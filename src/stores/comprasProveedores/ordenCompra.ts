@@ -103,7 +103,7 @@ export const useOrdenCompraStore = defineStore('ordenCompra', () => {
       const axios = AxiosHttpRepository.getInstance()
       const url = apiConfig.URL_BASE+'/'+axios.getEndpoint(endpoints.dashboard_compras)
       const response: AxiosResponse = await axios.post(url, data)
-      console.log(response)
+      console.log(response.data.results)
       return response.data.results
     } catch (error) {
       notificarError('Error al consultar el dashboard' + error)

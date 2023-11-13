@@ -58,9 +58,7 @@
             >
               <template v-slot:no-option>
                 <q-item>
-                  <q-item-section class="text-grey">
-                    No hay resultados
-                  </q-item-section>
+                  <q-item-section class="text-grey"> No hay resultados </q-item-section>
                 </q-item>
               </template>
             </q-select>
@@ -100,9 +98,7 @@
               placeholder="Obligatorio"
               hint="Ingresa un numero de OC y presiona Enter"
               @keyup.enter="cargarOrdenBD"
-              :disable="
-                disabled || soloLectura || orden.autorizador === store.user.id
-              "
+              :disable="disabled || soloLectura || orden.autorizador === store.user.id"
               outlined
               dense
             >
@@ -160,9 +156,7 @@
               dense
               outlined
               :disable="
-                disabled ||
-                orden.tiene_preorden ||
-                orden.autorizador !== store.user.id
+                disabled || orden.tiene_preorden || orden.autorizador !== store.user.id
               "
               :option-value="(v) => v.id"
               :option-label="(v) => v.nombre"
@@ -180,9 +174,7 @@
                 </template> -->
               <template v-slot:no-option>
                 <q-item>
-                  <q-item-section class="text-grey">
-                    No hay resultados
-                  </q-item-section>
+                  <q-item-section class="text-grey"> No hay resultados </q-item-section>
                 </q-item>
               </template>
             </q-select>
@@ -248,10 +240,7 @@
           </div>
 
           <!-- Tarea -->
-          <div
-            class="col-12 col-md-3"
-            v-if="orden.tarea || accion == acciones.nuevo"
-          >
+          <div class="col-12 col-md-3" v-if="orden.tarea || accion == acciones.nuevo">
             <label class="q-mb-sm block">N° Tarea</label>
             <q-select
               v-model="orden.tarea"
@@ -279,14 +268,12 @@
                 </q-item> </template
               ><template v-slot:no-option>
                 <q-item>
-                  <q-item-section class="text-grey">
-                    No hay resultados
-                  </q-item-section>
+                  <q-item-section class="text-grey"> No hay resultados </q-item-section>
                 </q-item>
               </template>
             </q-select>
           </div>
-          
+
           <!-- Proveedor -->
           <div class="col-12 col-md-3">
             <label class="q-mb-sm block">Proveedor</label>
@@ -314,18 +301,14 @@
                     <q-item-label>{{ scope.opt.razon_social }}</q-item-label>
                     <q-item-label caption
                       >Sucursal:
-                      {{
-                        scope.opt.sucursal || scope.opt.direccion
-                      }}</q-item-label
+                      {{ scope.opt.sucursal || scope.opt.direccion }}</q-item-label
                     >
                   </q-item-section>
                 </q-item>
               </template>
               <template v-slot:no-option>
                 <q-item>
-                  <q-item-section class="text-grey">
-                    No hay resultados
-                  </q-item-section>
+                  <q-item-section class="text-grey"> No hay resultados </q-item-section>
                 </q-item>
               </template>
             </q-select>
@@ -340,9 +323,7 @@
               v-model="orden.descripcion"
               placeholder="Obligatorio"
               :disable="
-                disabled ||
-                soloLectura ||
-                (accion == acciones.editar && store.esCompras)
+                disabled || soloLectura || (accion == acciones.editar && store.esCompras)
               "
               :error="!!v$.descripcion.$errors.length"
               outlined
@@ -376,9 +357,7 @@
             >
               <template v-slot:no-option>
                 <q-item>
-                  <q-item-section class="text-grey">
-                    No hay resultados
-                  </q-item-section>
+                  <q-item-section class="text-grey"> No hay resultados </q-item-section>
                 </q-item>
               </template>
               <template v-slot:error>
@@ -391,11 +370,7 @@
           <!-- Tiempo -->
           <div
             class="col-12 col-md-3"
-            v-if="
-              orden.tiempo ||
-              accion == acciones.nuevo ||
-              accion == acciones.editar
-            "
+            v-if="orden.tiempo || accion == acciones.nuevo || accion == acciones.editar"
           >
             <label class="q-mb-sm block">Tiempo</label>
             <q-select
@@ -416,9 +391,7 @@
             >
               <template v-slot:no-option>
                 <q-item>
-                  <q-item-section class="text-grey">
-                    No hay resultados
-                  </q-item-section>
+                  <q-item-section class="text-grey"> No hay resultados </q-item-section>
                 </q-item>
               </template>
               <template v-slot:error>
@@ -455,13 +428,7 @@
           <!-- Causa de anulacion -->
           <div class="col-12 col-md-3 q-mb-md" v-if="orden.causa_anulacion">
             <label class="q-mb-sm block">Causa de anulación</label>
-            <q-input
-              v-model="orden.causa_anulacion"
-              autogrow
-              outlined
-              dense
-              disable
-            >
+            <q-input v-model="orden.causa_anulacion" autogrow outlined dense disable>
             </q-input>
           </div>
           <!-- Modificar IVA -->
@@ -498,8 +465,7 @@
           <div
             class="col-12 col-md-3 q-mb-xl"
             v-if="
-              (accion == acciones.nuevo || accion == acciones.editar) &&
-              store.esCompras
+              (accion == acciones.nuevo || accion == acciones.editar) && store.esCompras
             "
           >
             <q-checkbox
@@ -529,9 +495,7 @@
                       filtrarTipo: 1,
                     })
                   "
-                  @blur="
-                    criterioBusquedaProducto === '' ? limpiarProducto() : null
-                  "
+                  @blur="criterioBusquedaProducto === '' ? limpiarProducto() : null"
                   outlined
                   dense
                 >
@@ -583,12 +547,14 @@
                     store.esCompras) &&
                   (orden.autorizacion == 1 || store.esCompras))
               "
+              :permitirEditarModal="true"
               :permitirConsultar="false"
-              :permitirEditar="false"
+              :permitirEditar="true"
               :permitirEliminar="false"
               :mostrarBotones="false"
               :altoFijo="false"
               :accion1="btnEliminarFila"
+              @guardarFila="(fila) => guardarFilaEditada(fila)"
               v-on:fila-modificada="calcularValores"
             >
             </essential-popup-editable-table>
@@ -596,12 +562,7 @@
           <!-- Tabla con el resumen -->
           <div class="col-12">
             <div class="row q-col-xs-4 q-col-xs-offset-8 flex-end justify-end">
-              <q-list
-                bordered
-                separator
-                dense
-                v-if="orden.listadoProductos.length > 0"
-              >
+              <q-list bordered separator dense v-if="orden.listadoProductos.length > 0">
                 <q-item>
                   <q-item-section>Subtotal: </q-item-section>
                   <q-separator vertical></q-separator>
@@ -642,9 +603,6 @@
     </template>
   </tab-layout-filter-tabs2>
   <!-- Modales -->
-  <modales-entidad
-    :comportamiento="modales"
-    :persistente="false"
-  ></modales-entidad>
+  <modales-entidad :comportamiento="modales" :persistente="false"></modales-entidad>
 </template>
 <script src="./OrdenCompraPage.ts"></script>

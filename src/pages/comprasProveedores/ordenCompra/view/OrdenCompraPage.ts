@@ -233,6 +233,10 @@ export default defineComponent({
       if (!orden.preorden || orden.preorden === 0)
         limpiarOrden()
     }
+    function guardarFilaEditada(fila: any){
+      console.log(fila)
+      calcularValores(fila)
+    }
 
     /**
      * La función calcula los valores de iva, subtotal y total en función de los datos
@@ -523,6 +527,7 @@ export default defineComponent({
       filtrarOrdenes,
       calcularValores,
       // estructuraConsultaCategoria,
+      guardarFilaEditada,
       filtrarProveedores,
       llenarOrden,
       actualizarPreorden,

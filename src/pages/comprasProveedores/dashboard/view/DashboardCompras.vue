@@ -1,6 +1,6 @@
 <template>
   <q-page padding>
-    <q-card
+    <q-card class="q-mb-md rounded no-border custom-shadow"
       ><q-card-section>
         <div class="border-1 text-primary text-bold q-mb-lg">
           <q-icon name="bi-graph-up-arrow" class="q-mr-sm"></q-icon>
@@ -76,9 +76,9 @@
               </template>
             </q-input>
           </div>
-          <div class="col-12 col-md-3">
+          <!-- <div class="col-12 col-md-3">
             <q-btn class="q-mt-lg" color="primary" @click="consultar()">Consultar</q-btn>
-          </div>
+          </div> -->
 
           <!-- <div class="col-12 col-md-6">
             <label class="q-mb-sm block">Seleccione el empleado a consultar</label>
@@ -117,21 +117,197 @@
           </div> -->
         </div>
       </q-card-section>
+    </q-card>
+    <q-card class="q-mb-md rounded no-border custom-shadow">
+      <div
+        class="row bg-body text-bold text-primary q-pa-md rounded justify-center q-mb-lg"
+      >
+        Información de ordenes de compras creadas
+      </div>
       <q-card-section>
-        <div class="col-12 col-md-6 text-center">
-          <div class="text-subtitle2 q-mb-lg">
-            Estado actual de las ordenes de compras
-          </div>
-          <div>
-            <grafico-generico
-              v-if="ordenesPorEstado.length"
-              :data="ordenesPorEstadoBar"
-              :options="optionsPie"
-              @click="(data) => clickGrafico(data)"
-            />
+        <div class="row q-col-gutter-sm q-mb-lg">
+          <div class="col-12 col-md-12 q-mb-lg">
+            <div class="row q-col-gutter-xs">
+              <div v-if="cantOrdenesCreadas >= 0" class="col-12">
+                <q-card class="rounded-card text-primary q-pa-md text-center bg-grey-2">
+                  <div class="text-h3 q-mb-md">
+                    {{ cantOrdenesCreadas }}
+                  </div>
+                  <div class="text-bold">Cantidad de ordenes creadas</div>
+                </q-card>
+              </div>
+              <div v-if="cantOrdenesPendientes >= 0" class="col-6 col-md-3">
+                <q-card class="rounded-card q-pa-md text-center full-height">
+                  <div class="text-h3 text-primary q-mb-md">
+                    {{ cantOrdenesPendientes }}
+                  </div>
+                  <div>Cantidad de ordenes pendientes</div>
+                </q-card>
+              </div>
+              <div v-if="cantOrdenesAprobadas >= 0" class="col-6 col-md-3">
+                <q-card class="rounded-card q-pa-md text-center full-height">
+                  <div class="text-h3 text-primary q-mb-md">
+                    {{ cantOrdenesAprobadas }}
+                  </div>
+                  <div>Cantidad de ordenes aprobadas</div>
+                </q-card>
+              </div>
+              <div v-if="cantOrdenesRevisadas >= 0" class="col-6 col-md-3">
+                <q-card class="rounded-card q-pa-md text-center full-height">
+                  <div class="text-h3 text-primary q-mb-md">
+                    {{ cantOrdenesRevisadas }}
+                  </div>
+                  <div>Cantidad de ordenes revisadas</div>
+                </q-card>
+              </div>
+              <div v-if="cantOrdenesRealizadas >= 0" class="col-6 col-md-3">
+                <q-card class="rounded-card q-pa-md text-center full-height">
+                  <div class="text-h3 text-primary q-mb-md">
+                    {{ cantOrdenesRealizadas }}
+                  </div>
+                  <div>Cantidad de ordenes realizadas</div>
+                </q-card>
+              </div>
+              <div v-if="cantOrdenesPagadas >= 0" class="col-6 col-md-3">
+                <q-card class="rounded-card q-pa-md text-center full-height">
+                  <div class="text-h3 text-primary q-mb-md">
+                    {{ cantOrdenesPagadas }}
+                  </div>
+                  <div>Cantidad de ordenes pagadas</div>
+                </q-card>
+              </div>
+              <div v-if="cantOrdenesAnuladas >= 0" class="col-6 col-md-3">
+                <q-card
+                  class="rounded-card q-pa-md text-center full-height bg-negative text-white"
+                >
+                  <div class="text-h3 q-mb-md">
+                    {{ cantOrdenesAnuladas }}
+                  </div>
+                  <div>Cantidad de ordenes anuladas</div>
+                </q-card>
+              </div>
+            </div>
           </div>
         </div>
       </q-card-section>
+    </q-card>
+    <q-card class="q-mb-md rounded no-border custom-shadow">
+      <div
+        class="row bg-body text-bold text-primary q-pa-md rounded justify-center q-mb-lg"
+      >
+        Gráficos estadisticos de Órdenes de Compras
+      </div>
+      <q-tab-panels
+        v-model="tabsEmpleado"
+        animated
+        transition-prev="scale"
+        transition-next="scale"
+        keep-alive
+        ><!-- Graficos -->
+        <q-tab-panel :name="opcionesEmpleado.empleadoGrafico">
+          <div v-if="mostrarTitulosSeccion" class="row justify-center q-mb-xl">
+            <div class="col-12 col-md-6 text-center">
+              <div class="text-subtitle2 q-mb-lg">Estado actual de los tickets</div>
+              <div>
+                <grafico-generico
+                  v-if="ticketsPorEstado.length"
+                  :data="ticketsPorEstadoBar"
+                  :options="optionsPie"
+                  @click="
+                    (data) =>
+                      clickGraficoTicketsEmpleado(
+                        data,
+                        categoriaGraficosEmpleado.ESTADO_ACTUAL
+                      )
+                  "
+                />
+              </div>
+            </div>
+          </div>
+
+          <div
+            v-if="mostrarTitulosSeccion"
+            class="row q-col-gutter-y-xl q-col-gutter-x-xs q-mb-xl"
+          >
+            <div
+              v-if="cantidadesTicketsSolicitadosPorDepartamento.length"
+              class="col-12 col-md-6 text-center"
+            >
+              <div class="text-subtitle2 q-mb-lg">
+                Tickets creados a los departamentos
+              </div>
+              <div>
+                <grafico-generico
+                  v-show="cantidadesTicketsSolicitadosPorDepartamento.length"
+                  :data="cantidadesTicketsSolicitadosPorDepartamentoBar"
+                  :options="optionsPie"
+                  @click="
+                    (data) =>
+                      clickGraficoTicketsEmpleado(
+                        data,
+                        categoriaGraficosEmpleado.CREADOS_A_DEPARTAMENTOS
+                      )
+                  "
+                />
+              </div>
+            </div>
+
+            <div class="col-12 col-md-6 text-center">
+              <div class="text-subtitle2 q-mb-lg">
+                Tickets recibidos por los departamentos
+              </div>
+              <div>
+                <grafico-generico
+                  v-if="cantidadesTicketsRecibidosPorDepartamento.length"
+                  :data="cantidadesTicketsRecibidosPorDepartamentoBar"
+                  :options="optionsPie"
+                  @click="
+                    (data) =>
+                      clickGraficoTicketsEmpleado(
+                        data,
+                        categoriaGraficosEmpleado.ASIGNADOS_POR_DEPARTAMENTOS
+                      )
+                  "
+                />
+              </div>
+            </div>
+          </div>
+        </q-tab-panel>
+
+        <q-tab-panel :name="opcionesEmpleado.empleadoListado">
+          <q-btn
+            color="primary"
+            @click="tabsEmpleado = opcionesEmpleado.empleadoGrafico"
+            glossy
+            no-caps
+            rounded
+            unelevated
+            class="q-mx-auto block"
+          >
+            <q-icon name="bi-arrow-left"></q-icon>
+            Regresar al gráfico</q-btn
+          >
+
+          <div class="row q-col-gutter-sm q-py-md q-mb-lg">
+            <div class="col-12">
+              <essential-table
+                v-if="ticketsPorEstadoListado.length"
+                titulo="Tickets del empleado"
+                :configuracionColumnas="[...configuracionColumnasTicket, accionesTabla]"
+                :datos="ticketsPorEstadoListado"
+                :permitirConsultar="false"
+                :permitirEliminar="false"
+                :permitirEditar="false"
+                :mostrarBotones="false"
+                :alto-fijo="false"
+                :accion1="botonVer"
+                :accion2="btnSeguimiento"
+              ></essential-table>
+            </div>
+            <!-- {{ ticketsEmpleadoResponsable }} -->
+          </div>
+        </q-tab-panel></q-tab-panels
+      >
     </q-card>
   </q-page>
 </template>

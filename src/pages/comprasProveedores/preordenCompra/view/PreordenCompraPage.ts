@@ -77,25 +77,25 @@ export default defineComponent({
     // const empleadosAutorizadores = ref([])
     cargarVista(async () => {
       await obtenerListados({
-        // empleados: {
-        //   controller: new EmpleadoController(),
-        //   params: {
-        //     campos: 'id,nombres,apellidos,cargo_id',
-        //     estado: 1,
-        //   }
-        // },
-        //   autorizadores: {
-        //     controller: new EmpleadoRoleController(),
-        //     params: {
-        //         roles: ['AUTORIZADOR'],
-        //     }
-        // },
-        // pedidos: {
-        //   controller: new PedidoController(),
-        //   params: {
-        //     autorizacion_id: 2//trae solo los pedidos autorizados
-        //   }
-        // }
+        empleados: {
+          controller: new EmpleadoController(),
+          params: {
+            campos: 'id,nombres,apellidos,cargo_id',
+            estado: 1,
+          }
+        },
+          autorizadores: {
+            controller: new EmpleadoRoleController(),
+            params: {
+                roles: ['AUTORIZADOR'],
+            }
+        },
+        pedidos: {
+          controller: new PedidoController(),
+          params: {
+            autorizacion_id: 2//trae solo los pedidos autorizados
+          }
+        }
 
       })
     })
