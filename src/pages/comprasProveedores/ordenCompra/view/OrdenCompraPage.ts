@@ -168,9 +168,6 @@ export default defineComponent({
      ****************************************************************************************/
     const reglas = {
       proveedor: { requiredIf: requiredIf(() => store.esCompras) },
-      // categorias: { requiredIfNoPreorden: requiredIf(() => false) },
-      // categorias: { requiredIfNoPreorden: requiredIf(() => !orden.preorden) },
-      // autorizacion: { requiredIfCoordinador: requiredIf(() => esCoordinador) },
       autorizador: { required },
       descripcion: { required },
       forma: { requiredIf: requiredIf(() => store.esCompras) },
@@ -244,7 +241,7 @@ export default defineComponent({
      * propiedades:
      */
     function calcularValores(data: any) {
-      console.log(data)
+      // console.log(data)
       data.precio_unitario = Number(data.precio_unitario).toFixed(4)
       data.iva = data.grava_iva && data.facturable ? ((Number(data.cantidad) * Number(data.precio_unitario)) * orden.iva / 100).toFixed(4) : 0
       data.subtotal = data.facturable ? (Number(data.cantidad) * Number(data.precio_unitario)).toFixed(4) : 0
@@ -322,6 +319,7 @@ export default defineComponent({
         orden.autorizacion = 1
         orden.estado = 1
         orden.causa_anulacion = null
+        orden.codigo = null
         // orden.categorias = []
       } else orden.hydrate(new OrdenCompra())
     }
@@ -374,9 +372,10 @@ export default defineComponent({
         })
       },
       visible: ({ entidad }) => {
-        if (tabSeleccionado.value == 1) {
-          return entidad.autorizacion_id == 1 && (entidad.solicitante_id == store.user.id || entidad.autorizador_id == store.user.id || store.esCompras)
+        if (tabSeleccionado.value == 1 || tabSeleccionado.value == 6) {
+          return (entidad.autorizacion_id == 1 || entidad.autorizacion_id == 2) && (entidad.solicitante_id == store.user.id || entidad.autorizador_id == store.user.id || store.esCompras)
         }
+
         return tabSeleccionado.value == 2 && store.esCompras || tabSeleccionado.value == 2 && (entidad.solicitante_id == store.user.id || entidad.autorizador_id == store.user.id)
       }
     }
@@ -386,6 +385,7 @@ export default defineComponent({
       color: 'warning',
       icono: 'bi-wrench',
       accion: async ({ entidad, posicion }) => {
+        console.log(entidad)
         ordenCompraStore.idOrden = entidad.id
         confirmar('¿Está seguro de abrir el formulario de registro de novedades de la orden de compra?', () => {
           modales.abrirModalEntidad('SeguimientoNovedadesOrdenesCompras')

@@ -2,9 +2,9 @@
 import { configuracionColumnasSubtareasRealizadasPorRegion } from '../domain/configuracionColumnasSubtareasRealizadasPorRegion'
 import { configuracionColumnasSubtareasRealizadasPorGrupo } from '../domain/configuracionColumnasSubtareasRealizadasPorGrupo'
 import { configuracionColumnasSubtareasRealizadasPorGrupoTiposTrabajosEmergencia } from '../domain/configuracionColumnasSubtareasRealizadasPorGrupoTiposTrabajosEmergencia'
-import { accionesTabla, departamentos, tiposJornadas } from 'config/utils'
+import { accionesTabla, opcionesDepartamentos, tiposJornadas } from 'config/utils'
 import { computed, defineComponent, reactive, ref } from 'vue'
-import { required } from 'shared/i18n-validators'
+import { required, requiredIf } from 'shared/i18n-validators'
 import { useVuelidate } from '@vuelidate/core'
 
 // Componentes
@@ -32,6 +32,9 @@ import { FiltroDashboardTicket } from '../domain/FiltroReporteMaterial'
 import { Ticket } from 'pages/gestionTickets/tickets/domain/Ticket'
 import { estadosTickets } from 'config/tickets.utils'
 import { useTicketStore } from 'stores/ticket'
+import { DepartamentoController } from 'pages/recursosHumanos/departamentos/infraestructure/DepartamentoController'
+import { useFiltrosListadosTickets } from 'pages/gestionTickets/tickets/application/FiltrosListadosTicket'
+import { optionsPie } from 'config/graficoGenerico'
 
 export default defineComponent({
   components: { TabLayout, EssentialTable, SelectorImagen, TableView, Bar, Pie, ModalesEntidad, GraficoGenerico },
@@ -58,6 +61,7 @@ export default defineComponent({
             estado: 1,
           }
         },
+        departamentos: new DepartamentoController(),
       })
     })
 
@@ -129,56 +133,26 @@ export default defineComponent({
       ASIGNADOS_POR_DEPARTAMENTOS: 'ASIGNADOS_POR_DEPARTAMENTOS',
     }
 
+    const opcionesFiltroDepartamentoEmpleado = {
+      porDepartamento: 'POR DEPARTAMENTO',
+      porEmpleado: 'POR EMPLEADO',
+    }
+
     const tabsDepartamento = ref(opcionesDepartamento.departamentoGrafico)
     const tabsEmpleado = ref(opcionesEmpleado.empleadoGrafico)
-
-    const optionsPie = {
-      responsive: true,
-      maintainAspectRatio: false,
-      layout: {
-        padding: 32,
-      },
-      elements: {
-        arc: {
-          borderWidth: 0,
-        }
-      },
-      plugins: {
-        legend: {
-          position: 'right',
-        },
-        datalabels: {
-          align: 'end',
-          anchor: 'end',
-          color: '#fff',
-          borderRadius: 16,
-          padding: 6,
-          backgroundColor: function (context) {
-            return context.dataset.backgroundColor
-          },
-          font: function (context) {
-            var w = context.chart.width
-            return {
-              size: w < 512 ? 10 : 12,
-            }
-          },
-          formatter: function (value, context) {
-            return value ? context.chart.data.labels[context.dataIndex] + ' (' + value + ')' : null
-          }
-        }
-      },
-    }
 
     /*******
      * Init
      *******/
+    filtro.departamento_empleado = opcionesFiltroDepartamentoEmpleado.porEmpleado
 
 
     // Reglas de validacion
     const reglas = {
       fecha_inicio: { required },
       fecha_fin: { required },
-      empleado: { required },
+      empleado: { requiredIf: requiredIf(() => filtro.departamento_empleado === opcionesFiltroDepartamentoEmpleado.porEmpleado) },
+      departamento: { requiredIf: requiredIf(() => filtro.departamento_empleado === opcionesFiltroDepartamentoEmpleado.porDepartamento) },
     }
 
     const v$ = useVuelidate(reglas, filtro)
@@ -211,6 +185,11 @@ export default defineComponent({
         empleados.value = listadosAuxiliares.empleados.filter((v) => v.nombres.toLowerCase().indexOf(needle) > -1 || v.apellidos.toLowerCase().indexOf(needle) > -1)
       })
     }
+
+    const {
+      departamentos,
+      filtrarDepartamentos,
+    } = useFiltrosListadosTickets(listadosAuxiliares)
 
     filtro.fecha_fin = obtenerFechaActual()
 
@@ -336,6 +315,9 @@ export default defineComponent({
           const colores10 = result.ticketsPorDepartamentoEstadoCalificado.map((item) => generarColorAzulPastelClaro())
           ticketsPorDepartamentoEstadoCalificadoBar.value = mapearDatos(labels10, valores10, 'Cantidad de tickets del departamento con filtro por estado', colores10)
 
+          // Tiempos
+          // const tiemposTicketsFinalizadosPorDepartamento = tiemposTicketsFinalizadosPorDepartamento
+
           console.log('10')
         } catch (e) {
           console.log(e)
@@ -375,19 +357,19 @@ export default defineComponent({
 
     function mapearColorDepartamentos(estadoTicket: keyof typeof estadosTickets) {
       switch (estadoTicket) {
-        case departamentos.xtrim_cuenca: return '#9fa8da'
-        case departamentos.medico: return '#78909c'
-        case departamentos.activos_fijos: return '#ffc107'
-        case departamentos.gerencia: return '#616161'
-        case departamentos.proyectos: return '#8bc34a'
-        case departamentos.recursos_humanos: return '#bcafe7'
-        case departamentos.tecnico: return '#987795'
-        case departamentos.contabilidad: return '#96c4e7'
-        case departamentos.informatica: return '#c4becb'
-        case departamentos.bodega: return '#eb548c'
-        case departamentos.sso: return '#ab8ba7'
-        case departamentos.vehiculos: return '#a98d7c'
-        case departamentos.comercial: return '#aaa698'
+        case opcionesDepartamentos.xtrim_cuenca: return '#9fa8da'
+        case opcionesDepartamentos.medico: return '#78909c'
+        case opcionesDepartamentos.activos_fijos: return '#ffc107'
+        case opcionesDepartamentos.gerencia: return '#616161'
+        case opcionesDepartamentos.proyectos: return '#8bc34a'
+        case opcionesDepartamentos.recursos_humanos: return '#bcafe7'
+        case opcionesDepartamentos.tecnico: return '#987795'
+        case opcionesDepartamentos.contabilidad: return '#96c4e7'
+        case opcionesDepartamentos.informatica: return '#c4becb'
+        case opcionesDepartamentos.bodega: return '#eb548c'
+        case opcionesDepartamentos.sso: return '#ab8ba7'
+        case opcionesDepartamentos.vehiculos: return '#a98d7c'
+        case opcionesDepartamentos.comercial: return '#aaa698'
       }
     }
 
@@ -506,12 +488,25 @@ export default defineComponent({
       return conteo
     }
 
+    const promedioTiemposLine = {
+      labels: ['1', '2', '3', '4', '5', '6', '7', '8', '9', '10'],
+      datasets: [
+        {
+          backgroundColor: '#0879dc',
+          label: 'hola',
+          data: [10, 34, 23, 2, 11, 52, 33, 42, 7, 3],
+        },
+      ],
+    }
+
     return {
+      promedioTiemposLine,
       // creados,
       tabsDepartamento,
       tabsEmpleado,
       opcionesDepartamento,
       opcionesEmpleado,
+      opcionesFiltroDepartamentoEmpleado,
       categoriaGraficosEmpleado,
       clickGraficoTicketsEmpleado,
       clickGraficoTicketsDepartamento,
@@ -553,6 +548,8 @@ export default defineComponent({
       empleadoResponsableDepartamento,
       ticketsEmpleadoResponsable,
       esResponsableDepartamento,
+      filtrarDepartamentos,
+      departamentos,
       // Configuracion columnas
       configuracionColumnasSubtareasRealizadasPorRegion,
       configuracionColumnasSubtareasRealizadasPorGrupo,

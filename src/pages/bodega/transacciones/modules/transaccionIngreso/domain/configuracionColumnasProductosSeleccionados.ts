@@ -49,6 +49,14 @@ export const configuracionColumnasProductosSeleccionados: ColumnConfig<DetallePr
     editable: false,
     visible: true
   },
+  {
+    name: 'detalle_id',
+    field: 'detalle_id',
+    label: 'Id Detalle',
+    align: 'left',
+    editable: false,
+    visible: false
+  },
   /* {
     name: 'condicion',
     field: 'condicion',

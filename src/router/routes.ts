@@ -551,6 +551,12 @@ const routes: RouteRecordRaw[] = [
        * COMPRAS Y PROVEEDORES
        *********************************************/
       {
+        path: '/dashboard-ordenes-compras',
+        name: 'dashboard_ordenes_compras',
+        component: () => import('pages/comprasProveedores/dashboard/view/DashboardCompras.vue'),
+        meta: { requiresAuth: true },
+      },
+      {
         path: '/bancos',
         name: 'bancos',
         component: () =>

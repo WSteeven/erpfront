@@ -1,13 +1,15 @@
 <template>
   <div v-if="permitirSubir" class="col-12 col-md-3 q-mb-lg">
     <br />
-    <q-checkbox
+    <q-toggle
       v-model="quiero_subir_archivos"
       :label="label || 'Quiero compartir archivos'"
       :disable="disable"
+      color="positive"
+      checked-icon="bi-eye"
       outlined
       dense
-    ></q-checkbox>
+    ></q-toggle>
   </div>
 
   <div v-if="quiero_subir_archivos" class="col-12 q-mb-sm">

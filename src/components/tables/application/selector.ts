@@ -22,11 +22,15 @@ export function useSelector(selector: any) {
         // Object.assign(filtros, params)
         status.activar()
         const { response } = await controller.listar(params)
+        console.log(response.data.mensaje)
+        if (response.data.mensaje) notificaciones.notificarAdvertencia(response.data.mensaje)
         result = response.data.results
         status.desactivar()
       } else {
         status.activar()
         const { response } = await controller.listar(filtros)
+        console.log(response.data.mensaje)
+        if (response.data.mensaje) notificaciones.notificarAdvertencia(response.data.mensaje)
         result = response.data.results
         status.desactivar()
       }
@@ -39,24 +43,25 @@ export function useSelector(selector: any) {
     }
 
 
+    if (result) {
+      if (result.length === 0) {
+        const { notificarAdvertencia } = useNotificaciones()
+        // await sleep(0)
+        notificarAdvertencia('No se encontraron coincidencias')
+        return
+      }
 
-    if (result.length === 0) {
-      const { notificarAdvertencia } = useNotificaciones()
-      // await sleep(0)
-      notificarAdvertencia('No se encontraron coincidencias')
-      return
-    }
+      // si se obtiene un solo elemento, se auto selecciona
+      if (result.length === 1) {
+        selector.refListadoSeleccionable.value.seleccionar(result) // seleccion multiple verificar si funciona para seleccion simple
+        return
+      }
 
-    // si se obtiene un solo elemento, se auto selecciona
-    if (result.length === 1) {
-      selector.refListadoSeleccionable.value.seleccionar(result) // seleccion multiple verificar si funciona para seleccion simple
-      return
-    }
-
-    // si se obtienen mas, mostrar el listado
-    if (result.length > 1) {
-      selector.listadoSeleccionable.value = [...result]
-      selector.refListadoSeleccionable.value.mostrar()
+      // si se obtienen mas, mostrar el listado
+      if (result.length > 1) {
+        selector.listadoSeleccionable.value = [...result]
+        selector.refListadoSeleccionable.value.mostrar()
+      }
     }
   }
 

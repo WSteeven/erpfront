@@ -12,12 +12,16 @@
 import { Chart as ChartJS } from 'chart.js'
 import datalabels from 'chartjs-plugin-datalabels'
 import { onMounted, ref, defineComponent, watch, watchEffect } from 'vue'
-import Chart from 'chart.js/auto'
+import Chart, { ChartTypeRegistry } from 'chart.js/auto'
 
 export default defineComponent({
   props: {
     data: Object,
     options: Object,
+    tipo: {
+      type: String, // as () => ChartTypeRegistry,
+      default: 'pie',
+    },
   },
   emits: ['click'],
   setup(props, { emit }) {
@@ -37,7 +41,7 @@ export default defineComponent({
       const combinedOptions = Object.assign({}, props.options)
       // Crear el gráfico
       myChart = new Chart(ctx, {
-        type: 'pie',
+        type: props.tipo,
         data: props.data,
         options: combinedOptions,
       })

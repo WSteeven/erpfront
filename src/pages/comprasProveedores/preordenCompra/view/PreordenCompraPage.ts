@@ -35,7 +35,7 @@ import { useRouter } from "vue-router";
 import { CustomActionPrompt } from "components/tables/domain/CustomActionPrompt";
 import { ordenarEmpleados } from "shared/utils";
 import { useFiltrosListadosSelects } from "shared/filtrosListadosGenerales";
-import { EmpleadoRoleController } from "pages/recursosHumanos/empleados/infraestructure/EmpleadoRolesController";
+import { ComportamientoModalesPreordenes } from "../application/ComportamientoModalesPreordenes";
 
 
 export default defineComponent({
@@ -46,6 +46,7 @@ export default defineComponent({
     const { setValidador, obtenerListados, cargarVista, listar } = mixin.useComportamiento()
     const { onConsultado } = mixin.useHooks()
     const { confirmar, prompt, notificarCorrecto, notificarError } = useNotificaciones()
+    const modales = new ComportamientoModalesPreordenes()
 
     //Stores
     useNotificacionStore().setQuasar(useQuasar())
@@ -76,25 +77,25 @@ export default defineComponent({
     // const empleadosAutorizadores = ref([])
     cargarVista(async () => {
       await obtenerListados({
-        empleados: {
-          controller: new EmpleadoController(),
-          params: {
-            campos: 'id,nombres,apellidos,cargo_id',
-            estado: 1,
-          }
-        },
+        // empleados: {
+        //   controller: new EmpleadoController(),
+        //   params: {
+        //     campos: 'id,nombres,apellidos,cargo_id',
+        //     estado: 1,
+        //   }
+        // },
         //   autorizadores: {
         //     controller: new EmpleadoRoleController(),
         //     params: {
         //         roles: ['AUTORIZADOR'],
         //     }
         // },
-        pedidos: {
-          controller: new PedidoController(),
-          params: {
-            autorizacion_id: 2//trae solo los pedidos autorizados
-          }
-        }
+        // pedidos: {
+        //   controller: new PedidoController(),
+        //   params: {
+        //     autorizacion_id: 2//trae solo los pedidos autorizados
+        //   }
+        // }
 
       })
     })
@@ -132,6 +133,10 @@ export default defineComponent({
 
     const { empleados, filtrarEmpleados } = useFiltrosListadosSelects(listadosAuxiliares)
 
+    async function guardado(data) {
+      console.log(data)
+      await listar({ solicitante_id: store.user.id, estado: tabSeleccionado.value })
+    }
 
     /*******************************************************************************************
      * Botones de tabla
@@ -183,6 +188,19 @@ export default defineComponent({
         return tabSeleccionado.value == estadosTransacciones.pendiente
       }
     }
+    const btnConsolidarPreordenes: CustomActionTable = {
+      titulo: 'Consolidar',
+      tooltip: 'Consolida varias preordenes en una sola preorden de compra',
+      icono: 'bi-box-arrow-in-down',
+      accion: async () => {
+        confirmar('¿Está seguro de consolidar preordenes de compras?', async () => {
+          confirmar('Esto anular las preordenes existentes y creará nuevas preordenes con la sumatoria de los items encontrados. ¿Desea continuar?', async () => {
+            await preordenStore.consolidarPreordenes()
+            await modales.abrirModalEntidad('ConsolidarPreordenPage')
+          })
+        })
+      }, visible: () => tabSeleccionado.value == estadosTransacciones.pendiente
+    }
 
 
     watch(refItems, () => {
@@ -212,11 +230,13 @@ export default defineComponent({
 
       //store
       store,
+      modales,
 
       //botones de tabla
       btnEliminarFila,
       btnHacerOrdenCompra,
       btnAnularPreorden,
+      btnConsolidarPreordenes,
 
 
       //tabla de detalles
@@ -229,6 +249,7 @@ export default defineComponent({
       //funciones
       filtrarPreordenes,
       ordenarEmpleados,
+      guardado,
 
       //variables computadas
       subtotal, total, descuento, iva,

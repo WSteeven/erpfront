@@ -343,7 +343,7 @@ export default defineComponent({
     const btnHabilitarEmpleado: CustomActionTable = {
       titulo: '',
       icono: 'bi-toggle2-on',
-      color: 'positive',
+      color: 'negative',
       tooltip: 'Habilitar',
       visible: ({entidad}) => {
         return (
@@ -351,14 +351,14 @@ export default defineComponent({
         )
       },
       accion: ({ entidad }) => {
-        HabilitarEmpleado(entidad.id,false)
+        HabilitarEmpleado(entidad.id,true)
         entidad.estado= true
       },
     }
     const btnDesHabilitarEmpleado: CustomActionTable = {
       titulo: '',
       icono: 'bi-toggle2-off',
-      color: 'negative',
+      color: 'positive',
       tooltip: 'DesHabilitar',
       visible: ({entidad}) => {
         return (
@@ -366,7 +366,7 @@ export default defineComponent({
         )
       },
       accion: ({ entidad }) => {
-        HabilitarEmpleado(entidad.id,true)
+        HabilitarEmpleado(entidad.id,false)
         entidad.estado=false
       },
     }

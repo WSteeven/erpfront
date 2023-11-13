@@ -16,6 +16,9 @@ export class Devolucion extends EntidadAuditable {
     autorizacion: number | null
     per_autoriza: number | null
     per_autoriza_id: number | null
+    sucursal: number | null
+    sucursal_id: number | null
+    pedido_automatico: boolean
 
     listadoProductos: any[]
 
@@ -38,8 +41,11 @@ export class Devolucion extends EntidadAuditable {
         this.estado = null
         this.estado_bodega = null
         this.created_at = null
-        this.es_para_stock =false
+        this.es_para_stock = false
         this.listadoProductos = []
+        this.sucursal = null
+        this.sucursal_id = null
+        this.pedido_automatico = false
 
         // variables auxiliares
         this.es_tarea = false
