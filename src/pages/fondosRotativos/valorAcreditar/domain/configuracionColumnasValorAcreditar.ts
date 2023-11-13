@@ -10,9 +10,16 @@ export const configuracionColumnasValorAcreditar: ColumnConfig<ValorAcreditar>[]
     sortable: true
   },
   {
+    name: 'saldo_empleado',
+    field: 'saldo_empleado',
+    label: 'Saldo Empleado',
+    align: 'left',
+    sortable: true
+  },
+  {
     name: 'monto_generado',
     field: 'monto_generado',
-    label: 'Monto Generad',
+    label: 'Monto Generado',
     align: 'left',
     sortable: true
   },
