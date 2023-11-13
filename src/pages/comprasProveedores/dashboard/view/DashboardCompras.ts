@@ -22,6 +22,7 @@ import { OrdenCompraController } from "pages/comprasProveedores/ordenCompra/infr
 import { ContenedorSimpleMixin } from "shared/contenedor/modules/simple/application/ContenedorSimpleMixin";
 import { useOrdenCompraStore } from "stores/comprasProveedores/ordenCompra";
 import { CustomActionTable } from "components/tables/domain/CustomActionTable";
+import { estadosOrdenesCompras } from "config/utils_compras_proveedores";
 
 
 export default defineComponent({
@@ -48,14 +49,14 @@ export default defineComponent({
     const proveedores = ref([])
     cargarVista(async () => {
       await obtenerListados({
-        proveedores: new ProveedorController(),
-        empleados: {
-          controller: new EmpleadoController(),
-          params: {
-            campos: 'id,nombres,apellidos,departamento_id,responsable_departamento',
-            estado: 1,
-          }
-        },
+        // proveedores: new ProveedorController(),
+        // empleados: {
+        //   controller: new EmpleadoController(),
+        //   params: {
+        //     campos: 'id,nombres,apellidos,departamento_id,responsable_departamento',
+        //     estado: 1,
+        //   }
+        // },
       })
     })
     // Reglas de validacion
@@ -120,18 +121,62 @@ export default defineComponent({
     /***************
      * Funciones
      ***************/
+    const cantOrdenesCreadas = ref()
+    const cantOrdenesPendientes = ref()
+    const cantOrdenesAprobadas = ref()
+    const cantOrdenesRevisadas = ref()
+    const cantOrdenesRealizadas = ref()
+    const cantOrdenesPagadas = ref()
+    const cantOrdenesAnuladas = ref()
+    const opcionesGrafico = {
+      grafico: 'grafico',
+      listado: 'listado'
+    }
+    const tabs = ref(opcionesGrafico.grafico)
+
     async function consultar() {
       if (await v$.value.$validate()) {
         try {
-          const { result } = await ordenCompraStore.consultarDashboard(dashboard)
-          console.log(result)
+          const results = await ordenCompraStore.consultarDashboard(dashboard)
+          console.log(results)
+          cantOrdenesCreadas.value = results.cant_ordenes_creadas
+          cantOrdenesPendientes.value = results.cant_ordenes_pendientes
+          cantOrdenesAprobadas.value = results.cant_ordenes_aprobadas
+          cantOrdenesRevisadas.value = results.cant_ordenes_revisadas
+          cantOrdenesRealizadas.value = results.cant_ordenes_realizadas
+          cantOrdenesPagadas.value = results.cant_ordenes_pagadas
+          cantOrdenesAnuladas.value = results.cant_ordenes_anuladas
+          ordenesPorEstado.value = results
+          const labels = ordenesPorEstado.value.map((item: OrdenCompra) => item.forma)
+          const valores = ordenesPorEstado.value.length
+          const colores = ordenesPorEstado.value.map((item: OrdenCompra) => mapearColor(item.forma!))
+          ordenesPorEstadoBar.value = mapearDatos(labels!, valores, 'Cantidad de Oc', colores)
         } catch (error) {
           console.log(error)
         }
       }
     }
-    function mapearDatos() {
-
+    function mapearDatos(labels: string[], valores: string[], titulo: string, colores: any[]) {
+      return {
+        labels: labels,
+        datasets: [
+          {
+            backgroundColor: colores,
+            label: titulo,
+            data: valores,
+          },
+        ],
+      }
+    }
+    function mapearColor(estadoOC: keyof typeof estadosOrdenesCompras) {
+      switch (estadoOC) {
+        case estadosOrdenesCompras.PENDIENTE: return '#9fa8da'
+        case estadosOrdenesCompras.APROBADO: return '#9fa8da'
+        case estadosOrdenesCompras.REVISADA: return '#78909c'
+        case estadosOrdenesCompras.REALIZADA: return '#ffc107'
+        case estadosOrdenesCompras.PAGADA: return '#616161'
+        case estadosOrdenesCompras.ANULADA: return '#8bc34a'
+      }
     }
     function clickGrafico() {
       console.log('Diste clic en grafico')
@@ -144,7 +189,16 @@ export default defineComponent({
       dashboard,
       btnVer,
       consultar,
-      clickGrafico
+      clickGrafico,
+      cantOrdenesCreadas,
+      cantOrdenesPendientes,
+      cantOrdenesAprobadas,
+      cantOrdenesRevisadas,
+      cantOrdenesRealizadas,
+      cantOrdenesPagadas,
+      cantOrdenesAnuladas,
+      tabs, opcionesGrafico,
+      
 
     }
   },
