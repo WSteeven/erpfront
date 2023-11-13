@@ -786,22 +786,46 @@
         Gráfico promedio de tiempos
       </div>
 
-      <div class="row">
-        <div class="col-12 col-md-6 text-center">
-          <div class="text-subtitle2 q-mb-lg">Promedio de tickets</div>
+      <div class="row q-pa-md q-col-gutter-x-sm">
+        <div class="col-12 col-md-10 text-center">
+          <div class="text-subtitle2 q-mb-lg">
+            Gráfico de tiempos de los tickets
+          </div>
           <div>
+            <!-- v-if="ticketsPorEstado.length" -->
             <grafico-generico
-              v-if="ticketsPorEstado.length"
-              :data="ticketsPorEstadoBar"
+              :data="promedioTiemposLine"
               :options="optionsPie"
-              @click="
-                (data) =>
-                  clickGraficoTicketsEmpleado(
-                    data,
-                    categoriaGraficosEmpleado.ESTADO_ACTUAL
-                  )
-              "
+              tipo="line"
             />
+          </div>
+        </div>
+
+        <div class="col-12 column col-md-2">
+          <div class="text-subtitle2 q-mb-lg text-center">
+            Promedio de tiempos de los tickets
+          </div>
+
+          <div
+            class="rounded-card no-border text-primary q-pa-md text-center bg-grey-3 q-mb-sm"
+          >
+            <div class="text-subtitle2 q-mb-lg">
+              {{ '2 horas 30 minutos con 6 segundos' }}
+            </div>
+            <q-icon name="bi-clock-history" size="xl" color="grey-5"></q-icon>
+          </div>
+
+          <div
+            class="rounded-card no-border text-positive q-pa-md text-center bg-light-green-1"
+          >
+            <div class="text-subtitle2 q-mb-lg">
+              {{ '20 tickets finalizados en el intervalo seleccionado' }}
+            </div>
+            <q-icon
+              name="bi-check-circle"
+              size="xl"
+              color="light-green-4"
+            ></q-icon>
           </div>
         </div>
       </div>

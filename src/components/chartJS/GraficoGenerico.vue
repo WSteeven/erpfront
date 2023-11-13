@@ -19,8 +19,8 @@ export default defineComponent({
     data: Object,
     options: Object,
     tipo: {
-      type: Object as () => ChartTypeRegistry,
-      required: true,
+      type: String, // as () => ChartTypeRegistry,
+      default: 'pie',
     },
   },
   emits: ['click'],

@@ -315,6 +315,9 @@ export default defineComponent({
           const colores10 = result.ticketsPorDepartamentoEstadoCalificado.map((item) => generarColorAzulPastelClaro())
           ticketsPorDepartamentoEstadoCalificadoBar.value = mapearDatos(labels10, valores10, 'Cantidad de tickets del departamento con filtro por estado', colores10)
 
+          // Tiempos
+          // const tiemposTicketsFinalizadosPorDepartamento = tiemposTicketsFinalizadosPorDepartamento
+
           console.log('10')
         } catch (e) {
           console.log(e)
@@ -485,7 +488,19 @@ export default defineComponent({
       return conteo
     }
 
+    const promedioTiemposLine = {
+      labels: ['1', '2', '3', '4', '5', '6', '7', '8', '9', '10'],
+      datasets: [
+        {
+          backgroundColor: '#0879dc',
+          label: 'hola',
+          data: [10, 34, 23, 2, 11, 52, 33, 42, 7, 3],
+        },
+      ],
+    }
+
     return {
+      promedioTiemposLine,
       // creados,
       tabsDepartamento,
       tabsEmpleado,
