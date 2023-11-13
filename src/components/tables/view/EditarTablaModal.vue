@@ -79,6 +79,19 @@
             </q-select>
           </div>
 
+          <!-- Toggles -->
+          <div
+            v-for="field in fieldsToggle"
+            :key="field.field"
+            class="col-12 col-md-3"
+          >
+            <label class="block q-mb-sm">{{ field.label }}</label>
+            <q-toggle
+              keep-color
+              v-model="field.valor"
+              :label="field.valor ? 'SI' : 'NO'"
+            />
+          </div>
           <!-- Inputs normales -->
           <!-- :class="{ 'col-12 q-mb-sm': true, 'col-md-3': fields.length > 1 }" -->
           <div
@@ -89,7 +102,11 @@
             <label class="block q-mb-sm">{{ field.label }}</label>
             <q-input
               v-model="field.valor"
-              :type="field.type !== 'select' ? field.type : 'text'"
+              :type="
+                field.type !== 'select' || field.type !== 'toggle'
+                  ? field.type
+                  : 'text'
+              "
               :autogrow="field.type !== 'number'"
               :hint="field.hint"
               outlined
@@ -180,6 +197,7 @@ export default defineComponent({
             fila.field !== 'acciones' &&
             fila.type !== 'imagen' &&
             fila.type !== 'select' &&
+            fila.type !== 'toggle' &&
             fila.editable
         )
     )
@@ -218,6 +236,24 @@ export default defineComponent({
         })
         .filter((fila) => fila.field !== 'acciones')
     )
+    //toggles
+    const fieldsToggle = computed(() =>
+      props.configuracionColumnas
+        .map((fila: ColumnConfig<any>) => {
+          return reactive({
+            label: fila.label,
+            field: fila.field,
+            type: fila.type ?? 'text',
+            editable: fila.editable ?? true,
+            valor: props.fila ? props.fila[fila.field] : '',
+            hint: fila.hint,
+          })
+        })
+        .filter(
+          (fila) =>
+            fila.field !== 'acciones' && fila.type === 'toggle' && fila.editable
+        )
+    )
 
     // imagenes
     const fieldsImagen = computed(() =>
@@ -249,6 +285,9 @@ export default defineComponent({
       var mappedSelect = fieldsSelect.value.map((item) => ({
         [item.field]: item.valor,
       }))
+      var mappedToggle = fieldsToggle.value.map((item) => ({
+        [item.field]: item.valor,
+      }))
       var mappedImagen = fieldsImagen.value.map((item) => ({
         [item.field]: item.valor,
       }))
@@ -260,6 +299,7 @@ export default defineComponent({
         ...mapped,
         ...mappedSelect,
         ...mappedImagen,
+        ...mappedToggle,
       ]
       const newObj = Object.assign({}, ...mapped)
 
@@ -317,6 +357,7 @@ export default defineComponent({
     return {
       fields,
       fieldsSelect,
+      fieldsToggle,
       fieldsAll,
       fieldsImagen,
       abierto,
