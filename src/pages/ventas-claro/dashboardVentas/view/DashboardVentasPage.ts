@@ -27,8 +27,8 @@ import { VendedoresController } from 'pages/ventas-claro/vendedores/infrestructu
 import { Ventas } from 'pages/ventas-claro/ventas/domain/Ventas'
 import { DashboardVentasController } from '../infraestructure/DashboardVentasController'
 import { FiltroDashboardVentas } from '../domain/FiltroDashboardVentas'
-import { ComportamientoModalesVentas } from 'pages/ventas-claro/ventas/application/ComportamientoModalesVentas'
 import { Vendedores } from 'pages/ventas-claro/vendedores/domain/Vendedores'
+import { ComportamientoModalesVentas } from 'pages/ventas-claro/ventas/application/ComportamientoModalesVentas'
 
 export default defineComponent({
   components: { TabLayout, EssentialTable, SelectorImagen, TableView, Bar, Pie, ModalesEntidad, GraficoGenerico },
@@ -55,6 +55,7 @@ export default defineComponent({
           }
         },
       })
+      vendedores.value = listadosAuxiliares.vendedores
     })
 
     const filtro = reactive(new FiltroDashboardVentas())
@@ -64,14 +65,14 @@ export default defineComponent({
     const modales = new ComportamientoModalesVentas()
     const vendedorResponsableDepartamento = ref()
     const esResponsableDepartamento = ref(false)
-    const ventasEmpleadoResponsable = ref([])
+    const ventasVendedorResponsable = ref([])
     const tabsVentas = ref('creados')
     let departamento
 
     // Cantidades
     const cantVentasCreados = ref()
     const cantVentasInstaladas = ref()
-    const cantVentasPendientas = ref()
+    const cantVentasPendientes = ref()
     const cantVentasRechazadas = ref()
     const ventasPorEstado: any = ref([])
     const ventasPorDepartamentoEstadoInstalado = ref([])
@@ -92,19 +93,19 @@ export default defineComponent({
       departamentoListado: 'departamentoListado',
     }
 
-    const opcionesEmpleado = {
+    const opcionesVendedor = {
       vendedorGrafico: 'vendedorGrafico',
       vendedorListado: 'vendedorListado',
     }
 
-    const categoriaGraficosEmpleado = {
+    const categoriaGraficosVendedor = {
       ESTADO_ACTUAL: 'ESTADO_ACTUAL',
       CREADOS_A_DEPARTAMENTOS: 'CREADOS_A_DEPARTAMENTOS',
       ASIGNADOS_POR_DEPARTAMENTOS: 'ASIGNADOS_POR_DEPARTAMENTOS',
     }
 
     const tabsDepartamento = ref(opcionesDepartamento.departamentoGrafico)
-    const tabsEmpleado = ref(opcionesEmpleado.vendedorGrafico)
+    const tabsVendedor = ref(opcionesVendedor.vendedorGrafico)
 
     const optionsPie = {
       responsive: true,
@@ -177,12 +178,12 @@ export default defineComponent({
    **********/
     const vendedores = ref([])
     const vendedoresResponsables = ref([])
-    function filtrarEmpleados(val, update) {
-      if (val === '') update(() => vendedores.value = listadosAuxiliares.vendedores.sort((a, b) => ordernarListaString(a.nombres, b.nombres)))
+    function filtrarVendedores(val, update) {
+      if (val === '') update(() => vendedores.value = listadosAuxiliares.vendedores)
 
       update(() => {
         const needle = val.toLowerCase()
-        vendedores.value = listadosAuxiliares.vendedores.filter((v) => v.nombres.toLowerCase().indexOf(needle) > -1 || v.apellidos.toLowerCase().indexOf(needle) > -1)
+        vendedores.value = listadosAuxiliares.vendedores.filter((v) => v.mpleado_info.toLowerCase().indexOf(needle) > -1)
       })
     }
 
@@ -193,20 +194,17 @@ export default defineComponent({
       if (await v$.value.$validate()) {
         try {
           cargando.activar()
-
           const { result } = await dashboardVentasController.listar({ fecha_inicio: filtro.fecha_inicio, fecha_fin: filtro.fecha_fin, vendedor_id: filtro.vendedor })
           // await obtenerResponsables()
-
           // creados.value = result.creados
-
           cantVentasCreados.value = result.cantidad_ventas
           cantVentasInstaladas.value = result.cantidad_ventas_instaladas
-          cantVentasPendientas.value = result.cantidad_ventas_por_instalar
-          cantVentasRechazadas.value = result.cantidad_ventas_por_rechazada
+          cantVentasPendientes.value = result.cantidad_ventas_por_instalar
+          cantVentasRechazadas.value = result.cantidad_ventas_por_rechazadas
 
           // Grafico vendedor consultado
           ventasPorEstado.value = result.ventasPorEstado
-          const graficoVentasPorEstado = contarVentasEmpleado(result.ventasPorEstado)
+          const graficoVentasPorEstado = contarVentasVendedor(result.ventasPorEstado)
           const labels3 = graficoVentasPorEstado.map((item) => item.estado)
           const valores3 = graficoVentasPorEstado.map((item) => item.total_ventas)
           const colores3 = graficoVentasPorEstado.map((item) => mapearColor(item.estado_activ))
@@ -244,28 +242,28 @@ export default defineComponent({
     }
 
 
-    function ordenarEmpleados() {
+    function ordenarVendedores() {
       vendedores.value.sort((a: Vendedores, b: Vendedores) => ordernarListaString(a.empleado_info!, b.empleado_info!))
     }
 
     const ventasPorEstadoListado = ref([])
- /*   function clickGraficoVentasEmpleado(data, categoriaGrafico: keyof typeof categoriaGraficosEmpleado) {
+ /*   function clickGraficoVentasVendedor(data, categoriaGrafico: keyof typeof categoriaGraficosVendedor) {
       const { label } = data
       if (label) {
         switch (categoriaGrafico) {
-          case categoriaGraficosEmpleado.ESTADO_ACTUAL:
+          case categoriaGraficosVendedor.ESTADO_ACTUAL:
             ventasPorEstadoListado.value = ventasPorEstado.value.filter((venta: Ventas) => venta.estado === label)
-            // tabsEmpleado.value = opcionesEmpleado.vendedorListado
+            // tabsVendedor.value = opcionesVendedor.vendedorListado
             break
-          case categoriaGraficosEmpleado.CREADOS_A_DEPARTAMENTOS:
+          case categoriaGraficosVendedor.CREADOS_A_DEPARTAMENTOS:
             ventasPorEstadoListado.value = cantidadesVentasSolicitadosPorDepartamento.value.filter((venta: Ventas) => venta.departamento_responsable === label)
-            // tabsEmpleado.value = opcionesEmpleado.vendedorListado
+            // tabsVendedor.value = opcionesVendedor.vendedorListado
             break
-          case categoriaGraficosEmpleado.ASIGNADOS_POR_DEPARTAMENTOS:
+          case categoriaGraficosVendedor.ASIGNADOS_POR_DEPARTAMENTOS:
             ventasPorEstadoListado.value = cantidadesVentasRecibidosPorDepartamento.value.filter((venta: Ventas) => venta.departamento_solicitante === label)
             break
         }
-        tabsEmpleado.value = opcionesEmpleado.vendedorListado
+        tabsVendedor.value = opcionesVendedor.vendedorListado
       }
     }*/
 
@@ -274,22 +272,22 @@ export default defineComponent({
       if (label) {
         switch (estado) {
           case estadosVentas.ASIGNADO:
-            ventasEmpleadoResponsable.value = ventasPorDepartamentoEstadoAsignado.value.filter((venta: Ventas) => venta.responsable === label)
+            ventasVendedorResponsable.value = ventasPorDepartamentoEstadoAsignado.value.filter((venta: Ventas) => venta.responsable === label)
             break
           case estadosVentas.EJECUTANDO:
-            ventasEmpleadoResponsable.value = ventasPorDepartamentoEstadoEjecutando.value.filter((venta: Ventas) => venta.responsable === label)
+            ventasVendedorResponsable.value = ventasPorDepartamentoEstadoEjecutando.value.filter((venta: Ventas) => venta.responsable === label)
             break
           case estadosVentas.PAUSADO:
-            ventasEmpleadoResponsable.value = ventasPorDepartamentoEstadoPausado.value.filter((venta: Ventas) => venta.responsable === label)
+            ventasVendedorResponsable.value = ventasPorDepartamentoEstadoPausado.value.filter((venta: Ventas) => venta.responsable === label)
             break
           case estadosVentas.REASIGNADO:
-            ventasEmpleadoResponsable.value = ventasPorDepartamentoEstadoReasignado.value.filter((venta: Ventas) => venta.responsable === label)
+            ventasVendedorResponsable.value = ventasPorDepartamentoEstadoReasignado.value.filter((venta: Ventas) => venta.responsable === label)
             break
           case estadosVentas.FINALIZADO_SOLUCIONADO:
-            ventasEmpleadoResponsable.value = ventasPorDepartamentoEstadoFinalizadoSolucionado.value.filter((venta: Ventas) => venta.responsable === label)
+            ventasVendedorResponsable.value = ventasPorDepartamentoEstadoFinalizadoSolucionado.value.filter((venta: Ventas) => venta.responsable === label)
             break
           case estadosVentas.FINALIZADO_SIN_SOLUCION:
-            ventasEmpleadoResponsable.value = ventasPorDepartamentoEstadoFinalizadoSinSolucion.value.filter((venta: Ventas) => venta.responsable === label)
+            ventasVendedorResponsable.value = ventasPorDepartamentoEstadoFinalizadoSinSolucion.value.filter((venta: Ventas) => venta.responsable === label)
             break
         }
         tabsDepartamento.value = opcionesDepartamento.departamentoListado
@@ -297,7 +295,7 @@ export default defineComponent({
     }*/
 
 
-    function contarVentasEmpleado(ventas: Ventas[]): any[] {
+    function contarVentasVendedor(ventas: Ventas[]): any[] {
       const conteo = ventas.reduce((acumulador: any, venta) => {
         const estado = venta.estado_activ
 
@@ -362,20 +360,22 @@ export default defineComponent({
     return {
       // creados,
       tabsDepartamento,
-      tabsEmpleado,
+      tabsVendedor,
       opcionesDepartamento,
-      opcionesEmpleado,
-      categoriaGraficosEmpleado,
-      //clickGraficoVentasEmpleado,
+      opcionesVendedor,
+      categoriaGraficosVendedor,
+      //clickGraficoVentasVendedor,
      // clickGraficoVentasDepartamento,
       modoUnaColumna: ref(false),
       tabsVentas,
-      ordenarEmpleados,
-      filtrarEmpleados,
+      ordenarVendedores,
+      filtrarVendedores,
       vendedores,
       vendedoresResponsables,
-     // ventasConSolucion,
       cantVentasCreados,
+      cantVentasInstaladas,
+      cantVentasPendientes,
+      cantVentasRechazadas,
     /*  cantVentasCreadosParaMi,
       cantVentasCreadosInternos,
       cantVentasCreadosADepartamentos,
@@ -402,7 +402,7 @@ export default defineComponent({
       accionesTabla,
       modales,
       vendedorResponsableDepartamento,
-      ventasEmpleadoResponsable,
+      ventasVendedorResponsable,
       esResponsableDepartamento,
       // Configuracion columnas
       configuracionColumnasSubtareasRealizadasPorRegion,

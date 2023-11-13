@@ -33,7 +33,7 @@ export default defineComponent({
       await obtenerListados({
         empleados: {
           controller: new EmpleadoController(),
-          params: { campos: 'id,nombres,apellidos',estado: 1 },
+          params: { campos: 'id,nombres,apellidos',estado: 1,departamento_id:13 },
         },
         modalidades: {
           controller: new ModalidadController(),
