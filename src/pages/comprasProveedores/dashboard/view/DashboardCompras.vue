@@ -244,7 +244,7 @@
               <!-- {{ ordenesPorEstado }} -->
               <div>
                 <grafico-generico
-                  v-if="ordenesPorEstado.length"
+                   v-if="ordenesPorEstado.length"
                   :data="ordenesPorEstadoBar"
                   :options="optionsPie"
                   @click="(data) => clickGrafico(data, 'hola')"

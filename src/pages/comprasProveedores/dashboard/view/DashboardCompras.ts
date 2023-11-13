@@ -150,11 +150,11 @@ export default defineComponent({
           cantOrdenesPagadas.value = results.cant_ordenes_pagadas
           cantOrdenesAnuladas.value = results.cant_ordenes_anuladas
           ordenesPorEstado.value = results.todas
-          const labels = ['PENDIENTES', 'APROBADOS', 'ANULADOS']
-          const valores = ordenesPorEstado.value.map((item: any) => item.autorizacion_id)
-          const colores = ordenesPorEstado.value.map((item: any) => mapearColor(item.autorizacion_id))
+          const labels = ['PENDIENTES', 'APROBADAS', 'ANULADAS']
+          const valores = [1, 4, 1]
+          const colores = mapearColor(valores)
           console.log(labels, valores, colores)
-          ordenesPorEstadoBar.value = mapearDatos(labels!, valores, 'Cantidad de Oc', colores)
+          ordenesPorEstadoBar.value = mapearDatos(labels!, valores, 'Cantidad de Ordenes', colores)
         } catch (error) {
           console.log(error)
         }
@@ -177,6 +177,7 @@ export default defineComponent({
         case 1: return '#9fa8da'
         case 2: return '#9fa8da'
         case 3: return '#78909c'
+        case 4: return '#ffc107'
       }
     }
     // function mapearColor(estadoOC: keyof typeof estadosOrdenesCompras) {
