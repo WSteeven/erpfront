@@ -19,7 +19,11 @@ import { Bar, Pie } from 'vue-chartjs'
 // Logica y controladores
 
 import { ContenedorSimpleMixin } from 'shared/contenedor/modules/simple/application/ContenedorSimpleMixin'
-import { generarColorAzulPastelClaro, obtenerFechaActual, ordernarListaString } from 'shared/utils'
+import {
+  generarColorAzulPastelClaro,
+  obtenerFechaActual,
+  ordernarListaString,
+} from 'shared/utils'
 import { StatusEssentialLoading } from 'components/loading/application/StatusEssentialLoading'
 import { ReporteSubtareasRealizadas } from '../domain/ReporteSubtareasRealizadas'
 import { CustomActionTable } from 'components/tables/domain/CustomActionTable'
@@ -31,12 +35,21 @@ import { Vendedores } from 'pages/ventas-claro/vendedores/domain/Vendedores'
 import { ComportamientoModalesVentas } from 'pages/ventas-claro/ventas/application/ComportamientoModalesVentas'
 
 export default defineComponent({
-  components: { TabLayout, EssentialTable, SelectorImagen, TableView, Bar, Pie, ModalesEntidad, GraficoGenerico },
+  components: {
+    TabLayout,
+    EssentialTable,
+    SelectorImagen,
+    TableView,
+    Bar,
+    Pie,
+    ModalesEntidad,
+    GraficoGenerico,
+  },
   setup() {
     /***********
-    * Stores
-    ***********/
-   // const ventaStore = ventaStore()
+     * Stores
+     ***********/
+    // const ventaStore = ventaStore()
 
     const mixin = new ContenedorSimpleMixin(
       ReporteSubtareasRealizadas,
@@ -51,8 +64,8 @@ export default defineComponent({
         vendedores: {
           controller: new VendedoresController(),
           params: {
-            campos: 'id'
-          }
+            campos: 'id',
+          },
         },
       })
       vendedores.value = listadosAuxiliares.vendedores
@@ -61,7 +74,9 @@ export default defineComponent({
     const filtro = reactive(new FiltroDashboardVentas())
     const dashboardVentasController = new DashboardVentasController()
     const cargando = new StatusEssentialLoading()
-    const mostrarTitulosSeccion = computed(() => filtro.fecha_inicio && filtro.fecha_fin && filtro.vendedor)
+    const mostrarTitulosSeccion = computed(
+      () => filtro.fecha_inicio && filtro.fecha_fin && filtro.vendedor
+    )
     const modales = new ComportamientoModalesVentas()
     const vendedorResponsableDepartamento = ref()
     const esResponsableDepartamento = ref(false)
@@ -75,16 +90,10 @@ export default defineComponent({
     const cantVentasPendientes = ref()
     const cantVentasRechazadas = ref()
     const ventasPorEstado: any = ref([])
-    const ventasPorDepartamentoEstadoInstalado = ref([])
-    const ventasPorDepartamentoEstadoPendientes = ref([])
-    const ventasPorDepartamentoEstadoRechazadas = ref([])
-
+    const ventasPorPlanes = ref([])
 
     const ventasPorEstadoBar = ref()
-    const ventasPorDepartamentoEstadoInstaladoBar = ref()
-    const ventasPorDepartamentoEstadoPendienteBar = ref()
-    const ventasPorDepartamentoEstadoRechazadoBar = ref()
-
+    const ventasPorPlanesoBar = ref()
 
     // const creados = ref([])
 
@@ -116,7 +125,7 @@ export default defineComponent({
       elements: {
         arc: {
           borderWidth: 0,
-        }
+        },
       },
       plugins: {
         legend: {
@@ -138,16 +147,20 @@ export default defineComponent({
             }
           },
           formatter: function (value, context) {
-            return value ? context.chart.data.labels[context.dataIndex] + ' (' + value + ')' : null
-          }
-        }
+            return value
+              ? context.chart.data.labels[context.dataIndex] +
+                  ' (' +
+                  value +
+                  ')'
+              : null
+          },
+        },
       },
     }
 
     /*******
      * Init
      *******/
-
 
     // Reglas de validacion
     const reglas = {
@@ -164,7 +177,7 @@ export default defineComponent({
     //const { btnSeguimiento } = useBotonesTablaVentas(mixin, modales)
     // setFiltrarVentas(filtrarTrabajoAsignado)
 
-   /* const botonVer: CustomActionTable = {
+    /* const botonVer: CustomActionTable = {
       titulo: 'Más detalles',
       icono: 'bi-eye',
       accion: async ({ entidad }) => {
@@ -174,27 +187,33 @@ export default defineComponent({
     }*/
 
     /*********
-   * Filtros
-   **********/
+     * Filtros
+     **********/
     const vendedores = ref([])
     const vendedoresResponsables = ref([])
     function filtrarVendedores(val, update) {
-      if (val === '') update(() => vendedores.value = listadosAuxiliares.vendedores)
+      if (val === '')
+        update(() => (vendedores.value = listadosAuxiliares.vendedores))
 
       update(() => {
         const needle = val.toLowerCase()
-        vendedores.value = listadosAuxiliares.vendedores.filter((v) => v.mpleado_info.toLowerCase().indexOf(needle) > -1)
+        vendedores.value = listadosAuxiliares.vendedores.filter(
+          (v) => v.mpleado_info.toLowerCase().indexOf(needle) > -1
+        )
       })
     }
 
     filtro.fecha_fin = obtenerFechaActual()
 
     async function consultar() {
-
       if (await v$.value.$validate()) {
         try {
           cargando.activar()
-          const { result } = await dashboardVentasController.listar({ fecha_inicio: filtro.fecha_inicio, fecha_fin: filtro.fecha_fin, vendedor_id: filtro.vendedor })
+          const { result } = await dashboardVentasController.listar({
+            fecha_inicio: filtro.fecha_inicio,
+            fecha_fin: filtro.fecha_fin,
+            vendedor_id: filtro.vendedor,
+          })
           // await obtenerResponsables()
           // creados.value = result.creados
           cantVentasCreados.value = result.cantidad_ventas
@@ -204,22 +223,52 @@ export default defineComponent({
 
           // Grafico vendedor consultado
           ventasPorEstado.value = result.ventasPorEstado
-          const graficoVentasPorEstado = contarVentasVendedor(result.ventasPorEstado)
-          const labels3 = graficoVentasPorEstado.map((item) => item.estado)
-          const valores3 = graficoVentasPorEstado.map((item) => item.total_ventas)
-          const colores3 = graficoVentasPorEstado.map((item) => mapearColor(item.estado_activ))
-          ventasPorEstadoBar.value = mapearDatos(labels3, valores3, 'Cantidad de ventas', colores3)
+          const graficoVentasPorEstado = result.graficoVentasPorEstado
 
+          //Grafico vendedor por planes
+          ventasPorPlanes.value = result.ventasPorPlanes
+          const graficoVentasPlanes = contarVentasPlanes(result.ventasPorPlanes)
+          // Grafico vendedor por estado
+          const labels3 = graficoVentasPorEstado.map((item) => item.estado_activ)
+          const valores3 = graficoVentasPorEstado.map((item) => item.total_ventas)
+          const colores3 = graficoVentasPorEstado.map((item) =>
+            mapearColor(item.estado_activ)
+          )
+          ventasPorEstadoBar.value = mapearDatos(
+            labels3,
+            valores3,
+            'Cantidad de ventas',
+            colores3
+          )
+          //Grafico vendedor por planes
+
+          const labelsPlanes = graficoVentasPlanes.map((item) => item.planes)
+          const valoresPlanes = graficoVentasPlanes.map(
+            (item) => item.total_planes
+          )
+          const coloresPlanes = graficoVentasPlanes.map((item) =>
+            mapearColorPlanes(item.planes)
+          )
+          ventasPorPlanesoBar.value = mapearDatos(
+            labelsPlanes,
+            valoresPlanes,
+            'Cantidad de ventas por planes',
+            coloresPlanes
+          )
         } catch (e) {
           console.log(e)
         } finally {
-
           cargando.desactivar()
         }
       }
     }
 
-    function mapearDatos(labels: string[], valores: string[], titulo: string, colores: any[]) {
+    function mapearDatos(
+      labels: string[],
+      valores: string[],
+      titulo: string,
+      colores: any[]
+    ) {
       return {
         labels: labels,
         datasets: [
@@ -232,22 +281,31 @@ export default defineComponent({
       }
     }
 
-    function mapearColor(estadoVentas:string) {
+    function mapearColor(estadoVentas: string) {
       const coloresPorEstado = {
-        ['APROBADO']: '#9fa8da',
-        ['RECHAZADO']: '#9fa8da',
-        ['PENDIENTE']: '#78909c',
-      };
-      return  coloresPorEstado[estadoVentas]
+        ['APROBADO']: '#83B11E',
+        ['RECHAZADA']: '#D62C18',
+        ['PENDIENTE']: '#D4CB13',
+      }
+      return coloresPorEstado[estadoVentas]
+    }
+    function mapearColorPlanes(planes: string) {
+      const coloresPorEstado = {
+        ['1PLAY']: '#D62C18  ',
+        ['2PLAY']: ' #DB6C25 ',
+        ['3PLAY']: ' #25DB8A',
+      }
+      return coloresPorEstado[planes]
     }
 
-
     function ordenarVendedores() {
-      vendedores.value.sort((a: Vendedores, b: Vendedores) => ordernarListaString(a.empleado_info!, b.empleado_info!))
+      vendedores.value.sort((a: Vendedores, b: Vendedores) =>
+        ordernarListaString(a.empleado_info!, b.empleado_info!)
+      )
     }
 
     const ventasPorEstadoListado = ref([])
- /*   function clickGraficoVentasVendedor(data, categoriaGrafico: keyof typeof categoriaGraficosVendedor) {
+    /*   function clickGraficoVentasVendedor(data, categoriaGrafico: keyof typeof categoriaGraficosVendedor) {
       const { label } = data
       if (label) {
         switch (categoriaGrafico) {
@@ -267,7 +325,7 @@ export default defineComponent({
       }
     }*/
 
-  /*  function clickGraficoVentasDepartamento(data, estado: keyof typeof estadosVentas) {
+    /*  function clickGraficoVentasDepartamento(data, estado: keyof typeof estadosVentas) {
       const { label } = data
       if (label) {
         switch (estado) {
@@ -294,13 +352,12 @@ export default defineComponent({
       }
     }*/
 
-
     function contarVentasVendedor(ventas: Ventas[]): any[] {
       const conteo = ventas.reduce((acumulador: any, venta) => {
         const estado = venta.estado_activ
-
-        const elementoExistente: any = acumulador.find((item: any) => item.estado === estado)
-
+        const elementoExistente: any = acumulador.find(
+          (item: any) => item.estado === estado
+        )
         if (!elementoExistente) acumulador.push({ estado, total_ventas: 1 })
         else elementoExistente.total_ventas++
 
@@ -310,24 +367,26 @@ export default defineComponent({
       return conteo
     }
 
- /*   function contarVentasDepartamento(ventas: Ventas[]): any[] {
+    function contarVentasPlanes(ventas: Ventas[]): any[] {
       const conteo = ventas.reduce((acumulador: any, venta) => {
-        const departamento_responsable = venta.departamento_responsable
+        const planes = venta.plan
 
-        if (departamento_responsable) {
-          const elementoExistente: any = acumulador.find((item: any) => item.departamento_responsable === departamento_responsable)
+        if (planes) {
+          const elementoExistente: any = acumulador.find(
+            (item: any) => item.planes === planes
+          )
 
-          if (!elementoExistente) acumulador.push({ departamento_responsable, total_ventas: 1 })
-          else elementoExistente.total_ventas++
+          if (!elementoExistente) acumulador.push({ planes, total_planes: 1 })
+          else elementoExistente.total_planes++
         }
 
         return acumulador
       }, [])
 
       return conteo
-    }*/
+    }
 
-   /* function contarVentasDepartamentoSolicitante(ventas: Ventas[]): any[] {
+    /* function contarVentasDepartamentoSolicitante(ventas: Ventas[]): any[] {
       const conteo = ventas.reduce((acumulador: any, venta) => {
         const departamento_solicitante = venta.departamento_solicitante
 
@@ -365,7 +424,7 @@ export default defineComponent({
       opcionesVendedor,
       categoriaGraficosVendedor,
       //clickGraficoVentasVendedor,
-     // clickGraficoVentasDepartamento,
+      // clickGraficoVentasDepartamento,
       modoUnaColumna: ref(false),
       tabsVentas,
       ordenarVendedores,
@@ -376,20 +435,6 @@ export default defineComponent({
       cantVentasInstaladas,
       cantVentasPendientes,
       cantVentasRechazadas,
-    /*  cantVentasCreadosParaMi,
-      cantVentasCreadosInternos,
-      cantVentasCreadosADepartamentos,
-      cantVentasRecibidos,
-      cantVentasReasignados,
-      cantVentasAsignados,
-      cantVentasCalificadosResponsable,
-      cantVentasCalificadosSolicitante,
-      cantVentasEjecutados,
-      cantVentasCancelados,
-      cantVentasCanceladosPorMi,
-      cantVentasPausados,
-      cantVentasFinalizadosSolucionados,
-      cantVentasFinalizadosSinSolucion,*/
       v$,
       mixin,
       listar,
@@ -411,27 +456,11 @@ export default defineComponent({
       // Consultar
       consultar,
       // Listados
-     /* cantidadesVentasSolicitadosPorDepartamento,
-      cantidadesVentasRecibidosPorDepartamento,
       ventasPorEstado,
-      ventasPorDepartamentoEstadoAsignado,
-      ventasPorDepartamentoEstadoReasignado,
-      ventasPorDepartamentoEstadoEjecutando,
-      ventasPorDepartamentoEstadoPausado,
-      ventasPorDepartamentoEstadoFinalizadoSolucionado,
-      ventasPorDepartamentoEstadoFinalizadoSinSolucion,
-      ventasPorDepartamentoEstadoCalificado,
       // Bar
-      cantidadesVentasSolicitadosPorDepartamentoBar,
-      cantidadesVentasRecibidosPorDepartamentoBar,
       ventasPorEstadoBar,
-      ventasPorDepartamentoEstadoAsignadoBar,
-      ventasPorDepartamentoEstadoReasignadoBar,
-      ventasPorDepartamentoEstadoEjecutandoBar,
-      ventasPorDepartamentoEstadoPausadoBar,
-      ventasPorDepartamentoEstadoFinalizadoSolucionadoBar,
-      ventasPorDepartamentoEstadoFinalizadoSinSolucionBar,
-      ventasPorDepartamentoEstadoCalificadoBar,*/
+      ventasPorPlanesoBar,
+
       // botones
       ventasPorEstadoListado,
     }

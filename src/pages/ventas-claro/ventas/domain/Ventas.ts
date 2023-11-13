@@ -6,6 +6,7 @@ export class Ventas extends EntidadAuditable {
   vendedor_info: string | null
   producto: number | null
   producto_info: string | null
+  plan: string | null
   fecha_activ: string | null
   estado_activ: string | null
   forma_pago: string | null
@@ -21,6 +22,7 @@ export class Ventas extends EntidadAuditable {
     this.vendedor_info = null
     this.producto = null
     this.producto_info = null
+    this.plan = null
     this.fecha_activ = null
     this.estado_activ = null
     this.forma_pago = null

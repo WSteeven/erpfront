@@ -181,13 +181,12 @@
                   <div>Cantidad de ventas que le cancelaron</div>
                 </q-card>
               </div>
-              <div v-if="cantVentasInstaladas >= 0 ||cantVentasInstaladas >= 0" class="col-12">
+              <div v-if="cantVentasInstaladas >= 0" class="col-12">
                 <q-card
                   class="rounded-card text-white no-border custom-shadow q-pa-md text-center bg-positive full-height q-card-hover"
                 >
                   <div class="text-h3 q-mb-md">
                     {{
-                      cantVentasInstaladas +
                       cantVentasInstaladas
                     }}
                   </div>
@@ -217,7 +216,35 @@
         transition-next="scale"
         keep-alive
       >
+      <q-tab-panel :name="opcionesVendedor.vendedorGrafico">
+          <div v-if="mostrarTitulosSeccion" class="row justify-center q-mb-xl">
+            <div class="col-12 col-md-6 text-center">
+              <div class="text-subtitle2 q-mb-lg">
+                Estado actual de las ventas
+              </div>
+              <div>
+                <grafico-generico
+                  v-if="ventasPorEstado.length"
+                  :data="ventasPorEstadoBar"
+                  :options="optionsPie"
 
+                />
+              </div>
+            </div>
+          </div>
+          <div class="col-12 col-md-6 text-center">
+              <div class="text-subtitle2 q-mb-lg">
+                Ventas por Planes
+              </div>
+              <div>
+                <grafico-generico
+                  v-if="ventasPorEstado.length"
+                  :data="ventasPorPlanesoBar"
+                  :options="optionsPie"
+                />
+              </div>
+            </div>
+        </q-tab-panel>
       </q-tab-panels>
       <!-- </q-card-section> -->
     </q-card>
