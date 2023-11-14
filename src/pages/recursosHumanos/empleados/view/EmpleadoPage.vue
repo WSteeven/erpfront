@@ -2,6 +2,10 @@
   <tab-layout
     :mixin="mixin"
     :configuracionColumnas="configuracionColumnas"
+    :accion1Header="btnImprimirEmpleados"
+    :accion1="btnHabilitarEmpleado"
+    :accion2="btnDesHabilitarEmpleado"
+
     titulo-pagina="Empleados"
     :puedeFiltrar="false"
     :puedeExportar="true"
@@ -1136,6 +1140,19 @@
                     <div class="error-msg">{{ error.$message }}</div>
                   </div>
                 </template>
+              </q-input>
+            </div>
+            <!-- Supa-->
+            <div class="col-12 col-md-3">
+              <label class="q-mb-sm block">Supa</label>
+              <q-input
+                v-model="empleado.supa"
+                placeholder="Opcional"
+                type="number"
+                :disable="disabled"
+                outlined
+                dense
+              >
               </q-input>
             </div>
 

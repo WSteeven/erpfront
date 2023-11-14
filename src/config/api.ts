@@ -100,8 +100,14 @@ export const endpoints = {
   imprimir_rol_pago: new Endpoint('recursos-humanos/imprimir_rol_pago/'),
   imprimir_rol_pago_general: new Endpoint('recursos-humanos/imprimir_rol_pago_general/'),
   imprimir_reporte_general: new Endpoint('recursos-humanos/imprimir_reporte_general/'),
+  imprimir_reporte_general_empleado: new Endpoint('recursos-humanos/imprimir_reporte_general_empleado'),
+
   verificar_todos_roles_finalizadas: new Endpoint('recursos-humanos/verificar-todos_roles-finalizadas'),
   finalizar_rol_pago: new Endpoint('recursos-humanos/finalizar-rol-pago'),
+  habilitar_empleado: new Endpoint('recursos-humanos/habilitar-empleado'),
+
+  actualizar_rol_pago: new Endpoint('recursos-humanos/actualizar-rol-pago/'),
+
   enviar_rol_pago: new Endpoint('recursos-humanos/enviar-roles-pago/'),
   enviar_rol_pago_empleado: new Endpoint('recursos-humanos/enviar-rol-pago-empleado/'),
 
@@ -119,6 +125,7 @@ export const endpoints = {
   conductores: new Endpoint('vehiculos/conductores'),
 
   //Modulo de compras y proveedores
+  dashboard_compras: new Endpoint('compras/dashboard'),
   calificacion_proveedor: new Endpoint('compras/calificaciones-proveedores'),
   categorias_ofertas: new Endpoint('compras/categorias-ofertas'),
   contactos_proveedores: new Endpoint('compras/contactos-proveedores'),
@@ -130,6 +137,7 @@ export const endpoints = {
   ofertas_proveedores: new Endpoint('compras/ofertas-proveedores'),
   ordenes_compras: new Endpoint('compras/ordenes-compras'),
   preordenes_compras: new Endpoint('compras/preordenes-compras'),
+  preordenes_compras_consolidadas: new Endpoint('compras/preordenes-consolidadas'),
   novedades_ordenes_compras: new Endpoint('compras/novedades-ordenes-compras'),
   prefacturas: new Endpoint('compras/prefacturas'),
   proformas: new Endpoint('compras/proformas'),
@@ -160,6 +168,7 @@ export const endpoints = {
   motivos: new Endpoint('motivos'),
   notificaciones: new Endpoint('notificaciones'),
   pedidos: new Endpoint('pedidos'),
+  preingresos: new Endpoint('preingresos'),
   procesadores: new Endpoint('procesadores'),
   prestamos: new Endpoint('prestamos'),
   productos: new Endpoint('productos'),
@@ -228,10 +237,14 @@ export const endpoints = {
   transferir_mis_tareas_activas: new Endpoint('tareas/transferir-mis-tareas-activas'),
   obtener_suma_material_tarea_usado: new Endpoint('tareas/obtener-suma-material-tarea-usado'),
   obtener_historial_material_tarea_usado_por_fecha: new Endpoint('tareas/obtener-historial-material-tarea-usado-por-fecha'),
+  obtener_historial_material_stock_usado_por_fecha: new Endpoint('tareas/obtener-historial-material-stock-usado-por-fecha'),
   actualizar_cantidad_utilizada_historial: new Endpoint('tareas/actualizar-cantidad-utilizada-historial'),
+  actualizar_cantidad_utilizada_historial_stock: new Endpoint('tareas/actualizar-cantidad-utilizada-historial-stock'),
   actualizar_cantidad_utilizada_tarea: new Endpoint('tareas/actualizar-cantidad-utilizada-tarea'),
+  actualizar_cantidad_utilizada_stock: new Endpoint('tareas/actualizar-cantidad-utilizada-stock'),
   actividades_realizadas_seguimientos_subtareas: new Endpoint('tareas/actividades-realizadas-seguimientos-subtareas'),
   fechas_historial_materiales_usados: new Endpoint('tareas/obtener-fechas-historial-materiales-usados'),
+  fechas_historial_materiales_stock_usados: new Endpoint('tareas/obtener-fechas-historial-materiales-stock-usados'),
 
   // Modulo Fondos Rotativos
   tipo_fondo: new Endpoint('fondos-rotativos/tipo-fondo'),
@@ -261,15 +274,23 @@ export const endpoints = {
   consolidado_filtrado_excel: new Endpoint('fondos-rotativos/consolidado_filtrado/excel'),
   autorizaciones_gastos: new Endpoint('fondos-rotativos/autorizaciones_gastos'),
   autorizaciones_transferencia: new Endpoint('fondos-rotativos/autorizaciones_transferencia'),
-
+  umbral: new Endpoint('fondos-rotativos/umbral'),
   acreditacion: new Endpoint('fondos-rotativos/acreditacion'),
   transferencia: new Endpoint('fondos-rotativos/transferencia'),
   ultimo_saldo: new Endpoint('fondos-rotativos/ultimo_saldo/'),
+  monto_acreditar_usuario: new Endpoint('fondos-rotativos/monto_acreditar_usuario/'),
+  cortar_saldo: new Endpoint('fondos-rotativos/cortar_saldo'),
+
   reporte_saldo_actual_excel: new Endpoint('fondos-rotativos/reporte/saldo_actual/excel'),
   reporte_saldo_actual_pdf: new Endpoint('fondos-rotativos/reporte/saldo_actual/pdf'),
   reporte_solicitud_fondo_pdf: new Endpoint('fondos-rotativos/reporte/solicitud_fondo/pdf'),
   reporte_solicitud_fondo_excel: new Endpoint('fondos-rotativos/reporte/solicitud_fondo/excel'),
   gastocontabilidad: new Endpoint('fondos-rotativos/gastocontabilidad'),
+  acreditacion_semana: new Endpoint('fondos-rotativos/acreditacion-semana'),
+  valor_acreditar: new Endpoint('fondos-rotativos/valor-acreditar'),
+  crear_cash_acreditacion_saldo: new Endpoint('fondos-rotativos/crear-cash-acreditacion-saldo/'),
+  acreditacion_saldo_semana: new Endpoint('fondos-rotativos/acreditacion-saldo-semana/'),
+
 
   /********************
    * Modulo de tickets
@@ -286,4 +307,5 @@ export const endpoints = {
   actividades_realizadas_seguimientos_tickets: new Endpoint('tickets/actividades-realizadas-seguimientos-tickets'),
   pausas_tickets: new Endpoint('tickets/tickets/obtener-pausas'),
   rechazos_tickets: new Endpoint('tickets/tickets/obtener-rechazados'),
+  linea_tiempo_tickets: new Endpoint('tickets/linea-tiempo'),
 }

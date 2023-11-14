@@ -3,6 +3,10 @@ export const iconos = {
     label: 'PEDIDO',
     icono: 'bi-file-earmark-text'
   },
+  preingreso: {
+    label: 'PREINGRESO DE MATERIALES',
+    icono: 'bi-file-earmark-text'
+  },
   devolucion: {
     label: 'DEVOLUCION',
     icono: 'bi-box-seam-fill'
@@ -18,6 +22,10 @@ export const iconos = {
   subtarea: {
     label: 'SUBTAREA',
     icono: 'bi-ui-checks-grid'
+  },
+  ingreso: {
+    label: 'INGRESO DE MATERIALES',
+    icono: 'bi-box-seam'
   },
   egreso: {
     label: 'EGRESO',

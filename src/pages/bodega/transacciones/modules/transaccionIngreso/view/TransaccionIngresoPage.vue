@@ -4,6 +4,7 @@
     :configuracionColumnas="configuracionColumnas"
     titulo-pagina="Transacciones - Ingresos"
     :permitirEditar="false"
+    :ajustarCeldas="true"
     :accion1="botonImprimir"
     :accion2="botonAnular"
   >
@@ -44,22 +45,10 @@
             >
               <template v-slot:append>
                 <q-icon name="event" class="cursor-pointer">
-                  <q-popup-proxy
-                    cover
-                    transition-show="scale"
-                    transition-hide="scale"
-                  >
-                    <q-date
-                      v-model="transaccion.fecha_limite"
-                      mask="DD-MM-YYYY"
-                    >
+                  <q-popup-proxy cover transition-show="scale" transition-hide="scale">
+                    <q-date v-model="transaccion.fecha_limite" mask="DD-MM-YYYY">
                       <div class="row items-center justify-end">
-                        <q-btn
-                          v-close-popup
-                          label="Cerrar"
-                          color="primary"
-                          flat
-                        />
+                        <q-btn v-close-popup label="Cerrar" color="primary" flat />
                       </div>
                     </q-date>
                   </q-popup-proxy>
@@ -91,18 +80,13 @@
             >
               <template v-slot:no-option>
                 <q-item>
-                  <q-item-section class="text-grey">
-                    No hay resultados
-                  </q-item-section>
+                  <q-item-section class="text-grey"> No hay resultados </q-item-section>
                 </q-item>
               </template>
             </q-select>
           </div>
           <!-- Transferencia -->
-          <div
-            v-if="transaccion.es_transferencia"
-            class="col-12 col-md-3 q-mb-md"
-          >
+          <div v-if="transaccion.es_transferencia" class="col-12 col-md-3 q-mb-md">
             <label class="q-mb-sm block">N° transferencia</label>
             <q-input
               type="number"
@@ -135,10 +119,7 @@
             ></q-checkbox>
           </div>
           <!-- Devolución -->
-          <div
-            v-if="transaccion.tiene_devolucion"
-            class="col-12 col-md-3 q-mb-md"
-          >
+          <div v-if="transaccion.tiene_devolucion" class="col-12 col-md-3 q-mb-md">
             <label class="q-mb-sm block">N° devolución</label>
             <q-input
               type="number"
@@ -165,10 +146,23 @@
               placeholder="Obligatorio"
               :readonly="disabled"
               :disable="disabled || soloLectura"
-              :rules="[
-                (val) => val > 0 || 'Ingresa un numero de comprobante válido',
-              ]"
+              :rules="[(val) => val > 0 || 'Ingresa un numero de comprobante válido']"
               :lazy-rules="true"
+              outlined
+              dense
+            >
+            </q-input>
+          </div>
+          <!--Proveedor -->
+          <div
+            v-if="esVisibleComprobante || transaccion.proveedor"
+            class="col-12 col-md-3 q-mb-md"
+          >
+            <label class="q-mb-sm block">Proveedor</label>
+            <q-input
+              v-model="transaccion.proveedor"
+              placeholder="Obligatorio"
+              :disable="disabled || soloLectura"
               outlined
               dense
             >
@@ -193,6 +187,7 @@
               input-debounce="0"
               @filter="filtroSucursales"
               @popup-show="ordenarSucursales"
+              @update:model-value="seleccionarClientePropietario"
               :option-value="(v) => v.id"
               :option-label="(v) => v.lugar"
               emit-value
@@ -205,9 +200,7 @@
               </template>
               <template v-slot:no-option>
                 <q-item>
-                  <q-item-section class="text-grey">
-                    No hay resultados
-                  </q-item-section>
+                  <q-item-section class="text-grey"> No hay resultados </q-item-section>
                 </q-item>
               </template>
               <template v-slot:after>
@@ -232,10 +225,7 @@
               dense
             >
               <template v-slot:error>
-                <div
-                  v-for="error of v$.justificacion.$errors"
-                  :key="error.$uid"
-                >
+                <div v-for="error of v$.justificacion.$errors" :key="error.$uid">
                   <div class="error-msg">{{ error.$message }}</div>
                 </div>
               </template>
@@ -244,9 +234,7 @@
 
           <!-- Solicitante -->
           <!-- v-if="transaccion.solicitante || !esBodeguero" -->
-          <div
-            class="col-12 col-md-3"
-          >
+          <div class="col-12 col-md-3">
             <label class="q-mb-sm block">Solicitante</label>
             <q-select
               v-model="transaccion.solicitante"
@@ -269,9 +257,7 @@
             >
               <template v-slot:no-option>
                 <q-item>
-                  <q-item-section class="text-grey">
-                    No hay resultados
-                  </q-item-section>
+                  <q-item-section class="text-grey"> No hay resultados </q-item-section>
                 </q-item>
               </template>
             </q-select>
@@ -337,9 +323,7 @@
               </template>
               <template v-slot:no-option>
                 <q-item>
-                  <q-item-section class="text-grey">
-                    No hay resultados
-                  </q-item-section>
+                  <q-item-section class="text-grey"> No hay resultados </q-item-section>
                 </q-item>
               </template>
             </q-select>
@@ -370,10 +354,7 @@
               dense
             >
               <template v-slot:error>
-                <div
-                  v-for="error of v$.observacion_est.$errors"
-                  :key="error.$uid"
-                >
+                <div v-for="error of v$.observacion_est.$errors" :key="error.$uid">
                   <div class="error-msg">{{ error.$message }}</div>
                 </div>
               </template>
@@ -407,9 +388,7 @@
               </template>
               <template v-slot:no-option>
                 <q-item>
-                  <q-item-section class="text-grey">
-                    No hay resultados
-                  </q-item-section>
+                  <q-item-section class="text-grey"> No hay resultados </q-item-section>
                 </q-item>
               </template>
             </q-select>
@@ -452,23 +431,19 @@
               </template>
               <template v-slot:no-option>
                 <q-item>
-                  <q-item-section class="text-grey">
-                    No hay resultados
-                  </q-item-section>
+                  <q-item-section class="text-grey"> No hay resultados </q-item-section>
                 </q-item>
               </template>
             </q-select>
           </div>
           <!-- Listado de la devolución -->
           <div
-            v-if="
-              listadoDevolucion !== undefined && listadoDevolucion.length > 0
-            "
+            v-if="listadoDevolucion !== undefined && listadoDevolucion.length > 0"
             class="col-12 col-md-12"
           >
             <q-table
               flat.bordered
-              style="height: 300px;"
+              style="height: 300px"
               title="Listado de la devolución"
               class="bg-body-table custom-border"
               :rows="listadoDevolucion"
@@ -494,9 +469,7 @@
                   hint="Presiona Enter para seleccionar un producto"
                   :disable="disabled || soloLectura"
                   @keydown.enter="listarProductos()"
-                  @blur="
-                    criterioBusquedaProducto === '' ? limpiarProducto() : null
-                  "
+                  @blur="criterioBusquedaProducto === '' ? limpiarProducto() : null"
                   outlined
                   dense
                 >
@@ -522,19 +495,18 @@
           <div class="col-12">
             <essential-table
               titulo="Productos Seleccionados"
-              :configuracionColumnas="
-                configuracionColumnasProductosSeleccionadosAccion
-              "
+              :configuracionColumnas="configuracionColumnasProductosSeleccionadosAccion"
               :datos="transaccion.listadoProductosTransaccion"
               :permitirConsultar="false"
-              :permitirEditar="
-                !transaccion.ingreso_masivo && accion === acciones.nuevo
+              :permitirEditar="!transaccion.ingreso_masivo && accion === acciones.nuevo"
+              :permitirEliminar="
+                accion == acciones.nuevo || accion == acciones.editar ? true : false
               "
-              :permitirEliminar="accion==acciones.nuevo||accion==acciones.editar?true:false"
               :mostrarBotones="false"
               :accion1="botonEditarCantidad"
               :accion1Header="abrirModalDetalle"
               :altoFijo="false"
+              :ajustarCeldas="true"
               @eliminar="eliminarItem"
               :permitirEditarModal="true"
               :modalMaximized="false"
@@ -545,9 +517,7 @@
       <!-- Modal de seleccion de detalles -->
       <essential-selectable-table
         ref="refListadoSeleccionableProductos"
-        :configuracion-columnas="
-          configuracionColumnasDetallesProductosSeleccionables
-        "
+        :configuracion-columnas="configuracionColumnasDetallesProductosSeleccionables"
         :datos="listadoProductos"
         tipo-seleccion="multiple"
         @selected="seleccionarProducto"
@@ -555,8 +525,6 @@
       </essential-selectable-table>
     </template>
   </tab-layout>
-  <modales-entidad
-    :comportamiento="modales"
-  ></modales-entidad>
+  <modales-entidad :comportamiento="modales"></modales-entidad>
 </template>
 <script src="./TransaccionIngresoPage.ts" />

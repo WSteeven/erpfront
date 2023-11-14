@@ -91,7 +91,7 @@ export default defineComponent({
       await obtenerListados({
         empleados: {
           controller: new EmpleadoController(),
-          params: { campos: 'id,nombres,apellidos', departamento_id: departamento }
+          params: { campos: 'id,nombres,apellidos', departamento_id: departamento, estado: 1 }
         },
       })
       empleados.value = listadosAuxiliares.empleados

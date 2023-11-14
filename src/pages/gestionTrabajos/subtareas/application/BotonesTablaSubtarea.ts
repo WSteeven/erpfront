@@ -142,6 +142,7 @@ export const useBotonesTablaSubtarea = (listado: Ref<Subtarea[]>, modales: any, 
     visible: ({ entidad }) => entidad.estado === estadosTrabajos.EJECUTANDO && (authenticationStore.esJefeTecnico || authenticationStore.esCoordinador || entidad.es_responsable),
     accion: ({ entidad, posicion }) => {
       obtenerCoordenadas(entidad)
+      const causasFiltradasPorTipo = listadosAuxiliares.causasIntervenciones.filter((causa: CausaIntervencion) => causa.tipo_trabajo === entidad.tipo_trabajo)
 
       const config: CustomActionPrompt = reactive({
         mensaje: 'Seleccione la causa de intervención',
@@ -149,8 +150,8 @@ export const useBotonesTablaSubtarea = (listado: Ref<Subtarea[]>, modales: any, 
           confirmarRealizar({ entidad, posicion, causa_intervencion_id })
         },
         tipo: 'radio',
-        requerido: false,
-        items: listadosAuxiliares.causasIntervenciones.filter((causa: CausaIntervencion) => causa.tipo_trabajo === entidad.tipo_trabajo).map((causa: CausaIntervencion) => {
+        requerido: causasFiltradasPorTipo.length,
+        items: causasFiltradasPorTipo.map((causa: CausaIntervencion) => {
           return {
             label: causa.nombre,
             value: causa.id

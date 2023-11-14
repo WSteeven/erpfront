@@ -1,13 +1,16 @@
 <template>
-  <tab-layout-filter-tabs
+  <tab-layout-filter-tabs2
     :mixin="mixin"
     :configuracionColumnas="configuracionColumnas"
     titulo-pagina="Devoluciones"
-    :tab-options="tabOptionsDevoluciones"
-    @tab-seleccionado="tabEs"
+    :tab-options="tabOptionsPedidos"
+    tabDefecto="PENDIENTE"
+    :filtrar="filtrarDevoluciones"
+    :ajustarCeldas="true"
     :permitirEditar="puedeEditar"
-    :accion1="botonAnular"
-    :accion2="botonImprimir"
+    :accion1="botonDespachar"
+    :accion2="botonAnular"
+    :accion3="botonImprimir"
   >
     <template #formulario>
       <q-form @submit.prevent>
@@ -31,7 +34,7 @@
             <q-input v-model="devolucion.created_at" disable outlined dense />
           </div>
           <!-- Canton select -->
-          <div class="col-12 col-md-3 q-mb-md">
+          <!-- <div class="col-12 col-md-3 q-mb-md">
             <label class="q-mb-sm block">Lugar de devolución</label>
             <q-select
               v-model="devolucion.canton"
@@ -58,6 +61,42 @@
                 <div v-for="error of v$.sucursal.$errors" :key="error.$uid">
                   <div class="error-msg">{{ error.$message }}</div>
                 </div>
+              </template>
+            </q-select>
+          </div> -->
+          <!-- Sucursal select -->
+          <div class="col-12 col-md-3">
+            <label class="q-mb-sm block">Lugar de devolución</label>
+            <q-select
+              v-model="devolucion.sucursal"
+              :options="opciones_sucursales"
+              transition-show="scale"
+              transition-hide="scale"
+              options-dense
+              dense
+              outlined
+              :disable="disabled || soloLectura"
+              :error="!!v$.sucursal.$errors.length"
+              error-message="Debes seleccionar una sucursal"
+              hint="Bodega donde se realiza la devolución de materiales"
+              use-input
+              input-debounce="0"
+              @filter="filtroSucursales"
+              @popup-show="ordenarSucursales"
+              :option-label="(item) => item.lugar"
+              :option-value="(item) => item.id"
+              emit-value
+              map-options
+            >
+              <template v-slot:error>
+                <div v-for="error of v$.sucursal.$errors" :key="error.$uid">
+                  <div class="error-msg">{{ error.$message }}</div>
+                </div>
+              </template>
+              <template v-slot:after>
+                <q-btn color="positive" @click="recargarSucursales">
+                  <q-icon size="xs" class="q-mr-sm" name="bi-arrow-clockwise" />
+                </q-btn>
               </template>
             </q-select>
           </div>
@@ -128,7 +167,21 @@
               dense
             ></q-checkbox>
           </div>
-
+          <!-- Es pedido automatico -->
+          <div
+            v-if="devolucion.pedido_automatico || accion === 'NUEVO'"
+            class="col-12 col-md-3"
+          >
+            <q-checkbox
+              class="q-mt-lg q-pt-md"
+              v-model="devolucion.pedido_automatico"
+              label="¿Pedido automático?"
+              :disable="disabled || soloLectura"
+              @update:model-value="comunicarComportamiento"
+              outlined
+              dense
+            ></q-checkbox>
+          </div>
           <!-- Es devolucion de tarea -->
           <div
             v-if="devolucion.es_tarea || accion === 'NUEVO'"
@@ -348,6 +401,8 @@
               :mostrarBotones="false"
               :accion1="botonEditarCantidad"
               :accion2="botonEliminar"
+              :ajustarCeldas="true"
+              :altoFijo="false"
             ></essential-table>
           </div>
         </div>
@@ -362,6 +417,6 @@
         @selected="seleccionarProducto"
       ></essential-selectable-table>
     </template>
-  </tab-layout-filter-tabs>
+  </tab-layout-filter-tabs2>
 </template>
 <script src="./DevolucionPage.ts"></script>

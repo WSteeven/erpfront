@@ -96,8 +96,70 @@
           </div>
 
           <div class="col-12 col-md-6">
+            <label class="block q-mb-sm">Filtrar por</label>
+            <q-btn-toggle
+              v-model="filtro.departamento_empleado"
+              class="toggle-button-grey"
+              spread
+              no-caps
+              rounded
+              toggle-color="grey-9"
+              unelevated
+              :options="[
+                {
+                  label: 'Por departamento',
+                  value: opcionesFiltroDepartamentoEmpleado.porDepartamento,
+                },
+                {
+                  label: 'Por empleado',
+                  value: opcionesFiltroDepartamentoEmpleado.porEmpleado,
+                },
+              ]"
+            />
+          </div>
+
+          <!-- Departamento -->
+          <div v-show="mostrarSeccionDepartamento" class="col-12">
             <label class="q-mb-sm block"
-              >Seleccione el empleado a consultar</label
+              >Seleccione un departamento para consultar</label
+            >
+            <q-select
+              v-model="filtro.departamento"
+              :options="departamentos"
+              @filter="filtrarDepartamentos"
+              transition-show="scale"
+              transition-hide="scale"
+              options-dense
+              dense
+              outlined
+              :option-label="(item) => item.nombre"
+              :option-value="(item) => item.id"
+              use-input
+              input-debounce="0"
+              emit-value
+              map-options
+              :error="!!v$.departamento.$errors.length"
+              @blur="v$.departamento.$touch"
+            >
+              <template v-slot:no-option>
+                <q-item>
+                  <q-item-section class="text-grey">
+                    No hay resultados
+                  </q-item-section>
+                </q-item>
+              </template>
+
+              <template v-slot:error>
+                <div v-for="error of v$.departamento.$errors" :key="error.$uid">
+                  <div class="error-msg">{{ error.$message }}</div>
+                </div>
+              </template>
+            </q-select>
+          </div>
+
+          <div v-if="mostrarSeccionEmpleado" class="col-12">
+            <label class="q-mb-sm block"
+              >Seleccione un empleado para consultar</label
             >
             <q-select
               v-model="filtro.empleado"
@@ -139,12 +201,13 @@
     </q-card>
 
     <q-card
-      v-if="mostrarTitulosSeccion"
+      v-if="mostrarTitulosSeccion && mostrarSeccionEmpleado"
       class="q-mb-md rounded no-border custom-shadow"
     >
       <div
-        class="row bg-body text-bold text-primary q-pa-md rounded justify-center q-mb-lg"
+        class="row text-bold text-primary q-pa-md rounded items-center q-mb-lg"
       >
+        <q-icon name="bi-graph-up-arrow" class="q-mr-sm"></q-icon>
         Información de tickets creados y asignados del empleado seleccionado
       </div>
       <q-card-section>
@@ -153,7 +216,7 @@
             <div class="row q-col-gutter-xs">
               <div v-if="cantTicketsCreados >= 0" class="col-12">
                 <q-card
-                  class="rounded-card no-border text-primary q-pa-md text-center cursor-pointer q-card-hover q-card-press bg-grey-2"
+                  class="rounded-card text-primary q-pa-md text-center bg-grey-2"
                 >
                   <div class="text-h3 q-mb-md">
                     {{ cantTicketsCreados }}
@@ -163,9 +226,7 @@
               </div>
 
               <div v-if="cantTicketsCreadosParaMi >= 0" class="col-6 col-md-3">
-                <q-card
-                  class="rounded-card custom-shadow no-border q-pa-md text-center full-height q-card-hover"
-                >
+                <q-card class="rounded-card q-pa-md text-center full-height">
                   <div class="text-h3 text-primary q-mb-md">
                     {{ cantTicketsCreadosParaMi }}
                   </div>
@@ -177,9 +238,7 @@
                 v-if="cantTicketsCreadosInternos >= 0"
                 class="col-6 col-md-3"
               >
-                <q-card
-                  class="rounded-card custom-shadow no-border q-pa-md text-center full-height q-card-hover"
-                >
+                <q-card class="rounded-card q-pa-md text-center full-height">
                   <div class="text-h3 text-primary q-mb-md">
                     {{ cantTicketsCreadosInternos }}
                   </div>
@@ -191,9 +250,7 @@
                 v-if="cantTicketsCreadosADepartamentos >= 0"
                 class="col-6 col-md-3"
               >
-                <q-card
-                  class="rounded-card custom-shadow no-border q-pa-md text-center full-height q-card-hover"
-                >
+                <q-card class="rounded-card q-pa-md text-center full-height">
                   <div class="text-h3 text-primary q-mb-md">
                     {{ cantTicketsCreadosADepartamentos }}
                   </div>
@@ -206,7 +263,7 @@
                 class="col-6 col-md-3"
               >
                 <q-card
-                  class="rounded-card custom-shadow no-border q-pa-md text-center full-height q-card-hover bg-negative text-white"
+                  class="rounded-card q-pa-md text-center full-height bg-pink-10 text-white"
                 >
                   <div class="text-h3 q-mb-md">
                     {{ cantTicketsCanceladosPorMi }}
@@ -219,9 +276,7 @@
                 v-if="cantTicketsCalificadosSolicitante >= 0"
                 class="col-6 col-md-3"
               >
-                <q-card
-                  class="rounded-card custom-shadow no-border q-pa-md text-center full-height q-card-hover"
-                >
+                <q-card class="rounded-card q-pa-md text-center full-height">
                   <div class="text-h3 text-positive q-mb-md">
                     {{ cantTicketsCalificadosSolicitante }}
                   </div>
@@ -238,7 +293,7 @@
             <div class="row q-col-gutter-xs">
               <div class="col-12">
                 <q-card
-                  class="rounded-card custom-shadow text-white no-border q-pa-md text-center full-height cursor-pointer q-card-hover q-card-press bg-primary"
+                  class="rounded-card text-white no-border q-pa-md text-center full-height bg-secondary"
                 >
                   <div class="text-h3 q-mb-md">
                     {{ cantTicketsRecibidos }}
@@ -248,9 +303,7 @@
               </div>
 
               <div v-if="cantTicketsAsignados >= 0" class="col-6 col-md-3">
-                <q-card
-                  class="rounded-card custom-shadow no-border q-pa-md text-center full-height cursor-pointer q-card-hover"
-                >
+                <q-card class="rounded-card q-pa-md text-center full-height">
                   <div class="text-h3 text-primary q-mb-md">
                     {{ cantTicketsAsignados }}
                   </div>
@@ -260,7 +313,7 @@
 
               <div v-if="cantTicketsCancelados >= 0" class="col-6 col-md-3">
                 <q-card
-                  class="rounded-card text-white custom-shadow no-border q-pa-md text-center full-height bg-negative cursor-pointer q-card-hover"
+                  class="rounded-card text-white q-pa-md text-center full-height bg-pink-10"
                 >
                   <div class="text-h3 q-mb-md">
                     {{ cantTicketsCancelados }}
@@ -270,9 +323,7 @@
               </div>
 
               <div v-if="cantTicketsReasignados >= 0" class="col-6 col-md-3">
-                <q-card
-                  class="rounded-card custom-shadow no-border q-pa-md text-center full-height q-card-hover"
-                >
+                <q-card class="rounded-card q-pa-md text-center full-height">
                   <div class="text-h3 text-primary q-mb-md">
                     {{ cantTicketsReasignados }}
                   </div>
@@ -281,9 +332,7 @@
               </div>
 
               <div v-if="cantTicketsEjecutados >= 0" class="col-6 col-md-3">
-                <q-card
-                  class="rounded-card custom-shadow no-border q-pa-md text-center full-height q-card-hover"
-                >
+                <q-card class="rounded-card q-pa-md text-center full-height">
                   <div class="text-h3 text-primary q-mb-md">
                     {{ cantTicketsEjecutados }}
                   </div>
@@ -292,9 +341,7 @@
               </div>
 
               <div v-if="cantTicketsPausados >= 0" class="col-6 col-md-3">
-                <q-card
-                  class="rounded-card custom-shadow no-border q-pa-md text-center full-height q-card-hover"
-                >
+                <q-card class="rounded-card q-pa-md text-center full-height">
                   <div class="text-h3 text-primary q-mb-md">
                     {{ cantTicketsPausados }}
                   </div>
@@ -306,9 +353,7 @@
                 v-if="cantTicketsFinalizadosSolucionados >= 0"
                 class="col-6 col-md-3"
               >
-                <q-card
-                  class="rounded-card no-border custom-shadow q-pa-md text-center q-card-hover"
-                >
+                <q-card class="rounded-card q-pa-md text-center">
                   <div class="text-h3 text-primary q-mb-md">
                     {{ cantTicketsFinalizadosSolucionados }}
                   </div>
@@ -320,9 +365,7 @@
                 v-if="cantTicketsFinalizadosSinSolucion >= 0"
                 class="col-6 col-md-3"
               >
-                <q-card
-                  class="rounded-card custom-shadow no-border q-pa-md text-center q-card-hover"
-                >
+                <q-card class="rounded-card q-pa-md text-center">
                   <div class="text-h3 text-primary q-mb-md">
                     {{ cantTicketsFinalizadosSinSolucion }}
                   </div>
@@ -334,9 +377,7 @@
                 v-if="cantTicketsCalificadosResponsable >= 0"
                 class="col-6 col-md-3"
               >
-                <q-card
-                  class="rounded-card custom-shadow no-border q-pa-md text-center full-height q-card-hover"
-                >
+                <q-card class="rounded-card q-pa-md text-center full-height">
                   <div class="text-h3 text-positive q-mb-md">
                     {{ cantTicketsCalificadosResponsable }}
                   </div>
@@ -354,7 +395,7 @@
                 class="col-12"
               >
                 <q-card
-                  class="rounded-card text-white no-border custom-shadow q-pa-md text-center bg-positive full-height q-card-hover"
+                  class="rounded-card text-white q-pa-md text-center bg-positive full-height"
                 >
                   <div class="text-h3 q-mb-md">
                     {{
@@ -372,12 +413,13 @@
     </q-card>
 
     <q-card
-      v-if="mostrarTitulosSeccion"
+      v-if="mostrarTitulosSeccion && mostrarSeccionEmpleado"
       class="q-mb-md rounded no-border custom-shadow"
     >
       <div
-        class="row bg-body text-bold q-pa-md rounded text-primary justify-center q-mb-lg"
+        class="row text-bold q-pa-md rounded text-primary items-center q-mb-lg"
       >
+        <q-icon name="bi-graph-up-arrow" class="q-mr-sm"></q-icon>
         Gráficos estadísticos del empleado consultado
       </div>
 
@@ -416,13 +458,16 @@
             v-if="mostrarTitulosSeccion"
             class="row q-col-gutter-y-xl q-col-gutter-x-xs q-mb-xl"
           >
-            <div class="col-12 col-md-6 text-center">
+            <div
+              v-if="cantidadesTicketsSolicitadosPorDepartamento.length"
+              class="col-12 col-md-6 text-center"
+            >
               <div class="text-subtitle2 q-mb-lg">
                 Tickets creados a los departamentos
               </div>
               <div>
                 <grafico-generico
-                  v-if="cantidadesTicketsSolicitadosPorDepartamento.length"
+                  v-show="cantidadesTicketsSolicitadosPorDepartamento.length"
                   :data="cantidadesTicketsSolicitadosPorDepartamentoBar"
                   :options="optionsPie"
                   @click="
@@ -460,13 +505,13 @@
 
         <q-tab-panel :name="opcionesEmpleado.empleadoListado">
           <q-btn
-            color="primary"
+            color="white"
             @click="tabsEmpleado = opcionesEmpleado.empleadoGrafico"
-            glossy
             no-caps
             rounded
-            unelevated
-            class="q-mx-auto block"
+            outline
+            glossy
+            class="text-grey-8"
           >
             <q-icon name="bi-arrow-left"></q-icon>
             Regresar al gráfico</q-btn
@@ -503,8 +548,9 @@
       class="q-mb-md rounded no-border custom-shadow"
     >
       <div
-        class="row bg-body text-bold text-primary q-pa-md rounded justify-center q-mb-md"
+        class="row text-bold text-primary q-pa-md rounded items-center q-mb-md"
       >
+        <q-icon name="bi-graph-up-arrow" class="q-mr-sm"></q-icon>
         Gráficos estadísticos del departamento
       </div>
 
@@ -690,13 +736,12 @@
 
         <q-tab-panel :name="opcionesDepartamento.departamentoListado">
           <q-btn
-            color="primary"
             @click="tabsDepartamento = opcionesDepartamento.departamentoGrafico"
-            glossy
             no-caps
             rounded
-            unelevated
-            class="q-mx-auto block"
+            outline
+            glossy
+            class="text-grey-8"
           >
             <q-icon name="bi-arrow-left"></q-icon>
             Regresar al gráfico</q-btn
@@ -724,6 +769,67 @@
           </div>
         </q-tab-panel>
       </q-tab-panels>
+    </q-card>
+
+    <q-card
+      v-if="
+        mostrarTitulosSeccion &&
+        (mostrarSeccionDepartamento || mostrarSeccionEmpleado)
+      "
+      class="q-mb-md rounded no-border custom-shadow"
+    >
+      <div
+        class="row text-bold q-pa-md rounded text-primary items-center q-mb-lg"
+      >
+        <q-icon name="bi-graph-up-arrow" class="q-mr-sm"></q-icon>
+        Gráfico promedio de tiempos
+      </div>
+
+      <div class="row q-pa-md q-col-gutter-x-sm">
+        <div class="col-12 text-center">
+          <div class="text-subtitle2 q-mb-lg">
+            Gráfico de tiempos de los tickets
+          </div>
+          <!-- {{ promedioTiemposLine }} -->
+          <div>
+            <!-- v-if="ticketsPorEstado.length" -->
+            <grafico-generico
+              :data="promedioTiemposLine"
+              :options="optionsLine"
+              tipo="line"
+              @click="(data) => clickGraficoLineaTiempo(data)"
+            />
+          </div>
+        </div>
+      </div>
+
+      <div class="row q-col-gutter-md q-px-md q-mb-lg">
+        <div class="col-12 col-md-6">
+          <div
+            class="rounded-card no-border text-primary q-pa-md text-center bg-grey-3 q-mb-sm"
+          >
+            <div class="text-subtitle2 q-mb-lg">
+              {{ '2 horas 30 minutos con 6 segundos' }}
+            </div>
+            <q-icon name="bi-clock-history" size="xl" color="grey-5"></q-icon>
+          </div>
+        </div>
+
+        <div class="col-12 col-md-6">
+          <div
+            class="rounded-card no-border text-positive q-pa-md text-center bg-light-green-1"
+          >
+            <div class="text-subtitle2 q-mb-lg">
+              {{ '20 tickets finalizados en el intervalo seleccionado' }}
+            </div>
+            <q-icon
+              name="bi-check-circle"
+              size="xl"
+              color="light-green-4"
+            ></q-icon>
+          </div>
+        </div>
+      </div>
     </q-card>
 
     <modales-entidad :comportamiento="modales" />

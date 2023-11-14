@@ -6,7 +6,7 @@ import { defineComponent, ref } from 'vue'
 import { useOrquestadorSelectorDetalles } from '../application/OrquestadorSelectorDetalles'
 
 //Componentes
-import TabLayoutFilterTabs from 'shared/contenedor/modules/simple/view/TabLayoutFilterTabs.vue'
+import TabLayoutFilterTabs2 from 'shared/contenedor/modules/simple/view/TabLayoutFilterTabs2.vue'
 import EssentialTable from 'components/tables/view/EssentialTable.vue'
 import EssentialSelectableTable from 'components/tables/view/EssentialSelectableTable.vue'
 import GestorArchivos from 'components/gestorArchivos/GestorArchivos.vue';
@@ -23,7 +23,7 @@ import { configuracionColumnasProductosSeleccionados } from '../domain/configura
 import { configuracionColumnasDetallesModal } from '../domain/configuracionColumnasDetallesModal'
 import { useNotificaciones } from 'shared/notificaciones'
 import { CustomActionTable } from 'components/tables/domain/CustomActionTable'
-import { acciones, estadosTransacciones, tabOptionsDevoluciones } from 'config/utils'
+import { acciones, estadosTransacciones, tabOptionsPedidos } from 'config/utils'
 import { useDevolucionStore } from 'stores/devolucion'
 
 import { useAuthenticationStore } from 'stores/authentication'
@@ -35,17 +35,21 @@ import { MaterialEmpleadoTarea } from 'pages/gestionTrabajos/miBodega/domain/Mat
 import { ValidarListadoProductos } from '../application/ValidarListadoProductos'
 import { useCargandoStore } from 'stores/cargando'
 import { useNotificacionStore } from 'stores/notificacion'
+import { useRouter } from 'vue-router'
+import { SucursalController } from 'pages/administracion/sucursales/infraestructure/SucursalController'
+import { Sucursal } from 'pages/administracion/sucursales/domain/Sucursal'
+import { ordernarListaString } from 'shared/utils'
 
 
 export default defineComponent({
-  components: { TabLayoutFilterTabs, EssentialTable, EssentialSelectableTable, GestorArchivos, },
+  components: { TabLayoutFilterTabs2, EssentialTable, EssentialSelectableTable, GestorArchivos, },
 
   setup() {
     const mixin = new ContenedorSimpleMixin(Devolucion, new DevolucionController())
     const { entidad: devolucion, disabled, accion, listadosAuxiliares, listado } = mixin.useReferencias()
-    const { setValidador, obtenerListados, cargarVista } = mixin.useComportamiento()
+    const { setValidador, obtenerListados, cargarVista, listar } = mixin.useComportamiento()
     const { onReestablecer, onGuardado, onConsultado } = mixin.useHooks()
-    const { confirmar, prompt, notificarCorrecto, notificarError } = useNotificaciones()
+    const { confirmar, prompt, notificarCorrecto, notificarError, notificarInformacion } = useNotificaciones()
 
     //stores
     useNotificacionStore().setQuasar(useQuasar())
@@ -53,6 +57,7 @@ export default defineComponent({
     const devolucionStore = useDevolucionStore()
     const store = useAuthenticationStore()
     const listadoMaterialesDevolucion = useListadoMaterialesDevolucionStore()
+    const router = useRouter()
 
     //orquestador
     const {
@@ -81,7 +86,7 @@ export default defineComponent({
     })
     onConsultado(() => {
       setTimeout(() => {
-         refArchivo.value.listarArchivosAlmacenados(devolucion.id)
+        refArchivo.value.listarArchivosAlmacenados(devolucion.id)
       }, 1);
     })
     onGuardado((id: number) => {
@@ -95,6 +100,7 @@ export default defineComponent({
     const opciones_cantones = ref([])
     const opciones_tareas = ref([])
     const opciones_autorizaciones = ref([])
+    const opciones_sucursales = ref([])
     //Obtener los listados
     cargarVista(async () => {
       await obtenerListados({
@@ -134,7 +140,8 @@ export default defineComponent({
     const reglas = {
       justificacion: { required },
       observacion_aut: { requiredIfCoordinador: requiredIf(() => devolucion.tiene_observacion_aut!) },
-      canton: { required },
+      // canton: { required },
+      sucursal: { required },
       tarea: { requiredIfTarea: requiredIf(devolucion.es_tarea!) },
     }
 
@@ -144,16 +151,45 @@ export default defineComponent({
     const validarListadoProductos = new ValidarListadoProductos(devolucion)
     mixin.agregarValidaciones(validarListadoProductos)
 
+    /*******************************************************************************************
+     * Funciones
+     ******************************************************************************************/
     async function subirArchivos() {
       await refArchivo.value.subir()
     }
-
-
 
     function eliminar({ entidad, posicion }) {
       confirmar('¿Está seguro de continuar?',
         () => devolucion.listadoProductos.splice(posicion, 1))
     }
+
+    function actualizarElemento(posicion: number, entidad: any): void {
+      if (posicion >= 0) {
+        listado.value.splice(posicion, 1, entidad)
+        listado.value = [...listado.value]
+      }
+    }
+
+    function filtrarDevoluciones(tab: string) {
+      tabSeleccionado.value = tab
+      puedeEditar.value = (esCoordinador || esActivosFijos || store.esJefeTecnico || store.esGerente || store.esRecursosHumanos || store.can('puede.autorizar.devoluciones')) && tabSeleccionado.value === estadosTransacciones.pendiente ? true : false
+      if (tab == 'PENDIENTE') puedeEditar.value = true
+      else puedeEditar.value = false
+      listar({ estado: tab })
+    }
+
+    async function recargarSucursales() {
+      const sucursales = (await new SucursalController().listar({ campos: 'id,lugar' })).result
+      LocalStorage.set('sucursales', JSON.stringify(sucursales))
+    }
+    function comunicarComportamiento(value) {
+      if (value) notificarInformacion('Esta opción generará un pedido automáticamente con los mismos items de la devolución, cuando la devolución sea aprobada')
+    }
+
+
+    /*******************************************************************************************
+     * Botones de tabla
+     ******************************************************************************************/
     const botonEliminar: CustomActionTable = {
       titulo: 'Quitar',
       color: 'negative',
@@ -195,7 +231,10 @@ export default defineComponent({
               try {
                 const { result } = await new CambiarEstadoDevolucion().anular(entidad.id, data)
                 notificarCorrecto('Devolución anulada exitosamente!')
-                actualizarElemento(posicion, result)
+                if (posicion >= 0) {
+                  listado.value.splice(posicion, 1,)
+                  listado.value = [...listado.value]
+                }
               } catch (e: any) {
                 notificarError('No se pudo anular, debes ingresar un motivo para la anulación')
               }
@@ -206,7 +245,8 @@ export default defineComponent({
         })
       },
       visible: ({ entidad }) => {
-        return tabSeleccionado.value == 'CREADA' && store.nombreUsuario == entidad.solicitante && (entidad.estado_bodega === estadosTransacciones.pendiente || entidad.estado_bodega === estadosTransacciones.parcial) ? true : false
+        return entidad.estado_bodega == 'PENDIENTE' && (entidad.solicitante_id == store.user.id || entidad.per_autoriza_id == store.user.id || store.esBodeguero || store.esAdministrador)
+        // return tabSeleccionado.value == 'PARCIAL' || tabSeleccionado.value == 'APROBADO' || tabSeleccionado.value == 'PENDIENTE' && store.user.id == entidad.solicitante_id && (entidad.estado_bodega === estadosTransacciones.pendiente || entidad.estado_bodega === estadosTransacciones.parcial) ? true : false
       }
     }
     const botonImprimir: CustomActionTable = {
@@ -220,12 +260,16 @@ export default defineComponent({
       visible: () => tabSeleccionado.value == 'CREADA' ? true : false
     }
 
-
-    function actualizarElemento(posicion: number, entidad: any): void {
-      if (posicion >= 0) {
-        listado.value.splice(posicion, 1, entidad)
-        listado.value = [...listado.value]
-      }
+    const botonDespachar: CustomActionTable = {
+      titulo: 'Gestionar',
+      color: 'primary',
+      icono: 'bi-pencil-square',
+      accion: ({ entidad, posicion }) => {
+        devolucionStore.devolucion = entidad
+        console.log('Devolución a ingresar a bodega es: ', devolucionStore.devolucion)
+        router.push('transacciones-ingresos')
+      },
+      visible: ({ entidad }) => (tabSeleccionado.value == 'APROBADO' || tabSeleccionado.value == 'PARCIAL') && store.esBodeguero ? true : false
     }
 
 
@@ -233,6 +277,7 @@ export default defineComponent({
     opciones_empleados.value = listadosAuxiliares.empleados
     opciones_cantones.value = JSON.parse(LocalStorage.getItem('cantones')!.toString())
     opciones_autorizaciones.value = JSON.parse(LocalStorage.getItem('autorizaciones')!.toString())
+    opciones_sucursales.value = JSON.parse(LocalStorage.getItem('sucursales')!.toString())
     opciones_tareas.value = listadosAuxiliares.tareas
 
     return {
@@ -243,6 +288,7 @@ export default defineComponent({
       opciones_tareas,
       opciones_cantones,
       opciones_autorizaciones,
+      opciones_sucursales,
       store,
       refArchivo,
       idDevolucion,
@@ -264,6 +310,7 @@ export default defineComponent({
       botonEliminar,
       botonAnular,
       botonImprimir,
+      botonDespachar,
 
       //flags
       soloLectura,
@@ -272,15 +319,13 @@ export default defineComponent({
       esActivosFijos,
 
       //Tabs
-      tabOptionsDevoluciones,
+      tabOptionsPedidos,
       tabSeleccionado,
       puedeEditar,
 
-      tabEs(val) {
-        tabSeleccionado.value = val
-        puedeEditar.value = (esCoordinador || esActivosFijos || store.esJefeTecnico || store.esGerente || store.esRecursosHumanos||store.can('puede.autorizar.devoluciones')) && tabSeleccionado.value === estadosTransacciones.pendiente
-          ? true : false
-      },
+
+      //funciones
+      filtrarDevoluciones,
 
       //Filtros
       filtroCantones(val, update) {
@@ -307,6 +352,23 @@ export default defineComponent({
           opciones_empleados.value = listadosAuxiliares.empleados.filter((v) => v.nombres.toLowerCase().indexOf(needle) > -1 || v.apellidos.toLowerCase().indexOf(needle) > -1)
         })
       },
+      recargarSucursales,
+      filtroSucursales(val, update) {
+        if (val === '') {
+          update(() => {
+            opciones_sucursales.value = JSON.parse(LocalStorage.getItem('sucursales')!.toString())
+          })
+          return
+        }
+        update(() => {
+          const needle = val.toLowerCase()
+          opciones_sucursales.value = JSON.parse(LocalStorage.getItem('sucursales')!.toString()).filter((v) => v.lugar.toLowerCase().indexOf(needle) > -1)
+        })
+      },
+      ordenarSucursales() {
+        opciones_sucursales.value.sort((a: Sucursal, b: Sucursal) => ordernarListaString(a.lugar!, b.lugar!))
+      },
+      comunicarComportamiento,
     }
   }
 })

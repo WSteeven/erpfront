@@ -48,7 +48,7 @@ export default defineComponent({
     const { setValidador, consultar } =
       mixin.useComportamiento()
     const { onConsultado } = mixin.useHooks()
-
+const issubmit = ref(true);
     const {
       confirmar,
       prompt,
@@ -76,10 +76,7 @@ export default defineComponent({
       mostrarListado.value = false
       mostrarAprobacion.value = true
       esFactura.value = fondoRotativoStore.existeFactura
-console.log(fondoRotativoStore.estaSemanAC)
       estaSemanAC.value= fondoRotativoStore.estaSemanAC
-      console.log(estaSemanAC.value)
-
     }
 
 
@@ -175,6 +172,7 @@ console.log(fondoRotativoStore.estaSemanAC)
               try {
                 entidad.detalle_estado = data
                 await aprobarController.aprobarGasto(entidad)
+                issubmit.value= false
                 notificarCorrecto('Se aprobado Gasto Exitosamente')
                 emit('cerrar-modal', false);
                 emit('guardado');
@@ -196,6 +194,7 @@ console.log(fondoRotativoStore.estaSemanAC)
                 try {
                   entidad.detalle_estado = data
                   await aprobarController.rechazarGasto(entidad)
+                  issubmit.value= false
                   notificarAdvertencia('Se rechazado Gasto Exitosamente')
                   emit('cerrar-modal');
                   emit('guardado');
@@ -218,6 +217,7 @@ console.log(fondoRotativoStore.estaSemanAC)
                 try {
                   entidad.detalle_estado = data
                   await aprobarController.anularGasto(entidad)
+                  issubmit.value= false
                   notificarAdvertencia('Se anulado Gasto Exitosamente')
                   emit('cerrar-modal');
                   emit('guardado');
@@ -242,6 +242,7 @@ console.log(fondoRotativoStore.estaSemanAC)
       esFactura,
       usuario,
       disabled,
+      issubmit,
       maskFecha,
       accion,
       v$,

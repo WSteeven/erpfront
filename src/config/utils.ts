@@ -200,12 +200,14 @@ export const estadosCondicionesId = {
   usado: '2',
   mal_estado: '3',
   danado: '4',
+  buen_estado: '5',
 }
 export const estadosCondicionesValue = {
   nuevo: 'NUEVO',
   usado: 'USADO',
   mal_estado: 'MAL ESTADO',
   danado: 'DAÑADO',
+  buen_estado: 'BUEN ESTADO',
 }
 
 export const meses = ['Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre']
@@ -270,6 +272,7 @@ export const rolesSistema = {
   compras: 'COMPRAS',
   contabilidad: 'CONTABILIDAD',
   coordinador: 'COORDINADOR',
+  coordinadorBodega: 'COORDINADOR DE BODEGA',
   coordinadorBackup: 'COORDINADOR_BACKUP',
   empleado: 'EMPLEADO',
   fiscalizador: 'FISCALIZADOR',
@@ -296,6 +299,10 @@ export const tiposMovimientos = {
 export const opcionesEstados = [
   { value: 1, label: 'ACTIVO' },
   { value: 0, label: 'INACTIVO' }
+]
+export const tiposProductos = [
+  { value: 'BIEN', label: 'BIEN' },
+  { value: 'SERVICIO', label: 'SERVICIO' },
 ]
 
 export const opcionesTipoContribuyente = [
@@ -352,7 +359,7 @@ export const tiposReportesEgresos = {
   transferencia: 10,
 }
 
-export const departamentos = {
+export const opcionesDepartamentos = {
   xtrim_cuenca: 'XTRIM CUENCA',
   medico: 'MEDICO',
   activos_fijos: 'ACTIVOS FIJOS',
@@ -371,7 +378,7 @@ export const opcionesUnidadesMedidas = [
   { value: 1, label: 'UNIDAD' },
   { value: 2, label: 'KILOGRAMO' },
   { value: 3, label: 'METRO' },
-  { value: 4, label: 'METRO LINEAL' }, //PERSONA QUE ATIENDE
+  { value: 4, label: 'METRO LINEAL' },
   { value: 5, label: 'KILOMETRO' },
   { value: 6, label: 'KILOMETRO CUBICO' },
   { value: 7, label: 'LITRO' },
@@ -427,4 +434,23 @@ export const talla_letras = [
   { nombre: 'XXL' },
   { nombre: 'XXXL' },
   // Puedes agregar aquí más tallas si es necesario
+]
+
+
+export const tabOptionsPreingresoMateriales = [
+  { label: 'Pendientes', value: '1' }, //autorizacion PENDIENTE
+  { label: 'Autorizadas', value: '2' }, //autorizacion APROBADO
+  { label: 'Canceladas', value: '3' }  //autorizacion CANCELADO
+]
+
+export const autorizaciones = [
+  { nombre: 'Pendiente', id: 1 }, //autorizacion PENDIENTE
+  { nombre: 'Aprobado', id: 2 }, //autorizacion APROBADO
+  { nombre: 'Cancelado', id: 3 }  //autorizacion CANCELADO
+]
+export const estados = [
+  { nombre: 'Pendiente', id: 1 }, //estado PENDIENTE
+  { nombre: 'Completa', id: 2 }, //estado COMPLETA
+  { nombre: 'Parcial', id: 3 }, //estado PARCIAL
+  { nombre: 'Anulado', id: 4 }  //estado ANULADO
 ]

@@ -11,9 +11,11 @@ import exportFile from 'quasar/src/utils/export-file.js'
 // Componentes
 import CustomButtons from './CustomButtonsTable.vue'
 import BotonesPaginacion from './BotonesPaginacion.vue'
+import EditarTablaModal from './EditarTablaModal.vue'
+import SelectorImagen from 'components/SelectorImagen.vue'
 
 export default defineComponent({
-  components: { CustomButtons, BotonesPaginacion },
+  components: { CustomButtons, BotonesPaginacion, EditarTablaModal, SelectorImagen },
   props: {
     configuracionColumnas: {
       type: Object as () => ColumnConfig<EntidadAuditable>[],
@@ -146,7 +148,19 @@ export default defineComponent({
     permitirEditarCeldas: {
       type: Boolean,
       default: true,
-    }
+    },
+    editarFilaLocal: {
+      type: Boolean,
+      default: true,
+    },
+    permitirEditarModal: {
+      type: Boolean,
+      default: false,
+    },
+    modalMaximized: {
+      type: Boolean,
+      default: true,
+    },
   },
   emits: [
     'selected',
@@ -157,12 +171,16 @@ export default defineComponent({
     'eliminar',
     'fila-modificada',
     'onScroll',
+    'guardar-fila',
   ],
   setup(props, { emit }) {
-    const referencia= ref()
+    const referencia = ref()
     const listado = ref()
     const filter = ref()
     const filtros = ref()
+    const refEditarModal = ref()
+    const fila = ref()
+    const posicionFilaEditada = ref()
     const refTableFilters = ref()
     const grid = ref(false)
     const inFullscreen = ref(false)
@@ -177,7 +195,6 @@ export default defineComponent({
     })
 
     watchEffect(() => listado.value = props.datos)
-
 
     const rows = computed(() => listado.value.length - 1 ?? 0)
     const pagesNumber = computed(() => {
@@ -194,10 +211,34 @@ export default defineComponent({
 
     // Acciones tabla
     const consultar = (data: object) => emit('consultar', data)
-    const editar = (data: any) => emit('editar', data)
+    const editar = (data: any) => {
+      emit('editar', data)
+
+      if (props.permitirEditarModal) {
+        fila.value = data.entidad
+        posicionFilaEditada.value = data.posicion
+        refEditarModal.value.abrir()
+      }
+    }
     const eliminar = (data: object) => emit('eliminar', data)
 
     //Funciones
+    function limpiarFila() {
+      fila.value = null
+    }
+
+    function guardarFila(data) {
+      console.log(data)
+      const posicion = props.datos.findIndex(
+        (fila: any) => fila.id === data.id
+      )
+      // console.log(posicion)
+
+      if (props.editarFilaLocal) listado.value[posicion] = data
+      limpiarFila()
+      emit('guardar-fila', data)
+    }
+
     function onScroll({ to }) {
       if (!loading.value && to === rows.value) {
         loading.value = true
@@ -212,7 +253,7 @@ export default defineComponent({
     }
 
     function guardarCeldaEditada(fila) {
-        emit('fila-modificada', fila)
+      emit('fila-modificada', fila)
     }
     function extraerVisible(
       accion: CustomActionTable,
@@ -306,6 +347,7 @@ export default defineComponent({
     }
 
     return {
+      refEditarModal,
       referencia,
       refTableFilters,
       grid,
@@ -332,6 +374,9 @@ export default defineComponent({
       editar,
       eliminar,
       guardarCeldaEditada,
+      fila,
+      guardarFila,
+      limpiarFila,
     }
   },
 })

@@ -5,12 +5,16 @@ export class ObtenerIconoNotificacionRealtime {
     switch (tipoNotificacion) {
       case iconos.pedido.label:
         return iconos.pedido.icono
+      case iconos.preingreso.label:
+        return iconos.preingreso.icono
       case iconos.autorizacion_gasto.label:
         return iconos.autorizacion_gasto.icono
       case iconos.tarea.label:
         return iconos.tarea.icono
       case iconos.subtarea.label:
         return iconos.subtarea.icono
+      case iconos.ingreso.label:
+        return iconos.ingreso.icono
       case iconos.egreso.label:
         return iconos.egreso.icono
       case iconos.ticket.label:

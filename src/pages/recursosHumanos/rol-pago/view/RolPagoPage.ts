@@ -52,7 +52,6 @@ export default defineComponent({
     ButtonSubmits,
     GestorDocumentos,
   },
-  emit: ['cerrar-modal', 'guardado'],
 
   setup(props, { emit }) {
     /********
@@ -90,7 +89,7 @@ export default defineComponent({
       reestablecer,
       setValidador,
     } = mixin.useComportamiento()
-    const { onBeforeGuardar, onConsultado } = mixin.useHooks()
+    const { onBeforeGuardar, onConsultado, onGuardado } = mixin.useHooks()
     const refArchivoRolPago = ref()
     cargarVista(async () => {
       await obtenerListados({
@@ -98,12 +97,17 @@ export default defineComponent({
           controller: new EmpleadoController(),
           params: { campos: 'id,nombres,apellidos', estado: 1 },
         },
-
       })
       empleados.value = listadosAuxiliares.empleados
-      concepto_ingresos.value= (await new ConceptoIngresoController().listar()).result;
-      descuentos_generales.value = (await new DescuentosGenralesController().listar()).result
-      descuentos_ley.value = (await new DescuentosLeyController().listar()).result
+      concepto_ingresos.value = (
+        await new ConceptoIngresoController().listar()
+      ).result
+      descuentos_generales.value = (
+        await new DescuentosGenralesController().listar()
+      ).result
+      descuentos_ley.value = (
+        await new DescuentosLeyController().listar()
+      ).result
       multas.value = (await new MultaController().listar()).result
       horas_extras_tipos.value =
         LocalStorage.getItem('horas_extras_tipos') == null
@@ -125,6 +129,7 @@ export default defineComponent({
     if (rolPagoStore.idRolPagoMes) {
       rolpago.rol_pago_id = rolPagoStore.idRolPagoMes
       rolpago.mes = rolPagoStore.mes
+      rolpago.es_quincena = rolPagoStore.es_quincena
     }
 
     accion.value = rolPagoStore.accion
@@ -244,6 +249,8 @@ export default defineComponent({
      *********/
     onConsultado(() => {
       es_consultado.value = true
+      console.log('consultado')
+
       if (rolpago.estado == 'FINALIZADO') {
         setTimeout(() => {
           refArchivoRolPago.value.listarArchivos({
@@ -254,32 +261,20 @@ export default defineComponent({
         }, 2000)
       }
     })
+
     let idSubtarea: any
 
     async function guardarDatos(rolpago: RolPago) {
       try {
         let entidad: RolPago = new RolPago()
         if (accion.value == 'NUEVO') {
-          await guardar(rolpago)
+          entidad = await guardar(rolpago)
         } else {
           await editar(rolpago, false)
           entidad = rolpago
         }
-
-        const rolpagoAux = new RolPago()
-        rolpagoAux.hydrate(entidad)
-
-        if (rolpagoAux.id) {
-          // Por el momento se asigna automaticamente pero a futuro quienes lo harán serán los trabajadores de la torre de control
-          // hacia los coordinadores
-
-          listado.value = [rolpagoAux, ...listado.value]
-
-          // Subir archivos
-          idSubtarea = rolpagoAux.id
-        }
-
         emit('cerrar-modal', false)
+        emit('guardado', { key: 'RolPagoMesPage', model: rolpago })
       } catch (e) {
         console.log(e)
       }
@@ -510,7 +505,7 @@ export default defineComponent({
         if (data) {
           rolpago.dias_permiso_sin_recuperar =
             data.totalDiasPermiso != null ? data.totalDiasPermiso : 0
-          rolpago.dias = 30
+          rolpago.dias = rolpago.es_quincena ? 15 : 30
         }
       })
     }
@@ -728,32 +723,41 @@ export default defineComponent({
         valor.id
       imprimirArchivo(url_pdf, 'GET', 'blob', 'pdf', filename, valor)
     }
-    function calcularSalario(tipo_contrato){
+    function calcularSalario(tipo_contrato) {
       let dias_quincena = rolpago.es_quincena == true ? 15 : 0
       const dias = parseFloat(
         rolpago.dias != null ? rolpago.dias.toString() : '0'
       )
-      if(rolpago.medio_tiempo || rolpago.tipo_contrato ==3 ){
+      if (rolpago.medio_tiempo || rolpago.tipo_contrato == 3) {
         dias_quincena = 0
       }
-      const salario = parseFloat(rolpago.salario ?? '0');
-      const dias_totales = dias + dias_quincena;
+      const salario = parseFloat(rolpago.salario ?? '0')
+      const dias_totales = dias + dias_quincena
       const sueldo = (salario / 30) * dias_totales
-      let total_sueldo =0;
-    switch (tipo_contrato) {
-      case 3:
-        total_sueldo = sueldo
-        break;
-      default:
-         total_sueldo = rolpago.es_quincena == true ? (sueldo * recursosHumanosStore.porcentajeAnticipo) / 100:sueldo
-        break;
-    }
-    rolpago.sueldo = parseFloat(total_sueldo.toFixed(2))
+      let total_sueldo = 0
+      switch (tipo_contrato) {
+        case 3:
+          total_sueldo = sueldo
+          break
+        default:
+          if(rolpago.es_vendedor_medio_tiempo){
+            const porcentaje = rolpago.porcentaje_quincena!=null?rolpago.porcentaje_quincena:0
+            total_sueldo =
+            rolpago.es_quincena == true
+              ? (sueldo * porcentaje) / 100
+              : sueldo
+          }else{
+            total_sueldo =
+            rolpago.es_quincena == true
+              ? (sueldo * recursosHumanosStore.porcentajeAnticipo) / 100
+              : sueldo
+          }
 
-
+          break
+      }
+      rolpago.sueldo = parseFloat(total_sueldo.toFixed(2))
     }
     watchEffect(() => {
-
       calcularSalario(rolpago.tipo_contrato)
     })
     return {

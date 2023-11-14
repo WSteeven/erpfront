@@ -16,6 +16,7 @@ import { useAuthenticationStore } from 'stores/authentication'
 import { EmpleadoController } from 'pages/recursosHumanos/empleados/infraestructure/EmpleadoController'
 import { useCargandoStore } from 'stores/cargando'
 import { useFondoRotativoStore } from 'stores/fondo_rotativo'
+import { useRouter } from 'vue-router'
 
 export default defineComponent({
   components: { TabLayout },
@@ -44,6 +45,8 @@ export default defineComponent({
     } = mixin.useReferencias()
     const { setValidador, obtenerListados, cargarVista } =
       mixin.useComportamiento()
+      const router = useRouter()
+
     /*************
      * Validaciones
      **************/
@@ -72,7 +75,7 @@ export default defineComponent({
       await obtenerListados({
         usuarios: {
           controller: new EmpleadoController(),
-          params: { campos: 'id,nombres,apellidos', estado: 1 },
+          params: { campos: 'id,nombres,apellidos', estado: 1,es_reporte__saldo_actual:true },
         },
       })
       usuarios.value = listadosAuxiliares.usuarios
@@ -175,11 +178,32 @@ export default defineComponent({
         }
       })
     }
+    function cortar_saldo() {
+      const axiosHttpRepository = AxiosHttpRepository.getInstance()
+      const url_acreditacion =
+        apiConfig.URL_BASE +
+        '/' +
+        axiosHttpRepository.getEndpoint(endpoints.cortar_saldo)
+      axios({
+        url: url_acreditacion,
+        method: 'GET',
+        responseType: 'json',
+        headers: {
+          Authorization: axiosHttpRepository.getOptions().headers.Authorization,
+        },
+      }).then((response: HttpResponseGet) => {
+        const { data } = response
+        if (data) {
+         router.push("acreditacion-semana");
+        }
+      })
 
+    }
     return {
       mixin,
       store,
       reporte_saldo_actual,
+      cortar_saldo,
       saldo_anterior,
       disabled,
       accion,

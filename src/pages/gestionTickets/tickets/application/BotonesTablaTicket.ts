@@ -1,17 +1,17 @@
 import { MotivoCanceladoTicket } from 'pages/gestionTickets/motivosCanceladosTickets/domain/MotivoCanceladoTicket'
 import { ContenedorSimpleMixin } from 'shared/contenedor/modules/simple/application/ContenedorSimpleMixin'
+import { MotivoPausaTicket } from 'pages/gestionTickets/motivosPausasTickets/domain/MotivoPausaTicket'
 import { CustomActionPrompt } from 'components/tables/domain/CustomActionPrompt'
 import { CustomActionTable } from 'components/tables/domain/CustomActionTable'
 import { ComportamientoModalesTicket } from './ComportamientoModalesTicket'
+import { isAxiosError, notificarMensajesError } from 'shared/utils'
+import { useAuthenticationStore } from 'stores/authentication'
 import { CambiarEstadoTicket } from './CambiarEstadoTicket'
 import { useNotificaciones } from 'shared/notificaciones'
 import { estadosTickets } from 'config/tickets.utils'
 import { Ticket } from '../domain/Ticket'
 import { useTicketStore } from 'stores/ticket'
 import { reactive } from 'vue'
-import { MotivoPausaTicket } from 'pages/gestionTickets/motivosPausasTickets/domain/MotivoPausaTicket'
-import { isAxiosError, notificarMensajesError } from 'shared/utils'
-import { useAuthenticationStore } from 'stores/authentication'
 
 export const useBotonesTablaTicket = (mixin: ContenedorSimpleMixin<Ticket | any>, modales: ComportamientoModalesTicket | any) => {
   const { confirmar, prompt, notificarAdvertencia, notificarCorrecto, promptItems } = useNotificaciones()
@@ -58,20 +58,30 @@ export const useBotonesTablaTicket = (mixin: ContenedorSimpleMixin<Ticket | any>
     icono: 'bi-pause-circle',
     color: 'blue-6',
     visible: ({ entidad }) => entidad.estado === estadosTickets.EJECUTANDO,
-    accion: ({ entidad, posicion }) => {
+    accion: ({ entidad }) => {
 
       confirmar('¿Está seguro de pausar el ticket?', () => {
         const config: CustomActionPrompt = reactive({
           mensaje: 'Seleccione el motivo de la pausa',
           accion: async (idMotivoPausa) => {
 
-            const data = {
-              motivo_pausa_ticket_id: idMotivoPausa,
-            }
+            try {
 
-            await cambiarEstadoTicket.pausar(entidad.id, data)
-            filtrarTickets(estadosTickets.PAUSADO)
-            notificarCorrecto('Ticket pausado exitosamente!')
+              const data = {
+                motivo_pausa_ticket_id: idMotivoPausa,
+              }
+
+              await cambiarEstadoTicket.pausar(entidad.id, data)
+              filtrarTickets(estadosTickets.PAUSADO)
+              notificarCorrecto('Ticket pausado exitosamente!')
+            } catch (error: any) {
+              if (isAxiosError(error)) {
+                const mensajes: string[] = error.erroresValidacion
+                notificarMensajesError(mensajes, notificaciones)
+              } else {
+                notificaciones.notificarError(error.message)
+              }
+            }
           },
           tipo: 'radio',
           items: listadosAuxiliares.motivosPausas.map((motivo: MotivoPausaTicket) => {
@@ -177,10 +187,8 @@ export const useBotonesTablaTicket = (mixin: ContenedorSimpleMixin<Ticket | any>
     color: 'indigo',
     visible: ({ entidad }) => [estadosTickets.EJECUTANDO, estadosTickets.PAUSADO, estadosTickets.FINALIZADO_SIN_SOLUCION, estadosTickets.FINALIZADO_SOLUCIONADO].includes(entidad.estado),
     accion: async ({ entidad }) => {
-      confirmar('¿Está seguro de abrir el formulario de seguimiento?', () => {
-        ticketStore.filaTicket = entidad
-        modales.abrirModalEntidad('SeguimientoTicketPage')
-      })
+      ticketStore.filaTicket = entidad
+      modales.abrirModalEntidad('SeguimientoTicketPage')
     }
   }
 

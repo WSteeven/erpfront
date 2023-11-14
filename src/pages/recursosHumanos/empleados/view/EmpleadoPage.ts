@@ -50,6 +50,12 @@ import { useFamiliarStore } from 'stores/familiar'
 import { useAuthenticationStore } from 'stores/authentication'
 import { Familiares } from 'pages/recursosHumanos/familiares/domain/Familiares'
 import { FamiliaresController } from 'pages/recursosHumanos/familiares/infraestructure/FamiliaresController'
+import { AxiosHttpRepository } from 'shared/http/infraestructure/AxiosHttpRepository'
+import { apiConfig, endpoints } from 'config/api'
+import { imprimirArchivo } from 'shared/utils'
+import { useCargandoStore } from 'stores/cargando'
+import { AxiosResponse } from 'axios'
+import { useNotificaciones } from 'shared/notificaciones'
 
 export default defineComponent({
   components: { TabLayout, SelectorImagen, ModalesEntidad, EssentialTable },
@@ -58,7 +64,10 @@ export default defineComponent({
      * Stores
      *********/
     useNotificacionStore().setQuasar(useQuasar())
+    useCargandoStore().setQuasar(useQuasar())
     const storeRecursosHumanos = useRecursosHumanosStore()
+    const { confirmar, prompt, notificarAdvertencia, notificarCorrecto } = useNotificaciones()
+
 
     /***********
      * Mixin
@@ -198,15 +207,7 @@ export default defineComponent({
 
     onConsultado(() => (empleado.tiene_grupo = !!empleado.grupo))
     async function guardado(data) {
-      switch (data) {
-        case 'EmpleadoPage':
-          const { result } = await new EmpleadoController().listar()
-          listadosAuxiliares.rolpago = result
-          break
-        case 'FamiliaresPage':
-          break
-      }
-      modales.cerrarModalEntidad()
+      empleado.familiares!.push(data.model) ;
     }
 
     const antiguedad = computed(() => {
@@ -319,6 +320,67 @@ export default defineComponent({
         eliminar(entidad)
       },
     }
+    const btnImprimirEmpleados: CustomActionTable = {
+      titulo: 'Reporte General',
+      icono: 'bi-printer',
+      color: 'primary',
+      visible: ({ entidad }) =>
+        authenticationStore.can('puede.ver.empleados') ,
+      accion: () => {
+        generar_reporte_general()
+      },
+    }
+    async function generar_reporte_general( ): Promise<void> {
+      console.log('generar_reporte_general')
+      const axios = AxiosHttpRepository.getInstance()
+      const filename = 'empleados'
+      const url_pdf =
+        apiConfig.URL_BASE +
+        '/' +
+        axios.getEndpoint(endpoints.imprimir_reporte_general_empleado)
+      imprimirArchivo(url_pdf, 'GET', 'blob', 'pdf', filename, null)
+    }
+    const btnHabilitarEmpleado: CustomActionTable = {
+      titulo: '',
+      icono: 'bi-toggle2-on',
+      color: 'negative',
+      tooltip: 'Habilitar',
+      visible: ({entidad}) => {
+        return (
+          !entidad.estado
+        )
+      },
+      accion: ({ entidad }) => {
+        HabilitarEmpleado(entidad.id,true)
+        entidad.estado= true
+      },
+    }
+    const btnDesHabilitarEmpleado: CustomActionTable = {
+      titulo: '',
+      icono: 'bi-toggle2-off',
+      color: 'positive',
+      tooltip: 'DesHabilitar',
+      visible: ({entidad}) => {
+        return (
+          entidad.estado
+        )
+      },
+      accion: ({ entidad }) => {
+        HabilitarEmpleado(entidad.id,false)
+        entidad.estado=false
+      },
+    }
+    async function HabilitarEmpleado(id: number, estado:boolean)  {
+      const axios = AxiosHttpRepository.getInstance()
+      const ruta = axios.getEndpoint(
+        endpoints.habilitar_empleado,
+        { id: id,estado:estado }
+      )
+      const response: AxiosResponse = await axios.get(ruta)
+      notificarCorrecto(
+        estado?'Ha Habilitado empleado':'Ha deshabilitado empleado'
+      )
+    }
     return {
       mixin,
       empleado,
@@ -352,6 +414,9 @@ export default defineComponent({
       btnConsultarFamiliar,
       btnEditarFamiliar,
       btnEliminarFamiliar,
+      btnImprimirEmpleados,
+      btnHabilitarEmpleado,
+      btnDesHabilitarEmpleado,
       modales,
       guardado,
       //  FILTROS
@@ -433,3 +498,5 @@ export default defineComponent({
     }
   },
 })
+
+

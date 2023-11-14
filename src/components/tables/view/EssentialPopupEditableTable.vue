@@ -1,4 +1,12 @@
 <template>
+  <EditarTablaModal
+    ref="refEditarModal"
+    :configuracionColumnas="configuracionColumnas"
+    :fila="fila"
+    @limpiar="limpiarFila"
+    @guardar="guardarFila"
+    :modalMaximized="modalMaximized"
+  ></EditarTablaModal>
   <div
     v-if="!$q.screen.xs && datos.length && permitirEditarCeldas"
     class="text-right text-grey-7"
@@ -614,6 +622,7 @@
     </template>
 
     <!-- Edicion de celdas -->
+    <!-- Celdas normales -->
     <template v-slot:body-cell="props" v-if="permitirEditarCeldas">
       <q-td :key="props.col.name" :props="props">
         {{ props.row[props.col.name] }}
@@ -683,11 +692,23 @@
         </q-popup-edit>
       </q-td>
     </template>
+    <!-- Selector de Imagen
+    <template #body-cell-fotografia="props">
+      <q-td :key="props.col.name" :props="props">
+        <selector-imagen
+              :imagen="props.row[props.col.name]"
+              file_extensiones=".jpg, image/*"
+              @update:modelValue="(data) => (props.row[props.col.name] = data)"
+              :hint="props.row[props.col.hint]"
+            >
+            </selector-imagen>
+      </q-td>
+    </template> -->
     <!--Select de unidad de medida-->
     <template #body-cell-unidad_medida="props">
       <q-td :key="props.col.name" :props="props">
         <q-select
-          v-if="props.col.type==='select' && props.col.editable"
+          v-if="props.col.type === 'select' && props.col.editable"
           v-model="props.row[props.col.name]"
           :options="props.col.options"
           :options-label="(v) => v.label"
@@ -699,7 +720,7 @@
           emit-value
           map-options
         />
-        <span v-else>{{props.row[props.col.name]}}</span>
+        <span v-else>{{ props.row[props.col.name] }}</span>
       </q-td>
     </template>
   </q-table>

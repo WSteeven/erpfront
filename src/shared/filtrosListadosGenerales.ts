@@ -4,12 +4,15 @@ import { ordernarListaString } from "./utils";
 import { Banco } from "pages/recursosHumanos/banco/domain/Banco";
 import { CategoriaOferta } from "pages/comprasProveedores/categoriaOfertas/domain/CategoriaOferta";
 import { Empleado } from "pages/recursosHumanos/empleados/domain/Empleado";
+import { Producto } from "pages/bodega/productos/domain/Producto";
+import { Canton } from "sistema/ciudad/domain/Canton";
 
 export const useFiltrosListadosSelects = (listadosAuxiliares, entidad?: Ref<any>) => {
   /**************************************************************
    * Variables
    **************************************************************/
   const paises = ref([])
+  const productos = ref([])
   const provincias = ref([])
   const cantones = ref([])
   const parroquias = ref([])
@@ -91,6 +94,9 @@ export const useFiltrosListadosSelects = (listadosAuxiliares, entidad?: Ref<any>
       )
     })
   }
+  function ordenarCantones() {
+    cantones.value.sort((a:Canton, b:Canton) => ordernarListaString(a.canton!, b.canton!))
+  }
 
 
   /**
@@ -115,6 +121,16 @@ export const useFiltrosListadosSelects = (listadosAuxiliares, entidad?: Ref<any>
     })
   }
 
+  function filtrarProductos(val, update) {
+    if (val === '' || val === undefined) {
+      update(() => productos.value = listadosAuxiliares.productos)
+      return
+    }
+    update(() => {
+      const needle = val.toLowerCase()
+      if (listadosAuxiliares.productos) productos.value = listadosAuxiliares.productos.filter((v: Producto) => v.nombre!.toLowerCase().indexOf(needle) > -1)
+    })
+  }
 
   /**
    * La función filtra una lista de empresas en función de un valor de búsqueda y actualiza la lista en
@@ -167,6 +183,7 @@ export const useFiltrosListadosSelects = (listadosAuxiliares, entidad?: Ref<any>
   }
 
   /* The `filtrarClientes` function is used to filter a list of clients based on a given search value. */
+  clientes.value = listadosAuxiliares.clientes
   function filtrarClientes(val, update) {
     if (val === '') {
       update(() => {
@@ -226,7 +243,7 @@ export const useFiltrosListadosSelects = (listadosAuxiliares, entidad?: Ref<any>
   return {
     paises, filtrarPaises,
     provincias, filtrarProvincias,
-    cantones, filtrarCantones,
+    cantones, filtrarCantones,ordenarCantones,
     parroquias, filtrarParroquias,
     empresas, filtrarEmpresas, ordenarEmpresas,
     proveedores, filtrarProveedores,
@@ -234,5 +251,6 @@ export const useFiltrosListadosSelects = (listadosAuxiliares, entidad?: Ref<any>
     empleados, filtrarEmpleados,ordenarEmpleados,
     bancos, filtrarBancos,
     categorias, filtrarCategoriasProveedor, ordenarCategorias,
+    productos, filtrarProductos,
   }
 }

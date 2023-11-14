@@ -1,3 +1,4 @@
+import { limpiarListado } from 'shared/utils';
 //Dependencias
 import { configuracionColumnasTransaccionIngreso } from '../../../domain/configuracionColumnasTransaccionIngreso'
 import { configuracionColumnasListadoProductosDevolucion } from '../../transaccionContent/domain/configuracionColumnasListadoProductosDevolucion'
@@ -10,7 +11,7 @@ import { configuracionColumnasProductos } from 'pages/bodega/productos/domain/co
 import { useOrquestadorSelectorItemsTransaccion } from 'pages/bodega/transacciones/modules/transaccionIngreso/application/OrquestadorSelectorDetalles'
 import { useTransaccionStore } from 'stores/transaccion'
 import { useDevolucionStore } from 'stores/devolucion'
-import { acciones, estadosTransacciones } from 'config/utils'
+import { acciones, autorizaciones, estados, estadosTransacciones } from 'config/utils'
 
 // Componentes
 import TabLayout from 'shared/contenedor/modules/simple/view/TabLayout.vue'
@@ -47,8 +48,10 @@ import { useCargandoStore } from 'stores/cargando'
 import { ComportamientoModalesTransaccionIngreso } from '../application/ComportamientoModalesGestionarIngreso'
 import { SucursalController } from 'pages/administracion/sucursales/infraestructure/SucursalController'
 import { Empleado } from 'pages/recursosHumanos/empleados/domain/Empleado'
+import { ValidarListadoProductosIngreso } from '../application/validations/ValidarListadoProductosIngreso'
 
 export default defineComponent({
+  name: 'Ingresos',
   components: { TabLayout, EssentialTable, ModalesEntidad, EssentialSelectableTable },
   // emits: ['creada', 'consultada'],
   setup() {
@@ -71,24 +74,30 @@ export default defineComponent({
 
     const rolSeleccionado = (store.user.roles.filter((v) => v.indexOf('BODEGA') > -1 || v.indexOf('COORDINADOR') > -1)).length > 0 ? true : false
 
-
+    /*****************************************************************************************
+     * Hooks
+     ****************************************************************************************/
     onGuardado(() => {
       listadoDevolucion.value = []
+      devolucionStore.resetearDevolucion()
     })
     onConsultado(() => {
       transaccion.solicitante = transaccion.solicitante_id
       transaccionStore.transaccion.hydrate(transaccion)
     })
     onReestablecer(() => {
-      // transaccion.cliente = listadosAuxiliares.clientes[0]['id']
+      listadoDevolucion.value = []
       transaccion.condicion = null
+      devolucionStore.resetearDevolucion()
 
       //reestablecer valores de las banderas
       esVisibleComprobante.value = false
 
     })
 
-
+    /*****************************************************************************************
+     * Selector
+     *****************************************************************************************/
     const {
       refListadoSeleccionable: refListadoSeleccionableProductos,
       criterioBusqueda: criterioBusquedaProducto,
@@ -98,6 +107,7 @@ export default defineComponent({
       seleccionar: seleccionarProducto
     } = useOrquestadorSelectorItemsTransaccion(transaccion, 'detalles')
 
+
     //flags
     const soloLectura = ref(false)
     const estaInventariando = ref(true)
@@ -105,10 +115,8 @@ export default defineComponent({
     const esVisibleTarea = ref(false)
     let listadoDevolucion = ref()
 
-    const opciones_autorizaciones = ref([])
     const opciones_sucursales = ref([])
     const opciones_motivos = ref([])
-    const opciones_estados = ref([])
     const opciones_tareas = ref([])
     const opciones_clientes = ref([])
     const opciones_empleados = ref([])
@@ -136,14 +144,19 @@ export default defineComponent({
           }
         },
       })
-      //configurar los select definidos al inicio
-      // transaccion.cliente = listadosAuxiliares.clientes[0]['id']
-      // console.log(store.user.id)
-      transaccion.solicitante = store.user.id
 
+      if (devolucionStore.devolucion.id) {
+        transaccion.tiene_devolucion = true
+        transaccion.tarea = devolucionStore.devolucion.tarea
+        await cargarDatosDevolucion()
+      } else {
+        transaccion.solicitante = store.user.id
+      }
     })
 
-    //Reglas de validacion
+    /*****************************************************************************************
+     * Validaciones
+     *****************************************************************************************/
     const reglas = {
       justificacion: { required },
       sucursal: { required },
@@ -155,6 +168,11 @@ export default defineComponent({
       condicion: { requiredIfMasivo: requiredIf(transaccion.ingreso_masivo) }
     }
 
+    const v$ = useVuelidate(reglas, transaccion)
+    setValidador(v$.value)
+    //validat que los datos que se envían en el listado están completos
+    const validarListadoProductos = new ValidarListadoProductosIngreso(transaccion, listadoDevolucion)
+    mixin.agregarValidaciones(validarListadoProductos)
 
     const abrirModalDetalle: CustomActionTable = {
       titulo: 'Agregar nuevo detalle',
@@ -173,13 +191,27 @@ export default defineComponent({
      */
     async function llenarTransaccion(id: number) {
       limpiarTransaccion()
-      await devolucionStore.cargarDevolucion(id)
+      try {
+        await devolucionStore.cargarDevolucion(id)
+        await cargarDatosDevolucion()
+      } catch (error) {
+        limpiarTransaccion()
+        limpiarProducto()
+        limpiarListado(listadoDevolucion.value)
+        devolucionStore.resetearDevolucion()
+      }
+
+    }
+    async function cargarDatosDevolucion() {
+      //Copiar los valores de las variables
       transaccion.devolucion = devolucionStore.devolucion.id
       transaccion.justificacion = devolucionStore.devolucion.justificacion
-      transaccion.solicitante = devolucionStore.devolucion.solicitante
+      transaccion.solicitante = Number.isInteger(devolucionStore.devolucion.solicitante) ? devolucionStore.devolucion.solicitante : devolucionStore.devolucion.solicitante_id
       transaccion.es_para_stock = devolucionStore.devolucion.es_para_stock
       listadoDevolucion.value = devolucionStore.devolucion.listadoProductos
       listadoDevolucion.value.sort((v, w) => v.id - w.id) //ordena el listado de devolucion
+      //primero copiamos los valores de id en detalle_id
+      devolucionStore.devolucion.listadoProductos.forEach((item) => item.detalle_id = item.id)
       //copiar el listado de devolución al listado de la tabla
       transaccion.listadoProductosTransaccion = [...devolucionStore.devolucion.listadoProductos]
       if (devolucionStore.devolucion.tarea) {
@@ -212,9 +244,11 @@ export default defineComponent({
       listadoDevolucion.value = []
     }
 
-    const v$ = useVuelidate(reglas, transaccion)
-    setValidador(v$.value)
 
+    function seleccionarClientePropietario(val) {
+      const sucursalSeleccionada = opciones_sucursales.value.filter((v: Sucursal) => v.id === val)
+      transaccion.cliente = sucursalSeleccionada[0]['cliente_id']
+    }
 
 
 
@@ -260,7 +294,7 @@ export default defineComponent({
       accion: async ({ entidad, posicion }) => {
         confirmar('¿Está seguro que desea anular la transacción?. Esta acción restará al inventario los materiales ingresados previamente', async () => {
           transaccionStore.idTransaccion = entidad.id
-          await transaccionStore.anular()
+          await transaccionStore.anularIngreso()
           entidad.estado = transaccionStore.transaccion.estado
         })
       },
@@ -272,8 +306,6 @@ export default defineComponent({
     }
 
     //Configurar los listados
-    opciones_estados.value = JSON.parse(LocalStorage.getItem('estados_transacciones')!.toString())
-    opciones_autorizaciones.value = JSON.parse(LocalStorage.getItem('autorizaciones')!.toString())
     opciones_condiciones.value = JSON.parse(LocalStorage.getItem('condiciones')!.toString())
     opciones_sucursales.value = JSON.parse(LocalStorage.getItem('sucursales')!.toString())
     opciones_motivos.value = listadosAuxiliares.motivos
@@ -328,8 +360,8 @@ export default defineComponent({
       //listados
       opciones_sucursales,
       opciones_motivos,
-      opciones_autorizaciones,
-      opciones_estados,
+      opciones_autorizaciones: autorizaciones,
+      opciones_estados: estados,
       opciones_tareas,
       opciones_clientes,
       opciones_empleados,
@@ -412,6 +444,8 @@ export default defineComponent({
       esBodeguero: store.esBodeguero,
       esCoordinador: store.esCoordinador,
 
+      //funciones
+      seleccionarClientePropietario,
       recargarSucursales,
       filtroEmpleados(val, update) {
         if (val === '') {
@@ -439,9 +473,9 @@ export default defineComponent({
       },
       //ordenacion de listas
       ordenarClientes() {
-        if(store.esBodegueroTelconet){
-          opciones_clientes.value =  opciones_clientes.value.filter((v:Cliente)=>v.razon_social!.indexOf('TELCONET')>-1)
-        }else opciones_clientes.value.sort((a: Cliente, b: Cliente) => ordernarListaString(a.razon_social!, b.razon_social!))
+        if (store.esBodegueroTelconet) {
+          opciones_clientes.value = opciones_clientes.value.filter((v: Cliente) => v.razon_social!.indexOf('TELCONET') > -1)
+        } else opciones_clientes.value.sort((a: Cliente, b: Cliente) => ordernarListaString(a.razon_social!, b.razon_social!))
       },
       ordenarMotivos() {
         opciones_motivos.value.sort((a: Motivo, b: Motivo) => ordernarListaString(a.nombre!, b.nombre!))
