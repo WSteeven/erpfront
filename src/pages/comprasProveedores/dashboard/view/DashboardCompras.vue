@@ -148,7 +148,7 @@
             <div class="row q-col-gutter-xs">
               <div v-if="cantOrdenesCreadas >= 0" class="col-12">
                 <q-card
-                class="rounded-card text-white no-border q-pa-md text-center full-height cursor-pointer bg-primary"
+                  class="rounded-card text-white no-border q-pa-md text-center full-height cursor-pointer bg-primary"
                 >
                   <div class="text-h3 q-mb-md">
                     {{ cantOrdenesCreadas }}
@@ -237,15 +237,19 @@
         ><!-- Graficos -->
         <q-tab-panel :name="opcionesGrafico.grafico">
           <div v-if="mostrarTitulosSeccion" class="row justify-center q-mb-xl">
-            <div class="col-12 col-md-6 text-center">
+            <!-- Graficos generados automaticamente -->
+            <div
+              class="col-12 col-md-6 text-center"
+              v-for="grafico in graficos"
+              :key="grafico.id"
+            >
               <div class="text-subtitle2 q-mb-lg">
-                Estado actual de las órdenes de compras
+                {{ grafico.encabezado }}
               </div>
-              <!-- {{ ordenesPorEstado }} -->
               <div>
                 <grafico-generico
-                   v-if="ordenesPorEstado.length"
-                  :data="ordenesPorEstadoBar"
+                  v-if="grafico"
+                  :data="grafico"
                   :options="optionsPie"
                   @click="(data) => clickGrafico(data, 'hola')"
                 />
@@ -257,7 +261,7 @@
         <q-tab-panel :name="opcionesGrafico.listado">
           <q-btn
             color="primary"
-            @click="tabsEmpleado = opcionesGrafico.grafico"
+            @click="tabs = opcionesGrafico.grafico"
             glossy
             no-caps
             rounded
@@ -283,13 +287,16 @@
                 :permitirEditar="false"
                 :mostrarBotones="false"
                 :alto-fijo="false"
+                :ajustarCeldas="true"
                 :accion1="btnVer"
+                :accion2="btnVerNovedades"
               ></essential-table>
             </div>
           </div> </q-tab-panel
       ></q-tab-panels>
     </q-card>
   </q-page>
+  <modales-entidad :comportamiento="modales" :persistente="false"></modales-entidad>
 </template>
 
 <script src="./DashboardCompras.ts"></script>

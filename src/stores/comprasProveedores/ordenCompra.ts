@@ -14,6 +14,7 @@ export const useOrdenCompraStore = defineStore('ordenCompra', () => {
   const orden = reactive(new OrdenCompra())
   const ordenReset = new OrdenCompra()
   const idOrden = ref()
+  const permitirSubir = ref(true)
 
   const { notificarCorrecto, notificarAdvertencia, notificarError } = useNotificaciones()
   const accionOrden = acciones.nuevo
@@ -120,6 +121,7 @@ export const useOrdenCompraStore = defineStore('ordenCompra', () => {
     orden,
     accionOrden,
     idOrden,
+    permitirSubir,
 
     anularOrden,
     resetearOrden,

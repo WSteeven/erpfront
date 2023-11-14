@@ -25,6 +25,8 @@ import { useOrdenCompraStore } from "stores/comprasProveedores/ordenCompra";
 import { CustomActionTable } from "components/tables/domain/CustomActionTable";
 import { estadosOrdenesCompras } from "config/utils_compras_proveedores";
 import { obtenerFechaActual } from "shared/utils";
+import { accionesTabla } from "config/utils";
+import { useNotificaciones } from "shared/notificaciones";
 
 
 export default defineComponent({
@@ -37,6 +39,7 @@ export default defineComponent({
     const mixin = new ContenedorSimpleMixin(OrdenCompra, new OrdenCompraController())
     const { entidad: orden, listado, listadosAuxiliares } = mixin.useReferencias()
     const { cargarVista, obtenerListados, listar } = mixin.useComportamiento()
+    const {confirmar} = useNotificaciones()
     const dashboard = reactive({
       fecha_inicio: '',
       fecha_fin: '',
@@ -71,7 +74,6 @@ export default defineComponent({
     const v$ = useVuelidate(reglas, dashboard)
 
     const ordenesPorEstado = ref([])
-    const ordenesPorEstadoBar = ref()
     const optionsPie = {
       responsive: true,
       maintainAspectRatio: false,
@@ -112,12 +114,28 @@ export default defineComponent({
      * Botones tabla
      ***************/
     const btnVer: CustomActionTable = {
-      titulo: 'Más detalles',
+      titulo: '',
       icono: 'bi-eye',
       accion: async ({ entidad }) => {
         ordenCompraStore.orden = entidad
         modales.abrirModalEntidad('VisualizarOrdenCompra')
       },
+    }
+    const btnVerNovedades: CustomActionTable = {
+      titulo: 'Ver novedades',
+      color: 'warning',
+      icono: 'bi-wrench',
+      accion: async ({ entidad, posicion }) => {
+        console.log(entidad)
+        ordenCompraStore.idOrden = entidad.id
+        confirmar('¿Está seguro de abrir el formulario de registro de novedades de la orden de compra?', () => {
+          ordenCompraStore.permitirSubir = false
+          modales.abrirModalEntidad('SeguimientoNovedadesOrdenesCompras')
+        })
+      },
+      visible: ({ entidad }) => {
+        return entidad.novedades > 0
+      }
     }
 
     /***************
@@ -136,12 +154,14 @@ export default defineComponent({
     }
     const tabs = ref(opcionesGrafico.grafico)
 
+    const graficos = ref()
+    const ordenes = ref()
 
     async function consultar() {
       if (await v$.value.$validate()) {
         try {
           const results = await ordenCompraStore.consultarDashboard(dashboard)
-          console.log(results)
+          // console.log(results)
           cantOrdenesCreadas.value = results.cant_ordenes_creadas
           cantOrdenesPendientes.value = results.cant_ordenes_pendientes
           cantOrdenesAprobadas.value = results.cant_ordenes_aprobadas
@@ -149,60 +169,43 @@ export default defineComponent({
           cantOrdenesRealizadas.value = results.cant_ordenes_realizadas
           cantOrdenesPagadas.value = results.cant_ordenes_pagadas
           cantOrdenesAnuladas.value = results.cant_ordenes_anuladas
-          ordenesPorEstado.value = results.todas
-          const labels = ['PENDIENTES', 'APROBADAS', 'ANULADAS']
-          const valores = [1, 4, 1]
-          const colores = mapearColor(valores)
-          console.log(labels, valores, colores)
-          ordenesPorEstadoBar.value = mapearDatos(labels!, valores, 'Cantidad de Ordenes', colores)
+          ordenes.value = results.todas
+          graficos.value = results.graficos
         } catch (error) {
           console.log(error)
         }
       }
     }
-    function mapearDatos(labels: string[], valores: string[], titulo: string, colores: any[]) {
-      return {
-        labels: labels,
-        datasets: [
-          {
-            backgroundColor: colores,
-            label: titulo,
-            data: valores,
-          },
-        ],
-      }
-    }
-    function mapearColor(estadoOC) {
-      switch (estadoOC) {
-        case 1: return '#9fa8da'
-        case 2: return '#9fa8da'
-        case 3: return '#78909c'
-        case 4: return '#ffc107'
-      }
-    }
-    // function mapearColor(estadoOC: keyof typeof estadosOrdenesCompras) {
-    //   switch (estadoOC) {
-    //     case estadosOrdenesCompras.PENDIENTE: return '#9fa8da'
-    //     case estadosOrdenesCompras.APROBADO: return '#9fa8da'
-    //     case estadosOrdenesCompras.REVISADA: return '#78909c'
-    //     case estadosOrdenesCompras.REALIZADA: return '#ffc107'
-    //     case estadosOrdenesCompras.PAGADA: return '#616161'
-    //     case estadosOrdenesCompras.ANULADA: return '#8bc34a'
-    //   }
-    // }
     function clickGrafico(data: any, key: string) {
       console.log('Diste clic en grafico', data, key)
+      console.log('Ordenes para filtrar', ordenes.value)
+      switch (data.label) {
+        case 'PENDIENTES':
+          ordenesPorEstado.value = ordenes.value.filter((orden) => orden.autorizacion_id === 1)
+          break;
+        case 'APROBADO':
+          ordenesPorEstado.value = ordenes.value.filter((orden) => orden.autorizacion_id === 2)
+          break
+        case 'CANCELADO':
+          ordenesPorEstado.value = ordenes.value.filter((orden) => orden.autorizacion_id === 3)
+          break;
+        default:
+          ordenesPorEstado.value = ordenes.value
+      }
+      console.log('ordenes filtradas', ordenesPorEstado.value, tabs.value)
+      tabs.value = opcionesGrafico.listado
     }
 
     dashboard.fecha_fin = obtenerFechaActual()
 
     return {
-      configuracionColumnas: configuracionColumnasOrdenesCompras,
-      ordenesPorEstado, ordenesPorEstadoBar,
+      configuracionColumnas: configuracionColumnasOrdenesCompras, accionesTabla,
+      ordenesPorEstado, 
       v$,
       dashboard,
       optionsPie,
       btnVer,
+      btnVerNovedades,
       consultar,
       clickGrafico,
       cantOrdenesCreadas,
@@ -213,8 +216,8 @@ export default defineComponent({
       cantOrdenesPagadas,
       cantOrdenesAnuladas,
       tabs, opcionesGrafico, mostrarTitulosSeccion,
-
-
+      graficos,
+      modales,
     }
   },
 })

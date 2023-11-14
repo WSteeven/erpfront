@@ -392,6 +392,7 @@ export default defineComponent({
         console.log(entidad)
         ordenCompraStore.idOrden = entidad.id
         confirmar('¿Está seguro de abrir el formulario de registro de novedades de la orden de compra?', () => {
+          ordenCompraStore.permitirSubir = true
           modales.abrirModalEntidad('SeguimientoNovedadesOrdenesCompras')
         })
       },
