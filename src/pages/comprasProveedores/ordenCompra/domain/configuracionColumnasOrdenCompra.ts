@@ -99,4 +99,12 @@ export const configuracionColumnasOrdenesCompras: ColumnConfig<OrdenCompra>[] = 
     sortable: true,
     visible:true,
   },
+  {
+    name: 'sum_total',
+    field: 'sum_total',
+    label: 'Total',
+    align: 'left',
+    sortable: true,
+    visible:true,
+  },
 ]

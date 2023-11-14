@@ -144,6 +144,17 @@
             <label class="q-mb-sm block">IVA general</label>
             <q-input v-model="orden.iva" outlined dense disable />
           </div>
+          <!-- Observacion de realizada -->
+          <div v-if="orden.observacion_realizada" class="col-12 col-md-3">
+            <label class="q-mb-sm block">Observacion realizada</label>
+            <q-input
+              autogrow
+              v-model="orden.observacion_realizada"
+              disable
+              outlined
+              dense
+            />
+          </div>
 
           <!-- Marcar orden completada -->
           <div class="col-12 col-md-3 q-mb-xl" v-if="store.esCompras">
