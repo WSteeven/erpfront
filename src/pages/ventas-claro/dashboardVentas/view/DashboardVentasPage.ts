@@ -33,6 +33,7 @@ import { DashboardVentasController } from '../infraestructure/DashboardVentasCon
 import { FiltroDashboardVentas } from '../domain/FiltroDashboardVentas'
 import { Vendedores } from 'pages/ventas-claro/vendedores/domain/Vendedores'
 import { ComportamientoModalesVentas } from 'pages/ventas-claro/ventas/application/ComportamientoModalesVentas'
+import { optionsPie } from 'config/graficoGenerico'
 
 export default defineComponent({
   components: {
@@ -116,47 +117,7 @@ export default defineComponent({
     const tabsDepartamento = ref(opcionesDepartamento.departamentoGrafico)
     const tabsVendedor = ref(opcionesVendedor.vendedorGrafico)
 
-    const optionsPie = {
-      responsive: true,
-      maintainAspectRatio: false,
-      layout: {
-        padding: 32,
-      },
-      elements: {
-        arc: {
-          borderWidth: 0,
-        },
-      },
-      plugins: {
-        legend: {
-          position: 'right',
-        },
-        datalabels: {
-          align: 'end',
-          anchor: 'end',
-          color: '#fff',
-          borderRadius: 16,
-          padding: 6,
-          backgroundColor: function (context) {
-            return context.dataset.backgroundColor
-          },
-          font: function (context) {
-            const w = context.chart.width
-            return {
-              size: w < 512 ? 10 : 12,
-            }
-          },
-          formatter: function (value, context) {
-            return value
-              ? context.chart.data.labels[context.dataIndex] +
-                  ' (' +
-                  value +
-                  ')'
-              : null
-          },
-        },
-      },
-    }
+
 
     /*******
      * Init
@@ -220,82 +181,19 @@ export default defineComponent({
           cantVentasInstaladas.value = result.cantidad_ventas_instaladas
           cantVentasPendientes.value = result.cantidad_ventas_por_instalar
           cantVentasRechazadas.value = result.cantidad_ventas_por_rechazadas
-
           // Grafico vendedor consultado
           ventasPorEstado.value = result.ventasPorEstado
-          const graficoVentasPorEstado = result.graficoVentasPorEstado
-
           //Grafico vendedor por planes
           ventasPorPlanes.value = result.ventasPorPlanes
-          const graficoVentasPlanes = contarVentasPlanes(result.ventasPorPlanes)
-          // Grafico vendedor por estado
-          const labels3 = graficoVentasPorEstado.map((item) => item.estado_activ)
-          const valores3 = graficoVentasPorEstado.map((item) => item.total_ventas)
-          const colores3 = graficoVentasPorEstado.map((item) =>
-            mapearColor(item.estado_activ)
-          )
-          ventasPorEstadoBar.value = mapearDatos(
-            labels3,
-            valores3,
-            'Cantidad de ventas',
-            colores3
-          )
+          ventasPorEstadoBar.value = result.ventasPorEstadoBar
           //Grafico vendedor por planes
-
-          const labelsPlanes = graficoVentasPlanes.map((item) => item.planes)
-          const valoresPlanes = graficoVentasPlanes.map(
-            (item) => item.total_planes
-          )
-          const coloresPlanes = graficoVentasPlanes.map((item) =>
-            mapearColorPlanes(item.planes)
-          )
-          ventasPorPlanesoBar.value = mapearDatos(
-            labelsPlanes,
-            valoresPlanes,
-            'Cantidad de ventas por planes',
-            coloresPlanes
-          )
+          ventasPorPlanesoBar.value = result.ventasPorPlanesoBar
         } catch (e) {
           console.log(e)
         } finally {
           cargando.desactivar()
         }
       }
-    }
-
-    function mapearDatos(
-      labels: string[],
-      valores: string[],
-      titulo: string,
-      colores: any[]
-    ) {
-      return {
-        labels: labels,
-        datasets: [
-          {
-            backgroundColor: colores,
-            label: titulo,
-            data: valores,
-          },
-        ],
-      }
-    }
-
-    function mapearColor(estadoVentas: string) {
-      const coloresPorEstado = {
-        ['APROBADO']: '#83B11E',
-        ['RECHAZADA']: '#D62C18',
-        ['PENDIENTE']: '#D4CB13',
-      }
-      return coloresPorEstado[estadoVentas]
-    }
-    function mapearColorPlanes(planes: string) {
-      const coloresPorEstado = {
-        ['1PLAY']: '#D62C18  ',
-        ['2PLAY']: ' #DB6C25 ',
-        ['3PLAY']: ' #25DB8A',
-      }
-      return coloresPorEstado[planes]
     }
 
     function ordenarVendedores() {
@@ -351,40 +249,6 @@ export default defineComponent({
         tabsDepartamento.value = opcionesDepartamento.departamentoListado
       }
     }*/
-
-    function contarVentasVendedor(ventas: Ventas[]): any[] {
-      const conteo = ventas.reduce((acumulador: any, venta) => {
-        const estado = venta.estado_activ
-        const elementoExistente: any = acumulador.find(
-          (item: any) => item.estado === estado
-        )
-        if (!elementoExistente) acumulador.push({ estado, total_ventas: 1 })
-        else elementoExistente.total_ventas++
-
-        return acumulador
-      }, [])
-
-      return conteo
-    }
-
-    function contarVentasPlanes(ventas: Ventas[]): any[] {
-      const conteo = ventas.reduce((acumulador: any, venta) => {
-        const planes = venta.plan
-
-        if (planes) {
-          const elementoExistente: any = acumulador.find(
-            (item: any) => item.planes === planes
-          )
-
-          if (!elementoExistente) acumulador.push({ planes, total_planes: 1 })
-          else elementoExistente.total_planes++
-        }
-
-        return acumulador
-      }, [])
-
-      return conteo
-    }
 
     /* function contarVentasDepartamentoSolicitante(ventas: Ventas[]): any[] {
       const conteo = ventas.reduce((acumulador: any, venta) => {
