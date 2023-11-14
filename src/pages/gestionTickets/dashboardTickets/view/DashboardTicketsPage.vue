@@ -119,14 +119,10 @@
           </div>
 
           <!-- Departamento -->
-          <div
-            v-if="
-              filtro.departamento_empleado ===
-              opcionesFiltroDepartamentoEmpleado.porDepartamento
-            "
-            class="col-12"
-          >
-            <label class="q-mb-sm block">Seleccione un departamento</label>
+          <div v-show="mostrarSeccionDepartamento" class="col-12">
+            <label class="q-mb-sm block"
+              >Seleccione un departamento para consultar</label
+            >
             <q-select
               v-model="filtro.departamento"
               :options="departamentos"
@@ -161,15 +157,9 @@
             </q-select>
           </div>
 
-          <div
-            v-if="
-              filtro.departamento_empleado ===
-              opcionesFiltroDepartamentoEmpleado.porEmpleado
-            "
-            class="col-12"
-          >
+          <div v-if="mostrarSeccionEmpleado" class="col-12">
             <label class="q-mb-sm block"
-              >Seleccione el empleado a consultar</label
+              >Seleccione un empleado para consultar</label
             >
             <q-select
               v-model="filtro.empleado"
@@ -211,12 +201,13 @@
     </q-card>
 
     <q-card
-      v-if="mostrarTitulosSeccion"
+      v-if="mostrarTitulosSeccion && mostrarSeccionEmpleado"
       class="q-mb-md rounded no-border custom-shadow"
     >
       <div
-        class="row bg-body text-bold text-primary q-pa-md rounded justify-center q-mb-lg"
+        class="row text-bold text-primary q-pa-md rounded items-center q-mb-lg"
       >
+        <q-icon name="bi-graph-up-arrow" class="q-mr-sm"></q-icon>
         Información de tickets creados y asignados del empleado seleccionado
       </div>
       <q-card-section>
@@ -272,7 +263,7 @@
                 class="col-6 col-md-3"
               >
                 <q-card
-                  class="rounded-card q-pa-md text-center full-height bg-negative text-white"
+                  class="rounded-card q-pa-md text-center full-height bg-pink-10 text-white"
                 >
                   <div class="text-h3 q-mb-md">
                     {{ cantTicketsCanceladosPorMi }}
@@ -302,7 +293,7 @@
             <div class="row q-col-gutter-xs">
               <div class="col-12">
                 <q-card
-                  class="rounded-card text-white no-border q-pa-md text-center full-height cursor-pointer bg-primary"
+                  class="rounded-card text-white no-border q-pa-md text-center full-height bg-secondary"
                 >
                   <div class="text-h3 q-mb-md">
                     {{ cantTicketsRecibidos }}
@@ -322,7 +313,7 @@
 
               <div v-if="cantTicketsCancelados >= 0" class="col-6 col-md-3">
                 <q-card
-                  class="rounded-card text-white q-pa-md text-center full-height bg-negative"
+                  class="rounded-card text-white q-pa-md text-center full-height bg-pink-10"
                 >
                   <div class="text-h3 q-mb-md">
                     {{ cantTicketsCancelados }}
@@ -422,12 +413,13 @@
     </q-card>
 
     <q-card
-      v-if="mostrarTitulosSeccion"
+      v-if="mostrarTitulosSeccion && mostrarSeccionEmpleado"
       class="q-mb-md rounded no-border custom-shadow"
     >
       <div
-        class="row bg-body text-bold q-pa-md rounded text-primary justify-center q-mb-lg"
+        class="row text-bold q-pa-md rounded text-primary items-center q-mb-lg"
       >
+        <q-icon name="bi-graph-up-arrow" class="q-mr-sm"></q-icon>
         Gráficos estadísticos del empleado consultado
       </div>
 
@@ -513,13 +505,13 @@
 
         <q-tab-panel :name="opcionesEmpleado.empleadoListado">
           <q-btn
-            color="primary"
+            color="white"
             @click="tabsEmpleado = opcionesEmpleado.empleadoGrafico"
-            glossy
             no-caps
             rounded
-            unelevated
-            class="q-mx-auto block"
+            outline
+            glossy
+            class="text-grey-8"
           >
             <q-icon name="bi-arrow-left"></q-icon>
             Regresar al gráfico</q-btn
@@ -556,8 +548,9 @@
       class="q-mb-md rounded no-border custom-shadow"
     >
       <div
-        class="row bg-body text-bold text-primary q-pa-md rounded justify-center q-mb-md"
+        class="row text-bold text-primary q-pa-md rounded items-center q-mb-md"
       >
+        <q-icon name="bi-graph-up-arrow" class="q-mr-sm"></q-icon>
         Gráficos estadísticos del departamento
       </div>
 
@@ -743,13 +736,12 @@
 
         <q-tab-panel :name="opcionesDepartamento.departamentoListado">
           <q-btn
-            color="primary"
             @click="tabsDepartamento = opcionesDepartamento.departamentoGrafico"
-            glossy
             no-caps
             rounded
-            unelevated
-            class="q-mx-auto block"
+            outline
+            glossy
+            class="text-grey-8"
           >
             <q-icon name="bi-arrow-left"></q-icon>
             Regresar al gráfico</q-btn
@@ -779,33 +771,40 @@
       </q-tab-panels>
     </q-card>
 
-    <q-card class="q-mb-md rounded no-border custom-shadow">
+    <q-card
+      v-if="
+        mostrarTitulosSeccion &&
+        (mostrarSeccionDepartamento || mostrarSeccionEmpleado)
+      "
+      class="q-mb-md rounded no-border custom-shadow"
+    >
       <div
-        class="row bg-body text-bold q-pa-md rounded text-primary justify-center q-mb-lg"
+        class="row text-bold q-pa-md rounded text-primary items-center q-mb-lg"
       >
+        <q-icon name="bi-graph-up-arrow" class="q-mr-sm"></q-icon>
         Gráfico promedio de tiempos
       </div>
 
       <div class="row q-pa-md q-col-gutter-x-sm">
-        <div class="col-12 col-md-10 text-center">
+        <div class="col-12 text-center">
           <div class="text-subtitle2 q-mb-lg">
             Gráfico de tiempos de los tickets
           </div>
+          <!-- {{ promedioTiemposLine }} -->
           <div>
             <!-- v-if="ticketsPorEstado.length" -->
             <grafico-generico
               :data="promedioTiemposLine"
-              :options="optionsPie"
+              :options="optionsLine"
               tipo="line"
+              @click="(data) => clickGraficoLineaTiempo(data)"
             />
           </div>
         </div>
+      </div>
 
-        <div class="col-12 column col-md-2">
-          <div class="text-subtitle2 q-mb-lg text-center">
-            Promedio de tiempos de los tickets
-          </div>
-
+      <div class="row q-col-gutter-md q-px-md q-mb-lg">
+        <div class="col-12 col-md-6">
           <div
             class="rounded-card no-border text-primary q-pa-md text-center bg-grey-3 q-mb-sm"
           >
@@ -814,7 +813,9 @@
             </div>
             <q-icon name="bi-clock-history" size="xl" color="grey-5"></q-icon>
           </div>
+        </div>
 
+        <div class="col-12 col-md-6">
           <div
             class="rounded-card no-border text-positive q-pa-md text-center bg-light-green-1"
           >
