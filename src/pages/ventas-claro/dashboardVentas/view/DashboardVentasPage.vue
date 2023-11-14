@@ -20,11 +20,7 @@
             >
               <template v-slot:append>
                 <q-icon name="event" class="cursor-pointer">
-                  <q-popup-proxy
-                    cover
-                    transition-show="scale"
-                    transition-hide="scale"
-                  >
+                  <q-popup-proxy cover transition-show="scale" transition-hide="scale">
                     <q-date
                       v-model="filtro.fecha_inicio"
                       mask="DD-MM-YYYY"
@@ -32,12 +28,7 @@
                       today-btn
                     >
                       <div class="row items-center justify-end">
-                        <q-btn
-                          v-close-popup
-                          label="Cerrar"
-                          color="primary"
-                          flat
-                        />
+                        <q-btn v-close-popup label="Cerrar" color="primary" flat />
                       </div>
                     </q-date>
                   </q-popup-proxy>
@@ -63,11 +54,7 @@
             >
               <template v-slot:append>
                 <q-icon name="event" class="cursor-pointer">
-                  <q-popup-proxy
-                    cover
-                    transition-show="scale"
-                    transition-hide="scale"
-                  >
+                  <q-popup-proxy cover transition-show="scale" transition-hide="scale">
                     <q-date
                       v-model="filtro.fecha_fin"
                       mask="DD-MM-YYYY"
@@ -75,12 +62,7 @@
                       @update:model-value="consultar()"
                     >
                       <div class="row items-center justify-end">
-                        <q-btn
-                          v-close-popup
-                          label="Cerrar"
-                          color="primary"
-                          flat
-                        />
+                        <q-btn v-close-popup label="Cerrar" color="primary" flat />
                       </div>
                     </q-date>
                   </q-popup-proxy>
@@ -96,9 +78,7 @@
           </div>
 
           <div class="col-12 col-md-6">
-            <label class="q-mb-sm block"
-              >Seleccione el vendedor a consultar</label
-            >
+            <label class="q-mb-sm block">Seleccione el vendedor a consultar</label>
             <q-select
               v-model="filtro.vendedor"
               :options="vendedores"
@@ -121,9 +101,7 @@
             >
               <template v-slot:no-option>
                 <q-item>
-                  <q-item-section class="text-grey">
-                    No hay resultados
-                  </q-item-section>
+                  <q-item-section class="text-grey"> No hay resultados </q-item-section>
                 </q-item>
               </template>
 
@@ -138,10 +116,7 @@
       </q-card-section>
     </q-card>
 
-    <q-card
-      v-if="mostrarTitulosSeccion"
-      class="q-mb-md rounded no-border custom-shadow"
-    >
+    <q-card v-if="mostrarTitulosSeccion" class="q-mb-md rounded no-border custom-shadow">
       <div
         class="row bg-body text-bold text-primary q-pa-md rounded justify-center q-mb-lg"
       >
@@ -186,9 +161,7 @@
                   class="rounded-card text-white no-border custom-shadow q-pa-md text-center bg-positive full-height q-card-hover"
                 >
                   <div class="text-h3 q-mb-md">
-                    {{
-                      cantVentasInstaladas
-                    }}
+                    {{ cantVentasInstaladas }}
                   </div>
                   <div>Cantidad de Ventas Instaladas</div>
                 </q-card>
@@ -199,10 +172,7 @@
       </q-card-section>
     </q-card>
 
-    <q-card
-      v-if="mostrarTitulosSeccion"
-      class="q-mb-md rounded no-border custom-shadow"
-    >
+    <q-card v-if="mostrarTitulosSeccion" class="q-mb-md rounded no-border custom-shadow">
       <div
         class="row bg-body text-bold q-pa-md rounded text-primary justify-center q-mb-lg"
       >
@@ -216,39 +186,34 @@
         transition-next="scale"
         keep-alive
       >
-      <q-tab-panel :name="opcionesVendedor.vendedorGrafico">
-          <div v-if="mostrarTitulosSeccion" class="row justify-center q-mb-xl">
+        <q-tab-panel :name="opcionesVendedor.vendedorGrafico">
+          <div v-if="mostrarTitulosSeccion" class="row q-col-gutter-y-xl q-col-gutter-x-xs q-mb-xl">
             <div class="col-12 col-md-6 text-center">
-              <div class="text-subtitle2 q-mb-lg">
-                Estado actual de las ventas
-              </div>
+              <div class="text-subtitle2 q-mb-lg">Estado actual de las ventas</div>
               <div>
                 <grafico-generico
                   v-if="ventasPorEstado.length"
                   :data="ventasPorEstadoBar"
                   :options="optionsPie"
-
                 />
               </div>
+            </div>
+            <div class="col-12 col-md-6 text-center">
+            <div class="text-subtitle2 q-mb-lg">Ventas por Planes</div>
+            <div>
+              <grafico-generico
+                v-if="ventasPorEstado.length"
+                :data="ventasPorPlanesoBar"
+                :options="optionsPie"
+              />
             </div>
           </div>
-          <div class="col-12 col-md-6 text-center">
-              <div class="text-subtitle2 q-mb-lg">
-                Ventas por Planes
-              </div>
-              <div>
-                <grafico-generico
-                  v-if="ventasPorEstado.length"
-                  :data="ventasPorPlanesoBar"
-                  :options="optionsPie"
-                />
-              </div>
-            </div>
+          </div>
+
         </q-tab-panel>
       </q-tab-panels>
       <!-- </q-card-section> -->
     </q-card>
-
 
     <modales-entidad :comportamiento="modales" />
   </q-page>
