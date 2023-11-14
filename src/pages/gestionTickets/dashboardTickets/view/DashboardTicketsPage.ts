@@ -229,6 +229,7 @@ export default defineComponent({
           // Grafico empleado consultado
           ticketsPorEstado.value = result.ticketsPorEstado
           const graficoTicketsPorEstado = contarTicketsEmpleado(result.ticketsPorEstado)
+          console.log(graficoTicketsPorEstado)
           const labels3 = graficoTicketsPorEstado.map((item) => item.estado)
           const valores3 = graficoTicketsPorEstado.map((item) => item.total_tickets)
           const colores3 = graficoTicketsPorEstado.map((item) => mapearColor(item.estado))

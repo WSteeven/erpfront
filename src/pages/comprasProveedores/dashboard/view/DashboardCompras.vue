@@ -20,7 +20,11 @@
             >
               <template v-slot:append>
                 <q-icon name="event" class="cursor-pointer">
-                  <q-popup-proxy cover transition-show="scale" transition-hide="scale">
+                  <q-popup-proxy
+                    cover
+                    transition-show="scale"
+                    transition-hide="scale"
+                  >
                     <q-date
                       v-model="dashboard.fecha_inicio"
                       mask="DD-MM-YYYY"
@@ -28,7 +32,12 @@
                       today-btn
                     >
                       <div class="row items-center justify-end">
-                        <q-btn v-close-popup label="Cerrar" color="primary" flat />
+                        <q-btn
+                          v-close-popup
+                          label="Cerrar"
+                          color="primary"
+                          flat
+                        />
                       </div>
                     </q-date>
                   </q-popup-proxy>
@@ -54,7 +63,11 @@
             >
               <template v-slot:append>
                 <q-icon name="event" class="cursor-pointer">
-                  <q-popup-proxy cover transition-show="scale" transition-hide="scale">
+                  <q-popup-proxy
+                    cover
+                    transition-show="scale"
+                    transition-hide="scale"
+                  >
                     <q-date
                       v-model="dashboard.fecha_fin"
                       mask="DD-MM-YYYY"
@@ -62,7 +75,12 @@
                       @update:model-value="consultar()"
                     >
                       <div class="row items-center justify-end">
-                        <q-btn v-close-popup label="Cerrar" color="primary" flat />
+                        <q-btn
+                          v-close-popup
+                          label="Cerrar"
+                          color="primary"
+                          flat
+                        />
                       </div>
                     </q-date>
                   </q-popup-proxy>
@@ -129,14 +147,16 @@
           <div class="col-12 col-md-12 q-mb-lg">
             <div class="row q-col-gutter-xs">
               <div v-if="cantOrdenesCreadas >= 0" class="col-12">
-                <q-card class="rounded-card text-primary q-pa-md text-center bg-grey-2">
+                <q-card
+                class="rounded-card text-white no-border q-pa-md text-center full-height cursor-pointer bg-primary"
+                >
                   <div class="text-h3 q-mb-md">
                     {{ cantOrdenesCreadas }}
                   </div>
                   <div class="text-bold">Cantidad de ordenes creadas</div>
                 </q-card>
               </div>
-              <div v-if="cantOrdenesPendientes >= 0" class="col-6 col-md-3">
+              <div v-if="cantOrdenesPendientes >= 0" class="col-6 col-md-4">
                 <q-card class="rounded-card q-pa-md text-center full-height">
                   <div class="text-h3 text-primary q-mb-md">
                     {{ cantOrdenesPendientes }}
@@ -144,12 +164,22 @@
                   <div>Cantidad de ordenes pendientes</div>
                 </q-card>
               </div>
-              <div v-if="cantOrdenesAprobadas >= 0" class="col-6 col-md-3">
+              <div v-if="cantOrdenesAprobadas >= 0" class="col-6 col-md-4">
                 <q-card class="rounded-card q-pa-md text-center full-height">
                   <div class="text-h3 text-primary q-mb-md">
                     {{ cantOrdenesAprobadas }}
                   </div>
                   <div>Cantidad de ordenes aprobadas</div>
+                </q-card>
+              </div>
+              <div v-if="cantOrdenesAnuladas >= 0" class="col-6 col-md-4">
+                <q-card
+                  class="rounded-card q-pa-md text-center full-height bg-negative text-white"
+                >
+                  <div class="text-h3 q-mb-md">
+                    {{ cantOrdenesAnuladas }}
+                  </div>
+                  <div>Cantidad de ordenes anuladas</div>
                 </q-card>
               </div>
               <div v-if="cantOrdenesRevisadas >= 0" class="col-6 col-md-3">
@@ -158,6 +188,17 @@
                     {{ cantOrdenesRevisadas }}
                   </div>
                   <div>Cantidad de ordenes revisadas</div>
+                </q-card>
+              </div>
+              <div
+                v-if="cantOrdenesRevisadas - cantOrdenesRealizadas >= 0"
+                class="col-6 col-md-3"
+              >
+                <q-card class="rounded-card q-pa-md text-center full-height">
+                  <div class="text-h3 text-primary q-mb-md">
+                    {{ cantOrdenesRevisadas - cantOrdenesRealizadas }}
+                  </div>
+                  <div>Cantidad de ordenes pendientes de realizar</div>
                 </q-card>
               </div>
               <div v-if="cantOrdenesRealizadas >= 0" class="col-6 col-md-3">
@@ -176,16 +217,6 @@
                   <div>Cantidad de ordenes pagadas</div>
                 </q-card>
               </div>
-              <div v-if="cantOrdenesAnuladas >= 0" class="col-6 col-md-3">
-                <q-card
-                  class="rounded-card q-pa-md text-center full-height bg-negative text-white"
-                >
-                  <div class="text-h3 q-mb-md">
-                    {{ cantOrdenesAnuladas }}
-                  </div>
-                  <div>Cantidad de ordenes anuladas</div>
-                </q-card>
-              </div>
             </div>
           </div>
         </div>
@@ -198,86 +229,35 @@
         Gráficos estadisticos de Órdenes de Compras
       </div>
       <q-tab-panels
-        v-model="tabsEmpleado"
+        v-model="tabs"
         animated
         transition-prev="scale"
         transition-next="scale"
         keep-alive
         ><!-- Graficos -->
-        <q-tab-panel :name="opcionesEmpleado.empleadoGrafico">
+        <q-tab-panel :name="opcionesGrafico.grafico">
           <div v-if="mostrarTitulosSeccion" class="row justify-center q-mb-xl">
             <div class="col-12 col-md-6 text-center">
-              <div class="text-subtitle2 q-mb-lg">Estado actual de los tickets</div>
-              <div>
-                <grafico-generico
-                  v-if="ticketsPorEstado.length"
-                  :data="ticketsPorEstadoBar"
-                  :options="optionsPie"
-                  @click="
-                    (data) =>
-                      clickGraficoTicketsEmpleado(
-                        data,
-                        categoriaGraficosEmpleado.ESTADO_ACTUAL
-                      )
-                  "
-                />
-              </div>
-            </div>
-          </div>
-
-          <div
-            v-if="mostrarTitulosSeccion"
-            class="row q-col-gutter-y-xl q-col-gutter-x-xs q-mb-xl"
-          >
-            <div
-              v-if="cantidadesTicketsSolicitadosPorDepartamento.length"
-              class="col-12 col-md-6 text-center"
-            >
               <div class="text-subtitle2 q-mb-lg">
-                Tickets creados a los departamentos
+                Estado actual de las órdenes de compras
               </div>
+              <!-- {{ ordenesPorEstado }} -->
               <div>
                 <grafico-generico
-                  v-show="cantidadesTicketsSolicitadosPorDepartamento.length"
-                  :data="cantidadesTicketsSolicitadosPorDepartamentoBar"
+                   v-if="ordenesPorEstado.length"
+                  :data="ordenesPorEstadoBar"
                   :options="optionsPie"
-                  @click="
-                    (data) =>
-                      clickGraficoTicketsEmpleado(
-                        data,
-                        categoriaGraficosEmpleado.CREADOS_A_DEPARTAMENTOS
-                      )
-                  "
-                />
-              </div>
-            </div>
-
-            <div class="col-12 col-md-6 text-center">
-              <div class="text-subtitle2 q-mb-lg">
-                Tickets recibidos por los departamentos
-              </div>
-              <div>
-                <grafico-generico
-                  v-if="cantidadesTicketsRecibidosPorDepartamento.length"
-                  :data="cantidadesTicketsRecibidosPorDepartamentoBar"
-                  :options="optionsPie"
-                  @click="
-                    (data) =>
-                      clickGraficoTicketsEmpleado(
-                        data,
-                        categoriaGraficosEmpleado.ASIGNADOS_POR_DEPARTAMENTOS
-                      )
-                  "
+                  @click="(data) => clickGrafico(data, 'hola')"
                 />
               </div>
             </div>
           </div>
         </q-tab-panel>
-
-        <q-tab-panel :name="opcionesEmpleado.empleadoListado">
+        <!-- Tabla con los registros -->
+        <q-tab-panel :name="opcionesGrafico.listado">
           <q-btn
             color="primary"
-            @click="tabsEmpleado = opcionesEmpleado.empleadoGrafico"
+            @click="tabsEmpleado = opcionesGrafico.grafico"
             glossy
             no-caps
             rounded
@@ -291,23 +271,23 @@
           <div class="row q-col-gutter-sm q-py-md q-mb-lg">
             <div class="col-12">
               <essential-table
-                v-if="ticketsPorEstadoListado.length"
-                titulo="Tickets del empleado"
-                :configuracionColumnas="[...configuracionColumnasTicket, accionesTabla]"
-                :datos="ticketsPorEstadoListado"
+                v-if="ordenesPorEstado.length"
+                titulo="Ordenes de Compra"
+                :configuracionColumnas="[
+                  ...configuracionColumnas,
+                  accionesTabla,
+                ]"
+                :datos="ordenesPorEstado"
                 :permitirConsultar="false"
                 :permitirEliminar="false"
                 :permitirEditar="false"
                 :mostrarBotones="false"
                 :alto-fijo="false"
-                :accion1="botonVer"
-                :accion2="btnSeguimiento"
+                :accion1="btnVer"
               ></essential-table>
             </div>
-            <!-- {{ ticketsEmpleadoResponsable }} -->
-          </div>
-        </q-tab-panel></q-tab-panels
-      >
+          </div> </q-tab-panel
+      ></q-tab-panels>
     </q-card>
   </q-page>
 </template>

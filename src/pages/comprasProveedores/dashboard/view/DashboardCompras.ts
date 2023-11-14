@@ -1,4 +1,5 @@
 //Dependencias
+import { configuracionColumnasOrdenesCompras } from "../../ordenCompra/domain/configuracionColumnasOrdenCompra";
 import { computed, defineComponent, reactive, ref } from "vue";
 import useVuelidate from "@vuelidate/core";
 import { required } from 'shared/i18n-validators'
@@ -23,6 +24,7 @@ import { ContenedorSimpleMixin } from "shared/contenedor/modules/simple/applicat
 import { useOrdenCompraStore } from "stores/comprasProveedores/ordenCompra";
 import { CustomActionTable } from "components/tables/domain/CustomActionTable";
 import { estadosOrdenesCompras } from "config/utils_compras_proveedores";
+import { obtenerFechaActual } from "shared/utils";
 
 
 export default defineComponent({
@@ -42,7 +44,7 @@ export default defineComponent({
       empleado: '',
     })
     const cargando = new StatusEssentialLoading()
-    const mostrarTitulosSeccion = computed(() => dashboard.fecha_inicio && dashboard.fecha_fin && dashboard.empleado)
+    const mostrarTitulosSeccion = computed(() => dashboard.fecha_inicio && dashboard.fecha_fin)
     const modales = new ComportamientoModalesOrdenesCompras()
 
     const empleados = ref([])
@@ -69,7 +71,7 @@ export default defineComponent({
     const v$ = useVuelidate(reglas, dashboard)
 
     const ordenesPorEstado = ref([])
-    const ordenesPorEstadoBar = ref([])
+    const ordenesPorEstadoBar = ref()
     const optionsPie = {
       responsive: true,
       maintainAspectRatio: false,
@@ -134,6 +136,7 @@ export default defineComponent({
     }
     const tabs = ref(opcionesGrafico.grafico)
 
+
     async function consultar() {
       if (await v$.value.$validate()) {
         try {
@@ -146,11 +149,12 @@ export default defineComponent({
           cantOrdenesRealizadas.value = results.cant_ordenes_realizadas
           cantOrdenesPagadas.value = results.cant_ordenes_pagadas
           cantOrdenesAnuladas.value = results.cant_ordenes_anuladas
-          ordenesPorEstado.value = results
-          const labels = ordenesPorEstado.value.map((item: OrdenCompra) => item.forma)
-          const valores = ordenesPorEstado.value.length
-          const colores = ordenesPorEstado.value.map((item: OrdenCompra) => mapearColor(item.forma!))
-          ordenesPorEstadoBar.value = mapearDatos(labels!, valores, 'Cantidad de Oc', colores)
+          ordenesPorEstado.value = results.todas
+          const labels = ['PENDIENTES', 'APROBADAS', 'ANULADAS']
+          const valores = [1, 4, 1]
+          const colores = mapearColor(valores)
+          console.log(labels, valores, colores)
+          ordenesPorEstadoBar.value = mapearDatos(labels!, valores, 'Cantidad de Ordenes', colores)
         } catch (error) {
           console.log(error)
         }
@@ -168,25 +172,36 @@ export default defineComponent({
         ],
       }
     }
-    function mapearColor(estadoOC: keyof typeof estadosOrdenesCompras) {
+    function mapearColor(estadoOC) {
       switch (estadoOC) {
-        case estadosOrdenesCompras.PENDIENTE: return '#9fa8da'
-        case estadosOrdenesCompras.APROBADO: return '#9fa8da'
-        case estadosOrdenesCompras.REVISADA: return '#78909c'
-        case estadosOrdenesCompras.REALIZADA: return '#ffc107'
-        case estadosOrdenesCompras.PAGADA: return '#616161'
-        case estadosOrdenesCompras.ANULADA: return '#8bc34a'
+        case 1: return '#9fa8da'
+        case 2: return '#9fa8da'
+        case 3: return '#78909c'
+        case 4: return '#ffc107'
       }
     }
-    function clickGrafico() {
-      console.log('Diste clic en grafico')
+    // function mapearColor(estadoOC: keyof typeof estadosOrdenesCompras) {
+    //   switch (estadoOC) {
+    //     case estadosOrdenesCompras.PENDIENTE: return '#9fa8da'
+    //     case estadosOrdenesCompras.APROBADO: return '#9fa8da'
+    //     case estadosOrdenesCompras.REVISADA: return '#78909c'
+    //     case estadosOrdenesCompras.REALIZADA: return '#ffc107'
+    //     case estadosOrdenesCompras.PAGADA: return '#616161'
+    //     case estadosOrdenesCompras.ANULADA: return '#8bc34a'
+    //   }
+    // }
+    function clickGrafico(data: any, key: string) {
+      console.log('Diste clic en grafico', data, key)
     }
 
+    dashboard.fecha_fin = obtenerFechaActual()
 
     return {
+      configuracionColumnas: configuracionColumnasOrdenesCompras,
       ordenesPorEstado, ordenesPorEstadoBar,
       v$,
       dashboard,
+      optionsPie,
       btnVer,
       consultar,
       clickGrafico,
@@ -197,8 +212,8 @@ export default defineComponent({
       cantOrdenesRealizadas,
       cantOrdenesPagadas,
       cantOrdenesAnuladas,
-      tabs, opcionesGrafico,
-      
+      tabs, opcionesGrafico, mostrarTitulosSeccion,
+
 
     }
   },
