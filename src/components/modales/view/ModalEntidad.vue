@@ -7,17 +7,14 @@
     :persistent="persistente"
     maximized
   >
-    <q-card class="bg-transparent rounded-card no-border" flat>
+    <q-card class="bg-transparent no-border" flat>
       <!-- <q-linear-progress :value="1" color="grey-4" /> -->
-      <q-toolbar
-        class="bg-body rounded-header border-bottom superior-fixed"
-        rounded
-      >
+      <q-toolbar class="bg-body border-bottom superior-fixed" rounded>
         <q-avatar square>
           <img src="~assets/logo.png" />
         </q-avatar>
 
-        <q-toolbar-title class="text-grey-8 text-subtitle1"
+        <q-toolbar-title class="text-primary text-subtitle1"
           ><span>{{ titulo }}</span></q-toolbar-title
         >
 
