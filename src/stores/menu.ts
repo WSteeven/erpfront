@@ -604,7 +604,7 @@ export const useMenuStore = defineStore('menu', () => {
           title: 'Conductores',
           link: 'conductores',
           icon: 'bi-person-vcard-fill',
-          can: store.can('puede.ver.conductores')||true,
+          can: store.can('puede.acceder.conductores'),
         },
         {
           title: 'Combustibles',

@@ -1,3 +1,4 @@
+import { Empleado } from "pages/recursosHumanos/empleados/domain/Empleado";
 import { EntidadAuditable } from "shared/entidad/domain/entidadAuditable";
 
 export class Conductor extends EntidadAuditable{
@@ -8,6 +9,7 @@ export class Conductor extends EntidadAuditable{
     fin_vigencia:string|null
     puntos:number|null
     plaza:number|null
+    info_empleado: Empleado|null
 
     constructor(){
         super()
@@ -18,5 +20,6 @@ export class Conductor extends EntidadAuditable{
         this.fin_vigencia= null
         this.puntos= null
         this.plaza= null
+        this.info_empleado= null
     }
 }

@@ -123,6 +123,7 @@ export const endpoints = {
   bitacoras_vehiculos: new Endpoint('vehiculos/bitacoras-vehiculos'),
   empleados_choferes: new Endpoint('vehiculos/empleados-choferes'),
   conductores: new Endpoint('vehiculos/conductores'),
+  multas_conductores: new Endpoint('vehiculos/multas'),
 
   //Modulo de compras y proveedores
   dashboard_compras: new Endpoint('compras/dashboard'),

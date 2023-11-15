@@ -291,6 +291,26 @@
                 </template>
               </q-input>
             </div>
+            <!-- Tabla de multas -->
+            <div class="col-12 col-md-12">
+                    <essential-table
+                      ref="refMultas"
+                      titulo="Multas del Conductor"
+                      :configuracionColumnas="columnasMultasConductor"
+                      :datos="conductor.multas"
+                      :accion1Header="abrirModalMultaConductor"
+                      :permitirBuscar="false"
+                      :permitirConsultar="false"
+                      :permitirEditar="true"
+                      :permitirEliminar="true"
+                      :mostrarBotones="false"
+                      :mostrarCantidadElementos="false"
+                      :permitirEditarModal="true"
+                      :modalMaximized="false"
+                      :alto-fijo="false"
+                      :mostrarFooter="false"
+                    ></essential-table>
+                  </div>
           </div>
         </q-expansion-item>
       </q-form>

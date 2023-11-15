@@ -17,10 +17,11 @@ import { configuracioncolumnasConductores } from "../domain/configuracionColumna
 import { useFiltrosListadosSelects } from "shared/filtrosListadosGenerales";
 import { Empleado } from "pages/recursosHumanos/empleados/domain/Empleado";
 import { StatusEssentialLoading } from "components/loading/application/StatusEssentialLoading";
-import { LocalStorage } from "quasar";
+import { LocalStorage, date } from "quasar";
 import { tiposLicencias } from "config/utils_vehiculos";
 import { maskFecha } from "config/utils";
-import { formatearFecha, formatearFechaTexto } from "shared/utils";
+import { CustomActionTable } from "components/tables/domain/CustomActionTable";
+import { ComportamientoModalesConductores } from "../application/ComportamientoModalesConductores";
 
 // Logica y Controladores
 
@@ -36,6 +37,7 @@ export default defineComponent({
 
         const empleado: Empleado = reactive(new Empleado())
         const statusLoading = new StatusEssentialLoading()
+        const modales = new ComportamientoModalesConductores()
 
         cargarVista(async () => {
             await obtenerListados({
@@ -64,7 +66,12 @@ export default defineComponent({
         /*********************************
          * Hooks
         *********************************/
-
+        onConsultado(() => {
+            empleado.hydrate(conductor.info_empleado)
+        })
+        onReestablecer(() => {
+            empleado.hydrate(new Empleado())
+        })
         /*********************************
          * Funciones
         *********************************/
@@ -78,11 +85,23 @@ export default defineComponent({
             }
         }
         function calcularFechaFinal() {
-            console.log(conductor.inicio_vigencia)
-            const fecha = new Date(conductor.inicio_vigencia!);
+            // Paso 1: Se divide el string de fecha en dia, mes, año
+            const partesFecha = conductor.inicio_vigencia!.split("-");
+            const fecha = new Date(Number(partesFecha[2]), Number(partesFecha[1]) - 1, Number(partesFecha[0]));
+
+            // Paso 2: Suma 5 años a la fecha
             fecha.setFullYear(fecha.getFullYear() + 5);
-            fecha.setDate(fecha.getDate() - 1); // Restar un día para obtener el resultado deseado
-            conductor.fin_vigencia = fecha.toISOString().slice(0, 10); // Formato YYYY-MM-DD
+            //Paso 3: Se resta un día
+            fecha.setDate(fecha.getDate() - 1)
+
+            // Paso 4: Formatea la nueva fecha en el formato deseado (DD-MM-YYYY)
+            const dia = fecha.getDate().toString().padStart(2, "0");
+            const mes = (fecha.getMonth() + 1).toString().padStart(2, "0");
+            const anio = fecha.getFullYear().toString();
+
+            // Resultado final
+            const nuevaFechaString = `${dia}-${mes}-${anio}`;
+            conductor.fin_vigencia = nuevaFechaString
         }
 
         /********************************
@@ -93,6 +112,21 @@ export default defineComponent({
             cantones,
         } = useFiltrosListadosSelects(listadosAuxiliares)
 
+        /**************************************************************
+         * Botones de tablas
+         **************************************************************/
+        const abrirModalMultaConductor: CustomActionTable = {
+            titulo: 'Agregar multa',
+            icono: 'bi-file',
+            color: 'positive',
+            tooltip: 'Agregar multa asociado al conductor',
+            accion: () => {
+                modales.abrirModalEntidad('MultaConductorPage')
+            }
+        }
+
+
+
         empleados.value = listadosAuxiliares.empleados
         cantones.value = listadosAuxiliares.cantones
         return {
@@ -100,6 +134,8 @@ export default defineComponent({
             configuracionColumnas: configuracioncolumnasConductores,
             empleado,
             maskFecha,
+            //botones
+            abrirModalMultaConductor,
 
 
             //listados
