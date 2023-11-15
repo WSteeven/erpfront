@@ -12,7 +12,13 @@
           <!-- N° orden de compra -->
           <div v-if="orden.id" class="col-12 col-md-3">
             <label class="q-mb-sm block">Orden N°</label>
-            <q-input v-model="orden.id" placeholder="Obligatorio" disable outlined dense>
+            <q-input
+              v-model="orden.id"
+              placeholder="Obligatorio"
+              disable
+              outlined
+              dense
+            >
             </q-input>
           </div>
           <!-- Fecha de orden -->
@@ -34,7 +40,7 @@
           <!-- Persona que autoriza -->
           <div class="col-12 col-md-3">
             <label class="q-mb-sm block">Persona que autoriza</label>
-            <q-input v-model="orden.autorizador" dense outlined />
+            <q-input v-model="orden.autorizador" disable dense outlined />
           </div>
           <!-- Select autorizacion -->
           <div class="col-12 col-md-3 q-mb-md" v-if="orden.autorizador">
@@ -47,18 +53,36 @@
             class="col-12 col-md-3"
           >
             <label class="q-mb-sm block">Observacion</label>
-            <q-input autogrow v-model="orden.observacion_aut" disable outlined dense />
+            <q-input
+              autogrow
+              v-model="orden.observacion_aut"
+              disable
+              outlined
+              dense
+            />
           </div>
           <!-- preorden de compra -->
           <div class="col-12 col-md-3 q-mb-md" v-if="orden.preorden">
             <label class="q-mb-sm block">N° preorden</label>
-            <q-input type="number" v-model="orden.preorden" disable outlined dense>
+            <q-input
+              type="number"
+              v-model="orden.preorden"
+              disable
+              outlined
+              dense
+            >
             </q-input>
           </div>
           <!-- pedido -->
           <div class="col-12 col-md-3 q-mb-md" v-if="orden.pedido">
             <label class="q-mb-sm block">N° pedido</label>
-            <q-input type="number" v-model="orden.pedido" disable outlined dense>
+            <q-input
+              type="number"
+              v-model="orden.pedido"
+              disable
+              outlined
+              dense
+            >
             </q-input>
           </div>
 
@@ -69,7 +93,7 @@
           </div>
 
           <!-- Proveedor -->
-          <div class="col-12 col-md-3">
+          <div class="col-12 col-md-3" v-if="orden.proveedor">
             <label class="q-mb-sm block">Proveedor</label>
             <q-input v-model="orden.proveedor" dense outlined disable />
           </div>
@@ -88,7 +112,7 @@
           </div>
 
           <!-- Forma -->
-          <div class="col-12 col-md-3">
+          <div class="col-12 col-md-3" v-if="orden.forma">
             <label class="q-mb-sm block">Forma</label>
             <q-input v-model="orden.forma" dense outlined disable />
           </div>
@@ -107,12 +131,29 @@
           <!-- Causa de anulacion -->
           <div class="col-12 col-md-3 q-mb-md" v-if="orden.causa_anulacion">
             <label class="q-mb-sm block">Causa de anulación</label>
-            <q-input v-model="orden.causa_anulacion" autogrow outlined dense disable />
+            <q-input
+              v-model="orden.causa_anulacion"
+              autogrow
+              outlined
+              dense
+              disable
+            />
           </div>
           <!-- IVA general -->
           <div class="col-12 col-md-3 q-mb-md">
             <label class="q-mb-sm block">IVA general</label>
             <q-input v-model="orden.iva" outlined dense disable />
+          </div>
+          <!-- Observacion de realizada -->
+          <div v-if="orden.observacion_realizada" class="col-12 col-md-3">
+            <label class="q-mb-sm block">Observacion realizada</label>
+            <q-input
+              autogrow
+              v-model="orden.observacion_realizada"
+              disable
+              outlined
+              dense
+            />
           </div>
 
           <!-- Marcar orden completada -->
@@ -140,13 +181,19 @@
               :permitirEliminar="false"
               :mostrarBotones="false"
               :altoFijo="false"
+              :ajustarCeldas="true"
             >
             </essential-table>
           </div>
           <!-- Tabla con el resumen -->
           <div class="col-12">
             <div class="row q-col-xs-4 q-col-xs-offset-8 flex-end justify-end">
-              <q-list bordered separator dense v-if="orden.listadoProductos.length > 0">
+              <q-list
+                bordered
+                separator
+                dense
+                v-if="orden.listadoProductos.length > 0"
+              >
                 <q-item>
                   <q-item-section>Subtotal: </q-item-section>
                   <q-separator vertical></q-separator>
