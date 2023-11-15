@@ -129,6 +129,7 @@ module.exports = configure(function (/* ctx */) {
           __dirname,
           './src/pages/gestionTickets/dashboardTickets'
         ),
+        gestionTickets: path.join(__dirname, './src/pages/gestionTickets'),
         tickets: path.join(__dirname, './src/pages/gestionTickets/tickets'),
         ticketsAsignados: path.join(
           __dirname,
@@ -157,7 +158,6 @@ module.exports = configure(function (/* ctx */) {
     devServer: {
       https: false,
       open: true, // opens browser window automatically
-
     },
 
     // https://v2.quasar.dev/quasar-cli-vite/quasar-config-js#framework
@@ -185,14 +185,14 @@ module.exports = configure(function (/* ctx */) {
 
     // https://v2.quasar.dev/quasar-cli-vite/quasar-config-js#sourcefiles
     sourceFiles: {
-    //   rootComponent: 'src/App.vue',
-    //   router: 'src/router/index',
-    //   store: 'src/store/index',
+      //   rootComponent: 'src/App.vue',
+      //   router: 'src/router/index',
+      //   store: 'src/store/index',
       registerServiceWorker: 'src/register-service-worker',
       serviceWorker: 'src/service-worker',
-    //   pwaManifestFile: 'src-pwa/manifest.json',
-    //   electronMain: 'src-electron/electron-main',
-    //   electronPreload: 'src-electron/electron-preload'
+      //   pwaManifestFile: 'src-pwa/manifest.json',
+      //   electronMain: 'src-electron/electron-main',
+      //   electronPreload: 'src-electron/electron-preload'
     },
 
     // https://v2.quasar.dev/quasar-cli-vite/developing-ssr/configuring-ssr

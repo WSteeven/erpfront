@@ -2,7 +2,7 @@ export const optionsPie = {
   responsive: true,
   maintainAspectRatio: false,
   layout: {
-    padding: 32,
+    padding: 24,
   },
   elements: {
     arc: {
@@ -39,7 +39,7 @@ export const optionsLine = {
   responsive: true,
   maintainAspectRatio: false,
   layout: {
-    padding: 32,
+    // padding: 32,
   },
   elements: {
     line: {
