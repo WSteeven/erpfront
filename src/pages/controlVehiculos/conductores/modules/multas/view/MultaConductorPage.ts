@@ -55,6 +55,7 @@ export default defineComponent({
          * Validaciones
          **************************************************************/
         const reglas = {
+            empleado: { required },
             fecha_infraccion: { required },
             total: { required },
 

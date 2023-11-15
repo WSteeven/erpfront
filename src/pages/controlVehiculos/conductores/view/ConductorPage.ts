@@ -19,9 +19,10 @@ import { Empleado } from "pages/recursosHumanos/empleados/domain/Empleado";
 import { StatusEssentialLoading } from "components/loading/application/StatusEssentialLoading";
 import { LocalStorage, date } from "quasar";
 import { tiposLicencias } from "config/utils_vehiculos";
-import { maskFecha } from "config/utils";
+import { accionesTabla, maskFecha } from "config/utils";
 import { CustomActionTable } from "components/tables/domain/CustomActionTable";
 import { ComportamientoModalesConductores } from "../application/ComportamientoModalesConductores";
+import { configuracionColumnasMultasConductores } from "../domain/configuracionColumnasMultasConductores";
 
 // Logica y Controladores
 
@@ -117,7 +118,7 @@ export default defineComponent({
          **************************************************************/
         const abrirModalMultaConductor: CustomActionTable = {
             titulo: 'Agregar multa',
-            icono: 'bi-file',
+            icono: 'bi-file-text',
             color: 'positive',
             tooltip: 'Agregar multa asociado al conductor',
             accion: () => {
@@ -132,8 +133,10 @@ export default defineComponent({
         return {
             mixin, conductor, disabled, accion, v$,
             configuracionColumnas: configuracioncolumnasConductores,
+            columnasMultasConductor: configuracionColumnasMultasConductores, accionesTabla,
             empleado,
             maskFecha,
+            modales,
             //botones
             abrirModalMultaConductor,
 

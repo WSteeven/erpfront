@@ -316,6 +316,9 @@
       </q-form>
     </template>
   </tab-layout>
+  <modales-entidad
+    :comportamiento="modales"
+  ></modales-entidad>
 </template>
 
 <script src="./ConductorPage.ts"></script>
