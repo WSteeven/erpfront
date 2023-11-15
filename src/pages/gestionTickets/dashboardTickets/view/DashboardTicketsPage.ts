@@ -650,8 +650,8 @@ export default defineComponent({
       btnSeguimiento,
       ticketsPorEstadoListado,
       listados,
-      mostrarSeccionEmpleado: computed(() => filtro.departamento_empleado === opcionesFiltroDepartamentoEmpleado.porEmpleado),
       mostrarSeccionDepartamento: computed(() => filtro.departamento_empleado === opcionesFiltroDepartamentoEmpleado.porDepartamento),
+      mostrarSeccionEmpleado: computed(() => filtro.departamento_empleado === opcionesFiltroDepartamentoEmpleado.porEmpleado),
     }
-  },
+  }
 })

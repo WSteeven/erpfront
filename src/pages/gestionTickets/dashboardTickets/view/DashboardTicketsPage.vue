@@ -99,11 +99,11 @@
             <label class="block q-mb-sm">Filtrar por</label>
             <q-btn-toggle
               v-model="filtro.departamento_empleado"
-              class="toggle-button-primary"
+              class="toggle-button-grey"
               spread
               no-caps
               rounded
-              toggle-color="primary"
+              toggle-color="grey-9"
               unelevated
               :options="[
                 {
