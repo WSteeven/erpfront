@@ -25,6 +25,10 @@ import { useOrdenCompraStore } from "stores/comprasProveedores/ordenCompra";
 import { CustomActionTable } from "components/tables/domain/CustomActionTable";
 import { estadosOrdenesCompras } from "config/utils_compras_proveedores";
 import { obtenerFechaActual } from "shared/utils";
+import { accionesTabla } from "config/utils";
+import { useNotificaciones } from "shared/notificaciones";
+import { optionsPie } from "config/graficoGenerico";
+import { filtroOrdenesComprasAprobadas, filtroOrdenesComprasCreadas, filtroOrdenesComprasProveedores } from "../application/FiltrosDashboardOrdenesCompras";
 
 
 export default defineComponent({
@@ -35,18 +39,46 @@ export default defineComponent({
     ***********/
     const ordenCompraStore = useOrdenCompraStore()
     const mixin = new ContenedorSimpleMixin(OrdenCompra, new OrdenCompraController())
-    const { entidad: orden, listado, listadosAuxiliares } = mixin.useReferencias()
-    const { cargarVista, obtenerListados, listar } = mixin.useComportamiento()
+    // const { entidad: orden, listado, listadosAuxiliares } = mixin.useReferencias()
+    const { cargarVista, obtenerListados } = mixin.useComportamiento()
+    const { confirmar } = useNotificaciones()
     const dashboard = reactive({
       fecha_inicio: '',
       fecha_fin: '',
       proveedor: '',
       empleado: '',
+      tipo: '',
     })
     const cargando = new StatusEssentialLoading()
     const mostrarTitulosSeccion = computed(() => dashboard.fecha_inicio && dashboard.fecha_fin)
     const modales = new ComportamientoModalesOrdenesCompras()
+    const cantOrdenesProveedor = ref()
+    const cantOrdenesCreadas = ref()
+    const cantOrdenesPendientes = ref()
+    const cantOrdenesAprobadas = ref()
+    const cantOrdenesRevisadas = ref()
+    const cantOrdenesRealizadas = ref()
+    const cantOrdenesPagadas = ref()
+    const cantOrdenesAnuladas = ref()
+    const opcionesTipos = [
+      { label: 'ESTADO', value: 'ESTADO' },
+      { label: 'PROVEEDOR', value: 'PROVEEDOR' },
+    ]
+    const opcionesGrafico = {
+      grafico: 'grafico',
+      listado: 'listado'
+    }
+    const identificadorGrafico = {
+      creadas: 'CREADAS',
+      aprobadas: 'APROBADAS',
+      //graficos de proveedores
+      proveedores: 'PROVEEDORES',
+    }
+    const tabs = ref(opcionesGrafico.grafico)
 
+    const graficos = ref()
+    const ordenes = ref()
+    const labelTabla = ref()
     const empleados = ref([])
     const proveedores = ref([])
     cargarVista(async () => {
@@ -60,88 +92,55 @@ export default defineComponent({
         //   }
         // },
       })
+      dashboard.fecha_fin = obtenerFechaActual()
     })
     // Reglas de validacion
     const reglas = {
       fecha_inicio: { required },
       fecha_fin: { required },
+      tipo: { required },
       // empleado: { required },
     }
 
     const v$ = useVuelidate(reglas, dashboard)
 
     const ordenesPorEstado = ref([])
-    const ordenesPorEstadoBar = ref()
-    const optionsPie = {
-      responsive: true,
-      maintainAspectRatio: false,
-      layout: {
-        padding: 32,
-      },
-      elements: {
-        arc: {
-          borderWidth: 0,
-        }
-      },
-      plugins: {
-        legend: {
-          position: 'right',
-        },
-        datalabels: {
-          align: 'end',
-          anchor: 'end',
-          color: '#fff',
-          borderRadius: 16,
-          padding: 6,
-          backgroundColor: function (context) {
-            return context.dataset.backgroundColor
-          },
-          font: function (context) {
-            var w = context.chart.width
-            return {
-              size: w < 512 ? 10 : 12,
-            }
-          },
-          formatter: function (value, context) {
-            return value ? context.chart.data.labels[context.dataIndex] + ' (' + value + ')' : null
-          }
-        }
-      },
-    }
     /***************
      * Botones tabla
      ***************/
     const btnVer: CustomActionTable = {
-      titulo: 'Más detalles',
+      titulo: '',
       icono: 'bi-eye',
       accion: async ({ entidad }) => {
         ordenCompraStore.orden = entidad
         modales.abrirModalEntidad('VisualizarOrdenCompra')
       },
     }
+    const btnVerNovedades: CustomActionTable = {
+      titulo: 'Novedades',
+      color: 'warning',
+      icono: 'bi-wrench',
+      accion: async ({ entidad, posicion }) => {
+        console.log(entidad)
+        ordenCompraStore.idOrden = entidad.id
+        confirmar('¿Está seguro de abrir el formulario de registro de novedades de la orden de compra?', () => {
+          ordenCompraStore.permitirSubir = false
+          modales.abrirModalEntidad('SeguimientoNovedadesOrdenesCompras')
+        })
+      },
+      visible: ({ entidad }) => {
+        return entidad.novedades > 0
+      }
+    }
 
     /***************
      * Funciones
      ***************/
-    const cantOrdenesCreadas = ref()
-    const cantOrdenesPendientes = ref()
-    const cantOrdenesAprobadas = ref()
-    const cantOrdenesRevisadas = ref()
-    const cantOrdenesRealizadas = ref()
-    const cantOrdenesPagadas = ref()
-    const cantOrdenesAnuladas = ref()
-    const opcionesGrafico = {
-      grafico: 'grafico',
-      listado: 'listado'
-    }
-    const tabs = ref(opcionesGrafico.grafico)
-
-
     async function consultar() {
       if (await v$.value.$validate()) {
         try {
           const results = await ordenCompraStore.consultarDashboard(dashboard)
-          console.log(results)
+          // console.log(results)
           cantOrdenesCreadas.value = results.cant_ordenes_creadas
           cantOrdenesPendientes.value = results.cant_ordenes_pendientes
           cantOrdenesAprobadas.value = results.cant_ordenes_aprobadas
@@ -149,62 +148,47 @@ export default defineComponent({
           cantOrdenesRealizadas.value = results.cant_ordenes_realizadas
           cantOrdenesPagadas.value = results.cant_ordenes_pagadas
           cantOrdenesAnuladas.value = results.cant_ordenes_anuladas
-          ordenesPorEstado.value = results.todas
-          const labels = ['PENDIENTES', 'APROBADAS', 'ANULADAS']
-          const valores = [1, 4, 1]
-          const colores = mapearColor(valores)
-          console.log(labels, valores, colores)
-          ordenesPorEstadoBar.value = mapearDatos(labels!, valores, 'Cantidad de Ordenes', colores)
+
+          cantOrdenesProveedor.value = results.cant_ordenes_proveedores
+          ordenes.value = results.todas
+          graficos.value = results.graficos
         } catch (error) {
           console.log(error)
         }
       }
     }
-    function mapearDatos(labels: string[], valores: string[], titulo: string, colores: any[]) {
-      return {
-        labels: labels,
-        datasets: [
-          {
-            backgroundColor: colores,
-            label: titulo,
-            data: valores,
-          },
-        ],
-      }
-    }
-    function mapearColor(estadoOC) {
-      switch (estadoOC) {
-        case 1: return '#9fa8da'
-        case 2: return '#9fa8da'
-        case 3: return '#78909c'
-        case 4: return '#ffc107'
-      }
-    }
-    // function mapearColor(estadoOC: keyof typeof estadosOrdenesCompras) {
-    //   switch (estadoOC) {
-    //     case estadosOrdenesCompras.PENDIENTE: return '#9fa8da'
-    //     case estadosOrdenesCompras.APROBADO: return '#9fa8da'
-    //     case estadosOrdenesCompras.REVISADA: return '#78909c'
-    //     case estadosOrdenesCompras.REALIZADA: return '#ffc107'
-    //     case estadosOrdenesCompras.PAGADA: return '#616161'
-    //     case estadosOrdenesCompras.ANULADA: return '#8bc34a'
-    //   }
-    // }
     function clickGrafico(data: any, key: string) {
+      labelTabla.value = data.label
       console.log('Diste clic en grafico', data, key)
+      // console.log('Ordenes para filtrar', ordenes.value)
+      switch (key) {
+        case identificadorGrafico.creadas:
+          ordenesPorEstado.value = filtroOrdenesComprasCreadas(data.label, ordenes)
+          break
+        case identificadorGrafico.aprobadas:
+          ordenesPorEstado.value = filtroOrdenesComprasAprobadas(data.label, ordenes)
+          break
+        case identificadorGrafico.proveedores:
+          ordenesPorEstado.value = filtroOrdenesComprasProveedores(data.label, ordenes)
+          break
+        default:
+          console.log('Entro en default de clic grafico')
+      }
+      tabs.value = opcionesGrafico.listado
     }
 
-    dashboard.fecha_fin = obtenerFechaActual()
 
     return {
-      configuracionColumnas: configuracionColumnasOrdenesCompras,
-      ordenesPorEstado, ordenesPorEstadoBar,
+      configuracionColumnas: configuracionColumnasOrdenesCompras, accionesTabla,
+      ordenesPorEstado,
       v$,
       dashboard,
       optionsPie,
       btnVer,
+      btnVerNovedades,
       consultar,
       clickGrafico,
+      cantOrdenesProveedor,
       cantOrdenesCreadas,
       cantOrdenesPendientes,
       cantOrdenesAprobadas,
@@ -212,9 +196,12 @@ export default defineComponent({
       cantOrdenesRealizadas,
       cantOrdenesPagadas,
       cantOrdenesAnuladas,
-      tabs, opcionesGrafico, mostrarTitulosSeccion,
-
-
+      opcionesTipos,
+      tabs, opcionesGrafico, mostrarTitulosSeccion, identificadorGrafico,
+      graficos,
+      modales,
+      modoUnaColumna: ref(false),
+      labelTabla,
     }
   },
 })
