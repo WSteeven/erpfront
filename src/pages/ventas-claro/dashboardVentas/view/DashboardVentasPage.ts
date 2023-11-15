@@ -33,7 +33,7 @@ import { DashboardVentasController } from '../infraestructure/DashboardVentasCon
 import { FiltroDashboardVentas } from '../domain/FiltroDashboardVentas'
 import { Vendedores } from 'pages/ventas-claro/vendedores/domain/Vendedores'
 import { ComportamientoModalesVentas } from 'pages/ventas-claro/ventas/application/ComportamientoModalesVentas'
-import { optionsPie } from 'config/graficoGenerico'
+import { optionsLine, optionsPie } from 'config/graficoGenerico'
 
 export default defineComponent({
   components: {
@@ -92,7 +92,7 @@ export default defineComponent({
     const cantVentasRechazadas = ref()
     const ventasPorEstado: any = ref([])
     const ventasPorPlanes = ref([])
-
+    const ventasTiemposLine= ref([])
     const ventasPorEstadoBar = ref()
     const ventasPorPlanesoBar = ref()
 
@@ -188,6 +188,7 @@ export default defineComponent({
           ventasPorEstadoBar.value = result.ventasPorEstadoBar
           //Grafico vendedor por planes
           ventasPorPlanesoBar.value = result.ventasPorPlanesoBar
+          ventasTiemposLine.value = result.ventasTiemposLine
         } catch (e) {
           console.log(e)
         } finally {
@@ -307,12 +308,14 @@ export default defineComponent({
       listadosAuxiliares,
       tiposJornadas,
       optionsPie,
+      optionsLine,
       mostrarTitulosSeccion,
       accionesTabla,
       modales,
       vendedorResponsableDepartamento,
       ventasVendedorResponsable,
       esResponsableDepartamento,
+      ventasTiemposLine,
       // Configuracion columnas
       configuracionColumnasSubtareasRealizadasPorRegion,
       configuracionColumnasSubtareasRealizadasPorGrupo,

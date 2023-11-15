@@ -213,6 +213,22 @@
         </q-tab-panel>
       </q-tab-panels>
       <!-- </q-card-section> -->
+
+      <div class="row q-pa-md q-col-gutter-x-sm">
+        <div class="col-12 text-center">
+          <div class="text-subtitle2 q-mb-lg">
+            Gráfico de ventas por mes
+          </div>
+          <div>
+            <!-- v-if="ticketsPorEstado.length" -->
+            <grafico-generico
+              :data="ventasTiemposLine"
+              :options="optionsLine"
+              tipo="line"
+            />
+          </div>
+        </div>
+      </div>
     </q-card>
 
     <modales-entidad :comportamiento="modales" />
