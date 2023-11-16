@@ -610,19 +610,25 @@ export const useMenuStore = defineStore('menu', () => {
           title: 'Combustibles',
           link: 'combustibles',
           icon: 'bi-fuel-pump-fill',
-          can: store.can('puede.ver.combustibles'),
+          can: store.can('puede.acceder.combustibles'),
         },
         {
           title: 'Control diario',
           link: 'control-vehiculos',
           icon: 'bi-card-checklist',
-          can: store.can('puede.ver.bitacoras_vehiculos'),
+          can: store.can('puede.acceder.bitacoras_vehiculos'),
         },
         {
           title: 'Vehículos',
           link: 'vehiculos',
           icon: 'bi-car-front-fill',
-          can: store.can('puede.ver.vehiculos'),
+          can: store.can('puede.acceder.vehiculos'),
+        },
+        {
+          title: 'Seguros vehiculares',
+          link: 'seguros',
+          icon: 'bi-shield-lock-fill',
+          can: store.can('puede.acceder.seguros_vehiculares'),
         },
       ]
     },

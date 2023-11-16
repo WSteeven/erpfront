@@ -47,9 +47,9 @@ export const configuracioncolumnasConductores: ColumnConfig<Conductor>[] = [
         sortable: true
     },
     {
-        name: 'plaza',
-        field: 'plaza',
-        label: 'Plaza',
+        name: 'multas',
+        field: 'multas',
+        label: 'Multas',
         align: 'left',
         sortable: true
     },

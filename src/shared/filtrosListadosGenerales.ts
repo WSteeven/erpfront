@@ -6,6 +6,7 @@ import { CategoriaOferta } from "pages/comprasProveedores/categoriaOfertas/domai
 import { Empleado } from "pages/recursosHumanos/empleados/domain/Empleado";
 import { Producto } from "pages/bodega/productos/domain/Producto";
 import { Canton } from "sistema/ciudad/domain/Canton";
+import { Vehiculo } from "pages/controlVehiculos/vehiculos/domain/Vehiculo";
 
 export const useFiltrosListadosSelects = (listadosAuxiliares, entidad?: Ref<any>) => {
   /**************************************************************
@@ -22,6 +23,8 @@ export const useFiltrosListadosSelects = (listadosAuxiliares, entidad?: Ref<any>
   const empleados = ref([])
   const bancos = ref([])
   const categorias = ref([])
+  const vehiculos = ref([])
+
 
 
   /**************************************************************
@@ -240,6 +243,18 @@ export const useFiltrosListadosSelects = (listadosAuxiliares, entidad?: Ref<any>
     categorias.value.sort((a: CategoriaOferta, b: CategoriaOferta) => ordernarListaString(a.nombre!, b.nombre!))
   }
 
+  function filtrarVehiculos(val, update) {
+    if (val === '') {
+      update(() => vehiculos.value = listadosAuxiliares.vehiculos)
+      return
+    }
+    update(() => {
+      const needle = val.toLowerCase()
+      if (listadosAuxiliares.vehiculos) vehiculos.value = listadosAuxiliares.vehiculos.filter((v:Vehiculo) => v.placa!.toLowerCase().indexOf(needle) > -1)
+    })
+  }
+
+
   return {
     paises, filtrarPaises,
     provincias, filtrarProvincias,
@@ -252,5 +267,6 @@ export const useFiltrosListadosSelects = (listadosAuxiliares, entidad?: Ref<any>
     bancos, filtrarBancos,
     categorias, filtrarCategoriasProveedor, ordenarCategorias,
     productos, filtrarProductos,
+    vehiculos, filtrarVehiculos,
   }
 }

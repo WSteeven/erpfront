@@ -1,25 +1,29 @@
 import { Empleado } from "pages/recursosHumanos/empleados/domain/Empleado";
 import { EntidadAuditable } from "shared/entidad/domain/entidadAuditable";
 
-export class Conductor extends EntidadAuditable{
-    empleado:number|null
-    identificacion:string|null
-    tipo_licencia:string|null
-    inicio_vigencia:string|null
-    fin_vigencia:string|null
-    puntos:number|null
-    plaza:number|null
-    info_empleado: Empleado|null
+export class Conductor extends EntidadAuditable {
+    empleado: number | null
+    identificacion: string | null
+    tipo_licencia: string | null
+    inicio_vigencia: string | null
+    fin_vigencia: string | null
+    puntos: number | null
+    plaza: number | null
+    info_empleado: Empleado | null
 
-    constructor(){
+    multas: any[]
+
+    constructor() {
         super()
         this.empleado = null
-        this.identificacion= null
+        this.identificacion = null
         this.tipo_licencia = null
-        this.inicio_vigencia= null
-        this.fin_vigencia= null
-        this.puntos= null
-        this.plaza= null
-        this.info_empleado= null
+        this.inicio_vigencia = null
+        this.fin_vigencia = null
+        this.puntos = null
+        this.plaza = null
+        this.info_empleado = null
+
+        this.multas = []
     }
 }

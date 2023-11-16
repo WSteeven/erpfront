@@ -36,6 +36,7 @@ export const configuracionColumnasMultasConductores: ColumnConfig<MultaConductor
         field: 'estado',
         label: 'Estado',
         align: 'left',
+        type: 'toggle',
         sortable: true
     },
     {

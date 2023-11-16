@@ -248,6 +248,40 @@ export function obtenerFechaActual() {
 }
 
 /**
+ * La función `sumarFechas` toma una cadena de fecha y le agrega un número específico de años, meses y
+ * días, devolviendo la fecha resultante en el formato "DD-MM-AAAA".
+ * @param {string} fechaString - El parámetro `fechaString` es una cadena que representa una fecha en
+ * el formato "DD-MM-AAAA".
+ * @param {number} anios - El parámetro "anios" representa el número de años que se agregarán o restarán a la
+ * fecha dada.
+ * @param {number} meses - El parámetro "meses" representa el número de meses que se agregarán o restarán a la
+ * fecha dada.
+ * @param {number} dias - El parámetro "dias" representa el número de días que se agregarán o restarán a la fecha
+ * dada.
+ * @returns una cadena en el formato "DD-MM-AAAA", que representa la fecha obtenida sumando o restando el número
+ * especificado de años, meses y días a la fecha de entrada.
+ */
+export function sumarFechas(fechaString: string, anios: number, meses: number, dias: number, formato = 'DD-MM-YYYY') {
+  // Paso 1: Se divide el string de fecha en dia, mes, año y se construye la fecha en formato valido de fecha 
+  const partesFecha = fechaString.split('-')
+  const fecha = new Date(Number(partesFecha[2]), Number(partesFecha[1]) - 1, Number(partesFecha[0]))
+
+  // Paso 2: Suma los años a la fecha
+  fecha.setFullYear(fecha.getFullYear() + anios);
+  //Paso 3: Suma los meses a la fecha
+  fecha.setMonth(fecha.getMonth() + meses)
+  //Paso 4: Se suma los días
+  fecha.setDate(fecha.getDate() + dias)
+  // Paso 5: Formatea la nueva fecha en el formato deseado (DD-MM-YYYY)
+  const dia = fecha.getDate().toString().padStart(2, "0");
+  const mes = (fecha.getMonth() + 1).toString().padStart(2, "0");
+  const anio = fecha.getFullYear().toString();
+
+  // Resultado final
+  return date.formatDate(fecha, formato)
+  // return `${dia}-${mes}-${anio}`
+}
+/**
  * Funcion para remover tildes o acentos de una cadena
  * @param accents cadena que se va a limpiar
  * @returns cadena sin acentos ni tildes

@@ -1,7 +1,11 @@
 <template>
-  <tab-layout
+  <tab-layout-filter-tabs2
     :mixin="mixin"
     :configuracionColumnas="configuracionColumnas"
+    :ajustarCeldas="true"
+    :tab-options="tabOptionsConductores"
+    tabDefecto="1"
+    :filtrar="filtrarConductores"
     titulo-pagina="Conductores"
   >
     <template #formulario>
@@ -282,10 +286,7 @@
                 outlined
                 dense
                 ><template v-slot:error>
-                  <div
-                    v-for="error of v$.puntos.$errors"
-                    :key="error.$uid"
-                  >
+                  <div v-for="error of v$.puntos.$errors" :key="error.$uid">
                     <div class="error-msg">{{ error.$message }}</div>
                   </div>
                 </template>
@@ -293,31 +294,44 @@
             </div>
             <!-- Tabla de multas -->
             <div class="col-12 col-md-12">
-                    <essential-table
-                      ref="refMultas"
-                      titulo="Multas del Conductor"
-                      :configuracionColumnas="columnasMultasConductor"
-                      :datos="conductor.multas"
-                      :accion1Header="abrirModalMultaConductor"
-                      :permitirBuscar="false"
-                      :permitirConsultar="false"
-                      :permitirEditar="true"
-                      :permitirEliminar="true"
-                      :mostrarBotones="false"
-                      :mostrarCantidadElementos="false"
-                      :permitirEditarModal="true"
-                      :modalMaximized="false"
-                      :alto-fijo="false"
-                      :mostrarFooter="false"
-                    ></essential-table>
-                  </div>
+              <essential-table
+                ref="refMultas"
+                titulo="Multas del Conductor"
+                :configuracionColumnas="
+                  accion == acciones.editar
+                    ? [...columnasMultasConductor, accionesTabla]
+                    : columnasMultasConductor
+                "
+                :datos="conductor.multas"
+                :accion1Header="abrirModalMultaConductor"
+                :permitirBuscar="false"
+                :permitirConsultar="false"
+                :permitirEditar="false"
+                :permitirEliminar="false"
+                :mostrarBotones="false"
+                :mostrarCantidadElementos="false"
+                :permitirEditarModal="true"
+                :modalMaximized="false"
+                :alto-fijo="false"
+                :mostrarFooter="false"
+                :accion1="btnEditarMulta"
+              ></essential-table>
+            </div>
           </div>
         </q-expansion-item>
       </q-form>
     </template>
-  </tab-layout>
+  </tab-layout-filter-tabs2>
+  <solicitar-fecha
+    :mostrar="mostrarSolicitarFecha"
+    label="Fecha de pago"
+    :confirmar="fechaIngresada"
+    @cerrar="mostrarSolicitarFecha = false"
+  ></solicitar-fecha>
   <modales-entidad
     :comportamiento="modales"
+    :persistente="false"
+    @guardado="(data) => guardado(data)"
   ></modales-entidad>
 </template>
 

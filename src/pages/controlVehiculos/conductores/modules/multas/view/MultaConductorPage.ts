@@ -1,6 +1,6 @@
 // Dependencies
-import { defineComponent, reactive } from "vue";
-import { required } from "shared/i18n-validators";
+import { defineComponent, reactive, ref } from "vue";
+import { required, requiredIf } from "shared/i18n-validators";
 
 //Componentes
 import TabLayout from "shared/contenedor/modules/simple/view/TabLayout.vue";
@@ -17,6 +17,9 @@ import { useFiltrosListadosSelects } from "shared/filtrosListadosGenerales";
 import { StatusEssentialLoading } from "components/loading/application/StatusEssentialLoading";
 import { Empleado } from "pages/recursosHumanos/empleados/domain/Empleado";
 import { EmpleadoController } from "pages/recursosHumanos/empleados/infraestructure/EmpleadoController";
+import { maskFecha } from "config/utils";
+import { VehiculoController } from "pages/controlVehiculos/vehiculos/infraestructure/VehiculoController";
+import { LocalStorage } from "quasar";
 
 
 export default defineComponent({
@@ -31,11 +34,19 @@ export default defineComponent({
         const empleado: Empleado = reactive(new Empleado())
         const store = useAuthenticationStore()
         const statusLoading = new StatusEssentialLoading()
+        const mostrarListado = ref(true)
 
         cargarVista(async () => {
             obtenerListados({
                 empleados: new ConductorController(),
+                vehiculos: {
+                    controller: new VehiculoController(),
+                    params: {
+                        campos: 'id,placa,marca,modelo',
+                    },
+                },
             })
+            listadosAuxiliares.cantones = JSON.parse(LocalStorage.getItem('cantones')!.toString())
         })
         /**************************************************************
         * Hooks
@@ -57,6 +68,7 @@ export default defineComponent({
         const reglas = {
             empleado: { required },
             fecha_infraccion: { required },
+            fecha_pago: { requiredIf: requiredIf(multa.estado) },
             total: { required },
 
         }
@@ -81,18 +93,25 @@ export default defineComponent({
          ********************************/
         const {
             empleados, filtrarEmpleados, ordenarEmpleados,
+            vehiculos, filtrarVehiculos,
+            cantones,
         } = useFiltrosListadosSelects(listadosAuxiliares)
 
+        cantones.value = listadosAuxiliares.cantones
         empleados.value = listadosAuxiliares.empleados
+        vehiculos.value = listadosAuxiliares.vehiculos
         return {
             mixin, multa, disabled, v$, accion,
             configuracionColumnas: configuracionColumnasMultasConductores,
-
+            empleado, maskFecha,
+            mostrarListado,
 
             //listados
-            empleados, filtrarEmpleados, ordenarEmpleados,obtenerEmpleado,
-            
-        
+            empleados, filtrarEmpleados, ordenarEmpleados, obtenerEmpleado,
+            cantones,
+            vehiculos, filtrarVehiculos,
+
+
         }
     },
 })

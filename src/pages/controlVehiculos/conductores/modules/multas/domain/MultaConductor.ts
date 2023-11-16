@@ -7,7 +7,7 @@ export class MultaConductor extends EntidadAuditable {
     placa: string | null
     puntos: string | null
     total: string | null
-    estado: string | null
+    estado: boolean
     fecha_pago: string | null
     comentario: string | null
 
@@ -19,7 +19,7 @@ export class MultaConductor extends EntidadAuditable {
         this.placa = null
         this.puntos = null
         this.total = null
-        this.estado = null
+        this.estado = false
         this.fecha_pago = null
         this.comentario = null
     }

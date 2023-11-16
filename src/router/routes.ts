@@ -506,13 +506,31 @@ const routes: RouteRecordRaw[] = [
        * MODULO DE VEHICULOS
        *****************************************/
       {
+        path: '/seguros',
+        name: 'seguros_vehiculares',
+        component: () =>
+          import(
+            'pages/controlVehiculos/seguros/view/SeguroVehicularPage.vue'
+          ),
+        meta: { requiresAuth: true },
+      },
+      // {
+      //   path: '/multas-conductores',
+      //   name: 'multas_conductores',
+      //   component: () =>
+      //     import(
+      //       'pages/controlVehiculos/conductores/modules/multas/view/MultaConductorPage.vue'
+      //     ),
+      //   meta: { requiresAuth: true },
+      // },
+      {
         path: '/conductores',
         name: 'conductores',
         component: () =>
           import(
             'pages/controlVehiculos/conductores/view/ConductorPage.vue'
           ),
-        meta: { requiresAuth: false },
+        meta: { requiresAuth: true },
       },
       {
         path: '/control-vehiculos',

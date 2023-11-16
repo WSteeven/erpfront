@@ -1,3 +1,5 @@
+import { TabOption } from "components/tables/domain/TabOption"
+
 export const opciones_traccion_vehiculos = [
   { value: '4X2 FWD', label: '4X2 FWD' },
   { value: '4X2 RWD', label: '4X2 RWD' },
@@ -20,4 +22,15 @@ export const tiposLicencias = [
   { value: 'E', label: 'E', caption: 'PROFESIONAL' },
   { value: 'E1', label: 'E1', caption: 'PROFESIONAL' },
   { value: 'G', label: 'G', caption: 'PROFESIONAL' },
+]
+
+
+export const tabOptionsConductores: TabOption[] = [
+  { label: 'Vigentes', value: '1' },
+  { label: 'Por caducar', value: '2' }
+]
+
+export const tabOptionsSeguros: TabOption[] = [
+  { label: 'Vigentes', value: '1' },
+  { label: 'Caducados', value: '2' }
 ]
