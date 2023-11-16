@@ -2,6 +2,7 @@
   <tab-layout
     :mixin="mixin"
     :configuracionColumnas="configuracionColumnas"
+    :ajustarCeldas="true"
     titulo-pagina="Combustibles"
   >
     <template #formulario>

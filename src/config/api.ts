@@ -123,6 +123,7 @@ export const endpoints = {
   bitacoras_vehiculos: new Endpoint('vehiculos/bitacoras-vehiculos'),
   empleados_choferes: new Endpoint('vehiculos/empleados-choferes'),
   conductores: new Endpoint('vehiculos/conductores'),
+  matriculas: new Endpoint('vehiculos/matriculas'),
   multas_conductores: new Endpoint('vehiculos/multas'),
   seguros: new Endpoint('vehiculos/seguros'),
 

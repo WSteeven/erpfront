@@ -34,3 +34,9 @@ export const tabOptionsSeguros: TabOption[] = [
   { label: 'Vigentes', value: '1' },
   { label: 'Caducados', value: '2' }
 ]
+
+export const tabOptionsMatriculas: TabOption[] = [
+  { label: 'Este mes', value: '1' },
+  { label: 'Este año', value: '2' },
+  { label: 'Pasadas', value: '3' },
+]

@@ -625,6 +625,12 @@ export const useMenuStore = defineStore('menu', () => {
           can: store.can('puede.acceder.vehiculos'),
         },
         {
+          title: 'Matrículas',
+          link: 'matriculas',
+          icon: 'bi-calendar3-week-fill',
+          can: store.can('puede.acceder.matriculas_vehiculos'),
+        },
+        {
           title: 'Seguros vehiculares',
           link: 'seguros',
           icon: 'bi-shield-lock-fill',
