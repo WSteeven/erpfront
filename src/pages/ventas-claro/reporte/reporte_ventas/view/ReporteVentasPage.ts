@@ -45,16 +45,11 @@ export default defineComponent({
      * Validaciones
      **************/
     const reglas = {
-      fecha_inicio: {
+      mes: {
         required: true,
-        minLength: 3,
-        maxLength: 50,
+
       },
-      fecha_fin: {
-        required: true,
-        minLength: 3,
-        maxLength: 50,
-      },
+
     }
 
 
@@ -65,6 +60,7 @@ export default defineComponent({
     const tiposFondos = ref([])
     const tiposFondoRotativoFechas = ref([])
     usuarios.value = listadosAuxiliares.usuarios
+    const is_month = ref(false)
 
     cargarVista(async () => {
       await obtenerListados({
@@ -97,12 +93,16 @@ export default defineComponent({
       tipo: string
     ): Promise<void> {
        const axios = AxiosHttpRepository.getInstance()
-      const filename = 'reporte_semanal_reporte_ventas_del_' + valor.fecha_inicio + '_al_' +valor.fecha_fin
+      const filename = 'reporte_semanal_reporte_ventas_del_' + valor.mes
       const url_excel =
             apiConfig.URL_BASE +
             '/' +
             axios.getEndpoint(endpoints.reporte_ventas)
           imprimirArchivo(url_excel, 'POST', 'blob', 'xlsx', filename, valor)
+    }
+     /**Verifica si es un mes */
+     function checkValue(val, reason, details) {
+      is_month.value = reason === 'month' ? false : true
     }
 
     return {
@@ -116,6 +116,8 @@ export default defineComponent({
       usuariosInactivos,
       tiposFondos,
       tiposFondoRotativoFechas,
+      is_month,
+      checkValue,
       generar_reporte,
       watchEffect,
     }

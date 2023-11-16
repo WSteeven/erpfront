@@ -10,65 +10,52 @@
       </q-card-section>
 
       <q-card-section>
-        <!-- Fecha Inicio -->
+        <!-- Mes -->
         <div class="col-6 col-md-3">
-          <label class="q-mb-sm block">Fecha Inicio:</label>
+          <label class="q-mb-sm block">Mes:</label>
           <q-input
-            v-model="reporte_ventas.fecha_inicio"
-            placeholder="Obligatorio"
-            :error="!!v$.fecha_inicio.$errors.length"
-            :disable="disabled"
-            outlined
-            dense
-          >
-            <template v-slot:append>
-              <q-icon name="event" class="cursor-pointer">
-                <q-popup-proxy cover transition-show="scale" transition-hide="scale">
-                  <q-date v-model="reporte_ventas.fecha_inicio" :mask="maskFecha" today-btn>
-                    <div class="row items-center justify-end">
-                      <q-btn v-close-popup label="Cerrar" color="primary" flat />
-                    </div>
-                  </q-date>
-                </q-popup-proxy>
-              </q-icon>
-            </template>
+              v-model="reporte_ventas.mes"
+              placeholder="Obligatorio"
+              :value="reporte_ventas.mes"
+              @click="$refs.monthPicker.show()"
+              mask="##-####"
+              :error="!!v$.mes.$errors.length"
+              :disable="disabled"
+              readonly
+              @blur="v$.mes.$touch"
+              outlined
+              dense
+            >
+              <template v-slot:append>
+                <q-icon name="event" class="cursor-pointer">
+                  <q-popup-proxy
+                    cover
+                    transition-show="scale"
+                    transition-hide="scale"
+                    v-model="is_month"
+                  >
+                    <q-date
+                      v-model="reporte_ventas.mes"
+                      minimal
+                      mask="MM-YYYY"
+                      emit-immediately
+                      default-view="Years"
+                      @update:model-value="checkValue"
+                    >
+                      <div class="row items-center justify-end">
+                        <q-btn v-close-popup label="Cerrar" color="primary" flat />
+                      </div>
+                    </q-date>
+                  </q-popup-proxy>
+                </q-icon>
+              </template>
 
-            <template v-slot:error>
-              <div v-for="error of v$.fecha_inicio.$errors" :key="error.$uid">
-                <div class="error-msg">{{ error.$message }}</div>
-              </div>
-            </template>
-          </q-input>
-        </div>
-        <!-- Fecha Fin -->
-        <div class="col-6 col-md-3">
-          <label class="q-mb-sm block">Fecha Fin:</label>
-          <q-input
-            v-model="reporte_ventas.fecha_fin"
-            placeholder="Obligatorio"
-            :error="!!v$.fecha_fin.$errors.length"
-            :disable="disabled"
-            outlined
-            dense
-          >
-            <template v-slot:append>
-              <q-icon name="event" class="cursor-pointer">
-                <q-popup-proxy cover transition-show="scale" transition-hide="scale">
-                  <q-date v-model="reporte_ventas.fecha_fin" :mask="maskFecha" today-btn>
-                    <div class="row items-center justify-end">
-                      <q-btn v-close-popup label="Cerrar" color="primary" flat />
-                    </div>
-                  </q-date>
-                </q-popup-proxy>
-              </q-icon>
-            </template>
-
-            <template v-slot:error>
-              <div v-for="error of v$.fecha_fin.$errors" :key="error.$uid">
-                <div class="error-msg">{{ error.$message }}</div>
-              </div>
-            </template>
-          </q-input>
+              <template v-slot:error>
+                <div v-for="error of v$.mes.$errors" :key="error.$uid">
+                  <div class="error-msg">{{ error.$message }}</div>
+                </div>
+              </template>
+            </q-input>
         </div>
 
       </q-card-section>

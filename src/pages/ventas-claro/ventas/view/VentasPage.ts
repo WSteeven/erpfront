@@ -16,6 +16,7 @@ import { AxiosHttpRepository } from 'shared/http/infraestructure/AxiosHttpReposi
 import { HttpResponseGet } from 'shared/http/domain/HttpResponse'
 import axios from 'axios'
 import { apiConfig, endpoints } from 'config/api'
+import { useVentaStore } from 'stores/venta'
 
 export default defineComponent({
   components: { TabLayout },
@@ -34,7 +35,7 @@ export default defineComponent({
       accion,
       listadosAuxiliares,
     } = mixin.useReferencias()
-    const { setValidador, obtenerListados, cargarVista } =
+    const {consultar, setValidador, obtenerListados, cargarVista } =
       mixin.useComportamiento()
 const precio_producto= ref(0)
 const comision_vendedor = ref(0)
@@ -81,6 +82,7 @@ const comision_vendedor = ref(0)
       productos.value = listadosAuxiliares.productos
       vendedores.value = listadosAuxiliares.vendedores
     })
+
     function filtrarProductos(val, update) {
       if (val === '') {
         update(() => {

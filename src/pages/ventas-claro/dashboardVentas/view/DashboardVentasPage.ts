@@ -34,6 +34,8 @@ import { FiltroDashboardVentas } from '../domain/FiltroDashboardVentas'
 import { Vendedores } from 'pages/ventas-claro/vendedores/domain/Vendedores'
 import { ComportamientoModalesVentas } from 'pages/ventas-claro/ventas/application/ComportamientoModalesVentas'
 import { optionsLine, optionsPie } from 'config/graficoGenerico'
+import { configuracionColumnasVentas } from 'pages/ventas-claro/ventas/domain/configuracionColumnasVentas'
+import { useVentaStore } from 'stores/venta'
 
 export default defineComponent({
   components: {
@@ -79,45 +81,38 @@ export default defineComponent({
       () => filtro.fecha_inicio && filtro.fecha_fin && filtro.vendedor
     )
     const modales = new ComportamientoModalesVentas()
-    const vendedorResponsableDepartamento = ref()
-    const esResponsableDepartamento = ref(false)
-    const ventasVendedorResponsable = ref([])
     const tabsVentas = ref('creados')
-    let departamento
-
     // Cantidades
     const cantVentasCreados = ref()
     const cantVentasInstaladas = ref()
     const cantVentasPendientes = ref()
     const cantVentasRechazadas = ref()
     const ventasPorEstado: any = ref([])
+    const ventasPorMesListado: any = ref([])
+
     const ventasPorPlanes = ref([])
-    const ventasTiemposLine= ref([])
+    const ventasTiemposLine = ref([])
+    const ventasPorMesBar = ref([])
     const ventasPorEstadoBar = ref()
     const ventasPorPlanesoBar = ref()
-
-    // const creados = ref([])
-
-    const opcionesDepartamento = {
-      departamentoGrafico: 'departamentoGrafico',
-      departamentoListado: 'departamentoListado',
-    }
 
     const opcionesVendedor = {
       vendedorGrafico: 'vendedorGrafico',
       vendedorListado: 'vendedorListado',
     }
+    const opcionesVendedorLineaTiempo = {
+      vendedorLineaTiempo: 'vendedorLineaTiempo',
+      vendedorListadoMes: 'vendedorListadoMes',
+    }
 
     const categoriaGraficosVendedor = {
       ESTADO_ACTUAL: 'ESTADO_ACTUAL',
-      CREADOS_A_DEPARTAMENTOS: 'CREADOS_A_DEPARTAMENTOS',
-      ASIGNADOS_POR_DEPARTAMENTOS: 'ASIGNADOS_POR_DEPARTAMENTOS',
+      VENTAS_POR_PLANES: 'VENTAS_POR_PLANES',
     }
-
-    const tabsDepartamento = ref(opcionesDepartamento.departamentoGrafico)
     const tabsVendedor = ref(opcionesVendedor.vendedorGrafico)
-
-
+    const tabsVendedorLinea = ref(
+      opcionesVendedorLineaTiempo.vendedorLineaTiempo
+    )
 
     /*******
      * Init
@@ -131,21 +126,18 @@ export default defineComponent({
     }
 
     const v$ = useVuelidate(reglas, filtro)
-
+    const ventaStore = useVentaStore()
     /***************
      * Botones tabla
      ***************/
-    //const { btnSeguimiento } = useBotonesTablaVentas(mixin, modales)
-    // setFiltrarVentas(filtrarTrabajoAsignado)
-
-    /* const botonVer: CustomActionTable = {
+    const botonVer: CustomActionTable = {
       titulo: 'Más detalles',
       icono: 'bi-eye',
       accion: async ({ entidad }) => {
-        ventaStore.filaVentas = entidad
+        ventaStore.filaVenta = entidad
         modales.abrirModalEntidad('DetalleCompletoVentas')
       },
-    }*/
+    }
 
     /*********
      * Filtros
@@ -186,9 +178,12 @@ export default defineComponent({
           //Grafico vendedor por planes
           ventasPorPlanes.value = result.ventasPorPlanes
           ventasPorEstadoBar.value = result.ventasPorEstadoBar
+          ventasPorMesBar.value = result.ventasPorMes
           //Grafico vendedor por planes
           ventasPorPlanesoBar.value = result.ventasPorPlanesoBar
           ventasTiemposLine.value = result.ventasTiemposLine
+          optionsLine.plugins.datalabels.formatter = (value) =>
+            value + ' ventas'
         } catch (e) {
           console.log(e)
         } finally {
@@ -204,92 +199,46 @@ export default defineComponent({
     }
 
     const ventasPorEstadoListado = ref([])
-    /*   function clickGraficoVentasVendedor(data, categoriaGrafico: keyof typeof categoriaGraficosVendedor) {
+    function clickGraficoVentasVendedor(
+      data,
+      categoriaGrafico: keyof typeof categoriaGraficosVendedor
+    ) {
       const { label } = data
       if (label) {
         switch (categoriaGrafico) {
           case categoriaGraficosVendedor.ESTADO_ACTUAL:
-            ventasPorEstadoListado.value = ventasPorEstado.value.filter((venta: Ventas) => venta.estado === label)
-            // tabsVendedor.value = opcionesVendedor.vendedorListado
+            ventasPorEstadoListado.value = ventasPorEstado.value.filter(
+              (venta: Ventas) => venta.estado_activ === label
+            )
             break
-          case categoriaGraficosVendedor.CREADOS_A_DEPARTAMENTOS:
-            ventasPorEstadoListado.value = cantidadesVentasSolicitadosPorDepartamento.value.filter((venta: Ventas) => venta.departamento_responsable === label)
-            // tabsVendedor.value = opcionesVendedor.vendedorListado
-            break
-          case categoriaGraficosVendedor.ASIGNADOS_POR_DEPARTAMENTOS:
-            ventasPorEstadoListado.value = cantidadesVentasRecibidosPorDepartamento.value.filter((venta: Ventas) => venta.departamento_solicitante === label)
+          case categoriaGraficosVendedor.VENTAS_POR_PLANES:
+            ventasPorEstadoListado.value = ventasPorPlanes.value.filter(
+              (venta: Ventas) => venta.plan === label.toUpperCase()
+            )
             break
         }
         tabsVendedor.value = opcionesVendedor.vendedorListado
       }
-    }*/
-
-    /*  function clickGraficoVentasDepartamento(data, estado: keyof typeof estadosVentas) {
+    }
+    function clickGraficoVentasMes(data) {
       const { label } = data
       if (label) {
-        switch (estado) {
-          case estadosVentas.ASIGNADO:
-            ventasVendedorResponsable.value = ventasPorDepartamentoEstadoAsignado.value.filter((venta: Ventas) => venta.responsable === label)
-            break
-          case estadosVentas.EJECUTANDO:
-            ventasVendedorResponsable.value = ventasPorDepartamentoEstadoEjecutando.value.filter((venta: Ventas) => venta.responsable === label)
-            break
-          case estadosVentas.PAUSADO:
-            ventasVendedorResponsable.value = ventasPorDepartamentoEstadoPausado.value.filter((venta: Ventas) => venta.responsable === label)
-            break
-          case estadosVentas.REASIGNADO:
-            ventasVendedorResponsable.value = ventasPorDepartamentoEstadoReasignado.value.filter((venta: Ventas) => venta.responsable === label)
-            break
-          case estadosVentas.FINALIZADO_SOLUCIONADO:
-            ventasVendedorResponsable.value = ventasPorDepartamentoEstadoFinalizadoSolucionado.value.filter((venta: Ventas) => venta.responsable === label)
-            break
-          case estadosVentas.FINALIZADO_SIN_SOLUCION:
-            ventasVendedorResponsable.value = ventasPorDepartamentoEstadoFinalizadoSinSolucion.value.filter((venta: Ventas) => venta.responsable === label)
-            break
-        }
-        tabsDepartamento.value = opcionesDepartamento.departamentoListado
+        ventasPorMesListado.value = ventasPorMesBar.value.filter(
+          (venta: Ventas) => venta.mes === label
+        )
+        tabsVendedorLinea.value = opcionesVendedorLineaTiempo.vendedorListadoMes
       }
-    }*/
-
-    /* function contarVentasDepartamentoSolicitante(ventas: Ventas[]): any[] {
-      const conteo = ventas.reduce((acumulador: any, venta) => {
-        const departamento_solicitante = venta.departamento_solicitante
-
-        const elementoExistente: any = acumulador.find((item: any) => item.departamento_solicitante === departamento_solicitante)
-
-        if (!elementoExistente) acumulador.push({ departamento_solicitante, total_ventas: 1 })
-        else elementoExistente.total_ventas++
-
-        return acumulador
-      }, [])
-
-      return conteo
-    }*/
-
-    /*function contarVentasResponsable(ventas: Ventas[]): any[] {
-      const conteo = ventas.reduce((acumulador: any, venta) => {
-        const responsable = venta.responsable
-
-        const elementoExistente: any = acumulador.find((item: any) => item.responsable === responsable)
-
-        if (!elementoExistente) acumulador.push({ responsable, total_ventas: 1 })
-        else elementoExistente.total_ventas++
-
-        return acumulador
-      }, [])
-
-      return conteo
-    }*/
+    }
 
     return {
       // creados,
-      tabsDepartamento,
       tabsVendedor,
-      opcionesDepartamento,
+      tabsVendedorLinea,
       opcionesVendedor,
+      opcionesVendedorLineaTiempo,
       categoriaGraficosVendedor,
-      //clickGraficoVentasVendedor,
-      // clickGraficoVentasDepartamento,
+      clickGraficoVentasVendedor,
+      clickGraficoVentasMes,
       modoUnaColumna: ref(false),
       tabsVentas,
       ordenarVendedores,
@@ -306,22 +255,17 @@ export default defineComponent({
       listado,
       filtro,
       listadosAuxiliares,
-      tiposJornadas,
       optionsPie,
       optionsLine,
       mostrarTitulosSeccion,
       accionesTabla,
       modales,
-      vendedorResponsableDepartamento,
-      ventasVendedorResponsable,
-      esResponsableDepartamento,
       ventasTiemposLine,
       // Configuracion columnas
-      configuracionColumnasSubtareasRealizadasPorRegion,
-      configuracionColumnasSubtareasRealizadasPorGrupo,
-      configuracionColumnasSubtareasRealizadasPorGrupoTiposTrabajosEmergencia,
+      configuracionColumnasVentas,
       // Consultar
       consultar,
+      botonVer,
       // Listados
       ventasPorEstado,
       // Bar
@@ -330,6 +274,7 @@ export default defineComponent({
 
       // botones
       ventasPorEstadoListado,
+      ventasPorMesListado,
     }
   },
 })

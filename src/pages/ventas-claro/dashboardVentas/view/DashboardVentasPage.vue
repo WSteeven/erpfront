@@ -93,7 +93,7 @@
               @blur="v$.vendedor.$touch"
               @update:model-value="consultar()"
               @filter="filtrarVendedors"
-              @popup-show="ordenarVendedores(vendedors)"
+              @popup-show="ordenarVendedores(vendedores)"
               :option-label="(v) => v.empleado_info"
               :option-value="(v) => v.id"
               emit-value
@@ -187,7 +187,10 @@
         keep-alive
       >
         <q-tab-panel :name="opcionesVendedor.vendedorGrafico">
-          <div v-if="mostrarTitulosSeccion" class="row q-col-gutter-y-xl q-col-gutter-x-xs q-mb-xl">
+          <div
+            v-if="mostrarTitulosSeccion"
+            class="row q-col-gutter-y-xl q-col-gutter-x-xs q-mb-xl"
+          >
             <div class="col-12 col-md-6 text-center">
               <div class="text-subtitle2 q-mb-lg">Estado actual de las ventas</div>
               <div>
@@ -195,40 +198,128 @@
                   v-if="ventasPorEstado.length"
                   :data="ventasPorEstadoBar"
                   :options="optionsPie"
+                  @click="
+                    (data) =>
+                      clickGraficoVentasVendedor(
+                        data,
+                        categoriaGraficosVendedor.ESTADO_ACTUAL
+                      )
+                  "
                 />
               </div>
             </div>
             <div class="col-12 col-md-6 text-center">
-            <div class="text-subtitle2 q-mb-lg">Ventas por Planes</div>
-            <div>
-              <grafico-generico
-                v-if="ventasPorEstado.length"
-                :data="ventasPorPlanesoBar"
-                :options="optionsPie"
-              />
+              <div class="text-subtitle2 q-mb-lg">Ventas por Planes</div>
+              <div>
+                <grafico-generico
+                  v-if="ventasPorEstado.length"
+                  :data="ventasPorPlanesoBar"
+                  :options="optionsPie"
+                  @click="
+                    (data) =>
+                      clickGraficoVentasVendedor(
+                        data,
+                        categoriaGraficosVendedor.VENTAS_POR_PLANES
+                      )
+                  "
+                />
+              </div>
             </div>
           </div>
-          </div>
+        </q-tab-panel>
+        <q-tab-panel :name="opcionesVendedor.vendedorListado">
+          <q-btn
+            color="white"
+            @click="tabsVendedor = opcionesVendedor.vendedorGrafico"
+            no-caps
+            rounded
+            outline
+            glossy
+            class="text-grey-8"
+          >
+            <q-icon name="bi-arrow-left"></q-icon>
+            Regresar al gráfico</q-btn
+          >
 
+          <div class="row q-col-gutter-sm q-py-md q-mb-lg">
+            <div class="col-12">
+              <essential-table
+                v-if="ventasPorEstadoListado.length"
+                titulo="Ventas"
+                :configuracionColumnas="[...configuracionColumnasVentas, accionesTabla]"
+                :datos="ventasPorEstadoListado"
+                :permitirConsultar="false"
+                :permitirEliminar="false"
+                :permitirEditar="false"
+                :mostrarBotones="false"
+                :alto-fijo="false"
+                :accion1="botonVer"
+              ></essential-table>
+            </div>
+            <!-- {{ ticketsVendedorResponsable }} -->
+          </div>
         </q-tab-panel>
       </q-tab-panels>
       <!-- </q-card-section> -->
 
-      <div class="row q-pa-md q-col-gutter-x-sm">
-        <div class="col-12 text-center">
-          <div class="text-subtitle2 q-mb-lg">
-            Gráfico de ventas por mes
-          </div>
-          <div>
-            <!-- v-if="ticketsPorEstado.length" -->
-            <grafico-generico
-              :data="ventasTiemposLine"
-              :options="optionsLine"
-              tipo="line"
-            />
+      <q-tab-panels
+        v-model="tabsVendedorLinea"
+        animated
+        transition-prev="scale"
+        transition-next="scale"
+        keep-alive
+      >
+      <q-tab-panel :name="opcionesVendedorLineaTiempo.vendedorLineaTiempo">
+        <div class="row q-pa-md q-col-gutter-x-sm">
+          <div class="col-12 text-center">
+            <div class="text-subtitle2 q-mb-lg">Gráfico de ventas por mes</div>
+            <div>
+              <grafico-generico
+                :data="ventasTiemposLine"
+                :options="optionsLine"
+                tipo="line"
+                @click="(data) => clickGraficoVentasMes(data)"
+              />
+            </div>
           </div>
         </div>
-      </div>
+        </q-tab-panel>
+
+
+
+        <q-tab-panel :name="opcionesVendedorLineaTiempo.vendedorListadoMes">
+          <q-btn
+            color="white"
+            @click="tabsVendedorLinea = opcionesVendedorLineaTiempo.vendedorLineaTiempo"
+            no-caps
+            rounded
+            outline
+            glossy
+            class="text-grey-8"
+          >
+            <q-icon name="bi-arrow-left"></q-icon>
+            Regresar al gráfico</q-btn
+          >
+
+          <div class="row q-col-gutter-sm q-py-md q-mb-lg">
+            <div class="col-12">
+              <essential-table
+                v-if="ventasPorMesListado.length"
+                titulo="Ventas"
+                :configuracionColumnas="[...configuracionColumnasVentas, accionesTabla]"
+                :datos="ventasPorMesListado"
+                :permitirConsultar="false"
+                :permitirEliminar="false"
+                :permitirEditar="false"
+                :mostrarBotones="false"
+                :alto-fijo="false"
+                :accion1="botonVer"
+              ></essential-table>
+            </div>
+            <!-- {{ ticketsVendedorResponsable }} -->
+          </div>
+        </q-tab-panel>
+      </q-tab-panels>
     </q-card>
 
     <modales-entidad :comportamiento="modales" />
