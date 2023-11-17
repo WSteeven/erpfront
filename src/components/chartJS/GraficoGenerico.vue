@@ -2,7 +2,7 @@
   <!-- <div class="bg-yellow full-width"> -->
   <div
     style="width: 100%; margin: 0 auto; height: 300px"
-    class="bg-body rounded"
+    class="bg-body rounded border-grey"
   >
     <canvas ref="chartRef" id="myChart"></canvas>
   </div>
@@ -11,7 +11,7 @@
 <script lang="ts">
 import { Chart as ChartJS } from 'chart.js'
 import datalabels from 'chartjs-plugin-datalabels'
-import { onMounted, ref, defineComponent, watch, watchEffect } from 'vue'
+import { onMounted, ref, defineComponent, watch } from 'vue'
 import Chart, { ChartTypeRegistry } from 'chart.js/auto'
 
 export default defineComponent({

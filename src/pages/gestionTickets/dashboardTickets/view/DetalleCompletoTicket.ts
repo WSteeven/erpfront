@@ -8,6 +8,7 @@ import EssentialTable from 'components/tables/view/EssentialTable.vue'
 import ModalesEntidad from 'components/modales/view/ModalEntidad.vue'
 import ArchivoSeguimiento from 'subtareas/modules/gestorArchivosTrabajos/view/ArchivoSeguimiento.vue'
 import EstadosSubtareas from 'components/tables/view/EstadosSubtareas.vue'
+import DetalleTicket from 'gestionTickets/ticketsAsignados/modules/detalleTicketAsignado/view/DetalleTicket.vue'
 
 // Logica y controladores
 import { Ticket } from 'pages/gestionTickets/tickets/domain/Ticket'
@@ -36,6 +37,7 @@ export default defineComponent({
     ModalesEntidad,
     ArchivoSeguimiento,
     EstadosSubtareas,
+    DetalleTicket,
   },
   setup(props) {
     /**********

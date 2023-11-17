@@ -18,7 +18,7 @@
 
     <div
       id="responsables"
-      class="row items-center bg-blue-5 rounded-header q-pt-sm"
+      class="row items-center bg-blue-8 rounded-header q-pt-sm"
     >
       <div class="col-12">
         <div class="row q-px-md items-center">
@@ -45,7 +45,7 @@
             >
               <q-btn
                 icon="bi-chevron-left"
-                color="primary"
+                color="blue-6"
                 class="bg-primary q-pr-md q-mr-sm"
                 @click="anterior"
                 rounded
@@ -54,7 +54,7 @@
               ></q-btn>
               <q-btn
                 icon-right="bi-chevron-right"
-                color="primary"
+                color="blue-6"
                 class="bg-primary q-pl-md"
                 @click.stop="siguiente"
                 rounded
@@ -117,7 +117,7 @@
               <q-icon
                 name="bi-caret-right-fill"
                 size="md"
-                color="primary"
+                color="white"
                 class="q-ml-md"
               ></q-icon>
             </div>

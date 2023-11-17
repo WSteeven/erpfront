@@ -27,6 +27,7 @@
       "subtareas/*": ["src/pages/gestionTrabajos/subtareas/*"],
       "tiposTrabajos/*": ["src/pages/tareas/tiposTareas/*"],
       "dashboardTickets/*": ["src/pages/gestionTickets/dashboardTickets"],
+      "gestionTickets/*": ["gestionTickets"],
       "tickets/*": ["gestionTickets/tickets"],
       "ticketsAsignados/*": ["gestionTickets/ticketsAsignados"],
       "tiposTickets/*": ["gestionTickets/tiposTickets"],
