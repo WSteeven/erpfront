@@ -67,4 +67,9 @@ export const iconos = {
     label: 'PROVEEDOR',
     icono: 'bi-stars',
   },
+
+  matricula:{
+    label: 'MATRICULA',
+    icono: 'bi-calendar3-week-fill'
+  }
 }

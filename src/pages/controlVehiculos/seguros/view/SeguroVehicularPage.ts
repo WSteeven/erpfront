@@ -1,20 +1,19 @@
 //Dependencias
 import { configuracionColumnasSegurosVehiculares } from "../domain/configuracionColumnasSegurosVehiculares";
-import { defineComponent, reactive, ref } from "vue";
-import { required, minValue, maxValue } from "shared/i18n-validators";
+import { required } from "shared/i18n-validators";
+import { defineComponent } from "vue";
+import useVuelidate from "@vuelidate/core";
 
 //Componentes
 import TabLayoutFilterTabs2 from "shared/contenedor/modules/simple/view/TabLayoutFilterTabs2.vue";
+
+//Logica y controladores
 import { ContenedorSimpleMixin } from "shared/contenedor/modules/simple/application/ContenedorSimpleMixin";
 import { SeguroVehicular } from "../domain/SeguroVehicular";
 import { SeguroVehicularController } from "../infraestructure/SeguroVehicularController";
-import useVuelidate from "@vuelidate/core";
 import { tabOptionsSeguros } from "config/vehiculos.utils";
-import { date } from "quasar";
 import { obtenerFechaActual, sumarFechas } from "shared/utils";
 import { maskFecha } from "config/utils";
-
-//Logica y controladores
 
 export default defineComponent({
     components: { TabLayoutFilterTabs2 },

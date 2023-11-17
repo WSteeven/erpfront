@@ -4,7 +4,7 @@
     :configuracionColumnas="configuracionColumnas"
     :ajustarCeldas="true"
     :tab-options="tabOptionsMatriculas"
-    tabDefecto="1"
+    :tabDefecto="tabActual"
     :filtrar="filtrarMatriculas"
     titulo-pagina="Matriculas de Vehículos"
     :accion1Header="btnConsultarMatricula"
@@ -165,6 +165,42 @@
                 </div>
               </template>
             </q-input>
+          </div>
+
+          <!-- Persona que matriculó -->
+          <div v-if="matricula.matriculador" class="col-12 col-md-3">
+            <label class="q-mb-sm block"
+              >Persona que realiza matriculación</label
+            >
+            <q-input
+              autogrow
+              v-model="matricula.matriculador"
+              disable
+              outlined
+              dense
+            />
+          </div>
+          <!-- Observación -->
+          <div v-if="matricula.observacion" class="col-12 col-md-3">
+            <label class="q-mb-sm block">Observación</label>
+            <q-input
+              autogrow
+              v-model="matricula.observacion"
+              disable
+              outlined
+              dense
+            />
+          </div>
+          <!-- Monto -->
+          <div v-if="matricula.monto" class="col-12 col-md-3">
+            <label class="q-mb-sm block">Monto</label>
+            <q-input
+              autogrow
+              v-model="matricula.monto"
+              disable
+              outlined
+              dense
+            />
           </div>
         </div>
       </q-form>

@@ -24,7 +24,10 @@ export const tiposLicencias = [
   { value: 'E1', label: 'E1', caption: 'PROFESIONAL' },
   { value: 'G', label: 'G', caption: 'PROFESIONAL' },
 ]
-
+export const tiposServicios = [
+  { value: 'PREVENTIVO', label: 'PREVENTIVO', },
+  { value: 'CORRECTIVO', label: 'CORRECTIVO', },
+]
 
 export const tabOptionsConductores: TabOption[] = [
   { label: 'Vigentes', value: '1' },
@@ -34,6 +37,10 @@ export const tabOptionsConductores: TabOption[] = [
 export const tabOptionsSeguros: TabOption[] = [
   { label: 'Vigentes', value: '1' },
   { label: 'Caducados', value: '2' }
+]
+export const tabOptionsServicios: TabOption[] = [
+  { label: 'Preventivos', value: 'PREVENTIVO' },
+  { label: 'Correctivos', value: 'CORRECTIVO' }
 ]
 
 export const tabOptionsMatriculas: TabOption[] = [

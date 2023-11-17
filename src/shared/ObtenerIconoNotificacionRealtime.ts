@@ -30,7 +30,9 @@ export class ObtenerIconoNotificacionRealtime {
       case iconos.vacacion.label:
         return iconos.vacacion.icono
 
-
+      /*******************
+       * MODULO DE COMPRAS Y PROVEEDORES
+       ********************/
       case iconos.preorden.label:
         return iconos.preorden.icono
       case iconos.orden.label:
@@ -39,6 +41,12 @@ export class ObtenerIconoNotificacionRealtime {
         return iconos.proforma.icono
       case iconos.proveedor.label:
         return iconos.proveedor.icono
+
+      /*******************
+       * MODULO DE VEHICULOS
+       ********************/
+      case iconos.matricula.label:
+        return iconos.matricula.icono
     }
   }
 }

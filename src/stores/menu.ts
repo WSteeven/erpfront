@@ -636,6 +636,12 @@ export const useMenuStore = defineStore('menu', () => {
           icon: 'bi-shield-lock-fill',
           can: store.can('puede.acceder.seguros_vehiculares'),
         },
+        {
+          title: 'Servicios de Mantenimientos',
+          link: 'servicios',
+          icon: 'bi-gear-fill',
+          can: store.can('puede.acceder.servicios_mantenimientos'),
+        },
       ]
     },
 

@@ -126,6 +126,7 @@ export const endpoints = {
   matriculas: new Endpoint('vehiculos/matriculas'),
   multas_conductores: new Endpoint('vehiculos/multas'),
   seguros: new Endpoint('vehiculos/seguros'),
+  servicios: new Endpoint('vehiculos/servicios'),
 
   //Modulo de compras y proveedores
   dashboard_compras: new Endpoint('compras/dashboard'),

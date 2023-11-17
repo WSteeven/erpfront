@@ -514,6 +514,15 @@ const routes: RouteRecordRaw[] = [
           ),
         meta: { requiresAuth: true },
       },
+      {
+        path: '/servicios',
+        name: 'servicios_mantenimientos',
+        component: () =>
+          import(
+            'pages/controlVehiculos/servicios/view/ServicioPage.vue'
+          ),
+        meta: { requiresAuth: true },
+      },
       // {
       //   path: '/multas-conductores',
       //   name: 'multas_conductores',

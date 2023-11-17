@@ -2,6 +2,7 @@
 import { configuracionColumnasMatriculas } from "../domain/configuracionColumnasMatriculas";
 import { required, requiredIf } from "shared/i18n-validators";
 import { defineComponent, reactive, ref } from "vue";
+import useVuelidate from "@vuelidate/core";
 
 //Components
 import TabLayoutFilterTabs2 from "shared/contenedor/modules/simple/view/TabLayoutFilterTabs2.vue";
@@ -14,18 +15,14 @@ import { MatricularController } from "../infraestructure/MatriculaController";
 import { useNotificaciones } from "shared/notificaciones";
 import { VehiculoController } from "pages/controlVehiculos/vehiculos/infraestructure/VehiculoController";
 import { useFiltrosListadosSelects } from "shared/filtrosListadosGenerales";
-import useVuelidate from "@vuelidate/core";
 import { tabOptionsMatriculas } from "config/vehiculos.utils";
 import { obtenerFechaActual, obtenerMesMatricula, obtenerPrimerUltimoDiaMes, obtenerUltimoDigito, sumarFechas } from "shared/utils";
 import { Vehiculo } from "pages/controlVehiculos/vehiculos/domain/Vehiculo";
 import { date } from "quasar";
 import { CustomActionTable } from "components/tables/domain/CustomActionTable";
 import { acciones } from "config/utils";
-import { RouterLink, useRouter } from "vue-router";
-import router from "src/router";
 import { useVehiculoStore } from "stores/vehiculos/vehiculo";
 import { CustomActionPrompt } from "components/tables/domain/CustomActionPrompt";
-import { data } from "autoprefixer";
 
 export default defineComponent({
     components: { TabLayoutFilterTabs2 },
@@ -45,6 +42,7 @@ export default defineComponent({
             observacion: null,
             monto: null,
         }
+        const tabActual = ref('1')
 
         cargarVista(async () => {
             await obtenerListados({
@@ -72,6 +70,7 @@ export default defineComponent({
         *********************************/
         const { primerDia, ultimoDia } = obtenerPrimerUltimoDiaMes('YYYY-MM-DD')
         async function filtrarMatriculas(tab: string) {
+            tabActual.value=tab
             switch (tab) {
                 case '1':
                     listar({
@@ -83,7 +82,7 @@ export default defineComponent({
                     listar({
                         matriculado: 0,
                         'fecha_matricula[operator]': '<',
-                        'fecha_matricula[value]': sumarFechas(obtenerFechaActual(), 0, 0, 0, 'YYYY-MM-DD'),
+                        'fecha_matricula[value]': primerDia,
 
                     })
                     break
@@ -173,11 +172,15 @@ export default defineComponent({
                                     const data3: CustomActionPrompt = {
                                         titulo: 'Pagar Matricula ' + entidad.vehiculo,
                                         mensaje: 'Monto del pago',
-                                        tipo: 'number',
-                                        requerido: false,
+                                        validacion: (val)=>{
+                                            const patron =    /^(\d{1,3}(?:,\d{3})*(?:\.\d+)?|\d+)?$/
+                                            return patron.test(val)
+                                        },
                                         accion: async (data) => {
                                             dataPagoMatricula.monto = data
-                                            matriculaStore.pagarMatricula(dataPagoMatricula)
+                                            if(await matriculaStore.pagarMatricula(dataPagoMatricula)) {
+                                                filtrarMatriculas('3')
+                                            }
                                         }
                                     }
                                     prompt(data3)
@@ -211,6 +214,7 @@ export default defineComponent({
             btnPagarMatricula,
 
             //tab
+            tabActual,
             tabOptionsMatriculas,
 
             //listados

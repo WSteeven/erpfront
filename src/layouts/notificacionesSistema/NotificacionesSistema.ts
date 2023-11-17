@@ -19,6 +19,7 @@ import { ActualizarNotificacionesPusherEvent } from 'src/pusherEvents/Actualizar
 import { NotificarVacacionPusherEvent } from 'src/pusherEvents/recursosHumanos/nominasPermisos/NotificarVacacionPusherEvent'
 import { PreingresoMaterialPusherEvent } from 'pages/bodega/preingresoMateriales/application/PreingresoPusherEvent'
 import { IngresoPusherEvent } from 'pages/bodega/transacciones/modules/transaccionIngreso/application/IngresoPusherEvent'
+import { MatriculaPusherEvent } from 'pages/controlVehiculos/matriculacion/application/MatriculaPusherEvent'
 
 
 export class NotificacionesSistema {
@@ -107,5 +108,12 @@ export class NotificacionesSistema {
     // Proforma
     const proformaPusherEvent = new ProformaEvent()
     proformaPusherEvent.start()
+
+
+  /*******************
+   * MODULO VEHICULOS
+   *********  ***********/
+  const matriculaPusherEvent = new MatriculaPusherEvent()
+  matriculaPusherEvent.start()
   }
 }

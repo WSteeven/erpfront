@@ -293,9 +293,8 @@ export function sumarFechas(fechaString: string, anios: number, meses: number, d
  */
 export function obtenerPrimerUltimoDiaMes(formato = 'DD-MM-YYYY') {
   const fecha = new Date()
-  const primerDia = new Date(fecha.getFullYear(), fecha.getMonth(), fecha.getMonth(), 1)
+  const primerDia = new Date(fecha.getFullYear(), fecha.getMonth(), 1)
   const ultimoDia = new Date(fecha.getFullYear(), fecha.getMonth() + 1, 0)
-
   return {
     primerDia: date.formatDate(primerDia, formato),
     ultimoDia: date.formatDate(ultimoDia, formato)
