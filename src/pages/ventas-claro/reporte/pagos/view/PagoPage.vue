@@ -70,7 +70,40 @@
             </template>
           </q-input>
         </div>
+        <div class="col-12 col-md-6">
+            <label class="q-mb-sm block">Vendedor</label>
+            <q-select
+              v-model="pago.vendedor"
+              :options="vendedores"
+              transition-show="scale"
+              transition-hide="scale"
+              options-dense
+              dense
+              outlined
+              use-input
+              input-debounce="0"
+              :error="!!v$.vendedor.$errors.length"
+              @blur="v$.vendedor.$touch"
+              @filter="filtrarVendedors"
+              @popup-show="ordenarVendedores(vendedores)"
+              :option-label="(v) => v.empleado_info"
+              :option-value="(v) => v.id"
+              emit-value
+              map-options
+            >
+              <template v-slot:no-option>
+                <q-item>
+                  <q-item-section class="text-grey"> No hay resultados </q-item-section>
+                </q-item>
+              </template>
 
+              <template v-slot:error>
+                <div v-for="error of v$.vendedor.$errors" :key="error.$uid">
+                  <div class="error-msg">{{ error.$message }}</div>
+                </div>
+              </template>
+            </q-select>
+          </div>
       </q-card-section>
 
       <q-separator></q-separator>

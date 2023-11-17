@@ -8,13 +8,16 @@ import { ContenedorSimpleMixin } from 'shared/contenedor/modules/simple/applicat
 import { TipoFondoController } from 'pages/fondosRotativos/tipoFondo/infrestructure/TipoFonfoController'
 import { AxiosHttpRepository } from 'shared/http/infraestructure/AxiosHttpRepository'
 import { apiConfig, endpoints } from 'config/api'
-import { imprimirArchivo } from 'shared/utils'
+import { imprimirArchivo, ordernarListaString } from 'shared/utils'
 import { Pagos } from '../domain/Pagos'
 import { PagosController } from '../infrestructure/PagosController'
 import { maskFecha } from 'config/utils'
 import { EmpleadoController } from 'pages/recursosHumanos/empleados/infraestructure/EmpleadoController'
 import { useCargandoStore } from 'stores/cargando'
 import { useFondoRotativoStore } from 'stores/fondo_rotativo'
+import { VendedoresController } from 'pages/ventas-claro/vendedores/infrestructure/VendedoresController'
+import { Vendedores } from 'pages/ventas-claro/vendedores/domain/Vendedores'
+
 
 export default defineComponent({
   components: { TabLayout },
@@ -55,43 +58,40 @@ export default defineComponent({
         minLength: 3,
         maxLength: 50,
       },
+      vendedor:{
+        required: true,
+      }
     }
 
 
     const v$ = useVuelidate(reglas, pago)
     setValidador(v$.value)
-    const usuarios = ref([])
-    const usuariosInactivos = ref()
-    const tiposFondos = ref([])
-    const tiposFondoRotativoFechas = ref([])
-    usuarios.value = listadosAuxiliares.usuarios
-
+    const vendedores = ref([])
     cargarVista(async () => {
       await obtenerListados({
-        usuarios: {
-          controller: new EmpleadoController(),
-          params: { campos: 'id,nombres,apellidos',estado: 1 },
-        },
-        tiposFondos: {
-          controller: new TipoFondoController(),
-          params: { campos: 'id,descripcion' },
-        },
+        vendedores: {
+          controller: new VendedoresController(),
+          params: {
+            campos: 'id',
+          },},
       })
+        vendedores.value = listadosAuxiliares.vendedores
 
-      usuarios.value = listadosAuxiliares.usuarios
-      usuariosInactivos.value =
-      LocalStorage.getItem('usuariosInactivos') == null
-        ? []
-        : JSON.parse(LocalStorage.getItem('usuariosInactivos')!.toString())
-    listadosAuxiliares.usuariosInactivos = usuariosInactivos.value
-      tiposFondos.value = listadosAuxiliares.tiposFondos
-      tiposFondoRotativoFechas.value =
-        listadosAuxiliares.tiposFondoRotativoFechas
     })
     /*********
      * Filtros
      **********/
+    function filtrarVendedores(val, update) {
+      if (val === '')
+        update(() => (vendedores.value = listadosAuxiliares.vendedores))
 
+      update(() => {
+        const needle = val.toLowerCase()
+        vendedores.value = listadosAuxiliares.vendedores.filter(
+          (v) => v.mpleado_info.toLowerCase().indexOf(needle) > -1
+        )
+      })
+    }
     async function generar_reporte(
       valor: Pagos,
       tipo: string
@@ -104,6 +104,11 @@ export default defineComponent({
             axios.getEndpoint(endpoints.pago)
           imprimirArchivo(url_excel, 'POST', 'blob', 'xlsx', filename, valor)
     }
+    function ordenarVendedores() {
+      vendedores.value.sort((a: Vendedores, b: Vendedores) =>
+        ordernarListaString(a.empleado_info!, b.empleado_info!)
+      )
+    }
 
     return {
       mixin,
@@ -112,10 +117,9 @@ export default defineComponent({
       accion,
       v$,
       maskFecha,
-      usuarios,
-      usuariosInactivos,
-      tiposFondos,
-      tiposFondoRotativoFechas,
+      ordenarVendedores,
+      filtrarVendedores,
+      vendedores,
       generar_reporte,
       watchEffect,
     }
