@@ -149,7 +149,7 @@
               :readonly="disabled"
               :error="!!v$.placa.$errors.length"
               error-message="Debe ingresar un numero de placa válido"
-              mask="XXX-####"
+              mask="XXX-##X#"
               fill-mask
               outlined
               dense

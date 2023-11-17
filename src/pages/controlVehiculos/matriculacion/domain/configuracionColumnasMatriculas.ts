@@ -27,7 +27,7 @@ export const configuracionColumnasMatriculas: ColumnConfig<Matricula>[] = [
     {
         name: 'estado',
         field: 'estado',
-        label: 'Estado',
+        label: '¿Matriculado?',
         align: 'left',
         sortable: true
     },

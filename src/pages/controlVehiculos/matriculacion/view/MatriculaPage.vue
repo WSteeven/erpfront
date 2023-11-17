@@ -7,6 +7,10 @@
     tabDefecto="1"
     :filtrar="filtrarMatriculas"
     titulo-pagina="Matriculas de Vehículos"
+    :accion1Header="btnConsultarMatricula"
+    :accion2Header="btnConsultarMultas"
+    :permitirEditar="false"
+    :accion1="btnPagarMatricula"
   >
     <template #formulario>
       <q-form @submit.prevent>
@@ -24,6 +28,7 @@
               dense
               outlined
               @filter="filtrarVehiculos"
+              @update:model-value="asignarPlaca"
               error-message="Debes seleccionar un numero de placa"
               use-input
               input-debounce="0"
@@ -54,7 +59,7 @@
           </div>
 
           <!-- Fecha de matricula -->
-          <div class="col-12 col-md-3" >
+          <div class="col-12 col-md-3">
             <label class="q-mb-sm block">Fecha de Matriculación </label>
             <q-input
               v-model="matricula.fecha_matricula"
@@ -107,7 +112,60 @@
               </template>
             </q-input>
           </div>
+          <!-- Proxima matricula -->
+          <div class="col-12 col-md-3">
+            <label class="q-mb-sm block">Próxima Matrícula </label>
+            <q-input
+              v-model="matricula.proxima_matricula"
+              placeholder="Obligatorio"
+              :value="matricula.proxima_matricula"
+              mask="##-####"
+              hint="Fecha de matriculación"
+              :error="!!v$.proxima_matricula.$errors.length"
+              :disable="disabled"
+              @blur="v$.proxima_matricula.$touch"
+              outlined
+              dense
+            >
+              <template v-slot:append>
+                <q-icon name="event" class="cursor-pointer">
+                  <q-popup-proxy
+                    cover
+                    transition-show="scale"
+                    transition-hide="scale"
+                    v-model="is_month"
+                  >
+                    <q-date
+                      v-model="matricula.proxima_matricula"
+                      minimal
+                      mask="MM-YYYY"
+                      emit-immediately
+                      default-view="Years"
+                      @update:model-value="checkValue"
+                    >
+                      <div class="row items-center justify-end">
+                        <q-btn
+                          v-close-popup
+                          label="Cerrar"
+                          color="primary"
+                          flat
+                        />
+                      </div>
+                    </q-date>
+                  </q-popup-proxy>
+                </q-icon>
+              </template>
 
+              <template v-slot:error>
+                <div
+                  v-for="error of v$.proxima_matricula.$errors"
+                  :key="error.$uid"
+                >
+                  <div class="error-msg">{{ error.$message }}</div>
+                </div>
+              </template>
+            </q-input>
+          </div>
         </div>
       </q-form>
     </template>

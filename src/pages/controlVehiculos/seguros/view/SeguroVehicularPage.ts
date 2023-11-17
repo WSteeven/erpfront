@@ -9,7 +9,7 @@ import { ContenedorSimpleMixin } from "shared/contenedor/modules/simple/applicat
 import { SeguroVehicular } from "../domain/SeguroVehicular";
 import { SeguroVehicularController } from "../infraestructure/SeguroVehicularController";
 import useVuelidate from "@vuelidate/core";
-import { tabOptionsSeguros } from "config/utils_vehiculos";
+import { tabOptionsSeguros } from "config/vehiculos.utils";
 import { date } from "quasar";
 import { obtenerFechaActual, sumarFechas } from "shared/utils";
 import { maskFecha } from "config/utils";

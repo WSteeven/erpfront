@@ -16,7 +16,7 @@ import { MarcaController } from 'pages/bodega/marcas/infraestructure/MarcaContro
 import { ModeloController } from 'pages/bodega/modelos/infraestructure/ModeloController';
 import { CombustibleController } from 'pages/controlVehiculos/combustible/infraestructure/CombustibleController';
 import { acciones } from 'config/utils';
-import { opciones_traccion_vehiculos } from 'config/utils_vehiculos';
+import { opciones_traccion_vehiculos } from 'config/vehiculos.utils';
 import { ArchivoController } from 'pages/gestionTrabajos/subtareas/modules/gestorArchivosTrabajos/infraestructure/ArchivoController';
 
 export default defineComponent({
@@ -77,23 +77,23 @@ export default defineComponent({
 
             refArchivo.value.limpiarListado() //se borra listado de archivos
         })
-        onConsultado(()=>{
-          setTimeout(() => {
-            refArchivo.value.listarArchivosAlmacenados(vehiculo.id)
-          }, 1);
+        onConsultado(() => {
+            setTimeout(() => {
+                refArchivo.value.listarArchivosAlmacenados(vehiculo.id)
+            }, 1);
         })
 
-        onGuardado((id:number)=>{
-          idVehiculo.value = id
-          setTimeout(() => {
-            subirArchivos()
-          }, 1)
+        onGuardado((id: number) => {
+            idVehiculo.value = id
+            setTimeout(() => {
+                subirArchivos()
+            }, 1)
         })
-        onModificado((id:number)=>{
-          idVehiculo.value = id
-          setTimeout(() => {
-            subirArchivos()
-          }, 1)
+        onModificado((id: number) => {
+            idVehiculo.value = id
+            setTimeout(() => {
+                subirArchivos()
+            }, 1)
         })
 
 
@@ -103,8 +103,8 @@ export default defineComponent({
         function reset() {
             // refCilindraje.value.resetValidation()
         }
-        async function subirArchivos(){
-          await refArchivo.value.subir()
+        async function subirArchivos() {
+            await refArchivo.value.subir()
         }
 
 

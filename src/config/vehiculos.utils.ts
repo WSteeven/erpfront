@@ -1,5 +1,6 @@
 import { TabOption } from "components/tables/domain/TabOption"
 
+
 export const opciones_traccion_vehiculos = [
   { value: '4X2 FWD', label: '4X2 FWD' },
   { value: '4X2 RWD', label: '4X2 RWD' },
@@ -37,6 +38,7 @@ export const tabOptionsSeguros: TabOption[] = [
 
 export const tabOptionsMatriculas: TabOption[] = [
   { label: 'Este mes', value: '1' },
-  { label: 'Este año', value: '2' },
-  { label: 'Pasadas', value: '3' },
+  { label: 'Vencidas', value: '2' },
+  { label: 'Matriculadas', value: '3' },
 ]
+

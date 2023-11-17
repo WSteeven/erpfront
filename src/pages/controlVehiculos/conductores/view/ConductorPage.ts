@@ -22,7 +22,7 @@ import { useFiltrosListadosSelects } from "shared/filtrosListadosGenerales";
 import { Empleado } from "pages/recursosHumanos/empleados/domain/Empleado";
 import { StatusEssentialLoading } from "components/loading/application/StatusEssentialLoading";
 import { LocalStorage, date } from "quasar";
-import { tabOptionsConductores, tiposLicencias } from "config/utils_vehiculos";
+import { tabOptionsConductores, tiposLicencias } from "config/vehiculos.utils";
 import { acciones, accionesTabla, maskFecha } from "config/utils";
 import { CustomActionTable } from "components/tables/domain/CustomActionTable";
 import { ComportamientoModalesConductores } from "../application/ComportamientoModalesConductores";
