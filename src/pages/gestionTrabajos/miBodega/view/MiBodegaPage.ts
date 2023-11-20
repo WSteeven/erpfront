@@ -18,6 +18,9 @@ import { useListadoMaterialesDevolucionStore } from 'stores/listadoMaterialesDev
 import { useNotificacionStore } from 'stores/notificacion'
 import { useCargandoStore } from 'stores/cargando'
 import { useQuasar } from 'quasar'
+import { endpoints } from 'config/api'
+import { AxiosHttpRepository } from 'shared/http/infraestructure/AxiosHttpRepository'
+import { AxiosResponse } from 'axios'
 
 export default defineComponent({
   components: { EssentialTable },
@@ -29,6 +32,7 @@ export default defineComponent({
     const listadoMaterialesDevolucionStore = useListadoMaterialesDevolucionStore()
     useNotificacionStore().setQuasar(useQuasar())
     useCargandoStore().setQuasar(useQuasar())
+
     /****************
      * Controladores
      ****************/
@@ -39,7 +43,7 @@ export default defineComponent({
     /************
      * Variables
      ************/
-    const { notificarError, notificarAdvertencia } = useNotificaciones()
+    const { notificarAdvertencia } = useNotificaciones()
     const cargando = new StatusEssentialLoading()
     const materialesTarea = ref([])
     const listadoStockPersonal = ref([])
@@ -50,16 +54,25 @@ export default defineComponent({
     })
     const mensaje = ref()
     const listado = ref()
+    const clienteMaterialStock = ref()
+    const clienteMaterialTarea = ref()
+    const clientes = ref([])
+    const clientesMaterialesTarea = ref([])
+
+    const axios = AxiosHttpRepository.getInstance()
 
     /*******
      * Init
      *******/
-    tareaController.listar({ finalizado: 0, campos: 'id,titulo,codigo_tarea', coordinador_id: authenticationStore.user.jefe_id }).then((data) => tareasSource.value = data.result)
+    // coordinador_id: authenticationStore.user.jefe_id
+    tareaController.listar({ finalizado: 0, campos: 'id,titulo,codigo_tarea' }).then((data) => tareasSource.value = data.result)
+    obtenerClientesMaterialesTarea()
+    obtenerClientesMaterialesEmpleado()
 
     /************
      * Funciones
      ************/
-    async function filtrarStock(tipoStock: string | null) {
+    /* async function filtrarStock(tipoStock: string | null) {
       mensaje.value = ''
       try {
         cargando.activar()
@@ -81,23 +94,49 @@ export default defineComponent({
           listadoMaterialesDevolucionStore.listadoMateriales = result
           listadoMaterialesDevolucionStore.tareaId = filtro.tarea
         }
-        if (tipoStock === 'personal') filtrarStockPersonal()
-        else filtrarMaterialTarea()
+        // if (tipoStock === 'personal') filtrarStockPersonal()
+        filtrarMaterialTarea()
       } catch (e) {
         notificarError('Error al obtener el material.')
       } finally {
         cargando.desactivar()
       }
+    } */
+
+    async function obtenerMaterialesTarea(cliente: number) {
+      try {
+        cargando.activar()
+        const ruta = axios.getEndpoint(endpoints.materiales_empleado_tarea, { tarea_id: filtro.tarea, empleado_id: authenticationStore.user.id, cliente_id: cliente })
+        const response: AxiosResponse = await axios.get(ruta)
+        materialesTarea.value = response.data.results
+        if (!materialesTarea.value.length) {
+          notificarAdvertencia('No tienes material asignado.')
+        }
+      } catch (e) {
+        console.log(e)
+      } finally {
+        cargando.desactivar()
+      }
     }
 
-    async function filtrarStockPersonal() {
-      const { result } = await materialEmpleadoController.listar({ empleado_id: authenticationStore.user.id })
-      listadoStockPersonal.value = result
-      listadoMaterialesDevolucionStore.listadoMateriales = result
-      mensaje.value = !result.length ? 'No tienes materiales asignados en tu stock personal' : ''
+    async function filtrarStock(cliente: number) {
+      try {
+        cargando.activar()
+        const { result } = await materialEmpleadoController.listar({ empleado_id: authenticationStore.user.id, cliente_id: cliente })
+        listadoStockPersonal.value = result
+        listadoMaterialesDevolucionStore.listadoMateriales = result
+        // mensaje.value = !result.length ? 'No tienes materiales asignados en tu stock personal' : ''
+        if (!result.length) {
+          notificarAdvertencia('No tienes material asignado.')
+        }
+      } catch (e) {
+        console.log(e)
+      } finally {
+        cargando.desactivar()
+      }
     }
 
-    async function filtrarMaterialTarea() {
+    /*async function filtrarMaterialTarea() {
       const { result } = await materialEmpleadoTareaController.listar({ tarea_id: filtro.tarea, empleado_id: authenticationStore.user.id })
       // if (result.length === 0) {
       //   notificarAdvertencia('No tiene material asignado para la tarea seleccionada.')
@@ -107,6 +146,34 @@ export default defineComponent({
       // asignacion al store de la tarea y el listado de materiales para devolver
       listadoMaterialesDevolucionStore.listadoMateriales = result
       listadoMaterialesDevolucionStore.tareaId = filtro.tarea
+    }*/
+
+
+    async function obtenerClientesMaterialesTarea() {
+      try {
+        cargando.activar()
+        const ruta = axios.getEndpoint(endpoints.obtener_clientes_materiales_tarea) + '/' + authenticationStore.user.id
+        const response: AxiosResponse = await axios.get(ruta)
+        clientesMaterialesTarea.value = response.data.results
+      } catch (e) {
+        console.log(e)
+      } finally {
+        cargando.desactivar()
+      }
+    }
+
+    async function obtenerClientesMaterialesEmpleado() {
+      try {
+        cargando.activar()
+        const ruta = axios.getEndpoint(endpoints.obtener_clientes_materiales_empleado) + '/' + authenticationStore.user.id
+        const response: AxiosResponse = await axios.get(ruta)
+        clientes.value = response.data.results
+      } catch (e) {
+        console.log(e)
+      } finally {
+        cargando.desactivar()
+      }
+
     }
 
     /**********
@@ -138,7 +205,12 @@ export default defineComponent({
       tab: ref('tareas'),
       filtrarTareas,
       mensaje,
-      listadoMaterialesDevolucionStore
+      listadoMaterialesDevolucionStore,
+      clientes,
+      clienteMaterialTarea,
+      clienteMaterialStock,
+      clientesMaterialesTarea,
+      obtenerMaterialesTarea,
     }
   },
 })

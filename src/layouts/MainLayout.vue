@@ -454,7 +454,9 @@
           <footer-component></footer-component>
         </div>
         <!-- Aplica keep-alive aquí -->
-        <keep-alive :exclude="['Ingresos', 'Egresos', 'OrdenCompraPage']">
+        <keep-alive
+          :exclude="['Ingresos', 'Egresos', 'OrdenCompraPage', 'Devoluciones']"
+        >
           <component :is="Component" />
         </keep-alive>
       </router-view>
