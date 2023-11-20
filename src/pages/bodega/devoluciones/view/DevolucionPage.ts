@@ -42,6 +42,7 @@ import { ordernarListaString } from 'shared/utils'
 
 
 export default defineComponent({
+  name: 'Devoluciones',
   components: { TabLayoutFilterTabs2, EssentialTable, EssentialSelectableTable, GestorArchivos, },
 
   setup() {
