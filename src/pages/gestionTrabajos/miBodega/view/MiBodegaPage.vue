@@ -159,7 +159,6 @@
                 :permitirEliminar="false"
                 :permitirEditar="false"
                 :mostrarBotones="false"
-                :permitir-buscar="false"
                 :alto-fijo="false"
               ></essential-table>
             </div>
@@ -225,7 +224,6 @@
                 :permitirEliminar="false"
                 :permitirEditar="false"
                 :mostrarBotones="false"
-                :permitir-buscar="false"
                 :alto-fijo="false"
                 :ajustar-celdas="true"
               ></essential-table>
