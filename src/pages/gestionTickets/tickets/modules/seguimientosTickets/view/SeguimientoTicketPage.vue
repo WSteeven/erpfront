@@ -149,6 +149,7 @@
             :mostrarAccion1Header="permitirSubir"
             titulo="Cronología de actividades realizadas"
             @guardarFila="(fila) => guardarFilaActividad(fila)"
+            :ajustar-celdas="true"
           ></tabla-filas-dinamicas>
         </div>
         <!-- :editarFilaLocal="false" -->
