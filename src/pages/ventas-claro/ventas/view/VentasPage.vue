@@ -158,7 +158,7 @@
             <q-input
               v-model="precio_producto"
               placeholder="Opcional"
-              type="textarea"
+              type="number"
               disable
               autogrow
               outlined
@@ -236,7 +236,7 @@
             <q-input
               v-model="comision_vendedor"
               placeholder="Opcional"
-              type="textarea"
+              type="number"
               disable
               autogrow
               outlined

@@ -4,9 +4,9 @@ import { PagoComision } from './PagoComision'
 export const configuracionColumnasPagoComision: ColumnConfig<PagoComision>[] = [
 
 {
-  name: 'mes',
-  field: 'mes',
-  label: 'Mes',
+  name: 'fecha',
+  field: 'fecha',
+  label: 'Fecha de corte',
   align: 'left',
   sortable: true
 },

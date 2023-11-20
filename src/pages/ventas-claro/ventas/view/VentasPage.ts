@@ -131,7 +131,7 @@ const comision_vendedor = ref(0)
       }).then((response: HttpResponseGet) => {
         const { data } = response
         if (data) {
-          precio_producto.value = data.model.precio
+          precio_producto.value = data.modelo.precio
         }
       })
     }

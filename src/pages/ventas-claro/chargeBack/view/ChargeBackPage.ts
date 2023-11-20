@@ -9,6 +9,12 @@ import { ContenedorSimpleMixin } from 'shared/contenedor/modules/simple/applicat
 import { ChargebackController } from '../infrestructure/ChargebackController'
 import { configuracionColumnasChargeback } from '../domain/configuracionColumnasChargeback'
 import { estados_activacion, formas_pago, maskFecha } from 'config/utils'
+import {
+  requiredIf,
+  maxLength,
+  minLength,
+  required,
+} from 'shared/i18n-validators'
 import { maxValue, minValue } from '@vuelidate/validators'
 
 import { AxiosHttpRepository } from 'shared/http/infraestructure/AxiosHttpRepository'
@@ -59,6 +65,9 @@ export default defineComponent({
       tipo_chargeback: {
         required: true,
       },
+      porcentaje:{
+        required:requiredIf(() => chargeback.tipo_chargeback==1)
+      }
     }
     const v$ = useVuelidate(reglas, chargeback)
     setValidador(v$.value)
@@ -108,6 +117,23 @@ export default defineComponent({
         )
       })
     }
+    function tipoChargeback(){
+      chargeback.valor = null;
+      chargeback.porcentaje = null;
+    }
+    function obtenerValor(){
+
+      const total = listadosAuxiliares.ventas.filter(
+            (v) =>
+              v.id == chargeback.venta )
+              precio_producto.value =total[0].producto_precio;
+    }
+    watchEffect(() => {
+      if(chargeback.tipo_chargeback ==1){
+        const porcentaje = chargeback.porcentaje!=null?chargeback?.porcentaje:0
+        chargeback.valor = (precio_producto.value * porcentaje )/100
+      }
+    })
 
     return {
       mixin,
@@ -125,6 +151,8 @@ export default defineComponent({
       comision_vendedor,
       filtrarTiposChargeback,
       filtrarVentas,
+      tipoChargeback,
+      obtenerValor,
     }
   },
 })

@@ -5,7 +5,7 @@ export class Chargeback extends EntidadAuditable {
   venta: number | null
   venta_info: string | null
   fecha: string | null
-  valor: string | null
+  valor: number | null
   id_tipo_chargeback: number | null
   tipo_chargeback: number | null
   tipo_chargeback_info: string | null

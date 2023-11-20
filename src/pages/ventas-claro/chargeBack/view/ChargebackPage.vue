@@ -5,7 +5,7 @@
         <div class="row q-col-gutter-sm q-mb-md">
           <!-- Ventas -->
           <div class="col-12 col-md-3">
-            <label class="q-mb-sm block">Vendedor</label>
+            <label class="q-mb-sm block">Ventas</label>
             <q-select
               v-model="chargeback.venta"
               :options="ventas"
@@ -18,10 +18,11 @@
               :readonly="disabled"
               :error="!!v$.venta.$errors.length"
               @blur="v$.venta.$touch"
+              @update:model-value="obtenerValor()"
               error-message="Debes seleccionar un ventas"
               use-input
               input-debounce="0"
-              @filter="filtrarPlanes"
+              @filter="filtrarVentas"
               :option-value="(v) => v.id"
               :option-label="(v) => v.orden_interna"
               emit-value
@@ -63,30 +64,8 @@
               </template>
             </q-input>
           </div>
-          <!-- Valor -->
-          <div class="col-12 col-md-3">
-            <label class="q-mb-sm block">Valor</label>
-            <q-input
-              v-model="chargeback.valor"
-              placeholder="Obligatorio"
-              type="textarea"
-              :disable="disabled"
-              :error="!!v$.valor.$errors.length"
-              autogrow
-              @blur="v$.valor.$touch"
-              outlined
-              dense
-            >
-              <template v-slot:error>
-                <div v-for="error of v$.valor.$errors" :key="error.$uid">
-                  <div class="error-msg">{{ error.$message }}</div>
-                </div>
-              </template>
-            </q-input>
-          </div>
-
-          <!-- Tipo Chargeback -->
-          <div class="col-12 col-md-3">
+                    <!-- Tipo Chargeback -->
+                    <div class="col-12 col-md-3">
             <label class="q-mb-sm block">TipoChargeBack</label>
             <q-select
               v-model="chargeback.tipo_chargeback"
@@ -101,6 +80,8 @@
               :error="!!v$.tipo_chargeback.$errors.length"
               @blur="v$.tipo_chargeback.$touch"
               @filter="filtrarProductos"
+              @update:model-value="tipoChargeback()"
+
               error-message="Debes seleccionar un tipo_chargeback"
               use-input
               input-debounce="0"
@@ -121,6 +102,49 @@
               </template>
             </q-select>
           </div>
+          <!-- Valor -->
+          <div class="col-12 col-md-3">
+            <label class="q-mb-sm block">Valor</label>
+            <q-input
+              v-model="chargeback.valor"
+              placeholder="Obligatorio"
+              type="textarea"
+              :disable="disabled || chargeback.tipo_chargeback==1"
+              :error="!!v$.valor.$errors.length"
+              autogrow
+              @blur="v$.valor.$touch"
+              outlined
+              dense
+            >
+              <template v-slot:error>
+                <div v-for="error of v$.valor.$errors" :key="error.$uid">
+                  <div class="error-msg">{{ error.$message }}</div>
+                </div>
+              </template>
+            </q-input>
+          </div>
+          <!-- Porcentaje -->
+          <div class="col-12 col-md-3" v-if="chargeback.tipo_chargeback==1">
+            <label class="q-mb-sm block">Porcentaje</label>
+            <q-input
+              v-model="chargeback.porcentaje"
+              placeholder="Obligatorio"
+              type="textarea"
+              :disable="disabled"
+              :error="!!v$.porcentaje.$errors.length"
+              autogrow
+              @blur="v$.porcentaje.$touch"
+              outlined
+              dense
+            >
+              <template v-slot:error>
+                <div v-for="error of v$.porcentaje.$errors" :key="error.$uid">
+                  <div class="error-msg">{{ error.$message }}</div>
+                </div>
+              </template>
+            </q-input>
+          </div>
+
         </div>
       </q-form>
     </template>
