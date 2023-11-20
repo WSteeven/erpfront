@@ -8,8 +8,8 @@
     :filtrar="filtrarServicios"
     titulo-pagina="Servicios de Mantenimientos"
     :permitirEditar="false"
-    :accion1="desactivarServicio"
-    :accion2="activarServicio"
+    :accion1="btnDesactivar"
+    :accion2="btnActivar"
   >
     <template #formulario>
       <q-form @submit.prevent>

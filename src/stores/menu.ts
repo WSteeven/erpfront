@@ -637,10 +637,23 @@ export const useMenuStore = defineStore('menu', () => {
           can: store.can('puede.acceder.seguros_vehiculares'),
         },
         {
-          title: 'Servicios de Mantenimientos',
+          title: 'Mantenimiento',
           link: 'servicios',
-          icon: 'bi-gear-fill',
-          can: store.can('puede.acceder.servicios_mantenimientos'),
+          icon: 'bi-tools',
+          children: [
+            {
+              title: 'Servicios de Mantenimientos',
+              link: 'servicios',
+              icon: 'bi-gear-fill',
+              can: store.can('puede.acceder.servicios_mantenimientos'),
+            },
+            {
+              title: 'Planes de Mantenimiento',
+              link: 'planes-mantenimientos',
+              icon: 'bi-gear-fill',
+              can: store.can('puede.acceder.planes_mantenimientos'),
+            },
+          ]
         },
       ]
     },

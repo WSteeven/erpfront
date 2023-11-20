@@ -20,7 +20,7 @@ export const configuracionColumnasServicios: ColumnConfig<Servicio>[] = [
     {
         name: 'intervalo',
         field: 'intervalo',
-        label: 'Aplicar cada',
+        label: 'Aplicar cada (Km)',
         align: 'left',
         sortable: true
     },

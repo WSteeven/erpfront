@@ -274,10 +274,10 @@
                 ><q-icon name="bi-percent" size="xs" color="black"></q-icon
               ></template>
             </q-input>
-            <q-circular-progress
+            <q-knob
               show-value
               class="text-white q-ma-md"
-              :value="bitacora.tanque_final"
+              v-model="bitacora.tanque_final"
               size="90px"
               :thickness="0.2"
               :color="bitacora.tanque_final > 50 ? 'green-5' : 'red-5'"
@@ -286,9 +286,7 @@
               "
               track-color="transparent"
               instant-feedback
-            >
-              <template v-slot:default> {{ bitacora.tanque_final }}% </template>
-            </q-circular-progress>
+            >{{ bitacora.tanque_final }}%</q-knob>
           </div>
         </div>
       </q-form>

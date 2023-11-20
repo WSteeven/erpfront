@@ -571,6 +571,13 @@ const routes: RouteRecordRaw[] = [
           import('pages/controlVehiculos/matriculacion/view/MatriculaPage.vue'),
         meta: { requiresAuth: true },
       },
+      {
+        path: '/planes-mantenimientos',
+        name: 'planes_mantenimientos',
+        component: () =>
+          import('pages/controlVehiculos/planMantenimiento/view/PlanMantenimientoPage.vue'),
+        meta: { requiresAuth: true },
+      },
 
       //Routes for Activos Fijos
       {

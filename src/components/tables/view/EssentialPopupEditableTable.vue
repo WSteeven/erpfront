@@ -723,6 +723,22 @@
         <span v-else>{{ props.row[props.col.name] }}</span>
       </q-td>
     </template>
+    <template #body-cell-estado="props">
+      <q-td :props="props">
+        <q-icon
+          v-if="props.value"
+          name="bi-check-circle-fill"
+          color="positive"
+          size="sm"
+        ></q-icon>
+        <q-icon
+          v-if="!props.value"
+          name="bi-x-circle-fill"
+          color="negative"
+          size="sm"
+        ></q-icon>
+      </q-td>
+    </template>
   </q-table>
 </template>
 
