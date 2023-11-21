@@ -759,7 +759,7 @@ export const useMenuStore = defineStore('menu', () => {
           title: 'Dashboard',
           link: 'dashboard-ventas',
           icon: 'bi-circle',
-          can: true //store.can('puede.ver.dashboard_venta'),
+          can: store.can('puede.ver.dashboard_venta'),
         },
         {
           title: 'Productos',
