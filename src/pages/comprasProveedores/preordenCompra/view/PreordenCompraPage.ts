@@ -36,6 +36,7 @@ import { CustomActionPrompt } from "components/tables/domain/CustomActionPrompt"
 import { ordenarEmpleados } from "shared/utils";
 import { useFiltrosListadosSelects } from "shared/filtrosListadosGenerales";
 import { ComportamientoModalesPreordenes } from "../application/ComportamientoModalesPreordenes";
+import { EmpleadoRoleController } from "pages/recursosHumanos/empleados/infraestructure/EmpleadoRolesController";
 
 
 export default defineComponent({
