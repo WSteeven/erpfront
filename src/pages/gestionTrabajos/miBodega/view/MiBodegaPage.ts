@@ -64,7 +64,8 @@ export default defineComponent({
      * Init
      *******/
     // coordinador_id: authenticationStore.user.jefe_id
-    tareaController.listar({ finalizado: 0, campos: 'id,titulo,codigo_tarea' }).then((data) => tareasSource.value = data.result)
+    // tareaController.listar({ finalizado: 0, campos: 'id,titulo,codigo_tarea' }).then((data) => tareasSource.value = data.result)
+    tareaController.listar({ activas_empleado: 1, empleado_id: authenticationStore.user.id }).then((data) => tareasSource.value = data.result)
     obtenerClientesMaterialesTarea()
     obtenerClientesMaterialesEmpleado()
 
