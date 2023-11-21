@@ -1,8 +1,8 @@
 // Dependencias
 import { configuracionColumnasMaterialEmpleadoTarea } from '../domain/configuracionColumnasMaterialEmpleadoTarea'
 import { defineComponent, reactive, ref } from 'vue'
-import { tiposJornadas } from 'config/utils'
 import { modosStock } from 'config/tareas.utils'
+import { tiposJornadas } from 'config/utils'
 
 // Componentes
 import EssentialTable from 'components/tables/view/EssentialTable.vue'
@@ -10,17 +10,17 @@ import EssentialTable from 'components/tables/view/EssentialTable.vue'
 // Logica y controladores
 import { MaterialEmpleadoTareaController } from '../infraestructure/MaterialEmpleadoTareaController'
 import { TareaController } from 'pages/gestionTrabajos/tareas/infraestructure/TareaController'
-import { useNotificaciones } from 'shared/notificaciones'
-import { MaterialEmpleadoController } from '../infraestructure/MaterialEmpleadoController'
-import { useAuthenticationStore } from 'stores/authentication'
 import { StatusEssentialLoading } from 'components/loading/application/StatusEssentialLoading'
+import { MaterialEmpleadoController } from '../infraestructure/MaterialEmpleadoController'
 import { useListadoMaterialesDevolucionStore } from 'stores/listadoMaterialesDevolucion'
-import { useNotificacionStore } from 'stores/notificacion'
-import { useCargandoStore } from 'stores/cargando'
-import { useQuasar } from 'quasar'
-import { endpoints } from 'config/api'
 import { AxiosHttpRepository } from 'shared/http/infraestructure/AxiosHttpRepository'
+import { useAuthenticationStore } from 'stores/authentication'
+import { useNotificacionStore } from 'stores/notificacion'
+import { useNotificaciones } from 'shared/notificaciones'
+import { useCargandoStore } from 'stores/cargando'
+import { endpoints } from 'config/api'
 import { AxiosResponse } from 'axios'
+import { useQuasar } from 'quasar'
 
 export default defineComponent({
   components: { EssentialTable },
@@ -53,7 +53,6 @@ export default defineComponent({
       tipoStock: null
     })
     const mensaje = ref()
-    const listado = ref()
     const clienteMaterialStock = ref()
     const clienteMaterialTarea = ref()
     const clientes = ref([])
@@ -109,6 +108,9 @@ export default defineComponent({
         const ruta = axios.getEndpoint(endpoints.materiales_empleado_tarea, { tarea_id: filtro.tarea, empleado_id: authenticationStore.user.id, cliente_id: cliente })
         const response: AxiosResponse = await axios.get(ruta)
         materialesTarea.value = response.data.results
+        listadoMaterialesDevolucionStore.listadoMateriales = response.data.results
+        listadoMaterialesDevolucionStore.tareaId = filtro.tarea
+
         if (!materialesTarea.value.length) {
           notificarAdvertencia('No tienes material asignado.')
         }
