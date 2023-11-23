@@ -5,7 +5,7 @@
     titulo-pagina="Orden de Compra"
     :tab-options="tabOptionsOrdenCompra"
     :ajustarCeldas="true"
-    tabDefecto="1"
+    :tabDefecto="tabDefecto"
     :filtrar="filtrarOrdenes"
     :permitirEditar="false"
     :permitirEliminar="false"
