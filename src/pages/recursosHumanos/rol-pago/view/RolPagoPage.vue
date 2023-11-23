@@ -83,6 +83,7 @@
           v-model="rolpago.dias"
           placeholder="Obligatorio"
           type="number"
+          mask="##"
           :disable="disabled"
           outlined
           dense
@@ -153,7 +154,7 @@
         >
         </q-input>
       </div>
-      <div class="col-12 col-md-3" v-if="rolpago.es_vendedor_medio_tiempo && rolpago.es_vendedor_medio_tiempo">
+      <div class="col-12 col-md-3" v-if="rolpago.es_vendedor_medio_tiempo && rolpago.es_quincena">
         <label class="q-mb-sm block">Porcentaje Quincena</label>
         <q-input
           v-model="rolpago.porcentaje_quincena"

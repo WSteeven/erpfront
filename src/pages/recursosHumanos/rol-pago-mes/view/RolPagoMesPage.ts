@@ -51,6 +51,7 @@ import { MultaController } from 'pages/recursosHumanos/multas/infraestructure/Mu
 import { ConceptoIngresoController } from 'pages/recursosHumanos/concepto_ingreso/infraestructure/ConceptoIngresoController'
 
 export default defineComponent({
+  name: 'RolPagoMes',
   components: {
     TabLayoutFilterTabs2,
     ModalesEntidad,

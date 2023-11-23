@@ -78,6 +78,7 @@ export default defineComponent({
         materialesTarea.value = response.data.results
         listadoMaterialesDevolucionStore.listadoMateriales = response.data.results
         listadoMaterialesDevolucionStore.tareaId = filtro.tarea
+        listadoMaterialesDevolucionStore.cliente_id = cliente
 
         if (!materialesTarea.value.length) {
           notificarAdvertencia('No tienes material asignado.')
@@ -95,6 +96,8 @@ export default defineComponent({
         const { result } = await materialEmpleadoController.listar({ empleado_id: authenticationStore.user.id, cliente_id: cliente })
         listadoStockPersonal.value = result
         listadoMaterialesDevolucionStore.listadoMateriales = result
+        listadoMaterialesDevolucionStore.tareaId = null
+        listadoMaterialesDevolucionStore.cliente_id = cliente
         // mensaje.value = !result.length ? 'No tienes materiales asignados en tu stock personal' : ''
         if (!result.length) {
           notificarAdvertencia('No tienes material asignado.')

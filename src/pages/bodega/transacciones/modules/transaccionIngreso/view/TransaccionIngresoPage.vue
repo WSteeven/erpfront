@@ -119,7 +119,7 @@
             ></q-checkbox>
           </div>
           <!-- Devolución -->
-          <div v-if="transaccion.tiene_devolucion" class="col-12 col-md-3 q-mb-md">
+          <div v-if="transaccion.tiene_devolucion|| transaccion.devolucion" class="col-12 col-md-3 q-mb-md">
             <label class="q-mb-sm block">N° devolución</label>
             <q-input
               type="number"

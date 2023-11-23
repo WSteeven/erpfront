@@ -70,7 +70,7 @@ export default defineComponent({
       kardex.tipo_rpt = tipo
 
       const axios = AxiosHttpRepository.getInstance()
-      const filename = 'reporte_kardex_'+Date.now()
+      const filename = 'reporte_kardex_' + Date.now()
       const url = apiConfig.URL_BASE + '/' + axios.getEndpoint(endpoints.reporte_inventario) + '/kardex'
       switch (tipo) {
         case 'excel':
@@ -101,7 +101,7 @@ export default defineComponent({
           return
         }
         update(() => {
-          detalles.value = results.value.filter((v: DetalleProducto) => v.descripcion!.toLowerCase().indexOf(val.toLowerCase()) > -1)
+          detalles.value = results.value.filter((v: DetalleProducto) => v.descripcion!.toLowerCase().indexOf(val.toLowerCase()) > -1 || v.serial?.toLowerCase().indexOf(val.toLowerCase())>-1)
         })
       },
     }
