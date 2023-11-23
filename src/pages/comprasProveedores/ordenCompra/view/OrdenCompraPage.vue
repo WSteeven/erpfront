@@ -596,7 +596,12 @@
               "
               :permitirEditarModal="true"
               :permitirConsultar="false"
-              :permitirEditar="true"
+              :permitirEditar="accion == acciones.nuevo ||
+                (accion == acciones.editar &&
+                  (orden.autorizador == store.user.id ||
+                    orden.solicitante == store.user.id ||
+                    store.esCompras) &&
+                  (orden.autorizacion == 1 || store.esCompras))"
               :permitirEliminar="false"
               :mostrarBotones="false"
               :altoFijo="false"
