@@ -317,7 +317,7 @@ export default defineComponent({
 
     async function obtenerMaterialesTarea(cliente: number) {
       cargarVista(async () => {
-        const ruta = axios.getEndpoint(endpoints.materiales_empleado_tarea, { tarea_id: trabajoAsignadoStore.idTareaSeleccionada, subtarea_id: trabajoAsignadoStore.subtarea.id, empleado_id: obtenerIdEmpleadoResponsable(), cliente_id: cliente })
+        const ruta = axios.getEndpoint(endpoints.materiales_empleado_tarea, { tarea_id: trabajoAsignadoStore.idTareaSeleccionada, subtarea_id: trabajoAsignadoStore.subtarea.id, empleado_id: obtenerIdEmpleadoResponsable(), cliente_id: cliente, seguimiento: 1 })
         const response: AxiosResponse = await axios.get(ruta)
         materialesTarea.value = response.data.results
       })
@@ -325,7 +325,7 @@ export default defineComponent({
 
     function obtenerMaterialesStock(cliente: number) {
       cargarVista(async () => {
-        const ruta = axios.getEndpoint(endpoints.materiales_empleado, { empleado_id: obtenerIdEmpleadoResponsable(), subtarea_id: trabajoAsignadoStore.subtarea.id, cliente_id: cliente })
+        const ruta = axios.getEndpoint(endpoints.materiales_empleado, { empleado_id: obtenerIdEmpleadoResponsable(), subtarea_id: trabajoAsignadoStore.subtarea.id, cliente_id: cliente, seguimiento: 1 })
         const response: AxiosResponse = await axios.get(ruta)
         materialesStock.value = response.data.results
       })
@@ -423,30 +423,6 @@ export default defineComponent({
         editar(emergencia, cerrarModal, { empleado_id: obtenerIdEmpleadoResponsable(), tarea_id: trabajoAsignadoStore.idTareaSeleccionada, grupo: trabajoAsignadoStore.subtarea.grupo })
       }
     }
-
-    /* async function actualizarTablaMaterialesTarea() {
-      try {
-        cargando.activar()
-        materialesTarea.value = []
-        await obtenerMaterialesTarea() //.then(() => ajustarCantidadesMaterialTareaUtilizadas())
-      } catch (e) {
-        console.log(e)
-      } finally {
-        cargando.desactivar()
-      }
-    } */
-
-    /* async function actualizarTablaMaterialesStock() {
-      try {
-        cargando.activar()
-        materialesStock.value = []
-        await obtenerMaterialesStock() // .then(() => ajustarCantidadesMaterialStockUtilizadas())
-      } catch (e) {
-        console.log(e)
-      } finally {
-        cargando.desactivar()
-      }
-    } */
 
     function guardarFilaActividad(data) {
       actividad.hydrate(data)

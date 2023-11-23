@@ -1,7 +1,7 @@
 <template>
   <q-page padding>
     <div class="column q-mb-md text-center">
-      <div class="q-mb-md text-primary">Materiales de los elementos</div>
+      <div class="q-mb-md text-primary">Materiales de los empleados</div>
       <small
         >Conoce el material que tienen a su disposición los técnicos para
         utilizar en sus trabajos. <br />
@@ -160,7 +160,8 @@
             <div class="col-12 justify-center q-gutter-sm q-mb-md">
               <div class="col-12">
                 <label class="q-mb-sm block"
-                  >Seleccione un cliente para filtrar el material</label
+                  ><b>Paso 2: </b>Seleccione un cliente para filtrar el
+                  material</label
                 >
                 <q-select
                   v-model="clienteMaterialStock"
