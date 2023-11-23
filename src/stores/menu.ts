@@ -62,7 +62,7 @@ export const useMenuStore = defineStore('menu', () => {
           can: store.can('puede.ver.tareas'),
         },
         {
-          title: 'Materiales de técnicos',
+          title: 'Materiales de empleados',
           link: 'materiales-empleados',
           icon: 'bi-circle',
           can: store.can('puede.ver.materiales_empleados'),

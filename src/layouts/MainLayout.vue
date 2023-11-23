@@ -408,7 +408,7 @@
       <!-- Drawer Body -->
       <q-scroll-area
         style="height: calc(96% - 100px); margin-top: 100px"
-        class="bg-drawer rounded-card shadow-chip q-mb-sm"
+        class="bg-drawer rounded-card custom-shadow-2 q-mb-sm"
       >
         <q-list>
           <div v-for="item in links" :key="item.title">

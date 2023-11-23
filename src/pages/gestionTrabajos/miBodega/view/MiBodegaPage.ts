@@ -63,8 +63,6 @@ export default defineComponent({
     /*******
      * Init
      *******/
-    // coordinador_id: authenticationStore.user.jefe_id
-    // tareaController.listar({ finalizado: 0, campos: 'id,titulo,codigo_tarea' }).then((data) => tareasSource.value = data.result)
     tareaController.listar({ activas_empleado: 1, empleado_id: authenticationStore.user.id }).then((data) => tareasSource.value = data.result)
     obtenerClientesMaterialesTarea()
     obtenerClientesMaterialesEmpleado()
@@ -72,37 +70,6 @@ export default defineComponent({
     /************
      * Funciones
      ************/
-    /* async function filtrarStock(tipoStock: string | null) {
-      mensaje.value = ''
-      try {
-        cargando.activar()
-        if (tipoStock === 'personal') {
-          const { result } = await materialEmpleadoController.listar({ empleado_id: authenticationStore.user.id })
-          listadoStockPersonal.value = result
-          listadoMaterialesDevolucionStore.listadoMateriales = result
-        } else {
-          if (!filtro.tarea) {
-            return notificarAdvertencia('Debe seleccionar una tarea')
-          }
-
-          const { result } = await materialEmpleadoTareaController.listar({ tarea_id: filtro.tarea, empleado_id: authenticationStore.user.id })
-          if (result.length === 0) {
-            notificarAdvertencia('No tiene material asignado para la tarea seleccionada.')
-          }
-          listado.value = result
-          // asignacion al store de la tarea y el listado de materiales para devolver
-          listadoMaterialesDevolucionStore.listadoMateriales = result
-          listadoMaterialesDevolucionStore.tareaId = filtro.tarea
-        }
-        // if (tipoStock === 'personal') filtrarStockPersonal()
-        filtrarMaterialTarea()
-      } catch (e) {
-        notificarError('Error al obtener el material.')
-      } finally {
-        cargando.desactivar()
-      }
-    } */
-
     async function obtenerMaterialesTarea(cliente: number) {
       try {
         cargando.activar()
@@ -139,19 +106,6 @@ export default defineComponent({
       }
     }
 
-    /*async function filtrarMaterialTarea() {
-      const { result } = await materialEmpleadoTareaController.listar({ tarea_id: filtro.tarea, empleado_id: authenticationStore.user.id })
-      // if (result.length === 0) {
-      //   notificarAdvertencia('No tiene material asignado para la tarea seleccionada.')
-      // }
-      materialesTarea.value = result
-      mensaje.value = !result.length ? 'No tienes materiales asignados para la tarea seleccionada' : ''
-      // asignacion al store de la tarea y el listado de materiales para devolver
-      listadoMaterialesDevolucionStore.listadoMateriales = result
-      listadoMaterialesDevolucionStore.tareaId = filtro.tarea
-    }*/
-
-
     async function obtenerClientesMaterialesTarea() {
       try {
         cargando.activar()
@@ -176,7 +130,6 @@ export default defineComponent({
       } finally {
         cargando.desactivar()
       }
-
     }
 
     /**********
@@ -193,7 +146,6 @@ export default defineComponent({
         )
       })
     }
-    //botones para transferir al stock
 
     return {
       configuracionColumnasMaterialEmpleadoTarea,
