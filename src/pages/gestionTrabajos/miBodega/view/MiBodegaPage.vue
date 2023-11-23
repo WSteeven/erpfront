@@ -1,28 +1,15 @@
 <template>
   <q-page padding>
     <div class="column q-mb-md text-center">
-      <b>Mi bodega</b>
+      <div class="q-mb-md text-primary">Mi bodega</div>
       <small
         >Conoce el material que tienes a tu disposición para utilizar en tus
-        trabajos.</small
-      >
-      <small
-        >El material puede ser asignado para la tarea o a tu stock
+        trabajos. <br />
+        El material puede ser asignado para la tarea o a tu stock
         personal.</small
       >
     </div>
-    <!-- <div
-      class="col-12 rounded-card q-py-md text-center text-white bg-secondary q-mb-sm"
-    >
-      <div class="q-mb-md text-shadow">
-        Mantenga siempre actualizada su base de datos de materiales.
-      </div>
-      <div class="q-mb-md text-bold">Modo offline.</div>
-      <q-btn color="white" outline no-caps>
-        <q-icon name="bi-cloud-download-fill" class="q-mr-sm"></q-icon>
-        Sincronizar ahora</q-btn
-      >
-    </div> -->
+
     <q-card class="rounded-card custom-shadow">
       <q-tabs
         v-model="tab"
@@ -39,9 +26,7 @@
           icon="bi-pin-angle"
           @click="() => (mensaje = '')"
         />
-        <q-tab name="personal" label="Stock personal" icon="bi-person">
-          <!-- @click="filtrarStock('personal')" -->
-        </q-tab>
+        <q-tab name="personal" label="Stock personal" icon="bi-person"> </q-tab>
       </q-tabs>
 
       <q-tab-panels v-model="tab" animated>
