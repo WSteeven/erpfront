@@ -72,11 +72,16 @@ export default defineComponent({
         cargando.activar()
         const tareasResponse = await tareaController.listar({ activas_empleado: 1, empleado_id: filtro.empleado })
         tareasSource.value = tareasResponse.result
+
+        obtenerClientesMaterialesTarea()
+        obtenerClientesMaterialesEmpleado()
+
         clienteMaterialStock.value = undefined
         clienteMaterialTarea.value = undefined
         listadoStockPersonal.value = []
         materialesTarea.value = []
         filtro.tarea = null
+
       } catch (e) {
         console.log(e)
       } finally {
@@ -100,9 +105,6 @@ export default defineComponent({
     }
 
     cargarEmpleados()
-    obtenerClientesMaterialesTarea()
-    obtenerClientesMaterialesEmpleado()
-
     /************
      * Funciones
      ************/
