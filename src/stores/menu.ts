@@ -752,6 +752,12 @@ export const useMenuStore = defineStore('menu', () => {
       can: false,// store.can('puede.ver.modulo_administracion') && store.esActivosFijos,
     },
     {
+      title: 'Log de auditorías',
+      link: 'auditorias',
+      icon: 'bi-journal-text',
+      can: store.can('puede.acceder.auditorias') || store.esAdministrador,
+    },
+    {
       title: 'Configuracion General',
       link: 'configuracion',
       icon: 'bi-house-gear-fill',
