@@ -72,6 +72,7 @@ export default defineComponent({
     const total = computed(() => orden.listadoProductos.reduce((prev, curr) => prev + parseFloat(curr.total), 0).toFixed(2))
 
     // Flags
+    const tabDefecto = ref()
     let tabSeleccionado = ref()
     let soloLectura = ref(false)
     let puedeEditar = ref(false)
@@ -203,6 +204,7 @@ export default defineComponent({
     //   return parametro
     // }
     function filtrarOrdenes(tab: string) {
+      tabDefecto.value=tab
       tabSeleccionado.value = tab
       if (tab == '1' || tab == '2') puedeEditar.value = true
       else puedeEditar.value = false
@@ -438,8 +440,8 @@ export default defineComponent({
         confirmar('¿Está seguro de marcar como pagada la orden de compra?', async () => {
           ordenCompraStore.idOrden = entidad.id
           await ordenCompraStore.marcarPagada()
+          await filtrarOrdenes('5')
         })
-        listar({ realizada: 1, pagada: 1, solicitante_id: store.user.id })
       },
       visible: ({ entidad }) => tabSeleccionado.value == 4 && store.esContabilidad
     }
@@ -483,12 +485,10 @@ export default defineComponent({
       refItems,
       //listados
       empleados,
-      // categorias,
       proveedores,
       autorizaciones,
       tareas,
       estados,
-      // empleadosAutorizadores,
       opcionesForma,
       opcionesTiempo,
 
@@ -520,6 +520,7 @@ export default defineComponent({
       //tabla de detalles
       //Tabs
       tabOptionsOrdenCompra,
+      tabDefecto,
       tabSeleccionado,
       puedeEditar,
 
