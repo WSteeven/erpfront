@@ -131,8 +131,6 @@ export default defineComponent({
       icono: 'bi-play-fill',
       color: 'positive',
       accion: () => {
-        console.log(rolpago)
-
         if (!rolpago.id)
           return notificarAdvertencia('Primero debe seleccionar una rol.')
         confirmar('¿Está seguro de iniciar cambios rol de pago?', async () => {
@@ -149,7 +147,7 @@ export default defineComponent({
       titulo: 'Finalizar Rol de Pago',
       icono: 'bi-check',
       color: 'positive',
-      visible: () => rolpago.es_quincena == true,
+      visible: () => rolpago.finalizado == false,
       accion: () => {
         if (!rolpago.id)
           return notificarAdvertencia('Primero debe seleccionar una rol.')
