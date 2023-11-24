@@ -564,8 +564,9 @@
             class="rounded-card text-indigo q-pa-md text-center bg-indigo-2"
             style="border: 1px solid #4a5bb980"
           >
-            <div class="text-subtitle2 q-mb-lg">
-              {{ listados.tiempoPromedio }}
+            <div class="text-subtitle2 q-mb-md">
+              Tiempo promedio de finalización: <br />
+              <b>{{ listados.tiempoPromedio }}</b>
             </div>
             <q-icon name="bi-clock-history" size="xl" color="indigo-5"></q-icon>
           </div>
@@ -576,11 +577,12 @@
             class="rounded-card text-positive q-pa-md text-center bg-light-green-1"
             style="border: 1px solid #9bc12a80"
           >
-            <div class="text-subtitle2 q-mb-lg">
-              {{
-                listados.totalTicketsFinalizados +
-                ' tickets finalizados en el intervalo seleccionado'
-              }}
+            <div class="text-subtitle2 q-mb-md">
+              Cantidad de tickets finalizados en el intervalo seleccionado
+              <br />
+              <b>
+                {{ listados.totalTicketsFinalizados + ' tickets' }}
+              </b>
             </div>
             <q-icon
               name="bi-check-circle"
