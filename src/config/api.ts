@@ -10,6 +10,7 @@ export const endpoints = {
   csrf_cookie: new Endpoint('api/csrf-cookie', false),
   usuarios: new Endpoint('usuarios'),
   configuracion: new Endpoint('configuracion'),
+  auditorias: new Endpoint('auditorias'),
   login: new Endpoint('usuarios/login'),
   logout: new Endpoint('usuarios/logout'),
   cambiarContrasena: new Endpoint('usuarios/cambiar-contrasena'),
@@ -122,6 +123,7 @@ export const endpoints = {
   empleados_choferes: new Endpoint('vehiculos/empleados-choferes'),
 
   //Modulo de compras y proveedores
+  dashboard_compras: new Endpoint('compras/dashboard'),
   calificacion_proveedor: new Endpoint('compras/calificaciones-proveedores'),
   categorias_ofertas: new Endpoint('compras/categorias-ofertas'),
   contactos_proveedores: new Endpoint('compras/contactos-proveedores'),
@@ -133,6 +135,7 @@ export const endpoints = {
   ofertas_proveedores: new Endpoint('compras/ofertas-proveedores'),
   ordenes_compras: new Endpoint('compras/ordenes-compras'),
   preordenes_compras: new Endpoint('compras/preordenes-compras'),
+  preordenes_compras_consolidadas: new Endpoint('compras/preordenes-consolidadas'),
   novedades_ordenes_compras: new Endpoint('compras/novedades-ordenes-compras'),
   prefacturas: new Endpoint('compras/prefacturas'),
   proformas: new Endpoint('compras/proformas'),
@@ -218,6 +221,7 @@ export const endpoints = {
   archivos_seguimientos: new Endpoint('tareas/archivos-seguimientos'),
   materiales_empleado_tarea: new Endpoint('tareas/materiales-empleado-tarea'),
   materiales_empleado: new Endpoint('tareas/materiales-empleado'),
+  materiales_empleado_consolidado: new Endpoint('tareas/materiales-empleado-consolidado'),
   registros_tendidos: new Endpoint('tareas/registros-tendidos'),
   reportes_modulo_tareas: new Endpoint('tareas/reportes'),
   resumen_tendidos: new Endpoint('tareas/resumen-tendidos'),
@@ -232,10 +236,16 @@ export const endpoints = {
   transferir_mis_tareas_activas: new Endpoint('tareas/transferir-mis-tareas-activas'),
   obtener_suma_material_tarea_usado: new Endpoint('tareas/obtener-suma-material-tarea-usado'),
   obtener_historial_material_tarea_usado_por_fecha: new Endpoint('tareas/obtener-historial-material-tarea-usado-por-fecha'),
+  obtener_historial_material_stock_usado_por_fecha: new Endpoint('tareas/obtener-historial-material-stock-usado-por-fecha'),
   actualizar_cantidad_utilizada_historial: new Endpoint('tareas/actualizar-cantidad-utilizada-historial'),
+  actualizar_cantidad_utilizada_historial_stock: new Endpoint('tareas/actualizar-cantidad-utilizada-historial-stock'),
   actualizar_cantidad_utilizada_tarea: new Endpoint('tareas/actualizar-cantidad-utilizada-tarea'),
+  actualizar_cantidad_utilizada_stock: new Endpoint('tareas/actualizar-cantidad-utilizada-stock'),
   actividades_realizadas_seguimientos_subtareas: new Endpoint('tareas/actividades-realizadas-seguimientos-subtareas'),
   fechas_historial_materiales_usados: new Endpoint('tareas/obtener-fechas-historial-materiales-usados'),
+  fechas_historial_materiales_stock_usados: new Endpoint('tareas/obtener-fechas-historial-materiales-stock-usados'),
+  obtener_clientes_materiales_empleado: new Endpoint('tareas/obtener-clientes-materiales-empleado'),
+  obtener_clientes_materiales_tarea: new Endpoint('tareas/obtener-clientes-materiales-tarea'),
 
   // Modulo Fondos Rotativos
   tipo_fondo: new Endpoint('fondos-rotativos/tipo-fondo'),

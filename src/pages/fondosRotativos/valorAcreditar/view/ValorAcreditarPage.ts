@@ -18,6 +18,7 @@ import { acciones, accionesTabla } from 'config/utils'
 import { AxiosHttpRepository } from 'shared/http/infraestructure/AxiosHttpRepository'
 import axios from 'axios'
 import { HttpResponseGet } from 'shared/http/domain/HttpResponse'
+import { useNotificaciones } from 'shared/notificaciones'
 
 export default defineComponent({
   components: { TabLayout, EssentialTable, ButtonSubmits },
@@ -39,6 +40,8 @@ export default defineComponent({
       mixin.useComportamiento()
     const { entidad: valorAcreditar, disabled, accion } = mixin.useReferencias()
     const authenticationStore = useAuthenticationStore()
+    const { confirmar, prompt } = useNotificaciones()
+
     const deshabilitar_empleado = ref(true)
     const mostrar_formulario = ref(false)
     /*************
@@ -105,11 +108,19 @@ export default defineComponent({
       color: 'secondary',
       visible: () =>
         authenticationStore.can('puede.eliminar.valor_acreditar') && !acreditacionesStore.esta_acreditado,
-      accion: ({ entidad }) => {
+      accion: ({ entidad, posicion }) => {
         accion.value = 'ELIMINAR'
-        eliminar(entidad)
+        eliminar(entidad);
+        //eliminar_acreditacion({entidad,posicion})
       },
     }
+    function eliminar_acreditacion({ entidad, posicion }) {
+      confirmar('¿Está seguro de continuar?', () => {
+        accion.value = 'EDITAR'
+        guardarDatos(entidad)
+        listado.value.splice(posicion, 1)
+      })
+  }
     function filtrarEmpleados(val, update) {
       if (val === '') {
         update(() => {

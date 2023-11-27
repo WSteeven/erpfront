@@ -60,10 +60,14 @@ export default defineComponent({
       }
     }
 
+    function guardado(data: any) {
+      if (data == 'aceptado') filtrarTabs('PENDIENTE')
+    }
 
     return {
       mixin, transaccion, disabled, listado,
       configuracionColumnas: configuracionColumnasTransaccionEgreso,
+      guardado,
 
       tabGestionarEgresos, filtrarTabs,
       botonVerTransaccion, accionesTabla, modales,

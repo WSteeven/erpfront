@@ -85,6 +85,17 @@
               </q-input>
             </div>
 
+            <div v-if="ticket.tiempo_hasta_finalizar" class="col-12 col-md-3">
+              <label class="q-mb-sm block">Tiempo hasta finalizar</label>
+              <q-input
+                v-model="ticket.tiempo_hasta_finalizar"
+                disable
+                outlined
+                dense
+              >
+              </q-input>
+            </div>
+
             <!-- Solicitante-->
             <div class="col-12 col-md-3">
               <label class="q-mb-sm block">Solicitante</label>

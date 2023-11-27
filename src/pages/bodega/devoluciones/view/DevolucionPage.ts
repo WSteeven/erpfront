@@ -23,7 +23,7 @@ import { configuracionColumnasProductosSeleccionados } from '../domain/configura
 import { configuracionColumnasDetallesModal } from '../domain/configuracionColumnasDetallesModal'
 import { useNotificaciones } from 'shared/notificaciones'
 import { CustomActionTable } from 'components/tables/domain/CustomActionTable'
-import { acciones, estadosTransacciones, tabOptionsDevoluciones, tabOptionsPedidos } from 'config/utils'
+import { acciones, estadosTransacciones, tabOptionsPedidos } from 'config/utils'
 import { useDevolucionStore } from 'stores/devolucion'
 
 import { useAuthenticationStore } from 'stores/authentication'
@@ -36,9 +36,17 @@ import { ValidarListadoProductos } from '../application/ValidarListadoProductos'
 import { useCargandoStore } from 'stores/cargando'
 import { useNotificacionStore } from 'stores/notificacion'
 import { useRouter } from 'vue-router'
+import { SucursalController } from 'pages/administracion/sucursales/infraestructure/SucursalController'
+import { Sucursal } from 'pages/administracion/sucursales/domain/Sucursal'
+import { ordernarListaString } from 'shared/utils'
+import { StatusEssentialLoading } from 'components/loading/application/StatusEssentialLoading'
+import { endpoints } from 'config/api'
+import { AxiosResponse } from 'axios'
+import { AxiosHttpRepository } from 'shared/http/infraestructure/AxiosHttpRepository'
 
 
 export default defineComponent({
+  name: 'Devoluciones',
   components: { TabLayoutFilterTabs2, EssentialTable, EssentialSelectableTable, GestorArchivos, },
 
   setup() {
@@ -46,7 +54,7 @@ export default defineComponent({
     const { entidad: devolucion, disabled, accion, listadosAuxiliares, listado } = mixin.useReferencias()
     const { setValidador, obtenerListados, cargarVista, listar } = mixin.useComportamiento()
     const { onReestablecer, onGuardado, onConsultado } = mixin.useHooks()
-    const { confirmar, prompt, notificarCorrecto, notificarError } = useNotificaciones()
+    const { confirmar, prompt, notificarCorrecto, notificarError, notificarInformacion } = useNotificaciones()
 
     //stores
     useNotificacionStore().setQuasar(useQuasar())
@@ -55,6 +63,8 @@ export default defineComponent({
     const store = useAuthenticationStore()
     const listadoMaterialesDevolucion = useListadoMaterialesDevolucionStore()
     const router = useRouter()
+    const cargando = new StatusEssentialLoading()
+    const axios = AxiosHttpRepository.getInstance()
 
     //orquestador
     const {
@@ -64,9 +74,9 @@ export default defineComponent({
       listar: listarProductos,
       limpiar: limpiarProducto,
       seleccionar: seleccionarProducto
-    } = useOrquestadorSelectorDetalles(devolucion, 'detalles')
+    } = useOrquestadorSelectorDetalles(devolucion, 'materiales_empleado_consolidado')
 
-    //flags
+    //variables
     const refArchivo = ref()
     const idDevolucion = ref()
     let tabSeleccionado = ref()
@@ -75,6 +85,8 @@ export default defineComponent({
     let puedeEditar = ref(false)
     const esCoordinador = store.esCoordinador
     const esActivosFijos = store.esActivosFijos
+    const clienteMaterialStock = ref(null)
+    const clientes = ref([])
 
 
     onReestablecer(() => {
@@ -97,6 +109,7 @@ export default defineComponent({
     const opciones_cantones = ref([])
     const opciones_tareas = ref([])
     const opciones_autorizaciones = ref([])
+    const opciones_sucursales = ref([])
     //Obtener los listados
     cargarVista(async () => {
       await obtenerListados({
@@ -116,6 +129,8 @@ export default defineComponent({
       //logica para autocompletar el formulario de devolucion
       if (listadoMaterialesDevolucion.listadoMateriales.length) {
         devolucion.tarea = listadoMaterialesDevolucion.tareaId ? listadoMaterialesDevolucion.tareaId : null
+        clienteMaterialStock.value = listadoMaterialesDevolucion.cliente_id
+        filtrarCliente(clienteMaterialStock.value)
         devolucion.es_tarea = !!devolucion.tarea
         devolucion.es_para_stock = listadoMaterialesDevolucion.devolverAlStock
         devolucion.listadoProductos = listadoMaterialesDevolucion.listadoMateriales.map((material: MaterialEmpleadoTarea) => {
@@ -128,15 +143,18 @@ export default defineComponent({
             id: material.detalle_producto_id
           }
         })
-
       }
+      listadosAuxiliares.sucursales = JSON.parse(LocalStorage.getItem('sucursales')!.toString())
+      opciones_sucursales.value = listadosAuxiliares.sucursales
+      obtenerClientesMaterialesEmpleado()
     })
 
     //reglas de validacion
     const reglas = {
       justificacion: { required },
       observacion_aut: { requiredIfCoordinador: requiredIf(() => devolucion.tiene_observacion_aut!) },
-      canton: { required },
+      // canton: { required },
+      sucursal: { required },
       tarea: { requiredIfTarea: requiredIf(devolucion.es_tarea!) },
     }
 
@@ -149,6 +167,30 @@ export default defineComponent({
     /*******************************************************************************************
      * Funciones
      ******************************************************************************************/
+    async function obtenerClientesMaterialesEmpleado() {
+      try {
+        cargando.activar()
+        const ruta = axios.getEndpoint(endpoints.obtener_clientes_materiales_empleado) + '/' + store.user.id
+        const response: AxiosResponse = await axios.get(ruta)
+        clientes.value = response.data.results
+      } catch (e) {
+        console.log(e)
+      } finally {
+        cargando.desactivar()
+      }
+
+    }
+
+    async function filtrarCliente(value: number | null) {
+      devolucion.listadoProductos = []
+      devolucion.sucursal = null
+      devolucion.sucursal_id = null
+      if (value == null)
+        listadosAuxiliares.sucursales = JSON.parse(LocalStorage.getItem('sucursales')!.toString())
+      else
+        listadosAuxiliares.sucursales = JSON.parse(LocalStorage.getItem('sucursales')!.toString()).filter((v) => v.cliente_id == value)
+
+    }
     async function subirArchivos() {
       await refArchivo.value.subir()
     }
@@ -173,6 +215,13 @@ export default defineComponent({
       listar({ estado: tab })
     }
 
+    async function recargarSucursales() {
+      const sucursales = (await new SucursalController().listar({ campos: 'id,lugar' })).result
+      LocalStorage.set('sucursales', JSON.stringify(sucursales))
+    }
+    function comunicarComportamiento(value) {
+      if (value) notificarInformacion('Esta opción generará un pedido automáticamente con los mismos items de la devolución, cuando la devolución sea aprobada')
+    }
 
 
     /*******************************************************************************************
@@ -265,6 +314,7 @@ export default defineComponent({
     opciones_empleados.value = listadosAuxiliares.empleados
     opciones_cantones.value = JSON.parse(LocalStorage.getItem('cantones')!.toString())
     opciones_autorizaciones.value = JSON.parse(LocalStorage.getItem('autorizaciones')!.toString())
+    opciones_sucursales.value = listadosAuxiliares.sucursales
     opciones_tareas.value = listadosAuxiliares.tareas
 
     return {
@@ -272,9 +322,11 @@ export default defineComponent({
       configuracionColumnas: configuracionColumnasDevoluciones,
       //listados
       opciones_empleados,
+      clientes,
       opciones_tareas,
       opciones_cantones,
       opciones_autorizaciones,
+      opciones_sucursales,
       store,
       refArchivo,
       idDevolucion,
@@ -303,6 +355,7 @@ export default defineComponent({
       esVisibleTarea,
       esCoordinador,
       esActivosFijos,
+      clienteMaterialStock,
 
       //Tabs
       tabOptionsPedidos,
@@ -312,6 +365,7 @@ export default defineComponent({
 
       //funciones
       filtrarDevoluciones,
+      filtrarCliente,
 
       //Filtros
       filtroCantones(val, update) {
@@ -338,6 +392,26 @@ export default defineComponent({
           opciones_empleados.value = listadosAuxiliares.empleados.filter((v) => v.nombres.toLowerCase().indexOf(needle) > -1 || v.apellidos.toLowerCase().indexOf(needle) > -1)
         })
       },
+      recargarSucursales,
+      filtroSucursales(val, update) {
+        if (val === '') {
+          update(() => {
+            opciones_sucursales.value = listadosAuxiliares.sucursales
+          })
+          return
+        }
+        update(() => {
+          const needle = val.toLowerCase()
+          opciones_sucursales.value = listadosAuxiliares.sucursales.filter((v) => {
+            return clienteMaterialStock.value != null ? v.lugar.toLowerCase().indexOf(needle) > -1 && v.cliente_id == clienteMaterialStock.value : v.lugar.toLowerCase().indexOf(needle) > -1
+          })
+        })
+
+      },
+      ordenarSucursales() {
+        opciones_sucursales.value.sort((a: Sucursal, b: Sucursal) => ordernarListaString(a.lugar!, b.lugar!))
+      },
+      comunicarComportamiento,
     }
   }
 })

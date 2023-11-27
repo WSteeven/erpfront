@@ -119,7 +119,7 @@
             ></q-checkbox>
           </div>
           <!-- Devolución -->
-          <div v-if="transaccion.tiene_devolucion" class="col-12 col-md-3 q-mb-md">
+          <div v-if="transaccion.tiene_devolucion|| transaccion.devolucion" class="col-12 col-md-3 q-mb-md">
             <label class="q-mb-sm block">N° devolución</label>
             <q-input
               type="number"
@@ -148,6 +148,21 @@
               :disable="disabled || soloLectura"
               :rules="[(val) => val > 0 || 'Ingresa un numero de comprobante válido']"
               :lazy-rules="true"
+              outlined
+              dense
+            >
+            </q-input>
+          </div>
+          <!--Proveedor -->
+          <div
+            v-if="esVisibleComprobante || transaccion.proveedor"
+            class="col-12 col-md-3 q-mb-md"
+          >
+            <label class="q-mb-sm block">Proveedor</label>
+            <q-input
+              v-model="transaccion.proveedor"
+              placeholder="Obligatorio"
+              :disable="disabled || soloLectura"
               outlined
               dense
             >

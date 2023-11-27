@@ -15,6 +15,7 @@ export const useListadoMaterialesDevolucionStore = defineStore('listadoMateriale
     const listadoMaterialStock = ref([])
     const listadoMateriales = ref([])
     const tareaId = ref()
+    const cliente_id = ref()
     const devolverAlStock = ref(false)
 
    
@@ -22,6 +23,7 @@ export const useListadoMaterialesDevolucionStore = defineStore('listadoMateriale
     return {
         listadoMateriales,
         tareaId,
+        cliente_id,
         devolverAlStock,
 
     }

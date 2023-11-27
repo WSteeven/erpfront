@@ -19,7 +19,7 @@ import { Pedido } from '../domain/Pedido'
 
 import { configuracionColumnasProductosSeleccionadosDespachado } from '../domain/configuracionColumnasProductosSeleccionadosDespachado'
 import { configuracionColumnasProductosSeleccionados } from '../domain/configuracionColumnasProductosSeleccionados'
-import { acciones, autorizacionesTransacciones, estadosTransacciones, tabOptionsPedidos } from 'config/utils'
+import { acciones, autorizaciones, autorizacionesTransacciones, estados, estadosTransacciones, tabOptionsPedidos } from 'config/utils'
 import { EmpleadoController } from 'pages/recursosHumanos/empleados/infraestructure/EmpleadoController'
 import { configuracionColumnasDetallesModal } from '../domain/configuracionColumnasDetallesModal'
 import { TareaController } from 'tareas/infraestructure/TareaController'
@@ -116,8 +116,6 @@ export default defineComponent({
     const opciones_empleados = ref([])
     const opciones_sucursales = ref([])
     const opciones_tareas = ref([])
-    const opciones_autorizaciones = ref([])
-    const opciones_estados = ref([])
 
     //Obtener los listados
     cargarVista(async () => {
@@ -335,9 +333,7 @@ export default defineComponent({
     opciones_tareas.value = listadosAuxiliares.tareas
     opciones_clientes.value = listadosAuxiliares.clientes
     opciones_sucursales.value = JSON.parse(LocalStorage.getItem('sucursales')!.toString())
-    opciones_autorizaciones.value = JSON.parse(LocalStorage.getItem('autorizaciones')!.toString())
-    opciones_estados.value = JSON.parse(LocalStorage.getItem('estados_transacciones')!.toString())
-
+    
     return {
       mixin, pedido, disabled, accion, v$, acciones,
       configuracionColumnas: configuracionColumnasPedidos,
@@ -346,8 +342,8 @@ export default defineComponent({
       opciones_tareas,
       opciones_clientes,
       opciones_sucursales,
-      opciones_estados,
-      opciones_autorizaciones,
+      opciones_estados: estados,
+      opciones_autorizaciones:autorizaciones,
 
       //selector
       refListado,

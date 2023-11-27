@@ -32,7 +32,7 @@ import { useRoute } from 'vue-router'
 
 export default defineComponent({
   components: { TabLayout, EssentialTable, EssentialSelectableTable },
-  emits: ['cerrar-modal'],
+  // emits: ['cerrar-modal'],
   setup(props, { emit }) {
     const mixin = new ContenedorSimpleMixin(Transaccion, new TransaccionEgresoController())
     const { entidad: transaccion } = mixin.useReferencias()
@@ -98,6 +98,7 @@ export default defineComponent({
               // transaccionStore.firmarComprobante(transaccionStore.idTransaccion, datos)
               notificarCorrecto('Documento aprobado y firmado correctamente')
               emit('cerrar-modal', false)
+              emit('guardado', 'aceptado')
             })
           } catch (e) {
             notificarError('No se pudo aprobar ni firmar el documento')
