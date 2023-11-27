@@ -1,4 +1,4 @@
-import { defineComponent, reactive, ref, watchEffect } from 'vue'
+import { defineComponent, onMounted, reactive, ref, watchEffect } from 'vue'
 
 import TabLayout from 'shared/contenedor/modules/simple/view/TabLayout.vue'
 import { useNotificacionStore } from 'stores/notificacion'
@@ -23,6 +23,7 @@ import { AxiosResponse } from 'axios'
 import { useNotificaciones } from 'shared/notificaciones'
 import { useCargandoStore } from 'stores/cargando'
 import { useAuthenticationStore } from 'stores/authentication'
+import { CustomActionPrompt } from 'components/tables/domain/CustomActionPrompt'
 
 
 export default defineComponent({
@@ -33,6 +34,8 @@ export default defineComponent({
      *********/
     useNotificacionStore().setQuasar(useQuasar())
     const acreditacionesStore = useAcreditacionesStore()
+    const { notificarAdvertencia, notificarCorrecto, confirmar, promptItems } =
+      useNotificaciones()
     /***********
      * Mixin
      ************/
@@ -55,7 +58,6 @@ export default defineComponent({
     } = mixin.useReferencias()
     const { setValidador, obtenerListados, cargarVista, listar } =
       mixin.useComportamiento()
-      const { confirmar, prompt, notificarAdvertencia, notificarCorrecto } = useNotificaciones()
       const store = useAuthenticationStore()
       useCargandoStore().setQuasar(useQuasar())
 
@@ -79,8 +81,13 @@ export default defineComponent({
     cargarVista(async () => {
       listado.value = (await new AcreditacionSemanaController().listar()).result
     })
-
+    const lista_tipo_reporte = [
+      { id: 'pdf', name: 'PDF' },
+      { id: 'xlsx', name: 'EXCEL' },
+    ]
     /**Modales */
+
+
 
     const botonVerModalValorAcreditar: CustomActionTable = {
       titulo: 'Consultar',
@@ -134,6 +141,49 @@ export default defineComponent({
         )
     }
 
+
+
+   const botonReporte: CustomActionTable = {
+      titulo: 'Reporte General',
+      icono: 'bi-printer',
+      color: 'primary',
+      visible: ({ entidad }) =>
+       true,
+      accion: ({ entidad }) => {
+        const config: CustomActionPrompt = reactive({
+          mensaje: 'Confirme el tipo de reporte',
+          accion: (tipo) => {
+            generar_reporte(entidad.id, tipo)
+          },
+          requerido: false,
+          defecto: 'EXCEL',
+          tipo: 'radio',
+          items: lista_tipo_reporte.map((tipo) => {
+            return {
+              label: tipo.name,
+              value: tipo.id,
+            }
+          }),
+        })
+        promptItems(config)
+      },
+    }
+    async function generar_reporte(
+      id: number,
+      tipo: string
+    ): Promise<void> {
+      const axios = AxiosHttpRepository.getInstance()
+      const filename = 'acreditacion_semana'
+      const url_pdf =
+        apiConfig.URL_BASE +
+        '/' +
+        axios.getEndpoint(endpoints.reporte_acreditacion_semanal) +
+        id +
+        '?tipo=' +
+        tipo
+
+      imprimirArchivo(url_pdf, 'GET', 'blob', tipo, filename, null)
+    }
     return {
       mixin,
       fondo_rotativo_contabilidad,
@@ -144,6 +194,7 @@ export default defineComponent({
       maskFecha,
       opened,
       modalesAcreditacionSemana,
+      botonReporte,
       watchEffect,
       listado,
       botonVerModalValorAcreditar,
