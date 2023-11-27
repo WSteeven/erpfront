@@ -10,6 +10,7 @@ import { ValorAcreditarController } from '../infrestructure/ValorAcreditarContro
 import { configuracionColumnasValorAcreditar } from '../domain/configuracionColumnasValorAcreditar'
 import ButtonSubmits from 'components/buttonSubmits/buttonSubmits.vue'
 import { CustomActionTable } from 'components/tables/domain/CustomActionTable'
+import { CustomActionPrompt } from 'components/tables/domain/CustomActionPrompt'
 import EssentialTable from 'components/tables/view/EssentialTable.vue'
 import { useAcreditacionesStore } from 'stores/acreditaciones'
 import { EmpleadoController } from 'pages/recursosHumanos/empleados/infraestructure/EmpleadoController'
@@ -22,7 +23,7 @@ import { useNotificaciones } from 'shared/notificaciones'
 
 export default defineComponent({
   components: { TabLayout, EssentialTable, ButtonSubmits },
-  setup() {
+  setup(props, { emit }) {
     /*********
      * Stores
      *********/
@@ -40,7 +41,8 @@ export default defineComponent({
       mixin.useComportamiento()
     const { entidad: valorAcreditar, disabled, accion } = mixin.useReferencias()
     const authenticationStore = useAuthenticationStore()
-    const { confirmar, prompt } = useNotificaciones()
+    const { confirmar, prompt,
+      notificarCorrecto, notificarError } = useNotificaciones()
 
     const deshabilitar_empleado = ref(true)
     const mostrar_formulario = ref(false)
@@ -110,18 +112,36 @@ export default defineComponent({
         authenticationStore.can('puede.eliminar.valor_acreditar') && !acreditacionesStore.esta_acreditado,
       accion: ({ entidad, posicion }) => {
         accion.value = 'ELIMINAR'
-        eliminar(entidad);
-        //eliminar_acreditacion({entidad,posicion})
+       // eliminar(entidad);
+       eliminar_acreditacion({entidad,posicion})
       },
     }
-    function eliminar_acreditacion({ entidad, posicion }) {
-      confirmar('¿Está seguro de continuar?', () => {
-        accion.value = 'EDITAR'
-        guardarDatos(entidad)
-        listado.value.splice(posicion, 1)
-      })
+   async  function eliminar_acreditacion({ entidad, posicion }) {
+      try {
+
+        const data: CustomActionPrompt = {
+          titulo: 'Anular Acreditacion',
+          mensaje: 'Ingrese motivo de anulacion',
+          accion: async (data) => {
+            console.log('Eliminar',entidad);
+            entidad.estado = false
+            entidad.motivo = data
+              valorAcreditar.id= entidad.id
+              valorAcreditar.estado = false
+              valorAcreditar.motivo = data
+              await editar(entidad, true)
+              notificarCorrecto('Se ha anulado Acreditacion')
+              listado.value.splice(posicion, 1)
+          },
+        }
+        prompt(data)
+    } catch (e: any) {
+      notificarError(
+        'No se pudo anular, debes ingresar un motivo para la anulacion'
+      )
+    }
   }
-    function filtrarEmpleados(val, update) {
+  function filtrarEmpleados(val, update) {
       if (val === '') {
         update(() => {
           empleados.value = listadosAuxiliares.empleados
@@ -141,8 +161,7 @@ export default defineComponent({
       titulo: '',
       icono: 'bi-pencil',
       color: 'warning',
-      visible: (entidad) => {
-        console.log(entidad)
+      visible: () => {
         return authenticationStore.can('puede.editar.valor_acreditar') && !acreditacionesStore.esta_acreditado
       },
       accion: ({ entidad }) => {

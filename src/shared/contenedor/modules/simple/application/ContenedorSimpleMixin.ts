@@ -303,6 +303,7 @@ export class ContenedorSimpleMixin<T extends EntidadAuditable> extends Contenedo
 
   // Editar
   private async editar(data: T, resetOnUpdated = true, params?: ParamsType) {
+
     if (this.entidad.id === null) {
       return this.notificaciones.notificarAdvertencia(
         'No se puede editar el recurso con id null'
