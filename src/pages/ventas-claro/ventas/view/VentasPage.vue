@@ -21,7 +21,7 @@
               error-message="Debes seleccionar un vendedor"
               use-input
               input-debounce="0"
-              @filter="filtrarPlanes"
+              @filter="filtrarVendedores"
               :option-value="(v) => v.id"
               :option-label="(v) => v.empleado_info"
               emit-value
@@ -136,7 +136,7 @@
               use-input
               input-debounce="0"
               :option-value="(v) => v.id"
-              :option-label="(v) => v.bundle"
+              :option-label="(v) => v.plan_info+ ' - '+v.bundle"
               emit-value
               map-options
             >

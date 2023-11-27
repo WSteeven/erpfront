@@ -93,7 +93,7 @@ const comision_vendedor = ref(0)
       update(() => {
         const needle = val.toLowerCase()
         productos.value = listadosAuxiliares.productos.filter(
-          (v) => v.bundle_id.toLowerCase().indexOf(needle) > -1
+          (v) => v.bundle.toLowerCase().indexOf(needle) > -1 || v.plan_info.toLowerCase().indexOf(needle) > -1
         )
       })
     }
