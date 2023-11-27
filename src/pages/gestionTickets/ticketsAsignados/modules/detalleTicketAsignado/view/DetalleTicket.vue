@@ -30,6 +30,18 @@
       <estados-subtareas :propsTable="{ value: ticket.estado }" />
     </div>
 
+    <div v-if="ticket.tiempo_hasta_finalizar" class="col-12 col-md-3">
+      <label class="q-mb-sm block">Tiempo total hasta finalizar</label>
+      <q-icon name="bi-star-fill" color="orange-3" class="q-mr-sm"></q-icon>
+      <b>{{ ticket.tiempo_hasta_finalizar }}</b>
+    </div>
+
+    <div v-if="ticket.tiempo_ocupado_pausas" class="col-12 col-md-3">
+      <label class="q-mb-sm block">Tiempo total pausado</label>
+      <q-icon name="bi-pause-circle" color="pink-8" class="q-mr-sm"></q-icon>
+      <b>{{ ticket.tiempo_ocupado_pausas }}</b>
+    </div>
+
     <div class="col-12 col-md-3">
       <label class="q-mb-sm block">Categoria tipo de ticket</label>
       <b>{{ ticket.categoria_tipo_ticket }}</b>

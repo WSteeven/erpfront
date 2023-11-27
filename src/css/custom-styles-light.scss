@@ -5,7 +5,7 @@
   }
 
   .bg-body {
-    background-color: $grey-2;
+    background-color: $grey-3;
   }
 
   .bg-body-table {
@@ -64,6 +64,12 @@
 
   .custom-shadow2 {
     box-shadow: rgba(0, 0, 0, 0.2) 0px 20px 30px;
+  }
+
+  .custom-shadow3 {
+    // box-shadow: rgba(17, 12, 46, 0.15) 0px 48px 100px 0px;
+    box-shadow: rgba(50, 50, 93, 0.25) 0px 50px 100px -20px,
+      rgba(0, 0, 0, 0.3) 0px 30px 60px -30px;
   }
 
   .shadow-button {
@@ -217,16 +223,16 @@
 
   // Fondos
   .fondo-gradiente {
-    background: #4e54c8; /* fallback for old browsers */
+    background: #fdf2f8; /* fallback for old browsers */
     background: -webkit-linear-gradient(
       to right,
-      #8f94fb,
-      #4e54c8
+      #fdf2f8,
+      #eef7fe
     ); /* Chrome 10-25, Safari 5.1-6 */
     background: linear-gradient(
       to right,
-      #8f94fb,
-      #4e54c8
+      #fdf2f8,
+      #eef7fe
     ); /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
   }
 

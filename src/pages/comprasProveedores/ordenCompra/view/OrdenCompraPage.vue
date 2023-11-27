@@ -5,7 +5,7 @@
     titulo-pagina="Orden de Compra"
     :tab-options="tabOptionsOrdenCompra"
     :ajustarCeldas="true"
-    tabDefecto="1"
+    :tabDefecto="tabDefecto"
     :filtrar="filtrarOrdenes"
     :permitirEditar="false"
     :permitirEliminar="false"
@@ -286,7 +286,7 @@
               </template>
             </q-select>
           </div>
-          
+
           <!-- Proveedor -->
           <div class="col-12 col-md-3">
             <label class="q-mb-sm block">Proveedor</label>
@@ -493,7 +493,18 @@
             >
             </q-input>
           </div>
-
+          <!-- Observacion de realizada -->
+          <div v-if="orden.observacion_realizada" class="col-12 col-md-3">
+            <label class="q-mb-sm block">Observacion realizada</label>
+            <q-input
+              autogrow
+              v-model="orden.observacion_realizada"
+              placeholder="Opcional"
+              disable
+              outlined
+              dense
+            />
+          </div>
           <!-- Marcar como completado -->
           <div
             class="col-12 col-md-3 q-mb-xl"
@@ -583,12 +594,19 @@
                     store.esCompras) &&
                   (orden.autorizacion == 1 || store.esCompras))
               "
+              :permitirEditarModal="true"
               :permitirConsultar="false"
-              :permitirEditar="false"
+              :permitirEditar="accion == acciones.nuevo ||
+                (accion == acciones.editar &&
+                  (orden.autorizador == store.user.id ||
+                    orden.solicitante == store.user.id ||
+                    store.esCompras) &&
+                  (orden.autorizacion == 1 || store.esCompras))"
               :permitirEliminar="false"
               :mostrarBotones="false"
               :altoFijo="false"
               :accion1="btnEliminarFila"
+              @guardarFila="(fila) => guardarFilaEditada(fila)"
               v-on:fila-modificada="calcularValores"
             >
             </essential-popup-editable-table>

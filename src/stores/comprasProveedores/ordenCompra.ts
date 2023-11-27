@@ -14,6 +14,7 @@ export const useOrdenCompraStore = defineStore('ordenCompra', () => {
   const orden = reactive(new OrdenCompra())
   const ordenReset = new OrdenCompra()
   const idOrden = ref()
+  const permitirSubir = ref(true)
 
   const { notificarCorrecto, notificarAdvertencia, notificarError } = useNotificaciones()
   const accionOrden = acciones.nuevo
@@ -103,7 +104,7 @@ export const useOrdenCompraStore = defineStore('ordenCompra', () => {
       const axios = AxiosHttpRepository.getInstance()
       const url = apiConfig.URL_BASE+'/'+axios.getEndpoint(endpoints.dashboard_compras)
       const response: AxiosResponse = await axios.post(url, data)
-      console.log(response)
+      console.log(response.data.results)
       return response.data.results
     } catch (error) {
       notificarError('Error al consultar el dashboard' + error)
@@ -120,6 +121,7 @@ export const useOrdenCompraStore = defineStore('ordenCompra', () => {
     orden,
     accionOrden,
     idOrden,
+    permitirSubir,
 
     anularOrden,
     resetearOrden,

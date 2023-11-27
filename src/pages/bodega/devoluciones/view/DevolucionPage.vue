@@ -64,6 +64,29 @@
               </template>
             </q-select>
           </div> -->
+          <div class="col-12 col-md-3" v-if="accion==acciones.nuevo">
+            <label class="q-mb-sm block"
+              >Seleccione un cliente para filtrar los materiales</label
+            >
+            <q-select
+              v-model="clienteMaterialStock"
+              :options="clientes"
+              transition-show="scale"
+              transition-hide="scale"
+              use-input
+              input-debounce="0"
+              options-dense
+              dense
+              outlined
+              :disable="disabled || soloLectura"
+              :option-label="(item) => item.razon_social"
+              :option-value="(item) => item.cliente_id"
+              @update:model-value="filtrarCliente"
+              emit-value
+              map-options
+            >
+            </q-select>
+          </div>
           <!-- Sucursal select -->
           <div class="col-12 col-md-3">
             <label class="q-mb-sm block">Lugar de devolución</label>
@@ -364,7 +387,12 @@
                   v-model="criterioBusquedaProducto"
                   placeholder="Nombre de producto"
                   hint="Presiona Enter para seleccionar un producto"
-                  @keydown.enter="listarProductos()"
+                  @keydown.enter="
+                    listarProductos({
+                      empleado_id: store.user.id,
+                      cliente_id: clienteMaterialStock,
+                    })
+                  "
                   @blur="
                     criterioBusquedaProducto === '' ? limpiarProducto() : null
                   "
@@ -375,7 +403,12 @@
               </div>
               <div class="col-12 col-md-2">
                 <q-btn
-                  @click="listarProductos()"
+                  @click="
+                    listarProductos({
+                      empleado_id: store.user.id,
+                      cliente_id: clienteMaterialStock,
+                    })
+                  "
                   icon="search"
                   unelevated
                   color="primary"

@@ -207,9 +207,13 @@ export default defineComponent({
       transaccion.devolucion = devolucionStore.devolucion.id
       transaccion.justificacion = devolucionStore.devolucion.justificacion
       transaccion.solicitante = Number.isInteger(devolucionStore.devolucion.solicitante) ? devolucionStore.devolucion.solicitante : devolucionStore.devolucion.solicitante_id
+      transaccion.sucursal = Number.isInteger(devolucionStore.devolucion.sucursal) ? devolucionStore.devolucion.sucursal : devolucionStore.devolucion.sucursal_id
+      transaccion.cliente = Number.isInteger(devolucionStore.devolucion.cliente) ? devolucionStore.devolucion.cliente : devolucionStore.devolucion.cliente_id
       transaccion.es_para_stock = devolucionStore.devolucion.es_para_stock
       listadoDevolucion.value = devolucionStore.devolucion.listadoProductos
       listadoDevolucion.value.sort((v, w) => v.id - w.id) //ordena el listado de devolucion
+      //primero copiamos los valores de id en detalle_id
+      devolucionStore.devolucion.listadoProductos.forEach((item) => item.detalle_id = item.id)
       //copiar el listado de devolución al listado de la tabla
       transaccion.listadoProductosTransaccion = [...devolucionStore.devolucion.listadoProductos]
       if (devolucionStore.devolucion.tarea) {

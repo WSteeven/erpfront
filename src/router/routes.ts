@@ -14,6 +14,12 @@ const routes: RouteRecordRaw[] = [
         meta: { requiresAuth: true },
       },
       {
+        path: 'auditorias',
+        name: 'auditorias',
+        component: () => import('pages/sistema/auditorias/view/AuditoriaPage.vue'),
+        meta: { requiresAuth:false },
+      },
+      {
         path: 'configuracion',
         name: 'configuracion_general',
         component: () => import('pages/sistema/configuracion/view/ConfiguracionPage.vue'),

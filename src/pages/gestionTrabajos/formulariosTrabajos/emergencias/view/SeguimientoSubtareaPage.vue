@@ -87,7 +87,35 @@
 
             <q-tab-panels v-model="tab" animated class="bg-body">
               <q-tab-panel name="usar_material_tarea">
+                <div class="row q-col-gutter-sm q-pa-sm q-mb-md">
+                  <div class="col-12">
+                    <label class="q-mb-sm block"
+                      >Seleccione un cliente para filtrar el material</label
+                    >
+                    <!-- @filter="filtrarClientesMaterialesTarea" -->
+                    <q-select
+                      v-model="clienteMaterialTarea"
+                      :options="clientesMaterialesTarea"
+                      transition-show="scale"
+                      transition-hide="scale"
+                      use-input
+                      input-debounce="0"
+                      options-dense
+                      dense
+                      outlined
+                      :option-label="(item) => item.razon_social"
+                      :option-value="(item) => item.cliente_id"
+                      @update:model-value="
+                        obtenerMaterialesTarea(clienteMaterialTarea)
+                      "
+                      emit-value
+                      map-options
+                    >
+                    </q-select>
+                  </div>
+                </div>
                 <essential-table
+                  v-if="materialesTarea.length"
                   titulo="Materiales designados para la tarea"
                   :configuracionColumnas="columnasMaterial"
                   :datos="materialesTarea"
@@ -172,7 +200,7 @@
               <q-tab
                 name="usar_material_stock"
                 label="Usar material de mi stock"
-                @click="actualizarTablaMaterialesStock()"
+                @click="() => (clienteMaterialStock = null)"
               />
               <q-tab
                 v-if="esCoordinador"
@@ -185,7 +213,36 @@
 
             <q-tab-panels v-model="tabMaterialStock" animated class="bg-body">
               <q-tab-panel name="usar_material_stock">
+                <div class="row q-col-gutter-sm q-pa-sm q-mb-md">
+                  <div class="col-12">
+                    <label class="q-mb-sm block"
+                      >Seleccione un cliente para filtrar el material</label
+                    >
+                    <q-select
+                      v-model="clienteMaterialStock"
+                      :options="clientes"
+                      @filter="filtrarClientes"
+                      transition-show="scale"
+                      transition-hide="scale"
+                      use-input
+                      input-debounce="0"
+                      options-dense
+                      dense
+                      outlined
+                      :option-label="(item) => item.razon_social"
+                      :option-value="(item) => item.cliente_id"
+                      @update:model-value="
+                        obtenerMaterialesStock(clienteMaterialStock)
+                      "
+                      emit-value
+                      map-options
+                    >
+                    </q-select>
+                  </div>
+                </div>
+
                 <essential-table
+                  v-if="materialesStock.length"
                   titulo="Materiales de stock del responsable"
                   :configuracionColumnas="columnasMaterial"
                   :datos="materialesStock"
@@ -196,6 +253,7 @@
                   :permitir-buscar="true"
                   :permitirEditarModal="true"
                   separador="cell"
+                  :ajustar-celdas="true"
                   :accion1="botonEditarCantidadStock"
                 ></essential-table>
               </q-tab-panel>
@@ -238,6 +296,7 @@
                   :permitirEditar="false"
                   :permitirEditarModal="true"
                   separador="cell"
+                  :ajustar-celdas="true"
                   :accion1="botonEditarCantidadStockHistorial"
                 ></essential-table>
               </q-tab-panel>

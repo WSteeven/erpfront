@@ -129,3 +129,12 @@ export const opcionesCalificacionProveedor = [
   { value: 'CALIFICADO', label: 'CALIFICADO' },
   { value: 'PARCIAL', label: 'PARCIAL' },
 ]
+
+export const estadosOrdenesCompras = {
+  PENDIENTE: 'PENDIENTE',
+  APROBADO: 'APROBADO',
+  REVISADA: 'REVISADA',
+  REALIZADA: 'REALIZADA',
+  PAGADA: 'PAGADA',
+  ANULADA: 'ANULADA'
+}
