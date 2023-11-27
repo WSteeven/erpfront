@@ -83,6 +83,7 @@
           v-model="rolpago.dias"
           placeholder="Obligatorio"
           type="number"
+          mask="##"
           :disable="disabled"
           outlined
           dense
@@ -127,6 +128,19 @@
           :disable="disabled"
         />
       </div>
+       <!-- Medio Tiempo -->
+       <div class="col-12 col-md-3">
+        <label class="q-mb-sm block">Vendedor Trabaja Medio tiempo</label>
+        <q-toggle
+          :label="rolpago.es_vendedor_medio_tiempo ? 'Vendedor Medio Tiempo' : 'Vendedor Tiempo completo'"
+          v-model="rolpago.es_vendedor_medio_tiempo"
+          color="primary"
+          keep-color
+          icon="bi-clock-history"
+          unchecked-icon="bi-clock"
+          :disable="disabled"
+        />
+      </div>
       <!-- Sueldo -->
       <div class="col-12 col-md-3">
         <label class="q-mb-sm block">Sueldo</label>
@@ -135,6 +149,18 @@
           placeholder="Obligatorio"
           type="number"
           disable
+          outlined
+          dense
+        >
+        </q-input>
+      </div>
+      <div class="col-12 col-md-3" v-if="rolpago.es_vendedor_medio_tiempo && rolpago.es_quincena">
+        <label class="q-mb-sm block">Porcentaje Quincena</label>
+        <q-input
+          v-model="rolpago.porcentaje_quincena"
+          placeholder="Opcional"
+          type="number"
+          :disable="disabled"
           outlined
           dense
         >

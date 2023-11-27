@@ -5,7 +5,7 @@ import { configuracionColumnasDetallesProductos } from "../domain/configuracionC
 import { configuracionColumnasItemOrdenCompra } from "pages/comprasProveedores/itemsOrdenCompra/domain/configuracionColumnasItemOrdenCompra";
 import { required, requiredIf, } from 'shared/i18n-validators'
 import { useVuelidate } from '@vuelidate/core'
-import { computed, defineComponent, ref, watch, } from 'vue'
+import { computed, defineComponent, ref, } from 'vue'
 
 
 // Componentes
@@ -21,13 +21,12 @@ import { OrdenCompra } from "../domain/OrdenCompra";
 import { OrdenCompraController } from "../infraestructure/OrdenCompraController";
 import { useNotificaciones } from "shared/notificaciones";
 import { useNotificacionStore } from "stores/notificacion";
-import { LocalStorage, useQuasar } from "quasar";
+import { useQuasar } from "quasar";
 import { useCargandoStore } from "stores/cargando";
 import { EmpleadoController } from "pages/recursosHumanos/empleados/infraestructure/EmpleadoController";
 import { ProveedorController } from "sistema/proveedores/infraestructure/ProveedorController";
-import { acciones, accionesTabla } from "config/utils";
-import { tabOptionsOrdenCompra, opcionesForma, opcionesTiempo, estadosCalificacionProveedor } from "config/utils_compras_proveedores";
-import { CategoriaController } from "pages/bodega/categorias/infraestructure/CategoriaController";
+import { acciones, accionesTabla, autorizaciones, autorizacionesTransacciones, estados } from "config/utils";
+import { tabOptionsOrdenCompra, opcionesForma, opcionesTiempo, } from "config/utils_compras_proveedores";
 import { useAuthenticationStore } from "stores/authentication";
 import { formatearFecha, } from "shared/utils";
 import { CustomActionTable } from "components/tables/domain/CustomActionTable";
@@ -52,8 +51,8 @@ export default defineComponent({
   emits: ['actualizar', 'fila-modificada'],
   setup(props, { emit }) {
     const mixin = new ContenedorSimpleMixin(OrdenCompra, new OrdenCompraController())
-    const { entidad: orden, disabled, accion, listadosAuxiliares, listado } = mixin.useReferencias()
-    const { setValidador, obtenerListados, cargarVista, listar } = mixin.useComportamiento()
+    const { entidad: orden, disabled, accion, listadosAuxiliares, listado, tabs } = mixin.useReferencias()
+    const { setValidador, obtenerListados, cargarVista, listar, consultar } = mixin.useComportamiento()
     const { onReestablecer, onConsultado, onModificado } = mixin.useHooks()
     const { confirmar, prompt, notificarCorrecto, notificarError } = useNotificaciones()
 
@@ -73,6 +72,7 @@ export default defineComponent({
     const total = computed(() => orden.listadoProductos.reduce((prev, curr) => prev + parseFloat(curr.total), 0).toFixed(2))
 
     // Flags
+    const tabDefecto = ref()
     let tabSeleccionado = ref()
     let soloLectura = ref(false)
     let puedeEditar = ref(false)
@@ -92,9 +92,7 @@ export default defineComponent({
 
     //Obtener listados
     const empleados = ref([])
-    const categorias = ref([])
-    const autorizaciones = ref([])
-    const estados = ref([])
+    // const categorias = ref([])
     const empleadosAutorizadores = ref([])
     const tareas = ref([])
     cargarVista(async () => {
@@ -133,7 +131,7 @@ export default defineComponent({
             // 'estado_calificado': estadosCalificacionProveedor.calificado
           }
         },
-        categorias: new CategoriaController()
+        // categorias: new CategoriaController()
       })
       //comprueba si hay una preorden en el store para llenar automaticamente los datos en la orden de compra
       orden.autorizacion = 1
@@ -154,7 +152,8 @@ export default defineComponent({
       orden.autorizacion = 1
     })
     onConsultado(() => {
-      if (accion.value === acciones.editar && store.user.id === orden.autorizador)
+      console.log(accion.value)
+      if (accion.value === acciones.editar && (store.user.id === orden.autorizador || store.esCompras))
         soloLectura.value = false
       else
         soloLectura.value = true
@@ -169,14 +168,11 @@ export default defineComponent({
      * Validaciones
      ****************************************************************************************/
     const reglas = {
-      proveedor: { requiredIfRolCompras: requiredIf(() => store.esCompras) },
-      categorias: { requiredIfNoPreorden: requiredIf(() => false) },
-      // categorias: { requiredIfNoPreorden: requiredIf(() => !orden.preorden) },
-      // autorizacion: { requiredIfCoordinador: requiredIf(() => esCoordinador) },
+      proveedor: { requiredIf: requiredIf(() => store.esCompras) },
       autorizador: { required },
       descripcion: { required },
-      forma: { requiredIfRolCompras: requiredIf(() => store.esCompras) },
-      tiempo: { requiredIfRolCompras: requiredIf(() => store.esCompras && (orden.forma != 'CONTADO' && orden.forma != 'TRANSFERENCIA')) },
+      forma: { requiredIf: requiredIf(() => store.esCompras) },
+      tiempo: { requiredIf: requiredIf(() => store.esCompras && (orden.forma != 'CONTADO' && orden.forma != 'TRANSFERENCIA')) },
       fecha: { required },
     }
 
@@ -194,24 +190,43 @@ export default defineComponent({
     /*******************************************************************************************
      * Funciones
      ******************************************************************************************/
-    function estructuraConsultaCategoria() {
-      let parametro = ''
-      if (orden.categorias!.length < 1) {
-        return ''
-      } else {
-        // console.log('Hay solo una categoria')
-        orden.categorias?.forEach((v, index) => {
-          if (index === orden.categorias!.length - 1) parametro += v
-          else parametro += v + '&categoria_id[]='
-        })
-      }
-      return parametro
-    }
+    // function estructuraConsultaCategoria() {
+    //   let parametro = ''
+    //   if (orden.categorias!.length < 1) {
+    //     return ''
+    //   } else {
+    //     // console.log('Hay solo una categoria')
+    //     orden.categorias?.forEach((v, index) => {
+    //       if (index === orden.categorias!.length - 1) parametro += v
+    //       else parametro += v + '&categoria_id[]='
+    //     })
+    //   }
+    //   return parametro
+    // }
     function filtrarOrdenes(tab: string) {
+      tabDefecto.value=tab
       tabSeleccionado.value = tab
-      if (tab == '1') puedeEditar.value = true
+      if (tab == '1' || tab == '2') puedeEditar.value = true
       else puedeEditar.value = false
-      listar({ autorizacion_id: tab, solicitante_id: store.user.id })
+      switch (tab) {
+        case '2':
+          listar({ autorizacion_id: tab, estado_id: 1, realizada: 0, pagada: 0, solicitante_id: store.user.id })
+          break
+        case '3':
+          listar({ autorizacion_id: tab, solicitante_id: store.user.id })
+          break
+        case '4':
+          listar({ realizada: 1, pagada: 0, solicitante_id: store.user.id })
+          break
+        case '5':
+          listar({ realizada: 1, pagada: 1, solicitante_id: store.user.id })
+          break
+        case '6':
+          listar({ autorizacion_id: 2, estado_id: 2, realizada: 0, pagada: 0, solicitante_id: store.user.id })
+          break
+        default: //si tab es 1 u 7 entra aquí
+          listar({ autorizacion_id: tab, solicitante_id: store.user.id })
+      }
     }
     function eliminar({ posicion }) {
       confirmar('¿Está seguro de continuar?', () => orden.listadoProductos.splice(posicion, 1))
@@ -219,6 +234,10 @@ export default defineComponent({
     function actualizarPreorden() {
       if (!orden.preorden || orden.preorden === 0)
         limpiarOrden()
+    }
+    function guardarFilaEditada(fila: any) {
+      console.log(fila)
+      calcularValores(fila)
     }
 
     /**
@@ -228,7 +247,7 @@ export default defineComponent({
      * propiedades:
      */
     function calcularValores(data: any) {
-      console.log(data)
+      // console.log(data)
       data.precio_unitario = Number(data.precio_unitario).toFixed(4)
       data.iva = data.grava_iva && data.facturable ? ((Number(data.cantidad) * Number(data.precio_unitario)) * orden.iva / 100).toFixed(4) : 0
       data.subtotal = data.facturable ? (Number(data.cantidad) * Number(data.precio_unitario)).toFixed(4) : 0
@@ -306,7 +325,8 @@ export default defineComponent({
         orden.autorizacion = 1
         orden.estado = 1
         orden.causa_anulacion = null
-        orden.categorias = []
+        orden.codigo = null
+        // orden.categorias = []
       } else orden.hydrate(new OrdenCompra())
     }
     /*******************************************************************************************
@@ -320,7 +340,7 @@ export default defineComponent({
         //: props.propsTable.rowIndex,
         eliminar({ posicion })
       },
-      visible: () => accion.value == acciones.nuevo || accion.value == acciones.editar
+      visible: () => (accion.value == acciones.nuevo || accion.value == acciones.editar) && orden.autorizacion == 1 || orden.solicitante == store.user.id || store.esCompras
     }
     const btnImprimir: CustomActionTable = {
       titulo: 'Imprimir',
@@ -330,7 +350,7 @@ export default defineComponent({
         ordenCompraStore.idOrden = entidad.id
         await ordenCompraStore.imprimirPdf()
       },
-      visible: () => tabSeleccionado.value > 1 ? true : false
+      visible: () => tabSeleccionado.value > 2 ? true : false
     }
     const btnAnularOrden: CustomActionTable = {
       titulo: 'Anular',
@@ -358,20 +378,23 @@ export default defineComponent({
         })
       },
       visible: ({ entidad }) => {
-        if (tabSeleccionado.value == 1) {
-          return entidad.autorizacion_id == 1 && (entidad.solicitante_id == store.user.id || entidad.autorizador_id == store.user.id || store.esCompras)
+        if (tabSeleccionado.value == 1 || tabSeleccionado.value == 6) {
+          return (entidad.autorizacion_id == 1 || entidad.autorizacion_id == 2) && (entidad.solicitante_id == store.user.id || entidad.autorizador_id == store.user.id || store.esCompras)
         }
+
         return tabSeleccionado.value == 2 && store.esCompras || tabSeleccionado.value == 2 && (entidad.solicitante_id == store.user.id || entidad.autorizador_id == store.user.id)
       }
     }
 
     const btnRegistrarNovedades: CustomActionTable = {
       titulo: 'Novedades',
-      color: 'primary',
+      color: 'warning',
       icono: 'bi-wrench',
       accion: async ({ entidad, posicion }) => {
+        console.log(entidad)
         ordenCompraStore.idOrden = entidad.id
         confirmar('¿Está seguro de abrir el formulario de registro de novedades de la orden de compra?', () => {
+          ordenCompraStore.permitirSubir = true
           modales.abrirModalEntidad('SeguimientoNovedadesOrdenesCompras')
         })
       },
@@ -382,15 +405,64 @@ export default defineComponent({
 
     const btnEnviarMailProveedor: CustomActionTable = {
       titulo: 'Enviar al proveedor',
-      color: 'positive',
+      color: 'primary',
       icono: 'bi-envelope-at',
       accion: async ({ entidad }) => {
         ordenCompraStore.idOrden = entidad.id
         await ordenCompraStore.enviarPdf()
       },
-      visible: ({ entidad }) => entidad.autorizacion_id === 2
+      visible: ({ entidad }) => entidad.estado_id === 2 && tabSeleccionado.value == 6
+    }
+    const btnMarcarRealizada: CustomActionTable = {
+      titulo: 'Realizada',
+      color: 'positive',
+      icono: 'bi-check-circle-fill',
+      accion: async ({ entidad, posicion }) => {
+        confirmar('¿Está seguro de marcar como realizada la orden de compra?', async () => {
+          const data: CustomActionPrompt = {
+            titulo: 'Observación',
+            mensaje: '¿Tienes alguna observación al respecto?',
+            accion: async (data) => {
+              ordenCompraStore.idOrden = entidad.id
+              await ordenCompraStore.marcarRealizada({ observacion_realizada: data })
+            }
+          }
+          prompt(data)
+        })
+      },
+      visible: ({ entidad }) => tabSeleccionado.value == 6 && store.esCompras
+    }
+    const btnMarcarPagada: CustomActionTable = {
+      titulo: 'Pagada',
+      color: 'positive',
+      icono: 'bi-check-circle-fill',
+      accion: async ({ entidad, posicion }) => {
+        confirmar('¿Está seguro de marcar como pagada la orden de compra?', async () => {
+          ordenCompraStore.idOrden = entidad.id
+          await ordenCompraStore.marcarPagada()
+          await filtrarOrdenes('5')
+        })
+      },
+      visible: ({ entidad }) => tabSeleccionado.value == 4 && store.esContabilidad
     }
 
+    const btnEditarRegistro: CustomActionTable = {
+      titulo: '',
+      icono: 'bi-pencil-square',
+      color: 'secondary',
+      tooltip: 'Editar',
+      accion: ({ entidad }) => {
+        console.log('diste clic en editar')
+        accion.value = acciones.editar
+        consultar(entidad)
+        tabs.value = 'formulario'
+
+      }, visible: ({ entidad, posicion }) => {
+        if ((tabSeleccionado.value == '1' || tabSeleccionado.value == '2') && entidad.autorizacion == autorizacionesTransacciones.pendiente && (store.esCompras || entidad.solicitante_id == store.user.id || entidad.autorizador_id == store.user.id)) return true
+        if ((tabSeleccionado.value == '1' || tabSeleccionado.value == '2') && entidad.autorizacion == autorizacionesTransacciones.aprobado && (store.esCompras || entidad.autorizador_id == store.user.id)) return true
+        return false
+      }
+    }
     // watch(refItems, () => {
     //     console.log('modificacion')
     //     console.log(refItems.value)
@@ -398,11 +470,9 @@ export default defineComponent({
 
     // configurar los listados
     empleados.value = listadosAuxiliares.empleados
-    categorias.value = listadosAuxiliares.categorias
+    // categorias.value = listadosAuxiliares.categorias
     proveedores.value = listadosAuxiliares.proveedores
-    autorizaciones.value = JSON.parse(LocalStorage.getItem('autorizaciones')!.toString())
     empleadosAutorizadores.value = listadosAuxiliares.autorizadores
-    estados.value = JSON.parse(LocalStorage.getItem('estados_transacciones')!.toString())
     tareas.value = listadosAuxiliares.tareas
 
     return {
@@ -415,12 +485,10 @@ export default defineComponent({
       refItems,
       //listados
       empleados,
-      categorias,
       proveedores,
       autorizaciones,
       tareas,
       estados,
-      // empleadosAutorizadores,
       opcionesForma,
       opcionesTiempo,
 
@@ -437,6 +505,9 @@ export default defineComponent({
       btnAnularOrden,
       btnEnviarMailProveedor,
       btnRegistrarNovedades,
+      btnMarcarRealizada,
+      btnMarcarPagada,
+      btnEditarRegistro,
 
       //selector
       refListado,
@@ -449,6 +520,7 @@ export default defineComponent({
       //tabla de detalles
       //Tabs
       tabOptionsOrdenCompra,
+      tabDefecto,
       tabSeleccionado,
       puedeEditar,
 
@@ -456,7 +528,8 @@ export default defineComponent({
       //funciones
       filtrarOrdenes,
       calcularValores,
-      estructuraConsultaCategoria,
+      // estructuraConsultaCategoria,
+      guardarFilaEditada,
       filtrarProveedores,
       llenarOrden,
       actualizarPreorden,

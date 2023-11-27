@@ -691,12 +691,14 @@
   <modales-entidad
     :comportamiento="modalesTarea"
     :mixin-modal="mixin"
+    :persistent="false"
     @guardado="guardado"
   />
 
   <modales-entidad
     :comportamiento="modalesSubtarea"
     :mixin-modal="mixinSubtarea"
+    :persistent="false"
   />
 </template>
 

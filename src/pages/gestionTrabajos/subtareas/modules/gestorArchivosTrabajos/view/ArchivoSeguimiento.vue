@@ -1,7 +1,8 @@
 <template>
-  <div v-if="permitirSubir" class="col-12 col-md-3 q-mb-lg">
+  <div class="col-12 col-md-3 q-mb-lg">
     <br />
     <q-toggle
+      v-if="permitirSubir"
       v-model="quiero_subir_archivos"
       label="Quiero compartir archivos"
       :disable="disable"

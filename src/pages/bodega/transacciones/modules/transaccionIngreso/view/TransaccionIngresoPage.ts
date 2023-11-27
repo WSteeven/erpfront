@@ -11,7 +11,7 @@ import { configuracionColumnasProductos } from 'pages/bodega/productos/domain/co
 import { useOrquestadorSelectorItemsTransaccion } from 'pages/bodega/transacciones/modules/transaccionIngreso/application/OrquestadorSelectorDetalles'
 import { useTransaccionStore } from 'stores/transaccion'
 import { useDevolucionStore } from 'stores/devolucion'
-import { acciones, estadosTransacciones } from 'config/utils'
+import { acciones, autorizaciones, estados, estadosTransacciones } from 'config/utils'
 
 // Componentes
 import TabLayout from 'shared/contenedor/modules/simple/view/TabLayout.vue'
@@ -115,10 +115,8 @@ export default defineComponent({
     const esVisibleTarea = ref(false)
     let listadoDevolucion = ref()
 
-    const opciones_autorizaciones = ref([])
     const opciones_sucursales = ref([])
     const opciones_motivos = ref([])
-    const opciones_estados = ref([])
     const opciones_tareas = ref([])
     const opciones_clientes = ref([])
     const opciones_empleados = ref([])
@@ -209,9 +207,13 @@ export default defineComponent({
       transaccion.devolucion = devolucionStore.devolucion.id
       transaccion.justificacion = devolucionStore.devolucion.justificacion
       transaccion.solicitante = Number.isInteger(devolucionStore.devolucion.solicitante) ? devolucionStore.devolucion.solicitante : devolucionStore.devolucion.solicitante_id
+      transaccion.sucursal = Number.isInteger(devolucionStore.devolucion.sucursal) ? devolucionStore.devolucion.sucursal : devolucionStore.devolucion.sucursal_id
+      transaccion.cliente = Number.isInteger(devolucionStore.devolucion.cliente) ? devolucionStore.devolucion.cliente : devolucionStore.devolucion.cliente_id
       transaccion.es_para_stock = devolucionStore.devolucion.es_para_stock
       listadoDevolucion.value = devolucionStore.devolucion.listadoProductos
       listadoDevolucion.value.sort((v, w) => v.id - w.id) //ordena el listado de devolucion
+      //primero copiamos los valores de id en detalle_id
+      devolucionStore.devolucion.listadoProductos.forEach((item) => item.detalle_id = item.id)
       //copiar el listado de devolución al listado de la tabla
       transaccion.listadoProductosTransaccion = [...devolucionStore.devolucion.listadoProductos]
       if (devolucionStore.devolucion.tarea) {
@@ -306,8 +308,6 @@ export default defineComponent({
     }
 
     //Configurar los listados
-    opciones_estados.value = JSON.parse(LocalStorage.getItem('estados_transacciones')!.toString())
-    opciones_autorizaciones.value = JSON.parse(LocalStorage.getItem('autorizaciones')!.toString())
     opciones_condiciones.value = JSON.parse(LocalStorage.getItem('condiciones')!.toString())
     opciones_sucursales.value = JSON.parse(LocalStorage.getItem('sucursales')!.toString())
     opciones_motivos.value = listadosAuxiliares.motivos
@@ -362,8 +362,8 @@ export default defineComponent({
       //listados
       opciones_sucursales,
       opciones_motivos,
-      opciones_autorizaciones,
-      opciones_estados,
+      opciones_autorizaciones: autorizaciones,
+      opciones_estados: estados,
       opciones_tareas,
       opciones_clientes,
       opciones_empleados,

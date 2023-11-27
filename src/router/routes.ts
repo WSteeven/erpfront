@@ -14,6 +14,12 @@ const routes: RouteRecordRaw[] = [
         meta: { requiresAuth: true },
       },
       {
+        path: 'auditorias',
+        name: 'auditorias',
+        component: () => import('pages/sistema/auditorias/view/AuditoriaPage.vue'),
+        meta: { requiresAuth:false },
+      },
+      {
         path: 'configuracion',
         name: 'configuracion_general',
         component: () => import('pages/sistema/configuracion/view/ConfiguracionPage.vue'),
@@ -390,7 +396,7 @@ const routes: RouteRecordRaw[] = [
         path: '/preingresos-materiales',
         name: 'preingresos_materiales',
         component: () => import('pages/bodega/preingresoMateriales/view/PreingresoMaterialPage.vue'),
-        meta: { requiresAuth: true},
+        meta: { requiresAuth: true },
       },
       {
         path: '/devoluciones',
@@ -539,6 +545,12 @@ const routes: RouteRecordRaw[] = [
       /*********************************************
        * COMPRAS Y PROVEEDORES
        *********************************************/
+      {
+        path: '/dashboard-ordenes-compras',
+        name: 'dashboard_ordenes_compras',
+        component: () => import('pages/comprasProveedores/dashboard/view/DashboardCompras.vue'),
+        meta: { requiresAuth: true },
+      },
       {
         path: '/bancos',
         name: 'bancos',
@@ -1025,6 +1037,15 @@ const routes: RouteRecordRaw[] = [
         component: () =>
           import(
             'pages/recursosHumanos/concepto_ingreso/view/ConceptoIngresoPage.vue'
+          ),
+        meta: { requiresAuth: true },
+      },
+      {
+        path: '/rubro',
+        name: 'rubro',
+        component: () =>
+          import(
+            'pages/recursosHumanos/rubros/view/RubroPage.vue'
           ),
         meta: { requiresAuth: true },
       },

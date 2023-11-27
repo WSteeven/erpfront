@@ -7,6 +7,8 @@ export class ValorAcreditar extends EntidadAuditable {
   acreditacion_semana_info: string | null
   monto_generado: number | null
   monto_modificado: number | null
+  saldo_empleado: number | null
+  umbral_empleado: number | null
   es_acreditado: boolean | null
 
   constructor() {
@@ -18,6 +20,8 @@ export class ValorAcreditar extends EntidadAuditable {
     this.acreditacion_semana_info = null
     this.monto_generado = null
     this.monto_modificado = null
+    this.saldo_empleado = null
+    this.umbral_empleado = null
     this.es_acreditado=null
 
   }

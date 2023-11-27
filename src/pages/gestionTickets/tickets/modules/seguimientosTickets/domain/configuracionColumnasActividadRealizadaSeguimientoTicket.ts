@@ -6,7 +6,7 @@ export const configuracionColumnasActividadRealizadaSeguimientoTicket: ColumnCon
     name: 'fecha_hora',
     field: 'fecha_hora',
     label: 'Fecha hora',
-    align: 'left',
+    align: 'center',
     type: 'text',
     sortable: true,
     editable: false,
@@ -24,7 +24,7 @@ export const configuracionColumnasActividadRealizadaSeguimientoTicket: ColumnCon
     name: 'responsable',
     field: 'responsable',
     label: 'Responsable',
-    align: 'left',
+    align: 'center',
     editable: false,
   },
   {

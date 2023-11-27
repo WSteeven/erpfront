@@ -286,7 +286,6 @@
           push
           rounded
           no-caps
-          glossy
           @click="accion1Header.accion"
         >
           <q-icon
@@ -305,7 +304,6 @@
           :class="{ 'q-mb-sm': $q.screen.xs, 'full-width': $q.screen.xs }"
           push
           rounded
-          glossy
           no-caps
           @click="accion2Header.accion"
         >
@@ -323,7 +321,6 @@
           :color="accion3Header?.color ?? 'primary'"
           :class="{ 'q-mb-sm': $q.screen.xs, 'full-width': $q.screen.xs }"
           push
-          glossy
           rounded
           no-caps
           @click="accion3Header.accion"
@@ -342,7 +339,6 @@
           :color="accion4Header?.color ?? 'primary'"
           :class="{ 'q-mb-sm': $q.screen.xs, 'full-width': $q.screen.xs }"
           push
-          glossy
           rounded
           no-caps
           @click="accion4Header.accion"
@@ -361,7 +357,6 @@
           :color="accion5Header?.color ?? 'primary'"
           :class="{ 'q-mb-sm': $q.screen.xs, 'full-width': $q.screen.xs }"
           push
-          glossy
           rounded
           no-caps
           @click="accion5Header.accion"
@@ -391,7 +386,6 @@
               v-if="permitirConsultar"
               class="bg-primary q-px-md"
               dense
-              glossy
               @click="
                 consultar({ entidad: props.row, posicion: props.rowIndex })
               "
@@ -404,7 +398,6 @@
             <q-btn
               v-if="permitirEditar"
               class="bg-secondary q-px-md"
-              glossy
               dense
               @click="editar({ entidad: props.row, posicion: props.rowIndex })"
             >
@@ -416,7 +409,6 @@
             <q-btn
               v-if="permitirEliminar"
               class="bg-negative q-px-md"
-              glossy
               dense
               @click="
                 eliminar({ entidad: props.row, posicion: props.rowIndex })
@@ -480,7 +472,6 @@
                   v-if="permitirConsultar"
                   class="bg-btn-table"
                   round
-                  glossy
                   dense
                   @click="
                     consultar({ entidad: props.row, posicion: props.rowIndex })
@@ -495,7 +486,6 @@
                   v-if="permitirEditar"
                   class="bg-btn-table"
                   round
-                  glossy
                   color="secondary"
                   dense
                   @click="
@@ -516,7 +506,6 @@
                   class="bg-btn-table"
                   round
                   color="negative"
-                  glossy
                   dense
                   @click="
                     eliminar({ entidad: props.row, posicion: props.rowIndex })
@@ -739,7 +728,13 @@
 
     <!-- Estilos de celdas -->
     <template #body-cell-despachado="props">
-      <q-td :props="props" class="bg-lime-2">
+      <q-td
+        :props="props"
+        :class="{
+          'bg-lime-2': !$q.dark.isActive,
+          'bg-green-10': $q.dark.isActive,
+        }"
+      >
         <q-badge color="positive">
           {{ props.value }}
         </q-badge>
@@ -747,7 +742,14 @@
     </template>
 
     <template #body-cell-total_cantidad_utilizada="props">
-      <q-td :props="props" class="bg-grey-2 text-bold">
+      <q-td
+        :props="props"
+        class="text-bold"
+        :class="{
+          'bg-grey-2': !$q.dark.isActive,
+          'bg-grey-10': $q.dark.isActive,
+        }"
+      >
         <!-- <q-badge color="blue-grey-6"> -->
         {{ props.value }}
         <!-- </q-badge> -->
@@ -755,7 +757,13 @@
     </template>
 
     <template #body-cell-stock_actual="props">
-      <q-td :props="props" class="bg-indigo-1">
+      <q-td
+        :props="props"
+        :class="{
+          'bg-indigo-1': !$q.dark.isActive,
+          'bg-indigo-10': $q.dark.isActive,
+        }"
+      >
         <q-badge color="indigo">
           {{ props.value }}
         </q-badge>
@@ -763,7 +771,13 @@
     </template>
 
     <template #body-cell-devuelto="props">
-      <q-td :props="props" class="bg-lime-2">
+      <q-td
+        :props="props"
+        :class="{
+          'bg-lime-2': !$q.dark.isActive,
+          'bg-green-10': $q.dark.isActive,
+        }"
+      >
         <q-badge color="positive">
           {{ props.value }}
         </q-badge>
@@ -1036,6 +1050,18 @@
         /></q-chip>
       </q-td>
     </template>
+    <template #body-cell-grava_iva="props">
+      <q-td :props="props">
+        <q-chip
+          v-if="props.value == true"
+          :class="{ 'bg-green-1': !$q.dark.isActive }"
+          ><q-icon name="bi-toggle-on"
+        /></q-chip>
+        <q-chip v-else :class="{ 'bg-red-1': !$q.dark.isActive }"
+          ><q-icon name="bi-toggle-off"
+        /></q-chip>
+      </q-td>
+    </template>
     <!-- corregir esto para que sea dinamico -->
     <template #body-cell-condiciones="props">
       <q-td :props="props">
@@ -1076,6 +1102,39 @@
           "
           >BUEN ESTADO</q-chip
         >
+      </q-td>
+    </template>
+    <!-- ordenes de compra -->
+    <template #body-cell-realizada="props">
+      <q-td :props="props">
+        <q-icon
+          v-if="props.value"
+          name="bi-check-circle-fill"
+          color="positive"
+          size="sm"
+        ></q-icon>
+        <q-icon
+          v-if="!props.value"
+          name="bi-x-circle-fill"
+          color="negative"
+          size="sm"
+        ></q-icon>
+      </q-td>
+    </template>
+    <template #body-cell-pagada="props">
+      <q-td :props="props">
+        <q-icon
+          v-if="props.value"
+          name="bi-check-circle-fill"
+          color="positive"
+          size="sm"
+        ></q-icon>
+        <q-icon
+          v-if="!props.value"
+          name="bi-x-circle-fill"
+          color="negative"
+          size="sm"
+        ></q-icon>
       </q-td>
     </template>
     <!-- devoluciones de bodega -->

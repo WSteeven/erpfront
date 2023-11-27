@@ -62,7 +62,7 @@ export const useMenuStore = defineStore('menu', () => {
           can: store.can('puede.ver.tareas'),
         },
         {
-          title: 'Materiales de técnicos',
+          title: 'Materiales de empleados',
           link: 'materiales-empleados',
           icon: 'bi-circle',
           can: store.can('puede.ver.materiales_empleados'),
@@ -467,79 +467,61 @@ export const useMenuStore = defineStore('menu', () => {
           title: 'Empleados',
           link: 'empleados',
           icon: 'bi-circle',
-          can: store.can('puede.ver.empleados'),
+          can: store.can('puede.acceder.empleados'),
         },
         {
           title: 'Cargos',
           link: 'cargos',
           icon: 'bi-circle',
-          can: store.can('puede.ver.cargos'),
+          can: store.can('puede.acceder.cargos'),
         },
         {
           title: 'Departamentos',
           link: 'departamentos',
           icon: 'bi-circle',
-          can: store.can('puede.ver.departamentos'),
+          can: store.can('puede.acceder.departamentos'),
         },
         {
           title: 'Grupos técnicos',
           link: 'grupos',
           icon: 'bi-circle',
-          can: store.can('puede.ver.grupos'),
+          can: store.can('puede.acceder.grupos'),
         },
         {
           title: 'Permiso',
           link: 'permiso-nomina',
           icon: 'bi-circle',
-          can: store.can('puede.ver.permiso_nomina'),
+          can: store.can('puede.acceder.permiso_nomina'),
         },
         {
           title: 'Rol de Pagos',
           link: 'rol-pago-mes',
           icon: 'bi-circle',
-          can: store.can('puede.ver.rol_pago_mes'),
+          can: store.can('puede.acceder.rol_pago_mes'),
         },
         {
           title: 'Licencia Empleado',
           link: 'licencia-empleado',
           icon: 'bi-person-vcard-fill',
-          can: store.can('puede.ver.licencia_empleado'),
+          can: store.can('puede.acceder.licencia_empleado'),
         },
         {
           title: 'Vacaciones',
           link: 'vacacion',
           icon: 'bi-umbrella',
-          can: store.can('puede.ver.vacacion'),
+          can: store.can('puede.acceder.vacacion'),
         },
         {
           title: 'Familiares',
           link: 'familiares',
           icon: 'bi-people',
-          can: store.can('puede.ver.familiares'),
-        },
-        {
-          title: 'Descuentos Generales',
-          link: 'descuentos-generales',
-          icon: 'bi-circle',
-          can: store.can('puede.acceder.descuentos_generales'),
-        },
-        {
-          title: 'Multas',
-          link: 'multa',
-          icon: 'bi-circle',
-          can: store.can('puede.acceder.multa'),
-        },
-        {
-          title: 'Conceptos de Ingresos',
-          link: 'concepto-ingreso',
-          icon: 'bi-circle',
-          can: store.can('puede.acceder.concepto_ingreso'),
+          can: store.can('puede.acceder.familiares'),
         },
         {
           title: 'Extension Conyugal',
           link: 'extension-conyugal',
           icon: 'fa-solid fa-people-arrows',
-          can: store.can('puede.ver.extension_conyugal'),
+          can: store.can('puede.acceder.extension_conyugal'),
         },
         {
           title: 'Prestamos',
@@ -550,28 +532,60 @@ export const useMenuStore = defineStore('menu', () => {
               title: 'Prestamos Empresariales',
               link: 'prestamo-empresarial',
               icon: 'bi-building',
-              can: store.can('puede.ver.prestamo_empresarial'),
+              can: store.can('puede.acceder.prestamo_empresarial'),
             },
             {
               title: 'Prestamos Hipotecario',
               link: 'prestamo-hipotecario',
               icon: 'bi-house',
-              can: store.can('puede.ver.prestamo_hipotecario'),
+              can: store.can('puede.acceder.prestamo_hipotecario'),
             },
             {
               title: 'Prestamos Quirorafario',
               link: 'prestamo-quirorafario',
               icon: 'fa-solid fa-hands-holding',
-              can: store.can('puede.ver.prestamo_quirorafario'),
+              can: store.can('puede.acceder.prestamo_quirorafario'),
             },
             {
               title: 'Solicitud de Prestamos Empresariales',
               link: 'solicitud-prestamo-empresarial',
               icon: 'fa-solid fa-file-signature',
-              can: store.can('puede.ver.solicitud_prestamo_empresarial'),
+              can: store.can('puede.acceder.solicitud_prestamo_empresarial'),
             },
           ]
         },
+        {
+          title: 'Configuracion',
+          icon: 'bi-gear-fill',
+          can: store.can('puede.acceder.configuracion_modulo_rrhh'),
+          children: [
+            {
+              title: 'Conceptos de Ingresos',
+              link: 'concepto-ingreso',
+              icon: 'bi-circle',
+              can: store.can('puede.acceder.concepto_ingreso'),
+            },
+            {
+              title: 'Descuentos Generales',
+              link: 'descuentos-generales',
+              icon: 'bi-circle',
+              can: store.can('puede.acceder.descuentos_generales'),
+            },
+            {
+              title: 'Multas',
+              link: 'multa',
+              icon: 'bi-circle',
+              can: store.can('puede.acceder.multa'),
+            },
+            {
+              title: 'Rubro',
+              link: 'rubro',
+              icon: 'bi-circle',
+              can: store.can('puede.acceder.rubro'),
+            },
+          ]
+        },
+
 
 
 
@@ -627,6 +641,12 @@ export const useMenuStore = defineStore('menu', () => {
       can: store.can('puede.ver.modulo_compras') || store.esAdministrador,
       children: [
         {
+          title: 'Dashboard',
+          link: 'dashboard-ordenes-compras',
+          icon: 'bi-circle',
+          can: store.can('puede.ver.dashboard_ordenes_compras'),
+        },
+        {
           title: 'Empresas',
           link: 'empresas',
           icon: 'bi-building-fill-gear',
@@ -672,13 +692,13 @@ export const useMenuStore = defineStore('menu', () => {
           title: 'Preordenes de Compras',
           link: 'preordenes-compras',
           icon: 'bi-list',
-          can: store.can('puede.ver.preordenes_compras') || store.esAdministrador,
+          can: store.can('puede.acceder.preordenes_compras') || store.esAdministrador,
         },
         {
           title: 'Ordenes de Compras',
           link: 'ordenes-compras',
           icon: 'bi-cart-plus',
-          can: store.can('puede.ver.ordenes_compras') || store.esAdministrador,
+          can: store.can('puede.acceder.ordenes_compras') || store.esAdministrador,
         },
         {
           title: 'Reportes',
@@ -730,6 +750,12 @@ export const useMenuStore = defineStore('menu', () => {
     {
       header: 'Administración',
       can: false,// store.can('puede.ver.modulo_administracion') && store.esActivosFijos,
+    },
+    {
+      title: 'Log de auditorías',
+      link: 'auditorias',
+      icon: 'bi-journal-text',
+      can: store.can('puede.acceder.auditorias') || store.esAdministrador,
     },
     {
       title: 'Configuracion General',
@@ -889,7 +915,7 @@ export const useMenuStore = defineStore('menu', () => {
       title: 'Clientes',
       link: 'clientes',
       icon: 'bi-person-circle',
-      can: store.can('puede.ver.clientes'),
+      can: store.can('puede.acceder.clientes'),
     },
     {
       title: 'Roles y Permisos',

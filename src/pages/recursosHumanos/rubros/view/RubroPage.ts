@@ -22,7 +22,8 @@ export default defineComponent({
 
         //Reglas de validacion
         const reglas = {
-          nombre_rubro: { required }
+          nombre_rubro: { required },
+          valor_rubro: {required}
         }
 
         const v$ = useVuelidate(reglas, rubro)

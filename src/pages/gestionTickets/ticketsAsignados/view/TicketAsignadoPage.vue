@@ -106,6 +106,7 @@
       :accion="filtrarTrabajoAsignado"
       @guardado="guardado"
       :confirmar-cerrar="false"
+      :persistente="false"
     />
   </q-page>
 </template>

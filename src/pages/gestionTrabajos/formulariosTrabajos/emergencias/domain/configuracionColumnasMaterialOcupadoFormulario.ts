@@ -23,6 +23,12 @@ export const configuracionColumnasMaterialOcupadoFormulario: ColumnConfig<Materi
     align: 'left',
   },
   {
+    name: 'cliente',
+    field: 'cliente',
+    label: 'Cliente',
+    align: 'left',
+  },
+  {
     name: 'despachado',
     field: 'despachado',
     label: 'Despachado',
