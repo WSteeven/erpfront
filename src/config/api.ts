@@ -291,7 +291,7 @@ export const endpoints = {
   valor_acreditar: new Endpoint('fondos-rotativos/valor-acreditar'),
   crear_cash_acreditacion_saldo: new Endpoint('fondos-rotativos/crear-cash-acreditacion-saldo/'),
   acreditacion_saldo_semana: new Endpoint('fondos-rotativos/acreditacion-saldo-semana/'),
-  reporte_acreditacion_semanal: new Endpoint('fondos-rotativos/reporte/reporte_acreditacion_semanal/'),
+  reporte_acreditacion_semanal: new Endpoint('fondos-rotativos/reporte-acreditacion-semanal/'),
 
 
 
