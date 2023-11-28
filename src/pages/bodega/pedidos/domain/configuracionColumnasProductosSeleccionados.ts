@@ -12,6 +12,7 @@ export const configuracionColumnasProductosSeleccionados: ColumnConfig<any>[] = 
         name: 'descripcion',
         field: 'descripcion',
         label: 'Descripción',
+        style: 'max-width: 300px; overflow: auto;',
         align: 'left',
         sortable: true,
     },

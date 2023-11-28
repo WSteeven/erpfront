@@ -64,8 +64,8 @@ export const useNotificationRealtimeStore = defineStore('notificaciones', () => 
    * Actualiza las notificaciones obtenidas desde la base de datos.
    * @param {Notificacion} notificacion
    */
-  function actualizar() {
-    listar()
+  async function actualizar() {
+    await listar()
   }
 
 

@@ -14,13 +14,18 @@ import { SucursalController } from 'pages/administracion/sucursales/infraestruct
 import { CondicionController } from 'pages/administracion/condiciones/infraestructure/CondicionController'
 import { ForgotPassword } from 'sistema/authentication/forgotPassword/domain/ForgotPassword'
 import { ResetPassword } from 'sistema/authentication/resetPassword/domain/ResetPassword'
-import { DetalleFondo } from 'pages/fondosRotativos/detalleFondo/domain/DetalleFondo'
 import { DetalleFondoController } from 'pages/fondosRotativos/detalleFondo/infrestructure/DetalleFondoController'
 import { SubDetalleFondoController } from 'pages/fondosRotativos/subDetalleFondo/infrestructure/SubDetalleFondoController'
 import { UsuarioAutorizadoresController } from 'pages/fondosRotativos/usuario/infrestructure/UsuarioAutorizadoresController'
 import { CantonController } from 'sistema/ciudad/infraestructure/CantonControllerontroller'
 import { TareaController } from 'pages/gestionTrabajos/tareas/infraestructure/TareaController'
-import { SubtareaController } from 'pages/gestionTrabajos/subtareas/infraestructure/SubtareaController'
+import { EmpleadoController } from 'pages/recursosHumanos/empleados/infraestructure/EmpleadoController'
+import { ConceptoIngresoController } from 'pages/recursosHumanos/concepto_ingreso/infraestructure/ConceptoIngresoController'
+import { DescuentosGenralesController } from 'pages/recursosHumanos/descuentos_generales/infraestructure/DescuentosGenralesController'
+import { DescuentosLeyController } from 'pages/recursosHumanos/descuentos_ley/infraestructure/DescuentosLeyController'
+import { HorasExtrasSubTipoController } from 'pages/recursosHumanos/horas_extras_subtipo/infraestructure/HorasExtrasSubTipoController'
+import { HorasExtrasTipoController } from 'pages/recursosHumanos/horas_extras_tipo/infraestructure/HorasExtrasTipoController'
+import { MultaController } from 'pages/recursosHumanos/multas/infraestructure/MultaController'
 
 export const useAuthenticationStore = defineStore('authentication', () => {
   // Variables locales
@@ -30,6 +35,7 @@ export const useAuthenticationStore = defineStore('authentication', () => {
   // State
   const user = ref()
   const auth = ref(false)
+  const roles = ref()
   const permisos = ref()
   const nombre_usuario = ref()
   const saldo_actual = ref(0)
@@ -41,15 +47,19 @@ export const useAuthenticationStore = defineStore('authentication', () => {
 
   const esCoordinador = computed(() => user.value ? extraerRol(user.value.roles, rolesSistema.coordinador) : false)
   const esCoordinadorBackup = computed(() => user.value ? extraerRol(user.value.roles, rolesSistema.coordinadorBackup) : false)
+  const esCoordinadorBodega = computed(() => user.value ? extraerRol(user.value.roles, rolesSistema.coordinadorBodega) : false)
   const esJefeTecnico = computed(() => user.value ? extraerRol(user.value.roles, rolesSistema.jefe_tecnico) : false)
   const esTecnicoLider = computed(() => user.value ? extraerRol(user.value.roles, rolesSistema.tecnico_lider) : false)
   const esBodeguero = computed(() => user.value ? extraerRol(user.value.roles, rolesSistema.bodega) : false)
+  const esBodegueroTelconet = computed(() => user.value ? extraerRol(user.value.roles, rolesSistema.bodegaTelconet) : false)
   const esActivosFijos = computed(() => user.value ? extraerRol(user.value.roles, rolesSistema.activos_fijos) : false)
   const esTecnico = computed(() => user.value ? extraerRol(user.value.roles, rolesSistema.tecnico) : false)
   const esRecursosHumanos = computed(() => user.value ? extraerRol(user.value.roles, rolesSistema.rrhh) : false)
   const esGerente = computed(() => user.value ? extraerRol(user.value.roles, rolesSistema.gerente) : false)
   const esContabilidad = computed(() => user.value ? extraerRol(user.value.roles, rolesSistema.contabilidad) : false)
+  const esCompras = computed(() => user.value ? extraerRol(user.value.roles, rolesSistema.compras) : false)
   const esAdministrador = computed(() => user.value ? extraerRol(user.value.roles, rolesSistema.administrador) : false)
+
 
   function extraerRol(roles: string[], rolConsultar: string) {
     return roles.some((rol: string) => rol === rolConsultar)
@@ -68,6 +78,7 @@ export const useAuthenticationStore = defineStore('authentication', () => {
 
       LocalStorage.set('token', response.data.access_token)
       setUser(response.data.modelo)
+      roles.value = response.data.modelo.roles
       permisos.value = response.data.modelo.permisos
 
       cargarDatosLS()
@@ -118,7 +129,7 @@ export const useAuthenticationStore = defineStore('authentication', () => {
   async function cargarDatosLS() {
     const autorizaciones = (await new AutorizacionController().listar({ campos: 'id,nombre' })).result
     LocalStorage.set('autorizaciones', JSON.stringify(autorizaciones))
-    const sucursales = (await new SucursalController().listar({ campos: 'id,lugar' })).result
+    const sucursales = (await new SucursalController().listar({ campos: 'id,lugar,cliente_id' })).result
     LocalStorage.set('sucursales', JSON.stringify(sucursales))
     const condiciones = (await new CondicionController().listar({ campos: 'id,nombre' })).result
     LocalStorage.set('condiciones', JSON.stringify(condiciones))
@@ -130,12 +141,26 @@ export const useAuthenticationStore = defineStore('authentication', () => {
     LocalStorage.set('detalles', JSON.stringify(detalles))
     const sub_detalles = (await new SubDetalleFondoController().listar({ campos: 'id,descripcion' })).result
     LocalStorage.set('sub_detalles', JSON.stringify(sub_detalles))
-    const autorizacionesEspeciales = (await new UsuarioAutorizadoresController().listar({ campos: 'id,nombre' })).result
-    LocalStorage.set('autorizaciones_especiales', JSON.stringify(autorizacionesEspeciales))
+    /*const autorizacionesEspeciales = (await new UsuarioAutorizadoresController().listar({ campos: 'id,nombre' })).result
+    LocalStorage.set('autorizaciones_especiales', JSON.stringify(autorizacionesEspeciales))*/
     const tareas = (await new TareaController().listar({ campos: 'id,titulo' })).result
     LocalStorage.set('tareas', JSON.stringify(tareas))
-    const sub_tareas = (await new SubtareaController().listar({ campos: 'id,titulo' })).result
-    LocalStorage.set('sub_tareas', JSON.stringify(sub_tareas))
+    const usuariosInactivos = (await new EmpleadoController().listar({ campos: 'id,nombres,apellidos', estado: 0 })).result
+    LocalStorage.set('usuariosInactivos', JSON.stringify(usuariosInactivos))
+    const concepto_ingresos = (await new ConceptoIngresoController().listar()).result
+    LocalStorage.set('concepto_ingresos', JSON.stringify(concepto_ingresos))
+    const descuentos_generales = (await new DescuentosGenralesController().listar()).result
+    LocalStorage.set('descuentos_generales', JSON.stringify(descuentos_generales))
+    const descuentos_ley = (await new DescuentosLeyController().listar()).result
+    LocalStorage.set('descuentos_ley', JSON.stringify(descuentos_ley))
+    const multas = (await new MultaController().listar()).result
+    LocalStorage.set('multas', JSON.stringify(multas))
+    const horas_extras_tipos = (await new HorasExtrasTipoController().listar()).result
+    LocalStorage.set('horas_extras_tipos', JSON.stringify(horas_extras_tipos))
+    const horas_extras_subtipos = (await new HorasExtrasSubTipoController().listar()).result
+    LocalStorage.set('horas_extras_subtipos', JSON.stringify(horas_extras_subtipos))
+    // const sub_tareas = (await new SubtareaController().listar({ campos: 'id,titulo' })).result
+    // LocalStorage.set('sub_tareas', JSON.stringify(sub_tareas))
 
 
   }
@@ -156,6 +181,7 @@ export const useAuthenticationStore = defineStore('authentication', () => {
     LocalStorage.remove('token')
     limpiarLS()
     await getUser()
+    document.title = 'JPCONSTRUCRED'
   }
 
   const setUser = (userData: Empleado | null) => {
@@ -230,6 +256,7 @@ export const useAuthenticationStore = defineStore('authentication', () => {
     recuperacionCuenta,
     nombreUsuario,
     logout,
+    roles,
     permisos,
     can,
     getUser,
@@ -239,14 +266,15 @@ export const useAuthenticationStore = defineStore('authentication', () => {
     isUserLoggedIn,
     esCoordinador,
     esCoordinadorBackup,
+    esCoordinadorBodega,
     esJefeTecnico,
     esTecnico,
     esTecnicoLider,
-    esBodeguero,
+    esBodeguero, esBodegueroTelconet,
     esActivosFijos,
     esRecursosHumanos,
     esGerente,
-    esContabilidad, esAdministrador,
+    esCompras, esContabilidad, esAdministrador,
     consultar_saldo_actual,
     extraerRol,
     listadoUsuarios,

@@ -1,11 +1,13 @@
 //Dependencias
 import { configuracionColumnasDetallesProductos } from '../domain/configuracionColumnasDetallesProductos'
+import { configuracionColumnasSerialesDetalles } from '../domain/configuracionColumnasSerialesDetalles'
 import { required, requiredIf, numeric } from 'shared/i18n-validators'
 import { useVuelidate } from '@vuelidate/core'
 import { defineComponent, ref, watch } from 'vue'
 
 //Componentes
 import TabLayout from 'shared/contenedor/modules/simple/view/TabLayout.vue'
+import EssentialTable from 'components/tables/view/EssentialTable.vue'
 
 //Logica y controladores
 import { ContenedorSimpleMixin } from 'shared/contenedor/modules/simple/application/ContenedorSimpleMixin'
@@ -24,18 +26,30 @@ import { SpanController } from 'pages/administracion/span/infraestructure/SpanCo
 import { RamController } from '../modules/computadoras/modules/ram/infraestructure/RamController'
 import { DiscoController } from '../modules/computadoras/modules/disco/infraestructure/DiscoController'
 import { ProcesadorController } from '../modules/computadoras/modules/procesador/infraestructure/ProcesadorController'
+import { CustomActionTable } from 'components/tables/domain/CustomActionTable'
+import { useNotificaciones } from 'shared/notificaciones'
+import { ValidarListadoSeriales } from '../application/validaciones/ValidarListadoSeriales'
+import { encontrarUltimoIdListado } from 'shared/utils'
+import { useDetalleStore } from 'stores/detalle'
+import { useAuthenticationStore } from 'stores/authentication'
 
 export default defineComponent({
-  components: { TabLayout },
+  components: { TabLayout, EssentialTable },
   setup() {
     const mixin = new ContenedorSimpleMixin(DetalleProducto, new DetalleProductoController())
     const { entidad: detalle, disabled, accion, listadosAuxiliares, listado } = mixin.useReferencias()
     const { setValidador, obtenerListados, cargarVista } = mixin.useComportamiento()
-    const {onGuardado, onReestablecer}=mixin.useHooks()
+    const { onGuardado, onReestablecer } = mixin.useHooks()
+    const { confirmar, notificarCorrecto, notificarAdvertencia, notificarError } = useNotificaciones()
+
+    //stores
+    const detalleStore = useDetalleStore()
+    const store = useAuthenticationStore()
 
     //variable aux
     const descripcion = ref()
-    
+    const refSeriesModalEditable = ref()
+
     //listas
     const opciones_productos = ref([])
     const opciones_marcas = ref([])
@@ -91,8 +105,8 @@ export default defineComponent({
     })
 
     //Hooks
-    onGuardado(()=>descripcion.value=null)
-    onReestablecer(()=>descripcion.value=null)
+    onGuardado(() => descripcion.value = null)
+    onReestablecer(() => descripcion.value = null)
 
     //Reglas de validacion
     const reglas = {
@@ -147,6 +161,9 @@ export default defineComponent({
 
     const v$ = useVuelidate(reglas, detalle)
     setValidador(v$.value)
+
+    const validarListadoSeriales = new ValidarListadoSeriales(detalle)
+    mixin.agregarValidaciones(validarListadoSeriales)
 
     //Configurar los listados
     opciones_hilos.value = listadosAuxiliares.hilos
@@ -220,6 +237,68 @@ export default defineComponent({
       detalle.tiene_adicionales = result.tiene_adicionales
     }
 
+    const addRow: CustomActionTable = {
+      titulo: 'Agregar ítem',
+      icono: 'bi-arrow-bar-down',
+      tooltip: 'Agregar elemento',
+      color: 'positive',
+      accion: () => {
+        const fila = {
+          id: detalle.seriales.length ? encontrarUltimoIdListado(detalle.seriales) + 1 : 1,
+          serial: '',
+        }
+        detalle.seriales.push(fila)
+        refSeriesModalEditable.value.abrirModalEntidad(fila, detalle.seriales.length - 1)
+      }
+    }
+    function eliminar({ posicion }) {
+      confirmar('¿Está seguro de continuar?', () => detalle.seriales.splice(posicion, 1))
+    }
+
+    /**************************************************************
+     * Botones de tablas
+     **************************************************************/
+    const botonDesactivarDetalle: CustomActionTable = {
+      titulo: 'Desactivar',
+      icono: 'bi-toggle2-off',
+      color: 'negative',
+      tooltip: 'Desactivar detalle',
+      accion: ({ entidad, posicion }) => {
+        confirmar('¿Está seguro de desactivar el detalle?', async () => {
+          try {
+            detalleStore.idDetalle = entidad.id
+            const response = await detalleStore.anularDetalle()
+            if (response?.status == 200) {
+              notificarCorrecto('Se ha desactivado correctamente el detalle')
+              listado.value.splice(posicion, 1, response.data.modelo)
+            }
+          } catch (error: any) {
+            notificarError('No se pudo desactivar el detalle!')
+          }
+        })
+      },
+      visible: ({ entidad }) => entidad.activo && store.can('puede.desactivar.detalles')
+    }
+    const botonActivarDetalle: CustomActionTable = {
+      titulo: 'Activar',
+      icono: 'bi-toggle2-off',
+      color: 'positive',
+      tooltip: 'Activar detalle',
+      accion: ({ entidad, posicion }) => {
+        confirmar('¿Está seguro de activar el detalle?', async () => {
+          try {
+            detalleStore.idDetalle = entidad.id
+            const response = await detalleStore.anularDetalle()
+            if (response?.status == 200) {
+              notificarCorrecto('Se ha activado correctamente el detalle')
+              listado.value.splice(posicion, 1, response.data.modelo)
+            }
+          } catch (error: any) {
+            notificarError('No se pudo activar el detalle!')
+          }
+        })
+      }, visible: ({ entidad }) => !entidad.activo && store.can('puede.activar.detalles')
+    }
     return {
       mixin, detalle, disabled, accion, v$, listado, listadoBackup,
       configuracionColumnas: configuracionColumnasDetallesProductos,
@@ -243,9 +322,9 @@ export default defineComponent({
 
       //filtros
       seleccionarModelo(val) {
-        console.log('seleccionar modelo: ', val)
+        // console.log('seleccionar modelo: ', val)
         opciones_modelos.value = listadosAuxiliares.modelos.filter((v) => v.marca_id === val)
-        console.log(opciones_modelos.value)
+        // console.log(opciones_modelos.value)
         detalle.modelo = ''
         if (opciones_modelos.value.length < 1) {
           detalle.modelo = ''
@@ -270,7 +349,7 @@ export default defineComponent({
       },
 
       seleccionarMarca(val) {
-        console.log('seleccionar marca: ', val)
+        // console.log('seleccionar marca: ', val)
         const encontrado = listadosAuxiliares.modelos.filter((v) => v.id === val)
         if (encontrado.length > 0) {
           opciones_marcas.value = listadosAuxiliares.marcas.filter((v) => v.id === encontrado[0]['marca_id'])
@@ -348,7 +427,7 @@ export default defineComponent({
 
       actualizarCategoria(val) {
         const producto = listadosAuxiliares.productos.filter((v) => v.id === val)
-        console.log(producto[0])
+        // console.log(producto[0])
         categoria_var.value = producto[0]['categoria']
         detalle.categoria = producto[0]['categoria']
         if (detalle.calco) {
@@ -363,7 +442,7 @@ export default defineComponent({
       },
       filtroDetalles(val, update) {
 
-        console.log('valor tipeado', val)
+        // console.log('valor tipeado', val)
         if (val === '') {
           update(() => {
             listadoBackup.value = listado.value
@@ -382,7 +461,16 @@ export default defineComponent({
        */
       calcularMetraje() {
         detalle.custodia = Math.abs((parseInt(detalle.punta_final!) - parseInt(detalle.punta_inicial!))).toString()
-      }
+      },
+
+      /* Filas y columnas de ingresar varios seriales */
+      refSeriesModalEditable,
+      columnas: configuracionColumnasSerialesDetalles,
+      addRow,
+      eliminar,
+
+      botonDesactivarDetalle,
+      botonActivarDetalle,
     }
   }
 })

@@ -1,17 +1,22 @@
-import { AxiosResponse, AxiosError } from "axios"
-import { CustomActionTable } from "components/tables/domain/CustomActionTable"
-import EssentialTable from "components/tables/view/EssentialTable.vue"
-import { apiConfig } from "config/api"
-import { ParamsType } from "config/types"
-import { accionesTabla } from "config/utils"
-import { ContenedorSimpleMixin } from "shared/contenedor/modules/simple/application/ContenedorSimpleMixin"
-import { EntidadAuditable } from "shared/entidad/domain/entidadAuditable"
-import { Endpoint } from "shared/http/domain/Endpoint"
-import { AxiosHttpRepository } from "shared/http/infraestructure/AxiosHttpRepository"
-import { useNotificaciones } from "shared/notificaciones"
-import { descargarArchivoUrl, formatBytes } from "shared/utils"
-import { defineComponent, ref, computed } from "vue"
-import { configuracionColumnasDocumento } from "../domain/configuracionColumnasDocumento"
+// Dependencias
+import { AxiosHttpRepository } from 'shared/http/infraestructure/AxiosHttpRepository'
+import { CustomActionTable } from 'components/tables/domain/CustomActionTable'
+import { descargarArchivoUrl, formatBytes } from 'shared/utils'
+import { useNotificaciones } from 'shared/notificaciones'
+import { AxiosError, AxiosResponse } from 'axios'
+import { accionesTabla } from 'config/utils'
+import { defineComponent, ref, watchEffect } from 'vue'
+import { apiConfig } from 'config/api'
+
+// Componentes
+import EssentialTable from 'components/tables/view/EssentialTable.vue'
+
+// Logica y controladores
+import { ContenedorSimpleMixin } from 'shared/contenedor/modules/simple/application/ContenedorSimpleMixin'
+import { EntidadAuditable } from 'shared/entidad/domain/entidadAuditable'
+import { Endpoint } from 'shared/http/domain/Endpoint'
+import { ParamsType } from 'config/types'
+import { configuracionColumnasDocumento } from '../domain/configuracionColumnasDocumento'
 
 export default defineComponent({
   components: {
@@ -50,7 +55,7 @@ export default defineComponent({
     esMultiple: {
       type: Boolean,
       default: true,
-    }
+    },
   },
   setup(props) {
     /********
@@ -98,16 +103,13 @@ export default defineComponent({
     const refGestor = ref()
     const axios = AxiosHttpRepository.getInstance()
     const tamanioListado = ref(0)
-    const tieneArchivo = ref(false)
 
     const ruta = `${apiConfig.URL_BASE}/${axios.getEndpoint(props.endpoint)}`
 
     /************
      * Funciones
      *************/
-    const quiero_subir_archivos = computed(() => {
-      return props.esObligatorio
-    })
+    const quiero_subir_archivos = ref(false)
     const esConsultado = ref(false)
     async function factoryFn(files) {
       const fd = new FormData()
@@ -122,13 +124,15 @@ export default defineComponent({
         files.value = []
         if (props.listarAlGuardar) listado.value.push(response.data.modelo)
         notificarCorrecto(response.data.mensaje)
+
+        // Restablecer el componente q-uploader para mostrar el botón de "añadir archivos" nuevamente
+        refGestor.value.reset()
+
       } catch (error: unknown) {
-        console.log(error)
         const axiosError = error as AxiosError
         notificarError(axiosError.response?.data.mensaje)
       }
     }
-
     function subir(params: ParamsType) {
       paramsForm = params
       if (refGestor.value) {
@@ -146,12 +150,9 @@ export default defineComponent({
     }
     function onFileAdded(file) {
       tamanioListado.value += obtenerSumatoriaTamanio(file)
-      tieneArchivo.value =  tamanioListado.value >0
     }
     function onFileRemoved(file) {
       tamanioListado.value -= obtenerSumatoriaTamanio(file)
-      tieneArchivo.value =  tamanioListado.value >0
-
     }
     function obtenerSumatoriaTamanio(files) {
       const sumatoria = files.reduce((total, file) => total + file.size, 0)
@@ -160,7 +161,7 @@ export default defineComponent({
     function limpiarListado() {
       listado.value = []
     }
-
+    watchEffect(() => (quiero_subir_archivos.value = props.esObligatorio))
     return {
       listado,
       refGestor,
@@ -168,6 +169,7 @@ export default defineComponent({
       formatBytes,
       onFileAdded,
       onFileRemoved,
+      watchEffect,
       quiero_subir_archivos,
       esConsultado,
       columnas: [...configuracionColumnasDocumento, accionesTabla],
@@ -179,7 +181,6 @@ export default defineComponent({
       listarArchivos,
       limpiarListado,
       tamanioListado,
-      tieneArchivo,
     }
   },
 })

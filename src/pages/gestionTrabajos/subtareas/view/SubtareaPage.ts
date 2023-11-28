@@ -13,8 +13,6 @@ import {
   rolesSistema,
   acciones,
   accionesTabla,
-  tiposIntervenciones,
-  causaIntervencion,
   maskFecha,
 } from 'config/utils'
 import { useFiltrosListadosTarea } from 'tareas/application/FiltrosListadosTarea'
@@ -22,7 +20,6 @@ import { destinosTareas, modosAsignacionTrabajo } from 'config/tareas.utils'
 import { required, requiredIf } from 'shared/i18n-validators'
 import { useNotificacionStore } from 'stores/notificacion'
 import { useNotificaciones } from 'shared/notificaciones'
-import { nivelesTrabajos } from 'config/tareas.utils'
 import { useSubtareaStore } from 'stores/subtarea'
 import useVuelidate from '@vuelidate/core'
 import { useQuasar } from 'quasar'
@@ -54,13 +51,15 @@ import { CambiarEstadoSubtarea } from '../application/CambiarEstadoSubtarea'
 import { Archivo } from '../modules/gestorArchivosTrabajos/domain/Archivo'
 import { Empleado } from 'recursosHumanos/empleados/domain/Empleado'
 import { EmpleadoGrupo } from '../domain/EmpleadoGrupo'
-import { descargarArchivoUrl } from 'shared/utils'
+import { convertirNumeroPositivo, descargarArchivoUrl } from 'shared/utils'
 import { apiConfig, endpoints } from 'config/api'
 import { Subtarea } from '../domain/Subtarea'
 import { AxiosError } from 'axios'
 import { ClienteFinal } from 'pages/gestionTrabajos/clientesFinales/domain/ClienteFinal'
 import { ClienteFinalController } from 'pages/gestionTrabajos/clientesFinales/infraestructure/ClienteFinalController'
 import { MovilizacionSubtareaController } from 'pages/gestionTrabajos/movilizacionSubtareas/infraestructure/MovilizacionSubtareaController'
+import { useCargandoStore } from 'stores/cargando'
+import { CausaIntervencionController } from 'pages/gestionTrabajos/causasIntervenciones/infraestructure/CausaIntervencionController'
 
 export default defineComponent({
   components: { TabLayout, EssentialTable, ButtonSubmits, EssentialSelectableTable, LabelAbrirModal, ModalesEntidad, DesignarResponsableTrabajo, TiempoSubtarea, TablaSubtareaSuspendida, TablaSubtareaPausas },
@@ -76,8 +75,9 @@ export default defineComponent({
      * Stores
      *********/
     const subtareaStore = useSubtareaStore()
-    const notificacionStore = useNotificacionStore()
-    notificacionStore.setQuasar(useQuasar())
+
+    useNotificacionStore().setQuasar(useQuasar())
+    useCargandoStore().setQuasar(useQuasar())
 
     /********
     * Mixin
@@ -90,21 +90,33 @@ export default defineComponent({
     const { listado: archivos } = mixinArchivo.useReferencias()
     const { listar: listarArchivos } = mixinArchivo.useComportamiento()
 
-
     cargarVista(async () => {
       await obtenerListados({
-        tiposTrabajos: new TipoTrabajoController(),
-        tareas: new TareaController(),
+        tiposTrabajos: {
+          controller: new TipoTrabajoController(),
+          params: { activo: 1, campos: 'id,descripcion,cliente_id' },
+        },
+        // tareas: new TareaController(),
         grupos: {
           controller: new GrupoController(),
           params: { campos: 'id,nombre' }
         },
-        clientes: new ClienteController(),
-        coordinadores: {
+        //clientes: new ClienteController(),
+        /*coordinadores: {
           controller: new EmpleadoController(),
           params: { rol: rolesSistema.coordinador },
+        },*/
+        /*empleados: {
+          controller: new EmpleadoController(),
+          params: {
+            campos: 'id,nombres,apellidos',
+            estado: 1
+          }
+        },*/
+        causasIntervenciones: {
+          controller: new CausaIntervencionController(),
+          params: { tipo_trabajo_id: subtarea.tipo_trabajo },
         },
-        empleados: new EmpleadoController(),
       })
 
       // Necesario al consultar
@@ -192,7 +204,8 @@ export default defineComponent({
     *********/
     onBeforeGuardar(() => {
       subtarea.tarea = subtareaStore.idTarea
-      subtarea.empleados_designados = subtarea.empleados_designados.map((empleado: EmpleadoGrupo) => empleado.id)
+      if (subtarea.modo_asignacion_trabajo === modosAsignacionTrabajo.por_grupo) subtarea.empleados_designados = subtarea.empleados_designados.map((empleado: EmpleadoGrupo) => empleado.id)
+      else subtarea.empleados_designados = [subtarea.empleado]
       /*subtarea.empleados_designados = subtarea.empleados_designados.map((empleado: EmpleadoGrupo) => {
         const empleadoGrupo = new EmpleadoGrupo()
         empleadoGrupo.hydrate(empleado)
@@ -365,6 +378,7 @@ export default defineComponent({
     })
 
     return {
+      convertirNumeroPositivo,
       tiempoFormateado,
       convertir,
       v$,
@@ -383,8 +397,6 @@ export default defineComponent({
       fab: ref(false),
       regiones,
       atenciones,
-      tiposIntervenciones,
-      causaIntervencion,
       guardarDatos,
       reestablecerDatos,
       accion,
@@ -401,7 +413,6 @@ export default defineComponent({
       reestablecer,
       modales,
       subtareaStore,
-      nivelesTrabajos,
       acciones,
       maskFecha,
       accionesTabla,

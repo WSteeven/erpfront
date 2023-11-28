@@ -3,7 +3,11 @@
     :mixin="mixin"
     :configuracionColumnas="configuracionColumnas"
     :pagination="pagination"
+    :puedeExportar="true"
+    :ajustarCeldas="true"
     titulo-pagina="Detalles de productos"
+    :accion1="botonActivarDetalle"
+    :accion2="botonDesactivarDetalle"
   >
     <template #formulario>
       <q-form @submit.prevent>
@@ -47,9 +51,7 @@
               </template>
               <template v-slot:no-option>
                 <q-item>
-                  <q-item-section class="text-grey">
-                    No hay resultados
-                  </q-item-section>
+                  <q-item-section class="text-grey"> No hay resultados </q-item-section>
                 </q-item>
               </template>
             </q-select>
@@ -77,9 +79,7 @@
                   <q-item-section>
                     <q-item-label>{{ scope.opt.descripcion }}</q-item-label>
                     <q-item-label caption>{{
-                      scope.opt.serial
-                        ? 'Serie: ' + scope.opt.serial
-                        : scope.opt.serial
+                      scope.opt.serial ? "Serie: " + scope.opt.serial : scope.opt.serial
                     }}</q-item-label>
                   </q-item-section>
                 </q-item>
@@ -105,10 +105,7 @@
             </q-input>
           </div>
           <!-- Procesador -->
-          <div
-            v-if="detalle.categoria == 'INFORMATICA'"
-            class="col-12 col-md-4 q-mb-md"
-          >
+          <div v-if="detalle.categoria == 'INFORMATICA'" class="col-12 col-md-4 q-mb-md">
             <label class="q-mb-sm block">Procesador</label>
             <q-select
               v-model="detalle.procesador"
@@ -136,10 +133,7 @@
             </q-select>
           </div>
           <!-- RAM -->
-          <div
-            v-if="detalle.categoria == 'INFORMATICA'"
-            class="col-12 col-md-4 q-mb-md"
-          >
+          <div v-if="detalle.categoria == 'INFORMATICA'" class="col-12 col-md-4 q-mb-md">
             <label class="q-mb-sm block">Ram</label>
             <q-select
               v-model="detalle.ram"
@@ -167,10 +161,7 @@
             </q-select>
           </div>
           <!-- Disco -->
-          <div
-            v-if="detalle.categoria == 'INFORMATICA'"
-            class="col-12 col-md-4 q-mb-md"
-          >
+          <div v-if="detalle.categoria == 'INFORMATICA'" class="col-12 col-md-4 q-mb-md">
             <label class="q-mb-sm block">Disco</label>
             <q-select
               v-model="detalle.disco"
@@ -198,10 +189,7 @@
             </q-select>
           </div>
           <!-- Imei -->
-          <div
-            v-if="detalle.categoria == 'INFORMATICA'"
-            class="col-12 col-md-4"
-          >
+          <div v-if="detalle.categoria == 'INFORMATICA'" class="col-12 col-md-4">
             <label class="q-mb-sm block">Imei</label>
             <q-input
               type="number"
@@ -274,9 +262,7 @@
               </template>
               <template v-slot:no-option>
                 <q-item>
-                  <q-item-section class="text-grey">
-                    No hay resultados
-                  </q-item-section>
+                  <q-item-section class="text-grey"> No hay resultados </q-item-section>
                 </q-item>
               </template>
             </q-select>
@@ -332,10 +318,7 @@
             ></q-checkbox>
           </div>
           <!-- Serial -->
-          <div
-            v-if="detalle.tiene_serial || detalle.es_fibra"
-            class="col-12 col-md-4"
-          >
+          <div v-if="detalle.tiene_serial || detalle.es_fibra" class="col-12 col-md-4">
             <label class="q-mb-sm block">Serial</label>
             <q-input
               v-model="detalle.serial"
@@ -397,9 +380,7 @@
             >
               <template v-slot:no-option>
                 <q-item>
-                  <q-item-section class="text-grey">
-                    No hay resultados
-                  </q-item-section>
+                  <q-item-section class="text-grey"> No hay resultados </q-item-section>
                 </q-item>
               </template>
             </q-select>
@@ -497,10 +478,7 @@
               dense
             >
               <template v-slot:error>
-                <div
-                  v-for="error of v$.punta_inicial.$errors"
-                  :key="error.$uid"
-                >
+                <div v-for="error of v$.punta_inicial.$errors" :key="error.$uid">
                   <div class="error-msg">{{ error.$message }}</div>
                 </div>
               </template>
@@ -544,6 +522,37 @@
               dense
             >
             </q-input>
+          </div>
+
+          <!-- Varios numeros de serie -->
+          <div class="col-12 col-md-4">
+            <br />
+            <q-checkbox
+              class="q-mb-lg"
+              v-model="detalle.varios_items"
+              label="Varios items"
+              outlined
+              dense
+            />
+          </div>
+          <!-- rows -->
+          <!-- Aquí se ingresan varios detalles -->
+          <div class="col-12 col-md-4 q-pa-md" v-if="detalle.varios_items">
+            <essential-table
+              ref="refSeriesModalEditable"
+              titulo="Seriales"
+              :datos="detalle.seriales"
+              :configuracionColumnas="columnas"
+              :accion1Header="addRow"
+              :permitirBuscar="false"
+              :permitirConsultar="false"
+              :permitirEditarModal="true"
+              :permitirEliminar="true"
+              :mostrarFooter="false"
+              :altoFijo="false"
+              @eliminar="eliminar"
+            ></essential-table>
+            <!-- todo el detalle -->
           </div>
         </div>
       </q-form>

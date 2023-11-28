@@ -2,16 +2,12 @@ import { ComponenteModal } from 'components/modales/domain/ComponenteModal.domai
 import { markRaw } from 'vue'
 
 //paginas
-import DespacharPage from '../view/DespacharPage.vue'
-import TransaccionEgresoImprimirPage from '../view/TransaccionEgresoImprimirPage.vue'
-import InventarioPage from 'pages/bodega/inventario/view/InventarioPage'
+import VisualizarEgresoPage from '../VisualizarEgresoPage.vue'
 
 export class TransaccionEgresoModales {
-    DespacharPage: ComponenteModal
-    TransaccionEgresoImprimirPage: ComponenteModal
+    VisualizarEgresoPage: ComponenteModal
 
     constructor() {
-        this.DespacharPage = markRaw(new ComponenteModal('CONSTRUCRED', DespacharPage))
-        this.TransaccionEgresoImprimirPage = markRaw(new ComponenteModal('CONSTRUCRED', TransaccionEgresoImprimirPage))
+        this.VisualizarEgresoPage = markRaw(new ComponenteModal('Egresos de bodega', VisualizarEgresoPage))
     }
 }

@@ -10,5 +10,6 @@
   "[typescript]": {
     "editor.defaultFormatter": "vscode.typescript-language-features"
   },
-  "vue.codeActions.enabled": false
+  "vue.codeActions.enabled": false,
+  "vue3snippets.enable-compile-vue-file-on-did-save-code": false
 }

@@ -2,8 +2,10 @@ import { TipoTrabajo } from 'gestionTrabajos/tiposTareas/domain/TipoTrabajo'
 import { Subtarea } from 'pages/gestionTrabajos/subtareas/domain/Subtarea'
 import { computed, Ref, ref, UnwrapRef } from 'vue'
 import { Tarea } from '../domain/Tarea'
+import { CausaIntervencion } from 'pages/gestionTrabajos/causasIntervenciones/domain/CausaIntervencion'
+import { ordernarListaString } from 'shared/utils'
 
-export const useFiltrosListadosTarea = (listadosAuxiliares, entidad?: UnwrapRef<Tarea | Subtarea>) => {
+export const useFiltrosListadosTarea = (listadosAuxiliares, entidad?: UnwrapRef<any>) => {// Tarea | Subtarea | any>) => {
   // - Filtro clientes corporativos
   const clientes = ref()
   function filtrarClientes(val, update) {
@@ -102,13 +104,29 @@ export const useFiltrosListadosTarea = (listadosAuxiliares, entidad?: UnwrapRef<
   )
 
   function filtrarTiposTrabajos(val, update) {
-    if (val === '') update(() => tiposTrabajos.value = []) //listadosAuxiliares.tiposTrabajos)
-    // if (val === '') update(() => tiposTrabajos.value = listadosAuxiliares.tiposTrabajos)
+    if (val === '') update(() => tiposTrabajos.value = [])
 
     update(() => {
       const needle = val.toLowerCase()
       tiposTrabajos.value = tiposTrabajosSource.value.filter(
         (v) => v.descripcion.toLowerCase().indexOf(needle) > -1
+      )
+    })
+  }
+
+  // - Filtro causas de intervenciones
+  const causasIntervenciones: Ref<TipoTrabajo[]> = ref([])
+  const causasIntervencionesSource = computed(() =>
+    listadosAuxiliares.causasIntervenciones.filter((causa: CausaIntervencion) => causa.tipo_trabajo_id === (entidad ? (entidad.tipo_trabajo ? entidad.tipo_trabajo : false) : false))
+  )
+
+  function filtrarCausasIntervenciones(val, update) {
+    if (val === '') update(() => causasIntervenciones.value = [])
+
+    update(() => {
+      const needle = val.toLowerCase()
+      causasIntervenciones.value = causasIntervencionesSource.value.filter(
+        (v) => v.nombre.toLowerCase().indexOf(needle) > -1
       )
     })
   }
@@ -129,13 +147,11 @@ export const useFiltrosListadosTarea = (listadosAuxiliares, entidad?: UnwrapRef<
   // - Filtro empleados
   const empleados = ref([])
   function filtrarEmpleados(val, update) {
-    if (val === '') update(() => empleados.value = listadosAuxiliares.empleados)
+    if (val === '') update(() => empleados.value = listadosAuxiliares.empleados.sort((a, b) => ordernarListaString(a.nombres, b.nombres)))
 
     update(() => {
       const needle = val.toLowerCase()
-      empleados.value = listadosAuxiliares.empleados.filter(
-        (v) => v.nombres.toLowerCase().indexOf(needle) > -1
-      )
+      empleados.value = listadosAuxiliares.empleados.filter((v) => v.nombres.toLowerCase().indexOf(needle) > -1 || v.apellidos.toLowerCase().indexOf(needle) > -1)
     })
   }
 
@@ -175,5 +191,7 @@ export const useFiltrosListadosTarea = (listadosAuxiliares, entidad?: UnwrapRef<
     filtrarEmpleados,
     rutas,
     filtrarRutas,
+    causasIntervenciones,
+    filtrarCausasIntervenciones,
   }
 }

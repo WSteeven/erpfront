@@ -9,7 +9,7 @@
         <div class="row q-col-gutter-sm q-py-md">
           <!-- nombre -->
           <div class="col-12 col-md-6">
-            <label class="q-mb-sm block">Nombre del Cargo</label>
+            <label class="q-mb-sm block">Nombre del Ingreso</label>
             <q-input
               v-model="concepto_ingreso.nombre"
               @update:model-value="(v) => (concepto_ingreso.nombre = removeAccents(v))"

@@ -48,14 +48,14 @@ export class CambiarEstadoTicket {
     return this.solicitud('/calificar', id, data)
   }
 
+  cargando = new StatusEssentialLoading()
   async solicitud(accion, id, data?: UnwrapRef<any>) {
-    const cargando = new StatusEssentialLoading()
 
     try {
       const ruta =
         this.axios.getEndpoint(endpoints.tickets) + accion + '/' + id
 
-      cargando.activar()
+      this.cargando.activar()
       const response: AxiosResponse = await this.axios.post(ruta, data)
 
       return {
@@ -66,7 +66,7 @@ export class CambiarEstadoTicket {
       const axiosError = e as AxiosError
       throw new ApiError(axiosError)
     } finally {
-      cargando.desactivar()
+      this.cargando.desactivar()
     }
   }
 }

@@ -20,7 +20,7 @@ import { EmpleadoController } from 'pages/recursosHumanos/empleados/infraestruct
 import { GrupoController } from 'pages/recursosHumanos/grupos/infraestructure/GrupoController'
 import { Empleado } from 'pages/recursosHumanos/empleados/domain/Empleado'
 import { StatusEssentialLoading } from 'components/loading/application/StatusEssentialLoading'
-import { extraerRol, isAxiosError, notificarMensajesError } from 'shared/utils'
+import { extraerRol, isAxiosError, notificarMensajesError, ordernarListaString } from 'shared/utils'
 import { useNotificaciones } from 'shared/notificaciones'
 import { CustomActionTable } from 'components/tables/domain/CustomActionTable'
 import { EmpleadoGrupo } from 'pages/gestionTrabajos/subtareas/domain/EmpleadoGrupo'
@@ -51,7 +51,13 @@ export default defineComponent({
           controller: new GrupoController(),
           params: { campos: 'id,nombre' }
         },
-        empleados: new EmpleadoController(),
+        empleados: {
+          controller: new EmpleadoController(),
+          params: {
+            campos: 'id,nombres,apellidos',
+            estado: 1
+          }
+        },
       })
 
       grupos.value = listadosAuxiliares.grupos
@@ -64,6 +70,7 @@ export default defineComponent({
     const tipoSeleccion = computed(() => cambiarResponsable.value ? 'single' : 'none')
     const notificaciones = useNotificaciones()
     const empleadosGrupo: Ref<Empleado[]> = ref([])
+    const cargando = new StatusEssentialLoading()
 
     /*************
     * Validaciones
@@ -161,12 +168,11 @@ export default defineComponent({
     }
 
     async function obtenerTecnicosGrupo(grupo_id: number) {
-      const cargando = new StatusEssentialLoading()
 
       try {
         cargando.activar()
         const empleadoController = new EmpleadoController()
-        const { result } = await empleadoController.listar({ grupo_id: grupo_id })
+        const { result } = await empleadoController.listar({ grupo_id: grupo_id, estado: 1 })
         empleadosGrupo.value = mapearResponsable(result)
       } catch (error) {
         if (isAxiosError(error)) {
@@ -187,6 +193,10 @@ export default defineComponent({
       })
     }
 
+    function ordenarEmpleados() {
+      empleados.value.sort((a: Empleado, b: Empleado) => ordernarListaString(a.apellidos!, b.apellidos!))
+    }
+
     return {
       seleccionarGrupo,
       seleccionarEmpleado,
@@ -197,6 +207,7 @@ export default defineComponent({
       columnasEmpleado: [...configuracionColumnasEmpleadoGrupo, accionesTabla],
       configuracionColumnasEmpleadoGrupo,
       empleadosGrupo,
+      ordenarEmpleados,
       // empleadosAdicionales,
       grupos,
       filtrarGrupos,

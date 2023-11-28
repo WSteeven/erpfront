@@ -26,19 +26,17 @@ import { CustomActionPrompt } from 'components/tables/domain/CustomActionPrompt'
 import { usePedidoStore } from 'stores/pedido'
 
 import { useTransferenciaStore } from 'stores/transferencia'
-import { ComprobanteController } from 'pages/bodega/comprobantes/infraestructure/ComprobanteController'
 import { apiConfig, endpoints } from 'config/api'
 import { AxiosHttpRepository } from 'shared/http/infraestructure/AxiosHttpRepository'
 import { useRoute } from 'vue-router'
 
 export default defineComponent({
   components: { TabLayout, EssentialTable, EssentialSelectableTable },
-  emits: ['cerrar-modal'],
+  // emits: ['cerrar-modal'],
   setup(props, { emit }) {
     const mixin = new ContenedorSimpleMixin(Transaccion, new TransaccionEgresoController())
     const { entidad: transaccion } = mixin.useReferencias()
     const { notificarError, notificarCorrecto, confirmar, prompt } = useNotificaciones()
-    const comprobanteController = new ComprobanteController()
     //stores
     useNotificacionStore().setQuasar(useQuasar())
     const store = useAuthenticationStore()
@@ -100,6 +98,7 @@ export default defineComponent({
               // transaccionStore.firmarComprobante(transaccionStore.idTransaccion, datos)
               notificarCorrecto('Documento aprobado y firmado correctamente')
               emit('cerrar-modal', false)
+              emit('guardado', 'aceptado')
             })
           } catch (e) {
             notificarError('No se pudo aprobar ni firmar el documento')

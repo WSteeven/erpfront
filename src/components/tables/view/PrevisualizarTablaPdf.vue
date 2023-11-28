@@ -39,7 +39,7 @@
         <div ref="refPDF">
           <div class="q-pa-md bg-white alto-fijo-hoja">
             <q-avatar square>
-              <img src="src/assets/logo.svg" />
+              <img src="src/assets/logo.png" />
             </q-avatar>
             <span class="text-h6"> CONSTRUCRED </span>
 

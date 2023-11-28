@@ -10,6 +10,13 @@ export const configuracionColumnasPlazoPrestamo: ColumnConfig<PlazoPrestamo>[] =
         sortable: true
     },
     {
+      name: 'fecha_vencimiento',
+      field: 'fecha_vencimiento',
+      label: 'Fecha de Vencimiento',
+      align: 'left',
+      sortable: true
+  },
+    {
       name: 'fecha_pago',
       field: 'fecha_pago',
       label: 'Fecha de Pago',
@@ -17,11 +24,33 @@ export const configuracionColumnasPlazoPrestamo: ColumnConfig<PlazoPrestamo>[] =
       sortable: true
   },
   {
+    name: 'valor_couta',
+    field: 'valor_couta',
+    label: 'Valor Couta',
+    align: 'left',
+    sortable: true
+},
+{
+  name: 'valor_pagado',
+  field: 'valor_pagado',
+  label: 'Valor a Pagado',
+  align: 'left',
+  sortable: true
+},
+  {
     name: 'valor_a_pagar',
     field: 'valor_a_pagar',
     label: 'Valor a Pagar',
     align: 'left',
     sortable: true
 },
+{
+  name: 'pago_couta',
+  field: 'pago_couta',
+  label: 'Pago',
+  align: 'left',
+  sortable: true
+},
+
 
 ]

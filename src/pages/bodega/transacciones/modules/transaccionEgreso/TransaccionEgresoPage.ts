@@ -2,20 +2,22 @@
 import { configuracionColumnasTransaccionEgreso } from '../../domain/configuracionColumnasTransaccionEgreso'
 import { required, requiredIf } from '@vuelidate/validators'
 import { useVuelidate } from '@vuelidate/core'
-import { Ref, defineComponent, ref, watch } from 'vue'
+import { Ref, defineComponent, ref } from 'vue'
 import { configuracionColumnasInventarios } from 'pages/bodega/inventario/domain/configuracionColumnasInventarios'
 import { configuracionColumnasItemsSeleccionados } from 'pages/bodega/traspasos/domain/configuracionColumnasItemsSeleccionados'
 import { configuracionColumnasListadoProductosSeleccionados } from '../transaccionContent/domain/configuracionColumnasListadoProductosSeleccionados'
 import { configuracionColumnasProductosSeleccionados } from './domain/configuracionColumnasProductosSeleccionados'
 import { configuracionColumnasProductos } from 'pages/bodega/productos/domain/configuracionColumnasProductos'
-import { useOrquestadorSelectorItemsTransaccion } from '../transaccionIngreso/application/OrquestadorSelectorDetalles'
+import { useOrquestadorSelectorItemsEgreso } from './application/OrquestadorSelectorInventario'
 import { configuracionColumnasDetallesProductos } from 'pages/bodega/detalles_productos/domain/configuracionColumnasDetallesProductos'
-import { acciones, motivos } from 'config/utils'
+import { acciones, estadosTransacciones, motivos } from 'config/utils'
 
 // Componentes
 import TabLayout from 'shared/contenedor/modules/simple/view/TabLayout.vue'
 import EssentialTable from 'components/tables/view/EssentialTable.vue'
 import EssentialSelectableTable from 'components/tables/view/EssentialSelectableTable.vue'
+import LabelInfoEmpleado from 'components/modales/modules/LabelInfoEmpleado.vue'
+import ModalesEntidad from 'components/modales/view/ModalEntidad.vue'
 
 //Logica y controladores
 import { ContenedorSimpleMixin } from 'shared/contenedor/modules/simple/application/ContenedorSimpleMixin'
@@ -43,24 +45,34 @@ import { ValidarListadoProductosEgreso } from './application/validaciones/Valida
 import { limpiarListado, ordernarListaString } from 'shared/utils'
 import { Motivo } from 'pages/administracion/motivos/domain/Motivo'
 import { useInventarioStore } from 'stores/inventario'
-import { GuardableRepository } from 'shared/controller/infraestructure/GuardableRepository'
+import { useCargandoStore } from 'stores/cargando'
+import { Sucursal } from 'pages/administracion/sucursales/domain/Sucursal'
+import { Empleado } from 'pages/recursosHumanos/empleados/domain/Empleado'
+import { SucursalController } from 'pages/administracion/sucursales/infraestructure/SucursalController'
+import { Cliente } from 'sistema/clientes/domain/Cliente'
+import { ComportamientoModalesEmpleado } from 'pages/recursosHumanos/empleados/application/ComportamientoModalesEmpleado'
+import { useEmpleadoStore } from 'stores/empleado'
 
 export default defineComponent({
-  components: { TabLayout, EssentialTable, EssentialSelectableTable },
+  name: 'Egresos',
+  components: { TabLayout, EssentialTable, EssentialSelectableTable, LabelInfoEmpleado, ModalesEntidad },
   setup() {
     const mixin = new ContenedorSimpleMixin(Transaccion, new TransaccionEgresoController())
     const { entidad: transaccion, disabled, accion, listadosAuxiliares } = mixin.useReferencias()
     const { setValidador, obtenerListados, cargarVista } = mixin.useComportamiento()
-    const { onConsultado, onReestablecer, onGuardado, onBeforeGuardar } = mixin.useHooks()
-    const { confirmar, prompt, notificarAdvertencia, notificarCorrecto } = useNotificaciones()
+    const { onConsultado, onReestablecer, onGuardado } = mixin.useHooks()
+    const { confirmar, prompt, notificarError } = useNotificaciones()
     //stores
     useNotificacionStore().setQuasar(useQuasar())
+    useCargandoStore().setQuasar(useQuasar())
     const store = useAuthenticationStore()
     const transaccionStore = useTransaccionStore()
     const pedidoStore = usePedidoStore()
     const transferenciaStore = useTransferenciaStore()
     const inventarioStore = useInventarioStore()
-    const $q = useNotificacionStore().$q ?? useQuasar()
+    const empleadoStore = useEmpleadoStore()
+
+    const modalesEmpleado = new ComportamientoModalesEmpleado()
 
     //orquestador
     const {
@@ -70,24 +82,24 @@ export default defineComponent({
       listar: listarProductos,
       limpiar: limpiarProducto,
       seleccionar: seleccionarProducto
-    } = useOrquestadorSelectorItemsTransaccion(transaccion, 'inventarios')
-    
+    } = useOrquestadorSelectorItemsEgreso(transaccion, 'inventarios')
+
 
     const usuarioLogueado = store.user
     const esBodeguero = store.esBodeguero
     const esCoordinador = store.esCoordinador
     const rolSeleccionado = (store.user.roles.filter((v) => v.indexOf('BODEGA') > -1 || v.indexOf('COORDINADOR') > -1)).length > 0 ? true : false
 
-    
+
     let soloLectura = ref(false)
     let puedeEditarCantidad = ref(true)
     let puedeDespacharMaterial = ref(false)
     let esVisibleAutorizacion = ref(false)
     let esVisibleTarea = ref(false)
-    let listadoPedido :Ref<any[]>= ref([])
+    let listadoPedido: Ref<any[]> = ref([])
     let coincidencias = ref()
     let listadoCoincidencias = ref()
-    
+
 
     const opciones_empleados = ref([])
     const opciones_autorizaciones = ref([])
@@ -124,7 +136,7 @@ export default defineComponent({
 
     //hooks
     onReestablecer(() => {
-      // console.log('se reestableció')
+      listadoPedido.value = []
       puedeEditarCantidad.value = true
       soloLectura.value = false
     })
@@ -155,7 +167,7 @@ export default defineComponent({
       listadoPedido.value = []
       transaccion.pedido = null
     })
-    
+
 
     /*****************************************************************************************
      * Validaciones
@@ -169,7 +181,7 @@ export default defineComponent({
       // responsable: { requiredIfPedido: requiredIf(transaccion.pedido! > 0) },
       responsable: { required },
       autorizacion: {
-        requiredIfCoordinador: requiredIf(esCoordinador),
+        requiredIfCoordinador: requiredIf(esCoordinador && !store.esBodegueroTelconet),
         requiredIfEsVisibleAut: requiredIf(false)
       },
       observacion_aut: {
@@ -185,7 +197,7 @@ export default defineComponent({
     //validar que envien datos en el listado
     const validarListadoProductos = new ValidarListadoProductosEgreso(transaccion, listadoPedido)
     mixin.agregarValidaciones(validarListadoProductos)
-    
+
 
 
     function eliminar({ entidad, posicion }) {
@@ -229,6 +241,28 @@ export default defineComponent({
       },
     }
 
+    const botonAnular: CustomActionTable = {
+      titulo: 'Anular',
+      color: 'red',
+      icono: 'bi-x',
+      accion: async ({ entidad, posicion }) => {
+        confirmar('¿Está seguro que desea anular la transacción?. Esta acción sumará al inventario los materiales egresados previamente', async () => {
+          try {
+            transaccionStore.idTransaccion = entidad.id
+            await transaccionStore.anularEgreso()
+            entidad.estado = transaccionStore.transaccion.estado
+          } catch (err) {
+            notificarError('' + err)
+          }
+        })
+      },
+      visible: ({ entidad, posicion }) => {
+        // console.log(entidad)
+        // console.log('aqui retornas cuando es visible el boton, en teoria solo cuando es administrador y no esta anulada')
+        return (store.esAdministrador || store.can('puede.anular.egresos')) && entidad.estado === estadosTransacciones.completa && entidad.estado_comprobante == 'PENDIENTE'
+      }
+
+    }
 
     /**
      * It loads a transaction from the database, and if it fails, it cleans the fields that were
@@ -301,7 +335,7 @@ export default defineComponent({
         sucursal_id: transaccion.sucursal,
         cliente_id: transaccion.cliente
       }
-      console.log(await inventarioStore.cargarCoincidencias(data, 'detalle_id'))
+      // console.log(await inventarioStore.cargarCoincidencias(data, 'detalle_id'))
       coincidencias.value = await inventarioStore.cargarCoincidencias(data, 'detalle_id')
       actualizarCantidades()
     }
@@ -318,11 +352,20 @@ export default defineComponent({
             v.cantidad = cantidadPendiente
             console.log('hay más en inventario')
           } else {
-            console.log('hay menos en inventario')
+            console.log('hay menos en inventario', v.detalle_id, v.cantidad)
           }
         }
       })
     }
+
+    function seleccionarClientePropietario(val) {
+      const sucursalSeleccionada = opciones_sucursales.value.filter((v: Sucursal) => v.id === val)
+      transaccion.cliente = sucursalSeleccionada[0]['cliente_id']
+
+      buscarListadoPedidoEnInventario()
+    }
+
+
 
     async function buscarListadoPedidoEnInventario() {
       transaccion.listadoProductosTransaccion = []
@@ -400,6 +443,18 @@ export default defineComponent({
     /* function filtroSolicitante(val){
         const opcion_encontrada = listadosAuxiliares.empleados.filter((v)=>v.id===val)
     } */
+
+    async function recargarSucursales() {
+      const sucursales = (await new SucursalController().listar({ campos: 'id,lugar,cliente_id' })).result
+      LocalStorage.set('sucursales', JSON.stringify(sucursales))
+    }
+
+    async function infoEmpleado(id: number) {
+      empleadoStore.idEmpleado = id
+      await empleadoStore.cargarEmpleado()
+      modalesEmpleado.abrirModalEntidad('EmpleadoInfoPage')
+    }
+
     return {
       mixin, transaccion, disabled, accion, v$, soloLectura,
       configuracionColumnas: configuracionColumnasTransaccionEgreso,
@@ -424,6 +479,13 @@ export default defineComponent({
       esVisibleAutorizacion,
       esVisibleTarea,
 
+      //modales
+      modalesEmpleado,
+
+      //funciones
+      recargarSucursales,
+      infoEmpleado,
+
 
       //filtros
       filtroTareas,
@@ -432,6 +494,19 @@ export default defineComponent({
         const motivoSeleccionado = listadosAuxiliares.motivos.filter((v) => v.id === val)
         transaccion.aviso_liquidacion_cliente = (motivoSeleccionado[0]['nombre'] == motivos.egresoLiquidacionMateriales) ? true : false
         transaccion.es_transferencia = (motivoSeleccionado[0]['nombre'] == motivos.egresoTransferenciaBodegas) ? true : false
+      },
+
+      filtroSucursales(val, update) {
+        if (val === '') {
+          update(() => {
+            opciones_sucursales.value = JSON.parse(LocalStorage.getItem('sucursales')!.toString())
+          })
+          return
+        }
+        update(() => {
+          const needle = val.toLowerCase()
+          opciones_sucursales.value = JSON.parse(LocalStorage.getItem('sucursales')!.toString()).filter((v) => v.lugar.toLowerCase().indexOf(needle) > -1)
+        })
       },
 
       filtroEmpleados(val, update) {
@@ -478,6 +553,7 @@ export default defineComponent({
       botonEditarCantidad,
       botonEliminar,
       botonImprimir,
+      botonAnular,
       eliminar,
 
       //selector
@@ -488,11 +564,14 @@ export default defineComponent({
 
       limpiarProducto,
       seleccionarProducto,
+      seleccionarClientePropietario,
       configuracionColumnasProductos,
 
       //rol
       rolSeleccionado,
       esBodeguero,
+      esBodegueroTelconet: store.esBodegueroTelconet,
+      store,
       esCoordinador,
 
       llenarTransaccion,
@@ -508,6 +587,19 @@ export default defineComponent({
       //ordenacion de listas
       ordenarMotivos() {
         opciones_motivos.value.sort((a: Motivo, b: Motivo) => ordernarListaString(a.nombre!, b.nombre!))
+      },
+      ordenarClientes() {
+        if (store.esBodegueroTelconet) opciones_clientes.value = opciones_clientes.value.filter((v: Cliente) => v.razon_social!.indexOf('TELCONET') > -1)
+        else opciones_clientes.value.sort((a: Cliente, b: Cliente) => ordernarListaString(a.razon_social!, b.razon_social!))
+      },
+      ordenarSucursales() {
+        if (store.esBodegueroTelconet) {
+          const sucursalesTelconet = opciones_sucursales.value.filter((v: Sucursal) => v.lugar!.indexOf('TELCONET') > -1)
+          opciones_sucursales.value = sucursalesTelconet.sort((a: Sucursal, b: Sucursal) => ordernarListaString(a.lugar!, b.lugar!))
+        } else opciones_sucursales.value.sort((a: Sucursal, b: Sucursal) => ordernarListaString(a.lugar!, b.lugar!))
+      },
+      ordenarEmpleados() {
+        opciones_empleados.value.sort((a: Empleado, b: Empleado) => ordernarListaString(a.apellidos!, b.apellidos!))
       }
     }
   }

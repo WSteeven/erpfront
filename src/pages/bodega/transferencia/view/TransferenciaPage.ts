@@ -29,6 +29,10 @@ import { useOrquestadorSelectorItems } from '../application/OrquestadorSelectorI
 import { configuracionColumnasInventarios } from 'pages/bodega/inventario/domain/configuracionColumnasInventarios'
 import { LocalStorage } from 'quasar'
 import { ValidarListadoProductos } from '../application/validaciones/ValidarListadoProductos'
+import { Sucursal } from 'pages/administracion/sucursales/domain/Sucursal'
+import { ordernarListaString } from 'shared/utils'
+import { SucursalController } from 'pages/administracion/sucursales/infraestructure/SucursalController'
+import { Cliente } from 'sistema/clientes/domain/Cliente'
 
 
 export default defineComponent({
@@ -114,7 +118,7 @@ export default defineComponent({
             sucursal_destino: { required },
             cliente: { requiredIfBodeguero: requiredIf(esBodeguero) },
             autorizacion: {
-                requiredIfCoordinador: requiredIf(esCoordinador),
+                requiredIfCoordinador: requiredIf(esCoordinador&& !store.esBodegueroTelconet),
             },
             // estado: { requiredIfBodega: requiredIf(esBodeguero), },
             observacion_aut: {
@@ -202,6 +206,11 @@ export default defineComponent({
         opciones_estados.value = JSON.parse(LocalStorage.getItem('estados_transacciones')!.toString())
 
 
+        async function recargarSucursales() {
+            const sucursales = (await new SucursalController().listar({ campos: 'id,lugar' })).result
+            LocalStorage.set('sucursales', JSON.stringify(sucursales))
+        }
+
         return {
             mixin, transferencia, disabled, accion, v$,
             configuracionColumnas: configuracionColumnasTransferencias,
@@ -253,6 +262,25 @@ export default defineComponent({
 
             },
 
+            filtroSucursales(val, update) {
+                if (val === '') {
+                    update(() => {
+                        opciones_sucursales.value = JSON.parse(LocalStorage.getItem('sucursales')!.toString())
+                    })
+                    return
+                }
+                update(() => {
+                    const needle = val.toLowerCase()
+                    opciones_sucursales.value = JSON.parse(LocalStorage.getItem('sucursales')!.toString()).filter((v) => v.lugar.toLowerCase().indexOf(needle) > -1)
+                })
+            },
+            recargarSucursales,
+            ordenarSucursales() {
+                opciones_sucursales.value.sort((a: Sucursal, b: Sucursal) => ordernarListaString(a.lugar!, b.lugar!))
+            },
+            ordenarClientes() {
+                opciones_clientes.value.sort((a: Cliente, b: Cliente) => ordernarListaString(a.razon_social!, b.razon_social!))
+              },
 
 
 

@@ -5,6 +5,7 @@ export const configuracionColumnasDetallesModal: ColumnConfig<any>[] = [
         name: 'producto',
         field: 'producto',
         label: 'Producto',
+        style: 'max-width: 300px; overflow: auto;',
         align: 'left',
         sortable: true
     },
@@ -12,6 +13,7 @@ export const configuracionColumnasDetallesModal: ColumnConfig<any>[] = [
         name: 'descripcion',
         field: 'descripcion',
         label: 'Descripción',
+        style: 'max-width: 500px; overflow: auto;',
         align: 'left',
         sortable: true
     },
@@ -20,7 +22,7 @@ export const configuracionColumnasDetallesModal: ColumnConfig<any>[] = [
         field: 'modelo',
         label: 'Modelo',
         align: 'left',
-        sortable: true
+        sortable: true 
     },
     {
         name: 'serial',
@@ -29,13 +31,13 @@ export const configuracionColumnasDetallesModal: ColumnConfig<any>[] = [
         align: 'left',
         sortable: true
     },
-    // {
-    //     name: 'computadora',
-    //     field: 'computadora',
-    //     label: 'Caracteristicas',
-    //     align: 'left',
-    //     sortable: true
-    // },
+    {
+        name: 'stock',
+        field: 'stock',
+        label: 'Stock',
+        align: 'left',
+        sortable: true
+    },
     {
         name: 'fibra',
         field: 'fibra',

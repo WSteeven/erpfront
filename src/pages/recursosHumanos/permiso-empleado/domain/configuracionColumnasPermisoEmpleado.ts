@@ -3,9 +3,9 @@ import { PermisoEmpleado } from './PermisoEmpleado'
 
 export const configuracionColumnasPermisoEmpleado: ColumnConfig<PermisoEmpleado>[] = [
     {
-        name: 'motivo_info',
-        field: 'motivo_info',
-        label: 'Motivo',
+        name: 'justificacion',
+        field: 'justificacion',
+        label: 'Juatificacion',
         align: 'left',
         sortable: true
     },
@@ -17,15 +17,15 @@ export const configuracionColumnasPermisoEmpleado: ColumnConfig<PermisoEmpleado>
       sortable: true
   },
   {
-    name: 'fecha_inicio',
-    field: 'fecha_inicio',
+    name: 'fecha_hora_inicio',
+    field: 'fecha_hora_inicio',
     label: 'Inicio',
     align: 'left',
     sortable: true
 },
 {
-  name: 'fecha_fin',
-  field: 'fecha_fin',
+  name: 'fecha_hora_fin',
+  field: 'fecha_hora_fin',
   label: 'Fin',
   align: 'left',
   sortable: true
@@ -37,4 +37,19 @@ export const configuracionColumnasPermisoEmpleado: ColumnConfig<PermisoEmpleado>
   align: 'left',
   sortable: true
 },
+{
+  name: 'observacion',
+  field: 'observacion',
+  label: 'Sugerencias',
+  align: 'left',
+  sortable: true
+},
+{
+  name: 'fecha_hora_reagendamiento',
+  field: 'fecha_hora_reagendamiento',
+  label: 'Fcha Sugerida de Permiso',
+  align: 'left',
+  sortable: true
+}
+
 ]

@@ -13,9 +13,6 @@
             <q-input
               v-model="departamento.nombre"
               placeholder="Obligatorio"
-              @update:model-value="
-                (v) => (departamento.nombre = v.toUpperCase())
-              "
               :disable="disabled"
               autofocus
               outlined
@@ -28,6 +25,45 @@
                 </div>
               </template>
             </q-input>
+          </div>
+
+          <!-- Responsable -->
+          <div class="col-12 col-md-3">
+            <label class="q-mb-sm block">Responsable</label>
+            <q-select
+              v-model="departamento.responsable"
+              :options="empleados"
+              @filter="filtrarEmpleados"
+              transition-show="scale"
+              transition-hide="scale"
+              hint="Obligatorio"
+              options-dense
+              dense
+              outlined
+              :disable="disabled"
+              :option-label="(item) => `${item.nombres} ${item.apellidos}`"
+              :option-value="(item) => item.id"
+              use-input
+              input-debounce="0"
+              emit-value
+              map-options
+              :error="!!v$.responsable.$errors.length"
+              @blur="v$.responsable.$touch"
+            >
+              <template v-slot:no-option>
+                <q-item>
+                  <q-item-section class="text-grey">
+                    Seleccione un departamento
+                  </q-item-section>
+                </q-item>
+              </template>
+
+              <template v-slot:error>
+                <div v-for="error of v$.responsable.$errors" :key="error.$uid">
+                  <div class="error-msg">{{ error.$message }}</div>
+                </div>
+              </template>
+            </q-select>
           </div>
 
           <div class="col-12 col-md-3">

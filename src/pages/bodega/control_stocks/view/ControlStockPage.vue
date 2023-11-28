@@ -3,6 +3,8 @@
     :mixin="mixin"
     :configuracionColumnas="configuracionColumnas"
     titulo-pagina="Control de stock"
+    :ajustarCeldas="true"
+    :accion1Header="btnActualizarStock"
   >
     <template #formulario>
       <q-form @submit.prevent>
@@ -57,7 +59,9 @@
                       item.descripcion +
                       ' &nbsp; | &nbsp; ' +
                       item.serial
-                    : item.id? item.modelo+' | '+item.descripcion:null
+                    : item.id
+                    ? item.modelo + ' | ' + item.descripcion
+                    : null
               "
               :option-value="(item) => item.id"
               emit-value
@@ -88,6 +92,10 @@
               options-dense
               dense
               outlined
+              use-input
+              input-debounce="0"
+              @filter="filtrarSucursales"
+              @update:model-value="seleccionarPropietario"
               :error="!!v$.sucursal_id.$errors.length"
               error-message="Debes seleccionar una sucursal"
               :option-label="(item) => item.lugar"
@@ -112,6 +120,7 @@
               transition-hide="scale"
               options-dense
               dense
+              disable
               outlined
               :error="!!v$.cliente_id.$errors.length"
               error-message="Debes seleccionar el propietario del producto"

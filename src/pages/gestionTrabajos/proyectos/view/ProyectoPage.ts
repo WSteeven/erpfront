@@ -147,7 +147,7 @@ export default defineComponent({
      * Hooks
      ********/
     onGuardado(() => {
-      emit('cerrar-modal')
+      emit('cerrar-modal', false)
       emit('guardado', 'ProyectoPage')
     })
 

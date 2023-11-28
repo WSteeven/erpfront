@@ -1,5 +1,3 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
-/* eslint-disable @typescript-eslint/explicit-module-boundary-types */
 import axios, { AxiosResponse, Method, ResponseType } from 'axios'
 import { StatusEssentialLoading } from 'components/loading/application/StatusEssentialLoading'
 import { apiConfig, endpoints } from 'config/api'
@@ -9,6 +7,10 @@ import { EntidadAuditable } from './entidad/domain/entidadAuditable'
 import { ApiError } from './error/domain/ApiError'
 import { HttpResponseGet } from './http/domain/HttpResponse'
 import { AxiosHttpRepository } from './http/infraestructure/AxiosHttpRepository'
+import { useNotificaciones } from './notificaciones';
+import { Empleado } from 'pages/recursosHumanos/empleados/domain/Empleado'
+import { ServiceWorkerClass } from './notificacionesServiceWorker/ServiceWorkerClass'
+import { ItemProforma } from 'pages/comprasProveedores/proforma/domain/ItemProforma'
 
 export function limpiarListado<T>(listado: T[]): void {
   listado.splice(0, listado.length)
@@ -51,9 +53,7 @@ export function descargarArchivo(
   link.remove()
 }
 
-export function descargarArchivoUrl(
-  url: string,
-): void {
+export function descargarArchivoUrl(url: string): void {
   const link = document.createElement('a')
   link.href = apiConfig.URL_BASE + url
   link.target = '_blank'
@@ -253,28 +253,27 @@ export function obtenerFechaActual() {
  * @returns cadena sin acentos ni tildes
  */
 export function removeAccents(accents: string) {
-  return accents.normalize("NFD").replace(/[\u0300-\u036f]/g, "")
+  return accents.normalize('NFD').replace(/[\u0300-\u036f]/g, '')
 }
 
 export async function obtenerTiempoActual() {
   const axios = AxiosHttpRepository.getInstance()
 
-  const cargando = new StatusEssentialLoading()
-
   try {
-    cargando.activar()
-    cargando.establecerMensaje('Obteniendo fecha y hora actual')
+    const fecha: AxiosResponse = await axios.get(
+      axios.getEndpoint(endpoints.fecha)
+    )
+    const hora: AxiosResponse = await axios.get(
+      axios.getEndpoint(endpoints.hora)
+    )
 
-    const fecha: AxiosResponse = await axios.get(axios.getEndpoint(endpoints.fecha))
-    const hora: AxiosResponse = await axios.get(axios.getEndpoint(endpoints.hora))
-
-    //const fechaArray = fecha.split('-') //.map(Number)
-    console.log(fecha.data)
-    return { fecha: fecha.data, hora: hora.data, fecha_hora: fecha.data + ' ' + hora.data }
+    return {
+      fecha: fecha.data,
+      hora: hora.data,
+      fecha_hora: fecha.data + ' ' + hora.data,
+    }
   } catch (e: any) {
     throw new ApiError(e)
-  } finally {
-    cargando.desactivar()
   }
 }
 
@@ -312,6 +311,20 @@ export function stringToArray(listado: string) {
 export function quitarItemDeArray(listado: any[], elemento: string) {
   return listado.filter((item) => item !== elemento)
 }
+export function pushEventMesaggeServiceWorker(data: ServiceWorkerClass) {
+  if ('serviceWorker' in navigator) {
+    navigator.serviceWorker.ready.then(function (registration) {
+      registration.active!.postMessage({
+        action: 'notificacionPush',
+        titulo: data.titulo,
+        mensaje: data.mensaje,
+        icono: data.icono,
+        link: data.link,
+        badge: data.badge,
+      })
+    })
+  }
+}
 
 /**
  * Metodo generico para descargar archivos desde una API
@@ -320,9 +333,13 @@ export function quitarItemDeArray(listado: any[], elemento: string) {
  * @param responseType tipo de respuesta esperada, de la clase axios.ResponseType
  * @param formato tipo de archivo esperado
  * @param titulo  nombre del archivo para descargar
+ * @param data  lo que se envia en el post
+ *
+ * @returns mensaje que indica que no se puede imprimir el archivo
  */
-export async function imprimirArchivo(ruta: string, metodo: Method, responseType: ResponseType, formato: string, titulo: string, data?: any,) {
+export async function imprimirArchivo(ruta: string, metodo: Method, responseType: ResponseType, formato: string, titulo: string, data?: any) {
   const statusLoading = new StatusEssentialLoading()
+  const { notificarAdvertencia } = useNotificaciones()
   statusLoading.activar()
   const axiosHttpRepository = AxiosHttpRepository.getInstance()
   axios({
@@ -330,20 +347,24 @@ export async function imprimirArchivo(ruta: string, metodo: Method, responseType
     method: metodo,
     data: data,
     responseType: responseType,
-    headers: {
-      'Authorization': axiosHttpRepository.getOptions().headers.Authorization
-    }
+    headers: { 'Authorization': axiosHttpRepository.getOptions().headers.Authorization }
   }).then((response: HttpResponseGet) => {
-    const fileURL = URL.createObjectURL(new Blob([response.data], { type: `appication/${formato}` }))
-    const link = document.createElement('a')
-    link.href = fileURL
-    link.target = '_blank'
-    link.setAttribute('download', `${titulo}.${formato}`)
-    document.body.appendChild(link)
-    link.click()
-    link.remove()
-  })
-  statusLoading.desactivar()
+    // console.log(response.data)
+    if (response.data.size < 100 || response.data.type == 'application/json') throw 'No se obtuvieron resultados para generar el reporte'
+    else {
+      const fileURL = URL.createObjectURL(new Blob([response.data], { type: `appication/${formato}` }))
+      const link = document.createElement('a')
+      link.href = fileURL
+      link.target = '_blank'
+      link.setAttribute('download', `${titulo}.${formato}`)
+      document.body.appendChild(link)
+      link.click()
+      link.remove()
+    }
+  }).catch(error => {
+    notificarAdvertencia(error)
+  }).finally(() => statusLoading.desactivar())
+
 }
 
 /**
@@ -364,22 +385,36 @@ export function ordernarListaString(a: string, b: string) {
 }
 
 export function obtenerUbicacion(onUbicacionConcedida) {
-
-  const onErrorDeUbicacion = err => {
+  const onErrorDeUbicacion = (err) => {
     console.log('Error obteniendo ubicación: ', err)
   }
 
   const opcionesDeSolicitud = {
     enableHighAccuracy: true, // Alta precisión
     maximumAge: 0, // No queremos caché
-    timeout: 5000 // Esperar solo 5 segundos
+    timeout: 5000, // Esperar solo 5 segundos
   }
 
-  navigator.geolocation.getCurrentPosition(onUbicacionConcedida, onErrorDeUbicacion, opcionesDeSolicitud)
+  navigator.geolocation.getCurrentPosition(
+    onUbicacionConcedida,
+    onErrorDeUbicacion,
+    opcionesDeSolicitud
+  )
 }
 
 export function extraerRol(roles: string[], rolConsultar: string) {
   return roles.some((rol: string) => rol === rolConsultar)
+}
+
+/**
+ * La función "extraerPermiso" comprueba si existe un permiso dado en una lista de permisos.
+ * @param {string[]} permisos - Una matriz de cadenas que representan los permisos.
+ * @param {string} permisoConsultar - El parámetro `permisoConsultar` es una cadena que representa el
+ * permiso a consultar. Debe ser en base a la estructura de establecida para nombres de permisos (Ej. 'puede.ver.accion')
+ * @returns un valor booleano.
+ */
+export function extraerPermiso(permisos: string[], permisoConsultar: string) {
+  return permisos.some((permiso: string) => permiso === permisoConsultar)
 }
 
 export function formatearFecha(fecha: string) {
@@ -402,4 +437,190 @@ export function formatearFechaHora(fecha: string, hora: string) {
   })
 
   return date.formatDate(nuevaFecha, 'YYYY-MM-DD') + ' ' + hora
+}
+
+// recibe fecha dd-mm-yyyy y sale yyyy-mm-dd con el nuevo separador
+export function formatearFechaSeparador(fecha: string, separador: string, sumarTiempo?: any) {
+  const arrayFecha = fecha.split('-').map(Number) // YYYY-MM-DD
+  let nuevaFecha = date.buildDate({
+    year: arrayFecha[2],
+    month: arrayFecha[1],
+    day: arrayFecha[0],
+  })
+
+  if (sumarTiempo) nuevaFecha = date.addToDate(nuevaFecha, sumarTiempo)
+
+  return date.formatDate(nuevaFecha, 'YYYY' + separador + 'MM' + separador + 'DD')
+}
+
+export function formatearFechaTexto(fecha: number) {
+  const opciones = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' }
+  return new Date(fecha).toLocaleDateString('es-Es', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' })
+}
+
+export function generarColorHexadecimalAleatorio() {
+  const r = Math.floor(Math.random() * 128 + 128); // Componente rojo entre 128 y 255
+  const g = Math.floor(Math.random() * 128 + 128); // Componente verde entre 128 y 255
+  const b = Math.floor(Math.random() * 128 + 128); // Componente azul entre 128 y 255
+
+  const colorHexadecimal = '#' + componentToHex(r) + componentToHex(g) + componentToHex(b);
+
+  return colorHexadecimal;
+}
+
+function componentToHex(component) {
+  const hex = component.toString(16);
+  return hex.length === 1 ? '0' + hex : hex;
+}
+
+export function generarColorPastelAzulAleatorio() {
+  const r = Math.floor(Math.random() * 128); // Componente rojo entre 0 y 127
+  const g = Math.floor(Math.random() * 128 + 128); // Componente verde entre 0 y 127
+  const b = Math.floor(Math.random() * 128); // Componente azul entre 128 y 255
+
+  const colorHexadecimal = '#' + componentToHex(r) + componentToHex(g) + componentToHex(b);
+
+  return colorHexadecimal;
+}
+
+// --
+export function generarColorAzulPastelClaro() {
+  // Generar valores RGB altos (entre 150 y 220) para obtener un tono azul claro
+  const r = Math.floor(Math.random() * 70) + 150;
+  const g = Math.floor(Math.random() * 70) + 150;
+  const b = Math.floor(Math.random() * 100) + 155; // Para asegurarse de que el tono sea azul claro
+
+  // Ajustar el brillo para hacerlo más claro (entre 0.7 y 1.0)
+  const brillo = Math.random() * 0.3 + 0.7;
+
+  // Convertir a formato hexadecimal
+  const colorHex = '#' + ((1 << 24) + (r << 16) + (g << 8) + b).toString(16).slice(1);
+
+  // Aplicar el brillo al color hexadecimal
+  const colorClaroHex = ajustarBrillo(colorHex, brillo);
+
+  return colorClaroHex;
+}
+
+function ajustarBrillo(colorHex, brillo) {
+  const r = parseInt(colorHex.substr(1, 2), 16);
+  const g = parseInt(colorHex.substr(3, 2), 16);
+  const b = parseInt(colorHex.substr(5, 2), 16);
+
+  const rNuevo = Math.round(r * brillo);
+  const gNuevo = Math.round(g * brillo);
+  const bNuevo = Math.round(b * brillo);
+
+  const colorOscuroHex = `#${(rNuevo << 16 | gNuevo << 8 | bNuevo).toString(16).padStart(6, '0')}`;
+  return colorOscuroHex;
+}
+
+
+/* export function ordenarEmpleados(empleados: Ref<Empleado[]>) {
+  empleados.value.sort((a: Empleado, b: Empleado) => ordernarListaString(a.apellidos!, b.apellidos!))
+} */
+
+/**
+ * La función verifica si una matriz tiene elementos repetidos.
+ * @param array - El parámetro `array` es una matriz de elementos.
+ * @returns un valor booleano. Devuelve verdadero si la matriz de entrada tiene elementos repetidos y
+ * falso si todos los elementos de la matriz son únicos.
+ */
+export function tieneElementosRepetidos(array) {
+  const set = new Set(array);
+  return set.size !== array.length;
+}
+
+/**
+ * La función comprueba si una matriz de objetos contiene objetos duplicados.
+ * @param arrayDeObjetos - El parámetro `arrayDeObjetos` es una matriz de objetos.
+ * @returns un valor booleano. Devuelve verdadero si hay objetos repetidos en la matriz y falso si no
+ * hay objetos repetidos.
+ */
+export function tieneElementosRepetidosObjeto(arrayDeObjetos) {
+  const objetoSet = new Set()
+  for (const objeto of arrayDeObjetos) {
+    const objetoString = JSON.stringify(objeto)
+    if (objetoSet.has(objetoString)) {
+      return true
+    } else {
+      objetoSet.add(objetoString)
+    }
+  }
+  return false
+}
+
+/**
+ * La función `ordenarEmpleados` toma una lista de empleados y los ordena alfabeticamente según sus apellidos.
+ * @param {Empleado[]} listadoEmpleados - Una matriz de objetos de tipo Empleado.
+ * @returns una variedad ordenada de empleados.
+ */
+export function ordenarEmpleados(listadoEmpleados: Empleado[]) {
+  return listadoEmpleados.sort((a: Empleado, b: Empleado) => ordernarListaString(a.apellidos!, b.apellidos!))
+}
+
+/**
+ * La función calcula el monto del descuento en función del subtotal y el porcentaje de descuento
+ * proporcionado.
+ * @param {number} subtotal - El subtotal es el monto total antes de aplicar cualquier descuento. Es un
+ * valor numérico.
+ * @param {number} porcentaje_descuento - El parámetro "porcentaje_descuento" representa el porcentaje
+ * de descuento que se aplicará al subtotal.
+ * @param {number} decimales - El parámetro "decimales" es el número de decimales al que se redondeará
+ * el resultado.
+ * @returns el importe del descuento calculado como una cadena con el número especificado de decimales.
+ */
+export function calcularDescuento(subtotal: number, porcentaje_descuento: number, decimales: number) {
+  return ((subtotal * porcentaje_descuento) / 100).toFixed(decimales)
+}
+
+/**
+ * La función calcula el monto del IVA (Impuesto al Valor Agregado) en función del subtotal, descuento,
+ * porcentaje de IVA y número de decimales.
+ * @param {number} subtotal - El subtotal es el monto total antes de que se apliquen descuentos o
+ * impuestos. Representa el monto base sobre el cual se realizarán los cálculos.
+ * @param {number} descuento - El parámetro "descuento" representa el monto del descuento aplicado al
+ * subtotal antes de calcular el impuesto.
+ * @param {number} porcentaje_iva - El parámetro "porcentaje_iva" representa el valor porcentual del
+ * IVA (Impuesto al Valor Agregado) a aplicar al subtotal luego de restar el descuento.
+ * @param {number} decimales - El parámetro "decimales" es el número de decimales al que se redondeará
+ * el resultado.
+ * @returns el valor calculado del IVA (Impuesto al Valor Agregado) en base a los parámetros dados.
+ */
+export function calcularIva(subtotal: number, descuento: number, porcentaje_iva: number, decimales: number) {
+  return (((subtotal - descuento) * porcentaje_iva) / 100).toFixed(decimales)
+}
+
+export function calcularSubtotalSinImpuestosLista(val: ItemProforma) {
+  let suma = 0
+  suma += val.grava_iva ? 0 : Number(val.subtotal) || 0
+  suma -= val.grava_iva ? 0 : Number(val.descuento) || 0
+  return suma
+}
+export function calcularSubtotalConImpuestosLista(val: ItemProforma) {
+  let suma = 0
+  suma += val.facturable && val.grava_iva ? Number(val.subtotal) || 0 : 0
+  suma -= val.facturable && val.grava_iva ? Number(val.descuento) || 0 : 0
+  return suma
+}
+
+/**
+ * La función "encontrarUltimoIdListado" toma una lista de objetos y devuelve el id del objeto con el
+ * valor de id más alto.
+ * @param {any} listado - El parámetro "listado" es una matriz de objetos. Cada objeto de la matriz
+ * tiene una propiedad llamada "id" que representa el identificador único del objeto.
+ * @returns el último valor de identificación de la matriz de listado dada.
+ */
+export function encontrarUltimoIdListado(listado: any) {
+  const objMayorId = listado.reduce((max, objeto) => objeto.id > max.id ? objeto : max, listado[0]);
+
+  return objMayorId.id
+}
+
+export function convertirNumeroPositivo(entidad, campo) {
+  if (entidad[campo]) {
+    if (entidad[campo] < 0) {
+      entidad[campo] = -1 * entidad[campo]
+    }
+  }
 }

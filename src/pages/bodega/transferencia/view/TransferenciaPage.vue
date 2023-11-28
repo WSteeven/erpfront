@@ -147,6 +147,10 @@
               :readonly="disabled || soloLectura"
               :error="!!v$.sucursal_salida.$errors.length"
               error-message="Debes seleccionar una sucursal"
+              use-input
+              input-debounce="0"
+              @filter="filtroSucursales"
+              @popup-show="ordenarSucursales"
               :option-value="(v) => v.id"
               :option-label="(v) => v.lugar"
               emit-value
@@ -167,6 +171,11 @@
                   </q-item-section>
                 </q-item>
               </template>
+              <template v-slot:after>
+                <q-btn color="positive" @click="recargarSucursales">
+                  <q-icon size="xs" class="q-mr-sm" name="bi-arrow-clockwise" />
+                </q-btn>
+              </template>
             </q-select>
           </div>
           <!-- Select sucursal desde -->
@@ -184,6 +193,10 @@
               :readonly="disabled || soloLectura"
               :error="!!v$.sucursal_destino.$errors.length"
               error-message="Debes seleccionar una sucursal"
+              use-input
+              input-debounce="0"
+              @filter="filtroSucursales"
+              @popup-show="ordenarSucursales"
               :option-value="(v) => v.id"
               :option-label="(v) => v.lugar"
               emit-value
@@ -275,6 +288,7 @@
               :readonly="disabled"
               :error="!!v$.cliente.$errors.length"
               error-message="Debes seleccionar un cliente"
+              @popup-show="ordenarClientes"
               :option-value="(item) => item.id"
               :option-label="(item) => item.razon_social"
               emit-value
@@ -368,7 +382,7 @@
                     listarProductos({
                       sucursal_id: transferencia.sucursal_salida,
                       cliente_id: transferencia.cliente,
-                      zeros:false,
+                      zeros: true,
                     })
                   "
                   @blur="
@@ -385,7 +399,7 @@
                     listarProductos({
                       sucursal_id: transferencia.sucursal_salida,
                       cliente_id: transferencia.cliente,
-                      zeros:false,
+                      zeros: true,
                     })
                   "
                   icon="search"
@@ -401,6 +415,8 @@
               </div>
             </div>
           </div>
+
+          {{ v$.$errors }}
           <!-- Tabla -->
           <div class="col-12">
             <essential-table
@@ -411,6 +427,7 @@
               :permitirEditar="false"
               :permitirEliminar="false"
               :mostrarBotones="false"
+              :altoFijo="false"
               :accion1="botonEditarCantidad"
               :accion2="botonEliminar"
               @eliminar="eliminar"

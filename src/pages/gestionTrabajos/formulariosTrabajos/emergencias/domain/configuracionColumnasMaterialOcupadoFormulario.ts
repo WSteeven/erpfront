@@ -11,9 +11,39 @@ export const configuracionColumnasMaterialOcupadoFormulario: ColumnConfig<Materi
     type: 'text'
   },
   {
+    name: 'serial',
+    field: 'serial',
+    label: 'Serial',
+    align: 'left',
+  },
+  {
     name: 'medida',
     field: 'medida',
     label: 'Medida',
+    align: 'left',
+  },
+  {
+    name: 'cliente',
+    field: 'cliente',
+    label: 'Cliente',
+    align: 'left',
+  },
+  {
+    name: 'despachado',
+    field: 'despachado',
+    label: 'Despachado',
+    align: 'left',
+  },
+  {
+    name: 'cantidad_utilizada',
+    field: 'cantidad_utilizada',
+    label: 'Cantidad utilizada',
+    align: 'left',
+  },
+  {
+    name: 'total_cantidad_utilizada',
+    field: 'total_cantidad_utilizada',
+    label: 'Total cantidad utilizada',
     align: 'left',
   },
   {
@@ -23,9 +53,9 @@ export const configuracionColumnasMaterialOcupadoFormulario: ColumnConfig<Materi
     align: 'left',
   },
   {
-    name: 'cantidad_utilizada',
-    field: 'cantidad_utilizada',
-    label: 'Cantidad utilizada',
+    name: 'devuelto',
+    field: 'devuelto',
+    label: 'Devuelto',
     align: 'left',
   },
 ]
