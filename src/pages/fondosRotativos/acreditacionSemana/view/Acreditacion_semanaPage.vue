@@ -10,6 +10,7 @@
       :accion1="botonVerModalValorAcreditar"
       :accion2="botonAcreditar"
       :accion3="botonCash"
+      :accion4="botonReporte"
     >
     </essential-table>
     <modales-entidad
