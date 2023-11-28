@@ -45,13 +45,13 @@
       :mostrar-botones="false"
       :mostrarFooter="true"
       :permitirFiltrar="true"
-      :permitirBuscar="false"
       @tab-seleccionado="filtrarSubtareas"
       :tabDefecto="tabActual"
       :altoFijo="altoFijo"
       @filtrar="aplicarFiltro"
       @limpiarListado="() => (listado = [])"
       :mostrarExportar="true"
+      :ajustar-celdas="true"
     ></essential-table-tabs>
 
     <modales-entidad :comportamiento="modalesSubtarea" :mixin-modal="mixin" />

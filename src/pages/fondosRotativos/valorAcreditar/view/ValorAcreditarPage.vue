@@ -76,6 +76,24 @@
           </template>
         </q-input>
       </div>
+      <div class="col-12 col-md-3">
+        <label class="q-mb-sm block">Motivo</label>
+        <q-input
+          v-model="valorAcreditar.motivo"
+          placeholder="Obligatorio"
+          :disable="disabled"
+          :error="!!v$.motivo.$errors.length"
+          @blur="v$.motivo.$touch"
+          outlined
+          dense
+        >
+          <template v-slot:error>
+            <div v-for="error of v$.motivo.$errors" :key="error.$uid">
+              <div class="error-msg">{{ error.$message }}</div>
+            </div>
+          </template>
+        </q-input>
+      </div>
 
     </div>
     <div class="row justify-end q-col-gutter-x-xs">
