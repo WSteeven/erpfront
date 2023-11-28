@@ -1,12 +1,15 @@
 <template>
   <q-page>
-    <div class="row items-center justify-between q-gutter-xs q-mb-md">
-      <div :class="{ 'text-center full-width': $q.screen.xs }">
-        Código de subtarea: <b>{{ codigoSubtarea }}</b>
+    <div class="column items-center justify-between q-gutter-sm q-mb-md">
+      <div
+        :class="{ 'text-center full-width': $q.screen.xs }"
+        class="text-primary"
+      >
+        {{ 'Subtarea ' + subtarea.codigo_subtarea }}
       </div>
 
       <q-btn
-        color="positive"
+        color="primary"
         no-caps
         push
         class="q-mr-sm"

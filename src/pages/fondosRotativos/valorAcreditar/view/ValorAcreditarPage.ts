@@ -1,4 +1,4 @@
-import { defineComponent, computed, ref } from 'vue'
+import { defineComponent, computed, ref, onMounted } from 'vue'
 import { ValorAcreditar } from '../domain/ValorAcreditar'
 import { apiConfig, endpoints } from 'config/api'
 import TabLayout from 'shared/contenedor/modules/simple/view/TabLayout.vue'
@@ -62,6 +62,9 @@ export default defineComponent({
       monto_modificado: {
         required: true,
       },
+      motivo:{
+        required: true,
+      }
     }
     const v$ = useVuelidate(reglas, valorAcreditar)
     setValidador(v$.value)
@@ -210,7 +213,8 @@ export default defineComponent({
     const totalAcreditar = computed(() => {
       const suma = listado.value.reduce(
         (acumulador, elemento) =>
-          acumulador + parseFloat(elemento.monto_modificado),
+
+          acumulador + parseFloat(elemento.monto_modificado.replace(/,/g, '')),
         0
       )
       return suma
@@ -240,6 +244,13 @@ export default defineComponent({
         })
       }
     }
+    onMounted(()=>{
+      console.log('monted',listado.value);
+
+      listado.value.forEach((v)=>{
+        console.log(v)
+      })
+    })
 
     return {
       mixin,
@@ -251,6 +262,7 @@ export default defineComponent({
       valorAcreditar,
       filtrarEmpleados,
       saldo_anterior,
+      onMounted,
       totalAcreditar,
       empleados,
       deshabilitar_empleado,

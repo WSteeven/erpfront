@@ -13,7 +13,7 @@ export class Ticket extends EntidadAuditable {
   solicitante_id: number | null
   responsable: number | null
   responsable_id: number | null
-  departamento_responsable: number | null
+  departamento_responsable: []
   departamento_solicitante: string | null
   tipo_ticket: number | null
   categoria_tipo_ticket: number | null
@@ -42,7 +42,7 @@ export class Ticket extends EntidadAuditable {
     this.solicitante_id = null
     this.responsable = null
     this.responsable_id = null
-    this.departamento_responsable = null
+    this.departamento_responsable = []
     this.departamento_solicitante = null
     this.tipo_ticket = null
     this.categoria_tipo_ticket = null

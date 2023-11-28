@@ -72,6 +72,107 @@
               </q-input>
             </div>
 
+            <!-- Departamento -->
+            <!-- :class="{ 'col-12': ticket.departamento_responsable.length > 1, -->
+            <!-- 'col-md-9': ticket.departamento_responsable.length <= 1, }" -->
+            <div class="col-12">
+              <label class="q-mb-sm block"
+                >Departamento(s) que atenderá(n)</label
+              >
+              <q-select
+                v-model="ticket.departamento_responsable"
+                :options="departamentos"
+                @filter="filtrarDepartamentos"
+                transition-show="scale"
+                transition-hide="scale"
+                hint="Obligatorio"
+                options-dense
+                dense
+                outlined
+                :disable="disabled || departamentoDeshabilitado"
+                :option-label="(item) => item.nombre"
+                :option-value="(item) => item.id"
+                use-input
+                input-debounce="0"
+                emit-value
+                map-options
+                use-chips
+                multiple
+                @update:model-value="
+                  () => {
+                    ticket.responsable = null
+                    ticket.categoria_tipo_ticket = null
+                    ticket.tipo_ticket = null
+                    obtenerResponsables(filtroResponsableDepartamento)
+                  }
+                "
+                :error="!!v$.departamento_responsable.$errors.length"
+                @blur="v$.departamento_responsable.$touch"
+              >
+                <template v-slot:no-option>
+                  <q-item>
+                    <q-item-section class="text-grey">
+                      No hay resultados
+                    </q-item-section>
+                  </q-item>
+                </template>
+
+                <template v-slot:error>
+                  <div
+                    v-for="error of v$.departamento_responsable.$errors"
+                    :key="error.$uid"
+                  >
+                    <div class="error-msg">{{ error.$message }}</div>
+                  </div>
+                </template>
+              </q-select>
+            </div>
+
+            <!-- Responsable -->
+            <!-- <div
+              v-if="ticket.departamento_responsable.length <= 1"
+              class="col-12 col-md-3"
+            >
+              <label class="q-mb-sm block">Responsable</label>
+              <q-select
+                v-model="ticket.responsable"
+                :options="empleados"
+                @filter="filtrarEmpleados"
+                transition-show="scale"
+                transition-hide="scale"
+                hint="Obligatorio"
+                options-dense
+                dense
+                outlined
+                :disable="disabled || responsableDeshabilitado"
+                :option-label="(item) => `${item.nombres} ${item.apellidos}`"
+                :option-value="(item) => item.id"
+                use-input
+                input-debounce="0"
+                emit-value
+                map-options
+                :error="!!v$.responsable.$errors.length"
+                @blur="v$.responsable.$touch"
+              >
+                <template v-slot:no-option>
+                  <q-item>
+                    <q-item-section class="text-grey">
+                      Seleccione un departamento
+                    </q-item-section>
+                  </q-item>
+                </template>
+
+                <template v-slot:error>
+                  <div
+                    v-for="error of v$.responsable.$errors"
+                    :key="error.$uid"
+                  >
+                    <div class="error-msg">{{ error.$message }}</div>
+                  </div>
+                </template>
+              </q-select>
+            </div> -->
+
             <!-- Estado -->
             <div v-if="ticket.estado" class="col-12 col-md-3">
               <label class="q-mb-sm block">Estado actual</label>
@@ -114,56 +215,6 @@
               </q-input>
             </div>
 
-            <!-- Departamento -->
-            <div class="col-12 col-md-3">
-              <label class="q-mb-sm block">Departamento que atenderá</label>
-              <q-select
-                v-model="ticket.departamento_responsable"
-                :options="departamentos"
-                @filter="filtrarDepartamentos"
-                transition-show="scale"
-                transition-hide="scale"
-                hint="Obligatorio"
-                options-dense
-                dense
-                outlined
-                :disable="disabled || departamentoDeshabilitado"
-                :option-label="(item) => item.nombre"
-                :option-value="(item) => item.id"
-                use-input
-                input-debounce="0"
-                emit-value
-                map-options
-                @update:model-value="
-                  () => {
-                    ticket.responsable = null
-                    ticket.categoria_tipo_ticket = null
-                    ticket.tipo_ticket = null
-                    obtenerResponsables(filtroResponsableDepartamento)
-                  }
-                "
-                :error="!!v$.departamento_responsable.$errors.length"
-                @blur="v$.departamento_responsable.$touch"
-              >
-                <template v-slot:no-option>
-                  <q-item>
-                    <q-item-section class="text-grey">
-                      No hay resultados
-                    </q-item-section>
-                  </q-item>
-                </template>
-
-                <template v-slot:error>
-                  <div
-                    v-for="error of v$.departamento_responsable.$errors"
-                    :key="error.$uid"
-                  >
-                    <div class="error-msg">{{ error.$message }}</div>
-                  </div>
-                </template>
-              </q-select>
-            </div>
-
             <!-- Ticket interno -->
             <div v-if="esResponsableDepartamento" class="col-12 col-md-3">
               <br />
@@ -188,48 +239,6 @@
                 @update:model-value="toggleTicketParaMi()"
                 dense
               ></q-checkbox>
-            </div>
-
-            <!-- Responsable -->
-            <div class="col-12 col-md-3">
-              <label class="q-mb-sm block">Responsable</label>
-              <q-select
-                v-model="ticket.responsable"
-                :options="empleados"
-                @filter="filtrarEmpleados"
-                transition-show="scale"
-                transition-hide="scale"
-                hint="Obligatorio"
-                options-dense
-                dense
-                outlined
-                :disable="disabled || responsableDeshabilitado"
-                :option-label="(item) => `${item.nombres} ${item.apellidos}`"
-                :option-value="(item) => item.id"
-                use-input
-                input-debounce="0"
-                emit-value
-                map-options
-                :error="!!v$.responsable.$errors.length"
-                @blur="v$.responsable.$touch"
-              >
-                <template v-slot:no-option>
-                  <q-item>
-                    <q-item-section class="text-grey">
-                      Seleccione un departamento
-                    </q-item-section>
-                  </q-item>
-                </template>
-
-                <template v-slot:error>
-                  <div
-                    v-for="error of v$.responsable.$errors"
-                    :key="error.$uid"
-                  >
-                    <div class="error-msg">{{ error.$message }}</div>
-                  </div>
-                </template>
-              </q-select>
             </div>
 
             <div class="col-12 col-md-3">
