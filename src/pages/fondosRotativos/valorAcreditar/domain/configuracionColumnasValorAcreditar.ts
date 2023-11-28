@@ -39,6 +39,13 @@ export const configuracionColumnasValorAcreditar: ColumnConfig<ValorAcreditar>[]
     align: 'left',
     sortable: true
   },
+  {
+    name: 'motivo',
+    field: 'motivo',
+    label: 'Motivo',
+    align: 'left',
+    sortable: true
+  },
 
 
 
