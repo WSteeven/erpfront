@@ -9,13 +9,14 @@ import { usePreordenStore } from "stores/comprasProveedores/preorden";
 
 export default defineComponent({
     components: { EssentialSelectableTable, EssentialTable },
+    emits:['cerrar-modal', 'guardado'],
     setup(props, { emit }) {
         const preordenStore = usePreordenStore()
         const productosSeleccionados = ref([])
         const refListado = ref()
         const listado = ref([])
         listado.value = preordenStore.listadoItems
-        
+
         function seleccionar() {
             productosSeleccionados.value = refListado.value.selected
             preordenStore.crearPreordenConsolida(productosSeleccionados.value)
@@ -32,7 +33,7 @@ export default defineComponent({
             seleccionar,
             cerrarModal,
             refListado,
-            
+
         }
     }
 })

@@ -381,6 +381,9 @@ export default defineComponent({
         if (tabSeleccionado.value == 1 || tabSeleccionado.value == 6) {
           return (entidad.autorizacion_id == 1 || entidad.autorizacion_id == 2) && (entidad.solicitante_id == store.user.id || entidad.autorizador_id == store.user.id || store.esCompras)
         }
+        if(tabSeleccionado.value==4){
+          return store.esCompras
+        }
 
         return tabSeleccionado.value == 2 && store.esCompras || tabSeleccionado.value == 2 && (entidad.solicitante_id == store.user.id || entidad.autorizador_id == store.user.id)
       }
