@@ -1,5 +1,8 @@
 <template>
   <div class="q-pa-sm">
+    <div class="text-primary text-center q-mb-md">
+      {{ 'Subtarea ' + subtarea.codigo_subtarea }}
+    </div>
     <q-expansion-item
       class="overflow-hidden q-mb-md expansion"
       label="Información general"
