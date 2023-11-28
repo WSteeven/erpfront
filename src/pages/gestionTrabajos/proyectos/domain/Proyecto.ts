@@ -14,6 +14,8 @@ export class Proyecto extends EntidadAuditable {
   demora: string | null
   finalizado: boolean
 
+  etapas: any[]
+
   constructor() {
     super()
     this.codigo_proyecto = null
@@ -28,5 +30,7 @@ export class Proyecto extends EntidadAuditable {
     this.fecha_solicitud = null
     this.demora = null
     this.finalizado = false
+
+    this.etapas =  []
   }
 }

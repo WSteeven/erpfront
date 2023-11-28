@@ -197,6 +197,7 @@ export const endpoints = {
   * Modulo de tareas
   *********************/
   dashboard_tareas: new Endpoint('tareas/dashboard'),
+  etapas: new Endpoint('tareas/etapas'),
   proyectos: new Endpoint('tareas/proyectos'),
   tareas: new Endpoint('tareas/tareas'),
   subtareas: new Endpoint('tareas/subtareas'),
