@@ -304,7 +304,7 @@
               :error="!!v$.proveedor.$errors.length"
               error-message="Debes seleccionar al menos una opcion"
               :disable="disabled || soloLectura"
-              :option-label="(v) => v.razon_social"
+              :option-label="(v) => v.razon_social +' - '+v.sucursal"
               :option-value="(v) => v.id"
               emit-value
               map-options
@@ -312,6 +312,9 @@
                 <q-item v-bind="scope.itemProps">
                   <q-item-section>
                     <q-item-label>{{ scope.opt.razon_social }}</q-item-label>
+                    <q-item-label caption
+                      >{{scope.opt.nombre_comercial}}</q-item-label
+                    >
                     <q-item-label caption
                       >Sucursal:
                       {{

@@ -150,6 +150,7 @@ export const endpoints = {
   empleados_roles: new Endpoint('empleados-roles'), //con esta ruta se obtienen los empleados por el/los roles especificados
   empleados_permisos: new Endpoint('empleados-permisos'), //con esta ruta se obtienen los empleados por el/los permisos especificados
   control_stocks: new Endpoint('control-stocks'),
+  items_control_stocks_consolidados: new Endpoint('control-stocks/items-consolidados'),
   codigos_clientes: new Endpoint('codigos-clientes'),
   detalles: new Endpoint('detalles'),
   devoluciones: new Endpoint('devoluciones'),

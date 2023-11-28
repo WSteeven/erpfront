@@ -33,6 +33,7 @@ import { estadosTickets } from 'config/tickets.utils'
 import { useSubtareaStore } from 'stores/subtarea'
 import { CustomActionPrompt } from 'components/tables/domain/CustomActionPrompt'
 import { useNotificaciones } from 'shared/notificaciones'
+import { useTrabajoAsignadoStore } from 'stores/trabajoAsignado'
 
 export default defineComponent({
   components: { TabLayout, EssentialTable, SelectorImagen, TableView, ModalesEntidad, GraficoGenerico },
@@ -41,6 +42,7 @@ export default defineComponent({
      * Stores
      *********/
     const subtareaStore = useSubtareaStore()
+    const trabajoAsignadoStore = useTrabajoAsignadoStore()
 
     /********
      * Mixin
@@ -471,7 +473,15 @@ export default defineComponent({
               modalesSubtarea.abrirModalEntidad('SubtareaPage')
               break
             case 'SEGUIMIENTO':
-              // modales.abrirModalEntidad('SeguimientoTicketPage')
+              // trabajoAsignadoStore.idSubtareaSeleccionada = entidad.id
+              // trabajoAsignadoStore.idTareaSeleccionada = entidad.tarea_id
+              // trabajoAsignadoStore.idEmpleadoResponsable = entidad.empleado_responsable_id
+              // trabajoAsignadoStore.idEmergencia = entidad.seguimiento
+              // trabajoAsignadoStore.codigoSubtarea = entidad.codigo_subtarea
+
+              trabajoAsignadoStore.subtarea = entidad
+
+              modalesSubtarea.abrirModalEntidad('SeguimientoSubtareaPage')
               break
           }
         },
