@@ -70,7 +70,7 @@ export const optionsLine = {
         }
       },
       formatter: function (value, context) {
-        return value + ' hora(s)' // ? context.chart.data.labels[context.dataIndex] + ' (' + value + ')' : null
+        return null // value + ' hora(s)' // ? context.chart.data.labels[context.dataIndex] + ' (' + value + ')' : null
       }
     }
   },

@@ -2,6 +2,7 @@
 import { generarColorAzulPastelClaro, obtenerFechaActual, ordernarListaString } from 'shared/utils'
 import { acciones, accionesTabla, estadosTrabajos, rolesSistema } from 'config/utils'
 import { Ref, computed, defineComponent, reactive, ref } from 'vue'
+import { optionsLine, optionsPie } from 'config/graficoGenerico'
 import { modosAsignacionTrabajo } from 'config/tareas.utils'
 import { required } from 'shared/i18n-validators'
 import { useVuelidate } from '@vuelidate/core'
@@ -30,6 +31,8 @@ import { Empleado } from 'pages/recursosHumanos/empleados/domain/Empleado'
 import { FiltroDashboardTicket } from '../domain/FiltroReporteMaterial'
 import { estadosTickets } from 'config/tickets.utils'
 import { useSubtareaStore } from 'stores/subtarea'
+import { CustomActionPrompt } from 'components/tables/domain/CustomActionPrompt'
+import { useNotificaciones } from 'shared/notificaciones'
 
 export default defineComponent({
   components: { TabLayout, EssentialTable, SelectorImagen, TableView, ModalesEntidad, GraficoGenerico },
@@ -66,6 +69,8 @@ export default defineComponent({
         },
       })
     })
+
+    const { promptItems } = useNotificaciones()
 
     const filtro = reactive(new FiltroDashboardTicket())
     const dashboardTareaController = new DashboardTareaController()
@@ -151,42 +156,19 @@ export default defineComponent({
     const tabsCoordinadorConsultado = ref(opcionesCoordinadorConsultado.coordinadorConsultadoGrafico)
     const tabsSubordinados = ref(opcionesSubordinado.subordinadosGrafico)
 
-    filtro.fecha_fin = obtenerFechaActual()
+    // Lineas de tiempo
+    const graficoLineaTiempoSubtareasFinalizadasCoordinador = ref()
+    const graficoLineaTiempoSubtareasRealizadasCoordinador = ref()
 
-    const optionsPie = {
-      responsive: true,
-      maintainAspectRatio: false,
-      layout: {
-        padding: 32,
-      },
-      elements: {
-        arc: {
-          borderWidth: 0,
-        }
-      },
-      plugins: {
-        legend: {
-          position: 'right',
-        },
-        datalabels: {
-          align: 'end',
-          anchor: 'end',
-          color: '#fff',
-          backgroundColor: function (context) {
-            return context.dataset.backgroundColor
-          },
-          font: function (context) {
-            var w = context.chart.width
-            return {
-              size: w < 512 ? 10 : 12,
-            }
-          },
-          formatter: function (value, context) {
-            return value ? context.chart.data.labels[context.dataIndex] + ': (' + value + ')' : null
-          }
-        }
-      },
+    const lineasTiempo = {
+      lineaTiempoSubtareasFinalizadasCoordinador: [],
+      lineaTiempoSubtareasRealizadasCoordinador: [],
     }
+
+    /*******
+     * Init
+     *******/
+    filtro.fecha_fin = obtenerFechaActual()
 
     // Reglas de validacion
     const reglas = {
@@ -352,6 +334,19 @@ export default defineComponent({
           const coloresFinalizadoEmpleado = finalizadosEmpleado.value.map(() => generarColorAzulPastelClaro())
           finalizadosEmpleadoBar.value = mapearDatos(labelsFinalizadoEmpleado, valoresFinalizadoEmpleado, 'Cantidad de subtareas', coloresFinalizadoEmpleado)
 
+          // Linea de tiempo
+          lineasTiempo.lineaTiempoSubtareasFinalizadasCoordinador = result.lineaTiempoSubtareasFinalizadasCoordinador
+          const labelsLineaTiempoSubtareasFinalizadasCoordinador = result.lineaTiempoSubtareasFinalizadasCoordinador.map((item) => item.codigo_subtarea)
+          const valoresLineaTiempoSubtareasFinalizadasCoordinador = result.lineaTiempoSubtareasFinalizadasCoordinador.map((item) => item.tiempo)
+          const coloresLineaTiempoSubtareasFinalizadasCoordinador = result.lineaTiempoSubtareasFinalizadasCoordinador.map((item) => generarColorAzulPastelClaro())
+          graficoLineaTiempoSubtareasFinalizadasCoordinador.value = mapearDatos(labelsLineaTiempoSubtareasFinalizadasCoordinador, valoresLineaTiempoSubtareasFinalizadasCoordinador, 'Tiempo ocupado (h)', coloresLineaTiempoSubtareasFinalizadasCoordinador)
+
+          lineasTiempo.lineaTiempoSubtareasRealizadasCoordinador = result.lineaTiempoSubtareasRealizadasCoordinador
+          const labelsLineaTiempoSubtareasRealizadasCoordinador = result.lineaTiempoSubtareasRealizadasCoordinador.map((item) => item.codigo_subtarea)
+          const valoresLineaTiempoSubtareasRealizadasCoordinador = result.lineaTiempoSubtareasRealizadasCoordinador.map((item) => item.tiempo)
+          const coloresLineaTiempoSubtareasRealizadasCoordinador = result.lineaTiempoSubtareasRealizadasCoordinador.map((item) => generarColorAzulPastelClaro())
+          graficoLineaTiempoSubtareasRealizadasCoordinador.value = mapearDatos(labelsLineaTiempoSubtareasRealizadasCoordinador, valoresLineaTiempoSubtareasRealizadasCoordinador, 'Tiempo ocupado (h)', coloresLineaTiempoSubtareasRealizadasCoordinador)
+
         } catch (e) {
           console.log(e)
         } finally {
@@ -462,6 +457,39 @@ export default defineComponent({
       }
     }
 
+    function clickGraficoLineaTiempo(data) {
+      if (!data.label) return
+
+      const config: CustomActionPrompt = reactive({
+        mensaje: 'Seleccione una opción',
+        accion: async (opcion) => {
+          const entidad: Subtarea = lineasTiempo.lineaTiempoSubtareasFinalizadasCoordinador.filter((subtarea: Subtarea) => subtarea.codigo_subtarea === data.label)[0]
+          switch (opcion) {
+            case 'MAS_DETALLES':
+              subtareaStore.idSubtareaSeleccionada = entidad.id
+              subtareaStore.accion = acciones.consultar
+              modalesSubtarea.abrirModalEntidad('SubtareaPage')
+              break
+            case 'SEGUIMIENTO':
+              // modales.abrirModalEntidad('SeguimientoTicketPage')
+              break
+          }
+        },
+        tipo: 'radio',
+        items: [
+          {
+            label: 'Más detalles',
+            value: 'MAS_DETALLES',
+          },
+          {
+            label: 'Seguimiento',
+            value: 'SEGUIMIENTO',
+          }
+        ]
+      })
+      promptItems(config)
+    }
+
     return {
       modoUnaColumna: ref(false),
       // Por empleado
@@ -530,6 +558,9 @@ export default defineComponent({
       filtro,
       optionsPie,
       mostrarTitulosSeccion,
+      optionsLine,
+      graficoLineaTiempoSubtareasFinalizadasCoordinador,
+      graficoLineaTiempoSubtareasRealizadasCoordinador,
       // Configuracion columnas
       consultar,
       // Listados
@@ -540,6 +571,7 @@ export default defineComponent({
       // botones
       botonVer,
       btnSeguimiento,
+      clickGraficoLineaTiempo,
     }
   },
 })
