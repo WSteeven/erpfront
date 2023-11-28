@@ -130,7 +130,7 @@ export default defineComponent({
     const filtroResponsableDepartamento = computed(() => { return { departamento_id: ticket.departamento_responsable, es_responsable_departamento: true } })
     const filtroDepartamento = computed(() => { return { departamento_id: ticket.departamento_responsable } })
 
-    const categoriasTiposTickets = computed(() => listadosAuxiliares.categoriasTiposTickets.filter((categoria: CategoriaTipoTicket) => categoria.departamento_id === ticket.departamento_responsable))
+    const categoriasTiposTickets = computed(() => listadosAuxiliares.categoriasTiposTickets.filter((categoria: CategoriaTipoTicket) => categoria.departamento_id === ticket.departamento_responsable[0]))
     const tiposTickets = computed(() => listadosAuxiliares.tiposTickets.filter((tipo: TipoTicket) => tipo.categoria_tipo_ticket_id === ticket.categoria_tipo_ticket))
     const esResponsableDepartamento = authenticationStore.user.es_responsable_departamento
 
@@ -143,7 +143,7 @@ export default defineComponent({
       categoria_tipo_ticket: { required },
       descripcion: { required },
       prioridad: { required },
-      responsable: { required },
+      // responsable: { required },
       departamento_responsable: { required },
     }
 
@@ -197,7 +197,7 @@ export default defineComponent({
         departamentoDeshabilitado.value = false
         listadosAuxiliares.empleados = []
         empleados.value = []
-        ticket.departamento_responsable = null
+        ticket.departamento_responsable = []
         ticket.responsable = null
       }
     }
@@ -208,7 +208,7 @@ export default defineComponent({
         ticket.departamento_responsable = authenticationStore.user.departamento
         obtenerResponsables(filtroDepartamento.value)
       } else {
-        ticket.departamento_responsable = null
+        ticket.departamento_responsable = []
         ticket.responsable = null
         listadosAuxiliares.empleados = []
         empleados.value = []
