@@ -75,7 +75,7 @@
             <!-- Departamento -->
             <!-- :class="{ 'col-12': ticket.departamento_responsable.length > 1, -->
             <!-- 'col-md-9': ticket.departamento_responsable.length <= 1, }" -->
-            <div class="col-12">
+            <div class="col-12 col-md-6">
               <label class="q-mb-sm block"
                 >Departamento(s) que atenderá(n)</label
               >
@@ -98,14 +98,6 @@
                 map-options
                 use-chips
                 multiple
-                @update:model-value="
-                  () => {
-                    ticket.responsable = null
-                    ticket.categoria_tipo_ticket = null
-                    ticket.tipo_ticket = null
-                    obtenerResponsables(filtroResponsableDepartamento)
-                  }
-                "
                 :error="!!v$.departamento_responsable.$errors.length"
                 @blur="v$.departamento_responsable.$touch"
               >
@@ -129,11 +121,26 @@
             </div>
 
             <!-- Responsable -->
-            <!-- <div
-              v-if="ticket.departamento_responsable.length <= 1"
-              class="col-12 col-md-3"
+            <div
+              v-if="!ticket.ticket_interno && responsables.length"
+              class="col-12 col-md-6"
             >
-              <label class="q-mb-sm block">Responsable</label>
+              <label class="q-mb-sm block">Responsable(s)</label>
+              <div class="row bg-grey-2 border-grey rounded-field">
+                <q-chip
+                  v-for="responsable in responsables"
+                  :key="responsable"
+                  color="light-green-1"
+                >
+                  <q-icon name="bi-person-fill"></q-icon>
+                  <span class="q-mr-xs">{{ responsable.empleado }}</span>
+                  <b>{{ `| ${responsable.departamento}` }}</b>
+                </q-chip>
+              </div>
+            </div>
+
+            <div v-if="ticket.ticket_interno" class="col-12 col-md-6">
+              <label class="q-mb-sm block">Responsable(s)</label>
               <q-select
                 v-model="ticket.responsable"
                 :options="empleados"
@@ -151,6 +158,8 @@
                 input-debounce="0"
                 emit-value
                 map-options
+                use-chips
+                multiple
                 :error="!!v$.responsable.$errors.length"
                 @blur="v$.responsable.$touch"
               >
@@ -171,7 +180,7 @@
                   </div>
                 </template>
               </q-select>
-            </div> -->
+            </div>
 
             <!-- Estado -->
             <div v-if="ticket.estado" class="col-12 col-md-3">

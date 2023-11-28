@@ -7,7 +7,7 @@
           Análisis de datos: Módulo de tareas
         </div>
         <!-- Tiempos -->
-        <div class="row q-col-gutter-sm q-mb-md">
+        <div class="row q-col-gutter-sm">
           <div class="col-12 col-md-3">
             <label class="q-mb-sm block">Fecha de inicio</label>
             <q-input
@@ -141,14 +141,14 @@
     >
       <div
         v-if="mostrarTitulosSeccion"
-        class="row text-bold text-primary rounded items-center q-mb-lg"
+        class="row text-bold text-primary rounded items-center"
       >
         <q-icon name="bi-graph-up-arrow" class="q-mr-sm"></q-icon>
         Información de tareas activas y subtareas creadas
       </div>
 
       <q-card-section>
-        <div class="row q-col-gutter-sm q-mb-lg">
+        <div class="row q-col-gutter-sm">
           <div class="col-12 col-md-6 q-mb-lg">
             <div class="row q-col-gutter-xs">
               <div v-if="cantidadTareasActivas >= 0" class="col-12">
@@ -278,7 +278,10 @@
       </q-card-section>
     </q-card>
 
-    <q-card class="q-mb-md rounded q-pa-md no-border custom-shadow">
+    <q-card
+      v-if="graficoLineaTiempoSubtareasRealizadasCoordinador"
+      class="q-mb-md rounded q-pa-md no-border custom-shadow"
+    >
       <div
         v-if="mostrarTitulosSeccion"
         class="row text-bold text-primary rounded items-center q-mb-lg"
@@ -290,8 +293,8 @@
       <div class="row q-px-md q-col-gutter-x-sm">
         <div class="col-12 text-center q-mb-md">
           <label class="text-bold q-mb-md block"
-            >Tiempo transcurrido desde la ejecución hasta realización de
-            tarea</label
+            >Tiempo transcurrido desde la ejecución hasta la realización de las
+            subtareas</label
           >
           <div>
             <grafico-generico
@@ -305,8 +308,8 @@
 
         <div class="col-12 text-center">
           <label class="text-bold q-mb-md block"
-            >Tiempo transcurrido desde la realización hasta finalización de
-            tarea</label
+            >Tiempo transcurrido desde la realización hasta la finalización de
+            las subtareas</label
           >
           <div>
             <grafico-generico
@@ -326,10 +329,10 @@
     >
       <div
         v-if="mostrarTitulosSeccion"
-        class="row text-bold text-primary q-pa-md rounded items-center q-mb-lg"
+        class="row text-bold text-primary q-pa-md rounded items-center"
       >
-        <q-icon name="bi-graph-up-arrow" class="q-mr-sm"></q-icon>
-        Gráficos estadísticos del coordinador consultado
+        <q-icon name="bi-pie-chart" class="q-mr-sm"></q-icon>
+        Estados de las subtareas del coordinador consultado
       </div>
 
       <q-tab-panels
@@ -405,10 +408,10 @@
     >
       <div
         v-if="mostrarTitulosSeccion"
-        class="row text-bold text-primary q-pa-md rounded items-center q-mb-lg"
+        class="row text-bold text-primary q-pa-md rounded items-center"
       >
-        <q-icon name="bi-graph-up-arrow" class="q-mr-sm"></q-icon>
-        Gráficos estadísticos de los empleados subordinados
+        <q-icon name="bi-pie-chart" class="q-mr-sm"></q-icon>
+        Estados de las subtareas de los empleados subordinados
       </div>
 
       <!-- <q-card-section> -->
@@ -892,6 +895,7 @@
     <modales-entidad
       :comportamiento="modalesSubtarea"
       :mixin-modal="mixinSubtarea"
+      :persistente="false"
     />
   </q-page>
 </template>

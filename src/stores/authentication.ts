@@ -37,7 +37,7 @@ export const useAuthenticationStore = defineStore('authentication', () => {
   const auth = ref(false)
   const roles = ref()
   const permisos = ref()
-  const nombre_usuario = ref()
+  const nombre_usuario = ref() // Para resetear clave
   const saldo_actual = ref(0)
   const nombreUsuario = computed(
     () =>

@@ -312,7 +312,7 @@ export default defineComponent({
 
     function obtenerIdEmpleadoResponsable() {
       if (esLider) return authenticationStore.user.id
-      else return trabajoAsignadoStore.subtarea.empleado_id // idEmpleadoResponsable
+      else return trabajoAsignadoStore.subtarea.empleado_responsable_id // idEmpleadoResponsable
     }
 
     async function obtenerMaterialesTarea(cliente: number) {

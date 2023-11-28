@@ -313,10 +313,7 @@
                   <q-item-section>
                     <q-item-label>{{ scope.opt.razon_social }}</q-item-label>
                     <q-item-label caption
-                      >{{scope.opt.nombre_comercial}}</q-item-label
-                    >
-                    <q-item-label caption
-                      >Sucursal:
+                      >{{scope.opt.nombre_comercial}} - Sucursal:
                       {{
                         scope.opt.sucursal || scope.opt.direccion
                       }}</q-item-label
