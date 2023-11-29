@@ -25,6 +25,12 @@ import { CustomActionTable } from 'components/tables/domain/CustomActionTable'
 import { Etapa } from '../modules/etapas/domain/Etapa'
 import { ComportamientoModalesProyectos } from '../application/ComportamientoModalesProyectos'
 import { EtapaController } from '../modules/etapas/infraestructure/EtapaController'
+import { useNotificaciones } from 'shared/notificaciones'
+import { AxiosInstance, AxiosResponse, ResponseType } from 'axios'
+import { HttpResponseDelete, ResponseData } from 'shared/http/domain/HttpResponse'
+import { ResponseItem } from 'shared/controller/domain/ResponseItem'
+import { CustomActionPrompt } from 'components/tables/domain/CustomActionPrompt'
+import { CambiarEstadoEtapa } from '../modules/etapas/application/CambiarEstadoEtapa'
 
 export default defineComponent({
   components: {
@@ -41,7 +47,8 @@ export default defineComponent({
     const { entidad: proyecto, disabled, accion, listadosAuxiliares } = mixin.useReferencias()
     const { cargarVista, obtenerListados, setValidador } =
       mixin.useComportamiento()
-    const { onGuardado, onConsultado } = mixin.useHooks()
+    const { onConsultado } = mixin.useHooks()
+    const { confirmar, prompt, notificarCorrecto, notificarError } = useNotificaciones()
 
     const store = useAuthenticationStore()
     const modales = new ComportamientoModalesProyectos()
@@ -170,6 +177,15 @@ export default defineComponent({
         )
       })
     }
+
+    async function eliminarEtapa({ entidad, posicion }) {
+      confirmar('¿Está seguro de continuar?', async () => {
+        // const response:ResponseItem<Etapa, HttpResponseDelete<Etapa>> = await new EtapaController().eliminar(entidad.id)
+        const response = await new EtapaController().eliminar(entidad.id)
+        notificarCorrecto(response.response.data.mensaje)
+        proyecto.etapas.splice(posicion, 1)
+      })
+    }
     /****************************
      * Botones de tablas
      ***************************/
@@ -180,15 +196,17 @@ export default defineComponent({
       tooltip: 'Agrega una nueva etapa al proyecto',
       accion: () => {
         modales.abrirModalEntidad('EtapaPage')
-      }
+      },
+      visible: () => accion.value === acciones.nuevo || accion.value === acciones.editar
     }
-    const btnGuardar: CustomActionTable = {
-      titulo: 'Guardar',
-      color: 'primary',
-      icono: 'bi-save',
-      tooltip: 'Guarda los cambios',
-      accion: () => {
-        console.log('Diste clic  en guardar cambios, se creará o actualizará la etapa')
+    const btnEliminar: CustomActionTable = {
+      titulo: 'Eliminar',
+      color: 'negative',
+      icono: 'bi-trash',
+      tooltip: 'Eliminar la etapa',
+      accion: ({ entidad, posicion }) => {
+        console.log('Diste clic  en eliminar, se eliminará la etapa')
+        eliminarEtapa({ entidad, posicion })
       }
     }
     const btnDesactivar: CustomActionTable = {
@@ -196,7 +214,23 @@ export default defineComponent({
       icono: 'bi-toggle2-off',
       color: 'negative',
       tooltip: 'Desactivar proveedor',
-      accion: () => {
+      accion: ({ entidad, posicion }) => {
+        confirmar('¿Está seguro de desactivar la etapa?', () => {
+          const data: CustomActionPrompt = {
+            titulo: 'Motivo',
+            mensaje: 'Ingresa el motivo por que vas a desactivar la etapa',
+            accion: async (data) => {
+              try {
+                const { result, } = await new CambiarEstadoEtapa().desactivar(entidad.id, data)
+                notificarCorrecto('Etapa anulada exitosamente!')
+                proyecto.etapas.splice(posicion, 1, result)
+              } catch (error: any) {
+
+              }
+            }
+          }
+          prompt(data)
+        })
         console.log('Diste clic  en desactivar etapa')
       }
     }
@@ -210,19 +244,10 @@ export default defineComponent({
       }
     }
 
-    /********
-     * Hooks
-     ********/
-    onGuardado(() => {
-      emit('cerrar-modal', false)
-      emit('guardado', 'ProyectoPage')
-    })
+
 
     onConsultado(() => {
-      if (accion.value == acciones.editar) {
-        //aquí se carga los valores para la fila de etapas
-
-      }
+      consultarEtapasProyecto()
     })
 
     return {
@@ -241,6 +266,7 @@ export default defineComponent({
       filtrarCantones,
       filtrarCoordinadores,
       filtrarFiscalizadores,
+      guardado,
       mostrarCoordinador,
       tieneEtapa,
       accionesTabla,
@@ -250,7 +276,7 @@ export default defineComponent({
 
       //botones de tabla
       addNuevaEtapa,
-      btnGuardar,
+      btnEliminar,
       btnDesactivar,
       btnActivar,
     }

@@ -5,8 +5,8 @@ export class Etapa extends EntidadAuditable {
   activo: boolean
   responsable: number | null
   proyecto: number | null
+  codigo_proyecto: string |number| null
   // nombre_responsable:string | null
-  // codigo_proyecto: string |number| null
   // nombre_proyecto: string | null
 
   constructor() {
@@ -15,8 +15,8 @@ export class Etapa extends EntidadAuditable {
     this.activo = true
     this.responsable = null
     this.proyecto = null
+    this.codigo_proyecto = null
     // this.nombre_responsable = null
-    // this.codigo_proyecto = null
     // this.nombre_proyecto = null
   }
 }
