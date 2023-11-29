@@ -3,7 +3,7 @@
     v-model="img"
     dense
     outlined
-    class="q-mb-sm"
+    class="q-mt-sm"
     clearable
     @update:model-value="setBase64"
     @clear="limpiar()"
@@ -20,6 +20,10 @@
       <slot name="error"></slot>
     </template>
   </q-file>
+  <!-- datos de la imagen  -->
+  <!-- <div v-if="fileSize !== null && !isNaN(fileSize)">
+    Tamaño de la imagen: {{ (fileSize / 1024).toFixed(2) }} KB
+  </div> -->
   <q-img
     v-show="imagenCodificada"
     :src="imagenCodificada"
@@ -40,6 +44,15 @@
         @click="() => (opened = false)"
         class="closeButton"
       />
+
+      <q-card-section v-if="texto1">
+        <div class="row q-col-gutter-sm q-mb-md q-ml-md q-mr-md text-grey-4">
+          <div class="col-12 col-md-3 text-h6">{{ texto1 }}</div>
+          <div v-if="texto2" class="col-12 col-md-3 text-h6">{{ texto2 }}</div>
+          <div v-if="texto3" class="col-12 col-md-3 text-h6">{{ texto3 }}</div>
+          <div class="col-12 col-md-3 text-h6">{{ texto4 }}</div>
+        </div>
+      </q-card-section>
 
       <q-card-section class="rounded-footer text-center q-pa-none">
         <q-img
@@ -69,27 +82,95 @@
 <script lang="ts" setup>
 import { computed, ref, watch } from 'vue'
 
-const props = defineProps([
-  'modelValue',
-  'imagen',
-  'disable',
-  'file_extensiones',
-  'error',
-  'alto',
-  'hint',
-])
+const props = defineProps({
+  modelValue: String,
+  imagen: String,
+  disable: Boolean,
+  file_extensiones: String,
+  error: Boolean,
+  alto: String,
+  hint: String,
+  texto1: String,
+  texto2: String,
+  texto3: String,
+  texto4: String,
+  comprimir: {
+    type: Boolean,
+    default: true,
+  },
+})
 const emit = defineEmits(['update:modelValue'])
 
-const img= ref()
+const fileSize = ref()
+const img = ref()
 const imagenCodificada = computed(() => props.imagen)
 const alto = computed(() => props.alto ?? '160px')
 const opened = ref(false)
-const setBase64 = (file: File) => {
+
+const setBase64 = async (file: File) => {
   if (file !== null && file !== undefined) {
+    // console.log('Imagen sin comprimida en el archivo', file)
+    fileSize.value = file.size
+    // console.log('tamaño de imagen_1', fileSize.value)
     const reader = new FileReader()
-    reader.readAsDataURL(file)
+    const compressedFile = props.comprimir ? await compressImage(file) : file
+
+    // console.log('Imagen comprimida en el archivo', compressedFile)
+    reader.readAsDataURL(compressedFile)
     reader.onload = () => emit('update:modelValue', reader.result)
+    // reader.onload = () => emit('update:modelValue', compressImage(file))
+    fileSize.value = compressedFile.size
+  } else {
+    fileSize.value = null
   }
+}
+
+async function compressImage(file) {
+  return new Promise<File>((resolve) => {
+    const reader = new FileReader()
+
+    reader.onload = (event) => {
+      // console.log(event)
+      const img = new Image()
+      img.src = event.target?.result?.toString() || ''
+
+      img.onload = () => {
+        const canvas = document.createElement('canvas')
+        const ctx = canvas.getContext('2d')
+
+        const maxWidth = 1600 // Tamaño máximo después de la compresión (puedes ajustar esto según tus necesidades)
+        let newWidth = img.width
+        let newHeight = img.height
+
+        if (img.width > maxWidth) {
+          const ratio = maxWidth / img.width
+          newWidth = maxWidth
+          newHeight = img.height * ratio
+        }
+
+        canvas.width = newWidth
+        canvas.height = newHeight
+
+        ctx?.drawImage(img, 0, 0, newWidth, newHeight)
+
+        canvas.toBlob(
+          (blob) => {
+            if (blob) {
+              const compressedFile: File = new File([blob], file.name, {
+                type: 'image/jpeg', // Ajusta el tipo de archivo según tus necesidades
+                lastModified: Date.now(),
+              })
+              resolve(compressedFile)
+            }
+          },
+          'image/jpeg',
+          0.7 // Ajusta la calidad de compresión (0.7 en este caso)
+        ) // Si se coloca en 1 (una imagen grande pesará alrededor de 2gb)
+      }
+    }
+
+    reader.readAsDataURL(file)
+  })
 }
 
 watch(imagenCodificada, () => {

@@ -1,5 +1,8 @@
 <template>
   <div class="q-pa-sm">
+    <div class="text-primary text-center q-mb-md">
+      {{ 'Subtarea ' + subtarea.codigo_subtarea }}
+    </div>
     <q-expansion-item
       class="overflow-hidden q-mb-md expansion"
       label="Información general"
@@ -81,12 +84,6 @@
           ></q-input>
         </div>
 
-        <!-- Tarea -->
-        <!-- <div class="col-12 col-md-3">
-          <label class="q-mb-sm block">Tarea</label>
-          <q-input v-model="subtarea.tarea" outlined dense disable></q-input>
-        </div> -->
-
         <!-- Tipo trabajo -->
         <div class="col-12 col-md-3">
           <label class="q-mb-sm block">Tipo de trabajo a realizar</label>
@@ -123,6 +120,28 @@
                 <div class="error-msg">{{ error.$message }}</div>
               </div>
             </template>
+          </q-select>
+        </div>
+
+        <!-- Causa intervencion -->
+        <div v-if="subtarea.causa_intervencion" class="col-12 col-md-3">
+          <label class="q-mb-sm block">Causa intervención</label>
+          <q-select
+            v-model="subtarea.causa_intervencion"
+            :options="listadosAuxiliares.causasIntervenciones"
+            transition-show="scale"
+            transition-hide="scale"
+            options-dense
+            dense
+            outlined
+            disable
+            :option-label="(item) => item.nombre"
+            :option-value="(item) => item.id"
+            use-input
+            input-debounce="0"
+            emit-value
+            map-options
+          >
           </q-select>
         </div>
 
@@ -312,6 +331,24 @@
             @update:model-value="convertir()"
             outlined
             clearable
+            dense
+          >
+          </q-input>
+        </div>
+
+        <!-- Metraje tendido -->
+        <div class="col-12 col-md-3">
+          <label class="q-mb-sm block"
+            >Cantidad de fibra óptica a tender (m)</label
+          >
+          <q-input
+            v-model="subtarea.metraje_tendido"
+            placeholder="Opcional"
+            :disable="disabled"
+            @update:model-value="
+              convertirNumeroPositivo(subtarea, 'metraje_tendido')
+            "
+            outlined
             dense
           >
           </q-input>

@@ -75,6 +75,21 @@ export const configuracionColumnasEmpleados: ColumnConfig<Empleado>[] = [
         sortable: true
     },
     {
+      name: 'departamento',
+      field: 'departamento',
+      label: 'Departamento',
+      align: 'left',
+      sortable: true
+  },
+  //tipo_contrato
+  {
+    name: 'tipo_contrato_info',
+    field: 'tipo_contrato_info',
+    label: 'Tipo de Contrato',
+    align: 'left',
+    sortable: true
+},
+    {
         name: 'roles',
         field: 'roles',
         label: 'Roles',
@@ -82,11 +97,67 @@ export const configuracionColumnasEmpleados: ColumnConfig<Empleado>[] = [
         sortable: true
     },
     {
+      name: 'banco_info',
+      field: 'banco_info',
+      label: 'Banco',
+      align: 'left',
+      sortable: true
+  },
+  {
+    name: 'num_cuenta',
+    field: 'num_cuenta',
+    label: 'Numero de cuenta',
+    align: 'left',
+    sortable: true
+},
+{
+  name: 'fecha_ingreso',
+  field: 'fecha_ingreso',
+  label: 'Fecha de Ingreso',
+  align: 'left',
+  sortable: true
+},
+{
+  name: 'antiguedad',
+  field: 'antiguedad',
+  label: 'Antiguedad',
+  align: 'left',
+  sortable: true
+},
+{
+  name: 'fecha_vinculacion',
+  field: 'fecha_vinculacion',
+  label: 'Fecha de Vinculacion',
+  align: 'left',
+  sortable: true
+},
+{
+  name: 'salario',
+  field: 'salario',
+  label: 'Salario',
+  align: 'left',
+  sortable: true
+},
+    {
         name: 'estado',
         field: 'estado',
         label: '¿Activo?',
         align: 'left',
         sortable: true
+    },
+    {
+      name:'esta_en_rol_pago',
+      field: 'esta_en_rol_pago',
+      label: '¿Esta enrolado?',
+      align: 'left',
+      sortable: true
+    },
+    {
+      name:'realiza_factura',
+      field: 'realiza_factura',
+      label: 'Factura',
+      align: 'left',
+      sortable: true
     },
     {
         name: 'firma_url',

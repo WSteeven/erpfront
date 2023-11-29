@@ -295,10 +295,37 @@
               label="Marcar proyecto como finalizado"
             />
           </div>
+          <!-- Tiene etapas -->
+          <div class="col-12 col-md-12">
+            <essential-table
+              ref="refEtapas"
+              titulo="Etapas del proyecto"
+              :configuracionColumnas="accion==acciones.nuevo||accion==acciones.editar? [...columnasEtapas, accionesTabla]:columnasEtapas"
+              :datos="proyecto.etapas"
+              :accion1Header="addNuevaEtapa"
+              :permitirBuscar="false"
+              :permitirConsultar="false"
+              :permitirEditar="true"
+              :permitirEliminar="true"
+              :mostrarBotones="false"
+              :mostrarCantidadElementos="false"
+              :permitirEditarModal="true"
+              :modalMaximized="false"
+              :alto-fijo="false"
+              :mostrarFooter="false"
+              :accion1="btnGuardar"
+              :accion2="btnDesactivar"
+              :accion3="btnActivar"
+            ></essential-table>
+          </div>
         </div>
       </q-form>
     </template>
   </tab-layout>
+  <modales-entidad
+    :comportamiento="modales"
+    @guardado="(data) => guardado(data)"
+  ></modales-entidad>
 </template>
 
 <script src="./ProyectoPage.ts"></script>

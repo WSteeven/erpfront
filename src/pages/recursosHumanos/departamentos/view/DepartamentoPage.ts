@@ -14,6 +14,8 @@ import EssentialTable from 'components/tables/view/EssentialTable.vue'
 import { ContenedorSimpleMixin } from 'shared/contenedor/modules/simple/application/ContenedorSimpleMixin'
 import { DepartamentoController } from '../infraestructure/DepartamentoController'
 import { Departamento } from '../domain/Departamento'
+import { EmpleadoController } from 'pages/recursosHumanos/empleados/infraestructure/EmpleadoController'
+import { useFiltrosListadosTickets } from 'pages/gestionTickets/tickets/application/FiltrosListadosTicket'
 
 export default defineComponent({
   components: {
@@ -25,11 +27,26 @@ export default defineComponent({
       Departamento,
       new DepartamentoController()
     )
-    const { entidad: departamento, disabled, accion } = mixin.useReferencias()
-    const { setValidador } = mixin.useComportamiento()
+    const { entidad: departamento, disabled, accion, listadosAuxiliares } = mixin.useReferencias()
+    const { setValidador, cargarVista, obtenerListados } = mixin.useComportamiento()
+
+    cargarVista(async () => {
+      await obtenerListados({
+        empleados: {
+          controller: new EmpleadoController(),
+          params: { estado: 1 }
+        }
+      })
+    })
+
+    const {
+      empleados,
+      filtrarEmpleados,
+    } = useFiltrosListadosTickets(listadosAuxiliares)
 
     const rules = {
       nombre: { required },
+      responsable: { required },
     }
 
     useNotificacionStore().setQuasar(useQuasar())
@@ -38,13 +55,14 @@ export default defineComponent({
     setValidador(v$.value)
 
     return {
-      // mixin
       v$,
       mixin,
       departamento,
       disabled,
       accion,
       configuracionColumnasDepartamento,
+      empleados,
+      filtrarEmpleados,
     }
   },
 })

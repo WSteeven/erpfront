@@ -7,17 +7,10 @@ const authenticationStore = useAuthenticationStore()
 
 export const configuracionColumnasSubtarea: ColumnConfig<Subtarea>[] = [
   {
-    name: 'codigo_tarea',
-    field: 'codigo_tarea',
-    label: 'Tarea JP',
-    align: 'left',
-    sortable: true,
-  },
-  {
     name: 'codigo_subtarea',
     field: 'codigo_subtarea',
     label: 'Código de subtarea',
-    align: 'left',
+    align: 'center',
     sortable: true,
   },
   {
@@ -32,19 +25,25 @@ export const configuracionColumnasSubtarea: ColumnConfig<Subtarea>[] = [
     name: 'coordinador',
     field: 'coordinador',
     label: 'Coordinador',
-    align: 'left',
+    align: 'center',
     filtrar: authenticationStore.esJefeTecnico || authenticationStore.esCoordinadorBackup,
   },
   {
-    name: 'titulo',
-    field: 'titulo',
-    label: 'Título del trabajo',
+    name: 'grupo',
+    field: 'grupo',
+    label: 'Grupo designado',
     align: 'left',
   },
   {
     name: 'tipo_trabajo',
     field: 'tipo_trabajo',
     label: 'Tipo de trabajo',
+    align: 'left',
+  },
+  {
+    name: 'titulo',
+    field: 'titulo',
+    label: 'Título del trabajo',
     align: 'left',
   },
   {
@@ -163,15 +162,9 @@ export const configuracionColumnasSubtarea: ColumnConfig<Subtarea>[] = [
     align: 'left',
   },
   {
-    name: 'empleado',
-    field: 'empleado',
-    label: 'Empleado designado',
-    align: 'left',
-  },
-  {
-    name: 'grupo',
-    field: 'grupo',
-    label: 'Grupo designado',
+    name: 'empleado_responsable',
+    field: 'empleado_responsable',
+    label: 'Empleado responsable',
     align: 'left',
   },
   {

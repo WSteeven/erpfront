@@ -1,16 +1,19 @@
 <template>
-  <div v-if="permitirSubir" class="col-12 col-md-3 q-mb-lg">
+  <div class="col-12 col-md-3 q-mb-lg">
     <br />
-    <q-checkbox
+    <q-toggle
+      v-if="permitirSubir"
       v-model="quiero_subir_archivos"
       label="Quiero compartir archivos"
       :disable="disable"
+      checked-icon="bi-eye"
+      color="positive"
       outlined
       dense
-    ></q-checkbox>
+    ></q-toggle>
   </div>
 
-  <div v-show="quiero_subir_archivos" class="col-12 q-mb-sm">
+  <div v-if="quiero_subir_archivos" class="col-12 q-mb-sm">
     <q-uploader
       ref="refGestor"
       label="Selecciona o arrastra tus archivos aquí (Máximo 10mb)"
@@ -42,8 +45,8 @@
       :mostrar-botones="false"
       :permitir-buscar="false"
       :accion1="btnDescargar"
+      :accion2="btnEliminar"
     ></essential-table>
-    <!-- :accion2="btnEliminar" -->
   </div>
 </template>
 

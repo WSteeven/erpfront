@@ -15,6 +15,7 @@ export const configuracionColumnasProductosSeleccionados: ColumnConfig<DetallePr
     name: 'producto',
     field: 'producto',
     label: 'Producto',
+    style: 'max-width:300px; overflow: auto;',
     align: 'left',
     sortable: true,
     editable: false,
@@ -24,6 +25,7 @@ export const configuracionColumnasProductosSeleccionados: ColumnConfig<DetallePr
     name: 'descripcion',
     field: 'descripcion',
     label: 'Descripción',
+    style: 'max-width:300px; overflow: auto;',
     align: 'left',
     sortable: true,
     editable: false,
@@ -46,6 +48,14 @@ export const configuracionColumnasProductosSeleccionados: ColumnConfig<DetallePr
     sortable: true,
     editable: false,
     visible: true
+  },
+  {
+    name: 'detalle_id',
+    field: 'detalle_id',
+    label: 'Id Detalle',
+    align: 'left',
+    editable: false,
+    visible: false
   },
   /* {
     name: 'condicion',

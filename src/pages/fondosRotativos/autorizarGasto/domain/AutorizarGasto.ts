@@ -27,6 +27,8 @@ export class AutorizarGasto extends EntidadAuditable {
   estado: string | null
   estado_info: string | null
   detalle_estado: string | null
+  created_at: string | null
+
   constructor() {
     super()
     this.usuario = null
@@ -56,5 +58,6 @@ export class AutorizarGasto extends EntidadAuditable {
     this.estado = null
     this.estado_info = null
     this.detalle_estado = null
+    this.created_at = null
   }
 }

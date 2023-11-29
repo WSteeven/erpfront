@@ -1,6 +1,6 @@
 <template>
   <q-page class="flex flex-center">
-    <q-card flat bordered class="my-card bg-grey-1  ">
+    <q-card flat bordered class="my-card bg-grey-1">
       <q-card-section>
         <div class="row items-center no-wrap">
           <div class="col">
@@ -11,13 +11,31 @@
 
       <q-card-section>
         <!-- Empleados -->
-        <div class="col-12 col-md-3"  v-if="store.can('puede.ver.campo.empleado.fondo_rotativo')">
+        <div
+          class="col-12 col-md-3"
+          v-if="
+            store.can('puede.ver.campo.empleado.fondo_rotativo') && is_inactivo == 'false'
+          "
+        >
           <label class="q-mb-sm block">Empleado</label>
-          <q-select v-model="fondo_rotativo_fecha.usuario" :options="usuarios" transition-show="jump-up"
-            transition-hide="jump-down" options-dense dense outlined :disable="disabled" :readonly="disabled"
-             use-input input-debounce="0"
-            @filter="filtrarUsuarios" :option-value="(v) => v.id" :option-label="(v) => v.nombres + ' ' + v.apellidos"
-            emit-value map-options>
+          <q-select
+            v-model="fondo_rotativo_fecha.usuario"
+            :options="usuarios"
+            transition-show="jump-up"
+            transition-hide="jump-down"
+            options-dense
+            dense
+            outlined
+            :disable="disabled"
+            :readonly="disabled"
+            use-input
+            input-debounce="0"
+            @filter="filtrarUsuarios"
+            :option-value="(v) => v.id"
+            :option-label="(v) => v.nombres + ' ' + v.apellidos"
+            emit-value
+            map-options
+          >
             <template v-slot:error>
               <div v-for="error of v$.usuario.$errors" :key="error.$uid">
                 <div class="error-msg">{{ error.$message }}</div>
@@ -25,9 +43,42 @@
             </template>
             <template v-slot:no-option>
               <q-item>
-                <q-item-section class="text-grey">
-                  No hay resultados
-                </q-item-section>
+                <q-item-section class="text-grey"> No hay resultados </q-item-section>
+              </q-item>
+            </template>
+          </q-select>
+        </div>
+        <!-- Empleados Inactivos -->
+        <div class="col-12 col-md-3" v-if="is_inactivo == 'true'">
+          <label class="q-mb-sm block">Empleado</label>
+          <q-select
+            v-model="fondo_rotativo_fecha.usuario"
+            :options="usuariosInactivos"
+            transition-show="jump-up"
+            transition-hide="jump-down"
+            options-dense
+            dense
+            outlined
+            :disable="disabled"
+            :readonly="disabled"
+            :error="!!v$.usuario.$errors.length"
+            error-message="Debes seleccionar un usuario"
+            use-input
+            input-debounce="0"
+            @filter="filtrarUsuariosInactivos"
+            :option-value="(v) => v.id"
+            :option-label="(v) => v.nombres + ' ' + v.apellidos"
+            emit-value
+            map-options
+          >
+            <template v-slot:error>
+              <div v-for="error of v$.usuario.$errors" :key="error.$uid">
+                <div class="error-msg">{{ error.$message }}</div>
+              </div>
+            </template>
+            <template v-slot:no-option>
+              <q-item>
+                <q-item-section class="text-grey"> No hay resultados </q-item-section>
               </q-item>
             </template>
           </q-select>
@@ -35,12 +86,22 @@
         <!-- Fecha Inicio -->
         <div class="col-6 col-md-3">
           <label class="q-mb-sm block">Fecha Inicio:</label>
-          <q-input v-model="fondo_rotativo_fecha.fecha_inicio" placeholder="Obligatorio"
-            :error="!!v$.fecha_inicio.$errors.length" :disable="disabled" outlined dense>
+          <q-input
+            v-model="fondo_rotativo_fecha.fecha_inicio"
+            placeholder="Obligatorio"
+            :error="!!v$.fecha_inicio.$errors.length"
+            :disable="disabled"
+            outlined
+            dense
+          >
             <template v-slot:append>
               <q-icon name="event" class="cursor-pointer">
                 <q-popup-proxy cover transition-show="scale" transition-hide="scale">
-                  <q-date v-model="fondo_rotativo_fecha.fecha_inicio" :mask="maskFecha" today-btn>
+                  <q-date
+                    v-model="fondo_rotativo_fecha.fecha_inicio"
+                    :mask="maskFecha"
+                    today-btn
+                  >
                     <div class="row items-center justify-end">
                       <q-btn v-close-popup label="Cerrar" color="primary" flat />
                     </div>
@@ -59,12 +120,22 @@
         <!-- Fecha Fin -->
         <div class="col-6 col-md-3">
           <label class="q-mb-sm block">Fecha Fin:</label>
-          <q-input v-model="fondo_rotativo_fecha.fecha_fin" placeholder="Obligatorio"
-            :error="!!v$.fecha_fin.$errors.length" :disable="disabled" outlined dense>
+          <q-input
+            v-model="fondo_rotativo_fecha.fecha_fin"
+            placeholder="Obligatorio"
+            :error="!!v$.fecha_fin.$errors.length"
+            :disable="disabled"
+            outlined
+            dense
+          >
             <template v-slot:append>
               <q-icon name="event" class="cursor-pointer">
                 <q-popup-proxy cover transition-show="scale" transition-hide="scale">
-                  <q-date v-model="fondo_rotativo_fecha.fecha_fin" :mask="maskFecha" today-btn>
+                  <q-date
+                    v-model="fondo_rotativo_fecha.fecha_fin"
+                    :mask="maskFecha"
+                    today-btn
+                  >
                     <div class="row items-center justify-end">
                       <q-btn v-close-popup label="Cerrar" color="primary" flat />
                     </div>
@@ -85,10 +156,14 @@
       <q-separator></q-separator>
 
       <q-card-actions align="around">
-        <q-btn color="positive" @click="generar_reporte(fondo_rotativo_fecha, 'excel')"> <q-icon
-            name="bi-file-earmark-excel-fill" size="xs" class="q-mr-sm"></q-icon>Excel</q-btn>
-        <q-btn color="negative" @click="generar_reporte(fondo_rotativo_fecha, 'pdf')"> <q-icon
-            name="bi-file-earmark-pdf-fill" size="xs" class="q-mr-sm"></q-icon>PDF</q-btn>
+        <q-btn color="positive" @click="generar_reporte(fondo_rotativo_fecha, 'excel')">
+          <q-icon name="bi-file-earmark-excel-fill" size="xs" class="q-mr-sm"></q-icon
+          >Excel</q-btn
+        >
+        <q-btn color="negative" @click="generar_reporte(fondo_rotativo_fecha, 'pdf')">
+          <q-icon name="bi-file-earmark-pdf-fill" size="xs" class="q-mr-sm"></q-icon
+          >PDF</q-btn
+        >
       </q-card-actions>
     </q-card>
   </q-page>

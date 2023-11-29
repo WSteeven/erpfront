@@ -3,6 +3,10 @@
     :mixin="mixin"
     :configuracion-columnas="configuracionColumnasTipoTicket"
     :permitir-eliminar="false"
+    :permitir-editar="false"
+    :permitir-consultar="false"
+    :accion1="btnToggleActivar"
+    subtitulo-pagina="Módulo de Tickets"
   >
     <template #formulario>
       <q-form @submit.prevent>
@@ -16,7 +20,6 @@
               @filter="filtrarDepartamentos"
               transition-show="scale"
               transition-hide="scale"
-              hint="Obligatorio"
               options-dense
               dense
               outlined
@@ -27,6 +30,7 @@
               input-debounce="0"
               emit-value
               map-options
+              @update:model-value="tipoTicket.categoria_tipo_ticket = null"
               :error="!!v$.departamento.$errors.length"
               @blur="v$.departamento.$touch"
             >
@@ -47,12 +51,12 @@
           </div>
 
           <!-- Categoria -->
+          <!-- @filter="filtrarCategoriasTiposTickets" -->
           <div v-if="tipoTicket.departamento" class="col-12 col-md-3">
             <label class="q-mb-sm block">Seleccione una categoría</label>
             <q-select
               v-model="tipoTicket.categoria_tipo_ticket"
               :options="categoriasTiposTickets"
-              @filter="filtrarCategoriasTiposTickets"
               transition-show="scale"
               transition-hide="scale"
               hint="Obligatorio"
@@ -94,7 +98,6 @@
             <q-input
               v-model="tipoTicket.nombre"
               placeholder="Obligatorio"
-              @update:model-value="(v) => (tipoTicket.nombre = v.toUpperCase())"
               :disable="disabled"
               autofocus
               outlined

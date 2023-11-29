@@ -12,6 +12,7 @@
     :filtrar="filtrarTarea"
     tabDefecto="0"
     :forzarListar="true"
+    subtitulo-pagina="Módulo de Tareas"
   >
     <!-- :labelGuardar="tarea.tiene_subtareas ? 'Guardar' : 'Guardar y agendar'" -->
     <template #formulario>
@@ -341,27 +342,23 @@
                   </q-select>
                 </div>
 
-                <!-- Tiene subtareas -->
-                <!-- <div class="col-12 col-md-3">
-                  <br />
-                  <q-checkbox
-                    v-model="tarea.tiene_subtareas"
-                    label="Tiene subtareas"
-                    outlined
+                <!-- Metraje tendido -->
+                <div class="col-12 col-md-3">
+                  <label class="q-mb-sm block"
+                    >Cantidad de fibra óptica a tender (m)</label
+                  >
+                  <q-input
+                    v-model="tarea.metraje_tendido"
+                    placeholder="Opcional"
                     :disable="disabled"
+                    @update:model-value="
+                      convertirNumeroPositivo(tarea, 'metraje_tendido')
+                    "
+                    outlined
                     dense
-                  ></q-checkbox>
-                </div> -->
-
-                <!--<div class="col-12 col-md-3">
-                  <br />
-                  <q-toggle
-                    v-model="tarea.finalizado"
-                    checked-icon="check"
-                    color="positive"
-                    label="Marcar tarea como finalizada"
-                  />
-                </div> -->
+                  >
+                  </q-input>
+                </div>
 
                 <!-- Titulo -->
                 <div class="col-12">
@@ -648,13 +645,6 @@
               </div>
             </q-expansion-item>
           </q-form>
-
-          <!-- <div class="row justify-end">
-            <q-btn color="positive" no-caps push @click="emitir('guardar')">
-              <q-icon name="bi-save" size="xs" class="q-pr-sm"></q-icon>
-              <span>Finalizar tarea</span>
-            </q-btn>
-          </div> -->
         </q-tab-panel>
 
         <q-tab-panel name="subtareas">
@@ -701,11 +691,14 @@
   <modales-entidad
     :comportamiento="modalesTarea"
     :mixin-modal="mixin"
+    :persistent="false"
     @guardado="guardado"
   />
+
   <modales-entidad
     :comportamiento="modalesSubtarea"
     :mixin-modal="mixinSubtarea"
+    :persistent="false"
   />
 </template>
 

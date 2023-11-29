@@ -8,11 +8,15 @@ import { LoginController } from '../infraestructure/LoginController'
 import { useNotificaciones } from 'shared/notificaciones'
 import { isAxiosError, notificarMensajesError } from 'shared/utils'
 import { useRouter } from 'vue-router';
+import { useConfiguracionGeneralStore } from 'stores/configuracion_general'
 
 
 export default defineComponent({
   name: 'LoginPage',
   setup() {
+    const configuracionGeneralStore = useConfiguracionGeneralStore()
+    configuracionGeneralStore.consultarConfiguracion()
+
     const loginUser = reactive(new UserLogin())
 
     const loginController = new LoginController()
@@ -49,6 +53,8 @@ export default defineComponent({
     return {
       isPwd: ref(true),
       loginUser,
+      logoClaro: computed(() => configuracionGeneralStore.configuracion?.logo_claro),
+      logoOscuro: computed(() => configuracionGeneralStore.configuracion?.logo_oscuro),
       // loginJson,
       enableLoginButton,
       login,

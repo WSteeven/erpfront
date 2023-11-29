@@ -84,12 +84,12 @@
               </template>
             </q-input>
           </div>
-          <!-- Administrador -->
-          <!-- <div class="col-12 col-md-4">
-            <label class="q-mb-sm block">Administrador</label>
+          <!-- Cliente -->
+          <div class="col-12 col-md-4">
+            <label class="q-mb-sm block">Cliente propietario</label>
             <q-select
-              v-model="sucursal.administrador"
-              :options="opciones_empleados"
+              v-model="sucursal.cliente"
+              :options="clientes"
               transition-show="jump-up"
               transition-hide="jump-up"
               options-dense
@@ -97,11 +97,13 @@
               outlined
               use-input
               input-debounce="0"
-              hint="Este campo es opcional"
-              @filter="filtroEmpleados"
+              hint="Este campo es obligatorio"
+              :error="!!v$.cliente.$errors.length"
+              @filter="filtroClientes"
+              @popup-show="ordenarClientes"
               :disable="disabled || soloLectura"
               :readonly="disabled || soloLectura"
-              :option-label="(v) => v.nombres + ' ' + v.apellidos"
+              :option-label="(v) => v.razon_social"
               :option-value="(v) => v.id"
               emit-value
               map-options
@@ -113,8 +115,13 @@
                   </q-item-section>
                 </q-item>
               </template>
+              <template v-slot:error>
+                <div v-for="error of v$.cliente.$errors" :key="error.$uid">
+                  <div class="error-msg">{{ error.$message }}</div>
+                </div>
+              </template>
             </q-select>
-          </div> -->
+          </div> 
         </div>
       </q-form>
     </template>

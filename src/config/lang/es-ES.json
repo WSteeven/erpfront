@@ -3,7 +3,10 @@
   "success": "Aktion erfolgreich",
   "validations": {
     "required": "Campo requerido",
+    "requiredIf": "Campo requerido",
     "maxLength": "ha exedido el número máximo de caracteres",
-    "numeric": "Debe ser un número"
+    "minLength": "número mínimo de caracteres insuficiente",
+    "minValue": "no puede ingresar un valor inferior al mínimo",
+    "numeric": "Debe ser un número mayor a cero"
   }
 }

@@ -10,19 +10,21 @@ import { StatusEssentialLoading } from 'components/loading/application/StatusEss
 import { Referencias } from 'shared/contenedor/domain/Referencias/referencias'
 import { useAuthenticationStore } from 'stores/authentication'
 import { useRouter } from 'vue-router'
-import { markRaw, watchEffect } from 'vue'
+import { markRaw, } from 'vue'
 import { ParamsType } from 'config/types'
-import { Usuario } from 'pages/fondosRotativos/usuario/domain/Usuario'
+import { Archivo } from 'pages/gestionTrabajos/subtareas/modules/gestorArchivosTrabajos/domain/Archivo'
+import { ArchivoController } from 'pages/gestionTrabajos/subtareas/modules/gestorArchivosTrabajos/infraestructure/ArchivoController'
 
-export class ContenedorSimpleMixin<T extends EntidadAuditable> extends Contenedor<T, Referencias<T>, TransaccionSimpleController<T>> {
+export class ContenedorSimpleMixin<T extends EntidadAuditable> extends Contenedor<T, Referencias<T>, TransaccionSimpleController<T>, ArchivoController> {
   private hooks = new HooksSimples()
   private statusEssentialLoading = new StatusEssentialLoading()
 
   constructor(
     entidad: Instanciable,
-    controller: TransaccionSimpleController<T>
+    controller: TransaccionSimpleController<T>,
+    controllerFiles?: TransaccionSimpleController<Archivo>,
   ) {
-    super(entidad, controller, markRaw(new Referencias()))
+    super(entidad, controller, markRaw(new Referencias()), controllerFiles)
   }
 
   private async cargarVista(callback: () => Promise<void>): Promise<void> {
@@ -38,12 +40,15 @@ export class ContenedorSimpleMixin<T extends EntidadAuditable> extends Contenedo
   useComportamiento() {
     return {
       listar: this.listar.bind(this),
+      listarArchivos: this.listarArchivos.bind(this),
       filtrar: this.filtrar.bind(this),
       consultar: this.consultar.bind(this),
+      guardarArchivos: this.guardarArchivos.bind(this),
       guardar: this.guardar.bind(this),
       editar: this.editar.bind(this),
       editarParcial: this.editarParcial.bind(this),
       eliminar: this.eliminar.bind(this),
+      eliminarArchivo: this.eliminarArchivo.bind(this),
       reestablecer: this.reestablecer.bind(this),
       obtenerListados: this.obtenerListados.bind(this),
       cargarVista: this.cargarVista.bind(this),
@@ -55,7 +60,7 @@ export class ContenedorSimpleMixin<T extends EntidadAuditable> extends Contenedo
     return {
       onBeforeGuardar: (callback: () => void) =>
         this.hooks.bindHook('onBeforeGuardar', callback),
-      onGuardado: (callback: (id?: number) => void) =>
+      onGuardado: (callback: (id?: number, response_data?:any) => void) =>
         this.hooks.bindHook('onGuardado', callback),
       onBeforeConsultar: (callback: () => void) =>
         this.hooks.bindHook('onBeforeConsultar', callback),
@@ -175,7 +180,7 @@ export class ContenedorSimpleMixin<T extends EntidadAuditable> extends Contenedo
     }
 
 
-    if (!(await this.refs.validador.value.$validate()) || !(await this.ejecutarValidaciones())) {
+    if (this.refs.validador.value && !(await this.refs.validador.value.$validate()) || !(await this.ejecutarValidaciones())) {
       this.notificaciones.notificarAdvertencia('Verifique el formulario')
       throw new Error('Verifique el formulario')
       // return console.log('Verifique el formulario')
@@ -201,8 +206,10 @@ export class ContenedorSimpleMixin<T extends EntidadAuditable> extends Contenedo
 
       //console.log(this.entidad)
       const copiaEntidad = JSON.parse(JSON.stringify(this.entidad))
+      // console.log(this.entidad)
+      // console.log(copiaEntidad)
       this.reestablecer()
-      this.hooks.onGuardado(copiaEntidad.id)
+      this.hooks.onGuardado(copiaEntidad.id,response.data )
       return copiaEntidad
       /* const stop = watchEffect(() => {
         // console.log('dentrode  watch')
@@ -224,8 +231,79 @@ export class ContenedorSimpleMixin<T extends EntidadAuditable> extends Contenedo
     }
   }
 
+  /**
+   * Funcion para eliminar un archivo relacionado a un modelo
+   */
+  private async eliminarArchivo(data: T, callback?: () => void) {
+    this.notificaciones.confirmar('¿Está seguro que desea eliminar?', () => {
+      if (data.id === null) {
+        return this.notificaciones.notificarAdvertencia('No se puede eliminar el recurso con id null')
+      }
+      this.controllerFiles?.eliminarFile(data.id, this.argsDefault).then(({ response }) => {
+        this.notificaciones.notificarCorrecto(response.data.mensaje)
+        this.eliminarElementoListaArchivosActual(data)
+        this.reestablecer()
+        if (callback) callback()
+      }).catch((error) => {
+        if (isAxiosError(error)) {
+          const mensajes: string[] = error.erroresValidacion
+          notificarMensajesError(mensajes, this.notificaciones)
+        } else {
+          this.notificaciones.notificarError(error.mensaje)
+        }
+      })
+    })
+  }
+  /**
+   * Funcion para listar todos los archivos relacionados a un modelo
+   */
+  private async listarArchivos(id: number, params?: ParamsType, append = false) {
+    this.statusEssentialLoading.activar()
+    try {
+      const { result } = await this.controller.listarFiles(id, params)
+      if (result.length == 0) this.notificaciones.notificarCorrecto('Aún no se han agregado elementos')
+
+      if (append) this.refs.listadoArchivos.value.push(...result)
+      else this.refs.listadoArchivos.value = result
+    } catch (error) {
+      this.notificaciones.notificarError('Error al obtener el listado de archivos.')
+    }
+    this.statusEssentialLoading.desactivar()
+  }
+
+  /**
+   * Aqui se guardan los archivos
+   * @param data
+   * @param agregarAlListado
+   * @param params
+   * @returns
+   */
+  private async guardarArchivos(id:number, data: T, params?: ParamsType): Promise<any> {
+
+    this.statusEssentialLoading.activar()
+    try {
+      const { response } = await this.controller.guardarFiles(id,data)
+
+      this.notificaciones.notificarCorrecto(response.data.mensaje)
+      // this.agregarElementoListadoArchivosActual(response.data.modelo)
+      // console.log(response)
+
+      return response
+    } catch (error: any) {
+      if (isAxiosError(error)) {
+        const mensajes: string[] = error.erroresValidacion
+        await notificarMensajesError(mensajes, this.notificaciones)
+      }
+    } finally {
+      this.statusEssentialLoading.desactivar()
+    }
+  }
+
+
+
   // Editar
   private async editar(data: T, resetOnUpdated = true, params?: ParamsType) {
+
     if (this.entidad.id === null) {
       return this.notificaciones.notificarAdvertencia(
         'No se puede editar el recurso con id null'

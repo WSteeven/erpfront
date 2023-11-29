@@ -1,8 +1,8 @@
 <template>
   <q-layout view="lHh Lpr lFf">
     <!-- Navbar -->
-    <q-header class="bg-toolbar border-bottomd">
-      <q-toolbar class="row justify-between">
+    <q-header class="bg-drawer rounded-card custom-shadow">
+      <q-toolbar class="row justify-between q-py-sm">
         <q-btn
           dense
           push
@@ -49,10 +49,10 @@
           }"
         >
           <span
-            class="row bg-body-table rounded q-pr-sm"
+            class="row"
             :class="{
-              'q-gutter-x-sm': $q.screen.xs,
-              'q-gutter-x-md': !$q.screen.xs,
+              'q-gutter-x-xs': $q.screen.xs,
+              'q-gutter-x-sm': !$q.screen.xs,
             }"
           >
             <!-- Boton transferir tareas -->
@@ -62,18 +62,19 @@
               rounded
               unelevated
               no-caps
-              class="text-shadow bg-body-table color-icono custom-shadow"
+              class="text-shadow bg-body-table color-icono shadow-button q-px-sm"
               @click="abrirTransferirTareas()"
             >
               <q-icon
                 name="bi-arrow-left-right"
-                :class="{ 'q-mr-sm': !$q.screen.xs }"
+                :class="{ 'q-mx-sm': !$q.screen.xs }"
+                size="xs"
               ></q-icon>
               <span v-if="!$q.screen.xs">Transferir tareas activas</span>
               <q-tooltip class="bg-dark">Transferir tareas activas</q-tooltip>
             </q-btn>
 
-            <q-separator vertical inset></q-separator>
+            <!-- <q-separator vertical inset></q-separator> -->
 
             <!-- Boton movilizacion -->
             <q-btn
@@ -81,18 +82,19 @@
               rounded
               unelevated
               no-caps
-              class="text-shadow bg-body-table color-icono"
+              class="text-shadow bg-body-table color-icono shadow-button q-px-sm"
               @click="abrirMovilizacionSubtarea()"
             >
               <q-icon
                 name="bi-car-front"
                 :class="{ 'q-mr-sm': !$q.screen.xs }"
+                size="xs"
               ></q-icon>
               <span v-if="!$q.screen.xs">Movilización</span>
               <q-tooltip class="bg-dark">Movilización</q-tooltip>
             </q-btn>
 
-            <q-separator vertical inset></q-separator>
+            <!-- <q-separator vertical inset></q-separator> -->
 
             <!-- Boton Mi bodega -->
             <q-btn
@@ -100,18 +102,19 @@
               rounded
               unelevated
               no-caps
-              class="text-shadow bg-body-table color-icono"
+              class="text-shadow bg-body-table color-icono shadow-button q-px-sm"
               :to="{ name: 'mi_bodega' }"
             >
               <q-icon
                 name="bi-box-seam"
                 :class="{ 'q-mr-sm': !$q.screen.xs }"
+                size="xs"
               ></q-icon>
               <span v-if="!$q.screen.xs">Mi bodega</span>
               <q-tooltip class="bg-dark">Mi bodega</q-tooltip>
             </q-btn>
 
-            <q-separator vertical inset></q-separator>
+            <!-- <q-separator vertical inset></q-separator> -->
 
             <!-- Boton notificaciones -->
             <q-btn
@@ -119,12 +122,13 @@
               rounded
               unelevated
               no-caps
-              class="text-shadow bg-body-table color-icono"
+              class="text-shadow bg-body-table color-icono shadow-button q-px-sm"
               @click.self="mostrarNotificaciones = true"
             >
               <q-icon
                 name="bi-bell"
                 :class="{ 'q-mr-sm': !$q.screen.xs }"
+                size="xs"
               ></q-icon>
               <span v-if="!$q.screen.xs">Notificaciones</span>
               <q-tooltip class="bg-dark">Notificaciones</q-tooltip>
@@ -143,7 +147,7 @@
                 max-height="100vh"
               >
                 <!-- anchor="center middle" -->
-                <div class="full-width text-right q-pr-md">
+                <div class="full-width text-right q-pr-md q-mb-md">
                   <q-btn
                     icon="bi-x"
                     round
@@ -153,7 +157,10 @@
                     @click="mostrarNotificaciones = false"
                   ></q-btn>
                 </div>
-                <q-list style="min-width: 120px; max-width: 400px">
+                <q-list
+                  style="min-width: 140px; max-width: 450px"
+                  class="q-px-xs"
+                >
                   <q-item
                     class="q-mb-md text-grey-7"
                     v-if="notificaciones.length === 0"
@@ -168,7 +175,54 @@
                     </q-item-section></q-item
                   >
 
-                  <q-item
+                  <q-expansion-item
+                    v-for="titulo in Object.keys(notificacionesAgrupadas)"
+                    :key="titulo"
+                    class="overflow-hidden q-mb-sm expansion"
+                    :label="`${titulo} (${notificacionesAgrupadas[titulo].length})`"
+                    header-class="text-bold bg-header-collapse text-primary full-width"
+                    icon="bi-dot"
+                  >
+                    <q-item
+                      v-for="notificacion in notificacionesAgrupadas[titulo]"
+                      :key="notificacion.id"
+                      :to="notificacion.link"
+                    >
+                      <q-item-section avatar>
+                        <q-icon
+                          color="grey-8"
+                          :name="
+                            obtenerIcono.obtener(notificacion.tipo_notificacion)
+                          "
+                        />
+                      </q-item-section>
+
+                      <q-item-section class="full-width">
+                        {{ notificacion.mensaje }}
+                        <span class="block text-grey-8 text-weight-regular">
+                          {{ moment(notificacion.created_at).fromNow() }}
+                        </span>
+
+                        <q-item-label class="row justify-end q-pt-sm">
+                          <q-btn
+                            icon="bi-check"
+                            label="Marcar como leído"
+                            dense
+                            color="positive"
+                            size="sm"
+                            no-caps
+                            rounded
+                            push
+                            unelevated
+                            @click="marcarLeida(notificacion.id)"
+                          >
+                          </q-btn
+                        ></q-item-label>
+                      </q-item-section>
+                    </q-item>
+                  </q-expansion-item>
+
+                  <!--<q-item
                     v-for="notificacion in notificaciones"
                     :key="notificacion.id"
                     :to="notificacion.link"
@@ -205,6 +259,7 @@
                       ></q-item-label>
                     </q-item-section>
                   </q-item>
+                -->
 
                   <q-separator />
 
@@ -264,6 +319,11 @@
                   Saldo Actual: $ {{ saldo }}
                 </div>
 
+                <!-- <div class=" text-center q-mb-md" v-if="ultimaConexion">
+                  Ultima conexión
+                  <br><strong>{{ ultimaConexion }}</strong>
+                </div> -->
+
                 <q-item clickable :to="{ name: 'perfil' }" class="full-width">
                   <q-avatar>
                     <q-icon name="bi-person"></q-icon>
@@ -312,7 +372,7 @@
       </q-toolbar>
 
       <div class="text-center">
-        <q-chip v-if="enCamino" class="bg-grey-4 q-mx-auto q-mb-md">
+        <q-chip v-if="enCamino" class="bg-grey-2 q-mx-auto q-mb-md">
           <q-icon
             name="bi-car-front-fill"
             color="positive"
@@ -322,25 +382,34 @@
             Destino:&nbsp;<b>{{ enCamino }}</b>
           </div>
           <q-separator vertical class="q-mx-md"></q-separator>
-          <i class="">VIAJE DE {{ motivo }}</i>
+          <span class="text-grey-8">VIAJE DE {{ motivo }}</span>
         </q-chip>
       </div>
     </q-header>
 
     <!-- Drawer -->
-    <q-drawer v-model="leftDrawerOpen" class="border-right" show-if-above>
+    <q-drawer
+      v-model="leftDrawerOpen"
+      class="bg-body q-px-sm q-py-sm"
+      show-if-above
+    >
       <!-- Drawer Header -->
-      <div class="absolute-top q-pa-lg">
-        <!--<img src="~assets/logo.svg" height="80" class="q-mx-auto block" /> -->
+      <div class="absolute-top q-pa-sm q-ma-sm rounded-card">
+        <!--<img src="~assets/logo.png" height="80" class="q-mx-auto block" /> -->
+        <!-- <img src="~assets/logo.png" height="80" class="q-mx-auto block" /> -->
         <img
-          src="~assets/logoJP_Borde.png"
+          :src="!$q.dark.isActive ? logoClaro : logoOscuro"
           height="80"
           class="q-mx-auto block"
         />
+        <!-- {{ logoClaro }} -->
       </div>
 
       <!-- Drawer Body -->
-      <q-scroll-area style="height: calc(100% - 150px); margin-top: 150px">
+      <q-scroll-area
+        style="height: calc(96% - 100px); margin-top: 100px"
+        class="bg-drawer rounded-card custom-shadow-2 q-mb-sm"
+      >
         <q-list>
           <div v-for="item in links" :key="item.title">
             <q-item-label
@@ -362,21 +431,36 @@
           </div>
         </q-list>
       </q-scroll-area>
+      <q-btn
+        color="primary"
+        no-caps
+        class="full-width"
+        rounded
+        @click="logout()"
+        >Cerrar sesión</q-btn
+      >
     </q-drawer>
 
     <modales-entidad :comportamiento="modales" />
 
-    <!-- Router -->
-    <q-page-container :class="{ 'bg-body': true }">
+    <ScrollToTopButton></ScrollToTopButton>
+
+    <q-page-container :class="{ 'bg-body': true }" class="window-height">
       <router-view v-slot="{ Component }">
         <transition name="scale" mode="out-in">
           <essential-loading></essential-loading>
         </transition>
-        <component :is="Component" />
-        <!--<footer-component></footer-component> -->
+        <div class="text-right absolute-bottom">
+          <footer-component></footer-component>
+        </div>
+        <!-- Aplica keep-alive aquí -->
+        <keep-alive
+          :exclude="['Ingresos', 'Egresos', 'OrdenCompraPage', 'Devoluciones','RolPagoMes']"
+        >
+          <component :is="Component" />
+        </keep-alive>
       </router-view>
     </q-page-container>
   </q-layout>
 </template>
-
 <script src="./MainLayout.ts"></script>

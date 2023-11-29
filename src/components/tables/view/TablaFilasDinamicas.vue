@@ -1,7 +1,7 @@
 <template>
   <essential-table
     ref="refTrabajos"
-    titulo="Cronología de trabajos realizados"
+    :titulo="titulo"
     :configuracionColumnas="columnas"
     :datos="trabajoRealizado"
     :alto-fijo="false"
@@ -19,6 +19,7 @@
     :entidad="entidad"
     :editarFilaLocal="editarFilaLocal"
     @guardarFila="(fila) => emit('guardar-fila', fila)"
+    :ajustar-celdas="true"
   ></essential-table>
 </template>
 
@@ -31,9 +32,10 @@ import { accionesTabla } from 'config/utils'
 import { Ref, ref, watchEffect } from 'vue'
 
 // Logica y controladores
+import { StatusEssentialLoading } from 'components/loading/application/StatusEssentialLoading'
+import { EntidadAuditable } from 'shared/entidad/domain/entidadAuditable'
 import EssentialTable from 'components/tables/view/EssentialTable.vue'
 import { ColumnConfig } from 'components/tables/domain/ColumnConfig'
-import { EntidadAuditable } from 'shared/entidad/domain/entidadAuditable'
 import { Instanciable } from 'shared/entidad/domain/instanciable'
 
 const props = defineProps({
@@ -61,6 +63,7 @@ const props = defineProps({
     type: Boolean,
     default: true,
   },
+  titulo: String,
 })
 
 const emit = defineEmits(['actualizar', 'guardar-fila'])
@@ -71,6 +74,7 @@ const emit = defineEmits(['actualizar', 'guardar-fila'])
 const trabajoRealizado: Ref<any[]> = ref(props.listado)
 const { confirmar, notificarError } = useNotificaciones()
 const refTrabajos = ref()
+const cargando = new StatusEssentialLoading()
 
 watchEffect(() => (trabajoRealizado.value = props.listado))
 
@@ -88,15 +92,17 @@ const agregarActividadRealizada: CustomActionTable = {
   color: 'positive',
   visible: () => props.mostrarAccion1Header,
   accion: async () => {
-    // const fila: TrabajoRealizado = new TrabajoRealizado()
     try {
+      cargando.activar()
       const { fecha_hora } = await obtenerTiempoActual()
       refTrabajos.value.abrirModalEditar({ fecha_hora })
-      emit('actualizar', trabajoRealizado.value)
+      // emit('actualizar', trabajoRealizado.value)
     } catch (e) {
       notificarError(
         'Problemas para obtener la fecha y hora actual del servidor. Verifica tu conexión a Internet.'
       )
+    } finally {
+      cargando.desactivar()
     }
   },
 }

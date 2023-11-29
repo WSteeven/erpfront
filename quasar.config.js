@@ -125,6 +125,11 @@ module.exports = configure(function (/* ctx */) {
           './src/pages/gestionTrabajos/subtareas'
         ),
         tiposTrabajos: path.join(__dirname, './src/pages/tareas/tiposTareas'),
+        dashboardTickets: path.join(
+          __dirname,
+          './src/pages/gestionTickets/dashboardTickets'
+        ),
+        gestionTickets: path.join(__dirname, './src/pages/gestionTickets'),
         tickets: path.join(__dirname, './src/pages/gestionTickets/tickets'),
         ticketsAsignados: path.join(
           __dirname,
@@ -151,7 +156,7 @@ module.exports = configure(function (/* ctx */) {
 
     // Full list of options: https://v2.quasar.dev/quasar-cli-vite/quasar-config-js#devServer
     devServer: {
-      // https: true
+      https: false,
       open: true, // opens browser window automatically
     },
 
@@ -171,7 +176,7 @@ module.exports = configure(function (/* ctx */) {
       // directives: [],
 
       // Quasar plugins
-      plugins: ['Notify', 'Dialog'],
+      plugins: ['Notify', 'Dialog', 'Loading'],
     },
 
     // animations: 'all', // --- includes all animations
@@ -179,16 +184,16 @@ module.exports = configure(function (/* ctx */) {
     animations: [],
 
     // https://v2.quasar.dev/quasar-cli-vite/quasar-config-js#sourcefiles
-    // sourceFiles: {
-    //   rootComponent: 'src/App.vue',
-    //   router: 'src/router/index',
-    //   store: 'src/store/index',
-    //   registerServiceWorker: 'src-pwa/register-service-worker',
-    //   serviceWorker: 'src-pwa/custom-service-worker',
-    //   pwaManifestFile: 'src-pwa/manifest.json',
-    //   electronMain: 'src-electron/electron-main',
-    //   electronPreload: 'src-electron/electron-preload'
-    // },
+    sourceFiles: {
+      //   rootComponent: 'src/App.vue',
+      //   router: 'src/router/index',
+      //   store: 'src/store/index',
+      registerServiceWorker: 'src/register-service-worker',
+      serviceWorker: 'src/service-worker',
+      //   pwaManifestFile: 'src-pwa/manifest.json',
+      //   electronMain: 'src-electron/electron-main',
+      //   electronPreload: 'src-electron/electron-preload'
+    },
 
     // https://v2.quasar.dev/quasar-cli-vite/developing-ssr/configuring-ssr
     ssr: {

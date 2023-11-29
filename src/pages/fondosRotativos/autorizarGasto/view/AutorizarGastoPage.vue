@@ -20,7 +20,7 @@
       :permitirConsultar="false"
       :permitirEditar="false"
       :permitirEliminar="false"
-      :permitirBuscar="false"
+      :permitirBuscar="true"
       :mostrar-botones="false"
       :tab-options="tabAutorizarGasto"
       @tab-seleccionado="filtrarAutorizacionesGasto"
@@ -34,12 +34,12 @@
     <div class="q-pa-md q-gutter-sm flex flex-center"
         v-if="usuario.id == gasto.aut_especial && gasto.estado_info == 'POR APROBAR'">
         <q-btn color="positive" @click="aprobar_gasto(gasto, 'aprobar')">
-          <q-icon name="bi-check-circle" size="xs"></q-icon>Aprobar</q-btn>
+          <q-icon name="bi-check-circle" size="xs"></q-icon>Aprobadddr</q-btn>
         <q-btn color="negative" @click="aprobar_gasto(gasto, 'rechazar')">
           <q-icon name="bi-x-circle" size="xs"></q-icon>Rechazar</q-btn>
       </div>
       <div class="q-pa-md q-gutter-sm flex flex-center"
-        v-if="usuario.id == gasto.aut_especial && gasto.estado_info == 'APROBADO'">
+        v-if="usuario.id == gasto.aut_especial && gasto.estado_info == 'APROBADO' && estaSemanAC==true">
         <q-btn color="negative" @click="aprobar_gasto(gasto, 'anular')">
           <q-icon name="bi-x-circle" size="xs"></q-icon>Anular</q-btn>
       </div>

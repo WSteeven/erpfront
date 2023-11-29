@@ -1,7 +1,8 @@
 import { EntidadAuditable } from 'shared/entidad/domain/entidadAuditable'
 
 export class DetalleProducto extends EntidadAuditable {
-    id:number | null
+    id: number | null
+    detalle_id: number | null
     categoria: string | null
     codigo: string | null
     producto: string | null
@@ -34,6 +35,7 @@ export class DetalleProducto extends EntidadAuditable {
     color: string | null
     talla: string | null
     tipo: string | null
+    activo: boolean
 
     //variables auxiliares
     tiene_serial: boolean
@@ -41,11 +43,15 @@ export class DetalleProducto extends EntidadAuditable {
     es_fibra: boolean
     tiene_precio_compra: boolean
     tiene_adicionales: boolean
-    calco:boolean
+    calco: boolean
+
+    varios_items: boolean
+    seriales: any[]
 
     constructor() {
         super()
         this.id = null
+        this.detalle_id = null
         this.producto = null
         this.producto_id = null
         this.descripcion = null
@@ -74,6 +80,7 @@ export class DetalleProducto extends EntidadAuditable {
         this.color = null
         this.talla = null
         this.tipo = null
+        this.activo = true
 
         this.adicionales = null
         this.es_computadora = false
@@ -81,6 +88,8 @@ export class DetalleProducto extends EntidadAuditable {
         this.tiene_serial = false
         this.tiene_precio_compra = false
         this.tiene_adicionales = false
-        this.calco=false
+        this.calco = false
+        this.varios_items = false
+        this.seriales = []
     }
 }

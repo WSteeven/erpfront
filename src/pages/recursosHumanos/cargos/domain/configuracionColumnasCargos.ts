@@ -9,4 +9,11 @@ export const configuracionColumnasCargos: ColumnConfig<Cargo>[] = [
         align: 'left',
         sortable: true
     },
+    {
+        name: 'estado',
+        field: 'estado',
+        label: 'Estado',
+        align: 'left',
+        sortable: true
+    },
 ]

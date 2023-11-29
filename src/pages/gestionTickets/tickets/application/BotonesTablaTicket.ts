@@ -1,22 +1,26 @@
 import { MotivoCanceladoTicket } from 'pages/gestionTickets/motivosCanceladosTickets/domain/MotivoCanceladoTicket'
 import { ContenedorSimpleMixin } from 'shared/contenedor/modules/simple/application/ContenedorSimpleMixin'
+import { MotivoPausaTicket } from 'pages/gestionTickets/motivosPausasTickets/domain/MotivoPausaTicket'
 import { CustomActionPrompt } from 'components/tables/domain/CustomActionPrompt'
 import { CustomActionTable } from 'components/tables/domain/CustomActionTable'
 import { ComportamientoModalesTicket } from './ComportamientoModalesTicket'
+import { isAxiosError, notificarMensajesError } from 'shared/utils'
+import { useAuthenticationStore } from 'stores/authentication'
 import { CambiarEstadoTicket } from './CambiarEstadoTicket'
 import { useNotificaciones } from 'shared/notificaciones'
 import { estadosTickets } from 'config/tickets.utils'
 import { Ticket } from '../domain/Ticket'
 import { useTicketStore } from 'stores/ticket'
 import { reactive } from 'vue'
-import { MotivoPausaTicket } from 'pages/gestionTickets/motivosPausasTickets/domain/MotivoPausaTicket'
 
-export const useBotonesTablaTicket = (mixin: ContenedorSimpleMixin<Ticket>, modales: ComportamientoModalesTicket | any) => {
+export const useBotonesTablaTicket = (mixin: ContenedorSimpleMixin<Ticket | any>, modales: ComportamientoModalesTicket | any) => {
   const { confirmar, prompt, notificarAdvertencia, notificarCorrecto, promptItems } = useNotificaciones()
+  const notificaciones = useNotificaciones()
   const { listado, listadosAuxiliares } = mixin.useReferencias()
 
   const cambiarEstadoTicket = new CambiarEstadoTicket()
   const ticketStore = useTicketStore()
+  const authenticationStore = useAuthenticationStore()
 
   let filtrarTickets: (estado: string) => void
   const setFiltrarTickets = (funcion: (estado: string) => void) => filtrarTickets = funcion
@@ -54,20 +58,30 @@ export const useBotonesTablaTicket = (mixin: ContenedorSimpleMixin<Ticket>, moda
     icono: 'bi-pause-circle',
     color: 'blue-6',
     visible: ({ entidad }) => entidad.estado === estadosTickets.EJECUTANDO,
-    accion: ({ entidad, posicion }) => {
+    accion: ({ entidad }) => {
 
       confirmar('¿Está seguro de pausar el ticket?', () => {
         const config: CustomActionPrompt = reactive({
           mensaje: 'Seleccione el motivo de la pausa',
           accion: async (idMotivoPausa) => {
 
-            const data = {
-              motivo_pausa_ticket_id: idMotivoPausa,
-            }
+            try {
 
-            await cambiarEstadoTicket.pausar(entidad.id, data)
-            filtrarTickets(estadosTickets.PAUSADO)
-            notificarCorrecto('Ticket pausado exitosamente!')
+              const data = {
+                motivo_pausa_ticket_id: idMotivoPausa,
+              }
+
+              await cambiarEstadoTicket.pausar(entidad.id, data)
+              filtrarTickets(estadosTickets.PAUSADO)
+              notificarCorrecto('Ticket pausado exitosamente!')
+            } catch (error: any) {
+              if (isAxiosError(error)) {
+                const mensajes: string[] = error.erroresValidacion
+                notificarMensajesError(mensajes, notificaciones)
+              } else {
+                notificaciones.notificarError(error.message)
+              }
+            }
           },
           tipo: 'radio',
           items: listadosAuxiliares.motivosPausas.map((motivo: MotivoPausaTicket) => {
@@ -108,23 +122,44 @@ export const useBotonesTablaTicket = (mixin: ContenedorSimpleMixin<Ticket>, moda
         accion: async (opcion) => {
 
           if (opcion === 1) {
-            await cambiarEstadoTicket.finalizar(entidad.id)
-            filtrarTickets(estadosTickets.FINALIZADO_SOLUCIONADO)
+            try {
+              await cambiarEstadoTicket.finalizar(entidad.id)
+              filtrarTickets(estadosTickets.FINALIZADO_SOLUCIONADO)
+
+              eliminarElemento(posicion)
+              notificarCorrecto('Ticket finalizado exitosamente!')
+            } catch (error: any) {
+              if (isAxiosError(error)) {
+                const mensajes: string[] = error.erroresValidacion
+                notificarMensajesError(mensajes, notificaciones)
+              } else {
+                notificaciones.notificarError(error.message)
+              }
+            }
           } else {
             const config2: CustomActionPrompt = {
               titulo: 'Motivo',
               mensaje: 'Ingrese el motivo por el que no se pudo dar solución.',
               accion: async (motivo) => {
-                await cambiarEstadoTicket.finalizarNoSolucion(entidad.id, { motivo })
-                filtrarTickets(estadosTickets.FINALIZADO_SIN_SOLUCION)
+                try {
+                  await cambiarEstadoTicket.finalizarNoSolucion(entidad.id, { motivo })
+                  filtrarTickets(estadosTickets.FINALIZADO_SIN_SOLUCION)
+
+                  eliminarElemento(posicion)
+                  notificarCorrecto('Ticket finalizado exitosamente!')
+                } catch (error: any) {
+                  if (isAxiosError(error)) {
+                    const mensajes: string[] = error.erroresValidacion
+                    notificarMensajesError(mensajes, notificaciones)
+                  } else {
+                    notificaciones.notificarError(error.message)
+                  }
+                }
               },
             }
 
             prompt(config2)
           }
-
-          eliminarElemento(posicion)
-          notificarCorrecto('Ticket finalizado exitosamente!')
         },
         tipo: 'radio',
         items: [
@@ -150,12 +185,10 @@ export const useBotonesTablaTicket = (mixin: ContenedorSimpleMixin<Ticket>, moda
     titulo: 'Seguimiento',
     icono: 'bi-check2-square',
     color: 'indigo',
-    visible: ({ entidad }) => [estadosTickets.EJECUTANDO, estadosTickets.PAUSADO, estadosTickets.FINALIZADO_SIN_SOLUCION, estadosTickets.FINALIZADO_SOLUCIONADO, estadosTickets.CALIFICADO].includes(entidad.estado),
+    visible: ({ entidad }) => [estadosTickets.EJECUTANDO, estadosTickets.PAUSADO, estadosTickets.FINALIZADO_SIN_SOLUCION, estadosTickets.FINALIZADO_SOLUCIONADO].includes(entidad.estado),
     accion: async ({ entidad }) => {
-      confirmar('¿Está seguro de abrir el formulario de seguimiento?', () => {
-        ticketStore.filaTicket = entidad
-        modales.abrirModalEntidad('SeguimientoTicketPage')
-      })
+      ticketStore.filaTicket = entidad
+      modales.abrirModalEntidad('SeguimientoTicketPage')
     }
   }
 
@@ -239,13 +272,25 @@ export const useBotonesTablaTicket = (mixin: ContenedorSimpleMixin<Ticket>, moda
     }
   }
 
-  const btnCalificar: CustomActionTable = {
+  const btnCalificarSolicitante: CustomActionTable = {
     titulo: 'Calificar',
     icono: 'bi-stars',
-    color: 'secondary',
-    visible: ({ entidad }) => [estadosTickets.FINALIZADO_SIN_SOLUCION, estadosTickets.FINALIZADO_SOLUCIONADO].includes(entidad.estado),
-    accion: ({ entidad }) => {
-      console.log('dentro')
+    color: 'positive',
+    visible: ({ entidad }) => [estadosTickets.FINALIZADO_SIN_SOLUCION, estadosTickets.FINALIZADO_SOLUCIONADO].includes(entidad.estado) && (authenticationStore.user.id === entidad.solicitante_id && entidad.pendiente_calificar_solicitante),
+    accion: ({ entidad, posicion }) => {
+      ticketStore.posicionFilaTicket = posicion
+      ticketStore.filaTicket = entidad
+      modales.abrirModalEntidad('CalificarTicketPage')
+    }
+  }
+
+  const btnCalificarResponsable: CustomActionTable = {
+    titulo: 'Calificar',
+    icono: 'bi-stars',
+    color: 'positive',
+    visible: ({ entidad }) => [estadosTickets.FINALIZADO_SIN_SOLUCION, estadosTickets.FINALIZADO_SOLUCIONADO].includes(entidad.estado) && (authenticationStore.user.id === entidad.responsable_id && entidad.pendiente_calificar_responsable),
+    accion: ({ entidad, posicion }) => {
+      ticketStore.posicionFilaTicket = posicion
       ticketStore.filaTicket = entidad
       modales.abrirModalEntidad('CalificarTicketPage')
     }
@@ -265,7 +310,8 @@ export const useBotonesTablaTicket = (mixin: ContenedorSimpleMixin<Ticket>, moda
     btnReasignar,
     btnCancelar,
     btnRechazar,
-    btnCalificar,
+    btnCalificarSolicitante,
+    btnCalificarResponsable,
     btnAsignar,
     setFiltrarTickets,
   }

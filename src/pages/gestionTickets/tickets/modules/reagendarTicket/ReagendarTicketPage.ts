@@ -20,6 +20,7 @@ import { useFiltrosListadosTickets } from '../../application/FiltrosListadosTick
 import { useAuthenticationStore } from 'stores/authentication'
 import { estadosTickets } from 'config/tickets.utils'
 import { Ticket } from '../../domain/Ticket'
+import { StatusEssentialLoading } from 'components/loading/application/StatusEssentialLoading'
 
 export default defineComponent({
   components: {
@@ -90,16 +91,19 @@ export default defineComponent({
       await obtenerListados({
         empleados: {
           controller: new EmpleadoController(),
-          params: { campos: 'id,nombres,apellidos', departamento_id: departamento }
+          params: { campos: 'id,nombres,apellidos', departamento_id: departamento, estado: 1 }
         },
       })
       empleados.value = listadosAuxiliares.empleados
     }
 
+    const cargando = new StatusEssentialLoading()
+
     async function cambiar() {
       if (await v$.value.$validate()) {
         try {
           confirmar('¿Está seguro de continuar?', async () => {
+            cargando.activar()
             const axios = AxiosHttpRepository.getInstance()
             const ruta = axios.getEndpoint(endpoints.cambiar_responsable_ticket) + '/' + ticket.id
             const response: AxiosResponse = await axios.post(ruta, {
@@ -107,13 +111,13 @@ export default defineComponent({
               responsable: reagendar.responsable,
             })
 
+            if (ticketStore.filaTicket.responsable_id === reagendar.responsable) {
+              cargando.desactivar()
+              return notificarAdvertencia('Seleccione un empleado diferente al responsable actual.')
+            }
+
             // Es el solicitante asigna
             if (authenticationStore.user.id === ticketStore.filaTicket.solicitante_id) {
-              /*const anterior = listado.value[ticketStore.posicionFilaTicket]
-              anterior.departamento_responsable = response.data.modelo.departamento_responsable
-              anterior.responsable = response.data.modelo.responsable
-              anterior.estado = estadosTickets.ASIGNADO
-              listado.value.splice(ticketStore.posicionFilaTicket, 1, anterior)*/
               props.accion(estadosTickets.ASIGNADO)
             } else {
               // Es el responsable actual transfiere
@@ -121,10 +125,13 @@ export default defineComponent({
             }
 
             notificarCorrecto(response.data.mensaje)
+            cargando.desactivar()
             emit('cerrar-modal', false)
           })
         } catch (e: any) {
           notificarAdvertencia(e)
+        } finally {
+          cargando.desactivar()
         }
       }
     }

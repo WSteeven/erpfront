@@ -17,23 +17,16 @@ export const configuracionColumnasRolPago: ColumnConfig<RolPago>[] = [
     sortable: true
 },
 {
+  name: 'sueldo',
+  field: 'sueldo',
+  label: 'Sueldo',
+  align: 'left',
+  sortable: true
+},
+{
   name: 'dias',
   field: 'dias',
-  label: 'Días',
-  align: 'left',
-  sortable: true
-},
-{
-  name: 'bonificacion',
-  field: 'bonificacion',
-  label: 'Bonificación',
-  align: 'left',
-  sortable: true
-},
-{
-  name: 'bono_recurente',
-  field: 'bono_recurente',
-  label: 'Bono Recurente',
+  label: 'Días Laborados',
   align: 'left',
   sortable: true
 },
@@ -52,6 +45,14 @@ export const configuracionColumnasRolPago: ColumnConfig<RolPago>[] = [
   sortable: true
 },
 {
+  name: 'fondos_reserva',
+  field: 'fondos_reserva',
+  label: 'Fondo de Reserva',
+  align: 'left',
+  sortable: true
+},
+
+{
   name: 'concepto_ingreso_info',
   field: 'concepto_ingreso_info',
   label: 'Concepto',
@@ -66,9 +67,51 @@ export const configuracionColumnasRolPago: ColumnConfig<RolPago>[] = [
   sortable: true
 },
 {
-  name: 'descuento_ley_info',
-  field: 'descuento_ley_info',
-  label: 'Descuentos de ley',
+  name: 'anticipo',
+  field: 'anticipo',
+  label: 'Anticipo',
+  align: 'left',
+  sortable: true
+},
+{
+  name: 'supa',
+  field: 'supa',
+  label: 'SUPA',
+  align: 'left',
+  sortable: true
+},
+{
+  name: 'extension_cobertura_salud',
+  field: 'extension_cobertura_salud',
+  label: 'Extension Cobertura de salud',
+  align: 'left',
+  sortable: true
+},
+{
+  name: 'prestamo_hipotecario',
+  field: 'prestamo_hipotecario',
+  label: 'Prestamo Hipotecario',
+  align: 'left',
+  sortable: true
+},
+{
+  name: 'prestamo_quirorafario',
+  field: 'prestamo_quirorafario',
+  label: 'Prestamo Quirorafario',
+  align: 'left',
+  sortable: true
+},
+{
+  name: 'prestamo_empresarial',
+  field: 'prestamo_empresarial',
+  label: 'Prestamo Empresarial',
+  align: 'left',
+  sortable: true
+},
+{
+  name: 'iess',
+  field: 'iess',
+  label: 'Aporte IESS',
   align: 'left',
   sortable: true
 },

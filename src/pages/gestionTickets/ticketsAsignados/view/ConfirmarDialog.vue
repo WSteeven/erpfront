@@ -3,7 +3,7 @@
     <q-card>
       <q-toolbar>
         <q-avatar square>
-          <img src="~assets/logo.svg" />
+          <img src="~assets/logo.png" />
         </q-avatar>
 
         <q-toolbar-title>{{ 'Seleccione su plantilla' }}</q-toolbar-title>

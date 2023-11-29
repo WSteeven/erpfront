@@ -9,6 +9,7 @@ import { useQuasar } from 'quasar'
 // Componentes
 import TabLayout from 'shared/contenedor/modules/simple/view/TabLayout.vue'
 import EssentialTable from 'components/tables/view/EssentialTable.vue'
+import ModalesEntidad from 'components/modales/view/ModalEntidad.vue';
 
 // Logica y controladores
 import { ContenedorSimpleMixin } from 'shared/contenedor/modules/simple/application/ContenedorSimpleMixin'
@@ -17,13 +18,19 @@ import { CantonController } from 'pages/sistema/ciudad/infraestructure/CantonCon
 import { ClienteController } from 'pages/sistema/clientes/infraestructure/ClienteController'
 import { ProyectoController } from '../infraestructure/ProyectoController'
 import { Proyecto } from '../domain/Proyecto'
-import { rolesSistema } from 'config/utils'
+import { acciones, accionesTabla, rolesSistema } from 'config/utils'
 import { useAuthenticationStore } from 'stores/authentication'
+import { configuracionColumnasEtapa } from '../modules/etapas/domain/configuracionColumnasEtapas'
+import { CustomActionTable } from 'components/tables/domain/CustomActionTable'
+import { Etapa } from '../modules/etapas/domain/Etapa'
+import { ComportamientoModalesProyectos } from '../application/ComportamientoModalesProyectos'
+import { EtapaController } from '../modules/etapas/infraestructure/EtapaController'
 
 export default defineComponent({
   components: {
     TabLayout,
     EssentialTable,
+    ModalesEntidad,
   },
   emits: ['guardado', 'cerrar-modal'],
   setup(props, { emit }) {
@@ -34,7 +41,12 @@ export default defineComponent({
     const { entidad: proyecto, disabled, accion, listadosAuxiliares } = mixin.useReferencias()
     const { cargarVista, obtenerListados, setValidador } =
       mixin.useComportamiento()
-    const { onGuardado } = mixin.useHooks()
+    const { onGuardado, onConsultado } = mixin.useHooks()
+
+    const store = useAuthenticationStore()
+    const modales = new ComportamientoModalesProyectos()
+
+    const tieneEtapa = ref(false)
 
     cargarVista(async () => {
       await obtenerListados({
@@ -79,6 +91,22 @@ export default defineComponent({
 
     const v$ = useVuelidate(rules, proyecto)
     setValidador(v$.value)
+    /****************************
+     * Funciones
+     ***************************/
+    async function guardado(data: string) {
+      switch (data) {
+        case 'Etapa':
+          await consultarEtapasProyecto()
+          break
+        default:
+      }
+    }
+
+    async function consultarEtapasProyecto() {
+      const { result } = await new EtapaController().listar({ proyecto_id: proyecto.id })
+      proyecto.etapas = result
+    }
 
     // Filtro clientes principales
     const clientes = ref()
@@ -142,22 +170,69 @@ export default defineComponent({
         )
       })
     }
+    /****************************
+     * Botones de tablas
+     ***************************/
+    const addNuevaEtapa: CustomActionTable = {
+      titulo: 'Agregar',
+      color: 'primary',
+      icono: 'bi-plus',
+      tooltip: 'Agrega una nueva etapa al proyecto',
+      accion: () => {
+        modales.abrirModalEntidad('EtapaPage')
+      }
+    }
+    const btnGuardar: CustomActionTable = {
+      titulo: 'Guardar',
+      color: 'primary',
+      icono: 'bi-save',
+      tooltip: 'Guarda los cambios',
+      accion: () => {
+        console.log('Diste clic  en guardar cambios, se creará o actualizará la etapa')
+      }
+    }
+    const btnDesactivar: CustomActionTable = {
+      titulo: 'Desactivar',
+      icono: 'bi-toggle2-off',
+      color: 'negative',
+      tooltip: 'Desactivar proveedor',
+      accion: () => {
+        console.log('Diste clic  en desactivar etapa')
+      }
+    }
+    const btnActivar: CustomActionTable = {
+      titulo: 'Activar',
+      icono: 'bi-toggle2-off',
+      color: 'positive',
+      tooltip: 'Activar proveedor',
+      accion: () => {
+        console.log('Diste clic en activar proveedor')
+      }
+    }
 
     /********
      * Hooks
      ********/
     onGuardado(() => {
-      emit('cerrar-modal')
+      emit('cerrar-modal', false)
       emit('guardado', 'ProyectoPage')
+    })
+
+    onConsultado(() => {
+      if (accion.value == acciones.editar) {
+        //aquí se carga los valores para la fila de etapas
+
+      }
     })
 
     return {
       mixin,
       proyecto,
       disabled,
-      accion,
+      accion, acciones,
       v$,
       configuracionColumnasProyecto,
+      columnasEtapas: configuracionColumnasEtapa,
       clientes,
       cantones,
       coordinadores,
@@ -167,6 +242,17 @@ export default defineComponent({
       filtrarCoordinadores,
       filtrarFiscalizadores,
       mostrarCoordinador,
+      tieneEtapa,
+      accionesTabla,
+
+      //modales
+      modales,
+
+      //botones de tabla
+      addNuevaEtapa,
+      btnGuardar,
+      btnDesactivar,
+      btnActivar,
     }
   },
 })

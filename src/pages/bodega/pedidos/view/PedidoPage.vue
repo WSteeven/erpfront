@@ -6,9 +6,12 @@
     :tab-options="tabOptionsPedidos"
     @tab-seleccionado="tabEs"
     :permitirEditar="puedeEditar"
+    :ajustarCeldas="true"
     :accion1="botonDespachar"
     :accion2="botonAnularAutorizacion"
-    :accion3="botonImprimir"
+    :accion3="botonCorregir"
+    :accion4="botonMarcarComoCompletado"
+    :accion5="botonImprimir"
   >
     <template #formulario>
       <q-form @submit.prevent>
@@ -20,7 +23,6 @@
               v-model="pedido.id"
               placeholder="Obligatorio"
               :disable="disabled || soloLectura"
-              :readonly="disabled || soloLectura"
               outlined
               dense
             >
@@ -43,9 +45,12 @@
               dense
               outlined
               :disable="disabled || soloLectura"
-              :readonly="disabled || soloLectura"
               :error="!!v$.sucursal.$errors.length"
               error-message="Debes seleccionar una sucursal"
+              use-input
+              input-debounce="0"
+              @filter="filtroSucursales"
+              @popup-show="ordenarSucursales"
               :option-label="(item) => item.lugar"
               :option-value="(item) => item.id"
               emit-value
@@ -55,6 +60,11 @@
                 <div v-for="error of v$.sucursal.$errors" :key="error.$uid">
                   <div class="error-msg">{{ error.$message }}</div>
                 </div>
+              </template>
+              <template v-slot:after>
+                <q-btn color="positive" @click="recargarSucursales">
+                  <q-icon size="xs" class="q-mr-sm" name="bi-arrow-clockwise" />
+                </q-btn>
               </template>
             </q-select>
           </div>
@@ -71,8 +81,7 @@
               options-dense
               dense
               outlined
-              :disable="disabled || soloLectura"
-              :readonly="disabled || soloLectura"
+              disable
               :option-label="(v) => v.nombres + ' ' + v.apellidos"
               :option-value="(v) => v.id"
               emit-value
@@ -95,8 +104,10 @@
               autogrow
               v-model="pedido.justificacion"
               placeholder="Obligatorio"
-              :disable="disabled || soloLectura"
-              :readonly="disabled || soloLectura"
+              :disable="
+                (disabled && !store.esAdministrador) ||
+                (soloLectura && !store.esAdministrador)
+              "
               :error="!!v$.justificacion.$errors.length"
               outlined
               dense
@@ -120,7 +131,6 @@
               :error="!!v$.fecha_limite.$errors.length"
               @blur="v$.fecha_limite.$touch"
               :disable="disabled || soloLectura"
-              :readonly="disabled || soloLectura"
               outlined
               dense
             >
@@ -160,7 +170,7 @@
             </q-input>
           </div>
           <!-- Es para el cliente -->
-          <div  class="col-12 col-md-3 q-mb-xl">
+          <div class="col-12 col-md-3 q-mb-xl">
             <q-checkbox
               class="q-mt-lg q-pt-md"
               v-model="pedido.para_cliente"
@@ -174,26 +184,30 @@
           <div v-if="pedido.para_cliente" class="col-12 col-md-3">
             <label class="q-mb-sm block">Cliente</label>
             <q-select
-            v-model="pedido.cliente"
-            :options="opciones_clientes"
-            transition-show="jump-up"
-            transition-hide="jump-up"
-            options-dense dense
-            outlined
-            use-input
-            input-debounce="0"
-            @filter="filtroClientes"
-            :option-label="(v)=>v.razon_social"
-            :option-value="(v)=>v.id"
-            emit-value
-            map-options
+              v-model="pedido.cliente"
+              :options="opciones_clientes"
+              transition-show="jump-up"
+              transition-hide="jump-up"
+              options-dense
+              dense
+              outlined
+              use-input
+              input-debounce="0"
+              @filter="filtroClientes"
+              :option-label="(v) => v.razon_social"
+              :option-value="(v) => v.id"
+              emit-value
+              map-options
             >
-
             </q-select>
           </div>
           <!-- Responsable -->
           <div
-            v-if="(esCoordinador && !pedido.para_cliente) || (esRRHH && !pedido.para_cliente) || (!esTecnico && !pedido.para_cliente) "
+            v-if="
+              (esCoordinador && !pedido.para_cliente) ||
+              (esRRHH && !pedido.para_cliente) ||
+              (!esTecnico && !pedido.para_cliente)
+            "
             class="col-12 col-md-3"
           >
             <label class="q-mb-sm block">Responsable</label>
@@ -211,7 +225,6 @@
               error-message="Debes seleccionar el responsable de los materiales"
               :error="!!v$.responsable.$errors.length"
               :disable="disabled || soloLectura"
-              :readonly="disabled || soloLectura"
               :option-label="(v) => v.nombres + ' ' + v.apellidos"
               :option-value="(v) => v.id"
               emit-value
@@ -232,7 +245,7 @@
             </q-select>
           </div>
           <!-- Retira otra persona -->
-          <div  class="col-12 col-md-3 q-mb-xl">
+          <div class="col-12 col-md-3 q-mb-xl">
             <q-checkbox
               class="q-mt-lg q-pt-md"
               v-model="pedido.retira_tercero"
@@ -260,7 +273,6 @@
               error-message="Debes seleccionar la persona que retira los materiales"
               :error="!!v$.per_retira.$errors.length"
               :disable="disabled || soloLectura"
-              :readonly="disabled || soloLectura"
               :option-label="(v) => v.nombres + ' ' + v.apellidos"
               :option-value="(v) => v.id"
               emit-value
@@ -309,7 +321,6 @@
               dense
               outlined
               :disable="disabled || soloLectura"
-              :readonly="disabled || soloLectura"
               :error="!!v$.tarea.$errors.length"
               @update:model-value="pedidoSeleccionado"
               error-message="Debe seleccionar una tarea"
@@ -343,8 +354,7 @@
               options-dense
               dense
               outlined
-              :disable="disabled || soloLectura"
-              :readonly="disabled || soloLectura"
+              disable
               :option-label="(v) => v.nombres + ' ' + v.apellidos"
               :option-value="(v) => v.id"
               emit-value
@@ -363,29 +373,12 @@
               options-dense
               dense
               outlined
-              :readonly="
-                disabled ||
-                (soloLectura &&
-                  !(
-                    esCoordinador ||
-                    esActivosFijos ||
-                    store.user.id == pedido.per_autoriza_id
-                  ))
-              "
+              :disable="disabled || store.user.id != pedido.per_autoriza_id"
               :option-value="(v) => v.id"
               :option-label="(v) => v.nombre"
               emit-value
               map-options
             >
-              <!--
-              :error="!!v$.autorizacion.$errors.length"
-              error-message="Debes seleccionar una autorizacion"
-
-              <template v-slot:error>
-                <div v-for="error of v$.autorizacion.$errors" :key="error.$uid">
-                  <div class="error-msg">{{ error.$message }}</div>
-                </div>
-              </template> -->
               <template v-slot:no-option>
                 <q-item>
                   <q-item-section class="text-grey">
@@ -442,8 +435,7 @@
               options-dense
               dense
               outlined
-              :disable="disabled || soloLectura"
-              :readonly="disabled || soloLectura"
+              disable
               :option-value="(v) => v.id"
               :option-label="(v) => v.nombre"
               emit-value
@@ -465,7 +457,10 @@
             ></q-checkbox>
           </div>
           <!-- Evidencia fotografica 1 -->
-          <div v-if="pedido.tiene_evidencia ||pedido.evidencia1" class="col-12 col-md-3">
+          <div
+            v-if="pedido.tiene_evidencia || pedido.evidencia1"
+            class="col-12 col-md-3"
+          >
             <label class="q-mb-sm block">Evidencia 1 </label>
             <selector-imagen
               file_extensiones=".jpg, image/*"
@@ -475,7 +470,10 @@
             ></selector-imagen>
           </div>
           <!-- Evidencia fotografica 2 -->
-          <div v-if="pedido.tiene_evidencia ||pedido.evidencia2" class="col-12 col-md-3">
+          <div
+            v-if="pedido.tiene_evidencia || pedido.evidencia2"
+            class="col-12 col-md-3"
+          >
             <label class="q-mb-sm block">Evidencia 2</label>
             <selector-imagen
               file_extensiones=".jpg, image/*"
@@ -495,11 +493,42 @@
               v-model="pedido.observacion_est"
               placeholder="Opcional"
               :disable="disabled || (soloLectura && !esCoordinador)"
-              :readonly="disabled || (soloLectura && !esCoordinador)"
               outlined
               dense
             >
             </q-input>
+          </div>
+          <!-- observacion bodega -->
+          <div v-if="pedido.observacion_bodega" class="col-12 col-md-3">
+            <label class="q-mb-sm block">Observacion del bodeguero</label>
+            <q-input
+              autogrow
+              v-model="pedido.observacion_bodega"
+              disable
+              outlined
+              dense
+            >
+            </q-input>
+          </div>
+          <!-- estado orden compra -->
+          <div v-if="pedido.estado_orden_compra" class="col-12 col-md-3">
+            <label class="q-mb-sm block">Estado Orden de Compra</label>
+            <q-input
+              autogrow
+              v-model="pedido.estado_orden_compra"
+              disable
+              outlined
+              dense
+            >
+            </q-input>
+          </div>
+          <!-- Configuracion de opciones para que puedan seleccionar los detalles en el listado -->
+          <div class="col-12 col-md-12" v-if="accion == acciones.nuevo">
+            <q-option-group
+              v-model="group"
+              :options="options_groups"
+              color="primary"
+            />
           </div>
           <!-- Configuracion para seleccionar productos -->
           <!-- Selector de productos -->
@@ -514,8 +543,11 @@
                   hint="Presiona Enter para seleccionar un producto"
                   @keydown.enter="
                     listarProductos({
+                      tipo_busqueda: group,
+                      search: criterioBusquedaProducto,
                       sucursal_id: pedido.sucursal,
-                      cliente_id: pedido.cliente,
+                      cliente_id: pedido.cliente || pedido.cliente_id,
+                      stock: true,
                     })
                   "
                   @blur="
@@ -530,8 +562,11 @@
                 <q-btn
                   @click="
                     listarProductos({
+                      tipo_busqueda: group,
+                      search: criterioBusquedaProducto,
                       sucursal_id: pedido.sucursal,
-                      cliente_id: pedido.cliente,
+                      cliente_id: pedido.cliente || pedido.cliente_id,
+                      stock: true,
                     })
                   "
                   icon="search"
@@ -563,6 +598,8 @@
               :mostrarBotones="false"
               :accion1="botonEditarCantidad"
               :accion2="botonEliminar"
+              :ajustarCeldas="true"
+              :altoFijo="false"
             >
               <template v-slot:body="props">
                 <q-tr :props="props" @click="onRowClick(props.row)">
@@ -587,6 +624,6 @@
     </template>
   </tab-layout-filter-tabs>
   <!-- Modales -->
-  <!-- <modales-entidad :comportamiento="modales"></modales-entidad> -->
+  <modales-entidad :comportamiento="modales"></modales-entidad>
 </template>
 <script src="./PedidoPage.ts"></script>

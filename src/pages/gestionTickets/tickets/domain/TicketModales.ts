@@ -7,11 +7,13 @@ import ReagendarTicketPage from 'tickets/modules/reagendarTicket/ReagendarTicket
 import SeguimientoTicketPage from 'tickets/modules/seguimientosTickets/view/SeguimientoTicketPage.vue'
 import DetalleTicketAsignadoPage from 'ticketsAsignados/modules/detalleTicketAsignado/view/DetalleTicketAsignadoPage.vue'
 import CalificarTicketPage from 'pages/gestionTickets/tickets/modules/calificarTicket/CalificarTicketPage.vue'
+import DetalleCompletoTicket from 'pages/gestionTickets/dashboardTickets/view/DetalleCompletoTicket.vue'
 export class TicketModales {
   ReagendarTicketPage: ComponenteModal
   SeguimientoTicketPage: ComponenteModal
   DetalleTicketAsignadoPage: ComponenteModal
   CalificarTicketPage: ComponenteModal
+  DetalleCompletoTicket: ComponenteModal
 
   constructor() {
     this.ReagendarTicketPage = markRaw(new ComponenteModal('Cambiar responsable', ReagendarTicketPage))
@@ -25,5 +27,7 @@ export class TicketModales {
     )
 
     this.CalificarTicketPage = markRaw(new ComponenteModal('Calificar ticket', CalificarTicketPage))
+
+    this.DetalleCompletoTicket = markRaw(new ComponenteModal('Detalle ticket', DetalleCompletoTicket))
   }
 }
