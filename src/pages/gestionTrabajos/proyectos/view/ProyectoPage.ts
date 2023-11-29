@@ -31,6 +31,7 @@ import { HttpResponseDelete, ResponseData } from 'shared/http/domain/HttpRespons
 import { ResponseItem } from 'shared/controller/domain/ResponseItem'
 import { CustomActionPrompt } from 'components/tables/domain/CustomActionPrompt'
 import { CambiarEstadoEtapa } from '../modules/etapas/application/CambiarEstadoEtapa'
+import { useEtapaStore } from 'stores/tareas/etapa'
 
 export default defineComponent({
   components: {
@@ -51,6 +52,7 @@ export default defineComponent({
     const { confirmar, prompt, notificarCorrecto, notificarError } = useNotificaciones()
 
     const store = useAuthenticationStore()
+    const etapaStore = useEtapaStore()
     const modales = new ComportamientoModalesProyectos()
 
     const tieneEtapa = ref(false)
@@ -178,14 +180,14 @@ export default defineComponent({
       })
     }
 
-    async function eliminarEtapa({ entidad, posicion }) {
-      confirmar('¿Está seguro de continuar?', async () => {
-        // const response:ResponseItem<Etapa, HttpResponseDelete<Etapa>> = await new EtapaController().eliminar(entidad.id)
-        const response = await new EtapaController().eliminar(entidad.id)
-        notificarCorrecto(response.response.data.mensaje)
-        proyecto.etapas.splice(posicion, 1)
-      })
-    }
+    // async function eliminarEtapa({ entidad, posicion }) {
+    //   confirmar('¿Está seguro de continuar?', async () => {
+    //     // const response:ResponseItem<Etapa, HttpResponseDelete<Etapa>> = await new EtapaController().eliminar(entidad.id)
+    //     const response = await new EtapaController().eliminar(entidad.id)
+    //     notificarCorrecto(response.response.data.mensaje)
+    //     proyecto.etapas.splice(posicion, 1)
+    //   })
+    // }
     /****************************
      * Botones de tablas
      ***************************/
@@ -199,20 +201,31 @@ export default defineComponent({
       },
       visible: () => accion.value === acciones.nuevo || accion.value === acciones.editar
     }
-    const btnEliminar: CustomActionTable = {
-      titulo: 'Eliminar',
-      color: 'negative',
-      icono: 'bi-trash',
-      tooltip: 'Eliminar la etapa',
-      accion: ({ entidad, posicion }) => {
-        console.log('Diste clic  en eliminar, se eliminará la etapa')
-        eliminarEtapa({ entidad, posicion })
+    // const btnEliminar: CustomActionTable = {
+    //   titulo: 'Eliminar',
+    //   color: 'negative',
+    //   icono: 'bi-trash',
+    //   tooltip: 'Eliminar la etapa',
+    //   accion: ({ entidad, posicion }) => {
+    //     console.log('Diste clic  en eliminar, se eliminará la etapa')
+    //     eliminarEtapa({ entidad, posicion })
+    //   }
+    // }
+    const btnEditar: CustomActionTable = {
+      titulo: 'Editar',
+      color:'secondary',
+      tooltip: 'Editar una etapa',
+      icono: 'bi-pencil-square',
+      accion: ({entidad, posicion})=>{
+        etapaStore.idEtapa = entidad.id
+        modales.abrirModalEntidad('EditarEtapaPage')
       }
+
     }
     const btnDesactivar: CustomActionTable = {
       titulo: 'Desactivar',
       icono: 'bi-toggle2-off',
-      color: 'negative',
+      color: 'pink-6',
       tooltip: 'Desactivar proveedor',
       accion: ({ entidad, posicion }) => {
         confirmar('¿Está seguro de desactivar la etapa?', () => {
@@ -225,23 +238,39 @@ export default defineComponent({
                 notificarCorrecto('Etapa anulada exitosamente!')
                 proyecto.etapas.splice(posicion, 1, result)
               } catch (error: any) {
-
+                console.log(error+'')
               }
             }
           }
           prompt(data)
         })
-        console.log('Diste clic  en desactivar etapa')
-      }
+      },
+      visible: ({entidad}) => entidad.activo
     }
     const btnActivar: CustomActionTable = {
       titulo: 'Activar',
       icono: 'bi-toggle2-off',
       color: 'positive',
       tooltip: 'Activar proveedor',
-      accion: () => {
-        console.log('Diste clic en activar proveedor')
-      }
+      accion: ({entidad, posicion}) => {
+        confirmar('¿Está seguro de activar la etapa?', () => {
+          const data: CustomActionPrompt = {
+            titulo: 'Motivo',
+            mensaje: 'Ingresa el motivo por que vas a activar la etapa',
+            accion: async (data) => {
+              try {
+                const { result, } = await new CambiarEstadoEtapa().desactivar(entidad.id, data)
+                notificarCorrecto('Etapa anulada exitosamente!')
+                proyecto.etapas.splice(posicion, 1, result)
+              } catch (error: any) {
+                console.log(error+'')
+              }
+            }
+          }
+          prompt(data)
+        })
+      },
+      visible: ({entidad}) => !entidad.activo
     }
 
 
@@ -276,7 +305,8 @@ export default defineComponent({
 
       //botones de tabla
       addNuevaEtapa,
-      btnEliminar,
+      btnEditar,
+      // btnEliminar,
       btnDesactivar,
       btnActivar,
     }
