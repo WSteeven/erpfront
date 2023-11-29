@@ -18,8 +18,8 @@ export const configuracionColumnasEtapa: ColumnConfig<Etapa>[] = [
     sortable: true,
   },
   {
-    name: 'nombre_responsable',
-    field: 'nombre_responsable',
+    name: 'responsable',
+    field: 'responsable',
     label: 'Responsable',
     align: 'left',
     sortable: true,

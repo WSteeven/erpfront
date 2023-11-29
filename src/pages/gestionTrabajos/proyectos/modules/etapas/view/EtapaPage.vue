@@ -8,12 +8,13 @@
       <q-form @submit.prevent>
         <div class="row q-col-gutter-sm q-py-md">
           <!-- Proyecto -->
-          <div class="col-12 col-md-6">
+          <div class="col-12 col-md-3">
             <label class="q-mb-sm block">Proyecto</label>
             <q-select
               v-model="etapa.proyecto"
               :options="proyectos"
               @filter="filtrarProyectos"
+              @update:model-value="actualizarResponsable"
               :disable="disabled"
               transition-show="scale"
               transition-hide="scale"
@@ -46,7 +47,7 @@
           </div>
 
           <!-- Responsable -->
-          <div class="col-12 col-md-6">
+          <div class="col-12 col-md-3">
             <label class="q-mb-sm block">Responsable</label>
             <q-select
               v-model="etapa.responsable"
@@ -82,6 +83,36 @@
                 </div>
               </template>
             </q-select>
+          </div>
+
+          <!-- Nombre de la etapa -->
+          <div class="col-12 col-md-3">
+            <label class="q-mb-sm block">Nombre</label>
+            <q-input
+              v-model="etapa.nombre"
+              :error="!!v$.nombre.$errors.length"
+              @blur="v$.nombre.$touch"
+              placeholder="Obligatorio"
+              :disable="disabled"
+              outlined
+              dense
+            >
+              <template v-slot:error>
+                <div v-for="error of v$.nombre.$errors" :key="error.$uid">
+                  <div class="error-msg">{{ error.$message }}</div>
+                </div>
+              </template>
+            </q-input>
+          </div>
+
+          <div class="col-12 col-md-3">
+            <br />
+            <q-toggle
+              v-model="etapa.activo"
+              checked-icon="check"
+              color="positive"
+              label="Activo"
+            />
           </div>
         </div>
       </q-form></template

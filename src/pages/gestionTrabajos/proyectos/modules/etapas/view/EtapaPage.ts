@@ -22,10 +22,11 @@ import useVuelidate from "@vuelidate/core";
 
 export default defineComponent({
   components: { TabLayout, EssentialTable },
-  setup() {
+  setup(props, {emit}) {
     const mixin = new ContenedorSimpleMixin(Etapa, new EtapaController())
     const { entidad: etapa, disabled, accion, listadosAuxiliares } = mixin.useReferencias()
     const { cargarVista, obtenerListados, setValidador } = mixin.useComportamiento()
+    const {onGuardado} = mixin.useHooks()
 
     cargarVista(async () => {
       await obtenerListados({
@@ -39,20 +40,38 @@ export default defineComponent({
       proyectos.value = listadosAuxiliares.proyectos
     })
 
-    const reglas ={
-      nombre:{required},
-      proyecto:{required},
-      responsable: {required},
+    const reglas = {
+      nombre: { required },
+      proyecto: { required },
+      responsable: { required },
     }
     const v$ = useVuelidate(reglas, etapa)
 
-    const {empleados, filtrarEmpleados, ordenarEmpleados} = useFiltrosListadosSelects(listadosAuxiliares)
-    const {proyectos, filtrarProyectos} = useFiltrosListadosTarea(listadosAuxiliares)
+    /********
+     * Hooks
+     ********/
+    onGuardado(() => {
+      emit('cerrar-modal', false)
+      emit('guardado', 'Etapa')
+    })
+
+    /***************************
+     * Funciones
+     ***************************/
+    function actualizarResponsable() {
+      const proyectoSeleccionado = proyectos.value.filter((v) => v.id === etapa.proyecto)
+      etapa.responsable = proyectoSeleccionado[0].coordinador_id ? proyectoSeleccionado[0].coordinador_id : null
+    }
+
+    const { empleados, filtrarEmpleados, ordenarEmpleados } = useFiltrosListadosSelects(listadosAuxiliares)
+    const { proyectos, filtrarProyectos } = useFiltrosListadosTarea(listadosAuxiliares)
 
     return {
       mixin, etapa, disabled, accion, v$,
       configuracionColumnas: configuracionColumnasEtapa,
-      
+
+      //funciones
+      actualizarResponsable,
 
 
       //listados

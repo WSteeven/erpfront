@@ -305,15 +305,15 @@
               :accion1Header="addNuevaEtapa"
               :permitirBuscar="false"
               :permitirConsultar="false"
-              :permitirEditar="true"
-              :permitirEliminar="true"
+              :permitirEditar="false"
+              :permitirEliminar="false"
               :mostrarBotones="false"
               :mostrarCantidadElementos="false"
               :permitirEditarModal="true"
               :modalMaximized="false"
               :alto-fijo="false"
               :mostrarFooter="false"
-              :accion1="btnGuardar"
+              :accion1="btnEliminar"
               :accion2="btnDesactivar"
               :accion3="btnActivar"
             ></essential-table>
@@ -324,6 +324,7 @@
   </tab-layout>
   <modales-entidad
     :comportamiento="modales"
+    :persistente="false"
     @guardado="(data) => guardado(data)"
   ></modales-entidad>
 </template>
