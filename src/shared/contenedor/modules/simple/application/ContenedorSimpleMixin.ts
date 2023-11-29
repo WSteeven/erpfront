@@ -179,7 +179,6 @@ export class ContenedorSimpleMixin<T extends EntidadAuditable> extends Contenedo
       // return console.log('No se ha efectuado ningun cambio')
     }
 
-    this.hooks.onBeforeGuardar()
 
     if (this.refs.validador.value && !(await this.refs.validador.value.$validate()) || !(await this.ejecutarValidaciones())) {
       this.notificaciones.notificarAdvertencia('Verifique el formulario')
@@ -187,6 +186,7 @@ export class ContenedorSimpleMixin<T extends EntidadAuditable> extends Contenedo
       // return console.log('Verifique el formulario')
     }
 
+    this.hooks.onBeforeGuardar()
 
     //return this.cargarVista(async (): Promise<any> => {
     this.statusEssentialLoading.activar()

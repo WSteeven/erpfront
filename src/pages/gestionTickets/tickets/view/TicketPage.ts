@@ -309,14 +309,20 @@ export default defineComponent({
     /*********
      * Hooks
      *********/
+    /* if (!ticket.ticket_interno) {
+      ticket.responsable = listadosAuxiliares.departamentos?.filter((departamento: any) => ticket.departamento_responsable.includes(departamento.id)).map((departamento: any) => departamento.responsable_id)
+    } */
+
+    function ajustarResponsablesInterno() {
+      if (!ticket.ticket_interno && !ticket.ticket_para_mi) {
+        ticket.responsable = listadosAuxiliares.departamentos?.filter((departamento: any) => ticket.departamento_responsable.includes(departamento.id)).map((departamento: any) => departamento.responsable_id)
+      }
+    }
+
     onBeforeGuardar(() => {
       if (fechaLimite.value) {
         horaLimite.value = ticket.establecer_hora_limite ? horaLimite.value : '23:59:59'
         ticket.fecha_hora_limite = formatearFechaHora(fechaLimite.value, horaLimite.value)
-      }
-
-      if (!ticket.ticket_interno) {
-        ticket.responsable = listadosAuxiliares.departamentos?.filter((departamento: any) => ticket.departamento_responsable.includes(departamento.id)).map((departamento: any) => departamento.responsable_id)
       }
     })
 
@@ -411,6 +417,7 @@ export default defineComponent({
       responsableDeshabilitado,
       toggleTicketParaMi,
       responsables,
+      ajustarResponsablesInterno,
     }
   },
 })

@@ -1,6 +1,9 @@
 <template>
   <div class="q-pa-sm">
-    <div class="text-primary text-center q-mb-md">
+    <div
+      v-if="subtarea.codigo_subtarea"
+      class="text-primary text-center q-mb-md"
+    >
       {{ 'Subtarea ' + subtarea.codigo_subtarea }}
     </div>
     <q-expansion-item
