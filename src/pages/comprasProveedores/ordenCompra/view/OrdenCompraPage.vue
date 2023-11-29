@@ -603,7 +603,6 @@
                     store.esCompras) &&
                   (orden.autorizacion == 1 || store.esCompras))"
               :permitirEliminar="false"
-              :mostrarBotones="false"
               :altoFijo="false"
               :accion1="btnEliminarFila"
               @guardarFila="(fila) => guardarFilaEditada(fila)"
