@@ -479,6 +479,7 @@ export default defineComponent({
               // trabajoAsignadoStore.idEmergencia = entidad.seguimiento
               // trabajoAsignadoStore.codigoSubtarea = entidad.codigo_subtarea
 
+              // entidad.estado = estadosTrabajos.FINALIZADO
               trabajoAsignadoStore.subtarea = entidad
 
               modalesSubtarea.abrirModalEntidad('SeguimientoSubtareaPage')

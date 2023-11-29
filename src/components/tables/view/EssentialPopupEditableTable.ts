@@ -13,9 +13,10 @@ import CustomButtons from './CustomButtonsTable.vue'
 import BotonesPaginacion from './BotonesPaginacion.vue'
 import EditarTablaModal from './EditarTablaModal.vue'
 import SelectorImagen from 'components/SelectorImagen.vue'
+import TableFilters from './TableFilters2.vue'
 
 export default defineComponent({
-  components: { CustomButtons, BotonesPaginacion, EditarTablaModal, SelectorImagen },
+  components: { CustomButtons, BotonesPaginacion, EditarTablaModal, SelectorImagen, TableFilters },
   props: {
     configuracionColumnas: {
       type: Object as () => ColumnConfig<EntidadAuditable>[],

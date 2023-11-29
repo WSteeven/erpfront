@@ -6,6 +6,7 @@ import { defineComponent, ref } from 'vue'
 
 //Componentes
 import TabLayout from 'shared/contenedor/modules/simple/view/TabLayout.vue'
+import ModalesEntidad from "components/modales/view/ModalEntidad.vue"
 
 //Logica y controladores
 import { ContenedorSimpleMixin } from 'shared/contenedor/modules/simple/application/ContenedorSimpleMixin'
@@ -16,22 +17,22 @@ import { ControlStock } from '../domain/ControlStock'
 import { ClienteController } from 'pages/sistema/clientes/infraestructure/ClienteController'
 import { ProductoController } from 'pages/bodega/productos/infraestructure/ProductoController'
 import { Sucursal } from 'pages/administracion/sucursales/domain/Sucursal'
+import { CustomActionTable } from 'components/tables/domain/CustomActionTable'
+import { useNotificaciones } from 'shared/notificaciones'
+import { useControlStockStore } from 'stores/bodega/controlStock'
+
 
 export default defineComponent({
-  components: { TabLayout },
+  components: { TabLayout, ModalesEntidad },
   setup() {
     const mixin = new ContenedorSimpleMixin(ControlStock, new ControlStockController())
-    const { entidad: stock, disabled, listadosAuxiliares } = mixin.useReferencias()
-    const { setValidador, obtenerListados, cargarVista } = mixin.useComportamiento()
+    const { entidad: stock, disabled, listadosAuxiliares, } = mixin.useReferencias()
+    const { setValidador, obtenerListados, cargarVista, listar } = mixin.useComportamiento()
+    const { confirmar, prompt, notificarCorrecto, notificarError } = useNotificaciones()
 
-    const reglas = {
-      sucursal_id: { required },
-      detalle_id: { required },
-      cliente_id: { required },
-    }
 
-    const v$ = useVuelidate(reglas, stock)
-    setValidador(v$.value)
+    //stores
+    const controlStore = useControlStockStore()
 
     const opciones_sucursales = ref([])
     const opciones_productos = ref([])
@@ -62,6 +63,41 @@ export default defineComponent({
         },
       })
     })
+
+    const reglas = {
+      sucursal_id: { required },
+      detalle_id: { required },
+      cliente_id: { required },
+    }
+
+    const v$ = useVuelidate(reglas, stock)
+    setValidador(v$.value)
+
+    /***************************
+     * BOTONES DE TABLAS
+     ***************************/
+    const btnActualizarStock: CustomActionTable = {
+      titulo: 'Actualizar',
+      tooltip: 'Actualizar listado',
+      icono: 'bi-arrow-clockwise',
+      accion: () => {
+        listar()
+      }
+    }
+
+    // const btnConsolidarPreordenes: CustomActionTable = {
+    //   titulo: 'Consolidar',
+    //   tooltip: 'Consolida varias preordenes en una sola preorden de compra',
+    //   icono: 'bi-box-arrow-in-down',
+    //   accion: async () => {
+    //     confirmar('¿Está seguro de consolidar preordenes de compras?', async () => {
+    //       confirmar('Esto anular las preordenes existentes y creará nuevas preordenes con la sumatoria de los items encontrados. ¿Desea continuar?', async () => {
+    //         await controlStore.consolidarItems()
+    //         await modales.abrirModalEntidad('ConsolidarItemsPage')
+    //       })
+    //     })
+    //   }, visible: () => true
+    // }
 
     const opciones_estados = [{
       'nombre': 'SUFICIENTE', 'valor': 'STOCK SUFICIENTE',
@@ -126,6 +162,9 @@ export default defineComponent({
           opciones_sucursales.value = listadosAuxiliares.sucursales.filter((v: Sucursal) => v.lugar!.toLowerCase().indexOf(needle) > -1)
         })
       },
+
+      //botones de tabla
+      btnActualizarStock,
     }
   }
 })

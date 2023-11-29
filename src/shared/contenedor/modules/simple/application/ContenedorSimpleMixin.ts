@@ -60,7 +60,7 @@ export class ContenedorSimpleMixin<T extends EntidadAuditable> extends Contenedo
     return {
       onBeforeGuardar: (callback: () => void) =>
         this.hooks.bindHook('onBeforeGuardar', callback),
-      onGuardado: (callback: (id?: number, response_data?:any) => void) =>
+      onGuardado: (callback: (id?: number, response_data?: any) => void) =>
         this.hooks.bindHook('onGuardado', callback),
       onBeforeConsultar: (callback: () => void) =>
         this.hooks.bindHook('onBeforeConsultar', callback),
@@ -179,6 +179,7 @@ export class ContenedorSimpleMixin<T extends EntidadAuditable> extends Contenedo
       // return console.log('No se ha efectuado ningun cambio')
     }
 
+    this.hooks.onBeforeGuardar()
 
     if (this.refs.validador.value && !(await this.refs.validador.value.$validate()) || !(await this.ejecutarValidaciones())) {
       this.notificaciones.notificarAdvertencia('Verifique el formulario')
@@ -186,7 +187,6 @@ export class ContenedorSimpleMixin<T extends EntidadAuditable> extends Contenedo
       // return console.log('Verifique el formulario')
     }
 
-    this.hooks.onBeforeGuardar()
 
     //return this.cargarVista(async (): Promise<any> => {
     this.statusEssentialLoading.activar()
@@ -209,7 +209,7 @@ export class ContenedorSimpleMixin<T extends EntidadAuditable> extends Contenedo
       // console.log(this.entidad)
       // console.log(copiaEntidad)
       this.reestablecer()
-      this.hooks.onGuardado(copiaEntidad.id,response.data )
+      this.hooks.onGuardado(copiaEntidad.id, response.data)
       return copiaEntidad
       /* const stop = watchEffect(() => {
         // console.log('dentrode  watch')
@@ -278,11 +278,11 @@ export class ContenedorSimpleMixin<T extends EntidadAuditable> extends Contenedo
    * @param params
    * @returns
    */
-  private async guardarArchivos(id:number, data: T, params?: ParamsType): Promise<any> {
+  private async guardarArchivos(id: number, data: T, params?: ParamsType): Promise<any> {
 
     this.statusEssentialLoading.activar()
     try {
-      const { response } = await this.controller.guardarFiles(id,data)
+      const { response } = await this.controller.guardarFiles(id, data)
 
       this.notificaciones.notificarCorrecto(response.data.mensaje)
       // this.agregarElementoListadoArchivosActual(response.data.modelo)
