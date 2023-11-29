@@ -97,7 +97,7 @@ export default defineComponent({
 
     cargarVista(async () => {
       await obtenerListados({
-        empleados: [],
+        // empleados: [],
         departamentos: new DepartamentoController(),
         categoriasTiposTickets: new CategoriaTipoTicketController(),
         tiposTickets: {
@@ -127,8 +127,22 @@ export default defineComponent({
     const tabActual = ref()
     const departamentoDeshabilitado = ref(false)
     const responsableDeshabilitado = ref(false)
+
+    /************
+    * Computeds
+    *************/
+    const responsables = computed(() => {
+      const responsables = listadosAuxiliares.departamentos?.filter((departamento: any) => ticket.departamento_responsable.includes(departamento.id))
+      return responsables?.map((departamento: any) => {
+        return {
+          empleado: departamento.responsable,
+          departamento: departamento.nombre,
+        }
+      })
+    })
+
     const filtroResponsableDepartamento = computed(() => { return { departamento_id: ticket.departamento_responsable, es_responsable_departamento: true } })
-    const filtroDepartamento = computed(() => { return { departamento_id: ticket.departamento_responsable } })
+    const filtroDepartamento = computed(() => { return { departamento_id: ticket.departamento_responsable[0] } })
 
     const categoriasTiposTickets = computed(() => listadosAuxiliares.categoriasTiposTickets.filter((categoria: CategoriaTipoTicket) => categoria.departamento_id === ticket.departamento_responsable[0]))
     const tiposTickets = computed(() => listadosAuxiliares.tiposTickets.filter((tipo: TipoTicket) => tipo.categoria_tipo_ticket_id === ticket.categoria_tipo_ticket))
@@ -143,7 +157,7 @@ export default defineComponent({
       categoria_tipo_ticket: { required },
       descripcion: { required },
       prioridad: { required },
-      // responsable: { required },
+      responsable: { required },
       departamento_responsable: { required },
     }
 
@@ -174,11 +188,11 @@ export default defineComponent({
       empleados,
     } = useFiltrosListadosTickets(listadosAuxiliares)
 
-    watchEffect(() => {
+    /* watchEffect(() => {
       if (listadosAuxiliares.empleados.length && ticket.ticket_interno) {
         listadosAuxiliares.empleados = listadosAuxiliares.empleados.filter((empleado: Empleado) => empleado.id !== authenticationStore.user.id)
       }
-    })
+    }) */
 
     /************
     * Funciones
@@ -187,29 +201,29 @@ export default defineComponent({
 
     async function toggleTicketInterno() {
       if (ticket.ticket_interno) {
-        ticket.responsable = null
+        ticket.responsable = []
         departamentoDeshabilitado.value = true
         responsableDeshabilitado.value = false
         ticket.ticket_para_mi = false
-        ticket.departamento_responsable = authenticationStore.user.departamento
+        ticket.departamento_responsable = [authenticationStore.user.departamento]
         await obtenerResponsables(filtroDepartamento.value)
       } else {
         departamentoDeshabilitado.value = false
         listadosAuxiliares.empleados = []
         empleados.value = []
         ticket.departamento_responsable = []
-        ticket.responsable = null
+        ticket.responsable = []
       }
     }
 
     function toggleTicketParaMi() {
       if (ticket.ticket_para_mi) {
-        ticket.responsable = authenticationStore.user.id
-        ticket.departamento_responsable = authenticationStore.user.departamento
+        ticket.responsable = [authenticationStore.user.id]
+        ticket.departamento_responsable = [authenticationStore.user.departamento]
         obtenerResponsables(filtroDepartamento.value)
       } else {
         ticket.departamento_responsable = []
-        ticket.responsable = null
+        ticket.responsable = []
         listadosAuxiliares.empleados = []
         empleados.value = []
       }
@@ -295,6 +309,16 @@ export default defineComponent({
     /*********
      * Hooks
      *********/
+    /* if (!ticket.ticket_interno) {
+      ticket.responsable = listadosAuxiliares.departamentos?.filter((departamento: any) => ticket.departamento_responsable.includes(departamento.id)).map((departamento: any) => departamento.responsable_id)
+    } */
+
+    function ajustarResponsablesInterno() {
+      if (!ticket.ticket_interno && !ticket.ticket_para_mi) {
+        ticket.responsable = listadosAuxiliares.departamentos?.filter((departamento: any) => ticket.departamento_responsable.includes(departamento.id)).map((departamento: any) => departamento.responsable_id)
+      }
+    }
+
     onBeforeGuardar(() => {
       if (fechaLimite.value) {
         horaLimite.value = ticket.establecer_hora_limite ? horaLimite.value : '23:59:59'
@@ -308,11 +332,11 @@ export default defineComponent({
       ticket.establecer_hora_limite = !!horaLimite.value
       fechaHoraActual.value = ticket.fecha_hora_solicitud
       clearInterval(tiempoActualInterval)
-      if (ticket.departamento_responsable) {
+      /* if (ticket.departamento_responsable) {
         obtenerResponsables({
           departamento_id: ticket.departamento_responsable,
         })
-      }
+      } */
       refArchivoTicket.value.listarArchivos({ ticket_id: ticket.id })
       refArchivoTicket.value.quiero_subir_archivos = false
       obtenerPausas()
@@ -378,7 +402,7 @@ export default defineComponent({
       btnReasignar, btnSeguimiento, btnCalificarSolicitante, btnCancelar, btnAsignar,
       estadosTickets,
       modalesTicket,
-      obtenerResponsables,
+      // obtenerResponsables,
       tabActual,
       pausas,
       rechazos,
@@ -392,6 +416,8 @@ export default defineComponent({
       filtroDepartamento,
       responsableDeshabilitado,
       toggleTicketParaMi,
+      responsables,
+      ajustarResponsablesInterno,
     }
   },
 })

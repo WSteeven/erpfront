@@ -213,10 +213,10 @@ export default defineComponent({
           listar({ autorizacion_id: tab, estado_id: 1, realizada: 0, pagada: 0, solicitante_id: store.user.id })
           break
         case '3':
-          listar({ autorizacion_id: tab, solicitante_id: store.user.id })
+          listar({ autorizacion_id: tab, 'or[estado_id]':4, solicitante_id: store.user.id })
           break
         case '4':
-          listar({ realizada: 1, pagada: 0, solicitante_id: store.user.id })
+          listar({ realizada: 1, estado_id:2,  pagada: 0, solicitante_id: store.user.id })
           break
         case '5':
           listar({ realizada: 1, pagada: 1, solicitante_id: store.user.id })
@@ -225,7 +225,7 @@ export default defineComponent({
           listar({ autorizacion_id: 2, estado_id: 2, realizada: 0, pagada: 0, solicitante_id: store.user.id })
           break
         default: //si tab es 1 u 7 entra aquí
-          listar({ autorizacion_id: tab, solicitante_id: store.user.id })
+          listar({ autorizacion_id: tab, estado_id:1, solicitante_id: store.user.id })
       }
     }
     function eliminar({ posicion }) {
@@ -380,6 +380,9 @@ export default defineComponent({
       visible: ({ entidad }) => {
         if (tabSeleccionado.value == 1 || tabSeleccionado.value == 6) {
           return (entidad.autorizacion_id == 1 || entidad.autorizacion_id == 2) && (entidad.solicitante_id == store.user.id || entidad.autorizador_id == store.user.id || store.esCompras)
+        }
+        if(tabSeleccionado.value==4){
+          return store.esCompras
         }
 
         return tabSeleccionado.value == 2 && store.esCompras || tabSeleccionado.value == 2 && (entidad.solicitante_id == store.user.id || entidad.autorizador_id == store.user.id)
