@@ -313,7 +313,7 @@
               :modalMaximized="false"
               :alto-fijo="false"
               :mostrarFooter="false"
-              :accion1="btnEliminar"
+              :accion1="btnEditar"
               :accion2="btnDesactivar"
               :accion3="btnActivar"
             ></essential-table>
