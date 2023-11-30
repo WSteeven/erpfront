@@ -159,6 +159,7 @@ export default defineComponent({
       proyecto: { required: requiredIf(() => paraProyecto.value) },
       coordinador: { required: requiredIf(() => esCoordinadorBackup) },
       ruta_tarea: { required: requiredIf(() => paraClienteFinal.value && tarea.ubicacion_trabajo === ubicacionesTrabajo.ruta) },
+      etapa: { required: requiredIf(() => paraProyecto.value && !!tarea.proyecto) },
     }
 
     const v$ = useVuelidate(reglas, tarea)
@@ -260,6 +261,24 @@ export default defineComponent({
 
       if (tarea.cliente) {
         obtenerClientesFinales()
+      }
+    })
+
+    // Limpiar proyecto
+    watch(paraClienteFinal, () => {
+      if (paraClienteFinal.value) {
+        tarea.etapa = null
+        tarea.proyecto = null
+      }
+    })
+
+    // Limpiar cliente final y mantenimiento
+    watch(paraProyecto, () => {
+      if (paraProyecto.value) {
+        tarea.fiscalizador = null
+        tarea.fecha_solicitud = null
+        tarea.ruta_tarea = null
+        tarea.cliente_final = null
       }
     })
 

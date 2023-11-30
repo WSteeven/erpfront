@@ -294,7 +294,6 @@
                     v-model="tarea.proyecto"
                     :options="proyectos"
                     @filter="filtrarProyectos"
-                    @blur="v$.proyecto.$touch"
                     transition-show="scale"
                     transition-hide="scale"
                     hint="Obligatorio"
@@ -307,6 +306,7 @@
                     input-debounce="0"
                     emit-value
                     map-options
+                    @blur="v$.proyecto.$touch"
                     :error="!!v$.proyecto.$errors.length"
                     @update:modelValue="setCliente"
                     :disable="disabled"
@@ -365,6 +365,8 @@
                     input-debounce="0"
                     emit-value
                     map-options
+                    @blur="v$.etapa.$touch"
+                    :error="!!v$.etapa.$errors.length"
                     @update:modelValue="setCliente"
                     :disable="disabled"
                   >
@@ -374,6 +376,12 @@
                           No hay resultados
                         </q-item-section>
                       </q-item>
+                    </template>
+
+                    <template v-slot:error>
+                      <div v-for="error of v$.etapa.$errors" :key="error.$uid">
+                        <div class="error-msg">{{ error.$message }}</div>
+                      </div>
                     </template>
                   </q-select>
                 </div>
