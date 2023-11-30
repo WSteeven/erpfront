@@ -204,7 +204,7 @@ export default defineComponent({
     //   return parametro
     // }
     function filtrarOrdenes(tab: string) {
-      tabDefecto.value=tab
+      tabDefecto.value = tab
       tabSeleccionado.value = tab
       if (tab == '1' || tab == '2') puedeEditar.value = true
       else puedeEditar.value = false
@@ -213,10 +213,10 @@ export default defineComponent({
           listar({ autorizacion_id: tab, estado_id: 1, realizada: 0, pagada: 0, solicitante_id: store.user.id })
           break
         case '3':
-          listar({ autorizacion_id: tab, 'or[estado_id]':4, solicitante_id: store.user.id })
+          listar({ autorizacion_id: tab, 'or[estado_id]': 4, solicitante_id: store.user.id })
           break
         case '4':
-          listar({ realizada: 1, estado_id:2,  pagada: 0, solicitante_id: store.user.id })
+          listar({ realizada: 1, estado_id: 2, pagada: 0, solicitante_id: store.user.id })
           break
         case '5':
           listar({ realizada: 1, pagada: 1, solicitante_id: store.user.id })
@@ -225,7 +225,7 @@ export default defineComponent({
           listar({ autorizacion_id: 2, estado_id: 2, realizada: 0, pagada: 0, solicitante_id: store.user.id })
           break
         default: //si tab es 1 u 7 entra aquí
-          listar({ autorizacion_id: tab, estado_id:1, solicitante_id: store.user.id })
+          listar({ autorizacion_id: tab, estado_id: 1, solicitante_id: store.user.id })
       }
     }
     function eliminar({ posicion }) {
@@ -350,7 +350,7 @@ export default defineComponent({
         ordenCompraStore.idOrden = entidad.id
         await ordenCompraStore.imprimirPdf()
       },
-      visible: () => tabSeleccionado.value > 2 ? true : false
+      visible: () => tabSeleccionado.value >= 2 ? true : false
     }
     const btnAnularOrden: CustomActionTable = {
       titulo: 'Anular',
@@ -381,7 +381,7 @@ export default defineComponent({
         if (tabSeleccionado.value == 1 || tabSeleccionado.value == 6) {
           return (entidad.autorizacion_id == 1 || entidad.autorizacion_id == 2) && (entidad.solicitante_id == store.user.id || entidad.autorizador_id == store.user.id || store.esCompras)
         }
-        if(tabSeleccionado.value==4){
+        if (tabSeleccionado.value == 4) {
           return store.esCompras
         }
 
@@ -414,7 +414,7 @@ export default defineComponent({
         ordenCompraStore.idOrden = entidad.id
         await ordenCompraStore.enviarPdf()
       },
-      visible: ({ entidad }) => entidad.estado_id === 2 && tabSeleccionado.value == 6
+      visible: ({ entidad }) => tabSeleccionado.value == 2 || (entidad.estado_id === 2 && tabSeleccionado.value == 6)
     }
     const btnMarcarRealizada: CustomActionTable = {
       titulo: 'Realizada',
@@ -450,10 +450,10 @@ export default defineComponent({
     }
 
     const btnEditarRegistro: CustomActionTable = {
-      titulo: '',
+      titulo: 'Editar',
       icono: 'bi-pencil-square',
       color: 'secondary',
-      tooltip: 'Editar',
+      tooltip: 'Editar Orden de Compra',
       accion: ({ entidad }) => {
         console.log('diste clic en editar')
         accion.value = acciones.editar

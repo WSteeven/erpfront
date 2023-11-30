@@ -98,6 +98,7 @@
                 map-options
                 use-chips
                 multiple
+                @update:model-value="ajustarResponsablesInterno()"
                 :error="!!v$.departamento_responsable.$errors.length"
                 @blur="v$.departamento_responsable.$touch"
               >
@@ -122,7 +123,11 @@
 
             <!-- Responsable -->
             <div
-              v-if="!ticket.ticket_interno && responsables.length"
+              v-if="
+                !ticket.ticket_interno &&
+                !ticket.ticket_para_mi &&
+                responsables.length
+              "
               class="col-12 col-md-6"
             >
               <label class="q-mb-sm block">Responsable(s)</label>
@@ -139,7 +144,10 @@
               </div>
             </div>
 
-            <div v-if="ticket.ticket_interno" class="col-12 col-md-6">
+            <div
+              v-if="ticket.ticket_interno || ticket.ticket_para_mi"
+              class="col-12 col-md-6"
+            >
               <label class="q-mb-sm block">Responsable(s)</label>
               <q-select
                 v-model="ticket.responsable"
