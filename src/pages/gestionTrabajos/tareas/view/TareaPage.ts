@@ -52,6 +52,7 @@ import { useCargandoStore } from 'stores/cargando'
 import { useQuasar } from 'quasar'
 import { CausaIntervencionController } from 'pages/gestionTrabajos/causasIntervenciones/infraestructure/CausaIntervencionController'
 import { convertirNumeroPositivo } from 'shared/utils'
+import { EtapaController } from 'pages/gestionTrabajos/proyectos/modules/etapas/infraestructure/EtapaController'
 
 export default defineComponent({
   components: {
@@ -93,18 +94,21 @@ export default defineComponent({
 
     cargarVista(async () => {
       await obtenerListados({
-        clientes: new ClienteController(),
+        clientes: {
+          controller: new ClienteController(),
+          params: { campos: 'id,razon_social' },
+        },
         proyectos: {
           controller: new ProyectoController(),
           params: { campos: 'id,nombre,codigo_proyecto', finalizado: 0, coordinador_id: authenticationStore.esJefeTecnico ? null : authenticationStore.user.id },
         },
         fiscalizadores: {
           controller: new EmpleadoController(),
-          params: { rol: rolesSistema.fiscalizador },
+          params: { rol: rolesSistema.fiscalizador, campos: 'id,nombres,apellidos' },
         },
         coordinadores: {
           controller: new EmpleadoController(),
-          params: { rol: rolesSistema.coordinador },
+          params: { rol: rolesSistema.coordinador, campos: 'id,nombres,apellidos' },
         },
         rutas: {
           controller: new RutaTareaController(),
@@ -143,6 +147,8 @@ export default defineComponent({
     const { btnFinalizarTarea, mostrarSolicitarImagen, imagenSubida, btnVerImagenInforme, refVisorImagen } = useBotonesTablaTarea(mixin)
     const { btnIniciar, btnPausar, btnReanudar, btnRealizar, btnReagendar, btnCancelar, btnFinalizar, btnSeguimiento, btnSuspender, setFiltrarTrabajoAsignado } = useBotonesTablaSubtarea(subtareas, modalesSubtarea, listadosAuxiliares)
     setFiltrarTrabajoAsignado(filtrarSubtareas)
+
+    const proyectoController = new ProyectoController()
 
     /*************
     * Validaciones
@@ -184,6 +190,8 @@ export default defineComponent({
       filtrarEmpleados,
       rutas,
       filtrarRutas,
+      etapas,
+      filtrarEtapas,
     } = useFiltrosListadosTarea(listadosAuxiliares, tarea)
 
     /************
@@ -205,14 +213,14 @@ export default defineComponent({
 
     async function establecerCliente() {
       tareaStore.tarea.cliente = tarea.cliente
-      tarea.tipo_trabajo = null
-      await obtenerRutas()
+      // tarea.tipo_trabajo = null
+      // await obtenerRutas()
     }
 
     async function guardado(paginaModal: keyof TareaModales) {
       switch (paginaModal) {
         case 'ProyectoPage':
-          const { result } = await new ProyectoController().listar({ campos: 'id,nombre,codigo_proyecto', finalizado: 0, coordinador_id: authenticationStore.user.id })
+          const { result } = await proyectoController.listar({ campos: 'id,nombre,codigo_proyecto', finalizado: 0, coordinador_id: authenticationStore.user.id })
           listadosAuxiliares.proyectos = result
           proyectos.value = result
           break
@@ -279,16 +287,23 @@ export default defineComponent({
       }
     })
 
-    function verificarEsVentana() {
+    /* function verificarEsVentana() {
       if (!tarea.es_ventana) tarea.hora_fin_trabajo = null
-    }
+    } */
 
     async function setCliente() {
       if (tarea.proyecto) {
-        const proyectoController = new ProyectoController()
-        const { result } = await proyectoController.consultar(tarea.proyecto)
-        tarea.cliente = result.cliente
+        const { result } = await proyectoController.consultar(tarea.proyecto, { campos: 'cliente_id' })
+        tarea.cliente = result.cliente_id
+
+        obtenerEtapasProyecto(tarea.proyecto)
       }
+    }
+
+    async function obtenerEtapasProyecto(idProyecto: number) {
+      const response = await new EtapaController().listar({ proyecto_id: idProyecto, campos: 'id,nombre' })
+      listadosAuxiliares.etapas = response.result
+      etapas.value = response.result
     }
 
     const mostrarLabelModal = computed(() => [acciones.nuevo, acciones.editar].includes(accion.value))
@@ -336,7 +351,7 @@ export default defineComponent({
       tabActual.value = estado
     }
 
-    function seleccionarGrupo(grupo_id) {
+    /* function seleccionarGrupo(grupo_id) {
       tarea.subtarea.modo_asignacion_trabajo = modosAsignacionTrabajo.por_grupo
       tarea.subtarea.grupo = grupo_id
       tarea.grupo = grupo_id
@@ -346,13 +361,13 @@ export default defineComponent({
       tarea.subtarea.modo_asignacion_trabajo = modosAsignacionTrabajo.por_empleado
       tarea.subtarea.empleado = empleado_id
       tarea.empleado = empleado_id
-    }
+    } */
 
     return {
       convertirNumeroPositivo,
       refVisorImagen,
-      seleccionarGrupo,
-      seleccionarEmpleado,
+      // seleccionarGrupo,
+      // seleccionarEmpleado,
       mixinSubtarea,
       filtrarSubtareas,
       btnIniciar,
@@ -386,6 +401,8 @@ export default defineComponent({
       filtrarFiscalizadores,
       filtrarProyectos,
       filtrarTiposTrabajos,
+      etapas,
+      filtrarEtapas,
       obtenerClienteFinal,
       fiscalizadores,
       coordinadores,
@@ -408,7 +425,7 @@ export default defineComponent({
       mediosNotificacion,
       tab,
       tabActual,
-      verificarEsVentana,
+      // verificarEsVentana,
       grupos,
       filtrarGrupos,
       empleados,
@@ -431,6 +448,7 @@ export default defineComponent({
       mostrarSolicitarImagen,
       imagenSubida,
       btnVerImagenInforme,
+      obtenerEtapasProyecto,
     }
   },
 })

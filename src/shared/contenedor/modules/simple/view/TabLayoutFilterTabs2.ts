@@ -160,7 +160,7 @@ export default defineComponent({
     // listadoCargado = true
     // }
     // const tabSeleccionado = 'TODO'
-    aplicarFiltro(props.tabDefecto)
+    if (!props.forzarListar) aplicarFiltro(props.tabDefecto)
 
     function forzarListar() {
       if (props.forzarListar) aplicarFiltro(props.tabDefecto)

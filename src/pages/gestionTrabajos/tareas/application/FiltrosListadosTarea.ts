@@ -168,6 +168,19 @@ export const useFiltrosListadosTarea = (listadosAuxiliares, entidad?: UnwrapRef<
     })
   }
 
+  // - Filtro etapas
+  const etapas = ref([])
+  function filtrarEtapas(val, update) {
+    if (val === '') update(() => etapas.value = listadosAuxiliares.etapas)
+
+    update(() => {
+      const needle = val.toLowerCase()
+      etapas.value = listadosAuxiliares.etapas.filter(
+        (v) => v.nombre.toLowerCase().indexOf(needle) > -1
+      )
+    })
+  }
+
   return {
     clientes,
     filtrarClientes,
@@ -193,5 +206,7 @@ export const useFiltrosListadosTarea = (listadosAuxiliares, entidad?: UnwrapRef<
     filtrarRutas,
     causasIntervenciones,
     filtrarCausasIntervenciones,
+    etapas,
+    filtrarEtapas,
   }
 }

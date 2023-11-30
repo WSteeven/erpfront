@@ -61,13 +61,12 @@
                 <div class="col-12">
                   <q-btn-toggle
                     v-model="tarea.para_cliente_proyecto"
-                    class="toggle-button"
+                    class="toggle-button-primary"
                     :disable="disabled"
                     spread
                     no-caps
                     rounded
-                    glossy
-                    toggle-color="positive"
+                    toggle-color="primary"
                     unelevated
                     :options="[
                       {
@@ -90,6 +89,7 @@
                     v-model="tarea.medio_notificacion"
                     :options="mediosNotificacion"
                     :disable="disabled"
+                    hint="Obligatorio"
                     options-dense
                     dense
                     outlined
@@ -297,6 +297,7 @@
                     @blur="v$.proyecto.$touch"
                     transition-show="scale"
                     transition-hide="scale"
+                    hint="Obligatorio"
                     options-dense
                     dense
                     outlined
@@ -338,6 +339,41 @@
                       >
                         <div class="error-msg">{{ error.$message }}</div>
                       </div>
+                    </template>
+                  </q-select>
+                </div>
+
+                <div
+                  v-if="tarea.proyecto && paraProyecto"
+                  class="col-12 col-md-3"
+                >
+                  <label class="q-mb-sm block">Etapa</label>
+                  <q-select
+                    v-model="tarea.etapa"
+                    :options="etapas"
+                    @filter="filtrarEtapas"
+                    transition-show="scale"
+                    transition-hide="scale"
+                    hint="Opcional"
+                    options-dense
+                    dense
+                    clearable
+                    outlined
+                    :option-label="(item) => item.nombre"
+                    :option-value="(item) => item.id"
+                    use-input
+                    input-debounce="0"
+                    emit-value
+                    map-options
+                    @update:modelValue="setCliente"
+                    :disable="disabled"
+                  >
+                    <template v-slot:no-option>
+                      <q-item>
+                        <q-item-section class="text-grey">
+                          No hay resultados
+                        </q-item-section>
+                      </q-item>
                     </template>
                   </q-select>
                 </div>
@@ -424,13 +460,12 @@
                 <div class="col-12">
                   <q-btn-toggle
                     v-model="tarea.ubicacion_trabajo"
-                    class="toggle-button"
+                    class="toggle-button-primary"
                     :disable="disabled"
                     spread
                     no-caps
                     rounded
-                    glossy
-                    toggle-color="positive"
+                    toggle-color="primary"
                     unelevated
                     :options="[
                       {
