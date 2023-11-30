@@ -6,7 +6,7 @@ import { OrdenCompra } from 'pages/comprasProveedores/ordenCompra/domain/OrdenCo
 import { defineStore } from 'pinia';
 import { AxiosHttpRepository } from 'shared/http/infraestructure/AxiosHttpRepository';
 import { useNotificaciones } from 'shared/notificaciones';
-import { imprimirArchivo, notificarMensajesError } from 'shared/utils';
+import { imprimirArchivo } from 'shared/utils';
 import { reactive, ref } from 'vue';
 
 export const useOrdenCompraStore = defineStore('ordenCompra', () => {
