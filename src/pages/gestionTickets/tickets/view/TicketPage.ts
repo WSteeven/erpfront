@@ -1,15 +1,21 @@
 // Dependencias
+import { configuracionColumnasPausas } from 'gestionTrabajos/subtareas/modules/pausasRealizadas/domain/configuracionColumnasPausas'
 import { configuracionColumnasSubtarea } from 'gestionTrabajos/subtareas/domain/configuracionColumnasSubtarea'
 import { configuracionColumnasClientes } from 'sistema/clientes/domain/configuracionColumnasClientes'
+import { configuracionColumnasTicketRechazado } from '../domain/configuracionColumnasTicketRechazado'
 import { tabOptionsEstadosTickets, tiposPrioridades, estadosTickets } from 'config/tickets.utils'
+import { StatusEssentialLoading } from 'components/loading/application/StatusEssentialLoading'
+import { AxiosHttpRepository } from 'shared/http/infraestructure/AxiosHttpRepository'
 import { configuracionColumnasTicket } from '../domain/configuracionColumnasTicket'
-import { useNotificaciones } from 'shared/notificaciones'
-import { accionesTabla, maskFecha, rolesSistema } from 'config/utils'
+import { accionesTabla, maskFecha } from 'config/utils'
+import { computed, defineComponent, ref } from 'vue'
+import { useCargandoStore } from 'stores/cargando'
 import { required } from 'shared/i18n-validators'
 import { useTareaStore } from 'stores/tarea'
-import { computed, defineComponent, ref, watchEffect } from 'vue'
 import useVuelidate from '@vuelidate/core'
 import { endpoints } from 'config/api'
+import { AxiosResponse } from 'axios'
+import { useQuasar } from 'quasar'
 
 // Componentes
 import DesignarResponsableTrabajo from 'gestionTrabajos/subtareas/modules/designarResponsableTrabajo/view/DesignarResponsableTrabajo.vue'
@@ -21,41 +27,31 @@ import TabLayoutFilterTabs2 from 'shared/contenedor/modules/simple/view/TabLayou
 import EssentialSelectableTable from 'components/tables/view/EssentialSelectableTable.vue'
 import EssentialTableTabs from 'components/tables/view/EssentialTableTabs.vue'
 import LabelAbrirModal from 'components/modales/modules/LabelAbrirModal.vue'
+import EstadosSubtareas from 'components/tables/view/EstadosSubtareas.vue'
 import EssentialTable from 'components/tables/view/EssentialTable.vue'
 import ModalesEntidad from 'components/modales/view/ModalEntidad.vue'
 import SolicitarImagen from 'shared/prompts/SolicitarImagen.vue'
 import VisorImagen from 'components/VisorImagen.vue'
-import EstadosSubtareas from 'components/tables/view/EstadosSubtareas.vue'
 
 // Logica y controladores
 import { MotivoCanceladoTicketController } from 'pages/gestionTickets/motivosCanceladosTickets/infraestructure/MotivoCanceladoTicketController'
+import { CategoriaTipoTicketController } from 'pages/gestionTickets/categoriasTiposTickets/infraestructure/CategoriaTipoTicketController'
 import { DepartamentoController } from 'pages/recursosHumanos/departamentos/infraestructure/DepartamentoController'
 import { TipoTicketController } from 'pages/gestionTickets/tiposTickets/infraestructure/TipoTicketController'
+import { CategoriaTipoTicket } from 'pages/gestionTickets/categoriasTiposTickets/domain/CategoriaTipoTicket'
 import { ContenedorSimpleMixin } from 'shared/contenedor/modules/simple/application/ContenedorSimpleMixin'
 import { Archivo } from 'pages/gestionTrabajos/subtareas/modules/gestorArchivosTrabajos/domain/Archivo'
 import { EmpleadoController } from 'recursosHumanos/empleados/infraestructure/EmpleadoController'
-import { ClienteFinalController } from 'clientesFinales/infraestructure/ClienteFinalController'
 import { ComportamientoModalesTicket } from '../application/ComportamientoModalesTicket'
 import { ArchivoTicketController } from '../infraestructure/ArchivoTicketController '
 import { useFiltrosListadosTickets } from '../application/FiltrosListadosTicket'
+import { TipoTicket } from 'pages/gestionTickets/tiposTickets/domain/TipoTicket'
 import { useBotonesTablaTicket } from '../application/BotonesTablaTicket'
 import { formatearFechaHora, obtenerFechaHoraActual } from 'shared/utils'
 import { TicketController } from '../infraestructure/TicketController'
 import { useAuthenticationStore } from 'stores/authentication'
-import { Ticket } from '../domain/Ticket'
-import { AxiosHttpRepository } from 'shared/http/infraestructure/AxiosHttpRepository'
-import { AxiosResponse } from 'axios'
-import { configuracionColumnasPausas } from 'gestionTrabajos/subtareas/modules/pausasRealizadas/domain/configuracionColumnasPausas'
-import { configuracionColumnasTicketRechazado } from '../domain/configuracionColumnasTicketRechazado'
-import { TipoTicket } from 'pages/gestionTickets/tiposTickets/domain/TipoTicket'
-import { CategoriaTipoTicketController } from 'pages/gestionTickets/categoriasTiposTickets/infraestructure/CategoriaTipoTicketController'
-import { CategoriaTipoTicket } from 'pages/gestionTickets/categoriasTiposTickets/domain/CategoriaTipoTicket'
-import { useQuasar } from 'quasar'
 import { TicketModales } from '../domain/TicketModales'
-import { useTicketStore } from 'stores/ticket'
-import { useCargandoStore } from 'stores/cargando'
-import { StatusEssentialLoading } from 'components/loading/application/StatusEssentialLoading'
-import { Empleado } from 'pages/recursosHumanos/empleados/domain/Empleado'
+import { Ticket } from '../domain/Ticket'
 
 export default defineComponent({
   components: {
@@ -81,14 +77,13 @@ export default defineComponent({
      *********/
     const tareaStore = useTareaStore()
     const authenticationStore = useAuthenticationStore()
-    const ticketStore = useTicketStore()
     useCargandoStore().setQuasar(useQuasar())
 
     /*******
      * Mixin
      *********/
     const mixin = new ContenedorSimpleMixin(Ticket, new TicketController())
-    const { entidad: ticket, listadosAuxiliares, accion, disabled, listado } = mixin.useReferencias()
+    const { entidad: ticket, listadosAuxiliares, accion, disabled } = mixin.useReferencias()
     const { guardar, editar, eliminar, reestablecer, setValidador, obtenerListados, cargarVista, listar } =
       mixin.useComportamiento()
     const { onBeforeGuardar, onGuardado, onModificado, onConsultado, onReestablecer } = mixin.useHooks()
@@ -97,7 +92,6 @@ export default defineComponent({
 
     cargarVista(async () => {
       await obtenerListados({
-        // empleados: [],
         departamentos: new DepartamentoController(),
         categoriasTiposTickets: new CategoriaTipoTicketController(),
         tiposTickets: {
@@ -116,7 +110,6 @@ export default defineComponent({
     /************
      * Variables
      ************/
-    // const { notificarAdvertencia, prompt, confirmar } = useNotificaciones()
     const nombreUsuario = authenticationStore.nombreUsuario
     const fechaHoraActual = ref()
     const refArchivoTicket = ref()
@@ -187,12 +180,6 @@ export default defineComponent({
       departamentos,
       empleados,
     } = useFiltrosListadosTickets(listadosAuxiliares)
-
-    /* watchEffect(() => {
-      if (listadosAuxiliares.empleados.length && ticket.ticket_interno) {
-        listadosAuxiliares.empleados = listadosAuxiliares.empleados.filter((empleado: Empleado) => empleado.id !== authenticationStore.user.id)
-      }
-    }) */
 
     /************
     * Funciones
@@ -294,13 +281,7 @@ export default defineComponent({
     async function guardado(paginaModal: keyof TicketModales) {
       switch (paginaModal) {
         case 'CalificarTicketPage':
-          /*if (!ticketStore.filaTicket.calificaciones.length) {
-            const entidad = listado.value[ticketStore.posicionFilaTicket]
-            entidad.pendiente_calificar = false
-            listado.value.splice(ticketStore.posicionFilaTicket, 1, entidad)
-          } else { */
           filtrarTickets(tabActual.value)
-          // }
           break
       }
       modalesTicket.cerrarModalEntidad()
@@ -309,10 +290,6 @@ export default defineComponent({
     /*********
      * Hooks
      *********/
-    /* if (!ticket.ticket_interno) {
-      ticket.responsable = listadosAuxiliares.departamentos?.filter((departamento: any) => ticket.departamento_responsable.includes(departamento.id)).map((departamento: any) => departamento.responsable_id)
-    } */
-
     function ajustarResponsablesInterno() {
       if (!ticket.ticket_interno && !ticket.ticket_para_mi) {
         ticket.responsable = listadosAuxiliares.departamentos?.filter((departamento: any) => ticket.departamento_responsable.includes(departamento.id)).map((departamento: any) => departamento.responsable_id)
@@ -332,11 +309,6 @@ export default defineComponent({
       ticket.establecer_hora_limite = !!horaLimite.value
       fechaHoraActual.value = ticket.fecha_hora_solicitud
       clearInterval(tiempoActualInterval)
-      /* if (ticket.departamento_responsable) {
-        obtenerResponsables({
-          departamento_id: ticket.departamento_responsable,
-        })
-      } */
       refArchivoTicket.value.listarArchivos({ ticket_id: ticket.id })
       refArchivoTicket.value.quiero_subir_archivos = false
       obtenerPausas()
