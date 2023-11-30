@@ -467,6 +467,20 @@ export default defineComponent({
           )
         })
       },
+      filtroRoles(val, update) {
+        if (val === '') {
+          update(() => {
+            opciones_roles.value = listadosAuxiliares.roles
+          })
+          return
+        }
+        update(() => {
+          const needle = val.toLowerCase()
+          opciones_roles.value = listadosAuxiliares.roles.filter(
+            (v) => v.nombre.toLowerCase().indexOf(needle) > -1
+          )
+        })
+      },
       filtroDepartamentos(val, update) {
         if (val === '') {
           update(() => {
