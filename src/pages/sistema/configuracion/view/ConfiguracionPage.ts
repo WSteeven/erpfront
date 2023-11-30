@@ -33,6 +33,7 @@ export default defineComponent({
       representante: { required },
       razon_social: { required },
       tipo_contribuyente: { required },
+      nombre_empresa: { required },
     }
 
     const v$ = useVuelidate(reglas, configuracion)
