@@ -132,15 +132,15 @@
             >
               <label class="q-mb-sm block">Responsable(s)</label>
               <div class="row bg-grey-2 border-grey rounded-field">
-                <q-chip
+                <div
                   v-for="responsable in responsables"
                   :key="responsable"
-                  color="light-green-1"
+                  class="q-pa-sm full-width"
                 >
                   <q-icon name="bi-person-fill"></q-icon>
                   <span class="q-mr-xs">{{ responsable.empleado }}</span>
                   <b>{{ `| ${responsable.departamento}` }}</b>
-                </q-chip>
+                </div>
               </div>
             </div>
 
