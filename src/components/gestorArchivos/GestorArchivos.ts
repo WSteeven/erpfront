@@ -31,6 +31,10 @@ export default defineComponent({
       type: Boolean,
       default: true,
     },
+    disable: {
+      type: Boolean,
+      default: false,
+    },
     permitirSubir: {
       type: Boolean,
       default: true,

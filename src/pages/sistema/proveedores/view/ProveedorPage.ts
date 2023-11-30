@@ -331,9 +331,10 @@ export default defineComponent({
         StatusLoading.activar()
         const { result } = await new EmpresaController().consultar(empresaId)
         empresa.hydrate(result)
+        proveedor.correo = proveedor.correo ? proveedor.correo : empresa.correo
         proveedor.contactos = empresa.contactos
-        proveedor.canton = empresa.canton
-        proveedor.direccion = empresa.direccion
+        proveedor.canton = proveedor.canton ? proveedor.canton : empresa.canton
+        proveedor.direccion = proveedor.direccion ? proveedor.direccion : empresa.direccion
         if (!proveedor.parroquia) obtenerParroquias(proveedor.canton)
         proveedor.sucursal = proveedor.sucursal ? proveedor.sucursal : empresa.sucursal
         StatusLoading.desactivar()
