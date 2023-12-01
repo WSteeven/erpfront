@@ -1,14 +1,15 @@
 // Dependencias
-import { computed, defineComponent, reactive, ref } from 'vue'
+import { computed, defineComponent, reactive, ref, watchEffect } from 'vue'
 import { Vue3Lottie } from 'vue3-lottie'
 import 'vue3-lottie/dist/style.css'
-// Componentes
+
 // Logica y controladores
 import { StatusEssentialLoading } from 'components/loading/application/StatusEssentialLoading'
 import { useNotificaciones } from 'shared/notificaciones'
 import { ForgotPasswordController } from '../infraestructure/forgotPassword.controller'
 import { ForgotPassword } from '../domain/ForgotPassword'
 import { isAxiosError, notificarMensajesError } from 'shared/utils'
+import { useConfiguracionGeneralStore } from 'stores/configuracion_general'
 
 export default defineComponent({
   name: 'ForgotPassword',
@@ -16,12 +17,20 @@ export default defineComponent({
     LottiePlayer: Vue3Lottie,
   },
   setup() {
+    /*********
+     * Stores
+     *********/
+    const configuracionGeneralStore = useConfiguracionGeneralStore()
+    if (!configuracionGeneralStore.configuracion?.nombre_empresa) configuracionGeneralStore.consultarConfiguracion()
+
     const forgotPassword = reactive(new ForgotPassword())
     const enviando = ref(false)
 
     const forgotPasswordController = new ForgotPasswordController()
     const notificaciones = useNotificaciones()
     const cargando = new StatusEssentialLoading()
+
+    const nombreEmpresa = computed(() => configuracionGeneralStore.configuracion?.nombre_empresa)
 
     const enviarCorreoRecuperacion = async () => {
       enviando.value = true
@@ -60,13 +69,15 @@ export default defineComponent({
     }
     const enableLoginButton = computed(
       () =>
-      forgotPassword.email !== ''
+        forgotPassword.email !== ''
     )
     const enableRecoveryPasswordButton = computed(
       () =>
-      forgotPassword.password !== '' &&
-      forgotPassword.password === forgotPassword.password_confirmation
+        forgotPassword.password !== '' &&
+        forgotPassword.password === forgotPassword.password_confirmation
     )
+
+    watchEffect(() => document.title = nombreEmpresa.value ?? '')
 
     return {
       forgotPassword,
@@ -78,7 +89,8 @@ export default defineComponent({
       enableRecoveryPasswordButton,
       // functions
       enviarCorreoRecuperacion,
-      recuperacionCuenta
+      recuperacionCuenta,
+      nombreEmpresa,
     }
   },
 })

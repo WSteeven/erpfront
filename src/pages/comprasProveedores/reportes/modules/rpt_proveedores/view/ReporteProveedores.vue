@@ -13,7 +13,6 @@
                   :options="cantones"
                   transition-show="jump-up"
                   transition-hide="jump-down"
-                  :disable="disabled"
                   options-dense
                   hint="opcional"
                   dense
@@ -52,7 +51,6 @@
                   :options="categorias"
                   transition-show="jump-up"
                   transition-hide="jump-down"
-                  :disable="disabled"
                   options-dense
                   multiple
                   dense
@@ -98,7 +96,6 @@
                   :options="opcionesCalificacionProveedor"
                   transition-show="jump-up"
                   transition-hide="jump-down"
-                  :disable="disabled"
                   options-dense
                   multiple
                   dense
@@ -153,7 +150,6 @@
                   :label="reporte.estado ? 'ACTIVO' : 'INACTIVO'"
                   v-model="reporte.estado"
                   color="primary"
-                  :disable="disabled"
                   keep-color
                   icon="bi-check2-circle"
                   unchecked-icon="clear"

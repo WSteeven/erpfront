@@ -33,7 +33,7 @@ export default defineComponent({
     },
     subtituloPagina: {
       type: String,
-      default: 'JPCONSTRUCRED',
+      default: 'SISTEMA',
     },
     mostrarFormulario: {
       type: Boolean,
