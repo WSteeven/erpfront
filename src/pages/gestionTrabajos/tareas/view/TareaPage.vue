@@ -344,7 +344,7 @@
                 </div>
 
                 <div
-                  v-if="tarea.proyecto && paraProyecto"
+                  v-if="tarea.proyecto && paraProyecto && etapas.length"
                   class="col-12 col-md-3"
                 >
                   <label class="q-mb-sm block">Etapa</label>

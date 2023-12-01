@@ -84,7 +84,8 @@ export class AxiosHttpRepository implements HttpRepository {
     return accessor
   }
 
-  public mapearArgumentos(args: Record<string, any>, filtrar = false): string {
+  // borrar
+  public mapearArgumentosOld(args: Record<string, any>, filtrar = false): string {
     const query: any = []
 
     // comprueba si el valor es valido
@@ -98,6 +99,25 @@ export class AxiosHttpRepository implements HttpRepository {
         }
       }
     return `?${query.join('&')}`
+  }
+
+  public mapearArgumentos(args: Record<string, any>, filtrar = false): string {
+    const query: any = []
+
+    // comprueba si el valor es valido
+    for (const key in args)
+      if (args[key] !== null && args[key] !== undefined) {
+        if (!filtrar) {
+          const operador = ['filter'].includes(key) ? '' : '='
+          const clave = key // ['filter'].includes(key) ? '' : key
+          query.push(`${clave}${operador}${args[key]}`)
+        } else {
+          query.push(`${key}[like]=%${args[key]}%`)
+        }
+      }
+
+    const cadena = `?${query.join('&')}`.replace('&filter', '|')
+    return cadena
   }
 
   getOptions() {
