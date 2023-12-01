@@ -8,6 +8,7 @@ export class PreordenCompra extends EntidadAuditable {
     autorizacion_id: number | null
     justificacion: string | null
     estado: string | null
+    causa_anulacion: string | null
     autorizador: number | null
     autorizador_id: number | null
     created_at: string | null
@@ -22,6 +23,7 @@ export class PreordenCompra extends EntidadAuditable {
         this.pedido = null
         this.justificacion = null
         this.estado = null
+        this.causa_anulacion = null
         this.autorizador = null
         this.autorizador_id = null
         this.autorizacion = null
