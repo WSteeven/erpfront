@@ -269,7 +269,7 @@ export default defineComponent({
       orden.fecha = formatearFecha(new Date().getDate().toLocaleString())
       orden.descripcion = preordenStore.preorden.justificacion
       orden.pedido = preordenStore.preorden.pedido
-      preordenStore.preorden.listadoProductos.forEach((v) => v.id = v.producto_id)
+      // preordenStore.preorden.listadoProductos.forEach((v) => v.id = v.producto_id)
       orden.listadoProductos = preordenStore.preorden.listadoProductos
       orden.listadoProductos.forEach((item) => {
         item.facturable = true
@@ -340,7 +340,7 @@ export default defineComponent({
         //: props.propsTable.rowIndex,
         eliminar({ posicion })
       },
-      visible: () => (accion.value == acciones.nuevo || accion.value == acciones.editar) && orden.autorizacion == 1 || orden.solicitante == store.user.id || store.esCompras
+      visible: () => (accion.value == acciones.nuevo || accion.value == acciones.editar) && (orden.autorizacion == 1 || orden.solicitante == store.user.id || store.esCoordinadorBodega||store.esCompras)
     }
     const btnImprimir: CustomActionTable = {
       titulo: 'Imprimir',

@@ -56,6 +56,7 @@ import { imprimirArchivo } from 'shared/utils'
 import { useCargandoStore } from 'stores/cargando'
 import { AxiosResponse } from 'axios'
 import { useNotificaciones } from 'shared/notificaciones'
+import { useConfiguracionGeneralStore } from 'stores/configuracion_general'
 
 export default defineComponent({
   components: { TabLayout, SelectorImagen, ModalesEntidad, EssentialTable },
@@ -66,8 +67,8 @@ export default defineComponent({
     useNotificacionStore().setQuasar(useQuasar())
     useCargandoStore().setQuasar(useQuasar())
     const storeRecursosHumanos = useRecursosHumanosStore()
-    const { confirmar, prompt, notificarAdvertencia, notificarCorrecto } = useNotificaciones()
-
+    const { confirmar, prompt, notificarAdvertencia, notificarCorrecto } =
+      useNotificaciones()
 
     /***********
      * Mixin
@@ -191,7 +192,7 @@ export default defineComponent({
 
     const v$ = useVuelidate(reglas, empleado)
     setValidador(v$.value)
-
+    const configuracionStore = useConfiguracionGeneralStore()
     opciones_cantones.value = listadosAuxiliares.cantones
     opciones_roles.value = listadosAuxiliares.roles
     opciones_cargos.value = listadosAuxiliares.cargos
@@ -207,7 +208,7 @@ export default defineComponent({
 
     onConsultado(() => (empleado.tiene_grupo = !!empleado.grupo))
     async function guardado(data) {
-      empleado.familiares!.push(data.model) ;
+      empleado.familiares!.push(data.model)
     }
 
     const antiguedad = computed(() => {
@@ -278,6 +279,26 @@ export default defineComponent({
      ************/
     watchEffect(() => {
       if (!empleado.tiene_grupo) empleado.grupo = null
+      if (empleado.nombres != null && empleado.nombres != '') {
+        const inicial_nombre =
+          empleado.nombres != null ? empleado.nombres[0] : ''
+        const apellido =
+          empleado.apellidos != null ? empleado.apellidos.split(' ')[0] : ''
+        const sitio_web =
+          configuracionStore.configuracion?.sitio_web?.split('WWW.')[1]
+        const username = inicial_nombre + apellido
+        empleado.email = username + '@' + sitio_web
+        empleado.usuario = username
+        if (
+          accion.value != acciones.editar ||
+          accion.value != acciones.consultar
+        ) {
+          empleado.password = empleado.identificacion
+        }
+      } else {
+        empleado.email = null
+        empleado.usuario = null
+      }
     })
     const btnConsultarFamiliar: CustomActionTable = {
       titulo: '',
@@ -294,9 +315,7 @@ export default defineComponent({
       icono: 'bi-pencil',
       color: 'warning',
       visible: () => {
-        return (
-          authenticationStore.can('puede.editar.familiares')
-        )
+        return authenticationStore.can('puede.editar.familiares')
       },
       accion: ({ entidad }) => {
         familiarStore.idFamiliarSeleccionada = entidad.id
@@ -313,8 +332,7 @@ export default defineComponent({
       titulo: '',
       icono: 'bi-trash',
       color: 'secondary',
-      visible: () =>
-        authenticationStore.can('puede.eliminar.familiares'),
+      visible: () => authenticationStore.can('puede.eliminar.familiares'),
       accion: ({ entidad }) => {
         accion.value = 'ELIMINAR'
         eliminar(entidad)
@@ -324,13 +342,12 @@ export default defineComponent({
       titulo: 'Reporte General',
       icono: 'bi-printer',
       color: 'primary',
-      visible: ({ entidad }) =>
-        authenticationStore.can('puede.ver.empleados') ,
+      visible: ({ entidad }) => authenticationStore.can('puede.ver.empleados'),
       accion: () => {
         generar_reporte_general()
       },
     }
-    async function generar_reporte_general( ): Promise<void> {
+    async function generar_reporte_general(): Promise<void> {
       console.log('generar_reporte_general')
       const axios = AxiosHttpRepository.getInstance()
       const filename = 'empleados'
@@ -345,14 +362,12 @@ export default defineComponent({
       icono: 'bi-toggle2-on',
       color: 'negative',
       tooltip: 'Habilitar',
-      visible: ({entidad}) => {
-        return (
-          !entidad.estado
-        )
+      visible: ({ entidad }) => {
+        return !entidad.estado
       },
       accion: ({ entidad }) => {
-        HabilitarEmpleado(entidad.id,true)
-        entidad.estado= true
+        HabilitarEmpleado(entidad.id, true)
+        entidad.estado = true
       },
     }
     const btnDesHabilitarEmpleado: CustomActionTable = {
@@ -360,25 +375,23 @@ export default defineComponent({
       icono: 'bi-toggle2-off',
       color: 'positive',
       tooltip: 'DesHabilitar',
-      visible: ({entidad}) => {
-        return (
-          entidad.estado
-        )
+      visible: ({ entidad }) => {
+        return entidad.estado
       },
       accion: ({ entidad }) => {
-        HabilitarEmpleado(entidad.id,false)
-        entidad.estado=false
+        HabilitarEmpleado(entidad.id, false)
+        entidad.estado = false
       },
     }
-    async function HabilitarEmpleado(id: number, estado:boolean)  {
+    async function HabilitarEmpleado(id: number, estado: boolean) {
       const axios = AxiosHttpRepository.getInstance()
-      const ruta = axios.getEndpoint(
-        endpoints.habilitar_empleado,
-        { id: id,estado:estado }
-      )
+      const ruta = axios.getEndpoint(endpoints.habilitar_empleado, {
+        id: id,
+        estado: estado,
+      })
       const response: AxiosResponse = await axios.get(ruta)
       notificarCorrecto(
-        estado?'Ha Habilitado empleado':'Ha deshabilitado empleado'
+        estado ? 'Ha Habilitado empleado' : 'Ha deshabilitado empleado'
       )
     }
     return {
@@ -512,5 +525,3 @@ export default defineComponent({
     }
   },
 })
-
-

@@ -1,4 +1,5 @@
 import { EntidadAuditable } from 'shared/entidad/domain/entidadAuditable'
+import { DestinatarioTicket } from './DestinatarioTicket'
 
 export class Ticket extends EntidadAuditable {
   codigo: string | null
@@ -13,7 +14,7 @@ export class Ticket extends EntidadAuditable {
   solicitante_id: number | null
   responsable: number[]
   responsable_id: number | null
-  departamento_responsable: number[]
+  departamento_responsable: any //number[] | number
   departamento_solicitante: string | null
   tipo_ticket: number | null
   categoria_tipo_ticket: number | null
@@ -27,6 +28,7 @@ export class Ticket extends EntidadAuditable {
   calificado_responsable: boolean
   tiempo_hasta_finalizar: string | null
   tiempo_ocupado_pausas: string | null
+  destinatarios: DestinatarioTicket[]
 
   constructor() {
     super()
@@ -56,5 +58,6 @@ export class Ticket extends EntidadAuditable {
     this.calificado_responsable = false
     this.tiempo_hasta_finalizar = null
     this.tiempo_ocupado_pausas = null
+    this.destinatarios = []
   }
 }
