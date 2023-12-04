@@ -31,6 +31,10 @@ export function useDestinatariosTickets(listadosAuxiliares: any) {
     destinatarios.value.push(destinario)
   }
 
+  function quitarDestinatario(idDepartamento: number) {
+    destinatarios.value = destinatarios.value.filter((destinatario: DestinatarioTicket) => destinatario.departamento_id !== idDepartamento)
+  }
+
   function mapearIdsDestinatarios() {
     return destinatarios.value.map((destinatario: DestinatarioTicket) => {
       const destinarioIds = new DestinatarioTicket()
@@ -73,5 +77,6 @@ export function useDestinatariosTickets(listadosAuxiliares: any) {
     mapearIdsDestinatarios,
     reestablecerDestinatarios,
     setDestinatarios,
+    quitarDestinatario,
   }
 }

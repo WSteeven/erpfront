@@ -8,7 +8,7 @@ import { StatusEssentialLoading } from 'components/loading/application/StatusEss
 import { AxiosHttpRepository } from 'shared/http/infraestructure/AxiosHttpRepository'
 import { configuracionColumnasTicket } from '../domain/configuracionColumnasTicket'
 import { accionesTabla, maskFecha } from 'config/utils'
-import { computed, defineComponent, ref } from 'vue'
+import { computed, defineComponent, ref, watch } from 'vue'
 import { useCargandoStore } from 'stores/cargando'
 import { required } from 'shared/i18n-validators'
 import { useTareaStore } from 'stores/tarea'
@@ -186,9 +186,11 @@ export default defineComponent({
     * Funciones
     ************/
     const { btnReasignar, btnSeguimiento, btnCalificarSolicitante, btnCancelar, btnAsignar } = useBotonesTablaTicket(mixin, modalesTicket)
-    const { destinatarios, agregarDestinatario, obtenerTiposTickets, mapearIdsDestinatarios, reestablecerDestinatarios, setDestinatarios } = useDestinatariosTickets(listadosAuxiliares)
+    const { destinatarios, agregarDestinatario, quitarDestinatario, obtenerTiposTickets, mapearIdsDestinatarios, reestablecerDestinatarios, setDestinatarios } = useDestinatariosTickets(listadosAuxiliares)
 
     async function toggleTicketInterno() {
+
+
       if (ticket.ticket_interno) {
         ticket.responsable = []
         departamentoDeshabilitado.value = true
@@ -204,6 +206,7 @@ export default defineComponent({
         empleados.value = []
         ticket.departamento_responsable = []
         ticket.responsable = []
+        reestablecerDestinatarios()
       }
     }
 
@@ -219,6 +222,7 @@ export default defineComponent({
         ticket.responsable = []
         listadosAuxiliares.empleados = []
         empleados.value = []
+        reestablecerDestinatarios()
       }
 
       responsableDeshabilitado.value = ticket.ticket_para_mi
@@ -293,6 +297,20 @@ export default defineComponent({
       modalesTicket.cerrarModalEntidad()
     }
 
+    /*************
+     * Observers
+     *************/
+    /* watch(computed(() => ticket.departamento_responsable), () => {
+
+    }) */
+    function agregarDepartamento(data) {
+      console.log(data)
+      agregarDestinatario(data.value)
+    }
+
+    function quitarDepartamento(data) {
+      quitarDestinatario(data.value)
+    }
     /*********
      * Hooks
      *********/
@@ -300,8 +318,6 @@ export default defineComponent({
       if (!ticket.ticket_interno && !ticket.ticket_para_mi) {
         ticket.responsable = listadosAuxiliares.departamentos?.filter((departamento: any) => ticket.departamento_responsable.includes(departamento.id)).map((departamento: any) => departamento.responsable_id)
       }
-
-      agregarDestinatario(ticket.departamento_responsable[ticket.departamento_responsable.length - 1])
     }
 
     onBeforeGuardar(() => {
@@ -411,6 +427,8 @@ export default defineComponent({
       // destinatarios
       destinatarios,
       obtenerTiposTickets,
+      agregarDepartamento,
+      quitarDepartamento,
     }
   },
 })

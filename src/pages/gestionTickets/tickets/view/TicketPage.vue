@@ -103,6 +103,8 @@
                 map-options
                 use-chips
                 multiple
+                @add="agregarDepartamento"
+                @remove="quitarDepartamento"
                 @update:model-value="ajustarResponsablesInterno()"
                 :error="!!v$.departamento_responsable.$errors.length"
                 @blur="v$.departamento_responsable.$touch"
