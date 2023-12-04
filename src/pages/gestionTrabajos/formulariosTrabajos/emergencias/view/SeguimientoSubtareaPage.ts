@@ -8,7 +8,6 @@ import { CustomActionTable } from 'components/tables/domain/CustomActionTable'
 import { computed, defineComponent, onMounted, Ref, ref, watch } from 'vue'
 import { useNotificaciones } from 'shared/notificaciones'
 import { apiConfig, endpoints } from 'config/api'
-import useVuelidate from '@vuelidate/core'
 import { AxiosResponse } from 'axios'
 
 // Componentes
@@ -18,6 +17,7 @@ import TablaDevolucionProducto from 'components/tables/view/TablaDevolucionProdu
 import TablaFilasDinamicas from 'components/tables/view/TablaFilasDinamicas.vue'
 import EssentialTable from 'components/tables/view/EssentialTable.vue'
 import ButtonSubmits from 'components/buttonSubmits/buttonSubmits.vue'
+import ModalesEntidad from 'components/modales/view/ModalEntidad.vue'
 import SelectorImagen from 'components/SelectorImagen.vue'
 import VisorImagen from 'components/VisorImagen.vue'
 
@@ -29,7 +29,6 @@ import { Archivo } from 'pages/gestionTrabajos/subtareas/modules/gestorArchivosT
 import ActividadRealizadaSeguimientoSubtarea from '../domain/ActividadRealizadaSeguimientoSubtarea'
 import { configuracionColumnasSumaMaterial } from '../domain/configuracionColumnasSumaMaterial'
 import { ArchivoSeguimientoController } from '../infraestructure/ArchivoSeguimientoController'
-import { StatusEssentialLoading } from 'components/loading/application/StatusEssentialLoading'
 import { EmergenciaController } from '../infraestructure/EmergenciaController'
 import { useFiltrosListadosSelects } from 'shared/filtrosListadosGenerales'
 import { Subtarea } from 'pages/gestionTrabajos/subtareas/domain/Subtarea'
@@ -37,6 +36,14 @@ import { imprimirArchivo, obtenerFechaActual } from 'shared/utils'
 import { useTrabajoAsignadoStore } from 'stores/trabajoAsignado'
 import { useAuthenticationStore } from 'stores/authentication'
 import { Emergencia } from '../domain/Emergencia'
+import { useGestionAtsApplication } from '../application/GestionAtsApplication'
+import { configuracionColumnasTicket } from 'pages/gestionTickets/tickets/domain/configuracionColumnasTicket'
+import { configuracionColumnasSolicitudAts } from '../domain/configuracionColumnasSolicitudAts'
+import { Ticket } from 'pages/gestionTickets/tickets/domain/Ticket'
+import { useBotonesTablaTicket } from 'pages/gestionTickets/tickets/application/BotonesTablaTicket'
+import { ComportamientoModalesTicketAsignado } from 'pages/gestionTickets/ticketsAsignados/application/ComportamientoModalesTicketAsignado'
+import { TicketController } from 'pages/gestionTickets/tickets/infraestructure/TicketController'
+import { MotivoCanceladoTicketController } from 'pages/gestionTickets/motivosCanceladosTickets/infraestructure/MotivoCanceladoTicketController'
 
 export default defineComponent({
   components: {
@@ -48,6 +55,7 @@ export default defineComponent({
     ArchivoSeguimiento,
     TablaFilasDinamicas,
     VisorImagen,
+    ModalesEntidad,
   },
   props: {
     mixinModal: {
@@ -66,17 +74,17 @@ export default defineComponent({
     /********
     * Mixin
     *********/
-    const mixin = new ContenedorSimpleMixin(Emergencia, new EmergenciaController())
+    /* const mixin = new ContenedorSimpleMixin(Emergencia, new EmergenciaController())
     const { entidad: emergencia, accion, listadosAuxiliares } = mixin.useReferencias()
     const { guardar, editar, reestablecer, setValidador, cargarVista } = mixin.useComportamiento()
-    const { onBeforeGuardar, onBeforeModificar, onGuardado, onModificado } = mixin.useHooks()
+    const { onBeforeGuardar, onBeforeModificar, onGuardado, onModificado } = mixin.useHooks() */
 
     const mixinArchivoSeguimiento = new ContenedorSimpleMixin(Archivo, new ArchivoSeguimientoController())
     const { listar: listarSubtareas } = props.mixinModal.useComportamiento()
 
     const mixinActividad = new ContenedorSimpleMixin(ActividadRealizadaSeguimientoSubtarea, new ActividadRealizadaSeguimientoSubtareaController())
     const { entidad: actividad, listado: actividadesRealizadas } = mixinActividad.useReferencias()
-    const { guardar: guardarActividad, listar: listarActividadesRealizadas } = mixinActividad.useComportamiento()
+    const { guardar: guardarActividad, listar: listarActividadesRealizadas, cargarVista } = mixinActividad.useComportamiento()
 
     /************
      * Variables
@@ -116,19 +124,36 @@ export default defineComponent({
     const clientes = ref([])
     const clientesMaterialesTarea = ref([])
 
-    // const cargando = new StatusEssentialLoading()
-
     const axios = AxiosHttpRepository.getInstance()
+
+    // Tickets
+    const modales = new ComportamientoModalesTicketAsignado()
+    const mixin = new ContenedorSimpleMixin(Ticket, new TicketController())
+    const { obtenerListados } = mixin.useComportamiento()
+    obtenerListados({
+      motivosCancelados: {
+        controller: new MotivoCanceladoTicketController(),
+        params: { activo: 1 },
+      }
+    })
+
+    const { consultarTicketsATS, ticketsAts, guardarFilaSolicitudAts } = useGestionAtsApplication(cargarVista)
+    const { btnSeguimiento, btnCancelar } = useBotonesTablaTicket(mixin, modales)
+
+    const listados = {
+      ticketsAts: [],
+    }
 
     /************
      * Init
      ************/
-    // actualizarTablaMaterialesTarea()
     listarActividadesRealizadas({ subtarea_id: trabajoAsignadoStore.subtarea.id })
     obtenerFechasHistorialMaterialesUsados()
     obtenerFechasHistorialMaterialesStockUsados()
     obtenerClientesMaterialesTarea()
     obtenerClientesMaterialesEmpleado()
+    // listados.ticketsAts.push(gestionAtsApplication.obtenerTicketsATS())
+    consultarTicketsATS(subtarea.id)
 
     onMounted(() => refArchivoSeguimiento.value.listarArchivos({ subtarea_id: trabajoAsignadoStore.subtarea.id }))
 
@@ -241,12 +266,12 @@ export default defineComponent({
     /*************
     * Validaciones
     **************/
-    const reglas = {
+    /* const reglas = {
       // regional: { required },
     }
 
     const v$ = useVuelidate(reglas, emergencia)
-    setValidador(v$.value)
+    setValidador(v$.value) */
 
     /************
     * Funciones
@@ -394,11 +419,11 @@ export default defineComponent({
       imprimirArchivo(ruta, 'GET', 'blob', 'xlsx', 'reporte_hoy_')
     }
 
-    async function guardarSeguimiento() {
+    /* async function guardarSeguimiento() {
       guardar(emergencia, true, { empleado_id: obtenerIdEmpleadoResponsable(), tarea_id: trabajoAsignadoStore.idTareaSeleccionada, grupo: trabajoAsignadoStore.subtarea.grupo }).catch((e) => {
         notificarAdvertencia('Ingrese al menos una actividad para guardar.')
       })
-    }
+    } */
 
     function subirArchivos() {
       refArchivoSeguimiento.value.subir({ subtarea_id: trabajoAsignadoStore.subtarea.id })
@@ -415,14 +440,14 @@ export default defineComponent({
       historialMaterialStockUsadoPorFecha.value = []
     }
 
-    function editarSeguimiento(cerrarVentanaModal = true) {
+    /* function editarSeguimiento(cerrarVentanaModal = true) {
       if (permitirSubir) {
         cerrarModal = cerrarVentanaModal
         fecha_historial.value = null
         historialMaterialTareaUsadoPorFecha.value = []
         editar(emergencia, cerrarModal, { empleado_id: obtenerIdEmpleadoResponsable(), tarea_id: trabajoAsignadoStore.idTareaSeleccionada, grupo: trabajoAsignadoStore.subtarea.grupo })
       }
-    }
+    } */
 
     function guardarFilaActividad(data) {
       actividad.hydrate(data)
@@ -433,7 +458,7 @@ export default defineComponent({
     /**********
      * Filtros
      **********/
-    const { filtrarClientes } = useFiltrosListadosSelects(listadosAuxiliares)
+    // const { filtrarClientes } = useFiltrosListadosSelects(listadosAuxiliares)
 
     /*************
      * Observers
@@ -457,7 +482,7 @@ export default defineComponent({
     /********
     * Hooks
     *********/
-    onBeforeGuardar(() => {
+    /* onBeforeGuardar(() => {
       emergencia.materiales_tarea_ocupados = filtrarMaterialesTareaOcupados()
       emergencia.materiales_stock_ocupados = filtrarMaterialesStockOcupados()
       emergencia.subtarea = trabajoAsignadoStore.idSubtareaSeleccionada
@@ -467,7 +492,6 @@ export default defineComponent({
       emergencia.materiales_tarea_ocupados = filtrarMaterialesTareaOcupados()
       emergencia.materiales_stock_ocupados = filtrarMaterialesStockOcupados()
       emergencia.subtarea = trabajoAsignadoStore.idSubtareaSeleccionada
-      // emergencia.trabajo_realizado = nuevasActividades.value
     })
 
     onGuardado((id: number) => {
@@ -477,19 +501,19 @@ export default defineComponent({
 
     onModificado((id: number) => {
       if (cerrarModal) emit('cerrar-modal', false)
-    })
+    }) */
 
     return {
-      v$,
+      // v$,
       refVisorImagen,
       refTrabajos,
       refObservaciones,
       refArchivoSeguimiento,
       mixinArchivoSeguimiento,
-      emergencia,
+      /* emergencia,
       accion,
       guardarSeguimiento,
-      editarSeguimiento,
+      editarSeguimiento, */
       utilizarMateriales,
       existeMaterialesDevolucion,
       existeObservaciones,
@@ -510,11 +534,11 @@ export default defineComponent({
       botonEditarCantidadStockHistorial,
       regiones,
       atenciones,
-      guardar,
+      /* guardar,
       editar,
       reestablecer,
+      listadosAuxiliares,*/
       emit,
-      listadosAuxiliares,
       codigoSubtarea,
       esLider,
       esCoordinador,
@@ -532,8 +556,6 @@ export default defineComponent({
       fecha_historial,
       fecha_historial_stock,
       rangoFechasHistorial,
-      // actualizarTablaMaterialesTarea,
-      // actualizarTablaMaterialesStock,
       actividadesRealizadas,
       guardarFilaActividad,
       mostrarBotonSubir: computed(() => refArchivoSeguimiento.value?.quiero_subir_archivos),
@@ -542,12 +564,20 @@ export default defineComponent({
       fechasHistorialMaterialesStockUsados,
       resetearFiltroHistorialTarea,
       resetearFiltroHistorialStock,
-      filtrarClientes,
+      // filtrarClientes,
       clienteMaterialStock,
       clienteMaterialTarea,
       obtenerMaterialesStock,
       obtenerMaterialesTarea,
       clientesMaterialesTarea,
+      // tickets ATS
+      ticketsAts,
+      configuracionColumnasSolicitudAts,
+      Ticket,
+      guardarFilaSolicitudAts,
+      btnSeguimiento,
+      btnCancelar,
+      modales,
     }
   }
 })

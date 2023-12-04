@@ -116,7 +116,9 @@ export class AxiosHttpRepository implements HttpRepository {
         }
       }
 
-    const cadena = `?${query.join('&')}`.replace('&filter', '|')
+    let cadena = `?${query.join('&')}`
+    cadena = cadena.includes('&filter') ? cadena.replace('&filter', '|') : cadena
+    cadena = cadena.includes('filter') ? cadena.replace('filter', '') : cadena
     return cadena
   }
 

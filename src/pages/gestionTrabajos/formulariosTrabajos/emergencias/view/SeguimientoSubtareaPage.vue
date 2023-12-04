@@ -22,23 +22,6 @@
     </div>
 
     <q-card class="rounded-card custom-shadow q-pa-md">
-      <!-- <div
-        v-if="esCoordinador"
-        class="col-12 rounded-card q-py-sm q-mb-md text-center text-accent bg-yellow-2"
-      >
-        <div>
-          <q-icon name="bi-exclamation-triangle-fill" class="q-mr-sm"></q-icon>
-          <div>
-            Cualquier cambio realizado aquí sobreescribirá el seguimiento hecho
-            por el técnico.
-            <br />
-            Se recomienda cerrar y abrir el seguimiento para tener las más
-            recientes actualizaciones ingresadas por el técnico.
-          </div>
-          <b>Advertencia</b>
-        </div>
-      </div> -->
-
       <div class="row">
         <div class="col-12 q-mb-md">
           <tabla-filas-dinamicas
@@ -49,6 +32,25 @@
             :entidad="ActividadRealizadaSeguimientoSubtarea"
             :accion1="verFotografia"
             titulo="Cronología de actividades realizadas"
+          ></tabla-filas-dinamicas>
+        </div>
+
+        <div class="col-12">
+          <tabla-filas-dinamicas
+            titulo="Solicitudes  de ATS a través de tickets"
+            :configuracionColumnas="configuracionColumnasSolicitudAts"
+            :listado="ticketsAts"
+            :permitirConsultar="false"
+            :permitirEliminar="false"
+            :permitirEditar="false"
+            :mostrarBotones="false"
+            :alto-fijo="false"
+            :entidad="Ticket"
+            :consultarTiempo="false"
+            :accion1="btnSeguimiento"
+            :accion2="btnCancelar"
+            :mostrarAccion1Header="permitirSubir"
+            @guardarFila="(fila) => guardarFilaSolicitudAts(fila, subtarea.id)"
           ></tabla-filas-dinamicas>
         </div>
 
@@ -221,10 +223,10 @@
                     <label class="q-mb-sm block"
                       >Seleccione un cliente para filtrar el material</label
                     >
+                    <!-- @filter="filtrarClientes" -->
                     <q-select
                       v-model="clienteMaterialStock"
                       :options="clientes"
-                      @filter="filtrarClientes"
                       transition-show="scale"
                       transition-hide="scale"
                       use-input
@@ -399,20 +401,16 @@
           </archivo-seguimiento>
         </div>
       </div>
-
-      <!-- <div class="row justify-end q-col-gutter-x-xs"> -->
-
-      <!-- <button-submits
-          :accion="accion"
-          @cerrar-modal="emit('cerrar-modal')"
-          @cancelar="reestablecer()"
-          @editar="editarSeguimiento()"
-          @guardar="guardarSeguimiento()"
-        /> -->
-      <!-- </div> -->
     </q-card>
 
     <visor-imagen ref="refVisorImagen"></visor-imagen>
+
+    <modales-entidad
+      :comportamiento="modales"
+      :mixin-modal="mixin"
+      :confirmar-cerrar="false"
+      :persistente="false"
+    />
   </q-page>
 </template>
 

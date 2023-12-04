@@ -29,6 +29,8 @@ export class Ticket extends EntidadAuditable {
   tiempo_hasta_finalizar: string | null
   tiempo_ocupado_pausas: string | null
   destinatarios: DestinatarioTicket[]
+  es_solicitud_ats: boolean
+  subtarea_id: number | null
 
   constructor() {
     super()
@@ -59,5 +61,7 @@ export class Ticket extends EntidadAuditable {
     this.tiempo_hasta_finalizar = null
     this.tiempo_ocupado_pausas = null
     this.destinatarios = []
+    this.es_solicitud_ats = false
+    this.subtarea_id = null
   }
 }

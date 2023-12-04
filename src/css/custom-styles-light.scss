@@ -38,7 +38,7 @@
   }
 
   .bg-drawer {
-    background-color: #fff;
+    background-color: $grey-2;
   }
 
   .q-card,
@@ -192,20 +192,22 @@
 
   // Menu item drawer
   .link-active {
-    background: rgba(#efeff7, 1);
-    border-right: 3px solid $primary;
+    background: $primary; //rgba(#efeff7, 1);
+    // border-right: 3px solid $primary;
+    border-radius: 16px;
+    color: white;
 
     i {
-      color: $primary;
+      color: white;
     }
 
-    .q-item__label {
+    /* .q-item__label {
       font-weight: bold;
-    }
+    } */
   }
 
   .color-icono {
-    color: #575b6e;
+    color: $primary; //#575b6e;
   }
 
   .q-card {

@@ -132,20 +132,21 @@ $border-color: #464646;
 
   // Menu item drawer
   .link-active {
-    background: rgba($bg-body, 1);
-    border-right: 3px solid $primary;
+    background: $primary; //rgba($bg-body, 1);
+    // border-right: 3px solid $primary;
+    border-radius: 16px;
 
     i {
-      color: $primary;
+      color: white;
     }
 
-    .q-item__label {
+    /* .q-item__label {
       font-weight: bold;
-    }
+    } */
   }
 
   .color-icono {
-    color: #8288a2;
+    color: $primary; //#8288a2;
   }
 
   // Botones tabla

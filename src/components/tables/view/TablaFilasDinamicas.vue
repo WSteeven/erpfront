@@ -64,6 +64,10 @@ const props = defineProps({
     default: true,
   },
   titulo: String,
+  consultarTiempo: {
+    type: Boolean,
+    default: true,
+  },
 })
 
 const emit = defineEmits(['actualizar', 'guardar-fila'])
@@ -87,15 +91,19 @@ const columnas: any = [...props.configuracionColumnas, accionesTabla]
  * Funciones
  ************/
 const agregarActividadRealizada: CustomActionTable = {
-  titulo: 'Agregar actividad',
-  icono: 'bi-arrow-bar-down',
+  titulo: 'Agregar fila',
+  icono: 'bi-plus',
   color: 'positive',
   visible: () => props.mostrarAccion1Header,
   accion: async () => {
     try {
       cargando.activar()
-      const { fecha_hora } = await obtenerTiempoActual()
-      refTrabajos.value.abrirModalEditar({ fecha_hora })
+      if (props.consultarTiempo) {
+        const { fecha_hora } = await obtenerTiempoActual()
+        refTrabajos.value.abrirModalEditar({ fecha_hora })
+      } else {
+        refTrabajos.value.abrirModalEditar()
+      }
       // emit('actualizar', trabajoRealizado.value)
     } catch (e) {
       notificarError(

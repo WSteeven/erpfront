@@ -1,7 +1,7 @@
 <template>
   <q-layout view="lHh Lpr lFf">
     <!-- Navbar -->
-    <q-header class="bg-drawer rounded-card custom-shadow">
+    <q-header class="bg-desenfoque border-bottom">
       <q-toolbar class="row justify-between q-py-sm">
         <q-btn
           dense
@@ -82,13 +82,14 @@
               rounded
               unelevated
               no-caps
-              class="text-shadow bg-body-table color-icono shadow-button q-px-sm"
+              class="text-shadow color-icono q-px-sm"
               @click="abrirMovilizacionSubtarea()"
             >
               <q-icon
                 name="bi-car-front"
                 :class="{ 'q-mr-sm': !$q.screen.xs }"
                 size="xs"
+                color="yellow-10"
               ></q-icon>
               <span v-if="!$q.screen.xs">Movilización</span>
               <q-tooltip class="bg-dark">Movilización</q-tooltip>
@@ -102,13 +103,14 @@
               rounded
               unelevated
               no-caps
-              class="text-shadow bg-body-table color-icono shadow-button q-px-sm"
+              class="text-shadow color-icono q-px-sm"
               :to="{ name: 'mi_bodega' }"
             >
               <q-icon
                 name="bi-box-seam"
                 :class="{ 'q-mr-sm': !$q.screen.xs }"
                 size="xs"
+                color="positive"
               ></q-icon>
               <span v-if="!$q.screen.xs">Mi bodega</span>
               <q-tooltip class="bg-dark">Mi bodega</q-tooltip>
@@ -122,13 +124,14 @@
               rounded
               unelevated
               no-caps
-              class="text-shadow bg-body-table color-icono shadow-button q-px-sm"
+              class="text-shadow color-icono q-px-sm"
               @click.self="mostrarNotificaciones = true"
             >
               <q-icon
                 name="bi-bell"
                 :class="{ 'q-mr-sm': !$q.screen.xs }"
                 size="xs"
+                color="pink-8"
               ></q-icon>
               <span v-if="!$q.screen.xs">Notificaciones</span>
               <q-tooltip class="bg-dark">Notificaciones</q-tooltip>
@@ -390,32 +393,26 @@
     <!-- Drawer -->
     <q-drawer
       v-model="leftDrawerOpen"
-      class="bg-body q-px-sm q-py-sm"
+      class="bg-drawer border-right q-px-sm q-py-sm"
       show-if-above
     >
       <!-- Drawer Header -->
       <div class="absolute-top q-pa-sm q-ma-sm rounded-card">
-        <!--<img src="~assets/logo.png" height="80" class="q-mx-auto block" /> -->
-        <!-- <img src="~assets/logo.png" height="80" class="q-mx-auto block" /> -->
         <img
           :src="!$q.dark.isActive ? logoClaro : logoOscuro"
           height="80"
           class="q-mx-auto block"
         />
-        <!-- {{ logoClaro }} -->
       </div>
 
       <!-- Drawer Body -->
-      <q-scroll-area
-        style="height: calc(96% - 100px); margin-top: 100px"
-        class="bg-drawer rounded-card custom-shadow-2 q-mb-sm"
-      >
+      <q-scroll-area style="height: calc(96% - 100px); margin-top: 100px">
         <q-list>
           <div v-for="item in links" :key="item.title">
             <q-item-label
               v-if="item.hasOwnProperty('header')"
               header
-              class="text-bold"
+              class="text-bold text-dark"
               >{{ item.header }}</q-item-label
             >
 
@@ -435,7 +432,8 @@
         color="primary"
         no-caps
         class="full-width"
-        rounded
+        unelevated
+        square
         @click="logout()"
         >Cerrar sesión</q-btn
       >
@@ -455,7 +453,13 @@
         </div>
         <!-- Aplica keep-alive aquí -->
         <keep-alive
-          :exclude="['Ingresos', 'Egresos', 'OrdenCompraPage', 'Devoluciones','RolPagoMes']"
+          :exclude="[
+            'Ingresos',
+            'Egresos',
+            'OrdenCompraPage',
+            'Devoluciones',
+            'RolPagoMes',
+          ]"
         >
           <component :is="Component" />
         </keep-alive>
