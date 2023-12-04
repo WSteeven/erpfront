@@ -457,6 +457,7 @@
             'Ingresos',
             'Egresos',
             'OrdenCompraPage',
+            'PreordenCompra',
             'Devoluciones',
             'RolPagoMes',
           ]"

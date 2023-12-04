@@ -40,6 +40,7 @@ import { EmpleadoRoleController } from "pages/recursosHumanos/empleados/infraest
 
 
 export default defineComponent({
+  name: 'PreordenCompra',
   components: { TabLayoutFilterTabs2, EssentialSelectableTable, EssentialTable, ModalesEntidad, EssentialPopupEditableTable },
   setup() {
     const mixin = new ContenedorSimpleMixin(PreordenCompra, new PreordenCompraController())
