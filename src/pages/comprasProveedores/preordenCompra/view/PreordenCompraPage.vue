@@ -159,6 +159,21 @@
             </q-select>
           </div>
 
+          <!-- Causa de anulacion -->
+          <div class="col-12 col-md-9" v-if="preorden.causa_anulacion">
+            <label class="q-mb-sm block">Causa de anulación</label>
+            <q-input
+              type="textarea"
+              autogrow
+              v-model="preorden.causa_anulacion"
+              placeholder="Obligatorio"
+              :disable="disabled || soloLectura"
+              outlined
+              dense
+            >
+            </q-input>
+          </div>
+
           <!-- Tabla con popup -->
           <div class="col-12">
             <essential-popup-editable-table

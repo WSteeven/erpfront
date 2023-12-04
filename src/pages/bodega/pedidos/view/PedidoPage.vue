@@ -373,7 +373,8 @@
               options-dense
               dense
               outlined
-              :disable="disabled || store.user.id != pedido.per_autoriza_id"
+              :disable="
+                disabled ||(store.user.id != pedido.per_autoriza_id && !store.esCoordinadorBodega)"
               :option-value="(v) => v.id"
               :option-label="(v) => v.nombre"
               emit-value
