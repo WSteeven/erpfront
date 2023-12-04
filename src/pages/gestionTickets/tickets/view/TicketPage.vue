@@ -24,6 +24,11 @@
           header-class="text-bold bg-header-collapse"
           default-opened
         >
+          <q-separator></q-separator>
+          <div class="col-12 text-primary bg-body q-px-md q-py-sm q-mb-md">
+            <q-icon name="bi-ticket-detailed"></q-icon>
+            Detalles
+          </div>
           <div class="row q-col-gutter-sm q-pa-md">
             <!-- Asunto -->
             <div class="col-12 col-md-6">
@@ -131,7 +136,7 @@
               class="col-12 col-md-6"
             >
               <label class="q-mb-sm block">Responsable(s)</label>
-              <div class="row bg-grey-2 border-grey rounded-field">
+              <div class="row bg-body border-grey rounded-field">
                 <div
                   v-for="responsable in responsables"
                   :key="responsable"
@@ -217,19 +222,12 @@
             <!-- Solicitante-->
             <div class="col-12 col-md-3">
               <label class="q-mb-sm block">Solicitante</label>
-              <q-input
-                v-model="nombreUsuario"
-                outlined
-                dense
-                disable
-                autogrow
-              ></q-input>
+              <b class="q-pa-sm block">{{ nombreUsuario }}</b>
             </div>
 
             <div class="col-12 col-md-3">
               <label class="q-mb-sm block">Fecha y hora de solicitud</label>
-              <q-input v-model="fechaHoraActual" disable outlined dense>
-              </q-input>
+              <b class="q-pa-sm block">{{ fechaHoraActual }} </b>
             </div>
 
             <!-- Ticket interno -->
@@ -256,92 +254,6 @@
                 @update:model-value="toggleTicketParaMi()"
                 dense
               ></q-checkbox>
-            </div>
-
-            <div class="col-12 col-md-3">
-              <label class="q-mb-sm block"
-                >Categorías para tipo de ticket</label
-              >
-              <!--@filter="filtrarCategoriasTiposTickets" -->
-              <q-select
-                v-model="ticket.categoria_tipo_ticket"
-                :options="categoriasTiposTickets"
-                transition-show="scale"
-                transition-hide="scale"
-                hint="Obligatorio"
-                options-dense
-                dense
-                outlined
-                :disable="disabled"
-                :option-label="(item) => item.nombre"
-                :option-value="(item) => item.id"
-                use-input
-                input-debounce="0"
-                emit-value
-                map-options
-                @update:model-value="ticket.tipo_ticket = null"
-                :error="!!v$.categoria_tipo_ticket.$errors.length"
-                @blur="v$.categoria_tipo_ticket.$touch"
-              >
-                <template v-slot:no-option>
-                  <q-item>
-                    <q-item-section class="text-grey">
-                      Seleccione un departamento
-                    </q-item-section>
-                  </q-item>
-                </template>
-
-                <template v-slot:error>
-                  <div
-                    v-for="error of v$.categoria_tipo_ticket.$errors"
-                    :key="error.$uid"
-                  >
-                    <div class="error-msg">{{ error.$message }}</div>
-                  </div>
-                </template>
-              </q-select>
-            </div>
-
-            <!-- Tipo de ticket -->
-            <div class="col-12 col-md-3">
-              <label class="q-mb-sm block">Tipo de ticket</label>
-              <!-- @filter="filtrarTiposTickets" -->
-              <q-select
-                v-model="ticket.tipo_ticket"
-                :options="tiposTickets"
-                transition-show="scale"
-                transition-hide="scale"
-                hint="Obligatorio"
-                options-dense
-                dense
-                outlined
-                :disable="disabled"
-                :option-label="(item) => item.nombre"
-                :option-value="(item) => item.id"
-                use-input
-                input-debounce="0"
-                emit-value
-                map-options
-                :error="!!v$.tipo_ticket.$errors.length"
-                @blur="v$.tipo_ticket.$touch"
-              >
-                <template v-slot:no-option>
-                  <q-item>
-                    <q-item-section class="text-grey">
-                      Seleccione una categoría
-                    </q-item-section>
-                  </q-item>
-                </template>
-
-                <template v-slot:error>
-                  <div
-                    v-for="error of v$.tipo_ticket.$errors"
-                    :key="error.$uid"
-                  >
-                    <div class="error-msg">{{ error.$message }}</div>
-                  </div>
-                </template>
-              </q-select>
             </div>
 
             <div class="col-12 col-md-3">
@@ -451,7 +363,125 @@
               >
               </q-input>
             </div>
+          </div>
 
+          <q-separator v-if="destinatarios.length"></q-separator>
+          <div
+            v-if="destinatarios.length"
+            class="col-12 text-primary bg-body q-px-md q-py-sm q-mb-md"
+          >
+            <q-icon name="bi-view-list"></q-icon>
+            Categorías y tipos
+          </div>
+          <div
+            v-for="destinatario in destinatarios"
+            :key="destinatario.departamento_id"
+            class="row q-px-md q-col-gutter-sm q-mb-md"
+          >
+            <div class="col-12 col-md-3">
+              <label class="q-mb-sm block">Departamento</label>
+              <q-chip>{{ destinatario.departamento }}</q-chip>
+            </div>
+
+            <div class="col-12 col-md-3">
+              <label class="q-mb-sm block"
+                >Categorías para tipo de ticket</label
+              >
+              <q-select
+                v-model="destinatario.categoria_id"
+                :options="destinatario.categorias"
+                transition-show="scale"
+                transition-hide="scale"
+                hint="Obligatorio"
+                options-dense
+                dense
+                outlined
+                :disable="disabled"
+                :option-label="(item) => item.nombre"
+                :option-value="(item) => item.id"
+                use-input
+                input-debounce="0"
+                emit-value
+                map-options
+                @update:model-value="
+                  () => {
+                    destinatario.tipo_ticket_id = null
+                    obtenerTiposTickets(
+                      destinatario.departamento_id,
+                      destinatario.categoria_id
+                    )
+                  }
+                "
+              >
+                <!-- :error="!!v$.categoria_tipo_ticket.$errors.length"
+                @blur="v$.categoria_tipo_ticket.$touch" -->
+                <template v-slot:no-option>
+                  <q-item>
+                    <q-item-section class="text-grey">
+                      Seleccione un departamento
+                    </q-item-section>
+                  </q-item>
+                </template>
+
+                <!-- <template v-slot:error>
+                  <div
+                    v-for="error of v$.categoria_tipo_ticket.$errors"
+                    :key="error.$uid"
+                  >
+                    <div class="error-msg">{{ error.$message }}</div>
+                  </div>
+                </template> -->
+              </q-select>
+            </div>
+
+            <!-- Tipo de ticket -->
+            <div class="col-12 col-md-3">
+              <label class="q-mb-sm block">Tipo de ticket</label>
+              <q-select
+                v-model="destinatario.tipo_ticket_id"
+                :options="destinatario.tipos_tickets"
+                transition-show="scale"
+                transition-hide="scale"
+                hint="Obligatorio"
+                options-dense
+                dense
+                outlined
+                :disable="disabled"
+                :option-label="(item) => item.nombre"
+                :option-value="(item) => item.id"
+                use-input
+                input-debounce="0"
+                emit-value
+                map-options
+              >
+                <!-- :error="!!v$.tipo_ticket.$errors.length"
+                @blur="v$.tipo_ticket.$touch" -->
+                <template v-slot:no-option>
+                  <q-item>
+                    <q-item-section class="text-grey">
+                      Seleccione una categoría
+                    </q-item-section>
+                  </q-item>
+                </template>
+
+                <!-- <template v-slot:error>
+                  <div
+                    v-for="error of v$.tipo_ticket.$errors"
+                    :key="error.$uid"
+                  >
+                    <div class="error-msg">{{ error.$message }}</div>
+                  </div>
+                </template> -->
+              </q-select>
+            </div>
+          </div>
+
+          <q-separator></q-separator>
+          <div class="col-12 text-primary bg-body q-px-md q-py-sm q-mb-md">
+            <q-icon name="bi-archive"></q-icon>
+            Archivos
+          </div>
+          <div class="row q-px-md q-col-gutter-sm">
             <div class="col-12 q-mb-md">
               <archivo-seguimiento
                 ref="refArchivoTicket"

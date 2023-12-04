@@ -52,6 +52,7 @@ import { TicketController } from '../infraestructure/TicketController'
 import { useAuthenticationStore } from 'stores/authentication'
 import { TicketModales } from '../domain/TicketModales'
 import { Ticket } from '../domain/Ticket'
+import { useDestinatariosTickets } from '../application/CategoriaTipoTicket.application'
 
 export default defineComponent({
   components: {
@@ -146,8 +147,8 @@ export default defineComponent({
     **************/
     const reglas = {
       asunto: { required },
-      tipo_ticket: { required },
-      categoria_tipo_ticket: { required },
+      // tipo_ticket: { required },
+      // categoria_tipo_ticket: { required },
       descripcion: { required },
       prioridad: { required },
       responsable: { required },
@@ -185,6 +186,7 @@ export default defineComponent({
     * Funciones
     ************/
     const { btnReasignar, btnSeguimiento, btnCalificarSolicitante, btnCancelar, btnAsignar } = useBotonesTablaTicket(mixin, modalesTicket)
+    const { destinatarios, agregarDestinatario, obtenerTiposTickets, mapearIdsDestinatarios, reestablecerDestinatarios, setDestinatarios } = useDestinatariosTickets(listadosAuxiliares)
 
     async function toggleTicketInterno() {
       if (ticket.ticket_interno) {
@@ -193,6 +195,8 @@ export default defineComponent({
         responsableDeshabilitado.value = false
         ticket.ticket_para_mi = false
         ticket.departamento_responsable = [authenticationStore.user.departamento]
+        reestablecerDestinatarios()
+        agregarDestinatario(authenticationStore.user.departamento)
         await obtenerResponsables(filtroDepartamento.value)
       } else {
         departamentoDeshabilitado.value = false
@@ -205,9 +209,11 @@ export default defineComponent({
 
     function toggleTicketParaMi() {
       if (ticket.ticket_para_mi) {
-        ticket.responsable = [authenticationStore.user.id]
-        ticket.departamento_responsable = [authenticationStore.user.departamento]
         obtenerResponsables(filtroDepartamento.value)
+        ticket.departamento_responsable = [authenticationStore.user.departamento]
+        ticket.responsable = [authenticationStore.user.id]
+        reestablecerDestinatarios()
+        agregarDestinatario(authenticationStore.user.departamento)
       } else {
         ticket.departamento_responsable = []
         ticket.responsable = []
@@ -294,6 +300,8 @@ export default defineComponent({
       if (!ticket.ticket_interno && !ticket.ticket_para_mi) {
         ticket.responsable = listadosAuxiliares.departamentos?.filter((departamento: any) => ticket.departamento_responsable.includes(departamento.id)).map((departamento: any) => departamento.responsable_id)
       }
+
+      agregarDestinatario(ticket.departamento_responsable[ticket.departamento_responsable.length - 1])
     }
 
     onBeforeGuardar(() => {
@@ -301,9 +309,14 @@ export default defineComponent({
         horaLimite.value = ticket.establecer_hora_limite ? horaLimite.value : '23:59:59'
         ticket.fecha_hora_limite = formatearFechaHora(fechaLimite.value, horaLimite.value)
       }
+
+      ticket.destinatarios = mapearIdsDestinatarios()
+      ticket.responsable_id = ticket.responsable[0]
+      console.log(ticket)
     })
 
     onConsultado(() => {
+      ticket.departamento_responsable = [ticket.departamento_responsable] // ? [ticket.departamento_responsable] : []
       fechaLimite.value = ticket.fecha_hora_limite?.split(' ')[0]
       horaLimite.value = ticket.fecha_hora_limite?.split(' ')[1]
       ticket.establecer_hora_limite = !!horaLimite.value
@@ -313,6 +326,9 @@ export default defineComponent({
       refArchivoTicket.value.quiero_subir_archivos = false
       obtenerPausas()
       obtenerRechazos()
+      obtenerResponsables(filtroDepartamento.value)
+      reestablecerDestinatarios()
+      setDestinatarios(ticket.destinatarios)
     })
 
     onGuardado((id: number) => {
@@ -334,6 +350,8 @@ export default defineComponent({
       refArchivoTicket.value.quiero_subir_archivos = false
       responsableDeshabilitado.value = false
       departamentoDeshabilitado.value = false
+      pausas.value = []
+      reestablecerDestinatarios()
     })
 
     return {
@@ -390,6 +408,9 @@ export default defineComponent({
       toggleTicketParaMi,
       responsables,
       ajustarResponsablesInterno,
+      // destinatarios
+      destinatarios,
+      obtenerTiposTickets,
     }
   },
 })
