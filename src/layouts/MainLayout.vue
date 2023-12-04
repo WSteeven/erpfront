@@ -455,7 +455,7 @@
         </div>
         <!-- Aplica keep-alive aquí -->
         <keep-alive
-          :exclude="['Ingresos', 'Egresos', 'OrdenCompraPage', 'Devoluciones','RolPagoMes']"
+          :exclude="['Ingresos', 'Egresos', 'OrdenCompraPage','PreordenCompra', 'Devoluciones','RolPagoMes']"
         >
           <component :is="Component" />
         </keep-alive>
