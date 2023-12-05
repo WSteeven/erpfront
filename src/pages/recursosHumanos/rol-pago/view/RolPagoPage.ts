@@ -1,6 +1,6 @@
 // Dependencias
 import { configuracionColumnasRolPago } from '../domain/configuracionColumnasRolPago'
-import { maxValue, minValue, required } from '@vuelidate/validators'
+import { required } from '@vuelidate/validators'
 import { useVuelidate } from '@vuelidate/core'
 import { defineComponent, ref, computed, watchEffect, Ref } from 'vue'
 
@@ -13,9 +13,8 @@ import { ContenedorSimpleMixin } from 'shared/contenedor/modules/simple/applicat
 import { RolPagoController } from '../infraestructure/RolPagoController'
 import { RolPago } from '../domain/RolPago'
 import { imprimirArchivo, removeAccents } from 'shared/utils'
-import { accionesTabla, maskFecha } from 'config/utils'
+import { acciones, accionesTabla } from 'config/utils'
 import { apiConfig, endpoints } from 'config/api'
-import { MotivoPermisoEmpleadoController } from 'pages/recursosHumanos/motivo/infraestructure/MotivoPermisoEmpleadoController'
 import { EmpleadoController } from 'pages/recursosHumanos/empleados/infraestructure/EmpleadoController'
 import { Empleado } from 'pages/recursosHumanos/empleados/domain/Empleado'
 import { configuracionColumnasRolPagoTabla } from '../domain/configuracionColumnasRolPagoTabla'
@@ -27,8 +26,6 @@ import { ConceptoIngresoController } from 'pages/recursosHumanos/concepto_ingres
 import { DescuentosGenralesController } from 'pages/recursosHumanos/descuentos_generales/infraestructure/DescuentosGenralesController'
 import { DescuentosLeyController } from 'pages/recursosHumanos/descuentos_ley/infraestructure/DescuentosLeyController'
 import { MultaController } from 'pages/recursosHumanos/multas/infraestructure/MultaController'
-import { HorasExtrasTipoController } from 'pages/recursosHumanos/horas_extras_tipo/infraestructure/HorasExtrasTipoController'
-import { HorasExtrasSubTipoController } from 'pages/recursosHumanos/horas_extras_subtipo/infraestructure/HorasExtrasSubTipoController'
 import { HorasExtrasSubTipo } from 'pages/recursosHumanos/horas_extras_subtipo/domain/HorasExtrasSubTipo'
 import { useAuthenticationStore } from 'stores/authentication'
 import { CustomActionTable } from 'components/tables/domain/CustomActionTable'
@@ -37,12 +34,11 @@ import { LocalStorage, useQuasar } from 'quasar'
 import ButtonSubmits from 'components/buttonSubmits/buttonSubmits.vue'
 import { useRolPagoStore } from 'stores/rolPago'
 import { useNotificacionStore } from 'stores/notificacion'
-import { useNotificaciones } from 'shared/notificaciones'
-import { ComportamientoModalesRolPago } from '../aplication/ComportamientoModalesRolPago'
 import GestorDocumentos from 'components/documentos/view/GestorDocumentos.vue'
 import { ArchivoRolPagoController } from '../infraestructure/ArchivoRolPagoController'
 import { Archivo } from 'pages/gestionTrabajos/subtareas/modules/gestorArchivosTrabajos/domain/Archivo'
 import { useRecursosHumanosStore } from 'stores/recursosHumanos'
+import { configuracionColumnasEgresoRolPago } from '../domain/configuracionColumnasEgresoRolPago'
 
 export default defineComponent({
   components: {
@@ -77,7 +73,6 @@ export default defineComponent({
       entidad: rolpago,
       listadosAuxiliares,
       accion,
-      listado,
       disabled,
     } = mixin.useReferencias()
     const {
@@ -89,7 +84,7 @@ export default defineComponent({
       reestablecer,
       setValidador,
     } = mixin.useComportamiento()
-    const { onBeforeGuardar, onConsultado, onGuardado } = mixin.useHooks()
+    const { onConsultado } = mixin.useHooks()
     const refArchivoRolPago = ref()
     cargarVista(async () => {
       await obtenerListados({
@@ -97,14 +92,16 @@ export default defineComponent({
           controller: new EmpleadoController(),
           params: { campos: 'id,nombres,apellidos', estado: 1 },
         },
+        descuentos_generales: {
+          controller: new DescuentosGenralesController(),
+          params: {},
+        },
       })
       empleados.value = listadosAuxiliares.empleados
       concepto_ingresos.value = (
         await new ConceptoIngresoController().listar()
       ).result
-      descuentos_generales.value = (
-        await new DescuentosGenralesController().listar()
-      ).result
+      descuentos_generales.value = listadosAuxiliares.descuentos_generales
       descuentos_ley.value = (
         await new DescuentosLeyController().listar()
       ).result
@@ -137,8 +134,6 @@ export default defineComponent({
     /************
      * Variables
      ************/
-    const { notificarError, notificarCorrecto, notificarAdvertencia } =
-      useNotificaciones()
     const concepto_ingresos: Ref<ConceptoIngreso[]> = ref([])
     const descuentos_generales = ref([])
     const horas_extras_tipos = ref([])
@@ -187,11 +182,6 @@ export default defineComponent({
       obtener_datos_empleado('SALARIO')
       obtener_datos_empleado('PERMISOS_SIN_RECUPERAR')
     }
-
-    /**********
-     * Modales
-     **********/
-    const modales = new ComportamientoModalesRolPago()
 
     /*********
      * Filtros
@@ -262,8 +252,6 @@ export default defineComponent({
       }
     })
 
-    let idSubtarea: any
-
     async function guardarDatos(rolpago: RolPago) {
       try {
         let entidad: RolPago = new RolPago()
@@ -295,7 +283,7 @@ export default defineComponent({
     setValidador(v$.value)
 
     /**Verifica si es un mes */
-    function checkValue(val, reason, details) {
+    function checkValue(reason) {
       is_month.value = reason === 'month' ? false : true
     }
 
@@ -552,6 +540,22 @@ export default defineComponent({
         indice_egreso.value = indice_egreso_busqueda
       }
     }
+    function obtener_egreso(tipo: string, id: number) {
+      let egreso
+      switch (tipo) {
+        case 'DESCUENTO_GENERAL':
+          egreso = listadosAuxiliares.descuentos_generales.filter(
+            (v) => v.id == id
+          )[0]
+          break
+        case 'MULTA':
+          egreso = listadosAuxiliares.multas.filter((v) => v.id == id)[0]
+          break
+        default:
+          break
+      }
+      return egreso
+    }
     function verificar_descuento_ley() {
       rolpago.egreso = null
       rolpago.descuento_general = null
@@ -696,6 +700,7 @@ export default defineComponent({
         rolpago.egresos.push({
           tipo: tipo_descuento.value,
           id_descuento: id_descuento,
+          descuento:obtener_egreso(tipo_descuento.value, id_descuento).nombre,
           id_empleado: rolpago.empleado,
           mes: rolpago.mes,
           monto: rolpago.egreso,
@@ -708,7 +713,7 @@ export default defineComponent({
       titulo: ' ',
       icono: 'bi-printer',
       color: 'primary',
-      visible: ({ entidad }) => esRecursosHumanos,
+      visible: () => esRecursosHumanos,
       accion: ({ entidad }) => {
         generar_reporte(entidad)
       },
@@ -740,17 +745,18 @@ export default defineComponent({
           total_sueldo = sueldo
           break
         default:
-          if(rolpago.es_vendedor_medio_tiempo){
-            const porcentaje = rolpago.porcentaje_quincena!=null?rolpago.porcentaje_quincena:0
+          if (rolpago.es_vendedor_medio_tiempo) {
+            const porcentaje =
+              rolpago.porcentaje_quincena != null
+                ? rolpago.porcentaje_quincena
+                : 0
             total_sueldo =
-            rolpago.es_quincena == true
-              ? (sueldo * porcentaje) / 100
-              : sueldo
-          }else{
+              rolpago.es_quincena == true ? (sueldo * porcentaje) / 100 : sueldo
+          } else {
             total_sueldo =
-            rolpago.es_quincena == true
-              ? (sueldo * recursosHumanosStore.porcentajeAnticipo) / 100
-              : sueldo
+              rolpago.es_quincena == true
+                ? (sueldo * recursosHumanosStore.porcentajeAnticipo) / 100
+                : sueldo
           }
 
           break
@@ -803,9 +809,11 @@ export default defineComponent({
       v$,
       disabled,
       configuracionColumnasRolPagoTabla,
+      configuracionColumnasEgresoRolPago,
       configuracionColumnas: configuracionColumnasRolPago,
       endpoint: endpoints.archivo_rol_pago,
       accion,
+      acciones,
       accionesTabla,
     }
   },

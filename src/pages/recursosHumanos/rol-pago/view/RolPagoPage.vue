@@ -128,7 +128,7 @@
           :disable="disabled"
         />
       </div>
-       <!-- Medio Tiempo -->
+       <!-- Vendedor Medio Tiempo -->
        <div class="col-12 col-md-3">
         <label class="q-mb-sm block">Vendedor Trabaja Medio tiempo</label>
         <q-toggle
@@ -154,6 +154,7 @@
         >
         </q-input>
       </div>
+      <!-- Porcentaje Anticipo -->
       <div class="col-12 col-md-3" v-if="rolpago.es_vendedor_medio_tiempo && rolpago.es_quincena">
         <label class="q-mb-sm block">Porcentaje Quincena</label>
         <q-input
@@ -334,6 +335,7 @@
           </q-input>
         </div>
       </div>
+
     </q-expansion-item>
     <q-expansion-item
       v-if="!rolpago.es_quincena"
@@ -445,6 +447,18 @@
           </q-input>
         </div>
       </div>
+      <div v-if="rolpago.egresos.length>0">
+        <essential-table
+      titulo="Egresos"
+      :configuracionColumnas="accion==acciones.editar?[...configuracionColumnasEgresoRolPago, accionesTabla]:[...configuracionColumnasEgresoRolPago]"
+      :datos="rolpago.egresos"
+      :permitirConsultar="false"
+      :permitirEditar="true"
+      :permitirEliminar="true"
+      >
+    </essential-table>
+      </div>
+
     </q-expansion-item>
     <div class="row justify-end q-col-gutter-x-xs">
       <button-submits

@@ -8,7 +8,7 @@ import { StatusEssentialLoading } from 'components/loading/application/StatusEss
 import { AxiosHttpRepository } from 'shared/http/infraestructure/AxiosHttpRepository'
 import { configuracionColumnasTicket } from '../domain/configuracionColumnasTicket'
 import { accionesTabla, maskFecha } from 'config/utils'
-import { computed, defineComponent, ref } from 'vue'
+import { computed, defineComponent, ref, watch } from 'vue'
 import { useCargandoStore } from 'stores/cargando'
 import { required } from 'shared/i18n-validators'
 import { useTareaStore } from 'stores/tarea'
@@ -52,6 +52,7 @@ import { TicketController } from '../infraestructure/TicketController'
 import { useAuthenticationStore } from 'stores/authentication'
 import { TicketModales } from '../domain/TicketModales'
 import { Ticket } from '../domain/Ticket'
+import { useDestinatariosTickets } from '../application/CategoriaTipoTicket.application'
 
 export default defineComponent({
   components: {
@@ -146,8 +147,8 @@ export default defineComponent({
     **************/
     const reglas = {
       asunto: { required },
-      tipo_ticket: { required },
-      categoria_tipo_ticket: { required },
+      // tipo_ticket: { required },
+      // categoria_tipo_ticket: { required },
       descripcion: { required },
       prioridad: { required },
       responsable: { required },
@@ -185,14 +186,19 @@ export default defineComponent({
     * Funciones
     ************/
     const { btnReasignar, btnSeguimiento, btnCalificarSolicitante, btnCancelar, btnAsignar } = useBotonesTablaTicket(mixin, modalesTicket)
+    const { destinatarios, agregarDestinatario, quitarDestinatario, obtenerTiposTickets, mapearIdsDestinatarios, reestablecerDestinatarios, setDestinatarios } = useDestinatariosTickets(listadosAuxiliares)
 
     async function toggleTicketInterno() {
+
+
       if (ticket.ticket_interno) {
         ticket.responsable = []
         departamentoDeshabilitado.value = true
         responsableDeshabilitado.value = false
         ticket.ticket_para_mi = false
         ticket.departamento_responsable = [authenticationStore.user.departamento]
+        reestablecerDestinatarios()
+        agregarDestinatario(authenticationStore.user.departamento)
         await obtenerResponsables(filtroDepartamento.value)
       } else {
         departamentoDeshabilitado.value = false
@@ -200,19 +206,23 @@ export default defineComponent({
         empleados.value = []
         ticket.departamento_responsable = []
         ticket.responsable = []
+        reestablecerDestinatarios()
       }
     }
 
     function toggleTicketParaMi() {
       if (ticket.ticket_para_mi) {
-        ticket.responsable = [authenticationStore.user.id]
-        ticket.departamento_responsable = [authenticationStore.user.departamento]
         obtenerResponsables(filtroDepartamento.value)
+        ticket.departamento_responsable = [authenticationStore.user.departamento]
+        ticket.responsable = [authenticationStore.user.id]
+        reestablecerDestinatarios()
+        agregarDestinatario(authenticationStore.user.departamento)
       } else {
         ticket.departamento_responsable = []
         ticket.responsable = []
         listadosAuxiliares.empleados = []
         empleados.value = []
+        reestablecerDestinatarios()
       }
 
       responsableDeshabilitado.value = ticket.ticket_para_mi
@@ -287,6 +297,20 @@ export default defineComponent({
       modalesTicket.cerrarModalEntidad()
     }
 
+    /*************
+     * Observers
+     *************/
+    /* watch(computed(() => ticket.departamento_responsable), () => {
+
+    }) */
+    function agregarDepartamento(data) {
+      console.log(data)
+      agregarDestinatario(data.value)
+    }
+
+    function quitarDepartamento(data) {
+      quitarDestinatario(data.value)
+    }
     /*********
      * Hooks
      *********/
@@ -301,9 +325,14 @@ export default defineComponent({
         horaLimite.value = ticket.establecer_hora_limite ? horaLimite.value : '23:59:59'
         ticket.fecha_hora_limite = formatearFechaHora(fechaLimite.value, horaLimite.value)
       }
+
+      ticket.destinatarios = mapearIdsDestinatarios()
+      ticket.responsable_id = ticket.responsable[0]
+      console.log(ticket)
     })
 
     onConsultado(() => {
+      ticket.departamento_responsable = [ticket.departamento_responsable] // ? [ticket.departamento_responsable] : []
       fechaLimite.value = ticket.fecha_hora_limite?.split(' ')[0]
       horaLimite.value = ticket.fecha_hora_limite?.split(' ')[1]
       ticket.establecer_hora_limite = !!horaLimite.value
@@ -313,6 +342,9 @@ export default defineComponent({
       refArchivoTicket.value.quiero_subir_archivos = false
       obtenerPausas()
       obtenerRechazos()
+      obtenerResponsables(filtroDepartamento.value)
+      reestablecerDestinatarios()
+      setDestinatarios(ticket.destinatarios)
     })
 
     onGuardado((id: number) => {
@@ -334,6 +366,8 @@ export default defineComponent({
       refArchivoTicket.value.quiero_subir_archivos = false
       responsableDeshabilitado.value = false
       departamentoDeshabilitado.value = false
+      pausas.value = []
+      reestablecerDestinatarios()
     })
 
     return {
@@ -390,6 +424,11 @@ export default defineComponent({
       toggleTicketParaMi,
       responsables,
       ajustarResponsablesInterno,
+      // destinatarios
+      destinatarios,
+      obtenerTiposTickets,
+      agregarDepartamento,
+      quitarDepartamento,
     }
   },
 })

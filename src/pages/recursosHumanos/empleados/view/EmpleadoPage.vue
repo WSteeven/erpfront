@@ -26,7 +26,7 @@
               <q-input
                 v-model="empleado.usuario"
                 placeholder="Obligatorio"
-                :disable="disabled"
+                disable
                 :error="!!v$.usuario.$errors.length"
                 @blur="v$.usuario.$touch"
                 outlined
@@ -46,7 +46,7 @@
                 type="email"
                 v-model="empleado.email"
                 placeholder="Obligatorio"
-                :disable="disabled"
+                disable
                 :error="!!v$.email.$errors.length"
                 @blur="v$.email.$touch"
                 @update:model-value="(v) => (empleado.email = v.toLowerCase())"
