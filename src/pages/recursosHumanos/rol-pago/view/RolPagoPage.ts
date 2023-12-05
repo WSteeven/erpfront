@@ -39,6 +39,8 @@ import { ArchivoRolPagoController } from '../infraestructure/ArchivoRolPagoContr
 import { Archivo } from 'pages/gestionTrabajos/subtareas/modules/gestorArchivosTrabajos/domain/Archivo'
 import { useRecursosHumanosStore } from 'stores/recursosHumanos'
 import { configuracionColumnasEgresoRolPago } from '../domain/configuracionColumnasEgresoRolPago'
+import { EgresoRolPago } from '../domain/EgresoRolPago'
+import { EgresoRolPagoController } from '../infraestructure/EgresoRolPagoController'
 
 export default defineComponent({
   components: {
@@ -58,6 +60,10 @@ export default defineComponent({
       Archivo,
       new ArchivoRolPagoController()
     )
+
+    const mixinEgresoRolPago = new ContenedorSimpleMixin(EgresoRolPago, new EgresoRolPagoController())
+    const { eliminar } =
+    mixinEgresoRolPago.useComportamiento()
 
     /*********
      * Stores
@@ -96,6 +102,10 @@ export default defineComponent({
           controller: new DescuentosGenralesController(),
           params: {},
         },
+        multas: {
+          controller: new MultaController(),
+          params: {},
+        },
       })
       empleados.value = listadosAuxiliares.empleados
       concepto_ingresos.value = (
@@ -105,7 +115,7 @@ export default defineComponent({
       descuentos_ley.value = (
         await new DescuentosLeyController().listar()
       ).result
-      multas.value = (await new MultaController().listar()).result
+      multas.value = listadosAuxiliares.multas
       horas_extras_tipos.value =
         LocalStorage.getItem('horas_extras_tipos') == null
           ? []
@@ -700,7 +710,7 @@ export default defineComponent({
         rolpago.egresos.push({
           tipo: tipo_descuento.value,
           id_descuento: id_descuento,
-          descuento:obtener_egreso(tipo_descuento.value, id_descuento).nombre,
+          descuento: obtener_egreso(tipo_descuento.value, id_descuento).nombre,
           id_empleado: rolpago.empleado,
           mes: rolpago.mes,
           monto: rolpago.egreso,
@@ -718,6 +728,47 @@ export default defineComponent({
         generar_reporte(entidad)
       },
     }
+
+    const btnEditarEgreso: CustomActionTable = {
+      titulo: 'Editar',
+      icono: 'bi-pencil',
+      color: 'warning',
+      visible: () => true,
+      accion: ({ entidad }) => {
+        switch (entidad.tipo) {
+          case 'DESCUENTO_GENERAL':
+            rolpago.descuento_general = entidad.id_descuento
+            rolpago.multa =null
+            break
+          case 'MULTA':
+            rolpago.multa = entidad.id_descuento
+            rolpago.descuento_general =null
+            break
+          default:
+            break
+        }
+        buscar_egreso(
+          entidad.tipo,
+          rolpago.descuento_general != null ? rolpago.descuento_general : 0
+        )
+      },
+    }
+    const btnEliminarEgreso: CustomActionTable = {
+      titulo: 'Eliminar',
+      icono: 'bi-trash',
+      color: 'negative',
+      visible: () => true,
+      accion: ({ entidad,posicion }) => {
+        if(entidad.id == undefined ){
+          rolpago.egresos.splice(posicion, 1)
+        }else{
+          eliminar(entidad)
+          rolpago.egresos.splice(posicion, 1)
+        }
+
+      },
+    }
+
     async function generar_reporte(valor: RolPago): Promise<void> {
       const axios = AxiosHttpRepository.getInstance()
       const filename = 'rol_pago'
@@ -781,6 +832,7 @@ export default defineComponent({
       empleados,
       imprimir,
       mixinRolPago,
+      mixinEgresoRolPago,
       refArchivoRolPago,
       guardarDatos,
       reestablecerDatos,
@@ -803,6 +855,8 @@ export default defineComponent({
       verificar_descuento_general,
       verificar_descuento_ley,
       verificar_multa,
+      btnEditarEgreso,
+      btnEliminarEgreso,
       es_seleccionable_descuento_general,
       es_seleccionable_descuento_ley,
       es_seleccionable_multa,

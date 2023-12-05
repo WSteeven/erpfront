@@ -453,8 +453,11 @@
       :configuracionColumnas="accion==acciones.editar?[...configuracionColumnasEgresoRolPago, accionesTabla]:[...configuracionColumnasEgresoRolPago]"
       :datos="rolpago.egresos"
       :permitirConsultar="false"
-      :permitirEditar="true"
-      :permitirEliminar="true"
+      :permitirEditar="false"
+      :permitirEliminar="false"
+      :altoFijo="false"
+      :accion1="btnEditarEgreso"
+      :accion2="btnEliminarEgreso"
       >
     </essential-table>
       </div>
