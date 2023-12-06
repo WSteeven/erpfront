@@ -204,7 +204,7 @@
           <!-- Responsable -->
           <div
             v-if="
-              (esCoordinador && !pedido.para_cliente) ||
+              ((esCoordinador||esCoordinadorBackup) && !pedido.para_cliente) ||
               (esRRHH && !pedido.para_cliente) ||
               (!esTecnico && !pedido.para_cliente)
             "
