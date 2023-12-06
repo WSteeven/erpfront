@@ -152,6 +152,7 @@
                 :disable="disabled"
                 :error="!!v$.apellidos.$errors.length"
                 @blur="v$.apellidos.$touch"
+                @focus="obtenerUsername()"
                 outlined
                 dense
               >
