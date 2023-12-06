@@ -59,6 +59,7 @@ export const endpoints = {
   anticipo: new Endpoint('recursos-humanos/anticipo'),
   rol_pago: new Endpoint('recursos-humanos/rol_pago'),
   egreso_rol_pago: new Endpoint('recursos-humanos/egreso_rol_pago'),
+  ingreso_rol_pago: new Endpoint('recursos-humanos/ingreso_rol_pago'),
   rol_pago_mes: new Endpoint('recursos-humanos/rol_pago_mes'),
   banco: new Endpoint('recursos-humanos/banco'),
   datos_empleado: new Endpoint('recursos-humanos/datos_empleado/'),
