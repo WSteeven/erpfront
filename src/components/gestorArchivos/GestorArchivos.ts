@@ -48,6 +48,7 @@ export default defineComponent({
       required: false,
     },
   },
+  emits:['inicializado'],
   setup(props, { emit }) {
     /********
      * Mixin
