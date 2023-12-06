@@ -1,16 +1,17 @@
 import { EntidadAuditable } from 'shared/entidad/domain/entidadAuditable'
 export class ValorAcreditar extends EntidadAuditable {
-  id: number | null;
+  id: number | null
   empleado: number | null
   empleado_info: string | null
-  acreditacion_semana: number  | null
+  acreditacion_semana: number | null
   acreditacion_semana_info: string | null
   monto_generado: number | null
   monto_modificado: number | null
   saldo_empleado: number | null
   umbral_empleado: number | null
   es_acreditado: boolean | null
-
+  estado: boolean | null
+  motivo: string | null
   constructor() {
     super()
     this.id = null
@@ -22,7 +23,8 @@ export class ValorAcreditar extends EntidadAuditable {
     this.monto_modificado = null
     this.saldo_empleado = null
     this.umbral_empleado = null
-    this.es_acreditado=null
-
+    this.es_acreditado = null
+    this.estado = true
+    this.motivo = null
   }
 }

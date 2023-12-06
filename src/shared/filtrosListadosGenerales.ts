@@ -178,7 +178,7 @@ export const useFiltrosListadosSelects = (listadosAuxiliares, entidad?: Ref<any>
     }
     update(() => {
       const needle = val.toLowerCase()
-      if (listadosAuxiliares.proveedores) proveedores.value = listadosAuxiliares.proveedores.filter((v) => v.razon_social.toLowerCase().indexOf(needle) > -1 || v.sucursal.toLowerCase().indexOf(needle) > -1)
+      if (listadosAuxiliares.proveedores) proveedores.value = listadosAuxiliares.proveedores.filter((v) => v.razon_social.toLowerCase().indexOf(needle) > -1 || v.sucursal.toLowerCase().indexOf(needle) > -1||v.nombre_comercial?.toLowerCase().indexOf(needle) > -1)
     })
   }
 

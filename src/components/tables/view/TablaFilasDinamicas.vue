@@ -19,6 +19,7 @@
     :entidad="entidad"
     :editarFilaLocal="editarFilaLocal"
     @guardarFila="(fila) => emit('guardar-fila', fila)"
+    :ajustar-celdas="true"
   ></essential-table>
 </template>
 

@@ -13,6 +13,7 @@ export class Proveedor extends EntidadAuditable {
   celular: string | null
   sitio_web: string | null
   telefono: string | null
+  correo: string | null
   contactos: any[]
 
   referencia: string | null
@@ -53,6 +54,7 @@ export class Proveedor extends EntidadAuditable {
     this.direccion = null
     this.celular = null
     this.telefono = null
+    this.correo = null
     this.sitio_web = null
     this.contactos = []
     this.tipos_ofrece = []

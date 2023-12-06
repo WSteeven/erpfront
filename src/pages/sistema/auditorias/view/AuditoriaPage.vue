@@ -163,7 +163,7 @@
               }`"
             >
               <p>
-                Modelo afectado: <strong> {{ l.auditable_type }}</strong>
+                Modelo afectado: <strong> {{ l.auditable_type }}</strong> <br/> Url: {{ l.url }}
               </p>
               <p>
                 Id de registro: {{ l.auditable_id }} <br />Ingreso desde:

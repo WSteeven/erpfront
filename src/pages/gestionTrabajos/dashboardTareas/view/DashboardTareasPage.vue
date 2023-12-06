@@ -1,13 +1,13 @@
 <template>
   <q-page padding>
     <q-card class="q-mb-md rounded no-border custom-shadow">
-      <div class="row bg-body text-bold q-pa-md rounded q-mb-lg">
-        Análisis de datos: Módulo de tareas
-      </div>
-
       <q-card-section>
+        <div class="border-1 text-primary text-bold q-mb-lg">
+          <q-icon name="bi-graph-up-arrow" class="q-mr-sm"></q-icon>
+          Análisis de datos: Módulo de tareas
+        </div>
         <!-- Tiempos -->
-        <div class="row q-col-gutter-sm q-mb-md">
+        <div class="row q-col-gutter-sm">
           <div class="col-12 col-md-3">
             <label class="q-mb-sm block">Fecha de inicio</label>
             <q-input
@@ -137,22 +137,23 @@
 
     <q-card
       v-if="mostrarTitulosSeccion"
-      class="q-mb-md rounded no-border custom-shadow"
+      class="q-mb-md rounded no-border custom-shadow q-pa-md"
     >
       <div
         v-if="mostrarTitulosSeccion"
-        class="row bg-body text-bold q-pa-md rounded text-primary block text-center q-mb-lg"
+        class="row text-bold text-primary rounded items-center"
       >
-        Datos generales
+        <q-icon name="bi-graph-up-arrow" class="q-mr-sm"></q-icon>
+        Información de tareas activas y subtareas creadas
       </div>
 
       <q-card-section>
-        <div class="row q-col-gutter-sm q-mb-lg">
+        <div class="row q-col-gutter-sm">
           <div class="col-12 col-md-6 q-mb-lg">
             <div class="row q-col-gutter-xs">
               <div v-if="cantidadTareasActivas >= 0" class="col-12">
                 <q-card
-                  class="rounded-card text-white no-border custom-shadow q-pa-md text-center cursor-pointer q-card-hover q-card-press"
+                  class="rounded-card text-white q-pa-md text-center"
                   style="background-color: #bc98f3"
                 >
                   <div class="text-h3 q-mb-md">
@@ -164,7 +165,7 @@
 
               <div v-if="cantidadTareasFinalizadas >= 0" class="col-12">
                 <q-card
-                  class="rounded-card text-white no-border custom-shadow q-pa-md text-center cursor-pointer q-card-hover q-card-press bg-positive"
+                  class="rounded-card text-white q-pa-md text-center bg-positive"
                 >
                   <div class="text-h3 q-mb-md">
                     {{ cantidadTareasFinalizadas }}
@@ -180,7 +181,7 @@
             <div class="row q-col-gutter-xs">
               <div class="col-12">
                 <q-card
-                  class="rounded-card custom-shadow text-white no-border q-pa-md text-center full-height cursor-pointer q-card-hover q-card-press bg-primary"
+                  class="rounded-card text-white q-pa-md text-center full-height bg-primary"
                 >
                   <div class="text-h3 q-mb-md">
                     {{ totalSubtareas }}
@@ -193,9 +194,7 @@
                 v-if="cantidadSubtareasAgendadas >= 0"
                 class="col-6 col-md-3"
               >
-                <q-card
-                  class="rounded-card custom-shadow no-border q-pa-md text-center full-height cursor-pointer q-card-hover"
-                >
+                <q-card class="rounded-card q-pa-md text-center full-height">
                   <div class="text-h3 text-primary q-mb-md">
                     {{ cantidadSubtareasAgendadas }}
                   </div>
@@ -208,7 +207,7 @@
                 class="col-6 col-md-3"
               >
                 <q-card
-                  class="rounded-card text-white custom-shadow no-border q-pa-md text-center full-height bg-negative cursor-pointer q-card-hover"
+                  class="rounded-card text-white q-pa-md text-center full-height bg-pink-10"
                 >
                   <div class="text-h3 q-mb-md">
                     {{ cantidadSubtareasCanceladas }}
@@ -221,9 +220,7 @@
                 v-if="cantidadSubtareasEjecutadas >= 0"
                 class="col-6 col-md-3"
               >
-                <q-card
-                  class="rounded-card custom-shadow no-border q-pa-md text-center full-height q-card-hover"
-                >
+                <q-card class="rounded-card q-pa-md text-center full-height">
                   <div class="text-h3 text-primary q-mb-md">
                     {{ cantidadSubtareasEjecutadas }}
                   </div>
@@ -232,9 +229,7 @@
               </div>
 
               <div v-if="cantidadSubtareasPausadas >= 0" class="col-6 col-md-3">
-                <q-card
-                  class="rounded-card custom-shadow no-border q-pa-md text-center full-height q-card-hover"
-                >
+                <q-card class="rounded-card q-pa-md text-center full-height">
                   <div class="text-h3 text-primary q-mb-md">
                     {{ cantidadSubtareasPausadas }}
                   </div>
@@ -246,9 +241,7 @@
                 v-if="cantidadSubtareasSuspendidas >= 0"
                 class="col-6 col-md-3"
               >
-                <q-card
-                  class="rounded-card custom-shadow no-border q-pa-md text-center full-height q-card-hover"
-                >
+                <q-card class="rounded-card q-pa-md text-center full-height">
                   <div class="text-h3 text-primary q-mb-md">
                     {{ cantidadSubtareasSuspendidas }}
                   </div>
@@ -260,9 +253,7 @@
                 v-if="cantidadSubtareasRealizadas >= 0"
                 class="col-6 col-md-3"
               >
-                <q-card
-                  class="rounded-card no-border custom-shadow q-pa-md text-center q-card-hover"
-                >
+                <q-card class="rounded-card q-pa-md text-center">
                   <div class="text-h3 text-primary q-mb-md">
                     {{ cantidadSubtareasRealizadas }}
                   </div>
@@ -274,9 +265,7 @@
                 v-if="cantidadSubtareasFinalizadas >= 0"
                 class="col-6 col-md-3"
               >
-                <q-card
-                  class="rounded-card custom-shadow no-border q-pa-md text-center q-card-hover"
-                >
+                <q-card class="rounded-card q-pa-md text-center">
                   <div class="text-h3 text-primary q-mb-md">
                     {{ cantidadSubtareasFinalizadas }}
                   </div>
@@ -290,16 +279,60 @@
     </q-card>
 
     <q-card
+      v-if="graficoLineaTiempoSubtareasRealizadasCoordinador"
+      class="q-mb-md rounded q-pa-md no-border custom-shadow"
+    >
+      <div
+        v-if="mostrarTitulosSeccion"
+        class="row text-bold text-primary rounded items-center q-mb-lg"
+      >
+        <q-icon name="bi-graph-up-arrow" class="q-mr-sm"></q-icon>
+        Linea de tiempo de las tareas finalizadas
+      </div>
+
+      <div class="row q-px-md q-col-gutter-x-sm">
+        <div class="col-12 text-center q-mb-md">
+          <label class="text-bold q-mb-md block"
+            >Tiempo transcurrido desde la ejecución hasta la realización de las
+            subtareas</label
+          >
+          <div>
+            <grafico-generico
+              :data="graficoLineaTiempoSubtareasRealizadasCoordinador"
+              :options="optionsLine"
+              tipo="line"
+              @click="(data) => clickGraficoLineaTiempo(data)"
+            />
+          </div>
+        </div>
+
+        <div class="col-12 text-center">
+          <label class="text-bold q-mb-md block"
+            >Tiempo transcurrido desde la realización hasta la finalización de
+            las subtareas</label
+          >
+          <div>
+            <grafico-generico
+              :data="graficoLineaTiempoSubtareasFinalizadasCoordinador"
+              :options="optionsLine"
+              tipo="line"
+              @click="(data) => clickGraficoLineaTiempo(data)"
+            />
+          </div>
+        </div>
+      </div>
+    </q-card>
+
+    <q-card
       v-if="mostrarTitulosSeccion"
       class="q-mb-md rounded no-border custom-shadow"
     >
       <div
         v-if="mostrarTitulosSeccion"
-        class="row bg-body text-bold q-pa-md rounded justify-center q-mb-md"
+        class="row text-bold text-primary q-pa-md rounded items-center"
       >
-        <span class="text-primary"
-          >Gráficos estadísticos del coordinador consultado</span
-        >
+        <q-icon name="bi-pie-chart" class="q-mr-sm"></q-icon>
+        Estados de las subtareas del coordinador consultado
       </div>
 
       <q-tab-panels
@@ -374,10 +407,13 @@
       class="q-mb-md rounded no-border custom-shadow"
     >
       <div
-        class="row bg-body text-bold q-pa-md rounded block text-center text-primary q-mb-md"
+        v-if="mostrarTitulosSeccion"
+        class="row text-bold text-primary q-pa-md rounded items-center"
       >
-        Gráficos estadísticos de los empleados subordinados
+        <q-icon name="bi-pie-chart" class="q-mr-sm"></q-icon>
+        Estados de las subtareas de los empleados subordinados
       </div>
+
       <!-- <q-card-section> -->
       <q-tab-panels
         v-model="tabsSubordinados"
@@ -392,12 +428,11 @@
             <div class="col-12">
               <q-btn-toggle
                 v-model="tipoFiltroSubordinados"
-                class="toggle-button-primary q-mb-md"
+                class="toggle-button-grey q-mb-md"
                 spread
                 no-caps
                 rounded
-                glossy
-                toggle-color="primary"
+                toggle-color="grey-8"
                 unelevated
                 :options="[
                   {
@@ -434,7 +469,7 @@
 
           <div
             v-if="tipoFiltroSubordinados === modosAsignacionTrabajo.por_grupo"
-            class="q-col-gutter-y-xl q-col-gutter-x-xs"
+            class="q-col-gutter-y-xl q-col-gutter-x-md"
             :class="{ row: !modoUnaColumna, column: modoUnaColumna }"
           >
             <!-- Agendados -->
@@ -572,9 +607,7 @@
 
             <!-- Finalizados -->
             <div v-if="finalizados.length" class="col-12 col-md-6 text-center">
-              <div class="text-subtitle2 bg-body rounded q-mb-lg">
-                Finalizados
-              </div>
+              <div class="text-subtitle2 q-mb-lg">Finalizados</div>
               <div>
                 <grafico-generico
                   v-if="finalizados.length"
@@ -862,6 +895,7 @@
     <modales-entidad
       :comportamiento="modalesSubtarea"
       :mixin-modal="mixinSubtarea"
+      :persistente="false"
     />
   </q-page>
 </template>

@@ -10,6 +10,7 @@ import { useMenuStore } from 'src/stores/menu'
 import { useRoute, useRouter } from 'vue-router'
 import Swal from 'sweetalert2'
 import moment from 'moment'
+import { Quasar } from 'quasar'
 
 // Componentes
 import ScrollToTopButton from 'components/buttonSubmits/ScrollToTopButton.vue'
@@ -49,6 +50,7 @@ export default defineComponent({
      *********/
     const authenticationStore = useAuthenticationStore()
     const movilizacionSubtareaStore = useMovilizacionSubtareaStore()
+    const configuracionGeneralStore = useConfiguracionGeneralStore()
 
     /*******
      * Init
@@ -68,7 +70,6 @@ export default defineComponent({
         }
       });
     }
-
 
     /************
      * Variables
@@ -153,7 +154,8 @@ export default defineComponent({
       return notificacionesAgrupadasYOrdenadas
     }
 
-    watchEffect(() => document.title = (notificaciones.value.length ? `(${notificaciones.value.length})` : '') + ' JPCONSTRUCRED')
+    const nombreEmpresa = computed(() => configuracionGeneralStore.configuracion?.nombre_empresa)
+    watchEffect(() => document.title = (notificaciones.value.length ? `(${notificaciones.value.length})` : '') + ' ' + nombreEmpresa.value)
 
     async function marcarLeida(id) {
       notificacionesPusherStore.idNotificacion = id
@@ -245,8 +247,9 @@ export default defineComponent({
       LocalStorage.remove('lastActivity')
     }
 
-    const configuracionGeneralStore = useConfiguracionGeneralStore()
-    configuracionGeneralStore.consultarConfiguracion()
+    // Establecer favicon
+    configuracionGeneralStore.consultarConfiguracion().then(() =>
+      configuracionGeneralStore.cambiarFavicon())
 
     return {
       // logoClaro: `${process.env.API_URL}/storage/configuracion_general/logo_claro.jpeg`,

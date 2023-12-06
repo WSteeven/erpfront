@@ -8,7 +8,8 @@
     </div>
 
     <q-card class="rounded custom-shadow no-border">
-      <div class="row bg-body text-bold text-grey-10 q-pa-md rounded">
+      <div class="row text-bold text-primary q-pa-md items-center">
+        <q-icon name="bi-house-gear-fill" class="q-mr-sm"></q-icon>
         Configuración general
       </div>
 
@@ -109,6 +110,18 @@
               </q-input>
             </div>
 
+            <!-- nombre empresa -->
+            <div class="col-12 col-md-4">
+              <label class="q-mb-sm block">Nombre Empresa</label>
+              <q-input
+                v-model="configuracion.nombre_empresa"
+                placeholder="Obligatorio"
+                outlined
+                dense
+              >
+              </q-input>
+            </div>
+
             <!-- direccion -->
             <div class="col-12 col-md-4">
               <label class="q-mb-sm block">Direccion</label>
@@ -163,7 +176,7 @@
             </div>
 
             <!-- celular -->
-            <div class="col-12 col-md-4">
+            <div class="col-12 col-md-2">
               <label class="q-mb-sm block">Celular</label>
               <q-input
                 v-model="configuracion.celular1"
@@ -177,7 +190,7 @@
             </div>
 
             <!-- Celular 2 -->
-            <div class="col-12 col-md-4">
+            <div class="col-12 col-md-2">
               <label class="q-mb-sm block">Celular 2</label>
               <q-input
                 v-model="configuracion.celular2"
@@ -245,7 +258,7 @@
 
             <!-- Logo claro -->
             <div class="col-12 col-md-4">
-              <label for="q-mb-sm block">Logo (tema claro)</label>
+              <label for="q-mb-sm block">Logo (tema claro / favicon)</label>
               <selector-imagen
                 file_extensiones=".jpg, image/*"
                 :imagen="configuracion.logo_claro"
@@ -286,19 +299,18 @@
             </div>
           </div>
 
-          <div class="row q-mb-md">
+          <div class="row q-mb-xl">
             <!-- Boton guardar -->
             <q-btn
               color="primary"
               type="submit"
               no-caps
-              push
               @click="guardar(configuracion)"
               class="full-width"
             >
               <!-- :class="{ 'full-width': $q.screen.xs }" -->
               <q-icon name="bi-save" size="xs" class="q-pr-sm"></q-icon>
-              <span>{{ 'Actualizar información general' }}</span>
+              <span>{{ 'Actualizar configuración general' }}</span>
             </q-btn>
           </div>
         </q-form>

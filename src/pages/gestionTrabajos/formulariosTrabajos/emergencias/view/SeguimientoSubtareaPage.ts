@@ -312,12 +312,12 @@ export default defineComponent({
 
     function obtenerIdEmpleadoResponsable() {
       if (esLider) return authenticationStore.user.id
-      else return trabajoAsignadoStore.idEmpleadoResponsable
+      else return trabajoAsignadoStore.subtarea.empleado_responsable_id // idEmpleadoResponsable
     }
 
     async function obtenerMaterialesTarea(cliente: number) {
       cargarVista(async () => {
-        const ruta = axios.getEndpoint(endpoints.materiales_empleado_tarea, { tarea_id: trabajoAsignadoStore.idTareaSeleccionada, subtarea_id: trabajoAsignadoStore.subtarea.id, empleado_id: obtenerIdEmpleadoResponsable(), cliente_id: cliente, seguimiento: 1 })
+        const ruta = axios.getEndpoint(endpoints.materiales_empleado_tarea, { tarea_id: trabajoAsignadoStore.subtarea.tarea_id, subtarea_id: trabajoAsignadoStore.subtarea.id, empleado_id: obtenerIdEmpleadoResponsable(), cliente_id: cliente })
         const response: AxiosResponse = await axios.get(ruta)
         materialesTarea.value = response.data.results
       })
@@ -325,7 +325,7 @@ export default defineComponent({
 
     function obtenerMaterialesStock(cliente: number) {
       cargarVista(async () => {
-        const ruta = axios.getEndpoint(endpoints.materiales_empleado, { empleado_id: obtenerIdEmpleadoResponsable(), subtarea_id: trabajoAsignadoStore.subtarea.id, cliente_id: cliente, seguimiento: 1 })
+        const ruta = axios.getEndpoint(endpoints.materiales_empleado, { empleado_id: obtenerIdEmpleadoResponsable(), subtarea_id: trabajoAsignadoStore.subtarea.id, cliente_id: cliente })
         const response: AxiosResponse = await axios.get(ruta)
         materialesStock.value = response.data.results
       })

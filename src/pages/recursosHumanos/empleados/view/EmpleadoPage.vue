@@ -5,7 +5,6 @@
     :accion1Header="btnImprimirEmpleados"
     :accion1="btnHabilitarEmpleado"
     :accion2="btnDesHabilitarEmpleado"
-
     titulo-pagina="Empleados"
     :puedeFiltrar="false"
     :puedeExportar="true"
@@ -27,7 +26,7 @@
               <q-input
                 v-model="empleado.usuario"
                 placeholder="Obligatorio"
-                :disable="disabled"
+                disable
                 :error="!!v$.usuario.$errors.length"
                 @blur="v$.usuario.$touch"
                 outlined
@@ -47,7 +46,7 @@
                 type="email"
                 v-model="empleado.email"
                 placeholder="Obligatorio"
-                :disable="disabled"
+                disable
                 :error="!!v$.email.$errors.length"
                 @blur="v$.email.$touch"
                 @update:model-value="(v) => (empleado.email = v.toLowerCase())"
@@ -854,19 +853,22 @@
               <q-select
                 v-model="empleado.roles"
                 :options="opciones_roles"
-                transition-show="jump-up"
-                transition-hide="jump-down"
-                :disable="disabled"
+                transition-show="scale"
+                transition-hide="scale"
                 options-dense
-                multiple
                 dense
                 use-chips
-                @blur="v$.roles.$touch"
                 outlined
-                :error="!!v$.roles.$errors.length"
-                error-message="Debes seleccionar uno o varios roles"
+                multiple
+                :disable="disabled"
+                :readonly="disabled"
+                use-input
+                input-debounce="0"
+                @filter="filtroRoles"
                 :option-value="(v) => v.name"
                 :option-label="(v) => v.name"
+                :error="!!v$.roles.$errors.length"
+                error-message="Debes seleccionar uno o varios roles"
                 emit-value
                 map-options
               >
@@ -874,7 +876,7 @@
                   <q-item v-bind="itemProps">
                     <q-item-section>
                       {{ opt.name }}
-                      <q-item-label v-bind:inner-h-t-m-l="opt.name" />
+                      <q-item-label v-bind:inner-h-t-m-l="opt.nombres" />
                     </q-item-section>
                     <q-item-section side>
                       <q-toggle
@@ -896,6 +898,7 @@
                 </template>
               </q-select>
             </div>
+
             <!-- Tipo Contrato -->
             <div class="col-12 col-md-3 q-mb-md">
               <label class="q-mb-sm block">Tipo Contrato</label>
