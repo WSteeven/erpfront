@@ -45,6 +45,19 @@ export const useProveedorStore = defineStore('proveedor', () => {
     const response: AxiosResponse = await axios.get(ruta)
     proveedor.hydrate(response.data.modelo)
   }
+  async function obtenerProveedores(){
+    try {
+      statusLoading.activar()
+      const axios = AxiosHttpRepository.getInstance()
+      const url = apiConfig.URL_BASE+'/'+axios.getEndpoint(endpoints.reporte_proveedores)
+      const filename = 'reporte_todos_proveedores'
+      imprimirArchivo(url, 'GET', 'blob', 'xlsx', filename)
+    } catch (error:any) {
+      notificarError(error)
+    }finally{
+      statusLoading.desactivar()
+    }
+  }
   async function buscarReporte(accion: string, data, listado) {
     try {
       statusLoading.activar()
@@ -115,5 +128,6 @@ export const useProveedorStore = defineStore('proveedor', () => {
     buscarReporte,
     imprimirReporteCalificacion,
     actualizarCalificacion,
+    obtenerProveedores,
   }
 })

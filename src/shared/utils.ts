@@ -195,27 +195,28 @@ export async function notificarMensajesError(
   }
 }
 
-export function gestionarNotificacionError(
-  error: any,
-  notificaciones: any
-): void {
-  if (isAxiosError(error)) {
-    const mensajes: string[] = error.erroresValidacion
-    if (mensajes.length > 0) {
-      notificarMensajesError(mensajes, notificaciones)
-    } else {
-      if (error.status === 413) {
-        notificaciones.notificarAdvertencia(
-          'El tamaño del archivo es demasiado grande.'
-        )
-      } else {
-        notificaciones.notificarAdvertencia(error.mensaje)
-      }
-    }
-  } else {
-    notificaciones.notificarAdvertencia(error.message)
-  }
-}
+// DEPURAR ESTE CODIGO (NO SE USA EN NINGUNA PARTE)
+// export function gestionarNotificacionError(
+//   error: any,
+//   notificaciones: any
+// ): void {
+//   if (isAxiosError(error)) {
+//     const mensajes: string[] = error.erroresValidacion
+//     if (mensajes.length > 0) {
+//       notificarMensajesError(mensajes, notificaciones)
+//     } else {
+//       if (error.status === 413) {
+//         notificaciones.notificarAdvertencia(
+//           'El tamaño del archivo es demasiado grande.'
+//         )
+//       } else {
+//         notificaciones.notificarAdvertencia(error.mensaje)
+//       }
+//     }
+//   } else {
+//     notificaciones.notificarAdvertencia(error.message)
+//   }
+// }
 
 export function wrap(el: HTMLElement, wrapper: HTMLElement) {
   el.parentNode?.insertBefore(wrapper, el)
@@ -349,7 +350,6 @@ export async function imprimirArchivo(ruta: string, metodo: Method, responseType
     responseType: responseType,
     headers: { 'Authorization': axiosHttpRepository.getOptions().headers.Authorization }
   }).then((response: HttpResponseGet) => {
-    // console.log(response.data)
     if (response.data.size < 100 || response.data.type == 'application/json') throw 'No se obtuvieron resultados para generar el reporte'
     else {
       const fileURL = URL.createObjectURL(new Blob([response.data], { type: `appication/${formato}` }))
@@ -361,8 +361,11 @@ export async function imprimirArchivo(ruta: string, metodo: Method, responseType
       link.click()
       link.remove()
     }
-  }).catch(error => {
-    notificarAdvertencia(error)
+  }).catch(async (error) => {
+    for(const err in error.response.data.errors){
+      notificarAdvertencia(error.response.data.errors[err])
+    }
+
   }).finally(() => statusLoading.desactivar())
 
 }
