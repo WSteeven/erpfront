@@ -333,12 +333,6 @@
     ></essential-table>
   </div>
 
-  <!-- <modales-entidad
-    :comportamiento="modalesTicket"
-    :mixin-modal="mixin"
-    :accion="filtrarTickets"
-    @guardado="guardado"
-  /> -->
-</template>
+  </template>
 
 <script src="./DetalleCompletoTicket.ts"></script>

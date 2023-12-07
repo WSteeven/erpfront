@@ -106,6 +106,8 @@ export const endpoints = {
   verificar_todos_roles_finalizadas: new Endpoint('recursos-humanos/verificar-todos_roles-finalizadas'),
   finalizar_rol_pago: new Endpoint('recursos-humanos/finalizar-rol-pago'),
   habilitar_empleado: new Endpoint('recursos-humanos/habilitar-empleado'),
+  generar_username: new Endpoint('recursos-humanos/generar-username'),
+
 
   actualizar_rol_pago: new Endpoint('recursos-humanos/actualizar-rol-pago/'),
 

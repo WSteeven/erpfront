@@ -243,6 +243,19 @@ export default defineComponent({
       }
     }
 
+    const botonActualizarCalificacion: CustomActionTable = {
+      titulo: 'Actualizar calificación',
+      icono: 'bi-arrow-clockwise',
+      color: 'positive',
+      accion: async ({ entidad, posicion }) => {
+        proveedorStore.idProveedor = entidad.id
+        const response = await proveedorStore.actualizarCalificacion()
+        if (response?.status == 200) {
+          notificarCorrecto('Se ha actualizado correctamente la calificación del proveedor')
+          listado.value.splice(posicion, 1, response.data.modelo)
+        }
+      }, visible: () => store.esAdministrador
+    }
     const botonCalificarProveedor: CustomActionTable = {
       titulo: 'Calificar',
       icono: 'bi-stars',
@@ -474,6 +487,7 @@ export default defineComponent({
       botonVerMiCalificacionProveedor,
       botonDesactivarProveedor,
       botonActivarProveedor,
+      botonActualizarCalificacion,
     }
 
   }

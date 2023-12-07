@@ -8,6 +8,7 @@
     :accion3="botonCalificarProveedor"
     :accion4="botonVerMiCalificacionProveedor"
     :accion5="botonVerCalificacionProveedor"
+    :accion6="botonActualizarCalificacion"
     :puedeExportar="true"
     :listar="false"
   >
@@ -354,7 +355,10 @@
               </q-input>
             </div>
             <!-- correo-->
-            <div class="col-12 col-md-3" v-if="proveedor.correo||accion==acciones.nuevo">
+            <div
+              class="col-12 col-md-3"
+              v-if="proveedor.correo || accion == acciones.nuevo"
+            >
               <label class="q-mb-sm block">Correo</label>
               <q-input
                 v-model="proveedor.correo"

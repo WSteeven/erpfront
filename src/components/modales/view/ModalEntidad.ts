@@ -16,6 +16,7 @@ export default defineComponent({
     accion: {
       type: Function,
       required: false,
+      default: () =>{},
     },
     confirmarCerrar: {
       type: Boolean,

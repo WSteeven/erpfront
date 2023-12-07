@@ -379,7 +379,7 @@ export default defineComponent({
       tabOptionsPedidos,
       tabSeleccionado,
       puedeEditar,
-      esCoordinador, esBodeguero, esTecnico, esActivosFijos, esRRHH,
+      esCoordinador, esCoordinadorBackup: store.esCoordinadorBackup, esBodeguero, esTecnico, esActivosFijos, esRRHH,
 
       checkEvidencia(val, evt) {
         if (!val) {
