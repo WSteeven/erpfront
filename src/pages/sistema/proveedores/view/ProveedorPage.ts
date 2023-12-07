@@ -82,6 +82,17 @@ export default defineComponent({
     const departamentos = ref([])
     const ofertas = ref([])
     const departamentoFinanciero = computed(() => listadosAuxiliares.departamentos.length > 0 ? listadosAuxiliares.departamentos.filter((v: Departamento) => v.nombre == 'FINANCIERO')[0] : new Departamento())
+    const reporte = reactive({
+      estado_calificado: null,
+      categorias: null,
+      canton: null,
+      razon_social: null,
+      tipo: null,
+      accion: null,
+      fecha_inicio: null,
+      fecha_fin: null,
+      estado: true,
+  })
     cargarVista(async () => {
       await obtenerListados({
         empresas: {
@@ -331,6 +342,16 @@ export default defineComponent({
       }
     }
 
+    const botonDescargarProveedores: CustomActionTable = {
+      titulo: 'Descargar Excel',
+      icono: 'bi-file-earmark-excel-fill',
+      color: 'positive',
+      tooltip: 'Descarga todos los datos de proveedores en formato de Contifico',
+      accion: async()=>{
+        await proveedorStore.obtenerProveedores()
+      }
+    }
+
     /**************************************************************
      * Funciones
      **************************************************************/
@@ -488,6 +509,7 @@ export default defineComponent({
       botonDesactivarProveedor,
       botonActivarProveedor,
       botonActualizarCalificacion,
+      botonDescargarProveedores,
     }
 
   }

@@ -221,7 +221,7 @@
               <div class="col-12 col-md-12">
                 <essential-table
                   v-if="listado.length"
-                  titulo="Listado de transacciones"
+                  titulo="Listado de proveedores"
                   :configuracionColumnas="configuracionColumnas"
                   :datos="listado"
                   :permitirConsultar="false"
@@ -233,6 +233,7 @@
                   :accion2="btnVerCalificacionProveedor"
                   :accion3="btnReporteCalificacionProveedor"
                   :alto-fijo="false"
+                  :ajustarCeldas="true"
                 ></essential-table>
               </div>
             </div>
