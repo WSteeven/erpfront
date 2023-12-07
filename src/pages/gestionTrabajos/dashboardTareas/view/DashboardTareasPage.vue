@@ -27,7 +27,7 @@
                     <q-date
                       v-model="filtro.fecha_inicio"
                       mask="DD-MM-YYYY"
-                      @update:model-value="consultar()"
+                      @update:model-value="consultarDesdeFechas()"
                       today-btn
                     >
                       <div class="row items-center justify-end">
@@ -71,7 +71,7 @@
                       v-model="filtro.fecha_fin"
                       mask="DD-MM-YYYY"
                       today-btn
-                      @update:model-value="consultar()"
+                      @update:model-value="consultarDesdeFechas()"
                     >
                       <div class="row items-center justify-end">
                         <q-btn
@@ -95,7 +95,33 @@
           </div>
 
           <div class="col-12 col-md-6">
-            <label class="q-mb-sm block">Seleccione un empleado</label>
+            <label class="block q-mb-sm">Filtrar por</label>
+            <q-btn-toggle
+              v-model="filtro.grupo_empleado"
+              class="toggle-button-grey"
+              spread
+              no-caps
+              rounded
+              toggle-color="grey-9"
+              unelevated
+              @click="limpiarDatosConsultados()"
+              :options="[
+                {
+                  label: 'Por coordinador',
+                  value: opcionesFiltroGrupoEmpleado.porEmpleado,
+                },
+                {
+                  label: 'Por grupo',
+                  value: opcionesFiltroGrupoEmpleado.porGrupo,
+                },
+              ]"
+            />
+          </div>
+
+          <div v-if="mostrarSeccionEmpleado" class="col-12">
+            <label class="q-mb-sm block"
+              >Seleccione un coordinador para consultar</label
+            >
             <q-select
               v-model="filtro.empleado"
               :options="empleados"
@@ -131,12 +157,52 @@
               </template>
             </q-select>
           </div>
+
+          <!-- Grupo -->
+          <div v-show="mostrarSeccionGrupo" class="col-12">
+            <label class="q-mb-sm block"
+              >Seleccione un grupo para consultar</label
+            >
+            <q-select
+              v-model="filtro.grupo"
+              :options="grupos"
+              @filter="filtrarGrupos"
+              transition-show="scale"
+              transition-hide="scale"
+              options-dense
+              dense
+              outlined
+              :option-label="(item) => item.nombre"
+              :option-value="(item) => item.id"
+              use-input
+              input-debounce="0"
+              emit-value
+              map-options
+              @update:model-value="consultarGrupo()"
+              :error="!!v$.grupo.$errors.length"
+              @blur="v$.grupo.$touch"
+            >
+              <template v-slot:no-option>
+                <q-item>
+                  <q-item-section class="text-grey">
+                    No hay resultados
+                  </q-item-section>
+                </q-item>
+              </template>
+
+              <template v-slot:error>
+                <div v-for="error of v$.grupo.$errors" :key="error.$uid">
+                  <div class="error-msg">{{ error.$message }}</div>
+                </div>
+              </template>
+            </q-select>
+          </div>
         </div>
       </q-card-section>
     </q-card>
 
     <q-card
-      v-if="mostrarTitulosSeccion"
+      v-if="mostrarTitulosSeccion && mostrarCantidades"
       class="q-mb-md rounded no-border custom-shadow q-pa-md"
     >
       <div
@@ -279,7 +345,10 @@
     </q-card>
 
     <q-card
-      v-if="graficoLineaTiempoSubtareasRealizadasCoordinador"
+      v-if="
+        graficoLineaTiempoSubtareasRealizadasCoordinador ||
+        graficoLineaTiempoSubtareasFinalizadasCoordinador
+      "
       class="q-mb-md rounded q-pa-md no-border custom-shadow"
     >
       <div
@@ -324,7 +393,7 @@
     </q-card>
 
     <q-card
-      v-if="mostrarTitulosSeccion"
+      v-if="mostrarTitulosSeccion && cantidadesPorEstadosSubtareasBar"
       class="q-mb-md rounded no-border custom-shadow"
     >
       <div
@@ -403,13 +472,14 @@
     </q-card>
 
     <q-card
-      v-if="mostrarTitulosSeccion"
+      v-if="
+        mostrarTitulosSeccion &&
+        (graficosCoordinadorSubordinadosPorGrupo.length ||
+          graficosCoordinadorSubordinadosPorCoordinador.length)
+      "
       class="q-mb-md rounded no-border custom-shadow"
     >
-      <div
-        v-if="mostrarTitulosSeccion"
-        class="row text-bold text-primary q-pa-md rounded items-center"
-      >
+      <div class="row text-bold text-primary q-pa-md rounded items-center">
         <q-icon name="bi-pie-chart" class="q-mr-sm"></q-icon>
         Estados de las subtareas de los empleados subordinados
       </div>
@@ -473,152 +543,21 @@
             :class="{ row: !modoUnaColumna, column: modoUnaColumna }"
           >
             <!-- Agendados -->
-            <div v-if="agendados.length" class="col-12 col-md-6 text-center">
-              <div class="text-subtitle2 q-mb-lg">Agendados</div>
+            <div
+              v-for="(
+                grafico, index
+              ) in graficosCoordinadorSubordinadosPorGrupo"
+              :key="index"
+              class="col-12 col-md-6 text-center"
+            >
+              <div class="text-subtitle2 q-mb-lg">{{ grafico.titulo }}</div>
               <div class="text-center row justify-center" style="height: 300px">
                 <grafico-generico
-                  v-if="agendados.length"
-                  :data="agendadosBar"
+                  :data="grafico"
                   :options="optionsPie"
                   @click="
                     (data) =>
-                      clickCantidadesSubtareasSubordinados(
-                        data,
-                        estadosTrabajos.AGENDADO
-                      )
-                  "
-                />
-              </div>
-            </div>
-
-            <!-- Suspendidos -->
-            <div v-if="suspendidos.length" class="col-12 col-md-6 text-center">
-              <div class="text-subtitle2 q-mb-lg">Suspendidos</div>
-              <div class="text-center row justify-center">
-                <grafico-generico
-                  v-if="suspendidos.length"
-                  :data="suspendidosBar"
-                  :options="optionsPie"
-                  @click="
-                    (data) =>
-                      clickCantidadesSubtareasSubordinados(
-                        data,
-                        estadosTrabajos.SUSPENDIDO
-                      )
-                  "
-                />
-              </div>
-            </div>
-
-            <!-- Ejecutados -->
-            <div v-if="ejecutados.length" class="col-12 col-md-6 text-center">
-              <div class="text-subtitle2 q-mb-lg">Ejecutando</div>
-              <div>
-                <grafico-generico
-                  v-if="ejecutados.length"
-                  :data="ejecutadosBar"
-                  :options="optionsPie"
-                  @click="
-                    (data) =>
-                      clickCantidadesSubtareasSubordinados(
-                        data,
-                        estadosTrabajos.EJECUTANDO
-                      )
-                  "
-                />
-              </div>
-            </div>
-
-            <!-- Pausados -->
-            <div v-if="pausados.length" class="col-12 col-md-6 text-center">
-              <div class="text-subtitle2 q-mb-lg">Pausados</div>
-              <div>
-                <grafico-generico
-                  v-if="pausados.length"
-                  :data="pausadosBar"
-                  :options="optionsPie"
-                  @click="
-                    (data) =>
-                      clickCantidadesSubtareasSubordinados(
-                        data,
-                        estadosTrabajos.PAUSADO
-                      )
-                  "
-                />
-              </div>
-            </div>
-
-            <!-- Suspendidos -->
-            <div v-if="suspendidos.length" class="col-12 col-md-6 text-center">
-              <div class="text-subtitle2 q-mb-lg">Suspendidos</div>
-              <div>
-                <grafico-generico
-                  v-if="suspendidos.length"
-                  :data="suspendidosBar"
-                  :options="optionsPie"
-                  @click="
-                    (data) =>
-                      clickCantidadesSubtareasSubordinados(
-                        data,
-                        estadosTrabajos.SUSPENDIDO
-                      )
-                  "
-                />
-              </div>
-            </div>
-
-            <!-- Cancelados -->
-            <div v-if="cancelados.length" class="col-12 col-md-6 text-center">
-              <div class="text-subtitle2 q-mb-lg">Cancelados</div>
-              <div>
-                <grafico-generico
-                  v-if="cancelados.length"
-                  :data="canceladosBar"
-                  :options="optionsPie"
-                  @click="
-                    (data) =>
-                      clickCantidadesSubtareasSubordinados(
-                        data,
-                        estadosTrabajos.CANCELADO
-                      )
-                  "
-                />
-              </div>
-            </div>
-
-            <!-- Realizados -->
-            <div v-if="realizados.length" class="col-12 col-md-6 text-center">
-              <div class="text-subtitle2 q-mb-lg">Realizados</div>
-              <div>
-                <grafico-generico
-                  v-if="realizados.length"
-                  :data="realizadosBar"
-                  :options="optionsPie"
-                  @click="
-                    (data) =>
-                      clickCantidadesSubtareasSubordinados(
-                        data,
-                        estadosTrabajos.REALIZADO
-                      )
-                  "
-                />
-              </div>
-            </div>
-
-            <!-- Finalizados -->
-            <div v-if="finalizados.length" class="col-12 col-md-6 text-center">
-              <div class="text-subtitle2 q-mb-lg">Finalizados</div>
-              <div>
-                <grafico-generico
-                  v-if="finalizados.length"
-                  :data="finalizadosBar"
-                  :options="optionsPie"
-                  @click="
-                    (data) =>
-                      clickCantidadesSubtareasSubordinados(
-                        data,
-                        estadosTrabajos.FINALIZADO
-                      )
+                      clickCantidadesSubtareasSubordinados(data, grafico.titulo)
                   "
                 />
               </div>
@@ -634,175 +573,20 @@
           >
             <!-- Agendados -->
             <div
-              v-if="agendadosEmpleado.length"
+              v-for="(
+                grafico, index
+              ) in graficosCoordinadorSubordinadosPorCoordinador"
+              :key="index"
               class="col-12 col-md-6 text-center"
             >
-              <div class="text-subtitle2 q-mb-lg">Agendados</div>
-              <div>
+              <div class="text-subtitle2 q-mb-lg">{{ grafico.titulo }}</div>
+              <div class="text-center row justify-center" style="height: 300px">
                 <grafico-generico
-                  v-if="agendadosEmpleado.length"
-                  :data="agendadosEmpleadoBar"
+                  :data="grafico"
                   :options="optionsPie"
                   @click="
                     (data) =>
-                      clickGraficoEmpleadoSubordinado(
-                        data,
-                        estadosTrabajos.AGENDADO
-                      )
-                  "
-                />
-              </div>
-            </div>
-
-            <!-- Suspendidos -->
-            <div
-              v-if="suspendidosEmpleado.length"
-              class="col-12 col-md-6 text-center"
-            >
-              <div class="text-subtitle2 q-mb-lg">Suspendidos</div>
-              <div class="text-center row justify-center">
-                <grafico-generico
-                  v-if="suspendidosEmpleado.length"
-                  :data="suspendidosEmpleadoBar"
-                  :options="optionsPie"
-                  @click="
-                    (data) =>
-                      clickGraficoEmpleadoSubordinado(
-                        data,
-                        estadosTrabajos.SUSPENDIDO
-                      )
-                  "
-                />
-              </div>
-            </div>
-
-            <!-- Ejecutados -->
-            <div
-              v-if="ejecutadosEmpleado.length"
-              class="col-12 col-md-6 text-center"
-            >
-              <div class="text-subtitle2 q-mb-lg">Ejecutando</div>
-              <div>
-                <grafico-generico
-                  v-if="ejecutadosEmpleado.length"
-                  :data="ejecutadosEmpleadoBar"
-                  :options="optionsPie"
-                  @click="
-                    (data) =>
-                      clickGraficoEmpleadoSubordinado(
-                        data,
-                        estadosTrabajos.EJECUTANDO
-                      )
-                  "
-                />
-              </div>
-            </div>
-
-            <!-- Pausados -->
-            <div
-              v-if="pausadosEmpleado.length"
-              class="col-12 col-md-6 text-center"
-            >
-              <div class="text-subtitle2 q-mb-lg">Pausados</div>
-              <div>
-                <grafico-generico
-                  v-if="pausadosEmpleado.length"
-                  :data="pausadosEmpleadoBar"
-                  :options="optionsPie"
-                  @click="
-                    (data) =>
-                      clickGraficoEmpleadoSubordinado(
-                        data,
-                        estadosTrabajos.PAUSADO
-                      )
-                  "
-                />
-              </div>
-            </div>
-
-            <!-- Suspendidos -->
-            <div
-              v-if="suspendidosEmpleado.length"
-              class="col-12 col-md-6 text-center"
-            >
-              <div class="text-subtitle2 q-mb-lg">Suspendidos</div>
-              <div>
-                <grafico-generico
-                  v-if="suspendidosEmpleado.length"
-                  :data="suspendidosEmpleadoBar"
-                  :options="optionsPie"
-                  @click="
-                    (data) =>
-                      clickGraficoEmpleadoSubordinado(
-                        data,
-                        estadosTrabajos.SUSPENDIDO
-                      )
-                  "
-                />
-              </div>
-            </div>
-
-            <!-- Cancelados -->
-            <div
-              v-if="canceladosEmpleado.length"
-              class="col-12 col-md-6 text-center"
-            >
-              <div class="text-subtitle2 q-mb-lg">Cancelados</div>
-              <div>
-                <grafico-generico
-                  v-if="canceladosEmpleado.length"
-                  :data="canceladosEmpleadoBar"
-                  :options="optionsPie"
-                  @click="
-                    (data) =>
-                      clickGraficoEmpleadoSubordinado(
-                        data,
-                        estadosTrabajos.CANCELADO
-                      )
-                  "
-                />
-              </div>
-            </div>
-
-            <!-- Realizados -->
-            <div
-              v-if="realizadosEmpleado.length"
-              class="col-12 col-md-6 text-center"
-            >
-              <div class="text-subtitle2 q-mb-lg">Realizados</div>
-              <div>
-                <grafico-generico
-                  v-if="realizadosEmpleado.length"
-                  :data="realizadosEmpleadoBar"
-                  :options="optionsPie"
-                  @click="
-                    (data) =>
-                      clickGraficoEmpleadoSubordinado(
-                        data,
-                        estadosTrabajos.REALIZADO
-                      )
-                  "
-                />
-              </div>
-            </div>
-
-            <!-- Finalizados -->
-            <div
-              v-if="finalizadosEmpleado.length"
-              class="col-12 col-md-6 text-center"
-            >
-              <div class="text-subtitle2 q-mb-lg">Finalizados</div>
-              <div>
-                <grafico-generico
-                  v-if="finalizadosEmpleado.length"
-                  :data="finalizadosEmpleadoBar"
-                  :options="optionsPie"
-                  @click="
-                    (data) =>
-                      clickGraficoEmpleadoSubordinado(
-                        data,
-                        estadosTrabajos.FINALIZADO
-                      )
+                      clickGraficoEmpleadoSubordinado(data, grafico.titulo)
                   "
                 />
               </div>
@@ -842,24 +626,6 @@
         </q-tab-panel>
 
         <q-tab-panel :name="opcionesSubordinado.subordinadosEmpleadoListado">
-          <div
-            class="row bg-body text-bold q-pa-md rounded justify-between q-mb-lg"
-          >
-            <span class="q-col-gutter-x-xs">
-              <q-icon name="bi-circle-fill" color="grey-3"></q-icon>
-              <q-icon name="bi-circle-fill" color="grey-4"></q-icon>
-              <q-icon name="bi-circle-fill" color="grey-5"></q-icon>
-            </span>
-            <span class="text-primary"
-              >Tabla de subtareas de empleados subordinados</span
-            >
-            <span class="q-col-gutter-x-xs">
-              <q-icon name="bi-circle-fill" color="grey-5"></q-icon>
-              <q-icon name="bi-circle-fill" color="grey-4"></q-icon>
-              <q-icon name="bi-circle-fill" color="grey-3"></q-icon>
-            </span>
-          </div>
-
           <q-btn
             color="primary"
             @click="tabsSubordinados = opcionesSubordinado.subordinadosGrafico"
@@ -892,10 +658,78 @@
       </q-tab-panels>
     </q-card>
 
+    <q-card v-if="graficos" class="q-mb-md rounded no-border custom-shadow">
+      <div class="row text-bold text-primary q-pa-md rounded items-center">
+        <q-icon name="bi-pie-chart" class="q-mr-sm"></q-icon>
+        Estados de las subtareas de los grupos
+      </div>
+      <q-tab-panels
+        v-model="tabsGrupo"
+        animated
+        transition-prev="scale"
+        transition-next="scale"
+        keep-alive
+        :class="{ 'rounded-tabpanel': !$q.screen.xs }"
+      >
+        <q-tab-panel :name="opcionesGrupo.grupoGrafico">
+          <div class="row q-px-md q-col-gutter-x-sm">
+            <div
+              v-for="(grafico, index) in graficos"
+              :key="index"
+              class="col-12 text-center q-mb-md"
+            >
+              <label class="text-bold q-mb-md block">{{
+                grafico.titulo
+              }}</label>
+              <div>
+                <grafico-generico
+                  :data="grafico"
+                  :options="optionsPie"
+                  @click="(data) => clickGraficoEstadosGrupo(data)"
+                />
+              </div>
+            </div>
+          </div>
+        </q-tab-panel>
+
+        <q-tab-panel :name="opcionesGrupo.grupoListado">
+          <q-btn
+            color="primary"
+            @click="tabsGrupo = opcionesGrupo.grupoGrafico"
+            glossy
+            no-caps
+            rounded
+            unelevated
+            class="q-mx-auto block"
+          >
+            <q-icon name="bi-arrow-left"></q-icon>
+            Regresar al gráfico</q-btn
+          >
+          <div class="row q-col-gutter-sm q-py-md q-mb-lg">
+            <div class="col-12">
+              <essential-table
+                titulo="Subtareas del empleado seleccionado"
+                :configuracionColumnas="columnasSubtareas"
+                :datos="listadoFiltrado"
+                :permitirConsultar="false"
+                :permitirEditar="false"
+                :permitirEliminar="false"
+                :mostrarBotones="false"
+                :alto-fijo="false"
+                :accion1="botonVer"
+                :accion2="btnSeguimiento"
+              ></essential-table>
+            </div>
+          </div>
+        </q-tab-panel>
+      </q-tab-panels>
+    </q-card>
+
     <modales-entidad
       :comportamiento="modalesSubtarea"
       :mixin-modal="mixinSubtarea"
       :persistente="false"
+      :confirmar-cerrar="false"
     />
   </q-page>
 </template>

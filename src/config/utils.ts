@@ -232,7 +232,8 @@ export const estadosTrabajos = {
   REALIZADO: 'REALIZADO',
   FINALIZADO: 'FINALIZADO',
   //REAGENDADO: 'REAGENDADO',
-}
+} as const
+
 export const estadosRolPago = {
   CREADO: 'CREADO',
   EJECUTANDO: 'EJECUTANDO',

@@ -28,7 +28,7 @@
                     <q-date
                       v-model="filtro.fecha_inicio"
                       mask="DD-MM-YYYY"
-                      @update:model-value="consultar()"
+                      @update:model-value="consultarDesdeFechas()"
                       today-btn
                     >
                       <div class="row items-center justify-end">
@@ -72,7 +72,7 @@
                       v-model="filtro.fecha_fin"
                       mask="DD-MM-YYYY"
                       today-btn
-                      @update:model-value="consultar()"
+                      @update:model-value="consultarDesdeFechas()"
                     >
                       <div class="row items-center justify-end">
                         <q-btn
