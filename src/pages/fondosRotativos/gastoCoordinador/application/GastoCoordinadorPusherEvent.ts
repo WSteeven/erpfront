@@ -1,8 +1,7 @@
-import Pusher from 'pusher-js'
 import { useNotificaciones } from 'shared/notificaciones'
+import { pushEventMesaggeServiceWorker } from 'shared/utils'
 import { useAuthenticationStore } from 'stores/authentication'
 import { useNotificationRealtimeStore } from 'stores/notificationRealtime'
-import { Ref } from 'vue'
 
 export class GastoCoordinadorPusherEvent {
   authenticationStore = useAuthenticationStore()
@@ -17,6 +16,11 @@ export class GastoCoordinadorPusherEvent {
     pusher.bind('solicitud-fondos-event', function (e) {
       notificacionStore.agregar(e.notificacion)
       notificarCorrecto('Tienes una solicitud de fondos pendiente')
+      pushEventMesaggeServiceWorker({
+        titulo: 'Solicitud de Fondos Rotativos',
+        mensaje: e.notificacion.mensaje,
+        link: e.notificacion.link,
+      })
 
     })
   }

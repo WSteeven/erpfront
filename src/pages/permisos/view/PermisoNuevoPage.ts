@@ -1,4 +1,5 @@
-import {  defineComponent, ref } from 'vue'
+import { defineComponent, ref } from 'vue'
+import { required } from 'shared/i18n-validators'
 import { useNotificacionStore } from 'stores/notificacion'
 import { useNotificaciones } from 'shared/notificaciones'
 import { useQuasar } from 'quasar'
@@ -15,8 +16,8 @@ import { RolController } from 'pages/administracion/roles/infraestructure/RolCon
 
 export default defineComponent({
   components: { TabLayout, ButtonSubmits },
-  emits: ['guardado','cerrar-modal'],
-  setup(props, { emit }){
+  emits: ['guardado', 'cerrar-modal'],
+  setup(props, { emit }) {
     /*********
      * Stores
      *********/
@@ -25,28 +26,21 @@ export default defineComponent({
     /***********
      * Mixin
      ************/
-    const mixin = new ContenedorSimpleMixin(
-      Permiso,
-      new PermisosController()
-    )
-    const { entidad: permiso, disabled,listadosAuxiliares } = mixin.useReferencias()
-    const { setValidador,cargarVista,obtenerListados } = mixin.useComportamiento()
+    const mixin = new ContenedorSimpleMixin(Permiso,new PermisosController())
+    const { entidad: permiso, disabled, listadosAuxiliares } = mixin.useReferencias()
+    const { setValidador, cargarVista, obtenerListados } = mixin.useComportamiento()
+
+    const {notificarError} = useNotificaciones()
     /*************
      * Validaciones
      **************/
     const reglas = {
-      name: {
-        required: true,
-        minLength: 3,
-        maxLength: 50,
-      },
-      roles:{
-        required: true,
-      }
+      name: { required },
+      roles: { required }
     }
     const v$ = useVuelidate(reglas, permiso)
+    
     const roles = ref([])
-    setValidador(v$.value)
     //Obtener el listado de las cantones
     cargarVista(async () => {
       await obtenerListados({
@@ -63,16 +57,19 @@ export default defineComponent({
     }
 
     async function crear() {
+      if(await v$.value.$validate()){
         const axios = AxiosHttpRepository.getInstance()
         const ruta = axios.getEndpoint(endpoints.crear_permiso)
-         await axios.post(ruta, permiso)
-        .then(function (response:any) {
-          notificaciones.notificarCorrecto(response.data.mensaje)
-          emit('cerrar-modal',false);
-        })
-        .catch((error) => {
-          //notificaciones.notificarError(error.response.data.errors.password[0])
-        });
+        await axios.post(ruta, permiso)
+          .then(function (response: any) {
+            notificaciones.notificarCorrecto(response.data.mensaje)
+            emit('cerrar-modal', false);
+          })
+          .catch((error) => {
+            notificarError(error)
+          });
+
+      }
     }
 
     return {
@@ -87,16 +84,16 @@ export default defineComponent({
       roles,
       listadosAuxiliares,
       crear,
-      filtrarRol(val, update){
-        if(val===''){
-          update(()=>{
+      filtrarRol(val, update) {
+        if (val === '') {
+          update(() => {
             roles.value = listadosAuxiliares.roles
           })
           return
         }
-        update(()=>{
+        update(() => {
           const needle = val.toLowerCase()
-          roles.value = listadosAuxiliares.roles.filter((v)=>v.nombre.toLowerCase().indexOf(needle)>-1)
+          roles.value = listadosAuxiliares.roles.filter((v) => v.nombre.toLowerCase().indexOf(needle) > -1)
         })
       },
     }

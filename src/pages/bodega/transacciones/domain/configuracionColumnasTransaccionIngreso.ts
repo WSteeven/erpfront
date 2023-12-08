@@ -10,10 +10,18 @@ export const configuracionColumnasTransaccionIngreso: ColumnConfig<Transaccion>[
         sortable: true,
     },
     {
+        name: 'created_at',
+        field: 'created_at',
+        label: 'Fecha',
+        align: 'left',
+        sortable: true,
+    },
+    {
         name: 'solicitante',
         field: 'solicitante',
         label: 'Solicitante',
         align: 'left',
+        style: 'max-width:250px; overflow: auto;',
         sortable: true,
     },
     {
@@ -21,6 +29,7 @@ export const configuracionColumnasTransaccionIngreso: ColumnConfig<Transaccion>[
         field: 'justificacion',
         label: 'Justificación',
         align: 'left',
+        style: 'max-width:300px; overflow: auto;',
         sortable: true,
     },
     {
@@ -30,13 +39,13 @@ export const configuracionColumnasTransaccionIngreso: ColumnConfig<Transaccion>[
         align: 'left',
         sortable: true,
     },
-    /* {
-        name: 'fecha_limite',
-        field: 'fecha_limite',
-        label: 'Fecha límite',
+    {
+        name: 'proveedor',
+        field: 'proveedor',
+        label: 'Proveedor',
         align: 'left',
         sortable: true,
-    }, */
+    },
     {
         name: 'motivo',
         field: 'motivo',
@@ -56,6 +65,7 @@ export const configuracionColumnasTransaccionIngreso: ColumnConfig<Transaccion>[
         field: 'per_autoriza',
         label: 'Autoriza',
         align: 'left',
+        style: 'max-width:250px; overflow: auto;',
         sortable: true,
     },
     {
@@ -63,6 +73,7 @@ export const configuracionColumnasTransaccionIngreso: ColumnConfig<Transaccion>[
         field: 'tarea',
         label: 'Tarea',
         align: 'left',
+        style: 'max-width:200px; overflow: auto;',
         sortable: true,
     },
     /* {

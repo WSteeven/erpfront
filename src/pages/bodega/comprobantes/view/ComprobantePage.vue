@@ -8,7 +8,7 @@
       :permitirEditar="false"
       :permitirEliminar="false"
       :tab-options="tabGestionarEgresos"
-      :mostrarFooter="false"
+      :mostrarFooter="true"
       @tab-seleccionado="filtrarTabs"
       :accion1="botonVerTransaccion"
       :accion2="botonImprimir"

@@ -1,5 +1,5 @@
 <template>
-  <div class="q-mb-lg q-pa-md rounded border-grey bg-white">
+  <q-card class="q-mb-lg q-pa-md rounded">
     <div class="text-bold q-mb-lg">Información general</div>
     <DetalleTicket :ticket="ticket"></DetalleTicket>
     <br />
@@ -74,7 +74,7 @@
 
     <div class="row q-gutter-sm justify-end">
       <!-- Boton guardar -->
-      <q-btn color="secondary" no-caps push @click="enviarCalificacion()">
+      <q-btn color="positive" no-caps push @click="enviarCalificacion()">
         <q-icon name="bi-stars" size="xs" class="q-pr-sm"></q-icon>
         <span>Calificar ticket</span>
       </q-btn>
@@ -84,7 +84,7 @@
         <span>Cancelar</span>
       </q-btn>
     </div>
-  </div>
+  </q-card>
 </template>
 
 <script src="./CalificarTicketPage.ts"></script>

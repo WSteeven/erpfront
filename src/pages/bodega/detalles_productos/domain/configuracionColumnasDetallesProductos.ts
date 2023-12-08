@@ -5,13 +5,14 @@ export const configuracionColumnasDetallesProductos: ColumnConfig<DetalleProduct
   {
     name: 'id',
     field: 'id',
-    label:'N°',
+    label: 'N°',
     align: 'left',
     sortable: true,
-  }, {
-    name: 'codigo',
-    field: 'codigo',
-    label: 'Código',
+  },
+  {
+    name: 'categoria',
+    field: 'categoria',
+    label: 'Categoria',
     align: 'left',
     sortable: true
   },
@@ -89,6 +90,13 @@ export const configuracionColumnasDetallesProductos: ColumnConfig<DetalleProduct
     name: 'adicionales',
     field: 'adicionales',
     label: 'Campos adicionales',
+    align: 'left',
+    sortable: true
+  },
+  {
+    name: 'activo',
+    field: 'activo',
+    label: 'Estado',
     align: 'left',
     sortable: true
   },

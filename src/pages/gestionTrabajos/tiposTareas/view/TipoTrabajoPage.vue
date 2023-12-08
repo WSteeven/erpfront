@@ -1,8 +1,10 @@
 <template>
   <tab-layout
     :mixin="mixin"
-    :configuracionColumnas="configuracionColumnasTiposTareas"
+    :configuracionColumnas="configuracionColumnasTiposTrabajos"
     titulo-pagina="Tipo de tareas"
+    :permitir-eliminar="false"
+    :permitir-consultar="false"
   >
     <template #formulario>
       <q-form @submit.prevent>
@@ -45,7 +47,7 @@
           </div>
 
           <!-- Nombre -->
-          <div class="col-12 col-md-6">
+          <div class="col-12 col-md-3">
             <label class="q-mb-sm block">Nombre del trabajo</label>
             <q-input
               v-model="tipoTarea.descripcion"
@@ -67,64 +69,17 @@
             </q-input>
           </div>
 
-          <!--<div class="col-12 col-md-6">
+          <div class="col-12 col-md-3">
             <br />
-            <q-checkbox
-              v-model="tipoTarea.requiere_imagenes"
-              label="Requiere imágenes adicionales"
-              outlined
-              dense
-            ></q-checkbox>
+            <q-toggle
+              v-model="tipoTarea.activo"
+              checked-icon="check"
+              :disable="disabled"
+              label="Activo"
+              color="positive"
+            />
           </div>
-
-          <div class="col-12 col-md-6">
-            <br />
-            <q-checkbox
-              v-model="tipoTarea.requiere_campos_adicionales"
-              label="Requiere información adicional"
-              outlined
-              dense
-            ></q-checkbox>
-          </div> -->
         </div>
-
-        <!--<div v-if="tipoTarea.requiere_imagenes" class="q-mb-md">
-          <essential-table
-            titulo="Imágenes adicionales"
-            :configuracionColumnas="configuracionColumnasImagenes"
-            :datos="tipoTarea.imagenes_adicionales"
-            :alto-fijo="false"
-            :permitirConsultar="false"
-            :permitirEditarModal="true"
-            :mostrar-footer="false"
-            separador="cell"
-            :mostrar-botones="false"
-            :accion1Header="agregarImagenAdicional"
-            :accion1="botonHabilitarFormulario"
-            :accion2="botonDeshabilitarFormulario"
-            @eliminar="eliminarImagenAdicional"
-            :entidad="ImagenesAdicionales"
-          ></essential-table>
-        </div>
-
-        <div v-if="tipoTarea.requiere_campos_adicionales" class="q-mb-md">
-          <essential-table
-            titulo="Información adicional"
-            :configuracionColumnas="configuracionColumnasCampos"
-            :datos="tipoTarea.campos_adicionales"
-            :alto-fijo="false"
-            :permitirConsultar="false"
-            :permitirEditarModal="true"
-            :mostrar-footer="false"
-            separador="cell"
-            :mostrar-botones="false"
-            :accion1Header="agregarCampoAdicional"
-            :accion1="botonActivarCampo"
-            :accion2="botonDesactivarCampo"
-            @eliminar="eliminarCampoAdicional"
-            :entidad="CamposAdicionales"
-          ></essential-table>
-        </div> -->
       </q-form>
     </template>
   </tab-layout>

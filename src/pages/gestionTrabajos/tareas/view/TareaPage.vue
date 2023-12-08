@@ -12,6 +12,7 @@
     :filtrar="filtrarTarea"
     tabDefecto="0"
     :forzarListar="true"
+    subtitulo-pagina="Módulo de Tareas"
   >
     <!-- :labelGuardar="tarea.tiene_subtareas ? 'Guardar' : 'Guardar y agendar'" -->
     <template #formulario>
@@ -60,13 +61,12 @@
                 <div class="col-12">
                   <q-btn-toggle
                     v-model="tarea.para_cliente_proyecto"
-                    class="toggle-button"
+                    class="toggle-button-primary"
                     :disable="disabled"
                     spread
                     no-caps
                     rounded
-                    glossy
-                    toggle-color="positive"
+                    toggle-color="primary"
                     unelevated
                     :options="[
                       {
@@ -89,6 +89,7 @@
                     v-model="tarea.medio_notificacion"
                     :options="mediosNotificacion"
                     :disable="disabled"
+                    hint="Obligatorio"
                     options-dense
                     dense
                     outlined
@@ -293,9 +294,9 @@
                     v-model="tarea.proyecto"
                     :options="proyectos"
                     @filter="filtrarProyectos"
-                    @blur="v$.proyecto.$touch"
                     transition-show="scale"
                     transition-hide="scale"
+                    hint="Obligatorio"
                     options-dense
                     dense
                     outlined
@@ -305,6 +306,7 @@
                     input-debounce="0"
                     emit-value
                     map-options
+                    @blur="v$.proyecto.$touch"
                     :error="!!v$.proyecto.$errors.length"
                     @update:modelValue="setCliente"
                     :disable="disabled"
@@ -341,27 +343,66 @@
                   </q-select>
                 </div>
 
-                <!-- Tiene subtareas -->
-                <!-- <div class="col-12 col-md-3">
-                  <br />
-                  <q-checkbox
-                    v-model="tarea.tiene_subtareas"
-                    label="Tiene subtareas"
-                    outlined
-                    :disable="disabled"
+                <div
+                  v-if="tarea.proyecto && paraProyecto && etapas.length"
+                  class="col-12 col-md-3"
+                >
+                  <label class="q-mb-sm block">Etapa</label>
+                  <q-select
+                    v-model="tarea.etapa"
+                    :options="etapas"
+                    @filter="filtrarEtapas"
+                    transition-show="scale"
+                    transition-hide="scale"
+                    hint="Opcional"
+                    options-dense
                     dense
-                  ></q-checkbox>
-                </div> -->
+                    clearable
+                    outlined
+                    :option-label="(item) => item.nombre"
+                    :option-value="(item) => item.id"
+                    use-input
+                    input-debounce="0"
+                    emit-value
+                    map-options
+                    @blur="v$.etapa.$touch"
+                    :error="!!v$.etapa.$errors.length"
+                    @update:modelValue="setCliente"
+                    :disable="disabled"
+                  >
+                    <template v-slot:no-option>
+                      <q-item>
+                        <q-item-section class="text-grey">
+                          No hay resultados
+                        </q-item-section>
+                      </q-item>
+                    </template>
 
-                <!--<div class="col-12 col-md-3">
-                  <br />
-                  <q-toggle
-                    v-model="tarea.finalizado"
-                    checked-icon="check"
-                    color="positive"
-                    label="Marcar tarea como finalizada"
-                  />
-                </div> -->
+                    <template v-slot:error>
+                      <div v-for="error of v$.etapa.$errors" :key="error.$uid">
+                        <div class="error-msg">{{ error.$message }}</div>
+                      </div>
+                    </template>
+                  </q-select>
+                </div>
+
+                <!-- Metraje tendido -->
+                <div class="col-12 col-md-3">
+                  <label class="q-mb-sm block"
+                    >Cantidad de fibra óptica a tender (m)</label
+                  >
+                  <q-input
+                    v-model="tarea.metraje_tendido"
+                    placeholder="Opcional"
+                    :disable="disabled"
+                    @update:model-value="
+                      convertirNumeroPositivo(tarea, 'metraje_tendido')
+                    "
+                    outlined
+                    dense
+                  >
+                  </q-input>
+                </div>
 
                 <!-- Titulo -->
                 <div class="col-12">
@@ -427,13 +468,12 @@
                 <div class="col-12">
                   <q-btn-toggle
                     v-model="tarea.ubicacion_trabajo"
-                    class="toggle-button"
+                    class="toggle-button-primary"
                     :disable="disabled"
                     spread
                     no-caps
                     rounded
-                    glossy
-                    toggle-color="positive"
+                    toggle-color="primary"
                     unelevated
                     :options="[
                       {
@@ -648,13 +688,6 @@
               </div>
             </q-expansion-item>
           </q-form>
-
-          <!-- <div class="row justify-end">
-            <q-btn color="positive" no-caps push @click="emitir('guardar')">
-              <q-icon name="bi-save" size="xs" class="q-pr-sm"></q-icon>
-              <span>Finalizar tarea</span>
-            </q-btn>
-          </div> -->
         </q-tab-panel>
 
         <q-tab-panel name="subtareas">
@@ -701,11 +734,14 @@
   <modales-entidad
     :comportamiento="modalesTarea"
     :mixin-modal="mixin"
+    :persistent="false"
     @guardado="guardado"
   />
+
   <modales-entidad
     :comportamiento="modalesSubtarea"
     :mixin-modal="mixinSubtarea"
+    :persistent="false"
   />
 </template>
 

@@ -3,6 +3,10 @@
     :mixin="mixin"
     :configuracion-columnas="configuracionColumnasCategoriaTipoTicket"
     :permitir-eliminar="false"
+    :permitir-editar="false"
+    :permitir-consultar="false"
+    :mostrar-acciones="false"
+    subtitulo-pagina="Módulo de Tickets"
   >
     <template #formulario>
       <q-form @submit.prevent>
@@ -13,10 +17,8 @@
             <q-select
               v-model="tipoTicket.departamento"
               :options="departamentos"
-              @filter="filtrarDepartamentos"
               transition-show="scale"
               transition-hide="scale"
-              hint="Obligatorio"
               options-dense
               dense
               outlined
@@ -48,7 +50,7 @@
 
           <!-- Nombre -->
           <div class="col-12 col-md-3">
-            <label class="q-mb-sm block">Nombre del tipo de ticket</label>
+            <label class="q-mb-sm block">Nombre de la categoría</label>
             <q-input
               v-model="tipoTicket.nombre"
               placeholder="Obligatorio"

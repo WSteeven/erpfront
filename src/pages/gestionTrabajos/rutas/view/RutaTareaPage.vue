@@ -2,6 +2,10 @@
   <tab-layout
     :mixin="mixin"
     :configuracionColumnas="configuracionColumnasRutasTareas"
+    :permitir-eliminar="false"
+    :permitir-editar="false"
+    :permitir-consultar="false"
+    :accion1="btnToggleActivar"
   >
     <template #formulario>
       <q-form @submit.prevent>

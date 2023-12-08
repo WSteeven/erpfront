@@ -31,6 +31,10 @@ export default defineComponent({
     tituloPagina: {
       type: String,
     },
+    subtituloPagina: {
+      type: String,
+      default: 'SISTEMA',
+    },
     mostrarFormulario: {
       type: Boolean,
       default: true,
@@ -119,7 +123,11 @@ export default defineComponent({
     forzarListar: {
       type: Boolean,
       default: false,
-    }
+    },
+    ajustarCeldas: { //valor que se envia para que el contenido de la celda se autoaujuste al tamaño de la celda en lugar de aumentar su tamaño
+      type: Boolean,
+      default: false,
+    },
   },
   emits: ['tab-seleccionado'],
   components: { EssentialTableTabs, ButtonSubmits },
@@ -152,7 +160,7 @@ export default defineComponent({
     // listadoCargado = true
     // }
     // const tabSeleccionado = 'TODO'
-    aplicarFiltro(props.tabDefecto)
+    if (!props.forzarListar) aplicarFiltro(props.tabDefecto)
 
     function forzarListar() {
       if (props.forzarListar) aplicarFiltro(props.tabDefecto)

@@ -4,12 +4,12 @@ import { markRaw } from 'vue'
 
 // Paginas
 import DetalleTrabajoAsignadoPage from 'gestionTrabajos/trabajoAsignado/modules/detalleTrabajosAsignados/view/DetalleTrabajoAsignadoPage.vue'
-import EmergenciaPage from 'formulariosTrabajos/emergencias/view/EmergenciaPage.vue'
+import SeguimientoSubtareaPage from 'formulariosTrabajos/emergencias/view/SeguimientoSubtareaPage.vue'
 import GuiaSubtareasPage from 'gestionTrabajos/trabajoAsignado/modules/guiaSubtareas/GuiaSubtareasPage.vue'
 
 export class TrabajoAsignadoModales {
   DetalleTrabajoAsignadoPage: ComponenteModal
-  EmergenciaPage: ComponenteModal
+  SeguimientoSubtareaPage: ComponenteModal
   GuiaSubtareasPage: ComponenteModal
 
   constructor() {
@@ -17,8 +17,8 @@ export class TrabajoAsignadoModales {
       new ComponenteModal('Detalles del trabajo', DetalleTrabajoAsignadoPage)
     )
 
-    this.EmergenciaPage = markRaw(
-      new ComponenteModal('Seguimiento', EmergenciaPage)
+    this.SeguimientoSubtareaPage = markRaw(
+      new ComponenteModal('Seguimiento', SeguimientoSubtareaPage)
     )
 
     this.GuiaSubtareasPage = markRaw(

@@ -1,5 +1,5 @@
 // Dependencias
-import { computed, defineComponent, reactive, ref } from 'vue'
+import { computed, defineComponent, reactive, ref, watchEffect } from 'vue'
 
 // Logica y controladores
 import { StatusEssentialLoading } from 'components/loading/application/StatusEssentialLoading'
@@ -8,11 +8,17 @@ import { LoginController } from '../infraestructure/LoginController'
 import { useNotificaciones } from 'shared/notificaciones'
 import { isAxiosError, notificarMensajesError } from 'shared/utils'
 import { useRouter } from 'vue-router';
+import { useConfiguracionGeneralStore } from 'stores/configuracion_general'
 
 
 export default defineComponent({
   name: 'LoginPage',
   setup() {
+    const configuracionGeneralStore = useConfiguracionGeneralStore()
+    if (!configuracionGeneralStore.configuracion?.nombre_empresa) configuracionGeneralStore.consultarConfiguracion()
+
+    const nombreEmpresa = computed(() => configuracionGeneralStore.configuracion?.nombre_empresa)
+
     const loginUser = reactive(new UserLogin())
 
     const loginController = new LoginController()
@@ -21,12 +27,14 @@ export default defineComponent({
     const cargando = new StatusEssentialLoading()
     const Router = useRouter()
 
+    watchEffect(() => document.title = nombreEmpresa.value ?? '')
+
     const login = async () => {
       try {
         cargando.activar()
         await loginController.login(loginUser)
 
-        notificaciones.notificarCorrecto('Bienvenido a JPCONSTRUCRED CIA. LTDA') //response.data.mensaje)
+        notificaciones.notificarCorrecto('Bienvenido a ' + nombreEmpresa.value)
 
       } catch (error: any) {
         if (isAxiosError(error)) {
@@ -49,10 +57,12 @@ export default defineComponent({
     return {
       isPwd: ref(true),
       loginUser,
-      // loginJson,
+      logoClaro: computed(() => configuracionGeneralStore.configuracion?.logo_claro),
+      logoOscuro: computed(() => configuracionGeneralStore.configuracion?.logo_oscuro),
       enableLoginButton,
       login,
-      recuperarPassword
+      recuperarPassword,
+      nombreEmpresa,
     }
   },
 })

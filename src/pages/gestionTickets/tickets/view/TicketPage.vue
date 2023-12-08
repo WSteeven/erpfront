@@ -13,9 +13,9 @@
     :accion2="btnReasignar"
     :accion3="btnSeguimiento"
     :accion4="btnCancelar"
-    :accion5="btnCalificar"
+    :accion5="btnCalificarSolicitante"
+    subtitulo-pagina="Módulo de Tickets"
   >
-    <!-- :labelGuardar="tarea.tiene_subtareas ? 'Guardar' : 'Guardar y agendar'" -->
     <template #formulario>
       <div class="q-pa-md">
         <q-expansion-item
@@ -24,6 +24,11 @@
           header-class="text-bold bg-header-collapse"
           default-opened
         >
+          <q-separator></q-separator>
+          <div class="col-12 text-primary bg-body q-px-md q-py-sm q-mb-md">
+            <q-icon name="bi-ticket-detailed"></q-icon>
+            Detalles
+          </div>
           <div class="row q-col-gutter-sm q-pa-md">
             <!-- Asunto -->
             <div class="col-12 col-md-6">
@@ -72,40 +77,13 @@
               </q-input>
             </div>
 
-            <!-- Estado -->
-            <div v-if="ticket.estado" class="col-12 col-md-3">
-              <label class="q-mb-sm block">Estado actual</label>
-              <estados-subtareas :propsTable="{ value: ticket.estado }" />
-            </div>
-
-            <!-- Codigo -->
-            <div v-if="ticket.codigo" class="col-12 col-md-3">
-              <label class="q-mb-sm block">Código del ticket</label>
-              <q-input v-model="ticket.codigo" disable outlined dense>
-              </q-input>
-            </div>
-
-            <!-- Solicitante-->
-            <div class="col-12 col-md-3">
-              <label class="q-mb-sm block">Solicitante</label>
-              <q-input
-                v-model="nombreUsuario"
-                outlined
-                dense
-                disable
-                autogrow
-              ></q-input>
-            </div>
-
-            <div class="col-12 col-md-3">
-              <label class="q-mb-sm block">Fecha y hora de solicitud</label>
-              <q-input v-model="fechaHoraActual" disable outlined dense>
-              </q-input>
-            </div>
-
             <!-- Departamento -->
-            <div class="col-12 col-md-3">
-              <label class="q-mb-sm block">Departamento que atenderá</label>
+            <!-- :class="{ 'col-12': ticket.departamento_responsable.length > 1, -->
+            <!-- 'col-md-9': ticket.departamento_responsable.length <= 1, }" -->
+            <div class="col-12 col-md-6">
+              <label class="q-mb-sm block"
+                >Departamento(s) que atenderá(n)</label
+              >
               <q-select
                 v-model="ticket.departamento_responsable"
                 :options="departamentos"
@@ -116,19 +94,18 @@
                 options-dense
                 dense
                 outlined
-                :disable="disabled"
+                :disable="disabled || departamentoDeshabilitado"
                 :option-label="(item) => item.nombre"
                 :option-value="(item) => item.id"
                 use-input
                 input-debounce="0"
                 emit-value
                 map-options
-                @update:model-value="
-                  () => {
-                    ticket.responsable = null
-                    obtenerResponsables(ticket.departamento_responsable)
-                  }
-                "
+                use-chips
+                multiple
+                @add="agregarDepartamento"
+                @remove="quitarDepartamento"
+                @update:model-value="ajustarResponsablesInterno()"
                 :error="!!v$.departamento_responsable.$errors.length"
                 @blur="v$.departamento_responsable.$touch"
               >
@@ -152,8 +129,33 @@
             </div>
 
             <!-- Responsable -->
-            <div class="col-12 col-md-3">
-              <label class="q-mb-sm block">Responsable</label>
+            <div
+              v-if="
+                !ticket.ticket_interno &&
+                !ticket.ticket_para_mi &&
+                responsables.length
+              "
+              class="col-12 col-md-6"
+            >
+              <label class="q-mb-sm block">Responsable(s)</label>
+              <div class="row bg-body border-grey rounded-field">
+                <div
+                  v-for="responsable in responsables"
+                  :key="responsable"
+                  class="q-pa-sm full-width"
+                >
+                  <q-icon name="bi-person-fill"></q-icon>
+                  <span class="q-mr-xs">{{ responsable.empleado }}</span>
+                  <b>{{ `| ${responsable.departamento}` }}</b>
+                </div>
+              </div>
+            </div>
+
+            <div
+              v-if="ticket.ticket_interno || ticket.ticket_para_mi"
+              class="col-12 col-md-6"
+            >
+              <label class="q-mb-sm block">Responsable(s)</label>
               <q-select
                 v-model="ticket.responsable"
                 :options="empleados"
@@ -164,20 +166,22 @@
                 options-dense
                 dense
                 outlined
-                :disable="disabled"
+                :disable="disabled || responsableDeshabilitado"
                 :option-label="(item) => `${item.nombres} ${item.apellidos}`"
                 :option-value="(item) => item.id"
                 use-input
                 input-debounce="0"
                 emit-value
                 map-options
+                use-chips
+                multiple
                 :error="!!v$.responsable.$errors.length"
                 @blur="v$.responsable.$touch"
               >
                 <template v-slot:no-option>
                   <q-item>
                     <q-item-section class="text-grey">
-                      Primero seleccione un departamento
+                      Seleccione un departamento
                     </q-item-section>
                   </q-item>
                 </template>
@@ -193,89 +197,65 @@
               </q-select>
             </div>
 
-            <div class="col-12 col-md-3">
-              <label class="q-mb-sm block"
-                >Categorías para tipo de ticket</label
-              >
-              <q-select
-                v-model="ticket.categoria_tipo_ticket"
-                :options="categoriasTiposTickets"
-                @filter="filtrarCategoriasTiposTickets"
-                transition-show="scale"
-                transition-hide="scale"
-                hint="Obligatorio"
-                options-dense
-                dense
-                outlined
-                :disable="disabled"
-                :option-label="(item) => item.nombre"
-                :option-value="(item) => item.id"
-                use-input
-                input-debounce="0"
-                emit-value
-                map-options
-                :error="!!v$.categoria_tipo_ticket.$errors.length"
-                @blur="v$.categoria_tipo_ticket.$touch"
-              >
-                <template v-slot:no-option>
-                  <q-item>
-                    <q-item-section class="text-grey">
-                      No hay resultados
-                    </q-item-section>
-                  </q-item>
-                </template>
-
-                <template v-slot:error>
-                  <div
-                    v-for="error of v$.categoria_tipo_ticket.$errors"
-                    :key="error.$uid"
-                  >
-                    <div class="error-msg">{{ error.$message }}</div>
-                  </div>
-                </template>
-              </q-select>
+            <!-- Estado -->
+            <div v-if="ticket.estado" class="col-12 col-md-3">
+              <label class="q-mb-sm block">Estado actual</label>
+              <estados-subtareas :propsTable="{ value: ticket.estado }" />
             </div>
 
-            <!-- Tipo de ticket -->
-            <div class="col-12 col-md-3">
-              <label class="q-mb-sm block">Tipo de ticket</label>
-              <!-- @filter="filtrarTiposTickets" -->
-              <q-select
-                v-model="ticket.tipo_ticket"
-                :options="tiposTickets"
-                transition-show="scale"
-                transition-hide="scale"
-                hint="Obligatorio"
-                options-dense
+            <!-- Codigo -->
+            <div v-if="ticket.codigo" class="col-12 col-md-3">
+              <label class="q-mb-sm block">Código del ticket</label>
+              <q-input v-model="ticket.codigo" disable outlined dense>
+              </q-input>
+            </div>
+
+            <div v-if="ticket.tiempo_hasta_finalizar" class="col-12 col-md-3">
+              <label class="q-mb-sm block">Tiempo hasta finalizar</label>
+              <q-input
+                v-model="ticket.tiempo_hasta_finalizar"
+                disable
+                outlined
                 dense
+              >
+              </q-input>
+            </div>
+
+            <!-- Solicitante-->
+            <div class="col-12 col-md-3">
+              <label class="q-mb-sm block">Solicitante</label>
+              <b class="q-pa-sm block">{{ nombreUsuario }}</b>
+            </div>
+
+            <div class="col-12 col-md-3">
+              <label class="q-mb-sm block">Fecha y hora de solicitud</label>
+              <b class="q-pa-sm block">{{ fechaHoraActual }} </b>
+            </div>
+
+            <!-- Ticket interno -->
+            <div v-if="esResponsableDepartamento" class="col-12 col-md-3">
+              <br />
+              <q-checkbox
+                v-model="ticket.ticket_interno"
+                label="Ticket interno"
                 outlined
                 :disable="disabled"
-                :option-label="(item) => item.nombre"
-                :option-value="(item) => item.id"
-                use-input
-                input-debounce="0"
-                emit-value
-                map-options
-                :error="!!v$.tipo_ticket.$errors.length"
-                @blur="v$.tipo_ticket.$touch"
-              >
-                <template v-slot:no-option>
-                  <q-item>
-                    <q-item-section class="text-grey">
-                      No hay resultados
-                    </q-item-section>
-                  </q-item>
-                </template>
+                @update:model-value="toggleTicketInterno()"
+                dense
+              ></q-checkbox>
+            </div>
 
-                <template v-slot:error>
-                  <div
-                    v-for="error of v$.tipo_ticket.$errors"
-                    :key="error.$uid"
-                  >
-                    <div class="error-msg">{{ error.$message }}</div>
-                  </div>
-                </template>
-              </q-select>
+            <!-- Ticket para mi -->
+            <div class="col-12 col-md-3">
+              <br />
+              <q-checkbox
+                v-model="ticket.ticket_para_mi"
+                label="Ticket para mi"
+                outlined
+                :disable="disabled"
+                @update:model-value="toggleTicketParaMi()"
+                dense
+              ></q-checkbox>
             </div>
 
             <div class="col-12 col-md-3">
@@ -385,7 +365,125 @@
               >
               </q-input>
             </div>
+          </div>
 
+          <q-separator v-if="destinatarios.length"></q-separator>
+          <div
+            v-if="destinatarios.length"
+            class="col-12 text-primary bg-body q-px-md q-py-sm q-mb-md"
+          >
+            <q-icon name="bi-view-list"></q-icon>
+            Categorías y tipos
+          </div>
+          <div
+            v-for="destinatario in destinatarios"
+            :key="destinatario.departamento_id"
+            class="row q-px-md q-col-gutter-sm q-mb-md"
+          >
+            <div class="col-12 col-md-3">
+              <label class="q-mb-sm block">Departamento</label>
+              <q-chip>{{ destinatario.departamento }}</q-chip>
+            </div>
+
+            <div class="col-12 col-md-3">
+              <label class="q-mb-sm block"
+                >Categorías para tipo de ticket</label
+              >
+              <q-select
+                v-model="destinatario.categoria_id"
+                :options="destinatario.categorias"
+                transition-show="scale"
+                transition-hide="scale"
+                hint="Obligatorio"
+                options-dense
+                dense
+                outlined
+                :disable="disabled"
+                :option-label="(item) => item.nombre"
+                :option-value="(item) => item.id"
+                use-input
+                input-debounce="0"
+                emit-value
+                map-options
+                @update:model-value="
+                  () => {
+                    destinatario.tipo_ticket_id = null
+                    obtenerTiposTickets(
+                      destinatario.departamento_id,
+                      destinatario.categoria_id
+                    )
+                  }
+                "
+              >
+                <!-- :error="!!v$.categoria_tipo_ticket.$errors.length"
+                @blur="v$.categoria_tipo_ticket.$touch" -->
+                <template v-slot:no-option>
+                  <q-item>
+                    <q-item-section class="text-grey">
+                      Seleccione un departamento
+                    </q-item-section>
+                  </q-item>
+                </template>
+
+                <!-- <template v-slot:error>
+                  <div
+                    v-for="error of v$.categoria_tipo_ticket.$errors"
+                    :key="error.$uid"
+                  >
+                    <div class="error-msg">{{ error.$message }}</div>
+                  </div>
+                </template> -->
+              </q-select>
+            </div>
+
+            <!-- Tipo de ticket -->
+            <div class="col-12 col-md-3">
+              <label class="q-mb-sm block">Tipo de ticket</label>
+              <q-select
+                v-model="destinatario.tipo_ticket_id"
+                :options="destinatario.tipos_tickets"
+                transition-show="scale"
+                transition-hide="scale"
+                hint="Obligatorio"
+                options-dense
+                dense
+                outlined
+                :disable="disabled"
+                :option-label="(item) => item.nombre"
+                :option-value="(item) => item.id"
+                use-input
+                input-debounce="0"
+                emit-value
+                map-options
+              >
+                <!-- :error="!!v$.tipo_ticket.$errors.length"
+                @blur="v$.tipo_ticket.$touch" -->
+                <template v-slot:no-option>
+                  <q-item>
+                    <q-item-section class="text-grey">
+                      Seleccione una categoría
+                    </q-item-section>
+                  </q-item>
+                </template>
+
+                <!-- <template v-slot:error>
+                  <div
+                    v-for="error of v$.tipo_ticket.$errors"
+                    :key="error.$uid"
+                  >
+                    <div class="error-msg">{{ error.$message }}</div>
+                  </div>
+                </template> -->
+              </q-select>
+            </div>
+          </div>
+
+          <q-separator></q-separator>
+          <div class="col-12 text-primary bg-body q-px-md q-py-sm q-mb-md">
+            <q-icon name="bi-archive"></q-icon>
+            Archivos
+          </div>
+          <div class="row q-px-md q-col-gutter-sm">
             <div class="col-12 q-mb-md">
               <archivo-seguimiento
                 ref="refArchivoTicket"
@@ -404,7 +502,10 @@
           class="rounded-card q-mb-md"
         >
           <q-card-section>
-            <div class="text-bold q-mb-lg">Calificaciones</div>
+            <div class="text-bold q-mb-lg">
+              <q-icon name="bi-stars"></q-icon>
+              Calificaciones
+            </div>
             <div
               v-for="item in ticket.calificaciones"
               :key="item.id"
@@ -415,13 +516,16 @@
                 <label class="q-mb-sm block"
                   >Calificación del {{ item.solicitante_o_responsable }}</label
                 >
-                <q-input
-                  :model-value="obtenerTexto(item.calificacion)"
-                  outlined
-                  disable
-                  dense
-                >
-                </q-input>
+                <q-chip color="grey-3">
+                  <q-icon
+                    v-for="index in item.calificacion"
+                    :key="index"
+                    name="bi-star-fill"
+                    color="yellow-7"
+                    class="q-mr-xs"
+                  ></q-icon>
+                  {{ obtenerTexto(item.calificacion) }}
+                </q-chip>
               </div>
 
               <!-- Observacion -->
@@ -452,6 +556,7 @@
           :alto-fijo="false"
           :permitir-buscar="false"
           :mostrar-footer="!pausas.length"
+          estilos="margin-bottom: 16px;"
         ></essential-table>
 
         <essential-table
@@ -471,6 +576,7 @@
     :comportamiento="modalesTicket"
     :mixin-modal="mixin"
     :accion="filtrarTickets"
+    @guardado="guardado"
   />
 </template>
 

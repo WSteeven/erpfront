@@ -5,7 +5,7 @@ import { useAuthenticationStore } from 'stores/authentication'
 import { accionesTabla, estadosTrabajos } from 'config/utils'
 import { tabTrabajoAsignado } from 'config/tareas.utils'
 import { computed, defineComponent, ref } from 'vue'
-import { date } from 'quasar'
+import { date, useQuasar } from 'quasar'
 
 // Componentes
 import ConfirmarDialog from 'gestionTrabajos/trabajoAsignado/view/ConfirmarDialog.vue'
@@ -13,15 +13,17 @@ import EssentialTableTabs from 'components/tables/view/EssentialTableTabs.vue'
 import ModalesEntidad from 'components/modales/view/ModalEntidad.vue'
 
 // Logica y controladores
+import { CausaIntervencionController } from 'pages/gestionTrabajos/causasIntervenciones/infraestructure/CausaIntervencionController'
 import { MotivoSuspendidoController } from 'pages/gestionTrabajos/motivosSuspendidos/infraestructure/MotivoSuspendidoController'
 import { TrabajoAsignadoController } from 'gestionTrabajos/trabajoAsignado/infraestructure/TrabajoAsignadoController'
 import { MotivoPausaController } from 'pages/gestionTrabajos/motivosPausas/infraestructure/MotivoPausaController'
 import { ComportamientoModalesTrabajoAsignado } from '../application/ComportamientoModalesTrabajoAsignado'
 import { ContenedorSimpleMixin } from 'shared/contenedor/modules/simple/application/ContenedorSimpleMixin'
 import { useBotonesTablaSubtarea } from 'pages/gestionTrabajos/subtareas/application/BotonesTablaSubtarea'
+import { SubtareaListadoPusherEvent } from '../application/SubtareaPusherEvent'
 import { CustomActionTable } from 'components/tables/domain/CustomActionTable'
 import { Subtarea } from 'pages/gestionTrabajos/subtareas/domain/Subtarea'
-import { SubtareaListadoPusherEvent } from '../application/SubtareaPusherEvent'
+import { useCargandoStore } from 'stores/cargando'
 
 export default defineComponent({
   components: {
@@ -35,6 +37,7 @@ export default defineComponent({
     ***********/
     const trabajoAsignadoStore = useTrabajoAsignadoStore()
     const authenticationStore = useAuthenticationStore()
+    useCargandoStore().setQuasar(useQuasar())
 
     /*******
     * Mixin
@@ -47,6 +50,7 @@ export default defineComponent({
       await obtenerListados({
         motivosPausas: new MotivoPausaController(),
         motivosSuspendidos: new MotivoSuspendidoController(),
+        causasIntervenciones: new CausaIntervencionController(),
       })
     })
 

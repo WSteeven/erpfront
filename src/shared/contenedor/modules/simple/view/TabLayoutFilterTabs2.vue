@@ -2,10 +2,13 @@
   <q-page padding>
     <slot name="modales" />
 
-    <b class="block text-center">
-      <q-icon name="bi-app-indicator" class="q-mr-sm"></q-icon>
-      {{ tituloTabla }}</b
-    >
+    <div class="text-left q-mb-md">
+      <b class="block text-subtitle1 text-thin text-primary">
+        <!-- <q-icon name="bi-app-indicator" class="q-mr-sm"></q-icon> -->
+        {{ tituloTabla }}</b
+      >
+      <small class="text-grey-9 text-bold">{{ subtituloPagina }}</small>
+    </div>
 
     <!-- Tabs -->
     <q-tabs
@@ -103,6 +106,7 @@
           :tab-options="tabOptions"
           @tab-seleccionado="aplicarFiltro"
           :tab-defecto="tabDefecto"
+          :ajustarCeldas="ajustarCeldas"
         ></essential-table-tabs>
         <!-- :tab-defecto="tabDefecto" -->
       </q-tab-panel>

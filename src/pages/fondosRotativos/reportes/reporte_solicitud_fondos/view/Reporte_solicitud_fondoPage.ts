@@ -15,6 +15,8 @@ import { useAuthenticationStore } from 'stores/authentication'
 import { ReporteSolicitudFondos } from '../domain/ReporteSolicitudFondos'
 import { maskFecha } from 'config/utils'
 import { EmpleadoController } from 'pages/recursosHumanos/empleados/infraestructure/EmpleadoController'
+import { useCargandoStore } from 'stores/cargando'
+import { useFondoRotativoStore } from 'stores/fondo_rotativo'
 
 export default defineComponent({
   components: { TabLayout },
@@ -25,7 +27,10 @@ export default defineComponent({
      * Stores
      *********/
     useNotificacionStore().setQuasar(useQuasar())
+    useCargandoStore().setQuasar(useQuasar())
     const store = useAuthenticationStore()
+    const fondoRotativoStore = useFondoRotativoStore()
+
     /***********
      * Mixin
      ************/
@@ -63,6 +68,7 @@ export default defineComponent({
     setValidador(v$.value)
     const usuarios = ref([])
     const is_all_users= ref('false')
+    const is_inactivo = ref('false')
     usuarios.value = listadosAuxiliares.usuarios
 
     cargarVista(async () => {
@@ -120,7 +126,36 @@ export default defineComponent({
           break
       }
     }
-
+    async function mostrarInactivos(val) {
+      if (val === 'true') {
+        const empleados = (
+          await new EmpleadoController().listar({
+            campos: 'id,nombres,apellidos',
+            estado: 0,
+          })
+        ).result
+        fondoRotativoStore.empleados = empleados
+        setTimeout(
+          () =>
+            setInterval(() => {
+              empleados.value = fondoRotativoStore.empleados
+              usuarios.value = empleados.value
+            }, 100),
+          250
+        )
+      } else {
+        const empleados_aux = listadosAuxiliares.usuarios
+        fondoRotativoStore.empleados = empleados_aux
+        setTimeout(
+          () =>
+            setInterval(() => {
+              empleados_aux.value = fondoRotativoStore.empleados
+              usuarios.value = empleados_aux.value
+            }, 100),
+          250
+        )
+      }
+    }
 
     return {
       mixin,
@@ -131,6 +166,8 @@ export default defineComponent({
       accion,
       v$,
       usuarios,
+      mostrarInactivos,
+      is_inactivo,
       is_all_users,
       generar_reporte,
       filtrarUsuarios,

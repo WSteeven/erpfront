@@ -1,6 +1,6 @@
 // Dependencias
 import { useAuthenticationStore } from 'stores/authentication'
-import loginJson from 'src/assets/lottie/login7.json'
+import loginJson from 'src/assets/lottie/welcome.json'
 import { defineComponent, reactive, ref } from 'vue'
 import { date } from 'quasar'
 
@@ -59,6 +59,8 @@ export default defineComponent({
 
     // obtenerSubtareasPendientesAsignar()
 
+    
+
     return {
       tablero,
       store,
@@ -77,6 +79,7 @@ export default defineComponent({
       verSubtarea,
       fecha,
       subtareasPorAsignar,
+
     }
   },
 })

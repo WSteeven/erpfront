@@ -1,16 +1,15 @@
 // Dependencias
-import { regiones, atenciones, tiposIntervenciones, estadosTrabajos } from 'config/utils'
-import { useNotificaciones } from 'shared/notificaciones'
-import { endpoints } from 'config/api'
-import { computed, defineComponent, Ref, ref } from 'vue'
+import { Ref, computed, defineComponent, onMounted, ref, watch, watchEffect } from 'vue'
+import { regiones, atenciones } from 'config/utils'
 import useVuelidate from '@vuelidate/core'
+import { endpoints } from 'config/api'
 
 // Componentes
-import TablaFilasDinamicas from 'components/tables/view/TablaFilasDinamicas.vue'
 import ArchivoSeguimiento from 'gestionTrabajos/subtareas/modules/gestorArchivosTrabajos/view/ArchivoSeguimiento.vue'
 import TablaObservaciones from 'gestionTrabajos/formulariosTrabajos/tablaObservaciones/view/TablaObservacion.vue'
 import DetalleTicket from 'ticketsAsignados/modules/detalleTicketAsignado/view/DetalleTicket.vue'
 import TablaDevolucionProducto from 'components/tables/view/TablaDevolucionProducto.vue'
+import TablaFilasDinamicas from 'components/tables/view/TablaFilasDinamicas.vue'
 import EssentialTable from 'components/tables/view/EssentialTable.vue'
 import ButtonSubmits from 'components/buttonSubmits/buttonSubmits.vue'
 import SelectorImagen from 'components/SelectorImagen.vue'
@@ -27,6 +26,8 @@ import { CustomActionTable } from 'components/tables/domain/CustomActionTable'
 import { useAuthenticationStore } from 'stores/authentication'
 import { useTicketStore } from 'stores/ticket'
 import { estadosTickets } from 'config/tickets.utils'
+import { AxiosHttpRepository } from 'shared/http/infraestructure/AxiosHttpRepository'
+import { AxiosResponse } from 'axios'
 
 export default defineComponent({
   components: {
@@ -40,12 +41,6 @@ export default defineComponent({
     VisorImagen,
     DetalleTicket,
   },
-  /* props: {
-    mixinModal: {
-      type: Object as () => ContenedorSimpleMixin<Subtarea>,
-      required: true,
-    },
-  },*/
   emits: ['cerrar-modal'],
   setup(props, { emit }) {
     /*********
@@ -60,7 +55,6 @@ export default defineComponent({
     const mixinActividad = new ContenedorSimpleMixin(ActividadRealizadaSeguimientoTicket, new SeguimientoTicketController())
     const { entidad: actividad, accion, listadosAuxiliares, listado: actividadesRealizadas } = mixinActividad.useReferencias()
     const { guardar: guardarActividad, editar, reestablecer, setValidador, listar: listarActividades } = mixinActividad.useComportamiento()
-    const { onBeforeGuardar, onConsultado, onBeforeModificar, onGuardado, onModificado } = mixinActividad.useHooks()
 
     const mixinArchivoSeguimiento = new ContenedorSimpleMixin(Archivo, new ArchivoSeguimientoTicketController())
     const { listar: listarArchivosTickets } = mixinArchivoSeguimiento.useComportamiento()
@@ -72,10 +66,11 @@ export default defineComponent({
     const refEditarModal = ref()
     const fila = ref()
     const refVisorImagen = ref()
-    // const { prompt, notificarAdvertencia } = useNotificaciones()
     const ticket = ticketStore.filaTicket
     const refArchivoSeguimiento = ref()
     const permitirSubir = authenticationStore.user.id == ticketStore.filaTicket.responsable_id && ticket.estado === estadosTickets.EJECUTANDO
+    const position = ref(0)
+    const scrollAreaRef = ref()
 
     /************
      * Init
@@ -89,7 +84,7 @@ export default defineComponent({
     const verFotografia: CustomActionTable = {
       titulo: 'Ver fotografía',
       icono: 'bi-image-fill',
-      color: 'secondary',
+      color: 'primary',
       visible: ({ entidad }) => entidad.fotografia,
       accion: async ({ entidad }) => {
         refVisorImagen.value.abrir(entidad.fotografia)
@@ -112,6 +107,7 @@ export default defineComponent({
     function guardarFilaActividad(data) {
       actividad.hydrate(data)
       actividad.ticket = ticketStore.filaTicket.id
+      actividad.responsable = authenticationStore.user.id
       guardarActividad(actividad)
     }
 
@@ -119,48 +115,53 @@ export default defineComponent({
       refArchivoSeguimiento.value.subir({ ticket_id: ticketStore.filaTicket.id })
     }
 
-    function editarSeguimiento() {
-      // editar(emergencia, true, { empleado_id: obtenerIdEmpleadoResponsable(), tarea_id: trabajoAsignadoStore.idTareaSeleccionada })
-    }
-
     function limpiarFila() {
       fila.value = null
     }
 
-    function guardarFila(data) {
-      //simple.value.push(data)
+    /* function guardarFila(data) {
       limpiarFila()
-    }
+    } */
 
     function abrirModalArbol() {
       refEditarModal.value.abrir()
     }
 
-    /********
-    * Hooks
-    *********/
-    onConsultado(async () => {
-      // refArchivoSeguimiento.value.listarArchivos({ seguimiento_id: actividad.id })
+    function siguiente() {
+      scrollAreaRef.value.setScrollPercentage('horizontal', position.value, 300)
+      position.value = position.value < 1 ? position.value + 0.1 : position.value
+    }
+
+    function anterior() {
+      scrollAreaRef.value.setScrollPercentage('horizontal', position.value, 300)
+      position.value = position.value > 0 ? position.value - 0.1 : position.value
+    }
+
+    const lineaTiempo = ref()
+    async function consultarLineaTiempoTicket() {
+      const axios = AxiosHttpRepository.getInstance()
+      const response: AxiosResponse = await axios.get(axios.getEndpoint(endpoints.linea_tiempo_tickets) + '/' + ticket.id)
+      lineaTiempo.value = response.data.results
+    }
+
+    consultarLineaTiempoTicket()
+
+    const actividadesFiltradas: Ref<ActividadRealizadaSeguimientoTicket[]> = ref([])
+    const filtrado = ref(false)
+    const indice = ref()
+    const mensajeFiltro = ref('Se muestran todas las actividades registradas hasta el momento')
+    function filtrarActividades(linea, index: number) {
+      filtrado.value = index === indice.value ? !filtrado.value : true
+      indice.value = index
+      mensajeFiltro.value = filtrado.value ? `Se muestran las actividades de ${linea.responsable} a partir de la fecha ${linea.created_at}` : 'Se muestran todas las actividades registradas hasta el momento'
+      actividadesFiltradas.value = filtrado.value ? actividadesRealizadas.value.filter((actividad: ActividadRealizadaSeguimientoTicket) => actividad.responsable === linea.responsable && (actividad.fecha_hora ? actividad.fecha_hora >= linea.created_at : false)) : actividadesRealizadas.value
+    }
+
+    watch(actividadesRealizadas, () => {
+      if (actividadesRealizadas.value.length) {
+        actividadesFiltradas.value = actividadesRealizadas.value
+      }
     })
-
-    onBeforeGuardar(() => {
-      // emergencia.subtarea = trabajoAsignadoStore.idSubtareaSeleccionada
-    })
-
-    onBeforeModificar(() => {
-      // emergencia.subtarea = trabajoAsignadoStore.idSubtareaSeleccionada
-    })
-
-    /*onGuardado((id: number) => {
-      subirArchivos(id)
-      listarArchivosTickets({ estado: estadosTrabajos.EJECUTANDO })
-      emit('cerrar-modal', false)
-    })*/
-
-    /*onModificado((id: number) => {
-      subirArchivos(id)
-      emit('cerrar-modal', false)
-    })*/
 
     return {
       v$,
@@ -170,12 +171,8 @@ export default defineComponent({
       refArchivoSeguimiento,
       mixinArchivoSeguimiento,
       accion,
-      //      guardarSeguimiento,
-      editarSeguimiento,
       regiones,
       atenciones,
-      tiposIntervenciones,
-      //    guardar,
       editar,
       reestablecer,
       emit,
@@ -184,7 +181,7 @@ export default defineComponent({
       endpoint: endpoints.archivos_seguimientos_tickets,
       columnasActividades: configuracionColumnasActividadRealizadaSeguimientoTicket,
       abrirModalArbol,
-      guardarFila,
+      // guardarFila,
       actividadesRealizadas,
       ActividadRealizadaSeguimientoTicket,
       verFotografia,
@@ -192,6 +189,16 @@ export default defineComponent({
       subirArchivos,
       mostrarBotonSubir: computed(() => refArchivoSeguimiento.value?.quiero_subir_archivos),
       permitirSubir,
+      siguiente,
+      anterior,
+      position,
+      scrollAreaRef,
+      lineaTiempo,
+      filtrarActividades,
+      actividadesFiltradas,
+      filtrado,
+      indice,
+      mensajeFiltro,
     }
   }
 })

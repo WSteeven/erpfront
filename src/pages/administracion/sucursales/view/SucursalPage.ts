@@ -12,6 +12,9 @@ import { ContenedorSimpleMixin } from 'shared/contenedor/modules/simple/applicat
 import { SucursalController } from '../infraestructure/SucursalController'
 import { Sucursal } from '../domain/Sucursal'
 import { useAuthenticationStore } from 'stores/authentication'
+import { ClienteController } from 'sistema/clientes/infraestructure/ClienteController'
+import { Cliente } from 'sistema/clientes/domain/Cliente'
+import { ordernarListaString } from 'shared/utils'
 
 export default defineComponent({
     components: { TabLayout },
@@ -20,14 +23,17 @@ export default defineComponent({
         const { entidad: sucursal, disabled, listadosAuxiliares } = mixin.useReferencias()
         const { setValidador, cargarVista, obtenerListados } = mixin.useComportamiento()
 
+        //stores
         const store = useAuthenticationStore()
 
-        const opciones_empleados = ref([])
+        const clientes = ref([])
         cargarVista(async () => {
             obtenerListados({
-                usuarios: await store.listadoUsuarios()
+                clientes: {
+                    controller: new ClienteController(),
+                    params: { requiere_bodega: 1 }
+                }
             })
-            opciones_empleados.value = listadosAuxiliares.usuarios
         })
 
 
@@ -36,33 +42,40 @@ export default defineComponent({
             lugar: { required },
             telefono: { required },
             correo: { required },
-            extension:{numeric, requiredIfExtension: requiredIf(sucursal.extension!==null)}
+            cliente: { required },
+            extension: { numeric, requiredIfExtension: requiredIf(sucursal.extension !== null) }
         }
 
         const v$ = useVuelidate(reglas, sucursal)
         setValidador(v$.value)
 
+        clientes.value = listadosAuxiliares.clientes
 
         return {
             mixin, sucursal, v$, disabled,
             configuracionColumnas: configuracionColumnasSucursales,
 
             //listados
-            opciones_empleados,
+            clientes,
 
-            //Filtros
-            filtroEmpleados(val, update) {
+            // Filtros
+            filtroClientes(val, update) {
                 if (val === '') {
                     update(() => {
-                        opciones_empleados.value = listadosAuxiliares.usuarios
+                        clientes.value = listadosAuxiliares.clientes
                     })
                     return
                 }
                 update(() => {
                     const needle = val.toLowerCase()
-                    opciones_empleados.value = listadosAuxiliares.usuarios.filter((v) => (v.nombres.toLowerCase().indexOf(needle) > -1 || v.apellidos.toLowerCase().indexOf(needle) > -1))
+                    clientes.value = listadosAuxiliares.clientes.filter((v:Cliente) => (v.razon_social!.toLowerCase().indexOf(needle) > -1))
                 })
-            }
+            },
+            //ordenamientos
+            ordenarClientes() {
+                if (store.esBodegueroTelconet) clientes.value = clientes.value.filter((v: Cliente) => v.razon_social!.indexOf('TELCONET') > -1)
+                else clientes.value.sort((a: Cliente, b: Cliente) => ordernarListaString(a.razon_social!, b.razon_social!))
+              },
         }
     }
 })

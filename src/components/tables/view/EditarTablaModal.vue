@@ -13,7 +13,7 @@
     >
       <q-toolbar class="bg-body rounded-header">
         <q-avatar square>
-          <img src="~assets/logo.svg" />
+          <img src="~assets/logo.png" />
         </q-avatar>
 
         <q-toolbar-title>Editar fila</q-toolbar-title>
@@ -79,6 +79,19 @@
             </q-select>
           </div>
 
+          <!-- Toggles -->
+          <div
+            v-for="field in fieldsToggle"
+            :key="field.field"
+            class="col-12 col-md-3"
+          >
+            <label class="block q-mb-sm">{{ field.label }}</label>
+            <q-toggle
+              keep-color
+              v-model="field.valor"
+              :label="field.valor ? 'SI' : 'NO'"
+            />
+          </div>
           <!-- Inputs normales -->
           <!-- :class="{ 'col-12 q-mb-sm': true, 'col-md-3': fields.length > 1 }" -->
           <div
@@ -89,7 +102,11 @@
             <label class="block q-mb-sm">{{ field.label }}</label>
             <q-input
               v-model="field.valor"
-              :type="field.type !== 'select' ? field.type : 'text'"
+              :type="
+                field.type !== 'select' || field.type !== 'toggle'
+                  ? field.type
+                  : 'text'
+              "
               :autogrow="field.type !== 'number'"
               :hint="field.hint"
               outlined
@@ -180,11 +197,12 @@ export default defineComponent({
             fila.field !== 'acciones' &&
             fila.type !== 'imagen' &&
             fila.type !== 'select' &&
+            fila.type !== 'toggle' &&
             fila.editable
         )
     )
 
-    // normal
+    // select
     const fieldsSelect = computed(() =>
       props.configuracionColumnas
         .map((fila: ColumnConfig<any>) => {
@@ -218,6 +236,24 @@ export default defineComponent({
         })
         .filter((fila) => fila.field !== 'acciones')
     )
+    //toggles
+    const fieldsToggle = computed(() =>
+      props.configuracionColumnas
+        .map((fila: ColumnConfig<any>) => {
+          return reactive({
+            label: fila.label,
+            field: fila.field,
+            type: fila.type ?? 'text',
+            editable: fila.editable ?? true,
+            valor: props.fila ? props.fila[fila.field] : '',
+            hint: fila.hint,
+          })
+        })
+        .filter(
+          (fila) =>
+            fila.field !== 'acciones' && fila.type === 'toggle' && fila.editable
+        )
+    )
 
     // imagenes
     const fieldsImagen = computed(() =>
@@ -249,6 +285,9 @@ export default defineComponent({
       var mappedSelect = fieldsSelect.value.map((item) => ({
         [item.field]: item.valor,
       }))
+      var mappedToggle = fieldsToggle.value.map((item) => ({
+        [item.field]: item.valor,
+      }))
       var mappedImagen = fieldsImagen.value.map((item) => ({
         [item.field]: item.valor,
       }))
@@ -260,6 +299,7 @@ export default defineComponent({
         ...mapped,
         ...mappedSelect,
         ...mappedImagen,
+        ...mappedToggle,
       ]
       const newObj = Object.assign({}, ...mapped)
 
@@ -281,19 +321,19 @@ export default defineComponent({
       emit('limpiar')
     }
 
-    function filtrarSelect(val, update) {
-      // const opciones = fieldsSelect.filter
-      console.log(val)
-      // if(val ===''){
-      //   update(()=>{
-      //     opciones = opciones
-      //   })
-      //   return
-      // }
-      // update(()=>{
-      //   opciones = opciones.filter((item) => item.label.toLowerCase().includes(val.toLowerCase()))
-      // })
-    }
+    // function filtrarSelect(val, update) {
+    // const opciones = fieldsSelect.filter
+    // console.log(val)
+    // if(val ===''){
+    //   update(()=>{
+    //     opciones = opciones
+    //   })
+    //   return
+    // }
+    // update(()=>{
+    //   opciones = opciones.filter((item) => item.label.toLowerCase().includes(val.toLowerCase()))
+    // })
+    // }
 
     // Antes de cerrar el modal
     function validarRequeridos(fila) {
@@ -301,7 +341,7 @@ export default defineComponent({
         .filter((item) => item.requerido)
         .map((item) => item.field)
 
-      console.log(requeridos)
+      // console.log(requeridos)
       let valido = true
 
       for (let key in fila) {
@@ -317,13 +357,13 @@ export default defineComponent({
     return {
       fields,
       fieldsSelect,
+      fieldsToggle,
       fieldsAll,
       fieldsImagen,
       abierto,
       abrir,
       guardar,
       cerrarModalEntidad,
-      filtrarSelect,
     }
   },
 })

@@ -19,22 +19,28 @@ import { Pedido } from '../domain/Pedido'
 
 import { configuracionColumnasProductosSeleccionadosDespachado } from '../domain/configuracionColumnasProductosSeleccionadosDespachado'
 import { configuracionColumnasProductosSeleccionados } from '../domain/configuracionColumnasProductosSeleccionados'
-import { acciones, autorizacionesTransacciones, estadosTransacciones, tabOptionsPedidos } from 'config/utils'
+import { acciones, autorizaciones, autorizacionesTransacciones, estados, estadosTransacciones, tabOptionsPedidos } from 'config/utils'
 import { EmpleadoController } from 'pages/recursosHumanos/empleados/infraestructure/EmpleadoController'
 import { configuracionColumnasDetallesModal } from '../domain/configuracionColumnasDetallesModal'
 import { TareaController } from 'tareas/infraestructure/TareaController'
 import { CustomActionTable } from 'components/tables/domain/CustomActionTable'
+import { CustomActionPrompt } from 'components/tables/domain/CustomActionPrompt'
 import { useNotificaciones } from 'shared/notificaciones'
 
-import { CustomActionPrompt } from 'components/tables/domain/CustomActionPrompt'
 import { fechaMayorActual } from 'shared/validadores/validaciones'
 import { useAuthenticationStore } from 'stores/authentication'
 import { usePedidoStore } from 'stores/pedido'
 import { useRouter } from 'vue-router'
 import { ValidarListadoProductos } from '../application/validaciones/ValidarListadoProductos'
-import { LocalStorage } from 'quasar'
+import { LocalStorage, useQuasar } from 'quasar'
 import { ClienteController } from 'sistema/clientes/infraestructure/ClienteController'
 import { CambiarEstadoPedido } from '../application/CambiarEstadoPedido'
+import { useNotificacionStore } from 'stores/notificacion'
+import { useCargandoStore } from 'stores/cargando'
+import { Sucursal } from 'pages/administracion/sucursales/domain/Sucursal'
+import { ordernarListaString } from 'shared/utils'
+import { SucursalController } from 'pages/administracion/sucursales/infraestructure/SucursalController'
+import { ComportamientoModalesPedido } from '../application/ComportamientoModalesPedido'
 
 
 export default defineComponent({
@@ -46,8 +52,11 @@ export default defineComponent({
     const { onReestablecer, onConsultado } = mixin.useHooks()
     const { confirmar, prompt, notificarCorrecto, notificarError } = useNotificaciones()
 
+    const modales = new ComportamientoModalesPedido()
 
     // Stores
+    useNotificacionStore().setQuasar(useQuasar())
+    useCargandoStore().setQuasar(useQuasar())
     const pedidoStore = usePedidoStore()
     const store = useAuthenticationStore()
     const router = useRouter()
@@ -83,13 +92,30 @@ export default defineComponent({
         soloLectura.value = true
       }
     })
+    //variables para cosultar los detalles
+    const all = ref(true)
+    const only_sucursal = ref(false)
+    const only_cliente_tarea = ref(false)
+    const group = ref('todos')
+    const options_groups = [
+      {
+        label: 'Todos los elementos',
+        value: 'todos'
+      },
+      {
+        label: 'Solo bodega seleccionada',
+        value: 'only_sucursal'
+      },
+      {
+        label: 'Solo perteneciente al cliente de la tarea',
+        value: 'only_cliente_tarea'
+      }
+    ]
 
     const opciones_clientes = ref([])
     const opciones_empleados = ref([])
     const opciones_sucursales = ref([])
     const opciones_tareas = ref([])
-    const opciones_autorizaciones = ref([])
-    const opciones_estados = ref([])
 
     //Obtener los listados
     cargarVista(async () => {
@@ -152,8 +178,12 @@ export default defineComponent({
 
     /*******************************************************************************************
      * Funciones
-     ******************************************************************************************/
-
+     *****************************************************************************************
+     */
+    async function recargarSucursales() {
+      const sucursales = (await new SucursalController().listar({ campos: 'id,lugar' })).result
+      LocalStorage.set('sucursales', JSON.stringify(sucursales))
+    }
     function eliminar({ entidad, posicion }) {
       confirmar('¿Está seguro de continuar?', () => pedido.listadoProductos.splice(posicion, 1))
     }
@@ -190,8 +220,38 @@ export default defineComponent({
         })
       },
       visible: ({ entidad, posicion }) => {
-        console.log(posicion, entidad)
-        return tabSeleccionado.value === autorizacionesTransacciones.aprobado && entidad.per_autoriza_id === store.user.id && entidad.estado === estadosTransacciones.pendiente
+        // console.log(posicion, entidad)
+        return tabSeleccionado.value === autorizacionesTransacciones.aprobado && ((entidad.per_autoriza_id === store.user.id || entidad.solicitante_id === store.user.id) && entidad.estado === estadosTransacciones.pendiente || store.esActivosFijos) || store.esAdministrador
+      }
+    }
+    const botonMarcarComoCompletado: CustomActionTable = {
+      titulo: 'Marcar Completado',
+      color: 'green-6',
+      icono: 'bi-check-circle-fill',
+      tooltip: 'Marcar pedido como completado',
+      accion: ({ entidad, posicion }) => {
+        confirmar('¿Está seguro de marcar el pedido como completado?', () => {
+          console.log(entidad, posicion)
+          const data: CustomActionPrompt = {
+            titulo: 'Observación',
+            mensaje: 'Ingresa el motivo de marcar como completo el pedido',
+            accion: async (data) => {
+              try {
+                const { result } = await new CambiarEstadoPedido().marcarCompletado(entidad.id, data)
+                if (result.estado === estadosTransacciones.completa) {
+                  notificarCorrecto('Pedido marcado completado con éxito')
+                  listado.value.splice(posicion, 1)
+                }
+              } catch (e: any) {
+                notificarError('No se pudo completar el pedido, debes ingresar un motivo para la anulación')
+              }
+            }
+          }
+          prompt(data)
+        })
+      },
+      visible: ({ entidad, posicion }) => {
+        return tabSeleccionado.value === estadosTransacciones.parcial && store.esBodeguero && store.esCoordinadorBodega
       }
     }
     const botonEditarCantidad: CustomActionTable = {
@@ -221,7 +281,18 @@ export default defineComponent({
         console.log('Pedido a despachar es: ', pedidoStore.pedido)
         router.push('transacciones-egresos')
       },
-      visible: ({ entidad }) => tabSeleccionado.value == 'APROBADO' && esBodeguero && entidad.estado != estadosTransacciones.completa ? true : false
+      visible: ({ entidad }) => (tabSeleccionado.value == 'APROBADO' || tabSeleccionado.value == 'PARCIAL') && esBodeguero && entidad.estado != estadosTransacciones.completa ? true : false
+    }
+    const botonCorregir: CustomActionTable = {
+      titulo: 'Corregir pedido',
+      color: 'amber-3',
+      icono: 'bi-gear',
+      accion: ({ entidad, posicion }) => {
+        pedidoStore.pedido = entidad
+        console.log('Entidad es: ', entidad)
+        modales.abrirModalEntidad('CorregirPedidoPage')
+      },
+      visible: ({ entidad }) => (tabSeleccionado.value == 'APROBADO' || tabSeleccionado.value == 'PARCIAL') && (esBodeguero || entidad.per_autoriza_id == store.user.id) && entidad.estado != estadosTransacciones.completa ? true : false
     }
 
     const botonImprimir: CustomActionTable = {
@@ -235,7 +306,7 @@ export default defineComponent({
         // console.log(pedidoStore.pedido.listadoProductos)
         // console.log(pedidoStore.pedido.listadoProductos.flatMap((v) => v))
       },
-      visible: () => tabSeleccionado.value == 'APROBADO' || tabSeleccionado.value == 'COMPLETA' ? true : false
+      visible: () => tabSeleccionado.value == 'APROBADO' || tabSeleccionado.value == 'PARCIAL' || tabSeleccionado.value == 'COMPLETA' ? true : false
     }
 
     function actualizarElemento(posicion: number, entidad: any): void {
@@ -262,9 +333,7 @@ export default defineComponent({
     opciones_tareas.value = listadosAuxiliares.tareas
     opciones_clientes.value = listadosAuxiliares.clientes
     opciones_sucursales.value = JSON.parse(LocalStorage.getItem('sucursales')!.toString())
-    opciones_autorizaciones.value = JSON.parse(LocalStorage.getItem('autorizaciones')!.toString())
-    opciones_estados.value = JSON.parse(LocalStorage.getItem('estados_transacciones')!.toString())
-
+    
     return {
       mixin, pedido, disabled, accion, v$, acciones,
       configuracionColumnas: configuracionColumnasPedidos,
@@ -273,8 +342,8 @@ export default defineComponent({
       opciones_tareas,
       opciones_clientes,
       opciones_sucursales,
-      opciones_estados,
-      opciones_autorizaciones,
+      opciones_estados: estados,
+      opciones_autorizaciones:autorizaciones,
 
       //selector
       refListado,
@@ -290,16 +359,21 @@ export default defineComponent({
       configuracionColumnasProductosSeleccionadosAccion,
       configuracionColumnasProductosSeleccionadosDespachado,
       botonEditarCantidad,
+      botonCorregir,
       botonEliminar,
       botonImprimir,
       botonDespachar,
       botonAnularAutorizacion,
+      botonMarcarComoCompletado,
 
       //stores
       store,
+      modales,
 
       //flags
       soloLectura,
+      all, only_sucursal, only_cliente_tarea,
+      group, options_groups,
 
       //Tabs
       tabOptionsPedidos,
@@ -327,7 +401,7 @@ export default defineComponent({
       },
       tabEs(val) {
         tabSeleccionado.value = val
-        puedeEditar.value = (esCoordinador || esActivosFijos || store.esJefeTecnico || esGerente) && tabSeleccionado.value === estadosTransacciones.pendiente
+        puedeEditar.value = (esCoordinador || esActivosFijos || store.esJefeTecnico || esGerente || store.esCompras || store.can('puede.autorizar.pedidos')) && tabSeleccionado.value === estadosTransacciones.pendiente
           ? true : false
       },
 
@@ -373,7 +447,24 @@ export default defineComponent({
       pedidoSeleccionado(val) {
         pedido.cliente_id = listadosAuxiliares.tareas.filter((v) => (v.id === val))[0]['cliente_id']
         console.log(pedido.cliente_id)
-      }
+      },
+
+      recargarSucursales,
+      filtroSucursales(val, update) {
+        if (val === '') {
+          update(() => {
+            opciones_sucursales.value = JSON.parse(LocalStorage.getItem('sucursales')!.toString())
+          })
+          return
+        }
+        update(() => {
+          const needle = val.toLowerCase()
+          opciones_sucursales.value = JSON.parse(LocalStorage.getItem('sucursales')!.toString()).filter((v) => v.lugar.toLowerCase().indexOf(needle) > -1)
+        })
+      },
+      ordenarSucursales() {
+        opciones_sucursales.value.sort((a: Sucursal, b: Sucursal) => ordernarListaString(a.lugar!, b.lugar!))
+      },
     }
   }
 })

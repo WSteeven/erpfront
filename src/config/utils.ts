@@ -1,11 +1,11 @@
 import { TabOption } from 'components/tables/domain/TabOption'
-import { CausaIntervencion } from 'pages/gestionTrabajos/formulariosTrabajos/emergencias/view/CausaIntervencion'
-// import { CausaIntervencion } from 'pages/tareas/controlTareas/modules/subtareas/modules/controlAvance/view/CausaIntervencion'
 
 export const maskFecha = 'DD-MM-YYYY'
 //export const maskFecha = 'YYYY/MM/DD'
 // Tipos
 export type TipoSeleccion = 'none' | 'single' | 'multiple'
+
+export type TipoSeparador = 'none' | 'horizontal' | 'vertical' | 'cell' | undefined
 
 export const acciones = {
   nuevo: 'NUEVO',
@@ -57,78 +57,6 @@ export const regiones = ['R1', 'R2', 'R3', 'R4']
 
 export const atenciones = ['URBANO', 'INTERURBANO']
 
-// Emergencias
-export const tiposIntervenciones = [
-  { id: 'CF', descripcion: 'CORTE FIBRA' },
-  { id: 'MTTO', descripcion: 'MANTENIMIENTO' },
-  { id: 'SPT', descripcion: 'SOPORTE' },
-  { id: 'TP', descripcion: 'TAREA PROGRAMADA' },
-]
-
-export const causaIntervencion: CausaIntervencion[] =
-  [
-    { categoria: 'TP', descripcion: 'TP-ARREGLO PATCH NODO' },
-    { categoria: 'TP', descripcion: 'TP-CAMBIO DE MANGAS' },
-    { categoria: 'TP', descripcion: 'TP-CAMBIO DE TRAMO' },
-    { categoria: 'TP', descripcion: 'TP-EMERGENTES' },
-    { categoria: 'TP', descripcion: 'TP-MIGRACION DE ENLACES' },
-    { categoria: 'TP', descripcion: 'TP-RECUPERACIÓN HILOS' },
-    { categoria: 'TP', descripcion: 'TP-REGULARIZACION DE TRAMOS' },
-    { categoria: 'TP', descripcion: 'TP-REPARACIÓN/CAMBIO ODF' },
-    { categoria: 'TP', descripcion: 'TP-REVISIÓN DE ATENUACIÓN' },
-    { categoria: 'TP', descripcion: 'TP-SEPARACIÓN DE RUTA' },
-
-    { categoria: 'CF', descripcion: 'CF-ACCESORIOS DE SUJECIÓN EN POSTES' },
-    { categoria: 'CF', descripcion: 'CF-ACCIDENTE DE TRANSITO' },
-    { categoria: 'CF', descripcion: 'CF-AMPLIACION DE VIAS/REGENERACION' },
-    { categoria: 'CF', descripcion: 'CF-CAIDA DE ARBOL ' },
-    { categoria: 'CF', descripcion: 'CF-CAIDA DE POSTES' },
-    { categoria: 'CF', descripcion: 'CF-CAMBIO DE TRAMO/FALLA NO DETERMINADA' },
-    { categoria: 'CF', descripcion: 'CF-CORTE MACHETE/PODA DE ARBOL' },
-    { categoria: 'CF', descripcion: 'CF-DEMOLICIONES' },
-    { categoria: 'CF', descripcion: 'CF-DERRUMBE/DESLAVE/INUNDACION/LLUVIAS' },
-    { categoria: 'CF', descripcion: 'CF-DESASTRES NATURALES' },
-    { categoria: 'CF', descripcion: 'CF-DESCARGA ELECTRICA/FIBRA QUEMADA' },
-    { categoria: 'CF', descripcion: 'CF-DISPARO EN FIBRA' },
-    { categoria: 'CF', descripcion: 'CF-ERROR HUMANO' },
-    { categoria: 'CF', descripcion: 'CF-EXTENSION DE VENTANA PROGRAMADA' },
-    { categoria: 'CF', descripcion: 'CF-INSECTOS/ROEDORES' },
-    { categoria: 'CF', descripcion: 'CF-INTENTO ROBO DE CABLE/MANGAS' },
-    { categoria: 'CF', descripcion: 'CF-MANGA CAIDA / MANGA MAL ESTADO' },
-    { categoria: 'CF', descripcion: 'CF-MAQUINARIA PESADA/CARGA ELEVADA' },
-    { categoria: 'CF', descripcion: 'CF-QUEMA DE MALEZA/FIBRA QUEMADA' },
-    { categoria: 'CF', descripcion: 'CF-REGENERACIÓN URBANA' },
-    { categoria: 'CF', descripcion: 'CF-RETIRO POSTES' },
-    { categoria: 'CF', descripcion: 'CF-SABOTAJE' },
-    { categoria: 'CF', descripcion: 'CF-TAREA NO NOTIFICADA' },
-    { categoria: 'CF', descripcion: 'CF-TRABAJOS DE OPERADOR EXTERNO' },
-
-    { categoria: 'MTTO', descripcion: 'MTTO-ARMADO DE MANGA' },
-    { categoria: 'MTTO', descripcion: 'MTTO-CAMBIO A NUEVOS POSTES' },
-    { categoria: 'MTTO', descripcion: 'MTTO-CAMBIO DE AMARRAS' },
-    { categoria: 'MTTO', descripcion: 'MTTO-COLOCACION DE ETIQUETAS' },
-    { categoria: 'MTTO', descripcion: 'MTTO-FIBRA EN EL SUELO' },
-    { categoria: 'MTTO', descripcion: 'MTTO-RETEMPLADO DE FIBRA' },
-    { categoria: 'MTTO', descripcion: 'MTTO-CERTIFICACION DE HILOS' },
-
-    { categoria: 'SPT', descripcion: 'SPT-CAMBIO DE EQUIPO' },
-    { categoria: 'SPT', descripcion: 'SPT-CAMBIO DE VENTILADORES' },
-    { categoria: 'SPT', descripcion: 'SPT-CAMBIO MODULO ODF' },
-    { categoria: 'SPT', descripcion: 'SPT-CAMBIO PATCH' },
-    { categoria: 'SPT', descripcion: 'SPT-CAMBIO SFP' },
-    { categoria: 'SPT', descripcion: 'SPT-REFUSION PIGTAIL' },
-    { categoria: 'SPT', descripcion: 'SPT-REINICIO DE EQUIPO' },
-    { categoria: 'SPT', descripcion: 'SPT-REVISION UM CLIENTE' },
-    { categoria: 'SPT', descripcion: 'STP-CAMBIO/REVISION DE FUENTE' },
-    { categoria: 'SPT', descripcion: 'SPT-ASISTENCIA MANOS REMOTAS' },
-    { categoria: 'SPT', descripcion: 'SPT-ACOMPAÑAMIENTO PROVEEDORES' },
-    { categoria: 'SPT', descripcion: 'SPT-ACOMPAÑAMIENTO CLIENTE' },
-    { categoria: 'SPT', descripcion: 'SPT-REVISION ELECTRICA' },
-    { categoria: 'SPT', descripcion: 'SPT-REVISION CLIMATIZACION' },
-    { categoria: 'SPT', descripcion: 'SPT-REVISION ALARMAS/SEGURIDAD' },
-    { categoria: 'SPT', descripcion: 'SPT-REVISION NODO' },
-  ]
-
 export const tabOptionsTransaccionesIngresos: TabOption[] = [
   { label: 'Todo', value: 'TODO' },
   { label: 'Pendiente', value: 'PENDIENTE' },
@@ -136,7 +64,9 @@ export const tabOptionsTransaccionesIngresos: TabOption[] = [
   { label: 'Completa', value: 'COMPLETA' },
 ]
 export const tabOptionsDevoluciones: TabOption[] = [
-  { label: 'Creadas', value: 'CREADA' },
+  { label: 'Por autorizar', value: 'PENDIENTE' },
+  { label: 'Aprobados', value: 'APROBADO' },
+  { label: 'Cancelados', value: 'CANCELADO' },
   { label: 'Anuladas', value: 'ANULADA' },
 ]
 export const tabOptionsTransferencias: TabOption[] = [
@@ -146,9 +76,31 @@ export const tabOptionsTransferencias: TabOption[] = [
 ]
 export const tabOptionsPedidos: TabOption[] = [
   { label: 'Por autorizar', value: 'PENDIENTE' },
-  { label: 'Aprobados', value: 'APROBADO' },
+  { label: 'Aprobados Pendiente', value: 'APROBADO' },
+  { label: 'Aprobados Parcial', value: 'PARCIAL' },
   { label: 'Cancelados', value: 'CANCELADO' },
   { label: 'Completados', value: 'COMPLETA' },
+]
+export const tabOptionsSolicitudPedido: TabOption[] = [
+  { label: 'Pendiente', value: '1' },
+  { label: 'Validado', value: '4' },
+  { label: 'Aprobados', value: '2' },
+  { label: 'Cancelados', value: '3' },
+]
+export const tabOptionsLicencias: TabOption[] = [
+  { label: 'Pendiente', value: '1' },
+  { label: 'Aprobados', value: '2' },
+  { label: 'Cancelados', value: '3' },
+]
+export const tabOptionsVacaciones: TabOption[] = [
+  { label: 'Pendiente', value: '1' },
+  { label: 'Aprobados', value: '2' },
+  { label: 'Cancelados', value: '3' },
+]
+export const tabOptionsPermiso: TabOption[] = [
+  { label: 'Pendiente', value: '1' },
+  { label: 'Aprobados', value: '2' },
+  { label: 'Cancelados', value: '3' },
 ]
 export const tabOptionsTraspasos: TabOption[] = [
   { label: 'Pendientes', value: '0' },
@@ -248,12 +200,14 @@ export const estadosCondicionesId = {
   usado: '2',
   mal_estado: '3',
   danado: '4',
+  buen_estado: '5',
 }
 export const estadosCondicionesValue = {
   nuevo: 'NUEVO',
   usado: 'USADO',
   mal_estado: 'MAL ESTADO',
   danado: 'DAÑADO',
+  buen_estado: 'BUEN ESTADO',
 }
 
 export const meses = ['Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre']
@@ -278,6 +232,13 @@ export const estadosTrabajos = {
   REALIZADO: 'REALIZADO',
   FINALIZADO: 'FINALIZADO',
   //REAGENDADO: 'REAGENDADO',
+}
+export const estadosRolPago = {
+  CREADO: 'CREADO',
+  EJECUTANDO: 'EJECUTANDO',
+  CANCELADO: 'CANCELADO',
+  REALIZADO: 'REALIZADO',
+  FINALIZADO: 'FINALIZADO',
 }
 export const estadosGastos = {
   APROBADO: 1,
@@ -304,20 +265,24 @@ export const estadosTrabajoArray = [
 ]
 
 export const rolesSistema = {
-  administrador: 'ADMINISTRADOR',
-  contabilidad: 'CONTABILIDAD',
-  gerente: 'GERENTE',
-  rrhh: 'RECURSOS HUMANOS',
-  empleado: 'EMPLEADO',
-  coordinador: 'COORDINADOR',
-  coordinadorBackup: 'COORDINADOR_BACKUP',
-  jefe_tecnico: 'JEFE TECNICO',
-  fiscalizador: 'FISCALIZADOR',
-  bodega: 'BODEGA',
   activos_fijos: 'ACTIVOS FIJOS',
-  tecnico: 'TECNICO',
-  tecnico_lider: 'LIDER DE GRUPO',
+  administrador: 'ADMINISTRADOR',
+  bodega: 'BODEGA',
+  bodegaTelconet: 'BODEGA TELCONET',
+  compras: 'COMPRAS',
+  contabilidad: 'CONTABILIDAD',
+  supervisor: 'SUPERVISOR',
+  coordinador: 'COORDINADOR',
+  coordinadorBodega: 'COORDINADOR DE BODEGA',
+  coordinadorBackup: 'COORDINADOR_BACKUP',
+  empleado: 'EMPLEADO',
+  fiscalizador: 'FISCALIZADOR',
+  gerente: 'GERENTE',
+  jefe_tecnico: 'JEFE TECNICO',
+  rrhh: 'RECURSOS HUMANOS',
   secretario: 'SECRETARIO',
+  tecnico_lider: 'LIDER DE GRUPO',
+  tecnico: 'TECNICO',
 }
 
 export const cargosSistema = {
@@ -336,9 +301,157 @@ export const opcionesEstados = [
   { value: 1, label: 'ACTIVO' },
   { value: 0, label: 'INACTIVO' }
 ]
+export const tiposProductos = [
+  { value: 'BIEN', label: 'BIEN' },
+  { value: 'SERVICIO', label: 'SERVICIO' },
+]
 
-export const opciones_tipo_contribuyente = [
+export const opcionesTipoContribuyente = [
   { value: 'NATURAL', label: 'NATURAL' },
   { value: 'PRIVADA', label: 'PRIVADA' },
   { value: 'PUBLICA', label: 'PUBLICA' },
+]
+
+export const opcionesReportesIngresos = [
+  { value: 0, label: 'POR SOLICITANTE' },
+  { value: 1, label: 'POR BODEGUERO' }, //PERSONA QUE ATIENDE
+  { value: 2, label: 'POR MOTIVO' },
+  { value: 3, label: 'POR BODEGA' },
+  { value: 4, label: 'POR DEVOLUCIÓN' },
+  { value: 5, label: 'POR TAREA' },
+  { value: 6, label: 'POR TRANSFERENCIA' },
+]
+
+export const tiposReportesIngresos = {
+  solicitante: 0, //empleado
+  bodeguero: 1, //bodeguero
+  motivo: 2,
+  sucursal: 3,
+  devolucion: 4,
+  tarea: 5,
+  transferencia: 6,
+}
+
+export const opcionesReportesEgresos = [
+  { value: 0, label: 'POR SOLICITANTE' },
+  { value: 1, label: 'POR PERSONA QUE AUTORIZA' },
+  { value: 2, label: 'POR PERSONA QUE RETIRA' },
+  { value: 3, label: 'POR RESPONSABLE' },
+  { value: 4, label: 'POR BODEGUERO' }, //PERSONA QUE ATIENDE
+  { value: 5, label: 'POR MOTIVO' },
+  { value: 6, label: 'POR BODEGA' },
+  { value: 7, label: 'POR PEDIDO' },
+  { value: 8, label: 'POR CLIENTE' },
+  { value: 9, label: 'POR TAREA' },
+  { value: 10, label: 'POR TRANSFERENCIA' },
+]
+
+export const tiposReportesEgresos = {
+  solicitante: 0, //empleado
+  autorizador: 1, //persona que autoriza el pedido
+  retira: 2, //persona que retira la encomienda o pedido
+  responsable: 3, //responsable de los materiales
+  bodeguero: 4, //bodeguero
+  motivo: 5,
+  sucursal: 6,
+  pedido: 7,
+  cliente: 8,
+  tarea: 9,
+  transferencia: 10,
+}
+
+export const opcionesDepartamentos = {
+  xtrim_cuenca: 'XTRIM CUENCA',
+  medico: 'MEDICO',
+  activos_fijos: 'ACTIVOS FIJOS',
+  gerencia: 'GERENCIA',
+  proyectos: 'PROYECTOS',
+  recursos_humanos: 'RECURSOS HUMANOS',
+  tecnico: 'TECNICO',
+  contabilidad: 'CONTABILIDAD',
+  informatica: 'INFORMATICA',
+  bodega: 'BODEGA',
+  sso: 'SSO',
+  vehiculos: 'VEHICULOS',
+  comercial: 'COMERCIAL',
+}
+export const opcionesUnidadesMedidas = [
+  { value: 1, label: 'UNIDAD' },
+  { value: 2, label: 'KILOGRAMO' },
+  { value: 3, label: 'METRO' },
+  { value: 4, label: 'METRO LINEAL' },
+  { value: 5, label: 'KILOMETRO' },
+  { value: 6, label: 'KILOMETRO CUBICO' },
+  { value: 7, label: 'LITRO' },
+  { value: 8, label: 'KIT' },
+]
+export function convertir_fecha(fecha: Date) {
+  const day = fecha.getDate() < 10 ? '0' + fecha.getDate() : fecha.getDate()
+  const month =
+    fecha.getMonth() + 1 < 10
+      ? '0' + (fecha.getMonth() + 1)
+      : fecha.getMonth() + 1
+  const year = fecha.getFullYear()
+  return year + '/' + month + '/' + day
+}
+export function convertir_fecha_guion(fecha) {
+  const partes = fecha.split(' '); // Dividir en fecha y hora
+  const fechaPartes = partes[0].split('-'); // Dividir la fecha en día, mes y año
+  const nuevaFecha = `${fechaPartes[2]}/${fechaPartes[1]}/${fechaPartes[0]}`; // Construir la nueva fecha en formato dd/mm/yyyy
+  return nuevaFecha;
+}
+export function convertir_fecha_hora(fecha) {
+  const dateParts = fecha.split('-') // Dividir el string en partes usando el guión como separador
+  let tiempo = dateParts[2]
+  tiempo = tiempo.split(' ')
+  tiempo = tiempo[1].split(':')
+  const dia = parseInt(dateParts[0], 10) // Obtener el día como entero
+  const mes = parseInt(dateParts[1], 10) - 1 // Obtener el mes como entero (restar 1 porque en JavaScript los meses comienzan desde 0)
+  const anio = parseInt(dateParts[2], 10)
+  const fecha_convert = new Date(anio, mes, dia, tiempo[0], tiempo[1], 0)
+  return fecha_convert
+}
+export const niveles_academicos = [
+  { nombre: 'ESTUDIO PRIMARIO' },
+  { nombre: 'ESTUDIO SECUNDARIO' },
+  { nombre: 'TITULO SUPERIOR' },
+]
+export const tipos_sangre = [
+  { nombre: 'A +' },
+  { nombre: 'B +' },
+  { nombre: 'AB +' },
+  { nombre: 'O +' },
+  { nombre: 'A -' },
+  { nombre: 'B -' },
+  { nombre: 'AB -' },
+  { nombre: 'O -' },
+  // Puedes agregar aquí más tipos de sangre si es necesario
+]
+export const talla_letras = [
+  { nombre: 'S' },
+  { nombre: 'M' },
+  { nombre: 'L' },
+  { nombre: 'XL' },
+  { nombre: 'XXL' },
+  { nombre: 'XXXL' },
+  // Puedes agregar aquí más tallas si es necesario
+]
+
+
+export const tabOptionsPreingresoMateriales = [
+  { label: 'Pendientes', value: '1' }, //autorizacion PENDIENTE
+  { label: 'Autorizadas', value: '2' }, //autorizacion APROBADO
+  { label: 'Canceladas', value: '3' }  //autorizacion CANCELADO
+]
+
+export const autorizaciones = [
+  { nombre: 'Pendiente', id: 1 }, //autorizacion PENDIENTE
+  { nombre: 'Aprobado', id: 2 }, //autorizacion APROBADO
+  { nombre: 'Cancelado', id: 3 }  //autorizacion CANCELADO
+]
+export const estados = [
+  { nombre: 'Pendiente', id: 1 }, //estado PENDIENTE
+  { nombre: 'Completa', id: 2 }, //estado COMPLETA
+  { nombre: 'Parcial', id: 3 }, //estado PARCIAL
+  { nombre: 'Anulado', id: 4 }  //estado ANULADO
 ]

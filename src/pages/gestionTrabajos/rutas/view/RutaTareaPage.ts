@@ -15,6 +15,10 @@ import { ContenedorSimpleMixin } from 'shared/contenedor/modules/simple/applicat
 import { ClienteController } from 'pages/sistema/clientes/infraestructure/ClienteController'
 import { RutaTarea } from '../domain/RutaTarea'
 import { RutaTareaController } from '../infraestructure/RutaTareaController'
+import { CustomActionTable } from 'components/tables/domain/CustomActionTable'
+import { useNotificaciones } from 'shared/notificaciones'
+import { StatusEssentialLoading } from 'components/loading/application/StatusEssentialLoading'
+import { isAxiosError, notificarMensajesError } from 'shared/utils'
 
 export default defineComponent({
   components: {
@@ -22,11 +26,26 @@ export default defineComponent({
     EssentialTable,
   },
   setup() {
+    /*********
+     * Stores
+     *********/
+    useNotificacionStore().setQuasar(useQuasar())
+
+    /************
+     * Variables
+     ************/
+    const notificaciones = useNotificaciones()
+    const cargando = new StatusEssentialLoading()
+    const controller = new RutaTareaController()
+
+    /********
+     * Mixin
+     ********/
     const mixin = new ContenedorSimpleMixin(
       RutaTarea,
-      new RutaTareaController()
+      controller
     )
-    const { entidad: rutaTarea, disabled, accion, listadosAuxiliares } = mixin.useReferencias()
+    const { entidad: rutaTarea, disabled, accion, listadosAuxiliares, listado } = mixin.useReferencias()
     const { cargarVista, obtenerListados, setValidador } =
       mixin.useComportamiento()
 
@@ -42,12 +61,41 @@ export default defineComponent({
       ruta: { required },
     }
 
-    useNotificacionStore().setQuasar(useQuasar())
 
     const v$ = useVuelidate(rules, rutaTarea)
     setValidador(v$.value)
 
-    // Filtro clientes principales
+    /****************
+     * Botones tabla
+     ****************/
+    const btnToggleActivar: CustomActionTable = {
+      titulo: ({ entidad }) => entidad.activo ? 'Deshabilitar' : 'Activar',
+      icono: ({ entidad }) => entidad.activo ? 'bi-toggle2-off' : 'bi-toggle2-on',
+      color: ({ entidad }) => entidad.activo ? 'negative' : 'secondary',
+      accion: ({ entidad, posicion }) => {
+        notificaciones.confirmar('¿Está seguro de continuar?', async () => {
+          try {
+            cargando.activar()
+            const { response, result } = await controller.editarParcial(entidad.id, { activo: !entidad.activo })
+            listado.value.splice(posicion, 1, result)
+            notificaciones.notificarCorrecto(response.data.mensaje)
+          } catch (e: any) {
+            if (isAxiosError(e)) {
+              const mensajes: string[] = e.erroresValidacion
+              notificarMensajesError(mensajes, notificaciones)
+            } else {
+              notificaciones.notificarError(e.message)
+            }
+          } finally {
+            cargando.desactivar()
+          }
+        })
+      }
+    }
+
+    /*********
+    * Filtros
+    **********/
     const clientes = ref()
     function filtrarClientes(val, update) {
       if (val === '') {
@@ -74,6 +122,7 @@ export default defineComponent({
       configuracionColumnasRutasTareas,
       filtrarClientes,
       clientes,
+      btnToggleActivar,
     }
   },
 })

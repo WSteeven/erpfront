@@ -1,19 +1,20 @@
 <template>
+  <!-- :maximized="$q.screen.xs" -->
   <q-dialog
     v-model="abierto"
-    :maximized="$q.screen.xs"
     :full-width="true"
     :full-height="true"
-    :persistent="true"
+    :persistent="persistente"
+    maximized
   >
-    <q-card class="bg-transparent rounded-card no-border" flat>
+    <q-card class="bg-transparent no-border" flat>
       <!-- <q-linear-progress :value="1" color="grey-4" /> -->
-      <q-toolbar class="bg-body rounded-header border-bottom" rounded>
+      <q-toolbar class="bg-body border-bottom superior-fixed" rounded>
         <q-avatar square>
-          <img src="~assets/logo.svg" />
+          <img src="~assets/logo.png" />
         </q-avatar>
 
-        <q-toolbar-title class="text-grey-8 text-subtitle1"
+        <q-toolbar-title class="text-primary text-subtitle1"
           ><span>{{ titulo }}</span></q-toolbar-title
         >
 
@@ -38,7 +39,7 @@
         <!--v-close-popup -->
       </q-toolbar>
 
-      <q-card-section class="bg-body rounded-footer">
+      <q-card-section class="bg-body rounded-footer superior-fixed-body">
         <component
           v-if="mixinModal"
           :is="componente"
@@ -68,3 +69,18 @@
 </template>
 
 <script src="./ModalEntidad.ts"></script>
+
+<style>
+.superior-fixed {
+  position: fixed;
+  top: 0;
+  z-index: 99999;
+}
+
+.superior-fixed-body {
+  position: relative;
+  top: 50px;
+  left: 0;
+  right: 0;
+}
+</style>

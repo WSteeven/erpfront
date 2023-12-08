@@ -112,7 +112,7 @@ export default defineComponent({
       const { result } = await new EmpleadoController().consultar(empleado.value);
       roles.value = result.roles
       permisos.value = [...result.permisos]
-      eliminarPuntosGuionesBajos(permisos.value)
+      // eliminarPuntosGuionesBajos(permisos.value)
       //Buscar los permisos no asignados a un empleado
       const { response } = await new PermisosUsuarioController().listar({
         empleado_id: empleado.value,
@@ -125,15 +125,15 @@ export default defineComponent({
 
       permisosSinAsignar.value = response.data.results
       listado.value = [...response.data.permisos_usuario]
-      eliminarPuntosGuionesBajos(permisosSinAsignar.value)
-      eliminarPuntosGuionesBajos(listado.value)
+      // eliminarPuntosGuionesBajos(permisosSinAsignar.value)
+      // eliminarPuntosGuionesBajos(listado.value)
       essentialLoading.desactivar()
     }
-    function eliminarPuntosGuionesBajos(lista) {
-      return lista.forEach((v) => {
-        v.name = v.name.replace('puede', '').split('.').join(' ').split('_').join(' ')
-      })
-    }
+    // function eliminarPuntosGuionesBajos(lista) {
+    //   return lista.forEach((v) => {
+    //     v.name = v.name.replace('puede', '').split('.').join(' ').split('_').join(' ')
+    //   })
+    // }
 
 
     return {

@@ -1,13 +1,5 @@
 <template>
-  <q-page class="">
-    <!-- <div class="row items-center empresa">
-      <q-avatar square>
-        <img src="~assets/logo.svg" />
-      </q-avatar>
-      <span class="text-primary q-ml-md text-h5">JPCONSTRUC</span
-      ><span class="text-accent text-h5">RED</span>
-    </div> -->
-
+  <q-page>
     <div class="row items-center">
       <!-- Left side -->
       <div
@@ -17,7 +9,7 @@
       >
         <div class="imagen d-flex align-items-center justify-content-center">
           <q-avatar square size="400px">
-            <img src="~assets/logo.svg" />
+            <img :src="!$q.dark.isActive ? logoClaro : logoOscuro" />
           </q-avatar>
         </div>
       </div>
@@ -32,12 +24,12 @@
           size="120px"
           class="q-mx-auto block q-mb-md"
         >
-          <img src="~assets/logo.svg" />
+          <img src="~assets/logo.png" />
         </q-avatar>
 
         <form @submit.prevent="login" class="full-width q-px-lg">
           <div class="q-mb-sm">
-            <h2>Bienvenidos a JPCONSTRUCRED</h2>
+            <h2>Bienvenidos a {{ nombreEmpresa }}</h2>
             <span>Inicie sesión con su cuenta</span>
           </div>
 

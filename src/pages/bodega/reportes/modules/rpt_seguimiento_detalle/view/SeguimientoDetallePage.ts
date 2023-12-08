@@ -11,10 +11,17 @@ import { AxiosResponse } from 'axios';
 import useVuelidate from '@vuelidate/core';
 import { required } from 'shared/i18n-validators';
 import { imprimirArchivo } from 'shared/utils';
+import { useNotificacionStore } from 'stores/notificacion';
+import { useCargandoStore } from 'stores/cargando';
+import { useQuasar } from 'quasar';
 
 export default defineComponent({
   components: { EssentialTable },
   setup() {
+
+    //stores
+    useNotificacionStore().setQuasar(useQuasar())
+    useCargandoStore().setQuasar(useQuasar())
 
     const kardex = reactive({
       detalle: '',
@@ -63,7 +70,7 @@ export default defineComponent({
       kardex.tipo_rpt = tipo
 
       const axios = AxiosHttpRepository.getInstance()
-      const filename = 'reporte_kardex_'+Date.now()
+      const filename = 'reporte_kardex_' + Date.now()
       const url = apiConfig.URL_BASE + '/' + axios.getEndpoint(endpoints.reporte_inventario) + '/kardex'
       switch (tipo) {
         case 'excel':
@@ -94,7 +101,7 @@ export default defineComponent({
           return
         }
         update(() => {
-          detalles.value = results.value.filter((v: DetalleProducto) => v.descripcion!.toLowerCase().indexOf(val.toLowerCase()) > -1)
+          detalles.value = results.value.filter((v: DetalleProducto) => v.descripcion!.toLowerCase().indexOf(val.toLowerCase()) > -1 || v.serial?.toLowerCase().indexOf(val.toLowerCase())>-1)
         })
       },
     }

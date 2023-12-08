@@ -49,7 +49,12 @@
       :tab-defecto="tabActual"
     ></essential-table-tabs>
 
-    <modales-entidad :comportamiento="modales" :mixin-modal="mixin" />
+    <modales-entidad
+      :comportamiento="modales"
+      :mixin-modal="mixin"
+      :confirmar-cerrar="false"
+      :persistente="false"
+    />
 
     <!-- <confirmar-dialog
       :visible="mostrarDialogPlantilla"

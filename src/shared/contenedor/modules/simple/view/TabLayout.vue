@@ -4,10 +4,14 @@
       <slot name="modales" />
     </transition>
 
-    <b class="block text-center">
-      <q-icon name="bi-app-indicator" class="q-mr-sm"></q-icon>
-      {{ tituloTabla }}</b
-    >
+    <div class="text-left q-mb-md">
+      <b class="block text-subtitle1 text-thin text-primary">
+        <!-- <q-icon name="bi-app-indicator" class="q-mr-sm"></q-icon> -->
+        {{ tituloTabla }}</b
+      >
+      <small class="text-grey-9 text-bold">{{ subtituloPagina }}</small>
+    </div>
+
     <!-- Tabs -->
     <q-tabs
       v-model="tabs"
@@ -46,6 +50,7 @@
       animated
       transition-prev="scale"
       transition-next="scale"
+      helpalive
       :class="{ 'rounded-tabpanel': !$q.screen.xs }"
     >
       <!-- Formulario -->
@@ -79,6 +84,16 @@
           :permitirEliminar="puedeEliminar"
           :accion1="accion1"
           :accion2="accion2"
+          :accion3="accion3"
+          :accion4="accion4"
+          :accion5="accion5"
+          :accion1Header="accion1Header"
+          :accion2Header="accion2Header"
+          :accion3Header="accion3Header"
+          :accion4Header="accion4Header"
+          :permitirFiltrar="puedeFiltrar"
+          :mostrarExportar="puedeExportar"
+          :ajustarCeldas="ajustarCeldas"
           @consultar="accionTabla.consultar"
           @editar="accionTabla.editar"
           @eliminar="accionTabla.eliminar"
