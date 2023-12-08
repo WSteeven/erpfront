@@ -18,7 +18,7 @@ export const useConfiguracionGeneralStore = defineStore('configuracion_general',
 
   function cambiarFavicon() {
     const rutaImagen = configuracion.value?.logo_claro
-    console.log(rutaImagen)
+    // console.log(rutaImagen)
 
     if (rutaImagen) {
       const link: any = document.querySelector("link[rel*='icon']") || document.createElement('link');
