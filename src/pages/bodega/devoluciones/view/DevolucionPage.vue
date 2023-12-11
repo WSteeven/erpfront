@@ -363,7 +363,7 @@
             >
               <template #boton-subir>
                 <q-btn
-                  v-if="mostrarBotonSubir"
+                  v-if="false"
                   color="positive"
                   push
                   no-caps

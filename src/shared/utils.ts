@@ -368,6 +368,18 @@ export async function imprimirArchivo(ruta: string, metodo: Method, responseType
 }
 
 /**
+ * La función `ordenarLista` ordena una lista determinada según una clave específica.
+ * Esta función sirve para ordenar cualquier lista que se muestra en un select.
+ * En el metodo popup-show debe envíar como argumentos la lista y la clave por la cual quiere ordenar los registros.
+ * @param lista - El parámetro "lista" es una matriz de objetos que desea ordenar.
+ * @param {string} clave - El parámetro "clave" es una cadena que representa la clave o propiedad de
+ * los objetos en la matriz "lista" que se utilizará para ordenar.
+ */
+export function ordenarLista(lista, clave:string) {
+  lista.sort((a, b) =>ordernarListaString(a[clave], b[clave]))
+}
+
+/**
  *  Función de comparación para ordenar dos strings, se debe usar de la siguiente manera:
  * (a,b)=>ordenarListaString(a.propiedad, b.propiedad)
  * @param a primer string
@@ -516,10 +528,6 @@ function ajustarBrillo(colorHex, brillo) {
 }
 
 
-/* export function ordenarEmpleados(empleados: Ref<Empleado[]>) {
-  empleados.value.sort((a: Empleado, b: Empleado) => ordernarListaString(a.apellidos!, b.apellidos!))
-} */
-
 /**
  * La función verifica si una matriz tiene elementos repetidos.
  * @param array - El parámetro `array` es una matriz de elementos.
@@ -550,14 +558,6 @@ export function tieneElementosRepetidosObjeto(arrayDeObjetos) {
   return false
 }
 
-/**
- * La función `ordenarEmpleados` toma una lista de empleados y los ordena alfabeticamente según sus apellidos.
- * @param {Empleado[]} listadoEmpleados - Una matriz de objetos de tipo Empleado.
- * @returns una variedad ordenada de empleados.
- */
-export function ordenarEmpleados(listadoEmpleados: Empleado[]) {
-  return listadoEmpleados.sort((a: Empleado, b: Empleado) => ordernarListaString(a.apellidos!, b.apellidos!))
-}
 
 /**
  * La función calcula el monto del descuento en función del subtotal y el porcentaje de descuento

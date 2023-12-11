@@ -86,7 +86,7 @@
           </div>
           <!-- Documento -->
           <div class="col-12 col-md-3" v-if="esNuevo">
-            <label class="q-mb-sm block">Planilla</label>
+            <label class="q-mb-sm block">Planilla de algo</label>
             <gestor-documentos
               ref="refArchivoExtensionConyugal"
               :mixin="mixinExtensionConyugal"

@@ -83,11 +83,11 @@
               options-dense
               dense
               outlined
-              @popup-show="ordenarCoordinadores"
+              @popup-show="ordenarLista(coordinadores, 'apellidos')"
               :error="!!v$.coordinador.$errors.length"
               error-message="Debes seleccionar al menos una opcion"
               :disable="disabled || soloLectura"
-              :option-label="(v) => v.nombres + ' ' + v.apellidos"
+              :option-label="(v) => v.apellidos + ' ' + v.nombres"
               :option-value="(v) => v.id"
               emit-value
               map-options
@@ -161,6 +161,90 @@
               dense
             ></q-input>
           </div>
+          <!-- Codigo de proyecto -->
+          <div class="col-12 col-md-3">
+            <label class="q-mb-sm block">Proyecto</label>
+            <q-select
+              v-model="preingreso.proyecto"
+              :options="proyectos"
+              @filter="filtrarProyectos"
+              @update:model-value="obtenerEtapasProyecto(preingreso.proyecto)"
+              transition-show="scale"
+              transition-hide="scale"
+              hint="Obligatorio"
+              options-dense
+              dense
+              outlined
+              :option-label="(item) => item.nombre"
+              :option-value="(item) => item.id"
+              use-input
+              input-debounce="0"
+              emit-value
+              map-options
+              :disable="disabled"
+            >
+              <template v-slot:option="scope">
+                <q-item v-bind="scope.itemProps" class="q-my-sm">
+                  <q-item-section>
+                    <q-item-label class="text-bold text-primary">{{
+                      scope.opt.codigo_proyecto
+                    }}</q-item-label>
+                    <q-item-label caption>{{ scope.opt.nombre }} </q-item-label>
+                  </q-item-section>
+                </q-item>
+              </template>
+
+              <template v-slot:no-option>
+                <q-item>
+                  <q-item-section class="text-grey">
+                    No hay resultados
+                  </q-item-section>
+                </q-item>
+              </template>
+            </q-select>
+          </div>
+
+          <!-- Etapa del proyecto -->
+          <div v-if="etapas.length" class="col-12 col-md-3">
+            <label class="q-mb-sm block">Etapa</label>
+            <q-select
+              v-model="tarea.etapa"
+              :options="etapas"
+              @filter="filtrarEtapas"
+              @update:modelValue="obtenerTareasEtapa(tarea.etapa)"
+              transition-show="scale"
+              transition-hide="scale"
+              hint="Opcional"
+              options-dense
+              dense
+              clearable
+              outlined
+              :option-label="(item) => item.nombre"
+              :option-value="(item) => item.id"
+              use-input
+              input-debounce="0"
+              emit-value
+              map-options
+              @blur="v$.etapa.$touch"
+              :error="!!v$.etapa.$errors.length"
+              :disable="disabled"
+            >
+              <template v-slot:no-option>
+                <q-item>
+                  <q-item-section class="text-grey">
+                    No hay resultados
+                  </q-item-section>
+                </q-item>
+              </template>
+
+              <template v-slot:error>
+                <div v-for="error of v$.etapa.$errors" :key="error.$uid">
+                  <div class="error-msg">{{ error.$message }}</div>
+                </div>
+              </template>
+            </q-select>
+          </div>
+
           <!-- Tarea -->
           <div class="col-12 col-md-3">
             <label class="q-mb-sm block"
@@ -217,7 +301,7 @@
               :disable="disabled || soloLectura"
               :error="!!v$.cliente.$errors.length"
               error-message="Debes seleccionar un cliente"
-              @popup-show="ordenarClientes"
+              @popup-show="ordenarLista(clientes, 'razon_social')"
               :option-value="(item) => item.id"
               :option-label="(item) => item.razon_social"
               emit-value
@@ -278,7 +362,7 @@
             >
               <template #boton-subir>
                 <q-btn
-                  v-if="mostrarBotonSubir"
+                  v-if="false"
                   color="positive"
                   push
                   no-caps
@@ -368,13 +452,10 @@
               :permitirEditarModal="true"
               :modalMaximized="false"
               :permitirEliminar="false"
-              :mostrarBotones="false"
               :altoFijo="false"
-              :hide-header="true"
               :accion1="btnVerFotografia"
               :accion2="btnEliminarFila"
               @guardarFila="(fila) => guardarFilaEditada(fila)"
-              v-on:fila-modificada="calcularFila"
             >
               <!-- :accion1Header="btnAddRow" -->
             </essential-popup-editable-table>
