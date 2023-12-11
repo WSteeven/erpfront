@@ -116,7 +116,7 @@ export default defineComponent({
         notificarCorrecto(response.data.mensaje)
         quiero_subir_archivos.value = false
       } catch (error: unknown) {
-        console.log(error)
+        // console.log(error)
         const axiosError = error as AxiosError
         notificarError(axiosError.response?.data.mensaje)
       }
