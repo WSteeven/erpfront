@@ -45,7 +45,7 @@
         >
           <div
             v-if="lineaTiempo"
-            class="row q-gutter-md items-center no-wrap bg-white rounded q-pa-xs"
+            class="row q-gutter-md items-center no-wrap bg-body-table rounded q-pa-xs"
           >
             <div
               v-for="(linea, index) in lineaTiempo"

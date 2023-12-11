@@ -122,13 +122,15 @@ export default defineComponent({
       }
     }
 
-    function subir(params: ParamsType) {
+    async function subir(params: ParamsType) {
       paramsForm = params
       if (refGestor.value) {
-        refGestor.value.upload()
+        await refGestor.value.upload()
+
         refGestor.value.reset()
         refGestor.value.removeUploadedFiles()
         refGestor.value.removeQueuedFiles()
+
       }
     }
 

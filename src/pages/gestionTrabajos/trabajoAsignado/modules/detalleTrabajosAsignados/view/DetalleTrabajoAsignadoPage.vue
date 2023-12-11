@@ -129,6 +129,12 @@
         <q-input v-model="trabajo.hora_fin_trabajo" outlined dense disable />
       </div>
 
+      <!-- ATS -->
+      <div v-if="ats" class="col-12 col-md-3">
+        <label class="q-mb-sm block">ATS</label>
+        <q-input v-model="ats" disable outlined dense> </q-input>
+      </div>
+
       <div class="col-12">
         <essential-table
           v-if="

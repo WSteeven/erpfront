@@ -146,6 +146,7 @@ export default defineComponent({
       modosAsignacionTrabajo,
       nombresClienteFinal: computed(() => clienteFinal.nombres + ' ' + clienteFinal.apellidos),
       empleadosDesignados,
+      ats: computed(() => trabajo.codigo_subtarea?.replace('TR', 'ATS')),
     }
   }
 })
