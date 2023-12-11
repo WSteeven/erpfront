@@ -156,19 +156,22 @@ export default defineComponent({
     const tabsDepartamento = ref(opcionesDepartamento.departamentoGrafico)
     const tabsEmpleado = ref(opcionesEmpleado.empleadoGrafico)
 
+    const mostrarSeccionDepartamento = computed(() => filtro.departamento_empleado === opcionesFiltroDepartamentoEmpleado.porDepartamento)
+    const mostrarSeccionEmpleado = computed(() => filtro.departamento_empleado === opcionesFiltroDepartamentoEmpleado.porEmpleado)
+
     /*******
      * Init
      *******/
     filtro.departamento_empleado = opcionesFiltroDepartamentoEmpleado.porEmpleado
-    console.log(optionsLine)
+    // console.log(optionsLine)
 
 
     // Reglas de validacion
     const reglas = {
       fecha_inicio: { required },
       fecha_fin: { required },
-      empleado: { requiredIf: requiredIf(() => filtro.departamento_empleado === opcionesFiltroDepartamentoEmpleado.porEmpleado) },
-      departamento: { requiredIf: requiredIf(() => filtro.departamento_empleado === opcionesFiltroDepartamentoEmpleado.porDepartamento) },
+      empleado: { requiredIf: requiredIf(() => mostrarSeccionEmpleado.value) },
+      departamento: { requiredIf: requiredIf(() => mostrarSeccionDepartamento.value) },
     }
 
     const v$ = useVuelidate(reglas, filtro)
@@ -301,7 +304,7 @@ export default defineComponent({
         try {
 
           const { result } = await dashboardTicketController.listar({ fecha_inicio: filtro.fecha_inicio, fecha_fin: filtro.fecha_fin, departamento_responsable_id: filtro.departamento })
-          console.log(result)
+          // console.log(result)
 
           // Grafico de pastel
           // Graficos estadisticos del empleado
@@ -383,6 +386,11 @@ export default defineComponent({
           cargando.desactivar()
         }
       }
+    }
+
+    function consultarDesdeFechas() {
+      if (mostrarSeccionEmpleado.value) consultar()
+      if (mostrarSeccionDepartamento.value) consultarDepartamento()
     }
 
     function mapearDatos(labels: string[], valores: string[], titulo: string, colores: any[]) {
@@ -649,8 +657,9 @@ export default defineComponent({
       btnSeguimiento,
       ticketsPorEstadoListado,
       listados,
-      mostrarSeccionDepartamento: computed(() => filtro.departamento_empleado === opcionesFiltroDepartamentoEmpleado.porDepartamento),
-      mostrarSeccionEmpleado: computed(() => filtro.departamento_empleado === opcionesFiltroDepartamentoEmpleado.porEmpleado),
+      consultarDesdeFechas,
+      mostrarSeccionDepartamento,
+      mostrarSeccionEmpleado,
     }
   }
 })

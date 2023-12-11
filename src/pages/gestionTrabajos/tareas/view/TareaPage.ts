@@ -144,6 +144,11 @@ export default defineComponent({
     const { btnIniciar, btnPausar, btnReanudar, btnRealizar, btnReagendar, btnCancelar, btnFinalizar, btnSeguimiento, btnSuspender, setFiltrarTrabajoAsignado } = useBotonesTablaSubtarea(subtareas, modalesSubtarea, listadosAuxiliares)
     setFiltrarTrabajoAsignado(filtrarSubtareas)
 
+    /********
+     * Init
+     *******/
+    // tarea.coordinador = 5
+
     /*************
     * Validaciones
     **************/
@@ -151,7 +156,7 @@ export default defineComponent({
       cliente: { required: requiredIf(() => paraClienteFinal.value) },
       titulo: { required },
       proyecto: { required: requiredIf(() => paraProyecto.value) },
-      coordinador: { required: requiredIf(() => esCoordinadorBackup) },
+      coordinador: { required: requiredIf(() => paraClienteFinal.value && esCoordinadorBackup) },
       ruta_tarea: { required: requiredIf(() => paraClienteFinal.value && tarea.ubicacion_trabajo === ubicacionesTrabajo.ruta) },
     }
 

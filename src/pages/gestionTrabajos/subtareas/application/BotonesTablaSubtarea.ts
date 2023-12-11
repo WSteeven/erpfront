@@ -200,18 +200,18 @@ export const useBotonesTablaSubtarea = (listado: Ref<Subtarea[]>, modales: any, 
     color: 'indigo',
     visible: ({ entidad }) => ![estadosTrabajos.AGENDADO, estadosTrabajos.CREADO].includes(entidad.estado) && (authenticationStore.esJefeTecnico || authenticationStore.esCoordinador || authenticationStore.esAdministrador || entidad.es_responsable),
     accion: async ({ entidad }) => {
-      confirmar('¿Está seguro de abrir el formulario de seguimiento?', () => {
-        trabajoAsignadoStore.idSubtareaSeleccionada = entidad.id
-        trabajoAsignadoStore.idTareaSeleccionada = entidad.tarea_id
-        trabajoAsignadoStore.idEmpleadoResponsable = entidad.empleado_responsable_id
-        trabajoAsignadoStore.idEmergencia = entidad.seguimiento
-        trabajoAsignadoStore.codigoSubtarea = entidad.codigo_subtarea
+      // confirmar('¿Está seguro de abrir el formulario de seguimiento?', () => {
+      trabajoAsignadoStore.idSubtareaSeleccionada = entidad.id
+      trabajoAsignadoStore.idTareaSeleccionada = entidad.tarea_id
+      trabajoAsignadoStore.idEmpleadoResponsable = entidad.empleado_responsable_id
+      trabajoAsignadoStore.idEmergencia = entidad.seguimiento
+      trabajoAsignadoStore.codigoSubtarea = entidad.codigo_subtarea
 
-        trabajoAsignadoStore.subtarea = entidad
+      trabajoAsignadoStore.subtarea = entidad
 
-        // const obtenerPlantilla = new ObtenerPlantilla()
-        modales.abrirModalEntidad('SeguimientoSubtareaPage')//obtenerPlantilla.obtener(entidad.tipo_trabajo))
-      })
+      // const obtenerPlantilla = new ObtenerPlantilla()
+      modales.abrirModalEntidad('SeguimientoSubtareaPage')//obtenerPlantilla.obtener(entidad.tipo_trabajo))
+      // })
     }
   }
 

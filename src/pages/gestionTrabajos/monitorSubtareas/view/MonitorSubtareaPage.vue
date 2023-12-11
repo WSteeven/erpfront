@@ -54,7 +54,12 @@
       :ajustar-celdas="true"
     ></essential-table-tabs>
 
-    <modales-entidad :comportamiento="modalesSubtarea" :mixin-modal="mixin" />
+    <modales-entidad
+      :comportamiento="modalesSubtarea"
+      :mixin-modal="mixin"
+      :confirmar-cerrar="false"
+      :persistente="false"
+    />
   </q-page>
 </template>
 
