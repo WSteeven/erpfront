@@ -1,4 +1,7 @@
 <template>
+  <!-- Tratar de no usar -->
+  <!-- Es necesario trasladar algunas funciones de aqui a GestorArchivo.vue -->
+  <!-- Esto es necesario debido a que ese componente trabaja de forma más generica -->
   <div v-if="permitirSubir && !esObligatorio" class="col-12 col-md-3 q-mb-lg">
     <br />
     <q-checkbox
@@ -12,7 +15,11 @@
   <div v-if="quiero_subir_archivos && !esConsultado" class="col-12 q-mb-sm">
     <q-uploader
       ref="refGestor"
-      :label="esMultiple?'Selecciona o arrastra tus archivos aquí (Máximo 10mb)':'Selecciona o arrastra el archivo aquí (Máximo 10mb)'"
+      :label="
+        esMultiple
+          ? 'Selecciona o arrastra tus archivos aquí (Máximo 10mb)'
+          : 'Selecciona o arrastra el archivo aquí (Máximo 10mb)'
+      "
       :multiple="esMultiple"
       style="width: 100%"
       flat

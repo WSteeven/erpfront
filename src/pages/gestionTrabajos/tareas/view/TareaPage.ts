@@ -323,7 +323,7 @@ export default defineComponent({
     }
 
     async function obtenerEtapasProyecto(idProyecto: number) {
-      const response = await new EtapaController().listar({ proyecto_id: idProyecto, campos: 'id,nombre', responsable_id: authenticationStore.user.id })
+      const response = await new EtapaController().listar({ proyecto_id: idProyecto, campos: 'id,nombre,responsable', responsable_id: authenticationStore.user.id })
       listadosAuxiliares.etapas = response.result
       etapas.value = response.result
     }

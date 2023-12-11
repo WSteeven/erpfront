@@ -1,6 +1,7 @@
 import { EntidadAuditable } from 'shared/entidad/domain/entidadAuditable'
 import { destinosTareas, modosAsignacionTrabajo } from 'config/tareas.utils'
 import { Empleado } from 'pages/recursosHumanos/empleados/domain/Empleado'
+import { estadosTrabajos } from 'config/utils'
 
 export class Subtarea extends EntidadAuditable {
   codigo_tarea: string | null
@@ -11,7 +12,7 @@ export class Subtarea extends EntidadAuditable {
   observacion: string | null
   para_cliente_proyecto: string | null
   fecha_solicitud: string | null
-  estado: string | null
+  estado: keyof typeof estadosTrabajos | null
   modo_asignacion_trabajo: string
 
   // Tiempos

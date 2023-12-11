@@ -116,19 +116,21 @@ export default defineComponent({
         notificarCorrecto(response.data.mensaje)
         quiero_subir_archivos.value = false
       } catch (error: unknown) {
-        console.log(error)
+        // console.log(error)
         const axiosError = error as AxiosError
         notificarError(axiosError.response?.data.mensaje)
       }
     }
 
-    function subir(params: ParamsType) {
+    async function subir(params: ParamsType) {
       paramsForm = params
       if (refGestor.value) {
-        refGestor.value.upload()
+        await refGestor.value.upload()
+
         refGestor.value.reset()
         refGestor.value.removeUploadedFiles()
         refGestor.value.removeQueuedFiles()
+
       }
     }
 

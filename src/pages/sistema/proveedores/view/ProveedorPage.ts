@@ -82,6 +82,17 @@ export default defineComponent({
     const departamentos = ref([])
     const ofertas = ref([])
     const departamentoFinanciero = computed(() => listadosAuxiliares.departamentos.length > 0 ? listadosAuxiliares.departamentos.filter((v: Departamento) => v.nombre == 'FINANCIERO')[0] : new Departamento())
+    const reporte = reactive({
+      estado_calificado: null,
+      categorias: null,
+      canton: null,
+      razon_social: null,
+      tipo: null,
+      accion: null,
+      fecha_inicio: null,
+      fecha_fin: null,
+      estado: true,
+  })
     cargarVista(async () => {
       await obtenerListados({
         empresas: {
@@ -243,6 +254,19 @@ export default defineComponent({
       }
     }
 
+    const botonActualizarCalificacion: CustomActionTable = {
+      titulo: 'Actualizar calificación',
+      icono: 'bi-arrow-clockwise',
+      color: 'positive',
+      accion: async ({ entidad, posicion }) => {
+        proveedorStore.idProveedor = entidad.id
+        const response = await proveedorStore.actualizarCalificacion()
+        if (response?.status == 200) {
+          notificarCorrecto('Se ha actualizado correctamente la calificación del proveedor')
+          listado.value.splice(posicion, 1, response.data.modelo)
+        }
+      }, visible: () => store.esAdministrador
+    }
     const botonCalificarProveedor: CustomActionTable = {
       titulo: 'Calificar',
       icono: 'bi-stars',
@@ -315,6 +339,16 @@ export default defineComponent({
         // console.log(entidad)
         // console.log(store.user.permisos)
         return entidad.estado_calificado === estadosCalificacionProveedor.calificado || (entidad.estado_calificado == estadosCalificacionProveedor.parcial)// || (store.esCompras && (entidad.estado_calificado !== estadosCalificacionProveedor.vacio || entidad.estado_calificado !== estadosCalificacionProveedor.parcial || entidad.estado_calificado !== estadosCalificacionProveedor.pendiente))
+      }
+    }
+
+    const botonDescargarProveedores: CustomActionTable = {
+      titulo: 'Descargar Excel',
+      icono: 'bi-file-earmark-excel-fill',
+      color: 'positive',
+      tooltip: 'Descarga todos los datos de proveedores en formato de Contifico',
+      accion: async()=>{
+        await proveedorStore.obtenerProveedores()
       }
     }
 
@@ -474,6 +508,8 @@ export default defineComponent({
       botonVerMiCalificacionProveedor,
       botonDesactivarProveedor,
       botonActivarProveedor,
+      botonActualizarCalificacion,
+      botonDescargarProveedores,
     }
 
   }

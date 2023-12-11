@@ -70,15 +70,15 @@ export default defineComponent({
     },
     primeraColumnaFija: {
       type: Boolean,
-      default:false,
+      default: false,
     },
     tipoSeleccion: {
       type: String as () => TipoSeleccion,
       default: 'none',
     },
-    ajustarCeldas:{
+    ajustarCeldas: {
       type: Boolean,
-      default:false,
+      default: false,
     },
     accion1: {
       type: Object as () => CustomActionTable,
@@ -219,7 +219,7 @@ export default defineComponent({
       }
     }
     const eliminar = (data: object) => {
-    //  console.log('evento de eliminar: ', data)
+      //  console.log('evento de eliminar: ', data)
       emit('eliminar', data)
     }
 

@@ -92,8 +92,8 @@
               :label="field.valor ? 'SI' : 'NO'"
             />
           </div>
-          <!-- Inputs normales -->
-          <!-- :class="{ 'col-12 q-mb-sm': true, 'col-md-3': fields.length > 1 }" -->
+
+          <!-- Input text -->
           <div
             v-for="field in fields"
             :key="field.field"
@@ -115,7 +115,6 @@
           </div>
 
           <!-- Imagenes -->
-          <!-- :class="{ 'col-12 q-mb-sm': true, 'col-md-3': fields.length > 1 }" -->
           <div
             v-for="field in fieldsImagen"
             :key="field.field"
@@ -150,11 +149,17 @@
 </template>
 
 <script lang="ts">
+// Dependencias
 import { EntidadAuditable } from 'shared/entidad/domain/entidadAuditable'
-import { ColumnConfig } from '../domain/ColumnConfig'
-import { computed, reactive, ref, defineComponent } from 'vue'
-import SelectorImagen from 'components/SelectorImagen.vue'
 import { useNotificaciones } from 'shared/notificaciones'
+import { ColumnConfig } from '../domain/ColumnConfig'
+import { ref, defineComponent } from 'vue'
+
+// Componentes
+import SelectorImagen from 'components/SelectorImagen.vue'
+
+// Logica y controladores
+import { extraerInputsEditarTablaModal } from '../application/extraerInputsEditarTablaModal'
 
 export default defineComponent({
   components: {
@@ -175,112 +180,49 @@ export default defineComponent({
     },
   },
   emits: ['limpiar', 'guardar'],
-
-  // normal
   setup(props, { emit }) {
     const { notificarAdvertencia } = useNotificaciones()
 
-    const fields = computed(() =>
-      props.configuracionColumnas
-        .map((fila: ColumnConfig<any>) => {
-          return reactive({
-            label: fila.label,
-            field: fila.field,
-            type: fila.type ?? 'text',
-            editable: fila.editable ?? true,
-            valor: props.fila ? props.fila[fila.field] : '',
-            hint: fila.hint,
-          })
-        })
-        .filter(
-          (fila) =>
-            fila.field !== 'acciones' &&
-            fila.type !== 'imagen' &&
-            fila.type !== 'select' &&
-            fila.type !== 'toggle' &&
-            fila.editable
-        )
-    )
+    const { fields, fieldsSelect, fieldsAll, fieldsToggle, fieldsImagen } =
+      extraerInputsEditarTablaModal(props)
 
-    // select
-    const fieldsSelect = computed(() =>
-      props.configuracionColumnas
-        .map((fila: ColumnConfig<any>) => {
-          return reactive({
-            label: fila.label,
-            field: fila.field,
-            type: fila.type ?? 'text',
-            editable: fila.editable ?? true,
-            valor: props.fila ? props.fila[fila.field] : '',
-            options: fila.options,
-            hint: fila.hint,
-          })
-        })
-        .filter(
-          (fila) =>
-            fila.field !== 'acciones' && fila.type === 'select' && fila.editable
-        )
-    )
-    // Todos los campos
-    const fieldsAll = computed(() =>
-      props.configuracionColumnas
-        .map((fila: ColumnConfig<any>) => {
-          return reactive({
-            label: fila.label,
-            field: fila.field,
-            type: fila.type ?? 'text',
-            editable: fila.editable ?? true,
-            valor: props.fila ? props.fila[fila.field] : '',
-            hint: fila.hint,
-          })
-        })
-        .filter((fila) => fila.field !== 'acciones')
-    )
-    //toggles
-    const fieldsToggle = computed(() =>
-      props.configuracionColumnas
-        .map((fila: ColumnConfig<any>) => {
-          return reactive({
-            label: fila.label,
-            field: fila.field,
-            type: fila.type ?? 'text',
-            editable: fila.editable ?? true,
-            valor: props.fila ? props.fila[fila.field] : '',
-            hint: fila.hint,
-          })
-        })
-        .filter(
-          (fila) =>
-            fila.field !== 'acciones' && fila.type === 'toggle' && fila.editable
-        )
-    )
-
-    // imagenes
-    const fieldsImagen = computed(() =>
-      props.configuracionColumnas
-        .map((fila: ColumnConfig<any>) => {
-          return reactive({
-            label: fila.label,
-            field: fila.field,
-            type: fila.type ?? 'text',
-            editable: fila.editable ?? true,
-            valor: props.fila ? props.fila[fila.field] : '',
-            hint: fila.hint,
-          })
-        })
-        .filter(
-          (fila) =>
-            fila.field !== 'acciones' && fila.type === 'imagen' && fila.editable
-        )
-    )
-
-    const abierto = ref(false) //computed(() => !!props.fila)
+    const abierto = ref(false)
 
     function abrir() {
       abierto.value = true
     }
 
     function guardar() {
+      const mapearCampos = (campos) =>
+        campos.value.map((item) => ({ [item.field]: item.valor }))
+
+      const mapped = mapearCampos(fields)
+      const mappedSelect = mapearCampos(fieldsSelect)
+      const mappedToggle = mapearCampos(fieldsToggle)
+      const mappedImagen = mapearCampos(fieldsImagen)
+      const mappedAll = mapearCampos(fieldsAll)
+
+      const mappedLleno = [
+        ...mappedAll,
+        ...mapped,
+        ...mappedSelect,
+        ...mappedImagen,
+        ...mappedToggle,
+      ]
+
+      const newObj = Object.assign({}, ...mappedLleno)
+      console.log(newObj)
+
+      const valido = validarRequeridos(newObj)
+
+      if (valido) {
+        emit('guardar', newObj)
+        abierto.value = false
+      }
+    }
+
+    // no se usa
+    function guardarOld() {
       var mapped = fields.value.map((item) => ({ [item.field]: item.valor }))
       var mappedSelect = fieldsSelect.value.map((item) => ({
         [item.field]: item.valor,
@@ -321,6 +263,7 @@ export default defineComponent({
       emit('limpiar')
     }
 
+    // No se usa
     // function filtrarSelect(val, update) {
     // const opciones = fieldsSelect.filter
     // console.log(val)

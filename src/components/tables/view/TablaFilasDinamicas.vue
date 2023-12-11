@@ -101,6 +101,7 @@ const agregarActividadRealizada: CustomActionTable = {
       if (props.consultarTiempo) {
         const { fecha_hora } = await obtenerTiempoActual()
         refTrabajos.value.abrirModalEditar({ fecha_hora })
+        console.log(fecha_hora + '')
       } else {
         refTrabajos.value.abrirModalEditar()
       }

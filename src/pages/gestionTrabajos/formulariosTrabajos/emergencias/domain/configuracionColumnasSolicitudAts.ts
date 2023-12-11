@@ -24,6 +24,13 @@ export const configuracionColumnasSolicitudAts: ColumnConfig<Ticket>[] = [
     align: 'left',
   },
   {
+    name: 'fotografia',
+    field: 'fotografia',
+    label: 'Fotografía',
+    visible: false,
+    type: 'imagen'
+  },
+  {
     name: 'responsable',
     field: 'responsable',
     label: 'Responsable',
