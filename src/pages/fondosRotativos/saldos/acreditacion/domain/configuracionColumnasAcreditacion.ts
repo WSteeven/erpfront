@@ -17,6 +17,13 @@ export const configuracionColumnasAcreditacion: ColumnConfig<Acreditacion>[] = [
     sortable: true
   },
   {
+    name: 'motivo',
+    field: 'motivo',
+    label: 'Motivo Anulacion',
+    align: 'left',
+    sortable: true
+  },
+  {
     name: 'monto',
     field: 'monto',
     label: 'Monto',
