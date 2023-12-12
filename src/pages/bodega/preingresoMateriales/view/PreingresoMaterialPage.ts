@@ -48,6 +48,8 @@ import { ProyectoController } from "pages/gestionTrabajos/proyectos/infraestruct
 import { Etapa } from "pages/gestionTrabajos/proyectos/modules/etapas/domain/Etapa";
 import { Proyecto } from "pages/gestionTrabajos/proyectos/domain/Proyecto";
 import { TareasEmpleadoController } from "pages/gestionTrabajos/tareas/infraestructure/TareasEmpleadoController";
+import { usePreingresoStore } from "stores/bodega/preingreso";
+import { useNotificacionStore } from "stores/notificacion";
 
 
 export default defineComponent({
@@ -65,8 +67,17 @@ export default defineComponent({
     const refVisorImagen = ref()
     const refArchivo = ref()
     const idPreingreso = ref()
+    /**
+     * stores
+     */
     const store = useAuthenticationStore()
+    const preingresoStore = usePreingresoStore()
     const cargando = new StatusEssentialLoading()
+    const cargandoStore = useCargandoStore()
+    cargandoStore.setQuasar(useQuasar())
+    const notificacionesStore = useNotificacionStore()
+    notificacionesStore.setQuasar(useQuasar())
+
 
     //Orquestador
     const {
@@ -103,7 +114,8 @@ export default defineComponent({
             finalizado: 0,
           },
         },
-        tareas: { controller: new TareasEmpleadoController(), params: { para_cliente_proyecto: 'PARA_CLIENTE_FINAL', finalizado: 0 } },
+        // tareas: { controller: new TareasEmpleadoController(), params: { para_cliente_proyecto: 'PARA_CLIENTE_FINAL', finalizado: 0 } },
+        tareas: { controller: new TareasEmpleadoController(), params: { empleado_id: store.user.id, finalizado: 0 } },
         clientes: { controller: new ClienteController(), params: { campos: 'id,razon_social', requiere_bodega: 1, estado: 1, } },
       })
       // productos.value = listadosAuxiliares.productos
@@ -136,6 +148,7 @@ export default defineComponent({
         soloLectura.value = false
       else
         soloLectura.value = true
+      obtenerEtapasProyecto(preingreso.proyecto, false)
     })
     onModificado((id: number) => {
       idPreingreso.value = id
@@ -160,7 +173,7 @@ export default defineComponent({
       num_guia: { required },
       coordinador: { required },
       cliente: { required },
-      etapa: { requiredIf: requiredIf(() => etapas.value.length) },
+      etapa: { requiredIf: requiredIf(() => etapas.value.length && preingreso.proyecto) },
       tarea: { requiredIf: requiredIf(() => preingreso.etapa && tareas.value.length) },
     }
 
@@ -192,9 +205,9 @@ export default defineComponent({
       preingreso.autorizacion = 1
     }
 
-    async function obtenerEtapasProyecto(idProyecto: number | null) {
+    async function obtenerEtapasProyecto(idProyecto: string | number | null, limpiarCampos=true) {
       cargando.activar()
-      if (idProyecto === null) {
+      if (idProyecto === null && limpiarCampos) {
         preingreso.etapa = null
         preingreso.cliente = null
         preingreso.coordinador = null
@@ -213,7 +226,7 @@ export default defineComponent({
       }
       cargando.desactivar()
     }
-    async function obtenerTareasEtapa(idEtapa: number|null) {
+    async function obtenerTareasEtapa(idEtapa: number | null) {
       cargando.activar()
       obtenerCoordinadorEtapa(idEtapa)
       preingreso.tarea = null
@@ -284,10 +297,8 @@ export default defineComponent({
       color: 'secondary',
       icono: 'bi-printer',
       accion: async ({ entidad, posicion }) => {
-        console.log(entidad)
-        console.log(posicion)
-        // ordenCompraStore.idOrden = entidad.id
-        // await ordenCompraStore.imprimirPdf()
+        preingresoStore.idPreingreso = entidad.id
+        await preingresoStore.imprimirPdf()
       },
       visible: () => tabSeleccionado.value > 1 ? true : false
     }

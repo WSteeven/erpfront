@@ -279,7 +279,7 @@
               </template>
             </q-select>
           </div>
-
+          
           <!-- Coordinador -->
           <div class="col-12 col-md-3">
             <label class="q-mb-sm block">Coordinador</label>

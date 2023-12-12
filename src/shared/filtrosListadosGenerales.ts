@@ -247,7 +247,7 @@ export const useFiltrosListadosSelects = (listadosAuxiliares, entidad?: Ref<any>
     return filtrarLista(val, update, etapas, 'nombre', listadosAuxiliares.etapas)
   }
   function filtrarTareas(val, update) {
-    return filtrarLista(val, update, tareas, 'nombre', listadosAuxiliares.tareas)
+    return filtrarLista(val, update, tareas, 'codigo_tarea', listadosAuxiliares.tareas)
   }
 
 
