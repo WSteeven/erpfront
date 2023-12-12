@@ -35,8 +35,6 @@ import { configuracionColumnasSumaMaterial } from '../domain/configuracionColumn
 import { configuracionColumnasSolicitudAts } from '../domain/configuracionColumnasSolicitudAts'
 import { ArchivoSeguimientoController } from '../infraestructure/ArchivoSeguimientoController'
 import { useGestionAtsApplication } from '../application/GestionAtsApplication'
-import { EmergenciaController } from '../infraestructure/EmergenciaController'
-import { useFiltrosListadosSelects } from 'shared/filtrosListadosGenerales'
 import { Subtarea } from 'pages/gestionTrabajos/subtareas/domain/Subtarea'
 import { Ticket } from 'pages/gestionTickets/tickets/domain/Ticket'
 import { imprimirArchivo, obtenerFechaActual } from 'shared/utils'
@@ -91,7 +89,7 @@ export default defineComponent({
     const usarMaterialStock = ref(false)
     const permitirSubir = ![estadosTrabajos.FINALIZADO, estadosTrabajos.PAUSADO].includes(trabajoAsignadoStore.subtarea.estado)
     const columnasMaterial = permitirSubir ? [...configuracionColumnasMaterialOcupadoFormulario, accionesTabla] : configuracionColumnasMaterialOcupadoFormulario
-    const { prompt, notificarAdvertencia } = useNotificaciones()
+    const { prompt } = useNotificaciones()
     const codigoSubtarea = trabajoAsignadoStore.codigoSubtarea
     const rangoFechasHistorial = computed(() => {
       return 'Rango disponible desde ' + trabajoAsignadoStore.subtarea.fecha_hora_ejecucion.substring(0, 10) + ' hasta ' + (trabajoAsignadoStore.subtarea.fecha_hora_finalizacion ?? obtenerFechaActual())
@@ -147,7 +145,7 @@ export default defineComponent({
       }
     })
 
-    const { consultarTicketsATS, ticketsAts, guardarFilaSolicitudAts } = useGestionAtsApplication(cargarVista)
+    const { mostrarSolicitudesAts, consultarTicketsATS, ticketsAts, guardarFilaSolicitudAts } = useGestionAtsApplication(cargarVista)
     const { btnSeguimiento, btnCancelar } = useBotonesTablaTicket(mixin, modales)
 
     /************
@@ -532,6 +530,7 @@ export default defineComponent({
       modales,
       mostrarMaterialConStock,
       mostrarMaterialStockConStock,
+      mostrarSolicitudesAts,
     }
   }
 })

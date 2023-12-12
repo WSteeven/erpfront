@@ -212,7 +212,9 @@ export default defineComponent({
       emit('editar', data)
 
       if (props.permitirEditarModal) {
+        console.log(fila.value)
         fila.value = data.entidad
+        console.log(fila.value)
         posicionFilaEditada.value = data.posicion
         // console.log(posicionFilaEditada.value)
         refEditarModal.value.abrir()
@@ -234,6 +236,7 @@ export default defineComponent({
         const filaVacia: EntidadAuditable = new props.entidad()
         if (data) filaVacia.hydrate(data)
         fila.value = filaVacia
+        console.log(fila.value)
         posicionFilaEditada.value = listado.value.length
         refEditarModal.value.abrir()
       } else {

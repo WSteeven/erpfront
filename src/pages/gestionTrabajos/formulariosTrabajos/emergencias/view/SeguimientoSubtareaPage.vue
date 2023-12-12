@@ -35,7 +35,18 @@
           ></tabla-filas-dinamicas>
         </div>
 
-        <div class="col-12">
+        <div class="col-12 q-mb-md">
+          <br />
+          <q-toggle
+            v-model="mostrarSolicitudesAts"
+            label="Solicitudes de ATS"
+            checked-icon="bi-eye"
+            color="positive"
+            dense
+          ></q-toggle>
+        </div>
+
+        <div v-if="mostrarSolicitudesAts" class="col-12">
           <tabla-filas-dinamicas
             titulo="Solicitudes  de ATS a través de tickets"
             :configuracionColumnas="configuracionColumnasSolicitudAts"

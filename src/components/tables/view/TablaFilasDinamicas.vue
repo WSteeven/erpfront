@@ -66,6 +66,7 @@ const props = defineProps({
   titulo: String,
   consultarTiempo: {
     type: Boolean,
+    required: false,
     default: true,
   },
 })
