@@ -53,6 +53,7 @@ import { ClienteFinal } from 'clientesFinales/domain/ClienteFinal'
 import { useAuthenticationStore } from 'stores/authentication'
 import { TareaModales } from '../domain/TareaModales'
 import { Tarea } from '../domain/Tarea'
+import { Proyecto } from 'pages/gestionTrabajos/proyectos/domain/Proyecto'
 
 export default defineComponent({
   components: {
@@ -101,7 +102,7 @@ export default defineComponent({
         proyectos: {
           controller: new ProyectoController(),
           params: {
-            campos: 'id,nombre,codigo_proyecto',
+            campos: 'id,nombre,codigo_proyecto,cliente_id',
             finalizado: 0,
             coordinador_id: authenticationStore.esJefeTecnico ? null : authenticationStore.user.id,
           },
@@ -309,17 +310,9 @@ export default defineComponent({
       }
     })
 
-    /* function verificarEsVentana() {
-      if (!tarea.es_ventana) tarea.hora_fin_trabajo = null
-    } */
-
     async function setCliente() {
-      if (tarea.proyecto) {
-        const { result } = await proyectoController.consultar(tarea.proyecto, { campos: 'cliente_id' })
-        tarea.cliente = result.cliente_id
-
-        obtenerEtapasProyecto(tarea.proyecto)
-      }
+      tarea.cliente = listadosAuxiliares.proyectos.filter((proyecto: Proyecto) => proyecto.id === tarea.proyecto)[0].cliente_id
+      if (tarea.proyecto) obtenerEtapasProyecto(tarea.proyecto)
     }
 
     async function obtenerEtapasProyecto(idProyecto: number) {
@@ -380,23 +373,9 @@ export default defineComponent({
       tabActual.value = estado
     }
 
-    /* function seleccionarGrupo(grupo_id) {
-      tarea.subtarea.modo_asignacion_trabajo = modosAsignacionTrabajo.por_grupo
-      tarea.subtarea.grupo = grupo_id
-      tarea.grupo = grupo_id
-    }
-
-    function seleccionarEmpleado(empleado_id) {
-      tarea.subtarea.modo_asignacion_trabajo = modosAsignacionTrabajo.por_empleado
-      tarea.subtarea.empleado = empleado_id
-      tarea.empleado = empleado_id
-    } */
-
     return {
       convertirNumeroPositivo,
       refVisorImagen,
-      // seleccionarGrupo,
-      // seleccionarEmpleado,
       mixinSubtarea,
       filtrarSubtareas,
       btnIniciar,

@@ -343,10 +343,8 @@
                   </q-select>
                 </div>
 
-                <div
-                  v-if="tarea.proyecto && paraProyecto && etapas.length"
-                  class="col-12 col-md-3"
-                >
+                <!-- v-if="tarea.proyecto && paraProyecto && etapas.length" -->
+                <div class="col-12 col-md-3">
                   <label class="q-mb-sm block">Etapa</label>
                   <q-select
                     v-model="tarea.etapa"

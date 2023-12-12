@@ -21,6 +21,8 @@ import { EmpleadoController } from 'pages/recursosHumanos/empleados/infraestruct
 import { useNotificaciones } from 'shared/notificaciones'
 import { CustomActionPrompt } from 'components/tables/domain/CustomActionPrompt'
 import { AcreditacionCancelacionController } from '../infrestructure/AcreditacionCancelacionController'
+import { CustomActionTable } from 'components/tables/domain/CustomActionTable'
+import { useAuthenticationStore } from 'stores/authentication'
 
 
 export default defineComponent({
@@ -35,7 +37,7 @@ export default defineComponent({
     ************/
     const mixin = new ContenedorSimpleMixin(Acreditacion, new AcreditacionController())
     const { entidad: acreditacion, disabled, accion,listadosAuxiliares } = mixin.useReferencias()
-    const { setValidador ,obtenerListados, cargarVista} = mixin.useComportamiento()
+    const { setValidador ,obtenerListados, cargarVista,eliminar} = mixin.useComportamiento()
     const {
       confirmar,
       prompt,
@@ -72,6 +74,7 @@ export default defineComponent({
    const usuarios= ref([]);
    const tiposFondos= ref([]);
    const tiposSaldos= ref([]);
+   const authenticationStore = useAuthenticationStore()
    usuarios.value=listadosAuxiliares.usuarios
    const acreditacionCancelacionController = new AcreditacionCancelacionController()
 
@@ -195,6 +198,39 @@ function saldo_anterior (){
   })
 }
 
+const btnEliminarAcreditacion: CustomActionTable = {
+  titulo: '',
+  icono: 'bi-trash',
+  color: 'negative',
+  visible: () =>
+    authenticationStore.can('puede.eliminar.acreditacion'),
+  accion: ({ entidad, posicion }) => {
+    accion.value = 'ELIMINAR'
+   eliminar_acreditacion({entidad,posicion})
+  },
+}
+async  function eliminar_acreditacion({ entidad, posicion }) {
+  try {
+
+    const data: CustomActionPrompt = {
+      titulo: 'Eliminar Acreditacion',
+      mensaje: 'Ingrese motivo de eliminacion',
+      accion: async (data) => {
+        entidad.estado = false
+        entidad.motivo = data
+        entidad.descripcion_acreditacion = data
+          await acreditacionCancelacionController.anularAcreditacion(entidad)
+          notificarCorrecto('Se ha eliminado Acreditacion')
+      },
+    }
+    prompt(data)
+} catch (e: any) {
+  notificarError(
+    'No se pudo anular, debes ingresar un motivo para la anulacion'
+  )
+}
+}
+
   watchEffect(() => acreditacion.saldo_actual =parseFloat(acreditacion.saldo_anterior!==null?acreditacion.saldo_anterior.toString():'0') + parseFloat(acreditacion.monto!==null?acreditacion.monto.toString():'0'))
     return {
       mixin,
@@ -210,6 +246,7 @@ function saldo_anterior (){
       filtrarUsuarios,
       filtrarTiposFondos,
       filtrarTiposSaldos,
+      btnEliminarAcreditacion,
       anularAcreditacion,
       watchEffect,
       configuracionColumnas: configuracionColumnasAcreditacion,

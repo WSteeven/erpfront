@@ -12,6 +12,7 @@ export class Acreditacion extends EntidadAuditable {
   saldo_anterior:number | null
   saldo_depositado:number | null
   monto:number | null
+  motivo:string | null
   saldo_actual:number | null
   fecha_inicio:Date |null
   fecha_fin:Date|null
@@ -23,7 +24,7 @@ export class Acreditacion extends EntidadAuditable {
   estatus_info:string|null
   transcriptor:string|null
   fecha_trans:Date|null
-
+fecha:string|null
   constructor() {
     super()
     this.id_tipo_saldo=null
@@ -38,6 +39,7 @@ export class Acreditacion extends EntidadAuditable {
     this.saldo_anterior=null
     this.saldo_depositado=null
     this.saldo_actual=null
+    this.motivo=null
     this.monto=null
     this.fecha_inicio=null
     this.fecha_fin=null
@@ -49,5 +51,6 @@ export class Acreditacion extends EntidadAuditable {
     this.estatus=null
     this.transcriptor = null
     this.fecha_trans = null
+    this.fecha = null
   }
 }

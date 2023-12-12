@@ -1,19 +1,14 @@
 import { TicketController } from 'pages/gestionTickets/tickets/infraestructure/TicketController'
-import { Ticket } from 'pages/gestionTickets/tickets/domain/Ticket'
-import { Ref, ref } from 'vue'
-// import { StatusEssentialLoading } from 'components/loading/application/StatusEssentialLoading'
-import { apiConfig, endpoints } from 'config/api'
-import { ContenedorSimpleMixin } from 'shared/contenedor/modules/simple/application/ContenedorSimpleMixin'
-import { Archivo } from 'pages/gestionTrabajos/subtareas/modules/gestorArchivosTrabajos/domain/Archivo'
-import { ArchivoTicketController } from 'pages/gestionTickets/tickets/infraestructure/ArchivoTicketController '
 import { AxiosHttpRepository } from 'shared/http/infraestructure/AxiosHttpRepository'
-import { AxiosResponse } from 'axios'
+import { Ticket } from 'pages/gestionTickets/tickets/domain/Ticket'
 import { useNotificaciones } from 'shared/notificaciones'
+import { apiConfig, endpoints } from 'config/api'
+import { AxiosResponse } from 'axios'
+import { Ref, ref } from 'vue'
 
 export function useGestionAtsApplication(cargarVista) {
   const ticketController = new TicketController()
   const { notificarCorrecto } = useNotificaciones()
-  // const cargando = new StatusEssentialLoading()
 
   const ticketsAts: Ref<Ticket[]> = ref([])
 
@@ -35,14 +30,9 @@ export function useGestionAtsApplication(cargarVista) {
     ticket.es_solicitud_ats = true
     ticket.prioridad = 'ALTA'
     ticket.subtarea_id = idSubtarea
+    ticket.para_sso = true
 
-    console.log(ticket)
-
-    console.log('fotografia jejej')
     const fotografia = t.fotografia
-    console.log(fotografia)
-
-    // delete ticket.fotografia
 
     try {
       cargarVista(async () => {
@@ -51,7 +41,7 @@ export function useGestionAtsApplication(cargarVista) {
 
         if (fotografia) {
           const file = base64ToFile(fotografia)
-          subir(file, result.id)
+          await subir(file, result.id)
         }
       })
     } catch (e) {
@@ -88,6 +78,7 @@ export function useGestionAtsApplication(cargarVista) {
   }
 
   return {
+    mostrarSolicitudesAts: ref(false),
     consultarTicketsATS,
     ticketsAts,
     guardarFilaSolicitudAts,
