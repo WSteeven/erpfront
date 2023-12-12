@@ -17,7 +17,7 @@ const routes: RouteRecordRaw[] = [
         path: 'auditorias',
         name: 'auditorias',
         component: () => import('pages/sistema/auditorias/view/AuditoriaPage.vue'),
-        meta: { requiresAuth:false },
+        meta: { requiresAuth: false },
       },
       {
         path: 'configuracion',
@@ -396,6 +396,12 @@ const routes: RouteRecordRaw[] = [
         path: '/preingresos-materiales',
         name: 'preingresos_materiales',
         component: () => import('pages/bodega/preingresoMateriales/view/PreingresoMaterialPage.vue'),
+        meta: { requiresAuth: true },
+      },
+      {
+        path: '/preingresos-materiales-coordinadores',
+        name: 'preingresos_materiales_coordinadores',
+        component: () => import('pages/bodega/preingresoMateriales/modules/view/PreingresoMaterialCoordinadorPage.vue'),
         meta: { requiresAuth: true },
       },
       {

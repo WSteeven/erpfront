@@ -217,6 +217,7 @@ export const endpoints = {
   motivos_suspendidos: new Endpoint('tareas/motivos-suspendidos'),
   control_asistencias: new Endpoint('tareas/control-asistencias'),
   control_cambios: new Endpoint('tareas/control-cambios'),
+  tareas_empleado: new Endpoint('tareas/tareas-empleado'),
   tipos_elementos: new Endpoint('tareas/tipos-elementos'),
   clientes_finales: new Endpoint('tareas/clientes-finales'),
   tendidos: new Endpoint('tareas/tendidos'),
