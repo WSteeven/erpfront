@@ -1,7 +1,7 @@
 import { defineComponent, ref, watchEffect} from 'vue'
 import { Acreditacion } from '../domain/Acreditacion'
 
-import TabLayout from 'shared/contenedor/modules/simple/view/TabLayout.vue'
+import TabLayoutFilterTabs2 from 'shared/contenedor/modules/simple/view/TabLayoutFilterTabs2.vue'
 import { useNotificacionStore } from 'stores/notificacion'
 import { useQuasar } from 'quasar'
 import { useVuelidate } from '@vuelidate/core'
@@ -16,7 +16,7 @@ import { apiConfig, endpoints } from 'config/api'
 import { HttpResponseGet } from 'shared/http/domain/HttpResponse'
 import { TipoSaldoController } from 'pages/fondosRotativos/tipo_saldo/infrestructure/TipoSaldoController'
 import axios from 'axios'
-import { acciones } from 'config/utils'
+import { acciones, tabAcreditacion } from 'config/utils'
 import { EmpleadoController } from 'pages/recursosHumanos/empleados/infraestructure/EmpleadoController'
 import { useNotificaciones } from 'shared/notificaciones'
 import { CustomActionPrompt } from 'components/tables/domain/CustomActionPrompt'
@@ -26,7 +26,7 @@ import { useAuthenticationStore } from 'stores/authentication'
 
 
 export default defineComponent({
-  components: { TabLayout },
+  components: { TabLayoutFilterTabs2 },
   setup() {
     /*********
     * Stores
@@ -36,8 +36,8 @@ export default defineComponent({
     * Mixin
     ************/
     const mixin = new ContenedorSimpleMixin(Acreditacion, new AcreditacionController())
-    const { entidad: acreditacion, disabled, accion,listadosAuxiliares } = mixin.useReferencias()
-    const { setValidador ,obtenerListados, cargarVista,eliminar} = mixin.useComportamiento()
+    const { entidad: acreditacion, disabled, accion,listadosAuxiliares,listado } = mixin.useReferencias()
+    const { setValidador ,obtenerListados, cargarVista,listar} = mixin.useComportamiento()
     const {
       confirmar,
       prompt,
@@ -187,6 +187,7 @@ function saldo_anterior (){
           entidad.descripcion_acreditacion = data
           await acreditacionCancelacionController.anularAcreditacion(entidad)
           notificarAdvertencia('Se anulado Acreditacion Exitosamente')
+          filtrarAcreditacion('2')
         } catch (e: any) {
           notificarError(
             'No se pudo anular, debes ingresar un motivo para la anulación'
@@ -207,6 +208,7 @@ const btnEliminarAcreditacion: CustomActionTable = {
   accion: ({ entidad, posicion }) => {
     accion.value = 'ELIMINAR'
    eliminar_acreditacion({entidad,posicion})
+
   },
 }
 async  function eliminar_acreditacion({ entidad, posicion }) {
@@ -221,6 +223,7 @@ async  function eliminar_acreditacion({ entidad, posicion }) {
         entidad.descripcion_acreditacion = data
           await acreditacionCancelacionController.anularAcreditacion(entidad)
           notificarCorrecto('Se ha eliminado Acreditacion')
+          listado.value.splice(posicion,1);
       },
     }
     prompt(data)
@@ -229,6 +232,12 @@ async  function eliminar_acreditacion({ entidad, posicion }) {
     'No se pudo anular, debes ingresar un motivo para la anulacion'
   )
 }
+}
+let tabActualAcreditacion = '1'
+
+function filtrarAcreditacion(tabSeleccionado: string) {
+  listar({ id_estado: tabSeleccionado }, false)
+  tabActualAcreditacion = tabSeleccionado
 }
 
   watchEffect(() => acreditacion.saldo_actual =parseFloat(acreditacion.saldo_anterior!==null?acreditacion.saldo_anterior.toString():'0') + parseFloat(acreditacion.monto!==null?acreditacion.monto.toString():'0'))
@@ -246,7 +255,9 @@ async  function eliminar_acreditacion({ entidad, posicion }) {
       filtrarUsuarios,
       filtrarTiposFondos,
       filtrarTiposSaldos,
+      filtrarAcreditacion,
       btnEliminarAcreditacion,
+      tabAcreditacion,
       anularAcreditacion,
       watchEffect,
       configuracionColumnas: configuracionColumnasAcreditacion,

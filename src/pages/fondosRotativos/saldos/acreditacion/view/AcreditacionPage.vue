@@ -1,10 +1,13 @@
 <template>
-  <tab-layout
+  <tab-layout-filter-tabs2
     :mixin="mixin"
     :configuracionColumnas="configuracionColumnas"
     :accion1="btnEliminarAcreditacion"
     :permitirEliminar="false"
-
+    :tabOptions="tabAcreditacion"
+    :filtrar="filtrarAcreditacion"
+    tabDefecto="1"
+    :forzarListar="true"
   >
     <template #formulario>
       <q-form @submit.prevent>
@@ -215,6 +218,6 @@
         >
       </div>
     </template>
-  </tab-layout>
+  </tab-layout-filter-tabs2>
 </template>
 <script src="./AcreditacionPage.ts"></script>
