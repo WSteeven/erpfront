@@ -11,6 +11,7 @@ import { useNotificaciones } from './notificaciones';
 import { Empleado } from 'pages/recursosHumanos/empleados/domain/Empleado'
 import { ServiceWorkerClass } from './notificacionesServiceWorker/ServiceWorkerClass'
 import { ItemProforma } from 'pages/comprasProveedores/proforma/domain/ItemProforma'
+import { pipeline } from 'stream'
 
 export function limpiarListado<T>(listado: T[]): void {
   listado.splice(0, listado.length)
@@ -340,7 +341,7 @@ export function pushEventMesaggeServiceWorker(data: ServiceWorkerClass) {
  */
 export async function imprimirArchivo(ruta: string, metodo: Method, responseType: ResponseType, formato: string, titulo: string, data?: any) {
   const statusLoading = new StatusEssentialLoading()
-  const { notificarAdvertencia } = useNotificaciones()
+  const { notificarAdvertencia, notificarError } = useNotificaciones()
   statusLoading.activar()
   const axiosHttpRepository = AxiosHttpRepository.getInstance()
   axios({
@@ -349,23 +350,26 @@ export async function imprimirArchivo(ruta: string, metodo: Method, responseType
     data: data,
     responseType: responseType,
     headers: { 'Authorization': axiosHttpRepository.getOptions().headers.Authorization }
-  }).then((response: HttpResponseGet) => {
-    if (response.data.size < 100 || response.data.type == 'application/json') throw 'No se obtuvieron resultados para generar el reporte'
-    else {
-      const fileURL = URL.createObjectURL(new Blob([response.data], { type: `appication/${formato}` }))
-      const link = document.createElement('a')
-      link.href = fileURL
-      link.target = '_blank'
-      link.setAttribute('download', `${titulo}.${formato}`)
-      document.body.appendChild(link)
-      link.click()
-      link.remove()
+  }).then((response) => {
+    if (response.status === 200) {
+      if (response.data.size < 100 || response.data.type == 'application/json') throw 'No se obtuvieron resultados para generar el reporte'
+      else {
+        const fileURL = URL.createObjectURL(new Blob([response.data], { type: `appication/${formato}` }))
+        const link = document.createElement('a')
+        link.href = fileURL
+        link.target = '_blank'
+        link.setAttribute('download', `${titulo}.${formato}`)
+        document.body.appendChild(link)
+        link.click()
+        link.remove()
+      }
+    // } else if (response.status === 500) {
+    //   console.log(response)
+    }else {
+      notificarError('Se produjo un error inesperado')
     }
   }).catch(async (error) => {
-    for(const err in error.response.data.errors){
-      notificarAdvertencia(error.response.data.errors[err])
-    }
-
+    notificarError(error)
   }).finally(() => statusLoading.desactivar())
 
 }
@@ -378,8 +382,8 @@ export async function imprimirArchivo(ruta: string, metodo: Method, responseType
  * @param {string} clave - El parámetro "clave" es una cadena que representa la clave o propiedad de
  * los objetos en la matriz "lista" que se utilizará para ordenar.
  */
-export function ordenarLista(lista, clave:string) {
-  lista.sort((a, b) =>ordernarListaString(a[clave], b[clave]))
+export function ordenarLista(lista, clave: string) {
+  lista.sort((a, b) => ordernarListaString(a[clave], b[clave]))
 }
 
 /**
