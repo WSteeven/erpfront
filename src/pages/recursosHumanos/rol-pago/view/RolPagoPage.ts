@@ -787,6 +787,7 @@ export default defineComponent({
           default:
             break
         }
+        es_calculable.value = false
         buscar_egreso(
           entidad.tipo,
           rolpago.descuento_general != null ? rolpago.descuento_general : 0
