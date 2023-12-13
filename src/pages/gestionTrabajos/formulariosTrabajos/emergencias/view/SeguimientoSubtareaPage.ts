@@ -337,9 +337,20 @@ export default defineComponent({
 
     async function obtenerMaterialesTarea(cliente: number) {
       cargarVista(async () => {
-        const ruta = axios.getEndpoint(endpoints.materiales_empleado_tarea, { tarea_id: trabajoAsignadoStore.subtarea.tarea_id, subtarea_id: trabajoAsignadoStore.subtarea.id, empleado_id: obtenerIdEmpleadoResponsable(), cliente_id: cliente, seguimiento: 1 })
+        const filtro = {
+          tarea_id: trabajoAsignadoStore.subtarea.tarea_id,
+          subtarea_id: trabajoAsignadoStore.subtarea.id,
+          empleado_id: obtenerIdEmpleadoResponsable(),
+          cliente_id: cliente,
+          seguimiento: 1,
+          proyecto_id: subtarea.proyecto_id,
+          etapa_id: subtarea.etapa_id,
+        }
+
+        if (!subtarea.proyecto_id) delete filtro.proyecto_id
+        if (!subtarea.etapa_id) delete filtro.etapa_id
+        const ruta = axios.getEndpoint(endpoints.materiales_empleado_tarea, filtro)
         const response: AxiosResponse = await axios.get(ruta)
-        // materialesTarea.value = response.data.results
         materialesTareaTodos.value = response.data.results
       })
     }
@@ -348,7 +359,6 @@ export default defineComponent({
       cargarVista(async () => {
         const ruta = axios.getEndpoint(endpoints.materiales_empleado, { empleado_id: obtenerIdEmpleadoResponsable(), subtarea_id: trabajoAsignadoStore.subtarea.id, cliente_id: cliente })
         const response: AxiosResponse = await axios.get(ruta)
-        // materialesStock.value = response.data.results
         materialesStockTodos.value = response.data.results
       })
     }
