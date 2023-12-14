@@ -60,12 +60,6 @@ export default defineComponent({
     let requiereFecha = ref(false) //para mostrar u ocultar fecha limite
 
 
-    const opciones_empleados = ref([])
-    const opciones_autorizaciones = ref([])
-    const opciones_sucursales = ref([])
-    const opciones_motivos = ref([])
-    const opciones_tareas = ref([])
-    const opciones_clientes = ref([])
 
     const configuracionColumnasProductosSeleccionadosDespachado = [...configuracionColumnasProductosSeleccionados, {
       name: 'cantidad',
@@ -115,13 +109,7 @@ export default defineComponent({
       mixin, transaccion,
       configuracionColumnas: configuracionColumnasTransaccionEgreso,
       acciones,
-      //listados
-      opciones_empleados,
-      opciones_sucursales,
-      opciones_motivos,
-      opciones_autorizaciones,
-      opciones_tareas,
-      opciones_clientes,
+
 
       //stores
       pedidoStore,
@@ -141,7 +129,7 @@ export default defineComponent({
       aprobarEgreso,
       tabGestionarEgresos,
 
-      //rutas 
+      //rutas
       route
 
     }

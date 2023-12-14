@@ -121,13 +121,17 @@
             <label class="q-mb-sm block">Desde</label>
             <q-select
               v-model="traspaso.desde_cliente"
-              :options="opciones_clientes"
+              :options="clientes"
               transition-show="scale"
               transition-hide="scale"
               options-dense
               dense
               outlined
               :error="!!v$.desde_cliente.$errors.length"
+              use-input
+              input-debounce="0"
+              @filter="filtrarClientes"
+              @popup-show="ordenarLista(clientes, 'razon_social')"
               :disable="disabled || soloLectura"
               :readonly="disabled || soloLectura"
               :option-label="(v) => v.razon_social"
@@ -159,13 +163,17 @@
               </q-input> -->
             <q-select
               v-model="traspaso.hasta_cliente"
-              :options="opciones_clientes"
+              :options="clientes"
               transition-show="scale"
               transition-hide="scale"
               options-dense
               dense
               outlined
               :error="!!v$.hasta_cliente.$errors.length"
+              use-input
+              input-debounce="0"
+              @filter="filtrarClientes"
+              @popup-show="ordenarLista(clientes, 'razon_social')"
               :disable="traspaso.es_tarea"
               :readonly="disabled || soloLectura"
               :option-label="(v) => v.razon_social"

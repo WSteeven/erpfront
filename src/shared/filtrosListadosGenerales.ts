@@ -191,7 +191,7 @@ export const useFiltrosListadosSelects = (listadosAuxiliares, entidad?: Ref<any>
   /* The `filtrarClientes` function is used to filter a list of clients based on a given search value. */
   clientes.value = listadosAuxiliares.clientes
   function filtrarClientes(val, update) {
-    return filtrarLista(val, update, clientes, 'nombre', listadosAuxiliares.clientes)
+    return filtrarLista(val, update, clientes, 'razon_social', listadosAuxiliares.clientes)
   }
   function ordenarClientes() {
     ordenarLista(clientes.value, 'razon_social')

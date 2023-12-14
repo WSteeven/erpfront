@@ -185,7 +185,7 @@
             <label class="q-mb-sm block">Cliente</label>
             <q-select
               v-model="pedido.cliente"
-              :options="opciones_clientes"
+              :options="clientes"
               transition-show="jump-up"
               transition-hide="jump-up"
               options-dense
@@ -193,7 +193,8 @@
               outlined
               use-input
               input-debounce="0"
-              @filter="filtroClientes"
+              @filter="filtrarClientes"
+              @popup-show="ordenarLista(clientes, 'razon_social')"
               :option-label="(v) => v.razon_social"
               :option-value="(v) => v.id"
               emit-value

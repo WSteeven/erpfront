@@ -365,7 +365,7 @@
             <label class="q-mb-sm block">Cliente</label>
             <q-select
               v-model="transaccion.cliente"
-              :options="opciones_clientes"
+              :options="clientes"
               transition-show="jum-up"
               transition-hide="jump-down"
               options-dense
@@ -375,7 +375,10 @@
               :disable="disabled || soloLectura"
               :error="!!v$.cliente.$errors.length"
               error-message="Debes seleccionar un cliente"
+              use-input
+              input-debounce="0"
               @popup-show="ordenarClientes"
+              @filter="filtrarClientes"
               :option-value="(item) => item.id"
               :option-label="(item) => item.razon_social"
               emit-value
@@ -452,6 +455,7 @@
               :hide-bottom="true"
               v-model:pagination="pagination"
               :rows-per-page-options="[0]"
+              wrap-cells
               virtual-scroll
               dense
             />
