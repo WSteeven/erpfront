@@ -356,6 +356,12 @@
           >
           </q-input>
         </div>
+
+        <!-- ATS -->
+        <div v-if="ats" class="col-12 col-md-3">
+          <label class="q-mb-sm block">ATS</label>
+          <q-input v-model="ats" disable outlined dense> </q-input>
+        </div>
       </div>
     </q-expansion-item>
 

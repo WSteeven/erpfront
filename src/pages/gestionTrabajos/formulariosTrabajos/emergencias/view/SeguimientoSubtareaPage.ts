@@ -105,8 +105,26 @@ export default defineComponent({
       return 'Rango disponible desde ' + trabajoAsignadoStore.subtarea.fecha_hora_ejecucion.substring(0, 10) + ' hasta ' + (trabajoAsignadoStore.subtarea.fecha_hora_finalizacion ?? obtenerFechaActual())
     })
 
-    const materialesTarea: Ref<MaterialOcupadoFormulario[]> = ref([])
-    const materialesStock: Ref<MaterialOcupadoFormulario[]> = ref([])
+    const mostrarMaterialConStock = ref(false)
+    const materialesTareaTodos: Ref<MaterialOcupadoFormulario[]> = ref([])
+    const materialesTarea = computed(() => {
+      if (mostrarMaterialConStock.value) {
+        return materialesTareaTodos.value.filter((material: MaterialOcupadoFormulario) => material.stock_actual)
+      } else {
+        return materialesTareaTodos.value
+      }
+    })
+
+    const mostrarMaterialStockConStock = ref(false)
+    const materialesStockTodos: Ref<MaterialOcupadoFormulario[]> = ref([])
+    const materialesStock = computed(() => {
+      if (mostrarMaterialStockConStock.value) {
+        return materialesStockTodos.value.filter((material: MaterialOcupadoFormulario) => material.stock_actual)
+      } else {
+        return materialesStockTodos.value
+      }
+    })
+
     const sumaMaterialesTareaUsado: Ref<MaterialOcupadoFormulario[]> = ref([])
     const historialMaterialTareaUsadoPorFecha: Ref<MaterialOcupadoFormulario[]> = ref([])
     const historialMaterialStockUsadoPorFecha: Ref<MaterialOcupadoFormulario[]> = ref([])
@@ -154,6 +172,8 @@ export default defineComponent({
     obtenerClientesMaterialesEmpleado()
     // listados.ticketsAts.push(gestionAtsApplication.obtenerTicketsATS())
     consultarTicketsATS(subtarea.id)
+    seleccionarClienteMaterialTarea()
+    seleccionarClienteMaterialStock()
 
     onMounted(() => refArchivoSeguimiento.value.listarArchivos({ subtarea_id: trabajoAsignadoStore.subtarea.id }))
 
@@ -342,9 +362,10 @@ export default defineComponent({
 
     async function obtenerMaterialesTarea(cliente: number) {
       cargarVista(async () => {
-        const ruta = axios.getEndpoint(endpoints.materiales_empleado_tarea, { tarea_id: trabajoAsignadoStore.subtarea.tarea_id, subtarea_id: trabajoAsignadoStore.subtarea.id, empleado_id: obtenerIdEmpleadoResponsable(), cliente_id: cliente })
+        const ruta = axios.getEndpoint(endpoints.materiales_empleado_tarea, { tarea_id: trabajoAsignadoStore.subtarea.tarea_id, subtarea_id: trabajoAsignadoStore.subtarea.id, empleado_id: obtenerIdEmpleadoResponsable(), cliente_id: cliente, seguimiento: 1 })
         const response: AxiosResponse = await axios.get(ruta)
-        materialesTarea.value = response.data.results
+        // materialesTarea.value = response.data.results
+        materialesTareaTodos.value = response.data.results
       })
     }
 
@@ -352,7 +373,8 @@ export default defineComponent({
       cargarVista(async () => {
         const ruta = axios.getEndpoint(endpoints.materiales_empleado, { empleado_id: obtenerIdEmpleadoResponsable(), subtarea_id: trabajoAsignadoStore.subtarea.id, cliente_id: cliente })
         const response: AxiosResponse = await axios.get(ruta)
-        materialesStock.value = response.data.results
+        // materialesStock.value = response.data.results
+        materialesStockTodos.value = response.data.results
       })
     }
 
@@ -453,6 +475,18 @@ export default defineComponent({
       actividad.hydrate(data)
       actividad.subtarea = trabajoAsignadoStore.subtarea.id
       guardarActividad(actividad)
+    }
+
+    function seleccionarClienteMaterialTarea() {
+      clienteMaterialTarea.value = subtarea.cliente_id
+
+      obtenerMaterialesTarea(clienteMaterialTarea.value)
+    }
+
+    function seleccionarClienteMaterialStock() {
+      clienteMaterialStock.value = subtarea.cliente_id
+
+      obtenerMaterialesStock(clienteMaterialStock.value)
     }
 
     /**********
@@ -578,6 +612,8 @@ export default defineComponent({
       btnSeguimiento,
       btnCancelar,
       modales,
+      mostrarMaterialConStock,
+      mostrarMaterialStockConStock,
     }
   }
 })

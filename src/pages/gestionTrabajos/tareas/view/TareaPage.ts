@@ -156,6 +156,10 @@ export default defineComponent({
     setFiltrarTrabajoAsignado(filtrarSubtareas)
 
     const proyectoController = new ProyectoController()
+    /********
+     * Init
+     *******/
+    // tarea.coordinador = 5
 
     /*************
     * Validaciones

@@ -119,6 +119,10 @@ export const tabAutorizarGasto: TabOption[] = [
   { label: 'Pendiente', value: '3' },
   { label: 'Anulado', value: '4' },
 ]
+export const tabAcreditacion: TabOption[] = [
+  { label: 'Aprobada', value: '1' },
+  { label: 'Anulado', value: '2' },
+]
 export const tabGestionarEgresos: TabOption[] = [
   { label: 'Aprobada', value: 'ACEPTADA' },
   // { label: 'Rechazada', value: 'RECHAZADA' },
@@ -232,7 +236,8 @@ export const estadosTrabajos = {
   REALIZADO: 'REALIZADO',
   FINALIZADO: 'FINALIZADO',
   //REAGENDADO: 'REAGENDADO',
-}
+} as const
+
 export const estadosRolPago = {
   CREADO: 'CREADO',
   EJECUTANDO: 'EJECUTANDO',

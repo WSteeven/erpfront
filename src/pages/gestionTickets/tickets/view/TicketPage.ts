@@ -147,8 +147,6 @@ export default defineComponent({
     **************/
     const reglas = {
       asunto: { required },
-      // tipo_ticket: { required },
-      // categoria_tipo_ticket: { required },
       descripcion: { required },
       prioridad: { required },
       responsable: { required },
@@ -189,8 +187,6 @@ export default defineComponent({
     const { destinatarios, agregarDestinatario, quitarDestinatario, obtenerTiposTickets, mapearIdsDestinatarios, reestablecerDestinatarios, setDestinatarios } = useDestinatariosTickets(listadosAuxiliares)
 
     async function toggleTicketInterno() {
-
-
       if (ticket.ticket_interno) {
         ticket.responsable = []
         departamentoDeshabilitado.value = true
@@ -242,8 +238,8 @@ export default defineComponent({
       })
     }
 
-    async function subirArchivos(id: number) {
-      await refArchivoTicket.value.subir({ ticket_id: id })
+    async function subirArchivos(id: number[]) {
+      await refArchivoTicket.value.subir({ tickets_id: id })
     }
 
     function filtrarTickets(tab: string) {
@@ -300,11 +296,7 @@ export default defineComponent({
     /*************
      * Observers
      *************/
-    /* watch(computed(() => ticket.departamento_responsable), () => {
-
-    }) */
     function agregarDepartamento(data) {
-      console.log(data)
       agregarDestinatario(data.value)
     }
 
@@ -328,7 +320,6 @@ export default defineComponent({
 
       ticket.destinatarios = mapearIdsDestinatarios()
       ticket.responsable_id = ticket.responsable[0]
-      console.log(ticket)
     })
 
     onConsultado(() => {
@@ -347,16 +338,16 @@ export default defineComponent({
       setDestinatarios(ticket.destinatarios)
     })
 
-    onGuardado((id: number) => {
-      subirArchivos(id)
+    onGuardado(async (id: number, responseData: any) => {
+      await subirArchivos([responseData.ids_tickets_creados])
       departamentoDeshabilitado.value = false
       emit('cerrar-modal', false)
     })
 
-    onModificado((id: number) => {
+    /* onModificado((id: number) => {
       subirArchivos(id)
       emit('cerrar-modal', false)
-    })
+    }) */
 
     onReestablecer(() => {
       fechaLimite.value = null

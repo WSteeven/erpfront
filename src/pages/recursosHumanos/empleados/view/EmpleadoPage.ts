@@ -40,12 +40,10 @@ import { DepartamentoController } from 'pages/recursosHumanos/departamentos/infr
 import { EstadoCivilController } from 'pages/recursosHumanos/estado-civil/infraestructure/EstadoCivilController'
 import { AreasController } from 'pages/recursosHumanos/areas/infraestructure/AreasController'
 import { BancoController } from 'pages/recursosHumanos/banco/infrestruture/BancoController'
-import { maxValue, minValue } from '@vuelidate/validators'
 import ModalesEntidad from 'components/modales/view/ModalEntidad.vue'
 import { configuracionColumnasFamiliaresEmpleado } from 'pages/recursosHumanos/familiares/domain/configuracionColumnasFamiliaresEmpleado'
 import { ComportamientoModalesEmpleado } from '../application/ComportamientoModalesEmpleado'
 import { CustomActionTable } from 'components/tables/domain/CustomActionTable'
-import { useRecursosHumanosStore } from 'stores/recursosHumanos'
 import { useFamiliarStore } from 'stores/familiar'
 import { useAuthenticationStore } from 'stores/authentication'
 import { Familiares } from 'pages/recursosHumanos/familiares/domain/Familiares'
@@ -54,7 +52,7 @@ import { AxiosHttpRepository } from 'shared/http/infraestructure/AxiosHttpReposi
 import { apiConfig, endpoints } from 'config/api'
 import { imprimirArchivo } from 'shared/utils'
 import { useCargandoStore } from 'stores/cargando'
-import { AxiosResponse } from 'axios'
+import  { AxiosResponse } from 'axios'
 import { useNotificaciones } from 'shared/notificaciones'
 import { useConfiguracionGeneralStore } from 'stores/configuracion_general'
 
@@ -66,8 +64,7 @@ export default defineComponent({
      *********/
     useNotificacionStore().setQuasar(useQuasar())
     useCargandoStore().setQuasar(useQuasar())
-    const storeRecursosHumanos = useRecursosHumanosStore()
-    const { confirmar, prompt, notificarAdvertencia, notificarCorrecto } =
+    const { notificarCorrecto } =
       useNotificaciones()
 
     /***********
@@ -279,7 +276,7 @@ export default defineComponent({
      ************/
     watchEffect(() => {
       if (!empleado.tiene_grupo) empleado.grupo = null
-      if (empleado.nombres != null && empleado.nombres != '') {
+      if (empleado.nombres != null && empleado.nombres != '' && accion.value == acciones.nuevo) {
         const inicial_nombre =
           empleado.nombres != null ? empleado.nombres[0] : ''
         const apellido =
@@ -289,15 +286,9 @@ export default defineComponent({
         const username = inicial_nombre + apellido
         empleado.email = username + '@' + sitio_web
         empleado.usuario = username
-        if (
-          accion.value != acciones.editar ||
-          accion.value != acciones.consultar
-        ) {
+
           empleado.password = empleado.identificacion
-        }
-      } else {
-        empleado.email = null
-        empleado.usuario = null
+
       }
     })
     const btnConsultarFamiliar: CustomActionTable = {
@@ -357,6 +348,8 @@ export default defineComponent({
         axios.getEndpoint(endpoints.imprimir_reporte_general_empleado)
       imprimirArchivo(url_pdf, 'GET', 'blob', 'pdf', filename, null)
     }
+
+
     const btnHabilitarEmpleado: CustomActionTable = {
       titulo: '',
       icono: 'bi-toggle2-on',
@@ -382,6 +375,22 @@ export default defineComponent({
         HabilitarEmpleado(entidad.id, false)
         entidad.estado = false
       },
+    }
+
+    function obtenerUsername(){
+     if( accion.value== acciones.nuevo && empleado.nombres != null && empleado.nombres != '' && empleado.apellidos != null && empleado.apellidos != ''){
+        generarUsename()
+     }
+    }
+    async function generarUsename(){
+      const axios = AxiosHttpRepository.getInstance()
+      const ruta = axios.getEndpoint(endpoints.generar_username,{nombres:empleado.nombres, apellidos: empleado.apellidos, usuario: empleado.usuario})
+      const response: AxiosResponse = await axios.get(ruta)
+      const username = ref(response.data.username);
+      const sitio_web = configuracionStore.configuracion?.sitio_web?.split('WWW.')[1]
+      empleado.usuario = username.value
+      empleado.email = username.value + '@' + sitio_web
+
     }
     async function HabilitarEmpleado(id: number, estado: boolean) {
       const axios = AxiosHttpRepository.getInstance()
@@ -431,6 +440,7 @@ export default defineComponent({
       btnHabilitarEmpleado,
       btnDesHabilitarEmpleado,
       modales,
+      obtenerUsername,
       guardado,
       //  FILTROS
       //filtro de empleados

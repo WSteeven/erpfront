@@ -69,7 +69,7 @@
       <q-step
         :name="1"
         title="Configura los criterios a calificar"
-        
+
         icon="settings"
         :done="step > 1"
       >
@@ -83,6 +83,7 @@
               dense
               :pagination="initialPagination"
               bordered
+              wrap-cells
               selection="multiple"
               v-model:selected="seleccionados"
               @selection="criterioSeleccionado"
@@ -112,6 +113,7 @@
               :permitirEditar="false"
               :permitirEliminar="false"
               :mostrarFooter="true"
+              :ajustarCeldas="true"
               :altoFijo="false"
               :accion1="btnEditarCantidadCriterioBien"
               :accion2="btnEliminarCriterioBien"
@@ -265,7 +267,6 @@
     :configuracion-columnas="columnasCriterios"
     :datos="criterios"
     tipo-seleccion="multiple"
-    @selected="seleccionarCriterio"
   ></essential-selectable-table>
 </template>
 

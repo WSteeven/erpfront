@@ -208,8 +208,9 @@ export class ContenedorSimpleMixin<T extends EntidadAuditable> extends Contenedo
       const copiaEntidad = JSON.parse(JSON.stringify(this.entidad))
       // console.log(this.entidad)
       // console.log(copiaEntidad)
-      this.reestablecer()
+      console.log(response.data)
       this.hooks.onGuardado(copiaEntidad.id, response.data)
+      this.reestablecer() // antes estaba arriba de onGuardado
       return copiaEntidad
       /* const stop = watchEffect(() => {
         // console.log('dentrode  watch')
