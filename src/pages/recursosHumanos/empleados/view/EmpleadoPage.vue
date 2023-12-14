@@ -26,7 +26,7 @@
               <q-input
                 v-model="empleado.usuario"
                 placeholder="Obligatorio"
-                :disable="disabled"
+                disable
                 :error="!!v$.usuario.$errors.length"
                 @blur="v$.usuario.$touch"
                 outlined
@@ -46,7 +46,7 @@
                 type="email"
                 v-model="empleado.email"
                 placeholder="Obligatorio"
-                :disable="disabled"
+                disable
                 :error="!!v$.email.$errors.length"
                 @blur="v$.email.$touch"
                 @update:model-value="(v) => (empleado.email = v.toLowerCase())"
@@ -135,7 +135,7 @@
                 placeholder="Obligatorio"
                 :disable="disabled"
                 :error="!!v$.nombres.$errors.length"
-                @blur="v$.nombres.$touch"
+                @blur="v$.nombres.$touch && obtenerUsername()"
                 outlined
                 dense
               >
@@ -154,8 +154,7 @@
                 placeholder="Obligatorio"
                 :disable="disabled"
                 :error="!!v$.apellidos.$errors.length"
-                @blur="v$.apellidos.$touch"
-                @focus="obtenerUsername()"
+                @blur="v$.apellidos.$touch && obtenerUsername()"
                 outlined
                 dense
               >

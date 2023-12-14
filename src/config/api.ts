@@ -118,6 +118,7 @@ export const endpoints = {
 
   crear_cash_roles_pago: new Endpoint('recursos-humanos/crear-cash-roles-pago/'),
   rubros: new Endpoint('recursos-humanos/rubros'),
+  anular_prestamo_empresarial: new Endpoint('recursos-humanos/anular-prestamo-empresarial'),
 
 
   //Modulo de Vehiculos
