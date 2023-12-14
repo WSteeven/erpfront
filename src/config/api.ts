@@ -155,6 +155,7 @@ export const endpoints = {
   control_stocks: new Endpoint('control-stocks'),
   items_control_stocks_consolidados: new Endpoint('control-stocks/items-consolidados'),
   codigos_clientes: new Endpoint('codigos-clientes'),
+  detalles_materiales: new Endpoint('detalles-materiales'),
   detalles: new Endpoint('detalles'),
   devoluciones: new Endpoint('devoluciones'),
   detalle_producto_transaccion: new Endpoint('detalles-productos-transacciones'),

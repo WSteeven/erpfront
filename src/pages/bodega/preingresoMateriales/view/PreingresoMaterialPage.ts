@@ -50,6 +50,7 @@ import { Proyecto } from "pages/gestionTrabajos/proyectos/domain/Proyecto";
 import { TareasEmpleadoController } from "pages/gestionTrabajos/tareas/infraestructure/TareasEmpleadoController";
 import { usePreingresoStore } from "stores/bodega/preingreso";
 import { useNotificacionStore } from "stores/notificacion";
+import { Tarea } from "pages/gestionTrabajos/tareas/domain/Tarea";
 
 
 export default defineComponent({
@@ -87,7 +88,7 @@ export default defineComponent({
       listar: listarProductos,
       limpiar: limpiarProducto,
       seleccionar: seleccionarProducto
-    } = useOrquestadorSelectorProductos(preingreso, 'detalles')
+    } = useOrquestadorSelectorProductos(preingreso, 'detalles_materiales')
 
     //filtros y listados
     const {
@@ -115,7 +116,7 @@ export default defineComponent({
           },
         },
         // tareas: { controller: new TareasEmpleadoController(), params: { para_cliente_proyecto: 'PARA_CLIENTE_FINAL', finalizado: 0 } },
-        tareas: { controller: new TareasEmpleadoController(), params: { empleado_id: store.user.id, finalizado: 0 } },
+        tareas: { controller: new TareasEmpleadoController(), params: { empleado_id: store.user.id, finalizado: 0, proyecto_id: preingreso.proyecto } },
         clientes: { controller: new ClienteController(), params: { campos: 'id,razon_social', requiere_bodega: 1, estado: 1, } },
       })
       // productos.value = listadosAuxiliares.productos
@@ -170,189 +171,209 @@ export default defineComponent({
      * Validaciones
      ****************************************************************************************/
     const reglas = {
+      fecha: { required },
+      cuadrilla: { required },
       num_guia: { required },
       coordinador: { required },
+      courier: { required },
+      observacion: { required },
       cliente: { required },
-      etapa: { requiredIf: requiredIf(() => etapas.value.length && preingreso.proyecto) },
+      etapa: { requiredIf: requiredIf(() => { if (etapas.value) return etapas.value.length && preingreso.proyecto})
+    },
       tarea: { requiredIf: requiredIf(() => preingreso.etapa && tareas.value.length) },
     }
 
-    const v$ = useVuelidate(reglas, preingreso)
-    setValidador(v$.value)
+const v$ = useVuelidate(reglas, preingreso)
+setValidador(v$.value)
 
-    const validarListadoProductos = new ValidarListadoProductos(preingreso)
-    mixin.agregarValidaciones(validarListadoProductos)
+const validarListadoProductos = new ValidarListadoProductos(preingreso)
+mixin.agregarValidaciones(validarListadoProductos)
 
-    /*******************************************************************************************
-    * Funciones
-    ******************************************************************************************/
-    async function subirArchivos() {
-      await refArchivo.value.subir()
+/*******************************************************************************************
+* Funciones
+******************************************************************************************/
+async function subirArchivos() {
+  await refArchivo.value.subir()
+}
+
+function filtrarPreingresos(tab: string) {
+  tabSeleccionado.value = tab
+  if (tab == '1') puedeEditar.value = true
+  else puedeEditar.value = false
+  listar({ autorizacion_id: tab, responsable_id: store.user.id })
+}
+function eliminar({ posicion }) {
+  confirmar('¿Está seguro de continuar?', () => preingreso.listadoProductos.splice(posicion, 1))
+}
+function cargarDatosDefecto() {
+  preingreso.responsable = store.user.nombres + ' ' + store.user.apellidos
+  preingreso.responsable_id = store.user.id
+  preingreso.autorizacion = 1
+}
+
+async function obtenerEtapasProyecto(idProyecto: string | number | null, limpiarCampos = true) {
+  cargando.activar()
+  if(limpiarCampos){
+    preingreso.etapa = null
+    preingreso.cliente = null
+    preingreso.coordinador = null
+  }
+  if (idProyecto === null) {
+    const response = await new TareasEmpleadoController().listar({ para_cliente_proyecto: 'PARA_CLIENTE_FINAL', campos: 'id,codigo_tarea,titulo', finalizado: 0 })
+    listadosAuxiliares.tareas = response.result
+    tareas.value = response.result
+  } else {
+    obtenerClienteProyecto(idProyecto)
+    obtenerCoordinadorProyecto(idProyecto)
+    const response = await new EtapaController().listar({ proyecto_id: idProyecto, campos: 'id,nombre,supervisor_id,supervisor_responsable' })
+    listadosAuxiliares.etapas = response.result
+    etapas.value = response.result
+    if (etapas.value.length <= 0) {
+      await obtenerTareasEtapa(null)
+    }
+  }
+  cargando.desactivar()
+}
+async function obtenerTareasEtapa(idEtapa: number | null) {
+  cargando.activar()
+  obtenerCoordinadorEtapa(idEtapa)
+  preingreso.tarea = null
+  const response = await new TareasEmpleadoController().listar({ proyecto_id: preingreso.proyecto, etapa_id: idEtapa, empleado_id: store.user.id, campos: 'id,codigo_tarea,titulo', finalizado: 0 })
+  listadosAuxiliares.tareas = response.result
+  tareas.value = response.result
+  cargando.desactivar()
+
+}
+
+async function obtenerCoordinadorClienteTareaSeleccionada() {
+  if (preingreso.proyecto == null && preingreso.etapa == null) {
+    const tareaSeleccionada = tareas.value.filter((v: Tarea) => v.id == preingreso.tarea)[0]
+    if (tareaSeleccionada) {
+      preingreso.cliente = tareaSeleccionada.cliente_id
+      preingreso.coordinador = tareaSeleccionada.coordinador_id
     }
 
-    function filtrarPreingresos(tab: string) {
-      tabSeleccionado.value = tab
-      if (tab == '1') puedeEditar.value = true
-      else puedeEditar.value = false
-      listar({ autorizacion_id: tab, responsable_id: store.user.id })
-    }
-    function eliminar({ posicion }) {
-      confirmar('¿Está seguro de continuar?', () => preingreso.listadoProductos.splice(posicion, 1))
-    }
-    function cargarDatosDefecto() {
-      preingreso.responsable = store.user.nombres + ' ' + store.user.apellidos
-      preingreso.responsable_id = store.user.id
-      preingreso.autorizacion = 1
-    }
+  }
+}
 
-    async function obtenerEtapasProyecto(idProyecto: string | number | null, limpiarCampos=true) {
-      cargando.activar()
-      if (idProyecto === null && limpiarCampos) {
-        preingreso.etapa = null
-        preingreso.cliente = null
-        preingreso.coordinador = null
-        const response = await new TareasEmpleadoController().listar({ para_cliente_proyecto: 'PARA_CLIENTE_FINAL', campos: 'id,codigo_tarea,titulo', finalizado: 0 })
-        listadosAuxiliares.tareas = response.result
-        tareas.value = response.result
-      } else {
-        obtenerClienteProyecto(idProyecto)
-        obtenerCoordinadorProyecto(idProyecto)
-        const response = await new EtapaController().listar({ proyecto_id: idProyecto, campos: 'id,nombre,supervisor_id,supervisor_responsable' })
-        listadosAuxiliares.etapas = response.result
-        etapas.value = response.result
-        if (etapas.value.length <= 0) {
-          await obtenerTareasEtapa(null)
-        }
-      }
-      cargando.desactivar()
-    }
-    async function obtenerTareasEtapa(idEtapa: number | null) {
-      cargando.activar()
-      obtenerCoordinadorEtapa(idEtapa)
-      preingreso.tarea = null
-      const response = await new TareasEmpleadoController().listar({ proyecto_id: preingreso.proyecto, etapa_id: idEtapa, empleado_id: store.user.id, campos: 'id,codigo_tarea,titulo', finalizado: 0 })
-      listadosAuxiliares.tareas = response.result
-      tareas.value = response.result
-      cargando.desactivar()
-    }
+async function obtenerClienteProyecto(idProyecto) {
+  const proyectoSeleccionado = proyectos.value.filter((v: Proyecto) => v.id == idProyecto)[0]
+  const clienteSeleccionado = clientes.value.filter((v: Cliente) => v.id == proyectoSeleccionado.cliente_id)[0]
+  preingreso.cliente = clienteSeleccionado.id
+}
+async function obtenerCoordinadorProyecto(idProyecto) {
+  const proyectoSeleccionado = proyectos.value.filter((v: Proyecto) => v.id == idProyecto)[0]
+  const supervisorSeleccionado: Empleado = coordinadores.value.filter((v: Empleado) => v.id == proyectoSeleccionado.coordinador_id)[0]
+  if (supervisorSeleccionado) preingreso.coordinador = supervisorSeleccionado.id
+}
 
-    async function obtenerClienteProyecto(idProyecto) {
-      const proyectoSeleccionado = proyectos.value.filter((v: Proyecto) => v.id == idProyecto)[0]
-      const clienteSeleccionado = clientes.value.filter((v: Cliente) => v.id == proyectoSeleccionado.cliente_id)[0]
-      preingreso.cliente = clienteSeleccionado.id
-    }
-    async function obtenerCoordinadorProyecto(idProyecto) {
-      const proyectoSeleccionado = proyectos.value.filter((v: Proyecto) => v.id == idProyecto)[0]
-      const supervisorSeleccionado: Empleado = coordinadores.value.filter((v: Empleado) => v.id == proyectoSeleccionado.coordinador_id)[0]
-      if (supervisorSeleccionado) preingreso.coordinador = supervisorSeleccionado.id
-    }
+async function obtenerCoordinadorEtapa(idEtapa: number | null) {
+  if (idEtapa != null) {
+    const etapaSeleccionada = etapas.value.filter((v: Etapa) => v.id == idEtapa)[0]
+    const supervisorSeleccionado: Empleado = coordinadores.value.filter((v: Empleado) => v.id == etapaSeleccionada.supervisor_id)[0]
+    preingreso.coordinador = supervisorSeleccionado.id
+  }
+}
 
-    async function obtenerCoordinadorEtapa(idEtapa: number | null) {
-      if (idEtapa != null) {
-        const etapaSeleccionada = etapas.value.filter((v: Etapa) => v.id == idEtapa)[0]
-        const supervisorSeleccionado: Empleado = coordinadores.value.filter((v: Empleado) => v.id == etapaSeleccionada.supervisor_id)[0]
-        preingreso.coordinador = supervisorSeleccionado.id
-      }
-    }
+/*******************************************************************************************
+ * Botones de tabla
+ ******************************************************************************************/
+const btnVerFotografia: CustomActionTable = {
+  titulo: 'Ver fotografía',
+  icono: 'bi-image-fill',
+  color: 'secondary',
+  visible: ({ entidad }) => entidad.fotografia,
+  accion: async ({ entidad }) => {
+    refVisorImagen.value.abrir(entidad.fotografia)
+  }
+}
+const btnEliminarFila: CustomActionTable = {
+  titulo: 'Eliminar',
+  icono: 'bi-trash',
+  color: 'negative',
+  accion: ({ entidad, posicion }) => {
+    //: props.propsTable.rowIndex,
+    eliminar({ posicion })
+  },
+  visible: () => (accion.value == acciones.nuevo || accion.value == acciones.editar) && preingreso.responsable_id == store.user.id
+}
+const btnAddRow: CustomActionTable = {
+  titulo: 'Agregar ítem',
+  icono: 'bi-arrow-bar-down',
+  color: 'positive',
+  tooltip: 'Agregar elemento',
+  accion: () => {
+    const fila = new ItemPreingresoMaterial()
+    fila.id = preingreso.listadoProductos.length ? encontrarUltimoIdListado(preingreso.listadoProductos) + 1 : 1
+    fila.unidad_medida = 1
+    preingreso.listadoProductos.push(fila)
 
-    /*******************************************************************************************
-     * Botones de tabla
-     ******************************************************************************************/
-    const btnVerFotografia: CustomActionTable = {
-      titulo: 'Ver fotografía',
-      icono: 'bi-image-fill',
-      color: 'secondary',
-      visible: ({ entidad }) => entidad.fotografia,
-      accion: async ({ entidad }) => {
-        refVisorImagen.value.abrir(entidad.fotografia)
-      }
-    }
-    const btnEliminarFila: CustomActionTable = {
-      titulo: 'Eliminar',
-      icono: 'bi-trash',
-      color: 'negative',
-      accion: ({ entidad, posicion }) => {
-        //: props.propsTable.rowIndex,
-        eliminar({ posicion })
-      },
-      visible: () => (accion.value == acciones.nuevo || accion.value == acciones.editar) && preingreso.responsable_id == store.user.id
-    }
-    const btnAddRow: CustomActionTable = {
-      titulo: 'Agregar ítem',
-      icono: 'bi-arrow-bar-down',
-      color: 'positive',
-      tooltip: 'Agregar elemento',
-      accion: () => {
-        const fila = new ItemPreingresoMaterial()
-        fila.id = preingreso.listadoProductos.length ? encontrarUltimoIdListado(preingreso.listadoProductos) + 1 : 1
-        fila.unidad_medida = 1
-        preingreso.listadoProductos.push(fila)
+    emit('actualizar', preingreso.listadoProductos)
+  },
+  visible: () => accion.value === acciones.nuevo || (accion.value === acciones.editar && preingreso.responsable === store.user.id)
+}
+const btnImprimir: CustomActionTable = {
+  titulo: 'Imprimir',
+  color: 'secondary',
+  icono: 'bi-printer',
+  accion: async ({ entidad, posicion }) => {
+    preingresoStore.idPreingreso = entidad.id
+    await preingresoStore.imprimirPdf()
+  },
+  visible: () => tabSeleccionado.value > 1 ? true : false
+}
 
-        emit('actualizar', preingreso.listadoProductos)
-      },
-      visible: () => accion.value === acciones.nuevo || (accion.value === acciones.editar && preingreso.responsable === store.user.id)
-    }
-    const btnImprimir: CustomActionTable = {
-      titulo: 'Imprimir',
-      color: 'secondary',
-      icono: 'bi-printer',
-      accion: async ({ entidad, posicion }) => {
-        preingresoStore.idPreingreso = entidad.id
-        await preingresoStore.imprimirPdf()
-      },
-      visible: () => tabSeleccionado.value > 1 ? true : false
-    }
+coordinadores.value = listadosAuxiliares.coordinadores
+autorizaciones.value = JSON.parse(LocalStorage.getItem('autorizaciones')!.toString())
+tareas.value = listadosAuxiliares.tareas
 
-    coordinadores.value = listadosAuxiliares.coordinadores
-    autorizaciones.value = JSON.parse(LocalStorage.getItem('autorizaciones')!.toString())
-    tareas.value = listadosAuxiliares.tareas
+return {
+  refItems,
+  refVisorImagen,
+  mixin, preingreso, disabled, accion, v$, acciones,
+  configuracionColumnas: configuracionColumnasPreingresosMateriales,
+  configuracionColumnasItemPreingreso,
+  configuracionColumnasProductos,
+  configuracionColumnasDetallesProductos,
+  puedeEditar,
+  componenteCargado,
+  accionesTabla,
+  store,
+  soloLectura,
+  refArchivo,
+  idPreingreso,
+  //listados
+  coordinadores,
+  autorizaciones,
+  clientes, filtrarClientes,
 
-    return {
-      refItems,
-      refVisorImagen,
-      mixin, preingreso, disabled, accion, v$, acciones,
-      configuracionColumnas: configuracionColumnasPreingresosMateriales,
-      configuracionColumnasItemPreingreso,
-      configuracionColumnasProductos,
-      configuracionColumnasDetallesProductos,
-      puedeEditar,
-      componenteCargado,
-      accionesTabla,
-      store,
-      soloLectura,
-      refArchivo,
-      idPreingreso,
-      //listados
-      coordinadores,
-      autorizaciones,
-      clientes, filtrarClientes,
+  //selector
+  refListado,
+  criterioBusquedaProducto,
+  listadoProductos,
+  listarProductos,
+  limpiarProducto,
+  seleccionarProducto,
 
-      //selector
-      refListado,
-      criterioBusquedaProducto,
-      listadoProductos,
-      listarProductos,
-      limpiarProducto,
-      seleccionarProducto,
+  //tabs
+  tabOptionsPreingresoMateriales,
 
-      //tabs
-      tabOptionsPreingresoMateriales,
-
-      //botones
-      btnVerFotografia,
-      btnEliminarFila,
-      btnImprimir,
-      btnAddRow,
+  //botones
+  btnVerFotografia,
+  btnEliminarFila,
+  btnImprimir,
+  btnAddRow,
 
 
-      filtrarPreingresos,
-      ordenarLista,
-      proyectos, filtrarProyectos,
-      etapas, filtrarEtapas,
-      tareas, filtrarTareas,
-      obtenerEtapasProyecto,
-      obtenerTareasEtapa,
+  filtrarPreingresos,
+  ordenarLista,
+  proyectos, filtrarProyectos,
+  etapas, filtrarEtapas,
+  tareas, filtrarTareas,
+  obtenerEtapasProyecto,
+  obtenerTareasEtapa,
+  obtenerCoordinadorClienteTareaSeleccionada,
 
-    }
+}
   }
 })
