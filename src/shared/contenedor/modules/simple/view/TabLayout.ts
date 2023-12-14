@@ -12,6 +12,7 @@ import { CustomActionTable } from 'components/tables/domain/CustomActionTable'
 import ButtonSubmits from 'components/buttonSubmits/buttonSubmits.vue'
 import EssentialTable from 'components/tables/view/EssentialTable.vue'
 import { useCargandoStore } from 'stores/cargando'
+import { useMainLayoutStore } from 'stores/mainLayout'
 
 export default defineComponent({
   props: {
@@ -175,6 +176,7 @@ export default defineComponent({
 
     const router = useRoute()
     const store = useAuthenticationStore()
+    const mainLayoutStore = useMainLayoutStore()
 
     const puedeVer = computed(() =>
       store.can(`puede.ver.${router.name?.toString()}`) && props.permitirConsultar
@@ -197,6 +199,8 @@ export default defineComponent({
     function filtrarTodos(filtros) {
       if (props.mostrarListado) filtrar(filtros)
     }
+
+    mainLayoutStore.tituloPagina = tituloTabla
 
     /* const aplicarFiltros = (filtros: any) => {
       filtrosBusqueda.value = filtros

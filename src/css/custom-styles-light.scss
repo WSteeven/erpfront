@@ -5,7 +5,7 @@
   }
 
   .bg-body {
-    background-color: $grey-3;
+    background-color: $grey-4;
   }
 
   .bg-body-table {
@@ -17,7 +17,7 @@
   }
 
   .bg-desenfoque {
-    background-color: #efeff733 !important;
+    background-color: rgba($grey-2, 0.6) !important;
     backdrop-filter: blur(10px) !important;
   }
 
@@ -39,6 +39,10 @@
 
   .bg-drawer {
     background-color: $grey-2;
+  }
+
+  .bg-icon {
+    background-color: #fff;
   }
 
   .q-card,
