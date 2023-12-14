@@ -156,6 +156,7 @@ export default defineComponent({
     obtenerFechasHistorialMaterialesStockUsados()
     obtenerClientesMaterialesTarea()
     obtenerClientesMaterialesEmpleado()
+    // listados.ticketsAts.push(gestionAtsApplication.obtenerTicketsATS())
     consultarTicketsATS(subtarea.id)
     seleccionarClienteMaterialTarea()
     seleccionarClienteMaterialStock()

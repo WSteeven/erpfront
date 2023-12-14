@@ -106,12 +106,7 @@
             </div>
             <div class="col-12 row justify-center q-gutter-sm q-mb-md">
               <!-- Boton guardar -->
-              <q-btn
-                color="primary"
-                no-caps
-                push
-                :to="{ name: 'devoluciones' }"
-              >
+              <q-btn color="primary" no-caps :to="{ name: 'devoluciones' }">
                 <q-icon name="bi-building" size="xs" class="q-pr-sm"></q-icon>
                 <span>Devolver a bodega matriz</span>
               </q-btn>
@@ -184,12 +179,7 @@
               Opciones de devolución de material sobrante del stock
             </div>
             <div class="col-12">
-              <q-btn
-                color="primary"
-                no-caps
-                push
-                :to="{ name: 'devoluciones' }"
-              >
+              <q-btn color="primary" no-caps :to="{ name: 'devoluciones' }">
                 <q-icon name="bi-building" size="xs" class="q-pr-sm"></q-icon>
                 <span>Devolver a bodega matriz</span>
               </q-btn>
