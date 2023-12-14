@@ -28,6 +28,7 @@ import { useNotificaciones } from 'shared/notificaciones'
 import { useIdle, useTimestamp } from '@vueuse/core'
 import { formatearFechaTexto } from 'shared/utils'
 import { Idle, NotIdle } from 'idlejs'
+import { useMainLayoutStore } from 'stores/mainLayout'
 
 export default defineComponent({
   name: 'MainLayout',
@@ -51,6 +52,7 @@ export default defineComponent({
     const authenticationStore = useAuthenticationStore()
     const movilizacionSubtareaStore = useMovilizacionSubtareaStore()
     const configuracionGeneralStore = useConfiguracionGeneralStore()
+    const mainLayoutStore = useMainLayoutStore()
 
     /*******
      * Init
@@ -76,7 +78,7 @@ export default defineComponent({
      ************/
     const Router = useRouter()
     const route = useRoute()
-    const { notificarAdvertencia } = useNotificaciones()
+    const tituloPagina = computed(() => mainLayoutStore.tituloPagina)
     const grupo = authenticationStore.user.grupo
 
     const saldo = computed(() => {
@@ -274,6 +276,7 @@ export default defineComponent({
       width: computed(() => ($q.screen.xs ? '100%' : '450px')),
       mostrarMenu: ref(false),
       mostrarNotificaciones: ref(false),
+      mostrarOpciones: ref(false),
       notificaciones,
       marcarLeida,
       ordenarNotificaciones() {
@@ -288,6 +291,7 @@ export default defineComponent({
       grupo,
       mostrarTransferirTareas: authenticationStore.esCoordinador || authenticationStore.esJefeTecnico,
       notificacionesAgrupadas,
+      tituloPagina,
       // idledFor,
       // tiempoInactividad,
       // mostrarAlertaInactividad,

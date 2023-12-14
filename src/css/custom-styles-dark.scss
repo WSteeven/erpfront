@@ -36,6 +36,10 @@ $border-color: #464646;
     background-color: $dark-color;
   }
 
+  .bg-icon {
+    background-color: $border-color;
+  }
+
   // Tabs
   .tab-active {
     background-color: $dark-color;
@@ -137,7 +141,7 @@ $border-color: #464646;
     border-radius: 16px;
 
     i {
-      color: white;
+      color: $primary;
     }
 
     /* .q-item__label {
