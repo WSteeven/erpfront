@@ -185,7 +185,7 @@
             </q-select>
           </div>
           <!-- Etapa del proyecto -->
-          <div v-if="etapas?.length ||preingreso.etapa" class="col-12 col-md-3">
+          <div v-if="etapas?.length" class="col-12 col-md-3">
             <label class="q-mb-sm block">Etapa</label>
             <q-select
               v-model="preingreso.etapa"
@@ -279,7 +279,7 @@
               </template>
             </q-select>
           </div>
-          
+
           <!-- Coordinador -->
           <div class="col-12 col-md-3">
             <label class="q-mb-sm block">Coordinador</label>
@@ -444,7 +444,6 @@
               </div>
             </div>
           </div>
-          <!-- {{ v$.$errors }} -->
           <!-- {{ preingreso.listadoProductos }} -->
           <!-- Tabla con popup -->
           <div class="col-12">
@@ -478,8 +477,8 @@
               :altoFijo="false"
               :accion1="btnVerFotografia"
               :accion2="btnEliminarFila"
+              @guardarFila="(fila) => guardarFilaEditada(fila)"
             >
-              <!-- @guardarFila="(fila) => guardarFilaEditada(fila)" -->
               <!-- :accion1Header="btnAddRow" -->
             </essential-popup-editable-table>
           </div>

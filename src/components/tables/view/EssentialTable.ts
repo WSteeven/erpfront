@@ -70,15 +70,15 @@ export default defineComponent({
     },
     primeraColumnaFija: {
       type: Boolean,
-      default:false,
+      default: false,
     },
     tipoSeleccion: {
       type: String as () => TipoSeleccion,
       default: 'none',
     },
-    ajustarCeldas:{
+    ajustarCeldas: {
       type: Boolean,
-      default:false,
+      default: false,
     },
     accion1: {
       type: Object as () => CustomActionTable,
@@ -212,14 +212,16 @@ export default defineComponent({
       emit('editar', data)
 
       if (props.permitirEditarModal) {
+        console.log(fila.value)
         fila.value = data.entidad
+        console.log(fila.value)
         posicionFilaEditada.value = data.posicion
         // console.log(posicionFilaEditada.value)
         refEditarModal.value.abrir()
       }
     }
     const eliminar = (data: object) => {
-    //  console.log('evento de eliminar: ', data)
+      //  console.log('evento de eliminar: ', data)
       emit('eliminar', data)
     }
 
@@ -234,6 +236,7 @@ export default defineComponent({
         const filaVacia: EntidadAuditable = new props.entidad()
         if (data) filaVacia.hydrate(data)
         fila.value = filaVacia
+        console.log(fila.value)
         posicionFilaEditada.value = listado.value.length
         refEditarModal.value.abrir()
       } else {

@@ -31,6 +31,8 @@ export class Ticket extends EntidadAuditable {
   destinatarios: DestinatarioTicket[]
   es_solicitud_ats: boolean
   subtarea_id: number | null
+  fotografia?: string | null
+  para_sso?: boolean
 
   constructor() {
     super()
@@ -63,5 +65,7 @@ export class Ticket extends EntidadAuditable {
     this.destinatarios = []
     this.es_solicitud_ats = false
     this.subtarea_id = null
+    this.fotografia = null
+    this.para_sso = false
   }
 }

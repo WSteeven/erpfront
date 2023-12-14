@@ -15,6 +15,9 @@ export class PreingresoMaterial extends EntidadAuditable {
     coordinador: number | null
     courier: string | null
     fecha:string | null
+    proyecto:string|number | null
+    etapa:string|number | null
+
 
     constructor() {
         super()
@@ -32,6 +35,8 @@ export class PreingresoMaterial extends EntidadAuditable {
         this.autorizacion= null
         this.observacion_aut= null
         this.listadoProductos = []
+        this.proyecto= null
+        this.etapa= null
 
 
     }

@@ -11,6 +11,7 @@ import { useNotificaciones } from './notificaciones';
 import { Empleado } from 'pages/recursosHumanos/empleados/domain/Empleado'
 import { ServiceWorkerClass } from './notificacionesServiceWorker/ServiceWorkerClass'
 import { ItemProforma } from 'pages/comprasProveedores/proforma/domain/ItemProforma'
+import { pipeline } from 'stream'
 
 export function limpiarListado<T>(listado: T[]): void {
   listado.splice(0, listado.length)
@@ -340,7 +341,7 @@ export function pushEventMesaggeServiceWorker(data: ServiceWorkerClass) {
  */
 export async function imprimirArchivo(ruta: string, metodo: Method, responseType: ResponseType, formato: string, titulo: string, data?: any) {
   const statusLoading = new StatusEssentialLoading()
-  const { notificarAdvertencia } = useNotificaciones()
+  const { notificarAdvertencia, notificarError } = useNotificaciones()
   statusLoading.activar()
   const axiosHttpRepository = AxiosHttpRepository.getInstance()
   axios({
@@ -349,25 +350,40 @@ export async function imprimirArchivo(ruta: string, metodo: Method, responseType
     data: data,
     responseType: responseType,
     headers: { 'Authorization': axiosHttpRepository.getOptions().headers.Authorization }
-  }).then((response: HttpResponseGet) => {
-    if (response.data.size < 100 || response.data.type == 'application/json') throw 'No se obtuvieron resultados para generar el reporte'
-    else {
-      const fileURL = URL.createObjectURL(new Blob([response.data], { type: `appication/${formato}` }))
-      const link = document.createElement('a')
-      link.href = fileURL
-      link.target = '_blank'
-      link.setAttribute('download', `${titulo}.${formato}`)
-      document.body.appendChild(link)
-      link.click()
-      link.remove()
+  }).then((response) => {
+    if (response.status === 200) {
+      if (response.data.size < 100 || response.data.type == 'application/json') throw 'No se obtuvieron resultados para generar el reporte'
+      else {
+        const fileURL = URL.createObjectURL(new Blob([response.data], { type: `appication/${formato}` }))
+        const link = document.createElement('a')
+        link.href = fileURL
+        link.target = '_blank'
+        link.setAttribute('download', `${titulo}.${formato}`)
+        document.body.appendChild(link)
+        link.click()
+        link.remove()
+      }
+    // } else if (response.status === 500) {
+    //   console.log(response)
+    }else {
+      notificarError('Se produjo un error inesperado')
     }
   }).catch(async (error) => {
-    for(const err in error.response.data.errors){
-      notificarAdvertencia(error.response.data.errors[err])
-    }
-
+    notificarError(error)
   }).finally(() => statusLoading.desactivar())
 
+}
+
+/**
+ * La función `ordenarLista` ordena una lista determinada según una clave específica.
+ * Esta función sirve para ordenar cualquier lista que se muestra en un select.
+ * En el metodo popup-show debe envíar como argumentos la lista y la clave por la cual quiere ordenar los registros.
+ * @param lista - El parámetro "lista" es una matriz de objetos que desea ordenar.
+ * @param {string} clave - El parámetro "clave" es una cadena que representa la clave o propiedad de
+ * los objetos en la matriz "lista" que se utilizará para ordenar.
+ */
+export function ordenarLista(lista, clave: string) {
+  lista.sort((a, b) => ordernarListaString(a[clave], b[clave]))
 }
 
 /**
@@ -519,10 +535,6 @@ function ajustarBrillo(colorHex, brillo) {
 }
 
 
-/* export function ordenarEmpleados(empleados: Ref<Empleado[]>) {
-  empleados.value.sort((a: Empleado, b: Empleado) => ordernarListaString(a.apellidos!, b.apellidos!))
-} */
-
 /**
  * La función verifica si una matriz tiene elementos repetidos.
  * @param array - El parámetro `array` es una matriz de elementos.
@@ -553,14 +565,6 @@ export function tieneElementosRepetidosObjeto(arrayDeObjetos) {
   return false
 }
 
-/**
- * La función `ordenarEmpleados` toma una lista de empleados y los ordena alfabeticamente según sus apellidos.
- * @param {Empleado[]} listadoEmpleados - Una matriz de objetos de tipo Empleado.
- * @returns una variedad ordenada de empleados.
- */
-export function ordenarEmpleados(listadoEmpleados: Empleado[]) {
-  return listadoEmpleados.sort((a: Empleado, b: Empleado) => ordernarListaString(a.apellidos!, b.apellidos!))
-}
 
 /**
  * La función calcula el monto del descuento en función del subtotal y el porcentaje de descuento

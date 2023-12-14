@@ -1,3 +1,9 @@
+/**
+ * @author Wilson Cordova
+ * @description Este componente trabaja con la tabla archivos y es polimorfica para otros modelos
+ * A nivel de backend hacer los métodos correspondientes en el controlador y la relación en el modelo.
+ * 
+ */
 // Dependencias
 import { configuracionColumnasArchivoSubtarea } from 'pages/gestionTrabajos/subtareas/modules/gestorArchivosTrabajos/domain/configuracionColumnasArchivoSubtarea'
 import { CustomActionTable } from 'components/tables/domain/CustomActionTable'

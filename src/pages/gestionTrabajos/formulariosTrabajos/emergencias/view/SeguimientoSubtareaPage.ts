@@ -22,28 +22,24 @@ import SelectorImagen from 'components/SelectorImagen.vue'
 import VisorImagen from 'components/VisorImagen.vue'
 
 // Logica y controladores
+import { MotivoCanceladoTicketController } from 'pages/gestionTickets/motivosCanceladosTickets/infraestructure/MotivoCanceladoTicketController'
+import { ComportamientoModalesTicketAsignado } from 'pages/gestionTickets/ticketsAsignados/application/ComportamientoModalesTicketAsignado'
 import { ActividadRealizadaSeguimientoSubtareaController } from '../infraestructure/ActividadRealizadaSeguimientoSubtareaController'
 import { MaterialOcupadoFormulario } from 'gestionTrabajos/formulariosTrabajos/emergencias/domain/MaterialOcupadoFormulario'
 import { ContenedorSimpleMixin } from 'shared/contenedor/modules/simple/application/ContenedorSimpleMixin'
 import { Archivo } from 'pages/gestionTrabajos/subtareas/modules/gestorArchivosTrabajos/domain/Archivo'
 import ActividadRealizadaSeguimientoSubtarea from '../domain/ActividadRealizadaSeguimientoSubtarea'
+import { useBotonesTablaTicket } from 'pages/gestionTickets/tickets/application/BotonesTablaTicket'
+import { TicketController } from 'pages/gestionTickets/tickets/infraestructure/TicketController'
 import { configuracionColumnasSumaMaterial } from '../domain/configuracionColumnasSumaMaterial'
+import { configuracionColumnasSolicitudAts } from '../domain/configuracionColumnasSolicitudAts'
 import { ArchivoSeguimientoController } from '../infraestructure/ArchivoSeguimientoController'
-import { EmergenciaController } from '../infraestructure/EmergenciaController'
-import { useFiltrosListadosSelects } from 'shared/filtrosListadosGenerales'
+import { useGestionAtsApplication } from '../application/GestionAtsApplication'
 import { Subtarea } from 'pages/gestionTrabajos/subtareas/domain/Subtarea'
+import { Ticket } from 'pages/gestionTickets/tickets/domain/Ticket'
 import { imprimirArchivo, obtenerFechaActual } from 'shared/utils'
 import { useTrabajoAsignadoStore } from 'stores/trabajoAsignado'
 import { useAuthenticationStore } from 'stores/authentication'
-import { Emergencia } from '../domain/Emergencia'
-import { useGestionAtsApplication } from '../application/GestionAtsApplication'
-import { configuracionColumnasTicket } from 'pages/gestionTickets/tickets/domain/configuracionColumnasTicket'
-import { configuracionColumnasSolicitudAts } from '../domain/configuracionColumnasSolicitudAts'
-import { Ticket } from 'pages/gestionTickets/tickets/domain/Ticket'
-import { useBotonesTablaTicket } from 'pages/gestionTickets/tickets/application/BotonesTablaTicket'
-import { ComportamientoModalesTicketAsignado } from 'pages/gestionTickets/ticketsAsignados/application/ComportamientoModalesTicketAsignado'
-import { TicketController } from 'pages/gestionTickets/tickets/infraestructure/TicketController'
-import { MotivoCanceladoTicketController } from 'pages/gestionTickets/motivosCanceladosTickets/infraestructure/MotivoCanceladoTicketController'
 
 export default defineComponent({
   components: {
@@ -74,13 +70,7 @@ export default defineComponent({
     /********
     * Mixin
     *********/
-    /* const mixin = new ContenedorSimpleMixin(Emergencia, new EmergenciaController())
-    const { entidad: emergencia, accion, listadosAuxiliares } = mixin.useReferencias()
-    const { guardar, editar, reestablecer, setValidador, cargarVista } = mixin.useComportamiento()
-    const { onBeforeGuardar, onBeforeModificar, onGuardado, onModificado } = mixin.useHooks() */
-
     const mixinArchivoSeguimiento = new ContenedorSimpleMixin(Archivo, new ArchivoSeguimientoController())
-    const { listar: listarSubtareas } = props.mixinModal.useComportamiento()
 
     const mixinActividad = new ContenedorSimpleMixin(ActividadRealizadaSeguimientoSubtarea, new ActividadRealizadaSeguimientoSubtareaController())
     const { entidad: actividad, listado: actividadesRealizadas } = mixinActividad.useReferencias()
@@ -99,7 +89,7 @@ export default defineComponent({
     const usarMaterialStock = ref(false)
     const permitirSubir = ![estadosTrabajos.FINALIZADO, estadosTrabajos.PAUSADO].includes(trabajoAsignadoStore.subtarea.estado)
     const columnasMaterial = permitirSubir ? [...configuracionColumnasMaterialOcupadoFormulario, accionesTabla] : configuracionColumnasMaterialOcupadoFormulario
-    const { prompt, notificarAdvertencia } = useNotificaciones()
+    const { prompt } = useNotificaciones()
     const codigoSubtarea = trabajoAsignadoStore.codigoSubtarea
     const rangoFechasHistorial = computed(() => {
       return 'Rango disponible desde ' + trabajoAsignadoStore.subtarea.fecha_hora_ejecucion.substring(0, 10) + ' hasta ' + (trabajoAsignadoStore.subtarea.fecha_hora_finalizacion ?? obtenerFechaActual())
@@ -155,12 +145,8 @@ export default defineComponent({
       }
     })
 
-    const { consultarTicketsATS, ticketsAts, guardarFilaSolicitudAts } = useGestionAtsApplication(cargarVista)
+    const { mostrarSolicitudesAts, consultarTicketsATS, ticketsAts, guardarFilaSolicitudAts } = useGestionAtsApplication(cargarVista)
     const { btnSeguimiento, btnCancelar } = useBotonesTablaTicket(mixin, modales)
-
-    const listados = {
-      ticketsAts: [],
-    }
 
     /************
      * Init
@@ -248,7 +234,7 @@ export default defineComponent({
           mensaje: 'Ingresa la cantidad',
           defecto: historialMaterialTareaUsadoPorFecha.value[posicion].cantidad_utilizada,
           tipo: 'number',
-          validacion: (val) => !!val && val >= 0 && val <= entidad.stock_actual + entidad.cantidad_utilizada, //(accion.value === acciones.nuevo ? val <= entidad.stock_actual : true),
+          validacion: (val) => !!val && val >= 0 && val <= entidad.stock_actual + entidad.cantidad_utilizada,
           accion: async (valor) => {
             entidad.cantidad_anterior = entidad.cantidad_utilizada
             entidad.cantidad_utilizada = valor
@@ -271,7 +257,7 @@ export default defineComponent({
           mensaje: 'Ingresa la cantidad',
           defecto: historialMaterialStockUsadoPorFecha.value[posicion].cantidad_utilizada,
           tipo: 'number',
-          validacion: (val) => !!val && val >= 0 && val <= entidad.stock_actual + entidad.cantidad_utilizada, //(accion.value === acciones.nuevo ? val <= entidad.stock_actual : true),
+          validacion: (val) => !!val && val >= 0 && val <= entidad.stock_actual + entidad.cantidad_utilizada,
           accion: async (valor) => {
             entidad.cantidad_anterior = entidad.cantidad_utilizada
             entidad.cantidad_utilizada = valor
@@ -282,16 +268,6 @@ export default defineComponent({
         prompt(config)
       },
     }
-
-    /*************
-    * Validaciones
-    **************/
-    /* const reglas = {
-      // regional: { required },
-    }
-
-    const v$ = useVuelidate(reglas, emergencia)
-    setValidador(v$.value) */
 
     /************
     * Funciones
@@ -426,32 +402,16 @@ export default defineComponent({
       })
     }
 
-    // Antes de guardar y editar seguimiento
-    function filtrarMaterialesTareaOcupados() {
-      return materialesTarea.value.filter((material: any) => material.hasOwnProperty('cantidad_utilizada')) // && material.cantidad_utilizada > 0)
-    }
-
-    function filtrarMaterialesStockOcupados() {
-      return materialesStock.value.filter((material: any) => material.hasOwnProperty('cantidad_utilizada')) // && material.cantidad_utilizada > 0)
-    }
-
     async function descargarExcel() {
       console.log(subtarea)
       const ruta = apiConfig.URL_BASE + '/' + axios.getEndpoint(endpoints.exportExcelSeguimiento) + '/' + subtarea.id
       imprimirArchivo(ruta, 'GET', 'blob', 'xlsx', 'reporte_hoy_')
     }
 
-    /* async function guardarSeguimiento() {
-      guardar(emergencia, true, { empleado_id: obtenerIdEmpleadoResponsable(), tarea_id: trabajoAsignadoStore.idTareaSeleccionada, grupo: trabajoAsignadoStore.subtarea.grupo }).catch((e) => {
-        notificarAdvertencia('Ingrese al menos una actividad para guardar.')
-      })
-    } */
-
     function subirArchivos() {
       refArchivoSeguimiento.value.subir({ subtarea_id: trabajoAsignadoStore.subtarea.id })
     }
 
-    let cerrarModal = true
     function resetearFiltroHistorialTarea() {
       fecha_historial.value = null
       historialMaterialTareaUsadoPorFecha.value = []
@@ -461,15 +421,6 @@ export default defineComponent({
       fecha_historial_stock.value = null
       historialMaterialStockUsadoPorFecha.value = []
     }
-
-    /* function editarSeguimiento(cerrarVentanaModal = true) {
-      if (permitirSubir) {
-        cerrarModal = cerrarVentanaModal
-        fecha_historial.value = null
-        historialMaterialTareaUsadoPorFecha.value = []
-        editar(emergencia, cerrarModal, { empleado_id: obtenerIdEmpleadoResponsable(), tarea_id: trabajoAsignadoStore.idTareaSeleccionada, grupo: trabajoAsignadoStore.subtarea.grupo })
-      }
-    } */
 
     function guardarFilaActividad(data) {
       actividad.hydrate(data)
@@ -513,41 +464,12 @@ export default defineComponent({
       }
     })
 
-    /********
-    * Hooks
-    *********/
-    /* onBeforeGuardar(() => {
-      emergencia.materiales_tarea_ocupados = filtrarMaterialesTareaOcupados()
-      emergencia.materiales_stock_ocupados = filtrarMaterialesStockOcupados()
-      emergencia.subtarea = trabajoAsignadoStore.idSubtareaSeleccionada
-    })
-
-    onBeforeModificar(() => {
-      emergencia.materiales_tarea_ocupados = filtrarMaterialesTareaOcupados()
-      emergencia.materiales_stock_ocupados = filtrarMaterialesStockOcupados()
-      emergencia.subtarea = trabajoAsignadoStore.idSubtareaSeleccionada
-    })
-
-    onGuardado((id: number) => {
-      listarSubtareas({ estado: estadosTrabajos.EJECUTANDO })
-      emit('cerrar-modal', false)
-    })
-
-    onModificado((id: number) => {
-      if (cerrarModal) emit('cerrar-modal', false)
-    }) */
-
     return {
-      // v$,
       refVisorImagen,
       refTrabajos,
       refObservaciones,
       refArchivoSeguimiento,
       mixinArchivoSeguimiento,
-      /* emergencia,
-      accion,
-      guardarSeguimiento,
-      editarSeguimiento, */
       utilizarMateriales,
       existeMaterialesDevolucion,
       existeObservaciones,
@@ -568,10 +490,6 @@ export default defineComponent({
       botonEditarCantidadStockHistorial,
       regiones,
       atenciones,
-      /* guardar,
-      editar,
-      reestablecer,
-      listadosAuxiliares,*/
       emit,
       codigoSubtarea,
       esLider,
@@ -598,7 +516,6 @@ export default defineComponent({
       fechasHistorialMaterialesStockUsados,
       resetearFiltroHistorialTarea,
       resetearFiltroHistorialStock,
-      // filtrarClientes,
       clienteMaterialStock,
       clienteMaterialTarea,
       obtenerMaterialesStock,
@@ -614,6 +531,7 @@ export default defineComponent({
       modales,
       mostrarMaterialConStock,
       mostrarMaterialStockConStock,
+      mostrarSolicitudesAts,
     }
   }
 })
