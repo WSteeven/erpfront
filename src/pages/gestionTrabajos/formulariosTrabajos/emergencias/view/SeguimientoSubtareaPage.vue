@@ -91,11 +91,10 @@
             <q-tab-panels v-model="tab" animated class="bg-body">
               <q-tab-panel name="usar_material_tarea">
                 <div class="row q-col-gutter-sm q-pa-sm q-mb-md">
-                  <div class="col-12">
+                  <div class="col-12 col-md-6">
                     <label class="q-mb-sm block"
                       >Seleccione un cliente para filtrar el material</label
                     >
-                    <!-- @filter="filtrarClientesMaterialesTarea" -->
                     <q-select
                       v-model="clienteMaterialTarea"
                       :options="clientesMaterialesTarea"
@@ -115,6 +114,18 @@
                       map-options
                     >
                     </q-select>
+                  </div>
+
+                  <div class="col-12 col-md-6">
+                    <br />
+                    <q-toggle
+                      v-model="mostrarMaterialConStock"
+                      label="Mostrar sólo material con stock mayor a cero"
+                      checked-icon="bi-bag-check"
+                      icon="bi-bag"
+                      color="positive"
+                      dense
+                    ></q-toggle>
                   </div>
                 </div>
                 <essential-table
@@ -217,7 +228,7 @@
             <q-tab-panels v-model="tabMaterialStock" animated class="bg-body">
               <q-tab-panel name="usar_material_stock">
                 <div class="row q-col-gutter-sm q-pa-sm q-mb-md">
-                  <div class="col-12">
+                  <div class="col-12 col-md-6">
                     <label class="q-mb-sm block"
                       >Seleccione un cliente para filtrar el material</label
                     >
@@ -241,6 +252,18 @@
                       map-options
                     >
                     </q-select>
+                  </div>
+
+                  <div class="col-12 col-md-6">
+                    <br />
+                    <q-toggle
+                      v-model="mostrarMaterialStockConStock"
+                      label="Mostrar sólo material con stock mayor a cero"
+                      checked-icon="bi-bag-check"
+                      icon="bi-bag"
+                      color="positive"
+                      dense
+                    ></q-toggle>
                   </div>
                 </div>
 
