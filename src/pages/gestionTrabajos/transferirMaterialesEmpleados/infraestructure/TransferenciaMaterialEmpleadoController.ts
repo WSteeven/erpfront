@@ -4,6 +4,6 @@ import { endpoints } from 'config/api'
 
 export class TransferenciaMaterialEmpleadoController extends TransaccionSimpleController<TransferenciaMaterialEmpleado>{
   constructor() {
-    super(endpoints.devoluciones)
+    super(endpoints.transferencia_materiales_empleados)
   }
 }

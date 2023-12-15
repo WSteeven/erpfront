@@ -77,6 +77,7 @@
               transition-show="scale"
               transition-hide="scale"
               :disable="puedeSeleccionarPropietarioMaterial"
+              @popup-show="ordenarOpcionesEmpleados()"
               options-dense
               dense
               outlined
@@ -92,6 +93,95 @@
                   </q-item-section>
                 </q-item>
               </template>
+            </q-select>
+          </div>
+          <!-- {{ tareas }} -->
+          <div class="col-12 col-md-3">
+            <label class="q-mb-sm block">Tarea origen</label>
+            <!-- @filter="filtrarTareas" -->
+            <q-select
+              v-model="transferencia.tarea"
+              :options="listadosAuxiliares.tareas"
+              transition-show="scale"
+              transition-hide="scale"
+              options-dense
+              hint="Tarea #"
+              dense
+              outlined
+              :disable="puedeSeleccionarPropietarioMaterial"
+              :option-label="(item) => item.codigo_tarea + ' - ' + item.titulo"
+              :option-value="(item) => item.id"
+              use-input
+              input-debounce="0"
+              emit-value
+              map-options
+              ><template v-slot:option="scope">
+                <q-item v-bind="scope.itemProps">
+                  <q-item-section>
+                    <q-item-label>{{ scope.opt.codigo_tarea }}</q-item-label>
+                    <q-item-label caption>{{ scope.opt.titulo }}</q-item-label>
+                  </q-item-section>
+                </q-item>
+              </template>
+              <template v-slot:no-option>
+                <q-item>
+                  <q-item-section class="text-grey">
+                    No hay resultados
+                  </q-item-section>
+                </q-item>
+              </template>
+            </q-select>
+          </div>
+
+          <div v-if="transferencia.etapa_origen" class="col-12 col-md-3">
+            <label class="q-mb-sm block">
+              <q-icon
+                name="bi-check-circle-fill"
+                color="primary"
+                class="q-mr-xs"
+              ></q-icon>
+              Etapa origen</label
+            >
+            <q-select
+              v-model="transferencia.etapa_origen"
+              :options="listadosAuxiliares.etapasOrigen"
+              transition-show="scale"
+              transition-hide="scale"
+              options-dense
+              dense
+              outlined
+              :option-label="(item) => item.nombre"
+              :option-value="(item) => item.id"
+              emit-value
+              map-options
+              disable
+            >
+            </q-select>
+          </div>
+
+          <div v-if="transferencia.proyecto_origen" class="col-12 col-md-3">
+            <label class="q-mb-sm block"
+              ><q-icon
+                name="bi-check-circle-fill"
+                color="primary"
+                class="q-mr-xs"
+              ></q-icon
+              >Proyecto origen</label
+            >
+            <q-select
+              v-model="transferencia.proyecto_origen"
+              :options="listadosAuxiliares.proyectosOrigen"
+              transition-show="scale"
+              transition-hide="scale"
+              options-dense
+              dense
+              outlined
+              :option-label="(item) => item.nombre"
+              :option-value="(item) => item.id"
+              emit-value
+              map-options
+              disable
+            >
             </q-select>
           </div>
 
@@ -138,22 +228,23 @@
             </q-select>
           </div>
           <!-- {{ tareas }} -->
-          <!-- Tarea destino -->
+          <!-- Tarea destino : tareas del empleado a transferir-->
           <div class="col-12 col-md-3">
             <label class="q-mb-sm block">Tarea destino</label>
             <q-select
-              v-model="transferencia.tarea"
-              :options="tareas"
+              v-model="transferencia.tarea_destino"
+              :options="tareasDestino"
               transition-show="scale"
               transition-hide="scale"
               options-dense
               hint="Tarea #"
-              @filter="filtrarTareas"
+              @filter="filtrarTareasDestino"
               dense
               outlined
               :disable="disabled"
               :option-label="(item) => item.codigo_tarea + ' - ' + item.titulo"
               :option-value="(item) => item.id"
+              @update:model-value="consultarEtapasProyecto()"
               use-input
               input-debounce="0"
               emit-value
@@ -173,6 +264,58 @@
                   </q-item-section>
                 </q-item>
               </template>
+            </q-select>
+          </div>
+
+          <div v-if="transferencia.etapa_destino" class="col-12 col-md-3">
+            <label class="q-mb-sm block">
+              <q-icon
+                name="bi-check-circle-fill"
+                color="positive"
+                class="q-mr-xs"
+              ></q-icon>
+              Etapa destino</label
+            >
+            <q-select
+              v-model="transferencia.etapa_destino"
+              :options="listadosAuxiliares.etapas"
+              transition-show="scale"
+              transition-hide="scale"
+              options-dense
+              dense
+              outlined
+              :option-label="(item) => item.nombre"
+              :option-value="(item) => item.id"
+              emit-value
+              map-options
+              disable
+            >
+            </q-select>
+          </div>
+
+          <div v-if="transferencia.proyecto_destino" class="col-12 col-md-3">
+            <label class="q-mb-sm block"
+              ><q-icon
+                name="bi-check-circle-fill"
+                color="positive"
+                class="q-mr-xs"
+              ></q-icon
+              >Proyecto destino</label
+            >
+            <q-select
+              v-model="transferencia.proyecto_destino"
+              :options="listadosAuxiliares.proyectos"
+              transition-show="scale"
+              transition-hide="scale"
+              options-dense
+              dense
+              outlined
+              :option-label="(item) => item.nombre"
+              :option-value="(item) => item.id"
+              emit-value
+              map-options
+              disable
+            >
             </q-select>
           </div>
 
