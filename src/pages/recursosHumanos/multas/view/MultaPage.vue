@@ -26,6 +26,27 @@
               </template>
             </q-input>
           </div>
+          <!-- abreviatura -->
+          <div class="col-12 col-md-6">
+            <label class="q-mb-sm block">Abreviatura de la Multa</label>
+            <q-input
+              v-model="multa.abreviatura"
+              @update:model-value="
+                (v) => (multa.abreviatura = removeAccents(v))
+              "
+              placeholder="Obligatorio"
+              :disable="disabled"
+              :error="!!v$.abreviatura.$errors.length"
+              outlined
+              dense
+            >
+              <template v-slot:error>
+                <div v-for="error of v$.abreviatura.$errors" :key="error.$uid">
+                  <div class="error-msg">{{ error.$message }}</div>
+                </div>
+              </template>
+            </q-input>
+          </div>
         </div>
       </q-form>
     </template>

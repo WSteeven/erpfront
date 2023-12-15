@@ -39,6 +39,11 @@ import { ArchivoRolPagoController } from '../infraestructure/ArchivoRolPagoContr
 import { Archivo } from 'pages/gestionTrabajos/subtareas/modules/gestorArchivosTrabajos/domain/Archivo'
 import { useRecursosHumanosStore } from 'stores/recursosHumanos'
 import { configuracionColumnasEgresoRolPago } from '../domain/configuracionColumnasEgresoRolPago'
+import { EgresoRolPago } from '../domain/EgresoRolPago'
+import { EgresoRolPagoController } from '../infraestructure/EgresoRolPagoController'
+import { IngresoRolPago } from '../domain/IngresoRolPago'
+import { IngresoRolPagoController } from '../infraestructure/IngresoRolPagoController'
+import { configuracionColumnasIngresoRolPago } from '../domain/configuracionColumnasIngresoRolPago'
 
 export default defineComponent({
   components: {
@@ -59,6 +64,19 @@ export default defineComponent({
       new ArchivoRolPagoController()
     )
 
+    const mixinEgresoRolPago = new ContenedorSimpleMixin(
+      EgresoRolPago,
+      new EgresoRolPagoController()
+    )
+    const mixinIngresoRolPago = new ContenedorSimpleMixin(
+      IngresoRolPago,
+      new IngresoRolPagoController()
+    )
+    const { eliminar, guardar: guardarEgreso } =
+      mixinEgresoRolPago.useComportamiento()
+    const { eliminar: eliminarIngreso, guardar: guardarIngreso } =
+      mixinIngresoRolPago.useComportamiento()
+
     /*********
      * Stores
      *********/
@@ -75,6 +93,10 @@ export default defineComponent({
       accion,
       disabled,
     } = mixin.useReferencias()
+
+    const { entidad: egresoRolPago } = mixinEgresoRolPago.useReferencias()
+
+    const { entidad: ingresoRolPago } = mixinIngresoRolPago.useReferencias()
     const {
       obtenerListados,
       cargarVista,
@@ -96,16 +118,22 @@ export default defineComponent({
           controller: new DescuentosGenralesController(),
           params: {},
         },
+        multas: {
+          controller: new MultaController(),
+          params: {},
+        },
+        concepto_ingresos: {
+          controller: new ConceptoIngresoController(),
+          params: {},
+        },
       })
       empleados.value = listadosAuxiliares.empleados
-      concepto_ingresos.value = (
-        await new ConceptoIngresoController().listar()
-      ).result
+      concepto_ingresos.value = listadosAuxiliares.concepto_ingresos
       descuentos_generales.value = listadosAuxiliares.descuentos_generales
       descuentos_ley.value = (
         await new DescuentosLeyController().listar()
       ).result
-      multas.value = (await new MultaController().listar()).result
+      multas.value = listadosAuxiliares.multas
       horas_extras_tipos.value =
         LocalStorage.getItem('horas_extras_tipos') == null
           ? []
@@ -556,6 +584,12 @@ export default defineComponent({
       }
       return egreso
     }
+    function obtener_ingreso(id: number) {
+      const ingreso = listadosAuxiliares.concepto_ingresos.filter(
+        (v) => v.id == id
+      )[0]
+      return ingreso
+    }
     function verificar_descuento_ley() {
       rolpago.egreso = null
       rolpago.descuento_general = null
@@ -649,10 +683,16 @@ export default defineComponent({
       if (indice_ingreso.value >= 0) {
         rolpago.ingresos[indice_ingreso.value].monto = rolpago.ingreso
       } else {
+        ingresoRolPago.concepto = rolpago.concepto_ingreso
+        ingresoRolPago.id_empleado = rolpago.empleado
+        ingresoRolPago.monto = rolpago.ingreso
+        ingresoRolPago.id_rol_pago = rolpago.id
+        guardarIngreso(ingresoRolPago)
+        const id_ingreso = rolpago.concepto_ingreso != null ? rolpago.concepto_ingreso: 0
         rolpago.ingresos.push({
           concepto: rolpago.concepto_ingreso,
+          concepto_info: obtener_ingreso(id_ingreso).nombre,
           id_empleado: rolpago.empleado,
-          mes: rolpago.mes,
           monto: rolpago.ingreso,
         })
       }
@@ -697,10 +737,20 @@ export default defineComponent({
       if (indice_egreso.value >= 0) {
         rolpago.egresos[indice_egreso.value].monto = rolpago.egreso
       } else {
+        egresoRolPago.descuento = obtener_egreso(
+          tipo_descuento.value,
+          id_descuento
+        ).nombre
+        egresoRolPago.monto = rolpago.egreso
+        egresoRolPago.id_descuento = id_descuento
+        egresoRolPago.tipo = tipo_descuento.value
+        egresoRolPago.empleado = rolpago.empleado
+        egresoRolPago.id_rol_pago = rolpago.id
+        guardarEgreso(egresoRolPago)
         rolpago.egresos.push({
           tipo: tipo_descuento.value,
           id_descuento: id_descuento,
-          descuento:obtener_egreso(tipo_descuento.value, id_descuento).nombre,
+          descuento: obtener_egreso(tipo_descuento.value, id_descuento).nombre,
           id_empleado: rolpago.empleado,
           mes: rolpago.mes,
           monto: rolpago.egreso,
@@ -718,6 +768,72 @@ export default defineComponent({
         generar_reporte(entidad)
       },
     }
+
+    const btnEditarEgreso: CustomActionTable = {
+      titulo: 'Editar',
+      icono: 'bi-pencil',
+      color: 'warning',
+      visible: () => true,
+      accion: ({ entidad }) => {
+        switch (entidad.tipo) {
+          case 'DESCUENTO_GENERAL':
+            rolpago.descuento_general = entidad.id_descuento
+            rolpago.multa = null
+            break
+          case 'MULTA':
+            rolpago.multa = entidad.id_descuento
+            rolpago.descuento_general = null
+            break
+          default:
+            break
+        }
+        es_calculable.value = false
+        buscar_egreso(
+          entidad.tipo,
+          rolpago.descuento_general != null ? rolpago.descuento_general : 0
+        )
+      },
+    }
+    const btnEditarIngreso: CustomActionTable = {
+      titulo: 'Editar',
+      icono: 'bi-pencil',
+      color: 'warning',
+      visible: () => true,
+      accion: ({ entidad }) => {
+        rolpago.concepto_ingreso = entidad.concepto
+        verificar_concepto_ingreso()
+      },
+    }
+    const btnEliminarEgreso: CustomActionTable = {
+      titulo: 'Eliminar',
+      icono: 'bi-trash',
+      color: 'negative',
+      visible: () => true,
+      accion: ({ entidad, posicion }) => {
+        if (entidad.id == undefined) {
+          rolpago.egresos.splice(posicion, 1)
+        } else {
+          eliminar(entidad)
+          rolpago.egresos.splice(posicion, 1)
+        }
+      },
+    }
+
+    const btnEliminarIngreso: CustomActionTable = {
+      titulo: 'Eliminar',
+      icono: 'bi-trash',
+      color: 'negative',
+      visible: () => true,
+      accion: ({ entidad, posicion }) => {
+        if (entidad.id == undefined) {
+          rolpago.ingresos.splice(posicion, 1)
+        } else {
+          eliminar(entidad)
+          rolpago.ingresos.splice(posicion, 1)
+        }
+      },
+    }
+
     async function generar_reporte(valor: RolPago): Promise<void> {
       const axios = AxiosHttpRepository.getInstance()
       const filename = 'rol_pago'
@@ -781,6 +897,7 @@ export default defineComponent({
       empleados,
       imprimir,
       mixinRolPago,
+      mixinEgresoRolPago,
       refArchivoRolPago,
       guardarDatos,
       reestablecerDatos,
@@ -803,6 +920,10 @@ export default defineComponent({
       verificar_descuento_general,
       verificar_descuento_ley,
       verificar_multa,
+      btnEditarEgreso,
+      btnEliminarEgreso,
+      btnEditarIngreso,
+      btnEliminarIngreso,
       es_seleccionable_descuento_general,
       es_seleccionable_descuento_ley,
       es_seleccionable_multa,
@@ -810,6 +931,7 @@ export default defineComponent({
       disabled,
       configuracionColumnasRolPagoTabla,
       configuracionColumnasEgresoRolPago,
+      configuracionColumnasIngresoRolPago,
       configuracionColumnas: configuracionColumnasRolPago,
       endpoint: endpoints.archivo_rol_pago,
       accion,

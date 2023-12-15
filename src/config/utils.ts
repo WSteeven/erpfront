@@ -128,6 +128,12 @@ export const tabAcreditacion: TabOption[] = [
   { label: 'Aprobada', value: '1' },
   { label: 'Anulado', value: '2' },
 ]
+export const tabPrestamoEmpresarial: TabOption[] = [
+  { label: 'ACTIVO', value: 'ACTIVO' },
+  { label: 'FINALIZADO', value: 'FINALIZADO' },
+  { label: 'INACTIVO', value: 'INACTIVO' },
+
+]
 export const tabGestionarEgresos: TabOption[] = [
   { label: 'Aprobada', value: 'ACEPTADA' },
   // { label: 'Rechazada', value: 'RECHAZADA' },
