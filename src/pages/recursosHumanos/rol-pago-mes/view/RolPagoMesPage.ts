@@ -214,8 +214,12 @@ export default defineComponent({
       listar({ finalizado: tabSeleccionado }, false)
       tabActualRolPago = tabSeleccionado
     }
-    function filtrarRolPagoEmpleado(estado) {
-      listarRolEmpleado({ rol_pago_id: rolpago.id, estado: estado })
+    function filtrarRolPagoEmpleado(estado, mensaje = null) {
+      listarRolEmpleado({ rol_pago_id: rolpago.id, estado: estado }).then(() => {
+        if(mensaje != null) {
+          notificarCorrecto(mensaje)
+        }
+      });
       tabActual.value = estado
     }
 
@@ -407,12 +411,13 @@ export default defineComponent({
       },
     }
     async function actualizarRolPago(idRolPago: number) {
+
       const axios = AxiosHttpRepository.getInstance()
       const ruta = axios.getEndpoint(endpoints.actualizar_rol_pago) + idRolPago
       const response: AxiosResponse = await axios.get(ruta)
-      filtrarRolPagoEmpleado('')
+      filtrarRolPagoEmpleado('',response.data.mensaje)
 
-      return notificarCorrecto(response.data.mensaje)
+
     }
     return {
       removeAccents,

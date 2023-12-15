@@ -61,11 +61,12 @@
                     </q-date>
                   </q-popup-proxy>
                 </q-icon> </template
-            ><template v-slot:error>
+              ><template v-slot:error>
                 <div v-for="error of v$.fecha.$errors" :key="error.$uid">
                   <div class="error-msg">{{ error.$message }}</div>
                 </div>
-              </template></q-input>
+              </template></q-input
+            >
           </div>
           <!-- Cuadrilla -->
           <div class="col-12 col-md-3">
@@ -148,7 +149,10 @@
             </q-input>
           </div>
           <!-- Codigo de proyecto -->
-          <div class="col-12 col-md-3" v-if="accion==acciones.nuevo||preingreso.proyecto">
+          <div
+            class="col-12 col-md-3"
+            v-if="accion == acciones.nuevo || preingreso.proyecto"
+          >
             <label class="q-mb-sm block">Proyecto</label>
             <q-select
               v-model="preingreso.proyecto"
@@ -191,7 +195,12 @@
             </q-select>
           </div>
           <!-- Etapa del proyecto -->
-          <div v-if="etapas?.length ||preingreso.etapa||accion==acciones.nuevo" class="col-12 col-md-3">
+          <div
+            v-if="
+              etapas?.length || preingreso.etapa || accion == acciones.nuevo
+            "
+            class="col-12 col-md-3"
+          >
             <label class="q-mb-sm block">Etapa</label>
             <q-select
               v-model="preingreso.etapa"
@@ -278,13 +287,13 @@
                     <q-item-label>{{ scope.opt.codigo_tarea }}</q-item-label>
                     <q-item-label caption>{{ scope.opt.titulo }}</q-item-label>
                   </q-item-section>
-                </q-item> </template
-              >
+                </q-item>
+              </template>
               <template v-slot:error>
                 <div v-for="error of v$.tarea.$errors" :key="error.$uid">
                   <div class="error-msg">{{ error.$message }}</div>
-                </div>
-              </template><template v-slot:no-option>
+                </div> </template
+              ><template v-slot:no-option>
                 <q-item>
                   <q-item-section class="text-grey">
                     No hay resultados
@@ -427,7 +436,7 @@
                   @keydown.enter="
                     listarProductos({
                       search: criterioBusquedaProducto,
-                      activo: 1
+                      activo: 1,
                     })
                   "
                   @blur="

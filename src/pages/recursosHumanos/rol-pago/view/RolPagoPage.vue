@@ -335,7 +335,20 @@
           </q-input>
         </div>
       </div>
-
+      <div v-if="rolpago.ingresos.length>0">
+        <essential-table
+      titulo="Ingresos"
+      :configuracionColumnas="accion==acciones.editar?[...configuracionColumnasIngresoRolPago, accionesTabla]:[...configuracionColumnasIngresoRolPago]"
+      :datos="rolpago.ingresos"
+      :permitirConsultar="false"
+      :permitirEditar="false"
+      :permitirEliminar="false"
+      :altoFijo="false"
+      :accion1="btnEditarIngreso"
+      :accion2="btnEliminarIngreso"
+      >
+    </essential-table>
+      </div>
     </q-expansion-item>
     <q-expansion-item
       v-if="!rolpago.es_quincena"
@@ -453,8 +466,11 @@
       :configuracionColumnas="accion==acciones.editar?[...configuracionColumnasEgresoRolPago, accionesTabla]:[...configuracionColumnasEgresoRolPago]"
       :datos="rolpago.egresos"
       :permitirConsultar="false"
-      :permitirEditar="true"
-      :permitirEliminar="true"
+      :permitirEditar="false"
+      :permitirEliminar="false"
+      :altoFijo="false"
+      :accion1="btnEditarEgreso"
+      :accion2="btnEliminarEgreso"
       >
     </essential-table>
       </div>

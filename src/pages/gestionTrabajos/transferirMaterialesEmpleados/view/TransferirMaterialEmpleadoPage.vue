@@ -1,0 +1,512 @@
+<template>
+  <tab-layout-filter-tabs2
+    :mixin="mixin"
+    :configuracionColumnas="configuracionColumnas"
+    :tab-options="tabOptionsTransferenciaMaterialEmpleado"
+    tabDefecto="PENDIENTE"
+    :filtrar="filtrarDevoluciones"
+    :ajustarCeldas="true"
+    :permitirEditar="puedeEditar"
+    :accion1="botonDespachar"
+    :accion2="botonAnular"
+    :accion3="botonImprimir"
+  >
+    <template #formulario>
+      <q-form @submit.prevent>
+        <div class="row q-col-gutter-sm q-py-md">
+          <!-- N° transferencia -->
+          <div v-if="transferencia.id" class="col-12 col-md-3">
+            <label class="q-mb-sm block">Transferencia N°</label>
+            <q-input
+              v-model="transferencia.id"
+              placeholder="Obligatorio"
+              :disable="disabled"
+              :readonly="disabled"
+              outlined
+              dense
+            >
+            </q-input>
+          </div>
+
+          <!-- Fecha de solicitud de transferencia -->
+          <div v-if="transferencia.created_at" class="col-12 col-md-3">
+            <label class="q-mb-sm block"
+              >Fecha solicitud de transferencia</label
+            >
+            <q-input
+              v-model="transferencia.created_at"
+              disable
+              outlined
+              dense
+            />
+          </div>
+
+          <!-- Solicitante -->
+          <div class="col-12 col-md-3">
+            <label class="q-mb-sm block">Solicitante de transferencia</label>
+            <q-select
+              v-model="transferencia.solicitante"
+              :options="opciones_empleados"
+              transition-show="scale"
+              transition-hide="scale"
+              options-dense
+              dense
+              outlined
+              disable
+              :option-label="(v) => v.nombres + ' ' + v.apellidos"
+              :option-value="(v) => v.id"
+              emit-value
+              map-options
+            >
+              <template v-slot:no-option>
+                <q-item>
+                  <q-item-section class="text-grey">
+                    No hay resultados
+                  </q-item-section>
+                </q-item>
+              </template>
+            </q-select>
+          </div>
+
+          <!-- Propietario del material -->
+          <div class="col-12 col-md-3">
+            <label class="q-mb-sm block">Propietario del material</label>
+            <q-select
+              v-model="transferencia.empleado_origen"
+              :options="opciones_empleados"
+              transition-show="scale"
+              transition-hide="scale"
+              :disable="puedeSeleccionarPropietarioMaterial"
+              @popup-show="ordenarOpcionesEmpleados()"
+              options-dense
+              dense
+              outlined
+              :option-label="(v) => v.nombres + ' ' + v.apellidos"
+              :option-value="(v) => v.id"
+              emit-value
+              map-options
+            >
+              <template v-slot:no-option>
+                <q-item>
+                  <q-item-section class="text-grey">
+                    No hay resultados
+                  </q-item-section>
+                </q-item>
+              </template>
+            </q-select>
+          </div>
+          <!-- {{ tareas }} -->
+          <div class="col-12 col-md-3">
+            <label class="q-mb-sm block">Tarea origen</label>
+            <!-- @filter="filtrarTareas" -->
+            <q-select
+              v-model="transferencia.tarea"
+              :options="listadosAuxiliares.tareas"
+              transition-show="scale"
+              transition-hide="scale"
+              options-dense
+              hint="Tarea #"
+              dense
+              outlined
+              :disable="puedeSeleccionarPropietarioMaterial"
+              :option-label="(item) => item.codigo_tarea + ' - ' + item.titulo"
+              :option-value="(item) => item.id"
+              use-input
+              input-debounce="0"
+              emit-value
+              map-options
+              ><template v-slot:option="scope">
+                <q-item v-bind="scope.itemProps">
+                  <q-item-section>
+                    <q-item-label>{{ scope.opt.codigo_tarea }}</q-item-label>
+                    <q-item-label caption>{{ scope.opt.titulo }}</q-item-label>
+                  </q-item-section>
+                </q-item>
+              </template>
+              <template v-slot:no-option>
+                <q-item>
+                  <q-item-section class="text-grey">
+                    No hay resultados
+                  </q-item-section>
+                </q-item>
+              </template>
+            </q-select>
+          </div>
+
+          <div v-if="transferencia.etapa_origen" class="col-12 col-md-3">
+            <label class="q-mb-sm block">
+              <q-icon
+                name="bi-check-circle-fill"
+                color="primary"
+                class="q-mr-xs"
+              ></q-icon>
+              Etapa origen</label
+            >
+            <q-select
+              v-model="transferencia.etapa_origen"
+              :options="listadosAuxiliares.etapasOrigen"
+              transition-show="scale"
+              transition-hide="scale"
+              options-dense
+              dense
+              outlined
+              :option-label="(item) => item.nombre"
+              :option-value="(item) => item.id"
+              emit-value
+              map-options
+              disable
+            >
+            </q-select>
+          </div>
+
+          <div v-if="transferencia.proyecto_origen" class="col-12 col-md-3">
+            <label class="q-mb-sm block"
+              ><q-icon
+                name="bi-check-circle-fill"
+                color="primary"
+                class="q-mr-xs"
+              ></q-icon
+              >Proyecto origen</label
+            >
+            <q-select
+              v-model="transferencia.proyecto_origen"
+              :options="listadosAuxiliares.proyectosOrigen"
+              transition-show="scale"
+              transition-hide="scale"
+              options-dense
+              dense
+              outlined
+              :option-label="(item) => item.nombre"
+              :option-value="(item) => item.id"
+              emit-value
+              map-options
+              disable
+            >
+            </q-select>
+          </div>
+
+          <div class="col-12 col-md-3">
+            <label class="q-mb-sm block"
+              >Seleccione el empleado a transferir</label
+            >
+            <q-select
+              v-model="transferencia.empleado_destino"
+              :options="empleados"
+              transition-show="scale"
+              transition-hide="scale"
+              options-dense
+              dense
+              outlined
+              use-input
+              input-debounce="0"
+              :error="!!v$.empleado_destino.$errors.length"
+              @blur="v$.empleado_destino.$touch"
+              @filter="filtrarEmpleados"
+              @popup-show="ordenarEmpleados(empleados)"
+              :option-label="(v) => v.apellidos + ' ' + v.nombres"
+              @update:model-value="consultarTareasEmpleado()"
+              :option-value="(v) => v.id"
+              emit-value
+              map-options
+            >
+              <template v-slot:no-option>
+                <q-item>
+                  <q-item-section class="text-grey">
+                    No hay resultados
+                  </q-item-section>
+                </q-item>
+              </template>
+
+              <template v-slot:error>
+                <div
+                  v-for="error of v$.empleado_destino.$errors"
+                  :key="error.$uid"
+                >
+                  <div class="error-msg">{{ error.$message }}</div>
+                </div>
+              </template>
+            </q-select>
+          </div>
+          <!-- {{ tareas }} -->
+          <!-- Tarea destino : tareas del empleado a transferir-->
+          <div class="col-12 col-md-3">
+            <label class="q-mb-sm block">Tarea destino</label>
+            <q-select
+              v-model="transferencia.tarea_destino"
+              :options="tareasDestino"
+              transition-show="scale"
+              transition-hide="scale"
+              options-dense
+              hint="Tarea #"
+              @filter="filtrarTareasDestino"
+              dense
+              outlined
+              :disable="disabled"
+              :option-label="(item) => item.codigo_tarea + ' - ' + item.titulo"
+              :option-value="(item) => item.id"
+              @update:model-value="consultarEtapasProyecto()"
+              use-input
+              input-debounce="0"
+              emit-value
+              map-options
+              ><template v-slot:option="scope">
+                <q-item v-bind="scope.itemProps">
+                  <q-item-section>
+                    <q-item-label>{{ scope.opt.codigo_tarea }}</q-item-label>
+                    <q-item-label caption>{{ scope.opt.titulo }}</q-item-label>
+                  </q-item-section>
+                </q-item>
+              </template>
+              <template v-slot:no-option>
+                <q-item>
+                  <q-item-section class="text-grey">
+                    No hay resultados
+                  </q-item-section>
+                </q-item>
+              </template>
+            </q-select>
+          </div>
+
+          <div v-if="transferencia.etapa_destino" class="col-12 col-md-3">
+            <label class="q-mb-sm block">
+              <q-icon
+                name="bi-check-circle-fill"
+                color="positive"
+                class="q-mr-xs"
+              ></q-icon>
+              Etapa destino</label
+            >
+            <q-select
+              v-model="transferencia.etapa_destino"
+              :options="listadosAuxiliares.etapas"
+              transition-show="scale"
+              transition-hide="scale"
+              options-dense
+              dense
+              outlined
+              :option-label="(item) => item.nombre"
+              :option-value="(item) => item.id"
+              emit-value
+              map-options
+              disable
+            >
+            </q-select>
+          </div>
+
+          <div v-if="transferencia.proyecto_destino" class="col-12 col-md-3">
+            <label class="q-mb-sm block"
+              ><q-icon
+                name="bi-check-circle-fill"
+                color="positive"
+                class="q-mr-xs"
+              ></q-icon
+              >Proyecto destino</label
+            >
+            <q-select
+              v-model="transferencia.proyecto_destino"
+              :options="listadosAuxiliares.proyectos"
+              transition-show="scale"
+              transition-hide="scale"
+              options-dense
+              dense
+              outlined
+              :option-label="(item) => item.nombre"
+              :option-value="(item) => item.id"
+              emit-value
+              map-options
+              disable
+            >
+            </q-select>
+          </div>
+
+          <!-- Justificacion -->
+          <div class="col-12 col-md-6">
+            <label class="q-mb-sm block">Justificación</label>
+            <q-input
+              type="textarea"
+              autogrow
+              v-model="transferencia.justificacion"
+              placeholder="Obligatorio"
+              :disable="disabled"
+              :readonly="disabled"
+              :error="!!v$.justificacion.$errors.length"
+              outlined
+              dense
+            >
+              <template v-slot:error>
+                <div
+                  v-for="error of v$.justificacion.$errors"
+                  :key="error.$uid"
+                >
+                  <div class="error-msg">{{ error.$message }}</div>
+                </div>
+              </template>
+            </q-input>
+          </div>
+
+          <!-- Persona que autoriza -->
+          <div v-if="transferencia.per_autoriza" class="col-12 col-md-3">
+            <label class="q-mb-sm block">Persona que autoriza</label>
+            <q-select
+              v-model="transferencia.per_autoriza"
+              :options="opciones_empleados"
+              transition-show="jump-up"
+              transition-hide="jump-up"
+              options-dense
+              dense
+              outlined
+              :disable="disabled"
+              :readonly="disabled"
+              :option-label="(v) => v.nombres + ' ' + v.apellidos"
+              :option-value="(v) => v.id"
+              emit-value
+              map-options
+            />
+          </div>
+
+          <div
+            v-if="transferencia.autorizacion"
+            class="col-12 col-md-3 q-mb-md"
+          >
+            <label class="q-mb-sm block">Autorizacion</label>
+            <q-select
+              v-model="transferencia.autorizacion"
+              :options="opciones_autorizaciones"
+              transition-show="jum-up"
+              transition-hide="jump-down"
+              options-dense
+              dense
+              outlined
+              :disable="disabled"
+              :readonly="
+                disabled ||
+                !(
+                  esCoordinador ||
+                  esActivosFijos ||
+                  store.user.id == transferencia.per_autoriza
+                )
+              "
+              :option-value="(v) => v.id"
+              :option-label="(v) => v.nombre"
+              emit-value
+              map-options
+            >
+              <template v-slot:no-option>
+                <q-item>
+                  <q-item-section class="text-grey">
+                    No hay resultados
+                  </q-item-section>
+                </q-item>
+              </template>
+            </q-select>
+          </div>
+
+          <!-- Observacion de autorizacion -->
+          <div
+            v-if="store.user.id === transferencia.per_autoriza"
+            class="col-12 col-md-3"
+          >
+            <label class="q-mb-sm block">Observacion</label>
+            <q-input
+              autogrow
+              v-model="transferencia.observacion_aut"
+              placeholder="Opcional"
+              :disable="
+                disabled ||
+                !(
+                  esCoordinador ||
+                  esActivosFijos ||
+                  store.user.id == transferencia.per_autoriza_id
+                )
+              "
+              :error="!!v$.observacion_aut.$errors.length"
+              outlined
+              dense
+            >
+              <template v-slot:error>
+                <div
+                  v-for="error of v$.observacion_aut.$errors"
+                  :key="error.$uid"
+                >
+                  <div class="error-msg">{{ error.$message }}</div>
+                </div>
+              </template>
+            </q-input>
+          </div>
+
+          <!-- Selector de productos -->
+          <div class="col-12 col-md-12">
+            <label class="q-mb-sm block">Agregar productos</label>
+            <div class="row q-col-gutter-x-xs">
+              <div class="col-12 col-md-10 q-mb-md">
+                <q-input
+                  v-model="criterioBusquedaProducto"
+                  placeholder="Nombre de producto"
+                  hint="Presiona Enter para seleccionar un producto"
+                  @keydown.enter="
+                    listarProductos({
+                      empleado_id: store.user.id,
+                      cliente_id: clienteMaterialStock,
+                    })
+                  "
+                  @blur="
+                    criterioBusquedaProducto === '' ? limpiarProducto() : null
+                  "
+                  outlined
+                  dense
+                >
+                </q-input>
+              </div>
+              <div class="col-12 col-md-2">
+                <q-btn
+                  @click="
+                    listarProductos({
+                      empleado_id: store.user.id,
+                      cliente_id: clienteMaterialStock,
+                    })
+                  "
+                  icon="search"
+                  unelevated
+                  color="primary"
+                  class="full-width"
+                  style="height: 40px"
+                  no-caps
+                  >Buscar</q-btn
+                >
+              </div>
+            </div>
+          </div>
+
+          <!-- Tabla -->
+          <div class="col-12">
+            <essential-table
+              titulo="Productos Seleccionados"
+              :configuracionColumnas="
+                configuracionColumnasProductosSeleccionadosAccion
+              "
+              :datos="transferencia.listadoProductos"
+              :permitirConsultar="false"
+              :permitirEditar="false"
+              :permitirEliminar="false"
+              :mostrarBotones="false"
+              :accion1="botonEditarCantidad"
+              :accion2="botonEliminar"
+              :ajustarCeldas="true"
+              :altoFijo="false"
+            ></essential-table>
+          </div>
+        </div>
+      </q-form>
+
+      <!-- Modal de seleccion de detalles -->
+      <essential-selectable-table
+        ref="refListado"
+        :configuracion-columnas="configuracionColumnasDetallesModal"
+        :datos="listadoProductos"
+        tipo-seleccion="multiple"
+        @selected="seleccionarProducto"
+      ></essential-selectable-table>
+    </template>
+  </tab-layout-filter-tabs2>
+</template>
+<script src="./TransferirMaterialEmpleadoPage.ts"></script>

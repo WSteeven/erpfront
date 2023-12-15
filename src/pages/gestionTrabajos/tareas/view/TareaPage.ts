@@ -54,6 +54,7 @@ import { useAuthenticationStore } from 'stores/authentication'
 import { TareaModales } from '../domain/TareaModales'
 import { Tarea } from '../domain/Tarea'
 import { Proyecto } from 'pages/gestionTrabajos/proyectos/domain/Proyecto'
+import { Etapa } from '../../proyectos/modules/etapas/domain/Etapa'
 
 export default defineComponent({
   components: {
@@ -102,7 +103,7 @@ export default defineComponent({
         proyectos: {
           controller: new ProyectoController(),
           params: {
-            campos: 'id,nombre,codigo_proyecto,cliente_id',
+            campos: 'id,nombre,codigo_proyecto,cliente_id,etapas',
             finalizado: 0,
             coordinador_id: authenticationStore.esJefeTecnico ? null : authenticationStore.user.id,
           },
@@ -110,7 +111,7 @@ export default defineComponent({
         proyectosEtapas: {
           controller: new ProyectoController(),
           params: {
-            campos: 'id,nombre,codigo_proyecto',
+            campos: 'id,nombre,codigo_proyecto,cliente_id,etapas',
             finalizado: 0,
             filter: `etapas[responsable_id]=${authenticationStore.user.id}&etapas[activo]=1`,
           },
@@ -222,8 +223,6 @@ export default defineComponent({
 
     async function establecerCliente() {
       tareaStore.tarea.cliente = tarea.cliente
-      // tarea.tipo_trabajo = null
-      // await obtenerRutas()
     }
 
     async function guardado(paginaModal: keyof TareaModales) {
@@ -265,9 +264,8 @@ export default defineComponent({
 
     watch(computed(() => tarea.cliente), async () => {
       clienteFinal.hydrate(new ClienteFinal())
-      // tarea.cliente_final = null
 
-      if (tarea.cliente) {
+      if (tarea.cliente && paraClienteFinal.value) {
         obtenerClientesFinales()
       }
     })
@@ -314,15 +312,17 @@ export default defineComponent({
       }
     })
 
-    async function setCliente() {
+    async function seleccionarProyecto() {
       tarea.cliente = listadosAuxiliares.proyectos.filter((proyecto: Proyecto) => proyecto.id === tarea.proyecto)[0].cliente_id
+      tarea.etapa = null
       if (tarea.proyecto) obtenerEtapasProyecto(tarea.proyecto)
     }
 
     async function obtenerEtapasProyecto(idProyecto: number) {
-      const response = await new EtapaController().listar({ proyecto_id: idProyecto, campos: 'id,nombre,responsable', responsable_id: authenticationStore.user.id })
-      listadosAuxiliares.etapas = response.result
-      etapas.value = response.result
+      const etapasProyecto = listadosAuxiliares.proyectos.filter((proyecto: Proyecto) => proyecto.id === tarea.proyecto)[0].etapas
+      const etapasResponsable = etapasProyecto.filter((etapa: Etapa) => etapa.responsable_id === authenticationStore.user.id)
+      listadosAuxiliares.etapas = etapasResponsable
+      etapas.value = etapasResponsable
     }
 
     const mostrarLabelModal = computed(() => [acciones.nuevo, acciones.editar].includes(accion.value))
@@ -424,7 +424,7 @@ export default defineComponent({
       listadosAuxiliares,
       establecerCliente,
       configuracionColumnasClientes,
-      setCliente,
+      seleccionarProyecto,
       modalesTarea,
       modalesSubtarea,
       mostrarLabelModal,

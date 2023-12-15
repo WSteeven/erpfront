@@ -9,6 +9,7 @@ export class EgresoRolPago extends EntidadAuditable {
   id_descuento: number | null
   id_empleado: number | null
   monto: number | null
+  id_rol_pago: number | null
 
   constructor() {
     super()
@@ -20,5 +21,6 @@ export class EgresoRolPago extends EntidadAuditable {
     this.descuento = null
     this.id_descuento = null
     this.id_empleado = null
+    this.id_rol_pago = null
   }
 }

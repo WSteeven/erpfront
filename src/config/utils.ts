@@ -81,6 +81,11 @@ export const tabOptionsPedidos: TabOption[] = [
   { label: 'Cancelados', value: 'CANCELADO' },
   { label: 'Completados', value: 'COMPLETA' },
 ]
+export const tabOptionsTransferenciaMaterialEmpleado: TabOption[] = [
+  { label: 'Por autorizar', value: 'PENDIENTE' },
+  { label: 'Cancelados', value: 'CANCELADO' },
+  { label: 'Completados', value: 'COMPLETA' },
+]
 export const tabOptionsSolicitudPedido: TabOption[] = [
   { label: 'Pendiente', value: '1' },
   { label: 'Validado', value: '4' },
@@ -122,6 +127,12 @@ export const tabAutorizarGasto: TabOption[] = [
 export const tabAcreditacion: TabOption[] = [
   { label: 'Aprobada', value: '1' },
   { label: 'Anulado', value: '2' },
+]
+export const tabPrestamoEmpresarial: TabOption[] = [
+  { label: 'ACTIVO', value: 'ACTIVO' },
+  { label: 'FINALIZADO', value: 'FINALIZADO' },
+  { label: 'INACTIVO', value: 'INACTIVO' },
+
 ]
 export const tabGestionarEgresos: TabOption[] = [
   { label: 'Aprobada', value: 'ACEPTADA' },

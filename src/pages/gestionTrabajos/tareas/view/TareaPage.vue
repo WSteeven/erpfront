@@ -308,7 +308,7 @@
                     map-options
                     @blur="v$.proyecto.$touch"
                     :error="!!v$.proyecto.$errors.length"
-                    @update:modelValue="setCliente"
+                    @update:modelValue="seleccionarProyecto()"
                     :disable="disabled"
                   >
                     <template v-slot:option="scope">
@@ -343,8 +343,10 @@
                   </q-select>
                 </div>
 
-                <!-- v-if="tarea.proyecto && paraProyecto && etapas.length" -->
-                <div class="col-12 col-md-3">
+                <div
+                  v-if="tarea.proyecto && paraProyecto && etapas.length"
+                  class="col-12 col-md-3"
+                >
                   <label class="q-mb-sm block">Etapa</label>
                   <q-select
                     v-model="tarea.etapa"
@@ -355,7 +357,6 @@
                     hint="Opcional"
                     options-dense
                     dense
-                    clearable
                     outlined
                     :option-label="(item) => item.nombre"
                     :option-value="(item) => item.id"
@@ -365,7 +366,6 @@
                     map-options
                     @blur="v$.etapa.$touch"
                     :error="!!v$.etapa.$errors.length"
-                    @update:modelValue="setCliente"
                     :disable="disabled"
                   >
                     <template v-slot:no-option>

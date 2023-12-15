@@ -28,6 +28,7 @@ export const useFiltrosListadosSelects = (listadosAuxiliares, entidad?: Ref<any>
   const proyectos = ref(listadosAuxiliares.proyectos)
   const etapas = ref(listadosAuxiliares.etapas)
   const tareas = ref(listadosAuxiliares.tareas)
+  const tareasDestino = ref(listadosAuxiliares.tareasDestino)
 
 
   /**************************************************************
@@ -249,7 +250,9 @@ export const useFiltrosListadosSelects = (listadosAuxiliares, entidad?: Ref<any>
   function filtrarTareas(val, update) {
     return filtrarLista(val, update, tareas, 'codigo_tarea', listadosAuxiliares.tareas)
   }
-
+  function filtrarTareasDestino(val, update) {
+    return filtrarLista(val, update, tareasDestino, 'codigo_tarea', listadosAuxiliares.tareasDestino)
+  }
 
 
   function filtrarLista(val, update, lista, clave, defaultValue = []) {
@@ -284,5 +287,6 @@ export const useFiltrosListadosSelects = (listadosAuxiliares, entidad?: Ref<any>
     tareas, filtrarTareas,
     proyectos, filtrarProyectos,
     etapas, filtrarEtapas,
+    tareasDestino, filtrarTareasDestino,
   }
 }

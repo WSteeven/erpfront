@@ -40,6 +40,14 @@ $border-color: #464646;
     background-color: $border-color;
   }
 
+  .color-icon-navbar {
+    color: $grey-2;
+  }
+
+  .text-color {
+    color: #fff;
+  }
+
   // Tabs
   .tab-active {
     background-color: $dark-color;

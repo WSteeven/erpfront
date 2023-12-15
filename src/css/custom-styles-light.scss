@@ -45,6 +45,10 @@
     background-color: #fff;
   }
 
+  .color-icon-navbar {
+    color: $grey-8;
+  }
+
   .q-card,
   .q-menu {
     box-shadow: rgba(149, 157, 165, 0.2) 0px 8px 24px;
@@ -105,6 +109,10 @@
 
   .text-shadow {
     text-shadow: 1px 1px 4px #00000055;
+  }
+
+  .text-color {
+    color: #000;
   }
 
   // Toggle

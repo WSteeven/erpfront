@@ -69,7 +69,7 @@
           <br />
           <q-toggle
             v-model="usarMaterialTarea"
-            label="Usar material asignado para la tarea"
+            label="Usar material asignado para proyecto / etapa / tarea"
             checked-icon="bi-eye"
             color="positive"
             dense

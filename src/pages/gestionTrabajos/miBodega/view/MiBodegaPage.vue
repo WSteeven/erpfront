@@ -50,12 +50,7 @@
                   (item) => item.codigo_tarea + ' - ' + item.titulo
                 "
                 :option-value="(item) => item.id"
-                @update:model-value="
-                  () => {
-                    materialesTarea = []
-                    clienteMaterialTarea = undefined
-                  }
-                "
+                @update:model-value="seleccionarTarea()"
                 emit-value
                 map-options
                 ><template v-slot:option="scope">
@@ -106,7 +101,13 @@
             </div>
             <div class="col-12 row justify-center q-gutter-sm q-mb-md">
               <!-- Boton guardar -->
-              <q-btn color="primary" no-caps :to="{ name: 'devoluciones' }">
+              <q-btn
+                color="primary"
+                no-caps
+                unelevated
+                rounded
+                :to="{ name: 'devoluciones' }"
+              >
                 <q-icon name="bi-building" size="xs" class="q-pr-sm"></q-icon>
                 <span>Devolver a bodega matriz</span>
               </q-btn>
@@ -119,11 +120,32 @@
                     (listadoMaterialesDevolucionStore.devolverAlStock = true)
                 "
                 no-caps
-                push
+                unelevated
+                rounded
                 :to="{ name: 'devoluciones' }"
               >
                 <q-icon name="bi-box-seam" size="xs" class="q-pr-sm"></q-icon>
                 <span>Transferir a stock personal</span>
+              </q-btn>
+
+              <!-- Boton transferir a otro técnico -->
+              <q-btn
+                color="positive"
+                @click="
+                  () =>
+                    (listadoMaterialesDevolucionStore.devolverAlStock = true)
+                "
+                no-caps
+                unelevated
+                rounded
+                :to="{ name: 'transferir_material_empleado' }"
+              >
+                <q-icon
+                  name="bi-box-arrow-up-right"
+                  size="xs"
+                  class="q-pr-sm"
+                ></q-icon>
+                <span>Transferir a otro técnico</span>
               </q-btn>
             </div>
 
