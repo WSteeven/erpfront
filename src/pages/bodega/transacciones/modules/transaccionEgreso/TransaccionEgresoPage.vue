@@ -364,7 +364,7 @@
             </q-select>
           </div>
           <!-- Responsable -->
-          <div v-if="!esTecnico" class="col-12 col-md-3">
+          <div class="col-12 col-md-3">
             <label-info-empleado
               v-if="accion == acciones.consultar"
               label="Responsable"
@@ -465,7 +465,7 @@
             <label class="q-mb-sm block">Cliente</label>
             <q-select
               v-model="transaccion.cliente"
-              :options="opciones_clientes"
+              :options="clientes"
               transition-show="jum-up"
               transition-hide="jump-down"
               options-dense
@@ -475,6 +475,9 @@
               :readonly="disabled"
               :error="!!v$.cliente.$errors.length"
               error-message="Debes seleccionar un cliente"
+              use-input
+              input-debounce="0"
+              @filter="filtrarClientes"
               @popup-show="ordenarClientes"
               @update:model-value="buscarListadoPedidoEnInventario"
               :option-value="(item) => item.id"

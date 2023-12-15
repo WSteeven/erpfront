@@ -52,6 +52,7 @@ import { SucursalController } from 'pages/administracion/sucursales/infraestruct
 import { Cliente } from 'sistema/clientes/domain/Cliente'
 import { ComportamientoModalesEmpleado } from 'pages/recursosHumanos/empleados/application/ComportamientoModalesEmpleado'
 import { useEmpleadoStore } from 'stores/empleado'
+import { useFiltrosListadosSelects } from 'shared/filtrosListadosGenerales'
 
 export default defineComponent({
   name: 'Egresos',
@@ -106,7 +107,8 @@ export default defineComponent({
     const opciones_sucursales = ref([])
     const opciones_motivos = ref([])
     const opciones_tareas = ref([])
-    const opciones_clientes = ref([])
+
+    const { clientes, filtrarClientes } = useFiltrosListadosSelects(listadosAuxiliares)
 
     cargarVista(async () => {
       await obtenerListados({
@@ -121,7 +123,7 @@ export default defineComponent({
         motivos: { controller: new MotivoController(), params: { tipo_transaccion_id: 2 } },
         clientes: {
           controller: new ClienteController(),
-          params: { campos: 'id,empresa_id', requiere_bodega: 1, estado: 1, },
+          params: { campos: 'id,razon_social', requiere_bodega: 1, estado: 1, },
         },
       })
       //comprueba si hay un pedido en el store para llenar automaticamente los datos de ese pedido en la transaccion
@@ -429,7 +431,7 @@ export default defineComponent({
     opciones_autorizaciones.value = JSON.parse(LocalStorage.getItem('autorizaciones')!.toString())
     opciones_motivos.value = listadosAuxiliares.motivos
     opciones_tareas.value = listadosAuxiliares.tareas
-    opciones_clientes.value = listadosAuxiliares.clientes
+    clientes.value = listadosAuxiliares.clientes
 
     function filtroTareas(val) {
       // console.log('val recibido', val)
@@ -465,7 +467,7 @@ export default defineComponent({
       opciones_motivos,
       opciones_autorizaciones,
       opciones_tareas,
-      opciones_clientes,
+      clientes,
 
       //stores
       pedidoStore,
@@ -576,6 +578,7 @@ export default defineComponent({
 
       llenarTransaccion,
       limpiarTransaccion,
+      filtrarClientes, 
 
       //transferencia
       llenarTransferencia,
@@ -589,8 +592,8 @@ export default defineComponent({
         opciones_motivos.value.sort((a: Motivo, b: Motivo) => ordernarListaString(a.nombre!, b.nombre!))
       },
       ordenarClientes() {
-        if (store.esBodegueroTelconet) opciones_clientes.value = opciones_clientes.value.filter((v: Cliente) => v.razon_social!.indexOf('TELCONET') > -1)
-        else opciones_clientes.value.sort((a: Cliente, b: Cliente) => ordernarListaString(a.razon_social!, b.razon_social!))
+        if (store.esBodegueroTelconet) clientes.value = clientes.value.filter((v: Cliente) => v.razon_social!.indexOf('TELCONET') > -1)
+        else clientes.value.sort((a: Cliente, b: Cliente) => ordernarListaString(a.razon_social!, b.razon_social!))
       },
       ordenarSucursales() {
         if (store.esBodegueroTelconet) {

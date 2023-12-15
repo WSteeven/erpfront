@@ -20,6 +20,8 @@ import { Sucursal } from 'pages/administracion/sucursales/domain/Sucursal'
 import { CustomActionTable } from 'components/tables/domain/CustomActionTable'
 import { useNotificaciones } from 'shared/notificaciones'
 import { useControlStockStore } from 'stores/bodega/controlStock'
+import { ordenarLista } from 'shared/utils'
+import { useFiltrosListadosSelects } from 'shared/filtrosListadosGenerales'
 
 
 export default defineComponent({
@@ -37,7 +39,7 @@ export default defineComponent({
     const opciones_sucursales = ref([])
     const opciones_productos = ref([])
     const opciones_detalles = ref([])
-    const opciones_clientes = ref([])
+    const {clientes} = useFiltrosListadosSelects(listadosAuxiliares)
     //Obtener listados
     cargarVista(async () => {
       await obtenerListados({
@@ -56,7 +58,7 @@ export default defineComponent({
         clientes: {
           controller: new ClienteController(),
           params: {
-            campos: 'id,empresa_id',
+            campos: 'id,razon_social',
             requiere_bodega: 1,
             estado: 1,
           },
@@ -110,7 +112,7 @@ export default defineComponent({
     opciones_sucursales.value = listadosAuxiliares.sucursales
     opciones_productos.value = listadosAuxiliares.productos
     opciones_detalles.value = listadosAuxiliares.detalles
-    opciones_clientes.value = listadosAuxiliares.clientes
+    clientes.value = listadosAuxiliares.clientes
     return {
       mixin, stock, v$, disabled,
       configuracionColumnas: configuracionColumnasControlStock,
@@ -119,7 +121,8 @@ export default defineComponent({
       opciones_sucursales,
       opciones_productos,
       opciones_detalles,
-      opciones_clientes,
+      clientes,
+      ordenarLista,
       filtroProductos(val, update) {
         if (val === '') {
           update(() => {
@@ -146,8 +149,6 @@ export default defineComponent({
       seleccionarPropietario(val) {
         const sucursalSeleccionada = opciones_sucursales.value.filter((v: Sucursal) => v.id === val)
         stock.cliente_id = sucursalSeleccionada[0]['cliente_id']
-        console.log(val)
-        console.log(sucursalSeleccionada)
       },
 
       filtrarSucursales(val, update) {

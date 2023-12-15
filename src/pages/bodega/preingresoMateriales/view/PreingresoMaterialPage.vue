@@ -37,6 +37,7 @@
               :disable="disabled || soloLectura"
               outlined
               dense
+              :error="!!v$.fecha.$errors.length"
               ><template v-slot:append>
                 <q-icon name="event" class="cursor-pointer">
                   <q-popup-proxy
@@ -60,7 +61,12 @@
                     </q-date>
                   </q-popup-proxy>
                 </q-icon> </template
-            ></q-input>
+              ><template v-slot:error>
+                <div v-for="error of v$.fecha.$errors" :key="error.$uid">
+                  <div class="error-msg">{{ error.$message }}</div>
+                </div>
+              </template></q-input
+            >
           </div>
           <!-- Cuadrilla -->
           <div class="col-12 col-md-3">
@@ -68,6 +74,7 @@
             <q-input
               v-model="preingreso.cuadrilla"
               :disable="disabled || soloLectura"
+              :error="!!v$.cuadrilla.$errors.length"
               outlined
               dense
             ></q-input>
@@ -142,7 +149,10 @@
             </q-input>
           </div>
           <!-- Codigo de proyecto -->
-          <div class="col-12 col-md-3">
+          <div
+            class="col-12 col-md-3"
+            v-if="accion == acciones.nuevo || preingreso.proyecto"
+          >
             <label class="q-mb-sm block">Proyecto</label>
             <q-select
               v-model="preingreso.proyecto"
@@ -151,7 +161,7 @@
               @update:model-value="obtenerEtapasProyecto(preingreso.proyecto)"
               transition-show="scale"
               transition-hide="scale"
-              hint="Obligatorio"
+              hint="Opcional"
               options-dense
               dense
               outlined
@@ -186,7 +196,9 @@
           </div>
           <!-- Etapa del proyecto -->
           <div
-            v-if="etapas?.length || preingreso.etapa"
+            v-if="
+              etapas?.length || preingreso.etapa || accion == acciones.nuevo
+            "
             class="col-12 col-md-3"
           >
             <label class="q-mb-sm block">Etapa</label>
@@ -260,10 +272,13 @@
               input-debounce="0"
               clearable
               @filter="filtrarTareas"
+              @update:model-value="obtenerCoordinadorClienteTareaSeleccionada"
               hint="Opcional"
               :disable="disabled || soloLectura"
               :option-label="(v) => v.codigo_tarea + ' - ' + v.titulo"
               :option-value="(v) => v.id"
+              :error="!!v$.tarea.$errors.length"
+              error-message="Debes seleccionar una tarea"
               emit-value
               map-options
               ><template v-slot:option="scope">
@@ -272,7 +287,12 @@
                     <q-item-label>{{ scope.opt.codigo_tarea }}</q-item-label>
                     <q-item-label caption>{{ scope.opt.titulo }}</q-item-label>
                   </q-item-section>
-                </q-item> </template
+                </q-item>
+              </template>
+              <template v-slot:error>
+                <div v-for="error of v$.tarea.$errors" :key="error.$uid">
+                  <div class="error-msg">{{ error.$message }}</div>
+                </div> </template
               ><template v-slot:no-option>
                 <q-item>
                   <q-item-section class="text-grey">
@@ -353,6 +373,7 @@
             <q-input
               v-model="preingreso.courier"
               :disable="disabled || soloLectura"
+              :error="!!v$.courier.$errors.length"
               outlined
               dense
             ></q-input>
@@ -367,6 +388,7 @@
               v-model="preingreso.observacion"
               placeholder="Obligatorio"
               :disable="disabled || soloLectura"
+              :error="!!v$.observacion.$errors.length"
               outlined
               dense
             />
@@ -401,7 +423,6 @@
             </gestor-archivos>
           </div>
           <!-- Configuracion para seleccionar productos -->
-          <!-- {{ orden.listadoProductos }} -->
           <!-- Selector de productos -->
           <div class="col-12 col-md-12">
             <label class="q-mb-sm block">Agregar productos</label>
@@ -415,6 +436,7 @@
                   @keydown.enter="
                     listarProductos({
                       search: criterioBusquedaProducto,
+                      activo: 1,
                     })
                   "
                   @blur="

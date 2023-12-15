@@ -50,6 +50,7 @@ import { Proyecto } from "pages/gestionTrabajos/proyectos/domain/Proyecto";
 import { TareasEmpleadoController } from "pages/gestionTrabajos/tareas/infraestructure/TareasEmpleadoController";
 import { usePreingresoStore } from "stores/bodega/preingreso";
 import { useNotificacionStore } from "stores/notificacion";
+import { Tarea } from "pages/gestionTrabajos/tareas/domain/Tarea";
 
 
 export default defineComponent({
@@ -87,7 +88,7 @@ export default defineComponent({
       listar: listarProductos,
       limpiar: limpiarProducto,
       seleccionar: seleccionarProducto
-    } = useOrquestadorSelectorProductos(preingreso, 'detalles')
+    } = useOrquestadorSelectorProductos(preingreso, 'detalles_materiales')
 
     //filtros y listados
     const {
@@ -115,7 +116,7 @@ export default defineComponent({
           },
         },
         // tareas: { controller: new TareasEmpleadoController(), params: { para_cliente_proyecto: 'PARA_CLIENTE_FINAL', finalizado: 0 } },
-        tareas: { controller: new TareasEmpleadoController(), params: { empleado_id: store.user.id, finalizado: 0 } },
+        tareas: { controller: new TareasEmpleadoController(), params: { empleado_id: store.user.id, finalizado: 0, proyecto_id: preingreso.proyecto } },
         clientes: { controller: new ClienteController(), params: { campos: 'id,razon_social', requiere_bodega: 1, estado: 1, } },
       })
       // productos.value = listadosAuxiliares.productos
@@ -170,10 +171,16 @@ export default defineComponent({
      * Validaciones
      ****************************************************************************************/
     const reglas = {
+      fecha: { required },
+      cuadrilla: { required },
       num_guia: { required },
       coordinador: { required },
+      courier: { required },
+      observacion: { required },
       cliente: { required },
-      etapa: { requiredIf: requiredIf(() => etapas.value.length && preingreso.proyecto) },
+      etapa: {
+        requiredIf: requiredIf(() => { if (etapas.value) return etapas.value.length && preingreso.proyecto })
+      },
       tarea: { requiredIf: requiredIf(() => preingreso.etapa && tareas.value.length) },
     }
 
@@ -207,10 +214,12 @@ export default defineComponent({
 
     async function obtenerEtapasProyecto(idProyecto: string | number | null, limpiarCampos = true) {
       cargando.activar()
-      if (idProyecto === null && limpiarCampos) {
+      if (limpiarCampos) {
         preingreso.etapa = null
         preingreso.cliente = null
         preingreso.coordinador = null
+      }
+      if (idProyecto === null) {
         const response = await new TareasEmpleadoController().listar({ para_cliente_proyecto: 'PARA_CLIENTE_FINAL', campos: 'id,codigo_tarea,titulo', finalizado: 0 })
         listadosAuxiliares.tareas = response.result
         tareas.value = response.result
@@ -234,6 +243,18 @@ export default defineComponent({
       listadosAuxiliares.tareas = response.result
       tareas.value = response.result
       cargando.desactivar()
+
+    }
+
+    async function obtenerCoordinadorClienteTareaSeleccionada() {
+      if (preingreso.proyecto == null && preingreso.etapa == null) {
+        const tareaSeleccionada = tareas.value.filter((v: Tarea) => v.id == preingreso.tarea)[0]
+        if (tareaSeleccionada) {
+          preingreso.cliente = tareaSeleccionada.cliente_id
+          preingreso.coordinador = tareaSeleccionada.coordinador_id
+        }
+
+      }
     }
 
     async function obtenerClienteProyecto(idProyecto) {
@@ -352,6 +373,7 @@ export default defineComponent({
       tareas, filtrarTareas,
       obtenerEtapasProyecto,
       obtenerTareasEtapa,
+      obtenerCoordinadorClienteTareaSeleccionada,
 
     }
   }

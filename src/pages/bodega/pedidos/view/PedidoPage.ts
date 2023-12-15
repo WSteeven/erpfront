@@ -38,9 +38,10 @@ import { CambiarEstadoPedido } from '../application/CambiarEstadoPedido'
 import { useNotificacionStore } from 'stores/notificacion'
 import { useCargandoStore } from 'stores/cargando'
 import { Sucursal } from 'pages/administracion/sucursales/domain/Sucursal'
-import { ordernarListaString } from 'shared/utils'
+import { ordenarLista, ordernarListaString } from 'shared/utils'
 import { SucursalController } from 'pages/administracion/sucursales/infraestructure/SucursalController'
 import { ComportamientoModalesPedido } from '../application/ComportamientoModalesPedido'
+import { useFiltrosListadosSelects } from 'shared/filtrosListadosGenerales'
 
 
 export default defineComponent({
@@ -112,10 +113,11 @@ export default defineComponent({
       }
     ]
 
-    const opciones_clientes = ref([])
     const opciones_empleados = ref([])
     const opciones_sucursales = ref([])
     const opciones_tareas = ref([])
+
+    const {clientes, filtrarClientes} = useFiltrosListadosSelects(listadosAuxiliares)
 
     //Obtener los listados
     cargarVista(async () => {
@@ -137,7 +139,7 @@ export default defineComponent({
         clientes: {
           controller: new ClienteController(),
           params: {
-            campos: 'id,empresa_id',
+            campos: 'id,razon_social',
             requiere_bodega: 1,
             estado: 1,
           },
@@ -331,16 +333,16 @@ export default defineComponent({
     //Configurar los listados
     opciones_empleados.value = listadosAuxiliares.empleados
     opciones_tareas.value = listadosAuxiliares.tareas
-    opciones_clientes.value = listadosAuxiliares.clientes
+    clientes.value = listadosAuxiliares.clientes
     opciones_sucursales.value = JSON.parse(LocalStorage.getItem('sucursales')!.toString())
-    
+
     return {
       mixin, pedido, disabled, accion, v$, acciones,
       configuracionColumnas: configuracionColumnasPedidos,
       //listados
       opciones_empleados,
       opciones_tareas,
-      opciones_clientes,
+      clientes,
       opciones_sucursales,
       opciones_estados: estados,
       opciones_autorizaciones:autorizaciones,
@@ -432,16 +434,8 @@ export default defineComponent({
           opciones_empleados.value = listadosAuxiliares.empleados.filter((v) => (v.nombres.toLowerCase().indexOf(needle) > -1 || v.apellidos.toLowerCase().indexOf(needle) > -1))
         })
       },
-      filtroClientes(val, update) {
-        if (val === '') {
-          update(() => opciones_clientes.value = listadosAuxiliares.clientes)
-          return
-        }
-        update(() => {
-          const needle = val.toLowerCase()
-          opciones_clientes.value = listadosAuxiliares.clientes.filter((v) => v.razon_social.toLowerCase().indexOf(needle) > -1)
-        })
-      },
+      filtrarClientes,
+      ordenarLista,
 
       onRowClick: (row) => alert(`${row.name} clicked`),
       pedidoSeleccionado(val) {
