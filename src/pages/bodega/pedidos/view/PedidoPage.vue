@@ -301,28 +301,126 @@
             <q-checkbox
               class="q-mt-lg q-pt-md"
               v-model="pedido.es_tarea"
-              label="¿Es material de tarea?"
+              label="¿Es material de proyecto/tarea?"
               :disable="disabled || soloLectura"
               @update:model-value="checkEsTarea"
               outlined
               dense
             ></q-checkbox>
           </div>
+          <!-- Codigo de proyecto -->
+          <div class="col-12 col-md-3" v-if="pedido.es_tarea||pedido.proyecto">
+            <label class="q-mb-sm block">Proyecto</label>
+            <q-select
+              v-model="pedido.proyecto"
+              :options="proyectos"
+              @filter="filtrarProyectos"
+              @update:model-value="obtenerEtapasProyecto(pedido.proyecto)"
+              transition-show="scale"
+              transition-hide="scale"
+              hint="Opcional"
+              options-dense
+              dense
+              outlined
+              clearable
+              :option-label="(item) => item.nombre"
+              :option-value="(item) => item.id"
+              use-input
+              input-debounce="0"
+              emit-value
+              map-options
+              :disable="disabled"
+            >
+              <template v-slot:option="scope">
+                <q-item v-bind="scope.itemProps" class="q-my-sm">
+                  <q-item-section>
+                    <q-item-label class="text-bold text-primary">{{
+                      scope.opt.codigo_proyecto
+                    }}</q-item-label>
+                    <q-item-label caption>{{ scope.opt.nombre }} </q-item-label>
+                  </q-item-section>
+                </q-item>
+              </template>
+
+              <template v-slot:no-option>
+                <q-item>
+                  <q-item-section class="text-grey">
+                    No hay resultados
+                  </q-item-section>
+                </q-item>
+              </template>
+            </q-select>
+          </div>
+          <!-- Etapa del proyecto -->
+          <div v-if="etapas?.length ||pedido.etapa" class="col-12 col-md-3">
+            <label class="q-mb-sm block">Etapa</label>
+            <q-select
+              v-model="pedido.etapa"
+              :options="etapas"
+              @filter="filtrarEtapas"
+              @update:modelValue="obtenerTareasEtapa(pedido.etapa)"
+              transition-show="scale"
+              transition-hide="scale"
+              hint="Obligatorio"
+              options-dense
+              dense
+              clearable
+              outlined
+              :option-label="(item) => item.nombre"
+              :option-value="(item) => item.id"
+              use-input
+              input-debounce="0"
+              emit-value
+              map-options
+              :disable="disabled"
+              @blur="v$.etapa.$touch"
+              :error="!!v$.etapa.$errors.length"
+            >
+              <template v-slot:option="scope">
+                <q-item v-bind="scope.itemProps" class="q-my-sm">
+                  <q-item-section>
+                    <q-item-label class="text-bold text-primary">{{
+                      scope.opt.nombre
+                    }}</q-item-label>
+                    <q-item-label caption
+                      >Supervisor: {{ scope.opt.supervisor_responsable }}
+                    </q-item-label>
+                  </q-item-section>
+                </q-item>
+              </template>
+              <template v-slot:no-option>
+                <q-item>
+                  <q-item-section class="text-grey">
+                    No hay resultados
+                  </q-item-section>
+                </q-item>
+              </template>
+
+              <template v-slot:error>
+                <div v-for="error of v$.etapa.$errors" :key="error.$uid">
+                  <div class="error-msg">{{ error.$message }}</div>
+                </div>
+              </template>
+            </q-select>
+          </div>
           <!-- Tarea -->
           <div v-if="pedido.es_tarea" class="col-12 col-md-3">
             <label class="q-mb-sm block">Tarea</label>
             <q-select
               v-model="pedido.tarea"
-              :options="opciones_tareas"
+              :options="tareas"
               transition-show="scale"
               transition-hide="scale"
               options-dense
               clearable
-              hint="Tarea #"
+              hint="Obligatorio"
               dense
               outlined
               :disable="disabled || soloLectura"
               :error="!!v$.tarea.$errors.length"
+              use-input
+              input-debounce="0"
+              @filter="filtrarTareas"
               @update:model-value="pedidoSeleccionado"
               error-message="Debe seleccionar una tarea"
               :option-label="(item) => item.titulo"
@@ -341,6 +439,13 @@
                 <div v-for="error of v$.tarea.$errors" :key="error.$uid">
                   <div class="error-msg">{{ error.$message }}</div>
                 </div>
+              </template>
+              <template v-slot:no-option>
+                <q-item>
+                  <q-item-section class="text-grey">
+                    No hay resultados
+                  </q-item-section>
+                </q-item>
               </template>
             </q-select>
           </div>
@@ -368,7 +473,7 @@
             <label class="q-mb-sm block">Autorizacion</label>
             <q-select
               v-model="pedido.autorizacion"
-              :options="opciones_autorizaciones"
+              :options="autorizaciones"
               transition-show="jum-up"
               transition-hide="jump-down"
               options-dense
@@ -431,7 +536,7 @@
             <label class="q-mb-sm block">Estado del despacho</label>
             <q-select
               v-model="pedido.estado"
-              :options="opciones_estados"
+              :options="estados"
               transition-show="jum-up"
               transition-hide="jump-down"
               options-dense
