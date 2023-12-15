@@ -49,7 +49,7 @@
           }"
         >
           <span
-            class="row text-grey-8"
+            class="row"
             :class="{
               'q-gutter-x-xs': $q.screen.xs,
               'q-gutter-x-sm': !$q.screen.xs,
@@ -67,10 +67,10 @@
               <q-icon
                 name="bi-arrow-left-right"
                 :class="{ 'q-mx-sm': !$q.screen.xs }"
-                class="bg-icon q-pa-xs rounded-field"
+                class="bg-icon color-icon-navbar q-pa-xs rounded-field"
                 size="xs"
               ></q-icon>
-              <span v-if="!$q.screen.xs" class="text-dark"
+              <span v-if="!$q.screen.xs" class="text-color"
                 >Transferir tareas activas</span
               >
               <q-tooltip class="bg-dark">Transferir tareas activas</q-tooltip>
@@ -87,10 +87,10 @@
               <q-icon
                 name="bi-car-front"
                 :class="{ 'q-mr-sm': !$q.screen.xs }"
-                class="bg-icon q-pa-xs rounded-field"
+                class="bg-icon color-icon-navbar q-pa-xs rounded-field"
                 size="xs"
               ></q-icon>
-              <span v-if="!$q.screen.xs" class="text-dark">Movilización</span>
+              <span v-if="!$q.screen.xs" class="text-color">Movilización</span>
               <q-tooltip class="bg-dark">Movilización</q-tooltip>
             </q-btn>
 
@@ -105,10 +105,10 @@
               <q-icon
                 name="bi-box-seam"
                 :class="{ 'q-mr-sm': !$q.screen.xs }"
-                class="bg-icon q-pa-xs rounded-field"
+                class="bg-icon color-icon-navbar q-pa-xs rounded-field"
                 size="xs"
               ></q-icon>
-              <span v-if="!$q.screen.xs" class="text-dark">Mi bodega</span>
+              <span v-if="!$q.screen.xs" class="text-color">Mi bodega</span>
               <q-tooltip class="bg-dark">Mi bodega</q-tooltip>
             </q-btn>
 
@@ -125,7 +125,7 @@
               <q-icon
                 name="bi-bell"
                 :class="{ 'q-mr-sm': !$q.screen.xs }"
-                class="bg-icon q-pa-xs rounded-field"
+                class="bg-icon color-icon-navbar q-pa-xs rounded-field"
                 size="xs"
               ></q-icon>
 

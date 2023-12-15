@@ -98,7 +98,7 @@ export const useMenuStore = defineStore('menu', () => {
           title: 'Dashboard',
           link: 'dashboard-tickets',
           icon: 'bi-app',
-          can: store.can('puede.ver.tickets'),
+          can: store.can('puede.ver.dashboard_tickets'),
         },
         {
           title: 'Crear ticket',

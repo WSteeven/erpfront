@@ -174,6 +174,13 @@ const routes: RouteRecordRaw[] = [
           import('gestionTrabajos/miBodega/view/MiBodegaPage.vue'),
         meta: { requiresAuth: true },
       },
+      {
+        path: '/transferir-material-empleado',
+        name: 'transferir_material_empleado',
+        component: () =>
+          import('gestionTrabajos/transferirMaterialesEmpleados/view/TransferirMaterialEmpleadoPage.vue'),
+        meta: { requiresAuth: true },
+      },
       /*{
         path: '/reporte-trabajos-realizados',
         name: 'reporte_trabajos_realizados',

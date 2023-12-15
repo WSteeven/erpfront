@@ -343,7 +343,6 @@ export default defineComponent({
           subtarea_id: trabajoAsignadoStore.subtarea.id,
           empleado_id: obtenerIdEmpleadoResponsable(),
           cliente_id: cliente,
-          seguimiento: 1,
           proyecto_id: subtarea.proyecto_id,
           etapa_id: subtarea.etapa_id,
         }

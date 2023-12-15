@@ -308,7 +308,7 @@
                     map-options
                     @blur="v$.proyecto.$touch"
                     :error="!!v$.proyecto.$errors.length"
-                    @update:modelValue="setCliente"
+                    @update:modelValue="seleccionarProyecto()"
                     :disable="disabled"
                   >
                     <template v-slot:option="scope">
@@ -357,7 +357,6 @@
                     hint="Opcional"
                     options-dense
                     dense
-                    clearable
                     outlined
                     :option-label="(item) => item.nombre"
                     :option-value="(item) => item.id"
@@ -367,7 +366,6 @@
                     map-options
                     @blur="v$.etapa.$touch"
                     :error="!!v$.etapa.$errors.length"
-                    @update:modelValue="setCliente"
                     :disable="disabled"
                   >
                     <template v-slot:no-option>

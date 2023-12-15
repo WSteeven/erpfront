@@ -21,6 +21,7 @@ import { useCargandoStore } from 'stores/cargando'
 import { endpoints } from 'config/api'
 import { AxiosResponse } from 'axios'
 import { useQuasar } from 'quasar'
+import { Tarea } from 'pages/gestionTrabajos/tareas/domain/Tarea'
 
 export default defineComponent({
   components: { EssentialTable },
@@ -63,7 +64,7 @@ export default defineComponent({
     /*******
      * Init
      *******/
-    tareaController.listar({ activas_empleado: 1, empleado_id: authenticationStore.user.id }).then((data) => tareasSource.value = data.result)
+    tareaController.listar({ activas_empleado: 1, empleado_id: authenticationStore.user.id, campos: 'id,codigo_tarea,cliente_id' }).then((data) => tareasSource.value = data.result)
     obtenerClientesMaterialesTarea()
     obtenerClientesMaterialesEmpleado()
 
@@ -135,6 +136,12 @@ export default defineComponent({
       }
     }
 
+    function seleccionarTarea() {
+      materialesTarea.value = []
+      clienteMaterialTarea.value = tareasSource.value.filter((tarea: Tarea) => tarea.id === filtro.tarea)[0].cliente_id
+      obtenerMaterialesTarea(clienteMaterialTarea.value)
+    }
+
     /**********
      * Filtros
      **********/
@@ -169,6 +176,7 @@ export default defineComponent({
       clienteMaterialStock,
       clientesMaterialesTarea,
       obtenerMaterialesTarea,
+      seleccionarTarea,
     }
   },
 })

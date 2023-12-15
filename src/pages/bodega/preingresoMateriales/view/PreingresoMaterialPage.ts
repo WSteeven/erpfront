@@ -205,7 +205,7 @@ export default defineComponent({
       preingreso.autorizacion = 1
     }
 
-    async function obtenerEtapasProyecto(idProyecto: string | number | null, limpiarCampos=true) {
+    async function obtenerEtapasProyecto(idProyecto: string | number | null, limpiarCampos = true) {
       cargando.activar()
       if (idProyecto === null && limpiarCampos) {
         preingreso.etapa = null
