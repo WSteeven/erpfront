@@ -2,9 +2,9 @@
   <tab-layout-filter-tabs2
     :mixin="mixin"
     :configuracionColumnas="configuracionColumnas"
-    :tab-options="tabOptionsTransferenciaMaterialEmpleado"
+    :tab-options="tabOptionsTransferenciaProductoEmpleado"
     tabDefecto="PENDIENTE"
-    :filtrar="filtrarDevoluciones"
+    :filtrar="filtrarTransferenciasProductoEmpleado"
     :ajustarCeldas="true"
     :permitirEditar="puedeEditar"
     :accion1="botonDespachar"
@@ -101,7 +101,7 @@
             <!-- @filter="filtrarTareas" -->
             <!-- :disable="puedeSeleccionarPropietarioMaterial" -->
             <q-select
-              v-model="transferencia.tarea"
+              v-model="transferencia.tarea_origen"
               :options="listadosAuxiliares.tareas"
               transition-show="scale"
               transition-hide="scale"
@@ -142,21 +142,12 @@
               ></q-icon>
               Etapa origen</label
             >
-            <q-select
+            <q-input
               v-model="transferencia.etapa_origen"
-              :options="listadosAuxiliares.etapasOrigen"
-              transition-show="scale"
-              transition-hide="scale"
-              options-dense
-              dense
-              outlined
-              :option-label="(item) => item.nombre"
-              :option-value="(item) => item.id"
-              emit-value
-              map-options
               disable
-            >
-            </q-select>
+              outlined
+              dense
+            />
           </div>
 
           <div v-if="transferencia.proyecto_origen" class="col-12 col-md-3">
@@ -168,21 +159,12 @@
               ></q-icon
               >Proyecto origen</label
             >
-            <q-select
+            <q-input
               v-model="transferencia.proyecto_origen"
-              :options="listadosAuxiliares.proyectosOrigen"
-              transition-show="scale"
-              transition-hide="scale"
-              options-dense
-              dense
-              outlined
-              :option-label="(item) => item.nombre"
-              :option-value="(item) => item.id"
-              emit-value
-              map-options
               disable
-            >
-            </q-select>
+              outlined
+              dense
+            />
           </div>
 
           <div class="col-12 col-md-3">
@@ -244,7 +226,6 @@
               :disable="disabled"
               :option-label="(item) => item.codigo_tarea + ' - ' + item.titulo"
               :option-value="(item) => item.id"
-              @update:model-value="consultarEtapasProyecto()"
               use-input
               input-debounce="0"
               emit-value
@@ -276,21 +257,12 @@
               ></q-icon>
               Etapa destino</label
             >
-            <q-select
+            <q-input
               v-model="transferencia.etapa_destino"
-              :options="listadosAuxiliares.etapas"
-              transition-show="scale"
-              transition-hide="scale"
-              options-dense
-              dense
-              outlined
-              :option-label="(item) => item.nombre"
-              :option-value="(item) => item.id"
-              emit-value
-              map-options
               disable
-            >
-            </q-select>
+              outlined
+              dense
+            />
           </div>
 
           <div v-if="transferencia.proyecto_destino" class="col-12 col-md-3">
@@ -302,21 +274,12 @@
               ></q-icon
               >Proyecto destino</label
             >
-            <q-select
+            <q-input
               v-model="transferencia.proyecto_destino"
-              :options="listadosAuxiliares.proyectos"
-              transition-show="scale"
-              transition-hide="scale"
-              options-dense
-              dense
-              outlined
-              :option-label="(item) => item.nombre"
-              :option-value="(item) => item.id"
-              emit-value
-              map-options
               disable
-            >
-            </q-select>
+              outlined
+              dense
+            />
           </div>
 
           <!-- Justificacion -->
@@ -345,10 +308,10 @@
           </div>
 
           <!-- Persona que autoriza -->
-          <div v-if="transferencia.per_autoriza" class="col-12 col-md-3">
+          <div v-if="transferencia.autorizador" class="col-12 col-md-3">
             <label class="q-mb-sm block">Persona que autoriza</label>
             <q-select
-              v-model="transferencia.per_autoriza"
+              v-model="transferencia.autorizador"
               :options="opciones_empleados"
               transition-show="jump-up"
               transition-hide="jump-up"
@@ -383,7 +346,7 @@
                 !(
                   esCoordinador ||
                   esActivosFijos ||
-                  store.user.id == transferencia.per_autoriza
+                  authenticationStore.user.id == transferencia.per_autoriza
                 )
               "
               :option-value="(v) => v.id"
@@ -403,7 +366,7 @@
 
           <!-- Observacion de autorizacion -->
           <div
-            v-if="store.user.id === transferencia.per_autoriza"
+            v-if="authenticationStore.user.id === transferencia.per_autoriza"
             class="col-12 col-md-3"
           >
             <label class="q-mb-sm block">Observacion</label>
@@ -416,7 +379,7 @@
                 !(
                   esCoordinador ||
                   esActivosFijos ||
-                  store.user.id == transferencia.per_autoriza_id
+                  authenticationStore.user.id == transferencia.per_autoriza_id
                 )
               "
               :error="!!v$.observacion_aut.$errors.length"
@@ -445,7 +408,7 @@
                   hint="Presiona Enter para seleccionar un producto"
                   @keydown.enter="
                     listarProductos({
-                      empleado_id: store.user.id,
+                      empleado_id: authenticationStore.user.id,
                       cliente_id: clienteMaterialStock,
                     })
                   "
@@ -461,7 +424,7 @@
                 <q-btn
                   @click="
                     listarProductos({
-                      empleado_id: store.user.id,
+                      empleado_id: authenticationStore.user.id,
                       cliente_id: clienteMaterialStock,
                     })
                   "
@@ -509,4 +472,4 @@
     </template>
   </tab-layout-filter-tabs2>
 </template>
-<script src="./TransferirMaterialEmpleadoPage.ts"></script>
+<script src="./TransferenciaProductoEmpleadoPage.ts"></script>

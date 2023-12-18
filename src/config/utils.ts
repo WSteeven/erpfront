@@ -81,7 +81,7 @@ export const tabOptionsPedidos: TabOption[] = [
   { label: 'Cancelados', value: 'CANCELADO' },
   { label: 'Completados', value: 'COMPLETA' },
 ]
-export const tabOptionsTransferenciaMaterialEmpleado: TabOption[] = [
+export const tabOptionsTransferenciaProductoEmpleado: TabOption[] = [
   { label: 'Por autorizar', value: 'PENDIENTE' },
   { label: 'Cancelados', value: 'CANCELADO' },
   { label: 'Completados', value: 'COMPLETA' },

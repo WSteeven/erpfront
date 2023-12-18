@@ -163,7 +163,7 @@
                 no-caps
                 unelevated
                 rounded
-                :to="{ name: 'transferir_material_empleado' }"
+                :to="{ name: 'transferencia_producto_empleado' }"
               >
                 <q-icon
                   name="bi-box-arrow-up-right"

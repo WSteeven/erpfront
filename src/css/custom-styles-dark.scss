@@ -24,7 +24,7 @@ $border-color: #464646;
   }
 
   .bg-desenfoque {
-    background-color: $dark-color-transparency;
+    background-color: rgba($dark-color, 0.8);
     backdrop-filter: blur(10px);
   }
 
