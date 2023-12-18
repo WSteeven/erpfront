@@ -158,7 +158,7 @@ export const tiposTrabajosEstaticos = {
   hincado: 'HINCADO',
 }
 
-export const motivos = {
+export const motivosTransaccionesBodega = {
   venta: 'VENTA',
   compraProveedor: 'COMPRA A PROVEEDOR',
   mercaderiaClienteTarea: 'MERCADERIA DE CLIENTE PARA TAREA',
