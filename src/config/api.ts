@@ -256,6 +256,7 @@ export const endpoints = {
   fechas_historial_materiales_stock_usados: new Endpoint('tareas/obtener-fechas-historial-materiales-stock-usados'),
   obtener_clientes_materiales_empleado: new Endpoint('tareas/obtener-clientes-materiales-empleado'),
   obtener_clientes_materiales_tarea: new Endpoint('tareas/obtener-clientes-materiales-tarea'),
+  transferencia_materiales_empleados: new Endpoint('tareas/transferencias-materiales-empleados'),
 
   // Modulo Fondos Rotativos
   tipo_fondo: new Endpoint('fondos-rotativos/tipo-fondo'),

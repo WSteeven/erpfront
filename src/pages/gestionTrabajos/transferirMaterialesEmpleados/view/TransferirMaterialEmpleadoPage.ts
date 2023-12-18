@@ -4,7 +4,7 @@ import { useOrquestadorSelectorDetalles } from '../application/OrquestadorSelect
 import { required, requiredIf } from 'shared/i18n-validators'
 import { LocalStorage, useQuasar } from 'quasar'
 import { useVuelidate } from '@vuelidate/core'
-import { computed, defineComponent, ref } from 'vue'
+import { computed, defineComponent, ref, watch } from 'vue'
 import { useRouter } from 'vue-router'
 import { endpoints } from 'config/api'
 import { AxiosResponse } from 'axios'
@@ -42,9 +42,13 @@ import { useNotificaciones } from 'shared/notificaciones'
 import { useDevolucionStore } from 'stores/devolucion'
 import { useCargandoStore } from 'stores/cargando'
 import { ordernarListaString } from 'shared/utils'
+import { Tarea } from 'pages/gestionTrabajos/tareas/domain/Tarea'
+import { EtapaController } from 'pages/gestionTrabajos/proyectos/modules/etapas/infraestructure/EtapaController'
+import { ProyectoController } from 'pages/gestionTrabajos/proyectos/infraestructure/ProyectoController'
+import { Empleado } from 'pages/recursosHumanos/empleados/domain/Empleado'
 
 export default defineComponent({
-  name: 'Devoluciones',
+  name: 'TransferirMaterial',
   components: { TabLayoutFilterTabs2, EssentialTable, EssentialSelectableTable, GestorArchivos, },
 
   setup() {
@@ -55,7 +59,7 @@ export default defineComponent({
     const { entidad: transferencia, disabled, accion, listadosAuxiliares, listado } = mixin.useReferencias()
     const { setValidador, obtenerListados, cargarVista, listar } = mixin.useComportamiento()
     const { onReestablecer, onGuardado, onConsultado } = mixin.useHooks()
-    const { confirmar, prompt, notificarCorrecto, notificarError, notificarInformacion } = useNotificaciones()
+    const { confirmar, prompt, notificarCorrecto, notificarError, notificarInformacion, notificarAdvertencia } = useNotificaciones()
 
     /**********
      * Stores
@@ -85,7 +89,7 @@ export default defineComponent({
     const tabSeleccionado = ref()
     const esCoordinador = store.esCoordinador
 
-    const { empleados, filtrarEmpleados, ordenarEmpleados, tareas, filtrarTareas } = useFiltrosListadosSelects(listadosAuxiliares)
+    const { empleados, filtrarEmpleados, ordenarEmpleados, tareas, filtrarTareas, tareasDestino, filtrarTareasDestino } = useFiltrosListadosSelects(listadosAuxiliares)
 
     const opciones_empleados = ref([])
     const opciones_tareas = ref([])
@@ -101,33 +105,29 @@ export default defineComponent({
             estado: 1
           }
         },
-        tareas: [],
-        /*tareas: {
+        tareasDestino: [],
+        etapas: [],
+        tareas: [], //new TareaController(),
+        /*{
           controller: new TareaController(),
-          params: { campos: 'id,codigo_tarea,titulo,cliente_id' }
+          // params: { campos: 'id,codigo_tarea,titulo,cliente_id' }
         },*/
       })
 
       //logica para autocompletar el formulario de devolucion
-      if (listadoMaterialesDevolucion.listadoMateriales.length) {
-        transferencia.tarea = listadoMaterialesDevolucion.tareaId ? listadoMaterialesDevolucion.tareaId : null
-        transferencia.listadoProductos = listadoMaterialesDevolucion.listadoMateriales.map((material: MaterialEmpleadoTarea) => {
-          return {
-            producto: material.producto,
-            categoria: material.categoria,
-            descripcion: material.detalle_producto,
-            cantidad: material.stock_actual,
-            medida: material.medida,
-            id: material.detalle_producto_id
-          }
-        })
-      }
+      // transferencia.tarea = listadoMaterialesDevolucion.tareaId ? listadoMaterialesDevolucion.tareaId : null
     })
 
     /********
      * Init
      ********/
     transferencia.solicitante = store.user.id
+    transferencia.empleado_origen = store.esTecnico ? store.user.id : null
+    transferencia.tarea = listadoMaterialesDevolucion.tareaId ? listadoMaterialesDevolucion.tareaId : null
+    if (listadoMaterialesDevolucion.listadoMateriales.length) {
+      transferencia.listadoProductos = mapearProductos(listadoMaterialesDevolucion.listadoMateriales)
+    }
+    consultarTareasEmpleadoOrigen()
 
     /*********
      * Reglas
@@ -146,6 +146,11 @@ export default defineComponent({
     const validarListadoProductos = new ValidarListadoProductos(transferencia)
     mixin.agregarValidaciones(validarListadoProductos)
 
+    /************
+     * Observers
+     ************/
+    watch(computed(() => transferencia.tarea), () => consultarEtapasOrigenProyecto())
+
     /*******************************************************************************************
      * Funciones
      ******************************************************************************************/
@@ -162,9 +167,94 @@ export default defineComponent({
       listar({ estado: tab })
     }
 
+    function consultarTareasEmpleadoOrigen() {
+      cargarVista(async () => {
+        const tareaController = new TareaController()
+        const { result } = await tareaController.listar({ activas_empleado: 1, empleado_id: transferencia.empleado_origen, campos: 'id,codigo_tarea' })
+        listadosAuxiliares.tareas = result
+      })
+    }
+
     function consultarTareasEmpleado() {
-      const tareaController = new TareaController()
-      tareaController.listar({ activas_empleado: 1, empleado_id: transferencia.empleado_destino, campos: 'id,codigo_tarea' }).then((data) => listadosAuxiliares.tareas.push(...data.result))
+      cargarVista(async () => {
+        const tareaController = new TareaController()
+        const { result } = await tareaController.listar({ activas_empleado: 1, empleado_id: transferencia.empleado_destino, campos: 'id,codigo_tarea' })
+        listadosAuxiliares.tareasDestino = result
+      })
+    }
+
+    function consultarEtapasOrigenProyecto() {
+      const tarea = listadosAuxiliares.tareas.filter((tarea: Tarea) => tarea.id === transferencia.tarea)[0]
+      cargarVista(async () => {
+        const etapaController = new EtapaController()
+        const { result } = await etapaController.listar({ proyecto_id: tarea.proyecto_id })
+        listadosAuxiliares.etapasOrigen = result
+        transferencia.etapa_origen = tarea.etapa_id
+        consultarProyectoOrigen()
+        obtenerMaterialesTarea(tarea.cliente_id)
+      })
+    }
+
+    function consultarEtapasProyecto() {
+      const tarea = listadosAuxiliares.tareasDestino.filter((tarea: Tarea) => tarea.id === transferencia.tarea_destino)[0]
+      cargarVista(async () => {
+        const etapaController = new EtapaController()
+        const { result } = await etapaController.listar({ proyecto_id: tarea.proyecto_id })
+        listadosAuxiliares.etapas = result
+        transferencia.etapa_destino = tarea.etapa_id
+        transferencia.per_autoriza = tarea.etapa_id ? tarea.coordinador_id : store.user.jefe_id
+        consultarProyecto()
+      })
+    }
+
+    function consultarProyectoOrigen() {
+      const tarea = listadosAuxiliares.tareas.filter((tarea: Tarea) => tarea.id === transferencia.tarea)[0]
+      cargarVista(async () => {
+        const proyectoController = new ProyectoController()
+        const { result } = await proyectoController.listar({ id: tarea.proyecto_id })
+        listadosAuxiliares.proyectosOrigen = result
+        transferencia.proyecto_origen = tarea.proyecto_id
+      })
+    }
+
+    function consultarProyecto() {
+      const tarea = listadosAuxiliares.tareasDestino.filter((tarea: Tarea) => tarea.id === transferencia.tarea_destino)[0]
+      cargarVista(async () => {
+        const proyectoController = new ProyectoController()
+        const { result } = await proyectoController.listar({ id: tarea.proyecto_id })
+        listadosAuxiliares.proyectos = result
+        transferencia.proyecto_destino = tarea.proyecto_id
+      })
+    }
+
+    async function obtenerMaterialesTarea(cliente: number) {
+      try {
+        cargando.activar()
+        const ruta = axios.getEndpoint(endpoints.materiales_empleado_tarea, { tarea_id: transferencia.tarea, empleado_id: transferencia.empleado_origen, cliente_id: cliente })
+        const response: AxiosResponse = await axios.get(ruta)
+        transferencia.listadoProductos = mapearProductos(response.data.results)
+
+        if (!transferencia.listadoProductos.length) {
+          notificarAdvertencia('No tienes material asignado.')
+        }
+      } catch (e) {
+        console.log(e)
+      } finally {
+        cargando.desactivar()
+      }
+    }
+
+    function mapearProductos(listado: any[]) {
+      return listado.map((material: MaterialEmpleadoTarea) => {
+        return {
+          producto: material.producto,
+          categoria: material.categoria,
+          descripcion: material.detalle_producto,
+          cantidad: material.stock_actual,
+          medida: material.medida,
+          id: material.detalle_producto_id
+        }
+      })
     }
 
     /*******************************************************************************************
@@ -299,6 +389,11 @@ export default defineComponent({
       ordenarEmpleados,
       tareas, filtrarTareas,
       consultarTareasEmpleado,
+      consultarEtapasProyecto,
+      consultarEtapasOrigenProyecto,
+      listadosAuxiliares,
+      tareasDestino, filtrarTareasDestino,
+      ordenarOpcionesEmpleados: () => opciones_empleados.value.sort((a: Empleado, b: Empleado) => ordernarListaString(a.apellidos!, b.apellidos!)),
     }
   }
 })

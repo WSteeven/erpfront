@@ -24,6 +24,10 @@ export class TransferenciaMaterialEmpleado extends EntidadAuditable {
   empleado_origen: number | null
   empleado_destino: number | null
   tarea_destino: number | null
+  etapa_origen: number | null
+  etapa_destino: number | null
+  proyecto_origen: number | null
+  proyecto_destino: number | null
 
   listadoProductos: any[]
 
@@ -56,6 +60,10 @@ export class TransferenciaMaterialEmpleado extends EntidadAuditable {
     this.empleado_origen = null
     this.empleado_destino = null
     this.tarea_destino = null
+    this.etapa_origen = null
+    this.etapa_destino = null
+    this.proyecto_origen = null
+    this.proyecto_destino = null
 
     // variables auxiliares
     this.es_tarea = false
