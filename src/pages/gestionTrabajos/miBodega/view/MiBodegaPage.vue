@@ -91,6 +91,31 @@
               >
               </q-select>
             </div>
+
+            <!-- Metrajedd tendido -->
+            <div v-if="etapa" class="col-12 col-md-6">
+              <label class="q-mb-sm block">
+                <q-icon
+                  name="bi-check-circle-fill"
+                  color="primary"
+                  class="q-mr-xs"
+                ></q-icon>
+                Etapa</label
+              >
+              <q-input v-model="etapa" disable outlined dense> </q-input>
+            </div>
+
+            <div v-if="proyecto" class="col-12 col-md-6">
+              <label class="q-mb-sm block">
+                <q-icon
+                  name="bi-check-circle-fill"
+                  color="primary"
+                  class="q-mr-xs"
+                ></q-icon>
+                Proyecto</label
+              >
+              <q-input v-model="proyecto" disable outlined dense> </q-input>
+            </div>
           </div>
 
           <div v-if="materialesTarea.length" class="row">

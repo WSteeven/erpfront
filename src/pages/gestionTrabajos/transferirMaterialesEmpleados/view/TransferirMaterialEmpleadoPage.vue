@@ -99,16 +99,16 @@
           <div class="col-12 col-md-3">
             <label class="q-mb-sm block">Tarea origen</label>
             <!-- @filter="filtrarTareas" -->
+            <!-- :disable="puedeSeleccionarPropietarioMaterial" -->
             <q-select
               v-model="transferencia.tarea"
               :options="listadosAuxiliares.tareas"
               transition-show="scale"
               transition-hide="scale"
               options-dense
-              hint="Tarea #"
+              hint="Seleccionar para buscar productos..."
               dense
               outlined
-              :disable="puedeSeleccionarPropietarioMaterial"
               :option-label="(item) => item.codigo_tarea + ' - ' + item.titulo"
               :option-value="(item) => item.id"
               use-input
@@ -480,7 +480,7 @@
           <!-- Tabla -->
           <div class="col-12">
             <essential-table
-              titulo="Productos Seleccionados"
+              titulo="Productos seleccionados"
               :configuracionColumnas="
                 configuracionColumnasProductosSeleccionadosAccion
               "

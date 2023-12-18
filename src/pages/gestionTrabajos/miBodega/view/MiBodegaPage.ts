@@ -58,6 +58,8 @@ export default defineComponent({
     const clienteMaterialTarea = ref()
     const clientes = ref([])
     const clientesMaterialesTarea = ref([])
+    const etapa = ref()
+    const proyecto = ref()
 
     const axios = AxiosHttpRepository.getInstance()
 
@@ -80,6 +82,9 @@ export default defineComponent({
         listadoMaterialesDevolucionStore.listadoMateriales = response.data.results
         listadoMaterialesDevolucionStore.tareaId = filtro.tarea
         listadoMaterialesDevolucionStore.cliente_id = cliente
+        const tarea: Tarea = tareasSource.value.filter((tarea: Tarea) => tarea.id === filtro.tarea)[0]
+        etapa.value = tarea.etapa
+        proyecto.value = tarea.proyecto
 
         if (!materialesTarea.value.length) {
           notificarAdvertencia('No tienes material asignado.')
@@ -177,6 +182,8 @@ export default defineComponent({
       clientesMaterialesTarea,
       obtenerMaterialesTarea,
       seleccionarTarea,
+      etapa,
+      proyecto,
     }
   },
 })
