@@ -10,6 +10,7 @@ import { VendedoresController } from '../infrestructure/VendedoresController'
 import { configuracionColumnasVendedores } from '../domain/configuracionColumnasVendedores'
 import { EmpleadoController } from 'pages/recursosHumanos/empleados/infraestructure/EmpleadoController'
 import { ModalidadController } from 'pages/ventas-claro/modalidad/infrestructure/ModalidadController'
+import { tipos_vendedor } from 'config/utils'
 
 
 export default defineComponent({
@@ -56,7 +57,9 @@ export default defineComponent({
       modalidad: {
         required: true
       },
-
+      tipo_vendedor:{
+        required: true
+      }
 
     }
     const v$ = useVuelidate(reglas, vendedores)
@@ -99,6 +102,7 @@ export default defineComponent({
       configuracionColumnas: configuracionColumnasVendedores,
       empleados,
       modalidades,
+      tipos_vendedor,
       filtrarEmpleados,
       filtrarModalidades,
     }

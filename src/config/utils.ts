@@ -426,6 +426,12 @@ export const tipos_sangre = [
   { nombre: 'O -' },
   // Puedes agregar aquí más tipos de sangre si es necesario
 ]
+export const tipos_vendedor = [
+  { nombre: 'SUPERVISOR' },
+  { nombre: 'JEFE DE VENTAS' },
+  { nombre: 'VENDEDOR' },
+  // Puedes agregar aquí más tipos de vendedor si es necesario
+]
 export const talla_letras = [
   { nombre: 'S' },
   { nombre: 'M' },
@@ -445,7 +451,7 @@ export const tabOptionsPreingresoMateriales = [
 export const formas_pago =[
   {label: 'EFECTIVO', value: 'EFECTIVO'},
   {label: 'TC', value: 'TARJETA DE CREDITO'},
-  {label: 'D.BANCAREO', value: 'DEBITO BANCAREO'},
+  {label: 'D.BANCARIO', value: 'DEBITO BANCARIO'},
 ]
 export const estados_activacion =[
   {label: 'PENDIENTE', value: 'PENDIENTE'},

@@ -24,6 +24,13 @@ export const configuracionColumnasVendedores: ColumnConfig<Vendedores>[] = [
     align: 'left',
     sortable: true
   },
+  {
+    name: 'tipo_vendedor',
+    field: 'tipo_vendedor',
+    label: 'Tipo Vendedor',
+    align: 'left',
+    sortable: true
+  },
 
 
 
