@@ -338,7 +338,7 @@ export default defineComponent({
     }
 
     function obtenerUsername(){
-     if( accion.value== acciones.nuevo && empleado.nombres != null && empleado.nombres != '' && empleado.apellidos != null && empleado.apellidos != ''){
+     if(( accion.value== acciones.nuevo || accion.value== acciones.editar )&& empleado.nombres != null && empleado.nombres != '' && empleado.apellidos != null && empleado.apellidos != ''){
         generarUsename()
      }
     }
