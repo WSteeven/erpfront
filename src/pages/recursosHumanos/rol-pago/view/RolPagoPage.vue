@@ -82,7 +82,6 @@
         <q-input
           v-model="rolpago.dias"
           placeholder="Obligatorio"
-          type="number"
           mask="##"
           :disable="disabled"
           outlined

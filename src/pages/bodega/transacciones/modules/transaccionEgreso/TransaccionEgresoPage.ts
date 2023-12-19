@@ -491,9 +491,11 @@ export default defineComponent({
       filtroTareas,
       filtroMotivos(val) {
         console.log('filtro motivos', val)
-        const motivoSeleccionado = listadosAuxiliares.motivos.filter((v) => v.id === val)
-        transaccion.aviso_liquidacion_cliente = (motivoSeleccionado[0]['nombre'] == motivos.egresoLiquidacionMateriales) ? true : false
-        transaccion.es_transferencia = (motivoSeleccionado[0]['nombre'] == motivos.egresoTransferenciaBodegas) ? true : false
+        const motivoSeleccionado = listadosAuxiliares.motivos.filter((v) => v.id === val)[0]
+        // transaccion.aviso_liquidacion_cliente = (motivoSeleccionado.nombre == motivos.egresoLiquidacionMateriales) ? true : false
+        if([motivos.destruccion, motivos.egresoAjusteRegularizacion, motivos.egresoLiquidacionMateriales, motivos.egresoTransferenciaBodegas, motivos.venta, motivos.robo].includes(motivoSeleccionado.nombre)) transaccion.aviso_liquidacion_cliente=true
+        else transaccion.aviso_liquidacion_cliente =false
+        transaccion.es_transferencia = (motivoSeleccionado.nombre == motivos.egresoTransferenciaBodegas) ? true : false
       },
 
       filtroSucursales(val, update) {
