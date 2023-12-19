@@ -20,11 +20,11 @@
         no-caps
         inline-label
       >
+        <q-tab name="tareas" label="Material para tarea" icon="bi-pin-angle" />
         <q-tab
-          name="tareas"
-          label="Material para tarea"
-          icon="bi-pin-angle"
-          @click="() => (mensaje = '')"
+          name="etapas"
+          label="Material para proyectos"
+          icon="bi-diagram-2"
         />
         <q-tab name="personal" label="Stock personal" icon="bi-person"> </q-tab>
       </q-tabs>
