@@ -22,7 +22,6 @@ import { configuracionColumnasProductosSeleccionados } from '../domain/configura
 import { acciones, autorizaciones, autorizacionesTransacciones, estados, estadosTransacciones, tabOptionsPedidos } from 'config/utils'
 import { EmpleadoController } from 'pages/recursosHumanos/empleados/infraestructure/EmpleadoController'
 import { configuracionColumnasDetallesModal } from '../domain/configuracionColumnasDetallesModal'
-import { TareaController } from 'tareas/infraestructure/TareaController'
 import { CustomActionTable } from 'components/tables/domain/CustomActionTable'
 import { CustomActionPrompt } from 'components/tables/domain/CustomActionPrompt'
 import { useNotificaciones } from 'shared/notificaciones'
@@ -37,7 +36,6 @@ import { ClienteController } from 'sistema/clientes/infraestructure/ClienteContr
 import { CambiarEstadoPedido } from '../application/CambiarEstadoPedido'
 import { useNotificacionStore } from 'stores/notificacion'
 import { useCargandoStore } from 'stores/cargando'
-import { Sucursal } from 'pages/administracion/sucursales/domain/Sucursal'
 import { ordenarLista, ordernarListaString } from 'shared/utils'
 import { SucursalController } from 'pages/administracion/sucursales/infraestructure/SucursalController'
 import { ComportamientoModalesPedido } from '../application/ComportamientoModalesPedido'
@@ -57,6 +55,7 @@ export default defineComponent({
     const { onReestablecer, onConsultado } = mixin.useHooks()
     const { confirmar, prompt, notificarCorrecto, notificarError } = useNotificaciones()
 
+    // modales
     const modales = new ComportamientoModalesPedido()
 
     // Stores
@@ -93,10 +92,12 @@ export default defineComponent({
       soloLectura.value = false
     })
     onConsultado(() => {
-      opciones_empleados.value = listadosAuxiliares.empleados
+      empleados.value = listadosAuxiliares.empleados
       if (accion.value === acciones.editar && (esCoordinador || esActivosFijos || store.user.id === pedido.per_autoriza_id)) {
         soloLectura.value = true
       }
+      obtenerProyectos()
+      obtenerEtapasProyecto(pedido.proyecto, false)
     })
     //variables para cosultar los detalles
     const all = ref(true)
@@ -118,14 +119,14 @@ export default defineComponent({
       }
     ]
 
-    const opciones_empleados = ref([])
-    const opciones_sucursales = ref([])
 
     const {
+      empleados, filtrarEmpleados,
       clientes, filtrarClientes,
       proyectos, filtrarProyectos,
       etapas, filtrarEtapas,
       tareas, filtrarTareas,
+      sucursales, filtrarSucursales,
     } = useFiltrosListadosSelects(listadosAuxiliares)
 
     //Obtener los listados
@@ -138,13 +139,6 @@ export default defineComponent({
             estado: 1,
           }
         },
-        // tareas: {
-        //   controller: new TareaController(),
-        //   params: {
-        //     campos: 'id,codigo_tarea,titulo,cliente_id',
-        //     finalizado: 0
-        //   }
-        // },
         clientes: {
           controller: new ClienteController(),
           params: {
@@ -153,6 +147,7 @@ export default defineComponent({
             estado: 1,
           },
         },
+        sucursales: JSON.parse(LocalStorage.getItem('sucursales')!.toString())
       })
     })
 
@@ -199,7 +194,8 @@ export default defineComponent({
       })
       listadosAuxiliares.proyectos = response.result
       proyectos.value = response.result
-      obtenerTareasEtapa(null)
+      if(accion.value == acciones.nuevo)obtenerTareasEtapa(null)
+      else obtenerTareasEtapa(pedido.etapa, false)
     }
      async function obtenerEtapasProyecto(idProyecto: string | number | null, limpiarCampos = true) {
       cargando.activar()
@@ -215,12 +211,13 @@ export default defineComponent({
         if (etapas.value.length <= 0) {
           await obtenerTareasEtapa(null)
         }else tareas.value = []
+        // if(pedido.tarea) await obtenerTareasEtapa(pedido.etapa)
       }
       cargando.desactivar()
     }
-    async function obtenerTareasEtapa(idEtapa: number | null) {
+    async function obtenerTareasEtapa(idEtapa: number | null, limpiarCampos=true) {
       cargando.activar()
-      pedido.tarea = null
+      if(limpiarCampos)pedido.tarea = null
       const response = await new TareasEmpleadoController().listar({ proyecto_id: pedido.proyecto, etapa_id: idEtapa, empleado_id: store.user.id, campos: 'id,codigo_tarea,titulo', finalizado: 0 })
       listadosAuxiliares.tareas = response.result
       tareas.value = response.result
@@ -268,7 +265,6 @@ export default defineComponent({
         })
       },
       visible: ({ entidad, posicion }) => {
-        // console.log(posicion, entidad)
         return tabSeleccionado.value === autorizacionesTransacciones.aprobado && ((entidad.per_autoriza_id === store.user.id || entidad.solicitante_id === store.user.id) && entidad.estado === estadosTransacciones.pendiente || store.esActivosFijos) || store.esAdministrador
       }
     }
@@ -279,7 +275,6 @@ export default defineComponent({
       tooltip: 'Marcar pedido como completado',
       accion: ({ entidad, posicion }) => {
         confirmar('¿Está seguro de marcar el pedido como completado?', () => {
-          console.log(entidad, posicion)
           const data: CustomActionPrompt = {
             titulo: 'Observación',
             mensaje: 'Ingresa el motivo de marcar como completo el pedido',
@@ -325,7 +320,6 @@ export default defineComponent({
       icono: 'bi-pencil-square',
       accion: ({ entidad, posicion }) => {
         pedidoStore.pedido = entidad
-        console.log('Pedido a despachar es: ', pedidoStore.pedido)
         router.push('transacciones-egresos')
       },
       visible: ({ entidad }) => (tabSeleccionado.value == 'APROBADO' || tabSeleccionado.value == 'PARCIAL') && esBodeguero && entidad.estado != estadosTransacciones.completa ? true : false
@@ -336,7 +330,6 @@ export default defineComponent({
       icono: 'bi-gear',
       accion: ({ entidad, posicion }) => {
         pedidoStore.pedido = entidad
-        console.log('Entidad es: ', entidad)
         modales.abrirModalEntidad('CorregirPedidoPage')
       },
       visible: ({ entidad }) => (tabSeleccionado.value == 'APROBADO' || tabSeleccionado.value == 'PARCIAL') && (esBodeguero || entidad.per_autoriza_id == store.user.id) && entidad.estado != estadosTransacciones.completa ? true : false
@@ -348,9 +341,6 @@ export default defineComponent({
       accion: async ({ entidad }) => {
         pedidoStore.idPedido = entidad.id
         await pedidoStore.imprimirPdf()
-        // console.log(pedidoStore.pedido)
-        // console.log(pedidoStore.pedido.listadoProductos)
-        // console.log(pedidoStore.pedido.listadoProductos.flatMap((v) => v))
       },
       visible: () => tabSeleccionado.value == 'APROBADO' || tabSeleccionado.value == 'PARCIAL' || tabSeleccionado.value == 'COMPLETA' ? true : false
     }
@@ -374,10 +364,10 @@ export default defineComponent({
 
 
     //Configurar los listados
-    opciones_empleados.value = listadosAuxiliares.empleados
+    empleados.value = listadosAuxiliares.empleados
     tareas.value = listadosAuxiliares.tareas
     clientes.value = listadosAuxiliares.clientes
-    opciones_sucursales.value = JSON.parse(LocalStorage.getItem('sucursales')!.toString())
+    sucursales.value = listadosAuxiliares.sucursales
 
     return {
       mixin, pedido, disabled, accion, v$, acciones,
@@ -388,8 +378,8 @@ export default defineComponent({
       proyectos, filtrarProyectos,
       etapas, filtrarEtapas,
       tareas, filtrarTareas,
-      opciones_empleados,
-      opciones_sucursales,
+      sucursales, filtrarSucursales,
+      empleados, filtrarEmpleados,
       estados,
       autorizaciones,
 
@@ -460,56 +450,15 @@ export default defineComponent({
       },
 
       //Filtros
-      filtroResponsable(val, update) {
-        if (val === '') {
-          update(() => {
-            // opciones_empleados.value = listadosAuxiliares.empleados
-            opciones_empleados.value = listadosAuxiliares.empleados
-          })
-          return
-        }
-        update(() => {
-          const needle = val.toLowerCase()
-          opciones_empleados.value = listadosAuxiliares.empleados.filter((v) => (v.nombres.toLowerCase().indexOf(needle) > -1 || v.apellidos.toLowerCase().indexOf(needle) > -1))
-        })
-      },
-      filtroRetira(val, update) {
-        if (val === '') {
-          update(() => {
-            // opciones_empleados.value = listadosAuxiliares.empleados
-            opciones_empleados.value = listadosAuxiliares.empleados
-          })
-          return
-        }
-        update(() => {
-          const needle = val.toLowerCase()
-          opciones_empleados.value = listadosAuxiliares.empleados.filter((v) => (v.nombres.toLowerCase().indexOf(needle) > -1 || v.apellidos.toLowerCase().indexOf(needle) > -1))
-        })
-      },
       ordenarLista,
 
       onRowClick: (row) => alert(`${row.name} clicked`),
       pedidoSeleccionado(val) {
         pedido.cliente_id = listadosAuxiliares.tareas.filter((v) => (v.id === val))[0]['cliente_id']
-        console.log(pedido.cliente_id)
       },
 
       recargarSucursales,
-      filtroSucursales(val, update) {
-        if (val === '') {
-          update(() => {
-            opciones_sucursales.value = JSON.parse(LocalStorage.getItem('sucursales')!.toString())
-          })
-          return
-        }
-        update(() => {
-          const needle = val.toLowerCase()
-          opciones_sucursales.value = JSON.parse(LocalStorage.getItem('sucursales')!.toString()).filter((v) => v.lugar.toLowerCase().indexOf(needle) > -1)
-        })
-      },
-      ordenarSucursales() {
-        opciones_sucursales.value.sort((a: Sucursal, b: Sucursal) => ordernarListaString(a.lugar!, b.lugar!))
-      },
+
     }
   }
 })

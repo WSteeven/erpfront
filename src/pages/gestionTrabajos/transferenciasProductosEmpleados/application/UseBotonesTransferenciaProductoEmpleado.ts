@@ -1,0 +1,62 @@
+import { CustomActionPrompt } from "components/tables/domain/CustomActionPrompt"
+import { CustomActionTable } from "components/tables/domain/CustomActionTable"
+
+export function useBotonesTransferenciaProductoEmpleado() {
+  const botonAnular: CustomActionTable = {
+    titulo: 'Anular',
+    color: 'negative',
+    icono: 'bi-x',
+    accion: ({ entidad, posicion }) => {
+      confirmar('¿Está seguro de anular la devolución?', () => {
+        const data: CustomActionPrompt = {
+          titulo: 'Motivo',
+          mensaje: 'Ingresa el motivo de la anulación',
+          accion: async (data) => {
+            try {
+              const { result } = await new CambiarEstadoDevolucion().anular(entidad.id, data)
+              notificarCorrecto('Devolución anulada exitosamente!')
+              if (posicion >= 0) {
+                listado.value.splice(posicion, 1,)
+                listado.value = [...listado.value]
+              }
+            } catch (e: any) {
+              notificarError('No se pudo anular, debes ingresar un motivo para la anulación')
+            }
+          }
+        }
+
+        prompt(data)
+      })
+    },
+    visible: ({ entidad }) => entidad.estado_bodega == 'PENDIENTE' && (entidad.solicitante_id == store.user.id || entidad.per_autoriza_id == store.user.id || store.esAdministrador)
+  }
+
+  const botonImprimir: CustomActionTable = {
+    titulo: 'Imprimir',
+    color: 'secondary',
+    icono: 'bi-printer',
+    accion: async ({ entidad, posicion }) => {
+      devolucionStore.idDevolucion = entidad.id
+      await devolucionStore.imprimirPdf()
+    },
+    visible: () => tabSeleccionado.value == 'CREADA' ? true : false
+  }
+
+  const botonDespachar: CustomActionTable = {
+    titulo: 'Gestionar',
+    color: 'primary',
+    icono: 'bi-pencil-square',
+    accion: ({ entidad, posicion }) => {
+      devolucionStore.devolucion = entidad
+      console.log('Devolución a ingresar a bodega es: ', devolucionStore.devolucion)
+      router.push('transacciones-ingresos')
+    },
+    visible: ({ entidad }) => (tabSeleccionado.value == 'APROBADO' || tabSeleccionado.value == 'PARCIAL') && store.esBodeguero ? true : false
+  }
+
+  return {
+    botonAnular,
+    botonImprimir,
+    botonDespachar,
+  }
+}

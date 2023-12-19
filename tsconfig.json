@@ -22,6 +22,7 @@
       ],
       "tiposTareas/*": ["src/pages/gestionTrabajos/tiposTareas/*"],
       "proyectos/*": ["src/pages/gestionTrabajos/proyectos/*"],
+      "miBodega/*": ["src/pages/gestionTrabajos/miBodega/*"],
       "recursosHumanos/*": ["src/pages/recursosHumanos/*"],
       "controlTareas/*": ["src/pages/tareas/controlTareas/*"],
       "subtareas/*": ["src/pages/gestionTrabajos/subtareas/*"],

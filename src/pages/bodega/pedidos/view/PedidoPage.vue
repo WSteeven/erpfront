@@ -38,7 +38,7 @@
             <label class="q-mb-sm block">Sucursal</label>
             <q-select
               v-model="pedido.sucursal"
-              :options="opciones_sucursales"
+              :options="sucursales"
               transition-show="scale"
               transition-hide="scale"
               options-dense
@@ -49,8 +49,8 @@
               error-message="Debes seleccionar una sucursal"
               use-input
               input-debounce="0"
-              @filter="filtroSucursales"
-              @popup-show="ordenarSucursales"
+              @filter="filtrarSucursales"
+              @popup-show="ordenarLista(sucursales, 'lugar')"
               :option-label="(item) => item.lugar"
               :option-value="(item) => item.id"
               emit-value
@@ -75,7 +75,7 @@
               </q-input> -->
             <q-select
               v-model="pedido.solicitante"
-              :options="opciones_empleados"
+              :options="empleados"
               transition-show="scale"
               transition-hide="scale"
               options-dense
@@ -205,7 +205,8 @@
           <!-- Responsable -->
           <div
             v-if="
-              ((esCoordinador||esCoordinadorBackup) && !pedido.para_cliente) ||
+              ((esCoordinador || esCoordinadorBackup) &&
+                !pedido.para_cliente) ||
               (esRRHH && !pedido.para_cliente) ||
               (!esTecnico && !pedido.para_cliente)
             "
@@ -214,7 +215,7 @@
             <label class="q-mb-sm block">Responsable</label>
             <q-select
               v-model="pedido.responsable"
-              :options="opciones_empleados"
+              :options="empleados"
               transition-show="jump-up"
               transition-hide="jump-up"
               options-dense
@@ -222,11 +223,12 @@
               outlined
               use-input
               input-debounce="0"
-              @filter="filtroResponsable"
+              @filter="filtrarEmpleados"
+              @popup-show="ordenarLista(empleados, 'apellidos')"
               error-message="Debes seleccionar el responsable de los materiales"
               :error="!!v$.responsable.$errors.length"
               :disable="disabled || soloLectura"
-              :option-label="(v) => v.nombres + ' ' + v.apellidos"
+              :option-label="(v) => v.apellidos + ' ' + v.nombres"
               :option-value="(v) => v.id"
               emit-value
               map-options
@@ -262,7 +264,7 @@
             <label class="q-mb-sm block">Persona que retira</label>
             <q-select
               v-model="pedido.per_retira"
-              :options="opciones_empleados"
+              :options="empleados"
               transition-show="jump-up"
               transition-hide="jump-up"
               options-dense
@@ -270,11 +272,12 @@
               outlined
               use-input
               input-debounce="0"
-              @filter="filtroRetira"
+              @filter="filtrarEmpleados"
+              @popup-show="ordenarLista(empleados, 'apellidos')"
               error-message="Debes seleccionar la persona que retira los materiales"
               :error="!!v$.per_retira.$errors.length"
               :disable="disabled || soloLectura"
-              :option-label="(v) => v.nombres + ' ' + v.apellidos"
+              :option-label="(v) => v.apellidos + ' ' + v.nombres"
               :option-value="(v) => v.id"
               emit-value
               map-options
@@ -309,7 +312,10 @@
             ></q-checkbox>
           </div>
           <!-- Codigo de proyecto -->
-          <div class="col-12 col-md-3" v-if="pedido.es_tarea||pedido.proyecto">
+          <div
+            class="col-12 col-md-3"
+            v-if="pedido.es_tarea || pedido.proyecto"
+          >
             <label class="q-mb-sm block">Proyecto</label>
             <q-select
               v-model="pedido.proyecto"
@@ -352,7 +358,7 @@
             </q-select>
           </div>
           <!-- Etapa del proyecto -->
-          <div v-if="etapas?.length ||pedido.etapa" class="col-12 col-md-3">
+          <div v-if="etapas?.length || pedido.etapa" class="col-12 col-md-3">
             <label class="q-mb-sm block">Etapa</label>
             <q-select
               v-model="pedido.etapa"
@@ -454,7 +460,7 @@
             <label class="q-mb-sm block">Persona que autoriza</label>
             <q-select
               v-model="pedido.per_autoriza"
-              :options="opciones_empleados"
+              :options="empleados"
               transition-show="jump-up"
               transition-hide="jump-up"
               options-dense
@@ -480,7 +486,10 @@
               dense
               outlined
               :disable="
-                disabled ||(store.user.id != pedido.per_autoriza_id && !store.esCoordinadorBodega)"
+                disabled ||
+                (store.user.id != pedido.per_autoriza_id &&
+                  !store.esCoordinadorBodega)
+              "
               :option-value="(v) => v.id"
               :option-label="(v) => v.nombre"
               emit-value

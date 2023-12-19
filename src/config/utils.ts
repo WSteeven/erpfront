@@ -81,7 +81,7 @@ export const tabOptionsPedidos: TabOption[] = [
   { label: 'Cancelados', value: 'CANCELADO' },
   { label: 'Completados', value: 'COMPLETA' },
 ]
-export const tabOptionsTransferenciaMaterialEmpleado: TabOption[] = [
+export const tabOptionsTransferenciaProductoEmpleado: TabOption[] = [
   { label: 'Por autorizar', value: 'PENDIENTE' },
   { label: 'Cancelados', value: 'CANCELADO' },
   { label: 'Completados', value: 'COMPLETA' },
@@ -158,7 +158,7 @@ export const tiposTrabajosEstaticos = {
   hincado: 'HINCADO',
 }
 
-export const motivos = {
+export const motivosTransaccionesBodega = {
   venta: 'VENTA',
   compraProveedor: 'COMPRA A PROVEEDOR',
   mercaderiaClienteTarea: 'MERCADERIA DE CLIENTE PARA TAREA',
@@ -167,6 +167,7 @@ export const motivos = {
   stockInicial: 'STOCK INICIAL',
   despachoTarea: 'DESPACHO DE TAREA',
   despacho: 'DESPACHO',
+  destruccion: 'DESTRUCCION',
   devolucionAlProveedor: 'DEVOLUCION AL PROVEEDOR',
   reposicion: 'REPOSICION',
   ingresoTransferenciaBodegas: 'INGRESO TRANSFERENCIA ENTRE BODEGAS',
@@ -174,6 +175,7 @@ export const motivos = {
   ingresoLiquidacionMateriales: 'INGRESO POR LIQUIDACION DE MATERIALES',
   egresoLiquidacionMateriales: 'EGRESO POR LIQUIDACION DE MATERIALES',
   ingresoAjusteRegularizacion: 'AJUSTE DE INGRESO POR REGULARIZACION',
+  robo: 'ROBO',
   egresoAjusteRegularizacion: 'AJUSTE DE EGRESO POR REGULARIZACION',
   mercaderiaClienteStock: 'MERCADERIA DE CLIENTE PARA STOCK',
   devolucionGarantia: 'DEVOLUCION POR GARANTIA',

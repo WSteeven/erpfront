@@ -175,10 +175,10 @@ const routes: RouteRecordRaw[] = [
         meta: { requiresAuth: true },
       },
       {
-        path: '/transferir-material-empleado',
-        name: 'transferir_material_empleado',
+        path: '/transferencia-producto-empleado',
+        name: 'transferencia_producto_empleado',
         component: () =>
-          import('gestionTrabajos/transferirMaterialesEmpleados/view/TransferirMaterialEmpleadoPage.vue'),
+          import('gestionTrabajos/transferenciasProductosEmpleados/view/TransferenciaProductoEmpleadoPage.vue'),
         meta: { requiresAuth: true },
       },
       /*{

@@ -24,6 +24,10 @@ export const useFiltrosListadosSelects = (listadosAuxiliares, entidad?: Ref<any>
   const bancos = ref(listadosAuxiliares.bancos)
   const categorias = ref(listadosAuxiliares.categorias)
 
+  //bodega
+  const sucursales = ref(listadosAuxiliares.sucursales)
+  const motivos = ref(listadosAuxiliares.motivos)
+
   // tareas
   const proyectos = ref(listadosAuxiliares.proyectos)
   const etapas = ref(listadosAuxiliares.etapas)
@@ -241,6 +245,13 @@ export const useFiltrosListadosSelects = (listadosAuxiliares, entidad?: Ref<any>
     categorias.value.sort((a: CategoriaOferta, b: CategoriaOferta) => ordernarListaString(a.nombre!, b.nombre!))
   }
 
+  function filtrarMotivos(val, update){
+    return filtrarLista(val, update, motivos, 'nombre', listadosAuxiliares.motivos)
+  }
+  function filtrarSucursales(val, update){
+    return filtrarLista(val, update, sucursales, 'lugar', listadosAuxiliares.sucursales)
+  }
+
   function filtrarProyectos(val, update) {
     return filtrarLista(val, update, proyectos, 'codigo_proyecto', listadosAuxiliares.proyectos)
   }
@@ -283,6 +294,8 @@ export const useFiltrosListadosSelects = (listadosAuxiliares, entidad?: Ref<any>
     bancos, filtrarBancos,
     categorias, filtrarCategoriasProveedor, ordenarCategorias,
     productos, filtrarProductos,
+    motivos, filtrarMotivos,
+    sucursales, filtrarSucursales,
 
     tareas, filtrarTareas,
     proyectos, filtrarProyectos,
