@@ -142,7 +142,7 @@ const comision_vendedor = ref(0)
         '/' +
         axiosHttpRepository.getEndpoint(endpoints.obtener_comision) +
         '/' +
-        ventas.producto+'/'+ventas.forma_pago
+        ventas.producto+'/'+ventas.forma_pago+'/'+ventas.vendedor
       axios({
         url: url_acreditacion,
         method: 'GET',

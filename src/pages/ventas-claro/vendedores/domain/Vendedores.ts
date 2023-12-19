@@ -9,6 +9,8 @@ export class Vendedores extends EntidadAuditable {
   modalidad_id: number | null
   modalidad_info: string | null
   tipo_vendedor: string | null
+  jefe_inmediato: number | null
+  jefe_inmediato_info : string | null
 
   constructor() {
     super()
@@ -21,5 +23,7 @@ export class Vendedores extends EntidadAuditable {
     this.modalidad_id =null
     this.modalidad_info = null
     this.tipo_vendedor = null
+    this.jefe_inmediato = null
+    this.jefe_inmediato_info = null
   }
 }

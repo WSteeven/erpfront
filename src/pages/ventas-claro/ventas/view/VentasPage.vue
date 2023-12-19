@@ -232,7 +232,7 @@
           </div>
            <!-- Comision -->
            <div class="col-12 col-md-3">
-            <label class="q-mb-sm block">Comision</label>
+            <label class="q-mb-sm block"> Comision a Pagar</label>
             <q-input
               v-model="comision_vendedor"
               placeholder="Opcional"

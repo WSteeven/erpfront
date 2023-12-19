@@ -28,7 +28,7 @@
               map-options
             >
               <template v-slot:error>
-                <div v-for="error of v$.modalidad.$errors" :key="error.$uid">
+                <div v-for="error of v$.empleado.$errors" :key="error.$uid">
                   <div class="error-msg">{{ error.$message }}</div>
                 </div>
               </template>
@@ -130,7 +130,44 @@
                 </template>
               </q-select>
             </div>
+                      <!-- Empleados -->
+          <div class="col-12 col-md-3" v-if="vendedores.tipo_vendedor!=='JEFE DE VENTAS'">
+            <label class="q-mb-sm block">Jefe inmediato</label>
+            <q-select
+              v-model="vendedores.jefe_inmediato"
+              :options="empleados"
+              transition-show="jump-up"
+              transition-hide="jump-down"
+              options-dense
+              dense
+              outlined
+              :disable="disabled"
+              :readonly="disabled"
+              :error="!!v$.jefe_inmediato.$errors.length"
+              @blur="v$.jefe_inmediato.$touch"
+              error-message="Debes seleccionar un empleado"
+              use-input
+              input-debounce="0"
+              @filter="filtrarEmpleados"
+              :option-value="(v) => v.id"
+              :option-label="(v) => v.nombres + ' ' + v.apellidos"
+              emit-value
+              map-options
+            >
+              <template v-slot:error>
+                <div v-for="error of v$.jefe_inmediato.$errors" :key="error.$uid">
+                  <div class="error-msg">{{ error.$message }}</div>
+                </div>
+              </template>
+              <template v-slot:no-option>
+                <q-item>
+                  <q-item-section class="text-grey"> No hay resultados </q-item-section>
+                </q-item>
+              </template>
+            </q-select>
+          </div>
         </div>
+
       </q-form>
     </template>
   </tab-layout>

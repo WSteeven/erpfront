@@ -31,7 +31,14 @@ export const configuracionColumnasVendedores: ColumnConfig<Vendedores>[] = [
     align: 'left',
     sortable: true
   },
-
+  //jefe_inmediato_info
+  {
+    name: 'jefe_inmediato_info',
+    field: 'jefe_inmediato_info',
+    label: 'Jefe Inmediato',
+    align: 'left',
+    sortable: true
+  },
 
 
 ]

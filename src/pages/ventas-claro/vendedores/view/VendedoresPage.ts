@@ -11,6 +11,7 @@ import { configuracionColumnasVendedores } from '../domain/configuracionColumnas
 import { EmpleadoController } from 'pages/recursosHumanos/empleados/infraestructure/EmpleadoController'
 import { ModalidadController } from 'pages/ventas-claro/modalidad/infrestructure/ModalidadController'
 import { tipos_vendedor } from 'config/utils'
+import { requiredIf } from 'shared/i18n-validators'
 
 
 export default defineComponent({
@@ -59,7 +60,11 @@ export default defineComponent({
       },
       tipo_vendedor:{
         required: true
+      },
+      jefe_inmediato:{
+        required: requiredIf(()=>vendedores.tipo_vendedor!=='JEFE DE VENTAS')
       }
+
 
     }
     const v$ = useVuelidate(reglas, vendedores)

@@ -48,7 +48,10 @@ export default defineComponent({
     useCargandoStore().setQuasar(useQuasar())
 
     const reglas = {
-      fecha: {
+      fecha_inicio: {
+        required: true,
+      },
+      fecha_fin: {
         required: true,
       },
     }
