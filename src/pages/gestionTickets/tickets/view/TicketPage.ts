@@ -358,6 +358,7 @@ export default defineComponent({
       responsableDeshabilitado.value = false
       departamentoDeshabilitado.value = false
       pausas.value = []
+      rechazos.value = []
       reestablecerDestinatarios()
     })
 
