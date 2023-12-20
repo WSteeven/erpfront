@@ -20,9 +20,13 @@
         no-caps
         inline-label
       >
-        <q-tab name="tareas" label="Material para tarea" icon="bi-pin-angle" />
         <q-tab
-          name="etapas"
+          :name="destinosTareas.paraClienteFinal"
+          label="Material para cliente final y mantenimiento"
+          icon="bi-pin-angle"
+        />
+        <q-tab
+          :name="destinosTareas.paraProyecto"
           label="Material para proyectos"
           icon="bi-diagram-2"
         />
@@ -30,13 +34,13 @@
       </q-tabs>
 
       <q-tab-panels v-model="tab" animated>
-        <q-tab-panel name="tareas">
+        <q-tab-panel :name="destinosTareas.paraClienteFinal">
           <div class="row q-col-gutter-sm q-pa-sm q-mb-md">
             <!-- Tarea -->
             <div class="col-12 col-md-6">
               <label class="q-mb-sm block">Seleccione una tarea</label>
               <q-select
-                v-model="filtro.tarea"
+                v-model="filtro.tarea_id"
                 :options="tareas"
                 @filter="filtrarTareas"
                 transition-show="scale"
@@ -67,13 +71,13 @@
             </div>
             <!-- @update:model-value="filtrarStock()" -->
 
-            <div v-if="filtro.tarea" class="col-12 col-md-6">
+            <div v-if="filtro.tarea_id" class="col-12 col-md-6">
               <label class="q-mb-sm block"
                 >Seleccione un cliente para filtrar el material</label
               >
               <q-select
-                v-model="clienteMaterialTarea"
-                :options="clientesMaterialesTarea"
+                v-model="filtro.cliente_id"
+                :options="listadosAuxiliares.clientesMaterialesTarea"
                 transition-show="scale"
                 transition-hide="scale"
                 use-input
@@ -83,9 +87,7 @@
                 outlined
                 :option-label="(item) => item.razon_social"
                 :option-value="(item) => item.cliente_id"
-                @update:model-value="
-                  obtenerMaterialesTarea(clienteMaterialTarea)
-                "
+                @update:model-value="obtenerMaterialesTarea()"
                 emit-value
                 map-options
               >
@@ -93,7 +95,7 @@
             </div>
 
             <!-- Metrajedd tendido -->
-            <div v-if="etapa" class="col-12 col-md-6">
+            <!-- <div v-if="etapa" class="col-12 col-md-6">
               <label class="q-mb-sm block">
                 <q-icon
                   name="bi-check-circle-fill"
@@ -103,9 +105,9 @@
                 Etapa</label
               >
               <q-input v-model="etapa" disable outlined dense> </q-input>
-            </div>
+            </div> -->
 
-            <div v-if="proyecto" class="col-12 col-md-6">
+            <!-- <div v-if="proyecto" class="col-12 col-md-6">
               <label class="q-mb-sm block">
                 <q-icon
                   name="bi-check-circle-fill"
@@ -115,10 +117,10 @@
                 Proyecto</label
               >
               <q-input v-model="proyecto" disable outlined dense> </q-input>
-            </div>
+            </div> -->
           </div>
 
-          <div v-if="materialesTarea.length" class="row">
+          <div v-if="listadosAuxiliares.materialesTarea.length" class="row">
             <div class="col-12 text-center">
               <label class="q-mb-sm block"
                 >Opciones de devolución de material sobrante de la tarea</label
@@ -173,21 +175,116 @@
                 <span>Transferir a otro técnico</span>
               </q-btn>
             </div>
+          </div>
+        </q-tab-panel>
 
-            <div class="col-12">
-              <essential-table
-                v-if="materialesTarea.length"
-                titulo="Listado de materiales para tarea"
-                :configuracionColumnas="
-                  configuracionColumnasMaterialEmpleadoTarea
+        <q-tab-panel :name="destinosTareas.paraProyecto">
+          <div class="row q-col-gutter-sm q-pa-sm q-mb-md">
+            <div class="col-12 col-md-4">
+              <label class="q-mb-sm block">Proyecto</label>
+              <q-select
+                v-model="proyecto"
+                :options="proyectos"
+                @filter="filtrarProyectos"
+                transition-show="scale"
+                transition-hide="scale"
+                hint="Opcional"
+                options-dense
+                dense
+                outlined
+                :option-label="(item) => item.nombre"
+                :option-value="(item) => item.id"
+                use-input
+                input-debounce="0"
+                emit-value
+                map-options
+                @update:modelValue="consultarEtapas()"
+              >
+                <template v-slot:option="scope">
+                  <q-item v-bind="scope.itemProps" class="q-my-sm">
+                    <q-item-section>
+                      <q-item-label class="text-bold text-primary">{{
+                        scope.opt.codigo_proyecto
+                      }}</q-item-label>
+                      <q-item-label caption
+                        >{{ scope.opt.nombre }}
+                      </q-item-label>
+                    </q-item-section>
+                  </q-item>
+                </template>
+
+                <template v-slot:no-option>
+                  <q-item>
+                    <q-item-section class="text-grey">
+                      No hay resultados
+                    </q-item-section>
+                  </q-item>
+                </template>
+              </q-select>
+            </div>
+
+            <div v-show="proyecto" class="col-12 col-md-4">
+              <label class="q-mb-sm block">Etapa</label>
+              <q-select
+                v-model="etapa"
+                :options="etapas"
+                @filter="filtrarEtapas"
+                transition-show="scale"
+                transition-hide="scale"
+                hint="Opcional"
+                options-dense
+                dense
+                outlined
+                :option-label="(item) => item.nombre"
+                :option-value="(item) => item.id"
+                @update:model-value="consultarTareas(tab, etapa)"
+                use-input
+                input-debounce="0"
+                emit-value
+                map-options
+              >
+                <template v-slot:no-option>
+                  <q-item>
+                    <q-item-section class="text-grey">
+                      No hay resultados
+                    </q-item-section>
+                  </q-item>
+                </template>
+              </q-select>
+            </div>
+
+            <!-- Tarea -->
+            <div class="col-12 col-md-4">
+              <label class="q-mb-sm block">Seleccione una tarea</label>
+              <q-select
+                v-model="filtro.tarea_id"
+                :options="tareas"
+                @filter="filtrarTareas"
+                transition-show="scale"
+                transition-hide="scale"
+                use-input
+                input-debounce="0"
+                options-dense
+                dense
+                outlined
+                :option-label="
+                  (item) => item.codigo_tarea + ' - ' + item.titulo
                 "
-                :datos="materialesTarea"
-                :permitirConsultar="false"
-                :permitirEliminar="false"
-                :permitirEditar="false"
-                :mostrarBotones="false"
-                :alto-fijo="false"
-              ></essential-table>
+                :option-value="(item) => item.id"
+                @update:model-value="seleccionarTarea()"
+                emit-value
+                map-options
+                ><template v-slot:option="scope">
+                  <q-item v-bind="scope.itemProps">
+                    <q-item-section>
+                      <q-item-label>{{ scope.opt.codigo_tarea }}</q-item-label>
+                      <q-item-label caption>{{
+                        scope.opt.titulo
+                      }}</q-item-label>
+                    </q-item-section>
+                  </q-item>
+                </template>
+              </q-select>
             </div>
           </div>
         </q-tab-panel>
@@ -233,7 +330,7 @@
             </div>
           </div>
 
-          <div class="row">
+          <!-- <div class="row">
             <div class="col-12 text-center">
               <essential-table
                 v-if="listadoStockPersonal.length"
@@ -250,9 +347,25 @@
                 :ajustar-celdas="true"
               ></essential-table>
             </div>
-          </div>
+          </div> -->
         </q-tab-panel>
       </q-tab-panels>
+
+      <div class="row q-px-md q-mb-md">
+        <div class="col-12">
+          <essential-table
+            v-if="listadosAuxiliares.materialesTarea.length"
+            titulo="Listado de materiales para tarea"
+            :configuracionColumnas="configuracionColumnasMaterialEmpleadoTarea"
+            :datos="listadosAuxiliares.materialesTarea"
+            :permitirConsultar="false"
+            :permitirEliminar="false"
+            :permitirEditar="false"
+            :mostrarBotones="false"
+            :alto-fijo="false"
+          ></essential-table>
+        </div>
+      </div>
       <div
         v-if="mensaje"
         class="text-center q-my-lg text-negative text-subtitle2"

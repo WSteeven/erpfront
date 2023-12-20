@@ -31,6 +31,7 @@ export const useFiltrosListadosSelects = (listadosAuxiliares, entidad?: Ref<any>
   // tareas
   const proyectos = ref(listadosAuxiliares.proyectos)
   const etapas = ref(listadosAuxiliares.etapas)
+  console.log(etapas.value)
   const tareas = ref(listadosAuxiliares.tareas)
   const tareasDestino = ref(listadosAuxiliares.tareasDestino)
 
@@ -245,10 +246,10 @@ export const useFiltrosListadosSelects = (listadosAuxiliares, entidad?: Ref<any>
     categorias.value.sort((a: CategoriaOferta, b: CategoriaOferta) => ordernarListaString(a.nombre!, b.nombre!))
   }
 
-  function filtrarMotivos(val, update){
+  function filtrarMotivos(val, update) {
     return filtrarLista(val, update, motivos, 'nombre', listadosAuxiliares.motivos)
   }
-  function filtrarSucursales(val, update){
+  function filtrarSucursales(val, update) {
     return filtrarLista(val, update, sucursales, 'lugar', listadosAuxiliares.sucursales)
   }
 
@@ -269,14 +270,13 @@ export const useFiltrosListadosSelects = (listadosAuxiliares, entidad?: Ref<any>
   function filtrarLista(val, update, lista, clave, defaultValue = []) {
     if (val === '') {
       update(() => lista.value = defaultValue)
-    } else {
-      update(() => {
-        const needle = val.toLowerCase()
-        lista.value = defaultValue.filter(
-          (v: any) => v[clave].toLowerCase().indexOf(needle) > -1
-        )
-      })
     }
+    update(() => {
+      const needle = val.toLowerCase()
+      lista.value = defaultValue.filter(
+        (v: any) => v[clave].toLowerCase().indexOf(needle) > -1
+      )
+    })
   }
 
 
