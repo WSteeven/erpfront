@@ -35,7 +35,6 @@ export default defineComponent({
     const login = async () => {
 
       if (!$q.loading.isActive) {
-        console.log('entro en login')
         try {
           cargando.activar()
           await loginController.login(loginUser)
@@ -50,7 +49,7 @@ export default defineComponent({
         } finally {
           cargando.desactivar()
         }
-      }else console.log('entro en el else de login')
+      }
     }
     const recuperarPassword = () => {
       Router.replace('/recuperar-contrasena')

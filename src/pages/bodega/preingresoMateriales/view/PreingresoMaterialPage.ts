@@ -30,7 +30,7 @@ import { EmpleadoRoleController } from "pages/recursosHumanos/empleados/infraest
 import { LocalStorage, useQuasar } from "quasar";
 import { useOrquestadorSelectorProductos } from "../application/OrquestadorSelectorProductos";
 import { ItemPreingresoMaterial } from "../domain/ItemPreingresoMaterial";
-import { encontrarUltimoIdListado, filtrarLista, ordenarLista } from "shared/utils";
+import { encontrarUltimoIdListado, filtrarEmpleadosPorRoles, filtrarLista, ordenarLista } from "shared/utils";
 import { UnidadMedidaController } from "pages/bodega/unidades_medidas/infraestructure/UnidadMedidaController";
 import { UnidadMedida } from "pages/bodega/unidades_medidas/domain/UnidadMedida";
 import { StatusEssentialLoading } from "components/loading/application/StatusEssentialLoading";
@@ -49,6 +49,7 @@ import { useNotificacionStore } from "stores/notificacion";
 import { Tarea } from "pages/gestionTrabajos/tareas/domain/Tarea";
 import { TareaController } from "pages/gestionTrabajos/tareas/infraestructure/TareaController";
 import { EmpleadoController } from "pages/recursosHumanos/empleados/infraestructure/EmpleadoController";
+import { EtapaController } from "pages/gestionTrabajos/proyectos/modules/etapas/infraestructure/EtapaController";
 
 
 export default defineComponent({
@@ -97,6 +98,7 @@ export default defineComponent({
 
     const soloLectura = ref(false)
     const refItems = ref()
+    const etapasResponsable = ref([])
     const autorizaciones = ref([])
     const coordinadores = ref([])
     const tecnicos = ref([])
@@ -104,9 +106,10 @@ export default defineComponent({
     cargarVista(async () => {
       cargarDatosDefecto()
       await obtenerListados({
+        etapas: [],
         unidades_medidas: new UnidadMedidaController(),
-        empleados: { controller: new EmpleadoController(), params: { estado:1 } },
-        coordinadores: { controller: new EmpleadoRoleController(), params: { roles: [rolesSistema.jefe_tecnico, rolesSistema.supervisor, rolesSistema.coordinador, rolesSistema.fiscalizador] } },
+        empleados: { controller: new EmpleadoController(), params: { estado: 1 } },
+        // coordinadores: { controller: new EmpleadoRoleController(), params: { roles: [rolesSistema.jefe_tecnico, rolesSistema.supervisor, rolesSistema.coordinador, rolesSistema.fiscalizador] } },
         proyectos: {
           controller: new ProyectoController(),
           params: {
@@ -120,11 +123,13 @@ export default defineComponent({
         clientes: { controller: new ClienteController(), params: { campos: 'id,razon_social', requiere_bodega: 1, estado: 1, } },
       })
       if (store.esCoordinador) {
-        const response = await new EmpleadoRoleController().listar({ roles: [rolesSistema.tecnico, rolesSistema.tecnico_lider] })
-        listadosAuxiliares.tecnicos = response.result
+        // const response = await new EmpleadoRoleController().listar({ roles: [rolesSistema.tecnico, rolesSistema.tecnico_lider] })
+        listadosAuxiliares.tecnicos = await filtrarEmpleadosPorRoles(listadosAuxiliares.empleados, [rolesSistema.tecnico, rolesSistema.tecnico_lider])
       }
       proyectos.value = listadosAuxiliares.proyectos
       empleados.value = listadosAuxiliares.empleados
+      // const rolesSupervisores = [rolesSistema.jefe_tecnico, rolesSistema.supervisor, rolesSistema.coordinador, rolesSistema.fiscalizador];
+      listadosAuxiliares.coordinadores = await filtrarEmpleadosPorRoles(listadosAuxiliares.empleados, [rolesSistema.jefe_tecnico, rolesSistema.supervisor, rolesSistema.coordinador, rolesSistema.fiscalizador])
       coordinadores.value = listadosAuxiliares.coordinadores
       tecnicos.value = listadosAuxiliares.tecnicos
       clientes.value = listadosAuxiliares.clientes
@@ -134,6 +139,10 @@ export default defineComponent({
 
 
     })
+
+
+
+
     /*****************************************************************************************
      * Hooks
      ****************************************************************************************/
@@ -217,15 +226,22 @@ export default defineComponent({
       preingreso.autorizacion = 1
     }
 
+
+
     async function obtenerEtapasProyecto(limpiarEtapa = true) {
       if (preingreso.proyecto) {
         if (limpiarEtapa) preingreso.etapa = null
         preingreso.cliente = listadosAuxiliares.proyectos.filter((proyecto: Proyecto) => proyecto.id === preingreso.proyecto)[0].cliente_id
         preingreso.coordinador = listadosAuxiliares.proyectos.filter((proyecto: Proyecto) => proyecto.id === preingreso.proyecto)[0].coordinador_id
         const etapasProyecto = listadosAuxiliares.proyectos.filter((proyecto: Proyecto) => proyecto.id === preingreso.proyecto)[0].etapas
-        const etapasResponsable = store.esJefeTecnico || store.esAdministrador ? etapasProyecto : etapasProyecto.filter((etapa: Etapa) => etapa.responsable_id === store.user.id)
-        listadosAuxiliares.etapas = etapasResponsable
-        etapas.value = etapasResponsable
+        if (store.esTecnico || store.esTecnicoLider) {
+          const response = await new EtapaController().listar({ etapas_empleado: 1, empleado_id: store.user.id, proyecto_id: preingreso.proyecto })
+          etapasResponsable.value = response.result
+        } else {
+          etapasResponsable.value = store.esJefeTecnico || store.esAdministrador ? etapasProyecto : etapasProyecto.filter((etapa: Etapa) => etapa.responsable_id === store.user.id)
+        }
+        listadosAuxiliares.etapas = etapasResponsable.value
+        etapas.value = etapasResponsable.value
       }
     }
     async function obtenerTareasEtapa(idEtapa: string | number | null, limpiarTarea = true) {
@@ -377,7 +393,7 @@ export default defineComponent({
       obtenerCoordinadorClienteTareaSeleccionada,
       filtrarCoordinadores(val, update) {
         if (val === '') {
-          update(() =>  coordinadores.value = listadosAuxiliares.coordinadores)
+          update(() => coordinadores.value = listadosAuxiliares.coordinadores)
           return
         }
         update(() => {

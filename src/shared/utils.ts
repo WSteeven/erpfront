@@ -644,3 +644,21 @@ export function convertirNumeroPositivo(entidad, campo) {
     }
   }
 }
+
+
+/**
+ * La función filtra a los empleados según sus roles.
+ * @param empleados - Una lista de empleados consultados en la base de datos. Cada objeto de empleado debe tener una
+ * propiedad llamada "roles", que es una cadena que representa todos los roles del empleado.
+ * @param roles - Una variedad de roles para filtrar a los empleados.Los roles
+ * deben estar separados por comas y espacios (por ejemplo, ["rol1, rol2, rol3"]).
+ * @return una lista de empleados que tienen al menos uno de los roles especificados en el parámetro
+ * "roles".
+ */
+export function filtrarEmpleadosPorRoles(empleados, roles) {
+  const filtrados = empleados.filter((empleado) => {
+    const rolesEmpleado = empleado.roles.split(', ')
+    return roles.some((rol) => rolesEmpleado.includes(rol))
+  })
+  return filtrados
+}
