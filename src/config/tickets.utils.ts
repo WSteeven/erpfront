@@ -22,7 +22,6 @@ export const estadosTickets = {
 }
 
 export const tabOptionsEstadosTickets: TabOption[] = [
-  { label: 'Rechazado', value: estadosTickets.RECHAZADO },
   { label: 'Asignado', value: estadosTickets.ASIGNADO },
   { label: 'Reasignado', value: estadosTickets.REASIGNADO },
   { label: 'Ejecutando', value: estadosTickets.EJECUTANDO },
@@ -30,6 +29,7 @@ export const tabOptionsEstadosTickets: TabOption[] = [
   { label: 'Finalizado solucionado', value: estadosTickets.FINALIZADO_SOLUCIONADO },
   { label: 'Finalizado sin solución', value: estadosTickets.FINALIZADO_SIN_SOLUCION },
   { label: 'Cancelado', value: estadosTickets.CANCELADO },
+  { label: 'Rechazado', value: estadosTickets.RECHAZADO },
 ]
 
 export const tabOptionsEstadosTicketsAsignados: TabOption[] = [
@@ -39,5 +39,6 @@ export const tabOptionsEstadosTicketsAsignados: TabOption[] = [
   { label: 'Pausado', value: estadosTickets.PAUSADO },
   { label: 'Finalizado solucionado', value: estadosTickets.FINALIZADO_SOLUCIONADO },
   { label: 'Finalizado sin solución', value: estadosTickets.FINALIZADO_SIN_SOLUCION },
+  { label: 'Rechazado', value: estadosTickets.RECHAZADO },
   // { label: 'Calificado', value: estadosTickets.CALIFICADO },
 ]

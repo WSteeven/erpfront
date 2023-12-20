@@ -577,6 +577,8 @@
     :mixin-modal="mixin"
     :accion="filtrarTickets"
     @guardado="guardado"
+    :confirmar-cerrar="false"
+    :persistente="false"
   />
 </template>
 
