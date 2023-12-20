@@ -374,6 +374,19 @@ export async function imprimirArchivo(ruta: string, metodo: Method, responseType
 
 }
 
+export function filtrarLista(val, update, lista, clave, defaultValue = []) {
+  if (val === '') {
+    update(() => lista.value = defaultValue)
+  } else {
+    update(() => {
+      const needle = val.toLowerCase()
+      lista.value = defaultValue.filter(
+        (v: any) => v[clave].toLowerCase().indexOf(needle) > -1
+      )
+    })
+  }
+}
+
 /**
  * La función `ordenarLista` ordena una lista determinada según una clave específica.
  * Esta función sirve para ordenar cualquier lista que se muestra en un select.

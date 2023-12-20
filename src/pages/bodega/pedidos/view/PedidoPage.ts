@@ -42,6 +42,7 @@ import { ComportamientoModalesPedido } from '../application/ComportamientoModale
 import { useFiltrosListadosSelects } from 'shared/filtrosListadosGenerales'
 import { ProyectoController } from 'pages/gestionTrabajos/proyectos/infraestructure/ProyectoController'
 import { StatusEssentialLoading } from 'components/loading/application/StatusEssentialLoading'
+import { TareaController } from 'pages/gestionTrabajos/tareas/infraestructure/TareaController'
 import { TareasEmpleadoController } from 'pages/gestionTrabajos/tareas/infraestructure/TareasEmpleadoController'
 import { EtapaController } from 'pages/gestionTrabajos/proyectos/modules/etapas/infraestructure/EtapaController'
 
@@ -53,7 +54,7 @@ export default defineComponent({
     const { entidad: pedido, disabled, accion, listadosAuxiliares, listado } = mixin.useReferencias()
     const { setValidador, obtenerListados, cargarVista } = mixin.useComportamiento()
     const { onReestablecer, onConsultado } = mixin.useHooks()
-    const { confirmar, prompt, notificarCorrecto, notificarError } = useNotificaciones()
+    const { confirmar, prompt, notificarCorrecto, notificarError, notificarAdvertencia } = useNotificaciones()
 
     // modales
     const modales = new ComportamientoModalesPedido()
@@ -164,7 +165,7 @@ export default defineComponent({
       responsable: {
         requiredIfCoordinador: requiredIf(() => (esCoordinador || !esTecnico || esRRHH) && !pedido.para_cliente)
       },
-      etapa: { requiredIf: requiredIf(() => { if (etapas.value) return etapas.value.length && pedido.proyecto})},
+      etapa: { requiredIf: requiredIf(() => { if (etapas.value) return etapas.value.length && pedido.proyecto }) },
       tarea: { requiredIfTarea: requiredIf(() => pedido.es_tarea!) },
       // fecha_limite: {
       //   required: requiredIf(() => pedido.tiene_fecha_limite!),
@@ -187,38 +188,39 @@ export default defineComponent({
      * Funciones
      *****************************************************************************************
      */
-     async function obtenerProyectos() {
+    async function obtenerProyectos() {
       const response = await new ProyectoController().listar({
-        campos: 'id,nombre,codigo_proyecto,coordinador_id,cliente_id',
+        empleado_id: pedido.responsable,
+        campos: 'id,nombre,codigo_proyecto',
         finalizado: 0,
       })
       listadosAuxiliares.proyectos = response.result
       proyectos.value = response.result
-      if(accion.value == acciones.nuevo)obtenerTareasEtapa(null)
+      if (accion.value == acciones.nuevo) obtenerTareasEtapa(null)
       else obtenerTareasEtapa(pedido.etapa, false)
     }
-     async function obtenerEtapasProyecto(idProyecto: string | number | null, limpiarCampos = true) {
+    async function obtenerEtapasProyecto(idProyecto: string | number | null, limpiarCampos = true) {
       cargando.activar()
       if (limpiarCampos) pedido.etapa = null
       if (idProyecto === null) {
-        const response = await new TareasEmpleadoController().listar({ para_cliente_proyecto: 'PARA_CLIENTE_FINAL', campos: 'id,codigo_tarea,titulo', finalizado: 0 })
+        const response = await new TareaController().listar({ activas_empleado: 1, empleado_id: pedido.responsable, para_cliente_proyecto: 'PARA_CLIENTE_FINAL', campos: 'id,codigo_tarea,titulo', finalizado: 0 })
         listadosAuxiliares.tareas = response.result
         tareas.value = response.result
       } else {
-        const response = await new EtapaController().listar({ proyecto_id: idProyecto, campos: 'id,nombre,supervisor_id,supervisor_responsable' })
+        const response = await new EtapaController().listar({ etapas_empleado: 1, empleado_id: pedido.responsable, proyecto_id: idProyecto, activo: 1, campos: 'id,nombre,supervisor_id,supervisor_responsable' })
         listadosAuxiliares.etapas = response.result
         etapas.value = response.result
         if (etapas.value.length <= 0) {
           await obtenerTareasEtapa(null)
-        }else tareas.value = []
+        } else tareas.value = []
         // if(pedido.tarea) await obtenerTareasEtapa(pedido.etapa)
       }
       cargando.desactivar()
     }
-    async function obtenerTareasEtapa(idEtapa: number | null, limpiarCampos=true) {
+    async function obtenerTareasEtapa(idEtapa: number | null, limpiarCampos = true) {
       cargando.activar()
-      if(limpiarCampos)pedido.tarea = null
-      const response = await new TareasEmpleadoController().listar({ proyecto_id: pedido.proyecto, etapa_id: idEtapa, empleado_id: store.user.id, campos: 'id,codigo_tarea,titulo', finalizado: 0 })
+      if (limpiarCampos) pedido.tarea = null
+      const response = await new TareaController().listar({ activas_empleado: 1, proyecto_id: pedido.proyecto, etapa_id: idEtapa, empleado_id: pedido.responsable, campos: 'id,codigo_tarea,titulo', finalizado: 0 })
       listadosAuxiliares.tareas = response.result
       tareas.value = response.result
       cargando.desactivar()
@@ -438,7 +440,10 @@ export default defineComponent({
       },
       checkEsTarea(val, evt) {
         if (val) {
-          obtenerProyectos()
+          if (!pedido.responsable) {
+            notificarAdvertencia('Debes seleccionar primero un empleado (técnico) responsable')
+            pedido.es_tarea = false
+          } else obtenerProyectos()
         } else {
           pedido.tarea = null
         }

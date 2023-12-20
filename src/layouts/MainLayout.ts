@@ -29,6 +29,8 @@ import { useIdle, useTimestamp } from '@vueuse/core'
 import { formatearFechaTexto } from 'shared/utils'
 import { Idle, NotIdle } from 'idlejs'
 import { useMainLayoutStore } from 'stores/mainLayout'
+import { useCargandoStore } from 'stores/cargando'
+import { StatusEssentialLoading } from 'components/loading/application/StatusEssentialLoading'
 
 export default defineComponent({
   name: 'MainLayout',
@@ -76,6 +78,7 @@ export default defineComponent({
     /************
      * Variables
      ************/
+    const cargando = new StatusEssentialLoading()
     const Router = useRouter()
     const route = useRoute()
     const tituloPagina = computed(() => mainLayoutStore.tituloPagina)
@@ -95,8 +98,10 @@ export default defineComponent({
     })
 
     async function logout() {
+      cargando.activar()
       await authenticationStore.logout()
       Router.replace({ name: 'Login' })
+      cargando.desactivar()
     }
 
     const $q = useQuasar()

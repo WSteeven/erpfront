@@ -9,6 +9,8 @@ import { useNotificaciones } from 'shared/notificaciones'
 import { isAxiosError, notificarMensajesError } from 'shared/utils'
 import { useRouter } from 'vue-router';
 import { useConfiguracionGeneralStore } from 'stores/configuracion_general'
+import { useCargandoStore } from 'stores/cargando'
+import { useQuasar } from 'quasar'
 
 
 export default defineComponent({
@@ -28,22 +30,27 @@ export default defineComponent({
     const Router = useRouter()
 
     watchEffect(() => document.title = nombreEmpresa.value ?? '')
+    const $q = useQuasar()
 
     const login = async () => {
-      try {
-        cargando.activar()
-        await loginController.login(loginUser)
 
-        notificaciones.notificarCorrecto('Bienvenido a ' + nombreEmpresa.value)
+      if (!$q.loading.isActive) {
+        console.log('entro en login')
+        try {
+          cargando.activar()
+          await loginController.login(loginUser)
 
-      } catch (error: any) {
-        if (isAxiosError(error)) {
-          const mensajes: string[] = error.erroresValidacion
-          notificarMensajesError(mensajes, notificaciones)
+          notificaciones.notificarCorrecto('Bienvenido a ' + nombreEmpresa.value)
+
+        } catch (error: any) {
+          if (isAxiosError(error)) {
+            const mensajes: string[] = error.erroresValidacion
+            notificarMensajesError(mensajes, notificaciones)
+          }
+        } finally {
+          cargando.desactivar()
         }
-      } finally {
-        cargando.desactivar()
-      }
+      }else console.log('entro en el else de login')
     }
     const recuperarPassword = () => {
       Router.replace('/recuperar-contrasena')
@@ -63,6 +70,7 @@ export default defineComponent({
       login,
       recuperarPassword,
       nombreEmpresa,
+      cargando,
     }
   },
 })
