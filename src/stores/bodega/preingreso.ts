@@ -19,17 +19,10 @@ export const usePreingresoStore = defineStore('preingreso',()=>{
   const cargando = new StatusEssentialLoading()
 
   async function imprimirPdf() {
-    try {
-      cargando.activar()
       const axios = AxiosHttpRepository.getInstance()
       const url = apiConfig.URL_BASE + '/' + axios.getEndpoint(endpoints.preingresos) + '/imprimir/' + idPreingreso.value
       const filename = 'preingreso_' + idPreingreso.value + '_' + Date.now()
-      await imprimirArchivo(url, 'GET', 'blob'||'json', 'pdf', filename)
-    } catch (error) {
-      notificarError(error+'')
-    }finally{
-      cargando.desactivar()
-    }
+      await imprimirArchivo(url, 'GET', 'blob', 'pdf', filename)
   }
 
   return{

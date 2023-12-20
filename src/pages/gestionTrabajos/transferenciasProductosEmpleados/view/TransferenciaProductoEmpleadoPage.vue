@@ -447,7 +447,7 @@
               :configuracionColumnas="
                 configuracionColumnasProductosSeleccionadosAccion
               "
-              :datos="transferencia.listadoProductos"
+              :datos="transferencia.listado_productos"
               :permitirConsultar="false"
               :permitirEditar="false"
               :permitirEliminar="false"

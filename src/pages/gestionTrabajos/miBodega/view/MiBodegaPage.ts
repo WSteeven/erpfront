@@ -1,27 +1,28 @@
 // Dependencias
 import { configuracionColumnasMaterialEmpleadoTarea } from '../domain/configuracionColumnasMaterialEmpleadoTarea'
-import { defineComponent, reactive, ref } from 'vue'
-import { modosStock } from 'config/tareas.utils'
+import { defineComponent, onMounted, reactive, ref, watch } from 'vue'
+import { destinosTareas, modosStock } from 'config/tareas.utils'
 import { tiposJornadas } from 'config/utils'
 
 // Componentes
 import EssentialTable from 'components/tables/view/EssentialTable.vue'
 
 // Logica y controladores
-import { MaterialEmpleadoTareaController } from '../infraestructure/MaterialEmpleadoTareaController'
-import { TareaController } from 'pages/gestionTrabajos/tareas/infraestructure/TareaController'
 import { StatusEssentialLoading } from 'components/loading/application/StatusEssentialLoading'
 import { MaterialEmpleadoController } from '../infraestructure/MaterialEmpleadoController'
 import { useListadoMaterialesDevolucionStore } from 'stores/listadoMaterialesDevolucion'
 import { AxiosHttpRepository } from 'shared/http/infraestructure/AxiosHttpRepository'
+import { useFiltrosListadosSelects } from 'shared/filtrosListadosGenerales'
+import { useMaterialesTarea } from '../application/UseMaterialesTarea'
+import { Tarea } from 'pages/gestionTrabajos/tareas/domain/Tarea'
 import { useAuthenticationStore } from 'stores/authentication'
 import { useNotificacionStore } from 'stores/notificacion'
 import { useNotificaciones } from 'shared/notificaciones'
+import { FiltroMiBodega } from '../domain/FiltroMiBodega'
 import { useCargandoStore } from 'stores/cargando'
 import { endpoints } from 'config/api'
 import { AxiosResponse } from 'axios'
 import { useQuasar } from 'quasar'
-import { Tarea } from 'pages/gestionTrabajos/tareas/domain/Tarea'
 
 export default defineComponent({
   components: { EssentialTable },
@@ -37,25 +38,24 @@ export default defineComponent({
     /****************
      * Controladores
      ****************/
-    const materialEmpleadoTareaController = new MaterialEmpleadoTareaController()
     const materialEmpleadoController = new MaterialEmpleadoController()
-    const tareaController = new TareaController()
 
     /************
      * Variables
      ************/
     const { notificarAdvertencia } = useNotificaciones()
     const cargando = new StatusEssentialLoading()
-    const materialesTarea = ref([])
     const listadoStockPersonal = ref([])
-    const tareasSource: any = ref([])
-    const filtro = reactive({
-      tarea: null,
-      tipoStock: null
-    })
+
+    const tab = ref()
+
+    onMounted(() => tab.value = destinosTareas.paraClienteFinal)
+
+    const filtro = reactive(new FiltroMiBodega())
+    filtro.empleado_id = authenticationStore.user.id
+
     const mensaje = ref()
     const clienteMaterialStock = ref()
-    const clienteMaterialTarea = ref()
     const clientes = ref([])
     const clientesMaterialesTarea = ref([])
     const etapa = ref()
@@ -63,38 +63,18 @@ export default defineComponent({
 
     const axios = AxiosHttpRepository.getInstance()
 
-    /*******
-     * Init
-     *******/
-    tareaController.listar({ activas_empleado: 1, empleado_id: authenticationStore.user.id, campos: 'id,codigo_tarea,cliente_id' }).then((data) => tareasSource.value = data.result)
-    obtenerClientesMaterialesTarea()
-    obtenerClientesMaterialesEmpleado()
+    const listadosAuxiliares = reactive({
+      materialesTarea: [],
+      clientesMaterialesTarea: [],
+      tareas: [],
+      proyectos: [],
+      etapas: [],
+    })
 
     /************
      * Funciones
      ************/
-    async function obtenerMaterialesTarea(cliente: number) {
-      try {
-        cargando.activar()
-        const ruta = axios.getEndpoint(endpoints.materiales_empleado_tarea, { tarea_id: filtro.tarea, empleado_id: authenticationStore.user.id, cliente_id: cliente })
-        const response: AxiosResponse = await axios.get(ruta)
-        materialesTarea.value = response.data.results
-        listadoMaterialesDevolucionStore.listadoMateriales = response.data.results
-        listadoMaterialesDevolucionStore.tareaId = filtro.tarea
-        listadoMaterialesDevolucionStore.cliente_id = cliente
-        const tarea: Tarea = tareasSource.value.filter((tarea: Tarea) => tarea.id === filtro.tarea)[0]
-        etapa.value = tarea.etapa
-        proyecto.value = tarea.proyecto
-
-        if (!materialesTarea.value.length) {
-          notificarAdvertencia('No tienes material asignado.')
-        }
-      } catch (e) {
-        console.log(e)
-      } finally {
-        cargando.desactivar()
-      }
-    }
+    const { obtenerMaterialesTarea, obtenerClientesMaterialesTarea, consultarTareas, consultarProyectos, consultarEtapas } = useMaterialesTarea(filtro, listadosAuxiliares)
 
     async function filtrarStock(cliente: number) {
       try {
@@ -104,23 +84,9 @@ export default defineComponent({
         listadoMaterialesDevolucionStore.listadoMateriales = result
         listadoMaterialesDevolucionStore.tareaId = null
         listadoMaterialesDevolucionStore.cliente_id = cliente
-        // mensaje.value = !result.length ? 'No tienes materiales asignados en tu stock personal' : ''
         if (!result.length) {
           notificarAdvertencia('No tienes material asignado.')
         }
-      } catch (e) {
-        console.log(e)
-      } finally {
-        cargando.desactivar()
-      }
-    }
-
-    async function obtenerClientesMaterialesTarea() {
-      try {
-        cargando.activar()
-        const ruta = axios.getEndpoint(endpoints.obtener_clientes_materiales_tarea) + '/' + authenticationStore.user.id
-        const response: AxiosResponse = await axios.get(ruta)
-        clientesMaterialesTarea.value = response.data.results
       } catch (e) {
         console.log(e)
       } finally {
@@ -142,48 +108,55 @@ export default defineComponent({
     }
 
     function seleccionarTarea() {
-      materialesTarea.value = []
-      clienteMaterialTarea.value = tareasSource.value.filter((tarea: Tarea) => tarea.id === filtro.tarea)[0].cliente_id
-      obtenerMaterialesTarea(clienteMaterialTarea.value)
+      listadosAuxiliares.materialesTarea = []
+      filtro.cliente_id = (listadosAuxiliares.tareas as any).find((tarea: Tarea) => tarea.id === filtro.tarea_id).cliente_id
+      obtenerMaterialesTarea()
     }
+
+    /*******
+     * Init
+     *******/
+    obtenerClientesMaterialesTarea()
+    obtenerClientesMaterialesEmpleado()
+    consultarProyectos()
+
+    /************
+     * Observers
+     ************/
+    watch(tab, () => consultarTareas(tab.value))
 
     /**********
      * Filtros
      **********/
-    const tareas = ref([])
-    function filtrarTareas(val, update) {
-      if (val === '') update(() => tareas.value = tareasSource.value)
-
-      update(() => {
-        const needle = val.toLowerCase()
-        tareas.value = tareasSource.value.filter(
-          (v) => v.codigo_tarea.toLowerCase().indexOf(needle) > -1
-        )
-      })
-    }
+    const { tareas, filtrarTareas, proyectos, filtrarProyectos, etapas, filtrarEtapas } = useFiltrosListadosSelects(listadosAuxiliares)
 
     return {
       configuracionColumnasMaterialEmpleadoTarea,
       tiposJornadas,
       modosStock,
       filtrarStock,
-      materialEmpleadoTareaController,
-      materialesTarea,
+      listadosAuxiliares,
       listadoStockPersonal,
-      tareas,
       filtro,
-      tab: ref('tareas'),
-      filtrarTareas,
+      tab,
+      destinosTareas,
       mensaje,
       listadoMaterialesDevolucionStore,
       clientes,
-      clienteMaterialTarea,
       clienteMaterialStock,
       clientesMaterialesTarea,
       obtenerMaterialesTarea,
+      consultarEtapas,
       seleccionarTarea,
+      tareas,
+      proyectos,
+      etapas,
+      filtrarTareas,
+      filtrarProyectos,
+      filtrarEtapas,
       etapa,
       proyecto,
+      consultarTareas,
     }
   },
 })

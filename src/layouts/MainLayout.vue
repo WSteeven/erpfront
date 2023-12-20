@@ -361,7 +361,7 @@
                   />
                 </q-item>
 
-                <q-item clickable class="full-width" @click="logout()">
+                <q-item clickable class="full-width" @click="logout()" :disable="$q.loading.isActive">
                   <q-avatar>
                     <q-icon name="bi-box-arrow-left"></q-icon>
                   </q-avatar>

@@ -349,6 +349,8 @@ export default defineComponent({
 
         if (!subtarea.proyecto_id) delete filtro.proyecto_id
         if (!subtarea.etapa_id) delete filtro.etapa_id
+        if (subtarea.etapa_id) delete filtro.tarea_id
+
         const ruta = axios.getEndpoint(endpoints.materiales_empleado_tarea, filtro)
         const response: AxiosResponse = await axios.get(ruta)
         materialesTareaTodos.value = response.data.results

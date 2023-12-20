@@ -287,6 +287,8 @@ export default defineComponent({
         await pedidoStore.cargarPedido(id)
         await cargarDatosPedido()
       } catch (error) {
+        notificarError(error + '')
+        console.log(error)
         //En esta seccion se limpian los campos previamente llenados
         limpiarTransaccion()
         limpiarProducto()
@@ -322,10 +324,8 @@ export default defineComponent({
      */
     async function cargarDatosPedido() {
       //Copiar los valores de las variables
-      console.log(pedidoStore.pedido)
       transaccion.pedido = pedidoStore.pedido.id
       transaccion.justificacion = pedidoStore.pedido.justificacion
-      console.log(transaccion.justificacion)
       transaccion.solicitante = Number.isInteger(pedidoStore.pedido.solicitante) ? pedidoStore.pedido.solicitante : pedidoStore.pedido.solicitante_id
       transaccion.responsable = Number.isInteger(pedidoStore.pedido.responsable) ? pedidoStore.pedido.responsable : pedidoStore.pedido.responsable_id
       transaccion.sucursal = Number.isInteger(pedidoStore.pedido.sucursal) ? pedidoStore.pedido.sucursal : pedidoStore.pedido.sucursal_id
@@ -337,12 +337,14 @@ export default defineComponent({
       transaccion.cliente = Number.isInteger(pedidoStore.pedido.cliente) ? pedidoStore.pedido.cliente : pedidoStore.pedido.cliente_id
       listadoPedido.value = [...pedidoStore.pedido.listadoProductos.filter((v) => v.cantidad != v.despachado)]
       listadoPedido.value.sort((v, w) => ordernarListaString(v.producto, w.producto)) //ordena el listado de pedido
-      // if (transaccion.proyecto) await obtenerProyectos()
-      // if (transaccion.etapa) await obtenerEtapasProyecto(transaccion.proyecto, false)
-      //filtra el cliente de una tarea, cuando el pedido tiene una tarea relacionada
+      if (transaccion.proyecto) await obtenerProyectos()
+      if (transaccion.etapa) await obtenerEtapasProyecto(transaccion.proyecto, false)
+
+      // filtra el cliente de una tarea, cuando el pedido tiene una tarea relacionada
       if (pedidoStore.pedido.tarea) {
         transaccion.es_tarea = true
         transaccion.tarea = Number.isInteger(pedidoStore.pedido.tarea) ? pedidoStore.pedido.tarea : pedidoStore.pedido.tarea_id
+        if (transaccion.tarea) await obtenerTareas()
         filtroTareas(transaccion.tarea)
       }
       //copia el listado de productos del pedido en la transaccion, filtrando los productos pendientes de despachar
@@ -446,7 +448,7 @@ export default defineComponent({
     }
     async function obtenerTareas() {
       cargando.activar()
-      const response = await new TareaController().listar({ activas_empleado: 1, empleado_id: transaccion.responsable, campos: 'id,codigo_tarea' })
+      const response = await new TareaController().listar({ activas_empleado: 1, empleado_id: transaccion.responsable,  campos: 'id,codigo_tarea' })
       listadosAuxiliares.tareas = response.result
       tareas.value = response.result
       cargando.desactivar()
@@ -479,23 +481,6 @@ export default defineComponent({
 
     }
 
-    // console.log('es bodeguero?', esBodeguero)
-    // const configuracionColumnasProductosSeleccionadosAccion = [...configuracionColumnasProductosSeleccionados, {
-    //   name: 'cantidad',
-    //   field: 'cantidad',
-    //   label: 'Cantidad',
-    //   align: 'left',
-    //   sortable: false,
-    // },
-    // {
-    //   name: 'acciones',
-    //   field: 'acciones',
-    //   label: 'Acciones',
-    //   align: 'right',
-    //   sortable: false,
-    // }
-    // ]
-
 
     //Configurar los listados
     empleados.value = listadosAuxiliares.empleados
@@ -506,11 +491,10 @@ export default defineComponent({
     clientes.value = listadosAuxiliares.clientes
 
     function filtroTareas(val) {
-      // console.log('val recibido', val)
-      const opcion_encontrada = listadosAuxiliares.tareas.filter((v) => v.id === val || v.detalle == val)
-      // console.log(listadosAuxiliares.tareas)
-      // console.log('cliente_encontrado', opcion_encontrada[0])
-      // console.log('cliente_encontrado', opcion_encontrada[0]['cliente_id'])
+      console.log(val)
+      console.log(listadosAuxiliares.tareas)
+      const opcion_encontrada = listadosAuxiliares.tareas.filter((v) => v.id == val || v.codigo_tarea == val)
+      console.log(opcion_encontrada)
       transaccion.cliente = opcion_encontrada[0]['cliente_id']
       transaccion.tarea = opcion_encontrada[0]['id']
     }
@@ -583,7 +567,6 @@ export default defineComponent({
       },
 
       checkPedido(val) {
-        // console.log('Pedido', val)
         if (!val) {
           limpiarTransaccion()
         }

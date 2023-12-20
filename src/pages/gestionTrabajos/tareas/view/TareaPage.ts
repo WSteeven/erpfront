@@ -313,14 +313,14 @@ export default defineComponent({
     })
 
     async function seleccionarProyecto() {
-      tarea.cliente = listadosAuxiliares.proyectos.filter((proyecto: Proyecto) => proyecto.id === tarea.proyecto)[0].cliente_id
+      tarea.cliente = listadosAuxiliares.proyectos.find((proyecto: Proyecto) => proyecto.id === tarea.proyecto).cliente_id
       tarea.etapa = null
       if (tarea.proyecto) obtenerEtapasProyecto(tarea.proyecto)
     }
 
     async function obtenerEtapasProyecto(idProyecto: number) {
       const etapasProyecto = listadosAuxiliares.proyectos.filter((proyecto: Proyecto) => proyecto.id === tarea.proyecto)[0].etapas
-      const etapasResponsable = etapasProyecto.filter((etapa: Etapa) => etapa.responsable_id === authenticationStore.user.id)
+      const etapasResponsable = authenticationStore.esJefeTecnico || authenticationStore.esAdministrador ? etapasProyecto : etapasProyecto.filter((etapa: Etapa) => etapa.responsable_id === authenticationStore.user.id)
       listadosAuxiliares.etapas = etapasResponsable
       etapas.value = etapasResponsable
     }

@@ -15,7 +15,7 @@ export class ValidarListadoProductos implements Validador {
         this.preingreso.listadoProductos.every((item) => {
             console.log(item)
         })
-        if (this.preingreso.listadoProductos.some((item) => item.fotografia == null || item.fotografia == undefined)) throw new Error('Debe ingresar una fotografía en cada elemento del listado')
+        if (!this.preingreso.proyecto && this.preingreso.listadoProductos.some((item) => item.fotografia == null || item.fotografia == undefined)) throw new Error('Debe ingresar una fotografía en cada elemento del listado')
 
         return true
     }

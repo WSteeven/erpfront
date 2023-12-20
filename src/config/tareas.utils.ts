@@ -21,7 +21,7 @@ export const modosAsignacionTrabajo = { por_grupo: 'POR_GRUPO', por_empleado: 'P
 export const destinosTareas = {
   paraProyecto: 'PARA_PROYECTO',
   paraClienteFinal: 'PARA_CLIENTE_FINAL',
-}
+} as const
 
 export const ubicacionesTrabajo = {
   clienteFinal: 'CLIENTE_FINAL',
