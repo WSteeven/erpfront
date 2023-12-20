@@ -16,15 +16,60 @@
         <div class="row q-col-gutter-sm q-py-md">
           <!-- Solicitante -->
           <div class="col-12 col-md-3">
-            <label class="q-mb-sm block">Responsable</label>
-            <q-input
-              v-model="preingreso.responsable"
-              placeholder="Obligatorio"
-              disable
-              outlined
+            <label class="q-mb-sm block">Solicitante</label>
+            <q-select
+              v-model="preingreso.solicitante"
+              :options="empleados"
+              transition-show="scale"
+              transition-hide="scale"
+              options-dense
               dense
+              outlined
+              disable
+              :option-label="(v) => v.apellidos + ' ' + v.nombres"
+              :option-value="(v) => v.id"
+              emit-value
+              map-options
             >
-            </q-input>
+              <template v-slot:no-option>
+                <q-item>
+                  <q-item-section class="text-grey">
+                    No hay resultados
+                  </q-item-section>
+                </q-item>
+              </template>
+            </q-select>
+          </div>
+
+          <!-- Responsable -->
+          <div class="col-12 col-md-3" v-if="store.esCoordinador||store.esCoordinadorBackup||store.esJefeTecnico||store.esSupervisorCampo||store.esFiscalizador">
+            <label class="q-mb-sm block">Responsable</label>
+            <q-select
+              v-model="preingreso.responsable"
+              :options="tecnicos"
+              transition-show="scale"
+              transition-hide="scale"
+              options-dense
+              dense
+              outlined
+              :disable="disabled||soloLectura"
+              :option-label="(v) => v.apellidos + ' ' + v.nombres"
+              :option-value="(v) => v.id"
+              use-input
+              input-debounce="0"
+              @filter="filtrarTecnicos"
+              @update:model-value="obtenerTareasTecnico"
+              emit-value
+              map-options
+            >
+              <template v-slot:no-option>
+                <q-item>
+                  <q-item-section class="text-grey">
+                    No hay resultados
+                  </q-item-section>
+                </q-item>
+              </template>
+            </q-select>
           </div>
 
           <!-- Fecha -->
@@ -158,7 +203,7 @@
               v-model="preingreso.proyecto"
               :options="proyectos"
               @filter="filtrarProyectos"
-              @update:model-value="obtenerEtapasProyecto(preingreso.proyecto)"
+              @update:model-value="obtenerEtapasProyecto()"
               transition-show="scale"
               transition-hide="scale"
               hint="Opcional"
@@ -172,7 +217,7 @@
               input-debounce="0"
               emit-value
               map-options
-              :disable="disabled"
+              :disable="disabled || soloLectura"
             >
               <template v-slot:option="scope">
                 <q-item v-bind="scope.itemProps" class="q-my-sm">
@@ -196,9 +241,7 @@
           </div>
           <!-- Etapa del proyecto -->
           <div
-            v-if="
-              etapas?.length || preingreso.etapa || accion == acciones.nuevo
-            "
+            v-if="etapas?.length || preingreso.etapa"
             class="col-12 col-md-3"
           >
             <label class="q-mb-sm block">Etapa</label>
@@ -220,11 +263,11 @@
               input-debounce="0"
               emit-value
               map-options
-              :disable="disabled"
+              :disable="disabled || soloLectura"
               @blur="v$.etapa.$touch"
               :error="!!v$.etapa.$errors.length"
             >
-              <template v-slot:option="scope">
+              <!-- <template v-slot:option="scope">
                 <q-item v-bind="scope.itemProps" class="q-my-sm">
                   <q-item-section>
                     <q-item-label class="text-bold text-primary">{{
@@ -235,7 +278,7 @@
                     </q-item-label>
                   </q-item-section>
                 </q-item>
-              </template>
+              </template> -->
               <template v-slot:no-option>
                 <q-item>
                   <q-item-section class="text-grey">
@@ -274,9 +317,9 @@
               @filter="filtrarTareas"
               @update:model-value="obtenerCoordinadorClienteTareaSeleccionada"
               hint="Opcional"
-              :disable="disabled || soloLectura"
               :option-label="(v) => v.codigo_tarea + ' - ' + v.titulo"
               :option-value="(v) => v.id"
+              :disable="disabled || soloLectura"
               :error="!!v$.tarea.$errors.length"
               error-message="Debes seleccionar una tarea"
               emit-value
@@ -314,6 +357,9 @@
               options-dense
               dense
               outlined
+              use-input
+              input-debounce="0"
+              @filter="filtrarCoordinadores"
               @popup-show="ordenarLista(coordinadores, 'apellidos')"
               :error="!!v$.coordinador.$errors.length"
               error-message="Debes seleccionar al menos una opcion"
@@ -381,7 +427,7 @@
 
           <!-- Observacion -->
           <div class="col-12 col-md-6">
-            <label class="q-mb-sm block">Observación</label>
+            <label class="q-mb-sm block">Justificación</label>
             <q-input
               type="textarea"
               autogrow
@@ -430,7 +476,7 @@
               <div class="col-12 col-md-10 q-mb-md">
                 <q-input
                   v-model="criterioBusquedaProducto"
-                  :disable="disabled || soloLectura"
+                  :disable="disabled"
                   placeholder="Nombre de producto"
                   hint="Presiona Enter para seleccionar un producto"
                   @keydown.enter="
@@ -461,7 +507,7 @@
                   color="positive"
                   class="full-width"
                   style="height: 40px"
-                  :disable="disabled || soloLectura"
+                  :disable="disabled"
                   no-caps
                   glossy
                   >Buscar</q-btn
@@ -489,13 +535,15 @@
               :permitirEditarCeldas="
                 accion == acciones.nuevo ||
                 (accion == acciones.editar &&
-                  preingreso.responsable_id == store.user.id)
+                  (preingreso.solicitante == store.user.id ||
+                    preingreso.responsable == store.user.id))
               "
               :permitirConsultar="false"
               :permitirEditar="
                 accion == acciones.nuevo ||
                 (accion == acciones.editar &&
-                  preingreso.responsable_id == store.user.id)
+                  (preingreso.solicitante == store.user.id ||
+                    preingreso.responsable == store.user.id))
               "
               :permitirEditarModal="true"
               :modalMaximized="false"

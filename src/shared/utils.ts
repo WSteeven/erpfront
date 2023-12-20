@@ -374,6 +374,19 @@ export async function imprimirArchivo(ruta: string, metodo: Method, responseType
 
 }
 
+export function filtrarLista(val, update, lista, clave, defaultValue = []) {
+  if (val === '') {
+    update(() => lista.value = defaultValue)
+  } else {
+    update(() => {
+      const needle = val.toLowerCase()
+      lista.value = defaultValue.filter(
+        (v: any) => v[clave].toLowerCase().indexOf(needle) > -1
+      )
+    })
+  }
+}
+
 /**
  * La función `ordenarLista` ordena una lista determinada según una clave específica.
  * Esta función sirve para ordenar cualquier lista que se muestra en un select.
@@ -630,4 +643,22 @@ export function convertirNumeroPositivo(entidad, campo) {
       entidad[campo] = -1 * entidad[campo]
     }
   }
+}
+
+
+/**
+ * La función filtra a los empleados según sus roles.
+ * @param empleados - Una lista de empleados consultados en la base de datos. Cada objeto de empleado debe tener una
+ * propiedad llamada "roles", que es una cadena que representa todos los roles del empleado.
+ * @param roles - Una variedad de roles para filtrar a los empleados.Los roles
+ * deben estar separados por comas y espacios (por ejemplo, ["rol1, rol2, rol3"]).
+ * @return una lista de empleados que tienen al menos uno de los roles especificados en el parámetro
+ * "roles".
+ */
+export function filtrarEmpleadosPorRoles(empleados, roles) {
+  const filtrados = empleados.filter((empleado) => {
+    const rolesEmpleado = empleado.roles.split(', ')
+    return roles.some((rol) => rolesEmpleado.includes(rol))
+  })
+  return filtrados
 }
