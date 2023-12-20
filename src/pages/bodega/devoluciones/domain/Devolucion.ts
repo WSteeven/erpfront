@@ -18,6 +18,8 @@ export class Devolucion extends EntidadAuditable {
     per_autoriza_id: number | null
     sucursal: number | null
     sucursal_id: number | null
+    cliente: number | null
+    cliente_id: number | null
     pedido_automatico: boolean
 
     listadoProductos: any[]
@@ -45,6 +47,8 @@ export class Devolucion extends EntidadAuditable {
         this.listadoProductos = []
         this.sucursal = null
         this.sucursal_id = null
+        this.cliente = null
+        this.cliente_id = null
         this.pedido_automatico = false
 
         // variables auxiliares

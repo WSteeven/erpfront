@@ -1,5 +1,5 @@
 // Dependencias
-import { computed, defineComponent, reactive, ref } from 'vue'
+import { computed, defineComponent, reactive, ref, watchEffect } from 'vue'
 
 // Logica y controladores
 import { StatusEssentialLoading } from 'components/loading/application/StatusEssentialLoading'
@@ -15,7 +15,9 @@ export default defineComponent({
   name: 'LoginPage',
   setup() {
     const configuracionGeneralStore = useConfiguracionGeneralStore()
-    configuracionGeneralStore.consultarConfiguracion()
+    if (!configuracionGeneralStore.configuracion?.nombre_empresa) configuracionGeneralStore.consultarConfiguracion()
+
+    const nombreEmpresa = computed(() => configuracionGeneralStore.configuracion?.nombre_empresa)
 
     const loginUser = reactive(new UserLogin())
 
@@ -25,12 +27,14 @@ export default defineComponent({
     const cargando = new StatusEssentialLoading()
     const Router = useRouter()
 
+    watchEffect(() => document.title = nombreEmpresa.value ?? '')
+
     const login = async () => {
       try {
         cargando.activar()
         await loginController.login(loginUser)
 
-        notificaciones.notificarCorrecto('Bienvenido a JPCONSTRUCRED CIA. LTDA') //response.data.mensaje)
+        notificaciones.notificarCorrecto('Bienvenido a ' + nombreEmpresa.value)
 
       } catch (error: any) {
         if (isAxiosError(error)) {
@@ -55,10 +59,10 @@ export default defineComponent({
       loginUser,
       logoClaro: computed(() => configuracionGeneralStore.configuracion?.logo_claro),
       logoOscuro: computed(() => configuracionGeneralStore.configuracion?.logo_oscuro),
-      // loginJson,
       enableLoginButton,
       login,
-      recuperarPassword
+      recuperarPassword,
+      nombreEmpresa,
     }
   },
 })

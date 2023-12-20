@@ -1,13 +1,11 @@
 <template>
   <q-page padding>
     <div class="column q-mb-md text-center">
-      <b>Material de técnicos</b>
+      <div class="q-mb-md text-primary">Materiales de los empleados</div>
       <small
         >Conoce el material que tienen a su disposición los técnicos para
-        utilizar en sus trabajos.</small
-      >
-      <small
-        >El material puede ser asignado para una tarea o a su stock
+        utilizar en sus trabajos. <br />
+        El material puede ser asignado para una tarea o a su stock
         personal.</small
       >
     </div>
@@ -33,6 +31,7 @@
               @popup-show="ordenarEmpleados"
               :option-label="(v) => v.apellidos + ' ' + v.nombres"
               :option-value="(v) => v.id"
+              @update:model-value="cargarTareas()"
               emit-value
               map-options
             >
@@ -58,16 +57,10 @@
         no-caps
         inline-label
       >
-        <q-tab
-          name="tareas"
-          label="Material para tarea que tiene a cargo"
-          @click="() => (mensaje = '')"
-        />
-        <q-tab
-          name="personal"
-          label="Stock personal del empleado"
-          @click="filtrarStock('personal')"
-        >
+        <q-tab name="tareas" label="Material para tarea que tiene a cargo" />
+        <!-- @click="() => (mensaje = '')" -->
+        <q-tab name="personal" label="Stock personal del empleado">
+          <!-- @click="filtrarStock('personal')" -->
         </q-tab>
       </q-tabs>
 
@@ -75,7 +68,7 @@
         <q-tab-panel name="tareas">
           <div class="row q-col-gutter-sm q-mb-md">
             <!-- Tarea -->
-            <div class="col-12">
+            <div class="col-12 col-md-6">
               <label class="q-mb-sm block"
                 ><b>Paso 2: </b>Seleccione una tarea</label
               >
@@ -95,7 +88,12 @@
                   (item) => item.codigo_tarea + ' - ' + item.titulo
                 "
                 :option-value="(item) => item.id"
-                @update:model-value="filtrarStock()"
+                @update:model-value="
+                  () => {
+                    materialesTarea = []
+                    clienteMaterialTarea = undefined
+                  }
+                "
                 emit-value
                 map-options
                 ><template v-slot:option="scope">
@@ -110,42 +108,35 @@
                 </template>
               </q-select>
             </div>
+
+            <div v-if="filtro.tarea" class="col-12 col-md-6">
+              <label class="q-mb-sm block"
+                ><b>Paso 3: </b>Seleccione un cliente para filtrar el
+                material</label
+              >
+              <q-select
+                v-model="clienteMaterialTarea"
+                :options="clientesMaterialesTarea"
+                transition-show="scale"
+                transition-hide="scale"
+                use-input
+                input-debounce="0"
+                options-dense
+                dense
+                outlined
+                :option-label="(item) => item.razon_social"
+                :option-value="(item) => item.cliente_id"
+                @update:model-value="
+                  obtenerMaterialesTarea(clienteMaterialTarea)
+                "
+                emit-value
+                map-options
+              >
+              </q-select>
+            </div>
           </div>
 
           <div v-if="materialesTarea.length" class="row">
-            <!-- <div class="col-12 text-center">
-              <label class="q-mb-sm block"
-                >Opciones de devolución de material sobrante de la tarea</label
-              >
-            </div> -->
-            <div class="col-12 row justify-center q-gutter-sm q-mb-md">
-              <!-- Boton guardar -->
-              <!-- <q-btn
-                color="primary"
-                no-caps
-                push
-                :to="{ name: 'devoluciones' }"
-              >
-                <q-icon name="bi-building" size="xs" class="q-pr-sm"></q-icon>
-                <span>Devolver a bodega matriz</span>
-              </q-btn> -->
-
-              <!-- Boton modificar -->
-              <!-- <q-btn
-                color="primary"
-                @click="
-                  () =>
-                    (listadoMaterialesDevolucionStore.devolverAlStock = true)
-                "
-                no-caps
-                push
-                :to="{ name: 'devoluciones' }"
-              >
-                <q-icon name="bi-box-seam" size="xs" class="q-pr-sm"></q-icon>
-                <span>Transferir a stock personal</span>
-              </q-btn> -->
-            </div>
-
             <div class="col-12">
               <essential-table
                 v-if="materialesTarea.length"
@@ -166,19 +157,34 @@
 
         <q-tab-panel name="personal">
           <div class="col-12 row justify-center q-gutter-sm q-mb-md">
-            <!-- Boton guardar -->
-            <!-- <q-btn
-              v-if="listadoStockPersonal.length"
-              color="primary"
-              no-caps
-              push
-              :to="{ name: 'devoluciones' }"
-            >
-              <q-icon name="bi-building" size="xs" class="q-pr-sm"></q-icon>
-              <span>Devolver a bodega matriz</span>
-            </q-btn> -->
-          </div>
-          <div class="row">
+            <div class="col-12 justify-center q-gutter-sm q-mb-md">
+              <div class="col-12">
+                <label class="q-mb-sm block"
+                  ><b>Paso 2: </b>Seleccione un cliente para filtrar el
+                  material</label
+                >
+                <q-select
+                  v-model="clienteMaterialStock"
+                  :options="clientesMaterialesStock"
+                  transition-show="scale"
+                  transition-hide="scale"
+                  use-input
+                  input-debounce="0"
+                  options-dense
+                  dense
+                  outlined
+                  :option-label="(item) => item.razon_social"
+                  :option-value="(item) => item.cliente_id"
+                  @update:model-value="
+                    obtenerMaterialStock(clienteMaterialStock)
+                  "
+                  emit-value
+                  map-options
+                >
+                </q-select>
+              </div>
+            </div>
+
             <div class="col-12">
               <essential-table
                 v-if="listadoStockPersonal.length"
@@ -193,7 +199,6 @@
                 :mostrarBotones="false"
                 :alto-fijo="false"
               ></essential-table>
-              <!-- <div v-else>El empleado seleccionado no tiene materiales asignados.</div> -->
             </div>
           </div>
         </q-tab-panel>

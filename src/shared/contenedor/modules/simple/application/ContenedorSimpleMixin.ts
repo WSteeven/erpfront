@@ -60,7 +60,7 @@ export class ContenedorSimpleMixin<T extends EntidadAuditable> extends Contenedo
     return {
       onBeforeGuardar: (callback: () => void) =>
         this.hooks.bindHook('onBeforeGuardar', callback),
-      onGuardado: (callback: (id?: number, response_data?:any) => void) =>
+      onGuardado: (callback: (id?: number, response_data?: any) => void) =>
         this.hooks.bindHook('onGuardado', callback),
       onBeforeConsultar: (callback: () => void) =>
         this.hooks.bindHook('onBeforeConsultar', callback),
@@ -208,8 +208,9 @@ export class ContenedorSimpleMixin<T extends EntidadAuditable> extends Contenedo
       const copiaEntidad = JSON.parse(JSON.stringify(this.entidad))
       // console.log(this.entidad)
       // console.log(copiaEntidad)
-      this.reestablecer()
-      this.hooks.onGuardado(copiaEntidad.id,response.data )
+      console.log(response.data)
+      this.hooks.onGuardado(copiaEntidad.id, response.data)
+      this.reestablecer() // antes estaba arriba de onGuardado
       return copiaEntidad
       /* const stop = watchEffect(() => {
         // console.log('dentrode  watch')
@@ -278,11 +279,11 @@ export class ContenedorSimpleMixin<T extends EntidadAuditable> extends Contenedo
    * @param params
    * @returns
    */
-  private async guardarArchivos(id:number, data: T, params?: ParamsType): Promise<any> {
+  private async guardarArchivos(id: number, data: T, params?: ParamsType): Promise<any> {
 
     this.statusEssentialLoading.activar()
     try {
-      const { response } = await this.controller.guardarFiles(id,data)
+      const { response } = await this.controller.guardarFiles(id, data)
 
       this.notificaciones.notificarCorrecto(response.data.mensaje)
       // this.agregarElementoListadoArchivosActual(response.data.modelo)
@@ -303,6 +304,7 @@ export class ContenedorSimpleMixin<T extends EntidadAuditable> extends Contenedo
 
   // Editar
   private async editar(data: T, resetOnUpdated = true, params?: ParamsType) {
+
     if (this.entidad.id === null) {
       return this.notificaciones.notificarAdvertencia(
         'No se puede editar el recurso con id null'

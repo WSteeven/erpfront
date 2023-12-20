@@ -119,6 +119,16 @@ export const tabAutorizarGasto: TabOption[] = [
   { label: 'Pendiente', value: '3' },
   { label: 'Anulado', value: '4' },
 ]
+export const tabAcreditacion: TabOption[] = [
+  { label: 'Aprobada', value: '1' },
+  { label: 'Anulado', value: '2' },
+]
+export const tabPrestamoEmpresarial: TabOption[] = [
+  { label: 'ACTIVO', value: 'ACTIVO' },
+  { label: 'FINALIZADO', value: 'FINALIZADO' },
+  { label: 'INACTIVO', value: 'INACTIVO' },
+
+]
 export const tabGestionarEgresos: TabOption[] = [
   { label: 'Aprobada', value: 'ACEPTADA' },
   // { label: 'Rechazada', value: 'RECHAZADA' },
@@ -152,6 +162,7 @@ export const motivos = {
   stockInicial: 'STOCK INICIAL',
   despachoTarea: 'DESPACHO DE TAREA',
   despacho: 'DESPACHO',
+  destruccion: 'DESTRUCCION',
   devolucionAlProveedor: 'DEVOLUCION AL PROVEEDOR',
   reposicion: 'REPOSICION',
   ingresoTransferenciaBodegas: 'INGRESO TRANSFERENCIA ENTRE BODEGAS',
@@ -159,6 +170,7 @@ export const motivos = {
   ingresoLiquidacionMateriales: 'INGRESO POR LIQUIDACION DE MATERIALES',
   egresoLiquidacionMateriales: 'EGRESO POR LIQUIDACION DE MATERIALES',
   ingresoAjusteRegularizacion: 'AJUSTE DE INGRESO POR REGULARIZACION',
+  robo: 'ROBO',
   egresoAjusteRegularizacion: 'AJUSTE DE EGRESO POR REGULARIZACION',
   mercaderiaClienteStock: 'MERCADERIA DE CLIENTE PARA STOCK',
   devolucionGarantia: 'DEVOLUCION POR GARANTIA',
@@ -232,7 +244,8 @@ export const estadosTrabajos = {
   REALIZADO: 'REALIZADO',
   FINALIZADO: 'FINALIZADO',
   //REAGENDADO: 'REAGENDADO',
-}
+} as const
+
 export const estadosRolPago = {
   CREADO: 'CREADO',
   EJECUTANDO: 'EJECUTANDO',

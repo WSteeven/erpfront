@@ -31,6 +31,10 @@ export default defineComponent({
       type: Boolean,
       default: true,
     },
+    disable: {
+      type: Boolean,
+      default: false,
+    },
     permitirSubir: {
       type: Boolean,
       default: true,
@@ -44,6 +48,7 @@ export default defineComponent({
       required: false,
     },
   },
+  emits:['inicializado'],
   setup(props, { emit }) {
     /********
      * Mixin

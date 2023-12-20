@@ -6,7 +6,7 @@ export const configuracionColumnasTrabajoRealizado: ColumnConfig<ActividadRealiz
     name: 'fecha_hora',
     field: 'fecha_hora',
     label: 'Fecha hora',
-    align: 'left',
+    align: 'center',
     type: 'text',
     sortable: true,
     editable: false,

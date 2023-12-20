@@ -1,13 +1,21 @@
 // Dependencias
+import { configuracionColumnasSubtareasRealizadasPorGrupoTiposTrabajosEmergencia } from '../domain/configuracionColumnasSubtareasRealizadasPorGrupoTiposTrabajosEmergencia'
 import { configuracionColumnasSubtareasRealizadasPorRegion } from '../domain/configuracionColumnasSubtareasRealizadasPorRegion'
 import { configuracionColumnasSubtareasRealizadasPorGrupo } from '../domain/configuracionColumnasSubtareasRealizadasPorGrupo'
-import { configuracionColumnasSubtareasRealizadasPorGrupoTiposTrabajosEmergencia } from '../domain/configuracionColumnasSubtareasRealizadasPorGrupoTiposTrabajosEmergencia'
-import { accionesTabla, opcionesDepartamentos, tiposJornadas } from 'config/utils'
+import { generarColorAzulPastelClaro, obtenerFechaActual, ordernarListaString } from 'shared/utils'
+import { CustomActionPrompt } from 'components/tables/domain/CustomActionPrompt'
 import { computed, defineComponent, reactive, ref, watchEffect } from 'vue'
+import { optionsPie, optionsLine } from 'config/graficoGenerico'
 import { required, requiredIf } from 'shared/i18n-validators'
+import { accionesTabla, tiposJornadas } from 'config/utils'
+import { useNotificaciones } from 'shared/notificaciones'
+import { estadosTickets } from 'config/tickets.utils'
+import { useTicketStore } from 'stores/ticket'
 import { useVuelidate } from '@vuelidate/core'
 
 // Componentes
+import { StatusEssentialLoading } from 'components/loading/application/StatusEssentialLoading'
+import { CustomActionTable } from 'components/tables/domain/CustomActionTable'
 import TabLayout from 'shared/contenedor/modules/simple/view/TabLayout.vue'
 import EssentialTable from 'components/tables/view/EssentialTable.vue'
 import ModalesEntidad from 'components/modales/view/ModalEntidad.vue'
@@ -18,25 +26,17 @@ import { Bar, Pie } from 'vue-chartjs'
 
 // Logica y controladores
 import { ComportamientoModalesTicketAsignado } from 'pages/gestionTickets/ticketsAsignados/application/ComportamientoModalesTicketAsignado'
+import { DepartamentoController } from 'pages/recursosHumanos/departamentos/infraestructure/DepartamentoController'
 import { configuracionColumnasTicket } from 'pages/gestionTickets/tickets/domain/configuracionColumnasTicket'
+import { useFiltrosListadosTickets } from 'pages/gestionTickets/tickets/application/FiltrosListadosTicket'
 import { ContenedorSimpleMixin } from 'shared/contenedor/modules/simple/application/ContenedorSimpleMixin'
 import { EmpleadoController } from 'pages/recursosHumanos/empleados/infraestructure/EmpleadoController'
 import { useBotonesTablaTicket } from 'pages/gestionTickets/tickets/application/BotonesTablaTicket'
-import { generarColorAzulPastelClaro, obtenerFechaActual, ordernarListaString } from 'shared/utils'
-import { StatusEssentialLoading } from 'components/loading/application/StatusEssentialLoading'
 import { DashboardTicketController } from '../infraestructure/DashboardTicketsController'
 import { ReporteSubtareasRealizadas } from '../domain/ReporteSubtareasRealizadas'
-import { CustomActionTable } from 'components/tables/domain/CustomActionTable'
 import { Empleado } from 'pages/recursosHumanos/empleados/domain/Empleado'
 import { FiltroDashboardTicket } from '../domain/FiltroReporteMaterial'
 import { Ticket } from 'pages/gestionTickets/tickets/domain/Ticket'
-import { estadosTickets } from 'config/tickets.utils'
-import { useTicketStore } from 'stores/ticket'
-import { DepartamentoController } from 'pages/recursosHumanos/departamentos/infraestructure/DepartamentoController'
-import { useFiltrosListadosTickets } from 'pages/gestionTickets/tickets/application/FiltrosListadosTicket'
-import { optionsPie, optionsLine } from 'config/graficoGenerico'
-import { CustomActionPrompt } from 'components/tables/domain/CustomActionPrompt'
-import { useNotificaciones } from 'shared/notificaciones'
 
 export default defineComponent({
   components: { TabLayout, EssentialTable, SelectorImagen, TableView, Bar, Pie, ModalesEntidad, GraficoGenerico },
@@ -80,7 +80,6 @@ export default defineComponent({
     const esResponsableDepartamento = ref(false)
     const ticketsEmpleadoResponsable = ref([])
     const tabsTickets = ref('creados')
-    let departamento
 
     // Cantidades
     const ticketsConSolucion = ref([])
@@ -157,19 +156,22 @@ export default defineComponent({
     const tabsDepartamento = ref(opcionesDepartamento.departamentoGrafico)
     const tabsEmpleado = ref(opcionesEmpleado.empleadoGrafico)
 
+    const mostrarSeccionDepartamento = computed(() => filtro.departamento_empleado === opcionesFiltroDepartamentoEmpleado.porDepartamento)
+    const mostrarSeccionEmpleado = computed(() => filtro.departamento_empleado === opcionesFiltroDepartamentoEmpleado.porEmpleado)
+
     /*******
      * Init
      *******/
     filtro.departamento_empleado = opcionesFiltroDepartamentoEmpleado.porEmpleado
-    console.log(optionsLine)
+    // console.log(optionsLine)
 
 
     // Reglas de validacion
     const reglas = {
       fecha_inicio: { required },
       fecha_fin: { required },
-      empleado: { requiredIf: requiredIf(() => filtro.departamento_empleado === opcionesFiltroDepartamentoEmpleado.porEmpleado) },
-      departamento: { requiredIf: requiredIf(() => filtro.departamento_empleado === opcionesFiltroDepartamentoEmpleado.porDepartamento) },
+      empleado: { requiredIf: requiredIf(() => mostrarSeccionEmpleado.value) },
+      departamento: { requiredIf: requiredIf(() => mostrarSeccionDepartamento.value) },
     }
 
     const v$ = useVuelidate(reglas, filtro)
@@ -302,7 +304,7 @@ export default defineComponent({
         try {
 
           const { result } = await dashboardTicketController.listar({ fecha_inicio: filtro.fecha_inicio, fecha_fin: filtro.fecha_fin, departamento_responsable_id: filtro.departamento })
-          console.log(result)
+          // console.log(result)
 
           // Grafico de pastel
           // Graficos estadisticos del empleado
@@ -384,6 +386,11 @@ export default defineComponent({
           cargando.desactivar()
         }
       }
+    }
+
+    function consultarDesdeFechas() {
+      if (mostrarSeccionEmpleado.value) consultar()
+      if (mostrarSeccionDepartamento.value) consultarDepartamento()
     }
 
     function mapearDatos(labels: string[], valores: string[], titulo: string, colores: any[]) {
@@ -650,8 +657,9 @@ export default defineComponent({
       btnSeguimiento,
       ticketsPorEstadoListado,
       listados,
-      mostrarSeccionDepartamento: computed(() => filtro.departamento_empleado === opcionesFiltroDepartamentoEmpleado.porDepartamento),
-      mostrarSeccionEmpleado: computed(() => filtro.departamento_empleado === opcionesFiltroDepartamentoEmpleado.porEmpleado),
+      consultarDesdeFechas,
+      mostrarSeccionDepartamento,
+      mostrarSeccionEmpleado,
     }
   }
 })

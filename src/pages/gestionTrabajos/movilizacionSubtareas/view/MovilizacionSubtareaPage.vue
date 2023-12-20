@@ -1,5 +1,5 @@
 <template>
-  <q-form @submit.prevent class="window-height">
+  <q-form @submit.prevent class="">
     <q-card class="rounded-card custom-shadow">
       <q-card-section>
         <div class="row q-col-gutter-xs">
@@ -128,11 +128,8 @@
               <q-btn
                 color="positive"
                 no-caps
-                glossy
-                push
-                rounded
                 no-wrap
-                class="q-mx-auto block"
+                class="full-width"
                 @click="obtenerCoordenadas()"
                 :disable="disabled"
               >
@@ -149,7 +146,6 @@
             color="primary"
             type="submit"
             no-caps
-            push
             @click="comenzar()"
           >
             <q-icon name="bi-car-front-fill" size="xs" class="q-pr-sm"></q-icon>

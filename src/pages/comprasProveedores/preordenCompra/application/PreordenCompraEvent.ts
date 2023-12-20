@@ -14,8 +14,8 @@ export class PreordenCompraEvent {
         const pusher = notificacionStore.pusher
 
         //suscripcion al canal de preorden creada
-        if (this.store.esCompras) {
-            const preordenCreada = pusher.subscribe('preordenes-generadas-' + rolesSistema.compras)
+        if (this.store.esCoordinadorBodega) {
+            const preordenCreada = pusher.subscribe('preordenes-generadas-' + rolesSistema.bodega)
             preordenCreada.bind('preorden-event', function (e) {
                 // notificacionStore.agregar(e.notificacion)
                 notificacionStore.actualizar()

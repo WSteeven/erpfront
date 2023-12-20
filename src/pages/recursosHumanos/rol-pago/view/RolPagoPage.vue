@@ -82,7 +82,7 @@
         <q-input
           v-model="rolpago.dias"
           placeholder="Obligatorio"
-          type="number"
+          mask="##"
           :disable="disabled"
           outlined
           dense
@@ -127,7 +127,7 @@
           :disable="disabled"
         />
       </div>
-       <!-- Medio Tiempo -->
+       <!-- Vendedor Medio Tiempo -->
        <div class="col-12 col-md-3">
         <label class="q-mb-sm block">Vendedor Trabaja Medio tiempo</label>
         <q-toggle
@@ -153,7 +153,8 @@
         >
         </q-input>
       </div>
-      <div class="col-12 col-md-3" v-if="rolpago.es_vendedor_medio_tiempo && rolpago.es_vendedor_medio_tiempo">
+      <!-- Porcentaje Anticipo -->
+      <div class="col-12 col-md-3" v-if="rolpago.es_vendedor_medio_tiempo && rolpago.es_quincena">
         <label class="q-mb-sm block">Porcentaje Quincena</label>
         <q-input
           v-model="rolpago.porcentaje_quincena"
@@ -333,6 +334,20 @@
           </q-input>
         </div>
       </div>
+      <div v-if="rolpago.ingresos.length>0">
+        <essential-table
+      titulo="Ingresos"
+      :configuracionColumnas="accion==acciones.editar?[...configuracionColumnasIngresoRolPago, accionesTabla]:[...configuracionColumnasIngresoRolPago]"
+      :datos="rolpago.ingresos"
+      :permitirConsultar="false"
+      :permitirEditar="false"
+      :permitirEliminar="false"
+      :altoFijo="false"
+      :accion1="btnEditarIngreso"
+      :accion2="btnEliminarIngreso"
+      >
+    </essential-table>
+      </div>
     </q-expansion-item>
     <q-expansion-item
       v-if="!rolpago.es_quincena"
@@ -444,6 +459,21 @@
           </q-input>
         </div>
       </div>
+      <div v-if="rolpago.egresos.length>0">
+        <essential-table
+      titulo="Egresos"
+      :configuracionColumnas="accion==acciones.editar?[...configuracionColumnasEgresoRolPago, accionesTabla]:[...configuracionColumnasEgresoRolPago]"
+      :datos="rolpago.egresos"
+      :permitirConsultar="false"
+      :permitirEditar="false"
+      :permitirEliminar="false"
+      :altoFijo="false"
+      :accion1="btnEditarEgreso"
+      :accion2="btnEliminarEgreso"
+      >
+    </essential-table>
+      </div>
+
     </q-expansion-item>
     <div class="row justify-end q-col-gutter-x-xs">
       <button-submits

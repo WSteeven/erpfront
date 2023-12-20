@@ -569,10 +569,10 @@
                 </span>
 
                 <div :class="{ 'q-mb-xs': $q.screen.xs }">
-                  <estados-subtareas
+                  <!-- <estados-subtareas
                     v-if="col.name === 'estado'"
                     :propsTable="col"
-                  />
+                  /> -->
 
                   <q-chip
                     v-if="col.value === 'EN CAMINO'"

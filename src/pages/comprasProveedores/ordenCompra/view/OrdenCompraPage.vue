@@ -5,7 +5,7 @@
     titulo-pagina="Orden de Compra"
     :tab-options="tabOptionsOrdenCompra"
     :ajustarCeldas="true"
-    tabDefecto="1"
+    :tabDefecto="tabDefecto"
     :filtrar="filtrarOrdenes"
     :permitirEditar="false"
     :permitirEliminar="false"
@@ -304,7 +304,7 @@
               :error="!!v$.proveedor.$errors.length"
               error-message="Debes seleccionar al menos una opcion"
               :disable="disabled || soloLectura"
-              :option-label="(v) => v.razon_social"
+              :option-label="(v) => v.razon_social +' - '+v.sucursal"
               :option-value="(v) => v.id"
               emit-value
               map-options
@@ -313,7 +313,7 @@
                   <q-item-section>
                     <q-item-label>{{ scope.opt.razon_social }}</q-item-label>
                     <q-item-label caption
-                      >Sucursal:
+                      >{{scope.opt.nombre_comercial}} - Sucursal:
                       {{
                         scope.opt.sucursal || scope.opt.direccion
                       }}</q-item-label
@@ -596,9 +596,13 @@
               "
               :permitirEditarModal="true"
               :permitirConsultar="false"
-              :permitirEditar="true"
+              :permitirEditar="accion == acciones.nuevo ||
+                (accion == acciones.editar &&
+                  (orden.autorizador == store.user.id ||
+                    orden.solicitante == store.user.id ||
+                    store.esCompras) &&
+                  (orden.autorizacion == 1 || store.esCompras))"
               :permitirEliminar="false"
-              :mostrarBotones="false"
               :altoFijo="false"
               :accion1="btnEliminarFila"
               @guardarFila="(fila) => guardarFilaEditada(fila)"

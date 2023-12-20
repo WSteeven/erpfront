@@ -22,7 +22,8 @@ export default defineComponent({
 
         //Reglas de validacion
         const reglas = {
-            nombre: { required }
+            nombre: { required },
+            abreviatura: { required }
         }
 
         const v$ = useVuelidate(reglas, descuentos_generales)

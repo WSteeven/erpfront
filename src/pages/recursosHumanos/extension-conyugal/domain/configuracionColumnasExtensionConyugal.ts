@@ -11,6 +11,13 @@ export const configuracionColumnasExtensionConyugal: ColumnConfig<ExtensionConyu
   sortable: true
 },
 {
+  name: 'mes',
+  field: 'mes',
+  label: 'Mes',
+  align: 'left',
+  sortable: true
+},
+{
   name: 'dependiente_info',
   field: 'dependiente_info',
   label: 'Dependiente',

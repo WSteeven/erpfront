@@ -51,6 +51,7 @@ import { MultaController } from 'pages/recursosHumanos/multas/infraestructure/Mu
 import { ConceptoIngresoController } from 'pages/recursosHumanos/concepto_ingreso/infraestructure/ConceptoIngresoController'
 
 export default defineComponent({
+  name: 'RolPagoMes',
   components: {
     TabLayoutFilterTabs2,
     ModalesEntidad,
@@ -130,8 +131,6 @@ export default defineComponent({
       icono: 'bi-play-fill',
       color: 'positive',
       accion: () => {
-        console.log(rolpago)
-
         if (!rolpago.id)
           return notificarAdvertencia('Primero debe seleccionar una rol.')
         confirmar('¿Está seguro de iniciar cambios rol de pago?', async () => {
@@ -148,7 +147,7 @@ export default defineComponent({
       titulo: 'Finalizar Rol de Pago',
       icono: 'bi-check',
       color: 'positive',
-      visible: () => rolpago.es_quincena == true,
+      visible: () => rolpago.finalizado == false,
       accion: () => {
         if (!rolpago.id)
           return notificarAdvertencia('Primero debe seleccionar una rol.')
@@ -164,7 +163,7 @@ export default defineComponent({
     }
 
     const btnConsultarRolPagoEmpleado: CustomActionTable = {
-      titulo: '',
+      titulo: 'Consultar',
       icono: 'bi-eye',
       accion: ({ entidad }) => {
         rolPagoStore.idRolPagoSeleccionada = entidad.id
@@ -174,7 +173,7 @@ export default defineComponent({
     }
 
     const btnEditarRolPagoEmpleado: CustomActionTable = {
-      titulo: '',
+      titulo: 'Editar',
       icono: 'bi-pencil',
       color: 'warning',
       visible: ({ entidad }) => {
@@ -215,8 +214,12 @@ export default defineComponent({
       listar({ finalizado: tabSeleccionado }, false)
       tabActualRolPago = tabSeleccionado
     }
-    function filtrarRolPagoEmpleado(estado) {
-      listarRolEmpleado({ rol_pago_id: rolpago.id, estado: estado })
+    function filtrarRolPagoEmpleado(estado, mensaje = null) {
+      listarRolEmpleado({ rol_pago_id: rolpago.id, estado: estado }).then(() => {
+        if(mensaje != null) {
+          notificarCorrecto(mensaje)
+        }
+      });
       tabActual.value = estado
     }
 
@@ -257,7 +260,7 @@ export default defineComponent({
       },
     }
     const btnEnviarRolPagoEmpleado: CustomActionTable = {
-      titulo: '',
+      titulo: 'Enviar Rol de Pago Individual',
       icono: 'bi-envelope-fill',
       color: 'secondary',
       visible: ({ entidad }) =>
@@ -268,7 +271,7 @@ export default defineComponent({
       },
     }
     const btnEliminarRolPago: CustomActionTable = {
-      titulo: '',
+      titulo: 'Eliminar',
       icono: 'bi-trash',
       color: 'secondary',
       visible: ({ entidad }) =>
@@ -408,12 +411,13 @@ export default defineComponent({
       },
     }
     async function actualizarRolPago(idRolPago: number) {
+
       const axios = AxiosHttpRepository.getInstance()
       const ruta = axios.getEndpoint(endpoints.actualizar_rol_pago) + idRolPago
       const response: AxiosResponse = await axios.get(ruta)
-      filtrarRolPagoEmpleado('')
+      filtrarRolPagoEmpleado('',response.data.mensaje)
 
-      return notificarCorrecto(response.data.mensaje)
+
     }
     return {
       removeAccents,

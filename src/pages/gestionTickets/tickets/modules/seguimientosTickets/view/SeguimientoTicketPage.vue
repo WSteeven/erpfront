@@ -1,13 +1,13 @@
 <template>
   <q-page>
-    <div class="text-center text-subtitle2 q-mb-md">
+    <div class="text-center text-primary q-mb-md">
       Ticket {{ ticket.codigo }}
     </div>
 
-    <div class="column q-col-gutter-sm q-mb-md">
+    <div class="row bg-body-table rounded q-pa-md border-grey">
       <div class="col-12">
         <label class="q-mb-sm block">Asunto</label>
-        <b>{{ ticket.asunto }}</b>
+        <div class="q-mb-md text-bold">{{ ticket.asunto }}</div>
       </div>
 
       <div class="col-12">
@@ -18,12 +18,12 @@
 
     <div
       id="responsables"
-      class="row items-center bg-blue-8 rounded-header q-pt-sm"
+      class="row items-center bg-body-table border-grey rounded q-mb-lg"
     >
       <div class="col-12">
-        <div class="row q-px-md items-center">
+        <div class="row q-px-md items-center q-pt-md">
           <div
-            class="col-12 col-sm-6 col-md-6 text-white"
+            class="col-12 col-sm-6 col-md-6 text-primary"
             :class="{ 'text-center q-mb-md': $q.screen.xs }"
           >
             <div class="text-subtitle2 text-shadow">
@@ -34,52 +34,26 @@
               registradas de la linea de tiempo del ticket</small
             >
           </div>
-
-          <div class="col-12 col-sm-6 col-md-6 q-mb-md">
-            <div
-              class="row"
-              :class="{
-                'justify-center': $q.screen.xs,
-                'justify-end': !$q.screen.xs,
-              }"
-            >
-              <q-btn
-                icon="bi-chevron-left"
-                color="blue-6"
-                class="bg-primary q-pr-md q-mr-sm"
-                @click="anterior"
-                rounded
-                no-caps
-                dense
-              ></q-btn>
-              <q-btn
-                icon-right="bi-chevron-right"
-                color="blue-6"
-                class="bg-primary q-pl-md"
-                @click.stop="siguiente"
-                rounded
-                no-caps
-                dense
-              ></q-btn>
-            </div>
-          </div>
         </div>
       </div>
 
-      <div class="col-12 rounded">
+      <div class="col-12">
         <q-scroll-area
           ref="scrollAreaRef"
           style="height: 250px; max-width: 100%"
           class="q-pa-sm"
         >
-          <div v-if="lineaTiempo" class="row q-gutter-md items-center no-wrap">
+          <div
+            v-if="lineaTiempo"
+            class="row q-gutter-md items-center no-wrap bg-body-table rounded q-pa-xs"
+          >
             <div
               v-for="(linea, index) in lineaTiempo"
               :key="index"
               class="row items-center no-wrap"
             >
               <q-card
-                class="custom-shadow2 text-white rounded-card cursor-pointer q-card-hover q-card-press bg-primary"
+                class="custom-shadow2 text-grey-8 rounded-card cursor-pointer q-card-hover q-card-press bg-body-table"
                 style="width: 180px"
                 @click="filtrarActividades(linea, index)"
               >
@@ -117,16 +91,45 @@
               <q-icon
                 name="bi-caret-right-fill"
                 size="md"
-                color="white"
+                color="grey-6"
                 class="q-ml-md"
               ></q-icon>
             </div>
           </div>
         </q-scroll-area>
       </div>
+
+      <div class="col-12 q-mb-sm">
+        <div
+          class="row justify-center"
+          :class="{
+            'justify-center': $q.screen.xs,
+            'justify-end': !$q.screen.xs,
+          }"
+        >
+          <q-btn
+            icon="bi-chevron-left"
+            color="blue-6"
+            class="bg-primary q-pr-md q-mr-sm custom-shadow2"
+            @click="anterior"
+            rounded
+            no-caps
+            dense
+          ></q-btn>
+          <q-btn
+            icon-right="bi-chevron-right"
+            color="blue-6"
+            class="bg-primary q-pl-md custom-shadow2"
+            @click.stop="siguiente"
+            rounded
+            no-caps
+            dense
+          ></q-btn>
+        </div>
+      </div>
     </div>
 
-    <q-card class="rounded-card custom-shadow no-border q-pa-md">
+    <q-card class="rounded-card custom-shadow q-pa-md">
       <div class="row">
         <div class="col-12 text-center q-mb-md">
           <q-chip

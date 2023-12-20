@@ -5,6 +5,7 @@ import { Banco } from "pages/recursosHumanos/banco/domain/Banco";
 import { CategoriaOferta } from "pages/comprasProveedores/categoriaOfertas/domain/CategoriaOferta";
 import { Producto } from "pages/bodega/productos/domain/Producto";
 import { Canton } from "sistema/ciudad/domain/Canton";
+import { Empleado } from "pages/recursosHumanos/empleados/domain/Empleado";
 
 export const useFiltrosListadosSelects = (listadosAuxiliares, entidad?: Ref<any>) => {
   /**************************************************************
@@ -94,7 +95,7 @@ export const useFiltrosListadosSelects = (listadosAuxiliares, entidad?: Ref<any>
     })
   }
   function ordenarCantones() {
-    cantones.value.sort((a:Canton, b:Canton) => ordernarListaString(a.canton!, b.canton!))
+    cantones.value.sort((a: Canton, b: Canton) => ordernarListaString(a.canton!, b.canton!))
   }
 
 
@@ -177,7 +178,7 @@ export const useFiltrosListadosSelects = (listadosAuxiliares, entidad?: Ref<any>
     }
     update(() => {
       const needle = val.toLowerCase()
-      if (listadosAuxiliares.proveedores) proveedores.value = listadosAuxiliares.proveedores.filter((v) => v.razon_social.toLowerCase().indexOf(needle) > -1 || v.sucursal.toLowerCase().indexOf(needle) > -1)
+      if (listadosAuxiliares.proveedores) proveedores.value = listadosAuxiliares.proveedores.filter((v) => v.razon_social.toLowerCase().indexOf(needle) > -1 || v.sucursal.toLowerCase().indexOf(needle) > -1||v.nombre_comercial?.toLowerCase().indexOf(needle) > -1)
     })
   }
 
@@ -207,6 +208,9 @@ export const useFiltrosListadosSelects = (listadosAuxiliares, entidad?: Ref<any>
       const needle = val.toLowerCase()
       empleados.value = listadosAuxiliares.empleados.filter((v) => v.nombres.toLowerCase().indexOf(needle) > -1 || v.apellidos.toLowerCase().indexOf(needle) > -1)
     })
+  }
+  function ordenarEmpleados() {
+    empleados.value.sort((a: Empleado, b: Empleado) => ordernarListaString(a.apellidos!, b.apellidos!))
   }
 
   function filtrarBancos(val, update) {
@@ -239,12 +243,12 @@ export const useFiltrosListadosSelects = (listadosAuxiliares, entidad?: Ref<any>
   return {
     paises, filtrarPaises,
     provincias, filtrarProvincias,
-    cantones, filtrarCantones,ordenarCantones,
+    cantones, filtrarCantones, ordenarCantones,
     parroquias, filtrarParroquias,
     empresas, filtrarEmpresas, ordenarEmpresas,
     proveedores, filtrarProveedores,
     clientes, filtrarClientes,
-    empleados, filtrarEmpleados,
+    empleados, filtrarEmpleados, ordenarEmpleados,
     bancos, filtrarBancos,
     categorias, filtrarCategoriasProveedor, ordenarCategorias,
     productos, filtrarProductos,

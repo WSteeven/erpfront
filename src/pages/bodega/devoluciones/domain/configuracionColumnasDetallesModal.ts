@@ -2,6 +2,13 @@ import { ColumnConfig } from 'components/tables/domain/ColumnConfig'
 
 export const configuracionColumnasDetallesModal: ColumnConfig<any>[] = [
     {
+        name: 'categoria',
+        field: 'Categoria',
+        label: 'Categoria',
+        align: 'left',
+        sortable: true
+    },
+    {
         name: 'producto',
         field: 'producto',
         label: 'Producto',
@@ -30,30 +37,16 @@ export const configuracionColumnasDetallesModal: ColumnConfig<any>[] = [
         sortable: true
     },
     {
-        name: 'computadora',
-        field: 'computadora',
-        label: 'Caracteristicas',
+        name: 'cantidad',
+        field: 'cantidad',
+        label: 'Cantidad Disponible',
         align: 'left',
         sortable: true
     },
     {
-        name: 'fibra',
-        field: 'fibra',
-        label: 'Fibra',
-        align: 'left',
-        sortable: true
-    },
-    {
-        name: 'puntas',
-        field: 'puntas',
-        label: 'Detalles Fibra',
-        align: 'left',
-        sortable: true
-    },
-    {
-        name: 'adicionales',
-        field: 'adicionales',
-        label: 'Campos adicionales',
+        name: 'cliente',
+        field: 'cliente',
+        label: 'Cliente Propietario',
         align: 'left',
         sortable: true
     },
