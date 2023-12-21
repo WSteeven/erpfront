@@ -361,7 +361,12 @@
                   />
                 </q-item>
 
-                <q-item clickable class="full-width" @click="logout()" :disable="$q.loading.isActive">
+                <q-item
+                  clickable
+                  class="full-width"
+                  @click="logout()"
+                  :disable="$q.loading.isActive"
+                >
                   <q-avatar>
                     <q-icon name="bi-box-arrow-left"></q-icon>
                   </q-avatar>
@@ -417,7 +422,7 @@
             <q-item-label
               v-if="item.hasOwnProperty('header')"
               header
-              class="text-bold text-dark"
+              class="text-bold text-primary"
               >{{ item.header }}</q-item-label
             >
 

@@ -22,7 +22,7 @@ export function useMaterialesEmpleado(filtro: UnwrapRef<FiltroMiBodega>, listado
   const cargando = new StatusEssentialLoading()
 
 
-  tareaController.listar({ activas_empleado: 1, empleado_id: authenticationStore.user.id, para_cliente_proyecto: destinosTareas.paraProyecto, campos: 'id,codigo_tarea,cliente_id' }).then((data) => listadosAuxiliares.tareas = data.result)
+  // tareaController.listar({ activas_empleado: 1, empleado_id: authenticationStore.user.id, para_cliente_proyecto: destinosTareas.paraProyecto, campos: 'id,codigo_tarea,cliente_id' }).then((data) => listadosAuxiliares.tareas = data.result)
 
   async function consultarMaterialEmpleado(cliente: number) {
     try {
