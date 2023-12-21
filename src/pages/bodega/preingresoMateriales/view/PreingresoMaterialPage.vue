@@ -42,7 +42,16 @@
           </div>
 
           <!-- Responsable -->
-          <div class="col-12 col-md-3" v-if="store.esCoordinador||store.esCoordinadorBackup||store.esJefeTecnico||store.esSupervisorCampo||store.esFiscalizador">
+          <div
+            class="col-12 col-md-3"
+            v-if="
+              store.esCoordinador ||
+              store.esCoordinadorBackup ||
+              store.esJefeTecnico ||
+              store.esSupervisorCampo ||
+              store.esFiscalizador
+            "
+          >
             <label class="q-mb-sm block">Responsable</label>
             <q-select
               v-model="preingreso.responsable"
@@ -52,13 +61,13 @@
               options-dense
               dense
               outlined
-              :disable="disabled||soloLectura"
+              :disable="disabled || soloLectura"
               :option-label="(v) => v.apellidos + ' ' + v.nombres"
               :option-value="(v) => v.id"
               use-input
               input-debounce="0"
               @filter="filtrarTecnicos"
-              @update:model-value="obtenerTareasTecnico"
+              @update:model-value="obtenerProyectosTareasTecnico"
               emit-value
               map-options
             >
@@ -196,14 +205,17 @@
           <!-- Codigo de proyecto -->
           <div
             class="col-12 col-md-3"
-            v-if="accion == acciones.nuevo || preingreso.proyecto"
+            v-if="
+              (proyectos?.length && accion == acciones.nuevo) ||
+              preingreso.proyecto
+            "
           >
             <label class="q-mb-sm block">Proyecto</label>
             <q-select
               v-model="preingreso.proyecto"
               :options="proyectos"
               @filter="filtrarProyectos"
-              @update:model-value="obtenerEtapasProyecto()"
+              @update:model-value="obtenerEtapasProyecto(true, true)"
               transition-show="scale"
               transition-hide="scale"
               hint="Opcional"
@@ -241,7 +253,9 @@
           </div>
           <!-- Etapa del proyecto -->
           <div
-            v-if="etapas?.length || preingreso.etapa"
+            v-if="
+              (etapas?.length && accion == acciones.nuevo) || preingreso.etapa
+            "
             class="col-12 col-md-3"
           >
             <label class="q-mb-sm block">Etapa</label>
@@ -267,18 +281,6 @@
               @blur="v$.etapa.$touch"
               :error="!!v$.etapa.$errors.length"
             >
-              <!-- <template v-slot:option="scope">
-                <q-item v-bind="scope.itemProps" class="q-my-sm">
-                  <q-item-section>
-                    <q-item-label class="text-bold text-primary">{{
-                      scope.opt.nombre
-                    }}</q-item-label>
-                    <q-item-label caption
-                      >Supervisor: {{ scope.opt.supervisor_responsable }}
-                    </q-item-label>
-                  </q-item-section>
-                </q-item>
-              </template> -->
               <template v-slot:no-option>
                 <q-item>
                   <q-item-section class="text-grey">
@@ -315,7 +317,7 @@
               input-debounce="0"
               clearable
               @filter="filtrarTareas"
-              @update:model-value="obtenerCoordinadorClienteTareaSeleccionada"
+              @update:model-value="obtenerDatosTareaSeleccionada"
               hint="Opcional"
               :option-label="(v) => v.codigo_tarea + ' - ' + v.titulo"
               :option-value="(v) => v.id"
@@ -515,8 +517,6 @@
               </div>
             </div>
           </div>
-          <!-- {{ v$.$errors }} -->
-          <!-- {{ preingreso.listadoProductos }} -->
           <!-- Tabla con popup -->
           <div class="col-12">
             <essential-popup-editable-table
@@ -536,14 +536,16 @@
                 accion == acciones.nuevo ||
                 (accion == acciones.editar &&
                   (preingreso.solicitante == store.user.id ||
-                    preingreso.responsable == store.user.id))
+                    preingreso.responsable == store.user.id ||
+                    preingreso.coordinador == store.user.id))
               "
               :permitirConsultar="false"
               :permitirEditar="
                 accion == acciones.nuevo ||
                 (accion == acciones.editar &&
                   (preingreso.solicitante == store.user.id ||
-                    preingreso.responsable == store.user.id))
+                    preingreso.responsable == store.user.id ||
+                    preingreso.coordinador == store.user.id))
               "
               :permitirEditarModal="true"
               :modalMaximized="false"
