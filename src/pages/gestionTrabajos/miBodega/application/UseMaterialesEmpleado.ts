@@ -2,12 +2,11 @@ import { TareaController } from 'gestionTrabajos/tareas/infraestructure/TareaCon
 import { useAuthenticationStore } from 'stores/authentication'
 import { FiltroMiBodega } from '../domain/FiltroMiBodega'
 import { destinosTareas } from 'config/tareas.utils'
-import { UnwrapRef, reactive } from 'vue'
 import { StatusEssentialLoading } from 'components/loading/application/StatusEssentialLoading'
-import { MaterialEmpleadoTareaController } from '../infraestructure/MaterialEmpleadoTareaController'
 import { useListadoMaterialesDevolucionStore } from 'stores/listadoMaterialesDevolucion'
-import { Tarea } from 'pages/gestionTrabajos/tareas/domain/Tarea'
 import { useNotificaciones } from 'shared/notificaciones'
+import { MaterialEmpleadoController } from '../infraestructure/MaterialEmpleadoController'
+import { UnwrapRef } from 'vue'
 
 export function useMaterialesEmpleado(filtro: UnwrapRef<FiltroMiBodega>, listadosAuxiliares) {
   // Stores
@@ -15,7 +14,7 @@ export function useMaterialesEmpleado(filtro: UnwrapRef<FiltroMiBodega>, listado
   const authenticationStore = useAuthenticationStore()
 
   // Controllers
-  const materialEmpleadoTareaController = new MaterialEmpleadoTareaController()
+  const materialEmpleadoController = new MaterialEmpleadoController()
   const tareaController = new TareaController()
 
   // Variables
@@ -25,20 +24,15 @@ export function useMaterialesEmpleado(filtro: UnwrapRef<FiltroMiBodega>, listado
 
   tareaController.listar({ activas_empleado: 1, empleado_id: authenticationStore.user.id, para_cliente_proyecto: destinosTareas.paraProyecto, campos: 'id,codigo_tarea,cliente_id' }).then((data) => listadosAuxiliares.tareas = data.result)
 
-  async function obtenerMaterialesTarea(cliente: number) {
+  async function consultarMaterialEmpleado(cliente: number) {
     try {
       cargando.activar()
-      filtro.cliente_id = cliente
-      const { result } = await materialEmpleadoTareaController.listar(filtro)
-
-      listadosAuxiliares.materialesProyecto = result
+      const { result } = await materialEmpleadoController.listar({ empleado_id: authenticationStore.user.id, cliente_id: cliente })
+      listadosAuxiliares.materialesTarea = result
       listadoMaterialesDevolucionStore.listadoMateriales = result
-      listadoMaterialesDevolucionStore.tareaId = filtro.tarea_id
+      listadoMaterialesDevolucionStore.tareaId = null
       listadoMaterialesDevolucionStore.cliente_id = cliente
-
-      const tarea: Tarea = (listadosAuxiliares.tareas as any).find((tarea: Tarea) => tarea.id === filtro.tarea_id)
-
-      if (!listadosAuxiliares.materialesProyecto.length) {
+      if (!result.length) {
         notificarAdvertencia('No tienes material asignado.')
       }
     } catch (e) {
@@ -49,6 +43,6 @@ export function useMaterialesEmpleado(filtro: UnwrapRef<FiltroMiBodega>, listado
   }
 
   return {
-    listadosAuxiliares,
+    consultarMaterialEmpleado,
   }
 }

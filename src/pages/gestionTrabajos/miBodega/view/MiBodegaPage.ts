@@ -9,15 +9,14 @@ import EssentialTable from 'components/tables/view/EssentialTable.vue'
 
 // Logica y controladores
 import { StatusEssentialLoading } from 'components/loading/application/StatusEssentialLoading'
-import { MaterialEmpleadoController } from '../infraestructure/MaterialEmpleadoController'
 import { useListadoMaterialesDevolucionStore } from 'stores/listadoMaterialesDevolucion'
 import { AxiosHttpRepository } from 'shared/http/infraestructure/AxiosHttpRepository'
+import { useMaterialesEmpleado } from '../application/UseMaterialesEmpleado'
 import { useFiltrosListadosSelects } from 'shared/filtrosListadosGenerales'
 import { useMaterialesTarea } from '../application/UseMaterialesTarea'
 import { Tarea } from 'pages/gestionTrabajos/tareas/domain/Tarea'
 import { useAuthenticationStore } from 'stores/authentication'
 import { useNotificacionStore } from 'stores/notificacion'
-import { useNotificaciones } from 'shared/notificaciones'
 import { FiltroMiBodega } from '../domain/FiltroMiBodega'
 import { useCargandoStore } from 'stores/cargando'
 import { endpoints } from 'config/api'
@@ -35,15 +34,9 @@ export default defineComponent({
     useNotificacionStore().setQuasar(useQuasar())
     useCargandoStore().setQuasar(useQuasar())
 
-    /****************
-     * Controladores
-     ****************/
-    const materialEmpleadoController = new MaterialEmpleadoController()
-
     /************
      * Variables
      ************/
-    const { notificarAdvertencia } = useNotificaciones()
     const cargando = new StatusEssentialLoading()
     const listadoStockPersonal = ref([])
 
@@ -54,7 +47,6 @@ export default defineComponent({
     const filtro = reactive(new FiltroMiBodega())
     filtro.empleado_id = authenticationStore.user.id
 
-    const mensaje = ref()
     const clienteMaterialStock = ref()
     const clientes = ref([])
     const clientesMaterialesTarea = ref([])
@@ -75,24 +67,7 @@ export default defineComponent({
      * Funciones
      ************/
     const { obtenerMaterialesTarea, obtenerClientesMaterialesTarea, consultarTareas, consultarProyectos, consultarEtapas } = useMaterialesTarea(filtro, listadosAuxiliares)
-
-    async function filtrarStock(cliente: number) {
-      try {
-        cargando.activar()
-        const { result } = await materialEmpleadoController.listar({ empleado_id: authenticationStore.user.id, cliente_id: cliente })
-        listadoStockPersonal.value = result
-        listadoMaterialesDevolucionStore.listadoMateriales = result
-        listadoMaterialesDevolucionStore.tareaId = null
-        listadoMaterialesDevolucionStore.cliente_id = cliente
-        if (!result.length) {
-          notificarAdvertencia('No tienes material asignado.')
-        }
-      } catch (e) {
-        console.log(e)
-      } finally {
-        cargando.desactivar()
-      }
-    }
+    const { consultarMaterialEmpleado } = useMaterialesEmpleado(filtro, listadosAuxiliares)
 
     async function obtenerClientesMaterialesEmpleado() {
       try {
@@ -109,7 +84,10 @@ export default defineComponent({
 
     function seleccionarTarea() {
       listadosAuxiliares.materialesTarea = []
-      filtro.cliente_id = (listadosAuxiliares.tareas as any).find((tarea: Tarea) => tarea.id === filtro.tarea_id).cliente_id
+      const tarea = (listadosAuxiliares.tareas as any).find((tarea: Tarea) => tarea.id === filtro.tarea_id)
+      proyecto.value = tarea.proyecto_id
+      etapa.value = tarea.etapa_id
+      filtro.cliente_id = tarea.cliente_id
       obtenerMaterialesTarea()
     }
 
@@ -123,7 +101,28 @@ export default defineComponent({
     /************
      * Observers
      ************/
-    watch(tab, () => consultarTareas(tab.value))
+    watch(tab, () => {
+      consultarTareas(tab.value)
+      listadosAuxiliares.materialesTarea = []
+      filtro.tarea_id = null
+      proyecto.value = null
+      etapa.value = null
+      /*listadosAuxiliares.clientesMaterialesTarea = []
+      listadosAuxiliares.tareas = []
+      listadosAuxiliares.proyectos = []
+      listadosAuxiliares.etapas = []
+      switch (tab.value) {
+        case destinosTareas.paraClienteFinal:
+
+          break
+        case destinosTareas.paraProyecto:
+          break
+      } */
+    })
+
+    watch(proyecto, () => {
+      consultarEtapas(proyecto.value)
+    })
 
     /**********
      * Filtros
@@ -134,13 +133,12 @@ export default defineComponent({
       configuracionColumnasMaterialEmpleadoTarea,
       tiposJornadas,
       modosStock,
-      filtrarStock,
+      consultarMaterialEmpleado,
       listadosAuxiliares,
       listadoStockPersonal,
       filtro,
       tab,
       destinosTareas,
-      mensaje,
       listadoMaterialesDevolucionStore,
       clientes,
       clienteMaterialStock,

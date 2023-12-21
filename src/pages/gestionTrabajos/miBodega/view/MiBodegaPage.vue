@@ -182,6 +182,7 @@
           <div class="row q-col-gutter-sm q-pa-sm q-mb-md">
             <div class="col-12 col-md-4">
               <label class="q-mb-sm block">Proyecto</label>
+              {{ proyectos }}
               <q-select
                 v-model="proyecto"
                 :options="proyectos"
@@ -198,7 +199,6 @@
                 input-debounce="0"
                 emit-value
                 map-options
-                @update:modelValue="consultarEtapas()"
               >
                 <template v-slot:option="scope">
                   <q-item v-bind="scope.itemProps" class="q-my-sm">
@@ -307,7 +307,7 @@
                 outlined
                 :option-label="(item) => item.razon_social"
                 :option-value="(item) => item.cliente_id"
-                @update:model-value="filtrarStock(clienteMaterialStock)"
+                @update:model-value="consultarMaterialEmpleado()"
                 emit-value
                 map-options
               >
