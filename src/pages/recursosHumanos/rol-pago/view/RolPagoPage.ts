@@ -871,7 +871,7 @@ export default defineComponent({
                 : 0
             total_sueldo =
               rolpago.es_quincena == true
-                ?( sueldo * porcentajeAnticipo)*porcentaje
+                ?( sueldo * 0.5)*porcentaje
                 : sueldo
           } else {
             total_sueldo =
