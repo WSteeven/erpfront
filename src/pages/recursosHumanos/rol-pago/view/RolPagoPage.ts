@@ -44,6 +44,7 @@ import { EgresoRolPagoController } from '../infraestructure/EgresoRolPagoControl
 import { IngresoRolPago } from '../domain/IngresoRolPago'
 import { IngresoRolPagoController } from '../infraestructure/IngresoRolPagoController'
 import { configuracionColumnasIngresoRolPago } from '../domain/configuracionColumnasIngresoRolPago'
+import { log } from 'console'
 
 export default defineComponent({
   components: {
@@ -688,7 +689,8 @@ export default defineComponent({
         ingresoRolPago.monto = rolpago.ingreso
         ingresoRolPago.id_rol_pago = rolpago.id
         guardarIngreso(ingresoRolPago)
-        const id_ingreso = rolpago.concepto_ingreso != null ? rolpago.concepto_ingreso: 0
+        const id_ingreso =
+          rolpago.concepto_ingreso != null ? rolpago.concepto_ingreso : 0
         rolpago.ingresos.push({
           concepto: rolpago.concepto_ingreso,
           concepto_info: obtener_ingreso(id_ingreso).nombre,
@@ -856,6 +858,7 @@ export default defineComponent({
       const dias_totales = dias + dias_quincena
       const sueldo = (salario / 30) * dias_totales
       let total_sueldo = 0
+      const porcentajeAnticipo = recursosHumanosStore.porcentajeAnticipo / 100
       switch (tipo_contrato) {
         case 3:
           total_sueldo = sueldo
@@ -864,15 +867,15 @@ export default defineComponent({
           if (rolpago.es_vendedor_medio_tiempo) {
             const porcentaje =
               rolpago.porcentaje_quincena != null
-                ? rolpago.porcentaje_quincena
+                ? rolpago.porcentaje_quincena/100
                 : 0
             total_sueldo =
-              rolpago.es_quincena == true ? (sueldo * porcentaje) / 100 : sueldo
+              rolpago.es_quincena == true
+                ?( sueldo * 0.5)*porcentaje
+                : sueldo
           } else {
             total_sueldo =
-              rolpago.es_quincena == true
-                ? (sueldo * recursosHumanosStore.porcentajeAnticipo) / 100
-                : sueldo
+              rolpago.es_quincena == true ? sueldo * porcentajeAnticipo : sueldo
           }
 
           break
