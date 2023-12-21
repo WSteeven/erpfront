@@ -166,7 +166,7 @@ export default defineComponent({
       }, 1)
     })
     onBeforeGuardar(() => {
-      console.log(refArchivo.value)
+      // console.log(refArchivo.value)
     })
     onGuardado((id: number) => {
       idPreingreso.value = id
@@ -247,20 +247,18 @@ export default defineComponent({
         limpiarCampos(limpiarEtapa, limpiarTarea)
         const proyectoSeleccionado = listadosAuxiliares.proyectos.filter((proyecto: Proyecto) => proyecto.id === preingreso.proyecto)[0]
         if (proyectoSeleccionado) {
-          console.log(proyectoSeleccionado)
           preingreso.cliente = proyectoSeleccionado.cliente_id
           preingreso.coordinador = proyectoSeleccionado.coordinador_id
-          // const etapasProyecto = proyectoSeleccionado.etapas
         }
         // if (store.esTecnico || store.esTecnicoLider) {
-        console.log('entro en tecnicos')
+        // console.log('entro en tecnicos')
         const response = await new EtapaController().listar({ etapas_empleado: 1, empleado_id: preingreso.responsable, proyecto_id: preingreso.proyecto })
         etapasResponsable.value = response.result
         if (response.result.length < 1) {
-          console.log('entro en if cuando no hay etapas')
+          // console.log('entro en if cuando no hay etapas')
           await obtenerTareasEtapa(null, false)
         } else {
-          console.log('entro en else respectivo')
+          // console.log('entro en else respectivo')
           const response = await new TareaController().listar({ activas_empleado: 1, proyecto_id: preingreso.proyecto, empleado_id: preingreso.responsable, campos: 'id,codigo_tarea,titulo', finalizado: 0 })
           listadosAuxiliares.tareas = response.result
           tareas.value = response.result
@@ -272,7 +270,8 @@ export default defineComponent({
         listadosAuxiliares.etapas = etapasResponsable.value
         etapas.value = etapasResponsable.value
       } else {
-        console.log('else linea 270')
+        // console.log('else linea 270')
+        etapas.value = []
         limpiarCampos(true, true)
         await obtenerTareasEtapa(null, false)
       }

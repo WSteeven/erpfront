@@ -45,6 +45,7 @@ import { StatusEssentialLoading } from 'components/loading/application/StatusEss
 import { TareaController } from 'pages/gestionTrabajos/tareas/infraestructure/TareaController'
 import { TareasEmpleadoController } from 'pages/gestionTrabajos/tareas/infraestructure/TareasEmpleadoController'
 import { EtapaController } from 'pages/gestionTrabajos/proyectos/modules/etapas/infraestructure/EtapaController'
+import { Tarea } from 'pages/gestionTrabajos/tareas/domain/Tarea'
 
 
 export default defineComponent({
@@ -104,6 +105,7 @@ export default defineComponent({
     const all = ref(true)
     const only_sucursal = ref(false)
     const only_cliente_tarea = ref(false)
+    const etapasResponsable = ref([])
     const group = ref('todos')
     const options_groups = [
       {
@@ -150,6 +152,11 @@ export default defineComponent({
         },
         sucursales: JSON.parse(LocalStorage.getItem('sucursales')!.toString())
       })
+      //Configurar los listados
+      empleados.value = listadosAuxiliares.empleados
+      tareas.value = listadosAuxiliares.tareas
+      clientes.value = listadosAuxiliares.clientes
+      sucursales.value = listadosAuxiliares.sucursales
     })
 
 
@@ -189,6 +196,7 @@ export default defineComponent({
      *****************************************************************************************
      */
     async function obtenerProyectos() {
+      cargando.activar()
       const response = await new ProyectoController().listar({
         empleado_id: pedido.responsable,
         campos: 'id,nombre,codigo_proyecto',
@@ -198,34 +206,70 @@ export default defineComponent({
       proyectos.value = response.result
       if (accion.value == acciones.nuevo) obtenerTareasEtapa(null)
       else obtenerTareasEtapa(pedido.etapa, false)
+      cargando.desactivar()
     }
-    async function obtenerEtapasProyecto(idProyecto: string | number | null, limpiarCampos = true) {
+
+    /**
+     * La función "limpiarCampos" borra los campos "etapa" o "tarea" si los parámetros correspondientes
+     * son verdaderos.
+     * @param [etapa=false] - Si se establece en verdadero, el campo "etapa" se establecerá en nulo.
+     * @param [tarea=false] - Si se establece en verdadero, la propiedad "tarea" se establecerá en nula.
+     */
+    function limpiarCampos(etapa = false, tarea = false) {
+      if (accion.value == acciones.nuevo) {
+        if (etapa) pedido.etapa = null
+        if (tarea) pedido.tarea = null
+      }
+    }
+    async function obtenerEtapasProyecto(limpiarEtapa, limpiarTarea) {
       cargando.activar()
-      if (limpiarCampos) pedido.etapa = null
-      if (idProyecto === null) {
-        const response = await new TareaController().listar({ activas_empleado: 1, empleado_id: pedido.responsable, para_cliente_proyecto: 'PARA_CLIENTE_FINAL', campos: 'id,codigo_tarea,titulo', finalizado: 0 })
-        listadosAuxiliares.tareas = response.result
-        tareas.value = response.result
+      if (pedido.proyecto) {
+        limpiarCampos(limpiarEtapa, limpiarTarea)
+        const proyectoSeleccionado = listadosAuxiliares.proyectos.filter((proyecto) => proyecto.id === pedido.proyecto)[0]
+        if (proyectoSeleccionado) {
+          console.log(proyectoSeleccionado)
+        }
+        const response = await new EtapaController().listar({ etapas_empleado: 1, empleado_id: pedido.responsable, proyecto_id: pedido.proyecto })
+        etapasResponsable.value = response.result
+        if (response.result.length < 1) {
+          await obtenerTareasEtapa(null, false)
+        } else {
+          const response = await new TareaController().listar({ activas_empleado: 1, empleado_id: pedido.responsable, proyecto_id: pedido.proyecto })
+          listadosAuxiliares.tareas = response.result
+          tareas.value = response.result
+        }
+        listadosAuxiliares.etapas = etapasResponsable.value
+        etapas.value = etapasResponsable.value
       } else {
-        const response = await new EtapaController().listar({ etapas_empleado: 1, empleado_id: pedido.responsable, proyecto_id: idProyecto, activo: 1, campos: 'id,nombre,supervisor_id,supervisor_responsable' })
-        listadosAuxiliares.etapas = response.result
-        etapas.value = response.result
-        if (etapas.value.length <= 0) {
-          await obtenerTareasEtapa(null)
-        } else tareas.value = []
-        // if(pedido.tarea) await obtenerTareasEtapa(pedido.etapa)
+        etapas.value = []
+        limpiarCampos(true, true)
+        await obtenerTareasEtapa(null, false)
       }
       cargando.desactivar()
     }
-    async function obtenerTareasEtapa(idEtapa: number | null, limpiarCampos = true) {
+    async function obtenerTareasEtapa(idEtapa: number | null, limpiarTarea = true) {
       cargando.activar()
-      if (limpiarCampos) pedido.tarea = null
+      limpiarCampos(false, limpiarTarea)
       const response = await new TareaController().listar({ activas_empleado: 1, proyecto_id: pedido.proyecto, etapa_id: idEtapa, empleado_id: pedido.responsable, campos: 'id,codigo_tarea,titulo', finalizado: 0 })
       listadosAuxiliares.tareas = response.result
       tareas.value = response.result
       cargando.desactivar()
-
     }
+
+    async function obtenerDatosTareaSeleccionada(){
+      const tareaSeleccionada = listadosAuxiliares.tareas.filter((v: Tarea) => v.id == pedido.tarea)[0]
+      if(tareaSeleccionada){
+        console.log(tareaSeleccionada)
+        pedido.cliente_id = tareaSeleccionada.cliente_id
+        if(pedido.proyecto==null){
+          pedido.proyecto = tareaSeleccionada.proyecto_id
+          await obtenerEtapasProyecto(true, true)
+        }
+        pedido.etapa = tareaSeleccionada.etapa_id
+        pedido.tarea = tareaSeleccionada.id
+      }
+    }
+
     async function recargarSucursales() {
       const sucursales = (await new SucursalController().listar({ campos: 'id,lugar' })).result
       LocalStorage.set('sucursales', JSON.stringify(sucursales))
@@ -234,6 +278,9 @@ export default defineComponent({
       confirmar('¿Está seguro de continuar?', () => pedido.listadoProductos.splice(posicion, 1))
     }
 
+    /*******************************************************************************************
+     * Botones de tabla
+     ******************************************************************************************/
     const botonEliminar: CustomActionTable = {
       titulo: 'Quitar',
       color: 'negative',
@@ -241,7 +288,6 @@ export default defineComponent({
       accion: ({ entidad, posicion }) => eliminar({ entidad, posicion }),
       visible: () => accion.value == acciones.consultar ? false : true
     }
-
     const botonAnularAutorizacion: CustomActionTable = {
       titulo: 'Anular',
       color: 'negative',
@@ -346,30 +392,15 @@ export default defineComponent({
       },
       visible: () => tabSeleccionado.value == 'APROBADO' || tabSeleccionado.value == 'PARCIAL' || tabSeleccionado.value == 'COMPLETA' ? true : false
     }
-    function actualizarElemento(posicion: number, entidad: any): void {
-      if (posicion >= 0) {
-        listado.value.splice(posicion, 1, entidad)
-        listado.value = [...listado.value]
-      }
-    }
-
-    //Configuracion de columnas
-    const configuracionColumnasProductosSeleccionadosAccion = [...configuracionColumnasProductosSeleccionados, {
-      name: 'acciones',
-      field: 'acciones',
-      label: 'Acciones',
-      align: 'center',
-      sortable: false,
-      style: 'width:250px'
-
-    }]
+    // function actualizarElemento(posicion: number, entidad: any): void {
+    //   if (posicion >= 0) {
+    //     listado.value.splice(posicion, 1, entidad)
+    //     listado.value = [...listado.value]
+    //   }
+    // }
 
 
-    //Configurar los listados
-    empleados.value = listadosAuxiliares.empleados
-    tareas.value = listadosAuxiliares.tareas
-    clientes.value = listadosAuxiliares.clientes
-    sucursales.value = listadosAuxiliares.sucursales
+
 
     return {
       mixin, pedido, disabled, accion, v$, acciones,
@@ -396,7 +427,7 @@ export default defineComponent({
 
 
       //tabla
-      configuracionColumnasProductosSeleccionadosAccion,
+      configuracionColumnasProductosSeleccionados,
       configuracionColumnasProductosSeleccionadosDespachado,
       botonEditarCantidad,
       botonCorregir,
@@ -458,9 +489,7 @@ export default defineComponent({
       ordenarLista,
 
       onRowClick: (row) => alert(`${row.name} clicked`),
-      pedidoSeleccionado(val) {
-        pedido.cliente_id = listadosAuxiliares.tareas.filter((v) => (v.id === val))[0]['cliente_id']
-      },
+      obtenerDatosTareaSeleccionada,
 
       recargarSucursales,
 

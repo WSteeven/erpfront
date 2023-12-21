@@ -321,7 +321,7 @@
               v-model="pedido.proyecto"
               :options="proyectos"
               @filter="filtrarProyectos"
-              @update:model-value="obtenerEtapasProyecto(pedido.proyecto)"
+              @update:model-value="obtenerEtapasProyecto(true, true)"
               transition-show="scale"
               transition-hide="scale"
               hint="Opcional"
@@ -427,7 +427,7 @@
               use-input
               input-debounce="0"
               @filter="filtrarTareas"
-              @update:model-value="pedidoSeleccionado"
+              @update:model-value="obtenerDatosTareaSeleccionada"
               error-message="Debe seleccionar una tarea"
               :option-label="(item) => item.titulo"
               :option-value="(item) => item.id"
@@ -704,7 +704,7 @@
               titulo="Productos Seleccionados"
               :configuracionColumnas="
                 accion === acciones.nuevo || accion === acciones.editar
-                  ? configuracionColumnasProductosSeleccionadosAccion
+                  ? configuracionColumnasProductosSeleccionados
                   : configuracionColumnasProductosSeleccionadosDespachado
               "
               :datos="pedido.listadoProductos"
