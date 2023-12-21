@@ -1,6 +1,6 @@
 // Dependencias
 import { configuracionColumnasMaterialEmpleadoTarea } from '../domain/configuracionColumnasMaterialEmpleadoTarea'
-import { defineComponent, onMounted, reactive, ref, watch } from 'vue'
+import { computed, defineComponent, onMounted, reactive, ref, watch } from 'vue'
 import { destinosTareas, modosStock } from 'config/tareas.utils'
 import { tiposJornadas } from 'config/utils'
 
@@ -42,7 +42,10 @@ export default defineComponent({
 
     const tab = ref()
 
-    onMounted(() => tab.value = destinosTareas.paraClienteFinal)
+    onMounted(() => {
+      tab.value = destinosTareas.paraClienteFinal
+      proyectos.value = listadosAuxiliares.proyectos
+    })
 
     const filtro = reactive(new FiltroMiBodega())
     filtro.empleado_id = authenticationStore.user.id
@@ -96,13 +99,16 @@ export default defineComponent({
      *******/
     obtenerClientesMaterialesTarea()
     obtenerClientesMaterialesEmpleado()
-    consultarProyectos()
+    consultarProyectos().then((result) => proyectos.value = listadosAuxiliares.proyectos)
 
     /************
      * Observers
      ************/
     watch(tab, () => {
+      listadosAuxiliares.tareas = []
+
       consultarTareas(tab.value)
+
       listadosAuxiliares.materialesTarea = []
       filtro.tarea_id = null
       proyecto.value = null
@@ -121,7 +127,23 @@ export default defineComponent({
     })
 
     watch(proyecto, () => {
-      consultarEtapas(proyecto.value)
+      if (proyecto.value) {
+        consultarEtapas(proyecto.value).then(() => etapas.value = listadosAuxiliares.etapas)
+        listadosAuxiliares.tareas = []
+        filtro.tarea_id = null
+        // if (!listadosAuxiliares.etapas.length) consultarTareas(destinosTareas.paraProyecto, proyecto.value)
+      }
+    })
+
+    watch(etapa, () => {
+      if (etapa.value) {
+        listadosAuxiliares.tareas = []
+        consultarTareas(destinosTareas.paraProyecto, proyecto.value, etapa.value)
+      }
+    })
+
+    watch(computed(() => filtro.tarea_id), (tarea) => {
+      if (tarea) seleccionarTarea()
     })
 
     /**********

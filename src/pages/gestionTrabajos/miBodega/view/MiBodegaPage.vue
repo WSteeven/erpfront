@@ -182,7 +182,6 @@
           <div class="row q-col-gutter-sm q-pa-sm q-mb-md">
             <div class="col-12 col-md-4">
               <label class="q-mb-sm block">Proyecto</label>
-              {{ proyectos }}
               <q-select
                 v-model="proyecto"
                 :options="proyectos"
@@ -199,6 +198,7 @@
                 input-debounce="0"
                 emit-value
                 map-options
+                clearable
               >
                 <template v-slot:option="scope">
                   <q-item v-bind="scope.itemProps" class="q-my-sm">
@@ -223,7 +223,7 @@
               </q-select>
             </div>
 
-            <div v-show="proyecto" class="col-12 col-md-4">
+            <div v-show="proyecto && etapas.length" class="col-12 col-md-4">
               <label class="q-mb-sm block">Etapa</label>
               <q-select
                 v-model="etapa"
@@ -237,12 +237,12 @@
                 outlined
                 :option-label="(item) => item.nombre"
                 :option-value="(item) => item.id"
-                @update:model-value="consultarTareas(tab, etapa)"
                 use-input
                 input-debounce="0"
                 emit-value
                 map-options
               >
+                <!-- @update:model-value="consultarTareas(tab, null, etapa)" -->
                 <template v-slot:no-option>
                   <q-item>
                     <q-item-section class="text-grey">
@@ -254,6 +254,7 @@
             </div>
 
             <!-- Tarea -->
+            <!-- @update:model-value="seleccionarTarea()" -->
             <div class="col-12 col-md-4">
               <label class="q-mb-sm block">Seleccione una tarea</label>
               <q-select
@@ -271,7 +272,6 @@
                   (item) => item.codigo_tarea + ' - ' + item.titulo
                 "
                 :option-value="(item) => item.id"
-                @update:model-value="seleccionarTarea()"
                 emit-value
                 map-options
                 ><template v-slot:option="scope">
@@ -365,13 +365,6 @@
             :alto-fijo="false"
           ></essential-table>
         </div>
-      </div>
-      <div
-        v-if="mensaje"
-        class="text-center q-my-lg text-negative text-subtitle2"
-      >
-        <q-icon name="bi-emoji-frown" class="q-mr-sm"></q-icon>
-        {{ mensaje }}
       </div>
     </q-card>
   </q-page>

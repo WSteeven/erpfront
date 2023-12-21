@@ -32,9 +32,18 @@ export function useMaterialesTarea(filtro: UnwrapRef<FiltroMiBodega>, listadosAu
   const cargando = new StatusEssentialLoading()
 
   // Funciones
-  async function consultarTareas(paraClienteProyecto: typeof destinosTareas[keyof typeof destinosTareas], etapa?: number) {
-    const { result } = await tareaController.listar({ activas_empleado: 1, empleado_id: authenticationStore.user.id, para_cliente_proyecto: paraClienteProyecto, etapa_id: etapa })
-    listadosAuxiliares.tareas = result
+  async function consultarTareas(paraClienteProyecto: typeof destinosTareas[keyof typeof destinosTareas], proyecto?: number, etapa?: number) {
+    console.log('consultando tareas...')
+    console.log(paraClienteProyecto)
+    try {
+      cargando.activar()
+      const { result } = await tareaController.listar({ activas_empleado: 1, empleado_id: authenticationStore.user.id, para_cliente_proyecto: paraClienteProyecto, proyecto_id: proyecto, etapa_id: etapa })
+      listadosAuxiliares.tareas = result
+    } catch (e) {
+      console.log(e)
+    } finally {
+      cargando.desactivar()
+    }
   }
 
   async function obtenerMaterialesTarea() {
@@ -78,8 +87,15 @@ export function useMaterialesTarea(filtro: UnwrapRef<FiltroMiBodega>, listadosAu
       empleado_id: authenticationStore.user.id,
     }
 
-    const { result } = await proyectoController.listar(params)
-    listadosAuxiliares.proyectos = result
+    try {
+      cargando.activar()
+      const { result } = await proyectoController.listar(params)
+      listadosAuxiliares.proyectos = result
+    } catch (e) {
+      console.log(e)
+    } finally {
+      cargando.desactivar()
+    }
   }
 
   async function consultarEtapas(idProyecto: number) {
@@ -91,9 +107,16 @@ export function useMaterialesTarea(filtro: UnwrapRef<FiltroMiBodega>, listadosAu
       etapas_empleado: 1,
     }
 
-    const { result } = await etapaController.listar(params)
-    listadosAuxiliares.etapas = result
-    console.log(listadosAuxiliares.etapas)
+    try {
+      cargando.activar()
+      const { result } = await etapaController.listar(params)
+      listadosAuxiliares.etapas = result
+      console.log(listadosAuxiliares.etapas)
+    } catch (e) {
+      console.log(e)
+    } finally {
+      cargando.desactivar()
+    }
   }
 
   return {
