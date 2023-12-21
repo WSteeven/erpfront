@@ -868,7 +868,7 @@ export default defineComponent({
             const porcentaje =
               rolpago.porcentaje_quincena != null
                 ? rolpago.porcentaje_quincena/100
-                : 0
+                : 1
             total_sueldo =
               rolpago.es_quincena == true
                 ?( sueldo * 0.5)*porcentaje
