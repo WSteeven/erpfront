@@ -11,7 +11,11 @@
         v-if="transaccion.aviso_liquidacion_cliente"
         class="col-12 col-md-12 rounded-card q-py-sm text-center text-accent bg-yellow-2"
       >
-        <q-icon name="bi-exclamation-triangle-fill" class="q-mr-sm" size="1em"></q-icon
+        <q-icon
+          name="bi-exclamation-triangle-fill"
+          class="q-mr-sm"
+          size="1em"
+        ></q-icon
         ><b>&nbsp; Advertencia</b>
         <div>Esta transacción no se cargará al stock de ningún empleado</div>
       </div>
@@ -37,41 +41,47 @@
           <!-- Select motivo -->
           <div class="col-12 col-md-3 q-mb-md">
             <label class="q-mb-sm block">Motivo</label>
-            <q-input v-model="transaccion.motivo" autogrow disable outlined dense />
+            <q-input
+              v-model="transaccion.motivo"
+              autogrow
+              disable
+              outlined
+              dense
+            />
           </div>
           <!-- Select autorizacion -->
           <div class="col-12 col-md-3 q-mb-md">
             <label class="q-mb-sm block">Autorizacion</label>
-            <q-input v-model="transaccion.autorizacion" disable outlined dense />
+            <q-input
+              v-model="transaccion.autorizacion"
+              disable
+              outlined
+              dense
+            />
           </div>
           <!-- Transferencia -->
-          <div v-if="transaccion.es_transferencia" class="col-12 col-md-3 q-mb-md">
+          <div
+            v-if="transaccion.es_transferencia"
+            class="col-12 col-md-3 q-mb-md"
+          >
             <label class="q-mb-sm block">N° transferencia</label>
             <q-input
               type="number"
               v-model="transaccion.transferencia"
               placeholder="Opcional"
               hint="Ingresa un numero de transferencia y presiona Enter"
-              @keyup.enter="llenarTransferencia(transaccion.transferencia)"
-              :readonly="disabled"
               outlined
               dense
             >
             </q-input>
           </div>
           <!-- Tiene pedido -->
-          <div
-            v-if="
-              (accion === 'NUEVO' && !transaccion.es_transferencia) ||
-              (transaccion.tiene_pedido && !transaccion.es_transferencia)
-            "
-            class="col-12 col-md-3"
-          >
+          <div v-if="transaccion.pedido" class="col-12 col-md-3">
             <q-checkbox
               class="q-mt-lg q-pt-md"
               v-model="transaccion.tiene_pedido"
               label="¿Hay pedido?"
-              @update:model-value="checkPedido"
+
               outlined
               disable
               dense
@@ -85,8 +95,6 @@
               v-model="transaccion.pedido"
               placeholder="Opcional"
               hint="Ingresa un numero de pedido y presiona Enter"
-              @keyup.enter="llenarTransaccion(transaccion.pedido)"
-              :readonly="disabled"
               disable
               outlined
               dense
@@ -113,21 +121,25 @@
           </div>
           <!-- observacion autorizacion -->
           <div
-            v-if="transaccion.tiene_observacion_aut || transaccion.observacion_aut"
+            v-if="
+              transaccion.tiene_observacion_aut || transaccion.observacion_aut
+            "
             class="col-12 col-md-3"
           >
             <label class="q-mb-sm block">Observacion</label>
             <q-input
               v-model="transaccion.observacion_aut"
               placeholder="Obligatorio"
-              :disable="disabled"
-              :readonly="disabled"
+              disable
               :error="!!v$.observacion_aut.$errors.length"
               outlined
               dense
             >
               <template v-slot:error>
-                <div v-for="error of v$.observacion_aut.$errors" :key="error.$uid">
+                <div
+                  v-for="error of v$.observacion_aut.$errors"
+                  :key="error.$uid"
+                >
                   <div class="error-msg">{{ error.$message }}</div>
                 </div>
               </template>
@@ -156,36 +168,44 @@
             <label class="q-mb-sm block">Solicitante</label>
             <!-- <q-input v-model="transaccion.solicitante" disable outlined dense>
             </q-input> -->
-            <q-input v-model="transaccion.solicitante" autogrow dense outlined disable>
+            <q-input
+              v-model="transaccion.solicitante"
+              autogrow
+              dense
+              outlined
+              disable
+            >
             </q-input>
           </div>
           <!-- Es para una tarea -->
-          <div
-            v-if="
-              (esVisibleTarea && !transaccion.es_transferencia) ||
-              (accion === 'NUEVO' && !transaccion.es_transferencia)
-            "
-            class="col-12 col-md-3"
-          >
+          <div v-if="transaccion.tarea" class="col-12 col-md-3">
             <q-checkbox
               class="q-mt-lg q-pt-md"
               v-model="transaccion.es_tarea"
               label="¿Es material para tarea?"
-              @update:model-value="checkTarea"
               disable
               outlined
               dense
             ></q-checkbox>
           </div>
           <!-- Tarea -->
-          <div v-if="esVisibleTarea || transaccion.es_tarea" class="col-12 col-md-3">
+          <div
+            v-if="esVisibleTarea || transaccion.es_tarea"
+            class="col-12 col-md-3"
+          >
             <label class="q-mb-sm block">Tarea</label>
-            <q-input v-model="transaccion.tarea" dense outlined disable />
+            <q-input v-model="transaccion.tarea" dense outlined disable autogrow />
           </div>
           <!-- Responsable -->
-          <div v-if="!esTecnico" class="col-12 col-md-3">
+          <div class="col-12 col-md-3">
             <label class="q-mb-sm block">Responsable</label>
-            <q-input v-model="transaccion.responsable" autogrow disable outlined dense />
+            <q-input
+              v-model="transaccion.responsable"
+              autogrow
+              disable
+              outlined
+              dense
+            />
           </div>
           <!-- Retira un tercero -->
           <div
@@ -193,16 +213,13 @@
               (transaccion.per_retira &&
                 !transaccion.es_transferencia &&
                 transaccion.retira_tercero) ||
-              (accion === 'NUEVO' &&
-                !transaccion.es_transferencia &&
-                transaccion.retira_tercero)
+              transaccion.retira_tercero
             "
             class="col-12 col-md-3"
           >
             <q-checkbox
               class="q-mt-lg q-pt-md"
               v-model="transaccion.retira_tercero"
-              @update:model-value="checkRetiraOtro"
               label="¿Retira otra persona?"
               disable
               outlined

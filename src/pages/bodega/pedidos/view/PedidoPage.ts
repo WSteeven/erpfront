@@ -92,6 +92,7 @@ export default defineComponent({
 
     onReestablecer(() => {
       soloLectura.value = false
+      cargarDatosDefecto()
     })
     onConsultado(() => {
       empleados.value = listadosAuxiliares.empleados
@@ -134,6 +135,7 @@ export default defineComponent({
 
     //Obtener los listados
     cargarVista(async () => {
+      cargarDatosDefecto()
       await obtenerListados({
         empleados: {
           controller: new EmpleadoController(),
@@ -195,6 +197,11 @@ export default defineComponent({
      * Funciones
      *****************************************************************************************
      */
+    function cargarDatosDefecto(){
+      pedido.solicitante = store.user.id
+      pedido.responsable = store.user.id
+
+    }
     async function obtenerProyectos() {
       cargando.activar()
       const response = await new ProyectoController().listar({
@@ -225,10 +232,10 @@ export default defineComponent({
       cargando.activar()
       if (pedido.proyecto) {
         limpiarCampos(limpiarEtapa, limpiarTarea)
-        const proyectoSeleccionado = listadosAuxiliares.proyectos.filter((proyecto) => proyecto.id === pedido.proyecto)[0]
-        if (proyectoSeleccionado) {
-          console.log(proyectoSeleccionado)
-        }
+        // const proyectoSeleccionado = listadosAuxiliares.proyectos.filter((proyecto) => proyecto.id === pedido.proyecto)[0]
+        // if (proyectoSeleccionado) {
+        //   console.log(proyectoSeleccionado)
+        // }
         const response = await new EtapaController().listar({ etapas_empleado: 1, empleado_id: pedido.responsable, proyecto_id: pedido.proyecto })
         etapasResponsable.value = response.result
         if (response.result.length < 1) {
@@ -256,12 +263,12 @@ export default defineComponent({
       cargando.desactivar()
     }
 
-    async function obtenerDatosTareaSeleccionada(){
+    async function obtenerDatosTareaSeleccionada() {
       const tareaSeleccionada = listadosAuxiliares.tareas.filter((v: Tarea) => v.id == pedido.tarea)[0]
-      if(tareaSeleccionada){
-        console.log(tareaSeleccionada)
+      if (tareaSeleccionada) {
+        // console.log(tareaSeleccionada)
         pedido.cliente_id = tareaSeleccionada.cliente_id
-        if(pedido.proyecto==null){
+        if (pedido.proyecto == null) {
           pedido.proyecto = tareaSeleccionada.proyecto_id
           await obtenerEtapasProyecto(true, true)
         }
@@ -269,6 +276,37 @@ export default defineComponent({
         pedido.tarea = tareaSeleccionada.id
       }
     }
+
+    async function obtenerProyectosTareasTecnico(limpiarProyecto = true) {
+      if (limpiarProyecto) pedido.proyecto = null
+      limpiarCampos(true, true)
+      cargando.activar()
+      if (pedido.responsable) {
+        const response = await new ProyectoController().listar({ empleado_id: pedido.responsable, finalizado: 0 })
+        listadosAuxiliares.proyectos = response.result
+        proyectos.value = response.result
+        await obtenerEtapasProyecto(false, false)
+        // await obtenerTareasTecnico()
+      } else {
+        pedido.es_tarea = false
+      }
+      cargando.desactivar()
+    }
+
+    /**
+     * La función "obtenerTareasTecnico" recupera una lista de tareas para un empleado, proyecto y
+     * etapa específicos, y actualiza la variable "tareas" con el resultado.
+     */
+    async function obtenerTareasTecnico() {
+      cargando.activar()
+      if (pedido.responsable) {
+        const response = await new TareaController().listar({ activas_empleado: 1, empleado_id: pedido.responsable, finalizado: 0, proyecto_id: pedido.proyecto, etapa_id: pedido.etapa })
+        listadosAuxiliares.tareas = response.result
+        tareas.value = response.result
+      }
+      cargando.desactivar()
+    }
+
 
     async function recargarSucursales() {
       const sucursales = (await new SucursalController().listar({ campos: 'id,lugar' })).result
@@ -452,6 +490,7 @@ export default defineComponent({
       puedeEditar,
       esCoordinador, esCoordinadorBackup: store.esCoordinadorBackup, esBodeguero, esTecnico, esActivosFijos, esRRHH,
 
+      obtenerProyectosTareasTecnico,
       obtenerEtapasProyecto,
       obtenerTareasEtapa,
       checkEvidencia(val, evt) {
@@ -474,7 +513,8 @@ export default defineComponent({
           if (!pedido.responsable) {
             notificarAdvertencia('Debes seleccionar primero un empleado (técnico) responsable')
             pedido.es_tarea = false
-          } else obtenerProyectos()
+          }
+          else obtenerProyectos()
         } else {
           pedido.tarea = null
         }

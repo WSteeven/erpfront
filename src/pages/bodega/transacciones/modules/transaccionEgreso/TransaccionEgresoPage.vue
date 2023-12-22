@@ -434,7 +434,12 @@
           <!-- Codigo de proyecto -->
           <div
             class="col-12 col-md-3"
-            v-if="transaccion.es_tarea || transaccion.proyecto"
+            v-if="
+              (transaccion.es_tarea &&
+                proyectos?.length &&
+                accion == acciones.nuevo) ||
+              transaccion.proyecto
+            "
           >
             <label class="q-mb-sm block">Proyecto</label>
             <q-select
@@ -477,7 +482,10 @@
             </q-select>
           </div>
           <!-- Etapa del proyecto -->
-          <div v-if="etapas?.length || transaccion.etapa" class="col-12 col-md-3">
+          <div
+            v-if="etapas?.length || transaccion.etapa"
+            class="col-12 col-md-3"
+          >
             <label class="q-mb-sm block">Etapa</label>
             <q-select
               v-model="transaccion.etapa"
@@ -545,8 +553,11 @@
               outlined
               :disable="soloLectura"
               :readonly="disabled || soloLectura"
-              @update:model-value="filtrarTareas"
-              :option-label="(item) => item.titulo"
+              use-input
+              input-debounce="0"
+              @filter="filtrarTareas"
+              @update:model-value="obtenerDatosTareaSeleccionada"
+              :option-label="(item) => item.codigo_tarea + ' - ' + item.titulo"
               :option-value="(item) => item.id"
               emit-value
               map-options
@@ -584,7 +595,7 @@
               options-dense
               dense
               outlined
-              :disable="transaccion.es_tarea || disabled"
+              :disable="disabled"
               :readonly="disabled"
               :error="!!v$.cliente.$errors.length"
               error-message="Debes seleccionar un cliente"
@@ -688,7 +699,10 @@
           <div class="col-12">
             <essential-table
               titulo="Productos Seleccionados"
-              :configuracionColumnas="configuracionColumnasProductosSeleccionados"
+              :configuracionColumnas="[
+                ...configuracionColumnasProductosSeleccionados,
+                accionesTabla,
+              ]"
               :datos="transaccion.listadoProductosTransaccion"
               :permitirConsultar="false"
               :permitirEditar="false"
