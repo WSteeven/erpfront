@@ -270,7 +270,7 @@ export default defineComponent({
         listadosAuxiliares.etapas = etapasResponsable.value
         etapas.value = etapasResponsable.value
       } else {
-        // console.log('else linea 270')
+        // t s('else linea 270')
         etapas.value = []
         limpiarCampos(true, true)
         await obtenerTareasEtapa(null, false)

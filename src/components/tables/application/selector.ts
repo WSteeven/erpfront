@@ -22,14 +22,14 @@ export function useSelector(selector: any) {
         // Object.assign(filtros, params)
         status.activar()
         const { response } = await controller.listar(params)
-        console.log(response.data.mensaje)
+        // console.log(response.data.mensaje)
         if (response.data.mensaje) notificaciones.notificarAdvertencia(response.data.mensaje)
         result = response.data.results
         status.desactivar()
       } else {
         status.activar()
         const { response } = await controller.listar(filtros)
-        console.log(response.data.mensaje)
+        // console.log(response.data.mensaje)
         if (response.data.mensaje) notificaciones.notificarAdvertencia(response.data.mensaje)
         result = response.data.results
         status.desactivar()

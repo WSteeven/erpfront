@@ -35,7 +35,7 @@ export default defineComponent({
   // emits: ['cerrar-modal'],
   setup(props, { emit }) {
     const mixin = new ContenedorSimpleMixin(Transaccion, new TransaccionEgresoController())
-    const { entidad: transaccion } = mixin.useReferencias()
+    const { entidad: transaccion, } = mixin.useReferencias()
     const { notificarError, notificarCorrecto, confirmar, prompt } = useNotificaciones()
     //stores
     useNotificacionStore().setQuasar(useQuasar())

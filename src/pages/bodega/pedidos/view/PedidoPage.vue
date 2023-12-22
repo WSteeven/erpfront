@@ -33,6 +33,34 @@
             <label class="q-mb-sm block">Fecha</label>
             <q-input v-model="pedido.created_at" disable outlined dense />
           </div>
+          <!-- Solicitante -->
+          <div v-if="pedido.solicitante" class="col-12 col-md-3">
+            <label class="q-mb-sm block">Solicitante</label>
+            <!-- <q-input v-model="pedido.solicitante" disable outlined dense>
+              </q-input> -->
+            <q-select
+              v-model="pedido.solicitante"
+              :options="empleados"
+              transition-show="scale"
+              transition-hide="scale"
+              options-dense
+              dense
+              outlined
+              disable
+              :option-label="(v) => v.nombres + ' ' + v.apellidos"
+              :option-value="(v) => v.id"
+              emit-value
+              map-options
+            >
+              <template v-slot:no-option>
+                <q-item>
+                  <q-item-section class="text-grey">
+                    No hay resultados
+                  </q-item-section>
+                </q-item>
+              </template>
+            </q-select>
+          </div>
           <!-- Sucursal select -->
           <div class="col-12 col-md-3">
             <label class="q-mb-sm block">Sucursal</label>
@@ -65,34 +93,6 @@
                 <q-btn color="positive" @click="recargarSucursales">
                   <q-icon size="xs" class="q-mr-sm" name="bi-arrow-clockwise" />
                 </q-btn>
-              </template>
-            </q-select>
-          </div>
-          <!-- Solicitante -->
-          <div v-if="pedido.solicitante" class="col-12 col-md-3">
-            <label class="q-mb-sm block">Solicitante</label>
-            <!-- <q-input v-model="pedido.solicitante" disable outlined dense>
-              </q-input> -->
-            <q-select
-              v-model="pedido.solicitante"
-              :options="empleados"
-              transition-show="scale"
-              transition-hide="scale"
-              options-dense
-              dense
-              outlined
-              disable
-              :option-label="(v) => v.nombres + ' ' + v.apellidos"
-              :option-value="(v) => v.id"
-              emit-value
-              map-options
-            >
-              <template v-slot:no-option>
-                <q-item>
-                  <q-item-section class="text-grey">
-                    No hay resultados
-                  </q-item-section>
-                </q-item>
               </template>
             </q-select>
           </div>
@@ -225,6 +225,7 @@
               input-debounce="0"
               @filter="filtrarEmpleados"
               @popup-show="ordenarLista(empleados, 'apellidos')"
+              @update:model-value="obtenerProyectosTareasTecnico"
               error-message="Debes seleccionar el responsable de los materiales"
               :error="!!v$.responsable.$errors.length"
               :disable="disabled || soloLectura"
@@ -335,7 +336,7 @@
               input-debounce="0"
               emit-value
               map-options
-              :disable="disabled"
+              :disable="disabled || soloLectura"
             >
               <template v-slot:option="scope">
                 <q-item v-bind="scope.itemProps" class="q-my-sm">
@@ -378,7 +379,7 @@
               input-debounce="0"
               emit-value
               map-options
-              :disable="disabled"
+              :disable="disabled || soloLectura"
               @blur="v$.etapa.$touch"
               :error="!!v$.etapa.$errors.length"
             >
@@ -429,7 +430,7 @@
               @filter="filtrarTareas"
               @update:model-value="obtenerDatosTareaSeleccionada"
               error-message="Debe seleccionar una tarea"
-              :option-label="(item) => item.titulo"
+              :option-label="(item) => item.codigo_tarea + ' - ' + item.titulo"
               :option-value="(item) => item.id"
               emit-value
               map-options
