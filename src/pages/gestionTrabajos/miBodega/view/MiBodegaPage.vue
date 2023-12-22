@@ -69,7 +69,6 @@
                 </template>
               </q-select>
             </div>
-            <!-- @update:model-value="filtrarStock()" -->
 
             <div v-if="filtro.tarea_id" class="col-12 col-md-6">
               <label class="q-mb-sm block"
@@ -93,102 +92,19 @@
               >
               </q-select>
             </div>
-
-            <!-- Metrajedd tendido -->
-            <!-- <div v-if="etapa" class="col-12 col-md-6">
-              <label class="q-mb-sm block">
-                <q-icon
-                  name="bi-check-circle-fill"
-                  color="primary"
-                  class="q-mr-xs"
-                ></q-icon>
-                Etapa</label
-              >
-              <q-input v-model="etapa" disable outlined dense> </q-input>
-            </div> -->
-
-            <!-- <div v-if="proyecto" class="col-12 col-md-6">
-              <label class="q-mb-sm block">
-                <q-icon
-                  name="bi-check-circle-fill"
-                  color="primary"
-                  class="q-mr-xs"
-                ></q-icon>
-                Proyecto</label
-              >
-              <q-input v-model="proyecto" disable outlined dense> </q-input>
-            </div> -->
-          </div>
-
-          <div v-if="listadosAuxiliares.materialesTarea.length" class="row">
-            <div class="col-12 text-center">
-              <label class="q-mb-sm block"
-                >Opciones de devolución de material sobrante de la tarea</label
-              >
-            </div>
-            <div class="col-12 row justify-center q-gutter-sm q-mb-md">
-              <!-- Boton guardar -->
-              <q-btn
-                color="primary"
-                no-caps
-                unelevated
-                rounded
-                :to="{ name: 'devoluciones' }"
-              >
-                <q-icon name="bi-building" size="xs" class="q-pr-sm"></q-icon>
-                <span>Devolver a bodega matriz</span>
-              </q-btn>
-
-              <!-- Boton modificar -->
-              <q-btn
-                color="primary"
-                @click="
-                  () =>
-                    (listadoMaterialesDevolucionStore.devolverAlStock = true)
-                "
-                no-caps
-                unelevated
-                rounded
-                :to="{ name: 'devoluciones' }"
-              >
-                <q-icon name="bi-box-seam" size="xs" class="q-pr-sm"></q-icon>
-                <span>Transferir a stock personal</span>
-              </q-btn>
-
-              <!-- Boton transferir a otro técnico -->
-              <q-btn
-                color="positive"
-                @click="
-                  () =>
-                    (listadoMaterialesDevolucionStore.devolverAlStock = true)
-                "
-                no-caps
-                unelevated
-                rounded
-                :to="{ name: 'transferencia_producto_empleado' }"
-              >
-                <q-icon
-                  name="bi-box-arrow-up-right"
-                  size="xs"
-                  class="q-pr-sm"
-                ></q-icon>
-                <span>Transferir a otro técnico</span>
-              </q-btn>
-            </div>
           </div>
         </q-tab-panel>
 
         <q-tab-panel :name="destinosTareas.paraProyecto">
           <div class="row q-col-gutter-sm q-pa-sm q-mb-md">
             <div class="col-12 col-md-4">
-              <label class="q-mb-sm block">Proyecto</label>
+              <label class="q-mb-sm block">Todos los proyectos asignados</label>
               <q-select
                 v-model="proyecto"
                 :options="proyectos"
                 @filter="filtrarProyectos"
                 transition-show="scale"
                 transition-hide="scale"
-                hint="Opcional"
                 options-dense
                 dense
                 outlined
@@ -224,14 +140,13 @@
             </div>
 
             <div v-show="proyecto && etapas.length" class="col-12 col-md-4">
-              <label class="q-mb-sm block">Etapa</label>
+              <label class="q-mb-sm block">Seleccione una etapa</label>
               <q-select
                 v-model="etapa"
                 :options="etapas"
                 @filter="filtrarEtapas"
                 transition-show="scale"
                 transition-hide="scale"
-                hint="Opcional"
                 options-dense
                 dense
                 outlined
@@ -242,7 +157,6 @@
                 emit-value
                 map-options
               >
-                <!-- @update:model-value="consultarTareas(tab, null, etapa)" -->
                 <template v-slot:no-option>
                   <q-item>
                     <q-item-section class="text-grey">
@@ -254,9 +168,8 @@
             </div>
 
             <!-- Tarea -->
-            <!-- @update:model-value="seleccionarTarea()" -->
-            <div class="col-12 col-md-4">
-              <label class="q-mb-sm block">Seleccione una tarea</label>
+            <div v-if="mostrarTareaProyecto" class="col-12 col-md-4">
+              <label class="q-mb-sm block">{{ campoTareaProyecto }}</label>
               <q-select
                 v-model="filtro.tarea_id"
                 :options="tareas"
@@ -296,8 +209,8 @@
                 >Seleccione un cliente para filtrar el material</label
               >
               <q-select
-                v-model="clienteMaterialStock"
-                :options="clientes"
+                v-model="filtro.cliente_id"
+                :options="listadosAuxiliares.clientesMaterialesEmpleado"
                 transition-show="scale"
                 transition-hide="scale"
                 use-input
@@ -307,54 +220,75 @@
                 outlined
                 :option-label="(item) => item.razon_social"
                 :option-value="(item) => item.cliente_id"
-                @update:model-value="consultarMaterialEmpleado()"
+                @update:model-value="
+                  consultarMaterialEmpleado(filtro.cliente_id)
+                "
                 emit-value
                 map-options
               >
               </q-select>
             </div>
           </div>
-
-          <div
-            v-if="listadoStockPersonal.length"
-            class="row text-center q-mb-md"
-          >
-            <div class="col-12 q-mb-sm">
-              Opciones de devolución de material sobrante del stock
-            </div>
-            <div class="col-12">
-              <q-btn color="primary" no-caps :to="{ name: 'devoluciones' }">
-                <q-icon name="bi-building" size="xs" class="q-pr-sm"></q-icon>
-                <span>Devolver a bodega matriz</span>
-              </q-btn>
-            </div>
-          </div>
-
-          <!-- <div class="row">
-            <div class="col-12 text-center">
-              <essential-table
-                v-if="listadoStockPersonal.length"
-                titulo="Listado de materiales"
-                :configuracionColumnas="
-                  configuracionColumnasMaterialEmpleadoTarea
-                "
-                :datos="listadoStockPersonal"
-                :permitirConsultar="false"
-                :permitirEliminar="false"
-                :permitirEditar="false"
-                :mostrarBotones="false"
-                :alto-fijo="false"
-                :ajustar-celdas="true"
-              ></essential-table>
-            </div>
-          </div> -->
         </q-tab-panel>
       </q-tab-panels>
 
-      <div class="row q-px-md q-mb-md">
-        <div class="col-12">
+      <div v-if="listadosAuxiliares.materialesTarea.length" class="row">
+        <div class="col-12 text-center">
+          <label class="q-mb-sm block"
+            >Opciones de devolución de material sobrante de la tarea</label
+          >
+        </div>
+
+        <div class="col-12 row justify-center q-gutter-sm q-mb-md">
+          <!-- Boton devolver a bodega matriz-->
+          <q-btn
+            color="primary"
+            no-caps
+            unelevated
+            rounded
+            :to="{ name: 'devoluciones' }"
+          >
+            <q-icon name="bi-building" size="xs" class="q-pr-sm"></q-icon>
+            <span>Devolver a bodega matriz</span>
+          </q-btn>
+
+          <!-- Boton transferir a stock personal -->
+          <q-btn
+            color="primary"
+            @click="
+              () => (listadoMaterialesDevolucionStore.devolverAlStock = true)
+            "
+            no-caps
+            unelevated
+            rounded
+            :to="{ name: 'devoluciones' }"
+          >
+            <q-icon name="bi-box-seam" size="xs" class="q-pr-sm"></q-icon>
+            <span>Transferir a stock personal</span>
+          </q-btn>
+
+          <!-- Boton transferir a otro técnico -->
+          <q-btn
+            color="positive"
+            @click="
+              () => (listadoMaterialesDevolucionStore.devolverAlStock = true)
+            "
+            no-caps
+            unelevated
+            rounded
+            :to="{ name: 'transferencia_producto_empleado' }"
+          >
+            <q-icon
+              name="bi-box-arrow-up-right"
+              size="xs"
+              class="q-pr-sm"
+            ></q-icon>
+            <span>Transferir a otro técnico</span>
+          </q-btn>
+        </div>
+
+        <div class="col-12 q-px-md">
           <essential-table
-            v-if="listadosAuxiliares.materialesTarea.length"
             titulo="Listado de materiales para tarea"
             :configuracionColumnas="configuracionColumnasMaterialEmpleadoTarea"
             :datos="listadosAuxiliares.materialesTarea"
@@ -366,6 +300,8 @@
           ></essential-table>
         </div>
       </div>
+
+      <div class="row q-px-md q-mb-md"></div>
     </q-card>
   </q-page>
 </template>

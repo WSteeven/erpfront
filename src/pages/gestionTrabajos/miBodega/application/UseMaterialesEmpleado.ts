@@ -1,28 +1,22 @@
-import { TareaController } from 'gestionTrabajos/tareas/infraestructure/TareaController'
-import { useAuthenticationStore } from 'stores/authentication'
-import { FiltroMiBodega } from '../domain/FiltroMiBodega'
-import { destinosTareas } from 'config/tareas.utils'
+import { ClienteMaterialEmpleadoController } from '../infraestructure/ClienteMaterialEmpleadoController'
 import { StatusEssentialLoading } from 'components/loading/application/StatusEssentialLoading'
-import { useListadoMaterialesDevolucionStore } from 'stores/listadoMaterialesDevolucion'
-import { useNotificaciones } from 'shared/notificaciones'
 import { MaterialEmpleadoController } from '../infraestructure/MaterialEmpleadoController'
-import { UnwrapRef } from 'vue'
+import { useListadoMaterialesDevolucionStore } from 'stores/listadoMaterialesDevolucion'
+import { useAuthenticationStore } from 'stores/authentication'
+import { useNotificaciones } from 'shared/notificaciones'
 
-export function useMaterialesEmpleado(filtro: UnwrapRef<FiltroMiBodega>, listadosAuxiliares) {
+export function useMaterialesEmpleado(listadosAuxiliares) {
   // Stores
   const listadoMaterialesDevolucionStore = useListadoMaterialesDevolucionStore()
   const authenticationStore = useAuthenticationStore()
 
   // Controllers
+  const clienteMaterialEmpleadoController = new ClienteMaterialEmpleadoController()
   const materialEmpleadoController = new MaterialEmpleadoController()
-  const tareaController = new TareaController()
 
   // Variables
   const { notificarAdvertencia } = useNotificaciones()
   const cargando = new StatusEssentialLoading()
-
-
-  // tareaController.listar({ activas_empleado: 1, empleado_id: authenticationStore.user.id, para_cliente_proyecto: destinosTareas.paraProyecto, campos: 'id,codigo_tarea,cliente_id' }).then((data) => listadosAuxiliares.tareas = data.result)
 
   async function consultarMaterialEmpleado(cliente: number) {
     try {
@@ -42,7 +36,20 @@ export function useMaterialesEmpleado(filtro: UnwrapRef<FiltroMiBodega>, listado
     }
   }
 
+  async function consultarClientesMaterialesEmpleado() {
+    try {
+      cargando.activar()
+      const { result } = await clienteMaterialEmpleadoController.listar({ empleado_id: authenticationStore.user.id })
+      listadosAuxiliares.clientesMaterialesEmpleado = result
+    } catch (e) {
+      console.log(e)
+    } finally {
+      cargando.desactivar()
+    }
+  }
+
   return {
     consultarMaterialEmpleado,
+    consultarClientesMaterialesEmpleado,
   }
 }

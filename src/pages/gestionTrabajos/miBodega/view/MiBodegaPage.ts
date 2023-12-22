@@ -37,9 +37,7 @@ export default defineComponent({
     /************
      * Variables
      ************/
-    const cargando = new StatusEssentialLoading()
-    const listadoStockPersonal = ref([])
-
+    const campoTareaProyecto = ref('Todas las tareas asignadas')
     const tab = ref()
 
     onMounted(() => {
@@ -51,16 +49,13 @@ export default defineComponent({
     filtro.empleado_id = authenticationStore.user.id
 
     const clienteMaterialStock = ref()
-    const clientes = ref([])
-    const clientesMaterialesTarea = ref([])
     const etapa = ref()
     const proyecto = ref()
-
-    const axios = AxiosHttpRepository.getInstance()
 
     const listadosAuxiliares = reactive({
       materialesTarea: [],
       clientesMaterialesTarea: [],
+      clientesMaterialesEmpleado: [],
       tareas: [],
       proyectos: [],
       etapas: [],
@@ -69,21 +64,8 @@ export default defineComponent({
     /************
      * Funciones
      ************/
-    const { obtenerMaterialesTarea, obtenerClientesMaterialesTarea, consultarTareas, consultarProyectos, consultarEtapas } = useMaterialesTarea(filtro, listadosAuxiliares)
-    const { consultarMaterialEmpleado } = useMaterialesEmpleado(filtro, listadosAuxiliares)
-
-    async function obtenerClientesMaterialesEmpleado() {
-      try {
-        cargando.activar()
-        const ruta = axios.getEndpoint(endpoints.obtener_clientes_materiales_empleado) + '/' + authenticationStore.user.id
-        const response: AxiosResponse = await axios.get(ruta)
-        clientes.value = response.data.results
-      } catch (e) {
-        console.log(e)
-      } finally {
-        cargando.desactivar()
-      }
-    }
+    const { obtenerMaterialesTarea, consultarClientesMaterialesTarea, consultarTareas, consultarProyectos, consultarEtapas } = useMaterialesTarea(filtro, listadosAuxiliares)
+    const { consultarMaterialEmpleado, consultarClientesMaterialesEmpleado } = useMaterialesEmpleado(listadosAuxiliares)
 
     function seleccionarTarea() {
       listadosAuxiliares.materialesTarea = []
@@ -97,9 +79,9 @@ export default defineComponent({
     /*******
      * Init
      *******/
-    obtenerClientesMaterialesTarea()
-    obtenerClientesMaterialesEmpleado()
-    consultarProyectos().then((result) => proyectos.value = listadosAuxiliares.proyectos)
+    consultarClientesMaterialesTarea()
+    consultarClientesMaterialesEmpleado()
+    consultarProyectos().then(() => proyectos.value = listadosAuxiliares.proyectos)
 
     /************
      * Observers
@@ -113,25 +95,44 @@ export default defineComponent({
       filtro.tarea_id = null
       proyecto.value = null
       etapa.value = null
+      filtro.cliente_id = undefined
     })
 
-    watch(proyecto, () => {
-      if (proyecto.value) {
-        consultarEtapas(proyecto.value).then(() => etapas.value = listadosAuxiliares.etapas)
-        listadosAuxiliares.tareas = []
-        // filtro.tarea_id = null
+    watch(proyecto, async () => {
+      if (tab.value === destinosTareas.paraProyecto) {
+        if (proyecto.value) {
+          await consultarEtapas(proyecto.value)
+          etapas.value = listadosAuxiliares.etapas
+          listadosAuxiliares.tareas = []
+          if (!listadosAuxiliares.etapas.length) {
+            consultarTareas(tab.value, proyecto.value)
+            campoTareaProyecto.value = 'Todas las tareas asignadas del proyecto seleccionado'
+          }
+        } else {
+          filtro.tarea_id = null
+          etapa.value = null
+          listadosAuxiliares.etapas = []
+          listadosAuxiliares.materialesTarea = []
+          consultarTareas(tab.value)
+        }
       }
+
+      filtro.cliente_id = null
     })
 
     watch(etapa, () => {
-      if (etapa.value) {
-        listadosAuxiliares.tareas = []
-        consultarTareas(destinosTareas.paraProyecto, proyecto.value, etapa.value)
+      if (tab.value === destinosTareas.paraProyecto) {
+        if (etapa.value) {
+          listadosAuxiliares.tareas = []
+          campoTareaProyecto.value = 'Todas las tareas asignadas de la etapa seleccionada'
+          consultarTareas(destinosTareas.paraProyecto, proyecto.value, etapa.value)
+        }
       }
     })
 
     watch(computed(() => filtro.tarea_id), (tarea) => {
       if (tarea) seleccionarTarea()
+      if (tab.value === destinosTareas.paraProyecto) consultarTareas(destinosTareas.paraProyecto, proyecto.value, etapa.value)
     })
 
     /**********
@@ -145,14 +146,11 @@ export default defineComponent({
       modosStock,
       consultarMaterialEmpleado,
       listadosAuxiliares,
-      listadoStockPersonal,
       filtro,
       tab,
       destinosTareas,
       listadoMaterialesDevolucionStore,
-      clientes,
       clienteMaterialStock,
-      clientesMaterialesTarea,
       obtenerMaterialesTarea,
       consultarEtapas,
       seleccionarTarea,
@@ -165,6 +163,8 @@ export default defineComponent({
       etapa,
       proyecto,
       consultarTareas,
+      campoTareaProyecto,
+      mostrarTareaProyecto: computed(() => !(proyecto.value && listadosAuxiliares.etapas.length && !etapa.value)),
     }
   },
 })

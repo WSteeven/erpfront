@@ -222,8 +222,6 @@ export default defineComponent({
 
     //Configurar los listados
     opciones_empleados.value = listadosAuxiliares.empleados
-    opciones_autorizaciones.value = JSON.parse(LocalStorage.getItem('autorizaciones')!.toString())
-    opciones_tareas.value = listadosAuxiliares.tareas
 
     return {
       mixin, transferencia, disabled, accion, v$, acciones,

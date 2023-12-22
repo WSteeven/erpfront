@@ -68,7 +68,7 @@ export function useMaterialesTarea(filtro: UnwrapRef<FiltroMiBodega>, listadosAu
     }
   }
 
-  async function obtenerClientesMaterialesTarea() {
+  async function consultarClientesMaterialesTarea() {
     try {
       cargando.activar()
       const { result } = await clienteMaterialTareaController.listar({ empleado_id: authenticationStore.user.id })
@@ -122,7 +122,7 @@ export function useMaterialesTarea(filtro: UnwrapRef<FiltroMiBodega>, listadosAu
   return {
     // variables
     listadosAuxiliares,
-    obtenerClientesMaterialesTarea,
+    consultarClientesMaterialesTarea,
     // funciones
     obtenerMaterialesTarea,
     consultarTareas,

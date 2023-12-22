@@ -4,7 +4,7 @@ export class FiltroMiBodega {
   // proyecto: number | null
   tipoStock: number | null
   empleado_id: number | null
-  cliente_id: number | null
+  cliente_id: number | null | undefined
 
   constructor() {
     this.tarea_id = null

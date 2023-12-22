@@ -54,6 +54,12 @@ export const configuracionColumnasSubtarea: ColumnConfig<Subtarea>[] = [
     type: 'number',
   },
   {
+    name: 'empleado_responsable',
+    field: 'empleado_responsable',
+    label: 'Empleado responsable',
+    align: 'left',
+  },
+  {
     name: 'fecha_solicitud',
     field: 'fecha_solicitud',
     label: 'Fecha solicitud',
@@ -159,12 +165,6 @@ export const configuracionColumnasSubtarea: ColumnConfig<Subtarea>[] = [
     name: 'motivo_cancelado',
     field: 'motivo_cancelado',
     label: 'Motivo de cancelación',
-    align: 'left',
-  },
-  {
-    name: 'empleado_responsable',
-    field: 'empleado_responsable',
-    label: 'Empleado responsable',
     align: 'left',
   },
   {
