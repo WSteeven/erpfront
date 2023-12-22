@@ -10,7 +10,14 @@ import EssentialTable from 'components/tables/view/EssentialTable.vue'
 //Logica y controladores
 import { ContenedorSimpleMixin } from 'shared/contenedor/modules/simple/application/ContenedorSimpleMixin'
 import { imprimirArchivo, removeAccents } from 'shared/utils'
-import { acciones, accionesTabla, maskFecha } from 'config/utils'
+import {
+  acciones,
+  accionesTabla,
+  convertir_fecha,
+  convertir_fecha_guion,
+  convertir_fecha_hora,
+  maskFecha,
+} from 'config/utils'
 import { ConceptoIngreso } from 'pages/recursosHumanos/concepto_ingreso/domain/ConceptoIngreso'
 import { useAuthenticationStore } from 'stores/authentication'
 import { useCargandoStore } from 'stores/cargando'
@@ -59,10 +66,19 @@ export default defineComponent({
     setValidador(v$.value)
 
     onGuardado(() => {
-      console.log('guardado');
+      console.log('guardado')
 
       listar({})
     })
+
+    function optionsFechaFin(date) {
+      const currentDate =
+        pagocomision.fecha_inicio != null
+          ? convertir_fecha_guion(pagocomision.fecha_inicio)
+          : new Date() // Obtener la fecha actual
+
+      return date > currentDate
+    }
     return {
       removeAccents,
       mixin,
@@ -71,6 +87,7 @@ export default defineComponent({
       accion,
       disabled,
       maskFecha,
+      optionsFechaFin,
       configuracionColumnas: configuracionColumnasPagoComision,
     }
   },

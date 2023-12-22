@@ -71,6 +71,7 @@
                     <q-date
                       v-model="pagocomision.fecha_fin"
                       :mask="maskFecha"
+                      :options="optionsFechaFin"
                       today-btn
                     >
                       <div class="row items-center justify-end">
