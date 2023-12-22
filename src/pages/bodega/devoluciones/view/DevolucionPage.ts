@@ -2,7 +2,7 @@
 import { configuracionColumnasDevoluciones } from '../domain/configuracionColumnasDevoluciones'
 import { required, requiredIf } from '@vuelidate/validators'
 import { useVuelidate } from '@vuelidate/core'
-import { computed, defineComponent, ref } from 'vue'
+import { defineComponent, ref, watchEffect } from 'vue'
 import { useOrquestadorSelectorDetalles } from '../application/OrquestadorSelectorDetalles'
 
 //Componentes
@@ -150,7 +150,6 @@ export default defineComponent({
       }
       listadosAuxiliares.sucursales = JSON.parse(LocalStorage.getItem('sucursales')!.toString())
       opciones_sucursales.value = listadosAuxiliares.sucursales
-      obtenerClientesMaterialesEmpleado()
     })
 
     //reglas de validacion
@@ -169,6 +168,14 @@ export default defineComponent({
     const validarListadoProductos = new ValidarListadoProductos(devolucion)
     mixin.agregarValidaciones(validarListadoProductos)
 
+    /************
+     * Observers
+     ************/
+    watchEffect(() => {
+      if (devolucion.es_tarea) obtenerClientesMaterialesTarea()
+      else obtenerClientesMaterialesEmpleado()
+    })
+
     /*******************************************************************************************
      * Funciones
      ******************************************************************************************/
@@ -183,7 +190,19 @@ export default defineComponent({
       } finally {
         cargando.desactivar()
       }
+    }
 
+    async function obtenerClientesMaterialesTarea() {
+      try {
+        cargando.activar()
+        const ruta = axios.getEndpoint(endpoints.obtener_clientes_materiales_tarea) + '/' + store.user.id
+        const response: AxiosResponse = await axios.get(ruta)
+        clientes.value = response.data.results
+      } catch (e) {
+        console.log(e)
+      } finally {
+        cargando.desactivar()
+      }
     }
 
     async function filtrarCliente(value: number | null) {

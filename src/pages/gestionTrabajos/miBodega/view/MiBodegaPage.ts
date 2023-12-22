@@ -113,25 +113,13 @@ export default defineComponent({
       filtro.tarea_id = null
       proyecto.value = null
       etapa.value = null
-      /*listadosAuxiliares.clientesMaterialesTarea = []
-      listadosAuxiliares.tareas = []
-      listadosAuxiliares.proyectos = []
-      listadosAuxiliares.etapas = []
-      switch (tab.value) {
-        case destinosTareas.paraClienteFinal:
-
-          break
-        case destinosTareas.paraProyecto:
-          break
-      } */
     })
 
     watch(proyecto, () => {
       if (proyecto.value) {
         consultarEtapas(proyecto.value).then(() => etapas.value = listadosAuxiliares.etapas)
         listadosAuxiliares.tareas = []
-        filtro.tarea_id = null
-        // if (!listadosAuxiliares.etapas.length) consultarTareas(destinosTareas.paraProyecto, proyecto.value)
+        // filtro.tarea_id = null
       }
     })
 
