@@ -861,18 +861,17 @@ export default defineComponent({
       const porcentajeAnticipo = recursosHumanosStore.porcentajeAnticipo / 100
       switch (tipo_contrato) {
         case 3:
-          total_sueldo = sueldo
+          const quincena = salario * porcentajeAnticipo
+          total_sueldo = (quincena / 15) * dias
           break
         default:
           if (rolpago.es_vendedor_medio_tiempo) {
             const porcentaje =
               rolpago.porcentaje_quincena != null
-                ? rolpago.porcentaje_quincena/100
+                ? rolpago.porcentaje_quincena / 100
                 : 1
             total_sueldo =
-              rolpago.es_quincena == true
-                ?( sueldo * 0.5)*porcentaje
-                : sueldo
+              rolpago.es_quincena == true ? sueldo * 0.5 * porcentaje : sueldo
           } else {
             total_sueldo =
               rolpago.es_quincena == true ? sueldo * porcentajeAnticipo : sueldo
