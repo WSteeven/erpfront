@@ -27,8 +27,8 @@ export function useBotonesListadoProductos(transferencia: TransferenciaProductoE
         titulo: 'Modifica',
         mensaje: 'Ingresa la cantidad',
         tipo: 'number',
-        defecto: transferencia.listadoProductos[posicion].cantidad,
-        accion: (data) => transferencia.listadoProductos[posicion].cantidad = data,
+        defecto: transferencia.listado_productos[posicion].cantidad,
+        accion: (data) => transferencia.listado_productos[posicion].cantidad = data,
       }
       prompt(data)
     },
@@ -39,7 +39,7 @@ export function useBotonesListadoProductos(transferencia: TransferenciaProductoE
 
   function eliminar({ posicion }) {
     confirmar('¿Está seguro de continuar?',
-      () => transferencia.listadoProductos.splice(posicion, 1))
+      () => transferencia.listado_productos.splice(posicion, 1))
   }
 
   return {

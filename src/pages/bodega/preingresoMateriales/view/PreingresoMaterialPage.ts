@@ -4,7 +4,7 @@ import { configuracionColumnasPreingresosMateriales } from "../domain/configurac
 import { configuracionColumnasItemPreingreso } from "../domain/configuracionColumnasItemsPreingreso";
 import { configuracionColumnasDetallesProductos } from "../domain/configuracionColumnasDetallesProductos";
 import { required, requiredIf } from "shared/i18n-validators";
-import { computed, defineComponent, onMounted, ref } from 'vue'
+import { defineComponent, ref } from 'vue'
 import { acciones, accionesTabla, rolesSistema, tabOptionsPreingresoMateriales } from 'config/utils'
 import useVuelidate from '@vuelidate/core'
 
@@ -26,7 +26,6 @@ import { PreingresoMaterialController } from '../infraestructure/PreingresoMater
 import { useNotificaciones } from 'shared/notificaciones'
 import { useAuthenticationStore } from "stores/authentication";
 import { CustomActionTable } from "components/tables/domain/CustomActionTable";
-import { EmpleadoRoleController } from "pages/recursosHumanos/empleados/infraestructure/EmpleadoRolesController";
 import { LocalStorage, useQuasar } from "quasar";
 import { useOrquestadorSelectorProductos } from "../application/OrquestadorSelectorProductos";
 import { ItemPreingresoMaterial } from "../domain/ItemPreingresoMaterial";
@@ -37,7 +36,6 @@ import { StatusEssentialLoading } from "components/loading/application/StatusEss
 import { useCargandoStore } from "stores/cargando";
 import { useFiltrosListadosSelects } from "shared/filtrosListadosGenerales";
 import { ValidarListadoProductos } from "../application/validation/ValidarListadoProductos";
-import { Cliente } from "sistema/clientes/domain/Cliente";
 import { ClienteController } from "sistema/clientes/infraestructure/ClienteController";
 import { ArchivoController } from "pages/gestionTrabajos/subtareas/modules/gestorArchivosTrabajos/infraestructure/ArchivoController";
 import { Empleado } from "pages/recursosHumanos/empleados/domain/Empleado";
@@ -59,7 +57,7 @@ export default defineComponent({
     const mixin = new ContenedorSimpleMixin(PreingresoMaterial, new PreingresoMaterialController(), new ArchivoController())
     const { entidad: preingreso, disabled, accion, listadosAuxiliares, listado } = mixin.useReferencias()
     const { setValidador, obtenerListados, cargarVista, listar } = mixin.useComportamiento()
-    const { onReestablecer, onConsultado, onGuardado, onModificado } = mixin.useHooks()
+    const { onReestablecer, onConsultado, onGuardado, onModificado, onBeforeGuardar } = mixin.useHooks()
     const { confirmar, prompt, notificarCorrecto, notificarError } = useNotificaciones()
     let tabSeleccionado = ref()
     let componenteCargado = ref(false)
@@ -113,17 +111,15 @@ export default defineComponent({
         proyectos: {
           controller: new ProyectoController(),
           params: {
+            empleado_id: preingreso.responsable,
             campos: 'id,nombre,codigo_proyecto,coordinador_id,cliente_id,etapas',
             finalizado: 0,
-            // coordinador_id: store.esJefeTecnico ? null : store.user.id,
-            filter: `etapas[responsable_id]=${store.user.id}&etapas[activo]=1`,
           },
         },
         tareas: { controller: new TareaController(), params: { activas_empleado: 1, empleado_id: preingreso.responsable, finalizado: 0, proyecto_id: preingreso.proyecto } },
         clientes: { controller: new ClienteController(), params: { campos: 'id,razon_social', requiere_bodega: 1, estado: 1, } },
       })
-      if (store.esCoordinador) {
-        // const response = await new EmpleadoRoleController().listar({ roles: [rolesSistema.tecnico, rolesSistema.tecnico_lider] })
+      if (store.esCoordinador || store.esJefeTecnico || store.esSupervisorCampo) {
         listadosAuxiliares.tecnicos = await filtrarEmpleadosPorRoles(listadosAuxiliares.empleados, [rolesSistema.tecnico, rolesSistema.tecnico_lider])
       }
       proyectos.value = listadosAuxiliares.proyectos
@@ -136,8 +132,6 @@ export default defineComponent({
       configuracionColumnasItemPreingreso.find((item) => item.field === 'unidad_medida')!.options = listadosAuxiliares.unidades_medidas.map((v: UnidadMedida) => { return { value: v.id, label: v.nombre } })
       componenteCargado.value = true
       // console.log('Se ha cargado el listado de opciones en la configuracion de columnas')
-
-
     })
 
 
@@ -156,13 +150,13 @@ export default defineComponent({
       setTimeout(() => {
         refArchivo.value.listarArchivosAlmacenados(preingreso.id)
       }, 1);
-      // console.log('Consultado ', accion.value)
       if (accion.value === acciones.editar && store.user.id === preingreso.responsable_id)
         soloLectura.value = false
       else
         soloLectura.value = true
-      obtenerEtapasProyecto(false)
-      obtenerTareasEtapa(preingreso.etapa, false)
+      obtenerProyectosTareasTecnico(false)
+      // obtenerEtapasProyecto(false, false)
+      // obtenerTareasEtapa(preingreso.etapa, false)
       // obtenerEtapasProyecto(preingreso.proyecto, false)
     })
     onModificado((id: number) => {
@@ -170,6 +164,9 @@ export default defineComponent({
       setTimeout(() => {
         subirArchivos()
       }, 1)
+    })
+    onBeforeGuardar(() => {
+      // console.log(refArchivo.value)
     })
     onGuardado((id: number) => {
       idPreingreso.value = id
@@ -201,7 +198,7 @@ export default defineComponent({
     const v$ = useVuelidate(reglas, preingreso)
     setValidador(v$.value)
 
-    const validarListadoProductos = new ValidarListadoProductos(preingreso)
+    const validarListadoProductos = new ValidarListadoProductos(preingreso, refArchivo)
     mixin.agregarValidaciones(validarListadoProductos)
 
     /*******************************************************************************************
@@ -226,62 +223,136 @@ export default defineComponent({
       preingreso.autorizacion = 1
     }
 
-
-
-    async function obtenerEtapasProyecto(limpiarEtapa = true) {
-      if (preingreso.proyecto) {
-        if (limpiarEtapa) preingreso.etapa = null
-        preingreso.cliente = listadosAuxiliares.proyectos.filter((proyecto: Proyecto) => proyecto.id === preingreso.proyecto)[0].cliente_id
-        preingreso.coordinador = listadosAuxiliares.proyectos.filter((proyecto: Proyecto) => proyecto.id === preingreso.proyecto)[0].coordinador_id
-        const etapasProyecto = listadosAuxiliares.proyectos.filter((proyecto: Proyecto) => proyecto.id === preingreso.proyecto)[0].etapas
-        if (store.esTecnico || store.esTecnicoLider) {
-          const response = await new EtapaController().listar({ etapas_empleado: 1, empleado_id: store.user.id, proyecto_id: preingreso.proyecto })
-          etapasResponsable.value = response.result
-        } else {
-          etapasResponsable.value = store.esJefeTecnico || store.esAdministrador ? etapasProyecto : etapasProyecto.filter((etapa: Etapa) => etapa.responsable_id === store.user.id)
-        }
-        listadosAuxiliares.etapas = etapasResponsable.value
-        etapas.value = etapasResponsable.value
+    /**
+     * La función "limpiarCampos" borra los campos "etapa" o "tarea" si los parámetros correspondientes
+     * son verdaderos.
+     * @param [etapa=false] - Si se establece en verdadero, el campo "etapa" se establecerá en nulo.
+     * @param [tarea=false] - Si se establece en verdadero, la propiedad "tarea" se establecerá en nula.
+     */
+    function limpiarCampos(etapa = false, tarea = false) {
+      if (accion.value == acciones.nuevo) {
+        if (etapa) preingreso.etapa = null
+        if (tarea) preingreso.tarea = null
       }
     }
+
+
+    /**
+     * La función "obtenerEtapasProyecto" recupera las etapas de un proyecto y realiza diversas
+     * operaciones según el rol del usuario.
+     */
+    async function obtenerEtapasProyecto(limpiarEtapa, limpiarTarea) {
+      cargando.activar()
+      if (preingreso.proyecto) {
+        limpiarCampos(limpiarEtapa, limpiarTarea)
+        const proyectoSeleccionado = listadosAuxiliares.proyectos.filter((proyecto: Proyecto) => proyecto.id === preingreso.proyecto)[0]
+        if (proyectoSeleccionado) {
+          preingreso.cliente = proyectoSeleccionado.cliente_id
+          preingreso.coordinador = proyectoSeleccionado.coordinador_id
+        }
+        // if (store.esTecnico || store.esTecnicoLider) {
+        // console.log('entro en tecnicos')
+        const response = await new EtapaController().listar({ etapas_empleado: 1, empleado_id: preingreso.responsable, proyecto_id: preingreso.proyecto })
+        etapasResponsable.value = response.result
+        if (response.result.length < 1) {
+          // console.log('entro en if cuando no hay etapas')
+          await obtenerTareasEtapa(null, false)
+        } else {
+          // console.log('entro en else respectivo')
+          const response = await new TareaController().listar({ activas_empleado: 1, proyecto_id: preingreso.proyecto, empleado_id: preingreso.responsable, campos: 'id,codigo_tarea,titulo', finalizado: 0 })
+          listadosAuxiliares.tareas = response.result
+          tareas.value = response.result
+        }
+        // } else {
+        //   console.log('entro en else')
+        //   etapasResponsable.value = store.esJefeTecnico || store.esAdministrador ? etapasProyecto : etapasProyecto.filter((etapa: Etapa) => etapa.responsable_id === store.user.id)
+        // }
+        listadosAuxiliares.etapas = etapasResponsable.value
+        etapas.value = etapasResponsable.value
+      } else {
+        // t s('else linea 270')
+        etapas.value = []
+        limpiarCampos(true, true)
+        await obtenerTareasEtapa(null, false)
+      }
+      cargando.desactivar()
+    }
+
+    /**
+     * La función "obtenerTareasEtapa" recupera una lista de tareas según el ID de etapa proporcionado
+     * y actualiza la lista de tareas.
+     * @param {string | number | null} idEtapa - La ID de la etapa para la cual desea obtener tareas.
+     * @param [limpiarTarea=true] - El parámetro `limpiarTarea` es un valor booleano que determina si
+     * la tarea actual debe borrarse o no. Si "limpiarTarea" es "verdadero", la tarea actual se
+     * establecerá en "nula". Caso contrario no sucede nada.
+     */
     async function obtenerTareasEtapa(idEtapa: string | number | null, limpiarTarea = true) {
       cargando.activar()
-      obtenerCoordinadorEtapa(idEtapa)
+      await obtenerCoordinadorEtapa(idEtapa)
+      limpiarCampos(false, limpiarTarea)
       if (limpiarTarea) preingreso.tarea = null
       const response = await new TareaController().listar({ activas_empleado: 1, proyecto_id: preingreso.proyecto, etapa_id: idEtapa, empleado_id: preingreso.responsable, campos: 'id,codigo_tarea,titulo', finalizado: 0 })
       listadosAuxiliares.tareas = response.result
       tareas.value = response.result
       cargando.desactivar()
-
     }
 
-    async function obtenerCoordinadorClienteTareaSeleccionada() {
+    /**
+     * La función "obtenerDatosTareaSeleccionada" recupera datos de una tarea seleccionada y los asigna
+     * a los campos correspondientes en el objeto "preingreso".
+     */
+    async function obtenerDatosTareaSeleccionada() {
       const tareaSeleccionada = tareas.value.filter((v: Tarea) => v.id == preingreso.tarea)[0]
-      console.log(tareaSeleccionada)
       if (tareaSeleccionada) {
-        preingreso.cliente = tareaSeleccionada.cliente_id
+        if (preingreso.proyecto == null) {
+          preingreso.proyecto = tareaSeleccionada.proyecto_id
+          await obtenerEtapasProyecto(true, true)
+        }
+        if (preingreso.etapa == null) preingreso.etapa = tareaSeleccionada.etapa_id
+        if (preingreso.cliente == null) preingreso.cliente = tareaSeleccionada.cliente_id
         if (preingreso.coordinador == null) preingreso.coordinador = tareaSeleccionada.coordinador_id
+        preingreso.tarea = tareaSeleccionada.id
       }
     }
 
-    async function obtenerClienteProyecto(idProyecto) {
-      const proyectoSeleccionado = proyectos.value.filter((v: Proyecto) => v.id == idProyecto)[0]
-      const clienteSeleccionado = clientes.value.filter((v: Cliente) => v.id == proyectoSeleccionado.cliente_id)[0]
-      preingreso.cliente = clienteSeleccionado.id
-    }
-    async function obtenerCoordinadorProyecto(idProyecto) {
-      const proyectoSeleccionado = proyectos.value.filter((v: Proyecto) => v.id == idProyecto)[0]
-      const supervisorSeleccionado: Empleado = coordinadores.value.filter((v: Empleado) => v.id == proyectoSeleccionado.coordinador_id)[0]
-      if (supervisorSeleccionado) preingreso.coordinador = supervisorSeleccionado.id
-    }
 
+    /**
+     * La función "obtenerCoordinadorEtapa" asigna el ID de un supervisor a la propiedad "coordinador"
+     * del objeto "preingreso" en función del ID de etapa seleccionado.
+     * @param {string | number | null} idEtapa - El parámetro `idEtapa` es un número que se usa para
+     * filtrar la etapa y obtener el ID  del supervisor que se asignará a preingreso.coordinador.
+     */
     async function obtenerCoordinadorEtapa(idEtapa: string | number | null) {
       if (idEtapa != null) {
         const etapaSeleccionada = etapas.value.filter((v: Etapa) => v.id == idEtapa)[0]
-        const supervisorSeleccionado: Empleado = coordinadores.value.filter((v: Empleado) => v.id == etapaSeleccionada.responsable_id)[0]
-        preingreso.coordinador = supervisorSeleccionado.id
+        const supervisorSeleccionado: Empleado = coordinadores.value.filter((v: Empleado) => v.id == etapaSeleccionada.supervisor_id)[0]
+        if (supervisorSeleccionado) preingreso.coordinador = supervisorSeleccionado.id
       }
     }
+
+    /**
+     * La función "obtenerProyectosTareasTecnico" recupera una lista de proyectos y tareas de un
+     * técnico concreto.
+     */
+    async function obtenerProyectosTareasTecnico(limpiarProyecto = true) {
+      if (limpiarProyecto) preingreso.proyecto = null
+      limpiarCampos(true, true)
+      cargando.activar()
+      if (preingreso.responsable) {
+        const response = await new ProyectoController().listar({ empleado_id: preingreso.responsable, finalizado: 0 })
+        listadosAuxiliares.proyectos = response.result
+        proyectos.value = response.result
+        await obtenerEtapasProyecto(false, false)
+        await obtenerTareasTecnico()
+      }
+      cargando.desactivar()
+    }
+
+
+    /**
+     * La función "obtenerTareasTecnico" recupera una lista de tareas para un empleado, proyecto y
+     * etapa específicos, y actualiza la variable "tareas" con el resultado.
+     */
     async function obtenerTareasTecnico() {
       cargando.activar()
       if (preingreso.responsable) {
@@ -312,7 +383,7 @@ export default defineComponent({
         //: props.propsTable.rowIndex,
         eliminar({ posicion })
       },
-      visible: () => (accion.value == acciones.nuevo || accion.value == acciones.editar) && (preingreso.responsable == store.user.id || preingreso.solicitante == store.user.id)
+      visible: () => (accion.value == acciones.nuevo || accion.value == acciones.editar) && (preingreso.responsable == store.user.id || preingreso.solicitante == store.user.id||preingreso.coordinador == store.user.id)
     }
     const btnAddRow: CustomActionTable = {
       titulo: 'Agregar ítem',
@@ -390,7 +461,8 @@ export default defineComponent({
       obtenerEtapasProyecto,
       obtenerTareasTecnico,
       obtenerTareasEtapa,
-      obtenerCoordinadorClienteTareaSeleccionada,
+      obtenerProyectosTareasTecnico,
+      obtenerDatosTareaSeleccionada,
       filtrarCoordinadores(val, update) {
         if (val === '') {
           update(() => coordinadores.value = listadosAuxiliares.coordinadores)

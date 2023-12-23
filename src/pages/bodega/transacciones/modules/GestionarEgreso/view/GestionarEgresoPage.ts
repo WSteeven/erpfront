@@ -28,18 +28,27 @@ export default defineComponent({
     //stores
     useNotificacionStore().setQuasar(useQuasar())
     useCargandoStore().setQuasar(useQuasar())
-    const statusLoading = new StatusEssentialLoading()
-
     const transaccionStore = useTransaccionEgresoStore()
+    const cargando = new StatusEssentialLoading()
+    const modales = new ComportamientoModalesGestionarEgreso()
+
+    /*******************************************************************************************
+    * Funciones
+    ******************************************************************************************/
     async function filtrarTabs(tabSeleccionado) {
-      statusLoading.activar()
+      cargando.activar()
       const result = await transaccionStore.filtrarEgresosComprobantes(tabSeleccionado)
       listado.value = result
+      cargando.desactivar()
     }
 
-    filtrarTabs('PENDIENTE')
+    function guardado(data: any) {
+      if (data == 'aceptado') filtrarTabs('PENDIENTE')
+    }
 
-    const modales = new ComportamientoModalesGestionarEgreso()
+    /*******************************************************************************************
+     * Botones de tabla
+     ******************************************************************************************/
     const botonVerTransaccion: CustomActionTable = {
       titulo: '',
       icono: 'bi-eye',
@@ -60,9 +69,9 @@ export default defineComponent({
       }
     }
 
-    function guardado(data: any) {
-      if (data == 'aceptado') filtrarTabs('PENDIENTE')
-    }
+
+    filtrarTabs('PENDIENTE')
+
 
     return {
       mixin, transaccion, disabled, listado,

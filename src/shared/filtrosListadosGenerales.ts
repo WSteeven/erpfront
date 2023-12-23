@@ -31,7 +31,6 @@ export const useFiltrosListadosSelects = (listadosAuxiliares, entidad?: Ref<any>
   // tareas
   const proyectos = ref(listadosAuxiliares.proyectos)
   const etapas = ref(listadosAuxiliares.etapas)
-  console.log(etapas.value)
   const tareas = ref(listadosAuxiliares.tareas)
   const tareasDestino = ref(listadosAuxiliares.tareasDestino)
 

@@ -10,7 +10,7 @@ import { configuracionColumnasProductosSeleccionados } from './domain/configurac
 import { configuracionColumnasProductos } from 'pages/bodega/productos/domain/configuracionColumnasProductos'
 import { useOrquestadorSelectorItemsEgreso } from './application/OrquestadorSelectorInventario'
 import { configuracionColumnasDetallesProductos } from 'pages/bodega/detalles_productos/domain/configuracionColumnasDetallesProductos'
-import { acciones, estadosTransacciones, motivosTransaccionesBodega } from 'config/utils'
+import { acciones, accionesTabla, estadosTransacciones, motivosTransaccionesBodega } from 'config/utils'
 
 // Componentes
 import TabLayout from 'shared/contenedor/modules/simple/view/TabLayout.vue'
@@ -65,7 +65,7 @@ export default defineComponent({
     const { entidad: transaccion, disabled, accion, listadosAuxiliares } = mixin.useReferencias()
     const { setValidador, obtenerListados, cargarVista } = mixin.useComportamiento()
     const { onConsultado, onReestablecer, onGuardado } = mixin.useHooks()
-    const { confirmar, prompt, notificarError } = useNotificaciones()
+    const { confirmar, prompt, notificarError, notificarAdvertencia } = useNotificaciones()
     //stores
     useNotificacionStore().setQuasar(useQuasar())
     useCargandoStore().setQuasar(useQuasar())
@@ -227,6 +227,7 @@ export default defineComponent({
         prompt(config)
       },
       visible: () => puedeEditarCantidad.value
+      // accion.value == acciones.nuevo || accion.value == acciones.editar
     }
     const botonImprimir: CustomActionTable = {
       titulo: 'Imprimir',
@@ -345,7 +346,7 @@ export default defineComponent({
         transaccion.es_tarea = true
         transaccion.tarea = Number.isInteger(pedidoStore.pedido.tarea) ? pedidoStore.pedido.tarea : pedidoStore.pedido.tarea_id
         if (transaccion.tarea) await obtenerTareas()
-        filtroTareas(transaccion.tarea)
+        obtenerDatosTareaSeleccionada(transaccion.tarea)
       }
       //copia el listado de productos del pedido en la transaccion, filtrando los productos pendientes de despachar
       transaccion.listadoProductosTransaccion = Array.from(pedidoStore.pedido.listadoProductos.filter((v) => v.cantidad != v.despachado))
@@ -433,6 +434,7 @@ export default defineComponent({
       cargando.activar()
       const response = await new ProyectoController().listar({
         campos: 'id,nombre,codigo_proyecto,coordinador_id,cliente_id',
+        empleado_id: transaccion.responsable,
         finalizado: 0,
       })
       listadosAuxiliares.proyectos = response.result
@@ -448,7 +450,7 @@ export default defineComponent({
     }
     async function obtenerTareas() {
       cargando.activar()
-      const response = await new TareaController().listar({ activas_empleado: 1, empleado_id: transaccion.responsable,  campos: 'id,codigo_tarea' })
+      const response = await new TareaController().listar({ activas_empleado: 1, empleado_id: transaccion.responsable, campos: 'id,codigo_tarea' })
       listadosAuxiliares.tareas = response.result
       tareas.value = response.result
       cargando.desactivar()
@@ -490,7 +492,7 @@ export default defineComponent({
     tareas.value = listadosAuxiliares.tareas
     clientes.value = listadosAuxiliares.clientes
 
-    function filtroTareas(val) {
+    function obtenerDatosTareaSeleccionada(val) {
       console.log(val)
       console.log(listadosAuxiliares.tareas)
       const opcion_encontrada = listadosAuxiliares.tareas.filter((v) => v.id == val || v.codigo_tarea == val)
@@ -538,6 +540,7 @@ export default defineComponent({
       //variables auxiliares
       esVisibleAutorizacion,
       esVisibleTarea,
+      accionesTabla,
 
       //modales
       modalesEmpleado,
@@ -545,17 +548,18 @@ export default defineComponent({
       //funciones
       recargarSucursales,
       infoEmpleado,
+      obtenerDatosTareaSeleccionada,
 
 
       //filtros
-      filtroTareas,
-      filtroMotivos(val) {
-        console.log('filtro motivos', val)
+      motivoSeleccionado(val) {
+        // console.log('filtro motivos', val)
         const motivoSeleccionado = listadosAuxiliares.motivos.filter((v) => v.id === val)[0]
+        // console.log(motivoSeleccionado)
         // transaccion.aviso_liquidacion_cliente = (motivoSeleccionado.nombre == motivos.egresoLiquidacionMateriales) ? true : false
-        if ([motivos.destruccion, motivos.egresoAjusteRegularizacion, motivos.egresoLiquidacionMateriales, motivos.egresoTransferenciaBodegas, motivos.venta, motivos.robo].includes(motivoSeleccionado.nombre)) transaccion.aviso_liquidacion_cliente = true
+        if ([motivosTransaccionesBodega.destruccion, motivosTransaccionesBodega.egresoAjusteRegularizacion, motivosTransaccionesBodega.egresoLiquidacionMateriales, motivosTransaccionesBodega.egresoTransferenciaBodegas, motivosTransaccionesBodega.venta, motivosTransaccionesBodega.robo].includes(motivoSeleccionado.nombre)) transaccion.aviso_liquidacion_cliente = true
         else transaccion.aviso_liquidacion_cliente = false
-        transaccion.es_transferencia = (motivoSeleccionado.nombre == motivos.egresoTransferenciaBodegas) ? true : false
+        transaccion.es_transferencia = (motivoSeleccionado.nombre == motivosTransaccionesBodega.egresoTransferenciaBodegas) ? true : false
       },
 
 
@@ -572,11 +576,16 @@ export default defineComponent({
         }
       },
       checkTarea(val) {
-        if (!val) {
-          transaccion.tarea = null
+        if (val) {
+          if (!transaccion.responsable) {
+            notificarAdvertencia('Debes seleccionar primero un empleado (técnico) responsable')
+            transaccion.es_tarea = false
+          }else{
+            obtenerProyectos()
+            obtenerTareas()
+          }
         } else {
-          obtenerProyectos()
-          obtenerTareas()
+          transaccion.tarea = null
         }
       },
 

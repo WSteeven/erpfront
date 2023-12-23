@@ -1,6 +1,6 @@
 // Dependencias
 import { configuracionColumnasMaterialEmpleadoTarea } from '../domain/configuracionColumnasMaterialEmpleadoTarea'
-import { defineComponent, onMounted, reactive, ref, watch } from 'vue'
+import { computed, defineComponent, onMounted, reactive, ref, watch } from 'vue'
 import { destinosTareas, modosStock } from 'config/tareas.utils'
 import { tiposJornadas } from 'config/utils'
 
@@ -37,27 +37,25 @@ export default defineComponent({
     /************
      * Variables
      ************/
-    const cargando = new StatusEssentialLoading()
-    const listadoStockPersonal = ref([])
-
+    const campoTareaProyecto = ref('Todas las tareas asignadas')
     const tab = ref()
 
-    onMounted(() => tab.value = destinosTareas.paraClienteFinal)
+    onMounted(() => {
+      tab.value = destinosTareas.paraClienteFinal
+      proyectos.value = listadosAuxiliares.proyectos
+    })
 
     const filtro = reactive(new FiltroMiBodega())
     filtro.empleado_id = authenticationStore.user.id
 
     const clienteMaterialStock = ref()
-    const clientes = ref([])
-    const clientesMaterialesTarea = ref([])
     const etapa = ref()
     const proyecto = ref()
-
-    const axios = AxiosHttpRepository.getInstance()
 
     const listadosAuxiliares = reactive({
       materialesTarea: [],
       clientesMaterialesTarea: [],
+      clientesMaterialesEmpleado: [],
       tareas: [],
       proyectos: [],
       etapas: [],
@@ -66,21 +64,8 @@ export default defineComponent({
     /************
      * Funciones
      ************/
-    const { obtenerMaterialesTarea, obtenerClientesMaterialesTarea, consultarTareas, consultarProyectos, consultarEtapas } = useMaterialesTarea(filtro, listadosAuxiliares)
-    const { consultarMaterialEmpleado } = useMaterialesEmpleado(filtro, listadosAuxiliares)
-
-    async function obtenerClientesMaterialesEmpleado() {
-      try {
-        cargando.activar()
-        const ruta = axios.getEndpoint(endpoints.obtener_clientes_materiales_empleado) + '/' + authenticationStore.user.id
-        const response: AxiosResponse = await axios.get(ruta)
-        clientes.value = response.data.results
-      } catch (e) {
-        console.log(e)
-      } finally {
-        cargando.desactivar()
-      }
-    }
+    const { obtenerMaterialesTarea, consultarClientesMaterialesTarea, consultarTareas, consultarProyectos, consultarEtapas } = useMaterialesTarea(filtro, listadosAuxiliares)
+    const { consultarMaterialEmpleado, consultarClientesMaterialesEmpleado } = useMaterialesEmpleado(listadosAuxiliares)
 
     function seleccionarTarea() {
       listadosAuxiliares.materialesTarea = []
@@ -94,34 +79,60 @@ export default defineComponent({
     /*******
      * Init
      *******/
-    obtenerClientesMaterialesTarea()
-    obtenerClientesMaterialesEmpleado()
-    consultarProyectos()
+    consultarClientesMaterialesTarea()
+    consultarClientesMaterialesEmpleado()
+    consultarProyectos().then(() => proyectos.value = listadosAuxiliares.proyectos)
 
     /************
      * Observers
      ************/
     watch(tab, () => {
+      listadosAuxiliares.tareas = []
+
       consultarTareas(tab.value)
+
       listadosAuxiliares.materialesTarea = []
       filtro.tarea_id = null
       proyecto.value = null
       etapa.value = null
-      /*listadosAuxiliares.clientesMaterialesTarea = []
-      listadosAuxiliares.tareas = []
-      listadosAuxiliares.proyectos = []
-      listadosAuxiliares.etapas = []
-      switch (tab.value) {
-        case destinosTareas.paraClienteFinal:
-
-          break
-        case destinosTareas.paraProyecto:
-          break
-      } */
+      filtro.cliente_id = undefined
     })
 
-    watch(proyecto, () => {
-      consultarEtapas(proyecto.value)
+    watch(proyecto, async () => {
+      if (tab.value === destinosTareas.paraProyecto) {
+        if (proyecto.value) {
+          await consultarEtapas(proyecto.value)
+          etapas.value = listadosAuxiliares.etapas
+          listadosAuxiliares.tareas = []
+          if (!listadosAuxiliares.etapas.length) {
+            consultarTareas(tab.value, proyecto.value)
+            campoTareaProyecto.value = 'Todas las tareas asignadas del proyecto seleccionado'
+          }
+        } else {
+          filtro.tarea_id = null
+          etapa.value = null
+          listadosAuxiliares.etapas = []
+          listadosAuxiliares.materialesTarea = []
+          consultarTareas(tab.value)
+        }
+      }
+
+      filtro.cliente_id = null
+    })
+
+    watch(etapa, () => {
+      if (tab.value === destinosTareas.paraProyecto) {
+        if (etapa.value) {
+          listadosAuxiliares.tareas = []
+          campoTareaProyecto.value = 'Todas las tareas asignadas de la etapa seleccionada'
+          consultarTareas(destinosTareas.paraProyecto, proyecto.value, etapa.value)
+        }
+      }
+    })
+
+    watch(computed(() => filtro.tarea_id), (tarea) => {
+      if (tarea) seleccionarTarea()
+      if (tab.value === destinosTareas.paraProyecto) consultarTareas(destinosTareas.paraProyecto, proyecto.value, etapa.value)
     })
 
     /**********
@@ -135,14 +146,11 @@ export default defineComponent({
       modosStock,
       consultarMaterialEmpleado,
       listadosAuxiliares,
-      listadoStockPersonal,
       filtro,
       tab,
       destinosTareas,
       listadoMaterialesDevolucionStore,
-      clientes,
       clienteMaterialStock,
-      clientesMaterialesTarea,
       obtenerMaterialesTarea,
       consultarEtapas,
       seleccionarTarea,
@@ -155,6 +163,8 @@ export default defineComponent({
       etapa,
       proyecto,
       consultarTareas,
+      campoTareaProyecto,
+      mostrarTareaProyecto: computed(() => !(proyecto.value && listadosAuxiliares.etapas.length && !etapa.value)),
     }
   },
 })
