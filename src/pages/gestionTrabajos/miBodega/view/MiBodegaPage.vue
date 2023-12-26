@@ -67,6 +67,17 @@
                     </q-item-section>
                   </q-item>
                 </template>
+
+                <template v-slot:after>
+                  <q-btn
+                    color="positive"
+                    unelevated
+                    @click="refrescarListadosTareas('tareas')"
+                  >
+                    <q-icon size="xs" name="bi-arrow-clockwise" />
+                    <q-tooltip>Recargar proyectos</q-tooltip>
+                  </q-btn>
+                </template>
               </q-select>
             </div>
 
@@ -86,11 +97,34 @@
                 outlined
                 :option-label="(item) => item.razon_social"
                 :option-value="(item) => item.cliente_id"
-                @update:model-value="obtenerMaterialesTarea()"
                 emit-value
                 map-options
               >
+                <template v-slot:after>
+                  <q-btn
+                    color="positive"
+                    unelevated
+                    @click="refrescarListadosTareas('clientes')"
+                  >
+                    <q-icon size="xs" name="bi-arrow-clockwise" />
+                    <q-tooltip>Recargar clientes</q-tooltip>
+                  </q-btn>
+                </template>
               </q-select>
+            </div>
+          </div>
+
+          <div class="row q-mb-lg">
+            <div class="col-12">
+              <q-btn
+                color="primary"
+                icon="bi-search"
+                class="full-width"
+                no-caps
+                unelevated
+                @click="consultarProductosTarea()"
+                >Consultar</q-btn
+              >
             </div>
           </div>
         </q-tab-panel>
@@ -100,7 +134,7 @@
             <div class="col-12 col-md-4">
               <label class="q-mb-sm block">Todos los proyectos asignados</label>
               <q-select
-                v-model="proyecto"
+                v-model="filtroProyecto.proyecto_id"
                 :options="proyectos"
                 @filter="filtrarProyectos"
                 transition-show="scale"
@@ -110,6 +144,7 @@
                 outlined
                 :option-label="(item) => item.nombre"
                 :option-value="(item) => item.id"
+                @update:model-value="seleccionarProyecto()"
                 use-input
                 input-debounce="0"
                 emit-value
@@ -129,6 +164,17 @@
                   </q-item>
                 </template>
 
+                <template v-slot:after>
+                  <q-btn
+                    color="positive"
+                    unelevated
+                    @click="refrescarListadosProyectos('proyectos')"
+                  >
+                    <q-icon size="xs" name="bi-arrow-clockwise" />
+                    <q-tooltip>Recargar proyectos</q-tooltip>
+                  </q-btn>
+                </template>
+
                 <template v-slot:no-option>
                   <q-item>
                     <q-item-section class="text-grey">
@@ -139,10 +185,13 @@
               </q-select>
             </div>
 
-            <div v-show="proyecto && etapas.length" class="col-12 col-md-4">
+            <div
+              v-show="filtroProyecto.proyecto_id && etapas.length"
+              class="col-12 col-md-4"
+            >
               <label class="q-mb-sm block">Seleccione una etapa</label>
               <q-select
-                v-model="etapa"
+                v-model="filtroProyecto.etapa_id"
                 :options="etapas"
                 @filter="filtrarEtapas"
                 transition-show="scale"
@@ -167,13 +216,14 @@
               </q-select>
             </div>
 
-            <!-- Tarea -->
-            <!-- <div v-if="mostrarTareaProyecto" class="col-12 col-md-4">
-              <label class="q-mb-sm block">{{ campoTareaProyecto }}</label>
+            <div v-if="filtroProyecto.proyecto_id" class="col-12 col-md-4">
+              <label class="q-mb-sm block"
+                >Seleccione un cliente para filtrar el material de
+                proyecto/etapa</label
+              >
               <q-select
-                v-model="filtro.tarea_id"
-                :options="tareas"
-                @filter="filtrarTareas"
+                v-model="filtroProyecto.cliente_id"
+                :options="listadosAuxiliares.clientesMaterialesTarea"
                 transition-show="scale"
                 transition-hide="scale"
                 use-input
@@ -181,35 +231,48 @@
                 options-dense
                 dense
                 outlined
-                :option-label="
-                  (item) => item.codigo_tarea + ' - ' + item.titulo
-                "
-                :option-value="(item) => item.id"
+                :option-label="(item) => item.razon_social"
+                :option-value="(item) => item.cliente_id"
                 emit-value
                 map-options
-                ><template v-slot:option="scope">
-                  <q-item v-bind="scope.itemProps">
-                    <q-item-section>
-                      <q-item-label>{{ scope.opt.codigo_tarea }}</q-item-label>
-                      <q-item-label caption>{{
-                        scope.opt.titulo
-                      }}</q-item-label>
-                    </q-item-section>
-                  </q-item>
+              >
+                <template v-slot:after>
+                  <q-btn
+                    color="positive"
+                    unelevated
+                    @click="refrescarListadosProyectos('clientes')"
+                  >
+                    <q-icon size="xs" name="bi-arrow-clockwise" />
+                    <q-tooltip>Recargar proyectos</q-tooltip>
+                  </q-btn>
                 </template>
               </q-select>
-            </div> -->
+            </div>
+          </div>
+
+          <div class="row q-mb-lg">
+            <div class="col-12">
+              <q-btn
+                color="primary"
+                icon="bi-search"
+                class="full-width"
+                no-caps
+                unelevated
+                @click="consultarProductosProyectoEtapa()"
+                >Consultar</q-btn
+              >
+            </div>
           </div>
         </q-tab-panel>
 
         <q-tab-panel name="personal">
-          <div class="col-12 justify-center q-gutter-sm q-mb-md">
+          <div class="row justify-center q-gutter-sm q-mb-md">
             <div class="col-12">
               <label class="q-mb-sm block"
                 >Seleccione un cliente para filtrar el material</label
               >
               <q-select
-                v-model="filtro.cliente_id"
+                v-model="filtroEmpleado.cliente_id"
                 :options="listadosAuxiliares.clientesMaterialesEmpleado"
                 transition-show="scale"
                 transition-hide="scale"
@@ -220,19 +283,38 @@
                 outlined
                 :option-label="(item) => item.razon_social"
                 :option-value="(item) => item.cliente_id"
-                @update:model-value="
-                  consultarMaterialEmpleado(filtro.cliente_id)
-                "
                 emit-value
                 map-options
               >
+                <template v-slot:after>
+                  <q-btn
+                    color="positive"
+                    unelevated
+                    @click="refrescarListadosEmpleado('clientes')"
+                  >
+                    <q-icon size="xs" name="bi-arrow-clockwise" />
+                    <q-tooltip>Recargar clientes</q-tooltip>
+                  </q-btn>
+                </template>
               </q-select>
+            </div>
+
+            <div class="col-12">
+              <q-btn
+                color="primary"
+                icon="bi-search"
+                class="full-width"
+                no-caps
+                unelevated
+                @click="consultarProductosEmpleado()"
+                >Consultar</q-btn
+              >
             </div>
           </div>
         </q-tab-panel>
       </q-tab-panels>
 
-      <div v-if="listadosAuxiliares.materialesTarea.length" class="row">
+      <div v-if="listadosAuxiliares.productos.length" class="row">
         <div class="col-12 text-center">
           <label class="q-mb-sm block"
             >Opciones de devolución de material sobrante de la tarea</label
@@ -242,7 +324,7 @@
         <div class="col-12 row justify-center q-gutter-sm q-mb-md">
           <!-- Boton devolver a bodega matriz-->
           <q-btn
-            color="primary"
+            color="secondary"
             no-caps
             unelevated
             rounded
@@ -254,7 +336,8 @@
 
           <!-- Boton transferir a stock personal -->
           <q-btn
-            color="primary"
+            v-if="mostrarBtnTransferirStockPersonal"
+            color="indigo-9"
             @click="
               () => (listadoMaterialesDevolucionStore.devolverAlStock = true)
             "
@@ -269,11 +352,9 @@
 
           <!-- Boton transferir a otro técnico -->
           <q-btn
-            color="positive"
-            @click="
-              () => (listadoMaterialesDevolucionStore.devolverAlStock = true)
-            "
+            color="grey-4"
             no-caps
+            class="text-black"
             unelevated
             rounded
             :to="{ name: 'transferencia_producto_empleado' }"
@@ -291,12 +372,13 @@
           <essential-table
             titulo="Listado de materiales para tarea"
             :configuracionColumnas="configuracionColumnasMaterialEmpleadoTarea"
-            :datos="listadosAuxiliares.materialesTarea"
+            :datos="listadosAuxiliares.productos"
             :permitirConsultar="false"
             :permitirEliminar="false"
             :permitirEditar="false"
             :mostrarBotones="false"
             :alto-fijo="false"
+            :ajustar-celdas="true"
           ></essential-table>
         </div>
       </div>

@@ -1,15 +1,11 @@
 import { useAuthenticationStore } from 'stores/authentication'
 
-export class FiltroMiBodegaProyecto {
-  etapa_id: number | null
-  proyecto_id: number | null
+export class FiltroMiBodegaEmpleado {
   empleado_id: number | null
   cliente_id: number | null | undefined
 
   constructor() {
-    this.etapa_id = null
-    this.proyecto_id = null
     this.empleado_id = useAuthenticationStore().user.id
-    this.cliente_id = null
+    this.cliente_id = undefined
   }
 }

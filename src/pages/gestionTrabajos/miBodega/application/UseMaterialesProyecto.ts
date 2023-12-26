@@ -1,4 +1,6 @@
+import { EtapaController } from 'pages/gestionTrabajos/proyectos/modules/etapas/infraestructure/EtapaController'
 import { ClienteMaterialEmpleadoController } from '../infraestructure/ClienteMaterialEmpleadoController'
+import { ProyectoController } from 'pages/gestionTrabajos/proyectos/infraestructure/ProyectoController'
 import { MaterialEmpleadoTareaController } from '../infraestructure/MaterialEmpleadoTareaController'
 import { StatusEssentialLoading } from 'components/loading/application/StatusEssentialLoading'
 import { useListadoMaterialesDevolucionStore } from 'stores/listadoMaterialesDevolucion'
@@ -15,26 +17,27 @@ export function useMaterialesProyecto(filtro: UnwrapRef<FiltroMiBodegaProyecto>,
   // Controllers
   const clienteMaterialEmpleadoController = new ClienteMaterialEmpleadoController()
   const materialEmpleadoTareaController = new MaterialEmpleadoTareaController()
+  const proyectoController = new ProyectoController()
+  const etapaController = new EtapaController()
 
   // Variables
   const { notificarAdvertencia } = useNotificaciones()
   const cargando = new StatusEssentialLoading()
 
-  async function consultarMaterialesProyecto() {
+  async function consultarProductosProyecto() {
     try {
       cargando.activar()
+
       const { result } = await materialEmpleadoTareaController.listar(filtro)
 
-      listadosAuxiliares.materialesTarea = result
+      listadosAuxiliares.productosProyectosEtapas = result
+      listadosAuxiliares.productos = result
+
       listadoMaterialesDevolucionStore.listadoMateriales = result
-      // listadoMaterialesDevolucionStore.tareaId = filtro.tarea_id
       listadoMaterialesDevolucionStore.cliente_id = filtro.cliente_id
 
-      // const tarea: Tarea = (listadosAuxiliares.tareas as any).find((tarea: Tarea) => tarea.id === filtro.tarea_id)
+      if (!result.length) notificarAdvertencia('No tienes material asignado.')
 
-      if (!listadosAuxiliares.materialesTarea.length) {
-        notificarAdvertencia('No tienes material asignado.')
-      }
     } catch (e) {
       console.log(e)
     } finally {
@@ -54,8 +57,49 @@ export function useMaterialesProyecto(filtro: UnwrapRef<FiltroMiBodegaProyecto>,
     }
   }
 
+  async function consultarProyectos() {
+    const params = {
+      campos: 'id,nombre,codigo_proyecto,cliente_id,etapas',
+      finalizado: 0,
+      empleado_id: authenticationStore.user.id,
+    }
+
+    try {
+      cargando.activar()
+      const { result } = await proyectoController.listar(params)
+      listadosAuxiliares.proyectos = result
+    } catch (e) {
+      console.log(e)
+    } finally {
+      cargando.desactivar()
+    }
+  }
+
+  async function consultarEtapas(idProyecto: number) {
+    const params = {
+      campos: 'id,nombre',
+      activo: 1,
+      empleado_id: authenticationStore.user.id,
+      proyecto_id: idProyecto,
+      etapas_empleado: 1,
+    }
+
+    try {
+      cargando.activar()
+      const { result } = await etapaController.listar(params)
+      listadosAuxiliares.etapas = result
+      console.log(listadosAuxiliares.etapas)
+    } catch (e) {
+      console.log(e)
+    } finally {
+      cargando.desactivar()
+    }
+  }
+
   return {
-    consultarMaterialEmpleado,
+    consultarProductosProyecto,
     consultarClientesMaterialesEmpleado,
+    consultarProyectos,
+    consultarEtapas,
   }
 }

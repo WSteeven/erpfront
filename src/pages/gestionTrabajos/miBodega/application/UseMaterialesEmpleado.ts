@@ -2,10 +2,12 @@ import { ClienteMaterialEmpleadoController } from '../infraestructure/ClienteMat
 import { StatusEssentialLoading } from 'components/loading/application/StatusEssentialLoading'
 import { MaterialEmpleadoController } from '../infraestructure/MaterialEmpleadoController'
 import { useListadoMaterialesDevolucionStore } from 'stores/listadoMaterialesDevolucion'
+import { FiltroMiBodegaEmpleado } from '../domain/FiltroMiBodegaEmpleado'
 import { useAuthenticationStore } from 'stores/authentication'
 import { useNotificaciones } from 'shared/notificaciones'
+import { UnwrapRef } from 'vue'
 
-export function useMaterialesEmpleado(listadosAuxiliares) {
+export function useMaterialesEmpleado(filtro: UnwrapRef<FiltroMiBodegaEmpleado>, listadosAuxiliares: any) {
   // Stores
   const listadoMaterialesDevolucionStore = useListadoMaterialesDevolucionStore()
   const authenticationStore = useAuthenticationStore()
@@ -18,17 +20,19 @@ export function useMaterialesEmpleado(listadosAuxiliares) {
   const { notificarAdvertencia } = useNotificaciones()
   const cargando = new StatusEssentialLoading()
 
-  async function consultarMaterialEmpleado(cliente: number) {
+  async function consultarProductosEmpleado() {
     try {
       cargando.activar()
-      const { result } = await materialEmpleadoController.listar({ empleado_id: authenticationStore.user.id, cliente_id: cliente })
-      listadosAuxiliares.materialesTarea = result
+      const { result } = await materialEmpleadoController.listar(filtro)
+
+      listadosAuxiliares.productosStock = result
+      listadosAuxiliares.productos = result
+
       listadoMaterialesDevolucionStore.listadoMateriales = result
       listadoMaterialesDevolucionStore.tareaId = null
-      listadoMaterialesDevolucionStore.cliente_id = cliente
-      if (!result.length) {
-        notificarAdvertencia('No tienes material asignado.')
-      }
+      listadoMaterialesDevolucionStore.cliente_id = filtro.cliente_id
+
+      if (!result.length) notificarAdvertencia('No tienes material asignado.')
     } catch (e) {
       console.log(e)
     } finally {
@@ -49,7 +53,7 @@ export function useMaterialesEmpleado(listadosAuxiliares) {
   }
 
   return {
-    consultarMaterialEmpleado,
+    consultarProductosEmpleado,
     consultarClientesMaterialesEmpleado,
   }
 }
