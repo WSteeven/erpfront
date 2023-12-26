@@ -168,7 +168,7 @@
             </div>
 
             <!-- Tarea -->
-            <div v-if="mostrarTareaProyecto" class="col-12 col-md-4">
+            <!-- <div v-if="mostrarTareaProyecto" class="col-12 col-md-4">
               <label class="q-mb-sm block">{{ campoTareaProyecto }}</label>
               <q-select
                 v-model="filtro.tarea_id"
@@ -198,7 +198,7 @@
                   </q-item>
                 </template>
               </q-select>
-            </div>
+            </div> -->
           </div>
         </q-tab-panel>
 

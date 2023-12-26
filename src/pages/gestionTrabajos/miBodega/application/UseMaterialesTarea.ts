@@ -4,13 +4,12 @@ import { useListadoMaterialesDevolucionStore } from 'stores/listadoMaterialesDev
 import { useAuthenticationStore } from 'stores/authentication'
 import { useNotificaciones } from 'shared/notificaciones'
 import { destinosTareas } from 'config/tareas.utils'
-import { UnwrapRef, reactive } from 'vue'
+import { UnwrapRef } from 'vue'
 
 // Logica y controladores
 import { MaterialEmpleadoTareaController } from '../infraestructure/MaterialEmpleadoTareaController'
 import { ClienteMaterialTareaController } from '../infraestructure/ClienteMaterialTareaController'
 import { TareaController } from 'pages/gestionTrabajos/tareas/infraestructure/TareaController'
-import { Tarea } from 'pages/gestionTrabajos/tareas/domain/Tarea'
 import { FiltroMiBodega } from '../domain/FiltroMiBodega'
 import { ProyectoController } from 'pages/gestionTrabajos/proyectos/infraestructure/ProyectoController'
 import { EtapaController } from 'pages/gestionTrabajos/proyectos/modules/etapas/infraestructure/EtapaController'
@@ -56,7 +55,7 @@ export function useMaterialesTarea(filtro: UnwrapRef<FiltroMiBodega>, listadosAu
       listadoMaterialesDevolucionStore.tareaId = filtro.tarea_id
       listadoMaterialesDevolucionStore.cliente_id = filtro.cliente_id
 
-      const tarea: Tarea = (listadosAuxiliares.tareas as any).find((tarea: Tarea) => tarea.id === filtro.tarea_id)
+      // const tarea: Tarea = (listadosAuxiliares.tareas as any).find((tarea: Tarea) => tarea.id === filtro.tarea_id)
 
       if (!listadosAuxiliares.materialesTarea.length) {
         notificarAdvertencia('No tienes material asignado.')
