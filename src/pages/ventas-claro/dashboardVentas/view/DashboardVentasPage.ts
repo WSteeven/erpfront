@@ -208,7 +208,7 @@ export default defineComponent({
         switch (categoriaGrafico) {
           case categoriaGraficosVendedor.ESTADO_ACTUAL:
             ventasPorEstadoListado.value = ventasPorEstado.value.filter(
-              (venta: Ventas) => venta.estado_activ === label
+              (venta: Ventas) => venta.estado_activacion === label
             )
             break
           case categoriaGraficosVendedor.VENTAS_POR_PLANES:

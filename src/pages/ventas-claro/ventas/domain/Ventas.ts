@@ -9,9 +9,9 @@ export class Ventas extends EntidadAuditable {
   producto_info: string | null
   producto_precio: number | null
   plan: string | null
-  fecha_activ: string | null
+  fecha_activacion: string | null
   mes:string | null
-  estado_activ: string | null
+  estado_activacion: string | null
   forma_pago: string | null
   comision: number | null
   comision_info: string | null
@@ -28,9 +28,9 @@ export class Ventas extends EntidadAuditable {
     this.producto_info = null
     this.producto_precio = null
     this.plan = null
-    this.fecha_activ = null
+    this.fecha_activacion = null
     this.mes = null
-    this.estado_activ = null
+    this.estado_activacion = null
     this.forma_pago = null
     this.comision = null
     this.comision_info = null

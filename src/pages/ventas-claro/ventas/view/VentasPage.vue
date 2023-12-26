@@ -170,7 +170,7 @@
           <div class="col-12 col-md-3">
             <label class="q-mb-sm block">Estado Activacion</label>
             <q-select
-              v-model="ventas.estado_activ"
+              v-model="ventas.estado_activacion"
               :options="estados_activacion"
               transition-show="jump-up"
               transition-hide="jump-down"
@@ -179,8 +179,8 @@
               outlined
               :disable="disabled"
               :readonly="disabled"
-              :error="!!v$.estado_activ.$errors.length"
-              @blur="v$.estado_activ.$touch"
+              :error="!!v$.estado_activacion.$errors.length"
+              @blur="v$.estado_activacion.$touch"
               @filter="filtrarProductos"
               error-message="Debes seleccionar un estado"
               use-input
@@ -191,7 +191,7 @@
               map-options
             >
               <template v-slot:error>
-                <div v-for="error of v$.estado_activ.$errors" :key="error.$uid">
+                <div v-for="error of v$.estado_activacion.$errors" :key="error.$uid">
                   <div class="error-msg">{{ error.$message }}</div>
                 </div>
               </template>
@@ -206,7 +206,7 @@
           <div class="col-12 col-md-3">
             <label class="q-mb-sm block">Fecha de Activacion</label>
             <q-input
-              v-model="ventas.fecha_activ"
+              v-model="ventas.fecha_activacion"
               placeholder="Opcional"
               :disable="disabled"
               readonly
@@ -217,7 +217,7 @@
                 <q-icon name="event" class="cursor-pointer">
                   <q-popup-proxy cover transition-show="scale" transition-hide="scale">
                     <q-date
-                      v-model="ventas.fecha_activ"
+                      v-model="ventas.fecha_activacion"
                       :mask="maskFecha"
                       today-btn
                     >

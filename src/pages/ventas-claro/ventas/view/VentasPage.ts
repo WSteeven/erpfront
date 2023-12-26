@@ -60,7 +60,7 @@ const comision_vendedor = ref(0)
       producto: {
         required: true,
       },
-      estado_activ: {
+      estado_activacion: {
         required: true,
       },
     }

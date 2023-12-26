@@ -38,8 +38,8 @@ export const configuracionColumnasVentas: ColumnConfig<Ventas>[] = [
     sortable: true
   },
   {
-    name: 'fecha_activ',
-    field: 'fecha_activ',
+    name: 'fecha_activacion',
+    field: 'fecha_activacion',
     label: 'Fecha de Activacion',
     align: 'left',
     sortable: true
