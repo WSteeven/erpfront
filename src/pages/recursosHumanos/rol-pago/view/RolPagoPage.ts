@@ -44,7 +44,6 @@ import { EgresoRolPagoController } from '../infraestructure/EgresoRolPagoControl
 import { IngresoRolPago } from '../domain/IngresoRolPago'
 import { IngresoRolPagoController } from '../infraestructure/IngresoRolPagoController'
 import { configuracionColumnasIngresoRolPago } from '../domain/configuracionColumnasIngresoRolPago'
-import { log } from 'console'
 
 export default defineComponent({
   components: {
@@ -287,6 +286,7 @@ export default defineComponent({
         if (accion.value == 'NUEVO') {
           entidad = await guardar(rolpago)
         } else {
+          console.log('rol', rolpago)
           await editar(rolpago, false)
           entidad = rolpago
         }

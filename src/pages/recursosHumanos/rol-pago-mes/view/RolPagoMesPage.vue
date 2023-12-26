@@ -155,7 +155,6 @@
 
       <modales-entidad
         :comportamiento="modalesRolPago"
-        :mixin-modal="mixinRolEmpleado"
         @guardado="(data) => guardado(data)"
       />
     </template>
