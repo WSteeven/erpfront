@@ -221,7 +221,7 @@ export default defineComponent({
       },
       visible: ({ entidad, posicion }) => {
         // console.log(posicion, entidad)
-        return tabSeleccionado.value === autorizacionesTransacciones.aprobado && ((entidad.per_autoriza_id === store.user.id || entidad.solicitante_id === store.user.id) && entidad.estado === estadosTransacciones.pendiente || store.esActivosFijos) || store.esAdministrador
+        return (tabSeleccionado.value === autorizacionesTransacciones.aprobado || tabSeleccionado.value === estadosTransacciones.parcial) && ((entidad.per_autoriza_id === store.user.id || entidad.solicitante_id === store.user.id) && entidad.estado === estadosTransacciones.pendiente || store.esActivosFijos) || store.esAdministrador
       }
     }
     const botonMarcarComoCompletado: CustomActionTable = {
@@ -333,7 +333,7 @@ export default defineComponent({
     opciones_tareas.value = listadosAuxiliares.tareas
     opciones_clientes.value = listadosAuxiliares.clientes
     opciones_sucursales.value = JSON.parse(LocalStorage.getItem('sucursales')!.toString())
-    
+
     return {
       mixin, pedido, disabled, accion, v$, acciones,
       configuracionColumnas: configuracionColumnasPedidos,
@@ -343,7 +343,7 @@ export default defineComponent({
       opciones_clientes,
       opciones_sucursales,
       opciones_estados: estados,
-      opciones_autorizaciones:autorizaciones,
+      opciones_autorizaciones: autorizaciones,
 
       //selector
       refListado,
