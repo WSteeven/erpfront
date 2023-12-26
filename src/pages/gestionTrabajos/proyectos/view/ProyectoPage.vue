@@ -3,6 +3,7 @@
     :mixin="mixin"
     :configuracionColumnas="configuracionColumnasProyecto"
     titulo-pagina="Proyectos"
+    :ajustarCeldas="true"
   >
     <template #formulario>
       <q-form @submit.prevent>
@@ -296,7 +297,7 @@
             />
           </div>
           <!-- Tiene etapas -->
-          <div class="col-12 col-md-12">
+          <div class="col-12 col-md-12" v-if="accion!==acciones.nuevo">
             <essential-table
               ref="refEtapas"
               titulo="Etapas del proyecto"
