@@ -1,16 +1,16 @@
 import { EntidadAuditable } from 'shared/entidad/domain/entidadAuditable'
-export class Comision extends EntidadAuditable {
-  plan: number | null
-  plan_info: string | null
-  forma_pago: string | null
+
+export class BonoSupervisor extends EntidadAuditable {
+  id: number | null
+  porcentaje: number | null
   comision: number | null
   tipo_vendedor: string | null
   constructor() {
     super()
-    this.plan = null
-    this.plan_info = null
-    this.forma_pago = null
+    this.id = null
+    this.porcentaje = null
     this.comision = null
     this.tipo_vendedor = null
+
   }
 }

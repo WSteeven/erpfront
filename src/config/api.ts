@@ -411,6 +411,7 @@ export const endpoints = {
    * Modulo de Ventas de Claro
    *********************/
   bonos: new Endpoint('ventas-claro/bonos'),
+  bonos_porcentuales: new Endpoint('ventas-claro/bono-porcentual'),
   comisiones: new Endpoint('ventas-claro/comisiones'),
   modalidad: new Endpoint('ventas-claro/modalidad'),
   planes: new Endpoint('ventas-claro/planes'),

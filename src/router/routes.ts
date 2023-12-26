@@ -16,8 +16,9 @@ const routes: RouteRecordRaw[] = [
       {
         path: 'auditorias',
         name: 'auditorias',
-        component: () => import('pages/sistema/auditorias/view/AuditoriaPage.vue'),
-        meta: { requiresAuth:false },
+        component: () =>
+          import('pages/sistema/auditorias/view/AuditoriaPage.vue'),
+        meta: { requiresAuth: false },
       },
       {
         path: 'configuracion',
@@ -559,7 +560,10 @@ const routes: RouteRecordRaw[] = [
       {
         path: '/dashboard-ordenes-compras',
         name: 'dashboard_ordenes_compras',
-        component: () => import('pages/comprasProveedores/dashboard/view/DashboardCompras.vue'),
+        component: () =>
+          import(
+            'pages/comprasProveedores/dashboard/view/DashboardCompras.vue'
+          ),
         meta: { requiresAuth: true },
       },
       {
@@ -1140,17 +1144,71 @@ const routes: RouteRecordRaw[] = [
         path: '/dashboard-ventas',
         name: 'dashboard_ventas',
         component: () =>
-          import('pages/ventas-claro/dashboardVentas/view/DashboardVentasPage.vue'),
+          import(
+            'pages/ventas-claro/dashboardVentas/view/DashboardVentasPage.vue'
+          ),
         meta: { requiresAuth: false },
       },
-
-    {
+      {
+        path: '/planes',
+        name: 'planes',
+        component: () =>
+          import('pages/ventas-claro/planes/view/PlanesPage.vue'),
+        meta: { requiresAuth: true },
+      },
+      {
+        path: '/producto-ventas',
+        name: 'producto_ventas',
+        component: () =>
+          import('pages/ventas-claro/productoVentas/view/ProductoVentasPage.vue'),
+        meta: { requiresAuth: true },
+      },
+      {
+        path: '/modalidad',
+        name: 'modalidad',
+        component: () =>
+          import('pages/ventas-claro/modalidad/view/ModalidadPage.vue'),
+        meta: { requiresAuth: true },
+      },
+      {
+        path: '/tipo-chargeback',
+        name: 'tipo_chargeback',
+        component: () =>
+          import('pages/ventas-claro/tipoChargeBack/view/TipoChargeBack.vue'),
+        meta: { requiresAuth: true },
+      },
+      {
+        path: '/comisiones',
+        name: 'comisiones',
+        component: () =>
+          import('pages/ventas-claro/comision/view/ComisionPage.vue'),
+        meta: { requiresAuth: true },
+      },
+      {
+        path: '/bonos',
+        name: 'bonos',
+        component: () =>
+          import('pages/ventas-claro/bono/bonoVentas/view/BonoVentaPage.vue'),
+        meta: { requiresAuth: true },
+      },
+      {
+        path: '/bono-porcentual',
+        name: 'bono_porcentual',
+        component: () =>
+          import('pages/ventas-claro/bono/bonoSupervisor/view/BonoSupervisorPage.vue'),
+        meta: { requiresAuth: true },
+      },
+      ///
+      {
         path: '/reporte_venta',
         name: 'reporte_venta',
         component: () =>
-          import('pages/ventas-claro/reporte/reporte_ventas/view/ReporteVentasPage.vue'),
+          import(
+            'pages/ventas-claro/reporte/reporte_ventas/view/ReporteVentasPage.vue'
+          ),
         meta: { requiresAuth: true },
-      },],
+      },
+    ],
   },
   {
     path: '/login',

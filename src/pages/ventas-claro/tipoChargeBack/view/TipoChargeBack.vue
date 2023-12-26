@@ -6,7 +6,7 @@
 
           <!-- Nombre -->
           <div class="col-12 col-md-3">
-            <label class="q-mb-sm block">#Orden</label>
+            <label class="q-mb-sm block">Nombre</label>
             <q-input
               v-model="tipochargeback.nombre"
               placeholder="Obligatorio"

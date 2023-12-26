@@ -3,42 +3,41 @@
     <template #formulario>
       <q-form @submit.prevent>
         <div class="row q-col-gutter-sm q-mb-md">
-          <!-- Nombre -->
+          <!-- cantidad de ventas -->
           <div class="col-12 col-md-3">
-            <label class="q-mb-sm block">Nombre</label>
+            <label class="q-mb-sm block">Cantidad de Ventas</label>
             <q-input
-              v-model="modalidad.nombre"
+              v-model="bono_venta.cant_ventas"
               placeholder="Obligatorio"
-              type="textarea"
+              type="number"
               :disable="disabled"
-              :error="!!v$.nombre.$errors.length"
-              autogrow
-              @blur="v$.nombre.$touch"
+              :error="!!v$.cant_ventas.$errors.length"
+              @blur="v$.cant_ventas.$touch"
               outlined
               dense
             >
               <template v-slot:error>
-                <div v-for="error of v$.nombre.$errors" :key="error.$uid">
+                <div v-for="error of v$.cant_ventas.$errors" :key="error.$uid">
                   <div class="error-msg">{{ error.$message }}</div>
                 </div>
               </template>
             </q-input>
           </div>
-           <!-- Umbral Minimo -->
-           <div class="col-12 col-md-3">
-            <label class="q-mb-sm block">Umbral Minimo</label>
+          <!-- valor -->
+          <div class="col-12 col-md-3">
+            <label class="q-mb-sm block">Valor a Comisionar</label>
             <q-input
-              v-model="modalidad.umbral_minimo"
+              v-model="bono_venta.valor"
               placeholder="Obligatorio"
               type="number"
               :disable="disabled"
-              :error="!!v$.umbral_minimo.$errors.length"
-              @blur="v$.umbral_minimo.$touch"
+              :error="!!v$.valor.$errors.length"
+              @blur="v$.valor.$touch"
               outlined
               dense
             >
               <template v-slot:error>
-                <div v-for="error of v$.umbral_minimo.$errors" :key="error.$uid">
+                <div v-for="error of v$.valor.$errors" :key="error.$uid">
                   <div class="error-msg">{{ error.$message }}</div>
                 </div>
               </template>
@@ -49,4 +48,4 @@
     </template>
   </tab-layout>
 </template>
-<script src="./ModalidadPage.ts"></script>
+<script src="./BonoVentaPage.ts"></script>

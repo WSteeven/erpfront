@@ -114,7 +114,7 @@
                 :error="!!v$.tipo_vendedor.$errors.length"
                 @blur="v$.tipo_vendedor.$touch"
                 :option-value="(v) => v.nombre"
-                :option-label="(v) => v.nombre"
+                :option-label="(v) => v.descripcion"
                 emit-value
                 map-options
               >

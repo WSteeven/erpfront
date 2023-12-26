@@ -9,7 +9,7 @@ import { ContenedorSimpleMixin } from 'shared/contenedor/modules/simple/applicat
 import { ComisionController } from '../infrestructure/ComisionController'
 import { configuracionColumnasComision } from '../domain/configuracionColumnasComision'
 import { PlanesController } from 'pages/ventas-claro/planes/infrestructure/PlanesController'
-import { formas_pago } from 'config/utils'
+import { formas_pago, tipos_vendedor } from 'config/utils'
 
 
 export default defineComponent({
@@ -38,6 +38,9 @@ export default defineComponent({
       },
       comision:{
         required: true
+      },
+      tipo_vendedor:{
+        required:true
       }
     }
     const v$ = useVuelidate(reglas, comision)
@@ -72,8 +75,10 @@ export default defineComponent({
     return {
       mixin,
       comision,
+      tipos_vendedor,
       disabled, accion, v$,
       formas_pago,
+      planes,
       filtrarPlanes,
       configuracionColumnas: configuracionColumnasComision,
     }

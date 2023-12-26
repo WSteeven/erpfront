@@ -804,6 +804,59 @@ export const useMenuStore = defineStore('menu', () => {
           can: store.can('puede.ver.bono_trimestral_cumplimiento'),
         },
         {
+          title: 'Configuracion',
+        icon: 'bi-gear-fill',
+        children: [
+          {
+            title: 'Planes',
+            link: 'planes',
+            icon: 'bi-circle',
+            can: store.can('puede.acceder.planes'),
+          },
+          {
+            title: 'Productos',
+            link: 'producto-ventas',
+            icon: 'bi-circle',
+            can: store.can('puede.acceder.producto_ventas'),
+          },
+          {
+            title: 'Modalidad',
+            link: 'modalidad',
+            icon: 'bi-circle',
+            can: store.can('puede.acceder.modalidad'),
+          },
+          {
+            title: 'Tipo de ChargeBack',
+            link: 'tipo-chargeback',
+            icon: 'bi-circle',
+            can: store.can('puede.acceder.tipo_chargeback'),
+          },
+          {
+            title: 'Comisiones',
+            link: 'comisiones',
+            icon: 'bi-circle',
+            can: store.can('puede.acceder.comisiones'),
+          },{
+          title: 'Bonos',
+        icon: 'fa-solid fa-hands-holding-circle',
+        children: [
+          {
+            title: 'Bono de Vendedores',
+            link: 'bonos',
+            icon: 'bi-circle',
+            can: store.can('puede.acceder.bonos'),
+          },
+          {
+            title: 'Bono de Supervisores',
+            link: 'bono-porcentual',
+            icon: 'bi-circle',
+            can: store.can('puede.acceder.bono_porcentual'),
+          },
+        ]}
+
+        ]
+      },
+        {
           title: 'Reportes',
           icon: 'bi-clipboard2-data-fill',
           children: [
