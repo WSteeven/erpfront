@@ -197,7 +197,7 @@ export default defineComponent({
      * Funciones
      *****************************************************************************************
      */
-    function cargarDatosDefecto(){
+    function cargarDatosDefecto() {
       pedido.solicitante = store.user.id
       pedido.responsable = store.user.id
 
@@ -351,7 +351,8 @@ export default defineComponent({
         })
       },
       visible: ({ entidad, posicion }) => {
-        return tabSeleccionado.value === autorizacionesTransacciones.aprobado && ((entidad.per_autoriza_id === store.user.id || entidad.solicitante_id === store.user.id) && entidad.estado === estadosTransacciones.pendiente || store.esActivosFijos) || store.esAdministrador
+        // console.log(posicion, entidad)
+        return (tabSeleccionado.value === autorizacionesTransacciones.aprobado || tabSeleccionado.value === estadosTransacciones.parcial) && ((entidad.per_autoriza_id === store.user.id || entidad.solicitante_id === store.user.id) && entidad.estado === estadosTransacciones.pendiente || store.esActivosFijos) || store.esAdministrador
       }
     }
     const botonMarcarComoCompletado: CustomActionTable = {
@@ -453,6 +454,8 @@ export default defineComponent({
       empleados, filtrarEmpleados,
       estados,
       autorizaciones,
+      opciones_estados: estados,
+      opciones_autorizaciones: autorizaciones,
 
       //selector
       refListado,
