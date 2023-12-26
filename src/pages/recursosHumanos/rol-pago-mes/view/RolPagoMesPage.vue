@@ -13,7 +13,6 @@
     :accion4="btnCashRolPago"
     :filtrar="filtrarRolPagoMes"
     tabDefecto="0"
-    :forzarListar="true"
   >
     <template #formulario>
       <q-tabs

@@ -1,30 +1,31 @@
 // Dependencias
+import axios, { AxiosResponse } from 'axios'
 import { configuracionColumnasRolPago } from '../../rol-pago/domain/configuracionColumnasRolPago'
 import { required } from '@vuelidate/validators'
 import { useVuelidate } from '@vuelidate/core'
 import { defineComponent, ref, computed, Ref, reactive } from 'vue'
 
 // Componentes
-import TabLayout from 'shared/contenedor/modules/simple/view/TabLayout.vue'
 import SelectorImagen from 'components/SelectorImagen.vue'
 import EssentialTable from 'components/tables/view/EssentialTable.vue'
+import TabLayoutFilterTabs2 from 'shared/contenedor/modules/simple/view/TabLayoutFilterTabs2.vue'
+import ModalesEntidad from 'components/modales/view/ModalEntidad.vue'
+import EssentialTableTabs from 'components/tables/view/EssentialTableTabs.vue'
+
 //Logica y controladores
 import { ContenedorSimpleMixin } from 'shared/contenedor/modules/simple/application/ContenedorSimpleMixin'
 import { RolPagoController } from '../../rol-pago/infraestructure/RolPagoController'
 import { RolPago } from '../../rol-pago/domain/RolPago'
 import { imprimirArchivo, removeAccents } from 'shared/utils'
 import { acciones, accionesTabla, estadosRolPago } from 'config/utils'
-import { configuracionColumnasRolPagoTabla } from '../../rol-pago/domain/configuracionColumnasRolPagoTabla'
 import { ConceptoIngreso } from 'pages/recursosHumanos/concepto_ingreso/domain/ConceptoIngreso'
 import { useAuthenticationStore } from 'stores/authentication'
 import { useCargandoStore } from 'stores/cargando'
 import { useQuasar } from 'quasar'
 import { RolPagoMes } from '../domain/RolPagoMes'
-import axios, { AxiosResponse } from 'axios'
 import { RolPagoMesController } from '../infrestucture/RolPagoMesController'
 import { ComportamientoModalesRolPagoMes } from '../aplication/ComportamientoModalesRolPagoMes'
 import { ComportamientoModalesRolPago } from 'pages/recursosHumanos/rol-pago/aplication/ComportamientoModalesRolPago'
-import { RolPagoMesModales } from '../domain/RolPagoMesModales'
 import {
   tabOptionsEstadosRolPago,
   tabOptionsEstadosRolPagoEmpleado,
@@ -33,22 +34,14 @@ import { CustomActionTable } from 'components/tables/domain/CustomActionTable'
 import { useBotonesTablaRolPagoMes } from '../aplication/BotonesTablaRolPagoMes'
 import { useRolPagoStore } from 'stores/rolPago'
 import { useNotificaciones } from 'shared/notificaciones'
-import TabLayoutFilterTabs2 from 'shared/contenedor/modules/simple/view/TabLayoutFilterTabs2.vue'
 import { configuracionColumnasRolPagoMes } from '../domain/configuracionColumnasRolPagoMes'
-import EssentialTableTabs from 'components/tables/view/EssentialTableTabs.vue'
 import { useBotonesTablaRolPago } from 'pages/recursosHumanos/rol-pago/aplication/BotonesTablaRolPago'
-import ModalesEntidad from 'components/modales/view/ModalEntidad.vue'
-import { log } from 'console'
 import { CambiarEstadoRolPago } from 'pages/recursosHumanos/rol-pago/aplication/CambiarEstadoRolPago'
 import { useBotonesImpresionTablaRolPago } from 'pages/recursosHumanos/rol-pago/aplication/BotonesImpresionRolPago'
 import { apiConfig, endpoints } from 'config/api'
 import { AxiosHttpRepository } from 'shared/http/infraestructure/AxiosHttpRepository'
 import { CustomActionPrompt } from 'components/tables/domain/CustomActionPrompt'
 import { HttpResponseGet } from 'shared/http/domain/HttpResponse'
-import { DescuentosGenralesController } from 'pages/recursosHumanos/descuentos_generales/infraestructure/DescuentosGenralesController'
-import { DescuentosLeyController } from 'pages/recursosHumanos/descuentos_ley/infraestructure/DescuentosLeyController'
-import { MultaController } from 'pages/recursosHumanos/multas/infraestructure/MultaController'
-import { ConceptoIngresoController } from 'pages/recursosHumanos/concepto_ingreso/infraestructure/ConceptoIngresoController'
 
 export default defineComponent({
   name: 'RolPagoMes',
@@ -183,9 +176,11 @@ export default defineComponent({
         )
       },
       accion: ({ entidad }) => {
+        console.log(entidad)
         rolPagoStore.idRolPagoSeleccionada = entidad.id
         rolPagoStore.idRolPagoMes = entidad.id
         rolPagoStore.accion = acciones.editar
+        // rolPagoStore.recalcularSueldo = entidad.salario * .4 == entidad.sueldo
         modalesRolPago.abrirModalEntidad('RolPagoPage')
       },
     }
@@ -205,9 +200,8 @@ export default defineComponent({
         'Diciembre',
       ]
       const [mes, anio] = rolpago.mes!.split('-')
-      rolpago.nombre = `Rol de Pagos de ${
-        rolpago.es_quincena ? 'QUINCENA DEL MES DE ' : ''
-      }  ${meses[parseInt(mes, 10) - 1]} de ${anio}`
+      rolpago.nombre = `Rol de Pagos de ${rolpago.es_quincena ? 'QUINCENA DEL MES DE ' : ''
+        }  ${meses[parseInt(mes, 10) - 1]} de ${anio}`
     }
     let tabActualRolPago = '0'
     function filtrarRolPagoMes(tabSeleccionado: string) {
@@ -216,7 +210,7 @@ export default defineComponent({
     }
     function filtrarRolPagoEmpleado(estado, mensaje = null) {
       listarRolEmpleado({ rol_pago_id: rolpago.id, estado: estado }).then(() => {
-        if(mensaje != null) {
+        if (mensaje != null) {
           notificarCorrecto(mensaje)
         }
       });
@@ -415,7 +409,7 @@ export default defineComponent({
       const axios = AxiosHttpRepository.getInstance()
       const ruta = axios.getEndpoint(endpoints.actualizar_rol_pago) + idRolPago
       const response: AxiosResponse = await axios.get(ruta)
-      filtrarRolPagoEmpleado('',response.data.mensaje)
+      filtrarRolPagoEmpleado('', response.data.mensaje)
 
 
     }

@@ -10,6 +10,6 @@ export const tabOptionsEstadosRolPagoEmpleado: TabOption[] = [
 
 export const tabOptionsEstadosRolPago: TabOption[] = [
   // { label: 'Todo', value: '' },
-  { label: 'Activas', value: false },
-  { label: 'Finalizadas', value: true },
+  { label: 'Activas', value: '0' },
+  { label: 'Finalizadas', value: '1' },
 ];

@@ -142,8 +142,8 @@ export default defineComponent({
         LocalStorage.getItem('horas_extras_subtipos') == null
           ? []
           : JSON.parse(
-              LocalStorage.getItem('horas_extras_subtipos')!.toString()
-            )
+            LocalStorage.getItem('horas_extras_subtipos')!.toString()
+          )
     })
     /*******
      * Init
@@ -156,6 +156,8 @@ export default defineComponent({
       rolpago.mes = rolPagoStore.mes
       rolpago.es_quincena = rolPagoStore.es_quincena
     }
+
+    // console.log(rolPagoStore.recalcularSueldo)
 
     accion.value = rolPagoStore.accion
 
@@ -290,9 +292,11 @@ export default defineComponent({
           await editar(rolpago, false)
           entidad = rolpago
         }
+        // rolPagoStore.recalcularSueldo = true
         emit('cerrar-modal', false)
         emit('guardado', { key: 'RolPagoMesPage', model: rolpago })
       } catch (e) {
+        rolPagoStore.recalcularSueldo = false
         console.log(e)
       }
     }
@@ -663,7 +667,7 @@ export default defineComponent({
           if (data) {
             rolpago.egreso = redondearDecimales(
               parseInt(rolpago.salario == null ? '0' : rolpago.salario) *
-                data.porcentaje_iess,
+              data.porcentaje_iess,
               2
             )
           }
@@ -881,9 +885,47 @@ export default defineComponent({
       }
       rolpago.sueldo = parseFloat(total_sueldo.toFixed(2))
     }
-    watchEffect(() => {
-      calcularSalario(rolpago.tipo_contrato)
-    })
+
+    rolpago.sueldo = computed(() => {
+      let dias_quincena = rolpago.es_quincena == true ? 15 : 0
+      const dias = parseFloat(
+        rolpago.dias != null ? rolpago.dias.toString() : '0'
+      )
+      if (rolpago.medio_tiempo || rolpago.tipo_contrato == 3) {
+        dias_quincena = 0
+      }
+      const salario = parseFloat(rolpago.salario ?? '0')
+      const dias_totales = dias + dias_quincena
+      const sueldo = (salario / 30) * dias_totales
+      let total_sueldo = 0
+      const porcentajeAnticipo = recursosHumanosStore.porcentajeAnticipo / 100
+      switch (rolpago.tipo_contrato) {
+        case 3:
+          const quincena = salario * porcentajeAnticipo
+          total_sueldo = (quincena / 15) * dias
+          break
+        default:
+          if (rolpago.es_vendedor_medio_tiempo) {
+            const porcentaje =
+              rolpago.porcentaje_quincena != null
+                ? rolpago.porcentaje_quincena / 100
+                : 1
+            total_sueldo =
+              rolpago.es_quincena == true ? sueldo * 0.5 * porcentaje : sueldo
+          } else {
+            total_sueldo =
+              rolpago.es_quincena == true ? sueldo * porcentajeAnticipo : sueldo
+          }
+
+          break
+      }
+      return parseFloat(total_sueldo.toFixed(2))
+    }).value
+
+    // watchEffect(() => {
+    //   if (rolPagoStore.recalcularSueldo)
+    //     calcularSalario(rolpago.tipo_contrato)
+    // })
     return {
       removeAccents,
       rolpago,
