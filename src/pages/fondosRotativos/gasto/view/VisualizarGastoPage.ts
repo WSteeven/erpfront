@@ -250,7 +250,8 @@ const issubmit = ref(true);
       configuracionColumnas: configuracionColumnasGasto,
       watchEffect,
       existeComprobante,
-      aprobar_gasto
+      aprobar_gasto,
+      authenticationStore
     }
   },
 })

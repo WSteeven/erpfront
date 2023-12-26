@@ -22,6 +22,7 @@ import { useCargandoStore } from 'stores/cargando'
 import { endpoints } from 'config/api'
 import { AxiosResponse } from 'axios'
 import { useQuasar } from 'quasar'
+import { FiltroMiBodegaProyecto } from '../domain/FiltroMiBodegaProyecto'
 
 export default defineComponent({
   components: { EssentialTable },
@@ -29,7 +30,6 @@ export default defineComponent({
     /*********
      * Stores
      *********/
-    const authenticationStore = useAuthenticationStore()
     const listadoMaterialesDevolucionStore = useListadoMaterialesDevolucionStore()
     useNotificacionStore().setQuasar(useQuasar())
     useCargandoStore().setQuasar(useQuasar())
@@ -46,7 +46,7 @@ export default defineComponent({
     })
 
     const filtro = reactive(new FiltroMiBodega())
-    filtro.empleado_id = authenticationStore.user.id
+    const filtroProyecto = reactive(new FiltroMiBodegaProyecto())
 
     const clienteMaterialStock = ref()
     const etapa = ref()
@@ -73,6 +73,15 @@ export default defineComponent({
       proyecto.value = tarea.proyecto_id
       etapa.value = tarea.etapa_id
       filtro.cliente_id = tarea.cliente_id
+      obtenerMaterialesTarea()
+    }
+
+    function consultarMaterialesProyecto() {
+      listadosAuxiliares.materialesTarea = []
+      /* const tarea = (listadosAuxiliares.tareas as any).find((tarea: Tarea) => tarea.id === filtro.tarea_id)
+      proyecto.value = tarea.proyecto_id
+      etapa.value = tarea.etapa_id
+      filtro.cliente_id = tarea.cliente_id*/
       obtenerMaterialesTarea()
     }
 
