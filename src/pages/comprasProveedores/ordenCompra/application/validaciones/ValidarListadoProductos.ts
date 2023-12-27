@@ -20,6 +20,7 @@ export class ValidarListadoProductos implements Validador {
     if ((this.store.esCompras && this.orden.autorizador == this.store.user.id && this.orden.completada) || (this.store.esCompras && this.orden.autorizacion == 2 && this.orden.completada)) {
       if (this.orden.listadoProductos.some((v: ItemOrdenCompra) => v.precio_unitario == 0 || v.precio_unitario == 0)) throw new Error("Debes poner precio a todos los elementos del listado")
     }
+    if(!this.orden.listadoProductos.every((v)=>v.hasOwnProperty("descripcion"))) throw new Error("El campo descripción es requerido en todos los elementos del listado")
     return true
   }
 }

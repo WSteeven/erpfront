@@ -73,7 +73,6 @@
                 <q-card-section
                   class="column q-gutter-sm items-center text-center"
                 >
-                  <!-- <q-icon name="boy" size="50px" color="grey"></q-icon> -->
                   <div class="circulo">
                     <q-img
                       :src="linea.foto"

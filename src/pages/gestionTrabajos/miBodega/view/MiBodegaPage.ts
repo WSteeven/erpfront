@@ -1,28 +1,26 @@
 // Dependencias
 import { configuracionColumnasMaterialEmpleadoTarea } from '../domain/configuracionColumnasMaterialEmpleadoTarea'
 import { computed, defineComponent, onMounted, reactive, ref, watch } from 'vue'
-import { destinosTareas, modosStock } from 'config/tareas.utils'
-import { tiposJornadas } from 'config/utils'
+import { destinosTareas } from 'config/tareas.utils'
 
 // Componentes
 import EssentialTable from 'components/tables/view/EssentialTable.vue'
 
 // Logica y controladores
-import { StatusEssentialLoading } from 'components/loading/application/StatusEssentialLoading'
 import { useListadoMaterialesDevolucionStore } from 'stores/listadoMaterialesDevolucion'
-import { AxiosHttpRepository } from 'shared/http/infraestructure/AxiosHttpRepository'
 import { useMaterialesEmpleado } from '../application/UseMaterialesEmpleado'
+import { useMaterialesProyecto } from '../application/UseMaterialesProyecto'
 import { useFiltrosListadosSelects } from 'shared/filtrosListadosGenerales'
+import { Proyecto } from 'pages/gestionTrabajos/proyectos/domain/Proyecto'
+import { FiltroMiBodegaProyecto } from '../domain/FiltroMiBodegaProyecto'
+import { FiltroMiBodegaEmpleado } from '../domain/FiltroMiBodegaEmpleado'
 import { useMaterialesTarea } from '../application/UseMaterialesTarea'
 import { Tarea } from 'pages/gestionTrabajos/tareas/domain/Tarea'
-import { useAuthenticationStore } from 'stores/authentication'
 import { useNotificacionStore } from 'stores/notificacion'
 import { FiltroMiBodega } from '../domain/FiltroMiBodega'
+import { useNotificaciones } from 'shared/notificaciones'
 import { useCargandoStore } from 'stores/cargando'
-import { endpoints } from 'config/api'
-import { AxiosResponse } from 'axios'
 import { useQuasar } from 'quasar'
-import { FiltroMiBodegaProyecto } from '../domain/FiltroMiBodegaProyecto'
 
 export default defineComponent({
   components: { EssentialTable },
@@ -38,6 +36,7 @@ export default defineComponent({
      * Variables
      ************/
     const campoTareaProyecto = ref('Todas las tareas asignadas')
+    const { notificarAdvertencia } = useNotificaciones()
     const tab = ref()
 
     onMounted(() => {
@@ -47,13 +46,13 @@ export default defineComponent({
 
     const filtro = reactive(new FiltroMiBodega())
     const filtroProyecto = reactive(new FiltroMiBodegaProyecto())
-
-    const clienteMaterialStock = ref()
-    const etapa = ref()
-    const proyecto = ref()
+    const filtroEmpleado = reactive(new FiltroMiBodegaEmpleado())
 
     const listadosAuxiliares = reactive({
-      materialesTarea: [],
+      productos: [],
+      productosTarea: [],
+      productosProyectosEtapas: [],
+      productosStock: [],
       clientesMaterialesTarea: [],
       clientesMaterialesEmpleado: [],
       tareas: [],
@@ -64,25 +63,66 @@ export default defineComponent({
     /************
      * Funciones
      ************/
-    const { obtenerMaterialesTarea, consultarClientesMaterialesTarea, consultarTareas, consultarProyectos, consultarEtapas } = useMaterialesTarea(filtro, listadosAuxiliares)
-    const { consultarMaterialEmpleado, consultarClientesMaterialesEmpleado } = useMaterialesEmpleado(listadosAuxiliares)
+    const { consultarProductosTarea, consultarClientesMaterialesTarea, consultarTareasClienteFinalMantenimiento } = useMaterialesTarea(filtro, listadosAuxiliares)
+    const { consultarProductosEmpleado, consultarClientesMaterialesEmpleado } = useMaterialesEmpleado(filtroEmpleado, listadosAuxiliares)
+    const { consultarProyectos, consultarEtapas, consultarProductosProyecto } = useMaterialesProyecto(filtroProyecto, listadosAuxiliares)
 
-    function seleccionarTarea() {
-      listadosAuxiliares.materialesTarea = []
-      const tarea = (listadosAuxiliares.tareas as any).find((tarea: Tarea) => tarea.id === filtro.tarea_id)
-      proyecto.value = tarea.proyecto_id
-      etapa.value = tarea.etapa_id
-      filtro.cliente_id = tarea.cliente_id
-      obtenerMaterialesTarea()
+    function refrescarListadosProyectos(nombreListado: string) {
+      switch (nombreListado) {
+        case 'proyectos':
+          consultarProyectos().then(() => proyectos.value = listadosAuxiliares.proyectos)
+          break
+        case 'clientes':
+          consultarClientesMaterialesTarea()
+          break
+      }
     }
 
-    function consultarMaterialesProyecto() {
-      listadosAuxiliares.materialesTarea = []
-      /* const tarea = (listadosAuxiliares.tareas as any).find((tarea: Tarea) => tarea.id === filtro.tarea_id)
-      proyecto.value = tarea.proyecto_id
-      etapa.value = tarea.etapa_id
-      filtro.cliente_id = tarea.cliente_id*/
-      obtenerMaterialesTarea()
+    function refrescarListadosTareas(nombreListado: string) {
+      switch (nombreListado) {
+        case 'tareas':
+          consultarTareasClienteFinalMantenimiento()
+          break
+        case 'clientes':
+          consultarClientesMaterialesTarea()
+          break
+      }
+    }
+
+    function refrescarListadosEmpleado(nombreListado: string) {
+      switch (nombreListado) {
+        case 'clientes':
+          consultarClientesMaterialesEmpleado()
+          break
+      }
+    }
+
+    function seleccionarTarea() {
+      listadosAuxiliares.productos = []
+      const tarea = (listadosAuxiliares.tareas as any).find((tarea: Tarea) => tarea.id === filtro.tarea_id)
+      filtro.cliente_id = tarea.cliente_id
+    }
+
+    async function seleccionarProyecto() {
+      if (filtroProyecto.proyecto_id) {
+        await consultarEtapas(filtroProyecto.proyecto_id)
+        etapas.value = listadosAuxiliares.etapas
+
+        const proyecto: Proyecto | undefined = listadosAuxiliares.proyectos.find((proyecto: Proyecto) => proyecto.id === filtroProyecto.proyecto_id)
+        filtroProyecto.cliente_id = proyecto!!.cliente_id
+      } else {
+        listadosAuxiliares.etapas = []
+      }
+
+      listadosAuxiliares.productosProyectosEtapas = []
+      listadosAuxiliares.productos = []
+      filtroProyecto.etapa_id = null
+      filtro.cliente_id = null
+    }
+
+    function consultarProductosProyectoEtapa() {
+      if (listadosAuxiliares.etapas.length && !filtroProyecto.etapa_id) return notificarAdvertencia('Debe seleccionar una etapa')
+      consultarProductosProyecto()
     }
 
     /*******
@@ -90,58 +130,27 @@ export default defineComponent({
      *******/
     consultarClientesMaterialesTarea()
     consultarClientesMaterialesEmpleado()
+    consultarTareasClienteFinalMantenimiento()
     consultarProyectos().then(() => proyectos.value = listadosAuxiliares.proyectos)
 
     /************
      * Observers
      ************/
-    watch(tab, () => {
-      listadosAuxiliares.tareas = []
-
-      consultarTareas(tab.value)
-
-      listadosAuxiliares.materialesTarea = []
-      filtro.tarea_id = null
-      proyecto.value = null
-      etapa.value = null
-      filtro.cliente_id = undefined
-    })
-
-    watch(proyecto, async () => {
-      if (tab.value === destinosTareas.paraProyecto) {
-        if (proyecto.value) {
-          await consultarEtapas(proyecto.value)
-          etapas.value = listadosAuxiliares.etapas
-          listadosAuxiliares.tareas = []
-          if (!listadosAuxiliares.etapas.length) {
-            consultarTareas(tab.value, proyecto.value)
-            campoTareaProyecto.value = 'Todas las tareas asignadas del proyecto seleccionado'
-          }
-        } else {
-          filtro.tarea_id = null
-          etapa.value = null
-          listadosAuxiliares.etapas = []
-          listadosAuxiliares.materialesTarea = []
-          consultarTareas(tab.value)
-        }
+    watch((tab), () => {
+      switch (tab.value) {
+        case destinosTareas.paraClienteFinal:
+          listadosAuxiliares.productos = listadosAuxiliares.productosTarea
+          listadoMaterialesDevolucionStore.listadoMateriales = listadosAuxiliares.productosTarea
+          break
+        case destinosTareas.paraProyecto:
+          listadosAuxiliares.productos = listadosAuxiliares.productosProyectosEtapas
+          listadoMaterialesDevolucionStore.listadoMateriales = listadosAuxiliares.productosProyectosEtapas
+          break
+        case 'personal':
+          listadosAuxiliares.productos = listadosAuxiliares.productosStock
+          listadoMaterialesDevolucionStore.listadoMateriales = listadosAuxiliares.productosStock
+          break
       }
-
-      filtro.cliente_id = null
-    })
-
-    watch(etapa, () => {
-      if (tab.value === destinosTareas.paraProyecto) {
-        if (etapa.value) {
-          listadosAuxiliares.tareas = []
-          campoTareaProyecto.value = 'Todas las tareas asignadas de la etapa seleccionada'
-          consultarTareas(destinosTareas.paraProyecto, proyecto.value, etapa.value)
-        }
-      }
-    })
-
-    watch(computed(() => filtro.tarea_id), (tarea) => {
-      if (tarea) seleccionarTarea()
-      if (tab.value === destinosTareas.paraProyecto) consultarTareas(destinosTareas.paraProyecto, proyecto.value, etapa.value)
     })
 
     /**********
@@ -150,30 +159,30 @@ export default defineComponent({
     const { tareas, filtrarTareas, proyectos, filtrarProyectos, etapas, filtrarEtapas } = useFiltrosListadosSelects(listadosAuxiliares)
 
     return {
+      tab,
       configuracionColumnasMaterialEmpleadoTarea,
-      tiposJornadas,
-      modosStock,
-      consultarMaterialEmpleado,
       listadosAuxiliares,
       filtro,
-      tab,
+      filtroProyecto,
+      filtroEmpleado,
       destinosTareas,
       listadoMaterialesDevolucionStore,
-      clienteMaterialStock,
-      obtenerMaterialesTarea,
       consultarEtapas,
-      seleccionarTarea,
       tareas,
       proyectos,
       etapas,
       filtrarTareas,
       filtrarProyectos,
       filtrarEtapas,
-      etapa,
-      proyecto,
-      consultarTareas,
-      campoTareaProyecto,
-      mostrarTareaProyecto: computed(() => !(proyecto.value && listadosAuxiliares.etapas.length && !etapa.value)),
+      seleccionarTarea,
+      seleccionarProyecto,
+      consultarProductosTarea,
+      consultarProductosProyectoEtapa,
+      consultarProductosEmpleado,
+      refrescarListadosProyectos,
+      refrescarListadosTareas,
+      refrescarListadosEmpleado,
+      mostrarBtnTransferirStockPersonal: computed(() => tab.value === destinosTareas.paraClienteFinal),
     }
   },
 })
