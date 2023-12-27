@@ -427,5 +427,7 @@ export const endpoints = {
   cobrojp:new Endpoint('ventas-claro/cobrojp'),
   pago:new Endpoint('ventas-claro/pago'),
   reporte_ventas:new Endpoint('ventas-claro/reporte-ventas'),
-  dashboard_ventas_claro:new Endpoint('ventas-claro/dashboard')
+  dashboard_ventas_claro:new Endpoint('ventas-claro/dashboard'),
+  umbral_ventas:new Endpoint('ventas-claro/umbral-ventas')
+
 }

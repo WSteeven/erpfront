@@ -836,7 +836,14 @@ export const useMenuStore = defineStore('menu', () => {
             link: 'comisiones',
             icon: 'bi-circle',
             can: store.can('puede.acceder.comisiones'),
-          },{
+          },
+          {
+            title: 'Meta de Ventas',
+            link: 'umbral-ventas',
+            icon: 'bi-circle',
+            can: store.can('puede.acceder.umbral_ventas'),
+          },
+          {
           title: 'Bonos',
         icon: 'fa-solid fa-hands-holding-circle',
         children: [

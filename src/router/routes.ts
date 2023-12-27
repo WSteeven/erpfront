@@ -1198,6 +1198,13 @@ const routes: RouteRecordRaw[] = [
           import('pages/ventas-claro/bono/bonoSupervisor/view/BonoSupervisorPage.vue'),
         meta: { requiresAuth: true },
       },
+      {
+        path: '/umbral-ventas',
+        name: 'umbral_ventas',
+        component: () =>
+          import('pages/ventas-claro/umbralVentas/view/UmbralVentasPage.vue'),
+        meta: { requiresAuth: true },
+      },
       ///
       {
         path: '/reporte_venta',
