@@ -106,7 +106,7 @@ export default defineComponent({
       reestablecer,
       setValidador,
     } = mixin.useComportamiento()
-    const { onConsultado } = mixin.useHooks()
+    const { onConsultado, onBeforeModificar } = mixin.useHooks()
     const refArchivoRolPago = ref()
     cargarVista(async () => {
       await obtenerListados({
@@ -281,6 +281,10 @@ export default defineComponent({
         }, 2000)
       }
     })
+
+    // onBeforeModificar(()=>{
+    //   rolpago.sueldo = sueldoCalculado
+    // })
 
     async function guardarDatos(rolpago: RolPago) {
       try {
@@ -885,8 +889,9 @@ export default defineComponent({
       }
       rolpago.sueldo = parseFloat(total_sueldo.toFixed(2))
     }
+    
 
-    rolpago.sueldo = computed(() => {
+    const sueldoCalculado = computed(() => {
       let dias_quincena = rolpago.es_quincena == true ? 15 : 0
       const dias = parseFloat(
         rolpago.dias != null ? rolpago.dias.toString() : '0'
@@ -922,10 +927,11 @@ export default defineComponent({
       return parseFloat(total_sueldo.toFixed(2))
     }).value
 
-    // watchEffect(() => {
-    //   if (rolPagoStore.recalcularSueldo)
-    //     calcularSalario(rolpago.tipo_contrato)
-    // })
+    watchEffect(() => {
+      // if (rolPagoStore.recalcularSueldo)
+      if(!rolpago.sueldo_quincena_modificado)
+        calcularSalario(rolpago.tipo_contrato)
+    })
     return {
       removeAccents,
       rolpago,

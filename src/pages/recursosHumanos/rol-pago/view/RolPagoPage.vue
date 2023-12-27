@@ -2,7 +2,7 @@
   <div class="q-pa-sm">
     <div class="row q-col-gutter-sm q-py-md">
       <!-- Mes -->
-      <div class="col-12 col-md-3">
+      <div class="col-12 col-md-3 col-sm-6">
         <label class="q-mb-sm block"> Mes </label>
         <q-input
           v-model="rolpago.mes"
@@ -48,7 +48,7 @@
         </q-input>
       </div>
       <!-- Empleados -->
-      <div class="col-12 col-md-3">
+      <div class="col-12 col-md-3 col-sm-6">
         <label class="q-mb-sm block">Empleado</label>
         <q-select
           v-model="rolpago.empleado"
@@ -65,7 +65,7 @@
           @filter="filtrarEmpleado"
           :option-value="(v) => v.id"
           @update:model-value="datos_empleado()"
-          :option-label="(v) => v.nombres + ' ' + v.apellidos"
+          :option-label="(v) => v.apellidos + ' ' + v.nombres"
           emit-value
           map-options
         >
@@ -79,7 +79,7 @@
         </q-select>
       </div>
       <!-- Días -->
-      <div class="col-12 col-md-3">
+      <div class="col-12 col-md-3 col-sm-6">
         <label class="q-mb-sm block">Días Laborados</label>
         <q-input
           v-model="rolpago.dias"
@@ -92,7 +92,7 @@
         </q-input>
       </div>
       <!-- Días  de permisos sin recuperar-->
-      <div class="col-12 col-md-3">
+      <div class="col-12 col-md-3 col-sm-6">
         <label class="q-mb-sm block">Días de permisos sin recuperar</label>
         <q-input
           v-model="rolpago.dias_permiso_sin_recuperar"
@@ -104,7 +104,7 @@
         </q-input>
       </div>
       <!-- Salario -->
-      <div class="col-12 col-md-3">
+      <div class="col-12 col-md-3 col-sm-6">
         <label class="q-mb-sm block">Salario</label>
         <q-input
           v-model="rolpago.salario"
@@ -117,7 +117,7 @@
         </q-input>
       </div>
       <!-- Medio Tiempo -->
-      <div class="col-12 col-md-3" v-if="rolpago.es_quincena">
+      <div class="col-12 col-md-3 col-sm-6" v-if="rolpago.es_quincena">
         <label class="q-mb-sm block">Trabaja Medio tiempo</label>
         <q-toggle
           :label="rolpago.medio_tiempo ? 'Medio Tiempo' : 'Tiempo completo'"
@@ -130,14 +130,10 @@
         />
       </div>
       <!-- Vendedor Medio Tiempo -->
-      <div class="col-12 col-md-3">
+      <div class="col-12 col-md-3 col-sm-6">
         <label class="q-mb-sm block">Vendedor Trabaja Medio tiempo</label>
         <q-toggle
-          :label="
-            rolpago.es_vendedor_medio_tiempo
-              ? 'Vendedor Medio Tiempo'
-              : 'Vendedor Tiempo completo'
-          "
+          :label="rolpago.es_vendedor_medio_tiempo ? 'SI' : 'NO'"
           v-model="rolpago.es_vendedor_medio_tiempo"
           color="primary"
           keep-color
@@ -147,14 +143,10 @@
         />
       </div>
       <!-- Modificar sueldo -->
-      <div class="col-12 col-md-3">
+      <div class="col-12 col-md-3 col-sm-6">
         <label class="q-mb-sm block">Modificar el sueldo</label>
         <q-toggle
-          :label="
-            rolpago.sueldo_quincena_modificado
-              ? 'SI'
-              : 'NO'
-          "
+          :label="rolpago.sueldo_quincena_modificado ? 'SI' : 'NO'"
           v-model="rolpago.sueldo_quincena_modificado"
           color="primary"
           keep-color
@@ -164,13 +156,13 @@
         />
       </div>
       <!-- Sueldo -->
-      <div class="col-12 col-md-3">
+      <div class="col-12 col-md-3 col-sm-6">
         <label class="q-mb-sm block">Sueldo</label>
         <q-input
           v-model="rolpago.sueldo"
           placeholder="Obligatorio"
           type="number"
-          :disable="disabled||!rolpago.sueldo_quincena_modificado"
+          :disable="disabled || !rolpago.sueldo_quincena_modificado"
           outlined
           dense
         >

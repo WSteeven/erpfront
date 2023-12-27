@@ -154,6 +154,7 @@
 
       <modales-entidad
         :comportamiento="modalesRolPago"
+        :persistente="false"
         @guardado="(data) => guardado(data)"
       />
     </template>
