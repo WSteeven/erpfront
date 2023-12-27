@@ -8,6 +8,7 @@ import { FiltroMiBodegaProyecto } from '../domain/FiltroMiBodegaProyecto'
 import { useAuthenticationStore } from 'stores/authentication'
 import { useNotificaciones } from 'shared/notificaciones'
 import { UnwrapRef } from 'vue'
+import { destinosTareas } from 'config/tareas.utils'
 
 export function useMaterialesProyecto(filtro: UnwrapRef<FiltroMiBodegaProyecto>, listadosAuxiliares: any) {
   // Stores
@@ -35,6 +36,7 @@ export function useMaterialesProyecto(filtro: UnwrapRef<FiltroMiBodegaProyecto>,
 
       listadoMaterialesDevolucionStore.listadoMateriales = result
       listadoMaterialesDevolucionStore.cliente_id = filtro.cliente_id
+      listadoMaterialesDevolucionStore.origenProductos = destinosTareas.paraProyecto
 
       if (!result.length) notificarAdvertencia('No tienes material asignado.')
 

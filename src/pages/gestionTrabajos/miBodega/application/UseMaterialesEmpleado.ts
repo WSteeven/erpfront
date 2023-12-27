@@ -29,6 +29,7 @@ export function useMaterialesEmpleado(filtro: UnwrapRef<FiltroMiBodegaEmpleado>,
       listadosAuxiliares.productos = result
 
       listadoMaterialesDevolucionStore.listadoMateriales = result
+      listadoMaterialesDevolucionStore.origenProductos = 'personal'
       listadoMaterialesDevolucionStore.tareaId = null
       listadoMaterialesDevolucionStore.cliente_id = filtro.cliente_id
 

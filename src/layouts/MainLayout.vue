@@ -471,6 +471,7 @@
             'PreordenCompra',
             'Devoluciones',
             'RolPagoMes',
+            'TransferenciaProductoEmpleado',
           ]"
         >
           <component :is="Component" />

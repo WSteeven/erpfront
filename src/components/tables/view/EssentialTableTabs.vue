@@ -7,9 +7,10 @@
       bordered
       dense
       narrow-indicator
-      active-color="white"
-      active-bg-color="primary"
-      indicator-color="primary"
+      inline-label
+      :active-color="activeColor"
+      :active-bg-color="activeBgColor"
+      :indicator-color="activeBgColor"
       :class="{
         'borde-header-tabla': !$q.screen.xs,
       }"
@@ -20,11 +21,15 @@
       <q-tab
         v-for="opcion in tabOptions"
         :key="opcion.label"
-        :label="opcion.label"
         :name="opcion.value + ''"
-        class=""
         :class="{ 'rounded shadow-chip q-mx-xs q-my-md': $q.screen.xs }"
       >
+        <q-icon
+          :name="opcion.icono"
+          :color="opcion.color_icono"
+          class="q-mr-sm"
+        ></q-icon>
+        <span>{{ opcion.label }}</span>
       </q-tab>
     </q-tabs>
 
@@ -87,7 +92,7 @@ import { TabOption } from 'components/tables/domain/TabOption' // nico, salaas, 
 import { ColumnConfig } from '../domain/ColumnConfig'
 import EssentialTable from './EssentialTable.vue'
 import { TipoSeleccion } from 'config/utils'
-import { ref, watchEffect } from 'vue'
+import { computed, ref, watchEffect } from 'vue'
 
 const props = defineProps({
   titulo: {
@@ -252,6 +257,19 @@ const emit = defineEmits([
 
 const tabSeleccionado = ref(props.tabDefecto)
 const mostrarTabs = ref(true)
+const activeColor = computed(
+  () =>
+    props.tabOptions.find(
+      (opcion: TabOption) => opcion.value === tabSeleccionado.value
+    )?.color_icono
+)
+
+const activeBgColor = computed(
+  () =>
+    props.tabOptions.find(
+      (opcion: TabOption) => opcion.value === tabSeleccionado.value
+    )?.bg_color
+)
 
 watchEffect(() => {
   tabSeleccionado.value = props.tabDefecto

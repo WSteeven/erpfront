@@ -14,7 +14,7 @@
       <q-tabs
         v-model="tab"
         class="text-primary"
-        :class="{ 'bg-grey-1': !$q.dark.isActive }"
+        :class="{ 'bg-grey-3': !$q.dark.isActive }"
         active-color="primary"
         align="justify"
         no-caps
@@ -314,9 +314,9 @@
         </q-tab-panel>
       </q-tab-panels>
 
-      <div v-if="listadosAuxiliares.productos.length" class="row">
+      <div v-if="listadosAuxiliares.productos.length" class="row q-pt-md">
         <div class="col-12 text-center">
-          <label class="q-mb-sm block"
+          <label class="q-mb-sm block text-bold"
             >Opciones de devolución de material sobrante de la tarea</label
           >
         </div>
@@ -324,7 +324,7 @@
         <div class="col-12 row justify-center q-gutter-sm q-mb-md">
           <!-- Boton devolver a bodega matriz-->
           <q-btn
-            color="secondary"
+            class="bg-grey-4 text-primary"
             no-caps
             unelevated
             rounded
@@ -337,7 +337,7 @@
           <!-- Boton transferir a stock personal -->
           <q-btn
             v-if="mostrarBtnTransferirStockPersonal"
-            color="indigo-9"
+            class="bg-grey-4 text-primary"
             @click="
               () => (listadoMaterialesDevolucionStore.devolverAlStock = true)
             "
@@ -351,10 +351,10 @@
           </q-btn>
 
           <!-- Boton transferir a otro técnico -->
+          <!-- color="grey-4" -->
           <q-btn
-            color="grey-4"
             no-caps
-            class="text-black"
+            class="bg-grey-4 text-primary"
             unelevated
             rounded
             :to="{ name: 'transferencia_producto_empleado' }"
@@ -382,8 +382,6 @@
           ></essential-table>
         </div>
       </div>
-
-      <div class="row q-px-md q-mb-md"></div>
     </q-card>
   </q-page>
 </template>

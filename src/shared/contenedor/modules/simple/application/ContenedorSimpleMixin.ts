@@ -68,7 +68,7 @@ export class ContenedorSimpleMixin<T extends EntidadAuditable> extends Contenedo
         this.hooks.bindHook('onConsultado', callback),
       onBeforeModificar: (callback: () => void) =>
         this.hooks.bindHook('onBeforeModificar', callback),
-      onModificado: (callback: (id?: number) => void) =>
+      onModificado: (callback: (id?: number, response_data?: any) => void) =>
         this.hooks.bindHook('onModificado', callback),
       onReestablecer: (callback: () => void) =>
         this.hooks.bindHook('onReestablecer', callback),
@@ -343,7 +343,7 @@ export class ContenedorSimpleMixin<T extends EntidadAuditable> extends Contenedo
         }
 
         const id: number = response.data.modelo.id ?? 0
-        this.hooks.onModificado(id)
+        this.hooks.onModificado(id, response.data)
 
       } catch (error: any) {
         if (isAxiosError(error)) {

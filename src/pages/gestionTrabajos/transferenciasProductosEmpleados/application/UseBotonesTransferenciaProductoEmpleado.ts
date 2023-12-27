@@ -1,7 +1,18 @@
-import { CustomActionPrompt } from "components/tables/domain/CustomActionPrompt"
-import { CustomActionTable } from "components/tables/domain/CustomActionTable"
+import { CustomActionPrompt } from 'components/tables/domain/CustomActionPrompt'
+import { CustomActionTable } from 'components/tables/domain/CustomActionTable'
+import { useNotificaciones } from 'shared/notificaciones'
+import { useAuthenticationStore } from 'stores/authentication'
+import { useDevolucionStore } from 'stores/devolucion'
+import { useRouter } from 'vue-router'
+import { CambiarEstadoDevolucion } from './CambiarEstadoDevolucion'
+import { Ref } from 'vue'
 
-export function useBotonesTransferenciaProductoEmpleado() {
+export function useBotonesTransferenciaProductoEmpleado(listado, tabSeleccionado: Ref<string>) {
+  const store = useAuthenticationStore()
+  const devolucionStore = useDevolucionStore()
+  const { notificarError, confirmar, notificarCorrecto, prompt } = useNotificaciones()
+  const router = useRouter()
+
   const botonAnular: CustomActionTable = {
     titulo: 'Anular',
     color: 'negative',
