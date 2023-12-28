@@ -154,8 +154,9 @@
                     icon="bi-x"
                     round
                     dense
-                    glossy
-                    class="q-mt-sm bg-negative text-white"
+                    unelevated
+                    outline
+                    color="grey-8"
                     @click="mostrarNotificaciones = false"
                   ></q-btn>
                 </div>
@@ -212,9 +213,9 @@
                             dense
                             color="positive"
                             size="sm"
+                            outline
                             no-caps
                             rounded
-                            push
                             unelevated
                             @click="marcarLeida(notificacion.id)"
                           >
@@ -299,8 +300,9 @@
                     icon="bi-x"
                     round
                     dense
-                    glossy
-                    class="q-mt-sm bg-negative text-white"
+                    unelevated
+                    outline
+                    color="grey-8"
                     @click="mostrarMenu = false"
                   ></q-btn>
                 </div>
