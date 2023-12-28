@@ -23,11 +23,25 @@ export const configuracionColumnasProductosSeleccionados: ColumnConfig<any>[] = 
     sortable: true,
   },
   {
+    name: 'serial',
+    field: 'serial',
+    label: 'Serial',
+    align: 'left',
+    sortable: true,
+  },
+  {
     name: 'cantidad',
     field: 'cantidad',
     label: 'Cantidad',
     align: 'left',
     sortable: true,
   },
+  {
+    name: 'acciones',
+    field: 'acciones',
+    label: 'Acciones',
+    align: 'right',
+    sortable: false,
+  }
 ]
 
