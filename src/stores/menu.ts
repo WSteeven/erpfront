@@ -844,6 +844,12 @@ export const useMenuStore = defineStore('menu', () => {
             can: store.can('puede.acceder.umbral_ventas'),
           },
           {
+            title: 'Esquema de Comisiones',
+            link: 'esquema-comision',
+            icon: 'bi-circle',
+            can: store.can('puede.acceder.esquema_comision'),
+          },
+          {
           title: 'Bonos',
         icon: 'fa-solid fa-hands-holding-circle',
         children: [
