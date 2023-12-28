@@ -469,18 +469,28 @@
           <div class="col-12">
             <essential-table
               titulo="Productos Seleccionados"
-              :configuracionColumnas="configuracionColumnasProductosSeleccionadosAccion"
+              :configuracionColumnas="
+                configuracionColumnasProductosSeleccionadosAccion
+              "
               :datos="devolucion.listadoProductos"
               :permitirConsultar="false"
-              :permitirEditar="!misma_condicion &&(accion == acciones.nuevo || accion == acciones.editar)"
+              :permitirEditar="
+                !misma_condicion &&
+                (accion == acciones.nuevo || accion == acciones.editar)
+              "
               :permitirEliminar="false"
               :mostrarBotones="false"
               :accion1="botonEditarCantidad"
               :accion2="botonEliminar"
               :altoFijo="false"
-              :ajustarCeldas="true"
-              :permitirEditarModal="true"
-            ></essential-table>
+              ><template v-slot:body="props">
+                <q-tr :props="props" @click="onRowClick(props.row)">
+                  <q-td key="name" :props="props">
+                    {{ props.row.name }}
+                  </q-td>
+                </q-tr>
+              </template></essential-table
+            >
           </div>
         </div>
       </q-form>

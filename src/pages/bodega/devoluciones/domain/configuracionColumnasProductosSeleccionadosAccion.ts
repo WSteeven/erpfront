@@ -36,12 +36,19 @@ export const configuracionColumnasProductosSeleccionados: ColumnConfig<any>[] = 
     align: 'left',
     sortable: false,
   },
-  // {
-  //   name: 'acciones',
-  //   field: 'acciones',
-  //   label: 'Acciones',
-  //   align: 'right',
-  //   sortable: false,
-  // }
+  {
+    name: 'devuelto',
+    field: 'devuelto',
+    label: 'Devuelto',
+    align: 'left',
+    sortable: false,
+  },
+  {
+    name: 'acciones',
+    field: 'acciones',
+    label: 'Acciones',
+    align: 'right',
+    sortable: false,
+  }
 ]
 
