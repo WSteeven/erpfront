@@ -83,6 +83,7 @@
         <label class="q-mb-sm block">Días Laborados</label>
         <q-input
           v-model="rolpago.dias"
+          type="number"
           placeholder="Obligatorio"
           mask="##"
           :disable="disabled"
@@ -143,7 +144,7 @@
         />
       </div>
       <!-- Modificar sueldo -->
-      <div class="col-12 col-md-3 col-sm-6">
+      <div class="col-12 col-md-3 col-sm-6" v-if="rolpago.es_quincena">
         <label class="q-mb-sm block">Modificar el sueldo</label>
         <q-toggle
           :label="rolpago.sueldo_quincena_modificado ? 'SI' : 'NO'"
@@ -212,7 +213,7 @@
       </div>
     </div>
     <q-expansion-item
-      v-if="!rolpago.es_quincena"
+      v-if="!rolpago.es_quincena && accion!== acciones.nuevo"
       class="overflow-hidden q-mb-md expansion"
       label="Ingresos"
       header-class="text-bold bg-header-collapse"
@@ -220,7 +221,7 @@
     >
       <div class="row q-col-gutter-sm q-py-md q-mx-xs">
         <!-- Bonificacion -->
-        <div class="col-12 col-md-3">
+        <div class="col-12 col-md-3 col-sm-4">
           <label class="q-mb-sm block">Bonificación</label>
           <q-input
             v-model="rolpago.bonificacion"
@@ -233,7 +234,7 @@
           </q-input>
         </div>
         <!-- Concepto -->
-        <div class="col-12 col-md-3">
+        <div class="col-12 col-md-3 col-sm-4">
           <label class="q-mb-sm block">Concepto</label>
           <q-select
             v-model="rolpago.concepto_ingreso"
@@ -269,7 +270,7 @@
           </q-select>
         </div>
         <!-- Tipos de Horas Extras -->
-        <div class="col-12 col-md-3" v-if="rolpago.concepto_ingreso == 2">
+        <div class="col-12 col-md-3 col-sm-4" v-if="rolpago.concepto_ingreso == 2">
           <label class="q-mb-sm block">Tipo de Hora Extra</label>
           <q-select
             v-model="rolpago.horas_extra_tipo"
@@ -300,7 +301,7 @@
         </div>
         <!-- Sub Tipos de Horas Extras -->
         <div
-          class="col-12 col-md-3"
+          class="col-12 col-md-3 col-sm-4"
           v-if="
             rolpago.horas_extra_tipo !== null && rolpago.horas_extra_tipo !== ''
           "
@@ -335,7 +336,7 @@
         </div>
         <!---Campo-->
         <div
-          class="col-12 col-md-3"
+          class="col-12 col-md-3 col-sm-4"
           v-if="
             rolpago.concepto_ingreso != '' && rolpago.concepto_ingreso != null
           "
@@ -355,7 +356,7 @@
           </q-input>
         </div>
         <!-- Bono Recurente -->
-        <div class="col-12 col-md-3">
+        <div class="col-12 col-md-3 col-sm-4">
           <label class="q-mb-sm block">Bono Recurente</label>
           <q-input
             v-model="rolpago.bono_recurente"
@@ -388,7 +389,7 @@
       </div>
     </q-expansion-item>
     <q-expansion-item
-      v-if="!rolpago.es_quincena"
+    v-if="!rolpago.es_quincena && accion!== acciones.nuevo"
       class="overflow-hidden q-mb-md expansion"
       label="Egresos"
       header-class="text-bold bg-header-collapse"
@@ -396,7 +397,7 @@
     >
       <div class="row q-col-gutter-sm q-py-md q-mx-xs">
         <!-- Descuento de Ley -->
-        <div class="col-12 col-md-3">
+        <div class="col-12 col-md-3 col-sm-4">
           <label class="q-mb-sm block">Descuento de Ley</label>
           <q-select
             v-model="rolpago.descuento_ley"
@@ -424,7 +425,7 @@
           </q-select>
         </div>
         <!-- Descuentos Generales -->
-        <div class="col-12 col-md-3">
+        <div class="col-12 col-md-3 col-sm-4">
           <label class="q-mb-sm block">Descuentos Generales</label>
           <q-select
             v-model="rolpago.descuento_general"
@@ -452,7 +453,7 @@
           </q-select>
         </div>
         <!-- Multa -->
-        <div class="col-12 col-md-3">
+        <div class="col-12 col-md-3 col-sm-4">
           <label class="q-mb-sm block">Multa</label>
           <q-select
             v-model="rolpago.multa"
@@ -481,7 +482,7 @@
         </div>
         <!---Campo-->
         <div
-          class="col-12 col-md-3"
+          class="col-12 col-md-3 col-sm-4"
           v-if="
             (rolpago.multa != '' && rolpago.multa != null) ||
             (rolpago.descuento_general != '' &&

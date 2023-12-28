@@ -44,7 +44,7 @@ export class RolPago extends EntidadAuditable {
   rol_pago_id: number | null
   anticipo: string | null
   iess: number | null
-  es_quincena: boolean | null
+  es_quincena: boolean
   porcentaje_anticipo: number | null
   es_vendedor_medio_tiempo: boolean | null
   porcentaje_quincena: number | null

@@ -12,8 +12,8 @@ export const useBotonesTablaRolPagoMes = (
   mixin: ContenedorSimpleMixin<RolPagoMes>
 ) => {
   const { confirmar, prompt, notificarAdvertencia, notificarCorrecto } = useNotificaciones()
-  const { listado } = mixin.useReferencias()
-  const { editarParcial } = mixin.useComportamiento()
+  const { listado, } = mixin.useReferencias()
+  const { editarParcial, listar } = mixin.useComportamiento()
   const authenticationStore = useAuthenticationStore()
   const filaFinalizar = {
     id: null,
@@ -41,15 +41,14 @@ export const useBotonesTablaRolPagoMes = (
         return notificarAdvertencia(
           'El rol de pago aún tiene roles de empleados pendientes de FINALIZAR, REALIZAR o EJECUTAR.'
         )
-        await FinalizarRolPago(
-          entidad.id
-        )
+      await FinalizarRolPago(
+        entidad.id
+      )
 
 
       filaFinalizar.id = entidad.id
       filaFinalizar.posicion = posicion
-
-
+      await listar({ finalizado: '0' })
     },
   }
   const btnRefrescar: CustomActionTable = {
@@ -57,31 +56,31 @@ export const useBotonesTablaRolPagoMes = (
     icono: 'bi-arrow-clockwise',
     color: 'positive',
     accion: async ({ entidad, posicion }) => {
-     actualizarRolPago(entidad.id)
+      actualizarRolPago(entidad.id)
     },
   }
 
   function eliminarElemento(posicion: number): void {
     if (posicion >= 0) listado.value.splice(posicion, 1)
   }
-async function actualizarRolPago(idRolPago:number){
-  const axios = AxiosHttpRepository.getInstance()
-  const ruta = endpoints.actualizar_rol_pago
-  return notificarCorrecto(
-    'El rol de pago ha sido Actualizado.'
-  )
-}
-async function FinalizarRolPago(idRolPago: number)  {
-  const axios = AxiosHttpRepository.getInstance()
-  const ruta = axios.getEndpoint(
-    endpoints.finalizar_rol_pago,
-    { rol_pago_id: idRolPago }
-  )
-  const response: AxiosResponse = await axios.get(ruta)
-  return notificarCorrecto(
-    'El rol de pago ha sido Finalizado.'
-  )
-}
+  async function actualizarRolPago(idRolPago: number) {
+    const axios = AxiosHttpRepository.getInstance()
+    const ruta = endpoints.actualizar_rol_pago
+    return notificarCorrecto(
+      'El rol de pago ha sido Actualizado.'
+    )
+  }
+  async function FinalizarRolPago(idRolPago: number) {
+    const axios = AxiosHttpRepository.getInstance()
+    const ruta = axios.getEndpoint(
+      endpoints.finalizar_rol_pago,
+      { rol_pago_id: idRolPago }
+    )
+    const response: AxiosResponse = await axios.get(ruta)
+    return notificarCorrecto(
+      'El rol de pago ha sido Finalizado.'
+    )
+  }
   async function verificarTodasRolPagoFinalizadas(idRolPago: number) {
     const axios = AxiosHttpRepository.getInstance()
     const ruta = axios.getEndpoint(
@@ -95,7 +94,7 @@ async function FinalizarRolPago(idRolPago: number)  {
 
   return {
     btnFinalizarRolPago,
-    btnRefrescar
+    btnRefrescar,
   }
 }
 

@@ -467,6 +467,7 @@ export default defineComponent({
       btnRefrescar,
       configuracionColumnas: configuracionColumnasRolPagoMes,
       accionesTabla,
+      tabActualRolPago,
     }
   },
 })
