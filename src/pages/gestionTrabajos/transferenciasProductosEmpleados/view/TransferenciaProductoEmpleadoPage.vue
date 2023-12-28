@@ -20,8 +20,7 @@
             <q-input
               v-model="transferencia.id"
               placeholder="Obligatorio"
-              :disable="disabled"
-              :readonly="disabled"
+              disable
               outlined
               dense
             >
@@ -96,7 +95,7 @@
             </q-select>
           </div>
           <!-- {{ tareas }} -->
-          <div class="col-12 col-md-3">
+          <div v-if="mostrarOrigenTarea" class="col-12 col-md-3">
             <label class="q-mb-sm block">Tarea origen</label>
             <!-- @filter="filtrarTareas" -->
             <!-- :disable="puedeSeleccionarPropietarioMaterial" -->
@@ -167,7 +166,10 @@
             />
           </div>
 
-          <div class="col-12 col-md-3">
+          <div
+            v-if="mostrarOrigenPersonal || mostrarOrigenTarea"
+            class="col-12 col-md-3"
+          >
             <label class="q-mb-sm block"
               >Seleccione el empleado a transferir</label
             >
@@ -186,7 +188,7 @@
               @filter="filtrarEmpleados"
               @popup-show="ordenarEmpleados(empleados)"
               :option-label="(v) => v.apellidos + ' ' + v.nombres"
-              @update:model-value="consultarTareasEmpleado()"
+              @update:model-value="consultarTareasClienteFinalMantenimiento()"
               :option-value="(v) => v.id"
               emit-value
               map-options
@@ -211,7 +213,7 @@
           </div>
           <!-- {{ tareas }} -->
           <!-- Tarea destino : tareas del empleado a transferir-->
-          <div class="col-12 col-md-3">
+          <div v-if="mostrarOrigenTarea" class="col-12 col-md-3">
             <label class="q-mb-sm block">Tarea destino</label>
             <q-select
               v-model="transferencia.tarea_destino"
@@ -340,14 +342,9 @@
               options-dense
               dense
               outlined
-              :disable="disabled"
-              :readonly="
+              :disable="
                 disabled ||
-                !(
-                  esCoordinador ||
-                  esActivosFijos ||
-                  authenticationStore.user.id == transferencia.per_autoriza
-                )
+                !(authenticationStore.user.id == transferencia.autorizador)
               "
               :option-value="(v) => v.id"
               :option-label="(v) => v.nombre"

@@ -47,6 +47,7 @@ export function useMaterialesTarea(filtro: UnwrapRef<FiltroMiBodega>, listadosAu
       listadosAuxiliares.productosTarea = result
       listadosAuxiliares.productos = result
       listadoMaterialesDevolucionStore.listadoMateriales = result
+      listadoMaterialesDevolucionStore.origenProductos = destinosTareas.paraClienteFinal
       listadoMaterialesDevolucionStore.tareaId = filtro.tarea_id
       listadoMaterialesDevolucionStore.cliente_id = filtro.cliente_id
 
