@@ -2,7 +2,7 @@
 import { configuracionColumnasDevoluciones } from '../domain/configuracionColumnasDevoluciones'
 import { required, requiredIf } from '@vuelidate/validators'
 import { useVuelidate } from '@vuelidate/core'
-import { defineComponent, ref, watchEffect } from 'vue'
+import { computed, defineComponent, ref, watchEffect } from 'vue'
 import { useOrquestadorSelectorDetalles } from '../application/OrquestadorSelectorDetalles'
 
 //Componentes
@@ -424,6 +424,7 @@ export default defineComponent({
         if (!val) devolucion.condicion = null
       },
 
+      onRowClick: (row) => alert(`${row.name} clicked`),
       //Filtros
       filtroCantones(val, update) {
         if (val === '') {

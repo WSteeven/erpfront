@@ -82,9 +82,9 @@ export const tabOptionsPedidos: TabOption[] = [
   { label: 'Completados', value: 'COMPLETA' },
 ]
 export const tabOptionsTransferenciaProductoEmpleado: TabOption[] = [
-  { label: 'Pendientes', value: 'PENDIENTE', icono: 'bi-app-indicator', color_icono: 'yellow-10', bg_color: 'yellow-2' },
-  { label: 'Aprobados', value: 'APROBADO', icono: 'bi-check-circle-fill', color_icono: 'positive', bg_color: 'green-2' },
-  { label: 'Cancelados', value: 'CANCELADO', icono: 'bi-x-circle-fill', color_icono: 'negative', bg_color: 'pink-2' },
+  { label: 'Pendientes', value: 'PENDIENTE', icono: 'bi-app-indicator', color_icono: 'yellow-10', bg_color: 'yellow-1' },
+  { label: 'Aprobados', value: 'APROBADO', icono: 'bi-check-circle-fill', color_icono: 'positive', bg_color: 'green-1' },
+  { label: 'Cancelados', value: 'CANCELADO', icono: 'bi-x-circle-fill', color_icono: 'negative', bg_color: 'pink-1' },
 ]
 export const tabOptionsSolicitudPedido: TabOption[] = [
   { label: 'Pendiente', value: '1' },

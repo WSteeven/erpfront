@@ -23,6 +23,11 @@ export const destinosTareas = {
   paraClienteFinal: 'PARA_CLIENTE_FINAL',
 } as const
 
+export const tiposTareas = [
+  { value: destinosTareas.paraProyecto, label: 'Tarea para un proyecto' },
+  { value: destinosTareas.paraClienteFinal, label: 'Tarea para cliente final y mantenimiento' },
+] as const
+
 export const ubicacionesTrabajo = {
   clienteFinal: 'CLIENTE_FINAL',
   ruta: 'RUTA',

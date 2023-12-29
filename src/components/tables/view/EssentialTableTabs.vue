@@ -1,16 +1,16 @@
 <template>
   <div class="bg-body-table-dark-color">
+    <!-- narrow-indicator -->
     <q-tabs
       v-if="mostrarTabs"
       v-model="tabSeleccionado"
       no-caps
       bordered
       dense
-      narrow-indicator
       inline-label
       :active-color="activeColor"
       :active-bg-color="activeBgColor"
-      :indicator-color="activeBgColor"
+      :indicator-color="activeColor"
       :class="{
         'borde-header-tabla': !$q.screen.xs,
       }"

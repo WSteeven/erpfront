@@ -1,4 +1,5 @@
 import { EntidadAuditable } from 'shared/entidad/domain/entidadAuditable'
+import { useAuthenticationStore } from 'stores/authentication'
 
 
 export class TransferenciaProductoEmpleado extends EntidadAuditable {
@@ -38,7 +39,7 @@ export class TransferenciaProductoEmpleado extends EntidadAuditable {
   constructor() {
     super()
     this.justificacion = null
-    this.solicitante = null
+    this.solicitante = useAuthenticationStore().user.id
     this.solicitante_id = null
     this.observacion_aut = null
     this.autorizacion = null
@@ -56,7 +57,7 @@ export class TransferenciaProductoEmpleado extends EntidadAuditable {
     this.cliente = null
     this.cliente_id = null
     this.pedido_automatico = false
-    this.empleado_origen = null
+    this.empleado_origen = useAuthenticationStore().user.id
     this.empleado_destino = null
     this.tarea_origen = null
     this.tarea_destino = null

@@ -39,7 +39,8 @@ import { MaterialEmpleadoTarea } from 'miBodega/domain/MaterialEmpleadoTarea'
 import { TareaController } from 'tareas/infraestructure/TareaController'
 import { Empleado } from 'recursosHumanos/empleados/domain/Empleado'
 import { Tarea } from 'tareas/domain/Tarea'
-import { destinosTareas } from 'config/tareas.utils'
+import { destinosTareas, tiposTareas } from 'config/tareas.utils'
+import { useTransferenciaProductoEmpleadoStore } from 'stores/transferenciaProductoEmpleado'
 
 export default defineComponent({
   name: 'TransferenciaProductoEmpleado',
@@ -52,13 +53,13 @@ export default defineComponent({
     const mixin = new ContenedorSimpleMixin(TransferenciaProductoEmpleado, new TransferenciaProductoEmpleadoController())
     const { entidad: transferencia, disabled, accion, listadosAuxiliares, listado } = mixin.useReferencias()
     const { setValidador, obtenerListados, cargarVista, listar } = mixin.useComportamiento()
-    const { onModificado } = mixin.useHooks()
+    const { onModificado, onConsultado } = mixin.useHooks()
     const { notificarAdvertencia } = useNotificaciones()
 
     /**********
      * Stores
      * ********/
-    const listadoMaterialesDevolucionStore = useListadoMaterialesDevolucionStore()
+    const transferenciaProductoEmpleadoStore = useTransferenciaProductoEmpleadoStore()
     useNotificacionStore().setQuasar(useQuasar())
     useCargandoStore().setQuasar(useQuasar())
     const authenticationStore = useAuthenticationStore()
@@ -110,18 +111,18 @@ export default defineComponent({
      * Init
      ********/
     onMounted(() => {
-      transferencia.tarea_origen = listadoMaterialesDevolucionStore.tareaId ? listadoMaterialesDevolucionStore.tareaId : null
+      transferencia.tarea_origen = transferenciaProductoEmpleadoStore.tareaId ? transferenciaProductoEmpleadoStore.tareaId : null
 
-      if (listadoMaterialesDevolucionStore.listadoMateriales.length) {
-        transferencia.listado_productos = mapearProductos(listadoMaterialesDevolucionStore.listadoMateriales)
-        console.log(transferencia.listado_productos)
+      if (transferenciaProductoEmpleadoStore.listadoMateriales.length) {
+        transferencia.listado_productos = mapearProductos(transferenciaProductoEmpleadoStore.listadoMateriales)
+        // console.log(transferencia.listado_productos)
       }
 
-      ajustarFormulariosPorOrigenProductos()
+      // ajustarFormulariosPorOrigenProductos()
+      transferencia.empleado_origen = authenticationStore.user.id
     })
 
     transferencia.solicitante = authenticationStore.user.id
-    transferencia.empleado_origen = authenticationStore.esTecnico ? authenticationStore.user.id : null
     opciones_autorizaciones.value = JSON.parse(LocalStorage.getItem('autorizaciones')!.toString())
 
 
@@ -162,8 +163,19 @@ export default defineComponent({
       transferencia.etapa_destino = tarea.etapa
     })*/
 
+    console.log(transferencia.empleado_origen)
     watch(computed(() => transferencia.empleado_origen), () => {
+      console.log(transferencia.empleado_origen)
       if (transferencia.empleado_origen) consultarTareasEmpleadoOrigen()
+      console.log('empelado origen...')
+    })
+
+
+    watch(computed(() => transferencia.empleado_destino), () => {
+      console.log(transferencia.empleado_destino)
+      if (transferencia.empleado_destino) consultarTareasClienteFinalMantenimiento()
+      transferencia.empleado_destino = transferencia.empleado_destino
+      console.log('empelado destino...')
     })
 
     /*******************************************************************************************
@@ -190,6 +202,7 @@ export default defineComponent({
         const tareaController = new TareaController()
         const { result } = await tareaController.listar({ activas_empleado: 1, empleado_id: transferencia.empleado_destino, campos: 'id,codigo_tarea', para_cliente_proyecto: destinosTareas.paraClienteFinal })
         listadosAuxiliares.tareasDestino = result
+        tareasDestino.value = result
       })
     }
 
@@ -224,7 +237,7 @@ export default defineComponent({
     }
 
     function ajustarFormulariosPorOrigenProductos() {
-      switch (listadoMaterialesDevolucionStore.origenProductos) {
+      switch (transferenciaProductoEmpleadoStore.origenProductos) {
         case destinosTareas.paraClienteFinal:
           break
         case destinosTareas.paraProyecto:
@@ -240,6 +253,8 @@ export default defineComponent({
      ********/
     onModificado(() => filtrarTransferenciasProductoEmpleado(tabSeleccionado.value))
 
+    onConsultado(() => transferenciaProductoEmpleadoStore.origenProductos = (transferencia.tarea_origen ? destinosTareas.paraClienteFinal : null))
+
     /*******************************************************************************************
      * Botones de tabla
      ******************************************************************************************/
@@ -248,6 +263,7 @@ export default defineComponent({
 
     //Configurar los listados
     opciones_empleados.value = listadosAuxiliares.empleados
+    empleados.value = listadosAuxiliares.empleados
 
     return {
       mixin, transferencia, disabled, accion, v$, acciones,
@@ -277,7 +293,7 @@ export default defineComponent({
 
       //flags
       esCoordinador,
-      puedeSeleccionarPropietarioMaterial: computed(() => !(esCoordinador || authenticationStore.esJefeTecnico || authenticationStore.esAdministrador)),
+      puedeAutorizar: computed(() => !((esCoordinador || authenticationStore.esJefeTecnico || authenticationStore.esAdministrador) && accion.value === acciones.nuevo)),
 
       //Tabs
       tabOptionsTransferenciaProductoEmpleado,
@@ -292,13 +308,14 @@ export default defineComponent({
       tareas, filtrarTareas,
       consultarTareasClienteFinalMantenimiento,
       listadosAuxiliares,
-      tareasDestino, filtrarTareasDestino, listadoMaterialesDevolucionStore,
+      tareasDestino, filtrarTareasDestino, transferenciaProductoEmpleadoStore,
       ordenarOpcionesEmpleados: () => opciones_empleados.value.sort((a: Empleado, b: Empleado) => ordernarListaString(a.apellidos!, b.apellidos!)),
 
       // Computeds
-      mostrarOrigenTarea: computed(() => listadoMaterialesDevolucionStore.origenProductos === destinosTareas.paraClienteFinal),
-      mostrarOrigenProyecto: computed(() => listadoMaterialesDevolucionStore.origenProductos === destinosTareas.paraProyecto),
-      mostrarOrigenPersonal: computed(() => listadoMaterialesDevolucionStore.origenProductos === 'personal'),
+      mostrarOrigenTarea: computed(() => transferenciaProductoEmpleadoStore.origenProductos === destinosTareas.paraClienteFinal),
+      mostrarOrigenProyecto: computed(() => transferenciaProductoEmpleadoStore.origenProductos === destinosTareas.paraProyecto),
+      mostrarOrigenPersonal: computed(() => transferenciaProductoEmpleadoStore.origenProductos === 'personal'),
+      tipoTarea: computed(() => tiposTareas.find((tipo) => tipo.value === transferenciaProductoEmpleadoStore.origenProductos)?.label),
     }
   }
 })

@@ -21,6 +21,7 @@ import { FiltroMiBodega } from '../domain/FiltroMiBodega'
 import { useNotificaciones } from 'shared/notificaciones'
 import { useCargandoStore } from 'stores/cargando'
 import { useQuasar } from 'quasar'
+import { useTransferenciaProductoEmpleadoStore } from 'stores/transferenciaProductoEmpleado'
 
 export default defineComponent({
   components: { EssentialTable },
@@ -28,7 +29,7 @@ export default defineComponent({
     /*********
      * Stores
      *********/
-    const listadoMaterialesDevolucionStore = useListadoMaterialesDevolucionStore()
+    const transferenciaProductoEmpleadoStore = useTransferenciaProductoEmpleadoStore()
     useNotificacionStore().setQuasar(useQuasar())
     useCargandoStore().setQuasar(useQuasar())
 
@@ -140,15 +141,15 @@ export default defineComponent({
       switch (tab.value) {
         case destinosTareas.paraClienteFinal:
           listadosAuxiliares.productos = listadosAuxiliares.productosTarea
-          listadoMaterialesDevolucionStore.listadoMateriales = listadosAuxiliares.productosTarea
+          transferenciaProductoEmpleadoStore.listadoMateriales = listadosAuxiliares.productosTarea
           break
         case destinosTareas.paraProyecto:
           listadosAuxiliares.productos = listadosAuxiliares.productosProyectosEtapas
-          listadoMaterialesDevolucionStore.listadoMateriales = listadosAuxiliares.productosProyectosEtapas
+          transferenciaProductoEmpleadoStore.listadoMateriales = listadosAuxiliares.productosProyectosEtapas
           break
         case 'personal':
           listadosAuxiliares.productos = listadosAuxiliares.productosStock
-          listadoMaterialesDevolucionStore.listadoMateriales = listadosAuxiliares.productosStock
+          transferenciaProductoEmpleadoStore.listadoMateriales = listadosAuxiliares.productosStock
           break
       }
     })
@@ -166,7 +167,7 @@ export default defineComponent({
       filtroProyecto,
       filtroEmpleado,
       destinosTareas,
-      listadoMaterialesDevolucionStore,
+      transferenciaProductoEmpleadoStore,
       consultarEtapas,
       tareas,
       proyectos,

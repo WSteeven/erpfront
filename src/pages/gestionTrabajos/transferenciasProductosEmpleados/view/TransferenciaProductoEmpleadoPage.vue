@@ -13,7 +13,12 @@
   >
     <template #formulario>
       <q-form @submit.prevent>
-        <div class="row q-col-gutter-sm q-py-md">
+        <div class="row q-col-gutter-sm q-pb-xl">
+          <div v-if="tipoTarea" class="col-12 text-right q-mb-md">
+            <q-chip color="light-green-2" class="text-green"
+              ><b>Transferencia:</b> {{ '&nbsp;' + tipoTarea }}</q-chip
+            >
+          </div>
           <!-- N° transferencia -->
           <div v-if="transferencia.id" class="col-12 col-md-3">
             <label class="q-mb-sm block">Transferencia N°</label>
@@ -75,7 +80,7 @@
               :options="opciones_empleados"
               transition-show="scale"
               transition-hide="scale"
-              :disable="puedeSeleccionarPropietarioMaterial"
+              :disable="puedeAutorizar"
               @popup-show="ordenarOpcionesEmpleados()"
               options-dense
               dense
@@ -94,6 +99,7 @@
               </template>
             </q-select>
           </div>
+
           <!-- {{ tareas }} -->
           <div v-if="mostrarOrigenTarea" class="col-12 col-md-3">
             <label class="q-mb-sm block">Tarea origen</label>
@@ -106,6 +112,7 @@
               transition-hide="scale"
               options-dense
               hint="Seleccionar para buscar productos..."
+              :disable="puedeAutorizar"
               dense
               outlined
               :option-label="(item) => item.codigo_tarea + ' - ' + item.titulo"
@@ -178,6 +185,7 @@
               :options="empleados"
               transition-show="scale"
               transition-hide="scale"
+              :disable="puedeAutorizar"
               options-dense
               dense
               outlined
@@ -188,11 +196,11 @@
               @filter="filtrarEmpleados"
               @popup-show="ordenarEmpleados(empleados)"
               :option-label="(v) => v.apellidos + ' ' + v.nombres"
-              @update:model-value="consultarTareasClienteFinalMantenimiento()"
               :option-value="(v) => v.id"
               emit-value
               map-options
             >
+              <!-- @update:model-value="consultarTareasClienteFinalMantenimiento()" -->
               <template v-slot:no-option>
                 <q-item>
                   <q-item-section class="text-grey">
@@ -225,7 +233,7 @@
               @filter="filtrarTareasDestino"
               dense
               outlined
-              :disable="disabled"
+              :disable="puedeAutorizar"
               :option-label="(item) => item.codigo_tarea + ' - ' + item.titulo"
               :option-value="(item) => item.id"
               use-input
@@ -292,7 +300,7 @@
               autogrow
               v-model="transferencia.justificacion"
               placeholder="Obligatorio"
-              :disable="disabled"
+              :disable="puedeAutorizar"
               :readonly="disabled"
               :error="!!v$.justificacion.$errors.length"
               outlined
@@ -320,7 +328,7 @@
               options-dense
               dense
               outlined
-              :disable="disabled"
+              :disable="puedeAutorizar"
               :readonly="disabled"
               :option-label="(v) => v.nombres + ' ' + v.apellidos"
               :option-value="(v) => v.id"
