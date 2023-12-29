@@ -24,6 +24,13 @@ export const configuracionColumnasVentas: ColumnConfig<Ventas>[] = [
     sortable: true
   },
   {
+    name: 'cliente_info',
+    field: 'cliente_info',
+    label: 'Cliente',
+    align: 'left',
+    sortable: true
+  },
+  {
     name: 'plan',
     field: 'plan',
     label: 'Plan',

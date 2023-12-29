@@ -429,7 +429,9 @@ export const endpoints = {
   reporte_ventas:new Endpoint('ventas-claro/reporte-ventas'),
   dashboard_ventas_claro:new Endpoint('ventas-claro/dashboard'),
   umbral_ventas:new Endpoint('ventas-claro/umbral-ventas'),
-  esquema_comision:new Endpoint('ventas-claro/esquema-comision')
+  esquema_comision:new Endpoint('ventas-claro/esquema-comision'),
+  cliente_claro:new Endpoint('ventas-claro/cliente-claro'),
+
 
 
 }

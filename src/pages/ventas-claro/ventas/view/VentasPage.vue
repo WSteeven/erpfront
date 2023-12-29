@@ -39,6 +39,42 @@
               </template>
             </q-select>
           </div>
+          <!-- Cliente -->
+          <div class="col-12 col-md-3">
+            <label class="q-mb-sm block">Cliente</label>
+            <q-select
+              v-model="ventas.cliente"
+              :options="clientes"
+              transition-show="jump-up"
+              transition-hide="jump-down"
+              options-dense
+              dense
+              outlined
+              :disable="disabled"
+              :readonly="disabled"
+              :error="!!v$.cliente.$errors.length"
+              @blur="v$.cliente.$touch"
+              error-message="Debes seleccionar un cliente"
+              use-input
+              input-debounce="0"
+              @filter="filtrarClientes"
+              :option-value="(v) => v.id"
+              :option-label="(v) => v.cliente_info"
+              emit-value
+              map-options
+            >
+              <template v-slot:error>
+                <div v-for="error of v$.vendedor.$errors" :key="error.$uid">
+                  <div class="error-msg">{{ error.$message }}</div>
+                </div>
+              </template>
+              <template v-slot:no-option>
+                <q-item>
+                  <q-item-section class="text-grey"> No hay resultados </q-item-section>
+                </q-item>
+              </template>
+            </q-select>
+          </div>
           <!-- Orden -->
           <div class="col-12 col-md-3">
             <label class="q-mb-sm block">#Orden</label>
@@ -136,7 +172,7 @@
               use-input
               input-debounce="0"
               :option-value="(v) => v.id"
-              :option-label="(v) => v.plan_info+ ' - '+v.bundle"
+              :option-label="(v) => v.plan_info + ' - ' + v.bundle"
               emit-value
               map-options
             >
@@ -152,8 +188,8 @@
               </template>
             </q-select>
           </div>
-             <!-- Precio -->
-             <div class="col-12 col-md-3">
+          <!-- Precio -->
+          <div class="col-12 col-md-3">
             <label class="q-mb-sm block">Precio</label>
             <q-input
               v-model="precio_producto"
@@ -216,11 +252,7 @@
               <template v-slot:append>
                 <q-icon name="event" class="cursor-pointer">
                   <q-popup-proxy cover transition-show="scale" transition-hide="scale">
-                    <q-date
-                      v-model="ventas.fecha_activacion"
-                      :mask="maskFecha"
-                      today-btn
-                    >
+                    <q-date v-model="ventas.fecha_activacion" :mask="maskFecha" today-btn>
                       <div class="row items-center justify-end">
                         <q-btn v-close-popup label="Cerrar" color="primary" flat />
                       </div>
@@ -230,8 +262,8 @@
               </template>
             </q-input>
           </div>
-           <!-- Comision -->
-           <div class="col-12 col-md-3">
+          <!-- Comision -->
+          <div class="col-12 col-md-3">
             <label class="q-mb-sm block"> Comision a Pagar</label>
             <q-input
               v-model="comision_vendedor"

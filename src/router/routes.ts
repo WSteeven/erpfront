@@ -1212,6 +1212,13 @@ const routes: RouteRecordRaw[] = [
           import('pages/ventas-claro/esquemaComision/view/EsquemaComisionPage.vue'),
         meta: { requiresAuth: true },
       },
+      {
+        path: '/cliente-claro',
+        name: 'cliente_claro',
+        component: () =>
+          import('pages/ventas-claro/cliente/view/ClienteClaroPage.vue'),
+        meta: { requiresAuth: true },
+      },
       ///
       {
         path: '/reporte_venta',

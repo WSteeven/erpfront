@@ -820,6 +820,12 @@ export const useMenuStore = defineStore('menu', () => {
             can: store.can('puede.acceder.producto_ventas'),
           },
           {
+            title: 'Clientes',
+            link: 'cliente-claro',
+            icon: 'bi-circle',
+            can: store.can('puede.acceder.cliente_claro'),
+          },
+          {
             title: 'Modalidad',
             link: 'modalidad',
             icon: 'bi-circle',

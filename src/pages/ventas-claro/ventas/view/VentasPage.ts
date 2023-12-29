@@ -17,6 +17,7 @@ import { HttpResponseGet } from 'shared/http/domain/HttpResponse'
 import axios from 'axios'
 import { apiConfig, endpoints } from 'config/api'
 import { useVentaStore } from 'stores/venta'
+import { ClienteClaroController } from 'pages/ventas-claro/cliente/infrestucture/ClienteClaroController'
 
 export default defineComponent({
   components: { TabLayout },
@@ -60,6 +61,9 @@ const comision_vendedor = ref(0)
       producto: {
         required: true,
       },
+      cliente: {
+        required: true,
+      },
       estado_activacion: {
         required: true,
       },
@@ -68,6 +72,7 @@ const comision_vendedor = ref(0)
     setValidador(v$.value)
     const productos = ref([])
     const vendedores = ref([])
+    const clientes = ref([])
     cargarVista(async () => {
       await obtenerListados({
         productos: {
@@ -78,9 +83,14 @@ const comision_vendedor = ref(0)
           controller: new VendedoresController(),
           params: {},
         },
+        clientes: {
+          controller: new ClienteClaroController(),
+          params: {},
+        }
       })
       productos.value = listadosAuxiliares.productos
       vendedores.value = listadosAuxiliares.vendedores
+      clientes.value = listadosAuxiliares.clientes
     })
 
     function filtrarProductos(val, update) {
@@ -94,6 +104,20 @@ const comision_vendedor = ref(0)
         const needle = val.toLowerCase()
         productos.value = listadosAuxiliares.productos.filter(
           (v) => v.bundle.toLowerCase().indexOf(needle) > -1 || v.plan_info.toLowerCase().indexOf(needle) > -1
+        )
+      })
+    }
+    function filtrarClientes(val, update) {
+      if (val === '') {
+        update(() => {
+          clientes.value = listadosAuxiliares.clientes
+        })
+        return
+      }
+      update(() => {
+        const needle = val.toLowerCase()
+        clientes.value = listadosAuxiliares.clientes.filter(
+          (v) => v.nombres.toLowerCase().indexOf(needle) > -1 || v.apellidos.toLowerCase().indexOf(needle) > -1 || v.identificacion.toLowerCase().indexOf(needle) > -1
         )
       })
     }
@@ -173,12 +197,14 @@ const comision_vendedor = ref(0)
       estados_activacion,
       formas_pago,
       vendedores,
+      clientes,
       productos,
       maskFecha,
       precio_producto,
       comision_vendedor,
       filtrarProductos,
       filtrarVendedores,
+      filtrarClientes,
     }
   },
 })
