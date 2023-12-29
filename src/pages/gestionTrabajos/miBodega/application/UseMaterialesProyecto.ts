@@ -9,10 +9,12 @@ import { useAuthenticationStore } from 'stores/authentication'
 import { useNotificaciones } from 'shared/notificaciones'
 import { UnwrapRef } from 'vue'
 import { destinosTareas } from 'config/tareas.utils'
+import { useTransferenciaProductoEmpleadoStore } from 'stores/transferenciaProductoEmpleado'
 
 export function useMaterialesProyecto(filtro: UnwrapRef<FiltroMiBodegaProyecto>, listadosAuxiliares: any) {
   // Stores
   const listadoMaterialesDevolucionStore = useListadoMaterialesDevolucionStore()
+  const transferenciaProductoEmpleadoStore = useTransferenciaProductoEmpleadoStore()
   const authenticationStore = useAuthenticationStore()
 
   // Controllers
@@ -36,7 +38,12 @@ export function useMaterialesProyecto(filtro: UnwrapRef<FiltroMiBodegaProyecto>,
 
       listadoMaterialesDevolucionStore.listadoMateriales = result
       listadoMaterialesDevolucionStore.cliente_id = filtro.cliente_id
-      listadoMaterialesDevolucionStore.origenProductos = destinosTareas.paraProyecto
+
+      transferenciaProductoEmpleadoStore.listadoMateriales = result
+      transferenciaProductoEmpleadoStore.cliente_id = filtro.cliente_id
+      transferenciaProductoEmpleadoStore.origenProductos = destinosTareas.paraProyecto
+      transferenciaProductoEmpleadoStore.idProyecto = filtro.proyecto_id
+      console.log(transferenciaProductoEmpleadoStore.idProyecto)
 
       if (!result.length) notificarAdvertencia('No tienes material asignado.')
 
@@ -63,13 +70,31 @@ export function useMaterialesProyecto(filtro: UnwrapRef<FiltroMiBodegaProyecto>,
     const params = {
       campos: 'id,nombre,codigo_proyecto,cliente_id,etapas',
       finalizado: 0,
-      empleado_id: authenticationStore.user.id,
+      empleado_id: filtro.empleado_id,
     }
 
     try {
       cargando.activar()
       const { result } = await proyectoController.listar(params)
       listadosAuxiliares.proyectos = result
+    } catch (e) {
+      console.log(e)
+    } finally {
+      cargando.desactivar()
+    }
+  }
+
+  async function consultarProyectosDestino(filtrarProyectosConEtapa = true) {
+    const params = {
+      campos: 'id,nombre,codigo_proyecto,cliente_id,etapas',
+      finalizado: 0,
+      empleado_id: filtro.empleado_id,
+    }
+
+    try {
+      cargando.activar()
+      const { result } = await proyectoController.listar(params)
+      listadosAuxiliares.proyectosDestino = result
     } catch (e) {
       console.log(e)
     } finally {
@@ -90,7 +115,7 @@ export function useMaterialesProyecto(filtro: UnwrapRef<FiltroMiBodegaProyecto>,
       cargando.activar()
       const { result } = await etapaController.listar(params)
       listadosAuxiliares.etapas = result
-      console.log(listadosAuxiliares.etapas)
+      // console.log(listadosAuxiliares.etapas)
     } catch (e) {
       console.log(e)
     } finally {
@@ -102,6 +127,7 @@ export function useMaterialesProyecto(filtro: UnwrapRef<FiltroMiBodegaProyecto>,
     consultarProductosProyecto,
     consultarClientesMaterialesEmpleado,
     consultarProyectos,
+    consultarProyectosDestino,
     consultarEtapas,
   }
 }

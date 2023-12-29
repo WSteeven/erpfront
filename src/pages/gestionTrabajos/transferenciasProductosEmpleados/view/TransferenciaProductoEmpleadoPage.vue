@@ -14,11 +14,17 @@
     <template #formulario>
       <q-form @submit.prevent>
         <div class="row q-col-gutter-sm q-pb-xl">
-          <div v-if="tipoTarea" class="col-12 text-right q-mb-md">
-            <q-chip color="light-green-2" class="text-green"
-              ><b>Transferencia:</b> {{ '&nbsp;' + tipoTarea }}</q-chip
-            >
+          <div v-if="tipoTarea" class="col-12 q-mb-md">
+            <div class="row justify-end">
+              <q-chip color="grey-3" class="text-green chip-up">
+                {{ '&nbsp;' + tipoTarea }}</q-chip
+              >
+              <q-chip color="grey-4" class="text-primary q-pl-lg">{{
+                proyectoOrigenTieneEtapas
+              }}</q-chip>
+            </div>
           </div>
+
           <!-- N° transferencia -->
           <div v-if="transferencia.id" class="col-12 col-md-3">
             <label class="q-mb-sm block">Transferencia N°</label>
@@ -80,7 +86,7 @@
               :options="opciones_empleados"
               transition-show="scale"
               transition-hide="scale"
-              :disable="puedeAutorizar"
+              :disable="!puedeAutorizar"
               @popup-show="ordenarOpcionesEmpleados()"
               options-dense
               dense
@@ -112,7 +118,7 @@
               transition-hide="scale"
               options-dense
               hint="Seleccionar para buscar productos..."
-              :disable="puedeAutorizar"
+              :disable="!puedeAutorizar"
               dense
               outlined
               :option-label="(item) => item.codigo_tarea + ' - ' + item.titulo"
@@ -156,7 +162,7 @@
             />
           </div>
 
-          <div v-if="transferencia.proyecto_origen" class="col-12 col-md-3">
+          <!-- <div v-if="transferencia.proyecto_origen" class="col-12 col-md-3">
             <label class="q-mb-sm block"
               ><q-icon
                 name="bi-check-circle-fill"
@@ -171,12 +177,51 @@
               outlined
               dense
             />
+          </div> -->
+
+          <div v-if="transferencia.proyecto_origen" class="col-12 col-md-3">
+            <label class="q-mb-sm block">Proyecto origen</label>
+            <q-select
+              v-model="transferencia.proyecto_origen"
+              :options="proyectos"
+              @filter="filtrarProyectos"
+              transition-show="scale"
+              transition-hide="scale"
+              :disable="!puedeAutorizar"
+              options-dense
+              dense
+              outlined
+              :option-label="(item) => item.nombre"
+              :option-value="(item) => item.id"
+              use-input
+              input-debounce="0"
+              emit-value
+              map-options
+              clearable
+            >
+              <template v-slot:option="scope">
+                <q-item v-bind="scope.itemProps" class="q-my-sm">
+                  <q-item-section>
+                    <q-item-label class="text-bold text-primary">{{
+                      scope.opt.codigo_proyecto
+                    }}</q-item-label>
+                    <q-item-label caption>{{ scope.opt.nombre }} </q-item-label>
+                  </q-item-section>
+                </q-item>
+              </template>
+
+              <template v-slot:no-option>
+                <q-item>
+                  <q-item-section class="text-grey">
+                    No hay resultados
+                  </q-item-section>
+                </q-item>
+              </template>
+            </q-select>
           </div>
 
-          <div
-            v-if="mostrarOrigenPersonal || mostrarOrigenTarea"
-            class="col-12 col-md-3"
-          >
+          <!-- v-if="mostrarOrigenPersonal || mostrarOrigenTarea" -->
+          <div class="col-12 col-md-3">
             <label class="q-mb-sm block"
               >Seleccione el empleado a transferir</label
             >
@@ -185,7 +230,7 @@
               :options="empleados"
               transition-show="scale"
               transition-hide="scale"
-              :disable="puedeAutorizar"
+              :disable="!(accion === acciones.nuevo)"
               options-dense
               dense
               outlined
@@ -219,6 +264,47 @@
               </template>
             </q-select>
           </div>
+
+          <div class="col-12 col-md-3">
+            <label class="q-mb-sm block">Proyecto destino</label>
+            <q-select
+              v-model="transferencia.proyecto_destino"
+              :options="proyectosDestino"
+              @filter="filtrarProyectosDestino"
+              transition-show="scale"
+              transition-hide="scale"
+              :disable="!(accion === acciones.nuevo)"
+              options-dense
+              dense
+              outlined
+              :option-label="(item) => item.nombre"
+              :option-value="(item) => item.id"
+              use-input
+              input-debounce="0"
+              emit-value
+              map-options
+            >
+              <template v-slot:option="scope">
+                <q-item v-bind="scope.itemProps" class="q-my-sm">
+                  <q-item-section>
+                    <q-item-label class="text-bold text-primary">{{
+                      scope.opt.codigo_proyecto
+                    }}</q-item-label>
+                    <q-item-label caption>{{ scope.opt.nombre }} </q-item-label>
+                  </q-item-section>
+                </q-item>
+              </template>
+
+              <template v-slot:no-option>
+                <q-item>
+                  <q-item-section class="text-grey">
+                    No hay resultados
+                  </q-item-section>
+                </q-item>
+              </template>
+            </q-select>
+          </div>
+
           <!-- {{ tareas }} -->
           <!-- Tarea destino : tareas del empleado a transferir-->
           <div v-if="mostrarOrigenTarea" class="col-12 col-md-3">
@@ -233,7 +319,7 @@
               @filter="filtrarTareasDestino"
               dense
               outlined
-              :disable="puedeAutorizar"
+              :disable="!puedeAutorizar"
               :option-label="(item) => item.codigo_tarea + ' - ' + item.titulo"
               :option-value="(item) => item.id"
               use-input
@@ -275,7 +361,7 @@
             />
           </div>
 
-          <div v-if="transferencia.proyecto_destino" class="col-12 col-md-3">
+          <!-- <div v-if="transferencia.proyecto_destino" class="col-12 col-md-3">
             <label class="q-mb-sm block"
               ><q-icon
                 name="bi-check-circle-fill"
@@ -290,7 +376,7 @@
               outlined
               dense
             />
-          </div>
+          </div> -->
 
           <!-- Justificacion -->
           <div class="col-12 col-md-6">
@@ -300,7 +386,7 @@
               autogrow
               v-model="transferencia.justificacion"
               placeholder="Obligatorio"
-              :disable="puedeAutorizar"
+              :disable="!(accion === acciones.nuevo)"
               :readonly="disabled"
               :error="!!v$.justificacion.$errors.length"
               outlined
@@ -328,7 +414,7 @@
               options-dense
               dense
               outlined
-              :disable="puedeAutorizar"
+              :disable="!puedeAutorizar"
               :readonly="disabled"
               :option-label="(v) => v.nombres + ' ' + v.apellidos"
               :option-value="(v) => v.id"
@@ -478,3 +564,11 @@
   </tab-layout-filter-tabs2>
 </template>
 <script src="./TransferenciaProductoEmpleadoPage.ts"></script>
+
+<style lang="scss">
+.chip-up {
+  position: relative;
+  right: -30px;
+  z-index: 100;
+}
+</style>

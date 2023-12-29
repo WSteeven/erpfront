@@ -57,7 +57,7 @@ export class TransferenciaProductoEmpleado extends EntidadAuditable {
     this.cliente = null
     this.cliente_id = null
     this.pedido_automatico = false
-    this.empleado_origen = useAuthenticationStore().user.id
+    this.empleado_origen = null //useAuthenticationStore().user.id
     this.empleado_destino = null
     this.tarea_origen = null
     this.tarea_destino = null
