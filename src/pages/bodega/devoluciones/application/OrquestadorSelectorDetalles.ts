@@ -31,6 +31,9 @@ export function useOrquestadorSelectorDetalles(entidad: Devolucion, endpoint: ke
         let ids: any = []
         ids = entidad.listadoProductos.map((entidad: DetalleProducto) => entidad.id)
         const datos = items.filter((v) => !ids.includes(v.id))
+        datos.forEach((item: any) => {
+            item.devuelto = 0
+        })
 
         singleSelector.seleccionar(datos)
     }
