@@ -1,5 +1,6 @@
 // Dependencias
 import { configuracionColumnasMaterialEmpleadoTarea } from '../domain/configuracionColumnasMaterialEmpleadoTarea'
+import { useTransferenciaProductoEmpleadoStore } from 'stores/transferenciaProductoEmpleado'
 import { computed, defineComponent, onMounted, reactive, ref, watch } from 'vue'
 import { destinosTareas } from 'config/tareas.utils'
 
@@ -21,7 +22,6 @@ import { FiltroMiBodega } from '../domain/FiltroMiBodega'
 import { useNotificaciones } from 'shared/notificaciones'
 import { useCargandoStore } from 'stores/cargando'
 import { useQuasar } from 'quasar'
-import { useTransferenciaProductoEmpleadoStore } from 'stores/transferenciaProductoEmpleado'
 
 export default defineComponent({
   components: { EssentialTable },
