@@ -39,7 +39,7 @@
           <q-icon name="bi-x-circle" size="xs"></q-icon>Rechazar</q-btn>
       </div>
       <div class="q-pa-md q-gutter-sm flex flex-center"
-        v-if="usuario.id == gasto.aut_especial && gasto.estado_info == 'APROBADO' && estaSemanAC==true">
+        v-if="(usuario.id ==gasto.aut_especial || authenticationStore.esAdministrador)&& gasto.estado_info == 'APROBADO' && estaSemanAC==true">
         <q-btn color="negative" @click="aprobar_gasto(gasto, 'anular')">
           <q-icon name="bi-x-circle" size="xs"></q-icon>Anular</q-btn>
       </div>

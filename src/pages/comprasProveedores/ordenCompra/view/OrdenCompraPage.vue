@@ -522,8 +522,36 @@
               dense
             ></q-checkbox>
           </div>
-          <!-- Configuracion para seleccionar productos -->
           <!-- {{ orden.listadoProductos }} -->
+          <!-- Manejo de archivos -->
+          <div class="col-12 q-mb-md">
+            <gestor-archivos
+              ref="refArchivo"
+              label="Adjuntar archivos/proformas"
+              :mixin="mixin"
+              :disable="disabled"
+              :listarAlGuardar="false"
+              :permitir-eliminar="
+                accion == acciones.nuevo || accion == acciones.editar
+              "
+              :idModelo="idOrden"
+            >
+              <template #boton-subir>
+                <q-btn
+                  v-if="false"
+                  color="positive"
+                  push
+                  no-caps
+                  class="full-width q-mb-lg"
+                  @click="subirArchivos()"
+                >
+                  <q-icon name="bi-upload" class="q-mr-sm" size="xs"></q-icon>
+                  Subir archivos seleccionados</q-btn
+                >
+              </template>
+            </gestor-archivos>
+          </div>
+          <!-- Configuracion para seleccionar productos -->
           <!-- Selector de productos -->
           <div class="col-12 col-md-12">
             <label class="q-mb-sm block">Agregar productos</label>

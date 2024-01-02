@@ -19,7 +19,7 @@ export const configuracionColumnasProductosSeleccionadosAccion: ColumnConfig<any
     name: 'categoria',
     field: 'categoria',
     label: 'Categoria',
-    align: 'left',
+    align: 'left', 
     sortable: true,
   },
   {
@@ -33,6 +33,13 @@ export const configuracionColumnasProductosSeleccionadosAccion: ColumnConfig<any
     name: 'cantidad',
     field: 'cantidad',
     label: 'Cantidad',
+    align: 'left',
+    sortable: false,
+  },
+  {
+    name: 'devuelto',
+    field: 'devuelto',
+    label: 'Devuelto',
     align: 'left',
     sortable: false,
   },

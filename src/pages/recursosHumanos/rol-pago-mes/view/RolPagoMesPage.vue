@@ -12,8 +12,7 @@
     :accion3="btnEnviarRolPago"
     :accion4="btnCashRolPago"
     :filtrar="filtrarRolPagoMes"
-    tabDefecto="0"
-    :forzarListar="true"
+    :tabDefecto="tabActualRolPago"
   >
     <template #formulario>
       <q-tabs
@@ -144,6 +143,7 @@
             :tabDefecto="tabActual"
             :alto-fijo="true"
             :primeraColumnaFija="true"
+            :ajustarCeldas="true"
           ></essential-table-tabs>
         </q-tab-panel>
       </q-tab-panels>
@@ -155,7 +155,7 @@
 
       <modales-entidad
         :comportamiento="modalesRolPago"
-        :mixin-modal="mixinRolEmpleado"
+        :persistente="false"
         @guardado="(data) => guardado(data)"
       />
     </template>

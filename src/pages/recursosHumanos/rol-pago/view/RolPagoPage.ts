@@ -44,7 +44,6 @@ import { EgresoRolPagoController } from '../infraestructure/EgresoRolPagoControl
 import { IngresoRolPago } from '../domain/IngresoRolPago'
 import { IngresoRolPagoController } from '../infraestructure/IngresoRolPagoController'
 import { configuracionColumnasIngresoRolPago } from '../domain/configuracionColumnasIngresoRolPago'
-import { log } from 'console'
 
 export default defineComponent({
   components: {
@@ -107,7 +106,7 @@ export default defineComponent({
       reestablecer,
       setValidador,
     } = mixin.useComportamiento()
-    const { onConsultado } = mixin.useHooks()
+    const { onConsultado, onBeforeModificar } = mixin.useHooks()
     const refArchivoRolPago = ref()
     cargarVista(async () => {
       await obtenerListados({
@@ -143,8 +142,8 @@ export default defineComponent({
         LocalStorage.getItem('horas_extras_subtipos') == null
           ? []
           : JSON.parse(
-              LocalStorage.getItem('horas_extras_subtipos')!.toString()
-            )
+            LocalStorage.getItem('horas_extras_subtipos')!.toString()
+          )
     })
     /*******
      * Init
@@ -157,6 +156,8 @@ export default defineComponent({
       rolpago.mes = rolPagoStore.mes
       rolpago.es_quincena = rolPagoStore.es_quincena
     }
+
+    // console.log(rolPagoStore.recalcularSueldo)
 
     accion.value = rolPagoStore.accion
 
@@ -281,18 +282,25 @@ export default defineComponent({
       }
     })
 
+    // onBeforeModificar(()=>{
+    //   rolpago.sueldo = sueldoCalculado
+    // })
+
     async function guardarDatos(rolpago: RolPago) {
       try {
         let entidad: RolPago = new RolPago()
         if (accion.value == 'NUEVO') {
           entidad = await guardar(rolpago)
         } else {
+          console.log('rol', rolpago)
           await editar(rolpago, false)
           entidad = rolpago
         }
+        // rolPagoStore.recalcularSueldo = true
         emit('cerrar-modal', false)
         emit('guardado', { key: 'RolPagoMesPage', model: rolpago })
       } catch (e) {
+        rolPagoStore.recalcularSueldo = false
         console.log(e)
       }
     }
@@ -663,7 +671,7 @@ export default defineComponent({
           if (data) {
             rolpago.egreso = redondearDecimales(
               parseInt(rolpago.salario == null ? '0' : rolpago.salario) *
-                data.porcentaje_iess,
+              data.porcentaje_iess,
               2
             )
           }
@@ -847,6 +855,53 @@ export default defineComponent({
       imprimirArchivo(url_pdf, 'GET', 'blob', 'pdf', filename, valor)
     }
     function calcularSalario(tipo_contrato) {
+      // let dias_quincena = rolpago.es_quincena ? 15 : 0
+      // if (rolpago.medio_tiempo || rolpago.tipo_contrato == 3) {
+      // dias_quincena = 0
+      // }
+      const dias = parseInt(rolpago.dias ? rolpago.dias.toString() : '0')
+      const salario = parseFloat(rolpago.salario ?? '0') //salario es el definido en el registro del empleado
+      // console.log(dias, salario)
+      const porcentajeAnticipo = recursosHumanosStore.porcentajeAnticipo / 100
+      const sueldo = (salario / 30) * dias * (porcentajeAnticipo + (rolpago.es_quincena ? porcentajeAnticipo : 0))
+      // console.log(sueldo)
+      // const sueldo = (salario / 30) * dias_totales
+      //
+      let total_sueldo = 0
+      // console.log(porcentajeAnticipo, tipo_contrato)
+      switch (tipo_contrato) {
+        case 3:
+          if (dias == 15) {
+            total_sueldo = salario * porcentajeAnticipo
+          } else {
+            const quincena = (salario / 30)
+            total_sueldo = quincena * dias
+            // console.log(quincena)
+            // console.log(total_sueldo)
+          }
+          break
+        default:
+          if (rolpago.es_vendedor_medio_tiempo) {
+            const porcentaje = rolpago.porcentaje_quincena
+              ? rolpago.porcentaje_quincena / 100
+              : 1
+            total_sueldo = rolpago.es_quincena == true ? salario * 0.5 * porcentaje : sueldo
+            // console.log('if', total_sueldo, porcentaje)
+          } else {
+            if (rolpago.es_quincena) {
+              if (dias == 15) total_sueldo = sueldo
+              else total_sueldo = salario / 15 * dias * porcentajeAnticipo
+            } else total_sueldo = sueldo
+            // console.log(total_sueldo)
+          }
+
+          break
+      }
+      rolpago.sueldo = parseFloat(total_sueldo.toFixed(2))
+    }
+
+
+    const sueldoCalculado = computed(() => {
       let dias_quincena = rolpago.es_quincena == true ? 15 : 0
       const dias = parseFloat(
         rolpago.dias != null ? rolpago.dias.toString() : '0'
@@ -859,20 +914,19 @@ export default defineComponent({
       const sueldo = (salario / 30) * dias_totales
       let total_sueldo = 0
       const porcentajeAnticipo = recursosHumanosStore.porcentajeAnticipo / 100
-      switch (tipo_contrato) {
+      switch (rolpago.tipo_contrato) {
         case 3:
-          total_sueldo = sueldo
+          const quincena = salario * porcentajeAnticipo
+          total_sueldo = (quincena / 15) * dias
           break
         default:
           if (rolpago.es_vendedor_medio_tiempo) {
             const porcentaje =
               rolpago.porcentaje_quincena != null
-                ? rolpago.porcentaje_quincena/100
-                : 0
+                ? rolpago.porcentaje_quincena / 100
+                : 1
             total_sueldo =
-              rolpago.es_quincena == true
-                ?( sueldo * porcentajeAnticipo)*porcentaje
-                : sueldo
+              rolpago.es_quincena == true ? sueldo * 0.5 * porcentaje : sueldo
           } else {
             total_sueldo =
               rolpago.es_quincena == true ? sueldo * porcentajeAnticipo : sueldo
@@ -880,10 +934,13 @@ export default defineComponent({
 
           break
       }
-      rolpago.sueldo = parseFloat(total_sueldo.toFixed(2))
-    }
+      return parseFloat(total_sueldo.toFixed(2))
+    }).value
+
     watchEffect(() => {
-      calcularSalario(rolpago.tipo_contrato)
+      // if (rolPagoStore.recalcularSueldo)
+      if (!rolpago.sueldo_quincena_modificado)
+        calcularSalario(rolpago.tipo_contrato)
     })
     return {
       removeAccents,

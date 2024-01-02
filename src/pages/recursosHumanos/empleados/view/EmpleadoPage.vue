@@ -21,7 +21,7 @@
         >
           <div class="row q-col-gutter-sm q-pa-sm">
             <!-- usuario -->
-            <div class="col-12 col-md-3">
+            <div class="col-12 col-md-3 col-sm-3">
               <label class="q-mb-sm block">Usuario</label>
               <q-input
                 v-model="empleado.usuario"
@@ -40,7 +40,7 @@
               </q-input>
             </div>
             <!-- correo -->
-            <div class="col-12 col-md-3">
+            <div class="col-12 col-md-3 col-sm-3">
               <label class="q-mb-sm block">Correo</label>
               <q-input
                 type="email"
@@ -61,7 +61,7 @@
               </q-input>
             </div>
             <!-- Contraseña -->
-            <div class="col-12 col-md-3">
+            <div class="col-12 col-md-3 col-sm-3">
               <label class="q-mb-sm block">Contraseña</label>
               <q-input
                 :type="isPwd ? 'password' : 'text'"
@@ -82,7 +82,7 @@
             </div>
 
             <!-- Estado -->
-            <div class="col-12 col-md-3">
+            <div class="col-12 col-md-3 col-sm-3">
               <label class="q-mb-sm block">Estado</label>
               <q-toggle
                 :label="empleado.estado ? 'ACTIVO' : 'INACTIVO'"
@@ -106,7 +106,7 @@
         >
           <!-- Identificación -->
           <div class="row q-col-gutter-sm q-pa-sm">
-            <div class="col-12 col-md-3">
+            <div class="col-12 col-md-3 col-sm-3">
               <label class="q-mb-sm block">Identificación</label>
               <q-input
                 v-model="empleado.identificacion"
@@ -128,7 +128,7 @@
               </q-input>
             </div>
             <!-- Nombres -->
-            <div class="col-12 col-md-3">
+            <div class="col-12 col-md-3 col-sm-3">
               <label class="q-mb-sm block">Nombres</label>
               <q-input
                 v-model="empleado.nombres"
@@ -147,7 +147,7 @@
               </q-input>
             </div>
             <!-- Apellidos -->
-            <div class="col-12 col-md-3">
+            <div class="col-12 col-md-3 col-sm-3">
               <label class="q-mb-sm block">Apellidos</label>
               <q-input
                 v-model="empleado.apellidos"
@@ -166,7 +166,7 @@
               </q-input>
             </div>
             <!-- Telefono -->
-            <div class="col-12 col-md-3">
+            <div class="col-12 col-md-3 col-sm-3">
               <label class="q-mb-sm block">Celular</label>
               <q-input
                 type="tel"
@@ -186,7 +186,7 @@
               </q-input>
             </div>
             <!-- correo -->
-            <div class="col-12 col-md-3">
+            <div class="col-12 col-md-3 col-sm-3">
               <label class="q-mb-sm block">Correo Personal</label>
               <q-input
                 type="email"
@@ -212,7 +212,7 @@
               </q-input>
             </div>
             <!--Tipo de Sangre -->
-            <div class="col-12 col-md-3">
+            <div class="col-12 col-md-3 col-sm-3">
               <label class="q-mb-sm block">Tipo de Sangre</label>
               <q-select
                 v-model="empleado.tipo_sangre"
@@ -251,7 +251,7 @@
               </q-select>
             </div>
             <!-- Estado Civil -->
-            <div class="col-12 col-md-3">
+            <div class="col-12 col-md-3 col-sm-3">
               <label class="q-mb-sm block">Estado Civil</label>
               <q-select
                 v-model="empleado.estado_civil"
@@ -289,7 +289,7 @@
               </q-select>
             </div>
             <!-- Genero -->
-            <div class="col-12 col-md-3">
+            <div class="col-12 col-md-3 col-sm-3">
               <label class="q-mb-sm block">Genero</label>
               <q-toggle
                 :label="empleado.genero == 'M' ? 'Masculino' : 'Femenino'"
@@ -304,7 +304,7 @@
               />
             </div>
             <!-- Convencional -->
-            <div class="col-12 col-md-3">
+            <div class="col-12 col-md-3 col-sm-3">
               <label class="q-mb-sm block">Convencional</label>
               <q-input
                 type="tel"
@@ -321,7 +321,7 @@
             </div>
             <!-- Fecha nacimiento -->
             -
-            <div class="col-12 col-md-3">
+            <div class="col-12 col-md-3 col-sm-3">
               <label class="q-mb-sm block">Fecha de nacimiento</label>
               <q-input
                 v-model="empleado.fecha_nacimiento"
@@ -370,7 +370,7 @@
               </q-input>
             </div>
             <!-- Numero de Cuenta bancarea -->
-            <div class="col-12 col-md-3">
+            <div class="col-12 col-md-3 col-sm-3">
               <label class="q-mb-sm block">Numero de Cuenta</label>
               <q-input
                 v-model="empleado.num_cuenta"
@@ -390,7 +390,7 @@
               </q-input>
             </div>
             <!-- Banco -->
-            <div class="col-12 col-md-3">
+            <div class="col-12 col-md-3 col-sm-3">
               <label class="q-mb-sm block">Banco</label>
               <q-select
                 v-model="empleado.banco"
@@ -426,7 +426,7 @@
               </q-select>
             </div>
             <!-- Canton -->
-            <div class="col-12 col-md-3">
+            <div class="col-12 col-md-3 col-sm-3">
               <label class="q-mb-sm block">Canton</label>
               <q-select
                 v-model="empleado.canton"
@@ -461,7 +461,7 @@
             </div>
 
             <!--Dirección-->
-            <div class="col-12 col-md-3">
+            <div class="col-12 col-md-3 col-sm-3">
               <label class="q-mb-sm block">Dirección</label>
               <q-input
                 v-model="empleado.direccion"
@@ -483,7 +483,7 @@
             </div>
 
             <!-- Foto de perfil -->
-            <div class="col-12 col-md-3">
+            <div class="col-12 col-md-3 col-sm-3">
               <label for="q-mb-sm block">Foto de perfil</label>
               <selector-imagen
                 file_extensiones=".jpg, image/*"
@@ -503,7 +503,7 @@
             >
               <div class="row q-col-gutter-sm q-pa-sm">
                 <!-- Casa propia -->
-                <div class="col-12 col-md-3">
+                <div class="col-12 col-md-3 col-sm-3">
                   <label class="q-mb-sm block">La casa donde vive es</label>
                   <q-toggle
                     :label="empleado.casa_propia ? 'PROPIA' : 'ALQUILADA'"
@@ -516,7 +516,7 @@
                   />
                 </div>
                 <!-- Vive con discapacitados -->
-                <div class="col-12 col-md-3">
+                <div class="col-12 col-md-3 col-sm-3">
                   <label class="q-mb-sm block"
                     >Convive con personas discapacitadas</label
                   >
@@ -531,7 +531,7 @@
                   />
                 </div>
                 <!-- Casa propia -->
-                <div class="col-12 col-md-3">
+                <div class="col-12 col-md-3 col-sm-3">
                   <label class="q-mb-sm block"
                     >Tiene a su cargo personas discapacitadas</label
                   >
@@ -546,7 +546,7 @@
                   />
                 </div>
                 <!-- Vive con discapacitados -->
-                <div class="col-12 col-md-3">
+                <div class="col-12 col-md-3 col-sm-3">
                   <label class="q-mb-sm block">Tiene Discapacidad</label>
                   <q-toggle
                     :label="empleado.tiene_discapacidad ? 'SI' : 'NO'"
@@ -559,7 +559,7 @@
                   />
                 </div>
                 <!-- Coordenadas -->
-                <div class="col-12 col-md-3">
+                <div class="col-12 col-md-3 col-sm-3">
                   <label class="q-mb-sm block"
                     >Coordenadas del lugar donde vive</label
                   >
@@ -586,7 +586,7 @@
                   </q-input>
                 </div>
                 <!-- Talla de zapato -->
-                <div class="col-12 col-md-3">
+                <div class="col-12 col-md-3 col-sm-3">
                   <label class="q-mb-sm block">Talla de zapato</label>
                   <q-input
                     v-model="empleado.talla_zapato"
@@ -612,7 +612,7 @@
                   </q-input>
                 </div>
                 <!-- Talla de camisa -->
-                <div class="col-12 col-md-3">
+                <div class="col-12 col-md-3 col-sm-3">
                   <label class="q-mb-sm block">Talla de camisa</label>
                   <q-select
                     v-model="empleado.talla_camisa"
@@ -652,7 +652,7 @@
                 </div>
 
                 <!-- Talla de guantes -->
-                <div class="col-12 col-md-3" v-if="empleado.tiene_grupo">
+                <div class="col-12 col-md-3 col-sm-3" v-if="empleado.tiene_grupo">
                   <label class="q-mb-sm block">Talla de guantes</label>
                   <q-input
                     v-model="empleado.talla_guantes"
@@ -678,7 +678,7 @@
                   </q-input>
                 </div>
                 <!-- Talla de pantalon -->
-                <div class="col-12 col-md-3">
+                <div class="col-12 col-md-3 col-sm-3">
                   <label class="q-mb-sm block">Talla de pantalon</label>
                   <q-input
                     v-model="empleado.talla_pantalon"
@@ -715,7 +715,7 @@
         >
           <div class="row q-col-gutter-sm q-pa-sm">
             <!-- Jefe -->
-            <div class="col-12 col-md-3 q-mb-md">
+            <div class="col-12 col-md-3 q-mb-md col-sm-3">
               <label class="q-mb-sm block">Jefe inmediato</label>
               <q-select
                 v-model="empleado.jefe"
@@ -752,7 +752,7 @@
               </q-select>
             </div>
             <!-- Acumula fondos de reserva -->
-            <div class="col-12 col-md-3">
+            <div class="col-12 col-md-3 col-sm-3">
               <label class="q-mb-sm block">¿Acumula fondos de reserva?</label>
               <q-toggle
                 :label="
@@ -769,7 +769,7 @@
               />
             </div>
             <!-- Estado -->
-            <div class="col-12 col-md-3">
+            <div class="col-12 col-md-3 col-sm-3">
               <label class="q-mb-sm block">¿Esta Enrolado?</label>
               <q-toggle
                 :label="empleado.esta_en_rol_pago ? 'Enrolado' : 'No enrolado'"
@@ -781,7 +781,7 @@
                 :disable="disabled"
               />
             </div>
-            <div class="col-12 col-md-3">
+            <div class="col-12 col-md-3 col-sm-3">
               <label class="q-mb-sm block">¿Factura?</label>
               <q-toggle
                 :label="empleado.realiza_factura ? 'Factura' : 'No factura'"
@@ -794,7 +794,7 @@
               />
             </div>
             <!-- Area -->
-            <div class="col-12 col-md-3">
+            <div class="col-12 col-md-3 col-sm-3">
               <label class="q-mb-sm block">Area</label>
               <q-select
                 v-model="empleado.area"
@@ -831,7 +831,7 @@
             </div>
 
             <!-- Departamento -->
-            <div class="col-12 col-md-3">
+            <div class="col-12 col-md-3 col-sm-3">
               <label class="q-mb-sm block">Departamento</label>
               <q-select
                 v-model="empleado.departamento"
@@ -871,7 +871,7 @@
             </div>
 
             <!--Cargo -->
-            <div class="col-12 col-md-3">
+            <div class="col-12 col-md-3 col-sm-3">
               <label class="q-mb-sm block">Cargo</label>
               <q-select
                 v-model="empleado.cargo"
@@ -908,7 +908,7 @@
               </q-select>
             </div>
             <!-- Roles -->
-            <div class="col-12 col-md-3">
+            <div class="col-12 col-md-3 col-sm-3">
               <label class="q-mb-sm block">Roles</label>
               <q-select
                 v-model="empleado.roles"
@@ -964,7 +964,7 @@
             </div>
 
             <!-- Tipo Contrato -->
-            <div class="col-12 col-md-3 q-mb-md">
+            <div class="col-12 col-md-3 q-mb-md col-sm-3">
               <label class="q-mb-sm block">Tipo Contrato</label>
               <q-select
                 v-model="empleado.tipo_contrato"
@@ -1002,7 +1002,7 @@
               </q-select>
             </div>
             <!-- Nivel Academico -->
-            <div class="col-12 col-md-3 q-mb-md">
+            <div class="col-12 col-md-3 q-mb-md col-sm-3">
               <label class="q-mb-sm block">Nivel Academico</label>
               <q-select
                 v-model="empleado.nivel_academico"
@@ -1040,7 +1040,7 @@
               </q-select>
             </div>
             <!-- Fecha Ingreso -->
-            <div class="col-12 col-md-3">
+            <div class="col-12 col-md-3 col-sm-3">
               <label class="q-mb-sm block">Fecha de Ingreso</label>
               <q-input
                 v-model="empleado.fecha_ingreso"
@@ -1088,7 +1088,7 @@
                 </template>
               </q-input>
             </div>
-            <div class="col-12 col-md-3 q-mb-xl">
+            <div class="col-12 col-md-3 q-mb-xl col-sm-3">
               <q-checkbox
                 class="q-mt-lg q-pt-md"
                 v-model="empleado.modificar_fecha_vinculacion"
@@ -1100,7 +1100,7 @@
             </div>
             <!-- Fecha Vinculacion -->
             <div
-              class="col-12 col-md-3"
+              class="col-12 col-md-3 col-sm-3"
               v-if="empleado.modificar_fecha_vinculacion"
             >
               <label class="q-mb-sm block">Fecha de vinculacion</label>
@@ -1141,7 +1141,7 @@
             </div>
 
             <!-- Fecha Salida -->
-            <div class="col-12 col-md-3">
+            <div class="col-12 col-md-3 col-sm-3">
               <label class="q-mb-sm block">Fecha de Salida</label>
               <q-input
                 v-model="empleado.fecha_salida"
@@ -1178,7 +1178,7 @@
               </q-input>
             </div>
             <!-- Antiguedad -->
-            <div class="col-12 col-md-3">
+            <div class="col-12 col-md-3 col-sm-3">
               <label class="q-mb-sm block">Antiguedad</label>
               <q-input
                 v-model="empleado.antiguedad"
@@ -1189,7 +1189,7 @@
               >
               </q-input>
             </div>
-            <div class="col-12 col-md-3 q-mb-xl">
+            <div class="col-12 col-md-3 q-mb-xl col-sm-3">
               <q-checkbox
                 class="q-mt-lg q-pt-md"
                 v-model="empleado.tiene_grupo"
@@ -1201,7 +1201,7 @@
             </div>
 
             <!-- Grupo -->
-            <div v-if="empleado.tiene_grupo" class="col-12 col-md-3 q-mb-md">
+            <div v-if="empleado.tiene_grupo" class="col-12 col-md-3 col-sm-3 q-mb-md">
               <label class="q-mb-sm block">Grupo</label>
               <q-select
                 v-model="empleado.grupo"
@@ -1236,7 +1236,7 @@
             </div>
 
             <!-- Salario -->
-            <div class="col-12 col-md-3">
+            <div class="col-12 col-md-3 col-sm-3">
               <label class="q-mb-sm block">Salario</label>
               <q-input
                 v-model="empleado.salario"
@@ -1256,7 +1256,7 @@
               </q-input>
             </div>
             <!-- Supa-->
-            <div class="col-12 col-md-3">
+            <div class="col-12 col-md-3 col-sm-3">
               <label class="q-mb-sm block">Supa</label>
               <q-input
                 v-model="empleado.supa"
@@ -1270,7 +1270,7 @@
             </div>
 
             <!-- Firma del empleado -->
-            <div class="col-12 col-md-3">
+            <div class="col-12 col-md-3 col-sm-3">
               <label for="q-mb-xl block">Firma</label>
               <selector-imagen
                 file_extensiones=".jpg, image/*"
@@ -1281,7 +1281,7 @@
               ></selector-imagen>
             </div>
             <!-- Telefono de la empresa -->
-            <div class="col-12 col-md-3">
+            <div class="col-12 col-md-3 col-sm-3">
               <label class="q-mb-sm block">Teléfono empresa</label>
               <q-input
                 type="tel"
@@ -1295,7 +1295,7 @@
               </q-input>
             </div>
             <!-- Extensión -->
-            <div class="col-12 col-md-3">
+            <div class="col-12 col-md-3 col-sm-3">
               <label class="q-mb-sm block">Extensión</label>
               <q-input
                 type="tel"
@@ -1310,7 +1310,7 @@
             </div>
 
             <!-- Observacion -->
-            <div class="col-12 col-md-3">
+            <div class="col-12 col-md-3 col-sm-3">
               <label class="q-mb-sm block">Observación</label>
               <q-input
                 v-model="empleado.observacion"
