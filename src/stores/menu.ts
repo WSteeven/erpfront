@@ -856,6 +856,12 @@ export const useMenuStore = defineStore('menu', () => {
             can: store.can('puede.acceder.esquema_comision'),
           },
           {
+            title: 'Escenario Venta',
+            link: 'escenario-venta-jp',
+            icon: 'bi-circle',
+            can: store.can('puede.acceder.escenario_venta_jp'),
+          },
+          {
           title: 'Bonos',
         icon: 'fa-solid fa-hands-holding-circle',
         children: [

@@ -431,6 +431,8 @@ export const endpoints = {
   umbral_ventas:new Endpoint('ventas-claro/umbral-ventas'),
   esquema_comision:new Endpoint('ventas-claro/esquema-comision'),
   cliente_claro:new Endpoint('ventas-claro/cliente-claro'),
+  escenario_venta_jp:new Endpoint('ventas-claro/escenario-venta-jp'),
+
 
 
 

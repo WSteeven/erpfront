@@ -1219,6 +1219,13 @@ const routes: RouteRecordRaw[] = [
           import('pages/ventas-claro/cliente/view/ClienteClaroPage.vue'),
         meta: { requiresAuth: true },
       },
+      {
+        path: '/escenario-venta-jp',
+        name: 'escenario_venta_jp',
+        component: () =>
+          import('pages/ventas-claro/escenarioVentasJP/view/EscenarioVentaJPPage.vue'),
+        meta: { requiresAuth: true },
+      },
       ///
       {
         path: '/reporte_venta',
