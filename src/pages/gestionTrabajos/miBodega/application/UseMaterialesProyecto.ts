@@ -43,7 +43,8 @@ export function useMaterialesProyecto(filtro: UnwrapRef<FiltroMiBodegaProyecto>,
       transferenciaProductoEmpleadoStore.cliente_id = filtro.cliente_id
       transferenciaProductoEmpleadoStore.origenProductos = destinosTareas.paraProyecto
       transferenciaProductoEmpleadoStore.idProyecto = filtro.proyecto_id
-      console.log(transferenciaProductoEmpleadoStore.idProyecto)
+      transferenciaProductoEmpleadoStore.idEtapa = filtro.etapa_id
+      // console.log(transferenciaProductoEmpleadoStore.idProyecto)
 
       if (!result.length) notificarAdvertencia('No tienes material asignado.')
 
@@ -123,11 +124,33 @@ export function useMaterialesProyecto(filtro: UnwrapRef<FiltroMiBodegaProyecto>,
     }
   }
 
+  async function consultarEtapasDestino(idProyecto: number) {
+    const params = {
+      campos: 'id,nombre',
+      activo: 1,
+      empleado_id: filtro.empleado_id,
+      proyecto_id: idProyecto,
+      etapas_empleado: 1,
+    }
+
+    try {
+      cargando.activar()
+      const { result } = await etapaController.listar(params)
+      listadosAuxiliares.etapasDestino = result
+      // console.log(listadosAuxiliares.etapas)
+    } catch (e) {
+      console.log(e)
+    } finally {
+      cargando.desactivar()
+    }
+  }
+
   return {
     consultarProductosProyecto,
     consultarClientesMaterialesEmpleado,
     consultarProyectos,
     consultarProyectosDestino,
     consultarEtapas,
+    consultarEtapasDestino,
   }
 }
