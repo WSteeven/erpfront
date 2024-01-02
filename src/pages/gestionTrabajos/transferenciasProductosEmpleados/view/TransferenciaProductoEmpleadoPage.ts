@@ -195,6 +195,10 @@ export default defineComponent({
       if (id) consultarEtapasEmpleadoDestino(id)
     })
 
+    watch(computed(() => transferencia.tarea_origen), (id) => {
+      if (id) establecerAutorizador()
+    })
+
     /*******************************************************************************************
      * Funciones
      ******************************************************************************************/
@@ -202,6 +206,10 @@ export default defineComponent({
 
     const filtroProyecto = reactive(new FiltroMiBodegaProyecto())
     const { consultarProyectos, consultarProyectosDestino, consultarEtapas, consultarEtapasDestino, consultarProductosProyecto } = useMaterialesProyecto(filtroProyecto, listadosAuxiliares)
+
+    function establecerAutorizador() {
+      transferencia.autorizador = listadosAuxiliares.tareasOrigen.find((tarea: Tarea) => tarea.id === transferencia.tarea_origen).coordinador
+    }
 
     async function consultarProyectosEmpleadoOrigen() {
       filtroProyecto.empleado_id = transferencia.empleado_origen
@@ -216,7 +224,7 @@ export default defineComponent({
     }
 
     async function consultarEtapasEmpleadoDestino(idProyecto: number) {
-      filtroProyecto.empleado_id = transferencia.empleado_origen
+      filtroProyecto.empleado_id = transferencia.empleado_destino
       await consultarEtapasDestino(idProyecto)
       etapasDestino.value = listadosAuxiliares.etapasDestino
     }
@@ -380,6 +388,8 @@ export default defineComponent({
       mostrarOrigenPersonal: computed(() => transferenciaProductoEmpleadoStore.origenProductos === 'personal'),
       tipoTarea: computed(() => transferenciaProductoEmpleadoStore.origenProductos === destinosTareas.paraClienteFinal ? tiposTareas.find((tipo) => tipo.value === transferenciaProductoEmpleadoStore.origenProductos)?.label : null),
       proyectoOrigenTieneEtapas: computed(() => !!listadosAuxiliares.proyectos.find((proyecto: Proyecto) => proyecto.id === transferencia.proyecto_origen)?.etapas.length ? ' Transferencia entre etapas' : ' Transferencia entre proyectos sin etapas'),
+      paraTarea: computed(() => transferenciaProductoEmpleadoStore.origenProductos === destinosTareas.paraClienteFinal),
+      paraProyecto: computed(() => transferenciaProductoEmpleadoStore.origenProductos === destinosTareas.paraProyecto),
     }
   }
 })

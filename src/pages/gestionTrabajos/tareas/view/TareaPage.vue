@@ -199,7 +199,10 @@
 
                 <!-- Coordinador -->
                 <div
-                  v-if="paraClienteFinal && esCoordinadorBackup"
+                  v-if="
+                    (paraClienteFinal && esCoordinadorBackup) ||
+                    accion === acciones.consultar
+                  "
                   class="col-12 col-md-3"
                 >
                   <label class="q-mb-sm block">Coordinador</label>
