@@ -13,6 +13,7 @@
     :accion4="btnCashRolPago"
     :filtrar="filtrarRolPagoMes"
     :tabDefecto="tabActualRolPago"
+    :ajustarCeldas="true"
   >
     <template #formulario>
       <q-tabs
