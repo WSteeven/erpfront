@@ -10,13 +10,6 @@ export const configuracionColumnasEscenarioVentaJP: ColumnConfig<EscenarioVentaJ
     sortable: true
   },
   {
-    name: 'apoyo_das_fijos',
-    field: 'apoyo_das_fijos',
-    label: 'Apoyo Das Fijos',
-    align: 'left',
-    sortable: true
-  },
-  {
     name: 'vendedores',
     field: 'vendedores',
     label: 'Vendedores',

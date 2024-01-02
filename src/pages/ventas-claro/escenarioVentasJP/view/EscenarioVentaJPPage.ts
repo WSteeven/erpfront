@@ -11,59 +11,70 @@ import { EscenarioVentaJP } from '../domain/EscenarioVentaJP'
 import { EscenarioVentaJPController } from '../infrestructure/EscenarioVentaJPController'
 import { configuracionColumnasEscenarioVentaJP } from '../domain/configuracionColumnasEscenarioVentaJP'
 
-
-
 export default defineComponent({
   components: { TabLayout },
   setup() {
     /*********
-    * Stores
-    *********/
+     * Stores
+     *********/
     useNotificacionStore().setQuasar(useQuasar())
     /***********
-    * Mixin
-    ************/
-    const mixin = new ContenedorSimpleMixin(EscenarioVentaJP, new EscenarioVentaJPController())
-    const { entidad: escenario_venta_jp, disabled, accion,listadosAuxiliares } = mixin.useReferencias()
-    const { setValidador ,obtenerListados, cargarVista} = mixin.useComportamiento()
+     * Mixin
+     ************/
+    const mixin = new ContenedorSimpleMixin(
+      EscenarioVentaJP,
+      new EscenarioVentaJPController()
+    )
+    const {
+      entidad: escenario_venta_jp,
+      disabled,
+      accion,
+      listadosAuxiliares,
+    } = mixin.useReferencias()
+    const { setValidador, obtenerListados, cargarVista } =
+      mixin.useComportamiento()
 
     /*************
-    * Validaciones
-    **************/
+     * Validaciones
+     **************/
     const reglas = {
       mes: {
-        required: true
+        required: true,
       },
-      apoyo_das_fijos:{
-        required: true
+      vendedores: {
+        required: true,
       },
-      vendedores:{
-        required: true
-      },productividad_minima:{
-        required: true
-      },vendedores_acumulados:{
-        required: true
-      },total_ventas_adicionales:{
-        required: true
-      },arpu_prom:{
-        required: true
-      },altas:{
-        required: true
-      },bajas:{
-        required: true
-      },neta:{
-        required: true
-      },stock:{
-        required: true
-      },stock_que_factura:{
-        required: true
+      productividad_minima: {
+        required: true,
       },
-
-
+      vendedores_acumulados: {
+        required: true,
+      },
+      total_ventas_adicionales: {
+        required: true,
+      },
+      arpu_prom: {
+        required: true,
+      },
+      altas: {
+        required: true,
+      },
+      bajas: {
+        required: true,
+      },
+      neta: {
+        required: true,
+      },
+      stock: {
+        required: true,
+      },
+      stock_que_factura: {
+        required: true,
+      },
     }
     const v$ = useVuelidate(reglas, escenario_venta_jp)
     setValidador(v$.value)
-    const planes= ref([]);
+    const planes = ref([])
     cargarVista(async () => {
       await obtenerListados({
         planes: {
@@ -71,8 +82,7 @@ export default defineComponent({
           params: { campos: 'id,nombre' },
         },
       })
-        planes.value = listadosAuxiliares.planes
-
+      planes.value = listadosAuxiliares.planes
     })
     function filtrarPlanes(val, update) {
       if (val === '') {
@@ -94,13 +104,13 @@ export default defineComponent({
       mixin,
       escenario_venta_jp,
       tipos_vendedor,
-      disabled, accion, v$,
+      disabled,
+      accion,
+      v$,
       formas_pago,
       planes,
       filtrarPlanes,
       configuracionColumnas: configuracionColumnasEscenarioVentaJP,
     }
-  }
+  },
 })
-
-

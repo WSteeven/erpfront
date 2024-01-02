@@ -23,25 +23,6 @@
               </template>
             </q-input>
           </div>
-          <!-- Apoyo Das Fijo -->
-          <div class="col-12 col-md-3">
-            <label class="q-mb-sm block">Apoyo Das Fijo</label>
-            <q-input
-              v-model="escenario_venta_jp.apoyo_das_fijos"
-              placeholder="Obligatorio"
-              :disable="disabled"
-              :error="!!v$.apoyo_das_fijos.$errors.length"
-              @blur="v$.apoyo_das_fijos.$touch"
-              outlined
-              dense
-            >
-              <template v-slot:error>
-                <div v-for="error of v$.apoyo_das_fijos.$errors" :key="error.$uid">
-                  <div class="error-msg">{{ error.$message }}</div>
-                </div>
-              </template>
-            </q-input>
-          </div>
           <!-- Vendedores -->
           <div class="col-12 col-md-3">
             <label class="q-mb-sm block">Vendedores</label>
