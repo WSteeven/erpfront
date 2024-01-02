@@ -14,12 +14,16 @@
     <template #formulario>
       <q-form @submit.prevent>
         <div class="row q-col-gutter-sm q-pb-xl">
-          <div v-if="tipoTarea" class="col-12 q-mb-md">
+          <div class="col-12 q-mb-md">
             <div class="row justify-end">
-              <q-chip color="grey-3" class="text-green chip-up">
+              <q-chip
+                v-if="tipoTarea"
+                color="grey-3"
+                class="text-green chip-up"
+              >
                 {{ '&nbsp;' + tipoTarea }}</q-chip
               >
-              <q-chip color="grey-4" class="text-primary q-pl-lg">{{
+              <q-chip color="grey-4" class="text-primary">{{
                 proyectoOrigenTieneEtapas
               }}</q-chip>
             </div>
@@ -145,7 +149,7 @@
             </q-select>
           </div>
 
-          <div v-if="transferencia.etapa_origen" class="col-12 col-md-3">
+          <!-- <div v-if="transferencia.etapa_origen" class="col-12 col-md-3">
             <label class="q-mb-sm block">
               <q-icon
                 name="bi-check-circle-fill"
@@ -160,7 +164,7 @@
               outlined
               dense
             />
-          </div>
+          </div> -->
 
           <!-- <div v-if="transferencia.proyecto_origen" class="col-12 col-md-3">
             <label class="q-mb-sm block"
@@ -186,8 +190,11 @@
               :options="proyectos"
               @filter="filtrarProyectos"
               transition-show="scale"
-              transition-hide="scale"
               :disable="!puedeAutorizar"
+              @update:model-value="
+                () => (transferencia.empleado_destino = null)
+              "
+              transition-hide="scale"
               options-dense
               dense
               outlined
@@ -210,6 +217,38 @@
                 </q-item>
               </template>
 
+              <template v-slot:no-option>
+                <q-item>
+                  <q-item-section class="text-grey">
+                    No hay resultados
+                  </q-item-section>
+                </q-item>
+              </template>
+            </q-select>
+          </div>
+
+          <div
+            v-show="transferencia.proyecto_origen && etapas.length"
+            class="col-12 col-md-3"
+          >
+            <label class="q-mb-sm block">Etapa origen</label>
+            <q-select
+              v-model="transferencia.etapa_origen"
+              :options="etapas"
+              @filter="filtrarEtapas"
+              :disable="!puedeAutorizar"
+              transition-show="scale"
+              transition-hide="scale"
+              options-dense
+              dense
+              outlined
+              :option-label="(item) => item.nombre"
+              :option-value="(item) => item.id"
+              use-input
+              input-debounce="0"
+              emit-value
+              map-options
+            >
               <template v-slot:no-option>
                 <q-item>
                   <q-item-section class="text-grey">
@@ -305,6 +344,39 @@
             </q-select>
           </div>
 
+          <div
+            v-show="transferencia.proyecto_destino && etapasDestino.length"
+            class="col-12 col-md-3"
+          >
+            <label class="q-mb-sm block">Etapa destino</label>
+            <!-- :disable="!puedeAutorizar" -->
+            <q-select
+              v-model="transferencia.etapa_destino"
+              :options="etapasDestino"
+              @filter="filtrarEtapasDestino"
+              :disable="!(accion === acciones.nuevo)"
+              transition-show="scale"
+              transition-hide="scale"
+              options-dense
+              dense
+              outlined
+              :option-label="(item) => item.nombre"
+              :option-value="(item) => item.id"
+              use-input
+              input-debounce="0"
+              emit-value
+              map-options
+            >
+              <template v-slot:no-option>
+                <q-item>
+                  <q-item-section class="text-grey">
+                    No hay resultados
+                  </q-item-section>
+                </q-item>
+              </template>
+            </q-select>
+          </div>
+
           <!-- {{ tareas }} -->
           <!-- Tarea destino : tareas del empleado a transferir-->
           <div v-if="mostrarOrigenTarea" class="col-12 col-md-3">
@@ -344,7 +416,7 @@
             </q-select>
           </div>
 
-          <div v-if="transferencia.etapa_destino" class="col-12 col-md-3">
+          <!-- <div v-if="transferencia.etapa_destino" class="col-12 col-md-3">
             <label class="q-mb-sm block">
               <q-icon
                 name="bi-check-circle-fill"
@@ -359,7 +431,7 @@
               outlined
               dense
             />
-          </div>
+          </div> -->
 
           <!-- <div v-if="transferencia.proyecto_destino" class="col-12 col-md-3">
             <label class="q-mb-sm block"
