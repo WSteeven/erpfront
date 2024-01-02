@@ -68,6 +68,12 @@ export const useMenuStore = defineStore('menu', () => {
           can: store.can('puede.ver.materiales_empleados'),
         },
         {
+          title: 'Transferencia de productos',
+          link: 'transferencia-producto-empleado',
+          icon: 'bi-app',
+          can: store.can('puede.ver.transferencia_producto_empleado'),
+        },
+        {
           title: 'Movilización entre trabajos',
           link: 'reporte-movilizacion-subtarea',
           icon: 'bi-app',

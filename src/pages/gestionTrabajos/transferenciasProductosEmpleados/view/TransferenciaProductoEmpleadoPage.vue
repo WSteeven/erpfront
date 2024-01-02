@@ -23,7 +23,7 @@
               >
                 {{ '&nbsp;' + tipoTarea }}</q-chip
               >
-              <q-chip color="grey-4" class="text-primary">{{
+              <q-chip v-else color="grey-4" class="text-primary">{{
                 proyectoOrigenTieneEtapas
               }}</q-chip>
             </div>
@@ -304,7 +304,7 @@
             </q-select>
           </div>
 
-          <div class="col-12 col-md-3">
+          <div v-if="paraProyecto" class="col-12 col-md-3">
             <label class="q-mb-sm block">Proyecto destino</label>
             <q-select
               v-model="transferencia.proyecto_destino"
@@ -345,7 +345,11 @@
           </div>
 
           <div
-            v-show="transferencia.proyecto_destino && etapasDestino.length"
+            v-show="
+              transferencia.proyecto_destino &&
+              etapasDestino.length &&
+              paraProyecto
+            "
             class="col-12 col-md-3"
           >
             <label class="q-mb-sm block">Etapa destino</label>
@@ -391,7 +395,7 @@
               @filter="filtrarTareasDestino"
               dense
               outlined
-              :disable="!puedeAutorizar"
+              :disable="!puedeAutorizar && paraProyecto"
               :option-label="(item) => item.codigo_tarea + ' - ' + item.titulo"
               :option-value="(item) => item.id"
               use-input
@@ -476,7 +480,9 @@
           </div>
 
           <!-- Persona que autoriza -->
-          <div v-if="transferencia.autorizador" class="col-12 col-md-3">
+          <!-- v-if="transferencia.autorizador" -->
+          <!-- :disable="!puedeAutorizar" -->
+          <div class="col-12 col-md-3">
             <label class="q-mb-sm block">Persona que autoriza</label>
             <q-select
               v-model="transferencia.autorizador"
@@ -486,7 +492,6 @@
               options-dense
               dense
               outlined
-              :disable="!puedeAutorizar"
               :readonly="disabled"
               :option-label="(v) => v.nombres + ' ' + v.apellidos"
               :option-value="(v) => v.id"

@@ -35,8 +35,8 @@ export const ubicacionesTrabajo = {
 
 export const tabOptionsEstadosTareas: TabOption[] = [
   // { label: 'Todo', value: '' },
-  { label: 'Activas', value: 0 },
-  { label: 'Finalizadas', value: 1 },
+  { label: 'Activas', value: 0, icono: 'bi-app-indicator', color_icono: 'primary', bg_color: 'yellow-1' },
+  { label: 'Finalizadas', value: 1, icono: 'bi-check-circle-fill', color_icono: 'green-10', bg_color: 'green-1' },
 ];
 
 export const tabOptionsEstadosSubtareas: TabOption[] = [

@@ -457,6 +457,7 @@ export default defineComponent({
       imagenSubida,
       btnVerImagenInforme,
       obtenerEtapasProyecto,
+      acciones,
     }
   },
 })

@@ -11,11 +11,13 @@ import { MaterialEmpleadoTareaController } from '../infraestructure/MaterialEmpl
 import { ClienteMaterialTareaController } from '../infraestructure/ClienteMaterialTareaController'
 import { TareaController } from 'pages/gestionTrabajos/tareas/infraestructure/TareaController'
 import { FiltroMiBodega } from '../domain/FiltroMiBodega'
+import { useTransferenciaProductoEmpleadoStore } from 'stores/transferenciaProductoEmpleado'
 
 export function useMaterialesTarea(filtro: UnwrapRef<FiltroMiBodega>, listadosAuxiliares: any) {
   // Stores
   const authenticationStore = useAuthenticationStore()
   const listadoMaterialesDevolucionStore = useListadoMaterialesDevolucionStore()
+  const transferenciaProductoEmpleadoStore = useTransferenciaProductoEmpleadoStore()
 
   // Controllers
   const materialEmpleadoTareaController = new MaterialEmpleadoTareaController()
@@ -46,10 +48,15 @@ export function useMaterialesTarea(filtro: UnwrapRef<FiltroMiBodega>, listadosAu
 
       listadosAuxiliares.productosTarea = result
       listadosAuxiliares.productos = result
+
       listadoMaterialesDevolucionStore.listadoMateriales = result
-      listadoMaterialesDevolucionStore.origenProductos = destinosTareas.paraClienteFinal
       listadoMaterialesDevolucionStore.tareaId = filtro.tarea_id
       listadoMaterialesDevolucionStore.cliente_id = filtro.cliente_id
+
+      transferenciaProductoEmpleadoStore.listadoMateriales = result
+      transferenciaProductoEmpleadoStore.cliente_id = filtro.cliente_id
+      transferenciaProductoEmpleadoStore.origenProductos = destinosTareas.paraClienteFinal
+      transferenciaProductoEmpleadoStore.tareaId = filtro.tarea_id
 
       if (!result.length) notificarAdvertencia('No tienes material asignado.')
 
