@@ -861,14 +861,14 @@ export default defineComponent({
       // }
       const dias = parseInt(rolpago.dias ? rolpago.dias.toString() : '0')
       const salario = parseFloat(rolpago.salario ?? '0') //salario es el definido en el registro del empleado
-      // console.log(dias, salario)
+      console.log(dias, salario)
       const porcentajeAnticipo = recursosHumanosStore.porcentajeAnticipo / 100
-      const sueldo = (salario / 30) * dias * (porcentajeAnticipo + (rolpago.es_quincena ? porcentajeAnticipo : 0))
+      const sueldo = rolpago.es_quincena ? (salario / 30) * dias * (porcentajeAnticipo + (rolpago.es_quincena ? porcentajeAnticipo : 0)) : salario / 30 * dias
       // console.log(sueldo)
       // const sueldo = (salario / 30) * dias_totales
       //
       let total_sueldo = 0
-      // console.log(porcentajeAnticipo, tipo_contrato)
+      console.log(porcentajeAnticipo, tipo_contrato)
       switch (tipo_contrato) {
         case 3:
           if (dias == 15) {
@@ -876,8 +876,8 @@ export default defineComponent({
           } else {
             const quincena = (salario / 30)
             total_sueldo = quincena * dias
-            // console.log(quincena)
-            // console.log(total_sueldo)
+            console.log(quincena)
+            console.log(total_sueldo)
           }
           break
         default:
@@ -886,13 +886,13 @@ export default defineComponent({
               ? rolpago.porcentaje_quincena / 100
               : 1
             total_sueldo = rolpago.es_quincena == true ? salario * 0.5 * porcentaje : sueldo
-            // console.log('if', total_sueldo, porcentaje)
+            console.log('if', total_sueldo, porcentaje)
           } else {
             if (rolpago.es_quincena) {
               if (dias == 15) total_sueldo = sueldo
               else total_sueldo = salario / 15 * dias * porcentajeAnticipo
             } else total_sueldo = sueldo
-            // console.log(total_sueldo)
+            console.log(total_sueldo)
           }
 
           break

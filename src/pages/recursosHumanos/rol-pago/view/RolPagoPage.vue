@@ -83,9 +83,9 @@
         <label class="q-mb-sm block">Días Laborados</label>
         <q-input
           v-model="rolpago.dias"
-          type="number"
           placeholder="Obligatorio"
           mask="##"
+          step="1"
           :disable="disabled"
           outlined
           dense
