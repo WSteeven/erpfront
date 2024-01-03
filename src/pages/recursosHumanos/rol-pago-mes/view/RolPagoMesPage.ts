@@ -28,7 +28,7 @@ import { ComportamientoModalesRolPagoMes } from '../aplication/ComportamientoMod
 import { ComportamientoModalesRolPago } from 'pages/recursosHumanos/rol-pago/aplication/ComportamientoModalesRolPago'
 import {
   tabOptionsEstadosRolPago,
-  tabOptionsEstadosRolPagoEmpleado,
+  tabOptionsEstadosRolPagoEmpleado, estadosRolPagoEmpleado
 } from 'config/recursosHumanos.utils'
 import { CustomActionTable } from 'components/tables/domain/CustomActionTable'
 import { useBotonesTablaRolPagoMes } from '../aplication/BotonesTablaRolPagoMes'
@@ -42,6 +42,7 @@ import { apiConfig, endpoints } from 'config/api'
 import { AxiosHttpRepository } from 'shared/http/infraestructure/AxiosHttpRepository'
 import { CustomActionPrompt } from 'components/tables/domain/CustomActionPrompt'
 import { HttpResponseGet } from 'shared/http/domain/HttpResponse'
+import { StatusEssentialLoading } from 'components/loading/application/StatusEssentialLoading'
 
 export default defineComponent({
   name: 'RolPagoMes',
@@ -74,6 +75,8 @@ export default defineComponent({
       mixinRolEmpleado.useComportamiento()
     const authenticationStore = useAuthenticationStore()
 
+    const cargando = new StatusEssentialLoading()
+
     /**********
      * Modales
      **********/
@@ -100,8 +103,17 @@ export default defineComponent({
       { id: 'pdf', name: 'PDF' },
       { id: 'xlsx', name: 'EXCEL' },
     ]
+    const btnActualizarEmpleadosRol: CustomActionTable = {
+      titulo: 'Agregar empleados',
+      icono: 'bi-arrow-clockwise',
+      color: 'primary',
+      tooltip: 'Agrega los empleados recientemente registrados en el sistema',
+      accion: () => {
+        agregarNuevosEmpleadosRol(rolpago.id!)
+      }
+    }
     const btnAgregarRolPagoEmpleado: CustomActionTable = {
-      titulo: 'Agregar rol pago empleado',
+      titulo: 'Agregar empleado al rol',
       icono: 'bi-plus',
       color: 'positive',
       accion: () => {
@@ -132,7 +144,7 @@ export default defineComponent({
           }
           await new CambiarEstadoRolPago().ejecutarMasivo(data)
           notificarCorrecto('Rol de Pagos se esta Verificando!')
-          filtrarRolPagoEmpleado('EJECUTANDO')
+          filtrarRolPagoEmpleado(estadosRolPagoEmpleado.ejecutando)
         })
       },
     }
@@ -150,7 +162,7 @@ export default defineComponent({
           }
           await new CambiarEstadoRolPago().finalizarMasivo(data)
           notificarCorrecto('Rol de Pagos Finalizado!')
-          filtrarRolPagoEmpleado('FINALIZADO')
+          filtrarRolPagoEmpleado( estadosRolPagoEmpleado.finalizado)
         })
       },
     }
@@ -208,8 +220,8 @@ export default defineComponent({
       listar({ finalizado: tabSeleccionado }, false)
       tabActualRolPago = tabSeleccionado
     }
-    function filtrarRolPagoEmpleado(estado, mensaje = null) {
-      listarRolEmpleado({ rol_pago_id: rolpago.id, estado: estado }).then(() => {
+    async function filtrarRolPagoEmpleado(estado, mensaje = null) {
+      await listarRolEmpleado({ rol_pago_id: rolpago.id, estado: estado }).then(() => {
         if (mensaje != null) {
           notificarCorrecto(mensaje)
         }
@@ -233,7 +245,7 @@ export default defineComponent({
     const v$ = useVuelidate(reglas, rolpago)
     setValidador(v$.value)
     async function guardado(data) {
-      filtrarRolPagoEmpleado('EJECUTANDO')
+      filtrarRolPagoEmpleado(estadosRolPagoEmpleado.ejecutando)
     }
 
     /**Verifica si es un mes */
@@ -401,18 +413,37 @@ export default defineComponent({
       color: 'warning',
       accion: async () => {
         const id = rolpago.id != null ? rolpago.id : 0
-        actualizarRolPago(id)
+        await actualizarRolPago(id)
       },
     }
     async function actualizarRolPago(idRolPago: number) {
-
-      const axios = AxiosHttpRepository.getInstance()
-      const ruta = axios.getEndpoint(endpoints.actualizar_rol_pago) + idRolPago
-      const response: AxiosResponse = await axios.get(ruta)
-      filtrarRolPagoEmpleado('', response.data.mensaje)
-
-
+      try {
+        cargando.activar()
+        const axios = AxiosHttpRepository.getInstance()
+        const ruta = axios.getEndpoint(endpoints.actualizar_rol_pago) + idRolPago
+        const response: AxiosResponse = await axios.get(ruta)
+        await filtrarRolPagoEmpleado('', response.data.mensaje)
+      } catch (error) {
+        notificarAdvertencia(error + '')
+      } finally {
+        cargando.desactivar()
+      }
     }
+
+    async function agregarNuevosEmpleadosRol(idRolPago: number) {
+      try {
+        cargando.activar()
+        const axios = AxiosHttpRepository.getInstance()
+        const ruta = axios.getEndpoint(endpoints.agregar_nuevos_empleados) + idRolPago
+        const response: AxiosResponse = await axios.get(ruta)
+        await filtrarRolPagoEmpleado(estadosRolPagoEmpleado.ejecutando, response.data.mensaje)
+      } catch (error) {
+        notificarAdvertencia(error + '')
+      } finally {
+        cargando.desactivar()
+      }
+    }
+    
     return {
       removeAccents,
       mixin,
@@ -465,6 +496,7 @@ export default defineComponent({
       btnEnviarRolPagoEmpleado,
       btnCashRolPago,
       btnRefrescar,
+      btnActualizarEmpleadosRol,
       configuracionColumnas: configuracionColumnasRolPagoMes,
       accionesTabla,
       tabActualRolPago,
