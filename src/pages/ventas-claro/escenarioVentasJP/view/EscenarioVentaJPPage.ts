@@ -6,7 +6,7 @@ import { useQuasar } from 'quasar'
 import { useVuelidate } from '@vuelidate/core'
 import { ContenedorSimpleMixin } from 'shared/contenedor/modules/simple/application/ContenedorSimpleMixin'
 import { PlanesController } from 'pages/ventas-claro/planes/infrestructure/PlanesController'
-import { formas_pago, tipos_vendedor } from 'config/utils'
+import { acciones, formas_pago, tipos_vendedor } from 'config/utils'
 import { EscenarioVentaJP } from '../domain/EscenarioVentaJP'
 import { EscenarioVentaJPController } from '../infrestructure/EscenarioVentaJPController'
 import { configuracionColumnasEscenarioVentaJP } from '../domain/configuracionColumnasEscenarioVentaJP'
@@ -39,6 +39,9 @@ export default defineComponent({
      **************/
     const reglas = {
       mes: {
+        required: true,
+      },
+      numero_mes: {
         required: true,
       },
       vendedores: {
@@ -75,6 +78,8 @@ export default defineComponent({
     const v$ = useVuelidate(reglas, escenario_venta_jp)
     setValidador(v$.value)
     const planes = ref([])
+    const is_month = ref(false)
+
     cargarVista(async () => {
       await obtenerListados({
         planes: {
@@ -100,13 +105,21 @@ export default defineComponent({
         )
       })
     }
+     /**Verifica si es un mes */
+     function checkValue(reason) {
+      is_month.value = reason === 'month' ? false : true
+    }
+
     return {
       mixin,
       escenario_venta_jp,
       tipos_vendedor,
       disabled,
       accion,
+      acciones,
       v$,
+      is_month,
+      checkValue,
       formas_pago,
       planes,
       filtrarPlanes,

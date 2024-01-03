@@ -1,7 +1,8 @@
 import { EntidadAuditable } from 'shared/entidad/domain/entidadAuditable'
 export class EscenarioVentaJP extends EntidadAuditable {
   id: number | null
-  mes: number | null
+  mes: string | null
+  numero_mes: number | null
   vendedores: number | null
   productividad_minima: number | null
   vendedores_acumulados: number | null
@@ -17,6 +18,7 @@ export class EscenarioVentaJP extends EntidadAuditable {
     super()
     this.id = null
     this.mes = null
+    this.numero_mes = null
     this.vendedores = null
     this.productividad_minima = null
     this.vendedores_acumulados = null

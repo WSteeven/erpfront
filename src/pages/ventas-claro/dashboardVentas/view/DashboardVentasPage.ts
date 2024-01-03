@@ -182,8 +182,6 @@ export default defineComponent({
           //Grafico vendedor por planes
           ventasPorPlanesoBar.value = result.ventasPorPlanesoBar
           ventasTiemposLine.value = result.ventasTiemposLine
-          optionsLine.plugins.datalabels.formatter = (value) =>
-            value + ' ventas'
         } catch (e) {
           console.log(e)
         } finally {

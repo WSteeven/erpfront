@@ -3,6 +3,13 @@ import { EscenarioVentaJP } from "./EscenarioVentaJP";
 
 export const configuracionColumnasEscenarioVentaJP: ColumnConfig<EscenarioVentaJP>[] = [
   {
+    name: 'numero_mes',
+    field: 'numero_mes',
+    label: 'Número de Mes',
+    align: 'left',
+    sortable: true
+  },
+  {
     name: 'mes',
     field: 'mes',
     label: 'Mes',
