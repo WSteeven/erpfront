@@ -31,14 +31,6 @@ export const configuracionColumnasEmpleados: ColumnConfig<Empleado>[] = [
         sortable: true
     },
     {
-        name: 'fecha_nacimiento',
-        field: 'fecha_nacimiento',
-        label: 'Fecha de nacimiento',
-        align: 'left',
-        sortable: true,
-        style: 'width:100px'
-    },
-    {
         name: 'jefe',
         field: 'jefe',
         label: 'Jefe',
@@ -81,60 +73,10 @@ export const configuracionColumnasEmpleados: ColumnConfig<Empleado>[] = [
       align: 'left',
       sortable: true
   },
-  //tipo_contrato
-  {
-    name: 'tipo_contrato_info',
-    field: 'tipo_contrato_info',
-    label: 'Tipo de Contrato',
-    align: 'left',
-    sortable: true
-},
-    {
-        name: 'roles',
-        field: 'roles',
-        label: 'Roles',
-        align: 'left',
-        sortable: true
-    },
-    {
-      name: 'banco_info',
-      field: 'banco_info',
-      label: 'Banco',
-      align: 'left',
-      sortable: true
-  },
-  {
-    name: 'num_cuenta',
-    field: 'num_cuenta',
-    label: 'Numero de cuenta',
-    align: 'left',
-    sortable: true
-},
-{
-  name: 'fecha_ingreso',
-  field: 'fecha_ingreso',
-  label: 'Fecha de Ingreso',
-  align: 'left',
-  sortable: true
-},
-{
-  name: 'antiguedad',
-  field: 'antiguedad',
-  label: 'Antiguedad',
-  align: 'left',
-  sortable: true
-},
 {
   name: 'fecha_vinculacion',
   field: 'fecha_vinculacion',
   label: 'Fecha de Vinculacion',
-  align: 'left',
-  sortable: true
-},
-{
-  name: 'salario',
-  field: 'salario',
-  label: 'Salario',
   align: 'left',
   sortable: true
 },
