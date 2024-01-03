@@ -189,6 +189,7 @@ export default defineComponent({
       },
       accion: ({ entidad }) => {
         console.log(entidad)
+        rolPagoStore.idEmpleado = entidad.empleado
         rolPagoStore.idRolPagoSeleccionada = entidad.id
         rolPagoStore.idRolPagoMes = entidad.id
         rolPagoStore.accion = acciones.editar
