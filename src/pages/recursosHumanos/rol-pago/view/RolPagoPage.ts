@@ -890,7 +890,7 @@ export default defineComponent({
           } else {
             if (rolpago.es_quincena) {
               if (dias == 15) total_sueldo = sueldo
-              else total_sueldo = salario / 15 * dias * porcentajeAnticipo
+              else total_sueldo = salario / 30 * dias * porcentajeAnticipo
             } else total_sueldo = sueldo
             console.log(total_sueldo)
           }
