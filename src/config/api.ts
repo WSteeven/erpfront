@@ -154,6 +154,7 @@ export const endpoints = {
 
 
   actualizar_rol_pago: new Endpoint('recursos-humanos/actualizar-rol-pago/'),
+  agregar_nuevos_empleados: new Endpoint('recursos-humanos/agregar-nuevos-empleados/'),
 
   enviar_rol_pago: new Endpoint('recursos-humanos/enviar-roles-pago/'),
   enviar_rol_pago_empleado: new Endpoint(
