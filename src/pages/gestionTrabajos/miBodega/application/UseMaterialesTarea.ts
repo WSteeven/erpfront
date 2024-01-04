@@ -67,10 +67,10 @@ export function useMaterialesTarea(filtro: UnwrapRef<FiltroMiBodega>, listadosAu
     }
   }
 
-  async function consultarClientesMaterialesTarea() {
+  async function consultarClientesMaterialesTarea(filtroClientes) {
     try {
       cargando.activar()
-      const { result } = await clienteMaterialTareaController.listar({ empleado_id: authenticationStore.user.id })
+      const { result } = await clienteMaterialTareaController.listar({ empleado_id: authenticationStore.user.id, ...filtroClientes })
       listadosAuxiliares.clientesMaterialesTarea = result
     } catch (e) {
       console.log(e)

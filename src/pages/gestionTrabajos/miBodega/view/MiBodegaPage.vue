@@ -38,6 +38,7 @@
           <div class="row q-col-gutter-sm q-pa-sm q-mb-md">
             <!-- Tarea -->
             <div class="col-12 col-md-6">
+              <!-- {{ filtro }} -->
               <label class="q-mb-sm block">Seleccione una tarea</label>
               <q-select
                 v-model="filtro.tarea_id"
@@ -75,7 +76,7 @@
                     @click="refrescarListadosTareas('tareas')"
                   >
                     <q-icon size="xs" name="bi-arrow-clockwise" />
-                    <q-tooltip>Recargar proyectos</q-tooltip>
+                    <q-tooltip>Recargar tareas</q-tooltip>
                   </q-btn>
                 </template>
               </q-select>
@@ -196,6 +197,7 @@
                 @filter="filtrarEtapas"
                 transition-show="scale"
                 transition-hide="scale"
+                @update:model-value="seleccionarEtapa()"
                 options-dense
                 dense
                 outlined
@@ -243,7 +245,7 @@
                     @click="refrescarListadosProyectos('clientes')"
                   >
                     <q-icon size="xs" name="bi-arrow-clockwise" />
-                    <q-tooltip>Recargar proyectos</q-tooltip>
+                    <q-tooltip>Recargar clientes</q-tooltip>
                   </q-btn>
                 </template>
               </q-select>

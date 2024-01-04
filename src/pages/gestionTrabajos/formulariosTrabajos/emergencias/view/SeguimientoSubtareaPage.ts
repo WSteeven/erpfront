@@ -167,7 +167,7 @@ export default defineComponent({
      * Botones tabla
      ****************/
     const botonEditarCantidadTarea: CustomActionTable = {
-      titulo: 'Cantidad utilizada',
+      titulo: 'Cantidad utilizada gh',
       icono: 'bi-pencil-square',
       color: 'primary',
       visible: () => permitirSubir,
@@ -306,6 +306,9 @@ export default defineComponent({
       const params = {
         tarea_id: trabajoAsignadoStore.idTareaSeleccionada,
         subtarea_id: trabajoAsignadoStore.subtarea.id,
+        proyecto_id: trabajoAsignadoStore.proyecto_id,
+        etapa_id: trabajoAsignadoStore.etapa_id,
+        cliente_id: trabajoAsignadoStore.cliente_id,
         empleado_id: obtenerIdEmpleadoResponsable(),
         detalle_producto_id: material.detalle_producto_id,
         cantidad_utilizada: material.cantidad_utilizada,

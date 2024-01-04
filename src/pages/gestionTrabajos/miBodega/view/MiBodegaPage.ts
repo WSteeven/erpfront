@@ -74,7 +74,7 @@ export default defineComponent({
           consultarProyectos().then(() => proyectos.value = listadosAuxiliares.proyectos)
           break
         case 'clientes':
-          consultarClientesMaterialesTarea()
+          consultarClientesMaterialesTarea({ proyecto_id: filtroProyecto.proyecto_id, etapa_id: filtroProyecto.etapa_id, filtrar_por_proyecto: true })
           break
       }
     }
@@ -85,7 +85,7 @@ export default defineComponent({
           consultarTareasClienteFinalMantenimiento()
           break
         case 'clientes':
-          consultarClientesMaterialesTarea()
+          consultarClientesMaterialesTarea({ tarea_id: filtro.tarea_id, filtrar_por_tarea: 1 })
           break
       }
     }
@@ -100,8 +100,11 @@ export default defineComponent({
 
     function seleccionarTarea() {
       listadosAuxiliares.productos = []
+      filtro.cliente_id = undefined
       const tarea = (listadosAuxiliares.tareas as any).find((tarea: Tarea) => tarea.id === filtro.tarea_id)
-      filtro.cliente_id = tarea.cliente_id
+      // filtro.cliente_id = tarea.cliente_id
+
+      consultarClientesMaterialesTarea({ tarea_id: filtro.tarea_id, filtrar_por_tarea: 1 })
     }
 
     async function seleccionarProyecto() {
@@ -110,7 +113,8 @@ export default defineComponent({
         etapas.value = listadosAuxiliares.etapas
 
         const proyecto: Proyecto | undefined = listadosAuxiliares.proyectos.find((proyecto: Proyecto) => proyecto.id === filtroProyecto.proyecto_id)
-        filtroProyecto.cliente_id = proyecto!!.cliente_id
+        filtroProyecto.cliente_id = undefined
+        // filtroProyecto.cliente_id = proyecto!!.cliente_id
       } else {
         listadosAuxiliares.etapas = []
       }
@@ -119,6 +123,12 @@ export default defineComponent({
       listadosAuxiliares.productos = []
       filtroProyecto.etapa_id = null
       filtro.cliente_id = null
+
+      if (!!!listadosAuxiliares.etapas.length) consultarClientesMaterialesTarea({ proyecto_id: filtroProyecto.proyecto_id, filtrar_por_proyecto: 1 })
+    }
+
+    function seleccionarEtapa() {
+      consultarClientesMaterialesTarea({ proyecto_id: filtroProyecto.proyecto_id, etapa_id: filtroProyecto.etapa_id, filtrar_por_etapa: 1 })
     }
 
     function consultarProductosProyectoEtapa() {
@@ -129,7 +139,7 @@ export default defineComponent({
     /*******
      * Init
      *******/
-    consultarClientesMaterialesTarea()
+    consultarClientesMaterialesTarea({ filtrar_por_tarea: true })
     consultarClientesMaterialesEmpleado()
     consultarTareasClienteFinalMantenimiento()
     consultarProyectos().then(() => proyectos.value = listadosAuxiliares.proyectos)
@@ -142,10 +152,12 @@ export default defineComponent({
         case destinosTareas.paraClienteFinal:
           listadosAuxiliares.productos = listadosAuxiliares.productosTarea
           transferenciaProductoEmpleadoStore.listadoMateriales = listadosAuxiliares.productosTarea
+          // consultarClientesMaterialesTarea({ filtrar_por_tarea: true })
           break
         case destinosTareas.paraProyecto:
           listadosAuxiliares.productos = listadosAuxiliares.productosProyectosEtapas
           transferenciaProductoEmpleadoStore.listadoMateriales = listadosAuxiliares.productosProyectosEtapas
+          // consultarClientesMaterialesTarea({ filtrar_por_proyecto: true })
           break
         case 'personal':
           listadosAuxiliares.productos = listadosAuxiliares.productosStock
@@ -177,6 +189,7 @@ export default defineComponent({
       filtrarEtapas,
       seleccionarTarea,
       seleccionarProyecto,
+      seleccionarEtapa,
       consultarProductosTarea,
       consultarProductosProyectoEtapa,
       consultarProductosEmpleado,

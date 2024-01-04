@@ -104,7 +104,7 @@
             <q-tab-panels v-model="tab" animated class="bg-body">
               <q-tab-panel name="usar_material_tarea">
                 <div class="row q-col-gutter-sm q-pa-sm q-mb-md">
-                  <div class="col-12 col-md-6">
+                  <!-- <div class="col-12 col-md-6">
                     <label class="q-mb-sm block"
                       >Seleccione un cliente para filtrar el material</label
                     >
@@ -127,7 +127,7 @@
                       map-options
                     >
                     </q-select>
-                  </div>
+                  </div> -->
 
                   <div class="col-12 col-md-6">
                     <br />
