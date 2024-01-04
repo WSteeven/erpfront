@@ -1,12 +1,15 @@
 <template>
-  <tab-layout
+  <tab-layout-filter-tabs2
     :mixin="mixin"
     :configuracionColumnas="configuracionColumnas"
     titulo-pagina="Transacciones - Egresos"
     :permitirEditar="false"
     :accion1="botonImprimir"
     :accion2="botonAnular"
+    :tab-options="tabOptionsTransaccionesEgresos"
     :ajustarCeldas="true"
+    :tabDefecto="tabDefecto"
+    :filtrar="filtrarTransacciones"
   >
     <template #formulario>
       <div
@@ -603,7 +606,7 @@
       >
       </essential-selectable-table>
     </template>
-  </tab-layout>
+  </tab-layout-filter-tabs2>
   <modales-entidad
     :comportamiento="modalesEmpleado"
     :confirmarCerrar="false"

@@ -488,3 +488,10 @@ export const estados = [
   { nombre: 'Parcial', id: 3 }, //estado PARCIAL
   { nombre: 'Anulado', id: 4 }  //estado ANULADO
 ]
+
+
+export const tabOptionsTransaccionesEgresos: TabOption[] = [
+  { label: 'Pendientes', value: 'PENDIENTE' },
+  { label: 'Completas', value: 'COMPLETA' },
+  { label: 'Anuladas', value: 'ANULADA' }
+]
