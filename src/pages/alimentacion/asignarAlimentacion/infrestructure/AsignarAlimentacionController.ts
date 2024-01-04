@@ -4,6 +4,6 @@ import { endpoints } from 'config/api';
 
 export class AsignarAlimentacionController extends TransaccionSimpleController<AsignarAlimentacion>{
   constructor() {
-    super(endpoints.umbral)
+    super(endpoints.asignar_alimentacion)
   }
 }

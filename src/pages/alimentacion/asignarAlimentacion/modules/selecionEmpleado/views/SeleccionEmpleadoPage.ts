@@ -20,9 +20,7 @@ export default defineComponent({
 
         function seleccionar() {
             empleadosSeleccionados.value = refListado.value.selected
-            console.log(asignacionAlimentacionStore.valor_asignar);
-
-           // asignacionAlimentacionStore.crearPreordenConsolida(empleadosSeleccionados.value)
+            asignacionAlimentacionStore.asignarAlimentacion(empleadosSeleccionados.value,asignacionAlimentacionStore.valor_asignar)
             cerrarModal(false)
             emit('guardado',empleadosSeleccionados.value)
         }

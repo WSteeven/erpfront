@@ -27,7 +27,23 @@ export const useAsignacionAlimentacionStore = defineStore('preorden', () => {
         statusLoading.desactivar()
     }
 }
+async function asignarAlimentacion(data,valor_asignar) {
+  try {
+      statusLoading.activar()
+      const axios = AxiosHttpRepository.getInstance()
+      const url = apiConfig.URL_BASE + '/' + axios.getEndpoint(endpoints.asignar_alimentacion)
+      data = {empleados: data,valor_minimo: valor_asignar}
+      const response: AxiosResponse = await axios.post(url, data)
+      console.log(response)
+  } catch (e: any) {
+      notificarError(e)
+  } finally {
+      statusLoading.desactivar()
+  }
+}
+
   return {
+    asignarAlimentacion,
     listarempleados,
     listadoItems,
     valor_asignar,

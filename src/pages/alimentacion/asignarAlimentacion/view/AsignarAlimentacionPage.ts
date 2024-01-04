@@ -37,7 +37,7 @@ export default defineComponent({
       accion,
       listadosAuxiliares,
     } = mixin.useReferencias()
-    const { setValidador, obtenerListados, cargarVista } =
+    const { setValidador, obtenerListados, cargarVista,listar } =
       mixin.useComportamiento()
     const { confirmar, prompt, notificarCorrecto, notificarError } =
       useNotificaciones()
@@ -122,7 +122,7 @@ export default defineComponent({
     }
     async function guardado(data) {
       console.log(data)
-      //await listar({ solicitante_id: store.user.id, estado: tabSeleccionado.value })
+      await listar()
     }
     return {
       mixin,
