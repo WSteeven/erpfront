@@ -3,8 +3,8 @@ import { AsignarAlimentacion } from "./AsignarAlimentacion";
 
 export const configuracionColumnasAsignarAlimentacion: ColumnConfig<AsignarAlimentacion>[] = [
   {
-    name: 'empleados_info',
-    field: 'empleados_info',
+    name: 'empleado_info',
+    field: 'empleado_info',
     label: 'Empleados',
     align: 'left',
     sortable: true
@@ -16,14 +16,5 @@ export const configuracionColumnasAsignarAlimentacion: ColumnConfig<AsignarAlime
     align: 'left',
     sortable: true
   },
-  {
-    name: 'fecha_corte',
-    field: 'fecha_corte',
-    label: 'Fecha de Corte',
-    align: 'left',
-    sortable: true
-  },
-
-
 
 ]

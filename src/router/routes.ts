@@ -1150,7 +1150,16 @@ const routes: RouteRecordRaw[] = [
         component: () =>
           import('pages/ventas-claro/reporte/reporte_ventas/view/ReporteVentasPage.vue'),
         meta: { requiresAuth: true },
-      },],
+      },
+      {
+        path: '/asignar-alimentacion',
+        name: 'asignar_alimentacion',
+        component: () =>
+          import('pages/alimentacion/asignarAlimentacion/view/AsignarAlimentacion.vue'),
+        meta: { requiresAuth: true },
+      },
+
+    ],
   },
   {
     path: '/login',

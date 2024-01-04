@@ -524,6 +524,12 @@ export const useMenuStore = defineStore('menu', () => {
           can: store.can('puede.acceder.extension_conyugal'),
         },
         {
+          title: 'Alimentacion',
+          link: 'asignar-alimentacion',
+          icon: 'bi-circle',
+          can: store.can('puede.acceder.asignar_alimentacion'),
+        },
+        {
           title: 'Prestamos',
           icon: 'fa-solid fa-hand-holding-dollar',
           can: true,//store.can('puede.ver.prestamo_empresarial'),

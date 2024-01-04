@@ -1,13 +1,17 @@
 <template>
-  <tab-layout :mixin="mixin" :configuracionColumnas="configuracionColumnas">
+  <tab-layout
+    :mixin="mixin"
+    :configuracionColumnas="configuracionColumnas"
+    :accion1Header="btnSeleccionarEmpleado"
+  >
     <template #formulario>
       <q-form @submit.prevent>
         <div class="row q-col-gutter-sm q-mb-md">
-          <!-- Empleados -->
+          <!--Empleados-->
           <div class="col-12 col-md-3">
-            <label class="q-mb-sm block">Empleado</label>
+            <label class="q-mb-sm block">Empleados</label>
             <q-select
-              v-model="umbral.empleado"
+              v-model="asignar_alimentacion.empleado"
               :options="empleados"
               transition-show="jump-up"
               transition-hide="jump-down"
@@ -16,11 +20,9 @@
               outlined
               :disable="disabled"
               :readonly="disabled"
-              :error="!!v$.empleado.$errors.length"
-              @blur="v$.empleado.$touch"
-              error-message="Debes seleccionar un empleado"
               use-input
               input-debounce="0"
+              @blur="v$.empleado.$touch"
               @filter="filtrarEmpleados"
               :option-value="(v) => v.id"
               :option-label="(v) => v.nombres + ' ' + v.apellidos"
@@ -39,32 +41,12 @@
               </template>
             </q-select>
           </div>
-          <!-- Nombre -->
-          <div class="col-12 col-md-3">
-            <label class="q-mb-sm block">Referencia</label>
-            <q-input
-              v-model="umbral.referencia"
-              placeholder="Obligatorio"
-              type="textarea"
-              :disable="disabled"
-              :error="!!v$.referencia.$errors.length"
-              autogrow
-              @blur="v$.referencia.$touch"
-              outlined
-              dense
-            >
-              <template v-slot:error>
-                <div v-for="error of v$.referencia.$errors" :key="error.$uid">
-                  <div class="error-msg">{{ error.$message }}</div>
-                </div>
-              </template>
-            </q-input>
-          </div>
+
           <!-- Valor minimo -->
           <div class="col-12 col-md-3">
             <label class="q-mb-sm block">Valor minimo</label>
             <q-input
-              v-model="umbral.valor_minimo"
+              v-model="asignar_alimentacion.valor_minimo"
               placeholder="Obligatorio"
               type="number"
               :disable="disabled"
@@ -84,5 +66,11 @@
       </q-form>
     </template>
   </tab-layout>
+  <!-- Modales -->
+  <modales-entidad
+    :comportamiento="modales"
+    :persistente="false"
+    @guardado="(data) => guardado(data)"
+  />
 </template>
-<script src="./UmbralPage.ts"></script>
+<script src="./AsignarAlimentacionPage.ts"></script>
