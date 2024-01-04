@@ -69,7 +69,7 @@ export function useMaterialesProyecto(filtro: UnwrapRef<FiltroMiBodegaProyecto>,
 
   async function consultarProyectos() {
     const params = {
-      campos: 'id,nombre,codigo_proyecto,cliente_id,etapas',
+      campos: 'id,nombre,codigo_proyecto,cliente_id,etapas,coordinador_id',
       finalizado: 0,
       empleado_id: filtro.empleado_id,
     }
@@ -105,7 +105,7 @@ export function useMaterialesProyecto(filtro: UnwrapRef<FiltroMiBodegaProyecto>,
 
   async function consultarEtapas(idProyecto: number) {
     const params = {
-      campos: 'id,nombre',
+      campos: 'id,nombre,supervisor_id',
       activo: 1,
       empleado_id: authenticationStore.user.id,
       proyecto_id: idProyecto,

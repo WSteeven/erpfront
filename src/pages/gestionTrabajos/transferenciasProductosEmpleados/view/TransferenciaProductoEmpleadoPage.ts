@@ -44,6 +44,7 @@ import { useTransferenciaProductoEmpleadoStore } from 'stores/transferenciaProdu
 import { FiltroMiBodegaProyecto } from 'pages/gestionTrabajos/miBodega/domain/FiltroMiBodegaProyecto'
 import { useMaterialesProyecto } from 'pages/gestionTrabajos/miBodega/application/UseMaterialesProyecto'
 import { Proyecto } from 'pages/gestionTrabajos/proyectos/domain/Proyecto'
+import { Etapa } from 'pages/gestionTrabajos/proyectos/modules/etapas/domain/Etapa'
 
 export default defineComponent({
   name: 'TransferenciaProductoEmpleado',
@@ -121,6 +122,7 @@ export default defineComponent({
       transferencia.proyecto_origen = transferenciaProductoEmpleadoStore.idProyecto
       transferencia.etapa_origen = transferenciaProductoEmpleadoStore.idEtapa
       transferencia.empleado_origen = useAuthenticationStore().user.id
+      transferencia.cliente_id = transferenciaProductoEmpleadoStore.cliente_id
       // console.log(transferenciaProductoEmpleadoStore.idProyecto)
 
       if (transferenciaProductoEmpleadoStore.listadoMateriales.length) {
@@ -188,7 +190,10 @@ export default defineComponent({
     })
 
     watch(computed(() => transferencia.proyecto_origen), (id) => {
-      if (id) consultarEtapasEmpleadoOrigen(id)
+      if (id) {
+        consultarEtapasEmpleadoOrigen(id)
+        console.log('proyecto origen')
+      }
     })
 
     watch(computed(() => transferencia.proyecto_destino), (id) => {
@@ -227,18 +232,38 @@ export default defineComponent({
       filtroProyecto.empleado_id = transferencia.empleado_destino
       await consultarEtapasDestino(idProyecto)
       etapasDestino.value = listadosAuxiliares.etapasDestino
+
+      if (esTransferenciaEntreEtapas()) transferencia.autorizador = buscarEtapa().supervisor_id
     }
 
     async function consultarProyectosEmpleadoDestino() {
       filtroProyecto.empleado_id = transferencia.empleado_destino
       await consultarProyectosDestino()
-      const esEntreEtapas = !!listadosAuxiliares.proyectos.find((proyecto: Proyecto) => proyecto.id === transferencia.proyecto_origen)?.etapas.length
+      const esEntreEtapas = esTransferenciaEntreEtapas() //!!listadosAuxiliares.proyectos.find((proyecto: Proyecto) => proyecto.id === transferencia.proyecto_origen)?.etapas.length
 
       console.log(esEntreEtapas)
 
       listadosAuxiliares.proyectosDestino = esEntreEtapas ? listadosAuxiliares.proyectosDestino.filter((proyecto: Proyecto) => proyecto.etapas.length > 0) : listadosAuxiliares.proyectosDestino.filter((proyecto: Proyecto) => proyecto.etapas.length === 0)
       proyectosDestino.value = listadosAuxiliares.proyectosDestino
+
+      if (!esEntreEtapas) transferencia.autorizador = buscarProyecto().coordinador_id
       // proyectosDestino.value = listadosAuxiliares.proyectosDestino
+    }
+
+    function esTransferenciaEntreEtapas() {
+      return !!listadosAuxiliares.proyectos.find((proyecto: Proyecto) => proyecto.id === transferencia.proyecto_origen)?.etapas.length
+    }
+
+    function buscarProyecto(): Proyecto {
+      const proy = listadosAuxiliares.proyectos.find((proyecto: Proyecto) => proyecto.id === transferencia.proyecto_origen)
+      console.log(listadosAuxiliares.proyectos)
+      console.log(transferencia.proyecto_origen)
+      console.log(proy)
+      return proy
+    }
+
+    function buscarEtapa(): Etapa {
+      return listadosAuxiliares.etapas.find((etapa: Etapa) => etapa.id === transferencia.etapa_origen)
     }
 
     const puedeEditar = ref()
