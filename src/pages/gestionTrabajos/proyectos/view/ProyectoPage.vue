@@ -219,14 +219,15 @@
           </div>
 
           <!-- Coordinador -->
-          <div v-if="mostrarCoordinador" class="col-12 col-md-3">
+          <!-- v-if="mostrarCoordinador && accion === acciones.nuevo" -->
+          <div class="col-12 col-md-3">
             <label class="q-mb-sm block">Coordinador</label>
             <q-select
               v-model="proyecto.coordinador"
               :options="coordinadores"
               @filter="filtrarCoordinadores"
               @blur="v$.coordinador.$touch"
-              :disable="disabled"
+              :disable="disabled || !mostrarCoordinador"
               transition-show="scale"
               transition-hide="scale"
               options-dense
@@ -297,11 +298,15 @@
             />
           </div>
           <!-- Tiene etapas -->
-          <div class="col-12 col-md-12" v-if="accion!==acciones.nuevo">
+          <div class="col-12 col-md-12" v-if="accion !== acciones.nuevo">
             <essential-table
               ref="refEtapas"
               titulo="Etapas del proyecto"
-              :configuracionColumnas="accion==acciones.nuevo||accion==acciones.editar? [...columnasEtapas, accionesTabla]:columnasEtapas"
+              :configuracionColumnas="
+                accion == acciones.nuevo || accion == acciones.editar
+                  ? [...columnasEtapas, accionesTabla]
+                  : columnasEtapas
+              "
               :datos="proyecto.etapas"
               :accion1Header="addNuevaEtapa"
               :permitirBuscar="false"

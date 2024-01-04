@@ -122,7 +122,7 @@ export default defineComponent({
       transferencia.proyecto_origen = transferenciaProductoEmpleadoStore.idProyecto
       transferencia.etapa_origen = transferenciaProductoEmpleadoStore.idEtapa
       transferencia.empleado_origen = useAuthenticationStore().user.id
-      transferencia.cliente_id = transferenciaProductoEmpleadoStore.cliente_id
+      transferencia.cliente = transferenciaProductoEmpleadoStore.cliente_id
       // console.log(transferenciaProductoEmpleadoStore.idProyecto)
 
       if (transferenciaProductoEmpleadoStore.listadoMateriales.length) {
