@@ -167,7 +167,7 @@ export default defineComponent({
      * Botones tabla
      ****************/
     const botonEditarCantidadTarea: CustomActionTable = {
-      titulo: 'Cantidad utilizada gh',
+      titulo: 'Cantidad utilizada',
       icono: 'bi-pencil-square',
       color: 'primary',
       visible: () => permitirSubir,
@@ -402,16 +402,16 @@ export default defineComponent({
 
     function obtenerClientesMaterialesEmpleado() {
       cargarVista(async () => {
-        const ruta = axios.getEndpoint(endpoints.obtener_clientes_materiales_empleado) + '/' + obtenerIdEmpleadoResponsable()
-        const response: AxiosResponse = await axios.get(ruta)
+        const ruta = axios.getEndpoint(endpoints.obtener_clientes_materiales_empleado) //+ '/' + obtenerIdEmpleadoResponsable()
+        const response: AxiosResponse = await axios.get(ruta, { empleado_id: obtenerIdEmpleadoResponsable() })
         clientes.value = response.data.results
       })
     }
 
     function obtenerClientesMaterialesTarea() {
       cargarVista(async () => {
-        const ruta = axios.getEndpoint(endpoints.obtener_clientes_materiales_tarea) + '/' + obtenerIdEmpleadoResponsable()
-        const response: AxiosResponse = await axios.get(ruta)
+        const ruta = axios.getEndpoint(endpoints.obtener_clientes_materiales_tarea)// + '/' + obtenerIdEmpleadoResponsable()
+        const response: AxiosResponse = await axios.get(ruta, { empleado_id: obtenerIdEmpleadoResponsable() })
         clientesMaterialesTarea.value = response.data.results
       })
     }
