@@ -3,6 +3,9 @@
     :mixin="mixin"
     :configuracionColumnas="configuracionColumnas"
     :accion1Header="btnSeleccionarEmpleado"
+    :accion2Header="btnRealizarCorte"
+    :accion3Header="btnVisualizarCorte"
+
   >
     <template #formulario>
       <q-form @submit.prevent>

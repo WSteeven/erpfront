@@ -526,7 +526,7 @@ export const useMenuStore = defineStore('menu', () => {
         {
           title: 'Alimentacion',
           link: 'asignar-alimentacion',
-          icon: 'bi-circle',
+          icon: 'fa-solid fa-utensils',
           can: store.can('puede.acceder.asignar_alimentacion'),
         },
         {

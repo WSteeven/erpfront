@@ -41,10 +41,23 @@ async function asignarAlimentacion(data,valor_asignar) {
       statusLoading.desactivar()
   }
 }
-
+async function realizarCorte() {
+  try {
+      statusLoading.activar()
+      const axios = AxiosHttpRepository.getInstance()
+      const url = apiConfig.URL_BASE + '/' + axios.getEndpoint(endpoints.alimentacion)
+      const response: AxiosResponse = await axios.post(url, null)
+      console.log(response)
+  } catch (e: any) {
+      notificarError(e)
+  } finally {
+      statusLoading.desactivar()
+  }
+}
   return {
     asignarAlimentacion,
     listarempleados,
+    realizarCorte,
     listadoItems,
     valor_asignar,
 }

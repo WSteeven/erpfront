@@ -120,6 +120,38 @@ export default defineComponent({
       },
       visible: () => true,
     }
+    const btnRealizarCorte: CustomActionTable = {
+      titulo: 'Realizar Corte',
+      tooltip: 'Seleccionar Empleado',
+      icono: 'fa-solid fa-utensils',
+      color: 'warning',
+
+      accion: async () => {
+        confirmar(
+          '¿Está seguro de realizar corte?',
+          async () => {
+            confirmar(
+              'Esto realizara los cortes de alimentacion de los empleados. ¿Desea continuar?',
+              async () => {
+                asignacionAlimentacionStore.realizarCorte();
+                modales.abrirModalEntidad('AlimentacionPage')
+              }
+            )
+          }
+        )
+      },
+      visible: () => true,
+    }
+    const btnVisualizarCorte: CustomActionTable = {
+      titulo: 'Visualizar Corte',
+      tooltip: 'Visualizar Corte de alimentacion',
+      icono: 'bi-eye-fill',
+      color: 'primary',
+      accion: async () => {
+        modales.abrirModalEntidad('AlimentacionPage')
+      },
+      visible: () => true,
+    }
     async function guardado(data) {
       console.log(data)
       await listar()
@@ -130,6 +162,8 @@ export default defineComponent({
       guardado,
       filtrarEmpleados,
       btnSeleccionarEmpleado,
+      btnRealizarCorte,
+      btnVisualizarCorte,
       maskFecha,
       empleados,
       modales,
