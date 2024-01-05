@@ -221,7 +221,7 @@
           <!-- Coordinador -->
           <!-- v-if="mostrarCoordinador && accion === acciones.nuevo" -->
           <div class="col-12 col-md-3">
-            <label class="q-mb-sm block">Coordinador</label>
+            <label class="q-mb-sm block">Coordinador/Supervisor</label>
             <q-select
               v-model="proyecto.coordinador"
               :options="coordinadores"

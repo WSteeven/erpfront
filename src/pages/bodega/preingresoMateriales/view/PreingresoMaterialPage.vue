@@ -350,7 +350,7 @@
 
           <!-- Coordinador -->
           <div class="col-12 col-md-3">
-            <label class="q-mb-sm block">Coordinador</label>
+            <label class="q-mb-sm block">Coordinador/Supervisor</label>
             <q-select
               v-model="preingreso.coordinador"
               :options="coordinadores"
