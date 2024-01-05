@@ -50,6 +50,7 @@
       :tab-options="tabTrabajoAsignado"
       @tab-seleccionado="filtrarTrabajoAsignado"
       :tab-defecto="tabActual"
+      :permitir-buscar="true"
     ></essential-table-tabs>
 
     <modales-entidad

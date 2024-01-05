@@ -5,7 +5,7 @@ import { AxiosHttpRepository } from 'shared/http/infraestructure/AxiosHttpReposi
 import { regiones, atenciones, accionesTabla, estadosTrabajos } from 'config/utils'
 import { CustomActionPrompt } from 'components/tables/domain/CustomActionPrompt'
 import { CustomActionTable } from 'components/tables/domain/CustomActionTable'
-import { computed, defineComponent, onMounted, Ref, ref, watch } from 'vue'
+import { computed, defineComponent, onMounted, reactive, Ref, ref, watch } from 'vue'
 import { useNotificaciones } from 'shared/notificaciones'
 import { apiConfig, endpoints } from 'config/api'
 import { AxiosResponse } from 'axios'
@@ -40,6 +40,11 @@ import { Ticket } from 'pages/gestionTickets/tickets/domain/Ticket'
 import { imprimirArchivo, obtenerFechaActual } from 'shared/utils'
 import { useTrabajoAsignadoStore } from 'stores/trabajoAsignado'
 import { useAuthenticationStore } from 'stores/authentication'
+import { useMaterialesTarea } from 'pages/gestionTrabajos/miBodega/application/UseMaterialesTarea'
+import { useMaterialesProyecto } from 'pages/gestionTrabajos/miBodega/application/UseMaterialesProyecto'
+import { FiltroMiBodegaProyecto } from 'pages/gestionTrabajos/miBodega/domain/FiltroMiBodegaProyecto'
+import { useMaterialesEmpleado } from 'pages/gestionTrabajos/miBodega/application/UseMaterialesEmpleado'
+import { FiltroMiBodegaEmpleado } from 'pages/gestionTrabajos/miBodega/domain/FiltroMiBodegaEmpleado'
 
 export default defineComponent({
   components: {
@@ -134,19 +139,42 @@ export default defineComponent({
 
     const axios = AxiosHttpRepository.getInstance()
 
+    const parametrosGenerales = {
+      tarea_id: trabajoAsignadoStore.idTareaSeleccionada,
+      subtarea_id: trabajoAsignadoStore.subtarea.id,
+      proyecto_id: trabajoAsignadoStore.proyecto_id,
+      etapa_id: trabajoAsignadoStore.etapa_id,
+      cliente_id: trabajoAsignadoStore.cliente_id,
+      empleado_id: obtenerIdEmpleadoResponsable(),
+    }
+
     // Tickets
     const modales = new ComportamientoModalesTicketAsignado()
     const mixin = new ContenedorSimpleMixin(Ticket, new TicketController())
     const { obtenerListados } = mixin.useComportamiento()
+    const { listadosAuxiliares } = mixin.useReferencias()
     obtenerListados({
       motivosCancelados: {
         controller: new MotivoCanceladoTicketController(),
         params: { activo: 1 },
-      }
+      },
+      clientesMaterialesTarea: [],
+      clientesMaterialesEmpleado: [],
     })
 
     const { mostrarSolicitudesAts, consultarTicketsATS, ticketsAts, guardarFilaSolicitudAts } = useGestionAtsApplication(cargarVista)
     const { btnSeguimiento, btnCancelar } = useBotonesTablaTicket(mixin, modales)
+
+    const filtroMiBodegaProyecto = reactive(new FiltroMiBodegaProyecto())
+    filtroMiBodegaProyecto.empleado_id = parametrosGenerales.empleado_id
+    filtroMiBodegaProyecto.proyecto_id = parametrosGenerales.proyecto_id
+    filtroMiBodegaProyecto.etapa_id = parametrosGenerales.etapa_id
+
+    const filtroEmpleado = new FiltroMiBodegaEmpleado()
+    filtroEmpleado.empleado_id = parametrosGenerales.empleado_id
+
+    const { consultarClientesMaterialesTarea } = useMaterialesProyecto(filtroMiBodegaProyecto, listadosAuxiliares)
+    const { consultarClientesMaterialesEmpleado } = useMaterialesEmpleado(filtroEmpleado, listadosAuxiliares)
 
     /************
      * Init
@@ -155,6 +183,7 @@ export default defineComponent({
     obtenerFechasHistorialMaterialesUsados()
     obtenerFechasHistorialMaterialesStockUsados()
     obtenerClientesMaterialesTarea()
+    // consultarClientesMaterialesTarea({ filtrar_por_proyecto: true })
     obtenerClientesMaterialesEmpleado()
     // listados.ticketsAts.push(gestionAtsApplication.obtenerTicketsATS())
     consultarTicketsATS(subtarea.id)
@@ -304,12 +333,13 @@ export default defineComponent({
 
     async function actualizarCantidadUtilizadaTarea(material) {
       const params = {
-        tarea_id: trabajoAsignadoStore.idTareaSeleccionada,
+        /* tarea_id: trabajoAsignadoStore.idTareaSeleccionada,
         subtarea_id: trabajoAsignadoStore.subtarea.id,
         proyecto_id: trabajoAsignadoStore.proyecto_id,
         etapa_id: trabajoAsignadoStore.etapa_id,
         cliente_id: trabajoAsignadoStore.cliente_id,
-        empleado_id: obtenerIdEmpleadoResponsable(),
+        empleado_id: obtenerIdEmpleadoResponsable(), */
+        ...parametrosGenerales,
         detalle_producto_id: material.detalle_producto_id,
         cantidad_utilizada: material.cantidad_utilizada,
         cantidad_anterior: material.cantidad_anterior,
@@ -401,19 +431,17 @@ export default defineComponent({
     }
 
     function obtenerClientesMaterialesEmpleado() {
-      cargarVista(async () => {
+      /*FcargarVista(async () => {
         const ruta = axios.getEndpoint(endpoints.obtener_clientes_materiales_empleado) //+ '/' + obtenerIdEmpleadoResponsable()
         const response: AxiosResponse = await axios.get(ruta, { empleado_id: obtenerIdEmpleadoResponsable() })
         clientes.value = response.data.results
-      })
+      })*/
+      consultarClientesMaterialesEmpleado()
     }
 
-    function obtenerClientesMaterialesTarea() {
-      cargarVista(async () => {
-        const ruta = axios.getEndpoint(endpoints.obtener_clientes_materiales_tarea)// + '/' + obtenerIdEmpleadoResponsable()
-        const response: AxiosResponse = await axios.get(ruta, { empleado_id: obtenerIdEmpleadoResponsable() })
-        clientesMaterialesTarea.value = response.data.results
-      })
+    async function obtenerClientesMaterialesTarea() {
+      if (parametrosGenerales.etapa_id) consultarClientesMaterialesTarea({ proyecto_id: parametrosGenerales.proyecto_id, etapa_id: parametrosGenerales.etapa_id, filtrar_por_etapa: true })
+      else consultarClientesMaterialesTarea({ proyecto_id: parametrosGenerales.proyecto_id, etapa_id: parametrosGenerales.etapa_id, filtrar_por_proyecto: true })
     }
 
     async function descargarExcel() {
@@ -535,6 +563,7 @@ export default defineComponent({
       obtenerMaterialesStock,
       obtenerMaterialesTarea,
       clientesMaterialesTarea,
+      listadosAuxiliares,
       // tickets ATS
       ticketsAts,
       configuracionColumnasSolicitudAts,

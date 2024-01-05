@@ -110,7 +110,7 @@
                     >
                     <q-select
                       v-model="clienteMaterialTarea"
-                      :options="clientesMaterialesTarea"
+                      :options="listadosAuxiliares.clientesMaterialesTarea"
                       transition-show="scale"
                       transition-hide="scale"
                       use-input
@@ -248,7 +248,7 @@
                     <!-- @filter="filtrarClientes" -->
                     <q-select
                       v-model="clienteMaterialStock"
-                      :options="clientes"
+                      :options="listadosAuxiliares.clientesMaterialesEmpleado"
                       transition-show="scale"
                       transition-hide="scale"
                       use-input

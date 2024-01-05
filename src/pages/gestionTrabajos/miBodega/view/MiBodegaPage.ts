@@ -74,7 +74,8 @@ export default defineComponent({
           consultarProyectos().then(() => proyectos.value = listadosAuxiliares.proyectos)
           break
         case 'clientes':
-          consultarClientesMaterialesTarea({ proyecto_id: filtroProyecto.proyecto_id, etapa_id: filtroProyecto.etapa_id, filtrar_por_proyecto: true })
+          if (filtroProyecto.etapa_id) consultarClientesMaterialesTarea({ proyecto_id: filtroProyecto.proyecto_id, etapa_id: filtroProyecto.etapa_id, filtrar_por_etapa: true })
+          else consultarClientesMaterialesTarea({ proyecto_id: filtroProyecto.proyecto_id, etapa_id: filtroProyecto.etapa_id, filtrar_por_proyecto: true })
           break
       }
     }
@@ -114,6 +115,7 @@ export default defineComponent({
 
         const proyecto: Proyecto | undefined = listadosAuxiliares.proyectos.find((proyecto: Proyecto) => proyecto.id === filtroProyecto.proyecto_id)
         filtroProyecto.cliente_id = undefined
+        transferenciaProductoEmpleadoStore.codigoTarea = null
         // filtroProyecto.cliente_id = proyecto!!.cliente_id
       } else {
         listadosAuxiliares.etapas = []

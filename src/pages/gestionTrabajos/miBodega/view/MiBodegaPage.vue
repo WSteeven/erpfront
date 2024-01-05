@@ -250,6 +250,20 @@
                 </template>
               </q-select>
             </div>
+
+            <div
+              v-if="transferenciaProductoEmpleadoStore.codigoTarea"
+              class="col-12 col-md-3"
+            >
+              <label class="q-mb-sm block">Tarea</label>
+              <q-input
+                v-model="transferenciaProductoEmpleadoStore.codigoTarea"
+                disable
+                outlined
+                dense
+              >
+              </q-input>
+            </div>
           </div>
 
           <div class="row q-mb-lg">

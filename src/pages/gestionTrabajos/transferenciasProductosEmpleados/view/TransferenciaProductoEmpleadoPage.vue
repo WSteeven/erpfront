@@ -110,11 +110,9 @@
             </q-select>
           </div>
 
-          <!-- {{ tareas }} -->
-          <div v-if="mostrarOrigenTarea" class="col-12 col-md-3">
+          <div v-if="mostrarOrigenTarea || true" class="col-12 col-md-3">
             <label class="q-mb-sm block">Tarea origen</label>
-            <!-- @filter="filtrarTareas" -->
-            <!-- :disable="puedeSeleccionarPropietarioMaterial" -->
+            <!-- :disable="!puedeAutorizar" -->
             <q-select
               v-model="transferencia.tarea_origen"
               :options="listadosAuxiliares.tareas"
@@ -122,7 +120,6 @@
               transition-hide="scale"
               options-dense
               hint="Seleccionar para buscar productos..."
-              :disable="!puedeAutorizar"
               dense
               outlined
               :option-label="(item) => item.codigo_tarea + ' - ' + item.titulo"
