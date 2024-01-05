@@ -58,8 +58,8 @@ export default defineComponent({
   components: { TabLayoutFilterTabs2, EssentialTable, EssentialSelectableTable, LabelInfoEmpleado, ModalesEntidad },
   setup() {
     const mixin = new ContenedorSimpleMixin(Transaccion, new TransaccionEgresoController())
-    const { entidad: transaccion, disabled, accion, listadosAuxiliares } = mixin.useReferencias()
-    const { setValidador, obtenerListados, cargarVista, listar } = mixin.useComportamiento()
+    const { entidad: transaccion, disabled, accion, listadosAuxiliares, listado } = mixin.useReferencias()
+    const { setValidador, obtenerListados, cargarVista, listar, } = mixin.useComportamiento()
     const { onConsultado, onReestablecer, onGuardado } = mixin.useHooks()
     const { confirmar, prompt, notificarError } = useNotificaciones()
     //stores
@@ -256,6 +256,7 @@ export default defineComponent({
             transaccionStore.idTransaccion = entidad.id
             await transaccionStore.anularEgreso()
             entidad.estado = transaccionStore.transaccion.estado
+            listado.value.splice(posicion, 1)
           } catch (err) {
             notificarError('' + err)
           }
@@ -416,6 +417,13 @@ export default defineComponent({
       field: 'cantidad',
       label: 'Cantidad',
       align: 'left',
+      sortable: false,
+    },
+    {
+      name: 'recibido',
+      field: 'recibido',
+      label: 'Recibido',
+      align: 'right',
       sortable: false,
     },
     {

@@ -131,7 +131,7 @@ export const tabPrestamoEmpresarial: TabOption[] = [
 ]
 export const tabGestionarEgresos: TabOption[] = [
   { label: 'Aprobada', value: 'ACEPTADA' },
-  // { label: 'Rechazada', value: 'RECHAZADA' },
+  { label: 'Parcial', value: 'PARCIAL' },
   { label: 'Pendiente', value: 'PENDIENTE' },
 ]
 export const tabAutorizarTransferenciaSaldo: TabOption[] = [
@@ -492,6 +492,7 @@ export const estados = [
 
 export const tabOptionsTransaccionesEgresos: TabOption[] = [
   { label: 'Pendientes', value: 'PENDIENTE' },
+  { label: 'Parciales', value: 'PARCIAL' },
   { label: 'Completas', value: 'COMPLETA' },
   { label: 'Anuladas', value: 'ANULADA' }
 ]
