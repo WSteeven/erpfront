@@ -6,7 +6,7 @@ import { useOrquestadorSelectorDetalles } from '../application/OrquestadorSelect
 import { useListadoMaterialesDevolucionStore } from 'stores/listadoMaterialesDevolucion'
 import { AxiosHttpRepository } from 'shared/http/infraestructure/AxiosHttpRepository'
 import { useFiltrosListadosSelects } from 'shared/filtrosListadosGenerales'
-import { computed, defineComponent, onMounted, reactive, ref, watch } from 'vue'
+import { computed, defineComponent, onMounted, reactive, ref, watch, watchEffect } from 'vue'
 import { useAuthenticationStore } from 'stores/authentication'
 import { useNotificacionStore } from 'stores/notificacion'
 import { useNotificaciones } from 'shared/notificaciones'
@@ -109,6 +109,7 @@ export default defineComponent({
         etapas: [],
         etapasDestino: [],
         tareas: [],
+        tareasOrigen: [],
         proyectos: [],
       })
     })
@@ -175,16 +176,17 @@ export default defineComponent({
     })*/
 
     watch(computed(() => transferencia.empleado_origen), () => {
+      console.log(transferencia.empleado_origen)
       if (transferencia.empleado_origen) {
         consultarTareasEmpleadoOrigen()
         consultarProyectosEmpleadoOrigen()
       }
     })
 
-    watch(computed(() => transferencia.empleado_destino), () => {
+    watchEffect(() => {
       if (transferencia.empleado_destino) {
         consultarTareasClienteFinalMantenimiento()
-        consultarProyectosEmpleadoDestino()
+        if (transferenciaProductoEmpleadoStore.origenProductos === destinosTareas.paraProyecto) consultarProyectosEmpleadoDestino()
       }
       transferencia.empleado_destino = transferencia.empleado_destino
     })
@@ -200,9 +202,15 @@ export default defineComponent({
       if (id) consultarEtapasEmpleadoDestino(id)
     })
 
-    watch(computed(() => transferencia.tarea_origen), (id) => {
-      if (id) establecerAutorizador()
+    watchEffect(() => {
+      console.log('cabio tarea')
+      if (transferencia.tarea_origen && !!listadosAuxiliares.tareas.length) establecerAutorizador()
     })
+
+    /*watch(computed(() => transferencia.tarea_origen), (id) => {
+      console.log('cabio tarea')
+      if (id) establecerAutorizador()
+    })*/
 
     /*******************************************************************************************
      * Funciones
@@ -213,7 +221,12 @@ export default defineComponent({
     const { consultarProyectos, consultarProyectosDestino, consultarEtapas, consultarEtapasDestino, consultarProductosProyecto } = useMaterialesProyecto(filtroProyecto, listadosAuxiliares)
 
     function establecerAutorizador() {
-      transferencia.autorizador = listadosAuxiliares.tareasOrigen.find((tarea: Tarea) => tarea.id === transferencia.tarea_origen).coordinador
+      console.log('en funcion ')
+      console.log(listadosAuxiliares.tareas)
+      console.log(transferencia.tarea_origen)
+      const tarea = listadosAuxiliares.tareas.find((tarea: Tarea) => tarea.id === transferencia.tarea_origen)
+      console.log(tarea)
+      transferencia.autorizador = tarea?.coordinador_id
     }
 
     async function consultarProyectosEmpleadoOrigen() {
@@ -338,7 +351,7 @@ export default defineComponent({
      ********/
     onModificado(() => filtrarTransferenciasProductoEmpleado(tabSeleccionado.value))
 
-    onConsultado(() => transferenciaProductoEmpleadoStore.origenProductos = (transferencia.tarea_origen ? destinosTareas.paraClienteFinal : null))
+    onConsultado(() => transferenciaProductoEmpleadoStore.origenProductos = (transferencia.tarea_origen ? destinosTareas.paraClienteFinal : destinosTareas.paraProyecto))
 
     /*******************************************************************************************
      * Botones de tabla

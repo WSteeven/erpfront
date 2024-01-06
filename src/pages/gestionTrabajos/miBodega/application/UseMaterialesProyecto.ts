@@ -10,6 +10,7 @@ import { useNotificaciones } from 'shared/notificaciones'
 import { UnwrapRef } from 'vue'
 import { destinosTareas } from 'config/tareas.utils'
 import { useTransferenciaProductoEmpleadoStore } from 'stores/transferenciaProductoEmpleado'
+import { ClienteMaterialTareaController } from '../infraestructure/ClienteMaterialTareaController'
 
 export function useMaterialesProyecto(filtro: UnwrapRef<FiltroMiBodegaProyecto>, listadosAuxiliares: any) {
   // Stores
@@ -18,7 +19,7 @@ export function useMaterialesProyecto(filtro: UnwrapRef<FiltroMiBodegaProyecto>,
   const authenticationStore = useAuthenticationStore()
 
   // Controllers
-  const clienteMaterialEmpleadoController = new ClienteMaterialEmpleadoController()
+  const clienteMaterialTareaController = new ClienteMaterialTareaController()
   const materialEmpleadoTareaController = new MaterialEmpleadoTareaController()
   const proyectoController = new ProyectoController()
   const etapaController = new EtapaController()
@@ -44,6 +45,7 @@ export function useMaterialesProyecto(filtro: UnwrapRef<FiltroMiBodegaProyecto>,
       transferenciaProductoEmpleadoStore.origenProductos = destinosTareas.paraProyecto
       transferenciaProductoEmpleadoStore.idProyecto = filtro.proyecto_id
       transferenciaProductoEmpleadoStore.idEtapa = filtro.etapa_id
+      transferenciaProductoEmpleadoStore.codigoTarea = result[result.length - 1].codigo_tarea
       // console.log(transferenciaProductoEmpleadoStore.idProyecto)
 
       if (!result.length) notificarAdvertencia('No tienes material asignado.')
@@ -55,11 +57,24 @@ export function useMaterialesProyecto(filtro: UnwrapRef<FiltroMiBodegaProyecto>,
     }
   }
 
-  async function consultarClientesMaterialesEmpleado() {
+  /* async function consultarClientesMaterialesEmpleado() {
     try {
       cargando.activar()
       const { result } = await clienteMaterialEmpleadoController.listar({ empleado_id: authenticationStore.user.id })
       listadosAuxiliares.clientesMaterialesEmpleado = result
+    } catch (e) {
+      console.log(e)
+    } finally {
+      cargando.desactivar()
+    }
+  } */
+
+  async function consultarClientesMaterialesTarea(filtroClientes) {
+    try {
+      cargando.activar()
+      const { result } = await clienteMaterialTareaController.listar({ ...filtro, ...filtroClientes })
+      // const { result } = await clienteMaterialTareaController.listar({ empleado_id: authenticationStore.user.id, ...filtroClientes })
+      listadosAuxiliares.clientesMaterialesTarea = result
     } catch (e) {
       console.log(e)
     } finally {
@@ -147,7 +162,7 @@ export function useMaterialesProyecto(filtro: UnwrapRef<FiltroMiBodegaProyecto>,
 
   return {
     consultarProductosProyecto,
-    consultarClientesMaterialesEmpleado,
+    consultarClientesMaterialesTarea,
     consultarProyectos,
     consultarProyectosDestino,
     consultarEtapas,
