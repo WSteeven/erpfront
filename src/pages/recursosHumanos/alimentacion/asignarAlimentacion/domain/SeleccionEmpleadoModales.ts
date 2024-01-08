@@ -1,7 +1,8 @@
 import { ComponenteModal } from "components/modales/domain/ComponenteModal.domain";
 import { markRaw } from "vue";
 import SeleccionEmpleadoPage from "../modules/selecionEmpleado/views/SeleccionEmpleadoPage.vue";
-import DetalleAlimentacionPage from "../modules/detalleAlimentacion/views/DetalleAlimentacionPage.vue";
+import DetalleAlimentacionPageVue from "../modules/detalleAlimentacion/views/DetalleAlimentacionPage.vue";
+
 
 //paginas
 export class SeleccionEmpleadoModales{
@@ -9,6 +10,6 @@ export class SeleccionEmpleadoModales{
   DetalleAlimentacionPage: ComponenteModal
     constructor(){
         this.SeleccionEmpleadoPage = markRaw(new ComponenteModal('Seleccionar Empleados', SeleccionEmpleadoPage))
-        this.DetalleAlimentacionPage = markRaw(new ComponenteModal('Detalle Alimentacion', DetalleAlimentacionPage))
+        this.DetalleAlimentacionPage = markRaw(new ComponenteModal('Detalle Alimentacion', DetalleAlimentacionPageVue))
     }
 }

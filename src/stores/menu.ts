@@ -524,10 +524,16 @@ export const useMenuStore = defineStore('menu', () => {
           can: store.can('puede.acceder.extension_conyugal'),
         },
         {
-          title: 'Alimentacion',
+          title: 'Asignar Alimentacion',
           link: 'asignar-alimentacion',
-          icon: 'fa-solid fa-utensils',
+          icon: 'fa-solid fa-cheese',
           can: store.can('puede.acceder.asignar_alimentacion'),
+        },
+        {
+          title: 'Alimentacion',
+          link: 'alimentacion',
+          icon: 'fa-solid fa-utensils',
+          can: store.can('puede.acceder.alimentacion'),
         },
         {
           title: 'Prestamos',
