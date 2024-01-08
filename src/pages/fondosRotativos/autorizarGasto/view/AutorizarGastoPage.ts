@@ -3,7 +3,12 @@
 import { useAuthenticationStore } from 'stores/authentication'
 import { useNotificaciones } from 'shared/notificaciones'
 import { computed, defineComponent, ref } from 'vue'
-import { accionesTabla, tabAutorizarGasto, estadosGastos } from 'config/utils'
+import {
+  accionesTabla,
+  tabAutorizarGasto,
+  estadosGastos,
+  acciones,
+} from 'config/utils'
 
 // Componentes
 import ConfirmarDialog from 'gestionTrabajos/trabajoAsignado/view/ConfirmarDialog.vue'
@@ -24,6 +29,7 @@ import { useNotificacionStore } from 'stores/notificacion'
 import { useQuasar } from 'quasar'
 import { useCargandoStore } from 'stores/cargando'
 import { log } from 'console'
+import { GastoController } from 'pages/fondosRotativos/gasto/infrestructure/GastoController'
 export default defineComponent({
   name: 'AutorizarGastoPage',
   components: {
@@ -33,6 +39,7 @@ export default defineComponent({
   },
   setup() {
     const controller = new AutorizarGastoController()
+    const gastos_controller = new GastoController()
     const aprobarController = new AprobarGastoController()
     const {
       confirmar,
@@ -46,8 +53,10 @@ export default defineComponent({
      * Mixin
      ************/
     const mixin = new ContenedorSimpleMixin(Gasto, controller)
-    const { listado } = mixin.useReferencias()
+    const mixin_gastos = new ContenedorSimpleMixin(Gasto, gastos_controller)
+    const { listado, accion } = mixin.useReferencias()
     const { listar } = mixin.useComportamiento()
+    const { consultar } = mixin_gastos.useComportamiento()
 
     /*********
      * Stores
@@ -87,26 +96,46 @@ export default defineComponent({
         fondoRotativoStore.existeFactura =
           entidad.factura == null ? false : true
         fondoRotativoStore.id_gasto = entidad.id
-        console.log(estaEnSemanaActual(entidad.fecha_viat))
-        fondoRotativoStore.estaSemanAC=estaEnSemanaActual(entidad.fecha_viat)
+        fondoRotativoStore.estaSemanAC = estaEnSemanaActual(entidad.fecha_viat)
+        accion.value = acciones.consultar
+        modales.abrirModalEntidad('VisualizarGastoPage')
+      },
+    }
+    const botonEditarGasto: CustomActionTable = {
+      titulo: ' ',
+      icono: 'bi-pencil-square',
+      color: 'secondary',
+      visible: ({ entidad }) => {
+        return (
+          authenticationStore.user.id === entidad.aut_especial &&
+          entidad.estado === estadosGastos.PENDIENTE
+        )
+      },
+      accion: ({ entidad }) => {
+        accion.value = acciones.editar
+        consultar(entidad)
+        fondoRotativoStore.id_gasto = entidad.id
+        fondoRotativoStore.existeFactura = fondoRotativoStore.estaSemanAC =
+          estaEnSemanaActual(entidad.fecha_viat)
+        fondoRotativoStore.accionForm= acciones.editar
         modales.abrirModalEntidad('VisualizarGastoPage')
       },
     }
     function estaEnSemanaActual(fecha) {
-      const fechaActual = new Date();
-      const dia = String(fechaActual.getDate()).padStart(2, '0');
-      const mes = String(fechaActual.getMonth() + 1).padStart(2, '0'); // Los meses comienzan desde 0
-      const anio = fechaActual.getFullYear();
-      const fechaFormateada = `${dia}-${mes}-${anio}`;
-      const fechaInicio = convertir_fecha(fechaFormateada);
-      const fechaFin = convertir_fecha(fecha);
+      const fechaActual = new Date()
+      const dia = String(fechaActual.getDate()).padStart(2, '0')
+      const mes = String(fechaActual.getMonth() + 1).padStart(2, '0') // Los meses comienzan desde 0
+      const anio = fechaActual.getFullYear()
+      const fechaFormateada = `${dia}-${mes}-${anio}`
+      const fechaInicio = convertir_fecha(fechaFormateada)
+      const fechaFin = convertir_fecha(fecha)
 
       // Calcula la diferencia en días
       const diferenciaDias = fechaInicio.getDate() - fechaFin.getDate()
-      if (diferenciaDias <= 8 || authenticationStore.esAdministrador ) {
-        return true;
+      if (diferenciaDias <= 8 || authenticationStore.esAdministrador) {
+        return true
       } else {
-        return false;
+        return false
       }
     }
 
@@ -123,12 +152,14 @@ export default defineComponent({
       filtrarAutorizacionesGasto(estadosGastos.PENDIENTE)
     }
 
+
     return {
       configuracionColumnasAutorizarGasto,
       listado,
       tabAutorizarGasto,
       botonVerModalGasto,
       accionesTabla,
+      botonEditarGasto,
       estaSemanAC,
       guardado,
       filtrarAutorizacionesGasto,
