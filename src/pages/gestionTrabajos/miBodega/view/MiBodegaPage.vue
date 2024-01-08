@@ -220,8 +220,7 @@
 
             <div v-if="filtroProyecto.proyecto_id" class="col-12 col-md-4">
               <label class="q-mb-sm block"
-                >Seleccione un cliente para filtrar el material de
-                proyecto/etapa</label
+                >Cliente propietario del material de proyecto/etapa</label
               >
               <q-select
                 v-model="filtroProyecto.cliente_id"
@@ -253,7 +252,7 @@
 
             <div
               v-if="transferenciaProductoEmpleadoStore.codigoTarea"
-              class="col-12 col-md-3"
+              class="col-12 col-md-4"
             >
               <label class="q-mb-sm block">Tarea</label>
               <q-input
@@ -395,6 +394,7 @@
             :mostrarBotones="false"
             :alto-fijo="false"
             :ajustar-celdas="true"
+            :mostrar-exportar="true"
           ></essential-table>
         </div>
       </div>

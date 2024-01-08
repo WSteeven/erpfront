@@ -13,6 +13,31 @@
   >
     <template #formulario>
       <q-form @submit.prevent>
+        <!-- <div class="row q-col-gutter-sm q-pa-sm">
+          <div class="col-12">
+            <q-btn-toggle
+              v-model=""
+              class="toggle-button-primary"
+              :disable="disabled"
+              spread
+              no-caps
+              rounded
+              toggle-color="primary"
+              unelevated
+              :options="[
+                {
+                  label: 'Tarea para un proyecto',
+                  value: destinosTareas.paraProyecto,
+                },
+                {
+                  label: 'Tarea para cliente final y mantenimiento',
+                  value: destinosTareas.paraClienteFinal,
+                },
+              ]"
+            />
+          </div>
+        </div> -->
+
         <div class="row q-col-gutter-sm q-pb-xl">
           <div class="col-12 q-mb-md">
             <div class="row justify-end">
@@ -110,42 +135,6 @@
             </q-select>
           </div>
 
-          <div v-if="mostrarOrigenTarea || true" class="col-12 col-md-3">
-            <label class="q-mb-sm block">Tarea origen</label>
-            <!-- :disable="!puedeAutorizar" -->
-            <q-select
-              v-model="transferencia.tarea_origen"
-              :options="listadosAuxiliares.tareas"
-              transition-show="scale"
-              transition-hide="scale"
-              options-dense
-              hint="Seleccionar para buscar productos..."
-              dense
-              outlined
-              :option-label="(item) => item.codigo_tarea + ' - ' + item.titulo"
-              :option-value="(item) => item.id"
-              use-input
-              input-debounce="0"
-              emit-value
-              map-options
-              ><template v-slot:option="scope">
-                <q-item v-bind="scope.itemProps">
-                  <q-item-section>
-                    <q-item-label>{{ scope.opt.codigo_tarea }}</q-item-label>
-                    <q-item-label caption>{{ scope.opt.titulo }}</q-item-label>
-                  </q-item-section>
-                </q-item>
-              </template>
-              <template v-slot:no-option>
-                <q-item>
-                  <q-item-section class="text-grey">
-                    No hay resultados
-                  </q-item-section>
-                </q-item>
-              </template>
-            </q-select>
-          </div>
-
           <!-- <div v-if="transferencia.etapa_origen" class="col-12 col-md-3">
             <label class="q-mb-sm block">
               <q-icon
@@ -180,16 +169,20 @@
             />
           </div> -->
 
-          <div v-if="transferencia.proyecto_origen" class="col-12 col-md-3">
+          <!-- v-if="transferencia.proyecto_origen" -->
+          <div class="col-12 col-md-3">
             <label class="q-mb-sm block">Proyecto origen</label>
+            <!-- :disable="!puedeAutorizar" -->
             <q-select
               v-model="transferencia.proyecto_origen"
               :options="proyectos"
               @filter="filtrarProyectos"
               transition-show="scale"
-              :disable="!puedeAutorizar"
               @update:model-value="
-                () => (transferencia.empleado_destino = null)
+                () => {
+                  transferencia.empleado_destino = null
+                  transferencia.tarea_origen = null
+                }
               "
               transition-hide="scale"
               options-dense
@@ -229,11 +222,11 @@
             class="col-12 col-md-3"
           >
             <label class="q-mb-sm block">Etapa origen</label>
+            <!-- :disable="!puedeAutorizar" -->
             <q-select
               v-model="transferencia.etapa_origen"
               :options="etapas"
               @filter="filtrarEtapas"
-              :disable="!puedeAutorizar"
               transition-show="scale"
               transition-hide="scale"
               options-dense
@@ -246,6 +239,43 @@
               emit-value
               map-options
             >
+              <template v-slot:no-option>
+                <q-item>
+                  <q-item-section class="text-grey">
+                    No hay resultados
+                  </q-item-section>
+                </q-item>
+              </template>
+            </q-select>
+          </div>
+
+          <!-- v-if="mostrarOrigenTarea || true" -->
+          <div class="col-12 col-md-3">
+            <label class="q-mb-sm block">Tarea origen</label>
+            <!-- :disable="!puedeAutorizar" -->
+            <q-select
+              v-model="transferencia.tarea_origen"
+              :options="listadosAuxiliares.tareas"
+              transition-show="scale"
+              transition-hide="scale"
+              options-dense
+              hint="Seleccionar para buscar productos..."
+              dense
+              outlined
+              :option-label="(item) => item.codigo_tarea + ' - ' + item.titulo"
+              :option-value="(item) => item.id"
+              use-input
+              input-debounce="0"
+              emit-value
+              map-options
+              ><template v-slot:option="scope">
+                <q-item v-bind="scope.itemProps">
+                  <q-item-section>
+                    <q-item-label>{{ scope.opt.codigo_tarea }}</q-item-label>
+                    <q-item-label caption>{{ scope.opt.titulo }}</q-item-label>
+                  </q-item-section>
+                </q-item>
+              </template>
               <template v-slot:no-option>
                 <q-item>
                   <q-item-section class="text-grey">
@@ -301,7 +331,8 @@
             </q-select>
           </div>
 
-          <div v-if="paraProyecto" class="col-12 col-md-3">
+          <!-- v-if="paraProyecto" -->
+          <div class="col-12 col-md-3">
             <label class="q-mb-sm block">Proyecto destino</label>
             <q-select
               v-model="transferencia.proyecto_destino"
@@ -310,6 +341,7 @@
               transition-show="scale"
               transition-hide="scale"
               :disable="!(accion === acciones.nuevo)"
+              clearable
               options-dense
               dense
               outlined
@@ -341,12 +373,9 @@
             </q-select>
           </div>
 
+          <!-- paraProyecto -->
           <div
-            v-show="
-              transferencia.proyecto_destino &&
-              etapasDestino.length &&
-              paraProyecto
-            "
+            v-show="transferencia.proyecto_destino && etapasDestino.length"
             class="col-12 col-md-3"
           >
             <label class="q-mb-sm block">Etapa destino</label>
@@ -380,7 +409,9 @@
 
           <!-- {{ tareas }} -->
           <!-- Tarea destino : tareas del empleado a transferir-->
-          <div v-if="mostrarOrigenTarea" class="col-12 col-md-3">
+          <!-- v-if="mostrarOrigenTarea" -->
+          <!-- :disable="!puedeAutorizar && paraProyecto" -->
+          <div class="col-12 col-md-3">
             <label class="q-mb-sm block">Tarea destino</label>
             <q-select
               v-model="transferencia.tarea_destino"
@@ -392,7 +423,6 @@
               @filter="filtrarTareasDestino"
               dense
               outlined
-              :disable="!puedeAutorizar && paraProyecto"
               :option-label="(item) => item.codigo_tarea + ' - ' + item.titulo"
               :option-value="(item) => item.id"
               use-input

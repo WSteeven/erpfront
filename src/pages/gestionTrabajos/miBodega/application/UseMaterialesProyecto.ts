@@ -45,6 +45,7 @@ export function useMaterialesProyecto(filtro: UnwrapRef<FiltroMiBodegaProyecto>,
       transferenciaProductoEmpleadoStore.origenProductos = destinosTareas.paraProyecto
       transferenciaProductoEmpleadoStore.idProyecto = filtro.proyecto_id
       transferenciaProductoEmpleadoStore.idEtapa = filtro.etapa_id
+      transferenciaProductoEmpleadoStore.tareaId = result[result.length - 1].tarea_id
       transferenciaProductoEmpleadoStore.codigoTarea = result[result.length - 1].codigo_tarea
       // console.log(transferenciaProductoEmpleadoStore.idProyecto)
 

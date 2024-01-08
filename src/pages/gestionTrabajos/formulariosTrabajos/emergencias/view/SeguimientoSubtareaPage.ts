@@ -144,7 +144,7 @@ export default defineComponent({
       subtarea_id: trabajoAsignadoStore.subtarea.id,
       proyecto_id: trabajoAsignadoStore.proyecto_id,
       etapa_id: trabajoAsignadoStore.etapa_id,
-      cliente_id: trabajoAsignadoStore.cliente_id,
+      // cliente_id: trabajoAsignadoStore.cliente_id,
       empleado_id: obtenerIdEmpleadoResponsable(),
     }
 
@@ -196,7 +196,7 @@ export default defineComponent({
      * Botones tabla
      ****************/
     const botonEditarCantidadTarea: CustomActionTable = {
-      titulo: 'Cantidad utilizada',
+      titulo: 'Cantidad utilizada11',
       icono: 'bi-pencil-square',
       color: 'primary',
       visible: () => permitirSubir,
@@ -344,6 +344,7 @@ export default defineComponent({
         cantidad_utilizada: material.cantidad_utilizada,
         cantidad_anterior: material.cantidad_anterior,
         fecha: fecha_historial.value,
+        cliente_id: material.cliente_id,
       }
       const ruta = axios.getEndpoint(endpoints.actualizar_cantidad_utilizada_tarea, params)
       const response: AxiosResponse = await axios.post(ruta)
