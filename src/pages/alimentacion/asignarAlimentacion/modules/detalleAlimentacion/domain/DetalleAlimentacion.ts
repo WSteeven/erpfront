@@ -1,5 +1,5 @@
 import { EntidadAuditable } from 'shared/entidad/domain/entidadAuditable'
-export class Alimentacion extends EntidadAuditable {
+export class DetalleAlimentacion extends EntidadAuditable {
   empleado:number | null
   empleado_info: string | null
   valor_asignado: number | null

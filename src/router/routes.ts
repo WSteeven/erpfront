@@ -1158,6 +1158,13 @@ const routes: RouteRecordRaw[] = [
           import('pages/alimentacion/asignarAlimentacion/view/AsignarAlimentacion.vue'),
         meta: { requiresAuth: true },
       },
+      {
+        path: '/alimentacion',
+        name: 'alimentacion',
+        component: () =>
+          import('pages/alimentacion/alimentacion/view/Alimentacion.vue'),
+        meta: { requiresAuth: true },
+      },
 
     ],
   },

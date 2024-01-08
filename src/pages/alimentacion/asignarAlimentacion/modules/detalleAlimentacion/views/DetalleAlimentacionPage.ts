@@ -8,13 +8,13 @@ import { required } from 'shared/i18n-validators'
 import { acciones, accionesTabla, maskFecha } from 'config/utils'
 import { ContenedorSimpleMixin } from 'shared/contenedor/modules/simple/application/ContenedorSimpleMixin'
 import ButtonSubmits from 'components/buttonSubmits/buttonSubmits.vue'
-import { Alimentacion } from '../domain/Alimentacion'
-import { AlimentacionController } from '../infraestructure/AlimentacionController'
-import { configuracionColumnasAlimentacion } from '../domain/configuracionColumnasAlimentacion'
+import { DetalleAlimentacionController } from '../infraestructure/DetalleAlimentacionController'
+import { configuracionColumnasDetalleAlimentacion } from '../domain/configuracionColumnasDetalleAlimentacion'
 import useVuelidate from '@vuelidate/core'
 import { EmpleadoController } from 'pages/recursosHumanos/empleados/infraestructure/EmpleadoController'
 import { CustomActionTable } from 'components/tables/domain/CustomActionTable'
 import { useAuthenticationStore } from 'stores/authentication'
+import { DetalleAlimentacion } from '../domain/DetalleAlimentacion'
 
 export default defineComponent({
   components: { EssentialSelectableTable, EssentialTable, ButtonSubmits },
@@ -24,8 +24,8 @@ export default defineComponent({
      * Mixin
      ************/
     const mixin = new ContenedorSimpleMixin(
-      Alimentacion,
-      new AlimentacionController()
+      DetalleAlimentacion,
+      new DetalleAlimentacionController()
     )
     const {
       setValidador,
@@ -62,7 +62,7 @@ export default defineComponent({
         '-' +
         fechaActual.getDate()
       listado.value = (
-        await new AlimentacionController().listar({
+        await new DetalleAlimentacionController().listar({
           fecha_corte: fechaFormateada,
         })
       ).result
@@ -111,7 +111,7 @@ export default defineComponent({
       emit('cerrar-modal', confirmar)
     }
 
-    const btnEditarAlimentacion: CustomActionTable = {
+    const btnEditarDetalleAlimentacion: CustomActionTable = {
       titulo: 'Editar',
       icono: 'bi-pencil',
       color: 'warning',
@@ -128,7 +128,7 @@ export default defineComponent({
         mostrar_formulario.value = true
       },
     }
-    const btnVerAlimentacion: CustomActionTable = {
+    const btnVerDetalleAlimentacion: CustomActionTable = {
       titulo: 'Consultar',
       icono: 'bi-eye',
       color: 'primary',
@@ -144,7 +144,7 @@ export default defineComponent({
         mostrar_formulario.value = true
       },
     }
-    const btnNuevoAlimentacion: CustomActionTable = {
+    const btnNuevoDetalleAlimentacion: CustomActionTable = {
       titulo: 'Agregar',
       icono: 'bi-plus',
       color: 'positive',
@@ -158,13 +158,13 @@ export default defineComponent({
       },
     }
 
-    async function guardarDatos(valoracreditar: Alimentacion) {
+    async function guardarDatos(valoracreditar: DetalleAlimentacion) {
       try {
-        let entidad: Alimentacion = new Alimentacion()
+        let entidad: DetalleAlimentacion = new DetalleAlimentacion()
         if (accion.value == acciones.nuevo) {
           entidad = await guardar(valoracreditar)
-          const valorAlimentacionAux = new Alimentacion()
-          valorAlimentacionAux.hydrate(entidad)
+          const valorDetalleAlimentacionAux = new DetalleAlimentacion()
+          valorDetalleAlimentacionAux.hydrate(entidad)
         } else {
           await editar(valoracreditar, true)
         }
@@ -177,7 +177,7 @@ export default defineComponent({
       reestablecer()
       mostrar_formulario.value = false
     }
-    const totalAlimentacion = computed(() => {
+    const totalDetalleAlimentacion = computed(() => {
       const suma = listado.value.reduce(
         (acumulador, elemento) =>
           acumulador + parseFloat(elemento.valor_asignado.replace(/,/g, '')),
@@ -185,7 +185,7 @@ export default defineComponent({
       )
       return suma
     })
-    const btnEliminarAlimentacion: CustomActionTable = {
+    const btnEliminarDetalleAlimentacion: CustomActionTable = {
       titulo: 'Eliminar',
       icono: 'bi-trash',
       color: 'secondary',
@@ -208,7 +208,7 @@ export default defineComponent({
 
     return {
       listado,
-      configuracionColumnasAlimentacion,
+      configuracionColumnasDetalleAlimentacion,
       deshabilitar_empleado,
       accionesTabla,
       accion,
@@ -219,14 +219,14 @@ export default defineComponent({
       reestablecerDatos,
       empleados,
       maskFecha,
-      totalAlimentacion,
+      totalDetalleAlimentacion,
       v$,
       cerrarModal,
       refListado,
-      btnNuevoAlimentacion,
-      btnVerAlimentacion,
-      btnEditarAlimentacion,
-      btnEliminarAlimentacion,
+      btnNuevoDetalleAlimentacion,
+      btnVerDetalleAlimentacion,
+      btnEditarDetalleAlimentacion,
+      btnEliminarDetalleAlimentacion,
       btnAsignarMasivo
     }
   },

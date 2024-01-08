@@ -140,6 +140,7 @@ export const tabAutorizarTransferenciaSaldo: TabOption[] = [
   { label: 'Pendiente', value: '3' },
 ]
 
+
 export const accionesTabla = {
   name: 'acciones',
   field: 'acciones',

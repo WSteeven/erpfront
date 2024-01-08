@@ -120,4 +120,4 @@
     </essential-table>
   </q-page>
 </template>
-<script src="./AlimentacionPage.ts"></script>
+<script src="./DetalleAlimentacionPage.ts"></script>

@@ -134,7 +134,7 @@ export default defineComponent({
               'Esto realizara los cortes de alimentacion de los empleados. ¿Desea continuar?',
               async () => {
                 asignacionAlimentacionStore.realizarCorte();
-                modales.abrirModalEntidad('AlimentacionPage')
+                modales.abrirModalEntidad('DetalleAlimentacionPage')
               }
             )
           }
@@ -148,7 +148,7 @@ export default defineComponent({
       icono: 'bi-eye-fill',
       color: 'primary',
       accion: async () => {
-        modales.abrirModalEntidad('AlimentacionPage')
+        modales.abrirModalEntidad('DetalleAlimentacionPage')
       },
       visible: () => true,
     }

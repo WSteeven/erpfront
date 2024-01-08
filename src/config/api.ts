@@ -168,6 +168,8 @@ export const endpoints = {
   anular_prestamo_empresarial: new Endpoint('recursos-humanos/anular-prestamo-empresarial'),
   asignar_alimentacion: new Endpoint('recursos-humanos/asignar-alimentacion'),
   alimentacion: new Endpoint('recursos-humanos/alimentacion'),
+  detalle_alimentacion: new Endpoint('recursos-humanos/detalle-alimentacion'),
+
 
   //Modulo de Vehiculos
   combustibles: new Endpoint('vehiculos/combustibles'),
