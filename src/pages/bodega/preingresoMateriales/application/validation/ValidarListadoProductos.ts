@@ -15,17 +15,14 @@ export class ValidarListadoProductos implements Validador {
   async validar(): Promise<boolean> {
     if (this.preingreso.listadoProductos.length == 0) throw new Error('Debe agregar al menos un item al listado')
 
-    // this.preingreso.listadoProductos.every((item) => {
-    //   console.log(item)
-    // })
     if (!this.preingreso.proyecto && this.preingreso.listadoProductos.some((item) => item.fotografia == null || item.fotografia == undefined)) throw new Error('Debe ingresar una fotografía en cada elemento del listado')
     else {
-      // console.log(this.refArchivo.value)
+      console.log(this.refArchivo.value)
       if (this.refArchivo.value.refGestor == undefined){
-        // console.log(this.refArchivo.value.listadoArchivos.length)
+        console.log(this.refArchivo.value.listadoArchivos.length)
         if (this.refArchivo.value.listadoArchivos.length < 1) throw new Error('Debes adjuntar al menos un archivo')
       }
-      else if (this.refArchivo.value.refGestor.files.length < 1 && this.refArchivo.value.listadoArchivos.length < 1) throw new Error('Se requiere al menos un archivo con la guía del material recibido')
+      else if (this.refArchivo.value.cantElementos===0 && this.refArchivo.value.refGestor.files.length < 1 && this.refArchivo.value.listadoArchivos.length < 1) throw new Error('Se requiere al menos un archivo con la guía del material recibido')
     }
 
     return true
