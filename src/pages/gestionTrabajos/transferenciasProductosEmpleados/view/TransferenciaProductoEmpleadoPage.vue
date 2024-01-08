@@ -634,7 +634,7 @@
               </div>
             </div>
           </div>
-
+          {{ transferencia.tarea_origen }}
           <!-- Tabla -->
           <div class="col-12">
             <essential-table

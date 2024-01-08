@@ -123,7 +123,8 @@ export function useMaterialesProyecto(filtro: UnwrapRef<FiltroMiBodegaProyecto>,
     const params = {
       campos: 'id,nombre,supervisor_id',
       activo: 1,
-      empleado_id: authenticationStore.user.id,
+      // empleado_id: authenticationStore.user.id,
+      empleado_id: filtro.empleado_id,
       proyecto_id: idProyecto,
       etapas_empleado: 1,
     }
