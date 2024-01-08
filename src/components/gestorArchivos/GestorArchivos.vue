@@ -27,6 +27,8 @@
       text-color="black"
       max-total-size="10485760"
       @rejected="onRejected"
+      @added="onFileAdded"
+      @removed="onFileRemoved"
       hide-upload-btn
     />
   </div>
