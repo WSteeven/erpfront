@@ -150,6 +150,7 @@
                 :permitirEditar="false"
                 :mostrarBotones="false"
                 :alto-fijo="false"
+                :mostrarExportar="true"
               ></essential-table>
             </div>
           </div>
@@ -198,6 +199,7 @@
                 :permitirEditar="false"
                 :mostrarBotones="false"
                 :alto-fijo="false"
+                :mostrarExportar="true"
               ></essential-table>
             </div>
           </div>

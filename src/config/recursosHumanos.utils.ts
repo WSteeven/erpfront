@@ -13,3 +13,13 @@ export const tabOptionsEstadosRolPago: TabOption[] = [
   { label: 'Activas', value: '0' },
   { label: 'Finalizadas', value: '1' },
 ];
+
+
+export const estadosRolPagoEmpleado = {
+  todo: '',
+  creado: 'CREADO',
+  ejecutando: 'EJECUTANDO',
+  realizado: 'REALIZADO',
+  finalizado: 'FINALIZADO',
+
+}
