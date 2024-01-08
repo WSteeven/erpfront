@@ -114,32 +114,34 @@ export default defineComponent({
     }
 
     function aprobarEgresoParcial() {
-      const data: CustomActionPrompt = {
-        titulo: 'Aprobar Recepción Parcial',
-        mensaje: 'Ingrese motivo de la aprobación parcial',
-        accion: async (data) => {
-          try {
-            confirmar('Esta acción firmará el comprobante de egreso con las cantidades y materiales aceptados ', async () => {
-              //aqui se aprueba y se firma el documento
-              const datos = {
-                transaccion: transaccion,
-                observacion: data
-              }
-              const axios = AxiosHttpRepository.getInstance()
-              const url = apiConfig.URL_BASE + '/' + axios.getEndpoint(endpoints.comprobantes) + '/aceptar-parcial/' + transaccion.id
-              const response = await axios.put(url, datos)
-              console.log(response)
-              notificarCorrecto('Documento parcial aprobado y firmado correctamente')
-              emit('cerrar-modal', false)
-              emit('guardado', 'parcial')
-            })
-          } catch (e) {
-            notificarError('Ha ocurrido un error')
-          }
-        },
+      if (verificarRecibidoMenor()) notificarError('El valor de recibido no puede ser superior a la cantidad despachada')
+      else {
+        const data: CustomActionPrompt = {
+          titulo: 'Aprobar Recepción Parcial',
+          mensaje: 'Ingrese motivo de la aprobación parcial',
+          accion: async (data) => {
+            try {
+              confirmar('Esta acción firmará el comprobante de egreso con las cantidades y materiales aceptados ', async () => {
+                //aqui se aprueba y se firma el documento
+                const datos = {
+                  transaccion: transaccion,
+                  observacion: data
+                }
+                const axios = AxiosHttpRepository.getInstance()
+                const url = apiConfig.URL_BASE + '/' + axios.getEndpoint(endpoints.comprobantes) + '/aceptar-parcial/' + transaccion.id
+                const response = await axios.put(url, datos)
+                console.log(response)
+                notificarCorrecto('Documento parcial aprobado y firmado correctamente')
+                emit('cerrar-modal', false)
+                emit('guardado', 'parcial')
+              })
+            } catch (e) {
+              notificarError('Ha ocurrido un error')
+            }
+          },
+        }
+        prompt(data)
       }
-      prompt(data)
-
     }
 
     function permitirModificarCantidades() {
@@ -160,7 +162,7 @@ export default defineComponent({
       } else {
         // console.log('entraste en el else', listadoAux)
         // console.log('entraste en el else', transaccion.listadoProductosTransaccion)
-        
+
         // transaccion.listadoProductosTransaccion = Object.deepCopy(listadoAux)
         transaccion.listadoProductosTransaccion = JSON.parse(JSON.stringify(listadoAux))
       }
@@ -168,6 +170,10 @@ export default defineComponent({
 
     function eliminar({ posicion }) {
       confirmar('¿Está seguro de continuar?', () => transaccion.listadoProductosTransaccion.splice(posicion, 1))
+    }
+
+    function verificarRecibidoMenor() {
+      return transaccion.listadoProductosTransaccion.some((item) => item.recibido > item.cantidad)
     }
 
     /*******************************************************************************************
