@@ -22,7 +22,7 @@
             >
             </q-input>
           </div>
-          <div class="col-12 col-md-3" v-if="!isconsultar">
+          <div class="col-12 col-md-3" v-if="isConsultar === false">
             <label class="q-mb-sm block">Lugar</label>
             <q-select
               v-model="gasto.lugar"
@@ -101,7 +101,7 @@
           </div>
 
           <!-- Proyectos -->
-          <div class="col-12 col-md-3" v-if="isconsultar">
+          <div class="col-12 col-md-3" v-if="isConsultar">
             <label class="q-mb-sm block">Proyectos</label>
             <q-input
               v-model="gasto.proyecto_info"
@@ -114,7 +114,7 @@
             >
             </q-input>
           </div>
-          <div class="col-12 col-md-3" v-if="!isconsultar">
+          <div class="col-12 col-md-3"  v-if="isConsultar === false">
             <label class="q-mb-sm block">Proyectos</label>
             <q-select
               v-model="gasto.proyecto"
@@ -163,7 +163,7 @@
           <!-- Tareas -->
           <div
             class="col-12 col-md-3"
-            v-if="gasto.proyecto >= 0 && accion.value === acciones.consultar"
+            v-if="gasto.proyecto >= 0 && isConsultar"
           >
             <label class="q-mb-sm block">Tareas</label>
             <q-input
@@ -179,7 +179,7 @@
           </div>
           <div
             class="col-12 col-md-3"
-            v-if="gasto.proyecto >= 0 && accion.value !== acciones.consultar"
+            v-if="gasto.proyecto >= 0 && isConsultar === false"
           >
             <label class="q-mb-sm block">Tareas</label>
             <q-select
@@ -340,7 +340,7 @@
             </q-input>
           </div>
           <!-- Detalle -->
-          <div class="col-12 col-md-3 q-mb-md" v-if="isconsultar">
+          <div class="col-12 col-md-3 q-mb-md" v-if="isConsultar">
             <label class="q-mb-sm block">Detalle</label>
             <q-input
               v-model="gasto.detalle_info"
@@ -352,7 +352,7 @@
               dense
             ></q-input>
           </div>
-          <div class="col-12 col-md-3 q-mb-md" v-if="!isconsultar">
+          <div class="col-12 col-md-3 q-mb-md" v-if="isConsultar === false">
             <label class="q-mb-sm block">Detalle</label>
             <q-select
               v-model="gasto.detalle"
@@ -394,7 +394,7 @@
             </q-select>
           </div>
           <!-- Subdetalle-->
-          <div class="col-12 col-md-3" v-if="isconsultar">
+          <div class="col-12 col-md-3" v-if="isConsultar">
             <label class="q-mb-sm block">Subdetalle</label>
             <q-input
               v-model="gasto.sub_detalle_info"
@@ -406,7 +406,7 @@
               dense
             ></q-input>
           </div>
-          <div class="col-12 col-md-3" v-if="!isconsultar">
+          <div class="col-12 col-md-3" v-if="isConsultar === false">
             <label class="q-mb-sm block">Subdetalle</label>
             <q-select
               v-model="gasto.sub_detalle"
@@ -464,7 +464,7 @@
             </q-select>
           </div>
           <!-- Placa -->
-          <div class="col-12 col-md-3" v-if="isconsultar">
+          <div class="col-12 col-md-3" v-if="isConsultar">
             <label class="q-mb-sm block">Placa</label>
             <q-input
               v-model="gasto.placa"
@@ -479,7 +479,7 @@
           <div
             class="col-12 col-md-3"
             v-if="
-              (esCombustibleEmpresa || mostarPlaca) && accion.value !== acciones.consultar
+              (esCombustibleEmpresa || mostarPlaca) && isConsultar === false
             "
           >
             <label class="q-mb-sm block">Placas</label>
@@ -598,7 +598,7 @@
             </q-input>
           </div>
           <!--Beneficiaros-->
-          <div class="col-12 col-md-3" v-if="isconsultar">
+          <div class="col-12 col-md-3" v-if="isConsultar">
             <label class="q-mb-sm block">Beneficiarios</label>
             <q-input
               v-model="gasto.beneficiarios_info"
@@ -611,7 +611,7 @@
             >
             </q-input>
           </div>
-          <div class="col-12 col-md-3" v-if="!isconsultar">
+          <div class="col-12 col-md-3" v-if="isConsultar === false">
             <label class="q-mb-sm block">Beneficiarios</label>
             <q-select
               v-model="gasto.beneficiarios"
@@ -689,15 +689,6 @@
             >
             </imagen-comprimida-component>
           </div>
-        </div>
-        <div class="row justify-end q-col-gutter-x-xs">
-          <button-submits
-            :accion="accion"
-            label-guardar="Guardar"
-            :permitirCancelar="false"
-            @cancelar="reestablecerDatos()"
-            @editar="guardarDatos(gasto)"
-          />
         </div>
       </q-form>
       <div

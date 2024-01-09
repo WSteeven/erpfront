@@ -97,30 +97,15 @@ export default defineComponent({
           entidad.factura == null ? false : true
         fondoRotativoStore.id_gasto = entidad.id
         fondoRotativoStore.estaSemanAC = estaEnSemanaActual(entidad.fecha_viat)
-        accion.value = acciones.consultar
-        modales.abrirModalEntidad('VisualizarGastoPage')
-      },
-    }
-    const botonEditarGasto: CustomActionTable = {
-      titulo: ' ',
-      icono: 'bi-pencil-square',
-      color: 'secondary',
-      visible: ({ entidad }) => {
-        return (
+        fondoRotativoStore.accionForm =
           authenticationStore.user.id === entidad.aut_especial &&
           entidad.estado === estadosGastos.PENDIENTE
-        )
-      },
-      accion: ({ entidad }) => {
-        accion.value = acciones.editar
-        consultar(entidad)
-        fondoRotativoStore.id_gasto = entidad.id
-        fondoRotativoStore.existeFactura = fondoRotativoStore.estaSemanAC =
-          estaEnSemanaActual(entidad.fecha_viat)
-        fondoRotativoStore.accionForm= acciones.editar
+            ? acciones.editar
+            : acciones.consultar
         modales.abrirModalEntidad('VisualizarGastoPage')
       },
     }
+
     function estaEnSemanaActual(fecha) {
       const fechaActual = new Date()
       const dia = String(fechaActual.getDate()).padStart(2, '0')
@@ -152,14 +137,12 @@ export default defineComponent({
       filtrarAutorizacionesGasto(estadosGastos.PENDIENTE)
     }
 
-
     return {
       configuracionColumnasAutorizarGasto,
       listado,
       tabAutorizarGasto,
       botonVerModalGasto,
       accionesTabla,
-      botonEditarGasto,
       estaSemanAC,
       guardado,
       filtrarAutorizacionesGasto,

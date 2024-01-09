@@ -17,7 +17,6 @@
       ]"
       :datos="listado"
       :accion1="botonVerModalGasto"
-      :accion2="botonEditarGasto"
       :permitirConsultar="false"
       :permitirEditar="false"
       :permitirEliminar="false"

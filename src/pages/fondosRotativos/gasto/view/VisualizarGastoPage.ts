@@ -41,7 +41,7 @@ import { Gasto } from '../domain/Gasto'
 import { GastoController } from '../infrestructure/GastoController'
 
 export default defineComponent({
-  components: { TabLayout, ImagenComprimidaComponent,ButtonSubmits },
+  components: { TabLayout, ImagenComprimidaComponent, ButtonSubmits },
   emits: ['guardado', 'cerrar-modal'],
   setup(props, { emit }) {
     const authenticationStore = useAuthenticationStore()
@@ -54,27 +54,17 @@ export default defineComponent({
     /***********
      * Mixin
      ************/
-    const mixin = new ContenedorSimpleMixin(
-      VisualizarGasto,
-      new VisualizarGastoController()
-    )
-    const mixin_gastos = new ContenedorSimpleMixin(
-      Gasto,
-      new GastoController()
-    )
-    const {
-      entidad: gasto,
-      disabled,
-      accion,
-      listadosAuxiliares,
-    } = mixin.useReferencias()
-    const { setValidador, consultar, cargarVista, obtenerListados } =
-      mixin.useComportamiento()
-      const {
-        guardar,
-        reestablecer,
-      } = mixin_gastos.useComportamiento()
+    const mixin = new ContenedorSimpleMixin(      VisualizarGasto,      new VisualizarGastoController()    )
+    const mixin_gastos = new ContenedorSimpleMixin(Gasto, new GastoController())
+    const {      entidad: visualizar_gasto,      disabled,      accion,        listadosAuxiliares,    } = mixin.useReferencias()
+    const { setValidador,  cargarVista, obtenerListados } =    mixin.useComportamiento()
     const { onConsultado } = mixin.useHooks()
+    const { entidad: gasto } = mixin_gastos.useReferencias()
+    const {
+      consultar,
+      editar,
+      reestablecer,
+    } = mixin_gastos.useComportamiento()
     const issubmit = ref(true)
     const {
       confirmar,
@@ -89,25 +79,19 @@ export default defineComponent({
      ******/
     const fondoRotativoStore = useFondoRotativoStore()
     const aprobarController = new AprobarGastoController()
-
     const esFactura = ref(true)
     const estaSemanAC = ref()
-
     const mostrarListado = ref(true)
     const mostrarAprobacion = ref(false)
     const isConsultar = ref(false)
-    onConsultado(() => {
-      esFactura.value = gasto.tiene_factura != null ? gasto.tiene_factura : true
-    })
-    if (fondoRotativoStore.id_gasto) {
-      consultar({ id: fondoRotativoStore.id_gasto })
-      mostrarListado.value = false
-      mostrarAprobacion.value = true
-      esFactura.value = fondoRotativoStore.existeFactura
-      estaSemanAC.value = fondoRotativoStore.estaSemanAC
-      accion.value = fondoRotativoStore.accionForm
-      isConsultar.value = fondoRotativoStore.accionForm === acciones.consultar
-    }
+    const cantones = ref([])
+    const detalles = ref([])
+    const sub_detalles = ref([])
+    const proyectos = ref([])
+    const autorizacionesEspeciales: Ref<Empleado[]> = ref([])
+    const tareas = ref([])
+    const vehiculos = ref([])
+    const beneficiarios = ref([])
     const esCombustibleEmpresa = computed(() => {
       if (gasto.detalle == null) {
         return false
@@ -174,6 +158,83 @@ export default defineComponent({
           : '###-###-#########'
       return mascara
     })
+    onConsultado(() => {
+      esFactura.value = gasto.tiene_factura != null ? gasto.tiene_factura : true
+    })
+       //Obtener el listado de las cantones
+    cargarVista(async () => {
+      await obtenerListados({
+        autorizacionesEspeciales: {
+          controller: new EmpleadoRoleController(),
+          params: { roles: ['AUTORIZADOR'] },
+        },
+        proyectos: {
+          controller: new ProyectoController(),
+          params: { campos: 'id,nombre,codigo_proyecto', finalizado: 0 },
+        },
+        tareas: {
+          controller: new TareaController(),
+          params: {
+            //campos: 'id,codigo_tarea,titulo,cliente_id,proyecto_id',
+            formulario: true,
+          },
+        },
+        empleados: {
+          controller: new EmpleadoController(),
+          params: {
+            campos: 'id,nombres,apellidos',
+            id: usuario.jefe_id,
+            estado: 1,
+          },
+        },
+        beneficiarios: {
+          controller: new EmpleadoController(),
+          params: {
+            campos: 'id,nombres,apellidos',
+            estado: 1,
+          },
+        },
+        vehiculos: {
+          controller: new VehiculoController(),
+          params: {
+            campos: 'id,placa',
+          },
+        },
+      })
+      autorizacionesEspeciales.value =
+        listadosAuxiliares.autorizacionesEspeciales
+      beneficiarios.value = listadosAuxiliares.beneficiarios
+      listadosAuxiliares.proyectos.unshift({ id: 0, nombre: 'Sin Proyecto' })
+      proyectos.value = listadosAuxiliares.proyectos
+      tareas.value = listadosAuxiliares.tareas
+      vehiculos.value = listadosAuxiliares.vehiculos
+      autorizacionesEspeciales.value.unshift(listadosAuxiliares.empleados[0])
+      cantones.value =
+        LocalStorage.getItem('cantones') == null
+          ? []
+          : JSON.parse(LocalStorage.getItem('cantones')!.toString())
+      detalles.value =
+        LocalStorage.getItem('detalles') == null
+          ? []
+          : JSON.parse(LocalStorage.getItem('detalles')!.toString())
+      sub_detalles.value =
+        LocalStorage.getItem('sub_detalles') == null
+          ? []
+          : JSON.parse(LocalStorage.getItem('sub_detalles')!.toString())
+      listadosAuxiliares.cantones = cantones.value
+      listadosAuxiliares.detalles = detalles.value
+      listadosAuxiliares.sub_detalles = sub_detalles.value
+      if (fondoRotativoStore.id_gasto) {
+       await consultar({ id: fondoRotativoStore.id_gasto })
+        mostrarListado.value = false
+        mostrarAprobacion.value = true
+        esFactura.value = fondoRotativoStore.existeFactura
+        estaSemanAC.value = fondoRotativoStore.estaSemanAC
+        accion.value = fondoRotativoStore.accionForm
+        isConsultar.value = fondoRotativoStore.accionForm === acciones.consultar
+      }
+    })
+
     /*************
      * Validaciones
      **************/
@@ -243,83 +304,8 @@ export default defineComponent({
         required,
       },
     }
-
     const v$ = useVuelidate(reglas, gasto)
     setValidador(v$.value)
-
-    const cantones = ref([])
-    const detalles = ref([])
-    const sub_detalles = ref([])
-    const proyectos = ref([])
-    const autorizacionesEspeciales: Ref<Empleado[]> = ref([])
-    const tareas = ref([])
-    const vehiculos = ref([])
-    const beneficiarios = ref([])
-
-    //Obtener el listado de las cantones
-    cargarVista(async () => {
-      await obtenerListados({
-        autorizacionesEspeciales: {
-          controller: new EmpleadoRoleController(),
-          params: { roles: ['AUTORIZADOR'] },
-        },
-        proyectos: {
-          controller: new ProyectoController(),
-          params: { campos: 'id,nombre,codigo_proyecto', finalizado: 0 },
-        },
-        tareas: {
-          controller: new TareaController(),
-          params: {
-            //campos: 'id,codigo_tarea,titulo,cliente_id,proyecto_id',
-            formulario: true,
-          },
-        },
-        empleados: {
-          controller: new EmpleadoController(),
-          params: {
-            campos: 'id,nombres,apellidos',
-            id: usuario.jefe_id,
-            estado: 1,
-          },
-        },
-        beneficiarios: {
-          controller: new EmpleadoController(),
-          params: {
-            campos: 'id,nombres,apellidos',
-            estado: 1,
-          },
-        },
-        vehiculos: {
-          controller: new VehiculoController(),
-          params: {
-            campos: 'id,placa',
-          },
-        },
-      })
-      autorizacionesEspeciales.value =
-        listadosAuxiliares.autorizacionesEspeciales
-      beneficiarios.value = listadosAuxiliares.beneficiarios
-      listadosAuxiliares.proyectos.unshift({ id: 0, nombre: 'Sin Proyecto' })
-      proyectos.value = listadosAuxiliares.proyectos
-      tareas.value = listadosAuxiliares.tareas
-      vehiculos.value = listadosAuxiliares.vehiculos
-      autorizacionesEspeciales.value.unshift(listadosAuxiliares.empleados[0])
-    })
-    cantones.value =
-      LocalStorage.getItem('cantones') == null
-        ? []
-        : JSON.parse(LocalStorage.getItem('cantones')!.toString())
-    detalles.value =
-      LocalStorage.getItem('detalles') == null
-        ? []
-        : JSON.parse(LocalStorage.getItem('detalles')!.toString())
-    sub_detalles.value =
-      LocalStorage.getItem('sub_detalles') == null
-        ? []
-        : JSON.parse(LocalStorage.getItem('sub_detalles')!.toString())
-    listadosAuxiliares.cantones = cantones.value
-    listadosAuxiliares.detalles = detalles.value
-    listadosAuxiliares.sub_detalles = sub_detalles.value
     /*********
      * Filtros
      **********/
@@ -590,17 +576,6 @@ export default defineComponent({
           break
       }
     }
-
-    /*********
-     * Pusher
-     *********/
-
-    const gastoPusherEvent = new GastoPusherEvent()
-    gastoPusherEvent.start()
-
-    watchEffect(() => {
-      gasto.total = gasto.cantidad! * gasto.valor_u!
-    })
     function existeComprobante() {
       gasto.factura = null
     }
@@ -613,7 +588,8 @@ export default defineComponent({
             accion: async (data) => {
               try {
                 entidad.detalle_estado = data
-                await aprobarController.aprobarGasto(entidad)
+                visualizar_gasto.detalle_estado = data
+                await aprobarController.aprobarGasto(visualizar_gasto)
                 issubmit.value = false
                 notificarCorrecto('Se aprobado Gasto Exitosamente')
                 emit('cerrar-modal', false)
@@ -679,7 +655,8 @@ export default defineComponent({
     }
     async function guardarDatos(gasto: Gasto) {
       try {
-        await guardar(gasto)
+        await editar(gasto)
+        emit('guardado')
         emit('cerrar-modal', false)
       } catch (e) {
         console.log(e)
@@ -689,7 +666,14 @@ export default defineComponent({
       reestablecer()
       emit('cerrar-modal')
     }
-
+    watchEffect(() => {
+      gasto.total = gasto.cantidad! * gasto.valor_u!
+    })
+    /*********
+     * Pusher
+     *********/
+    const gastoPusherEvent = new GastoPusherEvent()
+    gastoPusherEvent.start()
     return {
       mixin,
       gasto,
@@ -702,7 +686,6 @@ export default defineComponent({
       acciones,
       v$,
       estaSemanAC,
-      isConsultar,
       configuracionColumnas: configuracionColumnasGasto,
       authenticationStore,
       cantones,
@@ -730,6 +713,7 @@ export default defineComponent({
       recargar_detalle,
       guardarDatos,
       reestablecerDatos,
+      isConsultar,
     }
   },
 })
