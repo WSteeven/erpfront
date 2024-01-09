@@ -52,6 +52,8 @@ import { useCargandoStore } from 'stores/cargando'
 import { useQuasar } from 'quasar'
 import { CausaIntervencionController } from 'pages/gestionTrabajos/causasIntervenciones/infraestructure/CausaIntervencionController'
 import { convertirNumeroPositivo } from 'shared/utils'
+import { useFiltrosListadosSelects } from 'shared/filtrosListadosGenerales'
+import { CentroCostoController } from 'pages/gestionTrabajos/centroCostos/infraestructure/CentroCostosController'
 
 export default defineComponent({
   components: {
@@ -190,6 +192,7 @@ export default defineComponent({
       rutas,
       filtrarRutas,
     } = useFiltrosListadosTarea(listadosAuxiliares, tarea)
+    const { centros_costos, filtrarCentrosCostos } = useFiltrosListadosSelects(listadosAuxiliares)
 
     /************
     * Funciones
@@ -211,7 +214,10 @@ export default defineComponent({
     async function establecerCliente() {
       tareaStore.tarea.cliente = tarea.cliente
       tarea.tipo_trabajo = null
+      tarea.centro_costo = null
       await obtenerRutas()
+      //aqui se obtiene los centros de costos del cliente seleccionado
+      await obtenerCentrosCostos()
     }
 
     async function guardado(paginaModal: keyof TareaModales) {
@@ -243,6 +249,13 @@ export default defineComponent({
       cargando.activar()
       listadosAuxiliares.rutas = (await rutaTareaController.listar({ cliente_id: tarea.cliente })).result
       rutas.value = listadosAuxiliares.rutas
+      cargando.desactivar()
+    }
+
+    async function obtenerCentrosCostos() {
+      cargando.activar()
+      listadosAuxiliares.centros_costos = (await (new CentroCostoController().listar({ cliente_id: tarea.cliente, activo: 1 }))).result
+      centros_costos.value = listadosAuxiliares.centros_costos
       cargando.desactivar()
     }
 
@@ -436,6 +449,7 @@ export default defineComponent({
       mostrarSolicitarImagen,
       imagenSubida,
       btnVerImagenInforme,
+      centros_costos, filtrarCentrosCostos,
     }
   },
 })

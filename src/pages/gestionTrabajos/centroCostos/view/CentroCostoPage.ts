@@ -50,7 +50,7 @@ export default defineComponent({
         const v$ = useVuelidate(reglas, centro)
         setValidador(v$.value)
 
-        const btnDesactivarProveedor: CustomActionTable = {
+        const btnDesactivarCentroCosto: CustomActionTable = {
             titulo: 'Desactivar',
             icono: 'bi-toggle2-off',
             color: 'negative',
@@ -68,10 +68,10 @@ export default defineComponent({
             }, visible: ({ entidad }) => entidad.activo
         }
 
-        const btnActivarProveedor: CustomActionTable = {
-            titulo: 'Desactivar',
-            icono: 'bi-toggle2-off',
-            color: 'negative',
+        const btnActivarCentroCosto: CustomActionTable = {
+            titulo: 'Activar',
+            icono: 'bi-toggle2-on',
+            color: 'positive',
             tooltip: 'Desactivar',
             accion: ({ entidad, posicion }) => {
                 confirmar('¿Está seguro de desactivar este centro de costos?', async () => {
@@ -91,8 +91,8 @@ export default defineComponent({
             configuracionColumnas: configuracionColumnasCentroCostos,
 
             clientes, filtrarClientes,
-            btnDesactivarProveedor,
-            btnActivarProveedor,
+            btnDesactivarCentroCosto,
+            btnActivarCentroCosto,
 
         }
 

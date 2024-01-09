@@ -13,6 +13,7 @@ import { SubcentroCosto } from '../domain/SubcentroCosto'
 import { SubcentroCostoController } from '../infraestructure/SubcentroCostosController'
 import { CentroCostoController } from 'pages/gestionTrabajos/centroCostos/infraestructure/CentroCostosController'
 import { CentroCosto } from 'pages/gestionTrabajos/centroCostos/domain/CentroCostos'
+import { useFiltrosListadosSelects } from 'shared/filtrosListadosGenerales'
 
 
 export default defineComponent({
@@ -23,7 +24,8 @@ export default defineComponent({
         const { setValidador, cargarVista, obtenerListados } = mixin.useComportamiento()
 
 
-        const centros_costos = ref()
+        const {centros_costos, filtrarCentrosCostos} = useFiltrosListadosSelects(listadosAuxiliares)
+
         cargarVista(async () => {
             await obtenerListados({
                 centros_costos: new CentroCostoController(),
@@ -38,17 +40,6 @@ export default defineComponent({
 
         const v$ = useVuelidate(reglas, subcentro)
         setValidador(v$.value)
-
-        function filtrarCentrosCostos(val, update) {
-            if (val === '') {
-                update(() => centros_costos.value = listadosAuxiliares.centros_costos)
-                return
-            }
-            update(() => {
-                const needle = val.toLowerCase()
-                centros_costos.value = listadosAuxiliares.centros_costos.filter((v: CentroCosto) => v.nombre!.toLowerCase().indexOf(needle) > -1)
-            })
-        }
 
 
         return {

@@ -2,8 +2,8 @@
   <tab-layout
     :mixin="mixin"
     :configuracionColumnas="configuracionColumnas"
-    :accion1="botonDesactivarCentroCosto"
-    :accion2="botonActivarCentroCosto"
+    :accion1="btnDesactivarCentroCosto"
+    :accion2="btnActivarCentroCosto"
   >
     <template #formulario>
       <q-form @submit.prevent>
