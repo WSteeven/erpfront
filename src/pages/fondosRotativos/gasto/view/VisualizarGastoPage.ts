@@ -54,17 +54,22 @@ export default defineComponent({
     /***********
      * Mixin
      ************/
-    const mixin = new ContenedorSimpleMixin(      VisualizarGasto,      new VisualizarGastoController()    )
+    const mixin = new ContenedorSimpleMixin(
+      VisualizarGasto,
+      new VisualizarGastoController()
+    )
     const mixin_gastos = new ContenedorSimpleMixin(Gasto, new GastoController())
-    const {      entidad: visualizar_gasto,      disabled,      accion,        listadosAuxiliares,    } = mixin.useReferencias()
-    const { setValidador,  cargarVista, obtenerListados } =    mixin.useComportamiento()
+    const {
+      entidad: visualizar_gasto,
+      disabled,
+      accion,
+      listadosAuxiliares,
+    } = mixin.useReferencias()
+    const { setValidador, cargarVista, obtenerListados } =
+      mixin.useComportamiento()
     const { onConsultado } = mixin.useHooks()
     const { entidad: gasto } = mixin_gastos.useReferencias()
-    const {
-      consultar,
-      editar,
-      reestablecer,
-    } = mixin_gastos.useComportamiento()
+    const { consultar } = mixin_gastos.useComportamiento()
     const issubmit = ref(true)
     const {
       confirmar,
@@ -161,7 +166,7 @@ export default defineComponent({
     onConsultado(() => {
       esFactura.value = gasto.tiene_factura != null ? gasto.tiene_factura : true
     })
-       //Obtener el listado de las cantones
+    //Obtener el listado de las cantones
     cargarVista(async () => {
       await obtenerListados({
         autorizacionesEspeciales: {
@@ -170,12 +175,18 @@ export default defineComponent({
         },
         proyectos: {
           controller: new ProyectoController(),
-          params: { campos: 'id,nombre,codigo_proyecto', finalizado: 0 },
+          params: {
+            campos: 'id,nombre,codigo_proyecto',
+            finalizado: 0,
+            empleado_id: fondoRotativoStore.empleado_id,
+          },
         },
         tareas: {
           controller: new TareaController(),
           params: {
             //campos: 'id,codigo_tarea,titulo,cliente_id,proyecto_id',
+            empleado_id: fondoRotativoStore.empleado_id,
+            activas_empleado: 1,
             formulario: true,
           },
         },
@@ -225,7 +236,7 @@ export default defineComponent({
       listadosAuxiliares.detalles = detalles.value
       listadosAuxiliares.sub_detalles = sub_detalles.value
       if (fondoRotativoStore.id_gasto) {
-       await consultar({ id: fondoRotativoStore.id_gasto })
+        await consultar({ id: fondoRotativoStore.id_gasto })
         mostrarListado.value = false
         mostrarAprobacion.value = true
         esFactura.value = fondoRotativoStore.existeFactura
