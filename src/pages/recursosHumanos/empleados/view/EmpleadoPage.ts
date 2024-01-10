@@ -94,6 +94,8 @@ export default defineComponent({
     const modales = new ComportamientoModalesEmpleado()
     const familiarStore = useFamiliarStore()
     const authenticationStore = useAuthenticationStore()
+    const nombre_usuario =ref()
+    const email_usuario =ref()
     const mixinFamiliares = new ContenedorSimpleMixin(
       Familiares,
       new FamiliaresController()
@@ -209,7 +211,12 @@ export default defineComponent({
     }
 
 
-    onConsultado(() => (empleado.tiene_grupo = !!empleado.grupo))
+    onConsultado(() => {
+      empleado.tiene_grupo = !!empleado.grupo
+      nombre_usuario.value = empleado.usuario
+      email_usuario.value = empleado.email
+    }
+    )
     function optionsFecha(date) {
       const hoy = convertir_fecha(new Date())
       return date <= hoy
@@ -336,9 +343,21 @@ export default defineComponent({
         entidad.estado = false
       },
     }
+    function reestablecer_usuario(){
+      if( accion.value== acciones.editar && empleado.generar_usuario){
+        generarUsename()
+      }else{
+        empleado.usuario =nombre_usuario.value
+        empleado.email = email_usuario.value
+      }
+    }
 
     function obtenerUsername(){
-     if(( accion.value== acciones.nuevo || accion.value== acciones.editar )&& empleado.nombres != null && empleado.nombres != '' && empleado.apellidos != null && empleado.apellidos != ''){
+
+      if( accion.value== acciones.editar && empleado.generar_usuario){
+        generarUsename()
+      }
+     if(( accion.value== acciones.nuevo)&& empleado.nombres != null && empleado.nombres != '' && empleado.apellidos != null && empleado.apellidos != ''){
         generarUsename()
      }
     }
@@ -368,7 +387,9 @@ export default defineComponent({
       empleado,
       disabled,
       accion,
+      acciones,
       v$,
+      reestablecer_usuario,
       configuracionColumnas: configuracionColumnasEmpleados,
       columnasFamiliares,
       isPwd: ref(true),

@@ -98,7 +98,8 @@ const auxmes = ref()
     })
     onGuardado((id: number) => {
       subirArchivos()
-      emit('cerrar-modal')
+      listar()
+      // emit('cerrar-modal')
     })
     async function subirArchivos() {
         await refArchivoExtensionConyugal.value.subir({ mes: auxmes.value })

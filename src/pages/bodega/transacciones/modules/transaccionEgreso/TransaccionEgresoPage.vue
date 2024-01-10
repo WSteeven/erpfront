@@ -1,12 +1,15 @@
 <template>
-  <tab-layout
+  <tab-layout-filter-tabs2
     :mixin="mixin"
     :configuracionColumnas="configuracionColumnas"
     titulo-pagina="Transacciones - Egresos"
     :permitirEditar="false"
     :accion1="botonImprimir"
     :accion2="botonAnular"
+    :tab-options="tabOptionsTransaccionesEgresos"
     :ajustarCeldas="true"
+    :tabDefecto="tabDefecto"
+    :filtrar="filtrarTransacciones"
   >
     <template #formulario>
       <div
@@ -623,6 +626,27 @@
               </template>
             </q-select>
           </div>
+
+          <!-- observacion estado -->
+          <div v-if="transaccion.observacion_est" class="col-12 col-md-3">
+            <label class="q-mb-sm block">Observacion Egreso</label>
+            <q-input
+              v-model="transaccion.observacion_est"
+              placeholder="Obligatorio"
+              :disable="true"
+              outlined
+              dense
+            >
+              <template v-slot:error>
+                <div
+                  v-for="error of v$.observacion_est.$errors"
+                  :key="error.$uid"
+                >
+                  <div class="error-msg">{{ error.$message }}</div>
+                </div>
+              </template>
+            </q-input>
+          </div>
           <!-- Listado del pedido -->
           <div
             v-if="listadoPedido !== undefined && listadoPedido.length > 0"
@@ -729,7 +753,7 @@
       >
       </essential-selectable-table>
     </template>
-  </tab-layout>
+  </tab-layout-filter-tabs2>
   <modales-entidad
     :comportamiento="modalesEmpleado"
     :confirmarCerrar="false"

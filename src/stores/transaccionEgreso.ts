@@ -15,6 +15,7 @@ export const useTransaccionEgresoStore = defineStore('transaccion', () => {
     const transaccion = reactive(new Transaccion()) //la transaccion
     const transaccionReset = new Transaccion()
     const idTransaccion = ref()
+    const estadoPendiente = ref(false)
 
     const accionTransaccion = acciones.nuevo
     const notificaciones = useNotificaciones()
@@ -93,6 +94,7 @@ export const useTransaccionEgresoStore = defineStore('transaccion', () => {
         // State
         transaccion,
         accionTransaccion,
+        estadoPendiente,
         cargarTransaccion,
         resetearTransaccion,
         idTransaccion,
