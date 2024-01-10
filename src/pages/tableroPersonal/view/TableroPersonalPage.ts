@@ -7,6 +7,7 @@ import { date } from 'quasar'
 
 // Componentes
 import ModalesEntidad from 'components/modales/view/ModalEntidad.vue'
+import SolicitarFecha from 'shared/prompts/SolicitarFecha.vue'
 import { Vue3Lottie } from 'vue3-lottie'
 import 'vue3-lottie/dist/style.css'
 
@@ -15,11 +16,14 @@ import { ComportamientoModalesTableroPersonal } from '../application/Comportamie
 import { TableroPersonalController } from '../infraestructure/TableroPersonalController'
 // import { SubtareaController } from 'subtareas/infraestructure/SubtareaController'
 import { TableroPersonal } from '../domain/TableroPersonal'
+import { useNotificacionStore } from 'stores/notificacion'
+import { useNotificaciones } from 'shared/notificaciones'
 
 export default defineComponent({
   components: {
     ModalesEntidad,
     LottiePlayer: Vue3Lottie,
+    SolicitarFecha,
   },
   setup() {
     const store = useAuthenticationStore()
@@ -59,7 +63,20 @@ export default defineComponent({
 
     // obtenerSubtareasPendientesAsignar()
 
-    
+    /**
+     * Funcion para probar componente de fecha enviando al backend
+     */
+    const { confirmar } = useNotificaciones()
+    const mostrarSolicitarFecha = ref(false)
+    async function abrirFecha() {
+      console.log('Seleccionaste el componente de abrir fecha')
+      mostrarSolicitarFecha.value = true
+    }
+    function fechaSubida(fecha?) {
+      confirmar('¿Está seguro de subir esta fecha?', async () => {
+        console.log('Esta es la fecha registrada, a partir de aqui puedes enviarla al backend o manipular a tu antojo', fecha)
+      })
+    }
 
     return {
       tablero,
@@ -79,6 +96,9 @@ export default defineComponent({
       verSubtarea,
       fecha,
       subtareasPorAsignar,
+      abrirFecha,
+      mostrarSolicitarFecha,
+      fechaSubida,
 
     }
   },
