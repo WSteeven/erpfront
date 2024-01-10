@@ -432,6 +432,8 @@
               :altoFijo="false"
               :accion1="botonEditarCantidad"
               :accion2="botonEliminar"
+              :ajustarCeldas="true"
+              @eliminar="eliminar"
             ></essential-table>
           </div>
         </div>

@@ -136,7 +136,7 @@ export const tabPrestamoEmpresarial: TabOption[] = [
 ]
 export const tabGestionarEgresos: TabOption[] = [
   { label: 'Aprobada', value: 'ACEPTADA' },
-  // { label: 'Rechazada', value: 'RECHAZADA' },
+  { label: 'Parcial', value: 'PARCIAL' },
   { label: 'Pendiente', value: 'PENDIENTE' },
 ]
 export const tabAutorizarTransferenciaSaldo: TabOption[] = [
@@ -450,6 +450,12 @@ export const tipos_sangre = [
   { nombre: 'O -' },
   // Puedes agregar aquí más tipos de sangre si es necesario
 ]
+export const tipos_vendedor = [
+  { nombre: 'SUPERVISOR' },
+  { nombre: 'JEFE DE VENTAS' },
+  { nombre: 'VENDEDOR' },
+  // Puedes agregar aquí más tipos de vendedor si es necesario
+]
 export const talla_letras = [
   { nombre: 'S' },
   { nombre: 'M' },
@@ -466,7 +472,22 @@ export const tabOptionsPreingresoMateriales = [
   { label: 'Autorizadas', value: '2' }, //autorizacion APROBADO
   { label: 'Canceladas', value: '3' }  //autorizacion CANCELADO
 ]
+export const formas_pago =[
+  {label: 'EFECTIVO', value: 'EFECTIVO'},
+  {label: 'TC', value: 'TARJETA DE CREDITO'},
+  {label: 'D.BANCARIO', value: 'DEBITO BANCARIO'},
+]
+export const estados_activacion =[
+  {label: 'PENDIENTE', value: 'PENDIENTE'},
+  {label: 'APROBADO', value: 'APROBADO'},
+  {label: 'RECHAZADA', value: 'RECHAZADA'},
 
+]
+export const estadosVentas = {
+  APROBADO: 'APROBADO',
+  RECHAZADO: 'RECHAZADO',
+  PENDIENTE: 'PENDIENTE', // Se usa en vez de ASIGNADO en el dashboard
+}
 export const autorizaciones = [
   { nombre: 'Pendiente', id: 1 }, //autorizacion PENDIENTE
   { nombre: 'Aprobado', id: 2 }, //autorizacion APROBADO
@@ -477,4 +498,12 @@ export const estados = [
   { nombre: 'Completa', id: 2 }, //estado COMPLETA
   { nombre: 'Parcial', id: 3 }, //estado PARCIAL
   { nombre: 'Anulado', id: 4 }  //estado ANULADO
+]
+
+
+export const tabOptionsTransaccionesEgresos: TabOption[] = [
+  { label: 'Pendientes', value: 'PENDIENTE' },
+  { label: 'Parciales', value: 'PARCIAL' },
+  { label: 'Completas', value: 'COMPLETA' },
+  { label: 'Anuladas', value: 'ANULADA' }
 ]

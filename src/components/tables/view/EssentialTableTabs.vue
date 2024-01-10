@@ -24,12 +24,7 @@
         :name="opcion.value + ''"
         :class="{ 'rounded shadow-chip q-mx-xs q-my-md': $q.screen.xs }"
       >
-        <q-icon
-          :name="opcion.icono"
-          :color="opcion.color_icono"
-          class="q-mr-sm"
-        ></q-icon>
-        <span>{{ opcion.label }}</span>
+      <q-badge v-if="tabSeleccionado==opcion.value  && datos?.length>0" color="accent" style="margin-right: -15px;" floating>{{ datos.length }}</q-badge>
       </q-tab>
     </q-tabs>
 
@@ -57,6 +52,7 @@
         :accion3Header="accion3Header"
         :accion4Header="accion4Header"
         :accion5Header="accion5Header"
+        :accion6Header="accion6Header"
         :alto-fijo="altoFijo"
         :mostrarFooter="mostrarFooter"
         :mostrarExportar="mostrarExportar"
@@ -189,6 +185,10 @@ const props = defineProps({
     required: false,
   },
   accion5Header: {
+    type: Object as () => CustomActionTable,
+    required: false,
+  },
+  accion6Header: {
     type: Object as () => CustomActionTable,
     required: false,
   },

@@ -1,6 +1,6 @@
 //Dependencias
 import { configuracionColumnasTransaccionEgreso } from 'pages/bodega/transacciones/domain/configuracionColumnasTransaccionEgreso'
-import { defineComponent } from 'vue'
+import { defineComponent, ref } from 'vue'
 
 //Componentes
 import EssentialTableTabs from 'components/tables/view/EssentialTableTabs.vue'
@@ -41,10 +41,9 @@ export default defineComponent({
       listado.value = result
       cargando.desactivar()
     }
+    const tabDefecto = ref('PENDIENTE')
 
-    function guardado(data: any) {
-      if (data == 'aceptado') filtrarTabs('PENDIENTE')
-    }
+    filtrarTabs(tabDefecto.value)
 
     /*******************************************************************************************
      * Botones de tabla
@@ -55,6 +54,7 @@ export default defineComponent({
       color: 'primary',
       accion: async ({ entidad }) => {
         transaccionStore.idTransaccion = entidad.id
+        transaccionStore.estadoPendiente = entidad.estado_comprobante === 'PENDIENTE' ? true : false
         await transaccionStore.showPreview()
         modales.abrirModalEntidad('VisualizarEgresoPage')
       }
@@ -69,16 +69,23 @@ export default defineComponent({
       }
     }
 
-
-    filtrarTabs('PENDIENTE')
-
+    function guardado(data: any) {
+      if (data == 'aceptado') {
+        tabDefecto.value = 'PENDIENTE'
+        filtrarTabs(tabDefecto.value)
+      }
+      if (data == 'parcial') {
+        tabDefecto.value = 'PARCIAL'
+        filtrarTabs(tabDefecto.value)
+      }
+    }
 
     return {
       mixin, transaccion, disabled, listado,
       configuracionColumnas: configuracionColumnasTransaccionEgreso,
       guardado,
 
-      tabGestionarEgresos, filtrarTabs,
+      tabDefecto, tabGestionarEgresos, filtrarTabs,
       botonVerTransaccion, accionesTabla, modales,
       botonImprimir,
     }

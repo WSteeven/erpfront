@@ -68,7 +68,7 @@ export default defineComponent({
     if ('Notification' in window) {
       Notification.requestPermission().then(permission => {
         if (permission === 'granted') {
-          console.log('Permiso de notificación concedido.');
+          // console.log('Permiso de notificación concedido.');
         } else {
           console.log('Permiso de notificación denegado.');
         }

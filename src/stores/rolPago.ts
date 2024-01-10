@@ -7,6 +7,7 @@ export const useRolPagoStore = defineStore('rolpago', () => {
   const idRolPagoSeleccionada = ref()
   const posicionRolPagoSeleccionada = ref()
   const idEmpleado = ref()
+  const departamento = ref()
   const tareaTieneRolPagos = ref()
   const motivoSuspendido = ref()
   const accion = ref()
@@ -38,12 +39,14 @@ export const useRolPagoStore = defineStore('rolpago', () => {
   const dias_permiso_sin_recuperar = ref()
   const estado = ref()
   const es_quincena = ref()
+  const recalcularSueldo = ref()
 
   return {
     idRolPagoMes,
     idRolPagoSeleccionada,
     tareaTieneRolPagos,
     idEmpleado,
+    departamento,
     motivoSuspendido,
     posicionRolPagoSeleccionada,
     accion,
@@ -75,6 +78,7 @@ export const useRolPagoStore = defineStore('rolpago', () => {
     roles,
     dias_permiso_sin_recuperar,
     estado,
-    es_quincena
+    es_quincena,
+    recalcularSueldo,
   }
 })
