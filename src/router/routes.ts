@@ -1162,7 +1162,7 @@ const routes: RouteRecordRaw[] = [
         path: '/alimentacion',
         name: 'alimentacion',
         component: () =>
-          import('pages/recursosHumanos/alimentacion/alimentacion/view/Alimentacion.vue'),
+          import('pages/recursosHumanos/alimentacion/alimentacion/views/AlimentacionPage.vue'),
         meta: { requiresAuth: true },
       },
 

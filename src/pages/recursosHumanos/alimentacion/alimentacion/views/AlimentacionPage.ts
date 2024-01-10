@@ -6,7 +6,6 @@ import TabLayoutFilterTabs2 from 'shared/contenedor/modules/simple/view/TabLayou
 import { required } from 'shared/i18n-validators'
 import { acciones, accionesTabla, maskFecha } from 'config/utils'
 import { ContenedorSimpleMixin } from 'shared/contenedor/modules/simple/application/ContenedorSimpleMixin'
-import ButtonSubmits from 'components/buttonSubmits/buttonSubmits.vue'
 import { Alimentacion } from '../domain/Alimentacion'
 import { AlimentacionController } from '../infraestructure/AlimentacionController'
 import { configuracionColumnasAlimentacion } from '../domain/configuracionColumnasAlimentacion'
@@ -24,8 +23,7 @@ export default defineComponent({
       Alimentacion,
       new AlimentacionController()
     )
-    const { setValidador,listar } =
-    mixin.useComportamiento()
+
 
     const {
       entidad: alimentacion,
@@ -33,6 +31,8 @@ export default defineComponent({
       accion,
       listado,
     } = mixin.useReferencias()
+    const { setValidador, obtenerListados, cargarVista,listar } =
+    mixin.useComportamiento()
     const is_month = ref(false)
 
     /*************
