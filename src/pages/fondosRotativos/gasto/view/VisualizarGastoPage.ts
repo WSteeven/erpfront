@@ -303,6 +303,9 @@ export default defineComponent({
       observacion: {
         required,
       },
+      detalle_estado: {
+        required,
+      },
     }
     const v$ = useVuelidate(reglas, gasto)
     setValidador(v$.value)
@@ -579,29 +582,20 @@ export default defineComponent({
     function existeComprobante() {
       gasto.factura = null
     }
-    function aprobar_gasto(entidad, tipo_aprobacion: string) {
+    async function aprobar_gasto(entidad, tipo_aprobacion: string) {
       switch (tipo_aprobacion) {
         case 'aprobar':
-          const data: CustomActionPrompt = {
-            titulo: 'Aprobar gasto',
-            mensaje: 'Ingrese motivo de aprobación',
-            accion: async (data) => {
-              try {
-                entidad.detalle_estado = data
-                visualizar_gasto.detalle_estado = data
-                await aprobarController.aprobarGasto(visualizar_gasto)
-                issubmit.value = false
-                notificarCorrecto('Se aprobado Gasto Exitosamente')
-                emit('cerrar-modal', false)
-                emit('guardado')
-              } catch (e: any) {
-                notificarError(
-                  'No se pudo aprobar, debes ingresar un motivo para la aprobacion'
-                )
-              }
-            },
+          try {
+            await aprobarController.aprobarGasto(gasto)
+            issubmit.value = false
+            notificarCorrecto('Se aprobado Gasto Exitosamente')
+            emit('cerrar-modal', false)
+            emit('guardado')
+          } catch (e: any) {
+            notificarError(
+              'No se pudo aprobar, debes ingresar un motivo para la aprobacion'
+            )
           }
-          prompt(data)
           break
         case 'rechazar':
           confirmar('¿Está seguro de rechazar el gasto?', () => {
@@ -653,19 +647,6 @@ export default defineComponent({
           break
       }
     }
-    async function guardarDatos(gasto: Gasto) {
-      try {
-        await editar(gasto)
-        emit('guardado')
-        emit('cerrar-modal', false)
-      } catch (e) {
-        console.log(e)
-      }
-    }
-    function reestablecerDatos() {
-      reestablecer()
-      emit('cerrar-modal')
-    }
     watchEffect(() => {
       gasto.total = gasto.cantidad! * gasto.valor_u!
     })
@@ -693,6 +674,7 @@ export default defineComponent({
       sub_detalles,
       proyectos,
       tareas,
+      beneficiarios,
       mostarPlaca,
       mascaraFactura,
       watchEffect,
@@ -711,8 +693,6 @@ export default defineComponent({
       cambiar_proyecto,
       optionsFechaGasto,
       recargar_detalle,
-      guardarDatos,
-      reestablecerDatos,
       isConsultar,
     }
   },

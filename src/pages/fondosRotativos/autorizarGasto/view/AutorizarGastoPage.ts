@@ -140,6 +140,7 @@ export default defineComponent({
     return {
       configuracionColumnasAutorizarGasto,
       listado,
+      estadosGastos,
       tabAutorizarGasto,
       botonVerModalGasto,
       accionesTabla,

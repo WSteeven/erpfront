@@ -24,7 +24,7 @@
       :mostrar-botones="false"
       :tab-options="tabAutorizarGasto"
       @tab-seleccionado="filtrarAutorizacionesGasto"
-      tab-defecto="PENDIENTE"
+      tabDefecto="3"
     ></essential-table-tabs>
     <modal-entidad
     :comportamiento="modales"

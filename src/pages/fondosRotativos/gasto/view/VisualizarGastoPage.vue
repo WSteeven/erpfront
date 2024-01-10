@@ -570,13 +570,20 @@
             <label class="q-mb-sm block">Observación Autorizador</label>
             <q-input
               v-model="gasto.detalle_estado"
-              placeholder="Opcional"
+              placeholder="Obligatorio"
               type="textarea"
               :disable="disabled"
+              :error="!!v$.detalle_estado.$errors.length"
+              @blur="v$.detalle_estado.$touch"
               autogrow
               outlined
               dense
             >
+            <template v-slot:error>
+                <div v-for="error of v$.detalle_estado.$errors" :key="error.$uid">
+                  <div class="error-msg">{{ error.$message }}</div>
+                </div>
+              </template>
             </q-input>
           </div>
           <!-- Estado -->
