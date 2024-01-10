@@ -650,7 +650,7 @@ export default defineComponent({
       color: 'secondary',
       visible: ({ entidad }) => {
         return (
-          authenticationStore.user.id === entidad.aut_especial &&
+          (entidad.aut_especial === authenticationStore.user.id  || entidad.id_usuario == authenticationStore.user.id)&&
           entidad.estado === estadosGastos.PENDIENTE
         )
       },
