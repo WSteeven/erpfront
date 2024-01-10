@@ -33,7 +33,6 @@
             <q-input
               v-model="fecha"
               placeholder="Obligatorio"
-              :mask="mask"
               :readonly="true"
               outlined
               dense
@@ -96,7 +95,6 @@ import { ref, defineComponent, computed } from 'vue'
 import { useNotificaciones } from 'shared/notificaciones'
 import { useConfiguracionGeneralStore } from 'stores/configuracion_general'
 import { maskFecha } from 'config/utils'
-import { is } from 'quasar'
 
 export default defineComponent({
   props: {
@@ -133,10 +131,8 @@ export default defineComponent({
       props.confirmar(fecha.value)
       cerrarModalEntidad()
     }
-    function checkFecha(value) {
-      console.log(value, value === 'month')
-      console.log(value === 'month' ? false : true)
-      isMonth.value = value === 'month' ? false : true
+    function checkFecha(val, reason, details) {
+      isMonth.value = reason === 'month' ? false : true
     }
 
     return {

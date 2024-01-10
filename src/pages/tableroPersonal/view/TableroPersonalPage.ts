@@ -69,7 +69,6 @@ export default defineComponent({
     const { confirmar } = useNotificaciones()
     const mostrarSolicitarFecha = ref(false)
     async function abrirFecha() {
-      console.log('Seleccionaste el componente de abrir fecha')
       mostrarSolicitarFecha.value = true
     }
     function fechaSubida(fecha?) {
