@@ -266,7 +266,7 @@ export default defineComponent({
             //campos: 'id,codigo_tarea,titulo,cliente_id,proyecto_id',
             empleado_id: store.user.id,
             activas_empleado: 1,
-            //formulario: true,
+            formulario: true,
           },
         },
         empleados: {
