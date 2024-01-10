@@ -301,6 +301,7 @@ export const rolesSistema = {
   secretario: 'SECRETARIO',
   tecnico_lider: 'LIDER DE GRUPO',
   tecnico: 'TECNICO',
+  autorizador: 'AUTORIZADOR',
 }
 
 export const cargosSistema = {

@@ -8,7 +8,6 @@ import { destinosTareas } from 'config/tareas.utils'
 import EssentialTable from 'components/tables/view/EssentialTable.vue'
 
 // Logica y controladores
-import { useListadoMaterialesDevolucionStore } from 'stores/listadoMaterialesDevolucion'
 import { useMaterialesEmpleado } from '../application/UseMaterialesEmpleado'
 import { useMaterialesProyecto } from '../application/UseMaterialesProyecto'
 import { useFiltrosListadosSelects } from 'shared/filtrosListadosGenerales'
@@ -36,7 +35,6 @@ export default defineComponent({
     /************
      * Variables
      ************/
-    const campoTareaProyecto = ref('Todas las tareas asignadas')
     const { notificarAdvertencia } = useNotificaciones()
     const tab = ref()
 
@@ -54,8 +52,10 @@ export default defineComponent({
       productosTarea: [],
       productosProyectosEtapas: [],
       productosStock: [],
+      //
       clientesMaterialesTarea: [],
       clientesMaterialesEmpleado: [],
+      //
       tareas: [],
       proyectos: [],
       etapas: [],

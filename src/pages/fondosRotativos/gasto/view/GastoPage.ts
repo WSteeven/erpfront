@@ -89,8 +89,8 @@ export default defineComponent({
         ? true
         : false*/
     })
-    onConsultado(()=>{
-      esFactura.value = gasto.tiene_factura!=null?gasto.tiene_factura:true;
+    onConsultado(() => {
+      esFactura.value = gasto.tiene_factura != null ? gasto.tiene_factura : true;
     })
     const esCombustibleEmpresa = computed(() => {
       if (gasto.detalle == null) {
@@ -242,7 +242,7 @@ export default defineComponent({
       await obtenerListados({
         autorizacionesEspeciales: {
           controller: new EmpleadoRoleController(),
-          params: {roles: ['AUTORIZADOR']},
+          params: { roles: ['AUTORIZADOR'] },
         },
         proyectos: {
           controller: new ProyectoController(),
@@ -382,7 +382,7 @@ export default defineComponent({
           //new Date(today.setDate(today.getDate() - ((today.getDay()+1) % 7)))
           new Date(today.setDate(today.getDate() - ((today.getDay()) % 7)))
 
-          )
+        )
       }
       const sabadoSiguiente = convertir_fecha(new Date(siguienteSabado()))
       console.log(sabadoAnterior + ' al ' + sabadoSiguiente)
@@ -520,7 +520,7 @@ export default defineComponent({
         gasto.num_comprobante = null
         if (!subdetalleEncontrado.tiene_factura) {
           tieneFactura = false
-          gasto.factura= null
+          gasto.factura = null
           break
         }
       }

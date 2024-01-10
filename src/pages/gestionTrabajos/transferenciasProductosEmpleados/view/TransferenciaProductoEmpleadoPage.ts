@@ -1,5 +1,5 @@
 // Dependencias
-import { acciones, estadosTransacciones, tabOptionsTransferenciaProductoEmpleado } from 'config/utils'
+import { acciones, estadosTransacciones, rolesSistema, tabOptionsTransferenciaProductoEmpleado } from 'config/utils'
 import { configuracionColumnasDevoluciones } from '../domain/configuracionColumnasDevoluciones'
 import { StatusEssentialLoading } from 'components/loading/application/StatusEssentialLoading'
 import { computed, defineComponent, onMounted, reactive, ref, watch, watchEffect } from 'vue'
@@ -46,6 +46,7 @@ import { Etapa } from 'pages/gestionTrabajos/proyectos/modules/etapas/domain/Eta
 import { Tarea } from 'tareas/domain/Tarea'
 import { useMaterialesTarea } from 'pages/gestionTrabajos/miBodega/application/UseMaterialesTarea'
 import { FiltroMiBodega } from 'pages/gestionTrabajos/miBodega/domain/FiltroMiBodega'
+import { EmpleadoRoleController } from 'pages/recursosHumanos/empleados/infraestructure/EmpleadoRolesController'
 
 export default defineComponent({
   name: 'TransferenciaProductoEmpleado',
@@ -94,6 +95,11 @@ export default defineComponent({
     const opciones_empleados = ref([])
     const opciones_autorizaciones = ref([])
 
+    /************************
+     * Variables computadas
+     ************************/
+    const esEntreProyectos = (): boolean => listadosAuxiliares.proyectos.find((proyecto: Proyecto) => proyecto.id === transferencia.proyecto_origen)?.etapas.length === 0
+
     //Obtener los listados
     cargarVista(async () => {
       await obtenerListados({
@@ -103,6 +109,14 @@ export default defineComponent({
             campos: 'id,nombres,apellidos',
             estado: 1,
             // rol: rolesSistema.tecnico,
+          }
+        },
+        autorizadores: {
+          controller: new EmpleadoRoleController(),
+          params: {
+            // estado: 1,
+            // campos: 'id,nombres,apellidos,roles',
+            roles: [rolesSistema.jefe_tecnico, rolesSistema.coordinador, rolesSistema.coordinadorBackup],
           }
         },
         tareasDestino: [],
@@ -258,8 +272,13 @@ export default defineComponent({
     const { consultarProductosTarea } = useMaterialesTarea(filtroMiBodega, listadosAuxiliares)
 
     function establecerAutorizador() {
-      const tarea = listadosAuxiliares.tareas.find((tarea: Tarea) => tarea.id === transferencia.tarea_origen)
-      transferencia.autorizador = tarea?.coordinador_id
+      if (esEntreProyectos()) {
+        transferencia.autorizador = listadosAuxiliares.autorizadores.find((emp: Empleado) => emp.roles.includes(rolesSistema.jefe_tecnico)).id
+      } else {
+        // Aqui ingresa si es transferencia entre etapas y entre tareas
+        const tarea = listadosAuxiliares.tareas.find((tarea: Tarea) => tarea.id === transferencia.tarea_origen)
+        transferencia.autorizador = tarea?.coordinador_id
+      }
     }
 
     async function consultarProyectosEmpleadoOrigen() {

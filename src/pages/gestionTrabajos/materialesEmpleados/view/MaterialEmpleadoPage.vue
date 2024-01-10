@@ -10,6 +10,8 @@
       >
     </div>
 
+    <filtro-productos-asignados></filtro-productos-asignados>
+
     <q-card class="rounded-card custom-shadow">
       <q-card-section>
         <div class="row">
@@ -57,9 +59,22 @@
         no-caps
         inline-label
       >
-        <q-tab name="tareas" label="Material para tarea que tiene a cargo" />
+        <q-tab
+          :name="destinosTareas.paraClienteFinal"
+          label="Material para cliente final y mantenimiento"
+          icon="bi-pin-angle"
+        />
+        <q-tab
+          :name="destinosTareas.paraProyecto"
+          label="Material para proyectos"
+          icon="bi-diagram-2"
+        />
         <!-- @click="() => (mensaje = '')" -->
-        <q-tab name="personal" label="Stock personal del empleado">
+        <q-tab
+          name="personal"
+          label="Stock personal del empleado"
+          icon="bi-person"
+        >
           <!-- @click="filtrarStock('personal')" -->
         </q-tab>
       </q-tabs>
