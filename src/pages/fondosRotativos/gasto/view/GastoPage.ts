@@ -30,7 +30,13 @@ import { SubDetalleFondo } from 'pages/fondosRotativos/subDetalleFondo/domain/Su
 import { useNotificaciones } from 'shared/notificaciones'
 import { AprobarGastoController } from 'pages/fondosRotativos/autorizarGasto/infrestructure/AprobarGastoController'
 import { useAuthenticationStore } from 'stores/authentication'
-import { maskFecha, tabAutorizarGasto, estadosGastos, convertir_fecha, acciones } from 'config/utils'
+import {
+  maskFecha,
+  tabAutorizarGasto,
+  estadosGastos,
+  convertir_fecha,
+  acciones,
+} from 'config/utils'
 import { EmpleadoController } from 'pages/recursosHumanos/empleados/infraestructure/EmpleadoController'
 import { Empleado } from 'pages/recursosHumanos/empleados/domain/Empleado'
 import { VehiculoController } from 'pages/controlVehiculos/vehiculos/infraestructure/VehiculoController'
@@ -69,6 +75,7 @@ export default defineComponent({
       notificarError,
     } = useNotificaciones()
 
+    const store = useAuthenticationStore()
     /*******
      * Init
      ******/
@@ -90,8 +97,8 @@ export default defineComponent({
         ? true
         : false*/
     })
-    onConsultado(()=>{
-      esFactura.value = gasto.tiene_factura!=null?gasto.tiene_factura:true;
+    onConsultado(() => {
+      esFactura.value = gasto.tiene_factura != null ? gasto.tiene_factura : true
     })
     const esCombustibleEmpresa = computed(() => {
       if (gasto.detalle == null) {
@@ -106,9 +113,9 @@ export default defineComponent({
       if (parseInt(gasto.detalle !== null ? gasto.detalle : '') === 6) {
         return (
           gasto.sub_detalle!.findIndex((subdetalle) => subdetalle === 96) >
-          -1 ||
+            -1 ||
           gasto.sub_detalle!.findIndex((subdetalle) => subdetalle === 97) >
-          -1 ||
+            -1 ||
           gasto.sub_detalle!.findIndex((subdetalle) => subdetalle === 24) > -1
         )
       } else {
@@ -243,17 +250,23 @@ export default defineComponent({
       await obtenerListados({
         autorizacionesEspeciales: {
           controller: new EmpleadoRoleController(),
-          params: {roles: ['AUTORIZADOR']},
+          params: { roles: ['AUTORIZADOR'] },
         },
         proyectos: {
           controller: new ProyectoController(),
-          params: { campos: 'id,nombre,codigo_proyecto', finalizado: 0 },
+          params: {
+            campos: 'id,nombre,codigo_proyecto',
+            finalizado: 0,
+            empleado_id: store.user.id,
+          },
         },
         tareas: {
           controller: new TareaController(),
           params: {
             //campos: 'id,codigo_tarea,titulo,cliente_id,proyecto_id',
-            formulario: true,
+            empleado_id: store.user.id,
+            activas_empleado: 1,
+            //formulario: true,
           },
         },
         empleados: {
@@ -381,9 +394,8 @@ export default defineComponent({
       } else {
         sabadoAnterior = convertir_fecha(
           //new Date(today.setDate(today.getDate() - ((today.getDay()+1) % 7)))
-          new Date(today.setDate(today.getDate() - ((today.getDay()) % 7)))
-
-          )
+          new Date(today.setDate(today.getDate() - (today.getDay() % 7)))
+        )
       }
       const sabadoSiguiente = convertir_fecha(new Date(siguienteSabado()))
       console.log(sabadoAnterior + ' al ' + sabadoSiguiente)
@@ -521,7 +533,7 @@ export default defineComponent({
         gasto.num_comprobante = null
         if (!subdetalleEncontrado.tiene_factura) {
           tieneFactura = false
-          gasto.factura= null
+          gasto.factura = null
           break
         }
       }
@@ -577,8 +589,8 @@ export default defineComponent({
                   LocalStorage.getItem('sub_detalles') == null
                     ? []
                     : JSON.parse(
-                      LocalStorage.getItem('sub_detalles')!.toString()
-                    )
+                        LocalStorage.getItem('sub_detalles')!.toString()
+                      )
                 listadosAuxiliares.sub_detalles = sub_detalles.value
               }, 100),
             250
@@ -636,8 +648,12 @@ export default defineComponent({
       titulo: ' ',
       icono: 'bi-pencil-square',
       color: 'secondary',
-      visible: ({ entidad }) =>{
-        return authenticationStore.user.id === entidad.aut_especial && entidad.estado === estadosGastos.PENDIENTE },
+      visible: ({ entidad }) => {
+        return (
+          authenticationStore.user.id === entidad.aut_especial &&
+          entidad.estado === estadosGastos.PENDIENTE
+        )
+      },
       accion: ({ entidad }) => {
         accion.value = acciones.editar
         consultar(entidad)
