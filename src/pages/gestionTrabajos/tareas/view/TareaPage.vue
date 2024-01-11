@@ -374,7 +374,13 @@
                 </div>
 
                 <!-- Select de centro de costos  -->
-                <div class="col-12 col-md-3" v-if="tarea.cliente && !tarea.no_lleva_centro_costo">
+                <div
+                  class="col-12 col-md-3"
+                  v-if="
+                    (tarea.cliente && !tarea.no_lleva_centro_costo) ||
+                    tarea.centro_costo
+                  "
+                >
                   <label class="q-mb-sm block">Centro de Costos</label>
                   <q-select
                     v-model="tarea.centro_costo"
