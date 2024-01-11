@@ -14,6 +14,7 @@ import { useFiltrosListadosSelects } from 'shared/filtrosListadosGenerales'
 import { CustomActionTable } from 'components/tables/domain/CustomActionTable'
 import { useNotificaciones } from 'shared/notificaciones'
 import { CambiarEstadoCentroCosto } from '../application/CambiarEstadoCentroCosto'
+import { StatusEssentialLoading } from 'components/loading/application/StatusEssentialLoading'
 
 //Logica y controladores
 
@@ -25,6 +26,7 @@ export default defineComponent({
     const { entidad: centro, disabled, listadosAuxiliares, listado } = mixin.useReferencias()
     const { setValidador, cargarVista, obtenerListados } = mixin.useComportamiento()
     const { confirmar, notificarCorrecto, notificarError } = useNotificaciones()
+    const cargando = new StatusEssentialLoading()
 
     const { clientes, filtrarClientes } = useFiltrosListadosSelects(listadosAuxiliares)
 
@@ -54,11 +56,14 @@ export default defineComponent({
       accion: ({ entidad, posicion }) => {
         confirmar('¿Está seguro de desactivar este centro de costos?', async () => {
           try {
+            cargando.activar()
             const { result, response } = await new CambiarEstadoCentroCosto().anular(entidad.id)
             listado.value.splice(posicion, 1, response.data.modelo)
             notificarCorrecto('Desactivado correctamente')
           } catch (error: any) {
             notificarError('No se pudo desactivar el centro de costo!')
+          } finally {
+            cargando.desactivar()
           }
         })
       }, visible: ({ entidad }) => entidad.activo
@@ -72,11 +77,14 @@ export default defineComponent({
       accion: ({ entidad, posicion }) => {
         confirmar('¿Está seguro de desactivar este centro de costos?', async () => {
           try {
+            cargando.activar()
             const { result, response } = await new CambiarEstadoCentroCosto().anular(entidad.id)
             listado.value.splice(posicion, 1, response.data.modelo)
             notificarCorrecto('Desactivado correctamente')
           } catch (error: any) {
             notificarError('No se pudo desactivar el centro de costo!')
+          } finally {
+            cargando.desactivar()
           }
         })
       }, visible: ({ entidad }) => !entidad.activo

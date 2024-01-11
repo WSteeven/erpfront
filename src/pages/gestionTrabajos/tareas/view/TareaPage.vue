@@ -378,9 +378,18 @@
                     :option-label="(item) => item.nombre"
                     :option-value="(item) => item.id"
                     @filter="filtrarCentrosCostos"
+                    :error="!!v$.centro_costo.$errors.length"
                     emit-value
                     map-options
                   >
+                    <template v-slot:error>
+                      <div
+                        v-for="error of v$.centro_costo.$errors"
+                        :key="error.$uid"
+                      >
+                        <div class="error-msg">{{ error.$message }}</div>
+                      </div>
+                    </template>
                     <template v-slot:no-option>
                       <q-item>
                         <q-item-section class="text-italic text-grey">

@@ -160,6 +160,11 @@ export default defineComponent({
       proyecto: { required: requiredIf(() => paraProyecto.value) },
       coordinador: { required: requiredIf(() => paraClienteFinal.value && esCoordinadorBackup) },
       ruta_tarea: { required: requiredIf(() => paraClienteFinal.value && tarea.ubicacion_trabajo === ubicacionesTrabajo.ruta) },
+      centro_costo: { required: requiredIf(() => paraClienteFinal.value && centros_costos.value.length > 0) },
+      // tarea: { requiredIf: requiredIf(() => preingreso.etapa && centros_costos.value.length) },
+      // etapa: {
+      //   requiredIf: requiredIf(() => { if (etapas.value) return etapas.value.length && preingreso.proyecto })
+      // },
     }
 
     const v$ = useVuelidate(reglas, tarea)
@@ -319,7 +324,13 @@ export default defineComponent({
       clientesFinales.value = []
     })
 
-    onConsultado(() => filtrarSubtareas(''))
+    onConsultado(async () => {
+      filtrarSubtareas('')
+      cargando.activar()
+      listadosAuxiliares.centros_costos = (await (new CentroCostoController().listar({ cliente_id: tarea.cliente }))).result
+      centros_costos.value = listadosAuxiliares.centros_costos
+      cargando.desactivar()
+    })
 
     const btnAgregarSubtarea: CustomActionTable = {
       titulo: 'Agregar subtarea',
