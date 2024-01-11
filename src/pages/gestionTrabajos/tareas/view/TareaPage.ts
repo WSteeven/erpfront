@@ -55,6 +55,8 @@ import { TareaModales } from '../domain/TareaModales'
 import { Tarea } from '../domain/Tarea'
 import { Proyecto } from 'pages/gestionTrabajos/proyectos/domain/Proyecto'
 import { Etapa } from '../../proyectos/modules/etapas/domain/Etapa'
+import { useFiltrosListadosSelects } from 'shared/filtrosListadosGenerales'
+import { CentroCostoController } from 'pages/gestionTrabajos/centroCostos/infraestructure/CentroCostosController'
 
 export default defineComponent({
   components: {
@@ -172,7 +174,11 @@ export default defineComponent({
       proyecto: { required: requiredIf(() => paraProyecto.value) },
       coordinador: { required: requiredIf(() => esCoordinadorBackup && paraClienteFinal.value) },
       ruta_tarea: { required: requiredIf(() => paraClienteFinal.value && tarea.ubicacion_trabajo === ubicacionesTrabajo.ruta) },
-      etapa: { required: requiredIf(() => paraProyecto.value && !!tarea.proyecto && etapas.value.length) },
+      centro_costo: { required: requiredIf(() => paraClienteFinal.value && centros_costos.value.length > 0) },
+      // tarea: { requiredIf: requiredIf(() => preingreso.etapa && centros_costos.value.length) },
+      // etapa: {
+      //   requiredIf: requiredIf(() => { if (etapas.value) return etapas.value.length && preingreso.proyecto })
+      // },
     }
 
     const v$ = useVuelidate(reglas, tarea)
@@ -203,6 +209,7 @@ export default defineComponent({
       etapas,
       filtrarEtapas,
     } = useFiltrosListadosTarea(listadosAuxiliares, tarea)
+    const { centros_costos, filtrarCentrosCostos } = useFiltrosListadosSelects(listadosAuxiliares)
 
     /************
     * Funciones
@@ -223,6 +230,11 @@ export default defineComponent({
 
     async function establecerCliente() {
       tareaStore.tarea.cliente = tarea.cliente
+      tarea.tipo_trabajo = null
+      tarea.centro_costo = null
+      await obtenerRutas()
+      //aqui se obtiene los centros de costos del cliente seleccionado
+      await obtenerCentrosCostos()
     }
 
     async function guardado(paginaModal: keyof TareaModales) {
@@ -254,6 +266,13 @@ export default defineComponent({
       cargando.activar()
       listadosAuxiliares.rutas = (await rutaTareaController.listar({ cliente_id: tarea.cliente })).result
       rutas.value = listadosAuxiliares.rutas
+      cargando.desactivar()
+    }
+
+    async function obtenerCentrosCostos() {
+      cargando.activar()
+      listadosAuxiliares.centros_costos = (await (new CentroCostoController().listar({ cliente_id: tarea.cliente, activo: 1 }))).result
+      centros_costos.value = listadosAuxiliares.centros_costos
       cargando.desactivar()
     }
 
@@ -320,7 +339,7 @@ export default defineComponent({
 
     async function obtenerEtapasProyecto(idProyecto: number) {
       const etapasProyecto = listadosAuxiliares.proyectos.filter((proyecto: Proyecto) => proyecto.id === tarea.proyecto)[0].etapas
-      const etapasResponsable = authenticationStore.esJefeTecnico || authenticationStore.esAdministrador ? etapasProyecto : etapasProyecto.filter((etapa: Etapa) => etapa.responsable_id === authenticationStore.user.id)
+      const etapasResponsable = authenticationStore.esJefeTecnico || authenticationStore.esAdministrador ? etapasProyecto : etapasProyecto.filter((etapa: Etapa) => etapa.responsable === authenticationStore.user.id)
       listadosAuxiliares.etapas = etapasResponsable
       etapas.value = etapasResponsable
     }
@@ -337,11 +356,15 @@ export default defineComponent({
       clientesFinales.value = []
     })
 
-    onConsultado(() => {
+    onConsultado(async () => {
+      cargando.activar()
       filtrarSubtareas('')
       proyectos.value = listadosAuxiliares.proyectos
       rutas.value = listadosAuxiliares.rutas
       if (tarea.proyecto_id) obtenerEtapasProyecto(tarea.proyecto_id)
+      listadosAuxiliares.centros_costos = (await (new CentroCostoController().listar({ cliente_id: tarea.cliente }))).result
+      centros_costos.value = listadosAuxiliares.centros_costos
+      cargando.desactivar()
     })
 
     const btnAgregarSubtarea: CustomActionTable = {
@@ -458,6 +481,7 @@ export default defineComponent({
       btnVerImagenInforme,
       obtenerEtapasProyecto,
       acciones,
+      centros_costos, filtrarCentrosCostos,
     }
   },
 })

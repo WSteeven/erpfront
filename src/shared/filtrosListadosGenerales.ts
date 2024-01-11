@@ -7,6 +7,7 @@ import { Producto } from "pages/bodega/productos/domain/Producto";
 import { Canton } from "sistema/ciudad/domain/Canton";
 import { Empleado } from "pages/recursosHumanos/empleados/domain/Empleado";
 import { Cliente } from "sistema/clientes/domain/Cliente";
+import { CentroCosto } from "pages/gestionTrabajos/centroCostos/domain/CentroCostos";
 
 export const useFiltrosListadosSelects = (listadosAuxiliares, entidad?: Ref<any>) => {
   /**************************************************************
@@ -35,11 +36,24 @@ export const useFiltrosListadosSelects = (listadosAuxiliares, entidad?: Ref<any>
   const etapasDestino = ref(listadosAuxiliares.etapasDestino)
   const tareas = ref(listadosAuxiliares.tareas)
   const tareasDestino = ref(listadosAuxiliares.tareasDestino)
+  const centros_costos = ref([])
 
 
   /**************************************************************
    * Funciones
    **************************************************************/
+
+  centros_costos.value = listadosAuxiliares.centros_costos
+  function filtrarCentrosCostos(val, update) {
+    if (val === '') {
+      update(() => centros_costos.value = listadosAuxiliares.centros_costos)
+      return
+    }
+    update(() => {
+      const needle = val.toLowerCase()
+      centros_costos.value = listadosAuxiliares.centros_costos.filter((v: CentroCosto) => v.nombre!.toLowerCase().indexOf(needle) > -1)
+    })
+  }
 
   /**
    * Esta función filtra una lista de países en función de una consulta de búsqueda y actualiza la
@@ -310,5 +324,6 @@ export const useFiltrosListadosSelects = (listadosAuxiliares, entidad?: Ref<any>
     etapas, filtrarEtapas,
     etapasDestino, filtrarEtapasDestino,
     tareasDestino, filtrarTareasDestino,
+    centros_costos, filtrarCentrosCostos,
   }
 }
