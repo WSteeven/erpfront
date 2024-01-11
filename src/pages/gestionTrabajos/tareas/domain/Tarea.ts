@@ -44,8 +44,8 @@ export class Tarea extends EntidadAuditable {
   hora_fin_trabajo: string | null */
 
   // Foreign keys
-  /* tipo_trabajo: number | null
-  trabajo_padre: number | null*/
+   tipo_trabajo: number | null
+  /*trabajo_padre: number | null*/
   cliente_final: number | null
   coordinador: number | null
   fiscalizador: number | null
@@ -53,8 +53,9 @@ export class Tarea extends EntidadAuditable {
   proyecto_id: number | null
   cliente: number | null
   cliente_id: number | null
-  // trabajo_dependiente: string | null
-  // tarea: number | null
+  trabajo_dependiente: string | null
+  trabajo_padre: number | null
+  centro_costo: number | null
 
   // archivos: File[]
   imagen_informe: string | null
@@ -132,15 +133,16 @@ export class Tarea extends EntidadAuditable {
     this.metraje_tendido = null
 
     // Foreign keys
-    // this.tipo_trabajo = null
+    this.tipo_trabajo = null
     this.cliente_final = null
     this.coordinador = null
     this.fiscalizador = null
     this.proyecto = null
     this.proyecto_id = null
     this.cliente = null
-    // this.trabajo_padre = null
-    // this.trabajo_dependiente = null
+    this.trabajo_padre = null
+    this.trabajo_dependiente = null
+    this.centro_costo = null
 
     // this.trabajo_dependiente_id = null
 

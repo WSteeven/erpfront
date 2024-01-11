@@ -62,6 +62,18 @@ const routes: RouteRecordRaw[] = [
         meta: { requiresAuth: true },
       },
       {
+        path: '/centros-costos',
+        name: 'centros_costos',
+        component: () => import('gestionTrabajos/centroCostos/view/CentroCostoPage.vue'),
+        meta: { requiresAuth: true },
+      },
+      {
+        path: '/subcentros-costos',
+        name: 'subcentros_costos',
+        component: () => import('gestionTrabajos/subcentrosCostos/view/SubcentroCostoPage.vue'),
+        meta: { requiresAuth: true },
+      },
+      {
         path: '/tareas',
         name: 'tareas',
         component: () => import('tareas/view/TareaPage.vue'),
@@ -1157,7 +1169,7 @@ const routes: RouteRecordRaw[] = [
         meta: { requiresAuth: false },
       },
 
-    {
+      {
         path: '/reporte_venta',
         name: 'reporte_venta',
         component: () =>
