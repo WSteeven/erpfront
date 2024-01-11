@@ -11,6 +11,7 @@ import { useNotificaciones } from "shared/notificaciones";
 export const useAsignacionAlimentacionStore = defineStore('preorden', () => {
   const listadoItems = ref([])
   const valor_asignar = ref(0)
+  const mes = ref()
   const statusLoading = new StatusEssentialLoading()
   const { notificarAdvertencia, notificarError } = useNotificaciones()
 
@@ -46,7 +47,7 @@ async function realizarCorte() {
       statusLoading.activar()
       const axios = AxiosHttpRepository.getInstance()
       const url = apiConfig.URL_BASE + '/' + axios.getEndpoint(endpoints.alimentacion)
-      const response: AxiosResponse = await axios.post(url, null)
+      const response: AxiosResponse = await axios.post(url, {mes:mes})
       console.log(response)
   } catch (e: any) {
       notificarError(e)
@@ -60,6 +61,7 @@ async function realizarCorte() {
     realizarCorte,
     listadoItems,
     valor_asignar,
+    mes
 }
 
 });

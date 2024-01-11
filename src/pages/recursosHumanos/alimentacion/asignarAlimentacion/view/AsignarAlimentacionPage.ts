@@ -16,9 +16,10 @@ import { CustomActionTable } from 'components/tables/domain/CustomActionTable'
 import { useNotificaciones } from 'shared/notificaciones'
 import ModalesEntidad from 'components/modales/view/ModalEntidad.vue'
 import { CustomActionPrompt } from 'components/tables/domain/CustomActionPrompt'
+import SolicitarFecha from 'shared/prompts/SolicitarFecha.vue'
 
 export default defineComponent({
-  components: { TabLayout, ModalesEntidad },
+  components: { TabLayout, ModalesEntidad,SolicitarFecha },
   setup() {
     /*********
      * Stores
@@ -54,6 +55,8 @@ export default defineComponent({
       })
       empleados.value = listadosAuxiliares.empleados
     })
+    const mostrarSolicitarFecha = ref(false)
+
     /*************
      * Validaciones
      **************/
@@ -130,13 +133,7 @@ export default defineComponent({
         confirmar(
           '¿Está seguro de realizar corte?',
           async () => {
-            confirmar(
-              'Esto realizara los cortes de alimentacion de los empleados. ¿Desea continuar?',
-              async () => {
-                asignacionAlimentacionStore.realizarCorte();
-                modales.abrirModalEntidad('DetalleAlimentacionPage')
-              }
-            )
+            mostrarSolicitarFecha.value = true
           }
         )
       },
@@ -156,6 +153,13 @@ export default defineComponent({
       console.log(data)
       await listar()
     }
+    function fechaSubida(fecha?) {
+      confirmar('Esto realizara los cortes de valores de alimentacion de los empleados. ¿Desea continuar?', async () => {
+        asignacionAlimentacionStore.mes= fecha
+        asignacionAlimentacionStore.realizarCorte();
+        modales.abrirModalEntidad('DetalleAlimentacionPage')
+      })
+    }
     return {
       mixin,
       asignar_alimentacion,
@@ -171,6 +175,7 @@ export default defineComponent({
       accion,
       v$,
       configuracionColumnas: configuracionColumnasAsignarAlimentacion,
+      fechaSubida
     }
   },
 })

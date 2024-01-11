@@ -27,17 +27,6 @@
         glossy
         >Manuales de usuario</q-btn
       >
-
-      <q-btn color="secondary" @click="abrirFecha()" no-caps push glossy
-        >Abrir componente de fecha</q-btn
-      >
-      <solicitar-fecha
-        :mostrar="mostrarSolicitarFecha"
-        :confirmar="fechaSubida"
-        mask="YYYY-MM"
-        @cerrar="mostrarSolicitarFecha = false"
-      />
-
       <!--<q-chip
         v-if="store.esCoordinador || store.esTecnicoLider"
         icon="bi-check"

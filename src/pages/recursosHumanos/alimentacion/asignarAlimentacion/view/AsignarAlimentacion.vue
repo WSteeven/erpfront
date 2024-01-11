@@ -5,7 +5,6 @@
     :accion1Header="btnSeleccionarEmpleado"
     :accion2Header="btnRealizarCorte"
     :accion3Header="btnVisualizarCorte"
-
   >
     <template #formulario>
       <q-form @submit.prevent>
@@ -67,13 +66,19 @@
           </div>
         </div>
       </q-form>
+      <!-- Modales -->
+      <modales-entidad
+        :comportamiento="modales"
+        :persistente="false"
+        @guardado="(data) => guardado(data)"
+      />
+      <solicitar-fecha
+        :mostrar="mostrarSolicitarFecha"
+        :confirmar="fechaSubida"
+        mask="YYYY-MM"
+        @cerrar="mostrarSolicitarFecha = false"
+      />
     </template>
   </tab-layout>
-  <!-- Modales -->
-  <modales-entidad
-    :comportamiento="modales"
-    :persistente="false"
-    @guardado="(data) => guardado(data)"
-  />
 </template>
 <script src="./AsignarAlimentacionPage.ts"></script>

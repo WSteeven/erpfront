@@ -67,15 +67,8 @@ export default defineComponent({
      * Funcion para probar componente de fecha enviando al backend
      */
     const { confirmar } = useNotificaciones()
-    const mostrarSolicitarFecha = ref(false)
-    async function abrirFecha() {
-      mostrarSolicitarFecha.value = true
-    }
-    function fechaSubida(fecha?) {
-      confirmar('¿Está seguro de subir esta fecha?', async () => {
-        console.log('Esta es la fecha registrada, a partir de aqui puedes enviarla al backend o manipular a tu antojo', fecha)
-      })
-    }
+
+
 
     return {
       tablero,
@@ -95,10 +88,6 @@ export default defineComponent({
       verSubtarea,
       fecha,
       subtareasPorAsignar,
-      abrirFecha,
-      mostrarSolicitarFecha,
-      fechaSubida,
-
     }
   },
 })
