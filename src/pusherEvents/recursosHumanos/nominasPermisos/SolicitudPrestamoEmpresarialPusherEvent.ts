@@ -15,7 +15,7 @@ export class SolicitudPrestamoEmpresarialPusherEvent {
     const pusher = notificacionStore.pusher
 
     // Suscripcion al canal del pedido creado
-    console.log('solicitud-prestamo-empresarial-' + this.store.user.id);
+    // console.log('solicitud-prestamo-empresarial-' + this.store.user.id);
 
     pusher.subscribe('solicitud-prestamo-empresarial-' + this.store.user.id)
     pusher.bind('solicitud-prestamo-empresarial-event', function (e) {

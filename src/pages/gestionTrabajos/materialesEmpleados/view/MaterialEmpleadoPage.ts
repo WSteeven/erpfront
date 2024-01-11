@@ -2,6 +2,7 @@
 // import { configuracionColumnasMaterialEmpleadoTarea } from '../domain/configuracionColumnasMaterialEmpleadoTarea'
 import { useNotificaciones } from 'shared/notificaciones'
 import { defineComponent, reactive, ref } from 'vue'
+import { destinosTareas } from 'config/tareas.utils'
 import { ordernarListaString } from 'shared/utils'
 import { useCargandoStore } from 'stores/cargando'
 import { modosStock } from 'config/tareas.utils'
@@ -11,6 +12,7 @@ import { useQuasar } from 'quasar'
 
 // Componentes
 import EssentialTable from 'components/tables/view/EssentialTable.vue'
+import FiltroProductosAsignados from './FiltroProductosAsignados.vue'
 
 // Logica y controladores
 import { EmpleadoController } from 'pages/recursosHumanos/empleados/infraestructure/EmpleadoController'
@@ -25,7 +27,7 @@ import { endpoints } from 'config/api'
 import { configuracionColumnasMaterialEmpleadoTarea } from 'pages/gestionTrabajos/miBodega/domain/configuracionColumnasMaterialEmpleadoTarea'
 
 export default defineComponent({
-  components: { EssentialTable },
+  components: { EssentialTable, FiltroProductosAsignados },
   setup() {
     /*********
      * Stores
@@ -243,6 +245,7 @@ export default defineComponent({
       obtenerMaterialesTarea,
       clienteMaterialStock,
       clienteMaterialTarea,
+      destinosTareas,
     }
   },
 })

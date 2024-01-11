@@ -10,10 +10,10 @@ import { configuracionColumnasProductosSeleccionados } from './domain/configurac
 import { configuracionColumnasProductos } from 'pages/bodega/productos/domain/configuracionColumnasProductos'
 import { useOrquestadorSelectorItemsEgreso } from './application/OrquestadorSelectorInventario'
 import { configuracionColumnasDetallesProductos } from 'pages/bodega/detalles_productos/domain/configuracionColumnasDetallesProductos'
-import { acciones, accionesTabla, estadosTransacciones, motivosTransaccionesBodega } from 'config/utils'
+import { acciones, estadosTransacciones, motivos, tabOptionsTransaccionesEgresos } from 'config/utils'
 
 // Componentes
-import TabLayout from 'shared/contenedor/modules/simple/view/TabLayout.vue'
+import TabLayoutFilterTabs2 from "shared/contenedor/modules/simple/view/TabLayoutFilterTabs2.vue";
 import EssentialTable from 'components/tables/view/EssentialTable.vue'
 import EssentialSelectableTable from 'components/tables/view/EssentialSelectableTable.vue'
 import LabelInfoEmpleado from 'components/modales/modules/LabelInfoEmpleado.vue'
@@ -59,11 +59,11 @@ import { EtapaController } from 'pages/gestionTrabajos/proyectos/modules/etapas/
 
 export default defineComponent({
   name: 'Egresos',
-  components: { TabLayout, EssentialTable, EssentialSelectableTable, LabelInfoEmpleado, ModalesEntidad },
+  components: { TabLayoutFilterTabs2, EssentialTable, EssentialSelectableTable, LabelInfoEmpleado, ModalesEntidad },
   setup() {
     const mixin = new ContenedorSimpleMixin(Transaccion, new TransaccionEgresoController())
-    const { entidad: transaccion, disabled, accion, listadosAuxiliares } = mixin.useReferencias()
-    const { setValidador, obtenerListados, cargarVista } = mixin.useComportamiento()
+    const { entidad: transaccion, disabled, accion, listadosAuxiliares, listado } = mixin.useReferencias()
+    const { setValidador, obtenerListados, cargarVista, listar, } = mixin.useComportamiento()
     const { onConsultado, onReestablecer, onGuardado } = mixin.useHooks()
     const { confirmar, prompt, notificarError, notificarAdvertencia } = useNotificaciones()
     //stores
@@ -104,6 +104,7 @@ export default defineComponent({
     let listadoPedido: Ref<any[]> = ref([])
     let coincidencias = ref()
     let listadoCoincidencias = ref()
+    const tabDefecto = ref('PENDIENTE')
 
 
 
@@ -208,9 +209,24 @@ export default defineComponent({
     mixin.agregarValidaciones(validarListadoProductos)
 
 
-    /*****************************************************************************************
-     * Botones de tabla
-     ****************************************************************************************/
+    function filtrarTransacciones(tab: string) {
+      tabDefecto.value = tab
+      listar({ estado: tab })
+    }
+
+    function eliminar({ entidad, posicion }) {
+      confirmar('¿Está seguro de continuar?',
+        () => transaccion.listadoProductosTransaccion.splice(posicion, 1))
+    }
+    const botonEliminar: CustomActionTable = {
+      titulo: 'Quitar',
+      color: 'negative',
+      icono: 'bi-x',
+      accion: ({ entidad, posicion }) => {
+        eliminar({ entidad, posicion })
+      },
+      visible: () => puedeEditarCantidad.value
+    }
     const botonEditarCantidad: CustomActionTable = {
       titulo: 'Cantidad',
       icono: 'bi-pencil',
@@ -257,6 +273,7 @@ export default defineComponent({
             transaccionStore.idTransaccion = entidad.id
             await transaccionStore.anularEgreso()
             entidad.estado = transaccionStore.transaccion.estado
+            listado.value.splice(posicion, 1)
           } catch (err) {
             notificarError('' + err)
           }
@@ -540,12 +557,14 @@ export default defineComponent({
       //variables auxiliares
       esVisibleAutorizacion,
       esVisibleTarea,
-      accionesTabla,
+      tabDefecto,
+      tabOptionsTransaccionesEgresos,
 
       //modales
       modalesEmpleado,
 
       //funciones
+      filtrarTransacciones,
       recargarSucursales,
       infoEmpleado,
       obtenerDatosTareaSeleccionada,
@@ -557,9 +576,9 @@ export default defineComponent({
         const motivoSeleccionado = listadosAuxiliares.motivos.filter((v) => v.id === val)[0]
         // console.log(motivoSeleccionado)
         // transaccion.aviso_liquidacion_cliente = (motivoSeleccionado.nombre == motivos.egresoLiquidacionMateriales) ? true : false
-        if ([motivosTransaccionesBodega.destruccion, motivosTransaccionesBodega.egresoAjusteRegularizacion, motivosTransaccionesBodega.egresoLiquidacionMateriales, motivosTransaccionesBodega.egresoTransferenciaBodegas, motivosTransaccionesBodega.venta, motivosTransaccionesBodega.robo].includes(motivoSeleccionado.nombre)) transaccion.aviso_liquidacion_cliente = true
+        if ([motivos.destruccion, motivos.egresoAjusteRegularizacion, motivos.egresoLiquidacionMateriales, motivos.egresoTransferenciaBodegas, motivos.venta, motivos.robo].includes(motivoSeleccionado.nombre)) transaccion.aviso_liquidacion_cliente = true
         else transaccion.aviso_liquidacion_cliente = false
-        transaccion.es_transferencia = (motivoSeleccionado.nombre == motivosTransaccionesBodega.egresoTransferenciaBodegas) ? true : false
+        transaccion.es_transferencia = (motivoSeleccionado.nombre == motivos.egresoTransferenciaBodegas) ? true : false
       },
 
 

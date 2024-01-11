@@ -64,12 +64,12 @@
               </template>
             </q-select>
           </div> -->
-          <div class="col-12 col-md-3" v-if="accion == acciones.nuevo">
+          <div class="col-12 col-md-3">
             <label class="q-mb-sm block"
               >Seleccione un cliente para filtrar los materiales</label
             >
             <q-select
-              v-model="clienteMaterialStock"
+              v-model="devolucion.cliente"
               :options="clientes"
               transition-show="scale"
               transition-hide="scale"
@@ -435,7 +435,7 @@
                   @keydown.enter="
                     listarProductos({
                       empleado_id: store.user.id,
-                      cliente_id: clienteMaterialStock,
+                      cliente_id: devolucion.cliente,
                     })
                   "
                   @blur="
@@ -451,7 +451,7 @@
                   @click="
                     listarProductos({
                       empleado_id: store.user.id,
-                      cliente_id: clienteMaterialStock,
+                      cliente_id: devolucion.cliente,
                     })
                   "
                   icon="search"

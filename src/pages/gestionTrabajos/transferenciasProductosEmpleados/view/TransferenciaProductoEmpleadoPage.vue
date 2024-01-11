@@ -513,13 +513,13 @@
             <label class="q-mb-sm block">Persona que autoriza</label>
             <q-select
               v-model="transferencia.autorizador"
-              :options="opciones_empleados"
+              :options="listadosAuxiliares.autorizadores"
               transition-show="jump-up"
               transition-hide="jump-up"
               options-dense
               dense
               outlined
-              :readonly="disabled"
+              disable
               :option-label="(v) => v.nombres + ' ' + v.apellidos"
               :option-value="(v) => v.id"
               emit-value
@@ -634,7 +634,7 @@
               </div>
             </div>
           </div>
-
+          {{ transferencia.tarea_origen }}
           <!-- Tabla -->
           <div class="col-12">
             <essential-table
