@@ -41,9 +41,10 @@ export function useMaterialesTarea(filtro: UnwrapRef<FiltroMiBodega>, listadosAu
     }
   }
 
-  async function consultarProductosTarea() {
+  async function consultarProductosTarea(params?: any) {
     try {
       cargando.activar()
+      if (params && params.empleado_id) filtro.empleado_id = params.empleado_id
       const { result } = await materialEmpleadoTareaController.listar(filtro)
 
       listadosAuxiliares.productosTarea = result
@@ -57,6 +58,7 @@ export function useMaterialesTarea(filtro: UnwrapRef<FiltroMiBodega>, listadosAu
       transferenciaProductoEmpleadoStore.cliente_id = filtro.cliente_id
       transferenciaProductoEmpleadoStore.origenProductos = destinosTareas.paraClienteFinal
       transferenciaProductoEmpleadoStore.tareaId = filtro.tarea_id
+      transferenciaProductoEmpleadoStore.idEmpleado = filtro.empleado_id
 
       if (!result.length) notificarAdvertencia('No tienes material asignado.')
 
@@ -70,7 +72,8 @@ export function useMaterialesTarea(filtro: UnwrapRef<FiltroMiBodega>, listadosAu
   async function consultarClientesMaterialesTarea(filtroClientes) {
     try {
       cargando.activar()
-      const { result } = await clienteMaterialTareaController.listar({ empleado_id: authenticationStore.user.id, ...filtroClientes })
+      if (!filtroClientes.empleado_id) filtroClientes.empleado_id = authenticationStore.user.id
+      const { result } = await clienteMaterialTareaController.listar({ empleado_id: filtroClientes.empleado_id, ...filtroClientes })
       listadosAuxiliares.clientesMaterialesTarea = result
     } catch (e) {
       console.log(e)

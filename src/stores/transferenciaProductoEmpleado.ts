@@ -10,6 +10,7 @@ export const useTransferenciaProductoEmpleadoStore = defineStore('transferenciaP
   const idProyecto = ref()
   const idEtapa = ref()
   const origenProductos = ref() // cliente final, proyecto, personal
+  const idEmpleado = ref()
 
   return {
     listadoMateriales,
@@ -19,5 +20,6 @@ export const useTransferenciaProductoEmpleadoStore = defineStore('transferenciaP
     origenProductos,
     idEtapa,
     idProyecto,
+    idEmpleado,
   }
 })

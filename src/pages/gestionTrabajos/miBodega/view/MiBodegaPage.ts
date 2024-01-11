@@ -3,6 +3,7 @@ import { configuracionColumnasMaterialEmpleadoTarea } from '../domain/configurac
 import { useTransferenciaProductoEmpleadoStore } from 'stores/transferenciaProductoEmpleado'
 import { computed, defineComponent, onMounted, reactive, ref, watch } from 'vue'
 import { destinosTareas } from 'config/tareas.utils'
+import { useQuasar } from 'quasar'
 
 // Componentes
 import EssentialTable from 'components/tables/view/EssentialTable.vue'
@@ -16,12 +17,11 @@ import { FiltroMiBodegaProyecto } from '../domain/FiltroMiBodegaProyecto'
 import { FiltroMiBodegaEmpleado } from '../domain/FiltroMiBodegaEmpleado'
 import { useMaterialesTarea } from '../application/UseMaterialesTarea'
 import { Tarea } from 'pages/gestionTrabajos/tareas/domain/Tarea'
+import { useAuthenticationStore } from 'stores/authentication'
 import { useNotificacionStore } from 'stores/notificacion'
 import { FiltroMiBodega } from '../domain/FiltroMiBodega'
 import { useNotificaciones } from 'shared/notificaciones'
 import { useCargandoStore } from 'stores/cargando'
-import { useQuasar } from 'quasar'
-import { useAuthenticationStore } from 'stores/authentication'
 
 export default defineComponent({
   components: { EssentialTable },

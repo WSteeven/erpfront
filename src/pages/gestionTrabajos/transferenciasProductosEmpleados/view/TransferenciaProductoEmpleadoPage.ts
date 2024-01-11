@@ -139,7 +139,8 @@ export default defineComponent({
       // transferencia.proyecto_origen = transferenciaProductoEmpleadoStore.idProyecto
       // transferencia.etapa_origen = transferenciaProductoEmpleadoStore.idEtapa
       console.log(accion.value)
-      if (accion.value === acciones.nuevo) transferencia.empleado_origen = useAuthenticationStore().user.id
+      // if (accion.value === acciones.nuevo) transferencia.empleado_origen = useAuthenticationStore().user.id
+      transferencia.empleado_origen = transferenciaProductoEmpleadoStore.idEmpleado ?? useAuthenticationStore().user.id
       transferencia.cliente = transferenciaProductoEmpleadoStore.cliente_id
       // console.log(transferenciaProductoEmpleadoStore.idProyecto)
 
@@ -239,17 +240,17 @@ export default defineComponent({
           filtroProyecto.etapa_id = transferencia.etapa_origen
           filtroProyecto.proyecto_id = transferencia.proyecto_origen
           filtroProyecto.cliente_id = transferencia.cliente
-          await consultarProductosProyecto()
+          // await consultarProductosProyecto()
         } else {
           filtroMiBodega.empleado_id = transferencia.empleado_origen
           filtroMiBodega.tarea_id = transferencia.tarea_origen
           filtroMiBodega.cliente_id = transferencia.cliente_id
-          await consultarProductosTarea()
+          // await consultarProductosTarea()
         }
-        transferencia.listado_productos = mapearProductos(listadosAuxiliares.productos)
-      } else {
+        // transferencia.listado_productos = mapearProductos(listadosAuxiliares.productos)
+      } /*else {
         listadosAuxiliares.productos = []
-      }
+      }*/
     })
 
     // Destino

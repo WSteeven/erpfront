@@ -41,10 +41,12 @@ export function useMaterialesEmpleado(filtro: UnwrapRef<FiltroMiBodegaEmpleado>,
     }
   }
 
-  async function consultarClientesMaterialesEmpleado() {
+  async function consultarClientesMaterialesEmpleado(params: any) {
     try {
       cargando.activar()
-      const { result } = await clienteMaterialEmpleadoController.listar({ empleado_id: authenticationStore.user.id })
+
+      // if(params && params.empleado_id)
+      const { result } = await clienteMaterialEmpleadoController.listar({ empleado_id: params.empleado_id })
       listadosAuxiliares.clientesMaterialesEmpleado = result
     } catch (e) {
       console.log(e)
