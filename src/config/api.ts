@@ -264,6 +264,8 @@ export const endpoints = {
   actualizar_fechas_reagendar_tarea: new Endpoint(
     'tareas/tareas/actualizar-fechas-reagendar'
   ),
+  centros_costos: new Endpoint('tareas/centros-costos'),
+  subcentros_costos: new Endpoint('tareas/subcentros-costos'),
   trabajo_asignado: new Endpoint('tareas/trabajo-asignado'),
   pausas_subtareas: new Endpoint('tareas/subtareas/obtener-pausas'),
   suspendidos_subtareas: new Endpoint('tareas/subtareas/obtener-suspendidos'),

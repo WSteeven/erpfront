@@ -54,6 +54,7 @@ export class Tarea extends EntidadAuditable {
   cliente_id: number | null
   trabajo_dependiente: string | null
   tarea: number | null
+  centro_costo: number | null
 
   archivos: File[]
   imagen_informe: string | null
@@ -139,6 +140,7 @@ export class Tarea extends EntidadAuditable {
     this.cliente = null
     this.trabajo_padre = null
     this.trabajo_dependiente = null
+    this.centro_costo = null
 
     this.trabajo_dependiente_id = null
 
