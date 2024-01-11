@@ -29,10 +29,10 @@ export function useMaterialesTarea(filtro: UnwrapRef<FiltroMiBodega>, listadosAu
   const cargando = new StatusEssentialLoading()
 
   // Funciones
-  async function consultarTareasClienteFinalMantenimiento() { //paraClienteProyecto: typeof destinosTareas[keyof typeof destinosTareas], proyecto?: number, etapa?: number) {
+  async function consultarTareasClienteFinalMantenimiento(idEmpleado: number) { //paraClienteProyecto: typeof destinosTareas[keyof typeof destinosTareas], proyecto?: number, etapa?: number) {
     try {
       cargando.activar()
-      const { result } = await tareaController.listar({ activas_empleado: 1, empleado_id: authenticationStore.user.id, para_cliente_proyecto: destinosTareas.paraClienteFinal })
+      const { result } = await tareaController.listar({ activas_empleado: 1, empleado_id: idEmpleado, para_cliente_proyecto: destinosTareas.paraClienteFinal })
       listadosAuxiliares.tareas = result
     } catch (e) {
       console.log(e)

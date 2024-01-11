@@ -25,7 +25,7 @@
     <q-tab-panel :name="destinosTareas.paraClienteFinal">
       <div class="row q-col-gutter-sm q-pa-sm q-mb-md">
         <!-- Tarea -->
-        {{ listadosAuxiliares }}
+        <!-- {{ listadosAuxiliares }} -->
         <div class="col-12 col-md-6">
           <!-- {{ filtro }} -->
           <label class="q-mb-sm block">Seleccione una tarea</label>

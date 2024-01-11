@@ -21,6 +21,7 @@ import { FiltroMiBodega } from '../domain/FiltroMiBodega'
 import { useNotificaciones } from 'shared/notificaciones'
 import { useCargandoStore } from 'stores/cargando'
 import { useQuasar } from 'quasar'
+import { useAuthenticationStore } from 'stores/authentication'
 
 export default defineComponent({
   components: { EssentialTable },
@@ -31,6 +32,7 @@ export default defineComponent({
     const transferenciaProductoEmpleadoStore = useTransferenciaProductoEmpleadoStore()
     useNotificacionStore().setQuasar(useQuasar())
     useCargandoStore().setQuasar(useQuasar())
+    const authenticationStore = useAuthenticationStore()
 
     /************
      * Variables
@@ -83,7 +85,7 @@ export default defineComponent({
     function refrescarListadosTareas(nombreListado: string) {
       switch (nombreListado) {
         case 'tareas':
-          consultarTareasClienteFinalMantenimiento()
+          consultarTareasClienteFinalMantenimiento(authenticationStore.user.id)
           break
         case 'clientes':
           consultarClientesMaterialesTarea({ tarea_id: filtro.tarea_id, filtrar_por_tarea: 1 })
@@ -143,7 +145,7 @@ export default defineComponent({
      *******/
     consultarClientesMaterialesTarea({ filtrar_por_tarea: true })
     consultarClientesMaterialesEmpleado()
-    consultarTareasClienteFinalMantenimiento()
+    consultarTareasClienteFinalMantenimiento(authenticationStore.user.id)
     consultarProyectos().then(() => proyectos.value = listadosAuxiliares.proyectos)
 
     /************

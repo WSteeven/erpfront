@@ -5,11 +5,22 @@ import { useMaterialesEmpleado } from 'pages/gestionTrabajos/miBodega/applicatio
 import { useMaterialesTarea } from 'pages/gestionTrabajos/miBodega/application/UseMaterialesTarea'
 import { useFiltrosListadosSelects } from 'shared/filtrosListadosGenerales'
 import { FiltroMiBodega } from 'pages/gestionTrabajos/miBodega/domain/FiltroMiBodega'
-import { defineComponent, ref, reactive } from 'vue'
+import { defineComponent, ref, reactive, computed } from 'vue'
 import { destinosTareas } from 'config/tareas.utils'
+import { Tarea } from 'pages/gestionTrabajos/tareas/domain/Tarea'
 
 export default defineComponent({
-  setup() {
+  props: {
+    idEmpleado: {
+      type: Number,
+      required: true,
+    }
+  },
+  setup(props) {
+    /************
+     * Variables
+     ***********/
+    const idEmpleado = computed(() => props.idEmpleado)
     const tab = ref()
 
     // Filtros
@@ -62,7 +73,7 @@ export default defineComponent({
     function refrescarListadosTareas(nombreListado: string) {
       switch (nombreListado) {
         case 'tareas':
-          consultarTareasClienteFinalMantenimiento()
+          consultarTareasClienteFinalMantenimiento(idEmpleado.value)
           break
         case 'clientes':
           consultarClientesMaterialesTarea({ tarea_id: filtro.tarea_id, filtrar_por_tarea: 1 })
@@ -81,7 +92,8 @@ export default defineComponent({
     /*******
     * Init
     *******/
-    consultarTareasClienteFinalMantenimiento()
+    consultarTareasClienteFinalMantenimiento(idEmpleado.value)
+    tab.value = destinosTareas.paraClienteFinal
 
     /**********
      * Filtros
