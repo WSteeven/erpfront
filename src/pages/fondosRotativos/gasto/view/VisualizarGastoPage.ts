@@ -58,18 +58,15 @@ export default defineComponent({
       VisualizarGasto,
       new VisualizarGastoController()
     )
-    const mixin_gastos = new ContenedorSimpleMixin(Gasto, new GastoController())
     const {
-      entidad: visualizar_gasto,
+      entidad: gasto,
       disabled,
       accion,
       listadosAuxiliares,
     } = mixin.useReferencias()
-    const { setValidador, cargarVista, obtenerListados } =
+    const { setValidador, cargarVista, obtenerListados, consultar } =
       mixin.useComportamiento()
     const { onConsultado } = mixin.useHooks()
-    const { entidad: gasto } = mixin_gastos.useReferencias()
-    const { consultar } = mixin_gastos.useComportamiento()
     const issubmit = ref(true)
     const {
       confirmar,
@@ -597,11 +594,13 @@ export default defineComponent({
       switch (tipo_aprobacion) {
         case 'aprobar':
           try {
-            await aprobarController.aprobarGasto(gasto)
-            issubmit.value = false
-            notificarCorrecto('Se aprobado Gasto Exitosamente')
-            emit('cerrar-modal', false)
-            emit('guardado')
+            if (await v$.value.$validate()) {
+              await aprobarController.aprobarGasto(gasto)
+              issubmit.value = false
+              notificarCorrecto('Se aprobado Gasto Exitosamente')
+              emit('cerrar-modal', false)
+              emit('guardado')
+            }
           } catch (e: any) {
             notificarError(
               'No se pudo aprobar, debes ingresar un motivo para la aprobacion'
