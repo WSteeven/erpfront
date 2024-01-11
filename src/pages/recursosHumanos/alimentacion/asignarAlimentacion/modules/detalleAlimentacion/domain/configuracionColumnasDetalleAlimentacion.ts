@@ -1,7 +1,7 @@
 import { ColumnConfig } from 'components/tables/domain/ColumnConfig'
-import { Alimentacion } from './DetalleAlimentacion'
+import { DetalleAlimentacion } from './DetalleAlimentacion'
 
-export const configuracionColumnasDetalleAlimentacion: ColumnConfig<Alimentacion>[] =
+export const configuracionColumnasDetalleAlimentacion: ColumnConfig<DetalleAlimentacion>[] =
   [
     {
       name: 'empleado_info',

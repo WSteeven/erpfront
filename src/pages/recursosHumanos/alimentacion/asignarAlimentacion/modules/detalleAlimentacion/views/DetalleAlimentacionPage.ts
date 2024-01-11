@@ -15,6 +15,7 @@ import { EmpleadoController } from 'pages/recursosHumanos/empleados/infraestruct
 import { CustomActionTable } from 'components/tables/domain/CustomActionTable'
 import { useAuthenticationStore } from 'stores/authentication'
 import { DetalleAlimentacion } from '../domain/DetalleAlimentacion'
+import { useAsignacionAlimentacionStore } from 'stores/recursosHumanos/asignacionAlimentacion'
 
 export default defineComponent({
   components: { EssentialSelectableTable, EssentialTable, ButtonSubmits },
@@ -46,6 +47,8 @@ export default defineComponent({
       listadosAuxiliares,
     } = mixin.useReferencias()
     const empleados = ref([])
+    const asignacionAlimentacionStore = useAsignacionAlimentacionStore()
+
     cargarVista(async () => {
       await obtenerListados({
         empleados: {
@@ -54,16 +57,9 @@ export default defineComponent({
         },
       })
       empleados.value = listadosAuxiliares.empleados
-      const fechaActual = new Date()
-      const fechaFormateada =
-        fechaActual.getFullYear() +
-        '-' +
-        (fechaActual.getMonth() + 1) +
-        '-' +
-        fechaActual.getDate()
       listado.value = (
         await new DetalleAlimentacionController().listar({
-          fecha_corte: fechaFormateada,
+          alimentacion_id: asignacionAlimentacionStore.alimentacion.id,
         })
       ).result
     })
@@ -208,7 +204,6 @@ export default defineComponent({
 
     return {
       listado,
-      configuracionColumnasDetalleAlimentacion,
       deshabilitar_empleado,
       accionesTabla,
       accion,
@@ -227,7 +222,8 @@ export default defineComponent({
       btnVerDetalleAlimentacion,
       btnEditarDetalleAlimentacion,
       btnEliminarDetalleAlimentacion,
-      btnAsignarMasivo
+      btnAsignarMasivo,
+      configuracionColumnasDetalleAlimentacion
     }
   },
 })

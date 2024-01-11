@@ -1,4 +1,4 @@
-import { defineComponent, ref } from 'vue'
+import { defineComponent, ref, reactive } from 'vue'
 import { AsignarAlimentacion } from '../domain/AsignarAlimentacion'
 
 import TabLayout from 'shared/contenedor/modules/simple/view/TabLayout.vue'
@@ -19,7 +19,7 @@ import { CustomActionPrompt } from 'components/tables/domain/CustomActionPrompt'
 import SolicitarFecha from 'shared/prompts/SolicitarFecha.vue'
 
 export default defineComponent({
-  components: { TabLayout, ModalesEntidad,SolicitarFecha },
+  components: { TabLayout, ModalesEntidad, SolicitarFecha },
   setup() {
     /*********
      * Stores
@@ -38,12 +38,13 @@ export default defineComponent({
       accion,
       listadosAuxiliares,
     } = mixin.useReferencias()
-    const { setValidador, obtenerListados, cargarVista,listar } =
+    const { setValidador, obtenerListados, cargarVista, listar } =
       mixin.useComportamiento()
-    const { confirmar, prompt, notificarCorrecto, notificarError } =
+    const { confirmar, prompt, notificarError, promptItems } =
       useNotificaciones()
 
     const empleados = ref([])
+    const visualizar_corte = ref(false)
     const modales = new ComportamientoModalesSeleccionEmpleado()
 
     cargarVista(async () => {
@@ -105,13 +106,11 @@ export default defineComponent({
                   mensaje: 'Ingrese  valor a acreditar de alimentacion',
                   accion: async (data) => {
                     try {
-                      asignacionAlimentacionStore.valor_asignar=data
+                      asignacionAlimentacionStore.valor_asignar = data
                       await asignacionAlimentacionStore.listarempleados()
                       modales.abrirModalEntidad('SeleccionEmpleadoPage')
                     } catch (e: any) {
-                      notificarError(
-                        'No se pudo asignar alimentacion'
-                      )
+                      notificarError('No se pudo asignar alimentacion')
                     }
                   },
                 }
@@ -123,19 +122,33 @@ export default defineComponent({
       },
       visible: () => true,
     }
+    const lista_periodo_corte = [
+      { id: true, name: 'Quincena' },
+      { id: false, name: 'Fin de Mes' },
+    ]
     const btnRealizarCorte: CustomActionTable = {
       titulo: 'Realizar Corte',
-      tooltip: 'Seleccionar Empleado',
+      tooltip: 'Seleccionar Periodo de Corte',
       icono: 'fa-solid fa-utensils',
       color: 'warning',
-
       accion: async () => {
-        confirmar(
-          '¿Está seguro de realizar corte?',
-          async () => {
+        const config: CustomActionPrompt = reactive({
+          mensaje: 'De que periodo desea  realizar el corte',
+          accion: (tipo) => {
+            asignacionAlimentacionStore.alimentacion.es_quincena = tipo
             mostrarSolicitarFecha.value = true
-          }
-        )
+          },
+          requerido: false,
+          defecto: 'false',
+          tipo: 'radio',
+          items: lista_periodo_corte.map((tipo) => {
+            return {
+              label: tipo.name,
+              value: tipo.id,
+            }
+          }),
+        })
+        promptItems(config)
       },
       visible: () => true,
     }
@@ -145,25 +158,50 @@ export default defineComponent({
       icono: 'bi-eye-fill',
       color: 'primary',
       accion: async () => {
-        modales.abrirModalEntidad('DetalleAlimentacionPage')
+        const config: CustomActionPrompt = reactive({
+          mensaje: 'De que periodo desea visualizar el corte',
+          accion: (tipo) => {
+            asignacionAlimentacionStore.alimentacion.es_quincena = tipo
+            visualizar_corte.value = true
+            mostrarSolicitarFecha.value = true
+          },
+          requerido: false,
+          defecto: 'false',
+          tipo: 'radio',
+          items: lista_periodo_corte.map((tipo) => {
+            return {
+              label: tipo.name,
+              value: tipo.id,
+            }
+          }),
+        })
+        promptItems(config)
       },
       visible: () => true,
     }
     async function guardado(data) {
-      console.log(data)
       await listar()
     }
     function fechaSubida(fecha?) {
-      confirmar('Esto realizara los cortes de valores de alimentacion de los empleados. ¿Desea continuar?', async () => {
-        asignacionAlimentacionStore.mes= fecha
-        asignacionAlimentacionStore.realizarCorte();
+      asignacionAlimentacionStore.alimentacion.mes = fecha
+      if (!visualizar_corte.value) {
+        confirmar(
+          'Esto realizara los cortes de valores de alimentacion de los empleados. ¿Desea continuar?',
+          async () => {
+            asignacionAlimentacionStore.realizarCorte()
+            modales.abrirModalEntidad('DetalleAlimentacionPage')
+          }
+        )
+      } else {
         modales.abrirModalEntidad('DetalleAlimentacionPage')
-      })
+      }
     }
+
     return {
       mixin,
       asignar_alimentacion,
       guardado,
+      mostrarSolicitarFecha,
       filtrarEmpleados,
       btnSeleccionarEmpleado,
       btnRealizarCorte,
@@ -175,7 +213,7 @@ export default defineComponent({
       accion,
       v$,
       configuracionColumnas: configuracionColumnasAsignarAlimentacion,
-      fechaSubida
+      fechaSubida,
     }
   },
 })

@@ -103,11 +103,11 @@
       </div>
     </q-form>
 
-    <div class="text-h5 q-py-sm">Total: {{ totalAlimentacion.toFixed(2) }}</div>
+    <div class="text-h5 q-py-sm">Total: {{ totalAlimentacion }}</div>
     <essential-table
       titulo="Valores de Corte de Alimentacion"
-      :configuracionColumnas="[...configuracionColumnasAlimentacion, accionesTabla]"
       :datos="listado"
+      :configuracionColumnas="[...configuracionColumnasDetalleAlimentacion, accionesTabla]"
       :permitirConsultar="false"
       :permitirEditar="false"
       :permitirEliminar="false"

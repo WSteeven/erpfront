@@ -66,8 +66,10 @@
           </div>
         </div>
       </q-form>
-      <!-- Modales -->
-      <modales-entidad
+    </template>
+  </tab-layout>
+           <!-- Modales -->
+   <modales-entidad
         :comportamiento="modales"
         :persistente="false"
         @guardado="(data) => guardado(data)"
@@ -78,7 +80,5 @@
         mask="YYYY-MM"
         @cerrar="mostrarSolicitarFecha = false"
       />
-    </template>
-  </tab-layout>
 </template>
 <script src="./AsignarAlimentacionPage.ts"></script>
