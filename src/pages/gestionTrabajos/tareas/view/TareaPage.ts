@@ -160,7 +160,7 @@ export default defineComponent({
       proyecto: { required: requiredIf(() => paraProyecto.value) },
       coordinador: { required: requiredIf(() => paraClienteFinal.value && esCoordinadorBackup) },
       ruta_tarea: { required: requiredIf(() => paraClienteFinal.value && tarea.ubicacion_trabajo === ubicacionesTrabajo.ruta) },
-      centro_costo: { required: requiredIf(() => !tarea.no_lleva_centro_costo && paraClienteFinal.value && centros_costos.value.length > 0) },
+      centro_costo: { required: requiredIf(() => paraClienteFinal.value && centros_costos.value.length > 0) },
       // tarea: { requiredIf: requiredIf(() => preingreso.etapa && centros_costos.value.length) },
       // etapa: {
       //   requiredIf: requiredIf(() => { if (etapas.value) return etapas.value.length && preingreso.proyecto })
