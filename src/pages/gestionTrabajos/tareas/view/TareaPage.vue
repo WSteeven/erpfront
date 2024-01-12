@@ -367,9 +367,9 @@
                     input-debounce="0"
                     emit-value
                     map-options
-                    @blur="v$.etapa.$touch"
                     :error="!!v$.etapa.$errors.length"
                     :disable="disabled"
+                    @blur="v$.etapa.$touch"
                   >
                     <template v-slot:no-option>
                       <q-item>

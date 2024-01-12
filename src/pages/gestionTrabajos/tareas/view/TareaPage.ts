@@ -176,9 +176,9 @@ export default defineComponent({
       ruta_tarea: { required: requiredIf(() => paraClienteFinal.value && tarea.ubicacion_trabajo === ubicacionesTrabajo.ruta) },
       centro_costo: { required: requiredIf(() => paraClienteFinal.value && centros_costos.value.length > 0) },
       // tarea: { requiredIf: requiredIf(() => preingreso.etapa && centros_costos.value.length) },
-      // etapa: {
-      //   requiredIf: requiredIf(() => { if (etapas.value) return etapas.value.length && preingreso.proyecto })
-      // },
+      etapa: {
+        requiredIf: requiredIf(() => { if (etapas.value) return etapas.value.length && tarea.proyecto })
+      },
     }
 
     const v$ = useVuelidate(reglas, tarea)
@@ -338,12 +338,13 @@ export default defineComponent({
     async function seleccionarProyecto() {
       tarea.cliente = listadosAuxiliares.proyectos.find((proyecto: Proyecto) => proyecto.id === tarea.proyecto).cliente_id
       tarea.etapa = null
-      if (tarea.proyecto) obtenerEtapasProyecto(tarea.proyecto)
+      if (tarea.proyecto) obtenerEtapasProyecto(authenticationStore.user.id)
     }
 
-    async function obtenerEtapasProyecto(idProyecto: number) {
+    async function obtenerEtapasProyecto(idEmpleado: number) {
       const etapasProyecto = listadosAuxiliares.proyectos.filter((proyecto: Proyecto) => proyecto.id === tarea.proyecto)[0].etapas
-      const etapasResponsable = authenticationStore.esJefeTecnico || authenticationStore.esAdministrador ? etapasProyecto : etapasProyecto.filter((etapa: Etapa) => etapa.responsable === authenticationStore.user.id)
+      console.log(etapasProyecto)
+      const etapasResponsable = authenticationStore.esJefeTecnico || authenticationStore.esAdministrador ? etapasProyecto : etapasProyecto.filter((etapa: Etapa) => etapa.responsable_id === idEmpleado)
       listadosAuxiliares.etapas = etapasResponsable
       etapas.value = etapasResponsable
     }
@@ -365,7 +366,7 @@ export default defineComponent({
       filtrarSubtareas('')
       proyectos.value = listadosAuxiliares.proyectos
       rutas.value = listadosAuxiliares.rutas
-      if (tarea.proyecto_id) obtenerEtapasProyecto(tarea.proyecto_id)
+      if (tarea.proyecto_id && tarea.coordinador) obtenerEtapasProyecto(tarea.coordinador)
       listadosAuxiliares.centros_costos = (await (new CentroCostoController().listar({ cliente_id: tarea.cliente }))).result
       centros_costos.value = listadosAuxiliares.centros_costos
       cargando.desactivar()
