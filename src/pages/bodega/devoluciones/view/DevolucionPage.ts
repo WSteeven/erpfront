@@ -2,7 +2,7 @@
 import { configuracionColumnasDevoluciones } from '../domain/configuracionColumnasDevoluciones'
 import { required, requiredIf } from '@vuelidate/validators'
 import { useVuelidate } from '@vuelidate/core'
-import { defineComponent, ref, watchEffect } from 'vue'
+import { computed, defineComponent, ref, watchEffect } from 'vue'
 import { useOrquestadorSelectorDetalles } from '../application/OrquestadorSelectorDetalles'
 
 //Componentes
@@ -85,7 +85,6 @@ export default defineComponent({
     let puedeEditar = ref(false)
     const esCoordinador = store.esCoordinador
     const esActivosFijos = store.esActivosFijos
-    const clienteMaterialStock = ref(null)
     const clientes = ref([])
 
 
@@ -129,8 +128,8 @@ export default defineComponent({
       //logica para autocompletar el formulario de devolucion
       if (listadoMaterialesDevolucion.listadoMateriales.length) {
         devolucion.tarea = listadoMaterialesDevolucion.tareaId ? listadoMaterialesDevolucion.tareaId : null
-        clienteMaterialStock.value = listadoMaterialesDevolucion.cliente_id
-        filtrarCliente(clienteMaterialStock.value)
+        devolucion.cliente = listadoMaterialesDevolucion.cliente_id
+        filtrarCliente(devolucion.cliente)
         devolucion.es_tarea = !!devolucion.tarea
         devolucion.es_para_stock = listadoMaterialesDevolucion.devolverAlStock
         devolucion.listadoProductos = listadoMaterialesDevolucion.listadoMateriales.map((material: MaterialEmpleadoTarea) => {
@@ -374,7 +373,6 @@ export default defineComponent({
       esVisibleTarea,
       esCoordinador,
       esActivosFijos,
-      clienteMaterialStock,
 
       //Tabs
       tabOptionsPedidos,
@@ -385,7 +383,7 @@ export default defineComponent({
       //funciones
       filtrarDevoluciones,
       filtrarCliente,
-
+      onRowClick: (row) => alert(`${row.name} clicked`),
       //Filtros
       filtroCantones(val, update) {
         if (val === '') {
@@ -422,7 +420,7 @@ export default defineComponent({
         update(() => {
           const needle = val.toLowerCase()
           opciones_sucursales.value = listadosAuxiliares.sucursales.filter((v) => {
-            return clienteMaterialStock.value != null ? v.lugar.toLowerCase().indexOf(needle) > -1 && v.cliente_id == clienteMaterialStock.value : v.lugar.toLowerCase().indexOf(needle) > -1
+            return devolucion.cliente != null ? v.lugar.toLowerCase().indexOf(needle) > -1 && v.cliente_id == devolucion.cliente : v.lugar.toLowerCase().indexOf(needle) > -1
           })
         })
 

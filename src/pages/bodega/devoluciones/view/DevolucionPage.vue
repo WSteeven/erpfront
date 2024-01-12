@@ -64,12 +64,12 @@
               </template>
             </q-select>
           </div> -->
-          <div class="col-12 col-md-3" v-if="accion==acciones.nuevo">
+          <div class="col-12 col-md-3">
             <label class="q-mb-sm block"
               >Seleccione un cliente para filtrar los materiales</label
             >
             <q-select
-              v-model="clienteMaterialStock"
+              v-model="devolucion.cliente"
               :options="clientes"
               transition-show="scale"
               transition-hide="scale"
@@ -363,7 +363,7 @@
             >
               <template #boton-subir>
                 <q-btn
-                  v-if="mostrarBotonSubir"
+                  v-if="false"
                   color="positive"
                   push
                   no-caps
@@ -390,7 +390,7 @@
                   @keydown.enter="
                     listarProductos({
                       empleado_id: store.user.id,
-                      cliente_id: clienteMaterialStock,
+                      cliente_id: devolucion.cliente,
                     })
                   "
                   @blur="
@@ -406,7 +406,7 @@
                   @click="
                     listarProductos({
                       empleado_id: store.user.id,
-                      cliente_id: clienteMaterialStock,
+                      cliente_id: devolucion.cliente,
                     })
                   "
                   icon="search"
@@ -424,9 +424,7 @@
           <div class="col-12">
             <essential-table
               titulo="Productos Seleccionados"
-              :configuracionColumnas="
-                configuracionColumnasProductosSeleccionadosAccion
-              "
+              :configuracionColumnas="configuracionColumnasProductosSeleccionadosAccion"
               :datos="devolucion.listadoProductos"
               :permitirConsultar="false"
               :permitirEditar="false"
@@ -436,7 +434,14 @@
               :accion2="botonEliminar"
               :ajustarCeldas="true"
               :altoFijo="false"
-            ></essential-table>
+              ><template v-slot:body="props">
+                <q-tr :props="props" @click="onRowClick(props.row)">
+                  <q-td key="name" :props="props">
+                    {{ props.row.name }}
+                  </q-td>
+                </q-tr>
+              </template></essential-table
+            >
           </div>
         </div>
       </q-form>

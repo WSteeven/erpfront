@@ -14,6 +14,7 @@ import EssentialTable from "components/tables/view/EssentialTable.vue";
 import EssentialSelectableTable from "components/tables/view/EssentialSelectableTable.vue"
 import ModalesEntidad from "components/modales/view/ModalEntidad.vue";
 import EssentialPopupEditableTable from "components/tables/view/EssentialPopupEditableTable.vue"
+import GestorArchivos from 'components/gestorArchivos/GestorArchivos.vue';
 
 // Logica y controladores
 import { ContenedorSimpleMixin } from "shared/contenedor/modules/simple/application/ContenedorSimpleMixin";
@@ -43,17 +44,18 @@ import { ComportamientoModalesOrdenCompra } from "../application/ComportamientoM
 import { UnidadMedidaController } from "pages/bodega/unidades_medidas/infraestructure/UnidadMedidaController";
 import { UnidadMedida } from "pages/bodega/unidades_medidas/domain/UnidadMedida";
 import { PreordenCompra } from "pages/comprasProveedores/preordenCompra/domain/PreordenCompra";
+import { ArchivoController } from "pages/gestionTrabajos/subtareas/modules/gestorArchivosTrabajos/infraestructure/ArchivoController";
 
 
 export default defineComponent({
   name: 'OrdenCompraPage',
-  components: { TabLayoutFilterTabs2, EssentialSelectableTable, EssentialTable, ModalesEntidad, EssentialPopupEditableTable },
+  components: { TabLayoutFilterTabs2, EssentialSelectableTable, EssentialTable, ModalesEntidad, EssentialPopupEditableTable, GestorArchivos },
   emits: ['actualizar', 'fila-modificada'],
   setup(props, { emit }) {
-    const mixin = new ContenedorSimpleMixin(OrdenCompra, new OrdenCompraController())
+    const mixin = new ContenedorSimpleMixin(OrdenCompra, new OrdenCompraController(), new ArchivoController())
     const { entidad: orden, disabled, accion, listadosAuxiliares, listado, tabs } = mixin.useReferencias()
     const { setValidador, obtenerListados, cargarVista, listar, consultar } = mixin.useComportamiento()
-    const { onReestablecer, onConsultado, onModificado } = mixin.useHooks()
+    const { onReestablecer, onConsultado, onModificado, onGuardado } = mixin.useHooks()
     const { confirmar, prompt, notificarCorrecto, notificarError } = useNotificaciones()
 
     //Stores
@@ -72,6 +74,8 @@ export default defineComponent({
     const total = computed(() => orden.listadoProductos.reduce((prev, curr) => prev + parseFloat(curr.total), 0).toFixed(2))
 
     // Flags
+    const refArchivo = ref()
+    const idOrden = ref()
     const tabDefecto = ref()
     let tabSeleccionado = ref()
     let soloLectura = ref(false)
@@ -150,18 +154,28 @@ export default defineComponent({
       orden.solicitante = store.user.id
       soloLectura.value = false
       orden.autorizacion = 1
+
+      refArchivo.value.limpiarListado()
     })
     onConsultado(() => {
-      console.log(accion.value)
+      // console.log(accion.value)
       if (accion.value === acciones.editar && (store.user.id === orden.autorizador || store.esCompras))
         soloLectura.value = false
       else
         soloLectura.value = true
+      setTimeout(() => {
+        refArchivo.value.listarArchivosAlmacenados(orden.id)
+      }, 1);
     })
-    onModificado(() => {
+    onModificado((id: number) => {
+      idOrden.value=id
+      setTimeout(() => subirArchivos(), 1)
       filtrarOrdenes('1')
     })
-
+    onGuardado((id: number) => {
+      idOrden.value = id
+      setTimeout(() => subirArchivos(), 1)
+    });
 
 
     /*****************************************************************************************
@@ -203,6 +217,9 @@ export default defineComponent({
     //   }
     //   return parametro
     // }
+    async function subirArchivos() {
+      await refArchivo.value.subir()
+    }
     function filtrarOrdenes(tab: string) {
       tabDefecto.value = tab
       tabSeleccionado.value = tab
@@ -340,7 +357,7 @@ export default defineComponent({
         //: props.propsTable.rowIndex,
         eliminar({ posicion })
       },
-      visible: () => (accion.value == acciones.nuevo || accion.value == acciones.editar) && (orden.autorizacion == 1 || orden.solicitante == store.user.id || store.esCoordinadorBodega||store.esCompras)
+      visible: () => (accion.value == acciones.nuevo || accion.value == acciones.editar) && (orden.autorizacion == 1 || orden.solicitante == store.user.id || store.esCoordinadorBodega || store.esCompras)
     }
     const btnImprimir: CustomActionTable = {
       titulo: 'Imprimir',
@@ -526,6 +543,8 @@ export default defineComponent({
       tabDefecto,
       tabSeleccionado,
       puedeEditar,
+      refArchivo,
+      idOrden,
 
 
       //funciones

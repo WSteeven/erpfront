@@ -11,7 +11,11 @@
         v-if="transaccion.aviso_liquidacion_cliente"
         class="col-12 col-md-12 rounded-card q-py-sm text-center text-accent bg-yellow-2"
       >
-        <q-icon name="bi-exclamation-triangle-fill" class="q-mr-sm" size="1em"></q-icon
+        <q-icon
+          name="bi-exclamation-triangle-fill"
+          class="q-mr-sm"
+          size="1em"
+        ></q-icon
         ><b>&nbsp; Advertencia</b>
         <div>Esta transacción no se cargará al stock de ningún empleado</div>
       </div>
@@ -37,15 +41,29 @@
           <!-- Select motivo -->
           <div class="col-12 col-md-3 q-mb-md">
             <label class="q-mb-sm block">Motivo</label>
-            <q-input v-model="transaccion.motivo" autogrow disable outlined dense />
+            <q-input
+              v-model="transaccion.motivo"
+              autogrow
+              disable
+              outlined
+              dense
+            />
           </div>
           <!-- Select autorizacion -->
           <div class="col-12 col-md-3 q-mb-md">
             <label class="q-mb-sm block">Autorizacion</label>
-            <q-input v-model="transaccion.autorizacion" disable outlined dense />
+            <q-input
+              v-model="transaccion.autorizacion"
+              disable
+              outlined
+              dense
+            />
           </div>
           <!-- Transferencia -->
-          <div v-if="transaccion.es_transferencia" class="col-12 col-md-3 q-mb-md">
+          <div
+            v-if="transaccion.es_transferencia"
+            class="col-12 col-md-3 q-mb-md"
+          >
             <label class="q-mb-sm block">N° transferencia</label>
             <q-input
               type="number"
@@ -113,7 +131,9 @@
           </div>
           <!-- observacion autorizacion -->
           <div
-            v-if="transaccion.tiene_observacion_aut || transaccion.observacion_aut"
+            v-if="
+              transaccion.tiene_observacion_aut || transaccion.observacion_aut
+            "
             class="col-12 col-md-3"
           >
             <label class="q-mb-sm block">Observacion</label>
@@ -127,7 +147,10 @@
               dense
             >
               <template v-slot:error>
-                <div v-for="error of v$.observacion_aut.$errors" :key="error.$uid">
+                <div
+                  v-for="error of v$.observacion_aut.$errors"
+                  :key="error.$uid"
+                >
                   <div class="error-msg">{{ error.$message }}</div>
                 </div>
               </template>
@@ -156,7 +179,13 @@
             <label class="q-mb-sm block">Solicitante</label>
             <!-- <q-input v-model="transaccion.solicitante" disable outlined dense>
             </q-input> -->
-            <q-input v-model="transaccion.solicitante" autogrow dense outlined disable>
+            <q-input
+              v-model="transaccion.solicitante"
+              autogrow
+              dense
+              outlined
+              disable
+            >
             </q-input>
           </div>
           <!-- Es para una tarea -->
@@ -178,14 +207,23 @@
             ></q-checkbox>
           </div>
           <!-- Tarea -->
-          <div v-if="esVisibleTarea || transaccion.es_tarea" class="col-12 col-md-3">
+          <div
+            v-if="esVisibleTarea || transaccion.es_tarea"
+            class="col-12 col-md-3"
+          >
             <label class="q-mb-sm block">Tarea</label>
             <q-input v-model="transaccion.tarea" dense outlined disable />
           </div>
           <!-- Responsable -->
           <div v-if="!esTecnico" class="col-12 col-md-3">
             <label class="q-mb-sm block">Responsable</label>
-            <q-input v-model="transaccion.responsable" autogrow disable outlined dense />
+            <q-input
+              v-model="transaccion.responsable"
+              autogrow
+              disable
+              outlined
+              dense
+            />
           </div>
           <!-- Retira un tercero -->
           <div
@@ -220,13 +258,12 @@
             <q-input v-model="transaccion.cliente" disable outlined dense />
           </div>
 
+          <!-- {{ transaccion }} -->
           <!-- Tabla -->
-          <div class="col-12">
+          <div v-if="!transaccion.modificar_recepcion" class="col-12">
             <essential-table
               titulo="Productos Seleccionados"
-              :configuracionColumnas="
-                configuracionColumnasProductosSeleccionadosDespachado
-              "
+              :configuracionColumnas="configuracionColumnasProductosSeleccionadosEgreso"
               :datos="transaccion.listadoProductosTransaccion"
               :permitirConsultar="false"
               :permitirEditar="false"
@@ -237,8 +274,60 @@
               :altoFijo="false"
             ></essential-table>
           </div>
+          <div v-if="transaccion.modificar_recepcion && transaccion.estado_comprobante === 'PENDIENTE'" class="col-12">
+            <essential-table
+              titulo="Productos Seleccionados"
+              :configuracionColumnas="configuracionColumnasProductosSeleccionadosDespachadoParciales"
+              :datos="transaccion.listadoProductosTransaccion"
+              :permitirConsultar="false"
+              :permitirEditar="false"
+              :permitirEliminar="false"
+              :mostrarBotones="false"
+              :permitirBuscar="false"
+              :ajustarCeldas="true"
+              :altoFijo="false"
+              :accion1="btnEditarCantidad"
+              :accion2="btnEliminarFila"
+            ></essential-table>
+          </div>
+          <div v-if="transaccion.modificar_recepcion && transaccion.estado_comprobante === 'PARCIAL'" class="col-12">
+            <essential-table
+              titulo="Productos Seleccionados"
+              :configuracionColumnas="configuracionColumnasProductosSeleccionadosDespachadoParciales"
+              :datos="transaccion.listadoProductosTransaccion"
+              :permitirConsultar="false"
+              :permitirEditar="false"
+              :permitirEliminar="false"
+              :mostrarBotones="false"
+              :permitirBuscar="false"
+              :ajustarCeldas="true"
+              :altoFijo="false"
+              :accion1="btnEditarCantidad"
+              :accion2="btnEliminarFila"
+            ></essential-table>
+          </div>
         </div>
       </q-form>
+      <div
+        v-if="
+          transaccion.estado_comprobante === 'PARCIAL' &&
+          route.name == 'gestionar_egresos'
+        "
+        class="q-pa-md q-gutter-sm flex flex-center"
+      >
+        <q-btn color="warning" @click="permitirModificarCantidades()" no-caps glossy push>
+          <q-icon name="bi-pencil" size="xs" class="q-mr-sm"> </q-icon>
+          Modificar Recepción </q-btn
+        >
+        <q-btn v-if="transaccion.modificar_recepcion" color="positive" @click="aprobarEgresoParcial()" no-caps glossy push>
+          <q-icon name="bi-check-circle" size="xs" class="q-mr-sm"> </q-icon>
+          Aprobar Recepción Parcial</q-btn
+        >
+        <q-btn v-if="!transaccion.modificar_recepcion" color="positive" @click="aprobarEgreso()" no-caps glossy push>
+          <q-icon name="bi-check-circle" size="xs" class="q-mr-sm"> </q-icon>
+          Aprobar y Firmar</q-btn
+        >
+      </div>
       <div
         v-if="
           transaccion.estado_comprobante === 'PENDIENTE' &&
@@ -246,7 +335,15 @@
         "
         class="q-pa-md q-gutter-sm flex flex-center"
       >
-        <q-btn color="positive" @click="aprobarEgreso()" no-caps glossy push>
+        <q-btn color="warning" @click="permitirModificarCantidades()" no-caps glossy push>
+          <q-icon name="bi-pencil" size="xs" class="q-mr-sm"> </q-icon>
+          Modificar Recepción </q-btn
+        >
+        <q-btn v-if="transaccion.modificar_recepcion" color="positive" @click="aprobarEgresoParcial()" no-caps glossy push>
+          <q-icon name="bi-check-circle" size="xs" class="q-mr-sm"> </q-icon>
+          Aprobar Recepción Parcial</q-btn
+        >
+        <q-btn v-if="!transaccion.modificar_recepcion" color="positive" @click="aprobarEgreso()" no-caps glossy push>
           <q-icon name="bi-check-circle" size="xs" class="q-mr-sm"> </q-icon>
           Aprobar y Firmar</q-btn
         >

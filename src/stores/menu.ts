@@ -74,6 +74,25 @@ export const useMenuStore = defineStore('menu', () => {
           can: store.can('puede.ver.reporte_movilizacion_subtarea'),
         },
         {
+          title: 'Centro de Costos',
+          icon: 'bi-folder',
+          can: store.can('puede.acceder.centros_costos'),
+          children: [
+            {
+              title: 'Centro de Costos',
+              link: 'centros-costos',
+              icon: 'bi-circle',
+              can: store.can('puede.acceder.centros_costos'),
+            },
+            {
+              title: 'Subcentro de Costos',
+              link: 'subcentros-costos',
+              icon: 'bi-circle',
+              can: store.can('puede.acceder.subcentros_costos'),
+            },
+          ]
+        },
+        {
           title: 'Clientes finales',
           link: 'clientes-finales',
           icon: 'bi-circle',
@@ -744,6 +763,88 @@ export const useMenuStore = defineStore('menu', () => {
           link: 'prefacturas',
           icon: 'bi-circle',
           can: store.can('puede.ver.prefacturas') || store.esAdministrador,
+        },
+      ]
+    },
+    /*********************************************************
+     * Modulo de ventas de claro
+     *********************************************************/
+    {
+      title: 'Ventas de Claro',
+      icon: 'bi-phone-fill',
+      can: store.can('puede.ver.modulo_ventas_claro'),
+      children: [
+        {
+          title: 'Dashboard',
+          link: 'dashboard-ventas',
+          icon: 'bi-circle',
+          can: store.can('puede.ver.dashboard_venta'),
+        },
+        {
+          title: 'Productos',
+          link: 'producto-ventas',
+          icon: 'bi-circle',
+          can: store.can('puede.ver.producto_ventas'),
+        },
+        {
+          title: 'Vendedores',
+          link: 'vendedor',
+          icon: 'bi-circle',
+          can: store.can('puede.ver.vendedor'),
+        },
+        {
+          title: 'Ventas',
+          link: 'ventas',
+          icon: 'bi-circle',
+          can: store.can('puede.ver.ventas'),
+        },
+        {
+          title: 'Chargeback',
+          link: 'chargebacks',
+          icon: 'bi-circle',
+          can: store.can('puede.ver.chargebacks'),
+        },
+        {
+          title: 'Pagar Comisiones',
+          link: 'pago-comision',
+          icon: 'bi-circle',
+          can: store.can('puede.ver.pago_comision'),
+        },
+        {
+          title: 'Bono Mensual Cumplimento',
+          link: 'bono-mensual-cumplimiento',
+          icon: 'bi-circle',
+          can: store.can('puede.ver.bono_mensual_cumplimiento'),
+        },
+        {
+          title: 'Bono Trimestral Cumplimiento',
+          link: 'bono-trimestral-cumplimiento',
+          icon: 'bi-circle',
+          can: store.can('puede.ver.bono_trimestral_cumplimiento'),
+        },
+        {
+          title: 'Reportes',
+          icon: 'bi-clipboard2-data-fill',
+          children: [
+            {
+              title: 'Valores a cobrar para JP',
+              link: 'reporte_cobrojp',
+              icon: 'bi-circle',
+              can: store.can('puede.ver.reporte_cobrojp'),
+            },
+            {
+              title: 'Pagos',
+              link: 'reporte_pago',
+              icon: 'bi-circle',
+              can: store.can('puede.ver.reporte_pago'),
+            },
+            {
+              title: 'Ventas',
+              link: 'reporte_venta',
+              icon: 'bi-circle',
+              can: store.can('puede.ver.reporte_venta'),
+            },
+          ]
         },
       ]
     },
