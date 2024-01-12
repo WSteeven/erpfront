@@ -4,7 +4,7 @@ import { computed, defineComponent, ref } from 'vue'
 import EssentialSelectableTable from 'components/tables/view/EssentialSelectableTable.vue'
 import EssentialTable from 'components/tables/view/EssentialTable.vue'
 
-import { required } from 'shared/i18n-validators'
+import { required, requiredIf } from 'shared/i18n-validators'
 import { acciones, accionesTabla, maskFecha } from 'config/utils'
 import { ContenedorSimpleMixin } from 'shared/contenedor/modules/simple/application/ContenedorSimpleMixin'
 import ButtonSubmits from 'components/buttonSubmits/buttonSubmits.vue'
@@ -36,9 +36,8 @@ export default defineComponent({
       reestablecer,
       cargarVista,
       obtenerListados,
+      listar,
     } = mixin.useComportamiento()
-    const authenticationStore = useAuthenticationStore()
-
     const {
       entidad: alimentacion,
       disabled,
@@ -57,20 +56,15 @@ export default defineComponent({
         },
       })
       empleados.value = listadosAuxiliares.empleados
-      listado.value = (
-        await new DetalleAlimentacionController().listar({
-          alimentacion_id: asignacionAlimentacionStore.alimentacion.id,
-        })
-      ).result
+      await listar({
+        alimentacion_id: asignacionAlimentacionStore.alimentacion.id,
+      })
     })
 
     /*************
      * Validaciones
      **************/
     const reglas = {
-      empleado: {
-        required,
-      },
       valor_asignado: {
         required,
       },
@@ -149,6 +143,9 @@ export default defineComponent({
       },
       accion: () => {
         accion.value = acciones.nuevo
+        alimentacion.nuevo = true
+        alimentacion.alimentacion_id =
+          asignacionAlimentacionStore.alimentacion.id
         mostrar_formulario.value = true
         deshabilitar_empleado.value = false
       },
@@ -159,8 +156,10 @@ export default defineComponent({
         let entidad: DetalleAlimentacion = new DetalleAlimentacion()
         if (accion.value == acciones.nuevo) {
           entidad = await guardar(valoracreditar)
-          const valorDetalleAlimentacionAux = new DetalleAlimentacion()
-          valorDetalleAlimentacionAux.hydrate(entidad)
+          alimentacion.hydrate(entidad)
+          await listar({
+            alimentacion_id: asignacionAlimentacionStore.alimentacion.id,
+          })
         } else {
           await editar(valoracreditar, true)
         }
@@ -176,7 +175,7 @@ export default defineComponent({
     const totalDetalleAlimentacion = computed(() => {
       const suma = listado.value.reduce(
         (acumulador, elemento) =>
-          acumulador + parseFloat(elemento.valor_asignado.replace(/,/g, '')),
+          acumulador + parseFloat(elemento.valor_asignado?elemento.valor_asignado.replace(/,/g, ''):0),
         0
       )
       return suma
@@ -185,7 +184,7 @@ export default defineComponent({
       titulo: 'Eliminar',
       icono: 'bi-trash',
       color: 'secondary',
-      visible: () =>true,
+      visible: () => true,
       accion: ({ entidad, posicion }) => {
         accion.value = 'ELIMINAR'
         eliminar(entidad)
@@ -196,9 +195,11 @@ export default defineComponent({
       titulo: 'Asignacion Masiva',
       icono: 'bi-arrow-clockwise',
       color: 'warning',
-      visible: () =>true,
+      visible: () => true,
       accion: () => {
-            alimentacion.masivo = true
+        alimentacion.alimentacion_id =
+          asignacionAlimentacionStore.alimentacion.id
+        alimentacion.masivo = true
       },
     }
 
@@ -223,7 +224,7 @@ export default defineComponent({
       btnEditarDetalleAlimentacion,
       btnEliminarDetalleAlimentacion,
       btnAsignarMasivo,
-      configuracionColumnasDetalleAlimentacion
+      configuracionColumnasDetalleAlimentacion,
     }
   },
 })

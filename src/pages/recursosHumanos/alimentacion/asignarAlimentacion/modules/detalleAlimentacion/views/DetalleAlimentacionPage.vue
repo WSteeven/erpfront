@@ -15,8 +15,6 @@
             outlined
             :disable="deshabilitar_empleado"
             :readonly="disabled"
-            :error="!!v$.empleado.$errors.length"
-            @blur="v$.empleado.$touch"
             error-message="Debes seleccionar un empleado"
             use-input
             input-debounce="0"
@@ -26,11 +24,6 @@
             emit-value
             map-options
           >
-            <template v-slot:error>
-              <div v-for="error of v$.empleado.$errors" :key="error.$uid">
-                <div class="error-msg">{{ error.$message }}</div>
-              </div>
-            </template>
             <template v-slot:no-option>
               <q-item>
                 <q-item-section class="text-grey"> No hay resultados </q-item-section>
@@ -103,7 +96,7 @@
       </div>
     </q-form>
 
-    <div class="text-h5 q-py-sm">Total: {{ totalAlimentacion }}</div>
+    <div class="text-h5 q-py-sm">Total: {{ totalDetalleAlimentacion.toFixed(2)}}</div>
     <essential-table
       titulo="Valores de Corte de Alimentacion"
       :datos="listado"
@@ -111,11 +104,11 @@
       :permitirConsultar="false"
       :permitirEditar="false"
       :permitirEliminar="false"
-      :accion1Header="btnNuevoAlimentacion"
+      :accion1Header="btnNuevoDetalleAlimentacion"
       :accion2Header="btnAsignarMasivo"
-      :accion1="btnVerAlimentacion"
-      :accion2="btnEditarAlimentacion"
-      :accion3="btnEliminarAlimentacion"
+      :accion1="btnVerDetalleAlimentacion"
+      :accion2="btnEditarDetalleAlimentacion"
+      :accion3="btnEliminarDetalleAlimentacion"
     >
     </essential-table>
   </q-page>

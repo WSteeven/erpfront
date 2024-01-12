@@ -193,6 +193,7 @@ export default defineComponent({
           }
         )
       } else {
+        asignacionAlimentacionStore.obtenerAlimentacion()
         modales.abrirModalEntidad('DetalleAlimentacionPage')
       }
     }

@@ -11,6 +11,7 @@ import { Alimentacion } from 'pages/recursosHumanos/alimentacion/alimentacion/do
 
 export const useAsignacionAlimentacionStore = defineStore('preorden', () => {
   const listadoItems = ref([])
+  const alimentaciones = ref([])
   const valor_asignar = ref(0)
   const mes = ref()
   const alimentacion = new Alimentacion()
@@ -33,6 +34,25 @@ export const useAsignacionAlimentacionStore = defineStore('preorden', () => {
       statusLoading.desactivar()
     }
   }
+  async function obtenerAlimentacion() {
+    try {
+      statusLoading.activar()
+      const axios = AxiosHttpRepository.getInstance()
+      const url =
+        apiConfig.URL_BASE + '/' + axios.getEndpoint(endpoints.alimentacion)
+      const response: AxiosResponse = await axios.get(url, {
+        params: {mes: alimentacion.mes,es_quincena:alimentacion.es_quincena?1:0, finalizado: 0 },
+      })
+      alimentaciones.value = response.data.results
+      alimentacion.hydrate(alimentaciones.value[0])
+    } catch (e: any) {
+      notificarError(e)
+    } finally {
+      statusLoading.desactivar()
+    }
+  }
+
+
   async function asignarAlimentacion(data, valor_asignar) {
     try {
       statusLoading.activar()
@@ -89,6 +109,8 @@ export const useAsignacionAlimentacionStore = defineStore('preorden', () => {
     asignarAlimentacion,
     listarempleados,
     realizarCorte,
+    obtenerAlimentacion,
+    alimentaciones,
     listadoItems,
     valor_asignar,
     mes,
