@@ -586,11 +586,13 @@ export default defineComponent({
       switch (tipo_aprobacion) {
         case 'aprobar':
           try {
-            await aprobarController.aprobarGasto(gasto)
-            issubmit.value = false
-            notificarCorrecto('Se aprobado Gasto Exitosamente')
-            emit('cerrar-modal', false)
-            emit('guardado')
+            if (await v$.value.$validate()) {
+              await aprobarController.aprobarGasto(gasto)
+              issubmit.value = false
+              notificarCorrecto('Se aprobado Gasto Exitosamente')
+              emit('cerrar-modal', false)
+              emit('guardado')
+            }
           } catch (e: any) {
             notificarError(
               'No se pudo aprobar, debes ingresar un motivo para la aprobacion'
