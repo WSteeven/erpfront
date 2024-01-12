@@ -3,15 +3,21 @@ import { SubcentroCosto } from "./SubcentroCosto";
 
 export const configuracionColumnasSubcentroCostos: ColumnConfig<SubcentroCosto>[] = [
     {
+        name: 'nombre',
+        field: 'nombre',
+        label: 'Nombre',
+        align: 'left',
+    },
+    {
         name: 'centro_costo',
         field: 'centro_costo',
         label: 'Centro de Costos',
         align: 'left',
     },
     {
-        name: 'nombre',
-        field: 'nombre',
-        label: 'Subcentro de Costos',
+        name: 'grupo',
+        field: 'grupo',
+        label: 'Grupo',
         align: 'left',
     },
     {
