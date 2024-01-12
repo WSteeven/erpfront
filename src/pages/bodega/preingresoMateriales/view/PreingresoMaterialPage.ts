@@ -119,11 +119,11 @@ export default defineComponent({
         tareas: { controller: new TareaController(), params: { activas_empleado: 1, empleado_id: preingreso.responsable, finalizado: 0, proyecto_id: preingreso.proyecto } },
         clientes: { controller: new ClienteController(), params: { campos: 'id,razon_social', requiere_bodega: 1, estado: 1, } },
       })
+      proyectos.value = listadosAuxiliares.proyectos
+      empleados.value = listadosAuxiliares.empleados
       if (store.esCoordinador || store.esJefeTecnico || store.esSupervisorCampo) {
         listadosAuxiliares.tecnicos = await filtrarEmpleadosPorRoles(listadosAuxiliares.empleados, [rolesSistema.tecnico, rolesSistema.tecnico_lider])
       }
-      proyectos.value = listadosAuxiliares.proyectos
-      empleados.value = listadosAuxiliares.empleados
       // const rolesSupervisores = [rolesSistema.jefe_tecnico, rolesSistema.supervisor, rolesSistema.coordinador, rolesSistema.fiscalizador];
       listadosAuxiliares.coordinadores = await filtrarEmpleadosPorRoles(listadosAuxiliares.empleados, [rolesSistema.jefe_tecnico, rolesSistema.supervisor, rolesSistema.coordinador, rolesSistema.fiscalizador])
       coordinadores.value = listadosAuxiliares.coordinadores
