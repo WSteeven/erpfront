@@ -671,6 +671,7 @@ export default defineComponent({
       estaSemanAC,
       configuracionColumnas: configuracionColumnasGasto,
       authenticationStore,
+      esCombustibleEmpresa,
       cantones,
       detalles,
       sub_detalles,
