@@ -209,6 +209,10 @@ export default defineComponent({
       tabActualTarea = tabSeleccionado
     }
 
+    function checkCentroCosto(val, evt) {
+      if (val) notificarAdvertencia('No se creará centro de costos ni se asociará la tarea a un centro de costos')
+    }
+
 
     async function obtenerClienteFinal(clienteFinalId: number) {
       const clienteFinalController = new ClienteFinalController()
@@ -461,6 +465,7 @@ export default defineComponent({
       imagenSubida,
       btnVerImagenInforme,
       centros_costos, filtrarCentrosCostos,
+      checkCentroCosto,
     }
   },
 })

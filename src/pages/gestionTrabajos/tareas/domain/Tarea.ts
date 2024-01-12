@@ -73,6 +73,7 @@ export class Tarea extends EntidadAuditable {
   ubicacion_trabajo: string
   ruta_tarea: number | null
   metraje_tendido: number | null
+  no_lleva_centro_costo:boolean
 
   constructor() {
     super()
@@ -157,5 +158,6 @@ export class Tarea extends EntidadAuditable {
     this.cantidad_subtareas = null
     this.finalizado = false
     this.ruta_tarea = null
+    this.no_lleva_centro_costo = false
   }
 }
