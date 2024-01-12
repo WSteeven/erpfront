@@ -679,6 +679,7 @@ export default defineComponent({
       beneficiarios,
       mostarPlaca,
       mascaraFactura,
+      vehiculos,
       watchEffect,
       existeComprobante,
       aprobar_gasto,
