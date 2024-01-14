@@ -1,15 +1,9 @@
 <template>
   <q-page padding>
-    <div class="column q-mb-md text-center">
+    <div class="column q-mb-mdd text-center">
       <div class="q-mb-md text-primary">
         Productos que tienen asignados los empleados
       </div>
-      <small
-        >Conoce el material que tienes a tu disposición para utilizar en tus
-        trabajos. <br />
-        El material puede ser asignado para la tarea o a tu stock
-        personal.</small
-      >
     </div>
 
     <q-card class="rounded q-mb-md">
@@ -30,6 +24,7 @@
             input-debounce="0"
             @filter="filtrarEmpleados"
             @popup-show="ordenarEmpleados"
+            @update:model-value="resetearFiltros()"
             :option-label="(v) => v.apellidos + ' ' + v.nombres"
             :option-value="(v) => v.id"
             emit-value
@@ -47,7 +42,7 @@
       </q-card-section>
     </q-card>
 
-    <q-card class="rounded-card custom-shadow">
+    <q-card v-if="empleadoSeleccionado" class="rounded-card custom-shadow">
       <q-tabs
         v-model="tab"
         class="text-primary"
@@ -160,7 +155,9 @@
                 class="full-width"
                 no-caps
                 unelevated
-                @click="consultarProductosTarea()"
+                @click="
+                  consultarProductosTarea({ empleado_id: empleadoSeleccionado })
+                "
                 >Consultar</q-btn
               >
             </div>

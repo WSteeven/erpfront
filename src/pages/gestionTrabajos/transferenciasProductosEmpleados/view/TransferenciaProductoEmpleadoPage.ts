@@ -36,7 +36,7 @@ import { useTransferenciaProductoEmpleadoStore } from 'stores/transferenciaProdu
 import { TransferenciaProductoEmpleado } from '../domain/TransferenciaProductoEmpleado'
 import { useBotonesListadoProductos } from '../application/UseBotonesListadoProductos'
 import { useMaterialesProyecto } from 'pages/gestionTrabajos/miBodega/application/UseMaterialesProyecto'
-import { ValidarListadoProductos } from '../application/ValidarListadoProductos'
+import { ValidarExisteArchivo } from '../application/ValidarListadoProductos'
 import { MaterialEmpleadoTarea } from 'miBodega/domain/MaterialEmpleadoTarea'
 import { TareaController } from 'tareas/infraestructure/TareaController'
 import { Empleado } from 'recursosHumanos/empleados/domain/Empleado'
@@ -47,6 +47,7 @@ import { Tarea } from 'tareas/domain/Tarea'
 import { useMaterialesTarea } from 'pages/gestionTrabajos/miBodega/application/UseMaterialesTarea'
 import { FiltroMiBodega } from 'pages/gestionTrabajos/miBodega/domain/FiltroMiBodega'
 import { EmpleadoRoleController } from 'pages/recursosHumanos/empleados/infraestructure/EmpleadoRolesController'
+import { ArchivoController } from 'pages/gestionTrabajos/subtareas/modules/gestorArchivosTrabajos/infraestructure/ArchivoController'
 
 export default defineComponent({
   name: 'TransferenciaProductoEmpleado',
@@ -56,11 +57,10 @@ export default defineComponent({
     /********
      * Mixin
      ********/
-    const mixin = new ContenedorSimpleMixin(TransferenciaProductoEmpleado, new TransferenciaProductoEmpleadoController())
+    const mixin = new ContenedorSimpleMixin(TransferenciaProductoEmpleado, new TransferenciaProductoEmpleadoController(), new ArchivoController())
     const { entidad: transferencia, disabled, accion, listadosAuxiliares, listado } = mixin.useReferencias()
     const { setValidador, obtenerListados, cargarVista, listar } = mixin.useComportamiento()
-    const { onModificado, onConsultado, onReestablecer } = mixin.useHooks()
-    const { notificarAdvertencia } = useNotificaciones()
+    const { onModificado, onConsultado, onReestablecer, onGuardado } = mixin.useHooks()
 
     /**********
      * Stores
@@ -87,8 +87,8 @@ export default defineComponent({
      ************/
     const tabSeleccionado = ref()
     const esCoordinador = authenticationStore.esCoordinador
-    const cargando = new StatusEssentialLoading()
-    const axios = AxiosHttpRepository.getInstance()
+    const refArchivo = ref()
+    const idTransferencia = ref()
 
     const { empleados, filtrarEmpleados, ordenarEmpleados, tareas, filtrarTareas, tareasDestino, filtrarTareasDestino } = useFiltrosListadosSelects(listadosAuxiliares)
 
@@ -131,25 +131,16 @@ export default defineComponent({
     /********
      * Init
      ********/
-    // console.log(transferenciaProductoEmpleadoStore.idProyecto)
     onMounted(() => {
       transferencia.tarea_origen = transferenciaProductoEmpleadoStore.tareaId ?? null
-      console.log('Montando...')
-      console.log(transferencia.tarea_origen)
-      // transferencia.proyecto_origen = transferenciaProductoEmpleadoStore.idProyecto
-      // transferencia.etapa_origen = transferenciaProductoEmpleadoStore.idEtapa
-      console.log(accion.value)
-      if (accion.value === acciones.nuevo) transferencia.empleado_origen = useAuthenticationStore().user.id
+      transferencia.empleado_origen = transferenciaProductoEmpleadoStore.idEmpleado ?? useAuthenticationStore().user.id
       transferencia.cliente = transferenciaProductoEmpleadoStore.cliente_id
-      // console.log(transferenciaProductoEmpleadoStore.idProyecto)
+
+      console.log('Montado')
 
       if (transferenciaProductoEmpleadoStore.listadoMateriales.length) {
         transferencia.listado_productos = mapearProductos(transferenciaProductoEmpleadoStore.listadoMateriales)
-        // console.log(transferencia.listado_productos)
       }
-
-      // ajustarFormulariosPorOrigenProductos()
-      // transferencia.empleado_origen = authenticationStore.user.id
     })
 
     transferencia.solicitante = authenticationStore.user.id
@@ -170,8 +161,8 @@ export default defineComponent({
     const v$ = useVuelidate(reglas, transferencia)
     setValidador(v$.value)
 
-    const validarListadoProductos = new ValidarListadoProductos(transferencia)
-    mixin.agregarValidaciones(validarListadoProductos)
+    const validarExisteArchivo = new ValidarExisteArchivo(transferencia, refArchivo)
+    mixin.agregarValidaciones(validarExisteArchivo)
 
     /************
      * Observers
@@ -181,12 +172,8 @@ export default defineComponent({
         await consultarTareasEmpleadoOrigen()
         await consultarProyectosEmpleadoOrigen()
         const tarea = listadosAuxiliares.tareas.find((t: Tarea) => t.id === transferencia.tarea_origen)
-        console.log(listadosAuxiliares.tareas)
-        console.log(tarea)
         transferencia.proyecto_origen = tarea?.proyecto_id
         transferencia.etapa_origen = tarea?.etapa_id
-        console.log(transferencia.proyecto_origen)
-        console.log('tarea - proyecto')
       }
     })
 
@@ -226,29 +213,27 @@ export default defineComponent({
 
     watch(computed(() => transferencia.tarea_origen), async (id) => {
       if (id) {
-        const tarea = listadosAuxiliares.tareas.find((t: Tarea) => t.id === id)
-        // console.log(listadosAuxiliares.tareas)
-        transferencia.proyecto_origen = tarea?.proyecto_id
-        transferencia.etapa_origen = tarea?.etapa_id
-        transferencia.cliente = tarea?.cliente_id
-        // console.log(transferencia.proyecto_origen)
-        // console.log('tarea - proyecto')
+        if (listadosAuxiliares.tareas.length) {
+          const tarea = listadosAuxiliares.tareas.find((t: Tarea) => t.id === id)
+          console.log(listadosAuxiliares.tareas)
+          console.log(tarea)
+          transferencia.proyecto_origen = tarea?.proyecto_id
+          transferencia.etapa_origen = tarea?.etapa_id
+          transferencia.cliente = tarea?.cliente_id
+          console.log('Tarea origen - cliente: ')
+          console.log(transferencia.cliente)
+        }
 
         if (transferencia.proyecto_origen) {
           filtroProyecto.empleado_id = transferencia.empleado_origen
           filtroProyecto.etapa_id = transferencia.etapa_origen
           filtroProyecto.proyecto_id = transferencia.proyecto_origen
           filtroProyecto.cliente_id = transferencia.cliente
-          await consultarProductosProyecto()
         } else {
           filtroMiBodega.empleado_id = transferencia.empleado_origen
           filtroMiBodega.tarea_id = transferencia.tarea_origen
-          filtroMiBodega.cliente_id = transferencia.cliente_id
-          await consultarProductosTarea()
+          filtroMiBodega.cliente_id = transferencia.cliente
         }
-        transferencia.listado_productos = mapearProductos(listadosAuxiliares.productos)
-      } else {
-        listadosAuxiliares.productos = []
       }
     })
 
@@ -273,7 +258,8 @@ export default defineComponent({
 
     function establecerAutorizador() {
       if (esEntreProyectos()) {
-        transferencia.autorizador = listadosAuxiliares.autorizadores.find((emp: Empleado) => emp.roles.includes(rolesSistema.jefe_tecnico)).id
+        if (transferencia.proyecto_origen === transferencia.proyecto_destino) transferencia.autorizador = buscarProyecto().coordinador_id
+        else transferencia.autorizador = listadosAuxiliares.autorizadores.filter((emp: Empleado) => emp.roles.includes(rolesSistema.jefe_tecnico))[0].id
       } else {
         // Aqui ingresa si es transferencia entre etapas y entre tareas
         const tarea = listadosAuxiliares.tareas.find((tarea: Tarea) => tarea.id === transferencia.tarea_origen)
@@ -316,6 +302,7 @@ export default defineComponent({
       return !!listadosAuxiliares.proyectos.find((proyecto: Proyecto) => proyecto.id === transferencia.proyecto_origen)?.etapas.length
     }
 
+    // origen
     function buscarProyecto(): Proyecto {
       return listadosAuxiliares.proyectos.find((proyecto: Proyecto) => proyecto.id === transferencia.proyecto_origen)
     }
@@ -358,6 +345,10 @@ export default defineComponent({
       })
     }
 
+    async function subirArchivos() {
+      await refArchivo.value.subir()
+    }
+
     /* async function obtenerMaterialesTarea(cliente: number) {
       try {
         cargando.activar()
@@ -391,9 +382,27 @@ export default defineComponent({
     /********
      * Hooks
      ********/
-    onModificado(() => filtrarTransferenciasProductoEmpleado(tabSeleccionado.value))
+    onGuardado((id: number) => {
+      idTransferencia.value = id
+      setTimeout(() => {
+        subirArchivos()
+      }, 1)
+    })
 
-    onConsultado(() => transferenciaProductoEmpleadoStore.origenProductos = (transferencia.tarea_origen ? destinosTareas.paraClienteFinal : destinosTareas.paraProyecto))
+    onModificado((id: number) => {
+      filtrarTransferenciasProductoEmpleado(tabSeleccionado.value)
+      idTransferencia.value = id
+      setTimeout(() => {
+        subirArchivos()
+      }, 1)
+    })
+
+    onConsultado(() => {
+      setTimeout(() => {
+        refArchivo.value.listarArchivosAlmacenados(transferencia.id)
+      }, 1);
+      transferenciaProductoEmpleadoStore.origenProductos = (transferencia.tarea_origen ? destinosTareas.paraClienteFinal : destinosTareas.paraProyecto)
+    })
 
     onReestablecer(() => transferencia.empleado_origen = authenticationStore.user.id)
     /*******************************************************************************************
@@ -410,6 +419,8 @@ export default defineComponent({
       mixin, transferencia, disabled, accion, v$, acciones,
       configuracionColumnas: configuracionColumnasDevoluciones,
       authenticationStore,
+      refArchivo,
+      idTransferencia,
       // listados
       opciones_empleados,
       opciones_autorizaciones,

@@ -42,6 +42,7 @@ export function useMaterialesProyecto(filtro: UnwrapRef<FiltroMiBodegaProyecto>,
 
       transferenciaProductoEmpleadoStore.listadoMateriales = result
       transferenciaProductoEmpleadoStore.cliente_id = filtro.cliente_id
+      transferenciaProductoEmpleadoStore.idEmpleado = filtro.empleado_id
       transferenciaProductoEmpleadoStore.origenProductos = destinosTareas.paraProyecto
       transferenciaProductoEmpleadoStore.idProyecto = filtro.proyecto_id
       transferenciaProductoEmpleadoStore.idEtapa = filtro.etapa_id

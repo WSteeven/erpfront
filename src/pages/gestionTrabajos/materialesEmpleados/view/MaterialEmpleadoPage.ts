@@ -43,7 +43,6 @@ export default defineComponent({
     const transferenciaProductoEmpleadoStore = useTransferenciaProductoEmpleadoStore()
     useNotificacionStore().setQuasar(useQuasar())
     useCargandoStore().setQuasar(useQuasar())
-    const authenticationStore = useAuthenticationStore()
 
     /************
      * Variables
@@ -88,11 +87,12 @@ export default defineComponent({
     function refrescarListadosProyectos(nombreListado: string) {
       switch (nombreListado) {
         case 'proyectos':
+          filtroProyecto.empleado_id = empleadoSeleccionado.value
           consultarProyectos().then(() => proyectos.value = listadosAuxiliares.proyectos)
           break
         case 'clientes':
-          if (filtroProyecto.etapa_id) consultarClientesMaterialesTarea({ proyecto_id: filtroProyecto.proyecto_id, etapa_id: filtroProyecto.etapa_id, filtrar_por_etapa: true })
-          else consultarClientesMaterialesTarea({ proyecto_id: filtroProyecto.proyecto_id, etapa_id: filtroProyecto.etapa_id, filtrar_por_proyecto: true })
+          if (filtroProyecto.etapa_id) consultarClientesMaterialesTarea({ empleado_id: empleadoSeleccionado.value, proyecto_id: filtroProyecto.proyecto_id, etapa_id: filtroProyecto.etapa_id, filtrar_por_etapa: true })
+          else consultarClientesMaterialesTarea({ empleado_id: empleadoSeleccionado.value, proyecto_id: filtroProyecto.proyecto_id, etapa_id: filtroProyecto.etapa_id, filtrar_por_proyecto: true })
           break
       }
     }
@@ -100,10 +100,10 @@ export default defineComponent({
     function refrescarListadosTareas(nombreListado: string) {
       switch (nombreListado) {
         case 'tareas':
-          consultarTareasClienteFinalMantenimiento(authenticationStore.user.id)
+          consultarTareasClienteFinalMantenimiento(empleadoSeleccionado.value)
           break
         case 'clientes':
-          consultarClientesMaterialesTarea({ tarea_id: filtro.tarea_id, filtrar_por_tarea: 1 })
+          consultarClientesMaterialesTarea({ empleado_id: empleadoSeleccionado.value, tarea_id: filtro.tarea_id, filtrar_por_tarea: 1 })
           break
       }
     }
@@ -111,8 +111,30 @@ export default defineComponent({
     function refrescarListadosEmpleado(nombreListado: string) {
       switch (nombreListado) {
         case 'clientes':
-          consultarClientesMaterialesEmpleado()
+          consultarClientesMaterialesEmpleado({ empleado_id: empleadoSeleccionado.value })
           break
+      }
+    }
+
+    function resetearFiltros() {
+      filtro.hydrate(new FiltroMiBodega())
+      filtroProyecto.hydrate(new FiltroMiBodegaProyecto())
+      filtroEmpleado.hydrate(new FiltroMiBodegaEmpleado())
+      listadosAuxiliares.productos = []
+      listadosAuxiliares.productosTarea = []
+      listadosAuxiliares.productosProyectosEtapas = []
+      listadosAuxiliares.productosStock = []
+
+      cargarListado()
+    }
+
+    function cargarListado() {
+      if (empleadoSeleccionado.value) {
+        consultarTareasClienteFinalMantenimiento(empleadoSeleccionado.value)
+        filtroProyecto.empleado_id = empleadoSeleccionado.value
+        consultarProyectos().then(() => proyectos.value = listadosAuxiliares.proyectos)
+        consultarClientesMaterialesEmpleado({ empleado_id: empleadoSeleccionado.value })
+        consultarClientesMaterialesTarea({ empleado_id: empleadoSeleccionado.value, filtrar_por_tarea: true })
       }
     }
 
@@ -122,7 +144,7 @@ export default defineComponent({
       const tarea = (listadosAuxiliares.tareas as any).find((tarea: Tarea) => tarea.id === filtro.tarea_id)
       // filtro.cliente_id = tarea.cliente_id
 
-      consultarClientesMaterialesTarea({ tarea_id: filtro.tarea_id, filtrar_por_tarea: 1 })
+      consultarClientesMaterialesTarea({ empleado_id: empleadoSeleccionado.value, tarea_id: filtro.tarea_id, filtrar_por_tarea: 1 })
     }
 
     async function seleccionarProyecto() {
@@ -143,11 +165,11 @@ export default defineComponent({
       filtroProyecto.etapa_id = null
       filtro.cliente_id = null
 
-      if (!!!listadosAuxiliares.etapas.length) consultarClientesMaterialesTarea({ proyecto_id: filtroProyecto.proyecto_id, filtrar_por_proyecto: 1 })
+      if (!!!listadosAuxiliares.etapas.length) consultarClientesMaterialesTarea({ empleado_id: empleadoSeleccionado.value, proyecto_id: filtroProyecto.proyecto_id, filtrar_por_proyecto: 1 })
     }
 
     function seleccionarEtapa() {
-      consultarClientesMaterialesTarea({ proyecto_id: filtroProyecto.proyecto_id, etapa_id: filtroProyecto.etapa_id, filtrar_por_etapa: 1 })
+      consultarClientesMaterialesTarea({ empleado_id: empleadoSeleccionado.value, proyecto_id: filtroProyecto.proyecto_id, etapa_id: filtroProyecto.etapa_id, filtrar_por_etapa: 1 })
     }
 
     function consultarProductosProyectoEtapa() {
@@ -177,10 +199,10 @@ export default defineComponent({
     /*******
      * Init
     *******/
-    consultarClientesMaterialesTarea({ filtrar_por_tarea: true })
-    consultarClientesMaterialesEmpleado()
-    consultarTareasClienteFinalMantenimiento(authenticationStore.user.id)
-    consultarProyectos().then(() => proyectos.value = listadosAuxiliares.proyectos)
+    // consultarClientesMaterialesTarea({ empleado_id: empleadoSeleccionado.value, filtrar_por_tarea: true })
+    // consultarClientesMaterialesEmpleado()
+    // consultarTareasClienteFinalMantenimiento(empleadoSeleccionado.value)
+    // consultarProyectos().then(() => proyectos.value = listadosAuxiliares.proyectos)
     consultarTodosEmpleados()
 
     /************
@@ -191,12 +213,12 @@ export default defineComponent({
         case destinosTareas.paraClienteFinal:
           listadosAuxiliares.productos = listadosAuxiliares.productosTarea
           transferenciaProductoEmpleadoStore.listadoMateriales = listadosAuxiliares.productosTarea
-          // consultarClientesMaterialesTarea({ filtrar_por_tarea: true })
+          // consultarClientesMaterialesTarea({ empleado_id: empleadoSeleccionado.value, filtrar_por_tarea: true })
           break
         case destinosTareas.paraProyecto:
           listadosAuxiliares.productos = listadosAuxiliares.productosProyectosEtapas
           transferenciaProductoEmpleadoStore.listadoMateriales = listadosAuxiliares.productosProyectosEtapas
-          // consultarClientesMaterialesTarea({ filtrar_por_proyecto: true })
+          // consultarClientesMaterialesTarea({ empleado_id: empleadoSeleccionado.value, filtrar_por_proyecto: true })
           break
         case 'personal':
           listadosAuxiliares.productos = listadosAuxiliares.productosStock
@@ -240,6 +262,7 @@ export default defineComponent({
       empleados,
       filtrarEmpleados,
       empleadoSeleccionado,
+      resetearFiltros,
     }
   },
 })

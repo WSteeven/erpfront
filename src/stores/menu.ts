@@ -80,6 +80,25 @@ export const useMenuStore = defineStore('menu', () => {
           can: store.can('puede.ver.reporte_movilizacion_subtarea'),
         },
         {
+          title: 'Centro de Costos',
+          icon: 'bi-folder',
+          can: store.can('puede.acceder.centros_costos'),
+          children: [
+            {
+              title: 'Centro de Costos',
+              link: 'centros-costos',
+              icon: 'bi-circle',
+              can: store.can('puede.acceder.centros_costos'),
+            },
+            {
+              title: 'Subcentro de Costos',
+              link: 'subcentros-costos',
+              icon: 'bi-circle',
+              can: store.can('puede.acceder.subcentros_costos'),
+            },
+          ]
+        },
+        {
           title: 'Clientes finales',
           link: 'clientes-finales',
           icon: 'bi-app',

@@ -178,6 +178,7 @@
               :options="proyectos"
               @filter="filtrarProyectos"
               transition-show="scale"
+              :disable="!(accion === acciones.nuevo)"
               @update:model-value="
                 () => {
                   transferencia.empleado_destino = null
@@ -227,6 +228,7 @@
               v-model="transferencia.etapa_origen"
               :options="etapas"
               @filter="filtrarEtapas"
+              :disable="!(accion === acciones.nuevo)"
               transition-show="scale"
               transition-hide="scale"
               options-dense
@@ -258,6 +260,7 @@
               :options="listadosAuxiliares.tareas"
               transition-show="scale"
               transition-hide="scale"
+              :disable="!(accion === acciones.nuevo)"
               options-dense
               hint="Seleccionar para buscar productos..."
               dense
@@ -297,6 +300,13 @@
               transition-show="scale"
               transition-hide="scale"
               :disable="!(accion === acciones.nuevo)"
+              @update:model-value="
+                () => {
+                  transferencia.proyecto_destino = null
+                  transferencia.etapa_destino = null
+                  transferencia.tarea_destino = null
+                }
+              "
               options-dense
               dense
               outlined
@@ -341,6 +351,12 @@
               transition-show="scale"
               transition-hide="scale"
               :disable="!(accion === acciones.nuevo)"
+              @update:model-value="
+                () => {
+                  transferencia.etapa_destino = null
+                  transferencia.tarea_destino = null
+                }
+              "
               clearable
               options-dense
               dense
@@ -385,6 +401,7 @@
               :options="etapasDestino"
               @filter="filtrarEtapasDestino"
               :disable="!(accion === acciones.nuevo)"
+              @update:model-value="() => (transferencia.tarea_destino = null)"
               transition-show="scale"
               transition-hide="scale"
               options-dense
@@ -423,6 +440,7 @@
               @filter="filtrarTareasDestino"
               dense
               outlined
+              :disable="!(accion === acciones.nuevo)"
               :option-label="(item) => item.codigo_tarea + ' - ' + item.titulo"
               :option-value="(item) => item.id"
               use-input
@@ -592,6 +610,35 @@
             </q-input>
           </div>
 
+          <!-- Manejo de archivos -->
+          <div class="col-12 q-mb-md">
+            <gestor-archivos
+              ref="refArchivo"
+              label="Adjuntar archivos"
+              :mixin="mixin"
+              :disable="disabled"
+              :listarAlGuardar="false"
+              :permitir-eliminar="
+                accion == acciones.nuevo || accion == acciones.editar
+              "
+              :idModelo="idTransferencia"
+            >
+              <template #boton-subir>
+                <q-btn
+                  v-if="false"
+                  color="positive"
+                  push
+                  no-caps
+                  class="full-width q-mb-lg"
+                  @click="subirArchivos()"
+                >
+                  <q-icon name="bi-upload" class="q-mr-sm" size="xs"></q-icon>
+                  Subir archivos seleccionados</q-btn
+                >
+              </template>
+            </gestor-archivos>
+          </div>
+
           <!-- Selector de productos -->
           <div class="col-12 col-md-12">
             <label class="q-mb-sm block">Agregar productos</label>
@@ -634,7 +681,7 @@
               </div>
             </div>
           </div>
-          {{ transferencia.tarea_origen }}
+
           <!-- Tabla -->
           <div class="col-12">
             <essential-table

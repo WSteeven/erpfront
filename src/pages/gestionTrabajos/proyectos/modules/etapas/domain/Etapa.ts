@@ -4,6 +4,7 @@ export class Etapa extends EntidadAuditable {
   nombre: string | null
   activo: boolean
   responsable: number | null
+  responsable_id: number | null
   supervisor_id: number | null
   proyecto: number | null
   codigo_proyecto: string | number | null
@@ -15,6 +16,7 @@ export class Etapa extends EntidadAuditable {
     this.nombre = null
     this.activo = true
     this.responsable = null
+    this.responsable_id = null
     this.supervisor_id = null
     this.proyecto = null
     this.codigo_proyecto = null
