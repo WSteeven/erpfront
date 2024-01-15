@@ -28,10 +28,6 @@ export const estadosRolPagoEmpleado = {
 
 }
 export const estadosAlimentacion = {
-  todo: '',
-  creado: 'CREADO',
-  ejecutando: 'EJECUTANDO',
-  realizado: 'REALIZADO',
-  finalizado: 'FINALIZADO',
-
+  activa: '0',
+  finalizado: '1',
 }

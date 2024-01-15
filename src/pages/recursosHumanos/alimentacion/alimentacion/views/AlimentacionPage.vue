@@ -4,11 +4,13 @@
     :configuracionColumnas="configuracionColumnas"
     :mostrarListado="true"
     :tabOptions="tabOptionsEstadosAlimentacion"
+    :accion1="btnCashAlimentacion"
+    :accion2="btnImprimirReporteAlimentacion"
     :full="false"
     :permitirEditar="false"
     :permitirEliminar="false"
     :filtrar="filtrarAlimentacion"
-    :tabDefecto="estadosAlimentacion.todo"
+    :tabDefecto="estadosAlimentacion.activa"
   >
   <template #formulario>
     <q-form @submit.prevent>

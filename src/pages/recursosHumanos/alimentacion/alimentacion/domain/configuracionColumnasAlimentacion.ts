@@ -4,24 +4,18 @@ import { Alimentacion } from './Alimentacion'
 export const configuracionColumnasAlimentacion: ColumnConfig<Alimentacion>[] =
   [
     {
-      name: 'empleado_info',
-      field: 'empleado_info',
-      label: 'Empleado',
+      name: 'nombre',
+      field: 'nombre',
+      label: 'Nombre',
       align: 'left',
       sortable: true,
     },
     {
-      name: 'valor_asignado',
-      field: 'valor_asignado',
-      label: 'Valor asignado',
+      name: 'mes',
+      field: 'mes',
+      label: 'Mes',
       align: 'left',
       sortable: true,
     },
-    {
-      name: 'fecha_corte',
-      field: 'fecha_corte',
-      label: 'Fecha de corte',
-      align: 'left',
-      sortable: true,
-    },
+
   ]
