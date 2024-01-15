@@ -40,7 +40,6 @@ import { Ticket } from 'pages/gestionTickets/tickets/domain/Ticket'
 import { imprimirArchivo, obtenerFechaActual } from 'shared/utils'
 import { useTrabajoAsignadoStore } from 'stores/trabajoAsignado'
 import { useAuthenticationStore } from 'stores/authentication'
-import { useMaterialesTarea } from 'pages/gestionTrabajos/miBodega/application/UseMaterialesTarea'
 import { useMaterialesProyecto } from 'pages/gestionTrabajos/miBodega/application/UseMaterialesProyecto'
 import { FiltroMiBodegaProyecto } from 'pages/gestionTrabajos/miBodega/domain/FiltroMiBodegaProyecto'
 import { useMaterialesEmpleado } from 'pages/gestionTrabajos/miBodega/application/UseMaterialesEmpleado'
@@ -183,9 +182,7 @@ export default defineComponent({
     obtenerFechasHistorialMaterialesUsados()
     obtenerFechasHistorialMaterialesStockUsados()
     obtenerClientesMaterialesTarea()
-    // consultarClientesMaterialesTarea({ filtrar_por_proyecto: true })
     obtenerClientesMaterialesEmpleado()
-    // listados.ticketsAts.push(gestionAtsApplication.obtenerTicketsATS())
     consultarTicketsATS(subtarea.id)
     seleccionarClienteMaterialTarea()
     seleccionarClienteMaterialStock()
@@ -507,6 +504,10 @@ export default defineComponent({
       }
     })
 
+    console.log(subtarea)
+    console.log(subtarea.proyecto_id)
+    console.log(subtarea.proyecto_id === null)
+
     return {
       refVisorImagen,
       refTrabajos,
@@ -553,6 +554,7 @@ export default defineComponent({
       rangoFechasHistorial,
       actividadesRealizadas,
       guardarFilaActividad,
+      mostrarMaterialStock: subtarea.proyecto_id === null,
       mostrarBotonSubir: computed(() => refArchivoSeguimiento.value?.quiero_subir_archivos),
       subirArchivos,
       fechasHistorialMaterialesUsados,
