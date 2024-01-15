@@ -474,7 +474,7 @@
               options-dense
               dense
               outlined
-              :disable="transaccion.es_tarea || disabled"
+              :disable="disabled"
               :readonly="disabled"
               :error="!!v$.cliente.$errors.length"
               error-message="Debes seleccionar un cliente"
