@@ -193,7 +193,7 @@ export default defineComponent({
      * Botones tabla
      ****************/
     const botonEditarCantidadTarea: CustomActionTable = {
-      titulo: 'Cantidad utilizada11',
+      titulo: 'Cantidad utilizada',
       icono: 'bi-pencil-square',
       color: 'primary',
       visible: () => permitirSubir,
