@@ -242,16 +242,16 @@
           <div class="col-12 col-md-3" v-if="esFactura">
             <label class="q-mb-sm block">#Factura</label>
             <q-input
-              v-model="gasto.factura"
+            v-model="gasto.factura"
               placeholder="Obligatorio"
               :mask="mascaraFactura"
-              fill-mask
               :hint="mascaraFactura"
               :disable="disabled"
               :error="!!v$.factura.$errors.length"
               @blur="v$.factura.$touch"
               outlined
               dense
+              fill-mask
             >
               <template v-slot:error>
                 <div v-for="error of v$.factura.$errors" :key="error.$uid">
