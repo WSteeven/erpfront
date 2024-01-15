@@ -496,12 +496,11 @@ export default defineComponent({
     clientes.value = listadosAuxiliares.clientes
 
     function obtenerDatosTareaSeleccionada(val) {
-      console.log(val)
-      console.log(listadosAuxiliares.tareas)
       const opcion_encontrada = listadosAuxiliares.tareas.filter((v) => v.id == val || v.codigo_tarea == val)
       console.log(opcion_encontrada)
       transaccion.cliente = opcion_encontrada[0]['cliente_id']
       transaccion.tarea = opcion_encontrada[0]['id']
+      transaccion.proyecto = opcion_encontrada[0]['proyecto_id']
     }
     /* function filtroSolicitante(val){
         const opcion_encontrada = listadosAuxiliares.empleados.filter((v)=>v.id===val)
