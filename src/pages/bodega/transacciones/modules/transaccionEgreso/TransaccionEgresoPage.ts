@@ -10,7 +10,7 @@ import { configuracionColumnasProductosSeleccionados } from './domain/configurac
 import { configuracionColumnasProductos } from 'pages/bodega/productos/domain/configuracionColumnasProductos'
 import { useOrquestadorSelectorItemsEgreso } from './application/OrquestadorSelectorInventario'
 import { configuracionColumnasDetallesProductos } from 'pages/bodega/detalles_productos/domain/configuracionColumnasDetallesProductos'
-import { acciones, estadosTransacciones, motivosTransaccionesBodega, tabOptionsTransaccionesEgresos } from 'config/utils'
+import { acciones, estadosTransacciones, motivosTransaccionesBodega, tabOptionsTransaccionesEgresos, accionesTabla } from 'config/utils'
 
 // Componentes
 import TabLayoutFilterTabs2 from "shared/contenedor/modules/simple/view/TabLayoutFilterTabs2.vue";
@@ -522,7 +522,7 @@ export default defineComponent({
     return {
       mixin, transaccion, disabled, accion, v$, soloLectura,
       configuracionColumnas: configuracionColumnasTransaccionEgreso,
-      acciones,
+      acciones, accionesTabla,
       //listados
       autorizaciones,
       empleados, filtrarEmpleados,
@@ -586,7 +586,7 @@ export default defineComponent({
           if (!transaccion.responsable) {
             notificarAdvertencia('Debes seleccionar primero un empleado (técnico) responsable')
             transaccion.es_tarea = false
-          }else{
+          } else {
             obtenerProyectos()
             obtenerTareas()
           }
