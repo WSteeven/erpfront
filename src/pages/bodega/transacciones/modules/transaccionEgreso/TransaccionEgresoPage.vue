@@ -367,7 +367,7 @@
             </q-select>
           </div>
           <!-- Responsable -->
-          <div v-if="!esTecnico" class="col-12 col-md-3">
+          <div class="col-12 col-md-3">
             <label-info-empleado
               v-if="accion == acciones.consultar"
               label="Responsable"
