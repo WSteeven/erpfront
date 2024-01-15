@@ -312,7 +312,7 @@
               </template>
             </q-select>
           </div>
-
+          {{ transferencia }}
           <!-- v-if="paraProyecto" -->
           <div v-if="transferencia.tarea_origen" class="col-12 col-md-3">
             <label class="q-mb-sm block">Proyecto destino</label>

@@ -154,6 +154,7 @@
                   :permitirEditarModal="true"
                   separador="cell"
                   :accion1="botonEditarCantidadTarea"
+                  :ajustar-celdas="true"
                 ></essential-table>
               </q-tab-panel>
 
