@@ -601,49 +601,42 @@ export default defineComponent({
           }
           break
         case 'rechazar':
-          confirmar('¿Está seguro de rechazar el gasto?', () => {
-            const data: CustomActionPrompt = {
-              titulo: 'Rechazar gasto',
-              mensaje: 'Ingrese motivo de aprobación',
-              accion: async (data) => {
-                try {
-                  entidad.detalle_estado = data
-                  await aprobarController.rechazarGasto(entidad)
-                  issubmit.value = false
-                  notificarAdvertencia('Se rechazado Gasto Exitosamente')
-                  emit('cerrar-modal')
-                  emit('guardado')
-                } catch (e: any) {
-                  notificarError(
-                    'No se pudo rechazar, debes ingresar un motivo para la anulación'
-                  )
-                }
-              },
+          confirmar('¿Está seguro de rechazar el gasto?', async () => {
+            try {
+              if (await v$.value.$validate())
+              {
+               await aprobarController.rechazarGasto(entidad)
+                issubmit.value = false
+                notificarAdvertencia('Se rechazado Gasto Exitosamente')
+                emit('cerrar-modal', false)
+                emit('guardado')
+              }
+
+            } catch (e: any) {
+              notificarError(
+                'No se pudo rechazar, debes ingresar un motivo para la anulación'
+              )
             }
-            prompt(data)
+
           })
           break
         case 'anular':
-          confirmar('¿Está seguro de anular el gasto?', () => {
-            const data: CustomActionPrompt = {
-              titulo: 'Anular gasto',
-              mensaje: 'Ingrese motivo de anulacion',
-              accion: async (data) => {
+          confirmar('¿Está seguro de anular el gasto?', async () => {
+            if (await v$.value.$validate())
+              {
                 try {
-                  entidad.detalle_estado = data
                   await aprobarController.anularGasto(entidad)
                   issubmit.value = false
                   notificarAdvertencia('Se anulado Gasto Exitosamente')
-                  emit('cerrar-modal')
+                  emit('cerrar-modal',false)
                   emit('guardado')
                 } catch (e: any) {
                   notificarError(
                     'No se pudo anular, debes ingresar un motivo para la anulación'
                   )
                 }
-              },
-            }
-            prompt(data)
+
+              }
           })
           break
         default:
