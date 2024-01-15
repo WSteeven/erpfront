@@ -22,6 +22,7 @@ export const useFiltrosListadosSelects = (listadosAuxiliares, entidad?: Ref<any>
   const proveedores = ref(listadosAuxiliares.proveedores)
   const clientes = ref(listadosAuxiliares.clientes)
   const empleados = ref(listadosAuxiliares.empleados)
+  const empleadosOrigen = ref(listadosAuxiliares.empleadosOrigen)
   const bancos = ref(listadosAuxiliares.bancos)
   const categorias = ref(listadosAuxiliares.categorias)
 
@@ -230,6 +231,22 @@ export const useFiltrosListadosSelects = (listadosAuxiliares, entidad?: Ref<any>
       empleados.value = listadosAuxiliares.empleados.filter((v) => v.nombres.toLowerCase().indexOf(needle) > -1 || v.apellidos.toLowerCase().indexOf(needle) > -1)
     })
   }
+  function ordenarEmpleadosOrigen() {
+    empleadosOrigen.value.sort((a: Empleado, b: Empleado) => ordernarListaString(a.apellidos!, b.apellidos!))
+  }
+
+  function filtrarEmpleadosOrigen(val, update) {
+    if (val === '') {
+      update(() => {
+        empleadosOrigen.value = listadosAuxiliares.empleadosOrigen
+      })
+      return
+    }
+    update(() => {
+      const needle = val.toLowerCase()
+      empleadosOrigen.value = listadosAuxiliares.empleadosOrigen.filter((v) => v.nombres.toLowerCase().indexOf(needle) > -1 || v.apellidos.toLowerCase().indexOf(needle) > -1)
+    })
+  }
   function ordenarEmpleados() {
     empleados.value.sort((a: Empleado, b: Empleado) => ordernarListaString(a.apellidos!, b.apellidos!))
   }
@@ -312,6 +329,7 @@ export const useFiltrosListadosSelects = (listadosAuxiliares, entidad?: Ref<any>
     proveedores, filtrarProveedores,
     clientes, filtrarClientes, ordenarClientes,
     empleados, filtrarEmpleados, ordenarEmpleados,
+    empleadosOrigen, filtrarEmpleadosOrigen, ordenarEmpleadosOrigen,
     bancos, filtrarBancos,
     categorias, filtrarCategoriasProveedor, ordenarCategorias,
     productos, filtrarProductos,

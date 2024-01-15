@@ -85,7 +85,7 @@
             <label class="q-mb-sm block">Solicitante de transferencia</label>
             <q-select
               v-model="transferencia.solicitante"
-              :options="opciones_empleados"
+              :options="listadosAuxiliares.empleados"
               transition-show="scale"
               transition-hide="scale"
               options-dense
@@ -112,11 +112,14 @@
             <label class="q-mb-sm block">Propietario del material</label>
             <q-select
               v-model="transferencia.empleado_origen"
-              :options="opciones_empleados"
+              :options="empleadosOrigen"
+              @filter="filtrarEmpleadosOrigen"
               transition-show="scale"
               transition-hide="scale"
               :disable="!puedeAutorizar"
               @popup-show="ordenarOpcionesEmpleados()"
+              use-input
+              input-debounce="0"
               options-dense
               dense
               outlined
@@ -135,40 +138,6 @@
             </q-select>
           </div>
 
-          <!-- <div v-if="transferencia.etapa_origen" class="col-12 col-md-3">
-            <label class="q-mb-sm block">
-              <q-icon
-                name="bi-check-circle-fill"
-                color="primary"
-                class="q-mr-xs"
-              ></q-icon>
-              Etapa origen</label
-            >
-            <q-input
-              v-model="transferencia.etapa_origen"
-              disable
-              outlined
-              dense
-            />
-          </div> -->
-
-          <!-- <div v-if="transferencia.proyecto_origen" class="col-12 col-md-3">
-            <label class="q-mb-sm block"
-              ><q-icon
-                name="bi-check-circle-fill"
-                color="primary"
-                class="q-mr-xs"
-              ></q-icon
-              >Proyecto origen</label
-            >
-            <q-input
-              v-model="transferencia.proyecto_origen"
-              disable
-              outlined
-              dense
-            />
-          </div> -->
-
           <!-- v-if="transferencia.proyecto_origen" -->
           <div class="col-12 col-md-3">
             <label class="q-mb-sm block">Proyecto origen</label>
@@ -183,6 +152,9 @@
                 () => {
                   transferencia.empleado_destino = null
                   transferencia.tarea_origen = null
+                  transferencia.tarea_destino = null
+                  transferencia.etapa_destino = null
+                  transferencia.proyecto_destino = null
                 }
               "
               transition-hide="scale"
@@ -290,7 +262,7 @@
           </div>
 
           <!-- v-if="mostrarOrigenPersonal || mostrarOrigenTarea" -->
-          <div class="col-12 col-md-3">
+          <div v-if="transferencia.tarea_origen" class="col-12 col-md-3">
             <label class="q-mb-sm block"
               >Seleccione el empleado a transferir</label
             >
@@ -342,7 +314,7 @@
           </div>
 
           <!-- v-if="paraProyecto" -->
-          <div class="col-12 col-md-3">
+          <div v-if="transferencia.tarea_origen" class="col-12 col-md-3">
             <label class="q-mb-sm block">Proyecto destino</label>
             <q-select
               v-model="transferencia.proyecto_destino"
@@ -391,7 +363,11 @@
 
           <!-- paraProyecto -->
           <div
-            v-show="transferencia.proyecto_destino && etapasDestino.length"
+            v-show="
+              transferencia.proyecto_destino &&
+              etapasDestino.length &&
+              transferencia.tarea_origen
+            "
             class="col-12 col-md-3"
           >
             <label class="q-mb-sm block">Etapa destino</label>
@@ -428,7 +404,7 @@
           <!-- Tarea destino : tareas del empleado a transferir-->
           <!-- v-if="mostrarOrigenTarea" -->
           <!-- :disable="!puedeAutorizar && paraProyecto" -->
-          <div class="col-12 col-md-3">
+          <div v-if="transferencia.tarea_origen" class="col-12 col-md-3">
             <label class="q-mb-sm block">Tarea destino</label>
             <q-select
               v-model="transferencia.tarea_destino"
@@ -549,12 +525,17 @@
             v-if="transferencia.autorizacion"
             class="col-12 col-md-3 q-mb-md"
           >
-            <label class="q-mb-sm block">Autorizacion</label>
+            <q-chip
+              color="light-green-2"
+              class="text-positive text-bold q-mb-sm"
+              >Autorización</q-chip
+            >
             <q-select
               v-model="transferencia.autorizacion"
               :options="opciones_autorizaciones"
               transition-show="jum-up"
               transition-hide="jump-down"
+              color="positive"
               options-dense
               dense
               outlined

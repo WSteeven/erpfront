@@ -1,10 +1,11 @@
 // Dependencias
 import { useNotificacionStore } from 'stores/notificacion'
+import { motivosMovilizacion } from 'config/tareas.utils'
 import { required } from 'shared/i18n-validators'
 import { defineComponent, ref } from 'vue'
 import useVuelidate from '@vuelidate/core'
 import { useQuasar } from 'quasar'
-import { motivosMovilizacion } from 'config/tareas.utils'
+
 // Componentes
 import TabLayout from 'shared/contenedor/modules/simple/view/TabLayout.vue'
 import EssentialTable from 'components/tables/view/EssentialTable.vue'
@@ -13,8 +14,8 @@ import EssentialTable from 'components/tables/view/EssentialTable.vue'
 import { TrabajoAsignadoController } from 'pages/gestionTrabajos/trabajoAsignado/infraestructure/TrabajoAsignadoController'
 import { ContenedorSimpleMixin } from 'shared/contenedor/modules/simple/application/ContenedorSimpleMixin'
 import { MovilizacionSubtareaController } from '../infraestructure/MovilizacionSubtareaController'
-import { MovilizacionSubtarea } from '../domain/MovilizacionSubtarea'
 import { useMovilizacionSubtareaStore } from 'stores/movilizacionSubtarea'
+import { MovilizacionSubtarea } from '../domain/MovilizacionSubtarea'
 import { useAuthenticationStore } from 'stores/authentication'
 import { useNotificaciones } from 'shared/notificaciones'
 import { obtenerUbicacion } from 'shared/utils'
@@ -54,7 +55,7 @@ export default defineComponent({
     /************
      * Variables
      ************/
-    const { confirmar } = useNotificaciones()
+    // const { confirmar } = useNotificaciones()
 
     /***************
      * Validaciones

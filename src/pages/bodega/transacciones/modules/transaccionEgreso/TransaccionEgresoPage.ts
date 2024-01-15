@@ -10,7 +10,7 @@ import { configuracionColumnasProductosSeleccionados } from './domain/configurac
 import { configuracionColumnasProductos } from 'pages/bodega/productos/domain/configuracionColumnasProductos'
 import { useOrquestadorSelectorItemsEgreso } from './application/OrquestadorSelectorInventario'
 import { configuracionColumnasDetallesProductos } from 'pages/bodega/detalles_productos/domain/configuracionColumnasDetallesProductos'
-import { acciones, estadosTransacciones, motivos, tabOptionsTransaccionesEgresos } from 'config/utils'
+import { acciones, estadosTransacciones, motivosTransaccionesBodega, tabOptionsTransaccionesEgresos } from 'config/utils'
 
 // Componentes
 import TabLayoutFilterTabs2 from "shared/contenedor/modules/simple/view/TabLayoutFilterTabs2.vue";
@@ -214,19 +214,6 @@ export default defineComponent({
       listar({ estado: tab })
     }
 
-    function eliminar({ entidad, posicion }) {
-      confirmar('¿Está seguro de continuar?',
-        () => transaccion.listadoProductosTransaccion.splice(posicion, 1))
-    }
-    const botonEliminar: CustomActionTable = {
-      titulo: 'Quitar',
-      color: 'negative',
-      icono: 'bi-x',
-      accion: ({ entidad, posicion }) => {
-        eliminar({ entidad, posicion })
-      },
-      visible: () => puedeEditarCantidad.value
-    }
     const botonEditarCantidad: CustomActionTable = {
       titulo: 'Cantidad',
       icono: 'bi-pencil',
@@ -284,7 +271,6 @@ export default defineComponent({
       }
 
     }
-
 
     /*****************************************************************************************
      * Funciones
@@ -599,7 +585,7 @@ export default defineComponent({
           if (!transaccion.responsable) {
             notificarAdvertencia('Debes seleccionar primero un empleado (técnico) responsable')
             transaccion.es_tarea = false
-          }else{
+          } else {
             obtenerProyectos()
             obtenerTareas()
           }
