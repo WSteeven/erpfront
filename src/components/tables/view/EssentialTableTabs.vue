@@ -10,9 +10,9 @@
       inline-label
       :active-color="activeColor"
       :active-bg-color="activeBgColor"
-      :indicator-color="activeColor"
+      :indicator-color="indicatorColor"
       :class="{
-        'borde-header-tabla': !$q.screen.xs,
+        'borde-header-tablad': !$q.screen.xs,
       }"
       class="bg-table-tabs"
       align="justify"
@@ -24,7 +24,14 @@
         :name="opcion.value + ''"
         :class="{ 'rounded shadow-chip q-mx-xs q-my-md': $q.screen.xs }"
       >
-      <q-badge v-if="tabSeleccionado==opcion.value  && datos?.length>0" color="accent" style="margin-right: -15px;" floating>{{ datos.length }}</q-badge>
+        <span>{{ opcion.label }}</span>
+        <q-badge
+          v-if="tabSeleccionado == opcion.value && datos?.length > 0"
+          color="accent"
+          style="margin-right: -15px"
+          floating
+          >{{ datos.length }}</q-badge
+        >
       </q-tab>
     </q-tabs>
 
@@ -261,14 +268,21 @@ const activeColor = computed(
   () =>
     props.tabOptions.find(
       (opcion: TabOption) => opcion.value === tabSeleccionado.value
-    )?.color_icono
+    )?.color_icono ?? 'white'
+)
+
+const indicatorColor = computed(
+  () =>
+    props.tabOptions.find(
+      (opcion: TabOption) => opcion.value === tabSeleccionado.value
+    )?.color_icono ?? 'accent'
 )
 
 const activeBgColor = computed(
   () =>
     props.tabOptions.find(
       (opcion: TabOption) => opcion.value === tabSeleccionado.value
-    )?.bg_color
+    )?.bg_color ?? 'primary'
 )
 
 watchEffect(() => {

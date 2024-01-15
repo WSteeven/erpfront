@@ -202,7 +202,7 @@
           </q-card>
         </div>
 
-        <div class="col-12 q-mb-md">
+        <div v-if="mostrarMaterialStock" class="col-12 q-mb-md">
           <br />
           <q-toggle
             v-model="usarMaterialStock"

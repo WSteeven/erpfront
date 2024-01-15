@@ -44,6 +44,7 @@ export class Subtarea extends EntidadAuditable {
   coordinador_id: number | null
   fiscalizador: number | null
   proyecto: number | null
+  etapa: number | null
   cliente: number | null
   cliente_id: number | null
   subtarea_dependiente: string | null
@@ -120,6 +121,7 @@ export class Subtarea extends EntidadAuditable {
     this.coordinador_id = null
     this.fiscalizador = null
     this.proyecto = null
+    this.etapa = null
     this.cliente = null
     this.cliente_id = null
     this.trabajo_padre = null
