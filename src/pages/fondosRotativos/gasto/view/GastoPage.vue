@@ -10,6 +10,7 @@
     :filtrar="filtrarGasto"
     tabDefecto="3"
     :forzarListar="true"
+    :accion1="editarGasto"
   >
     <template #formulario>
       <q-form @submit.prevent>
@@ -45,9 +46,7 @@
               </template>
               <template v-slot:no-option>
                 <q-item>
-                  <q-item-section class="text-grey">
-                    No hay resultados
-                  </q-item-section>
+                  <q-item-section class="text-grey"> No hay resultados </q-item-section>
                 </q-item>
               </template>
             </q-select>
@@ -68,11 +67,7 @@
             >
               <template v-slot:append>
                 <q-icon name="event" class="cursor-pointer">
-                  <q-popup-proxy
-                    cover
-                    transition-show="scale"
-                    transition-hide="scale"
-                  >
+                  <q-popup-proxy cover transition-show="scale" transition-hide="scale">
                     <q-date
                       v-model="gasto.fecha_viat"
                       :mask="maskFecha"
@@ -80,12 +75,7 @@
                       today-btn
                     >
                       <div class="row items-center justify-end">
-                        <q-btn
-                          v-close-popup
-                          label="Cerrar"
-                          color="primary"
-                          flat
-                        />
+                        <q-btn v-close-popup label="Cerrar" color="primary" flat />
                       </div>
                     </q-date>
                   </q-popup-proxy>
@@ -142,9 +132,7 @@
               </template>
               <template v-slot:no-option>
                 <q-item>
-                  <q-item-section class="text-grey">
-                    No hay resultados
-                  </q-item-section>
+                  <q-item-section class="text-grey"> No hay resultados </q-item-section>
                 </q-item>
               </template>
             </q-select>
@@ -191,9 +179,7 @@
               </template>
               <template v-slot:no-option>
                 <q-item>
-                  <q-item-section class="text-grey">
-                    No hay resultados
-                  </q-item-section>
+                  <q-item-section class="text-grey"> No hay resultados </q-item-section>
                 </q-item>
               </template>
             </q-select>
@@ -210,8 +196,8 @@
               dense
             ></q-checkbox>
           </div>
-                    <!-- Detalle -->
-                    <div class="col-12 col-md-3 q-mb-md">
+          <!-- Detalle -->
+          <div class="col-12 col-md-3 q-mb-md">
             <label class="q-mb-sm block">Detalle</label>
             <q-select
               v-model="gasto.detalle"
@@ -242,9 +228,7 @@
               </template>
               <template v-slot:no-option>
                 <q-item>
-                  <q-item-section class="text-grey">
-                    No hay resultados
-                  </q-item-section>
+                  <q-item-section class="text-grey"> No hay resultados </q-item-section>
                 </q-item>
               </template>
               <template v-slot:after>
@@ -281,9 +265,7 @@
               emit-value
               map-options
             >
-              <template
-                v-slot:option="{ itemProps, opt, selected, toggleOption }"
-              >
+              <template v-slot:option="{ itemProps, opt, selected, toggleOption }">
                 <q-item v-bind="itemProps">
                   <q-item-section>
                     {{ opt.descripcion }}
@@ -304,23 +286,18 @@
               </template>
               <template v-slot:no-option>
                 <q-item>
-                  <q-item-section class="text-grey">
-                    No hay resultados
-                  </q-item-section>
+                  <q-item-section class="text-grey"> No hay resultados </q-item-section>
                 </q-item>
               </template>
               <template v-slot:after>
-                <q-btn
-                  color="positive"
-                  @click="recargar_detalle('sub_detalle')"
-                >
+                <q-btn color="positive" @click="recargar_detalle('sub_detalle')">
                   <q-icon size="xs" class="q-mr-sm" name="bi-arrow-clockwise" />
                 </q-btn>
               </template>
             </q-select>
           </div>
           <!-- Factura -->
-          <div class="col-12 col-md-3" v-if="esFactura && gasto.detalle!=null ">
+          <div class="col-12 col-md-3" v-if="esFactura && gasto.detalle != null">
             <label class="q-mb-sm block">#Factura</label>
             <q-input
               v-model="gasto.factura"
@@ -355,17 +332,14 @@
               dense
             >
               <template v-slot:error>
-                <div
-                  v-for="error of v$.num_comprobante.$errors"
-                  :key="error.$uid"
-                >
+                <div v-for="error of v$.num_comprobante.$errors" :key="error.$uid">
                   <div class="error-msg">{{ error.$message }}</div>
                 </div>
               </template>
             </q-input>
           </div>
           <!-- RUC -->
-          <div class="col-12 col-md-3" v-if="esFactura && gasto.detalle!=null">
+          <div class="col-12 col-md-3" v-if="esFactura && gasto.detalle != null">
             <label class="q-mb-sm block">RUC</label>
             <q-input
               v-model="gasto.ruc"
@@ -468,12 +442,10 @@
               emit-value
               map-options
             >
-              <template
-                v-slot:option="{ itemProps, opt, selected, toggleOption }"
-              >
+              <template v-slot:option="{ itemProps, opt, selected, toggleOption }">
                 <q-item v-bind="itemProps">
                   <q-item-section>
-                    {{ opt.nombres + ' ' + opt.apellidos }}
+                    {{ opt.nombres + " " + opt.apellidos }}
                     <q-item-label v-bind:inner-h-t-m-l="opt.nombres" />
                   </q-item-section>
                   <q-item-section side>
@@ -486,9 +458,7 @@
               </template>
               <template v-slot:no-option>
                 <q-item>
-                  <q-item-section class="text-grey">
-                    No hay resultados
-                  </q-item-section>
+                  <q-item-section class="text-grey"> No hay resultados </q-item-section>
                 </q-item>
               </template>
             </q-select>
@@ -524,9 +494,7 @@
               </template>
               <template v-slot:no-option>
                 <q-item>
-                  <q-item-section class="text-grey">
-                    No hay resultados
-                  </q-item-section>
+                  <q-item-section class="text-grey"> No hay resultados </q-item-section>
                 </q-item>
               </template>
             </q-select>
@@ -553,10 +521,7 @@
             </q-input>
           </div>
           <!-- Placa vehiculo -->
-          <div
-            class="col-12 col-md-3"
-            v-if="esCombustibleEmpresa || mostarPlaca"
-          >
+          <div class="col-12 col-md-3" v-if="esCombustibleEmpresa || mostarPlaca">
             <label class="q-mb-sm block">Placas</label>
             <q-select
               v-model="gasto.vehiculo"
@@ -595,9 +560,7 @@
               </template>
               <template v-slot:no-option>
                 <q-item>
-                  <q-item-section class="text-grey">
-                    No hay resultados
-                  </q-item-section>
+                  <q-item-section class="text-grey"> No hay resultados </q-item-section>
                 </q-item>
               </template>
             </q-select>
@@ -664,13 +627,7 @@
           <!-- Estado -->
           <div class="col-12 col-md-3">
             <label class="q-mb-sm block">Estado</label>
-            <q-input
-              v-model="gasto.estado_info"
-              placeholder=""
-              disable
-              outlined
-              dense
-            >
+            <q-input v-model="gasto.estado_info" placeholder="" disable outlined dense>
             </q-input>
           </div>
         </div>

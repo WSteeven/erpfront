@@ -25,6 +25,7 @@
         class=""
         :class="{ 'rounded shadow-chip q-mx-xs q-my-md': $q.screen.xs }"
       >
+      <q-badge v-if="tabSeleccionado==opcion.value  && datos?.length>0" color="accent" style="margin-right: -15px;" floating>{{ datos.length }}</q-badge>
       </q-tab>
     </q-tabs>
 

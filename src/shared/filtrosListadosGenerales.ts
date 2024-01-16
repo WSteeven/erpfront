@@ -6,6 +6,7 @@ import { CategoriaOferta } from "pages/comprasProveedores/categoriaOfertas/domai
 import { Producto } from "pages/bodega/productos/domain/Producto";
 import { Canton } from "sistema/ciudad/domain/Canton";
 import { Empleado } from "pages/recursosHumanos/empleados/domain/Empleado";
+import { CentroCosto } from "pages/gestionTrabajos/centroCostos/domain/CentroCostos";
 
 export const useFiltrosListadosSelects = (listadosAuxiliares, entidad?: Ref<any>) => {
   /**************************************************************
@@ -22,11 +23,24 @@ export const useFiltrosListadosSelects = (listadosAuxiliares, entidad?: Ref<any>
   const empleados = ref([])
   const bancos = ref([])
   const categorias = ref([])
+  const centros_costos = ref([])
 
 
   /**************************************************************
    * Funciones
    **************************************************************/
+
+  centros_costos.value = listadosAuxiliares.centros_costos
+  function filtrarCentrosCostos(val, update) {
+    if (val === '') {
+      update(() => centros_costos.value = listadosAuxiliares.centros_costos)
+      return
+    }
+    update(() => {
+      const needle = val.toLowerCase()
+      centros_costos.value = listadosAuxiliares.centros_costos.filter((v: CentroCosto) => v.nombre!.toLowerCase().indexOf(needle) > -1)
+    })
+  }
 
   /**
    * Esta función filtra una lista de países en función de una consulta de búsqueda y actualiza la
@@ -178,7 +192,7 @@ export const useFiltrosListadosSelects = (listadosAuxiliares, entidad?: Ref<any>
     }
     update(() => {
       const needle = val.toLowerCase()
-      if (listadosAuxiliares.proveedores) proveedores.value = listadosAuxiliares.proveedores.filter((v) => v.razon_social.toLowerCase().indexOf(needle) > -1 || v.sucursal.toLowerCase().indexOf(needle) > -1||v.nombre_comercial?.toLowerCase().indexOf(needle) > -1)
+      if (listadosAuxiliares.proveedores) proveedores.value = listadosAuxiliares.proveedores.filter((v) => v.razon_social.toLowerCase().indexOf(needle) > -1 || v.sucursal.toLowerCase().indexOf(needle) > -1 || v.nombre_comercial?.toLowerCase().indexOf(needle) > -1)
     })
   }
 
@@ -252,5 +266,6 @@ export const useFiltrosListadosSelects = (listadosAuxiliares, entidad?: Ref<any>
     bancos, filtrarBancos,
     categorias, filtrarCategoriasProveedor, ordenarCategorias,
     productos, filtrarProductos,
+    centros_costos, filtrarCentrosCostos,
   }
 }

@@ -15,6 +15,7 @@ export const useTransaccionEgresoStore = defineStore('transaccion', () => {
     const transaccion = reactive(new Transaccion()) //la transaccion
     const transaccionReset = new Transaccion()
     const idTransaccion = ref()
+    const estadoPendiente = ref(false)
 
     const accionTransaccion = acciones.nuevo
     const notificaciones = useNotificaciones()
@@ -54,7 +55,7 @@ export const useTransaccionEgresoStore = defineStore('transaccion', () => {
             const axios = AxiosHttpRepository.getInstance()
             // const url = apiConfig.URL_BASE+'/'+axios.getEndpoint(endpoints.transacciones_egresos)+'/filtrar?criterio='+filtro
             const url =axios.getEndpoint(endpoints.comprobantes_filtrados)+'?estado='+filtro
-            console.log(url)
+            // console.log(url)
             const response: AxiosResponse = await axios.get(url)
             return response.data.results
         } catch (error:any) {
@@ -93,6 +94,7 @@ export const useTransaccionEgresoStore = defineStore('transaccion', () => {
         // State
         transaccion,
         accionTransaccion,
+        estadoPendiente,
         cargarTransaccion,
         resetearTransaccion,
         idTransaccion,

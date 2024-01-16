@@ -46,7 +46,12 @@ export default defineComponent({
 
     cargarVista(async () => {
       await obtenerListados({
-        subtareas: new TrabajoAsignadoController(),
+        subtareas: {
+          controller: new TrabajoAsignadoController(),
+          params: {
+            estado: 'MOVILIZACION',
+          },
+        },
       })
       subtareas.value = listadosAuxiliares.subtareas
     })

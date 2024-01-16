@@ -15,7 +15,7 @@ export class LicenciaPusherEvent {
     const pusher = notificacionStore.pusher
 
     // Suscripcion al canal del pedido creado
-    console.log('licencia-empleado-' + this.store.user.id);
+    // console.log('licencia-empleado-' + this.store.user.id);
 
     pusher.subscribe('licencia-empleado-' + this.store.user.id)
     pusher.bind('licencia-empleado-event', function (e) {
