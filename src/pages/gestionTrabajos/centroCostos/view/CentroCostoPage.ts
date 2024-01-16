@@ -15,6 +15,7 @@ import { CustomActionTable } from 'components/tables/domain/CustomActionTable'
 import { useNotificaciones } from 'shared/notificaciones'
 import { CambiarEstadoCentroCosto } from '../application/CambiarEstadoCentroCosto'
 import { StatusEssentialLoading } from 'components/loading/application/StatusEssentialLoading'
+import { useAuthenticationStore } from 'stores/authentication'
 
 //Logica y controladores
 
@@ -26,7 +27,9 @@ export default defineComponent({
     const { entidad: centro, disabled, listadosAuxiliares, listado } = mixin.useReferencias()
     const { setValidador, cargarVista, obtenerListados } = mixin.useComportamiento()
     const { confirmar, notificarCorrecto, notificarError } = useNotificaciones()
+
     const cargando = new StatusEssentialLoading()
+    const store = useAuthenticationStore()
 
     const { clientes, filtrarClientes } = useFiltrosListadosSelects(listadosAuxiliares)
 
@@ -66,7 +69,7 @@ export default defineComponent({
             cargando.desactivar()
           }
         })
-      }, visible: ({ entidad }) => entidad.activo
+      }, visible: ({ entidad }) => entidad.activo && store.can('puede.desactivar.centros_costos')
     }
 
     const btnActivarCentroCosto: CustomActionTable = {
@@ -87,7 +90,7 @@ export default defineComponent({
             cargando.desactivar()
           }
         })
-      }, visible: ({ entidad }) => !entidad.activo
+      }, visible: ({ entidad }) => !entidad.activo && store.can('puede.activar.centros_costos')
     }
 
     return {
