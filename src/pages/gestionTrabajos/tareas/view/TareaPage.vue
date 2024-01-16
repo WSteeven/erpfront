@@ -200,7 +200,7 @@
                 <!-- Coordinador -->
                 <div
                   v-if="
-                    (paraClienteFinal && esCoordinadorBackup) ||
+                    (paraClienteFinal && (esCoordinadorBackup || esJefeTecnico)) ||
                     accion === acciones.consultar
                   "
                   class="col-12 col-md-3"
@@ -404,7 +404,7 @@
                   >
                   </q-input>
                 </div>
-
+                
                 <!-- Es para el cliente -->
                 <div class="col-12 col-md-3 q-mb-xl">
                   <q-checkbox

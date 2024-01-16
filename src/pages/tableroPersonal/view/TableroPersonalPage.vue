@@ -27,8 +27,6 @@
         glossy
         >Manuales de usuario</q-btn
       >
-      
-
       <!--<q-chip
         v-if="store.esCoordinador || store.esTecnicoLider"
         icon="bi-check"

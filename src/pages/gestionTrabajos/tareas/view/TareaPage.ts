@@ -172,12 +172,12 @@ export default defineComponent({
       cliente: { required: requiredIf(() => paraClienteFinal.value) },
       titulo: { required },
       proyecto: { required: requiredIf(() => paraProyecto.value) },
-      coordinador: { required: requiredIf(() => esCoordinadorBackup && paraClienteFinal.value) },
+      coordinador: { required: requiredIf(() => (esCoordinadorBackup||authenticationStore.esJefeTecnico) && paraClienteFinal.value) },
       ruta_tarea: { required: requiredIf(() => paraClienteFinal.value && tarea.ubicacion_trabajo === ubicacionesTrabajo.ruta) },
       centro_costo: { required: requiredIf(() => paraClienteFinal.value && centros_costos.value.length > 0) },
       // tarea: { requiredIf: requiredIf(() => preingreso.etapa && centros_costos.value.length) },
       etapa: {
-        requiredIf: requiredIf(() => { if (etapas.value) return etapas.value.length && tarea.proyecto })
+        requiredIf: requiredIf(() => { return paraProyecto.value && tarea.proyecto! > 0 && etapas.value.length > 0 })
       },
     }
 
@@ -479,6 +479,7 @@ export default defineComponent({
       tabOptionsEstadosTareas,
       filtrarTarea,
       esCoordinadorBackup,
+      esJefeTecnico: authenticationStore.esJefeTecnico,
       // Botones tareas
       btnFinalizarTarea,
       mostrarSolicitarImagen,

@@ -2,7 +2,7 @@
 import { configuracionColumnasSubcentroCostos } from '../domain/configuracionColumnasSubcentroCostos'
 import { required } from 'shared/i18n-validators'
 import useVuelidate from '@vuelidate/core'
-import { defineComponent, ref } from 'vue'
+import { defineComponent } from 'vue'
 
 // Componentes
 import TabLayout from 'shared/contenedor/modules/simple/view/TabLayout.vue'
@@ -12,8 +12,10 @@ import { ContenedorSimpleMixin } from 'shared/contenedor/modules/simple/applicat
 import { SubcentroCosto } from '../domain/SubcentroCosto'
 import { SubcentroCostoController } from '../infraestructure/SubcentroCostosController'
 import { CentroCostoController } from 'pages/gestionTrabajos/centroCostos/infraestructure/CentroCostosController'
-import { CentroCosto } from 'pages/gestionTrabajos/centroCostos/domain/CentroCostos'
 import { useFiltrosListadosSelects } from 'shared/filtrosListadosGenerales'
+import { GrupoController } from 'pages/recursosHumanos/grupos/infraestructure/GrupoController'
+import { grupos } from 'config/utils'
+import { useFiltrosListadosTarea } from 'pages/gestionTrabajos/tareas/application/FiltrosListadosTarea'
 
 
 export default defineComponent({
@@ -24,13 +26,16 @@ export default defineComponent({
         const { setValidador, cargarVista, obtenerListados } = mixin.useComportamiento()
 
 
-        const {centros_costos, filtrarCentrosCostos} = useFiltrosListadosSelects(listadosAuxiliares)
+        const { centros_costos, filtrarCentrosCostos } = useFiltrosListadosSelects(listadosAuxiliares)
+        const { grupos, filtrarGrupos } = useFiltrosListadosTarea(listadosAuxiliares)
 
         cargarVista(async () => {
             await obtenerListados({
-                centros_costos: new CentroCostoController(),
+                centros_costos: { controller: new CentroCostoController(), params: { activo: 1 } },
+                grupos: { controller: new GrupoController(), params: { activo: 1 } },
             })
             centros_costos.value = listadosAuxiliares.centros_costos
+            grupos.value = listadosAuxiliares.grupos
         })
 
 
@@ -46,7 +51,8 @@ export default defineComponent({
             v$, mixin, subcentro, disabled,
             configuracionColumnas: configuracionColumnasSubcentroCostos,
 
-            centros_costos,filtrarCentrosCostos,
+            centros_costos, filtrarCentrosCostos,
+            grupos, filtrarGrupos,
 
         }
 
