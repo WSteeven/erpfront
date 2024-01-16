@@ -84,6 +84,11 @@ export default defineComponent({
     const { consultarProductosEmpleado, consultarClientesMaterialesEmpleado } = useMaterialesEmpleado(filtroEmpleado, listadosAuxiliares)
     const { consultarProyectos, consultarEtapas, consultarProductosProyecto } = useMaterialesProyecto(filtroProyecto, listadosAuxiliares)
 
+    function consultarProductosStock() {
+      filtroEmpleado.empleado_id = empleadoSeleccionado.value
+      consultarProductosEmpleado()
+    }
+
     function refrescarListadosProyectos(nombreListado: string) {
       switch (nombreListado) {
         case 'proyectos':
@@ -263,6 +268,7 @@ export default defineComponent({
       filtrarEmpleados,
       empleadoSeleccionado,
       resetearFiltros,
+      consultarProductosStock,
     }
   },
 })

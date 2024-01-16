@@ -16,7 +16,6 @@ export function useMaterialesProyecto(filtro: UnwrapRef<FiltroMiBodegaProyecto>,
   // Stores
   const listadoMaterialesDevolucionStore = useListadoMaterialesDevolucionStore()
   const transferenciaProductoEmpleadoStore = useTransferenciaProductoEmpleadoStore()
-  const authenticationStore = useAuthenticationStore()
 
   // Controllers
   const clienteMaterialTareaController = new ClienteMaterialTareaController()

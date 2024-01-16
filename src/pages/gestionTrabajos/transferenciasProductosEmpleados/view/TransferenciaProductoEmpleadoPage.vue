@@ -41,16 +41,12 @@
         <div class="row q-col-gutter-sm q-pb-xl">
           <div class="col-12 q-mb-md">
             <div class="row justify-end">
-              <q-chip
-                v-if="tipoTarea"
-                color="grey-3"
-                class="text-green chip-up"
+              <q-chip color="grey-3" class="text-green">
+                {{ '&nbsp;' + tipoTransferencia }}</q-chip
               >
-                {{ '&nbsp;' + tipoTarea }}</q-chip
-              >
-              <q-chip v-else color="grey-4" class="text-primary">{{
+              <!-- <q-chip v-else color="grey-4" class="text-primary">{{
                 proyectoOrigenTieneEtapas
-              }}</q-chip>
+              }}</q-chip> -->
             </div>
           </div>
 
@@ -138,8 +134,55 @@
             </q-select>
           </div>
 
-          <!-- v-if="transferencia.proyecto_origen" -->
           <div class="col-12 col-md-3">
+            <label class="block">&nbsp;</label>
+            <q-checkbox
+              v-model="esParaStock"
+              label="Es stock"
+              :disable="disabled"
+              @update:model-value="seleccionarEsStock()"
+              outlined
+              dense
+            ></q-checkbox>
+          </div>
+
+          <div v-if="esParaStock" class="col-12 col-md-3">
+            <label class="q-mb-sm block"
+              >Seleccione un cliente para filtrar el material de stock</label
+            >
+            <q-select
+              v-model="transferencia.cliente"
+              :options="listadosAuxiliares.clientesMaterialesEmpleado"
+              transition-show="scale"
+              transition-hide="scale"
+              @update:model-value="
+                seleccionarClienteStock(transferencia.cliente)
+              "
+              use-input
+              input-debounce="0"
+              options-dense
+              dense
+              outlined
+              :option-label="(item) => item.razon_social"
+              :option-value="(item) => item.cliente_id"
+              emit-value
+              map-options
+            >
+              <template v-slot:after>
+                <q-btn
+                  color="positive"
+                  unelevated
+                  @click="refrescarListadosEmpleado('clientes')"
+                >
+                  <q-icon size="xs" name="bi-arrow-clockwise" />
+                  <q-tooltip>Recargar clientes</q-tooltip>
+                </q-btn>
+              </template>
+            </q-select>
+          </div>
+
+          <!-- v-if="transferencia.proyecto_origen" -->
+          <div v-if="!esParaStock" class="col-12 col-md-3">
             <label class="q-mb-sm block">Proyecto origen</label>
             <!-- :disable="!puedeAutorizar" -->
             <q-select
@@ -191,7 +234,9 @@
           </div>
 
           <div
-            v-show="transferencia.proyecto_origen && etapas.length"
+            v-show="
+              transferencia.proyecto_origen && etapas.length && !esParaStock
+            "
             class="col-12 col-md-3"
           >
             <label class="q-mb-sm block">Etapa origen</label>
@@ -224,7 +269,7 @@
           </div>
 
           <!-- v-if="mostrarOrigenTarea || true" -->
-          <div class="col-12 col-md-3">
+          <div v-if="!esParaStock" class="col-12 col-md-3">
             <label class="q-mb-sm block">Tarea origen</label>
             <!-- :disable="!puedeAutorizar" -->
             <q-select
@@ -261,8 +306,8 @@
             </q-select>
           </div>
 
-          <!-- v-if="mostrarOrigenPersonal || mostrarOrigenTarea" -->
-          <div v-if="transferencia.tarea_origen" class="col-12 col-md-3">
+          <!-- v-if="mostrarOrigenPersonal || mostrarOrigenTarea" ----- v-if="transferencia.tarea_origen"-->
+          <div v-if="existenProductos" class="col-12 col-md-3">
             <label class="q-mb-sm block"
               >Seleccione el empleado a transferir</label
             >
@@ -312,9 +357,9 @@
               </template>
             </q-select>
           </div>
-          {{ transferencia }}
+
           <!-- v-if="paraProyecto" -->
-          <div v-if="transferencia.tarea_origen" class="col-12 col-md-3">
+          <div v-if="existenProductos && !esParaStock" class="col-12 col-md-3">
             <label class="q-mb-sm block">Proyecto destino</label>
             <q-select
               v-model="transferencia.proyecto_destino"
@@ -366,7 +411,8 @@
             v-show="
               transferencia.proyecto_destino &&
               etapasDestino.length &&
-              transferencia.tarea_origen
+              existenProductos &&
+              !esParaStock
             "
             class="col-12 col-md-3"
           >
@@ -399,12 +445,12 @@
               </template>
             </q-select>
           </div>
-
+          <!-- {{ transferencia }} -->
           <!-- {{ tareas }} -->
           <!-- Tarea destino : tareas del empleado a transferir-->
           <!-- v-if="mostrarOrigenTarea" -->
           <!-- :disable="!puedeAutorizar && paraProyecto" -->
-          <div v-if="transferencia.tarea_origen" class="col-12 col-md-3">
+          <div v-if="existenProductos && !esParaStock" class="col-12 col-md-3">
             <label class="q-mb-sm block">Tarea destino</label>
             <q-select
               v-model="transferencia.tarea_destino"

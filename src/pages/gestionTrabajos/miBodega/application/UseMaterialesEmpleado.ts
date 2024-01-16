@@ -6,10 +6,12 @@ import { FiltroMiBodegaEmpleado } from '../domain/FiltroMiBodegaEmpleado'
 import { useAuthenticationStore } from 'stores/authentication'
 import { useNotificaciones } from 'shared/notificaciones'
 import { UnwrapRef } from 'vue'
+import { useTransferenciaProductoEmpleadoStore } from 'stores/transferenciaProductoEmpleado'
 
 export function useMaterialesEmpleado(filtro: UnwrapRef<FiltroMiBodegaEmpleado>, listadosAuxiliares: any) {
   // Stores
   const listadoMaterialesDevolucionStore = useListadoMaterialesDevolucionStore()
+  const transferenciaProductoEmpleadoStore = useTransferenciaProductoEmpleadoStore()
   const authenticationStore = useAuthenticationStore()
 
   // Controllers
@@ -32,6 +34,10 @@ export function useMaterialesEmpleado(filtro: UnwrapRef<FiltroMiBodegaEmpleado>,
       // listadoMaterialesDevolucionStore.origenProductos = 'personal'
       listadoMaterialesDevolucionStore.tareaId = null
       listadoMaterialesDevolucionStore.cliente_id = filtro.cliente_id
+
+      transferenciaProductoEmpleadoStore.listadoMateriales = result
+      transferenciaProductoEmpleadoStore.cliente_id = filtro.cliente_id
+      transferenciaProductoEmpleadoStore.idEmpleado = filtro.empleado_id
 
       if (!result.length) notificarAdvertencia('No tienes material asignado.')
     } catch (e) {

@@ -135,13 +135,21 @@
           </div>
 
           <!-- Select autorizacion -->
-          <div class="col-12 col-md-3 q-mb-md" v-if="preingreso.autorizacion">
-            <label class="q-mb-sm block">Autorizacion</label>
+          <div
+            class="col-12 col-md-3 q-mb-md q-pt-none"
+            v-if="preingreso.autorizacion"
+          >
+            <q-chip
+              color="light-green-2"
+              class="text-positive text-bold q-mb-xs"
+              >Autorización</q-chip
+            >
             <q-select
               v-model="preingreso.autorizacion"
               :options="autorizaciones"
               transition-show="jum-up"
               transition-hide="jump-down"
+              color="positive"
               options-dense
               dense
               outlined

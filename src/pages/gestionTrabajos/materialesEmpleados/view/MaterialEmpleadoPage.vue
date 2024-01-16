@@ -355,7 +355,7 @@
                 class="full-width"
                 no-caps
                 unelevated
-                @click="consultarProductosEmpleado()"
+                @click="consultarProductosStock()"
                 >Consultar</q-btn
               >
             </div>

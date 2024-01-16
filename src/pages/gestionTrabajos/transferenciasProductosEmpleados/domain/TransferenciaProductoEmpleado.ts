@@ -13,7 +13,7 @@ export class TransferenciaProductoEmpleado extends EntidadAuditable {
   autorizacion: number | null
   autorizador: number | null
   autorizador_id: number | null
-  cliente: number | null
+  cliente: number | null | undefined
   cliente_id: number | null
   empleado_origen: number | null
   empleado_destino: number | null
