@@ -322,9 +322,7 @@ export default defineComponent({
       icono: 'bi-toggle2-on',
       color: 'negative',
       tooltip: 'Habilitar',
-      visible: ({ entidad }) => {
-        return !entidad.estado
-      },
+      visible: ({ entidad }) =>  !entidad.estado && authenticationStore.can('puede.activar.empleados'),
       accion: ({ entidad }) => {
         HabilitarEmpleado(entidad.id, true)
         entidad.estado = true
@@ -335,9 +333,7 @@ export default defineComponent({
       icono: 'bi-toggle2-off',
       color: 'positive',
       tooltip: 'DesHabilitar',
-      visible: ({ entidad }) => {
-        return entidad.estado
-      },
+      visible: ({ entidad }) =>  entidad.estado && authenticationStore.can('puede.desactivar.empleados'),
       accion: ({ entidad }) => {
         HabilitarEmpleado(entidad.id, false)
         entidad.estado = false
