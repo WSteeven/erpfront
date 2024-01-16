@@ -44,6 +44,7 @@ import { EgresoRolPagoController } from '../infraestructure/EgresoRolPagoControl
 import { IngresoRolPago } from '../domain/IngresoRolPago'
 import { IngresoRolPagoController } from '../infraestructure/IngresoRolPagoController'
 import { configuracionColumnasIngresoRolPago } from '../domain/configuracionColumnasIngresoRolPago'
+import { useEmpleadoStore } from 'stores/empleado'
 
 export default defineComponent({
   components: {
@@ -86,6 +87,7 @@ export default defineComponent({
     useNotificacionStore().setQuasar(useQuasar())
     useCargandoStore().setQuasar(useQuasar())
     const store = useAuthenticationStore()
+    const empleadoStore = useEmpleadoStore()
 
     const {
       entidad: rolpago,
@@ -211,6 +213,7 @@ export default defineComponent({
     function datos_empleado() {
       obtener_datos_empleado('SALARIO')
       obtener_datos_empleado('PERMISOS_SIN_RECUPERAR')
+      obtener_datos_empleado('DEPARTAMENTO')
     }
 
     /*********
@@ -267,9 +270,14 @@ export default defineComponent({
     /********
      * Hooks
      *********/
-    onConsultado(() => {
+    onConsultado(async() => {
       es_consultado.value = true
       console.log('consultado')
+
+      empleadoStore.idEmpleado = rolPagoStore.idEmpleado
+      await empleadoStore.cargarEmpleado()
+      // console.log(empleadoStore.empleado)
+      rolPagoStore.departamento = empleadoStore.empleado.departamento
 
       if (rolpago.estado == 'FINALIZADO') {
         setTimeout(() => {
@@ -861,42 +869,46 @@ export default defineComponent({
       // }
       const dias = parseInt(rolpago.dias ? rolpago.dias.toString() : '0')
       const salario = parseFloat(rolpago.salario ?? '0') //salario es el definido en el registro del empleado
-      // console.log(dias, salario)
+      console.log(dias, salario)
       const porcentajeAnticipo = recursosHumanosStore.porcentajeAnticipo / 100
-      const sueldo = (salario / 30) * dias * (porcentajeAnticipo + (rolpago.es_quincena ? porcentajeAnticipo : 0))
+      const sueldo = rolpago.es_quincena ? (salario / 30) * dias * (porcentajeAnticipo + (rolpago.es_quincena ? porcentajeAnticipo : 0)) : salario / 30 * dias
       // console.log(sueldo)
       // const sueldo = (salario / 30) * dias_totales
       //
       let total_sueldo = 0
-      // console.log(porcentajeAnticipo, tipo_contrato)
-      switch (tipo_contrato) {
-        case 3:
-          if (dias == 15) {
-            total_sueldo = salario * porcentajeAnticipo
-          } else {
-            const quincena = (salario / 30)
-            total_sueldo = quincena * dias
-            // console.log(quincena)
-            // console.log(total_sueldo)
-          }
-          break
-        default:
+      console.log(porcentajeAnticipo, tipo_contrato)
+      // switch (tipo_contrato) {
+        // case 3:
+        //   if (dias == 15) {
+        //     total_sueldo = salario * porcentajeAnticipo
+        //   } else {
+        //     const quincena = (salario / 30)
+        //     total_sueldo = quincena * dias
+        //     console.log(quincena)
+        //     console.log(total_sueldo)
+        //   }
+        //   break
+        // default:
           if (rolpago.es_vendedor_medio_tiempo) {
             const porcentaje = rolpago.porcentaje_quincena
               ? rolpago.porcentaje_quincena / 100
               : 1
             total_sueldo = rolpago.es_quincena == true ? salario * 0.5 * porcentaje : sueldo
-            // console.log('if', total_sueldo, porcentaje)
+            console.log('if', total_sueldo, porcentaje)
           } else {
             if (rolpago.es_quincena) {
               if (dias == 15) total_sueldo = sueldo
-              else total_sueldo = salario / 15 * dias * porcentajeAnticipo
+              else{
+                if(empleadoStore.empleado.departamento == 'CUADRILLA'){
+                  total_sueldo = (salario*porcentajeAnticipo)/15 * dias
+                }else total_sueldo = (salario*porcentajeAnticipo) / 30 * dias //* porcentajeAnticipo
+              } 
             } else total_sueldo = sueldo
-            // console.log(total_sueldo)
+            console.log(total_sueldo)
           }
 
-          break
-      }
+      //     break
+      // }
       rolpago.sueldo = parseFloat(total_sueldo.toFixed(2))
     }
 

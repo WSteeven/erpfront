@@ -7,6 +7,7 @@ export const useRolPagoStore = defineStore('rolpago', () => {
   const idRolPagoSeleccionada = ref()
   const posicionRolPagoSeleccionada = ref()
   const idEmpleado = ref()
+  const departamento = ref()
   const tareaTieneRolPagos = ref()
   const motivoSuspendido = ref()
   const accion = ref()
@@ -45,6 +46,7 @@ export const useRolPagoStore = defineStore('rolpago', () => {
     idRolPagoSeleccionada,
     tareaTieneRolPagos,
     idEmpleado,
+    departamento,
     motivoSuspendido,
     posicionRolPagoSeleccionada,
     accion,

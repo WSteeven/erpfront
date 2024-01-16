@@ -10,10 +10,10 @@ import { configuracionColumnasProductosSeleccionados } from './domain/configurac
 import { configuracionColumnasProductos } from 'pages/bodega/productos/domain/configuracionColumnasProductos'
 import { useOrquestadorSelectorItemsEgreso } from './application/OrquestadorSelectorInventario'
 import { configuracionColumnasDetallesProductos } from 'pages/bodega/detalles_productos/domain/configuracionColumnasDetallesProductos'
-import { acciones, estadosTransacciones, motivos } from 'config/utils'
+import { acciones, estadosTransacciones, motivos, tabOptionsTransaccionesEgresos } from 'config/utils'
 
 // Componentes
-import TabLayout from 'shared/contenedor/modules/simple/view/TabLayout.vue'
+import TabLayoutFilterTabs2 from "shared/contenedor/modules/simple/view/TabLayoutFilterTabs2.vue";
 import EssentialTable from 'components/tables/view/EssentialTable.vue'
 import EssentialSelectableTable from 'components/tables/view/EssentialSelectableTable.vue'
 import LabelInfoEmpleado from 'components/modales/modules/LabelInfoEmpleado.vue'
@@ -55,11 +55,11 @@ import { useEmpleadoStore } from 'stores/empleado'
 
 export default defineComponent({
   name: 'Egresos',
-  components: { TabLayout, EssentialTable, EssentialSelectableTable, LabelInfoEmpleado, ModalesEntidad },
+  components: { TabLayoutFilterTabs2, EssentialTable, EssentialSelectableTable, LabelInfoEmpleado, ModalesEntidad },
   setup() {
     const mixin = new ContenedorSimpleMixin(Transaccion, new TransaccionEgresoController())
-    const { entidad: transaccion, disabled, accion, listadosAuxiliares } = mixin.useReferencias()
-    const { setValidador, obtenerListados, cargarVista } = mixin.useComportamiento()
+    const { entidad: transaccion, disabled, accion, listadosAuxiliares, listado } = mixin.useReferencias()
+    const { setValidador, obtenerListados, cargarVista, listar, } = mixin.useComportamiento()
     const { onConsultado, onReestablecer, onGuardado } = mixin.useHooks()
     const { confirmar, prompt, notificarError } = useNotificaciones()
     //stores
@@ -99,6 +99,7 @@ export default defineComponent({
     let listadoPedido: Ref<any[]> = ref([])
     let coincidencias = ref()
     let listadoCoincidencias = ref()
+    const tabDefecto = ref('PENDIENTE')
 
 
     const opciones_empleados = ref([])
@@ -199,6 +200,10 @@ export default defineComponent({
     mixin.agregarValidaciones(validarListadoProductos)
 
 
+    function filtrarTransacciones(tab: string) {
+      tabDefecto.value = tab
+      listar({ estado: tab })
+    }
 
     function eliminar({ entidad, posicion }) {
       confirmar('¿Está seguro de continuar?',
@@ -251,6 +256,7 @@ export default defineComponent({
             transaccionStore.idTransaccion = entidad.id
             await transaccionStore.anularEgreso()
             entidad.estado = transaccionStore.transaccion.estado
+            listado.value.splice(posicion, 1)
           } catch (err) {
             notificarError('' + err)
           }
@@ -414,6 +420,13 @@ export default defineComponent({
       sortable: false,
     },
     {
+      name: 'recibido',
+      field: 'recibido',
+      label: 'Recibido',
+      align: 'right',
+      sortable: false,
+    },
+    {
       name: 'acciones',
       field: 'acciones',
       label: 'Acciones',
@@ -478,11 +491,14 @@ export default defineComponent({
       //variables auxiliares
       esVisibleAutorizacion,
       esVisibleTarea,
+      tabDefecto,
+      tabOptionsTransaccionesEgresos,
 
       //modales
       modalesEmpleado,
 
       //funciones
+      filtrarTransacciones,
       recargarSucursales,
       infoEmpleado,
 
@@ -493,8 +509,8 @@ export default defineComponent({
         console.log('filtro motivos', val)
         const motivoSeleccionado = listadosAuxiliares.motivos.filter((v) => v.id === val)[0]
         // transaccion.aviso_liquidacion_cliente = (motivoSeleccionado.nombre == motivos.egresoLiquidacionMateriales) ? true : false
-        if([motivos.destruccion, motivos.egresoAjusteRegularizacion, motivos.egresoLiquidacionMateriales, motivos.egresoTransferenciaBodegas, motivos.venta, motivos.robo].includes(motivoSeleccionado.nombre)) transaccion.aviso_liquidacion_cliente=true
-        else transaccion.aviso_liquidacion_cliente =false
+        if ([motivos.destruccion, motivos.egresoAjusteRegularizacion, motivos.egresoLiquidacionMateriales, motivos.egresoTransferenciaBodegas, motivos.venta, motivos.robo].includes(motivoSeleccionado.nombre)) transaccion.aviso_liquidacion_cliente = true
+        else transaccion.aviso_liquidacion_cliente = false
         transaccion.es_transferencia = (motivoSeleccionado.nombre == motivos.egresoTransferenciaBodegas) ? true : false
       },
 

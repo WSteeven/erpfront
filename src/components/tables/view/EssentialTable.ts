@@ -140,6 +140,10 @@ export default defineComponent({
       type: Object as () => CustomActionTable,
       required: false,
     },
+    accion6Header: {
+      type: Object as () => CustomActionTable,
+      required: false,
+    },
     mostrarBotones: {
       type: Boolean,
       default: true,

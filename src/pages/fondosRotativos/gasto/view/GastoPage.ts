@@ -30,12 +30,13 @@ import { SubDetalleFondo } from 'pages/fondosRotativos/subDetalleFondo/domain/Su
 import { useNotificaciones } from 'shared/notificaciones'
 import { AprobarGastoController } from 'pages/fondosRotativos/autorizarGasto/infrestructure/AprobarGastoController'
 import { useAuthenticationStore } from 'stores/authentication'
-import { maskFecha, tabAutorizarGasto, estadosGastos, convertir_fecha } from 'config/utils'
+import { maskFecha, tabAutorizarGasto, estadosGastos, convertir_fecha, acciones } from 'config/utils'
 import { EmpleadoController } from 'pages/recursosHumanos/empleados/infraestructure/EmpleadoController'
 import { Empleado } from 'pages/recursosHumanos/empleados/domain/Empleado'
 import { VehiculoController } from 'pages/controlVehiculos/vehiculos/infraestructure/VehiculoController'
 import ImagenComprimidaComponent from 'components/ImagenComprimidaComponent.vue'
 import { EmpleadoRoleController } from 'pages/recursosHumanos/empleados/infraestructure/EmpleadoRolesController'
+import { CustomActionTable } from 'components/tables/domain/CustomActionTable'
 export default defineComponent({
   components: { TabLayoutFilterTabs2, ImagenComprimidaComponent },
   emits: ['guardado', 'cerrar-modal'],
@@ -631,6 +632,17 @@ export default defineComponent({
           break
       }
     }
+    const editarGasto: CustomActionTable = {
+      titulo: ' ',
+      icono: 'bi-pencil-square',
+      color: 'secondary',
+      visible: ({ entidad }) =>{
+        return authenticationStore.user.id === entidad.aut_especial && entidad.estado === estadosGastos.PENDIENTE },
+      accion: ({ entidad }) => {
+        accion.value = acciones.editar
+        consultar(entidad)
+      },
+    }
     let tabActualGasto = '3'
 
     function filtrarGasto(tabSeleccionado: string) {
@@ -675,6 +687,7 @@ export default defineComponent({
       cambiar_proyecto,
       optionsFechaGasto,
       recargar_detalle,
+      editarGasto,
       mascaraFactura,
       listadosAuxiliares,
       listadoSubdetalles,

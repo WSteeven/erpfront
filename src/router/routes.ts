@@ -16,8 +16,7 @@ const routes: RouteRecordRaw[] = [
       {
         path: 'auditorias',
         name: 'auditorias',
-        component: () =>
-          import('pages/sistema/auditorias/view/AuditoriaPage.vue'),
+        component: () => import('pages/sistema/auditorias/view/AuditoriaPage.vue'),
         meta: { requiresAuth: false },
       },
       {
@@ -60,6 +59,18 @@ const routes: RouteRecordRaw[] = [
           import(
             'gestionTrabajos/monitorSubtareas/view/MonitorSubtareaPage.vue'
           ),
+        meta: { requiresAuth: true },
+      },
+      {
+        path: '/centros-costos',
+        name: 'centros_costos',
+        component: () => import('gestionTrabajos/centroCostos/view/CentroCostoPage.vue'),
+        meta: { requiresAuth: true },
+      },
+      {
+        path: '/subcentros-costos',
+        name: 'subcentros_costos',
+        component: () => import('gestionTrabajos/subcentrosCostos/view/SubcentroCostoPage.vue'),
         meta: { requiresAuth: true },
       },
       {
@@ -1227,6 +1238,7 @@ const routes: RouteRecordRaw[] = [
         meta: { requiresAuth: true },
       },
       ///
+
       {
         path: '/reporte_venta',
         name: 'reporte_venta',
@@ -1236,6 +1248,21 @@ const routes: RouteRecordRaw[] = [
           ),
         meta: { requiresAuth: true },
       },
+      {
+        path: '/asignar-alimentacion',
+        name: 'asignar_alimentacion',
+        component: () =>
+          import('pages/recursosHumanos/alimentacion/asignarAlimentacion/view/AsignarAlimentacion.vue'),
+        meta: { requiresAuth: true },
+      },
+      {
+        path: '/alimentacion',
+        name: 'alimentacion',
+        component: () =>
+          import('pages/recursosHumanos/alimentacion/alimentacion/views/AlimentacionPage.vue'),
+        meta: { requiresAuth: true },
+      },
+
     ],
   },
   {

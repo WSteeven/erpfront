@@ -52,6 +52,8 @@ import { useCargandoStore } from 'stores/cargando'
 import { useQuasar } from 'quasar'
 import { CausaIntervencionController } from 'pages/gestionTrabajos/causasIntervenciones/infraestructure/CausaIntervencionController'
 import { convertirNumeroPositivo } from 'shared/utils'
+import { useFiltrosListadosSelects } from 'shared/filtrosListadosGenerales'
+import { CentroCostoController } from 'pages/gestionTrabajos/centroCostos/infraestructure/CentroCostosController'
 
 export default defineComponent({
   components: {
@@ -158,6 +160,11 @@ export default defineComponent({
       proyecto: { required: requiredIf(() => paraProyecto.value) },
       coordinador: { required: requiredIf(() => paraClienteFinal.value && esCoordinadorBackup) },
       ruta_tarea: { required: requiredIf(() => paraClienteFinal.value && tarea.ubicacion_trabajo === ubicacionesTrabajo.ruta) },
+      centro_costo: { required: requiredIf(() => paraClienteFinal.value && centros_costos.value.length > 0) },
+      // tarea: { requiredIf: requiredIf(() => preingreso.etapa && centros_costos.value.length) },
+      // etapa: {
+      //   requiredIf: requiredIf(() => { if (etapas.value) return etapas.value.length && preingreso.proyecto })
+      // },
     }
 
     const v$ = useVuelidate(reglas, tarea)
@@ -190,6 +197,7 @@ export default defineComponent({
       rutas,
       filtrarRutas,
     } = useFiltrosListadosTarea(listadosAuxiliares, tarea)
+    const { centros_costos, filtrarCentrosCostos } = useFiltrosListadosSelects(listadosAuxiliares)
 
     /************
     * Funciones
@@ -199,6 +207,10 @@ export default defineComponent({
     function filtrarTarea(tabSeleccionado: string) {
       listar({ finalizado: tabSeleccionado }, false)
       tabActualTarea = tabSeleccionado
+    }
+
+    function checkCentroCosto(val, evt) {
+      if (val) notificarAdvertencia('No se creará centro de costos ni se asociará la tarea a un centro de costos')
     }
 
 
@@ -211,7 +223,10 @@ export default defineComponent({
     async function establecerCliente() {
       tareaStore.tarea.cliente = tarea.cliente
       tarea.tipo_trabajo = null
+      tarea.centro_costo = null
       await obtenerRutas()
+      //aqui se obtiene los centros de costos del cliente seleccionado
+      await obtenerCentrosCostos()
     }
 
     async function guardado(paginaModal: keyof TareaModales) {
@@ -243,6 +258,13 @@ export default defineComponent({
       cargando.activar()
       listadosAuxiliares.rutas = (await rutaTareaController.listar({ cliente_id: tarea.cliente })).result
       rutas.value = listadosAuxiliares.rutas
+      cargando.desactivar()
+    }
+
+    async function obtenerCentrosCostos() {
+      cargando.activar()
+      listadosAuxiliares.centros_costos = (await (new CentroCostoController().listar({ cliente_id: tarea.cliente, activo: 1 }))).result
+      centros_costos.value = listadosAuxiliares.centros_costos
       cargando.desactivar()
     }
 
@@ -306,7 +328,13 @@ export default defineComponent({
       clientesFinales.value = []
     })
 
-    onConsultado(() => filtrarSubtareas(''))
+    onConsultado(async () => {
+      filtrarSubtareas('')
+      cargando.activar()
+      listadosAuxiliares.centros_costos = (await (new CentroCostoController().listar({ cliente_id: tarea.cliente }))).result
+      centros_costos.value = listadosAuxiliares.centros_costos
+      cargando.desactivar()
+    })
 
     const btnAgregarSubtarea: CustomActionTable = {
       titulo: 'Agregar subtarea',
@@ -436,6 +464,8 @@ export default defineComponent({
       mostrarSolicitarImagen,
       imagenSubida,
       btnVerImagenInforme,
+      centros_costos, filtrarCentrosCostos,
+      checkCentroCosto,
     }
   },
 })
