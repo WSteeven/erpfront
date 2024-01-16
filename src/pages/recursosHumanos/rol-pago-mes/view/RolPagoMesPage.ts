@@ -110,7 +110,8 @@ export default defineComponent({
       tooltip: 'Agrega los empleados recientemente registrados en el sistema',
       accion: () => {
         agregarNuevosEmpleadosRol(rolpago.id!)
-      }
+      },
+      visible: ()=> authenticationStore.can('puede.ver.btn.agregar_empleados')
     }
     const btnAgregarRolPagoEmpleado: CustomActionTable = {
       titulo: 'Agregar empleado al rol',
@@ -130,6 +131,7 @@ export default defineComponent({
         rolPagoStore.idRolPagoSeleccionada = null
         modalesRolPago.abrirModalEntidad('RolPagoPage')
       },
+      visible: ()=> authenticationStore.can('puede.ver.btn.agregar_empleado_rol')
     }
     const btnEjecutarMasivo: CustomActionTable = {
       titulo: 'Ejecutar Rol de Pago',
@@ -147,12 +149,13 @@ export default defineComponent({
           filtrarRolPagoEmpleado(estadosRolPagoEmpleado.ejecutando)
         })
       },
+      visible: ()=> authenticationStore.can('puede.ver.btn.ejecutar_rol_pago')
     }
     const btnFinalizarMasivo: CustomActionTable = {
       titulo: 'Finalizar Rol de Pago',
       icono: 'bi-check',
       color: 'positive',
-      visible: () => rolpago.finalizado == false,
+      visible: () => rolpago.finalizado == false && authenticationStore.can('puede.ver.btn.finalizar_rol_pago'),
       accion: () => {
         if (!rolpago.id)
           return notificarAdvertencia('Primero debe seleccionar una rol.')
@@ -416,6 +419,7 @@ export default defineComponent({
         const id = rolpago.id != null ? rolpago.id : 0
         await actualizarRolPago(id)
       },
+      visible: ()=> authenticationStore.can('puede.ver.btn.actualizar_rol_pago')
     }
     async function actualizarRolPago(idRolPago: number) {
       try {
