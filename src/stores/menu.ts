@@ -829,7 +829,7 @@ export const useMenuStore = defineStore('menu', () => {
      *********************************************************/
     {
       title: 'Ventas de Claro',
-      icon: 'bi-phone-fill',
+      icon: 'claro-logo',
       can: store.can('puede.ver.modulo_ventas_claro'),
       children: [
         {
