@@ -25,6 +25,29 @@
             >
             </q-select>
           </div>
+
+          <div class="col-12 col-md-3">
+            <label class="q-mb-sm block">Grupo</label>
+            <q-select
+              v-model="subcentro.grupo"
+              :options="grupos"
+              transition-show="scale"
+              transition-hide="scale"
+              use-input
+              input-debounce="0"
+              options-dense
+              clearable
+              dense
+              outlined
+              :disable="disabled"
+              :option-label="(item) => item.nombre"
+              :option-value="(item) => item.id"
+              @filter="filtrarGrupos"
+              emit-value
+              map-options
+            >
+            </q-select>
+          </div>
           <!-- Nombre -->
           <div class="col-12 col-md-3">
             <label class="q-mb-sm block">Nombre del subcentro de costo</label>
