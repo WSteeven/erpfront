@@ -6,6 +6,7 @@
     :tabOptions="tabOptionsEstadosAlimentacion"
     :accion1="btnCashAlimentacion"
     :accion2="btnImprimirReporteAlimentacion"
+    :accion3="btnFinalizar"
     :full="false"
     :permitirEditar="false"
     :permitirEliminar="false"

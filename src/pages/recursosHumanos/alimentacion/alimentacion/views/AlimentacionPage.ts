@@ -25,6 +25,7 @@ import { CustomActionPrompt } from 'components/tables/domain/CustomActionPrompt'
 import { useNotificaciones } from 'shared/notificaciones'
 import { useCargandoStore } from 'stores/cargando'
 import { useQuasar } from 'quasar'
+import { useBotonesTablaAlimentacion } from '../aplication/BotonesTablaAlimentacion'
 
 export default defineComponent({
   components: { TabLayoutFilterTabs2 },
@@ -36,6 +37,8 @@ export default defineComponent({
       Alimentacion,
       new AlimentacionController()
     )
+    const { btnFinalizar } = useBotonesTablaAlimentacion(mixin)
+
     const {
       entidad: alimentacion,
       disabled,
@@ -159,6 +162,7 @@ export default defineComponent({
       tabOptionsEstadosAlimentacion,
       btnCashAlimentacion,
       btnImprimirReporteAlimentacion,
+      btnFinalizar,
       estadosAlimentacion,
       filtrarAlimentacion,
       accionesTabla,

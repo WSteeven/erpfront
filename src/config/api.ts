@@ -175,6 +175,7 @@ export const endpoints = {
   asignar_alimentacion: new Endpoint('recursos-humanos/asignar-alimentacion'),
   alimentacion: new Endpoint('recursos-humanos/alimentacion'),
   detalle_alimentacion: new Endpoint('recursos-humanos/detalle-alimentacion'),
+  finalizar_asignacion_alimentacion: new Endpoint('recursos-humanos/finalizar-asignacion-alimentacion'),
 
 
   //Modulo de Vehiculos
