@@ -29,6 +29,8 @@ import { accionesTabla } from "config/utils";
 import { useNotificaciones } from "shared/notificaciones";
 import { optionsPie } from "config/graficoGenerico";
 import { filtroOrdenesComprasAprobadas, filtroOrdenesComprasCreadas, filtroOrdenesComprasProveedores } from "../application/FiltrosDashboardOrdenesCompras";
+import { EmpleadoOrdenesController } from "../infraestructure/EmpleadoOrdenesController";
+import { useFiltrosListadosSelects } from "shared/filtrosListadosGenerales";
 
 
 export default defineComponent({
@@ -39,7 +41,7 @@ export default defineComponent({
     ***********/
     const ordenCompraStore = useOrdenCompraStore()
     const mixin = new ContenedorSimpleMixin(OrdenCompra, new OrdenCompraController())
-    // const { entidad: orden, listado, listadosAuxiliares } = mixin.useReferencias()
+    const { entidad: orden, listado, listadosAuxiliares } = mixin.useReferencias()
     const { cargarVista, obtenerListados } = mixin.useComportamiento()
     const { confirmar } = useNotificaciones()
     const dashboard = reactive({
@@ -79,18 +81,19 @@ export default defineComponent({
     const graficos = ref()
     const ordenes = ref()
     const labelTabla = ref()
-    const empleados = ref([])
     const proveedores = ref([])
+
+    const { empleados, filtrarEmpleados} = useFiltrosListadosSelects(listadosAuxiliares)
     cargarVista(async () => {
       await obtenerListados({
         // proveedores: new ProveedorController(),
-        // empleados: {
-        //   controller: new EmpleadoController(),
-        //   params: {
-        //     campos: 'id,nombres,apellidos,departamento_id,responsable_departamento',
-        //     estado: 1,
-        //   }
-        // },
+        empleados: {
+          controller: new EmpleadoOrdenesController(),
+          params: {
+            campos: 'id,nombres,apellidos',
+            estado: 1,
+          }
+        },
       })
       dashboard.fecha_fin = obtenerFechaActual()
     })
@@ -202,6 +205,7 @@ export default defineComponent({
       modales,
       modoUnaColumna: ref(false),
       labelTabla,
+      empleados, filtrarEmpleados,
     }
   },
 })

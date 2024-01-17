@@ -7,8 +7,47 @@
           Análisis de datos: Módulo de Compras
         </div>
 
-        <!-- Tiempos -->
         <div class="row q-col-gutter-sm q-mb-md">
+          <div class="col-12 col-md-3">
+            <label class="q-mb-sm block"
+              >Seleccione un empleado</label
+            >
+            <q-select
+              v-model="dashboard.empleado"
+              :options="empleados"
+              transition-show="scale"
+              transition-hide="scale"
+              options-dense
+              dense
+              outlined
+              use-input
+              input-debounce="0"
+              :error="!!v$.empleado.$errors.length"
+              @blur="v$.empleado.$touch"
+              @filter="filtrarEmpleados"
+              @popup-show="ordenarEmpleados(empleados)"
+              :option-label="(v) => v.apellidos + ' ' + v.nombres"
+              :option-value="(v) => v.id"
+              emit-value
+              map-options
+            >
+              <template v-slot:no-option>
+                <q-item>
+                  <q-item-section class="text-grey">
+                    No hay resultados
+                  </q-item-section>
+                </q-item>
+              </template>
+
+              <template v-slot:error>
+                <div v-for="error of v$.empleado.$errors" :key="error.$uid">
+                  <div class="error-msg">{{ error.$message }}</div>
+                </div>
+              </template>
+            </q-select>
+          </div>
+
+          <!-- Tiempos -->
           <div class="col-12 col-md-3">
             <label class="q-mb-sm block">Fecha de inicio</label>
             <q-input
