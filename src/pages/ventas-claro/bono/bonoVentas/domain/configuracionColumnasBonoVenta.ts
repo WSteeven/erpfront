@@ -13,7 +13,7 @@ export const configuracionColumnasBonoVenta: ColumnConfig<BonoVentas>[] = [
 {
   name: 'valor',
   field: 'valor',
-  label: 'Valor a  Comisionar',
+  label: 'Valor a  Comisionar ($)',
   align: 'left',
   sortable: true
 },

@@ -21,11 +21,13 @@
               :disable="disabled"
               outlined
               dense
+              @blur="v$.fecha_inicio.$touch"
             >
               <template v-slot:append>
                 <q-icon name="event" class="cursor-pointer">
                   <q-popup-proxy cover transition-show="scale" transition-hide="scale">
-                    <q-date v-model="pago.fecha_inicio" :mask="maskFecha" today-btn>
+                    <q-date v-model="pago.fecha_inicio" :mask="maskFecha" today-btn                       @blur="v$.fecha_inicio.$touch"
+>
                       <div class="row items-center justify-end">
                         <q-btn v-close-popup label="Cerrar" color="primary" flat />
                       </div>
@@ -51,11 +53,14 @@
               :disable="disabled"
               outlined
               dense
+              @blur="v$.fecha_fin.$touch"
+
             >
               <template v-slot:append>
                 <q-icon name="event" class="cursor-pointer">
                   <q-popup-proxy cover transition-show="scale" transition-hide="scale">
-                    <q-date v-model="pago.fecha_fin" :mask="maskFecha" today-btn>
+                    <q-date v-model="pago.fecha_fin" :mask="maskFecha" today-btn               @blur="v$.fecha_fin.$touch"
+>
                       <div class="row items-center justify-end">
                         <q-btn v-close-popup label="Cerrar" color="primary" flat />
                       </div>

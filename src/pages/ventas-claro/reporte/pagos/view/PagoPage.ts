@@ -17,8 +17,7 @@ import { useCargandoStore } from 'stores/cargando'
 import { useFondoRotativoStore } from 'stores/fondo_rotativo'
 import { VendedoresController } from 'pages/ventas-claro/vendedores/infrestructure/VendedoresController'
 import { Vendedores } from 'pages/ventas-claro/vendedores/domain/Vendedores'
-
-
+import { required } from 'shared/i18n-validators'
 export default defineComponent({
   components: { TabLayout },
   setup() {
@@ -32,9 +31,7 @@ export default defineComponent({
     /***********
      * Mixin
      ************/
-    const mixin = new ContenedorSimpleMixin(
-      Pagos,new PagosController(),
-    )
+    const mixin = new ContenedorSimpleMixin(Pagos, new PagosController())
     const {
       entidad: pago,
       disabled,
@@ -49,20 +46,15 @@ export default defineComponent({
      **************/
     const reglas = {
       fecha_inicio: {
-        required: true,
-        minLength: 3,
-        maxLength: 50,
+        required,
       },
       fecha_fin: {
-        required: true,
-        minLength: 3,
-        maxLength: 50,
+        required,
       },
-      vendedor:{
-        required: true,
-      }
+      vendedor: {
+        required,
+      },
     }
-
 
     const v$ = useVuelidate(reglas, pago)
     setValidador(v$.value)
@@ -73,10 +65,10 @@ export default defineComponent({
           controller: new VendedoresController(),
           params: {
             campos: 'id',
-          },},
+          },
+        },
       })
-        vendedores.value = listadosAuxiliares.vendedores
-
+      vendedores.value = listadosAuxiliares.vendedores
     })
     /*********
      * Filtros
@@ -92,17 +84,18 @@ export default defineComponent({
         )
       })
     }
-    async function generar_reporte(
-      valor: Pagos,
-      tipo: string
-    ): Promise<void> {
-       const axios = AxiosHttpRepository.getInstance()
-      const filename = 'reporte_semanal_pago_del_' + valor.fecha_inicio + '_al_' +valor.fecha_fin
-      const url_excel =
-            apiConfig.URL_BASE +
-            '/' +
-            axios.getEndpoint(endpoints.pago)
-          imprimirArchivo(url_excel, 'POST', 'blob', 'xlsx', filename, valor)
+    async function generar_reporte(valor: Pagos, tipo: string): Promise<void> {
+      if (await v$.value.$validate()) {
+        const axios = AxiosHttpRepository.getInstance()
+        const filename =
+          'reporte_semanal_pago_del_' +
+          valor.fecha_inicio +
+          '_al_' +
+          valor.fecha_fin
+        const url_excel =
+          apiConfig.URL_BASE + '/' + axios.getEndpoint(endpoints.pago)
+        imprimirArchivo(url_excel, 'POST', 'blob', 'xlsx', filename, valor)
+      }
     }
     function ordenarVendedores() {
       vendedores.value.sort((a: Vendedores, b: Vendedores) =>

@@ -27,6 +27,7 @@ import { VendedoresController } from 'pages/ventas-claro/vendedores/infrestructu
 import { ClienteClaro } from '../domain/ClienteClaro'
 import { ClienteClaroController } from '../infrestucture/ClienteClaroController'
 import { configuracionColumnasClienteClaro } from '../domain/configuracionColumnasClienteClaro'
+import { maxLength,minLength } from 'shared/i18n-validators'
 
 
 export default defineComponent({
@@ -64,6 +65,8 @@ export default defineComponent({
     const reglas = {
       identificacion: {
         required: true,
+        maxLength: maxLength(10),
+        minLenght: minLength(10)
       },
       nombres: {
         required: true,
