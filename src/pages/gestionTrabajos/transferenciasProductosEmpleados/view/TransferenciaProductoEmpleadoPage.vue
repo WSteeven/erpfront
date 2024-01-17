@@ -139,8 +139,8 @@
             <q-checkbox
               v-model="esParaStock"
               label="Es stock"
-              :disable="disabled"
               @update:model-value="seleccionarEsStock()"
+              :disable="!(accion === acciones.nuevo)"
               outlined
               dense
             ></q-checkbox>
@@ -158,6 +158,7 @@
               @update:model-value="
                 seleccionarClienteStock(transferencia.cliente)
               "
+              :disable="!(accion === acciones.nuevo)"
               use-input
               input-debounce="0"
               options-dense
@@ -172,6 +173,7 @@
                 <q-btn
                   color="positive"
                   unelevated
+                  :disable="!(accion === acciones.nuevo)"
                   @click="refrescarListadosEmpleado('clientes')"
                 >
                   <q-icon size="xs" name="bi-arrow-clockwise" />
@@ -251,6 +253,12 @@
               options-dense
               dense
               outlined
+              @update:model-value="
+                () => {
+                  transferencia.tarea_origen = null
+                  transferencia.cliente = null
+                }
+              "
               :option-label="(item) => item.nombre"
               :option-value="(item) => item.id"
               use-input
@@ -303,6 +311,30 @@
                   </q-item-section>
                 </q-item>
               </template>
+            </q-select>
+          </div>
+          <!-- {{ listadosAuxiliares.clientesMaterialesTarea }} -->
+
+          {{ transferencia }}
+          <div v-if="!esParaStock" class="col-12 col-md-3">
+            <label class="q-mb-sm block"
+              >Cliente propietario del material de proyecto/etapa</label
+            >
+            <q-select
+              v-model="transferencia.cliente"
+              :options="listadosAuxiliares.clientesMaterialesTarea"
+              transition-show="scale"
+              transition-hide="scale"
+              use-input
+              input-debounce="0"
+              options-dense
+              dense
+              outlined
+              :option-label="(item) => item.razon_social"
+              :option-value="(item) => item.cliente_id"
+              emit-value
+              map-options
+            >
             </q-select>
           </div>
 
