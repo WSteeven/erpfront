@@ -58,6 +58,57 @@
               </template>
             </q-input>
           </div>
+          <!-- Telefono 1 -->
+          <div class="col-12 col-md-3">
+            <label class="q-mb-sm block">Telefono 1</label>
+            <q-input
+              v-model="cliente_claro.telefono1"
+              autogrow
+              :error="!!v$.telefono1.$errors.length"
+              @blur="v$.telefono1.$touch"
+              outlined
+              dense
+            >
+              <template v-slot:prepend>
+                <q-icon name="bi-telephone-fill" />
+              </template>
+              <template v-slot:error>
+                <div v-for="error of v$.telefono1.$errors" :key="error.$uid">
+                  <div class="error-msg">{{ error.$message }}</div>
+                </div>
+              </template>
+            </q-input>
+          </div>
+          <!-- Telefono 2 -->
+          <div class="col-12 col-md-3">
+            <label class="q-mb-sm block">Telefono 2</label>
+            <q-input v-model="cliente_claro.telefono2" autogrow outlined dense>
+              <template v-slot:prepend>
+                <q-icon name="bi-telephone-fill" />
+              </template>
+            </q-input>
+          </div>
+          <!-- Observacion -->
+          <div class="col-12 col-md-3">
+            <label class="q-mb-sm block">Dirección</label>
+            <q-input
+              v-model="cliente_claro.direccion"
+              placeholder="obligatorio"
+              type="textarea"
+              :disable="disabled"
+              :error="!!v$.direccion.$errors.length"
+              autogrow
+              @blur="v$.direccion.$touch"
+              outlined
+              dense
+            >
+              <template v-slot:error>
+                <div v-for="error of v$.direccion.$errors" :key="error.$uid">
+                  <div class="error-msg">{{ error.$message }}</div>
+                </div>
+              </template>
+            </q-input>
+          </div>
         </div>
       </q-form>
     </template>

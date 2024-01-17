@@ -77,40 +77,43 @@
           </div>
           <!-- Tipos de vendedores-->
           <div class="col-12 col-md-3">
-              <label class="q-mb-sm block">Tipo de Vendedor</label>
-              <q-select
-                v-model="vendedores.tipo_vendedor"
-                :options="tipos_vendedor"
-                transition-show="jump-up"
-                transition-hide="jump-down"
-                :disable="disabled"
-                options-dense
-                dense
-                outlined
-                :input-debounce="0"
-                use-input
-                hint="Obligatorio"
-                :error="!!v$.tipo_vendedor.$errors.length"
-                @blur="v$.tipo_vendedor.$touch"
-                :option-value="(v) => v.nombre"
-                :option-label="(v) => v.descripcion"
-                emit-value
-                map-options
-              >
-                <template v-slot:error>
-                  <div v-for="error of v$.tipo_vendedor.$errors" :key="error.$uid">
-                    <div class="error-msg">{{ error.$message }}</div>
-                  </div>
-                </template>
-                <template v-slot:no-option>
-                  <q-item>
-                    <q-item-section class="text-grey"> No hay resultados </q-item-section>
-                  </q-item>
-                </template>
-              </q-select>
-            </div>
-                      <!-- Empleados -->
-          <div class="col-12 col-md-3" v-if="vendedores.tipo_vendedor!=='JEFE DE VENTAS'">
+            <label class="q-mb-sm block">Tipo de Vendedor</label>
+            <q-select
+              v-model="vendedores.tipo_vendedor"
+              :options="tipos_vendedor"
+              transition-show="jump-up"
+              transition-hide="jump-down"
+              :disable="disabled"
+              options-dense
+              dense
+              outlined
+              :input-debounce="0"
+              use-input
+              hint="Obligatorio"
+              :error="!!v$.tipo_vendedor.$errors.length"
+              @blur="v$.tipo_vendedor.$touch"
+              :option-value="(v) => v.nombre"
+              :option-label="(v) => v.descripcion"
+              emit-value
+              map-options
+            >
+              <template v-slot:error>
+                <div v-for="error of v$.tipo_vendedor.$errors" :key="error.$uid">
+                  <div class="error-msg">{{ error.$message }}</div>
+                </div>
+              </template>
+              <template v-slot:no-option>
+                <q-item>
+                  <q-item-section class="text-grey"> No hay resultados </q-item-section>
+                </q-item>
+              </template>
+            </q-select>
+          </div>
+          <!-- Empleados -->
+          <div
+            class="col-12 col-md-3"
+            v-if="vendedores.tipo_vendedor !== 'JEFE DE VENTAS'"
+          >
             <label class="q-mb-sm block">Jefe inmediato</label>
             <q-select
               v-model="vendedores.jefe_inmediato"
@@ -146,7 +149,6 @@
             </q-select>
           </div>
         </div>
-
       </q-form>
     </template>
   </tab-layout>

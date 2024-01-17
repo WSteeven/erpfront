@@ -101,7 +101,7 @@
             <label class="q-mb-sm block">Orden Interna</label>
             <q-input
               v-model="ventas.orden_interna"
-              placeholder="Obligatorio"
+              placeholder="Opcional"
               type="textarea"
               :disable="disabled"
               :error="!!v$.orden_interna.$errors.length"

@@ -577,7 +577,7 @@ export const useMenuStore = defineStore('menu', () => {
                 {
                   title: 'Asignar Alimentacion',
                   link: 'asignar-alimentacion',
-                  icon: 'fa-solid fa-cheese',
+                  icon: 'img:src/assets/icons/logo-asignar-alimentacion.svg',
                   can: store.can('puede.acceder.asignar_alimentacion'),
                 },
                 {
@@ -829,7 +829,7 @@ export const useMenuStore = defineStore('menu', () => {
      *********************************************************/
     {
       title: 'Ventas de Claro',
-      icon: 'bi-c-circle-fill',
+      icon: 'img:src/assets/icons/logo-claro.svg', //'bi-c-circle-fill',
       can: store.can('puede.ver.modulo_ventas_claro'),
       children: [
         {

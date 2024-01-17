@@ -9,15 +9,14 @@ import { ContenedorSimpleMixin } from 'shared/contenedor/modules/simple/applicat
 import { VentasController } from '../infrestructure/VentasController'
 import { configuracionColumnasVentas } from '../domain/configuracionColumnasVentas'
 import { estados_activacion, formas_pago, maskFecha } from 'config/utils'
-import { maxValue, minValue } from '@vuelidate/validators'
 import { VendedoresController } from 'pages/ventas-claro/vendedores/infrestructure/VendedoresController'
 import { ProductoVentasController } from 'pages/ventas-claro/productoVentas/infrestructure/ProductoVentasController'
 import { AxiosHttpRepository } from 'shared/http/infraestructure/AxiosHttpRepository'
 import { HttpResponseGet } from 'shared/http/domain/HttpResponse'
 import axios from 'axios'
 import { apiConfig, endpoints } from 'config/api'
-import { useVentaStore } from 'stores/venta'
 import { ClienteClaroController } from 'pages/ventas-claro/cliente/infrestucture/ClienteClaroController'
+import { maxLength, required } from 'shared/i18n-validators'
 
 export default defineComponent({
   components: { TabLayout },
@@ -36,36 +35,35 @@ export default defineComponent({
       accion,
       listadosAuxiliares,
     } = mixin.useReferencias()
-    const {consultar, setValidador, obtenerListados, cargarVista } =
+    const { setValidador, obtenerListados, cargarVista } =
       mixin.useComportamiento()
-const precio_producto= ref(0)
-const comision_vendedor = ref(0)
+    const precio_producto = ref(0)
+    const comision_vendedor = ref(0)
     /*************
      * Validaciones
      **************/
     const reglas = {
       vendedor: {
-        required: true,
+        required,
       },
       orden_id: {
-        required: true,
-        //  maxValue: maxValue(13),
+        required,
+        maxLength: maxLength(13),
       },
       orden_interna: {
-        required: true,
-        //  maxValue: maxValue(6),
+        maxLength: maxLength(6),
       },
       forma_pago: {
-        required: true,
+        required,
       },
       producto: {
-        required: true,
+        required,
       },
       cliente: {
-        required: true,
+        required,
       },
       estado_activacion: {
-        required: true,
+        required,
       },
     }
     const v$ = useVuelidate(reglas, ventas)
@@ -81,12 +79,12 @@ const comision_vendedor = ref(0)
         },
         vendedores: {
           controller: new VendedoresController(),
-          params: {},
+          params: { supervisor: false },
         },
         clientes: {
           controller: new ClienteClaroController(),
           params: {},
-        }
+        },
       })
       productos.value = listadosAuxiliares.productos
       vendedores.value = listadosAuxiliares.vendedores
@@ -103,7 +101,9 @@ const comision_vendedor = ref(0)
       update(() => {
         const needle = val.toLowerCase()
         productos.value = listadosAuxiliares.productos.filter(
-          (v) => v.bundle.toLowerCase().indexOf(needle) > -1 || v.plan_info.toLowerCase().indexOf(needle) > -1
+          (v) =>
+            v.bundle.toLowerCase().indexOf(needle) > -1 ||
+            v.plan_info.toLowerCase().indexOf(needle) > -1
         )
       })
     }
@@ -117,7 +117,10 @@ const comision_vendedor = ref(0)
       update(() => {
         const needle = val.toLowerCase()
         clientes.value = listadosAuxiliares.clientes.filter(
-          (v) => v.nombres.toLowerCase().indexOf(needle) > -1 || v.apellidos.toLowerCase().indexOf(needle) > -1 || v.identificacion.toLowerCase().indexOf(needle) > -1
+          (v) =>
+            v.nombres.toLowerCase().indexOf(needle) > -1 ||
+            v.apellidos.toLowerCase().indexOf(needle) > -1 ||
+            v.identificacion.toLowerCase().indexOf(needle) > -1
         )
       })
     }
@@ -166,7 +169,11 @@ const comision_vendedor = ref(0)
         '/' +
         axiosHttpRepository.getEndpoint(endpoints.obtener_comision) +
         '/' +
-        ventas.producto+'/'+ventas.forma_pago+'/'+ventas.vendedor
+        ventas.producto +
+        '/' +
+        ventas.forma_pago +
+        '/' +
+        ventas.vendedor
       axios({
         url: url_acreditacion,
         method: 'GET',

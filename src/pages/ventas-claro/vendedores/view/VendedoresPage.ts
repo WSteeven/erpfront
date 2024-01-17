@@ -11,58 +11,75 @@ import { configuracionColumnasVendedores } from '../domain/configuracionColumnas
 import { EmpleadoController } from 'pages/recursosHumanos/empleados/infraestructure/EmpleadoController'
 import { ModalidadController } from 'pages/ventas-claro/modalidad/infrestructure/ModalidadController'
 import { tipos_vendedor } from 'config/utils'
-import { requiredIf } from 'shared/i18n-validators'
-
+import {
+  requiredIf,
+  required,
+  maxLength,
+  minLength,
+} from 'shared/i18n-validators'
 
 export default defineComponent({
   components: { TabLayout },
   setup() {
     /*********
-    * Stores
-    *********/
+     * Stores
+     *********/
     useNotificacionStore().setQuasar(useQuasar())
     /***********
-    * Mixin
-    ************/
-    const mixin = new ContenedorSimpleMixin(Vendedores, new VendedoresController())
-    const { entidad: vendedores, disabled, accion,listadosAuxiliares } = mixin.useReferencias()
-    const { setValidador ,obtenerListados, cargarVista} = mixin.useComportamiento()
+     * Mixin
+     ************/
+    const mixin = new ContenedorSimpleMixin(
+      Vendedores,
+      new VendedoresController()
+    )
+    const {
+      entidad: vendedores,
+      disabled,
+      accion,
+      listadosAuxiliares,
+    } = mixin.useReferencias()
+    const { setValidador, obtenerListados, cargarVista } =
+      mixin.useComportamiento()
 
-    const empleados= ref([]);
-    const modalidades= ref([]);
+    const empleados = ref([])
+    const modalidades = ref([])
 
     cargarVista(async () => {
       await obtenerListados({
         empleados: {
           controller: new EmpleadoController(),
-          params: { campos: 'id,nombres,apellidos',estado: 1,departamento_id:13 },
+          params: {
+            campos: 'id,nombres,apellidos',
+            estado: 1,
+            departamento_id: 13,
+          },
         },
         modalidades: {
           controller: new ModalidadController(),
           params: { campos: 'id,nombre' },
         },
       })
-        empleados.value = listadosAuxiliares.empleados
-        modalidades.value = listadosAuxiliares.modalidades
+      empleados.value = listadosAuxiliares.empleados
+      modalidades.value = listadosAuxiliares.modalidades
     })
     /*************
-    * Validaciones
-    **************/
+     * Validaciones
+     **************/
     const reglas = {
       empleado: {
-        required
+        required,
       },
       modalidad: {
-        required
+        required,
       },
-      tipo_vendedor:{
-        required
+      tipo_vendedor: {
+        required,
       },
-      jefe_inmediato:{
-        required: requiredIf(()=>vendedores.tipo_vendedor!=='JEFE DE VENTAS')
-      }
-
-
+      jefe_inmediato: {
+        required: requiredIf(
+          () => vendedores.tipo_vendedor !== 'JEFE DE VENTAS'
+        ),
+      },
     }
     const v$ = useVuelidate(reglas, vendedores)
     setValidador(v$.value)
@@ -92,15 +109,16 @@ export default defineComponent({
       update(() => {
         const needle = val.toLowerCase()
         modalidades.value = listadosAuxiliares.modalidades.filter(
-          (v) =>
-            v.nombre.toLowerCase().indexOf(needle) > -1
+          (v) => v.nombre.toLowerCase().indexOf(needle) > -1
         )
       })
     }
     return {
       mixin,
       vendedores,
-      disabled, accion, v$,
+      disabled,
+      accion,
+      v$,
       configuracionColumnas: configuracionColumnasVendedores,
       empleados,
       modalidades,
@@ -108,7 +126,5 @@ export default defineComponent({
       filtrarEmpleados,
       filtrarModalidades,
     }
-  }
+  },
 })
-
-
