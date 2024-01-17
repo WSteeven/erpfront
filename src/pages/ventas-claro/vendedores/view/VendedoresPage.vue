@@ -39,27 +39,6 @@
               </template>
             </q-select>
           </div>
-          <!-- Codigo de vendedor -->
-          <div class="col-12 col-md-3">
-            <label class="q-mb-sm block">Codigo de Vendedor</label>
-            <q-input
-              v-model="vendedores.codigo_vendedor"
-              placeholder="Obligatorio"
-              type="textarea"
-              :disable="disabled"
-              :error="!!v$.codigo_vendedor.$errors.length"
-              autogrow
-              @blur="v$.codigo_vendedor.$touch"
-              outlined
-              dense
-            >
-              <template v-slot:error>
-                <div v-for="error of v$.codigo_vendedor.$errors" :key="error.$uid">
-                  <div class="error-msg">{{ error.$message }}</div>
-                </div>
-              </template>
-            </q-input>
-          </div>
           <!-- Modalidades -->
           <div class="col-12 col-md-3">
             <label class="q-mb-sm block">Modalidad</label>

@@ -49,17 +49,14 @@ export default defineComponent({
     * Validaciones
     **************/
     const reglas = {
-      codigo_vendedor: {
-        required: true
-      },
       empleado: {
-        required: true
+        required
       },
       modalidad: {
-        required: true
+        required
       },
       tipo_vendedor:{
-        required: true
+        required
       },
       jefe_inmediato:{
         required: requiredIf(()=>vendedores.tipo_vendedor!=='JEFE DE VENTAS')
