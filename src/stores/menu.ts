@@ -829,7 +829,7 @@ export const useMenuStore = defineStore('menu', () => {
      *********************************************************/
     {
       title: 'Ventas de Claro',
-      icon: 'claro-logo',
+      icon: 'bi-c-circle-fill',
       can: store.can('puede.ver.modulo_ventas_claro'),
       children: [
         {
@@ -903,7 +903,7 @@ export const useMenuStore = defineStore('menu', () => {
             can: store.can('puede.acceder.cliente_claro'),
           },
           {
-            title: 'Modalidad',
+            title: 'Umbral de ventas',
             link: 'modalidad',
             icon: 'bi-circle',
             can: store.can('puede.acceder.modalidad'),
