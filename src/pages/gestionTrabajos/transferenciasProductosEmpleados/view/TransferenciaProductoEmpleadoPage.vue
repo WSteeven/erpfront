@@ -114,6 +114,7 @@
               transition-hide="scale"
               :disable="!puedeAutorizar"
               @popup-show="ordenarOpcionesEmpleados()"
+              @update:model-value="seleccionarEmpleadoOrigen()"
               use-input
               input-debounce="0"
               options-dense
@@ -193,15 +194,7 @@
               @filter="filtrarProyectos"
               transition-show="scale"
               :disable="!(accion === acciones.nuevo)"
-              @update:model-value="
-                () => {
-                  transferencia.empleado_destino = null
-                  transferencia.tarea_origen = null
-                  transferencia.tarea_destino = null
-                  transferencia.etapa_destino = null
-                  transferencia.proyecto_destino = null
-                }
-              "
+              @update:model-value="seleccionarProyectoOrigen()"
               transition-hide="scale"
               options-dense
               dense
@@ -214,6 +207,11 @@
               map-options
               clearable
             >
+              <!-- transferencia.empleado_destino = null
+                  transferencia.tarea_origen = null
+                  transferencia.tarea_destino = null
+                  transferencia.etapa_destino = null
+                  transferencia.proyecto_destino = null -->
               <template v-slot:option="scope">
                 <q-item v-bind="scope.itemProps" class="q-my-sm">
                   <q-item-section>
@@ -253,12 +251,7 @@
               options-dense
               dense
               outlined
-              @update:model-value="
-                () => {
-                  transferencia.tarea_origen = null
-                  transferencia.cliente = null
-                }
-              "
+              @update:model-value="seleccionarEtapaOrigen()"
               :option-label="(item) => item.nombre"
               :option-value="(item) => item.id"
               use-input
@@ -266,6 +259,10 @@
               emit-value
               map-options
             >
+              <!-- () => {
+                  transferencia.tarea_origen = null
+                  transferencia.cliente = null
+                } -->
               <template v-slot:no-option>
                 <q-item>
                   <q-item-section class="text-grey">
@@ -288,6 +285,7 @@
               :disable="!(accion === acciones.nuevo)"
               options-dense
               hint="Seleccionar para buscar productos..."
+              @update:model-value="seleccionarTareaOrigen()"
               dense
               outlined
               :option-label="(item) => item.codigo_tarea + ' - ' + item.titulo"
@@ -315,7 +313,7 @@
           </div>
           <!-- {{ listadosAuxiliares.clientesMaterialesTarea }} -->
 
-          {{ transferencia }}
+          <!-- {{ transferencia }} -->
           <div v-if="!esParaStock" class="col-12 col-md-3">
             <label class="q-mb-sm block"
               >Cliente propietario del material de proyecto/etapa</label
@@ -327,6 +325,7 @@
               transition-hide="scale"
               use-input
               input-debounce="0"
+              disable
               options-dense
               dense
               outlined
@@ -349,13 +348,7 @@
               transition-show="scale"
               transition-hide="scale"
               :disable="!(accion === acciones.nuevo)"
-              @update:model-value="
-                () => {
-                  transferencia.proyecto_destino = null
-                  transferencia.etapa_destino = null
-                  transferencia.tarea_destino = null
-                }
-              "
+              @update:model-value="seleccionarEmpleadoDestino()"
               options-dense
               dense
               outlined
@@ -370,6 +363,12 @@
               emit-value
               map-options
             >
+              <!-- () => {
+                  transferencia.proyecto_destino = null
+                  transferencia.etapa_destino = null
+                  transferencia.tarea_destino = null
+                }
+              " -->
               <!-- @update:model-value="consultarTareasClienteFinalMantenimiento()" -->
               <template v-slot:no-option>
                 <q-item>
@@ -400,12 +399,7 @@
               transition-show="scale"
               transition-hide="scale"
               :disable="!(accion === acciones.nuevo)"
-              @update:model-value="
-                () => {
-                  transferencia.etapa_destino = null
-                  transferencia.tarea_destino = null
-                }
-              "
+              @update:model-value="seleccionarProyectoDestino()"
               clearable
               options-dense
               dense
@@ -417,6 +411,11 @@
               emit-value
               map-options
             >
+              <!-- () => {
+                  transferencia.etapa_destino = null
+                  transferencia.tarea_destino = null
+                }
+              " -->
               <template v-slot:option="scope">
                 <q-item v-bind="scope.itemProps" class="q-my-sm">
                   <q-item-section>
@@ -455,7 +454,7 @@
               :options="etapasDestino"
               @filter="filtrarEtapasDestino"
               :disable="!(accion === acciones.nuevo)"
-              @update:model-value="() => (transferencia.tarea_destino = null)"
+              @update:model-value="seleccionarEtapaDestino()"
               transition-show="scale"
               transition-hide="scale"
               options-dense
@@ -497,6 +496,7 @@
               :disable="!(accion === acciones.nuevo)"
               :option-label="(item) => item.codigo_tarea + ' - ' + item.titulo"
               :option-value="(item) => item.id"
+              @update:model-value="seleccionarTareaDestino()"
               use-input
               input-debounce="0"
               emit-value
@@ -699,7 +699,7 @@
           </div>
 
           <!-- Selector de productos -->
-          <div class="col-12 col-md-12">
+          <!-- <div class="col-12 col-md-12">
             <label class="q-mb-sm block">Agregar productos</label>
             <div class="row q-col-gutter-x-xs">
               <div class="col-12 col-md-10 q-mb-md">
@@ -739,7 +739,7 @@
                 >
               </div>
             </div>
-          </div>
+          </div> -->
 
           <!-- Tabla -->
           <div class="col-12">
