@@ -14,7 +14,7 @@ export class PedidoPusherEvent {
    * It subscribes to a channel and listens for events.
   */
   start() {
-    const { notificarCorrecto } = useNotificaciones()
+    const { notificarCorrecto, notificarAdvertencia } = useNotificaciones()
     const notificacionStore = this.notificacionesPusherStore
     const pusher = notificacionStore.pusher
 
@@ -56,7 +56,17 @@ export class PedidoPusherEvent {
         notificarCorrecto('Tienes un pedido esperando ser despachado')
       })
     }
-
+    
+    if(this.store.esCoordinadorBodega || this.store.esBodeguero){
+      const pedidoParcial = pusher.subscribe('pedidos-parciales-BODEGA')
+      pedidoParcial.bind('pedido-event', function (e) {
+        console.log(e)
+        notificacionStore.agregar(e.notificacion)
+        notificarAdvertencia('Tienes varios pedidos parciales pendiente de despacho')
+      })
+    }
+        
+    
     // //suscripcion al canal general del service worker
     // const canalGeneral = pusher.subscribe('mi-canal')
     // canalGeneral.bind('eventoPersonalizado', function (e) {
