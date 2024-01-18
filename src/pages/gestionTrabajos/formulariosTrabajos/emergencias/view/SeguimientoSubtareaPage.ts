@@ -5,10 +5,9 @@ import { AxiosHttpRepository } from 'shared/http/infraestructure/AxiosHttpReposi
 import { regiones, atenciones, accionesTabla, estadosTrabajos } from 'config/utils'
 import { CustomActionPrompt } from 'components/tables/domain/CustomActionPrompt'
 import { CustomActionTable } from 'components/tables/domain/CustomActionTable'
-import { computed, defineComponent, onMounted, Ref, ref, watch } from 'vue'
+import { computed, defineComponent, onMounted, reactive, Ref, ref, watch } from 'vue'
 import { useNotificaciones } from 'shared/notificaciones'
 import { apiConfig, endpoints } from 'config/api'
-import useVuelidate from '@vuelidate/core'
 import { AxiosResponse } from 'axios'
 
 // Componentes
@@ -18,25 +17,33 @@ import TablaDevolucionProducto from 'components/tables/view/TablaDevolucionProdu
 import TablaFilasDinamicas from 'components/tables/view/TablaFilasDinamicas.vue'
 import EssentialTable from 'components/tables/view/EssentialTable.vue'
 import ButtonSubmits from 'components/buttonSubmits/buttonSubmits.vue'
+import ModalesEntidad from 'components/modales/view/ModalEntidad.vue'
 import SelectorImagen from 'components/SelectorImagen.vue'
 import VisorImagen from 'components/VisorImagen.vue'
 
 // Logica y controladores
+import { MotivoCanceladoTicketController } from 'pages/gestionTickets/motivosCanceladosTickets/infraestructure/MotivoCanceladoTicketController'
+import { ComportamientoModalesTicketAsignado } from 'pages/gestionTickets/ticketsAsignados/application/ComportamientoModalesTicketAsignado'
 import { ActividadRealizadaSeguimientoSubtareaController } from '../infraestructure/ActividadRealizadaSeguimientoSubtareaController'
 import { MaterialOcupadoFormulario } from 'gestionTrabajos/formulariosTrabajos/emergencias/domain/MaterialOcupadoFormulario'
 import { ContenedorSimpleMixin } from 'shared/contenedor/modules/simple/application/ContenedorSimpleMixin'
 import { Archivo } from 'pages/gestionTrabajos/subtareas/modules/gestorArchivosTrabajos/domain/Archivo'
 import ActividadRealizadaSeguimientoSubtarea from '../domain/ActividadRealizadaSeguimientoSubtarea'
+import { useBotonesTablaTicket } from 'pages/gestionTickets/tickets/application/BotonesTablaTicket'
+import { TicketController } from 'pages/gestionTickets/tickets/infraestructure/TicketController'
 import { configuracionColumnasSumaMaterial } from '../domain/configuracionColumnasSumaMaterial'
+import { configuracionColumnasSolicitudAts } from '../domain/configuracionColumnasSolicitudAts'
 import { ArchivoSeguimientoController } from '../infraestructure/ArchivoSeguimientoController'
-import { StatusEssentialLoading } from 'components/loading/application/StatusEssentialLoading'
-import { EmergenciaController } from '../infraestructure/EmergenciaController'
-import { useFiltrosListadosSelects } from 'shared/filtrosListadosGenerales'
+import { useGestionAtsApplication } from '../application/GestionAtsApplication'
 import { Subtarea } from 'pages/gestionTrabajos/subtareas/domain/Subtarea'
+import { Ticket } from 'pages/gestionTickets/tickets/domain/Ticket'
 import { imprimirArchivo, obtenerFechaActual } from 'shared/utils'
 import { useTrabajoAsignadoStore } from 'stores/trabajoAsignado'
 import { useAuthenticationStore } from 'stores/authentication'
-import { Emergencia } from '../domain/Emergencia'
+import { useMaterialesProyecto } from 'pages/gestionTrabajos/miBodega/application/UseMaterialesProyecto'
+import { FiltroMiBodegaProyecto } from 'pages/gestionTrabajos/miBodega/domain/FiltroMiBodegaProyecto'
+import { useMaterialesEmpleado } from 'pages/gestionTrabajos/miBodega/application/UseMaterialesEmpleado'
+import { FiltroMiBodegaEmpleado } from 'pages/gestionTrabajos/miBodega/domain/FiltroMiBodegaEmpleado'
 
 export default defineComponent({
   components: {
@@ -48,6 +55,7 @@ export default defineComponent({
     ArchivoSeguimiento,
     TablaFilasDinamicas,
     VisorImagen,
+    ModalesEntidad,
   },
   props: {
     mixinModal: {
@@ -66,17 +74,11 @@ export default defineComponent({
     /********
     * Mixin
     *********/
-    const mixin = new ContenedorSimpleMixin(Emergencia, new EmergenciaController())
-    const { entidad: emergencia, accion, listadosAuxiliares } = mixin.useReferencias()
-    const { guardar, editar, reestablecer, setValidador, cargarVista } = mixin.useComportamiento()
-    const { onBeforeGuardar, onBeforeModificar, onGuardado, onModificado } = mixin.useHooks()
-
     const mixinArchivoSeguimiento = new ContenedorSimpleMixin(Archivo, new ArchivoSeguimientoController())
-    const { listar: listarSubtareas } = props.mixinModal.useComportamiento()
 
     const mixinActividad = new ContenedorSimpleMixin(ActividadRealizadaSeguimientoSubtarea, new ActividadRealizadaSeguimientoSubtareaController())
     const { entidad: actividad, listado: actividadesRealizadas } = mixinActividad.useReferencias()
-    const { guardar: guardarActividad, listar: listarActividadesRealizadas } = mixinActividad.useComportamiento()
+    const { guardar: guardarActividad, listar: listarActividadesRealizadas, cargarVista } = mixinActividad.useComportamiento()
 
     /************
      * Variables
@@ -91,14 +93,32 @@ export default defineComponent({
     const usarMaterialStock = ref(false)
     const permitirSubir = ![estadosTrabajos.FINALIZADO, estadosTrabajos.PAUSADO].includes(trabajoAsignadoStore.subtarea.estado)
     const columnasMaterial = permitirSubir ? [...configuracionColumnasMaterialOcupadoFormulario, accionesTabla] : configuracionColumnasMaterialOcupadoFormulario
-    const { prompt, notificarAdvertencia } = useNotificaciones()
+    const { prompt } = useNotificaciones()
     const codigoSubtarea = trabajoAsignadoStore.codigoSubtarea
     const rangoFechasHistorial = computed(() => {
       return 'Rango disponible desde ' + trabajoAsignadoStore.subtarea.fecha_hora_ejecucion.substring(0, 10) + ' hasta ' + (trabajoAsignadoStore.subtarea.fecha_hora_finalizacion ?? obtenerFechaActual())
     })
 
-    const materialesTarea: Ref<MaterialOcupadoFormulario[]> = ref([])
-    const materialesStock: Ref<MaterialOcupadoFormulario[]> = ref([])
+    const mostrarMaterialConStock = ref(false)
+    const materialesTareaTodos: Ref<MaterialOcupadoFormulario[]> = ref([])
+    const materialesTarea = computed(() => {
+      if (mostrarMaterialConStock.value) {
+        return materialesTareaTodos.value.filter((material: MaterialOcupadoFormulario) => material.stock_actual)
+      } else {
+        return materialesTareaTodos.value
+      }
+    })
+
+    const mostrarMaterialStockConStock = ref(false)
+    const materialesStockTodos: Ref<MaterialOcupadoFormulario[]> = ref([])
+    const materialesStock = computed(() => {
+      if (mostrarMaterialStockConStock.value) {
+        return materialesStockTodos.value.filter((material: MaterialOcupadoFormulario) => material.stock_actual)
+      } else {
+        return materialesStockTodos.value
+      }
+    })
+
     const sumaMaterialesTareaUsado: Ref<MaterialOcupadoFormulario[]> = ref([])
     const historialMaterialTareaUsadoPorFecha: Ref<MaterialOcupadoFormulario[]> = ref([])
     const historialMaterialStockUsadoPorFecha: Ref<MaterialOcupadoFormulario[]> = ref([])
@@ -116,19 +136,56 @@ export default defineComponent({
     const clientes = ref([])
     const clientesMaterialesTarea = ref([])
 
-    // const cargando = new StatusEssentialLoading()
-
     const axios = AxiosHttpRepository.getInstance()
+
+    const parametrosGenerales = {
+      tarea_id: trabajoAsignadoStore.idTareaSeleccionada,
+      subtarea_id: trabajoAsignadoStore.subtarea.id,
+      proyecto_id: trabajoAsignadoStore.proyecto_id,
+      etapa_id: trabajoAsignadoStore.etapa_id,
+      // cliente_id: trabajoAsignadoStore.cliente_id,
+      empleado_id: obtenerIdEmpleadoResponsable(),
+    }
+
+    // Tickets
+    const modales = new ComportamientoModalesTicketAsignado()
+    const mixin = new ContenedorSimpleMixin(Ticket, new TicketController())
+    const { obtenerListados } = mixin.useComportamiento()
+    const { listadosAuxiliares } = mixin.useReferencias()
+    obtenerListados({
+      motivosCancelados: {
+        controller: new MotivoCanceladoTicketController(),
+        params: { activo: 1 },
+      },
+      clientesMaterialesTarea: [],
+      clientesMaterialesEmpleado: [],
+    })
+
+    const { mostrarSolicitudesAts, consultarTicketsATS, ticketsAts, guardarFilaSolicitudAts } = useGestionAtsApplication(cargarVista)
+    const { btnSeguimiento, btnCancelar } = useBotonesTablaTicket(mixin, modales)
+
+    const filtroMiBodegaProyecto = reactive(new FiltroMiBodegaProyecto())
+    filtroMiBodegaProyecto.empleado_id = parametrosGenerales.empleado_id
+    filtroMiBodegaProyecto.proyecto_id = parametrosGenerales.proyecto_id
+    filtroMiBodegaProyecto.etapa_id = parametrosGenerales.etapa_id
+
+    const filtroEmpleado = new FiltroMiBodegaEmpleado()
+    filtroEmpleado.empleado_id = parametrosGenerales.empleado_id
+
+    const { consultarClientesMaterialesTarea } = useMaterialesProyecto(filtroMiBodegaProyecto, listadosAuxiliares)
+    const { consultarClientesMaterialesEmpleado } = useMaterialesEmpleado(filtroEmpleado, listadosAuxiliares)
 
     /************
      * Init
      ************/
-    // actualizarTablaMaterialesTarea()
     listarActividadesRealizadas({ subtarea_id: trabajoAsignadoStore.subtarea.id })
     obtenerFechasHistorialMaterialesUsados()
     obtenerFechasHistorialMaterialesStockUsados()
     obtenerClientesMaterialesTarea()
     obtenerClientesMaterialesEmpleado()
+    consultarTicketsATS(subtarea.id)
+    seleccionarClienteMaterialTarea()
+    seleccionarClienteMaterialStock()
 
     onMounted(() => refArchivoSeguimiento.value.listarArchivos({ subtarea_id: trabajoAsignadoStore.subtarea.id }))
 
@@ -203,7 +260,7 @@ export default defineComponent({
           mensaje: 'Ingresa la cantidad',
           defecto: historialMaterialTareaUsadoPorFecha.value[posicion].cantidad_utilizada,
           tipo: 'number',
-          validacion: (val) => !!val && val >= 0 && val <= entidad.stock_actual + entidad.cantidad_utilizada, //(accion.value === acciones.nuevo ? val <= entidad.stock_actual : true),
+          validacion: (val) => !!val && val >= 0 && val <= entidad.stock_actual + entidad.cantidad_utilizada,
           accion: async (valor) => {
             entidad.cantidad_anterior = entidad.cantidad_utilizada
             entidad.cantidad_utilizada = valor
@@ -226,7 +283,7 @@ export default defineComponent({
           mensaje: 'Ingresa la cantidad',
           defecto: historialMaterialStockUsadoPorFecha.value[posicion].cantidad_utilizada,
           tipo: 'number',
-          validacion: (val) => !!val && val >= 0 && val <= entidad.stock_actual + entidad.cantidad_utilizada, //(accion.value === acciones.nuevo ? val <= entidad.stock_actual : true),
+          validacion: (val) => !!val && val >= 0 && val <= entidad.stock_actual + entidad.cantidad_utilizada,
           accion: async (valor) => {
             entidad.cantidad_anterior = entidad.cantidad_utilizada
             entidad.cantidad_utilizada = valor
@@ -237,16 +294,6 @@ export default defineComponent({
         prompt(config)
       },
     }
-
-    /*************
-    * Validaciones
-    **************/
-    const reglas = {
-      // regional: { required },
-    }
-
-    const v$ = useVuelidate(reglas, emergencia)
-    setValidador(v$.value)
 
     /************
     * Funciones
@@ -283,13 +330,18 @@ export default defineComponent({
 
     async function actualizarCantidadUtilizadaTarea(material) {
       const params = {
-        tarea_id: trabajoAsignadoStore.idTareaSeleccionada,
+        /* tarea_id: trabajoAsignadoStore.idTareaSeleccionada,
         subtarea_id: trabajoAsignadoStore.subtarea.id,
-        empleado_id: obtenerIdEmpleadoResponsable(),
+        proyecto_id: trabajoAsignadoStore.proyecto_id,
+        etapa_id: trabajoAsignadoStore.etapa_id,
+        cliente_id: trabajoAsignadoStore.cliente_id,
+        empleado_id: obtenerIdEmpleadoResponsable(), */
+        ...parametrosGenerales,
         detalle_producto_id: material.detalle_producto_id,
         cantidad_utilizada: material.cantidad_utilizada,
         cantidad_anterior: material.cantidad_anterior,
         fecha: fecha_historial.value,
+        cliente_id: material.cliente_id,
       }
       const ruta = axios.getEndpoint(endpoints.actualizar_cantidad_utilizada_tarea, params)
       const response: AxiosResponse = await axios.post(ruta)
@@ -312,22 +364,35 @@ export default defineComponent({
 
     function obtenerIdEmpleadoResponsable() {
       if (esLider) return authenticationStore.user.id
-      else return trabajoAsignadoStore.idEmpleadoResponsable
+      else return trabajoAsignadoStore.subtarea.empleado_responsable_id // idEmpleadoResponsable
     }
 
     async function obtenerMaterialesTarea(cliente: number) {
       cargarVista(async () => {
-        const ruta = axios.getEndpoint(endpoints.materiales_empleado_tarea, { tarea_id: trabajoAsignadoStore.idTareaSeleccionada, subtarea_id: trabajoAsignadoStore.subtarea.id, empleado_id: obtenerIdEmpleadoResponsable(), cliente_id: cliente, seguimiento: 1 })
+        const filtro = {
+          tarea_id: trabajoAsignadoStore.subtarea.tarea_id,
+          subtarea_id: trabajoAsignadoStore.subtarea.id,
+          empleado_id: obtenerIdEmpleadoResponsable(),
+          cliente_id: cliente,
+          proyecto_id: subtarea.proyecto_id,
+          etapa_id: subtarea.etapa_id,
+        }
+
+        if (!subtarea.proyecto_id) delete filtro.proyecto_id
+        if (!subtarea.etapa_id) delete filtro.etapa_id
+        if (subtarea.etapa_id) delete filtro.tarea_id
+
+        const ruta = axios.getEndpoint(endpoints.materiales_empleado_tarea, filtro)
         const response: AxiosResponse = await axios.get(ruta)
-        materialesTarea.value = response.data.results
+        materialesTareaTodos.value = response.data.results
       })
     }
 
     function obtenerMaterialesStock(cliente: number) {
       cargarVista(async () => {
-        const ruta = axios.getEndpoint(endpoints.materiales_empleado, { empleado_id: obtenerIdEmpleadoResponsable(), subtarea_id: trabajoAsignadoStore.subtarea.id, cliente_id: cliente, seguimiento: 1 })
+        const ruta = axios.getEndpoint(endpoints.materiales_empleado, { empleado_id: obtenerIdEmpleadoResponsable(), subtarea_id: trabajoAsignadoStore.subtarea.id, cliente_id: cliente })
         const response: AxiosResponse = await axios.get(ruta)
-        materialesStock.value = response.data.results
+        materialesStockTodos.value = response.data.results
       })
     }
 
@@ -364,28 +429,17 @@ export default defineComponent({
     }
 
     function obtenerClientesMaterialesEmpleado() {
-      cargarVista(async () => {
-        const ruta = axios.getEndpoint(endpoints.obtener_clientes_materiales_empleado) + '/' + obtenerIdEmpleadoResponsable()
-        const response: AxiosResponse = await axios.get(ruta)
+      /*FcargarVista(async () => {
+        const ruta = axios.getEndpoint(endpoints.obtener_clientes_materiales_empleado) //+ '/' + obtenerIdEmpleadoResponsable()
+        const response: AxiosResponse = await axios.get(ruta, { empleado_id: obtenerIdEmpleadoResponsable() })
         clientes.value = response.data.results
-      })
+      })*/
+      consultarClientesMaterialesEmpleado()
     }
 
-    function obtenerClientesMaterialesTarea() {
-      cargarVista(async () => {
-        const ruta = axios.getEndpoint(endpoints.obtener_clientes_materiales_tarea) + '/' + obtenerIdEmpleadoResponsable()
-        const response: AxiosResponse = await axios.get(ruta)
-        clientesMaterialesTarea.value = response.data.results
-      })
-    }
-
-    // Antes de guardar y editar seguimiento
-    function filtrarMaterialesTareaOcupados() {
-      return materialesTarea.value.filter((material: any) => material.hasOwnProperty('cantidad_utilizada')) // && material.cantidad_utilizada > 0)
-    }
-
-    function filtrarMaterialesStockOcupados() {
-      return materialesStock.value.filter((material: any) => material.hasOwnProperty('cantidad_utilizada')) // && material.cantidad_utilizada > 0)
+    async function obtenerClientesMaterialesTarea() {
+      if (parametrosGenerales.etapa_id) consultarClientesMaterialesTarea({ proyecto_id: parametrosGenerales.proyecto_id, etapa_id: parametrosGenerales.etapa_id, filtrar_por_etapa: true })
+      else consultarClientesMaterialesTarea({ proyecto_id: parametrosGenerales.proyecto_id, etapa_id: parametrosGenerales.etapa_id, filtrar_por_proyecto: true })
     }
 
     async function descargarExcel() {
@@ -394,17 +448,10 @@ export default defineComponent({
       imprimirArchivo(ruta, 'GET', 'blob', 'xlsx', 'reporte_hoy_')
     }
 
-    async function guardarSeguimiento() {
-      guardar(emergencia, true, { empleado_id: obtenerIdEmpleadoResponsable(), tarea_id: trabajoAsignadoStore.idTareaSeleccionada, grupo: trabajoAsignadoStore.subtarea.grupo }).catch((e) => {
-        notificarAdvertencia('Ingrese al menos una actividad para guardar.')
-      })
-    }
-
     function subirArchivos() {
       refArchivoSeguimiento.value.subir({ subtarea_id: trabajoAsignadoStore.subtarea.id })
     }
 
-    let cerrarModal = true
     function resetearFiltroHistorialTarea() {
       fecha_historial.value = null
       historialMaterialTareaUsadoPorFecha.value = []
@@ -415,25 +462,28 @@ export default defineComponent({
       historialMaterialStockUsadoPorFecha.value = []
     }
 
-    function editarSeguimiento(cerrarVentanaModal = true) {
-      if (permitirSubir) {
-        cerrarModal = cerrarVentanaModal
-        fecha_historial.value = null
-        historialMaterialTareaUsadoPorFecha.value = []
-        editar(emergencia, cerrarModal, { empleado_id: obtenerIdEmpleadoResponsable(), tarea_id: trabajoAsignadoStore.idTareaSeleccionada, grupo: trabajoAsignadoStore.subtarea.grupo })
-      }
-    }
-
     function guardarFilaActividad(data) {
       actividad.hydrate(data)
       actividad.subtarea = trabajoAsignadoStore.subtarea.id
       guardarActividad(actividad)
     }
 
+    function seleccionarClienteMaterialTarea() {
+      clienteMaterialTarea.value = subtarea.cliente_id
+
+      obtenerMaterialesTarea(clienteMaterialTarea.value)
+    }
+
+    function seleccionarClienteMaterialStock() {
+      clienteMaterialStock.value = subtarea.cliente_id
+
+      obtenerMaterialesStock(clienteMaterialStock.value)
+    }
+
     /**********
      * Filtros
      **********/
-    const { filtrarClientes } = useFiltrosListadosSelects(listadosAuxiliares)
+    // const { filtrarClientes } = useFiltrosListadosSelects(listadosAuxiliares)
 
     /*************
      * Observers
@@ -454,42 +504,16 @@ export default defineComponent({
       }
     })
 
-    /********
-    * Hooks
-    *********/
-    onBeforeGuardar(() => {
-      emergencia.materiales_tarea_ocupados = filtrarMaterialesTareaOcupados()
-      emergencia.materiales_stock_ocupados = filtrarMaterialesStockOcupados()
-      emergencia.subtarea = trabajoAsignadoStore.idSubtareaSeleccionada
-    })
-
-    onBeforeModificar(() => {
-      emergencia.materiales_tarea_ocupados = filtrarMaterialesTareaOcupados()
-      emergencia.materiales_stock_ocupados = filtrarMaterialesStockOcupados()
-      emergencia.subtarea = trabajoAsignadoStore.idSubtareaSeleccionada
-      // emergencia.trabajo_realizado = nuevasActividades.value
-    })
-
-    onGuardado((id: number) => {
-      listarSubtareas({ estado: estadosTrabajos.EJECUTANDO })
-      emit('cerrar-modal', false)
-    })
-
-    onModificado((id: number) => {
-      if (cerrarModal) emit('cerrar-modal', false)
-    })
+    console.log(subtarea)
+    console.log(subtarea.proyecto_id)
+    console.log(subtarea.proyecto_id === null)
 
     return {
-      v$,
       refVisorImagen,
       refTrabajos,
       refObservaciones,
       refArchivoSeguimiento,
       mixinArchivoSeguimiento,
-      emergencia,
-      accion,
-      guardarSeguimiento,
-      editarSeguimiento,
       utilizarMateriales,
       existeMaterialesDevolucion,
       existeObservaciones,
@@ -510,11 +534,7 @@ export default defineComponent({
       botonEditarCantidadStockHistorial,
       regiones,
       atenciones,
-      guardar,
-      editar,
-      reestablecer,
       emit,
-      listadosAuxiliares,
       codigoSubtarea,
       esLider,
       esCoordinador,
@@ -532,22 +552,32 @@ export default defineComponent({
       fecha_historial,
       fecha_historial_stock,
       rangoFechasHistorial,
-      // actualizarTablaMaterialesTarea,
-      // actualizarTablaMaterialesStock,
       actividadesRealizadas,
       guardarFilaActividad,
+      mostrarMaterialStock: subtarea.proyecto_id === null,
       mostrarBotonSubir: computed(() => refArchivoSeguimiento.value?.quiero_subir_archivos),
       subirArchivos,
       fechasHistorialMaterialesUsados,
       fechasHistorialMaterialesStockUsados,
       resetearFiltroHistorialTarea,
       resetearFiltroHistorialStock,
-      filtrarClientes,
       clienteMaterialStock,
       clienteMaterialTarea,
       obtenerMaterialesStock,
       obtenerMaterialesTarea,
       clientesMaterialesTarea,
+      listadosAuxiliares,
+      // tickets ATS
+      ticketsAts,
+      configuracionColumnasSolicitudAts,
+      Ticket,
+      guardarFilaSolicitudAts,
+      btnSeguimiento,
+      btnCancelar,
+      modales,
+      mostrarMaterialConStock,
+      mostrarMaterialStockConStock,
+      mostrarSolicitudesAts,
     }
   }
 })

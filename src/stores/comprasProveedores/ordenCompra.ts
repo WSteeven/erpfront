@@ -4,9 +4,12 @@ import { apiConfig, endpoints } from 'config/api';
 import { acciones } from 'config/utils';
 import { OrdenCompra } from 'pages/comprasProveedores/ordenCompra/domain/OrdenCompra';
 import { defineStore } from 'pinia';
+import { useQuasar } from 'quasar';
 import { AxiosHttpRepository } from 'shared/http/infraestructure/AxiosHttpRepository';
 import { useNotificaciones } from 'shared/notificaciones';
-import { imprimirArchivo, notificarMensajesError } from 'shared/utils';
+import { imprimirArchivo } from 'shared/utils';
+import { useNotificacionStore } from 'stores/notificacion';
+
 import { reactive, ref } from 'vue';
 
 export const useOrdenCompraStore = defineStore('ordenCompra', () => {
@@ -15,6 +18,9 @@ export const useOrdenCompraStore = defineStore('ordenCompra', () => {
   const ordenReset = new OrdenCompra()
   const idOrden = ref()
   const permitirSubir = ref(true)
+
+  const notificacionesStore = useNotificacionStore()
+  notificacionesStore.setQuasar(useQuasar())
 
   const { notificarCorrecto, notificarAdvertencia, notificarError } = useNotificaciones()
   const accionOrden = acciones.nuevo

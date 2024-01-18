@@ -21,13 +21,13 @@ export class Empleado extends EntidadAuditable {
   num_cuenta: string | null
   banco: number | null
   salario: number | null
-  departamento: number | null
+  departamento: string | number | null
   departamento_id: number | null
   roles: string[] | string // | null
   permisos: string[] | string // | null
   grupo: number | null
   fecha_ingreso: string | null
-  antiguedad : string | null
+  antiguedad: string | null
   fecha_vinculacion: string | null
   modificar_fecha_vinculacion: boolean | null
   fecha_salida: string | null
@@ -57,11 +57,13 @@ export class Empleado extends EntidadAuditable {
   talla_guantes: string | null
   talla_pantalon: string | null
   genero: string | null
-  esta_en_rol_pago:boolean | null
-  realiza_factura:boolean | null
+  esta_en_rol_pago: boolean | null
+  realiza_factura: boolean | null
   banco_info: string | null
-  acumula_fondos_reserva : boolean | null
-  familiares: any[] |null
+  acumula_fondos_reserva: boolean | null
+  familiares: any[] | null
+  generar_usuario: boolean
+
 
   constructor() {
     super()
@@ -96,7 +98,7 @@ export class Empleado extends EntidadAuditable {
     this.fecha_vinculacion = null
     this.fecha_salida = null
     this.tipo_contrato = null
-    this.tipo_contrato_info=null
+    this.tipo_contrato_info = null
     this.disponible = true
     this.es_lider = false
     this.grupo_id = null
@@ -115,16 +117,17 @@ export class Empleado extends EntidadAuditable {
     this.nivel_academico = null
     this.observacion = null
     this.responsable_departamento = false
-    this.supa= null
-    this.talla_zapato= null
-    this.talla_camisa= null
-    this.talla_guantes= null
-    this.talla_pantalon= null
+    this.supa = null
+    this.talla_zapato = null
+    this.talla_camisa = null
+    this.talla_guantes = null
+    this.talla_pantalon = null
     this.genero = 'M'
     this.banco_info = null
     this.esta_en_rol_pago = true
     this.acumula_fondos_reserva = false
     this.realiza_factura = false
-    this.familiares = []
+    this.familiares = [],
+      this.generar_usuario = false
   }
 }

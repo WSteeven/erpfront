@@ -2,7 +2,7 @@
   <div class="q-pa-sm">
     <div class="row q-col-gutter-sm q-py-md">
       <!-- Mes -->
-      <div class="col-12 col-md-3">
+      <div class="col-12 col-md-3 col-sm-6">
         <label class="q-mb-sm block"> Mes </label>
         <q-input
           v-model="rolpago.mes"
@@ -48,7 +48,7 @@
         </q-input>
       </div>
       <!-- Empleados -->
-      <div class="col-12 col-md-3">
+      <div class="col-12 col-md-3 col-sm-6">
         <label class="q-mb-sm block">Empleado</label>
         <q-select
           v-model="rolpago.empleado"
@@ -65,25 +65,27 @@
           @filter="filtrarEmpleado"
           :option-value="(v) => v.id"
           @update:model-value="datos_empleado()"
-          :option-label="(v) => v.nombres + ' ' + v.apellidos"
+          :option-label="(v) => v.apellidos + ' ' + v.nombres"
           emit-value
           map-options
         >
           <template v-slot:no-option>
             <q-item>
-              <q-item-section class="text-grey"> No hay resultados </q-item-section>
+              <q-item-section class="text-grey">
+                No hay resultados
+              </q-item-section>
             </q-item>
           </template>
         </q-select>
       </div>
       <!-- Días -->
-      <div class="col-12 col-md-3">
+      <div class="col-12 col-md-3 col-sm-6">
         <label class="q-mb-sm block">Días Laborados</label>
         <q-input
           v-model="rolpago.dias"
           placeholder="Obligatorio"
-          type="number"
           mask="##"
+          step="1"
           :disable="disabled"
           outlined
           dense
@@ -91,7 +93,7 @@
         </q-input>
       </div>
       <!-- Días  de permisos sin recuperar-->
-      <div class="col-12 col-md-3">
+      <div class="col-12 col-md-3 col-sm-6">
         <label class="q-mb-sm block">Días de permisos sin recuperar</label>
         <q-input
           v-model="rolpago.dias_permiso_sin_recuperar"
@@ -103,7 +105,7 @@
         </q-input>
       </div>
       <!-- Salario -->
-      <div class="col-12 col-md-3">
+      <div class="col-12 col-md-3 col-sm-6">
         <label class="q-mb-sm block">Salario</label>
         <q-input
           v-model="rolpago.salario"
@@ -116,7 +118,7 @@
         </q-input>
       </div>
       <!-- Medio Tiempo -->
-      <div class="col-12 col-md-3" v-if="rolpago.es_quincena">
+      <div class="col-12 col-md-3 col-sm-6" v-if="rolpago.es_quincena">
         <label class="q-mb-sm block">Trabaja Medio tiempo</label>
         <q-toggle
           :label="rolpago.medio_tiempo ? 'Medio Tiempo' : 'Tiempo completo'"
@@ -128,11 +130,11 @@
           :disable="disabled"
         />
       </div>
-       <!-- Medio Tiempo -->
-       <div class="col-12 col-md-3">
+      <!-- Vendedor Medio Tiempo -->
+      <div class="col-12 col-md-3 col-sm-6">
         <label class="q-mb-sm block">Vendedor Trabaja Medio tiempo</label>
         <q-toggle
-          :label="rolpago.es_vendedor_medio_tiempo ? 'Vendedor Medio Tiempo' : 'Vendedor Tiempo completo'"
+          :label="rolpago.es_vendedor_medio_tiempo ? 'SI' : 'NO'"
           v-model="rolpago.es_vendedor_medio_tiempo"
           color="primary"
           keep-color
@@ -141,20 +143,37 @@
           :disable="disabled"
         />
       </div>
+      <!-- Modificar sueldo -->
+      <div class="col-12 col-md-3 col-sm-6" v-if="rolpago.es_quincena">
+        <label class="q-mb-sm block">Modificar el sueldo</label>
+        <q-toggle
+          :label="rolpago.sueldo_quincena_modificado ? 'SI' : 'NO'"
+          v-model="rolpago.sueldo_quincena_modificado"
+          color="primary"
+          keep-color
+          icon="bi-clock-history"
+          unchecked-icon="bi-clock"
+          :disable="disabled"
+        />
+      </div>
       <!-- Sueldo -->
-      <div class="col-12 col-md-3">
+      <div class="col-12 col-md-3 col-sm-6">
         <label class="q-mb-sm block">Sueldo</label>
         <q-input
           v-model="rolpago.sueldo"
           placeholder="Obligatorio"
           type="number"
-          disable
+          :disable="disabled || !rolpago.sueldo_quincena_modificado"
           outlined
           dense
         >
         </q-input>
       </div>
-      <div class="col-12 col-md-3" v-if="rolpago.es_vendedor_medio_tiempo && rolpago.es_quincena">
+      <!-- Porcentaje Anticipo -->
+      <div
+        class="col-12 col-md-3"
+        v-if="rolpago.es_vendedor_medio_tiempo && rolpago.es_quincena"
+      >
         <label class="q-mb-sm block">Porcentaje Quincena</label>
         <q-input
           v-model="rolpago.porcentaje_quincena"
@@ -169,7 +188,13 @@
       <!-- Anticipo -->
       <div class="col-12 col-md-3" v-if="!rolpago.es_quincena">
         <label class="q-mb-sm block">Anticipo</label>
-        <q-input v-model="rolpago.anticipo" type="number" disable outlined dense>
+        <q-input
+          v-model="rolpago.anticipo"
+          type="number"
+          disable
+          outlined
+          dense
+        >
         </q-input>
       </div>
       <!-- Documento -->
@@ -188,7 +213,7 @@
       </div>
     </div>
     <q-expansion-item
-      v-if="!rolpago.es_quincena"
+      v-if="!rolpago.es_quincena && accion!== acciones.nuevo"
       class="overflow-hidden q-mb-md expansion"
       label="Ingresos"
       header-class="text-bold bg-header-collapse"
@@ -196,7 +221,7 @@
     >
       <div class="row q-col-gutter-sm q-py-md q-mx-xs">
         <!-- Bonificacion -->
-        <div class="col-12 col-md-3">
+        <div class="col-12 col-md-3 col-sm-4">
           <label class="q-mb-sm block">Bonificación</label>
           <q-input
             v-model="rolpago.bonificacion"
@@ -209,7 +234,7 @@
           </q-input>
         </div>
         <!-- Concepto -->
-        <div class="col-12 col-md-3">
+        <div class="col-12 col-md-3 col-sm-4">
           <label class="q-mb-sm block">Concepto</label>
           <q-select
             v-model="rolpago.concepto_ingreso"
@@ -237,13 +262,15 @@
             </template>
             <template v-slot:no-option>
               <q-item>
-                <q-item-section class="text-grey"> No hay resultados </q-item-section>
+                <q-item-section class="text-grey">
+                  No hay resultados
+                </q-item-section>
               </q-item>
             </template>
           </q-select>
         </div>
         <!-- Tipos de Horas Extras -->
-        <div class="col-12 col-md-3" v-if="rolpago.concepto_ingreso == 2">
+        <div class="col-12 col-md-3 col-sm-4" v-if="rolpago.concepto_ingreso == 2">
           <label class="q-mb-sm block">Tipo de Hora Extra</label>
           <q-select
             v-model="rolpago.horas_extra_tipo"
@@ -265,15 +292,19 @@
           >
             <template v-slot:no-option>
               <q-item>
-                <q-item-section class="text-grey"> No hay resultados </q-item-section>
+                <q-item-section class="text-grey">
+                  No hay resultados
+                </q-item-section>
               </q-item>
             </template>
           </q-select>
         </div>
         <!-- Sub Tipos de Horas Extras -->
         <div
-          class="col-12 col-md-3"
-          v-if="rolpago.horas_extra_tipo !== null && rolpago.horas_extra_tipo !== ''"
+          class="col-12 col-md-3 col-sm-4"
+          v-if="
+            rolpago.horas_extra_tipo !== null && rolpago.horas_extra_tipo !== ''
+          "
         >
           <label class="q-mb-sm block">Sub Tipo de Hora Extra</label>
           <q-select
@@ -296,15 +327,19 @@
           >
             <template v-slot:no-option>
               <q-item>
-                <q-item-section class="text-grey"> No hay resultados </q-item-section>
+                <q-item-section class="text-grey">
+                  No hay resultados
+                </q-item-section>
               </q-item>
             </template>
           </q-select>
         </div>
         <!---Campo-->
         <div
-          class="col-12 col-md-3"
-          v-if="rolpago.concepto_ingreso != '' && rolpago.concepto_ingreso != null"
+          class="col-12 col-md-3 col-sm-4"
+          v-if="
+            rolpago.concepto_ingreso != '' && rolpago.concepto_ingreso != null
+          "
         >
           <label class="q-mb-sm block">Valor</label>
           <q-input
@@ -321,7 +356,7 @@
           </q-input>
         </div>
         <!-- Bono Recurente -->
-        <div class="col-12 col-md-3">
+        <div class="col-12 col-md-3 col-sm-4">
           <label class="q-mb-sm block">Bono Recurente</label>
           <q-input
             v-model="rolpago.bono_recurente"
@@ -334,9 +369,27 @@
           </q-input>
         </div>
       </div>
+      <div v-if="rolpago.ingresos.length > 0">
+        <essential-table
+          titulo="Ingresos"
+          :configuracionColumnas="
+            accion == acciones.editar
+              ? [...configuracionColumnasIngresoRolPago, accionesTabla]
+              : [...configuracionColumnasIngresoRolPago]
+          "
+          :datos="rolpago.ingresos"
+          :permitirConsultar="false"
+          :permitirEditar="false"
+          :permitirEliminar="false"
+          :altoFijo="false"
+          :accion1="btnEditarIngreso"
+          :accion2="btnEliminarIngreso"
+        >
+        </essential-table>
+      </div>
     </q-expansion-item>
     <q-expansion-item
-      v-if="!rolpago.es_quincena"
+    v-if="!rolpago.es_quincena && accion!== acciones.nuevo"
       class="overflow-hidden q-mb-md expansion"
       label="Egresos"
       header-class="text-bold bg-header-collapse"
@@ -344,7 +397,7 @@
     >
       <div class="row q-col-gutter-sm q-py-md q-mx-xs">
         <!-- Descuento de Ley -->
-        <div class="col-12 col-md-3">
+        <div class="col-12 col-md-3 col-sm-4">
           <label class="q-mb-sm block">Descuento de Ley</label>
           <q-select
             v-model="rolpago.descuento_ley"
@@ -364,13 +417,15 @@
           >
             <template v-slot:no-option>
               <q-item>
-                <q-item-section class="text-grey"> No hay resultados </q-item-section>
+                <q-item-section class="text-grey">
+                  No hay resultados
+                </q-item-section>
               </q-item>
             </template>
           </q-select>
         </div>
         <!-- Descuentos Generales -->
-        <div class="col-12 col-md-3">
+        <div class="col-12 col-md-3 col-sm-4">
           <label class="q-mb-sm block">Descuentos Generales</label>
           <q-select
             v-model="rolpago.descuento_general"
@@ -390,13 +445,15 @@
           >
             <template v-slot:no-option>
               <q-item>
-                <q-item-section class="text-grey"> No hay resultados </q-item-section>
+                <q-item-section class="text-grey">
+                  No hay resultados
+                </q-item-section>
               </q-item>
             </template>
           </q-select>
         </div>
         <!-- Multa -->
-        <div class="col-12 col-md-3">
+        <div class="col-12 col-md-3 col-sm-4">
           <label class="q-mb-sm block">Multa</label>
           <q-select
             v-model="rolpago.multa"
@@ -416,17 +473,20 @@
           >
             <template v-slot:no-option>
               <q-item>
-                <q-item-section class="text-grey"> No hay resultados </q-item-section>
+                <q-item-section class="text-grey">
+                  No hay resultados
+                </q-item-section>
               </q-item>
             </template>
           </q-select>
         </div>
         <!---Campo-->
         <div
-          class="col-12 col-md-3"
+          class="col-12 col-md-3 col-sm-4"
           v-if="
             (rolpago.multa != '' && rolpago.multa != null) ||
-            (rolpago.descuento_general != '' && rolpago.descuento_general != null) ||
+            (rolpago.descuento_general != '' &&
+              rolpago.descuento_general != null) ||
             (rolpago.descuento_ley != '' && rolpago.descuento_ley != null)
           "
         >
@@ -444,6 +504,24 @@
             </template>
           </q-input>
         </div>
+      </div>
+      <div v-if="rolpago.egresos.length > 0">
+        <essential-table
+          titulo="Egresos"
+          :configuracionColumnas="
+            accion == acciones.editar
+              ? [...configuracionColumnasEgresoRolPago, accionesTabla]
+              : [...configuracionColumnasEgresoRolPago]
+          "
+          :datos="rolpago.egresos"
+          :permitirConsultar="false"
+          :permitirEditar="false"
+          :permitirEliminar="false"
+          :altoFijo="false"
+          :accion1="btnEditarEgreso"
+          :accion2="btnEliminarEgreso"
+        >
+        </essential-table>
       </div>
     </q-expansion-item>
     <div class="row justify-end q-col-gutter-x-xs">

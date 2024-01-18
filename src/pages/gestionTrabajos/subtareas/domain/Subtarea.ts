@@ -1,6 +1,7 @@
 import { EntidadAuditable } from 'shared/entidad/domain/entidadAuditable'
 import { destinosTareas, modosAsignacionTrabajo } from 'config/tareas.utils'
 import { Empleado } from 'pages/recursosHumanos/empleados/domain/Empleado'
+import { estadosTrabajos } from 'config/utils'
 
 export class Subtarea extends EntidadAuditable {
   codigo_tarea: string | null
@@ -11,7 +12,7 @@ export class Subtarea extends EntidadAuditable {
   observacion: string | null
   para_cliente_proyecto: string | null
   fecha_solicitud: string | null
-  estado: string | null
+  estado: keyof typeof estadosTrabajos | null
   modo_asignacion_trabajo: string
 
   // Tiempos
@@ -43,6 +44,7 @@ export class Subtarea extends EntidadAuditable {
   coordinador_id: number | null
   fiscalizador: number | null
   proyecto: number | null
+  etapa: number | null
   cliente: number | null
   cliente_id: number | null
   subtarea_dependiente: string | null
@@ -71,6 +73,7 @@ export class Subtarea extends EntidadAuditable {
   cantidad_adjuntos: number | null
   ruta_tarea: string | null
   metraje_tendido: number | null
+  etapa_id: number | null
 
   constructor() {
     super()
@@ -118,6 +121,7 @@ export class Subtarea extends EntidadAuditable {
     this.coordinador_id = null
     this.fiscalizador = null
     this.proyecto = null
+    this.etapa = null
     this.cliente = null
     this.cliente_id = null
     this.trabajo_padre = null
@@ -125,8 +129,7 @@ export class Subtarea extends EntidadAuditable {
 
     this.subtarea_dependiente_id = null
     this.metraje_tendido = null
-
-    // this.archivos = []
+    this.etapa_id = null
 
     // Listados
     this.empleado = null

@@ -45,7 +45,7 @@
         >
           <div
             v-if="lineaTiempo"
-            class="row q-gutter-md items-center no-wrap bg-white rounded q-pa-xs"
+            class="row q-gutter-md items-center no-wrap bg-body-table rounded q-pa-xs"
           >
             <div
               v-for="(linea, index) in lineaTiempo"
@@ -73,7 +73,6 @@
                 <q-card-section
                   class="column q-gutter-sm items-center text-center"
                 >
-                  <!-- <q-icon name="boy" size="50px" color="grey"></q-icon> -->
                   <div class="circulo">
                     <q-img
                       :src="linea.foto"

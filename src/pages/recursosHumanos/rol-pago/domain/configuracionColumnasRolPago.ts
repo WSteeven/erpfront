@@ -74,6 +74,13 @@ export const configuracionColumnasRolPago: ColumnConfig<RolPago>[] = [
   sortable: true
 },
 {
+  name: 'iess',
+  field: 'iess',
+  label: 'Aporte IESS',
+  align: 'left',
+  sortable: true
+},
+{
   name: 'supa',
   field: 'supa',
   label: 'SUPA',
@@ -105,13 +112,6 @@ export const configuracionColumnasRolPago: ColumnConfig<RolPago>[] = [
   name: 'prestamo_empresarial',
   field: 'prestamo_empresarial',
   label: 'Prestamo Empresarial',
-  align: 'left',
-  sortable: true
-},
-{
-  name: 'iess',
-  field: 'iess',
-  label: 'Aporte IESS',
   align: 'left',
   sortable: true
 },

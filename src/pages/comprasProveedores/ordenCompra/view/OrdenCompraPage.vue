@@ -304,7 +304,7 @@
               :error="!!v$.proveedor.$errors.length"
               error-message="Debes seleccionar al menos una opcion"
               :disable="disabled || soloLectura"
-              :option-label="(v) => v.razon_social"
+              :option-label="(v) => v.razon_social +' - '+v.sucursal"
               :option-value="(v) => v.id"
               emit-value
               map-options
@@ -313,7 +313,7 @@
                   <q-item-section>
                     <q-item-label>{{ scope.opt.razon_social }}</q-item-label>
                     <q-item-label caption
-                      >Sucursal:
+                      >{{scope.opt.nombre_comercial}} - Sucursal:
                       {{
                         scope.opt.sucursal || scope.opt.direccion
                       }}</q-item-label
@@ -522,8 +522,36 @@
               dense
             ></q-checkbox>
           </div>
-          <!-- Configuracion para seleccionar productos -->
           <!-- {{ orden.listadoProductos }} -->
+          <!-- Manejo de archivos -->
+          <div class="col-12 q-mb-md">
+            <gestor-archivos
+              ref="refArchivo"
+              label="Adjuntar archivos/proformas"
+              :mixin="mixin"
+              :disable="disabled"
+              :listarAlGuardar="false"
+              :permitir-eliminar="
+                accion == acciones.nuevo || accion == acciones.editar
+              "
+              :idModelo="idOrden"
+            >
+              <template #boton-subir>
+                <q-btn
+                  v-if="false"
+                  color="positive"
+                  push
+                  no-caps
+                  class="full-width q-mb-lg"
+                  @click="subirArchivos()"
+                >
+                  <q-icon name="bi-upload" class="q-mr-sm" size="xs"></q-icon>
+                  Subir archivos seleccionados</q-btn
+                >
+              </template>
+            </gestor-archivos>
+          </div>
+          <!-- Configuracion para seleccionar productos -->
           <!-- Selector de productos -->
           <div class="col-12 col-md-12">
             <label class="q-mb-sm block">Agregar productos</label>
@@ -603,7 +631,6 @@
                     store.esCompras) &&
                   (orden.autorizacion == 1 || store.esCompras))"
               :permitirEliminar="false"
-              :mostrarBotones="false"
               :altoFijo="false"
               :accion1="btnEliminarFila"
               @guardarFila="(fila) => guardarFilaEditada(fila)"

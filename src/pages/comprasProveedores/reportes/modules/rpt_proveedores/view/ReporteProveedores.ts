@@ -118,7 +118,7 @@ export default defineComponent({
             }
         }
         const btnReporteCalificacionProveedor: CustomActionTable = {
-            titulo: '',
+            titulo: 'Reporte calificaciones',
             icono: 'bi-file-earmark-excel-fill',
             color: 'positive',
             accion: async ({ entidad }) => {

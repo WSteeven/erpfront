@@ -1,5 +1,11 @@
 <template>
   <div class="q-pa-sm">
+    <div
+      v-if="subtarea.codigo_subtarea"
+      class="text-primary text-center q-mb-md"
+    >
+      {{ 'Subtarea ' + subtarea.codigo_subtarea }}
+    </div>
     <q-expansion-item
       class="overflow-hidden q-mb-md expansion"
       label="Información general"
@@ -349,6 +355,12 @@
             dense
           >
           </q-input>
+        </div>
+
+        <!-- ATS -->
+        <div v-if="ats" class="col-12 col-md-3">
+          <label class="q-mb-sm block">ATS</label>
+          <q-input v-model="ats" disable outlined dense> </q-input>
         </div>
       </div>
     </q-expansion-item>

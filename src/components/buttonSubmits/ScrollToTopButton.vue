@@ -41,7 +41,7 @@ export default defineComponent({
 <style lang="scss" scoped>
 .scroll-to-top-button {
   position: fixed;
-  bottom: 20px;
+  bottom: 63px;
   right: 20px;
   padding: 10px;
   background-color: $primary;

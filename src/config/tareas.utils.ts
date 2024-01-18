@@ -21,7 +21,12 @@ export const modosAsignacionTrabajo = { por_grupo: 'POR_GRUPO', por_empleado: 'P
 export const destinosTareas = {
   paraProyecto: 'PARA_PROYECTO',
   paraClienteFinal: 'PARA_CLIENTE_FINAL',
-}
+} as const
+
+export const tiposTareas = [
+  { value: destinosTareas.paraProyecto, label: 'Tarea para un proyecto' },
+  { value: destinosTareas.paraClienteFinal, label: 'Tarea para cliente final y mantenimiento' },
+] as const
 
 export const ubicacionesTrabajo = {
   clienteFinal: 'CLIENTE_FINAL',
@@ -30,8 +35,8 @@ export const ubicacionesTrabajo = {
 
 export const tabOptionsEstadosTareas: TabOption[] = [
   // { label: 'Todo', value: '' },
-  { label: 'Activas', value: 0 },
-  { label: 'Finalizadas', value: 1 },
+  { label: 'Activas', value: 0, icono: 'bi-app-indicator', color_icono: 'primary', bg_color: 'yellow-1' },
+  { label: 'Finalizadas', value: 1, icono: 'bi-check-circle-fill', color_icono: 'green-10', bg_color: 'green-1' },
 ];
 
 export const tabOptionsEstadosSubtareas: TabOption[] = [

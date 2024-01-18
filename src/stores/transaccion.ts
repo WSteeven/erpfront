@@ -99,7 +99,7 @@ export const useTransaccionStore = defineStore('transaccion', () => {
         const axios = AxiosHttpRepository.getInstance()
         const ruta = axios.getEndpoint(endpoints.transacciones_ingresos) + '/anular/' + idTransaccion.value
         const response: AxiosResponse = await axios.get(ruta)
-        console.log(response.data)
+        // console.log(response.data)
         notificaciones.notificarCorrecto(response.data.mensaje)
         transaccion.hydrate(response.data.modelo)
     }
@@ -109,7 +109,7 @@ export const useTransaccionStore = defineStore('transaccion', () => {
         const axios = AxiosHttpRepository.getInstance()
         const ruta = axios.getEndpoint(endpoints.transacciones_egresos) + '/anular/' + idTransaccion.value
         const response: AxiosResponse = await axios.get(ruta)
-        console.log(response.data)
+        // console.log(response.data)
         notificaciones.notificarCorrecto(response.data.mensaje)
         transaccion.hydrate(response.data.modelo)
 

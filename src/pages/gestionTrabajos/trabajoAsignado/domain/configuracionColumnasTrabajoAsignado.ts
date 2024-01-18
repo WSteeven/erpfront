@@ -99,6 +99,13 @@ export const configuracionColumnasTrabajoAsignado: ColumnConfig<Subtarea>[] = [
     sortable: true,
   },
   {
+    name: 'etapa',
+    field: 'etapa',
+    label: 'Etapa',
+    align: 'left',
+    sortable: true,
+  },
+  {
     name: 'cliente_final',
     field: 'cliente_final',
     label: 'Cliente final',

@@ -13,7 +13,7 @@
       :accion1="botonVerTransaccion"
       :accion2="botonImprimir"
       :ajustarCeldas="true"
-      tabDefecto="PENDIENTE"
+      :tabDefecto="tabDefecto"
     ></essential-table-tabs>
 
     <modal-entidad :comportamiento="modales" @guardado="(data) => guardado(data)"></modal-entidad>
