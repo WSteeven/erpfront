@@ -97,6 +97,8 @@ export default defineComponent({
           entidad.factura == null ? false : true
         fondoRotativoStore.id_gasto = entidad.id
         fondoRotativoStore.estaSemanAC = estaEnSemanaActual(entidad.fecha_viat)
+        console.log(entidad.tiene_factura);
+        fondoRotativoStore.existeFactura = entidad.tiene_factura
         fondoRotativoStore.accionForm =
           authenticationStore.user.id === entidad.aut_especial &&
           entidad.estado === estadosGastos.PENDIENTE
