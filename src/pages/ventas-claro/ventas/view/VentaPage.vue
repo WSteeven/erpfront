@@ -7,7 +7,7 @@
           <div class="col-12 col-md-3">
             <label class="q-mb-sm block">Vendedor</label>
             <q-select
-              v-model="ventas.vendedor"
+              v-model="venta.vendedor"
               :options="vendedores"
               transition-show="jump-up"
               transition-hide="jump-down"
@@ -34,16 +34,23 @@
               </template>
               <template v-slot:no-option>
                 <q-item>
-                  <q-item-section class="text-grey"> No hay resultados </q-item-section>
+                  <q-item-section class="text-grey">
+                    No hay resultados
+                  </q-item-section>
                 </q-item>
               </template>
             </q-select>
           </div>
           <!-- Cliente -->
           <div class="col-12 col-md-3">
-            <label class="q-mb-sm block">Cliente</label>
+            <label-abrir-modal
+              v-if="mostrarLabelModal"
+              label="Cliente"
+              @click="modales.abrirModalEntidad('ClientePage')"
+            />
+            <label v-else class="q-mb-sm block">Cliente</label>
             <q-select
-              v-model="ventas.cliente"
+              v-model="venta.cliente"
               :options="clientes"
               transition-show="jump-up"
               transition-hide="jump-down"
@@ -70,7 +77,9 @@
               </template>
               <template v-slot:no-option>
                 <q-item>
-                  <q-item-section class="text-grey"> No hay resultados </q-item-section>
+                  <q-item-section class="text-grey">
+                    No hay resultados
+                  </q-item-section>
                 </q-item>
               </template>
             </q-select>
@@ -79,7 +88,7 @@
           <div class="col-12 col-md-3">
             <label class="q-mb-sm block">#Orden</label>
             <q-input
-              v-model="ventas.orden_id"
+              v-model="venta.orden_id"
               placeholder="Obligatorio"
               type="textarea"
               :disable="disabled"
@@ -100,7 +109,7 @@
           <div class="col-12 col-md-3">
             <label class="q-mb-sm block">Orden Interna</label>
             <q-input
-              v-model="ventas.orden_interna"
+              v-model="venta.orden_interna"
               placeholder="Opcional"
               type="textarea"
               :disable="disabled"
@@ -111,7 +120,10 @@
               dense
             >
               <template v-slot:error>
-                <div v-for="error of v$.orden_interna.$errors" :key="error.$uid">
+                <div
+                  v-for="error of v$.orden_interna.$errors"
+                  :key="error.$uid"
+                >
                   <div class="error-msg">{{ error.$message }}</div>
                 </div>
               </template>
@@ -121,7 +133,7 @@
           <div class="col-12 col-md-3">
             <label class="q-mb-sm block">Forma de Pago</label>
             <q-select
-              v-model="ventas.forma_pago"
+              v-model="venta.forma_pago"
               :options="formas_pago"
               transition-show="jump-up"
               transition-hide="jump-down"
@@ -147,7 +159,9 @@
               </template>
               <template v-slot:no-option>
                 <q-item>
-                  <q-item-section class="text-grey"> No hay resultados </q-item-section>
+                  <q-item-section class="text-grey">
+                    No hay resultados
+                  </q-item-section>
                 </q-item>
               </template>
             </q-select>
@@ -156,7 +170,7 @@
           <div class="col-12 col-md-3">
             <label class="q-mb-sm block">Producto</label>
             <q-select
-              v-model="ventas.producto"
+              v-model="venta.producto"
               :options="productos"
               transition-show="jump-up"
               transition-hide="jump-down"
@@ -183,7 +197,9 @@
               </template>
               <template v-slot:no-option>
                 <q-item>
-                  <q-item-section class="text-grey"> No hay resultados </q-item-section>
+                  <q-item-section class="text-grey">
+                    No hay resultados
+                  </q-item-section>
                 </q-item>
               </template>
             </q-select>
@@ -206,7 +222,7 @@
           <div class="col-12 col-md-3">
             <label class="q-mb-sm block">Estado Activacion</label>
             <q-select
-              v-model="ventas.estado_activacion"
+              v-model="venta.estado_activacion"
               :options="estados_activacion"
               transition-show="jump-up"
               transition-hide="jump-down"
@@ -227,13 +243,18 @@
               map-options
             >
               <template v-slot:error>
-                <div v-for="error of v$.estado_activacion.$errors" :key="error.$uid">
+                <div
+                  v-for="error of v$.estado_activacion.$errors"
+                  :key="error.$uid"
+                >
                   <div class="error-msg">{{ error.$message }}</div>
                 </div>
               </template>
               <template v-slot:no-option>
                 <q-item>
-                  <q-item-section class="text-grey"> No hay resultados </q-item-section>
+                  <q-item-section class="text-grey">
+                    No hay resultados
+                  </q-item-section>
                 </q-item>
               </template>
             </q-select>
@@ -242,7 +263,7 @@
           <div class="col-12 col-md-3">
             <label class="q-mb-sm block">Fecha de Activacion</label>
             <q-input
-              v-model="ventas.fecha_activacion"
+              v-model="venta.fecha_activacion"
               placeholder="Opcional"
               :disable="disabled"
               readonly
@@ -251,10 +272,23 @@
             >
               <template v-slot:append>
                 <q-icon name="event" class="cursor-pointer">
-                  <q-popup-proxy cover transition-show="scale" transition-hide="scale">
-                    <q-date v-model="ventas.fecha_activacion" :mask="maskFecha" today-btn>
+                  <q-popup-proxy
+                    cover
+                    transition-show="scale"
+                    transition-hide="scale"
+                  >
+                    <q-date
+                      v-model="venta.fecha_activacion"
+                      :mask="maskFecha"
+                      today-btn
+                    >
                       <div class="row items-center justify-end">
-                        <q-btn v-close-popup label="Cerrar" color="primary" flat />
+                        <q-btn
+                          v-close-popup
+                          label="Cerrar"
+                          color="primary"
+                          flat
+                        />
                       </div>
                     </q-date>
                   </q-popup-proxy>
@@ -280,5 +314,10 @@
       </q-form>
     </template>
   </tab-layout>
+  <modales-entidad
+    :comportamiento="modales"
+    :persistente="false"
+    @guardado="(data) => guardado(data)"
+  ></modales-entidad>
 </template>
-<script src="./VentasPage.ts"></script>
+<script src="./VentaPage.ts"></script>

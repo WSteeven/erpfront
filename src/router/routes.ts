@@ -1083,8 +1083,8 @@ const routes: RouteRecordRaw[] = [
         meta: { requiresAuth: true },
       },
       {
-        path: '/producto-ventas',
-        name: 'producto_ventas',
+        path: '/productos-ventas',
+        name: 'productos_ventas',
         component: () =>
           import(
             'pages/ventas-claro/productoVentas/view/ProductoVentasPage.vue'
@@ -1092,17 +1092,17 @@ const routes: RouteRecordRaw[] = [
         meta: { requiresAuth: true },
       },
       {
-        path: '/vendedor',
-        name: 'vendedor',
+        path: '/vendedores',
+        name: 'vendedores',
         component: () =>
-          import('pages/ventas-claro/vendedores/view/VendedoresPage.vue'),
+          import('pages/ventas-claro/vendedores/view/VendedorPage.vue'),
         meta: { requiresAuth: true },
       },
       {
         path: '/ventas',
         name: 'ventas',
         component: () =>
-          import('pages/ventas-claro/ventas/view/VentasPage.vue'),
+          import('pages/ventas-claro/ventas/view/VentaPage.vue'),
         meta: { requiresAuth: true },
       },
       {

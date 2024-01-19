@@ -1,7 +1,7 @@
 import { ColumnConfig } from "components/tables/domain/ColumnConfig";
-import { Vendedores } from "./Vendedores";
+import { Vendedor } from "./Vendedor";
 
-export const configuracionColumnasVendedores: ColumnConfig<Vendedores>[] = [
+export const configuracionColumnasVendedores: ColumnConfig<Vendedor>[] = [
 
   {
     name: 'empleado_info',
@@ -29,6 +29,13 @@ export const configuracionColumnasVendedores: ColumnConfig<Vendedores>[] = [
     name: 'jefe_inmediato_info',
     field: 'jefe_inmediato_info',
     label: 'Jefe Inmediato',
+    align: 'left',
+    sortable: true
+  },
+  {
+    name: 'activo',
+    field: 'activo',
+    label: 'Estado',
     align: 'left',
     sortable: true
   },

@@ -16,11 +16,11 @@ import { useQuasar } from 'quasar'
 import EssentialTableTabs from 'components/tables/view/EssentialTableTabs.vue'
 import ModalesEntidad from 'components/modales/view/ModalEntidad.vue'
 
-import { VendedoresController } from 'pages/ventas-claro/vendedores/infrestructure/VendedoresController'
+import { VendedorController } from 'pages/ventas-claro/vendedores/infrestructure/VendedorController'
 import { ClienteClaro } from '../domain/ClienteClaro'
 import { ClienteClaroController } from '../infrestucture/ClienteClaroController'
 import { configuracionColumnasClienteClaro } from '../domain/configuracionColumnasClienteClaro'
-import { maxLength,minLength,required } from 'shared/i18n-validators'
+import { maxLength, minLength, required } from 'shared/i18n-validators'
 
 
 export default defineComponent({
@@ -36,8 +36,8 @@ export default defineComponent({
       ClienteClaro,
       new ClienteClaroController()
     )
-    const { entidad: cliente_claro, accion, disabled,listadosAuxiliares } = mixin.useReferencias()
-    const { setValidador, listar,obtenerListados,cargarVista } = mixin.useComportamiento()
+    const { entidad: cliente_claro, accion, disabled, listadosAuxiliares } = mixin.useReferencias()
+    const { setValidador, listar, obtenerListados, cargarVista } = mixin.useComportamiento()
     const { onGuardado } = mixin.useHooks()
 
     useCargandoStore().setQuasar(useQuasar())
@@ -47,9 +47,9 @@ export default defineComponent({
     cargarVista(async () => {
       await obtenerListados({
         vendedores: {
-          controller: new VendedoresController(),
+          controller: new VendedorController(),
           params: {
-            tipo_vendedor:'SUPERVISOR_VENTAS'
+            // tipo_vendedor: 'SUPERVISOR_VENTAS'
           },
         },
       })
@@ -88,8 +88,8 @@ export default defineComponent({
 
       listar({})
     })
-     /**Verifica si es un mes */
-     function checkValue(val, reason) {
+    /**Verifica si es un mes */
+    function checkValue(val, reason) {
       is_month.value = reason === 'month' ? false : true
     }
     function filtrarVendedores(val, update) {

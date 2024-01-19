@@ -1,5 +1,5 @@
 import { EntidadAuditable } from 'shared/entidad/domain/entidadAuditable'
-export class Ventas extends EntidadAuditable {
+export class Venta extends EntidadAuditable {
   id:number  | null
   orden_id: string | null
   orden_interna: string | null

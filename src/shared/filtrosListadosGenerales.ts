@@ -25,10 +25,31 @@ export const useFiltrosListadosSelects = (listadosAuxiliares, entidad?: Ref<any>
   const categorias = ref([])
   const centros_costos = ref([])
 
+  //////////////////////////////////////////
+  //modulo ventas
+  //////////////////////////////////////////
+  const modalidades = ref(listadosAuxiliares.modalidades)
+
 
   /**************************************************************
    * Funciones
    **************************************************************/
+
+  modalidades.value = listadosAuxiliares.modalidades
+  function filtrarModalidades(val, update) {
+    if (val === '') {
+      update(() => {
+        modalidades.value = listadosAuxiliares.modalidades
+      })
+      return
+    }
+    update(() => {
+      const needle = val.toLowerCase()
+      modalidades.value = listadosAuxiliares.modalidades.filter(
+        (v) => v.nombre.toLowerCase().indexOf(needle) > -1
+      )
+    })
+  }
 
   centros_costos.value = listadosAuxiliares.centros_costos
   function filtrarCentrosCostos(val, update) {
@@ -267,5 +288,6 @@ export const useFiltrosListadosSelects = (listadosAuxiliares, entidad?: Ref<any>
     categorias, filtrarCategoriasProveedor, ordenarCategorias,
     productos, filtrarProductos,
     centros_costos, filtrarCentrosCostos,
+    modalidades, filtrarModalidades,
   }
 }

@@ -1,15 +1,18 @@
-import { defineComponent, ref, watchEffect } from 'vue'
-import { Ventas } from '../domain/Ventas'
+import { computed, defineComponent, ref, watchEffect } from 'vue'
+import { Venta } from '../domain/Venta'
 
 import TabLayout from 'shared/contenedor/modules/simple/view/TabLayout.vue'
+import LabelAbrirModal from 'components/modales/modules/LabelAbrirModal.vue';
+import ModalesEntidad from 'components/modales/view/ModalEntidad.vue';
+
 import { useNotificacionStore } from 'stores/notificacion'
 import { useQuasar } from 'quasar'
 import { useVuelidate } from '@vuelidate/core'
 import { ContenedorSimpleMixin } from 'shared/contenedor/modules/simple/application/ContenedorSimpleMixin'
-import { VentasController } from '../infrestructure/VentasController'
+import { VentaController } from '../infrestructure/VentaController'
 import { configuracionColumnasVentas } from '../domain/configuracionColumnasVentas'
-import { estados_activacion, formas_pago, maskFecha } from 'config/utils'
-import { VendedoresController } from 'pages/ventas-claro/vendedores/infrestructure/VendedoresController'
+import { acciones, estados_activacion, formas_pago, maskFecha } from 'config/utils'
+import { VendedorController } from 'pages/ventas-claro/vendedores/infrestructure/VendedorController'
 import { ProductoVentasController } from 'pages/ventas-claro/productoVentas/infrestructure/ProductoVentasController'
 import { AxiosHttpRepository } from 'shared/http/infraestructure/AxiosHttpRepository'
 import { HttpResponseGet } from 'shared/http/domain/HttpResponse'
@@ -17,9 +20,10 @@ import axios from 'axios'
 import { apiConfig, endpoints } from 'config/api'
 import { ClienteClaroController } from 'pages/ventas-claro/cliente/infrestucture/ClienteClaroController'
 import { maxLength, required } from 'shared/i18n-validators'
+import { ComportamientoModalesVentasClaro } from '../application/ComportamientoModalesVentasClaro'
 
 export default defineComponent({
-  components: { TabLayout },
+  components: { TabLayout, ModalesEntidad, LabelAbrirModal },
   setup() {
     /*********
      * Stores
@@ -28,45 +32,32 @@ export default defineComponent({
     /***********
      * Mixin
      ************/
-    const mixin = new ContenedorSimpleMixin(Ventas, new VentasController())
-    const {
-      entidad: ventas,
-      disabled,
-      accion,
-      listadosAuxiliares,
-    } = mixin.useReferencias()
-    const { setValidador, obtenerListados, cargarVista } =
-      mixin.useComportamiento()
+    const mixin = new ContenedorSimpleMixin(Venta, new VentaController())
+    const { entidad: venta, disabled, accion, listadosAuxiliares, } = mixin.useReferencias()
+    const { setValidador, obtenerListados, cargarVista } = mixin.useComportamiento()
+
+    const modales = new ComportamientoModalesVentasClaro()
+
+
     const precio_producto = ref(0)
     const comision_vendedor = ref(0)
+    const mostrarLabelModal = computed(() => accion.value === acciones.nuevo || accion.value === acciones.editar)
+
+    modales.abrirModalEntidad('ClientePage')
+
     /*************
      * Validaciones
      **************/
     const reglas = {
-      vendedor: {
-        required,
-      },
-      orden_id: {
-        required,
-        maxLength: maxLength(13),
-      },
-      orden_interna: {
-        maxLength: maxLength(6),
-      },
-      forma_pago: {
-        required,
-      },
-      producto: {
-        required,
-      },
-      cliente: {
-        required,
-      },
-      estado_activacion: {
-        required,
-      },
+      vendedor: { required, },
+      orden_id: { required, maxLength: maxLength(13), },
+      orden_interna: { maxLength: maxLength(6), },
+      forma_pago: { required, },
+      producto: { required, },
+      cliente: { required, },
+      estado_activacion: { required, },
     }
-    const v$ = useVuelidate(reglas, ventas)
+    const v$ = useVuelidate(reglas, venta)
     setValidador(v$.value)
     const productos = ref([])
     const vendedores = ref([])
@@ -78,8 +69,10 @@ export default defineComponent({
           params: { campos: 'id,nombre' },
         },
         vendedores: {
-          controller: new VendedoresController(),
-          params: { supervisor: false },
+          controller: new VendedorController(),
+          params: { 
+            // supervisor: false
+           },
         },
         clientes: {
           controller: new ClienteClaroController(),
@@ -90,6 +83,13 @@ export default defineComponent({
       vendedores.value = listadosAuxiliares.vendedores
       clientes.value = listadosAuxiliares.clientes
     })
+
+    /**************************************************************
+     * Funciones
+     **************************************************************/
+    async function guardado(data) {
+      console.log(data)
+    }
 
     function filtrarProductos(val, update) {
       if (val === '') {
@@ -145,9 +145,9 @@ export default defineComponent({
       const url_acreditacion =
         apiConfig.URL_BASE +
         '/' +
-        axiosHttpRepository.getEndpoint(endpoints.producto_ventas) +
+        axiosHttpRepository.getEndpoint(endpoints.productos_ventas) +
         '/' +
-        ventas.producto
+        venta.producto
       axios({
         url: url_acreditacion,
         method: 'GET',
@@ -169,11 +169,11 @@ export default defineComponent({
         '/' +
         axiosHttpRepository.getEndpoint(endpoints.obtener_comision) +
         '/' +
-        ventas.producto +
+        venta.producto +
         '/' +
-        ventas.forma_pago +
+        venta.forma_pago +
         '/' +
-        ventas.vendedor
+        venta.vendedor
       axios({
         url: url_acreditacion,
         method: 'GET',
@@ -189,14 +189,14 @@ export default defineComponent({
       })
     }
     watchEffect(() => {
-      if (ventas.producto != null && ventas.forma_pago != null) {
+      if (venta.producto != null && venta.forma_pago != null) {
         obtenerProducto()
         obtenerComision()
       }
     })
     return {
       mixin,
-      ventas,
+      venta,
       disabled,
       accion,
       v$,
@@ -209,9 +209,14 @@ export default defineComponent({
       maskFecha,
       precio_producto,
       comision_vendedor,
+      mostrarLabelModal,
+      modales,
+
+
       filtrarProductos,
       filtrarVendedores,
       filtrarClientes,
+      guardado,
     }
   },
 })

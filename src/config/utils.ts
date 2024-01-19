@@ -440,10 +440,10 @@ export const tipos_sangre = [
   { nombre: 'O -' },
   // Puedes agregar aquí más tipos de sangre si es necesario
 ]
-export const tipos_vendedor = [
+export const tipos_vendedores = [
+  { nombre: 'VENDEDOR', descripcion:'VENDEDOR' },
   { nombre: 'SUPERVISOR_VENTAS', descripcion:'SUPERVISOR DE VENTAS' },
   { nombre: 'JEFE_VENTAS', descripcion:'JEFE DE VENTAS' },
-  { nombre: 'VENDEDOR', descripcion:'VENDEDOR' },
   // Puedes agregar aquí más tipos de vendedor si es necesario
 ]
 export const talla_letras = [

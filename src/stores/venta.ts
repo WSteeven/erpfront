@@ -1,4 +1,4 @@
-import { Ventas } from 'pages/ventas-claro/ventas/domain/Ventas'
+import { Ventas } from 'pages/ventas-claro/ventas/domain/Venta'
 import { defineStore } from 'pinia'
 import { reactive, ref } from 'vue'
 

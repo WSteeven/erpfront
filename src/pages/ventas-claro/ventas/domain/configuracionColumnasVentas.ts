@@ -1,5 +1,5 @@
 import { ColumnConfig } from "components/tables/domain/ColumnConfig";
-import { Ventas } from "./Ventas";
+import { Ventas } from "./Venta";
 
 export const configuracionColumnasVentas: ColumnConfig<Ventas>[] = [
   {

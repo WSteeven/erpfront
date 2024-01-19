@@ -21,7 +21,7 @@ import { AxiosHttpRepository } from 'shared/http/infraestructure/AxiosHttpReposi
 import { HttpResponseGet } from 'shared/http/domain/HttpResponse'
 import axios from 'axios'
 import { apiConfig, endpoints } from 'config/api'
-import { VentasController } from 'pages/ventas-claro/ventas/infrestructure/VentasController'
+import { VentasController } from 'pages/ventas-claro/ventas/infrestructure/VentaController'
 import { TipoChargeBackController } from 'pages/ventas-claro/tipoChargeBack/infrestructure/TipoChargeBackController'
 
 export default defineComponent({
@@ -65,8 +65,8 @@ export default defineComponent({
       tipo_chargeback: {
         required: true,
       },
-      porcentaje:{
-        required:requiredIf(() => chargeback.tipo_chargeback==1)
+      porcentaje: {
+        required: requiredIf(() => chargeback.tipo_chargeback == 1)
       }
     }
     const v$ = useVuelidate(reglas, chargeback)
@@ -117,21 +117,21 @@ export default defineComponent({
         )
       })
     }
-    function tipoChargeback(){
+    function tipoChargeback() {
       chargeback.valor = null;
       chargeback.porcentaje = null;
     }
-    function obtenerValor(){
+    function obtenerValor() {
 
       const total = listadosAuxiliares.ventas.filter(
-            (v) =>
-              v.id == chargeback.venta )
-              precio_producto.value =total[0].producto_precio;
+        (v) =>
+          v.id == chargeback.venta)
+      precio_producto.value = total[0].producto_precio;
     }
     watchEffect(() => {
-      if(chargeback.tipo_chargeback ==1){
-        const porcentaje = chargeback.porcentaje!=null?chargeback?.porcentaje:0
-        chargeback.valor = (precio_producto.value * porcentaje )/100
+      if (chargeback.tipo_chargeback == 1) {
+        const porcentaje = chargeback.porcentaje != null ? chargeback?.porcentaje : 0
+        chargeback.valor = (precio_producto.value * porcentaje) / 100
       }
     })
 

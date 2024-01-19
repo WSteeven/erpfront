@@ -15,8 +15,8 @@ import { maskFecha } from 'config/utils'
 import { EmpleadoController } from 'pages/recursosHumanos/empleados/infraestructure/EmpleadoController'
 import { useCargandoStore } from 'stores/cargando'
 import { useFondoRotativoStore } from 'stores/fondo_rotativo'
-import { VendedoresController } from 'pages/ventas-claro/vendedores/infrestructure/VendedoresController'
-import { Vendedores } from 'pages/ventas-claro/vendedores/domain/Vendedores'
+import { VendedoresController } from 'pages/ventas-claro/vendedores/infrestructure/VendedorController'
+import { Vendedores } from 'pages/ventas-claro/vendedores/domain/Vendedor'
 import { required } from 'shared/i18n-validators'
 export default defineComponent({
   components: { TabLayout },

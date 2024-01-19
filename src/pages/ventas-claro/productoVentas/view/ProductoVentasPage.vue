@@ -1,5 +1,13 @@
 <template>
-  <tab-layout :mixin="mixin" :configuracionColumnas="configuracionColumnas">
+  <tab-layout-filter-tabs-2
+    :mixin="mixin"
+    :configuracionColumnas="configuracionColumnas"
+    :accion1="btnDesactivar"
+    :accion2="btnActivar"
+    :tab-options="tabOptionsProductos"
+    :tabDefecto="tabDefecto"
+    :filtrar="filtrarProductos"
+  >
     <template #formulario>
       <q-form @submit.prevent>
         <div class="row q-col-gutter-sm q-mb-md">
@@ -7,7 +15,7 @@
           <div class="col-12 col-md-3">
             <label class="q-mb-sm block">Plan</label>
             <q-select
-              v-model="producto_ventas.plan"
+              v-model="producto.plan"
               :options="planes"
               transition-show="jump-up"
               transition-hide="jump-down"
@@ -34,7 +42,9 @@
               </template>
               <template v-slot:no-option>
                 <q-item>
-                  <q-item-section class="text-grey"> No hay resultados </q-item-section>
+                  <q-item-section class="text-grey">
+                    No hay resultados
+                  </q-item-section>
                 </q-item>
               </template>
             </q-select>
@@ -43,7 +53,7 @@
           <div class="col-12 col-md-3">
             <label class="q-mb-sm block">Bundle</label>
             <q-input
-              v-model="producto_ventas.bundle"
+              v-model="producto.bundle"
               placeholder="Obligatorio"
               type="textarea"
               :disable="disabled"
@@ -64,7 +74,7 @@
           <div class="col-12 col-md-3">
             <label class="q-mb-sm block">Precio</label>
             <q-input
-              v-model="producto_ventas.precio"
+              v-model="producto.precio"
               placeholder="Obligatorio"
               type="number"
               :disable="disabled"
@@ -80,9 +90,22 @@
               </template>
             </q-input>
           </div>
+
+          <!-- Colocar la siguiente linea en caso de hacer visible el campo -->
+          <!-- <div class="col-12 col-md-2" v-if="accion!==acciones.nuevo"> -->
+          <div class="col-12 col-md-2" v-if="false">
+            <br />
+            <q-toggle
+              v-model="producto.activo"
+              checked-icon="check"
+              :disable="disabled"
+              :label="producto.activo ? 'Activo' : 'Inactivo'"
+              color="positive"
+            />
+          </div>
         </div>
       </q-form>
     </template>
-  </tab-layout>
+  </tab-layout-filter-tabs-2>
 </template>
 <script src="./ProductoVentasPage.ts"></script>

@@ -25,7 +25,7 @@ import ModalesEntidad from 'components/modales/view/ModalEntidad.vue'
 import { UmbralVentas } from '../domain/UmbralVentas'
 import { UmbralVentasController } from '../infrestucture/UmbralVentasController'
 import { configuracionColumnasUmbralVentas } from '../domain/configuracionColumnasUmbralVentas'
-import { VendedoresController } from 'pages/ventas-claro/vendedores/infrestructure/VendedoresController'
+import { VendedoresController } from 'pages/ventas-claro/vendedores/infrestructure/VendedorController'
 
 
 export default defineComponent({
@@ -41,8 +41,8 @@ export default defineComponent({
       UmbralVentas,
       new UmbralVentasController()
     )
-    const { entidad: umbral_venta, accion, disabled,listadosAuxiliares } = mixin.useReferencias()
-    const { setValidador, listar,obtenerListados,cargarVista } = mixin.useComportamiento()
+    const { entidad: umbral_venta, accion, disabled, listadosAuxiliares } = mixin.useReferencias()
+    const { setValidador, listar, obtenerListados, cargarVista } = mixin.useComportamiento()
     const { onGuardado } = mixin.useHooks()
 
     useCargandoStore().setQuasar(useQuasar())
@@ -54,7 +54,7 @@ export default defineComponent({
         vendedores: {
           controller: new VendedoresController(),
           params: {
-            tipo_vendedor:'SUPERVISOR_VENTAS'
+            tipo_vendedor: 'SUPERVISOR_VENTAS'
           },
         },
       })
@@ -76,8 +76,8 @@ export default defineComponent({
 
       listar({})
     })
-     /**Verifica si es un mes */
-     function checkValue(val, reason, details) {
+    /**Verifica si es un mes */
+    function checkValue(val, reason, details) {
       is_month.value = reason === 'month' ? false : true
     }
     function filtrarVendedores(val, update) {

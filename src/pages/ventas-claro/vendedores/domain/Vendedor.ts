@@ -1,5 +1,5 @@
 import { EntidadAuditable } from 'shared/entidad/domain/entidadAuditable'
-export class Vendedores extends EntidadAuditable {
+export class Vendedor extends EntidadAuditable {
   id: number | null;
   empleado:number | null
   empleado_id: number | null
@@ -10,6 +10,8 @@ export class Vendedores extends EntidadAuditable {
   tipo_vendedor: string | null
   jefe_inmediato: number | null
   jefe_inmediato_info : string | null
+  causa_desactivacion : string | null
+  activo : boolean
 
   constructor() {
     super()
@@ -23,5 +25,7 @@ export class Vendedores extends EntidadAuditable {
     this.tipo_vendedor = null
     this.jefe_inmediato = null
     this.jefe_inmediato_info = null
+    this.causa_desactivacion = null
+    this.activo = true
   }
 }

@@ -1,5 +1,5 @@
 // Dependencias
-import { defineComponent,ref, watchEffect } from 'vue'
+import { defineComponent, ref, watchEffect } from 'vue'
 
 // Componentes
 import EssentialTable from 'components/tables/view/EssentialTable.vue'
@@ -11,8 +11,8 @@ import EstadosSubtareas from 'components/tables/view/EstadosSubtareas.vue'
 
 import { ContenedorSimpleMixin } from 'shared/contenedor/modules/simple/application/ContenedorSimpleMixin'
 import { useVentaStore } from 'stores/venta'
-import { Ventas } from 'pages/ventas-claro/ventas/domain/Ventas'
-import { VentasController } from 'pages/ventas-claro/ventas/infrestructure/VentasController'
+import { Ventas } from 'pages/ventas-claro/ventas/domain/Venta'
+import { VentasController } from 'pages/ventas-claro/ventas/infrestructure/VentaController'
 import { AxiosHttpRepository } from 'shared/http/infraestructure/AxiosHttpRepository'
 import { HttpResponseGet } from 'shared/http/domain/HttpResponse'
 import axios from 'axios'
