@@ -144,7 +144,7 @@ export const useMenuStore = defineStore('menu', () => {
     {
       title: 'Médico',
       icon: 'bi-heart-pulse-fill',
-      // can: store.can('puede.ver.modulo_medico'),
+      can: store.can('puede.ver.modulo_medico'),
       children: [
         {
           title: 'Gestionar pacientes',

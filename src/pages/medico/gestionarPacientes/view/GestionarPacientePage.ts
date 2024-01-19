@@ -38,6 +38,7 @@ export default defineComponent({
       mixin,
       empleado,
       tabs,
+      tabsRegistro: ref(),
       configuracionColumnas: configuracionColumnasEmpleados,
     }
   },
