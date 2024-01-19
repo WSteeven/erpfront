@@ -571,19 +571,19 @@ export const useMenuStore = defineStore('menu', () => {
             },
             {
               title: 'Alimentacion',
-              icon: 'fa-solid fa-money-bill-wheat',
+              icon: 'img:src/assets/icons/asignar-alimentacion.svg',
               can: true,
               children: [
                 {
                   title: 'Asignar Alimentacion',
                   link: 'asignar-alimentacion',
-                  icon: 'fa-solid fa-cheese',
+                  icon: 'bi-circle',
                   can: store.can('puede.acceder.asignar_alimentacion'),
                 },
                 {
                   title: 'Alimentacion',
                   link: 'alimentacion',
-                  icon: 'fa-solid fa-utensils',
+                  icon: 'bi-circle',
                   can: store.can('puede.acceder.alimentacion'),
                 },
               ]},

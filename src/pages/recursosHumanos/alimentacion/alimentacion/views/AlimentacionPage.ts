@@ -120,7 +120,7 @@ export default defineComponent({
       },
     }
     const btnCashAlimentacion: CustomActionTable = {
-      titulo: 'Cash Rol de Alimentacion',
+      titulo: 'Cash de Alimentacion',
       icono: 'bi-cash-stack',
       color: 'primary',
       visible: () =>
