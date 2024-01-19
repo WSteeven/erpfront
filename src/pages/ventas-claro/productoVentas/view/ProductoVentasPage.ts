@@ -52,15 +52,10 @@ export default defineComponent({
     * Validaciones
     **************/
     const reglas = {
-      plan: {
-        required: true
-      },
-      bundle: {
-        required: true,
-      },
-      precio: {
-        required: true,
-      },
+      plan: { required: true },
+      nombre: { required: true },
+      bundle: { required: true },
+      precio: { required: true },
     }
     const v$ = useVuelidate(reglas, producto)
     setValidador(v$.value)

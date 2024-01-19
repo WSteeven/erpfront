@@ -49,13 +49,11 @@ export default defineComponent({
       })
     })
     roles.value = listadosAuxiliares.roles
-    async function obtenerPermisoRol(id_rol: number) {
-      listar({ id_rol: id_rol, tipo: 'ASIGNADOS' })
-      const { result } = await controller.listar({
-        id_rol: id_rol,
-        tipo: 'NO ASIGNADOS',
-      })
-      permisosSinAsignar.value = result
+    async function obtenerPermisoRol(val) {
+      if(val){
+        listar({ id_rol:val, tipo: 'ASIGNADOS' })
+        permisosSinAsignar.value = (await controller.listar({id_rol: val,tipo: 'NO ASIGNADOS',})).result
+      }
     }
     function botonAsignarPermisos() {
       refPermisosSinAsignar.value.seleccionar()

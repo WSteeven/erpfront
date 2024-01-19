@@ -29,11 +29,68 @@ export const useFiltrosListadosSelects = (listadosAuxiliares, entidad?: Ref<any>
   //modulo ventas
   //////////////////////////////////////////
   const modalidades = ref(listadosAuxiliares.modalidades)
+  const productos_claro = ref(listadosAuxiliares.productos)
+  const vendedores_claro = ref(listadosAuxiliares.vendedores)
+  const clientes_claro = ref(listadosAuxiliares.clientes)
 
 
   /**************************************************************
    * Funciones
    **************************************************************/
+  clientes_claro.value = listadosAuxiliares.clientes
+  function filtrarClientesClaro(val, update) {
+    if (val === '') {
+      update(() => {
+        clientes_claro.value = listadosAuxiliares.clientes
+      })
+      return
+    }
+    update(() => {
+      const needle = val.toLowerCase()
+      clientes_claro.value = listadosAuxiliares.clientes.filter(
+        (v) =>
+          v.nombres.toLowerCase().indexOf(needle) > -1 ||
+          v.apellidos.toLowerCase().indexOf(needle) > -1 ||
+          v.identificacion.toLowerCase().indexOf(needle) > -1
+      )
+    })
+  }
+
+  vendedores_claro.value = listadosAuxiliares.vendedores
+  function filtrarVendedoresClaro(val, update) {
+    if (val === '') {
+      update(() => {
+        vendedores_claro.value = listadosAuxiliares.vendedores
+      })
+      return
+    }
+    update(() => {
+      const needle = val.toLowerCase()
+      vendedores_claro.value = listadosAuxiliares.vendedores.filter(
+        (v) =>
+          v.codigo_vendedor.toLowerCase().indexOf(needle) > -1 ||
+          v.empleado_info.toLowerCase().indexOf(needle) > -1
+      )
+    })
+  }
+
+  productos_claro.value = listadosAuxiliares.productos
+  function filtrarProductosClaro(val, update) {
+    if (val === '') {
+      update(() => {
+        productos.value = listadosAuxiliares.productos
+      })
+      return
+    }
+    update(() => {
+      const needle = val.toLowerCase()
+      productos.value = listadosAuxiliares.productos.filter(
+        (v) =>
+          v.bundle.toLowerCase().indexOf(needle) > -1 ||
+          v.plan_info.toLowerCase().indexOf(needle) > -1
+      )
+    })
+  }
 
   modalidades.value = listadosAuxiliares.modalidades
   function filtrarModalidades(val, update) {
@@ -289,5 +346,8 @@ export const useFiltrosListadosSelects = (listadosAuxiliares, entidad?: Ref<any>
     productos, filtrarProductos,
     centros_costos, filtrarCentrosCostos,
     modalidades, filtrarModalidades,
+    productos_claro, filtrarProductosClaro,
+    vendedores_claro, filtrarVendedoresClaro,
+    clientes_claro, filtrarClientesClaro,
   }
 }

@@ -25,7 +25,7 @@ import { tabOptionsProductos } from 'config/ventas.utils'
 
 export default defineComponent({
   components: { TabLayoutFilterTabs2 },
-  setup() {
+  setup(props, {emit}) {
     /*********
      * Stores
      *********/
@@ -38,14 +38,17 @@ export default defineComponent({
     const mixin = new ContenedorSimpleMixin(Vendedor, new VendedorController())
     const { entidad: vendedor, disabled, accion, listadosAuxiliares, listado } = mixin.useReferencias()
     const { setValidador, obtenerListados, cargarVista, listar } = mixin.useComportamiento()
-    const { confirmar, notificarCorrecto, prompt, notificarError } = useNotificaciones()
     const { onGuardado, onModificado, onReestablecer } = mixin.useHooks()
+    const { confirmar, notificarCorrecto, prompt, notificarError } = useNotificaciones()
 
     /*************
      * Hooks
      **************/
     onReestablecer(() => vendedor.jefe_inmediato = store.user.id)
-    onGuardado(() => vendedor.jefe_inmediato = store.user.id)
+    onGuardado((id, response) => {
+      emit('cerrar-modal', false)
+      emit('guardado', { formulario: 'VendedorPage', id: id, modelo: response.modelo })
+    })
     onModificado(() => vendedor.jefe_inmediato = store.user.id)
 
 
@@ -137,7 +140,7 @@ export default defineComponent({
         confirmar('¿Está seguro de activar el proveedor?', () => {
           const data: CustomActionPrompt = {
             titulo: 'Causa de activación',
-            mensaje: 'Ingresa el motivo por el que quieres desactivar este proveedor?',
+            mensaje: 'Ingresa el motivo por el que quieres activar este proveedor?',
             accion: async (data) => {
               try {
                 cargando.activar()

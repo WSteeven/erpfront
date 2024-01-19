@@ -8,6 +8,8 @@ export class ClienteClaro extends EntidadAuditable {
   telefono1: string | null
   telefono2: string | null
   direccion: string | null
+  activo: boolean
+
   constructor() {
     super()
     this.id = null
@@ -17,6 +19,7 @@ export class ClienteClaro extends EntidadAuditable {
     this.telefono1 = null
     this.telefono2 = null
     this.direccion = null
+    this.activo = true
 
   }
 }

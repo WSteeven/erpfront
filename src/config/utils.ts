@@ -296,6 +296,9 @@ export const rolesSistema = {
   secretario: 'SECRETARIO',
   tecnico_lider: 'LIDER DE GRUPO',
   tecnico: 'TECNICO',
+  jefe_ventas: 'JEFE_VENTAS',
+  supervisor_ventas: 'SUPERVISOR_VENTAS',
+  vendedor: 'VENDEDOR',
 }
 
 export const cargosSistema = {
@@ -462,7 +465,7 @@ export const tabOptionsPreingresoMateriales = [
   { label: 'Autorizadas', value: '2' }, //autorizacion APROBADO
   { label: 'Canceladas', value: '3' }  //autorizacion CANCELADO
 ]
-export const formas_pago =[
+export const formas_pagos =[
   {label: 'EFECTIVO', value: 'EFECTIVO'},
   {label: 'TC', value: 'TARJETA DE CREDITO'},
   {label: 'D.BANCARIO', value: 'DEBITO BANCARIO'},

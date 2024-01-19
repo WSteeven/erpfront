@@ -1,48 +1,50 @@
 // Dependencias
 import { useVuelidate } from '@vuelidate/core'
 import { defineComponent, ref } from 'vue'
+import { configuracionColumnasClienteClaro } from '../domain/configuracionColumnasClienteClaro'
 
 // Componentes
-import TabLayout from 'shared/contenedor/modules/simple/view/TabLayout.vue'
-import SelectorImagen from 'components/SelectorImagen.vue'
-import EssentialTable from 'components/tables/view/EssentialTable.vue'
+import TabLayoutFilterTabs2 from 'shared/contenedor/modules/simple/view/TabLayoutFilterTabs2.vue'
+
 //Logica y controladores
 import { ContenedorSimpleMixin } from 'shared/contenedor/modules/simple/application/ContenedorSimpleMixin'
 import { removeAccents } from 'shared/utils'
-import { maskFecha } from 'config/utils'
+import { acciones, maskFecha } from 'config/utils'
 import { useCargandoStore } from 'stores/cargando'
 import { useQuasar } from 'quasar'
-
-import EssentialTableTabs from 'components/tables/view/EssentialTableTabs.vue'
-import ModalesEntidad from 'components/modales/view/ModalEntidad.vue'
-
 import { VendedorController } from 'pages/ventas-claro/vendedores/infrestructure/VendedorController'
 import { ClienteClaro } from '../domain/ClienteClaro'
 import { ClienteClaroController } from '../infrestucture/ClienteClaroController'
-import { configuracionColumnasClienteClaro } from '../domain/configuracionColumnasClienteClaro'
 import { maxLength, minLength, required } from 'shared/i18n-validators'
+import { tabOptionsProductos } from 'config/ventas.utils'
+import { CustomActionTable } from 'components/tables/domain/CustomActionTable'
+import { CustomActionPrompt } from 'components/tables/domain/CustomActionPrompt'
+import { useNotificaciones } from 'shared/notificaciones'
+import { StatusEssentialLoading } from 'components/loading/application/StatusEssentialLoading'
+import { useAuthenticationStore } from 'stores/authentication'
+import { CambiarEstadoCliente } from '../application/CambiarEstadoCliente'
 
 
 export default defineComponent({
   components: {
-    TabLayout,
-    ModalesEntidad,
-    SelectorImagen,
-    EssentialTable,
-    EssentialTableTabs,
+    TabLayoutFilterTabs2,
   },
-  setup() {
+  setup(props, { emit }) {
     const mixin = new ContenedorSimpleMixin(
       ClienteClaro,
       new ClienteClaroController()
     )
-    const { entidad: cliente_claro, accion, disabled, listadosAuxiliares } = mixin.useReferencias()
+    const { entidad: cliente, accion, disabled, listadosAuxiliares, listado } = mixin.useReferencias()
     const { setValidador, listar, obtenerListados, cargarVista } = mixin.useComportamiento()
     const { onGuardado } = mixin.useHooks()
+    const { confirmar, notificarCorrecto, prompt, notificarError } = useNotificaciones()
 
     useCargandoStore().setQuasar(useQuasar())
+    const cargando = new StatusEssentialLoading()
+    const store = useAuthenticationStore()
     const is_month = ref(false)
     const vendedores = ref([])
+    const tabDefecto = ref('1')
 
     cargarVista(async () => {
       await obtenerListados({
@@ -61,15 +63,9 @@ export default defineComponent({
         maxLength: maxLength(10),
         minLenght: minLength(10)
       },
-      nombres: {
-        required,
-      },
-      apellidos: {
-        required,
-      },
-      direccion: {
-        required,
-      },
+      nombres: { required },
+      apellidos: { required },
+      direccion: { required },
       telefono1: {
         required,
         maxLength: maxLength(10),
@@ -80,14 +76,21 @@ export default defineComponent({
         minLenght: minLength(7),
       },
     }
-    const v$ = useVuelidate(reglas, cliente_claro)
+    const v$ = useVuelidate(reglas, cliente)
     setValidador(v$.value)
 
-    onGuardado(() => {
-      console.log('guardado');
-
-      listar({})
+    onGuardado((id, response) => {
+      emit('cerrar-modal', false)
+      emit('guardado', { formulario: 'ClienteClaroPage', id: id, modelo: response.modelo })
     })
+
+    /***********************
+    * Funciones
+    ***********************/
+    function filtrarClientes(tab: string) {
+      tabDefecto.value = tab
+      listar({ activo: tab })
+    }
     /**Verifica si es un mes */
     function checkValue(val, reason) {
       is_month.value = reason === 'month' ? false : true
@@ -108,19 +111,75 @@ export default defineComponent({
         )
       })
     }
+
+
+    /***********************
+     * Botones de tabla
+     ***********************/
+    const btnDesactivar: CustomActionTable = {
+      titulo: 'Desactivar',
+      icono: 'bi-toggle2-off',
+      color: 'negative',
+      tooltip: 'Desactivar Cliente',
+      accion: ({ entidad, posicion }) => {
+        confirmar('¿Está seguro de desactivar el cliente?', async () => {
+          try {
+            cargando.activar()
+            await new CambiarEstadoCliente().anular(entidad.id)
+            listado.value.splice(posicion, 1)
+            notificarCorrecto('Desactivado correctamente')
+          } catch (error: any) {
+            notificarError('No se pudo desactivar el cliente!')
+          } finally {
+            cargando.desactivar()
+          }
+        })
+      }, visible: ({ entidad }) => entidad.activo && store.can('puede.desactivar.clientes_claro')
+    }
+    const btnActivar: CustomActionTable = {
+      titulo: 'Activar',
+      icono: 'bi-toggle2-on',
+      color: 'positive',
+      tooltip: 'Activar Cliente',
+      accion: ({ entidad, posicion }) => {
+        confirmar('¿Está seguro de activar el cliente?', async () => {
+          try {
+            cargando.activar()
+            await new CambiarEstadoCliente().anular(entidad.id)
+            listado.value.splice(posicion, 1)
+            notificarCorrecto('Activado correctamente')
+          } catch (error: any) {
+            notificarError('No se pudo desactivar el cliente!')
+          } finally {
+            cargando.desactivar()
+          }
+        })
+      }, visible: ({ entidad }) => !entidad.activo && store.can('puede.activar.clientes_claro')
+    }
+
     return {
-      removeAccents,
       mixin,
       v$,
-      is_month,
-      checkValue,
-      filtrarVendedores,
-      vendedores,
-      cliente_claro,
-      accion,
       disabled,
-      maskFecha,
+      accion, acciones,
       configuracionColumnas: configuracionColumnasClienteClaro,
+      is_month,
+      tabDefecto,
+      tabOptionsClienteClaro: tabOptionsProductos,
+      vendedores,
+      cliente,
+      maskFecha,
+
+      //funciones
+      checkValue,
+      removeAccents,
+      filtrarVendedores,
+      filtrarClientes,
+
+      //botones de tabla
+      btnActivar,
+      btnDesactivar,
+
     }
   },
 })

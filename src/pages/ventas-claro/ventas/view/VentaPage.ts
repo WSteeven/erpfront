@@ -11,7 +11,7 @@ import { useVuelidate } from '@vuelidate/core'
 import { ContenedorSimpleMixin } from 'shared/contenedor/modules/simple/application/ContenedorSimpleMixin'
 import { VentaController } from '../infrestructure/VentaController'
 import { configuracionColumnasVentas } from '../domain/configuracionColumnasVentas'
-import { acciones, estados_activacion, formas_pago, maskFecha } from 'config/utils'
+import { acciones, estados_activacion, formas_pagos, maskFecha } from 'config/utils'
 import { VendedorController } from 'pages/ventas-claro/vendedores/infrestructure/VendedorController'
 import { ProductoVentasController } from 'pages/ventas-claro/productoVentas/infrestructure/ProductoVentasController'
 import { AxiosHttpRepository } from 'shared/http/infraestructure/AxiosHttpRepository'
@@ -21,6 +21,9 @@ import { apiConfig, endpoints } from 'config/api'
 import { ClienteClaroController } from 'pages/ventas-claro/cliente/infrestucture/ClienteClaroController'
 import { maxLength, required } from 'shared/i18n-validators'
 import { ComportamientoModalesVentasClaro } from '../application/ComportamientoModalesVentasClaro'
+import { useFiltrosListadosSelects } from 'shared/filtrosListadosGenerales';
+import { StatusEssentialLoading } from 'components/loading/application/StatusEssentialLoading';
+import { useAuthenticationStore } from 'stores/authentication';
 
 export default defineComponent({
   components: { TabLayout, ModalesEntidad, LabelAbrirModal },
@@ -36,21 +39,24 @@ export default defineComponent({
     const { entidad: venta, disabled, accion, listadosAuxiliares, } = mixin.useReferencias()
     const { setValidador, obtenerListados, cargarVista } = mixin.useComportamiento()
 
+    const cargando = new StatusEssentialLoading()
+
     const modales = new ComportamientoModalesVentasClaro()
+    const store = useAuthenticationStore()
 
 
     const precio_producto = ref(0)
     const comision_vendedor = ref(0)
     const mostrarLabelModal = computed(() => accion.value === acciones.nuevo || accion.value === acciones.editar)
 
-    modales.abrirModalEntidad('ClientePage')
+
 
     /*************
      * Validaciones
      **************/
     const reglas = {
       vendedor: { required, },
-      orden_id: { required, maxLength: maxLength(13), },
+      orden_id: { required, maxLength: maxLength(15), },
       orden_interna: { maxLength: maxLength(6), },
       forma_pago: { required, },
       producto: { required, },
@@ -59,9 +65,12 @@ export default defineComponent({
     }
     const v$ = useVuelidate(reglas, venta)
     setValidador(v$.value)
-    const productos = ref([])
-    const vendedores = ref([])
-    const clientes = ref([])
+
+    const { productos_claro: productos, filtrarProductosClaro: filtrarProductos,
+      vendedores_claro: vendedores, filtrarVendedoresClaro: filtrarVendedores,
+      clientes_claro: clientes, filtrarClientesClaro: filtrarClientes,
+    } = useFiltrosListadosSelects(listadosAuxiliares)
+
     cargarVista(async () => {
       await obtenerListados({
         productos: {
@@ -70,13 +79,15 @@ export default defineComponent({
         },
         vendedores: {
           controller: new VendedorController(),
-          params: { 
-            // supervisor: false
-           },
+          params: {
+            'tipo_vendedor[]': 'JEFE_VENTAS',
+            '&tipo_vendedor[]': 'VENDEDOR',
+            activo: 1
+          },
         },
         clientes: {
           controller: new ClienteClaroController(),
-          params: {},
+          params: { activo: 1 },
         },
       })
       productos.value = listadosAuxiliares.productos
@@ -88,58 +99,23 @@ export default defineComponent({
      * Funciones
      **************************************************************/
     async function guardado(data) {
-      console.log(data)
+      if (data.formulario === 'ClienteClaroPage') clientes.value.push(data.modelo)
+      if (data.formulario === 'VendedorPage') vendedores.value.push(data.modelo)
     }
 
-    function filtrarProductos(val, update) {
-      if (val === '') {
-        update(() => {
-          productos.value = listadosAuxiliares.productos
-        })
-        return
-      }
-      update(() => {
-        const needle = val.toLowerCase()
-        productos.value = listadosAuxiliares.productos.filter(
-          (v) =>
-            v.bundle.toLowerCase().indexOf(needle) > -1 ||
-            v.plan_info.toLowerCase().indexOf(needle) > -1
-        )
-      })
+    async function recargarVendedores() {
+      cargando.activar()
+      listadosAuxiliares.vendedores = (await new VendedorController().listar({ 'tipo_vendedor[]': 'JEFE_VENTAS', '&tipo_vendedor[]': 'VENDEDOR', activo: 1 })).result
+      vendedores.value = listadosAuxiliares.vendedores
+      cargando.desactivar()
     }
-    function filtrarClientes(val, update) {
-      if (val === '') {
-        update(() => {
-          clientes.value = listadosAuxiliares.clientes
-        })
-        return
-      }
-      update(() => {
-        const needle = val.toLowerCase()
-        clientes.value = listadosAuxiliares.clientes.filter(
-          (v) =>
-            v.nombres.toLowerCase().indexOf(needle) > -1 ||
-            v.apellidos.toLowerCase().indexOf(needle) > -1 ||
-            v.identificacion.toLowerCase().indexOf(needle) > -1
-        )
-      })
+    async function recargarClientes() {
+      cargando.activar()
+      listadosAuxiliares.clientes = (await new ClienteClaroController().listar({ activo: 1 })).result
+      clientes.value = listadosAuxiliares.clientes
+      cargando.desactivar()
     }
-    function filtrarVendedores(val, update) {
-      if (val === '') {
-        update(() => {
-          vendedores.value = listadosAuxiliares.vendedores
-        })
-        return
-      }
-      update(() => {
-        const needle = val.toLowerCase()
-        vendedores.value = listadosAuxiliares.vendedores.filter(
-          (v) =>
-            v.codigo_vendedor.toLowerCase().indexOf(needle) > -1 ||
-            v.empleado_info.toLowerCase().indexOf(needle) > -1
-        )
-      })
-    }
+
     function obtenerProducto() {
       const axiosHttpRepository = AxiosHttpRepository.getInstance()
       const url_acreditacion =
@@ -195,27 +171,20 @@ export default defineComponent({
       }
     })
     return {
-      mixin,
-      venta,
-      disabled,
-      accion,
-      v$,
+      mixin, venta, disabled, accion, v$,
       configuracionColumnas: configuracionColumnasVentas,
       estados_activacion,
-      formas_pago,
-      vendedores,
-      clientes,
-      productos,
+      formas_pagos,
       maskFecha,
       precio_producto,
       comision_vendedor,
       mostrarLabelModal,
       modales,
+      store,
 
-
-      filtrarProductos,
-      filtrarVendedores,
-      filtrarClientes,
+      productos, filtrarProductos, recargarClientes,
+      vendedores, filtrarVendedores, recargarVendedores,
+      clientes, filtrarClientes,
       guardado,
     }
   },

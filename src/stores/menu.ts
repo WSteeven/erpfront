@@ -892,7 +892,7 @@ export const useMenuStore = defineStore('menu', () => {
           },
           {
             title: 'Clientes',
-            link: 'cliente-claro',
+            link: 'clientes-claro',
             icon: 'bi-circle',
             can: store.can('puede.acceder.clientes_claro'),
           },

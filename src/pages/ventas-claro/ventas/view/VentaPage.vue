@@ -5,7 +5,12 @@
         <div class="row q-col-gutter-sm q-mb-md">
           <!-- Vendeedor -->
           <div class="col-12 col-md-3">
-            <label class="q-mb-sm block">Vendedor</label>
+            <label-abrir-modal
+              v-if="mostrarLabelModal && store.esJefeVentasClaro"
+              label="Vendedor"
+              @click="modales.abrirModalEntidad('VendedorPage')"
+            />
+            <label v-else class="q-mb-sm block">Vendedor</label>
             <q-select
               v-model="venta.vendedor"
               :options="vendedores"
@@ -27,10 +32,26 @@
               emit-value
               map-options
             >
+              <template v-slot:option="scope">
+                <q-item v-bind="scope.itemProps">
+                  <q-item-section>
+                    <q-item-label>{{ scope.opt.empleado_info }}</q-item-label>
+                    <q-item-label caption
+                      >{{ scope.opt.tipo_vendedor }}:
+                      {{ scope.opt.modalidad_info }}</q-item-label
+                    >
+                  </q-item-section>
+                </q-item>
+              </template>
               <template v-slot:error>
                 <div v-for="error of v$.vendedor.$errors" :key="error.$uid">
                   <div class="error-msg">{{ error.$message }}</div>
                 </div>
+              </template>
+              <template v-slot:after>
+                <q-btn color="positive" @click="recargarVendedores">
+                  <q-icon size="xs" class="q-mr-sm" name="bi-arrow-clockwise" />
+                </q-btn>
               </template>
               <template v-slot:no-option>
                 <q-item>
@@ -41,10 +62,12 @@
               </template>
             </q-select>
           </div>
+
+
           <!-- Cliente -->
           <div class="col-12 col-md-3">
             <label-abrir-modal
-              v-if="mostrarLabelModal"
+              v-if="mostrarLabelModal && !store.esVendedor"
               label="Cliente"
               @click="modales.abrirModalEntidad('ClientePage')"
             />
@@ -70,10 +93,25 @@
               emit-value
               map-options
             >
+            <template v-slot:option="scope">
+                <q-item v-bind="scope.itemProps">
+                  <q-item-section>
+                    <q-item-label>{{ scope.opt.cliente_info }}</q-item-label>
+                    <q-item-label caption
+                      >identificacion: {{ scope.opt.identificacion }}</q-item-label
+                    >
+                  </q-item-section>
+                </q-item>
+              </template>
               <template v-slot:error>
                 <div v-for="error of v$.vendedor.$errors" :key="error.$uid">
                   <div class="error-msg">{{ error.$message }}</div>
                 </div>
+              </template>
+              <template v-slot:after>
+                <q-btn color="positive" @click="recargarClientes">
+                  <q-icon size="xs" class="q-mr-sm" name="bi-arrow-clockwise" />
+                </q-btn>
               </template>
               <template v-slot:no-option>
                 <q-item>
@@ -134,7 +172,7 @@
             <label class="q-mb-sm block">Forma de Pago</label>
             <q-select
               v-model="venta.forma_pago"
-              :options="formas_pago"
+              :options="formas_pagos"
               transition-show="jump-up"
               transition-hide="jump-down"
               options-dense

@@ -1224,8 +1224,8 @@ const routes: RouteRecordRaw[] = [
         meta: { requiresAuth: true },
       },
       {
-        path: '/cliente-claro',
-        name: 'cliente_claro',
+        path: '/clientes-claro',
+        name: 'clientes_claro',
         component: () =>
           import('pages/ventas-claro/cliente/view/ClienteClaroPage.vue'),
         meta: { requiresAuth: true },

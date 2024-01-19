@@ -4,7 +4,7 @@ import { ClienteClaro } from "../domain/ClienteClaro";
 
 export class ClienteClaroController extends TransaccionSimpleController<ClienteClaro>{
   constructor(){
-    super(endpoints.cliente_claro)
+    super(endpoints.clientes_claro)
   }
 }
 

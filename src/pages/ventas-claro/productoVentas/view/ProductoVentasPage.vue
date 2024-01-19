@@ -2,6 +2,7 @@
   <tab-layout-filter-tabs-2
     :mixin="mixin"
     :configuracionColumnas="configuracionColumnas"
+    :ajustarCeldas="true"
     :accion1="btnDesactivar"
     :accion2="btnActivar"
     :tab-options="tabOptionsProductos"
@@ -48,6 +49,27 @@
                 </q-item>
               </template>
             </q-select>
+          </div>
+          
+          <!-- Nombre -->
+          <div class="col-12 col-md-3">
+            <label class="q-mb-sm block">Nombre</label>
+            <q-input
+              v-model="producto.nombre"
+              placeholder="Obligatorio"
+              :disable="disabled"
+              :error="!!v$.nombre.$errors.length"
+              autogrow
+              @blur="v$.nombre.$touch"
+              outlined
+              dense
+            >
+              <template v-slot:error>
+                <div v-for="error of v$.nombre.$errors" :key="error.$uid">
+                  <div class="error-msg">{{ error.$message }}</div>
+                </div>
+              </template>
+            </q-input>
           </div>
           <!-- Bundle -->
           <div class="col-12 col-md-3">
