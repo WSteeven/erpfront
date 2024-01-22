@@ -5,7 +5,7 @@
     :permitir-eliminar="false"
     :permitir-editar="false"
     :permitir-consultar="false"
-    :mostrar-acciones="false"
+    :accion1="btnToggleActivar"
     subtitulo-pagina="Módulo de Tickets"
   >
     <template #formulario>
