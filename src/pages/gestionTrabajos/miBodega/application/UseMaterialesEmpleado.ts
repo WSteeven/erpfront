@@ -38,6 +38,7 @@ export function useMaterialesEmpleado(filtro: UnwrapRef<FiltroMiBodegaEmpleado>,
       transferenciaProductoEmpleadoStore.listadoMateriales = result
       transferenciaProductoEmpleadoStore.cliente_id = filtro.cliente_id
       transferenciaProductoEmpleadoStore.idEmpleado = filtro.empleado_id
+      transferenciaProductoEmpleadoStore.tareaId = null
 
       if (!result.length) notificarAdvertencia('No tienes material asignado.')
     } catch (e) {

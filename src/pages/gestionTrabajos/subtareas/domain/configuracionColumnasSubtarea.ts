@@ -193,4 +193,11 @@ export const configuracionColumnasSubtarea: ColumnConfig<Subtarea>[] = [
     align: 'left',
     sortable: true,
   },
+  {
+    name: 'etapa',
+    field: 'etapa',
+    label: 'Etapa',
+    align: 'left',
+    sortable: true,
+  },
 ]

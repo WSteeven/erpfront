@@ -34,7 +34,6 @@ import { CausaIntervencionController } from 'pages/gestionTrabajos/causasInterve
 import { MotivoSuspendidoController } from 'gestionTrabajos/motivosSuspendidos/infraestructure/MotivoSuspendidoController'
 import { ComportamientoModalesSubtarea } from 'pages/gestionTrabajos/subtareas/application/ComportamientoModalesSubtarea'
 import { MotivoPausaController } from 'pages/gestionTrabajos/motivosPausas/infraestructure/MotivoPausaController'
-import { EtapaController } from 'pages/gestionTrabajos/proyectos/modules/etapas/infraestructure/EtapaController'
 import { ContenedorSimpleMixin } from 'shared/contenedor/modules/simple/application/ContenedorSimpleMixin'
 import { useBotonesTablaSubtarea } from 'pages/gestionTrabajos/subtareas/application/BotonesTablaSubtarea'
 import { SubtareaController } from 'pages/gestionTrabajos/subtareas/infraestructure/SubtareaController'
@@ -172,7 +171,7 @@ export default defineComponent({
       cliente: { required: requiredIf(() => paraClienteFinal.value) },
       titulo: { required },
       proyecto: { required: requiredIf(() => paraProyecto.value) },
-      coordinador: { required: requiredIf(() => (esCoordinadorBackup||authenticationStore.esJefeTecnico) && paraClienteFinal.value) },
+      coordinador: { required: requiredIf(() => (esCoordinadorBackup || authenticationStore.esJefeTecnico) && paraClienteFinal.value) },
       ruta_tarea: { required: requiredIf(() => paraClienteFinal.value && tarea.ubicacion_trabajo === ubicacionesTrabajo.ruta) },
       centro_costo: { required: requiredIf(() => paraClienteFinal.value && centros_costos.value.length > 0) },
       // tarea: { requiredIf: requiredIf(() => preingreso.etapa && centros_costos.value.length) },
