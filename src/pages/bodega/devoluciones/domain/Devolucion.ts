@@ -28,6 +28,7 @@ export class Devolucion extends EntidadAuditable {
   es_tarea: boolean | null
   tiene_observacion_aut: boolean | null
   condicion: boolean | null
+  misma_condicion: boolean 
 
   constructor() {
     super()
@@ -56,5 +57,6 @@ export class Devolucion extends EntidadAuditable {
     this.es_tarea = false
     this.tiene_observacion_aut = false
     this.condicion = false
+    this.misma_condicion = false
   }
 }

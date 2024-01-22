@@ -260,19 +260,26 @@
           </div>
 
           <!-- check ingreso masivo -->
-          <div v-if="accion === acciones.nuevo" class="col-12 col-md-3">
+          <div
+            v-if="accion === acciones.nuevo || devolucion.misma_condicion"
+            class="col-12 col-md-3"
+          >
             <q-checkbox
               class="q-mt-lg q-pt-md"
-              v-model="misma_condicion"
+              v-model="devolucion.misma_condicion"
               @update:model-value="checkMismaCondicion"
               label="¿Mismo estado?"
-              :disable="disabled || soloLectura"
+              :disable="
+                disabled ||
+                soloLectura ||
+                (accion == acciones.editar && devolucion.misma_condicion)
+              "
               outlined
               dense
             ></q-checkbox>
           </div>
           <!-- Select condiciones -->
-          <div v-if="misma_condicion" class="col-12 col-md-3">
+          <div v-if="devolucion.misma_condicion" class="col-12 col-md-3">
             <label class="q-mb-sm block">Estado de los productos</label>
             <q-select
               v-model="devolucion.condicion"
@@ -470,12 +477,18 @@
             <essential-table
               titulo="Productos Seleccionados"
               :configuracionColumnas="
-                configuracionColumnasProductosSeleccionadosAccion
+                accion == acciones.nuevo || accion == acciones.editar
+                  ? [
+                      ...configuracionColumnasProductosSeleccionadosAccion,
+                      accionesTabla,
+                    ]
+                  : configuracionColumnasProductosSeleccionadosAccion
               "
               :datos="devolucion.listadoProductos"
               :permitirConsultar="false"
+              :permitirEditarModal="true"
               :permitirEditar="
-                !misma_condicion &&
+                !devolucion.misma_condicion &&
                 (accion == acciones.nuevo || accion == acciones.editar)
               "
               :permitirEliminar="false"
@@ -483,6 +496,7 @@
               :accion1="botonEditarCantidad"
               :accion2="botonEliminar"
               :altoFijo="false"
+              :ajustarCeldas="true"
               ><template v-slot:body="props">
                 <q-tr :props="props" @click="onRowClick(props.row)">
                   <q-td key="name" :props="props">

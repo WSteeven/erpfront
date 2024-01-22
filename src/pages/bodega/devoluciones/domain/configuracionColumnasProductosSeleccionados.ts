@@ -15,6 +15,7 @@ export const configuracionColumnasProductosSeleccionados: ColumnConfig<any>[] = 
     field: 'producto',
     label: 'Producto',
     align: 'left',
+    editable:false,
     sortable: true,
   },
   {
@@ -22,6 +23,7 @@ export const configuracionColumnasProductosSeleccionados: ColumnConfig<any>[] = 
     field: 'descripcion',
     label: 'Descripción',
     align: 'left',
+    editable:false,
     sortable: true,
   },
   {
@@ -29,6 +31,7 @@ export const configuracionColumnasProductosSeleccionados: ColumnConfig<any>[] = 
     field: 'categoria',
     label: 'Categoria',
     align: 'left',
+    editable:false,
     sortable: true,
   },
   {
@@ -37,6 +40,7 @@ export const configuracionColumnasProductosSeleccionados: ColumnConfig<any>[] = 
     label: 'Serial',
     align: 'left',
     sortable: true,
+    editable:false,
   },
   {
     name: 'cantidad',
