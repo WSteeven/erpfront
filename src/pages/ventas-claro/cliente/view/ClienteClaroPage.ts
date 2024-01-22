@@ -15,7 +15,7 @@ import { useQuasar } from 'quasar'
 import { VendedorController } from 'pages/ventas-claro/vendedores/infrestructure/VendedorController'
 import { ClienteClaro } from '../domain/ClienteClaro'
 import { ClienteClaroController } from '../infrestucture/ClienteClaroController'
-import { maxLength, minLength, required } from 'shared/i18n-validators'
+import { maxLength, minLength, required, requiredIf } from 'shared/i18n-validators'
 import { tabOptionsProductos } from 'config/ventas.utils'
 import { CustomActionTable } from 'components/tables/domain/CustomActionTable'
 import { CustomActionPrompt } from 'components/tables/domain/CustomActionPrompt'
@@ -23,6 +23,7 @@ import { useNotificaciones } from 'shared/notificaciones'
 import { StatusEssentialLoading } from 'components/loading/application/StatusEssentialLoading'
 import { useAuthenticationStore } from 'stores/authentication'
 import { CambiarEstadoCliente } from '../application/CambiarEstadoCliente'
+import { useFiltrosListadosSelects } from 'shared/filtrosListadosGenerales'
 
 
 export default defineComponent({
@@ -36,26 +37,28 @@ export default defineComponent({
     )
     const { entidad: cliente, accion, disabled, listadosAuxiliares, listado } = mixin.useReferencias()
     const { setValidador, listar, obtenerListados, cargarVista } = mixin.useComportamiento()
-    const { onGuardado } = mixin.useHooks()
+    const { onGuardado, onReestablecer } = mixin.useHooks()
     const { confirmar, notificarCorrecto, prompt, notificarError } = useNotificaciones()
 
     useCargandoStore().setQuasar(useQuasar())
     const cargando = new StatusEssentialLoading()
     const store = useAuthenticationStore()
     const is_month = ref(false)
-    const vendedores = ref([])
     const tabDefecto = ref('1')
+
+    const { vendedores_claro: vendedores, filtrarVendedoresClaro: filtrarVendedores } = useFiltrosListadosSelects(listadosAuxiliares)
 
     cargarVista(async () => {
       await obtenerListados({
         vendedores: {
           controller: new VendedorController(),
           params: {
-            // tipo_vendedor: 'SUPERVISOR_VENTAS'
+            tipo_vendedor: 'SUPERVISOR_VENTAS'
           },
         },
       })
       vendedores.value = listadosAuxiliares.vendedores
+      if (store.esSupervisorVentasClaro) cliente.supervisor = store.user.id
     })
     const reglas = {
       identificacion: {
@@ -63,6 +66,7 @@ export default defineComponent({
         maxLength: maxLength(10),
         minLenght: minLength(10)
       },
+      supervisor: { requiredIf: requiredIf(() => store.esJefeVentasClaro) },
       nombres: { required },
       apellidos: { required },
       direccion: { required },
@@ -83,6 +87,9 @@ export default defineComponent({
       emit('cerrar-modal', false)
       emit('guardado', { formulario: 'ClienteClaroPage', id: id, modelo: response.modelo })
     })
+    onReestablecer(() => {
+      if (store.esSupervisorVentasClaro) cliente.supervisor = store.user.id
+    })
 
     /***********************
     * Funciones
@@ -91,25 +98,12 @@ export default defineComponent({
       tabDefecto.value = tab
       listar({ activo: tab })
     }
-    /**Verifica si es un mes */
-    function checkValue(val, reason) {
-      is_month.value = reason === 'month' ? false : true
-    }
-    function filtrarVendedores(val, update) {
-      if (val === '') {
-        update(() => {
-          vendedores.value = listadosAuxiliares.vendedores
-        })
-        return
-      }
-      update(() => {
-        const needle = val.toLowerCase()
-        vendedores.value = listadosAuxiliares.vendedores.filter(
-          (v) =>
-            v.codigo_vendedor.toLowerCase().indexOf(needle) > -1 ||
-            v.empleado_info.toLowerCase().indexOf(needle) > -1
-        )
-      })
+
+    async function recargarVendedores() {
+      cargando.activar()
+      listadosAuxiliares.vendedores = await (await new VendedorController().listar({ activo: 1, tipo_vendedor: 'SUPERVISOR_VENTAS' })).result
+      vendedores.value = listadosAuxiliares.vendedores
+      cargando.desactivar()
     }
 
 
@@ -166,14 +160,14 @@ export default defineComponent({
       is_month,
       tabDefecto,
       tabOptionsClienteClaro: tabOptionsProductos,
-      vendedores,
+
+      store,
       cliente,
       maskFecha,
 
       //funciones
-      checkValue,
       removeAccents,
-      filtrarVendedores,
+      vendedores, filtrarVendedores, recargarVendedores,
       filtrarClientes,
 
       //botones de tabla

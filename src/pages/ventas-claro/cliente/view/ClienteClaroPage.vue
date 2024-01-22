@@ -7,11 +7,66 @@
     :accion2="btnActivar"
     :tab-options="tabOptionsClienteClaro"
     :tabDefecto="tabDefecto"
-    :filtrar="filtrarClientes">
+    :filtrar="filtrarClientes"
   >
+    >
     <template #formulario>
       <q-form @submit.prevent>
         <div class="row q-col-gutter-sm q-mb-md">
+          <!-- supervisor -->
+          <div class="col-12 col-md-3" v-if="store.esJefeVentasClaro">
+            <label class="q-mb-sm block">Supervisor</label>
+            <q-select
+              v-model="cliente.supervisor"
+              :options="vendedores"
+              transition-show="jump-up"
+              transition-hide="jump-down"
+              options-dense
+              dense
+              outlined
+              :disable="disabled"
+              :error="!!v$.supervisor.$errors.length"
+              @blur="v$.supervisor.$touch"
+              error-message="Debes seleccionar un supervisor de ventas"
+              use-input
+              input-debounce="0"
+              @filter="filtrarVendedores"
+              :option-value="(v) => v.empleado_id"
+              :option-label="(v) => v.empleado_info"
+              emit-value
+              map-options
+            >
+              <template v-slot:option="scope">
+                <q-item v-bind="scope.itemProps">
+                  <q-item-section>
+                    <q-item-label>{{ scope.opt.empleado_info }}</q-item-label>
+                    <q-item-label caption
+                      >{{ scope.opt.tipo_vendedor }}
+                      {{ scope.opt.modalidad_info }}</q-item-label
+                    >
+                  </q-item-section>
+                </q-item>
+              </template>
+              <template v-slot:error>
+                <div v-for="error of v$.supervisor.$errors" :key="error.$uid">
+                  <div class="error-msg">{{ error.$message }}</div>
+                </div>
+              </template>
+              <template v-slot:after>
+                <q-btn color="positive" @click="recargarVendedores">
+                  <q-icon size="xs" class="q-mr-sm" name="bi-arrow-clockwise" />
+                </q-btn>
+              </template>
+              <template v-slot:no-option>
+                <q-item>
+                  <q-item-section class="text-grey">
+                    No hay resultados
+                  </q-item-section>
+                </q-item>
+              </template>
+            </q-select>
+          </div>
+
           <!-- cantidad de ventas -->
           <div class="col-12 col-md-3">
             <label class="q-mb-sm block">Identificacion</label>
