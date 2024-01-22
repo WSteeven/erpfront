@@ -96,12 +96,8 @@ export default defineComponent({
     const all = ref(true)
     const only_sucursal = ref(false)
     const only_cliente_tarea = ref(false)
-    const group = ref('todos')
+    const group = ref('only_sucursal')
     const options_groups = [
-      {
-        label: 'Todos los elementos',
-        value: 'todos'
-      },
       {
         label: 'Solo bodega seleccionada',
         value: 'only_sucursal'
@@ -109,7 +105,11 @@ export default defineComponent({
       {
         label: 'Solo perteneciente al cliente de la tarea',
         value: 'only_cliente_tarea'
-      }
+      },
+      {
+        label: 'Todos los elementos',
+        value: 'todos'
+      },
     ]
 
     const opciones_clientes = ref([])

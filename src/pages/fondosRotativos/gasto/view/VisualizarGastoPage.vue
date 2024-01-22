@@ -114,7 +114,7 @@
             >
             </q-input>
           </div>
-          <div class="col-12 col-md-3"  v-if="isConsultar === false">
+          <div class="col-12 col-md-3" v-if="isConsultar === false">
             <label class="q-mb-sm block">Proyectos</label>
             <q-select
               v-model="gasto.proyecto"
@@ -161,10 +161,7 @@
             </q-select>
           </div>
           <!-- Tareas -->
-          <div
-            class="col-12 col-md-3"
-            v-if="gasto.proyecto >= 0 && isConsultar"
-          >
+          <div class="col-12 col-md-3" v-if="gasto.proyecto >= 0 && isConsultar">
             <label class="q-mb-sm block">Tareas</label>
             <q-input
               v-model="gasto.tarea_info"
@@ -245,13 +242,13 @@
               v-model="gasto.factura"
               placeholder="Obligatorio"
               :mask="mascaraFactura"
-              fill-mask
               :hint="mascaraFactura"
               :disable="disabled"
               :error="!!v$.factura.$errors.length"
               @blur="v$.factura.$touch"
               outlined
               dense
+              fill-mask
             >
               <template v-slot:error>
                 <div v-for="error of v$.factura.$errors" :key="error.$uid">
@@ -478,9 +475,7 @@
           <!-- Placa vehiculo -->
           <div
             class="col-12 col-md-3"
-            v-if="
-              (esCombustibleEmpresa || mostarPlaca) && isConsultar === false
-            "
+            v-if="(esCombustibleEmpresa || mostarPlaca) && isConsultar === false"
           >
             <label class="q-mb-sm block">Placas</label>
             <q-select
@@ -579,7 +574,7 @@
               outlined
               dense
             >
-            <template v-slot:error>
+              <template v-slot:error>
                 <div v-for="error of v$.detalle_estado.$errors" :key="error.$uid">
                   <div class="error-msg">{{ error.$message }}</div>
                 </div>
@@ -695,6 +690,30 @@
               @update:modelValue="(data) => (gasto.comprobante2 = data)"
             >
             </imagen-comprimida-component>
+          </div>
+          <!-- Centro de Costo -->
+          <div class="col-12 col-md-3">
+            <label class="q-mb-sm block">Centro de Costo</label>
+            <q-input
+              v-model="gasto.centro_costo"
+              placeholder="Obligatorio"
+              disable
+              outlined
+              dense
+            >
+            </q-input>
+          </div>
+          <!-- Sub Centro de Costo -->
+          <div class="col-12 col-md-3">
+            <label class="q-mb-sm block">Sub Centro de Costo</label>
+            <q-input
+              v-model="gasto.subcentro_costo"
+              placeholder="Obligatorio"
+              disable
+              outlined
+              dense
+            >
+            </q-input>
           </div>
         </div>
       </q-form>

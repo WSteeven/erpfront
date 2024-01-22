@@ -23,12 +23,13 @@ export const useBotonesTablaRolPagoMes = (
     posicion: 0,
     imagen_informe: null,
   }
+  const store  = useAuthenticationStore()
 
   const btnFinalizarRolPago: CustomActionTable = {
     titulo: 'Finalizar Rol de Pago',
     icono: 'bi-check-circle-fill',
     color: 'positive',
-    visible: ({ entidad }) => !entidad.finalizado,
+    visible: ({ entidad }) => !entidad.finalizado && store.can('puede.ver.btn.finalizar_rol_pago'),
     accion: async ({ entidad, posicion }) => {
       if (listado.value[posicion].cantidad_subtareas == 0)
         return notificarAdvertencia(

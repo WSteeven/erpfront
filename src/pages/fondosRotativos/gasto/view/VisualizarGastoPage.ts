@@ -39,6 +39,7 @@ import { SubDetalleFondoController } from 'pages/fondosRotativos/subDetalleFondo
 import { DetalleFondoController } from 'pages/fondosRotativos/detalleFondo/infrestructure/DetalleFondoController'
 import { Gasto } from '../domain/Gasto'
 import { GastoController } from '../infrestructure/GastoController'
+import { isAxiosError, notificarMensajesError } from 'shared/utils'
 
 export default defineComponent({
   components: { TabLayout, ImagenComprimidaComponent, ButtonSubmits },
@@ -54,17 +55,22 @@ export default defineComponent({
     /***********
      * Mixin
      ************/
-    const mixin = new ContenedorSimpleMixin(      VisualizarGasto,      new VisualizarGastoController()    )
+    const mixin = new ContenedorSimpleMixin(
+      VisualizarGasto,
+      new VisualizarGastoController()
+    )
     const mixin_gastos = new ContenedorSimpleMixin(Gasto, new GastoController())
-    const {      entidad: visualizar_gasto,      disabled,      accion,        listadosAuxiliares,    } = mixin.useReferencias()
-    const { setValidador,  cargarVista, obtenerListados } =    mixin.useComportamiento()
+    const {
+      entidad: visualizar_gasto,
+      disabled,
+      accion,
+      listadosAuxiliares,
+    } = mixin.useReferencias()
+    const { setValidador, cargarVista, obtenerListados } =
+      mixin.useComportamiento()
     const { onConsultado } = mixin.useHooks()
     const { entidad: gasto } = mixin_gastos.useReferencias()
-    const {
-      consultar,
-      editar,
-      reestablecer,
-    } = mixin_gastos.useComportamiento()
+    const { consultar, editar, reestablecer } = mixin_gastos.useComportamiento()
     const issubmit = ref(true)
     const {
       confirmar,
@@ -78,6 +84,7 @@ export default defineComponent({
      * Init
      ******/
     const fondoRotativoStore = useFondoRotativoStore()
+    const notificaciones = useNotificaciones()
     const aprobarController = new AprobarGastoController()
     const esFactura = ref(true)
     const estaSemanAC = ref()
@@ -118,7 +125,7 @@ export default defineComponent({
       {
         detalle: 16,
         cantidad: 22,
-        mascara: '###-###-##############',
+        mascara: '###-###-###############',
       },
       {
         detalle: 10,
@@ -156,12 +163,13 @@ export default defineComponent({
         numFacturaObjeto[index] !== undefined
           ? numFacturaObjeto[index].mascara
           : '###-###-#########'
+
       return mascara
     })
     onConsultado(() => {
       esFactura.value = gasto.tiene_factura != null ? gasto.tiene_factura : true
     })
-       //Obtener el listado de las cantones
+    //Obtener el listado de las cantones
     cargarVista(async () => {
       await obtenerListados({
         autorizacionesEspeciales: {
@@ -225,7 +233,7 @@ export default defineComponent({
       listadosAuxiliares.detalles = detalles.value
       listadosAuxiliares.sub_detalles = sub_detalles.value
       if (fondoRotativoStore.id_gasto) {
-       await consultar({ id: fondoRotativoStore.id_gasto })
+        await consultar({ id: fondoRotativoStore.id_gasto })
         mostrarListado.value = false
         mostrarAprobacion.value = true
         esFactura.value = fondoRotativoStore.existeFactura
@@ -264,7 +272,6 @@ export default defineComponent({
         required: requiredIf(() => esFactura.value),
       },
       num_comprobante: {
-        minLength: minLength(10),
         maxLength: maxLength(15),
       },
       aut_especial: {
@@ -593,56 +600,47 @@ export default defineComponent({
               emit('cerrar-modal', false)
               emit('guardado')
             }
-          } catch (e: any) {
-            notificarError(
-              'No se pudo aprobar, debes ingresar un motivo para la aprobacion'
-            )
+          } catch (error: any) {
+            if (isAxiosError(error)) {
+              const mensajes: string[] = error.erroresValidacion
+              await notificarMensajesError(mensajes, notificaciones)
+            }
           }
           break
         case 'rechazar':
-          confirmar('¿Está seguro de rechazar el gasto?', () => {
-            const data: CustomActionPrompt = {
-              titulo: 'Rechazar gasto',
-              mensaje: 'Ingrese motivo de aprobación',
-              accion: async (data) => {
-                try {
-                  entidad.detalle_estado = data
-                  await aprobarController.rechazarGasto(entidad)
-                  issubmit.value = false
-                  notificarAdvertencia('Se rechazado Gasto Exitosamente')
-                  emit('cerrar-modal')
-                  emit('guardado')
-                } catch (e: any) {
-                  notificarError(
-                    'No se pudo rechazar, debes ingresar un motivo para la anulación'
-                  )
-                }
-              },
+          confirmar('¿Está seguro de rechazar el gasto?', async () => {
+            try {
+              if (await v$.value.$validate()) {
+                await aprobarController.rechazarGasto(entidad)
+                issubmit.value = false
+                notificarAdvertencia('Se rechazado Gasto Exitosamente')
+                emit('cerrar-modal', false)
+                emit('guardado')
+              }
+            } catch (error: any) {
+              if (isAxiosError(error)) {
+                const mensajes: string[] = error.erroresValidacion
+                await notificarMensajesError(mensajes, notificaciones)
+              }
             }
-            prompt(data)
           })
           break
         case 'anular':
-          confirmar('¿Está seguro de anular el gasto?', () => {
-            const data: CustomActionPrompt = {
-              titulo: 'Anular gasto',
-              mensaje: 'Ingrese motivo de anulacion',
-              accion: async (data) => {
-                try {
-                  entidad.detalle_estado = data
-                  await aprobarController.anularGasto(entidad)
-                  issubmit.value = false
-                  notificarAdvertencia('Se anulado Gasto Exitosamente')
-                  emit('cerrar-modal')
-                  emit('guardado')
-                } catch (e: any) {
-                  notificarError(
-                    'No se pudo anular, debes ingresar un motivo para la anulación'
-                  )
+          confirmar('¿Está seguro de anular el gasto?', async () => {
+            if (await v$.value.$validate()) {
+              try {
+                await aprobarController.anularGasto(entidad)
+                issubmit.value = false
+                notificarAdvertencia('Se anulado Gasto Exitosamente')
+                emit('cerrar-modal', false)
+                emit('guardado')
+              } catch (error: any) {
+                if (isAxiosError(error)) {
+                  const mensajes: string[] = error.erroresValidacion
+                  await notificarMensajesError(mensajes, notificaciones)
                 }
-              },
+              }
             }
-            prompt(data)
           })
           break
         default:

@@ -28,6 +28,8 @@ export class FondoRotativoContabilidad extends EntidadAuditable {
   estado_info: string | null
   detalle_estado: string | null
   created_at : string | null
+  centro_costo: string | null
+  subcentro_costo: string | null
   constructor() {
     super()
     this.usuario = null
@@ -58,6 +60,8 @@ export class FondoRotativoContabilidad extends EntidadAuditable {
     this.estado_info = null
     this.detalle_estado = null
     this.created_at = null
+    this.centro_costo = null
+    this.subcentro_costo= null
 
   }
 }

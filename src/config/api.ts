@@ -144,6 +144,9 @@ export const endpoints = {
   imprimir_reporte_general_empleado: new Endpoint(
     'recursos-humanos/imprimir_reporte_general_empleado'
   ),
+  imprimir_reporte_general_alimentacion: new Endpoint(
+    'recursos-humanos/imprimir-reporte-general-alimentacion/'
+  ),
 
   verificar_todos_roles_finalizadas: new Endpoint(
     'recursos-humanos/verificar-todos_roles-finalizadas'
@@ -164,8 +167,16 @@ export const endpoints = {
   crear_cash_roles_pago: new Endpoint(
     'recursos-humanos/crear-cash-roles-pago/'
   ),
+  crear_cash_alimentacion: new Endpoint(
+    'recursos-humanos/crear-cash-alimentacion/'
+  ),
   rubros: new Endpoint('recursos-humanos/rubros'),
   anular_prestamo_empresarial: new Endpoint('recursos-humanos/anular-prestamo-empresarial'),
+  asignar_alimentacion: new Endpoint('recursos-humanos/asignar-alimentacion'),
+  alimentacion: new Endpoint('recursos-humanos/alimentacion'),
+  detalle_alimentacion: new Endpoint('recursos-humanos/detalle-alimentacion'),
+  finalizar_asignacion_alimentacion: new Endpoint('recursos-humanos/finalizar-asignacion-alimentacion'),
+
 
   //Modulo de Vehiculos
   combustibles: new Endpoint('vehiculos/combustibles'),
