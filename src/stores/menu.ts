@@ -466,6 +466,12 @@ export const useMenuStore = defineStore('menu', () => {
           icon: 'bi-clipboard2-data-fill',
           children: [
             {
+              title: 'Resumen de valores de FR',
+              link: 'reporte-valores-fondos',
+              icon: 'bi-app',
+              can: store.can('puede.ver.reporte_valores_fondos_rotativos')|| store.esAdministrador,
+            },
+            {
               title: 'Fondo Rotativo',
               link: 'reporte-fondo-fecha',
               icon: 'bi-app',
