@@ -278,7 +278,6 @@ export default defineComponent({
         required: requiredIf(() => esFactura.value),
       },
       num_comprobante: {
-        minLength: minLength(10),
         maxLength: maxLength(15),
       },
       aut_especial: {

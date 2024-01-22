@@ -86,10 +86,10 @@ export default defineComponent({
           entidad.factura == null ? false : true
         fondoRotativoStore.id_gasto = entidad.id
         fondoRotativoStore.estaSemanAC = estaEnSemanaActual(entidad.fecha_viat)
-        fondoRotativoStore.empleado_id = entidad.id_usuario
+        fondoRotativoStore.existeFactura = entidad.tiene_factura
         fondoRotativoStore.accionForm =
           authenticationStore.user.id === entidad.aut_especial &&
-          entidad.estado === estadosGastos.PENDIENTE
+            entidad.estado === estadosGastos.PENDIENTE
             ? acciones.editar
             : acciones.consultar
         modales.abrirModalEntidad('VisualizarGastoPage')

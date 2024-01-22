@@ -97,8 +97,11 @@ export default defineComponent({
         ? true
         : false*/
     })
+    const es_consultar = computed(() => {
+      return accion.value === acciones.consultar
+    })
     onConsultado(() => {
-      esFactura.value = gasto.tiene_factura != null ? gasto.tiene_factura : true
+      esFactura.value = gasto.tiene_factura != null ? gasto.tiene_factura : true;
     })
     const esCombustibleEmpresa = computed(() => {
       if (gasto.detalle == null) {
@@ -678,6 +681,7 @@ export default defineComponent({
       usuario,
       disabled,
       accion,
+      acciones,
       v$,
       tabAutorizarGasto,
       maskFecha,
@@ -711,6 +715,7 @@ export default defineComponent({
       mostrarListado,
       mostarPlaca,
       listadoTareas,
+      es_consultar,
     }
   },
 })

@@ -624,6 +624,30 @@
               </template>
             </q-input>
           </div>
+          <!-- Centro de Costo -->
+          <div class="col-12 col-md-3" v-if="esconsultar">
+            <label class="q-mb-sm block">Centro de Costo</label>
+            <q-input
+              v-model="gasto.centro_costo"
+              placeholder="Obligatorio"
+              disable
+              outlined
+              dense
+            >
+            </q-input>
+          </div>
+          <!-- Sub Centro de Costo -->
+          <div class="col-12 col-md-3" v-if="es_consultar">
+            <label class="q-mb-sm block">Sub Centro de Costo</label>
+            <q-input
+              v-model="gasto.subcentro_costo"
+              placeholder="Obligatorio"
+              disable
+              outlined
+              dense
+            >
+            </q-input>
+          </div>
           <!-- Estado -->
           <div class="col-12 col-md-3">
             <label class="q-mb-sm block">Estado</label>
