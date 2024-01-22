@@ -300,13 +300,20 @@ export default defineComponent({
     *************/
     async function actualizarCantidadUtilizadaHistorial(material) {
       const params = {
-        tarea_id: trabajoAsignadoStore.idTareaSeleccionada,
+        /* tarea_id: trabajoAsignadoStore.idTareaSeleccionada,
         subtarea_id: trabajoAsignadoStore.subtarea.id,
         empleado_id: obtenerIdEmpleadoResponsable(),
         detalle_producto_id: material.detalle_producto_id,
         cantidad_utilizada: material.cantidad_utilizada,
         cantidad_anterior: material.cantidad_anterior,
         fecha: fecha_historial.value,
+        cliente_id: material.cliente_id,*/
+        ...parametrosGenerales,
+        detalle_producto_id: material.detalle_producto_id,
+        cantidad_utilizada: material.cantidad_utilizada,
+        cantidad_anterior: material.cantidad_anterior,
+        fecha: fecha_historial.value,
+        cliente_id: material.cliente_id,
       }
       const ruta = axios.getEndpoint(endpoints.actualizar_cantidad_utilizada_historial, params)
       const response: AxiosResponse = await axios.post(ruta)
@@ -315,13 +322,20 @@ export default defineComponent({
 
     async function actualizarCantidadUtilizadaHistorialStock(material) {
       const params = {
-        tarea_id: trabajoAsignadoStore.idTareaSeleccionada,
+        /*tarea_id: trabajoAsignadoStore.idTareaSeleccionada,
         subtarea_id: trabajoAsignadoStore.subtarea.id,
         empleado_id: obtenerIdEmpleadoResponsable(),
         detalle_producto_id: material.detalle_producto_id,
         cantidad_utilizada: material.cantidad_utilizada,
         cantidad_anterior: material.cantidad_anterior,
         fecha: fecha_historial_stock.value,
+        cliente_id: material.cliente_id,*/
+        ...parametrosGenerales,
+        detalle_producto_id: material.detalle_producto_id,
+        cantidad_utilizada: material.cantidad_utilizada,
+        cantidad_anterior: material.cantidad_anterior,
+        fecha: fecha_historial.value,
+        cliente_id: material.cliente_id,
       }
       const ruta = axios.getEndpoint(endpoints.actualizar_cantidad_utilizada_historial_stock, params)
       const response: AxiosResponse = await axios.post(ruta)
@@ -356,6 +370,7 @@ export default defineComponent({
         cantidad_utilizada: material.cantidad_utilizada,
         cantidad_anterior: material.cantidad_anterior,
         fecha: fecha_historial.value,
+        cliente_id: material.cliente_id,
       }
       const ruta = axios.getEndpoint(endpoints.actualizar_cantidad_utilizada_stock, params)
       const response: AxiosResponse = await axios.post(ruta)
@@ -438,8 +453,9 @@ export default defineComponent({
     }
 
     async function obtenerClientesMaterialesTarea() {
-      if (parametrosGenerales.etapa_id) consultarClientesMaterialesTarea({ proyecto_id: parametrosGenerales.proyecto_id, etapa_id: parametrosGenerales.etapa_id, filtrar_por_etapa: true })
-      else consultarClientesMaterialesTarea({ proyecto_id: parametrosGenerales.proyecto_id, etapa_id: parametrosGenerales.etapa_id, filtrar_por_proyecto: true })
+      if (parametrosGenerales.proyecto_id && parametrosGenerales.etapa_id) consultarClientesMaterialesTarea({ proyecto_id: parametrosGenerales.proyecto_id, etapa_id: parametrosGenerales.etapa_id, filtrar_por_etapa: true })
+      else if (parametrosGenerales.proyecto_id) consultarClientesMaterialesTarea({ proyecto_id: parametrosGenerales.proyecto_id, etapa_id: parametrosGenerales.etapa_id, filtrar_por_proyecto: true })
+      else consultarClientesMaterialesTarea({ tarea_id: subtarea.tarea_id, filtrar_por_tarea: true })
     }
 
     async function descargarExcel() {
@@ -478,6 +494,11 @@ export default defineComponent({
       clienteMaterialStock.value = subtarea.cliente_id
 
       obtenerMaterialesStock(clienteMaterialStock.value)
+    }
+
+    function actualizarTablaMaterialesTarea() {
+      clienteMaterialTarea.value = undefined
+      materialesTareaTodos.value = []
     }
 
     /**********
@@ -578,6 +599,7 @@ export default defineComponent({
       mostrarMaterialConStock,
       mostrarMaterialStockConStock,
       mostrarSolicitudesAts,
+      actualizarTablaMaterialesTarea,
     }
   }
 })

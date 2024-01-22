@@ -96,7 +96,7 @@
                 v-if="esCoordinador"
                 name="historial_material_tarea_usado"
                 label="Historial de material de tarea usado"
-                @click="resetearFiltroHistorial()"
+                @click="resetearFiltroHistorialTarea()"
               >
               </q-tab>
             </q-tabs>
@@ -255,6 +255,7 @@
                       use-input
                       input-debounce="0"
                       options-dense
+                      clearable
                       dense
                       outlined
                       :option-label="(item) => item.razon_social"
