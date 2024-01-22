@@ -911,6 +911,15 @@ const routes: RouteRecordRaw[] = [
       },
 
       {
+        path: '/reporte-valores-fondos',
+        name: 'reporte_valores_fondos',
+        component: () =>
+          import(
+            'pages/fondosRotativos/reportes/reporteValoresEmpleados/view/ValoresFondosEmpleadoPage.vue'
+          ),
+        meta: { requiresAuth: false},
+      },
+      {
         path: '/reporte-fondo-fecha',
         name: 'reporte_fondo_fecha',
         component: () =>

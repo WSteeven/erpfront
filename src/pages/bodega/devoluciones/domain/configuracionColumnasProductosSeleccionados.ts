@@ -44,13 +44,6 @@ export const configuracionColumnasProductosSeleccionados: ColumnConfig<any>[] = 
     label: 'Cantidad',
     align: 'left',
     sortable: true,
-  },
-  {
-    name: 'acciones',
-    field: 'acciones',
-    label: 'Acciones',
-    align: 'right',
-    sortable: false,
   }
 ]
 
