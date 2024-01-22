@@ -159,6 +159,31 @@ export const tiposTrabajosEstaticos = {
   hincado: 'HINCADO',
 }
 
+export const motivos = {
+  venta: 'VENTA',
+  compraProveedor: 'COMPRA A PROVEEDOR',
+  mercaderiaClienteTarea: 'MERCADERIA DE CLIENTE PARA TAREA',
+  devolucionFinalizacionLaboral: 'DEVOLUCION POR FINALIZACION LABORAL',
+  devolucionTarea: 'DEVOLUCION DE TAREA',
+  stockInicial: 'STOCK INICIAL',
+  despachoTarea: 'DESPACHO DE TAREA',
+  despacho: 'DESPACHO',
+  destruccion: 'DESTRUCCION',
+  devolucionAlProveedor: 'DEVOLUCION AL PROVEEDOR',
+  reposicion: 'REPOSICION',
+  ingresoTransferenciaBodegas: 'INGRESO TRANSFERENCIA ENTRE BODEGAS',
+  egresoTransferenciaBodegas: 'EGRESO TRANSFERENCIA ENTRE BODEGAS',
+  ingresoLiquidacionMateriales: 'INGRESO POR LIQUIDACION DE MATERIALES',
+  egresoLiquidacionMateriales: 'EGRESO POR LIQUIDACION DE MATERIALES',
+  ingresoAjusteRegularizacion: 'AJUSTE DE INGRESO POR REGULARIZACION',
+  robo: 'ROBO',
+  egresoAjusteRegularizacion: 'AJUSTE DE EGRESO POR REGULARIZACION',
+  mercaderiaClienteStock: 'MERCADERIA DE CLIENTE PARA STOCK',
+  devolucionGarantia: 'DEVOLUCION POR GARANTIA',
+  devolucionDanio: 'DEVOLUCION POR DAÑO',
+  despachoGarantia: 'DESPACHO POR GARANTIA',
+}
+
 export const motivosTransaccionesBodega = {
   venta: 'VENTA',
   compraProveedor: 'COMPRA A PROVEEDOR',
@@ -474,15 +499,15 @@ export const tabOptionsPreingresoMateriales = [
   { label: 'Autorizadas', value: '2' }, //autorizacion APROBADO
   { label: 'Canceladas', value: '3' }  //autorizacion CANCELADO
 ]
-export const formas_pago =[
-  {label: 'EFECTIVO', value: 'EFECTIVO'},
-  {label: 'TC', value: 'TARJETA DE CREDITO'},
-  {label: 'D.BANCARIO', value: 'DEBITO BANCARIO'},
+export const formas_pago = [
+  { label: 'EFECTIVO', value: 'EFECTIVO' },
+  { label: 'TC', value: 'TARJETA DE CREDITO' },
+  { label: 'D.BANCARIO', value: 'DEBITO BANCARIO' },
 ]
-export const estados_activacion =[
-  {label: 'PENDIENTE', value: 'PENDIENTE'},
-  {label: 'APROBADO', value: 'APROBADO'},
-  {label: 'RECHAZADA', value: 'RECHAZADA'},
+export const estados_activacion = [
+  { label: 'PENDIENTE', value: 'PENDIENTE' },
+  { label: 'APROBADO', value: 'APROBADO' },
+  { label: 'RECHAZADA', value: 'RECHAZADA' },
 
 ]
 export const estadosVentas = {

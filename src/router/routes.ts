@@ -428,6 +428,12 @@ const routes: RouteRecordRaw[] = [
           ),
         meta: { requiresAuth: true },
       },
+      /* {
+        path: '/preingresos-materiales-coordinadores',
+        name: 'preingresos_materiales_coordinadores',
+        component: () => import('pages/bodega/preingresoMateriales/modules/view/PreingresoMaterialCoordinadorPage.vue'),
+        meta: { requiresAuth: true },
+      }, */
       {
         path: '/devoluciones',
         name: 'devoluciones',

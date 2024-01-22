@@ -121,7 +121,7 @@ export default defineComponent({
     const opciones_empleados = ref([])
     const opciones_condiciones = ref([])
 
-    const {clientes, filtrarClientes} = useFiltrosListadosSelects(listadosAuxiliares)
+    const { clientes, filtrarClientes } = useFiltrosListadosSelects(listadosAuxiliares)
 
     //obtener los listados
     cargarVista(async () => {
