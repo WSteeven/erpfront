@@ -92,6 +92,7 @@ export default defineComponent({
             entidad.estado === estadosGastos.PENDIENTE
             ? acciones.editar
             : acciones.consultar
+            fondoRotativoStore.empleado_id= entidad.id_usuario
         modales.abrirModalEntidad('VisualizarGastoPage')
       },
     }
