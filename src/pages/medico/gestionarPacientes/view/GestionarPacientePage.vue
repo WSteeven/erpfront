@@ -18,7 +18,7 @@
         switch-indicator
         align="justify"
         active-class="tab-active"
-        indicator-color="transparent"
+        :indicator-color="transparent"
         dense
       >
         <q-tab

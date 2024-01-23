@@ -3,7 +3,7 @@ import { configuracionColumnasEmpleados } from '../domain/configuracionColumnasE
 import { useNotificacionStore } from 'stores/notificacion'
 import { useCargandoStore } from 'stores/cargando'
 import { defineComponent, ref } from 'vue'
-import { useQuasar } from 'quasar'
+//import { useQuasar } from 'quasar'
 
 // Componentes
 import TabLayout from 'shared/contenedor/modules/simple/view/TabLayout.vue'
