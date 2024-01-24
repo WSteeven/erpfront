@@ -6,20 +6,20 @@
             <!-- Producto -->
             <div class="col-12 col-md-6">
                 <label class="q-mb-sm block">Producto</label>
-                <q-select 
+                <q-select
                   v-model="codigo_cliente.producto"
                   :options="opciones_productos"
                   transition-show="scale"
                   transition-hide="scale"
-                  options-dense 
+                  options-dense
                   dense
-                  outlined  
+                  outlined
                   use-input
                   input-debounce="0"
                   @filter="filtrarProductos"
                   :option-label="(item)=> item.nombre"
                   :option-value="(item)=> item.id"
-                  emit-value 
+                  emit-value
                   map-options>
                   <template v-slot:no-option>
                     <q-item>
@@ -33,21 +33,21 @@
             <!-- Cliente -->
             <div class="col-12 col-md-6 q-mb-md">
               <label class="q-mb-sm block">Cliente</label>
-              <q-select 
-                v-model="codigo_cliente.cliente" 
-                :options="opciones_clientes"
+              <q-select
+                v-model="codigo_cliente.cliente"
+                :options="clientes"
                 transition-show="scale"
-                transition-hide="scale" 
-                options-dense 
-                dense 
-                outlined 
+                transition-hide="scale"
+                options-dense
+                dense
+                outlined
                 use-input
                 input-debounce="0"
                 @filter="filtrarClientes"
                 :option-label="(item) => item.razon_social"
-                :option-value="(item) => item.id" 
+                :option-value="(item) => item.id"
                 :option-disable="(item) =>item.id===1"
-                emit-value 
+                emit-value
                 map-options>
                 <template v-slot:no-option>
                   <q-item>
@@ -62,7 +62,7 @@
             <div class="col-12 col-md-6">
               <label class="q-mb-sm block">Codigo</label>
               <q-input v-model="codigo_cliente.codigo" placeholder="Obligatorio" :readonly="disabled"
-                :error="!!v$.codigo.$errors-length" 
+                :error="!!v$.codigo.$errors-length"
                 outlined
                 dense>
                 <template v-slot:error>
@@ -77,5 +77,5 @@
       </template>
     </tab-layout>
   </template>
-  
+
   <script src="./CodigoClientePage.ts"></script>

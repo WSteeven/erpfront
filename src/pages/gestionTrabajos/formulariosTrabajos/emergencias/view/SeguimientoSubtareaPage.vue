@@ -22,23 +22,6 @@
     </div>
 
     <q-card class="rounded-card custom-shadow q-pa-md">
-      <!-- <div
-        v-if="esCoordinador"
-        class="col-12 rounded-card q-py-sm q-mb-md text-center text-accent bg-yellow-2"
-      >
-        <div>
-          <q-icon name="bi-exclamation-triangle-fill" class="q-mr-sm"></q-icon>
-          <div>
-            Cualquier cambio realizado aquí sobreescribirá el seguimiento hecho
-            por el técnico.
-            <br />
-            Se recomienda cerrar y abrir el seguimiento para tener las más
-            recientes actualizaciones ingresadas por el técnico.
-          </div>
-          <b>Advertencia</b>
-        </div>
-      </div> -->
-
       <div class="row">
         <div class="col-12 q-mb-md">
           <tabla-filas-dinamicas
@@ -55,8 +38,38 @@
         <div class="col-12 q-mb-md">
           <br />
           <q-toggle
+            v-model="mostrarSolicitudesAts"
+            label="Solicitudes de ATS"
+            checked-icon="bi-eye"
+            color="positive"
+            dense
+          ></q-toggle>
+        </div>
+
+        <div v-if="mostrarSolicitudesAts" class="col-12">
+          <tabla-filas-dinamicas
+            titulo="Solicitudes  de ATS a través de tickets"
+            :configuracionColumnas="configuracionColumnasSolicitudAts"
+            :listado="ticketsAts"
+            :permitirConsultar="false"
+            :permitirEliminar="false"
+            :permitirEditar="false"
+            :mostrarBotones="false"
+            :alto-fijo="false"
+            :entidad="Ticket"
+            :consultarTiempo="false"
+            :accion1="btnSeguimiento"
+            :accion2="btnCancelar"
+            :mostrarAccion1Header="permitirSubir"
+            @guardarFila="(fila) => guardarFilaSolicitudAts(fila, subtarea.id)"
+          ></tabla-filas-dinamicas>
+        </div>
+
+        <div class="col-12 q-mb-md">
+          <br />
+          <q-toggle
             v-model="usarMaterialTarea"
-            label="Usar material asignado para la tarea"
+            label="Usar material asignado para proyecto / etapa / tarea"
             checked-icon="bi-eye"
             color="positive"
             dense
@@ -83,7 +96,7 @@
                 v-if="esCoordinador"
                 name="historial_material_tarea_usado"
                 label="Historial de material de tarea usado"
-                @click="resetearFiltroHistorial()"
+                @click="resetearFiltroHistorialTarea()"
               >
               </q-tab>
             </q-tabs>
@@ -97,7 +110,7 @@
                     >
                     <q-select
                       v-model="clienteMaterialTarea"
-                      :options="clientesMaterialesTarea"
+                      :options="listadosAuxiliares.clientesMaterialesTarea"
                       transition-show="scale"
                       transition-hide="scale"
                       use-input
@@ -141,6 +154,7 @@
                   :permitirEditarModal="true"
                   separador="cell"
                   :accion1="botonEditarCantidadTarea"
+                  :ajustar-celdas="true"
                 ></essential-table>
               </q-tab-panel>
 
@@ -189,7 +203,7 @@
           </q-card>
         </div>
 
-        <div class="col-12 q-mb-md">
+        <div v-if="mostrarMaterialStock" class="col-12 q-mb-md">
           <br />
           <q-toggle
             v-model="usarMaterialStock"
@@ -232,15 +246,16 @@
                     <label class="q-mb-sm block"
                       >Seleccione un cliente para filtrar el material</label
                     >
+                    <!-- @filter="filtrarClientes" -->
                     <q-select
                       v-model="clienteMaterialStock"
-                      :options="clientes"
-                      @filter="filtrarClientes"
+                      :options="listadosAuxiliares.clientesMaterialesEmpleado"
                       transition-show="scale"
                       transition-hide="scale"
                       use-input
                       input-debounce="0"
                       options-dense
+                      clearable
                       dense
                       outlined
                       :option-label="(item) => item.razon_social"
@@ -422,20 +437,16 @@
           </archivo-seguimiento>
         </div>
       </div>
-
-      <!-- <div class="row justify-end q-col-gutter-x-xs"> -->
-
-      <!-- <button-submits
-          :accion="accion"
-          @cerrar-modal="emit('cerrar-modal')"
-          @cancelar="reestablecer()"
-          @editar="editarSeguimiento()"
-          @guardar="guardarSeguimiento()"
-        /> -->
-      <!-- </div> -->
     </q-card>
 
     <visor-imagen ref="refVisorImagen"></visor-imagen>
+
+    <modales-entidad
+      :comportamiento="modales"
+      :mixin-modal="mixin"
+      :confirmar-cerrar="false"
+      :persistente="false"
+    />
   </q-page>
 </template>
 

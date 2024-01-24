@@ -259,6 +259,58 @@
             </q-select>
           </div>
 
+          <!-- check ingreso masivo -->
+          <div
+            v-if="accion === acciones.nuevo || devolucion.misma_condicion"
+            class="col-12 col-md-3"
+          >
+            <q-checkbox
+              class="q-mt-lg q-pt-md"
+              v-model="devolucion.misma_condicion"
+              @update:model-value="checkMismaCondicion"
+              label="¿Mismo estado?"
+              :disable="
+                disabled ||
+                soloLectura ||
+                (accion == acciones.editar && devolucion.misma_condicion)
+              "
+              outlined
+              dense
+            ></q-checkbox>
+          </div>
+          <!-- Select condiciones -->
+          <div v-if="devolucion.misma_condicion" class="col-12 col-md-3">
+            <label class="q-mb-sm block">Estado de los productos</label>
+            <q-select
+              v-model="devolucion.condicion"
+              :options="condiciones"
+              transition-show="jum-up"
+              transition-hide="jump-down"
+              options-dense
+              dense
+              outlined
+              :readonly="disabled"
+              :error="!!v$.condicion.$errors.length"
+              error-message="Debes seleccionar una condición"
+              :option-value="(item) => item.id"
+              :option-label="(item) => item.nombre"
+              emit-value
+              map-options
+            >
+              <template v-slot:error>
+                <div v-for="error of v$.condicion.$errors" :key="error.$uid">
+                  <div class="error-msg">{{ error.$message }}</div>
+                </div>
+              </template>
+              <template v-slot:no-option>
+                <q-item>
+                  <q-item-section class="text-grey">
+                    No hay resultados
+                  </q-item-section>
+                </q-item>
+              </template>
+            </q-select>
+          </div>
           <!-- Persona que autoriza -->
           <div v-if="devolucion.per_autoriza" class="col-12 col-md-3">
             <label class="q-mb-sm block">Persona que autoriza</label>
@@ -424,16 +476,27 @@
           <div class="col-12">
             <essential-table
               titulo="Productos Seleccionados"
-              :configuracionColumnas="configuracionColumnasProductosSeleccionadosAccion"
+              :configuracionColumnas="
+                accion == acciones.nuevo || accion == acciones.editar
+                  ? [
+                      ...configuracionColumnasProductosSeleccionadosAccion,
+                      accionesTabla,
+                    ]
+                  : configuracionColumnasProductosSeleccionadosAccion
+              "
               :datos="devolucion.listadoProductos"
               :permitirConsultar="false"
-              :permitirEditar="false"
+              :permitirEditarModal="true"
+              :permitirEditar="
+                !devolucion.misma_condicion &&
+                (accion == acciones.nuevo || accion == acciones.editar)
+              "
               :permitirEliminar="false"
               :mostrarBotones="false"
               :accion1="botonEditarCantidad"
               :accion2="botonEliminar"
-              :ajustarCeldas="true"
               :altoFijo="false"
+              :ajustarCeldas="true"
               ><template v-slot:body="props">
                 <q-tr :props="props" @click="onRowClick(props.row)">
                   <q-td key="name" :props="props">

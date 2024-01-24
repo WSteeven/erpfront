@@ -1,17 +1,18 @@
 <template>
   <div class="bg-body-table-dark-color">
+    <!-- narrow-indicator -->
     <q-tabs
       v-if="mostrarTabs"
       v-model="tabSeleccionado"
       no-caps
       bordered
       dense
-      narrow-indicator
-      active-color="white"
-      active-bg-color="primary"
-      indicator-color="primary"
+      inline-label
+      :active-color="activeColor"
+      :active-bg-color="activeBgColor"
+      :indicator-color="indicatorColor"
       :class="{
-        'borde-header-tabla': !$q.screen.xs,
+        'borde-header-tablad': !$q.screen.xs,
       }"
       class="bg-table-tabs"
       align="justify"
@@ -20,12 +21,17 @@
       <q-tab
         v-for="opcion in tabOptions"
         :key="opcion.label"
-        :label="opcion.label"
         :name="opcion.value + ''"
-        class=""
         :class="{ 'rounded shadow-chip q-mx-xs q-my-md': $q.screen.xs }"
       >
-      <q-badge v-if="tabSeleccionado==opcion.value  && datos?.length>0" color="accent" style="margin-right: -15px;" floating>{{ datos.length }}</q-badge>
+        <span>{{ opcion.label }}</span>
+        <q-badge
+          v-if="tabSeleccionado == opcion.value && datos?.length > 0"
+          color="accent"
+          style="margin-right: -15px"
+          floating
+          >{{ datos.length }}</q-badge
+        >
       </q-tab>
     </q-tabs>
 
@@ -89,7 +95,7 @@ import { TabOption } from 'components/tables/domain/TabOption' // nico, salaas, 
 import { ColumnConfig } from '../domain/ColumnConfig'
 import EssentialTable from './EssentialTable.vue'
 import { TipoSeleccion } from 'config/utils'
-import { ref, watchEffect } from 'vue'
+import { computed, ref, watchEffect } from 'vue'
 
 const props = defineProps({
   titulo: {
@@ -258,6 +264,26 @@ const emit = defineEmits([
 
 const tabSeleccionado = ref(props.tabDefecto)
 const mostrarTabs = ref(true)
+const activeColor = computed(
+  () =>
+    props.tabOptions.find(
+      (opcion: TabOption) => opcion.value === tabSeleccionado.value
+    )?.color_icono ?? 'white'
+)
+
+const indicatorColor = computed(
+  () =>
+    props.tabOptions.find(
+      (opcion: TabOption) => opcion.value === tabSeleccionado.value
+    )?.color_icono ?? 'accent'
+)
+
+const activeBgColor = computed(
+  () =>
+    props.tabOptions.find(
+      (opcion: TabOption) => opcion.value === tabSeleccionado.value
+    )?.bg_color ?? 'primary'
+)
 
 watchEffect(() => {
   tabSeleccionado.value = props.tabDefecto

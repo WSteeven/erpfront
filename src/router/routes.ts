@@ -192,6 +192,13 @@ const routes: RouteRecordRaw[] = [
           import('gestionTrabajos/miBodega/view/MiBodegaPage.vue'),
         meta: { requiresAuth: true },
       },
+      {
+        path: '/transferencia-producto-empleado',
+        name: 'transferencia_producto_empleado',
+        component: () =>
+          import('gestionTrabajos/transferenciasProductosEmpleados/view/TransferenciaProductoEmpleadoPage.vue'),
+        meta: { requiresAuth: true },
+      },
       /*{
         path: '/reporte-trabajos-realizados',
         name: 'reporte_trabajos_realizados',
@@ -421,6 +428,12 @@ const routes: RouteRecordRaw[] = [
           ),
         meta: { requiresAuth: true },
       },
+      /* {
+        path: '/preingresos-materiales-coordinadores',
+        name: 'preingresos_materiales_coordinadores',
+        component: () => import('pages/bodega/preingresoMateriales/modules/view/PreingresoMaterialCoordinadorPage.vue'),
+        meta: { requiresAuth: true },
+      }, */
       {
         path: '/devoluciones',
         name: 'devoluciones',
@@ -900,6 +913,15 @@ const routes: RouteRecordRaw[] = [
         meta: { requiresAuth: true },
       },
 
+      {
+        path: '/reporte-valores-fondos',
+        name: 'reporte_valores_fondos',
+        component: () =>
+          import(
+            'pages/fondosRotativos/reportes/reporteValoresEmpleados/view/ValoresFondosEmpleadoPage.vue'
+          ),
+        meta: { requiresAuth: false},
+      },
       {
         path: '/reporte-fondo-fecha',
         name: 'reporte_fondo_fecha',

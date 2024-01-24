@@ -178,12 +178,18 @@ export default defineComponent({
         },
         proyectos: {
           controller: new ProyectoController(),
-          params: { campos: 'id,nombre,codigo_proyecto', finalizado: 0 },
+          params: {
+            campos: 'id,nombre,codigo_proyecto',
+            finalizado: 0,
+            empleado_id: fondoRotativoStore.empleado_id,
+          },
         },
         tareas: {
           controller: new TareaController(),
           params: {
             //campos: 'id,codigo_tarea,titulo,cliente_id,proyecto_id',
+            empleado_id: fondoRotativoStore.empleado_id,
+            activas_empleado: 1,
             formulario: true,
           },
         },
@@ -272,7 +278,6 @@ export default defineComponent({
         required: requiredIf(() => esFactura.value),
       },
       num_comprobante: {
-        minLength: minLength(10),
         maxLength: maxLength(15),
       },
       aut_especial: {

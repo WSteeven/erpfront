@@ -18,12 +18,11 @@ import { Devolucion } from '../domain/Devolucion'
 
 import { EmpleadoController } from 'pages/recursosHumanos/empleados/infraestructure/EmpleadoController'
 import { TareaController } from 'pages/gestionTrabajos/tareas/infraestructure/TareaController'
-import { configuracionColumnasProductosSeleccionadosAccion } from '../domain/configuracionColumnasProductosSeleccionadosAccion'
 import { configuracionColumnasProductosSeleccionados } from '../domain/configuracionColumnasProductosSeleccionados'
 import { configuracionColumnasDetallesModal } from '../domain/configuracionColumnasDetallesModal'
 import { useNotificaciones } from 'shared/notificaciones'
 import { CustomActionTable } from 'components/tables/domain/CustomActionTable'
-import { acciones, estadosTransacciones, tabOptionsPedidos } from 'config/utils'
+import { acciones, accionesTabla, estadosTransacciones, tabOptionsPedidos } from 'config/utils'
 import { useDevolucionStore } from 'stores/devolucion'
 
 import { useAuthenticationStore } from 'stores/authentication'
@@ -43,6 +42,8 @@ import { StatusEssentialLoading } from 'components/loading/application/StatusEss
 import { endpoints } from 'config/api'
 import { AxiosResponse } from 'axios'
 import { AxiosHttpRepository } from 'shared/http/infraestructure/AxiosHttpRepository'
+import { CondicionController } from 'pages/administracion/condiciones/infraestructure/CondicionController'
+import { Condicion } from 'pages/administracion/condiciones/domain/Condicion'
 
 
 export default defineComponent({
@@ -104,6 +105,7 @@ export default defineComponent({
       }, 1)
     })
 
+    const condiciones = ref([])
     const opciones_empleados = ref([])
     const opciones_cantones = ref([])
     const opciones_tareas = ref([])
@@ -123,6 +125,7 @@ export default defineComponent({
           controller: new TareaController(),
           params: { campos: 'id,codigo_tarea,titulo,cliente_id' }
         },
+        condiciones: new CondicionController()
       })
 
       //logica para autocompletar el formulario de devolucion
@@ -154,6 +157,7 @@ export default defineComponent({
       // canton: { required },
       sucursal: { required },
       tarea: { requiredIfTarea: requiredIf(devolucion.es_tarea!) },
+      condicion: { requiredIf: requiredIf(devolucion.misma_condicion) }
     }
 
     const v$ = useVuelidate(reglas, devolucion)
@@ -176,8 +180,8 @@ export default defineComponent({
     async function obtenerClientesMaterialesEmpleado() {
       try {
         cargando.activar()
-        const ruta = axios.getEndpoint(endpoints.obtener_clientes_materiales_empleado) + '/' + store.user.id
-        const response: AxiosResponse = await axios.get(ruta)
+        const ruta = axios.getEndpoint(endpoints.obtener_clientes_materiales_empleado)
+        const response: AxiosResponse = await axios.get(ruta, { params: { empleado_id: store.user.id } })
         clientes.value = response.data.results
       } catch (e) {
         console.log(e)
@@ -189,8 +193,8 @@ export default defineComponent({
     async function obtenerClientesMaterialesTarea() {
       try {
         cargando.activar()
-        const ruta = axios.getEndpoint(endpoints.obtener_clientes_materiales_tarea) + '/' + store.user.id
-        const response: AxiosResponse = await axios.get(ruta)
+        const ruta = axios.getEndpoint(endpoints.obtener_clientes_materiales_tarea)
+        const response: AxiosResponse = await axios.get(ruta, { params: { empleado_id: store.user.id } })
         clientes.value = response.data.results
       } catch (e) {
         console.log(e)
@@ -270,7 +274,7 @@ export default defineComponent({
         prompt(data)
       },
       visible: () => {
-        return accion.value == acciones.consultar ? false : true
+        return (accion.value == acciones.nuevo && devolucion.misma_condicion) || (accion.value == acciones.nuevo && devolucion.misma_condicion)
       }
     }
     const botonAnular: CustomActionTable = {
@@ -312,7 +316,7 @@ export default defineComponent({
         devolucionStore.idDevolucion = entidad.id
         await devolucionStore.imprimirPdf()
       },
-      visible: () => tabSeleccionado.value == 'CREADA' ? true : false
+      visible: () => true //tabSeleccionado.value == 'CREADA' ? true : false
     }
 
     const botonDespachar: CustomActionTable = {
@@ -334,9 +338,37 @@ export default defineComponent({
     opciones_autorizaciones.value = JSON.parse(LocalStorage.getItem('autorizaciones')!.toString())
     opciones_sucursales.value = listadosAuxiliares.sucursales
     opciones_tareas.value = listadosAuxiliares.tareas
+    condiciones.value = listadosAuxiliares.condiciones
+
+    const configuracionColumnasProductosSeleccionadosAccion = computed(() => [...configuracionColumnasProductosSeleccionados,
+    {
+      name: 'condiciones',
+      field: 'condiciones',
+      label: 'Estado del producto',
+      align: 'left',
+      sortable: false,
+      visible: true,
+      type: 'select',
+      options: condiciones.value.map((v: Condicion) => { return { label: v.nombre } })
+    },
+    {
+      name: 'observacion',
+      field: 'observacion',
+      label: 'Observación',
+      align: 'left',
+      type: 'string',
+      sortable: false,
+    },
+    // {
+    //   name: 'acciones',
+    //   field: 'acciones',
+    //   label: 'Acciones',
+    //   align: 'center'
+    // },
+    ])
 
     return {
-      mixin, devolucion, disabled, accion, v$, acciones,
+      mixin, devolucion, disabled, accion, v$, acciones, accionesTabla,
       configuracionColumnas: configuracionColumnasDevoluciones,
       //listados
       opciones_empleados,
@@ -345,6 +377,7 @@ export default defineComponent({
       opciones_cantones,
       opciones_autorizaciones,
       opciones_sucursales,
+      condiciones,
       store,
       refArchivo,
       idDevolucion,
@@ -383,6 +416,10 @@ export default defineComponent({
       //funciones
       filtrarDevoluciones,
       filtrarCliente,
+      checkMismaCondicion(val, evt) {
+        if (!val) devolucion.condicion = null
+      },
+
       onRowClick: (row) => alert(`${row.name} clicked`),
       //Filtros
       filtroCantones(val, update) {

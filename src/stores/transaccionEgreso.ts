@@ -50,12 +50,12 @@ export const useTransaccionEgresoStore = defineStore('transaccion', () => {
     }
 
     async function filtrarEgresosComprobantes(filtro){
-        try {
-            statusLoading.activar()
+      try {
+          statusLoading.activar()
             const axios = AxiosHttpRepository.getInstance()
             // const url = apiConfig.URL_BASE+'/'+axios.getEndpoint(endpoints.transacciones_egresos)+'/filtrar?criterio='+filtro
-            const url =axios.getEndpoint(endpoints.comprobantes_filtrados)+'?estado='+filtro
-            // console.log(url)
+            const url =apiConfig.URL_BASE+'/'+axios.getEndpoint(endpoints.comprobantes_filtrados)+'?estado='+filtro
+            console.log(url)
             const response: AxiosResponse = await axios.get(url)
             return response.data.results
         } catch (error:any) {

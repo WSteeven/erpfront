@@ -81,6 +81,11 @@ export const tabOptionsPedidos: TabOption[] = [
   { label: 'Cancelados', value: 'CANCELADO' },
   { label: 'Completados', value: 'COMPLETA' },
 ]
+export const tabOptionsTransferenciaProductoEmpleado: TabOption[] = [
+  { label: 'Pendientes', value: 'PENDIENTE', icono: 'bi-app-indicator', color_icono: 'yellow-10', bg_color: 'yellow-1' },
+  { label: 'Aprobados', value: 'APROBADO', icono: 'bi-check-circle-fill', color_icono: 'positive', bg_color: 'green-1' },
+  { label: 'Cancelados', value: 'CANCELADO', icono: 'bi-x-circle-fill', color_icono: 'negative', bg_color: 'pink-1' },
+]
 export const tabOptionsSolicitudPedido: TabOption[] = [
   { label: 'Pendiente', value: '1' },
   { label: 'Validado', value: '4' },
@@ -155,6 +160,31 @@ export const tiposTrabajosEstaticos = {
 }
 
 export const motivos = {
+  venta: 'VENTA',
+  compraProveedor: 'COMPRA A PROVEEDOR',
+  mercaderiaClienteTarea: 'MERCADERIA DE CLIENTE PARA TAREA',
+  devolucionFinalizacionLaboral: 'DEVOLUCION POR FINALIZACION LABORAL',
+  devolucionTarea: 'DEVOLUCION DE TAREA',
+  stockInicial: 'STOCK INICIAL',
+  despachoTarea: 'DESPACHO DE TAREA',
+  despacho: 'DESPACHO',
+  destruccion: 'DESTRUCCION',
+  devolucionAlProveedor: 'DEVOLUCION AL PROVEEDOR',
+  reposicion: 'REPOSICION',
+  ingresoTransferenciaBodegas: 'INGRESO TRANSFERENCIA ENTRE BODEGAS',
+  egresoTransferenciaBodegas: 'EGRESO TRANSFERENCIA ENTRE BODEGAS',
+  ingresoLiquidacionMateriales: 'INGRESO POR LIQUIDACION DE MATERIALES',
+  egresoLiquidacionMateriales: 'EGRESO POR LIQUIDACION DE MATERIALES',
+  ingresoAjusteRegularizacion: 'AJUSTE DE INGRESO POR REGULARIZACION',
+  robo: 'ROBO',
+  egresoAjusteRegularizacion: 'AJUSTE DE EGRESO POR REGULARIZACION',
+  mercaderiaClienteStock: 'MERCADERIA DE CLIENTE PARA STOCK',
+  devolucionGarantia: 'DEVOLUCION POR GARANTIA',
+  devolucionDanio: 'DEVOLUCION POR DAÑO',
+  despachoGarantia: 'DESPACHO POR GARANTIA',
+}
+
+export const motivosTransaccionesBodega = {
   venta: 'VENTA',
   compraProveedor: 'COMPRA A PROVEEDOR',
   mercaderiaClienteTarea: 'MERCADERIA DE CLIENTE PARA TAREA',
@@ -285,6 +315,7 @@ export const rolesSistema = {
   bodegaTelconet: 'BODEGA TELCONET',
   compras: 'COMPRAS',
   contabilidad: 'CONTABILIDAD',
+  supervisor: 'SUPERVISOR_CAMPO',
   coordinador: 'COORDINADOR',
   coordinadorBodega: 'COORDINADOR DE BODEGA',
   coordinadorBackup: 'COORDINADOR_BACKUP',
@@ -296,6 +327,8 @@ export const rolesSistema = {
   secretario: 'SECRETARIO',
   tecnico_lider: 'LIDER DE GRUPO',
   tecnico: 'TECNICO',
+  autorizador: 'AUTORIZADOR',
+  //Roles de ventas de Claro
   jefe_ventas: 'JEFE_VENTAS',
   supervisor_ventas: 'SUPERVISOR_VENTAS',
   vendedor: 'VENDEDOR',
@@ -313,6 +346,11 @@ export const tiposMovimientos = {
   egreso: 'EGRESO',
 }
 
+export const opcionesEstadosTransferenciasBodega = [
+  { value: 'PENDIENTE', label: 'PENDIENTE' },
+  { value: 'TRANSITO', label: 'TRANSITO' },
+  { value: 'COMPLETADO', label: 'COMPLETADO' }
+]
 export const opcionesEstados = [
   { value: 1, label: 'ACTIVO' },
   { value: 0, label: 'INACTIVO' }
@@ -470,10 +508,10 @@ export const formas_pagos =[
   {label: 'TC', value: 'TARJETA DE CREDITO'},
   {label: 'D.BANCARIO', value: 'DEBITO BANCARIO'},
 ]
-export const estados_activacion =[
-  {label: 'PENDIENTE', value: 'PENDIENTE'},
-  {label: 'APROBADO', value: 'APROBADO'},
-  {label: 'RECHAZADA', value: 'RECHAZADA'},
+export const estados_activacion = [
+  { label: 'PENDIENTE', value: 'PENDIENTE' },
+  { label: 'APROBADO', value: 'APROBADO' },
+  { label: 'RECHAZADA', value: 'RECHAZADA' },
 
 ]
 export const estadosVentas = {

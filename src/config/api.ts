@@ -219,6 +219,7 @@ export const endpoints = {
   control_stocks: new Endpoint('control-stocks'),
   items_control_stocks_consolidados: new Endpoint('control-stocks/items-consolidados'),
   codigos_clientes: new Endpoint('codigos-clientes'),
+  detalles_materiales: new Endpoint('detalles-materiales'),
   detalles: new Endpoint('detalles'),
   devoluciones: new Endpoint('devoluciones'),
   detalle_producto_transaccion: new Endpoint(
@@ -266,6 +267,7 @@ export const endpoints = {
    * Modulo de tareas
    *********************/
   dashboard_tareas: new Endpoint('tareas/dashboard'),
+  etapas: new Endpoint('tareas/etapas'),
   proyectos: new Endpoint('tareas/proyectos'),
   tareas: new Endpoint('tareas/tareas'),
   subtareas: new Endpoint('tareas/subtareas'),
@@ -288,6 +290,7 @@ export const endpoints = {
   motivos_suspendidos: new Endpoint('tareas/motivos-suspendidos'),
   control_asistencias: new Endpoint('tareas/control-asistencias'),
   control_cambios: new Endpoint('tareas/control-cambios'),
+  tareas_empleado: new Endpoint('tareas/tareas-empleado'),
   tipos_elementos: new Endpoint('tareas/tipos-elementos'),
   clientes_finales: new Endpoint('tareas/clientes-finales'),
   tendidos: new Endpoint('tareas/tendidos'),
@@ -324,8 +327,11 @@ export const endpoints = {
   fechas_historial_materiales_stock_usados: new Endpoint('tareas/obtener-fechas-historial-materiales-stock-usados'),
   obtener_clientes_materiales_empleado: new Endpoint('tareas/obtener-clientes-materiales-empleado'),
   obtener_clientes_materiales_tarea: new Endpoint('tareas/obtener-clientes-materiales-tarea'),
+  transferencias_productos_empleados: new Endpoint('tareas/transferencias-productos-empleados'),
 
   // Modulo Fondos Rotativos
+  empleados_fondos_rotativos: new Endpoint('empleados-fondos-rotativos'),
+  reporte_valores_fondos_empleados: new Endpoint('fondos-rotativos/reporte-valores-fondos'),
   tipo_fondo: new Endpoint('fondos-rotativos/tipo-fondo'),
   gastos: new Endpoint('fondos-rotativos/gastos'),
   motivo_gasto: new Endpoint('fondos-rotativos/motivo-gasto'),

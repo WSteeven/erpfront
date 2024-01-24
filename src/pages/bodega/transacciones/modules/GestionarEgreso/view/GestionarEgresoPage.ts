@@ -28,19 +28,26 @@ export default defineComponent({
     //stores
     useNotificacionStore().setQuasar(useQuasar())
     useCargandoStore().setQuasar(useQuasar())
-    const statusLoading = new StatusEssentialLoading()
-
     const transaccionStore = useTransaccionEgresoStore()
+    const cargando = new StatusEssentialLoading()
+    const modales = new ComportamientoModalesGestionarEgreso()
+
+    /*******************************************************************************************
+    * Funciones
+    ******************************************************************************************/
     async function filtrarTabs(tabSeleccionado) {
-      statusLoading.activar()
+      cargando.activar()
       const result = await transaccionStore.filtrarEgresosComprobantes(tabSeleccionado)
       listado.value = result
+      cargando.desactivar()
     }
     const tabDefecto = ref('PENDIENTE')
 
     filtrarTabs(tabDefecto.value)
 
-    const modales = new ComportamientoModalesGestionarEgreso()
+    /*******************************************************************************************
+     * Botones de tabla
+     ******************************************************************************************/
     const botonVerTransaccion: CustomActionTable = {
       titulo: '',
       icono: 'bi-eye',

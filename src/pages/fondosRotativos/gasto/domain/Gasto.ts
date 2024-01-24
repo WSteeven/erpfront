@@ -35,8 +35,8 @@ export class Gasto extends EntidadAuditable {
   vehiculo: number | null
   created_at: string | null
   tiene_factura: boolean | null
-
-
+  centro_costo: string | null
+  subcentro_costo: string | null
   constructor() {
     super()
     this.fecha_viat = null
@@ -74,6 +74,7 @@ export class Gasto extends EntidadAuditable {
     this.vehiculo = null
     this.created_at = null
     this.tiene_factura = true
-
+  this.centro_costo = null
+  this.subcentro_costo= null
   }
 }
