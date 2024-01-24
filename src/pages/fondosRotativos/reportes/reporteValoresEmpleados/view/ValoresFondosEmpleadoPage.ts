@@ -1,6 +1,6 @@
 //Dependencias
 import { defineComponent, reactive, ref } from "vue";
-import { LocalStorage, useQuasar, } from "quasar";
+import {  useQuasar, } from "quasar";
 
 //Componentes
 import EssentialTable from "components/tables/view/EssentialTable.vue";
@@ -14,18 +14,8 @@ import { AxiosResponse } from "axios"
 import { apiConfig, endpoints } from "config/api";
 import { useNotificaciones } from "shared/notificaciones";
 import { ContenedorSimpleMixin } from "shared/contenedor/modules/simple/application/ContenedorSimpleMixin";
-import { TransaccionIngresoController } from "pages/bodega/transacciones/infraestructure/TransaccionIngresoController";
-import { Transaccion } from "pages/bodega/transacciones/domain/Transaccion";
-import { EmpleadoController } from "pages/recursosHumanos/empleados/infraestructure/EmpleadoController";
-import { accionesTabla, opcionesReportesEgresos, tiposReportesEgresos } from 'config/utils';
-import { MotivoController } from 'pages/administracion/motivos/infraestructure/MotivoController';
-import { CustomActionTable } from 'components/tables/domain/CustomActionTable';
-import { useTransaccionEgresoStore } from 'stores/transaccionEgreso';
-import { EmpleadoRoleController } from 'pages/recursosHumanos/empleados/infraestructure/EmpleadoRolesController';
-import { TareaController } from 'pages/gestionTrabajos/tareas/infraestructure/TareaController';
 import { imprimirArchivo } from 'shared/utils'
 import { useNotificacionStore } from 'stores/notificacion';
-import { ClienteController } from 'sistema/clientes/infraestructure/ClienteController';
 import { ComportamientoModalesTransaccionEgreso } from 'pages/bodega/transacciones/modules/transaccionEgreso/application/ComportamientoModalesGestionarEgresos';
 import { useCargandoStore } from "stores/cargando";
 import { Gasto } from "pages/fondosRotativos/gasto/domain/Gasto";
@@ -44,6 +34,7 @@ export default defineComponent({
         const cargando = new StatusEssentialLoading()
         const modales = new ComportamientoModalesTransaccionEgreso()
 
+        const activos= ref(false)
         const reporte = reactive({
             todos: false,
             empleado: null,
@@ -57,10 +48,7 @@ export default defineComponent({
             await obtenerListados({
                 empleados: new EmpleadoFondoRotativoController(),
             })
-            console.log(listadosAuxiliares.empleados)
-            console.log(await new EmpleadoFondoRotativoController().listar())
         })
-        
 
 
         /**
@@ -79,13 +67,13 @@ export default defineComponent({
                 const filename = 'reporte_egresos_bodega'
                 switch (accion) {
                     case 'excel':
-                        url = apiConfig.URL_BASE + '/' + axios.getEndpoint(endpoints.transacciones_egresos) + '/reportes'
+                        url = apiConfig.URL_BASE + '/' + axios.getEndpoint(endpoints.reporte_valores_fondos_empleados) + '/reportes'
                         reporte.accion = 'excel'
                         imprimirArchivo(url, 'POST', 'blob', 'xlsx', filename, reporte)
 
                         break
                     case 'pdf':
-                        url = apiConfig.URL_BASE + '/' + axios.getEndpoint(endpoints.transacciones_egresos) + '/reportes'
+                        url = apiConfig.URL_BASE + '/' + axios.getEndpoint(endpoints.reporte_valores_fondos_empleados) + '/reportes'
                         reporte.accion = 'pdf'
                         imprimirArchivo(url, 'POST', 'blob', 'pdf', filename, reporte)
                         break
@@ -106,20 +94,7 @@ export default defineComponent({
                 cargando.desactivar()
             }
         }
-        async function consultarListado(id: number) {
-            limpiarCampos()
-            // if (id == tiposReportesEgresos.cliente && em.value.length == 0) {
-            //     cargando.activar()
-            //     const { response } = await new ClienteController().listar({ estado: 1, requiere_bodega: 1 })
-            //     cargando.desactivar()
-            //     clientes.value = response.data.results
-            // }
-        }
-
-        /**
-         * Botones de tabla
-         */
-
+        
 
         //listados
         empleados.value = listadosAuxiliares.empleados
@@ -138,7 +113,6 @@ export default defineComponent({
 
             //funciones
             buscarReporte,
-            consultarListado,
             //botones
             modales,
 
