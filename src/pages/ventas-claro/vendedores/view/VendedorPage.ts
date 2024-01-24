@@ -22,6 +22,7 @@ import { StatusEssentialLoading } from 'components/loading/application/StatusEss
 import { CambiarEstadoVendedor } from '../application/CambiarEstadoVendedor'
 import { useAuthenticationStore } from 'stores/authentication'
 import { tabOptionsProductos } from 'config/ventas.utils'
+import { ordenarLista } from 'shared/utils'
 
 export default defineComponent({
   components: { TabLayoutFilterTabs2 },
@@ -173,6 +174,7 @@ export default defineComponent({
       empleados,
       modalidades,
       tipos_vendedores,
+      ordenarLista,
       filtrarEmpleados,
       filtrarModalidades,
       filtrarVendedores,

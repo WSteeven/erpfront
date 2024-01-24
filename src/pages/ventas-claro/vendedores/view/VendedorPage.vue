@@ -30,6 +30,7 @@
               error-message="Debes seleccionar un empleado"
               use-input
               input-debounce="0"
+              @popup-show="ordenarLista(empleados, 'apellidos')"
               @filter="filtrarEmpleados"
               :option-value="(v) => v.id"
               :option-label="(v) => v.apellidos + ' ' + v.nombres"
@@ -72,6 +73,7 @@
               error-message="Debes seleccionar un empleado"
               use-input
               input-debounce="0"
+              @popup-show="ordenarLista(empleados, 'apellidos')"
               @filter="filtrarEmpleados"
               :option-value="(v) => v.id"
               :option-label="(v) => v.apellidos + ' ' + v.nombres"
