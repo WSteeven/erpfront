@@ -80,11 +80,7 @@ export const useFiltrosListadosSelects = (listadosAuxiliares, entidad?: Ref<any>
     }
     update(() => {
       const needle = val.toLowerCase()
-      vendedores_claro.value = listadosAuxiliares.vendedores.filter(
-        (v) =>
-          v.codigo_vendedor.toLowerCase().indexOf(needle) > -1 ||
-          v.empleado_info.toLowerCase().indexOf(needle) > -1
-      )
+      vendedores_claro.value = listadosAuxiliares.vendedores.filter((v) => v.empleado_info.toLowerCase().indexOf(needle) > -1)
     })
   }
 
@@ -92,14 +88,15 @@ export const useFiltrosListadosSelects = (listadosAuxiliares, entidad?: Ref<any>
   function filtrarProductosClaro(val, update) {
     if (val === '') {
       update(() => {
-        productos.value = listadosAuxiliares.productos
+        productos_claro.value = listadosAuxiliares.productos
       })
       return
     }
     update(() => {
       const needle = val.toLowerCase()
-      productos.value = listadosAuxiliares.productos.filter(
+      productos_claro.value = listadosAuxiliares.productos.filter(
         (v) =>
+          v.nombre.toLowerCase().indexOf(needle) > -1 ||
           v.bundle.toLowerCase().indexOf(needle) > -1 ||
           v.plan_info.toLowerCase().indexOf(needle) > -1
       )

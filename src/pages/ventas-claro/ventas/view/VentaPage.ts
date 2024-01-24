@@ -24,6 +24,7 @@ import { ComportamientoModalesVentasClaro } from '../application/ComportamientoM
 import { useFiltrosListadosSelects } from 'shared/filtrosListadosGenerales';
 import { StatusEssentialLoading } from 'components/loading/application/StatusEssentialLoading';
 import { useAuthenticationStore } from 'stores/authentication';
+import { useVentaStore } from 'stores/ventasClaro/venta';
 
 export default defineComponent({
   components: { TabLayout, ModalesEntidad, LabelAbrirModal },
@@ -40,6 +41,7 @@ export default defineComponent({
     const { setValidador, obtenerListados, cargarVista } = mixin.useComportamiento()
 
     const cargando = new StatusEssentialLoading()
+    const ventaStore = useVentaStore()
 
     const modales = new ComportamientoModalesVentasClaro()
     const store = useAuthenticationStore()
@@ -116,60 +118,42 @@ export default defineComponent({
       cargando.desactivar()
     }
 
-    function obtenerProducto() {
-      const axiosHttpRepository = AxiosHttpRepository.getInstance()
-      const url_acreditacion =
-        apiConfig.URL_BASE +
-        '/' +
-        axiosHttpRepository.getEndpoint(endpoints.productos_ventas) +
-        '/' +
-        venta.producto
-      axios({
-        url: url_acreditacion,
-        method: 'GET',
-        responseType: 'json',
-        headers: {
-          Authorization: axiosHttpRepository.getOptions().headers.Authorization,
-        },
-      }).then((response: HttpResponseGet) => {
-        const { data } = response
-        if (data) {
-          precio_producto.value = data.modelo.precio
-        }
-      })
+    // function obtenerProducto() {
+    //   const axiosHttpRepository = AxiosHttpRepository.getInstance()
+    //   const url_acreditacion =
+    //     apiConfig.URL_BASE +
+    //     '/' +
+    //     axiosHttpRepository.getEndpoint(endpoints.productos_ventas) +
+    //     '/' +
+    //     venta.producto
+    //   axios({
+    //     url: url_acreditacion,
+    //     method: 'GET',
+    //     responseType: 'json',
+    //     headers: {
+    //       Authorization: axiosHttpRepository.getOptions().headers.Authorization,
+    //     },
+    //   }).then((response: HttpResponseGet) => {
+    //     const { data } = response
+    //     if (data) {
+    //       precio_producto.value = data.modelo.precio
+    //     }
+    //   })
+    // }
+    
+    // watchEffect(() => {
+    //   if (venta.producto != null && venta.forma_pago != null) {
+    //     obtenerProducto()
+    //     obtenerComision()
+    //   }
+    // })
+
+    async function obtenerPrecioProductoSeleccionado() {
+      const productoSeleccionado = productos.value.filter((v) => v.id == venta.producto)[0]
+      console.log(productoSeleccionado)
+      precio_producto.value = productoSeleccionado.precio
+      await ventaStore.obtenerComision(venta.producto!, venta.forma_pago!, venta.vendedor!)
     }
-    function obtenerComision() {
-      const axiosHttpRepository = AxiosHttpRepository.getInstance()
-      const url_acreditacion =
-        apiConfig.URL_BASE +
-        '/' +
-        axiosHttpRepository.getEndpoint(endpoints.obtener_comision) +
-        '/' +
-        venta.producto +
-        '/' +
-        venta.forma_pago +
-        '/' +
-        venta.vendedor
-      axios({
-        url: url_acreditacion,
-        method: 'GET',
-        responseType: 'json',
-        headers: {
-          Authorization: axiosHttpRepository.getOptions().headers.Authorization,
-        },
-      }).then((response: HttpResponseGet) => {
-        const { data } = response
-        if (data) {
-          comision_vendedor.value = data.comision_value
-        }
-      })
-    }
-    watchEffect(() => {
-      if (venta.producto != null && venta.forma_pago != null) {
-        obtenerProducto()
-        obtenerComision()
-      }
-    })
     return {
       mixin, venta, disabled, accion, v$,
       configuracionColumnas: configuracionColumnasVentas,
@@ -186,6 +170,7 @@ export default defineComponent({
       vendedores, filtrarVendedores, recargarVendedores,
       clientes, filtrarClientes,
       guardado,
+      obtenerPrecioProductoSeleccionado,
     }
   },
 })

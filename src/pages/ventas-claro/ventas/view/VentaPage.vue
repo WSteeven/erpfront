@@ -63,7 +63,6 @@
             </q-select>
           </div>
 
-
           <!-- Cliente -->
           <div class="col-12 col-md-3">
             <label-abrir-modal
@@ -93,12 +92,13 @@
               emit-value
               map-options
             >
-            <template v-slot:option="scope">
+              <template v-slot:option="scope">
                 <q-item v-bind="scope.itemProps">
                   <q-item-section>
                     <q-item-label>{{ scope.opt.cliente_info }}</q-item-label>
                     <q-item-label caption
-                      >identificacion: {{ scope.opt.identificacion }}</q-item-label
+                      >identificacion:
+                      {{ scope.opt.identificacion }}</q-item-label
                     >
                   </q-item-section>
                 </q-item>
@@ -204,6 +204,8 @@
               </template>
             </q-select>
           </div>
+{{ venta }}
+          <!-- {{ productos }} -->
           <!-- Producto -->
           <div class="col-12 col-md-3">
             <label class="q-mb-sm block">Producto</label>
@@ -223,11 +225,23 @@
               error-message="Debes seleccionar un producto"
               use-input
               input-debounce="0"
+              @update:model-value="obtenerPrecioProductoSeleccionado"
               :option-value="(v) => v.id"
               :option-label="(v) => v.plan_info + ' - ' + v.bundle"
               emit-value
               map-options
             >
+              <template v-slot:option="scope">
+                <q-item v-bind="scope.itemProps">
+                  <q-item-section>
+                    <q-item-label
+                      >{{ scope.opt.plan_info }} -
+                      {{ scope.opt.bundle }}</q-item-label
+                    >
+                    <q-item-label caption>{{ scope.opt.nombre }}</q-item-label>
+                  </q-item-section>
+                </q-item>
+              </template>
               <template v-slot:error>
                 <div v-for="error of v$.producto.$errors" :key="error.$uid">
                   <div class="error-msg">{{ error.$message }}</div>
