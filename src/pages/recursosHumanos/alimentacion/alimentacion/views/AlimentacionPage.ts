@@ -99,7 +99,7 @@ export default defineComponent({
       icono: 'bi-printer',
       color: 'positive',
       visible: ({ entidad }) =>
-        authenticationStore.can('puede.acceder.alimentacion'),
+        authenticationStore.can('puede.acceder.alimentaciones'),
       accion: ({ entidad }) => {
         const config: CustomActionPrompt = reactive({
           mensaje: 'Confirme el tipo de reporte',

@@ -47,6 +47,7 @@ export default defineComponent({
     } = mixin.useReferencias()
     const empleados = ref([])
     const asignacionAlimentacionStore = useAsignacionAlimentacionStore()
+    const authenticationStore = useAuthenticationStore()
 
     cargarVista(async () => {
       await obtenerListados({
@@ -106,7 +107,7 @@ export default defineComponent({
       icono: 'bi-pencil',
       color: 'warning',
       visible: () => {
-        return true //authenticationStore.can('puede.editar.valor_acreditar')
+        return authenticationStore.can('puede.editar.detalle_alimentaciones')
       },
       accion: ({ entidad }) => {
         deshabilitar_empleado.value = true
@@ -123,7 +124,7 @@ export default defineComponent({
       icono: 'bi-eye',
       color: 'primary',
       visible: () => {
-        return true //authenticationStore.can('puede.ver.valor_asignar')
+        return authenticationStore.can('puede.ver.detalle_alimentaciones')
       },
       accion: ({ entidad }) => {
         accion.value = acciones.consultar
@@ -139,7 +140,7 @@ export default defineComponent({
       icono: 'bi-plus',
       color: 'positive',
       visible: () => {
-        return true //authenticationStore.can('puede.ver.valor_asignar')
+        return authenticationStore.can('puede.crear.detalle_alimentaciones')
       },
       accion: () => {
         accion.value = acciones.nuevo
@@ -184,7 +185,9 @@ export default defineComponent({
       titulo: 'Eliminar',
       icono: 'bi-trash',
       color: 'secondary',
-      visible: () => true,
+      visible: () => {
+        return authenticationStore.can('puede.eliminar.detalle_alimentaciones')
+      },
       accion: ({ entidad, posicion }) => {
         accion.value = 'ELIMINAR'
         eliminar(entidad)
@@ -195,8 +198,9 @@ export default defineComponent({
       titulo: 'Asignacion Masiva',
       icono: 'bi-arrow-clockwise',
       color: 'warning',
-      visible: () => true,
-      accion: () => {
+      visible: () => {
+        return authenticationStore.can('puede.ver.btn.asignar_masivo_alimentaciones')
+      },      accion: () => {
         alimentacion.alimentacion_id =
           asignacionAlimentacionStore.alimentacion.id
         alimentacion.masivo = true
