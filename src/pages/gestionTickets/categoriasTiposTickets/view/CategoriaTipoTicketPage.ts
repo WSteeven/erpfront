@@ -18,6 +18,10 @@ import { CategoriaTipoTicket } from '../domain/CategoriaTipoTicket'
 import { CategoriaTipoTicketController } from '../infraestructure/CategoriaTipoTicketController'
 import { useAuthenticationStore } from 'stores/authentication'
 import { Departamento } from 'pages/recursosHumanos/departamentos/domain/Departamento'
+import { CustomActionTable } from 'components/tables/domain/CustomActionTable'
+import { useNotificaciones } from 'shared/notificaciones'
+import { StatusEssentialLoading } from 'components/loading/application/StatusEssentialLoading'
+import { isAxiosError, notificarMensajesError } from 'shared/utils'
 
 export default defineComponent({
   components: {
@@ -27,11 +31,13 @@ export default defineComponent({
   setup() {
     const authenticationStore = useAuthenticationStore()
 
+    const controller = new CategoriaTipoTicketController()
+
     const mixin = new ContenedorSimpleMixin(
       CategoriaTipoTicket,
-      new CategoriaTipoTicketController()
+      controller,
     )
-    const { entidad: tipoTicket, disabled, accion, listadosAuxiliares } = mixin.useReferencias()
+    const { entidad: tipoTicket, disabled, accion, listadosAuxiliares, listado } = mixin.useReferencias()
     const { setValidador, cargarVista, obtenerListados } = mixin.useComportamiento()
     const { onReestablecer } = mixin.useHooks()
 
@@ -50,6 +56,9 @@ export default defineComponent({
         return departamento.id === authenticationStore.user.departamento
       }
     }))
+
+    const notificaciones = useNotificaciones()
+    const cargando = new StatusEssentialLoading()
 
     /*********
     * Filtros
@@ -74,6 +83,35 @@ export default defineComponent({
      ********/
     onReestablecer(() => tipoTicket.departamento = authenticationStore.user.departamento)
 
+    /****************
+     * Botones tabla
+     ****************/
+    const btnToggleActivar: CustomActionTable = {
+      titulo: ({ entidad }) => entidad.activo ? 'Deshabilitar' : 'Activar',
+      icono: ({ entidad }) => entidad.activo ? 'bi-toggle2-off' : 'bi-toggle2-on',
+      color: ({ entidad }) => entidad.activo ? 'negative' : 'secondary',
+      accion: ({ entidad, posicion }) => {
+        notificaciones.confirmar('¿Está seguro de continuar?', async () => {
+          try {
+            cargando.activar()
+            console.log(entidad)
+            const { response, result } = await controller.editarParcial(entidad.id, { activo: !entidad.activo })
+            listado.value.splice(posicion, 1, result)
+            notificaciones.notificarCorrecto(response.data.mensaje)
+          } catch (e: any) {
+            if (isAxiosError(e)) {
+              const mensajes: string[] = e.erroresValidacion
+              notificarMensajesError(mensajes, notificaciones)
+            } else {
+              notificaciones.notificarError(e.message)
+            }
+          } finally {
+            cargando.desactivar()
+          }
+        })
+      }
+    }
+
     return {
       v$,
       mixin,
@@ -83,6 +121,7 @@ export default defineComponent({
       configuracionColumnasCategoriaTipoTicket,
       filtrarDepartamentos,
       departamentos,
+      btnToggleActivar,
     }
   },
 })

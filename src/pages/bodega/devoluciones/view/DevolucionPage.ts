@@ -22,7 +22,7 @@ import { configuracionColumnasProductosSeleccionados } from '../domain/configura
 import { configuracionColumnasDetallesModal } from '../domain/configuracionColumnasDetallesModal'
 import { useNotificaciones } from 'shared/notificaciones'
 import { CustomActionTable } from 'components/tables/domain/CustomActionTable'
-import { acciones, estadosTransacciones, tabOptionsPedidos } from 'config/utils'
+import { acciones, accionesTabla, estadosTransacciones, tabOptionsPedidos } from 'config/utils'
 import { useDevolucionStore } from 'stores/devolucion'
 
 import { useAuthenticationStore } from 'stores/authentication'
@@ -88,7 +88,6 @@ export default defineComponent({
     const esActivosFijos = store.esActivosFijos
     const clientes = ref([])
 
-    const misma_condicion = ref(false)
 
     onReestablecer(() => {
       soloLectura.value = false
@@ -158,7 +157,7 @@ export default defineComponent({
       // canton: { required },
       sucursal: { required },
       tarea: { requiredIfTarea: requiredIf(devolucion.es_tarea!) },
-      condicion: { requiredIf: requiredIf(misma_condicion.value) }
+      condicion: { requiredIf: requiredIf(devolucion.misma_condicion) }
     }
 
     const v$ = useVuelidate(reglas, devolucion)
@@ -181,8 +180,8 @@ export default defineComponent({
     async function obtenerClientesMaterialesEmpleado() {
       try {
         cargando.activar()
-        const ruta = axios.getEndpoint(endpoints.obtener_clientes_materiales_empleado) + '/' + store.user.id
-        const response: AxiosResponse = await axios.get(ruta)
+        const ruta = axios.getEndpoint(endpoints.obtener_clientes_materiales_empleado)
+        const response: AxiosResponse = await axios.get(ruta, { params: { empleado_id: store.user.id } })
         clientes.value = response.data.results
       } catch (e) {
         console.log(e)
@@ -194,8 +193,8 @@ export default defineComponent({
     async function obtenerClientesMaterialesTarea() {
       try {
         cargando.activar()
-        const ruta = axios.getEndpoint(endpoints.obtener_clientes_materiales_tarea) + '/' + store.user.id
-        const response: AxiosResponse = await axios.get(ruta)
+        const ruta = axios.getEndpoint(endpoints.obtener_clientes_materiales_tarea)
+        const response: AxiosResponse = await axios.get(ruta, { params: { empleado_id: store.user.id } })
         clientes.value = response.data.results
       } catch (e) {
         console.log(e)
@@ -275,7 +274,7 @@ export default defineComponent({
         prompt(data)
       },
       visible: () => {
-        return (accion.value == acciones.nuevo && misma_condicion.value) || (accion.value == acciones.nuevo && misma_condicion.value)
+        return (accion.value == acciones.nuevo && devolucion.misma_condicion) || (accion.value == acciones.nuevo && devolucion.misma_condicion)
       }
     }
     const botonAnular: CustomActionTable = {
@@ -360,16 +359,16 @@ export default defineComponent({
       type: 'string',
       sortable: false,
     },
-    {
-      name: 'acciones',
-      field: 'acciones',
-      label: 'Acciones',
-      align: 'center'
-    },
+    // {
+    //   name: 'acciones',
+    //   field: 'acciones',
+    //   label: 'Acciones',
+    //   align: 'center'
+    // },
     ])
 
     return {
-      mixin, devolucion, disabled, accion, v$, acciones,
+      mixin, devolucion, disabled, accion, v$, acciones, accionesTabla,
       configuracionColumnas: configuracionColumnasDevoluciones,
       //listados
       opciones_empleados,
