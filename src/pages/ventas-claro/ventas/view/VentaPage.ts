@@ -11,7 +11,7 @@ import { useVuelidate } from '@vuelidate/core'
 import { ContenedorSimpleMixin } from 'shared/contenedor/modules/simple/application/ContenedorSimpleMixin'
 import { VentaController } from '../infrestructure/VentaController'
 import { configuracionColumnasVentas } from '../domain/configuracionColumnasVentas'
-import { acciones, estados_activacion, formas_pagos, maskFecha } from 'config/utils'
+import { acciones, estados_activaciones, formas_pagos, maskFecha } from 'config/utils'
 import { VendedorController } from 'pages/ventas-claro/vendedores/infrestructure/VendedorController'
 import { ProductoVentasController } from 'pages/ventas-claro/productoVentas/infrestructure/ProductoVentasController'
 import { AxiosHttpRepository } from 'shared/http/infraestructure/AxiosHttpRepository'
@@ -19,7 +19,7 @@ import { HttpResponseGet } from 'shared/http/domain/HttpResponse'
 import axios from 'axios'
 import { apiConfig, endpoints } from 'config/api'
 import { ClienteClaroController } from 'pages/ventas-claro/cliente/infrestucture/ClienteClaroController'
-import { maxLength, required } from 'shared/i18n-validators'
+import { maxLength, required, requiredIf } from 'shared/i18n-validators'
 import { ComportamientoModalesVentasClaro } from '../application/ComportamientoModalesVentasClaro'
 import { useFiltrosListadosSelects } from 'shared/filtrosListadosGenerales';
 import { StatusEssentialLoading } from 'components/loading/application/StatusEssentialLoading';
@@ -39,6 +39,7 @@ export default defineComponent({
     const mixin = new ContenedorSimpleMixin(Venta, new VentaController())
     const { entidad: venta, disabled, accion, listadosAuxiliares, } = mixin.useReferencias()
     const { setValidador, obtenerListados, cargarVista } = mixin.useComportamiento()
+    const { onGuardado, onModificado, onReestablecer } = mixin.useHooks()
 
     const cargando = new StatusEssentialLoading()
     const ventaStore = useVentaStore()
@@ -54,6 +55,14 @@ export default defineComponent({
 
 
     /*************
+     * HOOKS
+     **************/
+    onReestablecer(() => {
+      precio_producto.value = 0
+      comision_vendedor.value = 0
+    })
+
+    /*************
      * Validaciones
      **************/
     const reglas = {
@@ -64,6 +73,7 @@ export default defineComponent({
       producto: { required, },
       cliente: { required, },
       estado_activacion: { required, },
+      fecha_activacion: { requiredIf: requiredIf(() => venta.estado_activacion === 'ACTIVADO') }
     }
     const v$ = useVuelidate(reglas, venta)
     setValidador(v$.value)
@@ -118,46 +128,20 @@ export default defineComponent({
       cargando.desactivar()
     }
 
-    // function obtenerProducto() {
-    //   const axiosHttpRepository = AxiosHttpRepository.getInstance()
-    //   const url_acreditacion =
-    //     apiConfig.URL_BASE +
-    //     '/' +
-    //     axiosHttpRepository.getEndpoint(endpoints.productos_ventas) +
-    //     '/' +
-    //     venta.producto
-    //   axios({
-    //     url: url_acreditacion,
-    //     method: 'GET',
-    //     responseType: 'json',
-    //     headers: {
-    //       Authorization: axiosHttpRepository.getOptions().headers.Authorization,
-    //     },
-    //   }).then((response: HttpResponseGet) => {
-    //     const { data } = response
-    //     if (data) {
-    //       precio_producto.value = data.modelo.precio
-    //     }
-    //   })
-    // }
-    
-    // watchEffect(() => {
-    //   if (venta.producto != null && venta.forma_pago != null) {
-    //     obtenerProducto()
-    //     obtenerComision()
-    //   }
-    // })
-
     async function obtenerPrecioProductoSeleccionado() {
       const productoSeleccionado = productos.value.filter((v) => v.id == venta.producto)[0]
-      console.log(productoSeleccionado)
       precio_producto.value = productoSeleccionado.precio
-      await ventaStore.obtenerComision(venta.producto!, venta.forma_pago!, venta.vendedor!)
+      await obtenerComisionVenta()
+    }
+    async function obtenerComisionVenta() {
+      if (venta.producto && venta.vendedor) {
+        comision_vendedor.value = await ventaStore.obtenerComision(venta.producto!, venta.forma_pago!, venta.vendedor!)
+      }
     }
     return {
       mixin, venta, disabled, accion, v$,
       configuracionColumnas: configuracionColumnasVentas,
-      estados_activacion,
+      estados_activaciones,
       formas_pagos,
       maskFecha,
       precio_producto,
@@ -171,6 +155,7 @@ export default defineComponent({
       clientes, filtrarClientes,
       guardado,
       obtenerPrecioProductoSeleccionado,
+      obtenerComisionVenta,
     }
   },
 })

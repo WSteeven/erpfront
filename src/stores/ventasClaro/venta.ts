@@ -16,7 +16,7 @@ export const useVentaStore = defineStore('venta', () => {
 
     async function obtenerComision(idProducto:number, forma_pago:string, idVendedor:number) {
         const axios = AxiosHttpRepository.getInstance()
-        const ruta =axios.getEndpoint(endpoints.obtener_comision) +'/' +venta.producto +'/' +venta.forma_pago +'/' +venta.vendedor
+        const ruta =axios.getEndpoint(endpoints.obtener_comision) +'/' +idProducto +'/' +forma_pago +'/' +idVendedor
         const response: AxiosResponse = await axios.get(ruta)
         return response.data.comision_value
       }

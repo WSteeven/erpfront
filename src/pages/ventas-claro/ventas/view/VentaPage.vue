@@ -183,6 +183,7 @@
               :error="!!v$.forma_pago.$errors.length"
               @blur="v$.forma_pago.$touch"
               error-message="Debes seleccionar una forma de pago"
+              @update:model-value="obtenerComisionVenta"
               use-input
               input-debounce="0"
               :option-value="(v) => v.label"
@@ -204,7 +205,6 @@
               </template>
             </q-select>
           </div>
-{{ venta }}
           <!-- {{ productos }} -->
           <!-- Producto -->
           <div class="col-12 col-md-3">
@@ -275,7 +275,7 @@
             <label class="q-mb-sm block">Estado Activacion</label>
             <q-select
               v-model="venta.estado_activacion"
-              :options="estados_activacion"
+              :options="estados_activaciones"
               transition-show="jump-up"
               transition-hide="jump-down"
               options-dense
@@ -318,6 +318,7 @@
               v-model="venta.fecha_activacion"
               placeholder="Opcional"
               :disable="disabled"
+              :error="!!v$.fecha_activacion.$errors.length"
               readonly
               outlined
               dense
@@ -345,6 +346,14 @@
                     </q-date>
                   </q-popup-proxy>
                 </q-icon>
+              </template>
+              <template v-slot:error>
+                <div
+                  v-for="error of v$.fecha_activacion.$errors"
+                  :key="error.$uid"
+                >
+                  <div class="error-msg">{{ error.$message }}</div>
+                </div>
               </template>
             </q-input>
           </div>

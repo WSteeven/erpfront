@@ -506,12 +506,13 @@ export const tabOptionsPreingresoMateriales = [
 export const formas_pagos =[
   {label: 'EFECTIVO', value: 'EFECTIVO'},
   {label: 'TC', value: 'TARJETA DE CREDITO'},
-  {label: 'D.BANCARIO', value: 'DEBITO BANCARIO'},
+  {label: 'D. BANCARIO', value: 'DEBITO BANCARIO'},
 ]
-export const estados_activacion = [
-  { label: 'PENDIENTE', value: 'PENDIENTE' },
+export const estados_activaciones = [
+  // { label: 'PENDIENTE', value: 'PENDIENTE' },
   { label: 'APROBADO', value: 'APROBADO' },
-  { label: 'RECHAZADA', value: 'RECHAZADA' },
+  { label: 'ACTIVADO', value: 'ACTIVADO' },
+  // { label: 'RECHAZADA', value: 'RECHAZADA' },
 
 ]
 export const estadosVentas = {
