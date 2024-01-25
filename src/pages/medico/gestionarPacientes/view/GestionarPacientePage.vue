@@ -18,7 +18,7 @@
         switch-indicator
         align="justify"
         active-class="tab-active"
-        indicator-color="transparent"
+        :indicator-color="transparent"
         dense
       >
         <q-tab
@@ -64,7 +64,7 @@
                 v-model="tabs"
                 vertical
                 switch-indicator
-                active-class="bg-primary text-white rounded"
+                active-class="bg-primary text-white"
                 indicator-color="transparent"
               >
                 <q-tab
@@ -86,7 +86,7 @@
                   no-caps
                 />
                 <q-tab
-                  name="3"
+                  name="4"
                   label="Registro #4"
                   :class="{ 'tab-inactive': tabs !== '3' }"
                   no-caps
@@ -103,7 +103,10 @@
                 helpalive
                 :class="{ 'rounded-tabpanel': !$q.screen.xs }"
               >
-                <q-tab-panel name="1"> derecho </q-tab-panel>
+                <q-tab-panel name="1"> Ingreso </q-tab-panel>
+                <q-tab-panel name="2"> Ocupacionales </q-tab-panel>
+                <q-tab-panel name="3"> Reingreso </q-tab-panel>
+                <q-tab-panel name="4"> Salida </q-tab-panel>
               </q-tab-panels>
             </template>
           </q-splitter>
