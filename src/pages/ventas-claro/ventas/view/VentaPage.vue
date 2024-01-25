@@ -1,5 +1,16 @@
 <template>
-  <tab-layout :mixin="mixin" :configuracionColumnas="configuracionColumnas">
+  <tab-layout-filter-tabs-2
+    :mixin="mixin"
+    :configuracionColumnas="configuracionColumnas"
+    :ajustarCeldas="true"
+    :accion1="btnDesactivar"
+    :accion2="btnActivar"
+    :accion3="btnPrimerMesPagado"
+    :accion4="btnRegistrarNovedades"
+    :tab-options="tabOptionsVentas"
+    :tabDefecto="tabDefecto"
+    :filtrar="filtrarVentas"
+  >
     <template #formulario>
       <q-form @submit.prevent>
         <div class="row q-col-gutter-sm q-mb-md">
@@ -20,7 +31,6 @@
               dense
               outlined
               :disable="disabled"
-              :readonly="disabled"
               :error="!!v$.vendedor.$errors.length"
               @blur="v$.vendedor.$touch"
               error-message="Debes seleccionar un vendedor"
@@ -80,7 +90,6 @@
               dense
               outlined
               :disable="disabled"
-              :readonly="disabled"
               :error="!!v$.cliente.$errors.length"
               @blur="v$.cliente.$touch"
               error-message="Debes seleccionar un cliente"
@@ -179,7 +188,6 @@
               dense
               outlined
               :disable="disabled"
-              :readonly="disabled"
               :error="!!v$.forma_pago.$errors.length"
               @blur="v$.forma_pago.$touch"
               error-message="Debes seleccionar una forma de pago"
@@ -218,7 +226,6 @@
               dense
               outlined
               :disable="disabled"
-              :readonly="disabled"
               :error="!!v$.producto.$errors.length"
               @blur="v$.producto.$touch"
               @filter="filtrarProductos"
@@ -282,7 +289,6 @@
               dense
               outlined
               :disable="disabled"
-              :readonly="disabled"
               :error="!!v$.estado_activacion.$errors.length"
               @blur="v$.estado_activacion.$touch"
               @filter="filtrarProductos"
@@ -371,10 +377,32 @@
             >
             </q-input>
           </div>
+          <!-- Estado -->
+          <div class="col-12 col-md-3" v-if="accion !== acciones.nuevo">
+            <br />
+            <q-toggle
+              v-model="venta.activo"
+              checked-icon="check"
+              :disable="disabled"
+              :label="venta.activo ? 'Activo' : 'Suspendido'"
+              color="positive"
+            />
+          </div>
+          <!-- Primer mes pagado -->
+          <div class="col-12 col-md-3" v-if="accion !== acciones.nuevo">
+            <label class="q-mb-sm block"> ¿Primer mes pagado?</label>
+            <q-toggle
+              v-model="venta.primer_mes"
+              checked-icon="check"
+              :disable="disabled"
+              :label="venta.primer_mes ? 'SI' : 'NO'"
+              color="positive"
+            />
+          </div>
         </div>
       </q-form>
     </template>
-  </tab-layout>
+  </tab-layout-filter-tabs-2>
   <modales-entidad
     :comportamiento="modales"
     :persistente="false"

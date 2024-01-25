@@ -1,7 +1,7 @@
 import { ColumnConfig } from "components/tables/domain/ColumnConfig";
-import { Ventas } from "./Venta";
+import { Venta } from "./Venta";
 
-export const configuracionColumnasVentas: ColumnConfig<Ventas>[] = [
+export const configuracionColumnasVentas: ColumnConfig<Venta>[] = [
   {
     name: 'orden_id',
     field: 'orden_id',
@@ -9,13 +9,13 @@ export const configuracionColumnasVentas: ColumnConfig<Ventas>[] = [
     align: 'left',
     sortable: true
   },
-  {
-    name: 'orden_interna',
-    field: 'orden_interna',
-    label: 'Orden Interna',
-    align: 'left',
-    sortable: true
-  },
+  // {
+  //   name: 'orden_interna',
+  //   field: 'orden_interna',
+  //   label: 'Orden Interna',
+  //   align: 'left',
+  //   sortable: true
+  // },
   {
     name: 'vendedor_info',
     field: 'vendedor_info',
@@ -66,12 +66,19 @@ export const configuracionColumnasVentas: ColumnConfig<Ventas>[] = [
     sortable: true
   },
   {
-    name: 'chargeback',
-    field: 'chargeback',
-    label: 'Chargeback',
+    name: 'novedades',
+    field: 'novedades',
+    label: 'Novedades',
     align: 'left',
     sortable: true
   },
+  // {
+  //   name: 'chargeback',
+  //   field: 'chargeback',
+  //   label: 'Chargeback',
+  //   align: 'left',
+  //   sortable: true
+  // },
 
 
 ]

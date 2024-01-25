@@ -1,7 +1,7 @@
 import { computed, defineComponent, ref, watchEffect } from 'vue'
 import { Venta } from '../domain/Venta'
 
-import TabLayout from 'shared/contenedor/modules/simple/view/TabLayout.vue'
+import TabLayoutFilterTabs2 from 'shared/contenedor/modules/simple/view/TabLayoutFilterTabs2.vue';
 import LabelAbrirModal from 'components/modales/modules/LabelAbrirModal.vue';
 import ModalesEntidad from 'components/modales/view/ModalEntidad.vue';
 
@@ -14,10 +14,6 @@ import { configuracionColumnasVentas } from '../domain/configuracionColumnasVent
 import { acciones, estados_activaciones, formas_pagos, maskFecha } from 'config/utils'
 import { VendedorController } from 'pages/ventas-claro/vendedores/infrestructure/VendedorController'
 import { ProductoVentasController } from 'pages/ventas-claro/productoVentas/infrestructure/ProductoVentasController'
-import { AxiosHttpRepository } from 'shared/http/infraestructure/AxiosHttpRepository'
-import { HttpResponseGet } from 'shared/http/domain/HttpResponse'
-import axios from 'axios'
-import { apiConfig, endpoints } from 'config/api'
 import { ClienteClaroController } from 'pages/ventas-claro/cliente/infrestucture/ClienteClaroController'
 import { maxLength, required, requiredIf } from 'shared/i18n-validators'
 import { ComportamientoModalesVentasClaro } from '../application/ComportamientoModalesVentasClaro'
@@ -25,9 +21,13 @@ import { useFiltrosListadosSelects } from 'shared/filtrosListadosGenerales';
 import { StatusEssentialLoading } from 'components/loading/application/StatusEssentialLoading';
 import { useAuthenticationStore } from 'stores/authentication';
 import { useVentaStore } from 'stores/ventasClaro/venta';
+import { tabOptionsProductos } from 'config/ventas.utils';
+import { CustomActionTable } from 'components/tables/domain/CustomActionTable';
+import { useNotificaciones } from 'shared/notificaciones';
+import { CustomActionPrompt } from 'components/tables/domain/CustomActionPrompt';
 
 export default defineComponent({
-  components: { TabLayout, ModalesEntidad, LabelAbrirModal },
+  components: { TabLayoutFilterTabs2, ModalesEntidad, LabelAbrirModal },
   setup() {
     /*********
      * Stores
@@ -37,9 +37,10 @@ export default defineComponent({
      * Mixin
      ************/
     const mixin = new ContenedorSimpleMixin(Venta, new VentaController())
-    const { entidad: venta, disabled, accion, listadosAuxiliares, } = mixin.useReferencias()
-    const { setValidador, obtenerListados, cargarVista } = mixin.useComportamiento()
+    const { entidad: venta, disabled, accion, listadosAuxiliares, listado } = mixin.useReferencias()
+    const { setValidador, obtenerListados, cargarVista, listar } = mixin.useComportamiento()
     const { onGuardado, onModificado, onReestablecer } = mixin.useHooks()
+    const { confirmar, notificarCorrecto, prompt, notificarError } = useNotificaciones()
 
     const cargando = new StatusEssentialLoading()
     const ventaStore = useVentaStore()
@@ -48,6 +49,7 @@ export default defineComponent({
     const store = useAuthenticationStore()
 
 
+    const tabDefecto = ref('1')
     const precio_producto = ref(0)
     const comision_vendedor = ref(0)
     const mostrarLabelModal = computed(() => accion.value === acciones.nuevo || accion.value === acciones.editar)
@@ -110,6 +112,10 @@ export default defineComponent({
     /**************************************************************
      * Funciones
      **************************************************************/
+    function filtrarVentas(tab: string) {
+      tabDefecto.value = tab
+      listar({ activo: tab })
+    }
     async function guardado(data) {
       if (data.formulario === 'ClienteClaroPage') clientes.value.push(data.modelo)
       if (data.formulario === 'VendedorPage') vendedores.value.push(data.modelo)
@@ -138,8 +144,93 @@ export default defineComponent({
         comision_vendedor.value = await ventaStore.obtenerComision(venta.producto!, venta.forma_pago!, venta.vendedor!)
       }
     }
+
+    /***********************
+    * Botones de tabla
+    ***********************/
+    const btnDesactivar: CustomActionTable = {
+      titulo: 'Suspender',
+      icono: 'bi-toggle2-off',
+      color: 'negative',
+      tooltip: 'Marcar venta como suspendida',
+      accion: ({ entidad, posicion }) => {
+        confirmar('¿Está seguro de marcar esta venta como suspendida?', async () => {
+          try {
+            cargando.activar()
+            ventaStore.idVenta = entidad.id
+            await ventaStore.suspenderVenta()
+            listado.value.splice(posicion, 1)
+            notificarCorrecto('Suspendida correctamente')
+          } catch (error: any) {
+            notificarError('No se pudo marcar como suspendida la venta!')
+          } finally {
+            cargando.desactivar()
+          }
+        })
+      }, visible: ({ entidad }) => entidad.activo && store.can('puede.desactivar.ventas_claro')
+    }
+    const btnActivar: CustomActionTable = {
+      titulo: 'Activar',
+      icono: 'bi-toggle2-on',
+      color: 'positive',
+      tooltip: 'Marcar venta como activada',
+      accion: ({ entidad, posicion }) => {
+        confirmar('¿Está seguro de activar el cliente?', async () => {
+          const data: CustomActionPrompt = {
+            titulo: 'Observación',
+            mensaje: 'Ingresa una observación',
+            accion: async (data) => {
+              try {
+                cargando.activar()
+                ventaStore.idVenta = entidad.id
+                await ventaStore.suspenderVenta({ observacion: data })
+                listado.value.splice(posicion, 1)
+                notificarCorrecto('Activado correctamente')
+              } catch (error: any) {
+                notificarError('No se pudo activar la venta!')
+              } finally {
+                cargando.desactivar()
+              }
+            }
+          }
+          prompt(data)
+        })
+      }, visible: ({ entidad }) => !entidad.activo && store.can('puede.activar.clientes_claro')
+    }
+    const btnPrimerMesPagado: CustomActionTable = {
+      titulo: 'Primer pago',
+      icono: 'fas fa-dollar-sign',
+      color: 'primary',
+      tooltip: 'Marcar primer mes como pagado',
+      accion: ({ entidad, posicion }) => {
+        confirmar('¿Estás seguro de marcar como pagado el primer mes?', async () => {
+          ventaStore.idVenta = entidad.id
+          const response = await ventaStore.marcarPrimerMesPagado()
+          console.log(response)
+          listado.value.splice(posicion, 1, response.result)
+        })
+        console.log(entidad, posicion)
+      }, visible: ({ entidad }) => entidad.activo && !entidad.primer_mes
+    }
+    const btnRegistrarNovedades: CustomActionTable={
+      titulo: 'Novedades',
+      color: 'warning',
+      icono: 'bi-wrench',
+      accion: async ({ entidad, posicion }) => {
+        ventaStore.idVenta = entidad.id
+        confirmar('¿Está seguro de abrir el formulario de registro de novedades de la venta?', () => {
+          ventaStore.permitirSubir = true
+          modales.abrirModalEntidad('SeguimientoVentaPage')
+        })
+      },
+      visible: ({ entidad }) => {
+        return true
+      }
+    }
+
+
     return {
-      mixin, venta, disabled, accion, v$,
+      mixin, venta, disabled, accion, v$, acciones,
       configuracionColumnas: configuracionColumnasVentas,
       estados_activaciones,
       formas_pagos,
@@ -149,6 +240,8 @@ export default defineComponent({
       mostrarLabelModal,
       modales,
       store,
+      tabDefecto,
+      tabOptionsVentas: tabOptionsProductos,
 
       productos, filtrarProductos, recargarClientes,
       vendedores, filtrarVendedores, recargarVendedores,
@@ -156,6 +249,13 @@ export default defineComponent({
       guardado,
       obtenerPrecioProductoSeleccionado,
       obtenerComisionVenta,
+      filtrarVentas,
+
+      //botones de tabla
+      btnActivar,
+      btnDesactivar,
+      btnPrimerMesPagado,
+      btnRegistrarNovedades,
     }
   },
 })

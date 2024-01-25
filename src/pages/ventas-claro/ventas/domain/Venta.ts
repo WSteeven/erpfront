@@ -1,6 +1,6 @@
 import { EntidadAuditable } from 'shared/entidad/domain/entidadAuditable'
 export class Venta extends EntidadAuditable {
-  id:number  | null
+  id: number | null
   orden_id: string | null
   orden_interna: string | null
   vendedor: number | null
@@ -12,13 +12,19 @@ export class Venta extends EntidadAuditable {
   producto_precio: number | null
   plan: string | null
   fecha_activacion: string | null
-  mes:string | null
+  mes: string | null
   estado_activacion: string | null
   forma_pago: string | null
   comision: number | null
   comision_info: string | null
-  chargeback:number | null
+  chargeback: number | null
   comision_vendedor: number | null
+  activo: boolean
+  observacion: string | null
+  primer_mes: boolean
+  novedades:number|null
+
+
   constructor() {
     super()
     this.id = null
@@ -40,5 +46,9 @@ export class Venta extends EntidadAuditable {
     this.comision_info = null
     this.chargeback = null
     this.comision_vendedor = null
+    this.activo = true
+    this.observacion = null
+    this.primer_mes = false
+    this.novedades = 0
   }
 }

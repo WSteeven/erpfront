@@ -444,14 +444,15 @@ export const endpoints = {
   pago_comision: new Endpoint('ventas-claro/pago-comision'),
   bono_mensual_cumplimiento: new Endpoint('ventas-claro/bono-mensual-cumplimiento'),
   bono_trimestral_cumplimiento: new Endpoint('ventas-claro/bono-trimestral-cumplimiento'),
-  cobrojp:new Endpoint('ventas-claro/cobrojp'),
-  pago:new Endpoint('ventas-claro/pago'),
-  reporte_ventas:new Endpoint('ventas-claro/reporte-ventas'),
-  dashboard_ventas_claro:new Endpoint('ventas-claro/dashboard'),
-  umbral_ventas:new Endpoint('ventas-claro/umbral-ventas'),
-  esquema_comision:new Endpoint('ventas-claro/esquema-comision'),
-  clientes_claro:new Endpoint('ventas-claro/clientes-claro'),
-  escenario_venta_jp:new Endpoint('ventas-claro/escenario-venta-jp'),
+  cobrojp: new Endpoint('ventas-claro/cobrojp'),
+  pago: new Endpoint('ventas-claro/pago'),
+  reporte_ventas: new Endpoint('ventas-claro/reporte-ventas'),
+  dashboard_ventas_claro: new Endpoint('ventas-claro/dashboard'),
+  umbral_ventas: new Endpoint('ventas-claro/umbral-ventas'),
+  esquema_comision: new Endpoint('ventas-claro/esquema-comision'),
+  clientes_claro: new Endpoint('ventas-claro/clientes-claro'),
+  escenario_venta_jp: new Endpoint('ventas-claro/escenario-venta-jp'),
+  novedades_ventas: new Endpoint('ventas-claro/novedades-ventas'),
 
 
 
