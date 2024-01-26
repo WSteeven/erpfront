@@ -10,10 +10,10 @@ import { configuracionColumnasProductosSeleccionados } from './domain/configurac
 import { configuracionColumnasProductos } from 'pages/bodega/productos/domain/configuracionColumnasProductos'
 import { useOrquestadorSelectorItemsEgreso } from './application/OrquestadorSelectorInventario'
 import { configuracionColumnasDetallesProductos } from 'pages/bodega/detalles_productos/domain/configuracionColumnasDetallesProductos'
-import { acciones, estadosTransacciones, motivos } from 'config/utils'
+import { acciones, estadosTransacciones, motivosTransaccionesBodega, tabOptionsTransaccionesEgresos, accionesTabla } from 'config/utils'
 
 // Componentes
-import TabLayout from 'shared/contenedor/modules/simple/view/TabLayout.vue'
+import TabLayoutFilterTabs2 from "shared/contenedor/modules/simple/view/TabLayoutFilterTabs2.vue";
 import EssentialTable from 'components/tables/view/EssentialTable.vue'
 import EssentialSelectableTable from 'components/tables/view/EssentialSelectableTable.vue'
 import LabelInfoEmpleado from 'components/modales/modules/LabelInfoEmpleado.vue'
@@ -25,6 +25,7 @@ import { TransaccionEgresoController } from '../../infraestructure/TransaccionEg
 import { Transaccion } from '../../domain/Transaccion'
 import { useNotificacionStore } from 'stores/notificacion'
 import { LocalStorage, useQuasar } from 'quasar'
+
 
 //Controladores
 import { MotivoController } from 'pages/administracion/motivos/infraestructure/MotivoController'
@@ -42,29 +43,33 @@ import { usePedidoStore } from 'stores/pedido'
 
 import { useTransferenciaStore } from 'stores/transferencia'
 import { ValidarListadoProductosEgreso } from './application/validaciones/ValidarListadoProductosEgreso'
-import { limpiarListado, ordernarListaString } from 'shared/utils'
-import { Motivo } from 'pages/administracion/motivos/domain/Motivo'
+import { ordenarLista, limpiarListado, ordernarListaString } from 'shared/utils'
 import { useInventarioStore } from 'stores/inventario'
 import { useCargandoStore } from 'stores/cargando'
 import { Sucursal } from 'pages/administracion/sucursales/domain/Sucursal'
-import { Empleado } from 'pages/recursosHumanos/empleados/domain/Empleado'
 import { SucursalController } from 'pages/administracion/sucursales/infraestructure/SucursalController'
 import { Cliente } from 'sistema/clientes/domain/Cliente'
 import { ComportamientoModalesEmpleado } from 'pages/recursosHumanos/empleados/application/ComportamientoModalesEmpleado'
 import { useEmpleadoStore } from 'stores/empleado'
+import { useFiltrosListadosSelects } from 'shared/filtrosListadosGenerales'
+import { ProyectoController } from 'pages/gestionTrabajos/proyectos/infraestructure/ProyectoController'
+import { StatusEssentialLoading } from 'components/loading/application/StatusEssentialLoading'
+import { TareasEmpleadoController } from 'pages/gestionTrabajos/tareas/infraestructure/TareasEmpleadoController'
+import { EtapaController } from 'pages/gestionTrabajos/proyectos/modules/etapas/infraestructure/EtapaController'
 
 export default defineComponent({
   name: 'Egresos',
-  components: { TabLayout, EssentialTable, EssentialSelectableTable, LabelInfoEmpleado, ModalesEntidad },
+  components: { TabLayoutFilterTabs2, EssentialTable, EssentialSelectableTable, LabelInfoEmpleado, ModalesEntidad },
   setup() {
     const mixin = new ContenedorSimpleMixin(Transaccion, new TransaccionEgresoController())
-    const { entidad: transaccion, disabled, accion, listadosAuxiliares } = mixin.useReferencias()
-    const { setValidador, obtenerListados, cargarVista } = mixin.useComportamiento()
+    const { entidad: transaccion, disabled, accion, listadosAuxiliares, listado } = mixin.useReferencias()
+    const { setValidador, obtenerListados, cargarVista, listar, } = mixin.useComportamiento()
     const { onConsultado, onReestablecer, onGuardado } = mixin.useHooks()
-    const { confirmar, prompt } = useNotificaciones()
+    const { confirmar, prompt, notificarError, notificarAdvertencia } = useNotificaciones()
     //stores
     useNotificacionStore().setQuasar(useQuasar())
     useCargandoStore().setQuasar(useQuasar())
+    const cargando = new StatusEssentialLoading()
     const store = useAuthenticationStore()
     const transaccionStore = useTransaccionStore()
     const pedidoStore = usePedidoStore()
@@ -99,14 +104,21 @@ export default defineComponent({
     let listadoPedido: Ref<any[]> = ref([])
     let coincidencias = ref()
     let listadoCoincidencias = ref()
+    const tabDefecto = ref('PENDIENTE')
 
 
-    const opciones_empleados = ref([])
-    const opciones_autorizaciones = ref([])
-    const opciones_sucursales = ref([])
-    const opciones_motivos = ref([])
-    const opciones_tareas = ref([])
-    const opciones_clientes = ref([])
+
+    const autorizaciones = ref([])
+
+    const {
+      empleados, filtrarEmpleados,
+      clientes, filtrarClientes,
+      motivos, filtrarMotivos,
+      proyectos, filtrarProyectos,
+      etapas, filtrarEtapas,
+      tareas, filtrarTareas,
+      sucursales, filtrarSucursales,
+    } = useFiltrosListadosSelects(listadosAuxiliares)
 
     cargarVista(async () => {
       await obtenerListados({
@@ -114,15 +126,13 @@ export default defineComponent({
           controller: new EmpleadoController(),
           params: { campos: 'id,nombres,apellidos', estado: 1 }
         },
-        tareas: {
-          controller: new TareaController(),
-          params: { campos: 'id,codigo_tarea,titulo,cliente_id' }
-        },
         motivos: { controller: new MotivoController(), params: { tipo_transaccion_id: 2 } },
         clientes: {
           controller: new ClienteController(),
-          params: { campos: 'id,empresa_id', requiere_bodega: 1, estado: 1, },
+          params: { campos: 'id,razon_social', requiere_bodega: 1, estado: 1, },
         },
+        sucursales: JSON.parse(LocalStorage.getItem('sucursales')!.toString()),
+        autorizaciones: JSON.parse(LocalStorage.getItem('autorizaciones')!.toString()),
       })
       //comprueba si hay un pedido en el store para llenar automaticamente los datos de ese pedido en la transaccion
       if (pedidoStore.pedido.id) {
@@ -177,8 +187,8 @@ export default defineComponent({
       sucursal: { required },
       cliente: { requiredIfBodeguero: requiredIf(esBodeguero) },
       motivo: { requiredIfBodeguero: requiredIf(esBodeguero) },
+      etapa: { requiredIf: requiredIf(() => { if (etapas.value) return etapas.value.length && transaccion.proyecto }) },
       tarea: { requiredIfTarea: requiredIf(transaccion.es_tarea) },
-      // responsable: { requiredIfPedido: requiredIf(transaccion.pedido! > 0) },
       responsable: { required },
       autorizacion: {
         requiredIfCoordinador: requiredIf(esCoordinador && !store.esBodegueroTelconet),
@@ -199,20 +209,11 @@ export default defineComponent({
     mixin.agregarValidaciones(validarListadoProductos)
 
 
+    function filtrarTransacciones(tab: string) {
+      tabDefecto.value = tab
+      listar({ estado: tab })
+    }
 
-    function eliminar({ entidad, posicion }) {
-      confirmar('¿Está seguro de continuar?',
-        () => transaccion.listadoProductosTransaccion.splice(posicion, 1))
-    }
-    const botonEliminar: CustomActionTable = {
-      titulo: 'Quitar',
-      color: 'negative',
-      icono: 'bi-x',
-      accion: ({ entidad, posicion }) => {
-        eliminar({ entidad, posicion })
-      },
-      visible: () => puedeEditarCantidad.value
-    }
     const botonEditarCantidad: CustomActionTable = {
       titulo: 'Cantidad',
       icono: 'bi-pencil',
@@ -226,10 +227,10 @@ export default defineComponent({
             transaccion.listadoProductosTransaccion[posicion].cantidad = data
           },
         }
-
         prompt(config)
       },
       visible: () => puedeEditarCantidad.value
+      // accion.value == acciones.nuevo || accion.value == acciones.editar
     }
     const botonImprimir: CustomActionTable = {
       titulo: 'Imprimir',
@@ -240,30 +241,49 @@ export default defineComponent({
         await transaccionStore.imprimirEgreso()
       },
     }
-
+    const botonEliminar: CustomActionTable = {
+      titulo: 'Quitar',
+      color: 'negative',
+      icono: 'bi-x',
+      accion: ({ entidad, posicion }) => {
+        eliminar({ posicion })
+      },
+      visible: () => puedeEditarCantidad.value
+    }
     const botonAnular: CustomActionTable = {
       titulo: 'Anular',
       color: 'red',
       icono: 'bi-x',
       accion: async ({ entidad, posicion }) => {
-        confirmar('¿Está seguro que desea anular la transacción?. Esta acción restará al inventario los materiales ingresados previamente', async () => {
-          transaccionStore.idTransaccion = entidad.id
-          await transaccionStore.anularEgreso()
-          entidad.estado = transaccionStore.transaccion.estado
+        confirmar('¿Está seguro que desea anular la transacción?. Esta acción sumará al inventario los materiales egresados previamente', async () => {
+          try {
+            transaccionStore.idTransaccion = entidad.id
+            await transaccionStore.anularEgreso()
+            entidad.estado = transaccionStore.transaccion.estado
+            listado.value.splice(posicion, 1)
+          } catch (err) {
+            notificarError('' + err)
+          }
         })
       },
       visible: ({ entidad, posicion }) => {
-        // console.log(entidad)
-        // console.log('aqui retornas cuando es visible el boton, en teoria solo cuando es administrador y no esta anulada')
-        return store.esAdministrador && entidad.estado === estadosTransacciones.completa && entidad.estado_comprobante =='PENDIENTE'
+        return (store.esAdministrador || store.can('puede.anular.egresos')) && entidad.estado === estadosTransacciones.completa && entidad.estado_comprobante == 'PENDIENTE'
       }
 
     }
 
+    /*****************************************************************************************
+     * Funciones
+     ****************************************************************************************/
+    function eliminar({ posicion }) {
+      confirmar('¿Está seguro de continuar?',
+        () => transaccion.listadoProductosTransaccion.splice(posicion, 1))
+    }
+
     /**
-     * It loads a transaction from the database, and if it fails, it cleans the fields that were
-     * previously filled.
-     * @param {number} id - number =&gt; id of the order
+     * La función "llenarTransaccion" llena una transacción con datos de un pedido específico, y si hay
+     * un error, borra la transacción y los campos relacionados.
+     * @param {number} id - El parámetro "id" es un número que representa el ID de un pedido.
      */
     async function llenarTransaccion(id: number) {
       limpiarTransaccion()
@@ -271,6 +291,8 @@ export default defineComponent({
         await pedidoStore.cargarPedido(id)
         await cargarDatosPedido()
       } catch (error) {
+        notificarError(error + '')
+        console.log(error)
         //En esta seccion se limpian los campos previamente llenados
         limpiarTransaccion()
         limpiarProducto()
@@ -278,11 +300,16 @@ export default defineComponent({
       }
     }
 
+    /**
+     * La función `llenarTransferencia` carga una transferencia con una ID determinada, borra los datos
+     * de la transacción existente y luego carga los datos de la transferencia.
+     * @param {number} id - El parámetro `id` es un número que representa el identificador de una
+     * transferencia.
+     */
     async function llenarTransferencia(id: number) {
       limpiarTransaccion()
       await transferenciaStore.cargarTransferencia(id)
       cargarDatosTransferencia()
-      // console.log(transferenciaStore.transferencia)
     }
 
     /**
@@ -295,7 +322,6 @@ export default defineComponent({
       transaccion.per_autoriza = transferenciaStore.transferencia.per_autoriza
       transaccion.listadoProductosTransaccion = transferenciaStore.transferencia.listadoProductos
     }
-
 
     /**
      * Cargar los datos del pedido en el formulario de egreso.
@@ -310,14 +336,20 @@ export default defineComponent({
       transaccion.per_autoriza = Number.isInteger(pedidoStore.pedido.per_autoriza) ? pedidoStore.pedido.per_autoriza : pedidoStore.pedido.per_autoriza_id
       transaccion.per_retira = Number.isInteger(pedidoStore.pedido.per_retira) ? pedidoStore.pedido.per_retira : pedidoStore.pedido.per_retira_id
       transaccion.retira_tercero = pedidoStore.pedido.retira_tercero
+      transaccion.proyecto = Number.isInteger(pedidoStore.pedido.proyecto) ? pedidoStore.pedido.proyecto : null
+      transaccion.etapa = Number.isInteger(pedidoStore.pedido.etapa) ? pedidoStore.pedido.etapa : null
+      transaccion.cliente = Number.isInteger(pedidoStore.pedido.cliente) ? pedidoStore.pedido.cliente : pedidoStore.pedido.cliente_id
       listadoPedido.value = [...pedidoStore.pedido.listadoProductos.filter((v) => v.cantidad != v.despachado)]
       listadoPedido.value.sort((v, w) => ordernarListaString(v.producto, w.producto)) //ordena el listado de pedido
-      //filtra el cliente de una tarea, cuando el pedido tiene una tarea relacionada
-      transaccion.cliente = Number.isInteger(pedidoStore.pedido.cliente) ? pedidoStore.pedido.cliente : pedidoStore.pedido.cliente_id
+      if (transaccion.proyecto) await obtenerProyectos()
+      if (transaccion.etapa) await obtenerEtapasProyecto(transaccion.proyecto, false)
+
+      // filtra el cliente de una tarea, cuando el pedido tiene una tarea relacionada
       if (pedidoStore.pedido.tarea) {
         transaccion.es_tarea = true
         transaccion.tarea = Number.isInteger(pedidoStore.pedido.tarea) ? pedidoStore.pedido.tarea : pedidoStore.pedido.tarea_id
-        filtroTareas(transaccion.tarea)
+        if (transaccion.tarea) await obtenerTareas()
+        obtenerDatosTareaSeleccionada(transaccion.tarea)
       }
       //copia el listado de productos del pedido en la transaccion, filtrando los productos pendientes de despachar
       transaccion.listadoProductosTransaccion = Array.from(pedidoStore.pedido.listadoProductos.filter((v) => v.cantidad != v.despachado))
@@ -355,7 +387,7 @@ export default defineComponent({
     }
 
     function seleccionarClientePropietario(val) {
-      const sucursalSeleccionada = opciones_sucursales.value.filter((v: Sucursal) => v.id === val)
+      const sucursalSeleccionada = sucursales.value.filter((v: Sucursal) => v.id === val)
       transaccion.cliente = sucursalSeleccionada[0]['cliente_id']
 
       buscarListadoPedidoEnInventario()
@@ -401,40 +433,74 @@ export default defineComponent({
       listadoPedido.value = []
     }
 
-    // console.log('es bodeguero?', esBodeguero)
-    const configuracionColumnasProductosSeleccionadosAccion = [...configuracionColumnasProductosSeleccionados, {
-      name: 'cantidad',
-      field: 'cantidad',
-      label: 'Cantidad',
-      align: 'left',
-      sortable: false,
-    },
-    {
-      name: 'acciones',
-      field: 'acciones',
-      label: 'Acciones',
-      align: 'right',
-      sortable: false,
+    async function obtenerProyectos() {
+      cargando.activar()
+      const response = await new ProyectoController().listar({
+        campos: 'id,nombre,codigo_proyecto,coordinador_id,cliente_id',
+        empleado_id: transaccion.responsable,
+        finalizado: 0,
+      })
+      listadosAuxiliares.proyectos = response.result
+      proyectos.value = response.result
+      cargando.desactivar()
     }
-    ]
+    async function obtenerEtapas() {
+      cargando.activar()
+      const response = await new EtapaController().listar({ proyecto_id: transaccion.proyecto, campos: 'id,nombre,supervisor_id,supervisor_responsable' })
+      listadosAuxiliares.etapas = response.result
+      etapas.value = response.result
+      cargando.desactivar()
+    }
+    async function obtenerTareas() {
+      cargando.activar()
+      const response = await new TareaController().listar({ activas_empleado: 1, empleado_id: transaccion.responsable, campos: 'id,codigo_tarea' })
+      listadosAuxiliares.tareas = response.result
+      tareas.value = response.result
+      cargando.desactivar()
+    }
+    async function obtenerEtapasProyecto(idProyecto: string | number | null, limpiarCampos = true) {
+      cargando.activar()
+      if (limpiarCampos) transaccion.etapa = null
+      if (idProyecto === null) {
+        const response = await new TareasEmpleadoController().listar({ para_cliente_proyecto: 'PARA_CLIENTE_FINAL', campos: 'id,codigo_tarea,titulo', finalizado: 0, empleado_id: transaccion.responsable })
+        listadosAuxiliares.tareas = response.result
+        tareas.value = response.result
+      } else {
+        const response = await new EtapaController().listar({ proyecto_id: idProyecto, campos: 'id,nombre,supervisor_id,supervisor_responsable' })
+        listadosAuxiliares.etapas = response.result
+        etapas.value = response.result
+        if (etapas.value.length <= 0) {
+          await obtenerTareasEtapa(null, false)
+        } else tareas.value = []
+        // if(pedido.tarea) await obtenerTareasEtapa(pedido.etapa)
+      }
+      cargando.desactivar()
+    }
+    async function obtenerTareasEtapa(idEtapa: number | null, limpiarCampos = true) {
+      cargando.activar()
+      if (limpiarCampos) transaccion.tarea = null
+      const response = await new TareasEmpleadoController().listar({ proyecto_id: transaccion.proyecto, etapa_id: idEtapa, empleado_id: transaccion.responsable, campos: 'id,codigo_tarea,titulo', finalizado: 0 })
+      listadosAuxiliares.tareas = response.result
+      tareas.value = response.result
+      cargando.desactivar()
+
+    }
 
 
     //Configurar los listados
-    opciones_empleados.value = listadosAuxiliares.empleados
-    opciones_sucursales.value = JSON.parse(LocalStorage.getItem('sucursales')!.toString())
-    opciones_autorizaciones.value = JSON.parse(LocalStorage.getItem('autorizaciones')!.toString())
-    opciones_motivos.value = listadosAuxiliares.motivos
-    opciones_tareas.value = listadosAuxiliares.tareas
-    opciones_clientes.value = listadosAuxiliares.clientes
+    empleados.value = listadosAuxiliares.empleados
+    sucursales.value = listadosAuxiliares.sucursales
+    autorizaciones.value = listadosAuxiliares.autorizaciones
+    motivos.value = listadosAuxiliares.motivos
+    tareas.value = listadosAuxiliares.tareas
+    clientes.value = listadosAuxiliares.clientes
 
-    function filtroTareas(val) {
-      // console.log('val recibido', val)
-      const opcion_encontrada = listadosAuxiliares.tareas.filter((v) => v.id === val || v.detalle == val)
-      // console.log(listadosAuxiliares.tareas)
-      // console.log('cliente_encontrado', opcion_encontrada[0])
-      // console.log('cliente_encontrado', opcion_encontrada[0]['cliente_id'])
+    function obtenerDatosTareaSeleccionada(val) {
+      const opcion_encontrada = listadosAuxiliares.tareas.filter((v) => v.id == val || v.codigo_tarea == val)
+      console.log(opcion_encontrada)
       transaccion.cliente = opcion_encontrada[0]['cliente_id']
       transaccion.tarea = opcion_encontrada[0]['id']
+      transaccion.proyecto = opcion_encontrada[0]['proyecto_id']
     }
     /* function filtroSolicitante(val){
         const opcion_encontrada = listadosAuxiliares.empleados.filter((v)=>v.id===val)
@@ -454,14 +520,16 @@ export default defineComponent({
     return {
       mixin, transaccion, disabled, accion, v$, soloLectura,
       configuracionColumnas: configuracionColumnasTransaccionEgreso,
-      acciones,
+      acciones, accionesTabla,
       //listados
-      opciones_empleados,
-      opciones_sucursales,
-      opciones_motivos,
-      opciones_autorizaciones,
-      opciones_tareas,
-      opciones_clientes,
+      autorizaciones,
+      empleados, filtrarEmpleados,
+      clientes, filtrarClientes,
+      motivos, filtrarMotivos,
+      proyectos, filtrarProyectos,
+      etapas, filtrarEtapas,
+      tareas, filtrarTareas,
+      sucursales, filtrarSucursales,
 
       //stores
       pedidoStore,
@@ -474,49 +542,30 @@ export default defineComponent({
       //variables auxiliares
       esVisibleAutorizacion,
       esVisibleTarea,
+      tabDefecto,
+      tabOptionsTransaccionesEgresos,
 
       //modales
       modalesEmpleado,
 
       //funciones
+      filtrarTransacciones,
       recargarSucursales,
       infoEmpleado,
+      obtenerDatosTareaSeleccionada,
 
 
       //filtros
-      filtroTareas,
-      filtroMotivos(val) {
-        console.log('filtro motivos', val)
-        const motivoSeleccionado = listadosAuxiliares.motivos.filter((v) => v.id === val)
-        transaccion.aviso_liquidacion_cliente = (motivoSeleccionado[0]['nombre'] == motivos.egresoLiquidacionMateriales) ? true : false
-        transaccion.es_transferencia = (motivoSeleccionado[0]['nombre'] == motivos.egresoTransferenciaBodegas) ? true : false
+      motivoSeleccionado(val) {
+        // console.log('filtro motivos', val)
+        const motivoSeleccionado = listadosAuxiliares.motivos.filter((v) => v.id === val)[0]
+        // console.log(motivoSeleccionado)
+        // transaccion.aviso_liquidacion_cliente = (motivoSeleccionado.nombre == motivos.egresoLiquidacionMateriales) ? true : false
+        if ([motivosTransaccionesBodega.destruccion, motivosTransaccionesBodega.egresoAjusteRegularizacion, motivosTransaccionesBodega.egresoLiquidacionMateriales, motivosTransaccionesBodega.egresoTransferenciaBodegas, motivosTransaccionesBodega.venta, motivosTransaccionesBodega.robo].includes(motivoSeleccionado.nombre)) transaccion.aviso_liquidacion_cliente = true
+        else transaccion.aviso_liquidacion_cliente = false
+        transaccion.es_transferencia = (motivoSeleccionado.nombre == motivosTransaccionesBodega.egresoTransferenciaBodegas) ? true : false
       },
 
-      filtroSucursales(val, update) {
-        if (val === '') {
-          update(() => {
-            opciones_sucursales.value = JSON.parse(LocalStorage.getItem('sucursales')!.toString())
-          })
-          return
-        }
-        update(() => {
-          const needle = val.toLowerCase()
-          opciones_sucursales.value = JSON.parse(LocalStorage.getItem('sucursales')!.toString()).filter((v) => v.lugar.toLowerCase().indexOf(needle) > -1)
-        })
-      },
-
-      filtroEmpleados(val, update) {
-        if (val === '') {
-          update(() => {
-            opciones_empleados.value = listadosAuxiliares.empleados
-          })
-          return
-        }
-        update(() => {
-          const needle = val.toLowerCase()
-          opciones_empleados.value = listadosAuxiliares.empleados.filter((v) => v.nombres.toLowerCase().indexOf(needle) > -1 || v.apellidos.toLowerCase().indexOf(needle) > -1)
-        })
-      },
 
       checkRetiraOtro(val) {
         if (!val) {
@@ -526,13 +575,20 @@ export default defineComponent({
       },
 
       checkPedido(val) {
-        // console.log('Pedido', val)
         if (!val) {
           limpiarTransaccion()
         }
       },
       checkTarea(val) {
-        if (!val) {
+        if (val) {
+          if (!transaccion.responsable) {
+            notificarAdvertencia('Debes seleccionar primero un empleado (técnico) responsable')
+            transaccion.es_tarea = false
+          } else {
+            obtenerProyectos()
+            obtenerTareas()
+          }
+        } else {
           transaccion.tarea = null
         }
       },
@@ -543,7 +599,6 @@ export default defineComponent({
       //tabla
       configuracionColumnasInventarios,
       configuracionColumnasItemsSeleccionados,
-      configuracionColumnasProductosSeleccionadosAccion,
       configuracionColumnasProductosSeleccionados,
       configuracionColumnasDetallesProductos,
       botonEditarCantidad,
@@ -581,22 +636,17 @@ export default defineComponent({
       }),
 
       //ordenacion de listas
-      ordenarMotivos() {
-        opciones_motivos.value.sort((a: Motivo, b: Motivo) => ordernarListaString(a.nombre!, b.nombre!))
-      },
       ordenarClientes() {
-        if (store.esBodegueroTelconet) opciones_clientes.value = opciones_clientes.value.filter((v: Cliente) => v.razon_social!.indexOf('TELCONET') > -1)
-        else opciones_clientes.value.sort((a: Cliente, b: Cliente) => ordernarListaString(a.razon_social!, b.razon_social!))
+        if (store.esBodegueroTelconet) clientes.value = clientes.value.filter((v: Cliente) => v.razon_social!.indexOf('TELCONET') > -1)
+        else clientes.value.sort((a: Cliente, b: Cliente) => ordernarListaString(a.razon_social!, b.razon_social!))
       },
       ordenarSucursales() {
         if (store.esBodegueroTelconet) {
-          const sucursalesTelconet = opciones_sucursales.value.filter((v: Sucursal) => v.lugar!.indexOf('TELCONET') > -1)
-          opciones_sucursales.value = sucursalesTelconet.sort((a: Sucursal, b: Sucursal) => ordernarListaString(a.lugar!, b.lugar!))
-        } else opciones_sucursales.value.sort((a: Sucursal, b: Sucursal) => ordernarListaString(a.lugar!, b.lugar!))
+          const sucursalesTelconet = sucursales.value.filter((v: Sucursal) => v.lugar!.indexOf('TELCONET') > -1)
+          sucursales.value = sucursalesTelconet.sort((a: Sucursal, b: Sucursal) => ordernarListaString(a.lugar!, b.lugar!))
+        } else sucursales.value.sort((a: Sucursal, b: Sucursal) => ordernarListaString(a.lugar!, b.lugar!))
       },
-      ordenarEmpleados() {
-        opciones_empleados.value.sort((a: Empleado, b: Empleado) => ordernarListaString(a.apellidos!, b.apellidos!))
-      }
+      ordenarLista,
     }
   }
 })

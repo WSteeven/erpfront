@@ -12,7 +12,7 @@ $border-color: #464646;
   }
 
   .bg-body {
-    background-color: $bg-body;
+    background-color: $bg-body !important;
   }
 
   .bg-body-table {
@@ -24,7 +24,7 @@ $border-color: #464646;
   }
 
   .bg-desenfoque {
-    background-color: $dark-color-transparency;
+    background-color: rgba($dark-color, 0.8);
     backdrop-filter: blur(10px);
   }
 
@@ -34,6 +34,18 @@ $border-color: #464646;
 
   .bg-drawer {
     background-color: $dark-color;
+  }
+
+  .bg-icon {
+    background-color: $border-color;
+  }
+
+  .color-icon-navbar {
+    color: $grey-2;
+  }
+
+  .text-color {
+    color: #fff;
   }
 
   // Tabs
@@ -55,6 +67,11 @@ $border-color: #464646;
   .toggle-button {
     border: 1px solid $positive;
     background-color: $bg-body;
+  }
+
+  .toggle-button-grey {
+    border: 1px solid $grey;
+    background-color: #000;
   }
 
   // Tabla
@@ -127,20 +144,21 @@ $border-color: #464646;
 
   // Menu item drawer
   .link-active {
-    background: rgba($bg-body, 1);
-    border-right: 3px solid $primary;
+    background: $primary; //rgba($bg-body, 1);
+    // border-right: 3px solid $primary;
+    border-radius: 16px;
 
     i {
       color: $primary;
     }
 
-    .q-item__label {
+    /* .q-item__label {
       font-weight: bold;
-    }
+    } */
   }
 
   .color-icono {
-    color: #8288a2;
+    color: $primary; //#8288a2;
   }
 
   // Botones tabla

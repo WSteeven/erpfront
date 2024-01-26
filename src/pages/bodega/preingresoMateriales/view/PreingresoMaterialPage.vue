@@ -16,16 +16,69 @@
         <div class="row q-col-gutter-sm q-py-md">
           <!-- Solicitante -->
           <div class="col-12 col-md-3">
-            <label class="q-mb-sm block">Responsable</label>
-            <q-input
-              v-model="preingreso.responsable"
-              placeholder="Obligatorio"
-              disable
-              :readonly="disabled || soloLectura"
-              outlined
+            <label class="q-mb-sm block">Solicitante</label>
+            <q-select
+              v-model="preingreso.solicitante"
+              :options="empleados"
+              transition-show="scale"
+              transition-hide="scale"
+              options-dense
               dense
+              outlined
+              disable
+              :option-label="(v) => v.apellidos + ' ' + v.nombres"
+              :option-value="(v) => v.id"
+              emit-value
+              map-options
             >
-            </q-input>
+              <template v-slot:no-option>
+                <q-item>
+                  <q-item-section class="text-grey">
+                    No hay resultados
+                  </q-item-section>
+                </q-item>
+              </template>
+            </q-select>
+          </div>
+
+          <!-- Responsable -->
+          <div
+            class="col-12 col-md-3"
+            v-if="
+              store.esCoordinador ||
+              store.esCoordinadorBackup ||
+              store.esJefeTecnico ||
+              store.esSupervisorCampo ||
+              store.esFiscalizador
+            "
+          >
+            <label class="q-mb-sm block">Responsable</label>
+            <q-select
+              v-model="preingreso.responsable"
+              :options="tecnicos"
+              transition-show="scale"
+              transition-hide="scale"
+              options-dense
+              dense
+              outlined
+              :disable="disabled || soloLectura"
+              :option-label="(v) => v.apellidos + ' ' + v.nombres"
+              :option-value="(v) => v.id"
+              use-input
+              input-debounce="0"
+              @filter="filtrarTecnicos"
+              @update:model-value="obtenerProyectosTareasTecnico"
+              emit-value
+              map-options
+            >
+              <template v-slot:no-option>
+                <q-item>
+                  <q-item-section class="text-grey">
+                    No hay resultados
+                  </q-item-section>
+                </q-item>
+              </template>
+            </q-select>
           </div>
 
           <!-- Fecha -->
@@ -35,9 +88,10 @@
             >
             <q-input
               v-model="preingreso.fecha"
-              :disable="disabled"
+              :disable="disabled || soloLectura"
               outlined
               dense
+              :error="!!v$.fecha.$errors.length"
               ><template v-slot:append>
                 <q-icon name="event" class="cursor-pointer">
                   <q-popup-proxy
@@ -61,54 +115,41 @@
                     </q-date>
                   </q-popup-proxy>
                 </q-icon> </template
-            ></q-input>
+              ><template v-slot:error>
+                <div v-for="error of v$.fecha.$errors" :key="error.$uid">
+                  <div class="error-msg">{{ error.$message }}</div>
+                </div>
+              </template></q-input
+            >
           </div>
           <!-- Cuadrilla -->
           <div class="col-12 col-md-3">
             <label class="q-mb-sm block">Cuadrilla</label>
             <q-input
               v-model="preingreso.cuadrilla"
-              :disable="disabled"
+              :disable="disabled || soloLectura"
+              :error="!!v$.cuadrilla.$errors.length"
               outlined
               dense
             ></q-input>
           </div>
-          <!-- Coordinador -->
-          <div class="col-12 col-md-3">
-            <label class="q-mb-sm block">Coordinador</label>
-            <q-select
-              v-model="preingreso.coordinador"
-              :options="coordinadores"
-              transition-show="jump-up"
-              transition-hide="jump-up"
-              options-dense
-              dense
-              outlined
-              @popup-show="ordenarCoordinadores"
-              :error="!!v$.coordinador.$errors.length"
-              error-message="Debes seleccionar al menos una opcion"
-              :disable="disabled"
-              :option-label="(v) => v.nombres + ' ' + v.apellidos"
-              :option-value="(v) => v.id"
-              emit-value
-              map-options
-              ><template v-slot:no-option>
-                <q-item>
-                  <q-item-section class="text-grey">
-                    No hay resultados
-                  </q-item-section>
-                </q-item>
-              </template>
-            </q-select>
-          </div>
+
           <!-- Select autorizacion -->
-          <div class="col-12 col-md-3 q-mb-md" v-if="preingreso.autorizacion">
-            <label class="q-mb-sm block">Autorizacion</label>
+          <div
+            class="col-12 col-md-3 q-mb-md q-pt-none"
+            v-if="preingreso.autorizacion"
+          >
+            <q-chip
+              color="light-green-2"
+              class="text-positive text-bold q-mb-xs"
+              >Autorización</q-chip
+            >
             <q-select
               v-model="preingreso.autorizacion"
               :options="autorizaciones"
               transition-show="jum-up"
               transition-hide="jump-down"
+              color="positive"
               options-dense
               dense
               outlined
@@ -127,6 +168,25 @@
               </template>
             </q-select>
           </div>
+          <!-- observacion autorizacion -->
+          <div
+            v-if="
+              preingreso.autorizador === store.user.id ||
+              preingreso.observacion_aut
+            "
+            class="col-12 col-md-3"
+          >
+            <label class="q-mb-sm block">Observacion</label>
+            <q-input
+              autogrow
+              v-model="preingreso.observacion_aut"
+              placeholder="Opcional"
+              :disable="disabled || preingreso.autorizador !== store.user.id"
+              outlined
+              dense
+            >
+            </q-input>
+          </div>
 
           <!-- numero de guia -->
           <div class="col-12 col-md-3">
@@ -138,11 +198,113 @@
             >
             <q-input
               v-model="preingreso.num_guia"
-              :disable="disabled"
+              :disable="disabled || soloLectura"
               outlined
               dense
-            ></q-input>
+              :error="!!v$.num_guia.$errors.length"
+            >
+              <template v-slot:error>
+                <div v-for="error of v$.num_guia.$errors" :key="error.$uid">
+                  <div class="error-msg">{{ error.$message }}</div>
+                </div>
+              </template>
+            </q-input>
           </div>
+          <!-- Codigo de proyecto -->
+          <div
+            class="col-12 col-md-3"
+            v-if="
+              (proyectos?.length && accion == acciones.nuevo) ||
+              preingreso.proyecto
+            "
+          >
+            <label class="q-mb-sm block">Proyecto</label>
+            <q-select
+              v-model="preingreso.proyecto"
+              :options="proyectos"
+              @filter="filtrarProyectos"
+              @update:model-value="obtenerEtapasProyecto(true, true)"
+              transition-show="scale"
+              transition-hide="scale"
+              hint="Opcional"
+              options-dense
+              dense
+              outlined
+              clearable
+              :option-label="(item) => item.nombre"
+              :option-value="(item) => item.id"
+              use-input
+              input-debounce="0"
+              emit-value
+              map-options
+              :disable="disabled || soloLectura"
+            >
+              <template v-slot:option="scope">
+                <q-item v-bind="scope.itemProps" class="q-my-sm">
+                  <q-item-section>
+                    <q-item-label class="text-bold text-primary">{{
+                      scope.opt.codigo_proyecto
+                    }}</q-item-label>
+                    <q-item-label caption>{{ scope.opt.nombre }} </q-item-label>
+                  </q-item-section>
+                </q-item>
+              </template>
+
+              <template v-slot:no-option>
+                <q-item>
+                  <q-item-section class="text-grey">
+                    No hay resultados
+                  </q-item-section>
+                </q-item>
+              </template>
+            </q-select>
+          </div>
+          <!-- Etapa del proyecto -->
+          <div
+            v-if="
+              (etapas?.length && accion == acciones.nuevo) || preingreso.etapa
+            "
+            class="col-12 col-md-3"
+          >
+            <label class="q-mb-sm block">Etapa</label>
+            <q-select
+              v-model="preingreso.etapa"
+              :options="etapas"
+              @filter="filtrarEtapas"
+              @update:modelValue="obtenerTareasEtapa(preingreso.etapa)"
+              transition-show="scale"
+              transition-hide="scale"
+              hint="Obligatorio"
+              options-dense
+              dense
+              clearable
+              outlined
+              :option-label="(item) => item.nombre"
+              :option-value="(item) => item.id"
+              use-input
+              input-debounce="0"
+              emit-value
+              map-options
+              :disable="disabled || soloLectura"
+              @blur="v$.etapa.$touch"
+              :error="!!v$.etapa.$errors.length"
+            >
+              <template v-slot:no-option>
+                <q-item>
+                  <q-item-section class="text-grey">
+                    No hay resultados
+                  </q-item-section>
+                </q-item>
+              </template>
+
+              <template v-slot:error>
+                <div v-for="error of v$.etapa.$errors" :key="error.$uid">
+                  <div class="error-msg">{{ error.$message }}</div>
+                </div>
+              </template>
+            </q-select>
+          </div>
+
           <!-- Tarea -->
           <div class="col-12 col-md-3">
             <label class="q-mb-sm block"
@@ -161,11 +323,15 @@
               outlined
               use-input
               input-debounce="0"
+              clearable
               @filter="filtrarTareas"
+              @update:model-value="obtenerDatosTareaSeleccionada"
               hint="Opcional"
-              :disable="disabled || soloLectura"
               :option-label="(v) => v.codigo_tarea + ' - ' + v.titulo"
               :option-value="(v) => v.id"
+              :disable="disabled || soloLectura"
+              :error="!!v$.tarea.$errors.length"
+              error-message="Debes seleccionar una tarea"
               emit-value
               map-options
               ><template v-slot:option="scope">
@@ -174,7 +340,44 @@
                     <q-item-label>{{ scope.opt.codigo_tarea }}</q-item-label>
                     <q-item-label caption>{{ scope.opt.titulo }}</q-item-label>
                   </q-item-section>
-                </q-item> </template
+                </q-item>
+              </template>
+              <template v-slot:error>
+                <div v-for="error of v$.tarea.$errors" :key="error.$uid">
+                  <div class="error-msg">{{ error.$message }}</div>
+                </div> </template
+              ><template v-slot:no-option>
+                <q-item>
+                  <q-item-section class="text-grey">
+                    No hay resultados
+                  </q-item-section>
+                </q-item>
+              </template>
+            </q-select>
+          </div>
+
+          <!-- Coordinador -->
+          <div class="col-12 col-md-3">
+            <label class="q-mb-sm block">Coordinador/Supervisor</label>
+            <q-select
+              v-model="preingreso.coordinador"
+              :options="coordinadores"
+              transition-show="jump-up"
+              transition-hide="jump-up"
+              options-dense
+              dense
+              outlined
+              use-input
+              input-debounce="0"
+              @filter="filtrarCoordinadores"
+              @popup-show="ordenarLista(coordinadores, 'apellidos')"
+              :error="!!v$.coordinador.$errors.length"
+              error-message="Debes seleccionar al menos una opcion"
+              :disable="disabled || soloLectura || !!preingreso.proyecto"
+              :option-label="(v) => v.apellidos + ' ' + v.nombres"
+              :option-value="(v) => v.id"
+              emit-value
+              map-options
               ><template v-slot:no-option>
                 <q-item>
                   <q-item-section class="text-grey">
@@ -196,10 +399,10 @@
               options-dense
               dense
               outlined
-              :disable="disabled"
+              :disable="disabled || soloLectura || !!preingreso.proyecto"
               :error="!!v$.cliente.$errors.length"
               error-message="Debes seleccionar un cliente"
-              @popup-show="ordenarClientes"
+              @popup-show="ordenarLista(clientes, 'razon_social')"
               :option-value="(item) => item.id"
               :option-label="(item) => item.razon_social"
               emit-value
@@ -225,7 +428,8 @@
             <label class="q-mb-sm block">Courier</label>
             <q-input
               v-model="preingreso.courier"
-              :disable="disabled"
+              :disable="disabled || soloLectura"
+              :error="!!v$.courier.$errors.length"
               outlined
               dense
             ></q-input>
@@ -233,20 +437,48 @@
 
           <!-- Observacion -->
           <div class="col-12 col-md-6">
-            <label class="q-mb-sm block">Observación</label>
+            <label class="q-mb-sm block">Justificación</label>
             <q-input
               type="textarea"
               autogrow
               v-model="preingreso.observacion"
               placeholder="Obligatorio"
               :disable="disabled || soloLectura"
+              :error="!!v$.observacion.$errors.length"
               outlined
               dense
             />
           </div>
 
+          <!-- Manejo de archivos -->
+          <div class="col-12 q-mb-md">
+            <gestor-archivos
+              ref="refArchivo"
+              label="Adjuntar archivos"
+              :mixin="mixin"
+              :disable="disabled"
+              :listarAlGuardar="false"
+              :permitir-eliminar="
+                accion == acciones.nuevo || accion == acciones.editar
+              "
+              :idModelo="idPreingreso"
+            >
+              <template #boton-subir>
+                <q-btn
+                  v-if="false"
+                  color="positive"
+                  push
+                  no-caps
+                  class="full-width q-mb-lg"
+                  @click="subirArchivos()"
+                >
+                  <q-icon name="bi-upload" class="q-mr-sm" size="xs"></q-icon>
+                  Subir archivos seleccionados</q-btn
+                >
+              </template>
+            </gestor-archivos>
+          </div>
           <!-- Configuracion para seleccionar productos -->
-          <!-- {{ orden.listadoProductos }} -->
           <!-- Selector de productos -->
           <div class="col-12 col-md-12">
             <label class="q-mb-sm block">Agregar productos</label>
@@ -260,6 +492,7 @@
                   @keydown.enter="
                     listarProductos({
                       search: criterioBusquedaProducto,
+                      activo: 1,
                     })
                   "
                   @blur="
@@ -292,7 +525,6 @@
               </div>
             </div>
           </div>
-          <!-- {{ preingreso.listadoProductos }} -->
           <!-- Tabla con popup -->
           <div class="col-12">
             <essential-popup-editable-table
@@ -311,25 +543,26 @@
               :permitirEditarCeldas="
                 accion == acciones.nuevo ||
                 (accion == acciones.editar &&
-                  preingreso.responsable_id == store.user.id)
+                  (preingreso.solicitante == store.user.id ||
+                    preingreso.responsable == store.user.id ||
+                    preingreso.coordinador == store.user.id))
               "
               :permitirConsultar="false"
               :permitirEditar="
                 accion == acciones.nuevo ||
                 (accion == acciones.editar &&
-                  preingreso.responsable_id == store.user.id)
+                  (preingreso.solicitante == store.user.id ||
+                    preingreso.responsable == store.user.id ||
+                    preingreso.coordinador == store.user.id))
               "
               :permitirEditarModal="true"
               :modalMaximized="false"
               :permitirEliminar="false"
-              :mostrarBotones="false"
               :altoFijo="false"
-              :hide-header="true"
               :accion1="btnVerFotografia"
               :accion2="btnEliminarFila"
-              @guardarFila="(fila) => guardarFilaEditada(fila)"
-              v-on:fila-modificada="calcularFila"
             >
+              <!-- @guardarFila="(fila) => guardarFilaEditada(fila)" -->
               <!-- :accion1Header="btnAddRow" -->
             </essential-popup-editable-table>
           </div>

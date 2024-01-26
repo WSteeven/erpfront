@@ -40,12 +40,10 @@ import { DepartamentoController } from 'pages/recursosHumanos/departamentos/infr
 import { EstadoCivilController } from 'pages/recursosHumanos/estado-civil/infraestructure/EstadoCivilController'
 import { AreasController } from 'pages/recursosHumanos/areas/infraestructure/AreasController'
 import { BancoController } from 'pages/recursosHumanos/banco/infrestruture/BancoController'
-import { maxValue, minValue } from '@vuelidate/validators'
 import ModalesEntidad from 'components/modales/view/ModalEntidad.vue'
 import { configuracionColumnasFamiliaresEmpleado } from 'pages/recursosHumanos/familiares/domain/configuracionColumnasFamiliaresEmpleado'
 import { ComportamientoModalesEmpleado } from '../application/ComportamientoModalesEmpleado'
 import { CustomActionTable } from 'components/tables/domain/CustomActionTable'
-import { useRecursosHumanosStore } from 'stores/recursosHumanos'
 import { useFamiliarStore } from 'stores/familiar'
 import { useAuthenticationStore } from 'stores/authentication'
 import { Familiares } from 'pages/recursosHumanos/familiares/domain/Familiares'
@@ -54,6 +52,9 @@ import { AxiosHttpRepository } from 'shared/http/infraestructure/AxiosHttpReposi
 import { apiConfig, endpoints } from 'config/api'
 import { imprimirArchivo } from 'shared/utils'
 import { useCargandoStore } from 'stores/cargando'
+import  { AxiosResponse } from 'axios'
+import { useNotificaciones } from 'shared/notificaciones'
+import { useConfiguracionGeneralStore } from 'stores/configuracion_general'
 
 export default defineComponent({
   components: { TabLayout, SelectorImagen, ModalesEntidad, EssentialTable },
@@ -63,7 +64,8 @@ export default defineComponent({
      *********/
     useNotificacionStore().setQuasar(useQuasar())
     useCargandoStore().setQuasar(useQuasar())
-    const storeRecursosHumanos = useRecursosHumanosStore()
+    const { notificarCorrecto } =
+      useNotificaciones()
 
     /***********
      * Mixin
@@ -92,6 +94,8 @@ export default defineComponent({
     const modales = new ComportamientoModalesEmpleado()
     const familiarStore = useFamiliarStore()
     const authenticationStore = useAuthenticationStore()
+    const nombre_usuario =ref()
+    const email_usuario =ref()
     const mixinFamiliares = new ContenedorSimpleMixin(
       Familiares,
       new FamiliaresController()
@@ -187,7 +191,7 @@ export default defineComponent({
 
     const v$ = useVuelidate(reglas, empleado)
     setValidador(v$.value)
-
+    const configuracionStore = useConfiguracionGeneralStore()
     opciones_cantones.value = listadosAuxiliares.cantones
     opciones_roles.value = listadosAuxiliares.roles
     opciones_cargos.value = listadosAuxiliares.cargos
@@ -203,59 +207,16 @@ export default defineComponent({
 
     onConsultado(() => (empleado.tiene_grupo = !!empleado.grupo))
     async function guardado(data) {
-      switch (data) {
-        case 'EmpleadoPage':
-          const { result } = await new EmpleadoController().listar()
-          listadosAuxiliares.rolpago = result
-          break
-        case 'FamiliaresPage':
-          break
-      }
-      modales.cerrarModalEntidad()
+      empleado.familiares!.push(data.model)
     }
 
-    const antiguedad = computed(() => {
-      const fechaActual = new Date()
-      const dateParts = empleado.fecha_ingreso
-        ? empleado.fecha_ingreso.split('-')
-        : 0 // Dividir el string en partes usando el guión como separador
-      const day = parseInt(dateParts[0], 10) // Obtener el día como entero
-      const month = parseInt(dateParts[1], 10) - 1 // Obtener el mes como entero (restar 1 porque en JavaScript los meses comienzan desde 0)
-      const year = parseInt(dateParts[2], 10) // Obtener el año como entero
-      const fechaIngreso = new Date(year, month, day)
 
-      if (!fechaIngreso) {
-        return null // O algún valor predeterminado en caso de fechaIngreso sea null
-      }
-
-      let diffYears = fechaActual.getFullYear() - fechaIngreso.getFullYear()
-      let diffMonths = fechaActual.getMonth() - fechaIngreso.getMonth()
-      let diffDays = fechaActual.getDate() - fechaIngreso.getDate()
-      if (diffMonths < 0 || (diffMonths === 0 && diffDays < 0)) {
-        diffYears--
-        diffMonths += 12
-      }
-
-      if (diffDays < 0) {
-        const lastMonthDate = new Date(
-          fechaActual.getFullYear(),
-          fechaActual.getMonth(),
-          0
-        ).getDate()
-        diffMonths--
-        diffDays += lastMonthDate
-      }
-      if (
-        Number.isNaN(diffYears) ||
-        Number.isNaN(diffMonths) ||
-        Number.isNaN(diffDays)
-      ) {
-        return null
-      }
-      return diffYears + ' Años ' + diffMonths + ' Meses ' + diffDays + ' Dias'
-    })
-
-    onConsultado(() => (empleado.tiene_grupo = !!empleado.grupo))
+    onConsultado(() => {
+      empleado.tiene_grupo = !!empleado.grupo
+      nombre_usuario.value = empleado.usuario
+      email_usuario.value = empleado.email
+    }
+    )
     function optionsFecha(date) {
       const hoy = convertir_fecha(new Date())
       return date <= hoy
@@ -282,6 +243,20 @@ export default defineComponent({
      ************/
     watchEffect(() => {
       if (!empleado.tiene_grupo) empleado.grupo = null
+      if (empleado.nombres != null && empleado.nombres != '' && accion.value == acciones.nuevo) {
+        const inicial_nombre =
+          empleado.nombres != null ? empleado.nombres[0] : ''
+        const apellido =
+          empleado.apellidos != null ? empleado.apellidos.split(' ')[0] : ''
+        const sitio_web =
+          configuracionStore.configuracion?.sitio_web?.split('WWW.')[1]
+        const username = inicial_nombre + apellido
+        empleado.email = username + '@' + sitio_web
+        empleado.usuario = username
+
+          empleado.password = empleado.identificacion
+
+      }
     })
     const btnConsultarFamiliar: CustomActionTable = {
       titulo: '',
@@ -298,9 +273,7 @@ export default defineComponent({
       icono: 'bi-pencil',
       color: 'warning',
       visible: () => {
-        return (
-          authenticationStore.can('puede.editar.familiares')
-        )
+        return authenticationStore.can('puede.editar.familiares')
       },
       accion: ({ entidad }) => {
         familiarStore.idFamiliarSeleccionada = entidad.id
@@ -317,8 +290,7 @@ export default defineComponent({
       titulo: '',
       icono: 'bi-trash',
       color: 'secondary',
-      visible: () =>
-        authenticationStore.can('puede.eliminar.familiares'),
+      visible: () => authenticationStore.can('puede.eliminar.familiares'),
       accion: ({ entidad }) => {
         accion.value = 'ELIMINAR'
         eliminar(entidad)
@@ -328,13 +300,12 @@ export default defineComponent({
       titulo: 'Reporte General',
       icono: 'bi-printer',
       color: 'primary',
-      visible: ({ entidad }) =>
-        authenticationStore.can('puede.ver.empleados') ,
+      visible: ({ entidad }) => authenticationStore.can('puede.ver.empleados'),
       accion: () => {
         generar_reporte_general()
       },
     }
-    async function generar_reporte_general( ): Promise<void> {
+    async function generar_reporte_general(): Promise<void> {
       console.log('generar_reporte_general')
       const axios = AxiosHttpRepository.getInstance()
       const filename = 'empleados'
@@ -345,17 +316,80 @@ export default defineComponent({
       imprimirArchivo(url_pdf, 'GET', 'blob', 'pdf', filename, null)
     }
 
+
+    const btnHabilitarEmpleado: CustomActionTable = {
+      titulo: '',
+      icono: 'bi-toggle2-on',
+      color: 'negative',
+      tooltip: 'Habilitar',
+      visible: ({ entidad }) =>  !entidad.estado && authenticationStore.can('puede.activar.empleados'),
+      accion: ({ entidad }) => {
+        HabilitarEmpleado(entidad.id, true)
+        entidad.estado = true
+      },
+    }
+    const btnDesHabilitarEmpleado: CustomActionTable = {
+      titulo: '',
+      icono: 'bi-toggle2-off',
+      color: 'positive',
+      tooltip: 'DesHabilitar',
+      visible: ({ entidad }) =>  entidad.estado && authenticationStore.can('puede.desactivar.empleados'),
+      accion: ({ entidad }) => {
+        HabilitarEmpleado(entidad.id, false)
+        entidad.estado = false
+      },
+    }
+    function reestablecer_usuario(){
+      if( accion.value== acciones.editar && empleado.generar_usuario){
+        generarUsename()
+      }else{
+        empleado.usuario =nombre_usuario.value
+        empleado.email = email_usuario.value
+      }
+    }
+
+    function obtenerUsername(){
+
+      if( accion.value== acciones.editar && empleado.generar_usuario){
+        generarUsename()
+      }
+     if(( accion.value== acciones.nuevo)&& empleado.nombres != null && empleado.nombres != '' && empleado.apellidos != null && empleado.apellidos != ''){
+        generarUsename()
+     }
+    }
+    async function generarUsename(){
+      const axios = AxiosHttpRepository.getInstance()
+      const ruta = axios.getEndpoint(endpoints.generar_username,{nombres:empleado.nombres, apellidos: empleado.apellidos, usuario: empleado.usuario})
+      const response: AxiosResponse = await axios.get(ruta)
+      const username = ref(response.data.username);
+      const sitio_web = configuracionStore.configuracion?.sitio_web?.split('WWW.')[1]
+      empleado.usuario = username.value
+      empleado.email = username.value + '@' + sitio_web
+
+    }
+    async function HabilitarEmpleado(id: number, estado: boolean) {
+      const axios = AxiosHttpRepository.getInstance()
+      const ruta = axios.getEndpoint(endpoints.habilitar_empleado, {
+        id: id,
+        estado: estado,
+      })
+      const response: AxiosResponse = await axios.get(ruta)
+      notificarCorrecto(
+        estado ? 'Ha Habilitado empleado' : 'Ha deshabilitado empleado'
+      )
+    }
     return {
       mixin,
       empleado,
       disabled,
       accion,
+      acciones,
       v$,
+      reestablecer_usuario,
       configuracionColumnas: configuracionColumnasEmpleados,
       columnasFamiliares,
       isPwd: ref(true),
       listadosAuxiliares,
-      antiguedad,
       //listado
       opciones_cantones,
       opciones_roles,
@@ -379,7 +413,10 @@ export default defineComponent({
       btnEditarFamiliar,
       btnEliminarFamiliar,
       btnImprimirEmpleados,
+      btnHabilitarEmpleado,
+      btnDesHabilitarEmpleado,
       modales,
+      obtenerUsername,
       guardado,
       //  FILTROS
       //filtro de empleados
@@ -425,6 +462,20 @@ export default defineComponent({
         update(() => {
           const needle = val.toLowerCase()
           opciones_cargos.value = listadosAuxiliares.cargos.filter(
+            (v) => v.nombre.toLowerCase().indexOf(needle) > -1
+          )
+        })
+      },
+      filtroRoles(val, update) {
+        if (val === '') {
+          update(() => {
+            opciones_roles.value = listadosAuxiliares.roles
+          })
+          return
+        }
+        update(() => {
+          const needle = val.toLowerCase()
+          opciones_roles.value = listadosAuxiliares.roles.filter(
             (v) => v.nombre.toLowerCase().indexOf(needle) > -1
           )
         })

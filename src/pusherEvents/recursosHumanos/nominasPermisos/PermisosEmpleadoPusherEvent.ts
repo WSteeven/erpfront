@@ -15,7 +15,7 @@ export class PermisoEmpleadoPusherEvent {
     const pusher = notificacionStore.pusher
 
     // Suscripcion al canal del pedido creado
-    console.log('permiso-empleado-' + this.store.user.id);
+    // console.log('permiso-empleado-' + this.store.user.id);
 
     pusher.subscribe('permiso-empleado-' + this.store.user.id)
     pusher.bind('permiso-empleado-event', function (e) {

@@ -46,7 +46,7 @@ export default defineComponent({
         const refArchivo = ref()
         const fila = ref()
         const refVisorImagen = ref()
-        const permitirSubir = true
+        const permitirSubir = ordenCompraStore.permitirSubir
 
         /************
          * Init

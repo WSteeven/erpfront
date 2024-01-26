@@ -21,8 +21,7 @@
               error-message="Debes seleccionar un empleado"
               use-input
               input-debounce="0"
-              @filter="filtrarUsuarios"
-              @update:model-value="saldo_anterior()"
+              @filter="filtrarEmpleados"
               :option-value="(v) => v.id"
               :option-label="(v) => v.nombres + ' ' + v.apellidos"
               emit-value

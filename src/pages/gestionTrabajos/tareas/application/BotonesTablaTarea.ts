@@ -34,9 +34,9 @@ export const useBotonesTablaTarea = (mixin: ContenedorSimpleMixin<Tarea>) => {
     accion: async ({ entidad, posicion }) => {
       if (listado.value[posicion].cantidad_subtareas == 0) return notificarAdvertencia('La tarea debe tener al menos una subtarea para poder finalizarla.')
       const estanFinalizadas = await verificarTodasSubtareasFinalizadas(entidad.id)
-      const materialDevuelto = await verificarMaterialTareaDevuelto(entidad.id, authenticationStore.user.id)
+      // const materialDevuelto = await verificarMaterialTareaDevuelto(entidad.id, authenticationStore.user.id)
       if (!estanFinalizadas) return notificarAdvertencia('La tarea aún tiene subtareas pendientes de FINALIZAR, CANCELAR o REAGENDAR.')
-      if (!materialDevuelto) return notificarAdvertencia('La tarea aún tiene materiales pendiente de devolución.')
+      // if (!materialDevuelto) return notificarAdvertencia('La tarea aún tiene materiales pendiente de devolución.')
 
       filaFinalizar.id = entidad.id
       filaFinalizar.posicion = posicion
@@ -91,7 +91,7 @@ export const useBotonesTablaTarea = (mixin: ContenedorSimpleMixin<Tarea>) => {
     titulo: 'Ver imagen informe',
     icono: 'bi-image-fill',
     color: 'secondary',
-    visible: ({ entidad }) => entidad.imagen_informe,
+    visible: ({ entidad }) => !!entidad.imagen_informe,
     accion: async ({ entidad }) => {
       refVisorImagen.value.abrir(entidad.imagen_informe)
     }
@@ -115,6 +115,7 @@ export const useBotonesTablaTarea = (mixin: ContenedorSimpleMixin<Tarea>) => {
     return response.data.materiales_devueltos
   }
 
+  // Funcion que finaliza la tarea ya sea directamente o luego de subir la imagen solicitada
   function imagenSubida(imagen?) {
     confirmar('¿Está seguro de finalizar la tarea?', async () => {
       const posicion = filaFinalizar.posicion

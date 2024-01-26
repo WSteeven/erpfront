@@ -1,6 +1,6 @@
 //Dependencias
 import { configuracionColumnasTransaccionEgreso } from 'pages/bodega/transacciones/domain/configuracionColumnasTransaccionEgreso'
-import { defineComponent } from 'vue'
+import { defineComponent, ref } from 'vue'
 
 //Componentes
 import EssentialTableTabs from 'components/tables/view/EssentialTableTabs.vue'
@@ -28,24 +28,33 @@ export default defineComponent({
     //stores
     useNotificacionStore().setQuasar(useQuasar())
     useCargandoStore().setQuasar(useQuasar())
-    const statusLoading = new StatusEssentialLoading()
-
     const transaccionStore = useTransaccionEgresoStore()
+    const cargando = new StatusEssentialLoading()
+    const modales = new ComportamientoModalesGestionarEgreso()
+
+    /*******************************************************************************************
+    * Funciones
+    ******************************************************************************************/
     async function filtrarTabs(tabSeleccionado) {
-      statusLoading.activar()
+      cargando.activar()
       const result = await transaccionStore.filtrarEgresosComprobantes(tabSeleccionado)
       listado.value = result
+      cargando.desactivar()
     }
+    const tabDefecto = ref('PENDIENTE')
 
-    filtrarTabs('PENDIENTE')
+    filtrarTabs(tabDefecto.value)
 
-    const modales = new ComportamientoModalesGestionarEgreso()
+    /*******************************************************************************************
+     * Botones de tabla
+     ******************************************************************************************/
     const botonVerTransaccion: CustomActionTable = {
       titulo: '',
       icono: 'bi-eye',
       color: 'primary',
       accion: async ({ entidad }) => {
         transaccionStore.idTransaccion = entidad.id
+        transaccionStore.estadoPendiente = entidad.estado_comprobante === 'PENDIENTE' ? true : false
         await transaccionStore.showPreview()
         modales.abrirModalEntidad('VisualizarEgresoPage')
       }
@@ -60,12 +69,23 @@ export default defineComponent({
       }
     }
 
+    function guardado(data: any) {
+      if (data == 'aceptado') {
+        tabDefecto.value = 'PENDIENTE'
+        filtrarTabs(tabDefecto.value)
+      }
+      if (data == 'parcial') {
+        tabDefecto.value = 'PARCIAL'
+        filtrarTabs(tabDefecto.value)
+      }
+    }
 
     return {
       mixin, transaccion, disabled, listado,
       configuracionColumnas: configuracionColumnasTransaccionEgreso,
+      guardado,
 
-      tabGestionarEgresos, filtrarTabs,
+      tabDefecto, tabGestionarEgresos, filtrarTabs,
       botonVerTransaccion, accionesTabla, modales,
       botonImprimir,
     }

@@ -77,4 +77,11 @@ export const configuracionColumnasPedidos: ColumnConfig<Pedido>[] = [
         align: 'left',
         sortable: true
     },
+    {
+        name: 'estado_orden_compra',
+        field: 'estado_orden_compra',
+        label: 'Estado OC',
+        align: 'left',
+        sortable: true
+    },
 ]

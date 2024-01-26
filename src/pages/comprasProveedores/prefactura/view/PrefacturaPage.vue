@@ -78,7 +78,7 @@
             </q-input>
           </div>
 
-          
+
           <!-- Cliente -->
           <div class="col-12 col-md-3">
             <label class="q-mb-sm block">Cliente</label>
@@ -93,6 +93,7 @@
               use-input
               input-debounce="0"
               @filter="filtrarClientes"
+              @popup-show="ordenarClientes"
               :error="!!v$.cliente.$errors.length"
               error-message="Debes seleccionar al menos una opcion"
               :disable="disabled || soloLectura"
@@ -305,7 +306,6 @@
               :permitirConsultar="false"
               :permitirEditar="false"
               :permitirEliminar="false"
-              :mostrarBotones="false"
               :altoFijo="false"
               :accion1Header="btnAddRow"
               :accion1="btnEliminarFila"

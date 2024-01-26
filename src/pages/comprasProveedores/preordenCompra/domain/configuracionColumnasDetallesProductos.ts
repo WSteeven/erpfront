@@ -6,6 +6,7 @@ export const configuracionColumnasDetallesProductos: ColumnConfig<any>[] = [
     field: 'cantidad',
     label: 'Cantidad',
     align: 'left',
+    type: 'number',
     sortable: true,
     editable: true,
   },

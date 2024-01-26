@@ -1,24 +1,38 @@
 // Dependencias
-import { configuracionColumnasMaterialEmpleadoTarea } from '../domain/configuracionColumnasMaterialEmpleadoTarea'
-import { defineComponent, reactive, ref } from 'vue'
-import { tiposJornadas } from 'config/utils'
-import { modosStock } from 'config/tareas.utils'
+// import { configuracionColumnasMaterialEmpleadoTarea } from '../domain/configuracionColumnasMaterialEmpleadoTarea'
+import { useTransferenciaProductoEmpleadoStore } from 'stores/transferenciaProductoEmpleado'
+import { computed, defineComponent, onMounted, reactive, ref, watch } from 'vue'
+import { destinosTareas } from 'config/tareas.utils'
 
 // Componentes
 import EssentialTable from 'components/tables/view/EssentialTable.vue'
 
 // Logica y controladores
-import { MaterialEmpleadoTareaController } from '../infraestructure/MaterialEmpleadoTareaController'
-import { TareaController } from 'pages/gestionTrabajos/tareas/infraestructure/TareaController'
+// import { useMaterialesEmpleado } from '../application/UseMaterialesEmpleado'
+// import { useMaterialesProyecto } from '../application/UseMaterialesProyecto'
+import { useFiltrosListadosSelects } from 'shared/filtrosListadosGenerales'
+import { Proyecto } from 'pages/gestionTrabajos/proyectos/domain/Proyecto'
+// import { FiltroMiBodegaProyecto } from '../domain/FiltroMiBodegaProyecto'
+// import { FiltroMiBodegaEmpleado } from '../domain/FiltroMiBodegaEmpleado'
+// import { useMaterialesTarea } from '../application/UseMaterialesTarea'
+import { Tarea } from 'pages/gestionTrabajos/tareas/domain/Tarea'
+import { useNotificacionStore } from 'stores/notificacion'
+// import { FiltroMiBodega } from '../domain/FiltroMiBodega'
 import { useNotificaciones } from 'shared/notificaciones'
-import { MaterialEmpleadoController } from '../infraestructure/MaterialEmpleadoController'
-import { StatusEssentialLoading } from 'components/loading/application/StatusEssentialLoading'
-import { useListadoMaterialesDevolucionStore } from 'stores/listadoMaterialesDevolucion'
 import { useCargandoStore } from 'stores/cargando'
 import { useQuasar } from 'quasar'
+import { useAuthenticationStore } from 'stores/authentication'
+import { FiltroMiBodega } from 'pages/gestionTrabajos/miBodega/domain/FiltroMiBodega'
+import { FiltroMiBodegaProyecto } from 'pages/gestionTrabajos/miBodega/domain/FiltroMiBodegaProyecto'
+import { FiltroMiBodegaEmpleado } from 'pages/gestionTrabajos/miBodega/domain/FiltroMiBodegaEmpleado'
+import { useMaterialesTarea } from 'pages/gestionTrabajos/miBodega/application/UseMaterialesTarea'
+import { useMaterialesEmpleado } from 'pages/gestionTrabajos/miBodega/application/UseMaterialesEmpleado'
+import { useMaterialesProyecto } from 'pages/gestionTrabajos/miBodega/application/UseMaterialesProyecto'
+import { configuracionColumnasMaterialEmpleadoTarea } from 'pages/gestionTrabajos/miBodega/domain/configuracionColumnasMaterialEmpleadoTarea'
 import { EmpleadoController } from 'pages/recursosHumanos/empleados/infraestructure/EmpleadoController'
-import { ordernarListaString } from 'shared/utils'
+import { StatusEssentialLoading } from 'components/loading/application/StatusEssentialLoading'
 import { Empleado } from 'pages/recursosHumanos/empleados/domain/Empleado'
+import { ordernarListaString } from 'shared/utils'
 
 export default defineComponent({
   components: { EssentialTable },
@@ -26,63 +40,158 @@ export default defineComponent({
     /*********
      * Stores
      *********/
-    // const authenticationStore = useAuthenticationStore()
-    const listadoMaterialesDevolucionStore = useListadoMaterialesDevolucionStore()
+    const transferenciaProductoEmpleadoStore = useTransferenciaProductoEmpleadoStore()
+    useNotificacionStore().setQuasar(useQuasar())
     useCargandoStore().setQuasar(useQuasar())
-
-    /****************
-     * Controladores
-     ****************/
-    const materialEmpleadoTareaController = new MaterialEmpleadoTareaController()
-    const materialEmpleadoController = new MaterialEmpleadoController()
-    const tareaController = new TareaController()
-    const empleadoController = new EmpleadoController()
 
     /************
      * Variables
      ************/
-    const { notificarError } = useNotificaciones()
+    const { notificarAdvertencia } = useNotificaciones()
     const cargando = new StatusEssentialLoading()
-    const materialesTarea = ref([])
-    const listadoStockPersonal = ref([])
-    const tareasSource: any = ref([])
-    const empleadosSource: any = ref([])
-    const filtro = reactive({
-      tarea: null,
-      tipoStock: null,
-      empleado: null,
+    const tab = ref()
+    const empleadoSeleccionado = ref()
+
+    onMounted(() => {
+      tab.value = destinosTareas.paraClienteFinal
+      proyectos.value = listadosAuxiliares.proyectos
     })
-    const mensaje = ref()
 
-    /*******
-     * Init
-     *******/
-    async function cargarListados() {
-      cargando.activar()
-      const tareasResponse = await tareaController.listar({ finalizado: 0 })
-      tareasSource.value = tareasResponse.result
+    const filtro = reactive(new FiltroMiBodega())
+    const filtroProyecto = reactive(new FiltroMiBodegaProyecto())
+    const filtroEmpleado = reactive(new FiltroMiBodegaEmpleado())
 
-      const empleadosResponse = await empleadoController.listar({
-        campos: 'id,nombres,apellidos',
-        estado: 1
-      })
-      empleadosSource.value = empleadosResponse.result
-      cargando.desactivar()
-    }
-
-    cargarListados()
+    const listadosAuxiliares = reactive({
+      productos: [],
+      productosTarea: [],
+      productosProyectosEtapas: [],
+      productosStock: [],
+      //
+      clientesMaterialesTarea: [],
+      clientesMaterialesEmpleado: [],
+      //
+      tareas: [],
+      proyectos: [],
+      etapas: [],
+      //
+      empleados: [],
+    })
 
     /************
      * Funciones
      ************/
-    async function filtrarStock(tipoStock: string | null) {
-      mensaje.value = ''
+    const { consultarProductosTarea, consultarClientesMaterialesTarea, consultarTareasClienteFinalMantenimiento } = useMaterialesTarea(filtro, listadosAuxiliares)
+    const { consultarProductosEmpleado, consultarClientesMaterialesEmpleado } = useMaterialesEmpleado(filtroEmpleado, listadosAuxiliares)
+    const { consultarProyectos, consultarEtapas, consultarProductosProyecto } = useMaterialesProyecto(filtroProyecto, listadosAuxiliares)
+
+    function consultarProductosStock() {
+      filtroEmpleado.empleado_id = empleadoSeleccionado.value
+      consultarProductosEmpleado()
+    }
+
+    function refrescarListadosProyectos(nombreListado: string) {
+      switch (nombreListado) {
+        case 'proyectos':
+          filtroProyecto.empleado_id = empleadoSeleccionado.value
+          consultarProyectos().then(() => proyectos.value = listadosAuxiliares.proyectos)
+          break
+        case 'clientes':
+          if (filtroProyecto.etapa_id) consultarClientesMaterialesTarea({ empleado_id: empleadoSeleccionado.value, proyecto_id: filtroProyecto.proyecto_id, etapa_id: filtroProyecto.etapa_id, filtrar_por_etapa: true })
+          else consultarClientesMaterialesTarea({ empleado_id: empleadoSeleccionado.value, proyecto_id: filtroProyecto.proyecto_id, etapa_id: filtroProyecto.etapa_id, filtrar_por_proyecto: true })
+          break
+      }
+    }
+
+    function refrescarListadosTareas(nombreListado: string) {
+      switch (nombreListado) {
+        case 'tareas':
+          consultarTareasClienteFinalMantenimiento(empleadoSeleccionado.value)
+          break
+        case 'clientes':
+          consultarClientesMaterialesTarea({ empleado_id: empleadoSeleccionado.value, tarea_id: filtro.tarea_id, filtrar_por_tarea: 1 })
+          break
+      }
+    }
+
+    function refrescarListadosEmpleado(nombreListado: string) {
+      switch (nombreListado) {
+        case 'clientes':
+          consultarClientesMaterialesEmpleado({ empleado_id: empleadoSeleccionado.value })
+          break
+      }
+    }
+
+    function resetearFiltros() {
+      filtro.hydrate(new FiltroMiBodega())
+      filtroProyecto.hydrate(new FiltroMiBodegaProyecto())
+      filtroEmpleado.hydrate(new FiltroMiBodegaEmpleado())
+      listadosAuxiliares.productos = []
+      listadosAuxiliares.productosTarea = []
+      listadosAuxiliares.productosProyectosEtapas = []
+      listadosAuxiliares.productosStock = []
+
+      cargarListado()
+    }
+
+    function cargarListado() {
+      if (empleadoSeleccionado.value) {
+        consultarTareasClienteFinalMantenimiento(empleadoSeleccionado.value)
+        filtroProyecto.empleado_id = empleadoSeleccionado.value
+        consultarProyectos().then(() => proyectos.value = listadosAuxiliares.proyectos)
+        consultarClientesMaterialesEmpleado({ empleado_id: empleadoSeleccionado.value })
+        consultarClientesMaterialesTarea({ empleado_id: empleadoSeleccionado.value, filtrar_por_tarea: true })
+      }
+    }
+
+    function seleccionarTarea() {
+      listadosAuxiliares.productos = []
+      filtro.cliente_id = undefined
+      const tarea = (listadosAuxiliares.tareas as any).find((tarea: Tarea) => tarea.id === filtro.tarea_id)
+      // filtro.cliente_id = tarea.cliente_id
+
+      consultarClientesMaterialesTarea({ empleado_id: empleadoSeleccionado.value, tarea_id: filtro.tarea_id, filtrar_por_tarea: 1 })
+    }
+
+    async function seleccionarProyecto() {
+      if (filtroProyecto.proyecto_id) {
+        await consultarEtapas(filtroProyecto.proyecto_id)
+        etapas.value = listadosAuxiliares.etapas
+
+        const proyecto: Proyecto | undefined = listadosAuxiliares.proyectos.find((proyecto: Proyecto) => proyecto.id === filtroProyecto.proyecto_id)
+        filtroProyecto.cliente_id = undefined
+        transferenciaProductoEmpleadoStore.codigoTarea = null
+        // filtroProyecto.cliente_id = proyecto!!.cliente_id
+      } else {
+        listadosAuxiliares.etapas = []
+      }
+
+      listadosAuxiliares.productosProyectosEtapas = []
+      listadosAuxiliares.productos = []
+      filtroProyecto.etapa_id = null
+      filtro.cliente_id = null
+
+      if (!!!listadosAuxiliares.etapas.length) consultarClientesMaterialesTarea({ empleado_id: empleadoSeleccionado.value, proyecto_id: filtroProyecto.proyecto_id, filtrar_por_proyecto: 1 })
+    }
+
+    function seleccionarEtapa() {
+      consultarClientesMaterialesTarea({ empleado_id: empleadoSeleccionado.value, proyecto_id: filtroProyecto.proyecto_id, etapa_id: filtroProyecto.etapa_id, filtrar_por_etapa: 1 })
+    }
+
+    function consultarProductosProyectoEtapa() {
+      if (listadosAuxiliares.etapas.length && !filtroProyecto.etapa_id) return notificarAdvertencia('Debe seleccionar una etapa')
+      consultarProductosProyecto()
+    }
+
+    async function consultarTodosEmpleados() {
       try {
         cargando.activar()
-        if (tipoStock === 'personal') filtrarStockPersonal()
-        else filtrarMaterialTarea()
+        const empleadosResponse = await new EmpleadoController().listar({
+          campos: 'id,nombres,apellidos',
+          estado: 1
+        })
+        listadosAuxiliares.empleados = empleadosResponse.result
       } catch (e) {
-        notificarError('Error al obtener el material.')
+        console.log(e)
       } finally {
         cargando.desactivar()
       }
@@ -92,67 +201,74 @@ export default defineComponent({
       empleados.value.sort((a: Empleado, b: Empleado) => ordernarListaString(a.apellidos!, b.apellidos!))
     }
 
-    async function filtrarStockPersonal() {
-      const { result } = await materialEmpleadoController.listar({ empleado_id: filtro.empleado })
-      listadoStockPersonal.value = result
-      listadoMaterialesDevolucionStore.listadoMateriales = result
-      mensaje.value = !result.length ? 'El empleado seleccionado no tiene materiales asignados en su stock personal' : ''
-    }
+    /*******
+     * Init
+    *******/
+    // consultarClientesMaterialesTarea({ empleado_id: empleadoSeleccionado.value, filtrar_por_tarea: true })
+    // consultarClientesMaterialesEmpleado()
+    // consultarTareasClienteFinalMantenimiento(empleadoSeleccionado.value)
+    // consultarProyectos().then(() => proyectos.value = listadosAuxiliares.proyectos)
+    consultarTodosEmpleados()
 
-    async function filtrarMaterialTarea() {
-      const { result } = await materialEmpleadoTareaController.listar({ tarea_id: filtro.tarea, empleado_id: filtro.empleado })
-      // if (result.length === 0) {
-      //   notificarAdvertencia('No tiene material asignado para la tarea seleccionada.')
-      // }
-      materialesTarea.value = result
-      mensaje.value = !result.length ? 'El empleado seleccionado no tiene materiales asignados para la tarea seleccionada' : ''
-      // asignacion al store de la tarea y el listado de materiales para devolver
-      listadoMaterialesDevolucionStore.listadoMateriales = result
-      listadoMaterialesDevolucionStore.tareaId = filtro.tarea
-    }
+    /************
+     * Observers
+     ************/
+    watch((tab), () => {
+      switch (tab.value) {
+        case destinosTareas.paraClienteFinal:
+          listadosAuxiliares.productos = listadosAuxiliares.productosTarea
+          transferenciaProductoEmpleadoStore.listadoMateriales = listadosAuxiliares.productosTarea
+          // consultarClientesMaterialesTarea({ empleado_id: empleadoSeleccionado.value, filtrar_por_tarea: true })
+          break
+        case destinosTareas.paraProyecto:
+          listadosAuxiliares.productos = listadosAuxiliares.productosProyectosEtapas
+          transferenciaProductoEmpleadoStore.listadoMateriales = listadosAuxiliares.productosProyectosEtapas
+          // consultarClientesMaterialesTarea({ empleado_id: empleadoSeleccionado.value, filtrar_por_proyecto: true })
+          break
+        case 'personal':
+          listadosAuxiliares.productos = listadosAuxiliares.productosStock
+          transferenciaProductoEmpleadoStore.listadoMateriales = listadosAuxiliares.productosStock
+          break
+      }
+    })
 
     /**********
      * Filtros
      **********/
-    const empleados = ref([])
-    function filtrarEmpleados(val, update) {
-      if (val === '') update(() => empleados.value = empleadosSource.value.sort((a, b) => ordernarListaString(a.nombres, b.nombres)))
-
-      update(() => {
-        const needle = val.toLowerCase()
-        empleados.value = empleadosSource.value.filter((v) => v.nombres.toLowerCase().indexOf(needle) > -1 || v.apellidos.toLowerCase().indexOf(needle) > -1)
-      })
-    }
-
-    const tareas = ref([])
-    function filtrarTareas(val, update) {
-      if (val === '') update(() => tareas.value = tareasSource.value)
-
-      update(() => {
-        const needle = val.toLowerCase()
-        tareas.value = tareasSource.value.filter(
-          (v) => v.codigo_tarea.toLowerCase().indexOf(needle) > -1
-        )
-      })
-    }
+    const { tareas, filtrarTareas, proyectos, filtrarProyectos, etapas, filtrarEtapas, empleados, filtrarEmpleados } = useFiltrosListadosSelects(listadosAuxiliares)
 
     return {
+      tab,
       configuracionColumnasMaterialEmpleadoTarea,
-      tiposJornadas,
-      modosStock,
-      filtrarStock,
-      materialEmpleadoTareaController,
-      materialesTarea,
-      listadoStockPersonal,
+      listadosAuxiliares,
       filtro,
+      filtroProyecto,
+      filtroEmpleado,
+      destinosTareas,
+      transferenciaProductoEmpleadoStore,
+      consultarEtapas,
       tareas,
-      empleados,
-      tab: ref('tareas'),
+      proyectos,
+      etapas,
       filtrarTareas,
-      filtrarEmpleados,
-      listadoMaterialesDevolucionStore,
+      filtrarProyectos,
+      filtrarEtapas,
+      seleccionarTarea,
+      seleccionarProyecto,
+      seleccionarEtapa,
+      consultarProductosTarea,
+      consultarProductosProyectoEtapa,
+      consultarProductosEmpleado,
+      refrescarListadosProyectos,
+      refrescarListadosTareas,
+      refrescarListadosEmpleado,
+      mostrarBtnTransferirStockPersonal: computed(() => tab.value === destinosTareas.paraClienteFinal),
       ordenarEmpleados,
-      mensaje,
+      empleados,
+      filtrarEmpleados,
+      empleadoSeleccionado,
+      resetearFiltros,
+      consultarProductosStock,
     }
   },
 })

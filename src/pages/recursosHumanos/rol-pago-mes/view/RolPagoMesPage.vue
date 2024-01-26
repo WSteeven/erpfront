@@ -12,8 +12,8 @@
     :accion3="btnEnviarRolPago"
     :accion4="btnCashRolPago"
     :filtrar="filtrarRolPagoMes"
-    tabDefecto="0"
-    :forzarListar="true"
+    :tabDefecto="tabActualRolPago"
+    :ajustarCeldas="true"
   >
     <template #formulario>
       <q-tabs
@@ -123,18 +123,18 @@
             :tabOptions="tabOptionsEstadosRolPagoEmpleado"
             :accion1="btnConsultarRolPagoEmpleado"
             :accion2="btnIniciar"
-            :accion3="btnFirmar"
-            :accion4="btnEditarRolPagoEmpleado"
-            :accion5="btnFinalizar"
-            :accion6="btnImprimir"
-            :accion7="btnEliminarRolPago"
-            :accion8="btnEnviarRolPagoEmpleado"
-            :accion1Header="btnAgregarRolPagoEmpleado"
+            :accion3="btnEditarRolPagoEmpleado"
+            :accion4="btnFinalizar"
+            :accion5="btnImprimir"
+            :accion6="btnEliminarRolPago"
+            :accion7="btnEnviarRolPagoEmpleado"
             :permitirExportar="true"
-            :accion2Header="btnEjecutarMasivo"
-            :accion3Header="btnFinalizarMasivo"
-            :accion4Header="btnGenerarReporte"
-            :accion5Header ="btnRefrescar"
+            :accion1Header="btnActualizarEmpleadosRol"
+            :accion2Header="btnAgregarRolPagoEmpleado"
+            :accion3Header="btnEjecutarMasivo"
+            :accion4Header="btnFinalizarMasivo"
+            :accion5Header="btnGenerarReporte"
+            :accion6Header="btnRefrescar"
             :permitirConsultar="false"
             :permitirEditar="false"
             :permitirEliminar="false"
@@ -145,6 +145,7 @@
             :tabDefecto="tabActual"
             :alto-fijo="true"
             :primeraColumnaFija="true"
+            :ajustarCeldas="true"
           ></essential-table-tabs>
         </q-tab-panel>
       </q-tab-panels>
@@ -154,7 +155,11 @@
         @guardado="guardado"
       />
 
-      <modales-entidad :comportamiento="modalesRolPago" :mixin-modal="mixinRolEmpleado" />
+      <modales-entidad
+        :comportamiento="modalesRolPago"
+        :persistente="false"
+        @guardado="(data) => guardado(data)"
+      />
     </template>
   </tab-layout-filter-tabs2>
 </template>

@@ -31,6 +31,20 @@ export const configuracionColumnasListadoProductosDevolucion: ColumnConfig<any>[
         sortable: true,
     },
     {
+      name: 'condiciones',
+      field: 'condiciones',
+      label: 'Condición',
+      align: 'left',
+      sortable: false,
+    },
+    {
+      name: 'observacion',
+      field: 'observacion',
+      label: 'Observación',
+      align: 'left',
+      sortable: false,
+    },
+    {
         name: 'cantidad',
         field: 'cantidad',
         label: 'Cantidad',

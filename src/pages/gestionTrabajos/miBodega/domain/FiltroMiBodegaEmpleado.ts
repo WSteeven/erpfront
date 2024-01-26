@@ -1,0 +1,13 @@
+import { EntidadAuditable } from 'shared/entidad/domain/entidadAuditable'
+import { useAuthenticationStore } from 'stores/authentication'
+
+export class FiltroMiBodegaEmpleado extends EntidadAuditable {
+  empleado_id: number | null
+  cliente_id: number | null | undefined
+
+  constructor() {
+    super()
+    this.empleado_id = useAuthenticationStore().user.id
+    this.cliente_id = undefined
+  }
+}

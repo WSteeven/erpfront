@@ -1,4 +1,7 @@
 export interface TabOption {
   label: string,
-  value: any
+  value: any,
+  icono?: string
+  color_icono?: string
+  bg_color?: string
 }

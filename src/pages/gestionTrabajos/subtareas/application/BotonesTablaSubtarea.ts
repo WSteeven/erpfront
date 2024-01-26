@@ -142,6 +142,7 @@ export const useBotonesTablaSubtarea = (listado: Ref<Subtarea[]>, modales: any, 
     visible: ({ entidad }) => entidad.estado === estadosTrabajos.EJECUTANDO && (authenticationStore.esJefeTecnico || authenticationStore.esCoordinador || entidad.es_responsable),
     accion: ({ entidad, posicion }) => {
       obtenerCoordenadas(entidad)
+      const causasFiltradasPorTipo = listadosAuxiliares.causasIntervenciones.filter((causa: CausaIntervencion) => causa.tipo_trabajo === entidad.tipo_trabajo)
 
       const config: CustomActionPrompt = reactive({
         mensaje: 'Seleccione la causa de intervención',
@@ -149,8 +150,8 @@ export const useBotonesTablaSubtarea = (listado: Ref<Subtarea[]>, modales: any, 
           confirmarRealizar({ entidad, posicion, causa_intervencion_id })
         },
         tipo: 'radio',
-        requerido: false,
-        items: listadosAuxiliares.causasIntervenciones.filter((causa: CausaIntervencion) => causa.tipo_trabajo === entidad.tipo_trabajo).map((causa: CausaIntervencion) => {
+        requerido: causasFiltradasPorTipo.length,
+        items: causasFiltradasPorTipo.map((causa: CausaIntervencion) => {
           return {
             label: causa.nombre,
             value: causa.id
@@ -199,18 +200,21 @@ export const useBotonesTablaSubtarea = (listado: Ref<Subtarea[]>, modales: any, 
     color: 'indigo',
     visible: ({ entidad }) => ![estadosTrabajos.AGENDADO, estadosTrabajos.CREADO].includes(entidad.estado) && (authenticationStore.esJefeTecnico || authenticationStore.esCoordinador || authenticationStore.esAdministrador || entidad.es_responsable),
     accion: async ({ entidad }) => {
-      confirmar('¿Está seguro de abrir el formulario de seguimiento?', () => {
-        trabajoAsignadoStore.idSubtareaSeleccionada = entidad.id
-        trabajoAsignadoStore.idTareaSeleccionada = entidad.tarea_id
-        trabajoAsignadoStore.idEmpleadoResponsable = entidad.empleado_responsable_id
-        trabajoAsignadoStore.idEmergencia = entidad.seguimiento
-        trabajoAsignadoStore.codigoSubtarea = entidad.codigo_subtarea
+      // confirmar('¿Está seguro de abrir el formulario de seguimiento?', () => {
+      trabajoAsignadoStore.idSubtareaSeleccionada = entidad.id
+      trabajoAsignadoStore.idTareaSeleccionada = entidad.tarea_id
+      trabajoAsignadoStore.proyecto_id = entidad.proyecto_id
+      trabajoAsignadoStore.etapa_id = entidad.etapa_id
+      trabajoAsignadoStore.cliente_id = entidad.cliente_id
+      trabajoAsignadoStore.idEmpleadoResponsable = entidad.empleado_responsable_id
+      trabajoAsignadoStore.idEmergencia = entidad.seguimiento
+      trabajoAsignadoStore.codigoSubtarea = entidad.codigo_subtarea
 
-        trabajoAsignadoStore.subtarea = entidad
+      trabajoAsignadoStore.subtarea = entidad
 
-        // const obtenerPlantilla = new ObtenerPlantilla()
-        modales.abrirModalEntidad('SeguimientoSubtareaPage')//obtenerPlantilla.obtener(entidad.tipo_trabajo))
-      })
+      // const obtenerPlantilla = new ObtenerPlantilla()
+      modales.abrirModalEntidad('SeguimientoSubtareaPage')//obtenerPlantilla.obtener(entidad.tipo_trabajo))
+      // })
     }
   }
 

@@ -11,6 +11,8 @@ export class MaterialEmpleadoTarea extends EntidadAuditable {
   tarea: number | null
   medida: number | null
   serial: string | null
+  cliente: string | null
+  etapa: string | null
 
   constructor() {
     super()
@@ -23,5 +25,7 @@ export class MaterialEmpleadoTarea extends EntidadAuditable {
     this.tarea = null
     this.medida = null
     this.serial = null
+    this.cliente = null
+    this.etapa = null
   }
 }

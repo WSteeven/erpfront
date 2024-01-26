@@ -23,6 +23,10 @@ export const iconos = {
     label: 'SUBTAREA',
     icono: 'bi-ui-checks-grid'
   },
+  ingreso: {
+    label: 'INGRESO DE MATERIALES',
+    icono: 'bi-box-seam'
+  },
   egreso: {
     label: 'EGRESO',
     icono: 'bi-box-seam'
