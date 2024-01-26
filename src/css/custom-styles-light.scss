@@ -37,6 +37,12 @@
     box-shadow: rgba(0, 0, 0, 0.12) 0px 5px 15px;
   }
 
+  .tab-inactive-square {
+    background-color: #00000020;
+    border-radius: 16px 4px 0 0;
+    box-shadow: rgba(0, 0, 0, 0.12) 0px 5px 15px;
+  }
+
   .bg-drawer {
     background-color: $grey-2;
   }
