@@ -1,4 +1,5 @@
 import { Endpoint } from 'shared/http/domain/Endpoint'
+import { medico } from './endpoints/medico'
 
 export const apiConfig = {
   // URL_BASE: 'http://localhost:8000',
@@ -293,4 +294,9 @@ export const endpoints = {
   actividades_realizadas_seguimientos_tickets: new Endpoint('tickets/actividades-realizadas-seguimientos-tickets'),
   pausas_tickets: new Endpoint('tickets/tickets/obtener-pausas'),
   rechazos_tickets: new Endpoint('tickets/tickets/obtener-rechazados'),
+
+  /****************
+   * Modulo medico
+   ****************/
+  ...medico,
 }

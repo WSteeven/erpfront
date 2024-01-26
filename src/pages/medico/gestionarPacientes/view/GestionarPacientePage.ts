@@ -16,6 +16,7 @@ import { ContenedorSimpleMixin } from 'shared/contenedor/modules/simple/applicat
 import { EmpleadoController } from '../infraestructure/EmpleadoController'
 import ModalesEntidad from 'components/modales/view/ModalEntidad.vue'
 import { Empleado } from 'recursosHumanos/empleados/domain/Empleado'
+import { DetalleExamen } from '../domain/DetalleExamen'
 
 export default defineComponent({
   components: { TabLayout, SelectorImagen, ModalesEntidad, EssentialTable, DetallePaciente },
@@ -34,12 +35,55 @@ export default defineComponent({
 
     const tabs = ref('1')
 
+    const registroExamenes: any[] = [
+      {
+        categoria: 'HEMATOLOGIA',
+        examenes: [
+          {
+            tipo_examen: 'Examenes comunes',
+            // categoria_examen: 'HEMATOLOGIA',
+            examen: 'GRUPO SANGUINEO',
+            estado: 1,
+            seleccionado: false,
+          },
+          {
+            tipo_examen: 'Examenes comunes',
+            // categoria_examen: 'HEMATOLOGIA',
+            examen: 'BIOMETRIA',
+            estado: 1,
+            seleccionado: false,
+          },
+        ],
+      },
+    ]
+
+    const estadosExamenes = [
+      {
+        id: 1,
+        nombre: 'SOLICITADO',
+      },
+      {
+        id: 2,
+        nombre: 'APROBADO POR COMPRAS',
+      },
+      {
+        id: 3,
+        nombre: 'DIAGNOSTICO REALIZADO',
+      },
+      {
+        id: 4,
+        nombre: 'APERTURA DE FICHA MEDICA',
+      },
+    ]
+
     return {
       mixin,
       empleado,
       tabs,
-      tabsRegistro: ref(),
+      tabsRegistro: ref('1'),
       configuracionColumnas: configuracionColumnasEmpleados,
+      registroExamenes,
+      estadosExamenes,
     }
   },
 })

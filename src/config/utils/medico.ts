@@ -1,0 +1,6 @@
+export const tiposProcesosExamenes = {
+  INGRESO: 'INGRESO',
+  OCUPACIONALES: 'OCUPACIONALES',
+  REINGRESO: 'REINGRESO',
+  SALIDA: 'SALIDA',
+}
