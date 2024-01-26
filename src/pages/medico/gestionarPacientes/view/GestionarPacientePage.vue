@@ -57,38 +57,31 @@
           helpalive
         >
           <!-- :class="{ 'rounded-tabpanel': !$q.screen.xs }" -->
-          <q-tab-panel name="1" class="q-px-none">
-            <div class="row justify-end q-mb-md">
-              <q-btn color="primary" no-caps rounded
-                >Agregar un registro de examen de ingreso</q-btn
-              >
-            </div>
+          <q-tab-panel name="1" class="q-pa-none">
             <q-splitter
               v-model="splitterModel"
               style="height: 700px"
               class="border-grey"
             >
               <template v-slot:before>
+                <q-btn
+                  color="positive"
+                  square
+                  no-caps
+                  icon="bi-plus"
+                  class="full-width"
+                  >Nuevo registro</q-btn
+                >
                 <!-- Tabs -->
                 <q-tabs
                   v-model="tabsRegistro"
                   vertical
-                  active-class="bg-accent text-white"
-                  indicator-color="primary"
-                  class="full-width border-accent bg-orange-1"
+                  indicator-color="transparent"
+                  class="full-width bg-grey-5"
+                  active-class="bg-grey-4 text-primary text-bold"
                 >
-                  <q-tab
-                    name="1"
-                    label="Registro #1"
-                    :class="{ 'tab-inactive': tabs !== '1' }"
-                    no-caps
-                  />
-                  <q-tab
-                    name="2"
-                    label="Registro #2"
-                    :class="{ 'tab-inactive': tabs !== '2' }"
-                    no-caps
-                  />
+                  <q-tab name="1" label="Registro #1" no-caps />
+                  <q-tab name="2" label="Registro #2" no-caps />
                 </q-tabs>
               </template>
 
@@ -99,9 +92,8 @@
                   transition-prev="scale"
                   transition-next="scale"
                   helpalive
-                  :class="{ 'rounded-tabpanel': !$q.screen.xs }"
                 >
-                  <q-tab-panel name="1">
+                  <q-tab-panel name="1" class="q-pa-none">
                     <essential-table-tabs
                       :configuracionColumnas="[
                         ...configuracionColumnasExamenes,
@@ -114,6 +106,7 @@
                       :tab-options="tabOptionsEstadosExamenes"
                       @tab-seleccionado="filtrarEstadoExamen"
                       :tab-defecto="tabEstadoExamen"
+                      :alto-fijo="false"
                       :accion1="btnSolicitar"
                       :accion2="btnResultados"
                     ></essential-table-tabs>
