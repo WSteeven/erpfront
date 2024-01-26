@@ -64,7 +64,7 @@ export class Empleado extends EntidadAuditable {
   realiza_factura: boolean | null
   banco_info: string | null
   acumula_fondos_reserva: boolean | null
-  familiares: [] | null
+  familiares: any[] | null
   generar_usuario: boolean
 
 

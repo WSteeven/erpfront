@@ -1,4 +1,0 @@
-// Dependencias
-export class EmpleadoModales {
-  //
-}

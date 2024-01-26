@@ -1,4 +1,5 @@
 import { Endpoint } from 'shared/http/domain/Endpoint'
+import { medico } from './endpoints/medico'
 
 export const apiConfig = {
   // URL_BASE: 'http://localhost:8000',
@@ -427,6 +428,10 @@ export const endpoints = {
   pausas_tickets: new Endpoint('tickets/tickets/obtener-pausas'),
   rechazos_tickets: new Endpoint('tickets/tickets/obtener-rechazados'),
 
+  /****************
+   * Modulo medico
+   ****************/
+  ...medico,
   /********************
    * Modulo de Ventas de Claro
    *********************/
@@ -443,8 +448,8 @@ export const endpoints = {
   pago_comision: new Endpoint('ventas-claro/pago-comision'),
   bono_mensual_cumplimiento: new Endpoint('ventas-claro/bono-mensual-cumplimiento'),
   bono_trimestral_cumplimiento: new Endpoint('ventas-claro/bono-trimestral-cumplimiento'),
-  cobrojp:new Endpoint('ventas-claro/cobrojp'),
-  pago:new Endpoint('ventas-claro/pago'),
-  reporte_ventas:new Endpoint('ventas-claro/reporte-ventas'),
-  dashboard_ventas_claro:new Endpoint('ventas-claro/dashboard')
+  cobrojp: new Endpoint('ventas-claro/cobrojp'),
+  pago: new Endpoint('ventas-claro/pago'),
+  reporte_ventas: new Endpoint('ventas-claro/reporte-ventas'),
+  dashboard_ventas_claro: new Endpoint('ventas-claro/dashboard')
 }
