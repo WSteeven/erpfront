@@ -152,6 +152,12 @@ export const useMenuStore = defineStore('menu', () => {
           icon: 'bi-circle',
           can: store.can('puede.ver.gestionar_pacientes'),
         },
+        {
+          title: 'Cuestionario psicosocial',
+          link: 'cuestionario-psicosocial',
+          icon: 'bi-circle',
+          can: store.can('puede.ver.cuestionario_psicosocial'),
+        },
       ]
     },
     /**
