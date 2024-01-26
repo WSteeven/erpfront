@@ -10,6 +10,7 @@ import { useMenuStore } from 'src/stores/menu'
 import { useRoute, useRouter } from 'vue-router'
 import Swal from 'sweetalert2'
 import moment from 'moment'
+import { Quasar } from 'quasar'
 
 // Componentes
 import ScrollToTopButton from 'components/buttonSubmits/ScrollToTopButton.vue'
@@ -27,6 +28,9 @@ import { useNotificaciones } from 'shared/notificaciones'
 import { useIdle, useTimestamp } from '@vueuse/core'
 import { formatearFechaTexto } from 'shared/utils'
 import { Idle, NotIdle } from 'idlejs'
+import { useMainLayoutStore } from 'stores/mainLayout'
+import { useCargandoStore } from 'stores/cargando'
+import { StatusEssentialLoading } from 'components/loading/application/StatusEssentialLoading'
 
 export default defineComponent({
   name: 'MainLayout',
@@ -49,6 +53,8 @@ export default defineComponent({
      *********/
     const authenticationStore = useAuthenticationStore()
     const movilizacionSubtareaStore = useMovilizacionSubtareaStore()
+    const configuracionGeneralStore = useConfiguracionGeneralStore()
+    const mainLayoutStore = useMainLayoutStore()
 
     /*******
      * Init
@@ -62,20 +68,20 @@ export default defineComponent({
     if ('Notification' in window) {
       Notification.requestPermission().then(permission => {
         if (permission === 'granted') {
-          console.log('Permiso de notificación concedido.');
+          // console.log('Permiso de notificación concedido.');
         } else {
           console.log('Permiso de notificación denegado.');
         }
       });
     }
 
-
     /************
      * Variables
      ************/
+    const cargando = new StatusEssentialLoading()
     const Router = useRouter()
     const route = useRoute()
-    const { notificarAdvertencia } = useNotificaciones()
+    const tituloPagina = computed(() => mainLayoutStore.tituloPagina)
     const grupo = authenticationStore.user.grupo
 
     const saldo = computed(() => {
@@ -92,8 +98,10 @@ export default defineComponent({
     })
 
     async function logout() {
+      cargando.activar()
       await authenticationStore.logout()
       Router.replace({ name: 'Login' })
+      cargando.desactivar()
     }
 
     const $q = useQuasar()
@@ -153,7 +161,8 @@ export default defineComponent({
       return notificacionesAgrupadasYOrdenadas
     }
 
-    watchEffect(() => document.title = (notificaciones.value.length ? `(${notificaciones.value.length})` : '') + ' JPCONSTRUCRED')
+    const nombreEmpresa = computed(() => configuracionGeneralStore.configuracion?.nombre_empresa)
+    watchEffect(() => document.title = (notificaciones.value.length ? `(${notificaciones.value.length})` : '') + ' ' + nombreEmpresa.value)
 
     async function marcarLeida(id) {
       notificacionesPusherStore.idNotificacion = id
@@ -220,8 +229,8 @@ export default defineComponent({
           LocalStorage.set('lastActivity', new Date().getTime().toString())
         })
         .start()
-      const LIMIT = 60 * 60 * 1000 // 60 minutes for logout session
-      // const LIMIT = 1 * 15 * 1000 // 5 segundos for logout session
+      // const LIMIT = 60 * 60 * 1000 // 60 minutes for logout session
+      const LIMIT = 4 * 60 * 60 * 1000 // 4 horas for logout session
       setInterval(() => {
         if (authenticationStore.user) {
           let la = new Date(JSON.parse(LocalStorage.getItem('lastActivity')!)).getTime()
@@ -245,8 +254,9 @@ export default defineComponent({
       LocalStorage.remove('lastActivity')
     }
 
-    const configuracionGeneralStore = useConfiguracionGeneralStore()
-    configuracionGeneralStore.consultarConfiguracion()
+    // Establecer favicon
+    configuracionGeneralStore.consultarConfiguracion().then(() =>
+      configuracionGeneralStore.cambiarFavicon())
 
     return {
       // logoClaro: `${process.env.API_URL}/storage/configuracion_general/logo_claro.jpeg`,
@@ -271,6 +281,7 @@ export default defineComponent({
       width: computed(() => ($q.screen.xs ? '100%' : '450px')),
       mostrarMenu: ref(false),
       mostrarNotificaciones: ref(false),
+      mostrarOpciones: ref(false),
       notificaciones,
       marcarLeida,
       ordenarNotificaciones() {
@@ -285,6 +296,7 @@ export default defineComponent({
       grupo,
       mostrarTransferirTareas: authenticationStore.esCoordinador || authenticationStore.esJefeTecnico,
       notificacionesAgrupadas,
+      tituloPagina,
       // idledFor,
       // tiempoInactividad,
       // mostrarAlertaInactividad,

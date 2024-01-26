@@ -6,7 +6,7 @@ body {
   }
 
   &::-webkit-scrollbar-thumb {
-    border-radius: 50px;
+    // border-radius: 50px;
 
     background: #aaaaaa;
     // background: -webkit-linear-gradient(to top, #2f4d81, #009fff);
@@ -16,30 +16,34 @@ body {
 
 .q-virtual-scroll {
   &::-webkit-scrollbar {
-    width: 10px;
+    width: 4px;
     height: 10px;
     background-color: transparent;
-    border-radius: 16px;
+    // border-radius: 16px;
   }
 
   &::-webkit-scrollbar-thumb {
-    border-radius: 50px;
+    // border-radius: 50px;
     background: #aaa;
   }
 }
 
 .q-drawer__content {
   &::-webkit-scrollbar {
-    width: 10px;
+    width: 0px;
     height: 10px;
     background-color: transparent;
-    border-radius: 16px;
+    // border-radius: 16px;
   }
 
   &::-webkit-scrollbar-thumb {
-    border-radius: 50px;
+    // border-radius: 50px;
     background: #aaa;
   }
+}
+
+.rounded-field {
+  border-radius: 4px !important;
 }
 
 .rounded-card {
@@ -121,4 +125,14 @@ input[type='time']::-webkit-calendar-picker-indicator {
 /* Reducir ligeramente el tamaño al presionar el q-card */
 .q-card-press:active {
   transform: scale(0.98);
+}
+
+.text-wrap {
+  white-space: normal !important;
+  word-wrap: break-word;
+}
+
+.my-card {
+  width: 100%;
+  max-width: 100%;
 }

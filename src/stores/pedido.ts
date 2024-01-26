@@ -23,7 +23,7 @@ export const usePedidoStore = defineStore('pedido', () => {
     const axios = AxiosHttpRepository.getInstance()
     const ruta = axios.getEndpoint(endpoints.pedidos) + '/show-preview/' + id
     const response: AxiosResponse = await axios.get(ruta)
-    console.log('Respuesta obtenida en store de pedido: ', response)
+    // cons ole.log('Respuesta obtenida en store de pedido: ', response)
     if (response.data.modelo.autorizacion === autorizacionesTransacciones.aprobado) {
       return response.data.modelo
     }
@@ -33,7 +33,7 @@ export const usePedidoStore = defineStore('pedido', () => {
     try {
       statusLoading.activar()
       const modelo = await consultar(id)
-      console.log('El modelo es: ', modelo)
+      // console.log('El modelo es: ', modelo)
       if (modelo.estado === estadosTransacciones.completa) {
         notificarAdvertencia('El pedido ya ha sido completado!')
       } else {

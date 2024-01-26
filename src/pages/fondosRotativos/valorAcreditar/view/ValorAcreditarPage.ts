@@ -1,6 +1,6 @@
-import { defineComponent, computed, ref } from 'vue'
+import { defineComponent, computed, ref, onMounted } from 'vue'
 import { ValorAcreditar } from '../domain/ValorAcreditar'
-
+import { apiConfig, endpoints } from 'config/api'
 import TabLayout from 'shared/contenedor/modules/simple/view/TabLayout.vue'
 import { useNotificacionStore } from 'stores/notificacion'
 import { useQuasar } from 'quasar'
@@ -10,15 +10,20 @@ import { ValorAcreditarController } from '../infrestructure/ValorAcreditarContro
 import { configuracionColumnasValorAcreditar } from '../domain/configuracionColumnasValorAcreditar'
 import ButtonSubmits from 'components/buttonSubmits/buttonSubmits.vue'
 import { CustomActionTable } from 'components/tables/domain/CustomActionTable'
+import { CustomActionPrompt } from 'components/tables/domain/CustomActionPrompt'
 import EssentialTable from 'components/tables/view/EssentialTable.vue'
 import { useAcreditacionesStore } from 'stores/acreditaciones'
 import { EmpleadoController } from 'pages/recursosHumanos/empleados/infraestructure/EmpleadoController'
 import { useAuthenticationStore } from 'stores/authentication'
 import { acciones, accionesTabla } from 'config/utils'
+import { AxiosHttpRepository } from 'shared/http/infraestructure/AxiosHttpRepository'
+import axios from 'axios'
+import { HttpResponseGet } from 'shared/http/domain/HttpResponse'
+import { useNotificaciones } from 'shared/notificaciones'
 
 export default defineComponent({
   components: { TabLayout, EssentialTable, ButtonSubmits },
-  setup() {
+  setup(props, { emit }) {
     /*********
      * Stores
      *********/
@@ -36,8 +41,11 @@ export default defineComponent({
       mixin.useComportamiento()
     const { entidad: valorAcreditar, disabled, accion } = mixin.useReferencias()
     const authenticationStore = useAuthenticationStore()
-const deshabilitar_empleado = ref(true);
-const mostrar_formulario = ref(false);
+    const { confirmar, prompt,
+      notificarCorrecto, notificarError } = useNotificaciones()
+
+    const deshabilitar_empleado = ref(true)
+    const mostrar_formulario = ref(false)
     /*************
      * Validaciones
      **************/
@@ -54,10 +62,13 @@ const mostrar_formulario = ref(false);
       monto_modificado: {
         required: true,
       },
+      motivo:{
+        required: true,
+      }
     }
     const v$ = useVuelidate(reglas, valorAcreditar)
     setValidador(v$.value)
-    const { consultar, cargarVista, obtenerListados } =
+    const { consultar, cargarVista, obtenerListados,eliminar } =
       mixin.useComportamiento()
     const { listado, listadosAuxiliares } = mixin.useReferencias()
     const empleados = ref([])
@@ -71,7 +82,7 @@ const mostrar_formulario = ref(false);
       empleados.value = listadosAuxiliares.empleados
       listado.value = (
         await new ValorAcreditarController().listar({
-          id: acreditacionesStore.idAcreditacionSeleccionada,
+          acreditacion_semana_id: acreditacionesStore.idAcreditacionSeleccionada,
         })
       ).result
     })
@@ -83,14 +94,10 @@ const mostrar_formulario = ref(false);
           entidad = await guardar(valoracreditar)
           const valorAcreditarAux = new ValorAcreditar()
           valorAcreditarAux.hydrate(entidad)
-          if (valorAcreditarAux.id) {
-            listado.value = [valorAcreditarAux, ...listado.value]
-          }
         } else {
           await editar(valoracreditar, true)
         }
         mostrar_formulario.value = false
-
       } catch (e) {
         console.log(e)
       }
@@ -100,20 +107,57 @@ const mostrar_formulario = ref(false);
       reestablecer()
       mostrar_formulario.value = false
     }
-    function filtrarEmpleados(val, update) {
+    const btnEliminarAcreditacionEmpleado: CustomActionTable = {
+      titulo: '',
+      icono: 'bi-trash',
+      color: 'secondary',
+      visible: () =>
+        authenticationStore.can('puede.eliminar.valor_acreditar') && !acreditacionesStore.esta_acreditado,
+      accion: ({ entidad, posicion }) => {
+        accion.value = 'ELIMINAR'
+       // eliminar(entidad);
+       eliminar_acreditacion({entidad,posicion})
+      },
+    }
+   async  function eliminar_acreditacion({ entidad, posicion }) {
+      try {
+
+        const data: CustomActionPrompt = {
+          titulo: 'Anular Acreditacion',
+          mensaje: 'Ingrese motivo de anulacion',
+          accion: async (data) => {
+            console.log('Eliminar',entidad);
+            entidad.estado = false
+            entidad.motivo = data
+              valorAcreditar.id= entidad.id
+              valorAcreditar.estado = false
+              valorAcreditar.motivo = data
+              await editar(entidad, true)
+              notificarCorrecto('Se ha anulado Acreditacion')
+              listado.value.splice(posicion, 1)
+          },
+        }
+        prompt(data)
+    } catch (e: any) {
+      notificarError(
+        'No se pudo anular, debes ingresar un motivo para la anulacion'
+      )
+    }
+  }
+  function filtrarEmpleados(val, update) {
       if (val === '') {
         update(() => {
-          empleados.value =
-            listadosAuxiliares.empleados
+          empleados.value = listadosAuxiliares.empleados
         })
         return
       }
       update(() => {
         const needle = val.toLowerCase()
-        empleados.value =
-          listadosAuxiliares.empleados.filter(
-            (v) => v.nombres.toLowerCase().indexOf(needle) > -1 || v.apellidos.toLowerCase().indexOf(needle) > -1
-          )
+        empleados.value = listadosAuxiliares.empleados.filter(
+          (v) =>
+            v.nombres.toLowerCase().indexOf(needle) > -1 ||
+            v.apellidos.toLowerCase().indexOf(needle) > -1
+        )
       })
     }
     const btnEditarAcreditacionEmpleado: CustomActionTable = {
@@ -121,11 +165,28 @@ const mostrar_formulario = ref(false);
       icono: 'bi-pencil',
       color: 'warning',
       visible: () => {
-        return authenticationStore.can('puede.editar.rol_pago')
+        return authenticationStore.can('puede.editar.valor_acreditar') && !acreditacionesStore.esta_acreditado
       },
       accion: ({ entidad }) => {
-        deshabilitar_empleado.value= true
+        deshabilitar_empleado.value = true
         accion.value = 'EDITAR'
+        valorAcreditar.id = entidad.id
+        valorAcreditar.empleado = entidad.empleado
+        valorAcreditar.acreditacion_semana = entidad.acreditacion_semana
+        valorAcreditar.monto_generado = entidad.monto_generado
+        valorAcreditar.monto_modificado = entidad.monto_modificado
+        mostrar_formulario.value = true
+      },
+    }
+    const btnVerAcreditacionEmpleado: CustomActionTable = {
+      titulo: 'Consultar',
+      icono: 'bi-eye',
+      color: 'primary',
+      visible: () => {
+        return authenticationStore.can('puede.ver.valor_acreditar')
+      },
+      accion: ({ entidad }) => {
+        accion.value = 'CONSULTAR'
         valorAcreditar.id = entidad.id
         valorAcreditar.empleado = entidad.empleado
         valorAcreditar.acreditacion_semana = entidad.acreditacion_semana
@@ -139,22 +200,56 @@ const mostrar_formulario = ref(false);
       icono: 'bi-plus',
       color: 'positive',
       visible: () => {
-        return authenticationStore.can('puede.editar.rol_pago')
+        return authenticationStore.can('puede.crear.valor_acreditar')&& acreditacionesStore.esta_acreditado==false
       },
       accion: () => {
         accion.value = 'NUEVO'
+        valorAcreditar.acreditacion_semana = acreditacionesStore.idAcreditacionSeleccionada
         mostrar_formulario.value = true
-        deshabilitar_empleado.value= false
+        deshabilitar_empleado.value = false
       },
     }
 
     const totalAcreditar = computed(() => {
       const suma = listado.value.reduce(
         (acumulador, elemento) =>
-          acumulador + parseFloat(elemento.monto_modificado),
+
+          acumulador + parseFloat(elemento.monto_modificado.replace(/,/g, '')),
         0
       )
       return suma
+    })
+    function saldo_anterior() {
+      if (accion.value == 'NUEVO') {
+        const axiosHttpRepository = AxiosHttpRepository.getInstance()
+        const url_acreditacion =
+          apiConfig.URL_BASE +
+          '/' +
+          axiosHttpRepository.getEndpoint(endpoints.monto_acreditar_usuario) +
+          valorAcreditar.empleado
+        axios({
+          url: url_acreditacion,
+          method: 'GET',
+          responseType: 'json',
+          headers: {
+            Authorization:
+              axiosHttpRepository.getOptions().headers.Authorization,
+          },
+        }).then((response: HttpResponseGet) => {
+          const { data } = response
+          if (data) {
+            valorAcreditar.monto_generado = data.monto_acreditar
+            valorAcreditar.monto_modificado = data.monto_acreditar
+          }
+        })
+      }
+    }
+    onMounted(()=>{
+      console.log('monted',listado.value);
+
+      listado.value.forEach((v)=>{
+        console.log(v)
+      })
     })
 
     return {
@@ -166,6 +261,8 @@ const mostrar_formulario = ref(false);
       v$,
       valorAcreditar,
       filtrarEmpleados,
+      saldo_anterior,
+      onMounted,
       totalAcreditar,
       empleados,
       deshabilitar_empleado,
@@ -173,9 +270,10 @@ const mostrar_formulario = ref(false);
       configuracionColumnasValorAcreditar,
       btnNevoEmpleadoAcreditar,
       btnEditarAcreditacionEmpleado,
+      btnEliminarAcreditacionEmpleado,
+      btnVerAcreditacionEmpleado,
       mostrar_formulario,
       accionesTabla,
-
     }
   },
 })

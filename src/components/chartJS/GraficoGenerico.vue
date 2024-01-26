@@ -2,7 +2,7 @@
   <!-- <div class="bg-yellow full-width"> -->
   <div
     style="width: 100%; margin: 0 auto; height: 300px"
-    class="bg-body rounded"
+    class="bg-body rounded border-grey"
   >
     <canvas ref="chartRef" id="myChart"></canvas>
   </div>
@@ -11,13 +11,17 @@
 <script lang="ts">
 import { Chart as ChartJS } from 'chart.js'
 import datalabels from 'chartjs-plugin-datalabels'
-import { onMounted, ref, defineComponent, watch, watchEffect } from 'vue'
-import Chart from 'chart.js/auto'
+import { onMounted, ref, defineComponent, watch } from 'vue'
+import Chart, { ChartTypeRegistry } from 'chart.js/auto'
 
 export default defineComponent({
   props: {
     data: Object,
     options: Object,
+    tipo: {
+      type: String, // as () => ChartTypeRegistry,
+      default: 'pie',
+    },
   },
   emits: ['click'],
   setup(props, { emit }) {
@@ -37,7 +41,7 @@ export default defineComponent({
       const combinedOptions = Object.assign({}, props.options)
       // Crear el gráfico
       myChart = new Chart(ctx, {
-        type: 'pie',
+        type: props.tipo,
         data: props.data,
         options: combinedOptions,
       })

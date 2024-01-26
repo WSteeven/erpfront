@@ -6,10 +6,10 @@
     :tab-options="tabOptionsPreordenCompra"
     tabDefecto="PENDIENTE"
     :filtrar="filtrarPreordenes"
-    :permitirEditar="false"
+    :permitirEditar="puedeEditar"
     :accion1="btnHacerOrdenCompra"
     :accion2="btnAnularPreorden"
-    
+    :accion1Header="btnConsolidarPreordenes"
   >
     <template #formulario>
       <q-form @submit.prevent>
@@ -45,7 +45,7 @@
             >
             </q-input>
           </div>
-          
+
           <!-- Solicitante -->
           <div v-if="preorden.solicitante" class="col-12 col-md-3">
             <label class="q-mb-sm block">Solicitante</label>
@@ -74,7 +74,6 @@
             </q-select>
           </div>
 
-
           <!-- Justificacion -->
           <div class="col-12 col-md-6">
             <label class="q-mb-sm block">Justificación</label>
@@ -83,13 +82,12 @@
               autogrow
               v-model="preorden.justificacion"
               placeholder="Obligatorio"
-              :disable="disabled||soloLectura"
+              :disable="disabled || soloLectura"
               outlined
               dense
             >
             </q-input>
           </div>
-
 
           <!-- Persona que autoriza -->
           <div class="col-12 col-md-3">
@@ -103,8 +101,8 @@
               dense
               outlined
               @filter="filtrarEmpleados"
-              @popup-show="ordenarEmpleados(empleados)"
-              :disable="disabled||soloLectura"
+              @popup-show="ordenarLista(empleados, 'apellidos')"
+              :disable="disabled || soloLectura"
               :option-label="(v) => v.apellidos + ' ' + v.nombres"
               :option-value="(v) => v.id"
               emit-value
@@ -123,7 +121,7 @@
               options-dense
               dense
               outlined
-              :disable="disabled||soloLectura"
+              :disable="disabled || soloLectura"
               :option-value="(v) => v.id"
               :option-label="(v) => v.nombre"
               emit-value
@@ -161,6 +159,21 @@
             </q-select>
           </div>
 
+          <!-- Causa de anulacion -->
+          <div class="col-12 col-md-9" v-if="preorden.causa_anulacion">
+            <label class="q-mb-sm block">Causa de anulación</label>
+            <q-input
+              type="textarea"
+              autogrow
+              v-model="preorden.causa_anulacion"
+              placeholder="Obligatorio"
+              :disable="disabled || soloLectura"
+              outlined
+              dense
+            >
+            </q-input>
+          </div>
+
           <!-- Tabla con popup -->
           <div class="col-12">
             <essential-popup-editable-table
@@ -173,11 +186,12 @@
               "
               :datos="preorden.listadoProductos"
               separador="cell"
-              :permitirEditarCeldas="accion==acciones.nuevo||accion==acciones.editar"
+              :permitirEditarCeldas="
+                accion == acciones.nuevo || accion == acciones.editar
+              "
               :permitirConsultar="false"
               :permitirEditar="false"
               :permitirEliminar="false"
-              :mostrarBotones="false"
               :altoFijo="false"
               :accion1="btnEliminarFila"
             >
@@ -221,17 +235,21 @@
       </q-form>
 
       <!-- Modal de seleccion de detalles -->
-      <essential-selectable-table
+      <!-- <essential-selectable-table
         ref="refListado"
         :configuracion-columnas="configuracionColumnasDetallesProductos"
         separador="cell"
         :datos="listadoProductos"
         tipo-seleccion="multiple"
         @selected="seleccionarProducto"
-      ></essential-selectable-table>
+      ></essential-selectable-table> -->
     </template>
   </tab-layout-filter-tabs2>
   <!-- Modales -->
-  <!-- <modales-entidad :comportamiento="modales"></modales-entidad> -->
+  <modales-entidad
+    :comportamiento="modales"
+    :persistente="false"
+    @guardado="(data) => guardado(data)"
+  />
 </template>
 <script src="./PreordenCompraPage.ts"></script>

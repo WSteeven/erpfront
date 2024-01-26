@@ -13,11 +13,12 @@ import { CargoController } from 'pages/recursosHumanos/cargos/infraestructure/Ca
 
 import { removeAccents } from 'shared/utils'
 import { ConceptoIngreso } from '../domain/ConceptoIngreso'
+import { ConceptoIngresoController } from '../infraestructure/ConceptoIngresoController'
 
 export default defineComponent({
     components: { TabLayout },
     setup() {
-        const mixin = new ContenedorSimpleMixin(ConceptoIngreso, new CargoController())
+        const mixin = new ContenedorSimpleMixin(ConceptoIngreso, new ConceptoIngresoController())
         const { entidad: concepto_ingreso, disabled } = mixin.useReferencias()
         const { setValidador } = mixin.useComportamiento()
 

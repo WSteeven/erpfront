@@ -1,3 +1,4 @@
+import { limpiarListado } from 'shared/utils';
 //Dependencias
 import { configuracionColumnasTransaccionIngreso } from '../../../domain/configuracionColumnasTransaccionIngreso'
 import { configuracionColumnasListadoProductosDevolucion } from '../../transaccionContent/domain/configuracionColumnasListadoProductosDevolucion'
@@ -10,7 +11,7 @@ import { configuracionColumnasProductos } from 'pages/bodega/productos/domain/co
 import { useOrquestadorSelectorItemsTransaccion } from 'pages/bodega/transacciones/modules/transaccionIngreso/application/OrquestadorSelectorDetalles'
 import { useTransaccionStore } from 'stores/transaccion'
 import { useDevolucionStore } from 'stores/devolucion'
-import { acciones, estadosTransacciones } from 'config/utils'
+import { acciones, autorizaciones, estados, estadosTransacciones } from 'config/utils'
 
 // Componentes
 import TabLayout from 'shared/contenedor/modules/simple/view/TabLayout.vue'
@@ -27,10 +28,9 @@ import { LocalStorage, useQuasar } from 'quasar'
 import { MotivoController } from 'pages/administracion/motivos/infraestructure/MotivoController'
 import { CustomActionTable } from 'components/tables/domain/CustomActionTable'
 import { useNotificaciones } from 'shared/notificaciones'
-import { DetalleProductoController } from 'pages/bodega/detalles_productos/infraestructure/DetalleProductoController'
 import { useAuthenticationStore } from 'stores/authentication'
 import { TareaController } from 'pages/gestionTrabajos/tareas/infraestructure/TareaController'
-import { motivos } from 'config/utils'
+import { motivosTransaccionesBodega as motivos } from 'config/utils'
 import { ClienteController } from 'pages/sistema/clientes/infraestructure/ClienteController'
 import { Transaccion } from 'pages/bodega/transacciones/domain/Transaccion'
 import { TransaccionIngresoController } from 'pages/bodega/transacciones/infraestructure/TransaccionIngresoController'
@@ -48,6 +48,7 @@ import { ComportamientoModalesTransaccionIngreso } from '../application/Comporta
 import { SucursalController } from 'pages/administracion/sucursales/infraestructure/SucursalController'
 import { Empleado } from 'pages/recursosHumanos/empleados/domain/Empleado'
 import { ValidarListadoProductosIngreso } from '../application/validations/ValidarListadoProductosIngreso'
+import { useFiltrosListadosSelects } from 'shared/filtrosListadosGenerales';
 
 export default defineComponent({
   name: 'Ingresos',
@@ -114,25 +115,23 @@ export default defineComponent({
     const esVisibleTarea = ref(false)
     let listadoDevolucion = ref()
 
-    const opciones_autorizaciones = ref([])
     const opciones_sucursales = ref([])
     const opciones_motivos = ref([])
-    const opciones_estados = ref([])
     const opciones_tareas = ref([])
-    const opciones_clientes = ref([])
     const opciones_empleados = ref([])
     const opciones_condiciones = ref([])
+
+    const { clientes, filtrarClientes } = useFiltrosListadosSelects(listadosAuxiliares)
 
     //obtener los listados
     cargarVista(async () => {
       await obtenerListados({
         tareas: { controller: new TareaController(), params: { campos: 'id,codigo_tarea,titulo,cliente_id' } },
         motivos: { controller: new MotivoController(), params: { tipo_transaccion_id: 1 } },
-        detalles: { controller: new DetalleProductoController(), params: { campos: 'id,producto_id,descripcion,modelo_id,serial' } },
         clientes: {
           controller: new ClienteController(),
           params: {
-            campos: 'id,empresa_id',
+            campos: 'id,razon_social',
             requiere_bodega: 1,
             estado: 1,
           },
@@ -192,8 +191,18 @@ export default defineComponent({
      */
     async function llenarTransaccion(id: number) {
       limpiarTransaccion()
-      await devolucionStore.cargarDevolucion(id)
-      await cargarDatosDevolucion()
+      limpiarProducto()
+      limpiarListado(listadoDevolucion.value)
+      devolucionStore.resetearDevolucion()
+      try {
+        await devolucionStore.cargarDevolucion(id)
+        await cargarDatosDevolucion()
+      } catch (error) {
+        limpiarTransaccion()
+        limpiarProducto()
+        limpiarListado(listadoDevolucion.value)
+        devolucionStore.resetearDevolucion()
+      }
 
     }
     async function cargarDatosDevolucion() {
@@ -201,9 +210,13 @@ export default defineComponent({
       transaccion.devolucion = devolucionStore.devolucion.id
       transaccion.justificacion = devolucionStore.devolucion.justificacion
       transaccion.solicitante = Number.isInteger(devolucionStore.devolucion.solicitante) ? devolucionStore.devolucion.solicitante : devolucionStore.devolucion.solicitante_id
+      transaccion.sucursal = Number.isInteger(devolucionStore.devolucion.sucursal) ? devolucionStore.devolucion.sucursal : devolucionStore.devolucion.sucursal_id
+      transaccion.cliente = Number.isInteger(devolucionStore.devolucion.cliente) ? devolucionStore.devolucion.cliente : devolucionStore.devolucion.cliente_id
       transaccion.es_para_stock = devolucionStore.devolucion.es_para_stock
       listadoDevolucion.value = devolucionStore.devolucion.listadoProductos
       listadoDevolucion.value.sort((v, w) => v.id - w.id) //ordena el listado de devolucion
+      //primero copiamos los valores de id en detalle_id
+      devolucionStore.devolucion.listadoProductos.forEach((item) => item.detalle_id = item.id)
       //copiar el listado de devolución al listado de la tabla
       transaccion.listadoProductosTransaccion = [...devolucionStore.devolucion.listadoProductos]
       if (devolucionStore.devolucion.tarea) {
@@ -298,13 +311,11 @@ export default defineComponent({
     }
 
     //Configurar los listados
-    opciones_estados.value = JSON.parse(LocalStorage.getItem('estados_transacciones')!.toString())
-    opciones_autorizaciones.value = JSON.parse(LocalStorage.getItem('autorizaciones')!.toString())
     opciones_condiciones.value = JSON.parse(LocalStorage.getItem('condiciones')!.toString())
     opciones_sucursales.value = JSON.parse(LocalStorage.getItem('sucursales')!.toString())
     opciones_motivos.value = listadosAuxiliares.motivos
     opciones_tareas.value = listadosAuxiliares.tareas
-    opciones_clientes.value = listadosAuxiliares.clientes
+    clientes.value = listadosAuxiliares.clientes
     opciones_empleados.value = listadosAuxiliares.empleados
 
 
@@ -354,10 +365,10 @@ export default defineComponent({
       //listados
       opciones_sucursales,
       opciones_motivos,
-      opciones_autorizaciones,
-      opciones_estados,
+      opciones_autorizaciones: autorizaciones,
+      opciones_estados: estados,
       opciones_tareas,
-      opciones_clientes,
+      clientes,
       opciones_empleados,
       opciones_condiciones,
 
@@ -441,6 +452,7 @@ export default defineComponent({
       //funciones
       seleccionarClientePropietario,
       recargarSucursales,
+      filtrarClientes,
       filtroEmpleados(val, update) {
         if (val === '') {
           update(() => {
@@ -468,8 +480,8 @@ export default defineComponent({
       //ordenacion de listas
       ordenarClientes() {
         if (store.esBodegueroTelconet) {
-          opciones_clientes.value = opciones_clientes.value.filter((v: Cliente) => v.razon_social!.indexOf('TELCONET') > -1)
-        } else opciones_clientes.value.sort((a: Cliente, b: Cliente) => ordernarListaString(a.razon_social!, b.razon_social!))
+          clientes.value = clientes.value.filter((v: Cliente) => v.razon_social!.indexOf('TELCONET') > -1)
+        } else clientes.value.sort((a: Cliente, b: Cliente) => ordernarListaString(a.razon_social!, b.razon_social!))
       },
       ordenarMotivos() {
         opciones_motivos.value.sort((a: Motivo, b: Motivo) => ordernarListaString(a.nombre!, b.nombre!))

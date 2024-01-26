@@ -2,13 +2,13 @@ import { ColumnConfig } from 'components/tables/domain/ColumnConfig'
 import { Subtarea } from 'gestionTrabajos/subtareas/domain/Subtarea'
 
 export const configuracionColumnasTrabajoAsignado: ColumnConfig<Subtarea>[] = [
-  {
+  /* {
     name: 'tarea',
     field: 'tarea',
     label: 'Cód. Tarea',
     align: 'left',
     sortable: true,
-  },
+  }, */
   {
     name: 'codigo_subtarea',
     field: 'codigo_subtarea',
@@ -95,6 +95,13 @@ export const configuracionColumnasTrabajoAsignado: ColumnConfig<Subtarea>[] = [
     name: 'proyecto',
     field: 'proyecto',
     label: 'Proyecto',
+    align: 'left',
+    sortable: true,
+  },
+  {
+    name: 'etapa',
+    field: 'etapa',
+    label: 'Etapa',
     align: 'left',
     sortable: true,
   },

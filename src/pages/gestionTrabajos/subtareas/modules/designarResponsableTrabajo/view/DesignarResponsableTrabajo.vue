@@ -81,6 +81,7 @@
         v-model="subtarea.empleado"
         :options="empleados"
         @filter="filtrarEmpleados"
+        @popup-show="ordenarEmpleados(empleados)"
         transition-show="scale"
         transition-hide="scale"
         hint="Obligatorio"

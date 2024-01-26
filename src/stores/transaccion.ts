@@ -83,9 +83,9 @@ export const useTransaccionStore = defineStore('transaccion', () => {
         }
     }
 
-    async function firmarComprobante(id:number, data:any){
+    async function firmarComprobante(id: number, data: any) {
         const modelo = await actualizarComprobante(id, data)
-        if(modelo){
+        if (modelo) {
             console.log('Se actualizó bien');
 
         }
@@ -95,22 +95,27 @@ export const useTransaccionStore = defineStore('transaccion', () => {
      * This is an async function that uses Axios to send a GET request to an API endpoint to cancel a
      * transaction and then hydrates the response data into a transaction object.
      */
-    async function anularIngreso(){
-      const axios = AxiosHttpRepository.getInstance()
-      const ruta = axios.getEndpoint(endpoints.transacciones_ingresos)+'/anular/'+idTransaccion.value
-      const response: AxiosResponse = await axios.get(ruta)
-      console.log(response.data)
-      notificaciones.notificarCorrecto(response.data.mensaje)
-      transaccion.hydrate(response.data.modelo)
+    async function anularIngreso() {
+        const axios = AxiosHttpRepository.getInstance()
+        const ruta = axios.getEndpoint(endpoints.transacciones_ingresos) + '/anular/' + idTransaccion.value
+        const response: AxiosResponse = await axios.get(ruta)
+        // console.log(response.data)
+        notificaciones.notificarCorrecto(response.data.mensaje)
+        transaccion.hydrate(response.data.modelo)
     }
-    
-    async function anularEgreso(){
-      const axios = AxiosHttpRepository.getInstance()
-      const ruta = axios.getEndpoint(endpoints.transacciones_egresos)+'/anular/'+idTransaccion.value
-      const response: AxiosResponse = await axios.get(ruta)
-      console.log(response.data)
-      notificaciones.notificarCorrecto(response.data.mensaje)
-      transaccion.hydrate(response.data.modelo)
+
+    async function anularEgreso() {
+        // try {
+        const axios = AxiosHttpRepository.getInstance()
+        const ruta = axios.getEndpoint(endpoints.transacciones_egresos) + '/anular/' + idTransaccion.value
+        const response: AxiosResponse = await axios.get(ruta)
+        // console.log(response.data)
+        notificaciones.notificarCorrecto(response.data.mensaje)
+        transaccion.hydrate(response.data.modelo)
+
+        // } catch (error) {
+        //     notificaciones.notificarError('Ha ocurrido un error: '+error)
+        // }
     }
 
     return {

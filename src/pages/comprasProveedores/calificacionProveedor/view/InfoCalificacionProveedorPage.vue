@@ -140,7 +140,7 @@
             <!-- @inicializado="cargarArchivos(departamento[0].id)" -->
             <template #boton-subir>
               <q-btn
-                v-if="mostrarBotonSubir"
+                v-if="false"
                 color="positive"
                 push
                 no-caps

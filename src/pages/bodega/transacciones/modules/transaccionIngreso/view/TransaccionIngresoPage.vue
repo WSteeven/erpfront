@@ -119,7 +119,7 @@
             ></q-checkbox>
           </div>
           <!-- Devolución -->
-          <div v-if="transaccion.tiene_devolucion" class="col-12 col-md-3 q-mb-md">
+          <div v-if="transaccion.tiene_devolucion|| transaccion.devolucion" class="col-12 col-md-3 q-mb-md">
             <label class="q-mb-sm block">N° devolución</label>
             <q-input
               type="number"
@@ -148,6 +148,21 @@
               :disable="disabled || soloLectura"
               :rules="[(val) => val > 0 || 'Ingresa un numero de comprobante válido']"
               :lazy-rules="true"
+              outlined
+              dense
+            >
+            </q-input>
+          </div>
+          <!--Proveedor -->
+          <div
+            v-if="esVisibleComprobante || transaccion.proveedor"
+            class="col-12 col-md-3 q-mb-md"
+          >
+            <label class="q-mb-sm block">Proveedor</label>
+            <q-input
+              v-model="transaccion.proveedor"
+              placeholder="Obligatorio"
+              :disable="disabled || soloLectura"
               outlined
               dense
             >
@@ -350,7 +365,7 @@
             <label class="q-mb-sm block">Cliente</label>
             <q-select
               v-model="transaccion.cliente"
-              :options="opciones_clientes"
+              :options="clientes"
               transition-show="jum-up"
               transition-hide="jump-down"
               options-dense
@@ -360,7 +375,10 @@
               :disable="disabled || soloLectura"
               :error="!!v$.cliente.$errors.length"
               error-message="Debes seleccionar un cliente"
+              use-input
+              input-debounce="0"
               @popup-show="ordenarClientes"
+              @filter="filtrarClientes"
               :option-value="(item) => item.id"
               :option-label="(item) => item.razon_social"
               emit-value
@@ -437,6 +455,7 @@
               :hide-bottom="true"
               v-model:pagination="pagination"
               :rows-per-page-options="[0]"
+              wrap-cells
               virtual-scroll
               dense
             />

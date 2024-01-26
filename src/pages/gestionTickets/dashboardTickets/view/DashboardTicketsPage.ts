@@ -1,13 +1,21 @@
 // Dependencias
+import { configuracionColumnasSubtareasRealizadasPorGrupoTiposTrabajosEmergencia } from '../domain/configuracionColumnasSubtareasRealizadasPorGrupoTiposTrabajosEmergencia'
 import { configuracionColumnasSubtareasRealizadasPorRegion } from '../domain/configuracionColumnasSubtareasRealizadasPorRegion'
 import { configuracionColumnasSubtareasRealizadasPorGrupo } from '../domain/configuracionColumnasSubtareasRealizadasPorGrupo'
-import { configuracionColumnasSubtareasRealizadasPorGrupoTiposTrabajosEmergencia } from '../domain/configuracionColumnasSubtareasRealizadasPorGrupoTiposTrabajosEmergencia'
-import { accionesTabla, departamentos, tiposJornadas } from 'config/utils'
+import { generarColorAzulPastelClaro, obtenerFechaActual, ordernarListaString } from 'shared/utils'
+import { CustomActionPrompt } from 'components/tables/domain/CustomActionPrompt'
 import { computed, defineComponent, reactive, ref, watchEffect } from 'vue'
-import { required } from 'shared/i18n-validators'
+import { optionsPie, optionsLine } from 'config/graficoGenerico'
+import { required, requiredIf } from 'shared/i18n-validators'
+import { accionesTabla, tiposJornadas } from 'config/utils'
+import { useNotificaciones } from 'shared/notificaciones'
+import { estadosTickets } from 'config/tickets.utils'
+import { useTicketStore } from 'stores/ticket'
 import { useVuelidate } from '@vuelidate/core'
 
 // Componentes
+import { StatusEssentialLoading } from 'components/loading/application/StatusEssentialLoading'
+import { CustomActionTable } from 'components/tables/domain/CustomActionTable'
 import TabLayout from 'shared/contenedor/modules/simple/view/TabLayout.vue'
 import EssentialTable from 'components/tables/view/EssentialTable.vue'
 import ModalesEntidad from 'components/modales/view/ModalEntidad.vue'
@@ -18,21 +26,17 @@ import { Bar, Pie } from 'vue-chartjs'
 
 // Logica y controladores
 import { ComportamientoModalesTicketAsignado } from 'pages/gestionTickets/ticketsAsignados/application/ComportamientoModalesTicketAsignado'
-import { generarColorAzulPastelClaro, obtenerFechaActual, ordernarListaString } from 'shared/utils'
+import { DepartamentoController } from 'pages/recursosHumanos/departamentos/infraestructure/DepartamentoController'
 import { configuracionColumnasTicket } from 'pages/gestionTickets/tickets/domain/configuracionColumnasTicket'
+import { useFiltrosListadosTickets } from 'pages/gestionTickets/tickets/application/FiltrosListadosTicket'
 import { ContenedorSimpleMixin } from 'shared/contenedor/modules/simple/application/ContenedorSimpleMixin'
 import { EmpleadoController } from 'pages/recursosHumanos/empleados/infraestructure/EmpleadoController'
 import { useBotonesTablaTicket } from 'pages/gestionTickets/tickets/application/BotonesTablaTicket'
-import { StatusEssentialLoading } from 'components/loading/application/StatusEssentialLoading'
 import { DashboardTicketController } from '../infraestructure/DashboardTicketsController'
 import { ReporteSubtareasRealizadas } from '../domain/ReporteSubtareasRealizadas'
-import { CustomActionTable } from 'components/tables/domain/CustomActionTable'
 import { Empleado } from 'pages/recursosHumanos/empleados/domain/Empleado'
 import { FiltroDashboardTicket } from '../domain/FiltroReporteMaterial'
-import { estadosTickets } from 'config/tickets.utils'
-import { useTicketStore } from 'stores/ticket'
 import { Ticket } from 'pages/gestionTickets/tickets/domain/Ticket'
-import { useAuthenticationStore } from 'stores/authentication'
 
 export default defineComponent({
   components: { TabLayout, EssentialTable, SelectorImagen, TableView, Bar, Pie, ModalesEntidad, GraficoGenerico },
@@ -41,7 +45,6 @@ export default defineComponent({
     * Stores
     ***********/
     const ticketStore = useTicketStore()
-    const authenticationStore = useAuthenticationStore()
 
     const mixin = new ContenedorSimpleMixin(
       ReporteSubtareasRealizadas,
@@ -58,25 +61,25 @@ export default defineComponent({
           params: {
             campos: 'id,nombres,apellidos,departamento_id,responsable_departamento',
             estado: 1,
-            // id: authenticationStore.user.id,
           }
         },
+        departamentos: new DepartamentoController(),
       })
 
-      // watchEffect(() => filtro.empleado = authenticationStore.user.es_responsable_departamento ? authenticationStore.user.id : null)
-      // console.log(filtro.empleado)
+      departamentos.value = listadosAuxiliares.departamentos
     })
+
+    const { promptItems } = useNotificaciones()
 
     const filtro = reactive(new FiltroDashboardTicket())
     const dashboardTicketController = new DashboardTicketController()
     const cargando = new StatusEssentialLoading()
-    const mostrarTitulosSeccion = computed(() => filtro.fecha_inicio && filtro.fecha_fin && filtro.empleado)
+    const mostrarTitulosSeccion = computed(() => filtro.fecha_inicio && filtro.fecha_fin && (filtro.empleado || filtro.departamento))
     const modales = new ComportamientoModalesTicketAsignado()
     const empleadoResponsableDepartamento = ref()
     const esResponsableDepartamento = ref(false)
     const ticketsEmpleadoResponsable = ref([])
     const tabsTickets = ref('creados')
-    let departamento
 
     // Cantidades
     const ticketsConSolucion = ref([])
@@ -106,6 +109,15 @@ export default defineComponent({
     const ticketsPorDepartamentoEstadoFinalizadoSinSolucion = ref([])
     const ticketsPorDepartamentoEstadoCalificado = ref([])
 
+    // Listados tiempos
+    const listados = reactive({
+      ticketsPorDepartamentoEstadoFinalizadoSolucionado: [],
+      tiempoPromedio: null,
+      totalTicketsFinalizados: null,
+      // tiemposTicketsFinalizadosPorDepartamento: [],
+    })
+
+    // Graficos
     const cantidadesTicketsSolicitadosPorDepartamentoBar = ref()
     const cantidadesTicketsRecibidosPorDepartamentoBar = ref()
     const ticketsPorEstadoBar = ref()
@@ -117,7 +129,8 @@ export default defineComponent({
     const ticketsPorDepartamentoEstadoFinalizadoSinSolucionBar = ref()
     const ticketsPorDepartamentoEstadoCalificadoBar = ref()
 
-    const creados = ref([])
+    // -- Graficos tiempos
+    const promedioTiemposLine = ref()
 
     const opcionesDepartamento = {
       departamentoGrafico: 'departamentoGrafico',
@@ -135,54 +148,30 @@ export default defineComponent({
       ASIGNADOS_POR_DEPARTAMENTOS: 'ASIGNADOS_POR_DEPARTAMENTOS',
     }
 
+    const opcionesFiltroDepartamentoEmpleado = {
+      porDepartamento: 'POR DEPARTAMENTO',
+      porEmpleado: 'POR EMPLEADO',
+    }
+
     const tabsDepartamento = ref(opcionesDepartamento.departamentoGrafico)
     const tabsEmpleado = ref(opcionesEmpleado.empleadoGrafico)
 
-    const optionsPie = {
-      responsive: true,
-      maintainAspectRatio: false,
-      layout: {
-        padding: 32,
-      },
-      elements: {
-        arc: {
-          borderWidth: 0,
-        }
-      },
-      plugins: {
-        legend: {
-          position: 'right',
-        },
-        datalabels: {
-          align: 'end',
-          anchor: 'end',
-          color: '#fff',
-          backgroundColor: function (context) {
-            return context.dataset.backgroundColor
-          },
-          font: function (context) {
-            var w = context.chart.width
-            return {
-              size: w < 512 ? 10 : 12,
-            }
-          },
-          formatter: function (value, context) {
-            return value ? context.chart.data.labels[context.dataIndex] + ': (' + value + ')' : null
-          }
-        }
-      },
-    }
+    const mostrarSeccionDepartamento = computed(() => filtro.departamento_empleado === opcionesFiltroDepartamentoEmpleado.porDepartamento)
+    const mostrarSeccionEmpleado = computed(() => filtro.departamento_empleado === opcionesFiltroDepartamentoEmpleado.porEmpleado)
 
     /*******
      * Init
      *******/
+    filtro.departamento_empleado = opcionesFiltroDepartamentoEmpleado.porEmpleado
+    // console.log(optionsLine)
 
 
     // Reglas de validacion
     const reglas = {
       fecha_inicio: { required },
       fecha_fin: { required },
-      empleado: { required },
+      empleado: { requiredIf: requiredIf(() => mostrarSeccionEmpleado.value) },
+      departamento: { requiredIf: requiredIf(() => mostrarSeccionDepartamento.value) },
     }
 
     const v$ = useVuelidate(reglas, filtro)
@@ -216,23 +205,40 @@ export default defineComponent({
       })
     }
 
+    const {
+      departamentos,
+      filtrarDepartamentos,
+    } = useFiltrosListadosTickets(listadosAuxiliares)
+
     filtro.fecha_fin = obtenerFechaActual()
+
+    /****************
+     * Observadores
+     ****************/
+    watchEffect(() => {
+      switch (filtro.departamento_empleado) {
+        case opcionesFiltroDepartamentoEmpleado.porEmpleado:
+          filtro.departamento = null
+          break
+        case opcionesFiltroDepartamentoEmpleado.porDepartamento:
+          filtro.empleado = null
+          break
+      }
+    })
 
     async function consultar() {
 
       if (await v$.value.$validate()) {
         try {
 
-          const empleadoSeleccionado: Empleado = empleados.value.filter((emp: Empleado) => emp.id === filtro.empleado)[0]
+          /* const empleadoSeleccionado: Empleado = empleados.value.filter((emp: Empleado) => emp.id === filtro.empleado)[0]
 
           esResponsableDepartamento.value = empleadoSeleccionado.responsable_departamento
           departamento = empleadoSeleccionado.departamento_id
+          filtro.departamento = empleadoSeleccionado.departamento_id */
           cargando.activar()
 
-          const { result } = await dashboardTicketController.listar({ fecha_inicio: filtro.fecha_inicio, fecha_fin: filtro.fecha_fin, empleado_id: filtro.empleado, departamento_responsable_id: departamento })
-          // await obtenerResponsables()
-
-          creados.value = result.creados
+          const { result } = await dashboardTicketController.listar({ fecha_inicio: filtro.fecha_inicio, fecha_fin: filtro.fecha_fin, empleado_id: filtro.empleado }) //, departamento_responsable_id: departamento })
 
           ticketsConSolucion.value = result.tiemposTicketsFinalizados
           cantTicketsCreados.value = result.cantTicketsCreados
@@ -254,25 +260,53 @@ export default defineComponent({
           // Grafico empleado consultado
           ticketsPorEstado.value = result.ticketsPorEstado
           const graficoTicketsPorEstado = contarTicketsEmpleado(result.ticketsPorEstado)
+          // console.log(graficoTicketsPorEstado)
           const labels3 = graficoTicketsPorEstado.map((item) => item.estado)
           const valores3 = graficoTicketsPorEstado.map((item) => item.total_tickets)
           const colores3 = graficoTicketsPorEstado.map((item) => mapearColor(item.estado))
           ticketsPorEstadoBar.value = mapearDatos(labels3, valores3, 'Cantidad de tickets', colores3)
 
+          console.log('1')
+
           cantidadesTicketsSolicitadosPorDepartamento.value = result.ticketsCreadosADepartamentos
           const graficoTicketsCreadosDepartamento = contarTicketsDepartamento(result.ticketsCreadosADepartamentos)
           const labels = graficoTicketsCreadosDepartamento.map((item) => item.departamento_responsable)
           const valores = graficoTicketsCreadosDepartamento.map((item) => item.total_tickets)
-          const colores1 = graficoTicketsCreadosDepartamento.map((item) => mapearColorDepartamentos(item.departamento_responsable))
+          const colores1 = graficoTicketsCreadosDepartamento.map((item) => generarColorAzulPastelClaro()) //mapearColorDepartamentos(item.departamento_responsable))
           cantidadesTicketsSolicitadosPorDepartamentoBar.value = mapearDatos(labels, valores, 'Cantidad de tickets creados a los departamentos', colores1)
+
+          console.log('2')
 
           cantidadesTicketsRecibidosPorDepartamento.value = result.ticketsRecibidosPorDepartamentos
           const graficoTicketsRecibidosDepartamento = contarTicketsDepartamentoSolicitante(result.ticketsRecibidosPorDepartamentos)
           const labels2 = graficoTicketsRecibidosDepartamento.map((item) => item.departamento_solicitante)
           const valores2 = graficoTicketsRecibidosDepartamento.map((item) => item.total_tickets)
-          const colores2 = graficoTicketsRecibidosDepartamento.map((item) => mapearColorDepartamentos(item.departamento_solicitante))
+          const colores2 = graficoTicketsRecibidosDepartamento.map((item) => generarColorAzulPastelClaro()) //mapearColorDepartamentos(item.departamento_solicitante))
           cantidadesTicketsRecibidosPorDepartamentoBar.value = mapearDatos(labels2, valores2, 'Cantidad de tickets recibidos por los departamentos', colores2)
 
+          // Tiempos
+          // const tiemposTicketsFinalizadosPorDepartamento = tiemposTicketsFinalizadosPorDepartamento
+          // listados.tiemposTicketsFinalizadosPorDepartamento = result.tiemposTicketsFinalizadosPorDepartamento
+          console.log('10')
+        } catch (e) {
+          console.log(e)
+        } finally {
+
+          cargando.desactivar()
+        }
+      }
+    }
+
+    async function consultarDepartamento() {
+      if (await v$.value.$validate()) {
+        cargando.activar()
+
+        try {
+
+          const { result } = await dashboardTicketController.listar({ fecha_inicio: filtro.fecha_inicio, fecha_fin: filtro.fecha_fin, departamento_responsable_id: filtro.departamento })
+          // console.log(result)
+
+          // Grafico de pastel
           // Graficos estadisticos del empleado
           ticketsPorDepartamentoEstadoAsignado.value = await result.ticketsPorDepartamentoEstadoAsignado
           const graficoTicketsPorDepartamentoEstadoAsignado = contarTicketsResponsable(result.ticketsPorDepartamentoEstadoAsignado) // <--
@@ -281,12 +315,16 @@ export default defineComponent({
           const colores4 = graficoTicketsPorDepartamentoEstadoAsignado.map(() => generarColorAzulPastelClaro())
           ticketsPorDepartamentoEstadoAsignadoBar.value = mapearDatos(labels4, valores4, 'Cantidad de tickets del departamento con filtro por estado', colores4)
 
+          console.log('4')
+
           ticketsPorDepartamentoEstadoReasignado.value = result.ticketsPorDepartamentoEstadoReasignado
           const graficoTicketsPorDepartamentoEstadoReasignado = contarTicketsResponsable(result.ticketsPorDepartamentoEstadoReasignado)
           const labels5 = graficoTicketsPorDepartamentoEstadoReasignado.map((item) => item.responsable)
           const valores5 = graficoTicketsPorDepartamentoEstadoReasignado.map((item) => item.total_tickets)
           const colores5 = graficoTicketsPorDepartamentoEstadoReasignado.map(() => generarColorAzulPastelClaro())
           ticketsPorDepartamentoEstadoReasignadoBar.value = mapearDatos(labels5, valores5, 'Cantidad de tickets del departamento con filtro por estado', colores5)
+
+          console.log('5')
 
           ticketsPorDepartamentoEstadoEjecutando.value = result.ticketsPorDepartamentoEstadoEjecutando
           const graficoTicketsPorDepartamentoEstadoEjecutando = contarTicketsResponsable(result.ticketsPorDepartamentoEstadoEjecutando)
@@ -295,6 +333,8 @@ export default defineComponent({
           const colores6 = graficoTicketsPorDepartamentoEstadoEjecutando.map(() => generarColorAzulPastelClaro())
           ticketsPorDepartamentoEstadoEjecutandoBar.value = mapearDatos(labels6, valores6, 'Cantidad de tickets del departamento con filtro por estado', colores6)
 
+          console.log('6')
+
           ticketsPorDepartamentoEstadoPausado.value = result.ticketsPorDepartamentoEstadoPausado
           const graficoTicketsPorDepartamentoEstadoPausado = contarTicketsResponsable(result.ticketsPorDepartamentoEstadoPausado)
           const labels7 = graficoTicketsPorDepartamentoEstadoPausado.map((item) => item.responsable)
@@ -302,12 +342,17 @@ export default defineComponent({
           const colores7 = graficoTicketsPorDepartamentoEstadoPausado.map(() => generarColorAzulPastelClaro())
           ticketsPorDepartamentoEstadoPausadoBar.value = mapearDatos(labels7, valores7, 'Cantidad de tickets del departamento con filtro por estado', colores7)
 
+          console.log('7')
+
+          listados.ticketsPorDepartamentoEstadoFinalizadoSolucionado = result.ticketsPorDepartamentoEstadoFinalizadoSolucionado
           ticketsPorDepartamentoEstadoFinalizadoSolucionado.value = result.ticketsPorDepartamentoEstadoFinalizadoSolucionado
           const graficoTicketsPorDepartamentoEstadoFinalizadoSolucionado = contarTicketsResponsable(result.ticketsPorDepartamentoEstadoFinalizadoSolucionado)
           const labels8 = graficoTicketsPorDepartamentoEstadoFinalizadoSolucionado.map((item) => item.responsable)
           const valores8 = graficoTicketsPorDepartamentoEstadoFinalizadoSolucionado.map((item) => item.total_tickets)
           const colores8 = graficoTicketsPorDepartamentoEstadoFinalizadoSolucionado.map(() => generarColorAzulPastelClaro())
           ticketsPorDepartamentoEstadoFinalizadoSolucionadoBar.value = mapearDatos(labels8, valores8, 'Cantidad de tickets del departamento con filtro por estado', colores8)
+
+          console.log('8')
 
           ticketsPorDepartamentoEstadoFinalizadoSinSolucion.value = result.ticketsPorDepartamentoEstadoFinalizadoSinSolucion
           const graficoTicketsPorDepartamentoEstadoFinalizadoSinSolucion = contarTicketsResponsable(result.ticketsPorDepartamentoEstadoFinalizadoSinSolucion)
@@ -316,11 +361,24 @@ export default defineComponent({
           const colores9 = graficoTicketsPorDepartamentoEstadoFinalizadoSinSolucion.map(() => generarColorAzulPastelClaro())
           ticketsPorDepartamentoEstadoFinalizadoSinSolucionBar.value = mapearDatos(labels9, valores9, 'Cantidad de tickets del departamento con filtro por estado', colores9)
 
+          console.log('9')
+
           ticketsPorDepartamentoEstadoCalificado.value = result.ticketsPorDepartamentoEstadoCalificado
           const labels10 = result.ticketsPorDepartamentoEstadoCalificado.map((item) => item.responsable)
           const valores10 = result.ticketsPorDepartamentoEstadoCalificado.map((item) => item.total_tickets)
-          const colores10 = result.ticketsPorDepartamentoEstadoCalificado.map((item) => generarColorAzulPastelClaro())
+          const colores10 = result.ticketsPorDepartamentoEstadoCalificado.map(() => generarColorAzulPastelClaro())
           ticketsPorDepartamentoEstadoCalificadoBar.value = mapearDatos(labels10, valores10, 'Cantidad de tickets del departamento con filtro por estado', colores10)
+
+          // Linea de tiempo
+          listados.ticketsPorDepartamentoEstadoFinalizadoSolucionado = result.ticketsPorDepartamentoEstadoFinalizadoSolucionado
+          const labels11 = result.ticketsPorDepartamentoEstadoFinalizadoSolucionado.map((item) => item.codigo)
+          const valores11 = result.ticketsPorDepartamentoEstadoFinalizadoSolucionado.map((item) => item.tiempo_hasta_finalizar_horas)
+          const colores11 = result.ticketsPorDepartamentoEstadoFinalizadoSolucionado.map((item) => generarColorAzulPastelClaro())
+          promedioTiemposLine.value = mapearDatos(labels11, valores11, 'Tiempo ocupado (h)', colores11)
+
+          listados.tiempoPromedio = result.tiempoPromedio
+          listados.totalTicketsFinalizados = result.totalTicketsFinalizados
+
         } catch (e) {
           console.log(e)
         } finally {
@@ -328,6 +386,11 @@ export default defineComponent({
           cargando.desactivar()
         }
       }
+    }
+
+    function consultarDesdeFechas() {
+      if (mostrarSeccionEmpleado.value) consultar()
+      if (mostrarSeccionDepartamento.value) consultarDepartamento()
     }
 
     function mapearDatos(labels: string[], valores: string[], titulo: string, colores: any[]) {
@@ -354,24 +417,6 @@ export default defineComponent({
         case estadosTickets.FINALIZADO_SIN_SOLUCION: return '#9ba98c'
         case estadosTickets.FINALIZADO: return '#8bc34a'
         case estadosTickets.CANCELADO: return '#c31d25'
-      }
-    }
-
-    function mapearColorDepartamentos(estadoTicket: keyof typeof estadosTickets) {
-      switch (estadoTicket) {
-        case departamentos.xtrim_cuenca: return '#9fa8da'
-        case departamentos.medico: return '#78909c'
-        case departamentos.activos_fijos: return '#ffc107'
-        case departamentos.gerencia: return '#616161'
-        case departamentos.proyectos: return '#8bc34a'
-        case departamentos.recursos_humanos: return '#bcafe7'
-        case departamentos.tecnico: return '#987795'
-        case departamentos.contabilidad: return '#96c4e7'
-        case departamentos.informatica: return '#c4becb'
-        case departamentos.bodega: return '#eb548c'
-        case departamentos.sso: return '#ab8ba7'
-        case departamentos.vehiculos: return '#a98d7c'
-        case departamentos.comercial: return '#aaa698'
       }
     }
 
@@ -427,6 +472,36 @@ export default defineComponent({
       }
     }
 
+    function clickGraficoLineaTiempo(data) {
+      if (!data.label) return
+
+      const config: CustomActionPrompt = reactive({
+        mensaje: 'Seleccione una opción',
+        accion: async (opcion) => {
+          ticketStore.filaTicket = listados.ticketsPorDepartamentoEstadoFinalizadoSolucionado.filter((ticket: Ticket) => ticket.codigo === data.label)[0]
+          switch (opcion) {
+            case 'MAS_DETALLES':
+              modales.abrirModalEntidad('DetalleCompletoTicket')
+              break
+            case 'SEGUIMIENTO':
+              modales.abrirModalEntidad('SeguimientoTicketPage')
+              break
+          }
+        },
+        tipo: 'radio',
+        items: [
+          {
+            label: 'Más detalles',
+            value: 'MAS_DETALLES',
+          },
+          {
+            label: 'Seguimiento',
+            value: 'SEGUIMIENTO',
+          }
+        ]
+      })
+      promptItems(config)
+    }
 
     function contarTicketsEmpleado(tickets: Ticket[]): any[] {
       const conteo = tickets.reduce((acumulador: any, ticket) => {
@@ -447,10 +522,12 @@ export default defineComponent({
       const conteo = tickets.reduce((acumulador: any, ticket) => {
         const departamento_responsable = ticket.departamento_responsable
 
-        const elementoExistente: any = acumulador.find((item: any) => item.departamento_responsable === departamento_responsable)
+        if (departamento_responsable) {
+          const elementoExistente: any = acumulador.find((item: any) => item.departamento_responsable === departamento_responsable)
 
-        if (!elementoExistente) acumulador.push({ departamento_responsable, total_tickets: 1 })
-        else elementoExistente.total_tickets++
+          if (!elementoExistente) acumulador.push({ departamento_responsable, total_tickets: 1 })
+          else elementoExistente.total_tickets++
+        }
 
         return acumulador
       }, [])
@@ -488,15 +565,23 @@ export default defineComponent({
       return conteo
     }
 
+    function saludar() {
+      console.log('hola')
+    }
+
     return {
-      creados,
+      saludar,
+      promedioTiemposLine,
+      // creados,
       tabsDepartamento,
       tabsEmpleado,
       opcionesDepartamento,
       opcionesEmpleado,
+      opcionesFiltroDepartamentoEmpleado,
       categoriaGraficosEmpleado,
       clickGraficoTicketsEmpleado,
       clickGraficoTicketsDepartamento,
+      clickGraficoLineaTiempo,
       modoUnaColumna: ref(false),
       tabsTickets,
       ordenarEmpleados,
@@ -529,18 +614,22 @@ export default defineComponent({
       listadosAuxiliares,
       tiposJornadas,
       optionsPie,
+      optionsLine,
       mostrarTitulosSeccion,
       accionesTabla,
       modales,
       empleadoResponsableDepartamento,
       ticketsEmpleadoResponsable,
       esResponsableDepartamento,
+      filtrarDepartamentos,
+      departamentos,
       // Configuracion columnas
       configuracionColumnasSubtareasRealizadasPorRegion,
       configuracionColumnasSubtareasRealizadasPorGrupo,
       configuracionColumnasSubtareasRealizadasPorGrupoTiposTrabajosEmergencia,
       // Consultar
       consultar,
+      consultarDepartamento,
       // Listados
       cantidadesTicketsSolicitadosPorDepartamento,
       cantidadesTicketsRecibidosPorDepartamento,
@@ -567,6 +656,10 @@ export default defineComponent({
       botonVer,
       btnSeguimiento,
       ticketsPorEstadoListado,
+      listados,
+      consultarDesdeFechas,
+      mostrarSeccionDepartamento,
+      mostrarSeccionEmpleado,
     }
-  },
+  }
 })

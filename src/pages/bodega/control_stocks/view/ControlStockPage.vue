@@ -3,6 +3,8 @@
     :mixin="mixin"
     :configuracionColumnas="configuracionColumnas"
     titulo-pagina="Control de stock"
+    :ajustarCeldas="true"
+    :accion1Header="btnActualizarStock"
   >
     <template #formulario>
       <q-form @submit.prevent>
@@ -29,7 +31,9 @@
             >
               <template v-slot:no-option>
                 <q-item>
-                  <q-item-section class="text-grey"> No hay resultados </q-item-section>
+                  <q-item-section class="text-grey">
+                    No hay resultados
+                  </q-item-section>
                 </q-item>
               </template>
             </q-select>
@@ -70,7 +74,9 @@
               </template>
               <template v-slot:no-option>
                 <q-item>
-                  <q-item-section class="text-grey"> No hay resultados </q-item-section>
+                  <q-item-section class="text-grey">
+                    No hay resultados
+                  </q-item-section>
                 </q-item>
               </template>
             </q-select>
@@ -89,6 +95,7 @@
               use-input
               input-debounce="0"
               @filter="filtrarSucursales"
+              @popup-show="ordenarLista(opciones_sucursales, 'lugar')"
               @update:model-value="seleccionarPropietario"
               :error="!!v$.sucursal_id.$errors.length"
               error-message="Debes seleccionar una sucursal"
@@ -109,7 +116,7 @@
             <label class="q-mb-sm block">Propietario</label>
             <q-select
               v-model="stock.cliente_id"
-              :options="opciones_clientes"
+              :options="clientes"
               transition-show="scale"
               transition-hide="scale"
               options-dense

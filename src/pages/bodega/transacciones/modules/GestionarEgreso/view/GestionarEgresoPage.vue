@@ -12,10 +12,11 @@
       @tab-seleccionado="filtrarTabs"
       :accion1="botonVerTransaccion"
       :accion2="botonImprimir"
-      tabDefecto="PENDIENTE"
+      :ajustarCeldas="true"
+      :tabDefecto="tabDefecto"
     ></essential-table-tabs>
 
-    <modal-entidad :comportamiento="modales"></modal-entidad>
+    <modal-entidad :comportamiento="modales" @guardado="(data) => guardado(data)"></modal-entidad>
   </q-page>
 </template>
 <script src="./GestionarEgresoPage.ts"></script>

@@ -39,14 +39,13 @@ export const configuracionColumnasTransaccionIngreso: ColumnConfig<Transaccion>[
         align: 'left',
         sortable: true,
     },
-    /*
     {
-        name: 'fecha_limite',
-        field: 'fecha_limite',
-        label: 'Fecha límite',
+        name: 'proveedor',
+        field: 'proveedor',
+        label: 'Proveedor',
         align: 'left',
         sortable: true,
-    }, */
+    },
     {
         name: 'motivo',
         field: 'motivo',

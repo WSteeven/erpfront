@@ -286,7 +286,6 @@
           push
           rounded
           no-caps
-          glossy
           @click="accion1Header.accion"
         >
           <q-icon
@@ -295,7 +294,7 @@
             class="q-pr-sm"
           ></q-icon>
           <span>{{ accion1Header.titulo }}</span>
-          <q-tooltip class="bg-dark">{{ accion1Header.tooltip }}</q-tooltip>
+          <q-tooltip v-if="accion1Header.tooltip" class="bg-dark">{{ accion1Header.tooltip }}</q-tooltip>
         </q-btn>
 
         <!-- Boton 2 Header -->
@@ -305,7 +304,6 @@
           :class="{ 'q-mb-sm': $q.screen.xs, 'full-width': $q.screen.xs }"
           push
           rounded
-          glossy
           no-caps
           @click="accion2Header.accion"
         >
@@ -315,6 +313,7 @@
             class="q-pr-sm"
           ></q-icon>
           <span>{{ accion2Header.titulo }}</span>
+          <q-tooltip v-if="accion2Header.tooltip" class="bg-dark">{{ accion2Header.tooltip }}</q-tooltip>
         </q-btn>
 
         <!-- Boton 3 Header -->
@@ -323,7 +322,6 @@
           :color="accion3Header?.color ?? 'primary'"
           :class="{ 'q-mb-sm': $q.screen.xs, 'full-width': $q.screen.xs }"
           push
-          glossy
           rounded
           no-caps
           @click="accion3Header.accion"
@@ -334,6 +332,7 @@
             class="q-pr-sm"
           ></q-icon>
           <span>{{ accion3Header.titulo }}</span>
+          <q-tooltip v-if="accion3Header.tooltip" class="bg-dark">{{ accion3Header.tooltip }}</q-tooltip>
         </q-btn>
 
         <!-- Boton 4 Header -->
@@ -342,7 +341,6 @@
           :color="accion4Header?.color ?? 'primary'"
           :class="{ 'q-mb-sm': $q.screen.xs, 'full-width': $q.screen.xs }"
           push
-          glossy
           rounded
           no-caps
           @click="accion4Header.accion"
@@ -353,6 +351,7 @@
             class="q-pr-sm"
           ></q-icon>
           <span>{{ accion4Header.titulo }}</span>
+          <q-tooltip v-if="accion4Header.tooltip" class="bg-dark">{{ accion4Header.tooltip }}</q-tooltip>
         </q-btn>
 
         <!-- Boton 5 Header -->
@@ -361,7 +360,6 @@
           :color="accion5Header?.color ?? 'primary'"
           :class="{ 'q-mb-sm': $q.screen.xs, 'full-width': $q.screen.xs }"
           push
-          glossy
           rounded
           no-caps
           @click="accion5Header.accion"
@@ -372,6 +370,30 @@
             class="q-pr-sm"
           ></q-icon>
           <span>{{ accion5Header.titulo }}</span>
+          <q-tooltip v-if="accion5Header.tooltip" class="bg-dark">{{
+            accion5Header.tooltip
+          }}</q-tooltip>
+        </q-btn>
+
+        <!-- Boton 6 Header -->
+        <q-btn
+          v-if="extraerVisible(accion6Header, props)"
+          :color="accion6Header?.color ?? 'primary'"
+          :class="{ 'q-mb-sm': $q.screen.xs, 'full-width': $q.screen.xs }"
+          push
+          rounded
+          no-caps
+          @click="accion6Header.accion"
+        >
+          <q-icon
+            :name="extraerIcono(accion6Header) ?? ''"
+            size="xs"
+            class="q-pr-sm"
+          ></q-icon>
+          <span>{{ accion6Header.titulo }}</span>
+          <q-tooltip v-if="accion6Header.tooltip" class="bg-dark">{{
+            accion6Header.tooltip
+          }}</q-tooltip>
         </q-btn>
       </div>
     </template>
@@ -391,7 +413,6 @@
               v-if="permitirConsultar"
               class="bg-primary q-px-md"
               dense
-              glossy
               @click="
                 consultar({ entidad: props.row, posicion: props.rowIndex })
               "
@@ -404,7 +425,6 @@
             <q-btn
               v-if="permitirEditar"
               class="bg-secondary q-px-md"
-              glossy
               dense
               @click="editar({ entidad: props.row, posicion: props.rowIndex })"
             >
@@ -416,7 +436,6 @@
             <q-btn
               v-if="permitirEliminar"
               class="bg-negative q-px-md"
-              glossy
               dense
               @click="
                 eliminar({ entidad: props.row, posicion: props.rowIndex })
@@ -480,7 +499,6 @@
                   v-if="permitirConsultar"
                   class="bg-btn-table"
                   round
-                  glossy
                   dense
                   @click="
                     consultar({ entidad: props.row, posicion: props.rowIndex })
@@ -495,7 +513,6 @@
                   v-if="permitirEditar"
                   class="bg-btn-table"
                   round
-                  glossy
                   color="secondary"
                   dense
                   @click="
@@ -516,7 +533,6 @@
                   class="bg-btn-table"
                   round
                   color="negative"
-                  glossy
                   dense
                   @click="
                     eliminar({ entidad: props.row, posicion: props.rowIndex })
@@ -644,6 +660,61 @@
                     >{{ 'RUTA COMPLETADA' }}
                   </q-chip>
 
+                  <q-chip
+                    v-if="col.value === 'TICKET REASIGNADO'"
+                    class="bg-blue-1 text-blue"
+                  >
+                    <q-icon
+                      name="bi-arrow-left-right"
+                      size="14px"
+                      class="q-mr-xs"
+                    ></q-icon>
+                    <small>
+                      {{ 'TICKET REASIGNADO' }}
+                    </small>
+                  </q-chip>
+
+                  <q-chip
+                    v-if="col.value === 'TICKET PAUSADO'"
+                    class="bg-grey-2 text-grey-8"
+                  >
+                    <q-icon
+                      name="bi-pause-circle-fill"
+                      color="text-grey-8"
+                      class="q-mr-xs"
+                      size="14px"
+                    ></q-icon>
+                    <small>
+                      {{ 'TICKET PAUSADO' }}
+                    </small>
+                  </q-chip>
+
+                  <q-chip
+                    v-if="col.value === 'TICKET EJECUTADO'"
+                    class="bg-yellow-1 text-yellow-8"
+                  >
+                    <q-icon
+                      name="bi-play-circle-fill"
+                      color="text-primary"
+                      size="14px"
+                      class="q-mr-xs"
+                    ></q-icon
+                    ><small>{{ 'TICKET EJECUTADO' }}</small>
+                  </q-chip>
+
+                  <q-chip
+                    v-if="col.value === 'TICKET FINALIZADO'"
+                    class="bg-green-1 text-positive"
+                  >
+                    <q-icon
+                      name="bi-check-circle-fill"
+                      color="positive"
+                      size="14px"
+                      class="q-mr-xs"
+                    ></q-icon
+                    ><small>{{ 'TICKET FINALIZADO' }}</small>
+                  </q-chip>
+
                   <!--<q-chip
                     v-if="col.value === 'TICKET TRANSFERIDO'"
                     class="bg-green-1 text-positive"
@@ -670,6 +741,7 @@
                       'es_responsable',
                       'tamanio_bytes',
                       'tiene_subtareas',
+                      'observacion',
                     ].includes(col.name)
                   "
                   >{{ col.value }}</span
@@ -683,7 +755,13 @@
 
     <!-- Estilos de celdas -->
     <template #body-cell-despachado="props">
-      <q-td :props="props" class="bg-lime-2">
+      <q-td
+        :props="props"
+        :class="{
+          'bg-lime-2': !$q.dark.isActive,
+          'bg-green-10': $q.dark.isActive,
+        }"
+      >
         <q-badge color="positive">
           {{ props.value }}
         </q-badge>
@@ -691,7 +769,14 @@
     </template>
 
     <template #body-cell-total_cantidad_utilizada="props">
-      <q-td :props="props" class="bg-grey-2 text-bold">
+      <q-td
+        :props="props"
+        class="text-bold"
+        :class="{
+          'bg-grey-2': !$q.dark.isActive,
+          'bg-grey-10': $q.dark.isActive,
+        }"
+      >
         <!-- <q-badge color="blue-grey-6"> -->
         {{ props.value }}
         <!-- </q-badge> -->
@@ -699,7 +784,13 @@
     </template>
 
     <template #body-cell-stock_actual="props">
-      <q-td :props="props" class="bg-indigo-1">
+      <q-td
+        :props="props"
+        :class="{
+          'bg-indigo-1': !$q.dark.isActive,
+          'bg-indigo-10': $q.dark.isActive,
+        }"
+      >
         <q-badge color="indigo">
           {{ props.value }}
         </q-badge>
@@ -707,7 +798,13 @@
     </template>
 
     <template #body-cell-devuelto="props">
-      <q-td :props="props" class="bg-lime-2">
+      <q-td
+        :props="props"
+        :class="{
+          'bg-lime-2': !$q.dark.isActive,
+          'bg-green-10': $q.dark.isActive,
+        }"
+      >
         <q-badge color="positive">
           {{ props.value }}
         </q-badge>
@@ -980,6 +1077,18 @@
         /></q-chip>
       </q-td>
     </template>
+    <template #body-cell-grava_iva="props">
+      <q-td :props="props">
+        <q-chip
+          v-if="props.value == true"
+          :class="{ 'bg-green-1': !$q.dark.isActive }"
+          ><q-icon name="bi-toggle-on"
+        /></q-chip>
+        <q-chip v-else :class="{ 'bg-red-1': !$q.dark.isActive }"
+          ><q-icon name="bi-toggle-off"
+        /></q-chip>
+      </q-td>
+    </template>
     <!-- corregir esto para que sea dinamico -->
     <template #body-cell-condiciones="props">
       <q-td :props="props">
@@ -1013,10 +1122,46 @@
           "
           >DAÑADO</q-chip
         >
-        <q-chip v-if="
+        <q-chip
+          v-if="
             props.value == estadosCondicionesId.buen_estado ||
             props.value == estadosCondicionesValue.buen_estado
-          ">BUEN ESTADO</q-chip>
+          "
+          >BUEN ESTADO</q-chip
+        >
+      </q-td>
+    </template>
+    <!-- ordenes de compra -->
+    <template #body-cell-realizada="props">
+      <q-td :props="props">
+        <q-icon
+          v-if="props.value"
+          name="bi-check-circle-fill"
+          color="positive"
+          size="sm"
+        ></q-icon>
+        <q-icon
+          v-if="!props.value"
+          name="bi-x-circle-fill"
+          color="negative"
+          size="sm"
+        ></q-icon>
+      </q-td>
+    </template>
+    <template #body-cell-pagada="props">
+      <q-td :props="props">
+        <q-icon
+          v-if="props.value"
+          name="bi-check-circle-fill"
+          color="positive"
+          size="sm"
+        ></q-icon>
+        <q-icon
+          v-if="!props.value"
+          name="bi-x-circle-fill"
+          color="negative"
+          size="sm"
+        ></q-icon>
       </q-td>
     </template>
     <!-- devoluciones de bodega -->
@@ -1254,13 +1399,9 @@
       <q-td :props="props">
         <q-chip
           v-if="props.value === 'TICKET REASIGNADO'"
-          class="bg-green-1 text-positive"
+          class="bg-blue-1 text-blue"
         >
-          <q-icon
-            name="bi-check-circle-fill"
-            color="positive"
-            class="q-mr-xs"
-          ></q-icon
+          <q-icon name="bi-arrow-left-right" class="q-mr-xs"></q-icon
           >{{ 'TICKET REASIGNADO' }}
         </q-chip>
 
@@ -1276,8 +1417,39 @@
           >{{ 'TICKET PAUSADO' }}
         </q-chip>
 
+        <q-chip
+          v-if="props.value === 'TICKET EJECUTADO'"
+          class="bg-yellow-1 text-yellow-8"
+        >
+          <q-icon
+            name="bi-play-circle-fill"
+            color="text-primary"
+            class="q-mr-xs"
+          ></q-icon
+          >{{ 'TICKET EJECUTADO' }}
+        </q-chip>
+
+        <q-chip
+          v-if="props.value === 'TICKET FINALIZADO'"
+          class="bg-green-1 text-positive"
+        >
+          <q-icon
+            name="bi-check-circle-fill"
+            color="positive"
+            class="q-mr-xs"
+          ></q-icon
+          >{{ 'TICKET FINALIZADO' }}
+        </q-chip>
+
         <span
-          v-if="!['TICKET REASIGNADO', 'TICKET PAUSADO'].includes(props.value)"
+          v-if="
+            ![
+              'TICKET REASIGNADO',
+              'TICKET PAUSADO',
+              'TICKET EJECUTADO',
+              'TICKET FINALIZADO',
+            ].includes(props.value)
+          "
           >{{ props.value }}</span
         >
       </q-td>

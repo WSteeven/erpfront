@@ -31,7 +31,7 @@
           class="full-width q-px-lg"
         >
           <div class="q-mb-sm">
-            <h2>Bienvenidos a JPCONSTRUCRED</h2>
+            <h2>Bienvenidos a {{ nombreEmpresa }}</h2>
             <span>Recupera tu cuenta</span>
           </div>
 

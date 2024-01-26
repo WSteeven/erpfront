@@ -3,11 +3,14 @@
     :mixin="mixin"
     :configuracionColumnas="configuracionColumnas"
     titulo-pagina="Proveedores"
+    :accion1Header="botonDescargarProveedores"
     :accion1="botonDesactivarProveedor"
     :accion2="botonActivarProveedor"
     :accion3="botonCalificarProveedor"
     :accion4="botonVerMiCalificacionProveedor"
     :accion5="botonVerCalificacionProveedor"
+    :accion6="botonActualizarCalificacion"
+    :ajustarCeldas="true"
     :puedeExportar="true"
     :listar="false"
   >
@@ -353,6 +356,22 @@
               >
               </q-input>
             </div>
+            <!-- correo-->
+            <div
+              class="col-12 col-md-3"
+              v-if="proveedor.correo || accion == acciones.nuevo"
+            >
+              <label class="q-mb-sm block">Correo</label>
+              <q-input
+                v-model="proveedor.correo"
+                autogrow
+                placeholder="Opcional"
+                hint="Correo de la sucursal"
+                :disable="disabled"
+                outlined
+                dense
+              ></q-input>
+            </div>
             <!-- Direccion  -->
             <div class="col-12 col-md-6">
               <label class="q-mb-sm block">Dirección</label>
@@ -393,7 +412,7 @@
                 class="q-mt-lg q-pt-md"
                 v-model="esReferido"
                 label="¿Es referido?"
-                :disable="disabled || soloLectura"
+                :disable="disabled"
                 @update:model-value="
                   () =>
                     (proveedor.referencia = esReferido
@@ -652,7 +671,7 @@
                     >
                       <template #boton-subir>
                         <q-btn
-                          v-if="mostrarBotonSubir"
+                          v-if="false"
                           color="positive"
                           push
                           no-caps

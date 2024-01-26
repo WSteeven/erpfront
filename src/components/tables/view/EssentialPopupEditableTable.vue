@@ -569,10 +569,10 @@
                 </span>
 
                 <div :class="{ 'q-mb-xs': $q.screen.xs }">
-                  <estados-subtareas
+                  <!-- <estados-subtareas
                     v-if="col.name === 'estado'"
                     :propsTable="col"
-                  />
+                  /> -->
 
                   <q-chip
                     v-if="col.value === 'EN CAMINO'"
@@ -622,6 +622,7 @@
     </template>
 
     <!-- Edicion de celdas -->
+    <!-- Celdas normales -->
     <template v-slot:body-cell="props" v-if="permitirEditarCeldas">
       <q-td :key="props.col.name" :props="props">
         {{ props.row[props.col.name] }}
@@ -691,35 +692,18 @@
         </q-popup-edit>
       </q-td>
     </template>
-    <!--Select de producto -->
-    <template #body-cell-producto="props">
+    <!-- Selector de Imagen
+    <template #body-cell-fotografia="props">
       <q-td :key="props.col.name" :props="props">
-        <q-select
-          v-if="props.col.type === 'select' && props.col.editable"
-          v-model="props.row[props.col.name]"
-          :options="props.col.options"
-          options-dense
-          dense
-          outlined
-          :use-input="props.col.filtrar"
-          input-debounce="0"
-          @filter="props.col.filtro"
-          :disable="!permitirEditarCeldas"
-          :options-label="(v) => v.label"
-          :options-value="(v) => v.value"
-          emit-value
-          map-options
-          ><template v-slot:no-option>
-            <q-item>
-              <q-item-section class="text-grey">
-                No hay resultados
-              </q-item-section>
-            </q-item>
-          </template></q-select
-        >
-        <span v-else>{{ props.row[props.col.name] }}</span>
+        <selector-imagen
+              :imagen="props.row[props.col.name]"
+              file_extensiones=".jpg, image/*"
+              @update:modelValue="(data) => (props.row[props.col.name] = data)"
+              :hint="props.row[props.col.hint]"
+            >
+            </selector-imagen>
       </q-td>
-    </template>
+    </template> -->
     <!--Select de unidad de medida-->
     <template #body-cell-unidad_medida="props">
       <q-td :key="props.col.name" :props="props">

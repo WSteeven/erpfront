@@ -1,10 +1,10 @@
 import { configuracionColumnasEmpleadoGrupo } from 'gestionTrabajos/subtareas/domain/configuracionColumnasEmpleadoGrupo'
 import { useFiltrosListadosTarea } from 'pages/gestionTrabajos/tareas/application/FiltrosListadosTarea'
-import { computed, defineComponent, onMounted, Ref, ref, UnwrapRef, watch, watchEffect } from 'vue'
+import { computed, defineComponent, Ref, ref, UnwrapRef, watch, watchEffect } from 'vue'
 import { Subtarea } from 'pages/gestionTrabajos/subtareas/domain/Subtarea'
 import { modosAsignacionTrabajo } from 'config/tareas.utils'
+import { accionesTabla, rolesSistema } from 'config/utils'
 import { requiredIf } from 'shared/i18n-validators'
-import { acciones, accionesTabla, rolesSistema } from 'config/utils'
 import useVuelidate from '@vuelidate/core'
 
 // Componentes
@@ -17,13 +17,12 @@ import { useBotonesTablaDesignacionSubtarea } from 'pages/gestionTrabajos/subtar
 import { ContenedorSimpleMixin } from 'shared/contenedor/modules/simple/application/ContenedorSimpleMixin'
 import { SubtareaController } from 'pages/gestionTrabajos/subtareas/infraestructure/SubtareaController'
 import { EmpleadoController } from 'pages/recursosHumanos/empleados/infraestructure/EmpleadoController'
+import { extraerRol, isAxiosError, notificarMensajesError, ordernarListaString } from 'shared/utils'
 import { GrupoController } from 'pages/recursosHumanos/grupos/infraestructure/GrupoController'
-import { Empleado } from 'pages/recursosHumanos/empleados/domain/Empleado'
 import { StatusEssentialLoading } from 'components/loading/application/StatusEssentialLoading'
-import { extraerRol, isAxiosError, notificarMensajesError } from 'shared/utils'
-import { useNotificaciones } from 'shared/notificaciones'
-import { CustomActionTable } from 'components/tables/domain/CustomActionTable'
 import { EmpleadoGrupo } from 'pages/gestionTrabajos/subtareas/domain/EmpleadoGrupo'
+import { Empleado } from 'pages/recursosHumanos/empleados/domain/Empleado'
+import { useNotificaciones } from 'shared/notificaciones'
 
 export default defineComponent({
   components: {
@@ -193,6 +192,10 @@ export default defineComponent({
       })
     }
 
+    function ordenarEmpleados() {
+      empleados.value.sort((a: Empleado, b: Empleado) => ordernarListaString(a.apellidos!, b.apellidos!))
+    }
+
     return {
       seleccionarGrupo,
       seleccionarEmpleado,
@@ -203,6 +206,7 @@ export default defineComponent({
       columnasEmpleado: [...configuracionColumnasEmpleadoGrupo, accionesTabla],
       configuracionColumnasEmpleadoGrupo,
       empleadosGrupo,
+      ordenarEmpleados,
       // empleadosAdicionales,
       grupos,
       filtrarGrupos,

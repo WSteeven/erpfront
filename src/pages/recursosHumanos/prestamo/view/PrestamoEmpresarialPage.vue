@@ -1,5 +1,14 @@
 <template>
-  <tab-layout :mixin="mixin" :configuracionColumnas="configuracionColumnas">
+  <tab-layout-filter-tabs2
+    :mixin="mixin"
+    :configuracionColumnas="configuracionColumnas"
+    :permitirEliminar="false"
+    :accion1="btnEliminarPrestamoEmpresarial"
+    :tabOptions="tabPrestamoEmpresarial"
+    :filtrar="filtrarPrestamoEmpresarial"
+    tabDefecto="ACTIVO"
+    :forzarListar="true"
+  >
     <template #formulario>
       <q-form @submit.prevent>
         <div class="row q-col-gutter-sm q-py-md">
@@ -204,13 +213,14 @@
         :accion1="botonmodificar_couta"
         :accion2="botonpagar_couta"
         :accion3="botonaplazar_couta"
+        :accion4="botoneditar_total_couta"
       >
       </essential-table>
       <label v-if="esMayorPrestamo" class="q-mb-sm text-red text-h6 block"
         >La suma de todas las coutas no debe superar al valor del prestamo</label
       >
     </template>
-  </tab-layout>
+  </tab-layout-filter-tabs2>
 </template>
 <!-- :error="v$.nombre.$errors"  -->
 

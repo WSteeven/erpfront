@@ -91,7 +91,7 @@ export default defineComponent({
       await obtenerListados({
         empleados: {
           controller: new EmpleadoController(),
-          params: { campos: 'id,nombres,apellidos', departamento_id: departamento }
+          params: { campos: 'id,nombres,apellidos', departamento_id: departamento, estado: 1 }
         },
       })
       empleados.value = listadosAuxiliares.empleados
@@ -111,10 +111,10 @@ export default defineComponent({
               responsable: reagendar.responsable,
             })
 
-            if (ticketStore.filaTicket.responsable_id === reagendar.responsable) {
+            /* if (ticketStore.filaTicket.responsable_id === reagendar.responsable) {
               cargando.desactivar()
               return notificarAdvertencia('Seleccione un empleado diferente al responsable actual.')
-            }
+            } */
 
             // Es el solicitante asigna
             if (authenticationStore.user.id === ticketStore.filaTicket.solicitante_id) {

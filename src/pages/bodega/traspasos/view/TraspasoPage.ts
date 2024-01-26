@@ -31,6 +31,8 @@ import { CustomActionPrompt } from 'components/tables/domain/CustomActionPrompt'
 import { ValidarListadoProductos } from '../application/validaciones/ValidarListadoProductos'
 import { LocalStorage } from 'quasar'
 import { useTraspasoStore } from 'stores/traspaso'
+import { useFiltrosListadosSelects } from 'shared/filtrosListadosGenerales'
+import { ordenarLista } from 'shared/utils'
 
 
 export default defineComponent({
@@ -83,10 +85,10 @@ export default defineComponent({
             ) */
         })
 
-        const opciones_clientes = ref([])
         const opciones_sucursales = ref([])
         const opciones_tareas = ref([])
         const opciones_estados = ref([])
+        const { clientes, filtrarClientes } = useFiltrosListadosSelects(listadosAuxiliares)
 
         //Obtener los listados
         cargarVista(async () => {
@@ -94,7 +96,7 @@ export default defineComponent({
                 clientes: {
                     controller: new ClienteController(),
                     params: {
-                        campos: 'id,empresa_id',
+                        campos: 'id,razon_social',
                         requiere_bodega: 1,
                         estado: 1,
                     },
@@ -104,7 +106,6 @@ export default defineComponent({
                     params: { campos: 'id,codigo_tarea,titulo,cliente_id' }
                 },
             })
-            // traspaso.desde_cliente = listadosAuxiliares.clientes[0]['id']
         })
 
         /**
@@ -189,7 +190,7 @@ export default defineComponent({
 
 
         //configurar los listados
-        opciones_clientes.value = listadosAuxiliares.clientes
+        clientes.value = listadosAuxiliares.clientes
         opciones_estados.value = JSON.parse(LocalStorage.getItem('estados_transacciones')!.toString())
         opciones_sucursales.value =  JSON.parse(LocalStorage.getItem('sucursales')!.toString())
         opciones_tareas.value = listadosAuxiliares.tareas
@@ -199,7 +200,7 @@ export default defineComponent({
             configuracionColumnas: configuracionColumnasTraspasos,
             acciones,
             //listados
-            opciones_clientes,
+            clientes,
             opciones_estados,
             opciones_sucursales,
             opciones_tareas,
@@ -236,6 +237,8 @@ export default defineComponent({
             },
 
             //Filtros
+            filtrarClientes,
+            ordenarLista,
             filtroTareas(val) {
                 const opcionSeleccionada = listadosAuxiliares.tareas.filter((v) => v.id === val)
                 traspaso.hasta_cliente = opcionSeleccionada[0]['cliente_id']

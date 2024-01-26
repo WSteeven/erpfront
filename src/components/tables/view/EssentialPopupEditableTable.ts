@@ -12,9 +12,11 @@ import exportFile from 'quasar/src/utils/export-file.js'
 import CustomButtons from './CustomButtonsTable.vue'
 import BotonesPaginacion from './BotonesPaginacion.vue'
 import EditarTablaModal from './EditarTablaModal.vue'
+import SelectorImagen from 'components/SelectorImagen.vue'
+import TableFilters from './TableFilters2.vue'
 
 export default defineComponent({
-  components: { CustomButtons, BotonesPaginacion, EditarTablaModal, },
+  components: { CustomButtons, BotonesPaginacion, EditarTablaModal, SelectorImagen, TableFilters },
   props: {
     configuracionColumnas: {
       type: Object as () => ColumnConfig<EntidadAuditable>[],
@@ -210,15 +212,15 @@ export default defineComponent({
 
     // Acciones tabla
     const consultar = (data: object) => emit('consultar', data)
-    const editar = (data: any) =>{
+    const editar = (data: any) => {
       emit('editar', data)
 
-      if(props.permitirEditarModal){
+      if (props.permitirEditarModal) {
         fila.value = data.entidad
         posicionFilaEditada.value = data.posicion
         refEditarModal.value.abrir()
       }
-    } 
+    }
     const eliminar = (data: object) => emit('eliminar', data)
 
     //Funciones

@@ -1,99 +1,56 @@
-import { TipoTrabajo } from 'gestionTrabajos/tiposTareas/domain/TipoTrabajo'
-import { Subtarea } from 'pages/gestionTrabajos/subtareas/domain/Subtarea'
-import { computed, Ref, ref, UnwrapRef } from 'vue'
-import { Tarea } from '../domain/Tarea'
 import { CausaIntervencion } from 'pages/gestionTrabajos/causasIntervenciones/domain/CausaIntervencion'
+import { TipoTrabajo } from 'gestionTrabajos/tiposTareas/domain/TipoTrabajo'
+import { computed, Ref, ref, UnwrapRef } from 'vue'
+import { ordernarListaString } from 'shared/utils'
 
-export const useFiltrosListadosTarea = (listadosAuxiliares, entidad?: UnwrapRef<any>) => {// Tarea | Subtarea | any>) => {
-  // - Filtro clientes corporativos
-  const clientes = ref()
+export const useFiltrosListadosTarea = (listadosAuxiliares, entidad?: UnwrapRef<any>) => {
+  // Clientes corporativos
+  const clientes = ref(listadosAuxiliares.clientes)
   function filtrarClientes(val, update) {
-    if (val === '') update(() => clientes.value = listadosAuxiliares.clientes)
-
-    update(() => {
-      const needle = val.toLowerCase()
-      clientes.value = listadosAuxiliares.clientes.filter(
-        (v) => v.razon_social.toLowerCase().indexOf(needle) > -1
-      )
-    })
+    return filtrarLista(val, update, clientes, 'razon_social', listadosAuxiliares.clientes)
   }
 
-  // - Filtro tipos de clientes finales
-  const clientesFinales = ref()
+  // Clientes finales
+  const clientesFinales = ref(listadosAuxiliares.clientes)
   function filtrarClientesFinales(val, update) {
-    if (val === '') update(() => clientesFinales.value = listadosAuxiliares.clientesFinales)
-
-    update(() => {
-      const needle = val.toLowerCase()
-      clientesFinales.value = listadosAuxiliares.clientesFinales.filter(
-        (v) => v.nombres.toLowerCase().indexOf(needle) > -1
-      )
-    })
+    return filtrarLista(val, update, clientesFinales, 'nombres', listadosAuxiliares.clientesFinales)
   }
 
-  // - Filtro supervisores
-  const fiscalizadores = ref()
+  // Fiscalizadores
+  const fiscalizadores = ref(listadosAuxiliares.fiscalizadores)
   function filtrarFiscalizadores(val, update) {
-    if (val === '') update(() => fiscalizadores.value = listadosAuxiliares.supervisores)
-
-    update(() => {
-      const needle = val.toLowerCase()
-      fiscalizadores.value = listadosAuxiliares.fiscalizadores.filter(
-        (v) => v.nombres.toLowerCase().indexOf(needle) > -1
-      )
-    })
+    return filtrarLista(val, update, fiscalizadores, 'nombres', listadosAuxiliares.fiscalizadores)
   }
 
-  // - Filtro coordinadores
-  const coordinadores = ref()
+  // Coordinadores
+  const coordinadores = ref(listadosAuxiliares.coordinadores)
   function filtrarCoordinadores(val, update) {
-    if (val === '') update(() => coordinadores.value = listadosAuxiliares.coordinadores)
-
-    update(() => {
-      const needle = val.toLowerCase()
-      coordinadores.value = listadosAuxiliares.coordinadores.filter(
-        (v) => v.nombres.toLowerCase().indexOf(needle) > -1
-      )
-    })
+    return filtrarLista(val, update, coordinadores, 'nombres', listadosAuxiliares.coordinadores)
   }
 
-  // - Filtro provincias
-  const provincias = ref()
-  function filtrarProvincias(val, update) {
-    if (val === '') update(() => provincias.value = listadosAuxiliares.provincias)
-
-    update(() => {
-      const needle = val.toLowerCase()
-      provincias.value = listadosAuxiliares.provincias.filter(
-        (v) => v.provincia.toLowerCase().indexOf(needle) > -1
-      )
-    })
-  }
-
-  // - Filtro cantones
-  const cantones = ref([])
-  function filtrarCantones(val, update) {
-    if (val === '') update(() => cantones.value = listadosAuxiliares.cantones)
-
-    update(() => {
-      const needle = val.toLowerCase()
-      cantones.value = listadosAuxiliares.cantones.filter(
-        (v) => v.canton.toLowerCase().indexOf(needle) > -1
-      )
-    })
-  }
-
-  // - Filtro proyectos
+  // Proyectos
   const proyectos = ref(listadosAuxiliares.proyectos)
   function filtrarProyectos(val, update) {
-    if (val === '') update(() => proyectos.value = listadosAuxiliares.proyectos)
+    return filtrarLista(val, update, proyectos, 'codigo_proyecto', listadosAuxiliares.proyectos)
+  }
 
-    update(() => {
-      const needle = val.toLowerCase()
-      proyectos.value = listadosAuxiliares.proyectos.filter(
-        (v) => v.codigo_proyecto.toLowerCase().indexOf(needle) > -1
-      )
-    })
+  // Etapas
+  const etapas = ref(listadosAuxiliares.etapas ?? [])
+  function filtrarEtapas(val, update) {
+    return filtrarLista(val, update, etapas, 'nombre', listadosAuxiliares.etapas)
+  }
+
+  function filtrarLista(val, update, lista, propiedad, defaultValue = []) {
+    if (val === '') {
+      update(() => lista.value = defaultValue)
+    } else {
+      update(() => {
+        const needle = val.toLowerCase()
+        lista.value = defaultValue.filter(
+          (v: any) => v[propiedad].toLowerCase().indexOf(needle) > -1
+        )
+      })
+    }
   }
 
   // - Filtro tipos de trabajos
@@ -146,13 +103,11 @@ export const useFiltrosListadosTarea = (listadosAuxiliares, entidad?: UnwrapRef<
   // - Filtro empleados
   const empleados = ref([])
   function filtrarEmpleados(val, update) {
-    if (val === '') update(() => empleados.value = listadosAuxiliares.empleados)
+    if (val === '') update(() => empleados.value = listadosAuxiliares.empleados.sort((a, b) => ordernarListaString(a.nombres, b.nombres)))
 
     update(() => {
       const needle = val.toLowerCase()
-      empleados.value = listadosAuxiliares.empleados.filter(
-        (v) => v.nombres.toLowerCase().indexOf(needle) > -1
-      )
+      empleados.value = listadosAuxiliares.empleados.filter((v) => v.nombres.toLowerCase().indexOf(needle) > -1 || v.apellidos.toLowerCase().indexOf(needle) > -1)
     })
   }
 
@@ -178,10 +133,6 @@ export const useFiltrosListadosTarea = (listadosAuxiliares, entidad?: UnwrapRef<
     filtrarFiscalizadores,
     coordinadores,
     filtrarCoordinadores,
-    provincias,
-    filtrarProvincias,
-    cantones,
-    filtrarCantones,
     proyectos,
     filtrarProyectos,
     tiposTrabajos,
@@ -194,5 +145,7 @@ export const useFiltrosListadosTarea = (listadosAuxiliares, entidad?: UnwrapRef<
     filtrarRutas,
     causasIntervenciones,
     filtrarCausasIntervenciones,
+    etapas,
+    filtrarEtapas,
   }
 }

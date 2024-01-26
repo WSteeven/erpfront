@@ -12,6 +12,7 @@ export class MaterialOcupadoFormulario extends EntidadAuditable {
   serial: string | null
   medida: string | null
   devuelto: number | null
+  cliente: string | null
 
   constructor() {
     super()
@@ -25,5 +26,6 @@ export class MaterialOcupadoFormulario extends EntidadAuditable {
     this.serial = null
     this.medida = null
     this.devuelto = null
+    this.cliente = null
   }
 }

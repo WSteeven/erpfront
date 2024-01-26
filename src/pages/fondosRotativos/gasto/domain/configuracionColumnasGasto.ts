@@ -72,7 +72,20 @@ export const configuracionColumnasGasto: ColumnConfig<Gasto>[] = [
     align: 'left',
     sortable: true
   },
-
+  {
+    name: 'centro_costo',
+    field: 'centro_costo',
+    label: 'Centro de Costo',
+    align: 'left',
+    sortable: true
+  },
+  {
+    name: 'subcentro_costo',
+    field: 'subcentro_costo',
+    label: 'Sub Centro de Costo',
+    align: 'left',
+    sortable: true
+  },
   {
     name: 'estado_info',
     field: 'estado_info',

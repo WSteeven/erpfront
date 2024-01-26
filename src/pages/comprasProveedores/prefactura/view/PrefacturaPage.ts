@@ -73,7 +73,7 @@ export default defineComponent({
 
 
         //Filtros y listados
-        const { clientes, filtrarClientes } = useFiltrosListadosSelects(listadosAuxiliares)
+        const { clientes, filtrarClientes, ordenarClientes } = useFiltrosListadosSelects(listadosAuxiliares)
 
         //Obtener listados
         const empleados = ref([])
@@ -293,7 +293,7 @@ export default defineComponent({
                 })
             },
             visible: ({ entidad }) => {
-                
+
                     return entidad.estado_id == 2 && entidad.solicitante_id == store.user.id
                 // return tabSeleccionado.value == 2 && store.esCompras || tabSeleccionado.value == 2 && (entidad.solicitante_id == store.user.id || entidad.autorizador_id == store.user.id)
             }
@@ -350,7 +350,7 @@ export default defineComponent({
             //funciones
             filtrarPrefacturas,
             calcularValores,
-            filtrarClientes,
+            filtrarClientes,ordenarClientes,
             actualizarListado,
             actualizarProforma,
             llenarPrefactura,
