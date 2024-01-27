@@ -1,6 +1,7 @@
 import { ExamenController } from "pages/medico/examenes/infraestructure/ExamenController"
 import { ref } from "vue"
 import { EstadoSolicitudExamenController } from "../infraestructure/EstadoSolicitudExamenController"
+import { StatusEssentialLoading } from "components/loading/application/StatusEssentialLoading"
 
 export function useExamenes() {
   /***************
@@ -12,19 +13,34 @@ export function useExamenes() {
   /************
    * Variables
    ************/
+  const cargando = new StatusEssentialLoading()
   const examenes = ref([])
 
   /************
    * Funciones
    ************/
   const consultarExamenes = async () => {
-    const { result } = await examenController.listar()
-    examenes.value = result
+    try {
+      cargando.activar()
+      const { result } = await examenController.listar()
+      examenes.value = result
+    } catch (e) {
+      console.log(e)
+    } finally {
+      cargando.desactivar()
+    }
   }
 
   const consultarExamenesSolicitados = async (tab: number) => {
-    const { result } = await estadoSolicitudExamenController.listar({ estado_examen_id: tab })
-    examenes.value = result
+    try {
+      cargando.activar()
+      const { result } = await estadoSolicitudExamenController.listar({ estado_examen_id: tab })
+      examenes.value = result
+    } catch (e) {
+      console.log(e)
+    } finally {
+      cargando.desactivar()
+    }
   }
 
   return {
