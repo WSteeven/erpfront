@@ -1,10 +1,11 @@
 import { ColumnConfig } from 'components/tables/domain/ColumnConfig'
+import { DetalleExamen } from './DetalleExamen'
 
-export const configuracionColumnasExamenes: ColumnConfig<any>[] = [
+export const configuracionColumnasExamenes: ColumnConfig<DetalleExamen>[] = [
   {
-    name: 'nombre',
-    field: 'nombre',
-    label: 'Nombre',
+    name: 'examen',
+    field: 'examen',
+    label: 'Examen',
     align: 'left',
     sortable: true
   },

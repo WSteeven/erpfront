@@ -34,7 +34,9 @@
       "tiposTickets/*": ["gestionTickets/tiposTickets"],
       "categoriasTiposTickets/*": ["gestionTickets/categoriasTiposTickets"],
       "motivosPausasTickets/*": ["gestionTickets/motivosPausasTickets"],
-      "motivosCanceladosTickets/*": ["gestionTickets/motivosCanceladosTickets"]
+      "motivosCanceladosTickets/*": ["gestionTickets/motivosCanceladosTickets"],
+      // Modulo medico
+      "medico/*": ["src/pages/medico/*"]
     }
   }
 }

@@ -83,6 +83,7 @@
         @toggle-filtros="toggleFiltros"
         :ajustarCeldas="ajustarCeldas"
         :separador="separador"
+        :tipoSeleccion="tipoSeleccion"
       ></essential-table>
     </div>
   </div>
