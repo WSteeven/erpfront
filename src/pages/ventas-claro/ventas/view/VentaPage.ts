@@ -117,8 +117,14 @@ export default defineComponent({
       listar({ activo: tab })
     }
     async function guardado(data) {
-      if (data.formulario === 'ClienteClaroPage') clientes.value.push(data.modelo)
-      if (data.formulario === 'VendedorPage') vendedores.value.push(data.modelo)
+      if (data.formulario === 'ClienteClaroPage') {
+        listadosAuxiliares.clientes.push(data.modelo)
+        clientes.value.push(data.modelo)
+      }
+      if (data.formulario === 'VendedorPage') {
+        listadosAuxiliares.vendedores.push(data.modelo)
+        vendedores.value.push(data.modelo)
+      }
     }
 
     async function recargarVendedores() {
@@ -212,7 +218,7 @@ export default defineComponent({
         console.log(entidad, posicion)
       }, visible: ({ entidad }) => entidad.activo && !entidad.primer_mes
     }
-    const btnRegistrarNovedades: CustomActionTable={
+    const btnRegistrarNovedades: CustomActionTable = {
       titulo: 'Novedades',
       color: 'warning',
       icono: 'bi-wrench',

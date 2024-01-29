@@ -15,8 +15,8 @@ import { maskFecha } from 'config/utils'
 import { EmpleadoController } from 'pages/recursosHumanos/empleados/infraestructure/EmpleadoController'
 import { useCargandoStore } from 'stores/cargando'
 import { useFondoRotativoStore } from 'stores/fondo_rotativo'
-import { VendedoresController } from 'pages/ventas-claro/vendedores/infrestructure/VendedorController'
-import { Vendedores } from 'pages/ventas-claro/vendedores/domain/Vendedor'
+import { VendedorController } from 'pages/ventas-claro/vendedores/infrestructure/VendedorController'
+import { Vendedor } from 'pages/ventas-claro/vendedores/domain/Vendedor'
 import { required } from 'shared/i18n-validators'
 export default defineComponent({
   components: { TabLayout },
@@ -62,9 +62,9 @@ export default defineComponent({
     cargarVista(async () => {
       await obtenerListados({
         vendedores: {
-          controller: new VendedoresController(),
+          controller: new VendedorController(),
           params: {
-            campos: 'id',
+            // campos: 'id',
           },
         },
       })
@@ -98,7 +98,7 @@ export default defineComponent({
       }
     }
     function ordenarVendedores() {
-      vendedores.value.sort((a: Vendedores, b: Vendedores) =>
+      vendedores.value.sort((a: Vendedor, b: Vendedor) =>
         ordernarListaString(a.empleado_info!, b.empleado_info!)
       )
     }

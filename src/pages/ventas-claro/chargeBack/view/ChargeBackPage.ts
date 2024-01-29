@@ -2,26 +2,16 @@ import { defineComponent, ref, watchEffect } from 'vue'
 import { Chargeback } from '../domain/Chargeback'
 
 import TabLayout from 'shared/contenedor/modules/simple/view/TabLayout.vue'
+
 import { useNotificacionStore } from 'stores/notificacion'
 import { useQuasar } from 'quasar'
 import { useVuelidate } from '@vuelidate/core'
 import { ContenedorSimpleMixin } from 'shared/contenedor/modules/simple/application/ContenedorSimpleMixin'
 import { ChargebackController } from '../infrestructure/ChargebackController'
 import { configuracionColumnasChargeback } from '../domain/configuracionColumnasChargeback'
-import { estados_activacion, formas_pago, maskFecha } from 'config/utils'
-import {
-  requiredIf,
-  maxLength,
-  minLength,
-  required,
-} from 'shared/i18n-validators'
-import { maxValue, minValue } from '@vuelidate/validators'
-
-import { AxiosHttpRepository } from 'shared/http/infraestructure/AxiosHttpRepository'
-import { HttpResponseGet } from 'shared/http/domain/HttpResponse'
-import axios from 'axios'
-import { apiConfig, endpoints } from 'config/api'
-import { VentasController } from 'pages/ventas-claro/ventas/infrestructure/VentaController'
+import { estados_activaciones, formas_pagos, maskFecha } from 'config/utils'
+import {requiredIf,} from 'shared/i18n-validators'
+import { VentaController } from 'pages/ventas-claro/ventas/infrestructure/VentaController'
 import { TipoChargeBackController } from 'pages/ventas-claro/tipoChargeBack/infrestructure/TipoChargeBackController'
 
 export default defineComponent({
@@ -71,32 +61,32 @@ export default defineComponent({
     }
     const v$ = useVuelidate(reglas, chargeback)
     setValidador(v$.value)
-    const tipos_chargeback = ref([])
+    const tipos_chargebacks = ref([])
     const ventas = ref([])
     cargarVista(async () => {
       await obtenerListados({
-        tipos_chargeback: {
+        tipos_chargebacks: {
           controller: new TipoChargeBackController(),
           params: { campos: 'id,nombre' },
         },
         ventas: {
-          controller: new VentasController(),
+          controller: new VentaController(),
           params: {},
         },
       })
-      tipos_chargeback.value = listadosAuxiliares.tipos_chargeback
+      tipos_chargebacks.value = listadosAuxiliares.tipos_chargebacks
       ventas.value = listadosAuxiliares.ventas
     })
     function filtrarTiposChargeback(val, update) {
       if (val === '') {
         update(() => {
-          tipos_chargeback.value = listadosAuxiliares.tipos_chargeback
+          tipos_chargebacks.value = listadosAuxiliares.tipos_chargebacks
         })
         return
       }
       update(() => {
         const needle = val.toLowerCase()
-        tipos_chargeback.value = listadosAuxiliares.tipos_chargeback.filter(
+        tipos_chargebacks.value = listadosAuxiliares.tipos_chargebacks.filter(
           (v) => v.nombre.toLowerCase().indexOf(needle) > -1
         )
       })
@@ -142,10 +132,10 @@ export default defineComponent({
       accion,
       v$,
       configuracionColumnas: configuracionColumnasChargeback,
-      estados_activacion,
-      formas_pago,
+      estados_activaciones,
+      formas_pagos,
       ventas,
-      tipos_chargeback,
+      tipos_chargebacks,
       maskFecha,
       precio_producto,
       comision_vendedor,

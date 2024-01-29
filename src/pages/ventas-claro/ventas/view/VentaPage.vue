@@ -192,8 +192,6 @@
               @blur="v$.forma_pago.$touch"
               error-message="Debes seleccionar una forma de pago"
               @update:model-value="obtenerComisionVenta"
-              use-input
-              input-debounce="0"
               :option-value="(v) => v.label"
               :option-label="(v) => v.value"
               emit-value
@@ -293,8 +291,6 @@
               @blur="v$.estado_activacion.$touch"
               @filter="filtrarProductos"
               error-message="Debes seleccionar un estado"
-              use-input
-              input-debounce="0"
               :option-value="(v) => v.label"
               :option-label="(v) => v.value"
               emit-value

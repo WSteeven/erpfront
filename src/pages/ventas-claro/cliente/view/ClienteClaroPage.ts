@@ -51,8 +51,13 @@ export default defineComponent({
       await obtenerListados({
         vendedores: {
           controller: new VendedorController(),
-          params: {
-            tipo_vendedor: 'SUPERVISOR_VENTAS'
+          params: store.esJefeVentasClaro ? {
+            'tipo_vendedor[]': 'SUPERVISOR_VENTAS',
+            '&tipo_vendedor[]': 'JEFE_VENTAS',
+            activo: 1
+          } : {
+            tipo_vendedor: 'SUPERVISOR_VENTAS',
+            activo: 1
           },
         },
       })
@@ -62,7 +67,7 @@ export default defineComponent({
     const reglas = {
       identificacion: {
         required,
-        maxLength: maxLength(10),
+        maxLength: maxLength(13),
         minLenght: minLength(10)
       },
       supervisor: { requiredIf: requiredIf(() => store.esJefeVentasClaro) },

@@ -1135,8 +1135,8 @@ const routes: RouteRecordRaw[] = [
         meta: { requiresAuth: true },
       },
       {
-        path: '/pago-comision',
-        name: 'pago_comision',
+        path: '/pagos-comisiones',
+        name: 'pagos_comisiones',
         component: () =>
           import('pages/ventas-claro/pagoComision/view/PagoComisionPage.vue'),
         meta: { requiresAuth: true },
@@ -1167,8 +1167,8 @@ const routes: RouteRecordRaw[] = [
         meta: { requiresAuth: true },
       },
       {
-        path: '/reporte_pago',
-        name: 'reporte_pago',
+        path: '/reportes-pagos-claro',
+        name: 'reportes_pagos_claro',
         component: () =>
           import('pages/ventas-claro/reporte/pagos/view/PagoPage.vue'),
         meta: { requiresAuth: true },
