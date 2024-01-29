@@ -53,6 +53,13 @@ export const configuracionColumnasEmpleados: ColumnConfig<Empleado>[] = [
         sortable: true
     },
     {
+        name: 'direccion',
+        field: 'direccion',
+        label: 'Dirección',
+        align: 'left',
+        visible:false,
+    },
+    {
         name: 'grupo',
         field: 'grupo',
         label: 'Grupo',
@@ -67,33 +74,33 @@ export const configuracionColumnasEmpleados: ColumnConfig<Empleado>[] = [
         sortable: true
     },
     {
-      name: 'departamento',
-      field: 'departamento',
-      label: 'Departamento',
-      align: 'left',
-      sortable: true
-  },
-{
-  name: 'fecha_vinculacion',
-  field: 'fecha_vinculacion',
-  label: 'Fecha de Vinculacion',
-  align: 'left',
-  sortable: true
-},
-{
-  name: 'num_cuenta',
-  field: 'num_cuenta',
-  label: 'Numero de Cuenta',
-  align: 'left',
-  sortable: true
-},
-{
-  name: 'salario',
-  field: 'salario',
-  label: 'Salario',
-  align: 'left',
-  sortable: true
-},
+        name: 'departamento',
+        field: 'departamento',
+        label: 'Departamento',
+        align: 'left',
+        sortable: true
+    },
+    {
+        name: 'fecha_vinculacion',
+        field: 'fecha_vinculacion',
+        label: 'Fecha de Vinculacion',
+        align: 'left',
+        sortable: true
+    },
+    {
+        name: 'num_cuenta',
+        field: 'num_cuenta',
+        label: 'Numero de Cuenta',
+        align: 'left',
+        sortable: true
+    },
+    {
+        name: 'salario',
+        field: 'salario',
+        label: 'Salario',
+        align: 'left',
+        sortable: true
+    },
     {
         name: 'estado',
         field: 'estado',
@@ -102,18 +109,18 @@ export const configuracionColumnasEmpleados: ColumnConfig<Empleado>[] = [
         sortable: true
     },
     {
-      name:'esta_en_rol_pago',
-      field: 'esta_en_rol_pago',
-      label: '¿Esta enrolado?',
-      align: 'left',
-      sortable: true
+        name: 'esta_en_rol_pago',
+        field: 'esta_en_rol_pago',
+        label: '¿Esta enrolado?',
+        align: 'left',
+        sortable: true
     },
     {
-      name:'realiza_factura',
-      field: 'realiza_factura',
-      label: 'Factura',
-      align: 'left',
-      sortable: true
+        name: 'realiza_factura',
+        field: 'realiza_factura',
+        label: 'Factura',
+        align: 'left',
+        sortable: true
     },
     {
         name: 'firma_url',
