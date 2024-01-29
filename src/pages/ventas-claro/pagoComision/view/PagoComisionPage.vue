@@ -3,8 +3,8 @@
     <template #formulario>
       <q-form @submit.prevent>
         <div class="row q-col-gutter-sm">
- <!-- Fecha Inicio -->
- <div class="col-12 col-md-6 ">
+          <!-- Fecha Inicio -->
+          <div class="col-12 col-md-6">
             <label class="q-mb-sm block">Fecha Inicio</label>
             <q-input
               v-model="pagocomision.fecha_inicio"
@@ -48,8 +48,8 @@
               </template>
             </q-input>
           </div>
-           <!-- Fecha Fin -->
-        <div class="col-12 col-md-6">
+          <!-- Fecha Fin -->
+          <div class="col-12 col-md-6">
             <label class="q-mb-sm block">Fecha Fin</label>
             <q-input
               v-model="pagocomision.fecha_fin"
@@ -95,7 +95,6 @@
             </q-input>
           </div>
         </div>
-
       </q-form>
     </template>
   </tab-layout>

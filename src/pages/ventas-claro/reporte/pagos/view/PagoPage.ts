@@ -18,6 +18,7 @@ import { useFondoRotativoStore } from 'stores/fondo_rotativo'
 import { VendedorController } from 'pages/ventas-claro/vendedores/infrestructure/VendedorController'
 import { Vendedor } from 'pages/ventas-claro/vendedores/domain/Vendedor'
 import { required } from 'shared/i18n-validators'
+import { useFiltrosListadosSelects } from 'shared/filtrosListadosGenerales'
 export default defineComponent({
   components: { TabLayout },
   setup() {
@@ -41,6 +42,20 @@ export default defineComponent({
     const { setValidador, obtenerListados, cargarVista } =
       mixin.useComportamiento()
 
+
+      const {vendedores_claro:vendedores,filtrarVendedoresClaro: filtrarVendedores} = useFiltrosListadosSelects(listadosAuxiliares)
+      cargarVista(async () => {
+        await obtenerListados({
+          vendedores: {
+            controller: new VendedorController(),
+            params: {
+              // campos: 'id',
+            },
+          },
+        })
+        vendedores.value = listadosAuxiliares.vendedores
+      })
+
     /*************
      * Validaciones
      **************/
@@ -58,32 +73,9 @@ export default defineComponent({
 
     const v$ = useVuelidate(reglas, pago)
     setValidador(v$.value)
-    const vendedores = ref([])
-    cargarVista(async () => {
-      await obtenerListados({
-        vendedores: {
-          controller: new VendedorController(),
-          params: {
-            // campos: 'id',
-          },
-        },
-      })
-      vendedores.value = listadosAuxiliares.vendedores
-    })
     /*********
      * Filtros
      **********/
-    function filtrarVendedores(val, update) {
-      if (val === '')
-        update(() => (vendedores.value = listadosAuxiliares.vendedores))
-
-      update(() => {
-        const needle = val.toLowerCase()
-        vendedores.value = listadosAuxiliares.vendedores.filter(
-          (v) => v.mpleado_info.toLowerCase().indexOf(needle) > -1
-        )
-      })
-    }
     async function generar_reporte(valor: Pagos, tipo: string): Promise<void> {
       if (await v$.value.$validate()) {
         const axios = AxiosHttpRepository.getInstance()
