@@ -24,6 +24,7 @@ import { useBotonesSolicitudExamen } from '../application/UseBotonesSolicitudExa
 import { useNotificaciones } from 'shared/notificaciones'
 import { isAxiosError, notificarMensajesError } from 'shared/utils'
 import { CustomActionPrompt } from 'components/tables/domain/CustomActionPrompt'
+import { useMedicoStore } from 'stores/medico'
 
 export default defineComponent({
   components: { TabLayout, SelectorImagen, ModalesEntidad, EssentialTable, DetallePaciente, EssentialTableTabs },
@@ -31,6 +32,7 @@ export default defineComponent({
     /*********
      * Stores
      *********/
+    const medicoStore = useMedicoStore()
     // useNotificacionStore().setQuasar(useQuasar())
     // useCargandoStore().setQuasar(useQuasar())
 
@@ -56,7 +58,21 @@ export default defineComponent({
      * Funciones
      *************/
     const { examenes, registros, consultarRegistrosEmpleadoExamen, consultarExamenesSinSolicitar, consultarExamenesSolicitados } = useExamenes()
-    const { seleccionVariosExamen, btnSolicitar, btnResultados, btnSeleccionarVariosExamenes, btnSolicitarExamenesSeleccionados } = useBotonesSolicitudExamen(tabEstadoExamen, modales)
+    const {
+      // Referencias
+      refTablaExamenes,
+      seleccionVariosExamen,
+      examenesSeleccionados,
+      // Header
+      btnSeleccionarVariosExamenes,
+      btnSolicitarExamenesSeleccionados,
+      btnCancelarSeleccionarVariosExamenes,
+      // Body
+      btnSolicitarExamenIndividual,
+      btnResultados,
+      // Other functions
+      seleccionarExamen,
+    } = useBotonesSolicitudExamen(tabEstadoExamen, modales)
 
     const filtrarEstadoExamen = (tab) => {
       tabEstadoExamen.value = tab
@@ -65,6 +81,7 @@ export default defineComponent({
         consultarExamenesSinSolicitar({ empleado_id: empleado.id })
       } else {
         // seleccionVariosExamen.value = true
+        examenesSeleccionados.value = []
         consultarExamenesSolicitados(tab)
       }
     }
@@ -96,11 +113,32 @@ export default defineComponent({
      * Init
      *******/
     onConsultado(async () => {
+      medicoStore.empleado = empleado
       await consultarRegistrosEmpleadoExamen({ empleado_id: empleado.id })
       await consultarExamenesSinSolicitar({ empleado_id: empleado.id })
     })
 
+    const btnSolicitarExamenesSeleccionados2: CustomActionTable = {
+      titulo: '22222',
+      icono: 'bi-plus',
+      color: 'positive',
+      visible: () => seleccionVariosExamen.value,
+      accion: async function () {
+        // seleccionVariosExamen.value = false
+        console.log(refTablaExamenes.value)
+        refTablaExamenes.value.seleccionar()
+        // seleccionarExamen()
+      }
+    }
+
+    const refTablaExamenes2 = ref()
+    function selecc() {
+      const lista = refTablaExamenes2.value.selected
+      console.log(lista)
+    }
+
     return {
+      selecc,
       mixin,
       empleado,
       tabs,
@@ -117,15 +155,24 @@ export default defineComponent({
       examenes,
       registros,
       tipoSeleccion: computed(() => seleccionVariosExamen.value && tabEstadoExamen.value === '0' ? 'multiple' : 'none'),
-      seleccionVariosExamen,
       // funciones
       agregarRegistro,
-      // botones tabla
-      btnSolicitar,
-      btnResultados,
-      // botones tabla header
+      /*******************
+       * Botones examenes
+       *******************/
+      // Referencias
+      refTablaExamenes,
+      seleccionVariosExamen,
+      // Header
       btnSeleccionarVariosExamenes,
       btnSolicitarExamenesSeleccionados,
+      btnCancelarSeleccionarVariosExamenes,
+      // Body
+      btnSolicitarExamenIndividual,
+      btnResultados,
+      // Other functions
+      seleccionarExamen,
+      btnSolicitarExamenesSeleccionados2,
     }
   },
 })

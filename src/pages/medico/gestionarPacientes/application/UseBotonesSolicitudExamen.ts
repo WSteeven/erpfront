@@ -1,18 +1,64 @@
-import { CustomActionTable } from "components/tables/domain/CustomActionTable"
 import { ComportamientoModalesGestionPaciente } from "./ComportamientoModalesGestionPaciente"
-import { Ref, ref } from "vue"
+import { CustomActionTable } from "components/tables/domain/CustomActionTable"
 import { DetalleExamen } from "../domain/DetalleExamen"
 import { estadosExamenes } from "config/utils/medico"
+import { Ref, ref } from "vue"
+import { useMedicoStore } from "stores/medico"
 
 export function useBotonesSolicitudExamen(tabEstadoExamen: Ref, modales: ComportamientoModalesGestionPaciente) {
-  const seleccionVariosExamen = ref(false)
+  /*********
+   * Stores
+   *********/
+  const medicoStore = useMedicoStore()
 
-  const btnSolicitar: CustomActionTable = {
+  /**************
+   * Referencias
+   **************/
+  const seleccionVariosExamen = ref(false)
+  const refTablaExamenes = ref()
+  const examenesSeleccionados: Ref<DetalleExamen[]> = ref([])
+
+  /*********
+   * Header
+   *********/
+  const btnSeleccionarVariosExamenes: CustomActionTable<DetalleExamen> = {
+    titulo: 'Solicitar varios examenes',
+    icono: 'bi-check-square',
+    color: 'primary',
+    visible: () => !seleccionVariosExamen.value && tabEstadoExamen.value === estadosExamenes.PENDIENTE_SOLICITAR,
+    accion: async () => seleccionVariosExamen.value = true
+  }
+
+  const btnCancelarSeleccionarVariosExamenes: CustomActionTable<DetalleExamen> = {
+    titulo: 'Cancelar seleccion',
+    icono: 'bi-x',
+    color: 'negative',
+    visible: () => seleccionVariosExamen.value && tabEstadoExamen.value === estadosExamenes.PENDIENTE_SOLICITAR,
+    accion: async () => seleccionVariosExamen.value = false
+  }
+
+  const btnSolicitarExamenesSeleccionados: CustomActionTable = {
+    titulo: 'Solicitar examenes seleccionados',
+    icono: 'bi-plus',
+    color: 'positive',
+    visible: () => seleccionVariosExamen.value,
+    accion: async function () {
+      console.log('Solicitando varios examenes...')
+      console.log(examenesSeleccionados.value)
+      examenesSeleccionados.value = []
+    }
+  }
+
+  /********
+   * Body
+   ********/
+  const btnSolicitarExamenIndividual: CustomActionTable<DetalleExamen> = {
     titulo: 'Solicitar examen',
     icono: 'bi-plus',
     color: 'positive',
-    visible: ({ entidad }) => tabEstadoExamen.value === '0',
+    visible: () => tabEstadoExamen.value === '0' && !seleccionVariosExamen.value,
     accion: ({ entidad }) => {
+      medicoStore.detalleExamen = entidad
       modales.abrirModalEntidad('SolicitudExamenPage')
       /*confirmar('¿Está seguro de ejecutar el ticket?', async () => {
         const { response, result } = await cambiarEstadoTicket.ejecutar(entidad.id)
@@ -41,30 +87,26 @@ export function useBotonesSolicitudExamen(tabEstadoExamen: Ref, modales: Comport
     }
   }
 
-  const btnSeleccionarVariosExamenes: CustomActionTable<DetalleExamen> = {
-    titulo: 'Solicitar varios examenes',
-    icono: 'bi-check-square',
-    color: 'primary',
-    visible: () => !seleccionVariosExamen.value && tabEstadoExamen.value === estadosExamenes.PENDIENTE_SOLICITAR,
-    accion: async () => seleccionVariosExamen.value = true
-  }
-
-  const btnSolicitarExamenesSeleccionados: CustomActionTable = {
-    titulo: 'Solicitar examenes seleccionados',
-    icono: 'bi-plus',
-    color: 'positive',
-    visible: () => seleccionVariosExamen.value,
-    accion: async () => seleccionVariosExamen.value = false
+  /******************
+   * Other functions
+   ******************/
+  async function seleccionarExamen(examenes: DetalleExamen[]) {
+    examenesSeleccionados.value = examenes
   }
 
   return {
     // Referencias
+    refTablaExamenes,
     seleccionVariosExamen,
-    // Botones
-    btnSolicitar,
-    btnResultados,
-    // Botones header
+    examenesSeleccionados,
+    // Header
     btnSeleccionarVariosExamenes,
     btnSolicitarExamenesSeleccionados,
+    btnCancelarSeleccionarVariosExamenes,
+    // Body
+    btnSolicitarExamenIndividual,
+    btnResultados,
+    // Other functions
+    seleccionarExamen,
   }
 }

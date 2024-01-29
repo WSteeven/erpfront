@@ -13,7 +13,7 @@
       </div>
 
       <!-- Tabs -->
-      <div class="border-grey">
+      <div>
         <q-tabs
           v-model="tabs"
           align="justify"
@@ -85,7 +85,7 @@
                   v-model="tabsRegistro"
                   vertical
                   indicator-color="transparent"
-                  class="bg-white text-grey-9 q-col-guttser-y-sm"
+                  class="bg-white text-grey-9"
                   active-class="bg-blue-1 text-black text-bold"
                 >
                   <q-tab
@@ -130,6 +130,7 @@
                         <div class="text-bold">{{ registro.observacion }}</div>
                       </div>
                     </div>
+
                     <essential-table-tabs
                       :configuracionColumnas="[
                         ...configuracionColumnasExamenes,
@@ -143,44 +144,13 @@
                       @tab-seleccionado="filtrarEstadoExamen"
                       :tab-defecto="tabEstadoExamen"
                       :accion1Header="btnSeleccionarVariosExamenes"
-                      :accion2Header="btnSolicitarExamenesSeleccionados"
-                      :accion1="btnSolicitar"
+                      :accion2Header="btnCancelarSeleccionarVariosExamenes"
+                      :accion3Header="btnSolicitarExamenesSeleccionados"
+                      :accion1="btnSolicitarExamenIndividual"
                       :accion2="btnResultados"
                       :tipo-seleccion="tipoSeleccion"
+                      @selected="seleccionarExamen"
                     ></essential-table-tabs>
-                    <!-- :alto-fijo="false" -->
-                    <!-- <div class="text-primary text-bold">Exámenes comunes</div>
-                    <div class="row text-bold text-center">
-                      <div class="col-12 col-md-4">TIPO DE EXAMEN</div>
-                      <div
-                        v-for="estado in estadosExamenes"
-                        :key="estado.id"
-                        class="col-12 col-md-2"
-                      >
-                        {{ estado.nombre }}
-                      </div>
-                    </div> -->
-
-                    <!-- Categoria -->
-                    <!-- <div
-                      v-for="registro in registroExamenes"
-                      :key="registro.id"
-                      class="row"
-                    >
-                      <div class="text-bold">{{ registro.categoria }}</div>
-                      <div
-                        v-for="examen in registro.examenes"
-                        :key="examen.examen"
-                        class=""
-                      >
-                        <q-checkbox
-                          v-model="examen.seleccionado"
-                          :label="examen.examen"
-                          outlined
-                          dense
-                        ></q-checkbox>
-                      </div>
-                    </div> -->
                   </q-tab-panel>
                   <q-tab-panel name="2"> Ocupacionales </q-tab-panel>
                 </q-tab-panels>
@@ -192,11 +162,6 @@
     </template>
   </tab-layout>
 
-  <!-- <modales-entidad
-    :comportamiento="modales"
-    @guardado="(data) => guardado(data)"
-    :mixin-modal="mixinFamiliares"
-  ></modales-entidad> -->
   <modales-entidad
     :comportamiento="modales"
     :mixin-modal="mixin"

@@ -1,3 +1,121 @@
 <template>
-  <q-page padding> Solicitud </q-page>
+  <q-page padding class="bg-body-table">
+    <detalle-paciente
+      v-if="empleado.id"
+      :empleado="empleado"
+    ></detalle-paciente>
+
+    <br />
+
+    <div class="row q-col-gutter-sm">
+      <div class="col-12 col-md-3">
+        <label class="q-mb-sm block">Exámen a solicitar</label>
+        <q-select
+          v-model="detalleExamen.id"
+          :options="examenes"
+          transition-show="scale"
+          transition-hide="scale"
+          options-dense
+          dense
+          outlined
+          :option-label="(item) => item.examen"
+          :option-value="(item) => item.id"
+          use-input
+          input-debounce="0"
+          emit-value
+          map-options
+          disable
+        >
+        </q-select>
+      </div>
+
+      <div class="col-12 col-md-3">
+        <label class="q-mb-sm block">Laboratorio clínico</label>
+        <q-select
+          v-model="detalleExamen.id"
+          :options="examenes"
+          transition-show="scale"
+          transition-hide="scale"
+          options-dense
+          dense
+          outlined
+          :option-label="(item) => item.examen"
+          :option-value="(item) => item.id"
+          use-input
+          input-debounce="0"
+          emit-value
+          map-options
+          disable
+        >
+        </q-select>
+      </div>
+
+      <div class="col-12 col-md-3">
+        <label class="q-mb-sm block">Fecha de asistencia</label>
+        <q-input
+          v-model="solicitud.fecha_asistencia"
+          outlined
+          type="datetime"
+          dense
+        >
+          <template v-slot:append>
+            <q-icon name="event" class="cursor-pointer">
+              <q-popup-proxy
+                cover
+                transition-show="scale"
+                transition-hide="scale"
+              >
+                <q-date
+                  v-model="solicitud.fecha_asistencia"
+                  :mask="maskFecha"
+                  today-btn
+                >
+                  <div class="row items-center justify-end">
+                    <q-btn v-close-popup label="Cerrar" color="primary" flat />
+                  </div>
+                </q-date>
+              </q-popup-proxy>
+            </q-icon>
+          </template>
+        </q-input>
+      </div>
+
+      <div class="col-12 col-md-3">
+        <label class="q-mb-sm block">Hora asistencia</label>
+        <q-input
+          v-model="solicitud.horaAsistencia"
+          type="time"
+          step="1"
+          stack-label
+          outlined
+          dense
+        >
+        </q-input>
+      </div>
+
+      <div class="col-12 q-mb-md">
+        <label class="q-mb-sm block">Observación</label>
+        <q-input
+          v-model="solicitud.observacion"
+          outlined
+          dense
+          autogrow
+        ></q-input>
+      </div>
+    </div>
+
+    <div class="row justify-end q-gutter-sm">
+      <q-btn color="primary" no-caps push @click="guardar()">
+        <q-icon name="bi-save" size="xs" class="q-pr-sm"></q-icon>
+        <span>Guardar y notificar solicitud</span>
+      </q-btn>
+
+      <q-btn color="negative" no-caps push @click="cancelar()">
+        <q-icon name="bi-x" size="xs" class="q-pr-sm"></q-icon>
+        <span>Cancelar</span>
+      </q-btn>
+    </div>
+  </q-page>
 </template>
+
+<script src="./SolicitudExamenPage.ts"></script>

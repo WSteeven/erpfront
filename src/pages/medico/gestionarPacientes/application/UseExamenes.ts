@@ -1,6 +1,6 @@
 import { ExamenController } from "pages/medico/examenes/infraestructure/ExamenController"
 import { ref } from "vue"
-import { EstadoSolicitudExamenController } from "../infraestructure/EstadoSolicitudExamenController"
+import { EstadoSolicitudExamenController } from "../modules/solicitudExamen/infraestructure/EstadoSolicitudExamenController"
 import { StatusEssentialLoading } from "components/loading/application/StatusEssentialLoading"
 import { RegistroEmpleadoExamenController } from "pages/medico/examenes/infraestructure/RegistroEmpleadoExamenController"
 

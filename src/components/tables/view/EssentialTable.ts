@@ -2,7 +2,7 @@
 import { accionesActivos, autorizacionesTransacciones, estadosTransacciones, estadosInventarios, estadosControlStock, estadosCondicionesId, estadosCondicionesValue } from 'config/utils'
 import { estadosCalificacionProveedor } from 'config/utils_compras_proveedores'
 import { EstadoPrevisualizarTablaPDF } from '../application/EstadoPrevisualizarTablaPDF'
-import { computed, defineComponent, ref, watchEffect, nextTick, Ref } from 'vue'
+import { computed, defineComponent, ref, watchEffect, nextTick, Ref, watch } from 'vue'
 import { EntidadAuditable } from 'shared/entidad/domain/entidadAuditable'
 import { Instanciable } from 'shared/entidad/domain/instanciable'
 import { CustomActionTable } from '../domain/CustomActionTable'
@@ -197,7 +197,7 @@ export default defineComponent({
       default: false,
     }
   },
-  emits: ['consultar', 'editar', 'eliminar', 'accion1', 'accion2', 'accion3', 'accion4', 'accion5', 'accion6', 'accion7', 'accion8', 'accion9', 'accion10', 'selected', 'onScroll', 'filtrar', 'toggle-filtros', 'guardar-fila'],
+  emits: ['consultar', 'editar', 'eliminar', 'accion1', 'accion2', 'accion3', 'accion4', 'accion5', 'accion6', 'accion7', 'accion8', 'accion9', 'accion10', 'selected', 'onScroll', 'filtrar', 'toggle-filtros', 'guardar-fila', 'update:selected'],
   setup(props, { emit }) {
     const grid = ref(false)
     const inFullscreen = ref(false)
@@ -256,7 +256,17 @@ export default defineComponent({
     // Observers
     const seleccionar = () => {
       emit('selected', selected.value)
+      // emit('update:selected', selected.value);
     }
+
+    watch(selected, () => {
+      console.log(selected.value)
+      emit('selected', selected.value)
+    })
+
+    /*const emitSelectedChange = () => {
+      emit('update:selected', selected.value);
+    };*/
 
     const printTable = new EstadoPrevisualizarTablaPDF()
 
@@ -418,6 +428,12 @@ export default defineComponent({
       return `"${formatted}"`
     }
 
+    function extraerColor(accion?: CustomActionTable) {
+      return typeof accion?.color === 'function'
+        ? accion.color()
+        : accion?.color
+    }
+
     return {
       refEditarModal,
       refTableFilters,
@@ -464,6 +480,7 @@ export default defineComponent({
       abrirModalEditar,
       exportTable,
       toggleFiltros,
+      extraerColor,
     }
   },
 })

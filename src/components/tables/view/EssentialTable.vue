@@ -294,7 +294,9 @@
             class="q-pr-sm"
           ></q-icon>
           <span>{{ accion1Header.titulo }}</span>
-          <q-tooltip v-if="accion1Header.tooltip" class="bg-dark">{{ accion1Header.tooltip }}</q-tooltip>
+          <q-tooltip v-if="accion1Header.tooltip" class="bg-dark">{{
+            accion1Header.tooltip
+          }}</q-tooltip>
         </q-btn>
 
         <!-- Boton 2 Header -->
@@ -313,7 +315,9 @@
             class="q-pr-sm"
           ></q-icon>
           <span>{{ accion2Header.titulo }}</span>
-          <q-tooltip v-if="accion2Header.tooltip" class="bg-dark">{{ accion2Header.tooltip }}</q-tooltip>
+          <q-tooltip v-if="accion2Header.tooltip" class="bg-dark">{{
+            accion2Header.tooltip
+          }}</q-tooltip>
         </q-btn>
 
         <!-- Boton 3 Header -->
@@ -332,7 +336,9 @@
             class="q-pr-sm"
           ></q-icon>
           <span>{{ accion3Header.titulo }}</span>
-          <q-tooltip v-if="accion3Header.tooltip" class="bg-dark">{{ accion3Header.tooltip }}</q-tooltip>
+          <q-tooltip v-if="accion3Header.tooltip" class="bg-dark">{{
+            accion3Header.tooltip
+          }}</q-tooltip>
         </q-btn>
 
         <!-- Boton 4 Header -->
@@ -351,7 +357,9 @@
             class="q-pr-sm"
           ></q-icon>
           <span>{{ accion4Header.titulo }}</span>
-          <q-tooltip v-if="accion4Header.tooltip" class="bg-dark">{{ accion4Header.tooltip }}</q-tooltip>
+          <q-tooltip v-if="accion4Header.tooltip" class="bg-dark">{{
+            accion4Header.tooltip
+          }}</q-tooltip>
         </q-btn>
 
         <!-- Boton 5 Header -->

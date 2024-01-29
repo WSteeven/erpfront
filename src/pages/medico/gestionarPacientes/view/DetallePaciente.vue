@@ -1,5 +1,5 @@
 <template>
-  <div class="row q-pt-lg">
+  <div class="row">
     <div class="col-12 col-md-2 text-center">
       <q-img :src="empleado.foto_url ?? ''" width="60%"></q-img>
     </div>
@@ -122,6 +122,6 @@ const genero = computed(() =>
 )
 
 const nombres = computed(
-  () => props.empleado.nombres + (props.empleado.apellidos ?? '')
+  () => props.empleado.nombres + ' ' + (props.empleado.apellidos ?? '')
 )
 </script>
