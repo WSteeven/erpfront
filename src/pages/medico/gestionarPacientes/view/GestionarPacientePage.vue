@@ -20,6 +20,7 @@
           active-color="primary"
           indicator-color="primary"
           active-bg-color="blue-1"
+          class="border-bottom-grey-5"
           dense
         >
           <q-tab
@@ -56,32 +57,50 @@
           transition-next="scale"
           helpalive
         >
-          <!-- :class="{ 'rounded-tabpanel': !$q.screen.xs }" -->
           <q-tab-panel name="1" class="q-pa-none">
-            <q-splitter
-              v-model="splitterModel"
-              style="height: 700px"
-              class="border-grey"
-            >
+            <q-splitter v-model="splitterModel" class="border-grey">
               <template v-slot:before>
-                <q-btn
-                  color="positive"
-                  square
-                  no-caps
-                  icon="bi-plus"
-                  class="full-width"
-                  >Nuevo registro</q-btn
+                <div
+                  class="bg-body border-bottom-grey-5 border-right-grey-5 text-center q-pb-md q-pt-sm"
                 >
+                  <q-btn
+                    color="white"
+                    class="text-black border-grey-6"
+                    square
+                    unelevated
+                    no-caps
+                    @click="agregarRegistro()"
+                  >
+                    <q-icon
+                      name="bi-plus-circle-fill"
+                      color="positive"
+                      size="xs"
+                      class="q-mr-sm"
+                    ></q-icon>
+                    Nuevo registro</q-btn
+                  >
+                </div>
                 <!-- Tabs -->
                 <q-tabs
                   v-model="tabsRegistro"
                   vertical
                   indicator-color="transparent"
-                  class="full-width bg-grey-5"
-                  active-class="bg-grey-4 text-primary text-bold"
+                  class="bg-white text-grey-9 q-col-guttser-y-sm"
+                  active-class="bg-blue-1 text-black text-bold"
                 >
-                  <q-tab name="1" label="Registro #1" no-caps />
-                  <q-tab name="2" label="Registro #2" no-caps />
+                  <q-tab
+                    v-for="registro in registros"
+                    :key="registro.id"
+                    :name="registro.id"
+                    no-caps
+                  >
+                    <q-icon
+                      name="bi-person"
+                      size="xs"
+                      class="text-primary q-mb-xs"
+                    ></q-icon>
+                    <span> Registro # {{ registro.numero_registro }} </span>
+                  </q-tab>
                 </q-tabs>
               </template>
 
@@ -93,7 +112,24 @@
                   transition-next="scale"
                   helpalive
                 >
-                  <q-tab-panel name="1" class="q-pa-none">
+                  <q-tab-panel
+                    v-for="registro in registros"
+                    :key="registro.id"
+                    :name="registro.id"
+                    class="q-pa-none"
+                  >
+                    <div class="row bg-body q-pa-md">
+                      <div class="col-12 col-md-6">
+                        <label class="q-mb-sm block">
+                          Fecha y hora de registro
+                        </label>
+                        <div class="text-bold">{{ registro.created_at }}</div>
+                      </div>
+                      <div class="col-12 col-md-6">
+                        <label class="q-mb-sm block"> Observación </label>
+                        <div class="text-bold">{{ registro.observacion }}</div>
+                      </div>
+                    </div>
                     <essential-table-tabs
                       :configuracionColumnas="[
                         ...configuracionColumnasExamenes,
@@ -106,10 +142,13 @@
                       :tab-options="tabOptionsEstadosExamenes"
                       @tab-seleccionado="filtrarEstadoExamen"
                       :tab-defecto="tabEstadoExamen"
-                      :alto-fijo="false"
+                      :accion1Header="btnSeleccionarVariosExamenes"
+                      :accion2Header="btnSolicitarExamenesSeleccionados"
                       :accion1="btnSolicitar"
                       :accion2="btnResultados"
+                      :tipo-seleccion="tipoSeleccion"
                     ></essential-table-tabs>
+                    <!-- :alto-fijo="false" -->
                     <!-- <div class="text-primary text-bold">Exámenes comunes</div>
                     <div class="row text-bold text-center">
                       <div class="col-12 col-md-4">TIPO DE EXAMEN</div>

@@ -1,6 +1,7 @@
 // Dependencias
 import { configuracionColumnasEmpleados } from '../domain/configuracionColumnasEmpleados'
-import { defineComponent, ref } from 'vue'
+import { configuracionColumnasExamenes } from '../domain/configuracionColumnasExamenes'
+import { computed, defineComponent, ref } from 'vue'
 
 // Componentes
 import EssentialTableTabs from 'components/tables/view/EssentialTableTabs.vue'
@@ -13,14 +14,16 @@ import DetallePaciente from './DetallePaciente.vue'
 import { ContenedorSimpleMixin } from 'shared/contenedor/modules/simple/application/ContenedorSimpleMixin'
 import { ComportamientoModalesGestionPaciente } from '../application/ComportamientoModalesGestionPaciente'
 import { EmpleadoController } from 'pages/recursosHumanos/empleados/infraestructure/EmpleadoController'
-import { configuracionColumnasExamenes } from '../domain/configuracionColumnasExamenes'
 import { CustomActionTable } from 'components/tables/domain/CustomActionTable'
 import ModalesEntidad from 'components/modales/view/ModalEntidad.vue'
 import { Empleado } from 'recursosHumanos/empleados/domain/Empleado'
-import { tabOptionsEstadosExamenes } from 'config/utils/medico'
+import { estadosExamenes, tabOptionsEstadosExamenes } from 'config/utils/medico'
 import { useExamenes } from '../application/UseExamenes'
 import { accionesTabla } from 'config/utils'
 import { useBotonesSolicitudExamen } from '../application/UseBotonesSolicitudExamen'
+import { useNotificaciones } from 'shared/notificaciones'
+import { isAxiosError, notificarMensajesError } from 'shared/utils'
+import { CustomActionPrompt } from 'components/tables/domain/CustomActionPrompt'
 
 export default defineComponent({
   components: { TabLayout, SelectorImagen, ModalesEntidad, EssentialTable, DetallePaciente, EssentialTableTabs },
@@ -36,26 +39,55 @@ export default defineComponent({
      ************/
     const mixin = new ContenedorSimpleMixin(Empleado, new EmpleadoController())
     const { entidad: empleado } = mixin.useReferencias()
+    const { onConsultado } = mixin.useHooks()
+    const notificaciones = useNotificaciones()
 
     const listadoExamenes = ref([])
 
     // const mixin = new ContenedorSimpleMixin(Empleado, new EmpleadoController())
 
     const tabs = ref('1')
-    const tabEstadoExamen = ref('0')
+    const tabEstadoExamen = ref(estadosExamenes.PENDIENTE_SOLICITAR)
 
     const modales = new ComportamientoModalesGestionPaciente()
+
 
     /*************
      * Funciones
      *************/
-    const { examenes, consultarExamenes, consultarExamenesSolicitados } = useExamenes()
-    const { btnSolicitar, btnResultados } = useBotonesSolicitudExamen(tabEstadoExamen, modales)
+    const { examenes, registros, consultarRegistrosEmpleadoExamen, consultarExamenesSinSolicitar, consultarExamenesSolicitados } = useExamenes()
+    const { seleccionVariosExamen, btnSolicitar, btnResultados, btnSeleccionarVariosExamenes, btnSolicitarExamenesSeleccionados } = useBotonesSolicitudExamen(tabEstadoExamen, modales)
 
     const filtrarEstadoExamen = (tab) => {
       tabEstadoExamen.value = tab
-      if (tab === '0') consultarExamenes()
-      else consultarExamenesSolicitados(tab)
+      if (tab === '0') {
+        // seleccionVariosExamen.value = false
+        consultarExamenesSinSolicitar({ empleado_id: empleado.id })
+      } else {
+        // seleccionVariosExamen.value = true
+        consultarExamenesSolicitados(tab)
+      }
+    }
+
+    const agregarRegistro = () => {
+      const config: CustomActionPrompt = {
+        titulo: 'Motivo',
+        mensaje: 'Ingrese una observación.',
+        accion: async (motivo) => {
+          try {
+            notificaciones.notificarCorrecto('Registro agregado exitosamente!')
+          } catch (error: any) {
+            if (isAxiosError(error)) {
+              const mensajes: string[] = error.erroresValidacion
+              notificarMensajesError(mensajes, notificaciones)
+            } else {
+              notificaciones.notificarError(error.message)
+            }
+          }
+        },
+      }
+
+      notificaciones.prompt(config)
     }
 
 
@@ -63,7 +95,10 @@ export default defineComponent({
     /*******
      * Init
      *******/
-    consultarExamenes()
+    onConsultado(async () => {
+      await consultarRegistrosEmpleadoExamen({ empleado_id: empleado.id })
+      await consultarExamenesSinSolicitar({ empleado_id: empleado.id })
+    })
 
     return {
       mixin,
@@ -80,9 +115,17 @@ export default defineComponent({
       accionesTabla,
       modales,
       examenes,
+      registros,
+      tipoSeleccion: computed(() => seleccionVariosExamen.value && tabEstadoExamen.value === '0' ? 'multiple' : 'none'),
+      seleccionVariosExamen,
+      // funciones
+      agregarRegistro,
       // botones tabla
       btnSolicitar,
       btnResultados,
+      // botones tabla header
+      btnSeleccionarVariosExamenes,
+      btnSolicitarExamenesSeleccionados,
     }
   },
 })

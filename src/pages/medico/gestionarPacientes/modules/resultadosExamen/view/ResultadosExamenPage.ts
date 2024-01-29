@@ -1,18 +1,18 @@
 // Dependencias
-import { configuracionColumnasCampos } from '../domain/configuracionColumnasCampos'
 import { defineComponent, ref } from 'vue'
 
 // Logica y controladores
 import { ArchivoController } from 'gestionTrabajos/subtareas/modules/gestorArchivosTrabajos/infraestructure/ArchivoController'
-import { ConfiguracionExamenCategoriaController } from '../infraestructure/ConfiguracionExamenCategoriaController'
-import { ConfiguracionExamenCampoController } from '../infraestructure/ConfiguracionExamenCampoController'
 import { ContenedorSimpleMixin } from 'shared/contenedor/modules/simple/application/ContenedorSimpleMixin'
-import { ResultadoExamen } from '../domain/ResultadoExamen'
 
 // Componentes
 import EssentialTable from 'components/tables/view/EssentialTable.vue'
 import GestorArchivos from 'components/gestorArchivos/GestorArchivos.vue'
+import { configuracionColumnasCampos } from '../domain/configuracionColumnasCampos'
+import { ConfiguracionExamenCategoriaController } from '../infraestructure/ConfiguracionExamenCategoriaController'
+import { ConfiguracionExamenCampoController } from '../infraestructure/ConfiguracionExamenCampoController'
 import { ResultadoExamenController } from '../infraestructure/ResultadoExamenController'
+import { ResultadoExamen } from '../domain/ResultadoExamen'
 
 export default defineComponent({
   components: { EssentialTable, GestorArchivos },

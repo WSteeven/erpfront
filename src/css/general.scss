@@ -93,6 +93,18 @@ input[type='time']::-webkit-calendar-picker-indicator {
 .border-grey {
   border: 1px solid $grey-4;
 }
+
+.border-grey-6 {
+  border: 1px solid $grey-6;
+}
+
+.border-bottom-grey-5 {
+  border-bottom: 1px solid $grey-5;
+}
+
+.border-right-grey-5 {
+  border-right: 1px solid $grey-5;
+}
 /* .bg-transparent {
     background-color: transparent !important;
     border: none !important;
