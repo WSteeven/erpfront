@@ -6,12 +6,16 @@
     ></detalle-paciente>
 
     <br />
-
-    <div class="row q-col-gutter-sm">
+    {{ estadoSolicitudExamen }}
+    <div
+      v-for="examenSolicitado in estadoSolicitudExamen.examenes_solicitados"
+      :key="examenSolicitado.examen_id"
+      class="row q-col-gutter-sm"
+    >
       <div class="col-12 col-md-3">
         <label class="q-mb-sm block">Exámen a solicitar</label>
         <q-select
-          v-model="detalleExamen.id"
+          v-model="examenSolicitado.examen_id"
           :options="examenes"
           transition-show="scale"
           transition-hide="scale"
@@ -32,7 +36,7 @@
       <div class="col-12 col-md-3">
         <label class="q-mb-sm block">Laboratorio clínico</label>
         <q-select
-          v-model="detalleExamen.id"
+          v-model="examenSolicitado.laboratorio_id"
           :options="examenes"
           transition-show="scale"
           transition-hide="scale"
@@ -45,7 +49,6 @@
           input-debounce="0"
           emit-value
           map-options
-          disable
         >
         </q-select>
       </div>
@@ -53,7 +56,7 @@
       <div class="col-12 col-md-3">
         <label class="q-mb-sm block">Fecha de asistencia</label>
         <q-input
-          v-model="solicitud.fecha_asistencia"
+          v-model="examenSolicitado.fecha_asistencia"
           outlined
           type="datetime"
           dense
@@ -66,7 +69,7 @@
                 transition-hide="scale"
               >
                 <q-date
-                  v-model="solicitud.fecha_asistencia"
+                  v-model="examenSolicitado.fecha_asistencia"
                   :mask="maskFecha"
                   today-btn
                 >
@@ -83,7 +86,7 @@
       <div class="col-12 col-md-3">
         <label class="q-mb-sm block">Hora asistencia</label>
         <q-input
-          v-model="solicitud.horaAsistencia"
+          v-model="examenSolicitado.hora_asistencia"
           type="time"
           step="1"
           stack-label
@@ -92,11 +95,13 @@
         >
         </q-input>
       </div>
+    </div>
 
+    <div class="row">
       <div class="col-12 q-mb-md">
         <label class="q-mb-sm block">Observación</label>
         <q-input
-          v-model="solicitud.observacion"
+          v-model="estadoSolicitudExamen.observacion"
           outlined
           dense
           autogrow

@@ -1,8 +1,9 @@
 import { ExamenController } from "pages/medico/examenes/infraestructure/ExamenController"
-import { ref } from "vue"
+import { Ref, ref } from "vue"
 import { EstadoSolicitudExamenController } from "../modules/solicitudExamen/infraestructure/EstadoSolicitudExamenController"
 import { StatusEssentialLoading } from "components/loading/application/StatusEssentialLoading"
 import { RegistroEmpleadoExamenController } from "pages/medico/examenes/infraestructure/RegistroEmpleadoExamenController"
+import { Examen } from "pages/medico/examenes/domain/Examen"
 
 export function useExamenes() {
   /***************
@@ -16,7 +17,7 @@ export function useExamenes() {
    * Variables
    ************/
   const cargando = new StatusEssentialLoading()
-  const examenes = ref([])
+  const examenes: Ref<Examen[]> = ref([])
   const registros = ref([])
 
   /************

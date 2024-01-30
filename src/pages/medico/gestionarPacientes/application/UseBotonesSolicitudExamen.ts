@@ -4,6 +4,7 @@ import { DetalleExamen } from "../domain/DetalleExamen"
 import { estadosExamenes } from "config/utils/medico"
 import { Ref, ref } from "vue"
 import { useMedicoStore } from "stores/medico"
+import { Examen } from "pages/medico/examenes/domain/Examen"
 
 export function useBotonesSolicitudExamen(tabEstadoExamen: Ref, modales: ComportamientoModalesGestionPaciente) {
   /*********
@@ -16,7 +17,7 @@ export function useBotonesSolicitudExamen(tabEstadoExamen: Ref, modales: Comport
    **************/
   const seleccionVariosExamen = ref(false)
   const refTablaExamenes = ref()
-  const examenesSeleccionados: Ref<DetalleExamen[]> = ref([])
+  const examenesSeleccionados: Ref<Examen[]> = ref([])
 
   /*********
    * Header
@@ -45,20 +46,22 @@ export function useBotonesSolicitudExamen(tabEstadoExamen: Ref, modales: Comport
     accion: async function () {
       console.log('Solicitando varios examenes...')
       console.log(examenesSeleccionados.value)
+      medicoStore.examenesSolicitados = examenesSeleccionados.value
       examenesSeleccionados.value = []
+      modales.abrirModalEntidad('SolicitudExamenPage')
     }
   }
 
   /********
    * Body
    ********/
-  const btnSolicitarExamenIndividual: CustomActionTable<DetalleExamen> = {
+  const btnSolicitarExamenIndividual: CustomActionTable<Examen> = {
     titulo: 'Solicitar examen',
     icono: 'bi-plus',
     color: 'positive',
     visible: () => tabEstadoExamen.value === '0' && !seleccionVariosExamen.value,
     accion: ({ entidad }) => {
-      medicoStore.detalleExamen = entidad
+      medicoStore.examen = entidad
       modales.abrirModalEntidad('SolicitudExamenPage')
       /*confirmar('¿Está seguro de ejecutar el ticket?', async () => {
         const { response, result } = await cambiarEstadoTicket.ejecutar(entidad.id)
@@ -90,7 +93,7 @@ export function useBotonesSolicitudExamen(tabEstadoExamen: Ref, modales: Comport
   /******************
    * Other functions
    ******************/
-  async function seleccionarExamen(examenes: DetalleExamen[]) {
+  async function seleccionarExamen(examenes: Examen[]) {
     examenesSeleccionados.value = examenes
   }
 

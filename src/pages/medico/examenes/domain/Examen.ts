@@ -1,14 +1,16 @@
 import { EntidadAuditable } from 'shared/entidad/domain/entidadAuditable'
 
 export class Examen extends EntidadAuditable {
-  tipo_examen: string | number | null
-  categoria_examen: string | number | null
+  nombre: string | number | null
   examen: string | number | null
+  categoria: string | number | null
+  tipo_examen: string | number | null
 
   constructor() {
     super()
-    this.tipo_examen = null
-    this.categoria_examen = null
+    this.categoria = null
+    this.nombre = null
     this.examen = null
+    this.tipo_examen = null
   }
 }
