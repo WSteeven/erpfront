@@ -26,7 +26,7 @@ export default defineComponent({
   components: { TabLayout, ModalesEntidad, SelectorImagen, EssentialTable, EssentialTableTabs, },
   setup() {
     const mixin = new ContenedorSimpleMixin(PagoComision, new PagoComisionController())
-    const { entidad: pagocomision, accion, disabled } = mixin.useReferencias()
+    const { entidad: pago, accion, disabled } = mixin.useReferencias()
     const { setValidador} = mixin.useComportamiento()
     const { onGuardado } = mixin.useHooks()
 
@@ -35,33 +35,25 @@ export default defineComponent({
     useCargandoStore().setQuasar(useQuasar())
 
     const reglas = {
-      fecha_inicio: { required, },
-      fecha_fin: { required, },
+      // fecha_inicio: { required, },
+      // fecha_fin: { required, },
+      rango_fecha: { required, },
     }
-    const v$ = useVuelidate(reglas, pagocomision)
+    const v$ = useVuelidate(reglas, pago)
     setValidador(v$.value)
 
     onGuardado(() => {
       console.log('guardado')
     })
 
-    function optionsFechaFin(date) {
-      const currentDate =
-        pagocomision.fecha_inicio != null
-          ? convertir_fecha_guion(pagocomision.fecha_inicio)
-          : new Date() // Obtener la fecha actual
-
-      return date > currentDate
-    }
     return {
       removeAccents,
       mixin,
       v$,
-      pagocomision,
+      pago,
       accion,
       disabled,
       maskFecha,
-      optionsFechaFin,
       configuracionColumnas: configuracionColumnasPagoComision,
     }
   },
