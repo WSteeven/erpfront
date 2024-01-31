@@ -44,6 +44,7 @@ import { AxiosResponse } from 'axios'
 import { AxiosHttpRepository } from 'shared/http/infraestructure/AxiosHttpRepository'
 import { CondicionController } from 'pages/administracion/condiciones/infraestructure/CondicionController'
 import { Condicion } from 'pages/administracion/condiciones/domain/Condicion'
+import { useFiltrosListadosSelects } from 'shared/filtrosListadosGenerales'
 
 
 export default defineComponent({
@@ -108,7 +109,7 @@ export default defineComponent({
     const condiciones = ref([])
     const opciones_empleados = ref([])
     const opciones_cantones = ref([])
-    const opciones_tareas = ref([])
+    // const tareas = ref([])
     const opciones_autorizaciones = ref([])
     const opciones_sucursales = ref([])
     //Obtener los listados
@@ -177,6 +178,8 @@ export default defineComponent({
     /*******************************************************************************************
      * Funciones
      ******************************************************************************************/
+    const { tareas, filtrarTareas } = useFiltrosListadosSelects(listadosAuxiliares)
+
     async function obtenerClientesMaterialesEmpleado() {
       try {
         cargando.activar()
@@ -337,7 +340,7 @@ export default defineComponent({
     opciones_cantones.value = JSON.parse(LocalStorage.getItem('cantones')!.toString())
     opciones_autorizaciones.value = JSON.parse(LocalStorage.getItem('autorizaciones')!.toString())
     opciones_sucursales.value = listadosAuxiliares.sucursales
-    opciones_tareas.value = listadosAuxiliares.tareas
+    tareas.value = listadosAuxiliares.tareas
     condiciones.value = listadosAuxiliares.condiciones
 
     const configuracionColumnasProductosSeleccionadosAccion = computed(() => [...configuracionColumnasProductosSeleccionados,
@@ -373,7 +376,8 @@ export default defineComponent({
       //listados
       opciones_empleados,
       clientes,
-      opciones_tareas,
+      tareas,
+      filtrarTareas,
       opciones_cantones,
       opciones_autorizaciones,
       opciones_sucursales,
