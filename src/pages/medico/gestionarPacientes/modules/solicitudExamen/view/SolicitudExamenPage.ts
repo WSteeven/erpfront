@@ -27,7 +27,7 @@ export default defineComponent({
     const examenesSolicitados = medicoStore.examenesSolicitados
 
     const cargando = new StatusEssentialLoading()
-    const examenController = new ExamenController()
+    const laboratorioClinicoController = new LaboratorioClinicoController()
     const examenes: Ref<Examen[]> = ref([])
 
     /********
@@ -40,21 +40,22 @@ export default defineComponent({
     cargarVista(async () => {
       await obtenerListados({
         laboratoriosClinicos: {
-          controller: new LaboratorioClinicoController(),
+          controller: laboratorioClinicoController,
           params: { canton_id: empleado.canton },
         },
         cantones: new CantonController(),
+        examenes: new ExamenController(),
       })
     })
 
     /************
      * Funciones
      ************/
-    const consultarTodosExamenes = async () => {
+    const consultarLaboratoriosClinicos = async (canton: number) => {
       try {
         cargando.activar()
-        const { result } = await examenController.listar()
-        examenes.value = result
+        const { result } = await laboratorioClinicoController.listar({ canton_id: canton })
+        listadosAuxiliares.laboratoriosClinicos = result
       } catch (e) {
         console.log(e)
       } finally {
@@ -73,7 +74,7 @@ export default defineComponent({
     /*******
      * Init
      *******/
-    consultarTodosExamenes()
+    // consultarTodosExamenes()
 
     examenesSolicitados?.forEach((examen: Examen) => {
       const examenSolicitado = new ExamenSolicitado()
@@ -88,6 +89,8 @@ export default defineComponent({
       empleado,
       examenes,
       listadosAuxiliares,
+      // funciones
+      consultarLaboratoriosClinicos,
     }
   }
 })

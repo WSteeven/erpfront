@@ -39,6 +39,8 @@ export const useFiltrosListadosSelects = (listadosAuxiliares, entidad?: Ref<any>
   const tareasDestino = ref(listadosAuxiliares.tareasDestino)
   const centros_costos = ref([])
 
+  // Modulo medico
+  const laboratoriosClinicos = ref(listadosAuxiliares.laboratoriosClinicos)
 
   /**************************************************************
    * Funciones

@@ -22,6 +22,7 @@
           outlined
           :option-label="(item) => item.canton"
           :option-value="(item) => item.id"
+          @update:model-value="consultarLaboratoriosClinicos(empleado.canton)"
           use-input
           input-debounce="0"
           emit-value
@@ -40,7 +41,7 @@
         <label class="q-mb-sm block">Exámen a solicitar</label>
         <q-select
           v-model="examenSolicitado.examen_id"
-          :options="examenes"
+          :options="listadosAuxiliares.examenes"
           transition-show="scale"
           transition-hide="scale"
           options-dense
