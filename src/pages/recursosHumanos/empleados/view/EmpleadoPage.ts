@@ -52,7 +52,7 @@ import { AxiosHttpRepository } from 'shared/http/infraestructure/AxiosHttpReposi
 import { apiConfig, endpoints } from 'config/api'
 import { imprimirArchivo } from 'shared/utils'
 import { useCargandoStore } from 'stores/cargando'
-import  { AxiosResponse } from 'axios'
+import { AxiosResponse } from 'axios'
 import { useNotificaciones } from 'shared/notificaciones'
 import { useConfiguracionGeneralStore } from 'stores/configuracion_general'
 
@@ -94,8 +94,8 @@ export default defineComponent({
     const modales = new ComportamientoModalesEmpleado()
     const familiarStore = useFamiliarStore()
     const authenticationStore = useAuthenticationStore()
-    const nombre_usuario =ref()
-    const email_usuario =ref()
+    const nombre_usuario = ref()
+    const email_usuario = ref()
     const mixinFamiliares = new ContenedorSimpleMixin(
       Familiares,
       new FamiliaresController()
@@ -254,7 +254,7 @@ export default defineComponent({
         empleado.email = username + '@' + sitio_web
         empleado.usuario = username
 
-          empleado.password = empleado.identificacion
+        empleado.password = empleado.identificacion
 
       }
     })
@@ -322,7 +322,7 @@ export default defineComponent({
       icono: 'bi-toggle2-on',
       color: 'negative',
       tooltip: 'Habilitar',
-      visible: ({ entidad }) =>  !entidad.estado && authenticationStore.can('puede.activar.empleados'),
+      visible: ({ entidad }) => !entidad.estado && authenticationStore.can('puede.activar.empleados'),
       accion: ({ entidad }) => {
         HabilitarEmpleado(entidad.id, true)
         entidad.estado = true
@@ -333,33 +333,33 @@ export default defineComponent({
       icono: 'bi-toggle2-off',
       color: 'positive',
       tooltip: 'DesHabilitar',
-      visible: ({ entidad }) =>  entidad.estado && authenticationStore.can('puede.desactivar.empleados'),
+      visible: ({ entidad }) => entidad.estado && authenticationStore.can('puede.desactivar.empleados'),
       accion: ({ entidad }) => {
         HabilitarEmpleado(entidad.id, false)
         entidad.estado = false
       },
     }
-    function reestablecer_usuario(){
-      if( accion.value== acciones.editar && empleado.generar_usuario){
+    function reestablecer_usuario() {
+      if (accion.value == acciones.editar && empleado.generar_usuario) {
         generarUsename()
-      }else{
-        empleado.usuario =nombre_usuario.value
+      } else {
+        empleado.usuario = nombre_usuario.value
         empleado.email = email_usuario.value
       }
     }
 
-    function obtenerUsername(){
+    function obtenerUsername() {
 
-      if( accion.value== acciones.editar && empleado.generar_usuario){
+      if (accion.value == acciones.editar && empleado.generar_usuario) {
         generarUsename()
       }
-     if(( accion.value== acciones.nuevo)&& empleado.nombres != null && empleado.nombres != '' && empleado.apellidos != null && empleado.apellidos != ''){
+      if ((accion.value == acciones.nuevo) && empleado.nombres != null && empleado.nombres != '' && empleado.apellidos != null && empleado.apellidos != '') {
         generarUsename()
-     }
+      }
     }
-    async function generarUsename(){
+    async function generarUsename() {
       const axios = AxiosHttpRepository.getInstance()
-      const ruta = axios.getEndpoint(endpoints.generar_username,{nombres:empleado.nombres, apellidos: empleado.apellidos, usuario: empleado.usuario})
+      const ruta = axios.getEndpoint(endpoints.generar_username, { nombres: empleado.nombres, apellidos: empleado.apellidos, usuario: empleado.usuario })
       const response: AxiosResponse = await axios.get(ruta)
       const username = ref(response.data.username);
       const sitio_web = configuracionStore.configuracion?.sitio_web?.split('WWW.')[1]

@@ -6,11 +6,33 @@
     ></detalle-paciente>
 
     <br />
-    {{ estadoSolicitudExamen }}
+
+    <div class="row">
+      <div class="col-12 col-md-3">
+        <label class="q-mb-sm block">Cantón</label>
+        <q-select
+          v-model="empleado.canton"
+          :options="listadosAuxiliares.cantones"
+          transition-show="scale"
+          transition-hide="scale"
+          options-dense
+          dense
+          outlined
+          :option-label="(item) => item.canton"
+          :option-value="(item) => item.id"
+          use-input
+          input-debounce="0"
+          emit-value
+          map-options
+        >
+        </q-select>
+      </div>
+    </div>
+
     <div
       v-for="examenSolicitado in estadoSolicitudExamen.examenes_solicitados"
       :key="examenSolicitado.examen_id"
-      class="row q-col-gutter-sm"
+      class="row q-col-gutter-sm q-mb-md"
     >
       <div class="col-12 col-md-3">
         <label class="q-mb-sm block">Exámen a solicitar</label>
@@ -37,13 +59,13 @@
         <label class="q-mb-sm block">Laboratorio clínico</label>
         <q-select
           v-model="examenSolicitado.laboratorio_id"
-          :options="examenes"
+          :options="listadosAuxiliares.laboratoriosClinicos"
           transition-show="scale"
           transition-hide="scale"
           options-dense
           dense
           outlined
-          :option-label="(item) => item.examen"
+          :option-label="(item) => item.nombre"
           :option-value="(item) => item.id"
           use-input
           input-debounce="0"
@@ -53,7 +75,7 @@
         </q-select>
       </div>
 
-      <div class="col-12 col-md-3">
+      <div class="col-12 col-md-2">
         <label class="q-mb-sm block">Fecha de asistencia</label>
         <q-input
           v-model="examenSolicitado.fecha_asistencia"
@@ -83,7 +105,7 @@
         </q-input>
       </div>
 
-      <div class="col-12 col-md-3">
+      <div class="col-12 col-md-1">
         <label class="q-mb-sm block">Hora asistencia</label>
         <q-input
           v-model="examenSolicitado.hora_asistencia"
