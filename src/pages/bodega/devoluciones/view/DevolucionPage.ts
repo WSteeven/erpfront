@@ -157,7 +157,7 @@ export default defineComponent({
       // canton: { required },
       sucursal: { required },
       tarea: { requiredIfTarea: requiredIf(devolucion.es_tarea!) },
-      condicion: { requiredIf: requiredIf(devolucion.misma_condicion) }
+      condicion: { requiredIf: requiredIf(() => devolucion.misma_condicion) }
     }
 
     const v$ = useVuelidate(reglas, devolucion)
@@ -359,12 +359,12 @@ export default defineComponent({
       type: 'string',
       sortable: false,
     },
-    // {
-    //   name: 'acciones',
-    //   field: 'acciones',
-    //   label: 'Acciones',
-    //   align: 'center'
-    // },
+      // {
+      //   name: 'acciones',
+      //   field: 'acciones',
+      //   label: 'Acciones',
+      //   align: 'center'
+      // },
     ])
 
     return {

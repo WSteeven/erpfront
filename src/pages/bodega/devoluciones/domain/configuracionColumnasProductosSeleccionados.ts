@@ -48,6 +48,13 @@ export const configuracionColumnasProductosSeleccionados: ColumnConfig<any>[] = 
     label: 'Cantidad',
     align: 'left',
     sortable: true,
+  },
+  {
+    name: 'devuelto',
+    field: 'devuelto',
+    label: 'Devuelto',
+    align: 'left',
+    sortable: true,
   }
 ]
 
