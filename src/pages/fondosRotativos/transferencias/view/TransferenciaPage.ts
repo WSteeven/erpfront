@@ -8,7 +8,7 @@ import SelectorImagen from 'components/SelectorImagen.vue'
 import { useNotificacionStore } from 'stores/notificacion'
 import { useQuasar } from 'quasar'
 import { useVuelidate } from '@vuelidate/core'
-import {  required,maxLength, requiredIf } from 'shared/i18n-validators'
+import { required, maxLength, requiredIf } from 'shared/i18n-validators'
 import { ContenedorSimpleMixin } from 'shared/contenedor/modules/simple/application/ContenedorSimpleMixin'
 import { TransferenciaController } from '../infrestructure/TransferenciaController'
 import { configuracionColumnasTransferencia } from '../domain/configuracionColumnasTransferencia'
@@ -35,7 +35,10 @@ export default defineComponent({
     /***********
      * Mixin
      ************/
-    const mixin = new ContenedorSimpleMixin(Transferencia, new TransferenciaController())
+    const mixin = new ContenedorSimpleMixin(
+      Transferencia,
+      new TransferenciaController()
+    )
     const aprobarController = new AprobarTransferenciaController()
     const {
       entidad: transferencia,
@@ -43,26 +46,26 @@ export default defineComponent({
       accion,
       listadosAuxiliares,
     } = mixin.useReferencias()
-    const { setValidador, obtenerListados, cargarVista,consultar } =
+    const { setValidador, obtenerListados, cargarVista, consultar } =
       mixin.useComportamiento()
-      const {
-        confirmar,
-        prompt,
-        notificarCorrecto,
-        notificarAdvertencia,
-        notificarError,
-      } = useNotificaciones()
-      const usuarios = ref([])
-      const esDevolucion = ref(false)
-      const tareas = ref([])
-      const mostrarListado = ref(true)
-      const mostrarAprobacion = ref(false)
+    const {
+      confirmar,
+      prompt,
+      notificarCorrecto,
+      notificarAdvertencia,
+      notificarError,
+    } = useNotificaciones()
+    const usuarios = ref([])
+    const esDevolucion = ref(false)
+    const tareas = ref([])
+    const mostrarListado = ref(true)
+    const mostrarAprobacion = ref(false)
     /*************
      * Validaciones
      **************/
     const reglas = {
       usuario_recibe: {
-        requiredIf:esDevolucion.value ? true : false,
+        requiredIf: esDevolucion.value ? true : false,
       },
       monto: {
         required,
@@ -73,7 +76,7 @@ export default defineComponent({
         maxLength: maxLength(50),
       },
       tarea: {
-        requiredIf:esDevolucion.value ? true : false,
+        requiredIf: esDevolucion.value ? true : false,
       },
       comprobante: {
         required,
@@ -86,8 +89,7 @@ export default defineComponent({
     const v$ = useVuelidate(reglas, transferencia)
     setValidador(v$.value)
 
-
-   /* Checking if the id_transferencia is not null, if it is not null, it is going to consult the
+    /* Checking if the id_transferencia is not null, if it is not null, it is going to consult the
    transfer with the id_transferencia, it is going to set the value of mostrarListado to false and
    the value of mostrarAprobacion to true, and it is going to set the value of esDevolucion to true
    if the user_recibe is not null, if it is null, it is going to set the value of esDevolucion to
@@ -99,20 +101,23 @@ export default defineComponent({
       esDevolucion.value = transferencia.usuario_recibe !== null ? true : false
     }
 
-
     //Obtener el listado de las cantones
     cargarVista(async () => {
       await obtenerListados({
         usuarios: {
           controller: new EmpleadoController(),
-          params: { campos: 'id,nombres,apellidos',estado: 1},
+          params: { campos: 'id,nombres,apellidos', estado: 1 },
         },
         tareas: {
           controller: new TareaController(),
           params: { campos: 'id,codigo_tarea,titulo,cliente_id,proyecto_id' },
         },
       })
-      listadosAuxiliares.tareas.unshift({ id: 0, titulo: 'Sin Tarea' })
+      listadosAuxiliares.tareas.unshift({
+        id: 0,
+        titulo: 'Sin Tarea',
+        codigo_tarea: ' ',
+      })
       tareas.value = listadosAuxiliares.tareas
       usuarios.value = listadosAuxiliares.usuarios
     })
@@ -123,47 +128,48 @@ export default defineComponent({
     function filtrarUsuarios(val, update) {
       if (val === '') {
         update(() => {
-          usuarios.value =
-            listadosAuxiliares.usuarios
+          usuarios.value = listadosAuxiliares.usuarios
         })
         return
       }
       update(() => {
         const needle = val.toLowerCase()
-        usuarios.value =
-          listadosAuxiliares.usuarios.filter(
-            (v) => v.nombres.toLowerCase().indexOf(needle) > -1 || v.apellidos.toLowerCase().indexOf(needle) > -1
-          )
+        usuarios.value = listadosAuxiliares.usuarios.filter(
+          (v) =>
+            v.nombres.toLowerCase().indexOf(needle) > -1 ||
+            v.apellidos.toLowerCase().indexOf(needle) > -1
+        )
       })
     }
     /**Filtro de Tareas */
     function filtrarTareas(val, update) {
       if (val === '') {
         update(() => {
-         tareas.value = listadosAuxiliares.tareas
+          tareas.value = listadosAuxiliares.tareas
         })
         return
       }
       update(() => {
         const needle = val.toLowerCase()
+
         tareas.value = listadosAuxiliares.tareas.filter(
           (v) =>
             v.codigo_tarea.toLowerCase().indexOf(needle) > -1 ||
-            v.detalle.toLowerCase().indexOf(needle) > -1
+            v.titulo.toLowerCase().indexOf(needle) > -1
         )
       })
     }
 
-/**
- * It checks if the value of the checkbox is true, if it is, it sets the value of the user_recibe to
- * null and the value of the reason to DEVOLUCION. If it is not true, it sets the value of the reason
- * to TRANSFERENCIA ENTRE USUARIOS.
- */
-    function existeDevolucion(){
-      if(esDevolucion.value ==true){
+    /**
+     * It checks if the value of the checkbox is true, if it is, it sets the value of the user_recibe to
+     * null and the value of the reason to DEVOLUCION. If it is not true, it sets the value of the reason
+     * to TRANSFERENCIA ENTRE USUARIOS.
+     */
+    function existeDevolucion() {
+      if (esDevolucion.value == true) {
         transferencia.usuario_recibe = null
         transferencia.motivo = 'DEVOLUCION'
-      }else{
+      } else {
         transferencia.motivo = 'TRANSFERENCIA ENTRE USUARIOS'
       }
     }
@@ -174,7 +180,9 @@ export default defineComponent({
       mixin,
       transferencia,
       esDevolucion,
-      disabled, accion, v$,
+      disabled,
+      accion,
+      v$,
       usuarios,
       usuario,
       tareas,
