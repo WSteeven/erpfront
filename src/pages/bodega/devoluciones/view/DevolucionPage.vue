@@ -227,7 +227,10 @@
             <label class="q-mb-sm block">Tarea</label>
             <q-select
               v-model="devolucion.tarea"
-              :options="opciones_tareas"
+              :options="tareas"
+              @filter="filtrarTareas"
+              use-input
+              input-debounce="0"
               transition-show="scale"
               transition-hide="scale"
               options-dense
