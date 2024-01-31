@@ -7,9 +7,11 @@
 
     <br />
 
-    <div class="row">
+    <div class="row q-mb-md">
       <div class="col-12 col-md-3">
-        <label class="q-mb-sm block">Cantón</label>
+        <label class="q-mb-sm block text-bold"
+          >Seleccione un cantón para filtrar los laboratorios clínicos</label
+        >
         <q-select
           v-model="empleado.canton"
           :options="listadosAuxiliares.cantones"
@@ -75,7 +77,7 @@
         </q-select>
       </div>
 
-      <div class="col-12 col-md-2">
+      <div class="col-12 col-md-3">
         <label class="q-mb-sm block">Fecha de asistencia</label>
         <q-input
           v-model="examenSolicitado.fecha_asistencia"
@@ -105,7 +107,7 @@
         </q-input>
       </div>
 
-      <div class="col-12 col-md-1">
+      <div class="col-12 col-md-3">
         <label class="q-mb-sm block">Hora asistencia</label>
         <q-input
           v-model="examenSolicitado.hora_asistencia"
