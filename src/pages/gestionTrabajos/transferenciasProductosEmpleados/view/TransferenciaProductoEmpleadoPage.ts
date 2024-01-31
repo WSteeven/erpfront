@@ -147,6 +147,8 @@ export default defineComponent({
         transferencia.listado_productos = mapearProductos(transferenciaProductoEmpleadoStore.listadoMateriales)
       } else {
       }
+
+      if (accion.value === acciones.nuevo) establecerAutorizador()
     })
 
     transferencia.solicitante = authenticationStore.user.id
@@ -306,12 +308,12 @@ export default defineComponent({
         // Consultar productos
         if (accion.value === acciones.nuevo) {
           if (transferenciaProductoEmpleadoStore.listadoMateriales.length) {
-            console.log('IF...')
+            // console.log('IF...')
             transferencia.listado_productos = mapearProductos(transferenciaProductoEmpleadoStore.listadoMateriales)
           } else {
-            console.log('ELSE...')
+            // console.log('ELSE...')
             if (!transferencia.proyecto_origen && !transferencia.etapa_origen) {
-              console.log('IF...###')
+              // console.log('IF...###')
               filtroTarea.cliente_id = transferencia.cliente
               filtroTarea.empleado_id = transferencia.empleado_origen
               filtroTarea.tarea_id = transferencia.tarea_origen
@@ -319,7 +321,7 @@ export default defineComponent({
               await consultarProductosTarea()
               transferencia.listado_productos = mapearProductos(listadosAuxiliares.productos)
             } else {
-              console.log('ELSE...###')
+              // console.log('ELSE...###')
               // filtroProyecto.cliente_id = transferencia.cliente
               filtroProyecto.empleado_id = transferencia.empleado_origen
               filtroProyecto.proyecto_id = transferencia.proyecto_origen
