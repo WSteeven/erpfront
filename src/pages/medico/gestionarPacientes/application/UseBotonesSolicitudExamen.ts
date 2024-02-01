@@ -81,6 +81,7 @@ export function useBotonesSolicitudExamen(tabEstadoExamen: Ref, modales: Comport
     color: 'primary',
     visible: ({ entidad }) => tabEstadoExamen.value === '1',
     accion: ({ entidad }) => {
+      medicoStore.examen = entidad
       modales.abrirModalEntidad('ResultadosExamenPage')
       /*confirmar('¿Está seguro de ejecutar el ticket?', async () => {
         const { response, result } = await cambiarEstadoTicket.ejecutar(entidad.id)

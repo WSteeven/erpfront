@@ -197,7 +197,7 @@ export default defineComponent({
       default: false,
     }
   },
-  emits: ['consultar', 'editar', 'eliminar', 'accion1', 'accion2', 'accion3', 'accion4', 'accion5', 'accion6', 'accion7', 'accion8', 'accion9', 'accion10', 'selected', 'onScroll', 'filtrar', 'toggle-filtros', 'guardar-fila', 'update:selected'],
+  emits: ['consultar', 'editar', 'eliminar', 'accion1', 'accion2', 'accion3', 'accion4', 'accion5', 'accion6', 'accion7', 'accion8', 'accion9', 'accion10', 'selected', 'onScroll', 'filtrar', 'toggle-filtros', 'guardar-fila', 'update:selected', 'fila-modificada'],
   setup(props, { emit }) {
     const grid = ref(false)
     const inFullscreen = ref(false)
@@ -434,6 +434,10 @@ export default defineComponent({
         : accion?.color
     }
 
+    function guardarCeldaEditada(fila) {
+      emit('fila-modificada', fila)
+    }
+
     return {
       refEditarModal,
       refTableFilters,
@@ -481,6 +485,7 @@ export default defineComponent({
       exportTable,
       toggleFiltros,
       extraerColor,
+      guardarCeldaEditada,
     }
   },
 })

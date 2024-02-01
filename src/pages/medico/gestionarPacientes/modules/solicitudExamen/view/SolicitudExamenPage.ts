@@ -15,6 +15,8 @@ import { ExamenSolicitado } from '../domain/ExamenSolicitado'
 import { Examen } from 'pages/medico/examenes/domain/Examen'
 import { LaboratorioClinicoController } from 'pages/medico/laboratoriosMedicos/infraestructure/LaboratorioClinicoController'
 import { CantonController } from 'sistema/ciudad/infraestructure/CantonControllerontroller'
+import { maskFecha } from 'config/utils'
+// import { medico } from 'config/endpoints/medico'
 
 export default defineComponent({
   components: {
@@ -35,7 +37,8 @@ export default defineComponent({
      ********/
     const mixin = new ContenedorSimpleMixin(EstadoSolicitudExamen, new EstadoSolicitudExamenController())
     const { entidad: estadoSolicitudExamen, listadosAuxiliares } = mixin.useReferencias()
-    const { cargarVista, obtenerListados } = mixin.useComportamiento()
+    const { cargarVista, obtenerListados, guardar } = mixin.useComportamiento()
+    const { onBeforeGuardar } = mixin.useHooks()
 
     cargarVista(async () => {
       await obtenerListados({
@@ -63,23 +66,34 @@ export default defineComponent({
       }
     }
 
-    const guardar = async () => {
+    /* const guardar = async () => {
       //
-    }
+    } */
 
     const cancelar = () => {
       //
     }
 
+    /********
+     * Hooks
+     ********/
+    onBeforeGuardar(() => {
+      estadoSolicitudExamen.examenes_solicitados = estadoSolicitudExamen.examenes_solicitados.map((examen: ExamenSolicitado) => {
+        return { ...examen, fecha_hora_asistencia: `${examen.fecha_asistencia} ${examen.hora_asistencia}` };
+      })
+    })
+
     /*******
      * Init
      *******/
     // consultarTodosExamenes()
+    estadoSolicitudExamen.registro_empleado_examen = medicoStore.idRegistroEmpleadoExamen
+    console.log(medicoStore)
 
     examenesSolicitados?.forEach((examen: Examen) => {
       const examenSolicitado = new ExamenSolicitado()
       // console.log(examen)
-      examenSolicitado.examen_id = examen.id
+      examenSolicitado.examen = examen.id
       estadoSolicitudExamen.examenes_solicitados.push(examenSolicitado)
     })
 
@@ -89,8 +103,10 @@ export default defineComponent({
       empleado,
       examenes,
       listadosAuxiliares,
+      maskFecha,
       // funciones
       consultarLaboratoriosClinicos,
+      guardar,
     }
   }
 })

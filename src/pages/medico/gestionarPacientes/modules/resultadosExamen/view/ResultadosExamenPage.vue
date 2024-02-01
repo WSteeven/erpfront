@@ -1,6 +1,6 @@
 <template>
   <q-page>
-    <div class="row bg-white q-pa-md">
+    <div class="row bg-body q-pa-md">
       <div class="col-12 text-center text-bold q-mb-md">
         <div class="q-mb-md">{{ categoria?.nombre }}</div>
         <essential-table
