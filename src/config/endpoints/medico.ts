@@ -13,13 +13,9 @@ export const medico = {
   ),
   tipos_examenes: new Endpoint('medico/tipos-examenes'),
   resultados_examenes: new Endpoint('medico/resultados-examenes'),
-  configuraciones_examenes_categorias: new Endpoint(
-    'medico/configuraciones-examenes-categ'
-  ),
-  configuraciones_examenes_campos: new Endpoint(
-    'medico/configuraciones-examenes-campos'
-  ),
   archivo_cie: new Endpoint('recursos-humanos/archivo-cie'),
   cie: new Endpoint('recursos-humanos/cie'),
-
+  configuraciones_examenes_categorias: new Endpoint('medico/configuraciones-examenes-categ'),
+  configuraciones_examenes_campos: new Endpoint('medico/configuraciones-examenes-campos'),
+  laboratorios_clinicos: new Endpoint('medico/laboratorios-clinicos'),
 }

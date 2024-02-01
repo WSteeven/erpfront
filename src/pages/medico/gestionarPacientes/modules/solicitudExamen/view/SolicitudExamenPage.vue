@@ -6,17 +6,42 @@
     ></detalle-paciente>
 
     <br />
-    {{ estadoSolicitudExamen }}
+
+    <div class="row q-mb-md">
+      <div class="col-12 col-md-3">
+        <label class="q-mb-sm block text-bold"
+          >Seleccione un cantón para filtrar los laboratorios clínicos</label
+        >
+        <q-select
+          v-model="empleado.canton"
+          :options="listadosAuxiliares.cantones"
+          transition-show="scale"
+          transition-hide="scale"
+          options-dense
+          dense
+          outlined
+          :option-label="(item) => item.canton"
+          :option-value="(item) => item.id"
+          @update:model-value="consultarLaboratoriosClinicos(empleado.canton)"
+          use-input
+          input-debounce="0"
+          emit-value
+          map-options
+        >
+        </q-select>
+      </div>
+    </div>
+
     <div
       v-for="examenSolicitado in estadoSolicitudExamen.examenes_solicitados"
       :key="examenSolicitado.examen_id"
-      class="row q-col-gutter-sm"
+      class="row q-col-gutter-sm q-mb-md"
     >
       <div class="col-12 col-md-3">
         <label class="q-mb-sm block">Exámen a solicitar</label>
         <q-select
           v-model="examenSolicitado.examen_id"
-          :options="examenes"
+          :options="listadosAuxiliares.examenes"
           transition-show="scale"
           transition-hide="scale"
           options-dense
@@ -37,13 +62,13 @@
         <label class="q-mb-sm block">Laboratorio clínico</label>
         <q-select
           v-model="examenSolicitado.laboratorio_id"
-          :options="examenes"
+          :options="listadosAuxiliares.laboratoriosClinicos"
           transition-show="scale"
           transition-hide="scale"
           options-dense
           dense
           outlined
-          :option-label="(item) => item.examen"
+          :option-label="(item) => item.nombre"
           :option-value="(item) => item.id"
           use-input
           input-debounce="0"

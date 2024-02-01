@@ -13,6 +13,8 @@ import { ExamenController } from 'pages/medico/examenes/infraestructure/ExamenCo
 import { EstadoSolicitudExamen } from '../domain/EstadoSolicitudExamen'
 import { ExamenSolicitado } from '../domain/ExamenSolicitado'
 import { Examen } from 'pages/medico/examenes/domain/Examen'
+import { LaboratorioClinicoController } from 'pages/medico/laboratoriosMedicos/infraestructure/LaboratorioClinicoController'
+import { CantonController } from 'sistema/ciudad/infraestructure/CantonControllerontroller'
 
 export default defineComponent({
   components: {
@@ -25,20 +27,35 @@ export default defineComponent({
     const examenesSolicitados = medicoStore.examenesSolicitados
 
     const cargando = new StatusEssentialLoading()
-    const examenController = new ExamenController()
+    const laboratorioClinicoController = new LaboratorioClinicoController()
     const examenes: Ref<Examen[]> = ref([])
 
+    /********
+     * Mixin
+     ********/
     const mixin = new ContenedorSimpleMixin(EstadoSolicitudExamen, new EstadoSolicitudExamenController())
-    const { entidad: estadoSolicitudExamen } = mixin.useReferencias()
+    const { entidad: estadoSolicitudExamen, listadosAuxiliares } = mixin.useReferencias()
+    const { cargarVista, obtenerListados } = mixin.useComportamiento()
+
+    cargarVista(async () => {
+      await obtenerListados({
+        laboratoriosClinicos: {
+          controller: laboratorioClinicoController,
+          params: { canton_id: empleado.canton },
+        },
+        cantones: new CantonController(),
+        examenes: new ExamenController(),
+      })
+    })
 
     /************
      * Funciones
      ************/
-    const consultarTodosExamenes = async () => {
+    const consultarLaboratoriosClinicos = async (canton: number) => {
       try {
         cargando.activar()
-        const { result } = await examenController.listar()
-        examenes.value = result
+        const { result } = await laboratorioClinicoController.listar({ canton_id: canton })
+        listadosAuxiliares.laboratoriosClinicos = result
       } catch (e) {
         console.log(e)
       } finally {
@@ -57,7 +74,7 @@ export default defineComponent({
     /*******
      * Init
      *******/
-    consultarTodosExamenes()
+    // consultarTodosExamenes()
 
     examenesSolicitados?.forEach((examen: Examen) => {
       const examenSolicitado = new ExamenSolicitado()
@@ -71,6 +88,9 @@ export default defineComponent({
       estadoSolicitudExamen,
       empleado,
       examenes,
+      listadosAuxiliares,
+      // funciones
+      consultarLaboratoriosClinicos,
     }
   }
 })
