@@ -4,7 +4,7 @@ import { endpoints } from "config/api";
 
 export class PagoComisionController extends TransaccionSimpleController<PagoComision>{
   constructor(){
-    super(endpoints.pago_comision)
+    super(endpoints.cortes_pagos_comisiones)
   }
 }
 

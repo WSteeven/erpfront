@@ -441,6 +441,7 @@ export const endpoints = {
   obtener_comision: new Endpoint('ventas-claro/obtener-comision'),
   tipo_chargebacks: new Endpoint('ventas-claro/tipo-chargeback'),
   chargebacks: new Endpoint('ventas-claro/chargebacks'),
+  cortes_pagos_comisiones: new Endpoint('ventas-claro/cortes-pagos-comisiones'),
   pago_comision: new Endpoint('ventas-claro/pagos-comisiones'),
   bono_mensual_cumplimiento: new Endpoint('ventas-claro/bono-mensual-cumplimiento'),
   bono_trimestral_cumplimiento: new Endpoint('ventas-claro/bono-trimestral-cumplimiento'),

@@ -1,6 +1,7 @@
 import { TabOption } from 'components/tables/domain/TabOption'
 
-export const maskFecha = 'DD-MM-YYYY'
+export const maskFecha = 'YYYY-MM-DD'
+// export const maskFecha = 'DD-MM-YYYY'
 //export const maskFecha = 'YYYY/MM/DD'
 // Tipos
 export type TipoSeleccion = 'none' | 'single' | 'multiple'
