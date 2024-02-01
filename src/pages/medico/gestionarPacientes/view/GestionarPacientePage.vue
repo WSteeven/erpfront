@@ -93,6 +93,7 @@
                     :key="registro.id"
                     :name="registro.id"
                     no-caps
+                    @click="seleccionarRegistro(registro.id)"
                   >
                     <q-icon
                       name="bi-person"

@@ -40,7 +40,7 @@
       <div class="col-12 col-md-3">
         <label class="q-mb-sm block">Exámen a solicitar</label>
         <q-select
-          v-model="examenSolicitado.examen_id"
+          v-model="examenSolicitado.examen"
           :options="listadosAuxiliares.examenes"
           transition-show="scale"
           transition-hide="scale"
@@ -61,7 +61,7 @@
       <div class="col-12 col-md-3">
         <label class="q-mb-sm block">Laboratorio clínico</label>
         <q-select
-          v-model="examenSolicitado.laboratorio_id"
+          v-model="examenSolicitado.laboratorio_clinico"
           :options="listadosAuxiliares.laboratoriosClinicos"
           transition-show="scale"
           transition-hide="scale"
@@ -135,7 +135,12 @@
     </div>
 
     <div class="row justify-end q-gutter-sm">
-      <q-btn color="primary" no-caps push @click="guardar()">
+      <q-btn
+        color="primary"
+        no-caps
+        push
+        @click="guardar(estadoSolicitudExamen)"
+      >
         <q-icon name="bi-save" size="xs" class="q-pr-sm"></q-icon>
         <span>Guardar y notificar solicitud</span>
       </q-btn>

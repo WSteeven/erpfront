@@ -61,16 +61,27 @@
       <q-td :key="props.col.name" :props="props">
         {{ props.row[props.col.name] }}
         <q-popup-edit
+          v-if="props.col.editable"
           v-model="props.row[props.col.name]"
           v-slot="scope"
           auto-save
+          @hide="guardarCeldaEditada(props.row)"
         >
           <q-input
+            v-if="props.col.type != 'toggle' || props.col.type != 'select'"
             v-model="scope.value"
             placeholder="Ingrese"
+            :type="props.col.type ? props.col.type : 'text'"
+            :hint="props.col.hint"
             dense
             autofocus
             @keyup.enter="scope.set"
+          />
+          <q-toggle
+            v-else
+            keep-color
+            v-model="scope.value"
+            :label="scope.value ? 'SIi' : 'NOi'"
           />
         </q-popup-edit>
       </q-td>

@@ -14,17 +14,17 @@ import DetallePaciente from './DetallePaciente.vue'
 import { ContenedorSimpleMixin } from 'shared/contenedor/modules/simple/application/ContenedorSimpleMixin'
 import { ComportamientoModalesGestionPaciente } from '../application/ComportamientoModalesGestionPaciente'
 import { EmpleadoController } from 'pages/recursosHumanos/empleados/infraestructure/EmpleadoController'
+import { useBotonesSolicitudExamen } from '../application/UseBotonesSolicitudExamen'
+import { CustomActionPrompt } from 'components/tables/domain/CustomActionPrompt'
+import { estadosExamenes, tabOptionsEstadosExamenes } from 'config/utils/medico'
 import { CustomActionTable } from 'components/tables/domain/CustomActionTable'
 import ModalesEntidad from 'components/modales/view/ModalEntidad.vue'
 import { Empleado } from 'recursosHumanos/empleados/domain/Empleado'
-import { estadosExamenes, tabOptionsEstadosExamenes } from 'config/utils/medico'
-import { useExamenes } from '../application/UseExamenes'
-import { accionesTabla } from 'config/utils'
-import { useBotonesSolicitudExamen } from '../application/UseBotonesSolicitudExamen'
-import { useNotificaciones } from 'shared/notificaciones'
 import { isAxiosError, notificarMensajesError } from 'shared/utils'
-import { CustomActionPrompt } from 'components/tables/domain/CustomActionPrompt'
+import { useNotificaciones } from 'shared/notificaciones'
+import { useExamenes } from '../application/UseExamenes'
 import { useMedicoStore } from 'stores/medico'
+import { accionesTabla } from 'config/utils'
 
 export default defineComponent({
   components: { TabLayout, SelectorImagen, ModalesEntidad, EssentialTable, DetallePaciente, EssentialTableTabs },
@@ -33,8 +33,6 @@ export default defineComponent({
      * Stores
      *********/
     const medicoStore = useMedicoStore()
-    // useNotificacionStore().setQuasar(useQuasar())
-    // useCargandoStore().setQuasar(useQuasar())
 
     /***********
      * Mixin
@@ -46,13 +44,10 @@ export default defineComponent({
 
     const listadoExamenes = ref([])
 
-    // const mixin = new ContenedorSimpleMixin(Empleado, new EmpleadoController())
-
     const tabs = ref('1')
     const tabEstadoExamen = ref(estadosExamenes.PENDIENTE_SOLICITAR)
 
     const modales = new ComportamientoModalesGestionPaciente()
-
 
     /*************
      * Funciones
@@ -107,7 +102,9 @@ export default defineComponent({
       notificaciones.prompt(config)
     }
 
-
+    const seleccionarRegistro = (registro: number) => {
+      medicoStore.idRegistroEmpleadoExamen = registro
+    }
 
     /*******
      * Init
@@ -157,6 +154,7 @@ export default defineComponent({
       tipoSeleccion: computed(() => seleccionVariosExamen.value && tabEstadoExamen.value === '0' ? 'multiple' : 'none'),
       // funciones
       agregarRegistro,
+      seleccionarRegistro,
       /*******************
        * Botones examenes
        *******************/
