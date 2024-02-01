@@ -13,6 +13,12 @@ const rutasMedico: RouteRecordRaw[] = [
     component: () => import('src/pages/medico/cuestionarioPsicosocial/view/CuestionarioPsicosocialPage.vue'),
     meta: { requiresAuth: true },
   },
+  {
+    path: '/cie',
+    name: 'cie',
+    component: () => import('src/pages/medico/cie/view/CiePage.vue'),
+    meta: { requiresAuth: true },
+  },
 ]
 
 export default rutasMedico
