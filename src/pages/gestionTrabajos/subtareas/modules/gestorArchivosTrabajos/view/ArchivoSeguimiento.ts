@@ -49,6 +49,10 @@ export default defineComponent({
       type: Boolean,
       default: true,
     },
+    label:{
+      type: String,
+      default:'Quiero compartir archivos'
+    }
   },
   setup(props) {
     /*********

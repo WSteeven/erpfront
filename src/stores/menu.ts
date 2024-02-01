@@ -194,6 +194,12 @@ export const useMenuStore = defineStore('menu', () => {
           icon: 'bi-circle',
           can: store.can('puede.ver.cuestionario_psicosocial'),
         },
+        {
+          title: 'CIE',
+          link: 'cie',
+          icon: 'bi-circle',
+          can: store.can('puede.ver.cie'),
+        },
       ]
     },
     /**

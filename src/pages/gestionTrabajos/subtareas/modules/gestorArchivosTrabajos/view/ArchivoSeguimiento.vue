@@ -6,7 +6,7 @@
     <q-toggle
       v-if="permitirSubir"
       v-model="quiero_subir_archivos"
-      label="Quiero compartir archivos"
+      :label="label"
       :disable="disable"
       checked-icon="bi-eye"
       color="positive"
