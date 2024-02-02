@@ -1,3 +1,4 @@
+import { configuracionColumnasVentas } from '../domain/configuracionColumnasVentas'
 import { computed, defineComponent, ref, watchEffect } from 'vue'
 import { Venta } from '../domain/Venta'
 
@@ -10,7 +11,6 @@ import { useQuasar } from 'quasar'
 import { useVuelidate } from '@vuelidate/core'
 import { ContenedorSimpleMixin } from 'shared/contenedor/modules/simple/application/ContenedorSimpleMixin'
 import { VentaController } from '../infrestructure/VentaController'
-import { configuracionColumnasVentas } from '../domain/configuracionColumnasVentas'
 import { acciones, estados_activaciones, formas_pagos, maskFecha } from 'config/utils'
 import { VendedorController } from 'pages/ventas-claro/vendedores/infrestructure/VendedorController'
 import { ProductoVentasController } from 'pages/ventas-claro/productoVentas/infrestructure/ProductoVentasController'

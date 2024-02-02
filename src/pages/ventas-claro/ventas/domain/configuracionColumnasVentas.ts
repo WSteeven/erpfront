@@ -52,6 +52,13 @@ export const configuracionColumnasVentas: ColumnConfig<Venta>[] = [
     sortable: true
   },
   {
+    name: 'estado_activacion',
+    field: 'estado_activacion',
+    label: 'Estado',
+    align: 'left',
+    sortable: true
+  },
+  {
     name: 'forma_pago',
     field: 'forma_pago',
     label: 'Forma de Pago',
