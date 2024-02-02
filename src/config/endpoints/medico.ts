@@ -12,6 +12,7 @@ export const medico = {
     'medico/estados-solicitudes-examenes'
   ),
   tipos_examenes: new Endpoint('medico/tipos-examenes'),
+  detalles_resultados_examenes: new Endpoint('medico/detalles-resultados-examenes'),
   resultados_examenes: new Endpoint('medico/resultados-examenes'),
   archivo_cie: new Endpoint('medico/archivo-cie'),
   cie: new Endpoint('medico/cie'),

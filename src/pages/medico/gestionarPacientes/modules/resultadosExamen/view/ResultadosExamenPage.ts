@@ -1,8 +1,11 @@
 // Dependencias
+import { StatusEssentialLoading } from 'components/loading/application/StatusEssentialLoading'
 import { configuracionColumnasCampos } from '../domain/configuracionColumnasCampos'
 import { Ref, defineComponent, ref } from 'vue'
+import { useMedicoStore } from 'stores/medico'
 
 // Componentes
+import TabLayout from 'shared/contenedor/modules/simple/view/TabLayout.vue'
 import GestorArchivos from 'components/gestorArchivos/GestorArchivos.vue'
 import EssentialTable from 'components/tables/view/EssentialTable.vue'
 
@@ -10,26 +13,31 @@ import EssentialTable from 'components/tables/view/EssentialTable.vue'
 import { ArchivoController } from 'gestionTrabajos/subtareas/modules/gestorArchivosTrabajos/infraestructure/ArchivoController'
 import { ConfiguracionExamenCategoriaController } from '../infraestructure/ConfiguracionExamenCategoriaController'
 import { ContenedorSimpleMixin } from 'shared/contenedor/modules/simple/application/ContenedorSimpleMixin'
-import { ConfiguracionExamenCampoController } from '../infraestructure/ConfiguracionExamenCampoController'
-import { ResultadoExamenController } from '../infraestructure/ResultadoExamenController'
+// import { ResultadoExamenController } from '../infraestructure/DetalleResultadoExamenController'
 import { ResultadoExamen } from '../domain/ResultadoExamen'
-import { useMedicoStore } from 'stores/medico'
-import { ConfiguracionExamenCategorias } from '../domain/ConfiguracionExamenCategorias'
+import { acciones } from 'config/utils'
+import { DetalleResultadoExamen } from '../domain/DetalleResultadoExamen'
+import { DetalleResultadoExamenController } from '../infraestructure/DetalleResultadoExamenController'
 
 export default defineComponent({
-  components: { EssentialTable, GestorArchivos },
+  components: { TabLayout, EssentialTable, GestorArchivos },
   setup() {
     /*********
      * Stores
      ********/
     const medicoStore = useMedicoStore()
 
+    /************
+     * Variables
+     ************/
     const configuracionExamenCategoriaController = new ConfiguracionExamenCategoriaController()
-    const configuracionExamenCampoController = new ConfiguracionExamenCampoController()
+    const cargando = new StatusEssentialLoading()
 
-    const mixin = new ContenedorSimpleMixin(ResultadoExamen, new ResultadoExamenController(), new ArchivoController())
+    const mixin = new ContenedorSimpleMixin(DetalleResultadoExamen, new DetalleResultadoExamenController(), new ArchivoController())
+    const { entidad: resultadoExamen, accion } = mixin.useReferencias()
+    accion.value = acciones.nuevo
 
-    const categoria: Ref<ConfiguracionExamenCategorias | undefined> = ref()
+    // const categorias: Ref<any | undefined> = ref()
     const campos = ref([])
     const observacion = ref()
 
@@ -37,31 +45,33 @@ export default defineComponent({
     const idTransferencia = ref()
 
     const consultarCategoria = async () => {
-      const { result } = await configuracionExamenCategoriaController.listar({ examen_id: medicoStore.examen?.id })
-      categoria.value = result[0]
-    }
-
-    const consultarCampos = async () => {
-      const { result } = await configuracionExamenCampoController.listar({ configuracion_examen_categoria_id: 1 })
-      campos.value = result
+      try {
+        cargando.activar()
+        const { result } = await configuracionExamenCategoriaController.listar({ examen_id: medicoStore.examenSolicitado?.examen_id, con_campos: true })
+        resultadoExamen.resultados_examenes = result
+      } catch (e) {
+        console.log(e)
+      } finally {
+        cargando.desactivar()
+      }
     }
 
     /*******
      * Init
      *******/
     consultarCategoria()
-    consultarCampos()
 
     return {
       mixin,
       refArchivo,
       idTransferencia,
       consultarCategoria,
-      consultarCampos,
-      categoria,
+      resultadoExamen,
+      // categorias,
       campos,
       configuracionColumnasCampos,
       observacion,
+      categoriaExamen: medicoStore.examenSolicitado?.categoria
     }
   }
 })
