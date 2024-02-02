@@ -1,15 +1,16 @@
 import { Examen } from 'pages/medico/examenes/domain/Examen'
+import { ExamenSolicitado } from 'pages/medico/gestionarPacientes/modules/solicitudExamen/domain/ExamenSolicitado'
 import { defineStore } from 'pinia'
 import { Ref, ref } from 'vue'
 
 export const useMedicoStore = defineStore('medico', () => {
   const empleado = ref()
-  const examen: Ref<Examen | undefined> = ref()
+  const examenSolicitado: Ref<ExamenSolicitado | undefined> = ref()
   const examenesSolicitados: Ref<Examen[] | undefined> = ref()
   const idRegistroEmpleadoExamen = ref()
 
   return {
-    examen,
+    examenSolicitado,
     empleado,
     examenesSolicitados,
     idRegistroEmpleadoExamen,

@@ -153,7 +153,7 @@ export default defineComponent({
     const Router = useRouter()
     let listadoCargado = false
 
-    let columnas: any = props.configuracionColumnas
+    let columnas: any = props.configuracionColumnas ?? []
 
     if (props.mostrarAcciones) {
       columnas = [...columnas, {

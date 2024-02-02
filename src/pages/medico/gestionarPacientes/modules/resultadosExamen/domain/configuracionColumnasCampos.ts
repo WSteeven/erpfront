@@ -13,7 +13,8 @@ export const configuracionColumnasCampos: ColumnConfig<any>[] = [
     field: 'valor',
     label: 'Valor',
     align: 'left',
-    sortable: true
+    sortable: true,
+    editable: true,
   },
   {
     name: 'unidad_medida',

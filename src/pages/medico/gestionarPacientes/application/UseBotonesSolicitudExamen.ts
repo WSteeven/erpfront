@@ -61,7 +61,7 @@ export function useBotonesSolicitudExamen(tabEstadoExamen: Ref, modales: Comport
     color: 'positive',
     visible: () => tabEstadoExamen.value === '0' && !seleccionVariosExamen.value,
     accion: ({ entidad }) => {
-      medicoStore.examen = entidad
+      medicoStore.examenSolicitado = entidad
       examenesSeleccionados.value = [entidad]
       medicoStore.examenesSolicitados = examenesSeleccionados.value
       modales.abrirModalEntidad('SolicitudExamenPage')
@@ -81,7 +81,8 @@ export function useBotonesSolicitudExamen(tabEstadoExamen: Ref, modales: Comport
     color: 'primary',
     visible: ({ entidad }) => tabEstadoExamen.value === '1',
     accion: ({ entidad }) => {
-      medicoStore.examen = entidad
+      medicoStore.examenSolicitado = entidad
+      console.log(entidad)
       modales.abrirModalEntidad('ResultadosExamenPage')
       /*confirmar('¿Está seguro de ejecutar el ticket?', async () => {
         const { response, result } = await cambiarEstadoTicket.ejecutar(entidad.id)
