@@ -10,8 +10,8 @@ export const configuracionColumnasCie: ColumnConfig<Cie>[] = [
     sortable: true
   },
   {
-    name: 'nombre',
-    field: 'nombre',
+    name: 'nombre_enfermedad',
+    field: 'nombre_enfermedad',
     label: 'Nombre',
     align: 'left',
     sortable: true
