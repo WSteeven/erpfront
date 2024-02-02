@@ -9,7 +9,7 @@ import { ContenedorSimpleMixin } from 'shared/contenedor/modules/simple/applicat
 import { ComisionController } from '../infrestructure/ComisionController'
 import { configuracionColumnasComision } from '../domain/configuracionColumnasComision'
 import { PlanesController } from 'pages/ventas-claro/planes/infrestructure/PlanesController'
-import { formas_pago, tipos_vendedor } from 'config/utils'
+import { formas_pagos, tipos_vendedores } from 'config/utils'
 
 
 export default defineComponent({
@@ -75,9 +75,9 @@ export default defineComponent({
     return {
       mixin,
       comision,
-      tipos_vendedor,
+      tipos_vendedores,
       disabled, accion, v$,
-      formas_pago,
+      formas_pagos,
       planes,
       filtrarPlanes,
       configuracionColumnas: configuracionColumnasComision,

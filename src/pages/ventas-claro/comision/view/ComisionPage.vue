@@ -34,7 +34,9 @@
               </template>
               <template v-slot:no-option>
                 <q-item>
-                  <q-item-section class="text-grey"> No hay resultados </q-item-section>
+                  <q-item-section class="text-grey">
+                    No hay resultados
+                  </q-item-section>
                 </q-item>
               </template>
             </q-select>
@@ -44,7 +46,7 @@
             <label class="q-mb-sm block">Forma de Pago</label>
             <q-select
               v-model="comision.forma_pago"
-              :options="formas_pago"
+              :options="formas_pagos"
               transition-show="jump-up"
               transition-hide="jump-down"
               options-dense
@@ -69,7 +71,9 @@
               </template>
               <template v-slot:no-option>
                 <q-item>
-                  <q-item-section class="text-grey"> No hay resultados </q-item-section>
+                  <q-item-section class="text-grey">
+                    No hay resultados
+                  </q-item-section>
                 </q-item>
               </template>
             </q-select>
@@ -99,7 +103,7 @@
             <label class="q-mb-sm block">Tipo de Vendedor</label>
             <q-select
               v-model="comision.tipo_vendedor"
-              :options="tipos_vendedor"
+              :options="tipos_vendedores"
               transition-show="jump-up"
               transition-hide="jump-down"
               :disable="disabled"
@@ -117,13 +121,18 @@
               map-options
             >
               <template v-slot:error>
-                <div v-for="error of v$.tipo_vendedor.$errors" :key="error.$uid">
+                <div
+                  v-for="error of v$.tipo_vendedor.$errors"
+                  :key="error.$uid"
+                >
                   <div class="error-msg">{{ error.$message }}</div>
                 </div>
               </template>
               <template v-slot:no-option>
                 <q-item>
-                  <q-item-section class="text-grey"> No hay resultados </q-item-section>
+                  <q-item-section class="text-grey">
+                    No hay resultados
+                  </q-item-section>
                 </q-item>
               </template>
             </q-select>
