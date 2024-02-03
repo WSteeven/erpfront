@@ -1,8 +1,7 @@
 // Dependencias
 
 import { useAuthenticationStore } from 'stores/authentication'
-import { useNotificaciones } from 'shared/notificaciones'
-import { computed, defineComponent, ref } from 'vue'
+import {  defineComponent, ref } from 'vue'
 import {
   accionesTabla,
   tabAutorizarGasto,
@@ -19,7 +18,6 @@ import { CustomActionTable } from 'components/tables/domain/CustomActionTable'
 import { configuracionColumnasAutorizarGasto } from '../domain/configuracionColumnasAutorizarGasto'
 import { StatusEssentialLoading } from 'components/loading/application/StatusEssentialLoading'
 import { AutorizarGastoController } from '../infrestructure/AutorizarGastoController'
-import { AprobarGastoController } from '../infrestructure/AprobarGastoController'
 import ModalEntidad from 'components/modales/view/ModalEntidad.vue'
 import { ComportamientoModalesAutorizarGasto } from '../application/ComportamientoModalesAutorizarGasto'
 import { useFondoRotativoStore } from 'stores/fondo_rotativo'
