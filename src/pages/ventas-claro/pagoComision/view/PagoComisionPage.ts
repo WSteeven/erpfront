@@ -14,13 +14,16 @@ import ModalesEntidad from 'components/modales/view/ModalEntidad.vue'
 
 //Logica y controladores
 import { ContenedorSimpleMixin } from 'shared/contenedor/modules/simple/application/ContenedorSimpleMixin'
-import { acciones, accionesTabla, convertir_fecha, maskFecha, } from 'config/utils'
+import { acciones, accionesTabla, maskFecha, } from 'config/utils'
 import { useCargandoStore } from 'stores/cargando'
-import Quasar, { useQuasar, date } from 'quasar'
+import { useQuasar, date } from 'quasar'
 import { PagoComision } from '../domain/PagoComision'
 import { PagoComisionController } from '../infrestucture/PagoComisionController'
-import { formatearFecha, formatearFechaSeparador } from 'shared/utils'
 import { tabOptionsPagosComisiones } from 'config/ventas.utils'
+import { CustomActionTable } from 'components/tables/domain/CustomActionTable'
+import { usePagaComisionStore } from 'stores/ventasClaro/pagoComision'
+import { useNotificaciones } from 'shared/notificaciones'
+import { CustomActionPrompt } from 'components/tables/domain/CustomActionPrompt'
 
 
 export default defineComponent({
@@ -28,20 +31,27 @@ export default defineComponent({
   setup() {
     const mixin = new ContenedorSimpleMixin(PagoComision, new PagoComisionController())
     const { entidad: pago, accion, disabled, listado } = mixin.useReferencias()
-    const { setValidador, cargarVista, obtenerListados, listar } = mixin.useComportamiento()
-    const { onGuardado } = mixin.useHooks()
+    const { setValidador, cargarVista, listar } = mixin.useComportamiento()
+    const { onGuardado, onReestablecer } = mixin.useHooks()
+    const { notificarCorrecto, notificarError, confirmar, prompt } = useNotificaciones()
 
     useCargandoStore().setQuasar(useQuasar())
+    const corteStore = usePagaComisionStore()
 
     const tabDefecto = ref('PENDIENTE')
 
     const fecha = ref()
     const ultima_fecha = ref()
+    const fechasDisponibles = ref()
     // const fecha_minima = ref('2024/02/01')
     const fecha_inicio = computed(() => fecha.value.from)
     const fecha_fin = computed(() => fecha.value.to)
     const nombre = computed(() => 'Pago de comisiones desde ' + fecha.value.from + ' al ' + fecha.value.to)
 
+    cargarVista(async () => {
+      const arrayfechas = Object.values(await corteStore.obtenerFechasDisponiblesCortes())
+      fechasDisponibles.value = arrayfechas
+    })
 
 
     const reglas = {
@@ -51,8 +61,15 @@ export default defineComponent({
     const v$ = useVuelidate(reglas, pago)
     setValidador(v$.value)
 
+    /*****************************************************************************************
+     * HOOKS
+     ****************************************************************************************/
     onGuardado(() => {
       console.log('guardado')
+    })
+    onReestablecer(async()=>{
+      const arrayfechas = Object.values(await corteStore.obtenerFechasDisponiblesCortes())
+      fechasDisponibles.value = arrayfechas
     })
     /*****************************************************************************************
      * FUNCIONES
@@ -69,10 +86,12 @@ export default defineComponent({
      * @returns un valor booleano. Comprueba si la fecha ingresada es mayor que la última fecha y menor
      * o igual a la fecha actual.
      */
-    function options(fecha) {
-      const arrayFecha = ultima_fecha.value.toString().split('-').map(Number) //recibe YYYY-MM-DD
-      const ultima_fecha_construida = date.buildDate({ year: arrayFecha[0], month: arrayFecha[1], day: arrayFecha[2] })
-      return fecha > date.formatDate(ultima_fecha_construida, 'YYYY/MM/DD') && fecha <= date.formatDate(new Date(), 'YYYY/MM/DD')
+
+    function options(fecha: string) {
+      // const arrayFecha = ultima_fecha.value.toString().split('-').map(Number) //recibe YYYY-MM-DD
+      // const ultima_fecha_construida = date.buildDate({ year: arrayFecha[0], month: arrayFecha[1], day: arrayFecha[2] })
+      // return fecha > date.formatDate(ultima_fecha_construida, 'YYYY/MM/DD') && fecha <= date.formatDate(new Date(), 'YYYY/MM/DD')
+      return fechasDisponibles.value.includes(fecha) // fechasDisponibles.value.includes(fecha)
     }
     function updateProxy() {
       const listadoOrdenado = listado.value.sort((a, b) => b.id - a.id)[0] //ordenacion descendente
@@ -84,6 +103,47 @@ export default defineComponent({
       pago.nombre = nombre.value
       pago.fecha_inicio = fecha_inicio.value
       pago.fecha_fin = fecha_fin.value
+    }
+
+    /*****************************************************************************************
+     * BOTONES DE TABLA
+     ****************************************************************************************/
+    const btnGenerarReporteExcel: CustomActionTable = {
+      titulo: 'Generar Reporte',
+      color: 'positive',
+      icono: 'bi-file-earmark-excel-fill',
+      accion: async ({ entidad, posicion }) => {
+        corteStore.corte = entidad
+        corteStore.idCorte = entidad.id
+        await corteStore.imprimirExcel()
+      }
+    }
+    const btnAnular: CustomActionTable = {
+      titulo: 'Anular',
+      color: 'negative',
+      icono: 'bi-x',
+      accion: async ({ entidad, posicion }) => {
+        confirmar('¿Está seguro de anular el corte?', () => {
+          const data: CustomActionPrompt = {
+            titulo: 'Causa de anulación',
+            mensaje: 'Ingresa el motivo de anulación',
+            accion: async (data) => {
+              try {
+                corteStore.idCorte = entidad.id
+                const response = await corteStore.anularCorte({ causa_anulacion: data })
+                if (response!.status == 200) {
+                  notificarCorrecto('Se ha anulado correctamente el corte de pagos')
+                  listado.value.splice(posicion, 1)
+                }
+              } catch (e: any) {
+                notificarError('No se pudo anular, debes ingresar un motivo para la anulación')
+              }
+            }
+          }
+          prompt(data)
+        })
+      },
+      visible: ({ entidad }) => entidad.estado == 'PENDIENTE'
     }
 
     return {
@@ -100,6 +160,9 @@ export default defineComponent({
       tabDefecto,
       tabOptionsPagosComisiones,
 
+      // botones de tabla
+      btnAnular,
+      btnGenerarReporteExcel,
 
       options,
       updateProxy,

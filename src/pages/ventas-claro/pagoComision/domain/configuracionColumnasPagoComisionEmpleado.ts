@@ -40,7 +40,7 @@ export const configuracionColumnasPagoComisionEmpleado: ColumnConfig<PagoComisio
     {
         name: 'valor',
         field: 'valor',
-        label: 'Valor',
+        label: 'Valor Comisión',
         align: 'left',
         sortable: true
     },

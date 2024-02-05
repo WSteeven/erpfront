@@ -6,6 +6,8 @@
     :tab-options="tabOptionsPagosComisiones"
     :tabDefecto="tabDefecto"
     :filtrar="filtrarCortesComisiones"
+    :accion1="btnAnular"
+    :accion2="btnGenerarReporteExcel"
   >
     <template #formulario>
       <q-form @submit.prevent>
@@ -41,6 +43,18 @@
             </q-btn>
           </div>
 
+          <!-- Nombre -->
+          <div class="col-12 col-md-4" v-if="accion != acciones.nuevo">
+            <label class="q-mb-sm block">Nombre</label>
+            <q-input
+              v-model="pago.nombre"
+              placeholder="Obligatorio"
+              autogrow
+              disable
+              outlined
+              dense
+            />
+          </div>
           <!-- Fecha de inicio -->
           <div class="col-12 col-md-4" v-if="pago.fecha_inicio">
             <label class="q-mb-sm block">Desde</label>

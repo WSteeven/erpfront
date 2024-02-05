@@ -918,7 +918,7 @@ export const useMenuStore = defineStore('menu', () => {
           },
           {
             title: 'Umbral de ventas',
-            link: 'modalidad',
+            link: 'modalidades',
             icon: 'bi-circle',
             can: store.can('puede.acceder.modalidades'),
           },

@@ -1197,8 +1197,8 @@ const routes: RouteRecordRaw[] = [
         meta: { requiresAuth: true },
       },
       {
-        path: '/modalidad',
-        name: 'modalidad',
+        path: '/modalidades',
+        name: 'modalidades',
         component: () =>
           import('pages/ventas-claro/modalidad/view/ModalidadPage.vue'),
         meta: { requiresAuth: true },
