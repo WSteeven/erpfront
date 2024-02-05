@@ -36,7 +36,7 @@ export const usePagaComisionStore = defineStore('cortes-comisiones', () => {
         cargando.activar()
         const axios = AxiosHttpRepository.getInstance()
         const url = apiConfig.URL_BASE + '/' + axios.getEndpoint(endpoints.cortes_pagos_comisiones) + '/imprimir-excel/' + idCorte.value
-        imprimirArchivo(url, 'GET', 'blob', 'xlsx', corte.nombre || 'reporte_' + Date.now())
+        imprimirArchivo(url, 'GET', 'blob', 'xlsx', corte.nombre + '_' + Date.now())
         cargando.desactivar()
     }
 

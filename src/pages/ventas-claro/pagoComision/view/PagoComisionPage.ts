@@ -24,6 +24,7 @@ import { CustomActionTable } from 'components/tables/domain/CustomActionTable'
 import { usePagaComisionStore } from 'stores/ventasClaro/pagoComision'
 import { useNotificaciones } from 'shared/notificaciones'
 import { CustomActionPrompt } from 'components/tables/domain/CustomActionPrompt'
+import { useNotificacionStore } from 'stores/notificacion'
 
 
 export default defineComponent({
@@ -35,6 +36,7 @@ export default defineComponent({
     const { onGuardado, onReestablecer } = mixin.useHooks()
     const { notificarCorrecto, notificarError, confirmar, prompt } = useNotificaciones()
 
+    useNotificacionStore().setQuasar(useQuasar())
     useCargandoStore().setQuasar(useQuasar())
     const corteStore = usePagaComisionStore()
 
@@ -67,7 +69,7 @@ export default defineComponent({
     onGuardado(() => {
       console.log('guardado')
     })
-    onReestablecer(async()=>{
+    onReestablecer(async () => {
       const arrayfechas = Object.values(await corteStore.obtenerFechasDisponiblesCortes())
       fechasDisponibles.value = arrayfechas
     })
@@ -113,7 +115,7 @@ export default defineComponent({
       color: 'positive',
       icono: 'bi-file-earmark-excel-fill',
       accion: async ({ entidad, posicion }) => {
-        corteStore.corte = entidad
+        corteStore.corte.nombre = entidad.nombre
         corteStore.idCorte = entidad.id
         await corteStore.imprimirExcel()
       }
