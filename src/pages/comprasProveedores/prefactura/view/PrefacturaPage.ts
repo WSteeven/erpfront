@@ -23,7 +23,7 @@ import { LocalStorage, useQuasar } from "quasar";
 import { useCargandoStore } from "stores/cargando";
 import { EmpleadoController } from "pages/recursosHumanos/empleados/infraestructure/EmpleadoController";
 import { acciones, accionesTabla } from "config/utils";
-import { tabOptionsOrdenCompra, opcionesForma, opcionesTiempo, estadosCalificacionProveedor } from "config/utils_compras_proveedores";
+import { tabOptionsPrefactura, opcionesForma, opcionesTiempo, estadosCalificacionProveedor } from "config/utils_compras_proveedores";
 import { useAuthenticationStore } from "stores/authentication";
 import { formatearFecha } from "shared/utils";
 import { CustomActionTable } from "components/tables/domain/CustomActionTable";
@@ -66,7 +66,7 @@ export default defineComponent({
         const total = computed(() => prefactura.listadoProductos.reduce((prev, curr) => prev + parseFloat(curr.total), 0).toFixed(2))
 
         // Flags
-        let tabSeleccionado = ref()
+        const tabSeleccionado= ref('2')
         let soloLectura = ref(false)
         let puedeEditar = ref(false)
         const refItems = ref()
@@ -103,7 +103,7 @@ export default defineComponent({
                 },
             })
             // comprueba si hay una proforma en el store para llenar automaticamente los datos en la prefactura
-            if(proformaStore.proforma.id){
+            if (proformaStore.proforma.id) {
                 prefactura.tiene_proforma = true
                 cargarDatosProforma()
             }
@@ -255,7 +255,7 @@ export default defineComponent({
                 prefacturaStore.idPrefactura = entidad.id
                 await prefacturaStore.imprimirPdf()
             },
-            visible: () => tabSeleccionado.value > 1 ? true : false
+            visible: () => Number(tabSeleccionado.value) > 1 ? true : false
         }
         const btnHacerPrefactura: CustomActionTable = {
             titulo: 'Generar Prefactura',
@@ -265,7 +265,7 @@ export default defineComponent({
                 prefacturaStore.prefactura = entidad
                 router.push('prefacturas')
             },
-            visible: () => tabSeleccionado.value == 2,
+            visible: () => Number(tabSeleccionado.value) == 2,
         }
         const btnAnularPrefactura: CustomActionTable = {
             titulo: 'Anular',
@@ -294,7 +294,7 @@ export default defineComponent({
             },
             visible: ({ entidad }) => {
 
-                    return entidad.estado_id == 2 && entidad.solicitante_id == store.user.id
+                return entidad.estado_id == 2 && entidad.solicitante_id == store.user.id
                 // return tabSeleccionado.value == 2 && store.esCompras || tabSeleccionado.value == 2 && (entidad.solicitante_id == store.user.id || entidad.autorizador_id == store.user.id)
             }
         }
@@ -342,7 +342,7 @@ export default defineComponent({
 
             //tabla de detalles
             //Tabs
-            tabOptionsOrdenCompra,
+            tabOptionsPrefactura,
             tabSeleccionado,
             puedeEditar,
 
@@ -350,7 +350,7 @@ export default defineComponent({
             //funciones
             filtrarPrefacturas,
             calcularValores,
-            filtrarClientes,ordenarClientes,
+            filtrarClientes, ordenarClientes,
             actualizarListado,
             actualizarProforma,
             llenarPrefactura,
