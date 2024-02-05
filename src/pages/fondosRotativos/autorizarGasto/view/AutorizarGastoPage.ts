@@ -83,14 +83,15 @@ export default defineComponent({
         fondoRotativoStore.existeFactura =
           entidad.factura == null ? false : true
         fondoRotativoStore.id_gasto = entidad.id
+
         fondoRotativoStore.estaSemanAC = estaEnSemanaActual(entidad.fecha_viat)
         fondoRotativoStore.existeFactura = entidad.tiene_factura
         fondoRotativoStore.accionForm =
-          authenticationStore.user.id === entidad.aut_especial &&
-            entidad.estado === estadosGastos.PENDIENTE
-            ? acciones.editar
-            : acciones.consultar
-            fondoRotativoStore.empleado_id= entidad.id_usuario
+        authenticationStore.user.id === entidad.aut_especial &&
+        entidad.estado === estadosGastos.PENDIENTE
+        ? acciones.editar
+        : acciones.consultar
+        fondoRotativoStore.empleado_id= entidad.id_usuario
         modales.abrirModalEntidad('VisualizarGastoPage')
       },
     }
@@ -106,7 +107,7 @@ export default defineComponent({
 
       // Calcula la diferencia en días
       const diferenciaDias = fechaInicio.getDate() - fechaFin.getDate()
-      if (diferenciaDias <= 8 || authenticationStore.esAdministrador) {
+      if (diferenciaDias <= 15 || authenticationStore.esAdministrador) {
         return true
       } else {
         return false
