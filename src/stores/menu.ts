@@ -388,6 +388,11 @@ export const useMenuStore = defineStore('menu', () => {
               link: 'autorizar-gasto',
               icon: 'bi-circle',
               can: true, //store.can('puede.ver.autorizar_gasto'),
+            },            {
+              title: 'Anular Gasto',
+              link: 'anular-gasto',
+              icon: 'bi-circle',
+              can: store.can('puede.ver.anular_gasto'),
             },
           ],
         },
