@@ -19,6 +19,6 @@ export const medico = {
   configuraciones_examenes_categorias: new Endpoint('medico/configuraciones-examenes-categ'),
   configuraciones_examenes_campos: new Endpoint('medico/configuraciones-examenes-campos'),
   laboratorios_clinicos: new Endpoint('medico/laboratorios-clinicos'),
-  respuestas_cuestionarios_empleados: new Endpoint('medico/respuestas-cuestionarios-empleados'),
+  respuestas_cuestionarios_empleados: new Endpoint('medico/resp-cuestionarios-empleados'),
   preguntas: new Endpoint('medico/preguntas'),
 }
