@@ -8,6 +8,7 @@
     :filtrar="filtrarCortesComisiones"
     :accion1="btnAnular"
     :accion2="btnGenerarReporteExcel"
+    :accion3="btnMarcarPagado"
   >
     <template #formulario>
       <q-form @submit.prevent>

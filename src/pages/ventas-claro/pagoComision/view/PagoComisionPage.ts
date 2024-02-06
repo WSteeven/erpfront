@@ -148,6 +148,10 @@ export default defineComponent({
       visible: ({ entidad }) => entidad.estado == 'PENDIENTE'
     }
 
+    const btnMarcarPagado: CustomActionTable = {
+      
+    }
+
     return {
       mixin,
       v$,
@@ -164,6 +168,7 @@ export default defineComponent({
 
       // botones de tabla
       btnAnular,
+      btnMarcarPagado,
       btnGenerarReporteExcel,
 
       options,
