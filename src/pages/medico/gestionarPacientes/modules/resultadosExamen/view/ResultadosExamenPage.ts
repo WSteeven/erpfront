@@ -1,7 +1,7 @@
 // Dependencias
 import { StatusEssentialLoading } from 'components/loading/application/StatusEssentialLoading'
 import { configuracionColumnasCampos } from '../domain/configuracionColumnasCampos'
-import { Ref, defineComponent, ref } from 'vue'
+import { Ref, defineComponent, ref, watch, watchEffect } from 'vue'
 import { useMedicoStore } from 'stores/medico'
 
 // Componentes
@@ -18,10 +18,12 @@ import { ResultadoExamen } from '../domain/ResultadoExamen'
 import { acciones } from 'config/utils'
 import { DetalleResultadoExamen } from '../domain/DetalleResultadoExamen'
 import { DetalleResultadoExamenController } from '../infraestructure/DetalleResultadoExamenController'
+import { ConfiguracionExamenCampo } from '../domain/ConfiguracionExamenCampo'
 
 export default defineComponent({
   components: { TabLayout, EssentialTable, GestorArchivos },
-  setup() {
+  emits: ['cerrar-modal', 'guardado'],
+  setup(props, { emit }) {
     /*********
      * Stores
      ********/
@@ -31,24 +33,27 @@ export default defineComponent({
      * Variables
      ************/
     const configuracionExamenCategoriaController = new ConfiguracionExamenCategoriaController()
+    // const detalleResultadoExamenController = new DetalleResultadoExamenController()
     const cargando = new StatusEssentialLoading()
 
     const mixin = new ContenedorSimpleMixin(DetalleResultadoExamen, new DetalleResultadoExamenController(), new ArchivoController())
     const { entidad: resultadoExamen, accion } = mixin.useReferencias()
-    accion.value = acciones.nuevo
+    const { onGuardado, onModificado, onBeforeGuardar, onBeforeModificar } = mixin.useHooks()
+    const { consultar } = mixin.useComportamiento()
 
     // const categorias: Ref<any | undefined> = ref()
-    const campos = ref([])
+    const resultadosExamenes = ref([])
+    // const resultadosExamenesLlenos: Ref<ResultadoExamen[]> = ref([])
     const observacion = ref()
 
     const refArchivo = ref()
     const idTransferencia = ref()
 
-    const consultarCategoria = async () => {
+    const consultarCategoriasCampos = async () => {
       try {
         cargando.activar()
         const { result } = await configuracionExamenCategoriaController.listar({ examen_id: medicoStore.examenSolicitado?.examen_id, con_campos: true })
-        resultadoExamen.resultados_examenes = result
+        resultadosExamenes.value = result
       } catch (e) {
         console.log(e)
       } finally {
@@ -56,22 +61,148 @@ export default defineComponent({
       }
     }
 
+    const completarCamposLlenos = async () => {
+      console.log('lleno en funcion... observer consultado')
+      /*try {
+        cargando.activar()*/
+      // const { result } = await detalleResultadoExamenController.listar({ estado_solicitud_examen_id: medicoStore.examenSolicitado?.id })
+      // resultadosExamenesLlenos.value = result[0].campos_llenos
+      console.log('completarCamposLlenos....')
+      console.log(resultadosExamenes.value)
+      resultadosExamenes.value.map((item: any) => {
+        console.log(item.campos)
+        return item.campos.map((campo: ConfiguracionExamenCampo) => {
+          console.log(resultadoExamen.resultados_examenes)
+          console.log(campo)
+          const campoEncontrado = resultadoExamen.resultados_examenes.find((re: ResultadoExamen) => re.configuracion_examen_campo === campo.id)
+          console.log(campoEncontrado)
+          if (campoEncontrado) {
+            campo.resultado_examen = campoEncontrado.id
+            campo.resultado = campoEncontrado.resultado
+            console.log(campo)
+            return campo
+          }
+        })
+      })
+
+      accion.value = acciones.editar
+      /*} catch (e) {
+        console.log(e)
+      } finally {
+        cargando.desactivar()
+      }*/
+    }
+
+    async function subirArchivos() {
+      await refArchivo.value.subir()
+      emit('cerrar-modal')
+    }
+
+    /********
+     * Hooks
+     ********/
+    const stop = watchEffect(() => {
+      if (resultadoExamen.resultados_examenes.length && resultadosExamenes.value.length) {
+        completarCamposLlenos()
+        setTimeout(() => {
+          refArchivo.value.listarArchivosAlmacenados(resultadoExamen.id)
+        }, 1);
+        stop()
+      }
+    })
+
+    onBeforeGuardar(() => {
+      console.log(resultadosExamenes.value)
+      resultadosExamenes.value.forEach((item: any) => {
+        item.campos.forEach((campo: any) => {
+          console.log(campo)
+
+          if (campo.resultado) {
+
+            const resultado = new ResultadoExamen()
+            resultado.resultado = campo.resultado
+            resultado.configuracion_examen_campo = campo.id
+
+            /*if (medicoStore.examenSolicitado) {
+              resultado.estado_solicitud_examen = medicoStore.examenSolicitado.id
+              console.log(medicoStore.examenSolicitado.id)
+            }*/
+
+            // resultadoExamen.resultados_examenes = []
+            resultadoExamen.resultados_examenes.push(resultado)
+          }
+        })
+      })
+    })
+
+    onGuardado((id: number, responseData) => {
+      idTransferencia.value = id
+      const modelo: DetalleResultadoExamen = responseData.modelo
+      emit('guardado', modelo.id)
+      emit('cerrar-modal')
+      setTimeout(() => {
+        subirArchivos()
+      }, 1)
+    })
+
+    onModificado((id: number) => {
+      idTransferencia.value = id
+      console.log('subiendo archivo actuaizado')
+      setTimeout(async () => {
+        await subirArchivos()
+      }, 1)
+    })
+
+    onBeforeModificar(() => {
+      resultadoExamen.resultados_examenes = []
+      console.log(resultadosExamenes.value)
+      resultadosExamenes.value.forEach((item: any) => {
+        item.campos.forEach((campo: ConfiguracionExamenCampo) => {
+          console.log(campo)
+
+          if (campo.resultado) {
+
+            const resultado = new ResultadoExamen()
+            resultado.id = campo.resultado_examen
+            resultado.resultado = campo.resultado
+            resultado.configuracion_examen_campo = campo.id
+
+            /*if (medicoStore.examenSolicitado) {
+              resultado.estado_solicitud_examen = medicoStore.examenSolicitado.id
+              console.log(medicoStore.examenSolicitado.id)
+            }*/
+
+            resultadoExamen.resultados_examenes.push(resultado)
+          }
+        })
+      })
+    })
+
+    /*onReestablecer(() => {
+      // resultadosExamenes.value = []
+      emit('cerrar-modal')
+    })*/
+
     /*******
      * Init
      *******/
-    consultarCategoria()
+    consultarCategoriasCampos()
+    // consultarCamposLlenos()
+    if (medicoStore.examenSolicitado && medicoStore.examenSolicitado.detalle_resultado_examen) consultar({ id: medicoStore.examenSolicitado.detalle_resultado_examen })
+    if (medicoStore.examenSolicitado) resultadoExamen.estado_solicitud_examen = medicoStore.examenSolicitado.id
 
     return {
       mixin,
+      resultadoExamen,
       refArchivo,
       idTransferencia,
-      consultarCategoria,
-      resultadoExamen,
+      // consultarCategoria,
       // categorias,
-      campos,
+      resultadosExamenes,
       configuracionColumnasCampos,
       observacion,
-      categoriaExamen: medicoStore.examenSolicitado?.categoria
+      categoriaExamen: medicoStore.examenSolicitado?.categoria,
+      examen: medicoStore.examenSolicitado?.examen,
     }
   }
 })

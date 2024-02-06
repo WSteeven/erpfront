@@ -2,9 +2,11 @@
   <tab-layout :mixin="mixin" :mostrar-listado="false">
     <template #formulario>
       <div class="text-center q-mb-md">{{ categoriaExamen }}</div>
+      <div class="text-center text-primary q-mb-md">{{ examen }}</div>
+
       <div class="row bg-body-table q-pa-md">
         <div
-          v-for="categoria in resultadoExamen.resultados_examenes"
+          v-for="categoria in resultadosExamenes"
           :key="categoria.id"
           class="col-12 text-center text-bold q-mb-md"
         >
@@ -19,12 +21,17 @@
             :mostrar-footer="false"
             separador="cell"
             :permitirEditarCeldas="true"
+            :permitir-buscar="false"
           ></essential-table>
         </div>
 
         <div class="col-12">
           <label class="q-mb-sm block">Observación</label>
-          <q-input v-model="observacion" outlined dense></q-input>
+          <q-input
+            v-model="resultadoExamen.observacion"
+            outlined
+            dense
+          ></q-input>
         </div>
 
         <!-- Manejo de archivos -->

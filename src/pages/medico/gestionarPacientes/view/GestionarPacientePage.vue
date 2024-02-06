@@ -24,26 +24,26 @@
           dense
         >
           <q-tab
-            name="1"
-            label="Ingreso"
+            :name="tiposProcesosExamenes.INGRESO"
+            :label="tiposProcesosExamenes.INGRESO"
             :class="{ 'tab-inactive': tabs !== '1' }"
             no-caps
           />
           <q-tab
-            name="2"
-            label="Ocupacionales"
+            :name="tiposProcesosExamenes.OCUPACIONALES"
+            :label="tiposProcesosExamenes.OCUPACIONALES"
             :class="{ 'tab-inactive': tabs !== '2' }"
             no-caps
           />
           <q-tab
-            name="3"
-            label="Reingreso"
+            :name="tiposProcesosExamenes.REINGRESO"
+            :label="tiposProcesosExamenes.REINGRESO"
             :class="{ 'tab-inactive': tabs !== '3' }"
             no-caps
           />
           <q-tab
-            name="4"
-            label="Salida"
+            :name="tiposProcesosExamenes.SALIDA"
+            :label="tiposProcesosExamenes.SALIDA"
             :class="{ 'tab-inactive': tabs !== '4' }"
             no-caps
           />
@@ -57,23 +57,23 @@
           transition-next="scale"
           helpalive
         >
-          <q-tab-panel name="1" class="q-pa-none">
+          <q-tab-panel :name="tiposProcesosExamenes.INGRESO" class="q-pa-none">
             <q-splitter v-model="splitterModel" class="border-grey">
               <template v-slot:before>
                 <div
-                  class="bg-body border-bottom-grey-5 border-right-grey-5 text-center q-pb-md q-pt-sm"
+                  class="bg-primary border-bottom-grey-5 border-right-grey-5 text-center q-pb-md q-pt-sm"
                 >
                   <q-btn
-                    color="white"
-                    class="text-black border-grey-6"
+                    color="positive"
+                    class="text-white"
                     square
-                    unelevated
+                    push
                     no-caps
                     @click="agregarRegistro()"
                   >
+                    <!-- color="white" -->
                     <q-icon
                       name="bi-plus-circle-fill"
-                      color="positive"
                       size="xs"
                       class="q-mr-sm"
                     ></q-icon>
@@ -133,6 +133,7 @@
                     </div>
 
                     <essential-table-tabs
+                      titulo="Examenes comúnes"
                       :configuracionColumnas="[
                         ...configuracionColumnasExamenes,
                         accionesTabla,
@@ -147,10 +148,12 @@
                       :accion1Header="btnSeleccionarVariosExamenes"
                       :accion2Header="btnCancelarSeleccionarVariosExamenes"
                       :accion3Header="btnSolicitarExamenesSeleccionados"
+                      :accion4Header="btnNuevoDiagnostico"
                       :accion1="btnSolicitarExamenIndividual"
                       :accion2="btnResultados"
                       :tipo-seleccion="tipoSeleccion"
                       @selected="seleccionarExamen"
+                      :alto-fijo="false"
                     ></essential-table-tabs>
                   </q-tab-panel>
                   <q-tab-panel name="2"> Ocupacionales </q-tab-panel>
@@ -168,6 +171,7 @@
     :mixin-modal="mixin"
     :confirmar-cerrar="false"
     :persistente="false"
+    @guardado="actualizarListadoExamenes"
   />
 </template>
 

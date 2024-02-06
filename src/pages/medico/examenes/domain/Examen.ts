@@ -5,6 +5,7 @@ export class Examen extends EntidadAuditable {
   examen: string | number | null
   categoria: string | number | null
   tipo_examen: string | number | null
+  detalle_resultado_examen: number | null
 
   constructor() {
     super()
@@ -12,5 +13,6 @@ export class Examen extends EntidadAuditable {
     this.nombre = null
     this.examen = null
     this.tipo_examen = null
+    this.detalle_resultado_examen = null
   }
 }

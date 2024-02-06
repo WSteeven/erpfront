@@ -24,6 +24,12 @@
         :name="opcion.value + ''"
         :class="{ 'rounded shadow-chip q-mx-xs q-my-md': $q.screen.xs }"
       >
+        <q-icon
+          v-if="opcion.icono"
+          :name="opcion.icono"
+          :color="opcion.color_icono"
+          class="q-mr-sm"
+        ></q-icon>
         <span>{{ opcion.label }}</span>
         <q-badge
           v-if="tabSeleccionado == opcion.value && datos?.length > 0"
