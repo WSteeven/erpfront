@@ -1,4 +1,18 @@
-import { defineComponent, reactive } from "vue";
+import { VehiculoController } from 'pages/controlVehiculos/vehiculos/infraestructure/VehiculoController'
+import { Gasto } from 'pages/fondosRotativos/gasto/domain/Gasto'
+import { GastoController } from 'pages/fondosRotativos/gasto/infrestructure/GastoController'
+import { ProyectoController } from 'pages/gestionTrabajos/proyectos/infraestructure/ProyectoController'
+import { TareaController } from 'pages/gestionTrabajos/tareas/infraestructure/TareaController'
+import { EmpleadoController } from 'pages/recursosHumanos/empleados/infraestructure/EmpleadoController'
+import { EmpleadoRoleController } from 'pages/recursosHumanos/empleados/infraestructure/EmpleadoRolesController'
+import { useQuasar } from 'quasar'
+import { store } from 'quasar/wrappers'
+import { ContenedorSimpleMixin } from 'shared/contenedor/modules/simple/application/ContenedorSimpleMixin'
+import { useNotificacionStore } from 'stores/notificacion'
+import { defineComponent, reactive, ref } from 'vue'
+import { RespuestaCuestionarioEmpleadoController } from '../infrestructure/RespuestaCuestionarioEmpleadoController'
+import { RespuestaCuestionarioEmpleado } from '../domain/RespuestaCuestionarioEmpleado'
+import { PreguntaController } from 'pages/medico/pregunta/infrestructure/RespuestaCuestionarioEmpleadoController'
 
 export default defineComponent({
   setup() {
@@ -9,50 +23,50 @@ export default defineComponent({
     ]
 
     const respuestas1_4a = [
-      { label: 'Muy clara', value: '1' },
-      { label: 'Clara', value: '2' },
-      { label: 'Poco clara', value: '3' },
-      { label: 'Nada clara', value: '4' },
+      { label: 'Muy clara', value: '1' },//1
+      { label: 'Clara', value: '2' },//2
+      { label: 'Poco clara', value: '3' },//3
+      { label: 'Nada clara', value: '4' },//4
     ]
 
     const respuestas1_4b = [
-      { label: 'Siempre o casi siempre', value: '1' },
-      { label: 'A menudo', value: '2' },
-      { label: 'A veces', value: '3' },
-      { label: 'Nunca o casi nunca', value: '4' },
+      { label: 'Siempre o casi siempre', value: '1' },//5
+      { label: 'A menudo', value: '2' },//6
+      { label: 'A veces', value: '3' },//7
+      { label: 'Nunca o casi nunca', value: '4' },//8
     ]
 
     const respuestas1_5 = [
-      { label: 'Siempre o casi siempre', value: '1' },
-      { label: 'A menudo', value: '2' },
-      { label: 'A veces', value: '3' },
-      { label: 'Nunca o casi nunca', value: '4' },
-      { label: 'No tengo, no hay otras personas', value: '5' },
+      { label: 'Siempre o casi siempre', value: '1' },//5
+      { label: 'A menudo', value: '2' },//6
+      { label: 'A veces', value: '3' },//7
+      { label: 'Nunca o casi nunca', value: '4' },//8
+      { label: 'No tengo, no hay otras personas', value: '5' },//9
     ]
 
     const respuestas1_5a = [
-      { label: 'Siempre o casi siempre', value: '1' },
-      { label: 'A menudo', value: '2' },
-      { label: 'A veces', value: '3' },
-      { label: 'Nunca o casi nunca', value: '4' },
-      { label: 'No trabajo turnos rotativos', value: '5' },
+      { label: 'Siempre o casi siempre', value: '1' },//5
+      { label: 'A menudo', value: '2' },//6
+      { label: 'A veces', value: '3' },//7
+      { label: 'Nunca o casi nunca', value: '4' },//8
+      { label: 'No trabajo turnos rotativos', value: '5' },//10
     ]
 
     const respuestas1_6 = [
-      { label: 'Puede decidir', value: '1' },
-      { label: 'Se me consulta', value: '2' },
-      { label: 'Solo recibo informacion', value: '3' },
-      { label: 'Ninguna participacion', value: '4' },
+      { label: 'Puede decidir', value: '1' },//11
+      { label: 'Se me consulta', value: '2' },//12
+      { label: 'Solo recibo informacion', value: '3' },//13
+      { label: 'Ninguna participacion', value: '4' },//14
     ]
 
     const respuestas1_7 = [
-      { label: 'No interviene', value: '1' },
-      { label: 'Insuficiuente', value: '2' },
-      { label: 'Adecuada', value: '3' },
-      { label: 'Excesiva', value: '4' },
+      { label: 'No interviene', value: '1' },//15
+      { label: 'Insuficiuente', value: '2' },//16
+      { label: 'Adecuada', value: '3' },//17
+      { label: 'Excesiva', value: '4' },//18
     ]
 
-    const preguntas = reactive([
+    /*  const preguntas = reactive([
       {
         id: '1',
         pregunta: '¿Trabaja los sábados?',
@@ -193,7 +207,7 @@ export default defineComponent({
       },
       {
         id: '11g',
-        pregunta: '¿Qué nivel de participación tienes en los siguientes aspectos de tu trabajo: contratación o incorporación de nuevos empleados?',
+        pregunta: '¿Qué nivel de participación tienes en los siguientes aspectos de tu trabajo: elaboración de las normas de trabajo?',
         respuesta: null,
         posibles_respuestas: respuestas1_6
       },
@@ -250,15 +264,41 @@ export default defineComponent({
         pregunta: 'Para realizar tu trabajo, ¿cómo valoras la información que recibes sobre los siguientes aspectos? Cómo debes hacerlo (métodos, protocolos, procedimientos de trabajo).',
         posibles_respuestas: respuestas1_4a
       },
-
-
-
-
-
-    ])
-
+    ])*/
+    /*********
+     * Stores
+     *********/
+    useNotificacionStore().setQuasar(useQuasar())
+    /***********
+     * Mixin
+     ************/
+    const mixin = new ContenedorSimpleMixin(
+      RespuestaCuestionarioEmpleado,
+      new RespuestaCuestionarioEmpleadoController()
+    )
+    const preguntas = ref([])
+    const { obtenerListados, cargarVista } = mixin.useComportamiento()
+    const {
+      entidad: respuesta_cuestionario_empleado,
+      disabled,
+      accion,
+      listadosAuxiliares,
+    } = mixin.useReferencias()
+    //Obtener el listado de las cantones
+    cargarVista(async () => {
+      await obtenerListados({
+        preguntas: {
+          controller: new PreguntaController(),
+          params: {
+            campos: 'id,codigo,pregunta',
+          },
+        },
+      })
+      preguntas.value = listadosAuxiliares.preguntas
+    })
     return {
       preguntas,
+      respuesta_cuestionario_empleado,
     }
-  }
+  },
 })

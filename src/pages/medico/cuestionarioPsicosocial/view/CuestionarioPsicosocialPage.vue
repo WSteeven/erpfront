@@ -11,8 +11,8 @@
             :key="item.id"
             class="col-12 text-bold q-mb-md"
           >
-            <label class="q-mb-sm block">{{ item.pregunta }}</label>
-            <q-select
+            <label class="q-mb-sm block">{{item.codigo+'.- '+ item.pregunta }}</label>
+           <!-- <q-select
               v-model="item.respuesta"
               :options="item.posibles_respuestas"
               transition-show="scale"
@@ -25,7 +25,7 @@
               emit-value
               map-options
             >
-            </q-select>
+            </q-select>-->
           </div>
         </div>
       </q-card-section>
