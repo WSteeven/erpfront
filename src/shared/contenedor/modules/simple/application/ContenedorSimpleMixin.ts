@@ -243,7 +243,7 @@ export class ContenedorSimpleMixin<T extends EntidadAuditable> extends Contenedo
       this.controllerFiles?.eliminarFile(data.id, this.argsDefault).then(({ response }) => {
         this.notificaciones.notificarCorrecto(response.data.mensaje)
         this.eliminarElementoListaArchivosActual(data)
-        this.reestablecer()
+        // this.reestablecer()
         if (callback) callback()
       }).catch((error) => {
         if (isAxiosError(error)) {

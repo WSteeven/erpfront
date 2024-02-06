@@ -2,7 +2,7 @@ import { EntidadAuditable } from 'shared/entidad/domain/entidadAuditable'
 import { DetalleResultadoExamen } from './DetalleResultadoExamen'
 
 export class ResultadoExamen extends EntidadAuditable {
-  resultado: string | null
+  resultado: number | null
   fecha_examen: string | null
   configuracion_examen_campo: number | null
   estado_solicitud_examen: number | null

@@ -30,14 +30,6 @@ export function useBotonesSolicitudExamen(tabEstadoExamen: Ref, modales: Comport
     accion: async () => seleccionVariosExamen.value = true
   }
 
-  const btnCancelarSeleccionarVariosExamenes: CustomActionTable<DetalleExamen> = {
-    titulo: 'Cancelar seleccion',
-    icono: 'bi-x',
-    color: 'negative',
-    visible: () => seleccionVariosExamen.value && tabEstadoExamen.value === estadosExamenes.PENDIENTE_SOLICITAR,
-    accion: async () => seleccionVariosExamen.value = false
-  }
-
   const btnSolicitarExamenesSeleccionados: CustomActionTable = {
     titulo: 'Solicitar examenes seleccionados',
     icono: 'bi-plus',
@@ -48,6 +40,24 @@ export function useBotonesSolicitudExamen(tabEstadoExamen: Ref, modales: Comport
       // console.log(examenesSeleccionados.value)
       medicoStore.examenesSolicitados = examenesSeleccionados.value
       // examenesSeleccionados.value = []
+      modales.abrirModalEntidad('SolicitudExamenPage')
+    }
+  }
+
+  const btnCancelarSeleccionarVariosExamenes: CustomActionTable<DetalleExamen> = {
+    titulo: 'Cancelar seleccion',
+    icono: 'bi-x',
+    color: 'negative',
+    visible: () => seleccionVariosExamen.value && tabEstadoExamen.value === estadosExamenes.PENDIENTE_SOLICITAR,
+    accion: async () => seleccionVariosExamen.value = false
+  }
+
+  const btnNuevoDiagnostico: CustomActionTable<DetalleExamen> = {
+    titulo: 'Nuevo diagnostico',
+    icono: 'bi-plus',
+    color: 'positive',
+    visible: () => tabEstadoExamen.value === estadosExamenes.DIAGNOSTICO_REALIZADO,
+    accion: async () => {
       modales.abrirModalEntidad('SolicitudExamenPage')
     }
   }
@@ -110,6 +120,7 @@ export function useBotonesSolicitudExamen(tabEstadoExamen: Ref, modales: Comport
     btnSeleccionarVariosExamenes,
     btnSolicitarExamenesSeleccionados,
     btnCancelarSeleccionarVariosExamenes,
+    btnNuevoDiagnostico,
     // Body
     btnSolicitarExamenIndividual,
     btnResultados,

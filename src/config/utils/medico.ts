@@ -18,7 +18,7 @@ export const estadosExamenes = {
 export const tabOptionsEstadosExamenes: TabOption[] = [
   { label: 'Pendientes de solicitar', value: estadosExamenes.PENDIENTE_SOLICITAR },
   { label: 'Solicitado', value: estadosExamenes.SOLICITADO },
-  { label: 'Aprobado por compras', value: estadosExamenes.APROBADO_POR_COMPRAS },
+  { label: 'Aprobado por compras', value: estadosExamenes.APROBADO_POR_COMPRAS, icono: 'bi-check-circle-fill', color_icono: 'positive', bg_color: 'light-green-2' },
   { label: 'Diagnóstico realizado', value: estadosExamenes.DIAGNOSTICO_REALIZADO },
   { label: 'Apertura de ficha médica', value: estadosExamenes.APERTURA_FICHA_MEDICA },
 ]

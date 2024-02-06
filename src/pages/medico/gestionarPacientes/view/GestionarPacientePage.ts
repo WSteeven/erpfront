@@ -16,7 +16,7 @@ import { ComportamientoModalesGestionPaciente } from '../application/Comportamie
 import { EmpleadoController } from 'pages/recursosHumanos/empleados/infraestructure/EmpleadoController'
 import { useBotonesSolicitudExamen } from '../application/UseBotonesSolicitudExamen'
 import { CustomActionPrompt } from 'components/tables/domain/CustomActionPrompt'
-import { estadosExamenes, tabOptionsEstadosExamenes } from 'config/utils/medico'
+import { estadosExamenes, tabOptionsEstadosExamenes, tiposProcesosExamenes } from 'config/utils/medico'
 import { CustomActionTable } from 'components/tables/domain/CustomActionTable'
 import ModalesEntidad from 'components/modales/view/ModalEntidad.vue'
 import { Empleado } from 'recursosHumanos/empleados/domain/Empleado'
@@ -44,15 +44,16 @@ export default defineComponent({
 
     const listadoExamenes = ref([])
 
-    const tabs = ref('1')
+    const tabs = ref(tiposProcesosExamenes.INGRESO)
     const tabEstadoExamen = ref(estadosExamenes.PENDIENTE_SOLICITAR)
+    const tabsRegistro = ref(1)
 
     const modales = new ComportamientoModalesGestionPaciente()
 
     /*************
      * Funciones
      *************/
-    const { examenes, registros, consultarRegistrosEmpleadoExamen, consultarExamenesSinSolicitar, consultarExamenesSolicitados } = useExamenes()
+    const { examenes, registros, consultarRegistrosEmpleadoExamen, consultarExamenesSinSolicitar, consultarExamenesSolicitados, guardarRegistro } = useExamenes()
     const {
       // Referencias
       refTablaExamenes,
@@ -62,6 +63,7 @@ export default defineComponent({
       btnSeleccionarVariosExamenes,
       btnSolicitarExamenesSeleccionados,
       btnCancelarSeleccionarVariosExamenes,
+      btnNuevoDiagnostico,
       // Body
       btnSolicitarExamenIndividual,
       btnResultados,
@@ -73,11 +75,11 @@ export default defineComponent({
       tabEstadoExamen.value = tab
       if (tab === '0') {
         // seleccionVariosExamen.value = false
-        consultarExamenesSinSolicitar({ empleado_id: empleado.id })
+        consultarExamenesSinSolicitar({ empleado_id: empleado.id, registro_empleado_examen_id: tabsRegistro.value })
       } else {
         // seleccionVariosExamen.value = true
         examenesSeleccionados.value = []
-        consultarExamenesSolicitados(tab)
+        consultarExamenesSolicitados(tab, tabsRegistro.value)
       }
     }
 
@@ -87,6 +89,7 @@ export default defineComponent({
         mensaje: 'Ingrese una observación.',
         accion: async (motivo) => {
           try {
+            if (empleado.id) guardarRegistro(motivo, empleado.id, tabs.value)
             notificaciones.notificarCorrecto('Registro agregado exitosamente!')
           } catch (error: any) {
             if (isAxiosError(error)) {
@@ -104,6 +107,28 @@ export default defineComponent({
 
     const seleccionarRegistro = (registro: number) => {
       medicoStore.idRegistroEmpleadoExamen = registro
+      examenes.value = []
+      tabEstadoExamen.value = estadosExamenes.PENDIENTE_SOLICITAR
+      consultarExamenesSinSolicitar({ empleado_id: empleado.id, registro_empleado_examen_id: registro })
+    }
+
+    const actualizarListadoExamenes = ({ detalle_resultado_examen, page }) => {
+      let index, examen
+      switch (page) {
+        case 'SolicitudExamenPage':
+          index = examenes.value.findIndex((examen) => examen.id === detalle_resultado_examen)
+          examen = examenes.value[index]
+          examenes.value.splice(index, 1)
+          break
+        default:
+          console.log('se guardo modal...')
+          console.log(detalle_resultado_examen)
+          console.log(examenes.value)
+          index = examenes.value.findIndex((examen) => examen.id === medicoStore.examenSolicitado?.id)
+          examen = examenes.value[index]
+          examen.detalle_resultado_examen = detalle_resultado_examen
+          examenes.value.splice(index, 1, examen)
+      }
     }
 
     /*******
@@ -112,7 +137,7 @@ export default defineComponent({
     onConsultado(async () => {
       medicoStore.empleado = empleado
       await consultarRegistrosEmpleadoExamen({ empleado_id: empleado.id })
-      await consultarExamenesSinSolicitar({ empleado_id: empleado.id })
+      await consultarExamenesSinSolicitar({ empleado_id: empleado.id, registro_empleado_examen_id: tabsRegistro.value })
     })
 
     const btnSolicitarExamenesSeleccionados2: CustomActionTable = {
@@ -139,7 +164,7 @@ export default defineComponent({
       mixin,
       empleado,
       tabs,
-      tabsRegistro: ref('1'),
+      tabsRegistro,
       tabEstadoExamen,
       configuracionColumnas: configuracionColumnasEmpleados,
       configuracionColumnasExamenes,
@@ -151,10 +176,12 @@ export default defineComponent({
       modales,
       examenes,
       registros,
+      tiposProcesosExamenes,
       tipoSeleccion: computed(() => seleccionVariosExamen.value && tabEstadoExamen.value === '0' ? 'multiple' : 'none'),
       // funciones
       agregarRegistro,
       seleccionarRegistro,
+      actualizarListadoExamenes,
       /*******************
        * Botones examenes
        *******************/
@@ -165,6 +192,7 @@ export default defineComponent({
       btnSeleccionarVariosExamenes,
       btnSolicitarExamenesSeleccionados,
       btnCancelarSeleccionarVariosExamenes,
+      btnNuevoDiagnostico,
       // Body
       btnSolicitarExamenIndividual,
       btnResultados,

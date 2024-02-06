@@ -22,7 +22,8 @@ export default defineComponent({
   components: {
     DetallePaciente,
   },
-  setup() {
+  emits: ['guardado'],
+  setup(props, { emit }) {
     const medicoStore = useMedicoStore()
     const empleado = medicoStore.empleado
     // const examen = medicoStore.examen
@@ -38,7 +39,7 @@ export default defineComponent({
     const mixin = new ContenedorSimpleMixin(EstadoSolicitudExamen, new EstadoSolicitudExamenController())
     const { entidad: estadoSolicitudExamen, listadosAuxiliares } = mixin.useReferencias()
     const { cargarVista, obtenerListados, guardar } = mixin.useComportamiento()
-    const { onBeforeGuardar } = mixin.useHooks()
+    const { onBeforeGuardar, onGuardado } = mixin.useHooks()
 
     cargarVista(async () => {
       await obtenerListados({
@@ -81,6 +82,11 @@ export default defineComponent({
       estadoSolicitudExamen.examenes_solicitados = estadoSolicitudExamen.examenes_solicitados.map((examen: ExamenSolicitado) => {
         return { ...examen, fecha_hora_asistencia: `${examen.fecha_asistencia} ${examen.hora_asistencia}` };
       })
+    })
+
+    onGuardado((id: number, responseData) => {
+      const modelo = responseData.modelo
+      emit('guardado', { id: modelo.id, page: 'SolicitudExamenPage' })
     })
 
     /*******
