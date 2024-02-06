@@ -545,13 +545,20 @@ export default defineComponent({
         // si es de stock personal autoriza el jefe inmediato
         if (transferencia.empleado_origen) {
           const { result } = await new EmpleadoController().consultar(transferencia.empleado_origen)
-          transferencia.autorizador = result.jefe ? parseInt(result.jefe) : null
+          // transferencia.autorizador = result.jefe ? parseInt(result.jefe) : null
+          transferencia.autorizador = autorizadorJefeTecnico(result)
         }
       } else {
         // si es entre etapas y entre tareas autoriza el coordinador de la tarea
         const tarea = listadosAuxiliares.tareas.find((tarea: Tarea) => tarea.id === transferencia.tarea_origen)
         transferencia.autorizador = tarea?.coordinador_id
       }
+    }
+
+    const autorizadorJefeTecnico = (empleado: Empleado) => {
+      if (empleado.roles.includes(rolesSistema.jefe_tecnico))
+        return typeof empleado.id === 'string' ? parseInt(empleado.id) : empleado.id
+      else return typeof empleado.jefe === 'string' ? parseInt(empleado.jefe) : empleado.jefe
     }
 
     async function consultarProyectosEmpleadoOrigen() {
