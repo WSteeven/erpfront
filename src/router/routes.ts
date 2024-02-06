@@ -920,7 +920,7 @@ const routes: RouteRecordRaw[] = [
           import(
             'pages/fondosRotativos/reportes/reporteValoresEmpleados/view/ValoresFondosEmpleadoPage.vue'
           ),
-        meta: { requiresAuth: false},
+        meta: { requiresAuth: false },
       },
       {
         path: '/reporte-fondo-fecha',
@@ -1139,6 +1139,13 @@ const routes: RouteRecordRaw[] = [
         name: 'pagos_comisiones',
         component: () =>
           import('pages/ventas-claro/pagoComision/view/PagoComisionPage.vue'),
+        meta: { requiresAuth: true },
+      },
+      {
+        path: '/retenciones-chargebacks',
+        name: 'retenciones_chargebacks',
+        component: () =>
+          import('pages/ventas-claro/retencionChargeback/view/RetencionChargebackPage.vue'),
         meta: { requiresAuth: true },
       },
       {

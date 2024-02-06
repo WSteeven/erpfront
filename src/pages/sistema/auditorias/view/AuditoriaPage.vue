@@ -138,7 +138,7 @@
           <q-timeline color="primary" v-if="listado.length > 0">
             <q-timeline-entry title="Registros de cambios realizados" />
             <q-timeline-entry
-              v-for="l in listado"
+              v-for="(l, index) in listado"
               :key="l.id"
               :title="`Evento: ${l.event}`"
               :color="`${
@@ -163,7 +163,8 @@
               }`"
             >
               <p>
-                Modelo afectado: <strong> {{ l.auditable_type }}</strong> <br/> Url: {{ l.url }}
+                Modelo afectado: <strong> {{ l.auditable_type }}</strong> <br />
+                Url: {{ l.url }}
               </p>
               <p>
                 Id de registro: {{ l.auditable_id }} <br />Ingreso desde:
@@ -201,6 +202,15 @@
                   </q-card>
                 </div>
               </div>
+              <q-separator
+                v-if="
+                  index < listado.length - 1 &&
+                  l.updated_at !== listado[index + 1].updated_at
+                "
+                color="grey-5"
+                size="4px"
+                spaced="10px"
+              />
             </q-timeline-entry>
           </q-timeline>
           <q-timeline v-else>

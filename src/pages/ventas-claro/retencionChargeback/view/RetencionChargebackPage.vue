@@ -3,13 +3,11 @@
     :mixin="mixin"
     :configuracionColumnas="configuracionColumnas"
     ajustarCeldas
-    :tab-options="tabOptionsPagosComisiones"
+    :tab-options="tabOptionsRetenciones"
     :tabDefecto="tabDefecto"
     :permitirEditar="tabDefecto == 'PENDIENTE'"
-    :filtrar="filtrarCortesComisiones"
-    :accion1="btnAnular"
-    :accion2="btnGenerarReporteExcel"
-    :accion3="btnMarcarPagado"
+    :filtrar="filtrarRetenciones"
+    :accion1="btnMarcarPagado"
   >
     <template #formulario>
       <q-form @submit.prevent>
@@ -108,33 +106,10 @@
             <label class="q-mb-sm block">Causa anulación</label>
             <q-input v-model="pago.causa_anulacion" disable outlined dense />
           </div>
-          <!-- Listado de empleados en el corte -->
-          <div
-            class="col-12 col-md-12"
-            v-if="accion !== acciones.nuevo && pago.listadoEmpleados.length > 0"
-          >
-            <essential-table
-              titulo="Comisiones de Empleados"
-              :configuracionColumnas="
-                accion === acciones.editar
-                  ? [
-                      ...configuracionColumnasPagoComisionEmpleado,
-                      accionesTabla,
-                    ]
-                  : configuracionColumnasPagoComisionEmpleado
-              "
-              :datos="pago.listadoEmpleados"
-              :permitirConsultar="false"
-              :permitirEditar="false"
-              :permitirEliminar="false"
-              :mostrarBotones="false"
-              :ajustarCeldas="true"
-              :altoFijo="false"
-            />
-          </div>
         </div>
       </q-form>
     </template>
   </tab-layout-filter-tabs2>
 </template>
-<script src="./PagoComisionPage.ts"></script>
+
+<script src="./RetencionChargeback.ts" />

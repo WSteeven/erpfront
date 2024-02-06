@@ -149,7 +149,17 @@ export default defineComponent({
     }
 
     const btnMarcarPagado: CustomActionTable = {
-      
+      titulo: 'Completada',
+      color: 'primary',
+      icono: 'bi-check-circle-fill',
+      accion: async ({ entidad }) => {
+        confirmar('¿Está seguro de marcar como completado el corte de pago de comisiones?', async () => {
+          corteStore.idCorte = entidad.id
+          await corteStore.marcarCompletada()
+          await filtrarCortesComisiones('COMPLETA')
+        })
+      },
+      visible: ({ entidad }) => entidad.estado == 'PENDIENTE'
     }
 
     return {

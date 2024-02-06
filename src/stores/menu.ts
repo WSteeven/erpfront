@@ -469,7 +469,7 @@ export const useMenuStore = defineStore('menu', () => {
               title: 'Resumen de valores de FR',
               link: 'reporte-valores-fondos',
               icon: 'bi-app',
-              can: store.can('puede.ver.reporte_valores_fondos_rotativos')|| store.esAdministrador,
+              can: store.can('puede.ver.reporte_valores_fondos_rotativos') || store.esAdministrador,
             },
             {
               title: 'Fondo Rotativo',
@@ -883,10 +883,16 @@ export const useMenuStore = defineStore('menu', () => {
           can: store.can('puede.acceder.chargebacks'),
         },
         {
-          title: 'Pagar Comisiones',
+          title: 'Pagos de Comisiones',
           link: 'pagos-comisiones',
           icon: 'bi-circle',
           can: store.can('puede.acceder.pagos_comisiones'),
+        },
+        {
+          title: 'Retenciones de Chargebacks',
+          link: 'retenciones-chargebacks',
+          icon: 'bi-circle',
+          can: store.can('puede.acceder.retenciones_chargebacks'),
         },
         {
           title: 'Bono Mensual Cumplimento',
@@ -902,76 +908,77 @@ export const useMenuStore = defineStore('menu', () => {
         },
         {
           title: 'Configuracion',
-        icon: 'bi-gear-fill',
-        children: [
-          {
-            title: 'Planes',
-            link: 'planes',
-            icon: 'bi-circle',
-            can: store.can('puede.acceder.planes'),
-          },
-          {
-            title: 'Clientes',
-            link: 'clientes-claro',
-            icon: 'bi-circle',
-            can: store.can('puede.acceder.clientes_claro'),
-          },
-          {
-            title: 'Umbral de ventas',
-            link: 'modalidades',
-            icon: 'bi-circle',
-            can: store.can('puede.acceder.modalidades'),
-          },
-          {
-            title: 'Tipo de ChargeBack',
-            link: 'tipo-chargeback',
-            icon: 'bi-circle',
-            can: store.can('puede.acceder.tipos_chargebacks'),
-          },
-          {
-            title: 'Comisiones',
-            link: 'comisiones',
-            icon: 'bi-circle',
-            can: store.can('puede.acceder.comisiones'),
-          },
-          {
-            title: 'Meta de Ventas',
-            link: 'umbral-ventas',
-            icon: 'bi-circle',
-            can: store.can('puede.acceder.umbrales_ventas'),
-          },
-          {
-            title: 'Esquema de Comisiones',
-            link: 'esquema-comision',
-            icon: 'bi-circle',
-            can: store.can('puede.acceder.esquemas_comisiones'),
-          },
-          {
-            title: 'Escenario Venta',
-            link: 'escenario-venta-jp',
-            icon: 'bi-circle',
-            can: store.can('puede.acceder.escenarios_ventas_jp'),
-          },
-          {
-          title: 'Bonos',
-        icon: 'fa-solid fa-hands-holding-circle',
-        children: [
-          {
-            title: 'Bono de Vendedores',
-            link: 'bonos',
-            icon: 'bi-circle',
-            can: store.can('puede.acceder.bonos'),
-          },
-          {
-            title: 'Bono de Supervisores',
-            link: 'bono-porcentual',
-            icon: 'bi-circle',
-            can: store.can('puede.acceder.bonos_porcentuales'),
-          },
-        ]}
+          icon: 'bi-gear-fill',
+          children: [
+            {
+              title: 'Planes',
+              link: 'planes',
+              icon: 'bi-circle',
+              can: store.can('puede.acceder.planes'),
+            },
+            {
+              title: 'Clientes',
+              link: 'clientes-claro',
+              icon: 'bi-circle',
+              can: store.can('puede.acceder.clientes_claro'),
+            },
+            {
+              title: 'Umbral de ventas',
+              link: 'modalidades',
+              icon: 'bi-circle',
+              can: store.can('puede.acceder.modalidades'),
+            },
+            {
+              title: 'Tipo de ChargeBack',
+              link: 'tipo-chargeback',
+              icon: 'bi-circle',
+              can: store.can('puede.acceder.tipos_chargebacks'),
+            },
+            {
+              title: 'Comisiones',
+              link: 'comisiones',
+              icon: 'bi-circle',
+              can: store.can('puede.acceder.comisiones'),
+            },
+            {
+              title: 'Meta de Ventas',
+              link: 'umbral-ventas',
+              icon: 'bi-circle',
+              can: store.can('puede.acceder.umbrales_ventas'),
+            },
+            {
+              title: 'Esquema de Comisiones',
+              link: 'esquema-comision',
+              icon: 'bi-circle',
+              can: store.can('puede.acceder.esquemas_comisiones'),
+            },
+            {
+              title: 'Escenario Venta',
+              link: 'escenario-venta-jp',
+              icon: 'bi-circle',
+              can: store.can('puede.acceder.escenarios_ventas_jp'),
+            },
+            {
+              title: 'Bonos',
+              icon: 'fa-solid fa-hands-holding-circle',
+              children: [
+                {
+                  title: 'Bono de Vendedores',
+                  link: 'bonos',
+                  icon: 'bi-circle',
+                  can: store.can('puede.acceder.bonos'),
+                },
+                {
+                  title: 'Bono de Supervisores',
+                  link: 'bono-porcentual',
+                  icon: 'bi-circle',
+                  can: store.can('puede.acceder.bonos_porcentuales'),
+                },
+              ]
+            }
 
-        ]
-      },
+          ]
+        },
         {
           title: 'Reportes',
           icon: 'bi-clipboard2-data-fill',

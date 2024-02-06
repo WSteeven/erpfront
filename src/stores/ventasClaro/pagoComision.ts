@@ -54,12 +54,29 @@ export const usePagaComisionStore = defineStore('cortes-comisiones', () => {
         }
     }
 
+    async function marcarCompletada() {
+        try {
+            cargando.activar()
+            const axios = AxiosHttpRepository.getInstance()
+            const url = apiConfig.URL_BASE + '/' + axios.getEndpoint(endpoints.cortes_pagos_comisiones) + '/marcar-completada/' + idCorte.value
+            const response: AxiosResponse = await axios.get(url)
+            if (response.status === 200) notificarCorrecto(response.data.mensaje)
+            else notificarAdvertencia(response.data.mensaje)
+        } catch (error) {
+            notificarError('Error al marcar como completado el corte de pago de comisiones ' + error)
+        } finally {
+            cargando.desactivar()
+        }
+
+    }
+
 
 
     return {
         corte, idCorte, corteReset,
 
         obtenerFechasDisponiblesCortes,
+        marcarCompletada,
         imprimirExcel,
         anularCorte,
     }
