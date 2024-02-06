@@ -195,6 +195,18 @@ export const useMenuStore = defineStore('menu', () => {
           can: store.can('puede.ver.cuestionario_psicosocial'),
         },
         {
+          title: 'Cita médica',
+          link: 'citas-medicas',
+          icon: 'bi-circle',
+          can: store.can('puede.ver.citas_medicas'),
+        },
+        {
+          title: 'Diagnóstico y receta',
+          link: 'diagnostico-receta',
+          icon: 'bi-circle',
+          can: store.can('puede.ver.diagnosticos_recetas'),
+        },
+        {
           title: 'CIE',
           link: 'cie',
           icon: 'bi-circle',
@@ -499,7 +511,7 @@ export const useMenuStore = defineStore('menu', () => {
               title: 'Resumen de valores de FR',
               link: 'reporte-valores-fondos',
               icon: 'bi-app',
-              can: store.can('puede.ver.reporte_valores_fondos_rotativos')|| store.esAdministrador,
+              can: store.can('puede.ver.reporte_valores_fondos_rotativos') || store.esAdministrador,
             },
             {
               title: 'Fondo Rotativo',

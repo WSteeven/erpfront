@@ -3,6 +3,7 @@
     :mixin="mixin"
     :configuracionColumnas="configuracionColumnas"
     :permitir-editar="false"
+    :mostrarButtonSubmits="false"
   >
     <template #formulario>
       <div :class="{ 'q-mb-xl': empleado.id }">
@@ -13,7 +14,7 @@
       </div>
 
       <!-- Tabs -->
-      <div>
+      <div v-if="empleado.id">
         <q-tabs
           v-model="tabs"
           align="justify"
