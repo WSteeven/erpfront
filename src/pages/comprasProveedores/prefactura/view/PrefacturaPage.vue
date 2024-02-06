@@ -3,11 +3,12 @@
     :mixin="mixin"
     :configuracionColumnas="configuracionColumnas"
     titulo-pagina="Prefactura"
-    :tab-options="tabOptionsOrdenCompra"
-    tabDefecto="1"
+    :tab-options="tabOptionsPrefactura"
+    :tabDefecto="tabSeleccionado"
     :filtrar="filtrarPrefacturas"
     :permitirEditar="puedeEditar"
     :permitirEliminar="false"
+    :ajustarCeldas="true"
     :accion1="btnImprimir"
     :accion2="btnAnularPrefactura"
   >
@@ -77,7 +78,6 @@
             >
             </q-input>
           </div>
-
 
           <!-- Cliente -->
           <div class="col-12 col-md-3">

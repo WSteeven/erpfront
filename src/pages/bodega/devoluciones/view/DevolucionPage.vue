@@ -33,38 +33,77 @@
             <label class="q-mb-sm block">Fecha</label>
             <q-input v-model="devolucion.created_at" disable outlined dense />
           </div>
-          <!-- Canton select -->
-          <!-- <div class="col-12 col-md-3 q-mb-md">
-            <label class="q-mb-sm block">Lugar de devolución</label>
+          <div
+            class="col-12 col-md-3"
+            v-if="
+              accion == acciones.nuevo &&
+              (store.esCoordinador ||
+                store.esCoordinadorBackup ||
+                store.esJefeTecnico ||
+                store.esCoordinadorBodega)
+            "
+          >
+            <br />
+            <q-toggle
+              v-model="devolucion.devolver_materiales_tecnicos"
+              :label="
+                devolucion.devolver_materiales_tecnicos
+                  ? 'Devolver materiales de tecnicos'
+                  : 'Devolver mis materiales'
+              "
+              :disable="disabled"
+              color="positive"
+              checked-icon="bi-check"
+              @update:model-value="checkSolicitantes"
+              outlined
+              dense
+            ></q-toggle>
+          </div>
+          <!-- Solicitante -->
+          <div
+            v-if="
+              (accion == acciones.nuevo &&
+                devolucion.devolver_materiales_tecnicos) ||
+              (accion != acciones.nuevo && devolucion.solicitante)
+            "
+            class="col-12 col-md-3"
+          >
+            <label class="q-mb-sm block">Solicitante</label>
+            <!-- <q-input v-model="transaccion.solicitante" disable outlined dense>
+            </q-input> -->
             <q-select
-              v-model="devolucion.canton"
-              :options="opciones_cantones"
+              v-model="devolucion.solicitante"
+              :options="empleados"
               transition-show="scale"
               transition-hide="scale"
               options-dense
               dense
               outlined
-              hint="Lugar desde donde se realiza la devolución de materiales"
               :disable="disabled || soloLectura"
               :readonly="disabled || soloLectura"
-              :error="!!v$.canton.$errors.length"
-              :input-debounce="0"
+              :option-label="(v) => v.apellidos + ' ' + v.nombres"
+              :option-value="(v) => v.id"
               use-input
-              @filter="filtroCantones"
-              error-message="Selecciona el lugar desde donde realiza la devolución"
-              :option-label="(item) => item.canton"
-              :option-value="(item) => item.id"
+              input-debounce="0"
+              @filter="filtrarEmpleados"
+              @popup-show="ordenarLista(empleados, 'apellidos')"
               emit-value
               map-options
             >
-              <template v-slot:error>
-                <div v-for="error of v$.sucursal.$errors" :key="error.$uid">
-                  <div class="error-msg">{{ error.$message }}</div>
-                </div>
+              <template v-slot:no-option>
+                <q-item>
+                  <q-item-section class="text-grey">
+                    No hay resultados
+                  </q-item-section>
+                </q-item>
               </template>
             </q-select>
-          </div> -->
-          <div class="col-12 col-md-3">
+          </div>
+
+          <div
+            class="col-12 col-md-3"
+            v-if="accion == acciones.nuevo || devolucion.cliente"
+          >
             <label class="q-mb-sm block"
               >Seleccione un cliente para filtrar los materiales</label
             >
@@ -92,7 +131,7 @@
             <label class="q-mb-sm block">Lugar de devolución</label>
             <q-select
               v-model="devolucion.sucursal"
-              :options="opciones_sucursales"
+              :options="sucursales"
               transition-show="scale"
               transition-hide="scale"
               options-dense
@@ -104,8 +143,8 @@
               hint="Bodega donde se realiza la devolución de materiales"
               use-input
               input-debounce="0"
-              @filter="filtroSucursales"
-              @popup-show="ordenarSucursales"
+              @filter="filtrarSucursales"
+              @popup-show="ordenarLista(sucursales, 'lugar')"
               :option-label="(item) => item.lugar"
               :option-value="(item) => item.id"
               emit-value
@@ -147,35 +186,7 @@
               </template>
             </q-input>
           </div>
-          <!-- Solicitante -->
-          <div v-if="devolucion.solicitante" class="col-12 col-md-3">
-            <label class="q-mb-sm block">Solicitante</label>
-            <!-- <q-input v-model="transaccion.solicitante" disable outlined dense>
-            </q-input> -->
-            <q-select
-              v-model="devolucion.solicitante"
-              :options="opciones_empleados"
-              transition-show="scale"
-              transition-hide="scale"
-              options-dense
-              dense
-              outlined
-              :disable="disabled || soloLectura"
-              :readonly="disabled || soloLectura"
-              :option-label="(v) => v.nombres + ' ' + v.apellidos"
-              :option-value="(v) => v.id"
-              emit-value
-              map-options
-            >
-              <template v-slot:no-option>
-                <q-item>
-                  <q-item-section class="text-grey">
-                    No hay resultados
-                  </q-item-section>
-                </q-item>
-              </template>
-            </q-select>
-          </div>
+
           <!-- Es devolucion para stock personal -->
           <div
             v-if="devolucion.es_para_stock || accion === 'NUEVO'"
@@ -319,7 +330,7 @@
             <label class="q-mb-sm block">Persona que autoriza</label>
             <q-select
               v-model="devolucion.per_autoriza"
-              :options="opciones_empleados"
+              :options="empleados"
               transition-show="jump-up"
               transition-hide="jump-up"
               options-dense
@@ -444,7 +455,7 @@
                   hint="Presiona Enter para seleccionar un producto"
                   @keydown.enter="
                     listarProductos({
-                      empleado_id: store.user.id,
+                      empleado_id: devolucion.solicitante,
                       cliente_id: devolucion.cliente,
                     })
                   "
@@ -460,7 +471,7 @@
                 <q-btn
                   @click="
                     listarProductos({
-                      empleado_id: store.user.id,
+                      empleado_id: devolucion.solicitante,
                       cliente_id: devolucion.cliente,
                     })
                   "

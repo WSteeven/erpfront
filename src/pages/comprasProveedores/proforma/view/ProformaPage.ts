@@ -73,6 +73,7 @@ export default defineComponent({
         const total = computed(() => proforma.descuento_general > 0 ? (Number(subtotal.value) + Number(iva.value) - Number(descuento.value)).toFixed(2) : (Number(subtotal.value) + Number(iva.value)).toFixed(2))
 
         // Flags
+        const tabDefecto = ref('1')
         let tabSeleccionado = ref()
         let soloLectura = ref(false)
         let puedeEditar = ref(false)
@@ -166,6 +167,7 @@ export default defineComponent({
          * Funciones
          ******************************************************************************************/
         function filtrarProformas(tab: string) {
+            tabDefecto.value = tab
             tabSeleccionado.value = tab
             // if (tab == '1' && proforma.autorizador_id===store.user.id) puedeEditar.value = true
             if (tab == '1' || tab == '2') puedeEditar.value = true
@@ -353,6 +355,7 @@ export default defineComponent({
             //tabla de detalles
             //Tabs
             tabOptionsProformas,
+            tabDefecto,
             tabSeleccionado,
             puedeEditar,
 
