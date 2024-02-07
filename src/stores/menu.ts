@@ -189,10 +189,16 @@ export const useMenuStore = defineStore('menu', () => {
           can: store.can('puede.ver.gestionar_pacientes'),
         },
         {
-          title: 'Cuestionario psicosocial',
+          title: 'Cuestionario Psicosocial',
           link: 'cuestionario-psicosocial',
           icon: 'bi-circle',
           can: store.can('puede.ver.cuestionario_psicosocial'),
+        },
+        {
+          title: 'Reporte Cuestionario Psicosocial',
+          link: 'reporte-cuestionarios-pisicosocial',
+          icon: 'bi-circle',
+          can: store.can('puede.ver.reporte_cuestionarios_pisicosocial'),
         },
         {
           title: 'CIE',

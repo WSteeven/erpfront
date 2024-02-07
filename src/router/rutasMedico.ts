@@ -18,6 +18,11 @@ const rutasMedico: RouteRecordRaw[] = [
     name: 'cie',
     component: () => import('src/pages/medico/cie/view/CiePage.vue'),
     meta: { requiresAuth: true },
+  },  {
+    path: '/reporte-cuestionarios-pisicosocial',
+    name: 'reporte_cuestionarios_pisicosocial',
+    component: () => import('pages/medico/cuestionarioPsicosocial/view/ReporteCuestionarioPisicosocial.vue'),
+    meta: { requiresAuth: true },
   },
 ]
 

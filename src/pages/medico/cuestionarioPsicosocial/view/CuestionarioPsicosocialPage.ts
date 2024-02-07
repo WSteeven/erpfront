@@ -34,7 +34,7 @@ export default defineComponent({
       accion,
       listadosAuxiliares,
     } = mixin.useReferencias()
-    const { notificarError,notificarAdvertencia } = useNotificaciones()
+    const { notificarAdvertencia } = useNotificaciones()
     //Obtener el listados
     cargarVista(async () => {
       await obtenerListados({
