@@ -12,42 +12,11 @@
     <template #formulario>
       <q-form @submit.prevent>
         <div class="row q-col-gutter-sm">
-          <!-- Boton seleccionar fecha -->
-          <div class="col-12 col-md-4" v-if="accion == acciones.nuevo">
-            <label class="q-mb-sm block">Selecciona un rango de fechas</label>
-            <q-btn icon="event" round color="primary">
-              <q-popup-proxy
-                @before-show="updateProxy"
-                cover
-                transition-show="scale"
-                transition-hide="scale"
-              >
-                <q-date
-                  v-model="fecha"
-                  :mask="maskFecha"
-                  range
-                  :options="options"
-                >
-                  <div class="row items-center justify-end q-gutter-sm">
-                    <q-btn label="Cancel" color="primary" flat v-close-popup />
-                    <q-btn
-                      label="OK"
-                      color="primary"
-                      flat
-                      @click="save"
-                      v-close-popup
-                    />
-                  </div>
-                </q-date>
-              </q-popup-proxy>
-            </q-btn>
-          </div>
-
-          <!-- Nombre -->
-          <div class="col-12 col-md-4" v-if="accion != acciones.nuevo">
-            <label class="q-mb-sm block">Nombre</label>
+          <!-- Venta -->
+          <div class="col-12 col-md-4" >
+            <label class="q-mb-sm block">Venta</label>
             <q-input
-              v-model="pago.nombre"
+              v-model="retencion.venta"
               placeholder="Obligatorio"
               autogrow
               disable
@@ -55,56 +24,50 @@
               dense
             />
           </div>
-          <!-- Fecha de inicio -->
-          <div class="col-12 col-md-4" v-if="pago.fecha_inicio">
-            <label class="q-mb-sm block">Desde</label>
+          <!-- Vendedor -->
+          <div class="col-12 col-md-4" >
+            <label class="q-mb-sm block">Vendedor</label>
             <q-input
-              v-model="pago.fecha_inicio"
+              v-model="retencion.vendedor"
               placeholder="Obligatorio"
-              :error="!!v$.fecha_inicio.$errors.length"
               disable
-              @blur="v$.fecha_inicio.$touch"
               outlined
               dense
-              emit-value
-            >
-              <template v-slot:error>
-                <div v-for="error of v$.fecha_inicio.$errors" :key="error.$uid">
-                  <div class="error-msg">{{ error.$message }}</div>
-                </div>
-              </template>
-            </q-input>
+            />
           </div>
 
-          <!-- Fecha de fin -->
-          <div class="col-12 col-md-4" v-if="pago.fecha_fin">
+          <!-- Fecha de retencion -->
+          <div class="col-12 col-md-4">
             <label class="q-mb-sm block">Hasta</label>
             <q-input
-              v-model="pago.fecha_fin"
-              placeholder="Obligatorio"
-              :error="!!v$.fecha_fin.$errors.length"
+              v-model="retencion.fecha_retencion"
               disable
-              @blur="v$.fecha_fin.$touch"
               outlined
               dense
-              emit-value
-            >
-              <template v-slot:error>
-                <div v-for="error of v$.fecha_fin.$errors" :key="error.$uid">
-                  <div class="error-msg">{{ error.$message }}</div>
-                </div>
-              </template>
-            </q-input>
+            />
           </div>
-          <!-- Estado -->
-          <div class="col-12 col-md-4" v-if="accion != acciones.nuevo">
+          <!-- Valor retenido -->
+          <div class="col-12 col-md-4" >
             <label class="q-mb-sm block">Estado</label>
-            <q-input v-model="pago.estado" disable outlined dense />
+            <q-input
+              v-model="retencion.valor_retenido"
+              disable
+              outlined
+              dense
+            />
           </div>
-          <!-- Causa anulación -->
+          <!-- Pagado -->
           <div class="col-12 col-md-4" v-if="accion != acciones.nuevo">
-            <label class="q-mb-sm block">Causa anulación</label>
-            <q-input v-model="pago.causa_anulacion" disable outlined dense />
+            <label class="q-mb-sm block">Pagado</label>
+            <q-toggle
+              :label="retencion.pagado ? 'SI' : 'NO'"
+              v-model="retencion.pagado"
+              disable
+              color="primary"
+              keep-color
+              icon="bi-check2-circle"
+              unchecked-icon="clear"
+            />
           </div>
         </div>
       </q-form>
@@ -112,4 +75,4 @@
   </tab-layout-filter-tabs2>
 </template>
 
-<script src="./RetencionChargeback.ts" />
+<script src="./RetencionChargebackPage.ts" />
