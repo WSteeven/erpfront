@@ -10,6 +10,13 @@ export const configuracionColumnasPagoComisionEmpleado: ColumnConfig<PagoComisio
         sortable: false
     },
     {
+        name: 'tipo_vendedor',
+        field: 'tipo_vendedor',
+        label: 'Modalidad',
+        align: 'left',
+        sortable: true
+    },
+    {
         name: 'fecha_inicio',
         field: 'fecha_inicio',
         label: 'Fecha de Inicio',

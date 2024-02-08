@@ -954,9 +954,9 @@ export const useMenuStore = defineStore('menu', () => {
             },
             {
               title: 'Escenario Venta',
-              link: 'escenario-venta-jp',
+              link: 'escenarios-ventas-jp',
               icon: 'bi-circle',
-              can: store.can('puede.acceder.escenarios_ventas_jp'),
+              can: store.can('puede.ver.escenarios_ventas_jp'),
             },
             {
               title: 'Bonos',

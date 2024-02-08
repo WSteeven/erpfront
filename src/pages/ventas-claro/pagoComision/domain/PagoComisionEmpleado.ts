@@ -7,6 +7,7 @@ export class PagoComisionEmpleado extends EntidadAuditable {
   corte_info: number | null
   vendedor_id: number | null
   vendedor_info: string | null
+  tipo_vendedor: string | null
   ventas: number | null
   chargeback: string | null
   valor: string | null
@@ -21,6 +22,7 @@ export class PagoComisionEmpleado extends EntidadAuditable {
     this.corte_info = null
     this.vendedor_id = null
     this.vendedor_info = null
+    this.tipo_vendedor = null
     this.ventas = null
     this.chargeback = null
     this.valor = null
