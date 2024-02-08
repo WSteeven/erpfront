@@ -996,8 +996,8 @@ export const useMenuStore = defineStore('menu', () => {
               can: store.can('puede.ver.reportes_pagos_claro'),
             },
             {
-              title: 'Ventas',
-              link: 'reporte_venta',
+              title: 'Ventas por Vendedor',
+              link: 'reportes-ventas-claro',
               icon: 'bi-circle',
               can: store.can('puede.ver.reportes_ventas_claro'),
             },

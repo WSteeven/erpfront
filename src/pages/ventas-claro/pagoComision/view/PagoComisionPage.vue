@@ -104,7 +104,10 @@
             <q-input v-model="pago.estado" disable outlined dense />
           </div>
           <!-- Causa anulación -->
-          <div class="col-12 col-md-4" v-if="accion != acciones.nuevo">
+          <div
+            class="col-12 col-md-4"
+            v-if="accion != acciones.nuevo && pago.causa_anulacion"
+          >
             <label class="q-mb-sm block">Causa anulación</label>
             <q-input v-model="pago.causa_anulacion" disable outlined dense />
           </div>

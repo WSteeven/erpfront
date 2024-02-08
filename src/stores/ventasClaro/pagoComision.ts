@@ -20,7 +20,7 @@ export const usePagaComisionStore = defineStore('cortes-comisiones', () => {
         try {
             cargando.activar()
             const axios = AxiosHttpRepository.getInstance()
-            const url = apiConfig.URL_BASE + '/api/ventas-claro/obtener-fechas-disponbles-cortes'
+            const url = apiConfig.URL_BASE + '/api/ventas-claro/obtener-fechas-disponibles-cortes'
             const response: AxiosResponse = await axios.get(url)
 
             return response.data.results

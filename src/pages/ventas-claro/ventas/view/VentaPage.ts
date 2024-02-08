@@ -11,7 +11,7 @@ import { useQuasar } from 'quasar'
 import { useVuelidate } from '@vuelidate/core'
 import { ContenedorSimpleMixin } from 'shared/contenedor/modules/simple/application/ContenedorSimpleMixin'
 import { VentaController } from '../infrestructure/VentaController'
-import { acciones, estados_activaciones, formas_pagos, maskFecha } from 'config/utils'
+import { acciones, estados, estados_activaciones, formas_pagos, maskFecha } from 'config/utils'
 import { VendedorController } from 'pages/ventas-claro/vendedores/infrestructure/VendedorController'
 import { ProductoVentasController } from 'pages/ventas-claro/productoVentas/infrestructure/ProductoVentasController'
 import { ClienteClaroController } from 'pages/ventas-claro/cliente/infrestucture/ClienteClaroController'
@@ -21,7 +21,7 @@ import { useFiltrosListadosSelects } from 'shared/filtrosListadosGenerales';
 import { StatusEssentialLoading } from 'components/loading/application/StatusEssentialLoading';
 import { useAuthenticationStore } from 'stores/authentication';
 import { useVentaStore } from 'stores/ventasClaro/venta';
-import { tabOptionsProductos } from 'config/ventas.utils';
+import { tabOptionsVentas, estadosActivacionesVentas } from 'config/ventas.utils';
 import { CustomActionTable } from 'components/tables/domain/CustomActionTable';
 import { useNotificaciones } from 'shared/notificaciones';
 import { CustomActionPrompt } from 'components/tables/domain/CustomActionPrompt';
@@ -59,6 +59,16 @@ export default defineComponent({
     /*************
      * HOOKS
      **************/
+    onGuardado((id, response) => {
+      // if (response.modelo.estado_activacion == estadosActivacionesVentas.aprobado) filtrarVentas(estadosActivacionesVentas.aprobado)
+      // if (response.modelo.estado_activacion == estadosActivacionesVentas.activado) filtrarVentas('1')
+      // if (!response.modelo.activo) filtrarVentas('0')
+    })
+    onModificado((id, response) => {
+      // if (response.modelo.estado_activacion == estadosActivacionesVentas.aprobado) filtrarVentas(estadosActivacionesVentas.aprobado)
+      // if (response.modelo.estado_activacion == estadosActivacionesVentas.activado) filtrarVentas('1')
+      // if (!response.modelo.activo) filtrarVentas('0')
+    })
     onReestablecer(() => {
       precio_producto.value = 0
       comision_vendedor.value = 0
@@ -114,7 +124,18 @@ export default defineComponent({
      **************************************************************/
     function filtrarVentas(tab: string) {
       tabDefecto.value = tab
-      listar({ activo: tab })
+      switch (tab) {
+        case estadosActivacionesVentas.aprobado:
+          listar({ activo: 1, estado_activacion: estadosActivacionesVentas.aprobado })
+          break
+        case '1':
+          listar({ activo: 1, estado_activacion: estadosActivacionesVentas.activado })
+          break
+        case '0':
+          listar({ activo: 0 })
+          break;
+        default: listar()
+      }
     }
     async function guardado(data) {
       if (data.formulario === 'ClienteClaroPage') {
@@ -247,7 +268,7 @@ export default defineComponent({
       modales,
       store,
       tabDefecto,
-      tabOptionsVentas: tabOptionsProductos,
+      tabOptionsVentas,
 
       productos, filtrarProductos, recargarClientes,
       vendedores, filtrarVendedores, recargarVendedores,

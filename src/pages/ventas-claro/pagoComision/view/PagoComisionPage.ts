@@ -96,9 +96,7 @@ export default defineComponent({
       return fechasDisponibles.value.includes(fecha) // fechasDisponibles.value.includes(fecha)
     }
     function updateProxy() {
-      const listadoOrdenado = listado.value.sort((a, b) => b.id - a.id)[0] //ordenacion descendente
-      ultima_fecha.value = listadoOrdenado.fecha_fin
-      fecha.value = ultima_fecha.value
+      fecha.value = fechasDisponibles.value[0]
       // console.log(ultima_fecha.value)
     }
     function save() {

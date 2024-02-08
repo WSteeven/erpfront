@@ -1269,8 +1269,8 @@ const routes: RouteRecordRaw[] = [
       ///
 
       {
-        path: '/reporte_venta',
-        name: 'reporte_venta',
+        path: '/reportes-ventas-claro',
+        name: 'reportes_ventas_claro',
         component: () =>
           import(
             'pages/ventas-claro/reporte/reporte_ventas/view/ReporteVentasPage.vue'
