@@ -23,7 +23,7 @@ export default defineComponent({
       RespuestaCuestionarioEmpleado,
       new RespuestaCuestionarioEmpleadoController()
     )
-    const {  cargarVista } =      mixin.useComportamiento()
+    const { cargarVista } = mixin.useComportamiento()
     const listado = ref([])
     const authenticationStore = useAuthenticationStore()
     useCargandoStore().setQuasar(useQuasar())
@@ -33,7 +33,8 @@ export default defineComponent({
     })
     async function reporte() {
       const axiosHttpRepository = AxiosHttpRepository.getInstance()
-      const url_acreditacion =        apiConfig.URL_BASE + '/api/medico/reporte-cuestionario'
+      const url_acreditacion =
+        apiConfig.URL_BASE + '/api/medico/reporte-cuestionario'
       await axios({
         url: url_acreditacion,
         method: 'GET',
@@ -52,21 +53,24 @@ export default defineComponent({
       titulo: 'Imprimir',
       icono: 'bi-printer',
       color: 'primary',
-      visible: () => authenticationStore.can('puede.ver.reporte_cuestionarios_pisicosocial'),
+      visible: () =>
+        authenticationStore.can('puede.ver.reporte_cuestionarios_pisicosocial'),
       accion: () => {
         imprimir_reporte()
       },
     }
 
     async function imprimir_reporte(): Promise<void> {
-      console.log('generar_reporte_general')
-      const axios = AxiosHttpRepository.getInstance()
-      const filename = 'empleados'
+      const fecha_actual = new Date();
+      const filename = 'reporte_cuestionarios_pisicosocial_'+fecha_actual.toLocaleString()
       const url_pdf =
-        apiConfig.URL_BASE +
-       '/api/medico/reporte-cuestionario?imprimir=true'
+        apiConfig.URL_BASE + '/api/medico/reporte-cuestionario?imprimir=true'
       imprimirArchivo(url_pdf, 'GET', 'blob', 'xlsx', filename, null)
     }
-    return { listado, ConfiguracionColumnasReporteCuestionarioEmpleado,btnImprimirReporte }
+    return {
+      listado,
+      ConfiguracionColumnasReporteCuestionarioEmpleado,
+      btnImprimirReporte,
+    }
   },
 })

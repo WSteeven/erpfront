@@ -205,6 +205,11 @@ export const useMenuStore = defineStore('menu', () => {
           link: 'cie',
           icon: 'bi-circle',
           can: store.can('puede.ver.cie'),
+        },{
+          title: 'Configuracion Cuestionario Empleado',
+          link: 'configuraciones-cuestionarios-empleados',
+          icon: 'bi-circle',
+          can: store.can('puede.ver.configuraciones_cuestionarios_empleados'),
         },
       ]
     },
