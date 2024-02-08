@@ -23,8 +23,7 @@ export default defineComponent({
       RespuestaCuestionarioEmpleado,
       new RespuestaCuestionarioEmpleadoController()
     )
-    const {  cargarVista } =
-      mixin.useComportamiento()
+    const {  cargarVista } =      mixin.useComportamiento()
     const listado = ref([])
     const authenticationStore = useAuthenticationStore()
     useCargandoStore().setQuasar(useQuasar())
@@ -32,11 +31,10 @@ export default defineComponent({
     cargarVista(async () => {
       await reporte()
     })
-    function reporte() {
+    async function reporte() {
       const axiosHttpRepository = AxiosHttpRepository.getInstance()
-      const url_acreditacion =
-        apiConfig.URL_BASE + '/api/medico/reporte-cuestionario'
-      axios({
+      const url_acreditacion =        apiConfig.URL_BASE + '/api/medico/reporte-cuestionario'
+      await axios({
         url: url_acreditacion,
         method: 'GET',
         responseType: 'json',
