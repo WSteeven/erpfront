@@ -31,6 +31,17 @@ const rutasMedico: RouteRecordRaw[] = [
     component: () => import('medico/cie/view/CiePage.vue'),
     meta: { requiresAuth: true },
   },
+  {
+    path: '/reporte-cuestionarios-pisicosocial',
+    name: 'reporte_cuestionarios_pisicosocial',
+    component: () => import('pages/medico/cuestionarioPsicosocial/view/ReporteCuestionarioPisicosocial.vue'),
+    meta: { requiresAuth: true },
+  },{
+    path: '/configuraciones-cuestionarios-empleados',
+    name: 'configuraciones_cuestionarios_empleados',
+    component: () => import('pages/medico/configuracionCuestionarioEmpleado/view/ConfiguracionCuestionarioEmpleadoPage.vue'),
+    meta: { requiresAuth: true },
+  },
 ]
 
 export default rutasMedico

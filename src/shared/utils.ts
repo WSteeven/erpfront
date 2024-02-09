@@ -341,7 +341,7 @@ export function pushEventMesaggeServiceWorker(data: ServiceWorkerClass) {
  */
 export async function imprimirArchivo(ruta: string, metodo: Method, responseType: ResponseType, formato: string, titulo: string, data?: any) {
   const statusLoading = new StatusEssentialLoading()
-  const { notificarAdvertencia, notificarError } = useNotificaciones()
+  const {  notificarError } = useNotificaciones()
   statusLoading.activar()
   const axiosHttpRepository = AxiosHttpRepository.getInstance()
   axios({
