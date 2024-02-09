@@ -8,12 +8,15 @@ import { CustomActionPrompt } from "components/tables/domain/CustomActionPrompt"
 import { useNotificaciones } from "shared/notificaciones"
 import { ContenedorSimpleMixin } from "shared/contenedor/modules/simple/application/ContenedorSimpleMixin"
 import { acciones } from "config/utils"
+import { ComportamientoModalesCitaMedica } from "../domain/ComportamientoModalesCitaMedica"
+import { useMedicoStore } from "stores/medico"
 
-export function useBotonesCitaMedica(mixin: ContenedorSimpleMixin<CitaMedica>, tabEstado: Ref<string>) {
+export function useBotonesCitaMedica(mixin: ContenedorSimpleMixin<CitaMedica>, tabEstado: Ref<string>, modales: ComportamientoModalesCitaMedica) {
   /**********
    * Stores
    **********/
   const store = useAuthenticationStore()
+  const medicoStore = useMedicoStore()
 
   /************
    * Variables
@@ -66,11 +69,16 @@ export function useBotonesCitaMedica(mixin: ContenedorSimpleMixin<CitaMedica>, t
   }
 
   const btnDiagnosticoReceta: CustomActionTable<CitaMedica> = {
-    titulo: 'Diagnostico receta',
+    titulo: 'Consulta médica',
     icono: 'bi-clipboard2-pulse-fill',
     color: 'positive',
     visible: () => tabEstado.value === estadosCitaMedica.AGENDADO && store.can('puede.crear.diagnosticos_recetas') && store.can('puede.editar.diagnosticos_recetas'),
-    accion: () => console.log('cancelado')
+    accion: ({ entidad }) => {
+      console.log(entidad)
+      medicoStore.idCita = entidad.id
+      medicoStore.empleado = entidad.paciente_id
+      modales.abrirModalEntidad('DiagnosticoRecetaPage')
+    }
   }
 
   const btnAgendarCita: CustomActionTable<CitaMedica> = {

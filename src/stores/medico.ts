@@ -8,11 +8,13 @@ export const useMedicoStore = defineStore('medico', () => {
   const examenSolicitado: Ref<ExamenSolicitado | undefined> = ref()
   const examenesSolicitados: Ref<Examen[] | undefined> = ref()
   const idRegistroEmpleadoExamen = ref()
+  const idCita = ref()
 
   return {
     examenSolicitado,
     empleado,
     examenesSolicitados,
     idRegistroEmpleadoExamen,
+    idCita,
   }
 })

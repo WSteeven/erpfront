@@ -1,12 +1,14 @@
 // Dependencias
 import { configuracionColumnasEmpleados } from '../domain/configuracionColumnasEmpleados'
 import { configuracionColumnasExamenes } from '../domain/configuracionColumnasExamenes'
-import { computed, defineComponent, ref } from 'vue'
+import { Ref, computed, defineComponent, ref } from 'vue'
+import { configuracionColumnasEsquemaVacunacion } from '../domain/configuracionColumnasEsquemaVacunacion'
 
 // Componentes
 import EssentialTableTabs from 'components/tables/view/EssentialTableTabs.vue'
 import TabLayout from 'shared/contenedor/modules/simple/view/TabLayout.vue'
 import EssentialTable from 'components/tables/view/EssentialTable.vue'
+import ModalesEntidad from 'components/modales/view/ModalEntidad.vue'
 import SelectorImagen from 'components/SelectorImagen.vue'
 import DetallePaciente from './DetallePaciente.vue'
 
@@ -18,13 +20,13 @@ import { estadosExamenes, tabOptionsEstadosExamenes, tiposProcesosExamenes } fro
 import { useBotonesSolicitudExamen } from '../application/UseBotonesSolicitudExamen'
 import { CustomActionPrompt } from 'components/tables/domain/CustomActionPrompt'
 import { CustomActionTable } from 'components/tables/domain/CustomActionTable'
-import ModalesEntidad from 'components/modales/view/ModalEntidad.vue'
 import { Empleado } from 'recursosHumanos/empleados/domain/Empleado'
 import { isAxiosError, notificarMensajesError } from 'shared/utils'
 import { useNotificaciones } from 'shared/notificaciones'
 import { useExamenes } from '../application/UseExamenes'
 import { useMedicoStore } from 'stores/medico'
 import { accionesTabla } from 'config/utils'
+import { EsquemaVacuna } from '../domain/EsquemaVacuna'
 
 export default defineComponent({
   components: { TabLayout, SelectorImagen, ModalesEntidad, EssentialTable, DetallePaciente, EssentialTableTabs },
@@ -42,11 +44,40 @@ export default defineComponent({
     const { onConsultado } = mixin.useHooks()
     const notificaciones = useNotificaciones()
 
+    /************
+     * Variables
+     ************/
     const listadoExamenes = ref([])
 
     const tabs = ref(tiposProcesosExamenes.INGRESO)
     const tabEstadoExamen = ref(estadosExamenes.PENDIENTE_SOLICITAR)
     const tabsRegistro = ref(1)
+    const esquemaVacunaciones: Ref<any[]> = ref([
+      {
+        'tipo_vacuna': 'Covid',
+        'dosis_aplicadas': 3,
+      },
+      {
+        'tipo_vacuna': 'Fiebre amarilla',
+        'dosis_aplicadas': 1,
+      },
+      {
+        'tipo_vacuna': 'Difteria',
+        'dosis_aplicadas': 1,
+      },
+      {
+        'tipo_vacuna': 'Hepatitis A o B, AB',
+        'dosis_aplicadas': 1,
+      },
+      {
+        'tipo_vacuna': 'Tétanos',
+        'dosis_aplicadas': 1,
+      },
+      {
+        'tipo_vacuna': 'Influenza',
+        'dosis_aplicadas': 0,
+      },
+    ])
 
     const modales = new ComportamientoModalesGestionPaciente()
 
@@ -70,6 +101,16 @@ export default defineComponent({
       // Other functions
       seleccionarExamen,
     } = useBotonesSolicitudExamen(tabEstadoExamen, modales)
+
+    const btnEsquemaVacunacion: CustomActionTable<Examen> = {
+      titulo: 'Gestionar',
+      icono: 'bi-plus',
+      color: 'positive',
+      // visible: () => tabEstadoExamen.value === '0' && !seleccionVariosExamen.value,
+      accion: ({ entidad }) => {
+        modales.abrirModalEntidad('EsquemaVacunacionPage')
+      }
+    }
 
     const filtrarEstadoExamen = (tab) => {
       tabEstadoExamen.value = tab
@@ -167,6 +208,7 @@ export default defineComponent({
       tabsRegistro,
       tabEstadoExamen,
       configuracionColumnas: configuracionColumnasEmpleados,
+      columnasEsquemaVacunacion: [...configuracionColumnasEsquemaVacunacion, accionesTabla],
       configuracionColumnasExamenes,
       tabOptionsEstadosExamenes,
       listadoExamenes,
@@ -178,6 +220,7 @@ export default defineComponent({
       registros,
       tiposProcesosExamenes,
       tipoSeleccion: computed(() => seleccionVariosExamen.value && tabEstadoExamen.value === '0' ? 'multiple' : 'none'),
+      esquemaVacunaciones,
       // funciones
       agregarRegistro,
       seleccionarRegistro,
@@ -199,6 +242,7 @@ export default defineComponent({
       // Other functions
       seleccionarExamen,
       btnSolicitarExamenesSeleccionados2,
+      btnEsquemaVacunacion,
     }
   },
 })

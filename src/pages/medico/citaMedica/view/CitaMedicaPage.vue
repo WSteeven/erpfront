@@ -165,6 +165,14 @@
       </div>
     </template>
   </tab-layout-tabs>
+
+  <modales-entidad
+    :comportamiento="modales"
+    :mixin-modal="mixin"
+    :confirmar-cerrar="false"
+    :persistente="false"
+  />
+  <!-- @guardado="actualizarListadoExamenes" -->
 </template>
 
 <script src="./CitaMedicaPage.ts"></script>

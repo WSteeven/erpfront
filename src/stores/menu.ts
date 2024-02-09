@@ -200,12 +200,12 @@ export const useMenuStore = defineStore('menu', () => {
           icon: 'bi-circle',
           can: store.can('puede.ver.citas_medicas'),
         },
-        {
-          title: 'Diagnóstico y receta',
+        /*{
+          title: 'Consulta médica',
           link: 'diagnostico-receta',
           icon: 'bi-circle',
           can: store.can('puede.ver.diagnosticos_recetas'),
-        },
+        },*/
         {
           title: 'Reporte Cuestionario Psicosocial',
           link: 'reporte-cuestionarios-pisicosocial',

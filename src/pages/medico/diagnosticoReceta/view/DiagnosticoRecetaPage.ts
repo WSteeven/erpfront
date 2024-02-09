@@ -97,12 +97,14 @@ export default defineComponent({
     * Init
     *******/
     if (medicoStore.empleado) {
-      empleado.hydrate(medicoStore.empleado)
-      consulta.empleado = empleado.id
+      // empleado.hydrate(medicoStore.empleado)
+      consultarEmpleado(medicoStore.empleado)
+      consulta.empleado = medicoStore.empleado
     } else {
       consultarEmpleado(authenticationStore.user.id)
       consulta.empleado = authenticationStore.user.id
     }
+    consulta.cita = medicoStore.idCita
     consultarEnfermedades()
 
     return {

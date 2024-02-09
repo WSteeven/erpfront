@@ -126,7 +126,6 @@
                           v-model="enfermedad.recomendacion"
                           placeholder="Obligatorio"
                           outlined
-                          :disable="disabled"
                           dense
                           autogrow
                           type="textarea"

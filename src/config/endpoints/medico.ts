@@ -24,4 +24,5 @@ export const medico = {
   citas_medicas: new Endpoint('medico/citas-medicas'),
   consultas: new Endpoint('medico/consultas'),
   configuracion_cuestionario_empleado: new Endpoint('medico/configuracion-cuestionario-empleado'),
+  esquemas_vacunas: new Endpoint('medico/esquemas-vacunas'),
 }

@@ -56,6 +56,7 @@
           animated
           transition-prev="scale"
           transition-next="scale"
+          class="q-mb-md"
           helpalive
         >
           <q-tab-panel :name="tiposProcesosExamenes.INGRESO" class="q-pa-none">
@@ -147,13 +148,13 @@
                       :accion1Header="btnSeleccionarVariosExamenes"
                       :accion2Header="btnCancelarSeleccionarVariosExamenes"
                       :accion3Header="btnSolicitarExamenesSeleccionados"
-                      :accion4Header="btnNuevoDiagnostico"
                       :accion1="btnSolicitarExamenIndividual"
                       :accion2="btnResultados"
                       :tipo-seleccion="tipoSeleccion"
                       @selected="seleccionarExamen"
                       :alto-fijo="false"
                     ></essential-table-tabs>
+                    <!-- :accion4Header="btnNuevoDiagnostico" -->
                   </q-tab-panel>
                   <q-tab-panel name="2"> Ocupacionales </q-tab-panel>
                 </q-tab-panels>
@@ -161,6 +162,19 @@
             </q-splitter>
           </q-tab-panel>
         </q-tab-panels>
+
+        <essential-table
+          titulo="Esquema de vacunación"
+          :configuracionColumnas="columnasEsquemaVacunacion"
+          :datos="esquemaVacunaciones"
+          :alto-fijo="false"
+          :permitirConsultar="false"
+          :permitirEditar="false"
+          :permitirEliminar="false"
+          :mostrar-footer="false"
+          :mostrar-botones="false"
+          :accion1="btnEsquemaVacunacion"
+        ></essential-table>
       </div>
     </template>
   </tab-layout>

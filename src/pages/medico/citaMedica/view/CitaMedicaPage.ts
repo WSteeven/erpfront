@@ -13,6 +13,7 @@ import { maskFecha } from 'config/utils'
 import TabLayoutFilterTabs2 from 'shared/contenedor/modules/simple/view/TabLayoutFilterTabs2.vue'
 import DetallePaciente from 'medico/gestionarPacientes/view/DetallePaciente.vue'
 import EstadosSubtareas from 'components/tables/view/EstadosSubtareas.vue'
+import ModalesEntidad from 'components/modales/view/ModalEntidad.vue'
 
 // Logica y controladores
 import { ContenedorSimpleMixin } from 'shared/contenedor/modules/simple/application/ContenedorSimpleMixin'
@@ -21,12 +22,14 @@ import { CitaMedicaController } from '../infraestructure/CitaMedicaController'
 import { Empleado } from 'pages/recursosHumanos/empleados/domain/Empleado'
 import { useBotonesCitaMedica } from '../application/UseBotonesCitaMedica'
 import { formatearFechaHora } from 'shared/utils'
+import { ComportamientoModalesCitaMedica } from '../domain/ComportamientoModalesCitaMedica'
 
 export default defineComponent({
   components: {
     TabLayoutTabs: TabLayoutFilterTabs2,
     Estado: EstadosSubtareas,
     DetallePaciente,
+    ModalesEntidad,
   },
   setup() {
     /*********
@@ -56,10 +59,12 @@ export default defineComponent({
     const fecha_cita_medica = ref()
     const hora_cita_medica = ref()
 
+    const modales = new ComportamientoModalesCitaMedica()
+
     /************
      * Funciones
      ************/
-    const { btnCancelarCita, btnRechazar, btnDiagnosticoReceta, btnAgendarCita } = useBotonesCitaMedica(mixin, tabCita)
+    const { btnCancelarCita, btnRechazar, btnDiagnosticoReceta, btnAgendarCita } = useBotonesCitaMedica(mixin, tabCita, modales)
 
     const filtrarCitaMedica = (tabSeleccionado: string) => {
       tabCita.value = tabSeleccionado
@@ -119,6 +124,7 @@ export default defineComponent({
     return {
       v$,
       mixin,
+      modales,
       citaMedica,
       configuracionColumnasCitaMedica,
       tabCita,
