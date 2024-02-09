@@ -9,11 +9,15 @@
   }
 
   .bg-body {
-    background-color: $grey-4 !important;
+    background-color: $grey-5 !important;
     // background-color: rgba($grey-5, 0.7) 70% !important;
     // position: absolute;
     // top: 0;
     // width: 100%;
+  }
+
+  .bg-grey-form {
+    background-color: $grey-3;
   }
 
   .bg-body-background {
@@ -23,12 +27,12 @@
     top: 0;
     bottom: 0;
     width: 100%;*/
-   background: linear-gradient(
+    backdrop-filter: blur(10px);
+    background: linear-gradient(
       180deg,
       rgba($grey-5, 0.7) 70%,
       rgba($grey-6, 0.9) 100%
     );
-
   }
 
   .bg-body-table {
@@ -41,6 +45,11 @@
 
   .bg-desenfoque {
     background-color: rgba($grey-2, 0.6) !important;
+    backdrop-filter: blur(10px) !important;
+  }
+
+  .bg-desenfoque-2 {
+    background-color: rgba($grey-2, 0.4) !important;
     backdrop-filter: blur(10px) !important;
   }
 
@@ -312,10 +321,8 @@
     rgba($grey-6, 0.9) 100%
   ) !important;
 }*/
-ul.circles{
-
-    background-color: #d0d0d0 !important;
-
+ul.circles {
+  background-color: #d0d0d0 !important;
 }
 .circles {
   position: absolute;

@@ -3,9 +3,10 @@
     :mixin="mixin"
     :configuracionColumnas="configuracionColumnas"
     :permitir-editar="false"
+    :mostrarButtonSubmits="false"
   >
     <template #formulario>
-      <div :class="{ 'q-mb-xl': empleado.id }">
+      <div :class="{ 'q-mb-md': empleado.id }">
         <detalle-paciente
           v-if="empleado.id"
           :empleado="empleado"
@@ -13,7 +14,7 @@
       </div>
 
       <!-- Tabs -->
-      <div>
+      <div v-if="empleado.id">
         <q-tabs
           v-model="tabs"
           align="justify"
@@ -61,17 +62,15 @@
             <q-splitter v-model="splitterModel" class="border-grey">
               <template v-slot:before>
                 <div
-                  class="bg-primary border-bottom-grey-5 border-right-grey-5 text-center q-pb-md q-pt-sm"
+                  class="border-bottom-grey-5 border-right-grey-5 text-center q-pb-md q-pt-sm"
                 >
                   <q-btn
-                    color="positive"
-                    class="text-white"
+                    class="text-primary"
                     square
                     push
                     no-caps
                     @click="agregarRegistro()"
                   >
-                    <!-- color="white" -->
                     <q-icon
                       name="bi-plus-circle-fill"
                       size="xs"
@@ -119,7 +118,7 @@
                     :name="registro.id"
                     class="q-pa-none"
                   >
-                    <div class="row bg-body q-pa-md">
+                    <div class="row bg-blue-1 q-pa-md">
                       <div class="col-12 col-md-6">
                         <label class="q-mb-sm block">
                           Fecha y hora de registro

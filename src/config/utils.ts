@@ -328,6 +328,7 @@ export const rolesSistema = {
   tecnico_lider: 'LIDER DE GRUPO',
   tecnico: 'TECNICO',
   autorizador: 'AUTORIZADOR',
+  medico: 'MEDICO',
 }
 
 export const cargosSistema = {

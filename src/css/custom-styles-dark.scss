@@ -15,6 +15,15 @@ $border-color: #464646;
     background-color: $bg-body !important;
   }
 
+  .bg-body-background {
+    backdrop-filter: blur(10px);
+    background: #000000a3;
+  }
+
+  .bg-grey-form {
+    background-color: #000;
+  }
+
   .bg-body-table {
     background-color: $bg-body;
   }
@@ -26,6 +35,11 @@ $border-color: #464646;
   .bg-desenfoque {
     background-color: rgba($dark-color, 0.8);
     backdrop-filter: blur(10px);
+  }
+
+  .bg-desenfoque-2 {
+    background-color: rgba($grey-10, 0.4) !important;
+    backdrop-filter: blur(10px) !important;
   }
 
   .bg-header-collapse {

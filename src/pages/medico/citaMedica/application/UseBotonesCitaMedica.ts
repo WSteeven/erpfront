@@ -1,0 +1,98 @@
+import { CustomActionTable } from "components/tables/domain/CustomActionTable"
+import { CitaMedica } from "../domain/CitaMedica"
+import { useAuthenticationStore } from "stores/authentication"
+import { estadosCitaMedica } from "config/utils/medico"
+import { Ref } from "vue"
+import { CambiarEstadoCitaMedica } from "./CambiarEstadoCitaMedica"
+import { CustomActionPrompt } from "components/tables/domain/CustomActionPrompt"
+import { useNotificaciones } from "shared/notificaciones"
+import { ContenedorSimpleMixin } from "shared/contenedor/modules/simple/application/ContenedorSimpleMixin"
+import { acciones } from "config/utils"
+
+export function useBotonesCitaMedica(mixin: ContenedorSimpleMixin<CitaMedica>, tabEstado: Ref<string>) {
+  /**********
+   * Stores
+   **********/
+  const store = useAuthenticationStore()
+
+  /************
+   * Variables
+   ************/
+  const cambiarEstado = new CambiarEstadoCitaMedica()
+  const { confirmar, prompt, notificarCorrecto } = useNotificaciones()
+  const { entidad: citaMedica, listado, accion } = mixin.useReferencias()
+  const { consultar } = mixin.useComportamiento()
+
+  const btnCancelarCita: CustomActionTable<CitaMedica> = {
+    titulo: 'Cancelar cita',
+    icono: 'bi-x',
+    color: 'negative',
+    visible: ({ entidad }) => tabEstado.value === estadosCitaMedica.PENDIENTE && store.user.id === entidad.paciente_id,
+    accion: async ({ entidad, posicion }) => {
+      const config: CustomActionPrompt = {
+        mensaje: 'Escriba el motivo de la cancelación',
+        accion: (motivo: string) => {
+          confirmar('¿Está seguro de cancelar la cita médica?', async () => {
+            const { response } = await cambiarEstado.cancelar(entidad.id, motivo)
+            notificarCorrecto(response.data.mensaje)
+            eliminarElemento(posicion)
+          })
+        },
+      }
+
+      prompt(config)
+    }
+  }
+
+  const btnRechazar: CustomActionTable<CitaMedica> = {
+    titulo: 'Rechazar',
+    icono: 'bi-x',
+    color: 'negative',
+    visible: () => tabEstado.value === estadosCitaMedica.PENDIENTE && store.can('puede.rechazar.citas_medicas'),
+    accion: async ({ entidad, posicion }) => {
+      const config: CustomActionPrompt = {
+        mensaje: 'Escriba el motivo del rechazo',
+        accion: (motivo: string) => {
+          confirmar('¿Está seguro de rechazar la cita médica?', async () => {
+            const { response } = await cambiarEstado.rechazar(entidad.id, motivo)
+            notificarCorrecto(response.data.mensaje)
+            eliminarElemento(posicion)
+          })
+        },
+      }
+
+      prompt(config)
+    }
+  }
+
+  const btnDiagnosticoReceta: CustomActionTable<CitaMedica> = {
+    titulo: 'Diagnostico receta',
+    icono: 'bi-clipboard2-pulse-fill',
+    color: 'positive',
+    visible: () => tabEstado.value === estadosCitaMedica.AGENDADO && store.can('puede.crear.diagnosticos_recetas') && store.can('puede.editar.diagnosticos_recetas'),
+    accion: () => console.log('cancelado')
+  }
+
+  const btnAgendarCita: CustomActionTable<CitaMedica> = {
+    titulo: 'Agendar cita',
+    icono: 'bi-clock-history',
+    color: 'primary',
+    visible: () => tabEstado.value === estadosCitaMedica.PENDIENTE && store.esMedico,
+    accion: async ({ entidad }) => {
+      await consultar({ id: entidad.id })
+      accion.value = acciones.editar
+      citaMedica.estado_cita_medica = estadosCitaMedica.AGENDADO
+    }
+  }
+
+  function eliminarElemento(posicion: number): void {
+    if (posicion >= 0) listado.value.splice(posicion, 1)
+  }
+
+  return {
+    btnCancelarCita,
+    btnRechazar,
+    btnDiagnosticoReceta,
+    btnAgendarCita,
+  }
+}

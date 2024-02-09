@@ -58,7 +58,7 @@ export function useBotonesSolicitudExamen(tabEstadoExamen: Ref, modales: Comport
     color: 'positive',
     visible: () => tabEstadoExamen.value === estadosExamenes.DIAGNOSTICO_REALIZADO,
     accion: async () => {
-      modales.abrirModalEntidad('SolicitudExamenPage')
+      modales.abrirModalEntidad('DiagnosticoRecetaPage')
     }
   }
 

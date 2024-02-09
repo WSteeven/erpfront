@@ -19,7 +19,7 @@
     <q-uploader
       ref="refGestor"
       label="Selecciona o arrastra tus archivos aquí (Máximo 10mb)"
-      multiple
+      :multiple="multiple"
       style="width: 100%"
       flat
       :factory="factoryFn"

@@ -67,12 +67,12 @@ export const useMenuStore = defineStore('menu', () => {
           icon: 'bi-app',
           can: store.can('puede.ver.materiales_empleados'),
         },
-        {
+        /*{
           title: 'Trabajo agendado',
           link: 'trabajo-agendado',
           icon: 'bi-ui-checks-grid',
           can: true,//store.esTecnicoLider,// store.can('puede.ver.trabajo_asignado'),
-        },
+        },*/
         {
           title: 'Transferencia de productos',
           link: 'transferencia-producto-empleado',
@@ -195,6 +195,18 @@ export const useMenuStore = defineStore('menu', () => {
           can: store.can('puede.ver.cuestionario_psicosocial'),
         },
         {
+          title: 'Cita médica',
+          link: 'citas-medicas',
+          icon: 'bi-circle',
+          can: store.can('puede.ver.citas_medicas'),
+        },
+        {
+          title: 'Diagnóstico y receta',
+          link: 'diagnostico-receta',
+          icon: 'bi-circle',
+          can: store.can('puede.ver.diagnosticos_recetas'),
+        },
+        {
           title: 'Reporte Cuestionario Psicosocial',
           link: 'reporte-cuestionarios-pisicosocial',
           icon: 'bi-circle',
@@ -205,7 +217,7 @@ export const useMenuStore = defineStore('menu', () => {
           link: 'cie',
           icon: 'bi-circle',
           can: store.can('puede.ver.cie'),
-        },{
+        }, {
           title: 'Configuracion Cuestionario Empleado',
           link: 'configuraciones-cuestionarios-empleados',
           icon: 'bi-circle',
@@ -510,7 +522,7 @@ export const useMenuStore = defineStore('menu', () => {
               title: 'Resumen de valores de FR',
               link: 'reporte-valores-fondos',
               icon: 'bi-app',
-              can: store.can('puede.ver.reporte_valores_fondos_rotativos')|| store.esAdministrador,
+              can: store.can('puede.ver.reporte_valores_fondos_rotativos') || store.esAdministrador,
             },
             {
               title: 'Fondo Rotativo',
