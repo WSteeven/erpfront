@@ -1,5 +1,5 @@
-import { Examen } from 'pages/medico/examenes/domain/Examen'
 import { ExamenSolicitado } from 'pages/medico/gestionarPacientes/modules/solicitudExamen/domain/ExamenSolicitado'
+import { Examen } from 'pages/medico/examenes/domain/Examen'
 import { defineStore } from 'pinia'
 import { Ref, ref } from 'vue'
 

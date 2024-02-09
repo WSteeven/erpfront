@@ -1,12 +1,12 @@
 <template>
-  <div class="row">
+  <div class="row bg-desenfoque q-mx-xs q-pa-md rounded">
     <div class="col-12 col-md-2 text-center">
       <q-img :src="empleado.foto_url ?? ''" width="60%"></q-img>
     </div>
 
     <div class="col-12 col-md-10">
       <div class="row q-col-gutter-md">
-        <div class="col-12 text-primary text-bold">
+        <div class="col-12 text-primary text-bold text-h6 q-mb-md">
           {{ nombres }}
         </div>
 

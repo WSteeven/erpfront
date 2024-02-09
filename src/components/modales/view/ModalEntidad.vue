@@ -9,7 +9,7 @@
   >
     <q-card class="bg-transparent no-border" flat>
       <!-- <q-linear-progress :value="1" color="grey-4" /> -->
-      <q-toolbar class="bg-body border-bottom superior-fixed" rounded>
+      <q-toolbar class="bg-desenfoque border-bottoffm superior-fixed" rounded>
         <q-avatar square>
           <img src="~assets/logo.png" />
         </q-avatar>

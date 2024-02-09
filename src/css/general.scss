@@ -8,7 +8,7 @@ body {
   &::-webkit-scrollbar-thumb {
     // border-radius: 50px;
 
-    background: #aaaaaa;
+    background: $primary;
     // background: -webkit-linear-gradient(to top, #2f4d81, #009fff);
     // background: linear-gradient(to top, #2f4d81, #009fff);
   }
@@ -24,7 +24,7 @@ body {
 
   &::-webkit-scrollbar-thumb {
     // border-radius: 50px;
-    background: #aaa;
+    background: $primary;
   }
 }
 
@@ -147,4 +147,9 @@ input[type='time']::-webkit-calendar-picker-indicator {
 .my-card {
   width: 100%;
   max-width: 100%;
+}
+
+.border-positive-banner {
+  border-top: 2px solid $positive;
+  border-bottom: 2px solid $positive;
 }
