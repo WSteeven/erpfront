@@ -10,6 +10,9 @@ import { reactive, ref } from "vue";
 export const useVentaStore = defineStore('venta', () => {
     const venta = reactive(new Venta())
     const ventaReset = new Venta()
+    const filaVenta = reactive(new Venta())
+    const posicionFilaVenta = ref()
+
     const idVenta = ref()
     const permitirSubir = ref(true)
 
@@ -45,6 +48,8 @@ export const useVentaStore = defineStore('venta', () => {
 
 
     return {
+        filaVenta,
+        posicionFilaVenta,
         venta, idVenta,
         permitirSubir,
 

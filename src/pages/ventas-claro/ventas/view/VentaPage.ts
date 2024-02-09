@@ -237,7 +237,7 @@ export default defineComponent({
           listado.value.splice(posicion, 1, response.result)
         })
         console.log(entidad, posicion)
-      }, visible: ({ entidad }) => entidad.activo && !entidad.primer_mes
+      }, visible: ({ entidad }) => entidad.activo && entidad.estado_activacion == estadosActivacionesVentas.activado && !entidad.primer_mes
     }
     const btnRegistrarNovedades: CustomActionTable = {
       titulo: 'Novedades',

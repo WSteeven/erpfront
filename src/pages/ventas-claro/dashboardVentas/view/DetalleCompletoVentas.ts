@@ -10,9 +10,9 @@ import EstadosSubtareas from 'components/tables/view/EstadosSubtareas.vue'
 // Logica y controladores
 
 import { ContenedorSimpleMixin } from 'shared/contenedor/modules/simple/application/ContenedorSimpleMixin'
-import { useVentaStore } from 'stores/venta'
-import { Ventas } from 'pages/ventas-claro/ventas/domain/Venta'
-import { VentasController } from 'pages/ventas-claro/ventas/infrestructure/VentaController'
+import { useVentaStore } from 'stores/ventasClaro/venta'
+import { Venta } from 'pages/ventas-claro/ventas/domain/Venta'
+import { VentaController } from 'pages/ventas-claro/ventas/infrestructure/VentaController'
 import { AxiosHttpRepository } from 'shared/http/infraestructure/AxiosHttpRepository'
 import { HttpResponseGet } from 'shared/http/domain/HttpResponse'
 import axios from 'axios'
@@ -34,7 +34,7 @@ export default defineComponent({
     /*******
      * Mixin
      *********/
-    const mixin = new ContenedorSimpleMixin(Ventas, new VentasController())
+    const mixin = new ContenedorSimpleMixin(Venta, new VentaController())
     const { listadosAuxiliares, accion, disabled } = mixin.useReferencias()
     const {
       guardar,
@@ -58,7 +58,7 @@ export default defineComponent({
       const url_producto =
         apiConfig.URL_BASE +
         '/' +
-        axiosHttpRepository.getEndpoint(endpoints.producto_ventas) +
+        axiosHttpRepository.getEndpoint(endpoints.productos_ventas) +
         '/' +
         ventas.producto
       axios({

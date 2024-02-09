@@ -3,6 +3,13 @@ import { Venta } from "./Venta";
 
 export const configuracionColumnasVentas: ColumnConfig<Venta>[] = [
   {
+    name: 'id',
+    field: 'id',
+    label: '#',
+    align: 'left',
+    sortable: true
+  },
+  {
     name: 'orden_id',
     field: 'orden_id',
     label: '#Orden',
@@ -66,9 +73,9 @@ export const configuracionColumnasVentas: ColumnConfig<Venta>[] = [
     sortable: true
   },
   {
-    name: 'comision_vendedor',
-    field: 'comision_vendedor',
-    label: 'Comision',
+    name: 'comisiona',
+    field: 'comisiona',
+    label: 'Comisiona',
     align: 'left',
     sortable: true
   },

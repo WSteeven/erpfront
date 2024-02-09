@@ -15,6 +15,7 @@ export class Venta extends EntidadAuditable {
   mes: string | null
   estado_activacion: string | null
   forma_pago: string | null
+  comisiona: boolean
   comision: number | null
   comision_info: string | null
   chargeback: number | null
@@ -22,7 +23,7 @@ export class Venta extends EntidadAuditable {
   activo: boolean
   observacion: string | null
   primer_mes: boolean
-  novedades:number|null
+  novedades: number | null
 
 
   constructor() {
@@ -42,6 +43,7 @@ export class Venta extends EntidadAuditable {
     this.mes = null
     this.estado_activacion = null
     this.forma_pago = null
+    this.comisiona = false
     this.comision = null
     this.comision_info = null
     this.chargeback = null

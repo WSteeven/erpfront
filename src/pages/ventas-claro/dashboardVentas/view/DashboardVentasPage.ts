@@ -27,15 +27,15 @@ import {
 import { StatusEssentialLoading } from 'components/loading/application/StatusEssentialLoading'
 import { ReporteSubtareasRealizadas } from '../domain/ReporteSubtareasRealizadas'
 import { CustomActionTable } from 'components/tables/domain/CustomActionTable'
-import { VendedoresController } from 'pages/ventas-claro/vendedores/infrestructure/VendedorController'
-import { Ventas } from 'pages/ventas-claro/ventas/domain/Venta'
+import { VendedorController } from 'pages/ventas-claro/vendedores/infrestructure/VendedorController'
+import { Venta } from 'pages/ventas-claro/ventas/domain/Venta'
 import { DashboardVentasController } from '../infraestructure/DashboardVentasController'
 import { FiltroDashboardVentas } from '../domain/FiltroDashboardVentas'
-import { Vendedores } from 'pages/ventas-claro/vendedores/domain/Vendedor'
-import { ComportamientoModalesVentas } from 'pages/ventas-claro/ventas/application/ComportamientoModalesVentas'
+import { Vendedor } from 'pages/ventas-claro/vendedores/domain/Vendedor'
+import { ComportamientoModalesVentasClaro } from 'pages/ventas-claro/ventas/application/ComportamientoModalesVentasClaro'
 import { optionsLine, optionsPie } from 'config/graficoGenerico'
 import { configuracionColumnasVentas } from 'pages/ventas-claro/ventas/domain/configuracionColumnasVentas'
-import { useVentaStore } from 'stores/venta'
+import { useVentaStore } from 'stores/ventasClaro/venta'
 
 export default defineComponent({
   components: {
@@ -65,9 +65,9 @@ export default defineComponent({
     cargarVista(async () => {
       await obtenerListados({
         vendedores: {
-          controller: new VendedoresController(),
+          controller: new VendedorController(),
           params: {
-            campos: 'id',
+            campos: 'empleado_id',
           },
         },
       })
@@ -80,7 +80,7 @@ export default defineComponent({
     const mostrarTitulosSeccion = computed(
       () => filtro.fecha_inicio && filtro.fecha_fin && filtro.vendedor
     )
-    const modales = new ComportamientoModalesVentas()
+    const modales = new ComportamientoModalesVentasClaro()
     const tabsVentas = ref('creados')
     // Cantidades
     const cantVentasCreados = ref()
@@ -151,7 +151,7 @@ export default defineComponent({
       update(() => {
         const needle = val.toLowerCase()
         vendedores.value = listadosAuxiliares.vendedores.filter(
-          (v) => v.mpleado_info.toLowerCase().indexOf(needle) > -1
+          (v) => v.empleado_info.toLowerCase().indexOf(needle) > -1
         )
       })
     }
@@ -191,7 +191,7 @@ export default defineComponent({
     }
 
     function ordenarVendedores() {
-      vendedores.value.sort((a: Vendedores, b: Vendedores) =>
+      vendedores.value.sort((a: Vendedor, b: Vendedor) =>
         ordernarListaString(a.empleado_info!, b.empleado_info!)
       )
     }
@@ -206,12 +206,12 @@ export default defineComponent({
         switch (categoriaGrafico) {
           case categoriaGraficosVendedor.ESTADO_ACTUAL:
             ventasPorEstadoListado.value = ventasPorEstado.value.filter(
-              (venta: Ventas) => venta.estado_activacion === label
+              (venta: Venta) => venta.estado_activacion === label
             )
             break
           case categoriaGraficosVendedor.VENTAS_POR_PLANES:
             ventasPorEstadoListado.value = ventasPorPlanes.value.filter(
-              (venta: Ventas) => venta.plan === label.toUpperCase()
+              (venta: Venta) => venta.plan === label.toUpperCase()
             )
             break
         }
@@ -222,7 +222,7 @@ export default defineComponent({
       const { label } = data
       if (label) {
         ventasPorMesListado.value = ventasPorMesBar.value.filter(
-          (venta: Ventas) => venta.mes === label
+          (venta: Venta) => venta.mes === label
         )
         tabsVendedorLinea.value = opcionesVendedorLineaTiempo.vendedorListadoMes
       }

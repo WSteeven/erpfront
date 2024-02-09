@@ -1150,7 +1150,7 @@ const routes: RouteRecordRaw[] = [
       },
       {
         path: '/bono-mensual-cumplimiento',
-        name: 'bono_mensual_cumplimiento',
+        name: 'bonos_mensuales_cumplimientos',
         component: () =>
           import(
             'pages/ventas-claro/bonoMensualCumplimiento/view/BonoMensualCumplimientoPagePage.vue'
