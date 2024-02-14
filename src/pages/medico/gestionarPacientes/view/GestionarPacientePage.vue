@@ -1,9 +1,12 @@
 <template>
-  <tab-layout
+  <tab-layout-filter-tabs2
     :mixin="mixin"
     :configuracionColumnas="configuracionColumnas"
     :permitir-editar="false"
     :mostrarButtonSubmits="false"
+    :tabOptions="tabOptionsEstadosEmpleados"
+    tabDefecto="1"
+    :filtrar="filtrarEmpleados"
   >
     <template #formulario>
       <div :class="{ 'q-mb-md': empleado.id }">
@@ -177,7 +180,7 @@
         ></essential-table>
       </div>
     </template>
-  </tab-layout>
+  </tab-layout-filter-tabs2>
 
   <modales-entidad
     :comportamiento="modales"

@@ -5,6 +5,7 @@ import { estadosExamenes } from "config/utils/medico"
 import { Ref, ref } from "vue"
 import { useMedicoStore } from "stores/medico"
 import { Examen } from "pages/medico/examenes/domain/Examen"
+import { useNotificaciones } from "shared/notificaciones"
 
 export function useBotonesSolicitudExamen(tabEstadoExamen: Ref, modales: ComportamientoModalesGestionPaciente) {
   /*********
@@ -18,6 +19,7 @@ export function useBotonesSolicitudExamen(tabEstadoExamen: Ref, modales: Comport
   const seleccionVariosExamen = ref(false)
   const refTablaExamenes = ref()
   const examenesSeleccionados: Ref<Examen[]> = ref([])
+  const { notificarAdvertencia } = useNotificaciones()
 
   /*********
    * Header
@@ -36,10 +38,8 @@ export function useBotonesSolicitudExamen(tabEstadoExamen: Ref, modales: Comport
     color: 'positive',
     visible: () => seleccionVariosExamen.value,
     accion: async function () {
-      // console.log('Solicitando varios examenes...')
-      // console.log(examenesSeleccionados.value)
+      if (!examenesSeleccionados.value.length) return notificarAdvertencia('Debe seleccionar al menos un examen!')
       medicoStore.examenesSolicitados = examenesSeleccionados.value
-      // examenesSeleccionados.value = []
       modales.abrirModalEntidad('SolicitudExamenPage')
     }
   }

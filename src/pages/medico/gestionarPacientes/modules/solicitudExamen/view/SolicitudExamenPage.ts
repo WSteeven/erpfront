@@ -1,6 +1,6 @@
 // Dependencias
 import { useMedicoStore } from 'stores/medico'
-import { Ref, computed, defineComponent, ref } from 'vue'
+import { Ref, computed, defineComponent, ref, watch } from 'vue'
 
 // Componentes
 import DetallePaciente from '../../../view/DetallePaciente.vue'
@@ -67,14 +67,6 @@ export default defineComponent({
       }
     }
 
-    /* const guardar = async () => {
-      //
-    } */
-
-    const cancelar = () => {
-      //
-    }
-
     /********
      * Hooks
      ********/
@@ -87,6 +79,18 @@ export default defineComponent({
     onGuardado((id: number, responseData) => {
       const modelo = responseData.modelo
       emit('guardado', { id: modelo.id, page: 'SolicitudExamenPage' })
+    })
+
+    /************
+     * Observers
+     ************/
+    let dd = 0
+    watch(computed(() => estadoSolicitudExamen.examenes_solicitados), (examenes) => {
+      examenes.map((examen: Examen, index: number) => {
+        if (index === 0) {
+          //
+        }
+      })
     })
 
     /*******

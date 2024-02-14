@@ -535,3 +535,8 @@ export const tabOptionsTransaccionesEgresos: TabOption[] = [
   { label: 'Completas', value: 'COMPLETA' },
   { label: 'Anuladas', value: 'ANULADA' }
 ]
+
+export const tabOptionsEstadosEmpleados: TabOption[] = [
+  { label: 'Activos', value: '1' },
+  { label: 'Inactivos', value: '0' },
+]

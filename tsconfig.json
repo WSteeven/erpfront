@@ -6,6 +6,7 @@
     "strictFunctionTypes": false,
     "module": "esnext",
     "target": "esnext",
+    "types": ["jest"],
     "paths": {
       "config/*": ["src/config/*"],
       "shared/*": ["src/shared/*"],

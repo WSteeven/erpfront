@@ -3,10 +3,11 @@ import { configuracionColumnasEmpleados } from '../domain/configuracionColumnasE
 import { configuracionColumnasExamenes } from '../domain/configuracionColumnasExamenes'
 import { Ref, computed, defineComponent, ref } from 'vue'
 import { configuracionColumnasEsquemaVacunacion } from '../domain/configuracionColumnasEsquemaVacunacion'
+import { tabOptionsEstadosEmpleados } from 'config/utils'
 
 // Componentes
 import EssentialTableTabs from 'components/tables/view/EssentialTableTabs.vue'
-import TabLayout from 'shared/contenedor/modules/simple/view/TabLayout.vue'
+import TabLayoutFilterTabs2 from 'shared/contenedor/modules/simple/view/TabLayoutFilterTabs2.vue'
 import EssentialTable from 'components/tables/view/EssentialTable.vue'
 import ModalesEntidad from 'components/modales/view/ModalEntidad.vue'
 import SelectorImagen from 'components/SelectorImagen.vue'
@@ -27,9 +28,10 @@ import { useExamenes } from '../application/UseExamenes'
 import { useMedicoStore } from 'stores/medico'
 import { accionesTabla } from 'config/utils'
 import { EsquemaVacuna } from '../domain/EsquemaVacuna'
+import { Examen } from 'pages/medico/examenes/domain/Examen'
 
 export default defineComponent({
-  components: { TabLayout, SelectorImagen, ModalesEntidad, EssentialTable, DetallePaciente, EssentialTableTabs },
+  components: { TabLayoutFilterTabs2, SelectorImagen, ModalesEntidad, EssentialTable, DetallePaciente, EssentialTableTabs },
   setup() {
     /*********
      * Stores
@@ -42,6 +44,7 @@ export default defineComponent({
     const mixin = new ContenedorSimpleMixin(Empleado, new EmpleadoController())
     const { entidad: empleado } = mixin.useReferencias()
     const { onConsultado } = mixin.useHooks()
+    const { listar } = mixin.useComportamiento()
     const notificaciones = useNotificaciones()
 
     /************
@@ -162,14 +165,15 @@ export default defineComponent({
           examenes.value.splice(index, 1)
           break
         default:
-          console.log('se guardo modal...')
-          console.log(detalle_resultado_examen)
-          console.log(examenes.value)
           index = examenes.value.findIndex((examen) => examen.id === medicoStore.examenSolicitado?.id)
           examen = examenes.value[index]
           examen.detalle_resultado_examen = detalle_resultado_examen
           examenes.value.splice(index, 1, examen)
       }
+    }
+
+    const filtrarEmpleados = (tab: number) => {
+      listar({ estado: tab })
     }
 
     /*******
@@ -221,6 +225,8 @@ export default defineComponent({
       tiposProcesosExamenes,
       tipoSeleccion: computed(() => seleccionVariosExamen.value && tabEstadoExamen.value === '0' ? 'multiple' : 'none'),
       esquemaVacunaciones,
+      tabOptionsEstadosEmpleados,
+      filtrarEmpleados,
       // funciones
       agregarRegistro,
       seleccionarRegistro,
