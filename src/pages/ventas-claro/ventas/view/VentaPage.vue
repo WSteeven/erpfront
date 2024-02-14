@@ -3,6 +3,7 @@
     :mixin="mixin"
     :configuracionColumnas="configuracionColumnas"
     :ajustarCeldas="true"
+    :accion1Header="btnActualizarCalculoComisiones"
     :accion1="btnDesactivar"
     :accion2="btnActivar"
     :accion3="btnPrimerMesPagado"
@@ -395,6 +396,19 @@
               color="positive"
             />
           </div>
+
+          <!-- Fecha pago primer mes -->
+          <div class="col-12 col-md-3" v-if="venta.fecha_pago_primer_mes">
+            <label class="q-mb-sm block">Fecha Pago Primer Mes</label>
+            <q-input
+              v-model="venta.fecha_pago_primer_mes"
+              disable
+              autogrow
+              outlined
+              dense
+            >
+            </q-input>
+          </div>
         </div>
       </q-form>
     </template>
@@ -404,5 +418,11 @@
     :persistente="false"
     @guardado="(data) => guardado(data)"
   ></modales-entidad>
+  <solicitar-fecha
+    :mostrar="mostrarSolicitarFecha"
+    :confirmar="fechaSubida"
+    mask="YYYY-MM"
+    @cerrar="mostrarSolicitarFecha = false"
+  />
 </template>
 <script src="./VentaPage.ts"></script>

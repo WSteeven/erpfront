@@ -5,6 +5,7 @@ import { Venta } from '../domain/Venta'
 import TabLayoutFilterTabs2 from 'shared/contenedor/modules/simple/view/TabLayoutFilterTabs2.vue';
 import LabelAbrirModal from 'components/modales/modules/LabelAbrirModal.vue';
 import ModalesEntidad from 'components/modales/view/ModalEntidad.vue';
+import SolicitarFecha from 'shared/prompts/SolicitarFecha.vue'
 
 import { useNotificacionStore } from 'stores/notificacion'
 import { useQuasar } from 'quasar'
@@ -27,7 +28,7 @@ import { useNotificaciones } from 'shared/notificaciones';
 import { CustomActionPrompt } from 'components/tables/domain/CustomActionPrompt';
 
 export default defineComponent({
-  components: { TabLayoutFilterTabs2, ModalesEntidad, LabelAbrirModal },
+  components: { TabLayoutFilterTabs2, ModalesEntidad, LabelAbrirModal, SolicitarFecha },
   setup() {
     /*********
      * Stores
@@ -53,6 +54,7 @@ export default defineComponent({
     const precio_producto = ref(0)
     const comision_vendedor = ref(0)
     const mostrarLabelModal = computed(() => accion.value === acciones.nuevo || accion.value === acciones.editar)
+    const mostrarSolicitarFecha = ref(false)
 
 
 
@@ -172,6 +174,11 @@ export default defineComponent({
       }
     }
 
+    async function fechaSubida(fecha?) {
+      ventaStore.fechaActualizacion = fecha
+      await ventaStore.actualizarCalculoComisiones()
+    }
+
     /***********************
     * Botones de tabla
     ***********************/
@@ -234,7 +241,7 @@ export default defineComponent({
           ventaStore.idVenta = entidad.id
           const response = await ventaStore.marcarPrimerMesPagado()
           console.log(response)
-          listado.value.splice(posicion, 1, response.result)
+          listado.value.splice(posicion, 1, response?.result)
         })
         console.log(entidad, posicion)
       }, visible: ({ entidad }) => entidad.activo && entidad.estado_activacion == estadosActivacionesVentas.activado && !entidad.primer_mes
@@ -254,6 +261,18 @@ export default defineComponent({
         return true
       }
     }
+    const btnActualizarCalculoComisiones: CustomActionTable = {
+      titulo: 'Actualizar Comisiones',
+      color: 'warning',
+      icono: 'bi-arrow-clockwise',
+      accion: ({ entidad, posicion }) => {
+        confirmar('Esto revisará las ventas registradas y actualizará el calculo de comisiones según el orden de la fecha de activación de las ventas. ¿Está seguro de continuar?', () => {
+          mostrarSolicitarFecha.value = true
+        })
+      },
+      visible: ({ entidad }) => store.can('puede.actualizar.comisiones_ventas')
+
+    }
 
 
     return {
@@ -269,6 +288,7 @@ export default defineComponent({
       store,
       tabDefecto,
       tabOptionsVentas,
+      mostrarSolicitarFecha,
 
       productos, filtrarProductos, recargarClientes,
       vendedores, filtrarVendedores, recargarVendedores,
@@ -277,12 +297,14 @@ export default defineComponent({
       obtenerPrecioProductoSeleccionado,
       obtenerComisionVenta,
       filtrarVentas,
+      fechaSubida,
 
       //botones de tabla
       btnActivar,
       btnDesactivar,
       btnPrimerMesPagado,
       btnRegistrarNovedades,
+      btnActualizarCalculoComisiones,
     }
   },
 })

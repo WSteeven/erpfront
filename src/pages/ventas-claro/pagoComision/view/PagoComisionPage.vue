@@ -5,12 +5,13 @@
     ajustarCeldas
     :tab-options="tabOptionsPagosComisiones"
     :tabDefecto="tabDefecto"
-    :permitirEditar="tabDefecto == 'PENDIENTE'"
+    :permitirEditar="false" 
     :filtrar="filtrarCortesComisiones"
     :accion1="btnAnular"
     :accion2="btnGenerarReporteExcel"
     :accion3="btnMarcarPagado"
   >
+  <!-- :permitirEditar="tabDefecto == 'PENDIENTE'" -->
     <template #formulario>
       <q-form @submit.prevent>
         <div class="row q-col-gutter-sm">

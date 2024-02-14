@@ -23,6 +23,7 @@ export class Venta extends EntidadAuditable {
   activo: boolean
   observacion: string | null
   primer_mes: boolean
+  fecha_pago_primer_mes: string | null
   novedades: number | null
 
 
@@ -51,6 +52,7 @@ export class Venta extends EntidadAuditable {
     this.activo = true
     this.observacion = null
     this.primer_mes = false
+    this.fecha_pago_primer_mes =null
     this.novedades = 0
   }
 }
