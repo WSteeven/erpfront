@@ -122,7 +122,7 @@
                     :name="registro.id"
                     class="q-pa-none"
                   >
-                    <div class="row bg-blue-1 q-pa-md">
+                    <div class="row bg-blue-1d q-pa-md">
                       <div class="col-12 col-md-6">
                         <label class="q-mb-sm block">
                           Fecha y hora de registro
@@ -134,33 +134,32 @@
                         <div class="text-bold">{{ registro.observacion }}</div>
                       </div>
                     </div>
-
-                    <essential-table-tabs
-                      titulo="Examenes comúnes"
-                      :configuracionColumnas="[
-                        ...configuracionColumnasExamenes,
-                        accionesTabla,
-                      ]"
-                      :datos="examenes"
-                      :permitirConsultar="false"
-                      :permitirEditar="false"
-                      :permitirEliminar="false"
-                      :tab-options="tabOptionsEstadosExamenes"
-                      @tab-seleccionado="filtrarEstadoExamen"
-                      :tab-defecto="tabEstadoExamen"
-                      :accion1Header="btnSeleccionarVariosExamenes"
-                      :accion2Header="btnCancelarSeleccionarVariosExamenes"
-                      :accion3Header="btnSolicitarExamenesSeleccionados"
-                      :accion1="btnSolicitarExamenIndividual"
-                      :accion2="btnResultados"
-                      :tipo-seleccion="tipoSeleccion"
-                      @selected="seleccionarExamen"
-                      :alto-fijo="false"
-                    ></essential-table-tabs>
                     <!-- :accion4Header="btnNuevoDiagnostico" -->
                   </q-tab-panel>
-                  <q-tab-panel name="2"> Ocupacionales </q-tab-panel>
+                  <!-- <q-tab-panel name="2"> Ocupacionales </q-tab-panel> -->
                 </q-tab-panels>
+                <essential-table-tabs
+                  titulo="Examenes comúnes"
+                  :configuracionColumnas="[
+                    ...configuracionColumnasExamenes,
+                    accionesTabla,
+                  ]"
+                  :datos="examenes"
+                  :permitirConsultar="false"
+                  :permitirEditar="false"
+                  :permitirEliminar="false"
+                  :tab-options="tabOptionsEstadosExamenes"
+                  @tab-seleccionado="filtrarEstadoExamen"
+                  :tab-defecto="tabEstadoExamen"
+                  :accion1Header="btnSeleccionarVariosExamenes"
+                  :accion2Header="btnCancelarSeleccionarVariosExamenes"
+                  :accion3Header="btnSolicitarExamenesSeleccionados"
+                  :accion1="btnSolicitarExamenIndividual"
+                  :accion2="btnResultados"
+                  :tipo-seleccion="tipoSeleccion"
+                  @selected="seleccionarExamen"
+                  :alto-fijo="false"
+                ></essential-table-tabs>
               </template>
             </q-splitter>
           </q-tab-panel>

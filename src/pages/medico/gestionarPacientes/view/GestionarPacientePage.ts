@@ -54,7 +54,7 @@ export default defineComponent({
 
     const tabs = ref(tiposProcesosExamenes.INGRESO)
     const tabEstadoExamen = ref(estadosExamenes.PENDIENTE_SOLICITAR)
-    const tabsRegistro = ref(1)
+    const tabsRegistro = ref()
     const esquemaVacunaciones: Ref<any[]> = ref([
       {
         'tipo_vacuna': 'Covid',
@@ -153,6 +153,7 @@ export default defineComponent({
       medicoStore.idRegistroEmpleadoExamen = registro
       examenes.value = []
       tabEstadoExamen.value = estadosExamenes.PENDIENTE_SOLICITAR
+      tabsRegistro.value = registro
       consultarExamenesSinSolicitar({ empleado_id: empleado.id, registro_empleado_examen_id: registro })
     }
 
@@ -182,7 +183,9 @@ export default defineComponent({
     onConsultado(async () => {
       medicoStore.empleado = empleado
       await consultarRegistrosEmpleadoExamen({ empleado_id: empleado.id })
-      await consultarExamenesSinSolicitar({ empleado_id: empleado.id, registro_empleado_examen_id: tabsRegistro.value })
+      // await consultarExamenesSinSolicitar({ empleado_id: empleado.id, registro_empleado_examen_id: tabsRegistro.value })
+      const idRegistro = registros.value[0].id
+      if (idRegistro) seleccionarRegistro(idRegistro)
     })
 
     const btnSolicitarExamenesSeleccionados2: CustomActionTable = {

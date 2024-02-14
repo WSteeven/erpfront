@@ -22,7 +22,10 @@
         v-for="opcion in tabOptions"
         :key="opcion.label"
         :name="opcion.value + ''"
-        :class="{ 'rounded shadow-chip q-mx-xs q-my-md': $q.screen.xs }"
+        :class="{
+          'rounded shadow-chip q-mx-xs q-my-md': $q.screen.xs,
+          'tab-inactive': tabSeleccionado !== opcion.label,
+        }"
       >
         <q-icon
           v-if="opcion.icono && !opcion.icono_derecha"

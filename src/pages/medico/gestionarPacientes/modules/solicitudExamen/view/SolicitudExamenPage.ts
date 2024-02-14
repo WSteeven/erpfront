@@ -14,8 +14,10 @@ import { EstadoSolicitudExamen } from '../domain/EstadoSolicitudExamen'
 import { ExamenSolicitado } from '../domain/ExamenSolicitado'
 import { Examen } from 'pages/medico/examenes/domain/Examen'
 import { LaboratorioClinicoController } from 'pages/medico/laboratoriosMedicos/infraestructure/LaboratorioClinicoController'
-import { CantonController } from 'sistema/ciudad/infraestructure/CantonControllerontroller'
+// import { CantonController } from 'sistema/ciudad/infraestructure/CantonControllerontroller'
 import { maskFecha } from 'config/utils'
+import { useFiltrosListadosSelects } from 'shared/filtrosListadosGenerales'
+import { LocalStorage } from 'quasar'
 // import { medico } from 'config/endpoints/medico'
 
 export default defineComponent({
@@ -42,14 +44,19 @@ export default defineComponent({
     const { onBeforeGuardar, onGuardado } = mixin.useHooks()
 
     cargarVista(async () => {
+      const examenes = LocalStorage.getItem('examenes') ? JSON.parse(LocalStorage.getItem('examenes')!.toString()) : []
+
       await obtenerListados({
         laboratoriosClinicos: {
           controller: laboratorioClinicoController,
-          params: { canton_id: empleado.canton },
+          params: { canton_id: empleado.canton, activo: 1, campos: 'id,nombre' },
         },
-        cantones: new CantonController(),
-        examenes: new ExamenController(),
+        cantones: [],
+        examenes: examenes.length ? examenes : new ExamenController(),
       })
+      listadosAuxiliares.cantones = JSON.parse(LocalStorage.getItem('cantones')!.toString())
+      LocalStorage.set('examenes', JSON.stringify(listadosAuxiliares.examenes))
+      cantones.value = listadosAuxiliares.cantones
     })
 
     /************
@@ -58,7 +65,7 @@ export default defineComponent({
     const consultarLaboratoriosClinicos = async (canton: number) => {
       try {
         cargando.activar()
-        const { result } = await laboratorioClinicoController.listar({ canton_id: canton })
+        const { result } = await laboratorioClinicoController.listar({ canton_id: canton, activo: 1, campos: 'id,nombre' })
         listadosAuxiliares.laboratoriosClinicos = result
       } catch (e) {
         console.log(e)
@@ -66,6 +73,8 @@ export default defineComponent({
         cargando.desactivar()
       }
     }
+
+    const { cantones, filtrarCantones } = useFiltrosListadosSelects(listadosAuxiliares)
 
     /********
      * Hooks
@@ -85,13 +94,13 @@ export default defineComponent({
      * Observers
      ************/
     let dd = 0
-    watch(computed(() => estadoSolicitudExamen.examenes_solicitados), (examenes) => {
+    /* watch(computed(() => estadoSolicitudExamen.examenes_solicitados), (examenes) => {
       examenes.map((examen: Examen, index: number) => {
         if (index === 0) {
           //
         }
       })
-    })
+    }) */
 
     /*******
      * Init
@@ -114,6 +123,8 @@ export default defineComponent({
       examenes,
       listadosAuxiliares,
       maskFecha,
+      cantones,
+      filtrarCantones,
       // funciones
       consultarLaboratoriosClinicos,
       guardar,

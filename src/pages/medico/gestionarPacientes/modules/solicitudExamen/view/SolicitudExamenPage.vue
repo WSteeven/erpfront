@@ -14,7 +14,8 @@
         >
         <q-select
           v-model="empleado.canton"
-          :options="listadosAuxiliares.cantones"
+          :options="cantones"
+          @filter="filtrarCantones"
           transition-show="scale"
           transition-hide="scale"
           options-dense
