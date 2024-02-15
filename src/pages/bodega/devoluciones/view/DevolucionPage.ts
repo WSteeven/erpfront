@@ -259,7 +259,7 @@ export default defineComponent({
       if (val) {
         devolucion.per_autoriza = store.user.id
         devolucion.autorizacion = 2
-        if (!store.esCoordinadorBodega) {
+        if (!(store.esCoordinadorBodega || store.esBodeguero)) {
           listadosAuxiliares.empleados = await filtrarEmpleadosPorRoles(listadosAuxiliares.empleados, [rolesSistema.tecnico, rolesSistema.tecnico_lider, rolesSistema.secretario])
         }
       } else {

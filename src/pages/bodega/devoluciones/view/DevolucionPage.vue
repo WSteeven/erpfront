@@ -36,11 +36,7 @@
           <div
             class="col-12 col-md-3"
             v-if="
-              accion == acciones.nuevo &&
-              (store.esCoordinador ||
-                store.esCoordinadorBackup ||
-                store.esJefeTecnico ||
-                store.esCoordinadorBodega)
+              accion == acciones.nuevo &&(store.esCoordinador ||store.esCoordinadorBackup ||store.esJefeTecnico ||store.esCoordinadorBodega||store.can('puede.hacer.devoluciones_terceros'))
             "
           >
             <br />
