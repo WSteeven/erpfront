@@ -46,6 +46,15 @@ $border-color: #464646;
     background-color: $bg-body;
   }
 
+  .tab-inactive {
+    background-color: #ffffff66;
+    border-radius: 16px 4px 0 0;
+    box-shadow: rgba(0, 0, 0, 0.12) 0px 5px 15px;
+    border-width: 1px 1px 0 1px;
+    border-style: solid;
+    border-color: $grey-8;
+  }
+
   .bg-drawer {
     background-color: $dark-color;
   }

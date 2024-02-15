@@ -62,13 +62,12 @@ export class CambiarEstadoSubtarea {
   }
 
   async solicitud(accion, tarea, data?: UnwrapRef<any>) {
+    this.cargando.activar()
 
     try {
       const ruta =
         this.axios.getEndpoint(endpoints.subtareas) + accion + '/' + tarea
 
-      this.cargando.activar()
-      console.log(data)
       const response: AxiosResponse = await this.axios.post(ruta, data)
 
       return {

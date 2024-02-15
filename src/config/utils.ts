@@ -53,7 +53,7 @@ export const tiposTareasTelconet = [
 
 export const tiposTareasNedetel = ['TENDIDO DE FIBRA', 'COLOCACIÓN DE CAJAS']
 
-export const regiones = ['R1', 'R2', 'R3', 'R4']
+export const regiones = ['R1', 'R2', 'R3', 'R4', 'R5']
 
 export const atenciones = ['URBANO', 'INTERURBANO']
 
@@ -275,7 +275,7 @@ export const estadosTrabajos = {
   REALIZADO: 'REALIZADO',
   FINALIZADO: 'FINALIZADO',
   //REAGENDADO: 'REAGENDADO',
-} as const
+} // as const
 
 export const estadosRolPago = {
   CREADO: 'CREADO',

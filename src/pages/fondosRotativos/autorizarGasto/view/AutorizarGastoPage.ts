@@ -1,8 +1,7 @@
 // Dependencias
 
 import { useAuthenticationStore } from 'stores/authentication'
-import { useNotificaciones } from 'shared/notificaciones'
-import { computed, defineComponent, ref } from 'vue'
+import {  defineComponent, ref } from 'vue'
 import {
   accionesTabla,
   tabAutorizarGasto,
@@ -19,7 +18,6 @@ import { CustomActionTable } from 'components/tables/domain/CustomActionTable'
 import { configuracionColumnasAutorizarGasto } from '../domain/configuracionColumnasAutorizarGasto'
 import { StatusEssentialLoading } from 'components/loading/application/StatusEssentialLoading'
 import { AutorizarGastoController } from '../infrestructure/AutorizarGastoController'
-import { AprobarGastoController } from '../infrestructure/AprobarGastoController'
 import ModalEntidad from 'components/modales/view/ModalEntidad.vue'
 import { ComportamientoModalesAutorizarGasto } from '../application/ComportamientoModalesAutorizarGasto'
 import { useFondoRotativoStore } from 'stores/fondo_rotativo'
@@ -85,14 +83,15 @@ export default defineComponent({
         fondoRotativoStore.existeFactura =
           entidad.factura == null ? false : true
         fondoRotativoStore.id_gasto = entidad.id
+
         fondoRotativoStore.estaSemanAC = estaEnSemanaActual(entidad.fecha_viat)
         fondoRotativoStore.existeFactura = entidad.tiene_factura
         fondoRotativoStore.accionForm =
-          authenticationStore.user.id === entidad.aut_especial &&
-            entidad.estado === estadosGastos.PENDIENTE
-            ? acciones.editar
-            : acciones.consultar
-            fondoRotativoStore.empleado_id= entidad.id_usuario
+        authenticationStore.user.id === entidad.aut_especial &&
+        entidad.estado === estadosGastos.PENDIENTE
+        ? acciones.editar
+        : acciones.consultar
+        fondoRotativoStore.empleado_id= entidad.id_usuario
         modales.abrirModalEntidad('VisualizarGastoPage')
       },
     }
@@ -108,7 +107,7 @@ export default defineComponent({
 
       // Calcula la diferencia en días
       const diferenciaDias = fechaInicio.getDate() - fechaFin.getDate()
-      if (diferenciaDias <= 8 || authenticationStore.esAdministrador) {
+      if (diferenciaDias <= 15 || authenticationStore.esAdministrador) {
         return true
       } else {
         return false

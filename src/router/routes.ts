@@ -824,6 +824,13 @@ const routes: RouteRecordRaw[] = [
         meta: { requiresAuth: true },
       },
       {
+        path: '/anular-gasto',
+        name: 'anular_gasto',
+        component: () =>
+          import('pages/fondosRotativos/anularGasto/view/AnularGastoPage.vue'),
+        meta: { requiresAuth: true },
+      },
+      {
         path: '/gasto-coordinador',
         name: 'gasto_coordinador',
         component: () =>

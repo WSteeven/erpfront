@@ -103,7 +103,7 @@
                     v-model="tarea.codigo_tarea"
                     outlined
                     dense
-                    disable
+                    readonly
                   ></q-input>
                 </div>
 
@@ -751,7 +751,6 @@
             </q-expansion-item>
           </q-form>
         </q-tab-panel>
-
         <q-tab-panel name="subtareas">
           <essential-table-tabs
             titulo="Subtareas"

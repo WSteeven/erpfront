@@ -1,5 +1,5 @@
 <template>
-  <div class="bg-body-table-dark-color">
+  <div>
     <!-- narrow-indicator -->
     <q-tabs
       v-if="mostrarTabs"
@@ -11,10 +11,6 @@
       :active-color="activeColor"
       :active-bg-color="activeBgColor"
       :indicator-color="indicatorColor"
-      :class="{
-        'borde-header-tablad': !$q.screen.xs,
-      }"
-      class="bg-table-tabs"
       align="justify"
       @click="$emit('tab-seleccionado', tabSeleccionado)"
     >
@@ -24,7 +20,7 @@
         :name="opcion.value + ''"
         :class="{
           'rounded shadow-chip q-mx-xs q-my-md': $q.screen.xs,
-          'tab-inactive': tabSeleccionado !== opcion.label,
+          'tab-inactive': tabSeleccionado !== opcion.label && !$q.screen.xs,
         }"
       >
         <q-icon

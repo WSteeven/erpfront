@@ -4,8 +4,9 @@
     :configuracionColumnas="configuracionColumnas"
     titulo-pagina="Proforma"
     :tab-options="tabOptionsProformas"
-    tabDefecto="1"
+    :tabDefecto="tabDefecto"
     :filtrar="filtrarProformas"
+    :ajustarCeldas="true"
     :permitirEditar="puedeEditar"
     :permitirEliminar="false"
     :accion1="btnHacerPrefactura"
@@ -386,12 +387,15 @@
           </div>
 
           <!-- Modificar Descuento -->
-          <div class="col-12 col-md-3 q-mb-xl" v-if="accion === acciones.nuevo||accion === acciones.editar">
+          <div
+            class="col-12 col-md-3 q-mb-xl"
+            v-if="accion === acciones.nuevo || accion === acciones.editar"
+          >
             <q-checkbox
               class="q-mt-lg q-pt-md"
               v-model="proforma.modificar_descuento"
               label="¿Aplicar descuento a toda la proforma?"
-              :disable="disabled "
+              :disable="disabled"
               outlined
               dense
             ></q-checkbox>
@@ -413,7 +417,7 @@
             </q-input>
           </div>
 
-        <!-- {{ proforma.listadoProductos }} -->
+          <!-- {{ proforma.listadoProductos }} -->
 
           <!-- Tabla con popup -->
           <div class="col-12">
@@ -437,9 +441,7 @@
               :permitirConsultar="false"
               :permitirEditar="false"
               :permitirEliminar="false"
-              :mostrarBotones="false"
               :altoFijo="false"
-              :hide-header="true"
               :accion1Header="btnAddRow"
               :accion1="btnEliminarFila"
               v-on:fila-modificada="calcularValores"
@@ -463,12 +465,18 @@
                 <q-item>
                   <q-item-section>Subtotal 0%: </q-item-section>
                   <q-separator vertical></q-separator>
-                  <q-item-section avatar>{{ subtotal_sin_impuestos }}</q-item-section>
+                  <q-item-section avatar>{{
+                    subtotal_sin_impuestos
+                  }}</q-item-section>
                 </q-item>
                 <q-item>
-                  <q-item-section>Subtotal ({{ proforma.iva }} %): </q-item-section>
+                  <q-item-section
+                    >Subtotal ({{ proforma.iva }} %):
+                  </q-item-section>
                   <q-separator vertical></q-separator>
-                  <q-item-section avatar>{{ subtotal_con_impuestos }}</q-item-section>
+                  <q-item-section avatar>{{
+                    subtotal_con_impuestos
+                  }}</q-item-section>
                 </q-item>
 
                 <q-item>

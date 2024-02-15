@@ -8,4 +8,3 @@ export interface CustomActionTable<T = any> {
   color?: string | funcion<T>
   icono?: string | funcion<T>
 }
-
