@@ -17,6 +17,7 @@ import { useNotificaciones } from 'shared/notificaciones'
 import ModalesEntidad from 'components/modales/view/ModalEntidad.vue'
 import { CustomActionPrompt } from 'components/tables/domain/CustomActionPrompt'
 import SolicitarFecha from 'shared/prompts/SolicitarFecha.vue'
+import { useAuthenticationStore } from 'stores/authentication'
 
 export default defineComponent({
   components: { TabLayout, ModalesEntidad, SolicitarFecha },
@@ -42,6 +43,7 @@ export default defineComponent({
       mixin.useComportamiento()
     const { confirmar, prompt, notificarError, promptItems } =
       useNotificaciones()
+      const authenticationStore = useAuthenticationStore()
 
     const empleados = ref([])
     const visualizar_corte = ref(false)
@@ -120,7 +122,7 @@ export default defineComponent({
           }
         )
       },
-      visible: () => true,
+      visible: () => authenticationStore.can('puede.ver.bnt.seleccionar_empleados'),
     }
     const lista_periodo_corte = [
       { id: true, name: 'Quincena' },
@@ -150,7 +152,7 @@ export default defineComponent({
         })
         promptItems(config)
       },
-      visible: () => true,
+      visible: () => authenticationStore.can('puede.ver.bnt.corte_asignacion_alimentaciones'),
     }
     const btnVisualizarCorte: CustomActionTable = {
       titulo: 'Visualizar Corte',
@@ -177,7 +179,7 @@ export default defineComponent({
         })
         promptItems(config)
       },
-      visible: () => true,
+      visible: () => authenticationStore.can('puede.ver.detalle_alimentaciones'),
     }
     async function guardado(data) {
       await listar()

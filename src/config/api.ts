@@ -426,6 +426,7 @@ export const endpoints = {
   ),
   pausas_tickets: new Endpoint('tickets/tickets/obtener-pausas'),
   rechazos_tickets: new Endpoint('tickets/tickets/obtener-rechazados'),
+  linea_tiempo_tickets: new Endpoint('tickets/linea-tiempo'),
 
   /********************
    * Modulo de Ventas de Claro
@@ -456,6 +457,7 @@ export const endpoints = {
   clientes_claro: new Endpoint('ventas-claro/clientes-claro'),
   escenario_venta_jp: new Endpoint('ventas-claro/escenario-venta-jp'),
   novedades_ventas: new Endpoint('ventas-claro/novedades-ventas'),
+
 
 
 

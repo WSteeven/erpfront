@@ -8,6 +8,18 @@
     <template #formulario>
       <q-form @submit.prevent>
         <div class="row q-col-gutter-sm q-mb-md">
+          <!-- Empleado Solicitante -->
+          <div class="col-12 col-md-3">
+            <label class="q-mb-sm block">Empleado Solicitante</label>
+            <q-input
+              v-model="gasto.empleado_info"
+              placeholder="Obligatorio"
+              disable
+              outlined
+              dense
+            >
+            </q-input>
+          </div>
           <!-- Lugar -->
           <div class="col-12 col-md-3" v-if="isConsultar">
             <label class="q-mb-sm block">Lugar</label>

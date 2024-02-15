@@ -825,6 +825,13 @@ const routes: RouteRecordRaw[] = [
         meta: { requiresAuth: true },
       },
       {
+        path: '/anular-gasto',
+        name: 'anular_gasto',
+        component: () =>
+          import('pages/fondosRotativos/anularGasto/view/AnularGastoPage.vue'),
+        meta: { requiresAuth: true },
+      },
+      {
         path: '/gasto-coordinador',
         name: 'gasto_coordinador',
         component: () =>
@@ -1278,15 +1285,15 @@ const routes: RouteRecordRaw[] = [
         meta: { requiresAuth: true },
       },
       {
-        path: '/asignar-alimentacion',
-        name: 'asignar_alimentacion',
+        path: '/asignar-alimentaciones',
+        name: 'asignar_alimentaciones',
         component: () =>
           import('pages/recursosHumanos/alimentacion/asignarAlimentacion/view/AsignarAlimentacion.vue'),
         meta: { requiresAuth: true },
       },
       {
-        path: '/alimentacion',
-        name: 'alimentacion',
+        path: '/alimentaciones',
+        name: 'alimentaciones',
         component: () =>
           import('pages/recursosHumanos/alimentacion/alimentacion/views/AlimentacionPage.vue'),
         meta: { requiresAuth: true },

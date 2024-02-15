@@ -5,6 +5,7 @@ import { endpoints } from 'config/api'
 import { ContenedorSimpleMixin } from 'shared/contenedor/modules/simple/application/ContenedorSimpleMixin'
 import { Alimentacion } from '../domain/Alimentacion'
 import { AxiosResponse } from 'axios'
+import { useAuthenticationStore } from 'stores/authentication'
 
 export const useBotonesTablaAlimentacion = (  mixin: ContenedorSimpleMixin<Alimentacion>
   ) => {
@@ -14,11 +15,12 @@ export const useBotonesTablaAlimentacion = (  mixin: ContenedorSimpleMixin<Alime
    * Variables
    ************/
   const {  notificarCorrecto } = useNotificaciones()
+  const authenticationStore = useAuthenticationStore()
   const btnFinalizar: CustomActionTable = {
     titulo: 'Finalizar Asignacion de Alimentación',
     icono: 'bi-check-circle-fill',
     color: 'warning',
-    visible: ({ entidad }) => !entidad.finalizado,
+    visible: ({ entidad }) => !entidad.finalizado &&  authenticationStore.can('puede.ver.bnt.finalizar_alimentaciones'),
     accion: async ({ entidad, posicion }) => {
       await FinalizarAlimentacion(
         entidad.id
