@@ -19,7 +19,7 @@
           <q-input
             v-model="subtarea.titulo"
             placeholder="Obligatorio"
-            :disable="disabled"
+            :readonly="disabled"
             autofocus
             outlined
             dense
@@ -43,7 +43,7 @@
             v-model="subtarea.descripcion_completa"
             placeholder="Obligatorio"
             outlined
-            :disable="disabled"
+            :readonly="disabled"
             dense
             autogrow
             type="textarea"
@@ -68,7 +68,7 @@
             v-model="subtarea.observacion"
             placeholder="Opcional"
             outlined
-            :disable="disabled"
+            :readonly="disabled"
             dense
             autogrow
             type="textarea"
