@@ -341,7 +341,7 @@ export function pushEventMesaggeServiceWorker(data: ServiceWorkerClass) {
  */
 export async function imprimirArchivo(ruta: string, metodo: Method, responseType: ResponseType, formato: string, titulo: string, data?: any) {
   const statusLoading = new StatusEssentialLoading()
-  const {  notificarError } = useNotificaciones()
+  const { notificarError } = useNotificaciones()
   statusLoading.activar()
   const axiosHttpRepository = AxiosHttpRepository.getInstance()
   axios({
@@ -363,9 +363,9 @@ export async function imprimirArchivo(ruta: string, metodo: Method, responseType
         link.click()
         link.remove()
       }
-    // } else if (response.status === 500) {
-    //   console.log(response)
-    }else {
+      // } else if (response.status === 500) {
+      //   console.log(response)
+    } else {
       notificarError('Se produjo un error inesperado')
     }
   }).catch(async (error) => {

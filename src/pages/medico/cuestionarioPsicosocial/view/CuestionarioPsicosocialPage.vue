@@ -1,10 +1,22 @@
 <template>
-  <div :class="!$q.screen.xs? 'centrar-card':'row'">
+  <div :class="!$q.screen.xs ? 'centrar-card' : 'row'">
     <div class="formulario">
-      <q-page class="flex flex-center" style="wiht: 12%">
+      <div class="row">
+        <div class="col-6">
+          <q-img
+            src="~assets/img/fpsico.png"
+            class="full-width"
+            width="100"
+          ></q-img>
+        </div>
+        <div class="col-6 text-bold text-right text-bold q-mb-md">
+          CUESTIONARIO DE EVALUACIÓN DE RIESGOS PSICOSOCIALES
+        </div>
+      </div>
+
+      <q-page class="flex flex-center">
         <q-card flat bordered class="my-card bg-grey-1">
           <q-card-section>
-            <div class="text-primary text-bold q-mb-md">Cuestionario psicosocial</div>
             <div class="row">
               <div
                 v-for="item in preguntas"
@@ -12,7 +24,7 @@
                 class="col-12 text-bold q-mb-md"
               >
                 <label class="q-mb-sm block">{{
-                  item.codigo + ".- " + item.pregunta
+                  item.codigo + '.- ' + item.pregunta
                 }}</label>
                 <q-option-group
                   v-model="item.respuesta"
@@ -38,20 +50,20 @@
   </div>
 </template>
 <style>
-  .centrar-card{
-    display: block;
-    justify-content: center;
-    align-items: center;
-    margin-left: 25%;
-    margin-right: 25%;
-  }
-  .formulario{
-width: 800px; /* Ancho deseado de tu formulario */
-    padding: 20px;
-    border: 1px solid #ccc;
-    border-radius: 8px;
-    background-color: #fff;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-  }
+.centrar-card {
+  display: block;
+  justify-content: center;
+  align-items: center;
+  margin-left: 25%;
+  margin-right: 25%;
+}
+.formulario {
+  width: 800px; /* Ancho deseado de tu formulario */
+  padding: 20px;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  background-color: #fff;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
 </style>
 <script src="./CuestionarioPsicosocialPage.ts"></script>
