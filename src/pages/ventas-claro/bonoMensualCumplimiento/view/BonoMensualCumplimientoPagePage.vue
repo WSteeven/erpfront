@@ -26,14 +26,19 @@
                 >
                   <q-date
                     v-model="bono_mensual_cumplimiento.mes"
-                    mask="MM-YYYY"
+                    mask="YYYY-MM"
                     minimal
                     emit-immediately
                     default-view="Years"
                     @update:model-value="checkValue"
                   >
                     <div class="row items-center justify-end">
-                      <q-btn v-close-popup label="Cerrar" color="primary" flat />
+                      <q-btn
+                        v-close-popup
+                        label="Cerrar"
+                        color="primary"
+                        flat
+                      />
                     </div>
                   </q-date>
                 </q-popup-proxy>
