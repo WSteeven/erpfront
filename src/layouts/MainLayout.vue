@@ -454,7 +454,7 @@
 
     <modales-entidad :comportamiento="modales" />
 
-    <ScrollToTopButton ></ScrollToTopButton>
+    <ScrollToTopButton></ScrollToTopButton>
     <div class="area">
       <ul class="circles">
         <li></li>

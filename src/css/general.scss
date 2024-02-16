@@ -102,6 +102,14 @@ input[type='time']::-webkit-calendar-picker-indicator {
   border-bottom: 1px solid $grey-5;
 }
 
+.border-black {
+  border: 1px solid #000;
+}
+
+.border-bottom-black-2px {
+  border-bottom: 2px solid #000;
+}
+
 .border-right-grey-5 {
   border-right: 1px solid $grey-5;
 }

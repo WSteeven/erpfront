@@ -27,12 +27,12 @@
     top: 0;
     bottom: 0;
     width: 100%;*/
-    backdrop-filter: blur(10px);
+    // backdrop-filter: blur(10px);
     background: linear-gradient(
       180deg,
       rgba($grey-5, 0.7) 70%,
       rgba($grey-6, 0.9) 100%
-    );
+    ) !important;
   }
 
   .bg-body-table {
@@ -335,7 +335,11 @@
   ) !important;
 }*/
 ul.circles {
-  background-color: #d0d0d0 !important;
+  background: linear-gradient(
+    180deg,
+    rgba($grey-5, 0.7) 70%,
+    rgba($grey-6, 0.9) 100%
+  ) !important;
 }
 .circles {
   position: absolute;

@@ -86,6 +86,9 @@ export default defineComponent({
         notificarAdvertencia('No ha llenado todo el cuestionario!')
       }
     }
+
+    const objetivo = 'El objetivo de este cuestionario es conocer algunos aspectos sobre las condiciones psicosociales en tu trabajo. El cuestionario es anónimo y se garantiza la confidencialidad de las respuestas. Con el fin de que la información que se obtenga sea útil es necesario que contestes sinceramente a todas las preguntas. Si hay alguna pregunta sin contestar el cuestionario no será válido. Tras leer atentamente cada pregunta así como sus opciones de respuesta, marca en cada caso la respuesta que consideres más adecuada, señalando una sola respuesta por cada pregunta.'
+
     return {
       accion,
       mixin,
@@ -94,6 +97,7 @@ export default defineComponent({
       respuesta_cuestionario_empleado,
       mapearArray,
       guardarDatos,
+      objetivo,
     }
   },
 })

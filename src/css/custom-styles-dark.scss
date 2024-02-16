@@ -16,8 +16,8 @@ $border-color: #464646;
   }
 
   .bg-body-background {
-    backdrop-filter: blur(10px);
-    background: #000000a3;
+    // backdrop-filter: blur(10px);
+    background-color: #000000a3;
   }
 
   .bg-grey-form {
@@ -209,5 +209,14 @@ $border-color: #464646;
 
   .border-bottom {
     border-bottom: 1px solid $grey-8;
+  }
+
+  // background
+  ul.circles {
+    background: linear-gradient(
+      180deg,
+      rgba($bg-body, 0.7) 70%,
+      rgba($bg-body, 0.9) 100%
+    ) !important;
   }
 }
