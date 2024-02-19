@@ -23,6 +23,13 @@ export const configuracionColumnasComision: ColumnConfig<Comision>[] = [
     align: 'left',
     sortable: true
   },
+  {
+    name: 'tipo_vendedor',
+    field: 'tipo_vendedor',
+    label: 'Tipo Vendedor',
+    align: 'left',
+    sortable: true
+  },
 
 
 

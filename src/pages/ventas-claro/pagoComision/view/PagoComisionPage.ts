@@ -1,94 +1,189 @@
 // Dependencias
-import { required } from '@vuelidate/validators'
+import { required } from 'shared/i18n-validators'
 import { useVuelidate } from '@vuelidate/core'
-import { defineComponent, ref, computed, Ref, reactive } from 'vue'
+import { computed, defineComponent, ref, } from 'vue'
+import { configuracionColumnasPagoComision } from '../domain/configuracionColumnasPagoComision'
+import { configuracionColumnasPagoComisionEmpleado } from '../domain/configuracionColumnasPagoComisionEmpleado'
 
 // Componentes
-import TabLayout from 'shared/contenedor/modules/simple/view/TabLayout.vue'
+import TabLayoutFilterTabs2 from 'shared/contenedor/modules/simple/view/TabLayoutFilterTabs2.vue'
 import SelectorImagen from 'components/SelectorImagen.vue'
 import EssentialTable from 'components/tables/view/EssentialTable.vue'
-//Logica y controladores
-import { ContenedorSimpleMixin } from 'shared/contenedor/modules/simple/application/ContenedorSimpleMixin'
-import { imprimirArchivo, removeAccents } from 'shared/utils'
-import {
-  acciones,
-  accionesTabla,
-  convertir_fecha,
-  convertir_fecha_guion,
-  convertir_fecha_hora,
-  maskFecha,
-} from 'config/utils'
-import { ConceptoIngreso } from 'pages/recursosHumanos/concepto_ingreso/domain/ConceptoIngreso'
-import { useAuthenticationStore } from 'stores/authentication'
-import { useCargandoStore } from 'stores/cargando'
-import { useQuasar } from 'quasar'
-import { PagoComision } from '../domain/PagoComision'
-import axios, { AxiosResponse } from 'axios'
-import { PagoComisionController } from '../infrestucture/PagoComisionController'
-
-import { CustomActionTable } from 'components/tables/domain/CustomActionTable'
-import { useNotificaciones } from 'shared/notificaciones'
-import TabLayoutFilterTabs2 from 'shared/contenedor/modules/simple/view/TabLayoutFilterTabs2.vue'
 import EssentialTableTabs from 'components/tables/view/EssentialTableTabs.vue'
 import ModalesEntidad from 'components/modales/view/ModalEntidad.vue'
-import { configuracionColumnasPagoComision } from '../domain/configuracionColumnasPagoComision'
+
+//Logica y controladores
+import { ContenedorSimpleMixin } from 'shared/contenedor/modules/simple/application/ContenedorSimpleMixin'
+import { acciones, accionesTabla, maskFecha, } from 'config/utils'
+import { useCargandoStore } from 'stores/cargando'
+import { useQuasar, date } from 'quasar'
+import { PagoComision } from '../domain/PagoComision'
+import { PagoComisionController } from '../infrestucture/PagoComisionController'
+import { tabOptionsPagosComisiones } from 'config/ventas.utils'
+import { CustomActionTable } from 'components/tables/domain/CustomActionTable'
+import { usePagaComisionStore } from 'stores/ventasClaro/pagoComision'
+import { useNotificaciones } from 'shared/notificaciones'
+import { CustomActionPrompt } from 'components/tables/domain/CustomActionPrompt'
+import { useNotificacionStore } from 'stores/notificacion'
+
 
 export default defineComponent({
-  components: {
-    TabLayout,
-    ModalesEntidad,
-    SelectorImagen,
-    EssentialTable,
-    EssentialTableTabs,
-  },
+  components: { TabLayoutFilterTabs2, ModalesEntidad, SelectorImagen, EssentialTable, EssentialTableTabs, },
   setup() {
-    const mixin = new ContenedorSimpleMixin(
-      PagoComision,
-      new PagoComisionController()
-    )
-    const { entidad: pagocomision, accion, disabled } = mixin.useReferencias()
-    const { setValidador, listar } = mixin.useComportamiento()
-    const { onGuardado } = mixin.useHooks()
+    const mixin = new ContenedorSimpleMixin(PagoComision, new PagoComisionController())
+    const { entidad: pago, accion, disabled, listado } = mixin.useReferencias()
+    const { setValidador, cargarVista, listar } = mixin.useComportamiento()
+    const { onGuardado, onReestablecer } = mixin.useHooks()
+    const { notificarCorrecto, notificarError, confirmar, prompt } = useNotificaciones()
 
-    const authenticationStore = useAuthenticationStore()
-
+    useNotificacionStore().setQuasar(useQuasar())
     useCargandoStore().setQuasar(useQuasar())
+    const corteStore = usePagaComisionStore()
 
-    const reglas = {
-      fecha_inicio: {
-        required: true,
-      },
-      fecha_fin: {
-        required: true,
-      },
-    }
-    const v$ = useVuelidate(reglas, pagocomision)
-    setValidador(v$.value)
+    const tabDefecto = ref('PENDIENTE')
 
-    onGuardado(() => {
-      console.log('guardado')
+    const fecha = ref()
+    const ultima_fecha = ref()
+    const fechasDisponibles = ref()
+    // const fecha_minima = ref('2024/02/01')
+    const fecha_inicio = computed(() => fecha.value.from)
+    const fecha_fin = computed(() => fecha.value.to)
+    const nombre = computed(() => 'Pago de comisiones desde ' + fecha.value.from + ' al ' + fecha.value.to)
 
-      listar({})
+    cargarVista(async () => {
+      const arrayfechas = Object.values(await corteStore.obtenerFechasDisponiblesCortes())
+      fechasDisponibles.value = arrayfechas
     })
 
-    function optionsFechaFin(date) {
-      const currentDate =
-        pagocomision.fecha_inicio != null
-          ? convertir_fecha_guion(pagocomision.fecha_inicio)
-          : new Date() // Obtener la fecha actual
 
-      return date > currentDate
+    const reglas = {
+      fecha_inicio: { required, },
+      fecha_fin: { required, },
     }
+    const v$ = useVuelidate(reglas, pago)
+    setValidador(v$.value)
+
+    /*****************************************************************************************
+     * HOOKS
+     ****************************************************************************************/
+    onGuardado(() => {
+      console.log('guardado')
+    })
+    onReestablecer(async () => {
+      const arrayfechas = Object.values(await corteStore.obtenerFechasDisponiblesCortes())
+      fechasDisponibles.value = arrayfechas
+    })
+    /*****************************************************************************************
+     * FUNCIONES
+     ****************************************************************************************/
+    function filtrarCortesComisiones(tab: string) {
+      tabDefecto.value = tab
+      listar({ estado: tab })
+    }
+    /**
+     * La función verifica si una fecha determinada está dentro de un rango definido por la última
+     * fecha y la fecha actual.
+     * @param fecha - El parámetro "fecha" representa una fecha que se está comparando con la fecha
+     * actual.
+     * @returns un valor booleano. Comprueba si la fecha ingresada es mayor que la última fecha y menor
+     * o igual a la fecha actual.
+     */
+
+    function options(fecha: string) {
+      // const arrayFecha = ultima_fecha.value.toString().split('-').map(Number) //recibe YYYY-MM-DD
+      // const ultima_fecha_construida = date.buildDate({ year: arrayFecha[0], month: arrayFecha[1], day: arrayFecha[2] })
+      // return fecha > date.formatDate(ultima_fecha_construida, 'YYYY/MM/DD') && fecha <= date.formatDate(new Date(), 'YYYY/MM/DD')
+      return fechasDisponibles.value.includes(fecha) // fechasDisponibles.value.includes(fecha)
+    }
+    function updateProxy() {
+      fecha.value = fechasDisponibles.value[0]
+      // console.log(ultima_fecha.value)
+    }
+    function save() {
+      pago.nombre = nombre.value
+      pago.fecha_inicio = fecha_inicio.value
+      pago.fecha_fin = fecha_fin.value
+    }
+
+    /*****************************************************************************************
+     * BOTONES DE TABLA
+     ****************************************************************************************/
+    const btnGenerarReporteExcel: CustomActionTable = {
+      titulo: 'Generar Reporte',
+      color: 'positive',
+      icono: 'bi-file-earmark-excel-fill',
+      accion: async ({ entidad, posicion }) => {
+        corteStore.corte.nombre = entidad.nombre
+        corteStore.idCorte = entidad.id
+        await corteStore.imprimirExcel()
+      }
+    }
+    const btnAnular: CustomActionTable = {
+      titulo: 'Anular',
+      color: 'negative',
+      icono: 'bi-x',
+      accion: async ({ entidad, posicion }) => {
+        confirmar('¿Está seguro de anular el corte?', () => {
+          const data: CustomActionPrompt = {
+            titulo: 'Causa de anulación',
+            mensaje: 'Ingresa el motivo de anulación',
+            accion: async (data) => {
+              try {
+                corteStore.idCorte = entidad.id
+                const response = await corteStore.anularCorte({ causa_anulacion: data })
+                if (response!.status == 200) {
+                  notificarCorrecto('Se ha anulado correctamente el corte de pagos')
+                  listado.value.splice(posicion, 1)
+                }
+              } catch (e: any) {
+                notificarError('No se pudo anular, debes ingresar un motivo para la anulación')
+              }
+            }
+          }
+          prompt(data)
+        })
+      },
+      visible: ({ entidad }) => entidad.estado == 'PENDIENTE'
+    }
+
+    const btnMarcarPagado: CustomActionTable = {
+      titulo: 'Completada',
+      color: 'primary',
+      icono: 'bi-check-circle-fill',
+      accion: async ({ entidad }) => {
+        confirmar('¿Está seguro de marcar como completado el corte de pago de comisiones?', async () => {
+          corteStore.idCorte = entidad.id
+          await corteStore.marcarCompletada()
+          await filtrarCortesComisiones('COMPLETA')
+        })
+      },
+      visible: ({ entidad }) => entidad.estado == 'PENDIENTE'
+    }
+
     return {
-      removeAccents,
       mixin,
       v$,
-      pagocomision,
-      accion,
+      pago,
+      accion, acciones, accionesTabla,
       disabled,
+      fecha,
       maskFecha,
-      optionsFechaFin,
       configuracionColumnas: configuracionColumnasPagoComision,
+      configuracionColumnasPagoComisionEmpleado,
+
+      tabDefecto,
+      tabOptionsPagosComisiones,
+
+      // botones de tabla
+      btnAnular,
+      btnMarcarPagado,
+      btnGenerarReporteExcel,
+
+      options,
+      updateProxy,
+      save,
+      filtrarCortesComisiones,
+
     }
   },
 })

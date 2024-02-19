@@ -32,6 +32,9 @@
           class="q-mr-xs"
         ></q-icon>
         <span>{{ extraerTitulo(accion1) }}</span>
+        <q-tooltip v-if="accion1?.tooltip" class="bg-dark">{{
+          accion1.tooltip
+        }}</q-tooltip>
       </q-btn>
 
       <!-- Accion 2 -->
@@ -53,6 +56,9 @@
           class="q-mr-xs"
         ></q-icon>
         <span>{{ extraerTitulo(accion2) }}</span>
+        <q-tooltip v-if="accion2?.tooltip" class="bg-dark">{{
+          accion2.tooltip
+        }}</q-tooltip>
       </q-btn>
 
       <!-- Accion 3 -->
@@ -74,6 +80,9 @@
           class="q-mr-xs"
         ></q-icon>
         <span>{{ extraerTitulo(accion3) }}</span>
+        <q-tooltip v-if="accion3?.tooltip" class="bg-dark">{{
+          accion3.tooltip
+        }}</q-tooltip>
       </q-btn>
 
       <!-- Accion 4 -->
@@ -95,6 +104,9 @@
           class="q-mr-xs"
         ></q-icon>
         <span>{{ extraerTitulo(accion4) }}</span>
+        <q-tooltip v-if="accion4?.tooltip" class="bg-dark">{{
+          accion4.tooltip
+        }}</q-tooltip>
       </q-btn>
 
       <!-- Accion 5 -->
@@ -116,6 +128,9 @@
           class="q-mr-xs"
         ></q-icon>
         <span>{{ extraerTitulo(accion5) }}</span>
+        <q-tooltip v-if="accion5?.tooltip" class="bg-dark">{{
+          accion5.tooltip
+        }}</q-tooltip>
       </q-btn>
 
       <!-- Accion 6 -->
@@ -137,6 +152,9 @@
           class="q-mr-xs"
         ></q-icon>
         <span>{{ extraerTitulo(accion6) }}</span>
+        <q-tooltip v-if="accion6?.tooltip" class="bg-dark">{{
+          accion6.tooltip
+        }}</q-tooltip>
       </q-btn>
 
       <!-- Accion 7 -->
@@ -158,6 +176,9 @@
           class="q-mr-xs"
         ></q-icon>
         <span>{{ extraerTitulo(accion7) }}</span>
+        <q-tooltip v-if="accion7?.tooltip" class="bg-dark">{{
+          accion7.tooltip
+        }}</q-tooltip>
       </q-btn>
 
       <!-- Accion 8 -->
@@ -179,6 +200,9 @@
           class="q-mr-xs"
         ></q-icon>
         <span>{{ extraerTitulo(accion8) }}</span>
+        <q-tooltip v-if="accion8?.tooltip" class="bg-dark">{{
+          accion8.tooltip
+        }}</q-tooltip>
       </q-btn>
 
       <!-- Accion 9 -->
@@ -200,6 +224,9 @@
           class="q-mr-xs"
         ></q-icon>
         <span>{{ extraerTitulo(accion9) }}</span>
+        <q-tooltip v-if="accion9?.tooltip" class="bg-dark">{{
+          accion9.tooltip
+        }}</q-tooltip>
       </q-btn>
 
       <!-- Accion 10 -->
@@ -221,6 +248,9 @@
           class="q-mr-xs"
         ></q-icon>
         <span>{{ extraerTitulo(accion10) }}</span>
+        <q-tooltip v-if="accion10?.tooltip" class="bg-dark">{{
+          accion10.tooltip
+        }}</q-tooltip>
       </q-btn>
     </q-btn-group>
 
@@ -264,6 +294,9 @@
               class="q-mr-xs"
             ></q-icon>
             <span>{{ extraerTitulo(accion1) }}</span>
+            <q-tooltip v-if="accion1?.tooltip" class="bg-dark">{{
+              accion1.tooltip
+            }}</q-tooltip>
           </q-btn>
 
           <!-- Accion 2 -->
@@ -285,6 +318,9 @@
               class="q-mr-xs"
             ></q-icon>
             <span>{{ extraerTitulo(accion2) }}</span>
+            <q-tooltip v-if="accion2?.tooltip" class="bg-dark">{{
+              accion2.tooltip
+            }}</q-tooltip>
           </q-btn>
 
           <!-- Accion 3 -->
@@ -306,6 +342,9 @@
               class="q-mr-xs"
             ></q-icon>
             <span>{{ extraerTitulo(accion3) }}</span>
+            <q-tooltip v-if="accion3?.tooltip" class="bg-dark">{{
+              accion3.tooltip
+            }}</q-tooltip>
           </q-btn>
 
           <!-- Accion 4 -->
@@ -327,6 +366,9 @@
               class="q-mr-xs"
             ></q-icon>
             <span>{{ extraerTitulo(accion4) }}</span>
+            <q-tooltip v-if="accion4?.tooltip" class="bg-dark">{{
+              accion4.tooltip
+            }}</q-tooltip>
           </q-btn>
 
           <!-- Accion 5 -->
@@ -348,6 +390,9 @@
               class="q-mr-xs"
             ></q-icon>
             <span>{{ extraerTitulo(accion5) }}</span>
+            <q-tooltip v-if="accion5?.tooltip" class="bg-dark">{{
+              accion5.tooltip
+            }}</q-tooltip>
           </q-btn>
 
           <!-- Accion 6 -->
@@ -369,6 +414,9 @@
               class="q-mr-xs"
             ></q-icon>
             <span>{{ extraerTitulo(accion6) }}</span>
+            <q-tooltip v-if="accion6?.tooltip" class="bg-dark">{{
+              accion6.tooltip
+            }}</q-tooltip>
           </q-btn>
 
           <!-- Accion 7 -->
@@ -390,6 +438,9 @@
               class="q-mr-xs"
             ></q-icon>
             <span>{{ extraerTitulo(accion7) }}</span>
+            <q-tooltip v-if="accion7?.tooltip" class="bg-dark">{{
+              accion7.tooltip
+            }}</q-tooltip>
           </q-btn>
 
           <!-- Accion 8 -->
@@ -411,6 +462,9 @@
               class="q-mr-xs"
             ></q-icon>
             <span>{{ extraerTitulo(accion8) }}</span>
+            <q-tooltip v-if="accion8?.tooltip" class="bg-dark">{{
+              accion8.tooltip
+            }}</q-tooltip>
           </q-btn>
 
           <!-- Accion 9 -->
@@ -432,6 +486,9 @@
               class="q-mr-xs"
             ></q-icon>
             <span>{{ extraerTitulo(accion9) }}</span>
+            <q-tooltip v-if="accion9?.tooltip" class="bg-dark">{{
+              accion9.tooltip
+            }}</q-tooltip>
           </q-btn>
 
           <!-- Accion 10 -->
@@ -453,6 +510,9 @@
               class="q-mr-xs"
             ></q-icon>
             <span>{{ extraerTitulo(accion10) }}</span>
+            <q-tooltip v-if="accion10?.tooltip" class="bg-dark">{{
+              accion10.tooltip
+            }}</q-tooltip>
           </q-btn>
         </q-list>
       </q-btn-dropdown>

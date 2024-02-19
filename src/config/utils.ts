@@ -1,6 +1,7 @@
 import { TabOption } from 'components/tables/domain/TabOption'
 
-export const maskFecha = 'DD-MM-YYYY'
+export const maskFecha = 'YYYY-MM-DD'
+// export const maskFecha = 'DD-MM-YYYY'
 //export const maskFecha = 'YYYY/MM/DD'
 // Tipos
 export type TipoSeleccion = 'none' | 'single' | 'multiple'
@@ -328,6 +329,10 @@ export const rolesSistema = {
   tecnico_lider: 'LIDER DE GRUPO',
   tecnico: 'TECNICO',
   autorizador: 'AUTORIZADOR',
+  //Roles de ventas de Claro
+  jefe_ventas: 'JEFE_VENTAS',
+  supervisor_ventas: 'SUPERVISOR_VENTAS',
+  vendedor: 'VENDEDOR',
 }
 
 export const cargosSistema = {
@@ -477,10 +482,10 @@ export const tipos_sangre = [
   { nombre: 'O -' },
   // Puedes agregar aquí más tipos de sangre si es necesario
 ]
-export const tipos_vendedor = [
-  { nombre: 'SUPERVISOR' },
-  { nombre: 'JEFE DE VENTAS' },
-  { nombre: 'VENDEDOR' },
+export const tipos_vendedores = [
+  { nombre: 'VENDEDOR', descripcion:'VENDEDOR' },
+  { nombre: 'SUPERVISOR_VENTAS', descripcion:'SUPERVISOR DE VENTAS' },
+  { nombre: 'JEFE_VENTAS', descripcion:'JEFE DE VENTAS' },
   // Puedes agregar aquí más tipos de vendedor si es necesario
 ]
 export const talla_letras = [
@@ -499,15 +504,16 @@ export const tabOptionsPreingresoMateriales = [
   { label: 'Autorizadas', value: '2' }, //autorizacion APROBADO
   { label: 'Canceladas', value: '3' }  //autorizacion CANCELADO
 ]
-export const formas_pago = [
-  { label: 'EFECTIVO', value: 'EFECTIVO' },
-  { label: 'TC', value: 'TARJETA DE CREDITO' },
-  { label: 'D.BANCARIO', value: 'DEBITO BANCARIO' },
+export const formas_pagos =[
+  {label: 'EFECTIVO', value: 'EFECTIVO'},
+  {label: 'TC', value: 'TARJETA DE CREDITO'},
+  {label: 'D. BANCARIO', value: 'DEBITO BANCARIO'},
 ]
-export const estados_activacion = [
-  { label: 'PENDIENTE', value: 'PENDIENTE' },
+export const estados_activaciones = [
+  // { label: 'PENDIENTE', value: 'PENDIENTE' },
   { label: 'APROBADO', value: 'APROBADO' },
-  { label: 'RECHAZADA', value: 'RECHAZADA' },
+  { label: 'ACTIVADO', value: 'ACTIVADO' },
+  // { label: 'RECHAZADA', value: 'RECHAZADA' },
 
 ]
 export const estadosVentas = {

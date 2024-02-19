@@ -10,6 +10,13 @@ export const configuracionColumnasProductoVentas: ColumnConfig<ProductoVentas>[]
     sortable: true
   },
   {
+    name: 'nombre',
+    field: 'nombre',
+    label: 'Nombre',
+    align: 'left',
+    sortable: true
+  },
+  {
     name: 'bundle',
     field: 'bundle',
     label: 'Bundle',
@@ -23,7 +30,11 @@ export const configuracionColumnasProductoVentas: ColumnConfig<ProductoVentas>[]
     align: 'left',
     sortable: true
   },
-
-
-
+  {
+    name: 'activo',
+    field: 'activo',
+    label: 'Estado',
+    align: 'left',
+    sortable: true
+  },
 ]

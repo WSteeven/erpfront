@@ -104,7 +104,7 @@
       <div class="col-12 col-md-3">
         <label class="q-mb-sm block">Estado Activacion</label>
         <q-input
-          v-model="ventas.estado_activ"
+          v-model="ventas.estado_activacion"
           placeholder="Obligatorio"
           type="textarea"
           disable
@@ -118,7 +118,7 @@
       <div class="col-12 col-md-3">
         <label class="q-mb-sm block">Fecha de Activacion</label>
         <q-input
-          v-model="ventas.fecha_activ"
+          v-model="ventas.fecha_activacion"
           placeholder="Opcional"
           disable
           readonly
@@ -128,7 +128,7 @@
           <template v-slot:append>
             <q-icon name="event" class="cursor-pointer">
               <q-popup-proxy cover transition-show="scale" transition-hide="scale">
-                <q-date v-model="ventas.fecha_activ" :mask="maskFecha" today-btn disable>
+                <q-date v-model="ventas.fecha_activacion" :mask="maskFecha" today-btn disable>
                   <div class="row items-center justify-end">
                     <q-btn v-close-popup label="Cerrar" color="primary" flat disable />
                   </div>

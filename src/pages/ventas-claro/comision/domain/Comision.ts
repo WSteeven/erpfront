@@ -4,11 +4,13 @@ export class Comision extends EntidadAuditable {
   plan_info: string | null
   forma_pago: string | null
   comision: number | null
+  tipo_vendedor: string | null
   constructor() {
     super()
     this.plan = null
     this.plan_info = null
     this.forma_pago = null
     this.comision = null
+    this.tipo_vendedor = null
   }
 }

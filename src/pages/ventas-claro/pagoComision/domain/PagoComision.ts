@@ -2,23 +2,21 @@ import { EntidadAuditable } from 'shared/entidad/domain/entidadAuditable'
 
 export class PagoComision extends EntidadAuditable {
   id: number | null
+  nombre: string | null
   fecha_inicio: string | null
   fecha_fin: string | null
-  vendedor: number | null
-  vendedor_id:number | null
-  vendedor_info: string | null
-  chargeback: number |null
-  valor:number | null
+  estado: null
+  causa_anulacion: string | null
+  listadoEmpleados: any
 
   constructor() {
     super()
     this.id = null
+    this.nombre = null
     this.fecha_inicio = null
     this.fecha_fin = null
-    this.vendedor = null
-    this.vendedor_id = null
-    this.vendedor_info = null
-    this.chargeback = null
-    this.valor = null
+    this.estado = null
+    this.causa_anulacion = null
+    this.listadoEmpleados = []
   }
 }

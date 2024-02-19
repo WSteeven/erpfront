@@ -39,10 +39,85 @@ export const useFiltrosListadosSelects = (listadosAuxiliares, entidad?: Ref<any>
   const tareasDestino = ref(listadosAuxiliares.tareasDestino)
   const centros_costos = ref([])
 
+  //////////////////////////////////////////
+  //modulo ventas
+  //////////////////////////////////////////
+  const modalidades = ref(listadosAuxiliares.modalidades)
+  const productos_claro = ref(listadosAuxiliares.productos)
+  const vendedores_claro = ref(listadosAuxiliares.vendedores)
+  const clientes_claro = ref(listadosAuxiliares.clientes)
+
 
   /**************************************************************
    * Funciones
    **************************************************************/
+  clientes_claro.value = listadosAuxiliares.clientes
+  function filtrarClientesClaro(val, update) {
+    if (val === '') {
+      update(() => {
+        clientes_claro.value = listadosAuxiliares.clientes
+      })
+      return
+    }
+    update(() => {
+      const needle = val.toLowerCase()
+      clientes_claro.value = listadosAuxiliares.clientes.filter(
+        (v) =>
+          v.nombres.toLowerCase().indexOf(needle) > -1 ||
+          v.apellidos.toLowerCase().indexOf(needle) > -1 ||
+          v.identificacion.toLowerCase().indexOf(needle) > -1
+      )
+    })
+  }
+
+  vendedores_claro.value = listadosAuxiliares.vendedores
+  function filtrarVendedoresClaro(val, update) {
+    if (val === '') {
+      update(() => {
+        vendedores_claro.value = listadosAuxiliares.vendedores
+      })
+      return
+    }
+    update(() => {
+      const needle = val.toLowerCase()
+      vendedores_claro.value = listadosAuxiliares.vendedores.filter((v) => v.empleado_info.toLowerCase().indexOf(needle) > -1)
+    })
+  }
+
+  productos_claro.value = listadosAuxiliares.productos
+  function filtrarProductosClaro(val, update) {
+    if (val === '') {
+      update(() => {
+        productos_claro.value = listadosAuxiliares.productos
+      })
+      return
+    }
+    update(() => {
+      const needle = val.toLowerCase()
+      productos_claro.value = listadosAuxiliares.productos.filter(
+        (v) =>
+          v.nombre.toLowerCase().indexOf(needle) > -1 ||
+          v.bundle.toLowerCase().indexOf(needle) > -1 ||
+          v.plan_info.toLowerCase().indexOf(needle) > -1
+      )
+    })
+  }
+
+  modalidades.value = listadosAuxiliares.modalidades
+  function filtrarModalidades(val, update) {
+    if (val === '') {
+      update(() => {
+        modalidades.value = listadosAuxiliares.modalidades
+      })
+      return
+    }
+    update(() => {
+      const needle = val.toLowerCase()
+      modalidades.value = listadosAuxiliares.modalidades.filter(
+        (v) => v.nombre.toLowerCase().indexOf(needle) > -1
+      )
+    })
+  }
 
   centros_costos.value = listadosAuxiliares.centros_costos
   function filtrarCentrosCostos(val, update) {
@@ -343,5 +418,9 @@ export const useFiltrosListadosSelects = (listadosAuxiliares, entidad?: Ref<any>
     etapasDestino, filtrarEtapasDestino,
     tareasDestino, filtrarTareasDestino,
     centros_costos, filtrarCentrosCostos,
+    modalidades, filtrarModalidades,
+    productos_claro, filtrarProductosClaro,
+    vendedores_claro, filtrarVendedoresClaro,
+    clientes_claro, filtrarClientesClaro,
   }
 }
