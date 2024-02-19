@@ -23,3 +23,8 @@ export const estadosActivacionesVentas = {
     aprobado: 'APROBADO',
     activado: 'ACTIVADO',
 }
+
+export const tabOptionsBonosMensuales: TabOption[] = [
+    { label: 'Pendientes', value: '0' }, //no pagadas
+    { label: 'Pagadas', value: '1' }, //pagadas
+]

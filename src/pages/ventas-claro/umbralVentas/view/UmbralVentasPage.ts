@@ -25,7 +25,7 @@ import ModalesEntidad from 'components/modales/view/ModalEntidad.vue'
 import { UmbralVentas } from '../domain/UmbralVentas'
 import { UmbralVentasController } from '../infrestucture/UmbralVentasController'
 import { configuracionColumnasUmbralVentas } from '../domain/configuracionColumnasUmbralVentas'
-import { VendedoresController } from 'pages/ventas-claro/vendedores/infrestructure/VendedorController'
+import { VendedorController } from 'pages/ventas-claro/vendedores/infrestructure/VendedorController'
 
 
 export default defineComponent({
@@ -52,7 +52,7 @@ export default defineComponent({
     cargarVista(async () => {
       await obtenerListados({
         vendedores: {
-          controller: new VendedoresController(),
+          controller: new VendedorController(),
           params: {
             tipo_vendedor: 'SUPERVISOR_VENTAS'
           },

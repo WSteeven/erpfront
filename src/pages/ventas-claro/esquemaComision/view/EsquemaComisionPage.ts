@@ -6,7 +6,7 @@ import { useQuasar } from 'quasar'
 import { useVuelidate } from '@vuelidate/core'
 import { ContenedorSimpleMixin } from 'shared/contenedor/modules/simple/application/ContenedorSimpleMixin'
 import { PlanesController } from 'pages/ventas-claro/planes/infrestructure/PlanesController'
-import { formas_pago, tipos_vendedor } from 'config/utils'
+import { formas_pagos, tipos_vendedores } from 'config/utils'
 import { EsquemaComisionController } from '../infrestructure/EsquemaComisionController'
 import { EsquemaComision } from '../domain/EsquemaComision'
 import { configuracionColumnasEsquemaComision } from '../domain/configuracionColumnasEsquemaComision'
@@ -72,9 +72,9 @@ export default defineComponent({
     return {
       mixin,
       esquemaComision,
-      tipos_vendedor,
+      tipos_vendedores,
       disabled, accion, v$,
-      formas_pago,
+      formas_pagos,
       planes,
       filtrarPlanes,
       configuracionColumnas: configuracionColumnasEsquemaComision,

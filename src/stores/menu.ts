@@ -388,7 +388,7 @@ export const useMenuStore = defineStore('menu', () => {
               link: 'autorizar-gasto',
               icon: 'bi-circle',
               can: true, //store.can('puede.ver.autorizar_gasto'),
-            },            {
+            }, {
               title: 'Anular Gasto',
               link: 'anular-gasto',
               icon: 'bi-circle',
@@ -876,6 +876,12 @@ export const useMenuStore = defineStore('menu', () => {
           can: store.can('puede.acceder.vendedores'),
         },
         {
+          title: 'Clientes',
+          link: 'clientes-claro',
+          icon: 'bi-circle',
+          can: store.can('puede.acceder.clientes_claro'),
+        },
+        {
           title: 'Ventas',
           link: 'ventas',
           icon: 'bi-circle',
@@ -907,7 +913,7 @@ export const useMenuStore = defineStore('menu', () => {
         },
         {
           title: 'Bono Trimestral Cumplimiento',
-          link: 'bono-trimestral-cumplimiento',
+          link: 'bonos-trimestrales-cumplimientos',
           icon: 'bi-circle',
           can: store.can('puede.acceder.bonos_trimestrales_cumplimientos'),
         },
@@ -922,12 +928,6 @@ export const useMenuStore = defineStore('menu', () => {
               can: store.can('puede.acceder.planes'),
             },
             {
-              title: 'Clientes',
-              link: 'clientes-claro',
-              icon: 'bi-circle',
-              can: store.can('puede.acceder.clientes_claro'),
-            },
-            {
               title: 'Umbral de ventas',
               link: 'modalidades',
               icon: 'bi-circle',
@@ -935,7 +935,7 @@ export const useMenuStore = defineStore('menu', () => {
             },
             {
               title: 'Tipo de ChargeBack',
-              link: 'tipo-chargeback',
+              link: 'tipos-chargebacks',
               icon: 'bi-circle',
               can: store.can('puede.acceder.tipos_chargebacks'),
             },
@@ -947,13 +947,13 @@ export const useMenuStore = defineStore('menu', () => {
             },
             {
               title: 'Meta de Ventas',
-              link: 'umbral-ventas',
+              link: 'umbrales-ventas',
               icon: 'bi-circle',
               can: store.can('puede.acceder.umbrales_ventas'),
             },
             {
               title: 'Esquema de Comisiones',
-              link: 'esquema-comision',
+              link: 'esquemas-comisiones',
               icon: 'bi-circle',
               can: store.can('puede.acceder.esquemas_comisiones'),
             },
@@ -975,7 +975,7 @@ export const useMenuStore = defineStore('menu', () => {
                 },
                 {
                   title: 'Bono de Supervisores',
-                  link: 'bono-porcentual',
+                  link: 'bonos-porcentuales',
                   icon: 'bi-circle',
                   can: store.can('puede.acceder.bonos_porcentuales'),
                 },

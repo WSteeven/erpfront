@@ -25,7 +25,7 @@
           </div>
                     <!-- Vendeedor -->
                     <div class="col-12 col-md-3">
-            <label class="q-mb-sm block">Vendedor</label>
+            <label class="q-mb-sm block">Supervisor</label>
             <q-select
               v-model="umbral_venta.vendedor"
               :options="vendedores"

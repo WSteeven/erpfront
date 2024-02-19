@@ -1165,8 +1165,8 @@ const routes: RouteRecordRaw[] = [
         meta: { requiresAuth: true },
       },
       {
-        path: '/bono-trimestral-cumplimiento',
-        name: 'bono_trimestral_cumplimiento',
+        path: '/bonos-trimestrales-cumplimientos',
+        name: 'bonos_trimestrales_cumplimientos',
         component: () =>
           import(
             'pages/ventas-claro/bonoTrimestralCumplimiento/view/BonoTrimestralCumplimientoPage.vue'
@@ -1218,8 +1218,8 @@ const routes: RouteRecordRaw[] = [
         meta: { requiresAuth: true },
       },
       {
-        path: '/tipo-chargeback',
-        name: 'tipo_chargeback',
+        path: '/tipos-chargebacks',
+        name: 'tipos_chargebacks',
         component: () =>
           import('pages/ventas-claro/tipoChargeBack/view/TipoChargeBack.vue'),
         meta: { requiresAuth: true },
@@ -1239,22 +1239,22 @@ const routes: RouteRecordRaw[] = [
         meta: { requiresAuth: true },
       },
       {
-        path: '/bono-porcentual',
-        name: 'bono_porcentual',
+        path: '/bonos-porcentuales',
+        name: 'bonos_porcentuales',
         component: () =>
           import('pages/ventas-claro/bono/bonoSupervisor/view/BonoSupervisorPage.vue'),
         meta: { requiresAuth: true },
       },
       {
-        path: '/umbral-ventas',
-        name: 'umbral_ventas',
+        path: '/umbrales-ventas',
+        name: 'umbrales_ventas',
         component: () =>
           import('pages/ventas-claro/umbralVentas/view/UmbralVentasPage.vue'),
         meta: { requiresAuth: true },
       },
       {
-        path: '/esquema-comision',
-        name: 'esquema_comision',
+        path: '/esquemas-comisiones',
+        name: 'esquemas_comisiones',
         component: () =>
           import('pages/ventas-claro/esquemaComision/view/EsquemaComisionPage.vue'),
         meta: { requiresAuth: true },

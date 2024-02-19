@@ -1,5 +1,13 @@
 <template>
-  <tab-layout :mixin="mixin" :configuracionColumnas="configuracionColumnas">
+  <tab-layout-filter-tabs-2
+    :mixin="mixin"
+    :configuracionColumnas="configuracionColumnas"
+    :puedeExportar="true"
+    :tabOptions="tabOptionsBonosMensuales"
+    :tabDefecto="tabDefecto"
+    :filtrar="filtrarBonos"
+    :accion1="btnMarcarPagada"
+  >
     <template #formulario>
       <q-form @submit.prevent>
         <!-- Mes -->
@@ -54,6 +62,6 @@
         </div>
       </q-form>
     </template>
-  </tab-layout>
+  </tab-layout-filter-tabs-2>
 </template>
 <script src="./BonoMensualCumplimientoPage.ts"></script>

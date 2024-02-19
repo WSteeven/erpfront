@@ -3,7 +3,6 @@
     <template #formulario>
       <q-form @submit.prevent>
         <div class="row q-col-gutter-sm q-mb-md">
-
           <!-- Nombre -->
           <div class="col-12 col-md-3">
             <label class="q-mb-sm block">Nombre</label>
