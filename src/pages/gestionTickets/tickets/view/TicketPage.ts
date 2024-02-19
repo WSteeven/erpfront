@@ -93,7 +93,10 @@ export default defineComponent({
 
     cargarVista(async () => {
       await obtenerListados({
-        departamentos: new DepartamentoController(),
+        departamentos: {
+          controller: new DepartamentoController(),
+          params: { activo: 1 },
+        },
         categoriasTiposTickets: new CategoriaTipoTicketController(),
         tiposTickets: {
           controller: new TipoTicketController(),
