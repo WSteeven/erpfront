@@ -8,6 +8,7 @@
       :permitirEditar="false"
       :permitirEliminar="false"
       :accion1Header="btnImprimirReporte"
+      :accion2Header="btnImprimirRespuestas"
     >
     </essential-table>
   </q-page>
