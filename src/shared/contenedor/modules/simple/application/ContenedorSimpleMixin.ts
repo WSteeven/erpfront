@@ -171,6 +171,8 @@ export class ContenedorSimpleMixin<T extends EntidadAuditable> extends Contenedo
   // @noImplicitAny: false
   private async guardar(data: T, agregarAlListado = true, params?: ParamsType): Promise<any> {
 
+    this.hooks.onBeforeGuardar() // <- 19/02/2024 Se movio antes de las validaciones para realizar cambios en las variables, si da error, bajar
+
     if (!this.seCambioEntidad(this.entidad_vacia)) {
       this.notificaciones.notificarAdvertencia(
         'No se ha efectuado ningun cambio'
@@ -183,10 +185,7 @@ export class ContenedorSimpleMixin<T extends EntidadAuditable> extends Contenedo
     if (this.refs.validador.value && !(await this.refs.validador.value.$validate()) || !(await this.ejecutarValidaciones())) {
       this.notificaciones.notificarAdvertencia('Verifique el formulario')
       throw new Error('Verifique el formulario')
-      // return console.log('Verifique el formulario')
     }
-
-    this.hooks.onBeforeGuardar()
 
     //return this.cargarVista(async (): Promise<any> => {
     this.statusEssentialLoading.activar()

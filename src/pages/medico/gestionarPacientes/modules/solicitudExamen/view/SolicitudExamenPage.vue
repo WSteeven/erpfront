@@ -8,7 +8,7 @@
     <br />
 
     <div class="row q-mb-md">
-      <div class="col-12 col-md-3">
+      <div class="col-12 col-md-3 q-pa-sm bg-desenfoque">
         <label class="q-mb-sm block text-bold"
           >Seleccione un cantón para filtrar los laboratorios clínicos</label
         >
@@ -34,12 +34,14 @@
     </div>
 
     <div
-      v-for="examenSolicitado in estadoSolicitudExamen.examenes_solicitados"
+      v-for="(
+        examenSolicitado, index
+      ) in estadoSolicitudExamen.examenes_solicitados"
       :key="examenSolicitado.examen_id"
       class="row q-col-gutter-sm q-mb-md"
     >
       <div class="col-12 col-md-3">
-        <label class="q-mb-sm block">Exámen a solicitar</label>
+        <label class="q-mb-sm block">Exámen a solicitar </label>
         <q-select
           v-model="examenSolicitado.examen"
           :options="listadosAuxiliares.examenes"
@@ -60,7 +62,14 @@
       </div>
 
       <div class="col-12 col-md-3">
-        <label class="q-mb-sm block">Laboratorio clínico</label>
+        <label class="q-mb-sm block"
+          >Laboratorio clínico
+          <q-icon v-if="index === 0" name="info" color="grey">
+            <q-tooltip class="bg-dark">{{
+              'Se autocompletarán los demás laboratorios con el seleccionado aquí'
+            }}</q-tooltip></q-icon
+          >
+        </label>
         <q-select
           v-model="examenSolicitado.laboratorio_clinico"
           :options="listadosAuxiliares.laboratoriosClinicos"
@@ -71,6 +80,9 @@
           outlined
           :option-label="(item) => item.nombre"
           :option-value="(item) => item.id"
+          @update:model-value="
+            asignarLaboratorio(examenSolicitado.laboratorio_clinico, index)
+          "
           use-input
           input-debounce="0"
           emit-value
@@ -80,7 +92,14 @@
       </div>
 
       <div class="col-12 col-md-3">
-        <label class="q-mb-sm block">Fecha de asistencia</label>
+        <label class="q-mb-sm block"
+          >Fecha de asistencia
+          <q-icon v-if="index === 0" name="info" color="grey">
+            <q-tooltip class="bg-dark">{{
+              'Se autocompletarán las demás fechas con la seleccionada aquí'
+            }}</q-tooltip></q-icon
+          ></label
+        >
         <q-input
           v-model="examenSolicitado.fecha_asistencia"
           outlined
@@ -96,6 +115,9 @@
               >
                 <q-date
                   v-model="examenSolicitado.fecha_asistencia"
+                  @update:model-value="
+                    asignarFecha(examenSolicitado.fecha_asistencia, index)
+                  "
                   :mask="maskFecha"
                   today-btn
                 >
@@ -110,9 +132,19 @@
       </div>
 
       <div class="col-12 col-md-3">
-        <label class="q-mb-sm block">Hora asistencia</label>
+        <label class="q-mb-sm block"
+          >Hora asistencia
+          <q-icon v-if="index === 0" name="info" color="grey">
+            <q-tooltip class="bg-dark">{{
+              'Se autocompletarán las demás horas con la seleccionada aquí'
+            }}</q-tooltip></q-icon
+          >
+        </label>
         <q-input
           v-model="examenSolicitado.hora_asistencia"
+          @update:model-value="
+            asignarHora(examenSolicitado.hora_asistencia, index)
+          "
           type="time"
           step="1"
           stack-label

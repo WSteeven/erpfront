@@ -157,13 +157,20 @@ export default defineComponent({
       consultarExamenesSinSolicitar({ empleado_id: empleado.id, registro_empleado_examen_id: registro })
     }
 
-    const actualizarListadoExamenes = ({ detalle_resultado_examen, page }) => {
-      let index, examen
+    const actualizarListadoExamenes = ({ data, page }) => {
+      let index: number, examen: Examen
+      const { detalle_resultado_examen, idExamenesSolicitados } = data
+
       switch (page) {
         case 'SolicitudExamenPage':
-          index = examenes.value.findIndex((examen) => examen.id === detalle_resultado_examen)
-          examen = examenes.value[index]
-          examenes.value.splice(index, 1)
+          const solicitados: number[] = idExamenesSolicitados
+
+          // Quitar examenes solicitados
+          solicitados.forEach((id: number) => {
+            index = examenes.value.findIndex((examen) => examen.id === detalle_resultado_examen)
+            examen = examenes.value[index]
+            examenes.value.splice(index, 1)
+          })
           break
         default:
           index = examenes.value.findIndex((examen) => examen.id === medicoStore.examenSolicitado?.id)

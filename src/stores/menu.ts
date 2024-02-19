@@ -189,7 +189,7 @@ export const useMenuStore = defineStore('menu', () => {
           can: store.can('puede.ver.gestionar_pacientes'),
         },
         {
-          title: 'Cuestionario Psicosocial',
+          title: 'Cuestionario de evaluación de riesgos psicosociales',
           link: 'cuestionario-psicosocial',
           icon: 'bi-circle',
           can: store.can('puede.ver.cuestionario_psicosocial'),
@@ -200,12 +200,12 @@ export const useMenuStore = defineStore('menu', () => {
           icon: 'bi-circle',
           can: store.can('puede.ver.citas_medicas'),
         },
-        /*{
-          title: 'Consulta médica',
-          link: 'diagnostico-receta',
+        {
+          title: 'Solicitudes de exámenes',
+          link: 'solicitudes-examenes',
           icon: 'bi-circle',
-          can: store.can('puede.ver.diagnosticos_recetas'),
-        },*/
+          can: store.can('puede.ver.solicitudes_examenes'),
+        },
         {
           title: 'Reporte Cuestionario Psicosocial',
           link: 'reporte-cuestionarios-pisicosocial',
@@ -441,7 +441,7 @@ export const useMenuStore = defineStore('menu', () => {
               link: 'autorizar-gasto',
               icon: 'bi-circle',
               can: true, //store.can('puede.ver.autorizar_gasto'),
-            },            {
+            }, {
               title: 'Anular Gasto',
               link: 'anular-gasto',
               icon: 'bi-circle',

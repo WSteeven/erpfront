@@ -138,6 +138,7 @@
                   </q-tab-panel>
                   <!-- <q-tab-panel name="2"> Ocupacionales </q-tab-panel> -->
                 </q-tab-panels>
+
                 <essential-table-tabs
                   titulo="Examenes comúnes"
                   :configuracionColumnas="[

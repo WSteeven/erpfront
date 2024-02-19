@@ -1,9 +1,9 @@
 <template>
-  <div
+  <q-page
     class="bg-white q-pa-lg q-mt-sm"
-    :class="!$q.screen.xs ? 'centrar-card' : 'row'"
+    :class="!$q.screen.xs && !$q.screen.sm ? 'centrar-card' : 'row'"
   >
-    <div class="row border-bottom-black-2px q-pb-sm q-mb-md">
+    <div class="row full-width border-bottom-black-2px q-pb-sm q-mb-md">
       <div class="col-6">
         <q-img
           src="~assets/img/fpsico.png"
@@ -25,7 +25,7 @@
       </div>
 
       <div
-        v-for="item in preguntas"
+        v-for="item in listadosAuxiliares.preguntas"
         :key="item.id"
         class="col-12 text-bold q-mb-md"
       >
@@ -34,7 +34,7 @@
         }}</label>
         <q-option-group
           v-model="item.respuesta"
-          :options="mapearArray(item.posibles_respuestas)"
+          :options="mapearCuestionario(item.cuestionario)"
           color="primary"
           dense
         />
@@ -44,20 +44,23 @@
     <div class="row justify-center">
       <button-submits
         :accion="accion"
-        label-guardar="Guardar"
+        label-guardar="Guardar respuestas y enviar"
         :permitirCancelar="true"
-        @guardar="guardarDatos()"
+        @guardar="guardar(respuestaCuestionarioEmpleado)"
+        @cancelar="reestablecer()"
       />
     </div>
-  </div>
+  </q-page>
 </template>
-<style>
+
+<script src="./CuestionarioPsicosocialPage.ts"></script>
+
+<style scoped>
 .centrar-card {
   display: block;
   justify-content: center;
   align-items: center;
-  margin-left: 25%;
-  margin-right: 25%;
+  margin-left: 20%;
+  margin-right: 20%;
 }
 </style>
-<script src="./CuestionarioPsicosocialPage.ts"></script>
