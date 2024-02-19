@@ -59,18 +59,37 @@ export default defineComponent({
         imprimir_reporte()
       },
     }
+    const btnImprimirRespuestas: CustomActionTable = {
+      titulo: 'Imprimir Respuestas',
+      icono: 'bi-printer',
+      color: 'primary',
+      visible: () =>
+        authenticationStore.can('puede.ver.reporte_cuestionarios_pisicosocial'),
+      accion: () => {
+        imprimir_respuesta()
+      },
+    }
 
     async function imprimir_reporte(): Promise<void> {
-      const fecha_actual = new Date();
-      const filename = 'reporte_cuestionarios_pisicosocial_'+fecha_actual.toLocaleString()
+      const fecha_actual = new Date()
+      const filename =
+        'reporte_cuestionarios_pisicosocial_' + fecha_actual.toLocaleString()
       const url_pdf =
         apiConfig.URL_BASE + '/api/medico/reporte-cuestionario?imprimir=true'
       imprimirArchivo(url_pdf, 'GET', 'blob', 'xlsx', filename, null)
+    }
+    async function imprimir_respuesta(): Promise<void> {
+      const fecha_actual = new Date()
+      const filename =
+        'respuesta_cuestionarios_pisicosocial_' + fecha_actual.toLocaleString()
+      const url_pdf = apiConfig.URL_BASE + '/api/medico/imprimir-cuestionario'
+      imprimirArchivo(url_pdf, 'GET', 'blob', 'txt', filename, null)
     }
     return {
       listado,
       ConfiguracionColumnasReporteCuestionarioEmpleado,
       btnImprimirReporte,
+      btnImprimirRespuestas
     }
   },
 })
