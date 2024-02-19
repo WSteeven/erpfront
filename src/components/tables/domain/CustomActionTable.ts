@@ -1,10 +1,10 @@
-type funcion = (param) => void
-export interface CustomActionTable {
-  titulo: string | funcion
+type funcion<T> = (param?: { entidad: Record<keyof T, any>, posicion: number }) => void
+type funcionBoolean<T> = (param: { entidad: Record<keyof T, any>, posicion: number }) => boolean
+export interface CustomActionTable<T = any> {
+  titulo: string | funcion<T>
   tooltip?: string
   accion: (param) => void
-  visible?: (param) => boolean
-  color?: string | funcion
-  icono?: string | funcion
+  visible?: funcionBoolean<T>
+  color?: string | funcion<T>
+  icono?: string | funcion<T>
 }
-

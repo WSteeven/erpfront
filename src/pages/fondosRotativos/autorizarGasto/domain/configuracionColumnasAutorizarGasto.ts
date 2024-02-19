@@ -1,5 +1,5 @@
-import { ColumnConfig } from "components/tables/domain/ColumnConfig";
-import { Gasto } from "pages/fondosRotativos/gasto/domain/Gasto";
+import { ColumnConfig } from 'components/tables/domain/ColumnConfig'
+import { Gasto } from 'pages/fondosRotativos/gasto/domain/Gasto'
 
 
 export const configuracionColumnasAutorizarGasto: ColumnConfig<Gasto>[] = [
@@ -25,6 +25,13 @@ export const configuracionColumnasAutorizarGasto: ColumnConfig<Gasto>[] = [
     sortable: true
   },
   {
+    name: 'tarea_cliente',
+    field: 'tarea_cliente',
+    label: 'Tarea cliente',
+    align: 'left',
+    sortable: true
+  },
+  {
     name: 'factura',
     field: 'factura',
     label: '#Factura',
@@ -36,7 +43,8 @@ export const configuracionColumnasAutorizarGasto: ColumnConfig<Gasto>[] = [
     field: 'num_comprobante',
     label: '#Comprobante',
     align: 'left',
-    sortable: true },
+    sortable: true
+  },
   {
     name: 'ruc',
     field: 'ruc',

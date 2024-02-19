@@ -103,7 +103,7 @@
                     v-model="tarea.codigo_tarea"
                     outlined
                     dense
-                    disable
+                    readonly
                   ></q-input>
                 </div>
 
@@ -200,7 +200,8 @@
                 <!-- Coordinador -->
                 <div
                   v-if="
-                    (paraClienteFinal && (esCoordinadorBackup || esJefeTecnico)) ||
+                    (paraClienteFinal &&
+                      (esCoordinadorBackup || esJefeTecnico)) ||
                     accion === acciones.consultar
                   "
                   class="col-12 col-md-3"
@@ -404,7 +405,7 @@
                   >
                   </q-input>
                 </div>
-                
+
                 <!-- Es para el cliente -->
                 <div class="col-12 col-md-3 q-mb-xl">
                   <q-checkbox
@@ -750,7 +751,6 @@
             </q-expansion-item>
           </q-form>
         </q-tab-panel>
-
         <q-tab-panel name="subtareas">
           <essential-table-tabs
             titulo="Subtareas"
