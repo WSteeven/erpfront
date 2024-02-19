@@ -18,6 +18,7 @@ import { ContenedorSimpleMixin } from 'shared/contenedor/modules/simple/applicat
 import { RespuestaCuestionarioEmpleado } from '../domain/RespuestaCuestionarioEmpleado'
 import { ValidarCuestionarioLleno } from '../application/ValidarCuestionarioLleno'
 import { Cuestionario } from '../domain/Cuestionario'
+import { isAxiosError } from 'shared/utils'
 
 export default defineComponent({
   components: { TabLayout, ButtonSubmits },
@@ -36,15 +37,9 @@ export default defineComponent({
     const { entidad: respuestaCuestionarioEmpleado, accion, listadosAuxiliares } = mixin.useReferencias()
     const { onBeforeGuardar } = mixin.useHooks()
 
-    // Obtener el listados
     cargarVista(async () => {
       await obtenerListados({
-        preguntas: {
-          controller: new PreguntaController(),
-          params: {
-            campos: 'id,codigo,pregunta,cuestionario',
-          },
-        },
+        preguntas: [],
       })
     })
 
@@ -52,7 +47,6 @@ export default defineComponent({
     * Variables
     ************/
     const objetivo = 'El objetivo de este cuestionario es conocer algunos aspectos sobre las condiciones psicosociales en tu trabajo. El cuestionario es anónimo y se garantiza la confidencialidad de las respuestas. Con el fin de que la información que se obtenga sea útil es necesario que contestes sinceramente a todas las preguntas. Si hay alguna pregunta sin contestar el cuestionario no será válido. Tras leer atentamente cada pregunta así como sus opciones de respuesta, marca en cada caso la respuesta que consideres más adecuada, señalando una sola respuesta por cada pregunta.'
-    // const { notificarAdvertencia } = useNotificaciones()
 
     /*********
      * Reglas
@@ -89,13 +83,30 @@ export default defineComponent({
      * Hooks
      ********/
     onBeforeGuardar(() => {
-      console.log(listadosAuxiliares)
       respuestaCuestionarioEmpleado.cuestionario = listadosAuxiliares.preguntas.map((item: any) => {
         return {
           id_cuestionario: item.respuesta
         }
       })
     })
+
+    /*******
+     * Init
+     *******/
+    const preguntaController = new PreguntaController()
+    const mensaje = ref()
+    const consultarPreguntas = async () => {
+      try {
+        const { result } = await preguntaController.listar()
+        listadosAuxiliares.preguntas = result
+      } catch (e) {
+        if (isAxiosError(e)) {
+          const mensajes: string[] = e.erroresValidacion
+          mensaje.value = mensajes[0]
+        }
+      }
+    }
+    consultarPreguntas()
 
     return {
       v$,
@@ -107,6 +118,7 @@ export default defineComponent({
       guardar,
       reestablecer,
       objetivo,
+      mensaje,
     }
   },
 })

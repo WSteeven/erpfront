@@ -315,7 +315,8 @@ export default defineComponent({
     onBeforeGuardar(() => {
       if (fechaLimite.value) {
         horaLimite.value = ticket.establecer_hora_limite ? horaLimite.value : '23:59:59'
-        ticket.fecha_hora_limite = formatearFechaHora(fechaLimite.value, horaLimite.value)
+        ticket.fecha_hora_limite = `${fechaLimite.value} ${horaLimite.value}`
+        // ticket.fecha_hora_limite = formatearFechaHora(fechaLimite.value, horaLimite.value)
       }
 
       ticket.destinatarios = mapearIdsDestinatarios()

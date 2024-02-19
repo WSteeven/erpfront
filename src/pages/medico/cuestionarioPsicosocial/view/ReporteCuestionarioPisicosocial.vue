@@ -2,7 +2,9 @@
   <q-page padding>
     <essential-table
       titulo="Reporte de Cuestionarios"
-      :configuracionColumnas="[...ConfiguracionColumnasReporteCuestionarioEmpleado]"
+      :configuracionColumnas="[
+        ...ConfiguracionColumnasReporteCuestionarioEmpleado,
+      ]"
       :datos="listado"
       :permitirConsultar="false"
       :permitirEditar="false"
@@ -13,4 +15,5 @@
     </essential-table>
   </q-page>
 </template>
-<script src="./ReporteCuestionarioPisicosocial.ts" />
+
+<script src="./ReporteCuestionarioPsicosocial.ts" />

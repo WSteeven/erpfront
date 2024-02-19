@@ -25,6 +25,19 @@
       </div>
 
       <div
+        v-if="mensaje"
+        class="col-12 text-positive text-bold text-center text-h5"
+      >
+        <div class="q-mb-md">{{ mensaje }}</div>
+        <q-rating
+          :model-value="5"
+          name="bi-star-fill"
+          maz="5"
+          color="amber"
+        ></q-rating>
+      </div>
+
+      <div
         v-for="item in listadosAuxiliares.preguntas"
         :key="item.id"
         class="col-12 text-bold q-mb-md"
@@ -43,6 +56,7 @@
 
     <div class="row justify-center">
       <button-submits
+        v-if="listadosAuxiliares.preguntas.length"
         :accion="accion"
         label-guardar="Guardar respuestas y enviar"
         :permitirCancelar="true"
