@@ -244,7 +244,10 @@
                       >{{ scope.opt.plan_info }} -
                       {{ scope.opt.bundle }}</q-item-label
                     >
-                    <q-item-label caption>{{ scope.opt.nombre }}</q-item-label>
+                    <q-item-label caption
+                      >{{ scope.opt.nombre }}-
+                      {{ scope.opt.precio }}</q-item-label
+                    >
                   </q-item-section>
                 </q-item>
               </template>

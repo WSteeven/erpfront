@@ -5,10 +5,12 @@
     :ajustarCeldas="true"
     :accion1="btnDesactivar"
     :accion2="btnActivar"
+    puedeExportar
     :tab-options="tabOptionsVendedores"
     :tabDefecto="tabDefecto"
-    :filtrar="filtrarVendedores">
+    :filtrar="filtrarVendedores"
   >
+    >
     <template #formulario>
       <q-form @submit.prevent>
         <div class="row q-col-gutter-sm q-mb-md">
@@ -198,6 +200,6 @@
         </div>
       </q-form>
     </template>
-    </tab-layout-filter-tabs-2>
+  </tab-layout-filter-tabs-2>
 </template>
 <script src="./VendedorPage.ts"></script>

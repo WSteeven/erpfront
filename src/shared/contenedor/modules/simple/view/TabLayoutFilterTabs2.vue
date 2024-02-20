@@ -100,6 +100,7 @@
           :accion1Header="accion1Header"
           :accion2Header="accion2Header"
           :accion3Header="accion3Header"
+          :mostrarExportar="puedeExportar"
           @consultar="accionTabla.consultar"
           @editar="accionTabla.editar"
           @eliminar="accionTabla.eliminar"
