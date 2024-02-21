@@ -1,4 +1,6 @@
-export class ExamenSolicitado {
+import { Hidratable } from "shared/entidad/domain/Hidratable"
+
+export class ExamenSolicitado extends Hidratable {
   id: number | null // estadoSolicitudExamen
   examen: number | null
   examen_id: number | null
@@ -9,6 +11,7 @@ export class ExamenSolicitado {
   detalle_resultado_examen: number | null
 
   constructor() {
+    super()
     this.id = null
     this.examen = null
     this.examen_id = null

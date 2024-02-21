@@ -6,6 +6,7 @@ import { Ref, ref } from "vue"
 import { useMedicoStore } from "stores/medico"
 import { Examen } from "pages/medico/examenes/domain/Examen"
 import { useNotificaciones } from "shared/notificaciones"
+import { SolicitudExamen } from "../domain/SolicitudExamen"
 
 export function useBotonesSolicitudExamen(tabEstadoExamen: Ref, modales: ComportamientoModalesGestionPaciente) {
   /*********
@@ -28,7 +29,7 @@ export function useBotonesSolicitudExamen(tabEstadoExamen: Ref, modales: Comport
     titulo: 'Solicitar varios examenes',
     icono: 'bi-check-square',
     color: 'primary',
-    visible: () => !seleccionVariosExamen.value && tabEstadoExamen.value === estadosExamenes.PENDIENTE_SOLICITAR,
+    visible: () => !seleccionVariosExamen.value && tabEstadoExamen.value === estadosExamenes.PENDIENTE_SOLICITAR.value,
     accion: async () => seleccionVariosExamen.value = true
   }
 
@@ -48,7 +49,7 @@ export function useBotonesSolicitudExamen(tabEstadoExamen: Ref, modales: Comport
     titulo: 'Cancelar seleccion',
     icono: 'bi-x',
     color: 'negative',
-    visible: () => seleccionVariosExamen.value && tabEstadoExamen.value === estadosExamenes.PENDIENTE_SOLICITAR,
+    visible: () => seleccionVariosExamen.value && tabEstadoExamen.value === estadosExamenes.PENDIENTE_SOLICITAR.value,
     accion: async () => seleccionVariosExamen.value = false
   }
 
@@ -56,7 +57,7 @@ export function useBotonesSolicitudExamen(tabEstadoExamen: Ref, modales: Comport
     titulo: 'Nuevo diagnostico',
     icono: 'bi-plus',
     color: 'positive',
-    visible: () => tabEstadoExamen.value === estadosExamenes.DIAGNOSTICO_REALIZADO,
+    visible: () => tabEstadoExamen.value === estadosExamenes.DIAGNOSTICO_REALIZADO.value,
     accion: async () => {
       modales.abrirModalEntidad('DiagnosticoRecetaPage')
     }
@@ -69,7 +70,7 @@ export function useBotonesSolicitudExamen(tabEstadoExamen: Ref, modales: Comport
     titulo: 'Solicitar examen',
     icono: 'bi-plus',
     color: 'positive',
-    visible: () => tabEstadoExamen.value === estadosExamenes.PENDIENTE_SOLICITAR && !seleccionVariosExamen.value,
+    visible: () => tabEstadoExamen.value === estadosExamenes.PENDIENTE_SOLICITAR.value && !seleccionVariosExamen.value,
     accion: ({ entidad }) => {
       medicoStore.examenSolicitado = entidad
       examenesSeleccionados.value = [entidad]
@@ -89,7 +90,7 @@ export function useBotonesSolicitudExamen(tabEstadoExamen: Ref, modales: Comport
     titulo: 'Resultados',
     icono: 'bi-list',
     color: 'primary',
-    visible: ({ entidad }) => tabEstadoExamen.value === '1',
+    visible: ({ entidad }) => tabEstadoExamen.value === estadosExamenes.SOLICITADO.value,
     accion: ({ entidad }) => {
       medicoStore.examenSolicitado = entidad
       console.log(entidad)
@@ -104,14 +105,18 @@ export function useBotonesSolicitudExamen(tabEstadoExamen: Ref, modales: Comport
     }
   }
 
-  const btnConsultarEstadoSolicitudExamen: CustomActionTable = {
+  const btnConsultarEstadoSolicitudExamen: CustomActionTable<SolicitudExamen> = {
     titulo: 'Consultar estado',
     icono: 'bi-eye',
     color: 'primary',
-    visible: () => tabEstadoExamen.value === estadosExamenes.SOLICITADO,
+    visible: () => tabEstadoExamen.value === estadosExamenes.SOLICITADO.value,
     accion: ({ entidad }) => {
-      medicoStore.examenSolicitado = entidad
-      modales.abrirModalEntidad('ResultadosExamenPage')
+      /*medicoStore.examenSolicitado = entidad
+      examenesSeleccionados.value = [entidad]
+      medicoStore.examenesSolicitados = examenesSeleccionados.value
+      modales.abrirModalEntidad('SolicitudExamenPage')*/
+      medicoStore.examenesSolicitados = entidad.examenes_ids
+      modales.abrirModalEntidad('SolicitudExamenPage')
     }
   }
 

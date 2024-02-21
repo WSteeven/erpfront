@@ -131,7 +131,8 @@ export default defineComponent({
 
     examenesSolicitados?.forEach((examen: Examen) => {
       const examenSolicitado = new ExamenSolicitado()
-      examenSolicitado.examen = examen.id
+      examenSolicitado.hydrate(examen)
+      // examenSolicitado.examen = examen.id
       estadoSolicitudExamen.examenes_solicitados.push(examenSolicitado)
     })
 

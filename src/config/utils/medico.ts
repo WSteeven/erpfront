@@ -25,18 +25,22 @@ export const estadosExamenes = {
   PENDIENTE_SOLICITAR: {
     value: '0',
     label: 'Pendientes de solicitar',
+    icono: 'bi-cart-plus',
   },
   SOLICITADO: {
     value: '1',
     label: 'Solicitudes de exámenes',
+    icono: 'bi-cart-check',
   },
   APROBADO_POR_COMPRAS: {
     value: '2',
     label: 'Aprobado por compras',
+    icono: 'bi-cash-coin',
   },
   RESULTADOS: {
     value: '3',
     label: 'Resultados de exámenes',
+    icono: 'bi-table',
   },
   DIAGNOSTICO_REALIZADO: {
     value: '4',

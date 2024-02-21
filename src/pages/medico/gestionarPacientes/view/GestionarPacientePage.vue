@@ -158,6 +158,7 @@
                         tabs !== estadosExamenes.PENDIENTE_SOLICITAR.value,
                     }"
                     no-caps
+                    :icon="estadosExamenes.PENDIENTE_SOLICITAR.icono"
                   />
                   <q-tab
                     :name="estadosExamenes.SOLICITADO.value"
@@ -166,6 +167,7 @@
                       'tab-inactive': tabs !== estadosExamenes.SOLICITADO.value,
                     }"
                     no-caps
+                    :icon="estadosExamenes.SOLICITADO.icono"
                   />
                   <q-tab
                     :name="estadosExamenes.APROBADO_POR_COMPRAS.value"
@@ -175,6 +177,7 @@
                         tabs !== estadosExamenes.APROBADO_POR_COMPRAS.value,
                     }"
                     no-caps
+                    :icon="estadosExamenes.APROBADO_POR_COMPRAS.icono"
                   />
                   <q-tab
                     :name="estadosExamenes.RESULTADOS.value"
@@ -183,6 +186,7 @@
                       'tab-inactive': tabs !== estadosExamenes.RESULTADOS.value,
                     }"
                     no-caps
+                    :icon="estadosExamenes.RESULTADOS.icono"
                   />
                 </q-tabs>
 

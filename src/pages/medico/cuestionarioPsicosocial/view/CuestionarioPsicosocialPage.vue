@@ -17,7 +17,7 @@
     </div>
 
     <div class="row q-mb-lg">
-      <div class="col-7 q-mx-auto q-my-xl border-black q-pa-sm">
+      <div class="col-7 q-mx-auto q-my-xl border-black text-justify q-pa-sm">
         {{ objetivo }}
         <div class="text-bold">
           {{ 'ES IMPRESCINDIBLE RESPONDER A TODAS LAS PREGUNTAS' }}

@@ -32,7 +32,7 @@
         </q-select>
       </div>
     </div>
-
+    
     <div
       v-for="(
         examenSolicitado, index
