@@ -10,67 +10,80 @@
       </q-card-section>
 
       <q-card-section>
-        <!-- Fecha Inicio -->
-        <div class="col-6 col-md-3">
-          <label class="q-mb-sm block">Fecha Inicio:</label>
-          <q-input
-            v-model="cobrojp.fecha_inicio"
-            placeholder="Obligatorio"
-            :error="!!v$.fecha_inicio.$errors.length"
-            :disable="disabled"
-            outlined
-            dense
-          >
-            <template v-slot:append>
-              <q-icon name="event" class="cursor-pointer">
-                <q-popup-proxy cover transition-show="scale" transition-hide="scale">
-                  <q-date v-model="cobrojp.fecha_inicio" :mask="maskFecha" today-btn>
-                    <div class="row items-center justify-end">
-                      <q-btn v-close-popup label="Cerrar" color="primary" flat />
-                    </div>
-                  </q-date>
-                </q-popup-proxy>
-              </q-icon>
-            </template>
+        <div class="row q-col-gutter-sm">
+          <!-- Fecha Inicio -->
+          <div class="col-6 col-md-6">
+            <label class="q-mb-sm block">Fecha Inicio:</label>
+            <q-input
+              v-model="cobrojp.fecha_inicio"
+              placeholder="Obligatorio"
+              :error="!!v$.fecha_inicio.$errors.length"
+              @blur="v$.fecha_inicio.$touch"
+              :disable="disabled"
+              outlined
+              dense
+            >
+              <template v-slot:append>
+                <q-icon name="event" class="cursor-pointer">
+                  <q-popup-proxy cover transition-show="scale" transition-hide="scale">
+                    <q-date
+                      v-model="cobrojp.fecha_inicio"
+                      :mask="maskFecha"
+                      @blur="v$.fecha_inicio.$touch"
+                      today-btn
+                    >
+                      <div class="row items-center justify-end">
+                        <q-btn v-close-popup label="Cerrar" color="primary" flat />
+                      </div>
+                    </q-date>
+                  </q-popup-proxy>
+                </q-icon>
+              </template>
 
-            <template v-slot:error>
-              <div v-for="error of v$.fecha_inicio.$errors" :key="error.$uid">
-                <div class="error-msg">{{ error.$message }}</div>
-              </div>
-            </template>
-          </q-input>
+              <template v-slot:error>
+                <div v-for="error of v$.fecha_inicio.$errors" :key="error.$uid">
+                  <div class="error-msg">{{ error.$message }}</div>
+                </div>
+              </template>
+            </q-input>
+          </div>
+          <!-- Fecha Fin -->
+          <div class="col-6 col-md-6">
+            <label class="q-mb-sm block">Fecha Fin:</label>
+            <q-input
+              v-model="cobrojp.fecha_fin"
+              placeholder="Obligatorio"
+              :error="!!v$.fecha_fin.$errors.length"
+              :disable="disabled"
+              outlined
+              dense
+              @blur="v$.fecha_fin.$touch"
+            >
+              <template v-slot:append>
+                <q-icon name="event" class="cursor-pointer">
+                  <q-popup-proxy cover transition-show="scale" transition-hide="scale">
+                    <q-date
+                      v-model="cobrojp.fecha_fin"
+                      :mask="maskFecha"
+                      today-btn
+                      @blur="v$.fecha_fin.$touch"
+                    >
+                      <div class="row items-center justify-end">
+                        <q-btn v-close-popup label="Cerrar" color="primary" flat />
+                      </div>
+                    </q-date>
+                  </q-popup-proxy>
+                </q-icon>
+              </template>
+
+              <template v-slot:error>
+                <div v-for="error of v$.fecha_fin.$errors" :key="error.$uid">
+                  <div class="error-msg">{{ error.$message }}</div>
+                </div>
+              </template>
+            </q-input>
+          </div>
         </div>
-        <!-- Fecha Fin -->
-        <div class="col-6 col-md-3">
-          <label class="q-mb-sm block">Fecha Fin:</label>
-          <q-input
-            v-model="cobrojp.fecha_fin"
-            placeholder="Obligatorio"
-            :error="!!v$.fecha_fin.$errors.length"
-            :disable="disabled"
-            outlined
-            dense
-          >
-            <template v-slot:append>
-              <q-icon name="event" class="cursor-pointer">
-                <q-popup-proxy cover transition-show="scale" transition-hide="scale">
-                  <q-date v-model="cobrojp.fecha_fin" :mask="maskFecha" today-btn>
-                    <div class="row items-center justify-end">
-                      <q-btn v-close-popup label="Cerrar" color="primary" flat />
-                    </div>
-                  </q-date>
-                </q-popup-proxy>
-              </q-icon>
-            </template>
-
-            <template v-slot:error>
-              <div v-for="error of v$.fecha_fin.$errors" :key="error.$uid">
-                <div class="error-msg">{{ error.$message }}</div>
-              </div>
-            </template>
-          </q-input>
-        </div>
-
       </q-card-section>
 
       <q-separator></q-separator>

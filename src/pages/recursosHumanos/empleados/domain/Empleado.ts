@@ -18,6 +18,7 @@ export class Empleado extends EntidadAuditable {
   estado: boolean | null
   cargo: number | null
   area: number | null
+  area_info : string | null
   num_cuenta: string | null
   banco: number | null
   salario: number | null
@@ -60,8 +61,8 @@ export class Empleado extends EntidadAuditable {
   esta_en_rol_pago: boolean | null
   realiza_factura: boolean | null
   banco_info: string | null
-  acumula_fondos_reserva : boolean | null
-  familiares: any[] |null
+  acumula_fondos_reserva: boolean | null
+  familiares: any[] | null
   generar_usuario: boolean
 
 
@@ -84,6 +85,7 @@ export class Empleado extends EntidadAuditable {
     this.estado = true
     this.cargo = null
     this.area = null
+    this.area_info= null
     this.num_cuenta = null
     this.banco = null
     this.salario = null
@@ -128,6 +130,6 @@ export class Empleado extends EntidadAuditable {
     this.acumula_fondos_reserva = false
     this.realiza_factura = false
     this.familiares = [],
-    this.generar_usuario = false
+      this.generar_usuario = false
   }
 }

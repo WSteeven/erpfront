@@ -5,7 +5,7 @@
   }
 
   .bg-body {
-    background-color: $grey-3;
+    background-color: $grey-4 !important;
   }
 
   .bg-body-table {
@@ -17,7 +17,7 @@
   }
 
   .bg-desenfoque {
-    background-color: #efeff733 !important;
+    background-color: rgba($grey-2, 0.6) !important;
     backdrop-filter: blur(10px) !important;
   }
 
@@ -35,10 +35,21 @@
     background-color: #ffffff66;
     border-radius: 16px 4px 0 0;
     box-shadow: rgba(0, 0, 0, 0.12) 0px 5px 15px;
+    border-width: 1px 1px 0 1px;
+    border-style: solid;
+    border-color: $grey-4;
   }
 
   .bg-drawer {
+    background-color: $grey-2;
+  }
+
+  .bg-icon {
     background-color: #fff;
+  }
+
+  .color-icon-navbar {
+    color: $grey-8;
   }
 
   .q-card,
@@ -101,6 +112,10 @@
 
   .text-shadow {
     text-shadow: 1px 1px 4px #00000055;
+  }
+
+  .text-color {
+    color: #000;
   }
 
   // Toggle
@@ -170,6 +185,16 @@
     font-weight: 500 !important;
   }
 
+  .q-field--readonly .q-field__inner {
+    background-color: #9ba5bb23;
+    border-radius: 4px;
+  }
+
+  .q-field--readonly .q-field__inner .q-field__native {
+    color: #000 !important;
+    font-weight: 500 !important;
+  }
+
   // EssentialTableTabs
   .bg-table-tabs {
     background-color: #fff;
@@ -192,20 +217,22 @@
 
   // Menu item drawer
   .link-active {
-    background: rgba(#efeff7, 1);
-    border-right: 3px solid $primary;
+    background: $primary; //rgba(#efeff7, 1);
+    // border-right: 3px solid $primary;
+    border-radius: 16px;
+    color: white;
 
     i {
-      color: $primary;
+      color: white;
     }
 
-    .q-item__label {
+    /* .q-item__label {
       font-weight: bold;
-    }
+    } */
   }
 
   .color-icono {
-    color: #575b6e;
+    color: $primary; //#575b6e;
   }
 
   .q-card {

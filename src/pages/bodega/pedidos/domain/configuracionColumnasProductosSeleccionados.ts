@@ -37,5 +37,13 @@ export const configuracionColumnasProductosSeleccionados: ColumnConfig<any>[] = 
         align: 'left',
         sortable: false,
     },
+    {
+      name: 'acciones',
+      field: 'acciones',
+      label: 'Acciones',
+      align: 'center',
+      sortable: false,
+      style: 'width:250px'
+    }
 ]
 

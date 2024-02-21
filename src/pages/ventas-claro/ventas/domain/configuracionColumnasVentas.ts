@@ -1,7 +1,14 @@
 import { ColumnConfig } from "components/tables/domain/ColumnConfig";
-import { Ventas } from "./Ventas";
+import { Venta } from "./Venta";
 
-export const configuracionColumnasVentas: ColumnConfig<Ventas>[] = [
+export const configuracionColumnasVentas: ColumnConfig<Venta>[] = [
+  {
+    name: 'id',
+    field: 'id',
+    label: '#',
+    align: 'left',
+    sortable: true
+  },
   {
     name: 'orden_id',
     field: 'orden_id',
@@ -9,17 +16,24 @@ export const configuracionColumnasVentas: ColumnConfig<Ventas>[] = [
     align: 'left',
     sortable: true
   },
-  {
-    name: 'orden_interna',
-    field: 'orden_interna',
-    label: 'Orden Interna',
-    align: 'left',
-    sortable: true
-  },
+  // {
+  //   name: 'orden_interna',
+  //   field: 'orden_interna',
+  //   label: 'Orden Interna',
+  //   align: 'left',
+  //   sortable: true
+  // },
   {
     name: 'vendedor_info',
     field: 'vendedor_info',
     label: 'Vendedor',
+    align: 'left',
+    sortable: true
+  },
+  {
+    name: 'cliente_info',
+    field: 'cliente_info',
+    label: 'Cliente',
     align: 'left',
     sortable: true
   },
@@ -38,9 +52,16 @@ export const configuracionColumnasVentas: ColumnConfig<Ventas>[] = [
     sortable: true
   },
   {
-    name: 'fecha_activ',
-    field: 'fecha_activ',
+    name: 'fecha_activacion',
+    field: 'fecha_activacion',
     label: 'Fecha de Activacion',
+    align: 'left',
+    sortable: true
+  },
+  {
+    name: 'estado_activacion',
+    field: 'estado_activacion',
+    label: 'Estado',
     align: 'left',
     sortable: true
   },
@@ -52,19 +73,26 @@ export const configuracionColumnasVentas: ColumnConfig<Ventas>[] = [
     sortable: true
   },
   {
-    name: 'comision_vendedor',
-    field: 'comision_vendedor',
-    label: 'Comision',
+    name: 'comisiona',
+    field: 'comisiona',
+    label: 'Comisiona',
     align: 'left',
     sortable: true
   },
   {
-    name: 'chargeback',
-    field: 'chargeback',
-    label: 'Chargeback',
+    name: 'novedades',
+    field: 'novedades',
+    label: 'Novedades',
     align: 'left',
     sortable: true
   },
+  // {
+  //   name: 'chargeback',
+  //   field: 'chargeback',
+  //   label: 'Chargeback',
+  //   align: 'left',
+  //   sortable: true
+  // },
 
 
 ]

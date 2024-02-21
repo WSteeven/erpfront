@@ -54,6 +54,12 @@ export const configuracionColumnasSubtarea: ColumnConfig<Subtarea>[] = [
     type: 'number',
   },
   {
+    name: 'empleado_responsable',
+    field: 'empleado_responsable',
+    label: 'Empleado responsable',
+    align: 'left',
+  },
+  {
     name: 'fecha_solicitud',
     field: 'fecha_solicitud',
     label: 'Fecha solicitud',
@@ -162,12 +168,6 @@ export const configuracionColumnasSubtarea: ColumnConfig<Subtarea>[] = [
     align: 'left',
   },
   {
-    name: 'empleado_responsable',
-    field: 'empleado_responsable',
-    label: 'Empleado responsable',
-    align: 'left',
-  },
-  {
     name: 'subtarea_dependiente',
     field: 'subtarea_dependiente',
     label: 'Depende de',
@@ -190,6 +190,13 @@ export const configuracionColumnasSubtarea: ColumnConfig<Subtarea>[] = [
     name: 'proyecto',
     field: 'proyecto',
     label: 'Proyecto',
+    align: 'left',
+    sortable: true,
+  },
+  {
+    name: 'etapa',
+    field: 'etapa',
+    label: 'Etapa',
     align: 'left',
     sortable: true,
   },

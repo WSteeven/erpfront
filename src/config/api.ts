@@ -220,6 +220,7 @@ export const endpoints = {
   control_stocks: new Endpoint('control-stocks'),
   items_control_stocks_consolidados: new Endpoint('control-stocks/items-consolidados'),
   codigos_clientes: new Endpoint('codigos-clientes'),
+  detalles_materiales: new Endpoint('detalles-materiales'),
   detalles: new Endpoint('detalles'),
   devoluciones: new Endpoint('devoluciones'),
   detalle_producto_transaccion: new Endpoint(
@@ -267,6 +268,7 @@ export const endpoints = {
    * Modulo de tareas
    *********************/
   dashboard_tareas: new Endpoint('tareas/dashboard'),
+  etapas: new Endpoint('tareas/etapas'),
   proyectos: new Endpoint('tareas/proyectos'),
   tareas: new Endpoint('tareas/tareas'),
   subtareas: new Endpoint('tareas/subtareas'),
@@ -289,6 +291,7 @@ export const endpoints = {
   motivos_suspendidos: new Endpoint('tareas/motivos-suspendidos'),
   control_asistencias: new Endpoint('tareas/control-asistencias'),
   control_cambios: new Endpoint('tareas/control-cambios'),
+  tareas_empleado: new Endpoint('tareas/tareas-empleado'),
   tipos_elementos: new Endpoint('tareas/tipos-elementos'),
   clientes_finales: new Endpoint('tareas/clientes-finales'),
   tendidos: new Endpoint('tareas/tendidos'),
@@ -325,8 +328,11 @@ export const endpoints = {
   fechas_historial_materiales_stock_usados: new Endpoint('tareas/obtener-fechas-historial-materiales-stock-usados'),
   obtener_clientes_materiales_empleado: new Endpoint('tareas/obtener-clientes-materiales-empleado'),
   obtener_clientes_materiales_tarea: new Endpoint('tareas/obtener-clientes-materiales-tarea'),
+  transferencias_productos_empleados: new Endpoint('tareas/transferencias-productos-empleados'),
 
   // Modulo Fondos Rotativos
+  empleados_fondos_rotativos: new Endpoint('empleados-fondos-rotativos'),
+  reporte_valores_fondos_empleados: new Endpoint('fondos-rotativos/reporte-valores-fondos'),
   tipo_fondo: new Endpoint('fondos-rotativos/tipo-fondo'),
   gastos: new Endpoint('fondos-rotativos/gastos'),
   motivo_gasto: new Endpoint('fondos-rotativos/motivo-gasto'),
@@ -421,25 +427,40 @@ export const endpoints = {
   ),
   pausas_tickets: new Endpoint('tickets/tickets/obtener-pausas'),
   rechazos_tickets: new Endpoint('tickets/tickets/obtener-rechazados'),
+  linea_tiempo_tickets: new Endpoint('tickets/linea-tiempo'),
 
   /********************
    * Modulo de Ventas de Claro
    *********************/
   bonos: new Endpoint('ventas-claro/bonos'),
+  bonos_porcentuales: new Endpoint('ventas-claro/bono-porcentual'),
   comisiones: new Endpoint('ventas-claro/comisiones'),
   modalidad: new Endpoint('ventas-claro/modalidad'),
   planes: new Endpoint('ventas-claro/planes'),
-  producto_ventas: new Endpoint('ventas-claro/producto-ventas'),
-  vendedor: new Endpoint('ventas-claro/vendedor'),
+  productos_ventas: new Endpoint('ventas-claro/productos-ventas'),
+  vendedores_claro: new Endpoint('ventas-claro/vendedores'),
   ventas: new Endpoint('ventas-claro/ventas'),
+  actualizar_comisiones_ventas: new Endpoint('ventas-claro/actualizar-comisiones-ventas'),
   obtener_comision: new Endpoint('ventas-claro/obtener-comision'),
   tipo_chargebacks: new Endpoint('ventas-claro/tipo-chargeback'),
   chargebacks: new Endpoint('ventas-claro/chargebacks'),
-  pago_comision: new Endpoint('ventas-claro/pago-comision'),
-  bono_mensual_cumplimiento: new Endpoint('ventas-claro/bono-mensual-cumplimiento'),
+  cortes_pagos_comisiones: new Endpoint('ventas-claro/cortes-pagos-comisiones'),
+  retenciones_chargebacks: new Endpoint('ventas-claro/retenciones-chargebacks'),
+  pago_comision: new Endpoint('ventas-claro/pagos-comisiones'),
+  bono_mensual_cumplimiento: new Endpoint('ventas-claro/bonos-mensuales-cumplimientos'),
   bono_trimestral_cumplimiento: new Endpoint('ventas-claro/bono-trimestral-cumplimiento'),
-  cobrojp:new Endpoint('ventas-claro/cobrojp'),
-  pago:new Endpoint('ventas-claro/pago'),
-  reporte_ventas:new Endpoint('ventas-claro/reporte-ventas'),
-  dashboard_ventas_claro:new Endpoint('ventas-claro/dashboard')
+  cobrojp: new Endpoint('ventas-claro/cobrojp'),
+  pago: new Endpoint('ventas-claro/pago'),
+  reporte_ventas: new Endpoint('ventas-claro/reporte-ventas'),
+  dashboard_ventas_claro: new Endpoint('ventas-claro/dashboard'),
+  umbral_ventas: new Endpoint('ventas-claro/umbral-ventas'),
+  esquema_comision: new Endpoint('ventas-claro/esquema-comision'),
+  clientes_claro: new Endpoint('ventas-claro/clientes-claro'),
+  escenario_venta_jp: new Endpoint('ventas-claro/escenario-venta-jp'),
+  novedades_ventas: new Endpoint('ventas-claro/novedades-ventas'),
+
+
+
+
+
 }

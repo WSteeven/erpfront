@@ -278,7 +278,7 @@
             <label class="q-mb-sm block">Cliente</label>
             <q-select
               v-model="transferencia.cliente"
-              :options="opciones_clientes"
+              :options="clientes"
               transition-show="jum-up"
               transition-hide="jump-down"
               options-dense
@@ -288,7 +288,10 @@
               :readonly="disabled"
               :error="!!v$.cliente.$errors.length"
               error-message="Debes seleccionar un cliente"
-              @popup-show="ordenarClientes"
+              use-input
+              input-debounce="0"
+              @filter="filtrarClientes"
+              @popup-show="ordenarLista(clientes, 'razon_social')"
               :option-value="(item) => item.id"
               :option-label="(item) => item.razon_social"
               emit-value
@@ -311,14 +314,14 @@
           <!-- Select estado -->
           <div
             v-if="
-              (rolSeleccionado && esBodeguero) || accion === acciones.consultar
+              ( esBodeguero) || accion === acciones.consultar
             "
             class="col-12 col-md-3 q-mb-md"
           >
             <label class="q-mb-sm block">Estado</label>
             <q-select
               v-model="transferencia.estado"
-              :options="opciones_estados"
+              :options="opcionesEstadosTransferenciasBodega"
               transition-show="jum-up"
               transition-hide="jump-down"
               options-dense
@@ -326,8 +329,8 @@
               outlined
               :disable="disabled || (soloLectura && !esBodeguero)"
               :readonly="disabled || (soloLectura && !esBodeguero)"
-              :option-value="(v) => v.id"
-              :option-label="(v) => v.nombre"
+              :option-value="(v) => v.value"
+              :option-label="(v) => v.label"
               emit-value
               map-options
             >

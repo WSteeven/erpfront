@@ -95,6 +95,7 @@
               use-input
               input-debounce="0"
               @filter="filtrarSucursales"
+              @popup-show="ordenarLista(opciones_sucursales, 'lugar')"
               @update:model-value="seleccionarPropietario"
               :error="!!v$.sucursal_id.$errors.length"
               error-message="Debes seleccionar una sucursal"
@@ -115,7 +116,7 @@
             <label class="q-mb-sm block">Propietario</label>
             <q-select
               v-model="stock.cliente_id"
-              :options="opciones_clientes"
+              :options="clientes"
               transition-show="scale"
               transition-hide="scale"
               options-dense

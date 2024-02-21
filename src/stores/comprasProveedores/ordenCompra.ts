@@ -67,6 +67,7 @@ export const useOrdenCompraStore = defineStore('ordenCompra', () => {
       const axios = AxiosHttpRepository.getInstance()
       const url = apiConfig.URL_BASE + '/' + axios.getEndpoint(endpoints.ordenes_compras) + '/anular/' + idOrden.value
       const response: AxiosResponse = await axios.post(url, data)
+      console.log(response)
       return response
     } catch (e: any) {
       notificarError(e)

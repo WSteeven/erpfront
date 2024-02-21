@@ -99,7 +99,7 @@ export default defineComponent({
       icono: 'bi-printer',
       color: 'positive',
       visible: ({ entidad }) =>
-        authenticationStore.can('puede.acceder.alimentacion'),
+        authenticationStore.can('puede.acceder.alimentaciones'),
       accion: ({ entidad }) => {
         const config: CustomActionPrompt = reactive({
           mensaje: 'Confirme el tipo de reporte',
@@ -120,7 +120,7 @@ export default defineComponent({
       },
     }
     const btnCashAlimentacion: CustomActionTable = {
-      titulo: 'Cash Rol de Alimentacion',
+      titulo: 'Cash de Alimentacion',
       icono: 'bi-cash-stack',
       color: 'primary',
       visible: () =>

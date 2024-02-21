@@ -93,7 +93,10 @@ export default defineComponent({
 
     cargarVista(async () => {
       await obtenerListados({
-        departamentos: new DepartamentoController(),
+        departamentos: {
+          controller: new DepartamentoController(),
+          params: { activo: 1 },
+        },
         categoriasTiposTickets: new CategoriaTipoTicketController(),
         tiposTickets: {
           controller: new TipoTicketController(),
@@ -315,7 +318,8 @@ export default defineComponent({
     onBeforeGuardar(() => {
       if (fechaLimite.value) {
         horaLimite.value = ticket.establecer_hora_limite ? horaLimite.value : '23:59:59'
-        ticket.fecha_hora_limite = formatearFechaHora(fechaLimite.value, horaLimite.value)
+        // ticket.fecha_hora_limite = formatearFechaHora(fechaLimite.value, horaLimite.value)
+        ticket.fecha_hora_limite = `${fechaLimite.value} ${horaLimite.value}`
       }
 
       ticket.destinatarios = mapearIdsDestinatarios()

@@ -1281,6 +1281,18 @@
           ></q-icon>
           NO REALIZADA
         </q-chip>
+        <!-- ANULADA -->
+        <q-chip
+          v-if="props.value === 'ANULADA'"
+          :class="{ 'bg-red-1': !$q.dark.isActive }"
+        >
+          <q-icon
+            name="bi-circle-fill"
+            color="negative"
+            class="q-mr-xs"
+          ></q-icon>
+          ANULADA
+        </q-chip>
         <q-icon
           v-if="props.value === 1 || props.value === true"
           name="bi-check-circle-fill"

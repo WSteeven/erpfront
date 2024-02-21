@@ -7,7 +7,7 @@
           <div class="col-12 col-md-3">
             <label class="q-mb-sm block">Nombre</label>
             <q-input
-              v-model="producto_ventas.nombre"
+              v-model="planes.nombre"
               placeholder="Obligatorio"
               type="textarea"
               :disable="disabled"
@@ -29,5 +29,4 @@
     </template>
   </tab-layout>
 </template>
-<script src="./ProductoVentasPage.ts"></script>
-./PlanesPage.js./PlanesPage.js
+<script src="./PlanesPage.ts"></script>

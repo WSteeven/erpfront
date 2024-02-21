@@ -22,7 +22,6 @@ import { configuracionColumnasProductosSeleccionados } from '../domain/configura
 import { acciones, autorizaciones, autorizacionesTransacciones, estados, estadosTransacciones, tabOptionsPedidos } from 'config/utils'
 import { EmpleadoController } from 'pages/recursosHumanos/empleados/infraestructure/EmpleadoController'
 import { configuracionColumnasDetallesModal } from '../domain/configuracionColumnasDetallesModal'
-import { TareaController } from 'tareas/infraestructure/TareaController'
 import { CustomActionTable } from 'components/tables/domain/CustomActionTable'
 import { CustomActionPrompt } from 'components/tables/domain/CustomActionPrompt'
 import { useNotificaciones } from 'shared/notificaciones'
@@ -37,10 +36,16 @@ import { ClienteController } from 'sistema/clientes/infraestructure/ClienteContr
 import { CambiarEstadoPedido } from '../application/CambiarEstadoPedido'
 import { useNotificacionStore } from 'stores/notificacion'
 import { useCargandoStore } from 'stores/cargando'
-import { Sucursal } from 'pages/administracion/sucursales/domain/Sucursal'
-import { ordernarListaString } from 'shared/utils'
+import { ordenarLista, ordernarListaString } from 'shared/utils'
 import { SucursalController } from 'pages/administracion/sucursales/infraestructure/SucursalController'
 import { ComportamientoModalesPedido } from '../application/ComportamientoModalesPedido'
+import { useFiltrosListadosSelects } from 'shared/filtrosListadosGenerales'
+import { ProyectoController } from 'pages/gestionTrabajos/proyectos/infraestructure/ProyectoController'
+import { StatusEssentialLoading } from 'components/loading/application/StatusEssentialLoading'
+import { TareaController } from 'pages/gestionTrabajos/tareas/infraestructure/TareaController'
+import { TareasEmpleadoController } from 'pages/gestionTrabajos/tareas/infraestructure/TareasEmpleadoController'
+import { EtapaController } from 'pages/gestionTrabajos/proyectos/modules/etapas/infraestructure/EtapaController'
+import { Tarea } from 'pages/gestionTrabajos/tareas/domain/Tarea'
 
 
 export default defineComponent({
@@ -50,13 +55,15 @@ export default defineComponent({
     const { entidad: pedido, disabled, accion, listadosAuxiliares, listado } = mixin.useReferencias()
     const { setValidador, obtenerListados, cargarVista } = mixin.useComportamiento()
     const { onReestablecer, onConsultado } = mixin.useHooks()
-    const { confirmar, prompt, notificarCorrecto, notificarError } = useNotificaciones()
+    const { confirmar, prompt, notificarCorrecto, notificarError, notificarAdvertencia } = useNotificaciones()
 
+    // modales
     const modales = new ComportamientoModalesPedido()
 
     // Stores
     useNotificacionStore().setQuasar(useQuasar())
     useCargandoStore().setQuasar(useQuasar())
+    const cargando = new StatusEssentialLoading()
     const pedidoStore = usePedidoStore()
     const store = useAuthenticationStore()
     const router = useRouter()
@@ -85,17 +92,21 @@ export default defineComponent({
 
     onReestablecer(() => {
       soloLectura.value = false
+      cargarDatosDefecto()
     })
     onConsultado(() => {
-      opciones_empleados.value = listadosAuxiliares.empleados
+      empleados.value = listadosAuxiliares.empleados
       if (accion.value === acciones.editar && (esCoordinador || esActivosFijos || store.user.id === pedido.per_autoriza_id)) {
         soloLectura.value = true
       }
+      obtenerProyectos()
+      obtenerEtapasProyecto(pedido.proyecto, false)
     })
     //variables para cosultar los detalles
     const all = ref(true)
     const only_sucursal = ref(false)
     const only_cliente_tarea = ref(false)
+    const etapasResponsable = ref([])
     const group = ref('only_sucursal')
     const options_groups = [
       {
@@ -112,13 +123,19 @@ export default defineComponent({
       },
     ]
 
-    const opciones_clientes = ref([])
-    const opciones_empleados = ref([])
-    const opciones_sucursales = ref([])
-    const opciones_tareas = ref([])
+
+    const {
+      empleados, filtrarEmpleados,
+      clientes, filtrarClientes,
+      proyectos, filtrarProyectos,
+      etapas, filtrarEtapas,
+      tareas, filtrarTareas,
+      sucursales, filtrarSucursales,
+    } = useFiltrosListadosSelects(listadosAuxiliares)
 
     //Obtener los listados
     cargarVista(async () => {
+      cargarDatosDefecto()
       await obtenerListados({
         empleados: {
           controller: new EmpleadoController(),
@@ -127,22 +144,21 @@ export default defineComponent({
             estado: 1,
           }
         },
-        tareas: {
-          controller: new TareaController(),
-          params: {
-            campos: 'id,codigo_tarea,titulo,cliente_id',
-            finalizado: 0
-          }
-        },
         clientes: {
           controller: new ClienteController(),
           params: {
-            campos: 'id,empresa_id',
+            campos: 'id,razon_social',
             requiere_bodega: 1,
             estado: 1,
           },
         },
+        sucursales: JSON.parse(LocalStorage.getItem('sucursales')!.toString())
       })
+      //Configurar los listados
+      empleados.value = listadosAuxiliares.empleados
+      tareas.value = listadosAuxiliares.tareas
+      clientes.value = listadosAuxiliares.clientes
+      sucursales.value = listadosAuxiliares.sucursales
     })
 
 
@@ -158,6 +174,7 @@ export default defineComponent({
       responsable: {
         requiredIfCoordinador: requiredIf(() => (esCoordinador || !esTecnico || esRRHH) && !pedido.para_cliente)
       },
+      etapa: { requiredIf: requiredIf(() => { if (etapas.value) return etapas.value.length && pedido.proyecto }) },
       tarea: { requiredIfTarea: requiredIf(() => pedido.es_tarea!) },
       // fecha_limite: {
       //   required: requiredIf(() => pedido.tiene_fecha_limite!),
@@ -180,6 +197,117 @@ export default defineComponent({
      * Funciones
      *****************************************************************************************
      */
+    function cargarDatosDefecto() {
+      pedido.solicitante = store.user.id
+      pedido.responsable = store.user.id
+
+    }
+    async function obtenerProyectos() {
+      cargando.activar()
+      const response = await new ProyectoController().listar({
+        empleado_id: pedido.responsable,
+        campos: 'id,nombre,codigo_proyecto',
+        finalizado: 0,
+      })
+      listadosAuxiliares.proyectos = response.result
+      proyectos.value = response.result
+      if (accion.value == acciones.nuevo) obtenerTareasEtapa(null)
+      else obtenerTareasEtapa(pedido.etapa, false)
+      cargando.desactivar()
+    }
+
+    /**
+     * La función "limpiarCampos" borra los campos "etapa" o "tarea" si los parámetros correspondientes
+     * son verdaderos.
+     * @param [etapa=false] - Si se establece en verdadero, el campo "etapa" se establecerá en nulo.
+     * @param [tarea=false] - Si se establece en verdadero, la propiedad "tarea" se establecerá en nula.
+     */
+    function limpiarCampos(etapa = false, tarea = false) {
+      if (accion.value == acciones.nuevo) {
+        if (etapa) pedido.etapa = null
+        if (tarea) pedido.tarea = null
+      }
+    }
+    async function obtenerEtapasProyecto(limpiarEtapa, limpiarTarea) {
+      cargando.activar()
+      if (pedido.proyecto) {
+        limpiarCampos(limpiarEtapa, limpiarTarea)
+        // const proyectoSeleccionado = listadosAuxiliares.proyectos.filter((proyecto) => proyecto.id === pedido.proyecto)[0]
+        // if (proyectoSeleccionado) {
+        //   console.log(proyectoSeleccionado)
+        // }
+        const response = await new EtapaController().listar({ etapas_empleado: 1, empleado_id: pedido.responsable, proyecto_id: pedido.proyecto })
+        etapasResponsable.value = response.result
+        if (response.result.length < 1) {
+          await obtenerTareasEtapa(null, false)
+        } else {
+          const response = await new TareaController().listar({ activas_empleado: 1, empleado_id: pedido.responsable, proyecto_id: pedido.proyecto })
+          listadosAuxiliares.tareas = response.result
+          tareas.value = response.result
+        }
+        listadosAuxiliares.etapas = etapasResponsable.value
+        etapas.value = etapasResponsable.value
+      } else {
+        etapas.value = []
+        limpiarCampos(true, true)
+        await obtenerTareasEtapa(null, false)
+      }
+      cargando.desactivar()
+    }
+    async function obtenerTareasEtapa(idEtapa: number | null, limpiarTarea = true) {
+      cargando.activar()
+      limpiarCampos(false, limpiarTarea)
+      const response = await new TareaController().listar({ activas_empleado: 1, proyecto_id: pedido.proyecto, etapa_id: idEtapa, empleado_id: pedido.responsable, campos: 'id,codigo_tarea,titulo', finalizado: 0 })
+      listadosAuxiliares.tareas = response.result
+      tareas.value = response.result
+      cargando.desactivar()
+    }
+
+    async function obtenerDatosTareaSeleccionada() {
+      const tareaSeleccionada = listadosAuxiliares.tareas.filter((v: Tarea) => v.id == pedido.tarea)[0]
+      if (tareaSeleccionada) {
+        // console.log(tareaSeleccionada)
+        pedido.cliente_id = tareaSeleccionada.cliente_id
+        if (pedido.proyecto == null) {
+          pedido.proyecto = tareaSeleccionada.proyecto_id
+          await obtenerEtapasProyecto(true, true)
+        }
+        pedido.etapa = tareaSeleccionada.etapa_id
+        pedido.tarea = tareaSeleccionada.id
+      }
+    }
+
+    async function obtenerProyectosTareasTecnico(limpiarProyecto = true) {
+      if (limpiarProyecto) pedido.proyecto = null
+      limpiarCampos(true, true)
+      cargando.activar()
+      if (pedido.responsable) {
+        const response = await new ProyectoController().listar({ empleado_id: pedido.responsable, finalizado: 0 })
+        listadosAuxiliares.proyectos = response.result
+        proyectos.value = response.result
+        await obtenerEtapasProyecto(false, false)
+        // await obtenerTareasTecnico()
+      } else {
+        pedido.es_tarea = false
+      }
+      cargando.desactivar()
+    }
+
+    /**
+     * La función "obtenerTareasTecnico" recupera una lista de tareas para un empleado, proyecto y
+     * etapa específicos, y actualiza la variable "tareas" con el resultado.
+     */
+    async function obtenerTareasTecnico() {
+      cargando.activar()
+      if (pedido.responsable) {
+        const response = await new TareaController().listar({ activas_empleado: 1, empleado_id: pedido.responsable, finalizado: 0, proyecto_id: pedido.proyecto, etapa_id: pedido.etapa })
+        listadosAuxiliares.tareas = response.result
+        tareas.value = response.result
+      }
+      cargando.desactivar()
+    }
+
+
     async function recargarSucursales() {
       const sucursales = (await new SucursalController().listar({ campos: 'id,lugar' })).result
       LocalStorage.set('sucursales', JSON.stringify(sucursales))
@@ -187,6 +315,10 @@ export default defineComponent({
     function eliminar({ entidad, posicion }) {
       confirmar('¿Está seguro de continuar?', () => pedido.listadoProductos.splice(posicion, 1))
     }
+
+    /*******************************************************************************************
+     * Botones de tabla
+     ******************************************************************************************/
     const botonEliminar: CustomActionTable = {
       titulo: 'Quitar',
       color: 'negative',
@@ -194,7 +326,6 @@ export default defineComponent({
       accion: ({ entidad, posicion }) => eliminar({ entidad, posicion }),
       visible: () => accion.value == acciones.consultar ? false : true
     }
-
     const botonAnularAutorizacion: CustomActionTable = {
       titulo: 'Anular',
       color: 'negative',
@@ -231,7 +362,6 @@ export default defineComponent({
       tooltip: 'Marcar pedido como completado',
       accion: ({ entidad, posicion }) => {
         confirmar('¿Está seguro de marcar el pedido como completado?', () => {
-          console.log(entidad, posicion)
           const data: CustomActionPrompt = {
             titulo: 'Observación',
             mensaje: 'Ingresa el motivo de marcar como completo el pedido',
@@ -271,14 +401,12 @@ export default defineComponent({
         return accion.value == acciones.consultar ? false : true
       }
     }
-
     const botonDespachar: CustomActionTable = {
       titulo: 'Despachar',
       color: 'primary',
       icono: 'bi-pencil-square',
       accion: ({ entidad, posicion }) => {
         pedidoStore.pedido = entidad
-        console.log('Pedido a despachar es: ', pedidoStore.pedido)
         router.push('transacciones-egresos')
       },
       visible: ({ entidad }) => (tabSeleccionado.value == 'APROBADO' || tabSeleccionado.value == 'PARCIAL') && esBodeguero && entidad.estado != estadosTransacciones.completa ? true : false
@@ -289,12 +417,10 @@ export default defineComponent({
       icono: 'bi-gear',
       accion: ({ entidad, posicion }) => {
         pedidoStore.pedido = entidad
-        console.log('Entidad es: ', entidad)
         modales.abrirModalEntidad('CorregirPedidoPage')
       },
       visible: ({ entidad }) => (tabSeleccionado.value == 'APROBADO' || tabSeleccionado.value == 'PARCIAL') && (esBodeguero || entidad.per_autoriza_id == store.user.id) && entidad.estado != estadosTransacciones.completa ? true : false
     }
-
     const botonImprimir: CustomActionTable = {
       titulo: 'Imprimir',
       color: 'secondary',
@@ -302,46 +428,32 @@ export default defineComponent({
       accion: async ({ entidad }) => {
         pedidoStore.idPedido = entidad.id
         await pedidoStore.imprimirPdf()
-        // console.log(pedidoStore.pedido)
-        // console.log(pedidoStore.pedido.listadoProductos)
-        // console.log(pedidoStore.pedido.listadoProductos.flatMap((v) => v))
       },
       visible: () => tabSeleccionado.value == 'APROBADO' || tabSeleccionado.value == 'PARCIAL' || tabSeleccionado.value == 'COMPLETA' ? true : false
     }
-
-    function actualizarElemento(posicion: number, entidad: any): void {
-      if (posicion >= 0) {
-        listado.value.splice(posicion, 1, entidad)
-        listado.value = [...listado.value]
-      }
-    }
-
-    //Configuracion de columnas
-    const configuracionColumnasProductosSeleccionadosAccion = [...configuracionColumnasProductosSeleccionados, {
-      name: 'acciones',
-      field: 'acciones',
-      label: 'Acciones',
-      align: 'center',
-      sortable: false,
-      style: 'width:250px'
-
-    }]
+    // function actualizarElemento(posicion: number, entidad: any): void {
+    //   if (posicion >= 0) {
+    //     listado.value.splice(posicion, 1, entidad)
+    //     listado.value = [...listado.value]
+    //   }
+    // }
 
 
-    //Configurar los listados
-    opciones_empleados.value = listadosAuxiliares.empleados
-    opciones_tareas.value = listadosAuxiliares.tareas
-    opciones_clientes.value = listadosAuxiliares.clientes
-    opciones_sucursales.value = JSON.parse(LocalStorage.getItem('sucursales')!.toString())
+
 
     return {
       mixin, pedido, disabled, accion, v$, acciones,
       configuracionColumnas: configuracionColumnasPedidos,
-      //listados
-      opciones_empleados,
-      opciones_tareas,
-      opciones_clientes,
-      opciones_sucursales,
+
+      //listados y filtros
+      clientes, filtrarClientes,
+      proyectos, filtrarProyectos,
+      etapas, filtrarEtapas,
+      tareas, filtrarTareas,
+      sucursales, filtrarSucursales,
+      empleados, filtrarEmpleados,
+      estados,
+      autorizaciones,
       opciones_estados: estados,
       opciones_autorizaciones: autorizaciones,
 
@@ -356,7 +468,7 @@ export default defineComponent({
 
 
       //tabla
-      configuracionColumnasProductosSeleccionadosAccion,
+      configuracionColumnasProductosSeleccionados,
       configuracionColumnasProductosSeleccionadosDespachado,
       botonEditarCantidad,
       botonCorregir,
@@ -381,6 +493,9 @@ export default defineComponent({
       puedeEditar,
       esCoordinador, esCoordinadorBackup: store.esCoordinadorBackup, esBodeguero, esTecnico, esActivosFijos, esRRHH,
 
+      obtenerProyectosTareasTecnico,
+      obtenerEtapasProyecto,
+      obtenerTareasEtapa,
       checkEvidencia(val, evt) {
         if (!val) {
           pedido.evidencia1 = ''
@@ -397,7 +512,15 @@ export default defineComponent({
         if (!val) pedido.per_retira = null
       },
       checkEsTarea(val, evt) {
-        if (!val) pedido.tarea = null
+        if (val) {
+          if (!pedido.responsable) {
+            notificarAdvertencia('Debes seleccionar primero un empleado (técnico) responsable')
+            pedido.es_tarea = false
+          }
+          else obtenerProyectos()
+        } else {
+          pedido.tarea = null
+        }
       },
       tabEs(val) {
         tabSeleccionado.value = val
@@ -406,65 +529,13 @@ export default defineComponent({
       },
 
       //Filtros
-      filtroResponsable(val, update) {
-        if (val === '') {
-          update(() => {
-            // opciones_empleados.value = listadosAuxiliares.empleados
-            opciones_empleados.value = listadosAuxiliares.empleados
-          })
-          return
-        }
-        update(() => {
-          const needle = val.toLowerCase()
-          opciones_empleados.value = listadosAuxiliares.empleados.filter((v) => (v.nombres.toLowerCase().indexOf(needle) > -1 || v.apellidos.toLowerCase().indexOf(needle) > -1))
-        })
-      },
-      filtroRetira(val, update) {
-        if (val === '') {
-          update(() => {
-            // opciones_empleados.value = listadosAuxiliares.empleados
-            opciones_empleados.value = listadosAuxiliares.empleados
-          })
-          return
-        }
-        update(() => {
-          const needle = val.toLowerCase()
-          opciones_empleados.value = listadosAuxiliares.empleados.filter((v) => (v.nombres.toLowerCase().indexOf(needle) > -1 || v.apellidos.toLowerCase().indexOf(needle) > -1))
-        })
-      },
-      filtroClientes(val, update) {
-        if (val === '') {
-          update(() => opciones_clientes.value = listadosAuxiliares.clientes)
-          return
-        }
-        update(() => {
-          const needle = val.toLowerCase()
-          opciones_clientes.value = listadosAuxiliares.clientes.filter((v) => v.razon_social.toLowerCase().indexOf(needle) > -1)
-        })
-      },
+      ordenarLista,
 
       onRowClick: (row) => alert(`${row.name} clicked`),
-      pedidoSeleccionado(val) {
-        pedido.cliente_id = listadosAuxiliares.tareas.filter((v) => (v.id === val))[0]['cliente_id']
-        console.log(pedido.cliente_id)
-      },
+      obtenerDatosTareaSeleccionada,
 
       recargarSucursales,
-      filtroSucursales(val, update) {
-        if (val === '') {
-          update(() => {
-            opciones_sucursales.value = JSON.parse(LocalStorage.getItem('sucursales')!.toString())
-          })
-          return
-        }
-        update(() => {
-          const needle = val.toLowerCase()
-          opciones_sucursales.value = JSON.parse(LocalStorage.getItem('sucursales')!.toString()).filter((v) => v.lugar.toLowerCase().indexOf(needle) > -1)
-        })
-      },
-      ordenarSucursales() {
-        opciones_sucursales.value.sort((a: Sucursal, b: Sucursal) => ordernarListaString(a.lugar!, b.lugar!))
-      },
+
     }
   }
 })

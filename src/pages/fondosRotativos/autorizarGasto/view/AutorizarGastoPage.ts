@@ -1,8 +1,7 @@
 // Dependencias
 
 import { useAuthenticationStore } from 'stores/authentication'
-import { useNotificaciones } from 'shared/notificaciones'
-import { computed, defineComponent, ref } from 'vue'
+import {  defineComponent, ref } from 'vue'
 import {
   accionesTabla,
   tabAutorizarGasto,
@@ -19,16 +18,12 @@ import { CustomActionTable } from 'components/tables/domain/CustomActionTable'
 import { configuracionColumnasAutorizarGasto } from '../domain/configuracionColumnasAutorizarGasto'
 import { StatusEssentialLoading } from 'components/loading/application/StatusEssentialLoading'
 import { AutorizarGastoController } from '../infrestructure/AutorizarGastoController'
-import { AprobarGastoController } from '../infrestructure/AprobarGastoController'
-import { AutorizarGasto } from '../domain/AutorizarGasto'
 import ModalEntidad from 'components/modales/view/ModalEntidad.vue'
 import { ComportamientoModalesAutorizarGasto } from '../application/ComportamientoModalesAutorizarGasto'
 import { useFondoRotativoStore } from 'stores/fondo_rotativo'
-import { AutorizarGastoModales } from '../domain/AutorizarGastoModales'
 import { useNotificacionStore } from 'stores/notificacion'
 import { useQuasar } from 'quasar'
 import { useCargandoStore } from 'stores/cargando'
-import { log } from 'console'
 import { GastoController } from 'pages/fondosRotativos/gasto/infrestructure/GastoController'
 export default defineComponent({
   name: 'AutorizarGastoPage',
@@ -40,14 +35,6 @@ export default defineComponent({
   setup() {
     const controller = new AutorizarGastoController()
     const gastos_controller = new GastoController()
-    const aprobarController = new AprobarGastoController()
-    const {
-      confirmar,
-      prompt,
-      notificarCorrecto,
-      notificarAdvertencia,
-      notificarError,
-    } = useNotificaciones()
     const tabActual = ref()
     /***********
      * Mixin
@@ -96,12 +83,15 @@ export default defineComponent({
         fondoRotativoStore.existeFactura =
           entidad.factura == null ? false : true
         fondoRotativoStore.id_gasto = entidad.id
+
         fondoRotativoStore.estaSemanAC = estaEnSemanaActual(entidad.fecha_viat)
+        fondoRotativoStore.existeFactura = entidad.tiene_factura
         fondoRotativoStore.accionForm =
-          authenticationStore.user.id === entidad.aut_especial &&
-          entidad.estado === estadosGastos.PENDIENTE
-            ? acciones.editar
-            : acciones.consultar
+        authenticationStore.user.id === entidad.aut_especial &&
+        entidad.estado === estadosGastos.PENDIENTE
+        ? acciones.editar
+        : acciones.consultar
+        fondoRotativoStore.empleado_id= entidad.id_usuario
         modales.abrirModalEntidad('VisualizarGastoPage')
       },
     }
@@ -117,7 +107,7 @@ export default defineComponent({
 
       // Calcula la diferencia en días
       const diferenciaDias = fechaInicio.getDate() - fechaFin.getDate()
-      if (diferenciaDias <= 8 || authenticationStore.esAdministrador) {
+      if (diferenciaDias <= 15 || authenticationStore.esAdministrador) {
         return true
       } else {
         return false

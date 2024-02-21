@@ -5,7 +5,7 @@ import { configuracionColumnasItemsSeleccionados } from '../domain/configuracion
 import { required, requiredIf } from '@vuelidate/validators'
 import { useVuelidate } from '@vuelidate/core'
 import { defineComponent, ref } from 'vue'
-import { acciones, tabOptionsTransferencias, } from 'config/utils'
+import { acciones, opcionesEstadosTransferenciasBodega, tabOptionsTransferencias, } from 'config/utils'
 
 
 //Componentes
@@ -30,9 +30,9 @@ import { configuracionColumnasInventarios } from 'pages/bodega/inventario/domain
 import { LocalStorage } from 'quasar'
 import { ValidarListadoProductos } from '../application/validaciones/ValidarListadoProductos'
 import { Sucursal } from 'pages/administracion/sucursales/domain/Sucursal'
-import { ordernarListaString } from 'shared/utils'
+import { ordenarLista, ordernarListaString } from 'shared/utils'
 import { SucursalController } from 'pages/administracion/sucursales/infraestructure/SucursalController'
-import { Cliente } from 'sistema/clientes/domain/Cliente'
+import { useFiltrosListadosSelects } from 'shared/filtrosListadosGenerales'
 
 
 export default defineComponent({
@@ -71,9 +71,10 @@ export default defineComponent({
 
         const opciones_autorizaciones = ref([])
         const opciones_sucursales = ref([])
-        const opciones_estados = ref([])
         const opciones_empleados = ref([])
-        const opciones_clientes = ref([])
+
+
+        const { clientes, filtrarClientes } = useFiltrosListadosSelects(listadosAuxiliares)
 
         cargarVista(async () => {
             await obtenerListados({
@@ -87,7 +88,7 @@ export default defineComponent({
                 clientes: {
                     controller: new ClienteController(),
                     params: {
-                        campos: 'id,empresa_id',
+                        campos: 'id,razon_social',
                         requiere_bodega: 1,
                         estado: 1,
                     },
@@ -200,10 +201,9 @@ export default defineComponent({
 
         //configurar los listados
         opciones_empleados.value = listadosAuxiliares.empleados
-        opciones_clientes.value = listadosAuxiliares.clientes
+        clientes.value = listadosAuxiliares.clientes
         opciones_sucursales.value = JSON.parse(LocalStorage.getItem('sucursales')!.toString())
         opciones_autorizaciones.value = JSON.parse(LocalStorage.getItem('autorizaciones')!.toString())
-        opciones_estados.value = JSON.parse(LocalStorage.getItem('estados_transacciones')!.toString())
 
 
         async function recargarSucursales() {
@@ -217,11 +217,11 @@ export default defineComponent({
             acciones,
 
             //listados
-            opciones_clientes,
-            opciones_estados,
+            clientes,
             opciones_sucursales,
             opciones_empleados,
             opciones_autorizaciones,
+            opcionesEstadosTransferenciasBodega,
 
             //variables auxiliares
             esVisibleAutorizacion,
@@ -278,9 +278,8 @@ export default defineComponent({
             ordenarSucursales() {
                 opciones_sucursales.value.sort((a: Sucursal, b: Sucursal) => ordernarListaString(a.lugar!, b.lugar!))
             },
-            ordenarClientes() {
-                opciones_clientes.value.sort((a: Cliente, b: Cliente) => ordernarListaString(a.razon_social!, b.razon_social!))
-              },
+            filtrarClientes,
+            ordenarLista,
 
 
 

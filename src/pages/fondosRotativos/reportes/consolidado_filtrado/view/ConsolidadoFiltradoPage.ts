@@ -25,6 +25,7 @@ import { useCargandoStore } from 'stores/cargando'
 import { useFondoRotativoStore } from 'stores/fondo_rotativo'
 import { CantonController } from 'sistema/ciudad/infraestructure/CantonControllerontroller'
 import { useNotificaciones } from 'shared/notificaciones'
+import { maskFecha } from 'config/utils'
 
 export default defineComponent({
   components: { TabLayout },
@@ -473,6 +474,7 @@ export default defineComponent({
       filtrarCiudades,
       watchEffect,
       listadosAuxiliares,
+      maskFecha,
     }
   },
 })

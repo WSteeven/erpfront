@@ -16,6 +16,8 @@ import ModalesEntidad from 'components/modales/view/ModalEntidad.vue'
 import { MotivoSuspendidoController } from 'pages/gestionTrabajos/motivosSuspendidos/infraestructure/MotivoSuspendidoController'
 import { MotivoPausaController } from 'pages/gestionTrabajos/motivosPausas/infraestructure/MotivoPausaController'
 import { CausaIntervencionController } from 'pages/gestionTrabajos/causasIntervenciones/infraestructure/CausaIntervencionController'
+import { useCargandoStore } from 'stores/cargando'
+import { useQuasar } from 'quasar'
 
 export default defineComponent({
   components: {
@@ -27,6 +29,7 @@ export default defineComponent({
     * Stores
     *********/
     const subtareaStore = useSubtareaStore()
+    useCargandoStore().setQuasar(useQuasar())
 
     /********
      * Mixin
@@ -73,7 +76,7 @@ export default defineComponent({
 
     function filtrarSubtareas(estado: string) {
       // console.log(estado)
-      const campos = 'id,codigo_tarea,codigo_subtarea,titulo,estado,grupo,empleado_responsable,coordinador,tipo_trabajo,cantidad_adjuntos,fecha_solicitud,es_ventana,fecha_hora_creacion,fecha_inicio_trabajo,hora_inicio_trabajo,hora_fin_trabajo,fecha_hora_asignacion,fecha_hora_agendado,fecha_hora_ejecucion,fecha_hora_realizado,fecha_hora_finalizacion,dias_ocupados,fecha_hora_suspendido,motivo_suspendido,fecha_hora_cancelado,motivo_cancelado,subtarea_dependiente,canton,cliente,proyecto'
+      const campos = 'id,codigo_tarea,codigo_subtarea,titulo,estado,grupo,empleado_responsable,coordinador,tipo_trabajo,cantidad_adjuntos,fecha_solicitud,es_ventana,fecha_hora_creacion,fecha_inicio_trabajo,hora_inicio_trabajo,hora_fin_trabajo,fecha_hora_asignacion,fecha_hora_agendado,fecha_hora_ejecucion,fecha_hora_realizado,fecha_hora_finalizacion,dias_ocupados,fecha_hora_suspendido,motivo_suspendido,fecha_hora_cancelado,motivo_cancelado,subtarea_dependiente,canton,cliente,proyecto,puede_ejecutar,puede_suspender,es_responsable'
       listar({ estado: estado, campos })
       tabActual.value = estado
     }

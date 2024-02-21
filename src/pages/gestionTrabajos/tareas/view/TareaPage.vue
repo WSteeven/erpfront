@@ -61,13 +61,12 @@
                 <div class="col-12">
                   <q-btn-toggle
                     v-model="tarea.para_cliente_proyecto"
-                    class="toggle-button"
+                    class="toggle-button-primary"
                     :disable="disabled"
                     spread
                     no-caps
                     rounded
-                    glossy
-                    toggle-color="positive"
+                    toggle-color="primary"
                     unelevated
                     :options="[
                       {
@@ -90,6 +89,7 @@
                     v-model="tarea.medio_notificacion"
                     :options="mediosNotificacion"
                     :disable="disabled"
+                    hint="Obligatorio"
                     options-dense
                     dense
                     outlined
@@ -103,7 +103,7 @@
                     v-model="tarea.codigo_tarea"
                     outlined
                     dense
-                    disable
+                    readonly
                   ></q-input>
                 </div>
 
@@ -199,7 +199,11 @@
 
                 <!-- Coordinador -->
                 <div
-                  v-if="paraClienteFinal && esCoordinadorBackup"
+                  v-if="
+                    (paraClienteFinal &&
+                      (esCoordinadorBackup || esJefeTecnico)) ||
+                    accion === acciones.consultar
+                  "
                   class="col-12 col-md-3"
                 >
                   <label class="q-mb-sm block">Coordinador</label>
@@ -294,9 +298,9 @@
                     v-model="tarea.proyecto"
                     :options="proyectos"
                     @filter="filtrarProyectos"
-                    @blur="v$.proyecto.$touch"
                     transition-show="scale"
                     transition-hide="scale"
+                    hint="Obligatorio"
                     options-dense
                     dense
                     outlined
@@ -306,8 +310,9 @@
                     input-debounce="0"
                     emit-value
                     map-options
+                    @blur="v$.proyecto.$touch"
                     :error="!!v$.proyecto.$errors.length"
-                    @update:modelValue="setCliente"
+                    @update:modelValue="seleccionarProyecto()"
                     :disable="disabled"
                   >
                     <template v-slot:option="scope">
@@ -336,6 +341,47 @@
                         v-for="error of v$.proyecto.$errors"
                         :key="error.$uid"
                       >
+                        <div class="error-msg">{{ error.$message }}</div>
+                      </div>
+                    </template>
+                  </q-select>
+                </div>
+
+                <div
+                  v-if="tarea.proyecto && paraProyecto && etapas.length"
+                  class="col-12 col-md-3"
+                >
+                  <label class="q-mb-sm block">Etapa</label>
+                  <q-select
+                    v-model="tarea.etapa"
+                    :options="etapas"
+                    @filter="filtrarEtapas"
+                    transition-show="scale"
+                    transition-hide="scale"
+                    hint="Opcional"
+                    options-dense
+                    dense
+                    outlined
+                    :option-label="(item) => item.nombre"
+                    :option-value="(item) => item.id"
+                    use-input
+                    input-debounce="0"
+                    emit-value
+                    map-options
+                    :error="!!v$.etapa.$errors.length"
+                    :disable="disabled"
+                    @blur="v$.etapa.$touch"
+                  >
+                    <template v-slot:no-option>
+                      <q-item>
+                        <q-item-section class="text-grey">
+                          No hay resultados
+                        </q-item-section>
+                      </q-item>
+                    </template>
+
+                    <template v-slot:error>
+                      <div v-for="error of v$.etapa.$errors" :key="error.$uid">
                         <div class="error-msg">{{ error.$message }}</div>
                       </div>
                     </template>
@@ -484,13 +530,12 @@
                 <div class="col-12">
                   <q-btn-toggle
                     v-model="tarea.ubicacion_trabajo"
-                    class="toggle-button"
+                    class="toggle-button-primary"
                     :disable="disabled"
                     spread
                     no-caps
                     rounded
-                    glossy
-                    toggle-color="positive"
+                    toggle-color="primary"
                     unelevated
                     :options="[
                       {
@@ -706,7 +751,6 @@
             </q-expansion-item>
           </q-form>
         </q-tab-panel>
-
         <q-tab-panel name="subtareas">
           <essential-table-tabs
             titulo="Subtareas"

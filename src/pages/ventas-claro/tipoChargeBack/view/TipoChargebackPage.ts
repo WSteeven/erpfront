@@ -8,7 +8,7 @@ import { useVuelidate } from '@vuelidate/core'
 import { ContenedorSimpleMixin } from 'shared/contenedor/modules/simple/application/ContenedorSimpleMixin'
 import { TipoChargeBackController } from '../infrestructure/TipoChargeBackController'
 import { configuracionColumnasTipoChargeBack } from '../domain/configuracionColumnasTipoChargeBack'
-import { estados_activacion, maskFecha } from 'config/utils'
+import { maskFecha } from 'config/utils'
 
 export default defineComponent({
   components: { TabLayout },
@@ -29,8 +29,8 @@ export default defineComponent({
     } = mixin.useReferencias()
     const { setValidador, obtenerListados, cargarVista } =
       mixin.useComportamiento()
-const precio_producto= ref(0)
-const comision_vendedor = ref(0)
+    const precio_producto = ref(0)
+    const comision_vendedor = ref(0)
     /*************
      * Validaciones
      **************/
@@ -50,7 +50,6 @@ const comision_vendedor = ref(0)
       accion,
       v$,
       configuracionColumnas: configuracionColumnasTipoChargeBack,
-      estados_activacion,
 
       maskFecha,
       precio_producto,

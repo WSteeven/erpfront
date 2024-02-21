@@ -92,7 +92,7 @@
               :error="!!v$.vendedor.$errors.length"
               @blur="v$.vendedor.$touch"
               @update:model-value="consultar()"
-              @filter="filtrarVendedors"
+              @filter="filtrarVendedores"
               @popup-show="ordenarVendedores(vendedores)"
               :option-label="(v) => v.empleado_info"
               :option-value="(v) => v.id"

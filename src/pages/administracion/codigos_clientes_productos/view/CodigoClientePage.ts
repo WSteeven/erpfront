@@ -16,6 +16,7 @@ import { useNotificacionStore } from 'stores/notificacion'
 import { useQuasar } from 'quasar'
 import { ProductoController } from 'pages/bodega/productos/infraestructure/ProductoController'
 import { ClienteController } from 'pages/sistema/clientes/infraestructure/ClienteController'
+import { useFiltrosListadosSelects } from 'shared/filtrosListadosGenerales'
 
 export default defineComponent({
     components: { TabLayout },
@@ -25,9 +26,11 @@ export default defineComponent({
         const { setValidador, obtenerListados, cargarVista } = mixin.useComportamiento()
 
         const opciones_productos = ref([])
-        const opciones_clientes = ref([])
+
+
+        const { clientes, filtrarClientes } = useFiltrosListadosSelects(listadosAuxiliares)
         //Obtener los listados
-        cargarVista(() => {
+        cargarVista(async () => {
             obtenerListados({
                 productos: {
                     controller: new ProductoController(),
@@ -36,7 +39,7 @@ export default defineComponent({
                 clientes: {
                     controller: new ClienteController(),
                     params: {
-                        campos: 'id,empresa_id',
+                        campos: 'id,razon_social',
                         requiere_bodega: 1,
                         estado: 1,
                     },
@@ -58,14 +61,14 @@ export default defineComponent({
 
         //Configurar el listado
         opciones_productos.value = listadosAuxiliares.productos
-        opciones_clientes.value = listadosAuxiliares.clientes
+        clientes.value = listadosAuxiliares.clientes
 
         return {
             mixin, codigo_cliente, disabled, accion, v$,
             configuracionColumnas: configuracionColumnasCodigosClientes,
             //listado
             opciones_productos,
-            opciones_clientes,
+            clientes,
 
             filtrarProductos(val, update) {
                 if (val === '') {
@@ -80,19 +83,8 @@ export default defineComponent({
                     // console.log(opciones_productos.productos)
                 })
             },
-            filtrarClientes(val, update) {
-                if (val === '') {
-                    update(() => {
-                        opciones_clientes.value = listadosAuxiliares.clientes
-                    })
-                    return
-                }
-                update(() => {
-                    const needle = val.toLowerCase()
-                    opciones_clientes.value = listadosAuxiliares.clientes.filter((v) => v.razon_social.toLowerCase().indexOf(needle) > -1)
-                    // console.log(opciones_productos.productos)
-                })
-            },
+            filtrarClientes,
+
         }
     }
 })

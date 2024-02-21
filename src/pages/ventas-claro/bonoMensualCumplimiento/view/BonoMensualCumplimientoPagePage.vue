@@ -1,5 +1,13 @@
 <template>
-  <tab-layout :mixin="mixin" :configuracionColumnas="configuracionColumnas">
+  <tab-layout-filter-tabs-2
+    :mixin="mixin"
+    :configuracionColumnas="configuracionColumnas"
+    :puedeExportar="true"
+    :tabOptions="tabOptionsBonosMensuales"
+    :tabDefecto="tabDefecto"
+    :filtrar="filtrarBonos"
+    :accion1="btnMarcarPagada"
+  >
     <template #formulario>
       <q-form @submit.prevent>
         <!-- Mes -->
@@ -26,14 +34,19 @@
                 >
                   <q-date
                     v-model="bono_mensual_cumplimiento.mes"
-                    mask="MM-YYYY"
+                    mask="YYYY-MM"
                     minimal
                     emit-immediately
                     default-view="Years"
                     @update:model-value="checkValue"
                   >
                     <div class="row items-center justify-end">
-                      <q-btn v-close-popup label="Cerrar" color="primary" flat />
+                      <q-btn
+                        v-close-popup
+                        label="Cerrar"
+                        color="primary"
+                        flat
+                      />
                     </div>
                   </q-date>
                 </q-popup-proxy>
@@ -49,6 +62,6 @@
         </div>
       </q-form>
     </template>
-  </tab-layout>
+  </tab-layout-filter-tabs-2>
 </template>
 <script src="./BonoMensualCumplimientoPage.ts"></script>

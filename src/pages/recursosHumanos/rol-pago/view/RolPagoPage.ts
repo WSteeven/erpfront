@@ -73,10 +73,8 @@ export default defineComponent({
       IngresoRolPago,
       new IngresoRolPagoController()
     )
-    const { eliminar, guardar: guardarEgreso } =
-      mixinEgresoRolPago.useComportamiento()
-    const { eliminar: eliminarIngreso, guardar: guardarIngreso } =
-      mixinIngresoRolPago.useComportamiento()
+    const { eliminar, guardar: guardarEgreso } = mixinEgresoRolPago.useComportamiento()
+    const { eliminar: eliminarIngreso, guardar: guardarIngreso } = mixinIngresoRolPago.useComportamiento()
 
     /*********
      * Stores
@@ -270,7 +268,7 @@ export default defineComponent({
     /********
      * Hooks
      *********/
-    onConsultado(async() => {
+    onConsultado(async () => {
       es_consultado.value = true
       console.log('consultado')
 
@@ -831,8 +829,7 @@ export default defineComponent({
         if (entidad.id == undefined) {
           rolpago.egresos.splice(posicion, 1)
         } else {
-          eliminar(entidad)
-          rolpago.egresos.splice(posicion, 1)
+          eliminar(entidad, () => rolpago.egresos.splice(posicion, 1))
         }
       },
     }
@@ -842,12 +839,12 @@ export default defineComponent({
       icono: 'bi-trash',
       color: 'negative',
       visible: () => true,
-      accion: ({ entidad, posicion }) => {
+      accion: async ({ entidad, posicion }) => {
         if (entidad.id == undefined) {
           rolpago.ingresos.splice(posicion, 1)
         } else {
-          eliminar(entidad)
-          rolpago.ingresos.splice(posicion, 1)
+          await eliminarIngreso(entidad, () => rolpago.ingresos.splice(posicion, 1))
+          // rolpago.ingresos.splice(posicion, 1)
         }
       },
     }
@@ -878,34 +875,34 @@ export default defineComponent({
       let total_sueldo = 0
       console.log(porcentajeAnticipo, tipo_contrato)
       // switch (tipo_contrato) {
-        // case 3:
-        //   if (dias == 15) {
-        //     total_sueldo = salario * porcentajeAnticipo
-        //   } else {
-        //     const quincena = (salario / 30)
-        //     total_sueldo = quincena * dias
-        //     console.log(quincena)
-        //     console.log(total_sueldo)
-        //   }
-        //   break
-        // default:
-          if (rolpago.es_vendedor_medio_tiempo) {
-            const porcentaje = rolpago.porcentaje_quincena
-              ? rolpago.porcentaje_quincena / 100
-              : 1
-            total_sueldo = rolpago.es_quincena == true ? salario * 0.5 * porcentaje : sueldo
-            console.log('if', total_sueldo, porcentaje)
-          } else {
-            if (rolpago.es_quincena) {
-              if (dias == 15) total_sueldo = sueldo
-              else{
-                if(empleadoStore.empleado.departamento == 'CUADRILLA'){
-                  total_sueldo = (salario*porcentajeAnticipo)/15 * dias
-                }else total_sueldo = (salario*porcentajeAnticipo) / 30 * dias //* porcentajeAnticipo
-              } 
-            } else total_sueldo = sueldo
-            console.log(total_sueldo)
+      // case 3:
+      //   if (dias == 15) {
+      //     total_sueldo = salario * porcentajeAnticipo
+      //   } else {
+      //     const quincena = (salario / 30)
+      //     total_sueldo = quincena * dias
+      //     console.log(quincena)
+      //     console.log(total_sueldo)
+      //   }
+      //   break
+      // default:
+      if (rolpago.es_vendedor_medio_tiempo) {
+        const porcentaje = rolpago.porcentaje_quincena
+          ? rolpago.porcentaje_quincena / 100
+          : 1
+        total_sueldo = rolpago.es_quincena == true ? salario * 0.5 * porcentaje : sueldo
+        console.log('if', total_sueldo, porcentaje)
+      } else {
+        if (rolpago.es_quincena) {
+          if (dias == 15) total_sueldo = sueldo
+          else {
+            if (empleadoStore.empleado.departamento == 'CUADRILLA') {
+              total_sueldo = (salario * porcentajeAnticipo) / 15 * dias
+            } else total_sueldo = (salario * porcentajeAnticipo) / 30 * dias //* porcentajeAnticipo
           }
+        } else total_sueldo = sueldo
+        console.log(total_sueldo)
+      }
 
       //     break
       // }

@@ -101,7 +101,7 @@
               dense
               outlined
               @filter="filtrarEmpleados"
-              @popup-show="ordenarEmpleados(empleados)"
+              @popup-show="ordenarLista(empleados, 'apellidos')"
               :disable="disabled || soloLectura"
               :option-label="(v) => v.apellidos + ' ' + v.nombres"
               :option-value="(v) => v.id"

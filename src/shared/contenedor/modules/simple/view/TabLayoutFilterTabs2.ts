@@ -55,6 +55,10 @@ export default defineComponent({
       type: Boolean,
       default: true,
     },
+    puedeExportar: {
+      type: Boolean,
+      default: false,
+    },
     tabOptions: {
       type: Array as () => TabOption[],
       required: true,
@@ -160,7 +164,7 @@ export default defineComponent({
     // listadoCargado = true
     // }
     // const tabSeleccionado = 'TODO'
-    aplicarFiltro(props.tabDefecto)
+    if (!props.forzarListar) aplicarFiltro(props.tabDefecto)
 
     function forzarListar() {
       if (props.forzarListar) aplicarFiltro(props.tabDefecto)
@@ -251,6 +255,7 @@ export default defineComponent({
       forzarListar,
       //valor del essentialLoading
       storeCargando: useCargandoStore(),
+      puedeExportar: props.puedeExportar,
     }
   },
 })

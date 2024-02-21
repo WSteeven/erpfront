@@ -69,7 +69,7 @@
             <label class="q-mb-sm block">TipoChargeBack</label>
             <q-select
               v-model="chargeback.tipo_chargeback"
-              :options="tipos_chargeback"
+              :options="tipos_chargebacks"
               transition-show="jump-up"
               transition-hide="jump-down"
               options-dense
@@ -79,7 +79,6 @@
               :readonly="disabled"
               :error="!!v$.tipo_chargeback.$errors.length"
               @blur="v$.tipo_chargeback.$touch"
-              @filter="filtrarProductos"
               @update:model-value="tipoChargeback()"
 
               error-message="Debes seleccionar un tipo_chargeback"

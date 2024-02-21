@@ -1,4 +1,6 @@
 <template>
+  <!-- Componente OFICIAL para trabajar con archivos -->
+  <!-- Es necesario trasladar algunas funciones de GestorDocumentos.vue aqui -->
   <div v-if="permitirSubir" class="col-12 col-md-3 q-mb-lg">
     <br />
     <q-toggle
@@ -25,6 +27,8 @@
       text-color="black"
       max-total-size="10485760"
       @rejected="onRejected"
+      @added="onFileAdded"
+      @removed="onFileRemoved"
       hide-upload-btn
     />
   </div>

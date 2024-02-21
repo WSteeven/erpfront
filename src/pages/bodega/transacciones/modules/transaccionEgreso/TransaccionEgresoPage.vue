@@ -52,14 +52,17 @@
             <label class="q-mb-sm block">Motivo</label>
             <q-select
               v-model="transaccion.motivo"
-              :options="opciones_motivos"
+              :options="motivos"
               transition-show="jum-up"
               transition-hide="jump-down"
               options-dense
               dense
               outlined
-              @popup-show="ordenarMotivos"
-              @update:model-value="filtroMotivos"
+              use-input
+              input-debounce="0"
+              @filter="filtrarMotivos"
+              @popup-show="ordenarLista(motivos, 'nombre')"
+              @update:model-value="motivoSeleccionado"
               :readonly="disabled || (soloLectura && !esBodeguero)"
               :disable="disabled || (soloLectura && !esBodeguero)"
               :error="!!v$.motivo.$errors.length"
@@ -86,7 +89,7 @@
             <label class="q-mb-sm block">Autorizacion</label>
             <q-select
               v-model="transaccion.autorizacion"
-              :options="opciones_autorizaciones"
+              :options="autorizaciones"
               transition-show="jum-up"
               transition-hide="jump-down"
               options-dense
@@ -217,7 +220,7 @@
             <label class="q-mb-sm block">Sucursal</label>
             <q-select
               v-model="transaccion.sucursal"
-              :options="opciones_sucursales"
+              :options="sucursales"
               transition-show="jum-up"
               transition-hide="jump-down"
               options-dense
@@ -230,7 +233,7 @@
               @update:model-value="seleccionarClientePropietario"
               use-input
               input-debounce="0"
-              @filter="filtroSucursales"
+              @filter="filtrarSucursales"
               @popup-show="ordenarSucursales"
               :option-value="(v) => v.id"
               :option-label="(v) => v.lugar"
@@ -293,7 +296,7 @@
             </q-input> -->
             <q-select
               v-model="transaccion.solicitante"
-              :options="opciones_empleados"
+              :options="empleados"
               transition-show="scale"
               transition-hide="scale"
               options-dense
@@ -315,57 +318,6 @@
               </template>
             </q-select>
           </div>
-          <!-- Es para una tarea -->
-          <div
-            v-if="
-              (esVisibleTarea && !transaccion.es_transferencia) ||
-              (accion === 'NUEVO' && !transaccion.es_transferencia)
-            "
-            class="col-12 col-md-3"
-          >
-            <q-checkbox
-              class="q-mt-lg q-pt-md"
-              v-model="transaccion.es_tarea"
-              label="¿Es material para tarea?"
-              @update:model-value="checkTarea"
-              :disable="disabled || soloLectura"
-              outlined
-              dense
-            ></q-checkbox>
-          </div>
-          <!-- Tarea -->
-          <div
-            v-if="esVisibleTarea || transaccion.es_tarea"
-            class="col-12 col-md-3"
-          >
-            <label class="q-mb-sm block">Tarea</label>
-            <q-select
-              v-model="transaccion.tarea"
-              :options="opciones_tareas"
-              transition-show="scale"
-              transition-hide="scale"
-              options-dense
-              clearable
-              hint="Tarea #"
-              dense
-              outlined
-              :disable="soloLectura"
-              :readonly="disabled || soloLectura"
-              @update:model-value="filtroTareas"
-              :option-label="(item) => item.titulo"
-              :option-value="(item) => item.id"
-              emit-value
-              map-options
-              ><template v-slot:option="scope">
-                <q-item v-bind="scope.itemProps">
-                  <q-item-section>
-                    <q-item-label>{{ scope.opt.codigo_tarea }}</q-item-label>
-                    <q-item-label caption>{{ scope.opt.titulo }}</q-item-label>
-                  </q-item-section>
-                </q-item>
-              </template>
-            </q-select>
-          </div>
           <!-- Responsable -->
           <div class="col-12 col-md-3">
             <label-info-empleado
@@ -376,7 +328,7 @@
             <label v-else class="q-mb-sm block">Responsable</label>
             <q-select
               v-model="transaccion.responsable"
-              :options="opciones_empleados"
+              :options="empleados"
               transition-show="jump-up"
               transition-hide="jump-up"
               options-dense
@@ -384,8 +336,8 @@
               outlined
               use-input
               input-debounce="0"
-              @filter="filtroEmpleados"
-              @popup-show="ordenarEmpleados"
+              @filter="filtrarEmpleados"
+              @popup-show="ordenarLista(empleados, 'apellidos')"
               error-message="Debes seleccionar el responsable de los materiales"
               :error="!!v$.responsable.$errors.length"
               :disable="disabled || soloLectura"
@@ -437,7 +389,7 @@
             <label v-else class="q-mb-sm block">Persona que retira</label>
             <q-select
               v-model="transaccion.per_retira"
-              :options="opciones_empleados"
+              :options="empleados"
               transition-show="scale"
               transition-hide="scale"
               options-dense
@@ -445,8 +397,8 @@
               outlined
               use-input
               input-debounce="0"
-              @filter="filtroEmpleados"
-              @popup-show="ordenarEmpleados"
+              @filter="filtrarEmpleados"
+              @popup-show="ordenarLista(empleados, 'apellidos')"
               :disable="disabled || soloLectura"
               :readonly="disabled || soloLectura"
               :option-label="(v) => v.apellidos + ' ' + v.nombres"
@@ -463,12 +415,184 @@
               </template>
             </q-select>
           </div>
+          <!-- Es para una tarea -->
+          <div
+            v-if="
+              (esVisibleTarea && !transaccion.es_transferencia) ||
+              (accion === 'NUEVO' && !transaccion.es_transferencia)
+            "
+            class="col-12 col-md-3"
+          >
+            <q-checkbox
+              class="q-mt-lg q-pt-md"
+              v-model="transaccion.es_tarea"
+              label="¿Es material para tarea?"
+              @update:model-value="checkTarea"
+              :disable="disabled || soloLectura"
+              outlined
+              dense
+            ></q-checkbox>
+          </div>
+
+          <!-- Codigo de proyecto -->
+          <div
+            class="col-12 col-md-3"
+            v-if="
+              (transaccion.es_tarea &&
+                proyectos?.length &&
+                accion == acciones.nuevo) ||
+              transaccion.proyecto
+            "
+          >
+            <label class="q-mb-sm block">Proyecto</label>
+            <q-select
+              v-model="transaccion.proyecto"
+              :options="proyectos"
+              @filter="filtrarProyectos"
+              transition-show="scale"
+              transition-hide="scale"
+              hint="Opcional"
+              options-dense
+              dense
+              outlined
+              clearable
+              :option-label="(item) => item.nombre"
+              :option-value="(item) => item.id"
+              use-input
+              input-debounce="0"
+              emit-value
+              map-options
+              :disable="disabled"
+            >
+              <template v-slot:option="scope">
+                <q-item v-bind="scope.itemProps" class="q-my-sm">
+                  <q-item-section>
+                    <q-item-label class="text-bold text-primary">{{
+                      scope.opt.codigo_proyecto
+                    }}</q-item-label>
+                    <q-item-label caption>{{ scope.opt.nombre }} </q-item-label>
+                  </q-item-section>
+                </q-item>
+              </template>
+
+              <template v-slot:no-option>
+                <q-item>
+                  <q-item-section class="text-grey">
+                    No hay resultados
+                  </q-item-section>
+                </q-item>
+              </template>
+            </q-select>
+          </div>
+          <!-- Etapa del proyecto -->
+          <div
+            v-if="etapas?.length || transaccion.etapa"
+            class="col-12 col-md-3"
+          >
+            <label class="q-mb-sm block">Etapa</label>
+            <q-select
+              v-model="transaccion.etapa"
+              :options="etapas"
+              @filter="filtrarEtapas"
+              transition-show="scale"
+              transition-hide="scale"
+              hint="Obligatorio"
+              options-dense
+              dense
+              clearable
+              outlined
+              :option-label="(item) => item.nombre"
+              :option-value="(item) => item.id"
+              use-input
+              input-debounce="0"
+              emit-value
+              map-options
+              :disable="disabled"
+              @blur="v$.etapa.$touch"
+              :error="!!v$.etapa.$errors.length"
+            >
+              <template v-slot:option="scope">
+                <q-item v-bind="scope.itemProps" class="q-my-sm">
+                  <q-item-section>
+                    <q-item-label class="text-bold text-primary">{{
+                      scope.opt.nombre
+                    }}</q-item-label>
+                    <q-item-label caption
+                      >Supervisor: {{ scope.opt.supervisor_responsable }}
+                    </q-item-label>
+                  </q-item-section>
+                </q-item>
+              </template>
+              <template v-slot:no-option>
+                <q-item>
+                  <q-item-section class="text-grey">
+                    No hay resultados
+                  </q-item-section>
+                </q-item>
+              </template>
+
+              <template v-slot:error>
+                <div v-for="error of v$.etapa.$errors" :key="error.$uid">
+                  <div class="error-msg">{{ error.$message }}</div>
+                </div>
+              </template>
+            </q-select>
+          </div>
+          <!-- Tarea -->
+          <div
+            v-if="esVisibleTarea || transaccion.es_tarea"
+            class="col-12 col-md-3"
+          >
+            <label class="q-mb-sm block">Tarea</label>
+            <q-select
+              v-model="transaccion.tarea"
+              :options="tareas"
+              transition-show="scale"
+              transition-hide="scale"
+              options-dense
+              clearable
+              hint="Tarea #"
+              dense
+              outlined
+              :disable="soloLectura"
+              :readonly="disabled || soloLectura"
+              use-input
+              input-debounce="0"
+              @filter="filtrarTareas"
+              @update:model-value="obtenerDatosTareaSeleccionada"
+              :option-label="(item) => item.codigo_tarea + ' - ' + item.titulo"
+              :option-value="(item) => item.id"
+              emit-value
+              map-options
+              ><template v-slot:option="scope">
+                <q-item v-bind="scope.itemProps">
+                  <q-item-section>
+                    <q-item-label>{{ scope.opt.codigo_tarea }}</q-item-label>
+                    <q-item-label caption>{{ scope.opt.titulo }}</q-item-label>
+                  </q-item-section>
+                </q-item>
+              </template>
+              <template v-slot:error>
+                <div v-for="error of v$.tarea.$errors" :key="error.$uid">
+                  <div class="error-msg">{{ error.$message }}</div>
+                </div>
+              </template>
+              <template v-slot:no-option>
+                <q-item>
+                  <q-item-section class="text-grey">
+                    No hay resultados
+                  </q-item-section>
+                </q-item>
+              </template>
+            </q-select>
+          </div>
+
           <!-- Select clientes -->
           <div class="col-12 col-md-3">
             <label class="q-mb-sm block">Cliente</label>
             <q-select
               v-model="transaccion.cliente"
-              :options="opciones_clientes"
+              :options="clientes"
               transition-show="jum-up"
               transition-hide="jump-down"
               options-dense
@@ -478,6 +602,9 @@
               :readonly="disabled"
               :error="!!v$.cliente.$errors.length"
               error-message="Debes seleccionar un cliente"
+              use-input
+              input-debounce="0"
+              @filter="filtrarClientes"
               @popup-show="ordenarClientes"
               @update:model-value="buscarListadoPedidoEnInventario"
               :option-value="(item) => item.id"
@@ -538,8 +665,6 @@
               v-model:pagination="pagination"
               :rows-per-page-options="[0]"
               dense
-              v-model:selected="selected"
-              @selection="buscarProductoEnInventario"
             />
           </div>
           <!-- Configuracion para seleccionar productos -->
@@ -598,9 +723,10 @@
           <div class="col-12">
             <essential-table
               titulo="Productos Seleccionados"
-              :configuracionColumnas="
-                configuracionColumnasProductosSeleccionadosAccion
-              "
+              :configuracionColumnas="[
+                ...configuracionColumnasProductosSeleccionados,
+                accionesTabla,
+              ]"
               :datos="transaccion.listadoProductosTransaccion"
               :permitirConsultar="false"
               :permitirEditar="false"

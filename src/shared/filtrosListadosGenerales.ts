@@ -1,34 +1,123 @@
 import { Empresa } from "pages/administracion/empresas/domain/Empresa";
 import { Ref, ref } from "vue";
-import { ordernarListaString } from "./utils";
+import { ordenarLista, ordernarListaString } from "./utils";
 import { Banco } from "pages/recursosHumanos/banco/domain/Banco";
 import { CategoriaOferta } from "pages/comprasProveedores/categoriaOfertas/domain/CategoriaOferta";
 import { Producto } from "pages/bodega/productos/domain/Producto";
 import { Canton } from "sistema/ciudad/domain/Canton";
 import { Empleado } from "pages/recursosHumanos/empleados/domain/Empleado";
+import { Cliente } from "sistema/clientes/domain/Cliente";
 import { CentroCosto } from "pages/gestionTrabajos/centroCostos/domain/CentroCostos";
 
 export const useFiltrosListadosSelects = (listadosAuxiliares, entidad?: Ref<any>) => {
   /**************************************************************
    * Variables
    **************************************************************/
-  const paises = ref([])
-  const productos = ref([])
-  const provincias = ref([])
-  const cantones = ref([])
-  const parroquias = ref([])
-  const empresas = ref([])
-  const proveedores = ref([])
-  const clientes = ref([])
-  const empleados = ref([])
-  const bancos = ref([])
-  const categorias = ref([])
+  const paises = ref(listadosAuxiliares.paises)
+  const productos = ref(listadosAuxiliares.productos)
+  const provincias = ref(listadosAuxiliares.provincias)
+  const cantones = ref(listadosAuxiliares.cantones)
+  const parroquias = ref(listadosAuxiliares.parroquias)
+  const empresas = ref(listadosAuxiliares.empresas)
+  const proveedores = ref(listadosAuxiliares.proveedores)
+  const clientes = ref(listadosAuxiliares.clientes)
+  const empleados = ref(listadosAuxiliares.empleados)
+  const empleadosOrigen = ref(listadosAuxiliares.empleadosOrigen)
+  const bancos = ref(listadosAuxiliares.bancos)
+  const categorias = ref(listadosAuxiliares.categorias)
+
+  //bodega
+  const sucursales = ref(listadosAuxiliares.sucursales)
+  const motivos = ref(listadosAuxiliares.motivos)
+
+  // Modulo de Tareas
+  const proyectos = ref(listadosAuxiliares.proyectos)
+  const proyectosDestino = ref(listadosAuxiliares.proyectosDestino)
+  const etapas = ref(listadosAuxiliares.etapas)
+  const etapasDestino = ref(listadosAuxiliares.etapasDestino)
+  const tareas = ref(listadosAuxiliares.tareas)
+  const tareasDestino = ref(listadosAuxiliares.tareasDestino)
   const centros_costos = ref([])
+
+  //////////////////////////////////////////
+  //modulo ventas
+  //////////////////////////////////////////
+  const modalidades = ref(listadosAuxiliares.modalidades)
+  const productos_claro = ref(listadosAuxiliares.productos)
+  const vendedores_claro = ref(listadosAuxiliares.vendedores)
+  const clientes_claro = ref(listadosAuxiliares.clientes)
 
 
   /**************************************************************
    * Funciones
    **************************************************************/
+  clientes_claro.value = listadosAuxiliares.clientes
+  function filtrarClientesClaro(val, update) {
+    if (val === '') {
+      update(() => {
+        clientes_claro.value = listadosAuxiliares.clientes
+      })
+      return
+    }
+    update(() => {
+      const needle = val.toLowerCase()
+      clientes_claro.value = listadosAuxiliares.clientes.filter(
+        (v) =>
+          v.nombres.toLowerCase().indexOf(needle) > -1 ||
+          v.apellidos.toLowerCase().indexOf(needle) > -1 ||
+          v.identificacion.toLowerCase().indexOf(needle) > -1
+      )
+    })
+  }
+
+  vendedores_claro.value = listadosAuxiliares.vendedores
+  function filtrarVendedoresClaro(val, update) {
+    if (val === '') {
+      update(() => {
+        vendedores_claro.value = listadosAuxiliares.vendedores
+      })
+      return
+    }
+    update(() => {
+      const needle = val.toLowerCase()
+      vendedores_claro.value = listadosAuxiliares.vendedores.filter((v) => v.empleado_info.toLowerCase().indexOf(needle) > -1)
+    })
+  }
+
+  productos_claro.value = listadosAuxiliares.productos
+  function filtrarProductosClaro(val, update) {
+    if (val === '') {
+      update(() => {
+        productos_claro.value = listadosAuxiliares.productos
+      })
+      return
+    }
+    update(() => {
+      const needle = val.toLowerCase()
+      productos_claro.value = listadosAuxiliares.productos.filter(
+        (v) =>
+          v.nombre.toLowerCase().indexOf(needle) > -1 ||
+          v.bundle.toLowerCase().indexOf(needle) > -1 ||
+          v.plan_info.toLowerCase().indexOf(needle) > -1
+      )
+    })
+  }
+
+  modalidades.value = listadosAuxiliares.modalidades
+  function filtrarModalidades(val, update) {
+    if (val === '') {
+      update(() => {
+        modalidades.value = listadosAuxiliares.modalidades
+      })
+      return
+    }
+    update(() => {
+      const needle = val.toLowerCase()
+      modalidades.value = listadosAuxiliares.modalidades.filter(
+        (v) => v.nombre.toLowerCase().indexOf(needle) > -1
+      )
+    })
+  }
 
   centros_costos.value = listadosAuxiliares.centros_costos
   function filtrarCentrosCostos(val, update) {
@@ -199,16 +288,10 @@ export const useFiltrosListadosSelects = (listadosAuxiliares, entidad?: Ref<any>
   /* The `filtrarClientes` function is used to filter a list of clients based on a given search value. */
   clientes.value = listadosAuxiliares.clientes
   function filtrarClientes(val, update) {
-    if (val === '') {
-      update(() => {
-        clientes.value = listadosAuxiliares.clientes
-      })
-      return
-    }
-    update(() => {
-      const needle = val.toLowerCase()
-      clientes.value = listadosAuxiliares.clientes.filter((v) => v.razon_social.toLowerCase().indexOf(needle) > -1)
-    })
+    return filtrarLista(val, update, clientes, 'razon_social', listadosAuxiliares.clientes)
+  }
+  function ordenarClientes() {
+    ordenarLista(clientes.value, 'razon_social')
   }
 
   function filtrarEmpleados(val, update) {
@@ -221,6 +304,22 @@ export const useFiltrosListadosSelects = (listadosAuxiliares, entidad?: Ref<any>
     update(() => {
       const needle = val.toLowerCase()
       empleados.value = listadosAuxiliares.empleados.filter((v) => v.nombres.toLowerCase().indexOf(needle) > -1 || v.apellidos.toLowerCase().indexOf(needle) > -1)
+    })
+  }
+  function ordenarEmpleadosOrigen() {
+    empleadosOrigen.value.sort((a: Empleado, b: Empleado) => ordernarListaString(a.apellidos!, b.apellidos!))
+  }
+
+  function filtrarEmpleadosOrigen(val, update) {
+    if (val === '') {
+      update(() => {
+        empleadosOrigen.value = listadosAuxiliares.empleadosOrigen
+      })
+      return
+    }
+    update(() => {
+      const needle = val.toLowerCase()
+      empleadosOrigen.value = listadosAuxiliares.empleadosOrigen.filter((v) => v.nombres.toLowerCase().indexOf(needle) > -1 || v.apellidos.toLowerCase().indexOf(needle) > -1)
     })
   }
   function ordenarEmpleados() {
@@ -254,6 +353,48 @@ export const useFiltrosListadosSelects = (listadosAuxiliares, entidad?: Ref<any>
     categorias.value.sort((a: CategoriaOferta, b: CategoriaOferta) => ordernarListaString(a.nombre!, b.nombre!))
   }
 
+  function filtrarMotivos(val, update) {
+    return filtrarLista(val, update, motivos, 'nombre', listadosAuxiliares.motivos)
+  }
+  function filtrarSucursales(val, update) {
+    return filtrarLista(val, update, sucursales, 'lugar', listadosAuxiliares.sucursales)
+  }
+
+  function filtrarProyectos(val, update) {
+    return filtrarLista(val, update, proyectos, 'codigo_proyecto', listadosAuxiliares.proyectos)
+  }
+  function filtrarProyectosDestino(val, update) {
+    return filtrarLista(val, update, proyectosDestino, 'codigo_proyecto', listadosAuxiliares.proyectosDestino)
+  }
+  function filtrarEtapas(val, update) {
+    return filtrarLista(val, update, etapas, 'nombre', listadosAuxiliares.etapas)
+  }
+  function filtrarEtapasDestino(val, update) {
+    return filtrarLista(val, update, etapasDestino, 'nombre', listadosAuxiliares.etapasDestino)
+  }
+  function filtrarTareas(val, update) {
+    return filtrarLista(val, update, tareas, 'codigo_tarea', listadosAuxiliares.tareas)
+  }
+  function filtrarTareasDestino(val, update) {
+    return filtrarLista(val, update, tareasDestino, 'codigo_tarea', listadosAuxiliares.tareasDestino)
+  }
+
+
+  function filtrarLista(val, update, lista, clave, defaultValue = []) {
+    if (val === '') {
+      update(() => lista.value = defaultValue)
+    }
+    update(() => {
+      const needle = val.toLowerCase()
+      lista.value = defaultValue.filter(
+        (v: any) => v[clave].toLowerCase().indexOf(needle) > -1
+      )
+    })
+  }
+
+
+
+
   return {
     paises, filtrarPaises,
     provincias, filtrarProvincias,
@@ -261,11 +402,25 @@ export const useFiltrosListadosSelects = (listadosAuxiliares, entidad?: Ref<any>
     parroquias, filtrarParroquias,
     empresas, filtrarEmpresas, ordenarEmpresas,
     proveedores, filtrarProveedores,
-    clientes, filtrarClientes,
+    clientes, filtrarClientes, ordenarClientes,
     empleados, filtrarEmpleados, ordenarEmpleados,
+    empleadosOrigen, filtrarEmpleadosOrigen, ordenarEmpleadosOrigen,
     bancos, filtrarBancos,
     categorias, filtrarCategoriasProveedor, ordenarCategorias,
     productos, filtrarProductos,
+    motivos, filtrarMotivos,
+    sucursales, filtrarSucursales,
+
+    tareas, filtrarTareas,
+    proyectos, filtrarProyectos,
+    proyectosDestino, filtrarProyectosDestino,
+    etapas, filtrarEtapas,
+    etapasDestino, filtrarEtapasDestino,
+    tareasDestino, filtrarTareasDestino,
     centros_costos, filtrarCentrosCostos,
+    modalidades, filtrarModalidades,
+    productos_claro, filtrarProductosClaro,
+    vendedores_claro, filtrarVendedoresClaro,
+    clientes_claro, filtrarClientesClaro,
   }
 }

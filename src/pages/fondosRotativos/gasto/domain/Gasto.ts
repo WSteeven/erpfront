@@ -4,13 +4,14 @@ export class Gasto extends EntidadAuditable {
   lugar: number | null
   num_tarea: string | null
   tarea_info: string | null
+  tarea_cliente: string | null
   subTarea: string | null
   proyecto: number | null
   proyecto_info: string | null
   ruc: string | null
   factura: string | null
   num_comprobante: string | null
-  beneficiarios:[] | null
+  beneficiarios: [] | null
   beneficiarios_info: string | null
   aut_especial: number | null
   aut_especial_user: string | null
@@ -35,8 +36,9 @@ export class Gasto extends EntidadAuditable {
   vehiculo: number | null
   created_at: string | null
   tiene_factura: boolean | null
-
-
+  centro_costo: string | null
+  subcentro_costo: string | null
+  placa: string | null
   constructor() {
     super()
     this.fecha_viat = null
@@ -44,6 +46,7 @@ export class Gasto extends EntidadAuditable {
     this.lugar_info = null
     this.num_tarea = null
     this.tarea_info = null
+    this.tarea_cliente = null
     this.subTarea = null
     this.subTarea_info = null
     this.proyecto = null
@@ -74,6 +77,8 @@ export class Gasto extends EntidadAuditable {
     this.vehiculo = null
     this.created_at = null
     this.tiene_factura = true
-
+    this.centro_costo = null
+    this.subcentro_costo = null
+    this.placa = null
   }
 }

@@ -15,6 +15,18 @@
     <template #formulario>
       <q-form @submit.prevent>
         <div class="row q-col-gutter-sm q-mb-md q-mt-md q-mx-md q-py-sm">
+          <!-- Empleado Solicitante -->
+          <div class="col-12 col-md-3" v-if="es_consultar">
+            <label class="q-mb-sm block">Empleado Solicitante</label>
+            <q-input
+              v-model="gasto.empleado_info"
+              placeholder="Obligatorio"
+              disable
+              outlined
+              dense
+            >
+            </q-input>
+          </div>
           <!-- Lugar -->
           <div class="col-12 col-md-3">
             <label class="q-mb-sm block">Lugar</label>
@@ -622,6 +634,30 @@
                   <div class="error-msg">{{ error.$message }}</div>
                 </div>
               </template>
+            </q-input>
+          </div>
+          <!-- Centro de Costo -->
+          <div class="col-12 col-md-3" v-if="es_consultar">
+            <label class="q-mb-sm block">Centro de Costo</label>
+            <q-input
+              v-model="gasto.centro_costo"
+              placeholder="Obligatorio"
+              disable
+              outlined
+              dense
+            >
+            </q-input>
+          </div>
+          <!-- Sub Centro de Costo -->
+          <div class="col-12 col-md-3" v-if="es_consultar">
+            <label class="q-mb-sm block">Sub Centro de Costo</label>
+            <q-input
+              v-model="gasto.subcentro_costo"
+              placeholder="Obligatorio"
+              disable
+              outlined
+              dense
+            >
             </q-input>
           </div>
           <!-- Estado -->

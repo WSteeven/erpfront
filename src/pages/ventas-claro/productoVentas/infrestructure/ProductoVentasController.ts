@@ -4,6 +4,6 @@ import { endpoints } from "config/api";
 
 export class ProductoVentasController extends TransaccionSimpleController<ProductoVentas>{
   constructor() {
-    super(endpoints.producto_ventas)
+    super(endpoints.productos_ventas)
   }
 }
