@@ -12,13 +12,40 @@ export const tiposEnfermedades = {
   COMUNES: 'Enfermedades comunes',
 }
 
+/*export const estadosExamenes = {
+  PENDIENTE_SOLICITAR: 'PENDIENTE DE SOLICITAR',
+  SOLICITADO: 'SOLICITUDES REALIZADAS',
+  APROBADO_POR_COMPRAS: 'APROBADO_POR_COMPRAS',
+  RESULTADOS: 'RESULTADOS DE EXÁMENES',
+  DIAGNOSTICO_REALIZADO: 'DIAGNOSTICO_REALIZADO',
+  APERTURA_FICHA_MEDICA: 'APERTURA_FICHA_MEDICA',
+}*/
+
 export const estadosExamenes = {
-  PENDIENTE_SOLICITAR: '0',
-  SOLICITADO: '1',
-  APROBADO_POR_COMPRAS: '2',
-  RESULTADOS: '3',
-  DIAGNOSTICO_REALIZADO: '4',
-  APERTURA_FICHA_MEDICA: '5',
+  PENDIENTE_SOLICITAR: {
+    value: '0',
+    label: 'Pendientes de solicitar',
+  },
+  SOLICITADO: {
+    value: '1',
+    label: 'Solicitudes de exámenes',
+  },
+  APROBADO_POR_COMPRAS: {
+    value: '2',
+    label: 'Aprobado por compras',
+  },
+  RESULTADOS: {
+    value: '3',
+    label: 'Resultados de exámenes',
+  },
+  DIAGNOSTICO_REALIZADO: {
+    value: '4',
+    label: 'Diagnostico realizado',
+  },
+  APERTURA_FICHA_MEDICA: {
+    value: '5',
+    label: 'Apertura de ficha médica',
+  },
 }
 
 export const estadosCitaMedica = {
@@ -31,7 +58,7 @@ export const estadosCitaMedica = {
 
 export const tabOptionsEstadosExamenes: TabOption[] = [
   { label: 'Pendientes de solicitar', value: estadosExamenes.PENDIENTE_SOLICITAR, icono: 'bi-arrow-right', color_icono: 'pink', bg_color: 'pink-1', icono_derecha: true },
-  { label: 'Solicitado', value: estadosExamenes.SOLICITADO, icono: 'bi-arrow-right', color_icono: 'orange', bg_color: 'yellow-2', icono_derecha: true },
+  { label: 'Solicitudes de exámenes', value: estadosExamenes.SOLICITADO, icono: 'bi-arrow-right', color_icono: 'orange', bg_color: 'yellow-2', icono_derecha: true },
   { label: 'Aprobado por compras', value: estadosExamenes.APROBADO_POR_COMPRAS, icono: 'bi-arrow-right', color_icono: 'primary', bg_color: 'blue-2', icono_derecha: true },
   { label: 'Resultados', value: estadosExamenes.DIAGNOSTICO_REALIZADO, color_icono: 'positive' },
   // { label: 'Diagnóstico realizado', value: estadosExamenes.DIAGNOSTICO_REALIZADO, icono: 'bi-arrow-right', color_icono: 'positive', bg_color: 'light-green-1', icono_derecha: true },

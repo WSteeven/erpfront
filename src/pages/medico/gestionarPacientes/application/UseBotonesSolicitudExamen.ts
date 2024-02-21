@@ -69,7 +69,7 @@ export function useBotonesSolicitudExamen(tabEstadoExamen: Ref, modales: Comport
     titulo: 'Solicitar examen',
     icono: 'bi-plus',
     color: 'positive',
-    visible: () => tabEstadoExamen.value === '0' && !seleccionVariosExamen.value,
+    visible: () => tabEstadoExamen.value === estadosExamenes.PENDIENTE_SOLICITAR && !seleccionVariosExamen.value,
     accion: ({ entidad }) => {
       medicoStore.examenSolicitado = entidad
       examenesSeleccionados.value = [entidad]
@@ -104,6 +104,17 @@ export function useBotonesSolicitudExamen(tabEstadoExamen: Ref, modales: Comport
     }
   }
 
+  const btnConsultarEstadoSolicitudExamen: CustomActionTable = {
+    titulo: 'Consultar estado',
+    icono: 'bi-eye',
+    color: 'primary',
+    visible: () => tabEstadoExamen.value === estadosExamenes.SOLICITADO,
+    accion: ({ entidad }) => {
+      medicoStore.examenSolicitado = entidad
+      modales.abrirModalEntidad('ResultadosExamenPage')
+    }
+  }
+
   /******************
    * Other functions
    ******************/
@@ -124,6 +135,7 @@ export function useBotonesSolicitudExamen(tabEstadoExamen: Ref, modales: Comport
     // Body
     btnSolicitarExamenIndividual,
     btnResultados,
+    btnConsultarEstadoSolicitudExamen,
     // Other functions
     seleccionarExamen,
   }

@@ -59,9 +59,8 @@
         v-if="listadosAuxiliares.preguntas.length"
         :accion="accion"
         label-guardar="Guardar respuestas y enviar"
-        :permitirCancelar="true"
-        @guardar="guardar(respuestaCuestionarioEmpleado)"
-        @cancelar="reestablecer()"
+        :permitirCancelar="false"
+        @guardar="guardarCuestionario()"
       />
     </div>
   </q-page>

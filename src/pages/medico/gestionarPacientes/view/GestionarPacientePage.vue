@@ -88,7 +88,7 @@
                   v-model="tabsRegistro"
                   vertical
                   indicator-color="transparent"
-                  class="bg-white text-grey-9"
+                  class="bg-toolbar"
                   active-class="bg-blue-1 text-black text-bold"
                 >
                   <q-tab
@@ -138,29 +138,109 @@
                   </q-tab-panel>
                   <!-- <q-tab-panel name="2"> Ocupacionales </q-tab-panel> -->
                 </q-tab-panels>
+                <!-- <q-btn color="positive" @click="cambiar()"
+                  >Cambiar columnas</q-btn
+                > -->
+                <q-tabs
+                  v-model="tabEstadoExamen"
+                  align="justify"
+                  active-color="primary"
+                  indicator-color="primary"
+                  active-bg-color="blue-1"
+                  class="border-bottom-grey-5"
+                  dense
+                >
+                  <q-tab
+                    :name="estadosExamenes.PENDIENTE_SOLICITAR.value"
+                    :label="estadosExamenes.PENDIENTE_SOLICITAR.label"
+                    :class="{
+                      'tab-inactive':
+                        tabs !== estadosExamenes.PENDIENTE_SOLICITAR.value,
+                    }"
+                    no-caps
+                  />
+                  <q-tab
+                    :name="estadosExamenes.SOLICITADO.value"
+                    :label="estadosExamenes.SOLICITADO.label"
+                    :class="{
+                      'tab-inactive': tabs !== estadosExamenes.SOLICITADO.value,
+                    }"
+                    no-caps
+                  />
+                  <q-tab
+                    :name="estadosExamenes.APROBADO_POR_COMPRAS.value"
+                    :label="estadosExamenes.APROBADO_POR_COMPRAS.label"
+                    :class="{
+                      'tab-inactive':
+                        tabs !== estadosExamenes.APROBADO_POR_COMPRAS.value,
+                    }"
+                    no-caps
+                  />
+                  <q-tab
+                    :name="estadosExamenes.RESULTADOS.value"
+                    :label="estadosExamenes.RESULTADOS.label"
+                    :class="{
+                      'tab-inactive': tabs !== estadosExamenes.RESULTADOS.value,
+                    }"
+                    no-caps
+                  />
+                </q-tabs>
 
-                <essential-table-tabs
-                  titulo="Examenes comúnes"
-                  :configuracionColumnas="[
-                    ...configuracionColumnasExamenes,
-                    accionesTabla,
-                  ]"
-                  :datos="examenes"
-                  :permitirConsultar="false"
-                  :permitirEditar="false"
-                  :permitirEliminar="false"
-                  :tab-options="tabOptionsEstadosExamenes"
-                  @tab-seleccionado="filtrarEstadoExamen"
-                  :tab-defecto="tabEstadoExamen"
-                  :accion1Header="btnSeleccionarVariosExamenes"
-                  :accion2Header="btnCancelarSeleccionarVariosExamenes"
-                  :accion3Header="btnSolicitarExamenesSeleccionados"
-                  :accion1="btnSolicitarExamenIndividual"
-                  :accion2="btnResultados"
-                  :tipo-seleccion="tipoSeleccion"
-                  @selected="seleccionarExamen"
-                  :alto-fijo="false"
-                ></essential-table-tabs>
+                <q-tab-panels
+                  v-model="tabEstadoExamen"
+                  animated
+                  transition-prev="scale"
+                  transition-next="scale"
+                  class="q-mb-md"
+                  helpalive
+                >
+                  <q-tab-panel
+                    :name="estadosExamenes.PENDIENTE_SOLICITAR.value"
+                    class="q-pa-none"
+                  >
+                    <!-- :tab-options="tabOptionsEstadosExamenes"
+                      @tab-seleccionado="filtrarEstadoExamen"
+                      :tab-defecto="tabEstadoExamen" -->
+                    <essential-table
+                      titulo="Examenes comúnes"
+                      :configuracionColumnas="[
+                        ...configuracionColumnasExamenes,
+                        accionesTabla,
+                      ]"
+                      :datos="examenes"
+                      :permitirConsultar="false"
+                      :permitirEditar="false"
+                      :permitirEliminar="false"
+                      :accion1Header="btnSeleccionarVariosExamenes"
+                      :accion2Header="btnCancelarSeleccionarVariosExamenes"
+                      :accion3Header="btnSolicitarExamenesSeleccionados"
+                      :accion1="btnSolicitarExamenIndividual"
+                      :accion2="btnResultados"
+                      :tipo-seleccion="tipoSeleccion"
+                      @selected="seleccionarExamen"
+                      :alto-fijo="false"
+                    ></essential-table>
+                  </q-tab-panel>
+
+                  <q-tab-panel
+                    :name="estadosExamenes.SOLICITADO.value"
+                    class="q-pa-none"
+                  >
+                    <essential-table
+                      titulo="Solicitudes de exámenes"
+                      :configuracionColumnas="[
+                        ...configuracionColumnasSolicitudExamen,
+                        accionesTabla,
+                      ]"
+                      :datos="solicitudesExamenes"
+                      :permitirConsultar="false"
+                      :permitirEditar="false"
+                      :permitirEliminar="false"
+                      :accion1="btnConsultarEstadoSolicitudExamen"
+                      :alto-fijo="false"
+                    ></essential-table>
+                  </q-tab-panel>
+                </q-tab-panels>
               </template>
             </q-splitter>
           </q-tab-panel>

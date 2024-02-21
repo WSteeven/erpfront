@@ -19,6 +19,8 @@ import ModalEntidad from 'components/modales/view/ModalEntidad.vue'
 import { RespuestaCuestionarioEmpleadoController } from '../infrestructure/RespuestaCuestionarioEmpleadoController'
 import { ContenedorSimpleMixin } from 'shared/contenedor/modules/simple/application/ContenedorSimpleMixin'
 import { RespuestaCuestionarioEmpleado } from '../domain/RespuestaCuestionarioEmpleado'
+import { ReporteCuestionarioController } from '../infrestructure/ReporteCuestionarioController'
+import { medico } from 'config/endpoints/medico'
 
 export default defineComponent({
   components: { EssentialTable, ModalEntidad },
@@ -35,68 +37,45 @@ export default defineComponent({
     const mixin = new ContenedorSimpleMixin(RespuestaCuestionarioEmpleado, new RespuestaCuestionarioEmpleadoController())
     const { cargarVista } = mixin.useComportamiento()
 
-    cargarVista(async () => {
-      await reporte()
-    })
-
     /************
      * Variables
      ************/
     const listado = ref([])
+    const reporteCuestionarioController = new ReporteCuestionarioController()
 
     /****************
      * Botones tabla
      ****************/
     const btnImprimirReporte: CustomActionTable = {
-      titulo: 'Imprimir',
+      titulo: 'Imprimir reporte',
       icono: 'bi-printer',
-      color: 'primary',
-      visible: () =>
-        authenticationStore.can('puede.ver.reporte_cuestionarios_pisicosocial'),
-      accion: () => {
-        imprimir_reporte()
-      },
+      color: 'positive',
+      visible: () => authenticationStore.can('puede.ver.reporte_cuestionarios_psicosocial'),
+      accion: () => imprimirReporte()
     }
 
     const btnImprimirRespuestas: CustomActionTable = {
-      titulo: 'Imprimir Respuestas',
+      titulo: 'Imprimir respuestas',
       icono: 'bi-printer',
       color: 'primary',
-      visible: () =>
-        authenticationStore.can('puede.ver.reporte_cuestionarios_pisicosocial'),
-      accion: () => {
-        imprimir_respuesta()
-      },
+      visible: () => authenticationStore.can('puede.ver.reporte_cuestionarios_psicosocial'),
+      accion: () => imprimir_respuesta()
     }
 
     /************
      * Funciones
      ************/
     async function reporte() {
-      const axiosHttpRepository = AxiosHttpRepository.getInstance()
-      const url_acreditacion = apiConfig.URL_BASE + '/api/medico/reporte-cuestionario'
-      await axios({
-        url: url_acreditacion,
-        method: 'GET',
-        responseType: 'json',
-        headers: {
-          Authorization: axiosHttpRepository.getOptions().headers.Authorization,
-        },
-      }).then((response: HttpResponseGet) => {
-        const { data } = response
-        if (data) {
-          listado.value = data.results
-        }
-      })
+      const { result } = await reporteCuestionarioController.listar()
+      listado.value = result
     }
 
-    async function imprimir_reporte(): Promise<void> {
-      const fecha_actual = new Date()
-      const filename =
-        'reporte_cuestionarios_pisicosocial_' + fecha_actual.toLocaleString()
-      const url_pdf =
-        apiConfig.URL_BASE + '/api/medico/reporte-cuestionario?imprimir=true'
-      imprimirArchivo(url_pdf, 'GET', 'blob', 'xlsx', filename, null)
+    async function imprimirReporte(): Promise<void> {
+      const fechaActual = new Date()
+      const filename = 'reporte_cuestionarios_pisicosocial_' + fechaActual.toLocaleString()
+      const urlPdf = apiConfig.URL_BASE + '/' + AxiosHttpRepository.getInstance().getEndpoint(medico.reporte_cuestionario) + '?imprimir=true'
+      imprimirArchivo(urlPdf, 'GET', 'blob', 'xlsx', filename, null)
+      // const url_pdf = apiConfig.URL_BASE + '/api/medico/reporte-cuestionario?imprimir=true'
     }
 
     async function imprimir_respuesta(): Promise<void> {
@@ -106,6 +85,13 @@ export default defineComponent({
       const url_pdf = apiConfig.URL_BASE + '/api/medico/imprimir-cuestionario'
       imprimirArchivo(url_pdf, 'GET', 'blob', 'txt', filename, null)
     }
+
+    /*******
+     * Init
+     *******/
+    cargarVista(async () => {
+      await reporte()
+    })
 
     return {
       listado,
