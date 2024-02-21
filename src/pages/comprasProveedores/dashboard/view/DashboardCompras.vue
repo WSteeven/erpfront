@@ -9,9 +9,7 @@
 
         <div class="row q-col-gutter-sm q-mb-md">
           <div class="col-12 col-md-3">
-            <label class="q-mb-sm block"
-              >Seleccione un empleado</label
-            >
+            <label class="q-mb-sm block">Seleccione un empleado</label>
             <q-select
               v-model="dashboard.empleado"
               :options="empleados"
@@ -25,7 +23,7 @@
               :error="!!v$.empleado.$errors.length"
               @blur="v$.empleado.$touch"
               @filter="filtrarEmpleados"
-              @popup-show="ordenarEmpleados(empleados)"
+              @popup-show="ordenarLista(empleados, 'apellidos')"
               :option-label="(v) => v.apellidos + ' ' + v.nombres"
               :option-value="(v) => v.id"
               emit-value
@@ -423,7 +421,9 @@
                   <div class="text-h3 q-mb-md">
                     {{ cantOrdenesProveedor }}
                   </div>
-                  <div class="text-bold">Cantidad de ordenes de compras que tienen proveedor</div>
+                  <div class="text-bold">
+                    Cantidad de ordenes de compras que tienen proveedor
+                  </div>
                 </q-card>
               </div>
               <div v-if="cantOrdenesPendientes >= 0" class="col-6 col-md-4">
@@ -564,7 +564,7 @@
             <div class="col-12">
               <essential-table
                 v-if="ordenesPorEstado.length"
-                :titulo="'Ordenes de Compra '+labelTabla"
+                :titulo="'Ordenes de Compra ' + labelTabla"
                 :configuracionColumnas="[
                   ...configuracionColumnas,
                   accionesTabla,

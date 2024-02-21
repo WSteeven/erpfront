@@ -5,8 +5,6 @@ import useVuelidate from "@vuelidate/core";
 import { required } from 'shared/i18n-validators'
 import { StatusEssentialLoading } from "components/loading/application/StatusEssentialLoading";
 import { ComportamientoModalesOrdenesCompras } from "../application/ComportamientoModalesOrdenesCompras";
-import { ProveedorController } from "sistema/proveedores/infraestructure/ProveedorController";
-import { EmpleadoController } from "pages/recursosHumanos/empleados/infraestructure/EmpleadoController";
 
 // Componentes
 import TabLayout from 'shared/contenedor/modules/simple/view/TabLayout.vue'
@@ -23,14 +21,14 @@ import { OrdenCompraController } from "pages/comprasProveedores/ordenCompra/infr
 import { ContenedorSimpleMixin } from "shared/contenedor/modules/simple/application/ContenedorSimpleMixin";
 import { useOrdenCompraStore } from "stores/comprasProveedores/ordenCompra";
 import { CustomActionTable } from "components/tables/domain/CustomActionTable";
-import { estadosOrdenesCompras } from "config/utils_compras_proveedores";
-import { obtenerFechaActual } from "shared/utils";
+import { obtenerFechaActual, ordenarLista } from "shared/utils";
 import { accionesTabla } from "config/utils";
 import { useNotificaciones } from "shared/notificaciones";
 import { optionsPie } from "config/graficoGenerico";
 import { filtroOrdenesComprasAprobadas, filtroOrdenesComprasCreadas, filtroOrdenesComprasProveedores } from "../application/FiltrosDashboardOrdenesCompras";
 import { EmpleadoOrdenesController } from "../infraestructure/EmpleadoOrdenesController";
 import { useFiltrosListadosSelects } from "shared/filtrosListadosGenerales";
+import { EmpleadoController } from "pages/recursosHumanos/empleados/infraestructure/EmpleadoController";
 
 
 export default defineComponent({
@@ -83,7 +81,7 @@ export default defineComponent({
     const labelTabla = ref()
     const proveedores = ref([])
 
-    const { empleados, filtrarEmpleados} = useFiltrosListadosSelects(listadosAuxiliares)
+    const { empleados, filtrarEmpleados } = useFiltrosListadosSelects(listadosAuxiliares)
     cargarVista(async () => {
       await obtenerListados({
         // proveedores: new ProveedorController(),
@@ -96,13 +94,14 @@ export default defineComponent({
         },
       })
       dashboard.fecha_fin = obtenerFechaActual()
+      empleados.value = listadosAuxiliares.empleados
     })
     // Reglas de validacion
     const reglas = {
       fecha_inicio: { required },
       fecha_fin: { required },
       tipo: { required },
-      // empleado: { required },
+      empleado: { required },
     }
 
     const v$ = useVuelidate(reglas, dashboard)
@@ -206,6 +205,7 @@ export default defineComponent({
       modoUnaColumna: ref(false),
       labelTabla,
       empleados, filtrarEmpleados,
+      ordenarLista,
     }
   },
 })
