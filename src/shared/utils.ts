@@ -1,4 +1,4 @@
-import axios, { AxiosResponse, Method, ResponseType } from 'axios'
+import axios, { AxiosError, AxiosResponse, Method, ResponseType } from 'axios'
 import { StatusEssentialLoading } from 'components/loading/application/StatusEssentialLoading'
 import { apiConfig, endpoints } from 'config/api'
 import { date } from 'quasar'
@@ -661,4 +661,16 @@ export function filtrarEmpleadosPorRoles(empleados, roles) {
     return roles.some((rol) => rolesEmpleado.includes(rol))
   })
   return filtrados
+}
+
+
+export async function notificarErrores(err) {
+  const axiosError = err as AxiosError
+  const error = new ApiError(axiosError)
+  if (isAxiosError(error)) {
+    const mensajes: string[] = error.erroresValidacion
+    await notificarMensajesError(mensajes, useNotificaciones())
+  } else {
+    console.log(axiosError)
+  }
 }

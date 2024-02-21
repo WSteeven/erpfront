@@ -49,5 +49,4 @@
     </template>
   </tab-layout>
 </template>
-<script src="./ProductoVentasPage.ts"></script>
-./PlanesPage.js./PlanesPage.js
+<script src="./ModalidadPage.ts"></script>

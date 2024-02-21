@@ -4,7 +4,9 @@
       <q-card-section>
         <div class="row items-center no-wrap">
           <div class="col">
-            <div class="text-h6">Generar Reporte Fondo Rotativo Contabilidad</div>
+            <div class="text-h6">
+              Generar Reporte Fondo Rotativo Contabilidad
+            </div>
           </div>
         </div>
       </q-card-section>
@@ -41,7 +43,9 @@
               </template>
               <template v-slot:no-option>
                 <q-item>
-                  <q-item-section class="text-grey"> No hay resultados </q-item-section>
+                  <q-item-section class="text-grey">
+                    No hay resultados
+                  </q-item-section>
                 </q-item>
               </template>
             </q-select>
@@ -59,14 +63,23 @@
             >
               <template v-slot:append>
                 <q-icon name="event" class="cursor-pointer">
-                  <q-popup-proxy cover transition-show="scale" transition-hide="scale">
+                  <q-popup-proxy
+                    cover
+                    transition-show="scale"
+                    transition-hide="scale"
+                  >
                     <q-date
                       v-model="fondo_rotativo_contabilidad.fecha_inicio"
                       :mask="maskFecha"
                       today-btn
                     >
                       <div class="row items-center justify-end">
-                        <q-btn v-close-popup label="Cerrar" color="primary" flat />
+                        <q-btn
+                          v-close-popup
+                          label="Cerrar"
+                          color="primary"
+                          flat
+                        />
                       </div>
                     </q-date>
                   </q-popup-proxy>
@@ -93,14 +106,23 @@
             >
               <template v-slot:append>
                 <q-icon name="event" class="cursor-pointer">
-                  <q-popup-proxy cover transition-show="scale" transition-hide="scale">
+                  <q-popup-proxy
+                    cover
+                    transition-show="scale"
+                    transition-hide="scale"
+                  >
                     <q-date
                       v-model="fondo_rotativo_contabilidad.fecha_fin"
                       :mask="maskFecha"
                       today-btn
                     >
                       <div class="row items-center justify-end">
-                        <q-btn v-close-popup label="Cerrar" color="primary" flat />
+                        <q-btn
+                          v-close-popup
+                          label="Cerrar"
+                          color="primary"
+                          flat
+                        />
                       </div>
                     </q-date>
                   </q-popup-proxy>
@@ -115,7 +137,9 @@
             </q-input>
           </div>
           <div class="col-4 col-md-2 q-mb-md" style="margin-top: 2%">
-            <q-btn color="positive" @click="abrir_reporte(fondo_rotativo_contabilidad)"
+            <q-btn
+              color="positive"
+              @click="abrir_reporte(fondo_rotativo_contabilidad)"
               ><q-icon size="xs" class="q-mr-sm" name="bi-search"
             /></q-btn>
           </div>
@@ -125,7 +149,10 @@
     <essential-table
       v-if="listado.length > 0"
       titulo="Reporte de Contabilidad"
-      :configuracionColumnas="[...ConfiguracionColumnasContabilidad, accionesTabla]"
+      :configuracionColumnas="[
+        ...ConfiguracionColumnasContabilidad,
+        accionesTabla,
+      ]"
       :datos="listado"
       :permitirConsultar="false"
       :permitirEditar="false"
@@ -133,7 +160,8 @@
       :accion1="botonVerModalGasto"
     >
     </essential-table>
-    <modal-entidad :comportamiento="modales"> </modal-entidad>
+    <modal-entidad :comportamiento="modales" :persistente="false">
+    </modal-entidad>
   </q-page>
 </template>
 <script src="./Reporte_contabilidadPage.ts"></script>

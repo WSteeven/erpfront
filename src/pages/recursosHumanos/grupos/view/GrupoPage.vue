@@ -40,6 +40,7 @@
               dense
               outlined
               :disable="disabled"
+              clearable
             >
             </q-select>
           </div>

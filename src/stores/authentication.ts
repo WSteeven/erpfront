@@ -61,6 +61,12 @@ export const useAuthenticationStore = defineStore('authentication', () => {
   const esCompras = computed(() => user.value ? extraerRol(user.value.roles, rolesSistema.compras) : false)
   const esAdministrador = computed(() => user.value ? extraerRol(user.value.roles, rolesSistema.administrador) : false)
   const esMedico = computed(() => user.value ? extraerRol(user.value.roles, rolesSistema.medico) : false)
+  //ventas
+  const esJefeVentasClaro = computed(() => user.value ? extraerRol(user.value.roles, rolesSistema.jefe_ventas) : false)
+  const esSupervisorVentasClaro = computed(() => user.value ? extraerRol(user.value.roles, rolesSistema.supervisor_ventas) : false)
+  const esVendedor = computed(() => user.value ? extraerRol(user.value.roles, rolesSistema.vendedor) : false)
+
+
 
   function extraerRol(roles: string[], rolConsultar: string) {
     return roles.some((rol: string) => rol === rolConsultar)
@@ -276,6 +282,7 @@ export const useAuthenticationStore = defineStore('authentication', () => {
     esRecursosHumanos,
     esGerente,
     esCompras, esContabilidad, esAdministrador,
+    esJefeVentasClaro, esSupervisorVentasClaro, esVendedor,
     esFiscalizador,
     esSupervisorCampo,
     esMedico,

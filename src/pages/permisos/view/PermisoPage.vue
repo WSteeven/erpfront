@@ -12,9 +12,7 @@
             options-dense
             dense
             outlined
-            @update:model-value="obtenerPermisoRol(rol)"
-            :disable="disabled"
-            :readonly="disabled"
+            @update:model-value="obtenerPermisoRol"
             error-message="Debes seleccionar un rol"
             use-input
             input-debounce="0"
@@ -49,9 +47,9 @@
                   :permitirConsultar="false"
                   :permitirEditar="false"
                   :permitirEliminar="false"
-                  :mostrarHeaders="false"
                   :mostrarFooter="true"
                   :mostrarColumnasVisibles="false"
+                  :mostrarExportar="true"
                   ref="refPermisosSinAsignar"
                   @selected="asignarPermiso"
                   tipo-seleccion="multiple"
@@ -61,7 +59,7 @@
             </q-card>
           </div>
 
-          <col-12 class="col-md-2 column justify-center q-gutter-y-md">
+          <div class="col-md-2 column justify-center q-gutter-y-md">
             <q-btn
               class="full-width block"
               color="secondary"
@@ -82,7 +80,7 @@
               @click="botonEliminarPermisos()"
               ><q-icon name="bi-arrow-left"></q-icon
             ></q-btn>
-          </col-12>
+          </div>
 
           <div class="col-12 col-md-5 q-mb-md">
             <q-card>
@@ -95,6 +93,7 @@
                   :permitirConsultar="false"
                   :permitirEditar="false"
                   :permitirEliminar="false"
+                  :mostrarExportar="true"
                   ref="refPermisosAsignados"
                   @selected="eliminarPermiso"
                   tipo-seleccion="multiple"

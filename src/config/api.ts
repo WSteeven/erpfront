@@ -437,20 +437,34 @@ export const endpoints = {
    * Modulo de Ventas de Claro
    *********************/
   bonos: new Endpoint('ventas-claro/bonos'),
+  bonos_porcentuales: new Endpoint('ventas-claro/bono-porcentual'),
   comisiones: new Endpoint('ventas-claro/comisiones'),
   modalidad: new Endpoint('ventas-claro/modalidad'),
   planes: new Endpoint('ventas-claro/planes'),
-  producto_ventas: new Endpoint('ventas-claro/producto-ventas'),
-  vendedor: new Endpoint('ventas-claro/vendedor'),
+  productos_ventas: new Endpoint('ventas-claro/productos-ventas'),
+  vendedores_claro: new Endpoint('ventas-claro/vendedores'),
   ventas: new Endpoint('ventas-claro/ventas'),
+  actualizar_comisiones_ventas: new Endpoint('ventas-claro/actualizar-comisiones-ventas'),
   obtener_comision: new Endpoint('ventas-claro/obtener-comision'),
   tipo_chargebacks: new Endpoint('ventas-claro/tipo-chargeback'),
   chargebacks: new Endpoint('ventas-claro/chargebacks'),
-  pago_comision: new Endpoint('ventas-claro/pago-comision'),
-  bono_mensual_cumplimiento: new Endpoint('ventas-claro/bono-mensual-cumplimiento'),
+  cortes_pagos_comisiones: new Endpoint('ventas-claro/cortes-pagos-comisiones'),
+  retenciones_chargebacks: new Endpoint('ventas-claro/retenciones-chargebacks'),
+  pago_comision: new Endpoint('ventas-claro/pagos-comisiones'),
+  bono_mensual_cumplimiento: new Endpoint('ventas-claro/bonos-mensuales-cumplimientos'),
   bono_trimestral_cumplimiento: new Endpoint('ventas-claro/bono-trimestral-cumplimiento'),
   cobrojp: new Endpoint('ventas-claro/cobrojp'),
   pago: new Endpoint('ventas-claro/pago'),
   reporte_ventas: new Endpoint('ventas-claro/reporte-ventas'),
-  dashboard_ventas_claro: new Endpoint('ventas-claro/dashboard')
+  dashboard_ventas_claro: new Endpoint('ventas-claro/dashboard'),
+  umbral_ventas: new Endpoint('ventas-claro/umbral-ventas'),
+  esquema_comision: new Endpoint('ventas-claro/esquema-comision'),
+  clientes_claro: new Endpoint('ventas-claro/clientes-claro'),
+  escenario_venta_jp: new Endpoint('ventas-claro/escenario-venta-jp'),
+  novedades_ventas: new Endpoint('ventas-claro/novedades-ventas'),
+
+
+
+
+
 }

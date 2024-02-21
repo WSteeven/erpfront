@@ -907,56 +907,135 @@ export const useMenuStore = defineStore('menu', () => {
      *********************************************************/
     {
       title: 'Ventas de Claro',
-      icon: 'bi-phone-fill',
+      icon: 'img:src/assets/icons/logo-claro.svg', //'bi-c-circle-fill',
       can: store.can('puede.ver.modulo_ventas_claro'),
       children: [
         {
           title: 'Dashboard',
           link: 'dashboard-ventas',
           icon: 'bi-circle',
-          can: store.can('puede.ver.dashboard_venta'),
+          can: store.can('puede.ver.dashboard_ventas'),
         },
         {
           title: 'Productos',
-          link: 'producto-ventas',
+          link: 'productos-ventas',
           icon: 'bi-circle',
-          can: store.can('puede.ver.producto_ventas'),
+          can: store.can('puede.acceder.productos_ventas'),
         },
         {
           title: 'Vendedores',
-          link: 'vendedor',
+          link: 'vendedores',
           icon: 'bi-circle',
-          can: store.can('puede.ver.vendedor'),
+          can: store.can('puede.acceder.vendedores'),
+        },
+        {
+          title: 'Clientes',
+          link: 'clientes-claro',
+          icon: 'bi-circle',
+          can: store.can('puede.acceder.clientes_claro'),
         },
         {
           title: 'Ventas',
           link: 'ventas',
           icon: 'bi-circle',
-          can: store.can('puede.ver.ventas'),
+          can: store.can('puede.acceder.ventas'),
         },
         {
           title: 'Chargeback',
           link: 'chargebacks',
           icon: 'bi-circle',
-          can: store.can('puede.ver.chargebacks'),
+          can: store.can('puede.acceder.chargebacks'),
         },
         {
-          title: 'Pagar Comisiones',
-          link: 'pago-comision',
+          title: 'Pagos de Comisiones',
+          link: 'pagos-comisiones',
           icon: 'bi-circle',
-          can: store.can('puede.ver.pago_comision'),
+          can: store.can('puede.acceder.pagos_comisiones'),
+        },
+        {
+          title: 'Retenciones de Chargebacks',
+          link: 'retenciones-chargebacks',
+          icon: 'bi-circle',
+          can: store.can('puede.acceder.retenciones_chargebacks'),
         },
         {
           title: 'Bono Mensual Cumplimento',
           link: 'bono-mensual-cumplimiento',
           icon: 'bi-circle',
-          can: store.can('puede.ver.bono_mensual_cumplimiento'),
+          can: store.can('puede.acceder.bonos_mensuales_cumplimientos'),
         },
         {
           title: 'Bono Trimestral Cumplimiento',
-          link: 'bono-trimestral-cumplimiento',
+          link: 'bonos-trimestrales-cumplimientos',
           icon: 'bi-circle',
-          can: store.can('puede.ver.bono_trimestral_cumplimiento'),
+          can: store.can('puede.acceder.bonos_trimestrales_cumplimientos'),
+        },
+        {
+          title: 'Configuracion',
+          icon: 'bi-gear-fill',
+          children: [
+            {
+              title: 'Planes',
+              link: 'planes',
+              icon: 'bi-circle',
+              can: store.can('puede.acceder.planes'),
+            },
+            {
+              title: 'Umbral de ventas',
+              link: 'modalidades',
+              icon: 'bi-circle',
+              can: store.can('puede.acceder.modalidades'),
+            },
+            {
+              title: 'Tipo de ChargeBack',
+              link: 'tipos-chargebacks',
+              icon: 'bi-circle',
+              can: store.can('puede.acceder.tipos_chargebacks'),
+            },
+            {
+              title: 'Comisiones',
+              link: 'comisiones',
+              icon: 'bi-circle',
+              can: store.can('puede.acceder.comisiones'),
+            },
+            {
+              title: 'Meta de Ventas',
+              link: 'umbrales-ventas',
+              icon: 'bi-circle',
+              can: store.can('puede.acceder.umbrales_ventas'),
+            },
+            {
+              title: 'Esquema de Comisiones',
+              link: 'esquemas-comisiones',
+              icon: 'bi-circle',
+              can: store.can('puede.acceder.esquemas_comisiones'),
+            },
+            {
+              title: 'Escenario Venta',
+              link: 'escenarios-ventas-jp',
+              icon: 'bi-circle',
+              can: store.can('puede.ver.escenarios_ventas_jp'),
+            },
+            {
+              title: 'Bonos',
+              icon: 'fa-solid fa-hands-holding-circle',
+              children: [
+                {
+                  title: 'Bono de Vendedores',
+                  link: 'bonos',
+                  icon: 'bi-circle',
+                  can: store.can('puede.acceder.bonos'),
+                },
+                {
+                  title: 'Bono de Supervisores',
+                  link: 'bonos-porcentuales',
+                  icon: 'bi-circle',
+                  can: store.can('puede.acceder.bonos_porcentuales'),
+                },
+              ]
+            }
+
+          ]
         },
         {
           title: 'Reportes',
@@ -966,19 +1045,19 @@ export const useMenuStore = defineStore('menu', () => {
               title: 'Valores a cobrar para JP',
               link: 'reporte_cobrojp',
               icon: 'bi-circle',
-              can: store.can('puede.ver.reporte_cobrojp'),
+              can: store.can('puede.ver.reportes_cobrosjp_claro'),
             },
             {
               title: 'Pagos',
-              link: 'reporte_pago',
+              link: 'reportes-pagos-claro',
               icon: 'bi-circle',
-              can: store.can('puede.ver.reporte_pago'),
+              can: store.can('puede.ver.reportes_pagos_claro'),
             },
             {
-              title: 'Ventas',
-              link: 'reporte_venta',
+              title: 'Ventas por Vendedor',
+              link: 'reportes-ventas-claro',
               icon: 'bi-circle',
-              can: store.can('puede.ver.reporte_venta'),
+              can: store.can('puede.ver.reportes_ventas_claro'),
             },
           ],
         },

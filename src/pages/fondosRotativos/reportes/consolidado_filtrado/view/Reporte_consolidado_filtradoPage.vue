@@ -26,7 +26,7 @@
                 <q-popup-proxy cover transition-show="scale" transition-hide="scale">
                   <q-date
                     v-model="consolidadofiltrado.fecha_inicio"
-                    mask="DD-MM-YYYY"
+                    :mask="maskFecha"
                     today-btn
                   >
                     <div class="row items-center justify-end">
@@ -60,7 +60,7 @@
                 <q-popup-proxy cover transition-show="scale" transition-hide="scale">
                   <q-date
                     v-model="consolidadofiltrado.fecha_fin"
-                    mask="DD-MM-YYYY"
+                    :mask="maskFecha"
                     today-btn
                   >
                     <div class="row items-center justify-end">

@@ -1,5 +1,5 @@
-import { ColumnConfig } from "components/tables/domain/ColumnConfig";
-import { Gasto } from "./Gasto";
+import { ColumnConfig } from 'components/tables/domain/ColumnConfig'
+import { Gasto } from './Gasto'
 
 export const configuracionColumnasGasto: ColumnConfig<Gasto>[] = [
   {
@@ -24,6 +24,13 @@ export const configuracionColumnasGasto: ColumnConfig<Gasto>[] = [
     sortable: true
   },
   {
+    name: 'tarea_cliente',
+    field: 'tarea_cliente',
+    label: 'Tarea cliente',
+    align: 'left',
+    sortable: true
+  },
+  {
     name: 'factura',
     field: 'factura',
     label: '#Factura',
@@ -35,7 +42,8 @@ export const configuracionColumnasGasto: ColumnConfig<Gasto>[] = [
     field: 'num_comprobante',
     label: '#Comprobante',
     align: 'left',
-    sortable: true },
+    sortable: true
+  },
   {
     name: 'ruc',
     field: 'ruc',
