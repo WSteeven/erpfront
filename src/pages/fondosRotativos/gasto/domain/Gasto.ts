@@ -38,6 +38,7 @@ export class Gasto extends EntidadAuditable {
   tiene_factura: boolean | null
   centro_costo: string | null
   subcentro_costo: string | null
+
   constructor() {
     super()
     this.fecha_viat = null
