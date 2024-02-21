@@ -1,14 +1,22 @@
 <template>
-  <tab-layout
-    :mixin="mixin"
-    :configuracionColumnas="configuracionColumnas"
-    titulo-pagina="CIE"
-    :mostrarButtonSubmits="!enviar_masivo"
-  >
-    <template #formulario>
-      <q-form @submit.prevent>
-        <div class="row q-col-gutter-sm q-mb-md q-mt-md q-mx-md q-py-sm">
-          <div class="col-12 col-md-6" >
+  <q-page padding>
+    <div class="text-right q-mb-md">
+      <b class="block text-subtitle1 text-thin text-primary">
+        {{ 'Configuracion Cuestionario' }}</b
+      >
+      <small class="text-grey-9 text-bold">{{ 'SISTEMA' }}</small>
+    </div>
+
+    <q-card class="rounded custom-shadow no-border">
+      <div class="row text-bold text-primary q-pa-md items-center">
+        <q-icon name="bi-house-gear-fill" class="q-mr-sm"></q-icon>
+        Configuracion Cuestionario
+      </div>
+
+      <q-card-section>
+        <q-form @submit.prevent>
+          <div class="row q-col-gutter-sm q-py-md q-mb-xl">
+            <div class="col-12 col-md-6" >
             <label class="q-mb-sm block">Fecha hora de Inicio</label>
             <q-input
               v-model="configuracion_cuestionario_empleado.fecha_hora_inicio"
@@ -94,10 +102,26 @@
               </template>
             </q-input>
           </div>
-        </div>
-      </q-form>
+          </div>
 
-    </template>
-  </tab-layout>
+          <div class="row q-mb-xl">
+            <!-- Boton guardar -->
+            <q-btn
+              color="primary"
+              type="submit"
+              no-caps
+              @click="guardar(configuracion_cuestionario_empleado)"
+              class="full-width"
+            >
+              <!-- :class="{ 'full-width': $q.screen.xs }" -->
+              <q-icon name="bi-save" size="xs" class="q-pr-sm"></q-icon>
+              <span>{{ 'Actualizar configuración cuestionario' }}</span>
+            </q-btn>
+          </div>
+        </q-form>
+      </q-card-section>
+    </q-card>
+  </q-page>
 </template>
-<script src="./ConfiguracionCuestionarioEmpleadoPage.ts" />
+
+<script src="./ConfiguracionCuestionarioEmpleadoPage.ts"></script>
