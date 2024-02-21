@@ -104,7 +104,7 @@ export default defineComponent({
       const filename =
         'respuesta_cuestionarios_pisicosocial_' + fecha_actual.toLocaleString()
       const url_pdf = apiConfig.URL_BASE + '/api/medico/imprimir-cuestionario'
-      imprimirArchivo(url_pdf, 'GET', 'blob', 'txt', filename, null)
+      imprimirArchivo(url_pdf, 'GET', 'blob', 'text', filename, null,'plain')
     }
 
     return {
