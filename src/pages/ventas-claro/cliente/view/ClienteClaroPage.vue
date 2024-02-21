@@ -14,7 +14,10 @@
       <q-form @submit.prevent>
         <div class="row q-col-gutter-sm q-mb-md">
           <!-- supervisor -->
-          <div class="col-12 col-md-3" v-if="store.esJefeVentasClaro">
+          <div
+            class="col-12 col-md-3"
+            v-if="store.esJefeVentasClaro || store.esAdministrador"
+          >
             <label class="q-mb-sm block">Supervisor</label>
             <q-select
               v-model="cliente.supervisor"

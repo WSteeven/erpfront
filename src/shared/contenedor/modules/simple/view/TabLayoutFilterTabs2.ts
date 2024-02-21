@@ -55,6 +55,10 @@ export default defineComponent({
       type: Boolean,
       default: true,
     },
+    puedeExportar: {
+      type: Boolean,
+      default: false,
+    },
     tabOptions: {
       type: Array as () => TabOption[],
       required: true,
@@ -251,6 +255,7 @@ export default defineComponent({
       forzarListar,
       //valor del essentialLoading
       storeCargando: useCargandoStore(),
+      puedeExportar: props.puedeExportar,
     }
   },
 })
