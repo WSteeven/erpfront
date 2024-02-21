@@ -39,6 +39,7 @@ export class Gasto extends EntidadAuditable {
   centro_costo: string | null
   subcentro_costo: string | null
   placa: string | null
+
   constructor() {
     super()
     this.fecha_viat = null
