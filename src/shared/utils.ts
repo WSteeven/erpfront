@@ -42,11 +42,12 @@ export function validarEmail(email?: string): boolean {
 export function descargarArchivo(
   data: any,
   titulo: string,
-  formato: string
+  formato: string,
+  tipo ='application'
 ): void {
   const link = document.createElement('a')
   link.href = URL.createObjectURL(
-    new Blob([data], { type: `application/${formato}` })
+    new Blob([data], { type: `${tipo}/${formato}` })
   )
   link.setAttribute('download', `${titulo}.${formato}`)
   document.body.appendChild(link)
@@ -339,7 +340,7 @@ export function pushEventMesaggeServiceWorker(data: ServiceWorkerClass) {
  *
  * @returns mensaje que indica que no se puede imprimir el archivo
  */
-export async function imprimirArchivo(ruta: string, metodo: Method, responseType: ResponseType, formato: string, titulo: string, data?: any) {
+export async function imprimirArchivo(ruta: string, metodo: Method, responseType: ResponseType, formato: string, titulo: string, data?: any, tipo ='application') {
   const statusLoading = new StatusEssentialLoading()
   const { notificarError } = useNotificaciones()
   statusLoading.activar()
@@ -354,10 +355,11 @@ export async function imprimirArchivo(ruta: string, metodo: Method, responseType
     if (response.status === 200) {
       if (response.data.size < 100 || response.data.type == 'application/json') throw 'No se obtuvieron resultados para generar el reporte'
       else {
-        const fileURL = URL.createObjectURL(new Blob([response.data], { type: `appication/${formato}` }))
+        const fileURL = URL.createObjectURL(new Blob([response.data], { type: `${tipo}/${formato}` }))
         const link = document.createElement('a')
         link.href = fileURL
         link.target = '_blank'
+        formato = formato == 'text' ? 'txt' : formato
         link.setAttribute('download', `${titulo}.${formato}`)
         document.body.appendChild(link)
         link.click()
