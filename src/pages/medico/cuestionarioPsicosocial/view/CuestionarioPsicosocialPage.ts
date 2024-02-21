@@ -1,7 +1,6 @@
 // Dependencias
 import { SelectOption } from 'components/tables/domain/SelectOption'
 import { useNotificacionStore } from 'stores/notificacion'
-import { useNotificaciones } from 'shared/notificaciones'
 import { required } from 'shared/i18n-validators'
 import { defineComponent, ref } from 'vue'
 import useVuelidate from '@vuelidate/core'
@@ -15,6 +14,7 @@ import ButtonSubmits from 'components/buttonSubmits/buttonSubmits.vue'
 import { RespuestaCuestionarioEmpleadoController } from '../infrestructure/RespuestaCuestionarioEmpleadoController'
 import { PreguntaController } from 'pages/medico/pregunta/infrestructure/RespuestaCuestionarioEmpleadoController'
 import { ContenedorSimpleMixin } from 'shared/contenedor/modules/simple/application/ContenedorSimpleMixin'
+import { StatusEssentialLoading } from 'components/loading/application/StatusEssentialLoading'
 import { RespuestaCuestionarioEmpleado } from '../domain/RespuestaCuestionarioEmpleado'
 import { ValidarCuestionarioLleno } from '../application/ValidarCuestionarioLleno'
 import { Cuestionario } from '../domain/Cuestionario'
@@ -47,6 +47,7 @@ export default defineComponent({
     * Variables
     ************/
     const objetivo = 'El objetivo de este cuestionario es conocer algunos aspectos sobre las condiciones psicosociales en tu trabajo. El cuestionario es anónimo y se garantiza la confidencialidad de las respuestas. Con el fin de que la información que se obtenga sea útil es necesario que contestes sinceramente a todas las preguntas. Si hay alguna pregunta sin contestar el cuestionario no será válido. Tras leer atentamente cada pregunta así como sus opciones de respuesta, marca en cada caso la respuesta que consideres más adecuada, señalando una sola respuesta por cada pregunta.'
+    const cargando = new StatusEssentialLoading()
 
     /*********
      * Reglas
@@ -75,8 +76,15 @@ export default defineComponent({
       })
     }
 
-    const confirmarLimpiarFormulario = () => {
-      //
+    const guardarCuestionario = async () => {
+      try {
+        await guardar(respuestaCuestionarioEmpleado)
+        listadosAuxiliares.preguntas = []
+        mensaje.value = 'Gracias por completar el cuestionario.'
+      } catch (e) {
+        console.log(e)
+      }
+
     }
 
     /********
@@ -95,7 +103,8 @@ export default defineComponent({
      *******/
     const preguntaController = new PreguntaController()
     const mensaje = ref()
-    const consultarPreguntas = async () => {
+    async function consultarPreguntas() {
+      cargando.activar()
       try {
         const { result } = await preguntaController.listar()
         listadosAuxiliares.preguntas = result
@@ -104,6 +113,8 @@ export default defineComponent({
           const mensajes: string[] = e.erroresValidacion
           mensaje.value = mensajes[0]
         }
+      } finally {
+        cargando.desactivar()
       }
     }
     consultarPreguntas()
@@ -112,6 +123,7 @@ export default defineComponent({
       v$,
       accion,
       mixin,
+      guardarCuestionario,
       listadosAuxiliares,
       respuestaCuestionarioEmpleado,
       mapearCuestionario,

@@ -22,6 +22,7 @@
     :hide-bottom="!mostrarFooter"
     flat
     bordered
+    square
     :selection="tipoSeleccion"
     v-model:selected="selected"
     :style="estilos"

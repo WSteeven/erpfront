@@ -240,7 +240,7 @@ export default defineComponent({
         const filaVacia: EntidadAuditable = new props.entidad()
         if (data) filaVacia.hydrate(data)
         fila.value = filaVacia
-        console.log(fila.value)
+        // console.log(fila.value)
         posicionFilaEditada.value = listado.value.length
         refEditarModal.value.abrir()
       } else {
