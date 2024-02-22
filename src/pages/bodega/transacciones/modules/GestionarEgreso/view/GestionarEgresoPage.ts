@@ -1,6 +1,6 @@
 //Dependencias
 import { configuracionColumnasTransaccionEgreso } from 'pages/bodega/transacciones/domain/configuracionColumnasTransaccionEgreso'
-import { defineComponent, ref } from 'vue'
+import { defineComponent, onMounted, ref } from 'vue'
 
 //Componentes
 import EssentialTableTabs from 'components/tables/view/EssentialTableTabs.vue'
@@ -43,7 +43,7 @@ export default defineComponent({
     }
     const tabDefecto = ref('PENDIENTE')
 
-    filtrarTabs(tabDefecto.value)
+    onMounted(() => filtrarTabs(tabDefecto.value))
 
     /*******************************************************************************************
      * Botones de tabla
