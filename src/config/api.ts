@@ -332,6 +332,7 @@ export const endpoints = {
   transferencias_productos_empleados: new Endpoint('tareas/transferencias-productos-empleados'),
 
   // Modulo Fondos Rotativos
+  empleados_saldos_fr: new Endpoint('fondos-rotativos/empleados-saldos-fr'),
   empleados_fondos_rotativos: new Endpoint('empleados-fondos-rotativos'),
   reporte_valores_fondos_empleados: new Endpoint('fondos-rotativos/reporte-valores-fondos'),
   tipo_fondo: new Endpoint('fondos-rotativos/tipo-fondo'),

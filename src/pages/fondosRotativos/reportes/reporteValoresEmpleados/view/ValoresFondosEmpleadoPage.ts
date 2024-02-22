@@ -1,6 +1,6 @@
 //Dependencias
 import { defineComponent, reactive, ref } from "vue";
-import {  useQuasar, } from "quasar";
+import { useQuasar, } from "quasar";
 
 //Componentes
 import EssentialTable from "components/tables/view/EssentialTable.vue";
@@ -22,6 +22,7 @@ import { Gasto } from "pages/fondosRotativos/gasto/domain/Gasto";
 import { useFiltrosListadosSelects } from "shared/filtrosListadosGenerales";
 import { ValoresFondosEmpleadoController } from "../infraestructure/ValoresFondosEmpleadoController";
 import { EmpleadoFondoRotativoController } from "../infraestructure/EmpleadoFondoRotativoController";
+import { EmpleadoSaldoFondosRotativos } from "pages/recursosHumanos/empleados/infraestructure/EmpleadoSaldoFondosRotativos";
 
 export default defineComponent({
     components: { EssentialTable, ModalEntidad },
@@ -34,7 +35,7 @@ export default defineComponent({
         const cargando = new StatusEssentialLoading()
         const modales = new ComportamientoModalesTransaccionEgreso()
 
-        const activos= ref(false)
+        const activos = ref(false)
         const reporte = reactive({
             todos: false,
             empleado: null,
@@ -46,8 +47,15 @@ export default defineComponent({
 
         cargarVista(async () => {
             await obtenerListados({
-                empleados: new EmpleadoFondoRotativoController(),
+                empleados: {
+                    controller: new EmpleadoSaldoFondosRotativos(),
+                    params: {
+                        // activo: 1
+                    }
+                },
             })
+            //listados
+            empleados.value = listadosAuxiliares.empleados
         })
 
 
@@ -94,10 +102,9 @@ export default defineComponent({
                 cargando.desactivar()
             }
         }
-        
 
-        //listados
-        empleados.value = listadosAuxiliares.empleados
+
+
 
 
 

@@ -19,6 +19,7 @@
                   options-dense
                   dense
                   outlined
+                  clearable
                   @update:model-value="empleados"
                   :option-label="(item) => item.apellidos + ' ' + item.nombres"
                   :option-value="(item) => item.id"
