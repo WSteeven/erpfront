@@ -440,6 +440,7 @@ export const endpoints = {
   modalidad: new Endpoint('ventas-claro/modalidad'),
   planes: new Endpoint('ventas-claro/planes'),
   productos_ventas: new Endpoint('ventas-claro/productos-ventas'),
+  vendedores_ventas_claro: new Endpoint('ventas-claro/empleados-ventas'),
   vendedores_claro: new Endpoint('ventas-claro/vendedores'),
   ventas: new Endpoint('ventas-claro/ventas'),
   actualizar_comisiones_ventas: new Endpoint('ventas-claro/actualizar-comisiones-ventas'),
