@@ -1,5 +1,5 @@
 //Dependencias
-import { defineComponent, reactive, ref } from "vue";
+import { defineComponent, reactive, } from "vue";
 import { useQuasar, } from "quasar";
 
 //Componentes
@@ -21,8 +21,9 @@ import { useCargandoStore } from "stores/cargando";
 import { Gasto } from "pages/fondosRotativos/gasto/domain/Gasto";
 import { useFiltrosListadosSelects } from "shared/filtrosListadosGenerales";
 import { ValoresFondosEmpleadoController } from "../infraestructure/ValoresFondosEmpleadoController";
-import { EmpleadoFondoRotativoController } from "../infraestructure/EmpleadoFondoRotativoController";
 import { EmpleadoSaldoFondosRotativos } from "pages/recursosHumanos/empleados/infraestructure/EmpleadoSaldoFondosRotativos";
+import { configuracionColumnasReportesFondosRotativos } from "../domain/configuracionColumnasReportesFondosRotativos";
+import { useAuthenticationStore } from "stores/authentication";
 
 export default defineComponent({
     components: { EssentialTable, ModalEntidad },
@@ -34,8 +35,8 @@ export default defineComponent({
         useCargandoStore().setQuasar(useQuasar())
         const cargando = new StatusEssentialLoading()
         const modales = new ComportamientoModalesTransaccionEgreso()
+        const store = useAuthenticationStore()
 
-        const activos = ref(false)
         const reporte = reactive({
             todos: false,
             empleado: null,
@@ -56,6 +57,7 @@ export default defineComponent({
             })
             //listados
             empleados.value = listadosAuxiliares.empleados
+            reporte.empleado = store.user.id
         })
 
 
@@ -88,7 +90,7 @@ export default defineComponent({
                     default:
                         reporte.accion = ''
                         const response: AxiosResponse = await axios.post(url, reporte)
-                        console.log(response)
+                        // console.log(response)
                         if (response.data.results) {
                             listado.value = response.data.results
                             if (response.data.results.length < 1) notificarAdvertencia('No se obtuvieron resultados')
@@ -104,24 +106,18 @@ export default defineComponent({
         }
 
 
-
-
-
-
-
-
-
-
         return {
             reporte,
             //listados
             listado,
             empleados, filtrarEmpleados,
+            configuracionColumnas: configuracionColumnasReportesFondosRotativos,
 
             //funciones
             buscarReporte,
             //botones
             modales,
+            store,
 
         }
     }
