@@ -193,6 +193,11 @@ export const useMenuStore = defineStore('menu', () => {
           link: 'cuestionario-psicosocial',
           icon: 'bi-circle',
           can: store.can('puede.ver.cuestionario_psicosocial'),
+        },        {
+          title: 'Cuestionario de diagnostico consumo de drogas',
+          link: 'cuestionario-diagnostico-consumo-drogas',
+          icon: 'bi-circle',
+          can: store.can('puede.ver.cuestionario_diagnostico_consumo_drogas'),
         },
         {
           title: 'Cita médica',

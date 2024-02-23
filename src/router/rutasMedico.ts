@@ -14,6 +14,12 @@ const rutasMedico: RouteRecordRaw[] = [
     meta: { requiresAuth: true },
   },
   {
+    path: '/cuestionario-diagnostico-consumo-drogas',
+    name: 'cuestionario_diagnostico_consumo_drogas',
+    component: () => import('pages/medico/cuestionarioPsicosocial/view/CuestionarioDiagnosticoConsumoDrogasPage.vue'),
+    meta: { requiresAuth: true },
+  },
+  {
     path: '/citas-medicas',
     name: 'citas_medicas',
     component: () => import('medico/citaMedica/view/CitaMedicaPage.vue'),
@@ -36,7 +42,8 @@ const rutasMedico: RouteRecordRaw[] = [
     name: 'reporte_cuestionarios_pisicosocial',
     component: () => import('pages/medico/cuestionarioPsicosocial/view/ReporteCuestionarioPisicosocial.vue'),
     meta: { requiresAuth: true },
-  },{
+  },
+   {
     path: '/configuraciones-cuestionarios-empleados',
     name: 'configuraciones_cuestionarios_empleados',
     component: () => import('pages/medico/configuracionCuestionarioEmpleado/view/ConfiguracionCuestionarioEmpleadoPage.vue'),
