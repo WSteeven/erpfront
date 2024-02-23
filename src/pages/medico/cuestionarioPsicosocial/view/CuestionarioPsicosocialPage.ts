@@ -106,7 +106,7 @@ export default defineComponent({
     async function consultarPreguntas() {
       cargando.activar()
       try {
-        const { result } = await preguntaController.listar()
+        const { result } = await preguntaController.listar({'tipo_cuestionario_id':1})
         listadosAuxiliares.preguntas = result
       } catch (e) {
         if (isAxiosError(e)) {
