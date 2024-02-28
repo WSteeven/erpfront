@@ -595,7 +595,7 @@ export const useMenuStore = defineStore('menu', () => {
             },
             {
               title: 'Alimentacion',
-              icon: 'img:assets/icons/asignar-alimentacion.svg',
+              icon: 'img:statics/icons/alimentacion_04.svg',
               can: true,
               children: [
                 {
@@ -854,7 +854,7 @@ export const useMenuStore = defineStore('menu', () => {
      *********************************************************/
     {
       title: 'Ventas de Claro',
-      icon: 'img:src/assets/icons/logo-claro.svg', //'bi-c-circle-fill',
+      icon: 'img:statics/icons/Claro-Logo.svg', //'bi-c-circle-fill',
       can: store.can('puede.ver.modulo_ventas_claro'),
       children: [
         {

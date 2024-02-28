@@ -101,7 +101,7 @@ export default defineComponent({
       return accion.value === acciones.consultar
     })
     onConsultado(() => {
-      esFactura.value = gasto.tiene_factura != null ? gasto.tiene_factura : true;
+      esFactura.value =  !!gasto.factura  //gasto.tiene_factura != null ? gasto.tiene_factura : true
     })
     const esCombustibleEmpresa = computed(() => {
       if (gasto.detalle == null) {

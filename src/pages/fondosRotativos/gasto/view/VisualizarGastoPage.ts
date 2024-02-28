@@ -167,7 +167,7 @@ export default defineComponent({
       return mascara
     })
     onConsultado(() => {
-      esFactura.value = gasto.tiene_factura != null ? gasto.tiene_factura : true
+      esFactura.value =  !!gasto.factura  //gasto.tiene_factura != null ? gasto.tiene_factura : true
     })
     //Obtener el listado de las cantones
     cargarVista(async () => {

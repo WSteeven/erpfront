@@ -1,7 +1,7 @@
 // Dependencias
 
 import { useAuthenticationStore } from 'stores/authentication'
-import {  defineComponent, ref } from 'vue'
+import { defineComponent, ref } from 'vue'
 import {
   accionesTabla,
   tabAutorizarGasto,
@@ -80,18 +80,18 @@ export default defineComponent({
       icono: 'bi-eye',
       color: 'indigo',
       accion: ({ entidad }) => {
-        fondoRotativoStore.existeFactura =
-          entidad.factura == null ? false : true
+
         fondoRotativoStore.id_gasto = entidad.id
 
         fondoRotativoStore.estaSemanAC = estaEnSemanaActual(entidad.fecha_viat)
-        fondoRotativoStore.existeFactura = entidad.tiene_factura
+
+        fondoRotativoStore.existeFactura = !!entidad.factura
         fondoRotativoStore.accionForm =
-        authenticationStore.user.id === entidad.aut_especial &&
-        entidad.estado === estadosGastos.PENDIENTE
-        ? acciones.editar
-        : acciones.consultar
-        fondoRotativoStore.empleado_id= entidad.id_usuario
+          authenticationStore.user.id === entidad.aut_especial &&
+          entidad.estado === estadosGastos.PENDIENTE
+            ? acciones.editar
+            : acciones.consultar
+        fondoRotativoStore.empleado_id = entidad.id_usuario
         modales.abrirModalEntidad('VisualizarGastoPage')
       },
     }
