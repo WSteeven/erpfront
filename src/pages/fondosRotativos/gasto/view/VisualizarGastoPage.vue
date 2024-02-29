@@ -254,7 +254,7 @@
               v-model="gasto.factura"
               placeholder="Obligatorio"
               :mask="mascaraFactura"
-              :hint="mascaraFactura"
+              hint="Porfavor Ingrese número de Factura tal como está en el Documento Fisico "
               :disable="disabled"
               :error="!!v$.factura.$errors.length"
               @blur="v$.factura.$touch"
