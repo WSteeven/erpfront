@@ -245,6 +245,7 @@ export const endpoints = {
   productos: new Endpoint('productos'),
   productos_perchas: new Endpoint('productos-perchas'),
   sucursales: new Endpoint('sucursales'),
+  sucursales_detalle: new Endpoint('sucursales-detalle'),
   spans: new Endpoint('spans'),
   tipos_fibras: new Endpoint('tipos-fibras'),
   tipos_transacciones: new Endpoint('tipos-transacciones'),
