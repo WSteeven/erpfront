@@ -7,6 +7,7 @@ import { useFiltrosListadosSelects } from 'shared/filtrosListadosGenerales'
 import { useAuthenticationStore } from 'stores/authentication'
 import { required, requiredIf } from 'shared/i18n-validators'
 import { useNotificacionStore } from 'stores/notificacion'
+import { destinosTareas } from 'config/tareas.utils'
 import { useCargandoStore } from 'stores/cargando'
 import { ordernarListaString } from 'shared/utils'
 import { LocalStorage, useQuasar } from 'quasar'
@@ -19,32 +20,31 @@ import GestorArchivos from 'components/gestorArchivos/GestorArchivos.vue'
 import EssentialTable from 'components/tables/view/EssentialTable.vue'
 
 // Logica y controladores
+import { ArchivoController } from 'pages/gestionTrabajos/subtareas/modules/gestorArchivosTrabajos/infraestructure/ArchivoController'
 import { configuracionColumnasProductosSeleccionadosAccion } from '../domain/configuracionColumnasProductosSeleccionadosAccion'
 import { TransferenciaProductoEmpleadoController } from '../infraestructure/TransferenciaProductoEmpleadoController'
 import { configuracionColumnasProductosSeleccionados } from '../domain/configuracionColumnasProductosSeleccionados'
 import { useBotonesTransferenciaProductoEmpleado } from '../application/UseBotonesTransferenciaProductoEmpleado'
+import { EmpleadoRoleController } from 'pages/recursosHumanos/empleados/infraestructure/EmpleadoRolesController'
 import { ContenedorSimpleMixin } from 'shared/contenedor/modules/simple/application/ContenedorSimpleMixin'
+import { useMaterialesProyecto } from 'pages/gestionTrabajos/miBodega/application/UseMaterialesProyecto'
+import { useMaterialesEmpleado } from 'pages/gestionTrabajos/miBodega/application/UseMaterialesEmpleado'
 import { FiltroMiBodegaProyecto } from 'pages/gestionTrabajos/miBodega/domain/FiltroMiBodegaProyecto'
+import { FiltroMiBodegaEmpleado } from 'pages/gestionTrabajos/miBodega/domain/FiltroMiBodegaEmpleado'
+import { useMaterialesTarea } from 'pages/gestionTrabajos/miBodega/application/UseMaterialesTarea'
 import { EmpleadoController } from 'recursosHumanos/empleados/infraestructure/EmpleadoController'
 import { configuracionColumnasDetallesModal } from '../domain/configuracionColumnasDetallesModal'
 import { useTransferenciaProductoEmpleadoStore } from 'stores/transferenciaProductoEmpleado'
 import { TransferenciaProductoEmpleado } from '../domain/TransferenciaProductoEmpleado'
 import { useBotonesListadoProductos } from '../application/UseBotonesListadoProductos'
-import { useMaterialesProyecto } from 'pages/gestionTrabajos/miBodega/application/UseMaterialesProyecto'
+import { FiltroMiBodega } from 'pages/gestionTrabajos/miBodega/domain/FiltroMiBodega'
+import { Etapa } from 'pages/gestionTrabajos/proyectos/modules/etapas/domain/Etapa'
 import { ValidarExisteArchivo } from '../application/ValidarListadoProductos'
 import { MaterialEmpleadoTarea } from 'miBodega/domain/MaterialEmpleadoTarea'
+import { Proyecto } from 'pages/gestionTrabajos/proyectos/domain/Proyecto'
 import { TareaController } from 'tareas/infraestructure/TareaController'
 import { Empleado } from 'recursosHumanos/empleados/domain/Empleado'
-import { destinosTareas, tiposTareas } from 'config/tareas.utils'
-import { Proyecto } from 'pages/gestionTrabajos/proyectos/domain/Proyecto'
-import { Etapa } from 'pages/gestionTrabajos/proyectos/modules/etapas/domain/Etapa'
 import { Tarea } from 'tareas/domain/Tarea'
-import { useMaterialesTarea } from 'pages/gestionTrabajos/miBodega/application/UseMaterialesTarea'
-import { FiltroMiBodega } from 'pages/gestionTrabajos/miBodega/domain/FiltroMiBodega'
-import { EmpleadoRoleController } from 'pages/recursosHumanos/empleados/infraestructure/EmpleadoRolesController'
-import { ArchivoController } from 'pages/gestionTrabajos/subtareas/modules/gestorArchivosTrabajos/infraestructure/ArchivoController'
-import { FiltroMiBodegaEmpleado } from 'pages/gestionTrabajos/miBodega/domain/FiltroMiBodegaEmpleado'
-import { useMaterialesEmpleado } from 'pages/gestionTrabajos/miBodega/application/UseMaterialesEmpleado'
 
 export default defineComponent({
   name: 'TransferenciaProductoEmpleado',
@@ -346,10 +346,13 @@ export default defineComponent({
       }
 
       if (transferencia.empleado_destino) {
-        if (transferencia.proyecto_origen) {
+        if (transferencia.proyecto_origen) { // Origen material de proyecto con etapas o sin etapas
           await consultarProyectosEmpleadoDestino()
-          await consultarTareasEmpleadoDestino({ para_cliente_proyecto: destinosTareas.paraProyecto }, !!transferencia.etapa_origen)
-        } else consultarTareasEmpleadoDestino({ para_cliente_proyecto: destinosTareas.paraClienteFinal })
+          await consultarTareasEmpleadoDestino({ para_cliente_proyecto: destinosTareas.paraProyecto })
+        } if (esParaStock.value) { // Origen material de stock
+          await consultarProyectosEmpleadoDestino()
+          await consultarTareasEmpleadoDestino()
+        } else consultarTareasEmpleadoDestino({ para_cliente_proyecto: destinosTareas.paraClienteFinal }) // Tareas para cliente final
       }
     }
 
@@ -365,14 +368,14 @@ export default defineComponent({
         await consultarEtapasEmpleadoDestino(id)
         await consultarTareasEmpleadoDestino({ proyecto_id: id }) // revisar q no se consulte si ya se consultaron las tareas por etapa
       } else {
-        consultarTareasEmpleadoDestino({}, !!transferencia.etapa_origen)
+        consultarTareasEmpleadoDestino({})//, !!transferencia.etapa_origen)
       }
 
       establecerAutorizador()
     }
 
     async function seleccionarEtapaDestino() {
-      if (transferencia.etapa_destino) await consultarTareasEmpleadoDestino({ etapa_id: transferencia.etapa_destino }, true)
+      if (transferencia.etapa_destino) await consultarTareasEmpleadoDestino({ etapa_id: transferencia.etapa_destino }) //, true)
     }
 
     async function seleccionarTareaDestino() {
@@ -588,7 +591,7 @@ export default defineComponent({
 
       proyectosDestino.value = listadosAuxiliares.proyectosDestino
 
-      if (!esEntreEtapas) transferencia.autorizador = buscarProyecto().coordinador_id
+      if (!esEntreEtapas) transferencia.autorizador = buscarProyecto()?.coordinador_id
     }
 
     function esTransferenciaEntreEtapas() {
@@ -621,7 +624,7 @@ export default defineComponent({
       }
     }
 
-    async function consultarTareasEmpleadoDestino(params?: any, conEtapas?: boolean) {
+    async function consultarTareasEmpleadoDestino(params?: any) {//}, conEtapas?: boolean) {
       console.log('Consultando tareas destino')
       await cargarVista(async () => {
         if (transferencia.empleado_destino) {

@@ -67,12 +67,12 @@ export const useMenuStore = defineStore('menu', () => {
           icon: 'bi-app',
           can: store.can('puede.ver.materiales_empleados'),
         },
-        {
+        /*{
           title: 'Trabajo agendado',
           link: 'trabajo-agendado',
           icon: 'bi-ui-checks-grid',
           can: true,//store.esTecnicoLider,// store.can('puede.ver.trabajo_asignado'),
-        },
+        },*/
         {
           title: 'Transferencia de productos',
           link: 'transferencia-producto-empleado',
