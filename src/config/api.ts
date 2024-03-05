@@ -187,6 +187,8 @@ export const endpoints = {
 
   //Modulo de compras y proveedores
   dashboard_compras: new Endpoint('compras/dashboard'),
+  empleados_ordenes: new Endpoint('compras/empleados-ordenes'),
+  proveedores_ordenes: new Endpoint('compras/proveedores-ordenes'),
   calificacion_proveedor: new Endpoint('compras/calificaciones-proveedores'),
   categorias_ofertas: new Endpoint('compras/categorias-ofertas'),
   contactos_proveedores: new Endpoint('compras/contactos-proveedores'),
@@ -331,6 +333,7 @@ export const endpoints = {
   transferencias_productos_empleados: new Endpoint('tareas/transferencias-productos-empleados'),
 
   // Modulo Fondos Rotativos
+  empleados_saldos_fr: new Endpoint('fondos-rotativos/empleados-saldos-fr'),
   empleados_fondos_rotativos: new Endpoint('empleados-fondos-rotativos'),
   reporte_valores_fondos_empleados: new Endpoint('fondos-rotativos/reporte-valores-fondos'),
   tipo_fondo: new Endpoint('fondos-rotativos/tipo-fondo'),

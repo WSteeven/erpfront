@@ -26,9 +26,12 @@ export const filtroOrdenesComprasAprobadas = (label: string, ordenes: any) => {
     }
 }
 export const filtroOrdenesComprasProveedores = (label: string, ordenes: any) => {
+    console.log(label, ordenes.value)
     switch (label) {
+        case 'ANULADAS':
+            return ordenes.value.filter((orden) => orden.autorizacion_id === 3 || orden.estado_id === 4)
         case 'PENDIENTES DE REVISAR':
-            return ordenes.value.filter((orden) => orden.estado_id === 1)
+            return ordenes.value.filter((orden) => orden.autorizacion_id === 1 || orden.estado_id === 1)
         case 'REVISADAS':
             return ordenes.value.filter((orden) => orden.estado_id === 2 && orden.realizada == false)
         case 'REALIZADAS':

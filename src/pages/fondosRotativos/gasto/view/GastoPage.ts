@@ -101,7 +101,7 @@ export default defineComponent({
       return accion.value === acciones.consultar
     })
     onConsultado(() => {
-      esFactura.value = gasto.tiene_factura != null ? gasto.tiene_factura : true;
+      esFactura.value =  !!gasto.factura  //gasto.tiene_factura != null ? gasto.tiene_factura : true
     })
     const esCombustibleEmpresa = computed(() => {
       if (gasto.detalle == null) {
@@ -137,6 +137,8 @@ export default defineComponent({
         mascara: '###-###-#########',
       },
     ]
+    const mascara_placa = 'AAA-####'
+
     const cantidadPermitidaFactura = computed(() => {
       let cantidad = 17
 
@@ -229,11 +231,14 @@ export default defineComponent({
         required: requiredIf(() => esCombustibleEmpresa.value),
       },
       vehiculo: {
-        required: requiredIf(() => esCombustibleEmpresa.value),
+        required: requiredIf(() => esCombustibleEmpresa.value && !!gasto.es_vehiculo_alquilado),
       },
       observacion: {
         required,
       },
+      placa:{
+        required: requiredIf(() => gasto.es_vehiculo_alquilado),
+      }
     }
 
     const v$ = useVuelidate(reglas, gasto)
@@ -709,6 +714,7 @@ export default defineComponent({
       recargar_detalle,
       editarGasto,
       mascaraFactura,
+      mascara_placa,
       listadosAuxiliares,
       listadoSubdetalles,
       beneficiarios,

@@ -39,6 +39,7 @@ export class Gasto extends EntidadAuditable {
   centro_costo: string | null
   subcentro_costo: string | null
   placa: string | null
+  es_vehiculo_alquilado: boolean
 
   constructor() {
     super()
@@ -81,5 +82,6 @@ export class Gasto extends EntidadAuditable {
     this.centro_costo = null
     this.subcentro_costo = null
     this.placa = null
+    this.es_vehiculo_alquilado = false
   }
 }
