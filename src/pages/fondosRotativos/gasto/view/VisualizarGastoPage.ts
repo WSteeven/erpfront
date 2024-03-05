@@ -167,7 +167,7 @@ export default defineComponent({
       return mascara
     })
     onConsultado(() => {
-      esFactura.value = gasto.tiene_factura != null ? gasto.tiene_factura : true
+      esFactura.value =  !!gasto.factura  //gasto.tiene_factura != null ? gasto.tiene_factura : true
     })
     //Obtener el listado de las cantones
     cargarVista(async () => {
@@ -319,8 +319,13 @@ export default defineComponent({
       detalle_estado: {
         required,
       },
+      placa:{
+        required: requiredIf(() => gasto.es_vehiculo_alquilado),
+      }
     }
     const v$ = useVuelidate(reglas, gasto)
+    const mascara_placa = 'AAA-####'
+
     setValidador(v$.value)
     /*********
      * Filtros
@@ -683,6 +688,7 @@ export default defineComponent({
       tareas,
       beneficiarios,
       mostarPlaca,
+      mascara_placa,
       mascaraFactura,
       vehiculos,
       watchEffect,

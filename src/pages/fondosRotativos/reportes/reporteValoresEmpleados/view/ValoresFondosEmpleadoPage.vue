@@ -19,6 +19,7 @@
                   options-dense
                   dense
                   outlined
+                  clearable
                   @update:model-value="empleados"
                   :option-label="(item) => item.apellidos + ' ' + item.nombres"
                   :option-value="(item) => item.id"
@@ -38,7 +39,7 @@
                     () =>
                       (reporte.empleado = reporte.todos
                         ? (reporte.empleado = null)
-                        : reporte.empleado)
+                        : reporte.empleado = store.user.id)
                   "
                   outlined
                   dense
@@ -61,6 +62,28 @@
                     <span>Buscar</span>
                   </q-btn>
                 </div>
+              </div>
+            </div>
+
+            <div
+              v-if="listado.length"
+              class="row q-col-gutter-sm q-pa-sm q-py-md"
+            >
+              <div class="col-12 col-md-12">
+                <essential-table
+                  v-if="listado.length"
+                  titulo="Listado de transacciones"
+                  :configuracionColumnas="configuracionColumnas"
+                  :datos="listado"
+                  :mostrarExportar="true"
+                  :permitirConsultar="false"
+                  :permitirEliminar="false"
+                  :permitirEditar="false"
+                  :mostrarBotones="false"
+                  :permitir-buscar="true"
+                  :ajustarCeldas="true"
+                  :altoFijo="false"
+                ></essential-table>
               </div>
             </div>
           </q-card>

@@ -7,8 +7,80 @@
           Análisis de datos: Módulo de Compras
         </div>
 
-        <!-- Tiempos -->
         <div class="row q-col-gutter-sm q-mb-md">
+          <div class="col-12 col-md-3">
+            <label class="q-mb-sm block">Seleccione el tipo</label>
+            <q-select
+              v-model="dashboard.tipo"
+              :options="opcionesTipos"
+              transition-show="scale"
+              transition-hide="scale"
+              options-dense
+              dense
+              outlined
+              :error="!!v$.tipo.$errors.length"
+              @blur="v$.tipo.$touch"
+              @update:model-value="consultar()"
+              :option-label="(v) => v.label"
+              :option-value="(v) => v.value"
+              emit-value
+              map-options
+            >
+              <template v-slot:no-option>
+                <q-item>
+                  <q-item-section class="text-grey">
+                    No hay resultados
+                  </q-item-section>
+                </q-item>
+              </template>
+
+              <template v-slot:error>
+                <div v-for="error of v$.tipo.$errors" :key="error.$uid">
+                  <div class="error-msg">{{ error.$message }}</div>
+                </div>
+              </template>
+            </q-select>
+          </div>
+
+          <div class="col-12 col-md-3">
+            <label class="q-mb-sm block">Seleccione un empleado</label>
+            <q-select
+              v-model="dashboard.empleado"
+              :options="empleados"
+              transition-show="scale"
+              transition-hide="scale"
+              options-dense
+              dense
+              outlined
+              use-input
+              input-debounce="0"
+              :error="!!v$.empleado.$errors.length"
+              @blur="v$.empleado.$touch"
+              @filter="filtrarEmpleados"
+              @popup-show="ordenarLista(empleados, 'apellidos')"
+              @update:model-value="obtenerProveedores(true)"
+              :option-label="(v) => v.apellidos + ' ' + v.nombres"
+              :option-value="(v) => v.id"
+              emit-value
+              map-options
+            >
+              <template v-slot:no-option>
+                <q-item>
+                  <q-item-section class="text-grey">
+                    No hay resultados
+                  </q-item-section>
+                </q-item>
+              </template>
+
+              <template v-slot:error>
+                <div v-for="error of v$.empleado.$errors" :key="error.$uid">
+                  <div class="error-msg">{{ error.$message }}</div>
+                </div>
+              </template>
+            </q-select>
+          </div>
+
+          <!-- Tiempos -->
           <div class="col-12 col-md-3">
             <label class="q-mb-sm block">Fecha de inicio</label>
             <q-input
@@ -95,21 +167,26 @@
             </q-input>
           </div>
 
-          <div class="col-12 col-md-3">
-            <label class="q-mb-sm block">Seleccione el tipo</label>
+          <div class="col-12 col-md-3" v-if="dashboard.tipo == PROVEEDOR">
+            <label class="q-mb-sm block">Seleccione un proveedor</label>
             <q-select
-              v-model="dashboard.tipo"
-              :options="opcionesTipos"
+              v-model="dashboard.proveedor"
+              :options="proveedores"
               transition-show="scale"
               transition-hide="scale"
               options-dense
               dense
               outlined
-              :error="!!v$.tipo.$errors.length"
-              @blur="v$.tipo.$touch"
-              @update:model-value="consultar()"
-              :option-label="(v) => v.label"
-              :option-value="(v) => v.value"
+              clearable
+              use-input
+              input-debounce="0"
+              :error="!!v$.proveedor.$errors.length"
+              @blur="v$.proveedor.$touch"
+              @filter="filtrarProveedores"
+              @popup-show="ordenarLista(proveedores, 'razon_social')"
+              @update:model-value="consultar"
+              :option-label="(v) => v.razon_social"
+              :option-value="(v) => v.id"
               emit-value
               map-options
             >
@@ -122,48 +199,12 @@
               </template>
 
               <template v-slot:error>
-                <div v-for="error of v$.tipo.$errors" :key="error.$uid">
+                <div v-for="error of v$.proveedor.$errors" :key="error.$uid">
                   <div class="error-msg">{{ error.$message }}</div>
                 </div>
               </template>
             </q-select>
           </div>
-
-          <!-- <div class="col-12 col-md-6">
-            <label class="q-mb-sm block">Seleccione el empleado a consultar</label>
-            <q-select
-              v-model="dashboard.empleado"
-              :options="empleados"
-              transition-show="scale"
-              transition-hide="scale"
-              options-dense
-              dense
-              outlined
-              use-input
-              input-debounce="0"
-              :error="!!v$.empleado.$errors.length"
-              @blur="v$.empleado.$touch"
-              @update:model-value="consultar()"
-              @filter="filtrarEmpleados"
-              @popup-show="ordenarEmpleados(empleados)"
-              :option-label="(v) => v.apellidos + ' ' + v.nombres"
-              :option-value="(v) => v.id"
-              emit-value
-              map-options
-            >
-              <template v-slot:no-option>
-                <q-item>
-                  <q-item-section class="text-grey"> No hay resultados </q-item-section>
-                </q-item>
-              </template>
-
-              <template v-slot:error>
-                <div v-for="error of v$.empleado.$errors" :key="error.$uid">
-                  <div class="error-msg">{{ error.$message }}</div>
-                </div>
-              </template>
-            </q-select>
-          </div> -->
         </div>
       </q-card-section>
     </q-card>
@@ -377,14 +418,31 @@
         <div class="row q-col-gutter-sm q-mb-lg">
           <div class="col-12 col-md-12 q-mb-lg">
             <div class="row q-col-gutter-xs">
-              <div v-if="cantOrdenesProveedor >= 0" class="col-12">
+              <div
+                v-if="cantOrdenesProveedor >= 0"
+                :class="cantOrdenesSinProveedor > 0 ? 'col-6' : 'col-12'"
+              >
                 <q-card
                   class="rounded-card text-white no-border q-pa-md text-center full-height cursor-pointer bg-primary"
                 >
                   <div class="text-h3 q-mb-md">
                     {{ cantOrdenesProveedor }}
                   </div>
-                  <div class="text-bold">Cantidad de ordenes de compras que tienen proveedor</div>
+                  <div class="text-bold">
+                    Cantidad de ordenes de compras que tienen proveedor
+                  </div>
+                </q-card>
+              </div>
+              <div v-if="cantOrdenesSinProveedor > 0" class="col-6">
+                <q-card
+                  class="rounded-card text-white no-border q-pa-md text-center full-height cursor-pointer bg-primary"
+                >
+                  <div class="text-h3 q-mb-md">
+                    {{ cantOrdenesSinProveedor }}
+                  </div>
+                  <div class="text-bold">
+                    Cantidad de ordenes de compras que no tienen proveedor
+                  </div>
                 </q-card>
               </div>
               <div v-if="cantOrdenesPendientes >= 0" class="col-6 col-md-4">
@@ -525,7 +583,7 @@
             <div class="col-12">
               <essential-table
                 v-if="ordenesPorEstado.length"
-                :titulo="'Ordenes de Compra '+labelTabla"
+                :titulo="'Ordenes de Compra ' + labelTabla"
                 :configuracionColumnas="[
                   ...configuracionColumnas,
                   accionesTabla,

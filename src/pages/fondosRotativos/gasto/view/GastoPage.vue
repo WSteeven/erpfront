@@ -532,8 +532,42 @@
               </template>
             </q-input>
           </div>
+          <!--es vehiculo alquilado-->
+          <div class="col-12 col-md-3 q-mb-xl" v-if="esCombustibleEmpresa || mostarPlaca">
+            <q-checkbox
+              class="q-mb-lg"
+              v-model="gasto.es_vehiculo_alquilado"
+              label="¿Es vehiculo alquilado?"
+              outlined
+              dense
+            />
+          </div>
+
+          <!-- Placa Vehiculo Alquilado -->
+          <div class="col-12 col-md-3" v-if="gasto.es_vehiculo_alquilado">
+            <label class="q-mb-sm block">Placa de Vehiculo Alquilado </label>
+            <q-input
+              v-model="gasto.placa"
+              placeholder="obligatorio"
+              :disable="disabled"
+              :mask="mascara_placa"
+              :error="!!v$.placa.$errors.length"
+              @blur="v$.placa.$touch"
+              outlined
+              dense
+            >
+              <template v-slot:error>
+                <div v-for="error of v$.placa.$errors" :key="error.$uid">
+                  <div class="error-msg">{{ error.$message }}</div>
+                </div>
+              </template>
+            </q-input>
+          </div>
           <!-- Placa vehiculo -->
-          <div class="col-12 col-md-3" v-if="esCombustibleEmpresa || mostarPlaca">
+          <div
+            class="col-12 col-md-3"
+            v-if="(esCombustibleEmpresa || mostarPlaca) && gasto.es_vehiculo_alquilado == false"
+          >
             <label class="q-mb-sm block">Placas</label>
             <q-select
               v-model="gasto.vehiculo"
@@ -577,6 +611,7 @@
               </template>
             </q-select>
           </div>
+
           <!-- Comprobante 1 Archivo -->
           <div class="col-12 col-md-3">
             <label class="q-mb-sm block">Comprobante 1</label>
