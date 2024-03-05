@@ -42,7 +42,7 @@
             </q-select>
           </div>
 
-          <div class="col-12 col-md-3">
+          <!-- <div class="col-12 col-md-3">
             <label class="q-mb-sm block">Seleccione un empleado</label>
             <q-select
               v-model="dashboard.empleado"
@@ -78,7 +78,7 @@
                 </div>
               </template>
             </q-select>
-          </div>
+          </div> -->
 
           <!-- Tiempos -->
           <div class="col-12 col-md-3">
@@ -167,11 +167,11 @@
             </q-input>
           </div>
 
-          <div class="col-12 col-md-3" v-if="dashboard.tipo == PROVEEDOR">
-            <label class="q-mb-sm block">Seleccione un proveedor</label>
+          <!-- <div class="col-12 col-md-3" v-if="dashboard.tipo == INVENTARIO">
+            <label class="q-mb-sm block">Seleccione un detalle</label>
             <q-select
-              v-model="dashboard.proveedor"
-              :options="proveedores"
+              v-model="dashboard.detalle"
+              :options="detalles"
               transition-show="scale"
               transition-hide="scale"
               options-dense
@@ -180,9 +180,9 @@
               clearable
               use-input
               input-debounce="0"
-              :error="!!v$.proveedor.$errors.length"
-              @blur="v$.proveedor.$touch"
-              @filter="filtrarProveedores"
+              :error="!!v$.detalle.$errors.length"
+              @blur="v$.detalle.$touch"
+              @filter="filtrs"
               @popup-show="ordenarLista(proveedores, 'razon_social')"
               @update:model-value="consultar"
               :option-label="(v) => v.razon_social"
@@ -204,58 +204,33 @@
                 </div>
               </template>
             </q-select>
-          </div>
+          </div> -->
         </div>
       </q-card-section>
     </q-card>
 
     <q-card
       class="q-mb-md rounded no-border custom-shadow"
-      v-if="dashboard.tipo == 'ESTADO'"
+      v-if="dashboard.tipo == INGRESO"
     >
       <div
         class="row text-bold text-primary q-pa-md rounded items-center q-mb-md"
       >
-        Información de ordenes de compras creadas
+        Información de Ingresos de Bodega
       </div>
       <q-card-section>
         <div class="row q-col-gutter-sm q-mb-lg">
           <div class="col-12 col-md-12 q-mb-lg">
             <div class="row q-col-gutter-xs">
-              <div v-if="cantOrdenesCreadas >= 0" class="col-12">
+              <!-- {{ registros }} -->
+              <div v-if="registros.length >= 0" class="col-12">
                 <q-card
                   class="rounded-card text-white no-border q-pa-md text-center full-height cursor-pointer bg-primary"
                 >
                   <div class="text-h3 q-mb-md">
-                    {{ cantOrdenesCreadas }}
+                    {{ registros.length }}
                   </div>
                   <div class="text-bold">Cantidad de ordenes creadas</div>
-                </q-card>
-              </div>
-              <div v-if="cantOrdenesPendientes >= 0" class="col-6 col-md-4">
-                <q-card class="rounded-card q-pa-md text-center full-height">
-                  <div class="text-h3 text-primary q-mb-md">
-                    {{ cantOrdenesPendientes }}
-                  </div>
-                  <div>Cantidad de ordenes pendientes</div>
-                </q-card>
-              </div>
-              <div v-if="cantOrdenesAprobadas >= 0" class="col-6 col-md-4">
-                <q-card class="rounded-card q-pa-md text-center full-height">
-                  <div class="text-h3 text-primary q-mb-md">
-                    {{ cantOrdenesAprobadas }}
-                  </div>
-                  <div>Cantidad de ordenes aprobadas</div>
-                </q-card>
-              </div>
-              <div v-if="cantOrdenesAnuladas >= 0" class="col-6 col-md-4">
-                <q-card
-                  class="rounded-card q-pa-md text-center full-height bg-negative text-white"
-                >
-                  <div class="text-h3 q-mb-md">
-                    {{ cantOrdenesAnuladas }}
-                  </div>
-                  <div>Cantidad de ordenes anuladas</div>
                 </q-card>
               </div>
               <div v-if="cantOrdenesRevisadas >= 0" class="col-6 col-md-3">
@@ -309,7 +284,7 @@
     </q-card>
     <q-card
       class="q-mb-md rounded no-border custom-shadow"
-      v-if="dashboard.tipo == 'ESTADO'"
+      v-if="dashboard.tipo == INGRESO"
     >
       <div
         class="row text-bold text-primary q-pa-md rounded items-center q-mb-md"
@@ -604,10 +579,10 @@
       ></q-tab-panels>
     </q-card>
   </q-page>
-  <modales-entidad
+  <!-- <modales-entidad
     :comportamiento="modales"
     :persistente="false"
-  ></modales-entidad>
+  ></modales-entidad> -->
 </template>
 
 <script src="./DashboardBodega.ts"/>

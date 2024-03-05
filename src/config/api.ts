@@ -216,6 +216,7 @@ export const endpoints = {
   condiciones: new Endpoint('condiciones'),
   comprobantes: new Endpoint('comprobantes'),
   estados_transacciones: new Endpoint('estados'),
+  dashboard_bodega: new Endpoint('dashboard-bodega'),
   empleados_roles: new Endpoint('empleados-roles'), //con esta ruta se obtienen los empleados por el/los roles especificados
   empleados_permisos: new Endpoint('empleados-permisos'), //con esta ruta se obtienen los empleados por el/los permisos especificados
   control_stocks: new Endpoint('control-stocks'),

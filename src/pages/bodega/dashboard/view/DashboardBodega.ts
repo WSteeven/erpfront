@@ -16,6 +16,15 @@ import { InventarioController } from "pages/bodega/inventario/infraestructure/In
 import { useNotificaciones } from "shared/notificaciones";
 import { useAuthenticationStore } from "stores/authentication";
 import { StatusEssentialLoading } from "components/loading/application/StatusEssentialLoading";
+import { useFiltrosListadosSelects } from "shared/filtrosListadosGenerales";
+import { obtenerFechaActual } from "shared/utils";
+import { required, requiredIf } from "shared/i18n-validators";
+import useVuelidate from "@vuelidate/core";
+import { CustomActionTable } from "components/tables/domain/CustomActionTable";
+import { useBodegaStore } from "stores/bodega/bodega";
+import { optionsPie } from "config/graficoGenerico";
+import { accionesTabla } from "config/utils";
+import { configuracionColumnasOrdenesCompras } from "pages/comprasProveedores/ordenCompra/domain/configuracionColumnasOrdenCompra";
 
 
 export default defineComponent({
@@ -24,7 +33,7 @@ export default defineComponent({
         /***********
             * Stores
             ***********/
-        
+
         const mixin = new ContenedorSimpleMixin(Inventario, new InventarioController())
         const { entidad: orden, listado, listadosAuxiliares } = mixin.useReferencias()
         const { cargarVista, obtenerListados } = mixin.useComportamiento()
@@ -32,14 +41,15 @@ export default defineComponent({
         const dashboard = reactive({
             fecha_inicio: '',
             fecha_fin: '',
-            proveedor: '',
+            detalle: '',
             empleado: '',
             tipo: '',
         })
         const store = useAuthenticationStore()
+        const bodegaStore = useBodegaStore()
         const cargando = new StatusEssentialLoading()
         const mostrarTitulosSeccion = computed(() => dashboard.fecha_inicio && dashboard.fecha_fin)
-        const modales = new ComportamientoModalesOrdenesCompras()
+        // const modales = new ComportamientoModalesOrdenesCompras()
         const cantOrdenesSinProveedor = ref()
         const cantOrdenesProveedor = ref()
         const cantOrdenesCreadas = ref()
@@ -49,11 +59,15 @@ export default defineComponent({
         const cantOrdenesRealizadas = ref()
         const cantOrdenesPagadas = ref()
         const cantOrdenesAnuladas = ref()
-        const ESTADO = 'ESTADO'
-        const PROVEEDOR = 'PROVEEDOR'
+        const INGRESO = 'INGRESO'
+        const EGRESO = 'EGRESO'
+        const INVENTARIO = 'INVENTARIO'
         const opcionesTipos = [
-            { label: 'ESTADO', value: 'ESTADO' },
-            { label: 'PROVEEDOR', value: 'PROVEEDOR' },
+            { label: 'INGRESOS REALIZADOS', value: 'INGRESO' },
+            { label: 'DEVOLUCIONES', value: 'DEVOLUCION' },
+            { label: 'EGRESOS REALIZADOS', value: 'EGRESO' },
+            { label: 'PEDIDOS', value: 'PEDIDO' },
+            { label: 'INVENTARIO', value: 'INVENTARIO' },
         ]
         const opcionesGrafico = {
             grafico: 'grafico',
@@ -68,26 +82,13 @@ export default defineComponent({
         const tabs = ref(opcionesGrafico.grafico)
 
         const graficos = ref()
-        const ordenes = ref()
+        const registros = ref()
         const labelTabla = ref()
 
         const { empleados, filtrarEmpleados, proveedores, filtrarProveedores } = useFiltrosListadosSelects(listadosAuxiliares)
         cargarVista(async () => {
             await obtenerListados({
-                proveedores: {
-                    controller: new ProveedoresOrdenesController(),
-                    params: {
-                        solicitante_id: dashboard.empleado,
-                        estado: 1,
-                    }
-                },
-                empleados: {
-                    controller: new EmpleadoOrdenesController(),
-                    params: {
-                        campos: 'id,nombres,apellidos',
-                        estado: 1,
-                    }
-                },
+
             })
             dashboard.empleado = store.user.id
             dashboard.fecha_fin = obtenerFechaActual()
@@ -99,8 +100,7 @@ export default defineComponent({
             fecha_inicio: { required },
             fecha_fin: { required },
             tipo: { required },
-            empleado: { required },
-            proveedor: { requiredIf: requiredIf(dashboard.tipo == PROVEEDOR) },
+            detalle: { requiredIf: requiredIf(dashboard.tipo == INVENTARIO) },
         }
 
         const v$ = useVuelidate(reglas, dashboard)
@@ -113,8 +113,9 @@ export default defineComponent({
             titulo: '',
             icono: 'bi-eye',
             accion: async ({ entidad }) => {
-                ordenCompraStore.orden = entidad
-                modales.abrirModalEntidad('VisualizarOrdenCompra')
+                console.log(entidad)
+                // ordenCompraStore.orden = entidad
+                // modales.abrirModalEntidad('VisualizarOrdenCompra')
             },
         }
         const btnVerNovedades: CustomActionTable = {
@@ -123,11 +124,11 @@ export default defineComponent({
             icono: 'bi-wrench',
             accion: async ({ entidad, posicion }) => {
                 console.log(entidad)
-                ordenCompraStore.idOrden = entidad.id
-                confirmar('¿Está seguro de abrir el formulario de registro de novedades de la orden de compra?', () => {
-                    ordenCompraStore.permitirSubir = false
-                    modales.abrirModalEntidad('SeguimientoNovedadesOrdenesCompras')
-                })
+                // ordenCompraStore.idOrden = entidad.id
+                // confirmar('¿Está seguro de abrir el formulario de registro de novedades de la orden de compra?', () => {
+                //     ordenCompraStore.permitirSubir = false
+                //     modales.abrirModalEntidad('SeguimientoNovedadesOrdenesCompras')
+                // })
             },
             visible: ({ entidad }) => {
                 return entidad.novedades > 0
@@ -140,9 +141,10 @@ export default defineComponent({
         async function consultar() {
             if (await v$.value.$validate()) {
                 try {
-                    obtenerProveedores();
-                    const results = await ordenCompraStore.consultarDashboard(dashboard)
-                    // console.log(results)
+                    if (dashboard.tipo == INVENTARIO) await obtenerDetalles()
+                    // obtenerProveedores();
+                    const results = await bodegaStore.consultarDashboard(dashboard)
+                    console.log(results)
                     cantOrdenesCreadas.value = results.cant_ordenes_creadas
                     cantOrdenesPendientes.value = results.cant_ordenes_pendientes
                     cantOrdenesAprobadas.value = results.cant_ordenes_aprobadas
@@ -152,7 +154,7 @@ export default defineComponent({
                     cantOrdenesAnuladas.value = results.cant_ordenes_anuladas
                     cantOrdenesSinProveedor.value = results.cant_ordenes_sin_proveedor
                     cantOrdenesProveedor.value = results.cant_ordenes_proveedores
-                    ordenes.value = results.todas
+                    registros.value = results.todas
                     graficos.value = results.graficos
                 } catch (error) {
                     console.log(error)
@@ -164,30 +166,41 @@ export default defineComponent({
             console.log('Diste clic en grafico', data, key)
             // console.log('Ordenes para filtrar', ordenes.value)
             switch (key) {
-                case identificadorGrafico.creadas:
-                    ordenesPorEstado.value = filtroOrdenesComprasCreadas(data.label, ordenes)
-                    break
-                case identificadorGrafico.aprobadas:
-                    ordenesPorEstado.value = filtroOrdenesComprasAprobadas(data.label, ordenes)
-                    break
-                case identificadorGrafico.proveedores:
-                    ordenesPorEstado.value = filtroOrdenesComprasProveedores(data.label, ordenes)
-                    break
+                // case identificadorGrafico.creadas:
+                //     ordenesPorEstado.value = filtroOrdenesComprasCreadas(data.label, ordenes)
+                //     break
+                // case identificadorGrafico.aprobadas:
+                //     ordenesPorEstado.value = filtroOrdenesComprasAprobadas(data.label, ordenes)
+                //     break
+                // case identificadorGrafico.proveedores:
+                //     ordenesPorEstado.value = filtroOrdenesComprasProveedores(data.label, ordenes)
+                //     break
                 default:
                     console.log('Entro en default de clic grafico')
             }
             tabs.value = opcionesGrafico.listado
         }
-        async function obtenerProveedores(limpiarProveedor = false) {
+        async function obtenerDetalles() {
             cargando.activar()
-            if (limpiarProveedor) dashboard.proveedor = ''
-            if (dashboard.tipo == PROVEEDOR) {
-                const response = await new ProveedoresOrdenesController().listar({ solicitante_id: dashboard.empleado })
+            dashboard.detalle = ''
+            if (dashboard.tipo == INVENTARIO) {
+                // const response = await new ProveedoresOrdenesController().listar({ solicitante_id: dashboard.empleado })
+                const response = { result: [] }
                 listadosAuxiliares.proveedores = response.result
                 proveedores.value = response.result
-            } else { dashboard.proveedor = '' }
+            } else { dashboard.detalle = '' }
             cargando.desactivar()
         }
+        // async function obtenerProveedores(limpiarProveedor = false) {
+        //     cargando.activar()
+        //     if (limpiarProveedor) dashboard.proveedor = ''
+        //     if (dashboard.tipo == PROVEEDOR) {
+        //         const response = await new ProveedoresOrdenesController().listar({ solicitante_id: dashboard.empleado })
+        //         listadosAuxiliares.proveedores = response.result
+        //         proveedores.value = response.result
+        //     } else { dashboard.proveedor = '' }
+        //     cargando.desactivar()
+        // }
 
         return {
             configuracionColumnas: configuracionColumnasOrdenesCompras, accionesTabla,
@@ -199,6 +212,7 @@ export default defineComponent({
             btnVerNovedades,
             consultar,
             clickGrafico,
+            registros,
             cantOrdenesSinProveedor,
             cantOrdenesProveedor,
             cantOrdenesCreadas,
@@ -211,15 +225,12 @@ export default defineComponent({
             opcionesTipos,
             tabs, opcionesGrafico, mostrarTitulosSeccion, identificadorGrafico,
             graficos,
-            modales,
-            modoUnaColumna: ref(false),
+            modales: ref(),
+            modoUnaColumna: ref(true),
             labelTabla,
-            ESTADO,
-            PROVEEDOR,
+            INGRESO, EGRESO, INVENTARIO,
             empleados, filtrarEmpleados,
             proveedores, filtrarProveedores,
-            obtenerProveedores,
-            ordenarLista,
         }
     },
 })
