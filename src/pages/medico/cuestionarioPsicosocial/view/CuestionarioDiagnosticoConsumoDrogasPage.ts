@@ -93,7 +93,7 @@ export default defineComponent({
     onBeforeGuardar(() => {
       respuestaCuestionarioEmpleado.cuestionario = listadosAuxiliares.preguntas.map((item: any) => {
         return {
-          id_cuestionario: item.respuesta
+          id_cuestionario:  item.respuesta ,
         }
       })
     })
@@ -106,7 +106,7 @@ export default defineComponent({
     async function consultarPreguntas() {
       cargando.activar()
       try {
-        const { result } = await preguntaController.listar({'tipo_cuestionario_id':1})
+        const { result } = await preguntaController.listar({'tipo_cuestionario_id':2})
         listadosAuxiliares.preguntas = result
       } catch (e) {
         if (isAxiosError(e)) {
