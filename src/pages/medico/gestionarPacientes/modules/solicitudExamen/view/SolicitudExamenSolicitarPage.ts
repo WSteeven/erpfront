@@ -1,26 +1,28 @@
 // Dependencias
 import { Ref, defineComponent, ref } from 'vue'
 import { useMedicoStore } from 'stores/medico'
+import { maskFecha } from 'config/utils'
+import { LocalStorage } from 'quasar'
 
 // Componentes
-import DetallePaciente from '../../../view/DetallePaciente.vue'
+import FormularioSolicitudExamen from 'medico/solicitudesExamenes/view/FormularioSolicitudExamen.vue'
+import SimpleLayout from 'shared/contenedor/modules/simple/view/SimpleLayout.vue'
 
 // Logica y controladores
 import { LaboratorioClinicoController } from 'medico/laboratoriosMedicos/infraestructure/LaboratorioClinicoController'
 import { ContenedorSimpleMixin } from 'shared/contenedor/modules/simple/application/ContenedorSimpleMixin'
-import { EstadoSolicitudExamenController } from '../infraestructure/EstadoSolicitudExamenController'
 import { StatusEssentialLoading } from 'components/loading/application/StatusEssentialLoading'
 import { ExamenController } from 'pages/medico/examenes/infraestructure/ExamenController'
+import { SolicitudExamen } from 'pages/medico/solicitudesExamenes/domain/SolicitudExamen'
+import { SolicitudExamenController } from 'pages/medico/solicitudesExamenes/infraestructure/SolicitudExamenController'
+import { ExamenSolicitado } from 'pages/medico/solicitudesExamenes/domain/ExamenSolicitado'
 import { useFiltrosListadosSelects } from 'shared/filtrosListadosGenerales'
-import { EstadoSolicitudExamen } from '../domain/EstadoSolicitudExamen'
-import { ExamenSolicitado } from '../domain/ExamenSolicitado'
 import { Examen } from 'pages/medico/examenes/domain/Examen'
-import { maskFecha } from 'config/utils'
-import { LocalStorage } from 'quasar'
 
 export default defineComponent({
   components: {
-    DetallePaciente,
+    FormularioSolicitudExamen,
+    SimpleLayout,
   },
   emits: ['guardado', 'cerrar-modal'],
   setup(props, { emit }) {
@@ -29,7 +31,7 @@ export default defineComponent({
      *********/
     const medicoStore = useMedicoStore()
     const empleado = medicoStore.empleado
-    const examenesSolicitados = medicoStore.examenesSolicitados
+    const canton = ref(empleado.canton)
 
     /************
      * Variables
@@ -42,26 +44,27 @@ export default defineComponent({
     /********
      * Mixin
      ********/
-    const mixin = new ContenedorSimpleMixin(EstadoSolicitudExamen, new EstadoSolicitudExamenController())
-    const { entidad: estadoSolicitudExamen, listadosAuxiliares } = mixin.useReferencias()
+    const mixin = new ContenedorSimpleMixin(SolicitudExamen, new SolicitudExamenController())
+    const { entidad: solicitudExamen, listadosAuxiliares, accion, disabled } = mixin.useReferencias()
     const { cargarVista, obtenerListados, guardar } = mixin.useComportamiento()
     const { onBeforeGuardar, onGuardado } = mixin.useHooks()
 
-    cargarVista(async () => {
+    /* cargarVista(async () => {
       const examenes = LocalStorage.getItem('examenes') ? JSON.parse(LocalStorage.getItem('examenes')!.toString()) : []
 
       await obtenerListados({
         laboratoriosClinicos: {
           controller: laboratorioClinicoController,
-          params: { canton_id: empleado.canton, activo: 1, campos: 'id,nombre' },
+          params: { canton_id: canton.value, activo: 1, campos: 'id,nombre' },
         },
         cantones: [],
         examenes: examenes.length ? examenes : new ExamenController(),
       })
+
       listadosAuxiliares.cantones = JSON.parse(LocalStorage.getItem('cantones')!.toString())
       LocalStorage.set('examenes', JSON.stringify(listadosAuxiliares.examenes))
       cantones.value = listadosAuxiliares.cantones
-    })
+    }) */
 
     /************
      * Funciones
@@ -80,10 +83,9 @@ export default defineComponent({
       }
     }
 
-
     const asignarLaboratorio = (laboratorioClinico: number, index: number) => {
       if (index === 0) {
-        estadoSolicitudExamen.examenes_solicitados = estadoSolicitudExamen.examenes_solicitados.map((examen: ExamenSolicitado) => {
+        solicitudExamen.examenes_solicitados = solicitudExamen.examenes_solicitados.map((examen: ExamenSolicitado) => {
           examen.laboratorio_clinico = laboratorioClinico
           return examen
         })
@@ -92,7 +94,7 @@ export default defineComponent({
 
     const asignarFecha = (fecha: string, index: number) => {
       if (index === 0) {
-        estadoSolicitudExamen.examenes_solicitados = estadoSolicitudExamen.examenes_solicitados.map((examen: ExamenSolicitado) => {
+        solicitudExamen.examenes_solicitados = solicitudExamen.examenes_solicitados.map((examen: ExamenSolicitado) => {
           examen.fecha_asistencia = fecha
           return examen
         })
@@ -101,7 +103,7 @@ export default defineComponent({
 
     const asignarHora = (hora: string, index: number) => {
       if (index === 0) {
-        estadoSolicitudExamen.examenes_solicitados = estadoSolicitudExamen.examenes_solicitados.map((examen: ExamenSolicitado) => {
+        solicitudExamen.examenes_solicitados = solicitudExamen.examenes_solicitados.map((examen: ExamenSolicitado) => {
           examen.hora_asistencia = hora
           return examen
         })
@@ -112,14 +114,19 @@ export default defineComponent({
      * Hooks
      ********/
     onBeforeGuardar(() => {
-      estadoSolicitudExamen.examenes_solicitados = estadoSolicitudExamen.examenes_solicitados.map((examen: ExamenSolicitado) => {
-        return { ...examen, fecha_hora_asistencia: `${examen.fecha_asistencia} ${examen.hora_asistencia}` }
+      solicitudExamen.examenes_solicitados = solicitudExamen.examenes_solicitados.map((examenSolicitado: ExamenSolicitado) => {
+        const examenSolicitadoAux = new ExamenSolicitado()
+        examenSolicitadoAux.hydrate(examenSolicitado)
+        examenSolicitado.fecha_hora_asistencia = `${examenSolicitado.fecha_asistencia} ${examenSolicitado.hora_asistencia}`
+        return examenSolicitadoAux
       })
-      idExamenesSolicitados = estadoSolicitudExamen.examenes_solicitados.map((examen: ExamenSolicitado) => examen.id)
+      solicitudExamen.canton = canton.value
+
+      idExamenesSolicitados = solicitudExamen.examenes_solicitados.map((ex: ExamenSolicitado) => ex.examen as number)
     })
 
     onGuardado((id: number, responseData) => {
-      const modelo = responseData.modelo
+      // const modelo = responseData.modelo
       emit('guardado', { data: { idExamenesSolicitados }, page: 'SolicitudExamenPage' })
       emit('cerrar-modal')
     })
@@ -127,24 +134,22 @@ export default defineComponent({
     /*******
      * Init
      *******/
-    estadoSolicitudExamen.registro_empleado_examen = medicoStore.idRegistroEmpleadoExamen
-
-    examenesSolicitados?.forEach((examen: Examen) => {
-      const examenSolicitado = new ExamenSolicitado()
-      examenSolicitado.hydrate(examen)
-      // examenSolicitado.examen = examen.id
-      estadoSolicitudExamen.examenes_solicitados.push(examenSolicitado)
-    })
+    solicitudExamen.hydrate(medicoStore.solicitudExamen)
+    solicitudExamen.registro_empleado_examen = medicoStore.idRegistroEmpleadoExamen
+    accion.value = medicoStore.accion
 
     return {
       mixin,
-      estadoSolicitudExamen,
+      solicitudExamen,
       empleado,
       examenes,
       listadosAuxiliares,
       maskFecha,
+      canton,
       cantones,
       filtrarCantones,
+      accion,
+      disabled,
       // funciones
       consultarLaboratoriosClinicos,
       guardar,

@@ -470,6 +470,8 @@
       </ul>
     </div>
 
+    <div class="backdrop"></div>
+
     <q-page-container class="bg-body-background">
       <!-- class="window-height" -->
       <router-view v-slot="{ Component }">

@@ -194,6 +194,7 @@ export default defineComponent({
       editar: ({ entidad }) => {
         accion.value = acciones.editar
         consultar(entidad)
+        console.log(accion.value)
       },
       eliminar: ({ entidad }) => {
         accion.value = acciones.eliminar

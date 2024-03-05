@@ -3,28 +3,27 @@ import { StatusEssentialLoading } from 'components/loading/application/StatusEss
 import { Ref, ref } from 'vue'
 
 // Logica y controladores
-import { EstadoSolicitudExamenController } from '../modules/solicitudExamen/infraestructure/EstadoSolicitudExamenController'
 import { RegistroEmpleadoExamenController } from 'pages/medico/examenes/infraestructure/RegistroEmpleadoExamenController'
+import { SolicitudExamenController } from 'pages/medico/solicitudesExamenes/infraestructure/SolicitudExamenController'
 import { RegistroEmpleadoExamen } from 'pages/medico/examenes/domain/RegistroEmpleadoExamen'
 import { ExamenController } from 'pages/medico/examenes/infraestructure/ExamenController'
 import { Examen } from 'pages/medico/examenes/domain/Examen'
-import { SolicitudExamen } from '../domain/SolicitudExamen'
 
 export function useExamenes() {
   /***************
    * Controllers
    ***************/
   const registroEmpleadoExamenController = new RegistroEmpleadoExamenController()
+  const solicitudExamenController = new SolicitudExamenController()
   const examenController = new ExamenController()
-  const estadoSolicitudExamenController = new EstadoSolicitudExamenController()
 
   /************
    * Variables
    ************/
   const cargando = new StatusEssentialLoading()
   const examenes: Ref<Examen[]> = ref([])
-  const solicitudesExamenes: Ref<SolicitudExamen[]> = ref([])
-  const listadoGeneral: Ref<Examen | SolicitudExamen[]> = ref([])
+  const solicitudesExamenes: Ref<any[]> = ref([])
+  const listadoGeneral: Ref<Examen | any[]> = ref([])
 
   const registros: Ref<RegistroEmpleadoExamen[]> = ref([])
 
@@ -71,7 +70,7 @@ export function useExamenes() {
   const consultarSolicitudesExamenes = async (tab: number, idRegistroEmpleadoExamen: number) => {
     cargando.activar()
     try {
-      const { result } = await estadoSolicitudExamenController.listar({ estado_examen_id: tab, registro_empleado_examen_id: idRegistroEmpleadoExamen, solicitudes: true })
+      const { result } = await solicitudExamenController.listar({ registro_empleado_examen_id: idRegistroEmpleadoExamen, estado_solicitud_examen: tab })
       solicitudesExamenes.value = result
       listadoGeneral.value = result
     } catch (e) {

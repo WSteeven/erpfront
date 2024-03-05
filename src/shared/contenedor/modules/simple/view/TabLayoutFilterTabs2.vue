@@ -1,14 +1,6 @@
 <template>
   <q-page padding>
     <slot name="modales" />
-
-    <!-- <div class="text-left q-mb-md">
-      <b class="block text-subtitle1 text-thin text-primary">
-        {{ tituloTabla }}</b
-      >
-      <small class="text-grey-9 text-bold">{{ subtituloPagina }}</small>
-    </div> -->
-
     <!-- Tabs -->
     <q-tabs
       v-model="tabs"
@@ -79,6 +71,7 @@
           </div>
         </div>
       </q-tab-panel>
+
       <!-- Listado -->
       <q-tab-panel name="listado">
         <essential-table-tabs

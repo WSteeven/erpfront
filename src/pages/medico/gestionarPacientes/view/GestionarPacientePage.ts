@@ -1,13 +1,13 @@
 // Dependencias
+import { configuracionColumnasSolicitudExamen } from '../../solicitudesExamenes/domain/configuracionColumnasSolicitudExamen'
+import { configuracionColumnasEsquemaVacunacion } from '../domain/configuracionColumnasEsquemaVacunacion'
 import { configuracionColumnasEmpleados } from '../domain/configuracionColumnasEmpleados'
 import { configuracionColumnasExamenes } from '../domain/configuracionColumnasExamenes'
-import { configuracionColumnasSolicitudExamen } from '../domain/configuracionColumnasSolicitudExamen'
 import { Ref, computed, defineComponent, ref, watch } from 'vue'
-import { configuracionColumnasEsquemaVacunacion } from '../domain/configuracionColumnasEsquemaVacunacion'
 import { tabOptionsEstadosEmpleados } from 'config/utils'
 
 // Componentes
-// import EssentialTableTabs from 'components/tables/view/EssentialTableTabs.vue'
+// import TabLayoutFilterTabs2 from 'shared/contenedor/modules/simple/view/TabLayoutFilterTabs2.vue'
 import TabLayoutFilterTabs2 from 'shared/contenedor/modules/simple/view/TabLayoutFilterTabs2.vue'
 import EssentialTable from 'components/tables/view/EssentialTable.vue'
 import ModalesEntidad from 'components/modales/view/ModalEntidad.vue'
@@ -18,18 +18,18 @@ import DetallePaciente from './DetallePaciente.vue'
 import { ContenedorSimpleMixin } from 'shared/contenedor/modules/simple/application/ContenedorSimpleMixin'
 import { ComportamientoModalesGestionPaciente } from '../application/ComportamientoModalesGestionPaciente'
 import { EmpleadoController } from 'pages/recursosHumanos/empleados/infraestructure/EmpleadoController'
-import { estadosExamenes, tabOptionsEstadosExamenes, tiposProcesosExamenes } from 'config/utils/medico'
+import { estadosSolicitudesExamenes, tabOptionsEstadosExamenes, tiposProcesosExamenes } from 'config/utils/medico'
 import { useBotonesSolicitudExamen } from '../application/UseBotonesSolicitudExamen'
 import { CustomActionPrompt } from 'components/tables/domain/CustomActionPrompt'
 import { CustomActionTable } from 'components/tables/domain/CustomActionTable'
 import { Empleado } from 'recursosHumanos/empleados/domain/Empleado'
 import { isAxiosError, notificarMensajesError } from 'shared/utils'
+import { Examen } from 'pages/medico/examenes/domain/Examen'
 import { useNotificaciones } from 'shared/notificaciones'
 import { useExamenes } from '../application/UseExamenes'
+import { EsquemaVacuna } from '../domain/EsquemaVacuna'
 import { useMedicoStore } from 'stores/medico'
 import { accionesTabla } from 'config/utils'
-import { EsquemaVacuna } from '../domain/EsquemaVacuna'
-import { Examen } from 'pages/medico/examenes/domain/Examen'
 
 export default defineComponent({
   components: { TabLayoutFilterTabs2, SelectorImagen, ModalesEntidad, EssentialTable, DetallePaciente },
@@ -54,7 +54,7 @@ export default defineComponent({
     const listadoExamenes = ref([])
 
     const tabs = ref(tiposProcesosExamenes.INGRESO)
-    const tabEstadoExamen = ref(estadosExamenes.PENDIENTE_SOLICITAR.value)
+    const tabEstadoExamen = ref(estadosSolicitudesExamenes.PENDIENTE_SOLICITAR.value)
     const tabsRegistro = ref()
     const esquemaVacunaciones: Ref<any[]> = ref([
       {
@@ -142,7 +142,7 @@ export default defineComponent({
     const seleccionarRegistro = (registro: number) => {
       medicoStore.idRegistroEmpleadoExamen = registro
       examenes.value = []
-      tabEstadoExamen.value = estadosExamenes.PENDIENTE_SOLICITAR.value
+      tabEstadoExamen.value = estadosSolicitudesExamenes.PENDIENTE_SOLICITAR.value
       tabsRegistro.value = registro
       consultarExamenesSinSolicitar({ empleado_id: empleado.id, registro_empleado_examen_id: registro })
     }
@@ -153,13 +153,14 @@ export default defineComponent({
 
       switch (page) {
         case 'SolicitudExamenPage':
-          const solicitados: number[] = idExamenesSolicitados
-
+          // const solicitados: number[] = idExamenesSolicitados
+          console.log(idExamenesSolicitados)
           // Quitar examenes solicitados
-          solicitados.forEach((id: number) => {
-            index = examenes.value.findIndex((examen) => examen.id === detalle_resultado_examen)
-            examen = examenes.value[index]
+          idExamenesSolicitados.forEach((id: number) => {
+            index = examenes.value.findIndex((examen: Examen) => examen.id === id) // detalle_resultado_examen)
+            // examen = examenes.value[index]
             examenes.value.splice(index, 1)
+            console.log(index)
           })
           break
         default:
@@ -175,17 +176,19 @@ export default defineComponent({
     }
 
     const filtrarEstadoExamen = (tab) => {
-      console.log(tab)
       tabEstadoExamen.value = tab
-      if (tab === estadosExamenes.PENDIENTE_SOLICITAR) {
+      // console.log(tab)
+      // console.log(estadosExamenes.PENDIENTE_SOLICITAR)
+      if (tab === estadosSolicitudesExamenes.PENDIENTE_SOLICITAR.value) {
         // seleccionVariosExamen.value = false
+        console.log('if...')
         consultarExamenesSinSolicitar({ empleado_id: empleado.id, registro_empleado_examen_id: tabsRegistro.value })
       } else {
+        console.log('else...')
         // seleccionVariosExamen.value = true
         examenesSeleccionados.value = []
         // consultarExamenesSolicitados(tab, tabsRegistro.value)
         consultarSolicitudesExamenes(tab, tabsRegistro.value)
-        filtrarEstadoExamen
       }
     }
 
@@ -248,7 +251,7 @@ export default defineComponent({
       registros,
       solicitudesExamenes,
       tiposProcesosExamenes,
-      tipoSeleccion: computed(() => seleccionVariosExamen.value && tabEstadoExamen.value === estadosExamenes.PENDIENTE_SOLICITAR.value ? 'multiple' : 'none'),
+      tipoSeleccion: computed(() => seleccionVariosExamen.value && tabEstadoExamen.value === estadosSolicitudesExamenes.PENDIENTE_SOLICITAR.value ? 'multiple' : 'none'),
       esquemaVacunaciones,
       tabOptionsEstadosEmpleados,
       filtrarEmpleados,
@@ -257,7 +260,7 @@ export default defineComponent({
       seleccionarRegistro,
       actualizarListadoExamenes,
       consultarSolicitudesExamenes,
-      estadosExamenes,
+      estadosSolicitudesExamenes,
       /*******************
        * Botones examenes
        *******************/
@@ -279,14 +282,6 @@ export default defineComponent({
       btnSolicitarExamenesSeleccionados2,
       btnEsquemaVacunacion,
       columnas,
-      cambiar: () => {
-        if (!colum.value) {
-          columnas.value = configuracionColumnasEmpleados
-        } else {
-          columnas.value = configuracionColumnasExamenes
-        }
-        colum.value = !colum.value
-      },
     }
   },
 })

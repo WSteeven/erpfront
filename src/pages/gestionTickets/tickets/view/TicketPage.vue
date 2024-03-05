@@ -25,7 +25,7 @@
           default-opened
         >
           <q-separator></q-separator>
-          <div class="col-12 text-primary bg-body q-px-md q-py-sm q-mb-md">
+          <div class="col-12 text-primary bg-background-header-grey q-px-md q-py-sm q-mb-md">
             <q-icon name="bi-ticket-detailed"></q-icon>
             Detalles
           </div>
@@ -370,7 +370,7 @@
           <q-separator v-if="destinatarios.length"></q-separator>
           <div
             v-if="destinatarios.length"
-            class="col-12 text-primary bg-body q-px-md q-py-sm q-mb-md"
+            class="col-12 text-primary bg-background-header-grey q-px-md q-py-sm q-mb-md"
           >
             <q-icon name="bi-view-list"></q-icon>
             Categorías y tipos
@@ -479,7 +479,7 @@
           </div>
 
           <q-separator></q-separator>
-          <div class="col-12 text-primary bg-body q-px-md q-py-sm q-mb-md">
+          <div class="col-12 text-primary bg-background-header-grey q-px-md q-py-sm q-mb-md">
             <q-icon name="bi-archive"></q-icon>
             Archivos
           </div>

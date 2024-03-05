@@ -13,7 +13,7 @@ export const acciones = {
   eliminar: 'ELIMINAR',
   consultar: 'CONSULTAR',
   editar: 'EDITAR',
-}
+} as const
 
 export const tiposElementos = [
   'POSTE',
@@ -334,6 +334,7 @@ export const rolesSistema = {
   jefe_ventas: 'JEFE_VENTAS',
   supervisor_ventas: 'SUPERVISOR_VENTAS',
   vendedor: 'VENDEDOR',
+  financiero: 'FINANCIERO',
 }
 
 export const cargosSistema = {

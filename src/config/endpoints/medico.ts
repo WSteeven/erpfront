@@ -8,9 +8,7 @@ export const medico = {
   categorias_examenes: new Endpoint('medico/categorias-examenes'),
   examenes: new Endpoint('medico/examenes'),
   estados_examenes: new Endpoint('medico/estados-examenes'),
-  estados_solicitudes_examenes: new Endpoint(
-    'medico/estados-solicitudes-examenes'
-  ),
+  solicitudes_examenes: new Endpoint('medico/solicitudes-examenes'),
   tipos_examenes: new Endpoint('medico/tipos-examenes'),
   detalles_resultados_examenes: new Endpoint('medico/detalles-resultados-examenes'),
   resultados_examenes: new Endpoint('medico/resultados-examenes'),

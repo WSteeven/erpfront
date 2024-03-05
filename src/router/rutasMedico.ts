@@ -20,6 +20,12 @@ const rutasMedico: RouteRecordRaw[] = [
     meta: { requiresAuth: true },
   },
   {
+    path: '/solicitudes-examenes',
+    name: 'solicitudes_examenes',
+    component: () => import('medico/solicitudesExamenes/view/SolicitudExamenPage.vue'),
+    meta: { requiresAuth: true },
+  },
+  {
     path: '/diagnostico-receta',
     name: 'diagnosticos_recetas',
     component: () => import('medico/diagnosticoReceta/view/DiagnosticoRecetaPage.vue'),
@@ -36,7 +42,7 @@ const rutasMedico: RouteRecordRaw[] = [
     name: 'reporte_cuestionarios_pisicosocial',
     component: () => import('pages/medico/cuestionarioPsicosocial/view/ReporteCuestionarioPisicosocial.vue'),
     meta: { requiresAuth: true },
-  },{
+  }, {
     path: '/configuraciones-cuestionarios-empleados',
     name: 'configuraciones_cuestionarios_empleados',
     component: () => import('pages/medico/configuracionCuestionarioEmpleado/view/ConfiguracionCuestionarioEmpleadoPage.vue'),

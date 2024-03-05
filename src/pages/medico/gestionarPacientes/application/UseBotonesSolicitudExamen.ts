@@ -1,12 +1,17 @@
-import { ComportamientoModalesGestionPaciente } from "./ComportamientoModalesGestionPaciente"
-import { CustomActionTable } from "components/tables/domain/CustomActionTable"
-import { DetalleExamen } from "../domain/DetalleExamen"
-import { estadosExamenes } from "config/utils/medico"
-import { Ref, ref } from "vue"
-import { useMedicoStore } from "stores/medico"
-import { Examen } from "pages/medico/examenes/domain/Examen"
-import { useNotificaciones } from "shared/notificaciones"
-import { SolicitudExamen } from "../domain/SolicitudExamen"
+// Dependencias
+import { CustomActionTable } from 'components/tables/domain/CustomActionTable'
+import { useNotificaciones } from 'shared/notificaciones'
+import { estadosSolicitudesExamenes } from 'config/utils/medico'
+import { useMedicoStore } from 'stores/medico'
+import { acciones } from 'config/utils'
+import { Ref, ref } from 'vue'
+
+// Logica y controladores
+import { ComportamientoModalesGestionPaciente } from './ComportamientoModalesGestionPaciente'
+import { ExamenSolicitado } from 'pages/medico/solicitudesExamenes/domain/ExamenSolicitado'
+import { SolicitudExamen } from 'pages/medico/solicitudesExamenes/domain/SolicitudExamen'
+import { Examen } from 'pages/medico/examenes/domain/Examen'
+import { DetalleExamen } from '../domain/DetalleExamen'
 
 export function useBotonesSolicitudExamen(tabEstadoExamen: Ref, modales: ComportamientoModalesGestionPaciente) {
   /*********
@@ -19,7 +24,7 @@ export function useBotonesSolicitudExamen(tabEstadoExamen: Ref, modales: Comport
    **************/
   const seleccionVariosExamen = ref(false)
   const refTablaExamenes = ref()
-  const examenesSeleccionados: Ref<Examen[]> = ref([])
+  const examenesSeleccionados: Ref<ExamenSolicitado[]> = ref([])
   const { notificarAdvertencia } = useNotificaciones()
 
   /*********
@@ -29,7 +34,7 @@ export function useBotonesSolicitudExamen(tabEstadoExamen: Ref, modales: Comport
     titulo: 'Solicitar varios examenes',
     icono: 'bi-check-square',
     color: 'primary',
-    visible: () => !seleccionVariosExamen.value && tabEstadoExamen.value === estadosExamenes.PENDIENTE_SOLICITAR.value,
+    visible: () => !seleccionVariosExamen.value && tabEstadoExamen.value === estadosSolicitudesExamenes.PENDIENTE_SOLICITAR.value,
     accion: async () => seleccionVariosExamen.value = true
   }
 
@@ -40,8 +45,21 @@ export function useBotonesSolicitudExamen(tabEstadoExamen: Ref, modales: Comport
     visible: () => seleccionVariosExamen.value,
     accion: async function () {
       if (!examenesSeleccionados.value.length) return notificarAdvertencia('Debe seleccionar al menos un examen!')
-      medicoStore.examenesSolicitados = examenesSeleccionados.value
-      modales.abrirModalEntidad('SolicitudExamenPage')
+      /* medicoStore.examenesSolicitados = examenesSeleccionados.value
+      modales.abrirModalEntidad('SolicitudExamenSolicitarPage') */
+
+      medicoStore.accion = acciones.nuevo
+      const solicitudExamen = new SolicitudExamen()
+      solicitudExamen.examenes_solicitados = examenesSeleccionados.value.map((examen: ExamenSolicitado) => {
+        const examenSolicitado = new ExamenSolicitado()
+        examenSolicitado.examen = examen.id
+        return examenSolicitado
+      })
+
+      // console.log(entidad)
+      // console.log(solicitudExamen)
+      medicoStore.solicitudExamen = solicitudExamen
+      modales.abrirModalEntidad('SolicitudExamenSolicitarPage')
     }
   }
 
@@ -49,7 +67,7 @@ export function useBotonesSolicitudExamen(tabEstadoExamen: Ref, modales: Comport
     titulo: 'Cancelar seleccion',
     icono: 'bi-x',
     color: 'negative',
-    visible: () => seleccionVariosExamen.value && tabEstadoExamen.value === estadosExamenes.PENDIENTE_SOLICITAR.value,
+    visible: () => seleccionVariosExamen.value && tabEstadoExamen.value === estadosSolicitudesExamenes.PENDIENTE_SOLICITAR.value,
     accion: async () => seleccionVariosExamen.value = false
   }
 
@@ -57,7 +75,7 @@ export function useBotonesSolicitudExamen(tabEstadoExamen: Ref, modales: Comport
     titulo: 'Nuevo diagnostico',
     icono: 'bi-plus',
     color: 'positive',
-    visible: () => tabEstadoExamen.value === estadosExamenes.DIAGNOSTICO_REALIZADO.value,
+    visible: () => tabEstadoExamen.value === estadosSolicitudesExamenes.DIAGNOSTICO_REALIZADO.value,
     accion: async () => {
       modales.abrirModalEntidad('DiagnosticoRecetaPage')
     }
@@ -70,19 +88,20 @@ export function useBotonesSolicitudExamen(tabEstadoExamen: Ref, modales: Comport
     titulo: 'Solicitar examen',
     icono: 'bi-plus',
     color: 'positive',
-    visible: () => tabEstadoExamen.value === estadosExamenes.PENDIENTE_SOLICITAR.value && !seleccionVariosExamen.value,
+    visible: () => tabEstadoExamen.value === estadosSolicitudesExamenes.PENDIENTE_SOLICITAR.value && !seleccionVariosExamen.value,
     accion: ({ entidad }) => {
-      medicoStore.examenSolicitado = entidad
-      examenesSeleccionados.value = [entidad]
-      medicoStore.examenesSolicitados = examenesSeleccionados.value
-      modales.abrirModalEntidad('SolicitudExamenPage')
-      /*confirmar('¿Está seguro de ejecutar el ticket?', async () => {
-        const { response, result } = await cambiarEstadoTicket.ejecutar(entidad.id)
-        entidad.estado = estadosTickets.EJECUTANDO
-        entidad.fecha_hora_ejecucion = result.fecha_hora_ejecucion
-        filtrarTickets(estadosTickets.EJECUTANDO)
-        notificarCorrecto(response.data.mensaje)
-      })*/
+      medicoStore.accion = acciones.nuevo
+      const solicitudExamen = new SolicitudExamen()
+      solicitudExamen.examenes_solicitados = [entidad].map((examen: Examen) => {
+        const examenSolicitado = new ExamenSolicitado()
+        examenSolicitado.examen = examen.id
+        return examenSolicitado
+      })
+
+      // console.log(entidad)
+      // console.log(solicitudExamen)
+      medicoStore.solicitudExamen = solicitudExamen
+      modales.abrirModalEntidad('SolicitudExamenSolicitarPage')
     }
   }
 
@@ -90,41 +109,58 @@ export function useBotonesSolicitudExamen(tabEstadoExamen: Ref, modales: Comport
     titulo: 'Resultados',
     icono: 'bi-list',
     color: 'primary',
-    visible: ({ entidad }) => tabEstadoExamen.value === estadosExamenes.SOLICITADO.value,
+    visible: ({ entidad }) => tabEstadoExamen.value === estadosSolicitudesExamenes.SOLICITADO.value,
     accion: ({ entidad }) => {
       medicoStore.examenSolicitado = entidad
       console.log(entidad)
       modales.abrirModalEntidad('ResultadosExamenPage')
-      /*confirmar('¿Está seguro de ejecutar el ticket?', async () => {
-        const { response, result } = await cambiarEstadoTicket.ejecutar(entidad.id)
-        entidad.estado = estadosTickets.EJECUTANDO
-        entidad.fecha_hora_ejecucion = result.fecha_hora_ejecucion
-        filtrarTickets(estadosTickets.EJECUTANDO)
-        notificarCorrecto(response.data.mensaje)
-      })*/
     }
   }
-
+  //
+  // detalles_productos where descripcion like '' id detalle
+  // inventarios where detalle_id = 1
+  // nuevo y jp construcred problemas asi q buscar esto
+  // detalle_producto_transaccion where o where in inventario_id =
+  // -- solo coger transaccion egresos por motivo por tipo
+  // transaccion bodega where motivo id = '' where motivo transaccion_id = ''
+  // reporte historico de fondos
+  // reporte resumen valores drf
   const btnConsultarEstadoSolicitudExamen: CustomActionTable<SolicitudExamen> = {
     titulo: 'Consultar estado',
     icono: 'bi-eye',
     color: 'primary',
-    visible: () => tabEstadoExamen.value === estadosExamenes.SOLICITADO.value,
+    visible: () => tabEstadoExamen.value === estadosSolicitudesExamenes.SOLICITADO.value,
     accion: ({ entidad }) => {
-      /*medicoStore.examenSolicitado = entidad
-      examenesSeleccionados.value = [entidad]
-      medicoStore.examenesSolicitados = examenesSeleccionados.value
-      modales.abrirModalEntidad('SolicitudExamenPage')*/
-      medicoStore.examenesSolicitados = entidad.examenes_ids
-      modales.abrirModalEntidad('SolicitudExamenPage')
+      medicoStore.accion = acciones.consultar
+      const examenesSolicitados: ExamenSolicitado[] = mapearExamenesSolicitados(entidad.examenes_solicitados)
+
+      const solicitudExamen = new SolicitudExamen()
+      solicitudExamen.hydrate(entidad)
+      solicitudExamen.examenes_solicitados = examenesSolicitados
+      medicoStore.solicitudExamen = solicitudExamen
+      console.log(examenesSolicitados)
+      console.log(solicitudExamen)
+      modales.abrirModalEntidad('SolicitudExamenSolicitarPage')
     }
   }
 
   /******************
    * Other functions
    ******************/
-  async function seleccionarExamen(examenes: Examen[]) {
+  async function seleccionarExamen(examenes: ExamenSolicitado[]) {
     examenesSeleccionados.value = examenes
+  }
+
+  const mapearExamenesSolicitados = (examenesSolicitados: ExamenSolicitado[]): ExamenSolicitado[] => {
+    return examenesSolicitados.map((examenSolicitado: ExamenSolicitado) => {
+      const examen = new ExamenSolicitado()
+      examen.examen = examenSolicitado.examen
+      examen.laboratorio_clinico = examenSolicitado.laboratorio_clinico
+      examen.fecha_asistencia = examenSolicitado.fecha_hora_asistencia?.split(' ')[0] || null
+      examen.hora_asistencia = examenSolicitado.fecha_hora_asistencia?.split(' ')[1] || null
+
+      return examen
+    })
   }
 
   return {

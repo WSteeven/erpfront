@@ -1,4 +1,4 @@
-import { TabOption } from "components/tables/domain/TabOption"
+import { TabOption } from 'components/tables/domain/TabOption'
 
 export const tiposProcesosExamenes = {
   INGRESO: 'INGRESO',
@@ -21,14 +21,17 @@ export const tiposEnfermedades = {
   APERTURA_FICHA_MEDICA: 'APERTURA_FICHA_MEDICA',
 }*/
 
-export const estadosExamenes = {
+/*******************
+ * Solicitud examen
+ *******************/
+export const estadosSolicitudesExamenes = {
   PENDIENTE_SOLICITAR: {
-    value: '0',
+    value: 'PENDIENTE_SOLICITAR',
     label: 'Pendientes de solicitar',
     icono: 'bi-cart-plus',
   },
   SOLICITADO: {
-    value: '1',
+    value: 'SOLICITADO',
     label: 'Solicitudes de exámenes',
     icono: 'bi-cart-check',
   },
@@ -52,6 +55,28 @@ export const estadosExamenes = {
   },
 }
 
+export const tabOptionsEstadosExamenes: TabOption[] = [
+  { label: 'Pendientes de solicitar', value: estadosSolicitudesExamenes.PENDIENTE_SOLICITAR.value, icono: 'bi-arrow-right', color_icono: 'pink', bg_color: 'pink-1', icono_derecha: true },
+  { label: 'Aprobado por compras', value: estadosSolicitudesExamenes.APROBADO_POR_COMPRAS.value, icono: 'bi-arrow-right', color_icono: 'primary', bg_color: 'blue-2', icono_derecha: true },
+  { label: 'Solicitudes de exámenes', value: estadosSolicitudesExamenes.SOLICITADO.value, icono: 'bi-arrow-right', color_icono: 'orange', bg_color: 'yellow-2', icono_derecha: true },
+  { label: 'Resultados', value: estadosSolicitudesExamenes.DIAGNOSTICO_REALIZADO.value, color_icono: 'positive' },
+  // { label: 'Diagnóstico realizado', value: estadosExamenes.DIAGNOSTICO_REALIZADO, icono: 'bi-arrow-right', color_icono: 'positive', bg_color: 'light-green-1', icono_derecha: true },
+  // { label: 'Apertura de ficha médica', value: estadosExamenes.APERTURA_FICHA_MEDICA, bg_color: 'light-green-2', color_icono: 'positive' },
+]
+
+export const tabOptionsEstadosSolicitudExamen: TabOption[] = [
+  { label: 'Pendientes de aprobar', value: estadosSolicitudesExamenes.SOLICITADO.value, icono: 'bi-cart-check', color_icono: 'orange', bg_color: 'yellow-2' },
+  { label: 'Aprobados', value: estadosSolicitudesExamenes.APROBADO_POR_COMPRAS.value, icono: 'bi-cash-coin', color_icono: 'positive', bg_color: 'light-green-2' },
+]
+
+export const selectAprobarEstadosSolicitudesExamenes = [
+  { label: 'Aprobar', value: estadosSolicitudesExamenes.APROBADO_POR_COMPRAS.value },
+  // { label: 'Rechazar', value: estadosSolicitudesExamenes.SOLICITADO.value },
+]
+
+/**************
+ * Cita medica
+ **************/
 export const estadosCitaMedica = {
   PENDIENTE: 'PENDIENTE',
   AGENDADO: 'AGENDADO',
@@ -59,15 +84,6 @@ export const estadosCitaMedica = {
   CANCELADO: 'CANCELADO',
   RECHAZADO: 'RECHAZADO',
 }
-
-export const tabOptionsEstadosExamenes: TabOption[] = [
-  { label: 'Pendientes de solicitar', value: estadosExamenes.PENDIENTE_SOLICITAR, icono: 'bi-arrow-right', color_icono: 'pink', bg_color: 'pink-1', icono_derecha: true },
-  { label: 'Solicitudes de exámenes', value: estadosExamenes.SOLICITADO, icono: 'bi-arrow-right', color_icono: 'orange', bg_color: 'yellow-2', icono_derecha: true },
-  { label: 'Aprobado por compras', value: estadosExamenes.APROBADO_POR_COMPRAS, icono: 'bi-arrow-right', color_icono: 'primary', bg_color: 'blue-2', icono_derecha: true },
-  { label: 'Resultados', value: estadosExamenes.DIAGNOSTICO_REALIZADO, color_icono: 'positive' },
-  // { label: 'Diagnóstico realizado', value: estadosExamenes.DIAGNOSTICO_REALIZADO, icono: 'bi-arrow-right', color_icono: 'positive', bg_color: 'light-green-1', icono_derecha: true },
-  // { label: 'Apertura de ficha médica', value: estadosExamenes.APERTURA_FICHA_MEDICA, bg_color: 'light-green-2', color_icono: 'positive' },
-]
 
 export const tabOptionsEstadosCitaMedica: TabOption[] = [
   { label: 'Pendientes', value: estadosCitaMedica.PENDIENTE },
