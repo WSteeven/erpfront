@@ -1,6 +1,6 @@
 <template>
-    <q-page padding>
-        <q-card class="q-mb-md rounded no-border custom-shadow"
+  <q-page padding>
+    <q-card class="q-mb-md rounded no-border custom-shadow"
       ><q-card-section>
         <div class="border-1 text-primary text-bold q-mb-lg">
           <q-icon name="bi-graph-up-arrow" class="q-mr-sm"></q-icon>
@@ -99,7 +99,7 @@
                   >
                     <q-date
                       v-model="dashboard.fecha_inicio"
-                      mask="DD-MM-YYYY"
+                      :mask="maskFecha"
                       @update:model-value="consultar()"
                       today-btn
                     >
@@ -142,7 +142,7 @@
                   >
                     <q-date
                       v-model="dashboard.fecha_fin"
-                      mask="DD-MM-YYYY"
+                      :mask="maskFecha"
                       today-btn
                       @update:model-value="consultar()"
                     >
@@ -223,7 +223,10 @@
           <div class="col-12 col-md-12 q-mb-lg">
             <div class="row q-col-gutter-xs">
               <!-- {{ registros }} -->
-              <div v-if="registros.length >= 0" class="col-12">
+              <div
+                v-if="registros !== undefined && registros.length >= 0"
+                class="col-12"
+              >
                 <q-card
                   class="rounded-card text-white no-border q-pa-md text-center full-height cursor-pointer bg-primary"
                 >
@@ -289,7 +292,7 @@
       <div
         class="row text-bold text-primary q-pa-md rounded items-center q-mb-md"
       >
-        Gráficos estadísticos de Órdenes de Compras
+        Gráficos estadísticos de Ingresos de Bodega
       </div>
       <q-tab-panels
         v-model="tabs"
@@ -361,13 +364,13 @@
           <div class="row q-col-gutter-sm q-py-md q-mb-lg">
             <div class="col-12">
               <essential-table
-                v-if="ordenesPorEstado.length"
-                titulo="Ordenes de Compra"
+                v-if="registrosFiltrados.length"
+                :titulo="dashboard.tipo + 'S - ' + labelTabla"
                 :configuracionColumnas="[
                   ...configuracionColumnas,
                   accionesTabla,
                 ]"
-                :datos="ordenesPorEstado"
+                :datos="registrosFiltrados"
                 :permitirConsultar="false"
                 :permitirEliminar="false"
                 :permitirEditar="false"
@@ -381,97 +384,71 @@
           </div> </q-tab-panel
       ></q-tab-panels>
     </q-card>
+
+    <!-- EGRESOS -->
     <q-card
       class="q-mb-md rounded no-border custom-shadow"
-      v-if="dashboard.tipo == 'PROVEEDOR'"
+      v-if="dashboard.tipo == EGRESO"
     >
       <div
         class="row text-bold text-primary q-pa-md rounded items-center q-mb-md"
       >
-        Información de ordenes de compras por Proveedor
+        Información de Egresos de Bodega
       </div>
       <q-card-section>
         <div class="row q-col-gutter-sm q-mb-lg">
           <div class="col-12 col-md-12 q-mb-lg">
             <div class="row q-col-gutter-xs">
               <div
-                v-if="cantOrdenesProveedor >= 0"
-                :class="cantOrdenesSinProveedor > 0 ? 'col-6' : 'col-12'"
+                v-if="registros !== undefined && registros.length >= 0"
+                class="col-12"
               >
                 <q-card
                   class="rounded-card text-white no-border q-pa-md text-center full-height cursor-pointer bg-primary"
                 >
                   <div class="text-h3 q-mb-md">
-                    {{ cantOrdenesProveedor }}
+                    {{ registros.length }}
                   </div>
-                  <div class="text-bold">
-                    Cantidad de ordenes de compras que tienen proveedor
-                  </div>
+                  <div class="text-bold">Cantidad de ordenes creadas</div>
                 </q-card>
               </div>
-              <div v-if="cantOrdenesSinProveedor > 0" class="col-6">
-                <q-card
-                  class="rounded-card text-white no-border q-pa-md text-center full-height cursor-pointer bg-primary"
-                >
-                  <div class="text-h3 q-mb-md">
-                    {{ cantOrdenesSinProveedor }}
-                  </div>
-                  <div class="text-bold">
-                    Cantidad de ordenes de compras que no tienen proveedor
-                  </div>
-                </q-card>
-              </div>
-              <div v-if="cantOrdenesPendientes >= 0" class="col-6 col-md-4">
+              <div v-if="cantEgresosPendientes > 0" class="col-6 col-md-4">
                 <q-card class="rounded-card q-pa-md text-center full-height">
                   <div class="text-h3 text-primary q-mb-md">
-                    {{ cantOrdenesPendientes }}
+                    {{ cantEgresosPendientes }}
                   </div>
-                  <div>Cantidad de ordenes pendientes</div>
+                  <div>
+                    Cantidad de Egresos pendientes de aceptar por el responsable
+                  </div>
                 </q-card>
               </div>
-              <div v-if="cantOrdenesRevisadas >= 0" class="col-6 col-md-4">
+              <div v-if="cantEgresosParciales > 0" class="col-6 col-md-4">
                 <q-card class="rounded-card q-pa-md text-center full-height">
                   <div class="text-h3 text-primary q-mb-md">
-                    {{ cantOrdenesRevisadas }}
+                    {{ cantEgresosParciales }}
                   </div>
-                  <div>Cantidad de ordenes revisadas</div>
+                  <div>
+                    Cantidad de Egresos parcialmente aceptados por el
+                    responsable
+                  </div>
                 </q-card>
               </div>
-              <div
-                v-if="cantOrdenesAprobadas - cantOrdenesRevisadas >= 0"
-                class="col-6 col-md-4"
-              >
+              <div v-if="cantEgresosCompletos > 0" class="col-6 col-md-4">
                 <q-card class="rounded-card q-pa-md text-center full-height">
                   <div class="text-h3 text-primary q-mb-md">
-                    {{ cantOrdenesAprobadas - cantOrdenesRevisadas }}
+                    {{ cantEgresosCompletos }}
                   </div>
-                  <div>Cantidad de ordenes pendientes de revisar</div>
+                  <div>Cantidad de Egresos completos</div>
                 </q-card>
               </div>
-              <div v-if="cantOrdenesRealizadas >= 0" class="col-6 col-md-4">
-                <q-card class="rounded-card q-pa-md text-center full-height">
-                  <div class="text-h3 text-primary q-mb-md">
-                    {{ cantOrdenesRealizadas }}
-                  </div>
-                  <div>Cantidad de ordenes realizadas</div>
-                </q-card>
-              </div>
-              <div v-if="cantOrdenesPagadas >= 0" class="col-6 col-md-6">
-                <q-card class="rounded-card q-pa-md text-center full-height">
-                  <div class="text-h3 text-primary q-mb-md">
-                    {{ cantOrdenesPagadas }}
-                  </div>
-                  <div>Cantidad de ordenes pagadas</div>
-                </q-card>
-              </div>
-              <div v-if="cantOrdenesAnuladas >= 0" class="col-6 col-md-6">
+              <div v-if="cantEgresosAnulados > 0" class="col-6 col-md-4">
                 <q-card
                   class="rounded-card q-pa-md text-center full-height bg-negative text-white"
                 >
                   <div class="text-h3 q-mb-md">
-                    {{ cantOrdenesAnuladas }}
+                    {{ cantEgresosAnulados }}
                   </div>
-                  <div>Cantidad de ordenes anuladas</div>
+                  <div>Cantidad de Egresos anulados</div>
                 </q-card>
               </div>
             </div>
@@ -481,12 +458,12 @@
     </q-card>
     <q-card
       class="q-mb-md rounded no-border custom-shadow"
-      v-if="dashboard.tipo == 'PROVEEDOR'"
+      v-if="dashboard.tipo == EGRESO"
     >
       <div
         class="row text-bold text-primary q-pa-md rounded items-center q-mb-md"
       >
-        Gráficos estadísticos de Órdenes de Compras por Proveedor
+        Gráficos estadísticos de Egresos de Bodega
       </div>
       <q-tab-panels
         v-model="tabs"
@@ -558,13 +535,13 @@
           <div class="row q-col-gutter-sm q-py-md q-mb-lg">
             <div class="col-12">
               <essential-table
-                v-if="ordenesPorEstado.length"
-                :titulo="'Ordenes de Compra ' + labelTabla"
+                v-if="registrosFiltrados.length"
+                :titulo="dashboard.tipo + 'S - ' + labelTabla"
                 :configuracionColumnas="[
                   ...configuracionColumnas,
                   accionesTabla,
                 ]"
-                :datos="ordenesPorEstado"
+                :datos="registrosFiltrados"
                 :permitirConsultar="false"
                 :permitirEliminar="false"
                 :permitirEditar="false"
@@ -579,10 +556,10 @@
       ></q-tab-panels>
     </q-card>
   </q-page>
-  <!-- <modales-entidad
+  <modales-entidad
     :comportamiento="modales"
     :persistente="false"
-  ></modales-entidad> -->
+  ></modales-entidad>
 </template>
 
-<script src="./DashboardBodega.ts"/>
+<script src="./DashboardBodega.ts" />

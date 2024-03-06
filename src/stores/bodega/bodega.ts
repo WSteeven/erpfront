@@ -25,7 +25,7 @@ export const useBodegaStore = defineStore('bodega', () => {
             const axios = AxiosHttpRepository.getInstance()
             const url = apiConfig.URL_BASE + '/' + axios.getEndpoint(endpoints.dashboard_bodega)
             const response: AxiosResponse = await axios.post(url, data)
-            console.log(response.data.results)
+            // console.log(response.data.results)
             return response.data.results
         } catch (error) {
             notificarError('Error al consultar el dashboard ' + error)

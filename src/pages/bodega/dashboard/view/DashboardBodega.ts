@@ -23,16 +23,16 @@ import useVuelidate from "@vuelidate/core";
 import { CustomActionTable } from "components/tables/domain/CustomActionTable";
 import { useBodegaStore } from "stores/bodega/bodega";
 import { optionsPie } from "config/graficoGenerico";
-import { accionesTabla } from "config/utils";
-import { configuracionColumnasOrdenesCompras } from "pages/comprasProveedores/ordenCompra/domain/configuracionColumnasOrdenCompra";
+import { accionesTabla, estadosTransacciones, maskFecha } from "config/utils";
+import { filtroIngresos } from "../application/FiltrosIngresosDashboard";
+import { configuracionColumnasTransacciones } from "../domain/configuracionColumnasTransacciones";
+import { ComportamientoModalesBodega } from "../application/ComportamientoModalesBodega";
+import { useTransaccionEgresoStore } from "stores/transaccionEgreso";
 
 
 export default defineComponent({
     components: { ModalesEntidad, GraficoGenerico, TableView, EssentialTable },
     setup(props) {
-        /***********
-            * Stores
-            ***********/
 
         const mixin = new ContenedorSimpleMixin(Inventario, new InventarioController())
         const { entidad: orden, listado, listadosAuxiliares } = mixin.useReferencias()
@@ -45,12 +45,19 @@ export default defineComponent({
             empleado: '',
             tipo: '',
         })
+        /***********
+            * Stores
+            ***********/
         const store = useAuthenticationStore()
         const bodegaStore = useBodegaStore()
+        const transaccionStore = useTransaccionEgresoStore()
         const cargando = new StatusEssentialLoading()
         const mostrarTitulosSeccion = computed(() => dashboard.fecha_inicio && dashboard.fecha_fin)
-        // const modales = new ComportamientoModalesOrdenesCompras()
-        const cantOrdenesSinProveedor = ref()
+        const modales = new ComportamientoModalesBodega()
+        const cantEgresosPendientes = ref(0)
+        const cantEgresosParciales = ref(0)
+        const cantEgresosCompletos = ref(0)
+        const cantEgresosAnulados = ref(0)
         const cantOrdenesProveedor = ref()
         const cantOrdenesCreadas = ref()
         const cantOrdenesPendientes = ref()
@@ -74,16 +81,20 @@ export default defineComponent({
             listado: 'listado'
         }
         const identificadorGrafico = {
-            creadas: 'CREADAS',
-            aprobadas: 'APROBADAS',
+            ingresos: 'INGRESO',
+            devoluciones: 'DEVOLUCION',
             //graficos de proveedores
-            proveedores: 'PROVEEDORES',
+            egresos: 'EGRESO',
+            pedidos: 'PEDIDO',
+            inventario: INVENTARIO,
         }
         const tabs = ref(opcionesGrafico.grafico)
 
         const graficos = ref()
         const registros = ref()
+        const registrosFiltrados = ref()
         const labelTabla = ref()
+        const modoUnaColumna = ref(false)
 
         const { empleados, filtrarEmpleados, proveedores, filtrarProveedores } = useFiltrosListadosSelects(listadosAuxiliares)
         cargarVista(async () => {
@@ -91,7 +102,7 @@ export default defineComponent({
 
             })
             dashboard.empleado = store.user.id
-            dashboard.fecha_fin = obtenerFechaActual()
+            dashboard.fecha_fin = obtenerFechaActual('YYYY-MM-DD')
             empleados.value = listadosAuxiliares.empleados
             proveedores.value = listadosAuxiliares.proveedores
         })
@@ -113,27 +124,15 @@ export default defineComponent({
             titulo: '',
             icono: 'bi-eye',
             accion: async ({ entidad }) => {
-                console.log(entidad)
-                // ordenCompraStore.orden = entidad
-                // modales.abrirModalEntidad('VisualizarOrdenCompra')
+                if (dashboard.tipo == INGRESO || dashboard.tipo == EGRESO) {
+                    transaccionStore.idTransaccion = entidad.id
+                    await transaccionStore.showPreview()
+                    if (dashboard.tipo == INGRESO) modales.abrirModalEntidad('VisualizarIngresoPage')
+                    if (dashboard.tipo == EGRESO) modales.abrirModalEntidad('VisualizarEgresoPage')
+                }
             },
         }
-        const btnVerNovedades: CustomActionTable = {
-            titulo: 'Novedades',
-            color: 'warning',
-            icono: 'bi-wrench',
-            accion: async ({ entidad, posicion }) => {
-                console.log(entidad)
-                // ordenCompraStore.idOrden = entidad.id
-                // confirmar('¿Está seguro de abrir el formulario de registro de novedades de la orden de compra?', () => {
-                //     ordenCompraStore.permitirSubir = false
-                //     modales.abrirModalEntidad('SeguimientoNovedadesOrdenesCompras')
-                // })
-            },
-            visible: ({ entidad }) => {
-                return entidad.novedades > 0
-            }
-        }
+
 
         /***************
          * Funciones
@@ -142,20 +141,17 @@ export default defineComponent({
             if (await v$.value.$validate()) {
                 try {
                     if (dashboard.tipo == INVENTARIO) await obtenerDetalles()
-                    // obtenerProveedores();
                     const results = await bodegaStore.consultarDashboard(dashboard)
-                    console.log(results)
-                    cantOrdenesCreadas.value = results.cant_ordenes_creadas
-                    cantOrdenesPendientes.value = results.cant_ordenes_pendientes
-                    cantOrdenesAprobadas.value = results.cant_ordenes_aprobadas
-                    cantOrdenesRevisadas.value = results.cant_ordenes_revisadas
-                    cantOrdenesRealizadas.value = results.cant_ordenes_realizadas
-                    cantOrdenesPagadas.value = results.cant_ordenes_pagadas
-                    cantOrdenesAnuladas.value = results.cant_ordenes_anuladas
-                    cantOrdenesSinProveedor.value = results.cant_ordenes_sin_proveedor
-                    cantOrdenesProveedor.value = results.cant_ordenes_proveedores
                     registros.value = results.todas
                     graficos.value = results.graficos
+
+                    modoUnaColumna.value = graficos.value.length > 1 ? false : true
+                    if (dashboard.tipo == EGRESO) {
+                        cantEgresosPendientes.value = registros.value.filter((registro) => registro.estado == estadosTransacciones.pendiente).length
+                        cantEgresosParciales.value = registros.value.filter((registro) => registro.estado == estadosTransacciones.parcial).length
+                        cantEgresosCompletos.value = registros.value.filter((registro) => registro.estado == estadosTransacciones.completa).length
+                        cantEgresosAnulados.value = registros.value.filter((registro) => registro.estado == estadosTransacciones.no_realizada).length
+                    }
                 } catch (error) {
                     console.log(error)
                 }
@@ -164,19 +160,16 @@ export default defineComponent({
         function clickGrafico(data: any, key: string) {
             labelTabla.value = data.label
             console.log('Diste clic en grafico', data, key)
-            // console.log('Ordenes para filtrar', ordenes.value)
-            switch (key) {
-                // case identificadorGrafico.creadas:
-                //     ordenesPorEstado.value = filtroOrdenesComprasCreadas(data.label, ordenes)
-                //     break
-                // case identificadorGrafico.aprobadas:
-                //     ordenesPorEstado.value = filtroOrdenesComprasAprobadas(data.label, ordenes)
-                //     break
-                // case identificadorGrafico.proveedores:
-                //     ordenesPorEstado.value = filtroOrdenesComprasProveedores(data.label, ordenes)
-                //     break
+            switch (dashboard.tipo) {
+                case INGRESO:
+                    const grafico = graficos.value.filter((grafico) => grafico.identificador === key)[0]
+                    registrosFiltrados.value = filtroIngresos(data.label, registros, grafico.labels)
+                    break;
+                case EGRESO:
+                    console.log('Estamos en egreso veamos que sigue')
+                    break;
                 default:
-                    console.log('Entro en default de clic grafico')
+                    console.log('El tipo es: ' + dashboard.tipo)
             }
             tabs.value = opcionesGrafico.listado
         }
@@ -191,42 +184,28 @@ export default defineComponent({
             } else { dashboard.detalle = '' }
             cargando.desactivar()
         }
-        // async function obtenerProveedores(limpiarProveedor = false) {
-        //     cargando.activar()
-        //     if (limpiarProveedor) dashboard.proveedor = ''
-        //     if (dashboard.tipo == PROVEEDOR) {
-        //         const response = await new ProveedoresOrdenesController().listar({ solicitante_id: dashboard.empleado })
-        //         listadosAuxiliares.proveedores = response.result
-        //         proveedores.value = response.result
-        //     } else { dashboard.proveedor = '' }
-        //     cargando.desactivar()
-        // }
+
 
         return {
-            configuracionColumnas: configuracionColumnasOrdenesCompras, accionesTabla,
+            configuracionColumnas: configuracionColumnasTransacciones, accionesTabla,
             ordenesPorEstado,
-            v$,
+            v$, maskFecha,
             dashboard,
             optionsPie,
             btnVer,
-            btnVerNovedades,
             consultar,
             clickGrafico,
             registros,
-            cantOrdenesSinProveedor,
-            cantOrdenesProveedor,
-            cantOrdenesCreadas,
-            cantOrdenesPendientes,
-            cantOrdenesAprobadas,
-            cantOrdenesRevisadas,
-            cantOrdenesRealizadas,
-            cantOrdenesPagadas,
-            cantOrdenesAnuladas,
+            registrosFiltrados,
+            cantEgresosPendientes,
+            cantEgresosParciales,
+            cantEgresosCompletos,
+            cantEgresosAnulados,
             opcionesTipos,
             tabs, opcionesGrafico, mostrarTitulosSeccion, identificadorGrafico,
             graficos,
-            modales: ref(),
-            modoUnaColumna: ref(true),
+            modales,
+            modoUnaColumna,
             labelTabla,
             INGRESO, EGRESO, INVENTARIO,
             empleados, filtrarEmpleados,

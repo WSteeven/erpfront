@@ -243,9 +243,9 @@ export function getVisibleColumns<T>(
 }
 
 // 20-04-2022
-export function obtenerFechaActual() {
+export function obtenerFechaActual(formato='DD-MM-YYYY') {
   const timeStamp = Date.now()
-  const formattedString = date.formatDate(timeStamp, 'DD-MM-YYYY')
+  const formattedString = date.formatDate(timeStamp, formato)
   return formattedString
 }
 
