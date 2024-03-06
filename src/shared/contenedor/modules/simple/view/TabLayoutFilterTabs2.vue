@@ -33,7 +33,7 @@
       animated
       transition-prev="scale"
       transition-next="scale"
-      :class="{ 'rounded-tabpanel': !$q.screen.xs }"
+      :class="{ 'bg-desenfoque rounded-tabpanel': !$q.screen.xs }"
       keep-alive
     >
       <!-- Formulario -->

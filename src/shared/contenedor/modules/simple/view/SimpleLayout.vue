@@ -1,5 +1,5 @@
 <template>
-  <q-page :padding="!$q.screen.xs">
+  <div :padding="!$q.screen.xs" class="bg-desenfoque rounded q-pa-md">
     <transition name="scale" mode="out-in">
       <slot name="modales" />
     </transition>
@@ -8,7 +8,7 @@
       <slot name="formulario" />
     </div>
 
-    <div class="row justify-end q-col-gutter-x-xs">
+    <div class="row justify-end q-col-gutter-x-xs q-pt-md">
       <button-submits
         v-if="mostrarButtonSubmits"
         :accion="accion"
@@ -21,7 +21,7 @@
         @guardar="guardar(entidad)"
       />
     </div>
-  </q-page>
+  </div>
 </template>
 
 <script src="./SimpleLayout.ts"></script>

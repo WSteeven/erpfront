@@ -105,6 +105,7 @@ export default defineComponent({
       btnConsultarEstadoSolicitudExamen,
       // Other functions
       seleccionarExamen,
+      limpiarExamenesSolicitados,
     } = useBotonesSolicitudExamen(tabEstadoExamen, modales)
 
     const btnEsquemaVacunacion: CustomActionTable<Examen> = {
@@ -152,16 +153,14 @@ export default defineComponent({
       const { detalle_resultado_examen, idExamenesSolicitados } = data
 
       switch (page) {
-        case 'SolicitudExamenPage':
-          // const solicitados: number[] = idExamenesSolicitados
-          console.log(idExamenesSolicitados)
+        case 'SolicitudExamenSolicitarPage':
           // Quitar examenes solicitados
           idExamenesSolicitados.forEach((id: number) => {
-            index = examenes.value.findIndex((examen: Examen) => examen.id === id) // detalle_resultado_examen)
-            // examen = examenes.value[index]
+            index = examenes.value.findIndex((examen: Examen) => examen.id === id)
             examenes.value.splice(index, 1)
-            console.log(index)
           })
+
+          limpiarExamenesSolicitados()
           break
         default:
           index = examenes.value.findIndex((examen) => examen.id === medicoStore.examenSolicitado?.id)
@@ -208,7 +207,7 @@ export default defineComponent({
       if (idRegistro) seleccionarRegistro(idRegistro)
     })
 
-    const btnSolicitarExamenesSeleccionados2: CustomActionTable = {
+    /*const btnSolicitarExamenesSeleccionados2: CustomActionTable = {
       titulo: '22222',
       icono: 'bi-plus',
       color: 'positive',
@@ -219,19 +218,19 @@ export default defineComponent({
         refTablaExamenes.value.seleccionar()
         // seleccionarExamen()
       }
-    }
+    }*/
 
-    const refTablaExamenes2 = ref()
-    function selecc() {
+    // const refTablaExamenes2 = ref()
+    /*function selecc() {
       const lista = refTablaExamenes2.value.selected
       console.log(lista)
-    }
+    }*/
 
     const colum = ref(false)
     const columnas: any = ref(configuracionColumnasExamenes)
 
     return {
-      selecc,
+      // selecc,
       mixin,
       empleado,
       tabs,
@@ -279,7 +278,7 @@ export default defineComponent({
       btnConsultarEstadoSolicitudExamen,
       // Other functions
       seleccionarExamen,
-      btnSolicitarExamenesSeleccionados2,
+      // btnSolicitarExamenesSeleccionados2,
       btnEsquemaVacunacion,
       columnas,
     }

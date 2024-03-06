@@ -21,7 +21,7 @@ import { EmpleadoController } from 'pages/recursosHumanos/empleados/infraestruct
 import { EmpleadoRoleController } from 'pages/recursosHumanos/empleados/infraestructure/EmpleadoRolesController'
 import { EmpleadoPermisoController } from 'pages/recursosHumanos/empleados/infraestructure/EmpleadoPermisosController'
 import { useAuthenticationStore } from 'stores/authentication'
-import { selectAprobarEstadosSolicitudesExamenes } from 'config/utils/medico'
+import { estadosSolicitudesExamenes, selectAprobarEstadosSolicitudesExamenes } from 'config/utils/medico'
 
 export default defineComponent({
   components: {
@@ -141,21 +141,27 @@ export default defineComponent({
      * Hooks
      ********/
     onBeforeGuardar(() => {
+      console.log('on before guardar...')
       solicitudExamen.examenes_solicitados = solicitudExamen.examenes_solicitados.map((examenSolicitado: ExamenSolicitado) => {
-        const examenSolicitadoAux = new ExamenSolicitado()
-        examenSolicitadoAux.hydrate(examenSolicitado)
+        // const examenSolicitadoAux = new ExamenSolicitado()
+        // examenSolicitadoAux.hydrate(examenSolicitado)
         examenSolicitado.fecha_hora_asistencia = `${examenSolicitado.fecha_asistencia} ${examenSolicitado.hora_asistencia}`
-        return examenSolicitadoAux
+        console.log(examenSolicitado)
+        // console.log(examenSolicitadoAux)
+        return examenSolicitado
       })
 
-      idExamenesSolicitados = solicitudExamen.examenes_solicitados.map((ex: ExamenSolicitado) => ex.examen as number)
+      console.log(solicitudExamen.examenes_solicitados)
+      solicitudExamen.canton = empleado.canton
+
+      // idExamenesSolicitados = solicitudExamen.examenes_solicitados.map((ex: ExamenSolicitado) => ex.examen as number)
     })
 
-    onGuardado((id: number, responseData) => {
+    /* onGuardado((id: number, responseData) => {
       const modelo = responseData.modelo
       emit('guardado', { data: { idExamenesSolicitados }, page: 'SolicitudExamenPage' })
       emit('cerrar-modal')
-    })
+    }) */
 
     /*******
      * Init
@@ -172,6 +178,7 @@ export default defineComponent({
       selectAprobarEstadosSolicitudesExamenes,
       mostrarCambiarCanton,
       acciones,
+      estadosSolicitudesExamenes,
       // canton,iiiiiii
       cantones,
       filtrarCantones,

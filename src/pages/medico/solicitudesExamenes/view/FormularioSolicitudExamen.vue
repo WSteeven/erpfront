@@ -1,17 +1,14 @@
 <template>
   <div>
-    <detalle-paciente
-      v-if="empleado.id"
-      :empleado="empleado"
-    ></detalle-paciente>
+    <div class="q-mb-md">
+      <detalle-paciente
+        v-if="empleado.id"
+        :empleado="empleado"
+      ></detalle-paciente>
+    </div>
 
-    <br />
-
-    <div class="bg-desenfoque rounded q-pt-md">
-      <!-- <q-separator></q-separator> -->
-      <div
-        class="col-12 text-primary bg-background-header-grey q-px-md q-py-sm q-mb-md"
-      >
+    <div class="bg-desenfoque rounded q-pt-md q-mb-md">
+      <div class="col-12 text-primary text-bold q-px-md q-mb-md">
         <q-icon name="bi-list"></q-icon>
         Listado de exámenes solicitados
       </div>
@@ -68,7 +65,7 @@
         class="row q-col-gutter-sm q-mb-md q-px-md"
       >
         <div class="col-12 col-md-3">
-          <label class="q-mb-sm block">Exámen a solicitar </label>
+          <label class="q-mb-md block">Exámen a solicitar </label>
           <q-select
             v-model="examenSolicitado.examen"
             :options="listadosAuxiliares.examenes"
@@ -88,13 +85,13 @@
           </q-select>
         </div>
         <div class="col-12 col-md-3">
-          <label class="q-mb-sm block"
+          <label class="q-mb-md block"
             >Laboratorio clínico
-            <q-icon v-if="index === 0" name="info" color="grey" class="q-mr-sm">
+            <!-- <q-icon v-if="index === 0" name="info" color="grey" class="q-mr-sm">
               <q-tooltip class="bg-dark">{{
                 'Se autocompletarán los demás laboratorios con el seleccionado aquí'
               }}</q-tooltip></q-icon
-            >
+            > -->
             <q-btn
               v-if="index === 0 && accion === acciones.nuevo"
               class="bg-body q-px-sm text-primary q-py-none"
@@ -113,6 +110,11 @@
             v-model="examenSolicitado.laboratorio_clinico"
             :options="listadosAuxiliares.laboratoriosClinicos"
             :disable="disabled || esAutorizador"
+            :hint="
+              index === 0
+                ? 'Se autocompletarán los demás laboratorios con el seleccionado aquí'
+                : null
+            "
             transition-show="scale"
             transition-hide="scale"
             options-dense
@@ -132,7 +134,7 @@
         </div>
 
         <div class="col-12 col-md-3">
-          <label class="q-mb-sm block"
+          <label class="q-mb-md block"
             >Fecha de asistencia
             <q-icon v-if="index === 0" name="info" color="grey">
               <q-tooltip class="bg-dark">{{
@@ -178,7 +180,7 @@
         </div>
 
         <div class="col-12 col-md-3">
-          <label class="q-mb-sm block"
+          <label class="q-mb-md block"
             >Hora de asistencia
             <q-icon v-if="index === 0" name="info" color="grey">
               <q-tooltip class="bg-dark">{{
@@ -214,19 +216,17 @@
           ></q-input>
         </div>
       </div>
+    </div>
 
-      <q-separator></q-separator>
-      <div
-        class="col-12 text-primary bg-background-header-grey q-px-md q-py-sm q-mb-md"
-      >
+    <div class="bg-desenfoque rounded q-pt-md">
+      <div class="col-12 text-primary text-bold q-px-md q-mb-md">
         <q-icon name="bi-key"></q-icon>
         Autorización
       </div>
 
       <div class="row q-col-gutter-sm q-px-md">
-        <div class="col-12 col-md-3">
+        <div class="col-12 col-md-3 q-mb-md">
           <label class="q-mb-sm block">Autorizador</label>
-
           <q-select
             v-model="solicitudExamen.autorizador"
             :options="listadosAuxiliares.autorizadores"
@@ -281,7 +281,13 @@
           </q-select>
         </div>
 
-        <div class="col-12 q-mb-md">
+        <div
+          v-if="
+            solicitudExamen.estado_solicitud_examen ===
+            estadosSolicitudesExamenes.SOLICITADO
+          "
+          class="col-12 q-mb-md"
+        >
           <label class="q-mb-sm block">Observación del autorizador</label>
           <q-input
             v-model="solicitudExamen.observacion_autorizador"

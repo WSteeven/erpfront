@@ -1,5 +1,5 @@
 <template>
-  <div class="row bg-desenfoque q-mx-xs q-pa-md rounded">
+  <div class="row bg-desenfoque q-pa-md rounded">
     <div class="col-12 col-md-2 text-center">
       <q-img :src="empleado.foto_url ?? ''" width="60%"></q-img>
     </div>

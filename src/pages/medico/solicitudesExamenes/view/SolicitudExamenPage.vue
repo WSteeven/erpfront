@@ -9,10 +9,12 @@
     :forzarListar="true"
   >
     <template #formulario>
-      <formulario-solicitud-examen
-        :mixin="mixin"
-        :empleado="empleado"
-      ></formulario-solicitud-examen>
+      <div class="q-pa-md">
+        <formulario-solicitud-examen
+          :mixin="mixin"
+          :empleado="empleado"
+        ></formulario-solicitud-examen>
+      </div>
     </template>
   </tab-layout-tabs>
 </template>

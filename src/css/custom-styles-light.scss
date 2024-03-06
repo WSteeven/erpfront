@@ -62,13 +62,14 @@
   }
 
   .tab-active {
-    background-color: #fff;
+    background-color: rgba($grey-2, 0.6);
     border-radius: 16px 4px 0 0;
     box-shadow: rgba(0, 0, 0, 0.12) 0px 5px 15px;
+    color: $primary;
   }
 
   .tab-inactive {
-    background-color: $grey-4;
+    background-color: $grey-5;
     border-radius: 16px 4px 0 0;
     box-shadow: rgba(0, 0, 0, 0.12) 0px 5px 15px;
   }

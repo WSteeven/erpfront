@@ -14,7 +14,7 @@ export class Empleado extends EntidadAuditable {
   correo_personal: string | null
   password: string | null
   usuario: string | null
-  canton: string | null
+  canton: number | null
   nombre_canton: string | null
   estado: boolean | null
   cargo: number | null

@@ -68,7 +68,10 @@ export function useBotonesSolicitudExamen(tabEstadoExamen: Ref, modales: Comport
     icono: 'bi-x',
     color: 'negative',
     visible: () => seleccionVariosExamen.value && tabEstadoExamen.value === estadosSolicitudesExamenes.PENDIENTE_SOLICITAR.value,
-    accion: async () => seleccionVariosExamen.value = false
+    accion: async () => {
+      seleccionVariosExamen.value = false
+      limpiarExamenesSolicitados()
+    }
   }
 
   const btnNuevoDiagnostico: CustomActionTable<DetalleExamen> = {
@@ -151,6 +154,12 @@ export function useBotonesSolicitudExamen(tabEstadoExamen: Ref, modales: Comport
     examenesSeleccionados.value = examenes
   }
 
+  const limpiarExamenesSolicitados = () => {
+    console.log('limpiando examenes...')
+    examenesSeleccionados.value = []
+    refTablaExamenes.value.clearSelection()
+  }
+
   const mapearExamenesSolicitados = (examenesSolicitados: ExamenSolicitado[]): ExamenSolicitado[] => {
     return examenesSolicitados.map((examenSolicitado: ExamenSolicitado) => {
       const examen = new ExamenSolicitado()
@@ -179,5 +188,6 @@ export function useBotonesSolicitudExamen(tabEstadoExamen: Ref, modales: Comport
     btnConsultarEstadoSolicitudExamen,
     // Other functions
     seleccionarExamen,
+    limpiarExamenesSolicitados,
   }
 }

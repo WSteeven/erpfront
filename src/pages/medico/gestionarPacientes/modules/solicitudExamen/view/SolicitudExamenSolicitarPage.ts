@@ -113,21 +113,21 @@ export default defineComponent({
     /********
      * Hooks
      ********/
-    onBeforeGuardar(() => {
+    /*onBeforeGuardar(() => {
       solicitudExamen.examenes_solicitados = solicitudExamen.examenes_solicitados.map((examenSolicitado: ExamenSolicitado) => {
-        const examenSolicitadoAux = new ExamenSolicitado()
-        examenSolicitadoAux.hydrate(examenSolicitado)
+        // const examenSolicitadoAux = new ExamenSolicitado()
+        // examenSolicitadoAux.hydrate(examenSolicitado)
         examenSolicitado.fecha_hora_asistencia = `${examenSolicitado.fecha_asistencia} ${examenSolicitado.hora_asistencia}`
-        return examenSolicitadoAux
+        return examenSolicitado //Aux
       })
       solicitudExamen.canton = canton.value
 
       idExamenesSolicitados = solicitudExamen.examenes_solicitados.map((ex: ExamenSolicitado) => ex.examen as number)
-    })
+    })*/
 
     onGuardado((id: number, responseData) => {
-      // const modelo = responseData.modelo
-      emit('guardado', { data: { idExamenesSolicitados }, page: 'SolicitudExamenPage' })
+      const idExamenesSolicitados = responseData.modelo.examenes_solicitados.map((ex: ExamenSolicitado) => ex.examen as number)
+      emit('guardado', { data: { idExamenesSolicitados }, page: 'SolicitudExamenSolicitarPage' })
       emit('cerrar-modal')
     })
 

@@ -438,6 +438,10 @@ export default defineComponent({
       emit('fila-modificada', fila)
     }
 
+    function clearSelection() {
+      // props.referencia.value.clearSelection()
+    }
+
     return {
       refEditarModal,
       refTableFilters,
@@ -486,6 +490,7 @@ export default defineComponent({
       toggleFiltros,
       extraerColor,
       guardarCeldaEditada,
+      clearSelection,
     }
   },
 })

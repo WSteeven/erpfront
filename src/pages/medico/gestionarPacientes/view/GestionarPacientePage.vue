@@ -149,14 +149,21 @@
                     dense
                   >
                     <q-tab
-                      :name="estadosSolicitudesExamenes.PENDIENTE_SOLICITAR.value"
-                      :label="estadosSolicitudesExamenes.PENDIENTE_SOLICITAR.label"
+                      :name="
+                        estadosSolicitudesExamenes.PENDIENTE_SOLICITAR.value
+                      "
+                      :label="
+                        estadosSolicitudesExamenes.PENDIENTE_SOLICITAR.label
+                      "
                       :class="{
                         'tab-inactive':
-                          tabs !== estadosSolicitudesExamenes.PENDIENTE_SOLICITAR.value,
+                          tabs !==
+                          estadosSolicitudesExamenes.PENDIENTE_SOLICITAR.value,
                       }"
                       no-caps
-                      :icon="estadosSolicitudesExamenes.PENDIENTE_SOLICITAR.icono"
+                      :icon="
+                        estadosSolicitudesExamenes.PENDIENTE_SOLICITAR.icono
+                      "
                     />
                     <q-tab
                       :name="estadosSolicitudesExamenes.SOLICITADO.value"
@@ -169,15 +176,22 @@
                       :icon="estadosSolicitudesExamenes.SOLICITADO.icono"
                     />
                     <q-tab
-                      :name="estadosSolicitudesExamenes.APROBADO_POR_COMPRAS.value"
-                      :label="estadosSolicitudesExamenes.APROBADO_POR_COMPRAS.label"
+                      :name="
+                        estadosSolicitudesExamenes.APROBADO_POR_COMPRAS.value
+                      "
+                      :label="
+                        estadosSolicitudesExamenes.APROBADO_POR_COMPRAS.label
+                      "
                       :class="{
                         'tab-inactive':
-                          tabs !== estadosSolicitudesExamenes.APROBADO_POR_COMPRAS.value,
+                          tabs !==
+                          estadosSolicitudesExamenes.APROBADO_POR_COMPRAS.value,
                       }"
                       class="q-pt-sm"
                       no-caps
-                      :icon="estadosSolicitudesExamenes.APROBADO_POR_COMPRAS.icono"
+                      :icon="
+                        estadosSolicitudesExamenes.APROBADO_POR_COMPRAS.icono
+                      "
                     />
                     <q-tab
                       :name="estadosSolicitudesExamenes.RESULTADOS.value"
@@ -200,13 +214,13 @@
                     helpalive
                   >
                     <q-tab-panel
-                      :name="estadosSolicitudesExamenes.PENDIENTE_SOLICITAR.value"
+                      :name="
+                        estadosSolicitudesExamenes.PENDIENTE_SOLICITAR.value
+                      "
                       class="q-pa-none"
                     >
-                      <!-- :tab-options="tabOptionsEstadosExamenes"
-                      @tab-seleccionado="filtrarEstadoExamen"
-                      :tab-defecto="tabEstadoExamen" -->
                       <essential-table
+                        ref="refTablaExamenes"
                         titulo="Examenes comúnes"
                         :configuracionColumnas="[
                           ...configuracionColumnasExamenes,
