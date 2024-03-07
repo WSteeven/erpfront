@@ -81,7 +81,6 @@
               class="q-mt-lg q-pt-md"
               v-model="transaccion.tiene_pedido"
               label="¿Hay pedido?"
-
               outlined
               disable
               dense
@@ -194,7 +193,13 @@
             class="col-12 col-md-3"
           >
             <label class="q-mb-sm block">Tarea</label>
-            <q-input v-model="transaccion.tarea" dense outlined disable autogrow />
+            <q-input
+              v-model="transaccion.tarea"
+              dense
+              outlined
+              disable
+              autogrow
+            />
           </div>
           <!-- Responsable -->
           <div class="col-12 col-md-3">
@@ -236,13 +241,20 @@
             <label class="q-mb-sm block">Cliente</label>
             <q-input v-model="transaccion.cliente" disable outlined dense />
           </div>
+          <!-- Comentario de aprobacion del comprobante -->
+          <div class="col-12 col-md-3" v-if="transaccion.estado_comprobante">
+            <label class="q-mb-sm block">Comentario de Aceptación</label>
+            <q-input v-model="transaccion.estado_comprobante" disable outlined dense />
+          </div>
 
           <!-- {{ transaccion }} -->
           <!-- Tabla -->
           <div v-if="!transaccion.modificar_recepcion" class="col-12">
             <essential-table
               titulo="Productos Seleccionados"
-              :configuracionColumnas="configuracionColumnasProductosSeleccionadosEgreso"
+              :configuracionColumnas="
+                configuracionColumnasProductosSeleccionadosEgreso
+              "
               :datos="transaccion.listadoProductosTransaccion"
               :permitirConsultar="false"
               :permitirEditar="false"
@@ -253,10 +265,18 @@
               :altoFijo="false"
             ></essential-table>
           </div>
-          <div v-if="transaccion.modificar_recepcion && transaccion.estado_comprobante === 'PENDIENTE'" class="col-12">
+          <div
+            v-if="
+              transaccion.modificar_recepcion &&
+              transaccion.estado_comprobante === 'PENDIENTE'
+            "
+            class="col-12"
+          >
             <essential-table
               titulo="Productos Seleccionados"
-              :configuracionColumnas="configuracionColumnasProductosSeleccionadosDespachadoParciales"
+              :configuracionColumnas="
+                configuracionColumnasProductosSeleccionadosDespachadoParciales
+              "
               :datos="transaccion.listadoProductosTransaccion"
               :permitirConsultar="false"
               :permitirEditar="false"
@@ -269,10 +289,18 @@
               :accion2="btnEliminarFila"
             ></essential-table>
           </div>
-          <div v-if="transaccion.modificar_recepcion && transaccion.estado_comprobante === 'PARCIAL'" class="col-12">
+          <div
+            v-if="
+              transaccion.modificar_recepcion &&
+              transaccion.estado_comprobante === 'PARCIAL'
+            "
+            class="col-12"
+          >
             <essential-table
               titulo="Productos Seleccionados"
-              :configuracionColumnas="configuracionColumnasProductosSeleccionadosDespachadoParciales"
+              :configuracionColumnas="
+                configuracionColumnasProductosSeleccionadosDespachadoParciales
+              "
               :datos="transaccion.listadoProductosTransaccion"
               :permitirConsultar="false"
               :permitirEditar="false"
@@ -294,15 +322,35 @@
         "
         class="q-pa-md q-gutter-sm flex flex-center"
       >
-        <q-btn color="warning" @click="permitirModificarCantidades()" no-caps glossy push>
-          <q-icon name="bi-pencil" size="xs" class="q-mr-sm"> </q-icon>
-          Modificar Recepción </q-btn
+        <q-btn
+          color="warning"
+          @click="permitirModificarCantidades()"
+          no-caps
+          glossy
+          push
         >
-        <q-btn v-if="transaccion.modificar_recepcion" color="positive" @click="aprobarEgresoParcial()" no-caps glossy push>
+          <q-icon name="bi-pencil" size="xs" class="q-mr-sm"> </q-icon>
+          Modificar Recepción
+        </q-btn>
+        <q-btn
+          v-if="transaccion.modificar_recepcion"
+          color="positive"
+          @click="aprobarEgresoParcial()"
+          no-caps
+          glossy
+          push
+        >
           <q-icon name="bi-check-circle" size="xs" class="q-mr-sm"> </q-icon>
           Aprobar Recepción Parcial</q-btn
         >
-        <q-btn v-if="!transaccion.modificar_recepcion" color="positive" @click="aprobarEgreso()" no-caps glossy push>
+        <q-btn
+          v-if="!transaccion.modificar_recepcion"
+          color="positive"
+          @click="aprobarEgreso()"
+          no-caps
+          glossy
+          push
+        >
           <q-icon name="bi-check-circle" size="xs" class="q-mr-sm"> </q-icon>
           Aprobar y Firmar</q-btn
         >
@@ -314,15 +362,35 @@
         "
         class="q-pa-md q-gutter-sm flex flex-center"
       >
-        <q-btn color="warning" @click="permitirModificarCantidades()" no-caps glossy push>
-          <q-icon name="bi-pencil" size="xs" class="q-mr-sm"> </q-icon>
-          Modificar Recepción </q-btn
+        <q-btn
+          color="warning"
+          @click="permitirModificarCantidades()"
+          no-caps
+          glossy
+          push
         >
-        <q-btn v-if="transaccion.modificar_recepcion" color="positive" @click="aprobarEgresoParcial()" no-caps glossy push>
+          <q-icon name="bi-pencil" size="xs" class="q-mr-sm"> </q-icon>
+          Modificar Recepción
+        </q-btn>
+        <q-btn
+          v-if="transaccion.modificar_recepcion"
+          color="positive"
+          @click="aprobarEgresoParcial()"
+          no-caps
+          glossy
+          push
+        >
           <q-icon name="bi-check-circle" size="xs" class="q-mr-sm"> </q-icon>
           Aprobar Recepción Parcial</q-btn
         >
-        <q-btn v-if="!transaccion.modificar_recepcion" color="positive" @click="aprobarEgreso()" no-caps glossy push>
+        <q-btn
+          v-if="!transaccion.modificar_recepcion"
+          color="positive"
+          @click="aprobarEgreso()"
+          no-caps
+          glossy
+          push
+        >
           <q-icon name="bi-check-circle" size="xs" class="q-mr-sm"> </q-icon>
           Aprobar y Firmar</q-btn
         >

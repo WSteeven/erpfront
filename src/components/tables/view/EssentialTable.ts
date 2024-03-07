@@ -252,6 +252,7 @@ export default defineComponent({
     const filter = ref()
     const selected = ref([])
     const visibleColumns = ref(getVisibleColumns(props.configuracionColumnas))
+    const refTable = ref()
 
     // Observers
     const seleccionar = () => {
@@ -418,7 +419,12 @@ export default defineComponent({
       return `"${formatted}"`
     }
 
+    function clearSelection() {
+      refTable.value.clearSelection()
+    }
+
     return {
+      refTable,
       refEditarModal,
       refTableFilters,
       resetearFiltros,
@@ -464,6 +470,7 @@ export default defineComponent({
       abrirModalEditar,
       exportTable,
       toggleFiltros,
+      clearSelection,
     }
   },
 })
