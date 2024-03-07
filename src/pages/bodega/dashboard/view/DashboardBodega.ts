@@ -28,6 +28,8 @@ import { filtroEgresos, filtroIngresos } from "../application/FiltrosDashboard";
 import { configuracionColumnasTransacciones } from "../domain/configuracionColumnasTransacciones";
 import { ComportamientoModalesBodega } from "../application/ComportamientoModalesBodega";
 import { useTransaccionEgresoStore } from "stores/transaccionEgreso";
+import { configuracionColumnasDevoluciones } from "pages/bodega/devoluciones/domain/configuracionColumnasDevoluciones";
+import { configuracionColumnasPedidos } from "pages/bodega/pedidos/domain/configuracionColumnasPedidos";
 
 
 export default defineComponent({
@@ -54,20 +56,24 @@ export default defineComponent({
         const cargando = new StatusEssentialLoading()
         const mostrarTitulosSeccion = computed(() => dashboard.fecha_inicio && dashboard.fecha_fin)
         const modales = new ComportamientoModalesBodega()
+        //variables de egresos
         const cantEgresosPendientes = ref(0)
         const cantEgresosParciales = ref(0)
         const cantEgresosCompletos = ref(0)
         const cantEgresosAnulados = ref(0)
-        const cantOrdenesProveedor = ref()
-        const cantOrdenesCreadas = ref()
-        const cantOrdenesPendientes = ref()
-        const cantOrdenesAprobadas = ref()
-        const cantOrdenesRevisadas = ref()
+        //variables de devoluciones
+        const cantDevolucionesPendientes = ref()
+        const cantDevolucionesParciales = ref()
+        const cantDevolucionesAprobadas = ref()
+        const cantDevolucionesCanceladas = ref()
+        const cantDevolucionesCompletas = ref()
         const cantOrdenesRealizadas = ref()
         const cantOrdenesPagadas = ref()
         const cantOrdenesAnuladas = ref()
         const INGRESO = 'INGRESO'
         const EGRESO = 'EGRESO'
+        const DEVOLUCION = 'DEVOLUCION'
+        const PEDIDO = 'PEDIDO'
         const INVENTARIO = 'INVENTARIO'
         const opcionesTipos = [
             { label: 'INGRESOS REALIZADOS', value: 'INGRESO' },
@@ -129,6 +135,8 @@ export default defineComponent({
                     await transaccionStore.showPreview()
                     if (dashboard.tipo == INGRESO) modales.abrirModalEntidad('VisualizarIngresoPage')
                     if (dashboard.tipo == EGRESO) modales.abrirModalEntidad('VisualizarEgresoPage')
+                    if (dashboard.tipo == DEVOLUCION) modales.abrirModalEntidad('VisualizarEgresoPage')
+                    if (dashboard.tipo == PEDIDO) modales.abrirModalEntidad('VisualizarEgresoPage')
                 }
             },
         }
@@ -151,6 +159,13 @@ export default defineComponent({
                         cantEgresosParciales.value = results.parciales
                         cantEgresosCompletos.value = results.completas
                         cantEgresosAnulados.value = results.anuladas
+                    }
+                    if (dashboard.tipo == DEVOLUCION) {
+                        cantDevolucionesPendientes.value = results.pendientes
+                        cantDevolucionesParciales.value = results.parciales
+                        cantDevolucionesAprobadas.value = results.aprobadas
+                        cantDevolucionesCanceladas.value = results.canceladas
+                        cantDevolucionesCompletas.value = results.completas
                     }
                 } catch (error) {
                     console.log(error)
@@ -188,6 +203,8 @@ export default defineComponent({
 
         return {
             configuracionColumnas: configuracionColumnasTransacciones, accionesTabla,
+            configuracionColumnasDevoluciones,
+            configuracionColumnasPedidos,
             ordenesPorEstado,
             v$, maskFecha,
             dashboard,
@@ -197,17 +214,24 @@ export default defineComponent({
             clickGrafico,
             registros,
             registrosFiltrados,
+            //egresos
             cantEgresosPendientes,
             cantEgresosParciales,
             cantEgresosCompletos,
             cantEgresosAnulados,
+            //devoluciones
+            cantDevolucionesPendientes,
+            cantDevolucionesParciales,
+            cantDevolucionesAprobadas,
+            cantDevolucionesCanceladas,
+            cantDevolucionesCompletas,
             opcionesTipos,
             tabs, opcionesGrafico, mostrarTitulosSeccion, identificadorGrafico,
             graficos,
             modales,
             modoUnaColumna,
             labelTabla,
-            INGRESO, EGRESO, INVENTARIO,
+            INGRESO, EGRESO, INVENTARIO, DEVOLUCION, PEDIDO,
             empleados, filtrarEmpleados,
             proveedores, filtrarProveedores,
         }
