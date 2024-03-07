@@ -4,7 +4,7 @@
       ><q-card-section>
         <div class="border-1 text-primary text-bold q-mb-lg">
           <q-icon name="bi-graph-up-arrow" class="q-mr-sm"></q-icon>
-          Análisis de datos: Módulo de Compras
+          Análisis de datos: Módulo de Bodega
         </div>
 
         <div class="row q-col-gutter-sm q-mb-md">
