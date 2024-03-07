@@ -540,3 +540,4 @@ export const tabOptionsTransaccionesEgresos: TabOption[] = [
   { label: 'Completas', value: 'COMPLETA' },
   { label: 'Anuladas', value: 'ANULADA' }
 ]
+

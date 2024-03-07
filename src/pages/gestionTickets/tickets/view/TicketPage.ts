@@ -10,7 +10,7 @@ import { configuracionColumnasTicket } from '../domain/configuracionColumnasTick
 import { accionesTabla, maskFecha } from 'config/utils'
 import { computed, defineComponent, ref, watch } from 'vue'
 import { useCargandoStore } from 'stores/cargando'
-import { required } from 'shared/i18n-validators'
+import { required, minLength } from 'shared/i18n-validators'
 import { useTareaStore } from 'stores/tarea'
 import useVuelidate from '@vuelidate/core'
 import { endpoints } from 'config/api'
@@ -30,6 +30,7 @@ import LabelAbrirModal from 'components/modales/modules/LabelAbrirModal.vue'
 import EstadosSubtareas from 'components/tables/view/EstadosSubtareas.vue'
 import EssentialTable from 'components/tables/view/EssentialTable.vue'
 import ModalesEntidad from 'components/modales/view/ModalEntidad.vue'
+import EssentialEditor from 'components/editores/EssentialEditor.vue'
 import SolicitarImagen from 'shared/prompts/SolicitarImagen.vue'
 import VisorImagen from 'components/VisorImagen.vue'
 
@@ -70,6 +71,7 @@ export default defineComponent({
     VisorImagen,
     ArchivoSeguimiento,
     EstadosSubtareas,
+    EssentialEditor,
   },
   emits: ['cerrar-modal'],
   setup(props, { emit }) {
@@ -150,7 +152,7 @@ export default defineComponent({
     **************/
     const reglas = {
       asunto: { required },
-      descripcion: { required },
+      descripcion: { required, minLength: minLength(ticket.descripcion.length) },
       prioridad: { required },
       responsable: { required },
       departamento_responsable: { required },
@@ -367,6 +369,7 @@ export default defineComponent({
     })
 
     return {
+      toolbar,
       v$,
       ticket,
       accion,
