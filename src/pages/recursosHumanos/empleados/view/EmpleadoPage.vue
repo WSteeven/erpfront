@@ -1030,7 +1030,7 @@
                 placeholder="Obligatorio"
                 :error="!!v$.fecha_ingreso.$errors.length"
                 @blur="v$.fecha_ingreso.$touch"
-                :disable="disabled || soloLectura"
+                :disable="disabled "
                 readonly
                 outlined
                 dense
@@ -1082,7 +1082,7 @@
               <q-input
                 v-model="empleado.fecha_vinculacion"
                 placeholder="Opcional"
-                :disable="disabled || soloLectura"
+                :disable="disabled"
                 readonly
                 outlined
                 dense
@@ -1112,7 +1112,7 @@
               <q-input
                 v-model="empleado.fecha_salida"
                 placeholder="Opcional"
-                :disable="disabled || soloLectura"
+                :disable="disabled"
                 readonly
                 outlined
                 dense

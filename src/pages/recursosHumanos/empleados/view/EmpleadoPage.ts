@@ -56,6 +56,7 @@ import { useCargandoStore } from 'stores/cargando'
 import { AxiosResponse } from 'axios'
 import { useNotificaciones } from 'shared/notificaciones'
 import { useConfiguracionGeneralStore } from 'stores/configuracion_general'
+import { ArchivoController } from 'pages/gestionTrabajos/subtareas/modules/gestorArchivosTrabajos/infraestructure/ArchivoController'
 
 export default defineComponent({
   components: {
@@ -76,7 +77,7 @@ export default defineComponent({
     /***********
      * Mixin
      ************/
-    const mixin = new ContenedorSimpleMixin(Empleado, new EmpleadoController())
+    const mixin = new ContenedorSimpleMixin(Empleado, new EmpleadoController(), new ArchivoController())
     const {
       entidad: empleado,
       disabled,
@@ -215,15 +216,20 @@ export default defineComponent({
      * Hooks
      ********/
 
-    onConsultado(() => (empleado.tiene_grupo = !!empleado.grupo))
+    
     async function guardado(data) {
       empleado.familiares!.push(data.model)
     }
 
     onConsultado(() => {
+      idEmpleado.value = empleado.id
       empleado.tiene_grupo = !!empleado.grupo
       nombre_usuario.value = empleado.usuario
       email_usuario.value = empleado.email
+
+      setTimeout(() => {
+        refArchivo.value.listarArchivosAlmacenados(empleado.id)
+      }, 1);
     })
 
     onGuardado((id: number) => {
@@ -413,7 +419,7 @@ export default defineComponent({
       )
     }
     return {
-      mixin,
+      mixin, mixinFamiliares,
       empleado,
       disabled,
       accion,
@@ -423,6 +429,7 @@ export default defineComponent({
       reestablecer_usuario,
       configuracionColumnas: configuracionColumnasEmpleados,
       columnasFamiliares,
+      idEmpleado,
       isPwd: ref(true),
       listadosAuxiliares,
       //listado
@@ -451,6 +458,8 @@ export default defineComponent({
       btnHabilitarEmpleado,
       btnDesHabilitarEmpleado,
       modales,
+      //funciones
+      subirArchivos,
       obtenerUsername,
       guardado,
       //  FILTROS
