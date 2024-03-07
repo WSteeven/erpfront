@@ -292,7 +292,7 @@
       <div
         class="row text-bold text-primary q-pa-md rounded items-center q-mb-md"
       >
-        Gráficos estadísticos de Ingresos de Bodega
+        Gráficos Estadísticos de Ingresos de Bodega
       </div>
       <q-tab-panels
         v-model="tabs"
@@ -378,7 +378,6 @@
                 :alto-fijo="false"
                 :ajustarCeldas="true"
                 :accion1="btnVer"
-                :accion2="btnVerNovedades"
               ></essential-table>
             </div>
           </div> </q-tab-panel
@@ -412,7 +411,7 @@
                   <div class="text-bold">Cantidad de ordenes creadas</div>
                 </q-card>
               </div>
-              <div v-if="cantEgresosPendientes > 0" class="col-6 col-md-4">
+              <div v-if="cantEgresosPendientes > 0" class="col-6 col-md-3">
                 <q-card class="rounded-card q-pa-md text-center full-height">
                   <div class="text-h3 text-primary q-mb-md">
                     {{ cantEgresosPendientes }}
@@ -422,18 +421,20 @@
                   </div>
                 </q-card>
               </div>
-              <div v-if="cantEgresosParciales > 0" class="col-6 col-md-4">
-                <q-card class="rounded-card q-pa-md text-center full-height">
-                  <div class="text-h3 text-primary q-mb-md">
-                    {{ cantEgresosParciales }}
-                  </div>
-                  <div>
-                    Cantidad de Egresos parcialmente aceptados por el
-                    responsable
-                  </div>
-                </q-card>
+              <div v-if="cantEgresosParciales > 0" class="col-6 col-md-3">
+                <!-- <q-btn flat outline ripple padding="none" @click="() => console.log('Diste clic')"> -->
+                  <q-card class="rounded-card q-pa-md text-center full-height">
+                    <div class="text-h3 text-primary q-mb-md">
+                      {{ cantEgresosParciales }}
+                    </div>
+                    <div>
+                      Cantidad de Egresos parcialmente aceptados por el
+                      responsable
+                    </div>
+                  </q-card>
+                <!-- </q-btn> -->
               </div>
-              <div v-if="cantEgresosCompletos > 0" class="col-6 col-md-4">
+              <div v-if="cantEgresosCompletos > 0" class="col-6 col-md-3">
                 <q-card class="rounded-card q-pa-md text-center full-height">
                   <div class="text-h3 text-primary q-mb-md">
                     {{ cantEgresosCompletos }}
@@ -441,7 +442,7 @@
                   <div>Cantidad de Egresos completos</div>
                 </q-card>
               </div>
-              <div v-if="cantEgresosAnulados > 0" class="col-6 col-md-4">
+              <div v-if="cantEgresosAnulados > 0" class="col-6 col-md-3">
                 <q-card
                   class="rounded-card q-pa-md text-center full-height bg-negative text-white"
                 >
@@ -463,7 +464,7 @@
       <div
         class="row text-bold text-primary q-pa-md rounded items-center q-mb-md"
       >
-        Gráficos estadísticos de Egresos de Bodega
+        Gráficos Estadísticos de Egresos de Bodega
       </div>
       <q-tab-panels
         v-model="tabs"
@@ -549,7 +550,6 @@
                 :alto-fijo="false"
                 :ajustarCeldas="true"
                 :accion1="btnVer"
-                :accion2="btnVerNovedades"
               ></essential-table>
             </div>
           </div> </q-tab-panel

@@ -24,7 +24,7 @@ import { CustomActionTable } from "components/tables/domain/CustomActionTable";
 import { useBodegaStore } from "stores/bodega/bodega";
 import { optionsPie } from "config/graficoGenerico";
 import { accionesTabla, estadosTransacciones, maskFecha } from "config/utils";
-import { filtroIngresos } from "../application/FiltrosIngresosDashboard";
+import { filtroEgresos, filtroIngresos } from "../application/FiltrosDashboard";
 import { configuracionColumnasTransacciones } from "../domain/configuracionColumnasTransacciones";
 import { ComportamientoModalesBodega } from "../application/ComportamientoModalesBodega";
 import { useTransaccionEgresoStore } from "stores/transaccionEgreso";
@@ -147,10 +147,10 @@ export default defineComponent({
 
                     modoUnaColumna.value = graficos.value.length > 1 ? false : true
                     if (dashboard.tipo == EGRESO) {
-                        cantEgresosPendientes.value = registros.value.filter((registro) => registro.estado == estadosTransacciones.pendiente).length
-                        cantEgresosParciales.value = registros.value.filter((registro) => registro.estado == estadosTransacciones.parcial).length
-                        cantEgresosCompletos.value = registros.value.filter((registro) => registro.estado == estadosTransacciones.completa).length
-                        cantEgresosAnulados.value = registros.value.filter((registro) => registro.estado == estadosTransacciones.no_realizada).length
+                        cantEgresosPendientes.value = results.pendientes
+                        cantEgresosParciales.value = results.parciales
+                        cantEgresosCompletos.value = results.completas
+                        cantEgresosAnulados.value = results.anuladas
                     }
                 } catch (error) {
                     console.log(error)
@@ -160,13 +160,13 @@ export default defineComponent({
         function clickGrafico(data: any, key: string) {
             labelTabla.value = data.label
             console.log('Diste clic en grafico', data, key)
+            const grafico = graficos.value.filter((grafico) => grafico.identificador === key)[0]
             switch (dashboard.tipo) {
                 case INGRESO:
-                    const grafico = graficos.value.filter((grafico) => grafico.identificador === key)[0]
                     registrosFiltrados.value = filtroIngresos(data.label, registros, grafico.labels)
                     break;
                 case EGRESO:
-                    console.log('Estamos en egreso veamos que sigue')
+                    registrosFiltrados.value = filtroEgresos(data.label, registros, grafico.labels, key)
                     break;
                 default:
                     console.log('El tipo es: ' + dashboard.tipo)
