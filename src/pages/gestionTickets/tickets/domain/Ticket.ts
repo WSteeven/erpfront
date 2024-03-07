@@ -4,7 +4,7 @@ import { DestinatarioTicket } from './DestinatarioTicket'
 export class Ticket extends EntidadAuditable {
   codigo: string | null
   asunto: string | null
-  descripcion: string | null
+  descripcion: string
   prioridad: string | null
   fecha_hora_limite: string | null
   estado: string | null
@@ -38,7 +38,7 @@ export class Ticket extends EntidadAuditable {
     super()
     this.codigo = null
     this.asunto = null
-    this.descripcion = null
+    this.descripcion = ''
     this.prioridad = null
     this.fecha_hora_limite = null
     this.estado = null
