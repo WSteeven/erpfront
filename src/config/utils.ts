@@ -471,6 +471,7 @@ export const niveles_academicos = [
   { nombre: 'ESTUDIO SECUNDARIO' },
   { nombre: 'TITULO SUPERIOR' },
 ]
+
 export const tipos_sangre = [
   { nombre: 'A +' },
   { nombre: 'B +' },
@@ -483,9 +484,9 @@ export const tipos_sangre = [
   // Puedes agregar aquí más tipos de sangre si es necesario
 ]
 export const tipos_vendedores = [
-  { nombre: 'VENDEDOR', descripcion:'VENDEDOR' },
-  { nombre: 'SUPERVISOR_VENTAS', descripcion:'SUPERVISOR DE VENTAS' },
-  { nombre: 'JEFE_VENTAS', descripcion:'JEFE DE VENTAS' },
+  { nombre: 'VENDEDOR', descripcion: 'VENDEDOR' },
+  { nombre: 'SUPERVISOR_VENTAS', descripcion: 'SUPERVISOR DE VENTAS' },
+  { nombre: 'JEFE_VENTAS', descripcion: 'JEFE DE VENTAS' },
   // Puedes agregar aquí más tipos de vendedor si es necesario
 ]
 export const talla_letras = [
@@ -504,10 +505,10 @@ export const tabOptionsPreingresoMateriales = [
   { label: 'Autorizadas', value: '2' }, //autorizacion APROBADO
   { label: 'Canceladas', value: '3' }  //autorizacion CANCELADO
 ]
-export const formas_pagos =[
-  {label: 'EFECTIVO', value: 'EFECTIVO'},
-  {label: 'TC', value: 'TARJETA DE CREDITO'},
-  {label: 'D. BANCARIO', value: 'DEBITO BANCARIO'},
+export const formas_pagos = [
+  { label: 'EFECTIVO', value: 'EFECTIVO' },
+  { label: 'TC', value: 'TARJETA DE CREDITO' },
+  { label: 'D. BANCARIO', value: 'DEBITO BANCARIO' },
 ]
 export const estados_activaciones = [
   // { label: 'PENDIENTE', value: 'PENDIENTE' },
