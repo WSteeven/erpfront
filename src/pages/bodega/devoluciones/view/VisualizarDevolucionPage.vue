@@ -59,77 +59,41 @@
               dense
             ></q-input>
           </div>
-          <!-- Fecha limite -->
-          <div class="col-12 col-md-3">
-            <label class="q-mb-sm block">Fecha límite</label>
-            <!-- <q-input v-model="devolucion.solicitante" disable outlined dense>
-              </q-input> -->
-            <q-input
-              v-model="devolucion.solicitante"
-              autogrow
-              dense
-              outlined
-              disable
-            >
-            </q-input>
-          </div>
-          <!-- Es para el cliente -->
-          <div class="col-12 col-md-3 q-mb-xl">
-            <q-checkbox
-              class="q-mt-lg q-pt-md"
-              v-model="devolucion.para_cliente"
-              label="¿Es material para el cliente?"
-              disable
-              outlined
-              dense
-            ></q-checkbox>
-          </div>
-          <div v-if="devolucion.para_cliente" class="col-12 col-md-3">
-            <label class="q-mb-sm block">Cliente</label>
-            <q-input v-model="devolucion.cliente" dense outlined />
-          </div>
 
-          <!-- Responsable -->
-          <div v-if="devolucion.responsable" class="col-12 col-md-3">
-            <label class="q-mb-sm block">Responsable</label>
-            <q-input
-              v-model="devolucion.responsable"
-              autogrow
-              disable
-              outlined
-              dense
-            />
-          </div>
-          <!-- Retira otra persona -->
-          <div class="col-12 col-md-3 q-mb-xl">
+          <!-- Es devolucion para stock personal -->
+          <div
+            v-if="devolucion.es_para_stock "
+            class="col-12 col-md-3"
+          >
             <q-checkbox
               class="q-mt-lg q-pt-md"
-              v-model="devolucion.retira_tercero"
-              label="¿Retira otra persona?"
+              v-model="devolucion.es_para_stock"
+              label="¿Es devolución al stock personal?"
               disable
               outlined
               dense
             ></q-checkbox>
           </div>
 
-          <!-- Retira un tercero -->
-          <div v-if="devolucion.per_retira" class="col-12 col-md-3">
+          <!-- Es pedido automatico -->
+          <div
+            v-if="devolucion.pedido_automatico "
+            class="col-12 col-md-3"
+          >
             <q-checkbox
               class="q-mt-lg q-pt-md"
-              v-model="devolucion.retira_tercero"
-              label="¿Retira otra persona?"
+              v-model="devolucion.pedido_automatico"
+              label="¿Pedido automático?"
               disable
               outlined
               dense
             ></q-checkbox>
-          </div>
-          <!-- Persona que retira -->
-          <div v-if="devolucion.retira_tercero" class="col-12 col-md-3">
-            <label class="q-mb-sm block">Persona que retira</label>
-            <q-input v-model="devolucion.per_retira" dense outlined disable />
           </div>
           <!-- Es devolucion de tarea -->
-          <div v-if="devolucion.es_tarea" class="col-12 col-md-3 q-mb-xl">
+          <div
+            v-if="devolucion.es_tarea ||devolucion.tarea"
+            class="col-12 col-md-3"
+          >
             <q-checkbox
               class="q-mt-lg q-pt-md"
               v-model="devolucion.es_tarea"
@@ -140,7 +104,7 @@
             ></q-checkbox>
           </div>
           <!-- Tarea -->
-          <div v-if="devolucion.es_tarea" class="col-12 col-md-3">
+          <div v-if="devolucion.es_tarea || devolucion.tarea" class="col-12 col-md-3">
             <label class="q-mb-sm block">Tarea</label>
             <q-input
               v-model="devolucion.tarea"
@@ -175,44 +139,7 @@
           <!-- Select estado -->
           <div v-if="devolucion.estado" class="col-12 col-md-3 q-mb-md">
             <label class="q-mb-sm block">Estado del despacho</label>
-            <q-input v-model="devolucion.estado" dense outlined disable />
-          </div>
-          <!-- Evidencia fotografica -->
-          <div v-if="devolucion.tiene_evidencia" class="col-12 col-md-3 q-mb-xl">
-            <q-checkbox
-              class="q-mt-lg q-pt-md"
-              v-model="devolucion.tiene_evidencia"
-              label="¿Tiene evidencia fotográfica?"
-              disable
-              outlined
-              dense
-            ></q-checkbox>
-          </div>
-          <!-- Evidencia fotografica 1 -->
-          <div
-            v-if="devolucion.tiene_evidencia || devolucion.evidencia1"
-            class="col-12 col-md-3"
-          >
-            <label class="q-mb-sm block">Evidencia 1 </label>
-            <selector-imagen
-              file_extensiones=".jpg, image/*"
-              :imagen="devolucion.evidencia1"
-              :alto="'200px'"
-              @update:model-value="(data) => (devolucion.evidencia1 = data)"
-            ></selector-imagen>
-          </div>
-          <!-- Evidencia fotografica 2 -->
-          <div
-            v-if="devolucion.tiene_evidencia || devolucion.evidencia2"
-            class="col-12 col-md-3"
-          >
-            <label class="q-mb-sm block">Evidencia 2</label>
-            <selector-imagen
-              file_extensiones=".jpg, image/*"
-              :imagen="devolucion.evidencia2"
-              :alto="'200px'"
-              @update:model-value="(data) => (devolucion.evidencia2 = data)"
-            ></selector-imagen>
+            <q-input v-model="devolucion.estado_bodega" dense outlined disable />
           </div>
           <!-- observacion estado -->
           <div v-if="devolucion.observacion_est" class="col-12 col-md-3">
@@ -228,12 +155,18 @@
             </q-input>
           </div>
 
+          <!-- Select estado -->
+          <div v-if="devolucion.causa_anulacion" class="col-12 col-md-3 q-mb-md">
+            <label class="q-mb-sm block">Causa de anulación</label>
+            <q-input v-model="devolucion.causa_anulacion" dense outlined disable />
+          </div>
+
           <!-- Tabla -->
           <div class="col-12">
             <essential-table
               titulo="Productos Seleccionados"
               :configuracionColumnas="
-                configuracionColumnasProductosSeleccionados
+                configuracionColumnasProductos
               "
               :datos="devolucion.listadoProductos"
               :permitirConsultar="false"
@@ -241,6 +174,7 @@
               :permitirEliminar="false"
               :mostrarBotones="false"
               :permitirBuscar="false"
+              ajustarCeldas
               :altoFijo="false"
             ></essential-table>
           </div>
@@ -249,4 +183,4 @@
     </template>
   </tab-layout>
 </template>
-<script src="./VisualizarDevolucionPage.ts"/>
+<script src="./VisualizarDevolucionPage.ts"></script>

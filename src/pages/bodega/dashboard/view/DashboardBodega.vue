@@ -690,6 +690,184 @@
           </div> </q-tab-panel
       ></q-tab-panels>
     </q-card>
+
+    <!-- PEDIDOS -->
+    <q-card
+      class="q-mb-md rounded no-border custom-shadow"
+      v-if="dashboard.tipo == PEDIDO"
+    >
+      <div
+        class="row text-bold text-primary q-pa-md rounded items-center q-mb-md"
+      >
+        Información de Pedidos a Bodega
+      </div>
+      <q-card-section>
+        <div class="row q-col-gutter-sm q-mb-lg">
+          <div class="col-12 col-md-12 q-mb-lg">
+            <div class="row q-col-gutter-xs">
+              <div
+                v-if="registros !== undefined && registros.length >= 0"
+                class="col-12"
+              >
+                <q-card
+                  class="rounded-card text-white no-border q-pa-md text-center full-height cursor-pointer bg-primary"
+                >
+                  <div class="text-h3 q-mb-md">
+                    {{ registros.length }}
+                  </div>
+                  <div class="text-bold">Cantidad de pedidos creados</div>
+                </q-card>
+              </div>
+              <div v-if="cantPedidosPendientes > 0" class="col-6 col-md-3">
+                <q-card class="rounded-card q-pa-md text-center full-height">
+                  <div class="text-h3 text-primary q-mb-md">
+                    {{ cantPedidosPendientes }}
+                  </div>
+                  <div>Cantidad de pedidos pendientes de autorizar</div>
+                </q-card>
+              </div>
+              <div v-if="cantPedidosAprobadas > 0" class="col-6 col-md-3">
+                <q-card class="rounded-card q-pa-md text-center full-height">
+                  <div class="text-h3 text-primary q-mb-md">
+                    {{ cantPedidosAprobadas }}
+                  </div>
+                  <div>
+                    Cantidad de pedidos autorizados pendientes de ser atendidos
+                    por bodega
+                  </div>
+                </q-card>
+              </div>
+              <div v-if="cantPedidosParciales > 0" class="col-6 col-md-3">
+                <q-card class="rounded-card q-pa-md text-center full-height">
+                  <div class="text-h3 text-primary q-mb-md">
+                    {{ cantPedidosParciales }}
+                  </div>
+                  <div>
+                    Cantidad de pedidos parcialmente despachados por bodega
+                  </div>
+                </q-card>
+              </div>
+              <div v-if="cantPedidosCompletas > 0" class="col-6 col-md-3">
+                <q-card class="rounded-card q-pa-md text-center full-height">
+                  <div class="text-h3 text-primary q-mb-md">
+                    {{ cantPedidosCompletas }}
+                  </div>
+                  <div>Cantidad de pedidos completamente despachados</div>
+                </q-card>
+              </div>
+              <div v-if="cantPedidosCanceladas> 0" class="col-6 col-md-3">
+                <q-card
+                  class="rounded-card q-pa-md text-center full-height bg-negative text-white"
+                >
+                  <div class="text-h3 q-mb-md">
+                    {{ cantPedidosCanceladas }}
+                  </div>
+                  <div>Cantidad de pedidos canceladas/anuladas</div>
+                </q-card>
+              </div>
+            </div>
+          </div>
+        </div>
+      </q-card-section>
+    </q-card>
+    <q-card
+      class="q-mb-md rounded no-border custom-shadow"
+      v-if="dashboard.tipo == PEDIDO"
+    >
+      <div
+        class="row text-bold text-primary q-pa-md rounded items-center q-mb-md"
+      >
+        Gráficos Estadísticos de Pedidos a Bodega
+      </div>
+      <q-tab-panels
+        v-model="tabs"
+        animated
+        transition-prev="scale"
+        transition-next="scale"
+        keep-alive
+        ><!-- Graficos -->
+        <q-tab-panel :name="opcionesGrafico.grafico">
+          <!-- Ver una columna o dos columnas -->
+          <div class="q-mb-xl q-gutter-y-md column items-center">
+            <q-btn-group push>
+              <q-btn
+                push
+                label="Una columna"
+                icon="bi-list"
+                no-caps
+                @click="() => (modoUnaColumna = true)"
+              />
+              <q-btn
+                push
+                label="Dos columnas"
+                icon="bi-grid"
+                no-caps
+                @click="() => (modoUnaColumna = false)"
+              />
+            </q-btn-group>
+          </div>
+          <!-- Graficos generados automaticamente -->
+          <div
+            v-if="mostrarTitulosSeccion"
+            class="q-col-gutter-y-xl q-col-gutter-x-xs q-mb-xl"
+            :class="{ row: !modoUnaColumna, column: modoUnaColumna }"
+          >
+            <div
+              class="col-12 col-md-6 text-center"
+              v-for="grafico in graficos"
+              :key="grafico.id"
+            >
+              <div class="text-subtitle2 q-mb-lg">
+                {{ grafico.encabezado }}
+              </div>
+              <div>
+                <grafico-generico
+                  v-if="grafico"
+                  :data="grafico"
+                  :options="optionsPie"
+                  @click="(data) => clickGrafico(data, grafico.identificador)"
+                />
+              </div>
+            </div>
+          </div>
+        </q-tab-panel>
+        <!-- Tabla con los registros -->
+        <q-tab-panel :name="opcionesGrafico.listado">
+          <q-btn
+            color="primary"
+            @click="tabs = opcionesGrafico.grafico"
+            glossy
+            no-caps
+            rounded
+            unelevated
+            class="q-mx-auto block"
+          >
+            <q-icon name="bi-arrow-left"></q-icon>
+            Regresar al gráfico</q-btn
+          >
+
+          <div class="row q-col-gutter-sm q-py-md q-mb-lg">
+            <div class="col-12">
+              <essential-table
+                v-if="registrosFiltrados.length"
+                :titulo="dashboard.tipo + 'S - ' + labelTabla"
+                :configuracionColumnas="[
+                  ...configuracionColumnasDevoluciones,
+                  accionesTabla,
+                ]"
+                :datos="registrosFiltrados"
+                :permitirConsultar="false"
+                :permitirEliminar="false"
+                :permitirEditar="false"
+                :mostrarBotones="false"
+                :alto-fijo="false"
+                :ajustarCeldas="true"
+                :accion1="btnVer"
+              ></essential-table>
+            </div>
+          </div> </q-tab-panel
+      ></q-tab-panels>
+    </q-card>
   </q-page>
   <modales-entidad
     :comportamiento="modales"

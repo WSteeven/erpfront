@@ -1,5 +1,5 @@
 //dependencies
-import { defineComponent } from "vue";
+import { computed, defineComponent, ref } from "vue";
 import { configuracionColumnasDevoluciones } from '../domain/configuracionColumnasDevoluciones'
 import { configuracionColumnasProductosSeleccionados } from '../domain/configuracionColumnasProductosSeleccionados'
 
@@ -13,16 +13,16 @@ import { Devolucion } from '../domain/Devolucion'
 import { DevolucionController } from '../infraestructure/DevolucionController'
 import { useNotificaciones } from "shared/notificaciones";
 import { useNotificacionStore } from "stores/notificacion";
-import { useQuasar } from "quasar";
+import { LocalStorage, useQuasar } from "quasar";
 import { useCargandoStore } from "stores/cargando";
-import { usePedidoStore } from "stores/pedido";
-import { configuracionColumnasPedidos } from "../domain/configuracionColumnasPedidos";
+import { useDevolucionStore } from "stores/devolucion";
+import { Condicion } from "pages/administracion/condiciones/domain/Condicion";
 
 export default defineComponent({
     components: { TabLayout, EssentialTable },
     setup() {
         const mixin = new ContenedorSimpleMixin(Devolucion, new DevolucionController())
-        const { entidad: pedido } = mixin.useReferencias()
+        const { entidad: devolucion} = mixin.useReferencias()
         const { notificarError } = useNotificaciones()
 
         //stores
@@ -30,13 +30,16 @@ export default defineComponent({
         useCargandoStore().setQuasar(useQuasar())
         const devolucionStore = useDevolucionStore()
 
+        const condiciones = ref()
+        condiciones.value = JSON.parse(LocalStorage.getItem('sucursales')!.toString())
+
         if (devolucionStore.devolucion) {
             devolucion.hydrate(devolucionStore.devolucion)
         } else {
             console.log('else->', devolucionStore.devolucion)
         }
 
-        const configuracionColumnasProductosSeleccionados = computed(() => [...configuracionColumnasProductosSeleccionados,
+        const configuracionColumnasProductos = computed(() => [...configuracionColumnasProductosSeleccionados,
         {
             name: 'condiciones',
             field: 'condiciones',
@@ -59,8 +62,8 @@ export default defineComponent({
 
         return {
             devolucion, mixin,
-            configuracionColumnas: configuracionColumnasPedidos,
-            configuracionColumnasProductosSeleccionados,
+            configuracionColumnas: configuracionColumnasDevoluciones,
+            configuracionColumnasProductos,
 
 
         }

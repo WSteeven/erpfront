@@ -24,12 +24,14 @@ import { CustomActionTable } from "components/tables/domain/CustomActionTable";
 import { useBodegaStore } from "stores/bodega/bodega";
 import { optionsPie } from "config/graficoGenerico";
 import { accionesTabla, estadosTransacciones, maskFecha } from "config/utils";
-import { filtroEgresos, filtroIngresos } from "../application/FiltrosDashboard";
+import { filtroDevoluciones, filtroEgresos, filtroIngresos, filtroPedidos } from "../application/FiltrosDashboard";
 import { configuracionColumnasTransacciones } from "../domain/configuracionColumnasTransacciones";
 import { ComportamientoModalesBodega } from "../application/ComportamientoModalesBodega";
 import { useTransaccionEgresoStore } from "stores/transaccionEgreso";
 import { configuracionColumnasDevoluciones } from "pages/bodega/devoluciones/domain/configuracionColumnasDevoluciones";
 import { configuracionColumnasPedidos } from "pages/bodega/pedidos/domain/configuracionColumnasPedidos";
+import { usePedidoStore } from "stores/pedido";
+import { useDevolucionStore } from "stores/devolucion";
 
 
 export default defineComponent({
@@ -53,6 +55,8 @@ export default defineComponent({
         const store = useAuthenticationStore()
         const bodegaStore = useBodegaStore()
         const transaccionStore = useTransaccionEgresoStore()
+        const pedidoStore = usePedidoStore()
+        const devolucionStore = useDevolucionStore()
         const cargando = new StatusEssentialLoading()
         const mostrarTitulosSeccion = computed(() => dashboard.fecha_inicio && dashboard.fecha_fin)
         const modales = new ComportamientoModalesBodega()
@@ -67,6 +71,13 @@ export default defineComponent({
         const cantDevolucionesAprobadas = ref()
         const cantDevolucionesCanceladas = ref()
         const cantDevolucionesCompletas = ref()
+        // pedidos
+        const cantPedidosPendientes = ref()
+        const cantPedidosParciales = ref()
+        const cantPedidosAprobadas = ref()
+        const cantPedidosCanceladas = ref()
+        const cantPedidosCompletas = ref()
+
         const cantOrdenesRealizadas = ref()
         const cantOrdenesPagadas = ref()
         const cantOrdenesAnuladas = ref()
@@ -80,7 +91,7 @@ export default defineComponent({
             { label: 'DEVOLUCIONES', value: 'DEVOLUCION' },
             { label: 'EGRESOS REALIZADOS', value: 'EGRESO' },
             { label: 'PEDIDOS', value: 'PEDIDO' },
-            { label: 'INVENTARIO', value: 'INVENTARIO' },
+            // { label: 'INVENTARIO', value: 'INVENTARIO' },
         ]
         const opcionesGrafico = {
             grafico: 'grafico',
@@ -135,8 +146,16 @@ export default defineComponent({
                     await transaccionStore.showPreview()
                     if (dashboard.tipo == INGRESO) modales.abrirModalEntidad('VisualizarIngresoPage')
                     if (dashboard.tipo == EGRESO) modales.abrirModalEntidad('VisualizarEgresoPage')
-                    if (dashboard.tipo == DEVOLUCION) modales.abrirModalEntidad('VisualizarEgresoPage')
-                    if (dashboard.tipo == PEDIDO) modales.abrirModalEntidad('VisualizarEgresoPage')
+                }
+                if (dashboard.tipo == DEVOLUCION) {
+                    devolucionStore.idDevolucion = entidad.id
+                    await devolucionStore.showPreview()
+                    modales.abrirModalEntidad('VisualizarDevolucionPage')
+                }
+                if (dashboard.tipo == PEDIDO) {
+                    pedidoStore.idPedido = entidad.id
+                    await pedidoStore.showPreview()
+                    modales.abrirModalEntidad('VisualizarPedidoPage')
                 }
             },
         }
@@ -167,6 +186,13 @@ export default defineComponent({
                         cantDevolucionesCanceladas.value = results.canceladas
                         cantDevolucionesCompletas.value = results.completas
                     }
+                    if (dashboard.tipo == PEDIDO) {
+                        cantPedidosPendientes.value = results.pendientes
+                        cantPedidosParciales.value = results.parciales
+                        cantPedidosAprobadas.value = results.aprobadas
+                        cantPedidosCanceladas.value = results.canceladas
+                        cantPedidosCompletas.value = results.completas
+                    }
                 } catch (error) {
                     console.log(error)
                 }
@@ -182,6 +208,12 @@ export default defineComponent({
                     break;
                 case EGRESO:
                     registrosFiltrados.value = filtroEgresos(data.label, registros, grafico.labels, key)
+                    break;
+                case DEVOLUCION:
+                    registrosFiltrados.value = filtroDevoluciones(data.label, registros)
+                    break;
+                case PEDIDO:
+                    registrosFiltrados.value = filtroPedidos(data.label, registros)
                     break;
                 default:
                     console.log('El tipo es: ' + dashboard.tipo)
@@ -225,6 +257,12 @@ export default defineComponent({
             cantDevolucionesAprobadas,
             cantDevolucionesCanceladas,
             cantDevolucionesCompletas,
+            //pedidos
+            cantPedidosPendientes,
+            cantPedidosParciales,
+            cantPedidosAprobadas,
+            cantPedidosCanceladas,
+            cantPedidosCompletas,
             opcionesTipos,
             tabs, opcionesGrafico, mostrarTitulosSeccion, identificadorGrafico,
             graficos,
