@@ -14,6 +14,8 @@ import { ContenedorSimpleMixin } from 'shared/contenedor/modules/simple/applicat
 import { AjusteSaldo } from "../domain/AjusteSaldo";
 import { AjusteSaldoController } from "../infraestructure/AjusteSaldoController";
 import { EmpleadoController } from "pages/recursosHumanos/empleados/infraestructure/EmpleadoController";
+import { useFiltrosListadosSelects } from "shared/filtrosListadosGenerales";
+import { opcionesTiposMovimientos, tiposMovimientos } from "config/utils";
 
 
 export default defineComponent({
@@ -23,13 +25,17 @@ export default defineComponent({
         const { entidad: ajuste, disabled, listadosAuxiliares } = mixin.useReferencias()
         const { setValidador, cargarVista, obtenerListados } = mixin.useComportamiento()
 
+        const { empleados, filtrarEmpleados } = useFiltrosListadosSelects(listadosAuxiliares)
+
         cargarVista(async () => {
             obtenerListados({
                 empleados: {
                     controller: new EmpleadoController(),
-                    params: { activo: 1 }
+                    params: { estado: 1 }
                 }
             })
+            empleados.value = listadosAuxiliares.empleados
+
         })
 
         //Reglas de validacion
@@ -38,6 +44,7 @@ export default defineComponent({
             motivo: { required },
             descripcion: { required },
             monto: { required },
+            tipo: { required },
         }
         const v$ = useVuelidate(reglas, ajuste)
         setValidador(v$.value)
@@ -47,6 +54,9 @@ export default defineComponent({
         return {
             mixin, ajuste, v$, disabled,
             configuracionColumnas: configuracionColumnasAjustesSaldos,
+
+            empleados, filtrarEmpleados,
+            opcionesTiposMovimientos,
 
 
 

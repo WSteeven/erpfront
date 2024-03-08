@@ -377,7 +377,7 @@ export const useMenuStore = defineStore('menu', () => {
           title: 'Ajuste de Saldos Fondos Rotativos',
           link: 'ajustes-saldos',
           icon: 'bi-app',
-          can: store.can('puede.acceder.ajustes_saldos'),
+          can: store.can('puede.acceder.ajustes_saldos')||true,
         },
         {
           title: 'Gastos',
