@@ -68,6 +68,7 @@
             <label class="q-mb-sm block">Justificación detallada</label>
             <q-input
               v-model="ajuste.descripcion"
+              autogrow
               placeholder="Obligatorio"
               :disable="disabled"
               :error="!!v$.descripcion.$errors.length"
