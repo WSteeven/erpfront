@@ -825,6 +825,13 @@ const routes: RouteRecordRaw[] = [
 
       //Fondos Rotativos
       {
+        path: '/ajustes-saldos',
+        name: 'ajuste_saldos',
+        component: () =>
+          import('pages/fondosRotativos/ajusteSaldo/view/AjusteSaldoPage.vue'),
+        meta: { requiresAuth: false },
+      },
+      {
         path: '/gasto',
         name: 'gasto',
         component: () =>
