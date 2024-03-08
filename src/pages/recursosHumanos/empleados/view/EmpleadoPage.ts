@@ -23,6 +23,7 @@ import { defineComponent, ref, watchEffect, computed } from 'vue'
 // Componentes
 import TabLayout from 'shared/contenedor/modules/simple/view/TabLayout.vue'
 import SelectorImagen from 'components/SelectorImagen.vue'
+import GestorArchivos from 'components/gestorArchivos/GestorArchivos.vue'
 
 //Logica y controladores
 import { ContenedorSimpleMixin } from 'shared/contenedor/modules/simple/application/ContenedorSimpleMixin'
@@ -55,22 +56,28 @@ import { useCargandoStore } from 'stores/cargando'
 import { AxiosResponse } from 'axios'
 import { useNotificaciones } from 'shared/notificaciones'
 import { useConfiguracionGeneralStore } from 'stores/configuracion_general'
+import { ArchivoController } from 'pages/gestionTrabajos/subtareas/modules/gestorArchivosTrabajos/infraestructure/ArchivoController'
 
 export default defineComponent({
-  components: { TabLayout, SelectorImagen, ModalesEntidad, EssentialTable },
+  components: {
+    TabLayout,
+    SelectorImagen,
+    ModalesEntidad,
+    EssentialTable,
+    GestorArchivos,
+  },
   setup() {
     /*********
      * Stores
      *********/
     useNotificacionStore().setQuasar(useQuasar())
     useCargandoStore().setQuasar(useQuasar())
-    const { notificarCorrecto } =
-      useNotificaciones()
+    const { notificarCorrecto } = useNotificaciones()
 
     /***********
      * Mixin
      ************/
-    const mixin = new ContenedorSimpleMixin(Empleado, new EmpleadoController())
+    const mixin = new ContenedorSimpleMixin(Empleado, new EmpleadoController(), new ArchivoController())
     const {
       entidad: empleado,
       disabled,
@@ -79,7 +86,7 @@ export default defineComponent({
     } = mixin.useReferencias()
     const { setValidador, cargarVista, obtenerListados } =
       mixin.useComportamiento()
-    const { onConsultado } = mixin.useHooks()
+    const { onConsultado, onGuardado } = mixin.useHooks()
 
     const opciones_cantones = ref([])
     const opciones_roles = ref([])
@@ -101,6 +108,9 @@ export default defineComponent({
       new FamiliaresController()
     )
     const { eliminar } = mixinFamiliares.useComportamiento()
+
+    const refArchivo = ref()
+    const idEmpleado = ref()
 
     cargarVista(async () => {
       obtenerListados({
@@ -164,6 +174,7 @@ export default defineComponent({
       banco: { required },
       num_cuenta: { required, maxLength: maxLength(12) },
       nivel_academico: { required },
+      titulo: { required },
       salario: { required },
       fecha_ingreso: { required },
       nombres: { required },
@@ -205,18 +216,29 @@ export default defineComponent({
      * Hooks
      ********/
 
-    onConsultado(() => (empleado.tiene_grupo = !!empleado.grupo))
+
     async function guardado(data) {
       empleado.familiares!.push(data.model)
     }
 
-
     onConsultado(() => {
+      idEmpleado.value = empleado.id
       empleado.tiene_grupo = !!empleado.grupo
       nombre_usuario.value = empleado.usuario
       email_usuario.value = empleado.email
-    }
-    )
+
+      setTimeout(() => {
+        refArchivo.value.listarArchivosAlmacenados(empleado.id)
+      }, 1);
+    })
+
+    onGuardado((id: number) => {
+      idEmpleado.value = id
+      setTimeout(() => {
+        subirArchivos()
+      }, 1)
+    })
+
     function optionsFecha(date) {
       const hoy = convertir_fecha(new Date())
       return date <= hoy
@@ -238,12 +260,21 @@ export default defineComponent({
         return accion.value == acciones.nuevo || accion.value == acciones.editar
       },
     }
+
+    async function subirArchivos() {
+      await refArchivo.value.subir()
+    }
+
     /************
      * Observers
      ************/
     watchEffect(() => {
       if (!empleado.tiene_grupo) empleado.grupo = null
-      if (empleado.nombres != null && empleado.nombres != '' && accion.value == acciones.nuevo) {
+      if (
+        empleado.nombres != null &&
+        empleado.nombres != '' &&
+        accion.value == acciones.nuevo
+      ) {
         const inicial_nombre =
           empleado.nombres != null ? empleado.nombres[0] : ''
         const apellido =
@@ -316,13 +347,13 @@ export default defineComponent({
       imprimirArchivo(url_pdf, 'GET', 'blob', 'pdf', filename, null)
     }
 
-
     const btnHabilitarEmpleado: CustomActionTable = {
       titulo: '',
       icono: 'bi-toggle2-on',
       color: 'negative',
       tooltip: 'Habilitar',
-      visible: ({ entidad }) => !entidad.estado && authenticationStore.can('puede.activar.empleados'),
+      visible: ({ entidad }) =>
+        !entidad.estado && authenticationStore.can('puede.activar.empleados'),
       accion: ({ entidad }) => {
         HabilitarEmpleado(entidad.id, true)
         entidad.estado = true
@@ -333,7 +364,8 @@ export default defineComponent({
       icono: 'bi-toggle2-off',
       color: 'positive',
       tooltip: 'DesHabilitar',
-      visible: ({ entidad }) => entidad.estado && authenticationStore.can('puede.desactivar.empleados'),
+      visible: ({ entidad }) =>
+        entidad.estado && authenticationStore.can('puede.desactivar.empleados'),
       accion: ({ entidad }) => {
         HabilitarEmpleado(entidad.id, false)
         entidad.estado = false
@@ -349,23 +381,32 @@ export default defineComponent({
     }
 
     function obtenerUsername() {
-
       if (accion.value == acciones.editar && empleado.generar_usuario) {
         generarUsename()
       }
-      if ((accion.value == acciones.nuevo) && empleado.nombres != null && empleado.nombres != '' && empleado.apellidos != null && empleado.apellidos != '') {
+      if (
+        accion.value == acciones.nuevo &&
+        empleado.nombres != null &&
+        empleado.nombres != '' &&
+        empleado.apellidos != null &&
+        empleado.apellidos != ''
+      ) {
         generarUsename()
       }
     }
     async function generarUsename() {
       const axios = AxiosHttpRepository.getInstance()
-      const ruta = axios.getEndpoint(endpoints.generar_username, { nombres: empleado.nombres, apellidos: empleado.apellidos, usuario: empleado.usuario })
+      const ruta = axios.getEndpoint(endpoints.generar_username, {
+        nombres: empleado.nombres,
+        apellidos: empleado.apellidos,
+        usuario: empleado.usuario,
+      })
       const response: AxiosResponse = await axios.get(ruta)
-      const username = ref(response.data.username);
-      const sitio_web = configuracionStore.configuracion?.sitio_web?.split('WWW.')[1]
+      const username = ref(response.data.username)
+      const sitio_web =
+        configuracionStore.configuracion?.sitio_web?.split('WWW.')[1]
       empleado.usuario = username.value
       empleado.email = username.value + '@' + sitio_web
-
     }
     async function HabilitarEmpleado(id: number, estado: boolean) {
       const axios = AxiosHttpRepository.getInstance()
@@ -379,15 +420,17 @@ export default defineComponent({
       )
     }
     return {
-      mixin,
+      mixin, mixinFamiliares,
       empleado,
       disabled,
       accion,
       acciones,
+      refArchivo,
       v$,
       reestablecer_usuario,
       configuracionColumnas: configuracionColumnasEmpleados,
       columnasFamiliares,
+      idEmpleado,
       isPwd: ref(true),
       listadosAuxiliares,
       //listado
@@ -416,6 +459,8 @@ export default defineComponent({
       btnHabilitarEmpleado,
       btnDesHabilitarEmpleado,
       modales,
+      //funciones
+      subirArchivos,
       obtenerUsername,
       guardado,
       //  FILTROS

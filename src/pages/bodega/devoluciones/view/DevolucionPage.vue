@@ -10,7 +10,8 @@
     :permitirEditar="puedeEditar"
     :accion1="botonDespachar"
     :accion2="botonAnular"
-    :accion3="botonImprimir"
+    :accion3="botonCorregir"
+    :accion4="botonImprimir"
   >
     <template #formulario>
       <q-form @submit.prevent>
@@ -529,5 +530,7 @@
       ></essential-selectable-table>
     </template>
   </tab-layout-filter-tabs2>
+  <!-- Modales -->
+  <modales-entidad :comportamiento="modales"></modales-entidad>
 </template>
 <script src="./DevolucionPage.ts"></script>

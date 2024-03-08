@@ -2,16 +2,12 @@ import { StatusEssentialLoading } from 'components/loading/application/StatusEss
 import { AxiosHttpRepository } from 'shared/http/infraestructure/AxiosHttpRepository'
 import { Devolucion } from 'pages/bodega/devoluciones/domain/Devolucion'
 import { apiConfig, endpoints } from 'config/api'
-import { AxiosError, AxiosResponse } from 'axios'
+import {  AxiosResponse } from 'axios'
 import { defineStore } from 'pinia'
 import { reactive, ref } from 'vue'
 import { acciones, estadosTransacciones } from 'config/utils'
-import { imprimirArchivo, isAxiosError, notificarMensajesError } from 'shared/utils'
+import { imprimirArchivo } from 'shared/utils'
 import { useNotificaciones } from 'shared/notificaciones'
-
-import TransaccionIngresoPage from 'pages/bodega/transacciones/modules/transaccionIngreso/view/TransaccionIngresoPage'
-import { ApiError } from 'shared/error/domain/ApiError'
-import { DevolucionController } from 'pages/bodega/devoluciones/infraestructure/DevolucionController'
 
 export const useDevolucionStore = defineStore('devolucion', () => {
   //State
@@ -75,6 +71,20 @@ export const useDevolucionStore = defineStore('devolucion', () => {
     imprimirArchivo(url, 'GET', 'blob', 'pdf', filename)
   }
 
+  async function modificarDevolucion(data) {
+    const axios = AxiosHttpRepository.getInstance()
+    const ruta = axios.getEndpoint(endpoints.devoluciones) + '/corregir-devolucion/' + idDevolucion.value
+    const response: AxiosResponse = await axios.put(ruta, data)
+    return response
+  }
+
+  async function eliminarDetalle(detalle_id, devolucion_id) {
+    const axios = AxiosHttpRepository.getInstance()
+    const ruta = axios.getEndpoint(endpoints.devoluciones) + '/eliminar-item'
+    const response: AxiosResponse = await axios.post(ruta, { devolucion_id, detalle_id })
+    return response
+  }
+
   function resetearDevolucion() {
     devolucion.hydrate(devolucionReset)
   }
@@ -82,6 +92,8 @@ export const useDevolucionStore = defineStore('devolucion', () => {
   return {
     devolucion,
     accionDevolucion,
+    modificarDevolucion,
+    eliminarDetalle,
     cargarDevolucion,
     resetearDevolucion,
     idDevolucion,

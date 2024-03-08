@@ -52,6 +52,7 @@ export class Empleado extends EntidadAuditable {
   tiene_discapacidad: boolean
   observacion: string | null
   nivel_academico: string | null
+  titulo: string | null
   grupo_id: number | null
   responsable_departamento: boolean
   supa: number | null
@@ -121,6 +122,7 @@ export class Empleado extends EntidadAuditable {
     this.responsable_discapacitados = false
     this.tiene_discapacidad = false
     this.nivel_academico = null
+    this.titulo = null
     this.observacion = null
     this.responsable_departamento = false
     this.supa = null

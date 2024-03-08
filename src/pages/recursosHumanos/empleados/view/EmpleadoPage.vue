@@ -26,7 +26,11 @@
               <q-input
                 v-model="empleado.usuario"
                 placeholder="Obligatorio"
-                :disable="accion === acciones.nuevo || accion === acciones.consultar || empleado.generar_usuario"
+                :disable="
+                  accion === acciones.nuevo ||
+                  accion === acciones.consultar ||
+                  empleado.generar_usuario
+                "
                 :error="!!v$.usuario.$errors.length"
                 @blur="v$.usuario.$touch"
                 outlined
@@ -46,7 +50,11 @@
                 type="email"
                 v-model="empleado.email"
                 placeholder="Obligatorio"
-                :disable="accion === acciones.nuevo || accion === acciones.consultar || empleado.generar_usuario"
+                :disable="
+                  accion === acciones.nuevo ||
+                  accion === acciones.consultar ||
+                  empleado.generar_usuario
+                "
                 :error="!!v$.email.$errors.length"
                 @blur="v$.email.$touch"
                 @update:model-value="(v) => (empleado.email = v.toLowerCase())"
@@ -94,8 +102,8 @@
                 :disable="disabled"
               />
             </div>
-             <!-- Generar nombre de usuario -->
-             <div class="col-12 col-md-3 col-sm-3" v-if="accion === acciones.editar">
+            <!-- Generar nombre de usuario -->
+            <div class="col-12 col-md-3 col-sm-3" v-if="accion === acciones.editar">
               <label class="q-mb-sm block">Generar Usuario</label>
               <q-toggle
                 :label="empleado.generar_usuario ? 'Si' : 'NO'"
@@ -108,7 +116,6 @@
                 :disable="disabled"
               />
             </div>
-
           </div>
           <!--</q-card> -->
         </q-expansion-item>
@@ -245,6 +252,7 @@
                     <div class="error-msg">{{ error.$message }}</div>
                   </div>
                 </template>
+
                 <template v-slot:no-option>
                   <q-item>
                     <q-item-section class="text-grey"> No hay resultados </q-item-section>
@@ -278,6 +286,7 @@
                     <div class="error-msg">{{ error.$message }}</div>
                   </div>
                 </template>
+
                 <template v-slot:no-option>
                   <q-item>
                     <q-item-section class="text-grey"> No hay resultados </q-item-section>
@@ -346,6 +355,7 @@
                     </q-popup-proxy>
                   </q-icon>
                 </template>
+
                 <template v-slot:error>
                   <div
                     style="clear: inherit"
@@ -404,6 +414,7 @@
                     <div class="error-msg">{{ error.$message }}</div>
                   </div>
                 </template>
+
                 <template v-slot:no-option>
                   <q-item>
                     <q-item-section class="text-grey"> No hay resultados </q-item-section>
@@ -436,6 +447,7 @@
                     <div class="error-msg">{{ error.$message }}</div>
                   </div>
                 </template>
+
                 <template v-slot:no-option>
                   <q-item>
                     <q-item-section class="text-grey"> No hay resultados </q-item-section>
@@ -611,6 +623,7 @@
                         <div class="error-msg">{{ error.$message }}</div>
                       </div>
                     </template>
+
                     <template v-slot:no-option>
                       <q-item>
                         <q-item-section class="text-grey">
@@ -708,6 +721,7 @@
                     <div class="error-msg">{{ error.$message }}</div>
                   </div>
                 </template>
+
                 <template v-slot:no-option>
                   <q-item>
                     <q-item-section class="text-grey"> No hay resultados </q-item-section>
@@ -784,6 +798,7 @@
                     <div class="error-msg">{{ error.$message }}</div>
                   </div>
                 </template>
+
                 <template v-slot:no-option>
                   <q-item>
                     <q-item-section class="text-grey"> No hay resultados </q-item-section>
@@ -819,6 +834,7 @@
                     <div class="error-msg">{{ error.$message }}</div>
                   </div>
                 </template>
+
                 <template v-slot:no-option>
                   <q-item>
                     <q-item-section class="text-grey"> No hay resultados </q-item-section>
@@ -855,6 +871,7 @@
                     <div class="error-msg">{{ error.$message }}</div>
                   </div>
                 </template>
+
                 <template v-slot:no-option>
                   <q-item>
                     <q-item-section class="text-grey"> No hay resultados </q-item-section>
@@ -901,11 +918,13 @@
                     </q-item-section>
                   </q-item>
                 </template>
+
                 <template v-slot:error>
                   <div v-for="error of v$.roles.$errors" :key="error.$uid">
                     <div class="error-msg">{{ error.$message }}</div>
                   </div>
                 </template>
+
                 <template v-slot:no-option>
                   <q-item>
                     <q-item-section class="text-grey"> No hay resultados </q-item-section>
@@ -940,6 +959,7 @@
                     <div class="error-msg">{{ error.$message }}</div>
                   </div>
                 </template>
+
                 <template v-slot:no-option>
                   <q-item>
                     <q-item-section class="text-grey"> No hay resultados </q-item-section>
@@ -947,7 +967,7 @@
                 </template>
               </q-select>
             </div>
-            <!-- Nivel Academico -->
+            <!-- Nivel Académico -->
             <div class="col-12 col-md-3 q-mb-md col-sm-3">
               <label class="q-mb-sm block">Nivel Academico</label>
               <q-select
@@ -973,6 +993,7 @@
                     <div class="error-msg">{{ error.$message }}</div>
                   </div>
                 </template>
+
                 <template v-slot:no-option>
                   <q-item>
                     <q-item-section class="text-grey"> No hay resultados </q-item-section>
@@ -980,6 +1001,27 @@
                 </template>
               </q-select>
             </div>
+
+            <!-- Tipo de Titulo -->
+            <div class="col-12 col-md-3 col-sm-3">
+              <label class="q-mb-sm block">Título</label>
+              <q-input
+                v-model="empleado.titulo"
+                placeholder="TITULO ACADEMICO"
+                :disable="disabled"
+                :error="!!v$.titulo.$errors.length"
+                @blur="v$.titulo.$touch"
+                outlined
+                dense
+              >
+                <template v-slot:error>
+                  <div v-for="error of v$.titulo.$errors" :key="error.$uid">
+                    <div class="error-msg">{{ error.$message }}</div>
+                  </div>
+                </template>
+              </q-input>
+            </div>
+
             <!-- Fecha Ingreso -->
             <div class="col-12 col-md-3 col-sm-3">
               <label class="q-mb-sm block">Fecha de Ingreso</label>
@@ -988,7 +1030,7 @@
                 placeholder="Obligatorio"
                 :error="!!v$.fecha_ingreso.$errors.length"
                 @blur="v$.fecha_ingreso.$touch"
-                :disable="disabled || soloLectura"
+                :disable="disabled "
                 readonly
                 outlined
                 dense
@@ -1009,6 +1051,7 @@
                     </q-popup-proxy>
                   </q-icon>
                 </template>
+
                 <template v-slot:error>
                   <div
                     style="clear: inherit"
@@ -1039,7 +1082,7 @@
               <q-input
                 v-model="empleado.fecha_vinculacion"
                 placeholder="Opcional"
-                :disable="disabled || soloLectura"
+                :disable="disabled"
                 readonly
                 outlined
                 dense
@@ -1069,7 +1112,7 @@
               <q-input
                 v-model="empleado.fecha_salida"
                 placeholder="Opcional"
-                :disable="disabled || soloLectura"
+                :disable="disabled"
                 readonly
                 outlined
                 dense
@@ -1135,6 +1178,7 @@
                     <div class="error-msg">{{ error.$message }}</div>
                   </div>
                 </template>
+
                 <template v-slot:no-option>
                   <q-item>
                     <q-item-section class="text-grey"> No hay resultados </q-item-section>
@@ -1232,6 +1276,34 @@
             </div>
           </div>
         </q-expansion-item>
+
+        <!-- Manejo de archivos -  -->
+        <div class="col-12 q-mb-md">
+          <gestor-archivos
+            ref="refArchivo"
+            label="Carpeta Digitalizada del Empleado"
+            :mixin="mixin"
+            :disable="disabled"
+            :listarAlGuardar="false"
+            :permitir-eliminar="accion == acciones.nuevo || accion == acciones.editar"
+            :idModelo="idEmpleado"
+          >
+            <template #boton-subir>
+              <q-btn
+                v-if="accion == acciones.editar"
+                color="positive"
+                push
+                no-caps
+                class="full-width q-mb-lg"
+                @click="subirArchivos()"
+              >
+                <q-icon name="bi-upload" class="q-mr-sm" size="xs"></q-icon>
+                Subir archivos seleccionados</q-btn
+              >
+            </template>
+          </gestor-archivos>
+        </div>
+
         <q-expansion-item
           class="overflow-hidden q-mb-md expansion"
           label="Familiares"

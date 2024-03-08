@@ -473,6 +473,7 @@ export const niveles_academicos = [
   { nombre: 'ESTUDIO SECUNDARIO' },
   { nombre: 'TITULO SUPERIOR' },
 ]
+
 export const tipos_sangre = [
   { nombre: 'A +' },
   { nombre: 'B +' },

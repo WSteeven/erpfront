@@ -18,6 +18,13 @@ export const configuracionColumnasSeguimientoDetalle: ColumnConfig<any>[] =
       sortable: true,
     },
     {
+      name: 'sucursal',
+      field: 'sucursal',
+      label: 'Bodega',
+      align: 'left',
+      sortable: true,
+    },
+    {
       name: 'num_transaccion',
       field: 'num_transaccion',
       label: 'N° transacción',

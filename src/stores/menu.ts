@@ -242,6 +242,12 @@ export const useMenuStore = defineStore('menu', () => {
       can: store.can('puede.ver.modulo_bodega'),
       children: [
         {
+          title: 'Dashboard',
+          link: 'dashboard-bodega',
+          can: store.esBodeguero || store.esCoordinadorBodega||store.can('puede.ver.dashboard_bodega'),
+          icon: 'bi-app',
+        },
+        {
           title: 'Categorías',
           link: 'categorias',
           can: store.esActivosFijos, //store.esBodeguero,//can('puede.ver.categorias'),

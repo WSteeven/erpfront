@@ -359,6 +359,13 @@ const routes: RouteRecordRaw[] = [
         meta: { requiresAuth: true },
       },
       {
+        path: '/dashboard-bodega',
+        name: 'dashboard_bodega',
+        component: () =>
+          import('pages/bodega/dashboard/view/DashboardBodega.vue'),
+        meta: { requiresAuth: true },
+      },
+      {
         path: '/categorias',
         name: 'categorias',
         component: () =>

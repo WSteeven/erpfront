@@ -432,6 +432,7 @@
               options-dense
               hint="Tarea #"
               @filter="filtrarTareasDestino"
+              clearable
               dense
               outlined
               :disable="!(accion === acciones.nuevo)"
