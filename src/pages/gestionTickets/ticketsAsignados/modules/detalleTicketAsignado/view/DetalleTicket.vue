@@ -73,7 +73,10 @@
 
     <div class="col-12 q-mb-md">
       <label class="q-mb-sm text-bold block">Descripción</label>
-      <div v-html="ticket.descripcion" class="border-grey q-pa-sm"></div>
+      <div
+        v-html="ticket.descripcion"
+        class="border-grey bg-grey-1 rounded q-pa-sm"
+      ></div>
     </div>
   </div>
 </template>
