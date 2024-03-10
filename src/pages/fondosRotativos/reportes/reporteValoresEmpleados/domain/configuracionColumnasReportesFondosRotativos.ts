@@ -51,6 +51,13 @@ export const configuracionColumnasReportesFondosRotativos: ColumnConfig<any>[] =
         sortable: true
     },
     {
+        name: 'ajustes_saldos',
+        field: 'ajustes_saldos',
+        label: 'Ajuste de Saldos',
+        align: 'left',
+        sortable: true
+    },
+    {
         name: 'saldo_actual',
         field: 'saldo_actual',
         label: 'Saldo Actual',
@@ -60,7 +67,7 @@ export const configuracionColumnasReportesFondosRotativos: ColumnConfig<any>[] =
     {
         name: 'diferencia',
         field: 'diferencia',
-        label: 'Diferencia',
+        label: 'Diferencial',
         align: 'left',
         sortable: true
     },
