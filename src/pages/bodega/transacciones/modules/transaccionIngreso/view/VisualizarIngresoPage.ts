@@ -17,14 +17,9 @@ import { useNotificacionStore } from 'stores/notificacion'
 import {  useQuasar } from 'quasar'
 
 //Controladores
-import { useNotificaciones } from 'shared/notificaciones'
-
 import { useAuthenticationStore } from 'stores/authentication'
 import { useTransaccionStore } from 'stores/transaccion'
-
 import { useTransferenciaStore } from 'stores/transferencia'
-import { apiConfig, endpoints } from 'config/api'
-import { AxiosHttpRepository } from 'shared/http/infraestructure/AxiosHttpRepository'
 
 export default defineComponent({
   components: { TabLayout, EssentialTable, EssentialSelectableTable },
@@ -32,7 +27,6 @@ export default defineComponent({
   setup(props, { emit }) {
     const mixin = new ContenedorSimpleMixin(Transaccion, new TransaccionIngresoController())
     const { entidad: transaccion } = mixin.useReferencias()
-    const { notificarError, notificarCorrecto, confirmar, prompt } = useNotificaciones()
     //stores
     useNotificacionStore().setQuasar(useQuasar())
     const store = useAuthenticationStore()
@@ -49,12 +43,6 @@ export default defineComponent({
     // console.log('rol seleccionado: ', rolSeleccionado)
 
 
-    const opciones_empleados = ref([])
-    const opciones_autorizaciones = ref([])
-    const opciones_sucursales = ref([])
-    const opciones_motivos = ref([])
-    const opciones_tareas = ref([])
-    const opciones_clientes = ref([])
 
     const configuracionColumnasProductosSeleccionadosDespachado = [...configuracionColumnasProductosSeleccionados, {
       name: 'cantidad',
@@ -71,13 +59,6 @@ export default defineComponent({
       mixin, transaccion,
       configuracionColumnas: configuracionColumnasTransaccionIngreso,
       acciones,
-      //listados
-      opciones_empleados,
-      opciones_sucursales,
-      opciones_motivos,
-      opciones_autorizaciones,
-      opciones_tareas,
-      opciones_clientes,
 
       //stores
       transferenciaStore,

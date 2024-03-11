@@ -5,6 +5,7 @@ import { configuracionColumnasProductosSeleccionadosDespachado } from "../domain
 //Components
 import TabLayout from "shared/contenedor/modules/simple/view/TabLayout.vue";
 import EssentialTable from "components/tables/view/EssentialTable.vue";
+import SelectorImagen from 'components/SelectorImagen.vue'
 
 //logica y controladores
 import { ContenedorSimpleMixin } from "shared/contenedor/modules/simple/application/ContenedorSimpleMixin";
@@ -18,7 +19,7 @@ import { usePedidoStore } from "stores/pedido";
 import { configuracionColumnasPedidos } from "../domain/configuracionColumnasPedidos";
 
 export default defineComponent({
-    components: { TabLayout, EssentialTable },
+    components: { TabLayout, EssentialTable, SelectorImagen },
     setup() {
         const mixin = new ContenedorSimpleMixin(Pedido, new PedidoController())
         const { entidad: pedido } = mixin.useReferencias()

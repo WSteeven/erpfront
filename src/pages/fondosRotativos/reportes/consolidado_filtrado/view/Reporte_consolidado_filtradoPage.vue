@@ -26,7 +26,7 @@
                 <q-popup-proxy cover transition-show="scale" transition-hide="scale">
                   <q-date
                     v-model="consolidadofiltrado.fecha_inicio"
-                    mask="DD-MM-YYYY"
+                    :mask="maskFecha"
                     today-btn
                   >
                     <div class="row items-center justify-end">
@@ -60,7 +60,7 @@
                 <q-popup-proxy cover transition-show="scale" transition-hide="scale">
                   <q-date
                     v-model="consolidadofiltrado.fecha_fin"
-                    mask="DD-MM-YYYY"
+                    :mask="maskFecha"
                     today-btn
                   >
                     <div class="row items-center justify-end">
@@ -152,7 +152,7 @@
         <div
           class="col-12 col-md-3"
           v-if="
-            consolidadofiltrado.tipo_filtro == 6 || consolidadofiltrado.tipo_filtro == 0
+           ( consolidadofiltrado.tipo_filtro == 6 || consolidadofiltrado.tipo_filtro == 0)&& is_inactivo == 'false'
           "
         >
           <label class="q-mb-sm block">Empleado</label>
@@ -188,6 +188,49 @@
             </template>
           </q-select>
         </div>
+        <!-- Empleados Inactivos -->
+        <div
+          class="col-12 col-md-3"
+          v-if="
+            (consolidadofiltrado.tipo_filtro == 6 ||
+              consolidadofiltrado.tipo_filtro == 0) &&
+            is_inactivo == 'true'
+          "
+        >
+          <label class="q-mb-sm block">Empleado</label>
+          <q-select
+            v-model="consolidadofiltrado.usuario"
+            :options="usuariosInactivos"
+            transition-show="jump-up"
+            transition-hide="jump-down"
+            options-dense
+            dense
+            outlined
+            :disable="disabled"
+            :readonly="disabled"
+            :error="!!v$.usuario.$errors.length"
+            error-message="Debes seleccionar un usuario"
+            use-input
+            input-debounce="0"
+            @filter="filtrarUsuariosInactivos"
+            :option-value="(v) => v.id"
+            :option-label="(v) => v.nombres + ' ' + v.apellidos"
+            emit-value
+            map-options
+          >
+            <template v-slot:error>
+              <div v-for="error of v$.usuario.$errors" :key="error.$uid">
+                <div class="error-msg">{{ error.$message }}</div>
+              </div>
+            </template>
+            <template v-slot:no-option>
+              <q-item>
+                <q-item-section class="text-grey"> No hay resultados </q-item-section>
+              </q-item>
+            </template>
+          </q-select>
+        </div>
+
         <!-- Proyectos -->
         <div
           class="col-12 col-md-4 q-mb-md"

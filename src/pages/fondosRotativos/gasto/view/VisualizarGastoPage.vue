@@ -8,8 +8,20 @@
     <template #formulario>
       <q-form @submit.prevent>
         <div class="row q-col-gutter-sm q-mb-md">
-          <!-- Lugar -->
+          <!-- Empleado Solicitante -->
           <div class="col-12 col-md-3">
+            <label class="q-mb-sm block">Empleado Solicitante</label>
+            <q-input
+              v-model="gasto.empleado_info"
+              placeholder="Obligatorio"
+              disable
+              outlined
+              dense
+            >
+            </q-input>
+          </div>
+          <!-- Lugar -->
+          <div class="col-12 col-md-3" v-if="isConsultar">
             <label class="q-mb-sm block">Lugar</label>
             <q-input
               v-model="gasto.lugar_info"
@@ -22,15 +34,51 @@
             >
             </q-input>
           </div>
-
+          <div class="col-12 col-md-3" v-if="isConsultar === false">
+            <label class="q-mb-sm block">Lugar</label>
+            <q-select
+              v-model="gasto.lugar"
+              :options="cantones"
+              transition-show="jump-up"
+              transition-hide="jump-down"
+              options-dense
+              dense
+              outlined
+              :disable="disabled"
+              :readonly="disabled"
+              :error="!!v$.lugar.$errors.length"
+              error-message="Debes seleccionar un canton"
+              use-input
+              input-debounce="0"
+              @blur="v$.lugar.$touch"
+              @filter="filtrarCantones"
+              :option-value="(v) => v.id"
+              :option-label="(v) => v.canton"
+              emit-value
+              map-options
+            >
+              <template v-slot:error>
+                <div v-for="error of v$.lugar.$errors" :key="error.$uid">
+                  <div class="error-msg">{{ error.$message }}</div>
+                </div>
+              </template>
+              <template v-slot:no-option>
+                <q-item>
+                  <q-item-section class="text-grey"> No hay resultados </q-item-section>
+                </q-item>
+              </template>
+            </q-select>
+          </div>
           <!-- Fecha -->
           <div class="col-12 col-md-3">
-            <label class="q-mb-sm block">Fecha</label>
+            <label class="q-mb-sm block">Fecha de Gasto</label>
             <q-input
               v-model="gasto.fecha_viat"
               placeholder="Obligatorio"
-              disable
+              :disable="disabled"
               outlined
+              readonly
+              @blur="v$.fecha_viat.$touch"
               dense
             >
               <template v-slot:append>
@@ -44,10 +92,15 @@
                   </q-popup-proxy>
                 </q-icon>
               </template>
+              <template v-slot:error>
+                <div v-for="error of v$.fecha_viat.$errors" :key="error.$uid">
+                  <div class="error-msg">{{ error.$message }}</div>
+                </div>
+              </template>
             </q-input>
           </div>
-           <!-- Fecha de creacion-->
-           <div class="col-12 col-md-3">
+          <!-- Fecha de creacion-->
+          <div class="col-12 col-md-3">
             <label class="q-mb-sm block">Fecha de Creacion</label>
             <q-input
               v-model="gasto.created_at"
@@ -60,7 +113,7 @@
           </div>
 
           <!-- Proyectos -->
-          <div class="col-12 col-md-3">
+          <div class="col-12 col-md-3" v-if="isConsultar">
             <label class="q-mb-sm block">Proyectos</label>
             <q-input
               v-model="gasto.proyecto_info"
@@ -73,9 +126,54 @@
             >
             </q-input>
           </div>
-
+          <div class="col-12 col-md-3" v-if="isConsultar === false">
+            <label class="q-mb-sm block">Proyectos</label>
+            <q-select
+              v-model="gasto.proyecto"
+              :options="proyectos"
+              transition-show="jump-up"
+              transition-hide="jump-down"
+              options-dense
+              dense
+              outlined
+              :disable="disabled"
+              :readonly="disabled"
+              :error="!!v$.proyecto.$errors.length"
+              error-message="Debes seleccionar un proyecto"
+              use-input
+              input-debounce="0"
+              @blur="v$.proyecto.$touch"
+              @filter="filtrarProyectos"
+              @update:model-value="cambiar_proyecto()"
+              :option-value="(v) => v.id"
+              :option-label="(v) => v.nombre"
+              emit-value
+              map-options
+            >
+              <template v-slot:error>
+                <div v-for="error of v$.proyecto.$errors" :key="error.$uid">
+                  <div class="error-msg">{{ error.$message }}</div>
+                </div>
+              </template>
+              <template v-slot:option="scope">
+                <q-item v-bind="scope.itemProps" class="q-my-sm">
+                  <q-item-section>
+                    <q-item-label class="text-bold text-primary">{{
+                      scope.opt.codigo_proyecto
+                    }}</q-item-label>
+                    <q-item-label caption>{{ scope.opt.nombre }} </q-item-label>
+                  </q-item-section>
+                </q-item>
+              </template>
+              <template v-slot:no-option>
+                <q-item>
+                  <q-item-section class="text-grey"> No hay resultados </q-item-section>
+                </q-item>
+              </template>
+            </q-select>
+          </div>
           <!-- Tareas -->
-          <div class="col-12 col-md-3" v-if="gasto.proyecto >= 0">
+          <div class="col-12 col-md-3" v-if="gasto.proyecto >= 0 && isConsultar">
             <label class="q-mb-sm block">Tareas</label>
             <q-input
               v-model="gasto.tarea_info"
@@ -88,19 +186,53 @@
             >
             </q-input>
           </div>
-          <!--SubTareas-->
-          <div class="col-12 col-md-3" v-if="gasto.proyecto >= 0">
-            <label class="q-mb-sm block">Sub Tareas</label>
-            <q-input
-              v-model="gasto.subTarea_info"
-              placeholder=""
-              type="textarea"
-              autogrow
-              disable
-              outlined
+          <div
+            class="col-12 col-md-3"
+            v-if="gasto.proyecto >= 0 && isConsultar === false"
+          >
+            <label class="q-mb-sm block">Tareas</label>
+            <q-select
+              v-model="gasto.num_tarea"
+              :options="tareas"
+              transition-show="jump-up"
+              transition-hide="jump-down"
+              options-dense
               dense
+              outlined
+              :disable="disabled"
+              :readonly="disabled"
+              :error="!!v$.num_tarea.$errors.length"
+              @filter="filtrarTareas"
+              @blur="v$.num_tarea.$touch"
+              error-message="Debes seleccionar una Tarea"
+              use-input
+              input-debounce="0"
+              :option-value="(v) => v.id"
+              :option-label="(v) => v.titulo"
+              emit-value
+              map-options
             >
-            </q-input>
+              <template v-slot:error>
+                <div v-for="error of v$.num_tarea.$errors" :key="error.$uid">
+                  <div class="error-msg">{{ error.$message }}</div>
+                </div>
+              </template>
+              <template v-slot:option="scope">
+                <q-item v-bind="scope.itemProps" class="q-my-sm">
+                  <q-item-section>
+                    <q-item-label class="text-bold text-primary">{{
+                      scope.opt.codigo_tarea
+                    }}</q-item-label>
+                    <q-item-label caption>{{ scope.opt.titulo }} </q-item-label>
+                  </q-item-section>
+                </q-item>
+              </template>
+              <template v-slot:no-option>
+                <q-item>
+                  <q-item-section class="text-grey"> No hay resultados </q-item-section>
+                </q-item>
+              </template>
+            </q-select>
           </div>
           <!--Tiene Factura-->
           <div class="col-12 col-md-3 q-mb-xl">
@@ -121,10 +253,20 @@
             <q-input
               v-model="gasto.factura"
               placeholder="Obligatorio"
-              disable
+              :mask="mascaraFactura"
+              hint="Porfavor Ingrese número de Factura tal como está en el Documento Fisico "
+              :disable="disabled"
+              :error="!!v$.factura.$errors.length"
+              @blur="v$.factura.$touch"
               outlined
               dense
+              fill-mask
             >
+              <template v-slot:error>
+                <div v-for="error of v$.factura.$errors" :key="error.$uid">
+                  <div class="error-msg">{{ error.$message }}</div>
+                </div>
+              </template>
             </q-input>
           </div>
           <!-- Numero de Comprobante -->
@@ -133,8 +275,8 @@
             <q-input
               v-model="gasto.num_comprobante"
               placeholder="Opcional"
-              type="number"
-              disable
+              mask="#################"
+              :disable="disabled"
               outlined
               dense
             >
@@ -147,7 +289,7 @@
               v-model="gasto.ruc"
               placeholder="Obligatorio"
               type="number"
-              disable
+              :disable="disabled"
               outlined
               dense
             >
@@ -160,7 +302,7 @@
               v-model="gasto.cantidad"
               placeholder="Obligatorio"
               type="number"
-              disable
+              :disable="disabled"
               outlined
               dense
             >
@@ -174,7 +316,7 @@
               v-model="gasto.valor_u"
               placeholder="Obligatorio"
               type="number"
-              disable
+              :disable="disabled"
               outlined
               dense
             >
@@ -195,7 +337,7 @@
           </div>
 
           <!-- Autorizacion -->
-          <div class="col-12 col-md-3">
+          <div class="col-12 col-md-3" v-if="isConsultar">
             <label class="q-mb-sm block">Autorizaciòn Especial</label>
             <q-input
               v-model="gasto.aut_especial_user"
@@ -207,7 +349,7 @@
             </q-input>
           </div>
           <!-- Detalle -->
-          <div class="col-12 col-md-3 q-mb-md">
+          <div class="col-12 col-md-3 q-mb-md" v-if="isConsultar">
             <label class="q-mb-sm block">Detalle</label>
             <q-input
               v-model="gasto.detalle_info"
@@ -219,8 +361,49 @@
               dense
             ></q-input>
           </div>
+          <div class="col-12 col-md-3 q-mb-md" v-if="isConsultar === false">
+            <label class="q-mb-sm block">Detalle</label>
+            <q-select
+              v-model="gasto.detalle"
+              :options="detalles"
+              transition-show="jump-up"
+              transition-hide="jump-down"
+              options-dense
+              dense
+              outlined
+              :disable="disabled"
+              :readonly="disabled"
+              :error="!!v$.detalle.$errors.length"
+              error-message="Debes seleccionar un detalle"
+              use-input
+              input-debounce="0"
+              @blur="v$.detalle.$touch"
+              @update:model-value="cambiar_detalle()"
+              @filter="filtrarDetalles"
+              :option-value="(v) => v.id"
+              :option-label="(v) => v.descripcion"
+              emit-value
+              map-options
+            >
+              <template v-slot:error>
+                <div v-for="error of v$.detalle.$errors" :key="error.$uid">
+                  <div class="error-msg">{{ error.$message }}</div>
+                </div>
+              </template>
+              <template v-slot:no-option>
+                <q-item>
+                  <q-item-section class="text-grey"> No hay resultados </q-item-section>
+                </q-item>
+              </template>
+              <template v-slot:after>
+                <q-btn color="positive" @click="recargar_detalle('detalle')">
+                  <q-icon size="xs" class="q-mr-sm" name="bi-arrow-clockwise" />
+                </q-btn>
+              </template>
+            </q-select>
+          </div>
           <!-- Subdetalle-->
-          <div class="col-12 col-md-3">
+          <div class="col-12 col-md-3" v-if="isConsultar">
             <label class="q-mb-sm block">Subdetalle</label>
             <q-input
               v-model="gasto.sub_detalle_info"
@@ -232,28 +415,163 @@
               dense
             ></q-input>
           </div>
-          <!-- Placa -->
-          <div class="col-12 col-md-3">
-            <label class="q-mb-sm block">Placa</label>
+          <div class="col-12 col-md-3" v-if="isConsultar === false">
+            <label class="q-mb-sm block">Subdetalle</label>
+            <q-select
+              v-model="gasto.sub_detalle"
+              :options="sub_detalles"
+              transition-show="scale"
+              transition-hide="scale"
+              options-dense
+              dense
+              use-chips
+              outlined
+              multiple
+              :disable="disabled"
+              :readonly="disabled"
+              use-input
+              input-debounce="0"
+              @filter="filtarSubdetalles"
+              @blur="v$.sub_detalle.$touch"
+              @update:model-value="tiene_factura_subdetalle()"
+              :error="!!v$.sub_detalle.$errors.length"
+              error-message="Debes seleccionar uno o varios sub_detalle"
+              :option-value="(v) => v.id"
+              :option-label="(v) => v.descripcion"
+              emit-value
+              map-options
+            >
+              <template v-slot:option="{ itemProps, opt, selected, toggleOption }">
+                <q-item v-bind="itemProps">
+                  <q-item-section>
+                    {{ opt.descripcion }}
+                    <q-item-label v-bind:inner-h-t-m-l="opt.nombres" />
+                  </q-item-section>
+                  <q-item-section side>
+                    <q-toggle
+                      :model-value="selected"
+                      @update:model-value="toggleOption(opt)"
+                    />
+                  </q-item-section>
+                </q-item>
+              </template>
+              <template v-slot:error>
+                <div v-for="error of v$.sub_detalle.$errors" :key="error.$uid">
+                  <div class="error-msg">{{ error.$message }}</div>
+                </div>
+              </template>
+              <template v-slot:no-option>
+                <q-item>
+                  <q-item-section class="text-grey"> No hay resultados </q-item-section>
+                </q-item>
+              </template>
+              <template v-slot:after>
+                <q-btn color="positive" @click="recargar_detalle('sub_detalle')">
+                  <q-icon size="xs" class="q-mr-sm" name="bi-arrow-clockwise" />
+                </q-btn>
+              </template>
+            </q-select>
+          </div>
+
+          <!--es vehiculo alquilado-->
+          <div class="col-12 col-md-3 q-mb-xl" v-if="esCombustibleEmpresa || mostarPlaca">
+            <q-checkbox
+              class="q-mb-lg"
+              v-model="gasto.es_vehiculo_alquilado"
+              label="¿Es vehiculo alquilado?"
+              outlined
+              dense
+            />
+          </div>
+
+          <!-- Placa Vehiculo Alquilado -->
+          <div class="col-12 col-md-3" v-if="gasto.es_vehiculo_alquilado">
+            <label class="q-mb-sm block">Placa de Vehiculo Alquilado </label>
             <q-input
               v-model="gasto.placa"
-              placeholder="Obligatorio"
-              disable
+              placeholder="obligatorio"
+              :disable="disabled"
+              :mask="mascara_placa"
+              :error="!!v$.placa.$errors.length"
+              @blur="v$.placa.$touch"
               outlined
               dense
             >
+              <template v-slot:error>
+                <div v-for="error of v$.placa.$errors" :key="error.$uid">
+                  <div class="error-msg">{{ error.$message }}</div>
+                </div>
+              </template>
             </q-input>
           </div>
+          <!-- Placa vehiculo -->
+          <div
+            class="col-12 col-md-3"
+            v-if="
+              (esCombustibleEmpresa || mostarPlaca) &&
+              gasto.es_vehiculo_alquilado == false
+            "
+          >
+            <label class="q-mb-sm block">Placas</label>
+            <q-select
+              v-model="gasto.vehiculo"
+              :options="vehiculos"
+              transition-show="jump-up"
+              transition-hide="jump-down"
+              options-dense
+              dense
+              outlined
+              :disable="disabled"
+              :readonly="disabled"
+              :error="!!v$.vehiculo.$errors.length"
+              @blur="v$.vehiculo.$touch"
+              @filter="filtrarVehiculos"
+              error-message="Debes seleccionar un numero de placa"
+              use-input
+              input-debounce="0"
+              :option-value="(v) => v.id"
+              :option-label="(v) => v.placa"
+              emit-value
+              map-options
+            >
+              <template v-slot:error>
+                <div v-for="error of v$.vehiculo.$errors" :key="error.$uid">
+                  <div class="error-msg">{{ error.$message }}</div>
+                </div>
+              </template>
+              <template v-slot:option="scope">
+                <q-item v-bind="scope.itemProps" class="q-my-sm">
+                  <q-item-section>
+                    <q-item-label class="text-bold text-primary">{{
+                      scope.opt.placa
+                    }}</q-item-label>
+                  </q-item-section>
+                </q-item>
+              </template>
+              <template v-slot:no-option>
+                <q-item>
+                  <q-item-section class="text-grey"> No hay resultados </q-item-section>
+                </q-item>
+              </template>
+            </q-select>
+          </div>
           <!-- Kilometraje -->
-          <div class="col-12 col-md-3">
+          <div class="col-12 col-md-3" v-if="esCombustibleEmpresa">
             <label class="q-mb-sm block">Kilometraje</label>
             <q-input
               v-model="gasto.kilometraje"
               placeholder="Obligatorio"
-              disable
+              :disable="disabled"
+              :error="!!v$.kilometraje.$errors.length"
+              @blur="v$.kilometraje.$touch"
               outlined
               dense
             >
+              <template v-slot:error>
+                <div v-for="error of v$.kilometraje.$errors" :key="error.$uid">
+                  <div class="error-msg">{{ error.$message }}</div>
+                </div>
+              </template>
             </q-input>
           </div>
           <!-- Observacion -->
@@ -263,25 +581,39 @@
               v-model="gasto.observacion"
               placeholder="Opcional"
               type="textarea"
-              disable
+              :error="!!v$.observacion.$errors.length"
+              @blur="v$.observacion.$touch"
+              :disable="disabled"
               autogrow
               outlined
               dense
             >
+              <template v-slot:error>
+                <div v-for="error of v$.observacion.$errors" :key="error.$uid">
+                  <div class="error-msg">{{ error.$message }}</div>
+                </div>
+              </template>
             </q-input>
           </div>
-           <!-- Observacion -->
-           <div class="col-12 col-md-3">
+          <!-- Observacion -->
+          <div class="col-12 col-md-3">
             <label class="q-mb-sm block">Observación Autorizador</label>
             <q-input
               v-model="gasto.detalle_estado"
-              placeholder="Opcional"
+              placeholder="Obligatorio"
               type="textarea"
-              disable
+              :disable="disabled"
+              :error="!!v$.detalle_estado.$errors.length"
+              @blur="v$.detalle_estado.$touch"
               autogrow
               outlined
               dense
             >
+              <template v-slot:error>
+                <div v-for="error of v$.detalle_estado.$errors" :key="error.$uid">
+                  <div class="error-msg">{{ error.$message }}</div>
+                </div>
+              </template>
             </q-input>
           </div>
           <!-- Estado -->
@@ -291,7 +623,7 @@
             </q-input>
           </div>
           <!-- Empleado -->
-          <div class="col-12 col-md-3">
+          <div class="col-12 col-md-3" v-if="isConsultar">
             <label class="q-mb-sm block">Empleado</label>
             <q-input
               v-model="gasto.empleado_info"
@@ -302,8 +634,8 @@
             >
             </q-input>
           </div>
-          <!--SubTareas-->
-          <div class="col-12 col-md-3">
+          <!--Beneficiaros-->
+          <div class="col-12 col-md-3" v-if="isConsultar">
             <label class="q-mb-sm block">Beneficiarios</label>
             <q-input
               v-model="gasto.beneficiarios_info"
@@ -315,6 +647,49 @@
               dense
             >
             </q-input>
+          </div>
+          <div class="col-12 col-md-3" v-if="isConsultar === false">
+            <label class="q-mb-sm block">Beneficiarios</label>
+            <q-select
+              v-model="gasto.beneficiarios"
+              :options="beneficiarios"
+              transition-show="scale"
+              transition-hide="scale"
+              options-dense
+              dense
+              use-chips
+              outlined
+              multiple
+              :disable="disabled"
+              :readonly="disabled"
+              use-input
+              input-debounce="0"
+              @filter="filtrarBeneficiarios"
+              :option-value="(v) => v.id"
+              :option-label="(v) => v.nombres + ' ' + v.apellidos"
+              emit-value
+              map-options
+            >
+              <template v-slot:option="{ itemProps, opt, selected, toggleOption }">
+                <q-item v-bind="itemProps">
+                  <q-item-section>
+                    {{ opt.nombres + " " + opt.apellidos }}
+                    <q-item-label v-bind:inner-h-t-m-l="opt.nombres" />
+                  </q-item-section>
+                  <q-item-section side>
+                    <q-toggle
+                      :model-value="selected"
+                      @update:model-value="toggleOption(opt)"
+                    />
+                  </q-item-section>
+                </q-item>
+              </template>
+              <template v-slot:no-option>
+                <q-item>
+                  <q-item-section class="text-grey"> No hay resultados </q-item-section>
+                </q-item>
+              </template>
+            </q-select>
           </div>
           <!-- Comprobante 1 Archivo -->
           <div class="col-6 col-md-3">
@@ -351,6 +726,30 @@
             >
             </imagen-comprimida-component>
           </div>
+          <!-- Centro de Costo -->
+          <div class="col-12 col-md-3">
+            <label class="q-mb-sm block">Centro de Costo</label>
+            <q-input
+              v-model="gasto.centro_costo"
+              placeholder="Obligatorio"
+              disable
+              outlined
+              dense
+            >
+            </q-input>
+          </div>
+          <!-- Sub Centro de Costo -->
+          <div class="col-12 col-md-3">
+            <label class="q-mb-sm block">Sub Centro de Costo</label>
+            <q-input
+              v-model="gasto.subcentro_costo"
+              placeholder="Obligatorio"
+              disable
+              outlined
+              dense
+            >
+            </q-input>
+          </div>
         </div>
       </q-form>
       <div
@@ -367,7 +766,7 @@
       <div
         class="q-pa-md q-gutter-sm flex flex-center"
         v-if="
-          usuario.id == gasto.aut_especial &&
+          (usuario.id == gasto.aut_especial || authenticationStore.esAdministrador) &&
           gasto.estado_info == 'APROBADO' &&
           estaSemanAC == true &&
           issubmit == true

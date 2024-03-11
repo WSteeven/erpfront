@@ -3,18 +3,14 @@ import { configuracionColumnasPrestamo } from '../domain/configuracionColumnasPr
 import { configuracionColumnasPlazoPrestamo } from '../domain/configuracionColumnasPlazoPrestamo'
 import {
   requiredIf,
-  maxLength,
-  minLength,
   required,
 } from 'shared/i18n-validators'
-import { apiConfig, endpoints } from 'config/api'
-import axios from 'axios'
 import { maxValue, minValue } from '@vuelidate/validators'
 import { useVuelidate } from '@vuelidate/core'
-import { defineComponent, ref, computed, watchEffect, reactive } from 'vue'
+import { defineComponent, ref, computed, watchEffect } from 'vue'
 
 // Componentes
-import TabLayout from 'shared/contenedor/modules/simple/view/TabLayout.vue'
+import TabLayoutFilterTabs2 from 'shared/contenedor/modules/simple/view/TabLayoutFilterTabs2.vue'
 import SelectorImagen from 'components/SelectorImagen.vue'
 
 //Logica y controladores
@@ -22,19 +18,20 @@ import { ContenedorSimpleMixin } from 'shared/contenedor/modules/simple/applicat
 import { PrestamoController } from '../infraestructure/PrestamoController'
 import { Prestamo } from '../domain/Prestamo'
 import { removeAccents } from 'shared/utils'
-import { accionesTabla, maskFecha } from 'config/utils'
+import { accionesTabla, maskFecha, tabPrestamoEmpresarial } from 'config/utils'
 import { MotivoPermisoEmpleadoController } from 'pages/recursosHumanos/motivo/infraestructure/MotivoPermisoEmpleadoController'
 import EssentialTable from 'components/tables/view/EssentialTable.vue'
 import { EmpleadoController } from 'pages/recursosHumanos/empleados/infraestructure/EmpleadoController'
 import { CustomActionPrompt } from 'components/tables/domain/CustomActionPrompt'
 import { useNotificaciones } from 'shared/notificaciones'
 import { CustomActionTable } from 'components/tables/domain/CustomActionTable'
-import { FormaPagoController } from 'pages/recursosHumanos/forma_pago/infraestructure/FormaPagoController'
 import { useRecursosHumanosStore } from 'stores/recursosHumanos'
 import { PeriodoController } from 'pages/recursosHumanos/periodo/infraestructure/PeriodoController'
+import { PrestamoCustomController } from '../infraestructure/PrestamoCustomController'
+import { useAuthenticationStore } from 'stores/authentication'
 
 export default defineComponent({
-  components: { TabLayout, SelectorImagen, EssentialTable },
+  components: { TabLayoutFilterTabs2, SelectorImagen, EssentialTable },
   setup() {
     const mixin = new ContenedorSimpleMixin(Prestamo, new PrestamoController())
     const {
@@ -42,16 +39,17 @@ export default defineComponent({
       disabled,
       accion,
       listadosAuxiliares,
+      listado
     } = mixin.useReferencias()
-    const { setValidador, obtenerListados, cargarVista } =
+    const { setValidador, obtenerListados, cargarVista,listar } =
       mixin.useComportamiento()
-    const { onBeforeConsultar, onConsultado, onBeforeModificar } =
+    const { onBeforeModificar } =
       mixin.useHooks()
+
     const {
       confirmar,
       prompt,
       notificarCorrecto,
-      notificarAdvertencia,
       notificarError,
     } = useNotificaciones()
     const key_enter = ref(0)
@@ -68,10 +66,14 @@ export default defineComponent({
     const empleados = ref([])
     const periodos = ref()
     const recursosHumanosStore = useRecursosHumanosStore()
+    const authenticationStore = useAuthenticationStore()
+
     const sueldo_basico = computed(() => {
       recursosHumanosStore.obtener_sueldo_basico()
       return recursosHumanosStore.sueldo_basico
     })
+    const prestamoEmpresarialCustomController = new PrestamoCustomController()
+
     const esNuevo = computed(() => {
       return accion.value === 'NUEVO'
     })
@@ -169,14 +171,7 @@ export default defineComponent({
     }
     const v$ = useVuelidate(reglas, prestamo)
     setValidador(v$.value)
-    function convertir_fecha(fecha: string) {
-      const dateString = fecha
-      const dateParts = dateString.split('-')
-      const dia = parseInt(dateParts[0])
-      const mes = parseInt(dateParts[1]) - 1
-      const anio = parseInt(dateParts[2])
-      return new Date(anio, mes, dia)
-    }
+
     watchEffect(() => {
       try {
         if (accion.value == 'NUEVO' ? true : false) {
@@ -282,6 +277,15 @@ export default defineComponent({
       },
       visible: () => (accion.value == 'EDITAR' ? true : false),
     }
+    const botoneditar_total_couta: CustomActionTable = {
+      titulo: 'Editar Valor a Pagar',
+      icono: 'bi-pencil-square',
+      color: 'warning',
+      accion: ({ posicion }) => {
+        modificar_total_couta(posicion)
+      },
+      visible: () => (accion.value == 'EDITAR' ? true : false),
+    }
     function aplazar(indice_couta) {
       const fechaActual = prestamo.plazos![prestamo.plazo - 1].fecha_vencimiento
       const [anio, mes, dia] = fechaActual.split('-')
@@ -312,6 +316,22 @@ export default defineComponent({
               }
               prestamo.plazos![indice_couta].valor_couta = data
               calcular_valores_prestamo_indice(indice_couta, valor_prestamo)
+            } catch (e: any) {
+              notificarError('No se pudo modificar, debes ingresar monto')
+            }
+          },
+        }
+        prompt(data)
+      })
+    }
+    function modificar_total_couta(indice_couta) {
+      confirmar('¿Está seguro de modificar la couta?', () => {
+        const data: CustomActionPrompt = {
+          titulo: 'Modificar couta',
+          mensaje: 'Ingrese nuevo valor total de la couta',
+          accion: async (data) => {
+            try {
+              prestamo.plazos![indice_couta].valor_a_pagar = data
             } catch (e: any) {
               notificarError('No se pudo modificar, debes ingresar monto')
             }
@@ -432,6 +452,51 @@ export default defineComponent({
         )
       })
     }
+    const btnEliminarPrestamoEmpresarial: CustomActionTable = {
+      titulo: '',
+      icono: 'bi-trash',
+      color: 'negative',
+      visible: () =>
+        authenticationStore.can('puede.eliminar.prestamo_empresarial') && tabActualPrestamoEmpresarial=='ACTIVO',
+      accion: ({ entidad, posicion }) => {
+       accion.value = 'ELIMINAR'
+       eliminar_prestamoempresarial({entidad,posicion})
+
+      },
+    }
+    async  function eliminar_prestamoempresarial({ entidad, posicion }) {
+      try {
+
+        const data: CustomActionPrompt = {
+          titulo: 'Eliminar PrestamoEmpresarial',
+          mensaje: 'Ingrese motivo de eliminacion',
+          accion: async (data) => {
+            entidad.estado = false
+            entidad.motivo = data
+            entidad.descripcion_prestamoempresarial = data
+              await prestamoEmpresarialCustomController.anularPrestamoEmpresarial(entidad)
+              notificarCorrecto('Se ha eliminado PrestamoEmpresarial')
+              listado.value.splice(posicion,1);
+          },
+        }
+        prompt(data)
+    } catch (e: any) {
+      notificarError(
+        'No se pudo anular, debes ingresar un motivo para la anulacion'
+      )
+    }
+    }
+    let tabActualPrestamoEmpresarial = 'ACTIVO'
+
+    function filtrarPrestamoEmpresarial(tabSeleccionado: string) {
+      listar({ estado: tabSeleccionado }, false)
+      tabActualPrestamoEmpresarial = tabSeleccionado
+    }
+
+
+
+
+
     return {
       removeAccents,
       mixin,
@@ -442,6 +507,7 @@ export default defineComponent({
       watchEffect,
       filtrarEmpleado,
       filtrarPeriodo,
+      filtrarPrestamoEmpresarial,
       recargar_tabla,
       esMayorPrestamo,
       maximoValorPrestamo: [
@@ -453,8 +519,9 @@ export default defineComponent({
       ],
       botonmodificar_couta,
       botonpagar_couta,
-
+      botoneditar_total_couta,
       botonaplazar_couta,
+      btnEliminarPrestamoEmpresarial,
       esNuevo,
       configuracionColumnasPlazoPrestamo,
       esConsultado,
@@ -464,6 +531,7 @@ export default defineComponent({
       maskFecha,
       v$,
       disabled,
+      tabPrestamoEmpresarial,
       configuracionColumnas: configuracionColumnasPrestamo,
       accion,
       accionesTabla,

@@ -4,13 +4,11 @@
       <slot name="modales" />
     </transition>
 
-    <div class="text-right">
-      <b class="block text-subtitle1 text-thin text-primary">
-        <!-- <q-icon name="bi-app-indicator" class="q-mr-sm"></q-icon> -->
-        {{ tituloTabla }}</b
-      >
-      <small class="text-grey-9 text-bold">{{ subtituloPagina }}</small>
-    </div>
+    <!-- <div class="text-center q-mb-md q-pa-sm bg-grey-2 border-bottom"> -->
+    <!-- <small class="block text-bold"> {{ tituloTabla }}</small> -->
+    <!-- <q-icon name="bi-app-indicator" class="q-mr-sm"></q-icon> -->
+    <!-- <small class="text-grey-9 text-bold">{{ subtituloPagina }}</small> -->
+    <!-- </div> -->
 
     <!-- Tabs -->
     <q-tabs
@@ -87,6 +85,11 @@
           :accion3="accion3"
           :accion4="accion4"
           :accion5="accion5"
+          :accion6="accion6"
+          :accion7="accion7"
+          :accion8="accion8"
+          :accion9="accion9"
+          :accion10="accion10"
           :accion1Header="accion1Header"
           :accion2Header="accion2Header"
           :accion3Header="accion3Header"

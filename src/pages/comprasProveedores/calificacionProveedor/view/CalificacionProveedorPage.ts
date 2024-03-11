@@ -30,12 +30,12 @@ import { useNotificaciones } from "shared/notificaciones";
 
 export default defineComponent({
     components: { EssentialTable, EssentialSelectableTable, GestorArchivos },
+    emits: ['cerrar-modal', 'guardado'],
     setup(props, { emit }) {
         const mixinArchivos = new ContenedorSimpleMixin(DetalleDepartamentoProveedor, new DetalleDepartamentoProveedorController(), new ArchivoController())
         const mixin = new ContenedorSimpleMixin(CalificacionProveedor, new CalificacionProveedorController(), new ArchivoController())
-        const { entidad: calificacion, listadosAuxiliares } = mixin.useReferencias()
+        const { listadosAuxiliares, } = mixin.useReferencias()
         const { cargarVista, obtenerListados } = mixin.useComportamiento()
-        const { onConsultado } = mixin.useHooks()
         const { confirmar,notificarCorrecto, notificarAdvertencia, notificarError } = useNotificaciones()
 
 

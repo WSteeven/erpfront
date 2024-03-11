@@ -3,7 +3,7 @@ import { configuracionColumnasTarea } from 'tareas/domain/configuracionColumnasT
 import { AxiosHttpRepository } from 'shared/http/infraestructure/AxiosHttpRepository'
 import { useFiltrosListadosTarea } from '../../application/FiltrosListadosTarea'
 import { required } from 'shared/i18n-validators'
-import { defineComponent, reactive } from 'vue'
+import { defineComponent, reactive, ref } from 'vue'
 import { rolesSistema } from 'config/utils'
 import useVuelidate from '@vuelidate/core'
 import { endpoints } from 'config/api'
@@ -21,6 +21,7 @@ import { useRouter } from 'vue-router'
 import { useNotificaciones } from 'shared/notificaciones'
 import { useTareaStore } from 'stores/tarea'
 import { useAuthenticationStore } from 'stores/authentication'
+import { Ref } from 'vue'
 
 export default defineComponent({
   components: {
@@ -45,7 +46,7 @@ export default defineComponent({
       await obtenerListados({
         coordinadores: {
           controller: new EmpleadoController(),
-          params: { rol: rolesSistema.coordinador },
+          params: { rol: rolesSistema.coordinador, campos: 'id,nombres,apellidos' },
         },
       })
 
@@ -55,6 +56,7 @@ export default defineComponent({
     /************
      * Variables
     ************/
+    const refTareas = ref()
     const router = useRouter()
     const { notificarAdvertencia, notificarCorrecto, confirmar } = useNotificaciones()
     const transferencia = reactive({
@@ -62,7 +64,7 @@ export default defineComponent({
       nuevo_coordinador: null,
     })
     const puedeSeleccionarActualCoordinador = authenticationStore.esCoordinadorBackup || authenticationStore.esJefeTecnico
-
+    // const tareasTransferir: Ref<Tarea[]> = ref([])
     /*******
      * Init
      *******/
@@ -89,15 +91,18 @@ export default defineComponent({
     /************
     * Funciones
     ************/
-    async function transferir() {
+    async function transferir(idsTareas: (number | null)[]) {
+      if (!idsTareas.length) return notificarAdvertencia('Debe seleccionar al menos una tarea para transferir')
+
       if (await v$.value.$validate()) {
         try {
           confirmar('¿Está seguro de realizar la transferencia?', async () => {
             const axios = AxiosHttpRepository.getInstance()
             const ruta = axios.getEndpoint(endpoints.transferir_mis_tareas_activas)
             const response: AxiosResponse = await axios.post(ruta, {
-              actual_coordinador: transferencia.actual_coordinador,
+              // actual_coordinador: transferencia.actual_coordinador,
               nuevo_coordinador: transferencia.nuevo_coordinador,
+              ids_tareas: idsTareas,
             })
 
             notificarCorrecto(response.data.mensaje)
@@ -112,6 +117,7 @@ export default defineComponent({
 
     function filtrarTareasPorCoordinador() {
       listar({ coordinador_id: transferencia.actual_coordinador, finalizado: false })
+      refTareas.value.clearSelection()
     }
 
     async function irControlTareas() {
@@ -123,18 +129,33 @@ export default defineComponent({
       emit('cerrar-modal', false)
     }
 
+    const seleccionarTareas = () => {
+      refTareas.value.seleccionar()
+    }
+
+    const tareasSeleccionadas = (tareas: Tarea[]) => {
+      console.log(tareas)
+      const idsTareas = tareas.map((tarea: Tarea) => tarea.id)
+
+      transferir(idsTareas)
+    }
+
     return {
       v$,
+      refTareas,
       transferencia,
       coordinadores,
       filtrarCoordinadores,
       listado,
-      transferir,
       irControlTareas,
       configuracionColumnasTarea,
-      cancelar,
       puedeSeleccionarActualCoordinador,
+      // Functions
+      transferir,
+      cancelar,
       filtrarTareasPorCoordinador,
+      seleccionarTareas,
+      tareasSeleccionadas,
     }
   }
 })

@@ -2,7 +2,7 @@ import { computed, defineComponent, reactive, ref, watchEffect } from 'vue'
 
 import TabLayout from 'shared/contenedor/modules/simple/view/TabLayout.vue'
 import { useNotificacionStore } from 'stores/notificacion'
-import { useQuasar } from 'quasar'
+import { LocalStorage, useQuasar } from 'quasar'
 import { useVuelidate } from '@vuelidate/core'
 import { ContenedorSimpleMixin } from 'shared/contenedor/modules/simple/application/ContenedorSimpleMixin'
 import { TipoFondoController } from 'pages/fondosRotativos/tipoFondo/infrestructure/TipoFonfoController'
@@ -25,6 +25,7 @@ import { useCargandoStore } from 'stores/cargando'
 import { useFondoRotativoStore } from 'stores/fondo_rotativo'
 import { CantonController } from 'sistema/ciudad/infraestructure/CantonControllerontroller'
 import { useNotificaciones } from 'shared/notificaciones'
+import { maskFecha } from 'config/utils'
 
 export default defineComponent({
   components: { TabLayout },
@@ -133,6 +134,7 @@ export default defineComponent({
     listadosAuxiliares.tipos_filtro = tipos_filtros
     const v$ = useVuelidate(reglas, consolidadofiltrado)
     const usuarios = ref([])
+    const usuariosInactivos = ref()
     const tiposFondos = ref([])
     const tiposFondoRotativoFechas = ref([])
     const detalles = ref([])
@@ -191,6 +193,12 @@ export default defineComponent({
       proyectos.value = listadosAuxiliares.proyectos
       tareas.value = listadosAuxiliares.tareas
       cantones.value = listadosAuxiliares.cantones
+
+      usuariosInactivos.value =
+      LocalStorage.getItem('usuariosInactivos') == null
+        ? []
+        : JSON.parse(LocalStorage.getItem('usuariosInactivos')!.toString())
+    listadosAuxiliares.usuariosInactivos = usuariosInactivos.value
     })
     /*********
      * Filtros
@@ -414,35 +422,24 @@ export default defineComponent({
           break
       }
     }
-    async function mostrarInactivos(val) {
-      if (val === 'true') {
-        const empleados = (
-          await new EmpleadoController().listar({
-            campos: 'id,nombres,apellidos',
-            estado: 0,
-          })
-        ).result
-        fondosStore.empleados = empleados
-        setTimeout(
-          () =>
-            setInterval(() => {
-              empleados.value = fondosStore.empleados
-              usuarios.value = empleados.value
-            }, 100),
-          250
-        )
-      } else {
-        const empleados_aux = listadosAuxiliares.usuarios
-        fondosStore.empleados = empleados_aux
-        setTimeout(
-          () =>
-            setInterval(() => {
-              empleados_aux.value = fondosStore.empleados
-              usuarios.value = empleados_aux.value
-            }, 100),
-          250
-        )
+
+
+
+    function filtrarUsuariosInactivos(val, update) {
+      if (val === '') {
+        update(() => {
+          usuariosInactivos.value = listadosAuxiliares.usuariosInactivos
+        })
+        return
       }
+      update(() => {
+        const needle = val.toLowerCase()
+        usuariosInactivos.value = listadosAuxiliares.usuariosInactivos.filter(
+          (v) =>
+            v.nombres.toLowerCase().indexOf(needle) > -1 ||
+            v.apellidos.toLowerCase().indexOf(needle) > -1
+        )
+      })
     }
     return {
       mixin,
@@ -451,6 +448,7 @@ export default defineComponent({
       accion,
       v$,
       usuarios,
+      usuariosInactivos,
       tiposFondos,
       tiposFondoRotativoFechas,
       tipos_saldos,
@@ -462,9 +460,9 @@ export default defineComponent({
       proyectos,
       tareas,
       generar_reporte,
-      mostrarInactivos,
       is_inactivo,
       filtrarUsuarios,
+      filtrarUsuariosInactivos,
       filtarTiposSaldos,
       filtrarTiposFiltro,
       filtroSubdetalles,
@@ -476,6 +474,7 @@ export default defineComponent({
       filtrarCiudades,
       watchEffect,
       listadosAuxiliares,
+      maskFecha,
     }
   },
 })

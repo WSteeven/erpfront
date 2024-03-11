@@ -1,63 +1,82 @@
 <template>
   <div class="row q-col-gutter-sm">
-    <div class="col-12 col-md-3">
-      <label class="q-mb-sm block">Código del ticket</label>
-      <b>{{ ticket.codigo }}</b>
+    <div class="col-12 col-md-3 q-mb-md">
+      <label class="q-mb-sm text-bold block">Código del ticket</label>
+      <span>{{ ticket.codigo }}</span>
     </div>
 
-    <div class="col-12 col-md-3">
-      <label class="q-mb-sm block">Asunto</label>
-      <b>{{ ticket.asunto }}</b>
+    <div class="col-12 col-md-3 q-mb-md">
+      <label class="q-mb-sm text-bold block">Asunto</label>
+      <span>{{ ticket.asunto }}</span>
     </div>
 
-    <div class="col-12 col-md-6">
-      <label class="q-mb-sm block">Descripción</label>
-      <b>{{ ticket.descripcion }}</b>
+    <div class="col-12 col-md-3 q-mb-md">
+      <label class="q-mb-sm text-bold block">Prioridad</label>
+      <span>{{ ticket.prioridad }}</span>
     </div>
 
-    <div class="col-12 col-md-3">
-      <label class="q-mb-sm block">Prioridad</label>
-      <b>{{ ticket.prioridad }}</b>
+    <div v-if="ticket.fecha_hora_limite" class="col-12 col-md-3 q-mb-md">
+      <label class="q-mb-sm text-bold block">Fecha y hora límite</label>
+      <span>{{ ticket.fecha_hora_limite }}</span>
     </div>
 
-    <div v-if="ticket.fecha_hora_limite" class="col-12 col-md-3">
-      <label class="q-mb-sm block">Fecha y hora límite</label>
-      <b>{{ ticket.fecha_hora_limite }}</b>
-    </div>
-
-    <div class="col-12 col-md-3">
-      <label class="q-mb-sm block">Estado actual</label>
+    <div class="col-12 col-md-3 q-mb-md">
+      <label class="q-mb-sm text-bold block">Estado actual</label>
       <estados-subtareas :propsTable="{ value: ticket.estado }" />
     </div>
 
-    <div class="col-12 col-md-3">
-      <label class="q-mb-sm block">Categoria tipo de ticket</label>
-      <b>{{ ticket.categoria_tipo_ticket }}</b>
+    <div v-if="ticket.tiempo_hasta_finalizar" class="col-12 col-md-3 q-mb-md">
+      <label class="q-mb-sm text-bold block"
+        >Tiempo total hasta finalizar</label
+      >
+      <q-icon name="bi-star-fill" color="orange-3" class="q-mr-sm"></q-icon>
+      <span>{{ ticket.tiempo_hasta_finalizar }}</span>
     </div>
 
-    <div class="col-12 col-md-3">
-      <label class="q-mb-sm block">Tipo de ticket</label>
-      <b>{{ ticket.tipo_ticket }}</b>
+    <div v-if="ticket.tiempo_ocupado_pausas" class="col-12 col-md-3 q-mb-md">
+      <label class="q-mb-sm text-bold block">Tiempo total pausado</label>
+      <q-icon name="bi-pause-circle" color="pink-8" class="q-mr-sm"></q-icon>
+      <span>{{ ticket.tiempo_ocupado_pausas }}</span>
     </div>
 
-    <div v-if="ticket.solicitante" class="col-12 col-md-3">
-      <label class="q-mb-sm block">Solicitante</label>
-      <b>{{ ticket.solicitante }}</b>
+    <div class="col-12 col-md-3 q-mb-md">
+      <label class="q-mb-sm text-bold block">Categoria tipo de ticket</label>
+      <span>{{ ticket.categoria_tipo_ticket }}</span>
     </div>
 
-    <div v-if="ticket.departamento_responsable" class="col-12 col-md-3">
-      <label class="q-mb-sm block">Actual departamento responsable</label>
-      <b>{{ ticket.departamento_responsable }}</b>
+    <div class="col-12 col-md-3 q-mb-md">
+      <label class="q-mb-sm text-bold block">Tipo de ticket</label>
+      <span>{{ ticket.tipo_ticket }}</span>
     </div>
 
-    <div v-if="ticket.responsable" class="col-12 col-md-3">
-      <label class="q-mb-sm block">Actual empleado responsable</label>
-      <b>{{ ticket.responsable }}</b>
+    <div v-if="ticket.solicitante" class="col-12 col-md-3 q-mb-md">
+      <label class="q-mb-sm text-bold block">Solicitante</label>
+      <span>{{ ticket.solicitante }}</span>
     </div>
 
-    <div v-if="ticket.fecha_hora_solicitud" class="col-12 col-md-3">
-      <label class="q-mb-sm block">Fecha hora solicitud</label>
-      <b>{{ ticket.fecha_hora_solicitud }}</b>
+    <div v-if="ticket.departamento_responsable" class="col-12 col-md-3 q-mb-md">
+      <label class="q-mb-sm text-bold block"
+        >Actual departamento responsable</label
+      >
+      <span>{{ ticket.departamento_responsable }}</span>
+    </div>
+
+    <div v-if="ticket.responsable" class="col-12 col-md-3 q-mb-md">
+      <label class="q-mb-sm text-bold block">Actual empleado responsable</label>
+      <span>{{ ticket.responsable }}</span>
+    </div>
+
+    <div v-if="ticket.fecha_hora_solicitud" class="col-12 col-md-3 q-mb-md">
+      <label class="q-mb-sm text-bold block">Fecha hora solicitud</label>
+      <span>{{ ticket.fecha_hora_solicitud }}</span>
+    </div>
+
+    <div class="col-12 q-mb-md">
+      <label class="q-mb-sm text-bold block">Descripción</label>
+      <div
+        v-html="ticket.descripcion"
+        class="border-grey bg-grey-1 rounded q-pa-sm"
+      ></div>
     </div>
   </div>
 </template>

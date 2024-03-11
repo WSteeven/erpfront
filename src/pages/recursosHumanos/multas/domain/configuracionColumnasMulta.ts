@@ -9,4 +9,11 @@ export const configuracionColumnasMulta: ColumnConfig<Multa>[] = [
         align: 'left',
         sortable: true
     },
+    {
+      name: 'abreviatura',
+      field: 'abreviatura',
+      label: 'Abreviatura',
+      align: 'left',
+      sortable: true
+  },
 ]

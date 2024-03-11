@@ -8,11 +8,12 @@ export class RolPago extends EntidadAuditable {
   salario: string | null
   sueldo: number | null
   dias: number | null
+  departamento:string | null
   concepto_ingreso: number | null
   descuento_ley_info: number | null
   concepto_ingreso_info: string | null
   descuento_general_info: string | null
-  medio_tiempo:boolean|null
+  medio_tiempo: boolean | null
   multa_info: string | null
   descuento_general: number | null
   descuento_ley: number | null
@@ -23,8 +24,8 @@ export class RolPago extends EntidadAuditable {
   prestamo_quirorafario: number | null
   prestamo_empresarial: number | null
   supa: number | null
-  decimo_tercero: number |null
-  decimo_cuarto: number| null
+  decimo_tercero: number | null
+  decimo_cuarto: number | null
   total_ingreso: number | null
   total_egreso: number | null
   bonificacion: number | null
@@ -38,16 +39,18 @@ export class RolPago extends EntidadAuditable {
   egresos: any | null
   roles: any | null
   dias_permiso_sin_recuperar: number | null
-  tipo_contrato : number | null
+  tipo_contrato: number | null
   estado: string | null
   tieneDocumento: boolean | null
-  rol_pago_id : number | null
+  rol_pago_id: number | null
   anticipo: string | null
   iess: number | null
-  es_quincena : boolean | null
-porcentaje_anticipo: number | null
-es_vendedor_medio_tiempo : boolean | null
-porcentaje_quincena:number | null
+  es_quincena: boolean
+  porcentaje_anticipo: number | null
+  es_vendedor_medio_tiempo: boolean | null
+  porcentaje_quincena: number | null
+  sueldo_quincena_modificado: boolean
+
 
   constructor() {
     super()
@@ -58,6 +61,7 @@ porcentaje_quincena:number | null
     this.salario = null
     this.sueldo = null
     this.dias = null
+    this.departamento = null
     this.concepto_ingreso = null
     this.concepto_ingreso_info = null
     this.descuento_ley_info = null
@@ -70,9 +74,9 @@ porcentaje_quincena:number | null
     this.multa = null
     this.fondos_reserva = null
     this.extension_cobertura_salud = null
-    this.prestamo_hipotecario=null
-    this.prestamo_quirorafario=null
-    this.prestamo_empresarial= null
+    this.prestamo_hipotecario = null
+    this.prestamo_quirorafario = null
+    this.prestamo_empresarial = null
     this.supa = null
     this.ingreso = null
     this.egreso = null
@@ -97,6 +101,7 @@ porcentaje_quincena:number | null
     this.medio_tiempo = false
     this.porcentaje_anticipo = null
     this.es_vendedor_medio_tiempo = false
-    this.porcentaje_quincena=100
+    this.porcentaje_quincena = 100
+    this.sueldo_quincena_modificado = false
   }
 }

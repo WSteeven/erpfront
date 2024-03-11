@@ -20,6 +20,7 @@ import { NotificarVacacionPusherEvent } from 'src/pusherEvents/recursosHumanos/n
 import { PreingresoMaterialPusherEvent } from 'pages/bodega/preingresoMateriales/application/PreingresoPusherEvent'
 import { IngresoPusherEvent } from 'pages/bodega/transacciones/modules/transaccionIngreso/application/IngresoPusherEvent'
 import { MatriculaPusherEvent } from 'pages/controlVehiculos/matriculacion/application/MatriculaPusherEvent'
+import { NotificarPermisoEmpleadoPusherEvent } from 'src/pusherEvents/recursosHumanos/nominasPermisos/NotificarPermisoEmpleadoPusherEvent'
 
 
 export class NotificacionesSistema {
@@ -77,7 +78,9 @@ export class NotificacionesSistema {
     // Permiso de Empleado
     const permisoEmpleadoPusherEvent = new PermisoEmpleadoPusherEvent()
     permisoEmpleadoPusherEvent.start()
-
+   //Notificar permisos de empleados de fecha actual a recursos humanos
+   const notificarPermisoEmpleadoPusherEvent = new NotificarPermisoEmpleadoPusherEvent()
+   notificarPermisoEmpleadoPusherEvent.start()
     // Licencia
     const licenciaPusherEvent = new LicenciaPusherEvent()
     licenciaPusherEvent.start()
@@ -92,6 +95,7 @@ export class NotificacionesSistema {
     // Notificar Vacaciones
     const notificarVacacionPusherEvent = new NotificarVacacionPusherEvent()
     notificarVacacionPusherEvent.start()
+
 
     // Proveedor
     const proveedorPusherEvent = new ProveedorEvent()
@@ -112,7 +116,7 @@ export class NotificacionesSistema {
 
   /*******************
    * MODULO VEHICULOS
-   *********  ***********/
+   ********************/
   const matriculaPusherEvent = new MatriculaPusherEvent()
   matriculaPusherEvent.start()
   }

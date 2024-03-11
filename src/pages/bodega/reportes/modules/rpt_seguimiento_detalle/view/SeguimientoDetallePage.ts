@@ -1,7 +1,7 @@
 import { DetalleProducto } from './../../../../detalles_productos/domain/DetalleProducto';
 import EssentialTable from 'components/tables/view/EssentialTable.vue';
 import { DetalleProductoController } from "pages/bodega/detalles_productos/infraestructure/DetalleProductoController"
-import { defineComponent, reactive, ref } from "vue"
+import { defineComponent, onMounted, reactive, ref } from "vue"
 import { configuracionColumnasSeguimientoDetalle } from '../../rpt_inventario/domain/configuracionColumnasSeguimientoDetalle';
 import { StatusEssentialLoading } from 'components/loading/application/StatusEssentialLoading';
 import { useNotificaciones } from 'shared/notificaciones';
@@ -14,6 +14,7 @@ import { imprimirArchivo } from 'shared/utils';
 import { useNotificacionStore } from 'stores/notificacion';
 import { useCargandoStore } from 'stores/cargando';
 import { useQuasar } from 'quasar';
+import { SucursalesDetalleController } from './infraestructure/SucursalesDetalleController';
 
 export default defineComponent({
   components: { EssentialTable },
@@ -22,24 +23,28 @@ export default defineComponent({
     //stores
     useNotificacionStore().setQuasar(useQuasar())
     useCargandoStore().setQuasar(useQuasar())
+    const cargando = new StatusEssentialLoading()
 
     const kardex = reactive({
-      detalle: '',
+      detalle_id: '',
       fecha_inicio: '',
       fecha_fin: '',
       tipo_rpt: '',
+      sucursal_id: '',
     })
+    const sucursales = ref([])
     const detalles = ref([])
     const results = ref([])
     const listado = ref([])
     const { notificarError } = useNotificaciones()
     async function cargarDetalles() {
-      const { result } = await new DetalleProductoController().listar()
+      cargando.activar()
+      const { result } = await new DetalleProductoController().listar({ tipo_busqueda: 'only_inventario' })
       results.value = result
       detalles.value = result
+      cargando.desactivar()
     }
-
-    cargarDetalles()
+    onMounted(async () => await cargarDetalles())
 
     const reglas = {
       fecha_inicio: { required },
@@ -49,13 +54,12 @@ export default defineComponent({
     // setValidador(v$.value)
 
     async function buscarKardex() {
-      const cargando = new StatusEssentialLoading()
       try {
         cargando.activar()
         const axios = AxiosHttpRepository.getInstance()
         const url = apiConfig.URL_BASE + '/' + axios.getEndpoint(endpoints.reporte_inventario) + '/kardex'
         const response: AxiosResponse = await axios.post(url, kardex)
-        console.log(response)
+        // console.log(response)
         if (response.data.results) listado.value = response.data.results
         cargando.desactivar()
       }
@@ -70,7 +74,7 @@ export default defineComponent({
       kardex.tipo_rpt = tipo
 
       const axios = AxiosHttpRepository.getInstance()
-      const filename = 'reporte_kardex_'+Date.now()
+      const filename = 'reporte_kardex_' + Date.now()
       const url = apiConfig.URL_BASE + '/' + axios.getEndpoint(endpoints.reporte_inventario) + '/kardex'
       switch (tipo) {
         case 'excel':
@@ -85,13 +89,29 @@ export default defineComponent({
       }
 
     }
+    async function obtenerSucursales() {
+      kardex.sucursal_id = ''
+      sucursales.value = []
+      try {
+
+        cargando.activar()
+        const response = await new SucursalesDetalleController().listar({ detalle_id: kardex.detalle_id })
+        sucursales.value = response.result
+      } catch (error) {
+        console.log(error)
+      } finally {
+        cargando.desactivar()
+      }
+    }
 
     return {
       kardex, v$,
       detalles,
       listado,
       configuracionColumnasSeguimientoDetalle,
+      sucursales,
       imprimirReporte,
+      obtenerSucursales,
       buscarKardex,
       filtrarDetalle(val, update) {
         if (val === '') {
@@ -101,7 +121,7 @@ export default defineComponent({
           return
         }
         update(() => {
-          detalles.value = results.value.filter((v: DetalleProducto) => v.descripcion!.toLowerCase().indexOf(val.toLowerCase()) > -1)
+          detalles.value = results.value.filter((v: DetalleProducto) => v.descripcion!.toLowerCase().indexOf(val.toLowerCase()) > -1 || (v.serial ?? '').toLowerCase().indexOf(val.toLowerCase()) > -1)
         })
       },
     }

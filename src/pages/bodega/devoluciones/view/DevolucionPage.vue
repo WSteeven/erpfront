@@ -10,7 +10,8 @@
     :permitirEditar="puedeEditar"
     :accion1="botonDespachar"
     :accion2="botonAnular"
-    :accion3="botonImprimir"
+    :accion3="botonCorregir"
+    :accion4="botonImprimir"
   >
     <template #formulario>
       <q-form @submit.prevent>
@@ -33,43 +34,101 @@
             <label class="q-mb-sm block">Fecha</label>
             <q-input v-model="devolucion.created_at" disable outlined dense />
           </div>
-          <!-- Canton select -->
-          <!-- <div class="col-12 col-md-3 q-mb-md">
-            <label class="q-mb-sm block">Lugar de devolución</label>
+          <div
+            class="col-12 col-md-3"
+            v-if="
+              accion == acciones.nuevo &&(store.esCoordinador ||store.esCoordinadorBackup ||store.esJefeTecnico ||store.esCoordinadorBodega||store.can('puede.hacer.devoluciones_terceros'))
+            "
+          >
+            <br />
+            <q-toggle
+              v-model="devolucion.devolver_materiales_tecnicos"
+              :label="
+                devolucion.devolver_materiales_tecnicos
+                  ? 'Devolver materiales de tecnicos'
+                  : 'Devolver mis materiales'
+              "
+              :disable="disabled"
+              color="positive"
+              checked-icon="bi-check"
+              @update:model-value="checkSolicitantes"
+              outlined
+              dense
+            ></q-toggle>
+          </div>
+          <!-- Solicitante -->
+          <div
+            v-if="
+              (accion == acciones.nuevo &&
+                devolucion.devolver_materiales_tecnicos) ||
+              (accion != acciones.nuevo && devolucion.solicitante)
+            "
+            class="col-12 col-md-3"
+          >
+            <label class="q-mb-sm block">Solicitante</label>
+            <!-- <q-input v-model="transaccion.solicitante" disable outlined dense>
+            </q-input> -->
             <q-select
-              v-model="devolucion.canton"
-              :options="opciones_cantones"
+              v-model="devolucion.solicitante"
+              :options="empleados"
               transition-show="scale"
               transition-hide="scale"
               options-dense
               dense
               outlined
-              hint="Lugar desde donde se realiza la devolución de materiales"
               :disable="disabled || soloLectura"
               :readonly="disabled || soloLectura"
-              :error="!!v$.canton.$errors.length"
-              :input-debounce="0"
+              :option-label="(v) => v.apellidos + ' ' + v.nombres"
+              :option-value="(v) => v.id"
               use-input
-              @filter="filtroCantones"
-              error-message="Selecciona el lugar desde donde realiza la devolución"
-              :option-label="(item) => item.canton"
-              :option-value="(item) => item.id"
+              input-debounce="0"
+              @filter="filtrarEmpleados"
+              @popup-show="ordenarLista(empleados, 'apellidos')"
               emit-value
               map-options
             >
-              <template v-slot:error>
-                <div v-for="error of v$.sucursal.$errors" :key="error.$uid">
-                  <div class="error-msg">{{ error.$message }}</div>
-                </div>
+              <template v-slot:no-option>
+                <q-item>
+                  <q-item-section class="text-grey">
+                    No hay resultados
+                  </q-item-section>
+                </q-item>
               </template>
             </q-select>
-          </div> -->
+          </div>
+
+          <div
+            class="col-12 col-md-3"
+            v-if="accion == acciones.nuevo || devolucion.cliente"
+          >
+            <label class="q-mb-sm block"
+              >Seleccione un cliente para filtrar los materiales</label
+            >
+            <q-select
+              v-model="devolucion.cliente"
+              :options="clientes"
+              transition-show="scale"
+              transition-hide="scale"
+              use-input
+              input-debounce="0"
+              options-dense
+              dense
+              outlined
+              :disable="disabled || soloLectura"
+              :option-label="(item) => item.razon_social"
+              :option-value="(item) => item.cliente_id"
+              @update:model-value="filtrarCliente"
+              emit-value
+              map-options
+            >
+            </q-select>
+          </div>
           <!-- Sucursal select -->
           <div class="col-12 col-md-3">
             <label class="q-mb-sm block">Lugar de devolución</label>
             <q-select
               v-model="devolucion.sucursal"
-              :options="opciones_sucursales"
+              :options="sucursales"
               transition-show="scale"
               transition-hide="scale"
               options-dense
@@ -81,8 +140,8 @@
               hint="Bodega donde se realiza la devolución de materiales"
               use-input
               input-debounce="0"
-              @filter="filtroSucursales"
-              @popup-show="ordenarSucursales"
+              @filter="filtrarSucursales"
+              @popup-show="ordenarLista(sucursales, 'lugar')"
               :option-label="(item) => item.lugar"
               :option-value="(item) => item.id"
               emit-value
@@ -124,35 +183,7 @@
               </template>
             </q-input>
           </div>
-          <!-- Solicitante -->
-          <div v-if="devolucion.solicitante" class="col-12 col-md-3">
-            <label class="q-mb-sm block">Solicitante</label>
-            <!-- <q-input v-model="transaccion.solicitante" disable outlined dense>
-            </q-input> -->
-            <q-select
-              v-model="devolucion.solicitante"
-              :options="opciones_empleados"
-              transition-show="scale"
-              transition-hide="scale"
-              options-dense
-              dense
-              outlined
-              :disable="disabled || soloLectura"
-              :readonly="disabled || soloLectura"
-              :option-label="(v) => v.nombres + ' ' + v.apellidos"
-              :option-value="(v) => v.id"
-              emit-value
-              map-options
-            >
-              <template v-slot:no-option>
-                <q-item>
-                  <q-item-section class="text-grey">
-                    No hay resultados
-                  </q-item-section>
-                </q-item>
-              </template>
-            </q-select>
-          </div>
+
           <!-- Es devolucion para stock personal -->
           <div
             v-if="devolucion.es_para_stock || accion === 'NUEVO'"
@@ -204,7 +235,10 @@
             <label class="q-mb-sm block">Tarea</label>
             <q-select
               v-model="devolucion.tarea"
-              :options="opciones_tareas"
+              :options="tareas"
+              @filter="filtrarTareas"
+              use-input
+              input-debounce="0"
               transition-show="scale"
               transition-hide="scale"
               options-dense
@@ -236,12 +270,64 @@
             </q-select>
           </div>
 
+          <!-- check ingreso masivo -->
+          <div
+            v-if="accion === acciones.nuevo || devolucion.misma_condicion"
+            class="col-12 col-md-3"
+          >
+            <q-checkbox
+              class="q-mt-lg q-pt-md"
+              v-model="devolucion.misma_condicion"
+              @update:model-value="checkMismaCondicion"
+              label="¿Mismo estado?"
+              :disable="
+                disabled ||
+                soloLectura ||
+                (accion == acciones.editar && devolucion.misma_condicion)
+              "
+              outlined
+              dense
+            ></q-checkbox>
+          </div>
+          <!-- Select condiciones -->
+          <div v-if="devolucion.misma_condicion" class="col-12 col-md-3">
+            <label class="q-mb-sm block">Estado de los productos</label>
+            <q-select
+              v-model="devolucion.condicion"
+              :options="condiciones"
+              transition-show="jum-up"
+              transition-hide="jump-down"
+              options-dense
+              dense
+              outlined
+              :readonly="disabled"
+              :error="!!v$.condicion.$errors.length"
+              error-message="Debes seleccionar una condición"
+              :option-value="(item) => item.id"
+              :option-label="(item) => item.nombre"
+              emit-value
+              map-options
+            >
+              <template v-slot:error>
+                <div v-for="error of v$.condicion.$errors" :key="error.$uid">
+                  <div class="error-msg">{{ error.$message }}</div>
+                </div>
+              </template>
+              <template v-slot:no-option>
+                <q-item>
+                  <q-item-section class="text-grey">
+                    No hay resultados
+                  </q-item-section>
+                </q-item>
+              </template>
+            </q-select>
+          </div>
           <!-- Persona que autoriza -->
           <div v-if="devolucion.per_autoriza" class="col-12 col-md-3">
             <label class="q-mb-sm block">Persona que autoriza</label>
             <q-select
               v-model="devolucion.per_autoriza"
-              :options="opciones_empleados"
+              :options="empleados"
               transition-show="jump-up"
               transition-hide="jump-up"
               options-dense
@@ -340,7 +426,7 @@
             >
               <template #boton-subir>
                 <q-btn
-                  v-if="mostrarBotonSubir"
+                  v-if="false"
                   color="positive"
                   push
                   no-caps
@@ -364,7 +450,12 @@
                   v-model="criterioBusquedaProducto"
                   placeholder="Nombre de producto"
                   hint="Presiona Enter para seleccionar un producto"
-                  @keydown.enter="listarProductos()"
+                  @keydown.enter="
+                    listarProductos({
+                      empleado_id: devolucion.solicitante,
+                      cliente_id: devolucion.cliente,
+                    })
+                  "
                   @blur="
                     criterioBusquedaProducto === '' ? limpiarProducto() : null
                   "
@@ -375,7 +466,12 @@
               </div>
               <div class="col-12 col-md-2">
                 <q-btn
-                  @click="listarProductos()"
+                  @click="
+                    listarProductos({
+                      empleado_id: devolucion.solicitante,
+                      cliente_id: devolucion.cliente,
+                    })
+                  "
                   icon="search"
                   unelevated
                   color="primary"
@@ -392,18 +488,34 @@
             <essential-table
               titulo="Productos Seleccionados"
               :configuracionColumnas="
-                configuracionColumnasProductosSeleccionadosAccion
+                accion == acciones.nuevo || accion == acciones.editar
+                  ? [
+                      ...configuracionColumnasProductosSeleccionadosAccion,
+                      accionesTabla,
+                    ]
+                  : configuracionColumnasProductosSeleccionadosAccion
               "
               :datos="devolucion.listadoProductos"
               :permitirConsultar="false"
-              :permitirEditar="false"
+              :permitirEditarModal="true"
+              :permitirEditar="
+                !devolucion.misma_condicion &&
+                (accion == acciones.nuevo || accion == acciones.editar)
+              "
               :permitirEliminar="false"
               :mostrarBotones="false"
               :accion1="botonEditarCantidad"
               :accion2="botonEliminar"
-              :ajustarCeldas="true"
               :altoFijo="false"
-            ></essential-table>
+              :ajustarCeldas="true"
+              ><template v-slot:body="props">
+                <q-tr :props="props" @click="onRowClick(props.row)">
+                  <q-td key="name" :props="props">
+                    {{ props.row.name }}
+                  </q-td>
+                </q-tr>
+              </template></essential-table
+            >
           </div>
         </div>
       </q-form>
@@ -418,5 +530,7 @@
       ></essential-selectable-table>
     </template>
   </tab-layout-filter-tabs2>
+  <!-- Modales -->
+  <modales-entidad :comportamiento="modales"></modales-entidad>
 </template>
 <script src="./DevolucionPage.ts"></script>

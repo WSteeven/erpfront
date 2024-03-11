@@ -16,7 +16,6 @@ import { ForgotPassword } from 'sistema/authentication/forgotPassword/domain/For
 import { ResetPassword } from 'sistema/authentication/resetPassword/domain/ResetPassword'
 import { DetalleFondoController } from 'pages/fondosRotativos/detalleFondo/infrestructure/DetalleFondoController'
 import { SubDetalleFondoController } from 'pages/fondosRotativos/subDetalleFondo/infrestructure/SubDetalleFondoController'
-import { UsuarioAutorizadoresController } from 'pages/fondosRotativos/usuario/infrestructure/UsuarioAutorizadoresController'
 import { CantonController } from 'sistema/ciudad/infraestructure/CantonControllerontroller'
 import { TareaController } from 'pages/gestionTrabajos/tareas/infraestructure/TareaController'
 import { EmpleadoController } from 'pages/recursosHumanos/empleados/infraestructure/EmpleadoController'
@@ -37,7 +36,7 @@ export const useAuthenticationStore = defineStore('authentication', () => {
   const auth = ref(false)
   const roles = ref()
   const permisos = ref()
-  const nombre_usuario = ref()
+  const nombre_usuario = ref() // Para resetear clave
   const saldo_actual = ref(0)
   const nombreUsuario = computed(
     () =>
@@ -48,7 +47,9 @@ export const useAuthenticationStore = defineStore('authentication', () => {
   const esCoordinador = computed(() => user.value ? extraerRol(user.value.roles, rolesSistema.coordinador) : false)
   const esCoordinadorBackup = computed(() => user.value ? extraerRol(user.value.roles, rolesSistema.coordinadorBackup) : false)
   const esCoordinadorBodega = computed(() => user.value ? extraerRol(user.value.roles, rolesSistema.coordinadorBodega) : false)
+  const esFiscalizador = computed(() => user.value ? extraerRol(user.value.roles, rolesSistema.fiscalizador) : false)
   const esJefeTecnico = computed(() => user.value ? extraerRol(user.value.roles, rolesSistema.jefe_tecnico) : false)
+  const esSupervisorCampo = computed(() => user.value ? extraerRol(user.value.roles, rolesSistema.supervisor) : false)
   const esTecnicoLider = computed(() => user.value ? extraerRol(user.value.roles, rolesSistema.tecnico_lider) : false)
   const esBodeguero = computed(() => user.value ? extraerRol(user.value.roles, rolesSistema.bodega) : false)
   const esBodegueroTelconet = computed(() => user.value ? extraerRol(user.value.roles, rolesSistema.bodegaTelconet) : false)
@@ -60,6 +61,11 @@ export const useAuthenticationStore = defineStore('authentication', () => {
   const esCompras = computed(() => user.value ? extraerRol(user.value.roles, rolesSistema.compras) : false)
   const esAdministrador = computed(() => user.value ? extraerRol(user.value.roles, rolesSistema.administrador) : false)
   const esAdministradorVehiculos = computed(() => user.value ? extraerRol(user.value.roles, rolesSistema.administradorVehiculos) : false)
+  //ventas
+  const esJefeVentasClaro = computed(() => user.value ? extraerRol(user.value.roles, rolesSistema.jefe_ventas) : false)
+  const esSupervisorVentasClaro = computed(() => user.value ? extraerRol(user.value.roles, rolesSistema.supervisor_ventas) : false)
+  const esVendedor = computed(() => user.value ? extraerRol(user.value.roles, rolesSistema.vendedor) : false)
+
 
 
   function extraerRol(roles: string[], rolConsultar: string) {
@@ -276,6 +282,9 @@ export const useAuthenticationStore = defineStore('authentication', () => {
     esRecursosHumanos,
     esGerente,
     esCompras, esContabilidad, esAdministrador,esAdministradorVehiculos,
+    esJefeVentasClaro, esSupervisorVentasClaro, esVendedor,
+    esFiscalizador,
+    esSupervisorCampo,
     consultar_saldo_actual,
     extraerRol,
     listadoUsuarios,

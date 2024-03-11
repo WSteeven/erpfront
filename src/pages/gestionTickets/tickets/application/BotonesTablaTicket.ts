@@ -185,7 +185,7 @@ export const useBotonesTablaTicket = (mixin: ContenedorSimpleMixin<Ticket | any>
     titulo: 'Seguimiento',
     icono: 'bi-check2-square',
     color: 'indigo',
-    visible: ({ entidad }) => [estadosTickets.EJECUTANDO, estadosTickets.PAUSADO, estadosTickets.FINALIZADO_SIN_SOLUCION, estadosTickets.FINALIZADO_SOLUCIONADO].includes(entidad.estado),
+    visible: ({ entidad }) => [estadosTickets.REASIGNADO, estadosTickets.EJECUTANDO, estadosTickets.PAUSADO, estadosTickets.FINALIZADO_SIN_SOLUCION, estadosTickets.FINALIZADO_SOLUCIONADO].includes(entidad.estado),
     accion: async ({ entidad }) => {
       ticketStore.filaTicket = entidad
       modales.abrirModalEntidad('SeguimientoTicketPage')

@@ -1,5 +1,11 @@
 <template>
   <div class="q-pa-sm">
+    <div
+      v-if="subtarea.codigo_subtarea"
+      class="text-primary text-center q-mb-md"
+    >
+      {{ 'Subtarea ' + subtarea.codigo_subtarea }}
+    </div>
     <q-expansion-item
       class="overflow-hidden q-mb-md expansion"
       label="Información general"
@@ -13,7 +19,7 @@
           <q-input
             v-model="subtarea.titulo"
             placeholder="Obligatorio"
-            :disable="disabled"
+            :readonly="disabled"
             autofocus
             outlined
             dense
@@ -37,7 +43,7 @@
             v-model="subtarea.descripcion_completa"
             placeholder="Obligatorio"
             outlined
-            :disable="disabled"
+            :readonly="disabled"
             dense
             autogrow
             type="textarea"
@@ -62,7 +68,7 @@
             v-model="subtarea.observacion"
             placeholder="Opcional"
             outlined
-            :disable="disabled"
+            :readonly="disabled"
             dense
             autogrow
             type="textarea"
@@ -349,6 +355,12 @@
             dense
           >
           </q-input>
+        </div>
+
+        <!-- ATS -->
+        <div v-if="ats" class="col-12 col-md-3">
+          <label class="q-mb-sm block">ATS</label>
+          <q-input v-model="ats" disable outlined dense> </q-input>
         </div>
       </div>
     </q-expansion-item>

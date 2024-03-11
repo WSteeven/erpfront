@@ -1,8 +1,10 @@
 import { useNotificationRealtimeStore } from 'stores/notificationRealtime'
 import { estadosTrabajos } from 'config/utils'
 import { Ref } from 'vue'
+import { useAuthenticationStore } from 'stores/authentication'
 
 export class SubtareaListadoPusherEvent {
+  store = useAuthenticationStore()
   accion: (param: string) => void
   puedeEjecutar: Ref<boolean>
 
@@ -16,7 +18,7 @@ export class SubtareaListadoPusherEvent {
     const accion = this.accion
     const puedeEjecutar = this.puedeEjecutar
 
-    pusher.subscribe('subtareas-tracker')
+    pusher.subscribe('subtareas-tracker-' + this.store.user.id)
     pusher.bind('subtarea-event', function (e) {
       if (puedeEjecutar.value) accion(estadosTrabajos.AGENDADO)
     })

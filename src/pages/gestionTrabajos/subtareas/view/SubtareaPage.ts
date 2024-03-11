@@ -445,6 +445,7 @@ export default defineComponent({
       filtrarGrupos,
       empleados,
       filtrarEmpleados,
+      ats: computed(() => subtarea.codigo_subtarea?.replace('TR', 'ATS'))
     }
   },
 })

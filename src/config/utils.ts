@@ -1,6 +1,7 @@
 import { TabOption } from 'components/tables/domain/TabOption'
 
-export const maskFecha = 'DD-MM-YYYY'
+export const maskFecha = 'YYYY-MM-DD'
+// export const maskFecha = 'DD-MM-YYYY'
 //export const maskFecha = 'YYYY/MM/DD'
 // Tipos
 export type TipoSeleccion = 'none' | 'single' | 'multiple'
@@ -53,7 +54,7 @@ export const tiposTareasTelconet = [
 
 export const tiposTareasNedetel = ['TENDIDO DE FIBRA', 'COLOCACIÓN DE CAJAS']
 
-export const regiones = ['R1', 'R2', 'R3', 'R4']
+export const regiones = ['R1', 'R2', 'R3', 'R4', 'R5']
 
 export const atenciones = ['URBANO', 'INTERURBANO']
 
@@ -80,6 +81,11 @@ export const tabOptionsPedidos: TabOption[] = [
   { label: 'Aprobados Parcial', value: 'PARCIAL' },
   { label: 'Cancelados', value: 'CANCELADO' },
   { label: 'Completados', value: 'COMPLETA' },
+]
+export const tabOptionsTransferenciaProductoEmpleado: TabOption[] = [
+  { label: 'Pendientes', value: 'PENDIENTE', icono: 'bi-app-indicator', color_icono: 'yellow-10', bg_color: 'yellow-1' },
+  { label: 'Aprobados', value: 'APROBADO', icono: 'bi-check-circle-fill', color_icono: 'positive', bg_color: 'green-1' },
+  { label: 'Cancelados', value: 'CANCELADO', icono: 'bi-x-circle-fill', color_icono: 'negative', bg_color: 'pink-1' },
 ]
 export const tabOptionsSolicitudPedido: TabOption[] = [
   { label: 'Pendiente', value: '1' },
@@ -119,9 +125,19 @@ export const tabAutorizarGasto: TabOption[] = [
   { label: 'Pendiente', value: '3' },
   { label: 'Anulado', value: '4' },
 ]
+export const tabAcreditacion: TabOption[] = [
+  { label: 'Aprobada', value: '1' },
+  { label: 'Anulado', value: '2' },
+]
+export const tabPrestamoEmpresarial: TabOption[] = [
+  { label: 'ACTIVO', value: 'ACTIVO' },
+  { label: 'FINALIZADO', value: 'FINALIZADO' },
+  { label: 'INACTIVO', value: 'INACTIVO' },
+
+]
 export const tabGestionarEgresos: TabOption[] = [
   { label: 'Aprobada', value: 'ACEPTADA' },
-  // { label: 'Rechazada', value: 'RECHAZADA' },
+  { label: 'Parcial', value: 'PARCIAL' },
   { label: 'Pendiente', value: 'PENDIENTE' },
 ]
 export const tabAutorizarTransferenciaSaldo: TabOption[] = [
@@ -129,6 +145,7 @@ export const tabAutorizarTransferenciaSaldo: TabOption[] = [
   { label: 'Rechazada', value: '2' },
   { label: 'Pendiente', value: '3' },
 ]
+
 
 export const accionesTabla = {
   name: 'acciones',
@@ -152,6 +169,7 @@ export const motivos = {
   stockInicial: 'STOCK INICIAL',
   despachoTarea: 'DESPACHO DE TAREA',
   despacho: 'DESPACHO',
+  destruccion: 'DESTRUCCION',
   devolucionAlProveedor: 'DEVOLUCION AL PROVEEDOR',
   reposicion: 'REPOSICION',
   ingresoTransferenciaBodegas: 'INGRESO TRANSFERENCIA ENTRE BODEGAS',
@@ -159,6 +177,32 @@ export const motivos = {
   ingresoLiquidacionMateriales: 'INGRESO POR LIQUIDACION DE MATERIALES',
   egresoLiquidacionMateriales: 'EGRESO POR LIQUIDACION DE MATERIALES',
   ingresoAjusteRegularizacion: 'AJUSTE DE INGRESO POR REGULARIZACION',
+  robo: 'ROBO',
+  egresoAjusteRegularizacion: 'AJUSTE DE EGRESO POR REGULARIZACION',
+  mercaderiaClienteStock: 'MERCADERIA DE CLIENTE PARA STOCK',
+  devolucionGarantia: 'DEVOLUCION POR GARANTIA',
+  devolucionDanio: 'DEVOLUCION POR DAÑO',
+  despachoGarantia: 'DESPACHO POR GARANTIA',
+}
+
+export const motivosTransaccionesBodega = {
+  venta: 'VENTA',
+  compraProveedor: 'COMPRA A PROVEEDOR',
+  mercaderiaClienteTarea: 'MERCADERIA DE CLIENTE PARA TAREA',
+  devolucionFinalizacionLaboral: 'DEVOLUCION POR FINALIZACION LABORAL',
+  devolucionTarea: 'DEVOLUCION DE TAREA',
+  stockInicial: 'STOCK INICIAL',
+  despachoTarea: 'DESPACHO DE TAREA',
+  despacho: 'DESPACHO',
+  destruccion: 'DESTRUCCION',
+  devolucionAlProveedor: 'DEVOLUCION AL PROVEEDOR',
+  reposicion: 'REPOSICION',
+  ingresoTransferenciaBodegas: 'INGRESO TRANSFERENCIA ENTRE BODEGAS',
+  egresoTransferenciaBodegas: 'EGRESO TRANSFERENCIA ENTRE BODEGAS',
+  ingresoLiquidacionMateriales: 'INGRESO POR LIQUIDACION DE MATERIALES',
+  egresoLiquidacionMateriales: 'EGRESO POR LIQUIDACION DE MATERIALES',
+  ingresoAjusteRegularizacion: 'AJUSTE DE INGRESO POR REGULARIZACION',
+  robo: 'ROBO',
   egresoAjusteRegularizacion: 'AJUSTE DE EGRESO POR REGULARIZACION',
   mercaderiaClienteStock: 'MERCADERIA DE CLIENTE PARA STOCK',
   devolucionGarantia: 'DEVOLUCION POR GARANTIA',
@@ -232,7 +276,8 @@ export const estadosTrabajos = {
   REALIZADO: 'REALIZADO',
   FINALIZADO: 'FINALIZADO',
   //REAGENDADO: 'REAGENDADO',
-}
+} // as const
+
 export const estadosRolPago = {
   CREADO: 'CREADO',
   EJECUTANDO: 'EJECUTANDO',
@@ -272,6 +317,7 @@ export const rolesSistema = {
   bodegaTelconet: 'BODEGA TELCONET',
   compras: 'COMPRAS',
   contabilidad: 'CONTABILIDAD',
+  supervisor: 'SUPERVISOR_CAMPO',
   coordinador: 'COORDINADOR',
   coordinadorBodega: 'COORDINADOR DE BODEGA',
   coordinadorBackup: 'COORDINADOR_BACKUP',
@@ -283,6 +329,11 @@ export const rolesSistema = {
   secretario: 'SECRETARIO',
   tecnico_lider: 'LIDER DE GRUPO',
   tecnico: 'TECNICO',
+  autorizador: 'AUTORIZADOR',
+  //Roles de ventas de Claro
+  jefe_ventas: 'JEFE_VENTAS',
+  supervisor_ventas: 'SUPERVISOR_VENTAS',
+  vendedor: 'VENDEDOR',
 }
 
 export const cargosSistema = {
@@ -297,6 +348,16 @@ export const tiposMovimientos = {
   egreso: 'EGRESO',
 }
 
+export const opcionesTiposMovimientos = [
+  { value: 'Ingreso', label: 'INGRESO' },
+  { value: 'Egreso', label: 'EGRESO' },
+]
+
+export const opcionesEstadosTransferenciasBodega = [
+  { value: 'PENDIENTE', label: 'PENDIENTE' },
+  { value: 'TRANSITO', label: 'TRANSITO' },
+  { value: 'COMPLETADO', label: 'COMPLETADO' }
+]
 export const opcionesEstados = [
   { value: 1, label: 'ACTIVO' },
   { value: 0, label: 'INACTIVO' }
@@ -416,6 +477,7 @@ export const niveles_academicos = [
   { nombre: 'ESTUDIO SECUNDARIO' },
   { nombre: 'TITULO SUPERIOR' },
 ]
+
 export const tipos_sangre = [
   { nombre: 'A +' },
   { nombre: 'B +' },
@@ -426,6 +488,12 @@ export const tipos_sangre = [
   { nombre: 'AB -' },
   { nombre: 'O -' },
   // Puedes agregar aquí más tipos de sangre si es necesario
+]
+export const tipos_vendedores = [
+  { nombre: 'VENDEDOR', descripcion: 'VENDEDOR' },
+  { nombre: 'SUPERVISOR_VENTAS', descripcion: 'SUPERVISOR DE VENTAS' },
+  { nombre: 'JEFE_VENTAS', descripcion: 'JEFE DE VENTAS' },
+  // Puedes agregar aquí más tipos de vendedor si es necesario
 ]
 export const talla_letras = [
   { nombre: 'S' },
@@ -443,7 +511,23 @@ export const tabOptionsPreingresoMateriales = [
   { label: 'Autorizadas', value: '2' }, //autorizacion APROBADO
   { label: 'Canceladas', value: '3' }  //autorizacion CANCELADO
 ]
+export const formas_pagos = [
+  { label: 'EFECTIVO', value: 'EFECTIVO' },
+  { label: 'TC', value: 'TARJETA DE CREDITO' },
+  { label: 'D. BANCARIO', value: 'DEBITO BANCARIO' },
+]
+export const estados_activaciones = [
+  // { label: 'PENDIENTE', value: 'PENDIENTE' },
+  { label: 'APROBADO', value: 'APROBADO' },
+  { label: 'ACTIVADO', value: 'ACTIVADO' },
+  // { label: 'RECHAZADA', value: 'RECHAZADA' },
 
+]
+export const estadosVentas = {
+  APROBADO: 'APROBADO',
+  RECHAZADO: 'RECHAZADO',
+  PENDIENTE: 'PENDIENTE', // Se usa en vez de ASIGNADO en el dashboard
+}
 export const autorizaciones = [
   { nombre: 'Pendiente', id: 1 }, //autorizacion PENDIENTE
   { nombre: 'Aprobado', id: 2 }, //autorizacion APROBADO
@@ -455,3 +539,12 @@ export const estados = [
   { nombre: 'Parcial', id: 3 }, //estado PARCIAL
   { nombre: 'Anulado', id: 4 }  //estado ANULADO
 ]
+
+
+export const tabOptionsTransaccionesEgresos: TabOption[] = [
+  { label: 'Pendientes', value: 'PENDIENTE' },
+  { label: 'Parciales', value: 'PARCIAL' },
+  { label: 'Completas', value: 'COMPLETA' },
+  { label: 'Anuladas', value: 'ANULADA' }
+]
+

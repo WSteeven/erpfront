@@ -1,3 +1,9 @@
+/**
+ * @author Wilson Cordova
+ * @description Este componente trabaja con la tabla archivos y es polimorfica para otros modelos
+ * A nivel de backend hacer los métodos correspondientes en el controlador y la relación en el modelo.
+ * 
+ */
 // Dependencias
 import { configuracionColumnasArchivoSubtarea } from 'pages/gestionTrabajos/subtareas/modules/gestorArchivosTrabajos/domain/configuracionColumnasArchivoSubtarea'
 import { CustomActionTable } from 'components/tables/domain/CustomActionTable'
@@ -31,6 +37,10 @@ export default defineComponent({
       type: Boolean,
       default: true,
     },
+    disable: {
+      type: Boolean,
+      default: false,
+    },
     permitirSubir: {
       type: Boolean,
       default: true,
@@ -44,6 +54,7 @@ export default defineComponent({
       required: false,
     },
   },
+  emits: ['inicializado'],
   setup(props, { emit }) {
     /********
      * Mixin
@@ -57,6 +68,8 @@ export default defineComponent({
       listarArchivos(id, params)
     }
 
+    const cantElementos = ref(0)
+    const tamanioListado = ref(0)
     let paramsForm
 
     /***************
@@ -139,6 +152,21 @@ export default defineComponent({
       // console.log('limpiado...')
     }
 
+    function onFileAdded(files) {
+      for (let index = 0; index < files.length; index++) {
+        cantElementos.value += 1
+      }
+      tamanioListado.value += obtenerSumatoriaTamanio(files)
+    }
+    function onFileRemoved(file) {
+      cantElementos.value -= 1
+      tamanioListado.value -= obtenerSumatoriaTamanio(file)
+    }
+    function obtenerSumatoriaTamanio(files) {
+      const sumatoria = files.reduce((total, file) => total + file.size, 0)
+      return sumatoria
+    }
+
     return {
       listadoArchivos,
       refGestor,
@@ -149,6 +177,10 @@ export default defineComponent({
       onRejected,
       btnEliminar,
       btnDescargar,
+      onFileAdded,
+      onFileRemoved,
+      tamanioListado,
+      cantElementos,
       factoryFn,
       subir,
       limpiarListado,

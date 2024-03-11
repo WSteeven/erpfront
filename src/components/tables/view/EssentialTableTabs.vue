@@ -1,30 +1,36 @@
 <template>
-  <div class="bg-body-table-dark-color">
+  <div>
+    <!-- narrow-indicator -->
     <q-tabs
       v-if="mostrarTabs"
       v-model="tabSeleccionado"
       no-caps
       bordered
       dense
-      narrow-indicator
-      active-color="white"
-      active-bg-color="primary"
-      indicator-color="primary"
-      :class="{
-        'borde-header-tabla': !$q.screen.xs,
-      }"
-      class="bg-table-tabs"
+      inline-label
+      :active-color="activeColor"
+      :active-bg-color="activeBgColor"
+      :indicator-color="indicatorColor"
       align="justify"
       @click="emit('tab-seleccionado', tabSeleccionado)"
     >
       <q-tab
         v-for="opcion in tabOptions"
         :key="opcion.label"
-        :label="opcion.label"
         :name="opcion.value + ''"
-        class=""
-        :class="{ 'rounded shadow-chip q-mx-xs q-my-md': $q.screen.xs }"
+        :class="{
+          'rounded shadow-chip q-mx-xs q-my-md': $q.screen.xs,
+          'tab-inactive': tabSeleccionado !== opcion.label && !$q.screen.xs,
+        }"
       >
+        <span>{{ opcion.label }}</span>
+        <q-badge
+          v-if="tabSeleccionado == opcion.value && datos?.length > 0"
+          color="accent"
+          style="margin-right: -15px"
+          floating
+          >{{ datos.length }}</q-badge
+        >
       </q-tab>
     </q-tabs>
 
@@ -52,6 +58,7 @@
         :accion3Header="accion3Header"
         :accion4Header="accion4Header"
         :accion5Header="accion5Header"
+        :accion6Header="accion6Header"
         :alto-fijo="altoFijo"
         :mostrarFooter="mostrarFooter"
         :mostrarExportar="mostrarExportar"
@@ -74,28 +81,29 @@
         @filtrar="consultarTodos"
         @toggle-filtros="toggleFiltros"
         :ajustarCeldas="ajustarCeldas"
+        :separador="separador"
       ></essential-table>
     </div>
   </div>
 </template>
 
 <script lang="ts" setup>
-import { EntidadAuditable } from "shared/entidad/domain/entidadAuditable";
-import { CustomActionTable } from "../domain/CustomActionTable";
-import { TabOption } from "components/tables/domain/TabOption";
-import { ColumnConfig } from "../domain/ColumnConfig";
-import EssentialTable from "./EssentialTable.vue";
-import { TipoSeleccion } from "config/utils";
-import { ref, watchEffect } from "vue";
+import { EntidadAuditable } from 'shared/entidad/domain/entidadAuditable'
+import { CustomActionTable } from '../domain/CustomActionTable'
+import { TabOption } from 'components/tables/domain/TabOption' // nico, salaas, patricion mnedes , fernando, milton -> operacion y mantenimiento pero no supervisores
+import { ColumnConfig } from '../domain/ColumnConfig'
+import EssentialTable from './EssentialTable.vue'
+import { TipoSeleccion } from 'config/utils'
+import { computed, ref, watchEffect } from 'vue'
 
 const props = defineProps({
   titulo: {
     type: String,
-    default: "Listado",
+    default: 'Listado',
   },
   separador: {
     type: String,
-    default: "horizontal",
+    default: 'horizontal',
   },
   configuracionColumnas: {
     type: Object as () => ColumnConfig<EntidadAuditable>[],
@@ -123,7 +131,7 @@ const props = defineProps({
   },
   tipoSeleccion: {
     type: String as () => TipoSeleccion,
-    default: "none",
+    default: 'none',
   },
   accion1: {
     type: Object as () => CustomActionTable,
@@ -186,6 +194,10 @@ const props = defineProps({
     type: Object as () => CustomActionTable,
     required: false,
   },
+  accion6Header: {
+    type: Object as () => CustomActionTable,
+    required: false,
+  },
   mostrarBotones: {
     type: Boolean,
     default: true,
@@ -228,55 +240,75 @@ const props = defineProps({
     type: Boolean,
     default: false,
   },
-});
+})
 
 const emit = defineEmits([
-  "consultar",
-  "editar",
-  "eliminar",
-  "accion1",
-  "accion2",
-  "accion3",
-  "accion4",
-  "accion5",
-  "accion6",
-  "accion7",
-  "accion8",
-  "accion9",
-  "accion10",
-  "tab-seleccionado",
-  "filtrar",
-  "limpiar-listado",
-]);
+  'consultar',
+  'editar',
+  'eliminar',
+  'accion1',
+  'accion2',
+  'accion3',
+  'accion4',
+  'accion5',
+  'accion6',
+  'accion7',
+  'accion8',
+  'accion9',
+  'accion10',
+  'tab-seleccionado',
+  'filtrar',
+  'limpiar-listado',
+])
 
-const tabSeleccionado = ref(props.tabDefecto);
-const mostrarTabs = ref(true);
+const tabSeleccionado = ref(props.tabDefecto)
+const mostrarTabs = ref(true)
+const activeColor = computed(
+  () =>
+    props.tabOptions.find(
+      (opcion: TabOption) => opcion.value === tabSeleccionado.value
+    )?.color_icono ?? 'white'
+)
+
+const indicatorColor = computed(
+  () =>
+    props.tabOptions.find(
+      (opcion: TabOption) => opcion.value === tabSeleccionado.value
+    )?.color_icono ?? 'accent'
+)
+
+const activeBgColor = computed(
+  () =>
+    props.tabOptions.find(
+      (opcion: TabOption) => opcion.value === tabSeleccionado.value
+    )?.bg_color ?? 'primary'
+)
 
 watchEffect(() => {
-  tabSeleccionado.value = props.tabDefecto;
-});
+  tabSeleccionado.value = props.tabDefecto
+})
 
 function toggleFiltros(mostrarFiltros: boolean) {
-  mostrarTabs.value = !mostrarFiltros;
-  if (mostrarTabs.value) emit("tab-seleccionado", tabSeleccionado.value);
-  else emit("limpiar-listado");
+  mostrarTabs.value = !mostrarFiltros
+  if (mostrarTabs.value) emit('tab-seleccionado', tabSeleccionado.value)
+  else emit('limpiar-listado')
 }
 
-const consultar = (data) => emit("consultar", data);
-const editar = (data) => emit("editar", data);
-const eliminar = (data) => emit("eliminar", data);
-const emitAccion1 = (data) => emit("accion1", data);
-const emitAccion2 = (data) => emit("accion2", data);
-const emitAccion3 = (data) => emit("accion3", data);
-const emitAccion4 = (data) => emit("accion4", data);
-const emitAccion5 = (data) => emit("accion5", data);
-const emitAccion6 = (data) => emit("accion6", data);
-const emitAccion7 = (data) => emit("accion7", data);
-const emitAccion8 = (data) => emit("accion8", data);
-const emitAccion9 = (data) => emit("accion9", data);
-const emitAccion10 = (data) => emit("accion10", data);
+const consultar = (data) => emit('consultar', data)
+const editar = (data) => emit('editar', data)
+const eliminar = (data) => emit('eliminar', data)
+const emitAccion1 = (data) => emit('accion1', data)
+const emitAccion2 = (data) => emit('accion2', data)
+const emitAccion3 = (data) => emit('accion3', data)
+const emitAccion4 = (data) => emit('accion4', data)
+const emitAccion5 = (data) => emit('accion5', data)
+const emitAccion6 = (data) => emit('accion6', data)
+const emitAccion7 = (data) => emit('accion7', data)
+const emitAccion8 = (data) => emit('accion8', data)
+const emitAccion9 = (data) => emit('accion9', data)
+const emitAccion10 = (data) => emit('accion10', data)
 
 function consultarTodos(uri) {
-  emit("filtrar", uri);
+  emit('filtrar', uri)
 }
 </script>

@@ -8,10 +8,11 @@
     >
       <q-toolbar class="bg-body rounded-header">
         <q-avatar square>
-          <img src="~assets/logo.png" />
+          <!-- <img src="~assets/logo.png" /> -->
+          <img :src="!$q.dark.isActive ? logoClaro! : logoOscuro!" />
         </q-avatar>
 
-        <q-toolbar-title>Seleccionar Fecha</q-toolbar-title>
+        <q-toolbar-title>Seleccionar fecha</q-toolbar-title>
 
         <q-btn
           round
@@ -28,16 +29,30 @@
       <q-card-section class="bg-body rounded-footer">
         <div class="row q-mb-md">
           <div class="col-12 q-mb-md">
-            <label class="q-mb-sm block">{{ label ? label : 'Fecha' }}</label>
-            <q-input v-model="fecha" placeholder="Obligatorio" outlined dense>
+            <label class="q-mb-sm block">{{ label }}</label>
+            <q-input
+              v-model="fecha"
+              placeholder="Obligatorio"
+              :readonly="true"
+              outlined
+              dense
+            >
               <template v-slot:append>
                 <q-icon name="event" class="cursor-pointer">
                   <q-popup-proxy
                     cover
                     transition-show="scale"
                     transition-hide="scale"
+                    v-model="isMonth"
                   >
-                    <q-date v-model="fecha" :mask="maskFecha" today-btn>
+                    <q-date
+                      v-model="fecha"
+                      minimal
+                      :mask="mask"
+                      emit-immediately
+                      default-view="Years"
+                      @update:model-value="checkFecha"
+                    >
                       <div class="row items-center justify-end">
                         <q-btn
                           v-close-popup
@@ -78,22 +93,31 @@
 <script lang="ts">
 import { ref, defineComponent, computed } from 'vue'
 import { useNotificaciones } from 'shared/notificaciones'
+import { useConfiguracionGeneralStore } from 'stores/configuracion_general'
 import { maskFecha } from 'config/utils'
 
 export default defineComponent({
-  components: {},
   props: {
     mostrar: Boolean,
     confirmar: {
       type: Function,
       required: true,
     },
-    label: { type: String, required: false },
+    label: {
+      type: String,
+      default: 'Seleccionar Fecha',
+    },
+    mask: {
+      type: String,
+      default: maskFecha,
+    },
   },
   emits: ['cerrar'],
   setup(props, { emit }) {
     const { notificarAdvertencia } = useNotificaciones()
+    const configuracionGeneralStore = useConfiguracionGeneralStore()
     const fecha = ref()
+    const isMonth = ref(false)
     const abierto = computed(() => props.mostrar)
 
     function cerrarModalEntidad() {
@@ -107,13 +131,23 @@ export default defineComponent({
       props.confirmar(fecha.value)
       cerrarModalEntidad()
     }
+    function checkFecha(val, reason, details) {
+      isMonth.value = reason === 'month' ? false : true
+    }
 
     return {
       abierto,
-      guardar,
       fecha,
+      isMonth,
+      guardar,
+      checkFecha,
       cerrarModalEntidad,
-      maskFecha,
+      logoClaro: computed(
+        () => configuracionGeneralStore.configuracion?.logo_claro
+      ),
+      logoOscuro: computed(
+        () => configuracionGeneralStore.configuracion?.logo_oscuro
+      ),
     }
   },
 })

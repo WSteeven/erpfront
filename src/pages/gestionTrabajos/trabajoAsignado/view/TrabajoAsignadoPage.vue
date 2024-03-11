@@ -1,26 +1,29 @@
 <template>
   <q-page :padding="!$q.screen.xs">
     <div class="text-center q-my-md">
-      <div class="q-mb-md">
+      <div class="q-mb-mdd">
         Bienvenido, <strong>{{ authenticationStore.nombreUsuario }}</strong>
       </div>
-      <div class="q-mb-md">{{ fecha }}</div>
+      <small class="block q-mb-md">{{ fecha }}</small>
       <q-btn
-        color="primary"
-        class="q-px-md"
+        color="transparent"
+        class="q-px-md text-positive"
         no-caps
         dense
-        glossy
-        outline
+        unelevated
         rounded
         @click="abrirGuia()"
       >
-        <q-icon name="bi-info-circle-fill" size="xs" class="q-mr-sm"></q-icon>
-        ¿Cómo funcionan los estados de las subtareas?</q-btn
-      >
-      <!--<div v-if="authenticationStore.user?.grupo" class="q-mb-md">
-        Grupo, <strong>{{ authenticationStore.user.grupo }}</strong>
-      </div> -->
+        <q-icon
+          name="bi-info-circle-fill"
+          size="xs"
+          class="q-mr-sm"
+          color="primary"
+        ></q-icon>
+        <span class="text-primary">
+          ¿Cómo funcionan los estados de las subtareas?
+        </span>
+      </q-btn>
     </div>
 
     <essential-table-tabs
@@ -47,9 +50,15 @@
       :tab-options="tabTrabajoAsignado"
       @tab-seleccionado="filtrarTrabajoAsignado"
       :tab-defecto="tabActual"
+      :permitir-buscar="true"
     ></essential-table-tabs>
 
-    <modales-entidad :comportamiento="modales" :mixin-modal="mixin" />
+    <modales-entidad
+      :comportamiento="modales"
+      :mixin-modal="mixin"
+      :confirmar-cerrar="false"
+      :persistente="false"
+    />
 
     <!-- <confirmar-dialog
       :visible="mostrarDialogPlantilla"

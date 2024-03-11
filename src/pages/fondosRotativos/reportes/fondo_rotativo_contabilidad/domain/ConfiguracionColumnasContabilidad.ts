@@ -68,6 +68,20 @@ export const ConfiguracionColumnasContabilidad: ColumnConfig<FondoRotativoContab
     sortable: true
   },
   {
+    name: 'centro_costo',
+    field: 'centro_costo',
+    label: 'Centro de Costo',
+    align: 'left',
+    sortable: true
+  },
+  {
+    name: 'subcentro_costo',
+    field: 'subcentro_costo',
+    label: 'Sub Centro de Costo',
+    align: 'left',
+    sortable: true
+  },
+  {
     name: 'cantidad',
     field: 'cantidad',
     label: 'Cantidad',

@@ -16,6 +16,13 @@ export const configuracionColumnasItemsPreorden: ColumnConfig<any>[] = [
         sortable: true,
     },
     {
+        name: 'preordenes',
+        field: 'preordenes',
+        label: 'Preordenes',
+        align: 'left',
+        sortable: true,
+    },
+    {
         name: 'unidad_medida',
         field: 'unidad_medida',
         label: 'Medida',
@@ -31,4 +38,4 @@ export const configuracionColumnasItemsPreorden: ColumnConfig<any>[] = [
         sortable: true,
         editable: true,
     },
-] 
+]

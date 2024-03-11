@@ -13,6 +13,7 @@ import EssentialTableTabs from 'components/tables/view/EssentialTableTabs.vue'
 import ModalesEntidad from 'components/modales/view/ModalEntidad.vue'
 
 // Logica y controladores
+import { CausaIntervencionController } from 'pages/gestionTrabajos/causasIntervenciones/infraestructure/CausaIntervencionController'
 import { MotivoSuspendidoController } from 'pages/gestionTrabajos/motivosSuspendidos/infraestructure/MotivoSuspendidoController'
 import { TrabajoAsignadoController } from 'gestionTrabajos/trabajoAsignado/infraestructure/TrabajoAsignadoController'
 import { MotivoPausaController } from 'pages/gestionTrabajos/motivosPausas/infraestructure/MotivoPausaController'
@@ -23,7 +24,6 @@ import { SubtareaListadoPusherEvent } from '../application/SubtareaPusherEvent'
 import { CustomActionTable } from 'components/tables/domain/CustomActionTable'
 import { Subtarea } from 'pages/gestionTrabajos/subtareas/domain/Subtarea'
 import { useCargandoStore } from 'stores/cargando'
-import { CausaIntervencionController } from 'pages/gestionTrabajos/causasIntervenciones/infraestructure/CausaIntervencionController'
 
 export default defineComponent({
   components: {

@@ -1,0 +1,20 @@
+import { ColumnConfig } from "components/tables/domain/ColumnConfig";
+import { AsignarAlimentacion } from "./AsignarAlimentacion";
+
+export const configuracionColumnasAsignarAlimentacion: ColumnConfig<AsignarAlimentacion>[] = [
+  {
+    name: 'empleado_info',
+    field: 'empleado_info',
+    label: 'Empleados',
+    align: 'left',
+    sortable: true
+  },
+  {
+    name: 'valor_minimo',
+    field: 'valor_minimo',
+    label: 'Valor Minimo',
+    align: 'left',
+    sortable: true
+  },
+
+]

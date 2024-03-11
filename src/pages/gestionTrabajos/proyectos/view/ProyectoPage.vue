@@ -3,9 +3,17 @@
     :mixin="mixin"
     :configuracionColumnas="configuracionColumnasProyecto"
     titulo-pagina="Proyectos"
+    :ajustarCeldas="true"
+    :permitir-eliminar="false"
   >
     <template #formulario>
       <q-form @submit.prevent>
+        <div
+          class="col-12 text-primary rounded bg-body q-px-md q-py-sm q-mb-md items-center row"
+        >
+          <q-icon name="bi-app-indicator" class="q-mr-sm"></q-icon>
+          Información general
+        </div>
         <div class="row q-col-gutter-sm q-py-md">
           <!-- Cliente -->
           <div class="col-12 col-md-6">
@@ -89,96 +97,6 @@
             </q-input>
           </div>
 
-          <!-- Fecha de inicio de proyecto-->
-          <div class="col-12 col-md-3">
-            <label class="q-mb-sm block">Fecha de inicio de proyecto</label>
-            <q-input
-              v-model="proyecto.fecha_inicio"
-              :error="!!v$.fecha_inicio.$errors.length"
-              placeholder="Obligatorio"
-              @blur="v$.fecha_inicio.$touch"
-              :disable="disabled"
-              outlined
-              dense
-            >
-              <template v-slot:append>
-                <q-icon name="event" class="cursor-pointer">
-                  <q-popup-proxy
-                    cover
-                    transition-show="scale"
-                    transition-hide="scale"
-                  >
-                    <q-date
-                      v-model="proyecto.fecha_inicio"
-                      mask="DD-MM-YYYY"
-                      today-btn
-                    >
-                      <div class="row items-center justify-end">
-                        <q-btn
-                          v-close-popup
-                          label="Cerrar"
-                          color="primary"
-                          flat
-                        />
-                      </div>
-                    </q-date>
-                  </q-popup-proxy>
-                </q-icon>
-              </template>
-
-              <template v-slot:error>
-                <div v-for="error of v$.fecha_inicio.$errors" :key="error.$uid">
-                  <div>{{ error.$message }}</div>
-                </div>
-              </template>
-            </q-input>
-          </div>
-
-          <!-- Fecha de fin de proyecto-->
-          <div class="col-12 col-md-3">
-            <label class="q-mb-sm block">Fecha de fin de proyecto</label>
-            <q-input
-              v-model="proyecto.fecha_fin"
-              :error="!!v$.fecha_fin.$errors.length"
-              placeholder="Obligatorio"
-              @blur="v$.fecha_fin.$touch"
-              :disable="disabled"
-              outlined
-              dense
-            >
-              <template v-slot:append>
-                <q-icon name="event" class="cursor-pointer">
-                  <q-popup-proxy
-                    cover
-                    transition-show="scale"
-                    transition-hide="scale"
-                  >
-                    <q-date
-                      v-model="proyecto.fecha_fin"
-                      mask="DD-MM-YYYY"
-                      today-btn
-                    >
-                      <div class="row items-center justify-end">
-                        <q-btn
-                          v-close-popup
-                          label="Cerrar"
-                          color="primary"
-                          flat
-                        />
-                      </div>
-                    </q-date>
-                  </q-popup-proxy>
-                </q-icon>
-              </template>
-
-              <template v-slot:error>
-                <div v-for="error of v$.fecha_fin.$errors" :key="error.$uid">
-                  <div class="error-msg">{{ error.$message }}</div>
-                </div>
-              </template>
-            </q-input>
-          </div>
-
           <!-- Canton -->
           <div class="col-12 col-md-3">
             <label class="q-mb-sm block">Cantón</label>
@@ -218,14 +136,15 @@
           </div>
 
           <!-- Coordinador -->
-          <div v-if="mostrarCoordinador" class="col-12 col-md-3">
-            <label class="q-mb-sm block">Coordinador</label>
+          <!-- v-if="mostrarCoordinador && accion === acciones.nuevo" -->
+          <div class="col-12 col-md-3">
+            <label class="q-mb-sm block">Coordinador/Supervisor</label>
             <q-select
               v-model="proyecto.coordinador"
               :options="coordinadores"
               @filter="filtrarCoordinadores"
               @blur="v$.coordinador.$touch"
-              :disable="disabled"
+              :disable="disabled || !mostrarCoordinador"
               transition-show="scale"
               transition-hide="scale"
               options-dense
@@ -285,7 +204,110 @@
               </template>
             </q-select>
           </div>
+        </div>
 
+        <div
+          class="col-12 text-primary rounded bg-body q-px-md q-py-sm q-mb-md items-center row"
+        >
+          <q-icon name="bi-clock" class="q-mr-sm"></q-icon>
+          Tiempos
+        </div>
+        <div class="row q-col-gutter-sm">
+          <!-- Fecha de inicio de proyecto-->
+          <div class="col-12 col-md-3">
+            <label class="q-mb-sm block"
+              >Fecha estimada de inicio de proyecto</label
+            >
+            <q-input
+              v-model="proyecto.fecha_inicio"
+              :error="!!v$.fecha_inicio.$errors.length"
+              placeholder="Obligatorio"
+              @blur="v$.fecha_inicio.$touch"
+              :disable="!!proyecto.fecha_hora_finalizado"
+              outlined
+              dense
+            >
+              <template v-slot:append>
+                <q-icon name="event" class="cursor-pointer">
+                  <q-popup-proxy
+                    cover
+                    transition-show="scale"
+                    transition-hide="scale"
+                  >
+                    <q-date
+                      v-model="proyecto.fecha_inicio"
+                      :mask="maskFecha"
+                      today-btn
+                    >
+                      <div class="row items-center justify-end">
+                        <q-btn
+                          v-close-popup
+                          label="Cerrar"
+                          color="primary"
+                          flat
+                        />
+                      </div>
+                    </q-date>
+                  </q-popup-proxy>
+                </q-icon>
+              </template>
+
+              <template v-slot:error>
+                <div v-for="error of v$.fecha_inicio.$errors" :key="error.$uid">
+                  <div>{{ error.$message }}</div>
+                </div>
+              </template>
+            </q-input>
+          </div>
+
+          <!-- Fecha de fin de proyecto-->
+          <div class="col-12 col-md-3">
+            <label class="q-mb-sm block"
+              >Fecha estimada de fin de proyecto</label
+            >
+            <q-input
+              v-model="proyecto.fecha_fin"
+              :error="!!v$.fecha_fin.$errors.length"
+              placeholder="Obligatorio"
+              @blur="v$.fecha_fin.$touch"
+              :disable="!!proyecto.fecha_hora_finalizado"
+              outlined
+              dense
+            >
+              <template v-slot:append>
+                <q-icon name="event" class="cursor-pointer">
+                  <q-popup-proxy
+                    cover
+                    transition-show="scale"
+                    transition-hide="scale"
+                  >
+                    <q-date
+                      v-model="proyecto.fecha_fin"
+                      :mask="maskFecha"
+                      today-btn
+                    >
+                      <div class="row items-center justify-end">
+                        <q-btn
+                          v-close-popup
+                          label="Cerrar"
+                          color="primary"
+                          flat
+                        />
+                      </div>
+                    </q-date>
+                  </q-popup-proxy>
+                </q-icon>
+              </template>
+
+              <template v-slot:error>
+                <div v-for="error of v$.fecha_fin.$errors" :key="error.$uid">
+                  <div class="error-msg">{{ error.$message }}</div>
+                </div>
+              </template>
+            </q-input>
+          </div>
+
+          <!-- Marcar como finalizado -->
           <div class="col-12 col-md-3">
             <br />
             <q-toggle
@@ -293,12 +315,77 @@
               checked-icon="check"
               color="positive"
               label="Marcar proyecto como finalizado"
+              :disable="!!proyecto.fecha_hora_finalizado"
             />
+          </div>
+
+          <div class="col-12 col-md-3"></div>
+
+          <div v-if="proyecto.tiempo_ocupado" class="col-12 col-md-3">
+            <label class="q-mb-sm block"
+              >Fecha y hora de creación en el sistema</label
+            >
+            <q-input v-model="proyecto.created_at" disable outlined dense>
+            </q-input>
+          </div>
+
+          <!-- Fecha y hora de finalizacion -->
+          <div v-if="proyecto.fecha_hora_finalizado" class="col-12 col-md-3">
+            <label class="q-mb-sm block"
+              >Fecha y hora de finalización en el sistema</label
+            >
+            <q-input
+              v-model="proyecto.fecha_hora_finalizado"
+              disable
+              outlined
+              dense
+            >
+            </q-input>
+          </div>
+
+          <div v-if="proyecto.tiempo_ocupado" class="col-12 col-md-6">
+            <label class="q-mb-sm block">Tiempo ocupado</label>
+            <q-input v-model="proyecto.tiempo_ocupado" disable outlined dense>
+            </q-input>
+          </div>
+
+          <!-- Tiene etapas -->
+          <div class="col-12 col-md-12" v-if="accion !== acciones.nuevo">
+            <essential-table
+              ref="refEtapas"
+              titulo="Etapas del proyecto"
+              :configuracionColumnas="
+                accion == acciones.nuevo || accion == acciones.editar
+                  ? [...columnasEtapas, accionesTabla]
+                  : columnasEtapas
+              "
+              :datos="proyecto.etapas"
+              :accion1Header="addNuevaEtapa"
+              :permitirBuscar="false"
+              :permitirConsultar="false"
+              :permitirEditar="false"
+              :permitirEliminar="false"
+              :mostrarBotones="false"
+              :mostrarCantidadElementos="false"
+              :permitirEditarModal="true"
+              :modalMaximized="false"
+              :alto-fijo="false"
+              :mostrarFooter="false"
+              :accion1="btnEditar"
+              :accion2="btnDesactivar"
+              :accion3="btnActivar"
+            ></essential-table>
           </div>
         </div>
       </q-form>
     </template>
   </tab-layout>
+
+  <modales-entidad
+    :comportamiento="modales"
+    :persistente="false"
+    @guardado="(data) => guardado(data)"
+  ></modales-entidad>
 </template>
 
 <script src="./ProyectoPage.ts"></script>

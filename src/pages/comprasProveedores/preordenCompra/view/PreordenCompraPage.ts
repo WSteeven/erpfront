@@ -33,12 +33,14 @@ import { PedidoController } from "pages/bodega/pedidos/infraestructura/PedidoCon
 import { usePreordenStore } from "stores/comprasProveedores/preorden";
 import { useRouter } from "vue-router";
 import { CustomActionPrompt } from "components/tables/domain/CustomActionPrompt";
-import { ordenarEmpleados } from "shared/utils";
+import { ordenarLista } from "shared/utils";
 import { useFiltrosListadosSelects } from "shared/filtrosListadosGenerales";
 import { ComportamientoModalesPreordenes } from "../application/ComportamientoModalesPreordenes";
+import { EmpleadoRoleController } from "pages/recursosHumanos/empleados/infraestructure/EmpleadoRolesController";
 
 
 export default defineComponent({
+  name: 'PreordenCompra',
   components: { TabLayoutFilterTabs2, EssentialSelectableTable, EssentialTable, ModalesEntidad, EssentialPopupEditableTable },
   setup() {
     const mixin = new ContenedorSimpleMixin(PreordenCompra, new PreordenCompraController())
@@ -248,7 +250,7 @@ export default defineComponent({
 
       //funciones
       filtrarPreordenes,
-      ordenarEmpleados,
+      ordenarLista,
       guardado,
 
       //variables computadas

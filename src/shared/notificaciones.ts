@@ -22,12 +22,12 @@ export function useNotificaciones() {
       position: 'bottom',
     })
   }
-  
+
   function notificarCorrecto(mensaje: string | string[]) {
     $q.notify({
       html: true,
-      color: 'light-green-7',
-      textColor: 'white',
+      color: 'light-green-2',
+      textColor: 'light-green-8',
       icon: 'bi-check-circle-fill',
       message: 'Correcto',
       caption: obtenerMensaje(mensaje),
@@ -38,8 +38,8 @@ export function useNotificaciones() {
   function notificarError(mensaje: string | string[]) {
     $q.notify({
       html: true,
-      color: 'pink-6',
-      textColor: 'white',
+      color: 'pink-2',
+      textColor: 'pink-6',
       icon: 'bi-question-diamond-fill',
       message: 'Error',
       caption: obtenerMensaje(mensaje),
@@ -51,8 +51,8 @@ export function useNotificaciones() {
   function notificarAdvertencia(mensaje: string | string[]) {
     $q.notify({
       html: true,
-      color: 'amber-9',
-      textColor: 'white',
+      color: 'amber-2',
+      textColor: 'amber-9',
       icon: 'bi-exclamation-triangle-fill',
       caption: obtenerMensaje(mensaje),
       message: 'Advertencia',
@@ -61,7 +61,7 @@ export function useNotificaciones() {
       progress: true,
       timeout: 2000,
       actions: [
-        { label: 'X', color: 'white', handler: () => { /* ... */ } }
+        { label: 'X', color: 'amber-9', handler: () => { /* ... */ } }
       ]
     })
   }
@@ -74,7 +74,7 @@ export function useNotificaciones() {
       cancel: true,
       persistent: true,
     })
-      .onOk(async() => {
+      .onOk(async () => {
         await callback()
       })
       .onCancel(() => {

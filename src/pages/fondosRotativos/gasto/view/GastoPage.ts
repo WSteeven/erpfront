@@ -30,12 +30,19 @@ import { SubDetalleFondo } from 'pages/fondosRotativos/subDetalleFondo/domain/Su
 import { useNotificaciones } from 'shared/notificaciones'
 import { AprobarGastoController } from 'pages/fondosRotativos/autorizarGasto/infrestructure/AprobarGastoController'
 import { useAuthenticationStore } from 'stores/authentication'
-import { maskFecha, tabAutorizarGasto, estadosGastos, convertir_fecha } from 'config/utils'
+import {
+  maskFecha,
+  tabAutorizarGasto,
+  estadosGastos,
+  convertir_fecha,
+  acciones,
+} from 'config/utils'
 import { EmpleadoController } from 'pages/recursosHumanos/empleados/infraestructure/EmpleadoController'
 import { Empleado } from 'pages/recursosHumanos/empleados/domain/Empleado'
 import { VehiculoController } from 'pages/controlVehiculos/vehiculos/infraestructure/VehiculoController'
 import ImagenComprimidaComponent from 'components/ImagenComprimidaComponent.vue'
 import { EmpleadoRoleController } from 'pages/recursosHumanos/empleados/infraestructure/EmpleadoRolesController'
+import { CustomActionTable } from 'components/tables/domain/CustomActionTable'
 export default defineComponent({
   components: { TabLayoutFilterTabs2, ImagenComprimidaComponent },
   emits: ['guardado', 'cerrar-modal'],
@@ -68,6 +75,7 @@ export default defineComponent({
       notificarError,
     } = useNotificaciones()
 
+    const store = useAuthenticationStore()
     /*******
      * Init
      ******/
@@ -89,8 +97,11 @@ export default defineComponent({
         ? true
         : false*/
     })
-    onConsultado(()=>{
-      esFactura.value = gasto.tiene_factura!=null?gasto.tiene_factura:true;
+    const es_consultar = computed(() => {
+      return accion.value === acciones.consultar
+    })
+    onConsultado(() => {
+      esFactura.value =  !!gasto.factura  //gasto.tiene_factura != null ? gasto.tiene_factura : true
     })
     const esCombustibleEmpresa = computed(() => {
       if (gasto.detalle == null) {
@@ -126,6 +137,8 @@ export default defineComponent({
         mascara: '###-###-#########',
       },
     ]
+    const mascara_placa = 'AAA-####'
+
     const cantidadPermitidaFactura = computed(() => {
       let cantidad = 17
 
@@ -218,11 +231,14 @@ export default defineComponent({
         required: requiredIf(() => esCombustibleEmpresa.value),
       },
       vehiculo: {
-        required: requiredIf(() => esCombustibleEmpresa.value),
+        required: requiredIf(() => esCombustibleEmpresa.value && !!gasto.es_vehiculo_alquilado),
       },
       observacion: {
         required,
       },
+      placa:{
+        required: requiredIf(() => gasto.es_vehiculo_alquilado),
+      }
     }
 
     const v$ = useVuelidate(reglas, gasto)
@@ -242,16 +258,22 @@ export default defineComponent({
       await obtenerListados({
         autorizacionesEspeciales: {
           controller: new EmpleadoRoleController(),
-          params: {roles: ['AUTORIZADOR']},
+          params: { roles: ['AUTORIZADOR'] },
         },
         proyectos: {
           controller: new ProyectoController(),
-          params: { campos: 'id,nombre,codigo_proyecto', finalizado: 0 },
+          params: {
+            campos: 'id,nombre,codigo_proyecto',
+            finalizado: 0,
+            empleado_id: store.user.id,
+          },
         },
         tareas: {
           controller: new TareaController(),
           params: {
             //campos: 'id,codigo_tarea,titulo,cliente_id,proyecto_id',
+            empleado_id: store.user.id,
+            activas_empleado: 1,
             formulario: true,
           },
         },
@@ -380,9 +402,8 @@ export default defineComponent({
       } else {
         sabadoAnterior = convertir_fecha(
           //new Date(today.setDate(today.getDate() - ((today.getDay()+1) % 7)))
-          new Date(today.setDate(today.getDate() - ((today.getDay()) % 7)))
-
-          )
+          new Date(today.setDate(today.getDate() - (today.getDay() % 7)))
+        )
       }
       const sabadoSiguiente = convertir_fecha(new Date(siguienteSabado()))
       console.log(sabadoAnterior + ' al ' + sabadoSiguiente)
@@ -520,7 +541,7 @@ export default defineComponent({
         gasto.num_comprobante = null
         if (!subdetalleEncontrado.tiene_factura) {
           tieneFactura = false
-          gasto.factura= null
+          gasto.factura = null
           break
         }
       }
@@ -631,6 +652,21 @@ export default defineComponent({
           break
       }
     }
+    const editarGasto: CustomActionTable = {
+      titulo: ' ',
+      icono: 'bi-pencil-square',
+      color: 'secondary',
+      visible: ({ entidad }) => {
+        return (
+          (entidad.aut_especial === authenticationStore.user.id || entidad.id_usuario == authenticationStore.user.id) &&
+          entidad.estado === estadosGastos.PENDIENTE
+        )
+      },
+      accion: ({ entidad }) => {
+        accion.value = acciones.editar
+        consultar(entidad)
+      },
+    }
     let tabActualGasto = '3'
 
     function filtrarGasto(tabSeleccionado: string) {
@@ -650,6 +686,7 @@ export default defineComponent({
       usuario,
       disabled,
       accion,
+      acciones,
       v$,
       tabAutorizarGasto,
       maskFecha,
@@ -675,13 +712,16 @@ export default defineComponent({
       cambiar_proyecto,
       optionsFechaGasto,
       recargar_detalle,
+      editarGasto,
       mascaraFactura,
+      mascara_placa,
       listadosAuxiliares,
       listadoSubdetalles,
       beneficiarios,
       mostrarListado,
       mostarPlaca,
       listadoTareas,
+      es_consultar,
     }
   },
 })

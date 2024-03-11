@@ -10,10 +10,23 @@
     :filtrar="filtrarGasto"
     tabDefecto="3"
     :forzarListar="true"
+    :accion1="editarGasto"
   >
     <template #formulario>
       <q-form @submit.prevent>
         <div class="row q-col-gutter-sm q-mb-md q-mt-md q-mx-md q-py-sm">
+          <!-- Empleado Solicitante -->
+          <div class="col-12 col-md-3" v-if="es_consultar">
+            <label class="q-mb-sm block">Empleado Solicitante</label>
+            <q-input
+              v-model="gasto.empleado_info"
+              placeholder="Obligatorio"
+              disable
+              outlined
+              dense
+            >
+            </q-input>
+          </div>
           <!-- Lugar -->
           <div class="col-12 col-md-3">
             <label class="q-mb-sm block">Lugar</label>
@@ -45,9 +58,7 @@
               </template>
               <template v-slot:no-option>
                 <q-item>
-                  <q-item-section class="text-grey">
-                    No hay resultados
-                  </q-item-section>
+                  <q-item-section class="text-grey"> No hay resultados </q-item-section>
                 </q-item>
               </template>
             </q-select>
@@ -68,11 +79,7 @@
             >
               <template v-slot:append>
                 <q-icon name="event" class="cursor-pointer">
-                  <q-popup-proxy
-                    cover
-                    transition-show="scale"
-                    transition-hide="scale"
-                  >
+                  <q-popup-proxy cover transition-show="scale" transition-hide="scale">
                     <q-date
                       v-model="gasto.fecha_viat"
                       :mask="maskFecha"
@@ -80,12 +87,7 @@
                       today-btn
                     >
                       <div class="row items-center justify-end">
-                        <q-btn
-                          v-close-popup
-                          label="Cerrar"
-                          color="primary"
-                          flat
-                        />
+                        <q-btn v-close-popup label="Cerrar" color="primary" flat />
                       </div>
                     </q-date>
                   </q-popup-proxy>
@@ -142,9 +144,7 @@
               </template>
               <template v-slot:no-option>
                 <q-item>
-                  <q-item-section class="text-grey">
-                    No hay resultados
-                  </q-item-section>
+                  <q-item-section class="text-grey"> No hay resultados </q-item-section>
                 </q-item>
               </template>
             </q-select>
@@ -191,9 +191,7 @@
               </template>
               <template v-slot:no-option>
                 <q-item>
-                  <q-item-section class="text-grey">
-                    No hay resultados
-                  </q-item-section>
+                  <q-item-section class="text-grey"> No hay resultados </q-item-section>
                 </q-item>
               </template>
             </q-select>
@@ -210,8 +208,8 @@
               dense
             ></q-checkbox>
           </div>
-                    <!-- Detalle -->
-                    <div class="col-12 col-md-3 q-mb-md">
+          <!-- Detalle -->
+          <div class="col-12 col-md-3 q-mb-md">
             <label class="q-mb-sm block">Detalle</label>
             <q-select
               v-model="gasto.detalle"
@@ -242,9 +240,7 @@
               </template>
               <template v-slot:no-option>
                 <q-item>
-                  <q-item-section class="text-grey">
-                    No hay resultados
-                  </q-item-section>
+                  <q-item-section class="text-grey"> No hay resultados </q-item-section>
                 </q-item>
               </template>
               <template v-slot:after>
@@ -281,9 +277,7 @@
               emit-value
               map-options
             >
-              <template
-                v-slot:option="{ itemProps, opt, selected, toggleOption }"
-              >
+              <template v-slot:option="{ itemProps, opt, selected, toggleOption }">
                 <q-item v-bind="itemProps">
                   <q-item-section>
                     {{ opt.descripcion }}
@@ -304,23 +298,18 @@
               </template>
               <template v-slot:no-option>
                 <q-item>
-                  <q-item-section class="text-grey">
-                    No hay resultados
-                  </q-item-section>
+                  <q-item-section class="text-grey"> No hay resultados </q-item-section>
                 </q-item>
               </template>
               <template v-slot:after>
-                <q-btn
-                  color="positive"
-                  @click="recargar_detalle('sub_detalle')"
-                >
+                <q-btn color="positive" @click="recargar_detalle('sub_detalle')">
                   <q-icon size="xs" class="q-mr-sm" name="bi-arrow-clockwise" />
                 </q-btn>
               </template>
             </q-select>
           </div>
           <!-- Factura -->
-          <div class="col-12 col-md-3" v-if="esFactura && gasto.detalle!=null ">
+          <div class="col-12 col-md-3" v-if="esFactura && gasto.detalle != null">
             <label class="q-mb-sm block">#Factura</label>
             <q-input
               v-model="gasto.factura"
@@ -355,17 +344,14 @@
               dense
             >
               <template v-slot:error>
-                <div
-                  v-for="error of v$.num_comprobante.$errors"
-                  :key="error.$uid"
-                >
+                <div v-for="error of v$.num_comprobante.$errors" :key="error.$uid">
                   <div class="error-msg">{{ error.$message }}</div>
                 </div>
               </template>
             </q-input>
           </div>
           <!-- RUC -->
-          <div class="col-12 col-md-3" v-if="esFactura && gasto.detalle!=null">
+          <div class="col-12 col-md-3" v-if="esFactura && gasto.detalle != null">
             <label class="q-mb-sm block">RUC</label>
             <q-input
               v-model="gasto.ruc"
@@ -468,12 +454,10 @@
               emit-value
               map-options
             >
-              <template
-                v-slot:option="{ itemProps, opt, selected, toggleOption }"
-              >
+              <template v-slot:option="{ itemProps, opt, selected, toggleOption }">
                 <q-item v-bind="itemProps">
                   <q-item-section>
-                    {{ opt.nombres + ' ' + opt.apellidos }}
+                    {{ opt.nombres + " " + opt.apellidos }}
                     <q-item-label v-bind:inner-h-t-m-l="opt.nombres" />
                   </q-item-section>
                   <q-item-section side>
@@ -486,9 +470,7 @@
               </template>
               <template v-slot:no-option>
                 <q-item>
-                  <q-item-section class="text-grey">
-                    No hay resultados
-                  </q-item-section>
+                  <q-item-section class="text-grey"> No hay resultados </q-item-section>
                 </q-item>
               </template>
             </q-select>
@@ -524,9 +506,7 @@
               </template>
               <template v-slot:no-option>
                 <q-item>
-                  <q-item-section class="text-grey">
-                    No hay resultados
-                  </q-item-section>
+                  <q-item-section class="text-grey"> No hay resultados </q-item-section>
                 </q-item>
               </template>
             </q-select>
@@ -552,10 +532,41 @@
               </template>
             </q-input>
           </div>
+          <!--es vehiculo alquilado-->
+          <div class="col-12 col-md-3 q-mb-xl" v-if="esCombustibleEmpresa || mostarPlaca">
+            <q-checkbox
+              class="q-mb-lg"
+              v-model="gasto.es_vehiculo_alquilado"
+              label="¿Es vehiculo alquilado?"
+              outlined
+              dense
+            />
+          </div>
+
+          <!-- Placa Vehiculo Alquilado -->
+          <div class="col-12 col-md-3" v-if="gasto.es_vehiculo_alquilado">
+            <label class="q-mb-sm block">Placa de Vehiculo Alquilado </label>
+            <q-input
+              v-model="gasto.placa"
+              placeholder="obligatorio"
+              :disable="disabled"
+              :mask="mascara_placa"
+              :error="!!v$.placa.$errors.length"
+              @blur="v$.placa.$touch"
+              outlined
+              dense
+            >
+              <template v-slot:error>
+                <div v-for="error of v$.placa.$errors" :key="error.$uid">
+                  <div class="error-msg">{{ error.$message }}</div>
+                </div>
+              </template>
+            </q-input>
+          </div>
           <!-- Placa vehiculo -->
           <div
             class="col-12 col-md-3"
-            v-if="esCombustibleEmpresa || mostarPlaca"
+            v-if="(esCombustibleEmpresa || mostarPlaca) && gasto.es_vehiculo_alquilado == false"
           >
             <label class="q-mb-sm block">Placas</label>
             <q-select
@@ -595,13 +606,12 @@
               </template>
               <template v-slot:no-option>
                 <q-item>
-                  <q-item-section class="text-grey">
-                    No hay resultados
-                  </q-item-section>
+                  <q-item-section class="text-grey"> No hay resultados </q-item-section>
                 </q-item>
               </template>
             </q-select>
           </div>
+
           <!-- Comprobante 1 Archivo -->
           <div class="col-12 col-md-3">
             <label class="q-mb-sm block">Comprobante 1</label>
@@ -661,16 +671,34 @@
               </template>
             </q-input>
           </div>
-          <!-- Estado -->
-          <div class="col-12 col-md-3">
-            <label class="q-mb-sm block">Estado</label>
+          <!-- Centro de Costo -->
+          <div class="col-12 col-md-3" v-if="es_consultar">
+            <label class="q-mb-sm block">Centro de Costo</label>
             <q-input
-              v-model="gasto.estado_info"
-              placeholder=""
+              v-model="gasto.centro_costo"
+              placeholder="Obligatorio"
               disable
               outlined
               dense
             >
+            </q-input>
+          </div>
+          <!-- Sub Centro de Costo -->
+          <div class="col-12 col-md-3" v-if="es_consultar">
+            <label class="q-mb-sm block">Sub Centro de Costo</label>
+            <q-input
+              v-model="gasto.subcentro_costo"
+              placeholder="Obligatorio"
+              disable
+              outlined
+              dense
+            >
+            </q-input>
+          </div>
+          <!-- Estado -->
+          <div class="col-12 col-md-3">
+            <label class="q-mb-sm block">Estado</label>
+            <q-input v-model="gasto.estado_info" placeholder="" disable outlined dense>
             </q-input>
           </div>
         </div>

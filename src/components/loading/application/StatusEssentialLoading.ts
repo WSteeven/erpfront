@@ -1,4 +1,4 @@
-import { QSpinnerIos, QSpinnerHourglass, useQuasar } from 'quasar'
+import { useQuasar, QSpinnerBars } from 'quasar'
 import { useCargandoStore } from 'stores/cargando'
 import { computed, ComputedRef, Ref } from 'vue'
 
@@ -12,14 +12,13 @@ export class StatusEssentialLoading {
     // this.mensaje.value = 'Cargando...'
   }
 
+  waitBackground = 'bg-grey-8' //this.$q.dark.isActive ? 'bg-grey-10' : 'bg-grey-4'
   activar(): void {
-    // this.store.activarCargando()
     this.$q.loading.show({
-      spinner: QSpinnerIos,
-      message: '<span class="text-white text-italic">La operación está en progreso.<br/><br/><small class="text-white text-italic q-py-xs q-px-sm bg-desenfoque rounded-card">Espere por favor...</small></span>',
-      html: true,
+      spinner: QSpinnerBars,
       spinnerColor: 'white',
-      // backgroundColor: 'white',
+      message: '<span class="text-white text-italic">La operación está en progreso.<br/><br/><small class=" text-italic text-bold q-py-xs q-px-sm ' + this.waitBackground + ' rounded-card">Espere por favor...</small></span>',
+      html: true,
     })
   }
 
@@ -28,7 +27,6 @@ export class StatusEssentialLoading {
   }
 
   desactivar(): void {
-    // this.store.desactivarCargando()
     this.$q.loading.hide()
   }
 }
