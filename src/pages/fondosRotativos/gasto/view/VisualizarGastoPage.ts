@@ -40,6 +40,7 @@ import { DetalleFondoController } from 'pages/fondosRotativos/detalleFondo/infre
 import { Gasto } from '../domain/Gasto'
 import { GastoController } from '../infrestructure/GastoController'
 import { isAxiosError, notificarMensajesError } from 'shared/utils'
+import { StatusEssentialLoading } from 'components/loading/application/StatusEssentialLoading'
 
 export default defineComponent({
   components: { TabLayout, ImagenComprimidaComponent, ButtonSubmits },
@@ -99,6 +100,8 @@ export default defineComponent({
     const tareas = ref([])
     const vehiculos = ref([])
     const beneficiarios = ref([])
+    const cargando = new StatusEssentialLoading()
+
     const esCombustibleEmpresa = computed(() => {
       if (gasto.detalle == null) {
         return false
@@ -601,6 +604,7 @@ export default defineComponent({
       gasto.factura = null
     }
     async function aprobar_gasto(entidad, tipo_aprobacion: string) {
+      cargando.activar()
       switch (tipo_aprobacion) {
         case 'aprobar':
           try {
@@ -609,6 +613,7 @@ export default defineComponent({
               issubmit.value = false
               notificarCorrecto('Se aprobado Gasto Exitosamente')
               emit('cerrar-modal', false)
+              cargando.desactivar()
               emit('guardado')
             }
           } catch (error: any) {
@@ -626,6 +631,7 @@ export default defineComponent({
                 issubmit.value = false
                 notificarAdvertencia('Se rechazado Gasto Exitosamente')
                 emit('cerrar-modal', false)
+                cargando.desactivar()
                 emit('guardado')
               }
             } catch (error: any) {
@@ -644,6 +650,7 @@ export default defineComponent({
                 issubmit.value = false
                 notificarAdvertencia('Se anulado Gasto Exitosamente')
                 emit('cerrar-modal', false)
+                cargando.desactivar()
                 emit('guardado')
               } catch (error: any) {
                 if (isAxiosError(error)) {

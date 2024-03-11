@@ -349,6 +349,11 @@ export const tiposMovimientos = {
   egreso: 'EGRESO',
 }
 
+export const opcionesTiposMovimientos = [
+  { value: 'Ingreso', label: 'INGRESO' },
+  { value: 'Egreso', label: 'EGRESO' },
+]
+
 export const opcionesEstadosTransferenciasBodega = [
   { value: 'PENDIENTE', label: 'PENDIENTE' },
   { value: 'TRANSITO', label: 'TRANSITO' },
