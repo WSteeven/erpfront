@@ -32,6 +32,8 @@ import { useNotificaciones } from "shared/notificaciones";
 import { CustomActionPrompt } from "components/tables/domain/CustomActionPrompt";
 import { obtenerFechaActual, sumarFechas } from "shared/utils";
 
+import { addYear, addDay, format } from "@formkit/tempo"
+
 
 
 export default defineComponent({
@@ -45,7 +47,8 @@ export default defineComponent({
 
         const empleado: Empleado = reactive(new Empleado())
         const conductorStore = useConductorStore()
-        const statusLoading = new StatusEssentialLoading()
+        const cargando = new StatusEssentialLoading()
+
         const modales = new ComportamientoModalesConductores()
 
         const dataMulta = {
@@ -108,26 +111,34 @@ export default defineComponent({
         }
         async function obtenerEmpleado(empleadoId: number | null) {
             if (empleadoId != null) {
-                statusLoading.activar()
+                cargando.activar()
                 const { result } = await new EmpleadoController().consultar(empleadoId)
                 console.log(result)
                 empleado.hydrate(result)
-                statusLoading.desactivar()
+                cargando.desactivar()
             }
         }
 
         async function filtrarConductores(tab: string) {
             switch (tab) {
-                case '1':
+                case '1': //licencias vigentes
+                // una licencia es vigente si la fecha de fin_vigencia >= a tres meses posteriores a la fecha actual
                     listar({
                         'fin_vigencia[operator]': '>',
-                        'fin_vigencia[value]': sumarFechas(obtenerFechaActual(), 0, 3, 0, 'YYYY-MM-DD'),
+                        'fin_vigencia[value]': sumarFechas(obtenerFechaActual(), 0, 3, 0, maskFecha),
                     })
                     break
-                case '2':
+                case '2':// por caducar
+                // una licencia esta por caducar cuando fin_vigencia > fecha_actual y menor a tres meses posteriores a la fecha actual
+                    listar({
+                        'fin_vigencia[start]': obtenerFechaActual(maskFecha),
+                        'fin_vigencia[end]': sumarFechas(obtenerFechaActual(), 0, 3, 0, maskFecha),
+                    })
+                    break
+                case '3'://licencias vencidas
                     listar({
                         'fin_vigencia[operator]': '<=',
-                        'fin_vigencia[value]': sumarFechas(obtenerFechaActual(), 0, 3, 0, 'YYYY-MM-DD'),
+                        'fin_vigencia[value]':obtenerFechaActual(maskFecha),
                     })
                     break
                 default:
@@ -140,7 +151,15 @@ export default defineComponent({
             if (await conductorStore.pagarMulta(dataMulta)) consultarMultasConductor()
         }
         function calcularFechaFinal() {
-            conductor.fin_vigencia = sumarFechas(conductor.inicio_vigencia!, 5, 0, -1)
+            conductor.fin_vigencia = format(addYear(conductor.inicio_vigencia!, 5), maskFecha) //sumarFechas(conductor.inicio_vigencia!, 5, 0, -1, maskFecha)
+            conductor.fin_vigencia = format(addDay(conductor.fin_vigencia!, -1), maskFecha)
+        }
+
+        async function recargarChoferes() {
+            cargando.activar()
+            listadosAuxiliares.empleados = (await new EmpleadoRoleController().listar({ roles: ['CHOFER'] })).result
+            empleados.value = listadosAuxiliares.empleados
+            cargando.desactivar()
         }
 
         /********************************
@@ -162,7 +181,7 @@ export default defineComponent({
             accion: () => {
                 modales.abrirModalEntidad('MultaConductorPage')
             },
-            visible: () => { return accion.value == acciones.nuevo || accion.value == acciones.editar }
+            visible: () => { return accion.value == acciones.editar }
         }
         const btnEditarMulta: CustomActionTable = {
             titulo: 'Editar',
@@ -215,6 +234,7 @@ export default defineComponent({
             calcularFechaFinal,
             guardado,
             fechaIngresada,
+            recargarChoferes,
         }
     }
 })

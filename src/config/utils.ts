@@ -312,7 +312,7 @@ export const estadosTrabajoArray = [
 export const rolesSistema = {
   activos_fijos: 'ACTIVOS FIJOS',
   administrador: 'ADMINISTRADOR',
-  administradorVehiculos: 'ADMINISTRADOR VEHICULOS',
+  administradorVehiculos: 'ADMINISTRADOR_VEHICULOS',
   bodega: 'BODEGA',
   bodegaTelconet: 'BODEGA TELCONET',
   compras: 'COMPRAS',

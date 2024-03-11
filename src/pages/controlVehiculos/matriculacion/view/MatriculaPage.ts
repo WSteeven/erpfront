@@ -20,7 +20,7 @@ import { obtenerFechaActual, obtenerMesMatricula, obtenerPrimerUltimoDiaMes, obt
 import { Vehiculo } from "pages/controlVehiculos/vehiculos/domain/Vehiculo";
 import { date } from "quasar";
 import { CustomActionTable } from "components/tables/domain/CustomActionTable";
-import { acciones } from "config/utils";
+import { acciones, maskFecha } from "config/utils";
 import { useVehiculoStore } from "stores/vehiculos/vehiculo";
 import { CustomActionPrompt } from "components/tables/domain/CustomActionPrompt";
 
@@ -68,17 +68,17 @@ export default defineComponent({
         /*********************************
          * Funciones
         *********************************/
-        const { primerDia, ultimoDia } = obtenerPrimerUltimoDiaMes('YYYY-MM-DD')
+        const { primerDia, ultimoDia } = obtenerPrimerUltimoDiaMes(maskFecha)
         async function filtrarMatriculas(tab: string) {
-            tabActual.value=tab
+            tabActual.value = tab
             switch (tab) {
-                case '1':
+                case '1':// a matricular este mes
                     listar({
                         'fecha_matricula[start]': primerDia,
                         'fecha_matricula[end]': ultimoDia
                     })
                     break
-                case '2':
+                case '2': //vencidas
                     listar({
                         matriculado: 0,
                         'fecha_matricula[operator]': '<',
@@ -86,8 +86,15 @@ export default defineComponent({
 
                     })
                     break
-                case '3':
+                case '3': //matriculadas
                     listar({ matriculado: 1 })
+                    break
+                case '4': // a matricular en los proximos meses
+                    listar({
+                        matriculado: 0,
+                        'fecha_matricula[operator]': '>',
+                        'fecha_matricula[value]': ultimoDia,
+                    })
                     break
                 default:
                     listar()
@@ -172,13 +179,13 @@ export default defineComponent({
                                     const data3: CustomActionPrompt = {
                                         titulo: 'Pagar Matricula ' + entidad.vehiculo,
                                         mensaje: 'Monto del pago',
-                                        validacion: (val)=>{
-                                            const patron =    /^(\d{1,3}(?:,\d{3})*(?:\.\d+)?|\d+)?$/
+                                        validacion: (val) => {
+                                            const patron = /^(\d{1,3}(?:,\d{3})*(?:\.\d+)?|\d+)?$/
                                             return patron.test(val)
                                         },
                                         accion: async (data) => {
                                             dataPagoMatricula.monto = data
-                                            if(await matriculaStore.pagarMatricula(dataPagoMatricula)) {
+                                            if (await matriculaStore.pagarMatricula(dataPagoMatricula)) {
                                                 filtrarMatriculas('3')
                                             }
                                         }
@@ -207,6 +214,7 @@ export default defineComponent({
             mixin, v$, matricula, disabled, accion,
             configuracionColumnas: configuracionColumnasMatriculas,
             maskFecha: 'MM-YYYY',
+            is_month,
 
             //botones de tabla
             btnConsultarMatricula,

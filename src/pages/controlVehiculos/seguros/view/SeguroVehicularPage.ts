@@ -39,14 +39,21 @@ export default defineComponent({
         *********************************/
         async function filtrarSeguros(tab: string) {
             switch (tab) {
-                case '1':
+                case '1': //vigentes
                     listar({
                         // estado: 1,
                         'fecha_caducidad[operator]': '>',
                         'fecha_caducidad[value]': sumarFechas(obtenerFechaActual(), 0, 0, 0, 'YYYY-MM-DD'),
                     })
                     break
-                case '2':
+                case '2': //15 días antes de caducar
+                    listar({
+                        // estado: 0,
+                        'fecha_caducidad[operator]': '<',
+                        'fecha_caducidad[value]': sumarFechas(obtenerFechaActual(), 0, 0, 0, 'YYYY-MM-DD'),
+                    })
+                    break
+                case '3': //caducados
                     listar({
                         // estado: 0,
                         'fecha_caducidad[operator]': '<',

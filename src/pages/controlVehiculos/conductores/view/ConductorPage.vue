@@ -66,6 +66,11 @@
                     </q-item-section>
                   </q-item>
                 </template>
+                <template v-slot:after>
+                <q-btn color="positive" @click="recargarChoferes">
+                  <q-icon size="xs" class="q-mr-sm" name="bi-arrow-clockwise" />
+                </q-btn>
+              </template>
               </q-select>
             </div>
             <!-- identificacion-->
@@ -293,7 +298,7 @@
               </q-input>
             </div>
             <!-- Tabla de multas -->
-            <div class="col-12 col-md-12">
+            <div class="col-12 col-md-12" v-if="accion==acciones.editar">
               <essential-table
                 ref="refMultas"
                 titulo="Multas del Conductor"
@@ -313,6 +318,7 @@
                 :permitirEditarModal="true"
                 :modalMaximized="false"
                 :alto-fijo="false"
+                ajustarCeldas
                 :mostrarFooter="false"
                 :accion1="btnEditarMulta"
               ></essential-table>

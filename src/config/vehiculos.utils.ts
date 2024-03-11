@@ -31,12 +31,14 @@ export const tiposServicios = [
 
 export const tabOptionsConductores: TabOption[] = [
   { label: 'Vigentes', value: '1' },
-  { label: 'Por caducar', value: '2' }
+  { label: 'Por caducar', value: '2' },
+  { label: 'Caducadas', value: '3' },
 ]
 
 export const tabOptionsSeguros: TabOption[] = [
   { label: 'Vigentes', value: '1' },
-  { label: 'Caducados', value: '2' }
+  { label: 'Por caducar', value: '2' },
+  { label: 'Caducados', value: '3' }
 ]
 export const tabOptionsServicios: TabOption[] = [
   { label: 'Preventivos', value: 'PREVENTIVO' },
@@ -47,5 +49,6 @@ export const tabOptionsMatriculas: TabOption[] = [
   { label: 'Este mes', value: '1' },
   { label: 'Vencidas', value: '2' },
   { label: 'Matriculadas', value: '3' },
+  { label: 'Proximas a matricular', value: '4' },
 ]
 
