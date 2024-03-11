@@ -66,7 +66,7 @@
             <q-splitter v-model="splitterModel" class="border-grey">
               <template v-slot:before>
                 <div
-                  class="border-bottom-grey-5 border-right-grey-5 text-center q-pb-md q-pt-sm"
+                  class="border-bottom-gresy-5 border-righst-grey-5 text-center q-pb-md q-pt-sm"
                 >
                   <q-btn
                     class="text-primary"
@@ -120,7 +120,7 @@
                     v-for="registro in registros"
                     :key="registro.id"
                     :name="registro.id"
-                    class="q-pa-none"
+                    class="bg-primary text-white q-pa-none"
                   >
                     <div class="row q-pa-md">
                       <div class="col-12 col-md-6">
@@ -137,7 +137,7 @@
                   </q-tab-panel>
                 </q-tab-panels>
 
-                <div class="q-px-sm">
+                <div v-if="tabsRegistro" class="bg-primary q-px-sm">
                   <q-tabs
                     v-model="tabEstadoExamen"
                     align="justify"
@@ -260,6 +260,13 @@
                       ></essential-table>
                     </q-tab-panel>
                   </q-tab-panels>
+                </div>
+
+                <div
+                  v-else
+                  class="row bg-primary h-100 q-py-xl items-center justify-center"
+                >
+                  Crea un registro y luego seleccionalo
                 </div>
               </template>
             </q-splitter>

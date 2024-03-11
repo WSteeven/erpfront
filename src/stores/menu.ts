@@ -192,8 +192,8 @@ export const useMenuStore = defineStore('menu', () => {
           title: 'Cuestionario de evaluación de riesgos psicosociales',
           link: 'cuestionario-psicosocial',
           icon: 'bi-circle',
-          can: store.can('puede.ver.cuestionario_psicosocial'),
-        },        {
+          can: store.can('puede.ver.cuestionarios_psicosocial'),
+        }, {
           title: 'Cuestionario de diagnostico consumo de drogas',
           link: 'cuestionario-diagnostico-consumo-drogas',
           icon: 'bi-circle',
@@ -244,7 +244,7 @@ export const useMenuStore = defineStore('menu', () => {
         {
           title: 'Dashboard',
           link: 'dashboard-bodega',
-          can: store.esBodeguero || store.esCoordinadorBodega||store.can('puede.ver.dashboard_bodega'),
+          can: store.esBodeguero || store.esCoordinadorBodega || store.can('puede.ver.dashboard_bodega'),
           icon: 'bi-app',
         },
         {
@@ -435,7 +435,7 @@ export const useMenuStore = defineStore('menu', () => {
           title: 'Ajuste de Saldos Fondos Rotativos',
           link: 'ajustes-saldos',
           icon: 'bi-app',
-          can: store.can('puede.acceder.ajustes_saldos')||true,
+          can: store.can('puede.acceder.ajustes_saldos') || true,
         },
         {
           title: 'Gastos',
