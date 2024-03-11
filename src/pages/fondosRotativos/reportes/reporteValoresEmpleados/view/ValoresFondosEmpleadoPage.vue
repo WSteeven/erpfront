@@ -18,9 +18,12 @@
                   transition-hide="scale"
                   options-dense
                   dense
+                  use-input
+                  input-debounce="0"
                   outlined
                   clearable
-                  @update:model-value="empleados"
+                  @filter="filtrarEmpleados"
+                  @popup-show="ordenarLista(empleados, 'apellidos')"
                   :option-label="(item) => item.apellidos + ' ' + item.nombres"
                   :option-value="(item) => item.id"
                   emit-value
@@ -39,7 +42,7 @@
                     () =>
                       (reporte.empleado = reporte.todos
                         ? (reporte.empleado = null)
-                        : reporte.empleado = store.user.id)
+                        : (reporte.empleado = store.user.id))
                   "
                   outlined
                   dense
