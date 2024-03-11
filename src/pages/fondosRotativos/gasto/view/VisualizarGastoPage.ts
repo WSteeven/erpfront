@@ -604,11 +604,11 @@ export default defineComponent({
       gasto.factura = null
     }
     async function aprobar_gasto(entidad, tipo_aprobacion: string) {
-      cargando.activar()
       switch (tipo_aprobacion) {
         case 'aprobar':
           try {
             if (await v$.value.$validate()) {
+              cargando.activar()
               await aprobarController.aprobarGasto(gasto)
               issubmit.value = false
               notificarCorrecto('Se aprobado Gasto Exitosamente')
@@ -627,6 +627,7 @@ export default defineComponent({
           confirmar('¿Está seguro de rechazar el gasto?', async () => {
             try {
               if (await v$.value.$validate()) {
+                cargando.activar()
                 await aprobarController.rechazarGasto(entidad)
                 issubmit.value = false
                 notificarAdvertencia('Se rechazado Gasto Exitosamente')
@@ -645,6 +646,7 @@ export default defineComponent({
         case 'anular':
           confirmar('¿Está seguro de anular el gasto?', async () => {
             if (await v$.value.$validate()) {
+              cargando.activar()
               try {
                 await aprobarController.anularGasto(entidad)
                 issubmit.value = false
