@@ -32,7 +32,9 @@
               map-options
               ><template v-slot:no-option>
                 <q-item>
-                  <q-item-section class="text-grey"> No hay resultados </q-item-section>
+                  <q-item-section class="text-grey">
+                    No hay resultados
+                  </q-item-section>
                 </q-item>
               </template>
             </q-select>
@@ -68,7 +70,9 @@
               </template>
               <template v-slot:no-option>
                 <q-item>
-                  <q-item-section class="text-grey"> No hay resultados </q-item-section>
+                  <q-item-section class="text-grey">
+                    No hay resultados
+                  </q-item-section>
                 </q-item>
               </template>
             </q-select>
@@ -103,7 +107,9 @@
               </template>
               <template v-slot:no-option>
                 <q-item>
-                  <q-item-section class="text-grey"> No hay resultados </q-item-section>
+                  <q-item-section class="text-grey">
+                    No hay resultados
+                  </q-item-section>
                 </q-item>
               </template>
             </q-select>
@@ -134,7 +140,9 @@
               </template>
               <template v-slot:no-option>
                 <q-item>
-                  <q-item-section class="text-grey"> No hay resultados </q-item-section>
+                  <q-item-section class="text-grey">
+                    No hay resultados
+                  </q-item-section>
                 </q-item>
               </template>
             </q-select>
@@ -215,7 +223,10 @@
               dense
             >
               <template v-slot:error>
-                <div v-for="error of v$.anio_fabricacion.$errors" :key="error.$uid">
+                <div
+                  v-for="error of v$.anio_fabricacion.$errors"
+                  :key="error.$uid"
+                >
                   <div class="error-msg">{{ error.$message }}</div>
                 </div>
               </template>
@@ -308,6 +319,49 @@
               :disable="disabled"
             />
           </div>
+
+          <!-- Seguro vehicular -->
+          <div class="col-12 col-md-3">
+            <label-abrir-modal
+              v-if="
+                (mostrarLabelModal && store.esAdministradorVehiculos) || true
+              "
+              label="Seguro"
+              @click="modales.abrirModalEntidad('SeguroVehicularPage')"
+            />
+            <label v-else class="q-mb-sm block">Seguro</label>
+            <q-select
+              v-model="vehiculo.seguro"
+              :options="seguros"
+              transition-show="jump-up"
+              transition-hide="jump-down"
+              options-dense
+              dense
+              outlined
+              :disable="disabled"
+              use-input
+              input-debounce="0"
+              @filter="filtrarSeguros"
+              :option-value="(v) => v.id"
+              :option-label="(v) => v.nombre + ' - ' + v.num_poliza"
+              emit-value
+              map-options
+            >
+              <template v-slot:after>
+                <q-btn color="positive" @click="recargarSeguros">
+                  <q-icon size="xs" class="q-mr-sm" name="bi-arrow-clockwise" />
+                </q-btn>
+              </template>
+              <template v-slot:no-option>
+                <q-item>
+                  <q-item-section class="text-grey">
+                    No hay resultados
+                  </q-item-section>
+                </q-item>
+              </template>
+            </q-select>
+          </div>
+
           <!-- Manejo de archivos -->
           <div class="col-12 q-mb-md">
             <gestor-archivos
@@ -316,7 +370,9 @@
               :mixin="mixin"
               :disable="disabled"
               :listarAlGuardar="false"
-              :permitir-eliminar="accion == acciones.nuevo || accion == acciones.editar"
+              :permitir-eliminar="
+                accion == acciones.nuevo || accion == acciones.editar
+              "
               :idModelo="idVehiculo"
             >
               <template #boton-subir>

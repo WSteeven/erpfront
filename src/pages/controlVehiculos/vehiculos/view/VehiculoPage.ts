@@ -15,9 +15,15 @@ import { VehiculoController } from '../infraestructure/VehiculoController';
 import { MarcaController } from 'pages/bodega/marcas/infraestructure/MarcaController';
 import { ModeloController } from 'pages/bodega/modelos/infraestructure/ModeloController';
 import { CombustibleController } from 'pages/controlVehiculos/combustible/infraestructure/CombustibleController';
-import { acciones } from 'config/utils';
+import { acciones, maskFecha } from 'config/utils';
 import { opciones_traccion_vehiculos } from 'config/vehiculos.utils';
 import { ArchivoController } from 'pages/gestionTrabajos/subtareas/modules/gestorArchivosTrabajos/infraestructure/ArchivoController';
+import { computed } from 'vue';
+import { useAuthenticationStore } from 'stores/authentication';
+import { StatusEssentialLoading } from 'components/loading/application/StatusEssentialLoading';
+import { SeguroVehicularController } from 'pages/controlVehiculos/seguros/infraestructure/SeguroVehicularController';
+import { obtenerFechaActual } from 'shared/utils';
+import { useFiltrosListadosSelects } from 'shared/filtrosListadosGenerales';
 
 export default defineComponent({
     components: { TabLayout, GestorArchivos },
@@ -27,12 +33,21 @@ export default defineComponent({
         const { setValidador, obtenerListados, cargarVista } = mixin.useComportamiento()
         const { onReestablecer, onGuardado, onConsultado, onModificado } = mixin.useHooks()
 
+        /************************
+         * Stores
+         ***********************/
+        const cargando = new StatusEssentialLoading()
+
         const idVehiculo = ref()
         const refArchivo = ref()
 
         const opciones_marcas = ref([])
         const opciones_modelos = ref([])
         const opciones_combustibles = ref([])
+
+        const {seguros, filtrarSeguros}= useFiltrosListadosSelects(listadosAuxiliares) 
+
+        const mostrarLabelModal = computed(() => accion.value === acciones.nuevo || accion.value === acciones.editar)
         cargarVista(async () => {
             await obtenerListados({
                 marcas: {
@@ -107,6 +122,17 @@ export default defineComponent({
             await refArchivo.value.subir()
         }
 
+        async function recargarSeguros() {
+            cargando.activar()
+            listadosAuxiliares.seguros = (await new SeguroVehicularController().listar({
+                'estado': 1,
+                'fecha_caducidad[operator]': '<=',
+                'fecha_caducidad[value]': obtenerFechaActual(maskFecha),
+            })).result
+            seguros.value = listadosAuxiliares.seguros
+            cargando.desactivar()
+        }
+
 
 
         //cargar datos en listados
@@ -119,6 +145,7 @@ export default defineComponent({
             configuracionColumnas: configuracionColumnasVehiculos,
             refArchivo,
             idVehiculo,
+            mostrarLabelModal,
             //listados
             opciones_marcas,
             opciones_modelos,
@@ -184,6 +211,9 @@ export default defineComponent({
                 }
                 // })
             },
+            //funciones
+            recargarSeguros,
+            seguros, filtrarSeguros,
 
 
 

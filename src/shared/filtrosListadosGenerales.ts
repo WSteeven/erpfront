@@ -10,6 +10,7 @@ import { Servicio } from "pages/controlVehiculos/servicios/domain/Servicio";
 import { Empleado } from "pages/recursosHumanos/empleados/domain/Empleado";
 import { Cliente } from "sistema/clientes/domain/Cliente";
 import { CentroCosto } from "pages/gestionTrabajos/centroCostos/domain/CentroCostos";
+import { SeguroVehicular } from "pages/controlVehiculos/seguros/domain/SeguroVehicular";
 
 export const useFiltrosListadosSelects = (listadosAuxiliares, entidad?: Ref<any>) => {
   /**************************************************************
@@ -52,6 +53,7 @@ export const useFiltrosListadosSelects = (listadosAuxiliares, entidad?: Ref<any>
   //vehiculos
   const vehiculos = ref(listadosAuxiliares.vehiculos)
   const servicios = ref(listadosAuxiliares.servicios)
+  const seguros = ref(listadosAuxiliares.seguros)
 
 
   /**************************************************************
@@ -381,6 +383,16 @@ export const useFiltrosListadosSelects = (listadosAuxiliares, entidad?: Ref<any>
       if (listadosAuxiliares.servicios) servicios.value = listadosAuxiliares.servicios.filter((v: Servicio) => v.nombre!.toLowerCase().indexOf(needle) > -1)
     })
   }
+  function filtrarSeguros(val, update) {
+    if (val === '') {
+      update(() => seguros.value = listadosAuxiliares.seguros)
+      return
+    }
+    update(() => {
+      const needle = val.toLowerCase()
+      if (listadosAuxiliares.seguros) seguros.value = listadosAuxiliares.seguros.filter((v: SeguroVehicular) => v.nombre!.toLowerCase().indexOf(needle) > -1 || v.num_poliza!.toLowerCase().indexOf(needle) > -1)
+    })
+  }
 
   function filtrarMotivos(val, update) {
     return filtrarLista(val, update, motivos, 'nombre', listadosAuxiliares.motivos)
@@ -453,5 +465,8 @@ export const useFiltrosListadosSelects = (listadosAuxiliares, entidad?: Ref<any>
     productos_claro, filtrarProductosClaro,
     vendedores_claro, filtrarVendedoresClaro,
     clientes_claro, filtrarClientesClaro,
+
+    //vehiculos
+    seguros, filtrarSeguros,
   }
 }

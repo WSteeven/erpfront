@@ -42,22 +42,22 @@ export default defineComponent({
                 case '1': //vigentes
                     listar({
                         // estado: 1,
-                        'fecha_caducidad[operator]': '>',
-                        'fecha_caducidad[value]': sumarFechas(obtenerFechaActual(), 0, 0, 0, 'YYYY-MM-DD'),
+                        'fecha_caducidad[operator]': '>=',
+                        'fecha_caducidad[value]': sumarFechas(obtenerFechaActual(), 0, 0, 15, maskFecha),
                     })
                     break
                 case '2': //15 días antes de caducar
                     listar({
                         // estado: 0,
-                        'fecha_caducidad[operator]': '<',
-                        'fecha_caducidad[value]': sumarFechas(obtenerFechaActual(), 0, 0, 0, 'YYYY-MM-DD'),
+                        'fecha_caducidad[start]': obtenerFechaActual(maskFecha),
+                        'fecha_caducidad[end]': sumarFechas(obtenerFechaActual(), 0, 0, 15,maskFecha),
                     })
                     break
                 case '3': //caducados
                     listar({
                         // estado: 0,
                         'fecha_caducidad[operator]': '<',
-                        'fecha_caducidad[value]': sumarFechas(obtenerFechaActual(), 0, 0, 0, 'YYYY-MM-DD'),
+                        'fecha_caducidad[value]': obtenerFechaActual(maskFecha),
                     })
                     break
                 default:

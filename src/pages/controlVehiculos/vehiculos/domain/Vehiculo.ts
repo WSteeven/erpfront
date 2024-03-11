@@ -11,10 +11,10 @@ export class Vehiculo extends EntidadAuditable {
     modelo: string | null
     combustible: string | null
     traccion: string | null
-    aire_acondicionado: boolean|false
+    aire_acondicionado: boolean | false
     capacidad_tanque: number | null
-    color:string | null
-    // modelo_id: number | null
+    color: string | null
+    seguro: number | null
     // combustible_id: number | null
 
     constructor() {
@@ -29,10 +29,10 @@ export class Vehiculo extends EntidadAuditable {
         this.modelo = null
         this.combustible = null
         this.traccion = null
-        this.aire_acondicionado =false
+        this.aire_acondicionado = false
         this.capacidad_tanque = null
         this.color = null
-        // this.modelo_id = null
+        this.seguro = null
         // this.combustible_id = null
     }
 }
