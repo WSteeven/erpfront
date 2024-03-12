@@ -1,7 +1,7 @@
 //Dependencias
 import { configuracionColumnasServicios } from "../domain/configuracionColumnasServicios";
 import { defineComponent, reactive, ref } from "vue";
-import { required, minValue, maxValue } from "shared/i18n-validators";
+import { required, minValue, maxValue, requiredIf } from "shared/i18n-validators";
 
 //Componentes
 import TabLayoutFilterTabs2 from "shared/contenedor/modules/simple/view/TabLayoutFilterTabs2.vue"
@@ -20,7 +20,7 @@ import { useAuthenticationStore } from "stores/authentication";
 
 export default defineComponent({
     components: { TabLayoutFilterTabs2 },
-    setup() {
+    setup(props, { emit }) {
         const mixin = new ContenedorSimpleMixin(Servicio, new ServicioController())
         const { entidad: servicio, disabled, listadosAuxiliares, accion, listado } = mixin.useReferencias()
         const { setValidador, obtenerListados, cargarVista, listar } = mixin.useComportamiento()
@@ -29,11 +29,18 @@ export default defineComponent({
         const store = useAuthenticationStore()
 
         /*****************************
+         * VARIABLES
+         ****************************/
+        const TIPO_PREVENTIVO = 'PREVENTIVO'
+        const TIPO_CORRECTIVO = 'CORRECTIVO'
+
+        /*****************************
          * VALIDACIONES
          ****************************/
         const reglas = {
             nombre: { required },
             tipo: { required },
+            intervalo: { requiredIf: requiredIf(() => servicio.tipo == TIPO_PREVENTIVO) },
         }
         const v$ = useVuelidate(reglas, servicio)
         setValidador(v$.value)
@@ -41,14 +48,22 @@ export default defineComponent({
         /*********************************
          * Funciones
         *********************************/
+        onGuardado((id, response) => {
+            emit('cerrar-modal', false)
+            emit('guardado', { formulario: 'ServicioPage', id: id, modelo: response.modelo })
+        })
+
+        /*********************************
+         * Funciones
+        *********************************/
         async function filtrarServicios(tab: string) {
             switch (tab) {
-                case 'PREVENTIVO':
+                case TIPO_PREVENTIVO:
                     listar({
                         'tipo': tab,
                     })
                     break
-                case 'CORRECTIVO':
+                case TIPO_CORRECTIVO:
                     listar({
                         'tipo': tab,
                     })

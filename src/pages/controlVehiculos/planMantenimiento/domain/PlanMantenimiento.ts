@@ -2,15 +2,17 @@ import { EntidadAuditable } from "shared/entidad/domain/entidadAuditable";
 
 export class PlanMantenimiento extends EntidadAuditable {
     vehiculo: string | null
-    comienza_km: number | null
+    aplicar_desde: number | null
     listadoServicios: any[]
-    cant_servicios: number | null
+    cantidad_servicios: number | null
+    activo: boolean
 
     constructor() {
         super()
         this.vehiculo = null
-        this.comienza_km = null
+        this.aplicar_desde = null
         this.listadoServicios = []
-        this.cant_servicios = null
+        this.cantidad_servicios = null
+        this.activo = true
     }
 }

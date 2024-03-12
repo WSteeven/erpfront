@@ -53,7 +53,7 @@
           <div class="col-12 col-md-3 q-mb-md">
             <label class="q-mb-sm block">Aplicar desde (Km)</label>
             <q-input
-              v-model="plan.comienza_km"
+              v-model="plan.aplicar_desde"
               placeholder="Obligatorio"
               type="number"
               min="0"
@@ -62,6 +62,18 @@
               dense
             >
             </q-input>
+          </div>
+
+          <!-- activo -->
+          <div class="col-12 col-md-3" v-if="accion == acciones.editar">
+            <br />
+            <q-toggle
+              v-model="plan.activo"
+              checked-icon="check"
+              :disable="disabled"
+              :label="plan.activo ? 'Plan Activo' : 'Plan Inactivo'"
+              color="positive"
+            />
           </div>
           <!-- Selector de servicios -->
           <div class="col-12 col-md-12">
@@ -75,6 +87,7 @@
                   hint="Presiona Enter para seleccionar un servicio"
                   @keydown.enter="
                     listarServicios({
+                      'nombre[like]': "'%'+criterioBusqueda+'%'",
                       tipo: 'PREVENTIVO',
                       estado: 1,
                     })
@@ -89,6 +102,7 @@
                 <q-btn
                   @click="
                     listarServicios({
+                      'nombre[like]': '%'+criterioBusqueda+'%',
                       tipo: 'PREVENTIVO',
                       estado: 1,
                     })
@@ -107,7 +121,10 @@
             </div>
           </div>
           <!-- Tabla de servicios seleccionados -->
-          <div class="col-12">
+          <div
+            class="col-12"
+            v-if="plan.listadoServicios.length > 0 || accion == acciones.editar"
+          >
             <essential-table
               titulo="Productos Seleccionados"
               :configuracionColumnas="
@@ -123,6 +140,7 @@
               :mostrarBotones="false"
               :ajustarCeldas="true"
               :altoFijo="false"
+              :accion1Header="btnAgregarServicio"
               :accion1="btnEditarFila"
               :accion2="btnEliminarFila"
             >
@@ -140,6 +158,11 @@
       ></essential-selectable-table>
     </template>
   </tab-layout>
+  <modales-entidad
+    :comportamiento="modales"
+    :persistente="false"
+    @guardado="(data) => guardado(data)"
+  ></modales-entidad>
 </template>
 
 <script src="./PlanMantenimientoPage.ts"></script>

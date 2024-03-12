@@ -32,6 +32,8 @@ export const useFiltrosListadosSelects = (listadosAuxiliares, entidad?: Ref<any>
   //bodega
   const sucursales = ref(listadosAuxiliares.sucursales)
   const motivos = ref(listadosAuxiliares.motivos)
+  const marcas = ref(listadosAuxiliares.marcas)
+  const modelos = ref(listadosAuxiliares.modelos)
 
   // Modulo de Tareas
   const proyectos = ref(listadosAuxiliares.proyectos)
@@ -54,6 +56,7 @@ export const useFiltrosListadosSelects = (listadosAuxiliares, entidad?: Ref<any>
   const vehiculos = ref(listadosAuxiliares.vehiculos)
   const servicios = ref(listadosAuxiliares.servicios)
   const seguros = ref(listadosAuxiliares.seguros)
+  const combustibles = ref(listadosAuxiliares.combustibles)
 
 
   /**************************************************************
@@ -420,6 +423,16 @@ export const useFiltrosListadosSelects = (listadosAuxiliares, entidad?: Ref<any>
     return filtrarLista(val, update, tareasDestino, 'codigo_tarea', listadosAuxiliares.tareasDestino)
   }
 
+  function filtrarMarcas(val, update) {
+    return filtrarLista(val, update, marcas, 'nombre', listadosAuxiliares.marcas)
+  }
+  function filtrarModelos(val, update) {
+    return filtrarLista(val, update, modelos, 'nombre', listadosAuxiliares.modelos)
+  }
+  function filtrarCombustibles(val, update) {
+    return filtrarLista(val, update, combustibles, 'nombre', listadosAuxiliares.combustibles)
+  }
+
 
   function filtrarLista(val, update, lista, clave, defaultValue = []) {
     if (val === '') {
@@ -468,5 +481,8 @@ export const useFiltrosListadosSelects = (listadosAuxiliares, entidad?: Ref<any>
 
     //vehiculos
     seguros, filtrarSeguros,
+    marcas, filtrarMarcas,
+    modelos, filtrarModelos,
+    combustibles, filtrarCombustibles,
   }
 }

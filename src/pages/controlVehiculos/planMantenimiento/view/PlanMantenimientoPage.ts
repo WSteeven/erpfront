@@ -9,6 +9,7 @@ import { computed, defineComponent, ref } from "vue";
 import TabLayout from 'shared/contenedor/modules/simple/view/TabLayout.vue'
 import EssentialTable from 'components/tables/view/EssentialTable.vue';
 import EssentialSelectableTable from 'components/tables/view/EssentialSelectableTable.vue'
+import ModalesEntidad from 'components/modales/view/ModalEntidad.vue';
 
 // Logica y controladores
 import { ContenedorSimpleMixin } from 'shared/contenedor/modules/simple/application/ContenedorSimpleMixin';
@@ -23,18 +24,27 @@ import { useOrquestadorSelectorServicios } from '../application/OrquestadorSelec
 import { useNotificaciones } from 'shared/notificaciones';
 import { CustomActionTable } from 'components/tables/domain/CustomActionTable';
 import { CustomActionPrompt } from 'components/tables/domain/CustomActionPrompt';
+import { ComportamientoModalesPlanMantenimiento } from '../application/ComportamientoModalesPlanMantenimiento';
+import { useQuasar } from 'quasar';
+import { useNotificacionStore } from 'stores/notificacion';
+import { useCargandoStore } from 'stores/cargando';
 
 
 export default defineComponent({
-    components: { TabLayout, EssentialTable, EssentialSelectableTable, },
+    components: { TabLayout, EssentialTable, EssentialSelectableTable, ModalesEntidad, },
     setup() {
         const mixin = new ContenedorSimpleMixin(PlanMantenimiento, new PlanMantenimientoController())
         const { entidad: plan, listado, accion, disabled, listadosAuxiliares } = mixin.useReferencias()
         const { setValidador, obtenerListados, cargarVista } = mixin.useComportamiento()
         const { confirmar, prompt, notificarCorrecto, notificarError } = useNotificaciones()
 
+        useNotificacionStore().setQuasar(useQuasar())
+        useCargandoStore().setQuasar(useQuasar())
         const store = useAuthenticationStore()
         const serviciosSeleccionados = ref()
+
+        //modales
+        const modales = new ComportamientoModalesPlanMantenimiento()
 
         // Orquestador
         const {
@@ -46,25 +56,34 @@ export default defineComponent({
             seleccionar: seleccionarServicio
         } = useOrquestadorSelectorServicios(plan, 'servicios')
 
+        /********************************
+         * LISTADOS Y FILTROS
+         ********************************/
+        const {
+            vehiculos, filtrarVehiculos,
+            // servicios, filtrarServicios,
+        } = useFiltrosListadosSelects(listadosAuxiliares)
+
         cargarVista(async () => {
             await obtenerListados({
                 vehiculos: {
                     controller: new VehiculoController(),
                     params: { campos: 'id,placa,marca,modelo' }
                 },
-                servicios: {
-                    controller: new ServicioController(),
-                    params: { tipo: 'PREVENTIVO', estado: 1 }
-
-                }
+                // servicios: {
+                //     controller: new ServicioController(),
+                //     params: { tipo: 'PREVENTIVO', estado: 1 }
+                // }
             })
+            vehiculos.value = listadosAuxiliares.vehiculos
+            // servicios.value = listadosAuxiliares.servicios
         })
         /**************************************************************
         * Validaciones
         **************************************************************/
         const reglas = {
             vehiculo: { required },
-            comienza_km: { required },
+            aplicar_desde: { required },
         }
         const v$ = useVuelidate(reglas, plan)
         setValidador(v$.value)
@@ -74,6 +93,12 @@ export default defineComponent({
          ******************************************************************************************/
         function eliminar({ posicion }) {
             confirmar('¿Está seguro de continuar?', () => plan.listadoServicios.splice(posicion, 1))
+        }
+        function guardado(data) {
+            console.log(data)
+            if (data.formulario == 'ServicioPage') {
+                plan.listadoServicios.push(data.modelo)
+            }
         }
         /*******************************************************************************************
          * Botones de tabla
@@ -105,6 +130,15 @@ export default defineComponent({
                 return accion.value == acciones.consultar ? false : true
             }
         }
+        const btnAgregarServicio: CustomActionTable = {
+            titulo: 'Agregar Servicio',
+            icono: 'bi-plus',
+            tooltip: 'Agregar nuevo servicio',
+            accion: () => {
+                modales.abrirModalEntidad('ServicioPage')
+            },
+            visible: () => accion.value == acciones.editar
+        }
 
 
         /***************************
@@ -116,23 +150,16 @@ export default defineComponent({
         configuracionColumnasServicios.find((item) => item.field == 'intervalo')!.type = 'number'
 
 
-        /********************************
-         * LISTADOS Y FILTROS
-         ********************************/
-        const {
-            vehiculos, filtrarVehiculos,
-            servicios, filtrarServicios,
-        } = useFiltrosListadosSelects(listadosAuxiliares)
-        vehiculos.value = listadosAuxiliares.vehiculos
-        servicios.value = listadosAuxiliares.servicios
+
 
         return {
             mixin, v$, plan, disabled, accion, acciones,
             configuracionColumnas: configuracionColumnasPlanMantenimiento,
             configuracionColumnasServicios, accionesTabla,
+            modales,
             //listados
             vehiculos, filtrarVehiculos,
-            servicios, filtrarServicios,
+            // servicios, filtrarServicios,
 
             serviciosSeleccionados,
             adminVehiculos: store.esAdministradorVehiculos,
@@ -144,6 +171,7 @@ export default defineComponent({
             listarServicios,
             limpiarServicios,
             seleccionarServicio,
+            guardado,
 
             //funciones
 
@@ -151,6 +179,7 @@ export default defineComponent({
             //botones de tabla
             btnEditarFila,
             btnEliminarFila,
+            btnAgregarServicio,
 
 
         }

@@ -7,6 +7,8 @@ import { defineComponent, ref } from "vue";
 // componentes
 import TabLayout from 'shared/contenedor/modules/simple/view/TabLayout.vue'
 import GestorArchivos from 'components/gestorArchivos/GestorArchivos.vue';
+import LabelAbrirModal from 'components/modales/modules/LabelAbrirModal.vue';
+import ModalesEntidad from 'components/modales/view/ModalEntidad.vue';
 
 // Logica y controladores
 import { ContenedorSimpleMixin } from 'shared/contenedor/modules/simple/application/ContenedorSimpleMixin';
@@ -24,28 +26,32 @@ import { StatusEssentialLoading } from 'components/loading/application/StatusEss
 import { SeguroVehicularController } from 'pages/controlVehiculos/seguros/infraestructure/SeguroVehicularController';
 import { obtenerFechaActual } from 'shared/utils';
 import { useFiltrosListadosSelects } from 'shared/filtrosListadosGenerales';
+import { ComportamientoModalesVehiculos } from '../application/ComportamientoModalesVehiculos';
 
 export default defineComponent({
-    components: { TabLayout, GestorArchivos },
+    components: { TabLayout, GestorArchivos, ModalesEntidad, LabelAbrirModal, },
     setup() {
         const mixin = new ContenedorSimpleMixin(Vehiculo, new VehiculoController(), new ArchivoController())
         const { entidad: vehiculo, disabled, listadosAuxiliares, accion } = mixin.useReferencias()
         const { setValidador, obtenerListados, cargarVista } = mixin.useComportamiento()
         const { onReestablecer, onGuardado, onConsultado, onModificado } = mixin.useHooks()
 
+        const modales = new ComportamientoModalesVehiculos()
+
         /************************
          * Stores
          ***********************/
         const cargando = new StatusEssentialLoading()
+        const store = useAuthenticationStore()
 
         const idVehiculo = ref()
         const refArchivo = ref()
 
-        const opciones_marcas = ref([])
-        const opciones_modelos = ref([])
-        const opciones_combustibles = ref([])
-
-        const {seguros, filtrarSeguros}= useFiltrosListadosSelects(listadosAuxiliares) 
+        const { seguros, filtrarSeguros,
+            marcas, filtrarMarcas,
+            modelos, filtrarModelos,
+            combustibles, filtrarCombustibles
+        } = useFiltrosListadosSelects(listadosAuxiliares)
 
         const mostrarLabelModal = computed(() => accion.value === acciones.nuevo || accion.value === acciones.editar)
         cargarVista(async () => {
@@ -61,8 +67,20 @@ export default defineComponent({
                 combustibles: {
                     controller: new CombustibleController(),
                     params: { campos: 'id,nombre' }
-                }
+                },
+                seguros: {
+                    controller: new SeguroVehicularController(),
+                    params: {
+                        estado: 1,
+                        'fecha_caducidad[operator]': '>',
+                        'fecha_caducidad[value]': obtenerFechaActual(maskFecha),
+                    }
+                },
             })
+            marcas.value = listadosAuxiliares.marcas
+            modelos.value = listadosAuxiliares.modelos
+            combustibles.value = listadosAuxiliares.combustibles
+            seguros.value = listadosAuxiliares.seguros
         })
 
         //Reglas de validacion
@@ -87,7 +105,6 @@ export default defineComponent({
         *********************************/
         onReestablecer(async () => {
             console.log(accion.value)
-            reset()
             console.log('Presionaste cancelar')
 
             refArchivo.value.limpiarListado() //se borra listado de archivos
@@ -115,8 +132,10 @@ export default defineComponent({
         /*********************************
          * Funciones
         *********************************/
-        function reset() {
-            // refCilindraje.value.resetValidation()
+        function guardado(data) {
+            if (data.formulario === 'SeguroVehicularPage') {
+                listadosAuxiliares.seguros.push(data.modelo)
+            }
         }
         async function subirArchivos() {
             await refArchivo.value.subir()
@@ -126,19 +145,32 @@ export default defineComponent({
             cargando.activar()
             listadosAuxiliares.seguros = (await new SeguroVehicularController().listar({
                 'estado': 1,
-                'fecha_caducidad[operator]': '<=',
+                'fecha_caducidad[operator]': '>',
                 'fecha_caducidad[value]': obtenerFechaActual(maskFecha),
             })).result
             seguros.value = listadosAuxiliares.seguros
             cargando.desactivar()
         }
+        function seleccionarModelo(val) {
+            modelos.value = listadosAuxiliares.modelos.filter((v) => v.marca_id === val)
+            vehiculo.modelo = ''
+            if (modelos.value.length < 1) {
+                vehiculo.modelo = ''
+            }
+            if (modelos.value.length === 1) {
+                vehiculo.modelo = modelos.value[0]['id']
+            }
+        }
+        function seleccionarMarca(val) {
+            const encontrado = listadosAuxiliares.modelos.filter((v) => v.id === val)
+            if (encontrado.length > 0) {
+                marcas.value = listadosAuxiliares.marcas.filter((v) => v.id === encontrado[0]['marca_id'])
+                vehiculo.marca = encontrado[0]['marca_id']
+            }
+        }
 
 
 
-        //cargar datos en listados
-        opciones_marcas.value = listadosAuxiliares.marcas
-        opciones_modelos.value = listadosAuxiliares.modelos
-        opciones_combustibles.value = listadosAuxiliares.combustibles
 
         return {
             mixin, vehiculo, disabled, v$, accion, acciones,
@@ -146,74 +178,20 @@ export default defineComponent({
             refArchivo,
             idVehiculo,
             mostrarLabelModal,
+            store,
+            modales,
             //listados
-            opciones_marcas,
-            opciones_modelos,
-            opciones_combustibles,
+            seguros, filtrarSeguros,
+            marcas, filtrarMarcas,
+            modelos, filtrarModelos,
+            combustibles, filtrarCombustibles,
             opciones_traccion_vehiculos,
-            filtroCombustibles(val, update) {
-                if (val === '') {
-                    update(() => {
-                        opciones_combustibles.value = listadosAuxiliares.combustibles
-                    })
-                    return
-                }
-                update(() => {
-                    const needle = val.toLowerCase()
-                    opciones_combustibles.value = listadosAuxiliares.combustibles.filter((v) => v.nombre.toLowerCase().indexOf(needle) > -1)
-                })
-            },
-            filtroMarcas(val, update) {
-                if (val === '') {
-                    update(() => {
-                        opciones_marcas.value = listadosAuxiliares.marcas
-                        opciones_modelos.value = listadosAuxiliares.modelos
-                    })
-                    return
-                }
-                update(() => {
-                    const needle = val.toLowerCase()
-                    opciones_marcas.value = listadosAuxiliares.marcas.filter((v) => v.nombre.toLowerCase().indexOf(needle) > -1)
-                })
-            },
-            filtroModelos(val, update) {
-                if (val === '') {
-                    update(() => {
-                        // opciones_modelos.modelos = listadosAuxiliares.modelos
-                        // console.log('modelos recibidos', opciones_modelos.value)
-                    })
-                    return
-                }
-                update(() => {
-                    const needle = val.toLowerCase()
-                    opciones_modelos.value = listadosAuxiliares.modelos.filter((v) => v.nombre.toLowerCase().indexOf(needle) > -1)
-                    // console.log(listadosAuxiliares.modelos.filter((v) => v.nombre.toLowerCase().indexOf(needle) > -1))
-                })
-            },
-            seleccionarModelo(val) {
-                console.log('seleccionar modelo: ', val)
-                opciones_modelos.value = listadosAuxiliares.modelos.filter((v) => v.marca_id === val)
-                console.log(opciones_modelos.value)
-                vehiculo.modelo = ''
-                if (opciones_modelos.value.length < 1) {
-                    vehiculo.modelo = ''
-                }
-                if (opciones_modelos.value.length === 1) {
-                    vehiculo.modelo = opciones_modelos.value[0]['id']
-                }
-            },
-            seleccionarMarca(val) {
-                console.log('seleccionar marca: ', val)
-                const encontrado = listadosAuxiliares.modelos.filter((v) => v.id === val)
-                if (encontrado.length > 0) {
-                    opciones_marcas.value = listadosAuxiliares.marcas.filter((v) => v.id === encontrado[0]['marca_id'])
-                    vehiculo.marca = encontrado[0]['marca_id']
-                }
-                // })
-            },
+
             //funciones
             recargarSeguros,
-            seguros, filtrarSeguros,
+            seleccionarMarca,
+            seleccionarModelo,
+            guardado,
 
 
 

@@ -17,11 +17,19 @@ import { maskFecha } from "config/utils";
 
 export default defineComponent({
     components: { TabLayoutFilterTabs2 },
-    setup() {
+    setup(props, { emit }) {
         const mixin = new ContenedorSimpleMixin(SeguroVehicular, new SeguroVehicularController())
         const { entidad: seguro, disabled, listadosAuxiliares, accion } = mixin.useReferencias()
         const { setValidador, obtenerListados, cargarVista, listar } = mixin.useComportamiento()
         const { onReestablecer, onGuardado, onConsultado, onModificado } = mixin.useHooks()
+
+        /*****************************
+         * HOOKS
+         ****************************/
+        onGuardado((id, response) => {
+            emit('cerrar-modal', false)
+            emit('guardado', { formulario: 'SeguroVehicularPage', id: id, modelo: response.modelo })
+        })
 
         /*****************************
          * VALIDACIONES
@@ -50,7 +58,7 @@ export default defineComponent({
                     listar({
                         // estado: 0,
                         'fecha_caducidad[start]': obtenerFechaActual(maskFecha),
-                        'fecha_caducidad[end]': sumarFechas(obtenerFechaActual(), 0, 0, 15,maskFecha),
+                        'fecha_caducidad[end]': sumarFechas(obtenerFechaActual(), 0, 0, 15, maskFecha),
                     })
                     break
                 case '3': //caducados

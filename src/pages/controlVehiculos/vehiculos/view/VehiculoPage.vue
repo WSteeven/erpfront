@@ -13,7 +13,7 @@
             <label class="q-mb-sm block">Marca</label>
             <q-select
               v-model="vehiculo.marca"
-              :options="opciones_marcas"
+              :options="marcas"
               hint="Agregue elementos desde el panel de marcas"
               transition-show="scale"
               transition-hide="scale"
@@ -24,7 +24,7 @@
               :readonly="disabled"
               use-input
               input-debounce="0"
-              @filter="filtroMarcas"
+              @filter="filtrarMarcas"
               @update:model-value="seleccionarModelo"
               :option-label="(item) => item.nombre"
               :option-value="(item) => item.id"
@@ -44,7 +44,7 @@
             <label class="q-mb-sm block">Modelo</label>
             <q-select
               v-model="vehiculo.modelo"
-              :options="opciones_modelos"
+              :options="modelos"
               hint="Agregue elementos desde el panel de modelos"
               transition-show="scale"
               transition-hide="scale"
@@ -56,7 +56,7 @@
               :error="!!v$.modelo.$errors.length"
               use-input
               input-debounce="0"
-              @filter="filtroModelos"
+              @filter="filtrarModelos"
               @update:model-value="seleccionarMarca"
               :option-label="(item) => item.nombre"
               :option-value="(item) => item.id"
@@ -82,7 +82,7 @@
             <label class="q-mb-sm block">Tipo de combustible</label>
             <q-select
               v-model="vehiculo.combustible"
-              :options="opciones_combustibles"
+              :options="combustibles"
               hint="Agregue elementos desde el panel de combustibles"
               transition-show="scale"
               transition-hide="scale"
@@ -94,7 +94,7 @@
               :error="!!v$.combustible.$errors.length"
               use-input
               input-debounce="0"
-              @filter="filtroCombustibles"
+              @filter="filtrarCombustibles"
               :option-label="(item) => item.nombre"
               :option-value="(item) => item.id"
               emit-value
@@ -377,7 +377,7 @@
             >
               <template #boton-subir>
                 <q-btn
-                  v-if="mostrarBotonSubir"
+                  v-if="false"
                   color="positive"
                   push
                   no-caps
@@ -394,6 +394,11 @@
       </q-form>
     </template>
   </tab-layout>
+  <modales-entidad
+    :comportamiento="modales"
+    :persistente="false"
+    @guardado="(data) => guardado(data)"
+  ></modales-entidad>
 </template>
 <!-- :error="v$.nombre.$errors"  -->
 

@@ -169,7 +169,7 @@ cargarVista(async () => {
   if (etapaStore.idEtapa) {
     console.log(etapaStore.idEtapa)
     accion.value = acciones.editar
-    consultar({id: etapaStore.idEtapa})
+    consultar({ id: etapaStore.idEtapa })
   }
 })
 const reglas = {

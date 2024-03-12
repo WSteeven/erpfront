@@ -40,7 +40,6 @@
             <q-input
               v-model="servicio.nombre"
               placeholder="Obligatorio"
-              :readonly="disabled"
               :disable="disabled"
               :error="!!v$.nombre.$errors.length"
               outlined
@@ -59,14 +58,20 @@
             <label class="q-mb-sm block">Realizar cada (Km)</label>
             <q-input
               v-model="servicio.intervalo"
-              placeholder="Obligatorio"
+              placeholder="Opcional"
+              hint="Campo obligatorio si el tipo es preventivo"
               type="number"
               step="100"
               min="0"
               :disable="disabled"
+              :error="!!v$.intervalo.$errors.length"
               outlined
               dense
-            >
+              ><template v-slot:error>
+                <div v-for="error of v$.intervalo.$errors" :key="error.$uid">
+                  <div class="error-msg">{{ error.$message }}</div>
+                </div>
+              </template>
             </q-input>
           </div>
 
