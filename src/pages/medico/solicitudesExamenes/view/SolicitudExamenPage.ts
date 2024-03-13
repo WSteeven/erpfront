@@ -99,8 +99,7 @@ export default defineComponent({
      * Hooks
      ********/
     onConsultado(async () => {
-      // accion.value = acciones.consultar
-      empleado.hydrate(new Empleado())
+      // empleado.hydrate(new Empleado())
       if (solicitudExamen.empleado_id) await consultarEmpleado(solicitudExamen.empleado_id)
       solicitudExamen.examenes_solicitados = solicitudExamen.examenes_solicitados.map((examenSolicitado: ExamenSolicitado) => {
         const examenSolicitadoAux = new ExamenSolicitado()
@@ -111,10 +110,10 @@ export default defineComponent({
       })
     })
 
-    onBeforeModificar(() => {
-      // citaMedica.fecha_hora_cita = formatearFechaHora(fecha_cita_medica.value, hora_cita_medica.value)
-      // citaMedica.paciente = citaMedica.paciente_id
-    })
+    // onBeforeModificar(() => {
+    // citaMedica.fecha_hora_cita = formatearFechaHora(fecha_cita_medica.value, hora_cita_medica.value)
+    // citaMedica.paciente = citaMedica.paciente_id
+    // })
 
     onReestablecer(() => {
       // hora_cita_medica.value = null

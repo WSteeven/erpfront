@@ -7,6 +7,7 @@
     :filtrar="filtrarSolicitudes"
     :tabDefecto="tabSolicitud"
     :forzarListar="true"
+    :permitir-editar="true"
   >
     <template #formulario>
       <div class="q-pa-md">

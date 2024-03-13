@@ -60,7 +60,7 @@ export default defineComponent({
      ********/
     const { entidad: solicitudExamen, listadosAuxiliares, accion, disabled } = props.mixin.useReferencias()
     const { cargarVista, obtenerListados, guardar } = props.mixin.useComportamiento()
-    const { onBeforeGuardar, onGuardado } = props.mixin.useHooks()
+    const { onBeforeGuardar, onBeforeModificar } = props.mixin.useHooks()
 
     cargarVista(async () => {
       const examenes = LocalStorage.getItem('examenes') ? JSON.parse(LocalStorage.getItem('examenes')!.toString()) : []
@@ -143,29 +143,22 @@ export default defineComponent({
     onBeforeGuardar(() => {
       console.log('on before guardar...')
       solicitudExamen.examenes_solicitados = solicitudExamen.examenes_solicitados.map((examenSolicitado: ExamenSolicitado) => {
-        // const examenSolicitadoAux = new ExamenSolicitado()
-        // examenSolicitadoAux.hydrate(examenSolicitado)
         examenSolicitado.fecha_hora_asistencia = `${examenSolicitado.fecha_asistencia} ${examenSolicitado.hora_asistencia}`
-        console.log(examenSolicitado)
-        // console.log(examenSolicitadoAux)
         return examenSolicitado
       })
 
-      console.log(solicitudExamen.examenes_solicitados)
       solicitudExamen.canton = empleado.canton
-
-      // idExamenesSolicitados = solicitudExamen.examenes_solicitados.map((ex: ExamenSolicitado) => ex.examen as number)
     })
 
-    /* onGuardado((id: number, responseData) => {
-      const modelo = responseData.modelo
-      emit('guardado', { data: { idExamenesSolicitados }, page: 'SolicitudExamenPage' })
-      emit('cerrar-modal')
-    }) */
+    onBeforeModificar(() => {
+      console.log('on before modificar...')
+      solicitudExamen.examenes_solicitados = solicitudExamen.examenes_solicitados.map((examenSolicitado: ExamenSolicitado) => {
+        examenSolicitado.fecha_hora_asistencia = `${examenSolicitado.fecha_asistencia} ${examenSolicitado.hora_asistencia}`
+        return examenSolicitado
+      })
 
-    /*******
-     * Init
-     *******/
+      solicitudExamen.canton = empleado.canton
+    })
 
     return {
       mixin: props.mixin,

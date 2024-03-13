@@ -33,7 +33,7 @@ export function useBotonesSolicitudExamen(tabEstadoExamen: Ref, modales: Comport
   const btnSeleccionarVariosExamenes: CustomActionTable<DetalleExamen> = {
     titulo: 'Solicitar varios examenes',
     icono: 'bi-check-square',
-    color: 'primary',
+    color: 'positive',
     visible: () => !seleccionVariosExamen.value && tabEstadoExamen.value === estadosSolicitudesExamenes.PENDIENTE_SOLICITAR.value,
     accion: async () => seleccionVariosExamen.value = true
   }
@@ -119,20 +119,12 @@ export function useBotonesSolicitudExamen(tabEstadoExamen: Ref, modales: Comport
       modales.abrirModalEntidad('ResultadosExamenPage')
     }
   }
-  //
-  // detalles_productos where descripcion like '' id detalle
-  // inventarios where detalle_id = 1
-  // nuevo y jp construcred problemas asi q buscar esto
-  // detalle_producto_transaccion where o where in inventario_id =
-  // -- solo coger transaccion egresos por motivo por tipo
-  // transaccion bodega where motivo id = '' where motivo transaccion_id = ''
-  // reporte historico de fondos
-  // reporte resumen valores drf
+
   const btnConsultarEstadoSolicitudExamen: CustomActionTable<SolicitudExamen> = {
     titulo: 'Consultar estado',
     icono: 'bi-eye',
     color: 'primary',
-    visible: () => tabEstadoExamen.value === estadosSolicitudesExamenes.SOLICITADO.value,
+    visible: () => [estadosSolicitudesExamenes.SOLICITADO.value, estadosSolicitudesExamenes.APROBADO_POR_COMPRAS.value].includes(tabEstadoExamen.value),
     accion: ({ entidad }) => {
       medicoStore.accion = acciones.consultar
       const examenesSolicitados: ExamenSolicitado[] = mapearExamenesSolicitados(entidad.examenes_solicitados)

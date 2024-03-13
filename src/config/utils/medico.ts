@@ -36,7 +36,7 @@ export const estadosSolicitudesExamenes = {
     icono: 'bi-cart-check',
   },
   APROBADO_POR_COMPRAS: {
-    value: '2',
+    value: 'APROBADO_POR_COMPRAS',
     label: 'Aprobado por compras',
     icono: 'bi-cash-coin',
   },
@@ -70,8 +70,8 @@ export const tabOptionsEstadosSolicitudExamen: TabOption[] = [
 ]
 
 export const selectAprobarEstadosSolicitudesExamenes = [
-  { label: 'Aprobar', value: estadosSolicitudesExamenes.APROBADO_POR_COMPRAS.value },
-  // { label: 'Rechazar', value: estadosSolicitudesExamenes.SOLICITADO.value },
+  { label: 'Aprobado', value: estadosSolicitudesExamenes.APROBADO_POR_COMPRAS.value },
+  { label: 'Solicitado', value: estadosSolicitudesExamenes.SOLICITADO.value },
 ]
 
 /**************

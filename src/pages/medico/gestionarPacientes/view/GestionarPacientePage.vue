@@ -63,14 +63,11 @@
           helpalive
         >
           <q-tab-panel :name="tiposProcesosExamenes.INGRESO" class="q-pa-none">
-            <q-splitter v-model="splitterModel" class="border-grey">
+            <q-splitter v-model="splitterModel">
               <template v-slot:before>
-                <div
-                  class="border-bottom-gresy-5 border-righst-grey-5 text-center q-pb-md q-pt-sm"
-                >
+                <div class="text-center bg-primary q-pb-md q-pt-sm">
                   <q-btn
-                    class="text-primary"
-                    square
+                    class="bg-white text-primary"
                     push
                     no-caps
                     @click="agregarRegistro()"
@@ -83,27 +80,33 @@
                     Nuevo registro</q-btn
                   >
                 </div>
+
                 <!-- Tabs -->
                 <q-tabs
                   v-model="tabsRegistro"
                   vertical
                   indicator-color="transparent"
-                  class="bg-toolbar"
-                  active-class="bg-blue-1 text-black text-bold"
+                  class="bg-primary text-white q-px-xs alto-tabla"
+                  active-bg-color="white"
+                  active-class="text-black bg-white text-bold"
+                  :style="'height:' + altoTabla"
                 >
                   <q-tab
                     v-for="registro in registros"
                     :key="registro.id"
                     :name="registro.id"
+                    class="rounded q-mb-xs"
+                    :class="{ 'bg-blue': tabsRegistro !== registro.id }"
                     no-caps
                     @click="seleccionarRegistro(registro.id)"
                   >
                     <q-icon
                       name="bi-person"
                       size="xs"
-                      class="text-primary q-mb-xs"
+                      class="q-mb-xs"
+                      :class="{ 'text-primary': tabsRegistro === registro.id }"
                     ></q-icon>
-                    <span> Registro # {{ registro.numero_registro }} </span>
+                    <span>Registro # {{ registro.numero_registro }}</span>
                   </q-tab>
                 </q-tabs>
               </template>
@@ -120,7 +123,7 @@
                     v-for="registro in registros"
                     :key="registro.id"
                     :name="registro.id"
-                    class="bg-primary text-white q-pa-none"
+                    class="text-primary q-pa-none"
                   >
                     <div class="row q-pa-md">
                       <div class="col-12 col-md-6">
@@ -137,7 +140,7 @@
                   </q-tab-panel>
                 </q-tab-panels>
 
-                <div v-if="tabsRegistro" class="bg-primary q-px-sm">
+                <div v-if="tabsRegistro" class="q-px-sm">
                   <q-tabs
                     v-model="tabEstadoExamen"
                     align="justify"
@@ -164,6 +167,7 @@
                       :icon="
                         estadosSolicitudesExamenes.PENDIENTE_SOLICITAR.icono
                       "
+                      @click="filtrarEstadoExamen(tabEstadoExamen)"
                     />
                     <q-tab
                       :name="estadosSolicitudesExamenes.SOLICITADO.value"
@@ -174,6 +178,7 @@
                       }"
                       no-caps
                       :icon="estadosSolicitudesExamenes.SOLICITADO.icono"
+                      @click="filtrarEstadoExamen(tabEstadoExamen)"
                     />
                     <q-tab
                       :name="
@@ -192,6 +197,7 @@
                       :icon="
                         estadosSolicitudesExamenes.APROBADO_POR_COMPRAS.icono
                       "
+                      @click="filtrarEstadoExamen(tabEstadoExamen)"
                     />
                     <q-tab
                       :name="estadosSolicitudesExamenes.RESULTADOS.value"
@@ -202,6 +208,7 @@
                       }"
                       no-caps
                       :icon="estadosSolicitudesExamenes.RESULTADOS.icono"
+                      @click="filtrarEstadoExamen(tabEstadoExamen)"
                     />
                   </q-tabs>
 
@@ -259,12 +266,33 @@
                         :alto-fijo="false"
                       ></essential-table>
                     </q-tab-panel>
+
+                    <q-tab-panel
+                      :name="
+                        estadosSolicitudesExamenes.APROBADO_POR_COMPRAS.value
+                      "
+                      class="q-pa-none"
+                    >
+                      <essential-table
+                        titulo="Solicitudes de exámenes aprobadas"
+                        :configuracionColumnas="[
+                          ...configuracionColumnasSolicitudExamen,
+                          accionesTabla,
+                        ]"
+                        :datos="solicitudesExamenes"
+                        :permitirConsultar="false"
+                        :permitirEditar="false"
+                        :permitirEliminar="false"
+                        :accion1="btnConsultarEstadoSolicitudExamen"
+                        :alto-fijo="false"
+                      ></essential-table>
+                    </q-tab-panel>
                   </q-tab-panels>
                 </div>
 
                 <div
                   v-else
-                  class="row bg-primary h-100 q-py-xl items-center justify-center"
+                  class="row text-primary h-100 q-py-xl items-center justify-center"
                 >
                   Crea un registro y luego seleccionalo
                 </div>
@@ -299,3 +327,9 @@
 </template>
 
 <script src="./GestionarPacientePage.ts" />
+
+<style>
+.alto-tabla {
+  height: 1200px;
+}
+</style>

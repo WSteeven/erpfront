@@ -17,17 +17,29 @@
         <div class="col-12 col-md-3"></div>
         <transition name="scale" mode="out-in">
           <div
-            v-show="mostrarCambiarCanton"
-            class="col-12 bg-primary q-pa-md rounded"
+            v-show="mostrarCambiarCanton || solicitudExamen.id"
+            class="rounded q-mb-md"
+            :class="{
+              'col-12': solicitudExamen.id,
+              'col-6 custom-shadow q-pa-md border-grey': !solicitudExamen.id,
+            }"
           >
-            <div class="row justify-between text-white items-center q-mb-sm">
-              <label class="q-mb-sm block text-bold"
+            <!-- <q-card-section> -->
+            <div class="row justify-between items-center q-mb-sm">
+              <label v-if="solicitudExamen.id" class="q-mb-sm block"
+                >Cantón</label
+              >
+              <label v-else class="q-mb-sm block text-positive text-bold"
                 >Seleccione un cantón para filtrar los laboratorios
                 clínicos</label
               >
               <q-btn
+                v-if="!solicitudExamen.id"
                 icon="bi-x"
-                flat
+                push
+                unelevated
+                color="negative"
+                dense
                 @click="() => (mostrarCambiarCanton = !mostrarCambiarCanton)"
               ></q-btn>
             </div>
@@ -53,6 +65,7 @@
               map-options
             >
             </q-select>
+            <!-- </q-card-section> -->
           </div>
         </transition>
       </div>
@@ -94,11 +107,11 @@
             > -->
             <q-btn
               v-if="index === 0 && accion === acciones.nuevo"
-              class="bg-body q-px-sm text-primary q-py-none"
+              class="bg-white q-px-sm text-positive q-py-none"
               dense
               no-caps
               rounded
-              unelevated
+              push
               @click="() => (mostrarCambiarCanton = !mostrarCambiarCanton)"
             >
               <q-icon size="14px" name="bi-arrow-left-right" class="q-mr-sm" />
@@ -111,7 +124,7 @@
             :options="listadosAuxiliares.laboratoriosClinicos"
             :disable="disabled || esAutorizador"
             :hint="
-              index === 0
+              index === 0 && accion === acciones.nuevo
                 ? 'Se autocompletarán los demás laboratorios con el seleccionado aquí'
                 : null
             "
@@ -256,14 +269,13 @@
           ></q-input>
         </div>
 
-        <div v-if="esAutorizador" class="col-12 col-md-3">
+        <div v-if="esAutorizador || accion === acciones.consultar" class="col-12 col-md-3">
           <label class="q-mb-sm block text-positive text-bold"
             >Autorización</label
           >
           <q-select
             v-model="solicitudExamen.estado_solicitud_examen"
             :options="selectAprobarEstadosSolicitudesExamenes"
-            @filter="filtrarCantones"
             :disable="!esAutorizador"
             transition-show="scale"
             transition-hide="scale"
@@ -280,14 +292,9 @@
           >
           </q-select>
         </div>
-
-        <div
-          v-if="
-            solicitudExamen.estado_solicitud_examen ===
-            estadosSolicitudesExamenes.SOLICITADO
-          "
-          class="col-12 q-mb-md"
-        >
+        <!-- solicitudExamen.estado_solicitud_examen === -->
+        <!-- estadosSolicitudesExamenes.SOLICITADO.value -->
+        <div v-if="solicitudExamen.created_at" class="col-12 q-mb-md">
           <label class="q-mb-sm block">Observación del autorizador</label>
           <q-input
             v-model="solicitudExamen.observacion_autorizador"

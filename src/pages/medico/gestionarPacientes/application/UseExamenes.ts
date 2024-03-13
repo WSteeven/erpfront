@@ -8,6 +8,7 @@ import { SolicitudExamenController } from 'pages/medico/solicitudesExamenes/infr
 import { RegistroEmpleadoExamen } from 'pages/medico/examenes/domain/RegistroEmpleadoExamen'
 import { ExamenController } from 'pages/medico/examenes/infraestructure/ExamenController'
 import { Examen } from 'pages/medico/examenes/domain/Examen'
+import { SolicitudExamen } from 'pages/medico/solicitudesExamenes/domain/SolicitudExamen'
 
 export function useExamenes() {
   /***************
@@ -21,11 +22,13 @@ export function useExamenes() {
    * Variables
    ************/
   const cargando = new StatusEssentialLoading()
-  const examenes: Ref<Examen[]> = ref([])
-  const solicitudesExamenes: Ref<any[]> = ref([])
-  const listadoGeneral: Ref<Examen | any[]> = ref([])
 
+  const examenes: Ref<Examen[]> = ref([])
+  const solicitudesExamenes: Ref<SolicitudExamen[]> = ref([])
+  const solicitudesExamenesAprobadas: Ref<SolicitudExamen[]> = ref([])
   const registros: Ref<RegistroEmpleadoExamen[]> = ref([])
+  // const listadoGeneral: Ref<Examen | any[]> = ref([])
+
 
   /************
    * Funciones
@@ -47,7 +50,7 @@ export function useExamenes() {
       cargando.activar()
       const { result } = await examenController.listar({ pendiente_solicitar: true, ...params })
       examenes.value = result
-      listadoGeneral.value = result
+      // listadoGeneral.value = result
     } catch (e) {
       console.log(e)
     } finally {
@@ -72,7 +75,19 @@ export function useExamenes() {
     try {
       const { result } = await solicitudExamenController.listar({ registro_empleado_examen_id: idRegistroEmpleadoExamen, estado_solicitud_examen: tab })
       solicitudesExamenes.value = result
-      listadoGeneral.value = result
+      // listadoGeneral.value = result
+    } catch (e) {
+      console.log(e)
+    } finally {
+      cargando.desactivar()
+    }
+  }
+
+  const consultarSolicitudesExamenesAprobadas = async (tab: number, idRegistroEmpleadoExamen: number) => {
+    cargando.activar()
+    try {
+      const { result } = await solicitudExamenController.listar({ registro_empleado_examen_id: idRegistroEmpleadoExamen, estado_solicitud_examen: tab })
+      solicitudesExamenesAprobadas.value = result
     } catch (e) {
       console.log(e)
     } finally {
@@ -93,7 +108,7 @@ export function useExamenes() {
     // variables
     examenes,
     solicitudesExamenes,
-    listadoGeneral,
+    // listadoGeneral,
     registros,
     // funciones
     consultarRegistrosEmpleadoExamen,

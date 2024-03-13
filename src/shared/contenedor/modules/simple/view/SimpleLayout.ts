@@ -1,7 +1,7 @@
 // Dependencias
 import { EntidadAuditable } from 'shared/entidad/domain/entidadAuditable'
 import { useAuthenticationStore } from 'stores/authentication'
-import { computed, defineComponent } from 'vue'
+import { computed, defineComponent, getCurrentInstance } from 'vue'
 import { useRoute } from 'vue-router'
 
 // Componentes
@@ -54,17 +54,20 @@ export default defineComponent({
     const router = useRoute()
     const store = useAuthenticationStore()
 
+    const currentInstance = getCurrentInstance()
+    const componentName = currentInstance?.parent?.type.name
+
     const puedeVer = computed(() =>
       store.can(`puede.ver.${router.name?.toString()}`) && props.permitirConsultar
     )
     const puedeCrear = computed(() =>
-      store.can(`puede.crear.${router.name?.toString()}`)
+      store.can(`puede.crear.${componentName ?? router.name?.toString()}`)
     )
     const puedeEditar = computed(() =>
-      store.can(`puede.editar.${router.name?.toString()}`) && props.permitirEditar
+      store.can(`puede.editar.${componentName ?? router.name?.toString()}`) && props.permitirEditar
     )
     const puedeEliminar = computed(() =>
-      store.can(`puede.eliminar.${router.name?.toString()}`) && props.permitirEliminar
+      store.can(`puede.eliminar.${componentName ?? router.name?.toString()}`) && props.permitirEliminar
     )
 
     return {

@@ -1,5 +1,6 @@
 // Dependencias
 import { configuracionColumnasSolicitudExamen } from '../../solicitudesExamenes/domain/configuracionColumnasSolicitudExamen'
+import { estadosSolicitudesExamenes, tabOptionsEstadosExamenes, tiposProcesosExamenes } from 'config/utils/medico'
 import { configuracionColumnasEsquemaVacunacion } from '../domain/configuracionColumnasEsquemaVacunacion'
 import { configuracionColumnasEmpleados } from '../domain/configuracionColumnasEmpleados'
 import { configuracionColumnasExamenes } from '../domain/configuracionColumnasExamenes'
@@ -18,7 +19,6 @@ import DetallePaciente from './DetallePaciente.vue'
 import { ContenedorSimpleMixin } from 'shared/contenedor/modules/simple/application/ContenedorSimpleMixin'
 import { ComportamientoModalesGestionPaciente } from '../application/ComportamientoModalesGestionPaciente'
 import { EmpleadoController } from 'pages/recursosHumanos/empleados/infraestructure/EmpleadoController'
-import { estadosSolicitudesExamenes, tabOptionsEstadosExamenes, tiposProcesosExamenes } from 'config/utils/medico'
 import { useBotonesSolicitudExamen } from '../application/UseBotonesSolicitudExamen'
 import { CustomActionPrompt } from 'components/tables/domain/CustomActionPrompt'
 import { CustomActionTable } from 'components/tables/domain/CustomActionTable'
@@ -88,7 +88,17 @@ export default defineComponent({
     /*************
      * Funciones
      *************/
-    const { examenes, solicitudesExamenes, listadoGeneral, registros, consultarRegistrosEmpleadoExamen, consultarExamenesSinSolicitar, consultarSolicitudesExamenes, guardarRegistro } = useExamenes()
+    const {
+      examenes,
+      solicitudesExamenes,
+      // solicitudesExamenesAprobadas,
+      // listadoGeneral,
+      registros,
+      consultarRegistrosEmpleadoExamen,
+      consultarExamenesSinSolicitar,
+      consultarSolicitudesExamenes,
+      guardarRegistro
+    } = useExamenes()
     const {
       // Referencias
       refTablaExamenes,
@@ -176,17 +186,13 @@ export default defineComponent({
 
     const filtrarEstadoExamen = (tab) => {
       tabEstadoExamen.value = tab
-      // console.log(tab)
-      // console.log(estadosExamenes.PENDIENTE_SOLICITAR)
+      examenes.value = []
+      solicitudesExamenes.value = []
+
       if (tab === estadosSolicitudesExamenes.PENDIENTE_SOLICITAR.value) {
-        // seleccionVariosExamen.value = false
-        console.log('if...')
         consultarExamenesSinSolicitar({ empleado_id: empleado.id, registro_empleado_examen_id: tabsRegistro.value })
       } else {
-        console.log('else...')
-        // seleccionVariosExamen.value = true
         examenesSeleccionados.value = []
-        // consultarExamenesSolicitados(tab, tabsRegistro.value)
         consultarSolicitudesExamenes(tab, tabsRegistro.value)
       }
     }
@@ -194,7 +200,7 @@ export default defineComponent({
     /************
      * Observers
      ************/
-    watch(tabEstadoExamen, (tab) => filtrarEstadoExamen(tab))
+    // watch(tabEstadoExamen, (tab) => filtrarEstadoExamen(tab))
 
     /*******
      * Init
@@ -229,6 +235,15 @@ export default defineComponent({
     const colum = ref(false)
     const columnas: any = ref(configuracionColumnasExamenes)
 
+    const altoTabla = computed(() => {
+      switch (tabEstadoExamen.value) {
+        case estadosSolicitudesExamenes.PENDIENTE_SOLICITAR.value:
+          return (examenes.value.length * 48 + 420) + 'px'
+        case estadosSolicitudesExamenes.SOLICITADO.value || estadosSolicitudesExamenes.APROBADO_POR_COMPRAS.value:
+          return (solicitudesExamenes.value.length * 48 + 420) + 'px'
+      }
+    }) // examenes
+
     return {
       // selecc,
       mixin,
@@ -254,6 +269,7 @@ export default defineComponent({
       esquemaVacunaciones,
       tabOptionsEstadosEmpleados,
       filtrarEmpleados,
+      altoTabla,
       // funciones
       agregarRegistro,
       seleccionarRegistro,
@@ -266,7 +282,7 @@ export default defineComponent({
       // Referencias
       refTablaExamenes,
       seleccionVariosExamen,
-      listadoGeneral,
+      // listadoGeneral,
       // Header
       btnSeleccionarVariosExamenes,
       btnSolicitarExamenesSeleccionados,
