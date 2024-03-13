@@ -14,7 +14,7 @@ import { AxiosResponse } from "axios"
 import { apiConfig, endpoints } from "config/api";
 import { useNotificaciones } from "shared/notificaciones";
 import { ContenedorSimpleMixin } from "shared/contenedor/modules/simple/application/ContenedorSimpleMixin";
-import { imprimirArchivo } from 'shared/utils'
+import { imprimirArchivo, ordenarLista } from 'shared/utils'
 import { useNotificacionStore } from 'stores/notificacion';
 import { ComportamientoModalesTransaccionEgreso } from 'pages/bodega/transacciones/modules/transaccionEgreso/application/ComportamientoModalesGestionarEgresos';
 import { useCargandoStore } from "stores/cargando";
@@ -115,6 +115,7 @@ export default defineComponent({
 
             //funciones
             buscarReporte,
+            ordenarLista,
             //botones
             modales,
             store,

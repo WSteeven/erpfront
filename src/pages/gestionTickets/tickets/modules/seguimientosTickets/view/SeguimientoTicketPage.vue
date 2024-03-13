@@ -6,14 +6,22 @@
 
     <div class="row bg-body-table rounded q-pa-md border-grey">
       <div class="col-12">
-        <label class="q-mb-sm block">Asunto</label>
-        <div class="q-mb-md text-bold">{{ ticket.asunto }}</div>
+        <label class="q-mb-sm text-bold block">Asunto</label>
+        <div class="q-mb-md">{{ ticket.asunto }}</div>
       </div>
 
-      <div class="col-12">
+      <div class="col-12 q-mb-md">
+        <label class="q-mb-sm text-bold block">Descripción</label>
+        <div
+          v-html="ticket.descripcion"
+          class="border-grey rounded bg-grey-1 q-pa-sm"
+        ></div>
+      </div>
+
+      <!-- <div class="col-12">
         <label class="q-mb-sm block">Descripción</label>
         <b>{{ ticket.descripcion }}</b>
-      </div>
+      </div> -->
     </div>
 
     <div

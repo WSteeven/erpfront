@@ -252,6 +252,7 @@
               :mostrarBotones="false"
               :permitirBuscar="false"
               :altoFijo="false"
+              ajustarCeldas
             ></essential-table>
           </div>
         </div>

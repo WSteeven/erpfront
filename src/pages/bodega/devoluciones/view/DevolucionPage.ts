@@ -10,6 +10,7 @@ import TabLayoutFilterTabs2 from 'shared/contenedor/modules/simple/view/TabLayou
 import EssentialTable from 'components/tables/view/EssentialTable.vue'
 import EssentialSelectableTable from 'components/tables/view/EssentialSelectableTable.vue'
 import GestorArchivos from 'components/gestorArchivos/GestorArchivos.vue';
+import ModalesEntidad from 'components/modales/view/ModalEntidad.vue'
 
 //Logica y controladores
 import { ContenedorSimpleMixin } from 'shared/contenedor/modules/simple/application/ContenedorSimpleMixin'
@@ -22,7 +23,7 @@ import { configuracionColumnasProductosSeleccionados } from '../domain/configura
 import { configuracionColumnasDetallesModal } from '../domain/configuracionColumnasDetallesModal'
 import { useNotificaciones } from 'shared/notificaciones'
 import { CustomActionTable } from 'components/tables/domain/CustomActionTable'
-import { acciones, accionesTabla, autorizaciones, autorizacionesTransacciones, estadosTransacciones, rolesSistema, tabOptionsPedidos } from 'config/utils'
+import { acciones, accionesTabla, estadosTransacciones, rolesSistema, tabOptionsPedidos } from 'config/utils'
 import { useDevolucionStore } from 'stores/devolucion'
 
 import { useAuthenticationStore } from 'stores/authentication'
@@ -36,8 +37,7 @@ import { useCargandoStore } from 'stores/cargando'
 import { useNotificacionStore } from 'stores/notificacion'
 import { useRouter } from 'vue-router'
 import { SucursalController } from 'pages/administracion/sucursales/infraestructure/SucursalController'
-import { Sucursal } from 'pages/administracion/sucursales/domain/Sucursal'
-import { filtrarEmpleadosPorRoles, ordenarLista, ordernarListaString } from 'shared/utils'
+import { filtrarEmpleadosPorRoles, ordenarLista } from 'shared/utils'
 import { StatusEssentialLoading } from 'components/loading/application/StatusEssentialLoading'
 import { endpoints } from 'config/api'
 import { AxiosResponse } from 'axios'
@@ -45,11 +45,12 @@ import { AxiosHttpRepository } from 'shared/http/infraestructure/AxiosHttpReposi
 import { CondicionController } from 'pages/administracion/condiciones/infraestructure/CondicionController'
 import { Condicion } from 'pages/administracion/condiciones/domain/Condicion'
 import { useFiltrosListadosSelects } from 'shared/filtrosListadosGenerales'
+import { ComportamientoModalesDevolucion } from '../application/ComportamientoModalesDevolucion'
 
 
 export default defineComponent({
   name: 'Devoluciones',
-  components: { TabLayoutFilterTabs2, EssentialTable, EssentialSelectableTable, GestorArchivos, },
+  components: { TabLayoutFilterTabs2, EssentialTable, ModalesEntidad, EssentialSelectableTable, GestorArchivos, },
 
   setup() {
     const mixin = new ContenedorSimpleMixin(Devolucion, new DevolucionController())
@@ -61,6 +62,8 @@ export default defineComponent({
     //stores
     useNotificacionStore().setQuasar(useQuasar())
     useCargandoStore().setQuasar(useQuasar())
+
+    const modales = new ComportamientoModalesDevolucion()
     const devolucionStore = useDevolucionStore()
     const store = useAuthenticationStore()
     const listadoMaterialesDevolucion = useListadoMaterialesDevolucionStore()
@@ -360,6 +363,17 @@ export default defineComponent({
       },
       visible: ({ entidad }) => (tabSeleccionado.value == 'APROBADO' || tabSeleccionado.value == 'PARCIAL') && store.esBodeguero ? true : false
     }
+    const botonCorregir: CustomActionTable = {
+      titulo: 'Corregir devolución',
+      color: 'amber-3',
+      icono: 'bi-gear',
+      accion: ({ entidad, posicion }) => {
+        devolucionStore.devolucion = entidad
+        modales.abrirModalEntidad('CorregirDevolucionPage')
+      },
+      // visible: ({ entidad }) =>true
+      visible: ({ entidad }) => (tabSeleccionado.value == 'APROBADO' || tabSeleccionado.value == 'PARCIAL') && (store.esBodeguero || entidad.per_autoriza_id == store.user.id) && entidad.estado_bodega == estadosTransacciones.parcial ? true : false
+    }
 
 
     //Configurar los listados
@@ -410,6 +424,7 @@ export default defineComponent({
       store,
       refArchivo,
       idDevolucion,
+      modales,
 
       //selector
       refListado,
@@ -426,6 +441,7 @@ export default defineComponent({
       configuracionColumnasProductosSeleccionados,
       botonEditarCantidad,
       botonEliminar,
+      botonCorregir,
       botonAnular,
       botonImprimir,
       botonDespachar,

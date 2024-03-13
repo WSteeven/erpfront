@@ -184,6 +184,12 @@ export const useMenuStore = defineStore('menu', () => {
       can: store.can('puede.ver.modulo_bodega'),
       children: [
         {
+          title: 'Dashboard',
+          link: 'dashboard-bodega',
+          can: store.esBodeguero || store.esCoordinadorBodega||store.can('puede.ver.dashboard_bodega'),
+          icon: 'bi-app',
+        },
+        {
           title: 'Categorías',
           link: 'categorias',
           can: store.esActivosFijos, //store.esBodeguero,//can('puede.ver.categorias'),
@@ -367,6 +373,12 @@ export const useMenuStore = defineStore('menu', () => {
       icon: 'fa-solid fa-cash-register',
       can: store.can('puede.ver.fondo'),
       children: [
+        {
+          title: 'Ajuste de Saldos Fondos Rotativos',
+          link: 'ajustes-saldos',
+          icon: 'bi-app',
+          can: store.can('puede.acceder.ajustes_saldos')||true,
+        },
         {
           title: 'Gastos',
           icon: 'bi-app',

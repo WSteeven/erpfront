@@ -216,6 +216,7 @@ export const endpoints = {
   condiciones: new Endpoint('condiciones'),
   comprobantes: new Endpoint('comprobantes'),
   estados_transacciones: new Endpoint('estados'),
+  dashboard_bodega: new Endpoint('dashboard-bodega'),
   empleados_roles: new Endpoint('empleados-roles'), //con esta ruta se obtienen los empleados por el/los roles especificados
   empleados_permisos: new Endpoint('empleados-permisos'), //con esta ruta se obtienen los empleados por el/los permisos especificados
   control_stocks: new Endpoint('control-stocks'),
@@ -245,6 +246,7 @@ export const endpoints = {
   productos: new Endpoint('productos'),
   productos_perchas: new Endpoint('productos-perchas'),
   sucursales: new Endpoint('sucursales'),
+  sucursales_detalle: new Endpoint('sucursales-detalle'),
   spans: new Endpoint('spans'),
   tipos_fibras: new Endpoint('tipos-fibras'),
   tipos_transacciones: new Endpoint('tipos-transacciones'),
@@ -336,6 +338,7 @@ export const endpoints = {
   empleados_fondos_rotativos: new Endpoint('empleados-fondos-rotativos'),
   reporte_valores_fondos_empleados: new Endpoint('fondos-rotativos/reporte-valores-fondos'),
   tipo_fondo: new Endpoint('fondos-rotativos/tipo-fondo'),
+  ajustes_saldos: new Endpoint('fondos-rotativos/ajustes-saldos'),
   gastos: new Endpoint('fondos-rotativos/gastos'),
   motivo_gasto: new Endpoint('fondos-rotativos/motivo-gasto'),
   gasto_coordinador: new Endpoint('fondos-rotativos/gasto-coordinador'),

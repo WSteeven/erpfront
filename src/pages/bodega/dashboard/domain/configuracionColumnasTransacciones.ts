@@ -1,7 +1,7 @@
-import { ColumnConfig } from 'components/tables/domain/ColumnConfig'
-import { Transaccion } from './Transaccion'
+import { ColumnConfig } from "components/tables/domain/ColumnConfig";
+import { Transaccion } from "pages/bodega/transacciones/domain/Transaccion";
 
-export const configuracionColumnasTransaccionIngreso: ColumnConfig<Transaccion>[] = [
+export const configuracionColumnasTransacciones: ColumnConfig<Transaccion>[] = [
     {
         name: 'id',
         field: 'id',
@@ -47,13 +47,6 @@ export const configuracionColumnasTransaccionIngreso: ColumnConfig<Transaccion>[
         sortable: true,
     },
     {
-        name: 'devolucion',
-        field: 'devolucion',
-        label: 'Devolución',
-        align: 'left',
-        sortable: true,
-    },
-    {
         name: 'motivo',
         field: 'motivo',
         label: 'Motivo',
@@ -83,25 +76,47 @@ export const configuracionColumnasTransaccionIngreso: ColumnConfig<Transaccion>[
         style: 'max-width:200px; overflow: auto;',
         sortable: true,
     },
-    /* {
-        name: 'autorizacion',
-        field: 'autorizacion',
-        label: 'Autorización',
-        align: 'left',
-        sortable: true,
-    }, */
-    /* {
-        name: 'tipo',
-        field: 'tipo',
-        label: 'Tipo',
-        align: 'left',
-        sortable: true,
-    }, */
     {
         name: 'estado',
         field: 'estado',
         label: 'Estado',
         align: 'left',
+        sortable: true,
+    },
+    {
+        name: 'responsable',
+        field: 'responsable',
+        label: 'Responsable',
+        align: 'left',
+        style: 'max-width:250px; overflow: auto;',
+        sortable: true,
+    },
+    {
+        name: 'pedido',
+        field: 'pedido',
+        label: 'Pedido',
+        align: 'left',
+        sortable: true,
+    },
+    {
+        name: 'autorizacion',
+        field: 'autorizacion',
+        label: 'Autorización',
+        align: 'left',
+        sortable: true,
+    },
+    {
+        name: 'firmada',
+        field: 'firmada',
+        label: '¿Firmada?',
+        align: 'left',
+        sortable: true,
+    },
+    {
+        name: 'estado_comprobante',
+        field: 'estado_comprobante',
+        label: 'Estado del comprobante',
+        align: 'center',
         sortable: true,
     }
 ]

@@ -148,7 +148,8 @@ export default defineComponent({
       } else {
       }
 
-      if (accion.value === acciones.nuevo) establecerAutorizador()
+      // if (accion.value === acciones.nuevo)
+      establecerAutorizador()
     })
 
     transferencia.solicitante = authenticationStore.user.id
@@ -239,6 +240,8 @@ export default defineComponent({
         if (esParaStock.value) consultarClientesMaterialesEmpleado({ empleado_id: transferencia.empleado_origen })
         else consultarClientesProyectoEtapa()
       }
+
+      establecerAutorizador()
     }
 
     async function seleccionarProyectoOrigen(limpiarCampos = true) {
@@ -540,21 +543,27 @@ export default defineComponent({
     const { consultarProyectos, consultarProyectosDestino, consultarEtapas, consultarEtapasDestino, consultarProductosProyecto, consultarClientesMaterialesTarea } = useMaterialesProyecto(filtroProyecto, listadosAuxiliares)
 
     async function establecerAutorizador() {
-      if (transferencia.proyecto_origen) {
-        // si es entre proyectos autoriza el jefe tecnico
-        if (transferencia.proyecto_origen === transferencia.proyecto_destino) transferencia.autorizador = buscarProyecto().coordinador_id
-        else transferencia.autorizador = listadosAuxiliares.autorizadores.filter((emp: Empleado) => emp.roles.includes(rolesSistema.jefe_tecnico))[0].id
-      } else if (!transferencia.proyecto_origen && !transferencia.etapa_origen && !transferencia.tarea_origen) {
-        // si es de stock personal autoriza el jefe inmediato
-        if (transferencia.empleado_origen) {
-          const { result } = await new EmpleadoController().consultar(transferencia.empleado_origen)
-          // transferencia.autorizador = result.jefe ? parseInt(result.jefe) : null
-          transferencia.autorizador = autorizadorJefeTecnico(result)
+      console.log('establecerAutorizador')
+      console.log(accion.value)
+      if (accion.value === acciones.nuevo) {
+        console.log('establecerAutorizador nuevo...')
+
+        if (transferencia.proyecto_origen) {
+          // si es entre proyectos autoriza el jefe tecnico
+          if (transferencia.proyecto_origen === transferencia.proyecto_destino) transferencia.autorizador = buscarProyecto().coordinador_id
+          else transferencia.autorizador = listadosAuxiliares.autorizadores.filter((emp: Empleado) => emp.roles.includes(rolesSistema.jefe_tecnico))[0].id
+        } else if (!transferencia.proyecto_origen && !transferencia.etapa_origen && !transferencia.tarea_origen) {
+          // si es de stock personal autoriza el jefe inmediato
+          if (transferencia.empleado_origen) {
+            const { result } = await new EmpleadoController().consultar(transferencia.empleado_origen)
+            // transferencia.autorizador = result.jefe ? parseInt(result.jefe) : null
+            transferencia.autorizador = autorizadorJefeTecnico(result)
+          }
+        } else {
+          // si es entre etapas y entre tareas autoriza el coordinador de la tarea
+          const tarea = listadosAuxiliares.tareas.find((tarea: Tarea) => tarea.id === transferencia.tarea_origen)
+          transferencia.autorizador = tarea?.coordinador_id
         }
-      } else {
-        // si es entre etapas y entre tareas autoriza el coordinador de la tarea
-        const tarea = listadosAuxiliares.tareas.find((tarea: Tarea) => tarea.id === transferencia.tarea_origen)
-        transferencia.autorizador = tarea?.coordinador_id
       }
     }
 
@@ -581,7 +590,7 @@ export default defineComponent({
       await consultarEtapasDestino(idProyecto)
       etapasDestino.value = listadosAuxiliares.etapasDestino
 
-      if (esTransferenciaEntreEtapas()) transferencia.autorizador = buscarEtapa().supervisor_id
+      if (esTransferenciaEntreEtapas() && accion.value === acciones.nuevo) transferencia.autorizador = buscarEtapa().supervisor_id
     }
 
     async function consultarProyectosEmpleadoDestino() {
@@ -591,7 +600,7 @@ export default defineComponent({
 
       proyectosDestino.value = listadosAuxiliares.proyectosDestino
 
-      if (!esEntreEtapas) transferencia.autorizador = buscarProyecto()?.coordinador_id
+      if (!esEntreEtapas && accion.value === acciones.nuevo) transferencia.autorizador = buscarProyecto()?.coordinador_id
     }
 
     function esTransferenciaEntreEtapas() {

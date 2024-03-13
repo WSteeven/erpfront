@@ -357,6 +357,13 @@ const routes: RouteRecordRaw[] = [
         meta: { requiresAuth: true },
       },
       {
+        path: '/dashboard-bodega',
+        name: 'dashboard_bodega',
+        component: () =>
+          import('pages/bodega/dashboard/view/DashboardBodega.vue'),
+        meta: { requiresAuth: true },
+      },
+      {
         path: '/categorias',
         name: 'categorias',
         component: () =>
@@ -817,6 +824,13 @@ const routes: RouteRecordRaw[] = [
       }, */
 
       //Fondos Rotativos
+      {
+        path: '/ajustes-saldos',
+        name: 'ajustes_saldos',
+        component: () =>
+          import('pages/fondosRotativos/ajusteSaldo/view/AjusteSaldoPage.vue'),
+        meta: { requiresAuth: true },
+      },
       {
         path: '/gasto',
         name: 'gasto',

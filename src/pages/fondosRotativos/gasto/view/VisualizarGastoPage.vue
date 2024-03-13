@@ -248,12 +248,12 @@
           </div>
 
           <!-- Factura -->
+          <!-- :mask="mascaraFactura" -->
           <div class="col-12 col-md-3" v-if="esFactura">
             <label class="q-mb-sm block">#Factura</label>
             <q-input
               v-model="gasto.factura"
               placeholder="Obligatorio"
-              :mask="mascaraFactura"
               hint="Porfavor Ingrese número de Factura tal como está en el Documento Fisico "
               :disable="disabled"
               :error="!!v$.factura.$errors.length"
