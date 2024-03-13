@@ -58,7 +58,7 @@ export default defineComponent({
 
     const mixin = new ContenedorSimpleMixin(Transaccion, new TransaccionIngresoController())
     const { entidad: transaccion, disabled, accion, listado, listadosAuxiliares } = mixin.useReferencias()
-    const { setValidador, obtenerListados, cargarVista, guardar, editar, eliminar, reestablecer } = mixin.useComportamiento()
+    const { setValidador, obtenerListados, cargarVista,listar, guardar, editar, eliminar, reestablecer } = mixin.useComportamiento()
     const { onConsultado, onReestablecer, onGuardado } = mixin.useHooks()
     const { confirmar, prompt } = useNotificaciones()
 
@@ -264,6 +264,13 @@ export default defineComponent({
           transaccion.listadoProductosTransaccion.splice(posicion, 1)
         })
     }
+    const botonActualizar: CustomActionTable = {
+      titulo: 'Actualizar',
+      icono: 'bi-arrow-clockwise',
+      accion: () => {
+        listar()
+      },
+    }
     const botonEditarCantidad: CustomActionTable = {
       titulo: 'Editar cantidad',
       accion: ({ entidad, posicion }) => {
@@ -406,6 +413,7 @@ export default defineComponent({
       // configuracionColumnasProductosSeleccionados,
       configuracionColumnasDetallesProductosSeleccionables,
       botonEditarCantidad,
+      botonActualizar,
       botonImprimir,
       botonAnular,
       eliminarItem,
