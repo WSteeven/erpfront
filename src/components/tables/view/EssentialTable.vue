@@ -457,6 +457,7 @@
 
           <CustomButtons
             v-if="accion1"
+            :desplegarDesde="desplegarDesde"
             :accion1="accion1"
             :accion2="accion2"
             :accion3="accion3"

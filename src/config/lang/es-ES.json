@@ -7,6 +7,7 @@
     "maxLength": "ha exedido el número máximo de caracteres",
     "minLength": "número mínimo de caracteres insuficiente",
     "minValue": "no puede ingresar un valor inferior al mínimo",
-    "numeric": "Debe ser un número mayor a cero"
+    "numeric": "Debe ser un número mayor a cero",
+    "integer": "Ingresa solo números sin decimales"
   }
 }

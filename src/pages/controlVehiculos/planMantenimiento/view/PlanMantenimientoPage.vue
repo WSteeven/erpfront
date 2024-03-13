@@ -58,9 +58,15 @@
               type="number"
               min="0"
               :disable="disabled"
+              :error="!!v$.aplicar_desde.$errors.length"
               outlined
               dense
             >
+            <template v-slot:error>
+                <div v-for="error of v$.aplicar_desde.$errors" :key="error.$uid">
+                  <div class="error-msg">{{ error.$message }}</div>
+                </div>
+              </template>
             </q-input>
           </div>
 
@@ -121,6 +127,8 @@
             </div>
           </div>
           <!-- Tabla de servicios seleccionados -->
+
+          {{ plan.listadoServicios }}
           <div
             class="col-12"
             v-if="plan.listadoServicios.length > 0 || accion == acciones.editar"
@@ -134,6 +142,7 @@
               "
               :datos="plan.listadoServicios"
               separador="cell"
+              :desplegarDesde="3"
               :permitirConsultar="false"
               :permitirEditar="false"
               :permitirEliminar="false"
@@ -142,7 +151,8 @@
               :altoFijo="false"
               :accion1Header="btnAgregarServicio"
               :accion1="btnEditarFila"
-              :accion2="btnEliminarFila"
+              :accion2="btnEditarNotificar"
+              :accion3="btnEliminarFila"
             >
             </essential-table>
           </div>

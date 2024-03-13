@@ -130,6 +130,25 @@ export default defineComponent({
                 return accion.value == acciones.consultar ? false : true
             }
         }
+        const btnEditarNotificar: CustomActionTable = {
+            titulo: 'Notificación',
+            color: 'positive',
+            icono: 'bi-bell-fill',
+            accion: ({ posicion }) => {
+                const data: CustomActionPrompt = {
+                    titulo: 'Modifica',
+                    mensaje: 'Ingresa los KM faltantes donde se realizará la notificación automática',
+                    tipo: 'number',
+                    validacion: (val) => Number.isInteger(parseFloat(val)),
+                    defecto: plan.listadoServicios[posicion].notificar_antes,
+                    accion: (data) => plan.listadoServicios[posicion].notificar_antes = data,
+                }
+                prompt(data)
+            },
+            visible: () => {
+                return accion.value == acciones.consultar ? false : true
+            }
+        }
         const btnAgregarServicio: CustomActionTable = {
             titulo: 'Agregar Servicio',
             icono: 'bi-plus',
@@ -144,7 +163,7 @@ export default defineComponent({
         /***************************
          * Configuracion de columnas
          ****************************/
-        configuracionColumnasServicios.splice(3, 1)
+        configuracionColumnasServicios.splice(4, 1)
         configuracionColumnasServicios.find((item) => item.field == 'nombre')!.editable = false
         configuracionColumnasServicios.find((item) => item.field == 'intervalo')!.editable = true
         configuracionColumnasServicios.find((item) => item.field == 'intervalo')!.type = 'number'
@@ -180,6 +199,7 @@ export default defineComponent({
             btnEditarFila,
             btnEliminarFila,
             btnAgregarServicio,
+            btnEditarNotificar,
 
 
         }

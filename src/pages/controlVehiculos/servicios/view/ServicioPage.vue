@@ -7,7 +7,6 @@
     tabDefecto="PREVENTIVO"
     :filtrar="filtrarServicios"
     titulo-pagina="Servicios de Mantenimientos"
-    :permitirEditar="false"
     :accion1="btnDesactivar"
     :accion2="btnActivar"
   >
@@ -55,7 +54,7 @@
 
           <!-- Intervalo -->
           <div class="col-12 col-md-3 q-mb-md">
-            <label class="q-mb-sm block">Realizar cada (Km)</label>
+            <label class="q-mb-sm block">Realizar cada </label>
             <q-input
               v-model="servicio.intervalo"
               placeholder="Opcional"
@@ -65,12 +64,44 @@
               min="0"
               :disable="disabled"
               :error="!!v$.intervalo.$errors.length"
+              error-mesagge="Ingresa solo números enteros"
+              @blur="v$.intervalo.$touch"
               outlined
               dense
               ><template v-slot:error>
                 <div v-for="error of v$.intervalo.$errors" :key="error.$uid">
                   <div class="error-msg">{{ error.$message }}</div>
                 </div>
+              </template>
+              <template v-slot:append>
+                <div>km</div>
+              </template>
+            </q-input>
+          </div>
+
+          <!-- notificar antes -->
+          <div class="col-12 col-md-3 q-mb-md">
+            <label class="q-mb-sm block">Notificar faltando</label>
+            <q-input
+              v-model="servicio.notificar_antes"
+              placeholder="Opcional"
+              hint="Establece la cantidad de km donde se notificará el servicio"
+              type="number"
+              step="100"
+              min="0"
+              :disable="disabled"
+              outlined
+              dense
+              :error="!!v$.notificar_antes.$errors.length"
+              @blur="v$.intervalo.$touch"
+              >
+              <template v-slot:error>
+                <div v-for="error of v$.notificar_antes.$errors" :key="error.$uid">
+                  <div class="error-msg">{{ error.$message }}</div>
+                </div>
+              </template>
+              <template v-slot:append>
+                <div>km</div>
               </template>
             </q-input>
           </div>

@@ -1,7 +1,7 @@
 //Dependencias
 import { configuracionColumnasServicios } from "../domain/configuracionColumnasServicios";
 import { defineComponent, reactive, ref } from "vue";
-import { required, minValue, maxValue, requiredIf } from "shared/i18n-validators";
+import { required, minValue, maxValue, requiredIf, numeric, integer } from "shared/i18n-validators";
 
 //Componentes
 import TabLayoutFilterTabs2 from "shared/contenedor/modules/simple/view/TabLayoutFilterTabs2.vue"
@@ -40,7 +40,11 @@ export default defineComponent({
         const reglas = {
             nombre: { required },
             tipo: { required },
-            intervalo: { requiredIf: requiredIf(() => servicio.tipo == TIPO_PREVENTIVO) },
+            intervalo: {
+                requiredIf: requiredIf(() => servicio.tipo == TIPO_PREVENTIVO),
+                integer,
+            },
+            notificar_antes: { required },
         }
         const v$ = useVuelidate(reglas, servicio)
         setValidador(v$.value)

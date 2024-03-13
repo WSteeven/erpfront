@@ -25,6 +25,13 @@ export const configuracionColumnasServicios: ColumnConfig<Servicio>[] = [
         sortable: true
     },
     {
+        name: 'notificar_antes',
+        field: 'notificar_antes',
+        label: 'Notificar faltando (Km)',
+        align: 'center',
+        sortable: true
+    },
+    {
         name: 'estado',
         field: 'estado',
         label: 'Estado',

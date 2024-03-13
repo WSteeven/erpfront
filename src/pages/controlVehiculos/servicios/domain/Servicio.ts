@@ -4,6 +4,7 @@ export class Servicio extends EntidadAuditable {
     nombre: string | null
     tipo: string | null
     intervalo: string | null
+    notificar_antes: null | number
     estado: boolean
 
     constructor() {
@@ -11,6 +12,7 @@ export class Servicio extends EntidadAuditable {
         this.nombre = null
         this.tipo = null
         this.intervalo = null
+        this.notificar_antes = null
         this.estado = true
     }
 
