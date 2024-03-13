@@ -87,7 +87,7 @@
                   hint="Presiona Enter para seleccionar un servicio"
                   @keydown.enter="
                     listarServicios({
-                      'nombre[like]': "'%'+criterioBusqueda+'%'",
+                      search: criterioBusqueda,
                       tipo: 'PREVENTIVO',
                       estado: 1,
                     })
@@ -102,7 +102,7 @@
                 <q-btn
                   @click="
                     listarServicios({
-                      'nombre[like]': '%'+criterioBusqueda+'%',
+                      search: criterioBusqueda,
                       tipo: 'PREVENTIVO',
                       estado: 1,
                     })

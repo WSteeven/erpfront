@@ -111,7 +111,7 @@ export default defineComponent({
                 //: props.propsTable.rowIndex,
                 eliminar({ posicion })
             },
-            visible: () => (accion.value == acciones.nuevo || accion.value == acciones.editar) && store.esAdministradorVehiculos
+            visible: () => (accion.value == acciones.nuevo || accion.value == acciones.editar) && (store.esAdministradorVehiculos || store.esAdministrador)
         }
         const btnEditarFila: CustomActionTable = {
             titulo: 'Cantidad',
