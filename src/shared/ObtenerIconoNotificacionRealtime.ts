@@ -9,6 +9,8 @@ export class ObtenerIconoNotificacionRealtime {
         return iconos.preingreso.icono
       case iconos.autorizacion_gasto.label:
         return iconos.autorizacion_gasto.icono
+      case iconos.transferencia_saldo.label:
+        return iconos.transferencia_saldo.icono
       case iconos.tarea.label:
         return iconos.tarea.icono
       case iconos.subtarea.label:

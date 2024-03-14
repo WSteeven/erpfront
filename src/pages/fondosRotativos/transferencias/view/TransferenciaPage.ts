@@ -166,17 +166,20 @@ export default defineComponent({
      * to TRANSFERENCIA ENTRE USUARIOS.
      */
     function existeDevolucion() {
-      if (esDevolucion.value == true) {
+      if (transferencia.es_devolucion) {
         transferencia.usuario_recibe = null
+        transferencia.tarea =0
         transferencia.motivo = 'DEVOLUCION'
       } else {
         transferencia.motivo = 'TRANSFERENCIA ENTRE USUARIOS'
       }
+      esDevolucion.value = transferencia.es_devolucion
     }
-    watchEffect(() => {
+
+  watchEffect(() => {
       existeDevolucion()
     })
-    return {
+     return {
       mixin,
       transferencia,
       esDevolucion,

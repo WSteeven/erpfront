@@ -50,6 +50,12 @@ export const configuracionColumnasTransferencia: ColumnConfig<Transferencia>[] =
     label:'Estado',
     align: 'left',
     sortable: true
+  },  {
+    name:'es_devolucion',
+    field:'es_devolucion',
+    label:'Es Devolucion',
+    align: 'left',
+    sortable: true
   }
 
 ]
