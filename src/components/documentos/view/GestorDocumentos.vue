@@ -37,7 +37,7 @@
 
   <slot name="boton-subir"></slot>
 
-  <div v-if="listado.length" class="col-12 q-mb-sm">
+  <div v-if="mostrarListado && listado.length" class="col-12 q-mb-sm">
     <essential-table
       :titulo="`Existen ${listado.length} archivos compartidos hasta el momento`"
       :configuracionColumnas="columnas"

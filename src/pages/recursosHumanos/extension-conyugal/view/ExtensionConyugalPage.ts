@@ -35,34 +35,17 @@ export default defineComponent({
       ExtensionConyugal,
       new ExtensionConyugalController()
     )
-    const mixinExtensionConyugal = new ContenedorSimpleMixin(
-      Archivo,
-      new ArchivoExtensionConyugalController()
-    )
+    const mixinExtensionConyugal = new ContenedorSimpleMixin(Archivo, new ArchivoExtensionConyugalController())
 
     const {
       entidad: extensionconyugal,
       disabled,
       accion,
     } = mixin.useReferencias()
-    const { setValidador, consultar, cargarVista, obtenerListados, listar } =
-      mixin.useComportamiento()
-    const {
-      onBeforeGuardar,
-      onGuardado,
-      onBeforeModificar,
-      onModificado,
-      onConsultado,
-      onReestablecer,
-    } = mixin.useHooks()
+    const { setValidador, consultar, cargarVista, obtenerListados, listar } = mixin.useComportamiento()
+    const { onBeforeGuardar, onGuardado, onBeforeModificar, onModificado, onConsultado, onReestablecer, } = mixin.useHooks()
     const store = useAuthenticationStore()
-    const {
-      confirmar,
-      prompt,
-      notificarCorrecto,
-      notificarAdvertencia,
-      notificarError,
-    } = useNotificaciones()
+    const { confirmar, prompt, notificarCorrecto, notificarAdvertencia, notificarError, } = useNotificaciones()
     const is_month = ref(false)
     const refArchivoExtensionConyugal = ref()
     const esRecursosHumanos = store.esRecursosHumanos
@@ -71,7 +54,7 @@ export default defineComponent({
     const esNuevo = computed(() => {
       return accion.value === 'NUEVO'
     })
-const auxmes = ref()
+    const auxmes = ref()
 
 
     function convertir_fecha(fecha) {
@@ -102,7 +85,7 @@ const auxmes = ref()
       // emit('cerrar-modal')
     })
     async function subirArchivos() {
-        await refArchivoExtensionConyugal.value.subir({ mes: auxmes.value })
+      await refArchivoExtensionConyugal.value.subir({ mes: auxmes.value })
     }
 
     const limpiarArchivoExtensionConyugal = () => {
@@ -111,7 +94,7 @@ const auxmes = ref()
       archivoExtensionConyugal.quiero_subir_archivos = false;
       archivoExtensionConyugal.esConsultado = false;
       // Realizar cambios en la interfaz de usuario en el siguiente ciclo de renderizado
-     requestAnimationFrame(() => {
+      requestAnimationFrame(() => {
         archivoExtensionConyugal.quiero_subir_archivos = true;
       });
     };
@@ -138,8 +121,8 @@ const auxmes = ref()
         consultar(entidad)
       },
     }
-     /**Verifica si es un mes */
-     function checkValue(val, reason, details) {
+    /**Verifica si es un mes */
+    function checkValue(val, reason, details) {
       is_month.value = reason === 'month' ? false : true
     }
 

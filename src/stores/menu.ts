@@ -812,6 +812,13 @@ export const useMenuStore = defineStore('menu', () => {
             store.can('puede.acceder.ordenes_compras') || store.esAdministrador,
         },
         {
+          title: 'Pago a Proveedores',
+          link: 'pagos-proveedores',
+          icon: 'bi-cash-stack',
+          can:
+            store.can('puede.acceder.pagos_proveedores') || store.esAdministrador,
+        },
+        {
           title: 'Reportes',
           icon: 'bi-clipboard2-data-fill',
           can:
