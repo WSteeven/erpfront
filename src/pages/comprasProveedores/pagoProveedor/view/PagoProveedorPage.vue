@@ -57,13 +57,13 @@
 
           <!-- Nombre -->
           <div v-if="pago.nombre" class="col-12 col-md-3">
-            <label class="q-mb-sm block">Nombre</label>
+            <label class="q-mb-sm block">Archivo</label>
             <q-input v-model="pago.nombre" disable outlined dense autogrow />
           </div>
 
           <!--Subido por -->
           <div v-if="pago.realizador" class="col-12 col-md-3">
-            <label class="q-mb-sm block">Nombre</label>
+            <label class="q-mb-sm block">Subido por</label>
             <q-input
               v-model="pago.realizador"
               disable
@@ -71,6 +71,18 @@
               dense
               autogrow
             />
+          </div>
+          <!-- Tabla con el resumen -->
+          <div class="col-12 col-md-3 col-sm-6" v-if="total > 0">
+            <label class="q-mb-sm block">Total a Pagar:</label>
+            <q-chip square>
+              <q-avatar
+                icon="bi-currency-dollar"
+                color="green"
+                text-color="white"
+              ></q-avatar>
+              {{ total }}
+            </q-chip>
           </div>
           <!-- Tabla con popup -->
           <div class="col-12" v-if="accion !== acciones.nuevo">
@@ -88,7 +100,7 @@
               :permitirConsultar="false"
               :permitirEditar="false"
               :permitirEliminar="false"
-              :altoFijo="true"
+              altoFijo
               :accion1="btnEliminarFila"
               v-on:fila-modificada="calcularValores"
             />

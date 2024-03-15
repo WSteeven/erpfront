@@ -17,6 +17,7 @@ import { acciones, accionesTabla } from 'config/utils'
 import { endpoints } from 'config/api'
 import { CustomActionTable } from 'components/tables/domain/CustomActionTable'
 import { useNotificaciones } from 'shared/notificaciones'
+import { number } from 'echarts'
 
 export default defineComponent({
     components: { TabLayout, GestorDocumentos, EssentialPopupEditableTable },
@@ -27,8 +28,9 @@ export default defineComponent({
         const { confirmar } = useNotificaciones()
         const { onConsultado } = mixin.useHooks()
 
+        // variables
         const refArchivo = ref()
-        // const configuracionColumnasItems = ref()
+        const total = computed(() => pago.listado.reduce((prev, curr: any) => prev + parseFloat(curr.valor_pagar), 0).toFixed(2))
 
         //Reglas de validacion
         const reglas = {
@@ -40,17 +42,17 @@ export default defineComponent({
         /************************
          * Botones de tabla
          ***********************/
-        // onConsultado(() => {
-        //     if (accion.value == acciones.editar) {
-        //         configuracionColumnasItems.value = [...configuracionColumnasItemsPago, {
-        //             name: 'valor_pagar',
-        //             field: 'valor_pagar',
-        //             label: 'V. Pagar',
-        //             align: 'left',
-        //             sortable: true
-        //         },]
-        //     }
-        // })
+        onConsultado(() => {
+            if (accion.value == acciones.editar) {
+                configuracionColumnasItemsPago.find((item) => item.field === 'valor_pagar')!.visible = true
+                configuracionColumnasItemsPago.find((item) => item.field === 'valor_pagar')!.editable = true
+                configuracionColumnasItemsPago.find((item) => item.field === 'valor_pagar')!.type = 'number'
+                configuracionColumnasItemsPago.find((item) => item.field === 'valor_pagar')!.hint = 'Ingresa el valor a pagar'
+            } else {
+                configuracionColumnasItemsPago.find((item) => item.field === 'valor_pagar')!.editable = false
+                // configuracionColumnasItemsPago.find((item) => item.field === 'valor_pagar')!.editable = false
+            }
+        })
         /************************
          * Botones de tabla
          ***********************/
@@ -78,7 +80,9 @@ export default defineComponent({
             listar()
         }
         function calcularValores(data: any) {
-            console.log(data)
+            data.valor_pagar = Number(data.valor_pagar).toFixed(2)
+            if (data.total < data.valor_pagar) data.valor_pagar = data.total
+            // console.log(data)
         }
 
 
@@ -96,8 +100,9 @@ export default defineComponent({
             //funciones
             subirArchivos,
             calcularValores,
-
             //investigar aqua, capa 2 para BTC
+            //variable computada para el calculo del total a pagar 
+            total,
         }
     }
 })
