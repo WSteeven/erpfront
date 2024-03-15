@@ -11,7 +11,7 @@ import { ContenedorSimpleMixin } from 'shared/contenedor/modules/simple/applicat
 import { removeAccents } from 'shared/utils'
 import { acciones, maskFecha } from 'config/utils'
 import { useCargandoStore } from 'stores/cargando'
-import { useQuasar } from 'quasar'
+import { LocalStorage, useQuasar } from 'quasar'
 import { VendedorController } from 'pages/ventas-claro/vendedores/infrestructure/VendedorController'
 import { ClienteClaro } from '../domain/ClienteClaro'
 import { ClienteClaroController } from '../infrestucture/ClienteClaroController'
@@ -45,7 +45,9 @@ export default defineComponent({
     const is_month = ref(false)
     const tabDefecto = ref('1')
 
-    const { vendedores_claro: vendedores, filtrarVendedoresClaro: filtrarVendedores } = useFiltrosListadosSelects(listadosAuxiliares)
+    const { vendedores_claro: vendedores,
+      filtrarVendedoresClaro: filtrarVendedores,
+      cantones, filtrarCantones } = useFiltrosListadosSelects(listadosAuxiliares)
 
     cargarVista(async () => {
       await obtenerListados({
@@ -61,6 +63,8 @@ export default defineComponent({
           },
         },
       })
+      listadosAuxiliares.cantones = cantones.value = JSON.parse(LocalStorage.getItem('cantones')!.toString())
+      cantones.value = listadosAuxiliares.cantones
       vendedores.value = listadosAuxiliares.vendedores
       if (store.esSupervisorVentasClaro) cliente.supervisor = store.user.id
     })
@@ -83,6 +87,7 @@ export default defineComponent({
         maxLength: maxLength(10),
         minLenght: minLength(7),
       },
+      canton: { required },
     }
     const v$ = useVuelidate(reglas, cliente)
     setValidador(v$.value)
@@ -172,6 +177,7 @@ export default defineComponent({
       //funciones
       removeAccents,
       vendedores, filtrarVendedores, recargarVendedores,
+      cantones, filtrarCantones,
       filtrarClientes,
 
       //botones de tabla
