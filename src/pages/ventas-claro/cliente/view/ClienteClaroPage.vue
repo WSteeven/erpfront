@@ -69,6 +69,53 @@
               </template>
             </q-select>
           </div>
+          <!-- ciudad  -->
+          <div class="col-12 col-md-3">
+            <label class="q-mb-sm block">Ciudad</label>
+            <q-select
+              v-model="cliente.canton"
+              :options="cantones"
+              transition-show="jump-up"
+              transition-hide="jump-down"
+              options-dense
+              dense
+              outlined
+              :disable="disabled"
+              :error="!!v$.canton.$errors.length"
+              @blur="v$.canton.$touch"
+              error-message="Debes seleccionar una ciudad"
+              use-input
+              input-debounce="0"
+              @filter="filtrarCantones"
+              :option-value="(v) => v.id"
+              :option-label="(v) => v.canton"
+              emit-value
+              map-options
+            >
+              <template v-slot:option="scope">
+                <q-item v-bind="scope.itemProps">
+                  <q-item-section>
+                    <q-item-label>{{ scope.opt.canton }}</q-item-label>
+                    <q-item-label caption
+                      >Provincia: {{ scope.opt.provincia }}</q-item-label
+                    >
+                  </q-item-section>
+                </q-item>
+              </template>
+              <template v-slot:error>
+                <div v-for="error of v$.canton.$errors" :key="error.$uid">
+                  <div class="error-msg">{{ error.$message }}</div>
+                </div>
+              </template>
+              <template v-slot:no-option>
+                <q-item>
+                  <q-item-section class="text-grey">
+                    No hay resultados
+                  </q-item-section>
+                </q-item>
+              </template>
+            </q-select>
+          </div>
 
           <!-- cantidad de ventas -->
           <div class="col-12 col-md-3">

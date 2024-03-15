@@ -64,10 +64,10 @@ export default defineComponent({
         empleados: {
           controller: new EmpleadoController(),
           params: {
-            campos: 'id,nombres,apellidos',
-            estado: 1,
+            // campos: 'id,nombres,apellidos',
             'departamento_id': 9,
-            '&or[departamento_id]': 13,
+            'or[departamento_id]': 13,
+            estado: 1,
           },
         },
         modalidades: {
