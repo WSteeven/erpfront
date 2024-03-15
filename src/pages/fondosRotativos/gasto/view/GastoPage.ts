@@ -607,51 +607,7 @@ export default defineComponent({
           break
       }
     }
-    function aprobar_gasto(entidad, tipo_aprobacion: string) {
-      switch (tipo_aprobacion) {
-        case 'aprobar':
-          const data: CustomActionPrompt = {
-            titulo: 'Aprobar gasto',
-            mensaje: 'Ingrese motivo de aprobación',
-            accion: async (data) => {
-              try {
-                entidad.detalle_estado = data
-                await aprobarController.aprobarGasto(entidad)
-                notificarCorrecto('Se aprobado Gasto Exitosamente')
-                emit('cerrar-modal')
-              } catch (e: any) {
-                notificarError(
-                  'No se pudo aprobar, debes ingresar un motivo para la anulación'
-                )
-              }
-            },
-          }
-          prompt(data)
-          break
-        case 'rechazar':
-          confirmar('¿Está seguro de rechazar el gasto?', () => {
-            const data: CustomActionPrompt = {
-              titulo: 'Rechazar gasto',
-              mensaje: 'Ingrese motivo de aprobación',
-              accion: async (data) => {
-                try {
-                  entidad.detalle_estado = data
-                  await aprobarController.rechazarGasto(entidad)
-                  notificarAdvertencia('Se rechazado Gasto Exitosamente')
-                  emit('cerrar-modal')
-                } catch (e: any) {
-                  notificarError(
-                    'No se pudo rechazar, debes ingresar un motivo para la anulación'
-                  )
-                }
-              },
-            }
-            prompt(data)
-          })
-        default:
-          break
-      }
-    }
+
     const editarGasto: CustomActionTable = {
       titulo: ' ',
       icono: 'bi-pencil-square',
@@ -707,7 +663,6 @@ export default defineComponent({
       filtrarTareas,
       filtrarGasto,
       filtrarVehiculos,
-      aprobar_gasto,
       cambiar_detalle,
       cambiar_proyecto,
       optionsFechaGasto,

@@ -23,8 +23,9 @@ import { CustomActionPrompt } from 'components/tables/domain/CustomActionPrompt'
 
 export default defineComponent({
   components: { TabLayout, SelectorImagen },
+  emits: ['guardado', 'cerrar-modal'],
 
-  setup() {
+  setup(props, { emit }) {
     /*********
      * Stores
      *********/

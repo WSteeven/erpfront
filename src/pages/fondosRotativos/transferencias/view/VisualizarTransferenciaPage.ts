@@ -41,7 +41,6 @@ export default defineComponent({
     )
     const aprobarController = new AprobarTransferenciaController()
     const { entidad: transferencia, disabled, accion } = mixin.useReferencias()
-    const { onConsultado } = mixin.useHooks()
     const { setValidador, consultar } = mixin.useComportamiento()
     const {
       confirmar,
@@ -50,7 +49,6 @@ export default defineComponent({
       notificarAdvertencia,
       notificarError,
     } = useNotificaciones()
-    const esDevolucion = ref(true)
     const mostrarListado = ref(true)
     const mostrarAprobacion = ref(false)
     /*************
@@ -58,7 +56,7 @@ export default defineComponent({
      **************/
     const reglas = {
       usuario_recibe: {
-        requiredIf: esDevolucion.value ? true : false,
+        requiredIf: transferencia.es_devolucion ? true : false,
       },
       monto: {
         required,
@@ -69,7 +67,7 @@ export default defineComponent({
         maxLength: maxLength(50),
       },
       tarea: {
-        requiredIf: esDevolucion.value ? true : false,
+        requiredIf: transferencia.es_devolucion ? true : false,
       },
       comprobante: {
         required,
@@ -89,33 +87,20 @@ export default defineComponent({
       mostrarListado.value = false
       mostrarAprobacion.value = true
     }
-    onConsultado(() => {
-      esDevolucion.value = transferencia.usuario_recibe !== null ? true : false
-    })
 
-    /**
-     * It checks if the value of the checkbox is true, if it is, it sets the value of the user_recibe to
-     * null and the value of the reason to DEVOLUCION. If it is not true, it sets the value of the reason
-     * to TRANSFERENCIA ENTRE USUARIOS.
-     */
-    function existeDevolucion() {
-      if (transferencia.es_devolucion) {
-        transferencia.usuario_recibe = null
-        transferencia.motivo = 'DEVOLUCION'
-      } else {
-        transferencia.motivo = 'TRANSFERENCIA ENTRE USUARIOS'
-      }
-    }
+
 
     async function aprobar_transferencia(entidad, tipo_aprobacion: string) {
       switch (tipo_aprobacion) {
         case 'aprobar':
           try {
             cargando.activar()
-            await aprobarController.aprobarTransferencia(entidad)
+
+           await aprobarController.aprobarTransferencia(entidad)
             notificarCorrecto('Se aprobado Transferencia Exitosamente')
             cargando.desactivar()
-            emit('cerrar-modal')
+            emit('cerrar-modal',false)
+            emit('guardado')
           } catch (e: any) {
             notificarError(
               'No se pudo aprobar, debes ingresar un motivo para la anulación'
@@ -170,12 +155,10 @@ export default defineComponent({
     return {
       mixin,
       transferencia,
-      esDevolucion,
       disabled,
       accion,
       v$,
       usuario,
-      existeDevolucion,
       mostrarListado,
       aprobar_transferencia,
       configuracionColumnas: configuracionColumnasTransferencia,
