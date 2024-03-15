@@ -4,6 +4,7 @@
     :configuracionColumnas="configuracionColumnas"
     titulo-pagina="Pago a Proveedores"
     :mostrarButtonSubmits="accion == acciones.nuevo ? false : true"
+    :accion1="btnCash"
   >
     <template #formulario>
       <q-form @submit.prevent>

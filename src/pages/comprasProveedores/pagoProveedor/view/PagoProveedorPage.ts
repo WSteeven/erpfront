@@ -14,10 +14,15 @@ import { PagoProveedor } from '../domain/PagoProveedor'
 import { PagoProveedorController } from '../infraestructure/PagoProveedorController'
 import { ContenedorSimpleMixin } from 'shared/contenedor/modules/simple/application/ContenedorSimpleMixin'
 import { acciones, accionesTabla } from 'config/utils'
-import { endpoints } from 'config/api'
+import { apiConfig, endpoints } from 'config/api'
 import { CustomActionTable } from 'components/tables/domain/CustomActionTable'
 import { useNotificaciones } from 'shared/notificaciones'
-import { number } from 'echarts'
+import { format } from '@formkit/tempo'
+import { AxiosHttpRepository } from 'shared/http/infraestructure/AxiosHttpRepository'
+import { imprimirArchivo } from 'shared/utils'
+import { useQuasar } from 'quasar'
+import { useNotificacionStore } from 'stores/notificacion'
+import { useCargandoStore } from 'stores/cargando'
 
 export default defineComponent({
     components: { TabLayout, GestorDocumentos, EssentialPopupEditableTable },
@@ -27,6 +32,10 @@ export default defineComponent({
         const { setValidador, listar } = mixin.useComportamiento()
         const { confirmar } = useNotificaciones()
         const { onConsultado } = mixin.useHooks()
+
+        // Stores
+        useNotificacionStore().setQuasar(useQuasar())
+        useCargandoStore().setQuasar(useQuasar())
 
         // variables
         const refArchivo = ref()
@@ -67,9 +76,25 @@ export default defineComponent({
             visible: () => accion.value == acciones.editar
         }
 
+        const btnCash: CustomActionTable = {
+            titulo: 'Excel',
+            icono: 'bi-file-earmark-excel-fill',
+            color: 'positive',
+            accion: async ({ entidad }) => {
+                await exportarCash(entidad)
+            },
+        }
+
         /************************
          * FUNCIONES
          ***********************/
+        async function exportarCash(entidad): Promise<void> {
+            const filename = 'pago_a_proveedores_' + format(new Date(), 'D-MM-YYYY')
+            const axios = AxiosHttpRepository.getInstance()
+            const url = apiConfig.URL_BASE + '/' + axios.getEndpoint(endpoints.pagos_proveedores) + '/cash/' + entidad.id
+            await imprimirArchivo(url, 'GET', 'blob', 'xlsx', filename, null)
+        }
+
         function eliminar({ posicion }) {
             confirmar('¿Está seguro de continuar?', () => pago.listado.splice(posicion, 1))
         }
@@ -96,6 +121,7 @@ export default defineComponent({
 
             //botones de tablas
             btnEliminarFila,
+            btnCash,
 
             //funciones
             subirArchivos,
