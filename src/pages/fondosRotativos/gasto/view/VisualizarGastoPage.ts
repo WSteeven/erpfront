@@ -128,7 +128,7 @@ export default defineComponent({
       {
         detalle: 16,
         cantidad: 22,
-        mascara: '###-###-###############',
+        mascara: '###-###-##############',
       },
       {
         detalle: 10,
@@ -166,7 +166,6 @@ export default defineComponent({
         numFacturaObjeto[index] !== undefined
           ? numFacturaObjeto[index].mascara
           : '###-###-#########'
-
       return mascara
     })
     onConsultado(() => {
