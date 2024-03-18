@@ -21,7 +21,7 @@ import { useNotificaciones } from 'shared/notificaciones'
 import { AprobarGastoController } from 'pages/fondosRotativos/autorizarGasto/infrestructure/AprobarGastoController'
 import { useAuthenticationStore } from 'stores/authentication'
 import ButtonSubmits from 'components/buttonSubmits/buttonSubmits.vue'
-import { acciones, convertir_fecha, maskFecha } from 'config/utils'
+import { acciones, convertir_fecha, estadosGastos, maskFecha } from 'config/utils'
 import { VisualizarGasto } from '../domain/VisualizarGasto'
 import { VisualizarGastoController } from '../infrestructure/VisualizarGastoController'
 // import { AutorizarGastoModales } from 'pages/fondosRotativos/autorizarGasto/domain/AutorizarGastoModales'
@@ -716,6 +716,8 @@ export default defineComponent({
       optionsFechaGasto,
       recargar_detalle,
       isConsultar,
+      estadosGastos,
+      fondoRotativoStore
     }
   },
 })

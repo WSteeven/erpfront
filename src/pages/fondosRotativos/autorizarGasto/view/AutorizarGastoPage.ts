@@ -22,7 +22,7 @@ import ModalEntidad from 'components/modales/view/ModalEntidad.vue'
 import { ComportamientoModalesAutorizarGasto } from '../application/ComportamientoModalesAutorizarGasto'
 import { useFondoRotativoStore } from 'stores/fondo_rotativo'
 import { useNotificacionStore } from 'stores/notificacion'
-import { useQuasar } from 'quasar'
+import { date, useQuasar } from 'quasar'
 import { useCargandoStore } from 'stores/cargando'
 import { GastoController } from 'pages/fondosRotativos/gasto/infrestructure/GastoController'
 export default defineComponent({
@@ -80,12 +80,15 @@ export default defineComponent({
       icono: 'bi-eye',
       color: 'indigo',
       accion: ({ entidad }) => {
-
         fondoRotativoStore.id_gasto = entidad.id
 
         fondoRotativoStore.estaSemanAC = estaEnSemanaActual(entidad.fecha_viat)
 
         fondoRotativoStore.existeFactura = !!entidad.factura
+        fondoRotativoStore.habilitar_observacion_autorizador =
+          authenticationStore.user.id === entidad.aut_especial &&
+          (entidad.estado === estadosGastos.PENDIENTE ||
+            entidad.estado === estadosGastos.APROBADO)
         fondoRotativoStore.accionForm =
           authenticationStore.user.id === entidad.aut_especial &&
           entidad.estado === estadosGastos.PENDIENTE
@@ -104,6 +107,12 @@ export default defineComponent({
       const fechaFormateada = `${dia}-${mes}-${anio}`
       const fechaInicio = convertir_fecha(fechaFormateada)
       const fechaFin = convertir_fecha(fecha)
+      console.log('fecha inicio', fechaInicio)
+      console.log('fecha fin', fechaFin)
+
+      const diff = date.getDateDiff(fechaInicio, fechaFin, 'days')
+
+      console.log(`La diferencia de días es: ${diff}`)
 
       // Calcula la diferencia en días
       const diferenciaDias = fechaInicio.getDate() - fechaFin.getDate()

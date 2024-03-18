@@ -545,6 +545,7 @@
               v-model="gasto.es_vehiculo_alquilado"
               label="¿Es vehiculo alquilado?"
               outlined
+              disable
               dense
             />
           </div>
@@ -666,7 +667,7 @@
               v-model="gasto.observacion"
               placeholder="obligatorio"
               type="textarea"
-              :disable="disabled"
+              disable
               :error="!!v$.observacion.$errors.length"
               autogrow
               @blur="v$.observacion.$touch"
@@ -704,14 +705,14 @@
             >
             </q-input>
           </div>
-          <!-- Observacion -->
+          <!-- Observacion Autorizador-->
           <div class="col-12 col-md-3">
             <label class="q-mb-sm block">Observación Autorizador</label>
             <q-input
               v-model="gasto.detalle_estado"
               placeholder="Obligatorio"
               type="textarea"
-              :disable="disabled"
+              :disable="!fondoRotativoStore.habilitar_observacion_autorizador"
               :error="!!v$.detalle_estado.$errors.length"
               @blur="v$.detalle_estado.$touch"
               autogrow
@@ -767,8 +768,7 @@
         v-if="
           (usuario.id == gasto.aut_especial || authenticationStore.esAdministrador) &&
           gasto.estado_info == 'APROBADO' &&
-          estaSemanAC == true &&
-          issubmit == true
+          estaSemanAC === true
         "
       >
         <q-btn color="negative" @click="aprobar_gasto(gasto, 'anular')">

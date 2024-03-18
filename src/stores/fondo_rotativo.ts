@@ -9,6 +9,7 @@ export const useFondoRotativoStore = defineStore('fondo_rotativo', () => {
   const estaSemanAC = ref(false)
   const accionForm = acciones.consultar
   const empleado_id = ref()
+  const habilitar_observacion_autorizador = ref(false)
 
   return {
     id_gasto,
@@ -16,6 +17,7 @@ export const useFondoRotativoStore = defineStore('fondo_rotativo', () => {
     empleados,
     estaSemanAC,
     accionForm,
-    empleado_id
+    empleado_id,
+    habilitar_observacion_autorizador
   }
 })
