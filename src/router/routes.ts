@@ -646,6 +646,15 @@ const routes: RouteRecordRaw[] = [
         meta: { requiresAuth: true },
       },
       {
+        path: '/pagos-proveedores',
+        name: 'pagos_proveedores',
+        component: () =>
+          import(
+            'pages/comprasProveedores/pagoProveedor/view/PagoProveedorPage.vue'
+          ),
+        meta: { requiresAuth: true },
+      },
+      {
         path: '/prefacturas',
         name: 'prefacturas',
         component: () =>

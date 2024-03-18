@@ -3,6 +3,7 @@ import { EntidadAuditable } from 'shared/entidad/domain/entidadAuditable'
 export class ClienteClaro extends EntidadAuditable {
   id: number | null
   supervisor: number | null
+  canton: number | null
   identificacion: string | null
   nombres: string | null
   apellidos: string | null
@@ -15,6 +16,7 @@ export class ClienteClaro extends EntidadAuditable {
     super()
     this.id = null
     this.supervisor = null
+    this.canton = null
     this.identificacion = null
     this.nombres = null
     this.apellidos = null

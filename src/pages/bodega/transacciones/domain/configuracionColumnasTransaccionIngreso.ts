@@ -47,6 +47,13 @@ export const configuracionColumnasTransaccionIngreso: ColumnConfig<Transaccion>[
         sortable: true,
     },
     {
+        name: 'devolucion',
+        field: 'devolucion',
+        label: 'Devolución',
+        align: 'left',
+        sortable: true,
+    },
+    {
         name: 'motivo',
         field: 'motivo',
         label: 'Motivo',

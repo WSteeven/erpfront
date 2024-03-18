@@ -7,6 +7,7 @@
     :ajustarCeldas="true"
     :accion1="botonImprimir"
     :accion2="botonAnular"
+    :accion1Header="botonActualizar"
   >
     <template #formulario>
       <q-form @submit.prevent>
