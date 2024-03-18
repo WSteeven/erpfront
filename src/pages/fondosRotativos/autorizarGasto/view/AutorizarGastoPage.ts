@@ -25,6 +25,8 @@ import { useNotificacionStore } from 'stores/notificacion'
 import { date, useQuasar } from 'quasar'
 import { useCargandoStore } from 'stores/cargando'
 import { GastoController } from 'pages/fondosRotativos/gasto/infrestructure/GastoController'
+import { format, parse } from '@formkit/tempo'
+
 export default defineComponent({
   name: 'AutorizarGastoPage',
   components: {
@@ -100,37 +102,28 @@ export default defineComponent({
     }
 
     function estaEnSemanaActual(fecha) {
-      const fechaActual = new Date()
-      const dia = String(fechaActual.getDate()).padStart(2, '0')
-      const mes = String(fechaActual.getMonth() + 1).padStart(2, '0') // Los meses comienzan desde 0
-      const anio = fechaActual.getFullYear()
-      const fechaFormateada = `${dia}-${mes}-${anio}`
-      const fechaInicio = convertir_fecha(fechaFormateada)
-      const fechaFin = convertir_fecha(fecha)
-      console.log('fecha inicio', fechaInicio)
-      console.log('fecha fin', fechaFin)
-
-      const diff = date.getDateDiff(fechaInicio, fechaFin, 'days')
-
-      console.log(`La diferencia de días es: ${diff}`)
-
-      // Calcula la diferencia en días
-      const diferenciaDias = fechaInicio.getDate() - fechaFin.getDate()
-      if (diferenciaDias <= 15 || authenticationStore.esAdministrador) {
+      // Create Date objects for current week's start and end (Sunday - Saturday)
+      const today = new Date()
+      const day = today.getDay() // Get current day of the week (0-6)
+      const weekStart = new Date(today.setDate(today.getDate() - day))
+      weekStart.setHours(0, 0, 0, 0) // Set start of day for Sunday
+      const weekEnd = new Date(weekStart.getTime() + 6 * 24 * 60 * 60 * 1000)
+      weekEnd.setHours(23, 59, 59, 999) // Set end of day for Saturday
+      // Convert target date to Date object
+      const fechaDate = parse(fecha, 'YYYY-MM-DD', 'America/Guayaquil')
+     // Calculate difference in milliseconds between target date and week start
+      const diferenciaMilisegundos = weekStart.getTime() - fechaDate.getTime()
+      const diferenciaEnDias = Math.floor(
+        diferenciaMilisegundos / (1000 * 60 * 60 * 24)
+      )
+      // Check if target date is within current week (inclusive)
+      if (diferenciaEnDias <= 8 || authenticationStore.esAdministrador) {
         return true
       } else {
         return false
       }
     }
 
-    function convertir_fecha(fecha) {
-      const dateParts = fecha.split('-') // Dividir el string en partes usando el guión como separador
-      const dia = parseInt(dateParts[0], 10) // Obtener el día como entero
-      const mes = parseInt(dateParts[1], 10) - 1 // Obtener el mes como entero (restar 1 porque en JavaScript los meses comienzan desde 0)
-      const anio = parseInt(dateParts[2], 10)
-      const fecha_convert = new Date(anio, mes, dia, 0)
-      return fecha_convert
-    }
 
     async function guardado() {
       filtrarAutorizacionesGasto(estadosGastos.PENDIENTE)
