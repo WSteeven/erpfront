@@ -480,7 +480,7 @@
             <label class="q-mb-sm block">Autorizaciòn Especial</label>
             <q-select
               v-model="gasto.aut_especial"
-              :options="autorizacionesEspeciales"
+              :options="autorizaciones_especiales"
               transition-show="scale"
               transition-hide="scale"
               options-dense

@@ -94,9 +94,34 @@
               </template>
             </q-input>
           </div>
+          <!-- Fecha de creacion-->
+          <div class="col-12 col-md-3">
+            <label class="q-mb-sm block">Fecha de Creacion</label>
+            <q-input
+              v-model="gasto.created_at"
+              placeholder="Obligatorio"
+              disable
+              outlined
+              dense
+            >
+            </q-input>
+          </div>
 
           <!-- Proyectos -->
-          <div class="col-12 col-md-3">
+          <div class="col-12 col-md-3" v-if="isConsultar">
+            <label class="q-mb-sm block">Proyectos</label>
+            <q-input
+              v-model="gasto.proyecto_info"
+              placeholder=""
+              type="textarea"
+              autogrow
+              disable
+              outlined
+              dense
+            >
+            </q-input>
+          </div>
+          <div class="col-12 col-md-3" v-if="isConsultar === false">
             <label class="q-mb-sm block">Proyectos</label>
             <q-select
               v-model="gasto.proyecto"
@@ -142,9 +167,24 @@
               </template>
             </q-select>
           </div>
-
           <!-- Tareas -->
-          <div class="col-12 col-md-3" v-if="gasto.proyecto >= 0">
+          <div class="col-12 col-md-3" v-if="gasto.proyecto >= 0 && isConsultar">
+            <label class="q-mb-sm block">Tareas</label>
+            <q-input
+              v-model="gasto.tarea_info"
+              placeholder=""
+              disable
+              type="textarea"
+              autogrow
+              outlined
+              dense
+            >
+            </q-input>
+          </div>
+          <div
+            class="col-12 col-md-3"
+            v-if="gasto.proyecto >= 0 && isConsultar === false"
+          >
             <label class="q-mb-sm block">Tareas</label>
             <q-select
               v-model="gasto.num_tarea"
@@ -189,6 +229,19 @@
               </template>
             </q-select>
           </div>
+          <!-- Autorizacion -->
+          <div class="col-12 col-md-3" v-if="isConsultar">
+            <label class="q-mb-sm block">Autorizaciòn Especial</label>
+            <q-input
+              v-model="gasto.aut_especial_user"
+              placeholder="Obligatorio"
+              disable
+              outlined
+              dense
+            >
+            </q-input>
+          </div>
+
           <!--Tiene Factura-->
           <div class="col-12 col-md-3 q-mb-xl">
             <q-checkbox
@@ -202,7 +255,19 @@
             ></q-checkbox>
           </div>
           <!-- Detalle -->
-          <div class="col-12 col-md-3 q-mb-md">
+          <div class="col-12 col-md-3 q-mb-md" v-if="isConsultar">
+            <label class="q-mb-sm block">Detalle</label>
+            <q-input
+              v-model="gasto.detalle_info"
+              placeholder="Obligatorio"
+              type="textarea"
+              autogrow
+              disable
+              outlined
+              dense
+            ></q-input>
+          </div>
+          <div class="col-12 col-md-3 q-mb-md" v-if="isConsultar === false">
             <label class="q-mb-sm block">Detalle</label>
             <q-select
               v-model="gasto.detalle"
@@ -243,8 +308,21 @@
               </template>
             </q-select>
           </div>
+
           <!-- Subdetalle-->
-          <div class="col-12 col-md-3">
+          <div class="col-12 col-md-3" v-if="isConsultar">
+            <label class="q-mb-sm block">Subdetalle</label>
+            <q-input
+              v-model="gasto.sub_detalle_info"
+              placeholder="Obligatorio"
+              type="textarea"
+              autogrow
+              disable
+              outlined
+              dense
+            ></q-input>
+          </div>
+          <div class="col-12 col-md-3" v-if="isConsultar === false">
             <label class="q-mb-sm block">Subdetalle</label>
             <q-select
               v-model="gasto.sub_detalle"
@@ -301,6 +379,7 @@
               </template>
             </q-select>
           </div>
+
           <!-- Factura -->
           <div class="col-12 col-md-3" v-if="esFactura && gasto.detalle != null">
             <label class="q-mb-sm block">#Factura</label>
@@ -438,7 +517,7 @@
             >
             </q-input>
           </div>
-          <div class="col-12 col-md-3" v-if="isConsultar === false">
+          <div class="col-12 col-md-3" v-if="!isConsultar">
             <label class="q-mb-sm block">Beneficiarios</label>
             <q-select
               v-model="gasto.beneficiarios"
@@ -574,8 +653,29 @@
           <div
             class="col-12 col-md-3"
             v-if="
+              isConsultar &&
               (esCombustibleEmpresa || mostarPlaca) &&
-              gasto.es_vehiculo_alquilado == false
+              !gasto.es_vehiculo_alquilado
+            "
+          >
+            <label class="q-mb-sm block">Placa</label>
+            <q-input
+              v-model="gasto.placa"
+              placeholder=""
+              disable
+              type="textarea"
+              autogrow
+              outlined
+              dense
+            >
+            </q-input>
+          </div>
+          <div
+            class="col-12 col-md-3"
+            v-if="
+              !isConsultar &&
+              (esCombustibleEmpresa || mostarPlaca) &&
+              !gasto.es_vehiculo_alquilado
             "
           >
             <label class="q-mb-sm block">Placas</label>
@@ -681,30 +781,6 @@
               </template>
             </q-input>
           </div>
-          <!-- Centro de Costo -->
-          <div class="col-12 col-md-3" v-if="es_consultar">
-            <label class="q-mb-sm block">Centro de Costo</label>
-            <q-input
-              v-model="gasto.centro_costo"
-              placeholder="Obligatorio"
-              disable
-              outlined
-              dense
-            >
-            </q-input>
-          </div>
-          <!-- Sub Centro de Costo -->
-          <div class="col-12 col-md-3" v-if="es_consultar">
-            <label class="q-mb-sm block">Sub Centro de Costo</label>
-            <q-input
-              v-model="gasto.subcentro_costo"
-              placeholder="Obligatorio"
-              disable
-              outlined
-              dense
-            >
-            </q-input>
-          </div>
           <!-- Observacion Autorizador-->
           <div class="col-12 col-md-3">
             <label class="q-mb-sm block">Observación Autorizador</label>
@@ -712,7 +788,7 @@
               v-model="gasto.detalle_estado"
               placeholder="Obligatorio"
               type="textarea"
-              :disable="!fondoRotativoStore.habilitar_observacion_autorizador"
+              :disable="!permitirAnular"
               :error="!!v$.detalle_estado.$errors.length"
               @blur="v$.detalle_estado.$touch"
               autogrow
@@ -768,7 +844,7 @@
         v-if="
           (usuario.id == gasto.aut_especial || authenticationStore.esAdministrador) &&
           gasto.estado_info == 'APROBADO' &&
-          estaSemanAC === true
+          permitirAnular === true
         "
       >
         <q-btn color="negative" @click="aprobar_gasto(gasto, 'anular')">

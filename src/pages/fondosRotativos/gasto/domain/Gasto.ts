@@ -1,5 +1,6 @@
 import { EntidadAuditable } from 'shared/entidad/domain/entidadAuditable'
 export class Gasto extends EntidadAuditable {
+  id: number | null;
   fecha_viat: Date | null
   lugar: number | null
   num_tarea: string | null
@@ -43,6 +44,7 @@ export class Gasto extends EntidadAuditable {
 
   constructor() {
     super()
+    this.id = null
     this.fecha_viat = null
     this.lugar = null
     this.lugar_info = null

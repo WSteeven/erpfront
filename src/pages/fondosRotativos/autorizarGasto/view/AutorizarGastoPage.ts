@@ -26,6 +26,10 @@ import { date, useQuasar } from 'quasar'
 import { useCargandoStore } from 'stores/cargando'
 import { GastoController } from 'pages/fondosRotativos/gasto/infrestructure/GastoController'
 import { format, parse } from '@formkit/tempo'
+import { VehiculoController } from 'pages/controlVehiculos/vehiculos/infraestructure/VehiculoController'
+import { EmpleadoController } from 'pages/recursosHumanos/empleados/infraestructure/EmpleadoController'
+import { ProyectoController } from 'pages/gestionTrabajos/proyectos/infraestructure/ProyectoController'
+import { TareaController } from 'pages/gestionTrabajos/tareas/infraestructure/TareaController'
 
 export default defineComponent({
   name: 'AutorizarGastoPage',
@@ -46,6 +50,7 @@ export default defineComponent({
     const { listado, accion } = mixin.useReferencias()
     const { listar } = mixin.useComportamiento()
     const { consultar } = mixin_gastos.useComportamiento()
+    const cargando = new StatusEssentialLoading()
 
     /*********
      * Stores
@@ -55,13 +60,15 @@ export default defineComponent({
     useCargandoStore().setQuasar(useQuasar())
     const authenticationStore = useAuthenticationStore()
     const fondoRotativoStore = useFondoRotativoStore()
+    const vehiculos = ref([])
+    const empleados = ref([])
+    const proyectos = ref([])
+    const tareas = ref([])
     /***************
      * Botones tabla
      ***************/
     const autorizarGastoController = new AutorizarGastoController()
     async function filtrarAutorizacionesGasto(tabSeleccionado) {
-      const cargando = new StatusEssentialLoading()
-
       cargando.activar()
 
       const { result } = await autorizarGastoController.listar({
@@ -72,7 +79,37 @@ export default defineComponent({
 
       cargando.desactivar()
     }
+    async function obtenerListados() {
+      vehiculos.value = (
+        await new VehiculoController().listar({
+          campos: 'id,placa',
+        })
+      ).result
+      empleados.value = (
+        await new EmpleadoController().listar({ estado: 1 })
+      ).result
+    }
+    async function obtenerListadosDependientesEmpleado(empleado_id: number) {
+      cargando.activar()
+      proyectos.value = (
+        await new ProyectoController().listar({
+          campos: 'id,nombre,codigo_proyecto',
+          finalizado: 0,
+          empleado_id: empleado_id,
+        })
+      ).result
+      tareas.value = (
+        await new TareaController().listar({
+          campos: 'id,codigo_tarea,titulo,cliente_id,proyecto_id',
+          empleado_id: empleado_id,
+          activas_empleado: 1,
+          formulario: true,
+        })
+      ).result
+      cargando.desactivar()
+    }
     filtrarAutorizacionesGasto(estadosGastos.PENDIENTE)
+    obtenerListados()
 
     /**Modales */
     const modales = new ComportamientoModalesAutorizarGasto()
@@ -81,27 +118,30 @@ export default defineComponent({
       titulo: 'Consultar',
       icono: 'bi-eye',
       color: 'indigo',
-      accion: ({ entidad }) => {
-        fondoRotativoStore.id_gasto = entidad.id
-
-        fondoRotativoStore.estaSemanAC = estaEnSemanaActual(entidad.fecha_viat)
-
-        fondoRotativoStore.existeFactura = !!entidad.factura
+      accion: async ({ entidad }) => {
+        cargando.activar()
+        fondoRotativoStore.gasto = entidad
+        fondoRotativoStore.vehiculos = vehiculos.value
+        fondoRotativoStore.empleados = empleados.value
         fondoRotativoStore.habilitar_observacion_autorizador =
           authenticationStore.user.id === entidad.aut_especial &&
           (entidad.estado === estadosGastos.PENDIENTE ||
-            entidad.estado === estadosGastos.APROBADO)
-        fondoRotativoStore.accionForm =
+            entidad.estado === estadosGastos.APROBADO) &&
+          permitirAnular(entidad.fecha_viat)
+        fondoRotativoStore.accion_form =
           authenticationStore.user.id === entidad.aut_especial &&
           entidad.estado === estadosGastos.PENDIENTE
             ? acciones.editar
             : acciones.consultar
-        fondoRotativoStore.empleado_id = entidad.id_usuario
+        await obtenerListadosDependientesEmpleado(entidad.id_usuario)
+        fondoRotativoStore.proyectos = proyectos.value
+        fondoRotativoStore.tareas = tareas.value
         modales.abrirModalEntidad('VisualizarGastoPage')
+        cargando.desactivar()
       },
     }
 
-    function estaEnSemanaActual(fecha) {
+    function permitirAnular(fecha) {
       // Create Date objects for current week's start and end (Sunday - Saturday)
       const today = new Date()
       const day = today.getDay() // Get current day of the week (0-6)
@@ -111,7 +151,7 @@ export default defineComponent({
       weekEnd.setHours(23, 59, 59, 999) // Set end of day for Saturday
       // Convert target date to Date object
       const fechaDate = parse(fecha, 'YYYY-MM-DD', 'America/Guayaquil')
-     // Calculate difference in milliseconds between target date and week start
+      // Calculate difference in milliseconds between target date and week start
       const diferenciaMilisegundos = weekStart.getTime() - fechaDate.getTime()
       const diferenciaEnDias = Math.floor(
         diferenciaMilisegundos / (1000 * 60 * 60 * 24)
@@ -123,7 +163,6 @@ export default defineComponent({
         return false
       }
     }
-
 
     async function guardado() {
       filtrarAutorizacionesGasto(estadosGastos.PENDIENTE)

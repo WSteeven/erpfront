@@ -36,6 +36,7 @@ import {
   estadosGastos,
   convertir_fecha,
   acciones,
+  rolesSistema,
 } from 'config/utils'
 import { EmpleadoController } from 'pages/recursosHumanos/empleados/infraestructure/EmpleadoController'
 import { Empleado } from 'pages/recursosHumanos/empleados/domain/Empleado'
@@ -43,6 +44,7 @@ import { VehiculoController } from 'pages/controlVehiculos/vehiculos/infraestruc
 import ImagenComprimidaComponent from 'components/ImagenComprimidaComponent.vue'
 import { EmpleadoRoleController } from 'pages/recursosHumanos/empleados/infraestructure/EmpleadoRolesController'
 import { CustomActionTable } from 'components/tables/domain/CustomActionTable'
+import { filtrarEmpleadosPorRoles } from 'shared/utils'
 export default defineComponent({
   components: { TabLayoutFilterTabs2, ImagenComprimidaComponent },
   emits: ['guardado', 'cerrar-modal'],
@@ -79,18 +81,10 @@ export default defineComponent({
     /*******
      * Init
      ******/
-    const fondoRotativoStore = useFondoRotativoStore()
-    const aprobarController = new AprobarGastoController()
 
     const esFactura = ref(true)
     const mostrarListado = ref(true)
-    const mostrarAprobacion = ref(false)
 
-    if (fondoRotativoStore.id_gasto) {
-      consultar({ id: fondoRotativoStore.id_gasto })
-      mostrarListado.value = false
-      mostrarAprobacion.value = true
-    }
     const visualizarAutorizador = computed(() => {
       return authenticationStore.can('puede.ver.campo.autorizador')
       /*return usuario.roles.findIndex((rol) => rol === 'TECNICO') > -1
@@ -248,7 +242,7 @@ export default defineComponent({
     const detalles = ref([])
     const sub_detalles = ref([])
     const proyectos = ref([])
-    const autorizacionesEspeciales: Ref<Empleado[]> = ref([])
+    const autorizaciones_especiales: Ref<Empleado[]> = ref([])
     const tareas = ref([])
     const vehiculos = ref([])
     const beneficiarios = ref([])
@@ -256,11 +250,7 @@ export default defineComponent({
     //Obtener el listado de las cantones
     cargarVista(async () => {
       await obtenerListados({
-        autorizacionesEspeciales: {
-          controller: new EmpleadoRoleController(),
-          params: { roles: ['AUTORIZADOR'] },
-        },
-        proyectos: {
+              proyectos: {
           controller: new ProyectoController(),
           params: {
             campos: 'id,nombre,codigo_proyecto',
@@ -280,15 +270,7 @@ export default defineComponent({
         empleados: {
           controller: new EmpleadoController(),
           params: {
-            campos: 'id,nombres,apellidos',
-            id: usuario.jefe_id,
-            estado: 1,
-          },
-        },
-        beneficiarios: {
-          controller: new EmpleadoController(),
-          params: {
-            campos: 'id,nombres,apellidos',
+           // campos: 'id,nombres,apellidos',
             estado: 1,
           },
         },
@@ -299,14 +281,14 @@ export default defineComponent({
           },
         },
       })
-      autorizacionesEspeciales.value =
-        listadosAuxiliares.autorizacionesEspeciales
-      beneficiarios.value = listadosAuxiliares.beneficiarios
+      autorizaciones_especiales.value = await filtrarEmpleadosPorRoles(listadosAuxiliares.empleados,[rolesSistema.autorizador])
+      listadosAuxiliares.autorizaciones_especiales =autorizaciones_especiales.value
+      beneficiarios.value = listadosAuxiliares.empleados
+      listadosAuxiliares.beneficiarios =beneficiarios.value
       listadosAuxiliares.proyectos.unshift({ id: 0, nombre: 'Sin Proyecto' })
       proyectos.value = listadosAuxiliares.proyectos
       tareas.value = listadosAuxiliares.tareas
       vehiculos.value = listadosAuxiliares.vehiculos
-      autorizacionesEspeciales.value.unshift(listadosAuxiliares.empleados[0])
     })
     cantones.value =
       LocalStorage.getItem('cantones') == null
@@ -332,23 +314,23 @@ export default defineComponent({
     function filtrarAutorizacionesEspeciales(val, update) {
       if (val === '') {
         update(() => {
-          autorizacionesEspeciales.value =
-            listadosAuxiliares.autorizacionesEspeciales
+          autorizaciones_especiales.value =
+            listadosAuxiliares.autorizaciones_especiales
         })
         return
       }
       update(() => {
         const needle = val.toLowerCase()
         console.log(
-          listadosAuxiliares.autorizacionesEspeciales.filter((v) => {
+          listadosAuxiliares.autorizaciones_especiales.filter((v) => {
             console.log(v.nombres.toLowerCase())
 
             v.nombres.toLowerCase().indexOf(needle) > -1
           })
         )
 
-        autorizacionesEspeciales.value =
-          listadosAuxiliares.autorizacionesEspeciales.filter(
+        autorizaciones_especiales.value =
+          listadosAuxiliares.autorizaciones_especiales.filter(
             (v) =>
               v.nombres.toLowerCase().indexOf(needle) > -1 ||
               v.apellidos.toLowerCase().indexOf(needle) > -1
@@ -647,7 +629,7 @@ export default defineComponent({
       tabAutorizarGasto,
       maskFecha,
       configuracionColumnas: configuracionColumnasGasto,
-      autorizacionesEspeciales,
+      autorizaciones_especiales,
       visualizarAutorizador,
       esCombustibleEmpresa,
       vehiculos,
