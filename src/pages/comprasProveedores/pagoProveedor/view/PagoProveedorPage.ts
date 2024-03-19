@@ -77,7 +77,7 @@ export default defineComponent({
         }
 
         const btnCash: CustomActionTable = {
-            titulo: 'Excel',
+            titulo: 'Cash',
             icono: 'bi-file-earmark-excel-fill',
             color: 'positive',
             accion: async ({ entidad }) => {
