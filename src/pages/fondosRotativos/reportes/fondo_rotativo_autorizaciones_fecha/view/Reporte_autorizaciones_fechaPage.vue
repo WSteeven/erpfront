@@ -132,6 +132,7 @@
                     v-model="fondo_rotativo_autorizacion_fecha.fecha_fin"
                     :mask="maskFecha"
                     today-btn
+                    :options="optionsFechaFin"
                   >
                     <div class="row items-center justify-end">
                       <q-btn v-close-popup label="Cerrar" color="primary" flat />

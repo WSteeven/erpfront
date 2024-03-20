@@ -291,6 +291,18 @@ export const estadosGastos = {
   PENDIENTE: 3,
   ANULADO: 4,
 }
+export const tipoReportes = {
+  PDF: 'pdf',
+  EXCEL: 'excel',
+}
+export const tipos_saldos = [
+  { value: '1', label: 'Acreditacion' },
+  { value: '2', label: 'Gasto' },
+  { value: '3', label: 'Consolidado' },
+  { value: '4', label: 'Estado de Cuenta' },
+  { value: '5', label: 'Transferencia de Saldos' },
+  { value: '6', label: 'Gastos con Fotografia' },
+]
 export const estadosTransferencias = {
   APROBADO: 1,
   RECHAZADO: 2,

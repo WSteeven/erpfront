@@ -121,7 +121,7 @@
               input-debounce="0"
               @blur="v$.proyecto.$touch"
               @filter="filtrarProyectos"
-              @update:model-value="cambiar_proyecto()"
+              @update:model-value="cambiarProyecto()"
               :option-value="(v) => v.id"
               :option-label="(v) => v.nombre"
               emit-value
@@ -226,7 +226,7 @@
               use-input
               input-debounce="0"
               @blur="v$.detalle.$touch"
-              @update:model-value="cambiar_detalle()"
+              @update:model-value="cambiarDetalle()"
               @filter="filtrarDetalles"
               :option-value="(v) => v.id"
               :option-label="(v) => v.descripcion"
@@ -269,7 +269,7 @@
               input-debounce="0"
               @filter="filtarSubdetalles"
               @blur="v$.sub_detalle.$touch"
-              @update:model-value="tiene_factura_subdetalle()"
+              @update:model-value="tieneFacturaSubDetalle()"
               :error="!!v$.sub_detalle.$errors.length"
               error-message="Debes seleccionar uno o varios sub_detalle"
               :option-value="(v) => v.id"
@@ -302,7 +302,7 @@
                 </q-item>
               </template>
               <template v-slot:after>
-                <q-btn color="positive" @click="recargar_detalle('sub_detalle')">
+                <q-btn color="positive" @click="recargarDetalle('sub_detalle')">
                   <q-icon size="xs" class="q-mr-sm" name="bi-arrow-clockwise" />
                 </q-btn>
               </template>

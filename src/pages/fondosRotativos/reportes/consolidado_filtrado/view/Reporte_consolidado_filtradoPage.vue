@@ -61,6 +61,7 @@
                   <q-date
                     v-model="consolidadofiltrado.fecha_fin"
                     :mask="maskFecha"
+                    :options="optionsFechaFin"
                     today-btn
                   >
                     <div class="row items-center justify-end">
@@ -83,7 +84,7 @@
           <label class="q-mb-sm block">Tipo Saldo</label>
           <q-select
             v-model="consolidadofiltrado.tipo_saldo"
-            :options="tipos_saldos"
+            :options="tipos_saldos_consolidado_filtro"
             transition-show="jump-up"
             transition-hide="jump-down"
             options-dense
@@ -95,6 +96,7 @@
             error-message="Debes seleccionar un tipo de saldo"
             use-input
             input-debounce="0"
+            @blur="v$.tipo_saldo.$touch"
             @filter="filtarTiposSaldos"
             :option-value="(v) => v.value"
             :option-label="(v) => v.label"
@@ -130,6 +132,7 @@
             error-message="Debes seleccionar un tipo de saldo"
             use-input
             input-debounce="0"
+            @blur="v$.tipo_filtro.$touch"
             @filter="filtrarTiposFiltro"
             :option-value="(v) => v.value"
             :option-label="(v) => v.name"

@@ -30,6 +30,7 @@
             :readonly="disabled"
             use-input
             input-debounce="0"
+            @blur="v$.usuario.$touch"
             @filter="filtrarUsuarios"
             :option-value="(v) => v.id"
             :option-label="(v) => v.nombres + ' ' + v.apellidos"
@@ -135,6 +136,7 @@
                     v-model="fondo_rotativo_fecha.fecha_fin"
                     :mask="maskFecha"
                     today-btn
+                    :options="optionsFechaFin"
                   >
                     <div class="row items-center justify-end">
                       <q-btn v-close-popup label="Cerrar" color="primary" flat />
