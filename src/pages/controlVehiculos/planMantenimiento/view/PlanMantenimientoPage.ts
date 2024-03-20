@@ -3,7 +3,7 @@ import { configuracionColumnasPlanMantenimiento } from '../domain/configuracionC
 import { configuracionColumnasServicios } from 'pages/controlVehiculos/servicios/domain/configuracionColumnasServicios';
 import { required } from "shared/i18n-validators";
 import { useVuelidate } from '@vuelidate/core'
-import { computed, defineComponent, ref } from "vue";
+import { computed, defineComponent, reactive, ref } from "vue";
 
 // componentes
 import TabLayout from 'shared/contenedor/modules/simple/view/TabLayout.vue'
@@ -28,6 +28,7 @@ import { ComportamientoModalesPlanMantenimiento } from '../application/Comportam
 import { useQuasar } from 'quasar';
 import { useNotificacionStore } from 'stores/notificacion';
 import { useCargandoStore } from 'stores/cargando';
+import { Vehiculo } from 'pages/controlVehiculos/vehiculos/domain/Vehiculo';
 
 
 export default defineComponent({
@@ -36,12 +37,14 @@ export default defineComponent({
         const mixin = new ContenedorSimpleMixin(PlanMantenimiento, new PlanMantenimientoController())
         const { entidad: plan, listado, accion, disabled, listadosAuxiliares } = mixin.useReferencias()
         const { setValidador, obtenerListados, cargarVista } = mixin.useComportamiento()
+        const { onConsultado } = mixin.useHooks()
         const { confirmar, prompt, notificarCorrecto, notificarError } = useNotificaciones()
 
         useNotificacionStore().setQuasar(useQuasar())
         useCargandoStore().setQuasar(useQuasar())
         const store = useAuthenticationStore()
         const serviciosSeleccionados = ref()
+        const vehiculo = reactive(new Vehiculo())
 
         //modales
         const modales = new ComportamientoModalesPlanMantenimiento()
@@ -55,6 +58,15 @@ export default defineComponent({
             limpiar: limpiarServicios,
             seleccionar: seleccionarServicio
         } = useOrquestadorSelectorServicios(plan, 'servicios')
+
+        /********************************
+         * HOOKS
+         ********************************/
+        onConsultado(() => {
+            const vehiculoSeleccionado = vehiculos.value.filter((v) => v.id === plan.vehiculo)[0]
+            console.log(vehiculoSeleccionado)
+            vehiculo.hydrate(vehiculoSeleccionado)
+        })
 
         /********************************
          * LISTADOS Y FILTROS
@@ -176,6 +188,7 @@ export default defineComponent({
             configuracionColumnas: configuracionColumnasPlanMantenimiento,
             configuracionColumnasServicios, accionesTabla,
             modales,
+            vehiculo,
             //listados
             vehiculos, filtrarVehiculos,
             // servicios, filtrarServicios,

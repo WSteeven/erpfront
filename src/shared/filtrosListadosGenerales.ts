@@ -8,7 +8,6 @@ import { Canton } from "sistema/ciudad/domain/Canton";
 import { Vehiculo } from "pages/controlVehiculos/vehiculos/domain/Vehiculo";
 import { Servicio } from "pages/controlVehiculos/servicios/domain/Servicio";
 import { Empleado } from "pages/recursosHumanos/empleados/domain/Empleado";
-import { Cliente } from "sistema/clientes/domain/Cliente";
 import { CentroCosto } from "pages/gestionTrabajos/centroCostos/domain/CentroCostos";
 import { SeguroVehicular } from "pages/controlVehiculos/seguros/domain/SeguroVehicular";
 
@@ -28,6 +27,13 @@ export const useFiltrosListadosSelects = (listadosAuxiliares, entidad?: Ref<any>
   const empleadosOrigen = ref(listadosAuxiliares.empleadosOrigen)
   const bancos = ref(listadosAuxiliares.bancos)
   const categorias = ref(listadosAuxiliares.categorias)
+  const areas = ref(listadosAuxiliares.areas)
+  const cargos = ref(listadosAuxiliares.cargos)
+  const roles = ref(listadosAuxiliares.roles)
+  const tiposContratos = ref(listadosAuxiliares.tipos_contratos)
+  const estadosCiviles = ref(listadosAuxiliares.estados_civiles)
+  const grupos = ref(listadosAuxiliares.grupos)
+  const departamentos = ref(listadosAuxiliares.departamentos)
 
   //bodega
   const sucursales = ref(listadosAuxiliares.sucursales)
@@ -433,6 +439,22 @@ export const useFiltrosListadosSelects = (listadosAuxiliares, entidad?: Ref<any>
     return filtrarLista(val, update, combustibles, 'nombre', listadosAuxiliares.combustibles)
   }
 
+  function filtrarCargos(val, update) {
+    return filtrarLista(val, update, cargos, 'nombre', listadosAuxiliares.cargos)
+  }
+  function filtrarRoles(val, update) {
+    return filtrarLista(val, update, roles, 'name', listadosAuxiliares.roles)
+  }
+  function filtrarDepartamentos(val, update) {
+    return filtrarLista(val, update, departamentos, 'nombre', listadosAuxiliares.departamentos)
+  }
+  function filtrarGrupos(val, update) {
+    return filtrarLista(val, update, grupos, 'nombre', listadosAuxiliares.grupos)
+  }
+  function filtrarAreas(val, update) {
+    return filtrarLista(val, update, grupos, 'nombre', listadosAuxiliares.areas)
+  }
+
 
   function filtrarLista(val, update, lista, clave, defaultValue = []) {
     if (val === '') {
@@ -466,6 +488,13 @@ export const useFiltrosListadosSelects = (listadosAuxiliares, entidad?: Ref<any>
     empleadosOrigen, filtrarEmpleadosOrigen, ordenarEmpleadosOrigen,
     motivos, filtrarMotivos,
     sucursales, filtrarSucursales,
+    cargos, filtrarCargos,
+    roles, filtrarRoles,
+    departamentos, filtrarDepartamentos,
+    grupos, filtrarGrupos,
+    areas, filtrarAreas,
+    estadosCiviles,
+    tiposContratos,
 
     tareas, filtrarTareas,
     proyectos, filtrarProyectos,

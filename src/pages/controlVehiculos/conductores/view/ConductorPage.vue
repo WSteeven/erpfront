@@ -17,7 +17,7 @@
           default-opened
         >
           <div class="row q-col-gutter-sm q-pa-sm">
-            <!--Identificación -->
+            <!--Nombre chofer -->
             <div class="col-12 col-md-3">
               <label class="q-mb-sm block">Chofer</label>
               <q-select
@@ -67,10 +67,14 @@
                   </q-item>
                 </template>
                 <template v-slot:after>
-                <q-btn color="positive" @click="recargarChoferes">
-                  <q-icon size="xs" class="q-mr-sm" name="bi-arrow-clockwise" />
-                </q-btn>
-              </template>
+                  <q-btn color="positive" @click="recargarChoferes">
+                    <q-icon
+                      size="xs"
+                      class="q-mr-sm"
+                      name="bi-arrow-clockwise"
+                    />
+                  </q-btn>
+                </template>
               </q-select>
             </div>
             <!-- identificacion-->
@@ -131,14 +135,19 @@
             </div>
           </div>
         </q-expansion-item>
-        <q-expansion-item
+        <informacion-licencia
+          :mixin="mixin"
+          :conductor="conductor"
+          :identificacion="empleado.identificacion"        
+        ></informacion-licencia>
+        <!-- <q-expansion-item
           class="overflow-hidden q-mb-md expansion"
           label="Información de Licencia"
           header-class="text-bold bg-header-collapse"
           default-opened
         >
           <div class="row q-col-gutter-sm q-pa-sm">
-            <!--Tipo de Licencia -->
+            !--Tipo de Licencia --
             <div class="col-12 col-md-3">
               <label class="q-mb-sm block">Tipo de Licencia</label>
               <q-select
@@ -150,6 +159,8 @@
                 options-dense
                 dense
                 outlined
+                multiple
+                use-chips
                 :error="!!v$.tipo_licencia.$errors.length"
                 error-message="Debes seleccionar un tipo de licencia"
                 :option-value="(v) => v.value"
@@ -168,7 +179,7 @@
                 <template v-slot:option="scope">
                   <q-item v-bind="scope.itemProps">
                     <q-item-section>
-                      <q-item-label>{{ scope.opt.label }}</q-item-label>
+                      <q-item-label><strong>{{ scope.opt.label }}</strong></q-item-label>
                       <q-item-label caption
                         >{{ scope.opt.caption }}
                       </q-item-label>
@@ -184,7 +195,7 @@
                 </template>
               </q-select>
             </div>
-            <!-- Fecha Inicio Vigencia -->
+            !-- Fecha Inicio Vigencia --
             <div class="col-6 col-md-3">
               <label class="q-mb-sm block">Fecha Inicial Vigencia</label>
               <q-input
@@ -231,7 +242,7 @@
                 </template>
               </q-input>
             </div>
-            <!-- Fecha Fin Vigencia -->
+            !-- Fecha Fin Vigencia --
             <div class="col-6 col-md-3">
               <label class="q-mb-sm block">Fecha Final Vigencia</label>
               <q-input
@@ -277,7 +288,7 @@
                 </template>
               </q-input>
             </div>
-            <!-- puntos -->
+            !-- puntos --
             <div class="col-12 col-md-3">
               <label class="q-mb-sm block">Puntos</label>
               <q-input
@@ -297,7 +308,7 @@
                 </template>
               </q-input>
             </div>
-            <!-- Tabla de multas -->
+            !-- Tabla de multas --
             <div class="col-12 col-md-12" v-if="accion==acciones.editar">
               <essential-table
                 ref="refMultas"
@@ -324,21 +335,21 @@
               ></essential-table>
             </div>
           </div>
-        </q-expansion-item>
+        </q-expansion-item> -->
       </q-form>
     </template>
   </tab-layout-filter-tabs2>
-  <solicitar-fecha
+  <!-- <solicitar-fecha
     :mostrar="mostrarSolicitarFecha"
     label="Fecha de pago"
     :confirmar="fechaIngresada"
     @cerrar="mostrarSolicitarFecha = false"
-  ></solicitar-fecha>
-  <modales-entidad
+  ></solicitar-fecha> -->
+  <!-- <modales-entidad
     :comportamiento="modales"
     :persistente="false"
     @guardado="(data) => guardado(data)"
-  ></modales-entidad>
+  ></modales-entidad> -->
 </template>
 
 <script src="./ConductorPage.ts"></script>

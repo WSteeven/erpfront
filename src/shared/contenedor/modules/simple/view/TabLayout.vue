@@ -48,7 +48,7 @@
       animated
       transition-prev="scale"
       transition-next="scale"
-      helpalive
+      keep-alive
       :class="{ 'rounded-tabpanel': !$q.screen.xs }"
     >
       <!-- Formulario -->

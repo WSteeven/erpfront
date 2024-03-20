@@ -317,6 +317,7 @@ export const rolesSistema = {
   bodegaTelconet: 'BODEGA TELCONET',
   compras: 'COMPRAS',
   contabilidad: 'CONTABILIDAD',
+  chofer: 'CHOFER',
   supervisor: 'SUPERVISOR_CAMPO',
   coordinador: 'COORDINADOR',
   coordinadorBodega: 'COORDINADOR DE BODEGA',

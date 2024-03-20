@@ -10,6 +10,7 @@ import ModalesEntidad from 'components/modales/view/ModalEntidad.vue';
 import EssentialTable from 'components/tables/view/EssentialTable.vue';
 import GestorArchivos from 'components/gestorArchivos/GestorArchivos.vue';
 import SolicitarFecha from 'shared/prompts/SolicitarFecha.vue'
+import InformacionLicencia from '../view/InformacionLicencia.vue'
 
 // Logica y Controladores
 import { ContenedorSimpleMixin } from "shared/contenedor/modules/simple/application/ContenedorSimpleMixin";
@@ -37,7 +38,7 @@ import { addYear, addDay, format } from "@formkit/tempo"
 
 
 export default defineComponent({
-    components: { TabLayoutFilterTabs2, ModalesEntidad, EssentialTable, GestorArchivos, SolicitarFecha },
+    components: { TabLayoutFilterTabs2, ModalesEntidad, EssentialTable, GestorArchivos, SolicitarFecha, InformacionLicencia },
     setup() {
         const mixin = new ContenedorSimpleMixin(Conductor, new ConductorController())
         const { entidad: conductor, disabled, listadosAuxiliares, accion } = mixin.useReferencias()
@@ -89,6 +90,7 @@ export default defineComponent({
             await consultarMultasConductor()
         })
         onReestablecer(() => {
+            console.log('reestablecer en conductorpage')
             empleado.hydrate(new Empleado())
             dataMulta.comentario = null
             dataMulta.fecha_pago = null
@@ -113,7 +115,7 @@ export default defineComponent({
             if (empleadoId != null) {
                 cargando.activar()
                 const { result } = await new EmpleadoController().consultar(empleadoId)
-                console.log(result)
+                // console.log(result)
                 empleado.hydrate(result)
                 cargando.desactivar()
             }
@@ -122,14 +124,14 @@ export default defineComponent({
         async function filtrarConductores(tab: string) {
             switch (tab) {
                 case '1': //licencias vigentes
-                // una licencia es vigente si la fecha de fin_vigencia >= a tres meses posteriores a la fecha actual
+                    // una licencia es vigente si la fecha de fin_vigencia >= a tres meses posteriores a la fecha actual
                     listar({
                         'fin_vigencia[operator]': '>',
                         'fin_vigencia[value]': sumarFechas(obtenerFechaActual(), 0, 3, 0, maskFecha),
                     })
                     break
                 case '2':// por caducar
-                // una licencia esta por caducar cuando fin_vigencia > fecha_actual y menor a tres meses posteriores a la fecha actual
+                    // una licencia esta por caducar cuando fin_vigencia > fecha_actual y menor a tres meses posteriores a la fecha actual
                     listar({
                         'fin_vigencia[start]': obtenerFechaActual(maskFecha),
                         'fin_vigencia[end]': sumarFechas(obtenerFechaActual(), 0, 3, 0, maskFecha),
@@ -138,7 +140,7 @@ export default defineComponent({
                 case '3'://licencias vencidas
                     listar({
                         'fin_vigencia[operator]': '<=',
-                        'fin_vigencia[value]':obtenerFechaActual(maskFecha),
+                        'fin_vigencia[value]': obtenerFechaActual(maskFecha),
                     })
                     break
                 default:

@@ -15,6 +15,7 @@
       "pages/*": ["src/pages/*"],
       "gestionTrabajos/*": ["src/pages/gestionTrabajos/*"],
       "tareas/*": ["src/pages/gestionTrabajos/tareas/*"],
+      "vehiculos/*": ["src/pages/controlVehiculos/*"],
       "trabajos/*": ["src/pages/gestionTrabajos/trabajos/*"],
       "clientesFinales/*": ["src/pages/gestionTrabajos/clientesFinales/*"],
       "formulariosTrabajos/*": [

@@ -49,6 +49,18 @@
               </template>
             </q-select>
           </div>
+          <!-- marca  -->
+          <div class="col-12 col-md-3 q-mb-md">
+            <label class="q-mb-sm block">Marca</label>
+            <q-input v-model="vehiculo.marca" disable outlined dense />
+          </div>
+
+          <!-- modelo  -->
+          <div class="col-12 col-md-3 q-mb-md">
+            <label class="q-mb-sm block">Modelo</label>
+            <q-input v-model="vehiculo.modelo" disable outlined dense />
+          </div>
+
           <!-- Km que comienza -->
           <div class="col-12 col-md-3 q-mb-md">
             <label class="q-mb-sm block">Aplicar desde (Km)</label>
@@ -62,8 +74,11 @@
               outlined
               dense
             >
-            <template v-slot:error>
-                <div v-for="error of v$.aplicar_desde.$errors" :key="error.$uid">
+              <template v-slot:error>
+                <div
+                  v-for="error of v$.aplicar_desde.$errors"
+                  :key="error.$uid"
+                >
                   <div class="error-msg">{{ error.$message }}</div>
                 </div>
               </template>
@@ -126,9 +141,9 @@
               </div>
             </div>
           </div>
+          <!-- {{ plan.listadoServicios }} -->
+          
           <!-- Tabla de servicios seleccionados -->
-
-          {{ plan.listadoServicios }}
           <div
             class="col-12"
             v-if="plan.listadoServicios.length > 0 || accion == acciones.editar"

@@ -1,5 +1,6 @@
 import { ColumnConfig } from "components/tables/domain/ColumnConfig";
 import { MultaConductor } from "../modules/multas/domain/MultaConductor";
+import { EntidadAuditable } from "shared/entidad/domain/entidadAuditable";
 
 export const configuracionColumnasMultasConductores: ColumnConfig<MultaConductor>[] = [
     {
