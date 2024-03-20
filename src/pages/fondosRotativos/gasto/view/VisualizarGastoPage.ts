@@ -2,7 +2,6 @@ import { Ref, computed, defineComponent, ref, watchEffect } from 'vue'
 
 // Componentes
 import TabLayout from 'shared/contenedor/modules/simple/view/TabLayout.vue'
-import SelectorImagen from 'components/SelectorImagen.vue'
 import { useNotificacionStore } from 'stores/notificacion'
 import { LocalStorage, useQuasar } from 'quasar'
 import { useVuelidate } from '@vuelidate/core'
@@ -12,7 +11,6 @@ import {
   minLength,
   required,
 } from 'shared/i18n-validators'
-import { CustomActionPrompt } from 'components/tables/domain/CustomActionPrompt'
 import { ContenedorSimpleMixin } from 'shared/contenedor/modules/simple/application/ContenedorSimpleMixin'
 import { configuracionColumnasGasto } from '../domain/configuracionColumnasGasto'
 import { GastoPusherEvent } from '../application/GastoPusherEvent'
@@ -32,11 +30,6 @@ import { VisualizarGasto } from '../domain/VisualizarGasto'
 import { VisualizarGastoController } from '../infrestructure/VisualizarGastoController'
 import { useCargandoStore } from 'stores/cargando'
 import ImagenComprimidaComponent from 'components/ImagenComprimidaComponent.vue'
-import { EmpleadoRoleController } from 'pages/recursosHumanos/empleados/infraestructure/EmpleadoRolesController'
-import { ProyectoController } from 'pages/gestionTrabajos/proyectos/infraestructure/ProyectoController'
-import { TareaController } from 'pages/gestionTrabajos/tareas/infraestructure/TareaController'
-import { EmpleadoController } from 'pages/recursosHumanos/empleados/infraestructure/EmpleadoController'
-import { VehiculoController } from 'pages/controlVehiculos/vehiculos/infraestructure/VehiculoController'
 import { Empleado } from 'pages/recursosHumanos/empleados/domain/Empleado'
 import { Tarea } from 'pages/gestionTrabajos/tareas/domain/Tarea'
 import { SubDetalleFondo } from 'pages/fondosRotativos/subDetalleFondo/domain/SubDetalleFondo'
@@ -80,7 +73,6 @@ export default defineComponent({
       mixin.useComportamiento()
     const { onConsultado } = mixin.useHooks()
     const { entidad: gasto } = mixin_gastos.useReferencias()
-    const { consultar } = mixin_gastos.useComportamiento()
     const issubmit = ref(true)
     const { confirmar, notificarCorrecto, notificarAdvertencia } =
       useNotificaciones()

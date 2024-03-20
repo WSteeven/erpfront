@@ -106,7 +106,7 @@ export default defineComponent({
       visible: ({entidad}) => store.can('puede.ver.campo.acreditar_saldo_masivo')&& !entidad.acreditar,
       accion: ({ entidad }) => {
         entidad.acreditar = true;
-        acreditacion_saldo(entidad)
+        acreditacionSaldo(entidad)
       },
     }
     const botonCash: CustomActionTable = {
@@ -115,10 +115,10 @@ export default defineComponent({
       color: 'warning',
       visible: () => store.can('puede.ver.campo.cash_acreditacion_saldo'),
       accion: ({ entidad }) => {
-        cash_rol_acreditacion_saldo(entidad)
+        cashRolAcreditacionSaldo(entidad)
       },
     }
-    async function cash_rol_acreditacion_saldo(entidad): Promise<void> {
+    async function cashRolAcreditacionSaldo(entidad): Promise<void> {
       const filename = 'cash_rol_pago'
       const axios_repository = AxiosHttpRepository.getInstance()
       const url_pdf =
@@ -128,7 +128,7 @@ export default defineComponent({
         entidad.id
       imprimirArchivo(url_pdf, 'GET', 'blob', 'xlsx', filename, null)
     }
-    async function acreditacion_saldo(entidad): Promise<void> {
+    async function acreditacionSaldo(entidad): Promise<void> {
       const axios_repository = AxiosHttpRepository.getInstance()
       const url =
         apiConfig.URL_BASE +
@@ -153,7 +153,7 @@ export default defineComponent({
         const config: CustomActionPrompt = reactive({
           mensaje: 'Confirme el tipo de reporte',
           accion: (tipo) => {
-            generar_reporte(entidad.id, tipo)
+            generarReporte(entidad.id, tipo)
           },
           requerido: false,
           defecto: 'EXCEL',
@@ -168,7 +168,7 @@ export default defineComponent({
         promptItems(config)
       },
     }
-    async function generar_reporte(
+    async function generarReporte(
       id: number,
       tipo: string
     ): Promise<void> {

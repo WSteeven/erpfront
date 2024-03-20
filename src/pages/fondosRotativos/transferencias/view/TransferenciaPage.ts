@@ -8,18 +8,14 @@ import SelectorImagen from 'components/SelectorImagen.vue'
 import { useNotificacionStore } from 'stores/notificacion'
 import { useQuasar } from 'quasar'
 import { useVuelidate } from '@vuelidate/core'
-import { required, maxLength, requiredIf } from 'shared/i18n-validators'
+import { required, maxLength } from 'shared/i18n-validators'
 import { ContenedorSimpleMixin } from 'shared/contenedor/modules/simple/application/ContenedorSimpleMixin'
 import { TransferenciaController } from '../infrestructure/TransferenciaController'
 import { configuracionColumnasTransferencia } from '../domain/configuracionColumnasTransferencia'
-import { UsuarioController } from 'pages/fondosRotativos/usuario/infrestructure/UsuarioController'
 import { TareaController } from 'pages/gestionTrabajos/tareas/infraestructure/TareaController'
 import { useAuthenticationStore } from 'stores/authentication'
 import { useTransferenciaSaldoStore } from 'stores/transferenciaSaldo'
-import { AprobarTransferenciaController } from 'pages/fondosRotativos/autorizarTransferencia/infrestructure/AprobarTransferenciaController'
-import { useNotificaciones } from 'shared/notificaciones'
 import { EmpleadoController } from 'pages/recursosHumanos/empleados/infraestructure/EmpleadoController'
-import { CustomActionPrompt } from 'components/tables/domain/CustomActionPrompt'
 
 export default defineComponent({
   components: { TabLayout, SelectorImagen },
@@ -40,7 +36,6 @@ export default defineComponent({
       Transferencia,
       new TransferenciaController()
     )
-    const aprobarController = new AprobarTransferenciaController()
     const {
       entidad: transferencia,
       disabled,
@@ -49,13 +44,6 @@ export default defineComponent({
     } = mixin.useReferencias()
     const { setValidador, obtenerListados, cargarVista, consultar } =
       mixin.useComportamiento()
-    const {
-      confirmar,
-      prompt,
-      notificarCorrecto,
-      notificarAdvertencia,
-      notificarError,
-    } = useNotificaciones()
     const usuarios = ref([])
     const esDevolucion = ref(false)
     const tareas = ref([])

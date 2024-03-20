@@ -8,12 +8,11 @@ import SelectorImagen from 'components/SelectorImagen.vue'
 import { useNotificacionStore } from 'stores/notificacion'
 import { useQuasar } from 'quasar'
 import { useVuelidate } from '@vuelidate/core'
-import { required,maxLength, minLength } from 'shared/i18n-validators'
+import { required, minLength } from 'shared/i18n-validators'
 import { ContenedorSimpleMixin } from 'shared/contenedor/modules/simple/application/ContenedorSimpleMixin'
 import { GastoCoordinadoresController } from '../infrestructure/GastoCoordinadoresController'
 import { configuracionColumnasGasto } from '../domain/configuracionColumnasGasto'
 import { CantonController } from 'sistema/ciudad/infraestructure/CantonControllerontroller'
-import { useFondoRotativoStore } from 'stores/fondo_rotativo'
 import { MotivoGastoController } from 'pages/fondosRotativos/MotivoGasto/infrestructure/MotivoGastoController'
 import { GrupoController } from 'pages/recursosHumanos/grupos/infraestructure/GrupoController'
 
@@ -35,18 +34,14 @@ export default defineComponent({
       accion,
       listadosAuxiliares,
     } = mixin.useReferencias()
-    const { setValidador, obtenerListados, cargarVista, consultar } =
+    const { setValidador, obtenerListados, cargarVista } =
       mixin.useComportamiento()
 
     /*******
      * Init
      ******/
-    const fondoRotativoStore = useFondoRotativoStore()
-    const mostrarListado = ref(true)
-    if (fondoRotativoStore.id_gasto) {
-      consultar({ id: fondoRotativoStore.id_gasto })
-      mostrarListado.value = false
-    }
+
+
 
     /*************
      * Validaciones
