@@ -361,7 +361,7 @@ export default defineComponent({
         console.log('Devolución a ingresar a bodega es: ', devolucionStore.devolucion)
         router.push('transacciones-ingresos')
       },
-      visible: ({ entidad }) => (tabSeleccionado.value == 'APROBADO' || tabSeleccionado.value == 'PARCIAL') && store.esBodeguero ? true : false
+      visible: ({ entidad }) => (tabSeleccionado.value == 'APROBADO' || tabSeleccionado.value == 'PARCIAL') && store.can('puede.gestionar.devoluciones') ? true : false
     }
     const botonCorregir: CustomActionTable = {
       titulo: 'Corregir devolución',

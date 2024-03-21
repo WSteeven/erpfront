@@ -13,8 +13,6 @@
                 options-dense
                 dense
                 outlined
-                :disable="disabled"
-                :readonly="disabled"
                 error-message="Debe seleccionar un empleado"
                 use-input
                 input-debounce="0"
@@ -49,25 +47,30 @@
               </q-card>
             </div>
           </div>
-          <div class="col-12 col-md-2">
-            </div>
+          <div class="col-12 col-md-2"></div>
           <!-- Permisos -->
           <div class="col-12 col-md-5" v-if="permisos">
             <div class="col-12 col-md-5 q-mb-md" v-if="listado">
               <q-card>
                 <q-card-section>
-                  <div class="text-h6">Todos los permisos asignados (roles y directamente)</div>
+                  <div class="text-h6">
+                    Todos los permisos asignados (roles y directamente)
+                  </div>
                   <q-scroll-area style="height: 164px">
                     <div class="q-py-xs">
-                      <q-item dense v-for="(permiso, index) in permisos" :key="index">
+                      <q-item
+                        dense
+                        v-for="(permiso, index) in permisos"
+                        :key="index"
+                      >
                         <q-item-section avatar>
                           <q-icon
                             name="bi-check-circle-fill"
                             size="xs"
                             color="positive"
                           >
-                          &nbsp;{{ index+1}}
-                        </q-icon>
+                            &nbsp;{{ index + 1 }}
+                          </q-icon>
                         </q-item-section>
                         <q-item-section>{{ permiso.name }}</q-item-section>
                       </q-item>
@@ -89,7 +92,7 @@
                   :permitirConsultar="false"
                   :permitirEditar="false"
                   :permitirEliminar="false"
-                  :mostrarHeaders="false"
+                  :mostrarHeader="true"
                   :mostrarFooter="true"
                   :mostrarColumnasVisibles="false"
                   ref="refPermisosSinAsignar"
@@ -101,7 +104,7 @@
             </q-card>
           </div>
 
-          <col-12 class="col-md-2 column justify-center q-gutter-y-md">
+          <div class="col-md-2 column justify-center q-gutter-y-md">
             <q-btn
               class="full-width block"
               color="secondary"
@@ -120,7 +123,7 @@
               @click="botonEliminarPermisos()"
               ><q-icon name="bi-arrow-left"></q-icon
             ></q-btn>
-          </col-12>
+          </div>
 
           <div class="col-12 col-md-5 q-mb-md">
             <q-card>
