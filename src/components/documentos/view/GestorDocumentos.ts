@@ -56,6 +56,10 @@ export default defineComponent({
       type: Boolean,
       default: true,
     },
+    mostrarListado: {
+      type: Boolean,
+      default: true,
+    },
   },
   setup(props) {
     /********

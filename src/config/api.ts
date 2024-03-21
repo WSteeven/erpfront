@@ -210,6 +210,7 @@ export const endpoints = {
   log_contactos_proveedores: new Endpoint('compras/log-contactos-proveedores'),
   ofertas_proveedores: new Endpoint('compras/ofertas-proveedores'),
   ordenes_compras: new Endpoint('compras/ordenes-compras'),
+  pagos_proveedores: new Endpoint('compras/pagos-proveedores'),
   preordenes_compras: new Endpoint('compras/preordenes-compras'),
   preordenes_compras_consolidadas: new Endpoint('compras/preordenes-consolidadas'),
   novedades_ordenes_compras: new Endpoint('compras/novedades-ordenes-compras'),
