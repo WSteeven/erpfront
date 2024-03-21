@@ -133,7 +133,9 @@ export default defineComponent({
           entidad.estado === estadosGastos.PENDIENTE
             ? acciones.editar
             : acciones.consultar
-        await obtenerListadosDependientesEmpleado(entidad.id_usuario)
+        if (entidad.estado === estadosGastos.PENDIENTE) {
+          await obtenerListadosDependientesEmpleado(entidad.id_usuario)
+        }
         fondoRotativoStore.proyectos = proyectos.value
         fondoRotativoStore.tareas = tareas.value
         modales.abrirModalEntidad('VisualizarGastoPage')

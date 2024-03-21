@@ -788,7 +788,7 @@
               v-model="gasto.detalle_estado"
               placeholder="Obligatorio"
               type="textarea"
-              :disable="!permitirAnular"
+              :disable="disabled"
               :error="!!v$.detalle_estado.$errors.length"
               @blur="v$.detalle_estado.$touch"
               autogrow
@@ -797,6 +797,27 @@
             >
               <template v-slot:error>
                 <div v-for="error of v$.detalle_estado.$errors" :key="error.$uid">
+                  <div class="error-msg">{{ error.$message }}</div>
+                </div>
+              </template>
+            </q-input>
+          </div>
+           <!-- Observacion de Anulacion -->
+           <div class="col-12 col-md-3" v-if="gasto.estado === estadosGastos.APROBADO ">
+            <label class="q-mb-sm block">Observacion de Anulación</label>
+            <q-input
+              v-model="gasto.observacion_anulacion"
+              placeholder="Opcional"
+              :disable="!permitirAnular"
+              type="textarea"
+              autogrow
+              outlined
+              :error="!!v$.observacion_anulacion.$errors.length"
+              @blur="v$.observacion_anulacion.$touch"
+              dense
+            >
+            <template v-slot:error>
+                <div v-for="error of v$.observacion_anulacion.$errors" :key="error.$uid">
                   <div class="error-msg">{{ error.$message }}</div>
                 </div>
               </template>

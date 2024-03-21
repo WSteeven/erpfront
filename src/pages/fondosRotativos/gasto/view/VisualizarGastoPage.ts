@@ -213,10 +213,6 @@ export default defineComponent({
           fondoRotativoStore.habilitar_observacion_autorizador
         accion.value = fondoRotativoStore.accion_form
         isConsultar.value = fondoRotativoStore.accion_form === acciones.consultar
-        gasto.detalle_estado =
-          fondoRotativoStore.habilitar_observacion_autorizador
-            ? null
-            : gasto.detalle_estado
       }
     })
 
@@ -293,6 +289,9 @@ export default defineComponent({
       placa: {
         required: requiredIf(() => gasto.es_vehiculo_alquilado),
       },
+      observacion_anulacion:{
+        required: requiredIf(() => gasto.estado === estadosGastos.APROBADO),
+      }
     }
     const v$ = useVuelidate(reglas, gasto)
     const mascara_placa = 'AAA-####'
@@ -315,8 +314,6 @@ export default defineComponent({
         const needle = val.toLowerCase()
         console.log(
           listadosAuxiliares.autorizaciones_especiales.filter((v) => {
-            console.log(v.nombres.toLowerCase())
-
             v.nombres.toLowerCase().indexOf(needle) > -1
           })
         )
@@ -584,6 +581,7 @@ export default defineComponent({
             if (isAxiosError(error)) {
               const mensajes: string[] = error.erroresValidacion
               await notificarMensajesError(mensajes, notificaciones)
+              cargando.desactivar()
             }
           }
           break
@@ -603,6 +601,7 @@ export default defineComponent({
               if (isAxiosError(error)) {
                 const mensajes: string[] = error.erroresValidacion
                 await notificarMensajesError(mensajes, notificaciones)
+                cargando.desactivar()
               }
             }
           })
@@ -622,6 +621,7 @@ export default defineComponent({
                 if (isAxiosError(error)) {
                   const mensajes: string[] = error.erroresValidacion
                   await notificarMensajesError(mensajes, notificaciones)
+                  cargando.desactivar()
                 }
               }
             }

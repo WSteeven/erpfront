@@ -244,7 +244,7 @@
                 </q-item>
               </template>
               <template v-slot:after>
-                <q-btn color="positive" @click="recargar_detalle('detalle')">
+                <q-btn color="positive" @click="recargarDetalle('detalle')">
                   <q-icon size="xs" class="q-mr-sm" name="bi-arrow-clockwise" />
                 </q-btn>
               </template>
@@ -566,7 +566,10 @@
           <!-- Placa vehiculo -->
           <div
             class="col-12 col-md-3"
-            v-if="(esCombustibleEmpresa || mostarPlaca) && gasto.es_vehiculo_alquilado == false"
+            v-if="
+              (esCombustibleEmpresa || mostarPlaca) &&
+              gasto.es_vehiculo_alquilado == false
+            "
           >
             <label class="q-mb-sm block">Placas</label>
             <q-select
@@ -669,6 +672,20 @@
                   <div class="error-msg">{{ error.$message }}</div>
                 </div>
               </template>
+            </q-input>
+          </div>
+          <!-- Observacion de Anulacion -->
+          <div class="col-12 col-md-3" v-if="es_consultar">
+            <label class="q-mb-sm block">Observacion de Anulación</label>
+            <q-input
+              v-model="gasto.observacion_anulacion"
+              placeholder="Opcional"
+              disable
+              type="textarea"
+              autogrow
+              outlined
+              dense
+            >
             </q-input>
           </div>
           <!-- Centro de Costo -->

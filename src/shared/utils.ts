@@ -714,7 +714,15 @@ export function filtrarEmpleadosPorRoles(empleados, roles) {
   })
   return filtrados
 }
-
+export function filtarVisualizacionEmpleadosSaldos(empleados) {
+  const filtrados =
+    authenticationStore.esContabilidad ||
+    authenticationStore.esCoordinador ||
+    authenticationStore.esAdministrador
+      ? empleados
+      : empleados.filter((empleado) => empleado.jefe_id === usuario.id)
+  return filtrados
+}
 export function filtarJefeImediato(empleados) {
   return empleados.filter((empleado) => empleado.id === usuario.jefe_id)[0]
 }

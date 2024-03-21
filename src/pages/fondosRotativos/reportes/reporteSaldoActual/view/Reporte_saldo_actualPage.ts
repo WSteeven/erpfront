@@ -7,7 +7,7 @@ import { useVuelidate } from '@vuelidate/core'
 import { ContenedorSimpleMixin } from 'shared/contenedor/modules/simple/application/ContenedorSimpleMixin'
 import { AxiosHttpRepository } from 'shared/http/infraestructure/AxiosHttpRepository'
 import { apiConfig, endpoints } from 'config/api'
-import { imprimirArchivo } from 'shared/utils'
+import { filtarVisualizacionEmpleadosSaldos, imprimirArchivo } from 'shared/utils'
 import { ReporteSaldoActual } from '../domain/ReporteSaldoActual'
 import { ReporteSaldoActualController } from '../infrestucture/ReporteSaldoActualController'
 import { HttpResponseGet } from 'shared/http/domain/HttpResponse'
@@ -27,8 +27,8 @@ export default defineComponent({
      *********/
     useNotificacionStore().setQuasar(useQuasar())
     useCargandoStore().setQuasar(useQuasar())
-    const fondosStore = useFondoRotativoStore()
     const store = useAuthenticationStore()
+    const empleado_actual = store.user
     /***********
      * Mixin
      ************/
@@ -45,7 +45,7 @@ export default defineComponent({
     } = mixin.useReferencias()
     const { setValidador, obtenerListados, cargarVista } =
       mixin.useComportamiento()
-      const router = useRouter()
+    const router = useRouter()
 
     /*************
      * Validaciones
@@ -75,10 +75,15 @@ export default defineComponent({
       await obtenerListados({
         usuarios: {
           controller: new EmpleadoController(),
-          params: { campos: 'id,nombres,apellidos', estado: 1,es_reporte__saldo_actual:true },
+          params: {
+            campos: 'id,nombres,apellidos',
+            estado: 1,
+          },
         },
       })
-      usuarios.value = listadosAuxiliares.usuarios
+
+      usuarios.value = filtarVisualizacionEmpleadosSaldos(listadosAuxiliares.usuarios)
+      listadosAuxiliares.usuarios = usuarios.value
       usuariosInactivos.value =
         LocalStorage.getItem('usuariosInactivos') == null
           ? []
@@ -194,10 +199,9 @@ export default defineComponent({
       }).then((response: HttpResponseGet) => {
         const { data } = response
         if (data) {
-         router.push("acreditacion-semana");
+          router.push('acreditacion-semana')
         }
       })
-
     }
     return {
       mixin,
