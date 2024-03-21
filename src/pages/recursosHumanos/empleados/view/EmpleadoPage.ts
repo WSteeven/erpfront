@@ -1,24 +1,9 @@
 //Dependencias
 import { configuracionColumnasEmpleados } from '../domain/configuracionColumnasEmpleados'
-import {
-  maxLength,
-  minLength,
-  numeric,
-  required,
-  requiredIf,
-} from 'shared/i18n-validators'
+import { maxLength, minLength, numeric, required, requiredIf, } from 'shared/i18n-validators'
 import { useVuelidate } from '@vuelidate/core'
-import {
-  acciones,
-  accionesTabla,
-  convertir_fecha,
-  maskFecha,
-  niveles_academicos,
-  rolesSistema,
-  talla_letras,
-  tipos_sangre,
-} from 'config/utils'
-import { defineComponent, ref, watchEffect, computed, reactive, onMounted } from 'vue'
+import { acciones, accionesTabla, convertir_fecha, maskFecha, niveles_academicos, rolesSistema, talla_letras, tipos_sangre, } from 'config/utils'
+import { defineComponent, ref, watchEffect, computed, reactive } from 'vue'
 
 // Componentes
 import TabLayout from 'shared/contenedor/modules/simple/view/TabLayout.vue'
@@ -62,14 +47,7 @@ import { useFiltrosListadosSelects } from 'shared/filtrosListadosGenerales'
 import { ValidarChofer } from '../application/ValidarChofer'
 
 export default defineComponent({
-  components: {
-    TabLayout,
-    SelectorImagen,
-    ModalesEntidad,
-    EssentialTable,
-    GestorArchivos,
-    InformacionLicencia,
-  },
+  components: { TabLayout, SelectorImagen, ModalesEntidad, EssentialTable, GestorArchivos, InformacionLicencia, },
   setup() {
     /*********
      * Stores
@@ -82,19 +60,12 @@ export default defineComponent({
      * Mixin
      ************/
     const mixin = new ContenedorSimpleMixin(Empleado, new EmpleadoController(), new ArchivoController())
-    const {
-      entidad: empleado,
-      disabled,
-      accion,
-      listadosAuxiliares,
-    } = mixin.useReferencias()
-    const { setValidador, cargarVista, obtenerListados } =
-      mixin.useComportamiento()
-    const { onConsultado, onGuardado, onReestablecer } = mixin.useHooks()
+    const { entidad: empleado, disabled, accion, listadosAuxiliares, } = mixin.useReferencias()
+    const { setValidador, cargarVista, obtenerListados } = mixin.useComportamiento()
+    const { onBeforeGuardar, onConsultado, onGuardado, onReestablecer } = mixin.useHooks()
+    const mixinFamiliares = new ContenedorSimpleMixin(Familiares, new FamiliaresController())
+    const { eliminar } = mixinFamiliares.useComportamiento()
 
-    //   console.log(refArchivo.value)
-    //   return refArchivo.value.quiero_subir_archivos==true
-    // })
     const conductor = reactive(new Conductor())
     /********************************
      * LISTADOS Y FILTROS
@@ -116,11 +87,6 @@ export default defineComponent({
     const authenticationStore = useAuthenticationStore()
     const nombre_usuario = ref()
     const email_usuario = ref()
-    const mixinFamiliares = new ContenedorSimpleMixin(
-      Familiares,
-      new FamiliaresController()
-    )
-    const { eliminar } = mixinFamiliares.useComportamiento()
 
     // const mostrarBotonSubirArchivos = ref(false) //computed(()=>{
     const mostrarComponenteInformacionLicencia = ref(false)
@@ -158,7 +124,7 @@ export default defineComponent({
           params: { campos: 'id,name' },
         },
       })
-    }).then(()=>{
+    }).then(() => {
       listadosAuxiliares.cantones = JSON.parse(LocalStorage.getItem('cantones')!.toString())
       areas.value = listadosAuxiliares.areas
       bancos.value = listadosAuxiliares.bancos
@@ -193,7 +159,7 @@ export default defineComponent({
         minlength: minLength(10),
         maxlength: maxLength(10),
       },
-      direccion: { required },
+      direccion: { required, },
       tipo_sangre: { required },
       estado_civil: { required },
       area: { required },
@@ -208,11 +174,7 @@ export default defineComponent({
       apellidos: { required },
       jefe: { required },
       email: { required },
-      coordenadas: {
-        required: requiredIf(() => {
-          return accion.value === 'EDITAR'
-        }),
-      },
+      coordenadas: { required: requiredIf(() => accion.value === acciones.editar) },
       correo_personal: { required },
       usuario: { required },
       fecha_nacimiento: { required },
@@ -244,7 +206,14 @@ export default defineComponent({
     async function guardado(data) {
       empleado.familiares!.push(data.model)
     }
-    onReestablecer(()=>{
+    onBeforeGuardar(() => {
+      if (empleado.roles.includes(rolesSistema.chofer))
+        empleado.conductor = conductor
+      else
+        empleado.conductor = []
+
+    })
+    onReestablecer(() => {
       refArchivo.value.limpiarListado()
       verificarRolesSeleccionados()
     })
@@ -253,8 +222,12 @@ export default defineComponent({
       empleado.tiene_grupo = !!empleado.grupo
       nombre_usuario.value = empleado.usuario
       email_usuario.value = empleado.email
-      
-      
+
+      if (empleado.roles.includes(rolesSistema.chofer)) {
+        mostrarComponenteInformacionLicencia.value = true
+        conductor.hydrate(empleado.conductor)
+      } else mostrarComponenteInformacionLicencia.value = false
+
       // listar archivos
       setTimeout(() => {
         refArchivo.value.listarArchivosAlmacenados(empleado.id)
@@ -456,7 +429,10 @@ export default defineComponent({
     function verificarRolesSeleccionados() {
       if (empleado.roles.includes(rolesSistema.chofer)) {
         mostrarComponenteInformacionLicencia.value = true
-      } else mostrarComponenteInformacionLicencia.value = false
+      } else {
+        mostrarComponenteInformacionLicencia.value = false
+        conductor.hydrate(new Conductor())
+      }
     }
     return {
       mixin, mixinFamiliares,

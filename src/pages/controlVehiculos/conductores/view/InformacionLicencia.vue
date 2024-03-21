@@ -178,7 +178,6 @@
           >
         </q-btn>
       </div>
-      {{ v$.$errors }}
       <!-- Tabla de multas -->
       <div class="col-12 col-md-12" v-if="accion == acciones.editar">
         <essential-table
@@ -186,8 +185,8 @@
           titulo="Multas del Conductor"
           :configuracionColumnas="
             accion == acciones.editar
-              ? [...columnasMultasConductor, accionesTabla]
-              : columnasMultasConductor
+              ? [...configuracionColumnasMultasConductores, accionesTabla] as any
+              : configuracionColumnasMultasConductores as any
           "
           :datos="conductor.multas"
           :accion1Header="abrirModalMultaConductor"
@@ -263,7 +262,6 @@ const { setValidador } = props.mixin.useComportamiento()
 const { onReestablecer, onConsultado, onBeforeModificar } =
   props.mixin.useHooks()
 const { confirmar, prompt } = useNotificaciones()
-const columnasMultasConductor = configuracionColumnasMultasConductores
 const modales = new ComportamientoModalesConductores()
 const conductorStore = useConductorStore()
 
@@ -273,20 +271,7 @@ const dataMulta = {
   fecha_pago: null,
   comentario: null,
 }
-conductor.empleado = props.identificacion
 
-/***********************
- * HOOKS
- **********************/
-// onConsultado(() => {
-//   console.log('onConsultado en InfomracionLicencia')
-// })
-// onBeforeModificar(() => {
-//   console.log('onBeforeModificar en InfomracionLicencia')
-// })
-// onReestablecer(() => {
-//   console.log('onReestablecer en InfomracionLicencia')
-// })
 /***********************
  * Reglas de validacion
  **********************/
@@ -323,7 +308,6 @@ function calcularFechaFinal() {
   )
 }
 function consultarMultasANT() {
-  // window.open('https://consultaweb.ant.gob.ec/PortalWEB/paginas/clientes/clp_criterio_consulta.jsp', '_blank')
   props.identificacion
     ? window.open(
         `https://consultaweb.ant.gob.ec/PortalWEB/paginas/clientes/clp_grid_citaciones.jsp?ps_tipo_identificacion=CED&ps_identificacion=${props.identificacion}&ps_placa=`,

@@ -831,7 +831,6 @@
                 :disable="disabled"
               />
             </div>
-            <!-- {{ roles }} -->
             <!-- Area -->
             <div class="col-12 col-md-3 col-sm-3">
               <label class="q-mb-sm block">Area</label>
@@ -951,7 +950,6 @@
                 </template>
               </q-select>
             </div>
-            <!-- {{ empleado }} -->
             <!-- Roles -->
             <div class="col-12 col-md-3 col-sm-3">
               <label class="q-mb-sm block">Roles</label>
@@ -1435,7 +1433,6 @@
           </gestor-archivos>
         </div>
 
-        {{ v$.$errors }}
         <!-- {{ conductor }} -->
         <div class="col-12 col-md-12" v-if="mostrarComponenteInformacionLicencia">
           <informacion-licencia
