@@ -74,12 +74,36 @@ export function useBotonesSolicitudExamen(tabEstadoExamen: Ref, modales: Comport
     }
   }
 
-  const btnNuevoDiagnostico: CustomActionTable<DetalleExamen> = {
+  /* const btnNuevoDiagnostico: CustomActionTable<DetalleExamen> = {
     titulo: 'Nuevo diagnostico',
     icono: 'bi-plus',
     color: 'positive',
     visible: () => tabEstadoExamen.value === estadosSolicitudesExamenes.DIAGNOSTICO_REALIZADO.value,
     accion: async () => {
+      modales.abrirModalEntidad('DiagnosticoRecetaPage')
+    }
+  } */
+
+  const btnResultados: CustomActionTable = {
+    titulo: 'Resultados de los exámenes',
+    icono: 'bi-table',
+    color: 'positive',
+    visible: () => tabEstadoExamen.value === estadosSolicitudesExamenes.APROBADO_POR_COMPRAS.value,
+    accion: () => {
+      // medicoStore.examenSolicitado = entidad
+      // console.log(entidad)
+      modales.abrirModalEntidad('ResultadosExamenPage')
+    }
+  }
+
+  const btnCitaMedica: CustomActionTable = {
+    titulo: 'Diagnóstico y receta',
+    icono: 'bi-capsule-pill',
+    color: 'blue-grey',
+    visible: () => tabEstadoExamen.value === estadosSolicitudesExamenes.APROBADO_POR_COMPRAS.value,
+    accion: () => {
+      medicoStore.idCita = null
+      // medicoStore.empleado = entidad.paciente_id
       modales.abrirModalEntidad('DiagnosticoRecetaPage')
     }
   }
@@ -105,18 +129,6 @@ export function useBotonesSolicitudExamen(tabEstadoExamen: Ref, modales: Comport
       // console.log(solicitudExamen)
       medicoStore.solicitudExamen = solicitudExamen
       modales.abrirModalEntidad('SolicitudExamenSolicitarPage')
-    }
-  }
-
-  const btnResultados: CustomActionTable = {
-    titulo: 'Resultados',
-    icono: 'bi-list',
-    color: 'primary',
-    visible: ({ entidad }) => tabEstadoExamen.value === estadosSolicitudesExamenes.SOLICITADO.value,
-    accion: ({ entidad }) => {
-      medicoStore.examenSolicitado = entidad
-      console.log(entidad)
-      modales.abrirModalEntidad('ResultadosExamenPage')
     }
   }
 
@@ -173,11 +185,12 @@ export function useBotonesSolicitudExamen(tabEstadoExamen: Ref, modales: Comport
     btnSeleccionarVariosExamenes,
     btnSolicitarExamenesSeleccionados,
     btnCancelarSeleccionarVariosExamenes,
-    btnNuevoDiagnostico,
+    // btnNuevoDiagnostico,
     // Body
     btnSolicitarExamenIndividual,
     btnResultados,
     btnConsultarEstadoSolicitudExamen,
+    btnCitaMedica,
     // Other functions
     seleccionarExamen,
     limpiarExamenesSolicitados,

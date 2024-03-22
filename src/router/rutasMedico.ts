@@ -39,7 +39,7 @@ const rutasMedico: RouteRecordRaw[] = [
   },
   {
     path: '/cie',
-    name: 'cie',
+    name: 'cies',
     component: () => import('medico/cie/view/CiePage.vue'),
     meta: { requiresAuth: true },
   },

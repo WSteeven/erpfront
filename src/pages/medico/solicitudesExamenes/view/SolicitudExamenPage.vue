@@ -7,7 +7,9 @@
     :filtrar="filtrarSolicitudes"
     :tabDefecto="tabSolicitud"
     :forzarListar="true"
+    :permitir-consultar="true"
     :permitir-editar="true"
+    :mostrar-button-submits="!!empleado.id"
   >
     <template #formulario>
       <div class="q-pa-md">

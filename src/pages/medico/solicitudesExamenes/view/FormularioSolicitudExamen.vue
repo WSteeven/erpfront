@@ -1,13 +1,16 @@
 <template>
   <div>
     <div class="q-mb-md">
-      <detalle-paciente
+      <transition name="scale" mode="out-in">
+
+        <detalle-paciente
         v-if="empleado.id"
         :empleado="empleado"
-      ></detalle-paciente>
+        ></detalle-paciente>
+      </transition>
     </div>
 
-    <div class="bg-desenfoque rounded q-pt-md q-mb-md">
+    <div v-if="empleado.id" class="bg-desenfoque rounded q-pt-md q-mb-md">
       <div class="col-12 text-primary text-bold q-px-md q-mb-md">
         <q-icon name="bi-list"></q-icon>
         Listado de exámenes solicitados
@@ -231,7 +234,7 @@
       </div>
     </div>
 
-    <div class="bg-desenfoque rounded q-pt-md">
+    <div v-if="empleado.id" class="bg-desenfoque rounded q-pt-md">
       <div class="col-12 text-primary text-bold q-px-md q-mb-md">
         <q-icon name="bi-key"></q-icon>
         Autorización

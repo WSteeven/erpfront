@@ -9,6 +9,7 @@ export class ActionHooks<T> extends Hooks<T> {
   onBeforeConsultar: () => void
   onConsultado: () => void
   onReestablecer: () => void
+  onListado: () => void
 
   constructor() {
     super()
@@ -19,5 +20,6 @@ export class ActionHooks<T> extends Hooks<T> {
     this.onBeforeConsultar = () => { }
     this.onConsultado = () => { }
     this.onReestablecer = () => { }
+    this.onListado = () => { }
   }
 }

@@ -88,14 +88,14 @@
                   indicator-color="transparent"
                   class="bg-primary text-white q-px-xs alto-tabla"
                   active-bg-color="white"
-                  active-class="text-black bg-white text-bold"
+                  active-class="text-black bg-desenfoque border-grey text-bold"
                   :style="'height:' + altoTabla"
                 >
                   <q-tab
                     v-for="registro in registros"
                     :key="registro.id"
                     :name="registro.id"
-                    class="rounded q-mb-xs"
+                    class="q-mb-xs"
                     :class="{ 'bg-blue': tabsRegistro !== registro.id }"
                     no-caps
                     @click="seleccionarRegistro(registro.id)"
@@ -199,17 +199,6 @@
                       "
                       @click="filtrarEstadoExamen(tabEstadoExamen)"
                     />
-                    <q-tab
-                      :name="estadosSolicitudesExamenes.RESULTADOS.value"
-                      :label="estadosSolicitudesExamenes.RESULTADOS.label"
-                      :class="{
-                        'tab-inactive':
-                          tabs !== estadosSolicitudesExamenes.RESULTADOS.value,
-                      }"
-                      no-caps
-                      :icon="estadosSolicitudesExamenes.RESULTADOS.icono"
-                      @click="filtrarEstadoExamen(tabEstadoExamen)"
-                    />
                   </q-tabs>
 
                   <q-tab-panels
@@ -241,7 +230,6 @@
                         :accion2Header="btnCancelarSeleccionarVariosExamenes"
                         :accion3Header="btnSolicitarExamenesSeleccionados"
                         :accion1="btnSolicitarExamenIndividual"
-                        :accion2="btnResultados"
                         :tipo-seleccion="tipoSeleccion"
                         @selected="seleccionarExamen"
                         :alto-fijo="false"
@@ -284,6 +272,8 @@
                         :permitirEditar="false"
                         :permitirEliminar="false"
                         :accion1="btnConsultarEstadoSolicitudExamen"
+                        :accion1Header="btnResultados"
+                        :accion2Header="btnCitaMedica"
                         :alto-fijo="false"
                       ></essential-table>
                     </q-tab-panel>

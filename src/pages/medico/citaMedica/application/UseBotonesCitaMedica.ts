@@ -70,8 +70,8 @@ export function useBotonesCitaMedica(mixin: ContenedorSimpleMixin<CitaMedica>, t
 
   const btnDiagnosticoReceta: CustomActionTable<CitaMedica> = {
     titulo: 'Consulta médica',
-    icono: 'bi-clipboard2-pulse-fill',
-    color: 'positive',
+    icono: 'bi-capsule-pill',
+    color: 'blue-grey',
     visible: () => tabEstado.value === estadosCitaMedica.AGENDADO && store.can('puede.crear.diagnosticos_recetas') && store.can('puede.editar.diagnosticos_recetas'),
     accion: ({ entidad }) => {
       console.log(entidad)
@@ -89,7 +89,6 @@ export function useBotonesCitaMedica(mixin: ContenedorSimpleMixin<CitaMedica>, t
     accion: async ({ entidad }) => {
       await consultar({ id: entidad.id })
       accion.value = acciones.editar
-      citaMedica.estado_cita_medica = estadosCitaMedica.AGENDADO
     }
   }
 

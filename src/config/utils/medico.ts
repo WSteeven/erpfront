@@ -8,7 +8,7 @@ export const tiposProcesosExamenes = {
 }
 
 export const tiposEnfermedades = {
-  PREEXISTENTES: 'Enfermedades preexistentes',
+  HISTORIAL_CLINICO: 'Historial clínico',
   COMUNES: 'Enfermedades comunes',
 }
 
@@ -93,3 +93,7 @@ export const tabOptionsEstadosCitaMedica: TabOption[] = [
   { label: 'Rechazados', value: estadosCitaMedica.RECHAZADO },
 ]
 
+export const selectAgendarCitaMedica = [
+  { label: 'Pendiente', value: estadosCitaMedica.PENDIENTE },
+  { label: 'Agendado', value: estadosCitaMedica.AGENDADO },
+]

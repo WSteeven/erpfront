@@ -52,8 +52,8 @@ export default defineComponent({
     const cargando = new StatusEssentialLoading()
     const laboratorioClinicoController = new LaboratorioClinicoController()
     const examenes: Ref<Examen[]> = ref([])
-    let idExamenesSolicitados: number[]
     const mostrarCambiarCanton = ref(false)
+    // let idExamenesSolicitados: number[]
 
     /********
      * Mixin
@@ -64,6 +64,7 @@ export default defineComponent({
 
     cargarVista(async () => {
       const examenes = LocalStorage.getItem('examenes') ? JSON.parse(LocalStorage.getItem('examenes')!.toString()) : []
+      // const examenes = JSON.parse(LocalStorage.getItem('examenes')!.toString())
 
       await obtenerListados({
         laboratoriosClinicos: {
@@ -91,8 +92,8 @@ export default defineComponent({
     const { cantones, filtrarCantones } = useFiltrosListadosSelects(listadosAuxiliares)
 
     const consultarLaboratoriosClinicos = async (canton: number) => {
+      cargando.activar()
       try {
-        cargando.activar()
         limpiarLaboratorios()
         const { result } = await laboratorioClinicoController.listar({ canton_id: canton, activo: 1, campos: 'id,nombre' })
         listadosAuxiliares.laboratoriosClinicos = result

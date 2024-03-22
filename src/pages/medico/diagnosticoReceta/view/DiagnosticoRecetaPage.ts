@@ -4,6 +4,7 @@ import { useAuthenticationStore } from 'stores/authentication'
 import { Ref, defineComponent, reactive, ref } from 'vue'
 import { tiposEnfermedades } from 'config/utils/medico'
 import { required } from 'shared/i18n-validators'
+import { useMedicoStore } from 'stores/medico'
 import useVuelidate from '@vuelidate/core'
 
 // Componentes
@@ -14,21 +15,26 @@ import ButtonSubmits from 'components/buttonSubmits/buttonSubmits.vue'
 // Logica y controladores
 import { ContenedorSimpleMixin } from 'shared/contenedor/modules/simple/application/ContenedorSimpleMixin'
 import { EmpleadoController } from 'pages/recursosHumanos/empleados/infraestructure/EmpleadoController'
+import { ConsultaMedicaController } from '../infraestructure/ConsultaMedicaController'
 import { CieController } from 'pages/medico/cie/infraestructure/CieController'
-import { ConsultaController } from '../infraestructure/ConsultaController'
 import { Empleado } from 'pages/recursosHumanos/empleados/domain/Empleado'
+import { ConsultaMedica } from '../domain/ConsultaMedica'
 import { Cie } from 'pages/medico/cie/domain/Cie'
-import { useMedicoStore } from 'stores/medico'
-import { Consulta } from '../domain/Consulta'
+import { DiagnosticoCitaMedica } from '../domain/DiagnosticoCitaMedica'
+import { DiagnosticoCitaMedicaController } from '../infraestructure/DiagnosticoCitaMedicaController'
+import { acciones } from 'config/utils'
+import { useFiltrosListadosSelects } from 'shared/filtrosListadosGenerales'
 
 
 export default defineComponent({
+  name: 'diagnosticos_recetas',
   components: {
     SimpleLayout,
     DetallePaciente,
     ButtonSubmits,
   },
-  setup() {
+  emits: ['cerrar-modal'],
+  setup(props, { emit }) {
     /*********
      * Stores
      *********/
@@ -39,43 +45,40 @@ export default defineComponent({
      * Controladores
      ****************/
     const empleadoController = new EmpleadoController()
-    const cieController = new CieController()
+    const consultaController = new ConsultaMedicaController()
 
     /***********
      * Variable
      ***********/
     const empleado = reactive(new Empleado())
-    const enfermedades: Ref<Cie[]> = ref([])
     const cargando = new StatusEssentialLoading()
-    const tabsEnfermedades = ref(tiposEnfermedades.PREEXISTENTES)
+    const tabsEnfermedades = ref(tiposEnfermedades.HISTORIAL_CLINICO)
+    const enfermedadesSeleccionadas: Ref<DiagnosticoCitaMedica[]> = ref([])
 
     /********
     * Mixin
     *********/
-    const mixin = new ContenedorSimpleMixin(Consulta, new ConsultaController())
-    const { entidad: consulta } = mixin.useReferencias()
-    const { setValidador } = mixin.useComportamiento()
+    const mixin = new ContenedorSimpleMixin(ConsultaMedica, consultaController)
+    const { entidad: consulta, accion, listadosAuxiliares, listado, disabled } = mixin.useReferencias()
+    const { setValidador, cargarVista, obtenerListados, listar } = mixin.useComportamiento()
+    const { onBeforeGuardar, onReestablecer, onListado } = mixin.useHooks()
+
+    cargarVista(async () => {
+      await obtenerListados({
+        enfermedades: new CieController(),
+      })
+    })
 
     /************
      * Funciones
      ************/
+    const { enfermedades, filtrarEnfermedades } = useFiltrosListadosSelects(listadosAuxiliares)
+
     const consultarEmpleado = async (id: number) => {
       cargando.activar()
       try {
         const { result } = await empleadoController.consultar(id)
         empleado.hydrate(result)
-      } catch (e) {
-        console.log(e)
-      } finally {
-        cargando.desactivar()
-      }
-    }
-
-    const consultarEnfermedades = async () => {
-      cargando.activar()
-      try {
-        const { result } = await cieController.listar()
-        enfermedades.value = result
       } catch (e) {
         console.log(e)
       } finally {
@@ -93,26 +96,58 @@ export default defineComponent({
     const v$ = useVuelidate(reglas, consulta)
     setValidador(v$.value)
 
+    /*********
+     * Hooks
+     *********/
+    onBeforeGuardar(() => {
+      consulta.diagnosticos = enfermedadesSeleccionadas.value.map((enfermedad: any) => {
+        const diagnostico = new DiagnosticoCitaMedica()
+        diagnostico.cie = enfermedad.id
+        diagnostico.recomendacion = enfermedad.recomendacion
+        return diagnostico
+      })
+
+      // console.log(consulta)
+    })
+
+    onReestablecer(() => {
+      enfermedadesSeleccionadas.value = []
+      emit('cerrar-modal')
+    })
+
+    const consultarConsulta = async () => {
+      const filtro = { registro_empleado_examen_id: consulta.registro_empleado_examen, cita_medica_id: consulta.cita_medica }
+      const { result } = await consultaController.listar(filtro)
+      consulta.hydrate(result[0])
+      enfermedadesSeleccionadas.value = consulta.diagnosticos
+      accion.value = consulta.id ? acciones.consultar : acciones.nuevo
+    }
+
     /*******
     * Init
     *******/
     if (medicoStore.empleado) {
-      // empleado.hydrate(medicoStore.empleado)
-      consultarEmpleado(medicoStore.empleado)
-      consulta.empleado = medicoStore.empleado
+      empleado.hydrate(medicoStore.empleado)
     } else {
       consultarEmpleado(authenticationStore.user.id)
-      consulta.empleado = authenticationStore.user.id
     }
-    consulta.cita = medicoStore.idCita
-    consultarEnfermedades()
+
+    consulta.cita_medica = medicoStore.idCita
+    consulta.registro_empleado_examen = medicoStore.idRegistroEmpleadoExamen
+
+    consultarConsulta()
+    listar({ empleado_id: medicoStore.empleado?.id })
 
     return {
       v$,
       mixin,
+      disabled,
+      listado,
       consulta,
       empleado,
       enfermedades,
+      filtrarEnfermedades,
+      enfermedadesSeleccionadas,
       tiposEnfermedades,
       tabsEnfermedades,
     }

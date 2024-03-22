@@ -30,6 +30,7 @@ import { useExamenes } from '../application/UseExamenes'
 import { EsquemaVacuna } from '../domain/EsquemaVacuna'
 import { useMedicoStore } from 'stores/medico'
 import { accionesTabla } from 'config/utils'
+import { SolicitudExamenPusherEvent } from 'src/pusherEvents/medico/SolicitudExamenPusherEvent'
 
 export default defineComponent({
   components: { TabLayoutFilterTabs2, SelectorImagen, ModalesEntidad, EssentialTable, DetallePaciente },
@@ -56,6 +57,15 @@ export default defineComponent({
     const tabs = ref(tiposProcesosExamenes.INGRESO)
     const tabEstadoExamen = ref(estadosSolicitudesExamenes.PENDIENTE_SOLICITAR.value)
     const tabsRegistro = ref()
+    const altoTabla = computed(() => {
+      switch (tabEstadoExamen.value) {
+        case estadosSolicitudesExamenes.PENDIENTE_SOLICITAR.value:
+          return (examenes.value.length * 48 + 420) + 'px'
+        case estadosSolicitudesExamenes.SOLICITADO.value || estadosSolicitudesExamenes.APROBADO_POR_COMPRAS.value:
+          return (solicitudesExamenes.value.length * 48 + 420) + 'px'
+      }
+    })
+
     const esquemaVacunaciones: Ref<any[]> = ref([
       {
         'tipo_vacuna': 'Covid',
@@ -91,14 +101,13 @@ export default defineComponent({
     const {
       examenes,
       solicitudesExamenes,
-      // solicitudesExamenesAprobadas,
-      // listadoGeneral,
       registros,
       consultarRegistrosEmpleadoExamen,
       consultarExamenesSinSolicitar,
       consultarSolicitudesExamenes,
       guardarRegistro
     } = useExamenes()
+
     const {
       // Referencias
       refTablaExamenes,
@@ -108,11 +117,12 @@ export default defineComponent({
       btnSeleccionarVariosExamenes,
       btnSolicitarExamenesSeleccionados,
       btnCancelarSeleccionarVariosExamenes,
-      btnNuevoDiagnostico,
+      // btnNuevoDiagnostico,
       // Body
       btnSolicitarExamenIndividual,
       btnResultados,
       btnConsultarEstadoSolicitudExamen,
+      btnCitaMedica,
       // Other functions
       seleccionarExamen,
       limpiarExamenesSolicitados,
@@ -122,8 +132,7 @@ export default defineComponent({
       titulo: 'Gestionar',
       icono: 'bi-plus',
       color: 'positive',
-      // visible: () => tabEstadoExamen.value === '0' && !seleccionVariosExamen.value,
-      accion: ({ entidad }) => {
+      accion: () => {
         modales.abrirModalEntidad('EsquemaVacunacionPage')
       }
     }
@@ -197,55 +206,23 @@ export default defineComponent({
       }
     }
 
-    /************
-     * Observers
-     ************/
-    // watch(tabEstadoExamen, (tab) => filtrarEstadoExamen(tab))
-
-    /*******
-     * Init
-     *******/
+    /*********
+     * Hooks
+     *********/
     onConsultado(async () => {
       medicoStore.empleado = empleado
       await consultarRegistrosEmpleadoExamen({ empleado_id: empleado.id })
-      // await consultarExamenesSinSolicitar({ empleado_id: empleado.id, registro_empleado_examen_id: tabsRegistro.value })
       const idRegistro = registros.value[0].id
       if (idRegistro) seleccionarRegistro(idRegistro)
     })
 
-    /*const btnSolicitarExamenesSeleccionados2: CustomActionTable = {
-      titulo: '22222',
-      icono: 'bi-plus',
-      color: 'positive',
-      visible: () => seleccionVariosExamen.value,
-      accion: async function () {
-        // seleccionVariosExamen.value = false
-        console.log(refTablaExamenes.value)
-        refTablaExamenes.value.seleccionar()
-        // seleccionarExamen()
-      }
-    }*/
-
-    // const refTablaExamenes2 = ref()
-    /*function selecc() {
-      const lista = refTablaExamenes2.value.selected
-      console.log(lista)
-    }*/
-
-    const colum = ref(false)
-    const columnas: any = ref(configuracionColumnasExamenes)
-
-    const altoTabla = computed(() => {
-      switch (tabEstadoExamen.value) {
-        case estadosSolicitudesExamenes.PENDIENTE_SOLICITAR.value:
-          return (examenes.value.length * 48 + 420) + 'px'
-        case estadosSolicitudesExamenes.SOLICITADO.value || estadosSolicitudesExamenes.APROBADO_POR_COMPRAS.value:
-          return (solicitudesExamenes.value.length * 48 + 420) + 'px'
-      }
-    }) // examenes
+    /*******
+     * Init
+     *******/
+    const solicitudExamenPusherEvent = new SolicitudExamenPusherEvent()
+    solicitudExamenPusherEvent.start()
 
     return {
-      // selecc,
       mixin,
       empleado,
       tabs,
@@ -282,21 +259,20 @@ export default defineComponent({
       // Referencias
       refTablaExamenes,
       seleccionVariosExamen,
-      // listadoGeneral,
       // Header
       btnSeleccionarVariosExamenes,
       btnSolicitarExamenesSeleccionados,
       btnCancelarSeleccionarVariosExamenes,
-      btnNuevoDiagnostico,
+      // btnNuevoDiagnostico,
       // Body
       btnSolicitarExamenIndividual,
       btnResultados,
       btnConsultarEstadoSolicitudExamen,
+      btnCitaMedica,
       // Other functions
       seleccionarExamen,
       // btnSolicitarExamenesSeleccionados2,
       btnEsquemaVacunacion,
-      columnas,
     }
   },
 })

@@ -83,7 +83,7 @@
         <q-card>
           <q-card-section>
             <div class="text-h6">Permisos</div>
-            <q-scroll-area style="height: 580px">
+            <q-scroll-area style="height: 100vh">
               <div class="q-py-md">
                 <q-item dense v-for="(permiso, index) in perfil.permisos" :key="index">
                   <q-item-section avatar>

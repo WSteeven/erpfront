@@ -1,7 +1,6 @@
 // Dependencias
 import { estadosCitaMedica, estadosSolicitudesExamenes, tabOptionsEstadosSolicitudExamen } from 'config/utils/medico'
 import { StatusEssentialLoading } from 'components/loading/application/StatusEssentialLoading'
-import { useAuthenticationStore } from 'stores/authentication'
 import { defineComponent, reactive, ref } from 'vue'
 import { required } from 'shared/i18n-validators'
 import useVuelidate from '@vuelidate/core'
@@ -36,7 +35,6 @@ export default defineComponent({
     /*********
      * Stores
      *********/
-    const authenticationStore = useAuthenticationStore()
     const medicoStore = useMedicoStore()
 
     /*********
@@ -45,7 +43,7 @@ export default defineComponent({
     const mixin = new ContenedorSimpleMixin(SolicitudExamen, new SolicitudExamenController())
     const { entidad: solicitudExamen, accion } = mixin.useReferencias()
     const { setValidador, listar } = mixin.useComportamiento()
-    const { onConsultado, onBeforeModificar, onReestablecer } = mixin.useHooks()
+    const { onConsultado } = mixin.useHooks()
 
     /****************
      * Controladores
@@ -67,9 +65,17 @@ export default defineComponent({
     const { btnAprobar } = useBotoncesTablaSolicitudExamen(tabSolicitud)
 
     const filtrarSolicitudes = (estadoSolicitud: string) => {
-      tabSolicitud.value = estadoSolicitud
-      const params = { estado_solicitud_examen: tabSolicitud.value, registro_empleado_examen_id: medicoStore.idRegistroEmpleadoExamen }
-      listar(params)
+      cargando.activar()
+
+      try {
+        tabSolicitud.value = estadoSolicitud
+        const params = { estado_solicitud_examen: tabSolicitud.value, registro_empleado_examen_id: medicoStore.idRegistroEmpleadoExamen }
+        listar(params)
+      } catch (e) {
+        console.log(e)
+      } finally {
+        cargando.desactivar()
+      }
     }
 
     const consultarEmpleado = async (id: number) => {
@@ -99,8 +105,9 @@ export default defineComponent({
      * Hooks
      ********/
     onConsultado(async () => {
-      // empleado.hydrate(new Empleado())
-      if (solicitudExamen.empleado_id) await consultarEmpleado(solicitudExamen.empleado_id)
+
+      if (solicitudExamen.empleado_id) consultarEmpleado(solicitudExamen.empleado_id)
+
       solicitudExamen.examenes_solicitados = solicitudExamen.examenes_solicitados.map((examenSolicitado: ExamenSolicitado) => {
         const examenSolicitadoAux = new ExamenSolicitado()
         examenSolicitadoAux.hydrate(examenSolicitado)
@@ -109,22 +116,6 @@ export default defineComponent({
         return examenSolicitadoAux
       })
     })
-
-    // onBeforeModificar(() => {
-    // citaMedica.fecha_hora_cita = formatearFechaHora(fecha_cita_medica.value, hora_cita_medica.value)
-    // citaMedica.paciente = citaMedica.paciente_id
-    // })
-
-    onReestablecer(() => {
-      // hora_cita_medica.value = null
-      // fecha_cita_medica.value = null
-      // citaMedica.estado_cita_medica = estadosCitaMedica.PENDIENTE
-    })
-
-    /*******
-     * Init
-     *******/
-    consultarEmpleado(authenticationStore.user.id)
 
     return {
       v$,

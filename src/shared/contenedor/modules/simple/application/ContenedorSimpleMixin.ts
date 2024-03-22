@@ -72,6 +72,8 @@ export class ContenedorSimpleMixin<T extends EntidadAuditable> extends Contenedo
         this.hooks.bindHook('onModificado', callback),
       onReestablecer: (callback: () => void) =>
         this.hooks.bindHook('onReestablecer', callback),
+      onListado: (callback: () => void) =>
+        this.hooks.bindHook('onListado', callback),
     }
   }
 
@@ -143,6 +145,8 @@ export class ContenedorSimpleMixin<T extends EntidadAuditable> extends Contenedo
     } catch (error) {
       this.notificaciones.notificarError('Error al obtener el listado.')
     }
+
+    this.hooks.onListado()
     this.statusEssentialLoading.desactivar()
     //})
   }

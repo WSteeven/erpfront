@@ -15,14 +15,18 @@
     :accion4="btnDiagnosticoReceta"
   >
     <template #formulario>
-      <div class="row q-col-gutter-sm q-pa-md q-mb-md">
-        <div class="col-12 q-mb-md">
+      <div class="row q-col-gutter-sm q-pa-md">
+        <div class="col-12">
           <detalle-paciente
             v-if="empleado.id"
             :empleado="empleado"
           ></detalle-paciente>
         </div>
+      </div>
 
+      <div
+        class="row bg-desenfoque q-mx-md rounded-card q-col-gutter-sm q-pa-md q-mb-md"
+      >
         <!-- Fecha y hora de solicitud -->
         <div v-if="mostrarAgendado" class="col-12 col-md-6 col-mb-md">
           <label class="q-mb-sm block">Fecha y hora de solicitud</label>
@@ -35,8 +39,25 @@
         </div>
 
         <div class="col-12 col-md-6 col-mb-md">
-          <label class="q-mb-sm block">Estado</label>
-          <estado :propsTable="{ value: citaMedica.estado_cita_medica }" />
+          <label class="q-mb-sm block text-positive text-bold">Estado</label>
+          <q-select
+            v-model="citaMedica.estado_cita_medica"
+            :options="selectAgendarCitaMedica"
+            transition-show="scale"
+            transition-hide="scale"
+            :disable="accion === acciones.nuevo || disabled"
+            options-dense
+            dense
+            outlined
+            color="positive"
+            :option-label="(item) => item.label"
+            :option-value="(item) => item.value"
+            use-input
+            input-debounce="0"
+            emit-value
+            map-options
+          >
+          </q-select>
         </div>
 
         <div class="col-12 col-mb-md">
@@ -44,10 +65,7 @@
           <q-input
             v-model="citaMedica.sintomas"
             placeholder="Describa los sintomas que presenta..."
-            :disable="
-              !esPaciente &&
-              citaMedica.estado_cita_medica === estadosCitaMedica.AGENDADO
-            "
+            :disable="esPaciente || disabled"
             outlined
             dense
             autogrow
@@ -68,7 +86,7 @@
           <label class="q-mb-sm block">Fecha de la cita</label>
           <q-input
             v-model="fecha_cita_medica"
-            placeholder="Obligatorio"
+            :disable="disabled"
             outlined
             type="datetime"
             dense
@@ -105,6 +123,7 @@
           <q-input
             v-model="hora_cita_medica"
             type="time"
+            :disable="disabled"
             step="1"
             stack-label
             outlined
@@ -123,10 +142,8 @@
           <label class="q-mb-sm block">Observación</label>
           <q-input
             v-model="citaMedica.observacion"
-            placeholder="Coloque una observación opcional para que el paciente la considere al asistir..."
-            :disable="
-              citaMedica.estado_cita_medica !== estadosCitaMedica.AGENDADO
-            "
+            placeholder="Coloque una observación opcional para que el paciente la considere al momento de presentarse a la cita..."
+            :disable="disabled"
             outlined
             dense
             autogrow
@@ -137,7 +154,7 @@
       </div>
 
       <div
-        v-if="mostrarAgendado && esPaciente"
+        v-if="mostrarAgendado && esPaciente && accion !== acciones.editar"
         class="row q-col-gutter-sm q-px-md q-py-sm bg-light-green-2 border-positive-banner"
       >
         <div class="col-12 text-positive q-mb-md">
@@ -148,6 +165,7 @@
         <div class="col-12 col-md-6 q-mb-md">
           <label class="q-mb-sm block">Fecha y hora de cita</label>
           <b>{{ citaMedica.fecha_hora_cita }}</b>
+          <!-- <b>{{ fecha_cita_medica + ' ' + hora_cita_medica }}</b> -->
         </div>
 
         <div class="col-12 col-md-6 q-mb-md">

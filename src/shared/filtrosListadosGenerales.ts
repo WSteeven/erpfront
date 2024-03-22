@@ -41,6 +41,8 @@ export const useFiltrosListadosSelects = (listadosAuxiliares, entidad?: Ref<any>
 
   // Modulo medico
   const laboratoriosClinicos = ref(listadosAuxiliares.laboratoriosClinicos)
+  const enfermedades = ref(listadosAuxiliares.enfermedades)
+
   //////////////////////////////////////////
   //modulo ventas
   //////////////////////////////////////////
@@ -351,6 +353,7 @@ export const useFiltrosListadosSelects = (listadosAuxiliares, entidad?: Ref<any>
       categorias.value = listadosAuxiliares.categorias.filter((v: CategoriaOferta) => v.nombre!.toLowerCase().indexOf(needle) > -1)
     })
   }
+
   function ordenarCategorias() {
     categorias.value.sort((a: CategoriaOferta, b: CategoriaOferta) => ordernarListaString(a.nombre!, b.nombre!))
   }
@@ -358,6 +361,7 @@ export const useFiltrosListadosSelects = (listadosAuxiliares, entidad?: Ref<any>
   function filtrarMotivos(val, update) {
     return filtrarLista(val, update, motivos, 'nombre', listadosAuxiliares.motivos)
   }
+
   function filtrarSucursales(val, update) {
     return filtrarLista(val, update, sucursales, 'lugar', listadosAuxiliares.sucursales)
   }
@@ -365,23 +369,38 @@ export const useFiltrosListadosSelects = (listadosAuxiliares, entidad?: Ref<any>
   function filtrarProyectos(val, update) {
     return filtrarLista(val, update, proyectos, 'codigo_proyecto', listadosAuxiliares.proyectos)
   }
+
   function filtrarProyectosDestino(val, update) {
     return filtrarLista(val, update, proyectosDestino, 'codigo_proyecto', listadosAuxiliares.proyectosDestino)
   }
+
   function filtrarEtapas(val, update) {
     return filtrarLista(val, update, etapas, 'nombre', listadosAuxiliares.etapas)
   }
+
   function filtrarEtapasDestino(val, update) {
     return filtrarLista(val, update, etapasDestino, 'nombre', listadosAuxiliares.etapasDestino)
   }
+
   function filtrarTareas(val, update) {
     return filtrarLista(val, update, tareas, 'codigo_tarea', listadosAuxiliares.tareas)
   }
+
   function filtrarTareasDestino(val, update) {
     return filtrarLista(val, update, tareasDestino, 'codigo_tarea', listadosAuxiliares.tareasDestino)
   }
 
+  /****************
+   * Modulo medico
+   ****************/
+  function filtrarEnfermedades(val, update) {
+    return filtrarLista(val, update, enfermedades, 'nombre', listadosAuxiliares.enfermedades)
+  }
 
+  /***************************************
+   * Filtro global optimizado
+   * Actualmente filtra por un solo campo
+   ***************************************/
   function filtrarLista(val, update, lista, clave, defaultValue = []) {
     if (val === '') {
       update(() => lista.value = defaultValue)
@@ -393,9 +412,6 @@ export const useFiltrosListadosSelects = (listadosAuxiliares, entidad?: Ref<any>
       )
     })
   }
-
-
-
 
   return {
     paises, filtrarPaises,
@@ -424,5 +440,7 @@ export const useFiltrosListadosSelects = (listadosAuxiliares, entidad?: Ref<any>
     productos_claro, filtrarProductosClaro,
     vendedores_claro, filtrarVendedoresClaro,
     clientes_claro, filtrarClientesClaro,
+    // Modulo medico
+    enfermedades, filtrarEnfermedades,
   }
 }
