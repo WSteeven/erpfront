@@ -48,7 +48,7 @@ export default defineComponent({
             await obtenerListados({
                 vehiculos: {
                     controller: new VehiculoController(),
-                    params: { campos: 'id,placa,marca,modelo' }
+                    params: { campos: 'id,placa,modelo_id' }
                 }
             })
         })

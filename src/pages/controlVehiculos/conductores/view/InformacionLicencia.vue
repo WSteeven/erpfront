@@ -179,7 +179,10 @@
         </q-btn>
       </div>
       <!-- Tabla de multas -->
-      <div class="col-12 col-md-12" v-if="accion == acciones.editar">
+      <div
+        class="col-12 col-md-12"
+        v-if="accion == acciones.editar || accion == acciones.consultar"
+      >
         <essential-table
           ref="refMultas"
           titulo="Multas del Conductor"
