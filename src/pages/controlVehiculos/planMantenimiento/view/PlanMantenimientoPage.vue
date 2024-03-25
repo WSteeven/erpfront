@@ -50,13 +50,13 @@
             </q-select>
           </div>
           <!-- marca  -->
-          <div class="col-12 col-md-3 q-mb-md">
+          <div class="col-12 col-md-3 q-mb-md" v-if="vehiculo.marca">
             <label class="q-mb-sm block">Marca</label>
             <q-input v-model="vehiculo.marca" disable outlined dense />
           </div>
 
           <!-- modelo  -->
-          <div class="col-12 col-md-3 q-mb-md">
+          <div class="col-12 col-md-3 q-mb-md" v-if="vehiculo.modelo">
             <label class="q-mb-sm block">Modelo</label>
             <q-input v-model="vehiculo.modelo" disable outlined dense />
           </div>

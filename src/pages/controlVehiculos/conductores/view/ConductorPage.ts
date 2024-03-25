@@ -22,7 +22,7 @@ import useVuelidate from "@vuelidate/core";
 import { useFiltrosListadosSelects } from "shared/filtrosListadosGenerales";
 import { Empleado } from "pages/recursosHumanos/empleados/domain/Empleado";
 import { StatusEssentialLoading } from "components/loading/application/StatusEssentialLoading";
-import { LocalStorage, date } from "quasar";
+import { LocalStorage, } from "quasar";
 import { tabOptionsConductores, tiposLicencias } from "config/vehiculos.utils";
 import { acciones, accionesTabla, maskFecha } from "config/utils";
 import { CustomActionTable } from "components/tables/domain/CustomActionTable";
@@ -88,12 +88,15 @@ export default defineComponent({
         onConsultado(async () => {
             empleado.hydrate(conductor.info_empleado)
             await consultarMultasConductor()
+
+            conductorStore.conductor = conductor
         })
         onReestablecer(() => {
             console.log('reestablecer en conductorpage')
             empleado.hydrate(new Empleado())
             dataMulta.comentario = null
             dataMulta.fecha_pago = null
+            conductorStore.resetearConductor()
         })
         /*********************************
          * Funciones

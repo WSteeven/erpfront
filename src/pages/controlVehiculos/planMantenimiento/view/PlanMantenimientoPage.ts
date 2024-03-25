@@ -37,7 +37,7 @@ export default defineComponent({
         const mixin = new ContenedorSimpleMixin(PlanMantenimiento, new PlanMantenimientoController())
         const { entidad: plan, listado, accion, disabled, listadosAuxiliares } = mixin.useReferencias()
         const { setValidador, obtenerListados, cargarVista } = mixin.useComportamiento()
-        const { onConsultado } = mixin.useHooks()
+        const { onConsultado, onReestablecer } = mixin.useHooks()
         const { confirmar, prompt, notificarCorrecto, notificarError } = useNotificaciones()
 
         useNotificacionStore().setQuasar(useQuasar())
@@ -66,6 +66,9 @@ export default defineComponent({
             const vehiculoSeleccionado = vehiculos.value.filter((v) => v.id === plan.vehiculo)[0]
             console.log(vehiculoSeleccionado)
             vehiculo.hydrate(vehiculoSeleccionado)
+        })
+        onReestablecer(() => {
+            vehiculo.hydrate(new Vehiculo())
         })
 
         /********************************

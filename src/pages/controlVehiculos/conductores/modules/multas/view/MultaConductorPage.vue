@@ -22,7 +22,7 @@
                 :options="empleados"
                 transition-show="jump-up"
                 transition-hide="jump-down"
-                :disable="disabled"
+                :disable="disabled || soloLectura"
                 options-dense
                 dense
                 outlined
@@ -46,9 +46,7 @@
                 <template v-slot:option="scope">
                   <q-item v-bind="scope.itemProps">
                     <q-item-section>
-                      <q-item-label
-                        >{{ scope.opt.empleado }}</q-item-label
-                      >
+                      <q-item-label>{{ scope.opt.empleado }}</q-item-label>
                       <q-item-label caption
                         >{{ scope.opt.identificacion }}
                       </q-item-label>
@@ -238,6 +236,7 @@
                 </template> -->
               </q-input>
             </div>
+
             <!-- total-->
             <div class="col-12 col-md-3">
               <label class="q-mb-sm block">Total a Pagar</label>
@@ -255,6 +254,21 @@
                 </template>
               </q-input>
             </div>
+            
+            <!-- afectacion al empleado-->
+            <div class="col-12 col-md-3">
+              <label class="q-mb-sm block">¿Se descuenta valor al Empleado?</label>
+              <q-toggle
+                v-model="multa.descontable"
+                :label="multa.descontable ? 'SI' : 'NO'"
+                color="primary"
+                keep-color
+                icon="bi-check2-circle"
+                unchecked-icon="clear"
+                :disable="disabled"
+              />
+            </div>
+            
             <!-- estado -->
             <div class="col-12 col-md-3">
               <label class="q-mb-sm block">Estado</label>

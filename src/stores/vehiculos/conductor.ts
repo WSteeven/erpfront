@@ -1,13 +1,17 @@
 import { AxiosResponse } from "axios";
 import { StatusEssentialLoading } from "components/loading/application/StatusEssentialLoading";
 import { apiConfig, endpoints } from "config/api";
+import { Conductor } from "pages/controlVehiculos/conductores/domain/Conductor";
+import { Empleado } from "pages/recursosHumanos/empleados/domain/Empleado";
 import { defineStore } from "pinia";
 import { AxiosHttpRepository } from "shared/http/infraestructure/AxiosHttpRepository";
 import { useNotificaciones } from "shared/notificaciones";
-import { ref } from "vue";
+import { reactive, ref } from "vue";
 
 export const useConductorStore = defineStore('conductor', () => {
     //State
+    const conductor = reactive(new Conductor())
+    const idConductor = ref()
     const accionMulta = ref('')
     const tabs = ref('formulario')
     const mostrarListado = ref(true)
@@ -33,12 +37,19 @@ export const useConductorStore = defineStore('conductor', () => {
         return false
     }
 
+    function resetearConductor(){
+        conductor.hydrate(new Conductor())
+    }
+
     return {
+        conductor, idConductor, 
         accionMulta,
         tabs,
         mostrarListado,
         idMulta,
 
+        resetearConductor,
         pagarMulta,
+        
     }
 })

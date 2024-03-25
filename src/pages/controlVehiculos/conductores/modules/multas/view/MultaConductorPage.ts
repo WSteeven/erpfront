@@ -20,6 +20,7 @@ import { EmpleadoController } from "pages/recursosHumanos/empleados/infraestruct
 import { maskFecha } from "config/utils";
 import { VehiculoController } from "pages/controlVehiculos/vehiculos/infraestructure/VehiculoController";
 import { LocalStorage } from "quasar";
+import { useConductorStore } from "stores/vehiculos/conductor";
 
 
 export default defineComponent({
@@ -30,23 +31,38 @@ export default defineComponent({
         const { setValidador, cargarVista, obtenerListados } = mixin.useComportamiento()
         const { onConsultado, onReestablecer, onGuardado } = mixin.useHooks()
 
-        //variables
-        const empleado: Empleado = reactive(new Empleado())
+        //stores
         const store = useAuthenticationStore()
-        const statusLoading = new StatusEssentialLoading()
+        const cargando = new StatusEssentialLoading()
+        const conductorStore = useConductorStore()
+        //variables
         const mostrarListado = ref(true)
+        const soloLectura = ref(false)
+        // const empleado: Empleado = conductorStore.conductor.info_empleado != null ? conductorStore.conductor.info_empleado : reactive(new Empleado())
+        const empleado: Empleado = reactive(new Empleado())
 
         cargarVista(async () => {
-            obtenerListados({
+            if (conductorStore.conductor) {
+                empleado.hydrate(conductorStore.conductor.info_empleado)
+                multa.empleado = empleado.id
+                soloLectura.value = true
+            } else {
+                soloLectura.value = false
+                multa.empleado = null
+                empleado.hydrate(new Empleado())
+            }
+
+            await obtenerListados({
                 empleados: new ConductorController(),
                 vehiculos: {
                     controller: new VehiculoController(),
                     params: {
-                        campos: 'id,placa,marca,modelo',
+                        campos: 'id,placa,modelo_id',
                     },
                 },
             })
             listadosAuxiliares.cantones = JSON.parse(LocalStorage.getItem('cantones')!.toString())
+            
         })
         /**************************************************************
         * Hooks
@@ -55,7 +71,8 @@ export default defineComponent({
             // obtenerProveedor(contacto.proveedor)
         })
         onReestablecer(() => {
-            // proveedor.hydrate(new Proveedor())
+            empleado.hydrate(new Empleado())
+            soloLectura.value = false
         })
         onGuardado(() => {
             emit('cerrar-modal', false)
@@ -68,7 +85,7 @@ export default defineComponent({
         const reglas = {
             empleado: { required },
             fecha_infraccion: { required },
-            fecha_pago: { requiredIf: requiredIf(multa.estado) },
+            fecha_pago: { requiredIf: requiredIf(()=>multa.estado) },
             total: { required },
 
         }
@@ -79,11 +96,11 @@ export default defineComponent({
         *********************************/
         async function obtenerEmpleado(empleadoId: number | null) {
             if (empleadoId != null) {
-                statusLoading.activar()
+                cargando.activar()
                 const { result } = await new EmpleadoController().consultar(empleadoId)
                 console.log(result)
                 empleado.hydrate(result)
-                statusLoading.desactivar()
+                cargando.desactivar()
             }
         }
 
@@ -105,6 +122,7 @@ export default defineComponent({
             configuracionColumnas: configuracionColumnasMultasConductores,
             empleado, maskFecha,
             mostrarListado,
+            soloLectura,
 
             //listados
             empleados, filtrarEmpleados, ordenarEmpleados, obtenerEmpleado,
