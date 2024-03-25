@@ -134,8 +134,15 @@ export default defineComponent({
           controller: new TareaController(),
           params: { campos: 'id,codigo_tarea,titulo,cliente_id' }
         },
-        condiciones: new CondicionController()
+        // condiciones: new CondicionController()
       })
+      //Configurar los listados
+      empleados.value = listadosAuxiliares.empleados
+      opciones_autorizaciones.value = JSON.parse(LocalStorage.getItem('autorizaciones')!.toString())
+      sucursales.value = listadosAuxiliares.sucursales
+      tareas.value = listadosAuxiliares.tareas
+      listadosAuxiliares.condiciones = JSON.parse(LocalStorage.getItem('condiciones')!.toString())
+      condiciones.value = listadosAuxiliares.condiciones
 
       //logica para autocompletar el formulario de devolucion
       if (listadoMaterialesDevolucion.listadoMateriales.length) {
@@ -307,7 +314,7 @@ export default defineComponent({
         prompt(data)
       },
       visible: () => {
-        return (accion.value == acciones.nuevo && devolucion.misma_condicion) || (accion.value == acciones.nuevo && devolucion.misma_condicion)
+        return (accion.value == acciones.nuevo && devolucion.misma_condicion) || (accion.value == acciones.editar && devolucion.misma_condicion)
       }
     }
     const botonAnular: CustomActionTable = {
@@ -376,12 +383,7 @@ export default defineComponent({
     }
 
 
-    //Configurar los listados
-    empleados.value = listadosAuxiliares.empleados
-    opciones_autorizaciones.value = JSON.parse(LocalStorage.getItem('autorizaciones')!.toString())
-    sucursales.value = listadosAuxiliares.sucursales
-    tareas.value = listadosAuxiliares.tareas
-    condiciones.value = listadosAuxiliares.condiciones
+
 
     const configuracionColumnasProductosSeleccionadosAccion = computed(() => [...configuracionColumnasProductosSeleccionados,
     {
