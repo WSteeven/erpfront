@@ -95,7 +95,6 @@ export default defineComponent({
         case 'aprobar':
           try {
             cargando.activar()
-
            await aprobarController.aprobarTransferencia(entidad)
             notificarCorrecto('Se aprobado Transferencia Exitosamente')
             cargando.desactivar()
@@ -124,13 +123,13 @@ export default defineComponent({
           })
           break
         case 'anular':
-          cargando.activar()
           confirmar('¿Está seguro de anular el gasto?', () => {
             const data: CustomActionPrompt = {
               titulo: 'Anular gasto',
               mensaje: 'Ingrese motivo de anulacion',
               accion: async (data) => {
                 try {
+                  cargando.activar()
                   entidad.detalle_estado = data
                   await aprobarController.anularTransferencia(entidad)
                   notificarAdvertencia('Se anulado Transferencia Exitosamente')
