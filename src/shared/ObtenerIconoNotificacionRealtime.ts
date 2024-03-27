@@ -47,6 +47,8 @@ export class ObtenerIconoNotificacionRealtime {
        ********************/
       case iconos.matricula.label:
         return iconos.matricula.icono
+      case iconos.multa_conductor.label:
+        return iconos.multa_conductor.icono
     }
   }
 }

@@ -38,11 +38,10 @@ export default defineComponent({
         //variables
         const mostrarListado = ref(true)
         const soloLectura = ref(false)
-        // const empleado: Empleado = conductorStore.conductor.info_empleado != null ? conductorStore.conductor.info_empleado : reactive(new Empleado())
         const empleado: Empleado = reactive(new Empleado())
 
         cargarVista(async () => {
-            if (conductorStore.conductor) {
+            if (conductorStore.conductor.info_empleado != null) {
                 empleado.hydrate(conductorStore.conductor.info_empleado)
                 multa.empleado = empleado.id
                 soloLectura.value = true
@@ -62,7 +61,7 @@ export default defineComponent({
                 },
             })
             listadosAuxiliares.cantones = JSON.parse(LocalStorage.getItem('cantones')!.toString())
-            
+
         })
         /**************************************************************
         * Hooks
@@ -85,7 +84,7 @@ export default defineComponent({
         const reglas = {
             empleado: { required },
             fecha_infraccion: { required },
-            fecha_pago: { requiredIf: requiredIf(()=>multa.estado) },
+            fecha_pago: { requiredIf: requiredIf(() => multa.estado) },
             total: { required },
 
         }

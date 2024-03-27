@@ -52,3 +52,9 @@ export const tabOptionsMatriculas: TabOption[] = [
   { label: 'Proximas a matricular', value: '4' },
 ]
 
+export const tabOptionsAsignacionVehiculos: TabOption[] = [
+  { label: 'PENDIENTES', value: 'PENDIENTE' },
+  { label: 'FIRMADAS', value: 'FIRMADA' },
+  { label: 'ANULADAS', value: 'ANULADA' },
+]
+

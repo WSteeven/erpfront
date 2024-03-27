@@ -42,7 +42,7 @@ export default defineComponent({
     setup() {
         const mixin = new ContenedorSimpleMixin(Conductor, new ConductorController())
         const { entidad: conductor, disabled, listadosAuxiliares, accion } = mixin.useReferencias()
-        const { setValidador, obtenerListados, cargarVista, listar } = mixin.useComportamiento()
+        const { setValidador, obtenerListados, cargarVista, listar, consultar } = mixin.useComportamiento()
         const { onReestablecer, onGuardado, onConsultado, onModificado } = mixin.useHooks()
         const { confirmar, prompt, notificarCorrecto, notificarError } = useNotificaciones()
 
@@ -92,7 +92,6 @@ export default defineComponent({
             conductorStore.conductor = conductor
         })
         onReestablecer(() => {
-            console.log('reestablecer en conductorpage')
             empleado.hydrate(new Empleado())
             dataMulta.comentario = null
             dataMulta.fecha_pago = null
@@ -104,7 +103,9 @@ export default defineComponent({
         async function guardado(data) {
             switch (data) {
                 case 'MultaConductorPage':
-                    await consultarMultasConductor()
+                    console.log('Antes de consultar', conductor.id)
+                    await consultar({id: conductor.id})
+                    console.log('Luego de consultar', conductor.id)
                     break
                 default:
                     console.log('No se recibio data')

@@ -35,21 +35,21 @@ export const iconos = {
     label: 'TICKET',
     icono: 'bi-ticket-perforated'
   },
-  permiso_empleado:{
+  permiso_empleado: {
     label: 'PERMISO EMPLEADO',
-    icono:'bi-person-fill-lock'
+    icono: 'bi-person-fill-lock'
   },
-  licencia_empleado:{
+  licencia_empleado: {
     label: 'LICENCIA EMPLEADO',
-    icono:'bi-person-vcard-fill'
+    icono: 'bi-person-vcard-fill'
   },
-  solicitud_prestamo_empleado:{
+  solicitud_prestamo_empleado: {
     label: 'SOLICITUD PRESTAMO EMPRESARIAL',
-    icono:'fa-solid fa-file-signature'
+    icono: 'fa-solid fa-file-signature'
   },
-  vacacion:{
+  vacacion: {
     label: 'VACACION',
-    icono:'bi-umbrella'
+    icono: 'bi-umbrella'
   },
   preorden: {
     label: 'PREORDEN',
@@ -68,8 +68,12 @@ export const iconos = {
     icono: 'bi-stars',
   },
 
-  matricula:{
+  matricula: {
     label: 'MATRICULA',
     icono: 'bi-calendar3-week-fill'
-  }
+  },
+  multa_conductor: {
+    label: 'MULTA_CONDUCTOR',
+    icono: 'bi-file-text'
+  },
 }

@@ -86,8 +86,7 @@
               v-model="bitacora.fecha"
               placeholder="Obligatorio"
               :error="!!v$.fecha.$errors.length"
-              :disable="disabled || soloLectura"
-              :readonly="disabled || soloLectura"
+              :disable="disabled"
               outlined
               dense
             >
@@ -232,10 +231,10 @@
                   color="black"
                 ></q-icon></template
             ></q-input>
-            <q-circular-progress
+            <q-knob
               show-value
               class="text-white q-ma-md"
-              :value="bitacora.tanque_inicio"
+              v-model="bitacora.tanque_inicio"
               size="90px"
               :thickness="0.2"
               :color="bitacora.tanque_inicio > 50 ? 'green-5' : 'red-5'"
@@ -245,12 +244,13 @@
               track-color="transparent"
               instant-feedback
             >
-              <template v-slot:default>
+            <template v-slot:default>
+                <!-- <q-icon name="bi-fuel-pump-fill"/> -->
                 {{ bitacora.tanque_inicio }}%
               </template>
-            </q-circular-progress>
+            </q-knob>
           </div>
-          <!-- {{ v$.$errors }} -->
+          
           <!-- Tanque final -->
           <div class="col-6 col-md-3">
             <label class="q-mb-sm block">Tanque final</label>
@@ -286,7 +286,8 @@
               "
               track-color="transparent"
               instant-feedback
-            >{{ bitacora.tanque_final }}%</q-knob>
+              >{{ bitacora.tanque_final }}%</q-knob
+            >
           </div>
         </div>
       </q-form>

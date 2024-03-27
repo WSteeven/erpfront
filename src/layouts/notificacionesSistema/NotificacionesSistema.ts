@@ -21,6 +21,7 @@ import { PreingresoMaterialPusherEvent } from 'pages/bodega/preingresoMateriales
 import { IngresoPusherEvent } from 'pages/bodega/transacciones/modules/transaccionIngreso/application/IngresoPusherEvent'
 import { MatriculaPusherEvent } from 'pages/controlVehiculos/matriculacion/application/MatriculaPusherEvent'
 import { NotificarPermisoEmpleadoPusherEvent } from 'src/pusherEvents/recursosHumanos/nominasPermisos/NotificarPermisoEmpleadoPusherEvent'
+import { MultaConductorPusherEvent } from 'pages/controlVehiculos/conductores/modules/multas/application/MultaPusherEvent'
 
 
 export class NotificacionesSistema {
@@ -119,5 +120,8 @@ export class NotificacionesSistema {
    ********************/
   const matriculaPusherEvent = new MatriculaPusherEvent()
   matriculaPusherEvent.start()
+
+  const multaPusherEvent = new MultaConductorPusherEvent()
+  multaPusherEvent.start()
   }
 }

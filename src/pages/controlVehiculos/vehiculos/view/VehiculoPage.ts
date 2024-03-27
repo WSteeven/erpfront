@@ -1,6 +1,6 @@
 //Dependencias
 import { configuracionColumnasVehiculos } from '../domain/configuracionColumnasVehiculos'
-import { required, maxLength, minLength } from "shared/i18n-validators";
+import { required, maxLength, minLength, requiredIf } from "shared/i18n-validators";
 import { useVuelidate } from '@vuelidate/core'
 import { defineComponent, ref } from "vue";
 
@@ -27,6 +27,7 @@ import { SeguroVehicularController } from 'pages/controlVehiculos/seguros/infrae
 import { obtenerFechaActual } from 'shared/utils';
 import { useFiltrosListadosSelects } from 'shared/filtrosListadosGenerales';
 import { ComportamientoModalesVehiculos } from '../application/ComportamientoModalesVehiculos';
+import { TipoVehiculoController } from 'pages/controlVehiculos/tiposVehiculos/infraestructure/TipoVehiculoController';
 
 export default defineComponent({
     components: { TabLayout, GestorArchivos, ModalesEntidad, LabelAbrirModal, },
@@ -50,7 +51,8 @@ export default defineComponent({
         const { seguros, filtrarSeguros,
             marcas, filtrarMarcas,
             modelos, filtrarModelos,
-            combustibles, filtrarCombustibles
+            combustibles, filtrarCombustibles,
+            tiposVehiculos, filtrarTiposVehiculos
         } = useFiltrosListadosSelects(listadosAuxiliares)
 
         const mostrarLabelModal = computed(() => accion.value === acciones.nuevo || accion.value === acciones.editar)
@@ -68,6 +70,7 @@ export default defineComponent({
                     controller: new CombustibleController(),
                     params: { campos: 'id,nombre' }
                 },
+                tipos_vehiculos: new TipoVehiculoController(),
                 seguros: {
                     controller: new SeguroVehicularController(),
                     params: {
@@ -81,6 +84,7 @@ export default defineComponent({
             modelos.value = listadosAuxiliares.modelos
             combustibles.value = listadosAuxiliares.combustibles
             seguros.value = listadosAuxiliares.seguros
+            tiposVehiculos.value = listadosAuxiliares.tipos_vehiculos
         })
 
         //Reglas de validacion
@@ -93,6 +97,8 @@ export default defineComponent({
             rendimiento: { required, maximo: maxLength(2) },
             modelo: { required },
             combustible: { required },
+            tipo_vehiculo: { required },
+            prendador: { requiredIf: requiredIf(() => vehiculo.tiene_gravamen) },
             traccion: { required },
             aire_acondicionado: { required },
             capacidad_tanque: { required },
@@ -186,6 +192,7 @@ export default defineComponent({
             modelos, filtrarModelos,
             combustibles, filtrarCombustibles,
             opciones_traccion_vehiculos,
+            tiposVehiculos, filtrarTiposVehiculos,
 
             //funciones
             recargarSeguros,

@@ -572,15 +572,24 @@ const routes: RouteRecordRaw[] = [
           ),
         meta: { requiresAuth: true },
       },
-      // {
-      //   path: '/multas-conductores',
-      //   name: 'multas_conductores',
-      //   component: () =>
-      //     import(
-      //       'pages/controlVehiculos/conductores/modules/multas/view/MultaConductorPage.vue'
-      //     ),
-      //   meta: { requiresAuth: true },
-      // },
+      {
+        path: '/multas-conductores',
+        name: 'multas_conductores',
+        component: () =>
+          import(
+            'pages/controlVehiculos/conductores/modules/multas/view/MultaConductorPage.vue'
+          ),
+        meta: { requiresAuth: false },
+      },
+      {
+        path: '/asignaciones-vehiculos',
+        name: 'asignaciones-vehiculos',
+        component: () =>
+          import(
+            'pages/controlVehiculos/conductores/modules/multas/view/MultaConductorPage.vue'
+          ),
+        meta: { requiresAuth: false },
+      },
       {
         path: '/conductores',
         name: 'conductores',
@@ -611,6 +620,13 @@ const routes: RouteRecordRaw[] = [
         name: 'vehiculos',
         component: () =>
           import('pages/controlVehiculos/vehiculos/view/VehiculoPage.vue'),
+        meta: { requiresAuth: true },
+      },
+      {
+        path: '/tipos-vehiculos',
+        name: 'tipos_vehiculos',
+        component: () =>
+          import('pages/controlVehiculos/tiposVehiculos/view/TipoVehiculoPage.vue'),
         meta: { requiresAuth: true },
       },
       {

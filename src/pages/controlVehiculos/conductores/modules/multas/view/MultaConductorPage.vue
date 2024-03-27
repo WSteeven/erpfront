@@ -4,6 +4,7 @@
     :configuracionColumnas="configuracionColumnas"
     titulo-pagina="Multas de Conductores"
     :mostrarListado="mostrarListado"
+    ajustarCeldas
   >
     <template #formulario>
       <q-form @submit.prevent>

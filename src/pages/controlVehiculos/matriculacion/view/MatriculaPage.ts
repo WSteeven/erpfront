@@ -36,7 +36,8 @@ export default defineComponent({
         const matriculaStore = useVehiculoStore()
 
         //variables
-        const is_month = ref(false)
+        const is_month_fecha_matricula = ref(false)
+        const is_month_proxima_matricula = ref(false)
         const dataPagoMatricula = {
             matriculador: null,
             observacion: null,
@@ -101,8 +102,11 @@ export default defineComponent({
             }
         }
         /**Verifica si es un mes */
-        function checkValue(val, reason, details) {
-            is_month.value = reason === 'month' ? false : true
+        function checkValueFechaMatricula(val, reason, details) {
+            is_month_fecha_matricula.value = reason === 'month' ? false : true
+        }
+        function checkValueProximaMatricula(val, reason, details) {
+            is_month_proxima_matricula.value = reason === 'month' ? false : true
         }
         function calcularProximaMatricula() {
             const proxima = obtenerMesMatricula(obtenerUltimoDigito(matricula.placa))
@@ -173,7 +177,8 @@ export default defineComponent({
                             const data2: CustomActionPrompt = {
                                 titulo: 'Pagar Matricula ' + entidad.vehiculo,
                                 mensaje: 'Observación',
-                                requerido: false,
+                                requerido: true,
+                                validacion: (val) => !!val,
                                 accion: async (data2) => {
                                     dataPagoMatricula.observacion = data2
                                     const data3: CustomActionPrompt = {
@@ -211,10 +216,10 @@ export default defineComponent({
         vehiculos.value = listadosAuxiliares.vehiculos
 
         return {
-            mixin, v$, matricula, disabled, accion,
+            mixin, v$, matricula, disabled, accion, acciones,
             configuracionColumnas: configuracionColumnasMatriculas,
             maskFecha: 'MM-YYYY',
-            is_month,
+            is_month_fecha_matricula, is_month_proxima_matricula,
 
             //botones de tabla
             btnConsultarMatricula,
@@ -231,7 +236,8 @@ export default defineComponent({
             //funciones
             filtrarMatriculas,
             calcularProximaMatricula,
-            checkValue,
+            checkValueFechaMatricula,
+            checkValueProximaMatricula,
             asignarPlaca,
 
         }

@@ -210,6 +210,7 @@
     </div>
     <solicitar-fecha
       :mostrar="mostrarSolicitarFecha"
+      reason="mask"
       label="Fecha de pago"
       :confirmar="fechaIngresada"
       @cerrar="mostrarSolicitarFecha = false"
@@ -258,7 +259,12 @@ const props = defineProps({
     type: String,
     required: false,
   },
+  consultarMultas: {
+    type: Boolean,
+    default: true,
+  },
 })
+const emit = defineEmits(['guardado'])
 
 const { disabled, accion } = props.mixin.useReferencias()
 const { setValidador } = props.mixin.useComportamiento()
@@ -294,7 +300,8 @@ setValidador(v$.value)
 async function guardado(data) {
   switch (data) {
     case 'MultaConductorPage':
-      await consultarMultasConductor()
+      if (props.consultarMultas) await consultarMultasConductor()
+      emit('guardado', 'MultaConductorPage')
       break
     default:
       console.log('No se recibio data')
@@ -328,7 +335,7 @@ async function consultarMultasConductor() {
   conductor.multas = result
 }
 async function fechaIngresada(fecha?) {
-  console.log('Fecha ingresada: ', fecha)
+  // console.log('Fecha ingresada: ', fecha)
   dataMulta.fecha_pago = fecha
   if (await conductorStore.pagarMulta(dataMulta)) consultarMultasConductor()
 }
@@ -359,6 +366,7 @@ const btnEditarMulta: CustomActionTable = {
       const data: CustomActionPrompt = {
         titulo: 'Fecha de pago',
         mensaje: '¿Tienes alguna observación al respecto?',
+        validacion: (val) => val != null,
         accion: async (data) => {
           conductorStore.idMulta = entidad.id
           dataMulta.comentario = data
@@ -367,6 +375,8 @@ const btnEditarMulta: CustomActionTable = {
       }
       prompt(data)
     })
+    dataMulta.comentario = null
+    dataMulta.fecha_pago = null
   },
   visible: ({ entidad }) => {
     return (

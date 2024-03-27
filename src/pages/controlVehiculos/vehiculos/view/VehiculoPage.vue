@@ -9,7 +9,7 @@
       <q-form @submit.prevent>
         <div class="row q-col-gutter-sm q-py-md">
           <!-- Marca -->
-          <div class="col-12 col-md-3 q-mb-md">
+          <div class="col-12 col-md-3 col-sm-6 q-mb-md">
             <label class="q-mb-sm block">Marca</label>
             <q-select
               v-model="vehiculo.marca"
@@ -40,7 +40,7 @@
             </q-select>
           </div>
           <!-- Modelo -->
-          <div class="col-12 col-md-3 q-mb-md">
+          <div class="col-12 col-md-3 col-sm-6 q-mb-md">
             <label class="q-mb-sm block">Modelo</label>
             <q-select
               v-model="vehiculo.modelo"
@@ -78,7 +78,7 @@
             </q-select>
           </div>
           <!-- Combustible -->
-          <div class="col-12 col-md-3 q-mb-md">
+          <div class="col-12 col-md-3 col-sm-6 q-mb-md">
             <label class="q-mb-sm block">Tipo de combustible</label>
             <q-select
               v-model="vehiculo.combustible"
@@ -115,7 +115,7 @@
             </q-select>
           </div>
           <!-- Tracción -->
-          <div class="col-12 col-md-3 q-mb-md">
+          <div class="col-12 col-md-3 col-sm-6 q-mb-md">
             <label class="q-mb-sm block">Tracción</label>
             <q-select
               v-model="vehiculo.traccion"
@@ -148,7 +148,7 @@
             </q-select>
           </div>
           <!-- placa -->
-          <div class="col-12 col-md-3">
+          <div class="col-12 col-md-3 col-sm-6">
             <label class="q-mb-sm block">Placa</label>
             <q-input
               v-model="vehiculo.placa"
@@ -170,7 +170,7 @@
             </q-input>
           </div>
           <!-- num_chasis -->
-          <div class="col-12 col-md-3">
+          <div class="col-12 col-md-3 col-sm-6">
             <label class="q-mb-sm block">N° Chasis</label>
             <q-input
               v-model="vehiculo.num_chasis"
@@ -189,7 +189,7 @@
             </q-input>
           </div>
           <!-- num_motor -->
-          <div class="col-12 col-md-3">
+          <div class="col-12 col-md-3 col-sm-6">
             <label class="q-mb-sm block">N° Motor</label>
             <q-input
               v-model="vehiculo.num_motor"
@@ -207,8 +207,47 @@
               </template>
             </q-input>
           </div>
+
+          <!-- Tipo de vehiculo -->
+          <div class="col-12 col-md-3 col-sm-6 q-mb-md">
+            <label class="q-mb-sm block">Tipo de Vehículo</label>
+            <q-select
+              v-model="vehiculo.tipo_vehiculo"
+              :options="tiposVehiculos"
+              transition-show="scale"
+              transition-hide="scale"
+              options-dense
+              dense
+              outlined
+              :disable="disabled"
+              use-input
+              input-debounce="0"
+              @filter="filtrarTiposVehiculos"
+              :error="!!v$.tipo_vehiculo.$errors.length"
+              :option-label="(item) => item.nombre"
+              :option-value="(item) => item.id"
+              emit-value
+              map-options
+            >
+              <template v-slot:error>
+                <div
+                  v-for="error of v$.tipo_vehiculo.$errors"
+                  :key="error.$uid"
+                >
+                  <div class="error-msg">{{ error.$message }}</div>
+                </div>
+              </template>
+              <template v-slot:no-option>
+                <q-item>
+                  <q-item-section class="text-grey">
+                    No hay resultados
+                  </q-item-section>
+                </q-item>
+              </template>
+            </q-select>
+          </div>
           <!-- año -->
-          <div class="col-12 col-md-3">
+          <div class="col-12 col-md-3 col-sm-6">
             <label class="q-mb-sm block">Año de fabricación</label>
             <q-input
               type="number"
@@ -234,7 +273,7 @@
           </div>
 
           <!-- cilindraje -->
-          <div class="col-12 col-md-3">
+          <div class="col-12 col-md-3 col-sm-6">
             <label class="q-mb-sm block">Cilindraje (cc)</label>
             <q-input
               type="number"
@@ -256,7 +295,7 @@
             </q-input>
           </div>
           <!-- rendimiento -->
-          <div class="col-12 col-md-3">
+          <div class="col-12 col-md-3 col-sm-6">
             <label class="q-mb-sm block">Rendimiento (km/gl)</label>
             <q-input
               type="number"
@@ -277,7 +316,7 @@
             </q-input>
           </div>
           <!-- capacidad tanque-->
-          <div class="col-12 col-md-3">
+          <div class="col-12 col-md-3 col-sm-6">
             <label class="q-mb-sm block">Capacidad tanque (gl)</label>
             <q-input
               v-model="vehiculo.capacidad_tanque"
@@ -286,14 +325,13 @@
               :readonly="disabled"
               error-message="Ingrese la capacidad del tanque de combustible"
               mask="##.##"
-              fill-mask
               outlined
               dense
             >
             </q-input>
           </div>
           <!-- capacidad tanque-->
-          <div class="col-12 col-md-3">
+          <div class="col-12 col-md-3 col-sm-6">
             <label class="q-mb-sm block">Color</label>
             <q-input
               v-model="vehiculo.color"
@@ -307,7 +345,7 @@
             </q-input>
           </div>
           <!-- aire acondicionado -->
-          <div class="col-12 col-md-3">
+          <div class="col-12 col-md-3 col-sm-6">
             <label class="q-mb-sm block">Tiene aire acondicionado</label>
             <q-toggle
               :label="vehiculo.aire_acondicionado ? 'SI' : 'NO'"
@@ -321,7 +359,7 @@
           </div>
 
           <!-- Seguro vehicular -->
-          <div class="col-12 col-md-3">
+          <div class="col-12 col-md-3 col-sm-6">
             <label-abrir-modal
               v-if="
                 (mostrarLabelModal && store.esAdministradorVehiculos) || true
@@ -360,6 +398,41 @@
                 </q-item>
               </template>
             </q-select>
+          </div>
+
+          <!-- tiene gravamen -->
+          <div class="col-12 col-md-3 col-sm-6">
+            <label class="q-mb-sm block">¿Está prendado?</label>
+            <q-toggle
+              :label="vehiculo.tiene_gravamen ? 'SI' : 'NO'"
+              v-model="vehiculo.tiene_gravamen"
+              @update:model-value="() =>(vehiculo.prendador = vehiculo.tiene_gravamen? vehiculo.prendador: null)"
+              color="primary"
+              keep-color
+              icon="bi-check2-circle"
+              unchecked-icon="clear"
+              :disable="disabled"
+            />
+          </div>
+
+          <!-- prendador -->
+          <div class="col-12 col-md-3 col-sm-6" v-if="vehiculo.tiene_gravamen">
+            <label class="q-mb-sm block">Prendador</label>
+            <q-input
+              v-model="vehiculo.prendador"
+              placeholder="Obligatorio"
+              :disable="disabled"
+              hint="Ingrese la institución o empresa propietaria del vehículo"
+              :error="!!v$.prendador.$errors.length"
+              outlined
+              dense
+            >
+              <template v-slot:error>
+                <div v-for="error of v$.prendador.$errors" :key="error.$uid">
+                  <div class="error-msg">{{ error.$message }}</div>
+                </div>
+              </template>
+            </q-input>
           </div>
 
           <!-- Manejo de archivos -->

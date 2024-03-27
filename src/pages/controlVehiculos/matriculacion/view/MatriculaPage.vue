@@ -66,7 +66,7 @@
               placeholder="Obligatorio"
               :value="matricula.fecha_matricula"
               mask="##-####"
-              hint="Fecha de matriculación"
+              hint="Fecha de ultima matriculación"
               :error="!!v$.fecha_matricula.$errors.length"
               :disable="disabled"
               @blur="v$.fecha_matricula.$touch"
@@ -79,15 +79,15 @@
                     cover
                     transition-show="scale"
                     transition-hide="scale"
-                    v-model="is_month"
+                    v-model="is_month_fecha_matricula"
                   >
                     <q-date
                       v-model="matricula.fecha_matricula"
                       minimal
-                      mask="MM-YYYY"
+                      :mask="maskFecha"
                       emit-immediately
                       default-view="Years"
-                      @update:model-value="checkValue"
+                      @update:model-value="checkValueFechaMatricula"
                     >
                       <div class="row items-center justify-end">
                         <q-btn
@@ -120,7 +120,7 @@
               placeholder="Obligatorio"
               :value="matricula.proxima_matricula"
               mask="##-####"
-              hint="Fecha de matriculación"
+              hint="Fecha de próxima matriculación"
               :error="!!v$.proxima_matricula.$errors.length"
               :disable="disabled"
               @blur="v$.proxima_matricula.$touch"
@@ -133,15 +133,15 @@
                     cover
                     transition-show="scale"
                     transition-hide="scale"
-                    v-model="is_month"
+                    v-model="is_month_proxima_matricula"
                   >
                     <q-date
                       v-model="matricula.proxima_matricula"
                       minimal
-                      mask="MM-YYYY"
+                      :mask="maskFecha"
                       emit-immediately
                       default-view="Years"
-                      @update:model-value="checkValue"
+                      @update:model-value="checkValueProximaMatricula"
                     >
                       <div class="row items-center justify-end">
                         <q-btn

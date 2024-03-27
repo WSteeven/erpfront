@@ -183,10 +183,12 @@ export const endpoints = {
    ******************************/
   combustibles: new Endpoint('vehiculos/combustibles'),
   vehiculos: new Endpoint('vehiculos/vehiculos'),
+  tipos_vehiculos: new Endpoint('vehiculos/tipos-vehiculos'),
   bitacoras_vehiculos: new Endpoint('vehiculos/bitacoras-vehiculos'),
   empleados_choferes: new Endpoint('vehiculos/empleados-choferes'),
   conductores: new Endpoint('vehiculos/conductores'),
   matriculas: new Endpoint('vehiculos/matriculas'),
+  asignaciones_vehiculos: new Endpoint('vehiculos/asignaciones-vehiculos'),
   multas_conductores: new Endpoint('vehiculos/multas'),
   seguros: new Endpoint('vehiculos/seguros'),
   servicios: new Endpoint('vehiculos/servicios'),

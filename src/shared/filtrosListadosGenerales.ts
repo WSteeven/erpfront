@@ -63,6 +63,7 @@ export const useFiltrosListadosSelects = (listadosAuxiliares, entidad?: Ref<any>
   const servicios = ref(listadosAuxiliares.servicios)
   const seguros = ref(listadosAuxiliares.seguros)
   const combustibles = ref(listadosAuxiliares.combustibles)
+  const tiposVehiculos = ref(listadosAuxiliares.tipos_vehiculos)
 
 
   /**************************************************************
@@ -381,6 +382,9 @@ export const useFiltrosListadosSelects = (listadosAuxiliares, entidad?: Ref<any>
       if (listadosAuxiliares.vehiculos) vehiculos.value = listadosAuxiliares.vehiculos.filter((v: Vehiculo) => v.placa!.toLowerCase().indexOf(needle) > -1)
     })
   }
+  function filtrarTiposVehiculos(val, update) {
+    return filtrarLista(val, update, tiposVehiculos, 'nombre', listadosAuxiliares.tipos_vehiculos)
+  }
 
   function filtrarServicios(val, update) {
     if (val === '') {
@@ -513,5 +517,6 @@ export const useFiltrosListadosSelects = (listadosAuxiliares, entidad?: Ref<any>
     marcas, filtrarMarcas,
     modelos, filtrarModelos,
     combustibles, filtrarCombustibles,
+    tiposVehiculos, filtrarTiposVehiculos,
   }
 }

@@ -186,7 +186,7 @@ export const useMenuStore = defineStore('menu', () => {
         {
           title: 'Dashboard',
           link: 'dashboard-bodega',
-          can: store.esBodeguero || store.esCoordinadorBodega||store.can('puede.ver.dashboard_bodega'),
+          can: store.esBodeguero || store.esCoordinadorBodega || store.can('puede.ver.dashboard_bodega'),
           icon: 'bi-app',
         },
         {
@@ -377,7 +377,7 @@ export const useMenuStore = defineStore('menu', () => {
           title: 'Ajuste de Saldos Fondos Rotativos',
           link: 'ajustes-saldos',
           icon: 'bi-app',
-          can: store.can('puede.acceder.ajustes_saldos')||true,
+          can: store.can('puede.acceder.ajustes_saldos') || true,
         },
         {
           title: 'Gastos',
@@ -570,6 +570,12 @@ export const useMenuStore = defineStore('menu', () => {
           can: true,
           children: [
             {
+              title: 'Multas de Conductores',
+              link: 'multas-conductores',
+              icon: 'bi-file-text',
+              can: true, // store.can('puede.acceder.permiso_nomina'),
+            },
+            {
               title: 'Permiso',
               link: 'permiso-nomina',
               icon: 'fa-solid fa-person-chalkboard',
@@ -708,6 +714,30 @@ export const useMenuStore = defineStore('menu', () => {
           can: store.can('puede.acceder.conductores'),
         },
         {
+          title: 'Multas de Conductores',
+          link: 'multas-conductores',
+          icon: 'bi-circle',
+          can: store.can('puede.acceder.multas_conductores'),
+        },
+        {
+          title: 'Vehículos',
+          link: 'vehiculos',
+          icon: 'bi-car-front-fill',
+          can: store.can('puede.acceder.vehiculos'),
+        },
+        {
+          title: 'Asignar Vehículos a Choferes',
+          link: 'asignaciones-vehiculos',
+          icon: 'bi-car-front-fill',
+          can: store.can('puede.acceder.asignaciones-vehiculos'),
+        },
+        {
+          title: 'Tipos de Vehículos',
+          link: 'tipos-vehiculos',
+          icon: 'bi-circle',
+          can: store.can('puede.acceder.tipos_vehiculos'),
+        },
+        {
           title: 'Combustibles',
           link: 'combustibles',
           icon: 'bi-fuel-pump-fill',
@@ -718,12 +748,6 @@ export const useMenuStore = defineStore('menu', () => {
           link: 'control-vehiculos',
           icon: 'bi-card-checklist',
           can: store.can('puede.acceder.bitacoras_vehiculos'),
-        },
-        {
-          title: 'Vehículos',
-          link: 'vehiculos',
-          icon: 'bi-car-front-fill',
-          can: store.can('puede.acceder.vehiculos'),
         },
         {
           title: 'Seguros vehiculares',

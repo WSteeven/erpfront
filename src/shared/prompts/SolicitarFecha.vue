@@ -111,6 +111,10 @@ export default defineComponent({
       type: String,
       default: maskFecha,
     },
+    reason:{
+      type: String,
+      default: "month"
+    },
   },
   emits: ['cerrar'],
   setup(props, { emit }) {
@@ -132,7 +136,7 @@ export default defineComponent({
       cerrarModalEntidad()
     }
     function checkFecha(val, reason, details) {
-      isMonth.value = reason === 'month' ? false : true
+      isMonth.value = reason === props.reason ? false : true
     }
 
     return {
