@@ -20,6 +20,7 @@ import { AxiosHttpRepository } from 'shared/http/infraestructure/AxiosHttpReposi
 import axios from 'axios'
 import { HttpResponseGet } from 'shared/http/domain/HttpResponse'
 import { useNotificaciones } from 'shared/notificaciones'
+import { required, minValue } from 'shared/i18n-validators'
 
 export default defineComponent({
   components: { TabLayout, EssentialTable, ButtonSubmits },
@@ -51,19 +52,19 @@ export default defineComponent({
      **************/
     const reglas = {
       empleado: {
-        required: true,
+        required,
       },
       acreditacion_semana: {
-        required: true,
+        required
       },
       monto_generado: {
-        required: true,
+        required
       },
       monto_modificado: {
-        required: true,
+       minimo: minValue(1)
       },
       motivo: {
-        required: true,
+        required
       },
     }
     const v$ = useVuelidate(reglas, valorAcreditar)
@@ -92,11 +93,15 @@ export default defineComponent({
       try {
         let entidad: ValorAcreditar = new ValorAcreditar()
         if (accion.value == 'NUEVO') {
-          entidad = await guardar(valoracreditar)
-          const valorAcreditarAux = new ValorAcreditar()
-          valorAcreditarAux.hydrate(entidad)
+          if (await v$.value.$validate()) {
+            entidad = await guardar(valoracreditar)
+            const valorAcreditarAux = new ValorAcreditar()
+            valorAcreditarAux.hydrate(entidad)
+          }
         } else {
-          await editar(valoracreditar, true)
+          if (await v$.value.$validate()) {
+            await editar(valoracreditar, true)
+          }
         }
         mostrar_formulario.value = false
       } catch (e) {

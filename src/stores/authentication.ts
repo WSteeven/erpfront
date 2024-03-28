@@ -147,28 +147,10 @@ export const useAuthenticationStore = defineStore('authentication', () => {
     LocalStorage.set('detalles', JSON.stringify(detalles))
     const sub_detalles = (await new SubDetalleFondoController().listar({ campos: 'id,descripcion' })).result
     LocalStorage.set('sub_detalles', JSON.stringify(sub_detalles))
-    /*const autorizacionesEspeciales = (await new UsuarioAutorizadoresController().listar({ campos: 'id,nombre' })).result
-    LocalStorage.set('autorizaciones_especiales', JSON.stringify(autorizacionesEspeciales))*/
     const tareas = (await new TareaController().listar({ campos: 'id,titulo' })).result
     LocalStorage.set('tareas', JSON.stringify(tareas))
     const usuariosInactivos = (await new EmpleadoController().listar({ campos: 'id,nombres,apellidos', estado: 0 })).result
     LocalStorage.set('usuariosInactivos', JSON.stringify(usuariosInactivos))
-    const concepto_ingresos = (await new ConceptoIngresoController().listar()).result
-    LocalStorage.set('concepto_ingresos', JSON.stringify(concepto_ingresos))
-    const descuentos_generales = (await new DescuentosGenralesController().listar()).result
-    LocalStorage.set('descuentos_generales', JSON.stringify(descuentos_generales))
-    const descuentos_ley = (await new DescuentosLeyController().listar()).result
-    LocalStorage.set('descuentos_ley', JSON.stringify(descuentos_ley))
-    const multas = (await new MultaController().listar()).result
-    LocalStorage.set('multas', JSON.stringify(multas))
-    const horas_extras_tipos = (await new HorasExtrasTipoController().listar()).result
-    LocalStorage.set('horas_extras_tipos', JSON.stringify(horas_extras_tipos))
-    const horas_extras_subtipos = (await new HorasExtrasSubTipoController().listar()).result
-    LocalStorage.set('horas_extras_subtipos', JSON.stringify(horas_extras_subtipos))
-    // const sub_tareas = (await new SubtareaController().listar({ campos: 'id,titulo' })).result
-    // LocalStorage.set('sub_tareas', JSON.stringify(sub_tareas))
-
-
   }
   /**
    * Función para limpiar los datos del Local Storage

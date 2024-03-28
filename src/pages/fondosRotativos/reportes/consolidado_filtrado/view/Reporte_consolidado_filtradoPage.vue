@@ -169,8 +169,6 @@
             outlined
             :disable="disabled"
             :readonly="disabled"
-            :error="!!v$.usuario.$errors.length"
-            error-message="Debes seleccionar un empleado"
             use-input
             input-debounce="0"
             @filter="filtrarUsuarios"
@@ -179,11 +177,6 @@
             emit-value
             map-options
           >
-            <template v-slot:error>
-              <div v-for="error of v$.usuario.$errors" :key="error.$uid">
-                <div class="error-msg">{{ error.$message }}</div>
-              </div>
-            </template>
             <template v-slot:no-option>
               <q-item>
                 <q-item-section class="text-grey"> No hay resultados </q-item-section>
@@ -211,8 +204,6 @@
             outlined
             :disable="disabled"
             :readonly="disabled"
-            :error="!!v$.usuario.$errors.length"
-            error-message="Debes seleccionar un usuario"
             use-input
             input-debounce="0"
             @filter="filtrarUsuariosInactivos"
@@ -221,11 +212,6 @@
             emit-value
             map-options
           >
-            <template v-slot:error>
-              <div v-for="error of v$.usuario.$errors" :key="error.$uid">
-                <div class="error-msg">{{ error.$message }}</div>
-              </div>
-            </template>
             <template v-slot:no-option>
               <q-item>
                 <q-item-section class="text-grey"> No hay resultados </q-item-section>

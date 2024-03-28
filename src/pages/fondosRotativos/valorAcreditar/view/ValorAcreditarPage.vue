@@ -64,6 +64,7 @@
             v-model="valorAcreditar.monto_modificado"
             placeholder="Obligatorio"
             :disable="disabled"
+            error-message='Ingrese monto mayor a 0'
             :error="!!v$.monto_modificado.$errors.length"
             @blur="v$.monto_modificado.$touch"
             outlined
@@ -106,7 +107,7 @@
         />
       </div>
     </q-form>
-    <div class="text-h5 q-py-sm">Total: {{ totalAcreditar.toFixed(2) }}</div>
+    <div class="text-h5 q-py-sm text-right">Total a Acreditar: ${{ totalAcreditar.toFixed(2) }}</div>
     <essential-table
       titulo="Valores a Acreditar"
       :configuracionColumnas="[...configuracionColumnasValorAcreditar, accionesTabla]"
