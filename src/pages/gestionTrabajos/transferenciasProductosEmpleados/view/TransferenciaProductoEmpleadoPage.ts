@@ -756,6 +756,11 @@ export default defineComponent({
       if (esParaStock.value) consultarClientesMaterialesEmpleado({ empleado_id: transferencia.empleado_origen, cliente_id: transferencia.cliente })
     }
 
+    const seleccionarEsDestinoStock = () => {
+      transferencia.proyecto_destino = null
+      transferencia.tarea_destino = null
+    }
+
     return {
       mixin, transferencia, disabled, accion, v$, acciones,
       configuracionColumnas: configuracionColumnasDevoluciones,
@@ -827,6 +832,8 @@ export default defineComponent({
       refrescarListadosEmpleado,
       refrescarListadosProyectos,
       esParaStock,
+      esDestinoStock: ref(false),
+      seleccionarEsDestinoStock,
       seleccionarClienteStock,
       seleccionarEsStock,
       existenProductos: computed(() => transferencia.listado_productos.length),
