@@ -268,8 +268,6 @@ const emit = defineEmits(['guardado'])
 
 const { disabled, accion } = props.mixin.useReferencias()
 const { setValidador } = props.mixin.useComportamiento()
-const { onReestablecer, onConsultado, onBeforeModificar } =
-  props.mixin.useHooks()
 const { confirmar, prompt } = useNotificaciones()
 const modales = new ComportamientoModalesConductores()
 const conductorStore = useConductorStore()
@@ -285,7 +283,6 @@ const dataMulta = {
  * Reglas de validacion
  **********************/
 const reglas = {
-  empleado: { required },
   tipo_licencia: { required },
   puntos: { required, maximo: maxValue(30), minimo: minValue(0) },
   inicio_vigencia: { required },

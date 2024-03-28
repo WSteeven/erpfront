@@ -49,6 +49,8 @@ export class ObtenerIconoNotificacionRealtime {
         return iconos.matricula.icono
       case iconos.multa_conductor.label:
         return iconos.multa_conductor.icono
+      case iconos.asignacion_vehiculo.label:
+        return iconos.asignacion_vehiculo.icono
     }
   }
 }

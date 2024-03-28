@@ -728,8 +728,8 @@ export const useMenuStore = defineStore('menu', () => {
         {
           title: 'Asignar Vehículos a Choferes',
           link: 'asignaciones-vehiculos',
-          icon: 'bi-car-front-fill',
-          can: store.can('puede.acceder.asignaciones-vehiculos'),
+          icon: 'bi-circle',
+          can: store.can('puede.acceder.asignaciones_vehiculos'),
         },
         {
           title: 'Tipos de Vehículos',

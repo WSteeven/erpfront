@@ -311,7 +311,7 @@ export class ContenedorSimpleMixin<T extends EntidadAuditable> extends Contenedo
       )
     }
 
-    if (!this.seCambioEntidad(this.entidad_vacia)) {
+    if (!this.seCambioEntidad(this.entidad_copia)) {
       return this.notificaciones.notificarAdvertencia(
         'No se ha efectuado ningun cambio'
       )

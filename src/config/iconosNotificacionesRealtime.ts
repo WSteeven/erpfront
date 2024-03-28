@@ -76,4 +76,8 @@ export const iconos = {
     label: 'MULTA_CONDUCTOR',
     icono: 'bi-file-text'
   },
+  asignacion_vehiculo: {
+    label: 'ASIGNACION_VEHICULO',
+    icono: 'bi-file-text'
+  }
 }

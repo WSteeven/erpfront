@@ -104,7 +104,7 @@ export default defineComponent({
             switch (data) {
                 case 'MultaConductorPage':
                     console.log('Antes de consultar', conductor.id)
-                    await consultar({id: conductor.id})
+                    await consultar({ id: conductor.id })
                     console.log('Luego de consultar', conductor.id)
                     break
                 default:

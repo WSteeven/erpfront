@@ -55,6 +55,14 @@ export const tabOptionsMatriculas: TabOption[] = [
 export const tabOptionsAsignacionVehiculos: TabOption[] = [
   { label: 'PENDIENTES', value: 'PENDIENTE' },
   { label: 'FIRMADAS', value: 'FIRMADA' },
-  { label: 'ANULADAS', value: 'ANULADA' },
+  { label: 'RECHAZADAS', value: 'RECHAZADO' },
+  { label: 'ANULADAS', value: 'ANULADO' },
+]
+
+export const estadosAsignacionesVehiculos = [
+  { label: 'PENDIENTE' },
+  { label: 'ACEPTADO' },
+  { label: 'RECHAZADO' },
+  { label: 'ANULADO' },
 ]
 

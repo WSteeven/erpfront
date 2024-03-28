@@ -22,6 +22,7 @@ import { IngresoPusherEvent } from 'pages/bodega/transacciones/modules/transacci
 import { MatriculaPusherEvent } from 'pages/controlVehiculos/matriculacion/application/MatriculaPusherEvent'
 import { NotificarPermisoEmpleadoPusherEvent } from 'src/pusherEvents/recursosHumanos/nominasPermisos/NotificarPermisoEmpleadoPusherEvent'
 import { MultaConductorPusherEvent } from 'pages/controlVehiculos/conductores/modules/multas/application/MultaPusherEvent'
+import { AsignarVehiculoPusherEvent } from 'pages/controlVehiculos/asignarVehiculos/application/AsignarVehiculoPusherEvent'
 
 
 export class NotificacionesSistema {
@@ -79,9 +80,9 @@ export class NotificacionesSistema {
     // Permiso de Empleado
     const permisoEmpleadoPusherEvent = new PermisoEmpleadoPusherEvent()
     permisoEmpleadoPusherEvent.start()
-   //Notificar permisos de empleados de fecha actual a recursos humanos
-   const notificarPermisoEmpleadoPusherEvent = new NotificarPermisoEmpleadoPusherEvent()
-   notificarPermisoEmpleadoPusherEvent.start()
+    //Notificar permisos de empleados de fecha actual a recursos humanos
+    const notificarPermisoEmpleadoPusherEvent = new NotificarPermisoEmpleadoPusherEvent()
+    notificarPermisoEmpleadoPusherEvent.start()
     // Licencia
     const licenciaPusherEvent = new LicenciaPusherEvent()
     licenciaPusherEvent.start()
@@ -115,13 +116,16 @@ export class NotificacionesSistema {
     proformaPusherEvent.start()
 
 
-  /*******************
-   * MODULO VEHICULOS
-   ********************/
-  const matriculaPusherEvent = new MatriculaPusherEvent()
-  matriculaPusherEvent.start()
+    /*******************
+     * MODULO VEHICULOS
+     ********************/
+    const matriculaPusherEvent = new MatriculaPusherEvent()
+    matriculaPusherEvent.start()
 
-  const multaPusherEvent = new MultaConductorPusherEvent()
-  multaPusherEvent.start()
+    const multaPusherEvent = new MultaConductorPusherEvent()
+    multaPusherEvent.start()
+
+    const asignacionVehiculoEvent = new AsignarVehiculoPusherEvent()
+    asignacionVehiculoEvent.start()
   }
 }

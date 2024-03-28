@@ -5,12 +5,11 @@ import EssentialLoading from 'components/loading/view/EssentialLoading.vue'
 import { useNotificationRealtimeStore } from 'stores/notificationRealtime'
 import { defineComponent, ref, computed, Ref, ComputedRef, watch, watchEffect } from 'vue'
 import { useAuthenticationStore } from 'src/stores/authentication'
-import { LocalStorage, SessionStorage, useQuasar } from 'quasar'
+import { LocalStorage, useQuasar } from 'quasar'
 import { useMenuStore } from 'src/stores/menu'
 import { useRoute, useRouter } from 'vue-router'
 import Swal from 'sweetalert2'
 import moment from 'moment'
-import { Quasar } from 'quasar'
 
 // Componentes
 import ScrollToTopButton from 'components/buttonSubmits/ScrollToTopButton.vue'
@@ -24,12 +23,10 @@ import { ObtenerIconoNotificacionRealtime } from 'shared/ObtenerIconoNotificacio
 import { NotificacionesSistema } from './notificacionesSistema/NotificacionesSistema'
 import { useConfiguracionGeneralStore } from 'stores/configuracion_general'
 import { useMovilizacionSubtareaStore } from 'stores/movilizacionSubtarea'
-import { useNotificaciones } from 'shared/notificaciones'
-import { useIdle, useTimestamp } from '@vueuse/core'
+import { useIdle, } from '@vueuse/core'
 import { formatearFechaTexto } from 'shared/utils'
-import { Idle, NotIdle } from 'idlejs'
+import { NotIdle } from 'idlejs'
 import { useMainLayoutStore } from 'stores/mainLayout'
-import { useCargandoStore } from 'stores/cargando'
 import { StatusEssentialLoading } from 'components/loading/application/StatusEssentialLoading'
 
 export default defineComponent({

@@ -1433,6 +1433,7 @@
           </gestor-archivos>
         </div>
 
+        <!-- {{v$.$errors}} -->
         <!-- {{ conductor }} -->
         <div class="col-12 col-md-12" v-if="mostrarComponenteInformacionLicencia">
           <informacion-licencia

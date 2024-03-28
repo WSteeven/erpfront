@@ -583,10 +583,10 @@ const routes: RouteRecordRaw[] = [
       },
       {
         path: '/asignaciones-vehiculos',
-        name: 'asignaciones-vehiculos',
+        name: 'asignaciones_vehiculos',
         component: () =>
           import(
-            'pages/controlVehiculos/conductores/modules/multas/view/MultaConductorPage.vue'
+            'pages/controlVehiculos/asignarVehiculos/view/AsignarVehiculoPage.vue'
           ),
         meta: { requiresAuth: false },
       },

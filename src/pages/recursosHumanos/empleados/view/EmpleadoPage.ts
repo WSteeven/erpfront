@@ -62,7 +62,7 @@ export default defineComponent({
     const mixin = new ContenedorSimpleMixin(Empleado, new EmpleadoController(), new ArchivoController())
     const { entidad: empleado, disabled, accion, listadosAuxiliares, } = mixin.useReferencias()
     const { setValidador, cargarVista, obtenerListados } = mixin.useComportamiento()
-    const { onBeforeGuardar, onConsultado, onGuardado, onReestablecer } = mixin.useHooks()
+    const { onBeforeGuardar, onBeforeModificar, onConsultado, onModificado, onGuardado, onReestablecer } = mixin.useHooks()
     const mixinFamiliares = new ContenedorSimpleMixin(Familiares, new FamiliaresController())
     const { eliminar } = mixinFamiliares.useComportamiento()
 
@@ -207,12 +207,23 @@ export default defineComponent({
       empleado.familiares!.push(data.model)
     }
     onBeforeGuardar(() => {
-      if (empleado.roles.includes(rolesSistema.chofer))
+      if (empleado.roles.includes(rolesSistema.chofer)) {
         empleado.conductor = conductor
-      else
+      }
+      else {
         empleado.conductor = []
+      }
 
     })
+    onBeforeModificar(() => {
+      if (empleado.roles.includes(rolesSistema.chofer)) {
+        empleado.conductor = conductor
+      }
+      else {
+        empleado.conductor = []
+      }
+    })
+    onModificado(() => console.log('modificado'))
     onReestablecer(() => {
       refArchivo.value.limpiarListado()
       verificarRolesSeleccionados()
@@ -225,7 +236,7 @@ export default defineComponent({
 
       if (empleado.roles.includes(rolesSistema.chofer)) {
         mostrarComponenteInformacionLicencia.value = true
-        conductor.hydrate(empleado.conductor)
+        conductor.hydrate(empleado.conductor ? empleado.conductor : new Conductor())
       } else mostrarComponenteInformacionLicencia.value = false
 
       // listar archivos

@@ -2,12 +2,23 @@ import { EntidadAuditable } from "shared/entidad/domain/entidadAuditable";
 
 export class AsignacionVehiculo extends EntidadAuditable {
     vehiculo: string | null
-    persona_entrega: number | null
-    persona_responsable: number | null
-    observacion: string | null
+    entrega: number | null
+    responsable: number | null
+    observacion_recibe: string | null
+    observacion_entrega: string | null
+    fecha_entrega: string| null
+    estado: string| null
+    canton:number| null
 
     constructor() {
         super()
         this.vehiculo = null
+        this.entrega = null
+        this.responsable = null
+        this.observacion_entrega = null
+        this.observacion_recibe = null
+        this.fecha_entrega = null
+        this.estado = null
+        this.canton = null
     }
 }
