@@ -2,10 +2,9 @@
   <div>
     <div class="q-mb-md">
       <transition name="scale" mode="out-in">
-
         <detalle-paciente
-        v-if="empleado.id"
-        :empleado="empleado"
+          v-if="empleado.id"
+          :empleado="empleado"
         ></detalle-paciente>
       </transition>
     </div>
@@ -272,11 +271,17 @@
           ></q-input>
         </div>
 
-        <div v-if="esAutorizador || accion === acciones.consultar" class="col-12 col-md-3">
+        <div
+          v-if="esAutorizador || accion === acciones.consultar"
+          class="col-12 col-md-3"
+        >
           <label class="q-mb-sm block text-positive text-bold"
             >Autorización</label
           >
-          <q-select
+          <q-chip color="grey-4">{{
+            solicitudExamen.estado_solicitud_examen
+          }}</q-chip>
+          <!-- <q-select
             v-model="solicitudExamen.estado_solicitud_examen"
             :options="selectAprobarEstadosSolicitudesExamenes"
             :disable="!esAutorizador"
@@ -293,7 +298,7 @@
             emit-value
             map-options
           >
-          </q-select>
+          </q-select> -->
         </div>
         <!-- solicitudExamen.estado_solicitud_examen === -->
         <!-- estadosSolicitudesExamenes.SOLICITADO.value -->
@@ -301,7 +306,7 @@
           <label class="q-mb-sm block">Observación del autorizador</label>
           <q-input
             v-model="solicitudExamen.observacion_autorizador"
-            :disable="disabled"
+            disable
             outlined
             dense
             autogrow

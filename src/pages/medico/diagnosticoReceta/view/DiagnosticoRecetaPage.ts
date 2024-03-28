@@ -1,8 +1,8 @@
 // Dependencias
 import { StatusEssentialLoading } from 'components/loading/application/StatusEssentialLoading'
 import { useAuthenticationStore } from 'stores/authentication'
-import { Ref, defineComponent, reactive, ref } from 'vue'
-import { tiposEnfermedades } from 'config/utils/medico'
+import { tiposCitaMedica, tiposEnfermedades } from 'config/utils/medico'
+import { computed, defineComponent, reactive, ref } from 'vue'
 import { required } from 'shared/i18n-validators'
 import { useMedicoStore } from 'stores/medico'
 import useVuelidate from '@vuelidate/core'
@@ -18,12 +18,10 @@ import { EmpleadoController } from 'pages/recursosHumanos/empleados/infraestruct
 import { ConsultaMedicaController } from '../infraestructure/ConsultaMedicaController'
 import { CieController } from 'pages/medico/cie/infraestructure/CieController'
 import { Empleado } from 'pages/recursosHumanos/empleados/domain/Empleado'
-import { ConsultaMedica } from '../domain/ConsultaMedica'
-import { Cie } from 'pages/medico/cie/domain/Cie'
-import { DiagnosticoCitaMedica } from '../domain/DiagnosticoCitaMedica'
-import { DiagnosticoCitaMedicaController } from '../infraestructure/DiagnosticoCitaMedicaController'
-import { acciones } from 'config/utils'
 import { useFiltrosListadosSelects } from 'shared/filtrosListadosGenerales'
+import { DiagnosticoCitaMedica } from '../domain/DiagnosticoCitaMedica'
+import { ConsultaMedica } from '../domain/ConsultaMedica'
+import { acciones } from 'config/utils'
 
 
 export default defineComponent({
@@ -33,7 +31,7 @@ export default defineComponent({
     DetallePaciente,
     ButtonSubmits,
   },
-  emits: ['cerrar-modal'],
+  emits: ['cerrar-modal', 'guardado'],
   setup(props, { emit }) {
     /*********
      * Stores
@@ -52,16 +50,15 @@ export default defineComponent({
      ***********/
     const empleado = reactive(new Empleado())
     const cargando = new StatusEssentialLoading()
-    const tabsEnfermedades = ref(tiposEnfermedades.HISTORIAL_CLINICO)
-    const enfermedadesSeleccionadas: Ref<DiagnosticoCitaMedica[]> = ref([])
+    const tabsEnfermedades = ref(tiposEnfermedades.COMUNES)
 
     /********
     * Mixin
     *********/
     const mixin = new ContenedorSimpleMixin(ConsultaMedica, consultaController)
     const { entidad: consulta, accion, listadosAuxiliares, listado, disabled } = mixin.useReferencias()
-    const { setValidador, cargarVista, obtenerListados, listar } = mixin.useComportamiento()
-    const { onBeforeGuardar, onReestablecer, onListado } = mixin.useHooks()
+    const { setValidador, cargarVista, obtenerListados, listar, editarParcial } = mixin.useComportamiento()
+    const { onBeforeGuardar, onReestablecer, onGuardado } = mixin.useHooks()
 
     cargarVista(async () => {
       await obtenerListados({
@@ -86,6 +83,17 @@ export default defineComponent({
       }
     }
 
+    const consultarConsulta = async () => {
+      const filtro = { registro_empleado_examen_id: consulta.registro_empleado_examen, cita_medica_id: consulta.cita_medica }
+      const { result } = await consultaController.listar(filtro)
+      if (result[0]) consulta.hydrate(result[0])
+      accion.value = consulta.id ? acciones.consultar : acciones.nuevo
+    }
+
+    const darAlta = () => {
+      editarParcial(consulta.id, { dado_alta: true })
+    }
+
     /*************
    * Validaciones
    **************/
@@ -100,28 +108,22 @@ export default defineComponent({
      * Hooks
      *********/
     onBeforeGuardar(() => {
-      consulta.diagnosticos = enfermedadesSeleccionadas.value.map((enfermedad: any) => {
+      consulta.diagnosticos = consulta.diagnosticos.map((enfermedad: any) => {
         const diagnostico = new DiagnosticoCitaMedica()
         diagnostico.cie = enfermedad.id
         diagnostico.recomendacion = enfermedad.recomendacion
         return diagnostico
       })
-
-      // console.log(consulta)
     })
 
     onReestablecer(() => {
-      enfermedadesSeleccionadas.value = []
+      consulta.diagnosticos = []
       emit('cerrar-modal')
     })
 
-    const consultarConsulta = async () => {
-      const filtro = { registro_empleado_examen_id: consulta.registro_empleado_examen, cita_medica_id: consulta.cita_medica }
-      const { result } = await consultaController.listar(filtro)
-      consulta.hydrate(result[0])
-      enfermedadesSeleccionadas.value = consulta.diagnosticos
-      accion.value = consulta.id ? acciones.consultar : acciones.nuevo
-    }
+    onGuardado(() => {
+      emit('guardado', { page: 'DiagnosticoRecetaPage', entidad: consulta })
+    })
 
     /*******
     * Init
@@ -138,6 +140,8 @@ export default defineComponent({
     consultarConsulta()
     listar({ empleado_id: medicoStore.empleado?.id })
 
+    const esAccidenteTrabajo = computed(() => medicoStore.tipoCitaMedica === tiposCitaMedica.ACCIDENTE_DE_TRABAJO.value)
+
     return {
       v$,
       mixin,
@@ -147,7 +151,14 @@ export default defineComponent({
       empleado,
       enfermedades,
       filtrarEnfermedades,
-      enfermedadesSeleccionadas,
+      esConsultable: computed(() => accion.value === acciones.consultar),
+      esAccidenteTrabajo,
+      tipoCitaMedica: computed(() => {
+        if (medicoStore.tipoCitaMedica === tiposCitaMedica.ENFERMEDAD_COMUN.value) return tiposCitaMedica.ENFERMEDAD_COMUN.label
+        else if (esAccidenteTrabajo.value) return tiposCitaMedica.ACCIDENTE_DE_TRABAJO.label
+      }),
+      darAlta,
+      // enfermedadesSeleccionadas,
       tiposEnfermedades,
       tabsEnfermedades,
     }

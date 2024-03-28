@@ -8,6 +8,7 @@ export class ConsultaMedica extends EntidadAuditable {
   registro_empleado_examen: number | null
   diagnosticos: DiagnosticoCitaMedica[]
   receta: Receta
+  tipo_cita_medica: string | null
 
   constructor() {
     super()
@@ -16,5 +17,6 @@ export class ConsultaMedica extends EntidadAuditable {
     this.registro_empleado_examen = null
     this.diagnosticos = []
     this.receta = new Receta()
+    this.tipo_cita_medica = null
   }
 }

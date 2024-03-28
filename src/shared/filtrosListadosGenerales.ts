@@ -394,7 +394,7 @@ export const useFiltrosListadosSelects = (listadosAuxiliares, entidad?: Ref<any>
    * Modulo medico
    ****************/
   function filtrarEnfermedades(val, update) {
-    return filtrarLista(val, update, enfermedades, 'nombre', listadosAuxiliares.enfermedades)
+    return filtrarLista(val, update, enfermedades, 'codigo_nombre_enfermedad', listadosAuxiliares.enfermedades)
   }
 
   /***************************************

@@ -103,19 +103,24 @@
 
       <div
         v-if="titulo"
-        class="row text-primary text-subtitle2 q-mb-lg items-center justify-center block"
+        class="row text-primary text-subtitle2 q-mb-lg items-center justify-between col-12"
         :class="{
           'titulo-tabla2': !$q.screen.xs,
           'justify-center': $q.screen.xs,
         }"
       >
-        <q-icon
-          v-if="!$q.screen.xs"
-          name="bi-grip-vertical"
-          color="info"
-          class="q-mr-sm"
-        ></q-icon>
-        {{ titulo }}
+        <span>
+          <q-icon
+            v-if="!$q.screen.xs"
+            name="bi-grip-vertical"
+            color="info"
+            class="q-mr-sm"
+          ></q-icon>
+          <span>{{ titulo }}</span>
+        </span>
+        <span>
+          <slot name="custom-header" />
+        </span>
       </div>
 
       <div v-if="permitirBuscar" class="row q-col-gutter-xs full-width q-mb-md">

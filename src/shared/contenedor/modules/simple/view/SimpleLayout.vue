@@ -9,6 +9,9 @@
     </div>
 
     <div class="row justify-end q-col-gutter-x-xs q-pt-md">
+      <span>
+        <slot name="custom-buttons"></slot>
+      </span>
       <button-submits
         v-if="mostrarButtonSubmits"
         :accion="accion"

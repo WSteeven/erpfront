@@ -41,7 +41,7 @@
                   />
                   <q-tab
                     :name="tiposEnfermedades.COMUNES"
-                    :label="tiposEnfermedades.COMUNES"
+                    :label="tipoCitaMedica"
                     :class="{
                       'tab-inactive':
                         tabsEnfermedades !== tiposEnfermedades.COMUNES,
@@ -59,62 +59,78 @@
                   class="bg-desenfoque border-grey custom-shadow"
                 >
                   <q-tab-panel :name="tiposEnfermedades.HISTORIAL_CLINICO">
-                    <q-scroll-area style="height: 600px">
+                    <q-scroll-area style="height: 400px">
                       <div
-                        v-for="consulta in listado"
-                        :key="consulta.id"
-                        class="row border-primary q-pa-sm rounded bg-blue-2 q-mb-sm"
+                        class="border-blue-grey-dashed rounded overflow-hidden"
                       >
-                        <div class="col-12 col-md-6 q-mb-md">
-                          <div class="text-bold text-primary q-mb-sm">
-                            Fecha de atención
+                        <div
+                          v-for="consulta in listado"
+                          :key="consulta.id"
+                          class="row border-bottom-blue-grey-dashed q-pa-md q-col-gutter-x-sm rounded bg-blue-grey-1"
+                        >
+                          <div class="col-12 col-md-6 q-mb-md">
+                            <div class="text-bold q-mb-sm">
+                              Fecha de atención
+                            </div>
+                            {{ consulta.created_at }}
                           </div>
-                          {{ consulta.created_at }}
-                        </div>
 
-                        <div class="col-12 col-md-6 q-mb-md">
-                          <div class="text-bold text-primary q-mb-sm">
-                            Observación
+                          <div class="col-12 col-md-6 q-mb-md">
+                            <div class="text-bold q-mb-sm">Observación</div>
+                            {{ consulta.observacion ?? 'NINGUNA' }}
                           </div>
-                          {{ consulta.observacion }}
-                        </div>
 
-                        <div class="col-12 col-md-6">
-                          <div class="text-bold text-primary q-mb-sm">
-                            Receta
-                          </div>
-                          <div class="row">
-                            <div class="col-4">
-                              <b>RP: </b>{{ consulta.receta.rp }}
+                          <div class="col-12 col-md-6">
+                            <div class="text-bold q-mb-sm">Receta</div>
+                            <div class="row">
+                              <div class="col-12">
+                                <table>
+                                  <thead>
+                                    <th>RP</th>
+                                    <th>Prescripción</th>
+                                  </thead>
+                                  <tbody>
+                                    <tr>
+                                      <td>{{ consulta.receta.rp }}</td>
+                                      <td>
+                                        {{ consulta.receta.prescripcion }}
+                                      </td>
+                                    </tr>
+                                  </tbody>
+                                </table>
+                              </div>
                             </div>
-                            <div class="col-8">
-                              <b>Prescripción: </b
-                              >{{ consulta.receta.prescripcion }}
-                            </div>
                           </div>
-                        </div>
 
-                        <div class="col-12 col-md-6">
-                          <div class="text-bold text-primary q-mb-sm">
-                            Diagnóstico
-                          </div>
-                          <div
-                            v-for="diagnostico in consulta.diagnosticos"
-                            :key="diagnostico.id"
-                            class="row"
-                          >
-                            <div class="col-4">
-                              <b>Enfermedad: </b
-                              >{{
-                                diagnostico.codigo +
-                                '-' +
-                                diagnostico.nombre_enfermedad
-                              }}
+                          <div class="col-12 col-md-6">
+                            <div class="text-bold q-mb-sm">
+                              Diagnóstico realizado
                             </div>
-                            <div class="col-8">
-                              <b>Recomendación: </b>
-                              {{ diagnostico.recomendacion }}
-                            </div>
+
+                            <table>
+                              <thead>
+                                <th>Enfermedad</th>
+                                <th>Recomendación</th>
+                              </thead>
+                              <tbody>
+                                <tr
+                                  v-for="diagnostico in consulta.diagnosticos"
+                                  :key="diagnostico.id"
+                                >
+                                  <td>
+                                    {{
+                                      diagnostico.codigo +
+                                      '-' +
+                                      diagnostico.nombre_enfermedad
+                                    }}
+                                  </td>
+
+                                  <td>
+                                    {{ diagnostico.recomendacion }}
+                                  </td>
+                                </tr>
+                              </tbody>
+                            </table>
                           </div>
                         </div>
                       </div>
@@ -129,8 +145,9 @@
                       </div>
                       <div class="col-12">
                         <label class="q-mb-sm block">Enfermedades</label>
+                        <!-- v-model="enfermedadesSeleccionadas" -->
                         <q-select
-                          v-model="enfermedadesSeleccionadas"
+                          v-model="consulta.diagnosticos"
                           :options="enfermedades"
                           transition-show="scale"
                           transition-hide="scale"
@@ -140,10 +157,7 @@
                           options-dense
                           dense
                           outlined
-                          :option-label="
-                            (item) =>
-                              `${item.codigo} - ${item.nombre_enfermedad}`
-                          "
+                          :option-label="(i) => i.codigo_nombre_enfermedad"
                           use-input
                           input-debounce="0"
                           emit-value
@@ -173,8 +187,9 @@
                       </div>
                     </div>
 
+                    <!-- v-for="enfermedad in enfermedadesSeleccionadas" -->
                     <div
-                      v-for="enfermedad in enfermedadesSeleccionadas"
+                      v-for="enfermedad in consulta.diagnosticos"
                       :key="enfermedad.id"
                       class="row q-mb-md"
                     >
@@ -277,6 +292,23 @@
           </q-expansion-item>
         </div>
       </div>
+    </template>
+
+    <template #custom-buttons>
+      <q-btn
+        v-if="esAccidenteTrabajo && esConsultable"
+        color="positive"
+        @click="darAlta()"
+        no-caps
+        push
+      >
+        <q-icon
+          name="bi-hand-thumbs-up-fill"
+          class="q-mr-sm"
+          size="xs"
+        ></q-icon>
+        Dar de alta</q-btn
+      >
     </template>
   </simple-layout>
 </template>

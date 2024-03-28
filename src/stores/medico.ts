@@ -13,6 +13,7 @@ export const useMedicoStore = defineStore('medico', () => {
   const idRegistroEmpleadoExamen: Ref<number | undefined> = ref()
   const idCita: Ref<number | null> = ref(null)
   const accion: typeof acciones[keyof typeof acciones] = acciones.nuevo as typeof acciones[keyof typeof acciones]
+  const tipoCitaMedica: Ref<string | undefined> = ref()
 
   return {
     examenSolicitado,
@@ -22,5 +23,6 @@ export const useMedicoStore = defineStore('medico', () => {
     accion,
     idRegistroEmpleadoExamen,
     idCita,
+    tipoCitaMedica,
   }
 })

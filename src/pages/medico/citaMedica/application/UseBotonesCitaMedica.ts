@@ -11,7 +11,8 @@ import { acciones } from "config/utils"
 import { ComportamientoModalesCitaMedica } from "../domain/ComportamientoModalesCitaMedica"
 import { useMedicoStore } from "stores/medico"
 
-export function useBotonesCitaMedica(mixin: ContenedorSimpleMixin<CitaMedica>, tabEstado: Ref<string>, modales: ComportamientoModalesCitaMedica) {
+export function useBotonesCitaMedica(listado: Ref<CitaMedica[]>, accion: Ref<string>, consultar: (params: any) => void, tabEstado: Ref<string>, modales: ComportamientoModalesCitaMedica) {
+  // export function useBotonesCitaMedica(mixin: ContenedorSimpleMixin<CitaMedica>, tabEstado: Ref<string>, modales: ComportamientoModalesCitaMedica) {
   /**********
    * Stores
    **********/
@@ -23,8 +24,8 @@ export function useBotonesCitaMedica(mixin: ContenedorSimpleMixin<CitaMedica>, t
    ************/
   const cambiarEstado = new CambiarEstadoCitaMedica()
   const { confirmar, prompt, notificarCorrecto } = useNotificaciones()
-  const { entidad: citaMedica, listado, accion } = mixin.useReferencias()
-  const { consultar } = mixin.useComportamiento()
+  // const { entidad: citaMedica, listado, accion } = mixin.useReferencias()
+  // const { consultar } = mixin.useComportamiento()
 
   const btnCancelarCita: CustomActionTable<CitaMedica> = {
     titulo: 'Cancelar cita',
@@ -72,20 +73,21 @@ export function useBotonesCitaMedica(mixin: ContenedorSimpleMixin<CitaMedica>, t
     titulo: 'Consulta médica',
     icono: 'bi-capsule-pill',
     color: 'blue-grey',
-    visible: () => tabEstado.value === estadosCitaMedica.AGENDADO && store.can('puede.crear.diagnosticos_recetas') && store.can('puede.editar.diagnosticos_recetas'),
+    visible: () => [estadosCitaMedica.AGENDADO, estadosCitaMedica.ATENDIDO].includes(tabEstado.value) && store.can('puede.crear.diagnosticos_recetas') && store.can('puede.editar.diagnosticos_recetas'),
     accion: ({ entidad }) => {
       console.log(entidad)
       medicoStore.idCita = entidad.id
       medicoStore.empleado = entidad.paciente_id
+      medicoStore.tipoCitaMedica = entidad.tipo_cita_medica
       modales.abrirModalEntidad('DiagnosticoRecetaPage')
     }
   }
 
   const btnAgendarCita: CustomActionTable<CitaMedica> = {
-    titulo: 'Agendar cita',
-    icono: 'bi-clock-history',
+    titulo: 'Gestionar cita',
+    icono: 'bi-pencil-square',
     color: 'primary',
-    visible: () => tabEstado.value === estadosCitaMedica.PENDIENTE && store.esMedico,
+    visible: () => tabEstado.value === estadosCitaMedica.PENDIENTE && ![estadosCitaMedica.CANCELADO, estadosCitaMedica.RECHAZADO].includes(tabEstado.value), // && store.esMedico,
     accion: async ({ entidad }) => {
       await consultar({ id: entidad.id })
       accion.value = acciones.editar

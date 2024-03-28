@@ -13,7 +13,7 @@ import { SolicitudExamen } from 'pages/medico/solicitudesExamenes/domain/Solicit
 import { Examen } from 'pages/medico/examenes/domain/Examen'
 import { DetalleExamen } from '../domain/DetalleExamen'
 
-export function useBotonesSolicitudExamen(tabEstadoExamen: Ref, modales: ComportamientoModalesGestionPaciente) {
+export function useBotonesSolicitudExamen(tabEstadoExamen: Ref, modales?: ComportamientoModalesGestionPaciente) {
   /*********
    * Stores
    *********/
@@ -59,7 +59,7 @@ export function useBotonesSolicitudExamen(tabEstadoExamen: Ref, modales: Comport
       // console.log(entidad)
       // console.log(solicitudExamen)
       medicoStore.solicitudExamen = solicitudExamen
-      modales.abrirModalEntidad('SolicitudExamenSolicitarPage')
+      modales?.abrirModalEntidad('SolicitudExamenSolicitarPage')
     }
   }
 
@@ -92,7 +92,7 @@ export function useBotonesSolicitudExamen(tabEstadoExamen: Ref, modales: Comport
     accion: () => {
       // medicoStore.examenSolicitado = entidad
       // console.log(entidad)
-      modales.abrirModalEntidad('ResultadosExamenPage')
+      modales?.abrirModalEntidad('ResultadosExamenPage')
     }
   }
 
@@ -104,7 +104,7 @@ export function useBotonesSolicitudExamen(tabEstadoExamen: Ref, modales: Comport
     accion: () => {
       medicoStore.idCita = null
       // medicoStore.empleado = entidad.paciente_id
-      modales.abrirModalEntidad('DiagnosticoRecetaPage')
+      modales?.abrirModalEntidad('DiagnosticoRecetaPage')
     }
   }
 
@@ -128,7 +128,7 @@ export function useBotonesSolicitudExamen(tabEstadoExamen: Ref, modales: Comport
       // console.log(entidad)
       // console.log(solicitudExamen)
       medicoStore.solicitudExamen = solicitudExamen
-      modales.abrirModalEntidad('SolicitudExamenSolicitarPage')
+      modales?.abrirModalEntidad('SolicitudExamenSolicitarPage')
     }
   }
 
@@ -147,7 +147,7 @@ export function useBotonesSolicitudExamen(tabEstadoExamen: Ref, modales: Comport
       medicoStore.solicitudExamen = solicitudExamen
       console.log(examenesSolicitados)
       console.log(solicitudExamen)
-      modales.abrirModalEntidad('SolicitudExamenSolicitarPage')
+      modales?.abrirModalEntidad('SolicitudExamenSolicitarPage')
     }
   }
 

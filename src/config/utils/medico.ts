@@ -9,7 +9,8 @@ export const tiposProcesosExamenes = {
 
 export const tiposEnfermedades = {
   HISTORIAL_CLINICO: 'Historial clínico',
-  COMUNES: 'Enfermedades comunes',
+  COMUNES: 'Enfermedades comúnes',
+  ACCIDENTE_TRABAJO: 'Accidente de trabajo',
 }
 
 /*export const estadosExamenes = {
@@ -93,7 +94,36 @@ export const tabOptionsEstadosCitaMedica: TabOption[] = [
   { label: 'Rechazados', value: estadosCitaMedica.RECHAZADO },
 ]
 
-export const selectAgendarCitaMedica = [
+export const selectAgendarCitaMedicaMedico = [
   { label: 'Pendiente', value: estadosCitaMedica.PENDIENTE },
   { label: 'Agendado', value: estadosCitaMedica.AGENDADO },
+  { label: 'Cancelar', value: estadosCitaMedica.CANCELADO },
+  { label: 'Rechazar', value: estadosCitaMedica.RECHAZADO },
+]
+
+export const selectAgendarCitaMedicaPaciente = [
+  { label: 'Pendiente', value: estadosCitaMedica.PENDIENTE },
+  { label: 'Cancelar', value: estadosCitaMedica.CANCELADO },
+]
+
+export const opcionesDestinoCitaMedica = {
+  PARA_MI: 'Para mi',
+  PARA_OTRO_EMPLEADO: 'Para otro empleado',
+}
+
+// tipo de cita medica
+export const tiposCitaMedica = {
+  ENFERMEDAD_COMUN: {
+    label: 'Enfermedad común',
+    value: 'ENFERMEDAD COMUN',
+  },
+  ACCIDENTE_DE_TRABAJO: {
+    label: 'Accidente de trabajo',
+    value: 'ACCIDENTE DE TRABAJO',
+  },
+}
+
+export const selectTipoCitaMedica = [
+  { label: 'Enfermedad común', value: tiposCitaMedica.ENFERMEDAD_COMUN.value },
+  { label: 'Accidente de trabajo', value: tiposCitaMedica.ACCIDENTE_DE_TRABAJO.value },
 ]

@@ -42,6 +42,11 @@ body {
   }
 }
 
+.q-scrollarea__thumb {
+  background: $primary;
+  opacity: 0.6;
+}
+
 .rounded-field {
   border-radius: 4px !important;
 }
@@ -71,6 +76,42 @@ body {
 }
 
 // table
+table {
+  border-collapse: collapse;
+  // border-radius: 4px;
+  // padding: 14px;
+  // overflow: hidden;
+  // width: 100%;
+}
+
+// table,
+td,
+th {
+  border: 1px solid;
+  padding: 0 4px;
+}
+
+th  {
+  color: $primary;
+  border-color: $grey-5;
+}
+
+thead {
+  background-color: $blue-grey-2;
+}
+
+td {
+  background-color: white; //rgba(white, .8);
+  border-color: $grey-5;
+  color: $grey-9;
+}
+
+/*th {
+  color: white;
+  border-color: black;
+}*/
+
+// q-table
 .q-virtual-scroll__content {
   text-transform: uppercase;
 }
@@ -94,6 +135,14 @@ input[type='time']::-webkit-calendar-picker-indicator {
   border: 1px solid $grey-4;
 }
 
+.border-blue-grey-dashed {
+  border: 1px dashed $blue-grey;
+}
+
+.border-bottom-blue-grey-dashed {
+  border-bottom: 1px dashed $blue-grey;
+}
+
 .border-grey-6 {
   border: 1px solid $grey-6;
 }
@@ -112,6 +161,10 @@ input[type='time']::-webkit-calendar-picker-indicator {
 
 .border-right-grey-5 {
   border-right: 1px solid $grey-5;
+}
+
+.border-bottom-primary {
+  border-bottom: 1px solid $primary;
 }
 /* .bg-transparent {
     background-color: transparent !important;
