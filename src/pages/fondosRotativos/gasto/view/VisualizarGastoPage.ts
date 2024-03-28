@@ -619,6 +619,7 @@ export default defineComponent({
             if (isAxiosError(error)) {
               const mensajes: string[] = error.erroresValidacion
               await notificarMensajesError(mensajes, notificaciones)
+              cargando.desactivar()
             }
           }
           break
@@ -638,6 +639,7 @@ export default defineComponent({
               if (isAxiosError(error)) {
                 const mensajes: string[] = error.erroresValidacion
                 await notificarMensajesError(mensajes, notificaciones)
+                cargando.desactivar()
               }
             }
           })
@@ -657,6 +659,7 @@ export default defineComponent({
                 if (isAxiosError(error)) {
                   const mensajes: string[] = error.erroresValidacion
                   await notificarMensajesError(mensajes, notificaciones)
+                  cargando.desactivar()
                 }
               }
             }
