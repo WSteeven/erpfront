@@ -101,6 +101,7 @@
                   <q-date
                     v-model="fondo_rotativo_fecha.fecha_inicio"
                     :mask="maskFecha"
+                    :options="optionsFechaInicio"
                     today-btn
                   >
                     <div class="row items-center justify-end">

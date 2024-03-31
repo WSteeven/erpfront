@@ -18,6 +18,7 @@ import { CustomActionTable } from 'components/tables/domain/CustomActionTable'
 import { accionesTabla, maskFecha } from 'config/utils'
 import { EmpleadoController } from 'pages/recursosHumanos/empleados/infraestructure/EmpleadoController'
 import { VehiculoController } from 'pages/controlVehiculos/vehiculos/infraestructure/VehiculoController'
+import { format } from '@formkit/tempo'
 
 export default defineComponent({
   components: { TabLayout, EssentialTable, ModalEntidad },
@@ -161,6 +162,20 @@ export default defineComponent({
         )
       }
     }
+    function optionsFechaInicio(date){
+      const fecha_actual = format(new Date(), 'YYYY/MM/DD')
+      return  date <= fecha_actual
+    }
+    function optionsFechaFin(date) {
+      const fecha_actual = format(new Date(), 'YYYY/MM/DD')
+      const fecha_inicio = format(
+        fondo_rotativo_contabilidad.fecha_inicio !== null
+          ? fondo_rotativo_contabilidad.fecha_inicio
+          : new Date(),
+        'YYYY/MM/DD'
+      )
+      return date >= fecha_inicio &&  date <= fecha_actual
+    }
     return {
       mixin,
       fondo_rotativo_contabilidad,
@@ -178,6 +193,8 @@ export default defineComponent({
       abrir_reporte,
       filtrarUsuarios,
       watchEffect,
+      optionsFechaInicio,
+      optionsFechaFin,
       modales,
       listado,
       botonVerModalGasto,

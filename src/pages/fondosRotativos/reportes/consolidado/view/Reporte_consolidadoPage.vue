@@ -86,7 +86,12 @@
             <template v-slot:append>
               <q-icon name="event" class="cursor-pointer">
                 <q-popup-proxy cover transition-show="scale" transition-hide="scale">
-                  <q-date v-model="consolidado.fecha_inicio" :mask="maskFecha" today-btn>
+                  <q-date
+                    v-model="consolidado.fecha_inicio"
+                    :mask="maskFecha"
+                    :options="optionsFechaInicio"
+                    today-btn
+                  >
                     <div class="row items-center justify-end">
                       <q-btn v-close-popup label="Cerrar" color="primary" flat />
                     </div>

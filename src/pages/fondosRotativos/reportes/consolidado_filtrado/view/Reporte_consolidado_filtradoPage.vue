@@ -27,6 +27,7 @@
                   <q-date
                     v-model="consolidadofiltrado.fecha_inicio"
                     :mask="maskFecha"
+                    :options="optionsFechaInicio"
                     today-btn
                   >
                     <div class="row items-center justify-end">

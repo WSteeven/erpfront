@@ -191,15 +191,21 @@ export default defineComponent({
         }
       }
     }
+    function optionsFechaInicio(date){
+      const fecha_actual = format(new Date(), 'YYYY/MM/DD')
+      return  date <= fecha_actual
+    }
     function optionsFechaFin(date) {
-      const fechaActual = format(
+      const fecha_actual = format(new Date(), 'YYYY/MM/DD')
+      const fecha_inicio = format(
         fondo_rotativo_fecha.fecha_inicio !== null
           ? fondo_rotativo_fecha.fecha_inicio
           : new Date(),
         'YYYY/MM/DD'
       )
-      return date >= fechaActual
+      return date >= fecha_inicio  && date <= fecha_actual
     }
+
     return {
       mixin,
       fondo_rotativo_fecha,
@@ -219,6 +225,7 @@ export default defineComponent({
       filtrarTiposFondos,
       filtrarTiposFondoRotativoFechas,
       watchEffect,
+      optionsFechaInicio,
       optionsFechaFin,
     }
   },

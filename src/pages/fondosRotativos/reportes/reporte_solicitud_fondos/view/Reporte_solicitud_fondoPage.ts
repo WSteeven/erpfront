@@ -155,15 +155,21 @@ export default defineComponent({
         )
       }
     }
+    function optionsFechaInicio(date){
+      const fecha_actual = format(new Date(), 'YYYY/MM/DD')
+      return  date <= fecha_actual
+    }
     function optionsFechaFin(date) {
-      const fechaActual = format(
+      const fecha_actual = format(new Date(), 'YYYY/MM/DD')
+      const fecha_inicio = format(
         reporte_solicitud_fondos.fecha_inicio !== null
           ? reporte_solicitud_fondos.fecha_inicio
           : new Date(),
         'YYYY/MM/DD'
       )
-      return date >= fechaActual
+      return date >= fecha_inicio  && date <= fecha_actual
     }
+
     return {
       mixin,
       store,
@@ -180,6 +186,7 @@ export default defineComponent({
       filtrarUsuarios,
       visualizar_saldo_usuario,
       watchEffect,
+      optionsFechaInicio,
       optionsFechaFin,
     }
   },

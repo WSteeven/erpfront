@@ -34,61 +34,81 @@
           >
             <template v-slot:no-option>
               <q-item>
-                <q-item-section class="text-grey">
-                  No hay resultados
-                </q-item-section>
+                <q-item-section class="text-grey"> No hay resultados </q-item-section>
               </q-item>
             </template>
           </q-select>
         </div>
-          <!-- Fecha Inicio -->
-          <div class="col-6 col-md-3">
-            <label class="q-mb-sm block">Fecha Inicio:</label>
-            <q-input v-model="reporte_solicitud_fondos.fecha_inicio" placeholder="Obligatorio"
-              :error="!!v$.fecha_inicio.$errors.length" :disable="disabled" outlined dense>
-              <template v-slot:append>
-                <q-icon name="event" class="cursor-pointer">
-                  <q-popup-proxy cover transition-show="scale" transition-hide="scale">
-                    <q-date v-model="reporte_solicitud_fondos.fecha_inicio" :mask="maskFecha" today-btn>
-                      <div class="row items-center justify-end">
-                        <q-btn v-close-popup label="Cerrar" color="primary" flat />
-                      </div>
-                    </q-date>
-                  </q-popup-proxy>
-                </q-icon>
-              </template>
+        <!-- Fecha Inicio -->
+        <div class="col-6 col-md-3">
+          <label class="q-mb-sm block">Fecha Inicio:</label>
+          <q-input
+            v-model="reporte_solicitud_fondos.fecha_inicio"
+            placeholder="Obligatorio"
+            :error="!!v$.fecha_inicio.$errors.length"
+            :disable="disabled"
+            outlined
+            dense
+          >
+            <template v-slot:append>
+              <q-icon name="event" class="cursor-pointer">
+                <q-popup-proxy cover transition-show="scale" transition-hide="scale">
+                  <q-date
+                    v-model="reporte_solicitud_fondos.fecha_inicio"
+                    :mask="maskFecha"
+                    :options="optionsFechaInicio"
+                    today-btn
+                  >
+                    <div class="row items-center justify-end">
+                      <q-btn v-close-popup label="Cerrar" color="primary" flat />
+                    </div>
+                  </q-date>
+                </q-popup-proxy>
+              </q-icon>
+            </template>
 
-              <template v-slot:error>
-                <div v-for="error of v$.fecha_inicio.$errors" :key="error.$uid">
-                  <div class="error-msg">{{ error.$message }}</div>
-                </div>
-              </template>
-            </q-input>
-          </div>
-          <!-- Fecha Fin -->
-          <div class="col-6 col-md-3">
-            <label class="q-mb-sm block">Fecha Fin:</label>
-            <q-input v-model="reporte_solicitud_fondos.fecha_fin" placeholder="Obligatorio"
-              :error="!!v$.fecha_fin.$errors.length" :disable="disabled" outlined dense>
-              <template v-slot:append>
-                <q-icon name="event" class="cursor-pointer">
-                  <q-popup-proxy cover transition-show="scale" transition-hide="scale">
-                    <q-date v-model="reporte_solicitud_fondos.fecha_fin" :mask="maskFecha" :options="optionsFechaFin" today-btn>
-                      <div class="row items-center justify-end">
-                        <q-btn v-close-popup label="Cerrar" color="primary" flat />
-                      </div>
-                    </q-date>
-                  </q-popup-proxy>
-                </q-icon>
-              </template>
+            <template v-slot:error>
+              <div v-for="error of v$.fecha_inicio.$errors" :key="error.$uid">
+                <div class="error-msg">{{ error.$message }}</div>
+              </div>
+            </template>
+          </q-input>
+        </div>
+        <!-- Fecha Fin -->
+        <div class="col-6 col-md-3">
+          <label class="q-mb-sm block">Fecha Fin:</label>
+          <q-input
+            v-model="reporte_solicitud_fondos.fecha_fin"
+            placeholder="Obligatorio"
+            :error="!!v$.fecha_fin.$errors.length"
+            :disable="disabled"
+            outlined
+            dense
+          >
+            <template v-slot:append>
+              <q-icon name="event" class="cursor-pointer">
+                <q-popup-proxy cover transition-show="scale" transition-hide="scale">
+                  <q-date
+                    v-model="reporte_solicitud_fondos.fecha_fin"
+                    :mask="maskFecha"
+                    :options="optionsFechaFin"
+                    today-btn
+                  >
+                    <div class="row items-center justify-end">
+                      <q-btn v-close-popup label="Cerrar" color="primary" flat />
+                    </div>
+                  </q-date>
+                </q-popup-proxy>
+              </q-icon>
+            </template>
 
-              <template v-slot:error>
-                <div v-for="error of v$.fecha_fin.$errors" :key="error.$uid">
-                  <div class="error-msg">{{ error.$message }}</div>
-                </div>
-              </template>
-            </q-input>
-          </div>
+            <template v-slot:error>
+              <div v-for="error of v$.fecha_fin.$errors" :key="error.$uid">
+                <div class="error-msg">{{ error.$message }}</div>
+              </div>
+            </template>
+          </q-input>
+        </div>
       </q-card-section>
 
       <q-separator></q-separator>
@@ -98,22 +118,11 @@
           color="positive"
           @click="generar_reporte(reporte_solicitud_fondos, 'excel')"
         >
-          <q-icon
-            name="bi-file-earmark-excel-fill"
-            size="xs"
-            class="q-mr-sm"
-          ></q-icon
+          <q-icon name="bi-file-earmark-excel-fill" size="xs" class="q-mr-sm"></q-icon
           >Excel</q-btn
         >
-        <q-btn
-          color="negative"
-          @click="generar_reporte(reporte_solicitud_fondos, 'pdf')"
-        >
-          <q-icon
-            name="bi-file-earmark-pdf-fill"
-            size="xs"
-            class="q-mr-sm"
-          ></q-icon
+        <q-btn color="negative" @click="generar_reporte(reporte_solicitud_fondos, 'pdf')">
+          <q-icon name="bi-file-earmark-pdf-fill" size="xs" class="q-mr-sm"></q-icon
           >PDF</q-btn
         >
       </q-card-actions>

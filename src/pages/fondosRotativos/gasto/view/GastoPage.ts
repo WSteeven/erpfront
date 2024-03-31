@@ -28,7 +28,6 @@ import {
   maskFecha,
   tabAutorizarGasto,
   estadosGastos,
-  convertir_fecha,
   acciones,
   rolesSistema,
 } from 'config/utils'
@@ -38,10 +37,10 @@ import { VehiculoController } from 'pages/controlVehiculos/vehiculos/infraestruc
 import ImagenComprimidaComponent from 'components/ImagenComprimidaComponent.vue'
 import { CustomActionTable } from 'components/tables/domain/CustomActionTable'
 import { filtarJefeImediato, filtrarEmpleadosPorRoles } from 'shared/utils'
+import { format } from '@formkit/tempo'
 export default defineComponent({
   components: { TabLayoutFilterTabs2, ImagenComprimidaComponent },
-  emits: ['guardado', 'cerrar-modal'],
-  setup(props, { emit }) {
+  setup() {
     const authenticationStore = useAuthenticationStore()
     const usuario = authenticationStore.user
     /*********
@@ -61,7 +60,6 @@ export default defineComponent({
     const { setValidador, obtenerListados, cargarVista, consultar, listar } =
       mixin.useComportamiento()
     const { onConsultado } = mixin.useHooks()
-
 
     const store = useAuthenticationStore()
     /*******
@@ -273,7 +271,9 @@ export default defineComponent({
         listadosAuxiliares.empleados,
         [rolesSistema.autorizador]
       )
-      autorizaciones_especiales.value.unshift(await filtarJefeImediato( listadosAuxiliares.empleados))
+      autorizaciones_especiales.value.unshift(
+        await filtarJefeImediato(listadosAuxiliares.empleados)
+      )
       listadosAuxiliares.autorizaciones_especiales =
         autorizaciones_especiales.value
       beneficiarios.value = listadosAuxiliares.empleados
@@ -303,7 +303,6 @@ export default defineComponent({
      * Filtros
      **********/
     // - Filtro AUTORIZACIONES ESPECIALES
-
 
     function filtrarAutorizacionesEspeciales(val, update) {
       if (val === '') {
@@ -365,18 +364,24 @@ export default defineComponent({
       // Verificar si el día actual es sábado
       let sabadoAnterior = ''
       if (diaSemana === 6) {
-        sabadoAnterior = convertir_fecha(
-          new Date(today.setDate(today.getDate() - ((today.getDay() + 2) % 7)))
+        sabadoAnterior = format(
+          new Date(today.setDate(today.getDate() - ((today.getDay() + 2) % 7))),
+          'YYYY/MM/DD'
         )
       } else {
-        sabadoAnterior = convertir_fecha(
-          //new Date(today.setDate(today.getDate() - ((today.getDay()+1) % 7)))
-          new Date(today.setDate(today.getDate() - (today.getDay() % 7)))
+        sabadoAnterior = format(
+          new Date(today.setDate(today.getDate() - (today.getDay() % 7))),
+          'YYYY/MM/DD'
         )
       }
-      const sabadoSiguiente = convertir_fecha(new Date(siguienteSabado()))
-      console.log(sabadoAnterior + ' al ' + sabadoSiguiente)
-      return date >= sabadoAnterior && date <= sabadoSiguiente
+      const sabadoSiguiente = format(new Date(siguienteSabado()), 'YYYY/MM/DD')
+      const fecha_actual = format(new Date(), 'YYYY/MM/DD')
+
+      return (
+        date >= sabadoAnterior &&
+        date <= sabadoSiguiente &&
+        date <= fecha_actual
+      )
     }
     function siguienteSabado() {
       const fecha = new Date() // Obtenemos la fecha actual
@@ -593,11 +598,11 @@ export default defineComponent({
         consultar(entidad)
       },
     }
-    let tabActualGasto = estadosGastos.PENDIENTE
+    const tabActualGasto = ref(estadosGastos.PENDIENTE)
 
     function filtrarGasto(tabSeleccionado: number) {
       listar({ estado: tabSeleccionado }, false)
-      tabActualGasto = tabSeleccionado
+      tabActualGasto.value = tabSeleccionado
     }
     return {
       mixin,

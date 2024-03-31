@@ -211,14 +211,19 @@ export default defineComponent({
     function mostrarEmpleados() {
       consolidado.usuario = null
     }
+    function optionsFechaInicio(date){
+      const fecha_actual = format(new Date(), 'YYYY/MM/DD')
+      return  date <= fecha_actual
+    }
     function optionsFechaFin(date) {
-      const fechaActual = format(
+      const fecha_actual = format(new Date(), 'YYYY/MM/DD')
+      const fecha_inicio = format(
         consolidado.fecha_inicio !== null
           ? consolidado.fecha_inicio
           : new Date(),
         'YYYY/MM/DD'
       )
-      return date >= fechaActual
+      return date >= fecha_inicio && date <= fecha_actual
     }
     return {
       mixin,
@@ -242,6 +247,7 @@ export default defineComponent({
       filtarTiposSaldos,
       mostrarEmpleados,
       watchEffect,
+      optionsFechaInicio,
       optionsFechaFin,
     }
   },
