@@ -1,4 +1,4 @@
-import { Ref, defineComponent, reactive, ref, watchEffect } from 'vue'
+import {  defineComponent, ref, } from 'vue'
 
 import TabLayout from 'shared/contenedor/modules/simple/view/TabLayout.vue'
 import { useNotificacionStore } from 'stores/notificacion'
@@ -15,7 +15,6 @@ import axios from 'axios'
 import { useAuthenticationStore } from 'stores/authentication'
 import { EmpleadoController } from 'pages/recursosHumanos/empleados/infraestructure/EmpleadoController'
 import { useCargandoStore } from 'stores/cargando'
-import { useFondoRotativoStore } from 'stores/fondo_rotativo'
 import { useRouter } from 'vue-router'
 
 export default defineComponent({
@@ -28,7 +27,6 @@ export default defineComponent({
     useNotificacionStore().setQuasar(useQuasar())
     useCargandoStore().setQuasar(useQuasar())
     const store = useAuthenticationStore()
-    const empleado_actual = store.user
     /***********
      * Mixin
      ************/

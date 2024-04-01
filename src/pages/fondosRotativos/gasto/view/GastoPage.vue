@@ -511,7 +511,6 @@
               </template>
             </q-select>
           </div>
-
           <!-- Kilometraje -->
           <div class="col-12 col-md-3" v-if="esCombustibleEmpresa">
             <label class="q-mb-sm block">Kilometraje</label>
@@ -542,7 +541,6 @@
               dense
             />
           </div>
-
           <!-- Placa Vehiculo Alquilado -->
           <div class="col-12 col-md-3" v-if="gasto.es_vehiculo_alquilado">
             <label class="q-mb-sm block">Placa de Vehiculo Alquilado </label>
@@ -630,7 +628,6 @@
               </template>
             </imagen-comprimida-component>
           </div>
-
           <!-- Comprobante 2 Archivo -->
           <div class="col-12 col-md-3">
             <label class="q-mb-sm block">Comprobante 2</label>
@@ -646,7 +643,6 @@
               </template>
             </imagen-comprimida-component>
           </div>
-
           <!-- Observacion -->
           <div class="col-12 col-md-3">
             <label class="q-mb-sm block">Observación</label>
@@ -669,7 +665,7 @@
             </q-input>
           </div>
           <!-- Observacion de Anulacion -->
-          <div class="col-12 col-md-3" v-if="es_consultar">
+          <div class="col-12 col-md-3" v-if="gasto.estado === estadosGastos.ANULADO">
             <label class="q-mb-sm block">Observacion de Anulación</label>
             <q-input
               v-model="gasto.observacion_anulacion"

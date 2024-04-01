@@ -560,42 +560,6 @@
               </template>
             </q-select>
           </div>
-          <!-- Autorizacion -->
-          <div class="col-12 col-md-3" v-if="visualizarAutorizador">
-            <label class="q-mb-sm block">Autorizaciòn Especial</label>
-            <q-select
-              v-model="gasto.aut_especial"
-              :options="autorizacionesEspeciales"
-              transition-show="scale"
-              transition-hide="scale"
-              options-dense
-              dense
-              outlined
-              :disable="disabled"
-              :readonly="disabled"
-              :error="!!v$.aut_especial.$errors.length"
-              error-message="Debes seleccionar un autorizador"
-              use-input
-              input-debounce="0"
-              @blur="v$.aut_especial.$touch"
-              @filter="filtrarAutorizacionesEspeciales"
-              :option-value="(v) => v.id"
-              :option-label="(v) => v.nombres + ' ' + v.apellidos"
-              emit-value
-              map-options
-            >
-              <template v-slot:error>
-                <div v-for="error of v$.aut_especial.$errors" :key="error.$uid">
-                  <div class="error-msg">{{ error.$message }}</div>
-                </div>
-              </template>
-              <template v-slot:no-option>
-                <q-item>
-                  <q-item-section class="text-grey"> No hay resultados </q-item-section>
-                </q-item>
-              </template>
-            </q-select>
-          </div>
 
           <!-- Kilometraje -->
           <div class="col-12 col-md-3" v-if="esCombustibleEmpresa">

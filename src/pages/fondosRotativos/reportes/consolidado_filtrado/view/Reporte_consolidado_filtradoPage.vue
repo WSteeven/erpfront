@@ -135,6 +135,7 @@
             input-debounce="0"
             @blur="v$.tipo_filtro.$touch"
             @filter="filtrarTiposFiltro"
+            @update:model-value="limpiar"
             :option-value="(v) => v.value"
             :option-label="(v) => v.name"
             emit-value
@@ -220,7 +221,6 @@
             </template>
           </q-select>
         </div>
-
         <!-- Proyectos -->
         <div
           class="col-12 col-md-4 q-mb-md"
@@ -241,8 +241,6 @@
             outlined
             :disable="disabled"
             :readonly="disabled"
-            :error="!!v$.proyecto.$errors.length"
-            error-message="Debes seleccionar un canton"
             use-input
             input-debounce="0"
             @filter="filtrarProyectos"
@@ -251,11 +249,7 @@
             emit-value
             map-options
           >
-            <template v-slot:error>
-              <div v-for="error of v$.proyecto.$errors" :key="error.$uid">
-                <div class="error-msg">{{ error.$message }}</div>
-              </div>
-            </template>
+
             <template v-slot:option="scope">
               <q-item v-bind="scope.itemProps" class="q-my-sm">
                 <q-item-section>
@@ -294,8 +288,6 @@
             outlined
             :disable="disabled"
             :readonly="disabled"
-            :error="!!v$.tarea.$errors.length"
-            error-message="Debes seleccionar una Tarea"
             use-input
             input-debounce="0"
             @filter="filtrarTareas"
@@ -304,11 +296,6 @@
             emit-value
             map-options
           >
-            <template v-slot:error>
-              <div v-for="error of v$.tarea.$errors" :key="error.$uid">
-                <div class="error-msg">{{ error.$message }}</div>
-              </div>
-            </template>
             <template v-slot:option="scope">
               <q-item v-bind="scope.itemProps" class="q-my-sm">
                 <q-item-section>
@@ -346,8 +333,6 @@
             outlined
             :disable="disabled"
             :readonly="disabled"
-            :error="!!v$.detalle.$errors.length"
-            error-message="Debes seleccionar un canton"
             use-input
             input-debounce="0"
             @filter="filtrarDetalles"
@@ -356,11 +341,6 @@
             emit-value
             map-options
           >
-            <template v-slot:error>
-              <div v-for="error of v$.detalle.$errors" :key="error.$uid">
-                <div class="error-msg">{{ error.$message }}</div>
-              </div>
-            </template>
             <template v-slot:no-option>
               <q-item>
                 <q-item-section class="text-grey"> No hay resultados </q-item-section>
@@ -421,8 +401,6 @@
             outlined
             :disable="disabled"
             :readonly="disabled"
-            :error="!!v$.subdetalle.$errors.length"
-            error-message="Debes seleccionar un canton"
             use-input
             input-debounce="0"
             @filter="filtroSubdetalles"
@@ -431,11 +409,6 @@
             emit-value
             map-options
           >
-            <template v-slot:error>
-              <div v-for="error of v$.subdetalle.$errors" :key="error.$uid">
-                <div class="error-msg">{{ error.$message }}</div>
-              </div>
-            </template>
             <template v-slot:no-option>
               <q-item>
                 <q-item-section class="text-grey"> No hay resultados </q-item-section>
@@ -461,8 +434,6 @@
             outlined
             :disable="disabled"
             :readonly="disabled"
-            :error="!!v$.autorizador.$errors.length"
-            error-message="Debes seleccionar un empleado"
             use-input
             input-debounce="0"
             @filter="filtrarAutorizacionesEspeciales"

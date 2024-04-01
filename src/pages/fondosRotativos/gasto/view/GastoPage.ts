@@ -652,6 +652,7 @@ export default defineComponent({
       mostarPlaca,
       listadoTareas,
       es_consultar,
+      estadosGastos
     }
   },
 })

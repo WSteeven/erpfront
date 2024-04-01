@@ -72,6 +72,8 @@ export default defineComponent({
       ruc: {
         minLength: 13,
       },
+
+
     }
     const tipos_saldos_consolidado_filtro = ref()
     const tipos_filtros = ref([
@@ -400,6 +402,17 @@ export default defineComponent({
         )
       })
     }
+
+    function limpiar(){
+      consolidadofiltrado.usuario = null
+      consolidadofiltrado.proyecto = null
+      consolidadofiltrado.tarea = null
+      consolidadofiltrado.detalle = null
+      consolidadofiltrado.ciudad = null
+      consolidadofiltrado.subdetalle = null
+      consolidadofiltrado.autorizador = null
+      consolidadofiltrado.ruc = null
+    }
     function optionsFechaInicio(date){
       const fecha_actual = format(new Date(), 'YYYY/MM/DD')
       return  date <= fecha_actual
@@ -445,6 +458,7 @@ export default defineComponent({
       filtrarProyectos,
       filtrarTareas,
       filtrarCiudades,
+      limpiar,
       watchEffect,
       listadosAuxiliares,
       maskFecha,

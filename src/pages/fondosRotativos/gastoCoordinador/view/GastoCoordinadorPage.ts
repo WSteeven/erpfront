@@ -1,5 +1,5 @@
-import {  defineComponent,ref } from 'vue'
-import {  GastoCoordinadores } from '../domain/GastoCoordinadores'
+import { defineComponent, ref } from 'vue'
+import { GastoCoordinadores } from '../domain/GastoCoordinadores'
 
 // Componentes
 import TabLayout from 'shared/contenedor/modules/simple/view/TabLayout.vue'
@@ -15,7 +15,9 @@ import { configuracionColumnasGasto } from '../domain/configuracionColumnasGasto
 import { CantonController } from 'sistema/ciudad/infraestructure/CantonControllerontroller'
 import { MotivoGastoController } from 'pages/fondosRotativos/MotivoGasto/infrestructure/MotivoGastoController'
 import { GrupoController } from 'pages/recursosHumanos/grupos/infraestructure/GrupoController'
-
+import { acciones } from 'config/utils'
+import { useAuthenticationStore } from 'stores/authentication'
+import { CustomActionTable } from 'components/tables/domain/CustomActionTable'
 
 export default defineComponent({
   components: { TabLayout, SelectorImagen },
@@ -24,39 +26,42 @@ export default defineComponent({
      * Stores
      *********/
     useNotificacionStore().setQuasar(useQuasar())
+    const authenticationStore = useAuthenticationStore()
+
     /***********
      * Mixin
      ************/
-    const mixin = new ContenedorSimpleMixin(GastoCoordinadores, new GastoCoordinadoresController())
+    const mixin = new ContenedorSimpleMixin(
+      GastoCoordinadores,
+      new GastoCoordinadoresController()
+    )
     const {
       entidad: gasto,
       disabled,
       accion,
       listadosAuxiliares,
     } = mixin.useReferencias()
-    const { setValidador, obtenerListados, cargarVista } =
+    const { setValidador, obtenerListados, cargarVista,consultar } =
       mixin.useComportamiento()
 
     /*******
      * Init
      ******/
 
-
-
     /*************
      * Validaciones
      **************/
     const reglas = {
       lugar: {
-        required
+        required,
       },
-      grupo:{
-        required
+      grupo: {
+        required,
       },
       monto: {
         required,
       },
-      motivo:{
+      motivo: {
         required,
       },
       observacion: {
@@ -82,10 +87,10 @@ export default defineComponent({
           controller: new MotivoGastoController(),
           params: { campos: 'id,nombre' },
         },
-        grupos:{
+        grupos: {
           controller: new GrupoController(),
           params: { campos: 'id,nombre' },
-        }
+        },
       })
       cantones.value = listadosAuxiliares.cantones
       motivos.value = listadosAuxiliares.motivos
@@ -96,7 +101,7 @@ export default defineComponent({
      * Filtros
      **********/
 
-      // - Filtro Lugares
+    // - Filtro Lugares
     function filtrarCantones(val, update) {
       if (val === '') {
         update(() => {
@@ -141,6 +146,18 @@ export default defineComponent({
         )
       })
     }
+    const editarGasto: CustomActionTable = {
+      titulo: ' ',
+      icono: 'bi-pencil-square',
+      color: 'secondary',
+      visible: ({ entidad }) => {
+        return entidad.usuario == authenticationStore.user.id
+      },
+      accion: ({ entidad }) => {
+        accion.value = acciones.editar
+        consultar(entidad)
+      },
+    }
 
     return {
       mixin,
@@ -155,7 +172,8 @@ export default defineComponent({
       autorizacionesEspeciales,
       filtrarGrupos,
       filtrarCantones,
-      filtarMotivos
+      filtarMotivos,
+      editarGasto
     }
   },
 })

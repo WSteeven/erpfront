@@ -69,7 +69,7 @@ export default defineComponent({
       accion,
       listadosAuxiliares,
     } = mixin.useReferencias()
-    const { setValidador, cargarVista, obtenerListados } =
+    const { setValidador, cargarVista } =
       mixin.useComportamiento()
     const { onConsultado } = mixin.useHooks()
     const { entidad: gasto } = mixin_gastos.useReferencias()
@@ -169,13 +169,7 @@ export default defineComponent({
     })
     //Obtener el listado de las cantones
     cargarVista(async () => {
-      autorizaciones_especiales.value = await filtrarEmpleadosPorRoles(
-        fondoRotativoStore.empleados,
-        [rolesSistema.autorizador]
-      )
-      listadosAuxiliares.autorizaciones_especiales =
-        autorizaciones_especiales.value
-      beneficiarios.value = fondoRotativoStore.empleados
+        beneficiarios.value = fondoRotativoStore.empleados
       listadosAuxiliares.beneficiarios = beneficiarios.value
        proyectos.value = fondoRotativoStore.proyectos
       listadosAuxiliares.proyectos = proyectos.value
@@ -667,7 +661,6 @@ export default defineComponent({
       watchEffect,
       existeComprobante,
       aprobar_gasto,
-      filtrarAutorizacionesEspeciales,
       tiene_factura_subdetalle,
       filtrarCantones,
       filtrarDetalles,
