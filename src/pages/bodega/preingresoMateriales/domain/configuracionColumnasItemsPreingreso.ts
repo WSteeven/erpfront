@@ -49,6 +49,15 @@ export const configuracionColumnasItemPreingreso: ColumnConfig<ItemPreingresoMat
         sortable: false
     },
     {
+        name: 'condicion',
+        field: 'condicion',
+        label: 'Condición',
+        align: 'left',
+        type: 'select',
+        editable: true,
+        sortable: false
+    },
+    {
         name: 'serial',
         field: 'serial',
         label: 'Serial',

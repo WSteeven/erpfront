@@ -13,7 +13,6 @@ import { AxiosResponse } from 'axios'
 // Componentes
 import ArchivoSeguimiento from 'gestionTrabajos/subtareas/modules/gestorArchivosTrabajos/view/ArchivoSeguimiento.vue'
 import TablaObservaciones from 'gestionTrabajos/formulariosTrabajos/tablaObservaciones/view/TablaObservacion.vue'
-import TablaDevolucionProducto from 'components/tables/view/TablaDevolucionProducto.vue'
 import TablaFilasDinamicas from 'components/tables/view/TablaFilasDinamicas.vue'
 import EssentialTable from 'components/tables/view/EssentialTable.vue'
 import ButtonSubmits from 'components/buttonSubmits/buttonSubmits.vue'
@@ -50,7 +49,6 @@ export default defineComponent({
     EssentialTable,
     SelectorImagen,
     ButtonSubmits,
-    TablaDevolucionProducto,
     TablaObservaciones,
     ArchivoSeguimiento,
     TablaFilasDinamicas,
