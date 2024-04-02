@@ -134,8 +134,15 @@ export default defineComponent({
           controller: new TareaController(),
           params: { campos: 'id,codigo_tarea,titulo,cliente_id' }
         },
-        condiciones: new CondicionController()
+        // condiciones: new CondicionController()
       })
+      //Configurar los listados
+      empleados.value = listadosAuxiliares.empleados
+      opciones_autorizaciones.value = JSON.parse(LocalStorage.getItem('autorizaciones')!.toString())
+      sucursales.value = listadosAuxiliares.sucursales
+      tareas.value = listadosAuxiliares.tareas
+      listadosAuxiliares.condiciones = JSON.parse(LocalStorage.getItem('condiciones')!.toString())
+      condiciones.value = listadosAuxiliares.condiciones
 
       //logica para autocompletar el formulario de devolucion
       if (listadoMaterialesDevolucion.listadoMateriales.length) {
@@ -151,7 +158,8 @@ export default defineComponent({
             descripcion: material.detalle_producto,
             cantidad: material.stock_actual,
             medida: material.medida,
-            id: material.detalle_producto_id
+            id: material.detalle_producto_id,
+            serial: material.serial,
           }
         })
       }
@@ -307,7 +315,7 @@ export default defineComponent({
         prompt(data)
       },
       visible: () => {
-        return (accion.value == acciones.nuevo && devolucion.misma_condicion) || (accion.value == acciones.nuevo && devolucion.misma_condicion)
+        return (accion.value == acciones.nuevo && devolucion.misma_condicion) || (accion.value == acciones.editar && devolucion.misma_condicion)
       }
     }
     const botonAnular: CustomActionTable = {
@@ -361,7 +369,7 @@ export default defineComponent({
         console.log('Devolución a ingresar a bodega es: ', devolucionStore.devolucion)
         router.push('transacciones-ingresos')
       },
-      visible: ({ entidad }) => (tabSeleccionado.value == 'APROBADO' || tabSeleccionado.value == 'PARCIAL') && store.esBodeguero ? true : false
+      visible: ({ entidad }) => (tabSeleccionado.value == 'APROBADO' || tabSeleccionado.value == 'PARCIAL') && store.can('puede.gestionar.devoluciones') ? true : false
     }
     const botonCorregir: CustomActionTable = {
       titulo: 'Corregir devolución',
@@ -376,12 +384,7 @@ export default defineComponent({
     }
 
 
-    //Configurar los listados
-    empleados.value = listadosAuxiliares.empleados
-    opciones_autorizaciones.value = JSON.parse(LocalStorage.getItem('autorizaciones')!.toString())
-    sucursales.value = listadosAuxiliares.sucursales
-    tareas.value = listadosAuxiliares.tareas
-    condiciones.value = listadosAuxiliares.condiciones
+
 
     const configuracionColumnasProductosSeleccionadosAccion = computed(() => [...configuracionColumnasProductosSeleccionados,
     {

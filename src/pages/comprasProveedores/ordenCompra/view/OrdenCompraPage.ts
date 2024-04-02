@@ -121,6 +121,7 @@ export default defineComponent({
           params: {
             campos: 'id,codigo_tarea,titulo,cliente_id',
             formulario: true,
+            empleado_id: store.user.id,
             //   coordinador_id: 7,
           },
         },
@@ -168,7 +169,7 @@ export default defineComponent({
       }, 1);
     })
     onModificado((id: number) => {
-      idOrden.value=id
+      idOrden.value = id
       setTimeout(() => subirArchivos(), 1)
       filtrarOrdenes('1')
     })

@@ -58,7 +58,7 @@
             class=""
             v-model="permiso.autorizar"
             label="Autorizar"
-            :disable="disabled || soloLectura"
+            :disable="disabled "
             outlined
             dense
           ></q-checkbox>
@@ -67,7 +67,7 @@
             class="q-ml-lg"
             v-model="permiso.acceder"
             label="Acceder"
-            :disable="disabled || soloLectura"
+            :disable="disabled "
             outlined
             dense
           ></q-checkbox>
@@ -76,7 +76,7 @@
             class="q-ml-lg"
             v-model="permiso.ver"
             label="Ver"
-            :disable="disabled || soloLectura"
+            :disable="disabled "
             outlined
             dense
           ></q-checkbox>
@@ -85,7 +85,7 @@
             class="q-ml-lg"
             v-model="permiso.crear"
             label="Crear"
-            :disable="disabled || soloLectura"
+            :disable="disabled "
             outlined
             dense
           ></q-checkbox>
@@ -94,7 +94,7 @@
             class="q-ml-lg"
             v-model="permiso.editar"
             label="Editar"
-            :disable="disabled || soloLectura"
+            :disable="disabled "
             outlined
             dense
           ></q-checkbox>
@@ -103,7 +103,7 @@
             class="q-ml-lg"
             v-model="permiso.eliminar"
             label="Eliminar"
-            :disable="disabled || soloLectura"
+            :disable="disabled "
             outlined
             dense
           ></q-checkbox>

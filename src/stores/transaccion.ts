@@ -6,7 +6,7 @@ import { AxiosResponse } from 'axios'
 import { defineStore } from 'pinia'
 import { reactive, ref } from 'vue'
 import { acciones } from 'config/utils'
-import { imprimirArchivo, notificarMensajesError } from 'shared/utils'
+import { imprimirArchivo, notificarErrores, notificarMensajesError } from 'shared/utils'
 import { Comprobante } from 'pages/bodega/comprobantes/domain/Comprobante'
 import { ApiError } from 'shared/error/domain/ApiError'
 import { useNotificaciones } from 'shared/notificaciones'
@@ -96,12 +96,19 @@ export const useTransaccionStore = defineStore('transaccion', () => {
      * transaction and then hydrates the response data into a transaction object.
      */
     async function anularIngreso() {
-        const axios = AxiosHttpRepository.getInstance()
-        const ruta = axios.getEndpoint(endpoints.transacciones_ingresos) + '/anular/' + idTransaccion.value
-        const response: AxiosResponse = await axios.get(ruta)
-        // console.log(response.data)
-        notificaciones.notificarCorrecto(response.data.mensaje)
-        transaccion.hydrate(response.data.modelo)
+        try {
+            statusLoading.activar();
+            const axios = AxiosHttpRepository.getInstance()
+            const ruta = axios.getEndpoint(endpoints.transacciones_ingresos) + '/anular/' + idTransaccion.value
+            const response: AxiosResponse = await axios.get(ruta)
+            // console.log(response.data)
+            notificaciones.notificarCorrecto(response.data.mensaje)
+            transaccion.hydrate(response.data.modelo)
+        } catch (error) {
+            notificarErrores(error)
+        } finally {
+            statusLoading.desactivar();
+        }
     }
 
     async function anularEgreso() {

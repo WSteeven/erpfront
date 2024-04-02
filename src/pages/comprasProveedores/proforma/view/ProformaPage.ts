@@ -22,7 +22,7 @@ import { useNotificacionStore } from "stores/notificacion";
 import { LocalStorage, useQuasar } from "quasar";
 import { useCargandoStore } from "stores/cargando";
 import { EmpleadoController } from "pages/recursosHumanos/empleados/infraestructure/EmpleadoController";
-import { acciones, accionesTabla, autorizacionesTransacciones } from "config/utils";
+import { acciones, accionesTabla, } from "config/utils";
 import { tabOptionsProformas, opcionesForma, opcionesTiempo } from "config/utils_compras_proveedores";
 import { useAuthenticationStore } from "stores/authentication";
 import { calcularDescuento, calcularSubtotalConImpuestosLista, calcularSubtotalSinImpuestosLista, encontrarUltimoIdListado, formatearFecha } from "shared/utils";
@@ -217,13 +217,14 @@ export default defineComponent({
         async function cargarProformaBD() {
             if (proforma.id_aux) {
                 const { result } = await new ProformaController().consultar(proforma.id_aux)
-                await console.log(result)
+                // await console.log(result)
                 await proforma.hydrate(result)
                 proforma.id = null
                 proforma.solicitante = store.user.id
                 proforma.created_at = formatearFecha(new Date().getDate().toLocaleString())
                 proforma.autorizacion = 1
                 proforma.estado = 1
+                proforma.observacion_aut =null
             } else {
                 proforma.hydrate(new Proforma())
             }
@@ -310,8 +311,8 @@ export default defineComponent({
         }
 
         watch(refItems, () => {
-            console.log('modificacion')
-            console.log(refItems.value)
+            // console.log('modificacion')
+            // console.log(refItems.value)
         })
 
         // configurar los listados

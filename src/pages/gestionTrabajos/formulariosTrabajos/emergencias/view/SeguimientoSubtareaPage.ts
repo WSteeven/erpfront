@@ -184,8 +184,8 @@ export default defineComponent({
     obtenerClientesMaterialesTarea()
     obtenerClientesMaterialesEmpleado()
     consultarTicketsATS(subtarea.id)
-    seleccionarClienteMaterialTarea()
-    seleccionarClienteMaterialStock()
+    // seleccionarClienteMaterialTarea()
+    // seleccionarClienteMaterialStock()
 
     onMounted(() => refArchivoSeguimiento.value.listarArchivos({ subtarea_id: trabajoAsignadoStore.subtarea.id }))
 
@@ -449,7 +449,7 @@ export default defineComponent({
         const response: AxiosResponse = await axios.get(ruta, { empleado_id: obtenerIdEmpleadoResponsable() })
         clientes.value = response.data.results
       })*/
-      consultarClientesMaterialesEmpleado()
+      consultarClientesMaterialesEmpleado({ empleado_id: obtenerIdEmpleadoResponsable() })
     }
 
     async function obtenerClientesMaterialesTarea() {
@@ -484,17 +484,21 @@ export default defineComponent({
       guardarActividad(actividad)
     }
 
-    function seleccionarClienteMaterialTarea() {
+    /*function seleccionarClienteMaterialTarea() {
       clienteMaterialTarea.value = subtarea.cliente_id
 
-      obtenerMaterialesTarea(clienteMaterialTarea.value)
+      const clienteEncontrado = listadosAuxiliares.clientesMaterialesTarea.value.find((cliente: any) => cliente.cliente_id === subtarea.cliente_id)
+
+      if (clienteEncontrado) obtenerMaterialesTarea(clienteMaterialTarea.value)
     }
 
     function seleccionarClienteMaterialStock() {
       clienteMaterialStock.value = subtarea.cliente_id
 
-      obtenerMaterialesStock(clienteMaterialStock.value)
-    }
+      const clienteEncontrado = listadosAuxiliares.clientesMaterialesEmpleado.value.find((cliente: any) => cliente.cliente_id === subtarea.cliente_id)
+
+      if (clienteEncontrado) obtenerMaterialesStock(clienteMaterialStock.value)
+    }*/
 
     function actualizarTablaMaterialesTarea() {
       clienteMaterialTarea.value = undefined

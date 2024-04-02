@@ -110,7 +110,7 @@ export default defineComponent({
         autorizadores: {
           controller: new EmpleadoRoleController(),
           params: {
-            roles: [rolesSistema.jefe_tecnico, rolesSistema.coordinador, rolesSistema.coordinadorBackup],
+            roles: [rolesSistema.jefe_tecnico, rolesSistema.coordinador, rolesSistema.coordinadorBackup, rolesSistema.gerente],
           }
         },
         empleadosOrigen: [],
@@ -271,6 +271,8 @@ export default defineComponent({
 
     async function seleccionarTareaOrigen() {
       transferencia.cliente = null
+      // transferencia.listado_productos = []
+      // listadosAuxiliares.productos = []
 
       const id = transferencia.tarea_origen
       if (id) {
@@ -310,13 +312,18 @@ export default defineComponent({
 
         // Consultar productos
         if (accion.value === acciones.nuevo) {
-          if (transferenciaProductoEmpleadoStore.listadoMateriales.length) {
-            // console.log('IF...')
+          console.log(transferenciaProductoEmpleadoStore.listadoMateriales)
+          console.log(transferenciaProductoEmpleadoStore.listadoMateriales.length)
+          /*if (transferenciaProductoEmpleadoStore.listadoMateriales.length) {
+            console.log('IF...')
             transferencia.listado_productos = mapearProductos(transferenciaProductoEmpleadoStore.listadoMateriales)
-          } else {
-            // console.log('ELSE...')
+            transferenciaProductoEmpleadoStore.listadoMateriales = []
+            console.log(transferenciaProductoEmpleadoStore.listadoMateriales)
+          } else {*/
+            console.log('ELSE...')
+            // es de tarea
             if (!transferencia.proyecto_origen && !transferencia.etapa_origen) {
-              // console.log('IF...###')
+              console.log('DENTRO DE ES DE TAREA')
               filtroTarea.cliente_id = transferencia.cliente
               filtroTarea.empleado_id = transferencia.empleado_origen
               filtroTarea.tarea_id = transferencia.tarea_origen
@@ -334,11 +341,12 @@ export default defineComponent({
             }
 
             transferenciaProductoEmpleadoStore.listadoMateriales = []
-          }
+          // }
         }
 
         establecerAutorizador()
       }
+      transferenciaProductoEmpleadoStore.listadoMateriales = []
     }
 
     async function seleccionarEmpleadoDestino() {
@@ -357,6 +365,8 @@ export default defineComponent({
           await consultarTareasEmpleadoDestino()
         } else consultarTareasEmpleadoDestino({ para_cliente_proyecto: destinosTareas.paraClienteFinal }) // Tareas para cliente final
       }
+
+      establecerAutorizador()
     }
 
     async function seleccionarProyectoDestino(limpiarCampos = true) {
@@ -657,7 +667,8 @@ export default defineComponent({
           descripcion: material.detalle_producto,
           cantidad: material.stock_actual,
           medida: material.medida,
-          id: material.detalle_producto_id
+          id: material.detalle_producto_id,
+          serial: material.serial,
         }
       })
     }
@@ -754,6 +765,13 @@ export default defineComponent({
 
     const seleccionarEsStock = () => {
       if (esParaStock.value) consultarClientesMaterialesEmpleado({ empleado_id: transferencia.empleado_origen, cliente_id: transferencia.cliente })
+      else transferencia.cliente = undefined
+      transferencia.listado_productos = []
+    }
+
+    const seleccionarEsDestinoStock = () => {
+      transferencia.proyecto_destino = null
+      transferencia.tarea_destino = null
     }
 
     return {
@@ -827,6 +845,8 @@ export default defineComponent({
       refrescarListadosEmpleado,
       refrescarListadosProyectos,
       esParaStock,
+      esDestinoStock: ref(false),
+      seleccionarEsDestinoStock,
       seleccionarClienteStock,
       seleccionarEsStock,
       existenProductos: computed(() => transferencia.listado_productos.length),

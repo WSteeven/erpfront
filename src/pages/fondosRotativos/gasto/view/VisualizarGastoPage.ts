@@ -24,7 +24,6 @@ import ButtonSubmits from 'components/buttonSubmits/buttonSubmits.vue'
 import { acciones, convertir_fecha, maskFecha } from 'config/utils'
 import { VisualizarGasto } from '../domain/VisualizarGasto'
 import { VisualizarGastoController } from '../infrestructure/VisualizarGastoController'
-// import { AutorizarGastoModales } from 'pages/fondosRotativos/autorizarGasto/domain/AutorizarGastoModales'
 import { useCargandoStore } from 'stores/cargando'
 import ImagenComprimidaComponent from 'components/ImagenComprimidaComponent.vue'
 import { EmpleadoRoleController } from 'pages/recursosHumanos/empleados/infraestructure/EmpleadoRolesController'
@@ -604,11 +603,11 @@ export default defineComponent({
       gasto.factura = null
     }
     async function aprobar_gasto(entidad, tipo_aprobacion: string) {
-      cargando.activar()
       switch (tipo_aprobacion) {
         case 'aprobar':
           try {
             if (await v$.value.$validate()) {
+              cargando.activar()
               await aprobarController.aprobarGasto(gasto)
               issubmit.value = false
               notificarCorrecto('Se aprobado Gasto Exitosamente')
@@ -620,6 +619,7 @@ export default defineComponent({
             if (isAxiosError(error)) {
               const mensajes: string[] = error.erroresValidacion
               await notificarMensajesError(mensajes, notificaciones)
+              cargando.desactivar()
             }
           }
           break
@@ -627,6 +627,7 @@ export default defineComponent({
           confirmar('¿Está seguro de rechazar el gasto?', async () => {
             try {
               if (await v$.value.$validate()) {
+                cargando.activar()
                 await aprobarController.rechazarGasto(entidad)
                 issubmit.value = false
                 notificarAdvertencia('Se rechazado Gasto Exitosamente')
@@ -638,6 +639,7 @@ export default defineComponent({
               if (isAxiosError(error)) {
                 const mensajes: string[] = error.erroresValidacion
                 await notificarMensajesError(mensajes, notificaciones)
+                cargando.desactivar()
               }
             }
           })
@@ -645,6 +647,7 @@ export default defineComponent({
         case 'anular':
           confirmar('¿Está seguro de anular el gasto?', async () => {
             if (await v$.value.$validate()) {
+              cargando.activar()
               try {
                 await aprobarController.anularGasto(entidad)
                 issubmit.value = false
@@ -656,6 +659,7 @@ export default defineComponent({
                 if (isAxiosError(error)) {
                   const mensajes: string[] = error.erroresValidacion
                   await notificarMensajesError(mensajes, notificaciones)
+                  cargando.desactivar()
                 }
               }
             }

@@ -285,7 +285,7 @@
                 soloLectura ||
                 (accion == acciones.editar && devolucion.misma_condicion)
               "
-              outlined
+              
               dense
             ></q-checkbox>
           </div>
@@ -508,14 +508,7 @@
               :accion2="botonEliminar"
               :altoFijo="false"
               :ajustarCeldas="true"
-              ><template v-slot:body="props">
-                <q-tr :props="props" @click="onRowClick(props.row)">
-                  <q-td key="name" :props="props">
-                    {{ props.row.name }}
-                  </q-td>
-                </q-tr>
-              </template></essential-table
-            >
+              />
           </div>
         </div>
       </q-form>
