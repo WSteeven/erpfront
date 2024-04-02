@@ -667,7 +667,8 @@ export default defineComponent({
           descripcion: material.detalle_producto,
           cantidad: material.stock_actual,
           medida: material.medida,
-          id: material.detalle_producto_id
+          id: material.detalle_producto_id,
+          serial: material.serial,
         }
       })
     }
