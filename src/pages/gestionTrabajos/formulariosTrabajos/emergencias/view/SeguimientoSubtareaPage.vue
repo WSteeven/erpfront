@@ -202,7 +202,7 @@
             </q-tab-panels>
           </q-card>
         </div>
-
+{{subtarea}}
         <div v-if="mostrarMaterialStock" class="col-12 q-mb-md">
           <br />
           <q-toggle
