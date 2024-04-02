@@ -38,6 +38,7 @@ export function useOrquestadorSelectorProductos(entidad: PreingresoMaterial, end
             item.cantidad = 1
             item.producto = item.producto
             item.descripcion = item.descripcion
+            item.condicion = 'NUEVO'
             item.serial = ''
             item.punta_inicial = ''
             item.punta_final = ''

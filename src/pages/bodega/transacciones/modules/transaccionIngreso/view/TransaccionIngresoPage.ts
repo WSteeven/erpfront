@@ -312,7 +312,7 @@ export default defineComponent({
       },
       visible: ({ entidad, posicion }) => {
         // console.log('aqui retornas cuando es visible el boton, en teoria solo cuando es activos fijos y no esta anulada')
-        return store.esActivosFijos && entidad.estado === estadosTransacciones.completa
+        return store.can('puede.anular.transacciones_ingresos') && entidad.estado === estadosTransacciones.completa
       }
 
     }

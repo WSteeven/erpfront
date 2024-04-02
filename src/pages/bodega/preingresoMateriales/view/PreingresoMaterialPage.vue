@@ -101,7 +101,7 @@
                   >
                     <q-date
                       v-model="preingreso.fecha"
-                      mask="DD-MM-YYYY"
+                      :mask="maskFecha"
                       today-btn
                     >
                       <div class="row items-center justify-end">
