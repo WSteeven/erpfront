@@ -6,9 +6,10 @@ export class AsignacionVehiculo extends EntidadAuditable {
     responsable: number | null
     observacion_recibe: string | null
     observacion_entrega: string | null
-    fecha_entrega: string| null
-    estado: string| null
-    canton:number| null
+    fecha_entrega: string | null
+    estado: string | null
+    canton: number | null
+    accesorios: string | null
 
     constructor() {
         super()
@@ -20,5 +21,6 @@ export class AsignacionVehiculo extends EntidadAuditable {
         this.fecha_entrega = null
         this.estado = null
         this.canton = null
+        this.accesorios = null
     }
 }

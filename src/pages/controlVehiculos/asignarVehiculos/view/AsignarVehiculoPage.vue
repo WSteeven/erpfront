@@ -266,7 +266,26 @@
             </q-select>
           </div>
 
-          <!--  -->
+          <!-- accesorios -->
+          <div class="col-12 col-md-3 q-mb-md">
+            <label class="q-mb-sm block">Accesorios</label>
+            <q-select
+              v-model="asignacion.accesorios"
+              options-dense
+              hint="Selecciona o ingresa un ítem"
+              :disable="disabled || soloLectura"
+              dense
+              outlined
+              use-input
+              use-chips
+              multiple
+              input-debounce="0"
+              @new-value="crearAccesorio"
+              :options="accesorios"
+              @filter="filtrarAccesorios"
+            >
+            </q-select>
+          </div>
         </div>
       </q-form>
     </template>

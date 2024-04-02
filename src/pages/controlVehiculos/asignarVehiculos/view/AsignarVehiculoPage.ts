@@ -19,7 +19,6 @@ import { useAuthenticationStore } from "stores/authentication";
 import { acciones, convertir_fecha, maskFecha } from "config/utils";
 import { VehiculoController } from "pages/controlVehiculos/vehiculos/infraestructure/VehiculoController";
 import { CustomActionTable } from "components/tables/domain/CustomActionTable";
-import EssentialLoading from "components/loading/view/EssentialLoading.vue";
 import { StatusEssentialLoading } from "components/loading/application/StatusEssentialLoading";
 import { AxiosHttpRepository } from "shared/http/infraestructure/AxiosHttpRepository";
 import { apiConfig, endpoints } from "config/api";
@@ -50,10 +49,18 @@ export default defineComponent({
         const puedeEditar = computed(() => tabActual.value == pendiente.label && listado.value.some((item) => item.responsable_id == store.user.id))
         const soloLectura = computed(() => accion.value == acciones.editar)
 
+        let accesoriosDefault = [
+            'GATA HIDRAULICA',
+            'LLANTA DE EMERGENCIA',
+            'TRIANGULOS REFLECTIVOS'
+        ]
+        const accesorios = ref(accesoriosDefault)
+
         const {
             empleados, filtrarEmpleados,
             cantones, filtrarCantones,
             vehiculos, filtrarVehiculos } = useFiltrosListadosSelects(listadosAuxiliares)
+
         cargarVista(async () => {
             await obtenerListados({
                 empleados: new ConductorController(),
@@ -64,6 +71,8 @@ export default defineComponent({
             vehiculos.value = listadosAuxiliares.vehiculos
             listadosAuxiliares.cantones = JSON.parse(LocalStorage.getItem('cantones')!.toString())
             cantones.value = listadosAuxiliares.cantones
+
+            obtenerAccesoriosLS()
 
             asignacion.entrega = store.user.id
             asignacion.estado = pendiente.label
@@ -81,8 +90,12 @@ export default defineComponent({
 
 
         /*********************************
-         * Funciones
+         * HOOKS
         *********************************/
+        onConsultado(() => {
+            LocalStorage.set('accesoriosVehiculos', JSON.stringify(asignacion.accesorios))
+            obtenerAccesoriosLS()
+        })
         onReestablecer(() => {
             asignacion.entrega = store.user.id
             asignacion.estado = pendiente.label
@@ -90,6 +103,18 @@ export default defineComponent({
         /*********************************
          * Funciones
         *********************************/
+        /**
+         * La función `obtenerAccesoriosLS` recupera y fija el valor de los accesorios de los vehículos
+         * almacenados en local storage.
+         */
+        function obtenerAccesoriosLS() {
+            if (LocalStorage.getItem('accesoriosVehiculos')) {
+                const accesoriosEnLocalStorageString = LocalStorage.getItem('accesoriosVehiculos')
+                const accesoriosEnLocalStorage = JSON.parse(accesoriosEnLocalStorageString?.toString() || '[]')
+                accesoriosDefault = accesoriosEnLocalStorage
+                accesorios.value = accesoriosEnLocalStorage
+            }
+        }
         async function filtrarAsignaciones(tab: string) {
             tabActual.value = tab
             switch (tab) {
@@ -126,12 +151,30 @@ export default defineComponent({
                 const url = apiConfig.URL_BASE + '/' + axios.getEndpoint(endpoints.asignaciones_vehiculos) + '/imprimir/' + id
                 const filename = 'acta_resposabilidad_vehiculo_' + placa + '_' + Date.now()
                 imprimirArchivo(url, 'GET', 'blob', 'pdf', filename)
-                console.log('Acta  impreso con éxito')
             } catch (e) {
                 notificarAdvertencia('Error al imprimir el acta. ' + e)
             } finally {
                 cargando.desactivar()
             }
+        }
+        function crearAccesorio(val, done) {
+            val = val.toUpperCase()
+            if (val.length > 0) {
+                if (!accesoriosDefault.includes(val)) {
+                    accesoriosDefault.push(val)
+                    done(val, 'add-unique')
+                    LocalStorage.set('accesoriosVehiculos', JSON.stringify(accesoriosDefault))
+                }
+            }
+        }
+        function filtrarAccesorios(val, update) {
+            val = val.toUpperCase()
+            update(() => {
+                if (val == '') accesorios.value = accesoriosDefault
+                else {
+                    accesorios.value = accesoriosDefault.filter(v => v.toUpperCase().indexOf(val) > -1)
+                }
+            })
         }
 
         /**************************
@@ -163,12 +206,16 @@ export default defineComponent({
             vehiculos, filtrarVehiculos,
             cantones, filtrarCantones,
             estadosAsignacionesVehiculos,
+            accesorios,
 
 
             //funciones
             filtrarAsignaciones,
             ordenarLista,
             optionsFecha,
+            crearAccesorio,
+            filtrarAccesorios,
+
 
             //botones de tablas
             btnImprimirActaResponsabilidad,
