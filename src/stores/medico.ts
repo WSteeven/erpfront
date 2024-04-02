@@ -4,6 +4,7 @@ import { Empleado } from 'recursosHumanos/empleados/domain/Empleado'
 import { acciones } from 'config/utils'
 import { defineStore } from 'pinia'
 import { Ref, ref } from 'vue'
+import { EsquemaVacuna } from 'pages/medico/gestionarPacientes/modules/esquemaVacunacion/domain/EsquemaVacuna'
 
 export const useMedicoStore = defineStore('medico', () => {
   const empleado: Ref<Empleado | undefined> = ref()
@@ -14,6 +15,8 @@ export const useMedicoStore = defineStore('medico', () => {
   const idCita: Ref<number | null> = ref(null)
   const accion: typeof acciones[keyof typeof acciones] = acciones.nuevo as typeof acciones[keyof typeof acciones]
   const tipoCitaMedica: Ref<string | undefined> = ref()
+  const esquemaVacuna: Ref<EsquemaVacuna | undefined> = ref()
+  const tiposVacunasYaRealizadosPaciente: Ref<number[]> = ref([])
 
   return {
     examenSolicitado,
@@ -24,5 +27,7 @@ export const useMedicoStore = defineStore('medico', () => {
     idRegistroEmpleadoExamen,
     idCita,
     tipoCitaMedica,
+    esquemaVacuna,
+    tiposVacunasYaRealizadosPaciente,
   }
 })

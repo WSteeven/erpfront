@@ -9,6 +9,9 @@ export class ConsultaMedica extends EntidadAuditable {
   diagnosticos: DiagnosticoCitaMedica[]
   receta: Receta
   tipo_cita_medica: string | null
+  dado_alta: boolean
+  fecha_hora_solicitud: string | null
+  dias_descanso: number | null
 
   constructor() {
     super()
@@ -18,5 +21,8 @@ export class ConsultaMedica extends EntidadAuditable {
     this.diagnosticos = []
     this.receta = new Receta()
     this.tipo_cita_medica = null
+    this.dado_alta = false
+    this.fecha_hora_solicitud = null
+    this.dias_descanso = null
   }
 }

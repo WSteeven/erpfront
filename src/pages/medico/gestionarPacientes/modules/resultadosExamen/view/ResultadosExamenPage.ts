@@ -1,8 +1,9 @@
 // Dependencias
 import { StatusEssentialLoading } from 'components/loading/application/StatusEssentialLoading'
 import { configuracionColumnasCampos } from '../domain/configuracionColumnasCampos'
-import { Ref, defineComponent, ref, watch, watchEffect } from 'vue'
+import { defineComponent, ref, watchEffect } from 'vue'
 import { useMedicoStore } from 'stores/medico'
+import { acciones } from 'config/utils'
 
 // Componentes
 import TabLayout from 'shared/contenedor/modules/simple/view/TabLayout.vue'
@@ -13,12 +14,10 @@ import EssentialTable from 'components/tables/view/EssentialTable.vue'
 import { ArchivoController } from 'gestionTrabajos/subtareas/modules/gestorArchivosTrabajos/infraestructure/ArchivoController'
 import { ConfiguracionExamenCategoriaController } from '../infraestructure/ConfiguracionExamenCategoriaController'
 import { ContenedorSimpleMixin } from 'shared/contenedor/modules/simple/application/ContenedorSimpleMixin'
-// import { ResultadoExamenController } from '../infraestructure/DetalleResultadoExamenController'
-import { ResultadoExamen } from '../domain/ResultadoExamen'
-import { acciones } from 'config/utils'
-import { DetalleResultadoExamen } from '../domain/DetalleResultadoExamen'
 import { DetalleResultadoExamenController } from '../infraestructure/DetalleResultadoExamenController'
 import { ConfiguracionExamenCampo } from '../domain/ConfiguracionExamenCampo'
+import { DetalleResultadoExamen } from '../domain/DetalleResultadoExamen'
+import { ResultadoExamen } from '../domain/ResultadoExamen'
 
 export default defineComponent({
   components: { TabLayout, EssentialTable, GestorArchivos },
@@ -33,7 +32,6 @@ export default defineComponent({
      * Variables
      ************/
     const configuracionExamenCategoriaController = new ConfiguracionExamenCategoriaController()
-    // const detalleResultadoExamenController = new DetalleResultadoExamenController()
     const cargando = new StatusEssentialLoading()
 
     const mixin = new ContenedorSimpleMixin(DetalleResultadoExamen, new DetalleResultadoExamenController(), new ArchivoController())
@@ -41,9 +39,7 @@ export default defineComponent({
     const { onGuardado, onModificado, onBeforeGuardar, onBeforeModificar } = mixin.useHooks()
     const { consultar } = mixin.useComportamiento()
 
-    // const categorias: Ref<any | undefined> = ref()
     const resultadosExamenes = ref([])
-    // const resultadosExamenesLlenos: Ref<ResultadoExamen[]> = ref([])
     const observacion = ref()
 
     const refArchivo = ref()
@@ -52,7 +48,7 @@ export default defineComponent({
     const consultarCategoriasCampos = async () => {
       try {
         cargando.activar()
-        const { result } = await configuracionExamenCategoriaController.listar({ examen_id: medicoStore.examenSolicitado?.examen_id, con_campos: true })
+        const { result } = await configuracionExamenCategoriaController.listar({ examen_id: medicoStore.examenSolicitado?.examen_id })
         resultadosExamenes.value = result
       } catch (e) {
         console.log(e)
@@ -63,10 +59,6 @@ export default defineComponent({
 
     const completarCamposLlenos = async () => {
       console.log('lleno en funcion... observer consultado')
-      /*try {
-        cargando.activar()*/
-      // const { result } = await detalleResultadoExamenController.listar({ estado_solicitud_examen_id: medicoStore.examenSolicitado?.id })
-      // resultadosExamenesLlenos.value = result[0].campos_llenos
       console.log('completarCamposLlenos....')
       console.log(resultadosExamenes.value)
       resultadosExamenes.value.map((item: any) => {
@@ -86,11 +78,6 @@ export default defineComponent({
       })
 
       accion.value = acciones.editar
-      /*} catch (e) {
-        console.log(e)
-      } finally {
-        cargando.desactivar()
-      }*/
     }
 
     async function subirArchivos() {
@@ -122,13 +109,6 @@ export default defineComponent({
             const resultado = new ResultadoExamen()
             resultado.resultado = campo.resultado
             resultado.configuracion_examen_campo = campo.id
-
-            /*if (medicoStore.examenSolicitado) {
-              resultado.estado_solicitud_examen = medicoStore.examenSolicitado.id
-              console.log(medicoStore.examenSolicitado.id)
-            }*/
-
-            // resultadoExamen.resultados_examenes = []
             resultadoExamen.resultados_examenes.push(resultado)
           }
         })
@@ -166,28 +146,16 @@ export default defineComponent({
             resultado.id = campo.resultado_examen
             resultado.resultado = campo.resultado
             resultado.configuracion_examen_campo = campo.id
-
-            /*if (medicoStore.examenSolicitado) {
-              resultado.estado_solicitud_examen = medicoStore.examenSolicitado.id
-              console.log(medicoStore.examenSolicitado.id)
-            }*/
-
             resultadoExamen.resultados_examenes.push(resultado)
           }
         })
       })
     })
 
-    /*onReestablecer(() => {
-      // resultadosExamenes.value = []
-      emit('cerrar-modal')
-    })*/
-
     /*******
      * Init
      *******/
     consultarCategoriasCampos()
-    // consultarCamposLlenos()
     if (medicoStore.examenSolicitado && medicoStore.examenSolicitado.detalle_resultado_examen) consultar({ id: medicoStore.examenSolicitado.detalle_resultado_examen })
     if (medicoStore.examenSolicitado) resultadoExamen.estado_solicitud_examen = medicoStore.examenSolicitado.id
 
@@ -196,8 +164,6 @@ export default defineComponent({
       resultadoExamen,
       refArchivo,
       idTransferencia,
-      // consultarCategoria,
-      // categorias,
       resultadosExamenes,
       configuracionColumnasCampos,
       observacion,

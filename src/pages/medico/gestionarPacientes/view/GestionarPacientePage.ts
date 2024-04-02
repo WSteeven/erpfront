@@ -1,14 +1,14 @@
 // Dependencias
-// import { configuracionColumnasSolicitudExamen } from '../../solicitudesExamenes/domain/configuracionColumnasSolicitudExamen'
 import { estadosSolicitudesExamenes, tabOptionsEstadosExamenes, tiposProcesosExamenes } from 'config/utils/medico'
 import { configuracionColumnasEsquemaVacunacion } from '../domain/configuracionColumnasEsquemaVacunacion'
+import { SolicitudExamenPusherEvent } from 'src/pusherEvents/medico/SolicitudExamenPusherEvent'
 import { configuracionColumnasEmpleados } from '../domain/configuracionColumnasEmpleados'
-// import { configuracionColumnasExamenes } from '../domain/configuracionColumnasExamenes'
-import { Ref, computed, defineComponent, ref, watch } from 'vue'
 import { tabOptionsEstadosEmpleados } from 'config/utils'
+import { Ref, computed, defineComponent, ref } from 'vue'
+import { useMedicoStore } from 'stores/medico'
+import { accionesTabla } from 'config/utils'
 
 // Componentes
-// import TabLayoutFilterTabs2 from 'shared/contenedor/modules/simple/view/TabLayoutFilterTabs2.vue'
 import TabLayoutFilterTabs2 from 'shared/contenedor/modules/simple/view/TabLayoutFilterTabs2.vue'
 import EssentialTable from 'components/tables/view/EssentialTable.vue'
 import ModalesEntidad from 'components/modales/view/ModalEntidad.vue'
@@ -17,22 +17,19 @@ import DetallePaciente from './DetallePaciente.vue'
 import PanelTipoProceso from './PanelTipoProceso.vue'
 
 // Logica y controladores
+import { EsquemaVacunaController } from '../modules/esquemaVacunacion/infraestructure/EsquemaVacunaController'
 import { ContenedorSimpleMixin } from 'shared/contenedor/modules/simple/application/ContenedorSimpleMixin'
 import { ComportamientoModalesGestionPaciente } from '../application/ComportamientoModalesGestionPaciente'
 import { EmpleadoController } from 'pages/recursosHumanos/empleados/infraestructure/EmpleadoController'
 import { useBotonesSolicitudExamen } from '../application/UseBotonesSolicitudExamen'
-import { CustomActionPrompt } from 'components/tables/domain/CustomActionPrompt'
+import { useTiposProcesosExamenes } from '../application/UseTiposProcesosExamenes'
+import { useBotonesEsquemaVacuna } from '../application/UseBotonesEsquemaVacuna'
 import { CustomActionTable } from 'components/tables/domain/CustomActionTable'
 import { Empleado } from 'recursosHumanos/empleados/domain/Empleado'
-import { isAxiosError, notificarMensajesError } from 'shared/utils'
 import { Examen } from 'pages/medico/examenes/domain/Examen'
 import { useNotificaciones } from 'shared/notificaciones'
 import { useExamenes } from '../application/UseExamenes'
-import { EsquemaVacuna } from '../domain/EsquemaVacuna'
-import { useMedicoStore } from 'stores/medico'
-import { accionesTabla } from 'config/utils'
-import { SolicitudExamenPusherEvent } from 'src/pusherEvents/medico/SolicitudExamenPusherEvent'
-import { useTiposProcesosExamenes } from '../application/UseTiposProcesosExamenes'
+import { EsquemaVacuna } from '../modules/esquemaVacunacion/domain/EsquemaVacuna'
 
 export default defineComponent({
   components: { TabLayoutFilterTabs2, SelectorImagen, ModalesEntidad, EssentialTable, DetallePaciente, PanelTipoProceso },
@@ -46,14 +43,22 @@ export default defineComponent({
      * Mixin
      ************/
     const mixin = new ContenedorSimpleMixin(Empleado, new EmpleadoController())
-    const { entidad: empleado } = mixin.useReferencias()
+    const { entidad: empleado, listadosAuxiliares } = mixin.useReferencias()
     const { onConsultado } = mixin.useHooks()
-    const { listar } = mixin.useComportamiento()
+    const { listar, cargarVista, obtenerListados } = mixin.useComportamiento()
     const notificaciones = useNotificaciones()
+
+    cargarVista(async () => obtenerListados({
+      esquemasVacunas: [], /*{
+        controller: new EsquemaVacunaController(),
+        params: { paciente_id: medicoStore.empleado?.id },
+      }, */
+    }))
 
     /************
      * Variables
      ************/
+    // FILTRAR ESQUEMA POR EMPLEADO SELECCINADO
     const listadoExamenes = ref([])
 
     const tabs = ref(tiposProcesosExamenes.INGRESO)
@@ -63,55 +68,20 @@ export default defineComponent({
     const refPanelTipoProcesoOcupacional = ref()
     const refPanelTipoProcesoReingreso = ref()
     const refPanelTipoProcesoSalida = ref()
-    /* const altoTabla = computed(() => {
-      switch (tabEstadoExamen.value) {
-        case estadosSolicitudesExamenes.PENDIENTE_SOLICITAR.value:
-          return (examenes.value.length * 48 + 420) + 'px'
-        case estadosSolicitudesExamenes.SOLICITADO.value || estadosSolicitudesExamenes.APROBADO_POR_COMPRAS.value:
-          return (solicitudesExamenes.value.length * 48 + 420) + 'px'
-      }
-    }) */
-
-    const esquemaVacunaciones: Ref<any[]> = ref([
-      {
-        'tipo_vacuna': 'Covid',
-        'dosis_aplicadas': 3,
-      },
-      {
-        'tipo_vacuna': 'Fiebre amarilla',
-        'dosis_aplicadas': 1,
-      },
-      {
-        'tipo_vacuna': 'Difteria',
-        'dosis_aplicadas': 1,
-      },
-      {
-        'tipo_vacuna': 'Hepatitis A o B, AB',
-        'dosis_aplicadas': 1,
-      },
-      {
-        'tipo_vacuna': 'Tétanos',
-        'dosis_aplicadas': 1,
-      },
-      {
-        'tipo_vacuna': 'Influenza',
-        'dosis_aplicadas': 0,
-      },
-    ])
+    const esquemaVacunaController = new EsquemaVacunaController()
 
     const modales = new ComportamientoModalesGestionPaciente()
 
     /*************
      * Funciones
      *************/
+    const { btnAgregarVacunaAplicada, btnEditarVacunaAplicada } = useBotonesEsquemaVacuna(modales, listadosAuxiliares)
+
     const {
       examenes,
       solicitudesExamenes,
       registros,
-      consultarRegistrosEmpleadoExamen,
-      consultarExamenesSinSolicitar,
       consultarSolicitudesExamenes,
-      guardarRegistro
     } = useExamenes()
 
     const {
@@ -123,7 +93,6 @@ export default defineComponent({
       btnSeleccionarVariosExamenes,
       btnSolicitarExamenesSeleccionados,
       btnCancelarSeleccionarVariosExamenes,
-      // btnNuevoDiagnostico,
       // Body
       btnSolicitarExamenIndividual,
       btnResultados,
@@ -131,15 +100,14 @@ export default defineComponent({
       btnCitaMedica,
       // Other functions
       seleccionarExamen,
-      limpiarExamenesSolicitados,
     } = useBotonesSolicitudExamen(tabEstadoExamen, modales)
 
-    const {
+    /* const {
       agregarRegistro,
       seleccionarRegistro,
       filtrarEstadoExamen,
       actualizarListadoExamenes
-    } = useTiposProcesosExamenes(tabs, tabsRegistro, tabEstadoExamen, empleado)
+    } = useTiposProcesosExamenes(tabs, tabsRegistro, tabEstadoExamen, empleado)*/
 
     const btnEsquemaVacunacion: CustomActionTable<Examen> = {
       titulo: 'Gestionar',
@@ -158,24 +126,32 @@ export default defineComponent({
     const seleccionarTabTipoProcesoOcupacional = () => refPanelTipoProcesoOcupacional.value.seleccionarTabTipoProceso()
     const seleccionarTabTipoProcesoReingreso = () => refPanelTipoProcesoReingreso.value.seleccionarTabTipoProceso()
     const seleccionarTabTipoProcesoSalida = () => refPanelTipoProcesoSalida.value.seleccionarTabTipoProceso()
-    /* function seleccionarTabTipoProcesoOcupacional() {
-      console.log(refPanelTipoProcesoOcupacional.value)
-      refPanelTipoProcesoOcupacional.value.seleccionarTabTipoProceso()
-    } */
+
+    const insertarListados = ({ esquemaVacuna, page }) => {
+      console.log('indertar...')
+      listadosAuxiliares.esquemasVacunas.unshift(esquemaVacuna)
+    }
+
+    const actualizarListados = ({ esquemaVacuna, page }) => {
+      console.log('modificado actualizar....')
+      const index = listadosAuxiliares.esquemasVacunas.findIndex((esquema: EsquemaVacuna) => esquema.id === esquemaVacuna.id)
+      console.log(index)
+      listadosAuxiliares.esquemasVacunas.splice(index, 1, esquemaVacuna)
+    }
+
+    const obtenerEsquemaVacunaPaciente = async () => {
+      const { result } = await esquemaVacunaController.listar({ paciente_id: empleado.id })
+      listadosAuxiliares.esquemasVacunas = result
+    }
 
     /*********
      * Hooks
      *********/
     onConsultado(async () => {
       medicoStore.empleado = empleado
+      obtenerEsquemaVacunaPaciente()
       await refPanelTipoProcesoIngreso.value.seleccionarTabTipoProceso()
     })
-    /* onConsultado(async () => {
-      medicoStore.empleado = empleado
-      // await consultarRegistrosEmpleadoExamen({ empleado_id: empleado.id })
-      const idRegistro = registros.value[0].id
-      if (idRegistro) seleccionarRegistro(idRegistro)
-    }) */
 
     /*******
      * Init
@@ -184,7 +160,6 @@ export default defineComponent({
     solicitudExamenPusherEvent.start()
 
     return {
-      // ref
       refPanelTipoProcesoIngreso,
       refPanelTipoProcesoOcupacional,
       refPanelTipoProcesoReingreso,
@@ -196,12 +171,9 @@ export default defineComponent({
       tabEstadoExamen,
       configuracionColumnas: configuracionColumnasEmpleados,
       columnasEsquemaVacunacion: [...configuracionColumnasEsquemaVacunacion, accionesTabla],
-      // configuracionColumnasExamenes,
-      // configuracionColumnasSolicitudExamen,
       tabOptionsEstadosExamenes,
       listadoExamenes,
-      filtrarEstadoExamen,
-      // splitterModel: ref(14),
+      // filtrarEstadoExamen,
       accionesTabla,
       modales,
       examenes,
@@ -209,20 +181,23 @@ export default defineComponent({
       solicitudesExamenes,
       tiposProcesosExamenes,
       tipoSeleccion: computed(() => seleccionVariosExamen.value && tabEstadoExamen.value === estadosSolicitudesExamenes.PENDIENTE_SOLICITAR.value ? 'multiple' : 'none'),
-      esquemaVacunaciones,
       tabOptionsEstadosEmpleados,
       filtrarEmpleados,
-      // altoTabla,
+      listadosAuxiliares,
       // funciones
-      agregarRegistro,
+      /* agregarRegistro,
       seleccionarRegistro,
-      actualizarListadoExamenes,
+      actualizarListadoExamenes,*/
       consultarSolicitudesExamenes,
       estadosSolicitudesExamenes,
       seleccionarTabTipoProcesoIngreso,
       seleccionarTabTipoProcesoOcupacional,
       seleccionarTabTipoProcesoReingreso,
       seleccionarTabTipoProcesoSalida,
+      actualizarListados,
+      insertarListados,
+      btnAgregarVacunaAplicada,
+      btnEditarVacunaAplicada,
       /*******************
        * Botones examenes
        *******************/
@@ -233,7 +208,6 @@ export default defineComponent({
       btnSeleccionarVariosExamenes,
       btnSolicitarExamenesSeleccionados,
       btnCancelarSeleccionarVariosExamenes,
-      // btnNuevoDiagnostico,
       // Body
       btnSolicitarExamenIndividual,
       btnResultados,
@@ -241,7 +215,6 @@ export default defineComponent({
       btnCitaMedica,
       // Other functions
       seleccionarExamen,
-      // btnSolicitarExamenesSeleccionados2,
       btnEsquemaVacunacion,
     }
   },

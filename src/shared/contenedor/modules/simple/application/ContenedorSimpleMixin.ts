@@ -74,6 +74,8 @@ export class ContenedorSimpleMixin<T extends EntidadAuditable> extends Contenedo
         this.hooks.bindHook('onReestablecer', callback),
       onListado: (callback: () => void) =>
         this.hooks.bindHook('onListado', callback),
+      onListadosCargados: (callback: () => void) =>
+        this.hooks.bindHook('onListadosCargados', callback),
     }
   }
 
@@ -366,6 +368,7 @@ export class ContenedorSimpleMixin<T extends EntidadAuditable> extends Contenedo
         'No se puede editar el recurso con id null'
       )
     } */
+    this.hooks.onBeforeModificar()
 
     this.cargarVista(async () => {
       try {
@@ -381,6 +384,10 @@ export class ContenedorSimpleMixin<T extends EntidadAuditable> extends Contenedo
         this.notificaciones.notificarCorrecto(response.data.mensaje)
         this.actualizarElementoListadoActual(modelo)
         this.entidad.hydrate(response.data.modelo)
+
+        // this.hooks.onReestablecer()
+        this.reestablecer()
+        this.hooks.onModificado(id, response.data)
 
       } catch (error: any) {
         if (isAxiosError(error)) {

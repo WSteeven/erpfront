@@ -17,8 +17,8 @@ export const configuracionColumnasCitaMedica: ColumnConfig<CitaMedica>[] = [
     sortable: true,
   },
   {
-    name: 'created_at',
-    field: 'created_at',
+    name: 'fecha_hora_solicitud',
+    field: 'fecha_hora_solicitud',
     label: 'Fecha y hora de solicitud',
     align: 'left',
     sortable: true,

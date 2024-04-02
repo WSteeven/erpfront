@@ -16,6 +16,23 @@
         ></detalle-paciente>
       </div>
 
+      <essential-table
+        v-if="empleado.id"
+        titulo="Esquema de vacunación"
+        :configuracionColumnas="columnasEsquemaVacunacion"
+        :datos="listadosAuxiliares.esquemasVacunas"
+        :alto-fijo="false"
+        :permitirConsultar="false"
+        :permitirEditar="false"
+        :permitirEliminar="false"
+        :mostrar-footer="false"
+        :mostrar-botones="false"
+        :accion1Header="btnAgregarVacunaAplicada"
+        :accion1="btnEditarVacunaAplicada"
+      ></essential-table>
+
+      <br />
+
       <!-- Tabs -->
       <div v-show="empleado.id">
         <q-tabs
@@ -58,82 +75,75 @@
         </q-tabs>
 
         <!-- Paneles -->
-        <transition name="scale" mode="out-in">
-          <div
-            v-show="tabs === tiposProcesosExamenes.INGRESO"
-            class="q-pa-none"
-          >
-            <panel-tipo-proceso
-              ref="refPanelTipoProcesoIngreso"
-              :tipo-proceso="tiposProcesosExamenes.INGRESO"
-              :empleado="empleado"
-              :mixin="mixin"
-            />
-          </div>
-        </transition>
+        <div class="q-mb-md">
+          <transition name="scale" mode="out-in">
+            <div
+              v-show="tabs === tiposProcesosExamenes.INGRESO"
+              class="q-pa-none"
+            >
+              <panel-tipo-proceso
+                ref="refPanelTipoProcesoIngreso"
+                :tipo-proceso="tiposProcesosExamenes.INGRESO"
+                :empleado="empleado"
+                :mixin="mixin"
+              />
+            </div>
+          </transition>
 
-        <transition name="scale" mode="out-in">
-          <div
-            v-show="tabs === tiposProcesosExamenes.OCUPACIONALES"
-            class="q-pa-none"
-          >
-            <panel-tipo-proceso
-              ref="refPanelTipoProcesoOcupacional"
-              :tipo-proceso="tiposProcesosExamenes.OCUPACIONALES"
-              :empleado="empleado"
-              :mixin="mixin"
-            />
-          </div>
-        </transition>
+          <transition name="scale" mode="out-in">
+            <div
+              v-show="tabs === tiposProcesosExamenes.OCUPACIONALES"
+              class="q-pa-none"
+            >
+              <panel-tipo-proceso
+                ref="refPanelTipoProcesoOcupacional"
+                :tipo-proceso="tiposProcesosExamenes.OCUPACIONALES"
+                :empleado="empleado"
+                :mixin="mixin"
+              />
+            </div>
+          </transition>
 
-        <transition name="scale" mode="out-in">
-          <div
-            v-show="tabs === tiposProcesosExamenes.REINGRESO"
-            class="q-pa-none"
-          >
-            <panel-tipo-proceso
-              ref="refPanelTipoProcesoReingreso"
-              :tipo-proceso="tiposProcesosExamenes.REINGRESO"
-              :empleado="empleado"
-              :mixin="mixin"
-            />
-          </div>
-        </transition>
+          <transition name="scale" mode="out-in">
+            <div
+              v-show="tabs === tiposProcesosExamenes.REINGRESO"
+              class="q-pa-none"
+            >
+              <panel-tipo-proceso
+                ref="refPanelTipoProcesoReingreso"
+                :tipo-proceso="tiposProcesosExamenes.REINGRESO"
+                :empleado="empleado"
+                :mixin="mixin"
+              />
+            </div>
+          </transition>
 
-        <transition name="scale" mode="out-in">
-          <div v-show="tabs === tiposProcesosExamenes.SALIDA" class="q-pa-none">
-            <panel-tipo-proceso
-              ref="refPanelTipoProcesoSalida"
-              :tipo-proceso="tiposProcesosExamenes.SALIDA"
-              :empleado="empleado"
-              :mixin="mixin"
-            />
-          </div>
-        </transition>
-
-        <essential-table
-          titulo="Esquema de vacunación"
-          :configuracionColumnas="columnasEsquemaVacunacion"
-          :datos="esquemaVacunaciones"
-          :alto-fijo="false"
-          :permitirConsultar="false"
-          :permitirEditar="false"
-          :permitirEliminar="false"
-          :mostrar-footer="false"
-          :mostrar-botones="false"
-          :accion1="btnEsquemaVacunacion"
-        ></essential-table>
+          <transition name="scale" mode="out-in">
+            <div
+              v-show="tabs === tiposProcesosExamenes.SALIDA"
+              class="q-pa-none"
+            >
+              <panel-tipo-proceso
+                ref="refPanelTipoProcesoSalida"
+                :tipo-proceso="tiposProcesosExamenes.SALIDA"
+                :empleado="empleado"
+                :mixin="mixin"
+              />
+            </div>
+          </transition>
+        </div>
       </div>
     </template>
   </tab-layout-filter-tabs2>
 
-  <!-- <modales-entidad
+  <modales-entidad
     :comportamiento="modales"
     :mixin-modal="mixin"
     :confirmar-cerrar="false"
     :persistente="false"
-    @guardado="actualizarListadoExamenes"
-  /> -->
+    @guardado="insertarListados"
+    @modificado="actualizarListados"
+  />
 </template>
 
 <script src="./GestionarPacientePage.ts" />

@@ -10,6 +10,7 @@ export class ActionHooks<T> extends Hooks<T> {
   onConsultado: () => void
   onReestablecer: () => void
   onListado: () => void
+  onListadosCargados: () => void
 
   constructor() {
     super()
@@ -21,5 +22,6 @@ export class ActionHooks<T> extends Hooks<T> {
     this.onConsultado = () => { }
     this.onReestablecer = () => { }
     this.onListado = () => { }
+    this.onListadosCargados = () => { }
   }
 }

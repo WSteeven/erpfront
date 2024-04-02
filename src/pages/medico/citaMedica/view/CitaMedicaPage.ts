@@ -48,7 +48,7 @@ export default defineComponent({
     const mixin = new ContenedorSimpleMixin(CitaMedica, citaMedicaController)
     const { entidad: citaMedica, accion, disabled, listadosAuxiliares } = mixin.useReferencias()
     const { setValidador, listar, cargarVista, obtenerListados, consultar } = mixin.useComportamiento()
-    const { onConsultado, onBeforeModificar, onGuardado, onReestablecer, onModificado } = mixin.useHooks()
+    const { onConsultado, onBeforeModificar, onGuardado, onReestablecer, onModificado, onBeforeGuardar } = mixin.useHooks()
 
     cargarVista(async () => {
       await obtenerListados({
@@ -80,6 +80,8 @@ export default defineComponent({
     const cargando = new StatusEssentialLoading()
     const fecha_cita_medica = ref()
     const hora_cita_medica = ref()
+    const fechaAccidente = ref()
+    const horaAccidente = ref()
     const destinoCitaMedica = ref(opcionesDestinoCitaMedica.PARA_MI)
     const enfermedadesComunes: Ref<CitaMedica[]> = ref([])
     const accidentesTrabajo: Ref<CitaMedica[]> = ref([])
@@ -171,15 +173,28 @@ export default defineComponent({
       accion.value = acciones.consultar
     }
 
-    const guardadoCitaMedica = (params: { page: keyof CitaMedicaModales, entidad }) => {
+    const guardadoCitaMedica = (params: { page: keyof CitaMedicaModales, entidad: ConsultaMedica, hook }) => {
+      // const consultaMedica: ConsultaMedica = params.entidad
+      const citaMedica = new CitaMedica()
+      citaMedica.hydrate(params.entidad)
+      citaMedica.id = params.entidad.cita_medica
+
+      const indexEC = enfermedadesComunes.value.findIndex((cita: CitaMedica) => cita.id === citaMedica.id)
+      const indexAT = accidentesTrabajo.value.findIndex((cita: CitaMedica) => cita.id === citaMedica.id)
+
       switch (params.page) {
         case 'DiagnosticoRecetaPage':
-          const consultaMedica: ConsultaMedica = params.entidad
-          const indexEC = enfermedadesComunes.value.findIndex((cita: CitaMedica) => cita.id === consultaMedica.cita_medica)
-          const indexAT = accidentesTrabajo.value.findIndex((cita: CitaMedica) => cita.id === consultaMedica.cita_medica)
+          if (params.hook === 'onGuardado') {
+            if (indexEC) enfermedadesComunes.value.splice(indexEC, 1)
+            if (indexAT) accidentesTrabajo.value.splice(indexAT, 1)
+          }
 
-          if (indexEC) enfermedadesComunes.value.splice(indexEC, 1)
-          if (indexAT) accidentesTrabajo.value.splice(indexAT, 1)
+          if (params.hook === 'onModificado') {
+            console.log('modificado')
+            console.log(params.entidad)
+            if (indexEC) enfermedadesComunes.value.splice(indexEC, 1, citaMedica)
+            if (indexAT) accidentesTrabajo.value.splice(indexAT, 1, citaMedica)
+          }
 
           break
       }
@@ -202,15 +217,24 @@ export default defineComponent({
      ********/
     onConsultado(async () => {
       const fecha_hora = citaMedica.fecha_hora_cita?.split(' ') ?? []
+      const fechaHoraAccidente = citaMedica.fecha_hora_accidente?.split(' ') ?? []
+
       fecha_cita_medica.value = fecha_hora[0]
       hora_cita_medica.value = fecha_hora[1]
+
+      fechaAccidente.value = fechaHoraAccidente[0]
+      horaAccidente.value = fechaHoraAccidente[1]
+
       if (citaMedica.paciente_id) await consultarEmpleado(citaMedica.paciente_id)
+    })
+
+    onBeforeGuardar(() => {
+      citaMedica.fecha_hora_accidente = fechaAccidente.value + ' ' + horaAccidente.value
     })
 
     onBeforeModificar(() => {
       citaMedica.fecha_hora_cita = fecha_cita_medica.value + ' ' + hora_cita_medica.value
       citaMedica.paciente = citaMedica.paciente_id
-      // citaMedica.estado_cita_medica = citaMedica.fecha_hora_cita ? estadosCitaMedica.AGENDADO : estadosCitaMedica.PENDIENTE
     })
 
     onGuardado((id, responseData) => {
@@ -251,6 +275,8 @@ export default defineComponent({
     onReestablecer(() => {
       hora_cita_medica.value = null
       fecha_cita_medica.value = null
+      horaAccidente.value = null
+      fechaAccidente.value = null
       citaMedica.estado_cita_medica = estadosCitaMedica.PENDIENTE
       empleados.value = listadosAuxiliares.empleados
       citaMedica.paciente = authenticationStore.user.id
@@ -302,9 +328,12 @@ export default defineComponent({
       estaPendiente: computed(() => citaMedica.estado_cita_medica === estadosCitaMedica.PENDIENTE),
       estaCancelado: computed(() => citaMedica.estado_cita_medica === estadosCitaMedica.CANCELADO),
       estaRechazado: computed(() => citaMedica.estado_cita_medica === estadosCitaMedica.RECHAZADO),
+      esAccidenteTrabajo: computed(() => citaMedica.tipo_cita_medica === tiposCitaMedica.ACCIDENTE_DE_TRABAJO.value),
       maskFecha,
       fecha_cita_medica,
       hora_cita_medica,
+      fechaAccidente,
+      horaAccidente,
       selectEstadoCita: computed(() => {
         if (authenticationStore.esMedico) {
           /* if (!esPaciente.value) {

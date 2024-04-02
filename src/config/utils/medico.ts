@@ -59,7 +59,7 @@ export const estadosSolicitudesExamenes = {
 export const tabOptionsEstadosExamenes: TabOption[] = [
   { label: 'Pendientes de solicitar', value: estadosSolicitudesExamenes.PENDIENTE_SOLICITAR.value, icono: 'bi-arrow-right', color_icono: 'pink', bg_color: 'pink-1', icono_derecha: true },
   { label: 'Aprobado por compras', value: estadosSolicitudesExamenes.APROBADO_POR_COMPRAS.value, icono: 'bi-arrow-right', color_icono: 'primary', bg_color: 'blue-2', icono_derecha: true },
-  { label: 'Solicitudes de exámenes', value: estadosSolicitudesExamenes.SOLICITADO.value, icono: 'bi-arrow-right', color_icono: 'orange', bg_color: 'yellow-2', icono_derecha: true },
+  { label: 'Solicitud de exámenes', value: estadosSolicitudesExamenes.SOLICITADO.value, icono: 'bi-arrow-right', color_icono: 'orange', bg_color: 'yellow-2', icono_derecha: true },
   { label: 'Resultados', value: estadosSolicitudesExamenes.DIAGNOSTICO_REALIZADO.value, color_icono: 'positive' },
   // { label: 'Diagnóstico realizado', value: estadosExamenes.DIAGNOSTICO_REALIZADO, icono: 'bi-arrow-right', color_icono: 'positive', bg_color: 'light-green-1', icono_derecha: true },
   // { label: 'Apertura de ficha médica', value: estadosExamenes.APERTURA_FICHA_MEDICA, bg_color: 'light-green-2', color_icono: 'positive' },

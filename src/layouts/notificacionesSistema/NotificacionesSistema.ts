@@ -21,6 +21,7 @@ import { PreingresoMaterialPusherEvent } from 'pages/bodega/preingresoMateriales
 import { IngresoPusherEvent } from 'pages/bodega/transacciones/modules/transaccionIngreso/application/IngresoPusherEvent'
 import { NotificarPermisoEmpleadoPusherEvent } from 'src/pusherEvents/recursosHumanos/nominasPermisos/NotificarPermisoEmpleadoPusherEvent'
 import { SolicitudExamenPusherEvent } from 'src/pusherEvents/medico/SolicitudExamenPusherEvent'
+import { DiasDescansoPusherEvent } from 'src/pusherEvents/medico/DiasDescansoPusherEvent'
 
 
 export class NotificacionesSistema {
@@ -120,5 +121,8 @@ export class NotificacionesSistema {
      ******************/
     const solicitudExamenPusherEvent = new SolicitudExamenPusherEvent()
     solicitudExamenPusherEvent.start()
+
+    const diasDescansoPusherEvent = new DiasDescansoPusherEvent()
+    diasDescansoPusherEvent.start()
   }
 }

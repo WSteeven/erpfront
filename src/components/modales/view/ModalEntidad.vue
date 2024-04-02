@@ -49,6 +49,7 @@
             (confirmarCerrar) => cerrarModalEntidad(confirmarCerrar)
           "
           @guardado="(data) => emit('guardado', data)"
+          @modificado="(data) => emit('modificado', data)"
         ></component>
         <!--  @seleccionar="emit('seleccionar')" -->
 
@@ -60,6 +61,7 @@
             (confirmarCerrar) => cerrarModalEntidad(confirmarCerrar)
           "
           @guardado="(data) => emit('guardado', data)"
+          @modificado="(data) => emit('modificado', data)"
         ></component>
         <!--  @seleccionar="emit('seleccionar')" -->
         <!-- :mostrar-listado="false"></component> -->

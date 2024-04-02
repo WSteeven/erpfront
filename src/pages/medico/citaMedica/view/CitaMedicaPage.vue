@@ -98,7 +98,7 @@
         <div v-if="mostrarAgendado" class="col-12 col-md-6 col-mb-md">
           <label class="q-mb-sm block">Fecha y hora de solicitud</label>
           <q-input
-            v-model="citaMedica.created_at"
+            v-model="citaMedica.fecha_hora_solicitud"
             outlined
             disable
             dense
@@ -156,6 +156,53 @@
               </div>
             </template>
           </q-select>
+        </div>
+
+        <!-- Fecha y hora accidente trabajo -->
+        <div v-if="esMedico && esAccidenteTrabajo" class="col-12 col-md-3">
+          <label class="q-mb-sm block">Fecha del accidente</label>
+          <q-input
+            v-model="fechaAccidente"
+            :disable="disabled"
+            outlined
+            type="datetime"
+            dense
+          >
+            <template v-slot:append>
+              <q-icon name="event" class="cursor-pointer">
+                <q-popup-proxy
+                  cover
+                  transition-show="scale"
+                  transition-hide="scale"
+                >
+                  <q-date v-model="fechaAccidente" :mask="maskFecha" today-btn>
+                    <div class="row items-center justify-end">
+                      <q-btn
+                        v-close-popup
+                        label="Cerrar"
+                        color="primary"
+                        flat
+                      />
+                    </div>
+                  </q-date>
+                </q-popup-proxy>
+              </q-icon>
+            </template>
+          </q-input>
+        </div>
+
+        <div v-if="esMedico && esAccidenteTrabajo" class="col-12 col-md-3">
+          <label class="q-mb-sm block">Hora del accidente</label>
+          <q-input
+            v-model="horaAccidente"
+            type="time"
+            :disable="disabled"
+            step="1"
+            stack-label
+            outlined
+            dense
+          >
+          </q-input>
         </div>
 
         <div class="col-12 col-mb-md">

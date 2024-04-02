@@ -288,6 +288,19 @@
                 >
                 </q-input>
               </div>
+
+              <div class="col-12 col-md-3 q-mb-md">
+                <label class="q-mb-sm block">Días de descanso médico</label>
+                <q-input
+                  v-model="consulta.dias_descanso"
+                  placeholder="Opcional"
+                  :disable="disabled"
+                  type="number"
+                  outlined
+                  dense
+                >
+                </q-input>
+              </div>
             </div>
           </q-expansion-item>
         </div>
@@ -296,7 +309,7 @@
 
     <template #custom-buttons>
       <q-btn
-        v-if="esAccidenteTrabajo && esConsultable"
+        v-if="esAccidenteTrabajo && esConsultable && !consulta.dado_alta"
         color="positive"
         @click="darAlta()"
         no-caps

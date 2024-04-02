@@ -1,12 +1,11 @@
+import { EsquemaVacuna } from '../modules/esquemaVacunacion/domain/EsquemaVacuna'
 import { ColumnConfig } from 'components/tables/domain/ColumnConfig'
-import { DetalleExamen } from './DetalleExamen'
-import { EsquemaVacuna } from './EsquemaVacuna'
 
 export const configuracionColumnasEsquemaVacunacion: ColumnConfig<EsquemaVacuna>[] = [
   {
     name: 'tipo_vacuna',
     field: 'tipo_vacuna',
-    label: 'Vacuna',
+    label: 'Tipo de vacuna',
     align: 'left',
     sortable: true
   },

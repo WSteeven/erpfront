@@ -10,6 +10,9 @@
           :key="categoria.id"
           class="col-12 text-center text-bold q-mb-md"
         >
+          <div class="q-mb-md">
+            {{ categoria.examen }}
+          </div>
           <essential-table
             :titulo="categoria.categoria"
             :configuracionColumnas="configuracionColumnasCampos"

@@ -84,7 +84,7 @@ export function useBotonesCitaMedica(listado: Ref<CitaMedica[]>, accion: Ref<str
   }
 
   const btnAgendarCita: CustomActionTable<CitaMedica> = {
-    titulo: 'Gestionar cita',
+    titulo: 'Agendar cita',
     icono: 'bi-pencil-square',
     color: 'primary',
     visible: () => tabEstado.value === estadosCitaMedica.PENDIENTE && ![estadosCitaMedica.CANCELADO, estadosCitaMedica.RECHAZADO].includes(tabEstado.value), // && store.esMedico,

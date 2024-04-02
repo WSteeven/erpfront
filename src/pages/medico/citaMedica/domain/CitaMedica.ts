@@ -14,6 +14,8 @@ export class CitaMedica extends EntidadAuditable {
   motivo_cancelacion: string | null
   motivo_rechazo: string | null
   dado_alta: boolean
+  fecha_hora_solicitud: string | null
+  fecha_hora_accidente: string | null
 
   constructor() {
     super()
@@ -30,5 +32,7 @@ export class CitaMedica extends EntidadAuditable {
     this.fecha_hora_cancelado = null
     this.fecha_hora_rechazo = null
     this.dado_alta = false
+    this.fecha_hora_solicitud = null
+    this.fecha_hora_accidente = null
   }
 }

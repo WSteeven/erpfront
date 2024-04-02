@@ -22,6 +22,7 @@ import { useFiltrosListadosSelects } from 'shared/filtrosListadosGenerales'
 import { DiagnosticoCitaMedica } from '../domain/DiagnosticoCitaMedica'
 import { ConsultaMedica } from '../domain/ConsultaMedica'
 import { acciones } from 'config/utils'
+import { useNotificaciones } from 'shared/notificaciones'
 
 
 export default defineComponent({
@@ -51,6 +52,7 @@ export default defineComponent({
     const empleado = reactive(new Empleado())
     const cargando = new StatusEssentialLoading()
     const tabsEnfermedades = ref(tiposEnfermedades.COMUNES)
+    const { confirmar } = useNotificaciones()
 
     /********
     * Mixin
@@ -58,7 +60,7 @@ export default defineComponent({
     const mixin = new ContenedorSimpleMixin(ConsultaMedica, consultaController)
     const { entidad: consulta, accion, listadosAuxiliares, listado, disabled } = mixin.useReferencias()
     const { setValidador, cargarVista, obtenerListados, listar, editarParcial } = mixin.useComportamiento()
-    const { onBeforeGuardar, onReestablecer, onGuardado } = mixin.useHooks()
+    const { onBeforeGuardar, onReestablecer, onGuardado, onModificado } = mixin.useHooks()
 
     cargarVista(async () => {
       await obtenerListados({
@@ -91,7 +93,7 @@ export default defineComponent({
     }
 
     const darAlta = () => {
-      editarParcial(consulta.id, { dado_alta: true })
+      confirmar('¿Está seguro del dar de alta al paciente?', () => editarParcial(consulta.id, { dado_alta: true }))
     }
 
     /*************
@@ -121,8 +123,12 @@ export default defineComponent({
       emit('cerrar-modal')
     })
 
-    onGuardado(() => {
-      emit('guardado', { page: 'DiagnosticoRecetaPage', entidad: consulta })
+    onGuardado((id, responseData) => {
+      emit('guardado', { page: 'DiagnosticoRecetaPage', entidad: responseData.modelo, hook: 'onGuardado' })
+    })
+
+    onModificado((id, responseData) => {
+      emit('guardado', { page: 'DiagnosticoRecetaPage', entidad: responseData.modelo, hook: 'onModificado' })
     })
 
     /*******

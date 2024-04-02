@@ -103,10 +103,11 @@
 
       <div
         v-if="titulo"
-        class="row text-primary text-subtitle2 q-mb-lg items-center justify-between col-12"
+        class="row text-primary q-pa-sm text-subtitle2 q-mb-lg items-center justify-between col-12 bg-grey-4 rounded"
         :class="{
           'titulo-tabla2': !$q.screen.xs,
           'justify-center': $q.screen.xs,
+          'bg-grey-9': $q.dark.isActive,
         }"
       >
         <span>
@@ -193,9 +194,14 @@
         v-if="permitirFiltrar || (true && mostrarCantidadElementos)"
         class="row full-width justify-between q-col-gutter-x-sm items-center q-mb-md"
       >
-        <q-chip class="q-px-md" :class="{ 'bg-grey-8': $q.dark.isActive }">
+        <span class="row items-center q-px-md">
+          <q-icon
+            name="bi-circle-fill"
+            color="positive"
+            class="q-mr-sm"
+          ></q-icon>
           {{ 'Total de elementos: ' }} <b>{{ datos.length }}</b>
-        </q-chip>
+        </span>
 
         <div class="row q-gutter-xs justify-end q-mb-md">
           <q-btn
@@ -283,6 +289,9 @@
           >
         </div>
       </div>
+
+      <!-- <q-separator color="red" class="q-py-sm q-my-sm" inset></q-separator>dd -->
+      <q-separator color="grey-4" class=" block full-width q-mb-md" inset></q-separator>
 
       <!-- Filtros -->
       <div class="row col-12">
@@ -741,6 +750,30 @@
                     ><small>{{ 'TICKET FINALIZADO' }}</small>
                   </q-chip>
 
+                  <q-chip
+                    v-if="col.value === 1 || col.value"
+                    class="bg-green-1 text-positive"
+                  >
+                    <q-icon
+                      name="bi-check-circle-fill"
+                      color="positive"
+                      size="14px"
+                      class="q-mr-xs"
+                    ></q-icon>
+                  </q-chip>
+
+                  <q-chip
+                    v-if="col.value === 0 || !col.value"
+                    class="bg-pink-1 text-positive"
+                  >
+                    <q-icon
+                      name="bi-x-circle-fill"
+                      color="negative"
+                      size="14px"
+                      class="q-mr-xs"
+                    ></q-icon>
+                  </q-chip>
+
                   <!--<q-chip
                     v-if="col.value === 'TICKET TRANSFERIDO'"
                     class="bg-green-1 text-positive"
@@ -768,6 +801,7 @@
                       'tamanio_bytes',
                       'tiene_subtareas',
                       'observacion',
+                      'dado_alta',
                     ].includes(col.name)
                   "
                   >{{ col.value }}</span
@@ -1429,6 +1463,28 @@
             class="q-mr-xs"
           ></q-icon
           >DEVUELTO
+        </q-chip>
+      </q-td>
+    </template>
+
+    <template #body-cell-dado_alta="props">
+      <q-td :props="props">
+        <q-chip
+          v-if="props.value === 1 || props.value"
+          :class="{ 'bg-green-1': !$q.dark.isActive }"
+        >
+          <q-icon
+            name="bi-check-circle-fill"
+            color="positive"
+            size="xs"
+          ></q-icon>
+        </q-chip>
+
+        <q-chip
+          v-if="props.value === 0 || !props.value"
+          :class="{ 'bg-pink-1': !$q.dark.isActive }"
+        >
+          <q-icon name="bi-x-circle-fill" color="negative" size="xs"></q-icon>
         </q-chip>
       </q-td>
     </template>

@@ -1,10 +1,10 @@
 import { TransaccionSimpleController } from 'shared/contenedor/modules/simple/infraestructure/TransacccionSimpleController'
-import { EsquemaVacuna } from '../domain/EsquemaVacuna'
+import { TipoVacuna } from '../domain/TipoVacuna'
 import { endpoints } from 'config/api'
 
-export class EsquemaVacunaController extends TransaccionSimpleController<EsquemaVacuna>{
+export class TipoVacunaController extends TransaccionSimpleController<TipoVacuna>{
   constructor() {
-    super(endpoints.esquemas_vacunas)
+    super(endpoints.tipos_vacunas)
   }
 }
 
