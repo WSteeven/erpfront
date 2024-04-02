@@ -449,7 +449,7 @@ export default defineComponent({
         const response: AxiosResponse = await axios.get(ruta, { empleado_id: obtenerIdEmpleadoResponsable() })
         clientes.value = response.data.results
       })*/
-      consultarClientesMaterialesEmpleado()
+      consultarClientesMaterialesEmpleado({empleado_id: obtenerIdEmpleadoResponsable()})
     }
 
     async function obtenerClientesMaterialesTarea() {
