@@ -71,7 +71,7 @@ export default defineComponent({
       await obtenerListados({
         usuarios: {
           controller: new EmpleadoController(),
-          params: { campos: 'id,nombres,apellidos', estado: 1 },
+          params: { campos: 'id,nombres,apellidos', estado: 1, empleados_autorizadores_gasto:1 },
         },
         tiposFondos: {
           controller: new TipoFondoController(),
