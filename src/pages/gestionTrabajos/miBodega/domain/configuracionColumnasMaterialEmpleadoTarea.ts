@@ -39,6 +39,13 @@ export const configuracionColumnasMaterialEmpleadoTarea: ColumnConfig<MaterialEm
       sortable: true,
     }, */
     {
+      name: 'despachado',
+      field: 'despachado',
+      label: 'Despachado',
+      align: 'left',
+      sortable: true,
+    },
+    {
       name: 'stock_actual',
       field: 'stock_actual',
       label: 'Stock actual',
