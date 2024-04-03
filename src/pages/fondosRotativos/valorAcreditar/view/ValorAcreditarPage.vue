@@ -1,5 +1,8 @@
 <template>
   <q-page padding>
+    <div class="text-h5 q-py-sm text-right">
+      Total a Acreditar: ${{ totalAcreditar.toFixed(2) }}
+    </div>
     <q-form @submit.prevent v-if="mostrar_formulario">
       <div class="row q-col-gutter-sm q-mb-md">
         <!-- Usuarios -->
@@ -64,7 +67,7 @@
             v-model="valorAcreditar.monto_modificado"
             placeholder="Obligatorio"
             :disable="disabled"
-            error-message='Ingrese monto mayor a 0'
+            error-message="Ingrese monto mayor a 0"
             :error="!!v$.monto_modificado.$errors.length"
             @blur="v$.monto_modificado.$touch"
             outlined
@@ -107,20 +110,26 @@
         />
       </div>
     </q-form>
-    <div class="text-h5 q-py-sm text-right">Total a Acreditar: ${{ totalAcreditar.toFixed(2) }}</div>
-    <essential-table
-      titulo="Valores a Acreditar"
-      :configuracionColumnas="[...configuracionColumnasValorAcreditar, accionesTabla]"
-      :datos="listado"
-      :permitirConsultar="false"
+    <tab-layout-filter-tabs2
+      :mixin="mixin"
+      :configuracionColumnas="configuracionColumnas"
+      :full="true"
       :permitirEditar="false"
       :permitirEliminar="false"
+      :mostrarButtonSubmits="false"
+      :permitirConsultar="false"
+      :tabOptions="tabOptionsValoresAcreditar"
+      subtituloPagina=""
       :accion1Header="btnNevoEmpleadoAcreditar"
       :accion1="btnVerAcreditacionEmpleado"
       :accion2="btnEditarAcreditacionEmpleado"
       :accion3="btnEliminarAcreditacionEmpleado"
-    >
-    </essential-table>
+      :accion4="btnActivarAcreditacionEmpleado"
+      :filtrar="filtrarValoresAcreditar"
+      :tabDefecto="tabValorAcreditar"
+      :ajustarCeldas="true"
+      :mostrarFormulario="false"
+    />
   </q-page>
 </template>
 

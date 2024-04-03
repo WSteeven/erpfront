@@ -186,6 +186,7 @@ export default defineComponent({
     }
     return {
       mixin,
+      mixinAcreditacion,
       fondo_rotativo_contabilidad,
       ConfiguracionColumnasAcreditacionSemana,
       disabled,

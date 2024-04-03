@@ -16,7 +16,7 @@ import { EmpleadoController } from 'pages/recursosHumanos/empleados/infraestruct
 import { useAuthenticationStore } from 'stores/authentication'
 import { useCargandoStore } from 'stores/cargando'
 import { format } from '@formkit/tempo'
-import { required } from 'shared/i18n-validators'
+import { required, requiredIf } from 'shared/i18n-validators'
 
 export default defineComponent({
   components: { TabLayout },
@@ -48,9 +48,7 @@ export default defineComponent({
      * Validaciones
      **************/
     const reglas = {
-      usuario: {
-        required,
-      },
+      usuario: { requiredIfUsuario: requiredIf(() => store.can('puede.ver.campo.empleado.fondo_rotativo')) },
       fecha_inicio: {
         required,
       },

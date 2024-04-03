@@ -181,7 +181,6 @@
             label="Inactivo"
             true-value="true"
             false-value="false"
-            @update:model-value="mostrarInactivos"
           ></q-checkbox>
         </div>
       </q-card-section>

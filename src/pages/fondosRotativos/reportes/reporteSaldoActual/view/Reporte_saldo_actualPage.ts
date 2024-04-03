@@ -7,6 +7,8 @@ import { useVuelidate } from '@vuelidate/core'
 import { ContenedorSimpleMixin } from 'shared/contenedor/modules/simple/application/ContenedorSimpleMixin'
 import { AxiosHttpRepository } from 'shared/http/infraestructure/AxiosHttpRepository'
 import { apiConfig, endpoints } from 'config/api'
+import { isAxiosError, notificarMensajesError } from 'shared/utils'
+
 import {
   filtarVisualizacionEmpleadosSaldos,
   imprimirArchivo,
@@ -19,6 +21,7 @@ import { useCargandoStore } from 'stores/cargando'
 import { useRouter } from 'vue-router'
 import { UltimoSaldoController } from '../infrestucture/UltimoSaldoController'
 import { CortarSaldolController } from '../infrestucture/CortarSaldoController'
+import { useNotificaciones } from 'shared/notificaciones'
 
 export default defineComponent({
   components: { TabLayout },
@@ -30,6 +33,8 @@ export default defineComponent({
     useNotificacionStore().setQuasar(useQuasar())
     useCargandoStore().setQuasar(useQuasar())
     const store = useAuthenticationStore()
+    const notificaciones = useNotificaciones()
+
     /***********
      * Mixin
      ************/
@@ -52,6 +57,7 @@ export default defineComponent({
      * Validaciones
      **************/
     const reglas = {
+
       usuario: {
         required: true,
         minLength: 3,
@@ -175,9 +181,16 @@ export default defineComponent({
       }
     }
     async function cortar_saldo() {
-      const cortar_saldo = new CortarSaldolController()
-      await cortar_saldo.listar()
-      router.push('acreditacion-semana')
+      try {
+        const cortar_saldo = new CortarSaldolController()
+        await cortar_saldo.listar()
+        router.push('acreditacion-semana')
+      } catch (error) {
+        if (isAxiosError(error)) {
+          const mensajes: string[] = error.erroresValidacion
+          await notificarMensajesError(mensajes, notificaciones)
+        }
+      }
     }
     return {
       mixin,

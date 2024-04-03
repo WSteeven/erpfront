@@ -2,6 +2,8 @@ import { defineComponent, computed, ref, onMounted } from 'vue'
 import { ValorAcreditar } from '../domain/ValorAcreditar'
 import { apiConfig, endpoints } from 'config/api'
 import TabLayout from 'shared/contenedor/modules/simple/view/TabLayout.vue'
+import TabLayoutFilterTabs2 from 'shared/contenedor/modules/simple/view/TabLayoutFilterTabs2.vue'
+
 import { useNotificacionStore } from 'stores/notificacion'
 import { useQuasar } from 'quasar'
 import { useVuelidate } from '@vuelidate/core'
@@ -15,7 +17,7 @@ import EssentialTable from 'components/tables/view/EssentialTable.vue'
 import { useAcreditacionesStore } from 'stores/acreditaciones'
 import { EmpleadoController } from 'pages/recursosHumanos/empleados/infraestructure/EmpleadoController'
 import { useAuthenticationStore } from 'stores/authentication'
-import { accionesTabla } from 'config/utils'
+import { accionesTabla, tabOptionsValoresAcreditar } from 'config/utils'
 import { AxiosHttpRepository } from 'shared/http/infraestructure/AxiosHttpRepository'
 import axios from 'axios'
 import { HttpResponseGet } from 'shared/http/domain/HttpResponse'
@@ -23,7 +25,12 @@ import { useNotificaciones } from 'shared/notificaciones'
 import { required, minValue } from 'shared/i18n-validators'
 
 export default defineComponent({
-  components: { TabLayout, EssentialTable, ButtonSubmits },
+  components: {
+    TabLayout,
+    TabLayoutFilterTabs2,
+    EssentialTable,
+    ButtonSubmits,
+  },
   setup(props, { emit }) {
     /*********
      * Stores
@@ -38,7 +45,7 @@ export default defineComponent({
       ValorAcreditar,
       new ValorAcreditarController()
     )
-    const { setValidador, guardar, editar, reestablecer } =
+    const { setValidador, guardar, editar, reestablecer, listar } =
       mixin.useComportamiento()
     const { entidad: valorAcreditar, disabled, accion } = mixin.useReferencias()
     const authenticationStore = useAuthenticationStore()
@@ -55,16 +62,16 @@ export default defineComponent({
         required,
       },
       acreditacion_semana: {
-        required
+        required,
       },
       monto_generado: {
-        required
+        required,
       },
       monto_modificado: {
-       minimo: minValue(1)
+        minimo: minValue(1),
       },
       motivo: {
-        required
+        required,
       },
     }
     const v$ = useVuelidate(reglas, valorAcreditar)
@@ -114,7 +121,7 @@ export default defineComponent({
       mostrar_formulario.value = false
     }
     const btnEliminarAcreditacionEmpleado: CustomActionTable = {
-      titulo: '',
+      titulo: 'Eliminar',
       icono: 'bi-trash',
       color: 'secondary',
       visible: () =>
@@ -122,9 +129,47 @@ export default defineComponent({
         !acreditacionesStore.esta_acreditado,
       accion: ({ entidad, posicion }) => {
         accion.value = 'ELIMINAR'
-        // eliminar(entidad);
         eliminar_acreditacion({ entidad, posicion })
       },
+    }
+    const btnActivarAcreditacionEmpleado: CustomActionTable = {
+      titulo: 'Activar',
+      icono: 'bi-toggle2-on',
+      color: 'secondary',
+      visible: (entidad) =>
+        authenticationStore.can('puede.eliminar.valor_acreditar') &&
+        !acreditacionesStore.esta_acreditado ,
+      accion: ({ entidad, posicion }) => {
+        console.log(entidad);
+
+       /* accion.value = 'ELIMINAR'
+        activar_acreditacion({ entidad, posicion })
+        filtrarValoresAcreditar('1')*/
+      },
+    }
+
+    async function activar_acreditacion({ entidad, posicion }) {
+      try {
+        const data: CustomActionPrompt = {
+          titulo: 'Anular Acreditacion',
+          mensaje: 'Ingrese motivo de anulacion',
+          accion: async (data) => {
+            entidad.estado = true
+            entidad.motivo = data
+            valorAcreditar.id = entidad.id
+            valorAcreditar.estado = true
+            valorAcreditar.motivo = data
+            await editar(entidad, true)
+            notificarCorrecto('Se ha anulado Acreditacion')
+            listado.value.splice(posicion, 1)
+          },
+        }
+        prompt(data)
+      } catch (e: any) {
+        notificarError(
+          'No se pudo anular, debes ingresar un motivo para la anulacion'
+        )
+      }
     }
     async function eliminar_acreditacion({ entidad, posicion }) {
       try {
@@ -132,7 +177,6 @@ export default defineComponent({
           titulo: 'Anular Acreditacion',
           mensaje: 'Ingrese motivo de anulacion',
           accion: async (data) => {
-            console.log('Eliminar', entidad)
             entidad.estado = false
             entidad.motivo = data
             valorAcreditar.id = entidad.id
@@ -167,7 +211,7 @@ export default defineComponent({
       })
     }
     const btnEditarAcreditacionEmpleado: CustomActionTable = {
-      titulo: '',
+      titulo: 'Editar',
       icono: 'bi-pencil',
       color: 'warning',
       visible: () => {
@@ -263,7 +307,11 @@ export default defineComponent({
         console.log(v)
       })
     })
-
+    let tabValorAcreditar = '0'
+    function filtrarValoresAcreditar(tabSeleccionado: string) {
+      listar({ estado: tabSeleccionado }, false)
+      tabValorAcreditar = tabSeleccionado
+    }
     return {
       mixin,
       disabled,
@@ -273,6 +321,7 @@ export default defineComponent({
       v$,
       valorAcreditar,
       filtrarEmpleados,
+      filtrarValoresAcreditar,
       saldo_anterior,
       onMounted,
       totalAcreditar,
@@ -284,8 +333,12 @@ export default defineComponent({
       btnEditarAcreditacionEmpleado,
       btnEliminarAcreditacionEmpleado,
       btnVerAcreditacionEmpleado,
+      btnActivarAcreditacionEmpleado,
       mostrar_formulario,
       accionesTabla,
+      tabOptionsValoresAcreditar,
+      configuracionColumnas: configuracionColumnasValorAcreditar,
+      tabValorAcreditar,
     }
   },
 })
