@@ -225,6 +225,9 @@ export default defineComponent({
       )
       return date >= fecha_inicio && date <= fecha_actual
     }
+function limpiar(){
+  is_all_empleados.value = 'false';
+}
     return {
       mixin,
       consolidado,
@@ -249,6 +252,7 @@ export default defineComponent({
       watchEffect,
       optionsFechaInicio,
       optionsFechaFin,
+      limpiar,
     }
   },
 })

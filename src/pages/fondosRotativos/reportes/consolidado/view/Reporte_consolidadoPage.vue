@@ -160,6 +160,7 @@
             use-input
             input-debounce="0"
             @blur="v$.tipo_saldo.$touch"
+            @update:model-value="limpiar()"
             @filter="filtarTiposSaldos"
             :option-value="(v) => v.value"
             :option-label="(v) => v.label"
@@ -178,7 +179,7 @@
             </template>
           </q-select>
         </div>
-        <div class="col-12 col-md-3">
+        <div class="col-12 col-md-3" v-if="consolidado.tipo_saldo == 1 || consolidado.tipo_saldo == 2 ||  consolidado.tipo_saldo == 6">
           <q-checkbox
             v-model="is_all_empleados"
             color="secondary"
