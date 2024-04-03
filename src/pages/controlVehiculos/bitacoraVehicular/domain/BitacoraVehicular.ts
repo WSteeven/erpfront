@@ -10,6 +10,7 @@ export class BitacoraVehicular extends EntidadAuditable {
     tanque_final: number | null
     firmada: boolean | null
     chofer: string | null
+    chofer_id: number | null
     vehiculo: string | null
 
     constructor() {
@@ -23,6 +24,7 @@ export class BitacoraVehicular extends EntidadAuditable {
         this.tanque_final = 0
         this.firmada = false
         this.chofer = null
+        this.chofer_id = null
         this.vehiculo = null
     }
 }

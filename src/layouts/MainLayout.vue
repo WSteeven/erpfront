@@ -474,6 +474,7 @@
             'Devoluciones',
             'RolPagoMes',
             'TransferenciaProductoEmpleado',
+            // 'ControlDiarioVehiculo'
           ]"
         >
           <component :is="Component" />

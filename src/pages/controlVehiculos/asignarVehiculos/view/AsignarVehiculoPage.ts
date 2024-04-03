@@ -26,6 +26,7 @@ import { useNotificaciones } from "shared/notificaciones";
 import { LocalStorage, useQuasar } from "quasar";
 import { useNotificacionStore } from "stores/notificacion";
 import { useCargandoStore } from "stores/cargando";
+import { valida2rCedula } from "shared/validadores/validaciones";
 
 
 export default defineComponent({
@@ -55,6 +56,12 @@ export default defineComponent({
             'TRIANGULOS REFLECTIVOS'
         ]
         const accesorios = ref(accesoriosDefault)
+        let estadosDefault = [
+            'SIN CHOQUES',
+            'EN BUEN ESTADO',
+            'EN PERFECTAS CONDICIONES',
+        ]
+        const estados = ref(estadosDefault)
 
         const {
             empleados, filtrarEmpleados,
@@ -94,6 +101,17 @@ export default defineComponent({
         *********************************/
         onConsultado(() => {
             LocalStorage.set('accesoriosVehiculos', JSON.stringify(asignacion.accesorios))
+            //concatenamos los valores de las 3 variables para tener uno solo 
+            const estadosDB = [asignacion.estado_mecanico, asignacion.estado_mecanico, asignacion.estado_electrico]
+            console.log(asignacion, estadosDB)
+            const todosNulos = estadosDB.every(function (value) { return value === null })
+            
+            console.log(todosNulos)
+            if (todosNulos)
+                LocalStorage.set('estadosVehiculos', JSON.stringify(estadosDefault))
+            else
+                LocalStorage.set('estadosVehiculos', JSON.stringify(Array.from(new Set(estadosDB))))
+
             obtenerAccesoriosLS()
         })
         onReestablecer(() => {
@@ -113,6 +131,12 @@ export default defineComponent({
                 const accesoriosEnLocalStorage = JSON.parse(accesoriosEnLocalStorageString?.toString() || '[]')
                 accesoriosDefault = accesoriosEnLocalStorage
                 accesorios.value = accesoriosEnLocalStorage
+            }
+            if (LocalStorage.getItem('estadosVehiculos')) {
+                const estadosEnLocalStorageString = LocalStorage.getItem('estadosVehiculos')
+                const estadosEnLocalStorage = JSON.parse(estadosEnLocalStorageString?.toString() || '[]')
+                estadosDefault = estadosEnLocalStorage
+                estados.value = estadosEnLocalStorage
             }
         }
         async function filtrarAsignaciones(tab: string) {
@@ -150,11 +174,21 @@ export default defineComponent({
                 const axios = AxiosHttpRepository.getInstance()
                 const url = apiConfig.URL_BASE + '/' + axios.getEndpoint(endpoints.asignaciones_vehiculos) + '/imprimir/' + id
                 const filename = 'acta_resposabilidad_vehiculo_' + placa + '_' + Date.now()
-                imprimirArchivo(url, 'GET', 'blob', 'pdf', filename)
+                await imprimirArchivo(url, 'GET', 'blob', 'pdf', filename)
             } catch (e) {
                 notificarAdvertencia('Error al imprimir el acta. ' + e)
             } finally {
                 cargando.desactivar()
+            }
+        }
+        function crearEstado(val, done) {
+            val = val.toUpperCase()
+            if (val.length > 0) {
+                if (!estadosDefault.includes(val)) {
+                    estadosDefault.push(val)
+                    done(val, 'add-unique')
+                    LocalStorage.set('estadosVehiculos', JSON.stringify(estadosDefault))
+                }
             }
         }
         function crearAccesorio(val, done) {
@@ -166,6 +200,15 @@ export default defineComponent({
                     LocalStorage.set('accesoriosVehiculos', JSON.stringify(accesoriosDefault))
                 }
             }
+        }
+        function filtrarEstados(val, update) {
+            val = val.toUpperCase()
+            update(() => {
+                if (val == '') estados.value = estadosDefault
+                else {
+                    estados.value = estadosDefault.filter(v => v.toUpperCase().indexOf(val) > -1)
+                }
+            })
         }
         function filtrarAccesorios(val, update) {
             val = val.toUpperCase()
@@ -207,6 +250,7 @@ export default defineComponent({
             cantones, filtrarCantones,
             estadosAsignacionesVehiculos,
             accesorios,
+            estados,
 
 
             //funciones
@@ -215,6 +259,8 @@ export default defineComponent({
             optionsFecha,
             crearAccesorio,
             filtrarAccesorios,
+            crearEstado,
+            filtrarEstados,
 
 
             //botones de tablas

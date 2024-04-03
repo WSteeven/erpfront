@@ -10,9 +10,17 @@
           <!-- Vehiculo -->
           <div class="col-12 col-md-3 q-mb-md">
             <label class="q-mb-sm block">Vehículo</label>
-            <q-select
+            <q-input
               v-model="bitacora.vehiculo"
-              :options="opciones_vehiculos"
+              placeholder="Obligatorio"
+              :error="!!v$.vehiculo.$errors.length"
+              disable
+              outlined
+              dense
+            ></q-input>
+            <!-- <q-select
+              v-model="bitacora.vehiculo"
+              :options="vehiculos"
               hint="Agregue elementos desde el panel de vehículos"
               transition-show="scale"
               transition-hide="scale"
@@ -24,7 +32,7 @@
               :disable="disabled"
               use-input
               input-debounce="0"
-              @filter="filtroVehiculos"
+              @filter="filtrarVehiculos"
               :option-label="(item) => item.placa"
               :option-value="(item) => item.id"
               emit-value
@@ -47,14 +55,24 @@
                   </q-item-section>
                 </q-item>
               </template>
-            </q-select>
+            </q-select> -->
           </div>
           <!-- Chofer -->
-          <div class="col-12 col-md-3 q-mb-md" v-if="accion !== acciones.nuevo">
+          <div
+            class="col-12 col-md-3 q-mb-md"
+            v-if="accion == acciones.nuevo || bitacora.chofer"
+          >
             <label class="q-mb-sm block">Chofer</label>
-            <q-select
+            <q-input
               v-model="bitacora.chofer"
-              :options="opciones_choferes"
+              autogrow
+              disable
+              outlined
+              dense
+            ></q-input>
+            <!-- <q-select
+              v-model="bitacora.chofer"
+              :options="choferes"
               hint="Agregue rol de chofer a un empleado para mostrar en este listado"
               transition-show="scale"
               transition-hide="scale"
@@ -64,7 +82,7 @@
               :readonly="disabled"
               use-input
               input-debounce="0"
-              @filter="filtroChoferes"
+              @filter="filtrarChoferes"
               :option-label="(item) => item.nombres + ' ' + item.apellidos"
               :option-value="(item) => item.id"
               emit-value
@@ -77,7 +95,7 @@
                   </q-item-section>
                 </q-item>
               </template>
-            </q-select>
+            </q-select> -->
           </div>
           <!-- Fecha de registro -->
           <div class="col-6 col-md-3">
@@ -87,6 +105,7 @@
               placeholder="Obligatorio"
               :error="!!v$.fecha.$errors.length"
               :disable="disabled"
+              mask="####-##-##"
               outlined
               dense
             >
@@ -99,7 +118,8 @@
                   >
                     <q-date
                       v-model="bitacora.fecha"
-                      mask="DD-MM-YYYY"
+                      :mask="maskFecha"
+                      :options="optionsFecha"
                       today-btn
                     >
                       <div class="row items-center justify-end">
@@ -125,7 +145,7 @@
               </template>
             </q-input>
           </div>
-          <!-- Hora de salida -->
+          <!-- Hora de inicio -->
           <div class="col-3 col-md-3">
             <label class="q-mb-sm block">Hora inicio labores vehículo</label>
             <q-input
@@ -244,13 +264,13 @@
               track-color="transparent"
               instant-feedback
             >
-            <template v-slot:default>
+              <template v-slot:default>
                 <!-- <q-icon name="bi-fuel-pump-fill"/> -->
                 {{ bitacora.tanque_inicio }}%
               </template>
             </q-knob>
           </div>
-          
+
           <!-- Tanque final -->
           <div class="col-6 col-md-3">
             <label class="q-mb-sm block">Tanque final</label>

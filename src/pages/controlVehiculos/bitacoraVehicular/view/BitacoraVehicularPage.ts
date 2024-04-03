@@ -1,8 +1,8 @@
 //Dependencias
 import { configuracionColumnasBitacoraVehicular } from '../domain/configuracionColumnasBitacoraVehicular';
-import { required } from "shared/i18n-validators";
+import { required, requiredIf } from "shared/i18n-validators";
 import { useVuelidate } from '@vuelidate/core'
-import { computed, defineComponent, ref } from "vue";
+import { computed, defineComponent, onBeforeUnmount, onMounted, onUnmounted, ref } from "vue";
 
 // componentes
 import TabLayout from 'shared/contenedor/modules/simple/view/TabLayout.vue'
@@ -11,43 +11,71 @@ import TabLayout from 'shared/contenedor/modules/simple/view/TabLayout.vue'
 import { ContenedorSimpleMixin } from 'shared/contenedor/modules/simple/application/ContenedorSimpleMixin';
 import { BitacoraVehicular } from '../domain/BitacoraVehicular';
 import { BitacoraVehicularController } from '../infraestructure/BitacoraVehicularController';
-import { acciones } from 'config/utils';
+import { acciones, convertir_fecha, maskFecha } from 'config/utils';
 import { ChoferController } from 'pages/recursosHumanos/empleados/infraestructure/ChoferController';
 import { VehiculoController } from 'pages/controlVehiculos/vehiculos/infraestructure/VehiculoController';
+import { useFiltrosListadosSelects } from 'shared/filtrosListadosGenerales';
+import { useAuthenticationStore } from 'stores/authentication';
+import { AsignacionVehiculoController } from 'pages/controlVehiculos/asignarVehiculos/infraestructure/AsignacionVehiculoController';
+import { obtenerFechaActual, sumarFechas } from 'shared/utils';
 
 
 export default defineComponent({
+    // name:'ControlDiarioVehiculo',
     components: { TabLayout },
     setup() {
         const mixin = new ContenedorSimpleMixin(BitacoraVehicular, new BitacoraVehicularController())
         const { entidad: bitacora, disabled, listadosAuxiliares, accion } = mixin.useReferencias()
         const { setValidador, obtenerListados, cargarVista } = mixin.useComportamiento()
+        const { onReestablecer, onConsultado, } = mixin.useHooks()
 
-        const opciones_vehiculos = ref([])
-        const opciones_choferes = ref([])
+        /****************************************
+         * Stores
+         ****************************************/
+        const store = useAuthenticationStore()
+
+        const { vehiculos, filtrarVehiculos,
+            empleados: choferes, filtrarEmpleados: filtrarChoferes,
+        } = useFiltrosListadosSelects(listadosAuxiliares)
+        const usuarioDefault = ref()
         cargarVista(async () => {
-            await obtenerListados({
-                choferes: new ChoferController(),
-                vehiculos: new VehiculoController(),
-                /* combustibles: {
-                    controller: new CombustibleController(),
-                    params: { campos: 'id,nombre' }
-                } */
-            })
+            usuarioDefault.value = await obtenerVehiculoAsignado()
+            // await obtenerListados({
+            //     empleados: new ChoferController(),
+            //     vehiculos: new VehiculoController(),
+            //     /* combustibles: {
+            //         controller: new CombustibleController(),
+            //         params: { campos: 'id,nombre' }
+            //     } */
+            // })
+            //cargar datos por defecto
+            cargarDatosDefecto()
         })
-        //cargar datos en listados
-        opciones_vehiculos.value = listadosAuxiliares.vehiculos
-        opciones_choferes.value = listadosAuxiliares.choferes
 
-        // Hooks
+        /****************************************
+         * HOOKS
+         ****************************************/
+        //Estos metodos funcionan si no se usa el keep alive 
+        onMounted(()=>{
+            console.log('Se activo el onMounted')
+        })
+        onBeforeUnmount(()=>{
+            console.log('Se activo el onBeforeUnmount')
+        })
+        onUnmounted(()=>{
+            console.log('Se activo el onUnmounted')
+        })
+        onReestablecer(() => {
+            cargarDatosDefecto()
+        })
 
         //Reglas de validacion
         const reglas = {
             fecha: { required },
             hora_salida: { required },
-            hora_llegada: { required },
+            hora_llegada: { requiredIf: requiredIf(() => accion.value == acciones.editar) },
             km_inicial: { required },
-            km_final: { required },
+            km_final: { requiredIf: requiredIf(() => accion.value == acciones.editar) },
             tanque_inicio: { required },
             tanque_final: { required },
             // chofer: { required },
@@ -55,39 +83,58 @@ export default defineComponent({
         }
         const v$ = useVuelidate(reglas, bitacora)
         setValidador(v$.value)
+        /****************************************
+         * Funciones
+         ****************************************/
+        /**
+         * La función obtiene el vehículo asignado para el usuario actual con un estado específico.
+         * @returns La función `obtenerVehiculoAsignado` está devolviendo el primer elemento del array
+         * `resultado` de la respuesta del método `listar` en la clase `AsignacionVehiculoController`.
+         */
+        async function obtenerVehiculoAsignado() {
+            store.user.id
+            const response = (await new AsignacionVehiculoController().listar({ filtro: 1, responsable_id: store.user.id, estado: 'ACEPTADO' }))
+            return response.result[0]
+        }
+        /**
+         * La función "cargarDatosDefecto" carga datos por defecto en el objeto "bitacora" basándose en
+         * los valores de "usuarioDefault".
+         */
+        function cargarDatosDefecto() {
+            if (usuarioDefault.value) {
+                bitacora.vehiculo = usuarioDefault.value.vehiculo
+                bitacora.chofer_id = usuarioDefault.value.responsable_id
+                bitacora.chofer = usuarioDefault.value.responsable
+                bitacora.fecha = obtenerFechaActual(maskFecha)
+            }
+        }
 
+        /**
+         * La función `optionsFecha` comprueba si una fecha determinada se encuentra dentro del rango
+         * de ayer y hoy.
+         * @param date - El parámetro `date` es un objeto de fecha que se compara con la fecha de ayer
+         * y la fecha de hoy.
+         * @returns devuelve un valor booleano si la `fecha` se encuentra dentro del rango de ayer y hoy.
+         */
+        function optionsFecha(date) {
+            const today = new Date()
+            const yesterday = new Date(today.setDate(today.getDate() - 1))
+            return date >= convertir_fecha(yesterday) && date <= convertir_fecha(new Date())
+        }
 
         return {
             mixin, bitacora, disabled, v$, accion, acciones,
             configuracionColumnas: configuracionColumnasBitacoraVehicular,
+            maskFecha,
+
             //listados
-            opciones_vehiculos,
-            opciones_choferes,
-            filtroVehiculos(val, update) {
-                if (val === '') {
-                    update(() => {
-                        opciones_vehiculos.value = listadosAuxiliares.vehiculos
-                    })
-                    return
-                }
-                update(() => {
-                    const needle = val.toLowerCase()
-                    opciones_vehiculos.value = listadosAuxiliares.vehiculos.filter((v) => v.placa.toLowerCase().indexOf(needle) > -1)
-                })
-            },
-            filtroChoferes(val, update) {
-                if (val === '') {
-                    update(() => {
-                        opciones_choferes.value = listadosAuxiliares.choferes
-                    })
-                    return
-                }
-                update(() => {
-                    const needle = val.toLowerCase()
-                    opciones_choferes.value = listadosAuxiliares.choferes.filter((v) => v.nombres.toLowerCase().indexOf(needle) > -1 || v.apellidos.toLowerCase().indexOf(needle) > -1)
-                })
-            },
+            vehiculos, filtrarVehiculos,
+            choferes, filtrarChoferes,
+
             TanqueFinalValido: computed(() => bitacora.tanque_final! <= 100 || bitacora.tanque_final! >= 0),
+
+            //funciones
+            optionsFecha,
 
         }
     }

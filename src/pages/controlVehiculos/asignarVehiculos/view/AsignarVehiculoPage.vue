@@ -228,6 +228,69 @@
             />
           </div>
 
+          <!-- estado carroceria -->
+          <div class="col-12 col-md-3 q-mb-md">
+            <label class="q-mb-sm block">Estado de carrocería</label>
+            <q-select
+              v-model="asignacion.estado_carroceria"
+              options-dense
+              hint="Selecciona o ingresa uno o varios ítem"
+              :disable="disabled"
+              dense
+              outlined
+              use-input
+              use-chips
+              multiple
+              input-debounce="0"
+              @new-value="crearEstado"
+              :options="estados"
+              @filter="filtrarEstados"
+            >
+            </q-select>
+          </div>
+
+          <!-- estado mecanico -->
+          <div class="col-12 col-md-3 q-mb-md">
+            <label class="q-mb-sm block">Estado Mecánico</label>
+            <q-select
+              v-model="asignacion.estado_mecanico"
+              options-dense
+              hint="Selecciona o ingresa uno o varios ítem"
+              :disable="disabled"
+              dense
+              outlined
+              use-input
+              use-chips
+              multiple
+              input-debounce="0"
+              @new-value="crearEstado"
+              :options="estados"
+              @filter="filtrarEstados"
+            >
+            </q-select>
+          </div>
+
+          <!-- estado electrico -->
+          <div class="col-12 col-md-3 q-mb-md">
+            <label class="q-mb-sm block">Estado Eléctrico y A/AC</label>
+            <q-select
+              v-model="asignacion.estado_electrico"
+              options-dense
+              hint="Selecciona o ingresa uno o varios ítem"
+              :disable="disabled"
+              dense
+              outlined
+              use-input
+              use-chips
+              multiple
+              input-debounce="0"
+              @new-value="crearEstado"
+              :options="estados"
+              @filter="filtrarEstados"
+            >
+            </q-select>
+          </div>
+
           <!-- Observacion recibe -->
           <div
             class="col-12 col-md-3"
