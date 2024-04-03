@@ -11,7 +11,6 @@ import { apiConfig, endpoints } from 'config/api'
 import { imprimirArchivo } from 'shared/utils'
 import { Consolidado } from '../domain/Consolidado'
 import { ConsolidadoController } from '../infrestructure/ConsolidadoController'
-import { UsuarioController } from 'pages/fondosRotativos/usuario/infrestructure/UsuarioController'
 import { maskFecha } from 'config/utils'
 import { EmpleadoController } from 'pages/recursosHumanos/empleados/infraestructure/EmpleadoController'
 import { useCargandoStore } from 'stores/cargando'
@@ -223,6 +222,9 @@ export default defineComponent({
     function mostrarEmpleados() {
       consolidado.usuario = null;
     }
+function limpiar(){
+  is_all_empleados.value = 'false';
+}
     return {
       mixin,
       consolidado,
@@ -245,6 +247,7 @@ export default defineComponent({
       filtarTiposSaldos,
       mostrarEmpleados,
       watchEffect,
+      limpiar,
     }
   },
 })
