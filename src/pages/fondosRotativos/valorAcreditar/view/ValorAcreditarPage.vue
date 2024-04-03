@@ -3,6 +3,7 @@
     <div class="text-h5 q-py-sm text-right">
       Total a Acreditar: ${{ totalAcreditar.toFixed(2) }}
     </div>
+
     <q-form @submit.prevent v-if="mostrar_formulario">
       <div class="row q-col-gutter-sm q-mb-md">
         <!-- Usuarios -->

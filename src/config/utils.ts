@@ -623,6 +623,6 @@ export const tabOptionsTransaccionesEgresos: TabOption[] = [
 ]
 export const tabOptionsValoresAcreditar: TabOption[] = [
   // { label: 'Todo', value: '' },
-  { label: 'Activas', value: '0' },
-  { label: 'Inactivas', value: '1' },
+  { label: 'Activas', value: '1' },
+  { label: 'Inactivas', value: '0' },
 ];

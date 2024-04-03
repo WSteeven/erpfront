@@ -22,7 +22,7 @@ import { AxiosHttpRepository } from 'shared/http/infraestructure/AxiosHttpReposi
 import axios from 'axios'
 import { HttpResponseGet } from 'shared/http/domain/HttpResponse'
 import { useNotificaciones } from 'shared/notificaciones'
-import { required, minValue } from 'shared/i18n-validators'
+import { required, minValue, requiredIf } from 'shared/i18n-validators'
 
 export default defineComponent({
   components: {
@@ -49,7 +49,7 @@ export default defineComponent({
       mixin.useComportamiento()
     const { entidad: valorAcreditar, disabled, accion } = mixin.useReferencias()
     const authenticationStore = useAuthenticationStore()
-    const { confirmar, prompt, notificarCorrecto, notificarError } =
+    const {  prompt, notificarCorrecto, notificarError } =
       useNotificaciones()
 
     const deshabilitar_empleado = ref(true)
@@ -71,7 +71,7 @@ export default defineComponent({
         minimo: minValue(1),
       },
       motivo: {
-        required,
+        required: requiredIf(() => valorAcreditar.estado),
       },
     }
     const v$ = useVuelidate(reglas, valorAcreditar)
@@ -124,9 +124,9 @@ export default defineComponent({
       titulo: 'Eliminar',
       icono: 'bi-trash',
       color: 'secondary',
-      visible: () =>
+      visible: ({entidad}) =>
         authenticationStore.can('puede.eliminar.valor_acreditar') &&
-        !acreditacionesStore.esta_acreditado,
+        !acreditacionesStore.esta_acreditado &&  entidad.estado,
       accion: ({ entidad, posicion }) => {
         accion.value = 'ELIMINAR'
         eliminar_acreditacion({ entidad, posicion })
@@ -135,37 +135,38 @@ export default defineComponent({
     const btnActivarAcreditacionEmpleado: CustomActionTable = {
       titulo: 'Activar',
       icono: 'bi-toggle2-on',
-      color: 'secondary',
-      visible: (entidad) =>
-        authenticationStore.can('puede.eliminar.valor_acreditar') &&
-        !acreditacionesStore.esta_acreditado ,
-      accion: ({ entidad, posicion }) => {
-        console.log(entidad);
+      color: 'positive',
+      visible: ({entidad}) =>
+        {
+          return (
+            authenticationStore.can('puede.eliminar.valor_acreditar') &&
+            !acreditacionesStore.esta_acreditado && !entidad.estado
+          )
+        },
 
-       /* accion.value = 'ELIMINAR'
+      accion: ({ entidad, posicion }) => {
+        accion.value = 'ELIMINAR'
         activar_acreditacion({ entidad, posicion })
-        filtrarValoresAcreditar('1')*/
       },
     }
 
     async function activar_acreditacion({ entidad, posicion }) {
       try {
-        const data: CustomActionPrompt = {
-          titulo: 'Anular Acreditacion',
-          mensaje: 'Ingrese motivo de anulacion',
-          accion: async (data) => {
-            entidad.estado = true
-            entidad.motivo = data
-            valorAcreditar.id = entidad.id
-            valorAcreditar.estado = true
-            valorAcreditar.motivo = data
-            await editar(entidad, true)
-            notificarCorrecto('Se ha anulado Acreditacion')
-            listado.value.splice(posicion, 1)
-          },
-        }
-        prompt(data)
+        entidad.estado = true
+        entidad.motivo = ' '
+        valorAcreditar.id = entidad.id
+        valorAcreditar.empleado = entidad.empleado
+        valorAcreditar.acreditacion_semana = entidad.acreditacion_semana
+        valorAcreditar.monto_generado = entidad.monto_generado
+        valorAcreditar.monto_modificado = entidad.monto_modificado
+        valorAcreditar.estado = false
+        valorAcreditar.motivo = " "
+        await editar(entidad, true)
+        notificarCorrecto('Se ha activado empleado')
+        tabValorAcreditar.value='1'
+        filtrarValoresAcreditar('1')
       } catch (e: any) {
+        console.log(e.message);
         notificarError(
           'No se pudo anular, debes ingresar un motivo para la anulacion'
         )
@@ -180,6 +181,10 @@ export default defineComponent({
             entidad.estado = false
             entidad.motivo = data
             valorAcreditar.id = entidad.id
+            valorAcreditar.empleado = entidad.empleado
+            valorAcreditar.acreditacion_semana = entidad.acreditacion_semana
+            valorAcreditar.monto_generado = entidad.monto_generado
+            valorAcreditar.monto_modificado = entidad.monto_modificado
             valorAcreditar.estado = false
             valorAcreditar.motivo = data
             await editar(entidad, true)
@@ -307,10 +312,10 @@ export default defineComponent({
         console.log(v)
       })
     })
-    let tabValorAcreditar = '0'
+    const tabValorAcreditar = ref('1')
     function filtrarValoresAcreditar(tabSeleccionado: string) {
       listar({ estado: tabSeleccionado }, false)
-      tabValorAcreditar = tabSeleccionado
+      tabValorAcreditar.value = tabSeleccionado
     }
     return {
       mixin,
