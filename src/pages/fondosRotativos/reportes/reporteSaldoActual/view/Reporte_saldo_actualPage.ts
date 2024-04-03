@@ -1,4 +1,4 @@
-import {  defineComponent, ref, } from 'vue'
+import { defineComponent, ref } from 'vue'
 
 import TabLayout from 'shared/contenedor/modules/simple/view/TabLayout.vue'
 import { useNotificacionStore } from 'stores/notificacion'
@@ -7,7 +7,10 @@ import { useVuelidate } from '@vuelidate/core'
 import { ContenedorSimpleMixin } from 'shared/contenedor/modules/simple/application/ContenedorSimpleMixin'
 import { AxiosHttpRepository } from 'shared/http/infraestructure/AxiosHttpRepository'
 import { apiConfig, endpoints } from 'config/api'
-import { filtarVisualizacionEmpleadosSaldos, imprimirArchivo } from 'shared/utils'
+import {
+  filtarVisualizacionEmpleadosSaldos,
+  imprimirArchivo,
+} from 'shared/utils'
 import { ReporteSaldoActual } from '../domain/ReporteSaldoActual'
 import { ReporteSaldoActualController } from '../infrestucture/ReporteSaldoActualController'
 import { HttpResponseGet } from 'shared/http/domain/HttpResponse'
@@ -16,6 +19,7 @@ import { useAuthenticationStore } from 'stores/authentication'
 import { EmpleadoController } from 'pages/recursosHumanos/empleados/infraestructure/EmpleadoController'
 import { useCargandoStore } from 'stores/cargando'
 import { useRouter } from 'vue-router'
+import { UltimoSaldoController } from '../infrestucture/UltimoSaldoController'
 
 export default defineComponent({
   components: { TabLayout },
@@ -80,7 +84,9 @@ export default defineComponent({
         },
       })
 
-      usuarios.value = filtarVisualizacionEmpleadosSaldos(listadosAuxiliares.usuarios)
+      usuarios.value = filtarVisualizacionEmpleadosSaldos(
+        listadosAuxiliares.usuarios
+      )
       listadosAuxiliares.usuarios = usuarios.value
       usuariosInactivos.value =
         LocalStorage.getItem('usuariosInactivos') == null
@@ -157,29 +163,17 @@ export default defineComponent({
     if (store.can('puede.buscar.saldo.usuarios') == false) {
       reporte_saldo_actual.usuario = store.user.id
       visualizar_saldo_usuario.value = true
-      saldo_anterior()
+      saldoAnterior()
     }
-    function saldo_anterior() {
-      const axiosHttpRepository = AxiosHttpRepository.getInstance()
-      const url_acreditacion =
-        apiConfig.URL_BASE +
-        '/' +
-        axiosHttpRepository.getEndpoint(endpoints.ultimo_saldo) +
-        reporte_saldo_actual.usuario
-      axios({
-        url: url_acreditacion,
-        method: 'GET',
-        responseType: 'json',
-        headers: {
-          Authorization: axiosHttpRepository.getOptions().headers.Authorization,
-        },
-      }).then((response: HttpResponseGet) => {
-        const { data } = response
-        if (data) {
-          visualizar_saldo_usuario.value = true
-          reporte_saldo_actual.saldo_anterior = data.saldo_actual
-        }
-      })
+    async function saldoAnterior() {
+      const ultimo_saldo = new UltimoSaldoController()
+      if (reporte_saldo_actual.usuario) {
+        const { response } = await ultimo_saldo.consultar(
+          reporte_saldo_actual.usuario
+        )
+        visualizar_saldo_usuario.value = true
+        reporte_saldo_actual.saldo_anterior = response.data.saldo_actual
+      }
     }
     function cortar_saldo() {
       const axiosHttpRepository = AxiosHttpRepository.getInstance()
@@ -206,7 +200,7 @@ export default defineComponent({
       store,
       reporte_saldo_actual,
       cortar_saldo,
-      saldo_anterior,
+      saldoAnterior,
       disabled,
       accion,
       v$,
