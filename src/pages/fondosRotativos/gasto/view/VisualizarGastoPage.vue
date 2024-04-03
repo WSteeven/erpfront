@@ -254,6 +254,18 @@
               dense
             ></q-checkbox>
           </div>
+          <!-- Autorizacion -->
+          <div class="col-12 col-md-3">
+            <label class="q-mb-sm block">Autorizaciòn Especial</label>
+            <q-input
+              v-model="gasto.aut_especial_user"
+              placeholder="Obligatorio"
+              disable
+              outlined
+              dense
+            >
+            </q-input>
+          </div>
           <!-- Detalle -->
           <div class="col-12 col-md-3 q-mb-md" v-if="isConsultar">
             <label class="q-mb-sm block">Detalle</label>
@@ -761,8 +773,8 @@
               </template>
             </q-input>
           </div>
-           <!-- Observacion de Anulacion -->
-           <div class="col-12 col-md-3" v-if="gasto.estado === estadosGastos.APROBADO ">
+          <!-- Observacion de Anulacion -->
+          <div class="col-12 col-md-3" v-if="gasto.estado === estadosGastos.APROBADO">
             <label class="q-mb-sm block">Observacion de Anulación</label>
             <q-input
               v-model="gasto.observacion_anulacion"
@@ -775,7 +787,7 @@
               @blur="v$.observacion_anulacion.$touch"
               dense
             >
-            <template v-slot:error>
+              <template v-slot:error>
                 <div v-for="error of v$.observacion_anulacion.$errors" :key="error.$uid">
                   <div class="error-msg">{{ error.$message }}</div>
                 </div>

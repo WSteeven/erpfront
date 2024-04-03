@@ -13,13 +13,12 @@ import {
 } from 'shared/utils'
 import { ReporteSaldoActual } from '../domain/ReporteSaldoActual'
 import { ReporteSaldoActualController } from '../infrestucture/ReporteSaldoActualController'
-import { HttpResponseGet } from 'shared/http/domain/HttpResponse'
-import axios from 'axios'
 import { useAuthenticationStore } from 'stores/authentication'
 import { EmpleadoController } from 'pages/recursosHumanos/empleados/infraestructure/EmpleadoController'
 import { useCargandoStore } from 'stores/cargando'
 import { useRouter } from 'vue-router'
 import { UltimoSaldoController } from '../infrestucture/UltimoSaldoController'
+import { CortarSaldolController } from '../infrestucture/CortarSaldoController'
 
 export default defineComponent({
   components: { TabLayout },
@@ -175,25 +174,10 @@ export default defineComponent({
         reporte_saldo_actual.saldo_anterior = response.data.saldo_actual
       }
     }
-    function cortar_saldo() {
-      const axiosHttpRepository = AxiosHttpRepository.getInstance()
-      const url_acreditacion =
-        apiConfig.URL_BASE +
-        '/' +
-        axiosHttpRepository.getEndpoint(endpoints.cortar_saldo)
-      axios({
-        url: url_acreditacion,
-        method: 'GET',
-        responseType: 'json',
-        headers: {
-          Authorization: axiosHttpRepository.getOptions().headers.Authorization,
-        },
-      }).then((response: HttpResponseGet) => {
-        const { data } = response
-        if (data) {
-          router.push('acreditacion-semana')
-        }
-      })
+    async function cortar_saldo() {
+      const cortar_saldo = new CortarSaldolController()
+      await cortar_saldo.listar()
+      router.push('acreditacion-semana')
     }
     return {
       mixin,

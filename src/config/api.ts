@@ -383,7 +383,7 @@ export const endpoints = {
   umbral: new Endpoint('fondos-rotativos/umbral'),
   acreditacion: new Endpoint('fondos-rotativos/acreditacion'),
   transferencia: new Endpoint('fondos-rotativos/transferencia'),
-  ultimo_saldo: new Endpoint('fondos-rotativos/ultimo_saldo/'),
+  ultimo_saldo: new Endpoint('fondos-rotativos/ultimo_saldo'),
   monto_acreditar_usuario: new Endpoint(
     'fondos-rotativos/monto_acreditar_usuario/'
   ),
