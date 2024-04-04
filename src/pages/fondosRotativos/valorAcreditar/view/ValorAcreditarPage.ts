@@ -91,7 +91,7 @@ export default defineComponent({
       listado.value = (
         await new ValorAcreditarController().listar({
           acreditacion_semana_id:
-            acreditacionesStore.idAcreditacionSeleccionada,
+            acreditacionesStore.acreditacion_semana.id,
         })
       ).result
     })

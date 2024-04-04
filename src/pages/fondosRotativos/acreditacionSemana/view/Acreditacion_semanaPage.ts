@@ -95,6 +95,7 @@ export default defineComponent({
       color: 'primary',
       accion: ({ entidad }) => {
         acreditacionesStore.idAcreditacionSeleccionada = entidad.id
+        acreditacionesStore.acreditacion_semana=entidad
         acreditacionesStore.esta_acreditado= entidad.acreditar
         modalesAcreditacionSemana.abrirModalEntidad('ValorAcreditarPage')
       },

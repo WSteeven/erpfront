@@ -1,10 +1,12 @@
+import { Acreditacion } from 'pages/fondosRotativos/saldos/acreditacion/domain/Acreditacion'
 import { defineStore } from 'pinia'
-import { ref } from 'vue'
+import { reactive, ref } from 'vue'
 
 export const useAcreditacionesStore = defineStore('acreditaciones', () => {
   const idAcreditacion = ref()
   const idAcreditacionSeleccionada = ref()
   const posicionAcreditacionSeleccionada = ref()
+  const acreditacion_semana:Acreditacion = reactive(new Acreditacion)
   const esta_acreditado = ref()
 
 
@@ -13,5 +15,6 @@ export const useAcreditacionesStore = defineStore('acreditaciones', () => {
     idAcreditacionSeleccionada,
     esta_acreditado,
     posicionAcreditacionSeleccionada,
+    acreditacion_semana,
   }
 })
