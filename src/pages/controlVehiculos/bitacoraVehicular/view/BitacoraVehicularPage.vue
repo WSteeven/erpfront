@@ -312,20 +312,23 @@
         </div>
         <!-- Mantenimientos -->
         <q-expansion-item
+          v-if="accion == acciones.editar || accion == acciones.consultar"
           class="overflow-hidden q-mb-md expansion"
-          label="Checklist del vehículo"
+          label="Checklist del Vehículo"
           header-class="text-bold bg-header-collapse"
           default-opened
+          group="checklist"
         >
           <div
             class="col-12 col-md-12 rounded-card q-ma-sm q-py-sm text-center bg-light-blue-2"
           >
-            
-            <div><q-icon
-              name="bi-info-circle-fill"
-              class="q-mr-sm"
-              size="1em"
-            /><b> Información </b>Las opciones se marcan con colores:</div>
+            <div>
+              <q-icon
+                name="bi-info-circle-fill"
+                class="q-mr-xs q-ml-xs"
+                size="1em"
+              /><b> Información </b>Las opciones se marcan con colores:
+            </div>
             <div>
               <q-radio
                 v-model="accepted"
@@ -361,11 +364,12 @@
             >
               <div class="row q-col-gutter-sm q-pa-sm">
                 <!-- parabrisas -->
-                <div class="col-12 col-md-3 col-sm-6">
+                <div class="col-md-3 col-sm-4 col-xs-6">
                   <label class="q-mb-sm block"
                     >Parabrisas/ Vidrios Ventanas</label
                   >
                   <q-option-group
+                    :disable="disabled"
                     v-model="bitacora.parabrisas"
                     placeholder="Obligatorio"
                     :options="optionsDefault"
@@ -376,9 +380,10 @@
                 </div>
 
                 <!-- limpiaparabrisas -->
-                <div class="col-12 col-md-3 col-sm-6">
+                <div class="col-md-3 col-sm-4 col-xs-6">
                   <label class="q-mb-sm block">Limpiaparabrisas</label>
                   <q-option-group
+                    :disable="disabled"
                     v-model="bitacora.limpiaparabrisas"
                     placeholder="Obligatorio"
                     :options="optionsDefault"
@@ -389,11 +394,12 @@
                 </div>
 
                 <!-- luces interiores -->
-                <div class="col-12 col-md-3 col-sm-6">
+                <div class="col-md-3 col-sm-4 col-xs-6">
                   <label class="q-mb-sm block"
                     >Luces interiores y tablero</label
                   >
                   <q-option-group
+                    :disable="disabled"
                     v-model="bitacora.luces_interiores"
                     placeholder="Obligatorio"
                     :options="optionsDefault"
@@ -404,9 +410,10 @@
                 </div>
 
                 <!-- Aire acondicionado -->
-                <div class="col-12 col-md-3 col-sm-6">
+                <div class="col-md-3 col-sm-4 col-xs-6">
                   <label class="q-mb-sm block">Aire Acondicionado</label>
                   <q-option-group
+                    :disable="disabled"
                     v-model="bitacora.aire_acondicionado"
                     placeholder="Obligatorio"
                     :options="optionsDefault"
@@ -426,9 +433,10 @@
             >
               <div class="row q-col-gutter-sm q-pa-sm">
                 <!-- aceite de motor -->
-                <div class="col-12 col-md-3 col-sm-6">
+                <div class="col-md-3 col-sm-4 col-xs-6">
                   <label class="q-mb-sm block">Aceite de motor</label>
                   <q-option-group
+                    :disable="disabled"
                     v-model="bitacora.aceite_motor"
                     placeholder="Obligatorio"
                     :options="optionsDefault"
@@ -438,23 +446,11 @@
                   </q-option-group>
                 </div>
 
-                <!-- Liquido de freno -->
-                <div class="col-12 col-md-3 col-sm-6">
-                  <label class="q-mb-sm block">Liquído de freno</label>
-                  <q-option-group
-                    v-model="bitacora.liquido_freno"
-                    placeholder="Obligatorio"
-                    :options="optionsDefault"
-                    keep-color
-                    inline
-                  >
-                  </q-option-group>
-                </div>
-
                 <!-- Aceite Hidraulico -->
-                <div class="col-12 col-md-3 col-sm-6">
+                <div class="col-md-3 col-sm-4 col-xs-6">
                   <label class="q-mb-sm block">Aceite Hidraulico</label>
                   <q-option-group
+                    :disable="disabled"
                     v-model="bitacora.aceite_hidraulico"
                     placeholder="Obligatorio"
                     :options="optionsDefault"
@@ -464,10 +460,25 @@
                   </q-option-group>
                 </div>
 
+                <!-- Liquido de freno -->
+                <div class="col-md-3 col-sm-4 col-xs-6">
+                  <label class="q-mb-sm block">Liquído de freno</label>
+                  <q-option-group
+                    :disable="disabled"
+                    v-model="bitacora.liquido_freno"
+                    placeholder="Obligatorio"
+                    :options="optionsDefault"
+                    keep-color
+                    inline
+                  >
+                  </q-option-group>
+                </div>
+
                 <!-- liquido refrigerante -->
-                <div class="col-12 col-md-3 col-sm-6">
+                <div class="col-md-3 col-sm-4 col-xs-6">
                   <label class="q-mb-sm block">Líquido refrigerante</label>
                   <q-option-group
+                    :disable="disabled"
                     v-model="bitacora.liquido_refrigerante"
                     placeholder="Obligatorio"
                     :options="optionsDefault"
@@ -477,10 +488,25 @@
                   </q-option-group>
                 </div>
 
+                <!-- agua -->
+                <div class="col-md-3 col-sm-4 col-xs-6">
+                  <label class="q-mb-sm block">Agua Plumas/Radiador</label>
+                  <q-option-group
+                    :disable="disabled"
+                    v-model="bitacora.cables_conexiones"
+                    placeholder="Obligatorio"
+                    :options="optionsDefault"
+                    keep-color
+                    inline
+                  >
+                  </q-option-group>
+                </div>
+
                 <!-- filtro de combustible -->
-                <div class="col-12 col-md-3 col-sm-6">
+                <div class="col-md-3 col-sm-4 col-xs-6">
                   <label class="q-mb-sm block">Filtro de combustible</label>
                   <q-option-group
+                    :disable="disabled"
                     v-model="bitacora.filtro_combustible"
                     placeholder="Obligatorio"
                     :options="optionsDefault"
@@ -490,9 +516,10 @@
                   </q-option-group>
                 </div>
                 <!-- baterias -->
-                <div class="col-12 col-md-3 col-sm-6">
+                <div class="col-md-3 col-sm-4 col-xs-6">
                   <label class="q-mb-sm block">Batería</label>
                   <q-option-group
+                    :disable="disabled"
                     v-model="bitacora.bateria"
                     placeholder="Obligatorio"
                     :options="optionsDefault"
@@ -502,9 +529,10 @@
                   </q-option-group>
                 </div>
                 <!-- cables y conexiones-->
-                <div class="col-12 col-md-3 col-sm-6">
+                <div class="col-md-3 col-sm-4 col-xs-6">
                   <label class="q-mb-sm block">Cables y Conexiones</label>
                   <q-option-group
+                    :disable="disabled"
                     v-model="bitacora.cables_conexiones"
                     placeholder="Obligatorio"
                     :options="optionsDefault"
@@ -524,9 +552,10 @@
             >
               <div class="row q-col-gutter-sm q-pa-sm">
                 <!-- luces exteriores -->
-                <div class="col-md-3 col-sm-4 col-xs-6" style="background-color:aqua">
+                <div class="col-md-3 col-sm-4 col-xs-6">
                   <label class="q-mb-sm block">Luces exteriores</label>
                   <q-option-group
+                    :disable="disabled"
                     v-model="bitacora.luces_exteriores"
                     placeholder="Obligatorio"
                     :options="optionsDefault"
@@ -537,11 +566,12 @@
                 </div>
 
                 <!-- frenos -->
-                <div class="col-md-3 col-sm-4 col-xs-6" >
+                <div class="col-md-3 col-sm-4 col-xs-6">
                   <label class="q-mb-sm block"
                     >Frenos (pastillas/zapatas)</label
                   >
                   <q-option-group
+                    :disable="disabled"
                     v-model="bitacora.frenos"
                     placeholder="Obligatorio"
                     :options="optionsDefault"
@@ -552,9 +582,10 @@
                 </div>
 
                 <!-- Amortiguadores -->
-                <div class="col-md-3 col-sm-4 col-xs-6" style="background-color:aqua">
+                <div class="col-md-3 col-sm-4 col-xs-6">
                   <label class="q-mb-sm block">Amortiguadores</label>
                   <q-option-group
+                    :disable="disabled"
                     v-model="bitacora.amortiguadores"
                     placeholder="Obligatorio"
                     :options="optionsDefault"
@@ -568,6 +599,7 @@
                 <div class="col-md-3 col-sm-4 col-xs-6">
                   <label class="q-mb-sm block">Llanta delantera derecha</label>
                   <q-option-group
+                    :disable="disabled"
                     v-model="bitacora.tire_rf"
                     placeholder="Obligatorio"
                     :options="optionsDefault"
@@ -578,11 +610,12 @@
                 </div>
 
                 <!-- llanta delantera izquierda -->
-                <div class="col-md-3 col-sm-4 col-xs-6" style="background-color:aqua">
+                <div class="col-md-3 col-sm-4 col-xs-6">
                   <label class="q-mb-sm block"
                     >Llanta delantera izquierda</label
                   >
                   <q-option-group
+                    :disable="disabled"
                     v-model="bitacora.tire_lf"
                     placeholder="Obligatorio"
                     :options="optionsDefault"
@@ -596,6 +629,7 @@
                 <div class="col-md-3 col-sm-4 col-xs-6">
                   <label class="q-mb-sm block">Llanta trasera derecha</label>
                   <q-option-group
+                    :disable="disabled"
                     v-model="bitacora.tire_rr"
                     placeholder="Obligatorio"
                     :options="optionsDefault"
@@ -608,6 +642,7 @@
                 <div class="col-md-3 col-sm-4 col-xs-6">
                   <label class="q-mb-sm block">Llanta trasera izquierda</label>
                   <q-option-group
+                    :disable="disabled"
                     v-model="bitacora.tire_lr"
                     placeholder="Obligatorio"
                     :options="optionsDefault"
@@ -620,7 +655,125 @@
             </q-expansion-item>
           </div>
         </q-expansion-item>
-        <!-- Seguimientos -->
+
+        <!-- Accesorios del vehículo -->
+        <q-expansion-item
+          v-if="accion == acciones.editar || accion == acciones.consultar"
+          class="overflow-hidden q-mb-md expansion"
+          label="Checklist de Accesorios Vehículo"
+          header-class="text-bold bg-header-collapse"
+          group="checklist"
+        >
+          <div class="row q-col-gutter-sm q-pa-sm">
+            <!-- botiquín -->
+            <div class="col-md-3 col-sm-4 col-xs-6">
+              <label class="q-mb-sm block">Botiquín</label>
+              <q-option-group
+                :disable="disabled"
+                v-model="bitacora.botiquin"
+                placeholder="Obligatorio"
+                :options="optionsEstadosCualitativos"
+                keep-color
+              >
+              </q-option-group>
+            </div>
+
+            <!-- extintor -->
+            <div class="col-md-3 col-sm-4 col-xs-6">
+              <label class="q-mb-sm block">Extintor</label>
+              <q-option-group
+                :disable="disabled"
+                v-model="bitacora.extintor"
+                placeholder="Obligatorio"
+                :options="optionsEstadosCualitativos"
+                keep-color
+              >
+              </q-option-group>
+            </div>
+
+            <!-- caja de herramientas -->
+            <div class="col-md-3 col-sm-4 col-xs-6">
+              <label class="q-mb-sm block">Caja de Herramientas</label>
+              <q-option-group
+                :disable="disabled"
+                v-model="bitacora.caja_herramientas"
+                placeholder="Obligatorio"
+                :options="optionsEstadosCualitativos"
+                keep-color
+              >
+              </q-option-group>
+            </div>
+
+            <!-- triangulos de seguridad -->
+            <div class="col-md-3 col-sm-4 col-xs-6">
+              <label class="q-mb-sm block">Triángulos de Seguridad</label>
+              <q-option-group
+                :disable="disabled"
+                v-model="bitacora.triangulos"
+                placeholder="Obligatorio"
+                :options="optionsEstados"
+                keep-color
+                inline
+              >
+              </q-option-group>
+            </div>
+
+            <!-- llanta de emergencia -->
+            <div class="col-md-3 col-sm-4 col-xs-6">
+              <label class="q-mb-sm block">Llanta Emergencia</label>
+              <q-option-group
+                :disable="disabled"
+                v-model="bitacora.tire_emergencia"
+                placeholder="Obligatorio"
+                :options="optionsEstados"
+                keep-color
+                inline
+              >
+              </q-option-group>
+            </div>
+
+            <!-- cinturon de seguridad -->
+            <div class="col-md-3 col-sm-4 col-xs-6">
+              <label class="q-mb-sm block">Cinturones de Seguridad</label>
+              <q-option-group
+                :disable="disabled"
+                v-model="bitacora.cinturones"
+                placeholder="Obligatorio"
+                :options="optionsEstados"
+                keep-color
+                inline
+              >
+              </q-option-group>
+            </div>
+            <!-- gata -->
+            <div class="col-md-3 col-sm-4 col-xs-6">
+              <label class="q-mb-sm block">Gata Hidráulica</label>
+              <q-option-group
+                :disable="disabled"
+                v-model="bitacora.gata"
+                placeholder="Obligatorio"
+                :options="optionsEstados"
+                keep-color
+                inline
+              >
+              </q-option-group>
+            </div>
+            
+            <!-- portaescalera -->
+            <div class="col-md-3 col-sm-4 col-xs-6">
+              <label class="q-mb-sm block">Portaescalera</label>
+              <q-option-group
+                :disable="disabled"
+                v-model="bitacora.portaescalera"
+                placeholder="Obligatorio"
+                :options="optionsEstados"
+                keep-color
+                inline
+              >
+              </q-option-group>
+            </div>
+          </div>
+        </q-expansion-item>
       </q-form>
     </template>
   </tab-layout>

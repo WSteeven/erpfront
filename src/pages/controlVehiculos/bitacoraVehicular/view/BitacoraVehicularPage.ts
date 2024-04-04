@@ -39,6 +39,38 @@ export default defineComponent({
         } = useFiltrosListadosSelects(listadosAuxiliares)
         const usuarioDefault = ref()
         // const accepted = ref('1')
+        const optionsEstadosCualitativos = [
+            {
+                label: 'Lleno      ',
+                value: 'lleno',
+                color: 'green',
+                checkedIcon: 'bi-check-circle-fill',
+                uncheckedIcon: 'panorama_fish_eye',
+            },
+            {
+                label: 'Vacio      ',
+                value: 'vacio',
+                color: 'red',
+                checkedIcon: 'bi-check-circle-fill',
+                uncheckedIcon: 'panorama_fish_eye',
+            },
+        ]
+        const optionsEstados = [
+            {
+                label: 'Buen estado',
+                value: 'buen estado',
+                color: 'green',
+                checkedIcon: 'bi-check-circle-fill',
+                uncheckedIcon: 'panorama_fish_eye',
+            },
+            {
+                label: 'Mal estado',
+                value: 'Mal estado',
+                color: 'red',
+                checkedIcon: 'bi-check-circle-fill',
+                uncheckedIcon: 'panorama_fish_eye',
+            },
+        ]
         const optionsDefault = [
             {
                 label: '',
@@ -98,9 +130,9 @@ export default defineComponent({
         const reglas = {
             fecha: { required },
             hora_salida: { required },
-            hora_llegada: { requiredIf: requiredIf(() => accion.value == acciones.editar) },
+            hora_llegada: { requiredIf: requiredIf(() => accion.value == acciones.editar && bitacora.firmada) },
             km_inicial: { required },
-            km_final: { requiredIf: requiredIf(() => accion.value == acciones.editar) },
+            km_final: { requiredIf: requiredIf(() => accion.value == acciones.editar && bitacora.firmada) },
             tanque_inicio: { required },
             tanque_final: { required },
             // chofer: { required },
@@ -151,7 +183,7 @@ export default defineComponent({
             mixin, bitacora, disabled, v$, accion, acciones,
             configuracionColumnas: configuracionColumnasBitacoraVehicular,
             maskFecha,
-            optionsDefault,
+            optionsDefault, optionsEstadosCualitativos, optionsEstados,
             accepted: ref('1'),
 
             //listados
