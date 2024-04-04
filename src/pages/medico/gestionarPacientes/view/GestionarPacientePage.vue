@@ -16,23 +16,6 @@
         ></detalle-paciente>
       </div>
 
-      <essential-table
-        v-if="empleado.id"
-        titulo="Esquema de vacunación"
-        :configuracionColumnas="columnasEsquemaVacunacion"
-        :datos="listadosAuxiliares.esquemasVacunas"
-        :alto-fijo="false"
-        :permitirConsultar="false"
-        :permitirEditar="false"
-        :permitirEliminar="false"
-        :mostrar-footer="false"
-        :mostrar-botones="false"
-        :accion1Header="btnAgregarVacunaAplicada"
-        :accion1="btnEditarVacunaAplicada"
-      ></essential-table>
-
-      <br />
-
       <!-- Tabs -->
       <div v-show="empleado.id">
         <q-tabs
@@ -133,6 +116,21 @@
           </transition>
         </div>
       </div>
+
+      <essential-table
+        v-if="empleado.id"
+        titulo="Esquema de vacunación"
+        :configuracionColumnas="columnasEsquemaVacunacion"
+        :datos="listadosAuxiliares.esquemasVacunas"
+        :alto-fijo="false"
+        :permitirConsultar="false"
+        :permitirEditar="false"
+        :permitirEliminar="false"
+        :mostrar-footer="false"
+        :mostrar-botones="false"
+        :accion1Header="btnAgregarVacunaAplicada"
+        :accion1="btnEditarVacunaAplicada"
+      ></essential-table>
     </template>
   </tab-layout-filter-tabs2>
 

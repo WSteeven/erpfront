@@ -7,17 +7,20 @@ import ResultadosExamenPage from '../modules/resultadosExamen/view/ResultadosExa
 import SolicitudExamenSolicitarPage from 'medico/gestionarPacientes/modules/solicitudExamen/view/SolicitudExamenSolicitarPage.vue'
 import DiagnosticoRecetaPage from 'pages/medico/diagnosticoReceta/view/DiagnosticoRecetaPage.vue'
 import EsquemaVacunacionPage from 'medico/gestionarPacientes/modules/esquemaVacunacion/view/EsquemaVacunacionPage.vue'
+import FichaAptitudPage from 'medico/gestionarPacientes/modules/fichaAptitud/view/FichaAptitudPage.vue'
 
 export class GestionPacienteModales {
   ResultadosExamenPage: ComponenteModal
   SolicitudExamenSolicitarPage: ComponenteModal
   DiagnosticoRecetaPage: ComponenteModal
   EsquemaVacunacionPage: ComponenteModal
+  FichaAptitudPage: ComponenteModal
 
   constructor() {
     this.ResultadosExamenPage = markRaw(new ComponenteModal('Resultados de examen', ResultadosExamenPage))
     this.SolicitudExamenSolicitarPage = markRaw(new ComponenteModal('Realizar solicitud de examenes médicos', SolicitudExamenSolicitarPage))
     this.DiagnosticoRecetaPage = markRaw(new ComponenteModal('Diagnóstico receta', DiagnosticoRecetaPage))
     this.EsquemaVacunacionPage = markRaw(new ComponenteModal('Esquema de vacunación', EsquemaVacunacionPage))
+    this.FichaAptitudPage = markRaw(new ComponenteModal('Ficha de Aptitud', FichaAptitudPage))
   }
 }

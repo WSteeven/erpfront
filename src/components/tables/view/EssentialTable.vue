@@ -103,7 +103,7 @@
 
       <div
         v-if="titulo"
-        class="row text-primary q-pa-sm text-subtitle2 q-mb-lg items-center justify-between col-12 bg-grey-4 rounded"
+        class="row text-primary text-subtitle2 q-mb-lg items-center justify-between col-12"
         :class="{
           'titulo-tabla2': !$q.screen.xs,
           'justify-center': $q.screen.xs,
@@ -291,7 +291,7 @@
       </div>
 
       <!-- <q-separator color="red" class="q-py-sm q-my-sm" inset></q-separator>dd -->
-      <q-separator color="grey-4" class=" block full-width q-mb-md" inset></q-separator>
+      <!-- <q-separator color="grey-4" class=" block full-width q-mb-md" inset></q-separator> -->
 
       <!-- Filtros -->
       <div class="row col-12">
@@ -1687,7 +1687,7 @@
     </template>
   </q-table>
 
-  <div
+  <!-- <div
     v-if="!$q.screen.xs && permitirEditarCeldas && listado.length"
     class="text-right text-grey-7"
   >
@@ -1700,7 +1700,7 @@
       ></q-icon>
       <small>Haz clic sobre una celda para editarla</small>
     </q-chip>
-  </div>
+  </div> -->
 
   <previsualizar-tabla-pdf
     :configuracionColumnas="configuracionColumnas"

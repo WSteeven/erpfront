@@ -1,31 +1,34 @@
 <template>
   <tab-layout :mixin="mixin" :mostrar-listado="false">
     <template #formulario>
-      <div class="text-center q-mb-md">{{ categoriaExamen }}</div>
-      <div class="text-center text-primary q-mb-md">{{ examen }}</div>
+      <!-- <div class="text-center q-mb-md">{{ categoriaExamen }}</div> -->
+      <!-- <div class="text-center text-primary q-mb-md">{{ examen }}</div> -->
 
       <div class="row bg-body-table q-pa-md">
-        <div
-          v-for="categoria in resultadosExamenes"
-          :key="categoria.id"
-          class="col-12 text-center text-bold q-mb-md"
-        >
-          <div class="q-mb-md">
-            {{ categoria.examen }}
+        <div v-for="itemExamen in resultadosExamenes" :key="itemExamen.examen" class="col-12">
+          <div class="text-bold text-shadow q-mb-md q-mt-xl">
+            <q-icon name="bi-table" class="q-mr-sm"></q-icon>
+            {{ itemExamen.examen }}
           </div>
-          <essential-table
-            :titulo="categoria.categoria"
-            :configuracionColumnas="configuracionColumnasCampos"
-            :datos="categoria.campos"
-            :alto-fijo="false"
-            :permitirConsultar="false"
-            :permitirEditar="false"
-            :permitirEliminar="false"
-            :mostrar-footer="false"
-            separador="cell"
-            :permitirEditarCeldas="true"
-            :permitir-buscar="false"
-          ></essential-table>
+          <div
+            v-for="categoria in itemExamen.categorias"
+            :key="categoria.id"
+            class="col-12 text-center text-bold q-mb-md"
+          >
+            <essential-table
+              :titulo="categoria.categoria"
+              :configuracionColumnas="configuracionColumnasCampos"
+              :datos="categoria.campos"
+              :alto-fijo="false"
+              :permitirConsultar="false"
+              :permitirEditar="false"
+              :permitirEliminar="false"
+              :mostrar-footer="false"
+              separador="cell"
+              :permitirEditarCeldas="true"
+              :permitir-buscar="false"
+            ></essential-table>
+          </div>
         </div>
 
         <div class="col-12">
@@ -36,7 +39,7 @@
             dense
           ></q-input>
         </div>
-
+{{ accion }}
         <!-- Manejo de archivos -->
         <div class="col-12 q-mb-md">
           <gestor-archivos

@@ -43,6 +43,8 @@ export const useFiltrosListadosSelects = (listadosAuxiliares, entidad?: Ref<any>
   const laboratoriosClinicos = ref(listadosAuxiliares.laboratoriosClinicos)
   const enfermedades = ref(listadosAuxiliares.enfermedades)
   const tiposVacunas = ref(listadosAuxiliares.tiposVacunas)
+  const tiposEvaluacionesMedicasRetiros = ref(listadosAuxiliares.tiposEvaluacionesMedicasRetiros)
+  const tiposAptitudesMedicasLaborales = ref(listadosAuxiliares.tiposAptitudesMedicasLaborales)
 
   //////////////////////////////////////////
   //modulo ventas
@@ -397,6 +399,8 @@ export const useFiltrosListadosSelects = (listadosAuxiliares, entidad?: Ref<any>
   const filtrarEnfermedades = (val, update) => filtrarLista(val, update, enfermedades, 'codigo_nombre_enfermedad', listadosAuxiliares.enfermedades)
   const filtrarTiposVacunas = (val, update) => filtrarLista(val, update, tiposVacunas, 'nombre', listadosAuxiliares.tiposVacunas)
   const filtrarLaboratoriosClinicos = (val, update) => filtrarLista(val, update, laboratoriosClinicos, 'nombre', listadosAuxiliares.laboratoriosClinicos)
+  const filtrarTiposEvaluacionesMedicasRetiros = (val, update) => filtrarLista(val, update, tiposEvaluacionesMedicasRetiros, 'nombre', listadosAuxiliares.tiposEvaluacionesMedicasRetiros)
+  const filtrarTiposAptitudesMedicasLaborales = (val, update) => filtrarLista(val, update, tiposAptitudesMedicasLaborales, 'nombre', listadosAuxiliares.tiposAptitudesMedicasLaborales)
 
   /***************************************
    * Filtro global optimizado
@@ -445,5 +449,7 @@ export const useFiltrosListadosSelects = (listadosAuxiliares, entidad?: Ref<any>
     enfermedades, filtrarEnfermedades,
     tiposVacunas, filtrarTiposVacunas,
     laboratoriosClinicos, filtrarLaboratoriosClinicos,
+    // tiposEvaluacionesMedicasRetiros, filtrarTiposEvaluacionesMedicasRetiros,
+    // tiposAptitudesMedicasLaborales, filtrarTiposAptitudesMedicasLaborales,
   }
 }

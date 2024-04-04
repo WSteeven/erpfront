@@ -47,8 +47,6 @@ export default defineComponent({
      *********/
     const medicoStore = useMedicoStore()
 
-    // const { onConsultado } = props.mixin.useHooks()
-
     /************
     * Variables
     *************/
@@ -163,17 +161,6 @@ export default defineComponent({
       }
     }
 
-    /********
-     * Hooks
-     ********/
-    /* const onConsultado = async () => {
-      console.log('consultado...')
-      medicoStore.empleado = empleado.value
-      await consultarRegistrosEmpleadoExamen({ empleado_id: empleado.value.id })
-      const idRegistro = registros.value[0].id
-      if (idRegistro) seleccionarRegistro(idRegistro)
-    } */
-
     async function seleccionarTabTipoProceso() {
       console.log('consultado...')
 
@@ -182,12 +169,9 @@ export default defineComponent({
       if (idRegistro) seleccionarRegistro(idRegistro)
     }
 
-    /************
-     * Observers
-     ************/
-    /* watch(empleado, async () => {
-      await consultarRegistrosEmpleadoExamen({ empleado_id: empleado.value.id, tipo_proceso_examen: props.tipoProceso })
-    })*/
+    const abrirFichaAptitud = () => {
+      modales.abrirModalEntidad('FichaAptitudPage')
+    }
 
     return {
       // variables
@@ -217,6 +201,7 @@ export default defineComponent({
       seleccionarTabTipoProceso,
       seleccionarRegistro,
       filtrarEstadoExamen,
+      abrirFichaAptitud,
       /*****************************
        * useBotonesSolicitudExamen
        *****************************/

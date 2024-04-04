@@ -1,7 +1,7 @@
 // Dependencias
 import { StatusEssentialLoading } from 'components/loading/application/StatusEssentialLoading'
 import { configuracionColumnasCampos } from '../domain/configuracionColumnasCampos'
-import { defineComponent, ref, watchEffect } from 'vue'
+import { Ref, defineComponent, ref, watchEffect } from 'vue'
 import { useMedicoStore } from 'stores/medico'
 import { acciones } from 'config/utils'
 
@@ -18,8 +18,10 @@ import { DetalleResultadoExamenController } from '../infraestructure/DetalleResu
 import { ConfiguracionExamenCampo } from '../domain/ConfiguracionExamenCampo'
 import { DetalleResultadoExamen } from '../domain/DetalleResultadoExamen'
 import { ResultadoExamen } from '../domain/ResultadoExamen'
+import { ItemExamen } from '../domain/ItemExamen'
 
 export default defineComponent({
+  name: 'resultados_examenes',
   components: { TabLayout, EssentialTable, GestorArchivos },
   emits: ['cerrar-modal', 'guardado'],
   setup(props, { emit }) {
@@ -35,11 +37,11 @@ export default defineComponent({
     const cargando = new StatusEssentialLoading()
 
     const mixin = new ContenedorSimpleMixin(DetalleResultadoExamen, new DetalleResultadoExamenController(), new ArchivoController())
-    const { entidad: resultadoExamen, accion } = mixin.useReferencias()
     const { onGuardado, onModificado, onBeforeGuardar, onBeforeModificar } = mixin.useHooks()
+    const { entidad: resultadoExamen, accion } = mixin.useReferencias()
     const { consultar } = mixin.useComportamiento()
 
-    const resultadosExamenes = ref([])
+    const resultadosExamenes: Ref<ItemExamen[]> = ref([])
     const observacion = ref()
 
     const refArchivo = ref()
@@ -50,6 +52,7 @@ export default defineComponent({
         cargando.activar()
         const { result } = await configuracionExamenCategoriaController.listar({ examen_id: medicoStore.examenSolicitado?.examen_id })
         resultadosExamenes.value = result
+        console.log(resultadosExamenes.value)
       } catch (e) {
         console.log(e)
       } finally {
@@ -167,8 +170,9 @@ export default defineComponent({
       resultadosExamenes,
       configuracionColumnasCampos,
       observacion,
-      categoriaExamen: medicoStore.examenSolicitado?.categoria,
-      examen: medicoStore.examenSolicitado?.examen,
+      accion,
+      // categoriaExamen: medicoStore.examenSolicitado?.categoria,
+      // examen: medicoStore.examenSolicitado?.examen,
     }
   }
 })

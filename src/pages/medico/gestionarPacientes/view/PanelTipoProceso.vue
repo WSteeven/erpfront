@@ -62,10 +62,13 @@
               <label class="q-mb-sm block"> Fecha y hora de registro </label>
               <div class="text-bold">{{ registro.created_at }}</div>
             </div>
-            <div class="col-12 col-md-6">
+
+            <div class="col-12 col-md-6 q-mb-md">
               <label class="q-mb-sm block"> Observación </label>
               <div class="text-bold">{{ registro.observacion }}</div>
             </div>
+
+            <q-btn color="positive" class="col-12" no-caps unelevated @click="abrirFichaAptitud()">Ficha de aptitud</q-btn>
           </div>
         </q-tab-panel>
       </q-tab-panels>
