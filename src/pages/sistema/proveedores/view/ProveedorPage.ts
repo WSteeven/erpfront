@@ -8,7 +8,6 @@ import { useVuelidate } from '@vuelidate/core';
 import TabLayout from 'shared/contenedor/modules/simple/view/TabLayout.vue'
 import LabelAbrirModal from 'components/modales/modules/LabelAbrirModal.vue';
 import ModalesEntidad from 'components/modales/view/ModalEntidad.vue';
-import TablaDevolucionProducto from 'components/tables/view/TablaDevolucionProducto.vue'
 import EssentialTable from 'components/tables/view/EssentialTable.vue';
 import GestorArchivos from 'components/gestorArchivos/GestorArchivos.vue';
 
@@ -51,7 +50,7 @@ import { DatoBancarioController } from 'pages/comprasProveedores/datosBancariosP
 
 
 export default defineComponent({
-  components: { TabLayout, LabelAbrirModal, ModalesEntidad, TablaDevolucionProducto, EssentialTable, GestorArchivos },
+  components: { TabLayout, LabelAbrirModal, ModalesEntidad, EssentialTable, GestorArchivos },
   setup() {
     const mixinEmpresas = new ContenedorSimpleMixin(Empresa, new EmpresaController(), new ArchivoController())
     const mixin = new ContenedorSimpleMixin(Proveedor, new ProveedorController())

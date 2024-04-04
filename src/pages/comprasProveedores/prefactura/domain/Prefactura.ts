@@ -29,7 +29,7 @@ export class Prefactura extends EntidadAuditable {
         this.created_at = null
         this.tiempo = null
         this.estado = null
-        this.iva = 12
+        this.iva = 15
         this.listadoProductos = []
         this.tiene_proforma = false
         this.tiene_pedido = false
