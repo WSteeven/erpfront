@@ -46,7 +46,7 @@ export class Proforma extends EntidadAuditable {
         this.estado = null
         this.forma = null
         this.id_aux = null
-        this.iva = 12
+        this.iva = 15
         this.listadoProductos = []
         this.modificar_descuento = false
         this.modificar_iva = false

@@ -127,7 +127,7 @@ export default defineComponent({
             proforma.autorizacion = 1
         })
         onConsultado(() => {
-            if (accion.value === acciones.editar && store.user.id === proforma.autorizador) {
+            if (accion.value === acciones.editar && (store.user.id === proforma.autorizador || store.user.id === proforma.solicitante)) {
                 soloLectura.value = false
                 proforma.autorizacion = null
             }
@@ -224,7 +224,7 @@ export default defineComponent({
                 proforma.created_at = formatearFecha(new Date().getDate().toLocaleString())
                 proforma.autorizacion = 1
                 proforma.estado = 1
-                proforma.observacion_aut =null
+                proforma.observacion_aut = null
             } else {
                 proforma.hydrate(new Proforma())
             }
