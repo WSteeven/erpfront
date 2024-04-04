@@ -4,6 +4,6 @@ import { ReporteSaldoActual } from "../domain/ReporteSaldoActual";
 
 export class ReporteSaldoActualController extends TransaccionSimpleController<ReporteSaldoActual>{
   constructor() {
-    super(endpoints.reporte_saldo_actual)
+    super(endpoints.reporte_saldo_actual_pdf)
   }
 }

@@ -25,6 +25,7 @@ import { DescuentosLeyController } from 'pages/recursosHumanos/descuentos_ley/in
 import { HorasExtrasSubTipoController } from 'pages/recursosHumanos/horas_extras_subtipo/infraestructure/HorasExtrasSubTipoController'
 import { HorasExtrasTipoController } from 'pages/recursosHumanos/horas_extras_tipo/infraestructure/HorasExtrasTipoController'
 import { MultaController } from 'pages/recursosHumanos/multas/infraestructure/MultaController'
+import { UltimoSaldoController } from 'pages/fondosRotativos/reportes/reporteSaldoActual/infrestucture/UltimoSaldoController'
 
 export const useAuthenticationStore = defineStore('authentication', () => {
   // Variables locales
@@ -40,32 +41,83 @@ export const useAuthenticationStore = defineStore('authentication', () => {
   const saldo_actual = ref(0)
   const nombreUsuario = computed(
     () =>
-      `${user.value?.nombres}${user.value?.apellidos ? ' ' + user.value.apellidos : ''
+      `${user.value?.nombres}${
+        user.value?.apellidos ? ' ' + user.value.apellidos : ''
       }`
   )
 
-  const esCoordinador = computed(() => user.value ? extraerRol(user.value.roles, rolesSistema.coordinador) : false)
-  const esCoordinadorBackup = computed(() => user.value ? extraerRol(user.value.roles, rolesSistema.coordinadorBackup) : false)
-  const esCoordinadorBodega = computed(() => user.value ? extraerRol(user.value.roles, rolesSistema.coordinadorBodega) : false)
-  const esFiscalizador = computed(() => user.value ? extraerRol(user.value.roles, rolesSistema.fiscalizador) : false)
-  const esJefeTecnico = computed(() => user.value ? extraerRol(user.value.roles, rolesSistema.jefe_tecnico) : false)
-  const esSupervisorCampo = computed(() => user.value ? extraerRol(user.value.roles, rolesSistema.supervisor) : false)
-  const esTecnicoLider = computed(() => user.value ? extraerRol(user.value.roles, rolesSistema.tecnico_lider) : false)
-  const esBodeguero = computed(() => user.value ? extraerRol(user.value.roles, rolesSistema.bodega) : false)
-  const esBodegueroTelconet = computed(() => user.value ? extraerRol(user.value.roles, rolesSistema.bodegaTelconet) : false)
-  const esActivosFijos = computed(() => user.value ? extraerRol(user.value.roles, rolesSistema.activos_fijos) : false)
-  const esTecnico = computed(() => user.value ? extraerRol(user.value.roles, rolesSistema.tecnico) : false)
-  const esRecursosHumanos = computed(() => user.value ? extraerRol(user.value.roles, rolesSistema.rrhh) : false)
-  const esGerente = computed(() => user.value ? extraerRol(user.value.roles, rolesSistema.gerente) : false)
-  const esContabilidad = computed(() => user.value ? extraerRol(user.value.roles, rolesSistema.contabilidad) : false)
-  const esCompras = computed(() => user.value ? extraerRol(user.value.roles, rolesSistema.compras) : false)
-  const esAdministrador = computed(() => user.value ? extraerRol(user.value.roles, rolesSistema.administrador) : false)
+  const esCoordinador = computed(() =>
+    user.value ? extraerRol(user.value.roles, rolesSistema.coordinador) : false
+  )
+  const esCoordinadorBackup = computed(() =>
+    user.value
+      ? extraerRol(user.value.roles, rolesSistema.coordinadorBackup)
+      : false
+  )
+  const esCoordinadorBodega = computed(() =>
+    user.value
+      ? extraerRol(user.value.roles, rolesSistema.coordinadorBodega)
+      : false
+  )
+  const esFiscalizador = computed(() =>
+    user.value ? extraerRol(user.value.roles, rolesSistema.fiscalizador) : false
+  )
+  const esJefeTecnico = computed(() =>
+    user.value ? extraerRol(user.value.roles, rolesSistema.jefe_tecnico) : false
+  )
+  const esSupervisorCampo = computed(() =>
+    user.value ? extraerRol(user.value.roles, rolesSistema.supervisor) : false
+  )
+  const esTecnicoLider = computed(() =>
+    user.value
+      ? extraerRol(user.value.roles, rolesSistema.tecnico_lider)
+      : false
+  )
+  const esBodeguero = computed(() =>
+    user.value ? extraerRol(user.value.roles, rolesSistema.bodega) : false
+  )
+  const esBodegueroTelconet = computed(() =>
+    user.value
+      ? extraerRol(user.value.roles, rolesSistema.bodegaTelconet)
+      : false
+  )
+  const esActivosFijos = computed(() =>
+    user.value
+      ? extraerRol(user.value.roles, rolesSistema.activos_fijos)
+      : false
+  )
+  const esTecnico = computed(() =>
+    user.value ? extraerRol(user.value.roles, rolesSistema.tecnico) : false
+  )
+  const esRecursosHumanos = computed(() =>
+    user.value ? extraerRol(user.value.roles, rolesSistema.rrhh) : false
+  )
+  const esGerente = computed(() =>
+    user.value ? extraerRol(user.value.roles, rolesSistema.gerente) : false
+  )
+  const esContabilidad = computed(() =>
+    user.value ? extraerRol(user.value.roles, rolesSistema.contabilidad) : false
+  )
+  const esCompras = computed(() =>
+    user.value ? extraerRol(user.value.roles, rolesSistema.compras) : false
+  )
+  const esAdministrador = computed(() =>
+    user.value
+      ? extraerRol(user.value.roles, rolesSistema.administrador)
+      : false
+  )
   //ventas
-  const esJefeVentasClaro = computed(() => user.value ? extraerRol(user.value.roles, rolesSistema.jefe_ventas) : false)
-  const esSupervisorVentasClaro = computed(() => user.value ? extraerRol(user.value.roles, rolesSistema.supervisor_ventas) : false)
-  const esVendedor = computed(() => user.value ? extraerRol(user.value.roles, rolesSistema.vendedor) : false)
-
-
+  const esJefeVentasClaro = computed(() =>
+    user.value ? extraerRol(user.value.roles, rolesSistema.jefe_ventas) : false
+  )
+  const esSupervisorVentasClaro = computed(() =>
+    user.value
+      ? extraerRol(user.value.roles, rolesSistema.supervisor_ventas)
+      : false
+  )
+  const esVendedor = computed(() =>
+    user.value ? extraerRol(user.value.roles, rolesSistema.vendedor) : false
+  )
 
   function extraerRol(roles: string[], rolConsultar: string) {
     return roles.some((rol: string) => rol === rolConsultar)
@@ -77,7 +129,6 @@ export const useAuthenticationStore = defineStore('authentication', () => {
       /*const csrf_cookie = axios.getEndpoint(endpoints.csrf_cookie)
       console.log('authentication...')
       await axios.get(csrf_cookie) */
-
 
       const login = axios.getEndpoint(endpoints.login)
       const response: AxiosResponse = await axios.post(login, credentiales)
@@ -91,7 +142,7 @@ export const useAuthenticationStore = defineStore('authentication', () => {
 
       return response.data.modelo
     } catch (error: unknown) {
-      console.log(error);
+      console.log(error)
 
       const axiosError = error as AxiosError
       throw new ApiError(axiosError)
@@ -99,7 +150,10 @@ export const useAuthenticationStore = defineStore('authentication', () => {
   }
   const enviarCorreoRecuperacion = async (userLogin: ForgotPassword) => {
     try {
-      await axios.post(axios.getEndpoint(endpoints.enviar_correo_recuperacion), userLogin)
+      await axios.post(
+        axios.getEndpoint(endpoints.enviar_correo_recuperacion),
+        userLogin
+      )
     } catch (error: unknown) {
       const axiosError = error as AxiosError
       throw new ApiError(axiosError)
@@ -107,7 +161,10 @@ export const useAuthenticationStore = defineStore('authentication', () => {
   }
   const recuperacionCuenta = async (userLogin: ForgotPassword) => {
     try {
-      await axios.post(axios.getEndpoint(endpoints.recuperacion_cuenta), userLogin)
+      await axios.post(
+        axios.getEndpoint(endpoints.recuperacion_cuenta),
+        userLogin
+      )
     } catch (error: unknown) {
       const axiosError = error as AxiosError
       throw new ApiError(axiosError)
@@ -115,60 +172,63 @@ export const useAuthenticationStore = defineStore('authentication', () => {
   }
   async function consultar_saldo_actual() {
     try {
-      const userApi = axios.getEndpoint(endpoints.ultimo_saldo) + user.value?.id
-
-      const response = await axios.get<AxiosResponse>(userApi)
-
-      setSaldo(response.data.saldo_actual)
-      return response.data.saldo_actual
-
+      const ultimo_saldo = new UltimoSaldoController()
+      if (user.value.id) {
+        const { response } = await ultimo_saldo.consultar(user.value.id)
+        const saldo_actual = response.data.saldo_actual
+        setSaldo(saldo_actual)
+        return saldo_actual
+      }
     } catch (e) {
       setSaldo(0)
     }
-
   }
-
 
   /**
    * Función para cargar datos en el Local Storage
    */
   async function cargarDatosLS() {
-    const autorizaciones = (await new AutorizacionController().listar({ campos: 'id,nombre' })).result
+    const autorizaciones = (
+      await new AutorizacionController().listar({ campos: 'id,nombre' })
+    ).result
     LocalStorage.set('autorizaciones', JSON.stringify(autorizaciones))
-    const sucursales = (await new SucursalController().listar({ campos: 'id,lugar,cliente_id' })).result
+    const sucursales = (
+      await new SucursalController().listar({ campos: 'id,lugar,cliente_id' })
+    ).result
     LocalStorage.set('sucursales', JSON.stringify(sucursales))
-    const condiciones = (await new CondicionController().listar({ campos: 'id,nombre' })).result
+    const condiciones = (
+      await new CondicionController().listar({ campos: 'id,nombre' })
+    ).result
     LocalStorage.set('condiciones', JSON.stringify(condiciones))
-    const estados_transacciones = (await new EstadosTransaccionController().listar({ campos: 'id,nombre' })).result
-    LocalStorage.set('estados_transacciones', JSON.stringify(estados_transacciones))
-    const cantones = (await new CantonController().listar({ campos: 'id,canton' })).result
+    const estados_transacciones = (
+      await new EstadosTransaccionController().listar({ campos: 'id,nombre' })
+    ).result
+    LocalStorage.set(
+      'estados_transacciones',
+      JSON.stringify(estados_transacciones)
+    )
+    const cantones = (
+      await new CantonController().listar({ campos: 'id,canton' })
+    ).result
     LocalStorage.set('cantones', JSON.stringify(cantones))
-    const detalles = (await new DetalleFondoController().listar({ campos: 'id,descripcion' })).result
+    const detalles = (
+      await new DetalleFondoController().listar({ campos: 'id,descripcion' })
+    ).result
     LocalStorage.set('detalles', JSON.stringify(detalles))
-    const sub_detalles = (await new SubDetalleFondoController().listar({ campos: 'id,descripcion' })).result
+    const sub_detalles = (
+      await new SubDetalleFondoController().listar({ campos: 'id,descripcion' })
+    ).result
     LocalStorage.set('sub_detalles', JSON.stringify(sub_detalles))
-    /*const autorizacionesEspeciales = (await new UsuarioAutorizadoresController().listar({ campos: 'id,nombre' })).result
-    LocalStorage.set('autorizaciones_especiales', JSON.stringify(autorizacionesEspeciales))*/
-    const tareas = (await new TareaController().listar({ campos: 'id,titulo' })).result
+    const tareas = (await new TareaController().listar({ campos: 'id,titulo' }))
+      .result
     LocalStorage.set('tareas', JSON.stringify(tareas))
-    const usuariosInactivos = (await new EmpleadoController().listar({ campos: 'id,nombres,apellidos', estado: 0 })).result
+    const usuariosInactivos = (
+      await new EmpleadoController().listar({
+        campos: 'id,nombres,apellidos',
+        estado: 0,
+      })
+    ).result
     LocalStorage.set('usuariosInactivos', JSON.stringify(usuariosInactivos))
-    const concepto_ingresos = (await new ConceptoIngresoController().listar()).result
-    LocalStorage.set('concepto_ingresos', JSON.stringify(concepto_ingresos))
-    const descuentos_generales = (await new DescuentosGenralesController().listar()).result
-    LocalStorage.set('descuentos_generales', JSON.stringify(descuentos_generales))
-    const descuentos_ley = (await new DescuentosLeyController().listar()).result
-    LocalStorage.set('descuentos_ley', JSON.stringify(descuentos_ley))
-    const multas = (await new MultaController().listar()).result
-    LocalStorage.set('multas', JSON.stringify(multas))
-    const horas_extras_tipos = (await new HorasExtrasTipoController().listar()).result
-    LocalStorage.set('horas_extras_tipos', JSON.stringify(horas_extras_tipos))
-    const horas_extras_subtipos = (await new HorasExtrasSubTipoController().listar()).result
-    LocalStorage.set('horas_extras_subtipos', JSON.stringify(horas_extras_subtipos))
-    // const sub_tareas = (await new SubtareaController().listar({ campos: 'id,titulo' })).result
-    // LocalStorage.set('sub_tareas', JSON.stringify(sub_tareas))
-
-
   }
   /**
    * Función para limpiar los datos del Local Storage
@@ -214,7 +274,6 @@ export const useAuthenticationStore = defineStore('authentication', () => {
 
       permisos.value = response.data.permisos
       return response.data
-
     } catch (e) {
       setUser(null)
     }
@@ -243,7 +302,9 @@ export const useAuthenticationStore = defineStore('authentication', () => {
 
   async function listadoUsuarios() {
     try {
-      const response = await axios.get<AxiosResponse>(axios.getEndpoint(endpoints.usuarios))
+      const response = await axios.get<AxiosResponse>(
+        axios.getEndpoint(endpoints.usuarios)
+      )
       return response.data.modelo
     } catch (e) {
       const axiosError = e as AxiosError
@@ -251,7 +312,6 @@ export const useAuthenticationStore = defineStore('authentication', () => {
     }
   }
   // console.log(user);
-
 
   return {
     user,
@@ -276,12 +336,17 @@ export const useAuthenticationStore = defineStore('authentication', () => {
     esJefeTecnico,
     esTecnico,
     esTecnicoLider,
-    esBodeguero, esBodegueroTelconet,
+    esBodeguero,
+    esBodegueroTelconet,
     esActivosFijos,
     esRecursosHumanos,
     esGerente,
-    esCompras, esContabilidad, esAdministrador,
-    esJefeVentasClaro, esSupervisorVentasClaro, esVendedor,
+    esCompras,
+    esContabilidad,
+    esAdministrador,
+    esJefeVentasClaro,
+    esSupervisorVentasClaro,
+    esVendedor,
     esFiscalizador,
     esSupervisorCampo,
     consultar_saldo_actual,
@@ -289,4 +354,3 @@ export const useAuthenticationStore = defineStore('authentication', () => {
     listadoUsuarios,
   }
 })
-

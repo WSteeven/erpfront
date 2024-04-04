@@ -97,6 +97,7 @@
                   <q-date
                     v-model="fondo_rotativo_autorizacion_fecha.fecha_inicio"
                     :mask="maskFecha"
+                    :options="optionsFechaInicio"
                     today-btn
                   >
                     <div class="row items-center justify-end">
@@ -132,6 +133,7 @@
                     v-model="fondo_rotativo_autorizacion_fecha.fecha_fin"
                     :mask="maskFecha"
                     today-btn
+                    :options="optionsFechaFin"
                   >
                     <div class="row items-center justify-end">
                       <q-btn v-close-popup label="Cerrar" color="primary" flat />
@@ -179,7 +181,6 @@
             label="Inactivo"
             true-value="true"
             false-value="false"
-            @update:model-value="mostrarInactivos"
           ></q-checkbox>
         </div>
       </q-card-section>
