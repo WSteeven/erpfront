@@ -120,7 +120,7 @@
       :mostrarButtonSubmits="false"
       :permitirConsultar="false"
       :tabOptions="tabOptionsValoresAcreditar"
-      subtituloPagina=""
+      :subtituloPagina="acreditacion_semana.semana"
       :accion1Header="btnNevoEmpleadoAcreditar"
       :accion1="btnVerAcreditacionEmpleado"
       :accion2="btnEditarAcreditacionEmpleado"

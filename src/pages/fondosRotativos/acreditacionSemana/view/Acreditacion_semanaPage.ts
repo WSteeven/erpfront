@@ -27,6 +27,8 @@ import { CustomActionPrompt } from 'components/tables/domain/CustomActionPrompt'
 
 
 export default defineComponent({
+  name: 'AcreditacionSemana',
+
   components: { TabLayout, EssentialTable ,ModalesEntidad},
   setup() {
     /*********
@@ -34,7 +36,7 @@ export default defineComponent({
      *********/
     useNotificacionStore().setQuasar(useQuasar())
     const acreditacionesStore = useAcreditacionesStore()
-    const { notificarAdvertencia, notificarCorrecto, confirmar, promptItems } =
+    const {  notificarCorrecto,  promptItems } =
       useNotificaciones()
     /***********
      * Mixin
@@ -53,10 +55,9 @@ export default defineComponent({
       entidad: fondo_rotativo_contabilidad,
       disabled,
       accion,
-      listadosAuxiliares,
       listado,
     } = mixin.useReferencias()
-    const { setValidador, obtenerListados, cargarVista, listar } =
+    const { setValidador,  cargarVista } =
       mixin.useComportamiento()
       const store = useAuthenticationStore()
       useCargandoStore().setQuasar(useQuasar())
@@ -94,7 +95,6 @@ export default defineComponent({
       icono: 'bi-eye',
       color: 'primary',
       accion: ({ entidad }) => {
-        acreditacionesStore.idAcreditacionSeleccionada = entidad.id
         acreditacionesStore.acreditacion_semana=entidad
         acreditacionesStore.esta_acreditado= entidad.acreditar
         modalesAcreditacionSemana.abrirModalEntidad('ValorAcreditarPage')

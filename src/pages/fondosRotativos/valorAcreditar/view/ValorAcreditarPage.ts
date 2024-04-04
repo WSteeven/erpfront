@@ -1,6 +1,5 @@
 import { defineComponent, computed, ref, onMounted } from 'vue'
 import { ValorAcreditar } from '../domain/ValorAcreditar'
-import { apiConfig, endpoints } from 'config/api'
 import TabLayout from 'shared/contenedor/modules/simple/view/TabLayout.vue'
 import TabLayoutFilterTabs2 from 'shared/contenedor/modules/simple/view/TabLayoutFilterTabs2.vue'
 
@@ -18,9 +17,6 @@ import { useAcreditacionesStore } from 'stores/acreditaciones'
 import { EmpleadoController } from 'pages/recursosHumanos/empleados/infraestructure/EmpleadoController'
 import { useAuthenticationStore } from 'stores/authentication'
 import { accionesTabla, tabOptionsValoresAcreditar } from 'config/utils'
-import { AxiosHttpRepository } from 'shared/http/infraestructure/AxiosHttpRepository'
-import axios from 'axios'
-import { HttpResponseGet } from 'shared/http/domain/HttpResponse'
 import { useNotificaciones } from 'shared/notificaciones'
 import { required, minValue, requiredIf } from 'shared/i18n-validators'
 import { ValorAcreditarEmpleadoController } from '../infrestructure/ValorAcreditarEmpleadoController'
@@ -54,6 +50,7 @@ export default defineComponent({
 
     const deshabilitar_empleado = ref(true)
     const mostrar_formulario = ref(false)
+    const acreditacion_semana = ref(acreditacionesStore.acreditacion_semana)
     /*************
      * Validaciones
      **************/
@@ -267,7 +264,7 @@ export default defineComponent({
       accion: () => {
         accion.value = 'NUEVO'
         valorAcreditar.acreditacion_semana =
-          acreditacionesStore.idAcreditacionSeleccionada
+          acreditacionesStore.acreditacion_semana.id
         mostrar_formulario.value = true
         deshabilitar_empleado.value = false
       },
@@ -307,7 +304,7 @@ export default defineComponent({
         {
           estado: tabSeleccionado,
           acreditacion_semana_id:
-            acreditacionesStore.idAcreditacionSeleccionada,
+            acreditacionesStore.acreditacion_semana.id,
         },
         false
       )
@@ -340,6 +337,7 @@ export default defineComponent({
       tabOptionsValoresAcreditar,
       configuracionColumnas: configuracionColumnasValorAcreditar,
       tabValorAcreditar,
+      acreditacion_semana,
     }
   },
 })
