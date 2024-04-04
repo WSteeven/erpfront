@@ -38,6 +38,31 @@ export default defineComponent({
             empleados: choferes, filtrarEmpleados: filtrarChoferes,
         } = useFiltrosListadosSelects(listadosAuxiliares)
         const usuarioDefault = ref()
+        // const accepted = ref('1')
+        const optionsDefault = [
+            {
+                label: '',
+                value: 'success',
+                color: 'green',
+                checkedIcon: 'bi-check-circle-fill',
+                uncheckedIcon: 'panorama_fish_eye',
+                iconColor: 'green-2',
+            },
+            {
+                label: '',
+                value: 'warning',
+                color: 'orange',
+                checkedIcon: 'bi-check-circle-fill',
+                uncheckedIcon: 'panorama_fish_eye',
+            },
+            {
+                label: '',
+                value: 'danger',
+                color: 'red',
+                checkedIcon: 'bi-check-circle-fill',
+                uncheckedIcon: 'panorama_fish_eye',
+            },
+        ]
         cargarVista(async () => {
             usuarioDefault.value = await obtenerVehiculoAsignado()
             // await obtenerListados({
@@ -56,13 +81,13 @@ export default defineComponent({
          * HOOKS
          ****************************************/
         //Estos metodos funcionan si no se usa el keep alive 
-        onMounted(()=>{
+        onMounted(() => {
             console.log('Se activo el onMounted')
         })
-        onBeforeUnmount(()=>{
+        onBeforeUnmount(() => {
             console.log('Se activo el onBeforeUnmount')
         })
-        onUnmounted(()=>{
+        onUnmounted(() => {
             console.log('Se activo el onUnmounted')
         })
         onReestablecer(() => {
@@ -126,6 +151,8 @@ export default defineComponent({
             mixin, bitacora, disabled, v$, accion, acciones,
             configuracionColumnas: configuracionColumnasBitacoraVehicular,
             maskFecha,
+            optionsDefault,
+            accepted: ref('1'),
 
             //listados
             vehiculos, filtrarVehiculos,
