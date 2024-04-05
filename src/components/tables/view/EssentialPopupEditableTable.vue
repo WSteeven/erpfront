@@ -723,6 +723,25 @@
         <span v-else>{{ props.row[props.col.name] }}</span>
       </q-td>
     </template>
+    <!--Select de unidad de medida-->
+    <template #body-cell-condicion="props">
+      <q-td :key="props.col.name" :props="props">
+        <q-select
+          v-if="props.col.type === 'select' && props.col.editable"
+          v-model="props.row[props.col.name]"
+          :options="props.col.options"
+          :options-label="(v) => v.label"
+          :options-value="(v) => v.value"
+          options-dense
+          outlined
+          :disable="!permitirEditarCeldas"
+          dense
+          emit-value
+          map-options
+        />
+        <span v-else>{{ props.row[props.col.name] }}</span>
+      </q-td>
+    </template>
   </q-table>
 </template>
 

@@ -31,17 +31,10 @@ export const configuracionColumnasMaterialEmpleadoTarea: ColumnConfig<MaterialEm
       align: 'left',
       sortable: true,
     },
-    /* {
-      name: 'etapa',
-      field: 'etapa',
-      label: 'Etapa',
-      align: 'left',
-      sortable: true,
-    }, */
     {
-      name: 'despachado',
-      field: 'despachado',
-      label: 'Despachado',
+      name: 'transacciones',
+      field: 'transacciones',
+      label: 'Transacciones',
       align: 'left',
       sortable: true,
     },

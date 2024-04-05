@@ -70,5 +70,9 @@ export const iconos = {
   diasDescanso: {
     label: 'DIAS DE DESCANSO',
     icono: 'bi-house-heart',
-  }
+  },
+  transferencia_saldo:{
+    label: 'TRANSFERENCIA DE SALDO',
+    icono: 'bi-cash',
+  },
 }

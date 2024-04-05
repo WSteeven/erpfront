@@ -1,9 +1,8 @@
 // Dependencias
 
 import { useAuthenticationStore } from 'stores/authentication'
-import { useNotificaciones } from 'shared/notificaciones'
 import { defineComponent, ref } from 'vue'
-import { accionesTabla, tabAutorizarTransferenciaSaldo, estadosGastos, estadosTransferencias } from 'config/utils'
+import { accionesTabla, tabAutorizarTransferenciaSaldo,  estadosTransferencias } from 'config/utils'
 
 // Componentes
 import ConfirmarDialog from 'gestionTrabajos/trabajoAsignado/view/ConfirmarDialog.vue'
@@ -13,7 +12,6 @@ import { Gasto } from 'pages/fondosRotativos/gasto/domain/Gasto'
 import { CustomActionTable } from 'components/tables/domain/CustomActionTable'
 import { configuracionColumnasAutorizarTransferencia } from '../domain/configuracionColumnasAutorizarTransferencia'
 import { StatusEssentialLoading } from 'components/loading/application/StatusEssentialLoading'
-import { AprobarTransferenciaController } from '../infrestructure/AprobarTransferenciaController'
 import ModalEntidad from 'components/modales/view/ModalEntidad.vue'
 import { ComportamientoModalesTransferencia } from '../application/ComportamientoModalesTransferencia'
 import { AutorizarTransferenciaController } from '../infrestructure/AutorizarTransferenciaController'
@@ -30,22 +28,12 @@ export default defineComponent({
   },
   setup() {
     const controller = new AutorizarTransferenciaController()
-    const aprobarController = new AprobarTransferenciaController()
-    const {
-      confirmar,
-      prompt,
-      notificarCorrecto,
-      notificarAdvertencia,
-      notificarError,
-    } = useNotificaciones()
     const tabActual = ref()
     /***********
      * Mixin
      ************/
     const mixin = new ContenedorSimpleMixin(Gasto, controller)
     const { listado } = mixin.useReferencias()
-    const { listar } =
-      mixin.useComportamiento()
     /***********
      * Stores
      ***********/

@@ -490,6 +490,7 @@
             'PreordenCompra',
             'Devoluciones',
             'RolPagoMes',
+            'AcreditacionSemana',
             'TransferenciaProductoEmpleado',
           ]"
         >

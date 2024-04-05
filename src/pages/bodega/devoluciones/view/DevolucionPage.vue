@@ -185,24 +185,26 @@
           </div>
 
           <!-- Es devolucion para stock personal -->
-          <div
+          <!-- <div
             v-if="devolucion.es_para_stock || accion === 'NUEVO'"
             class="col-12 col-md-3"
           >
             <q-checkbox
               class="q-mt-lg q-pt-md"
               v-model="devolucion.es_para_stock"
+              hint
               label="¿Es devolución al stock personal?"
               :disable="disabled || soloLectura"
               outlined
               dense
             ></q-checkbox>
-          </div>
+          </div> -->
           <!-- Es pedido automatico -->
           <div
             v-if="devolucion.pedido_automatico || accion === 'NUEVO'"
             class="col-12 col-md-3"
           >
+          <q-tooltip class="bg-dark">Marque esta opción unicamente cuando quieras hacer un pedido de lo mismo que vas a devolver</q-tooltip>
             <q-checkbox
               class="q-mt-lg q-pt-md"
               v-model="devolucion.pedido_automatico"
@@ -218,6 +220,7 @@
             v-if="devolucion.es_tarea || accion === 'NUEVO'"
             class="col-12 col-md-3"
           >
+          <q-tooltip class="bg-dark">Marque esta opción cuando quieras hacer devoluciones de materiales de tarea</q-tooltip>
             <q-checkbox
               class="q-mt-lg q-pt-md"
               v-model="devolucion.es_tarea"
@@ -275,6 +278,7 @@
             v-if="accion === acciones.nuevo || devolucion.misma_condicion"
             class="col-12 col-md-3"
           >
+          <q-tooltip class="bg-dark">Marque esta opción para seleccionar un estado para todos los elementos de la devolución</q-tooltip>
             <q-checkbox
               class="q-mt-lg q-pt-md"
               v-model="devolucion.misma_condicion"

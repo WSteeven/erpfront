@@ -18,7 +18,7 @@ export class GastoPusherEvent {
       // console.log('pusher', e);
       notificacionStore.agregar(e.notificacion)
       notificacionStore.actualizar()
-      notificarCorrecto('Tienes un gasto esperando ser aprobado')
+      notificarCorrecto(e.notificacion.mensaje)
       pushEventMesaggeServiceWorker({
         titulo: 'Aprobacion de Gastos',
         mensaje: e.notificacion.mensaje,

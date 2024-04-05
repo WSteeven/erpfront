@@ -6,7 +6,12 @@ export const maskFecha = 'YYYY-MM-DD'
 // Tipos
 export type TipoSeleccion = 'none' | 'single' | 'multiple'
 
-export type TipoSeparador = 'none' | 'horizontal' | 'vertical' | 'cell' | undefined
+export type TipoSeparador =
+  | 'none'
+  | 'horizontal'
+  | 'vertical'
+  | 'cell'
+  | undefined
 
 export const acciones = {
   nuevo: 'NUEVO',
@@ -15,13 +20,13 @@ export const acciones = {
   editar: 'EDITAR',
 } as const
 
-export const tiposElementos = [
-  'POSTE',
-  'POZO',
-  'AMERICANO',
-  'NODO',
+export const tiposElementos = ['POSTE', 'POZO', 'AMERICANO', 'NODO']
+export const tiposTension = [
+  'BAJA TENSIÓN',
+  'MEDIA TENSIÓN',
+  'ALTA TENSIÓN',
+  'DATOS',
 ]
-export const tiposTension = ['BAJA TENSIÓN', 'MEDIA TENSIÓN', 'ALTA TENSIÓN', 'DATOS']
 export const propietariosElementos = [
   'CNEL',
   'CNT',
@@ -32,7 +37,7 @@ export const propietariosElementos = [
   'SETEL',
   'PRIVADO',
   'EERRS',
-  'CENTRO SUR'
+  'CENTRO SUR',
 ]
 
 export const estadoElementos = ['BUENO', 'MALO']
@@ -83,9 +88,27 @@ export const tabOptionsPedidos: TabOption[] = [
   { label: 'Completados', value: 'COMPLETA' },
 ]
 export const tabOptionsTransferenciaProductoEmpleado: TabOption[] = [
-  { label: 'Pendientes', value: 'PENDIENTE', icono: 'bi-app-indicator', color_icono: 'yellow-10', bg_color: 'yellow-1' },
-  { label: 'Aprobados', value: 'APROBADO', icono: 'bi-check-circle-fill', color_icono: 'positive', bg_color: 'green-1' },
-  { label: 'Cancelados', value: 'CANCELADO', icono: 'bi-x-circle-fill', color_icono: 'negative', bg_color: 'pink-1' },
+  {
+    label: 'Pendientes',
+    value: 'PENDIENTE',
+    icono: 'bi-app-indicator',
+    color_icono: 'yellow-10',
+    bg_color: 'yellow-1',
+  },
+  {
+    label: 'Aprobados',
+    value: 'APROBADO',
+    icono: 'bi-check-circle-fill',
+    color_icono: 'positive',
+    bg_color: 'green-1',
+  },
+  {
+    label: 'Cancelados',
+    value: 'CANCELADO',
+    icono: 'bi-x-circle-fill',
+    color_icono: 'negative',
+    bg_color: 'pink-1',
+  },
 ]
 export const tabOptionsSolicitudPedido: TabOption[] = [
   { label: 'Pendiente', value: '1' },
@@ -133,7 +156,6 @@ export const tabPrestamoEmpresarial: TabOption[] = [
   { label: 'ACTIVO', value: 'ACTIVO' },
   { label: 'FINALIZADO', value: 'FINALIZADO' },
   { label: 'INACTIVO', value: 'INACTIVO' },
-
 ]
 export const tabGestionarEgresos: TabOption[] = [
   { label: 'Aprobada', value: 'ACEPTADA' },
@@ -145,7 +167,6 @@ export const tabAutorizarTransferenciaSaldo: TabOption[] = [
   { label: 'Rechazada', value: '2' },
   { label: 'Pendiente', value: '3' },
 ]
-
 
 export const accionesTabla = {
   name: 'acciones',
@@ -218,7 +239,6 @@ export const autorizacionesTransacciones = {
   pendiente: 'PENDIENTE',
   aprobado: 'APROBADO',
   cancelado: 'CANCELADO',
-
 }
 
 export const estadosTransacciones = {
@@ -254,7 +274,20 @@ export const estadosCondicionesValue = {
   buen_estado: 'BUEN ESTADO',
 }
 
-export const meses = ['Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre']
+export const meses = [
+  'Enero',
+  'Febrero',
+  'Marzo',
+  'Abril',
+  'Mayo',
+  'Junio',
+  'Julio',
+  'Agosto',
+  'Septiembre',
+  'Octubre',
+  'Noviembre',
+  'Diciembre',
+]
 
 export const sistemasCoordenadas = ['DMS', 'UTM']
 
@@ -290,6 +323,51 @@ export const estadosGastos = {
   RECHAZADO: 2,
   PENDIENTE: 3,
   ANULADO: 4,
+}
+export const tipoReportes = {
+  PDF: 'pdf',
+  EXCEL: 'excel',
+}
+export const tipos_saldos = [
+  { value: '1', label: 'Acreditacion' },
+  { value: '2', label: 'Gasto' },
+  { value: '3', label: 'Consolidado' },
+  { value: '4', label: 'Estado de Cuenta' },
+  { value: '5', label: 'Transferencia de Saldos' },
+  { value: '6', label: 'Gastos con Fotografia' },
+]
+
+export const tipos_filtros = [
+  { value: '0', name: 'Todos' },
+  { value: '1', name: 'Proyecto' },
+  { value: '2', name: 'Tarea' },
+  { value: '3', name: 'Detalle' },
+  { value: '4', name: 'SubDetalle' },
+  { value: '5', name: 'Autorizacion' },
+  { value: '6', name: 'Empleado' },
+  { value: '7', name: 'RUC' },
+  { value: '8', name: 'SIN FACTURA' },
+  { value: '9', name: 'CIUDAD' },
+]
+export const tipo_filtro = {
+  TODOS:'0',
+  PROYECTO:'1',
+  TAREA: '2',
+  DETALLE: '3',
+  SUBDETALLE: '4',
+  AUTORIZACIONES : '5',
+  EMPLEADO : '6',
+  RUC : '7',
+  SIN_FACTURA: '8',
+  CIUDAD : '9',
+}
+export const tipo_saldo = {
+  ACREDITACIONES: '1',
+  GASTO: '2',
+  CONSOLIDADO: '3',
+  ESTADO_CUENTA: '4',
+  TRANSFERENCIA_SALDOS: '5',
+  GASTOS_FOTOGRAFIA: '6',
 }
 export const estadosTransferencias = {
   APROBADO: 1,
@@ -357,11 +435,11 @@ export const opcionesTiposMovimientos = [
 export const opcionesEstadosTransferenciasBodega = [
   { value: 'PENDIENTE', label: 'PENDIENTE' },
   { value: 'TRANSITO', label: 'TRANSITO' },
-  { value: 'COMPLETADO', label: 'COMPLETADO' }
+  { value: 'COMPLETADO', label: 'COMPLETADO' },
 ]
 export const opcionesEstados = [
   { value: 1, label: 'ACTIVO' },
-  { value: 0, label: 'INACTIVO' }
+  { value: 0, label: 'INACTIVO' },
 ]
 export const tiposProductos = [
   { value: 'BIEN', label: 'BIEN' },
@@ -457,10 +535,10 @@ export function convertir_fecha(fecha: Date) {
   return year + '/' + month + '/' + day
 }
 export function convertir_fecha_guion(fecha) {
-  const partes = fecha.split(' '); // Dividir en fecha y hora
-  const fechaPartes = partes[0].split('-'); // Dividir la fecha en día, mes y año
-  const nuevaFecha = `${fechaPartes[2]}/${fechaPartes[1]}/${fechaPartes[0]}`; // Construir la nueva fecha en formato dd/mm/yyyy
-  return nuevaFecha;
+  const partes = fecha.split(' ') // Dividir en fecha y hora
+  const fechaPartes = partes[0].split('-') // Dividir la fecha en día, mes y año
+  const nuevaFecha = `${fechaPartes[2]}/${fechaPartes[1]}/${fechaPartes[0]}` // Construir la nueva fecha en formato dd/mm/yyyy
+  return nuevaFecha
 }
 export function convertir_fecha_hora(fecha) {
   const dateParts = fecha.split('-') // Dividir el string en partes usando el guión como separador
@@ -506,11 +584,10 @@ export const talla_letras = [
   // Puedes agregar aquí más tallas si es necesario
 ]
 
-
 export const tabOptionsPreingresoMateriales = [
   { label: 'Pendientes', value: '1' }, //autorizacion PENDIENTE
   { label: 'Autorizadas', value: '2' }, //autorizacion APROBADO
-  { label: 'Canceladas', value: '3' }  //autorizacion CANCELADO
+  { label: 'Canceladas', value: '3' }, //autorizacion CANCELADO
 ]
 export const formas_pagos = [
   { label: 'EFECTIVO', value: 'EFECTIVO' },
@@ -522,7 +599,6 @@ export const estados_activaciones = [
   { label: 'APROBADO', value: 'APROBADO' },
   { label: 'ACTIVADO', value: 'ACTIVADO' },
   // { label: 'RECHAZADA', value: 'RECHAZADA' },
-
 ]
 export const estadosVentas = {
   APROBADO: 'APROBADO',
@@ -532,24 +608,29 @@ export const estadosVentas = {
 export const autorizaciones = [
   { nombre: 'Pendiente', id: 1 }, //autorizacion PENDIENTE
   { nombre: 'Aprobado', id: 2 }, //autorizacion APROBADO
-  { nombre: 'Cancelado', id: 3 }  //autorizacion CANCELADO
+  { nombre: 'Cancelado', id: 3 }, //autorizacion CANCELADO
 ]
 export const estados = [
   { nombre: 'Pendiente', id: 1 }, //estado PENDIENTE
   { nombre: 'Completa', id: 2 }, //estado COMPLETA
   { nombre: 'Parcial', id: 3 }, //estado PARCIAL
-  { nombre: 'Anulado', id: 4 }  //estado ANULADO
+  { nombre: 'Anulado', id: 4 }, //estado ANULADO
 ]
-
 
 export const tabOptionsTransaccionesEgresos: TabOption[] = [
   { label: 'Pendientes', value: 'PENDIENTE' },
   { label: 'Parciales', value: 'PARCIAL' },
   { label: 'Completas', value: 'COMPLETA' },
-  { label: 'Anuladas', value: 'ANULADA' }
+  { label: 'Anuladas', value: 'ANULADA' },
 ]
 
 export const tabOptionsEstadosEmpleados: TabOption[] = [
   { label: 'Activos', value: '1' },
   { label: 'Inactivos', value: '0' },
 ]
+
+export const tabOptionsValoresAcreditar: TabOption[] = [
+  // { label: 'Todo', value: '' },
+  { label: 'Activas', value: '1' },
+  { label: 'Inactivas', value: '0' },
+];

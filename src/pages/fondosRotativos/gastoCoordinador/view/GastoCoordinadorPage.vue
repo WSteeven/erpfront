@@ -2,7 +2,7 @@
   <tab-layout
     :mixin="mixin"
     :configuracionColumnas="configuracionColumnas"
-    :mostrarListado="mostrarListado"
+    :accion1="editarGasto"
   >
     <template #formulario>
       <q-form @submit.prevent>

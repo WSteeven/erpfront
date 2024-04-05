@@ -229,7 +229,7 @@ export default defineComponent({
     }
 
     const puedeVer = computed(() =>
-      store.can(`puede.ver.${router.name?.toString()}`)
+      store.can(`puede.ver.${router.name?.toString()}`) && props.permitirConsultar
     )
     const puedeCrear = computed(() =>
       store.can(`puede.crear.${router.name?.toString()}`)
