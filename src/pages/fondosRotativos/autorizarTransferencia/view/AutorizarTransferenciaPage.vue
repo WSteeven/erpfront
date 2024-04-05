@@ -1,7 +1,6 @@
 <template>
   <q-page :padding="!$q.screen.xs">
     <div class="text-center q-pb-md">
-      <div class="q-mb-md">{{ fecha }}</div>
       <div class="q-mb-md">
         Bienvenido, <strong>{{ authenticationStore.nombreUsuario }}</strong>
       </div>

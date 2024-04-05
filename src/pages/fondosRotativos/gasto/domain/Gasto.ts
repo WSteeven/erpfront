@@ -1,5 +1,6 @@
 import { EntidadAuditable } from 'shared/entidad/domain/entidadAuditable'
 export class Gasto extends EntidadAuditable {
+  id: number | null;
   fecha_viat: Date | null
   lugar: number | null
   num_tarea: string | null
@@ -29,7 +30,7 @@ export class Gasto extends EntidadAuditable {
   observacion: string | null
   id_usuario: number | null
   empleado_info: string | null
-  estado: string | null
+  estado: number | null
   estado_info: string | null
   detalle_estado: string | null
   kilometraje: number | null
@@ -40,9 +41,11 @@ export class Gasto extends EntidadAuditable {
   subcentro_costo: string | null
   placa: string | null
   es_vehiculo_alquilado: boolean
+  observacion_anulacion: string | null
 
   constructor() {
     super()
+    this.id = null
     this.fecha_viat = null
     this.lugar = null
     this.lugar_info = null
@@ -83,5 +86,6 @@ export class Gasto extends EntidadAuditable {
     this.subcentro_costo = null
     this.placa = null
     this.es_vehiculo_alquilado = false
+    this.observacion_anulacion = null
   }
 }

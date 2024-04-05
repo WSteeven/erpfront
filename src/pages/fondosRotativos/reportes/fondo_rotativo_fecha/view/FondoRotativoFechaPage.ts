@@ -1,4 +1,4 @@
-import { defineComponent, reactive, ref, watchEffect } from 'vue'
+import { defineComponent, ref, watchEffect } from 'vue'
 
 import TabLayout from 'shared/contenedor/modules/simple/view/TabLayout.vue'
 import { useNotificacionStore } from 'stores/notificacion'
@@ -6,17 +6,17 @@ import { LocalStorage, useQuasar } from 'quasar'
 import { useVuelidate } from '@vuelidate/core'
 import { ContenedorSimpleMixin } from 'shared/contenedor/modules/simple/application/ContenedorSimpleMixin'
 import { FondoRotativoFechaController } from '../infrestructure/FondoRotativoFechaController'
-import { UsuarioController } from 'pages/fondosRotativos/usuario/infrestructure/UsuarioController'
 import { TipoFondoController } from 'pages/fondosRotativos/tipoFondo/infrestructure/TipoFonfoController'
 import { FondoRotativoFecha } from '../domain/FondoRotativoFecha'
 import { AxiosHttpRepository } from 'shared/http/infraestructure/AxiosHttpRepository'
 import { apiConfig, endpoints } from 'config/api'
 import { imprimirArchivo } from 'shared/utils'
-import { maskFecha } from 'config/utils'
+import { maskFecha, tipoReportes } from 'config/utils'
 import { EmpleadoController } from 'pages/recursosHumanos/empleados/infraestructure/EmpleadoController'
 import { useAuthenticationStore } from 'stores/authentication'
 import { useCargandoStore } from 'stores/cargando'
-import { useFondoRotativoStore } from 'stores/fondo_rotativo'
+import { format } from '@formkit/tempo'
+import { required, requiredIf } from 'shared/i18n-validators'
 
 export default defineComponent({
   components: { TabLayout },
@@ -27,7 +27,6 @@ export default defineComponent({
     useNotificacionStore().setQuasar(useQuasar())
     useCargandoStore().setQuasar(useQuasar())
     const store = useAuthenticationStore()
-    const fondoRotativoStore = useFondoRotativoStore()
 
     /***********
      * Mixin
@@ -49,15 +48,12 @@ export default defineComponent({
      * Validaciones
      **************/
     const reglas = {
+      usuario: { requiredIfUsuario: requiredIf(() => store.can('puede.ver.campo.empleado.fondo_rotativo')) },
       fecha_inicio: {
-        required: true,
-        minLength: 3,
-        maxLength: 50,
+        required,
       },
       fecha_fin: {
-        required: true,
-        minLength: 3,
-        maxLength: 50,
+        required,
       },
     }
     const v$ = useVuelidate(reglas, fondo_rotativo_fecha)
@@ -84,10 +80,10 @@ export default defineComponent({
 
       usuarios.value = listadosAuxiliares.usuarios
       usuariosInactivos.value =
-      LocalStorage.getItem('usuariosInactivos') == null
-        ? []
-        : JSON.parse(LocalStorage.getItem('usuariosInactivos')!.toString())
-    listadosAuxiliares.usuariosInactivos = usuariosInactivos.value
+        LocalStorage.getItem('usuariosInactivos') == null
+          ? []
+          : JSON.parse(LocalStorage.getItem('usuariosInactivos')!.toString())
+      listadosAuxiliares.usuariosInactivos = usuariosInactivos.value
       tiposFondos.value = listadosAuxiliares.tiposFondos
       tiposFondoRotativoFechas.value =
         listadosAuxiliares.tiposFondoRotativoFechas
@@ -107,7 +103,9 @@ export default defineComponent({
       update(() => {
         const needle = val.toLowerCase()
         usuarios.value = listadosAuxiliares.usuarios.filter(
-          (v) => v.nombres.toLowerCase().indexOf(needle) > -1 || v.apellidos.toLowerCase().indexOf(needle) > -1
+          (v) =>
+            v.nombres.toLowerCase().indexOf(needle) > -1 ||
+            v.apellidos.toLowerCase().indexOf(needle) > -1
         )
       })
     }
@@ -164,23 +162,46 @@ export default defineComponent({
       valor: FondoRotativoFecha,
       tipo: string
     ): Promise<void> {
-      const axios = AxiosHttpRepository.getInstance()
-      const filename = 'reporte_semanal_gastos_del_' + valor.fecha_inicio + '_al_' + valor.fecha_fin
-      switch (tipo) {
-        case 'excel':
-          const url_excel =apiConfig.URL_BASE +'/' +axios.getEndpoint(endpoints.fondo_rotativo_fecha_excel)
-          imprimirArchivo(url_excel, 'POST', 'blob', 'xlsx', filename, valor)
-          break
-        case 'pdf':
-          const url_pdf =
-            apiConfig.URL_BASE +
-            '/' +
-            axios.getEndpoint(endpoints.fondo_rotativo_fecha_pdf)
-          imprimirArchivo(url_pdf, 'POST', 'blob', 'pdf', filename, valor)
-          break
-        default:
-          break
+      if (await v$.value.$validate()) {
+        const axios = AxiosHttpRepository.getInstance()
+        const filename =
+          'reporte_semanal_gastos_del_' +
+          valor.fecha_inicio +
+          '_al_' +
+          valor.fecha_fin
+        switch (tipo) {
+          case tipoReportes.EXCEL:
+            const url_excel =
+              apiConfig.URL_BASE +
+              '/' +
+              axios.getEndpoint(endpoints.fondo_rotativo_fecha_excel)
+            imprimirArchivo(url_excel, 'POST', 'blob', 'xlsx', filename, valor)
+            break
+          case tipoReportes.PDF:
+            const url_pdf =
+              apiConfig.URL_BASE +
+              '/' +
+              axios.getEndpoint(endpoints.fondo_rotativo_fecha_pdf)
+            imprimirArchivo(url_pdf, 'POST', 'blob', 'pdf', filename, valor)
+            break
+          default:
+            break
+        }
       }
+    }
+    function optionsFechaInicio(date){
+      const fecha_actual = format(new Date(), 'YYYY/MM/DD')
+      return  date <= fecha_actual
+    }
+    function optionsFechaFin(date) {
+      const fecha_actual = format(new Date(), 'YYYY/MM/DD')
+      const fecha_inicio = format(
+        fondo_rotativo_fecha.fecha_inicio !== null
+          ? fondo_rotativo_fecha.fecha_inicio
+          : new Date(),
+        'YYYY/MM/DD'
+      )
+      return date >= fecha_inicio  && date <= fecha_actual
     }
 
     return {
@@ -202,6 +223,8 @@ export default defineComponent({
       filtrarTiposFondos,
       filtrarTiposFondoRotativoFechas,
       watchEffect,
+      optionsFechaInicio,
+      optionsFechaFin,
     }
   },
 })

@@ -1,4 +1,4 @@
-import { Ref, defineComponent, reactive, ref, watchEffect } from 'vue'
+import { defineComponent, ref } from 'vue'
 
 import TabLayout from 'shared/contenedor/modules/simple/view/TabLayout.vue'
 import { useNotificacionStore } from 'stores/notificacion'
@@ -7,16 +7,21 @@ import { useVuelidate } from '@vuelidate/core'
 import { ContenedorSimpleMixin } from 'shared/contenedor/modules/simple/application/ContenedorSimpleMixin'
 import { AxiosHttpRepository } from 'shared/http/infraestructure/AxiosHttpRepository'
 import { apiConfig, endpoints } from 'config/api'
-import { imprimirArchivo } from 'shared/utils'
+import { isAxiosError, notificarMensajesError } from 'shared/utils'
+
+import {
+  filtarVisualizacionEmpleadosSaldos,
+  imprimirArchivo,
+} from 'shared/utils'
 import { ReporteSaldoActual } from '../domain/ReporteSaldoActual'
 import { ReporteSaldoActualController } from '../infrestucture/ReporteSaldoActualController'
-import { HttpResponseGet } from 'shared/http/domain/HttpResponse'
-import axios from 'axios'
 import { useAuthenticationStore } from 'stores/authentication'
 import { EmpleadoController } from 'pages/recursosHumanos/empleados/infraestructure/EmpleadoController'
 import { useCargandoStore } from 'stores/cargando'
-import { useFondoRotativoStore } from 'stores/fondo_rotativo'
 import { useRouter } from 'vue-router'
+import { UltimoSaldoController } from '../infrestucture/UltimoSaldoController'
+import { CortarSaldolController } from '../infrestucture/CortarSaldoController'
+import { useNotificaciones } from 'shared/notificaciones'
 
 export default defineComponent({
   components: { TabLayout },
@@ -27,8 +32,9 @@ export default defineComponent({
      *********/
     useNotificacionStore().setQuasar(useQuasar())
     useCargandoStore().setQuasar(useQuasar())
-    const fondosStore = useFondoRotativoStore()
     const store = useAuthenticationStore()
+    const notificaciones = useNotificaciones()
+
     /***********
      * Mixin
      ************/
@@ -45,12 +51,13 @@ export default defineComponent({
     } = mixin.useReferencias()
     const { setValidador, obtenerListados, cargarVista } =
       mixin.useComportamiento()
-      const router = useRouter()
+    const router = useRouter()
 
     /*************
      * Validaciones
      **************/
     const reglas = {
+
       usuario: {
         required: true,
         minLength: 3,
@@ -75,10 +82,17 @@ export default defineComponent({
       await obtenerListados({
         usuarios: {
           controller: new EmpleadoController(),
-          params: { campos: 'id,nombres,apellidos', estado: 1,es_reporte__saldo_actual:true },
+          params: {
+            campos: 'id,nombres,apellidos',
+            estado: 1,
+          },
         },
       })
-      usuarios.value = listadosAuxiliares.usuarios
+
+      usuarios.value = filtarVisualizacionEmpleadosSaldos(
+        listadosAuxiliares.usuarios
+      )
+      listadosAuxiliares.usuarios = usuarios.value
       usuariosInactivos.value =
         LocalStorage.getItem('usuariosInactivos') == null
           ? []
@@ -154,57 +168,36 @@ export default defineComponent({
     if (store.can('puede.buscar.saldo.usuarios') == false) {
       reporte_saldo_actual.usuario = store.user.id
       visualizar_saldo_usuario.value = true
-      saldo_anterior()
+      saldoAnterior()
     }
-    function saldo_anterior() {
-      const axiosHttpRepository = AxiosHttpRepository.getInstance()
-      const url_acreditacion =
-        apiConfig.URL_BASE +
-        '/' +
-        axiosHttpRepository.getEndpoint(endpoints.ultimo_saldo) +
-        reporte_saldo_actual.usuario
-      axios({
-        url: url_acreditacion,
-        method: 'GET',
-        responseType: 'json',
-        headers: {
-          Authorization: axiosHttpRepository.getOptions().headers.Authorization,
-        },
-      }).then((response: HttpResponseGet) => {
-        const { data } = response
-        if (data) {
-          visualizar_saldo_usuario.value = true
-          reporte_saldo_actual.saldo_anterior = data.saldo_actual
-        }
-      })
+    async function saldoAnterior() {
+      const ultimo_saldo = new UltimoSaldoController()
+      if (reporte_saldo_actual.usuario) {
+        const { response } = await ultimo_saldo.consultar(
+          reporte_saldo_actual.usuario
+        )
+        visualizar_saldo_usuario.value = true
+        reporte_saldo_actual.saldo_anterior = response.data.saldo_actual
+      }
     }
-    function cortar_saldo() {
-      const axiosHttpRepository = AxiosHttpRepository.getInstance()
-      const url_acreditacion =
-        apiConfig.URL_BASE +
-        '/' +
-        axiosHttpRepository.getEndpoint(endpoints.cortar_saldo)
-      axios({
-        url: url_acreditacion,
-        method: 'GET',
-        responseType: 'json',
-        headers: {
-          Authorization: axiosHttpRepository.getOptions().headers.Authorization,
-        },
-      }).then((response: HttpResponseGet) => {
-        const { data } = response
-        if (data) {
-         router.push("acreditacion-semana");
+    async function cortar_saldo() {
+      try {
+        const cortar_saldo = new CortarSaldolController()
+        await cortar_saldo.listar()
+        router.push('acreditacion-semana')
+      } catch (error) {
+        if (isAxiosError(error)) {
+          const mensajes: string[] = error.erroresValidacion
+          await notificarMensajesError(mensajes, notificaciones)
         }
-      })
-
+      }
     }
     return {
       mixin,
       store,
       reporte_saldo_actual,
       cortar_saldo,
-      saldo_anterior,
+      saldoAnterior,
       disabled,
       accion,
       v$,

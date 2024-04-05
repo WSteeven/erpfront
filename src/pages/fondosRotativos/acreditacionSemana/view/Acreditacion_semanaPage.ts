@@ -27,6 +27,8 @@ import { CustomActionPrompt } from 'components/tables/domain/CustomActionPrompt'
 
 
 export default defineComponent({
+  name: 'AcreditacionSemana',
+
   components: { TabLayout, EssentialTable ,ModalesEntidad},
   setup() {
     /*********
@@ -34,7 +36,7 @@ export default defineComponent({
      *********/
     useNotificacionStore().setQuasar(useQuasar())
     const acreditacionesStore = useAcreditacionesStore()
-    const { notificarAdvertencia, notificarCorrecto, confirmar, promptItems } =
+    const {  notificarCorrecto,  promptItems } =
       useNotificaciones()
     /***********
      * Mixin
@@ -53,10 +55,9 @@ export default defineComponent({
       entidad: fondo_rotativo_contabilidad,
       disabled,
       accion,
-      listadosAuxiliares,
       listado,
     } = mixin.useReferencias()
-    const { setValidador, obtenerListados, cargarVista, listar } =
+    const { setValidador,  cargarVista } =
       mixin.useComportamiento()
       const store = useAuthenticationStore()
       useCargandoStore().setQuasar(useQuasar())
@@ -94,7 +95,7 @@ export default defineComponent({
       icono: 'bi-eye',
       color: 'primary',
       accion: ({ entidad }) => {
-        acreditacionesStore.idAcreditacionSeleccionada = entidad.id
+        acreditacionesStore.acreditacion_semana=entidad
         acreditacionesStore.esta_acreditado= entidad.acreditar
         modalesAcreditacionSemana.abrirModalEntidad('ValorAcreditarPage')
       },
@@ -106,7 +107,7 @@ export default defineComponent({
       visible: ({entidad}) => store.can('puede.ver.campo.acreditar_saldo_masivo')&& !entidad.acreditar,
       accion: ({ entidad }) => {
         entidad.acreditar = true;
-        acreditacion_saldo(entidad)
+        acreditacionSaldo(entidad)
       },
     }
     const botonCash: CustomActionTable = {
@@ -115,10 +116,10 @@ export default defineComponent({
       color: 'warning',
       visible: () => store.can('puede.ver.campo.cash_acreditacion_saldo'),
       accion: ({ entidad }) => {
-        cash_rol_acreditacion_saldo(entidad)
+        cashRolAcreditacionSaldo(entidad)
       },
     }
-    async function cash_rol_acreditacion_saldo(entidad): Promise<void> {
+    async function cashRolAcreditacionSaldo(entidad): Promise<void> {
       const filename = 'cash_rol_pago'
       const axios_repository = AxiosHttpRepository.getInstance()
       const url_pdf =
@@ -128,7 +129,7 @@ export default defineComponent({
         entidad.id
       imprimirArchivo(url_pdf, 'GET', 'blob', 'xlsx', filename, null)
     }
-    async function acreditacion_saldo(entidad): Promise<void> {
+    async function acreditacionSaldo(entidad): Promise<void> {
       const axios_repository = AxiosHttpRepository.getInstance()
       const url =
         apiConfig.URL_BASE +
@@ -153,7 +154,7 @@ export default defineComponent({
         const config: CustomActionPrompt = reactive({
           mensaje: 'Confirme el tipo de reporte',
           accion: (tipo) => {
-            generar_reporte(entidad.id, tipo)
+            generarReporte(entidad.id, tipo)
           },
           requerido: false,
           defecto: 'EXCEL',
@@ -168,7 +169,7 @@ export default defineComponent({
         promptItems(config)
       },
     }
-    async function generar_reporte(
+    async function generarReporte(
       id: number,
       tipo: string
     ): Promise<void> {
@@ -186,6 +187,7 @@ export default defineComponent({
     }
     return {
       mixin,
+      mixinAcreditacion,
       fondo_rotativo_contabilidad,
       ConfiguracionColumnasAcreditacionSemana,
       disabled,

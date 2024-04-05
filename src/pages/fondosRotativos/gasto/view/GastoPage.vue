@@ -121,7 +121,7 @@
               input-debounce="0"
               @blur="v$.proyecto.$touch"
               @filter="filtrarProyectos"
-              @update:model-value="cambiar_proyecto()"
+              @update:model-value="cambiarProyecto()"
               :option-value="(v) => v.id"
               :option-label="(v) => v.nombre"
               emit-value
@@ -226,7 +226,7 @@
               use-input
               input-debounce="0"
               @blur="v$.detalle.$touch"
-              @update:model-value="cambiar_detalle()"
+              @update:model-value="cambiarDetalle()"
               @filter="filtrarDetalles"
               :option-value="(v) => v.id"
               :option-label="(v) => v.descripcion"
@@ -244,7 +244,7 @@
                 </q-item>
               </template>
               <template v-slot:after>
-                <q-btn color="positive" @click="recargar_detalle('detalle')">
+                <q-btn color="positive" @click="recargarDetalle('detalle')">
                   <q-icon size="xs" class="q-mr-sm" name="bi-arrow-clockwise" />
                 </q-btn>
               </template>
@@ -269,7 +269,7 @@
               input-debounce="0"
               @filter="filtarSubdetalles"
               @blur="v$.sub_detalle.$touch"
-              @update:model-value="tiene_factura_subdetalle()"
+              @update:model-value="tieneFacturaSubDetalle()"
               :error="!!v$.sub_detalle.$errors.length"
               error-message="Debes seleccionar uno o varios sub_detalle"
               :option-value="(v) => v.id"
@@ -302,7 +302,7 @@
                 </q-item>
               </template>
               <template v-slot:after>
-                <q-btn color="positive" @click="recargar_detalle('sub_detalle')">
+                <q-btn color="positive" @click="recargarDetalle('sub_detalle')">
                   <q-icon size="xs" class="q-mr-sm" name="bi-arrow-clockwise" />
                 </q-btn>
               </template>
@@ -480,7 +480,7 @@
             <label class="q-mb-sm block">Autorizaciòn Especial</label>
             <q-select
               v-model="gasto.aut_especial"
-              :options="autorizacionesEspeciales"
+              :options="autorizaciones_especiales"
               transition-show="scale"
               transition-hide="scale"
               options-dense
@@ -511,7 +511,6 @@
               </template>
             </q-select>
           </div>
-
           <!-- Kilometraje -->
           <div class="col-12 col-md-3" v-if="esCombustibleEmpresa">
             <label class="q-mb-sm block">Kilometraje</label>
@@ -542,7 +541,6 @@
               dense
             />
           </div>
-
           <!-- Placa Vehiculo Alquilado -->
           <div class="col-12 col-md-3" v-if="gasto.es_vehiculo_alquilado">
             <label class="q-mb-sm block">Placa de Vehiculo Alquilado </label>
@@ -566,7 +564,10 @@
           <!-- Placa vehiculo -->
           <div
             class="col-12 col-md-3"
-            v-if="(esCombustibleEmpresa || mostarPlaca) && gasto.es_vehiculo_alquilado == false"
+            v-if="
+              (esCombustibleEmpresa || mostarPlaca) &&
+              gasto.es_vehiculo_alquilado == false
+            "
           >
             <label class="q-mb-sm block">Placas</label>
             <q-select
@@ -618,9 +619,6 @@
             <imagen-comprimida-component
               :imagen="gasto.comprobante1"
               file_extensiones=".jpg, image/*"
-              :error="!!v$.comprobante1.$errors.length"
-              error-message="Debes de cargar imagen de comprobante"
-              @blur="v$.comprobante1.$touch"
               @update:modelValue="(data) => (gasto.comprobante1 = data)"
             >
               <template v-slot:error>
@@ -630,16 +628,12 @@
               </template>
             </imagen-comprimida-component>
           </div>
-
           <!-- Comprobante 2 Archivo -->
           <div class="col-12 col-md-3">
             <label class="q-mb-sm block">Comprobante 2</label>
             <imagen-comprimida-component
               :imagen="gasto.comprobante2"
               file_extensiones=".jpg, image/*"
-              :error="!!v$.comprobante2.$errors.length"
-              error-message="Debes de cargar reverso imagen de comprobante"
-              @blur="v$.comprobante2.$touch"
               @update:modelValue="(data) => (gasto.comprobante2 = data)"
             >
               <template v-slot:error>
@@ -649,7 +643,6 @@
               </template>
             </imagen-comprimida-component>
           </div>
-
           <!-- Observacion -->
           <div class="col-12 col-md-3">
             <label class="q-mb-sm block">Observación</label>
@@ -669,6 +662,20 @@
                   <div class="error-msg">{{ error.$message }}</div>
                 </div>
               </template>
+            </q-input>
+          </div>
+          <!-- Observacion de Anulacion -->
+          <div class="col-12 col-md-3" v-if="gasto.estado === estadosGastos.ANULADO">
+            <label class="q-mb-sm block">Observacion de Anulación</label>
+            <q-input
+              v-model="gasto.observacion_anulacion"
+              placeholder="Opcional"
+              disable
+              type="textarea"
+              autogrow
+              outlined
+              dense
+            >
             </q-input>
           </div>
           <!-- Centro de Costo -->

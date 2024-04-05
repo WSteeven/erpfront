@@ -67,4 +67,8 @@ export const iconos = {
     label: 'PROVEEDOR',
     icono: 'bi-stars',
   },
+  transferencia_saldo:{
+    label: 'TRANSFERENCIA DE SALDO',
+    icono: 'bi-cash',
+  },
 }

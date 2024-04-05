@@ -7,11 +7,15 @@ import { EntidadAuditable } from './entidad/domain/entidadAuditable'
 import { ApiError } from './error/domain/ApiError'
 import { HttpResponseGet } from './http/domain/HttpResponse'
 import { AxiosHttpRepository } from './http/infraestructure/AxiosHttpRepository'
-import { useNotificaciones } from './notificaciones';
+import { useNotificaciones } from './notificaciones'
 import { Empleado } from 'pages/recursosHumanos/empleados/domain/Empleado'
 import { ServiceWorkerClass } from './notificacionesServiceWorker/ServiceWorkerClass'
 import { ItemProforma } from 'pages/comprasProveedores/proforma/domain/ItemProforma'
 import { pipeline } from 'stream'
+import { useAuthenticationStore } from 'stores/authentication'
+
+const authenticationStore = useAuthenticationStore()
+const usuario = authenticationStore.user
 
 export function limpiarListado<T>(listado: T[]): void {
   listado.splice(0, listado.length)
@@ -243,7 +247,7 @@ export function getVisibleColumns<T>(
 }
 
 // 20-04-2022
-export function obtenerFechaActual(formato='DD-MM-YYYY') {
+export function obtenerFechaActual(formato = 'DD-MM-YYYY') {
   const timeStamp = Date.now()
   const formattedString = date.formatDate(timeStamp, formato)
   return formattedString
@@ -339,7 +343,14 @@ export function pushEventMesaggeServiceWorker(data: ServiceWorkerClass) {
  *
  * @returns mensaje que indica que no se puede imprimir el archivo
  */
-export async function imprimirArchivo(ruta: string, metodo: Method, responseType: ResponseType, formato: string, titulo: string, data?: any) {
+export async function imprimirArchivo(
+  ruta: string,
+  metodo: Method,
+  responseType: ResponseType,
+  formato: string,
+  titulo: string,
+  data?: any
+) {
   const statusLoading = new StatusEssentialLoading()
   const { notificarAdvertencia, notificarError } = useNotificaciones()
   statusLoading.activar()
@@ -349,34 +360,44 @@ export async function imprimirArchivo(ruta: string, metodo: Method, responseType
     method: metodo,
     data: data,
     responseType: responseType,
-    headers: { 'Authorization': axiosHttpRepository.getOptions().headers.Authorization }
-  }).then((response) => {
-    if (response.status === 200) {
-      if (response.data.size < 100 || response.data.type == 'application/json') throw 'No se obtuvieron resultados para generar el reporte'
-      else {
-        const fileURL = URL.createObjectURL(new Blob([response.data], { type: `appication/${formato}` }))
-        const link = document.createElement('a')
-        link.href = fileURL
-        link.target = '_blank'
-        link.setAttribute('download', `${titulo}.${formato}`)
-        document.body.appendChild(link)
-        link.click()
-        link.remove()
+    headers: {
+      Authorization: axiosHttpRepository.getOptions().headers.Authorization,
+    },
+  })
+    .then((response) => {
+      if (response.status === 200) {
+        if (
+          response.data.size < 100 ||
+          response.data.type == 'application/json'
+        )
+          throw 'No se obtuvieron resultados para generar el reporte'
+        else {
+          const fileURL = URL.createObjectURL(
+            new Blob([response.data], { type: `appication/${formato}` })
+          )
+          const link = document.createElement('a')
+          link.href = fileURL
+          link.target = '_blank'
+          link.setAttribute('download', `${titulo}.${formato}`)
+          document.body.appendChild(link)
+          link.click()
+          link.remove()
+        }
+        // } else if (response.status === 500) {
+        //   console.log(response)
+      } else {
+        notificarError('Se produjo un error inesperado')
       }
-      // } else if (response.status === 500) {
-      //   console.log(response)
-    } else {
-      notificarError('Se produjo un error inesperado')
-    }
-  }).catch(async (error) => {
-    notificarError(error)
-  }).finally(() => statusLoading.desactivar())
-
+    })
+    .catch(async (error) => {
+      notificarError(error)
+    })
+    .finally(() => statusLoading.desactivar())
 }
 
 export function filtrarLista(val, update, lista, clave, defaultValue = []) {
   if (val === '') {
-    update(() => lista.value = defaultValue)
+    update(() => (lista.value = defaultValue))
   } else {
     update(() => {
       const needle = val.toLowerCase()
@@ -472,7 +493,11 @@ export function formatearFechaHora(fecha: string, hora: string) {
 }
 
 // recibe fecha dd-mm-yyyy y sale yyyy-mm-dd con el nuevo separador
-export function formatearFechaSeparador(fecha: string, separador: string, sumarTiempo?: any) {
+export function formatearFechaSeparador(
+  fecha: string,
+  separador: string,
+  sumarTiempo?: any
+) {
   const arrayFecha = fecha.split('-').map(Number) // YYYY-MM-DD
   let nuevaFecha = date.buildDate({
     year: arrayFecha[2],
@@ -482,71 +507,88 @@ export function formatearFechaSeparador(fecha: string, separador: string, sumarT
 
   if (sumarTiempo) nuevaFecha = date.addToDate(nuevaFecha, sumarTiempo)
 
-  return date.formatDate(nuevaFecha, 'YYYY' + separador + 'MM' + separador + 'DD')
+  return date.formatDate(
+    nuevaFecha,
+    'YYYY' + separador + 'MM' + separador + 'DD'
+  )
 }
 
 export function formatearFechaTexto(fecha: number) {
-  const opciones = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' }
-  return new Date(fecha).toLocaleDateString('es-Es', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' })
+  const opciones = {
+    weekday: 'long',
+    year: 'numeric',
+    month: 'long',
+    day: 'numeric',
+  }
+  return new Date(fecha).toLocaleDateString('es-Es', {
+    weekday: 'long',
+    year: 'numeric',
+    month: 'long',
+    day: 'numeric',
+  })
 }
 
 export function generarColorHexadecimalAleatorio() {
-  const r = Math.floor(Math.random() * 128 + 128); // Componente rojo entre 128 y 255
-  const g = Math.floor(Math.random() * 128 + 128); // Componente verde entre 128 y 255
-  const b = Math.floor(Math.random() * 128 + 128); // Componente azul entre 128 y 255
+  const r = Math.floor(Math.random() * 128 + 128) // Componente rojo entre 128 y 255
+  const g = Math.floor(Math.random() * 128 + 128) // Componente verde entre 128 y 255
+  const b = Math.floor(Math.random() * 128 + 128) // Componente azul entre 128 y 255
 
-  const colorHexadecimal = '#' + componentToHex(r) + componentToHex(g) + componentToHex(b);
+  const colorHexadecimal =
+    '#' + componentToHex(r) + componentToHex(g) + componentToHex(b)
 
-  return colorHexadecimal;
+  return colorHexadecimal
 }
 
 function componentToHex(component) {
-  const hex = component.toString(16);
-  return hex.length === 1 ? '0' + hex : hex;
+  const hex = component.toString(16)
+  return hex.length === 1 ? '0' + hex : hex
 }
 
 export function generarColorPastelAzulAleatorio() {
-  const r = Math.floor(Math.random() * 128); // Componente rojo entre 0 y 127
-  const g = Math.floor(Math.random() * 128 + 128); // Componente verde entre 0 y 127
-  const b = Math.floor(Math.random() * 128); // Componente azul entre 128 y 255
+  const r = Math.floor(Math.random() * 128) // Componente rojo entre 0 y 127
+  const g = Math.floor(Math.random() * 128 + 128) // Componente verde entre 0 y 127
+  const b = Math.floor(Math.random() * 128) // Componente azul entre 128 y 255
 
-  const colorHexadecimal = '#' + componentToHex(r) + componentToHex(g) + componentToHex(b);
+  const colorHexadecimal =
+    '#' + componentToHex(r) + componentToHex(g) + componentToHex(b)
 
-  return colorHexadecimal;
+  return colorHexadecimal
 }
 
 // --
 export function generarColorAzulPastelClaro() {
   // Generar valores RGB altos (entre 150 y 220) para obtener un tono azul claro
-  const r = Math.floor(Math.random() * 70) + 150;
-  const g = Math.floor(Math.random() * 70) + 150;
-  const b = Math.floor(Math.random() * 100) + 155; // Para asegurarse de que el tono sea azul claro
+  const r = Math.floor(Math.random() * 70) + 150
+  const g = Math.floor(Math.random() * 70) + 150
+  const b = Math.floor(Math.random() * 100) + 155 // Para asegurarse de que el tono sea azul claro
 
   // Ajustar el brillo para hacerlo más claro (entre 0.7 y 1.0)
-  const brillo = Math.random() * 0.3 + 0.7;
+  const brillo = Math.random() * 0.3 + 0.7
 
   // Convertir a formato hexadecimal
-  const colorHex = '#' + ((1 << 24) + (r << 16) + (g << 8) + b).toString(16).slice(1);
+  const colorHex =
+    '#' + ((1 << 24) + (r << 16) + (g << 8) + b).toString(16).slice(1)
 
   // Aplicar el brillo al color hexadecimal
-  const colorClaroHex = ajustarBrillo(colorHex, brillo);
+  const colorClaroHex = ajustarBrillo(colorHex, brillo)
 
-  return colorClaroHex;
+  return colorClaroHex
 }
 
 function ajustarBrillo(colorHex, brillo) {
-  const r = parseInt(colorHex.substr(1, 2), 16);
-  const g = parseInt(colorHex.substr(3, 2), 16);
-  const b = parseInt(colorHex.substr(5, 2), 16);
+  const r = parseInt(colorHex.substr(1, 2), 16)
+  const g = parseInt(colorHex.substr(3, 2), 16)
+  const b = parseInt(colorHex.substr(5, 2), 16)
 
-  const rNuevo = Math.round(r * brillo);
-  const gNuevo = Math.round(g * brillo);
-  const bNuevo = Math.round(b * brillo);
+  const rNuevo = Math.round(r * brillo)
+  const gNuevo = Math.round(g * brillo)
+  const bNuevo = Math.round(b * brillo)
 
-  const colorOscuroHex = `#${(rNuevo << 16 | gNuevo << 8 | bNuevo).toString(16).padStart(6, '0')}`;
-  return colorOscuroHex;
+  const colorOscuroHex = `#${((rNuevo << 16) | (gNuevo << 8) | bNuevo)
+    .toString(16)
+    .padStart(6, '0')}`
+  return colorOscuroHex
 }
-
 
 /**
  * La función verifica si una matriz tiene elementos repetidos.
@@ -555,8 +597,8 @@ function ajustarBrillo(colorHex, brillo) {
  * falso si todos los elementos de la matriz son únicos.
  */
 export function tieneElementosRepetidos(array) {
-  const set = new Set(array);
-  return set.size !== array.length;
+  const set = new Set(array)
+  return set.size !== array.length
 }
 
 /**
@@ -578,7 +620,6 @@ export function tieneElementosRepetidosObjeto(arrayDeObjetos) {
   return false
 }
 
-
 /**
  * La función calcula el monto del descuento en función del subtotal y el porcentaje de descuento
  * proporcionado.
@@ -590,7 +631,11 @@ export function tieneElementosRepetidosObjeto(arrayDeObjetos) {
  * el resultado.
  * @returns el importe del descuento calculado como una cadena con el número especificado de decimales.
  */
-export function calcularDescuento(subtotal: number, porcentaje_descuento: number, decimales: number) {
+export function calcularDescuento(
+  subtotal: number,
+  porcentaje_descuento: number,
+  decimales: number
+) {
   return ((subtotal * porcentaje_descuento) / 100).toFixed(decimales)
 }
 
@@ -607,7 +652,12 @@ export function calcularDescuento(subtotal: number, porcentaje_descuento: number
  * el resultado.
  * @returns el valor calculado del IVA (Impuesto al Valor Agregado) en base a los parámetros dados.
  */
-export function calcularIva(subtotal: number, descuento: number, porcentaje_iva: number, decimales: number) {
+export function calcularIva(
+  subtotal: number,
+  descuento: number,
+  porcentaje_iva: number,
+  decimales: number
+) {
   return (((subtotal - descuento) * porcentaje_iva) / 100).toFixed(decimales)
 }
 
@@ -632,7 +682,10 @@ export function calcularSubtotalConImpuestosLista(val: ItemProforma) {
  * @returns el último valor de identificación de la matriz de listado dada.
  */
 export function encontrarUltimoIdListado(listado: any) {
-  const objMayorId = listado.reduce((max, objeto) => objeto.id > max.id ? objeto : max, listado[0]);
+  const objMayorId = listado.reduce(
+    (max, objeto) => (objeto.id > max.id ? objeto : max),
+    listado[0]
+  )
 
   return objMayorId.id
 }
@@ -644,7 +697,6 @@ export function convertirNumeroPositivo(entidad, campo) {
     }
   }
 }
-
 
 /**
  * La función filtra a los empleados según sus roles.
@@ -662,7 +714,18 @@ export function filtrarEmpleadosPorRoles(empleados, roles) {
   })
   return filtrados
 }
-
+export function filtarVisualizacionEmpleadosSaldos(empleados) {
+  const filtrados =
+    authenticationStore.esContabilidad ||
+    authenticationStore.esCoordinador ||
+    authenticationStore.esAdministrador
+      ? empleados
+      : empleados.filter((empleado) => empleado.jefe_id === usuario.id)
+  return filtrados
+}
+export function filtarJefeImediato(empleados) {
+  return empleados.filter((empleado) => empleado.id === usuario.jefe_id)[0]
+}
 
 export async function notificarErrores(err) {
   const axiosError = err as AxiosError

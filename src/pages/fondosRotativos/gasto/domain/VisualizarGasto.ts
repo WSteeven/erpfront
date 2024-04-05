@@ -34,6 +34,7 @@ export class VisualizarGasto extends EntidadAuditable {
   detalle_estado: string | null
   created_at: string | null
   tiene_factura: boolean | null
+  observacion_anulacion: string | null
 
   constructor() {
     super()
@@ -72,7 +73,6 @@ export class VisualizarGasto extends EntidadAuditable {
     this.detalle_estado = null
     this.created_at = null
     this.tiene_factura = true
-
-
+    this.observacion_anulacion = null
   }
 }
