@@ -1,33 +1,38 @@
 //Dependencias
 import { configuracionColumnasBitacoraVehicular } from '../domain/configuracionColumnasBitacoraVehicular';
+import { configuracionColumnasActividadesRealizadas } from '../domain/configuracionColumnasActividadesRealizadas';
 import { required, requiredIf } from "shared/i18n-validators";
 import { useVuelidate } from '@vuelidate/core'
 import { computed, defineComponent, onBeforeUnmount, onMounted, onUnmounted, ref } from "vue";
 
 // componentes
 import TabLayout from 'shared/contenedor/modules/simple/view/TabLayout.vue'
+import SelectorImagen from 'components/SelectorImagen.vue'
+import EssentialTable from 'components/tables/view/EssentialTable.vue'
 
 // Logica y controladores
 import { ContenedorSimpleMixin } from 'shared/contenedor/modules/simple/application/ContenedorSimpleMixin';
 import { BitacoraVehicular } from '../domain/BitacoraVehicular';
 import { BitacoraVehicularController } from '../infraestructure/BitacoraVehicularController';
-import { acciones, convertir_fecha, maskFecha } from 'config/utils';
-import { ChoferController } from 'pages/recursosHumanos/empleados/infraestructure/ChoferController';
-import { VehiculoController } from 'pages/controlVehiculos/vehiculos/infraestructure/VehiculoController';
+import { acciones, accionesTabla, convertir_fecha, maskFecha } from 'config/utils';
 import { useFiltrosListadosSelects } from 'shared/filtrosListadosGenerales';
 import { useAuthenticationStore } from 'stores/authentication';
 import { AsignacionVehiculoController } from 'pages/controlVehiculos/asignarVehiculos/infraestructure/AsignacionVehiculoController';
-import { obtenerFechaActual, sumarFechas } from 'shared/utils';
+import { encontrarUltimoIdListado, obtenerFechaActual, } from 'shared/utils';
+import { CustomActionTable } from 'components/tables/domain/CustomActionTable';
+import { useNotificaciones } from 'shared/notificaciones';
+import { CustomActionPrompt } from 'components/tables/domain/CustomActionPrompt';
 
 
 export default defineComponent({
     // name:'ControlDiarioVehiculo',
-    components: { TabLayout },
+    components: { TabLayout, SelectorImagen, EssentialTable },
     setup() {
         const mixin = new ContenedorSimpleMixin(BitacoraVehicular, new BitacoraVehicularController())
         const { entidad: bitacora, disabled, listadosAuxiliares, accion } = mixin.useReferencias()
-        const { setValidador, obtenerListados, cargarVista } = mixin.useComportamiento()
-        const { onReestablecer, onConsultado, } = mixin.useHooks()
+        const { setValidador,  cargarVista } = mixin.useComportamiento()
+        const { onReestablecer, } = mixin.useHooks()
+        const { confirmar, prompt, } = useNotificaciones()
 
         /****************************************
          * Stores
@@ -65,7 +70,7 @@ export default defineComponent({
             },
             {
                 label: 'Mal estado',
-                value: 'Mal estado',
+                value: 'mal estado',
                 color: 'red',
                 checkedIcon: 'bi-check-circle-fill',
                 uncheckedIcon: 'panorama_fish_eye',
@@ -140,6 +145,7 @@ export default defineComponent({
         }
         const v$ = useVuelidate(reglas, bitacora)
         setValidador(v$.value)
+
         /****************************************
          * Funciones
          ****************************************/
@@ -179,10 +185,60 @@ export default defineComponent({
             return date >= convertir_fecha(yesterday) && date <= convertir_fecha(new Date())
         }
 
+        function eliminar({ posicion }) {
+            confirmar('¿Está seguro de continuar?', () => bitacora.actividadesRealizadas.splice(posicion, 1))
+        }
+
+
+        /****************************************
+         * Botones de tabla
+         ****************************************/
+        // const btnAgregarActividad: CustomActionTable = {
+        //     titulo: 'Agregar Actividad',
+        //     icono: 'bi-arrow-bar-down',
+        //     color: 'positive',
+        //     tooltip: 'Agregar elemento',
+        //     accion: () => {
+        //         const fila = { 'id': null, 'fecha_hora': null, 'actividad': null }
+        //         fila.id = bitacora.actividadesRealizadas.length ? encontrarUltimoIdListado(bitacora.actividadesRealizadas) + 1 : 1
+        //         // fila.fecha_hora = new Date().toDateString()
+        //         bitacora.actividadesRealizadas.push(fila)
+
+        //         // emit('actualizar', proforma.listadoProductos)
+        //     },
+        //     visible: () => true
+        // }
+        // const botonEditar: CustomActionTable = {
+        //     titulo: 'Actividad realizada',
+        //     icono: 'bi-pencil',
+        //     accion: ({ posicion }) => {
+        //         const data: CustomActionPrompt = {
+        //             titulo: 'Modifica',
+        //             mensaje: 'Ingresa la cantidad',
+        //             defecto: bitacora.actividadesRealizadas[posicion].actividad,
+        //             accion: (data) => bitacora.actividadesRealizadas[posicion].actividad = data,
+        //         }
+        //         prompt(data)
+        //     },
+        //     visible: () => {
+        //         return accion.value == acciones.consultar ? false : true
+        //     }
+        // }
+        // const btnEliminar: CustomActionTable = {
+        //     titulo: 'Eliminar',
+        //     icono: 'bi-trash',
+        //     color: 'negative',
+        //     accion: ({ entidad, posicion }) => {
+        //         eliminar({ posicion })
+        //     },
+        //     visible: () => true
+        // }
+
         return {
             mixin, bitacora, disabled, v$, accion, acciones,
             configuracionColumnas: configuracionColumnasBitacoraVehicular,
-            maskFecha,
+            columnasActividades: configuracionColumnasActividadesRealizadas,
+            maskFecha, accionesTabla,
             optionsDefault, optionsEstadosCualitativos, optionsEstados,
             accepted: ref('1'),
 
@@ -194,6 +250,12 @@ export default defineComponent({
 
             //funciones
             optionsFecha,
+
+            //botones de tabla
+            // btnAgregarActividad,
+            // botonEditar,
+            // botonEliminar,
+
 
         }
     }

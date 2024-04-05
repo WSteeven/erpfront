@@ -12,6 +12,7 @@ export class BitacoraVehicular extends EntidadAuditable {
     chofer: string | null
     chofer_id: number | null
     vehiculo: string | null
+    actividadesRealizadas:[]
 
     //partes del vehiculo
     parabrisas: string | null
@@ -33,6 +34,27 @@ export class BitacoraVehicular extends EntidadAuditable {
     tire_rr: string | null //trasera derecha
     tire_lr: string | null //trasera izquierda
 
+    //accesorios del vehículo
+    botiquin: string | null
+    extintor: string | null
+    caja_herramientas: string | null
+    triangulos: string | null
+    tire_emergencia: string | null
+    cinturones: string | null
+    gata: string | null
+    portaescalera: string | null
+
+    //imagenes del vehículo
+    imagen_frontal: string | null
+    imagen_trasera: string | null
+    imagen_lateral_derecha: string | null
+    imagen_lateral_izquierda: string | null
+    imagen_tablero_km: string | null
+    imagen_tablero_radio: string | null
+    imagen_asientos: string | null
+    imagen_accesorios: string | null
+
+
     constructor() {
         super()
         this.fecha = null
@@ -46,6 +68,7 @@ export class BitacoraVehicular extends EntidadAuditable {
         this.chofer = null
         this.chofer_id = null
         this.vehiculo = null
+        this.actividadesRealizadas=[]
 
         // partes del vehiculo
         this.parabrisas = 'success'
@@ -69,5 +92,26 @@ export class BitacoraVehicular extends EntidadAuditable {
         this.tire_lf = 'success'
         this.tire_rr = 'success'
         this.tire_lr = 'success'
+
+        //accesorios del vehículo
+        this.botiquin = 'lleno'
+        this.extintor = 'lleno'
+        this.caja_herramientas = 'lleno'
+        this.triangulos = 'buen estado'
+        this.tire_emergencia = 'buen estado'
+        this.cinturones = 'buen estado'
+        this.gata = 'buen estado'
+        this.portaescalera = 'buen estado'
+
+        //imagenes del vehículo
+        this.imagen_frontal = null
+        this.imagen_trasera = null
+        this.imagen_lateral_derecha = null
+        this.imagen_lateral_izquierda = null
+        this.imagen_tablero_km = null
+        this.imagen_tablero_radio = null
+        this.imagen_asientos = null
+        this.imagen_accesorios = null
+
     }
 }

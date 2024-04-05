@@ -310,6 +310,33 @@
             >
           </div>
         </div>
+        <!-- Actividades realizadas -->
+        <!-- <q-expansion-item
+          v-if="accion == acciones.editar || accion == acciones.consultar"
+          class="overflow-hidden q-mb-md expansion"
+          label="Actividades Realizadas"
+          header-class="text-bold bg-header-collapse"
+          default-opened
+        >
+          <div class="row q-col-gutter-sm q-pa-sm">
+            <div class="col-12">
+              <essential-table
+              titulo="Actividades realizadas"
+              :configuracionColumnas="accion === acciones.editar
+                  ? [columnasActividades,...accionesTabla]
+                  : columnasActividades
+              "
+              :datos="bitacoras.actividadesRealizadas"
+              :permitirConsultar="false"
+              :permitirEditar="false"
+              :permitirEliminar="false"
+              :mostrarBotones="false"
+              :ajustarCeldas="true"
+              :altoFijo="false"
+            ></essential-table>
+            </div>
+          </div>
+        </q-expansion-item> -->
         <!-- Mantenimientos -->
         <q-expansion-item
           v-if="accion == acciones.editar || accion == acciones.consultar"
@@ -421,6 +448,15 @@
                     inline
                   >
                   </q-option-group>
+                </div>
+
+                <div class="col-12">
+                  <label class="q-mb-sm block">Observacion</label>
+                  <q-input
+                    v-model="bitacora.aire_acondicionado"
+                    outlined
+                    dense
+                  ></q-input>
                 </div>
               </div>
             </q-expansion-item>
@@ -674,6 +710,13 @@
                 placeholder="Obligatorio"
                 :options="optionsEstadosCualitativos"
                 keep-color
+                :inline="
+                  ($q.screen.xs && $q.screen.width > 540) ||
+                  ($q.screen.sm && $q.screen.width > 780) ||
+                  ($q.screen.md && $q.screen.width > 1024) ||
+                  $q.screen.lg ||
+                  $q.screen.xl
+                "
               >
               </q-option-group>
             </div>
@@ -687,6 +730,13 @@
                 placeholder="Obligatorio"
                 :options="optionsEstadosCualitativos"
                 keep-color
+                :inline="
+                  ($q.screen.xs && $q.screen.width > 540) ||
+                  ($q.screen.sm && $q.screen.width > 780) ||
+                  ($q.screen.md && $q.screen.width > 1024) ||
+                  $q.screen.lg ||
+                  $q.screen.xl
+                "
               >
               </q-option-group>
             </div>
@@ -700,6 +750,13 @@
                 placeholder="Obligatorio"
                 :options="optionsEstadosCualitativos"
                 keep-color
+                :inline="
+                  ($q.screen.xs && $q.screen.width > 540) ||
+                  ($q.screen.sm && $q.screen.width > 780) ||
+                  ($q.screen.md && $q.screen.width > 1024) ||
+                  $q.screen.lg ||
+                  $q.screen.xl
+                "
               >
               </q-option-group>
             </div>
@@ -758,7 +815,7 @@
               >
               </q-option-group>
             </div>
-            
+
             <!-- portaescalera -->
             <div class="col-md-3 col-sm-4 col-xs-6">
               <label class="q-mb-sm block">Portaescalera</label>
@@ -771,6 +828,130 @@
                 inline
               >
               </q-option-group>
+            </div>
+          </div>
+        </q-expansion-item>
+
+        <!-- Imágenes -->
+        <q-expansion-item
+          v-if="accion == acciones.editar || accion == acciones.consultar"
+          class="overflow-hidden q-mb-md expansion"
+          label="Checklist de Imágenes del vehículo"
+          header-class="text-bold bg-header-collapse"
+          group="checklist"
+        >
+          <div
+            class="col-12 col-md-12 rounded-card q-ma-sm q-py-sm text-center bg-light-blue-2"
+          >
+            <div>
+              <q-icon
+                name="bi-info-circle-fill"
+                class="q-mr-xs q-ml-xs"
+                size="1em"
+              /><b> Información </b>Todas las imágenes son obligatorias en cada
+              bitácora:
+            </div>
+          </div>
+          <div class="row q-col-gutter-sm q-pa-sm">
+            <!-- frente del vehiculo -->
+            <div class="col-md-3 col-sm-4 col-xs-6">
+              <label class="q-mb-sm block">Parte Delantera</label>
+              <selector-imagen
+                file_extensiones=".jpg, image/*"
+                :imagen="bitacora.imagen_frontal"
+                :comprimir="true"
+                :alto="'200px'"
+                @update:model-value="(data) => (bitacora.imagen_frontal = data)"
+              ></selector-imagen>
+            </div>
+
+            <!-- parte trasera del vehiculo-->
+            <div class="col-md-3 col-sm-4 col-xs-6">
+              <label class="q-mb-sm block">Parte trasera</label>
+              <selector-imagen
+                file_extensiones=".jpg, image/*"
+                :imagen="bitacora.imagen_frontal"
+                :comprimir="true"
+                :alto="'200px'"
+                @update:model-value="(data) => (bitacora.imagen_frontal = data)"
+              ></selector-imagen>
+            </div>
+
+            <!-- parte lateral izquierda -->
+            <div class="col-md-3 col-sm-4 col-xs-6">
+              <label class="q-mb-sm block">Parte Lateral Izq.</label>
+              <selector-imagen
+                file_extensiones=".jpg, image/*"
+                :imagen="bitacora.imagen_frontal"
+                :comprimir="true"
+                :alto="'200px'"
+                @update:model-value="(data) => (bitacora.imagen_frontal = data)"
+              ></selector-imagen>
+            </div>
+
+            <!-- parte lateral derecha -->
+            <div class="col-md-3 col-sm-4 col-xs-6">
+              <label class="q-mb-sm block">Parte Lateral Der.</label>
+              <selector-imagen
+                file_extensiones=".jpg, image/*"
+                :imagen="bitacora.imagen_frontal"
+                :comprimir="true"
+                :alto="'200px'"
+                @update:model-value="(data) => (bitacora.imagen_frontal = data)"
+              ></selector-imagen>
+            </div>
+
+            <!-- Tablero -->
+            <div class="col-md-3 col-sm-4 col-xs-6">
+              <label class="q-mb-sm block">Tablero (kilometraje)</label>
+              <selector-imagen
+                file_extensiones=".jpg, image/*"
+                :imagen="bitacora.imagen_frontal"
+                :comprimir="true"
+                :alto="'200px'"
+                @update:model-value="(data) => (bitacora.imagen_frontal = data)"
+              ></selector-imagen>
+            </div>
+
+            <!-- Tablero -->
+            <div class="col-md-3 col-sm-4 col-xs-6">
+              <label class="q-mb-sm block">Tablero (radio)</label>
+              <selector-imagen
+                file_extensiones=".jpg, image/*"
+                :imagen="bitacora.imagen_frontal"
+                :comprimir="true"
+                :alto="'200px'"
+                @update:model-value="(data) => (bitacora.imagen_frontal = data)"
+              ></selector-imagen>
+            </div>
+
+            <!-- asientos -->
+            <div class="col-md-3 col-sm-4 col-xs-6">
+              <label class="q-mb-sm block">Asientos</label>
+              <selector-imagen
+                file_extensiones=".jpg, image/*"
+                :imagen="bitacora.imagen_frontal"
+                :comprimir="true"
+                :alto="'200px'"
+                @update:model-value="(data) => (bitacora.imagen_frontal = data)"
+              ></selector-imagen>
+            </div>
+            <!-- herramientas y accesorios -->
+            <div class="col-md-3 col-sm-4 col-xs-6">
+              <label class="q-mb-sm block"
+                >Herramientas y accesorios
+                <q-tooltip class="bg-dark"
+                  >La imágen debe incluir triángulos, extintor, gata, conos,
+                  caja de herramientas</q-tooltip
+                ></label
+              >
+              <selector-imagen
+                file_extensiones=".jpg, image/*"
+                :imagen="bitacora.imagen_frontal"
+                :comprimir="true"
+                :alto="'200px'"
+                @update:model-value="(data) => (bitacora.imagen_frontal = data)"
+              ></selector-imagen>
             </div>
           </div>
         </q-expansion-item>
