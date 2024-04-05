@@ -38,6 +38,7 @@ import ImagenComprimidaComponent from 'components/ImagenComprimidaComponent.vue'
 import { CustomActionTable } from 'components/tables/domain/CustomActionTable'
 import { filtarJefeImediato, filtrarEmpleadosPorRoles } from 'shared/utils'
 import { format } from '@formkit/tempo'
+import { maxValue } from '@vuelidate/validators'
 export default defineComponent({
   components: { TabLayoutFilterTabs2, ImagenComprimidaComponent },
   setup() {
@@ -191,9 +192,11 @@ export default defineComponent({
         required,
       },
       cantidad: {
+        maxValue:maxValue(9999),
         required,
       },
       valor_u: {
+        maxValue:maxValue(9999),
         required,
       },
       total: {

@@ -43,6 +43,7 @@ import {
   notificarMensajesError,
 } from 'shared/utils'
 import { StatusEssentialLoading } from 'components/loading/application/StatusEssentialLoading'
+import { maxValue } from '@vuelidate/validators'
 
 export default defineComponent({
   components: { TabLayout, ImagenComprimidaComponent, ButtonSubmits },
@@ -254,9 +255,11 @@ export default defineComponent({
         required,
       },
       cantidad: {
+        maxValue:maxValue(9999),
         required,
       },
       valor_u: {
+        maxValue:maxValue(9999),
         required,
       },
       total: {

@@ -16,6 +16,7 @@ import { TareaController } from 'pages/gestionTrabajos/tareas/infraestructure/Ta
 import { useAuthenticationStore } from 'stores/authentication'
 import { useTransferenciaSaldoStore } from 'stores/transferenciaSaldo'
 import { EmpleadoController } from 'pages/recursosHumanos/empleados/infraestructure/EmpleadoController'
+import { maxValue } from '@vuelidate/validators'
 
 export default defineComponent({
   components: { TabLayout, SelectorImagen },
@@ -58,6 +59,7 @@ export default defineComponent({
       },
       monto: {
         required,
+        maxValue:maxValue(9999),
         maxLength: maxLength(50),
       },
       cuenta: {

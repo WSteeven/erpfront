@@ -254,9 +254,10 @@
         <div
           class="col-12 col-md-4 q-mb-md"
           v-if="
-            (consolidadofiltrado.tipo_filtro == 1 ||
-              consolidadofiltrado.tipo_filtro == 0) &&
-            consolidadofiltrado.tipo_saldo == 2
+            (consolidadofiltrado.tipo_filtro == tipo_filtro.PROYECTO ||
+              consolidadofiltrado.tipo_filtro == tipo_filtro.TODOS) &&
+              ( consolidadofiltrado.tipo_saldo == tipo_saldo.GASTO ||
+            consolidadofiltrado.tipo_saldo == tipo_saldo.GASTOS_FOTOGRAFIA)
           "
         >
           <label class="q-mb-sm block">Proyectos</label>
@@ -310,7 +311,8 @@
             (consolidadofiltrado.tipo_filtro == tipo_filtro.TAREA ||
               consolidadofiltrado.tipo_filtro == tipo_filtro.TODOS) &&
             consolidadofiltrado.proyecto >= 0 &&
-            consolidadofiltrado.tipo_saldo == tipo_saldo.GASTO
+            ( consolidadofiltrado.tipo_saldo == tipo_saldo.GASTO ||
+            consolidadofiltrado.tipo_saldo == tipo_saldo.GASTOS_FOTOGRAFIA)
           "
         >
           <label class="q-mb-sm block">Tareas</label>
@@ -363,7 +365,8 @@
           v-if="
             (consolidadofiltrado.tipo_filtro == tipo_filtro.DETALLE ||
               consolidadofiltrado.tipo_filtro == tipo_filtro.TODOS) &&
-            consolidadofiltrado.tipo_saldo == tipo_saldo.GASTO
+              ( consolidadofiltrado.tipo_saldo == tipo_saldo.GASTO ||
+            consolidadofiltrado.tipo_saldo == tipo_saldo.GASTOS_FOTOGRAFIA)
           "
         >
           <label class="q-mb-sm block">Detalle</label>
@@ -406,7 +409,8 @@
           v-if="
             (consolidadofiltrado.tipo_filtro == tipo_filtro.CIUDAD ||
               consolidadofiltrado.tipo_filtro == tipo_filtro.TODOS) &&
-            consolidadofiltrado.tipo_saldo == tipo_saldo.GASTO
+              ( consolidadofiltrado.tipo_saldo == tipo_saldo.GASTO ||
+            consolidadofiltrado.tipo_saldo == tipo_saldo.GASTOS_FOTOGRAFIA)
           "
         >
           <label class="q-mb-sm block">Ciudades</label>
@@ -449,7 +453,8 @@
           v-if="
             (consolidadofiltrado.tipo_filtro == tipo_filtro.SUBDETALLE ||
               consolidadofiltrado.tipo_filtro == tipo_filtro.TODOS) &&
-            consolidadofiltrado.tipo_saldo == tipo_saldo.GASTO
+              ( consolidadofiltrado.tipo_saldo == tipo_saldo.GASTO ||
+            consolidadofiltrado.tipo_saldo == tipo_saldo.GASTOS_FOTOGRAFIA)
           "
         >
           <label class="q-mb-sm block">SubDetalle</label>
@@ -492,7 +497,8 @@
           v-if="
             (consolidadofiltrado.tipo_filtro == tipo_filtro.AUTORIZACIONES ||
               consolidadofiltrado.tipo_filtro == tipo_filtro.TODOS) &&
-            consolidadofiltrado.tipo_saldo == tipo_saldo.GASTO
+              ( consolidadofiltrado.tipo_saldo == tipo_saldo.GASTO ||
+            consolidadofiltrado.tipo_saldo == tipo_saldo.GASTOS_FOTOGRAFIA)
           "
         >
           <label class="q-mb-sm block">Autorizaciòn Especial</label>
@@ -535,8 +541,8 @@
           v-if="
             (consolidadofiltrado.tipo_filtro == tipo_filtro.RUC ||
               consolidadofiltrado.tipo_filtro == tipo_filtro.TODOS) &&
-            consolidadofiltrado.tipo_saldo == tipo_saldo.GASTO
-          "
+             ( consolidadofiltrado.tipo_saldo == tipo_saldo.GASTO ||
+            consolidadofiltrado.tipo_saldo == tipo_saldo.GASTOS_FOTOGRAFIA)          "
         >
           <label class="q-mb-sm block">RUC</label>
           <q-input
