@@ -18,45 +18,7 @@
               outlined
               dense
             ></q-input>
-            <!-- <q-select
-              v-model="bitacora.vehiculo"
-              :options="vehiculos"
-              hint="Agregue elementos desde el panel de vehículos"
-              transition-show="scale"
-              transition-hide="scale"
-              options-dense
-              clearable
-              dense
-              outlined
-              :readonly="disabled"
-              :disable="disabled"
-              use-input
-              input-debounce="0"
-              @filter="filtrarVehiculos"
-              :option-label="(item) => item.placa"
-              :option-value="(item) => item.id"
-              emit-value
-              map-options
-            >
-              <template v-slot:option="scope">
-                <q-item v-bind="scope.itemProps">
-                  <q-item-section>
-                    <q-item-label>{{ scope.opt.placa }}</q-item-label>
-                    <q-item-label caption>{{
-                      scope.opt.marca + ' ' + scope.opt.modelo
-                    }}</q-item-label>
-                  </q-item-section>
-                </q-item>
-              </template>
-              <template v-slot:no-option>
-                <q-item>
-                  <q-item-section class="text-grey">
-                    No hay resultados
-                  </q-item-section>
-                </q-item>
-              </template>
-            </q-select> -->
-          </div>
+            </div>
           <!-- Chofer -->
           <div
             class="col-12 col-md-3 q-mb-md"
@@ -70,32 +32,7 @@
               outlined
               dense
             ></q-input>
-            <!-- <q-select
-              v-model="bitacora.chofer"
-              :options="choferes"
-              hint="Agregue rol de chofer a un empleado para mostrar en este listado"
-              transition-show="scale"
-              transition-hide="scale"
-              options-dense
-              dense
-              outlined
-              :readonly="disabled"
-              use-input
-              input-debounce="0"
-              @filter="filtrarChoferes"
-              :option-label="(item) => item.nombres + ' ' + item.apellidos"
-              :option-value="(item) => item.id"
-              emit-value
-              map-options
-            >
-              <template v-slot:no-option>
-                <q-item>
-                  <q-item-section class="text-grey">
-                    No hay resultados
-                  </q-item-section>
-                </q-item>
-              </template>
-            </q-select> -->
+            
           </div>
           <!-- Fecha de registro -->
           <div class="col-6 col-md-3">
@@ -311,7 +248,7 @@
           </div>
         </div>
         <!-- Actividades realizadas -->
-        <!-- <q-expansion-item
+        <q-expansion-item
           v-if="accion == acciones.editar || accion == acciones.consultar"
           class="overflow-hidden q-mb-md expansion"
           label="Actividades Realizadas"
@@ -336,7 +273,7 @@
             ></essential-table>
             </div>
           </div>
-        </q-expansion-item> -->
+        </q-expansion-item>
         <!-- Mantenimientos -->
         <q-expansion-item
           v-if="accion == acciones.editar || accion == acciones.consultar"
