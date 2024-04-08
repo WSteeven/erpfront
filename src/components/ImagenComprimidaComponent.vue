@@ -93,6 +93,7 @@
           <div v-if="texto2" class="col-12 col-md-3 text-h6">{{ texto2 }}</div>
           <div v-if="texto3" class="col-12 col-md-3 text-h6">{{ texto3 }}</div>
           <div class="col-12 col-md-3 text-h6">{{ texto4 }}</div>
+          <div class="col-12 col-md-3 text-h6">{{ texto5 }}</div>
         </div>
       </q-card-section>
 
@@ -144,6 +145,7 @@ const props = defineProps([
   'texto2',
   'texto3',
   'texto4',
+  'texto5'
 ])
 const emit = defineEmits(['update:modelValue'])
 

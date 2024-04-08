@@ -28,7 +28,7 @@ export default defineComponent({
   },
   setup() {
     const controller = new AutorizarTransferenciaController()
-    const tabActual = ref()
+    const tabActual = ref('3')
     /***********
      * Mixin
      ************/
