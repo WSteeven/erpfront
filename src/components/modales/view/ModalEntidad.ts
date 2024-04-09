@@ -29,6 +29,10 @@ export default defineComponent({
     persistente: {
       type: Boolean,
       default: true,
+    },
+    mostrarListado: {
+      type: Boolean,
+      default: true,
     }
   },
   // emits: ['seleccionar', 'accion1'],

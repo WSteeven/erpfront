@@ -18,7 +18,7 @@
               outlined
               dense
             ></q-input>
-            </div>
+          </div>
           <!-- Chofer -->
           <div
             class="col-12 col-md-3 q-mb-md"
@@ -32,7 +32,6 @@
               outlined
               dense
             ></q-input>
-            
           </div>
           <!-- Fecha de registro -->
           <div class="col-6 col-md-3">
@@ -246,7 +245,83 @@
               >{{ bitacora.tanque_final }}%</q-knob
             >
           </div>
+
+          <!-- Tareas -->
+          <div class="col-12 col-md-3">
+            <label class="q-mb-sm block">Tareas</label>
+            <q-select
+              v-model="bitacora.tareas"
+              :options="tareas"
+              options-dense
+              clearable
+              dense
+              outlined
+              use-input
+              use-chips
+              input-debounce="0"
+              @filter="filtrarTareas"
+              multiple
+              :option-label="(item) => item.codigo_tarea"
+              :option-value="(item) => item.id"
+              emit-value
+              map-options
+            >
+              <template v-slot:option="scope">
+                <q-item v-bind="scope.itemProps">
+                  <q-item-section>
+                    <q-item-label>{{ scope.opt.codigo_tarea }}</q-item-label>
+                    <q-item-label caption>{{ scope.opt.titulo }}</q-item-label>
+                  </q-item-section>
+                </q-item>
+              </template>
+              <template v-slot:no-option>
+                <q-item>
+                  <q-item-section class="text-grey">
+                    No hay resultados
+                  </q-item-section>
+                </q-item>
+              </template>
+            </q-select>
+          </div>
+          <!-- Tickets -->
+          <div class="col-12 col-md-3">
+            <label class="q-mb-sm block">Tickets</label>
+            <q-select
+              v-model="bitacora.tickets"
+              :options="tickets"
+              options-dense
+              clearable
+              dense
+              outlined
+              use-input
+              use-chips
+              input-debounce="0"
+              @filter="filtrarTickets"
+              multiple
+              :option-label="(item) => item.codigo"
+              :option-value="(item) => item.id"
+              emit-value
+              map-options
+            >
+              <template v-slot:option="scope">
+                <q-item v-bind="scope.itemProps">
+                  <q-item-section>
+                    <q-item-label>{{ scope.opt.codigo }}</q-item-label>
+                    <q-item-label caption>{{ scope.opt.asunto }}</q-item-label>
+                  </q-item-section>
+                </q-item>
+              </template>
+              <template v-slot:no-option>
+                <q-item>
+                  <q-item-section class="text-grey">
+                    No hay resultados
+                  </q-item-section>
+                </q-item>
+              </template>
+            </q-select>
+          </div>
         </div>
+
         <!-- Actividades realizadas -->
         <q-expansion-item
           v-if="accion == acciones.editar || accion == acciones.consultar"
@@ -257,24 +332,28 @@
         >
           <div class="row q-col-gutter-sm q-pa-sm">
             <div class="col-12">
-              <essential-table
-              titulo="Actividades realizadas"
-              :configuracionColumnas="accion === acciones.editar
-                  ? [columnasActividades,...accionesTabla]
-                  : columnasActividades
-              "
-              :datos="bitacoras.actividadesRealizadas"
-              :permitirConsultar="false"
-              :permitirEditar="false"
-              :permitirEliminar="false"
-              :mostrarBotones="false"
-              :ajustarCeldas="true"
-              :altoFijo="false"
-            ></essential-table>
+              <essential-popup-editable-table
+                titulo="Actividades realizadas"
+                :configuracionColumnas="
+                  accion === acciones.editar
+                    ? [...columnasActividades, accionesTabla]
+                    : columnasActividades
+                "
+                :datos="bitacora.actividadesRealizadas"
+                :permitirConsultar="false"
+                :permitirEditarCeldas="true"
+                :permitirEditarModal="true"
+                :permitirEditar="$q.screen.xs"
+                :permitirEliminar="false"
+                :altoFijo="false"
+                :accion1Header="btnAgregarActividad"
+                :accion1="btnEliminar"
+                @guardarFila="(fila) => guardarFilaEditada(fila)"
+              ></essential-popup-editable-table>
             </div>
           </div>
         </q-expansion-item>
-        <!-- Mantenimientos -->
+        <!-- Checklist del vehículo -->
         <q-expansion-item
           v-if="accion == acciones.editar || accion == acciones.consultar"
           class="overflow-hidden q-mb-md expansion"
@@ -335,7 +414,6 @@
                   <q-option-group
                     :disable="disabled"
                     v-model="bitacora.parabrisas"
-                    placeholder="Obligatorio"
                     :options="optionsDefault"
                     keep-color
                     inline
@@ -349,7 +427,6 @@
                   <q-option-group
                     :disable="disabled"
                     v-model="bitacora.limpiaparabrisas"
-                    placeholder="Obligatorio"
                     :options="optionsDefault"
                     keep-color
                     inline
@@ -365,7 +442,6 @@
                   <q-option-group
                     :disable="disabled"
                     v-model="bitacora.luces_interiores"
-                    placeholder="Obligatorio"
                     :options="optionsDefault"
                     keep-color
                     inline
@@ -379,7 +455,6 @@
                   <q-option-group
                     :disable="disabled"
                     v-model="bitacora.aire_acondicionado"
-                    placeholder="Obligatorio"
                     :options="optionsDefault"
                     keep-color
                     inline
@@ -388,9 +463,12 @@
                 </div>
 
                 <div class="col-12">
-                  <label class="q-mb-sm block">Observacion</label>
+                  <label class="q-mb-sm block">Observación</label>
                   <q-input
-                    v-model="bitacora.aire_acondicionado"
+                    autogrow
+                    v-model="bitacora.observacion_checklist_interior"
+                    placeholder="Opcional"
+                    hint="Ingresa alguna observación o novedad presentada en el interior del vehículo"
                     outlined
                     dense
                   ></q-input>
@@ -411,7 +489,6 @@
                   <q-option-group
                     :disable="disabled"
                     v-model="bitacora.aceite_motor"
-                    placeholder="Obligatorio"
                     :options="optionsDefault"
                     keep-color
                     inline
@@ -425,7 +502,6 @@
                   <q-option-group
                     :disable="disabled"
                     v-model="bitacora.aceite_hidraulico"
-                    placeholder="Obligatorio"
                     :options="optionsDefault"
                     keep-color
                     inline
@@ -439,7 +515,6 @@
                   <q-option-group
                     :disable="disabled"
                     v-model="bitacora.liquido_freno"
-                    placeholder="Obligatorio"
                     :options="optionsDefault"
                     keep-color
                     inline
@@ -453,7 +528,6 @@
                   <q-option-group
                     :disable="disabled"
                     v-model="bitacora.liquido_refrigerante"
-                    placeholder="Obligatorio"
                     :options="optionsDefault"
                     keep-color
                     inline
@@ -467,7 +541,6 @@
                   <q-option-group
                     :disable="disabled"
                     v-model="bitacora.cables_conexiones"
-                    placeholder="Obligatorio"
                     :options="optionsDefault"
                     keep-color
                     inline
@@ -481,7 +554,6 @@
                   <q-option-group
                     :disable="disabled"
                     v-model="bitacora.filtro_combustible"
-                    placeholder="Obligatorio"
                     :options="optionsDefault"
                     keep-color
                     inline
@@ -494,7 +566,6 @@
                   <q-option-group
                     :disable="disabled"
                     v-model="bitacora.bateria"
-                    placeholder="Obligatorio"
                     :options="optionsDefault"
                     keep-color
                     inline
@@ -507,12 +578,23 @@
                   <q-option-group
                     :disable="disabled"
                     v-model="bitacora.cables_conexiones"
-                    placeholder="Obligatorio"
                     :options="optionsDefault"
                     keep-color
                     inline
                   >
                   </q-option-group>
+                </div>
+
+                <div class="col-12">
+                  <label class="q-mb-sm block">Observación</label>
+                  <q-input
+                    autogrow
+                    v-model="bitacora.observacion_checklist_bajo_capo"
+                    placeholder="Opcional"
+                    hint="Ingresa alguna observación o novedad presentada bajo el capó del vehículo"
+                    outlined
+                    dense
+                  ></q-input>
                 </div>
               </div>
             </q-expansion-item>
@@ -530,7 +612,6 @@
                   <q-option-group
                     :disable="disabled"
                     v-model="bitacora.luces_exteriores"
-                    placeholder="Obligatorio"
                     :options="optionsDefault"
                     keep-color
                     inline
@@ -546,7 +627,6 @@
                   <q-option-group
                     :disable="disabled"
                     v-model="bitacora.frenos"
-                    placeholder="Obligatorio"
                     :options="optionsDefault"
                     keep-color
                     inline
@@ -560,7 +640,6 @@
                   <q-option-group
                     :disable="disabled"
                     v-model="bitacora.amortiguadores"
-                    placeholder="Obligatorio"
                     :options="optionsDefault"
                     keep-color
                     inline
@@ -568,13 +647,12 @@
                   </q-option-group>
                 </div>
 
-                <!-- llanta delantera derecha -->
+                <!-- 4 llantas -->
                 <div class="col-md-3 col-sm-4 col-xs-6">
-                  <label class="q-mb-sm block">Llanta delantera derecha</label>
+                  <label class="q-mb-sm block">Llantas </label>
                   <q-option-group
                     :disable="disabled"
-                    v-model="bitacora.tire_rf"
-                    placeholder="Obligatorio"
+                    v-model="bitacora.llantas"
                     :options="optionsDefault"
                     keep-color
                     inline
@@ -582,47 +660,16 @@
                   </q-option-group>
                 </div>
 
-                <!-- llanta delantera izquierda -->
-                <div class="col-md-3 col-sm-4 col-xs-6">
-                  <label class="q-mb-sm block"
-                    >Llanta delantera izquierda</label
-                  >
-                  <q-option-group
-                    :disable="disabled"
-                    v-model="bitacora.tire_lf"
-                    placeholder="Obligatorio"
-                    :options="optionsDefault"
-                    keep-color
-                    inline
-                  >
-                  </q-option-group>
-                </div>
-
-                <!-- llanta trasera derecha -->
-                <div class="col-md-3 col-sm-4 col-xs-6">
-                  <label class="q-mb-sm block">Llanta trasera derecha</label>
-                  <q-option-group
-                    :disable="disabled"
-                    v-model="bitacora.tire_rr"
-                    placeholder="Obligatorio"
-                    :options="optionsDefault"
-                    keep-color
-                    inline
-                  >
-                  </q-option-group>
-                </div>
-                <!-- llanta trasera izquiera-->
-                <div class="col-md-3 col-sm-4 col-xs-6">
-                  <label class="q-mb-sm block">Llanta trasera izquierda</label>
-                  <q-option-group
-                    :disable="disabled"
-                    v-model="bitacora.tire_lr"
-                    placeholder="Obligatorio"
-                    :options="optionsDefault"
-                    keep-color
-                    inline
-                  >
-                  </q-option-group>
+                <div class="col-12">
+                  <label class="q-mb-sm block">Observación</label>
+                  <q-input
+                    autogrow
+                    v-model="bitacora.observacion_checklist_exterior"
+                    placeholder="Opcional"
+                    hint="Ingresa alguna observación o novedad presentada bajo el vehículo y en el exterior"
+                    outlined
+                    dense
+                  ></q-input>
                 </div>
               </div>
             </q-expansion-item>
@@ -644,26 +691,6 @@
               <q-option-group
                 :disable="disabled"
                 v-model="bitacora.botiquin"
-                placeholder="Obligatorio"
-                :options="optionsEstadosCualitativos"
-                keep-color
-                :inline="
-                  ($q.screen.xs && $q.screen.width > 540) ||
-                  ($q.screen.sm && $q.screen.width > 780) ||
-                  ($q.screen.md && $q.screen.width > 1024) ||
-                  $q.screen.lg ||
-                  $q.screen.xl
-                "
-              >
-              </q-option-group>
-            </div>
-
-            <!-- extintor -->
-            <div class="col-md-3 col-sm-4 col-xs-6">
-              <label class="q-mb-sm block">Extintor</label>
-              <q-option-group
-                :disable="disabled"
-                v-model="bitacora.extintor"
                 placeholder="Obligatorio"
                 :options="optionsEstadosCualitativos"
                 keep-color
@@ -717,7 +744,7 @@
               <label class="q-mb-sm block">Llanta Emergencia</label>
               <q-option-group
                 :disable="disabled"
-                v-model="bitacora.tire_emergencia"
+                v-model="bitacora.llanta_emergencia"
                 placeholder="Obligatorio"
                 :options="optionsEstados"
                 keep-color
@@ -766,6 +793,32 @@
               >
               </q-option-group>
             </div>
+
+            <!-- extintor -->
+            <div class="col-md-3 col-sm-4 col-xs-6">
+              <label class="q-mb-sm block">Extintor</label>
+              <q-option-group
+                :disable="disabled"
+                v-model="bitacora.extintor"
+                placeholder="Obligatorio"
+                :options="optionsEstadosExtintor"
+                keep-color
+                inline
+              >
+              </q-option-group>
+            </div>
+
+            <div class="col-12">
+              <label class="q-mb-sm block">Observación</label>
+              <q-input
+                autogrow
+                v-model="bitacora.observacion_accesorios_vehiculo"
+                placeholder="Opcional"
+                hint="Ingresa alguna observación o novedad acerca de los accesorios del vehículo"
+                outlined
+                dense
+              ></q-input>
+            </div>
           </div>
         </q-expansion-item>
 
@@ -807,10 +860,10 @@
               <label class="q-mb-sm block">Parte trasera</label>
               <selector-imagen
                 file_extensiones=".jpg, image/*"
-                :imagen="bitacora.imagen_frontal"
+                :imagen="bitacora.imagen_trasera"
                 :comprimir="true"
                 :alto="'200px'"
-                @update:model-value="(data) => (bitacora.imagen_frontal = data)"
+                @update:model-value="(data) => (bitacora.imagen_trasera = data)"
               ></selector-imagen>
             </div>
 
@@ -819,10 +872,12 @@
               <label class="q-mb-sm block">Parte Lateral Izq.</label>
               <selector-imagen
                 file_extensiones=".jpg, image/*"
-                :imagen="bitacora.imagen_frontal"
+                :imagen="bitacora.imagen_lateral_izquierda"
                 :comprimir="true"
                 :alto="'200px'"
-                @update:model-value="(data) => (bitacora.imagen_frontal = data)"
+                @update:model-value="
+                  (data) => (bitacora.imagen_lateral_izquierda = data)
+                "
               ></selector-imagen>
             </div>
 
@@ -831,10 +886,12 @@
               <label class="q-mb-sm block">Parte Lateral Der.</label>
               <selector-imagen
                 file_extensiones=".jpg, image/*"
-                :imagen="bitacora.imagen_frontal"
+                :imagen="bitacora.imagen_lateral_derecha"
                 :comprimir="true"
                 :alto="'200px'"
-                @update:model-value="(data) => (bitacora.imagen_frontal = data)"
+                @update:model-value="
+                  (data) => (bitacora.imagen_lateral_derecha = data)
+                "
               ></selector-imagen>
             </div>
 
@@ -843,10 +900,12 @@
               <label class="q-mb-sm block">Tablero (kilometraje)</label>
               <selector-imagen
                 file_extensiones=".jpg, image/*"
-                :imagen="bitacora.imagen_frontal"
+                :imagen="bitacora.imagen_tablero_km"
                 :comprimir="true"
                 :alto="'200px'"
-                @update:model-value="(data) => (bitacora.imagen_frontal = data)"
+                @update:model-value="
+                  (data) => (bitacora.imagen_tablero_km = data)
+                "
               ></selector-imagen>
             </div>
 
@@ -855,10 +914,12 @@
               <label class="q-mb-sm block">Tablero (radio)</label>
               <selector-imagen
                 file_extensiones=".jpg, image/*"
-                :imagen="bitacora.imagen_frontal"
+                :imagen="bitacora.imagen_tablero_radio"
                 :comprimir="true"
                 :alto="'200px'"
-                @update:model-value="(data) => (bitacora.imagen_frontal = data)"
+                @update:model-value="
+                  (data) => (bitacora.imagen_tablero_radio = data)
+                "
               ></selector-imagen>
             </div>
 
@@ -867,10 +928,12 @@
               <label class="q-mb-sm block">Asientos</label>
               <selector-imagen
                 file_extensiones=".jpg, image/*"
-                :imagen="bitacora.imagen_frontal"
+                :imagen="bitacora.imagen_asientos"
                 :comprimir="true"
                 :alto="'200px'"
-                @update:model-value="(data) => (bitacora.imagen_frontal = data)"
+                @update:model-value="
+                  (data) => (bitacora.imagen_asientos = data)
+                "
               ></selector-imagen>
             </div>
             <!-- herramientas y accesorios -->
@@ -884,11 +947,25 @@
               >
               <selector-imagen
                 file_extensiones=".jpg, image/*"
-                :imagen="bitacora.imagen_frontal"
+                :imagen="bitacora.imagen_accesorios"
                 :comprimir="true"
                 :alto="'200px'"
-                @update:model-value="(data) => (bitacora.imagen_frontal = data)"
+                @update:model-value="
+                  (data) => (bitacora.imagen_accesorios = data)
+                "
               ></selector-imagen>
+            </div>
+
+            <div class="col-12">
+              <label class="q-mb-sm block">Observación</label>
+              <q-input
+                autogrow
+                v-model="bitacora.observacion_checklist_interior"
+                placeholder="Opcional"
+                hint="Ingresa alguna observación o novedad presentada en el vehículo"
+                outlined
+                dense
+              ></q-input>
             </div>
           </div>
         </q-expansion-item>

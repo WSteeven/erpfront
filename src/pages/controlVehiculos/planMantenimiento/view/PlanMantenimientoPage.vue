@@ -186,6 +186,7 @@
   <modales-entidad
     :comportamiento="modales"
     :persistente="false"
+    :mostrarListado="false"
     @guardado="(data) => guardado(data)"
   ></modales-entidad>
 </template>

@@ -34,6 +34,7 @@ export const useFiltrosListadosSelects = (listadosAuxiliares, entidad?: Ref<any>
   const estadosCiviles = ref(listadosAuxiliares.estados_civiles)
   const grupos = ref(listadosAuxiliares.grupos)
   const departamentos = ref(listadosAuxiliares.departamentos)
+  const tickets = ref(listadosAuxiliares.tickets)
 
   //bodega
   const sucursales = ref(listadosAuxiliares.sucursales)
@@ -443,6 +444,9 @@ export const useFiltrosListadosSelects = (listadosAuxiliares, entidad?: Ref<any>
     return filtrarLista(val, update, combustibles, 'nombre', listadosAuxiliares.combustibles)
   }
 
+  function filtrarTickets(val, update) {
+    return filtrarLista(val, update, tickets, 'codigo', listadosAuxiliares.tickets)
+  }
   function filtrarCargos(val, update) {
     return filtrarLista(val, update, cargos, 'nombre', listadosAuxiliares.cargos)
   }
@@ -500,6 +504,7 @@ export const useFiltrosListadosSelects = (listadosAuxiliares, entidad?: Ref<any>
     estadosCiviles,
     tiposContratos,
 
+    tickets, filtrarTickets,
     tareas, filtrarTareas,
     proyectos, filtrarProyectos,
     proyectosDestino, filtrarProyectosDestino,

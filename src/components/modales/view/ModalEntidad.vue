@@ -45,22 +45,24 @@
           :is="componente"
           :mixin-modal="mixinModal"
           :accion="accion"
+          :mostrarListado="mostrarListado"
           @cerrar-modal="
             (confirmarCerrar) => cerrarModalEntidad(confirmarCerrar)
-          "
+            "
           @guardado="(data) => emit('guardado', data)"
-        ></component>
-        <!--  @seleccionar="emit('seleccionar')" -->
+          ></component>
+          <!--  @seleccionar="emit('seleccionar')" -->
 
         <component
           v-else
           :is="componente"
           :accion="accion"
+          :mostrarListado="mostrarListado"
           @cerrar-modal="
             (confirmarCerrar) => cerrarModalEntidad(confirmarCerrar)
-          "
+            "
           @guardado="(data) => emit('guardado', data)"
-        ></component>
+          ></component>
         <!--  @seleccionar="emit('seleccionar')" -->
         <!-- :mostrar-listado="false"></component> -->
       </q-card-section>

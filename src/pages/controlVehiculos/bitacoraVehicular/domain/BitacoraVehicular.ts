@@ -12,7 +12,9 @@ export class BitacoraVehicular extends EntidadAuditable {
     chofer: string | null
     chofer_id: number | null
     vehiculo: string | null
-    actividadesRealizadas:[]
+    actividadesRealizadas: any
+    tareas: string | null
+    tickets: string | null
 
     //partes del vehiculo
     parabrisas: string | null
@@ -29,20 +31,21 @@ export class BitacoraVehicular extends EntidadAuditable {
     luces_exteriores: string | null
     frenos: string | null
     amortiguadores: string | null
-    tire_rf: string | null //delantera derecha
-    tire_lf: string | null //delantera izquierda
-    tire_rr: string | null //trasera derecha
-    tire_lr: string | null //trasera izquierda
+    llantas: string | null //todas las llantas
+    observacion_checklist_interior: string | null
+    observacion_checklist_bajo_capo: string | null
+    observacion_checklist_exterior: string | null
 
     //accesorios del vehículo
     botiquin: string | null
     extintor: string | null
     caja_herramientas: string | null
     triangulos: string | null
-    tire_emergencia: string | null
+    llanta_emergencia: string | null
     cinturones: string | null
     gata: string | null
     portaescalera: string | null
+    observacion_accesorios_vehiculo: string | null
 
     //imagenes del vehículo
     imagen_frontal: string | null
@@ -68,7 +71,9 @@ export class BitacoraVehicular extends EntidadAuditable {
         this.chofer = null
         this.chofer_id = null
         this.vehiculo = null
-        this.actividadesRealizadas=[]
+        this.actividadesRealizadas = []
+        this.tareas = null
+        this.tickets = null
 
         // partes del vehiculo
         this.parabrisas = 'success'
@@ -88,20 +93,21 @@ export class BitacoraVehicular extends EntidadAuditable {
         this.luces_exteriores = 'success'
         this.frenos = 'success'
         this.amortiguadores = 'success'
-        this.tire_rf = 'success'
-        this.tire_lf = 'success'
-        this.tire_rr = 'success'
-        this.tire_lr = 'success'
+        this.llantas = 'success'
+        this.observacion_checklist_interior = null
+        this.observacion_checklist_bajo_capo = null
+        this.observacion_checklist_exterior = null
 
         //accesorios del vehículo
         this.botiquin = 'lleno'
         this.extintor = 'lleno'
         this.caja_herramientas = 'lleno'
         this.triangulos = 'buen estado'
-        this.tire_emergencia = 'buen estado'
+        this.llanta_emergencia = 'buen estado'
         this.cinturones = 'buen estado'
         this.gata = 'buen estado'
         this.portaescalera = 'buen estado'
+        this.observacion_accesorios_vehiculo= null
 
         //imagenes del vehículo
         this.imagen_frontal = null

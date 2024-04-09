@@ -609,6 +609,15 @@ const routes: RouteRecordRaw[] = [
         meta: { requiresAuth: true },
       },
       {
+        path: '/ordenes-reparaciones',
+        name: 'ordenes_reparaciones',
+        component: () =>
+          import(
+            'pages/controlVehiculos/ordenesReparacion/view/OrdenReparacionPage.vue'
+          ),
+        meta: { requiresAuth: true },
+      },
+      {
         path: '/combustibles',
         name: 'combustibles',
         component: () =>

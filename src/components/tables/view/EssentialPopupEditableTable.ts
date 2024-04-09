@@ -229,7 +229,7 @@ export default defineComponent({
     }
 
     function guardarFila(data) {
-      console.log(data)
+      // console.log(data)
       const posicion = props.datos.findIndex(
         (fila: any) => fila.id === data.id
       )
@@ -378,6 +378,7 @@ export default defineComponent({
       fila,
       guardarFila,
       limpiarFila,
+      onScroll,
     }
   },
 })

@@ -20,6 +20,12 @@ import { useAuthenticationStore } from "stores/authentication";
 
 export default defineComponent({
     components: { TabLayoutFilterTabs2 },
+    props: {
+        mostrarListado: {
+            type: Boolean,
+            default: true,
+        }
+    },
     setup(props, { emit }) {
         const mixin = new ContenedorSimpleMixin(Servicio, new ServicioController())
         const { entidad: servicio, disabled, listadosAuxiliares, accion, listado } = mixin.useReferencias()

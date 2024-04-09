@@ -188,6 +188,7 @@ export const endpoints = {
   empleados_choferes: new Endpoint('vehiculos/empleados-choferes'),
   conductores: new Endpoint('vehiculos/conductores'),
   matriculas: new Endpoint('vehiculos/matriculas'),
+  ordenes_reparaciones: new Endpoint('vehiculos/ordenes-reparaciones'),
   asignaciones_vehiculos: new Endpoint('vehiculos/asignaciones-vehiculos'),
   multas_conductores: new Endpoint('vehiculos/multas'),
   seguros: new Endpoint('vehiculos/seguros'),

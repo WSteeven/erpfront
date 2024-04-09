@@ -9,6 +9,8 @@
     titulo-pagina="Servicios de Mantenimientos"
     :accion1="btnDesactivar"
     :accion2="btnActivar"
+    :mostrarListado="mostrarListado"
+    :forzarListar="!mostrarListado"
   >
     <template #formulario>
       <q-form @submit.prevent>
@@ -94,9 +96,12 @@
               dense
               :error="!!v$.notificar_antes.$errors.length"
               @blur="v$.intervalo.$touch"
-              >
+            >
               <template v-slot:error>
-                <div v-for="error of v$.notificar_antes.$errors" :key="error.$uid">
+                <div
+                  v-for="error of v$.notificar_antes.$errors"
+                  :key="error.$uid"
+                >
                   <div class="error-msg">{{ error.$message }}</div>
                 </div>
               </template>

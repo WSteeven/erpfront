@@ -746,8 +746,14 @@ export const useMenuStore = defineStore('menu', () => {
         {
           title: 'Control diario',
           link: 'control-vehiculos',
-          icon: 'bi-card-checklist',
+          icon: 'bi-circle',
           can: store.can('puede.acceder.bitacoras_vehiculos'),
+        },
+        {
+          title: 'Orden Interna de Reparación',
+          link: 'ordenes-reparaciones',
+          icon: 'bi-circle',
+          can: store.can('puede.acceder.ordenes_reparaciones'),
         },
         {
           title: 'Seguros vehiculares',

@@ -3,7 +3,6 @@
     :mixin="mixin"
     :configuracionColumnas="configuracionColumnasEtapa"
     titulo-pagina="Proyectos"
-    :listar="false"
     :mostrarListado="false"
   >
     <template #formulario>

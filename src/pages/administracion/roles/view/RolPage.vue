@@ -25,6 +25,27 @@
               </template>
             </q-input>
           </div>
+
+          <!-- Listado de usuarios que tienen el rol -->
+          <div
+            v-if="
+              (accion === acciones.consultar || accion === acciones.editar) &&
+              rol.empleados
+            "
+            class="col-12 col-md-12 q-mt-xl"
+          >
+            <essential-table
+              titulo="Empleados que tienen el rol actual"
+              :configuracionColumnas="columnasEmpleados"
+              :datos="rol.empleados"
+              :permitirConsultar="false"
+              :permitirEditar="false"
+              :permitirEliminar="false"
+              :mostrarBotones="false"
+              :ajustarCeldas="true"
+              :altoFijo="false"
+            />
+          </div>
         </div>
       </q-form>
     </template>

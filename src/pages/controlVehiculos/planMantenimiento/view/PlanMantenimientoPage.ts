@@ -171,7 +171,7 @@ export default defineComponent({
             accion: () => {
                 modales.abrirModalEntidad('ServicioPage')
             },
-            visible: () => accion.value == acciones.editar
+            visible: () => accion.value == acciones.nuevo || accion.value == acciones.editar
         }
 
 

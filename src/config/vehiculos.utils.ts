@@ -29,6 +29,11 @@ export const tiposServicios = [
   { value: 'CORRECTIVO', label: 'CORRECTIVO', },
 ]
 
+export const tabOptionsOrdenesReparaciones: TabOption[] = [
+  { value: '1', label: 'PREVENTIVO', },
+  { value: '2', label: 'CORRECTIVO', },
+]
+
 export const tabOptionsConductores: TabOption[] = [
   { label: 'Vigentes', value: '1' },
   { label: 'Por caducar', value: '2' },
@@ -66,3 +71,82 @@ export const estadosAsignacionesVehiculos = [
   { label: 'ANULADO' },
 ]
 
+export const optionsEstadosExtintor = [
+  {
+    label: 'Lleno',
+    value: 'lleno',
+    color: 'green',
+    checkedIcon: 'bi-check-circle-fill',
+    uncheckedIcon: 'panorama_fish_eye',
+  },
+  {
+    label: 'Vacio',
+    value: 'vacio',
+    color: 'orange',
+    checkedIcon: 'bi-check-circle-fill',
+    uncheckedIcon: 'panorama_fish_eye',
+  },
+  {
+    label: 'Caducado',
+    value: 'caducado',
+    color: 'red',
+    checkedIcon: 'bi-check-circle-fill',
+    uncheckedIcon: 'panorama_fish_eye',
+  },
+]
+export const optionsEstadosCualitativos = [
+  {
+    label: 'Lleno',
+    value: 'lleno',
+    color: 'green',
+    checkedIcon: 'bi-check-circle-fill',
+    uncheckedIcon: 'panorama_fish_eye',
+  },
+  {
+    label: 'Vacio',
+    value: 'vacio',
+    color: 'red',
+    checkedIcon: 'bi-check-circle-fill',
+    uncheckedIcon: 'panorama_fish_eye',
+  },
+]
+export const optionsEstados = [
+  {
+    label: 'Buen estado',
+    value: 'buen estado',
+    color: 'green',
+    checkedIcon: 'bi-check-circle-fill',
+    uncheckedIcon: 'panorama_fish_eye',
+  },
+  {
+    label: 'Mal estado',
+    value: 'mal estado',
+    color: 'red',
+    checkedIcon: 'bi-check-circle-fill',
+    uncheckedIcon: 'panorama_fish_eye',
+  },
+]
+export const optionsDefault = [
+  {
+    label: '',
+    value: 'success',
+    color: 'green',
+    checkedIcon: 'bi-check-circle-fill',
+    uncheckedIcon: 'panorama_fish_eye',
+    iconColor: 'green-2',
+  },
+  {
+    label: '',
+    value: 'warning',
+    color: 'orange',
+    checkedIcon: 'bi-check-circle-fill',
+    uncheckedIcon: 'panorama_fish_eye',
+  },
+  {
+    label: '',
+    value: 'danger',
+    color: 'red',
+    checkedIcon: 'bi-check-circle-fill',
+    uncheckedIcon: 'panorama_fish_eye',
+  },
+]
