@@ -230,7 +230,7 @@
             </q-select>
           </div>
           <!-- Autorizacion -->
-          <div class="col-12 col-md-3" v-if="isConsultar">
+          <div class="col-12 col-md-3">
             <label class="q-mb-sm block">Autorizaciòn Especial</label>
             <q-input
               v-model="gasto.aut_especial_user"
@@ -241,7 +241,6 @@
             >
             </q-input>
           </div>
-
           <!--Tiene Factura-->
           <div class="col-12 col-md-3 q-mb-xl">
             <q-checkbox
@@ -254,18 +253,7 @@
               dense
             ></q-checkbox>
           </div>
-          <!-- Autorizacion -->
-          <div class="col-12 col-md-3">
-            <label class="q-mb-sm block">Autorizaciòn Especial</label>
-            <q-input
-              v-model="gasto.aut_especial_user"
-              placeholder="Obligatorio"
-              disable
-              outlined
-              dense
-            >
-            </q-input>
-          </div>
+
           <!-- Detalle -->
           <div class="col-12 col-md-3 q-mb-md" v-if="isConsultar">
             <label class="q-mb-sm block">Detalle</label>
@@ -703,6 +691,11 @@
             <label class="q-mb-sm block">Comprobante 1</label>
             <imagen-comprimida-component
               :imagen="gasto.comprobante1"
+              :texto1="gasto.empleado_info"
+              :texto2="'RUC: '+gasto.ruc"
+              :texto3="gasto.num_comprobante"
+              :texto4="'# FACTURA: '+gasto.factura"
+              :texto5="'TOTAL: $ '+gasto.total"
               file_extensiones=".jpg, image/*"
               @update:modelValue="(data) => (gasto.comprobante1 = data)"
             >
@@ -719,6 +712,11 @@
             <label class="q-mb-sm block">Comprobante 2</label>
             <imagen-comprimida-component
               :imagen="gasto.comprobante2"
+              :texto1="gasto.empleado_info"
+              :texto2="'RUC: '+gasto.ruc"
+              :texto3="gasto.num_comprobante"
+              :texto4="'# FACTURA: '+gasto.factura"
+              :texto5="'TOTAL: $ '+gasto.total"
               file_extensiones=".jpg, image/*"
               @blur="v$.comprobante2.$touch"
               @update:modelValue="(data) => (gasto.comprobante2 = data)"
@@ -738,7 +736,7 @@
               v-model="gasto.observacion"
               placeholder="obligatorio"
               type="textarea"
-              disable
+              :disable="disabled"
               :error="!!v$.observacion.$errors.length"
               autogrow
               @blur="v$.observacion.$touch"

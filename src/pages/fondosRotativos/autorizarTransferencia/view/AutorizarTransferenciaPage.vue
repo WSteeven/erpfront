@@ -23,7 +23,7 @@
       :mostrar-botones="false"
       :tab-options="tabAutorizarTransferenciaSaldo"
       @tab-seleccionado="filtrarAutorizacionesTransferencia"
-      tab-defecto="PENDIENTE"
+      tab-defecto="3"
     ></essential-table-tabs>
     <modal-entidad
     :comportamiento="modales"

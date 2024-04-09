@@ -11,6 +11,7 @@ import {
   requiredIf,
   maxLength,
   minLength,
+  maxValue,
   required,
 } from 'shared/i18n-validators'
 import { ContenedorSimpleMixin } from 'shared/contenedor/modules/simple/application/ContenedorSimpleMixin'
@@ -38,7 +39,6 @@ import ImagenComprimidaComponent from 'components/ImagenComprimidaComponent.vue'
 import { CustomActionTable } from 'components/tables/domain/CustomActionTable'
 import { filtarJefeImediato, filtrarEmpleadosPorRoles } from 'shared/utils'
 import { format } from '@formkit/tempo'
-import { maxValue } from '@vuelidate/validators'
 export default defineComponent({
   components: { TabLayoutFilterTabs2, ImagenComprimidaComponent },
   setup() {

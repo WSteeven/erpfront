@@ -9,6 +9,7 @@ import {
   requiredIf,
   maxLength,
   minLength,
+  maxValue,
   required,
 } from 'shared/i18n-validators'
 import { ContenedorSimpleMixin } from 'shared/contenedor/modules/simple/application/ContenedorSimpleMixin'
@@ -24,7 +25,6 @@ import {
   convertir_fecha,
   estadosGastos,
   maskFecha,
-  rolesSistema,
 } from 'config/utils'
 import { VisualizarGasto } from '../domain/VisualizarGasto'
 import { VisualizarGastoController } from '../infrestructure/VisualizarGastoController'
@@ -38,12 +38,10 @@ import { DetalleFondoController } from 'pages/fondosRotativos/detalleFondo/infre
 import { Gasto } from '../domain/Gasto'
 import { GastoController } from '../infrestructure/GastoController'
 import {
-  filtrarEmpleadosPorRoles,
   isAxiosError,
   notificarMensajesError,
 } from 'shared/utils'
 import { StatusEssentialLoading } from 'components/loading/application/StatusEssentialLoading'
-import { maxValue } from '@vuelidate/validators'
 
 export default defineComponent({
   components: { TabLayout, ImagenComprimidaComponent, ButtonSubmits },
