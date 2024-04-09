@@ -446,6 +446,16 @@ limpiar();
       )
       return date >= fecha_inicio && date <= fecha_actual
     }
+    async function recargarEmpleadosInactivos() {
+      usuariosInactivos.value = (
+        await new EmpleadoController().listar({
+          campos: 'id,nombres,apellidos',
+          estado: 0,
+        })
+      ).result
+      listadosAuxiliares.usuariosInactivos = usuariosInactivos.value
+      LocalStorage.set('usuariosInactivos', JSON.stringify(usuariosInactivos.value))
+    }
     return {
       mixin,
       consolidadofiltrado,
@@ -484,6 +494,7 @@ limpiar();
       maskFecha,
       optionsFechaInicio,
       optionsFechaFin,
+      recargarEmpleadosInactivos,
       tipo_saldo,
       tipo_filtro,
     }

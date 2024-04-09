@@ -11,7 +11,7 @@ import { apiConfig, endpoints } from 'config/api'
 import { imprimirArchivo } from 'shared/utils'
 import { Consolidado } from '../domain/Consolidado'
 import { ConsolidadoController } from '../infrestructure/ConsolidadoController'
-import { maskFecha, tipoReportes, tipos_saldos } from 'config/utils'
+import { maskFecha, tipoReportes, tipo_saldo, tipos_saldos } from 'config/utils'
 import { EmpleadoController } from 'pages/recursosHumanos/empleados/infraestructure/EmpleadoController'
 import { useCargandoStore } from 'stores/cargando'
 import { required } from 'shared/i18n-validators'
@@ -211,9 +211,19 @@ export default defineComponent({
     function mostrarEmpleados() {
       consolidado.usuario = null
     }
-    function optionsFechaInicio(date){
+    async function recargarEmpleadosInactivos() {
+      usuariosInactivos.value = (
+        await new EmpleadoController().listar({
+          campos: 'id,nombres,apellidos',
+          estado: 0,
+        })
+      ).result
+      listadosAuxiliares.usuariosInactivos = usuariosInactivos.value
+      LocalStorage.set('usuariosInactivos', JSON.stringify(usuariosInactivos.value))
+    }
+    function optionsFechaInicio(date) {
       const fecha_actual = format(new Date(), 'YYYY/MM/DD')
-      return  date <= fecha_actual
+      return date <= fecha_actual
     }
     function optionsFechaFin(date) {
       const fecha_actual = format(new Date(), 'YYYY/MM/DD')
@@ -225,9 +235,9 @@ export default defineComponent({
       )
       return date >= fecha_inicio && date <= fecha_actual
     }
-function limpiar(){
-  is_all_empleados.value = 'false';
-}
+    function limpiar() {
+      is_all_empleados.value = 'false'
+    }
     return {
       mixin,
       consolidado,
@@ -240,6 +250,7 @@ function limpiar(){
       tiposFondos,
       tiposFondoRotativoFechas,
       tipos_saldos_consolidado,
+      tipo_saldo,
       is_all_empleados,
       is_inactivo,
       generar_reporte,
@@ -252,6 +263,7 @@ function limpiar(){
       watchEffect,
       optionsFechaInicio,
       optionsFechaFin,
+      recargarEmpleadosInactivos,
       limpiar,
     }
   },

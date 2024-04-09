@@ -211,8 +211,12 @@
         <div
           class="col-12 col-md-3"
           v-if="
-            (consolidadofiltrado.tipo_filtro == 6 ||
-              consolidadofiltrado.tipo_filtro == 0) &&
+            (consolidadofiltrado.tipo_filtro == tipo_filtro.EMPLEADO ||
+              consolidadofiltrado.tipo_filtro == tipo_filtro.TODOS ||
+              consolidadofiltrado.tipo_saldo == tipo_saldo.ACREDITACIONES ||
+              consolidadofiltrado.tipo_saldo == tipo_saldo.CONSOLIDADO ||
+              consolidadofiltrado.tipo_saldo == tipo_saldo.ESTADO_CUENTA ||
+              consolidadofiltrado.tipo_saldo == tipo_saldo.TRANSFERENCIA_SALDOS) &&
             is_inactivo == 'true'
           "
         >
@@ -248,6 +252,11 @@
                 <q-item-section class="text-grey"> No hay resultados </q-item-section>
               </q-item>
             </template>
+            <template v-slot:after>
+                <q-btn color="positive" @click="recargarEmpleadosInactivos()">
+                  <q-icon size="xs" class="q-mr-sm" name="bi-arrow-clockwise" />
+                </q-btn>
+              </template>
           </q-select>
         </div>
         <!-- Proyectos -->
