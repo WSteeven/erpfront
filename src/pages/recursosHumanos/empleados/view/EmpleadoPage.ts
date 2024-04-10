@@ -18,7 +18,7 @@ import {
   talla_letras,
   tipos_sangre,
 } from 'config/utils'
-import { defineComponent, ref, watchEffect, computed } from 'vue'
+import { defineComponent, ref, watchEffect, computed, Ref } from 'vue'
 
 // Componentes
 import TabLayout from 'shared/contenedor/modules/simple/view/TabLayout.vue'
@@ -57,6 +57,7 @@ import { AxiosResponse } from 'axios'
 import { useNotificaciones } from 'shared/notificaciones'
 import { useConfiguracionGeneralStore } from 'stores/configuracion_general'
 import { ArchivoController } from 'pages/gestionTrabajos/subtareas/modules/gestorArchivosTrabajos/infraestructure/ArchivoController'
+import { TipoDiscapacidadController } from 'pages/recursosHumanos/tipo-discapacidad/infraestructure/TipoDiscapacidadController'
 
 export default defineComponent({
   components: {
@@ -77,7 +78,11 @@ export default defineComponent({
     /***********
      * Mixin
      ************/
-    const mixin = new ContenedorSimpleMixin(Empleado, new EmpleadoController(), new ArchivoController())
+    const mixin = new ContenedorSimpleMixin(
+      Empleado,
+      new EmpleadoController(),
+      new ArchivoController()
+    )
     const {
       entidad: empleado,
       disabled,
@@ -96,6 +101,7 @@ export default defineComponent({
     const bancos = ref([])
     const areas = ref([])
     const tipos_contrato = ref([])
+    const tiposDiscapacidades = ref([])
     const opcionesDepartamentos = ref([])
     const refFamiliares = ref()
     const modales = new ComportamientoModalesEmpleado()
@@ -111,7 +117,7 @@ export default defineComponent({
 
     const refArchivo = ref()
     const idEmpleado = ref()
-
+    const idsTiposDiscapacidades: Ref<number[]> = ref([])
     cargarVista(async () => {
       obtenerListados({
         cantones: new CantonController(),
@@ -123,6 +129,10 @@ export default defineComponent({
         roles: {
           controller: new RolController(),
           params: { campos: 'id,name' },
+        },
+        tiposDiscapacidades: {
+          controller: new TipoDiscapacidadController(),
+          params: { campos: 'id,nombres' },
         },
         empleados: {
           controller: new EmpleadoController(),
@@ -216,7 +226,6 @@ export default defineComponent({
      * Hooks
      ********/
 
-
     async function guardado(data) {
       empleado.familiares!.push(data.model)
     }
@@ -229,7 +238,7 @@ export default defineComponent({
 
       setTimeout(() => {
         refArchivo.value.listarArchivosAlmacenados(empleado.id)
-      }, 1);
+      }, 1)
     })
 
     onGuardado((id: number) => {
@@ -286,7 +295,6 @@ export default defineComponent({
         empleado.usuario = username
 
         empleado.password = empleado.identificacion
-
       }
     })
     const btnConsultarFamiliar: CustomActionTable = {
@@ -419,8 +427,114 @@ export default defineComponent({
         estado ? 'Ha Habilitado empleado' : 'Ha deshabilitado empleado'
       )
     }
+
+    //  FILTROS
+    //filtro de empleados
+    function filtroEmpleados(val, update) {
+      if (val === '') {
+        update(() => {
+          opciones_empleados.value = listadosAuxiliares.empleados
+        })
+        return
+      }
+      update(() => {
+        const needle = val.toLowerCase()
+        opciones_empleados.value = listadosAuxiliares.empleados.filter(
+          (v) =>
+            v.nombres.toLowerCase().indexOf(needle) > -1 ||
+            v.apellidos.toLowerCase().indexOf(needle) > -1
+        )
+      })
+    }
+    //filtro de cantones
+    function filtroCantones(val, update) {
+      if (val === '') {
+        update(() => {
+          opciones_cantones.value = listadosAuxiliares.cantones
+        })
+        return
+      }
+      update(() => {
+        const needle = val.toLowerCase()
+        opciones_cantones.value = listadosAuxiliares.cantones.filter(
+          (v) => v.canton.toLowerCase().indexOf(needle) > -1
+        )
+      })
+    }
+    //filtro de cargos
+    function filtroCargos(val, update) {
+      if (val === '') {
+        update(() => {
+          opciones_cargos.value = listadosAuxiliares.cargos
+        })
+        return
+      }
+      update(() => {
+        const needle = val.toLowerCase()
+        opciones_cargos.value = listadosAuxiliares.cargos.filter(
+          (v) => v.nombre.toLowerCase().indexOf(needle) > -1
+        )
+      })
+    }
+    function filtroRoles(val, update) {
+      if (val === '') {
+        update(() => {
+          opciones_roles.value = listadosAuxiliares.roles
+        })
+        return
+      }
+      update(() => {
+        const needle = val.toLowerCase()
+        opciones_roles.value = listadosAuxiliares.roles.filter(
+          (v) => v.nombre.toLowerCase().indexOf(needle) > -1
+        )
+      })
+    }
+    function filtroDepartamentos(val, update) {
+      if (val === '') {
+        update(() => {
+          opcionesDepartamentos.value = listadosAuxiliares.departamentos
+        })
+        return
+      }
+      update(() => {
+        const needle = val.toLowerCase()
+        opcionesDepartamentos.value = listadosAuxiliares.departamentos.filter(
+          (v) => v.nombre.toLowerCase().indexOf(needle) > -1
+        )
+      })
+    }
+    function filtrobancos(val, update) {
+      if (val === '') {
+        update(() => {
+          bancos.value = listadosAuxiliares.bancos
+        })
+        return
+      }
+      update(() => {
+        const needle = val.toLowerCase()
+        opcionesDepartamentos.value = listadosAuxiliares.bancos.filter(
+          (v) => v.nombre.toLowerCase().indexOf(needle) > -1
+        )
+      })
+    }
+    function filtrarTipoDiscapacidad(val, update) {
+      if (val === '') {
+        update(() => {
+          tiposDiscapacidades.value = listadosAuxiliares.tiposDiscapacidades
+        })
+        return
+      }
+      update(() => {
+        const needle = val.toLowerCase()
+        tiposDiscapacidades.value = listadosAuxiliares.tiposDiscapacidades.filter(
+          (v) => v.nombre.toLowerCase().indexOf(needle) > -1
+        )
+      })
+    }
     return {
-      mixin, mixinFamiliares,
+      mixin,
+      mixinFamiliares,
       empleado,
       disabled,
       accion,
@@ -459,100 +573,19 @@ export default defineComponent({
       btnHabilitarEmpleado,
       btnDesHabilitarEmpleado,
       modales,
+      idsTiposDiscapacidades,
+      tiposDiscapacidades,
       //funciones
       subirArchivos,
       obtenerUsername,
       guardado,
-      //  FILTROS
-      //filtro de empleados
-      filtroEmpleados(val, update) {
-        if (val === '') {
-          update(() => {
-            opciones_empleados.value = listadosAuxiliares.empleados
-          })
-          return
-        }
-        update(() => {
-          const needle = val.toLowerCase()
-          opciones_empleados.value = listadosAuxiliares.empleados.filter(
-            (v) =>
-              v.nombres.toLowerCase().indexOf(needle) > -1 ||
-              v.apellidos.toLowerCase().indexOf(needle) > -1
-          )
-        })
-      },
-      //filtro de cantones
-      filtroCantones(val, update) {
-        if (val === '') {
-          update(() => {
-            opciones_cantones.value = listadosAuxiliares.cantones
-          })
-          return
-        }
-        update(() => {
-          const needle = val.toLowerCase()
-          opciones_cantones.value = listadosAuxiliares.cantones.filter(
-            (v) => v.canton.toLowerCase().indexOf(needle) > -1
-          )
-        })
-      },
-      //filtro de cargos
-      filtroCargos(val, update) {
-        if (val === '') {
-          update(() => {
-            opciones_cargos.value = listadosAuxiliares.cargos
-          })
-          return
-        }
-        update(() => {
-          const needle = val.toLowerCase()
-          opciones_cargos.value = listadosAuxiliares.cargos.filter(
-            (v) => v.nombre.toLowerCase().indexOf(needle) > -1
-          )
-        })
-      },
-      filtroRoles(val, update) {
-        if (val === '') {
-          update(() => {
-            opciones_roles.value = listadosAuxiliares.roles
-          })
-          return
-        }
-        update(() => {
-          const needle = val.toLowerCase()
-          opciones_roles.value = listadosAuxiliares.roles.filter(
-            (v) => v.nombre.toLowerCase().indexOf(needle) > -1
-          )
-        })
-      },
-      filtroDepartamentos(val, update) {
-        if (val === '') {
-          update(() => {
-            opcionesDepartamentos.value = listadosAuxiliares.departamentos
-          })
-          return
-        }
-        update(() => {
-          const needle = val.toLowerCase()
-          opcionesDepartamentos.value = listadosAuxiliares.departamentos.filter(
-            (v) => v.nombre.toLowerCase().indexOf(needle) > -1
-          )
-        })
-      },
-      filtrobancos(val, update) {
-        if (val === '') {
-          update(() => {
-            bancos.value = listadosAuxiliares.bancos
-          })
-          return
-        }
-        update(() => {
-          const needle = val.toLowerCase()
-          opcionesDepartamentos.value = listadosAuxiliares.bancos.filter(
-            (v) => v.nombre.toLowerCase().indexOf(needle) > -1
-          )
-        })
-      },
+      filtroEmpleados,
+      filtroCantones,
+      filtroCargos,
+      filtroRoles,
+      filtroDepartamentos,
+      filtrobancos,
+      filtrarTipoDiscapacidad
     }
   },
 })

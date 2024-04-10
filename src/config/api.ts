@@ -172,6 +172,7 @@ export const endpoints = {
     'recursos-humanos/crear-cash-alimentacion/'
   ),
   rubros: new Endpoint('recursos-humanos/rubros'),
+  tipos_discapacidades: new Endpoint('recursos-humanos/tipos-discapacidades'),
   anular_prestamo_empresarial: new Endpoint('recursos-humanos/anular-prestamo-empresarial'),
   asignar_alimentacion: new Endpoint('recursos-humanos/asignar-alimentacion'),
   alimentacion: new Endpoint('recursos-humanos/alimentacion'),

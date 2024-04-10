@@ -1030,7 +1030,7 @@
                 placeholder="Obligatorio"
                 :error="!!v$.fecha_ingreso.$errors.length"
                 @blur="v$.fecha_ingreso.$touch"
-                :disable="disabled "
+                :disable="disabled"
                 readonly
                 outlined
                 dense
@@ -1273,6 +1273,36 @@
                 outlined
                 dense
               />
+            </div>
+            <div class="col-12 col-md-3 col-sm-3">
+              <label class="q-mb-sm block">Tipos de Discapacidades</label>
+              <q-select
+                v-model="idsTiposDiscapacidades"
+                :options="tiposDiscapacidades"
+                transition-show="scale"
+                transition-hide="scale"
+                hint="Opcional"
+                @filter="filtrarTipoDiscapacidad"
+                :disable="disabled"
+                options-dense
+                dense
+                outlined
+                :option-label="(i) => i.nombre"
+                use-input
+                input-debounce="0"
+                emit-value
+                map-options
+                use-chips
+                multiple
+              >
+                <template v-slot:no-option>
+                  <q-item>
+                    <q-item-section class="text-grey">
+                      Primero cargue registros en el formulario de Tipo de Discapacidad
+                    </q-item-section>
+                  </q-item>
+                </template>
+              </q-select>
             </div>
           </div>
         </q-expansion-item>
