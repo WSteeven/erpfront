@@ -3,7 +3,7 @@ import { configuracionColumnasSolicitudExamen } from '../../solicitudesExamenes/
 import { configuracionColumnasExamenes } from '../domain/configuracionColumnasExamenes'
 import { CustomActionPrompt } from 'components/tables/domain/CustomActionPrompt'
 import { isAxiosError, notificarMensajesError } from 'shared/utils'
-import { estadosSolicitudesExamenes } from 'config/utils/medico'
+import { estadosSolicitudesExamenes, tiposProcesosExamenes } from 'config/utils/medico'
 import { computed, defineComponent, ref, watch } from 'vue'
 import { useNotificaciones } from 'shared/notificaciones'
 import { useExamenes } from '../application/UseExamenes'
@@ -21,6 +21,7 @@ import { useMedicoStore } from 'stores/medico'
 import { ComportamientoModalesGestionPaciente } from '../application/ComportamientoModalesGestionPaciente'
 import { ContenedorSimpleMixin } from 'shared/contenedor/modules/simple/application/ContenedorSimpleMixin'
 import { EntidadAuditable } from 'shared/entidad/domain/entidadAuditable'
+import { RegistroEmpleadoExamen } from 'pages/medico/examenes/domain/RegistroEmpleadoExamen'
 
 export default defineComponent({
   components: {
@@ -140,12 +141,13 @@ export default defineComponent({
       }
     }
 
-    const seleccionarRegistro = (registro: number) => {
-      medicoStore.idRegistroEmpleadoExamen = registro
-      tabRegistro.value = registro
+    const seleccionarRegistro = (registro: RegistroEmpleadoExamen) => {
+      medicoStore.idRegistroEmpleadoExamen = registro.id ?? undefined
+      medicoStore.idFichaAptitud = registro.ficha_aptitud ?? undefined
+      tabRegistro.value = registro.id
       examenes.value = []
       tabEstadoExamen.value = estadosSolicitudesExamenes.PENDIENTE_SOLICITAR.value
-      consultarExamenesSinSolicitar({ empleado_id: empleado.value.id, registro_empleado_examen_id: registro })
+      consultarExamenesSinSolicitar({ empleado_id: empleado.value.id, registro_empleado_examen_id: registro.id })
     }
 
     const filtrarEstadoExamen = (tab) => {
@@ -162,15 +164,17 @@ export default defineComponent({
     }
 
     async function seleccionarTabTipoProceso() {
-      console.log('consultado...')
-
       await consultarRegistrosEmpleadoExamen({ empleado_id: empleado.value.id, tipo_proceso_examen: props.tipoProceso })
-      const idRegistro = registros.value[0].id
-      if (idRegistro) seleccionarRegistro(idRegistro)
+      const registro = registros.value[0]
+      if (registro) seleccionarRegistro(registro)
     }
 
     const abrirFichaAptitud = () => {
       modales.abrirModalEntidad('FichaAptitudPage')
+    }
+
+    const abrirFichaPeriodicaProcupacional = () => {
+      modales.abrirModalEntidad('FichaPeriodicaPreocupacionalPage')
     }
 
     return {
@@ -184,6 +188,9 @@ export default defineComponent({
       altoTabla,
       estadosSolicitudesExamenes,
       tipoSeleccion: computed(() => seleccionVariosExamen.value && tabEstadoExamen.value === estadosSolicitudesExamenes.PENDIENTE_SOLICITAR.value ? 'multiple' : 'none'),
+      textoFichaAptitud: computed(() => medicoStore.idFichaAptitud ? 'Consultar ficha de aptitud' : 'Llenar ficha de aptitud'),
+      textoFichaPeriodicaPreocupacional: computed(() => medicoStore.idFichaPeriodicaPreocupacional ? 'Consultar ficha períodica preocupacional' : 'Llenar ficha períodica preocupacional'),
+      mostrarFichaPeriodicaPreocupacional: computed(() => props.tipoProceso === tiposProcesosExamenes.PERIODICO),
       // columnas
       configuracionColumnasExamenes,
       configuracionColumnasSolicitudExamen,
@@ -202,6 +209,7 @@ export default defineComponent({
       seleccionarRegistro,
       filtrarEstadoExamen,
       abrirFichaAptitud,
+      abrirFichaPeriodicaProcupacional,
       /*****************************
        * useBotonesSolicitudExamen
        *****************************/

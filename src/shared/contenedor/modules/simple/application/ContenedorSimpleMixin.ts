@@ -28,9 +28,14 @@ export class ContenedorSimpleMixin<T extends EntidadAuditable> extends Contenedo
   }
 
   private async cargarVista(callback: () => Promise<void>): Promise<void> {
-    this.statusEssentialLoading.activar()
-    await callback()
-    this.statusEssentialLoading.desactivar()
+    try {
+      this.statusEssentialLoading.activar()
+      await callback()
+    } catch (e) {
+      throw e
+    } finally {
+      this.statusEssentialLoading.desactivar()
+    }
   }
 
   useReferencias() {
@@ -84,25 +89,28 @@ export class ContenedorSimpleMixin<T extends EntidadAuditable> extends Contenedo
 
     this.hooks.onBeforeConsultar()
 
-    // this.cargarVista(async () => {
+
     if (data.id === null) {
       return this.notificaciones.notificarAdvertencia(
         'No se puede consultar el recurso con id null'
       )
     }
 
+    // this.statusEssentialLoading.activar()
+    const idEntidad = data.id
     try {
-      this.statusEssentialLoading.activar()
-      const { result } = await this.controller.consultar(
-        data.id,
-        {
-          ...this.argsDefault,
-          ...params
-        }
-      )
-      this.entidad.hydrate(result)
-      this.entidad_copia.hydrate(this.entidad)
-      this.refs.tabs.value = 'formulario'
+      this.cargarVista(async () => {
+        const { result } = await this.controller.consultar(
+          idEntidad,
+          {
+            ...this.argsDefault,
+            ...params
+          }
+        )
+        this.entidad.hydrate(result)
+        this.entidad_copia.hydrate(this.entidad)
+        this.refs.tabs.value = 'formulario'
+      })
 
       // const usuario = new Usuario()
       // usuario.hydrate(result)
@@ -114,7 +122,7 @@ export class ContenedorSimpleMixin<T extends EntidadAuditable> extends Contenedo
       }
     } finally {
       this.hooks.onConsultado()
-      this.statusEssentialLoading.desactivar()
+      // this.statusEssentialLoading.desactivar()
     }
     // })
 
@@ -368,6 +376,7 @@ export class ContenedorSimpleMixin<T extends EntidadAuditable> extends Contenedo
         'No se puede editar el recurso con id null'
       )
     } */
+
     this.hooks.onBeforeModificar()
 
     this.cargarVista(async () => {

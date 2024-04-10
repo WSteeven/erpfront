@@ -2,9 +2,9 @@ import { TabOption } from 'components/tables/domain/TabOption'
 
 export const tiposProcesosExamenes = {
   INGRESO: 'INGRESO',
-  OCUPACIONALES: 'OCUPACIONALES',
-  REINGRESO: 'REINGRESO',
-  SALIDA: 'SALIDA',
+  PERIODICO: 'PERIODICO',
+  REINTEGRO: 'REINTEGRO',
+  RETIRO: 'RETIRO',
 }
 
 export const tiposEnfermedades = {
@@ -126,4 +126,14 @@ export const tiposCitaMedica = {
 export const selectTipoCitaMedica = [
   { label: 'Enfermedad común', value: tiposCitaMedica.ENFERMEDAD_COMUN.value },
   { label: 'Accidente de trabajo', value: tiposCitaMedica.ACCIDENTE_DE_TRABAJO.value },
+]
+
+export const tiposFichasMedicas = {
+  APTITUD: 'APTITUD',
+  OCUPACIONAL: 'OCUPACIONAL',
+}
+
+export const tabOptionsTiposFichasMedicas: TabOption[] = [
+  { label: 'Aptitud', value: tiposFichasMedicas.APTITUD, color_icono: 'pink', bg_color: 'pink-1' },
+  { label: 'Períodico ocupacional', value: tiposFichasMedicas.OCUPACIONAL, color_icono: 'primary', bg_color: 'blue-2' },
 ]

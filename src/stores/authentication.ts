@@ -26,11 +26,13 @@ import { HorasExtrasSubTipoController } from 'pages/recursosHumanos/horas_extras
 import { HorasExtrasTipoController } from 'pages/recursosHumanos/horas_extras_tipo/infraestructure/HorasExtrasTipoController'
 import { MultaController } from 'pages/recursosHumanos/multas/infraestructure/MultaController'
 import { UltimoSaldoController } from 'pages/fondosRotativos/reportes/reporteSaldoActual/infrestucture/UltimoSaldoController'
+import { useListadosSistemaStore } from './listadosSistema'
 
 export const useAuthenticationStore = defineStore('authentication', () => {
   // Variables locales
   const axios = AxiosHttpRepository.getInstance()
   let usuarioFueConsultado = false
+  const listadosSistemaStore = useListadosSistemaStore()
 
   // State
   const user = ref()
@@ -139,7 +141,7 @@ export const useAuthenticationStore = defineStore('authentication', () => {
       roles.value = response.data.modelo.roles
       permisos.value = response.data.modelo.permisos
 
-      cargarDatosLS()
+      listadosSistemaStore.cargarDatosLS()
 
       return response.data.modelo
     } catch (error: unknown) {
@@ -185,10 +187,10 @@ export const useAuthenticationStore = defineStore('authentication', () => {
     }
   }
 
-  /**
+  /** BORRAR
    * Función para cargar datos en el Local Storage
    */
-  async function cargarDatosLS() {
+  /* async function cargarDatosLS() {
     const autorizaciones = (
       await new AutorizacionController().listar({ campos: 'id,nombre' })
     ).result
@@ -230,23 +232,24 @@ export const useAuthenticationStore = defineStore('authentication', () => {
       })
     ).result
     LocalStorage.set('usuariosInactivos', JSON.stringify(usuariosInactivos))
-  }
+  } */
+
   /**
    * Función para limpiar los datos del Local Storage
    */
-  function limpiarLS() {
+  /* function limpiarLS() {
     LocalStorage.remove('autorizaciones')
     LocalStorage.remove('sucursales')
     LocalStorage.remove('condiciones')
     LocalStorage.remove('estados_transacciones')
     LocalStorage.remove('lugares')
     LocalStorage.remove('detalles')
-  }
+  } */
 
   async function logout() {
     await axios.post(axios.getEndpoint(endpoints.logout))
     LocalStorage.remove('token')
-    limpiarLS()
+    listadosSistemaStore.limpiarLS()
     await getUser()
     document.title = 'JPCONSTRUCRED'
   }

@@ -1,4 +1,4 @@
-<template>
++<template>
   <simple-layout :mixin="mixin">
     <template #formulario>
       <div class="row q-mb-md">
@@ -145,7 +145,6 @@
                       </div>
                       <div class="col-12">
                         <label class="q-mb-sm block">Enfermedades</label>
-                        <!-- v-model="enfermedadesSeleccionadas" -->
                         <q-select
                           v-model="consulta.diagnosticos"
                           :options="enfermedades"
@@ -187,7 +186,6 @@
                       </div>
                     </div>
 
-                    <!-- v-for="enfermedad in enfermedadesSeleccionadas" -->
                     <div
                       v-for="enfermedad in consulta.diagnosticos"
                       :key="enfermedad.id"
