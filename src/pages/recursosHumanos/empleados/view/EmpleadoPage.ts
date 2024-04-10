@@ -58,6 +58,9 @@ import { useNotificaciones } from 'shared/notificaciones'
 import { useConfiguracionGeneralStore } from 'stores/configuracion_general'
 import { ArchivoController } from 'pages/gestionTrabajos/subtareas/modules/gestorArchivosTrabajos/infraestructure/ArchivoController'
 import { TipoDiscapacidadController } from 'pages/recursosHumanos/tipo-discapacidad/infraestructure/TipoDiscapacidadController'
+import { configuracionColumnasTipoDiscapacidadPorcentaje } from '../domain/configuracionColumnasTipoDiscapacidadPorcentaje'
+import { TipoDiscapacidadPorcentaje } from '../domain/TipoDiscapacidadPorcentaje'
+import { TipoDiscapacidad } from 'pages/recursosHumanos/tipo-discapacidad/domain/TipoDiscapacidad'
 
 export default defineComponent({
   components: {
@@ -161,6 +164,9 @@ export default defineComponent({
       ...configuracionColumnasFamiliaresEmpleado,
       accionesTabla,
     ]
+
+
+    configuracionColumnasTipoDiscapacidadPorcentaje.find((item) => item.field === 'tipo_discapacidad')!.options = listadosAuxiliares.tiposDiscapacidades.map((v: TipoDiscapacidad) => { return { label: v.nombre, value: v.id } })
     /*************
      * Validaciones
      **************/
@@ -379,6 +385,17 @@ export default defineComponent({
         entidad.estado = false
       },
     }
+     const btnAgregarDiscapacidad: CustomActionTable = {
+      titulo: 'Agregar',
+      icono: 'bi-toggle2-off',
+      color: 'positive',
+      tooltip: 'Agregar',
+      accion: () => {
+        console.log('agregar discapácidad');
+
+       empleado.discapacidades?.push(new TipoDiscapacidadPorcentaje ())
+      },
+    }
     function reestablecer_usuario() {
       if (accion.value == acciones.editar && empleado.generar_usuario) {
         generarUsename()
@@ -387,6 +404,7 @@ export default defineComponent({
         empleado.email = email_usuario.value
       }
     }
+
 
     function obtenerUsername() {
       if (accion.value == acciones.editar && empleado.generar_usuario) {
@@ -585,7 +603,9 @@ export default defineComponent({
       filtroRoles,
       filtroDepartamentos,
       filtrobancos,
-      filtrarTipoDiscapacidad
+      filtrarTipoDiscapacidad,
+      configuracionColumnasTipoDiscapacidadPorcentaje,
+      btnAgregarDiscapacidad
     }
   },
 })

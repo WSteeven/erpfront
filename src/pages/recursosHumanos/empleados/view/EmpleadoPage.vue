@@ -1274,8 +1274,8 @@
                 dense
               />
             </div>
-            <div class="col-12 col-md-3 col-sm-3">
-              <label class="q-mb-sm block">Tipos de Discapacidades</label>
+            <div class="col-12 col-md-6 col-sm-3">
+              <!--  <label class="q-mb-sm block">Tipos de Discapacidades</label>
               <q-select
                 v-model="idsTiposDiscapacidades"
                 :options="tiposDiscapacidades"
@@ -1302,7 +1302,19 @@
                     </q-item-section>
                   </q-item>
                 </template>
-              </q-select>
+              </q-select>-->
+              <essential-table
+                :configuracionColumnas="configuracionColumnasTipoDiscapacidadPorcentaje"
+                :datos="empleado.discapacidades"
+                :permitirConsultar="false"
+                :permitirEditar="false"
+                :permitirEliminar="false"
+                :mostrarBotones="false"
+                :alto-fijo="false"
+                :ajustarCeldas="true"
+                :accion1Header="btnAgregarDiscapacidad"
+              >
+              </essential-table>
             </div>
           </div>
         </q-expansion-item>
@@ -1367,12 +1379,12 @@
         </q-expansion-item>
       </q-form>
     </template>
+    <modales-entidad
+      :comportamiento="modales"
+      @guardado="(data) => guardado(data)"
+      :mixin-modal="mixinFamiliares"
+    ></modales-entidad>
   </tab-layout>
-  <modales-entidad
-    :comportamiento="modales"
-    @guardado="(data) => guardado(data)"
-    :mixin-modal="mixinFamiliares"
-  ></modales-entidad>
 </template>
 
 <script src="./EmpleadoPage.ts" />

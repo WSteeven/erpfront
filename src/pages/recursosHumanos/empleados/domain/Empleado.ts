@@ -66,6 +66,7 @@ export class Empleado extends EntidadAuditable {
   banco_info: string | null
   acumula_fondos_reserva: boolean | null
   familiares: any[] | null
+  discapacidades: any[] | null
   generar_usuario: boolean
 
 
@@ -136,6 +137,7 @@ export class Empleado extends EntidadAuditable {
     this.acumula_fondos_reserva = false
     this.realiza_factura = false
     this.familiares = [],
+    this.discapacidades =[],
       this.generar_usuario = false
   }
 }
