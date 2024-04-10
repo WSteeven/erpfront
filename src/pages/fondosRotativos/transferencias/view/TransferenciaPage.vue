@@ -6,7 +6,7 @@
           <!-- Usuarios Reciben -->
           <div
             class="col-12 col-md-3 q-mb-md"
-            v-if="!esDevolucion || transferencia.usuario_recibe !== null"
+            v-if="!transferencia.es_devolucion"
           >
             <label class="q-mb-sm block">Destinatario:</label>
             <q-select
@@ -49,6 +49,7 @@
               v-model="transferencia.monto"
               placeholder="Obligatorio"
               :disable="disabled"
+              type="number"
               :error="!!v$.monto.$errors.length"
               @blur="v$.monto.$touch"
               outlined
@@ -81,7 +82,7 @@
             </q-input>
           </div>
           <!-- Tareas -->
-          <div class="col-12 col-md-3" v-if="esDevolucion === false">
+          <div class="col-12 col-md-3" v-if="!transferencia.es_devolucion">
             <label class="q-mb-sm block">Tareas</label>
             <q-select
               v-model="transferencia.tarea"
@@ -140,7 +141,7 @@
           <div class="col-12 col-md-3 q-mb-xl">
             <q-checkbox
               class="q-mt-lg q-pt-md"
-              v-model="esDevolucion"
+              v-model="transferencia.es_devolucion"
               label="¿Es devolucion?"
               :disable="disabled"
               @update:model-value="existeDevolucion()"

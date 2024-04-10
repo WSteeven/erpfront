@@ -13,7 +13,15 @@
         <!-- Empleados -->
         <div
           class="col-12 col-md-3"
-          v-if="is_all_empleados == 'false' && is_inactivo == 'false'"
+          v-if="
+            (consolidado.tipo_saldo == tipo_saldo.ACREDITACIONES ||
+              consolidado.tipo_saldo == tipo_saldo.GASTO ||
+              consolidado.tipo_saldo == tipo_saldo.GASTOS_FOTOGRAFIA ||
+              consolidado.tipo_saldo == tipo_saldo.CONSOLIDADO ||
+              consolidado.tipo_saldo == tipo_saldo.ESTADO_CUENTA ||
+              consolidado.tipo_saldo == tipo_saldo.TRANSFERENCIA_SALDOS) &&
+            is_inactivo == 'false'
+          "
         >
           <label class="q-mb-sm block">Empleado</label>
           <q-select
@@ -26,8 +34,6 @@
             outlined
             :disable="disabled"
             :readonly="disabled"
-            :error="!!v$.usuario.$errors.length"
-            error-message="Debes seleccionar un usuario"
             use-input
             input-debounce="0"
             @filter="filtrarUsuarios"
@@ -36,11 +42,6 @@
             emit-value
             map-options
           >
-            <template v-slot:error>
-              <div v-for="error of v$.usuario.$errors" :key="error.$uid">
-                <div class="error-msg">{{ error.$message }}</div>
-              </div>
-            </template>
             <template v-slot:no-option>
               <q-item>
                 <q-item-section class="text-grey"> No hay resultados </q-item-section>
@@ -49,7 +50,18 @@
           </q-select>
         </div>
         <!-- Empleados Inactivos -->
-        <div class="col-12 col-md-3" v-if="is_all_empleados == 'false' && is_inactivo == 'true'" >
+        <div
+          class="col-12 col-md-3"
+          v-if="
+            (consolidado.tipo_saldo == tipo_saldo.ACREDITACIONES ||
+              consolidado.tipo_saldo == tipo_saldo.GASTO ||
+              consolidado.tipo_saldo == tipo_saldo.GASTOS_FOTOGRAFIA ||
+              consolidado.tipo_saldo == tipo_saldo.CONSOLIDADO ||
+              consolidado.tipo_saldo == tipo_saldo.ESTADO_CUENTA ||
+              consolidado.tipo_saldo == tipo_saldo.TRANSFERENCIA_SALDOS) &&
+            is_inactivo == 'true'
+          "
+        >
           <label class="q-mb-sm block">Empleado</label>
           <q-select
             v-model="consolidado.usuario"
@@ -61,8 +73,6 @@
             outlined
             :disable="disabled"
             :readonly="disabled"
-            :error="!!v$.usuario.$errors.length"
-            error-message="Debes seleccionar un usuario"
             use-input
             input-debounce="0"
             @filter="filtrarUsuariosInactivos"
@@ -71,15 +81,15 @@
             emit-value
             map-options
           >
-            <template v-slot:error>
-              <div v-for="error of v$.usuario.$errors" :key="error.$uid">
-                <div class="error-msg">{{ error.$message }}</div>
-              </div>
-            </template>
             <template v-slot:no-option>
               <q-item>
                 <q-item-section class="text-grey"> No hay resultados </q-item-section>
               </q-item>
+            </template>
+            <template v-slot:after>
+              <q-btn color="positive" @click="recargarEmpleadosInactivos()">
+                <q-icon size="xs" class="q-mr-sm" name="bi-arrow-clockwise" />
+              </q-btn>
             </template>
           </q-select>
         </div>
@@ -97,7 +107,12 @@
             <template v-slot:append>
               <q-icon name="event" class="cursor-pointer">
                 <q-popup-proxy cover transition-show="scale" transition-hide="scale">
-                  <q-date v-model="consolidado.fecha_inicio" :mask="maskFecha" today-btn>
+                  <q-date
+                    v-model="consolidado.fecha_inicio"
+                    :mask="maskFecha"
+                    :options="optionsFechaInicio"
+                    today-btn
+                  >
                     <div class="row items-center justify-end">
                       <q-btn v-close-popup label="Cerrar" color="primary" flat />
                     </div>
@@ -127,7 +142,12 @@
             <template v-slot:append>
               <q-icon name="event" class="cursor-pointer">
                 <q-popup-proxy cover transition-show="scale" transition-hide="scale">
-                  <q-date v-model="consolidado.fecha_fin" :mask="maskFecha" today-btn>
+                  <q-date
+                    v-model="consolidado.fecha_fin"
+                    :mask="maskFecha"
+                    :options="optionsFechaFin"
+                    today-btn
+                  >
                     <div class="row items-center justify-end">
                       <q-btn v-close-popup label="Cerrar" color="primary" flat />
                     </div>
@@ -148,7 +168,7 @@
           <label class="q-mb-sm block">Tipo Saldo</label>
           <q-select
             v-model="consolidado.tipo_saldo"
-            :options="tipos_saldos"
+            :options="tipos_saldos_consolidado"
             transition-show="jump-up"
             transition-hide="jump-down"
             options-dense
@@ -160,6 +180,8 @@
             error-message="Debes seleccionar un tipo de saldo"
             use-input
             input-debounce="0"
+            @blur="v$.tipo_saldo.$touch"
+            @update:model-value="limpiar()"
             @filter="filtarTiposSaldos"
             :option-value="(v) => v.value"
             :option-label="(v) => v.label"
@@ -178,7 +200,14 @@
             </template>
           </q-select>
         </div>
-        <div class="col-12 col-md-3">
+        <div
+          class="col-12 col-md-3"
+          v-if="
+            consolidado.tipo_saldo == 1 ||
+            consolidado.tipo_saldo == 2 ||
+            consolidado.tipo_saldo == 6
+          "
+        >
           <q-checkbox
             v-model="is_all_empleados"
             color="secondary"

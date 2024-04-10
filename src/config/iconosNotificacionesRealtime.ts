@@ -84,4 +84,8 @@ export const iconos = {
     label: 'ORDEN_REPARACION_VEHICULO',
     icono: 'bi-tools'
   },
+  transferencia_saldo:{
+    label: 'TRANSFERENCIA DE SALDO',
+    icono: 'bi-cash',
+  },
 }

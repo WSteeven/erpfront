@@ -473,6 +473,7 @@
             'PreordenCompra',
             'Devoluciones',
             'RolPagoMes',
+            'AcreditacionSemana',
             'TransferenciaProductoEmpleado',
             // 'ControlDiarioVehiculo'
           ]"

@@ -2,7 +2,6 @@ import { Ref, computed, defineComponent, ref, watchEffect } from 'vue'
 
 // Componentes
 import TabLayout from 'shared/contenedor/modules/simple/view/TabLayout.vue'
-import SelectorImagen from 'components/SelectorImagen.vue'
 import { useNotificacionStore } from 'stores/notificacion'
 import { LocalStorage, useQuasar } from 'quasar'
 import { useVuelidate } from '@vuelidate/core'
@@ -10,9 +9,9 @@ import {
   requiredIf,
   maxLength,
   minLength,
+  maxValue,
   required,
 } from 'shared/i18n-validators'
-import { CustomActionPrompt } from 'components/tables/domain/CustomActionPrompt'
 import { ContenedorSimpleMixin } from 'shared/contenedor/modules/simple/application/ContenedorSimpleMixin'
 import { configuracionColumnasGasto } from '../domain/configuracionColumnasGasto'
 import { GastoPusherEvent } from '../application/GastoPusherEvent'
@@ -21,16 +20,16 @@ import { useNotificaciones } from 'shared/notificaciones'
 import { AprobarGastoController } from 'pages/fondosRotativos/autorizarGasto/infrestructure/AprobarGastoController'
 import { useAuthenticationStore } from 'stores/authentication'
 import ButtonSubmits from 'components/buttonSubmits/buttonSubmits.vue'
-import { acciones, convertir_fecha, maskFecha } from 'config/utils'
+import {
+  acciones,
+  convertir_fecha,
+  estadosGastos,
+  maskFecha,
+} from 'config/utils'
 import { VisualizarGasto } from '../domain/VisualizarGasto'
 import { VisualizarGastoController } from '../infrestructure/VisualizarGastoController'
 import { useCargandoStore } from 'stores/cargando'
 import ImagenComprimidaComponent from 'components/ImagenComprimidaComponent.vue'
-import { EmpleadoRoleController } from 'pages/recursosHumanos/empleados/infraestructure/EmpleadoRolesController'
-import { ProyectoController } from 'pages/gestionTrabajos/proyectos/infraestructure/ProyectoController'
-import { TareaController } from 'pages/gestionTrabajos/tareas/infraestructure/TareaController'
-import { EmpleadoController } from 'pages/recursosHumanos/empleados/infraestructure/EmpleadoController'
-import { VehiculoController } from 'pages/controlVehiculos/vehiculos/infraestructure/VehiculoController'
 import { Empleado } from 'pages/recursosHumanos/empleados/domain/Empleado'
 import { Tarea } from 'pages/gestionTrabajos/tareas/domain/Tarea'
 import { SubDetalleFondo } from 'pages/fondosRotativos/subDetalleFondo/domain/SubDetalleFondo'
@@ -38,7 +37,10 @@ import { SubDetalleFondoController } from 'pages/fondosRotativos/subDetalleFondo
 import { DetalleFondoController } from 'pages/fondosRotativos/detalleFondo/infrestructure/DetalleFondoController'
 import { Gasto } from '../domain/Gasto'
 import { GastoController } from '../infrestructure/GastoController'
-import { isAxiosError, notificarMensajesError } from 'shared/utils'
+import {
+  isAxiosError,
+  notificarMensajesError,
+} from 'shared/utils'
 import { StatusEssentialLoading } from 'components/loading/application/StatusEssentialLoading'
 
 export default defineComponent({
@@ -66,19 +68,13 @@ export default defineComponent({
       accion,
       listadosAuxiliares,
     } = mixin.useReferencias()
-    const { setValidador, cargarVista, obtenerListados } =
+    const { setValidador, cargarVista } =
       mixin.useComportamiento()
     const { onConsultado } = mixin.useHooks()
     const { entidad: gasto } = mixin_gastos.useReferencias()
-    const { consultar, editar, reestablecer } = mixin_gastos.useComportamiento()
     const issubmit = ref(true)
-    const {
-      confirmar,
-      prompt,
-      notificarCorrecto,
-      notificarAdvertencia,
-      notificarError,
-    } = useNotificaciones()
+    const { confirmar, notificarCorrecto, notificarAdvertencia } =
+      useNotificaciones()
 
     /*******
      * Init
@@ -87,7 +83,7 @@ export default defineComponent({
     const notificaciones = useNotificaciones()
     const aprobarController = new AprobarGastoController()
     const esFactura = ref(true)
-    const estaSemanAC = ref()
+    const permitirAnular = ref()
     const mostrarListado = ref(true)
     const mostrarAprobacion = ref(false)
     const isConsultar = ref(false)
@@ -95,7 +91,7 @@ export default defineComponent({
     const detalles = ref([])
     const sub_detalles = ref([])
     const proyectos = ref([])
-    const autorizacionesEspeciales: Ref<Empleado[]> = ref([])
+    const autorizaciones_especiales: Ref<Empleado[]> = ref([])
     const tareas = ref([])
     const vehiculos = ref([])
     const beneficiarios = ref([])
@@ -127,7 +123,7 @@ export default defineComponent({
       {
         detalle: 16,
         cantidad: 22,
-        mascara: '###-###-###############',
+        mascara: '###-###-##############',
       },
       {
         detalle: 10,
@@ -165,66 +161,27 @@ export default defineComponent({
         numFacturaObjeto[index] !== undefined
           ? numFacturaObjeto[index].mascara
           : '###-###-#########'
-
       return mascara
     })
     onConsultado(() => {
-      esFactura.value =  !!gasto.factura  //gasto.tiene_factura != null ? gasto.tiene_factura : true
+      esFactura.value = !!gasto.factura
     })
     //Obtener el listado de las cantones
     cargarVista(async () => {
-      await obtenerListados({
-        autorizacionesEspeciales: {
-          controller: new EmpleadoRoleController(),
-          params: { roles: ['AUTORIZADOR'] },
-        },
-        proyectos: {
-          controller: new ProyectoController(),
-          params: {
-            campos: 'id,nombre,codigo_proyecto',
-            finalizado: 0,
-            empleado_id: fondoRotativoStore.empleado_id,
-          },
-        },
-        tareas: {
-          controller: new TareaController(),
-          params: {
-            //campos: 'id,codigo_tarea,titulo,cliente_id,proyecto_id',
-            empleado_id: fondoRotativoStore.empleado_id,
-            activas_empleado: 1,
-            formulario: true,
-          },
-        },
-        empleados: {
-          controller: new EmpleadoController(),
-          params: {
-            campos: 'id,nombres,apellidos',
-            id: usuario.jefe_id,
-            estado: 1,
-          },
-        },
-        beneficiarios: {
-          controller: new EmpleadoController(),
-          params: {
-            campos: 'id,nombres,apellidos',
-            estado: 1,
-          },
-        },
-        vehiculos: {
-          controller: new VehiculoController(),
-          params: {
-            campos: 'id,placa',
-          },
-        },
-      })
-      autorizacionesEspeciales.value =
-        listadosAuxiliares.autorizacionesEspeciales
-      beneficiarios.value = listadosAuxiliares.beneficiarios
+        beneficiarios.value = fondoRotativoStore.empleados
+      listadosAuxiliares.beneficiarios = beneficiarios.value
+       proyectos.value = fondoRotativoStore.proyectos
+      listadosAuxiliares.proyectos = proyectos.value
       listadosAuxiliares.proyectos.unshift({ id: 0, nombre: 'Sin Proyecto' })
-      proyectos.value = listadosAuxiliares.proyectos
-      tareas.value = listadosAuxiliares.tareas
-      vehiculos.value = listadosAuxiliares.vehiculos
-      autorizacionesEspeciales.value.unshift(listadosAuxiliares.empleados[0])
+      tareas.value = fondoRotativoStore.tareas
+      listadosAuxiliares.tareas = tareas.value
+      listadosAuxiliares.tareas.unshift({
+        id: 0,
+        titulo: 'Sin Tarea',
+        codigo_tarea: ' ',
+      })
+      vehiculos.value = fondoRotativoStore.vehiculos
+      listadosAuxiliares.vehiculos = vehiculos.value
       cantones.value =
         LocalStorage.getItem('cantones') == null
           ? []
@@ -240,14 +197,15 @@ export default defineComponent({
       listadosAuxiliares.cantones = cantones.value
       listadosAuxiliares.detalles = detalles.value
       listadosAuxiliares.sub_detalles = sub_detalles.value
-      if (fondoRotativoStore.id_gasto) {
-        await consultar({ id: fondoRotativoStore.id_gasto })
+      if (fondoRotativoStore.gasto !== null) {
+        await gasto.hydrate(fondoRotativoStore.gasto)
         mostrarListado.value = false
         mostrarAprobacion.value = true
-        esFactura.value = fondoRotativoStore.existeFactura
-        estaSemanAC.value = fondoRotativoStore.estaSemanAC
-        accion.value = fondoRotativoStore.accionForm
-        isConsultar.value = fondoRotativoStore.accionForm === acciones.consultar
+        esFactura.value = !!gasto.factura
+        permitirAnular.value =
+          fondoRotativoStore.habilitar_observacion_autorizador
+        accion.value = fondoRotativoStore.accion_form
+        isConsultar.value = fondoRotativoStore.accion_form === acciones.consultar
       }
     })
 
@@ -295,9 +253,11 @@ export default defineComponent({
         required,
       },
       cantidad: {
+        maxValue:maxValue(9999),
         required,
       },
       valor_u: {
+        maxValue:maxValue(9999),
         required,
       },
       total: {
@@ -321,8 +281,11 @@ export default defineComponent({
       detalle_estado: {
         required,
       },
-      placa:{
+      placa: {
         required: requiredIf(() => gasto.es_vehiculo_alquilado),
+      },
+      observacion_anulacion:{
+        required: requiredIf(() => gasto.estado === estadosGastos.APROBADO),
       }
     }
     const v$ = useVuelidate(reglas, gasto)
@@ -337,23 +300,21 @@ export default defineComponent({
     function filtrarAutorizacionesEspeciales(val, update) {
       if (val === '') {
         update(() => {
-          autorizacionesEspeciales.value =
-            listadosAuxiliares.autorizacionesEspeciales
+          autorizaciones_especiales.value =
+            listadosAuxiliares.autorizaciones_especiales
         })
         return
       }
       update(() => {
         const needle = val.toLowerCase()
         console.log(
-          listadosAuxiliares.autorizacionesEspeciales.filter((v) => {
-            console.log(v.nombres.toLowerCase())
-
+          listadosAuxiliares.autorizaciones_especiales.filter((v) => {
             v.nombres.toLowerCase().indexOf(needle) > -1
           })
         )
 
-        autorizacionesEspeciales.value =
-          listadosAuxiliares.autorizacionesEspeciales.filter(
+        autorizaciones_especiales.value =
+          listadosAuxiliares.autorizaciones_especiales.filter(
             (v) =>
               v.nombres.toLowerCase().indexOf(needle) > -1 ||
               v.apellidos.toLowerCase().indexOf(needle) > -1
@@ -505,11 +466,7 @@ export default defineComponent({
         )
       })
     }
-    listadosAuxiliares.tareas.unshift({
-      id: 0,
-      titulo: 'Sin Tarea',
-      codigo_tarea: ' ',
-    })
+
     const listadoTareas = computed(() => {
       if (gasto.proyecto == 0) {
         return listadosAuxiliares.tareas.filter(
@@ -619,6 +576,7 @@ export default defineComponent({
             if (isAxiosError(error)) {
               const mensajes: string[] = error.erroresValidacion
               await notificarMensajesError(mensajes, notificaciones)
+              cargando.desactivar()
             }
           }
           break
@@ -638,6 +596,7 @@ export default defineComponent({
               if (isAxiosError(error)) {
                 const mensajes: string[] = error.erroresValidacion
                 await notificarMensajesError(mensajes, notificaciones)
+                cargando.desactivar()
               }
             }
           })
@@ -657,6 +616,7 @@ export default defineComponent({
                 if (isAxiosError(error)) {
                   const mensajes: string[] = error.erroresValidacion
                   await notificarMensajesError(mensajes, notificaciones)
+                  cargando.desactivar()
                 }
               }
             }
@@ -685,7 +645,7 @@ export default defineComponent({
       accion,
       acciones,
       v$,
-      estaSemanAC,
+      permitirAnular,
       configuracionColumnas: configuracionColumnasGasto,
       authenticationStore,
       esCombustibleEmpresa,
@@ -702,7 +662,6 @@ export default defineComponent({
       watchEffect,
       existeComprobante,
       aprobar_gasto,
-      filtrarAutorizacionesEspeciales,
       tiene_factura_subdetalle,
       filtrarCantones,
       filtrarDetalles,
@@ -716,6 +675,7 @@ export default defineComponent({
       optionsFechaGasto,
       recargar_detalle,
       isConsultar,
+      estadosGastos,
     }
   },
 })

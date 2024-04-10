@@ -216,7 +216,27 @@
             ></essential-table>
           </div>
         </div>
-        <div v-else>&nbsp;&nbsp; Aún no hay movimientos de este detalle.</div>
+        <div v-else>&nbsp;&nbsp; Aún no hay movimientos de este detalle en inventarios.</div>
+        <!-- Listado de preingresos -->
+        <div v-if="listadoPreingreso.length" class="row">
+          <div class="col-12">
+            <essential-table
+              v-if="listadoPreingreso.length"
+              titulo="Listado de movimientos del detalle"
+              :configuracionColumnas="columnasPreingresos"
+              :datos="listadoPreingreso"
+              :permitirConsultar="false"
+              :permitirEliminar="false"
+              :permitirEditar="false"
+              :mostrarBotones="false"
+              :permitir-buscar="false"
+              :alto-fijo="false"
+              ajustarCeldas
+            ></essential-table>
+          </div>
+        </div>
+        <div v-else>&nbsp;&nbsp; Aún no hay movimientos de este detalle en preingresos.</div>
+
       </q-card>
     </div>
   </q-page>

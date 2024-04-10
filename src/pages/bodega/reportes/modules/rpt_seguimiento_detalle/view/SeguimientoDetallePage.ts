@@ -15,6 +15,9 @@ import { useNotificacionStore } from 'stores/notificacion';
 import { useCargandoStore } from 'stores/cargando';
 import { useQuasar } from 'quasar';
 import { SucursalesDetalleController } from './infraestructure/SucursalesDetalleController';
+import { configuracionColumnasItemPreingreso } from 'pages/bodega/preingresoMateriales/domain/configuracionColumnasItemsPreingreso';
+import { ColumnConfig } from 'components/tables/domain/ColumnConfig';
+import { ItemPreingresoMaterial } from 'pages/bodega/preingresoMateriales/domain/ItemPreingresoMaterial';
 
 export default defineComponent({
   components: { EssentialTable },
@@ -36,6 +39,7 @@ export default defineComponent({
     const detalles = ref([])
     const results = ref([])
     const listado = ref([])
+    const listadoPreingreso = ref([])
     const { notificarError } = useNotificaciones()
     async function cargarDetalles() {
       cargando.activar()
@@ -60,7 +64,10 @@ export default defineComponent({
         const url = apiConfig.URL_BASE + '/' + axios.getEndpoint(endpoints.reporte_inventario) + '/kardex'
         const response: AxiosResponse = await axios.post(url, kardex)
         // console.log(response)
-        if (response.data.results) listado.value = response.data.results
+        if (response.data.results) {
+          listado.value = response.data.results
+          listadoPreingreso.value = response.data.results2
+        }
         cargando.desactivar()
       }
       catch (e) {
@@ -104,11 +111,28 @@ export default defineComponent({
       }
     }
 
+    configuracionColumnasItemPreingreso.splice(1, 0, {
+      name: 'preingreso',
+      field: 'preingreso',
+      label: 'Preingreso',
+      align: 'left',
+      sortable: true,
+    },
+    {
+      name: 'created_at',
+      field: 'created_at',
+      label: 'Fecha',
+      align: 'left',
+      sortable: true,
+    },)
+
     return {
       kardex, v$,
       detalles,
       listado,
+      listadoPreingreso,
       configuracionColumnasSeguimientoDetalle,
+      columnasPreingresos: configuracionColumnasItemPreingreso,
       sucursales,
       imprimirReporte,
       obtenerSucursales,

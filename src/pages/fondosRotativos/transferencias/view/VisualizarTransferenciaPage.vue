@@ -6,7 +6,7 @@
       <q-form @submit.prevent>
         <div class="row q-col-gutter-sm q-mb-md">
           <!-- Usuarios Reciben -->
-          <div class="col-12 col-md-3 q-mb-md" v-if="!esDevolucion || transferencia.usuario_recibe !== null">
+          <div class="col-12 col-md-3 q-mb-md" v-if="!transferencia.es_devolucion">
             <label class="q-mb-sm block">Destinatario:</label>
             <q-input v-model="transferencia.usuario_recibe_info" placeholder="Obligatorio" disable
               outlined dense>
@@ -32,7 +32,7 @@
             </q-input>
           </div>
           <!-- Tareas -->
-          <div class="col-12 col-md-3" v-if="esDevolucion === false">
+          <div class="col-12 col-md-3"  v-if="!transferencia.es_devolucion">
             <label class="q-mb-sm block">Tareas</label>
             <q-input v-model="transferencia.tarea_info" placeholder="Obligatorio" disable
               outlined dense>
@@ -47,8 +47,8 @@
           </div>
           <!--Es devolucion-->
           <div class="col-12 col-md-3 q-mb-xl">
-          <q-checkbox class="q-mt-lg q-pt-md" v-model="esDevolucion" label="¿Es devolucion?" :disable="disabled"
-            @update:model-value="existeDevolucion()" outlined dense></q-checkbox>
+          <q-checkbox class="q-mt-lg q-pt-md" v-model="transferencia.es_devolucion" label="¿Es devolucion?" disable
+            outlined dense></q-checkbox>
         </div>
         </div>
 

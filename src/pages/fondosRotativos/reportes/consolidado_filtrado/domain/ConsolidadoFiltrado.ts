@@ -11,6 +11,8 @@ export class ConsolidadoFiltrado extends EntidadAuditable {
   tipo_filtro: string | null
   fecha_inicio: Date | null
   fecha_fin: Date | null
+  ciudad:number | null
+  empleado: number | null
   constructor() {
     super()
     this.usuario = null
@@ -24,5 +26,7 @@ export class ConsolidadoFiltrado extends EntidadAuditable {
     this.tipo_filtro = null
     this.fecha_inicio = null
     this.fecha_fin = null
+    this.ciudad =null
+    this.empleado = null
   }
 }

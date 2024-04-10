@@ -13,6 +13,7 @@ export class Transferencia extends EntidadAuditable {
   tarea_info:string|null
   comprobante:string|null
   estado_info:string|null
+  es_devolucion: boolean
 
   constructor() {
     super()
@@ -29,5 +30,6 @@ export class Transferencia extends EntidadAuditable {
     this.tarea_info=null
     this.comprobante=null
     this.estado_info=null
+    this.es_devolucion = false
   }
 }

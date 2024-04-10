@@ -144,7 +144,7 @@ export default defineComponent({
         orden.tiene_preorden = true
         cargarDatosPreorden()
       }
-      configuracionColumnasItemOrdenCompra.find((item) => item.field === 'unidad_medida')!.options = listadosAuxiliares.unidades_medidas.map((v: UnidadMedida) => { return { value: v.id, label: v.nombre } })
+      configuracionColumnasItemOrdenCompra.find((item) => item.field === 'unidad_medida')!.options = listadosAuxiliares.unidades_medidas.map((v: UnidadMedida) => { return { label: v.nombre } })
     })
 
     /*****************************************************************************************
