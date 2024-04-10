@@ -79,5 +79,9 @@ export const iconos = {
   asignacion_vehiculo: {
     label: 'ASIGNACION_VEHICULO',
     icono: 'bi-file-text'
-  }
+  },
+  ordenes_reparaciones_vehiculos: {
+    label: 'ORDEN_REPARACION_VEHICULO',
+    icono: 'bi-tools'
+  },
 }

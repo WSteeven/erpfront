@@ -23,6 +23,7 @@ import { MatriculaPusherEvent } from 'pages/controlVehiculos/matriculacion/appli
 import { NotificarPermisoEmpleadoPusherEvent } from 'src/pusherEvents/recursosHumanos/nominasPermisos/NotificarPermisoEmpleadoPusherEvent'
 import { MultaConductorPusherEvent } from 'pages/controlVehiculos/conductores/modules/multas/application/MultaPusherEvent'
 import { AsignarVehiculoPusherEvent } from 'pages/controlVehiculos/asignarVehiculos/application/AsignarVehiculoPusherEvent'
+import { OrdenReparacionPusherEvent } from 'src/pusherEvents/vehiculos/OrdenReparacionPusherEvent'
 
 
 export class NotificacionesSistema {
@@ -127,5 +128,8 @@ export class NotificacionesSistema {
 
     const asignacionVehiculoEvent = new AsignarVehiculoPusherEvent()
     asignacionVehiculoEvent.start()
+
+    const ordenesReparacionesVehiculos = new OrdenReparacionPusherEvent()
+    ordenesReparacionesVehiculos.start()
   }
 }

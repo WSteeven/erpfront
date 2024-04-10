@@ -19,7 +19,7 @@ import { required } from "shared/i18n-validators";
 import useVuelidate from "@vuelidate/core";
 import { configuracionColumnasOrdenesReparaciones } from "../domain/configuracionColumnasOrdenesReparacion";
 import { obtenerFechaActual } from "shared/utils";
-import { acciones, maskFecha } from "config/utils";
+import { acciones, autorizaciones, maskFecha } from "config/utils";
 import { AsignacionVehiculoController } from "pages/controlVehiculos/asignarVehiculos/infraestructure/AsignacionVehiculoController";
 
 
@@ -44,7 +44,7 @@ export default defineComponent({
         cargarVista(async () => {
             usuarioDefault.value = await obtenerVehiculoAsignado()
             await obtenerListados({
-                servicios: { controller: new ServicioController(), params: { tipo: 'CORRECTIVO' } },
+                servicios: { controller: new ServicioController(), params: { tipo: 'CORRECTIVO', estado: 1 } },
             })
             servicios.value = listadosAuxiliares.servicios
             cargarDatosDefecto()
@@ -56,6 +56,7 @@ export default defineComponent({
             vehiculo: { required },
             fecha: { required },
             autorizacion: { required },
+            observacion: { required },
         }
         const v$ = useVuelidate(reglas, orden)
         setValidador(v$.value)
@@ -83,6 +84,7 @@ export default defineComponent({
          */
         async function obtenerVehiculoAsignado() {
             const response = (await new AsignacionVehiculoController().listar({ filtro: 1, responsable_id: store.user.id, estado: 'ACEPTADO' }))
+            console.log(response)
             return response.result[0]
         }
         function cargarDatosDefecto() {
@@ -90,6 +92,7 @@ export default defineComponent({
                 orden.vehiculo = usuarioDefault.value.vehiculo
                 orden.solicitante_id = usuarioDefault.value.responsable_id
                 orden.solicitante = usuarioDefault.value.responsable
+                orden.autorizacion = 1
                 orden.fecha = obtenerFechaActual(maskFecha)
             }
         }
@@ -107,6 +110,7 @@ export default defineComponent({
 
             //listados
             servicios, filtrarServicios,
+            autorizaciones,
 
             //funciones
             filtrarOrdenesReparaciones,

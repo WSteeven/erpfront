@@ -3,21 +3,23 @@ import { EntidadAuditable } from "shared/entidad/domain/entidadAuditable";
 export class OrdenReparacion extends EntidadAuditable {
     solicitante: string | null
     solicitante_id: number | null
+    autorizador: number | null
     vehiculo: string | null
     fecha: string | null
-    autorizacion: string | null
+    autorizacion: number | null
     servicios: string | null
-    listadoReparaciones: any[]
+    observacion: string | null
 
     constructor() {
         super()
         this.solicitante = null
         this.solicitante_id = null
+        this.autorizador = null
         this.vehiculo = null
         this.fecha = null
         this.autorizacion = null
         this.servicios = null
-        this.listadoReparaciones = []
+        this.observacion = null
     }
 
 }
