@@ -123,9 +123,9 @@ export default defineComponent({
           })
           break
         case 'anular':
-          confirmar('¿Está seguro de anular el gasto?', () => {
+          confirmar('¿Está seguro de anular la transferencia?', () => {
             const data: CustomActionPrompt = {
-              titulo: 'Anular gasto',
+              titulo: 'Anular Transferencia',
               mensaje: 'Ingrese motivo de anulacion',
               accion: async (data) => {
                 try {

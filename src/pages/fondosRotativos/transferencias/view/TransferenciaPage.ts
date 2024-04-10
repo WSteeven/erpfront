@@ -8,7 +8,7 @@ import SelectorImagen from 'components/SelectorImagen.vue'
 import { useNotificacionStore } from 'stores/notificacion'
 import { useQuasar } from 'quasar'
 import { useVuelidate } from '@vuelidate/core'
-import { required, maxLength } from 'shared/i18n-validators'
+import { required, maxLength,maxValue } from 'shared/i18n-validators'
 import { ContenedorSimpleMixin } from 'shared/contenedor/modules/simple/application/ContenedorSimpleMixin'
 import { TransferenciaController } from '../infrestructure/TransferenciaController'
 import { configuracionColumnasTransferencia } from '../domain/configuracionColumnasTransferencia'
@@ -16,7 +16,6 @@ import { TareaController } from 'pages/gestionTrabajos/tareas/infraestructure/Ta
 import { useAuthenticationStore } from 'stores/authentication'
 import { useTransferenciaSaldoStore } from 'stores/transferenciaSaldo'
 import { EmpleadoController } from 'pages/recursosHumanos/empleados/infraestructure/EmpleadoController'
-import { maxValue } from '@vuelidate/validators'
 
 export default defineComponent({
   components: { TabLayout, SelectorImagen },

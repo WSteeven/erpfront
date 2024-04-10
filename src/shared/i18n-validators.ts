@@ -22,5 +22,6 @@ export const minLength = withI18nMessage(validators.minLength, { withArguments: 
 export const maxLength = withI18nMessage(validators.maxLength, { withArguments: true })
 export const numeric = withI18nMessage(validators.numeric)
 export const minValue = withI18nMessage(validators.minValue, { withArguments: true })
+export const maxValue = withI18nMessage(validators.maxValue, { withArguments: true })
 
 export const helpers = validators.helpers

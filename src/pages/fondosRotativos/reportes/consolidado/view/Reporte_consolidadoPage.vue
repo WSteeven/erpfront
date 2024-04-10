@@ -13,7 +13,15 @@
         <!-- Empleados -->
         <div
           class="col-12 col-md-3"
-          v-if="is_all_empleados == 'false' && is_inactivo == 'false'"
+          v-if="
+            (consolidado.tipo_saldo == tipo_saldo.ACREDITACIONES ||
+              consolidado.tipo_saldo == tipo_saldo.GASTO ||
+              consolidado.tipo_saldo == tipo_saldo.GASTOS_FOTOGRAFIA ||
+              consolidado.tipo_saldo == tipo_saldo.CONSOLIDADO ||
+              consolidado.tipo_saldo == tipo_saldo.ESTADO_CUENTA ||
+              consolidado.tipo_saldo == tipo_saldo.TRANSFERENCIA_SALDOS) &&
+            is_inactivo == 'false'
+          "
         >
           <label class="q-mb-sm block">Empleado</label>
           <q-select
@@ -44,7 +52,15 @@
         <!-- Empleados Inactivos -->
         <div
           class="col-12 col-md-3"
-          v-if="is_all_empleados == 'false' && is_inactivo == 'true'"
+          v-if="
+            (consolidado.tipo_saldo == tipo_saldo.ACREDITACIONES ||
+              consolidado.tipo_saldo == tipo_saldo.GASTO ||
+              consolidado.tipo_saldo == tipo_saldo.GASTOS_FOTOGRAFIA ||
+              consolidado.tipo_saldo == tipo_saldo.CONSOLIDADO ||
+              consolidado.tipo_saldo == tipo_saldo.ESTADO_CUENTA ||
+              consolidado.tipo_saldo == tipo_saldo.TRANSFERENCIA_SALDOS) &&
+            is_inactivo == 'true'
+          "
         >
           <label class="q-mb-sm block">Empleado</label>
           <q-select
@@ -69,6 +85,11 @@
               <q-item>
                 <q-item-section class="text-grey"> No hay resultados </q-item-section>
               </q-item>
+            </template>
+            <template v-slot:after>
+              <q-btn color="positive" @click="recargarEmpleadosInactivos()">
+                <q-icon size="xs" class="q-mr-sm" name="bi-arrow-clockwise" />
+              </q-btn>
             </template>
           </q-select>
         </div>
@@ -179,7 +200,14 @@
             </template>
           </q-select>
         </div>
-        <div class="col-12 col-md-3" v-if="consolidado.tipo_saldo == 1 || consolidado.tipo_saldo == 2 ||  consolidado.tipo_saldo == 6">
+        <div
+          class="col-12 col-md-3"
+          v-if="
+            consolidado.tipo_saldo == 1 ||
+            consolidado.tipo_saldo == 2 ||
+            consolidado.tipo_saldo == 6
+          "
+        >
           <q-checkbox
             v-model="is_all_empleados"
             color="secondary"
