@@ -1,7 +1,6 @@
 import { defineComponent } from 'vue'
 
 import TabLayout from 'shared/contenedor/modules/simple/view/TabLayout.vue'
-import EssentialTable from 'components/tables/view/EssentialTable.vue'
 import { useNotificacionStore } from 'stores/notificacion'
 import { useQuasar } from 'quasar'
 import { useVuelidate } from '@vuelidate/core'
@@ -9,13 +8,11 @@ import { ContenedorSimpleMixin } from 'shared/contenedor/modules/simple/applicat
 import { RolController } from '../infraestructure/RolController'
 import { configuracionColumnasRol } from '../domain/configuracionColumnasRol'
 import { Rol } from '../domain/Rol'
-import { configuracionColumnasEmpleadosLite } from 'pages/recursosHumanos/empleados/domain/configuracionColumnasEmpleadosLite'
-import { acciones } from 'config/utils'
 
 
 
 export default defineComponent({
-  components: { TabLayout, EssentialTable },
+  components: { TabLayout },
   setup() {
     /*********
     * Stores
@@ -43,9 +40,8 @@ export default defineComponent({
     return {
       mixin,
       rol,
-      disabled, accion, acciones, v$,
+      disabled, accion, v$,
       configuracionColumnas: configuracionColumnasRol,
-      columnasEmpleados: configuracionColumnasEmpleadosLite,
     }
   }
 })
