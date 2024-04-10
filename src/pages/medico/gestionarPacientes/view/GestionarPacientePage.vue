@@ -35,22 +35,22 @@
             no-caps
           />
           <q-tab
-            :name="tiposProcesosExamenes.OCUPACIONALES"
-            :label="tiposProcesosExamenes.OCUPACIONALES"
+            :name="tiposProcesosExamenes.PERIODICO"
+            :label="tiposProcesosExamenes.PERIODICO"
             :class="{ 'tab-inactive': tabs !== '2' }"
             @click="seleccionarTabTipoProcesoOcupacional()"
             no-caps
           />
           <q-tab
-            :name="tiposProcesosExamenes.REINGRESO"
-            :label="tiposProcesosExamenes.REINGRESO"
+            :name="tiposProcesosExamenes.REINTEGRO"
+            :label="tiposProcesosExamenes.REINTEGRO"
             :class="{ 'tab-inactive': tabs !== '3' }"
             @click="seleccionarTabTipoProcesoReingreso()"
             no-caps
           />
           <q-tab
-            :name="tiposProcesosExamenes.SALIDA"
-            :label="tiposProcesosExamenes.SALIDA"
+            :name="tiposProcesosExamenes.RETIRO"
+            :label="tiposProcesosExamenes.RETIRO"
             :class="{ 'tab-inactive': tabs !== '4' }"
             @click="seleccionarTabTipoProcesoSalida()"
             no-caps
@@ -75,12 +75,12 @@
 
           <transition name="scale" mode="out-in">
             <div
-              v-show="tabs === tiposProcesosExamenes.OCUPACIONALES"
+              v-show="tabs === tiposProcesosExamenes.PERIODICO"
               class="q-pa-none"
             >
               <panel-tipo-proceso
                 ref="refPanelTipoProcesoOcupacional"
-                :tipo-proceso="tiposProcesosExamenes.OCUPACIONALES"
+                :tipo-proceso="tiposProcesosExamenes.PERIODICO"
                 :empleado="empleado"
                 :mixin="mixin"
               />
@@ -89,12 +89,12 @@
 
           <transition name="scale" mode="out-in">
             <div
-              v-show="tabs === tiposProcesosExamenes.REINGRESO"
+              v-show="tabs === tiposProcesosExamenes.REINTEGRO"
               class="q-pa-none"
             >
               <panel-tipo-proceso
                 ref="refPanelTipoProcesoReingreso"
-                :tipo-proceso="tiposProcesosExamenes.REINGRESO"
+                :tipo-proceso="tiposProcesosExamenes.REINTEGRO"
                 :empleado="empleado"
                 :mixin="mixin"
               />
@@ -103,12 +103,12 @@
 
           <transition name="scale" mode="out-in">
             <div
-              v-show="tabs === tiposProcesosExamenes.SALIDA"
+              v-show="tabs === tiposProcesosExamenes.RETIRO"
               class="q-pa-none"
             >
               <panel-tipo-proceso
                 ref="refPanelTipoProcesoSalida"
-                :tipo-proceso="tiposProcesosExamenes.SALIDA"
+                :tipo-proceso="tiposProcesosExamenes.RETIRO"
                 :empleado="empleado"
                 :mixin="mixin"
               />

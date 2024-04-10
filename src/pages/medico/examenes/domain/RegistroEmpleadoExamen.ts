@@ -5,6 +5,7 @@ export class RegistroEmpleadoExamen extends EntidadAuditable {
   observacion: string | null
   tipo_proceso_examen: string | null
   empleado: number | null
+  ficha_aptitud: number | null
 
   constructor() {
     super()
@@ -12,5 +13,6 @@ export class RegistroEmpleadoExamen extends EntidadAuditable {
     this.observacion = null
     this.tipo_proceso_examen = null
     this.empleado = null
+    this.ficha_aptitud = null
   }
 }

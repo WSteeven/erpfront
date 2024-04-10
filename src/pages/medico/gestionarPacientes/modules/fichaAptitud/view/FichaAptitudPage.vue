@@ -10,7 +10,7 @@
         <div class="row q-pa-md">
           <div class="col-12 q-mb-md">
             <label class="q-mb-sm block"
-              >Después de la valoración medica ocupacionalse certifica que la
+              >Después de la valoración medica ocupacional se certifica que la
               persona en mención, es calificada como:</label
             >
             <div class="q-gutter-sm">
@@ -20,6 +20,7 @@
                 v-model="fichaAptitud.tipo_aptitud_medica_laboral"
                 :val="tipo.id"
                 :label="`${tipo.nombre}`"
+                :disable="disabled"
               />
             </div>
           </div>
@@ -29,6 +30,7 @@
             <q-input
               v-model="fichaAptitud.observaciones_aptitud_medica"
               placeholder="Opcional"
+              :disable="disabled"
               outlined
               dense
               autogrow
@@ -46,7 +48,6 @@
         default-opened
       >
         <div class="q-pa-md">
-          {{ tiposEvaluacionesMedicasRetiros }}
           <div
             v-for="tipo in tiposEvaluacionesMedicasRetiros"
             :key="tipo.nombre"
@@ -63,6 +64,7 @@
                 v-model="tipo.respuesta"
                 :val="itemRespuesta"
                 :label="`${itemRespuesta}`"
+                :disable="disabled"
               />
             </div>
           </div>
@@ -81,6 +83,7 @@
             <q-input
               v-model="fichaAptitud.recomendaciones"
               placeholder="Opcional"
+              :disable="disabled"
               outlined
               dense
               autogrow
@@ -115,8 +118,28 @@
 
     <template #custom-buttons>
       <div class="row q-gutter-x-xs">
-        <q-btn color="positive" no-caps push>Firmar (Profesional médico)</q-btn>
-        <q-btn color="positive" no-caps push>Firmar (Paciente)</q-btn>
+        <q-btn
+          v-if="fichaAptitud.id && mostrarDescargarPdf"
+          class="bg-white text-positive"
+          no-caps
+          push
+          @click="descargarPdf()"
+        >
+          <q-icon name="bi-download" size="xs" class="q-mr-sm"></q-icon>
+          Descargar PDF</q-btn
+        >
+        <q-btn
+          v-if="
+            fichaAptitud.id &&
+            !fichaAptitud.firmado_paciente &&
+            mostrarFirmarPaciente
+          "
+          color="positive"
+          no-caps
+          push
+          @click="firmarPaciente()"
+          >Firmar (Paciente)</q-btn
+        >
       </div>
     </template>
   </simple-layout>

@@ -7,7 +7,7 @@ export const configuracionColumnasExamenes: ColumnConfig<DetalleExamen>[] = [
     field: 'examen',
     label: 'Examen',
     align: 'left',
-    sortable: true
+    sortable: true,
   },
   {
     name: 'categoria',
@@ -21,6 +21,6 @@ export const configuracionColumnasExamenes: ColumnConfig<DetalleExamen>[] = [
     field: 'tipo_examen',
     label: 'Tipo examen',
     align: 'left',
-    sortable: true
+    sortable: true,
   },
 ]

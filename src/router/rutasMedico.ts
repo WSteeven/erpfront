@@ -46,13 +46,19 @@ const rutasMedico: RouteRecordRaw[] = [
   {
     path: '/reporte-cuestionarios-pisicosocial',
     name: 'reporte_cuestionarios_pisicosocial',
-    component: () => import('pages/medico/cuestionarioPsicosocial/view/ReporteCuestionarioPisicosocial.vue'),
+    component: () => import('medico/cuestionarioPsicosocial/view/ReporteCuestionarioPisicosocial.vue'),
     meta: { requiresAuth: true },
   },
   {
     path: '/configuraciones-cuestionarios-empleados',
     name: 'configuraciones_cuestionarios_empleados',
-    component: () => import('pages/medico/configuracionCuestionarioEmpleado/view/ConfiguracionCuestionarioEmpleadoPage.vue'),
+    component: () => import('medico/configuracionCuestionarioEmpleado/view/ConfiguracionCuestionarioEmpleadoPage.vue'),
+    meta: { requiresAuth: true },
+  },
+  {
+    path: '/firmar-fichas-medicas',
+    name: 'firmar_fichas_medicas',
+    component: () => import('medico/firmarFichasMedicas/view/FirmarFichaMedicaPage.vue'),
     meta: { requiresAuth: true },
   },
 ]

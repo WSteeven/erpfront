@@ -30,7 +30,7 @@
           class="q-mb-xs"
           :class="{ 'bg-blue': tabRegistro !== registro.id }"
           no-caps
-          @click="seleccionarRegistro(registro.id)"
+          @click="seleccionarRegistro(registro)"
         >
           <q-icon
             name="bi-person"
@@ -68,7 +68,26 @@
               <div class="text-bold">{{ registro.observacion }}</div>
             </div>
 
-            <q-btn color="positive" class="col-12" no-caps unelevated @click="abrirFichaAptitud()">Ficha de aptitud</q-btn>
+            <q-btn
+              class="col-12 q-mb-sm bg-white text-black"
+              no-caps
+              push
+              @click="abrirFichaAptitud()"
+            >
+              <q-icon name="bi-table" class="q-mr-sm" color="positive" size="xs"></q-icon>
+              {{ textoFichaAptitud }}
+            </q-btn>
+
+            <q-btn
+              v-if="mostrarFichaPeriodicaPreocupacional"
+              class="col-12 bg-white text-dark"
+              no-caps
+              push
+              @click="abrirFichaPeriodicaProcupacional()"
+            >
+              <q-icon name="bi-table" class="q-mr-sm" color="primary" size="xs"></q-icon>
+              {{ textoFichaPeriodicaPreocupacional }}
+            </q-btn>
           </div>
         </q-tab-panel>
       </q-tab-panels>
@@ -152,6 +171,7 @@
               :tipo-seleccion="tipoSeleccion"
               @selected="seleccionarExamen"
               :alto-fijo="false"
+              :permitir-editar-celdas="true"
             ></essential-table>
           </q-tab-panel>
 

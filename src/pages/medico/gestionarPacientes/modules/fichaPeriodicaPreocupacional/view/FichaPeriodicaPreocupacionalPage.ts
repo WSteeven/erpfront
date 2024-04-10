@@ -1,0 +1,46 @@
+import { defineComponent } from 'vue'
+
+// Componentes
+import SimpleLayout from 'src/shared/contenedor/modules/simple/view/SimpleLayout.vue'
+import { ContenedorSimpleMixin } from 'shared/contenedor/modules/simple/application/ContenedorSimpleMixin'
+import { FichaPeriodicaPreocupacional } from '../domain/FichaPeriodicaPreocupacional'
+import { FichaPeriodicaPreocupacionalController } from '../infraestructure/FichaPeriodicaPreocupacionalController'
+import { ReligionController } from '../infraestructure/ReligionController'
+import { OrientacionSexualController } from '../infraestructure/OrientacionSexualController'
+import { IdentidadGeneroController } from '../infraestructure/IdentidadGeneroController'
+import { tipos_sangre } from 'config/utils'
+
+export default defineComponent({
+  name: 'fichas_periodicas_preocupacionales',
+  components: {
+    SimpleLayout,
+  },
+  setup() {
+    /********
+    * Mixin
+    *********/
+    const mixin = new ContenedorSimpleMixin(FichaPeriodicaPreocupacional, new FichaPeriodicaPreocupacionalController())
+    const { entidad: fichaPeriodica, listadosAuxiliares, disabled, accion } = mixin.useReferencias()
+    const { setValidador, cargarVista, obtenerListados, consultar, editarParcial, listar } = mixin.useComportamiento()
+    const { onBeforeGuardar, onReestablecer, onConsultado, onGuardado } = mixin.useHooks()
+
+    cargarVista(async () => await obtenerListados({
+      religiones: new ReligionController(),
+      orientacionesSexuales: new OrientacionSexualController(),
+      identidadesGeneros: new IdentidadGeneroController(),
+    }))
+
+    /*******
+     * Init
+     *******/
+    listar()
+
+    return {
+      mixin,
+      disabled,
+      fichaPeriodica,
+      listadosAuxiliares,
+      tipos_sangre,
+    }
+  }
+})

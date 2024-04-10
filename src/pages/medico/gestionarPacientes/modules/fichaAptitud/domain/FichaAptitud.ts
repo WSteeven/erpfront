@@ -10,6 +10,7 @@ export class FichaAptitud extends EntidadAuditable {
   tipo_aptitud_medica_laboral: number | null
   profesional_salud: number | null
   opciones_respuestas_tipo_evaluacion_medica_retiro: OpcionRespuestaTipoEvaluacionMedicaRetiro[]
+  paciente: number | null
 
   constructor() {
     super()
@@ -22,5 +23,6 @@ export class FichaAptitud extends EntidadAuditable {
     this.tipo_aptitud_medica_laboral = null
     this.profesional_salud = null
     this.opciones_respuestas_tipo_evaluacion_medica_retiro = []
+    this.paciente = null
   }
 }

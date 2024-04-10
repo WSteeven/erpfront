@@ -61,16 +61,15 @@
     <!-- Editar celdas -->
     <template v-if="permitirEditarCeldas" v-slot:body-cell="props">
       <q-td :key="props.col.name" :props="props">
-        {{ props.row[props.col.name] }}
         <q-popup-edit
-          v-if="props.col.editable"
+          v-if="props.col.editable && !props.col.type"
           v-model="props.row[props.col.name]"
           v-slot="scope"
           auto-save
           @hide="guardarCeldaEditada(props.row)"
         >
+        <!-- v-if="props.col.type != 'toggle' || props.col.type != 'select'" -->
           <q-input
-            v-if="props.col.type != 'toggle' || props.col.type != 'select'"
             v-model="scope.value"
             placeholder="Ingrese"
             :type="props.col.type ? props.col.type : 'text'"
@@ -79,13 +78,29 @@
             autofocus
             @keyup.enter="scope.set"
           />
-          <q-toggle
-            v-else
-            keep-color
-            v-model="scope.value"
-            :label="scope.value ? 'SIi' : 'NOi'"
-          />
         </q-popup-edit>
+
+        <q-select
+          v-if="props.col.type === 'select'"
+          v-model="props.row[props.col.name]"
+          :options="props.col.options"
+          :options-label="(v) => v.label"
+          :options-value="(v) => v.value"
+          options-dense
+          outlined
+          dense
+          emit-value
+          map-options
+        />
+
+        <q-toggle
+          v-if="props.col.type === 'toggle'"
+          v-model="props.row[props.col.name]"
+          :label="scope.value ? 'SIi' : 'NOi'"
+          keep-color
+        />
+
+        <span v-if="props.col.type !== 'select'">{{ props.row[props.col.name] }}</span>
       </q-td>
     </template>
 

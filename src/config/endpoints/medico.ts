@@ -29,6 +29,11 @@ export const medico = {
   // configuracion_cuestionario_empleado: new Endpoint('medico/config-cuestionario-empleado'),
   configuracion_cuestionario_empleado: new Endpoint('medico/config-cuestionario-empleado'),
   fichas_aptitudes: new Endpoint('medico/fichas-aptitudes'),
+  fichas_periodicas_preocupacionales: new Endpoint('medico/fichas-periodicas-preocupacionales'),
+  religiones: new Endpoint('medico/religiones'),
+  identidades_generos: new Endpoint('medico/identidades-generos'),
+  orientaciones_sexuales: new Endpoint('medico/orientaciones-sexuales'),
+  fichas_aptitudes_imprimir: new Endpoint('medico/fichas-aptitudes/imprimir'),
   tipos_aptitudes_medicas_laborales: new Endpoint('medico/tipos-aptitudes-medicas-laborales'),
   tipos_eval_medicas_retiro: new Endpoint('medico/tipos-eval-medicas-retiro'),
 }
