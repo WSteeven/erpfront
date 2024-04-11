@@ -195,11 +195,15 @@ export default defineComponent({
     mostrarExportar: {
       type: Boolean,
       default: false,
+    },
+    grid: {
+      type: Boolean,
+      default: true,
     }
   },
   emits: ['consultar', 'editar', 'eliminar', 'accion1', 'accion2', 'accion3', 'accion4', 'accion5', 'accion6', 'accion7', 'accion8', 'accion9', 'accion10', 'selected', 'onScroll', 'filtrar', 'toggle-filtros', 'guardar-fila', 'update:selected', 'fila-modificada'],
   setup(props, { emit }) {
-    const grid = ref(false)
+    // const grid = ref(false)
     const inFullscreen = ref(false)
     const fila = ref()
     const posicionFilaEditada = ref()
@@ -451,7 +455,7 @@ export default defineComponent({
       agregarFiltro,
       establecerFiltros,
       filtrar,
-      grid,
+      // grid,
       inFullscreen,
       editar,
       consultar,

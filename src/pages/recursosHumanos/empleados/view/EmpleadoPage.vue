@@ -1303,16 +1303,20 @@
                   </q-item>
                 </template>
               </q-select>-->
+              <q-btn color="primary" @click="agregarDiscapacidad()" class="full-width">Agregar discapacidad</q-btn>
               <essential-table
-                :configuracionColumnas="configuracionColumnasTipoDiscapacidadPorcentaje"
+                :configuracionColumnas="[...configuracionColumnasTipoDiscapacidadPorcentajeReactive, accionesTabla]"
                 :datos="empleado.discapacidades"
                 :permitirConsultar="false"
-                :permitirEditar="false"
                 :permitirEliminar="false"
+                :permitirEditar="false"
                 :mostrarBotones="false"
+                :permitir-editar-celdas="true"
+                :mostrar-header="false"
+                :grid="false"
+                :accion1="btnEliminarDiscapacidad"
                 :alto-fijo="false"
                 :ajustarCeldas="true"
-                :accion1Header="btnAgregarDiscapacidad"
               >
               </essential-table>
             </div>

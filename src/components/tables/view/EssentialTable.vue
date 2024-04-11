@@ -9,10 +9,11 @@
   ></EditarTablaModal>
 
   <!-- ref="referencia" -->
+  <!--  || $q.screen.xs" -->
   <q-table
     ref="refTable"
     :hide-header="grid"
-    :grid="grid || $q.screen.xs"
+    :grid="grid && $q.screen.xs"
     :columns="configuracionColumnas"
     :rows="listado"
     :filter="filter"
@@ -62,7 +63,7 @@
     <template v-if="permitirEditarCeldas" v-slot:body-cell="props">
       <q-td :key="props.col.name" :props="props">
         <q-popup-edit
-          v-if="props.col.editable && !props.col.type"
+          v-if="props.col.editable && !props.col.type || ['text', 'number', 'date', 'time'].includes(props.col.type)"
           v-model="props.row[props.col.name]"
           v-slot="scope"
           auto-save

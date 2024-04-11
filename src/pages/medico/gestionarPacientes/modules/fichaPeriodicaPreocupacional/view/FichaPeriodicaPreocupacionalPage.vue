@@ -127,7 +127,128 @@
             </q-input>
           </div>
 
-          <div class="text-bold q-mb-md">ANTECEDENTES GINECO OBSTÉTRICOS</div>
+          <div class="col-12 text-bold q-mb-md">ANTECEDENTES GINECO OBSTÉTRICOS</div>
+          <div class="col-12 col-md-3 q-mb-md">
+            <label class="q-mb-sm block">Menarquía</label>
+            <q-input
+              v-model="fichaPeriodica.antecedente_gineco_obstetrico.menarquia"
+              placeholder="Opcional"
+              :disable="disabled"
+              outlined
+              dense
+            >
+            </q-input>
+          </div>
+
+          <div class="col-12 col-md-3 q-mb-md">
+            <label class="q-mb-sm block">Ciclos</label>
+            <q-input
+              v-model="fichaPeriodica.antecedente_gineco_obstetrico.ciclos"
+              placeholder="Opcional"
+              :disable="disabled"
+              outlined
+              dense
+            >
+            </q-input>
+          </div>
+
+          <div class="col-12 col-md-3 q-mb-md">
+            <label class="q-mb-sm block">Fecha de última menstruación</label>
+            <q-input
+              v-model="fichaPeriodica.antecedente_gineco_obstetrico.fecha_ultima_menstruacion"
+              placeholder="Opcional"
+              :disable="disabled"
+              outlined
+              dense
+            >
+            </q-input>
+          </div>
+
+          <div class="col-12 col-md-3 q-mb-md">
+            <label class="q-mb-sm block">Gestas</label>
+            <q-input
+              v-model="fichaPeriodica.antecedente_gineco_obstetrico.gestas"
+              placeholder="Opcional"
+              :disable="disabled"
+              outlined
+              dense
+            >
+            </q-input>
+          </div>
+
+          <div class="col-12 col-md-3 q-mb-md">
+            <label class="q-mb-sm block">Partos</label>
+            <q-input
+              v-model="fichaPeriodica.antecedente_gineco_obstetrico.partos"
+              placeholder="Opcional"
+              :disable="disabled"
+              outlined
+              dense
+            >
+            </q-input>
+          </div>
+
+          <div class="col-12 col-md-3 q-mb-md">
+            <label class="q-mb-sm block">Cesáreas</label>
+            <q-input
+              v-model="fichaPeriodica.antecedente_gineco_obstetrico.cesareas"
+              placeholder="Opcional"
+              :disable="disabled"
+              outlined
+              dense
+            >
+            </q-input>
+          </div>
+
+          <div class="col-12 col-md-3 q-mb-md">
+            <label class="q-mb-sm block">Abortos</label>
+            <q-input
+              v-model="fichaPeriodica.antecedente_gineco_obstetrico.abortos"
+              placeholder="Opcional"
+              :disable="disabled"
+              outlined
+              dense
+            >
+            </q-input>
+          </div>
+
+          <div class="col-12 col-md-3 q-mb-md">
+            <label class="q-mb-sm block">Hijos vivos</label>
+            <q-input
+              v-model="fichaPeriodica.antecedente_gineco_obstetrico.hijos_vivos"
+              placeholder="Opcional"
+              :disable="disabled"
+              outlined
+              dense
+            >
+            </q-input>
+          </div>
+
+          <div class="col-12 col-md-3 q-mb-md">
+            <label class="q-mb-sm block">Hijos muertos</label>
+            <q-input
+              v-model="fichaPeriodica.antecedente_gineco_obstetrico.hijos_muertos"
+              placeholder="Opcional"
+              :disable="disabled"
+              outlined
+              dense
+            >
+            </q-input>
+          </div>
+
+          <div class="col-12 col-md-6 q-mb-md">
+            <label class="q-mb-sm block">Vida sexual activa:</label>
+            <div class="q-gutter-sm">
+              <q-radio
+                v-for="religion in listadosAuxiliares.religiones"
+                :key="religion.nombre"
+                v-model="fichaPeriodica.religion"
+                :val="religion.id"
+                :label="`${religion.nombre}`"
+                :disable="disabled"
+              />
+            </div>
+          </div>
         </div>
       </q-expansion-item>
     </template>

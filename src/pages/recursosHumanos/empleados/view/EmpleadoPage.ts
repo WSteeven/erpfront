@@ -1,4 +1,5 @@
 //Dependencias
+import { configuracionColumnasTipoDiscapacidadPorcentaje } from '../domain/configuracionColumnasTipoDiscapacidadPorcentaje'
 import { configuracionColumnasEmpleados } from '../domain/configuracionColumnasEmpleados'
 import {
   maxLength,
@@ -51,16 +52,16 @@ import { Familiares } from 'pages/recursosHumanos/familiares/domain/Familiares'
 import { FamiliaresController } from 'pages/recursosHumanos/familiares/infraestructure/FamiliaresController'
 import { AxiosHttpRepository } from 'shared/http/infraestructure/AxiosHttpRepository'
 import { apiConfig, endpoints } from 'config/api'
-import { imprimirArchivo } from 'shared/utils'
+import { encontrarUltimoIdListado, imprimirArchivo } from 'shared/utils'
 import { useCargandoStore } from 'stores/cargando'
 import { AxiosResponse } from 'axios'
 import { useNotificaciones } from 'shared/notificaciones'
 import { useConfiguracionGeneralStore } from 'stores/configuracion_general'
 import { ArchivoController } from 'pages/gestionTrabajos/subtareas/modules/gestorArchivosTrabajos/infraestructure/ArchivoController'
 import { TipoDiscapacidadController } from 'pages/recursosHumanos/tipo-discapacidad/infraestructure/TipoDiscapacidadController'
-import { configuracionColumnasTipoDiscapacidadPorcentaje } from '../domain/configuracionColumnasTipoDiscapacidadPorcentaje'
 import { TipoDiscapacidadPorcentaje } from '../domain/TipoDiscapacidadPorcentaje'
 import { TipoDiscapacidad } from 'pages/recursosHumanos/tipo-discapacidad/domain/TipoDiscapacidad'
+import { reactive } from 'vue'
 
 export default defineComponent({
   components: {
@@ -76,7 +77,7 @@ export default defineComponent({
      *********/
     useNotificacionStore().setQuasar(useQuasar())
     useCargandoStore().setQuasar(useQuasar())
-    const { notificarCorrecto } = useNotificaciones()
+    const { notificarCorrecto, confirmar } = useNotificaciones()
 
     /***********
      * Mixin
@@ -96,6 +97,10 @@ export default defineComponent({
       mixin.useComportamiento()
     const { onConsultado, onGuardado } = mixin.useHooks()
 
+    /************
+     * Variables
+     ************/
+    const configuracionColumnasTipoDiscapacidadPorcentajeReactive = reactive(configuracionColumnasTipoDiscapacidadPorcentaje)
     const opciones_cantones = ref([])
     const opciones_roles = ref([])
     const opciones_cargos = ref([])
@@ -121,8 +126,9 @@ export default defineComponent({
     const refArchivo = ref()
     const idEmpleado = ref()
     const idsTiposDiscapacidades: Ref<number[]> = ref([])
+
     cargarVista(async () => {
-     await obtenerListados({
+      await obtenerListados({
         cantones: new CantonController(),
         cargos: {
           controller: new CargoController(),
@@ -156,10 +162,11 @@ export default defineComponent({
           params: { activo: 1 },
         },
       })
-      configuracionColumnasTipoDiscapacidadPorcentaje.find((item) => item.field === 'tipo_discapacidad')!.options = listadosAuxiliares.tiposDiscapacidades.map((v: TipoDiscapacidad) => { return { label: v.nombre, value: v.id } })
+      configuracionColumnasTipoDiscapacidadPorcentajeReactive.find((item) => item.field === 'tipo_discapacidad')!.options = listadosAuxiliares.tiposDiscapacidades.map((v: TipoDiscapacidad) => { return { label: v.nombre, value: v.id } })
       console.log(configuracionColumnasTipoDiscapacidadPorcentaje);
 
     })
+
     /***************************
      * Configuracion de columnas
      ****************************/
@@ -388,17 +395,21 @@ export default defineComponent({
         entidad.estado = false
       },
     }
-     const btnAgregarDiscapacidad: CustomActionTable = {
-      titulo: 'Agregar',
-      icono: 'bi-toggle2-off',
+    /*const btnAgregarDiscapacidad: CustomActionTable = {
+      titulo: 'Agregar fila',
+      icono: 'bi-plus',
       color: 'positive',
       tooltip: 'Agregar',
-      accion: () => {
-        console.log('agregar discapácidad');
 
-       empleado.discapacidades?.push(new TipoDiscapacidadPorcentaje ())
-      },
+    } */
+
+    const agregarDiscapacidad = () => {
+      console.log('agregar discapácidad');
+      const fila = new TipoDiscapacidadPorcentaje()
+      fila.id = empleado.discapacidades?.length ? encontrarUltimoIdListado(empleado.discapacidades) + 1 : 1
+      empleado.discapacidades?.push(fila)
     }
+
     function reestablecer_usuario() {
       if (accion.value == acciones.editar && empleado.generar_usuario) {
         generarUsename()
@@ -408,6 +419,15 @@ export default defineComponent({
       }
     }
 
+    const btnEliminarDiscapacidad: CustomActionTable = {
+      titulo: 'Eliminar',
+      icono: 'bi-x',
+      color: 'negative',
+      accion: ({ entidad, posicion }) => {
+        // eliminar({ posicion })
+        confirmar('¿Está seguro de continuar?', () => empleado.discapacidades?.splice(posicion, 1))
+      },
+    }
 
     function obtenerUsername() {
       if (accion.value == acciones.editar && empleado.generar_usuario) {
@@ -553,6 +573,12 @@ export default defineComponent({
         )
       })
     }
+
+    /*******
+     * Init
+     *******/
+    agregarDiscapacidad()
+
     return {
       mixin,
       mixinFamiliares,
@@ -593,6 +619,7 @@ export default defineComponent({
       btnImprimirEmpleados,
       btnHabilitarEmpleado,
       btnDesHabilitarEmpleado,
+      btnEliminarDiscapacidad,
       modales,
       idsTiposDiscapacidades,
       tiposDiscapacidades,
@@ -607,8 +634,9 @@ export default defineComponent({
       filtroDepartamentos,
       filtrobancos,
       filtrarTipoDiscapacidad,
-      configuracionColumnasTipoDiscapacidadPorcentaje,
-      btnAgregarDiscapacidad
+      configuracionColumnasTipoDiscapacidadPorcentajeReactive,
+      agregarDiscapacidad,
+      accionesTabla,
     }
   },
 })
