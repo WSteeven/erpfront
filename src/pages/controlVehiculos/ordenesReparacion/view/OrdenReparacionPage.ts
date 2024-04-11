@@ -1,5 +1,6 @@
 //Dependencias
 import { defineComponent, ref } from "vue";
+import { configuracionColumnasOrdenesReparaciones } from "../domain/configuracionColumnasOrdenesReparacion";
 
 //Componentes
 import TabLayoutFilterTabs2 from "shared/contenedor/modules/simple/view/TabLayoutFilterTabs2.vue";
@@ -17,7 +18,6 @@ import { ServicioController } from "pages/controlVehiculos/servicios/infraestruc
 import { useFiltrosListadosSelects } from "shared/filtrosListadosGenerales";
 import { required } from "shared/i18n-validators";
 import useVuelidate from "@vuelidate/core";
-import { configuracionColumnasOrdenesReparaciones } from "../domain/configuracionColumnasOrdenesReparacion";
 import { obtenerFechaActual } from "shared/utils";
 import { acciones, autorizaciones, maskFecha } from "config/utils";
 import { AsignacionVehiculoController } from "pages/controlVehiculos/asignarVehiculos/infraestructure/AsignacionVehiculoController";
