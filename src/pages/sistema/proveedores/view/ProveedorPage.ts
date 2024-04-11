@@ -32,7 +32,6 @@ import { useNotificaciones } from 'shared/notificaciones';
 import { ContactoProveedorController } from 'pages/comprasProveedores/contactosProveedor/infraestructure/ContactoProveedorController';
 import { useProveedorStore } from 'stores/comprasProveedores/proveedor';
 import { useAuthenticationStore } from 'stores/authentication';
-import moment from 'moment';
 import { useCalificacionProveedorStore } from 'stores/comprasProveedores/calificacionProveedor';
 import { DetalleDepartamentoProveedorController } from 'pages/comprasProveedores/detallesDepartamentosProveedor/infraestructure/DetalleDepartamentoProveedorController';
 import { LocalStorage, useQuasar } from 'quasar';
@@ -47,6 +46,7 @@ import { ArchivoController } from 'pages/gestionTrabajos/subtareas/modules/gesto
 import { CustomActionPrompt } from 'components/tables/domain/CustomActionPrompt';
 import { ValidarPropiedadesProveedor } from '../application/validaciones/ValidarPropiedadesProveedor';
 import { DatoBancarioController } from 'pages/comprasProveedores/datosBancariosProveedor/infraestructure/DatoBancarioController';
+import dayjs from 'dayjs';
 
 
 export default defineComponent({
@@ -286,7 +286,7 @@ export default defineComponent({
         const departamento_calificador = entidad.related_departamentos.filter((v) => v.id === store.user.departamento)[0]
         if (departamento_calificador) {
           if (departamento_calificador.pivot.fecha_calificacion) {
-            const diasTranscurridos = moment().diff(moment(departamento_calificador?.pivot.fecha_calificacion), 'days')
+            const diasTranscurridos = dayjs().diff(dayjs(departamento_calificador?.pivot.fecha_calificacion), 'day')
             return diasTranscurridos > 365 && entidad.estado
           }
           return true && entidad.estado

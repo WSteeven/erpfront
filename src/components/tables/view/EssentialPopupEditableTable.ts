@@ -162,6 +162,11 @@ export default defineComponent({
       type: Boolean,
       default: true,
     },
+    grid: {
+      type: Boolean,
+      default: true,
+    },
+    
   },
   emits: [
     'selected',
@@ -183,7 +188,6 @@ export default defineComponent({
     const fila = ref()
     const posicionFilaEditada = ref()
     const refTableFilters = ref()
-    const grid = ref(false)
     const inFullscreen = ref(false)
     const mostrarFiltros = ref(false)
     const visibleColumns = ref(getVisibleColumns(props.configuracionColumnas))
@@ -351,7 +355,6 @@ export default defineComponent({
       refEditarModal,
       referencia,
       refTableFilters,
-      grid,
       filter,
       visibleColumns,
       selected,

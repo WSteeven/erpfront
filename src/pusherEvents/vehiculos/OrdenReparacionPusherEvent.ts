@@ -16,7 +16,7 @@ export class OrdenReparacionPusherEvent {
         ordenReparacion.bind('ordenes-creadas', function (e) {
             notificacionStore.actualizar()
 
-            notificarCorrecto('Tienes un pedido esperando ser atendido')
+            notificarCorrecto('Tienes una orden de reparación de vehículo esperando ser atendida')
 
             //lanzamos la notificación push en el navegador del destinatario
             pushEventMesaggeServiceWorker({

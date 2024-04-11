@@ -9,6 +9,6 @@
     "minValue": "no puede ingresar un valor inferior al mínimo",
     "maxValue": "no puede ingresar un valor superior al maximo",
     "numeric": "Debe ser un número mayor a cero",
-    "integer": "Ingresa solo números sin decimales",
+    "integer": "Ingresa solo números sin decimales"
   }
 }

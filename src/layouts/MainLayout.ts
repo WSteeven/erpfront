@@ -3,13 +3,14 @@
 import { Notificacion } from 'pages/administracion/notificaciones/domain/Notificacion'
 import EssentialLoading from 'components/loading/view/EssentialLoading.vue'
 import { useNotificationRealtimeStore } from 'stores/notificationRealtime'
-import { defineComponent, ref, computed, Ref, ComputedRef, watch, watchEffect } from 'vue'
+import { defineComponent, ref, computed, Ref, ComputedRef, watch, watchEffect, createApp } from 'vue'
 import { useAuthenticationStore } from 'src/stores/authentication'
 import { LocalStorage, useQuasar } from 'quasar'
 import { useMenuStore } from 'src/stores/menu'
 import { useRoute, useRouter } from 'vue-router'
 import Swal from 'sweetalert2'
-import moment from 'moment'
+import relativeTime from 'dayjs/plugin/relativeTime'
+import es from 'dayjs/locale/es'
 
 // Componentes
 import ScrollToTopButton from 'components/buttonSubmits/ScrollToTopButton.vue'
@@ -28,6 +29,7 @@ import { formatearFechaTexto } from 'shared/utils'
 import { NotIdle } from 'idlejs'
 import { useMainLayoutStore } from 'stores/mainLayout'
 import { StatusEssentialLoading } from 'components/loading/application/StatusEssentialLoading'
+import dayjs from 'dayjs'
 
 export default defineComponent({
   name: 'MainLayout',
@@ -57,8 +59,7 @@ export default defineComponent({
      * Init
      *******/
     if (authenticationStore.esTecnico) movilizacionSubtareaStore.getSubtareaDestino(authenticationStore.user.id)
-    moment.updateLocale('es', { invalidDate: 'No aplica' })
-
+    
     /***************************
      * Permitir Notificaciones push
      ***************************/
@@ -71,6 +72,11 @@ export default defineComponent({
         }
       });
     }
+
+    dayjs.extend(relativeTime)
+    dayjs.locale(es)
+    
+
 
     /************
      * Variables
@@ -286,7 +292,7 @@ export default defineComponent({
           return b.id! - a.id!
         })
       },
-      moment,
+      dayjs,
       obtenerIcono: obtenerIconoNotificacion,
       imagenPerfil,
       selfCenterMiddle,
