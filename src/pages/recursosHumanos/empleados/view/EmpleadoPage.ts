@@ -122,7 +122,7 @@ export default defineComponent({
     const idEmpleado = ref()
     const idsTiposDiscapacidades: Ref<number[]> = ref([])
     cargarVista(async () => {
-      obtenerListados({
+     await obtenerListados({
         cantones: new CantonController(),
         cargos: {
           controller: new CargoController(),
@@ -156,6 +156,9 @@ export default defineComponent({
           params: { activo: 1 },
         },
       })
+      configuracionColumnasTipoDiscapacidadPorcentaje.find((item) => item.field === 'tipo_discapacidad')!.options = listadosAuxiliares.tiposDiscapacidades.map((v: TipoDiscapacidad) => { return { label: v.nombre, value: v.id } })
+      console.log(configuracionColumnasTipoDiscapacidadPorcentaje);
+
     })
     /***************************
      * Configuracion de columnas
@@ -166,7 +169,7 @@ export default defineComponent({
     ]
 
 
-    configuracionColumnasTipoDiscapacidadPorcentaje.find((item) => item.field === 'tipo_discapacidad')!.options = listadosAuxiliares.tiposDiscapacidades.map((v: TipoDiscapacidad) => { return { label: v.nombre, value: v.id } })
+
     /*************
      * Validaciones
      **************/
