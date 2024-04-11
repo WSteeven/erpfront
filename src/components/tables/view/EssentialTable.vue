@@ -8,11 +8,9 @@
     :modalMaximized="modalMaximized"
   ></EditarTablaModal>
 
-  <!-- ref="referencia" -->
-  <!--  || $q.screen.xs" -->
+  <!-- :hide-header="grid" -->
   <q-table
     ref="refTable"
-    :hide-header="grid"
     :grid="grid && $q.screen.xs"
     :columns="configuracionColumnas"
     :rows="listado"

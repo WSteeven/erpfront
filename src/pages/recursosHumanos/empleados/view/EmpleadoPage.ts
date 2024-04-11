@@ -25,10 +25,10 @@ import { defineComponent, ref, watchEffect, computed, Ref } from 'vue'
 import TabLayout from 'shared/contenedor/modules/simple/view/TabLayout.vue'
 import SelectorImagen from 'components/SelectorImagen.vue'
 import GestorArchivos from 'components/gestorArchivos/GestorArchivos.vue'
+import EssentialTable from 'components/tables/view/EssentialTable.vue'
 
 //Logica y controladores
 import { ContenedorSimpleMixin } from 'shared/contenedor/modules/simple/application/ContenedorSimpleMixin'
-import EssentialTable from 'components/tables/view/EssentialTable.vue'
 import { RolController } from 'pages/administracion/roles/infraestructure/RolController'
 import { GrupoController } from 'pages/recursosHumanos/grupos/infraestructure/GrupoController'
 import { EmpleadoController } from '../infraestructure/EmpleadoController'

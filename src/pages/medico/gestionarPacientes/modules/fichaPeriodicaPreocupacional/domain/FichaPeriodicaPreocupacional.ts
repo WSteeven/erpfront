@@ -8,6 +8,7 @@ export class FichaPeriodicaPreocupacional extends EntidadAuditable {
   lateralidad: string | null
   motivo_consulta: string | null
   antecedente_gineco_obstetrico: AntecedenteGinecoObstetrico
+  vida_sexual_activa: boolean
 
   constructor() {
     super()
@@ -17,5 +18,6 @@ export class FichaPeriodicaPreocupacional extends EntidadAuditable {
     this.lateralidad = null
     this.motivo_consulta = null
     this.antecedente_gineco_obstetrico = new AntecedenteGinecoObstetrico()
+    this.vida_sexual_activa = false
   }
 }

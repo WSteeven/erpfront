@@ -114,7 +114,9 @@
         default-opened
       >
         <div class="row q-col-gutter-x-sm q-pa-md">
-          <div class="text-bold q-mb-md">ANTECEDENTES CLÍNICOS Y QUIRÚRGICOS</div>
+          <div class="text-bold q-mb-md">
+            ANTECEDENTES CLÍNICOS Y QUIRÚRGICOS
+          </div>
           <div class="col-12 q-mb-md">
             <label class="q-mb-sm block">Descripción</label>
             <q-input
@@ -127,8 +129,15 @@
             </q-input>
           </div>
 
-          <div class="col-12 text-bold q-mb-md">ANTECEDENTES GINECO OBSTÉTRICOS</div>
-          <div class="col-12 col-md-3 q-mb-md">
+          <div class="col-12 text-bold q-mb-md">
+            {{
+              mostrarMasculino
+                ? 'ANTECEDENTES REPRODUCTIVOS MASCULINOS'
+                : 'ANTECEDENTES GINECO OBSTÉTRICOS'
+            }}
+          </div>
+
+          <div v-if="mostrarFemenino" class="col-12 col-md-3 q-mb-md">
             <label class="q-mb-sm block">Menarquía</label>
             <q-input
               v-model="fichaPeriodica.antecedente_gineco_obstetrico.menarquia"
@@ -140,11 +149,12 @@
             </q-input>
           </div>
 
-          <div class="col-12 col-md-3 q-mb-md">
+          <div v-if="mostrarFemenino" class="col-12 col-md-3 q-mb-md">
             <label class="q-mb-sm block">Ciclos</label>
             <q-input
               v-model="fichaPeriodica.antecedente_gineco_obstetrico.ciclos"
               placeholder="Opcional"
+              type="number"
               :disable="disabled"
               outlined
               dense
@@ -152,11 +162,15 @@
             </q-input>
           </div>
 
-          <div class="col-12 col-md-3 q-mb-md">
+          <div v-if="mostrarFemenino" class="col-12 col-md-3 q-mb-md">
             <label class="q-mb-sm block">Fecha de última menstruación</label>
             <q-input
-              v-model="fichaPeriodica.antecedente_gineco_obstetrico.fecha_ultima_menstruacion"
+              v-model="
+                fichaPeriodica.antecedente_gineco_obstetrico
+                  .fecha_ultima_menstruacion
+              "
               placeholder="Opcional"
+              type="number"
               :disable="disabled"
               outlined
               dense
@@ -164,11 +178,12 @@
             </q-input>
           </div>
 
-          <div class="col-12 col-md-3 q-mb-md">
+          <div v-if="mostrarFemenino" class="col-12 col-md-3 q-mb-md">
             <label class="q-mb-sm block">Gestas</label>
             <q-input
               v-model="fichaPeriodica.antecedente_gineco_obstetrico.gestas"
               placeholder="Opcional"
+              type="number"
               :disable="disabled"
               outlined
               dense
@@ -176,11 +191,12 @@
             </q-input>
           </div>
 
-          <div class="col-12 col-md-3 q-mb-md">
+          <div v-if="mostrarFemenino" class="col-12 col-md-3 q-mb-md">
             <label class="q-mb-sm block">Partos</label>
             <q-input
               v-model="fichaPeriodica.antecedente_gineco_obstetrico.partos"
               placeholder="Opcional"
+              type="number"
               :disable="disabled"
               outlined
               dense
@@ -188,11 +204,12 @@
             </q-input>
           </div>
 
-          <div class="col-12 col-md-3 q-mb-md">
+          <div v-if="mostrarFemenino" class="col-12 col-md-3 q-mb-md">
             <label class="q-mb-sm block">Cesáreas</label>
             <q-input
               v-model="fichaPeriodica.antecedente_gineco_obstetrico.cesareas"
               placeholder="Opcional"
+              type="number"
               :disable="disabled"
               outlined
               dense
@@ -200,11 +217,12 @@
             </q-input>
           </div>
 
-          <div class="col-12 col-md-3 q-mb-md">
+          <div v-if="mostrarFemenino" class="col-12 col-md-3 q-mb-md">
             <label class="q-mb-sm block">Abortos</label>
             <q-input
               v-model="fichaPeriodica.antecedente_gineco_obstetrico.abortos"
               placeholder="Opcional"
+              type="number"
               :disable="disabled"
               outlined
               dense
@@ -227,7 +245,77 @@
           <div class="col-12 col-md-3 q-mb-md">
             <label class="q-mb-sm block">Hijos muertos</label>
             <q-input
-              v-model="fichaPeriodica.antecedente_gineco_obstetrico.hijos_muertos"
+              v-model="
+                fichaPeriodica.antecedente_gineco_obstetrico.hijos_muertos
+              "
+              placeholder="Opcional"
+              type="number"
+              :disable="disabled"
+              outlined
+              dense
+            >
+            </q-input>
+          </div>
+
+          <div class="col-12 col-md-3 q-mb-md">
+            <label class="q-mb-sm block">Vida sexual activa</label>
+            <div class="q-gutter-sm">
+              <q-radio
+                v-model="fichaPeriodica.vida_sexual_activa"
+                :val="true"
+                label="Si"
+                :disable="disabled"
+              />
+              <q-radio
+                v-model="fichaPeriodica.vida_sexual_activa"
+                :val="false"
+                label="No"
+                :disable="disabled"
+              />
+            </div>
+          </div>
+
+          <div class="col-12 col-md-3 q-mb-md">
+            <label class="q-mb-sm block"
+              >Método de planificación familiar</label
+            >
+            <div class="q-gutter-sm">
+              <q-radio
+                v-model="
+                  fichaPeriodica.antecedente_gineco_obstetrico
+                    .tiene_metodo_planificacion_familiar
+                "
+                :val="true"
+                label="Si"
+                :disable="disabled"
+              />
+              <q-radio
+                v-model="
+                  fichaPeriodica.antecedente_gineco_obstetrico
+                    .tiene_metodo_planificacion_familiar
+                "
+                :val="false"
+                label="No"
+                :disable="disabled"
+              />
+            </div>
+          </div>
+
+          <div
+            v-if="
+              fichaPeriodica.antecedente_gineco_obstetrico
+                .tiene_metodo_planificacion_familiar
+            "
+            class="col-12 col-md-3 q-mb-md"
+          >
+            <label class="q-mb-sm block"
+              >Tipo de método de planificación familiar</label
+            >
+            <q-input
+              v-model="
+                fichaPeriodica.antecedente_gineco_obstetrico
+                  .tipo_metodo_planificacion_familiar
+              "
               placeholder="Opcional"
               :disable="disabled"
               outlined
@@ -236,19 +324,29 @@
             </q-input>
           </div>
 
-          <div class="col-12 col-md-6 q-mb-md">
-            <label class="q-mb-sm block">Vida sexual activa:</label>
-            <div class="q-gutter-sm">
-              <q-radio
-                v-for="religion in listadosAuxiliares.religiones"
-                :key="religion.nombre"
-                v-model="fichaPeriodica.religion"
-                :val="religion.id"
-                :label="`${religion.nombre}`"
-                :disable="disabled"
-              />
-            </div>
+          <div class="col-12 q-mb-md">
+            <essential-table
+              :configuracionColumnas="
+                configuracionColumnasResultadoExamenPreocupacional
+              "
+              :datos="
+                fichaPeriodica.antecedente_gineco_obstetrico
+                  .resultados_examenes_preocupacionales
+              "
+              :permitirConsultar="false"
+              :permitirEliminar="false"
+              :permitirEditar="false"
+              :mostrarBotones="false"
+              :permitir-editar-celdas="true"
+              :mostrar-header="false"
+              :alto-fijo="false"
+              :ajustarCeldas="true"
+            >
+            </essential-table>
           </div>
+
+          <div class="col-12 text-bold q-mb-md">HÁBITOS TÓXICOS</div>
+          
         </div>
       </q-expansion-item>
     </template>
