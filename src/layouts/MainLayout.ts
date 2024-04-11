@@ -9,8 +9,9 @@ import { LocalStorage, useQuasar } from 'quasar'
 import { useMenuStore } from 'src/stores/menu'
 import { useRoute, useRouter } from 'vue-router'
 import Swal from 'sweetalert2'
-import relativeTime from 'dayjs/plugin/relativeTime'
+import dayjs from 'dayjs'
 import es from 'dayjs/locale/es'
+import relativeTime from 'dayjs/plugin/relativeTime'
 
 // Componentes
 import ScrollToTopButton from 'components/buttonSubmits/ScrollToTopButton.vue'
@@ -29,7 +30,6 @@ import { formatearFechaTexto } from 'shared/utils'
 import { NotIdle } from 'idlejs'
 import { useMainLayoutStore } from 'stores/mainLayout'
 import { StatusEssentialLoading } from 'components/loading/application/StatusEssentialLoading'
-import dayjs from 'dayjs'
 
 export default defineComponent({
   name: 'MainLayout',

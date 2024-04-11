@@ -740,7 +740,7 @@ export const useMenuStore = defineStore('menu', () => {
         {
           title: 'Combustibles',
           link: 'combustibles',
-          icon: 'bi-fuel-pump-fill',
+          icon: 'bi-circle',
           can: store.can('puede.acceder.combustibles'),
         },
         {
@@ -758,7 +758,7 @@ export const useMenuStore = defineStore('menu', () => {
         {
           title: 'Seguros vehiculares',
           link: 'seguros',
-          icon: 'bi-shield-lock-fill',
+          icon: 'bi-circle',//'bi-shield-lock-fill',
           can: store.can('puede.acceder.seguros_vehiculares'),
         },
         {

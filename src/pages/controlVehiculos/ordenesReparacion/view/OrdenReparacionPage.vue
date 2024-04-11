@@ -5,6 +5,7 @@
     :ajustarCeldas="true"
     :tab-options="tabOptionsOrdenesReparaciones"
     :tabDefecto="tabActual"
+    :permitirEditar="tabActual == 1"
     :filtrar="filtrarOrdenesReparaciones"
     titulo-pagina="Matriculas de Vehículos"
     ><template #formulario>
@@ -49,8 +50,15 @@
           </div>
 
           <!-- Select autorizacion -->
-          <div v-if="orden.autorizacion" class="col-12 col-md-3 q-mb-md">
-            <label class="q-mb-sm block">Autorizacion</label>
+          <div
+            v-if="orden.autorizacion"
+            class="col-12 col-md-3 q-mb-md q-pt-none"
+          >
+            <q-chip
+              color="light-green-2"
+              class="text-positive text-bold q-mb-xs"
+              >Autorización</q-chip
+            >
             <q-select
               v-model="orden.autorizacion"
               :options="autorizaciones"
@@ -59,7 +67,7 @@
               options-dense
               dense
               outlined
-              disable
+              :disable="disabled || orden.autorizador !== store.user.id"
               :option-value="(v) => v.id"
               :option-label="(v) => v.nombre"
               emit-value
@@ -74,7 +82,7 @@
               </template>
             </q-select>
           </div>
-          {{ orden }}
+
           <!-- Servicios -->
           <div class="col-12 col-md-12 q-mb-md">
             <label class="q-mb-sm block">Servicios a realizar</label>
@@ -84,6 +92,7 @@
               options-dense
               clearable
               dense
+              :disable="disabled"
               outlined
               use-input
               use-chips
@@ -124,6 +133,7 @@
               placeholder="Obligatorio"
               hint="Ingresa alguna observación o novedad presentada en el interior del vehículo"
               outlined
+              :disable="disabled"
               dense
               ><template v-slot:error>
                 <div

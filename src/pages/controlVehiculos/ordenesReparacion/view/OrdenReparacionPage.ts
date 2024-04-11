@@ -106,7 +106,7 @@ export default defineComponent({
             configuracionColumnas: configuracionColumnasOrdenesReparaciones,
 
             tabActual,
-
+            store,
 
             //listados
             servicios, filtrarServicios,

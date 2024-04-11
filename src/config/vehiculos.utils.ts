@@ -30,8 +30,9 @@ export const tiposServicios = [
 ]
 
 export const tabOptionsOrdenesReparaciones: TabOption[] = [
-  { value: '1', label: 'PREVENTIVO', },
-  { value: '2', label: 'CORRECTIVO', },
+  { value: '1', label: 'PENDIENTES', },
+  { value: '2', label: 'APROBADAS', },
+  { value: '3', label: 'CANCELADAS', },
 ]
 
 export const tabOptionsConductores: TabOption[] = [
