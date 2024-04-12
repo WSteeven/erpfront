@@ -165,7 +165,7 @@ export default defineComponent({
                 fila.id = bitacora.actividadesRealizadas.length ? encontrarUltimoIdListado(bitacora.actividadesRealizadas) + 1 : 1
                 const fecha = new Date()
                 fila.fecha_hora = format(fecha, 'YYYY-MM-DD HH:mm:ss', 'es')
-                bitacora.actividadesRealizadas.push(fila)
+                bitacora.actividadesRealizadas.unshift(fila)
                 // emit('actualizar', bitacora.actividadesRealizadas)
             },
             visible: () => true

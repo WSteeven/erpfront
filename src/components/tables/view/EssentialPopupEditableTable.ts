@@ -46,10 +46,6 @@ export default defineComponent({
       type: Boolean,
       default: true,
     },
-    mostrarFooter: {
-      type: Boolean,
-      default: true,
-    },
     permitirBuscar: {
       type: Boolean,
       default: true,
@@ -75,6 +71,10 @@ export default defineComponent({
       default: true,
     },
     mostrarHeader: {
+      type: Boolean,
+      default: true,
+    },
+    mostrarFooter: {
       type: Boolean,
       default: true,
     },
@@ -166,7 +166,7 @@ export default defineComponent({
       type: Boolean,
       default: true,
     },
-    
+
   },
   emits: [
     'selected',

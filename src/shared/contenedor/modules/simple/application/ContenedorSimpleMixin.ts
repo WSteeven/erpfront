@@ -41,9 +41,11 @@ export class ContenedorSimpleMixin<T extends EntidadAuditable> extends Contenedo
     return {
       listar: this.listar.bind(this),
       listarArchivos: this.listarArchivos.bind(this),
+      listarActividades: this.listarActividades.bind(this),
       filtrar: this.filtrar.bind(this),
       consultar: this.consultar.bind(this),
       guardarArchivos: this.guardarArchivos.bind(this),
+      guardarActividades: this.guardarActividades.bind(this),
       guardar: this.guardar.bind(this),
       editar: this.editar.bind(this),
       editarParcial: this.editarParcial.bind(this),
@@ -271,6 +273,19 @@ export class ContenedorSimpleMixin<T extends EntidadAuditable> extends Contenedo
     }
     this.statusEssentialLoading.desactivar()
   }
+  private async listarActividades(id: number, params?: ParamsType, append = false) {
+    this.statusEssentialLoading.activar()
+    try {
+      const { result } = await this.controller.listarActividades(id, params)
+      if (result.length == 0) this.notificaciones.notificarCorrecto('Aún no se han agregado elementos')
+
+      if (append) this.refs.listadoActividades.value.push(...result)
+      else this.refs.listadoActividades.value = result
+    } catch (error) {
+      this.notificaciones.notificarError('Error al obtener el listado de actividades realizadas.')
+    }
+    this.statusEssentialLoading.desactivar()
+  }
 
   /**
    * Aqui se guardan los archivos
@@ -291,6 +306,24 @@ export class ContenedorSimpleMixin<T extends EntidadAuditable> extends Contenedo
 
       return response
     } catch (error: any) {
+      if (isAxiosError(error)) {
+        const mensajes: string[] = error.erroresValidacion
+        await notificarMensajesError(mensajes, this.notificaciones)
+      }
+    } finally {
+      this.statusEssentialLoading.desactivar()
+    }
+  }
+
+  private async guardarActividades(id: number, data: T, params?: ParamsType): Promise<any> {
+    this.statusEssentialLoading.activar()
+    try {
+      const { response } = await this.controller.guardarActivities(id, data)
+
+      this.notificaciones.notificarCorrecto(response.data.mensaje)
+
+      return response
+    } catch (error) {
       if (isAxiosError(error)) {
         const mensajes: string[] = error.erroresValidacion
         await notificarMensajesError(mensajes, this.notificaciones)

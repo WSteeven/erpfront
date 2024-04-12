@@ -348,7 +348,6 @@
                 :altoFijo="false"
                 :accion1Header="btnAgregarActividad"
                 :accion1="btnEliminar"
-                @guardarFila="(fila) => guardarFilaEditada(fila)"
               ></essential-popup-editable-table>
             </div>
           </div>

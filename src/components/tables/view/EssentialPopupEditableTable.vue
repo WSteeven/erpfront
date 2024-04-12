@@ -23,7 +23,7 @@
   </div>
   <q-table
     ref="referencia"
-    :hide-header="grid"
+    :hide-header="!mostrarHeader"
     :grid="grid && $q.screen.xs"
     :columns="configuracionColumnas"
     :rows="listado"

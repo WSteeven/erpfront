@@ -33,6 +33,7 @@ export const endpoints = {
   asignar_permisos_individual: new Endpoint('asignar-permisos-usuario'),
   crear_permiso: new Endpoint('crear-permiso'),
   //Archivos
+  actividades: new Endpoint('actividades'),
   archivos: new Endpoint('archivos'),
   // Ubicacion
   paises: new Endpoint('paises'),

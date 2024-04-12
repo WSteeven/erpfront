@@ -17,6 +17,7 @@ export const configuracionColumnasActividadesRealizadas: ColumnConfig<any>[] = [
         align: 'left',
         sortable: true,
         editable: true,
+        visible: true
     },
     {
         name: 'actividad',
@@ -26,5 +27,6 @@ export const configuracionColumnasActividadesRealizadas: ColumnConfig<any>[] = [
         type: 'textarea',
         sortable: true,
         editable: true,
+        visible: true
     },
 ]
