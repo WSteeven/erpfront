@@ -205,19 +205,6 @@ export default defineComponent({
     /*******************************************************************************************
      * Funciones
      ******************************************************************************************/
-    // function estructuraConsultaCategoria() {
-    //   let parametro = ''
-    //   if (orden.categorias!.length < 1) {
-    //     return ''
-    //   } else {
-    //     // console.log('Hay solo una categoria')
-    //     orden.categorias?.forEach((v, index) => {
-    //       if (index === orden.categorias!.length - 1) parametro += v
-    //       else parametro += v + '&categoria_id[]='
-    //     })
-    //   }
-    //   return parametro
-    // }
     async function subirArchivos() {
       await refArchivo.value.subir()
     }

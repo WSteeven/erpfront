@@ -285,7 +285,7 @@
     </template>
   </tab-layout>
   <modales-entidad
-    :comportamiento="modales"
+    :comportamiento="modales" :persistente="false"
     @guardado="guardado"
   ></modales-entidad>
   <modal-entidad
