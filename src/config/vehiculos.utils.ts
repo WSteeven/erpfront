@@ -75,21 +75,21 @@ export const estadosAsignacionesVehiculos = [
 export const optionsEstadosExtintor = [
   {
     label: 'Lleno',
-    value: 'lleno',
+    value: 'LLENO',
     color: 'green',
     checkedIcon: 'bi-check-circle-fill',
     uncheckedIcon: 'panorama_fish_eye',
   },
   {
     label: 'Vacio',
-    value: 'vacio',
+    value: 'VACIO',
     color: 'orange',
     checkedIcon: 'bi-check-circle-fill',
     uncheckedIcon: 'panorama_fish_eye',
   },
   {
     label: 'Caducado',
-    value: 'caducado',
+    value: 'CADUCADO',
     color: 'red',
     checkedIcon: 'bi-check-circle-fill',
     uncheckedIcon: 'panorama_fish_eye',
@@ -98,14 +98,14 @@ export const optionsEstadosExtintor = [
 export const optionsEstadosCualitativos = [
   {
     label: 'Lleno',
-    value: 'lleno',
+    value: 'LLENO',
     color: 'green',
     checkedIcon: 'bi-check-circle-fill',
     uncheckedIcon: 'panorama_fish_eye',
   },
   {
     label: 'Vacio',
-    value: 'vacio',
+    value: 'VACIO',
     color: 'red',
     checkedIcon: 'bi-check-circle-fill',
     uncheckedIcon: 'panorama_fish_eye',
@@ -114,14 +114,14 @@ export const optionsEstadosCualitativos = [
 export const optionsEstados = [
   {
     label: 'Buen estado',
-    value: 'buen estado',
+    value: 'BUENO',
     color: 'green',
     checkedIcon: 'bi-check-circle-fill',
     uncheckedIcon: 'panorama_fish_eye',
   },
   {
     label: 'Mal estado',
-    value: 'mal estado',
+    value: 'MALO',
     color: 'red',
     checkedIcon: 'bi-check-circle-fill',
     uncheckedIcon: 'panorama_fish_eye',
@@ -130,7 +130,7 @@ export const optionsEstados = [
 export const optionsDefault = [
   {
     label: '',
-    value: 'success',
+    value: 'CORRECTO',
     color: 'green',
     checkedIcon: 'bi-check-circle-fill',
     uncheckedIcon: 'panorama_fish_eye',
@@ -138,14 +138,14 @@ export const optionsDefault = [
   },
   {
     label: '',
-    value: 'warning',
+    value: 'ADVERTENCIA',
     color: 'orange',
     checkedIcon: 'bi-check-circle-fill',
     uncheckedIcon: 'panorama_fish_eye',
   },
   {
     label: '',
-    value: 'danger',
+    value: 'PELIGRO',
     color: 'red',
     checkedIcon: 'bi-check-circle-fill',
     uncheckedIcon: 'panorama_fish_eye',

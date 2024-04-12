@@ -412,7 +412,7 @@
                   >
                   <q-option-group
                     :disable="disabled"
-                    v-model="bitacora.parabrisas"
+                    v-model="bitacora.checklistVehiculo.parabrisas"
                     :options="optionsDefault"
                     keep-color
                     inline
@@ -425,7 +425,7 @@
                   <label class="q-mb-sm block">Limpiaparabrisas</label>
                   <q-option-group
                     :disable="disabled"
-                    v-model="bitacora.limpiaparabrisas"
+                    v-model="bitacora.checklistVehiculo.limpiaparabrisas"
                     :options="optionsDefault"
                     keep-color
                     inline
@@ -440,7 +440,7 @@
                   >
                   <q-option-group
                     :disable="disabled"
-                    v-model="bitacora.luces_interiores"
+                    v-model="bitacora.checklistVehiculo.luces_interiores"
                     :options="optionsDefault"
                     keep-color
                     inline
@@ -453,7 +453,7 @@
                   <label class="q-mb-sm block">Aire Acondicionado</label>
                   <q-option-group
                     :disable="disabled"
-                    v-model="bitacora.aire_acondicionado"
+                    v-model="bitacora.checklistVehiculo.aire_acondicionado"
                     :options="optionsDefault"
                     keep-color
                     inline
@@ -465,7 +465,9 @@
                   <label class="q-mb-sm block">Observación</label>
                   <q-input
                     autogrow
-                    v-model="bitacora.observacion_checklist_interior"
+                    v-model="
+                      bitacora.checklistVehiculo.observacion_checklist_interior
+                    "
                     placeholder="Opcional"
                     hint="Ingresa alguna observación o novedad presentada en el interior del vehículo"
                     outlined
@@ -487,7 +489,7 @@
                   <label class="q-mb-sm block">Aceite de motor</label>
                   <q-option-group
                     :disable="disabled"
-                    v-model="bitacora.aceite_motor"
+                    v-model="bitacora.checklistVehiculo.aceite_motor"
                     :options="optionsDefault"
                     keep-color
                     inline
@@ -500,7 +502,7 @@
                   <label class="q-mb-sm block">Aceite Hidraulico</label>
                   <q-option-group
                     :disable="disabled"
-                    v-model="bitacora.aceite_hidraulico"
+                    v-model="bitacora.checklistVehiculo.aceite_hidraulico"
                     :options="optionsDefault"
                     keep-color
                     inline
@@ -513,7 +515,7 @@
                   <label class="q-mb-sm block">Liquído de freno</label>
                   <q-option-group
                     :disable="disabled"
-                    v-model="bitacora.liquido_freno"
+                    v-model="bitacora.checklistVehiculo.liquido_freno"
                     :options="optionsDefault"
                     keep-color
                     inline
@@ -526,7 +528,7 @@
                   <label class="q-mb-sm block">Líquido refrigerante</label>
                   <q-option-group
                     :disable="disabled"
-                    v-model="bitacora.liquido_refrigerante"
+                    v-model="bitacora.checklistVehiculo.liquido_refrigerante"
                     :options="optionsDefault"
                     keep-color
                     inline
@@ -539,7 +541,7 @@
                   <label class="q-mb-sm block">Agua Plumas/Radiador</label>
                   <q-option-group
                     :disable="disabled"
-                    v-model="bitacora.cables_conexiones"
+                    v-model="bitacora.checklistVehiculo.cables_conexiones"
                     :options="optionsDefault"
                     keep-color
                     inline
@@ -552,7 +554,7 @@
                   <label class="q-mb-sm block">Filtro de combustible</label>
                   <q-option-group
                     :disable="disabled"
-                    v-model="bitacora.filtro_combustible"
+                    v-model="bitacora.checklistVehiculo.filtro_combustible"
                     :options="optionsDefault"
                     keep-color
                     inline
@@ -564,7 +566,7 @@
                   <label class="q-mb-sm block">Batería</label>
                   <q-option-group
                     :disable="disabled"
-                    v-model="bitacora.bateria"
+                    v-model="bitacora.checklistVehiculo.bateria"
                     :options="optionsDefault"
                     keep-color
                     inline
@@ -576,7 +578,7 @@
                   <label class="q-mb-sm block">Cables y Conexiones</label>
                   <q-option-group
                     :disable="disabled"
-                    v-model="bitacora.cables_conexiones"
+                    v-model="bitacora.checklistVehiculo.cables_conexiones"
                     :options="optionsDefault"
                     keep-color
                     inline
@@ -588,7 +590,9 @@
                   <label class="q-mb-sm block">Observación</label>
                   <q-input
                     autogrow
-                    v-model="bitacora.observacion_checklist_bajo_capo"
+                    v-model="
+                      bitacora.checklistVehiculo.observacion_checklist_bajo_capo
+                    "
                     placeholder="Opcional"
                     hint="Ingresa alguna observación o novedad presentada bajo el capó del vehículo"
                     outlined
@@ -610,7 +614,7 @@
                   <label class="q-mb-sm block">Luces exteriores</label>
                   <q-option-group
                     :disable="disabled"
-                    v-model="bitacora.luces_exteriores"
+                    v-model="bitacora.checklistVehiculo.luces_exteriores"
                     :options="optionsDefault"
                     keep-color
                     inline
@@ -625,7 +629,7 @@
                   >
                   <q-option-group
                     :disable="disabled"
-                    v-model="bitacora.frenos"
+                    v-model="bitacora.checklistVehiculo.frenos"
                     :options="optionsDefault"
                     keep-color
                     inline
@@ -638,7 +642,7 @@
                   <label class="q-mb-sm block">Amortiguadores</label>
                   <q-option-group
                     :disable="disabled"
-                    v-model="bitacora.amortiguadores"
+                    v-model="bitacora.checklistVehiculo.amortiguadores"
                     :options="optionsDefault"
                     keep-color
                     inline
@@ -651,7 +655,7 @@
                   <label class="q-mb-sm block">Llantas </label>
                   <q-option-group
                     :disable="disabled"
-                    v-model="bitacora.llantas"
+                    v-model="bitacora.checklistVehiculo.llantas"
                     :options="optionsDefault"
                     keep-color
                     inline
@@ -663,7 +667,9 @@
                   <label class="q-mb-sm block">Observación</label>
                   <q-input
                     autogrow
-                    v-model="bitacora.observacion_checklist_exterior"
+                    v-model="
+                      bitacora.checklistVehiculo.observacion_checklist_exterior
+                    "
                     placeholder="Opcional"
                     hint="Ingresa alguna observación o novedad presentada bajo el vehículo y en el exterior"
                     outlined
@@ -689,7 +695,7 @@
               <label class="q-mb-sm block">Botiquín</label>
               <q-option-group
                 :disable="disabled"
-                v-model="bitacora.botiquin"
+                v-model="bitacora.checklistAccesoriosVehiculo.botiquin"
                 placeholder="Obligatorio"
                 :options="optionsEstadosCualitativos"
                 keep-color
@@ -709,7 +715,7 @@
               <label class="q-mb-sm block">Caja de Herramientas</label>
               <q-option-group
                 :disable="disabled"
-                v-model="bitacora.caja_herramientas"
+                v-model="bitacora.checklistAccesoriosVehiculo.caja_herramientas"
                 placeholder="Obligatorio"
                 :options="optionsEstadosCualitativos"
                 keep-color
@@ -729,7 +735,7 @@
               <label class="q-mb-sm block">Triángulos de Seguridad</label>
               <q-option-group
                 :disable="disabled"
-                v-model="bitacora.triangulos"
+                v-model="bitacora.checklistAccesoriosVehiculo.triangulos"
                 placeholder="Obligatorio"
                 :options="optionsEstados"
                 keep-color
@@ -743,7 +749,7 @@
               <label class="q-mb-sm block">Llanta Emergencia</label>
               <q-option-group
                 :disable="disabled"
-                v-model="bitacora.llanta_emergencia"
+                v-model="bitacora.checklistAccesoriosVehiculo.llanta_emergencia"
                 placeholder="Obligatorio"
                 :options="optionsEstados"
                 keep-color
@@ -757,7 +763,7 @@
               <label class="q-mb-sm block">Cinturones de Seguridad</label>
               <q-option-group
                 :disable="disabled"
-                v-model="bitacora.cinturones"
+                v-model="bitacora.checklistAccesoriosVehiculo.cinturones"
                 placeholder="Obligatorio"
                 :options="optionsEstados"
                 keep-color
@@ -770,7 +776,7 @@
               <label class="q-mb-sm block">Gata Hidráulica</label>
               <q-option-group
                 :disable="disabled"
-                v-model="bitacora.gata"
+                v-model="bitacora.checklistAccesoriosVehiculo.gata"
                 placeholder="Obligatorio"
                 :options="optionsEstados"
                 keep-color
@@ -784,7 +790,7 @@
               <label class="q-mb-sm block">Portaescalera</label>
               <q-option-group
                 :disable="disabled"
-                v-model="bitacora.portaescalera"
+                v-model="bitacora.checklistAccesoriosVehiculo.portaescalera"
                 placeholder="Obligatorio"
                 :options="optionsEstados"
                 keep-color
@@ -798,7 +804,7 @@
               <label class="q-mb-sm block">Extintor</label>
               <q-option-group
                 :disable="disabled"
-                v-model="bitacora.extintor"
+                v-model="bitacora.checklistAccesoriosVehiculo.extintor"
                 placeholder="Obligatorio"
                 :options="optionsEstadosExtintor"
                 keep-color
@@ -811,7 +817,10 @@
               <label class="q-mb-sm block">Observación</label>
               <q-input
                 autogrow
-                v-model="bitacora.observacion_accesorios_vehiculo"
+                v-model="
+                  bitacora.checklistAccesoriosVehiculo
+                    .observacion_accesorios_vehiculo
+                "
                 placeholder="Opcional"
                 hint="Ingresa alguna observación o novedad acerca de los accesorios del vehículo"
                 outlined
@@ -838,7 +847,7 @@
                 class="q-mr-xs q-ml-xs"
                 size="1em"
               /><b> Información </b>Todas las imágenes son obligatorias en cada
-              bitácora:
+              bitácora
             </div>
           </div>
           <div class="row q-col-gutter-sm q-pa-sm">
@@ -847,10 +856,13 @@
               <label class="q-mb-sm block">Parte Delantera</label>
               <selector-imagen
                 file_extensiones=".jpg, image/*"
-                :imagen="bitacora.imagen_frontal"
+                :imagen="bitacora.checklistImagenVehiculo.imagen_frontal"
                 :comprimir="true"
                 :alto="'200px'"
-                @update:model-value="(data) => (bitacora.imagen_frontal = data)"
+                @update:model-value="
+                  (data) =>
+                    (bitacora.checklistImagenVehiculo.imagen_frontal = data)
+                "
               ></selector-imagen>
             </div>
 
@@ -859,10 +871,13 @@
               <label class="q-mb-sm block">Parte trasera</label>
               <selector-imagen
                 file_extensiones=".jpg, image/*"
-                :imagen="bitacora.imagen_trasera"
+                :imagen="bitacora.checklistImagenVehiculo.imagen_trasera"
                 :comprimir="true"
                 :alto="'200px'"
-                @update:model-value="(data) => (bitacora.imagen_trasera = data)"
+                @update:model-value="
+                  (data) =>
+                    (bitacora.checklistImagenVehiculo.imagen_trasera = data)
+                "
               ></selector-imagen>
             </div>
 
@@ -871,11 +886,15 @@
               <label class="q-mb-sm block">Parte Lateral Izq.</label>
               <selector-imagen
                 file_extensiones=".jpg, image/*"
-                :imagen="bitacora.imagen_lateral_izquierda"
+                :imagen="
+                  bitacora.checklistImagenVehiculo.imagen_lateral_izquierda
+                "
                 :comprimir="true"
                 :alto="'200px'"
                 @update:model-value="
-                  (data) => (bitacora.imagen_lateral_izquierda = data)
+                  (data) =>
+                    (bitacora.checklistImagenVehiculo.imagen_lateral_izquierda =
+                      data)
                 "
               ></selector-imagen>
             </div>
@@ -885,11 +904,15 @@
               <label class="q-mb-sm block">Parte Lateral Der.</label>
               <selector-imagen
                 file_extensiones=".jpg, image/*"
-                :imagen="bitacora.imagen_lateral_derecha"
+                :imagen="
+                  bitacora.checklistImagenVehiculo.imagen_lateral_derecha
+                "
                 :comprimir="true"
                 :alto="'200px'"
                 @update:model-value="
-                  (data) => (bitacora.imagen_lateral_derecha = data)
+                  (data) =>
+                    (bitacora.checklistImagenVehiculo.imagen_lateral_derecha =
+                      data)
                 "
               ></selector-imagen>
             </div>
@@ -899,11 +922,12 @@
               <label class="q-mb-sm block">Tablero (kilometraje)</label>
               <selector-imagen
                 file_extensiones=".jpg, image/*"
-                :imagen="bitacora.imagen_tablero_km"
+                :imagen="bitacora.checklistImagenVehiculo.imagen_tablero_km"
                 :comprimir="true"
                 :alto="'200px'"
                 @update:model-value="
-                  (data) => (bitacora.imagen_tablero_km = data)
+                  (data) =>
+                    (bitacora.checklistImagenVehiculo.imagen_tablero_km = data)
                 "
               ></selector-imagen>
             </div>
@@ -913,11 +937,13 @@
               <label class="q-mb-sm block">Tablero (radio)</label>
               <selector-imagen
                 file_extensiones=".jpg, image/*"
-                :imagen="bitacora.imagen_tablero_radio"
+                :imagen="bitacora.checklistImagenVehiculo.imagen_tablero_radio"
                 :comprimir="true"
                 :alto="'200px'"
                 @update:model-value="
-                  (data) => (bitacora.imagen_tablero_radio = data)
+                  (data) =>
+                    (bitacora.checklistImagenVehiculo.imagen_tablero_radio =
+                      data)
                 "
               ></selector-imagen>
             </div>
@@ -927,11 +953,12 @@
               <label class="q-mb-sm block">Asientos</label>
               <selector-imagen
                 file_extensiones=".jpg, image/*"
-                :imagen="bitacora.imagen_asientos"
+                :imagen="bitacora.checklistImagenVehiculo.imagen_asientos"
                 :comprimir="true"
                 :alto="'200px'"
                 @update:model-value="
-                  (data) => (bitacora.imagen_asientos = data)
+                  (data) =>
+                    (bitacora.checklistImagenVehiculo.imagen_asientos = data)
                 "
               ></selector-imagen>
             </div>
@@ -946,11 +973,12 @@
               >
               <selector-imagen
                 file_extensiones=".jpg, image/*"
-                :imagen="bitacora.imagen_accesorios"
+                :imagen="bitacora.checklistImagenVehiculo.imagen_accesorios"
                 :comprimir="true"
                 :alto="'200px'"
                 @update:model-value="
-                  (data) => (bitacora.imagen_accesorios = data)
+                  (data) =>
+                    (bitacora.checklistImagenVehiculo.imagen_accesorios = data)
                 "
               ></selector-imagen>
             </div>
@@ -959,7 +987,10 @@
               <label class="q-mb-sm block">Observación</label>
               <q-input
                 autogrow
-                v-model="bitacora.observacion_checklist_interior"
+                v-model="
+                  bitacora.checklistImagenVehiculo
+                    .observacion_checklist_interior
+                "
                 placeholder="Opcional"
                 hint="Ingresa alguna observación o novedad presentada en el vehículo"
                 outlined
