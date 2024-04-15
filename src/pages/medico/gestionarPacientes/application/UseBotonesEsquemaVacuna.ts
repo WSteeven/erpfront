@@ -30,7 +30,7 @@ export function useBotonesEsquemaVacuna(modales: ComportamientoModalesGestionPac
     color: 'blue-grey',
     accion: async () => {
       medicoStore.accion = acciones.nuevo
-      medicoStore.esquemaVacuna
+      medicoStore.esquemaVacuna = undefined
       medicoStore.tiposVacunasYaRealizadosPaciente = listadosAuxiliares.esquemasVacunas.map((esquema: EsquemaVacuna) => esquema.tipo_vacuna_id)
       modales.abrirModalEntidad('EsquemaVacunacionPage')
     }

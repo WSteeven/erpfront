@@ -13,6 +13,7 @@ import ButtonSubmits from 'components/buttonSubmits/buttonSubmits.vue'
 import EssentialTable from 'components/tables/view/EssentialTable.vue'
 import { useCargandoStore } from 'stores/cargando'
 import { useMainLayoutStore } from 'stores/mainLayout'
+import { getCurrentInstance } from 'vue'
 
 export default defineComponent({
   props: {
@@ -198,11 +199,15 @@ export default defineComponent({
     const store = useAuthenticationStore()
     const mainLayoutStore = useMainLayoutStore()
 
+    const currentInstance = getCurrentInstance()
+    const componentName = currentInstance?.parent?.type.name
+
     const puedeVer = computed(() =>
       store.can(`puede.ver.${router.name?.toString()}`) && props.permitirConsultar
     )
     const puedeCrear = computed(() =>
-      store.can(`puede.crear.${router.name?.toString()}`)
+      // store.can(`puede.crear.${router.name?.toString()}`)
+      store.can(`puede.crear.${componentName ?? router.name?.toString()}`)
     )
     const puedeEditar = computed(() =>
       store.can(`puede.editar.${router.name?.toString()}`) && props.permitirEditar

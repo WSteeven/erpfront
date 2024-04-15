@@ -41,7 +41,7 @@
                   />
                   <q-tab
                     :name="tiposEnfermedades.COMUNES"
-                    :label="tipoCitaMedica"
+                    :label="tiposEnfermedades.COMUNES"
                     :class="{
                       'tab-inactive':
                         tabsEnfermedades !== tiposEnfermedades.COMUNES,
@@ -306,8 +306,8 @@
     </template>
 
     <template #custom-buttons>
+      <!-- v-if="esAccidenteTrabajo && esConsultable && !consulta.dado_alta" -->
       <q-btn
-        v-if="esAccidenteTrabajo && esConsultable && !consulta.dado_alta"
         color="positive"
         @click="darAlta()"
         no-caps

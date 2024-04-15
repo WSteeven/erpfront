@@ -1,4 +1,5 @@
 import { EntidadAuditable } from 'shared/entidad/domain/entidadAuditable'
+import { AntecedentePersonal } from './AntecedentePersonal'
 
 export class AntecedenteGinecoObstetrico extends EntidadAuditable {
   menarquia: string | null
@@ -8,12 +9,6 @@ export class AntecedenteGinecoObstetrico extends EntidadAuditable {
   partos: string | null
   cesareas: string | null
   abortos: string | null
-  hijos_vivos: string | null
-  hijos_muertos: string | null
-  antecedentes_personales: number | null
-  tiene_metodo_planificacion_familiar: boolean
-  tipo_metodo_planificacion_familiar: string | null
-  resultados_examenes_preocupacionales: any[]
 
   constructor() {
     super()
@@ -24,11 +19,6 @@ export class AntecedenteGinecoObstetrico extends EntidadAuditable {
     this.partos = null
     this.cesareas = null
     this.abortos = null
-    this.hijos_vivos = null
-    this.hijos_muertos = null
-    this.antecedentes_personales = null
-    this.tiene_metodo_planificacion_familiar = false
-    this.tipo_metodo_planificacion_familiar = null
-    this.resultados_examenes_preocupacionales = []
+
   }
 }

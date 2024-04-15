@@ -8,7 +8,7 @@ export class ConfiguracionExamenCampo extends EntidadAuditable {
   configuracion_examen_categoria: number | null
   resultado: number | null // para configutracion columnas
   resultado_examen: number | null
-  observacion: string | null
+  observaciones: string | null
 
   constructor() {
     super()
@@ -19,6 +19,6 @@ export class ConfiguracionExamenCampo extends EntidadAuditable {
     this.configuracion_examen_categoria = null
     this.resultado = null
     this.resultado_examen = null
-    this.observacion = null
+    this.observaciones = null
   }
 }

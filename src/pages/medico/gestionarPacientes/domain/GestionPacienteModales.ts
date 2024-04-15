@@ -24,6 +24,6 @@ export class GestionPacienteModales {
     this.DiagnosticoRecetaPage = markRaw(new ComponenteModal('Diagnóstico receta', DiagnosticoRecetaPage))
     this.EsquemaVacunacionPage = markRaw(new ComponenteModal('Esquema de vacunación', EsquemaVacunacionPage))
     this.FichaAptitudPage = markRaw(new ComponenteModal('Ficha de Aptitud', FichaAptitudPage))
-    this.FichaPeriodicaPreocupacionalPage = markRaw(new ComponenteModal('Ficha períodica preocupacional', FichaPeriodicaPreocupacionalPage))
+    this.FichaPeriodicaPreocupacionalPage = markRaw(new ComponenteModal('Ficha períodica', FichaPeriodicaPreocupacionalPage))
   }
 }

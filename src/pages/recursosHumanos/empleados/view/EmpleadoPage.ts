@@ -419,14 +419,11 @@ export default defineComponent({
       }
     }
 
-    const btnEliminarDiscapacidad: CustomActionTable = {
+    const btnEliminarDiscapacidad: CustomActionTable<TipoDiscapacidadPorcentaje> = {
       titulo: 'Eliminar',
       icono: 'bi-x',
       color: 'negative',
-      accion: ({ entidad, posicion }) => {
-        // eliminar({ posicion })
-        confirmar('¿Está seguro de continuar?', () => empleado.discapacidades?.splice(posicion, 1))
-      },
+      accion: ({ posicion }) => confirmar('¿Está seguro de continuar?', () => empleado.discapacidades?.splice(posicion, 1))
     }
 
     function obtenerUsername() {

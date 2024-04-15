@@ -59,25 +59,34 @@
 
     <!-- Editar celdas -->
     <template v-if="permitirEditarCeldas" v-slot:body-cell="props">
-      <q-td :key="props.col.name" :props="props">
-        <q-popup-edit
-          v-if="props.col.editable && !props.col.type || ['text', 'number', 'date', 'time'].includes(props.col.type)"
+      <q-td
+        v-if="props.col.editable"
+        :key="props.col.name"
+        :props="props"
+        :class="{ 'bg-white text-bold': props.col.editable }"
+      >
+        <!-- <q-popup-edit
           v-model="props.row[props.col.name]"
           v-slot="scope"
           auto-save
           @hide="guardarCeldaEditada(props.row)"
         >
-        <!-- v-if="props.col.type != 'toggle' || props.col.type != 'select'" -->
-          <q-input
-            v-model="scope.value"
-            placeholder="Ingrese"
-            :type="props.col.type ? props.col.type : 'text'"
-            :hint="props.col.hint"
-            dense
-            autofocus
-            @keyup.enter="scope.set"
-          />
-        </q-popup-edit>
+        </q-popup-edit> -->
+
+        <q-input
+          v-if="
+            props.col.editable &&
+            (!props.col.type ||
+              ['text', 'number', 'date', 'time'].includes(props.col.type))
+          "
+          v-model="props.row[props.col.name]"
+          placeholder="Ingrese valor"
+          :type="props.col.type ? props.col.type : 'text'"
+          :hint="props.col.hint"
+          dense
+          outlined
+        />
+        <!-- @keyup.enter="scope.set" -->
 
         <q-select
           v-if="props.col.type === 'select'"
@@ -92,14 +101,47 @@
           map-options
         />
 
-        <q-toggle
-          v-if="props.col.type === 'toggle'"
+        <q-select
+          v-if="props.col.type === 'select_multiple'"
           v-model="props.row[props.col.name]"
-          :label="scope.value ? 'SIi' : 'NOi'"
+          :options="props.col.options"
+          :options-label="(v) => v.label"
+          :options-value="(v) => v.value"
+          use-chips
+          multiple
+          options-dense
+          outlined
+          dense
+          emit-value
+          map-options
+        >
+          <template v-slot:option="{ itemProps, opt, selected, toggleOption }">
+            <q-item v-bind="itemProps">
+              <q-item-section>
+                {{ opt.label }}
+              </q-item-section>
+              <q-item-section side>
+                <q-toggle
+                  :model-value="selected"
+                  @update:model-value="toggleOption(opt)"
+                />
+              </q-item-section>
+            </q-item>
+          </template>
+        </q-select>
+
+        <q-toggle
+          v-if="props.col.type === 'boolean'"
+          v-model="props.row[props.col.name]"
+          :label="props.row[props.col.name] ? 'SI' : 'NO'"
           keep-color
         />
+      </q-td>
 
-        <span v-if="props.col.type !== 'select'">{{ props.row[props.col.name] }}</span>
+      <q-td v-else :props="props" class="bg-grey-3">
+        <span v-if="!['select', 'boolean'].includes(props.col.type)">{{
+          props.row[props.col.name]
+        }}</span>
       </q-td>
     </template>
 

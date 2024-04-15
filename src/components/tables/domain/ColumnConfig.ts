@@ -1,6 +1,6 @@
 import { SelectOption } from "./SelectOption"
 
-type tipos = 'text' | 'number' | 'textarea' | 'select' | 'boolean' | 'date' | 'search' | 'imagen' | 'datetime' | 'toggle'
+type tipos = 'text' | 'number' | 'textarea' | 'select' | 'boolean' | 'date' | 'search' | 'imagen' | 'datetime' | 'toggle' | 'select_multiple'
 type align = 'left' | 'center' | 'right'
 
 export interface ColumnConfig<T> {

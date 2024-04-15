@@ -1,6 +1,6 @@
 // Dependencias
 import { useFiltrosListadosSelects } from 'shared/filtrosListadosGenerales'
-import { computed, defineComponent, ref, watchEffect } from 'vue'
+import { computed, defineComponent, ref, watch, watchEffect } from 'vue'
 import { useMedicoStore } from 'stores/medico'
 import { acciones } from 'config/utils'
 
@@ -49,6 +49,7 @@ export default defineComponent({
     const habilitarTipoVacuna = ref(true)
     const refArchivo = ref()
     const idEsquema = ref()
+    const archivoSubido = ref(false)
 
     /************
      * Funciones
@@ -64,36 +65,31 @@ export default defineComponent({
     }
 
     const quitarTiposVacunasYaRealizados = () => {
-      console.log('dentro...')
-
       if (habilitarTipoVacuna.value) {
-        console.log('en if...')
-        console.log(medicoStore.tiposVacunasYaRealizadosPaciente)
-        // listadosAuxiliares.tiposVacunas.
-        console.log(listadosAuxiliares.tiposVacunas)
         let indicesAEliminar = listadosAuxiliares.tiposVacunas
           .map((tipoVacuna: TipoVacuna, index) => (tipoVacuna.id && medicoStore.tiposVacunasYaRealizadosPaciente.includes(tipoVacuna.id) ? index : -1))
           .filter((index) => index !== -1)
 
-        console.log(indicesAEliminar)
-
         const array = listadosAuxiliares.tiposVacunas.filter((_, index) => !indicesAEliminar.includes(index))
-        console.log(array)
         listadosAuxiliares.tiposVacunas = array
       }
     }
 
     async function subirArchivos() {
       await refArchivo.value.subir()
+      archivoSubido.value = true
     }
 
     /********
      * Hooks
      ********/
-    /* onReestablecer(() => {
+    onReestablecer(() => {
       refArchivo.value.limpiarListado()
-      emit('cerrar-modal')
-    })*/
+      const stop = watch(archivoSubido, () => {
+        stop()
+        emit('cerrar-modal')
+      })
+    })
 
     onGuardado(async (id, responseData) => {
       console.log('guardado...')

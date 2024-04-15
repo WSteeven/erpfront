@@ -40,9 +40,9 @@ export const configuracionColumnasCampos: ColumnConfig<ConfiguracionExamenCampo>
     sortable: true
   },
   {
-    name: 'observacion',
-    field: 'observacion',
-    label: 'Observación',
+    name: 'observaciones',
+    field: 'observaciones',
+    label: 'Observaciones',
     align: 'left',
     sortable: true,
     editable: true,

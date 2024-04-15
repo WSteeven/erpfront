@@ -10,6 +10,13 @@ export const configuracionColumnasEsquemaVacunacion: ColumnConfig<EsquemaVacuna>
     sortable: true
   },
   {
+    name: 'dosis_totales',
+    field: 'dosis_totales',
+    label: 'Dosis totales',
+    align: 'left',
+    sortable: true
+  },
+  {
     name: 'dosis_aplicadas',
     field: 'dosis_aplicadas',
     label: 'Dosis aplicadas',

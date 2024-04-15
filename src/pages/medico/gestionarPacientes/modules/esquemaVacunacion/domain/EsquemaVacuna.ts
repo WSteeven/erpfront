@@ -6,6 +6,7 @@ export class EsquemaVacuna extends EntidadAuditable {
   tipo_vacuna: number | null
   tipo_vacuna_id: number | null
   paciente: number | null
+  dosis_totales: number | null
 
   constructor() {
     super()
@@ -14,5 +15,6 @@ export class EsquemaVacuna extends EntidadAuditable {
     this.tipo_vacuna = null
     this.tipo_vacuna_id = null
     this.paciente = null
+    this.dosis_totales = null
   }
 }
