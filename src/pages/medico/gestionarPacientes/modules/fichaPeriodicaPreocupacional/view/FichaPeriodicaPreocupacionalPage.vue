@@ -351,7 +351,7 @@
               :configuracionColumnas="
                 configuracionColumnasResultadoHabitoToxico
               "
-              :datos="fichaPeriodica.resultados_habitos_toxicos"
+              :datos="listadosAuxiliares.resultados_habitos_toxicos"
               :permitirConsultar="false"
               :permitirEliminar="false"
               :permitirEditar="false"
@@ -658,10 +658,10 @@
       >
         <div class="row q-col-gutter-x-sm q-pa-md">
           <div class="col-12 q-mb-md">
-            {{ fichaPeriodica.antecedentes_familiares }}
+            <!-- {{ fichaPeriodica.antecedentes_familiares }} -->
             <essential-table
               :configuracionColumnas="configuracionColumnasAntecedenteFamiliar"
-              :datos="fichaPeriodica.antecedentes_familiares"
+              :datos="listadosAuxiliares.antecedentes_familiares"
               :permitirConsultar="false"
               :permitirEliminar="false"
               :permitirEditar="false"
@@ -711,6 +711,7 @@
               :alto-fijo="false"
               :ajustarCeldas="false"
               separador="cell"
+              :accion1="btnEliminarFrPuestoTrabajoActual"
             >
             </essential-table>
           </div>
@@ -892,6 +893,27 @@
             <label class="q-mb-sm block">Perímetro abdominal(cm)</label>
             <q-input
               v-model="fichaPeriodica.constante_vital.perimetro_abdominal"
+              placeholder="Opcional"
+              :disable="disabled"
+              outlined
+              dense
+            >
+            </q-input>
+          </div>
+        </div>
+      </q-expansion-item>
+
+      <q-expansion-item
+        class="overflow-hidden q-mb-md rounded bg-desenfoque-2"
+        label="Recomendaciones y/o tratamiento"
+        header-class="text-bold bg-desenfoque text-primary"
+        default-opened
+      >
+        <div class="row q-col-gutter-x-sm q-pa-md">
+          <div class="col-12">
+            <label class="q-mb-sm block">Descripción</label>
+            <q-input
+              v-model="fichaPeriodica.recomendaciones_tratamiento"
               placeholder="Opcional"
               :disable="disabled"
               outlined

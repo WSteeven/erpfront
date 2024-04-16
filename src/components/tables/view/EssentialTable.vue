@@ -138,7 +138,7 @@
         />
       </q-td>
 
-      <q-td v-else :props="props" class="bg-grey-3">
+      <q-td v-else :props="props" >
         <span v-if="!['select', 'boolean'].includes(props.col.type)">{{
           props.row[props.col.name]
         }}</span>

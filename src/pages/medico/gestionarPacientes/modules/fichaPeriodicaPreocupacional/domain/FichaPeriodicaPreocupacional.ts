@@ -34,6 +34,7 @@ export class FichaPeriodicaPreocupacional extends EntidadAuditable {
   constante_vital: ConstanteVital
   antecedentes_clinicos_quirurgicos: string | null
   resultados_examenes_preocupacionales: ResultadoExamenPreocupacional[]
+  recomendaciones_tratamiento: string | null
 
   constructor() {
     super()
@@ -58,5 +59,6 @@ export class FichaPeriodicaPreocupacional extends EntidadAuditable {
     this.constante_vital = new ConstanteVital()
     this.antecedentes_clinicos_quirurgicos = null
     this.resultados_examenes_preocupacionales = []
+    this.recomendaciones_tratamiento = null
   }
 }

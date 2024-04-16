@@ -5,6 +5,7 @@ export class ResultadoHabitoToxico extends EntidadAuditable {
   tiempo_abstinencia_meses: number | null
   ficha_preocupacional: number | null
   tipo_habito_toxico: number | string | null
+  tipo_habito_toxico_id: number | null
   ex_consumidor: boolean
   cantidad: number | null
 
@@ -14,6 +15,7 @@ export class ResultadoHabitoToxico extends EntidadAuditable {
     this.tiempo_abstinencia_meses = null
     this.ficha_preocupacional = null
     this.tipo_habito_toxico = null
+    this.tipo_habito_toxico_id = null
     this.ex_consumidor = false
     this.cantidad = null
   }
