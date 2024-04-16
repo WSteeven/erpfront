@@ -142,8 +142,11 @@ export default defineComponent({
     }
 
     const seleccionarRegistro = (registro: RegistroEmpleadoExamen) => {
+      // Si las fichas ya fueron llenadas
       medicoStore.idRegistroEmpleadoExamen = registro.id ?? undefined
       medicoStore.idFichaAptitud = registro.ficha_aptitud ?? undefined
+      medicoStore.idFichaRetiro = registro.ficha_retiro ?? undefined
+
       tabRegistro.value = registro.id
       examenes.value = []
       tabEstadoExamen.value = estadosSolicitudesExamenes.PENDIENTE_SOLICITAR.value
@@ -177,6 +180,10 @@ export default defineComponent({
       modales.abrirModalEntidad('FichaPeriodicaPreocupacionalPage')
     }
 
+    const abrirFichaRetiro = () => {
+      modales.abrirModalEntidad('FichaRetiroPage')
+    }
+
     return {
       // variables
       accionesTabla,
@@ -189,8 +196,10 @@ export default defineComponent({
       estadosSolicitudesExamenes,
       tipoSeleccion: computed(() => seleccionVariosExamen.value && tabEstadoExamen.value === estadosSolicitudesExamenes.PENDIENTE_SOLICITAR.value ? 'multiple' : 'none'),
       textoFichaAptitud: computed(() => medicoStore.idFichaAptitud ? 'Consultar ficha de aptitud' : 'Llenar ficha de aptitud'),
-      textoFichaPeriodicaPreocupacional: computed(() => medicoStore.idFichaPeriodicaPreocupacional ? 'Consultar ficha períodica preocupacional' : 'Llenar ficha períodica preocupacional'),
-      mostrarFichaPeriodicaPreocupacional: computed(() => props.tipoProceso === tiposProcesosExamenes.PERIODICO),
+      textoFichaPeriodicaPreocupacional: computed(() => medicoStore.idFichaPeriodicaPreocupacional ? 'Consultar ficha períodica' : 'Llenar ficha períodica'),
+      textoFichaRetiro: computed(() => medicoStore.idFichaRetiro ? 'Consultar ficha retiro' : 'Llenar ficha retiro'),
+      mostrarFichaPreocupacional: computed(() => props.tipoProceso === tiposProcesosExamenes.INGRESO),
+      mostrarFichaRetiro: computed(() => props.tipoProceso === tiposProcesosExamenes.RETIRO),
       // columnas
       configuracionColumnasExamenes,
       configuracionColumnasSolicitudExamen,
@@ -210,6 +219,7 @@ export default defineComponent({
       filtrarEstadoExamen,
       abrirFichaAptitud,
       abrirFichaPeriodicaProcupacional,
+      abrirFichaRetiro,
       /*****************************
        * useBotonesSolicitudExamen
        *****************************/

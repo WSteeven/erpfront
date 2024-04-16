@@ -8,6 +8,8 @@
         default-opened
       >
         <div class="row q-col-gutter-x-sm q-pa-md">
+
+
           <div class="col-12 col-md-6 q-mb-md">
             <label class="q-mb-sm block">Religión:</label>
             <div class="q-gutter-sm">
@@ -48,6 +50,19 @@
                 :disable="disabled"
               />
             </div>
+          </div>
+
+          <div class="col-12 col-md-3 q-mb-md">
+            <label class="q-mb-sm block">Número de archivo</label>
+            <q-input
+              v-model="fichaPeriodica.numero_archivo"
+              placeholder="Obligatorio"
+              type="number"
+              :disable="disabled"
+              outlined
+              dense
+            >
+            </q-input>
           </div>
 
           <div class="col-12 col-md-3 col-sm-3">
@@ -698,7 +713,7 @@
             <essential-table
               v-if="mostrarTablaFrPuestoTrabajoActualReactive"
               :configuracionColumnas="
-                configuracionColumnasFrPuestoTrabajoActualReactive
+                [...configuracionColumnasFrPuestoTrabajoActualReactive, accionesTabla]
               "
               :datos="fichaPeriodica.fr_puestos_trabajos_actuales"
               :permitirConsultar="false"

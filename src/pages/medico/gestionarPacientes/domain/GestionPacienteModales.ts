@@ -9,6 +9,7 @@ import DiagnosticoRecetaPage from 'pages/medico/diagnosticoReceta/view/Diagnosti
 import EsquemaVacunacionPage from 'medico/gestionarPacientes/modules/esquemaVacunacion/view/EsquemaVacunacionPage.vue'
 import FichaAptitudPage from 'medico/gestionarPacientes/modules/fichaAptitud/view/FichaAptitudPage.vue'
 import FichaPeriodicaPreocupacionalPage from 'medico/gestionarPacientes/modules/fichaPeriodicaPreocupacional/view/FichaPeriodicaPreocupacionalPage.vue'
+import FichaRetiroPage from 'medico/gestionarPacientes/modules/fichaRetiro/view/FichaRetiroPage.vue'
 
 export class GestionPacienteModales {
   ResultadosExamenPage: ComponenteModal
@@ -17,6 +18,7 @@ export class GestionPacienteModales {
   EsquemaVacunacionPage: ComponenteModal
   FichaAptitudPage: ComponenteModal
   FichaPeriodicaPreocupacionalPage: ComponenteModal
+  FichaRetiroPage: ComponenteModal
 
   constructor() {
     this.ResultadosExamenPage = markRaw(new ComponenteModal('Resultados de examen', ResultadosExamenPage))
@@ -25,5 +27,6 @@ export class GestionPacienteModales {
     this.EsquemaVacunacionPage = markRaw(new ComponenteModal('Esquema de vacunación', EsquemaVacunacionPage))
     this.FichaAptitudPage = markRaw(new ComponenteModal('Ficha de Aptitud', FichaAptitudPage))
     this.FichaPeriodicaPreocupacionalPage = markRaw(new ComponenteModal('Ficha períodica', FichaPeriodicaPreocupacionalPage))
+    this.FichaRetiroPage = markRaw(new ComponenteModal('Ficha de retiro', FichaRetiroPage))
   }
 }

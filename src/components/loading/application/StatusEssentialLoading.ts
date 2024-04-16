@@ -14,7 +14,7 @@ export class StatusEssentialLoading {
 
   waitBackground = 'bg-grey-8' //this.$q.dark.isActive ? 'bg-grey-10' : 'bg-grey-4'
   activar(): void {
-    this.$q.loading.show({
+    this.$q?.loading?.show({
       delay: 400, // ms
       spinner: QSpinnerBars,
       spinnerColor: 'white',

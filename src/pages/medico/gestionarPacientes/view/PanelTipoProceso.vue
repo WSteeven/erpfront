@@ -79,7 +79,7 @@
             </q-btn>
 
             <q-btn
-              v-if="mostrarFichaPeriodicaPreocupacional"
+              v-if="mostrarFichaPreocupacional"
               class="col-12 bg-white text-dark"
               no-caps
               push
@@ -87,6 +87,17 @@
             >
               <q-icon name="bi-table" class="q-mr-sm" color="primary" size="xs"></q-icon>
               {{ textoFichaPeriodicaPreocupacional }}
+            </q-btn>
+
+            <q-btn
+              v-if="mostrarFichaRetiro"
+              class="col-12 bg-white text-dark"
+              no-caps
+              push
+              @click="abrirFichaRetiro()"
+            >
+              <q-icon name="bi-table" class="q-mr-sm" color="primary" size="xs"></q-icon>
+              {{ textoFichaRetiro }}
             </q-btn>
           </div>
         </q-tab-panel>

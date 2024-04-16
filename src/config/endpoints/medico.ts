@@ -42,6 +42,7 @@ export const medico = {
   orientaciones_sexuales: new Endpoint('medico/orientaciones-sexuales'),
   tipos_antecedentes: new Endpoint('medico/tipos-antecedentes'),
   fichas_aptitudes_imprimir: new Endpoint('medico/fichas-aptitudes/imprimir'),
+  fichas_retiros_imprimir: new Endpoint('medico/fichas-retiros/imprimir'),
   tipos_aptitudes_medicas_laborales: new Endpoint('medico/tipos-aptitudes-medicas-laborales'),
   tipos_eval_medicas_retiro: new Endpoint('medico/tipos-eval-medicas-retiro'),
 }

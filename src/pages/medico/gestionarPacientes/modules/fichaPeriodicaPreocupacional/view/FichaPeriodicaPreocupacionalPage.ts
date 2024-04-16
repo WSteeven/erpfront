@@ -10,9 +10,8 @@ import { CustomActionTable } from 'components/tables/domain/CustomActionTable'
 import { accionesTabla, maskFecha, tipos_sangre } from 'config/utils'
 import { useNotificaciones } from 'shared/notificaciones'
 import { encontrarUltimoIdListado } from 'shared/utils'
-import { defineComponent, reactive } from 'vue'
 import { useMedicoStore } from 'stores/medico'
-import { ref } from 'vue'
+import { defineComponent, ref } from 'vue'
 
 // Componentes
 import SimpleLayout from 'src/shared/contenedor/modules/simple/view/SimpleLayout.vue'
@@ -157,28 +156,28 @@ export default defineComponent({
      * Botones tablas
      ******************/
     const btnEliminarActividadFisica: CustomActionTable<ActividadFisica> = {
-      titulo: 'Eliminar',
+      titulo: '',
       icono: 'bi-x',
       color: 'negative',
       accion: ({ posicion }) => confirmar('¿Está seguro de continuar?', () => fichaPeriodica.actividades_fisicas?.splice(posicion, 1))
     }
 
     const btnEliminarMedicacionHabitual: CustomActionTable<ResultadoHabitoToxico> = {
-      titulo: 'Eliminar',
+      titulo: '',
       icono: 'bi-x',
       color: 'negative',
       accion: ({ posicion }) => confirmar('¿Está seguro de continuar?', () => fichaPeriodica.resultados_habitos_toxicos?.splice(posicion, 1))
     }
 
     const btnEliminarAntecedenteTrabajoAnterior: CustomActionTable<AntecedenteTrabajoAnterior> = {
-      titulo: 'Eliminar',
+      titulo: '',
       icono: 'bi-x',
       color: 'negative',
       accion: ({ posicion }) => confirmar('¿Está seguro de continuar?', () => fichaPeriodica.antecedentes_trabajos_anteriores?.splice(posicion, 1))
     }
 
     const btnEliminarFrPuestoTrabajoActual: CustomActionTable<FrPuestoTrabajoActual> = {
-      titulo: 'Eliminar',
+      titulo: '',
       icono: 'bi-x',
       color: 'negative',
       accion: ({ posicion }) => confirmar('¿Está seguro de continuar?', () => fichaPeriodica.fr_puestos_trabajos_actuales?.splice(posicion, 1))
@@ -233,6 +232,8 @@ export default defineComponent({
      * Hooks
      ********/
     onBeforeGuardar(() => {
+      fichaPeriodica.registro_empleado_examen = medicoStore.idRegistroEmpleadoExamen ?? null
+
       // Antecedentes familiares
       fichaPeriodica.antecedentes_familiares = [...listadosAuxiliares.antecedentes_familiares.filter((antecedente: AntecedenteFamiliar) => antecedente.descripcion)]
       /*.map((antecedente: AntecedenteFamiliar) => {

@@ -13,6 +13,8 @@ import { ActividadFisica } from './ActividadFisica'
 import { ConstanteVital } from './ConstanteVital'
 
 export class FichaPeriodicaPreocupacional extends EntidadAuditable {
+  numero_archivo: number | null
+  registro_empleado_examen: number | null
   religion: number | null
   orientacion_sexual: number | null
   identidad_genero: number | null
@@ -38,6 +40,8 @@ export class FichaPeriodicaPreocupacional extends EntidadAuditable {
 
   constructor() {
     super()
+    this.numero_archivo = null
+    this.registro_empleado_examen = null
     this.religion = null
     this.orientacion_sexual = null
     this.identidad_genero = null

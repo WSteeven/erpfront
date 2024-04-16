@@ -17,8 +17,10 @@ export const useMedicoStore = defineStore('medico', () => {
   const tipoCitaMedica: Ref<string | undefined> = ref()
   const esquemaVacuna: Ref<EsquemaVacuna | undefined> = ref()
   const tiposVacunasYaRealizadosPaciente: Ref<number[]> = ref([])
+  // Fichas
   const idFichaAptitud: Ref<number | undefined> = ref()
   const idFichaPeriodicaPreocupacional: Ref<number | undefined> = ref()
+  const idFichaRetiro: Ref<number | undefined> = ref()
 
   return {
     examenSolicitado,
@@ -31,7 +33,9 @@ export const useMedicoStore = defineStore('medico', () => {
     tipoCitaMedica,
     esquemaVacuna,
     tiposVacunasYaRealizadosPaciente,
+    // Fichas
     idFichaAptitud,
     idFichaPeriodicaPreocupacional,
+    idFichaRetiro,
   }
 })
