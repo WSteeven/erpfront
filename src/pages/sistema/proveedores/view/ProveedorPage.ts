@@ -32,6 +32,7 @@ import { useNotificaciones } from 'shared/notificaciones';
 import { ContactoProveedorController } from 'pages/comprasProveedores/contactosProveedor/infraestructure/ContactoProveedorController';
 import { useProveedorStore } from 'stores/comprasProveedores/proveedor';
 import { useAuthenticationStore } from 'stores/authentication';
+import dayjs from 'dayjs';
 import { useCalificacionProveedorStore } from 'stores/comprasProveedores/calificacionProveedor';
 import { DetalleDepartamentoProveedorController } from 'pages/comprasProveedores/detallesDepartamentosProveedor/infraestructure/DetalleDepartamentoProveedorController';
 import { LocalStorage, useQuasar } from 'quasar';
@@ -46,7 +47,6 @@ import { ArchivoController } from 'pages/gestionTrabajos/subtareas/modules/gesto
 import { CustomActionPrompt } from 'components/tables/domain/CustomActionPrompt';
 import { ValidarPropiedadesProveedor } from '../application/validaciones/ValidarPropiedadesProveedor';
 import { DatoBancarioController } from 'pages/comprasProveedores/datosBancariosProveedor/infraestructure/DatoBancarioController';
-import dayjs from 'dayjs';
 
 
 export default defineComponent({

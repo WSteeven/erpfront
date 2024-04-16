@@ -58,7 +58,7 @@ export default defineComponent({
 
     const mixin = new ContenedorSimpleMixin(Transaccion, new TransaccionIngresoController())
     const { entidad: transaccion, disabled, accion, listado, listadosAuxiliares } = mixin.useReferencias()
-    const { setValidador, obtenerListados, cargarVista,listar, guardar, editar, eliminar, reestablecer } = mixin.useComportamiento()
+    const { setValidador, obtenerListados, cargarVista, listar, guardar, editar, eliminar, reestablecer } = mixin.useComportamiento()
     const { onConsultado, onReestablecer, onGuardado } = mixin.useHooks()
     const { confirmar, prompt } = useNotificaciones()
 
@@ -213,12 +213,12 @@ export default defineComponent({
       transaccion.sucursal = Number.isInteger(devolucionStore.devolucion.sucursal) ? devolucionStore.devolucion.sucursal : devolucionStore.devolucion.sucursal_id
       transaccion.cliente = Number.isInteger(devolucionStore.devolucion.cliente) ? devolucionStore.devolucion.cliente : devolucionStore.devolucion.cliente_id
       transaccion.es_para_stock = devolucionStore.devolucion.es_para_stock
-      listadoDevolucion.value = devolucionStore.devolucion.listadoProductos
-      listadoDevolucion.value.sort((v, w) => v.id - w.id) //ordena el listado de devolucion
       //primero copiamos los valores de id en detalle_id
       devolucionStore.devolucion.listadoProductos.forEach((item) => item.detalle_id = item.id)
+      listadoDevolucion.value = [...devolucionStore.devolucion.listadoProductos.filter((detalle) => detalle.cantidad !== detalle.devuelto)]
+      listadoDevolucion.value.sort((v, w) => v.id - w.id) //ordena el listado de devolucion
       //copiar el listado de devolución al listado de la tabla
-      transaccion.listadoProductosTransaccion = [...devolucionStore.devolucion.listadoProductos]
+      transaccion.listadoProductosTransaccion = [...listadoDevolucion.value]
       if (devolucionStore.devolucion.tarea) {
         transaccion.es_tarea = true
         transaccion.tarea = Number.isInteger(devolucionStore.devolucion.tarea) ? devolucionStore.devolucion.tarea : devolucionStore.devolucion.tarea_id
