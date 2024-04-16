@@ -203,7 +203,7 @@
                       <q-item-section class="full-width">
                         {{ notificacion.mensaje }}
                         <span class="block text-grey-8 text-weight-regular">
-                          {{ moment(notificacion.created_at).fromNow() }}
+                          {{ dayjs(notificacion.created_at).fromNow() }}
                         </span>
 
                         <q-item-label class="row justify-end q-pt-sm">
