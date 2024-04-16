@@ -25,7 +25,7 @@ import { EmpleadoController } from "pages/recursosHumanos/empleados/infraestruct
 import { acciones, accionesTabla } from "config/utils";
 import { tabOptionsPrefactura, opcionesForma, opcionesTiempo, estadosCalificacionProveedor } from "config/utils_compras_proveedores";
 import { useAuthenticationStore } from "stores/authentication";
-import { formatearFecha } from "shared/utils";
+import { calcularSubtotalConImpuestosLista, calcularSubtotalSinImpuestosLista, formatearFecha } from "shared/utils";
 import { CustomActionTable } from "components/tables/domain/CustomActionTable";
 import { StatusEssentialLoading } from "components/loading/application/StatusEssentialLoading";
 import { useFiltrosListadosSelects } from "shared/filtrosListadosGenerales";
@@ -60,13 +60,19 @@ export default defineComponent({
 
 
         //variables
+        const subtotal_sin_impuestos = computed(() =>
+            prefactura.listadoProductos.reduce((prev, curr) => prev + calcularSubtotalSinImpuestosLista(curr), 0).toFixed(2)
+        )
+        const subtotal_con_impuestos = computed(() =>
+            prefactura.listadoProductos.reduce((prev, curr) => prev + calcularSubtotalConImpuestosLista(curr), 0).toFixed(2)
+        )
         const subtotal = computed(() => prefactura.listadoProductos.reduce((prev, curr) => prev + parseFloat(curr.subtotal), 0).toFixed(2))
         const iva = computed(() => prefactura.listadoProductos.reduce((prev, curr) => prev + parseFloat(curr.iva), 0).toFixed(2))
-        const descuento = computed(() => prefactura.listadoProductos.reduce((prev, curr) => prev + parseFloat(curr.descuento), 0).toFixed(2))
-        const total = computed(() => prefactura.listadoProductos.reduce((prev, curr) => prev + parseFloat(curr.total), 0).toFixed(2))
+        const descuento = computed(() => prefactura.descuento_general == 0 ? prefactura.listadoProductos.reduce((prev, curr) => prev + parseFloat(curr.descuento), 0).toFixed(2) : prefactura.descuento_general)
+        const total = computed(() => prefactura.descuento_general > 0 ?(Number(subtotal.value) + Number(iva.value) - Number(descuento.value)).toFixed(2): (Number(subtotal.value) + Number(iva.value)).toFixed(2))
 
         // Flags
-        const tabSeleccionado= ref('2')
+        const tabSeleccionado = ref('2')
         let soloLectura = ref(false)
         let puedeEditar = ref(false)
         const refItems = ref()
@@ -221,6 +227,19 @@ export default defineComponent({
             })
         }
 
+        /**
+         * La función "actualizarDescuento" actualiza los valores de descuento de cada producto en una
+         * proforma si se aplica un descuento general.
+         */
+        function actualizarDescuento() {
+            if (prefactura.descuento_general > 0) {
+                prefactura.listadoProductos.forEach((fila) => {
+                    fila.porcentaje_descuento = 0
+                    calcularValores(fila)
+                })
+            }
+        }
+
         /*******************************************************************************************
          * Botones de tabla
         ******************************************************************************************/
@@ -233,7 +252,7 @@ export default defineComponent({
                 const fila = new ItemPrefactura()
                 fila.unidad_medida = 1
                 prefactura.listadoProductos.push(fila)
-                refItems.value.abrirModalEntidad(fila, prefactura.listadoProductos.length - 1)
+                // refItems.value.abrirModalEntidad(fila, prefactura.listadoProductos.length - 1)
                 emit('actualizar', prefactura.listadoProductos)
             }
         }
@@ -354,10 +373,12 @@ export default defineComponent({
             actualizarListado,
             actualizarProforma,
             llenarPrefactura,
+            actualizarDescuento,
 
 
             //variables computadas
-            subtotal, total, descuento, iva,
+            subtotal_sin_impuestos, subtotal_con_impuestos, subtotal,
+            total, descuento, iva,
         }
     }
 })
