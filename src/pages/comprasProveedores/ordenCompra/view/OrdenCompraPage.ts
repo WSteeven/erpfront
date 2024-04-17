@@ -160,7 +160,7 @@ export default defineComponent({
     })
     onConsultado(() => {
       // console.log(accion.value)
-      if (accion.value === acciones.editar && (store.user.id === orden.autorizador || store.esCompras))
+      if (accion.value === acciones.editar && (store.user.id === orden.autorizador || store.esCompras || store.user.id === orden.solicitante))
         soloLectura.value = false
       else
         soloLectura.value = true
