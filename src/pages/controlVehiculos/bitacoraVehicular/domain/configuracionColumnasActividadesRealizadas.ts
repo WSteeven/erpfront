@@ -20,8 +20,8 @@ export const configuracionColumnasActividadesRealizadas: ColumnConfig<any>[] = [
         visible: true
     },
     {
-        name: 'actividad',
-        field: 'actividad',
+        name: 'actividad_realizada',
+        field: 'actividad_realizada',
         label: 'Actividad Realizada',
         align: 'left',
         type: 'textarea',

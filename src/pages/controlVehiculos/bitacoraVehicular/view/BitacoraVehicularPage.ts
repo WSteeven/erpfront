@@ -36,7 +36,7 @@ export default defineComponent({
         const mixin = new ContenedorSimpleMixin(BitacoraVehicular, new BitacoraVehicularController())
         const { entidad: bitacora, disabled, listadosAuxiliares, accion } = mixin.useReferencias()
         const { setValidador, cargarVista, obtenerListados } = mixin.useComportamiento()
-        const { onReestablecer, onConsultado } = mixin.useHooks()
+        const { onReestablecer, onConsultado, onBeforeModificar } = mixin.useHooks()
         const { confirmar, prompt, } = useNotificaciones()
 
         /****************************************
@@ -91,6 +91,11 @@ export default defineComponent({
                 tareas.value = listadosAuxiliares.tareas
                 tickets.value = listadosAuxiliares.tareas
             }
+        })
+        onBeforeModificar(() => {
+            bitacora.checklistAccesoriosVehiculo.bitacora_id = bitacora.id
+            bitacora.checklistImagenVehiculo.bitacora_id = bitacora.id
+            bitacora.checklistVehiculo.bitacora_id = bitacora.id
         })
 
         //Reglas de validacion

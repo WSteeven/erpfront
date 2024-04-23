@@ -47,12 +47,12 @@ export class BitacoraVehicular extends EntidadAuditable {
         this.tickets = null
 
         // partes del vehiculo
-        this.checklistVehiculo = new ChecklistVehiculo()
+        this.checklistVehiculo = new ChecklistVehiculo(this.id)
         //accesorios del vehículo
-        this.checklistAccesoriosVehiculo = new ChecklistAccesoriosVehiculo()
+        this.checklistAccesoriosVehiculo = new ChecklistAccesoriosVehiculo(this.id)
         //imagenes del vehículo
-        this.checklistImagenVehiculo = new ChecklistImagenVehiculo()
-
+        this.checklistImagenVehiculo = new ChecklistImagenVehiculo(this.id)
+        
 
     }
 }

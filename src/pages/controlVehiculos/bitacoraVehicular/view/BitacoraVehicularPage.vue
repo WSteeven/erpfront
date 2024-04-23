@@ -392,6 +392,7 @@
                 v-model="accepted"
                 checked-icon="bi-check-circle-fill"
                 color="red"
+                disable
                 val="1"
                 label="Requiere atención inmediata"
               />
@@ -541,7 +542,7 @@
                   <label class="q-mb-sm block">Agua Plumas/Radiador</label>
                   <q-option-group
                     :disable="disabled"
-                    v-model="bitacora.checklistVehiculo.cables_conexiones"
+                    v-model="bitacora.checklistVehiculo.agua_plumas_radiador"
                     :options="optionsDefault"
                     keep-color
                     inline
@@ -988,8 +989,7 @@
               <q-input
                 autogrow
                 v-model="
-                  bitacora.checklistImagenVehiculo
-                    .observacion_checklist_interior
+                  bitacora.checklistImagenVehiculo.observacion
                 "
                 placeholder="Opcional"
                 hint="Ingresa alguna observación o novedad presentada en el vehículo"

@@ -2,7 +2,7 @@ import { EntidadAuditable } from "shared/entidad/domain/entidadAuditable";
 
 export class ChecklistVehiculo extends EntidadAuditable {
     //partes del vehiculo
-    bitacora_id: number| null
+    bitacora_id: number | null
     parabrisas: string | null
     limpiaparabrisas: string | null
     luces_interiores: string | null
@@ -13,6 +13,7 @@ export class ChecklistVehiculo extends EntidadAuditable {
     liquido_refrigerante: string | null
     filtro_combustible: string | null
     bateria: string | null
+    agua_plumas_radiador: string | null
     cables_conexiones: string | null
     luces_exteriores: string | null
     frenos: string | null
@@ -22,9 +23,9 @@ export class ChecklistVehiculo extends EntidadAuditable {
     observacion_checklist_bajo_capo: string | null
     observacion_checklist_exterior: string | null
 
-    constructor() {
+    constructor(id: number | null = null) {
         super()
-        this.bitacora_id = null
+        this.bitacora_id = id
         this.parabrisas = 'CORRECTO'
         this.limpiaparabrisas = 'CORRECTO'
         this.luces_interiores = 'CORRECTO'
@@ -35,6 +36,7 @@ export class ChecklistVehiculo extends EntidadAuditable {
         this.liquido_refrigerante = 'CORRECTO'
         this.filtro_combustible = 'CORRECTO'
         this.bateria = 'CORRECTO'
+        this.agua_plumas_radiador = 'CORRECTO'
         this.cables_conexiones = 'CORRECTO'
         this.luces_exteriores = 'CORRECTO'
         this.frenos = 'CORRECTO'

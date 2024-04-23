@@ -13,9 +13,9 @@ export class ChecklistAccesoriosVehiculo extends EntidadAuditable {
     portaescalera: string | null
     observacion_accesorios_vehiculo: string | null
 
-    constructor() {
+    constructor(id: number | null = null) {
         super()
-        this.bitacora_id = null
+        this.bitacora_id = id
         this.botiquin = 'LLENO'
         this.extintor = 'LLENO'
         this.caja_herramientas = 'LLENO'
