@@ -244,7 +244,12 @@
           <!-- Comentario de aprobacion del comprobante -->
           <div class="col-12 col-md-3" v-if="transaccion.estado_comprobante">
             <label class="q-mb-sm block">Comentario de Aceptación</label>
-            <q-input v-model="transaccion.estado_comprobante" disable outlined dense />
+            <q-input
+              v-model="transaccion.estado_comprobante"
+              disable
+              outlined
+              dense
+            />
           </div>
 
           <!-- {{ transaccion }} -->
@@ -363,15 +368,16 @@
         class="q-pa-md q-gutter-sm flex flex-center"
       >
         <q-btn
-          color="warning"
-          @click="permitirModificarCantidades()"
+          v-if="!transaccion.modificar_recepcion"
+          color="positive"
+          @click="aprobarEgreso()"
           no-caps
           glossy
           push
         >
-          <q-icon name="bi-pencil" size="xs" class="q-mr-sm"> </q-icon>
-          Modificar Recepción
-        </q-btn>
+          <q-icon name="bi-check-circle" size="xs" class="q-mr-sm"> </q-icon>
+          Aprobar y Firmar</q-btn
+        >
         <q-btn
           v-if="transaccion.modificar_recepcion"
           color="positive"
@@ -384,16 +390,15 @@
           Aprobar Recepción Parcial</q-btn
         >
         <q-btn
-          v-if="!transaccion.modificar_recepcion"
-          color="positive"
-          @click="aprobarEgreso()"
+          color="warning"
+          @click="permitirModificarCantidades()"
           no-caps
           glossy
           push
         >
-          <q-icon name="bi-check-circle" size="xs" class="q-mr-sm"> </q-icon>
-          Aprobar y Firmar</q-btn
-        >
+          <q-icon name="bi-pencil" size="xs" class="q-mr-sm"> </q-icon>
+          Modificar Recepción
+        </q-btn>
       </div>
     </template>
   </tab-layout>

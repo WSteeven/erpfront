@@ -67,9 +67,9 @@ export default defineComponent({
             prefactura.listadoProductos.reduce((prev, curr) => prev + calcularSubtotalConImpuestosLista(curr), 0).toFixed(2)
         )
         const subtotal = computed(() => prefactura.listadoProductos.reduce((prev, curr) => prev + parseFloat(curr.subtotal), 0).toFixed(2))
-        const iva = computed(() => prefactura.listadoProductos.reduce((prev, curr) => prev + parseFloat(curr.iva), 0).toFixed(2))
         const descuento = computed(() => prefactura.descuento_general == 0 ? prefactura.listadoProductos.reduce((prev, curr) => prev + parseFloat(curr.descuento), 0).toFixed(2) : prefactura.descuento_general)
-        const total = computed(() => prefactura.descuento_general > 0 ?(Number(subtotal.value) + Number(iva.value) - Number(descuento.value)).toFixed(2): (Number(subtotal.value) + Number(iva.value)).toFixed(2))
+        const iva = computed(() => (subtotal_con_impuestos.value * prefactura.iva/100).toFixed(2))
+        const total = computed(() => prefactura.descuento_general > 0 ?(Number(subtotal.value) + Number(iva.value) - Number(descuento.value)).toFixed(2): (Number(subtotal_con_impuestos.value) + Number(subtotal_sin_impuestos.value) + Number(iva.value)).toFixed(2))
 
         // Flags
         const tabSeleccionado = ref('2')
