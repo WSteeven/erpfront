@@ -121,6 +121,7 @@ export default defineComponent({
           params: {
             campos: 'id,codigo_tarea,titulo,cliente_id',
             formulario: true,
+            empleado_id: store.user.id,
             //   coordinador_id: 7,
           },
         },
@@ -139,11 +140,11 @@ export default defineComponent({
       })
       //comprueba si hay una preorden en el store para llenar automaticamente los datos en la orden de compra
       orden.autorizacion = 1
-      if (preordenStore.preorden.id) {
+      if (preordenStore.preorden.id) {8
         orden.tiene_preorden = true
         cargarDatosPreorden()
       }
-      configuracionColumnasItemOrdenCompra.find((item) => item.field === 'unidad_medida')!.options = listadosAuxiliares.unidades_medidas.map((v: UnidadMedida) => { return { value: v.id, label: v.nombre } })
+      configuracionColumnasItemOrdenCompra.find((item) => item.field === 'unidad_medida')!.options = listadosAuxiliares.unidades_medidas.map((v: UnidadMedida) => { return { label: v.nombre } })
     })
 
     /*****************************************************************************************
@@ -164,11 +165,11 @@ export default defineComponent({
       else
         soloLectura.value = true
       setTimeout(() => {
-        refArchivo.value.listarArchivosAlmacenados(orden.id)
+        if(orden.id) refArchivo.value.listarArchivosAlmacenados(orden.id)
       }, 1);
     })
     onModificado((id: number) => {
-      idOrden.value=id
+      idOrden.value = id
       setTimeout(() => subirArchivos(), 1)
       filtrarOrdenes('1')
     })
@@ -204,19 +205,6 @@ export default defineComponent({
     /*******************************************************************************************
      * Funciones
      ******************************************************************************************/
-    // function estructuraConsultaCategoria() {
-    //   let parametro = ''
-    //   if (orden.categorias!.length < 1) {
-    //     return ''
-    //   } else {
-    //     // console.log('Hay solo una categoria')
-    //     orden.categorias?.forEach((v, index) => {
-    //       if (index === orden.categorias!.length - 1) parametro += v
-    //       else parametro += v + '&categoria_id[]='
-    //     })
-    //   }
-    //   return parametro
-    // }
     async function subirArchivos() {
       await refArchivo.value.subir()
     }

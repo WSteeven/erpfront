@@ -10,7 +10,7 @@ export class ValorAcreditar extends EntidadAuditable {
   saldo_empleado: number | null
   umbral_empleado: number | null
   es_acreditado: boolean | null
-  estado: boolean | null
+  estado: boolean
   motivo: string | null
   constructor() {
     super()

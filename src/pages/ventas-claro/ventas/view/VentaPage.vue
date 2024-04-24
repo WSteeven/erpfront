@@ -155,11 +155,11 @@
           </div>
           <!-- Orden Interna -->
           <div class="col-12 col-md-3">
-            <label class="q-mb-sm block">Orden Interna</label>
+            <label class="q-mb-sm block">Regularización</label>
             <q-input
               v-model="venta.orden_interna"
               placeholder="Opcional"
-              type="textarea"
+              type="date"
               :disable="disabled"
               :error="!!v$.orden_interna.$errors.length"
               autogrow
@@ -167,6 +167,30 @@
               outlined
               dense
             >
+            <template v-slot:append>
+                <q-icon name="event" class="cursor-pointer">
+                  <q-popup-proxy
+                    cover
+                    transition-show="scale"
+                    transition-hide="scale"
+                  >
+                    <q-date
+                      v-model="venta.orden_interna"
+                      :mask="maskFecha"
+                      today-btn
+                    >
+                      <div class="row items-center justify-end">
+                        <q-btn
+                          v-close-popup
+                          label="Cerrar"
+                          color="primary"
+                          flat
+                        />
+                      </div>
+                    </q-date>
+                  </q-popup-proxy>
+                </q-icon>
+              </template>
               <template v-slot:error>
                 <div
                   v-for="error of v$.orden_interna.$errors"

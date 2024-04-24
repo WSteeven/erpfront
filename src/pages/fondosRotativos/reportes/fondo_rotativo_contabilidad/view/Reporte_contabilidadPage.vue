@@ -70,6 +70,7 @@
                   >
                     <q-date
                       v-model="fondo_rotativo_contabilidad.fecha_inicio"
+                      :options="optionsFechaInicio"
                       :mask="maskFecha"
                       today-btn
                     >
@@ -114,6 +115,7 @@
                     <q-date
                       v-model="fondo_rotativo_contabilidad.fecha_fin"
                       :mask="maskFecha"
+                      :options="optionsFechaFin"
                       today-btn
                     >
                       <div class="row items-center justify-end">

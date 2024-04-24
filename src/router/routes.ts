@@ -1,5 +1,6 @@
 import { truncate } from 'fs'
 import { RouteRecordRaw } from 'vue-router'
+import rutasMedico from './rutasMedico'
 
 const routes: RouteRecordRaw[] = [
   {
@@ -208,6 +209,7 @@ const routes: RouteRecordRaw[] = [
           ),
         meta: { requiresAuth: true },
       },*/
+      ...rutasMedico,
       /********************
        * Modulo de tickets
        ********************/
@@ -354,6 +356,13 @@ const routes: RouteRecordRaw[] = [
         name: 'unidades_medidas',
         component: () =>
           import('pages/bodega/unidades_medidas/view/UnidadMedidaPage.vue'),
+        meta: { requiresAuth: true },
+      },
+      {
+        path: '/dashboard-bodega',
+        name: 'dashboard_bodega',
+        component: () =>
+          import('pages/bodega/dashboard/view/DashboardBodega.vue'),
         meta: { requiresAuth: true },
       },
       {
@@ -639,6 +648,15 @@ const routes: RouteRecordRaw[] = [
         meta: { requiresAuth: true },
       },
       {
+        path: '/pagos-proveedores',
+        name: 'pagos_proveedores',
+        component: () =>
+          import(
+            'pages/comprasProveedores/pagoProveedor/view/PagoProveedorPage.vue'
+          ),
+        meta: { requiresAuth: true },
+      },
+      {
         path: '/prefacturas',
         name: 'prefacturas',
         component: () =>
@@ -817,6 +835,13 @@ const routes: RouteRecordRaw[] = [
       }, */
 
       //Fondos Rotativos
+      {
+        path: '/ajustes-saldos',
+        name: 'ajustes_saldos',
+        component: () =>
+          import('pages/fondosRotativos/ajusteSaldo/view/AjusteSaldoPage.vue'),
+        meta: { requiresAuth: true },
+      },
       {
         path: '/gasto',
         name: 'gasto',

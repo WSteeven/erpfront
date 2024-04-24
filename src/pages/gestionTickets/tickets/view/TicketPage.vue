@@ -25,13 +25,13 @@
           default-opened
         >
           <q-separator></q-separator>
-          <div class="col-12 text-primary bg-body q-px-md q-py-sm q-mb-md">
+          <div class="col-12 text-primary bg-background-header-grey q-px-md q-py-sm q-mb-md">
             <q-icon name="bi-ticket-detailed"></q-icon>
             Detalles
           </div>
           <div class="row q-col-gutter-sm q-pa-md">
             <!-- Asunto -->
-            <div class="col-12 col-md-6">
+            <div class="col-12">
               <label class="q-mb-sm block">Asunto</label>
               <q-input
                 v-model="ticket.asunto"
@@ -53,9 +53,24 @@
             </div>
 
             <!-- Descripcion -->
-            <div class="col-12 col-md-6">
-              <label class="q-mb-sm block">Descripción</label>
-              <q-input
+            <div class="col-12">
+              <div class="row justify-between">
+                <label class="q-mb-sm block">Descripción</label>
+                <b class="text-italic">*No enviar imágenes demasiado grandes</b>
+              </div>
+              <essential-editor
+                v-model="ticket.descripcion"
+                :disable="disabled"
+              >
+              </essential-editor>
+              <div
+                v-for="error of v$.descripcion.$errors"
+                :key="error.$uid"
+                class="text-negative text-uppercase"
+              >
+                <small>{{ error.$message }}</small>
+              </div>
+              <!-- <q-input
                 v-model="ticket.descripcion"
                 placeholder="Obligatorio"
                 outlined
@@ -74,7 +89,7 @@
                     <div>{{ error.$message }}</div>
                   </div>
                 </template>
-              </q-input>
+              </q-input> -->
             </div>
 
             <!-- Departamento -->
@@ -370,7 +385,7 @@
           <q-separator v-if="destinatarios.length"></q-separator>
           <div
             v-if="destinatarios.length"
-            class="col-12 text-primary bg-body q-px-md q-py-sm q-mb-md"
+            class="col-12 text-primary bg-background-header-grey q-px-md q-py-sm q-mb-md"
           >
             <q-icon name="bi-view-list"></q-icon>
             Categorías y tipos
@@ -479,7 +494,7 @@
           </div>
 
           <q-separator></q-separator>
-          <div class="col-12 text-primary bg-body q-px-md q-py-sm q-mb-md">
+          <div class="col-12 text-primary bg-background-header-grey q-px-md q-py-sm q-mb-md">
             <q-icon name="bi-archive"></q-icon>
             Archivos
           </div>

@@ -61,7 +61,7 @@ export default defineComponent({
     },
     tabOptions: {
       type: Array as () => TabOption[],
-      required: true,
+      required: false,
     },
     tabDefecto: String,
     full: {
@@ -122,7 +122,7 @@ export default defineComponent({
     },
     filtrar: {
       type: Function,
-      required: true,
+      required: false,
     },
     forzarListar: {
       type: Boolean,
@@ -132,10 +132,21 @@ export default defineComponent({
       type: Boolean,
       default: false,
     },
+    customPanel1: {
+      type: Object,
+      required: false,
+    },
+    customPanel2: {
+      type: Object,
+      required: false,
+    },
   },
   emits: ['tab-seleccionado'],
   components: { EssentialTableTabs, ButtonSubmits },
   setup(props, { emit }) {
+    /************
+     * Variables
+     ************/
     const { listar, guardar, editar, eliminar, consultar, reestablecer } =
       props.mixin.useComportamiento()
 
@@ -143,10 +154,8 @@ export default defineComponent({
       props.mixin.useReferencias()
 
     const Router = useRouter()
-    // let listadoCargado = false
 
     const accionPersonalizada = computed(() => props.accion1)
-    // console.log('accion recibida:',accionPersonalizada)
 
     const columnas = [
       ...props.configuracionColumnas,
@@ -159,11 +168,17 @@ export default defineComponent({
       },
     ]
 
-    // if (!listadoCargado) {
-    // listar()
-    // listadoCargado = true
-    // }
-    // const tabSeleccionado = 'TODO'
+    const seleccionado = ref()
+
+    const customPanel1Ejecutado = ref(false)
+    const customPanel2Ejecutado = ref(false)
+
+    const router = useRoute()
+    const store = useAuthenticationStore()
+
+    /************
+     * Funciones
+     ************/
     if (!props.forzarListar) aplicarFiltro(props.tabDefecto)
 
     function forzarListar() {
@@ -171,11 +186,22 @@ export default defineComponent({
     }
 
     function aplicarFiltro(tabSeleccionado?) {
-      props.filtrar(tabSeleccionado)
+      props.filtrar ? props.filtrar(tabSeleccionado) : null
     }
 
-    const seleccionado = ref()
+    function ejecutarUnaVezCustomPanel1() {
+      if (!customPanel1Ejecutado.value) props.customPanel1?.accion()
+      customPanel1Ejecutado.value = true
+    }
 
+    function ejecutarUnaVezCustomPanel2() {
+      if (!customPanel2Ejecutado.value) props.customPanel2?.accion()
+      customPanel2Ejecutado.value = true
+    }
+
+    /************
+    * Observers
+    *************/
     watchEffect(() => {
       tabs.value = props.mostrarFormulario ? 'formulario' : 'listado'
     })
@@ -194,6 +220,7 @@ export default defineComponent({
       editar: ({ entidad }) => {
         accion.value = acciones.editar
         consultar(entidad)
+        console.log(accion.value)
       },
       eliminar: ({ entidad }) => {
         accion.value = acciones.eliminar
@@ -201,11 +228,8 @@ export default defineComponent({
       },
     }
 
-    const router = useRoute()
-    const store = useAuthenticationStore()
-
     const puedeVer = computed(() =>
-      store.can(`puede.ver.${router.name?.toString()}`)
+      store.can(`puede.ver.${router.name?.toString()}`) && props.permitirConsultar
     )
     const puedeCrear = computed(() =>
       store.can(`puede.crear.${router.name?.toString()}`)
@@ -220,13 +244,6 @@ export default defineComponent({
     const esBodeguero = store.esBodeguero
     const esCoordinador = store.esCoordinador
 
-    // console.log(esCoordinador, ' - ', esBodeguero)
-
-    /*function cargarListado() {
-      if (nextPageUrl.value)
-        listar({ estado: tabSeleccionado })
-    }*/
-
     return {
       tabs,
       tituloTabla,
@@ -237,10 +254,9 @@ export default defineComponent({
       accion,
       filtros,
       accionTabla,
-      // tituloPagina: tituloTabla[0].toUpperCase() + tituloTabla.substring(1),
       seleccionado,
       columnas,
-      // acciones tabla
+      // Acciones tabla
       consultar,
       editar,
       eliminar,
@@ -253,9 +269,12 @@ export default defineComponent({
       esBodeguero,
       esCoordinador,
       forzarListar,
-      //valor del essentialLoading
+      // Valor del essentialLoading
       storeCargando: useCargandoStore(),
       puedeExportar: props.puedeExportar,
+      // custom tab panel
+      ejecutarUnaVezCustomPanel1,
+      ejecutarUnaVezCustomPanel2,
     }
   },
 })

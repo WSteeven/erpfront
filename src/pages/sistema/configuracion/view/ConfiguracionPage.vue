@@ -76,7 +76,26 @@
                 </template>
               </q-input>
             </div>
-
+            <!-- ciiu -->
+            <div class="col-12 col-md-4">
+              <label class="q-mb-sm block">CIIU</label>
+              <q-input
+                v-model="configuracion.ciiu"
+                placeholder="Obligatorio"
+                :error="!!v$.ciiu.$errors.length"
+                outlined
+                dense
+              >
+                <template v-slot:error>
+                  <div
+                    v-for="error of v$.ciiu.$errors"
+                    :key="error.$uid"
+                  >
+                    <div class="error-msg">{{ error.$message }}</div>
+                  </div>
+                </template>
+              </q-input>
+            </div>
             <!-- razon social -->
             <div class="col-12 col-md-4">
               <label class="q-mb-sm block">Razón Social</label>

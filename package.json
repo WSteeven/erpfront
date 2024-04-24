@@ -8,9 +8,10 @@
   "scripts": {
     "lint": "eslint --ext .js,.ts,.vue ./",
     "format": "prettier --write \"**/*.{js,ts,vue,scss,html,md,json}\" --ignore-path .gitignore",
-    "test": "echo \"No test specified\" && exit 0"
+    "test": "vue-cli-service test:unit"
   },
   "dependencies": {
+    "@formkit/tempo": "^0.0.16",
     "@quasar/extras": "^1.0.0",
     "@types/vuelidate": "^0.7.15",
     "@vuelidate/core": "^2.0.0-alpha.44",
@@ -19,12 +20,12 @@
     "axios": "^0.21.1",
     "chart.js": "^4.3.0",
     "chartjs-plugin-datalabels": "^2.2.0",
+    "dayjs": "^1.11.10",
     "dotenv": "^16.0.3",
     "echarts": "^5.4.0",
     "html2pdf.js": "^0.10.1",
     "idlejs": "^3.0.0",
     "jspdf": "^2.5.1",
-    "moment": "^2.29.4",
     "pinia": "^2.0.11",
     "push.js": "^1.0.12",
     "quasar": "^2.11.10",
@@ -39,17 +40,23 @@
   "devDependencies": {
     "@quasar/app-vite": "^1.0.0",
     "@types/i18n": "^0.13.6",
+    "@types/jest": "^29.5.12",
     "@types/node": "^12.20.21",
     "@typescript-eslint/eslint-plugin": "^5.10.0",
     "@typescript-eslint/parser": "^5.10.0",
+    "@vue/cli-plugin-unit-jest": "^5.0.8",
+    "@vue/test-utils": "^2.4.4",
     "autoprefixer": "^10.4.2",
     "eslint": "^8.10.0",
     "eslint-config-prettier": "^8.1.0",
     "eslint-plugin-vue": "^9.0.0",
+    "jest": "^29.7.0",
     "laravel-echo": "^1.15.0",
     "prettier": "^2.5.1",
     "pusher-js": "^7.6.0",
-    "typescript": "^5.0.4"
+    "ts-jest": "^29.1.2",
+    "typescript": "^5.0.4",
+    "vue3-jest": "^27.0.0-alpha.1"
   },
   "engines": {
     "node": "^18 || ^16 || ^14.19",

@@ -180,6 +180,70 @@ export const useMenuStore = defineStore('menu', () => {
         },
       ],
     },
+    /********************
+    * Modulo medico
+    ********************/
+    {
+      title: 'Médico',
+      icon: 'bi-heart-pulse-fill',
+      can: store.can('puede.ver.modulo_medico'),
+      children: [
+        {
+          title: 'Gestionar pacientes',
+          link: 'gestionar-pacientes',
+          icon: 'bi-app',
+          can: store.can('puede.ver.gestionar_pacientes'),
+        },
+        {
+          title: 'Cuestionario de evaluación de riesgos psicosociales',
+          link: 'cuestionario-psicosocial',
+          icon: 'bi-app',
+          can: store.can('puede.ver.cuestionarios_psicosocial'),
+        }, {
+          title: 'Cuestionario de diagnostico consumo de drogas',
+          link: 'cuestionario-diagnostico-consumo-drogas',
+          icon: 'bi-app',
+          can: store.can('puede.ver.cuestionario_diagnostico_consumo_drogas'),
+        },
+        {
+          title: 'Cita médica',
+          link: 'citas-medicas',
+          icon: 'bi-app',
+          can: store.can('puede.ver.citas_medicas'),
+        },
+        {
+          title: 'Solicitudes de exámenes',
+          link: 'solicitudes-examenes',
+          icon: 'bi-app',
+          can: store.can('puede.ver.solicitudes_examenes'),
+        },
+        {
+          title: 'Reporte Cuestionario Psicosocial',
+          link: 'reporte-cuestionarios-pisicosocial',
+          icon: 'bi-app',
+          can: store.can('puede.ver.reporte_cuestionarios_pisicosocial'),
+        },
+        {
+          title: 'CIE',
+          link: 'cie',
+          icon: 'bi-app',
+          can: store.can('puede.ver.cies'),
+        },
+        {
+          title: 'Firmar fichas médicas',
+          link: 'firmar-fichas-medicas',
+          icon: 'bi-app',
+        },
+        {
+          title: 'Configuracion Cuestionario Empleado',
+          link: 'configuraciones-cuestionarios-empleados',
+          icon: 'bi-circle',
+          can: store.can('puede.ver.configuraciones_cuestionarios_empleados'),
+        },
+      ]
+    },
+    /**
+     * Modulo de bodega.
     /*****************************************************************************
      * MÓDULO DE BODEGA.
      * Toda la estructura de pedidos, devoluciones y despachos de materiales
@@ -189,6 +253,12 @@ export const useMenuStore = defineStore('menu', () => {
       icon: 'bi-building-fill',
       can: store.can('puede.ver.modulo_bodega'),
       children: [
+        {
+          title: 'Dashboard',
+          link: 'dashboard-bodega',
+          can: store.esBodeguero || store.esCoordinadorBodega || store.can('puede.ver.dashboard_bodega'),
+          icon: 'bi-app',
+        },
         {
           title: 'Categorías',
           link: 'categorias',
@@ -373,6 +443,12 @@ export const useMenuStore = defineStore('menu', () => {
       icon: 'fa-solid fa-cash-register',
       can: store.can('puede.ver.fondo'),
       children: [
+        {
+          title: 'Ajuste de Saldos Fondos Rotativos',
+          link: 'ajustes-saldos',
+          icon: 'bi-app',
+          can: store.can('puede.acceder.ajustes_saldos') || true,
+        },
         {
           title: 'Gastos',
           icon: 'bi-app',
@@ -804,6 +880,13 @@ export const useMenuStore = defineStore('menu', () => {
           icon: 'bi-cart-plus',
           can:
             store.can('puede.acceder.ordenes_compras') || store.esAdministrador,
+        },
+        {
+          title: 'Pago a Proveedores',
+          link: 'pagos-proveedores',
+          icon: 'bi-cash-stack',
+          can:
+            store.can('puede.acceder.pagos_proveedores') || store.esAdministrador,
         },
         {
           title: 'Reportes',

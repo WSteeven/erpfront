@@ -35,7 +35,7 @@
 
   <q-dialog v-model="opened" maximized>
     <q-card class="bg-black rounded-card no-border" flat>
-      <q-btn
+      <!-- <q-btn
         round
         push
         color="negative"
@@ -43,7 +43,49 @@
         icon="bi-x"
         @click="() => (opened = false)"
         class="closeButton"
-      />
+      /> -->
+
+      <!--  -->
+      <div class="row q-gutter-sm justify-center closeButton">
+        <q-btn
+          round
+          push
+          color="positive"
+          glossy
+          icon="bi-arrow-clockwise"
+          @click="rotateImage()"
+        />
+
+        <q-btn
+          push
+          dense
+          color="white"
+          rounded
+          outline
+          icon="bi-dash"
+          @click="zoomOut()"
+        />
+
+        <q-btn
+          dense
+          push
+          outline
+          rounded
+          color="white"
+          icon="bi-plus"
+          @click="zoomIn()"
+        />
+
+        <q-btn
+          round
+          push
+          color="negative"
+          glossy
+          icon="bi-x"
+          @click="() => (opened = false)"
+        />
+      </div>
+      <!--  -->
 
       <q-card-section v-if="texto1">
         <div class="row q-col-gutter-sm q-mb-md q-ml-md q-mr-md text-grey-4">
@@ -51,17 +93,26 @@
           <div v-if="texto2" class="col-12 col-md-3 text-h6">{{ texto2 }}</div>
           <div v-if="texto3" class="col-12 col-md-3 text-h6">{{ texto3 }}</div>
           <div class="col-12 col-md-3 text-h6">{{ texto4 }}</div>
+          <div class="col-12 col-md-3 text-h6">{{ texto5 }}</div>
         </div>
       </q-card-section>
 
-      <q-card-section class="rounded-footer text-center q-pa-none">
+      <q-card-section
+        class="rounded-footer text-center q-pa-none scroll-container"
+      >
+        <!-- style="margin-top: 50px" -->
         <q-img
           v-show="imagenCodificada"
           :src="imagenCodificada"
           fit="contain"
-          width="80%"
+          width="100%"
           height="100vh"
+          spinner-color="white"
+          :img-style="{
+            transform: 'rotate(' + rotation + 'deg) scale(' + zoomLevel + ')',
+          }"
         >
+          <!-- class="q-overflow-scroll" -->
         </q-img>
       </q-card-section>
     </q-card>
@@ -94,6 +145,7 @@ const props = defineProps([
   'texto2',
   'texto3',
   'texto4',
+  'texto5'
 ])
 const emit = defineEmits(['update:modelValue'])
 
@@ -102,6 +154,9 @@ const img = ref()
 const imagenCodificada = computed(() => props.imagen)
 const alto = computed(() => props.alto ?? '160px')
 const opened = ref(false)
+
+const rotation = ref(0)
+const zoomLevel = ref(1)
 
 const setBase64 = async (file: File) => {
   if (file !== null && file !== undefined) {
@@ -173,6 +228,18 @@ watch(imagenCodificada, () => {
 function limpiar() {
   emit('update:modelValue', null)
 }
+
+function rotateImage() {
+  rotation.value += 90
+}
+
+function zoomIn() {
+  zoomLevel.value += 0.1
+}
+
+function zoomOut() {
+  zoomLevel.value -= 0.1
+}
 </script>
 
 <style lang="scss">
@@ -181,5 +248,17 @@ function limpiar() {
   right: 10px;
   top: 10px;
   z-index: 9999;
+}
+
+.scroll-container {
+  width: 100%;
+  height: 100vh;
+  overflow: auto;
+  white-space: nowrap; /* Esto evita que las imágenes se envuelvan */
+}
+
+.q-img {
+  display: inline-block;
+  vertical-align: top;
 }
 </style>

@@ -16,7 +16,7 @@ export class TransferenciaSaldoPusherEvent {
     pusher.subscribe('transferencia-saldo-'+this.usuario.id)
     pusher.bind('transferencia-saldo-event', function (e) {
       notificacionStore.agregar(e.notificacion)
-      notificarCorrecto('Tienes una transferencia esperando ser aceptada')
+      notificarCorrecto(e.notificacion.mensaje)
       pushEventMesaggeServiceWorker({
         titulo: 'Aprobacion de Transferencias de Saldos',
         mensaje: e.notificacion.mensaje,

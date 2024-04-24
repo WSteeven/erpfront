@@ -9,7 +9,7 @@
   >
     <q-card class="bg-transparent no-border" flat>
       <!-- <q-linear-progress :value="1" color="grey-4" /> -->
-      <q-toolbar class="bg-body border-bottom superior-fixed" rounded>
+      <q-toolbar class="bg-body border-bottoffm superior-fixed" rounded>
         <q-avatar square>
           <img src="~assets/logo.png" />
         </q-avatar>
@@ -49,6 +49,7 @@
             (confirmarCerrar) => cerrarModalEntidad(confirmarCerrar)
           "
           @guardado="(data) => emit('guardado', data)"
+          @modificado="(data) => emit('modificado', data)"
         ></component>
         <!--  @seleccionar="emit('seleccionar')" -->
 
@@ -60,6 +61,7 @@
             (confirmarCerrar) => cerrarModalEntidad(confirmarCerrar)
           "
           @guardado="(data) => emit('guardado', data)"
+          @modificado="(data) => emit('modificado', data)"
         ></component>
         <!--  @seleccionar="emit('seleccionar')" -->
         <!-- :mostrar-listado="false"></component> -->

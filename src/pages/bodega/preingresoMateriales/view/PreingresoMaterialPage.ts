@@ -5,7 +5,7 @@ import { configuracionColumnasItemPreingreso } from "../domain/configuracionColu
 import { configuracionColumnasDetallesProductos } from "../domain/configuracionColumnasDetallesProductos";
 import { required, requiredIf } from "shared/i18n-validators";
 import { defineComponent, ref } from 'vue'
-import { acciones, accionesTabla, rolesSistema, tabOptionsPreingresoMateriales } from 'config/utils'
+import { acciones, accionesTabla, maskFecha, rolesSistema, tabOptionsPreingresoMateriales } from 'config/utils'
 import useVuelidate from '@vuelidate/core'
 
 //Components
@@ -48,6 +48,8 @@ import { Tarea } from "pages/gestionTrabajos/tareas/domain/Tarea";
 import { TareaController } from "pages/gestionTrabajos/tareas/infraestructure/TareaController";
 import { EmpleadoController } from "pages/recursosHumanos/empleados/infraestructure/EmpleadoController";
 import { EtapaController } from "pages/gestionTrabajos/proyectos/modules/etapas/infraestructure/EtapaController";
+import { Condicion } from "pages/administracion/condiciones/domain/Condicion";
+import { CondicionController } from "pages/administracion/condiciones/infraestructure/CondicionController";
 
 
 export default defineComponent({
@@ -105,6 +107,7 @@ export default defineComponent({
       cargarDatosDefecto()
       await obtenerListados({
         etapas: [],
+        condiciones: new CondicionController(),
         unidades_medidas: new UnidadMedidaController(),
         empleados: { controller: new EmpleadoController(), params: { estado: 1 } },
         // coordinadores: { controller: new EmpleadoRoleController(), params: { roles: [rolesSistema.jefe_tecnico, rolesSistema.supervisor, rolesSistema.coordinador, rolesSistema.fiscalizador] } },
@@ -129,7 +132,8 @@ export default defineComponent({
       coordinadores.value = listadosAuxiliares.coordinadores
       tecnicos.value = listadosAuxiliares.tecnicos
       clientes.value = listadosAuxiliares.clientes
-      configuracionColumnasItemPreingreso.find((item) => item.field === 'unidad_medida')!.options = listadosAuxiliares.unidades_medidas.map((v: UnidadMedida) => { return { value: v.id, label: v.nombre } })
+      configuracionColumnasItemPreingreso.find((item) => item.field === 'unidad_medida')!.options = listadosAuxiliares.unidades_medidas.map((v: UnidadMedida) => { return { label: v.nombre } })
+      configuracionColumnasItemPreingreso.find((item) => item.field === 'condicion')!.options = listadosAuxiliares.condiciones.map((v: Condicion) => { return { label: v.nombre } })
       componenteCargado.value = true
       // console.log('Se ha cargado el listado de opciones en la configuracion de columnas')
     })
@@ -428,6 +432,7 @@ export default defineComponent({
       soloLectura,
       refArchivo,
       idPreingreso,
+      maskFecha,
       //listados
       coordinadores,
       tecnicos,

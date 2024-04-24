@@ -52,9 +52,9 @@ export const configuracionColumnasProyecto: ColumnConfig<Proyecto>[] = [
     sortable: true,
   },
   {
-    name: 'demora',
-    field: 'demora',
-    label: 'Demora',
+    name: 'tiempo_ocupado',
+    field: 'tiempo_ocupado',
+    label: 'Tiempo ocupado',
     align: 'left',
   },
   {

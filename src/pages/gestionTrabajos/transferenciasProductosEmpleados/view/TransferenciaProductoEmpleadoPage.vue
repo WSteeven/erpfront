@@ -339,8 +339,20 @@
             </q-select>
           </div>
 
-          <!-- !esParaStock -->
           <div v-if="existenProductos" class="col-12 col-md-3">
+            <label class="block">&nbsp;</label>
+            <q-checkbox
+              v-model="esDestinoStock"
+              label="Destino al stock del empleado a transferir"
+              @update:model-value="seleccionarEsDestinoStock()"
+              :disable="!(accion === acciones.nuevo)"
+              outlined
+              dense
+            ></q-checkbox>
+          </div>
+
+          <!-- !esParaStock -->
+          <div v-if="existenProductos && !esDestinoStock" class="col-12 col-md-3">
             <label class="q-mb-sm block">Proyecto destino</label>
             <q-select
               v-model="transferencia.proyecto_destino"
@@ -388,7 +400,7 @@
               transferencia.proyecto_destino &&
               etapasDestino.length &&
               existenProductos &&
-              !esParaStock
+              (!esParaStock || !esDestinoStock)
             "
             class="col-12 col-md-3"
           >
@@ -422,7 +434,7 @@
           </div>
 
           <!-- !esParaStock -->
-          <div v-if="existenProductos" class="col-12 col-md-3">
+          <div v-if="existenProductos && !esDestinoStock" class="col-12 col-md-3">
             <label class="q-mb-sm block">Tarea destino</label>
             <q-select
               v-model="transferencia.tarea_destino"
@@ -432,6 +444,7 @@
               options-dense
               hint="Tarea #"
               @filter="filtrarTareasDestino"
+              clearable
               dense
               outlined
               :disable="!(accion === acciones.nuevo)"

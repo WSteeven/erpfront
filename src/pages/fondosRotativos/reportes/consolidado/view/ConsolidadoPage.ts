@@ -1,4 +1,4 @@
-import { defineComponent, reactive, ref, watchEffect } from 'vue'
+import { defineComponent, ref, watchEffect } from 'vue'
 
 import TabLayout from 'shared/contenedor/modules/simple/view/TabLayout.vue'
 import { useNotificacionStore } from 'stores/notificacion'
@@ -11,11 +11,11 @@ import { apiConfig, endpoints } from 'config/api'
 import { imprimirArchivo } from 'shared/utils'
 import { Consolidado } from '../domain/Consolidado'
 import { ConsolidadoController } from '../infrestructure/ConsolidadoController'
-import { UsuarioController } from 'pages/fondosRotativos/usuario/infrestructure/UsuarioController'
-import { maskFecha } from 'config/utils'
+import { maskFecha, tipoReportes, tipo_saldo, tipos_saldos } from 'config/utils'
 import { EmpleadoController } from 'pages/recursosHumanos/empleados/infraestructure/EmpleadoController'
 import { useCargandoStore } from 'stores/cargando'
-import { useFondoRotativoStore } from 'stores/fondo_rotativo'
+import { required } from 'shared/i18n-validators'
+import { format } from '@formkit/tempo'
 
 export default defineComponent({
   components: { TabLayout },
@@ -25,13 +25,13 @@ export default defineComponent({
      *********/
     useNotificacionStore().setQuasar(useQuasar())
     useCargandoStore().setQuasar(useQuasar())
-    const fondosStore = useFondoRotativoStore()
 
     /***********
      * Mixin
      ************/
     const mixin = new ContenedorSimpleMixin(
-      Consolidado,new ConsolidadoController(),
+      Consolidado,
+      new ConsolidadoController()
     )
     const {
       entidad: consolidado,
@@ -46,40 +46,22 @@ export default defineComponent({
      * Validaciones
      **************/
     const reglas = {
-      usuario: {
-        required: true,
-        minLength: 3,
-        maxLength: 50,
-      },
       tipo_saldo: {
-        required: true,
-        minLength: 3,
-        maxLength: 50,
+        required,
       },
       fecha_inicio: {
-        required: true,
-        minLength: 3,
-        maxLength: 50,
+        required,
       },
       fecha_fin: {
-        required: true,
-        minLength: 3,
-        maxLength: 50,
+        required,
       },
     }
-    const tipos_saldos = ref([
-      { value: '1', label: 'Acreditacion' },
-      { value: '2', label: 'Gasto' },
-      { value: '3', label: 'Consolidado' },
-      { value: '4', label: 'Estado de Cuenta' },
-      { value: '5', label: 'Transferencia de Saldos' },
-      { value: '6', label: 'Gastos con Fotografia' },
 
-
-    ]);
-    const is_all_empleados= ref('false')
+    const is_all_empleados = ref('false')
     const is_inactivo = ref('false')
-    listadosAuxiliares.tipos_saldos = tipos_saldos;
+    const tipos_saldos_consolidado = ref()
+    tipos_saldos_consolidado.value = tipos_saldos
+    listadosAuxiliares.tipos_saldos = tipos_saldos_consolidado
     const v$ = useVuelidate(reglas, consolidado)
     setValidador(v$.value)
     const usuarios = ref([])
@@ -92,7 +74,7 @@ export default defineComponent({
       await obtenerListados({
         usuarios: {
           controller: new EmpleadoController(),
-          params: { campos: 'id,nombres,apellidos',estado: 1 },
+          params: { campos: 'id,nombres,apellidos', estado: 1 },
         },
         tiposFondos: {
           controller: new TipoFondoController(),
@@ -102,10 +84,10 @@ export default defineComponent({
 
       usuarios.value = listadosAuxiliares.usuarios
       usuariosInactivos.value =
-      LocalStorage.getItem('usuariosInactivos') == null
-        ? []
-        : JSON.parse(LocalStorage.getItem('usuariosInactivos')!.toString())
-    listadosAuxiliares.usuariosInactivos = usuariosInactivos.value
+        LocalStorage.getItem('usuariosInactivos') == null
+          ? []
+          : JSON.parse(LocalStorage.getItem('usuariosInactivos')!.toString())
+      listadosAuxiliares.usuariosInactivos = usuariosInactivos.value
       tiposFondos.value = listadosAuxiliares.tiposFondos
       tiposFondoRotativoFechas.value =
         listadosAuxiliares.tiposFondoRotativoFechas
@@ -125,7 +107,9 @@ export default defineComponent({
       update(() => {
         const needle = val.toLowerCase()
         usuarios.value = listadosAuxiliares.usuarios.filter(
-          (v) => v.nombres.toLowerCase().indexOf(needle) > -1 ||v.apellidos.toLowerCase().indexOf(needle) > -1
+          (v) =>
+            v.nombres.toLowerCase().indexOf(needle) > -1 ||
+            v.apellidos.toLowerCase().indexOf(needle) > -1
         )
       })
     }
@@ -182,46 +166,77 @@ export default defineComponent({
     function filtarTiposSaldos(val, update) {
       if (val === '') {
         update(() => {
-          tipos_saldos.value=
-            listadosAuxiliares.tipos_saldos
+          tipos_saldos_consolidado.value = listadosAuxiliares.tipos_saldos
         })
         return
       }
       update(() => {
         const needle = val.toLowerCase()
-        tipos_saldos.value =
-          listadosAuxiliares.tipos_saldos.filter(
-            (v) => v.label.toLowerCase().indexOf(needle) > -1
-          )
+        tipos_saldos_consolidado.value = listadosAuxiliares.tipos_saldos.filter(
+          (v) => v.label.toLowerCase().indexOf(needle) > -1
+        )
       })
     }
     async function generar_reporte(
       valor: Consolidado,
       tipo: string
     ): Promise<void> {
-       const axios = AxiosHttpRepository.getInstance()
-      const filename = 'reporte_semanal_consolidado_del_' + valor.fecha_inicio + '_al_' +valor.fecha_fin
-      switch (tipo) {
-        case 'excel':
-          const url_excel =
-            apiConfig.URL_BASE +
-            '/' +
-            axios.getEndpoint(endpoints.consolidado_excel)
-          imprimirArchivo(url_excel, 'POST', 'blob', 'xlsx', filename, valor)
-          break
-        case 'pdf':
-          const url_pdf =
-            apiConfig.URL_BASE +
-            '/' +
-            axios.getEndpoint(endpoints.consolidado_pdf)
-          imprimirArchivo(url_pdf, 'POST', 'blob', 'pdf', filename, valor)
-          break
-        default:
-          break
+      if (await v$.value.$validate()) {
+        const axios = AxiosHttpRepository.getInstance()
+        const filename =
+          'reporte_semanal_consolidado_del_' +
+          valor.fecha_inicio +
+          '_al_' +
+          valor.fecha_fin
+        switch (tipo) {
+          case tipoReportes.EXCEL:
+            const url_excel =
+              apiConfig.URL_BASE +
+              '/' +
+              axios.getEndpoint(endpoints.consolidado_excel)
+            imprimirArchivo(url_excel, 'POST', 'blob', 'xlsx', filename, valor)
+            break
+          case tipoReportes.PDF:
+            const url_pdf =
+              apiConfig.URL_BASE +
+              '/' +
+              axios.getEndpoint(endpoints.consolidado_pdf)
+            imprimirArchivo(url_pdf, 'POST', 'blob', 'pdf', filename, valor)
+            break
+          default:
+            break
+        }
       }
     }
     function mostrarEmpleados() {
-      consolidado.usuario = null;
+      consolidado.usuario = null
+    }
+    async function recargarEmpleadosInactivos() {
+      usuariosInactivos.value = (
+        await new EmpleadoController().listar({
+          campos: 'id,nombres,apellidos',
+          estado: 0,
+        })
+      ).result
+      listadosAuxiliares.usuariosInactivos = usuariosInactivos.value
+      LocalStorage.set('usuariosInactivos', JSON.stringify(usuariosInactivos.value))
+    }
+    function optionsFechaInicio(date) {
+      const fecha_actual = format(new Date(), 'YYYY/MM/DD')
+      return date <= fecha_actual
+    }
+    function optionsFechaFin(date) {
+      const fecha_actual = format(new Date(), 'YYYY/MM/DD')
+      const fecha_inicio = format(
+        consolidado.fecha_inicio !== null
+          ? consolidado.fecha_inicio
+          : new Date(),
+        'YYYY/MM/DD'
+      )
+      return date >= fecha_inicio && date <= fecha_actual
+    }
+    function limpiar() {
+      is_all_empleados.value = 'false'
     }
     return {
       mixin,
@@ -234,7 +249,8 @@ export default defineComponent({
       usuariosInactivos,
       tiposFondos,
       tiposFondoRotativoFechas,
-      tipos_saldos,
+      tipos_saldos_consolidado,
+      tipo_saldo,
       is_all_empleados,
       is_inactivo,
       generar_reporte,
@@ -245,6 +261,10 @@ export default defineComponent({
       filtarTiposSaldos,
       mostrarEmpleados,
       watchEffect,
+      optionsFechaInicio,
+      optionsFechaFin,
+      recargarEmpleadosInactivos,
+      limpiar,
     }
   },
 })

@@ -21,6 +21,7 @@ export class ConfiguracionGeneral extends EntidadAuditable {
   direccion_secundaria2: string | null
   favicon: string | null
   nombre_empresa: string | null
+  ciiu: string | null
 
   constructor() {
     super()
@@ -44,5 +45,6 @@ export class ConfiguracionGeneral extends EntidadAuditable {
     this.direccion_secundaria2 = null
     this.favicon = null
     this.nombre_empresa = null
+    this.ciiu = null
   }
 }

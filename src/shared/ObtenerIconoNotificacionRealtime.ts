@@ -9,6 +9,8 @@ export class ObtenerIconoNotificacionRealtime {
         return iconos.preingreso.icono
       case iconos.autorizacion_gasto.label:
         return iconos.autorizacion_gasto.icono
+      case iconos.transferencia_saldo.label:
+        return iconos.transferencia_saldo.icono
       case iconos.tarea.label:
         return iconos.tarea.icono
       case iconos.subtarea.label:
@@ -29,8 +31,6 @@ export class ObtenerIconoNotificacionRealtime {
         return iconos.solicitud_prestamo_empleado.icono
       case iconos.vacacion.label:
         return iconos.vacacion.icono
-
-
       case iconos.preorden.label:
         return iconos.preorden.icono
       case iconos.orden.label:
@@ -39,6 +39,8 @@ export class ObtenerIconoNotificacionRealtime {
         return iconos.proforma.icono
       case iconos.proveedor.label:
         return iconos.proveedor.icono
+      case iconos.diasDescanso.label:
+        return iconos.diasDescanso.icono
     }
   }
 }

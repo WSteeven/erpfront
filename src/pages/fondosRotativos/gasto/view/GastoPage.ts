@@ -1,9 +1,8 @@
-import { computed, defineComponent, reactive, Ref, ref, watchEffect } from 'vue'
+import { computed, defineComponent, Ref, ref, watchEffect } from 'vue'
 import { Gasto } from '../domain/Gasto'
 
 // Componentes
 
-import SelectorImagen from 'components/SelectorImagen.vue'
 import TabLayoutFilterTabs2 from 'shared/contenedor/modules/simple/view/TabLayoutFilterTabs2.vue'
 import { useNotificacionStore } from 'stores/notificacion'
 import { LocalStorage, useQuasar } from 'quasar'
@@ -12,41 +11,37 @@ import {
   requiredIf,
   maxLength,
   minLength,
+  maxValue,
   required,
 } from 'shared/i18n-validators'
-import { CustomActionPrompt } from 'components/tables/domain/CustomActionPrompt'
 import { ContenedorSimpleMixin } from 'shared/contenedor/modules/simple/application/ContenedorSimpleMixin'
 import { GastoController } from '../infrestructure/GastoController'
 import { configuracionColumnasGasto } from '../domain/configuracionColumnasGasto'
 import { DetalleFondoController } from 'pages/fondosRotativos/detalleFondo/infrestructure/DetalleFondoController'
 import { SubDetalleFondoController } from 'pages/fondosRotativos/subDetalleFondo/infrestructure/SubDetalleFondoController'
-import { UsuarioAutorizadoresController } from 'pages/fondosRotativos/usuario/infrestructure/UsuarioAutorizadoresController'
 import { ProyectoController } from 'proyectos/infraestructure/ProyectoController'
 import { TareaController } from 'tareas/infraestructure/TareaController'
 import { GastoPusherEvent } from '../application/GastoPusherEvent'
-import { useFondoRotativoStore } from 'stores/fondo_rotativo'
 import { Tarea } from 'pages/gestionTrabajos/tareas/domain/Tarea'
 import { SubDetalleFondo } from 'pages/fondosRotativos/subDetalleFondo/domain/SubDetalleFondo'
-import { useNotificaciones } from 'shared/notificaciones'
-import { AprobarGastoController } from 'pages/fondosRotativos/autorizarGasto/infrestructure/AprobarGastoController'
 import { useAuthenticationStore } from 'stores/authentication'
 import {
   maskFecha,
   tabAutorizarGasto,
   estadosGastos,
-  convertir_fecha,
   acciones,
+  rolesSistema,
 } from 'config/utils'
 import { EmpleadoController } from 'pages/recursosHumanos/empleados/infraestructure/EmpleadoController'
 import { Empleado } from 'pages/recursosHumanos/empleados/domain/Empleado'
 import { VehiculoController } from 'pages/controlVehiculos/vehiculos/infraestructure/VehiculoController'
 import ImagenComprimidaComponent from 'components/ImagenComprimidaComponent.vue'
-import { EmpleadoRoleController } from 'pages/recursosHumanos/empleados/infraestructure/EmpleadoRolesController'
 import { CustomActionTable } from 'components/tables/domain/CustomActionTable'
+import { filtarJefeImediato, filtrarEmpleadosPorRoles } from 'shared/utils'
+import { format } from '@formkit/tempo'
 export default defineComponent({
   components: { TabLayoutFilterTabs2, ImagenComprimidaComponent },
-  emits: ['guardado', 'cerrar-modal'],
-  setup(props, { emit }) {
+  setup() {
     const authenticationStore = useAuthenticationStore()
     const usuario = authenticationStore.user
     /*********
@@ -67,30 +62,14 @@ export default defineComponent({
       mixin.useComportamiento()
     const { onConsultado } = mixin.useHooks()
 
-    const {
-      confirmar,
-      prompt,
-      notificarCorrecto,
-      notificarAdvertencia,
-      notificarError,
-    } = useNotificaciones()
-
     const store = useAuthenticationStore()
     /*******
      * Init
      ******/
-    const fondoRotativoStore = useFondoRotativoStore()
-    const aprobarController = new AprobarGastoController()
 
     const esFactura = ref(true)
     const mostrarListado = ref(true)
-    const mostrarAprobacion = ref(false)
 
-    if (fondoRotativoStore.id_gasto) {
-      consultar({ id: fondoRotativoStore.id_gasto })
-      mostrarListado.value = false
-      mostrarAprobacion.value = true
-    }
     const visualizarAutorizador = computed(() => {
       return authenticationStore.can('puede.ver.campo.autorizador')
       /*return usuario.roles.findIndex((rol) => rol === 'TECNICO') > -1
@@ -101,7 +80,7 @@ export default defineComponent({
       return accion.value === acciones.consultar
     })
     onConsultado(() => {
-      esFactura.value =  !!gasto.factura  //gasto.tiene_factura != null ? gasto.tiene_factura : true
+      esFactura.value = !!gasto.factura //gasto.tiene_factura != null ? gasto.tiene_factura : true
     })
     const esCombustibleEmpresa = computed(() => {
       if (gasto.detalle == null) {
@@ -116,9 +95,9 @@ export default defineComponent({
       if (parseInt(gasto.detalle !== null ? gasto.detalle : '') === 6) {
         return (
           gasto.sub_detalle!.findIndex((subdetalle) => subdetalle === 96) >
-          -1 ||
+            -1 ||
           gasto.sub_detalle!.findIndex((subdetalle) => subdetalle === 97) >
-          -1 ||
+            -1 ||
           gasto.sub_detalle!.findIndex((subdetalle) => subdetalle === 24) > -1
         )
       } else {
@@ -213,9 +192,11 @@ export default defineComponent({
         required,
       },
       cantidad: {
+        maxValue:maxValue(9999),
         required,
       },
       valor_u: {
+        maxValue:maxValue(9999),
         required,
       },
       total: {
@@ -231,14 +212,16 @@ export default defineComponent({
         required: requiredIf(() => esCombustibleEmpresa.value),
       },
       vehiculo: {
-        required: requiredIf(() => esCombustibleEmpresa.value && !!gasto.es_vehiculo_alquilado),
+        required: requiredIf(
+          () => esCombustibleEmpresa.value && !!gasto.es_vehiculo_alquilado
+        ),
       },
       observacion: {
         required,
       },
-      placa:{
+      placa: {
         required: requiredIf(() => gasto.es_vehiculo_alquilado),
-      }
+      },
     }
 
     const v$ = useVuelidate(reglas, gasto)
@@ -248,7 +231,7 @@ export default defineComponent({
     const detalles = ref([])
     const sub_detalles = ref([])
     const proyectos = ref([])
-    const autorizacionesEspeciales: Ref<Empleado[]> = ref([])
+    const autorizaciones_especiales: Ref<Empleado[]> = ref([])
     const tareas = ref([])
     const vehiculos = ref([])
     const beneficiarios = ref([])
@@ -256,10 +239,6 @@ export default defineComponent({
     //Obtener el listado de las cantones
     cargarVista(async () => {
       await obtenerListados({
-        autorizacionesEspeciales: {
-          controller: new EmpleadoRoleController(),
-          params: { roles: ['AUTORIZADOR'] },
-        },
         proyectos: {
           controller: new ProyectoController(),
           params: {
@@ -280,15 +259,7 @@ export default defineComponent({
         empleados: {
           controller: new EmpleadoController(),
           params: {
-            campos: 'id,nombres,apellidos',
-            id: usuario.jefe_id,
-            estado: 1,
-          },
-        },
-        beneficiarios: {
-          controller: new EmpleadoController(),
-          params: {
-            campos: 'id,nombres,apellidos',
+            // campos: 'id,nombres,apellidos',
             estado: 1,
           },
         },
@@ -299,14 +270,21 @@ export default defineComponent({
           },
         },
       })
-      autorizacionesEspeciales.value =
-        listadosAuxiliares.autorizacionesEspeciales
-      beneficiarios.value = listadosAuxiliares.beneficiarios
+      autorizaciones_especiales.value = await filtrarEmpleadosPorRoles(
+        listadosAuxiliares.empleados,
+        [rolesSistema.autorizador]
+      )
+      autorizaciones_especiales.value.unshift(
+        await filtarJefeImediato(listadosAuxiliares.empleados)
+      )
+      listadosAuxiliares.autorizaciones_especiales =
+        autorizaciones_especiales.value
+      beneficiarios.value = listadosAuxiliares.empleados
+      listadosAuxiliares.beneficiarios = beneficiarios.value
       listadosAuxiliares.proyectos.unshift({ id: 0, nombre: 'Sin Proyecto' })
       proyectos.value = listadosAuxiliares.proyectos
       tareas.value = listadosAuxiliares.tareas
       vehiculos.value = listadosAuxiliares.vehiculos
-      autorizacionesEspeciales.value.unshift(listadosAuxiliares.empleados[0])
     })
     cantones.value =
       LocalStorage.getItem('cantones') == null
@@ -332,23 +310,16 @@ export default defineComponent({
     function filtrarAutorizacionesEspeciales(val, update) {
       if (val === '') {
         update(() => {
-          autorizacionesEspeciales.value =
-            listadosAuxiliares.autorizacionesEspeciales
+          autorizaciones_especiales.value =
+            listadosAuxiliares.autorizaciones_especiales
         })
         return
       }
       update(() => {
         const needle = val.toLowerCase()
-        console.log(
-          listadosAuxiliares.autorizacionesEspeciales.filter((v) => {
-            console.log(v.nombres.toLowerCase())
 
-            v.nombres.toLowerCase().indexOf(needle) > -1
-          })
-        )
-
-        autorizacionesEspeciales.value =
-          listadosAuxiliares.autorizacionesEspeciales.filter(
+        autorizaciones_especiales.value =
+          listadosAuxiliares.autorizaciones_especiales.filter(
             (v) =>
               v.nombres.toLowerCase().indexOf(needle) > -1 ||
               v.apellidos.toLowerCase().indexOf(needle) > -1
@@ -396,18 +367,24 @@ export default defineComponent({
       // Verificar si el día actual es sábado
       let sabadoAnterior = ''
       if (diaSemana === 6) {
-        sabadoAnterior = convertir_fecha(
-          new Date(today.setDate(today.getDate() - ((today.getDay() + 2) % 7)))
+        sabadoAnterior = format(
+          new Date(today.setDate(today.getDate() - ((today.getDay() + 2) % 7))),
+          'YYYY/MM/DD'
         )
       } else {
-        sabadoAnterior = convertir_fecha(
-          //new Date(today.setDate(today.getDate() - ((today.getDay()+1) % 7)))
-          new Date(today.setDate(today.getDate() - (today.getDay() % 7)))
+        sabadoAnterior = format(
+          new Date(today.setDate(today.getDate() - (today.getDay() % 7))),
+          'YYYY/MM/DD'
         )
       }
-      const sabadoSiguiente = convertir_fecha(new Date(siguienteSabado()))
-      console.log(sabadoAnterior + ' al ' + sabadoSiguiente)
-      return date >= sabadoAnterior && date <= sabadoSiguiente
+      const sabadoSiguiente = format(new Date(siguienteSabado()), 'YYYY/MM/DD')
+      const fecha_actual = format(new Date(), 'YYYY/MM/DD')
+
+      return (
+        date >= sabadoAnterior &&
+        date <= sabadoSiguiente &&
+        date <= fecha_actual
+      )
     }
     function siguienteSabado() {
       const fecha = new Date() // Obtenemos la fecha actual
@@ -524,14 +501,14 @@ export default defineComponent({
           subdetalle.id_detalle_viatico === gasto.detalle
       )
     })
-    function cambiar_proyecto() {
+    function cambiarProyecto() {
       gasto.num_tarea = null
     }
-    function cambiar_detalle() {
+    function cambiarDetalle() {
       gasto.sub_detalle = null
     }
 
-    function tiene_factura_subdetalle() {
+    function tieneFacturaSubDetalle() {
       let tieneFactura = true
       for (let index = 0; index < gasto.sub_detalle!.length; index++) {
         const id_subdetalle = gasto.sub_detalle![index]
@@ -561,7 +538,7 @@ export default defineComponent({
       gasto.factura = null
       gasto.ruc = null
     }
-    async function recargar_detalle(tipo: string) {
+    async function recargarDetalle(tipo: string) {
       switch (tipo) {
         case 'detalle':
           const detalles = (
@@ -597,8 +574,8 @@ export default defineComponent({
                   LocalStorage.getItem('sub_detalles') == null
                     ? []
                     : JSON.parse(
-                      LocalStorage.getItem('sub_detalles')!.toString()
-                    )
+                        LocalStorage.getItem('sub_detalles')!.toString()
+                      )
                 listadosAuxiliares.sub_detalles = sub_detalles.value
               }, 100),
             250
@@ -607,58 +584,15 @@ export default defineComponent({
           break
       }
     }
-    function aprobar_gasto(entidad, tipo_aprobacion: string) {
-      switch (tipo_aprobacion) {
-        case 'aprobar':
-          const data: CustomActionPrompt = {
-            titulo: 'Aprobar gasto',
-            mensaje: 'Ingrese motivo de aprobación',
-            accion: async (data) => {
-              try {
-                entidad.detalle_estado = data
-                await aprobarController.aprobarGasto(entidad)
-                notificarCorrecto('Se aprobado Gasto Exitosamente')
-                emit('cerrar-modal')
-              } catch (e: any) {
-                notificarError(
-                  'No se pudo aprobar, debes ingresar un motivo para la anulación'
-                )
-              }
-            },
-          }
-          prompt(data)
-          break
-        case 'rechazar':
-          confirmar('¿Está seguro de rechazar el gasto?', () => {
-            const data: CustomActionPrompt = {
-              titulo: 'Rechazar gasto',
-              mensaje: 'Ingrese motivo de aprobación',
-              accion: async (data) => {
-                try {
-                  entidad.detalle_estado = data
-                  await aprobarController.rechazarGasto(entidad)
-                  notificarAdvertencia('Se rechazado Gasto Exitosamente')
-                  emit('cerrar-modal')
-                } catch (e: any) {
-                  notificarError(
-                    'No se pudo rechazar, debes ingresar un motivo para la anulación'
-                  )
-                }
-              },
-            }
-            prompt(data)
-          })
-        default:
-          break
-      }
-    }
+
     const editarGasto: CustomActionTable = {
       titulo: ' ',
       icono: 'bi-pencil-square',
       color: 'secondary',
       visible: ({ entidad }) => {
         return (
-          (entidad.aut_especial === authenticationStore.user.id || entidad.id_usuario == authenticationStore.user.id) &&
+          (entidad.aut_especial === authenticationStore.user.id ||
+            entidad.id_usuario == authenticationStore.user.id) &&
           entidad.estado === estadosGastos.PENDIENTE
         )
       },
@@ -667,11 +601,11 @@ export default defineComponent({
         consultar(entidad)
       },
     }
-    let tabActualGasto = '3'
+    const tabActualGasto = ref(estadosGastos.PENDIENTE)
 
-    function filtrarGasto(tabSeleccionado: string) {
+    function filtrarGasto(tabSeleccionado: number) {
       listar({ estado: tabSeleccionado }, false)
-      tabActualGasto = tabSeleccionado
+      tabActualGasto.value = tabSeleccionado
     }
     return {
       mixin,
@@ -691,13 +625,13 @@ export default defineComponent({
       tabAutorizarGasto,
       maskFecha,
       configuracionColumnas: configuracionColumnasGasto,
-      autorizacionesEspeciales,
+      autorizaciones_especiales,
       visualizarAutorizador,
       esCombustibleEmpresa,
       vehiculos,
       watchEffect,
       filtrarAutorizacionesEspeciales,
-      tiene_factura_subdetalle,
+      tieneFacturaSubDetalle,
       filtrarCantones,
       filtrarDetalles,
       filtarSubdetalles,
@@ -707,11 +641,10 @@ export default defineComponent({
       filtrarTareas,
       filtrarGasto,
       filtrarVehiculos,
-      aprobar_gasto,
-      cambiar_detalle,
-      cambiar_proyecto,
+      cambiarDetalle,
+      cambiarProyecto,
       optionsFechaGasto,
-      recargar_detalle,
+      recargarDetalle,
       editarGasto,
       mascaraFactura,
       mascara_placa,
@@ -722,6 +655,7 @@ export default defineComponent({
       mostarPlaca,
       listadoTareas,
       es_consultar,
+      estadosGastos
     }
   },
 })

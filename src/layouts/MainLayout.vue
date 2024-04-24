@@ -203,7 +203,7 @@
                       <q-item-section class="full-width">
                         {{ notificacion.mensaje }}
                         <span class="block text-grey-8 text-weight-regular">
-                          {{ moment(notificacion.created_at).fromNow() }}
+                          {{ dayjs(notificacion.created_at).fromNow() }}
                         </span>
 
                         <q-item-label class="row justify-end q-pt-sm">
@@ -455,8 +455,25 @@
     <modales-entidad :comportamiento="modales" />
 
     <ScrollToTopButton></ScrollToTopButton>
+    <div class="area">
+      <ul class="circles">
+        <li></li>
+        <li></li>
+        <li></li>
+        <li></li>
+        <li></li>
+        <li></li>
+        <li></li>
+        <li></li>
+        <li></li>
+        <li></li>
+      </ul>
+    </div>
 
-    <q-page-container :class="{ 'bg-body': true }" class="window-height">
+    <div class="backdrop"></div>
+
+    <q-page-container class="bg-body-background">
+      <!-- class="window-height" -->
       <router-view v-slot="{ Component }">
         <transition name="scale" mode="out-in">
           <essential-loading></essential-loading>
@@ -473,6 +490,7 @@
             'PreordenCompra',
             'Devoluciones',
             'RolPagoMes',
+            'AcreditacionSemana',
             'TransferenciaProductoEmpleado',
           ]"
         >

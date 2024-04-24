@@ -111,6 +111,7 @@
                     <q-select
                       v-model="clienteMaterialTarea"
                       :options="listadosAuxiliares.clientesMaterialesTarea"
+                      :hint="subtarea.cliente"
                       transition-show="scale"
                       transition-hide="scale"
                       use-input
@@ -250,6 +251,7 @@
                     <q-select
                       v-model="clienteMaterialStock"
                       :options="listadosAuxiliares.clientesMaterialesEmpleado"
+                      :hint="subtarea.cliente"
                       transition-show="scale"
                       transition-hide="scale"
                       use-input

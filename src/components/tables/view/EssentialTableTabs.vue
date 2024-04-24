@@ -12,7 +12,7 @@
       :active-bg-color="activeBgColor"
       :indicator-color="indicatorColor"
       align="justify"
-      @click="emit('tab-seleccionado', tabSeleccionado)"
+      @click="$emit('tab-seleccionado', tabSeleccionado)"
     >
       <q-tab
         v-for="opcion in tabOptions"
@@ -23,7 +23,19 @@
           'tab-inactive': tabSeleccionado !== opcion.label && !$q.screen.xs,
         }"
       >
+        <q-icon
+          v-if="opcion.icono && !opcion.icono_derecha"
+          :name="opcion.icono"
+          :color="opcion.color_icono"
+          class="q-mr-sm"
+        ></q-icon>
         <span>{{ opcion.label }}</span>
+        <q-icon
+          v-if="opcion.icono && opcion.icono_derecha"
+          :name="opcion.icono"
+          :color="opcion.color_icono"
+          class="q-ml-sm"
+        ></q-icon>
         <q-badge
           v-if="tabSeleccionado == opcion.value && datos?.length > 0"
           color="accent"
@@ -36,6 +48,7 @@
 
     <div :class="{ 'q-mx-sm': $q.screen.xs }">
       <essential-table
+        ref="refTabla"
         :titulo="titulo"
         :configuracionColumnas="configuracionColumnas"
         :datos="datos"
@@ -82,233 +95,283 @@
         @toggle-filtros="toggleFiltros"
         :ajustarCeldas="ajustarCeldas"
         :separador="separador"
+        :tipoSeleccion="tipoSeleccion"
+        @selected="seleccionado"
       ></essential-table>
     </div>
   </div>
 </template>
 
-<script lang="ts" setup>
+<script lang="ts">
 import { EntidadAuditable } from 'shared/entidad/domain/entidadAuditable'
 import { CustomActionTable } from '../domain/CustomActionTable'
-import { TabOption } from 'components/tables/domain/TabOption' // nico, salaas, patricion mnedes , fernando, milton -> operacion y mantenimiento pero no supervisores
+import { TabOption } from 'components/tables/domain/TabOption'
 import { ColumnConfig } from '../domain/ColumnConfig'
-import EssentialTable from './EssentialTable.vue'
 import { TipoSeleccion } from 'config/utils'
-import { computed, ref, watchEffect } from 'vue'
+import { computed, defineComponent, ref, watchEffect } from 'vue'
 
-const props = defineProps({
-  titulo: {
-    type: String,
-    default: 'Listado',
+// Components
+import EssentialTable from './EssentialTable.vue'
+
+export default defineComponent({
+  components: {
+    EssentialTable,
   },
-  separador: {
-    type: String,
-    default: 'horizontal',
-  },
-  configuracionColumnas: {
-    type: Object as () => ColumnConfig<EntidadAuditable>[],
-    required: true,
-  },
-  datos: {
-    type: Array,
-    required: true,
-  },
-  permitirEditarCeldas: {
-    type: Boolean,
-    default: false,
-  },
-  permitirConsultar: {
-    type: Boolean,
-    default: true,
-  },
-  permitirEditar: {
-    type: Boolean,
-    default: true,
-  },
-  permitirEliminar: {
-    type: Boolean,
-    default: true,
-  },
-  tipoSeleccion: {
-    type: String as () => TipoSeleccion,
-    default: 'none',
-  },
-  accion1: {
-    type: Object as () => CustomActionTable,
-    required: false,
+  props: {
+    titulo: {
+      type: String,
+      default: 'Listado',
+    },
+    separador: {
+      type: String,
+      default: 'horizontal',
+    },
+    configuracionColumnas: {
+      type: Object as () => ColumnConfig<EntidadAuditable>[],
+      required: true,
+    },
+    datos: {
+      type: Array,
+      required: true,
+    },
+    permitirEditarCeldas: {
+      type: Boolean,
+      default: false,
+    },
+    permitirConsultar: {
+      type: Boolean,
+      default: true,
+    },
+    permitirEditar: {
+      type: Boolean,
+      default: true,
+    },
+    permitirEliminar: {
+      type: Boolean,
+      default: true,
+    },
+    tipoSeleccion: {
+      type: String as () => TipoSeleccion,
+      default: 'none',
+    },
+    accion1: {
+      type: Object as () => CustomActionTable,
+      required: false,
+    },
+
+    accion2: {
+      type: Object as () => CustomActionTable,
+      required: false,
+    },
+    accion3: {
+      type: Object as () => CustomActionTable,
+      required: false,
+    },
+    accion4: {
+      type: Object as () => CustomActionTable,
+      required: false,
+    },
+    accion5: {
+      type: Object as () => CustomActionTable,
+      required: false,
+    },
+    accion6: {
+      type: Object as () => CustomActionTable,
+      required: false,
+    },
+    accion7: {
+      type: Object as () => CustomActionTable,
+      required: false,
+    },
+    accion8: {
+      type: Object as () => CustomActionTable,
+      required: false,
+    },
+    accion9: {
+      type: Object as () => CustomActionTable,
+      required: false,
+    },
+    accion10: {
+      type: Object as () => CustomActionTable,
+      required: false,
+    },
+    accion1Header: {
+      type: Object as () => CustomActionTable,
+      required: false,
+    },
+    accion2Header: {
+      type: Object as () => CustomActionTable,
+      required: false,
+    },
+    accion3Header: {
+      type: Object as () => CustomActionTable,
+      required: false,
+    },
+    accion4Header: {
+      type: Object as () => CustomActionTable,
+      required: false,
+    },
+    accion5Header: {
+      type: Object as () => CustomActionTable,
+      required: false,
+    },
+    accion6Header: {
+      type: Object as () => CustomActionTable,
+      required: false,
+    },
+    mostrarBotones: {
+      type: Boolean,
+      default: true,
+    },
+    altoFijo: {
+      type: Boolean,
+      default: true,
+    },
+    mostrarHeader: {
+      type: Boolean,
+      default: true,
+    },
+    mostrarFooter: {
+      type: Boolean,
+      default: true,
+    },
+    tabOptions: {
+      type: Array as () => TabOption[],
+      required: true,
+    },
+    tabDefecto: String,
+    permitirFiltrar: {
+      type: Boolean,
+      default: false,
+    },
+    permitirBuscar: {
+      type: Boolean,
+      default: true,
+    },
+    primeraColumnaFija: {
+      type: Boolean,
+      default: false,
+    },
+    mostrarExportar: {
+      type: Boolean,
+      default: false,
+    },
+    ajustarCeldas: {
+      //valor que se envia para que el contenido de la celda se autoaujuste al tamaño de la celda en lugar de aumentar su tamaño
+      type: Boolean,
+      default: false,
+    },
   },
 
-  accion2: {
-    type: Object as () => CustomActionTable,
-    required: false,
-  },
-  accion3: {
-    type: Object as () => CustomActionTable,
-    required: false,
-  },
-  accion4: {
-    type: Object as () => CustomActionTable,
-    required: false,
-  },
-  accion5: {
-    type: Object as () => CustomActionTable,
-    required: false,
-  },
-  accion6: {
-    type: Object as () => CustomActionTable,
-    required: false,
-  },
-  accion7: {
-    type: Object as () => CustomActionTable,
-    required: false,
-  },
-  accion8: {
-    type: Object as () => CustomActionTable,
-    required: false,
-  },
-  accion9: {
-    type: Object as () => CustomActionTable,
-    required: false,
-  },
-  accion10: {
-    type: Object as () => CustomActionTable,
-    required: false,
-  },
-  accion1Header: {
-    type: Object as () => CustomActionTable,
-    required: false,
-  },
-  accion2Header: {
-    type: Object as () => CustomActionTable,
-    required: false,
-  },
-  accion3Header: {
-    type: Object as () => CustomActionTable,
-    required: false,
-  },
-  accion4Header: {
-    type: Object as () => CustomActionTable,
-    required: false,
-  },
-  accion5Header: {
-    type: Object as () => CustomActionTable,
-    required: false,
-  },
-  accion6Header: {
-    type: Object as () => CustomActionTable,
-    required: false,
-  },
-  mostrarBotones: {
-    type: Boolean,
-    default: true,
-  },
-  altoFijo: {
-    type: Boolean,
-    default: true,
-  },
-  mostrarHeader: {
-    type: Boolean,
-    default: true,
-  },
-  mostrarFooter: {
-    type: Boolean,
-    default: true,
-  },
-  tabOptions: {
-    type: Array as () => TabOption[],
-    required: true,
-  },
-  tabDefecto: String,
-  permitirFiltrar: {
-    type: Boolean,
-    default: false,
-  },
-  permitirBuscar: {
-    type: Boolean,
-    default: true,
-  },
-  primeraColumnaFija: {
-    type: Boolean,
-    default: false,
-  },
-  mostrarExportar: {
-    type: Boolean,
-    default: false,
-  },
-  ajustarCeldas: {
-    //valor que se envia para que el contenido de la celda se autoaujuste al tamaño de la celda en lugar de aumentar su tamaño
-    type: Boolean,
-    default: false,
+  emits: [
+    'consultar',
+    'editar',
+    'eliminar',
+    'accion1',
+    'accion2',
+    'accion3',
+    'accion4',
+    'accion5',
+    'accion6',
+    'accion7',
+    'accion8',
+    'accion9',
+    'accion10',
+    'tab-seleccionado',
+    'filtrar',
+    'limpiar-listado',
+    'selected',
+    'update:selected',
+  ],
+  setup(props, { emit }) {
+    const refTabla = ref()
+    const selected = ref([])
+    const tabSeleccionado = ref(props.tabDefecto)
+    const mostrarTabs = ref(true)
+    const activeColor = computed(
+      () =>
+        props.tabOptions.find(
+          (opcion: TabOption) => opcion.value === tabSeleccionado.value
+        )?.color_icono ?? 'white'
+    )
+
+    const indicatorColor = computed(
+      () =>
+        props.tabOptions.find(
+          (opcion: TabOption) => opcion.value === tabSeleccionado.value
+        )?.color_icono ?? 'accent'
+    )
+
+    const activeBgColor = computed(
+      () =>
+        props.tabOptions.find(
+          (opcion: TabOption) => opcion.value === tabSeleccionado.value
+        )?.bg_color ?? 'primary'
+    )
+
+    watchEffect(() => {
+      tabSeleccionado.value = props.tabDefecto
+    })
+
+    function toggleFiltros(mostrarFiltros: boolean) {
+      mostrarTabs.value = !mostrarFiltros
+      if (mostrarTabs.value) emit('tab-seleccionado', tabSeleccionado.value)
+      else emit('limpiar-listado')
+    }
+
+    const consultar = (data) => emit('consultar', data)
+    const editar = (data) => emit('editar', data)
+    const eliminar = (data) => emit('eliminar', data)
+    const emitAccion1 = (data) => emit('accion1', data)
+    const emitAccion2 = (data) => emit('accion2', data)
+    const emitAccion3 = (data) => emit('accion3', data)
+    const emitAccion4 = (data) => emit('accion4', data)
+    const emitAccion5 = (data) => emit('accion5', data)
+    const emitAccion6 = (data) => emit('accion6', data)
+    const emitAccion7 = (data) => emit('accion7', data)
+    const emitAccion8 = (data) => emit('accion8', data)
+    const emitAccion9 = (data) => emit('accion9', data)
+    const emitAccion10 = (data) => emit('accion10', data)
+
+    function consultarTodos(uri) {
+      emit('filtrar', uri)
+    }
+
+    /* function seleccionar() {
+      console.log('saludando...')
+      refTabla.value.seleccionar()
+    } */
+
+    function seleccionado(selected) {
+      console.log('En tabs')
+      console.log(selected)
+      emit('selected', selected)
+    }
+
+    return {
+      refTabla,
+      mostrarTabs,
+      tabSeleccionado,
+      activeColor,
+      activeBgColor,
+      indicatorColor,
+      consultar,
+      editar,
+      eliminar,
+      emitAccion1,
+      emitAccion2,
+      emitAccion3,
+      emitAccion4,
+      emitAccion5,
+      emitAccion6,
+      emitAccion7,
+      emitAccion8,
+      emitAccion9,
+      emitAccion10,
+      consultarTodos,
+      toggleFiltros,
+      seleccionado,
+    }
   },
 })
-
-const emit = defineEmits([
-  'consultar',
-  'editar',
-  'eliminar',
-  'accion1',
-  'accion2',
-  'accion3',
-  'accion4',
-  'accion5',
-  'accion6',
-  'accion7',
-  'accion8',
-  'accion9',
-  'accion10',
-  'tab-seleccionado',
-  'filtrar',
-  'limpiar-listado',
-])
-
-const tabSeleccionado = ref(props.tabDefecto)
-const mostrarTabs = ref(true)
-const activeColor = computed(
-  () =>
-    props.tabOptions.find(
-      (opcion: TabOption) => opcion.value === tabSeleccionado.value
-    )?.color_icono ?? 'white'
-)
-
-const indicatorColor = computed(
-  () =>
-    props.tabOptions.find(
-      (opcion: TabOption) => opcion.value === tabSeleccionado.value
-    )?.color_icono ?? 'accent'
-)
-
-const activeBgColor = computed(
-  () =>
-    props.tabOptions.find(
-      (opcion: TabOption) => opcion.value === tabSeleccionado.value
-    )?.bg_color ?? 'primary'
-)
-
-watchEffect(() => {
-  tabSeleccionado.value = props.tabDefecto
-})
-
-function toggleFiltros(mostrarFiltros: boolean) {
-  mostrarTabs.value = !mostrarFiltros
-  if (mostrarTabs.value) emit('tab-seleccionado', tabSeleccionado.value)
-  else emit('limpiar-listado')
-}
-
-const consultar = (data) => emit('consultar', data)
-const editar = (data) => emit('editar', data)
-const eliminar = (data) => emit('eliminar', data)
-const emitAccion1 = (data) => emit('accion1', data)
-const emitAccion2 = (data) => emit('accion2', data)
-const emitAccion3 = (data) => emit('accion3', data)
-const emitAccion4 = (data) => emit('accion4', data)
-const emitAccion5 = (data) => emit('accion5', data)
-const emitAccion6 = (data) => emit('accion6', data)
-const emitAccion7 = (data) => emit('accion7', data)
-const emitAccion8 = (data) => emit('accion8', data)
-const emitAccion9 = (data) => emit('accion9', data)
-const emitAccion10 = (data) => emit('accion10', data)
-
-function consultarTodos(uri) {
-  emit('filtrar', uri)
-}
 </script>

@@ -8,7 +8,6 @@ import { useVuelidate } from '@vuelidate/core';
 import TabLayout from 'shared/contenedor/modules/simple/view/TabLayout.vue'
 import LabelAbrirModal from 'components/modales/modules/LabelAbrirModal.vue';
 import ModalesEntidad from 'components/modales/view/ModalEntidad.vue';
-import TablaDevolucionProducto from 'components/tables/view/TablaDevolucionProducto.vue'
 import EssentialTable from 'components/tables/view/EssentialTable.vue';
 import GestorArchivos from 'components/gestorArchivos/GestorArchivos.vue';
 
@@ -33,7 +32,7 @@ import { useNotificaciones } from 'shared/notificaciones';
 import { ContactoProveedorController } from 'pages/comprasProveedores/contactosProveedor/infraestructure/ContactoProveedorController';
 import { useProveedorStore } from 'stores/comprasProveedores/proveedor';
 import { useAuthenticationStore } from 'stores/authentication';
-import moment from 'moment';
+import dayjs from 'dayjs';
 import { useCalificacionProveedorStore } from 'stores/comprasProveedores/calificacionProveedor';
 import { DetalleDepartamentoProveedorController } from 'pages/comprasProveedores/detallesDepartamentosProveedor/infraestructure/DetalleDepartamentoProveedorController';
 import { LocalStorage, useQuasar } from 'quasar';
@@ -51,7 +50,7 @@ import { DatoBancarioController } from 'pages/comprasProveedores/datosBancariosP
 
 
 export default defineComponent({
-  components: { TabLayout, LabelAbrirModal, ModalesEntidad, TablaDevolucionProducto, EssentialTable, GestorArchivos },
+  components: { TabLayout, LabelAbrirModal, ModalesEntidad, EssentialTable, GestorArchivos },
   setup() {
     const mixinEmpresas = new ContenedorSimpleMixin(Empresa, new EmpresaController(), new ArchivoController())
     const mixin = new ContenedorSimpleMixin(Proveedor, new ProveedorController())
@@ -287,7 +286,7 @@ export default defineComponent({
         const departamento_calificador = entidad.related_departamentos.filter((v) => v.id === store.user.departamento)[0]
         if (departamento_calificador) {
           if (departamento_calificador.pivot.fecha_calificacion) {
-            const diasTranscurridos = moment().diff(moment(departamento_calificador?.pivot.fecha_calificacion), 'days')
+            const diasTranscurridos = dayjs().diff(dayjs(departamento_calificador?.pivot.fecha_calificacion), 'day')
             return diasTranscurridos > 365 && entidad.estado
           }
           return true && entidad.estado

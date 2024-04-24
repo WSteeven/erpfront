@@ -17,12 +17,13 @@ import ModalesEntidad from 'components/modales/view/ModalEntidad.vue'
 import { ComportamientoModalesTicketAsignado } from '../application/ComportamientoModalesTicketAsignado'
 import { ContenedorSimpleMixin } from 'shared/contenedor/modules/simple/application/ContenedorSimpleMixin'
 import { CustomActionTable } from 'components/tables/domain/CustomActionTable'
-import { SubtareaListadoPusherEvent } from '../application/SubtareaPusherEvent'
+// import { SubtareaListadoPusherEvent } from '../application/SubtareaPusherEventBORRAR'
 import { TicketController } from 'pages/gestionTickets/tickets/infraestructure/TicketController'
 import { Ticket } from 'pages/gestionTickets/tickets/domain/Ticket'
 import { useBotonesTablaTicket } from 'pages/gestionTickets/tickets/application/BotonesTablaTicket'
 import { MotivoPausaTicketController } from 'pages/gestionTickets/motivosPausasTickets/infraestructure/MotivoPausaTicketController'
 import { TicketModales } from 'pages/gestionTickets/tickets/domain/TicketModales'
+import { TicketPusherEvent } from 'src/pusherEvents/TicketPusherEvent'
 
 export default defineComponent({
   components: {
@@ -71,10 +72,9 @@ export default defineComponent({
     /*********
      * Pusher
      *********/
-    const puedeEjecutar = computed(() => tabActual.value === estadosTickets.ASIGNADO)
+    // const puedeEjecutar = computed(() => tabActual.value === estadosTickets.ASIGNADO)
 
-    const subtareaPusherEvent = new SubtareaListadoPusherEvent(filtrarTrabajoAsignado, puedeEjecutar)
-    subtareaPusherEvent.start()
+    // const subtareaPusherEvent = new SubtareaListadoPusherEvent(filtrarTrabajoAsignado, puedeEjecutar)
 
     /***************
      * Botones tabla
@@ -94,9 +94,13 @@ export default defineComponent({
     async function filtrarTrabajoAsignado(tabSeleccionado) {
       listar({ responsable_id: authenticationStore.user.id, estado: tabSeleccionado })
       tabActual.value = tabSeleccionado
+      console.log('filtrando ticket event')
     }
 
     filtrarTrabajoAsignado(estadosTrabajos.ASIGNADO)
+
+    const ticketPusherEvent = new TicketPusherEvent(filtrarTrabajoAsignado)
+    ticketPusherEvent.start()
 
     async function guardado(paginaModal: keyof TicketModales) {
       switch (paginaModal) {

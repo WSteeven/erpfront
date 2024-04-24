@@ -2,7 +2,7 @@
 import { accionesActivos, autorizacionesTransacciones, estadosTransacciones, estadosInventarios, estadosControlStock, estadosCondicionesId, estadosCondicionesValue } from 'config/utils'
 import { estadosCalificacionProveedor } from 'config/utils_compras_proveedores'
 import { EstadoPrevisualizarTablaPDF } from '../application/EstadoPrevisualizarTablaPDF'
-import { computed, defineComponent, ref, watchEffect, nextTick, Ref } from 'vue'
+import { computed, defineComponent, ref, watchEffect, nextTick, Ref, watch } from 'vue'
 import { EntidadAuditable } from 'shared/entidad/domain/entidadAuditable'
 import { Instanciable } from 'shared/entidad/domain/instanciable'
 import { CustomActionTable } from '../domain/CustomActionTable'
@@ -195,11 +195,15 @@ export default defineComponent({
     mostrarExportar: {
       type: Boolean,
       default: false,
+    },
+    grid: {
+      type: Boolean,
+      default: true,
     }
   },
-  emits: ['consultar', 'editar', 'eliminar', 'accion1', 'accion2', 'accion3', 'accion4', 'accion5', 'accion6', 'accion7', 'accion8', 'accion9', 'accion10', 'selected', 'onScroll', 'filtrar', 'toggle-filtros', 'guardar-fila'],
+  emits: ['consultar', 'editar', 'eliminar', 'accion1', 'accion2', 'accion3', 'accion4', 'accion5', 'accion6', 'accion7', 'accion8', 'accion9', 'accion10', 'selected', 'onScroll', 'filtrar', 'toggle-filtros', 'guardar-fila', 'update:selected', 'fila-modificada'],
   setup(props, { emit }) {
-    const grid = ref(false)
+    // const grid = ref(false)
     const inFullscreen = ref(false)
     const fila = ref()
     const posicionFilaEditada = ref()
@@ -240,7 +244,7 @@ export default defineComponent({
         const filaVacia: EntidadAuditable = new props.entidad()
         if (data) filaVacia.hydrate(data)
         fila.value = filaVacia
-        console.log(fila.value)
+        // console.log(fila.value)
         posicionFilaEditada.value = listado.value.length
         refEditarModal.value.abrir()
       } else {
@@ -257,7 +261,17 @@ export default defineComponent({
     // Observers
     const seleccionar = () => {
       emit('selected', selected.value)
+      // emit('update:selected', selected.value);
     }
+
+    watch(selected, () => {
+      console.log(selected.value)
+      emit('selected', selected.value)
+    })
+
+    /*const emitSelectedChange = () => {
+      emit('update:selected', selected.value);
+    };*/
 
     const printTable = new EstadoPrevisualizarTablaPDF()
 
@@ -419,6 +433,16 @@ export default defineComponent({
       return `"${formatted}"`
     }
 
+    function extraerColor(accion?: CustomActionTable) {
+      return typeof accion?.color === 'function'
+        ? accion.color()
+        : accion?.color
+    }
+
+    function guardarCeldaEditada(fila) {
+      emit('fila-modificada', fila)
+    }
+
     function clearSelection() {
       refTable.value.clearSelection()
     }
@@ -431,7 +455,7 @@ export default defineComponent({
       agregarFiltro,
       establecerFiltros,
       filtrar,
-      grid,
+      // grid,
       inFullscreen,
       editar,
       consultar,
@@ -470,6 +494,8 @@ export default defineComponent({
       abrirModalEditar,
       exportTable,
       toggleFiltros,
+      extraerColor,
+      guardarCeldaEditada,
       clearSelection,
     }
   },

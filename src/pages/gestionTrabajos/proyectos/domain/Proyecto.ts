@@ -8,12 +8,13 @@ export class Proyecto extends EntidadAuditable {
   canton: number | null
   fecha_inicio: string | null
   fecha_fin: string | null
+  fecha_hora_finalizado: string | null
+  tiempo_ocupado: string | null
   cliente: number | null
   cliente_id: number | null
   costo: number | null
   nombre: string | null
   fecha_solicitud: string | null
-  demora: string | null
   finalizado: boolean
 
   etapas: any[]
@@ -27,12 +28,13 @@ export class Proyecto extends EntidadAuditable {
     this.canton = null
     this.fecha_inicio = null
     this.fecha_fin = null
+    this.fecha_hora_finalizado = null
+    this.tiempo_ocupado = null
     this.cliente = null
     this.cliente_id = null
     this.costo = null
     this.nombre = null
     this.fecha_solicitud = null
-    this.demora = null
     this.finalizado = false
 
     this.etapas = []

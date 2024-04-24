@@ -39,6 +39,13 @@ export const useFiltrosListadosSelects = (listadosAuxiliares, entidad?: Ref<any>
   const tareasDestino = ref(listadosAuxiliares.tareasDestino)
   const centros_costos = ref([])
 
+  // Modulo medico
+  const laboratoriosClinicos = ref(listadosAuxiliares.laboratoriosClinicos)
+  const enfermedades = ref(listadosAuxiliares.enfermedades)
+  const tiposVacunas = ref(listadosAuxiliares.tiposVacunas)
+  const tiposEvaluacionesMedicasRetiros = ref(listadosAuxiliares.tiposEvaluacionesMedicasRetiros)
+  const tiposAptitudesMedicasLaborales = ref(listadosAuxiliares.tiposAptitudesMedicasLaborales)
+
   //////////////////////////////////////////
   //modulo ventas
   //////////////////////////////////////////
@@ -349,6 +356,7 @@ export const useFiltrosListadosSelects = (listadosAuxiliares, entidad?: Ref<any>
       categorias.value = listadosAuxiliares.categorias.filter((v: CategoriaOferta) => v.nombre!.toLowerCase().indexOf(needle) > -1)
     })
   }
+
   function ordenarCategorias() {
     categorias.value.sort((a: CategoriaOferta, b: CategoriaOferta) => ordernarListaString(a.nombre!, b.nombre!))
   }
@@ -356,6 +364,7 @@ export const useFiltrosListadosSelects = (listadosAuxiliares, entidad?: Ref<any>
   function filtrarMotivos(val, update) {
     return filtrarLista(val, update, motivos, 'nombre', listadosAuxiliares.motivos)
   }
+
   function filtrarSucursales(val, update) {
     return filtrarLista(val, update, sucursales, 'lugar', listadosAuxiliares.sucursales)
   }
@@ -363,23 +372,40 @@ export const useFiltrosListadosSelects = (listadosAuxiliares, entidad?: Ref<any>
   function filtrarProyectos(val, update) {
     return filtrarLista(val, update, proyectos, 'codigo_proyecto', listadosAuxiliares.proyectos)
   }
+
   function filtrarProyectosDestino(val, update) {
     return filtrarLista(val, update, proyectosDestino, 'codigo_proyecto', listadosAuxiliares.proyectosDestino)
   }
+
   function filtrarEtapas(val, update) {
     return filtrarLista(val, update, etapas, 'nombre', listadosAuxiliares.etapas)
   }
+
   function filtrarEtapasDestino(val, update) {
     return filtrarLista(val, update, etapasDestino, 'nombre', listadosAuxiliares.etapasDestino)
   }
+
   function filtrarTareas(val, update) {
     return filtrarLista(val, update, tareas, 'codigo_tarea', listadosAuxiliares.tareas)
   }
+
   function filtrarTareasDestino(val, update) {
     return filtrarLista(val, update, tareasDestino, 'codigo_tarea', listadosAuxiliares.tareasDestino)
   }
 
+  /****************
+   * Modulo medico
+   ****************/
+  const filtrarEnfermedades = (val, update) => filtrarLista(val, update, enfermedades, 'codigo_nombre_enfermedad', listadosAuxiliares.enfermedades)
+  const filtrarTiposVacunas = (val, update) => filtrarLista(val, update, tiposVacunas, 'nombre', listadosAuxiliares.tiposVacunas)
+  const filtrarLaboratoriosClinicos = (val, update) => filtrarLista(val, update, laboratoriosClinicos, 'nombre', listadosAuxiliares.laboratoriosClinicos)
+  const filtrarTiposEvaluacionesMedicasRetiros = (val, update) => filtrarLista(val, update, tiposEvaluacionesMedicasRetiros, 'nombre', listadosAuxiliares.tiposEvaluacionesMedicasRetiros)
+  const filtrarTiposAptitudesMedicasLaborales = (val, update) => filtrarLista(val, update, tiposAptitudesMedicasLaborales, 'nombre', listadosAuxiliares.tiposAptitudesMedicasLaborales)
 
+  /***************************************
+   * Filtro global optimizado
+   * Actualmente filtra por un solo campo
+   ***************************************/
   function filtrarLista(val, update, lista, clave, defaultValue = []) {
     if (val === '') {
       update(() => lista.value = defaultValue)
@@ -391,9 +417,6 @@ export const useFiltrosListadosSelects = (listadosAuxiliares, entidad?: Ref<any>
       )
     })
   }
-
-
-
 
   return {
     paises, filtrarPaises,
@@ -422,5 +445,11 @@ export const useFiltrosListadosSelects = (listadosAuxiliares, entidad?: Ref<any>
     productos_claro, filtrarProductosClaro,
     vendedores_claro, filtrarVendedoresClaro,
     clientes_claro, filtrarClientesClaro,
+    // Modulo medico
+    enfermedades, filtrarEnfermedades,
+    tiposVacunas, filtrarTiposVacunas,
+    laboratoriosClinicos, filtrarLaboratoriosClinicos,
+    // tiposEvaluacionesMedicasRetiros, filtrarTiposEvaluacionesMedicasRetiros,
+    // tiposAptitudesMedicasLaborales, filtrarTiposAptitudesMedicasLaborales,
   }
 }
