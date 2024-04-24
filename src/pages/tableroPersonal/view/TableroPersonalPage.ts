@@ -26,15 +26,35 @@ export default defineComponent({
     SolicitarFecha,
   },
   setup() {
+
+    const timeStamp = Date.now()
+
+
     const store = useAuthenticationStore()
     const controller = new TableroPersonalController()
     const tablero = reactive(new TableroPersonal())
     const usuarios = 20
+    const slide = ref(1)
+    const autoplay = ref(true)
+    const date = ref(timeStamp)
 
     const filtrosTareas = ['Recientes', 'sdsd']
     const filtroTarea = ref('Recientes')
 
     const subtareasPorAsignar = ref([])
+
+    const imagenPerfil = `https://ui-avatars.com/api/?name=${store.user.nombres.substr(0, 1)}+${store.user.apellidos.substr(0, 1)}&bold=true&background=0879dc28&color=0879dc`
+
+
+    const tipoSolicitud = ref('')
+    const descripcion = ref('')
+    const tiposSolicitud = ref([
+      { label: 'Vacaciones', value: 'vacaciones' },
+      { label: 'Enfermedad', value: 'enfermedad' },
+      { label: 'Licencia de trabajo', value: 'licencia' }
+    ])
+
+
 
     async function index() {
       const { response } = await controller.listar()
@@ -45,8 +65,7 @@ export default defineComponent({
 
     const modales = new ComportamientoModalesTableroPersonal()
 
-    const timeStamp = Date.now()
-    const fecha = date.formatDate(timeStamp, 'dddd, DD MMMM YYYY')
+    const events = ['2024/04/01', '2024/04/05', '2024/04/06', '2024/04/09', '2024/04/23']
 
     function verSubtarea() {
       // modales.abrirModalEntidad('SubtareaAsignadaPage')
@@ -69,6 +88,27 @@ export default defineComponent({
     const { confirmar } = useNotificaciones()
 
 
+    function eventsFn(date) {
+      if (date === '2024/04/01' ||
+        date === '2024/04/05' ||
+        date === '2024/04/06' ||
+        date === '2024/04/09' ||
+        date === '2024/04/24') {
+        return true
+      }
+      return false
+    }
+
+
+    function enviarSolicitud() {
+      // Aquí puedes implementar la lógica para enviar la solicitud
+      console.log('Solicitud enviada:', {
+        tipo: tipoSolicitud,
+        descripcion: descripcion
+      });
+    }
+
+
 
     return {
       tablero,
@@ -86,8 +126,15 @@ export default defineComponent({
       filtroTarea,
       modales,
       verSubtarea,
-      fecha,
+      timeStamp,
       subtareasPorAsignar,
+      slide,
+      autoplay,
+      imagenPerfil,
+      date,
+      events,
+      eventsFn,
+      tiposSolicitud,
     }
   },
 })

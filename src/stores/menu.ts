@@ -18,6 +18,12 @@ export const useMenuStore = defineStore('menu', () => {
       can: true, //!store.can('puede.ver.trabajo_asignado'),
     },
     {
+      title: 'Eventos',
+      icon: 'bi-calendar-check',
+      link: 'eventos',
+      can: true, //!store.can('puede.ver.trabajo_asignado'),
+    },
+    {
       title: 'Trabajo agendado',
       link: 'trabajo-agendado',
       icon: 'bi-ui-checks-grid',

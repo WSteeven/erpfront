@@ -461,6 +461,9 @@ export const endpoints = {
   escenario_venta_jp: new Endpoint('ventas-claro/escenario-venta-jp'),
   novedades_ventas: new Endpoint('ventas-claro/novedades-ventas'),
 
+  //intranet
+  eventos: new Endpoint('intranet/eventos'),
+
 
 
 
