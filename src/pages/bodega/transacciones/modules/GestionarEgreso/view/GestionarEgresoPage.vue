@@ -16,7 +16,11 @@
       :tabDefecto="tabDefecto"
     ></essential-table-tabs>
 
-    <modal-entidad :comportamiento="modales" @guardado="(data) => guardado(data)"></modal-entidad>
+    <modal-entidad
+      :comportamiento="modales"
+      :persistente="false"
+      @guardado="(data) => guardado(data)"
+    ></modal-entidad>
   </q-page>
 </template>
 <script src="./GestionarEgresoPage.ts"></script>

@@ -328,16 +328,6 @@
         class="q-pa-md q-gutter-sm flex flex-center"
       >
         <q-btn
-          color="warning"
-          @click="permitirModificarCantidades()"
-          no-caps
-          glossy
-          push
-        >
-          <q-icon name="bi-pencil" size="xs" class="q-mr-sm"> </q-icon>
-          Modificar Recepción
-        </q-btn>
-        <q-btn
           v-if="transaccion.modificar_recepcion"
           color="positive"
           @click="aprobarEgresoParcial()"
@@ -359,6 +349,16 @@
           <q-icon name="bi-check-circle" size="xs" class="q-mr-sm"> </q-icon>
           Aprobar y Firmar</q-btn
         >
+        <q-btn
+          color="warning"
+          @click="permitirModificarCantidades()"
+          no-caps
+          glossy
+          push
+        >
+          <q-icon name="bi-pencil" size="xs" class="q-mr-sm"> </q-icon>
+          Modificar Recepción
+        </q-btn>
       </div>
       <div
         v-if="
