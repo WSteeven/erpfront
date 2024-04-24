@@ -1,7 +1,7 @@
 // Dependencias
 import { useAuthenticationStore } from 'stores/authentication'
 import loginJson from 'src/assets/lottie/welcome.json'
-import { defineComponent, reactive, ref } from 'vue'
+import { Ref, computed, defineComponent, reactive, ref } from 'vue'
 import { date } from 'quasar'
 
 
@@ -29,6 +29,9 @@ export default defineComponent({
 
     const timeStamp = Date.now()
 
+    const departamentoSeleccionado = ref('')
+    const departamentos = ref(['Departamento 1', 'Departamento 2', 'Departamento 3'])
+    const empleados: Ref<String[]> = ref([''])
 
     const store = useAuthenticationStore()
     const controller = new TableroPersonalController()
@@ -45,7 +48,7 @@ export default defineComponent({
 
     const imagenPerfil = `https://ui-avatars.com/api/?name=${store.user.nombres.substr(0, 1)}+${store.user.apellidos.substr(0, 1)}&bold=true&background=0879dc28&color=0879dc`
 
-
+    const lorem = 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.'
     const tipoSolicitud = ref('')
     const descripcion = ref('')
     const tiposSolicitud = ref([
@@ -66,6 +69,20 @@ export default defineComponent({
     const modales = new ComportamientoModalesTableroPersonal()
 
     const events = ['2024/04/01', '2024/04/05', '2024/04/06', '2024/04/09', '2024/04/23']
+
+
+    const data = ref([{ imagen: 'https://cdn.quasar.dev/img/mountains.jpg', titulo: 'noticia 1', autor: 'autor', descripcion: lorem },
+    { imagen: 'https://cdn.quasar.dev/img/mountains.jpg', titulo: 'noticia 2', autor: 'autor', descripcion: lorem },
+    { imagen: 'https://cdn.quasar.dev/img/mountains.jpg', titulo: 'noticia 3', autor: 'autor', descripcion: lorem },
+    { imagen: 'https://cdn.quasar.dev/img/mountains.jpg', titulo: 'noticia 4', autor: 'autor', descripcion: lorem },
+    { imagen: 'https://cdn.quasar.dev/img/mountains.jpg', titulo: 'noticia 5', autor: 'autor', descripcion: lorem }])
+    const currentPage = ref(1); // Current page number (starts at 1)
+    const perPage = ref(2); // Number of cards per page
+    const displayedCards = computed(() => {
+      const start = (currentPage.value - 1) * perPage.value;
+      const end = start + perPage.value;
+      return data.value.slice(start, end);
+    });
 
     function verSubtarea() {
       // modales.abrirModalEntidad('SubtareaAsignadaPage')
@@ -108,6 +125,22 @@ export default defineComponent({
       });
     }
 
+    function MostrarEmpleados() {
+      switch (departamentoSeleccionado.value) {
+        case 'Departamento 1':
+          empleados.value = ['Empleado 1.1', 'Empleado 1.2', 'Empleado 1.3']
+          break;
+        case 'Departamento 2':
+          empleados.value = ['Empleado 2.1', 'Empleado 2.2', 'Empleado 2.3']
+          break;
+        case 'Departamento 3':
+          empleados.value = ['Empleado 3.1', 'Empleado 3.2', 'Empleado 3.3']
+          break;
+        default:
+          empleados.value = []
+      }
+    }
+
 
 
     return {
@@ -135,6 +168,16 @@ export default defineComponent({
       events,
       eventsFn,
       tiposSolicitud,
+      lorem,
+      data,
+      currentPage,
+      perPage,
+      displayedCards,
+      MostrarEmpleados,
+      departamentoSeleccionado,
+      departamentos,
+      empleados,
+
     }
   },
 })

@@ -47,7 +47,14 @@
         </q-carousel>
       </div>
       <div class="col-4 col-md-4">
+        <q-input v-model="search" filled type="search" hint="" placeholder="Buscar">
+          <template v-slot:append>
+            <q-icon name="search" />
+          </template>
+        </q-input>
+
         <q-card class="my-card">
+
           <div class="row q-pa-md">
             <div class="col-auto">
               <div class="relative-position">
@@ -106,18 +113,6 @@
       <div class="col-6 col-md-3">
         <q-date v-model="date" :events="eventsFn" :event-color="(date) => date[9] % 2 === 0 ? 'teal' : 'orange'"
           minimal />
-
-      </div>
-      <div class="col-6 col-md-6 flex flex-center">
-
-      </div>
-      <div class="col-6 col-md-3 items-lg-end">
-
-      </div>
-
-    </div>
-    <div class="row q-col-gutter-sm">
-      <div class="col-6 col-md-3">
         <q-card class="solicitudes q-my-md">
           <q-card class="solicitudes q-my-md">
             <q-card-section>
@@ -134,6 +129,50 @@
             </q-card-actions>
           </q-card>
         </q-card>
+      </div>
+      <div class="col-3 col-md-3">
+        <q-card class="my-card">
+          <img src="https://cdn.quasar.dev/img/mountains.jpg">
+
+          <q-card-section>
+            <div class="text-h6">Noticia</div>
+            <div class="text-subtitle2">Autor Noticia</div>
+          </q-card-section>
+
+          <q-card-section class="q-pt-none">
+            {{ lorem }}
+            <q-pagination v-if="data.length > 2" class="q-pa-md row q-gutter-md justify-center align-center"
+              v-model="currentPage" :boundary-links="true" :direction-links="true" :round="true" :per-page="perPage"
+              :max="Math.ceil(data.length / perPage)" :total="Math.ceil(data.length / perPage)" />
+          </q-card-section>
+        </q-card>
+      </div>
+      <div class="col-6 col-md-3 items-lg-end">
+        <q-card class="q-pa-md">
+          <q-card-section>
+            <div class="row">
+              <!-- Columna de departamentos -->
+              <div class="col-md-6">
+                <q-select v-model="departamentoSeleccionado" label="Departamentos" filled emit-value map-options
+                  :options="departamentos" @update:model-value="MostrarEmpleados()" />
+              </div>
+              <!-- Columna de empleados -->
+              <div class="col-md-6">
+                <q-list>
+                  <q-item v-for="(empleado, index) in empleados" :key="index">
+                    <q-item-section>{{ empleado }}</q-item-section>
+                  </q-item>
+                </q-list>
+              </div>
+            </div>
+          </q-card-section>
+        </q-card>
+      </div>
+
+    </div>
+    <div class="row q-col-gutter-sm">
+      <div class="col-6 col-md-3">
+
       </div>
       <div class="col-6 col-md-6 flex flex-center">
 
