@@ -750,6 +750,13 @@ export const useMenuStore = defineStore('menu', () => {
           can: store.can('puede.acceder.bitacoras_vehiculos'),
         },
         {
+          title: 'Registro de incidentes',
+          link: 'registros-incidentes',
+          icon: 'bi-circle',
+          // can: store.can('puede.acceder.registros_incidentes'),
+          can: true,
+        },
+        {
           title: 'Orden Interna de Reparación',
           link: 'ordenes-reparaciones',
           icon: 'bi-circle',

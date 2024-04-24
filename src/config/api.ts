@@ -186,6 +186,7 @@ export const endpoints = {
   vehiculos: new Endpoint('vehiculos/vehiculos'),
   tipos_vehiculos: new Endpoint('vehiculos/tipos-vehiculos'),
   bitacoras_vehiculos: new Endpoint('vehiculos/bitacoras-vehiculos'),
+  registros_incidentes: new Endpoint('vehiculos/registros-incidentes'),
   empleados_choferes: new Endpoint('vehiculos/empleados-choferes'),
   conductores: new Endpoint('vehiculos/conductores'),
   matriculas: new Endpoint('vehiculos/matriculas'),
