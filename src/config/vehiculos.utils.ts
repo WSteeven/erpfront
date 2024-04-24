@@ -29,6 +29,18 @@ export const tiposServicios = [
   { value: 'CORRECTIVO', label: 'CORRECTIVO', },
 ]
 
+export const tiposIncidentes = [
+  { value: 'ROBO', label: 'ROBO', },
+  { value: 'ACCIDENTE', label: 'ACCIDENTE', },
+]
+
+export const subtiposIncidentes = [
+  { value: 'PARCIAL', label: 'PARCIAL', tipo: 'ROBO'},
+  { value: 'TOTAL', label: 'TOTAL', tipo: 'ROBO'},
+  { value: 'LEVE', label: 'LEVE', tipo: 'ACCIDENTE'},
+  { value: 'GRAVE', label: 'GRAVE', tipo: 'ACCIDENTE'},
+]
+
 export const tabOptionsOrdenesReparaciones: TabOption[] = [
   { value: '1', label: 'PENDIENTES', },
   { value: '2', label: 'APROBADAS', },
