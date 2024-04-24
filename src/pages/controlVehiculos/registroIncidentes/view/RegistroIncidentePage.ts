@@ -15,6 +15,7 @@ import { required } from "shared/i18n-validators"
 import useVuelidate from "@vuelidate/core"
 import { useFiltrosListadosSelects } from "shared/filtrosListadosGenerales"
 import { maskFecha } from "config/utils"
+import { subtiposIncidentes, tiposIncidentes } from "config/vehiculos.utils"
 
 
 //Logica y controladores
@@ -58,14 +59,26 @@ export default defineComponent({
         setValidador(v$.value)
 
 
+        /****************************************
+         * Funciones
+         ****************************************/
+        function filtrarSubtipos() {
+
+        }
+
         return {
             mixin, registro, v$, accion, disabled,
             configuracionColumnas: configuracionColumnasRegistroIncidente,
             maskFecha,
-            
+
             //listados
             vehiculos, filtrarVehiculos,
             empleados, filtrarEmpleados,
+            tiposIncidentes, subtiposIncidentes,
+
+
+            //funciones
+            filtrarSubtipos,
 
 
         }
