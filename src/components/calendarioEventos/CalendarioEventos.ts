@@ -1,26 +1,23 @@
+/**
+ * @author Henry Simbaña Cruz
+ * @description Este componente trabaja con q-calendar para visualizacion de eventos
+ *
+ */
 import {
   QCalendarMonth,
   daysBetween,
   isOverlappingDates,
   parsed,
-  parseDate,
   today,
   indexOf
 } from '@quasar/quasar-ui-qcalendar/src/index.js'
 import '@quasar/quasar-ui-qcalendar/src/QCalendarVariables.sass'
 import '@quasar/quasar-ui-qcalendar/src/QCalendarTransitions.sass'
 import '@quasar/quasar-ui-qcalendar/src/QCalendarMonth.sass'
-
-import { defineComponent } from 'vue'
-
-// The function below is used to set up our demo data
-const CURRENT_DAY = new Date()
-function getCurrentDay (day) {
-  const newDay = new Date(CURRENT_DAY)
-  newDay.setDate(day)
-  const tm = parseDate(newDay)
-  return tm.date
-}
+import {  computed, defineComponent, ref } from 'vue'
+import { EventWeek } from './domain/EventWeek'
+import { EventCalendar } from './domain/EventCalendar'
+import { useConfiguracionGeneralStore } from 'stores/configuracion_general'
 
 export default defineComponent({
   name: 'CalendarioEventos',
@@ -32,20 +29,38 @@ export default defineComponent({
       type: Array,
       default: Array.from([]),
     },
+    lenguaje: {
+      type:String,
+      default:'es-ES'
+    }
   },
   data (props) {
     return {
+      refCalendar: ref(),
       selectedDate: today(),
-      events: props.eventos
+      events: props.eventos,
+      lang: props.lenguaje,
+      viewEvent: false,
+      evento:{title:'',autor:'',description:'',start:'',end:'',time:''},
     }
   },
   methods: {
-    getWeekEvents (week, weekdays) {
+    getEvent(data){
+      this.viewEvent = true
+      this.evento.title = data.event.title
+      this.evento.description = data.event.details
+      this.evento.start = data.event.start
+      this.evento.end = data.event.end
+      this.evento.time = data.event.time
+
+console.log('evento',data);
+
+    },
+    getWeekEvents (week) {
       const firstDay = parsed(week[ 0 ].date + ' 00:00')
       const lastDay = parsed(week[ week.length - 1 ].date + ' 23:59')
-
-      const eventsWeek = []
-      this.events.forEach((event, id) => {
+      const eventsWeek:EventWeek[] =[]
+      this.events.forEach((event:EventCalendar, id) => {
         const startDate = parsed(event.start + ' 00:00')
         const endDate = parsed(event.end + ' 23:59')
 
@@ -65,7 +80,7 @@ export default defineComponent({
 
       const events = []
       if (eventsWeek.length > 0) {
-        const infoWeek = eventsWeek.sort((a, b) => a.left - b.left)
+        const infoWeek = eventsWeek.sort((a:EventWeek, b:EventWeek) => a.left - b.left)
         infoWeek.forEach((_, i) => {
           this.insertEvent(events, week.length, infoWeek, i, 0, 0)
         })
@@ -127,7 +142,7 @@ export default defineComponent({
     },
 
     badgeStyles (computedEvent, weekLength) {
-      const s = {}
+      const s = {width:''}
       if (computedEvent.size !== undefined) {
         s.width = ((100 / weekLength) * computedEvent.size) + '%'
       }
@@ -143,19 +158,20 @@ export default defineComponent({
     },
 
     onToday () {
-      this.$refs.calendar.moveToToday()
+      this.refCalendar.moveToToday()
     },
     onPrev () {
-      this.$refs.calendar.prev()
+      this.refCalendar.prev()
     },
     onNext () {
-      this.$refs.calendar.next()
+     this.refCalendar.next()
     },
     onMoved (data) {
       console.log('onMoved', data)
     },
     onChange (data) {
       console.log('onChange', data)
+      console.log(this.refCalendar);
     },
     onClickDate (data) {
       console.log('onClickDate', data)
@@ -174,3 +190,5 @@ export default defineComponent({
     }
   }
 })
+
+

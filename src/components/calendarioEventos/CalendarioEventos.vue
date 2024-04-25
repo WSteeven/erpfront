@@ -1,10 +1,9 @@
 <template>
   <div class="subcontent">
-
     <div class="row justify-center">
       <div style="display: flex; max-width: 800px; width: 100%">
         <q-calendar-month
-          ref="calendar"
+          ref="refCalendar"
           v-model="selectedDate"
           animated
           bordered
@@ -13,6 +12,7 @@
           no-active-date
           :day-min-height="60"
           :day-height="0"
+          :locale="lang"
           @change="onChange"
           @moved="onMoved"
           @click-date="onClickDate"
@@ -22,13 +22,14 @@
           @click-head-day="onClickHeadDay"
         >
           <template #week="{ scope: { week, weekdays } }">
-            <template
+            <span
               v-for="(computedEvent, index) in getWeekEvents(week, weekdays)"
               :key="index"
             >
               <div
                 :class="badgeClasses(computedEvent)"
                 :style="badgeStyles(computedEvent, week.length)"
+                @click="getEvent(computedEvent)"
               >
                 <div
                   v-if="computedEvent.event && computedEvent.event.details"
@@ -41,11 +42,12 @@
                   <q-tooltip>{{ computedEvent.event.details }}</q-tooltip>
                 </div>
               </div>
-            </template>
+            </span>
           </template>
         </q-calendar-month>
       </div>
     </div>
+
   </div>
 </template>
 
