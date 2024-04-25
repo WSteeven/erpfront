@@ -10,7 +10,6 @@ export class HistorialVehiculo extends EntidadAuditable {
         super()
         this.vehiculo = null
         this.accion = null
-        // this.opciones = ref(['MANTENIMIENTOS','INCIDENTES','TODOS'])
-        this.opciones = ref(['op1'])
+        this.opciones = ref(['TODOS'])
     }
 }

@@ -56,7 +56,9 @@
                 <q-option-group
                   v-model="historial.opciones"
                   :options="opciones"
-                  type="toogle"
+                  color="primary"
+                  type="toggle"
+                  @update:model-value="optionCliqueada"
                 >
                 </q-option-group>
               </div>

@@ -24,7 +24,7 @@ export default defineComponent({
         const mixin = new ContenedorSimpleMixin(HistorialVehiculo, new HistorialVehiculoController())
         const { entidad: historial, listadosAuxiliares } = mixin.useReferencias()
         const { obtenerListados, cargarVista, setValidador } = mixin.useComportamiento()
-        const { notificarError, notificarAdvertencia } = useNotificaciones()
+        const { notificarAdvertencia } = useNotificaciones()
 
 
         /****************************************
@@ -98,43 +98,34 @@ export default defineComponent({
             opciones:
                 [
                     {
-                        label: 'Option 1',
-                        value: 'op1'
+                        label: 'Todo',
+                        value: 'TODOS',
+                        checkedIcon: 'bi-check-circle-fill',
+                        uncheckedIcon: 'bi-check-circle-fill',
                     },
                     {
-                        label: 'Option 2',
-                        value: 'op2'
+                        label: 'Mantenimientos',
+                        value: 'MANTENIMIENTOS',
+                        checkedIcon: 'bi-tools',
+                        uncheckedIcon: 'bi-tools',
                     },
                     {
-                        label: 'Option 3',
-                        value: 'op3'
-                    }
-                    // {
-                    //     label: 'Mantenimientos',
-                    //     value: 'MANTENIMIENTOS',
-                    //     color: 'yellow',
-                    //     checkedIcon: 'bi-tools',
-                    //     uncheckedIcon: 'panorama_fish_eye',
-                    // },
-                    // {
-                    //     label: 'Incidentes',
-                    //     value: 'INCIDENTES',
-                    //     color: 'red',
-                    //     checkedIcon: 'bi-activity',
-                    //     uncheckedIcon: 'panorama_fish_eye',
-                    // },
-                    // {
-                    //     label: 'Todo',
-                    //     value: 'TODOS',
-                    //     color: 'green',
-                    //     checkedIcon: 'bi-check-circle-fill',
-                    //     uncheckedIcon: 'panorama_fish_eye',
-                    // },
+                        label: 'Incidentes',
+                        value: 'INCIDENTES',
+                        checkedIcon: 'bi-activity',
+                        uncheckedIcon: 'bi-activity',
+                    },
                 ],
 
 
             buscarReporte,
             obtenerVehiculoSeleccionado,
+            optionCliqueada(val){
+                if(historial.opciones.some((val)=>val!='TODOS')){
+                    
+                }
+                console.log(val);
+            }
         }
     }
 })
