@@ -27,6 +27,7 @@ import { TicketController } from 'pages/gestionTickets/tickets/infraestructure/T
 import { format } from '@formkit/tempo';
 import { StatusEssentialLoading } from 'components/loading/application/StatusEssentialLoading';
 import { optionsDefault, optionsEstados, optionsEstadosCualitativos, optionsEstadosExtintor } from 'config/vehiculos.utils';
+import { useQuasar } from 'quasar';
 
 
 export default defineComponent({

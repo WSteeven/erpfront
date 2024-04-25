@@ -591,6 +591,15 @@ const routes: RouteRecordRaw[] = [
         meta: { requiresAuth: false },
       },
       {
+        path: '/historial-vehiculos',
+        name: 'historial_vehiculos',
+        component: () =>
+          import(
+            'pages/controlVehiculos/historialVehiculos/view/HistorialVehiculoPage.vue'
+          ),
+        meta: { requiresAuth: true },
+      },
+      {
         path: '/conductores',
         name: 'conductores',
         component: () =>

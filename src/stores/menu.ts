@@ -708,6 +708,12 @@ export const useMenuStore = defineStore('menu', () => {
       can: store.esAdministrador || store.can('puede.ver.modulo_vehiculos'),
       children: [
         {
+          title: 'Historial Vehicular',
+          link: 'historial-vehiculos',
+          icon: 'bi-circle',
+          can: store.can('puede.acceder.historial_vehiculos'),
+        },
+        {
           title: 'Conductores',
           link: 'conductores',
           icon: 'bi-person-vcard-fill',
