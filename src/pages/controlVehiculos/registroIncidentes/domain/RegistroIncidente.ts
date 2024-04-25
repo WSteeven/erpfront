@@ -5,8 +5,10 @@ export class RegistroIncidente extends EntidadAuditable {
   fecha: string | null
   descripcion: string | null
   tipo: string | null
+  gravedad: string | null
   persona_reporta: string | null
   persona_registra: string | null
+  aplica_seguro: boolean
 
   constructor() {
     super()
@@ -14,8 +16,10 @@ export class RegistroIncidente extends EntidadAuditable {
     this.fecha = null
     this.descripcion = null
     this.tipo = null
+    this.gravedad = null
     this.persona_reporta = null
     this.persona_registra = null
+    this.aplica_seguro = false
   }
 }
 

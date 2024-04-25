@@ -7,6 +7,25 @@
     <template #formulario>
       <q-form @submit.prevent>
         <div class="row q-col-gutter-sm q-py-md">
+          <!-- Persona que registra -->
+          <div class="col-12 col-md-3" v-if="registro.persona_registra">
+            <label class="q-mb-sm block">Persona que registra</label>
+            <q-select
+              v-model="registro.persona_registra"
+              :options="empleados"
+              transition-show="jump-up"
+              transition-hide="jump-up"
+              options-dense
+              dense
+              outlined
+              disable
+              :option-label="(v) => v.apellidos + ' ' + v.nombres"
+              :option-value="(v) => v.id"
+              emit-value
+              map-options
+            ></q-select>
+          </div>
+
           <!-- Placa -->
           <div class="col-12 col-md-3">
             <label class="q-mb-sm block">Placa</label>
@@ -56,8 +75,6 @@
               v-model="registro.fecha"
               placeholder="Obligatorio"
               :value="registro.fecha"
-              mask="##-####"
-              hint="Fecha del incidente"
               :error="!!v$.fecha.$errors.length"
               :disable="disabled"
               @blur="v$.fecha.$touch"
@@ -73,9 +90,8 @@
                   >
                     <q-date
                       v-model="registro.fecha"
-                      minimal
                       :mask="maskFecha"
-                      emit-immediately
+                      today-btn
                     >
                       <div class="row items-center justify-end">
                         <q-btn
@@ -110,6 +126,7 @@
               options-dense
               dense
               outlined
+              clearable
               @update:model-value="filtrarSubtipos"
               error-message="Debes seleccionar un tipo de incidente"
               :option-value="(v) => v.value"
@@ -118,13 +135,13 @@
               map-options
             ></q-select>
           </div>
-          
+
           <!-- SubTipo de incidente -->
           <div class="col-12 col-md-3">
             <label class="q-mb-sm block">Gravedad</label>
             <q-select
-              v-model="registro.subtipo"
-              :options="subtiposIncidentes"
+              v-model="registro.gravedad"
+              :options="subtipos"
               transition-show="jump-up"
               transition-hide="jump-down"
               :disable="disabled"
@@ -136,8 +153,106 @@
               :option-label="(v) => v.label"
               emit-value
               map-options
-            ></q-select>
+              ><template v-slot:no-option>
+                <q-item>
+                  <q-item-section class="text-grey">
+                    Primero selecciona un tipo de incidente
+                  </q-item-section>
+                </q-item>
+              </template></q-select
+            >
           </div>
+
+          <!-- aplicó el seguro -->
+          <div class="col-12 col-md-3 q-mb-xl">
+            <q-checkbox
+              class="q-mt-lg q-pt-md"
+              v-model="registro.aplica_seguro"
+              label="¿Aplicó el seguro?"
+              :disable="disabled"
+              outlined
+              dense
+            ></q-checkbox>
+          </div>
+
+          <!-- Persona que reporta -->
+          <div class="col-12 col-md-3">
+            <label class="q-mb-sm block">Persona que reporta</label>
+            <q-select
+              v-model="registro.persona_reporta"
+              :options="empleados"
+              transition-show="jump-up"
+              transition-hide="jump-up"
+              options-dense
+              dense
+              outlined
+              use-input
+              input-debounce="0"
+              @filter="filtrarEmpleados"
+              @popup-show="ordenarLista(empleados, 'apellidos')"
+              error-message="Debes seleccionar un empleado"
+              :error="!!v$.persona_reporta.$errors.length"
+              :disable="disabled"
+              :option-label="(v) => v.apellidos + ' ' + v.nombres"
+              :option-value="(v) => v.id"
+              emit-value
+              map-options
+            >
+              <template v-slot:no-option>
+                <q-item>
+                  <q-item-section class="text-grey">
+                    No hay resultados
+                  </q-item-section>
+                </q-item>
+              </template>
+              <template v-slot:error>
+                <div
+                  v-for="error of v$.persona_reporta.$errors"
+                  :key="error.$uid"
+                >
+                  <div class="error-msg">{{ error.$message }}</div>
+                </div>
+              </template>
+            </q-select>
+          </div>
+
+          <!-- descripcion -->
+          <div class="col-12 col-md-12">
+            <label class="q-mb-sm block">Descripción del incidente</label>
+            <q-input
+              type="textarea"
+              autogrow
+              v-model="registro.descripcion"
+              placeholder="Obligatorio"
+              :disable="disabled"
+              :error="!!v$.descripcion.$errors.length"
+              outlined
+              dense
+            >
+              <template v-slot:error>
+                <div v-for="error of v$.descripcion.$errors" :key="error.$uid">
+                  <div class="error-msg">{{ error.$message }}</div>
+                </div>
+              </template>
+            </q-input>
+          </div>
+
+          <!-- Manejo de archivos -->
+          <div class="col-12 q-mb-md">
+            <gestor-archivos
+              ref="refArchivo"
+              label="Imágenes o archivos adjuntos"
+              :mixin="mixin"
+              :disable="disabled"
+              :listarAlGuardar="false"
+              :permitir-eliminar="
+                accion == acciones.nuevo || accion == acciones.editar
+              "
+              :idModelo="idRegistro"
+            />
+          </div>
+
+          <!-- end components -->
         </div>
       </q-form>
     </template>
