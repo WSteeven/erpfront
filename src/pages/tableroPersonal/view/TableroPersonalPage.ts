@@ -48,13 +48,7 @@ export default defineComponent({
 
     const subtareasPorAsignar = ref([])
 
-    const imagenPerfil = `https://ui-avatars.com/api/?name=${store.user.nombres.substr(
-      0,
-      1
-    )}+${store.user.apellidos.substr(
-      0,
-      1
-    )}&bold=true&background=0879dc28&color=0879dc`
+    const imagenPerfil =  store.user.foto_url?store.user.foto_url:`https://ui-avatars.com/api/?name=${store.user.nombres.substr(0,1)}+${store.user.apellidos.substr(0,1)}&bold=true&background=0879dc28&color=0879dc`
 
     const lorem =
       'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.'
@@ -75,7 +69,7 @@ export default defineComponent({
 
     const modales = new ComportamientoModalesTableroPersonal()
 
-    const events = [
+    const eventos = [
       '2024/04/01',
       '2024/04/05',
       '2024/04/06',
@@ -143,22 +137,11 @@ export default defineComponent({
     const { confirmar } = useNotificaciones()
 
     function verEvento(date) {
-      modales.abrirModalEntidad('VisualizarEventoPage')
-      console.log(date)
+      const result = eventos.filter((evento) => evento === date)
+      if (result.length > 0) {
+        modales.abrirModalEntidad('VisualizarEventoPage')
+      }
     }
-    // function eventsFn(date) {
-    //   if (
-    //     date === '2024/04/01' ||
-    //     date === '2024/04/05' ||
-    //     date === '2024/04/06' ||
-    //     date === '2024/04/06' ||
-    //     date === '2024/04/09' ||
-    //     date === '2024/04/24'
-    //   ) {
-    //     return true
-    //   }
-    //   return false
-    // }
 
     function enviarSolicitud() {
       // Aquí puedes implementar la lógica para enviar la solicitud
@@ -189,13 +172,6 @@ export default defineComponent({
       store,
       usuarios,
       loginJson,
-      /* tab: ref(
-          store.esTecnicoLider
-              ? 'asignadas'
-              : store.esCoordinador
-                  ? 'pendientes'
-                  : ''
-      ), */
       filtrosTareas,
       filtroTarea,
       modales,
@@ -206,7 +182,7 @@ export default defineComponent({
       autoplay,
       imagenPerfil,
       date,
-      events,
+      eventos,
       tiposSolicitud,
       lorem,
       data,

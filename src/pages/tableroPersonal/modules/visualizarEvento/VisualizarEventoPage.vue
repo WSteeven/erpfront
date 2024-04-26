@@ -8,7 +8,7 @@
         expand-separator
         :label="evento.titulo"
         group="evento"
-        :caption="evento.autor"
+        :caption="evento.fecha_hora_inicio+' - '+evento.fecha_hora_fin"
       >
         <q-card>
           <div

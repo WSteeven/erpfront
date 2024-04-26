@@ -111,7 +111,7 @@
     </div>
     <div class="row q-col-gutter-sm">
       <div class="col-6 col-md-3">
-        <q-date v-model="date" :events="events"  @click="verEvento(date)" :event-color="(date) => date[9] % 2 === 0 ? 'teal' : 'orange'"
+        <q-date v-model="date" :events="eventos" @update:model-value="verEvento(date)" :event-color="(date) => date[9] % 2 === 0 ? 'teal' : 'orange'"
           minimal />
         <q-card class="solicitudes q-my-md">
           <q-card class="solicitudes q-my-md">
