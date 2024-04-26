@@ -15,6 +15,7 @@ export class BitacoraVehicular extends EntidadAuditable {
     chofer: string | null
     chofer_id: number | null
     vehiculo: string | null
+    vehiculo_id: number | null
     actividadesRealizadas: any
     tareas: string | null
     tickets: string | null
@@ -42,6 +43,7 @@ export class BitacoraVehicular extends EntidadAuditable {
         this.chofer = null
         this.chofer_id = null
         this.vehiculo = null
+        this.vehiculo_id = null
         this.actividadesRealizadas = []
         this.tareas = null
         this.tickets = null
@@ -52,7 +54,7 @@ export class BitacoraVehicular extends EntidadAuditable {
         this.checklistAccesoriosVehiculo = new ChecklistAccesoriosVehiculo(this.id)
         //imagenes del vehículo
         this.checklistImagenVehiculo = new ChecklistImagenVehiculo(this.id)
-        
+
 
     }
 }

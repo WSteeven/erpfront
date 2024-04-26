@@ -17,6 +17,7 @@ import { apiConfig, endpoints } from "config/api";
 import { Vehiculo } from "pages/controlVehiculos/vehiculos/domain/Vehiculo";
 import { AxiosResponse } from "axios";
 import { useNotificaciones } from "shared/notificaciones";
+import { historialVehiculos, optionsHistorialVehiculos } from "config/vehiculos.utils";
 
 export default defineComponent({
     setup() {
@@ -95,36 +96,16 @@ export default defineComponent({
             historial, v$,
             vehiculos, filtrarVehiculos,
             empleados, filtrarEmpleados,
-            opciones:
-                [
-                    {
-                        label: 'Todo',
-                        value: 'TODOS',
-                        checkedIcon: 'bi-check-circle-fill',
-                        uncheckedIcon: 'bi-check-circle-fill',
-                    },
-                    {
-                        label: 'Mantenimientos',
-                        value: 'MANTENIMIENTOS',
-                        checkedIcon: 'bi-tools',
-                        uncheckedIcon: 'bi-tools',
-                    },
-                    {
-                        label: 'Incidentes',
-                        value: 'INCIDENTES',
-                        checkedIcon: 'bi-activity',
-                        uncheckedIcon: 'bi-activity',
-                    },
-                ],
+            opciones: optionsHistorialVehiculos,
 
 
             buscarReporte,
             obtenerVehiculoSeleccionado,
-            optionCliqueada(val){
-                if(historial.opciones.some((val)=>val!='TODOS')){
-                    
-                }
-                console.log(val);
+            optionCliqueada(val) {
+                if (historial.opciones[historial.opciones.length - 1] === historialVehiculos.todos)
+                    historial.opciones = historial.opciones.filter((v) => v === 'TODOS')
+                else
+                    historial.opciones = historial.opciones.filter((v) => v !== 'TODOS')
             }
         }
     }

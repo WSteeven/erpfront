@@ -3,10 +3,10 @@ import { configuracionColumnasBitacoraVehicular } from '../domain/configuracionC
 import { configuracionColumnasActividadesRealizadas } from '../domain/configuracionColumnasActividadesRealizadas';
 import { required, requiredIf } from "shared/i18n-validators";
 import { useVuelidate } from '@vuelidate/core'
-import { computed, defineComponent, onBeforeUnmount, onMounted, onUnmounted, ref } from "vue";
+import { computed, defineComponent, ref } from "vue";
 
 // componentes
-import TabLayout from 'shared/contenedor/modules/simple/view/TabLayout.vue'
+import TabLayoutFilterTabs2 from 'shared/contenedor/modules/simple/view/TabLayoutFilterTabs2.vue';
 import SelectorImagen from 'components/SelectorImagen.vue'
 import EssentialPopupEditableTable from "components/tables/view/EssentialPopupEditableTable.vue"
 
@@ -18,27 +18,28 @@ import { acciones, accionesTabla, convertir_fecha, maskFecha } from 'config/util
 import { useFiltrosListadosSelects } from 'shared/filtrosListadosGenerales';
 import { useAuthenticationStore } from 'stores/authentication';
 import { AsignacionVehiculoController } from 'pages/controlVehiculos/asignarVehiculos/infraestructure/AsignacionVehiculoController';
-import { encontrarUltimoIdListado, obtenerFechaActual, } from 'shared/utils';
+import { encontrarUltimoIdListado, notificarErrores, notificarMensajesError, obtenerFechaActual, } from 'shared/utils';
 import { useNotificaciones } from 'shared/notificaciones';
 import { CustomActionTable } from 'components/tables/domain/CustomActionTable';
-import { CustomActionPrompt } from 'components/tables/domain/CustomActionPrompt';
 import { TareaController } from 'pages/gestionTrabajos/tareas/infraestructure/TareaController';
 import { TicketController } from 'pages/gestionTickets/tickets/infraestructure/TicketController';
 import { format } from '@formkit/tempo';
 import { StatusEssentialLoading } from 'components/loading/application/StatusEssentialLoading';
-import { optionsDefault, optionsEstados, optionsEstadosCualitativos, optionsEstadosExtintor } from 'config/vehiculos.utils';
-import { useQuasar } from 'quasar';
+import { optionsDefault, optionsEstados, optionsEstadosCualitativos, optionsEstadosExtintor, tabOptionsBitacoras } from 'config/vehiculos.utils';
+import { AxiosHttpRepository } from 'shared/http/infraestructure/AxiosHttpRepository';
+import { apiConfig, endpoints } from 'config/api';
+import { AxiosResponse } from 'axios';
 
 
 export default defineComponent({
     // name:'ControlDiarioVehiculo',
-    components: { TabLayout, SelectorImagen, EssentialPopupEditableTable, },
+    components: { TabLayoutFilterTabs2, SelectorImagen, EssentialPopupEditableTable, },
     setup(props, { emit }) {
         const mixin = new ContenedorSimpleMixin(BitacoraVehicular, new BitacoraVehicularController())
         const { entidad: bitacora, disabled, listadosAuxiliares, accion } = mixin.useReferencias()
-        const { setValidador, cargarVista, obtenerListados } = mixin.useComportamiento()
+        const { setValidador, cargarVista, obtenerListados, reestablecer, listar } = mixin.useComportamiento()
         const { onReestablecer, onConsultado, onBeforeModificar } = mixin.useHooks()
-        const { confirmar, prompt, } = useNotificaciones()
+        const { confirmar, prompt, notificarCorrecto } = useNotificaciones()
 
         /****************************************
          * Stores
@@ -52,10 +53,15 @@ export default defineComponent({
             tickets, filtrarTickets,
         } = useFiltrosListadosSelects(listadosAuxiliares)
         const usuarioDefault = ref()
+        const bitacoraDefault = ref()
+        const bloquear_km_tanque = ref(false)
+        const tabDefecto = ref('0')
+        const axios = AxiosHttpRepository.getInstance()
 
 
         cargarVista(async () => {
             usuarioDefault.value = await obtenerVehiculoAsignado()
+            bitacoraDefault.value = await obtenerUltimaBitacora()
             // await obtenerListados({
             //     empleados: new ChoferController(),
             //     vehiculos: new VehiculoController(),
@@ -66,6 +72,7 @@ export default defineComponent({
             // })
             //cargar datos por defecto
             cargarDatosDefecto()
+            cargarDatosBitacoraDefecto()
         })
 
         /****************************************
@@ -74,6 +81,7 @@ export default defineComponent({
         //Estos metodos funcionan si no se usa el keep alive 
         onReestablecer(() => {
             cargarDatosDefecto()
+            cargarDatosBitacoraDefecto()
         })
         onConsultado(async () => {
             if (accion.value == acciones.editar) {
@@ -117,6 +125,10 @@ export default defineComponent({
         /****************************************
          * Funciones
          ****************************************/
+        function filtrarBitacoras(tab: string) {
+            tabDefecto.value = tab
+            listar({ firmada: tab, chofer_id: store.user.id })
+        }
         /**
          * La función obtiene el vehículo asignado para el usuario actual con un estado específico.
          * @returns La función `obtenerVehiculoAsignado` está devolviendo el primer elemento del array
@@ -124,8 +136,16 @@ export default defineComponent({
          */
         async function obtenerVehiculoAsignado() {
             const response = (await new AsignacionVehiculoController().listar({ filtro: 1, responsable_id: store.user.id, estado: 'ACEPTADO' }))
+            console.log(response)
             return response.result[0]
         }
+
+        async function obtenerUltimaBitacora() {
+            const response = (await new BitacoraVehicularController().listar({ chofer_id: store.user.id, vehiculo_id: bitacora.vehiculo, firmada: 1, filtrar: 1 }))
+            console.log(response)
+            return response.result[0]
+        }
+
 
         /**
          * La función "cargarDatosDefecto" carga datos por defecto en el objeto "bitacora" basándose en
@@ -134,10 +154,19 @@ export default defineComponent({
         function cargarDatosDefecto() {
             if (usuarioDefault.value) {
                 bitacora.vehiculo = usuarioDefault.value.vehiculo
+                bitacora.vehiculo_id = usuarioDefault.value.vehiculo_id
                 bitacora.chofer_id = usuarioDefault.value.responsable_id
                 bitacora.chofer = usuarioDefault.value.responsable
                 bitacora.fecha = obtenerFechaActual(maskFecha)
             }
+        }
+
+        function cargarDatosBitacoraDefecto() {
+            if (bitacoraDefault.value) {
+                bitacora.km_inicial = bitacoraDefault.value.km_final
+                bitacora.tanque_inicio = bitacoraDefault.value.tanque_final
+                bloquear_km_tanque.value = true
+            } else { bloquear_km_tanque.value = false }
         }
 
         /**
@@ -157,6 +186,41 @@ export default defineComponent({
             confirmar('¿Está seguro de continuar?', () => bitacora.actividadesRealizadas.splice(posicion, 1))
         }
 
+        function checkFinalizada(val, evt) {
+            if (val) {
+                confirmar('¿Está seguro de marcar como finalizada esta bitácora? Después de esto no podrás modificarla!', () =>
+                    confirmar('Al dar click en OK se finalizará y se firmará automaticamente este registro!. ¿Desea continuar? ', async () => {
+                        await firmarBitacora(bitacora.id!)
+                        await reestablecer()
+                    },
+                        () => bitacora.firmada = false
+                    ),
+                    () => bitacora.firmada = false
+                )
+            }
+        }
+
+        async function firmarBitacora(id: number) {
+            try {
+                cargando.activar()
+                const url = apiConfig.URL_BASE + '/' + axios.getEndpoint(endpoints.bitacoras_vehiculos) + '/firmar-bitacora/' + id
+                const response: AxiosResponse = await axios.post(url)
+                console.log(response)
+                if (response.status = 200) notificarCorrecto(response.data.mensaje)
+                //se filtra los registros para mostrar en el lado correcto la bitacora actualizada
+                await filtrarBitacoras('1')
+                //se manda a consultar la ultima bitacora, la que se actualizó recientemente
+                bitacoraDefault.value = await obtenerUltimaBitacora()
+
+                //se reestablece el formulario con los nuevos datos actualizados
+                await reestablecer()
+                return response
+            } catch (error) {
+                notificarErrores(error)
+            } finally {
+                cargando.desactivar()
+            }
+        }
 
         /****************************************
          * Botones de tabla
@@ -186,6 +250,17 @@ export default defineComponent({
             visible: () => true
         }
 
+        const btnMarcarFinalizada: CustomActionTable = {
+            titulo: 'Finalizar',
+            icono: 'bi-check2-circle',
+            color: 'positive',
+            accion: async ({ entidad, posicion }) => {
+                console.log('diste clic en finalizar')
+                await firmarBitacora(entidad.id)
+            },
+            visible: () => tabDefecto.value === '0'
+        }
+
         return {
             mixin, bitacora, disabled, v$, accion, acciones,
             configuracionColumnas: configuracionColumnasBitacoraVehicular,
@@ -193,6 +268,9 @@ export default defineComponent({
             maskFecha, accionesTabla,
             optionsDefault, optionsEstadosCualitativos, optionsEstados, optionsEstadosExtintor,
             accepted: ref('1'),
+            tabDefecto,
+            tabOptionsBitacoras,
+            bloquear_km_tanque,
 
             //listados
             vehiculos, filtrarVehiculos,
@@ -204,9 +282,12 @@ export default defineComponent({
 
             //funciones
             optionsFecha,
+            checkFinalizada,
+            filtrarBitacoras,
 
             //botones de tabla
             btnAgregarActividad,
+            btnMarcarFinalizada,
             btnEliminar,
 
 

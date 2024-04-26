@@ -1,8 +1,13 @@
 <template>
-  <tab-layout
+  <tab-layout-filter-tabs2
     :mixin="mixin"
     :configuracionColumnas="configuracionColumnas"
     titulo-pagina="Control diario de vehículos"
+    ajustarCeldas
+    :tab-options="tabOptionsBitacoras"
+    :tabDefecto="tabDefecto"
+    :filtrar="filtrarBitacoras"
+    :accion1="btnMarcarFinalizada"
   >
     <template #formulario>
       <q-form @submit.prevent>
@@ -87,7 +92,7 @@
             <q-input
               v-model="bitacora.hora_salida"
               placeholder="Obligatorio"
-              :disabled="disabled"
+              :disable="disabled"
               :readonly="disabled"
               :error="!!v$.hora_salida.$errors.length"
               type="time"
@@ -108,7 +113,7 @@
             <q-input
               v-model="bitacora.hora_llegada"
               placeholder="Obligatorio"
-              :disabled="disabled"
+              :disable="disabled"
               :readonly="disabled"
               :error="!!v$.hora_llegada.$errors.length"
               type="time"
@@ -130,7 +135,7 @@
               type="number"
               v-model="bitacora.km_inicial"
               placeholder="Obligatorio"
-              :disabled="disabled"
+              :disable="disabled || bloquear_km_tanque"
               :readonly="disabled"
               :error="!!v$.km_inicial.$errors.length"
               outlined
@@ -150,7 +155,7 @@
               type="number"
               v-model="bitacora.km_final"
               placeholder="Obligatorio"
-              :disabled="disabled"
+              :disable="disabled"
               :readonly="disabled"
               :error="!!v$.km_final.$errors.length"
               outlined
@@ -169,6 +174,7 @@
             <q-input
               v-model="bitacora.tanque_inicio"
               type="number"
+              :disable="disabled || bloquear_km_tanque"
               mask="###"
               :rules="[
                 (val) =>
@@ -192,6 +198,7 @@
               class="text-white q-ma-md"
               v-model="bitacora.tanque_inicio"
               size="90px"
+              :disable="disabled || bloquear_km_tanque"
               :thickness="0.2"
               :color="bitacora.tanque_inicio > 50 ? 'green-5' : 'red-5'"
               :center-color="
@@ -320,6 +327,22 @@
               </template>
             </q-select>
           </div>
+        </div>
+
+        <!-- Marcar como finalizada (firmada) -->
+        <div
+          class="col-12 col-md-3 q-mb-xl"
+          v-if="accion === acciones.editar || bitacora.firmada"
+        >
+          <q-checkbox
+            class="q-mt-lg q-pt-md"
+            v-model="bitacora.firmada"
+            label="¿Marcar como finalizada?"
+            :disable="disabled"
+            @update:model-value="checkFinalizada"
+            outlined
+            dense
+          ></q-checkbox>
         </div>
 
         <!-- Actividades realizadas -->
@@ -988,9 +1011,7 @@
               <label class="q-mb-sm block">Observación</label>
               <q-input
                 autogrow
-                v-model="
-                  bitacora.checklistImagenVehiculo.observacion
-                "
+                v-model="bitacora.checklistImagenVehiculo.observacion"
                 placeholder="Opcional"
                 hint="Ingresa alguna observación o novedad presentada en el vehículo"
                 outlined
@@ -1001,7 +1022,7 @@
         </q-expansion-item>
       </q-form>
     </template>
-  </tab-layout>
+  </tab-layout-filter-tabs2>
 </template>
 <!-- :error="v$.nombre.$errors"  -->
 

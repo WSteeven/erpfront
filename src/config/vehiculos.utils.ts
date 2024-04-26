@@ -35,10 +35,10 @@ export const tiposIncidentes = [
 ]
 
 export const subtiposIncidentes = [
-  { value: 'PARCIAL', label: 'PARCIAL', tipo: 'ROBO'},
-  { value: 'TOTAL', label: 'TOTAL', tipo: 'ROBO'},
-  { value: 'LEVE', label: 'LEVE', tipo: 'ACCIDENTE'},
-  { value: 'GRAVE', label: 'GRAVE', tipo: 'ACCIDENTE'},
+  { value: 'PARCIAL', label: 'PARCIAL', tipo: 'ROBO' },
+  { value: 'TOTAL', label: 'TOTAL', tipo: 'ROBO' },
+  { value: 'LEVE', label: 'LEVE', tipo: 'ACCIDENTE' },
+  { value: 'GRAVE', label: 'GRAVE', tipo: 'ACCIDENTE' },
 ]
 
 export const tabOptionsOrdenesReparaciones: TabOption[] = [
@@ -163,3 +163,36 @@ export const optionsDefault = [
     uncheckedIcon: 'panorama_fish_eye',
   },
 ]
+
+export const historialVehiculos = {
+  todos: 'TODOS',
+  mantenimientos: 'MANTENIMIENTOS',
+  incidentes: 'INCIDENTES',
+}
+
+export const optionsHistorialVehiculos = [
+  {
+    label: 'Todo',
+    value: historialVehiculos.todos,
+    checkedIcon: 'bi-check-circle-fill',
+    uncheckedIcon: 'bi-check-circle-fill',
+  },
+  {
+    label: 'Mantenimientos',
+    value: historialVehiculos.mantenimientos,
+    checkedIcon: 'bi-tools',
+    uncheckedIcon: 'bi-tools',
+  },
+  {
+    label: 'Incidentes',
+    value: historialVehiculos.incidentes,
+    checkedIcon: 'bi-activity',
+    uncheckedIcon: 'bi-activity',
+  },
+]
+
+export const tabOptionsBitacoras: TabOption[] = [
+  { label: 'Creadas', value: '0' }, //estado Finalizado = false
+  { label: 'Finalizadas', value: '1' }, //estado Finalizado = true
+]
+
