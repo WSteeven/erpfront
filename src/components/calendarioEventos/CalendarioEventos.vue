@@ -1,5 +1,10 @@
 <template>
   <div class="subcontent">
+    <navigation-bar
+      @today="onToday"
+      @prev="onPrev"
+      @next="onNext"
+    />
     <div class="row justify-center">
       <div style="display: flex; max-width: 800px; width: 100%">
         <q-calendar-month

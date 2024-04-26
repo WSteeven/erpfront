@@ -14,15 +14,16 @@ import {
 import '@quasar/quasar-ui-qcalendar/src/QCalendarVariables.sass'
 import '@quasar/quasar-ui-qcalendar/src/QCalendarTransitions.sass'
 import '@quasar/quasar-ui-qcalendar/src/QCalendarMonth.sass'
-import {  computed, defineComponent, ref } from 'vue'
+import {   defineComponent, ref } from 'vue'
 import { EventWeek } from './domain/EventWeek'
 import { EventCalendar } from './domain/EventCalendar'
-import { useConfiguracionGeneralStore } from 'stores/configuracion_general'
+import NavigationBar from './navigatorBar/NavigationBar.vue'
 
 export default defineComponent({
   name: 'CalendarioEventos',
   components: {
-    QCalendarMonth
+    QCalendarMonth,
+    NavigationBar
   },
   props: {
     eventos: {
