@@ -143,6 +143,7 @@ export default defineComponent({
     const { confirmar } = useNotificaciones()
 
     function verEvento(date) {
+      modales.abrirModalEntidad('VisualizarEventoPage')
       console.log(date)
     }
     // function eventsFn(date) {

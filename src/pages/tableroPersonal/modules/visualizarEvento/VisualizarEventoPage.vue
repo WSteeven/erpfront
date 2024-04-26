@@ -1,55 +1,27 @@
 <template>
-  <div class="q-pa-md" style="max-width: 350px">
+  <div class="q-pa-md bg-grey-2">
+    <p class="text-h6 text-center text-bold">2024-05-10</p>
     <q-list bordered class="rounded-borders">
       <q-expansion-item
+        v-for="(evento, index) in eventos"
+        :key="index"
         expand-separator
-        icon="perm_identity"
-        label="Account settings"
-        caption="John Doe">
-        <q-card>
-          <q-card-section>
-            Lorem ipsum dolor sit amet, consectetur adipisicing elit. Quidem, eius reprehenderit eos corrupti
-            commodi magni quaerat ex numquam, dolorum officiis modi facere maiores architecto suscipit iste
-            eveniet doloribus ullam aliquid.
-          </q-card-section>
-        </q-card>
-      </q-expansion-item>
-
-      <q-expansion-item
-        expand-separator
-        icon="signal_wifi_off"
-        label="Wifi settings"
+        :label="evento.titulo"
+        group="evento"
+        :caption="evento.autor"
       >
         <q-card>
-          <q-card-section>
-            Lorem ipsum dolor sit amet, consectetur adipisicing elit. Quidem, eius reprehenderit eos corrupti
-            commodi magni quaerat ex numquam, dolorum officiis modi facere maiores architecto suscipit iste
-            eveniet doloribus ullam aliquid.
-          </q-card-section>
-        </q-card>
-      </q-expansion-item>
+          <div
+            class="fit row wrap justify-center items-start content-start q-my-md"
+          >
+            <q-img
+              :src="evento.imagen"
+              style="max-width: 500px; height: 250px"
+            />
+          </div>
 
-      <q-expansion-item
-        expand-separator
-        icon="drafts"
-        label="Drafts"
-        header-class="text-purple"
-      >
-        <q-card>
           <q-card-section>
-            Lorem ipsum dolor sit amet, consectetur adipisicing elit. Quidem, eius reprehenderit eos corrupti
-            commodi magni quaerat ex numquam, dolorum officiis modi facere maiores architecto suscipit iste
-            eveniet doloribus ullam aliquid.
-          </q-card-section>
-        </q-card>
-      </q-expansion-item>
-
-      <q-expansion-item icon="assessment" label="Disabled" disable>
-        <q-card>
-          <q-card-section>
-            Lorem ipsum dolor sit amet, consectetur adipisicing elit. Quidem, eius reprehenderit eos corrupti
-            commodi magni quaerat ex numquam, dolorum officiis modi facere maiores architecto suscipit iste
-            eveniet doloribus ullam aliquid.
+            {{ evento.descripcion }}
           </q-card-section>
         </q-card>
       </q-expansion-item>
