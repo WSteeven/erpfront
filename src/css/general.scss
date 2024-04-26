@@ -8,7 +8,7 @@ body {
   &::-webkit-scrollbar-thumb {
     // border-radius: 50px;
 
-    background: $primary;
+    background: $grey-8;
     // background: -webkit-linear-gradient(to top, #2f4d81, #009fff);
     // background: linear-gradient(to top, #2f4d81, #009fff);
   }
@@ -24,7 +24,7 @@ body {
 
   &::-webkit-scrollbar-thumb {
     // border-radius: 50px;
-    background: $primary;
+    background: $grey-8;
   }
 }
 
@@ -38,12 +38,12 @@ body {
 
   &::-webkit-scrollbar-thumb {
     // border-radius: 50px;
-    background: #aaa;
+    background: $grey-8;
   }
 }
 
 .q-scrollarea__thumb {
-  background: $primary;
+  background: $grey-8;
   opacity: 0.6;
 }
 

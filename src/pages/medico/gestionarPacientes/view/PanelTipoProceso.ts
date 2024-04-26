@@ -92,6 +92,7 @@ export default defineComponent({
       btnResultados,
       btnConsultarEstadoSolicitudExamen,
       btnCitaMedica,
+      btnSubirResultadosExamenes,
       // Other functions
       seleccionarExamen,
       limpiarExamenesSolicitados,
@@ -184,6 +185,8 @@ export default defineComponent({
       modales.abrirModalEntidad('FichaRetiroPage')
     }
 
+    const resetearTabRegistro = () => tabRegistro.value = null
+
     return {
       // variables
       accionesTabla,
@@ -196,7 +199,7 @@ export default defineComponent({
       estadosSolicitudesExamenes,
       tipoSeleccion: computed(() => seleccionVariosExamen.value && tabEstadoExamen.value === estadosSolicitudesExamenes.PENDIENTE_SOLICITAR.value ? 'multiple' : 'none'),
       textoFichaAptitud: computed(() => medicoStore.idFichaAptitud ? 'Consultar ficha de aptitud' : 'Llenar ficha de aptitud'),
-      textoFichaPeriodicaPreocupacional: computed(() => medicoStore.idFichaPeriodicaPreocupacional ? 'Consultar ficha períodica' : 'Llenar ficha períodica'),
+      textoFichaPeriodicaPreocupacional: computed(() => medicoStore.idFichaPeriodicaPreocupacional ? 'Consultar ficha preocupacional' : 'Llenar ficha preocupacional'),
       textoFichaRetiro: computed(() => medicoStore.idFichaRetiro ? 'Consultar ficha retiro' : 'Llenar ficha retiro'),
       mostrarFichaPreocupacional: computed(() => props.tipoProceso === tiposProcesosExamenes.INGRESO),
       mostrarFichaRetiro: computed(() => props.tipoProceso === tiposProcesosExamenes.RETIRO),
@@ -220,6 +223,7 @@ export default defineComponent({
       abrirFichaAptitud,
       abrirFichaPeriodicaProcupacional,
       abrirFichaRetiro,
+      resetearTabRegistro,
       /*****************************
        * useBotonesSolicitudExamen
        *****************************/
@@ -236,6 +240,7 @@ export default defineComponent({
       btnResultados,
       btnConsultarEstadoSolicitudExamen,
       btnCitaMedica,
+      btnSubirResultadosExamenes,
       // Other functions
       seleccionarExamen,
     }

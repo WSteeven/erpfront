@@ -80,7 +80,7 @@
               ['text', 'number', 'date', 'time'].includes(props.col.type))
           "
           v-model="props.row[props.col.name]"
-          placeholder="Ingrese valor"
+          bg-color="grey-3"
           :type="props.col.type ? props.col.type : 'text'"
           :hint="props.col.hint"
           dense
@@ -708,6 +708,15 @@
                   ></q-icon>
                 </span>
 
+                <span v-if="col.name === 'es_dosis_unica'">
+                  <q-icon
+                    v-if="col.value"
+                    name="bi-check-circle-fill"
+                    color="positive"
+                    size="xs"
+                  ></q-icon>
+                </span>
+
                 <span v-if="col.name === 'tamanio_bytes'">
                   {{ formatBytes(col.value) }}
                 </span>
@@ -858,6 +867,7 @@
                       'tiene_subtareas',
                       'observacion',
                       'dado_alta',
+                      'es_dosis_unica',
                     ].includes(col.name)
                   "
                   >{{ col.value }}</span
@@ -959,6 +969,17 @@
 
     <!-- Resumen tendido -->
     <template #body-cell-instalo_manga="props">
+      <q-td :props="props">
+        <q-icon
+          v-if="props.value"
+          name="bi-check-circle-fill"
+          color="positive"
+          size="xs"
+        ></q-icon>
+      </q-td>
+    </template>
+
+    <template #body-cell-es_dosis_unica="props">
       <q-td :props="props">
         <q-icon
           v-if="props.value"

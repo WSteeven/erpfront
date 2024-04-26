@@ -16,6 +16,7 @@ export class CitaMedica extends EntidadAuditable {
   dado_alta: boolean
   fecha_hora_solicitud: string | null
   fecha_hora_accidente: string | null
+  tipo_cambio_cargo: string | null
 
   constructor() {
     super()
@@ -34,5 +35,6 @@ export class CitaMedica extends EntidadAuditable {
     this.dado_alta = false
     this.fecha_hora_solicitud = null
     this.fecha_hora_accidente = null
+    this.tipo_cambio_cargo = null
   }
 }

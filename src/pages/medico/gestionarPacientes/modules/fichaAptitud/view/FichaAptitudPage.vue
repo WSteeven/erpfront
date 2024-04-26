@@ -105,14 +105,14 @@
           ></q-icon
           >Firmado por el profesional médico
         </div>
-        <div class="row items-center">
+        <!-- <div class="row items-center">
           <q-icon
             name="bi-check-circle-fill"
             :color="fichaAptitud.firmado_paciente ? 'positive' : 'grey'"
             class="q-mr-sm"
           ></q-icon
           >Firmado por el paciente
-        </div>
+        </div> -->
       </div>
     </template>
 
@@ -128,7 +128,7 @@
           <q-icon name="bi-download" size="xs" class="q-mr-sm"></q-icon>
           Descargar PDF</q-btn
         >
-        <q-btn
+        <!-- <q-btn
           v-if="
             fichaAptitud.id &&
             !fichaAptitud.firmado_paciente &&
@@ -139,7 +139,7 @@
           push
           @click="firmarPaciente()"
           >Firmar (Paciente)</q-btn
-        >
+        > -->
       </div>
     </template>
   </simple-layout>

@@ -74,7 +74,12 @@
               push
               @click="abrirFichaAptitud()"
             >
-              <q-icon name="bi-table" class="q-mr-sm" color="positive" size="xs"></q-icon>
+              <q-icon
+                name="bi-table"
+                class="q-mr-sm"
+                color="positive"
+                size="xs"
+              ></q-icon>
               {{ textoFichaAptitud }}
             </q-btn>
 
@@ -85,7 +90,12 @@
               push
               @click="abrirFichaPeriodicaProcupacional()"
             >
-              <q-icon name="bi-table" class="q-mr-sm" color="primary" size="xs"></q-icon>
+              <q-icon
+                name="bi-table"
+                class="q-mr-sm"
+                color="primary"
+                size="xs"
+              ></q-icon>
               {{ textoFichaPeriodicaPreocupacional }}
             </q-btn>
 
@@ -96,7 +106,12 @@
               push
               @click="abrirFichaRetiro()"
             >
-              <q-icon name="bi-table" class="q-mr-sm" color="primary" size="xs"></q-icon>
+              <q-icon
+                name="bi-table"
+                class="q-mr-sm"
+                color="primary"
+                size="xs"
+              ></q-icon>
               {{ textoFichaRetiro }}
             </q-btn>
           </div>
@@ -137,7 +152,7 @@
             :icon="estadosSolicitudesExamenes.SOLICITADO.icono"
             @click="filtrarEstadoExamen(tabEstadoExamen)"
           />
-          <q-tab
+          <!-- <q-tab
             :name="estadosSolicitudesExamenes.APROBADO_POR_COMPRAS.value"
             :label="estadosSolicitudesExamenes.APROBADO_POR_COMPRAS.label"
             :class="{
@@ -149,7 +164,7 @@
             no-caps
             :icon="estadosSolicitudesExamenes.APROBADO_POR_COMPRAS.icono"
             @click="filtrarEstadoExamen(tabEstadoExamen)"
-          />
+          /> -->
         </q-tabs>
 
         <q-tab-panels
@@ -200,12 +215,15 @@
               :permitirConsultar="false"
               :permitirEditar="false"
               :permitirEliminar="false"
+              :accion1Header="btnResultados"
+              :accion2Header="btnCitaMedica"
               :accion1="btnConsultarEstadoSolicitudExamen"
+              :accion2="btnSubirResultadosExamenes"
               :alto-fijo="false"
             ></essential-table>
           </q-tab-panel>
 
-          <q-tab-panel
+          <!-- <q-tab-panel
             :name="estadosSolicitudesExamenes.APROBADO_POR_COMPRAS.value"
             class="q-pa-none"
           >
@@ -224,7 +242,7 @@
               :accion2Header="btnCitaMedica"
               :alto-fijo="false"
             ></essential-table>
-          </q-tab-panel>
+          </q-tab-panel> -->
         </q-tab-panels>
       </div>
 

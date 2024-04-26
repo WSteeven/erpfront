@@ -89,8 +89,8 @@ export default defineComponent({
         categoriasFactoresRiesgos: new CategoriaFactorRiesgoController(),
         tiposFactoresRiesgos: new TipoFactorRiesgoController(),
         sistemasOrganos: new SistemaOrganoController(),
-        regionesCuerpo: new RegionCuerpoController(),
-        categoriasExamenesFisicos: new CategoriaExamenFisicoController(),
+        // regionesCuerpo: new RegionCuerpoController(),
+        // categoriasExamenesFisicos: new CategoriaExamenFisicoController(),
         antecedentes_familiares: [],
         resultados_habitos_toxicos: [],
       })

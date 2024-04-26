@@ -35,7 +35,7 @@
 
         <div class="col-12 col-md-3">
           <q-icon name="cake" color="primary" class="q-mr-sm"></q-icon>
-          <span>{{ empleado.fecha_nacimiento }}</span>
+          <span>{{ empleado.edad + ' años' }}</span>
         </div>
 
         <div class="col-12 col-md-3">

@@ -1,3 +1,4 @@
+import { SelectOption } from 'components/tables/domain/SelectOption'
 import { TabOption } from 'components/tables/domain/TabOption'
 
 export const maskFecha = 'YYYY-MM-DD'
@@ -350,16 +351,16 @@ export const tipos_filtros = [
   { value: '9', name: 'CIUDAD' },
 ]
 export const tipo_filtro = {
-  TODOS:'0',
-  PROYECTO:'1',
+  TODOS: '0',
+  PROYECTO: '1',
   TAREA: '2',
   DETALLE: '3',
   SUBDETALLE: '4',
-  AUTORIZACIONES : '5',
-  EMPLEADO : '6',
-  RUC : '7',
+  AUTORIZACIONES: '5',
+  EMPLEADO: '6',
+  RUC: '7',
   SIN_FACTURA: '8',
-  CIUDAD : '9',
+  CIUDAD: '9',
 }
 export const tipo_saldo = {
   ACREDITACIONES: '1',
@@ -633,4 +634,9 @@ export const tabOptionsValoresAcreditar: TabOption[] = [
   // { label: 'Todo', value: '' },
   { label: 'Activas', value: '1' },
   { label: 'Inactivas', value: '0' },
-];
+]
+
+export const selectOptionsSiNo: SelectOption[] = [
+  { label: 'Sí', value: 1 },
+  { label: 'No', value: 0 },
+]

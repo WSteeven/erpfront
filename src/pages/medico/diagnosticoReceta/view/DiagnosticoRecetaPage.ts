@@ -59,7 +59,7 @@ export default defineComponent({
     *********/
     const mixin = new ContenedorSimpleMixin(ConsultaMedica, consultaController)
     const { entidad: consulta, accion, listadosAuxiliares, listado, disabled } = mixin.useReferencias()
-    const { setValidador, cargarVista, obtenerListados, listar, editarParcial } = mixin.useComportamiento()
+    const { setValidador, cargarVista, obtenerListados, listar, editarParcial, guardar } = mixin.useComportamiento()
     const { onBeforeGuardar, onReestablecer, onGuardado, onModificado } = mixin.useHooks()
 
     cargarVista(async () => {
@@ -94,6 +94,11 @@ export default defineComponent({
 
     const darAlta = () => {
       confirmar('¿Está seguro del dar de alta al paciente?', () => editarParcial(consulta.id, { dado_alta: true }))
+    }
+
+    const guardarYDarAlta = () => {
+      consulta.dado_alta = true
+      guardar(consulta)
     }
 
     /*************
@@ -164,6 +169,7 @@ export default defineComponent({
         else if (esAccidenteTrabajo.value) return tiposCitaMedica.ACCIDENTE_DE_TRABAJO.label
       }),
       darAlta,
+      guardarYDarAlta,
       // enfermedadesSeleccionadas,
       tiposEnfermedades,
       tabsEnfermedades,

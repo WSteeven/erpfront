@@ -69,7 +69,7 @@ export class ContenedorSimpleMixin<T extends EntidadAuditable> extends Contenedo
         this.hooks.bindHook('onGuardado', callback),
       onBeforeConsultar: (callback: () => void) =>
         this.hooks.bindHook('onBeforeConsultar', callback),
-      onConsultado: (callback: () => void) =>
+      onConsultado: (callback: (entidad?: any) => void) =>
         this.hooks.bindHook('onConsultado', callback),
       onBeforeModificar: (callback: () => void) =>
         this.hooks.bindHook('onBeforeModificar', callback),
@@ -110,6 +110,7 @@ export class ContenedorSimpleMixin<T extends EntidadAuditable> extends Contenedo
         this.entidad.hydrate(result)
         this.entidad_copia.hydrate(this.entidad)
         this.refs.tabs.value = 'formulario'
+        this.hooks.onConsultado(result)
       })
 
       // const usuario = new Usuario()
@@ -121,7 +122,7 @@ export class ContenedorSimpleMixin<T extends EntidadAuditable> extends Contenedo
         await notificarMensajesError(mensajes, this.notificaciones)
       }
     } finally {
-      this.hooks.onConsultado()
+      // this.hooks.onConsultado(result)
       // this.statusEssentialLoading.desactivar()
     }
     // })

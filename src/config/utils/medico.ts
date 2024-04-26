@@ -37,7 +37,7 @@ export const estadosSolicitudesExamenes = {
     icono: 'bi-cart-check',
   },
   APROBADO_POR_COMPRAS: {
-    value: 'APROBADO_POR_COMPRAS',
+    value: 'RESULTADOS DE EXAMENES',
     label: 'Aprobado por compras',
     icono: 'bi-cash-coin',
   },
@@ -126,6 +126,11 @@ export const tiposCitaMedica = {
 export const selectTipoCitaMedica = [
   { label: 'Enfermedad común', value: tiposCitaMedica.ENFERMEDAD_COMUN.value },
   { label: 'Accidente de trabajo', value: tiposCitaMedica.ACCIDENTE_DE_TRABAJO.value },
+]
+
+export const selectTipoCambioCargo = [
+  { label: 'Temporal', value: 'TEMPORAL' },
+  { label: 'Permanente', value: 'PERMANENTE' },
 ]
 
 export const tiposFichasMedicas = {

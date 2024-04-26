@@ -1,4 +1,5 @@
-+<template>
++
+<template>
   <simple-layout :mixin="mixin">
     <template #formulario>
       <div class="row q-mb-md">
@@ -306,8 +307,9 @@
     </template>
 
     <template #custom-buttons>
-      <!-- v-if="esAccidenteTrabajo && esConsultable && !consulta.dado_alta" -->
+      <!-- {{ esConsultable }} -->
       <q-btn
+        v-if="esAccidenteTrabajo && esConsultable && !consulta.dado_alta"
         color="positive"
         @click="darAlta()"
         no-caps
@@ -319,6 +321,20 @@
           size="xs"
         ></q-icon>
         Dar de alta</q-btn
+      >
+      <q-btn
+        v-if="esAccidenteTrabajo && !esConsultable"
+        color="primary"
+        @click="guardarYDarAlta()"
+        no-caps
+        push
+      >
+        <q-icon
+          name="bi-hand-thumbs-up-fill"
+          class="q-mr-sm"
+          size="xs"
+        ></q-icon>
+        Guardar y dar de alta</q-btn
       >
     </template>
   </simple-layout>

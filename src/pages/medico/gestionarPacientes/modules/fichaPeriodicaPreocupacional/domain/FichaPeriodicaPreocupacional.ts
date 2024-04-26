@@ -10,9 +10,9 @@ import { AntecedenteFamiliar } from './AntecedenteFamiliar'
 import { AntecedentePersonal } from './AntecedentePersonal'
 import { MedicacionHabitual } from './MedicacionHabitual'
 import { ActividadFisica } from './ActividadFisica'
-import { ConstanteVital } from './ConstanteVital'
+import { FichaMedica } from '../../seccionesFichas/domain/FichaMedica'
 
-export class FichaPeriodicaPreocupacional extends EntidadAuditable {
+export class FichaPeriodicaPreocupacional extends FichaMedica {
   numero_archivo: number | null
   registro_empleado_examen: number | null
   religion: number | null
@@ -26,14 +26,11 @@ export class FichaPeriodicaPreocupacional extends EntidadAuditable {
   actividades_fisicas: ActividadFisica[]
   medicacion_habituales: MedicacionHabitual[]
   antecedentes_trabajos_anteriores: AntecedenteTrabajoAnterior[]
-  accidente_trabajo: DescripcionAntecedenteTrabajo
-  enfermedad_profesional: DescripcionAntecedenteTrabajo
   antecedentes_familiares: AntecedenteFamiliar[]
   fr_puestos_trabajos_actuales: FrPuestoTrabajoActual[]
   actividades_extralaborales: string | null
   enfermedad_actual: string | null
   revisiones_actuales_organos_sistemas: RevisionActualOrganoSistema[]
-  constante_vital: ConstanteVital
   antecedentes_clinicos_quirurgicos: string | null
   resultados_examenes_preocupacionales: ResultadoExamenPreocupacional[]
   recomendaciones_tratamiento: string | null
@@ -53,14 +50,11 @@ export class FichaPeriodicaPreocupacional extends EntidadAuditable {
     this.actividades_fisicas = []
     this.medicacion_habituales = []
     this.antecedentes_trabajos_anteriores = []
-    this.accidente_trabajo = new DescripcionAntecedenteTrabajo()
-    this.enfermedad_profesional = new DescripcionAntecedenteTrabajo()
     this.antecedentes_familiares = []
     this.fr_puestos_trabajos_actuales = []
     this.actividades_extralaborales = null
     this.enfermedad_actual = null
     this.revisiones_actuales_organos_sistemas = []
-    this.constante_vital = new ConstanteVital()
     this.antecedentes_clinicos_quirurgicos = null
     this.resultados_examenes_preocupacionales = []
     this.recomendaciones_tratamiento = null

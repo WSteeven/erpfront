@@ -129,7 +129,10 @@ export default defineComponent({
 
     const insertarListados = ({ esquemaVacuna, page }) => {
       console.log('indertar...')
-      listadosAuxiliares.esquemasVacunas.unshift(esquemaVacuna)
+      // listadosAuxiliares.esquemasVacunas.unshift(esquemaVacuna)
+      const index = listadosAuxiliares.esquemasVacunas.findIndex((esquema: EsquemaVacuna) => esquema.tipo_vacuna_id === esquemaVacuna.tipo_vacuna_id)
+      if (index >= 0) listadosAuxiliares.esquemasVacunas.splice(index, 1, esquemaVacuna)
+      else listadosAuxiliares.esquemasVacunas.push(esquemaVacuna)
     }
 
     const actualizarListados = ({ esquemaVacuna, page }) => {
@@ -139,18 +142,23 @@ export default defineComponent({
       listadosAuxiliares.esquemasVacunas.splice(index, 1, esquemaVacuna)
     }
 
-    const obtenerEsquemaVacunaPaciente = async () => {
-      const { result } = await esquemaVacunaController.listar({ paciente_id: empleado.id })
+    const obtenerEsquemaVacunaPaciente = async (idEmpleado: number) => {
+      const { result } = await esquemaVacunaController.listar({ paciente_id: idEmpleado, agrupar: true })
       listadosAuxiliares.esquemasVacunas = result
     }
 
     /*********
      * Hooks
      *********/
-    onConsultado(async () => {
+    onConsultado(async (entidad) => {
       medicoStore.empleado = empleado
-      obtenerEsquemaVacunaPaciente()
+      console.log(empleado)
+      await obtenerEsquemaVacunaPaciente(entidad.id)
       await refPanelTipoProcesoIngreso.value.seleccionarTabTipoProceso()
+      refPanelTipoProcesoIngreso.value.resetearTabRegistro()
+      refPanelTipoProcesoOcupacional.value.resetearTabRegistro()
+      refPanelTipoProcesoReingreso.value.resetearTabRegistro()
+      refPanelTipoProcesoSalida.value.resetearTabRegistro()
     })
 
     /*******

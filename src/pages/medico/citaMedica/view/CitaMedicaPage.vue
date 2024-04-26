@@ -158,6 +158,27 @@
           </q-select>
         </div>
 
+        <div v-if="citaMedica.tipo_cita_medica === tiposCitaMedica.ACCIDENTE_DE_TRABAJO.value" class="col-12 col-md-6 col-mb-md">
+          <label class="q-mb-sm block">Cambio de cargo</label>
+          <q-select
+            v-model="citaMedica.tipo_cambio_cargo"
+            :options="selectTipoCambioCargo"
+            transition-show="scale"
+            transition-hide="scale"
+            :disable="disabled"
+            options-dense
+            dense
+            outlined
+            :option-label="(item) => item.label"
+            :option-value="(item) => item.value"
+            use-input
+            input-debounce="0"
+            emit-value
+            map-options
+          >
+          </q-select>
+        </div>
+
         <!-- Fecha y hora accidente trabajo -->
         <div v-if="esMedico && esAccidenteTrabajo" class="col-12 col-md-3">
           <label class="q-mb-sm block">Fecha del accidente</label>

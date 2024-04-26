@@ -1,7 +1,7 @@
 // Dependencias
 import { StatusEssentialLoading } from 'components/loading/application/StatusEssentialLoading'
 import { configuracionColumnasCitaMedica } from '../domain/configuracionColumnasCitaMedica'
-import { estadosCitaMedica, tabOptionsEstadosCitaMedica, selectAgendarCitaMedicaMedico, selectAgendarCitaMedicaPaciente, opcionesDestinoCitaMedica, selectTipoCitaMedica, tiposCitaMedica } from 'config/utils/medico'
+import { estadosCitaMedica, tabOptionsEstadosCitaMedica, selectAgendarCitaMedicaMedico, selectAgendarCitaMedicaPaciente, opcionesDestinoCitaMedica, selectTipoCitaMedica, selectTipoCambioCargo, tiposCitaMedica } from 'config/utils/medico'
 import { Ref, computed, defineComponent, reactive, ref } from 'vue'
 import { useAuthenticationStore } from 'stores/authentication'
 import { CitaMedica } from '../domain/CitaMedica'
@@ -363,6 +363,7 @@ export default defineComponent({
       tabLayout,
       guardadoCitaMedica,
       configuracionColumnasCitaMedicaAccidenteTransito,
+      selectTipoCambioCargo,
       // Botones tabla
       btnCancelarCitaEnfermedadComun,
       btnRechazarEnfermedadComun,

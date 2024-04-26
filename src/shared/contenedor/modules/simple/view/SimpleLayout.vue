@@ -16,6 +16,7 @@
         v-if="mostrarButtonSubmits"
         :accion="accion"
         :permitirGuardar="puedeCrear"
+        :permitirModificar="puedeEditar"
         :disabled="storeCargando.cargando"
         :labelGuardar="labelGuardar"
         @cancelar="reestablecer()"

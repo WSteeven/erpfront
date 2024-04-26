@@ -68,7 +68,7 @@ export class Empleado extends EntidadAuditable {
   familiares: any[] | null
   discapacidades: any[] | null
   generar_usuario: boolean
-
+  edad: number | null
 
   constructor() {
     super()
@@ -136,8 +136,9 @@ export class Empleado extends EntidadAuditable {
     this.esta_en_rol_pago = true
     this.acumula_fondos_reserva = false
     this.realiza_factura = false
-    this.familiares = [],
-    this.discapacidades =[],
-      this.generar_usuario = false
+    this.familiares = []
+    this.discapacidades = []
+    this.generar_usuario = false
+    this.edad = null
   }
 }
