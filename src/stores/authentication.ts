@@ -47,6 +47,7 @@ export const useAuthenticationStore = defineStore('authentication', () => {
       }`
   )
 
+
   const esCoordinador = computed(() =>
     user.value ? extraerRol(user.value.roles, rolesSistema.coordinador) : false
   )
@@ -357,5 +358,6 @@ export const useAuthenticationStore = defineStore('authentication', () => {
     consultar_saldo_actual,
     extraerRol,
     listadoUsuarios,
+
   }
 })

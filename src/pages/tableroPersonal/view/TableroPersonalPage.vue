@@ -2,10 +2,10 @@
   <q-page padding>
 
 
-    <q-banner inline-actions class="text-white bg-orange">
-      Noticia de Emergencia o Flash Informativo (Aqui iria la breve descripcion de la noticia o el suceso)
+    <q-banner ref="myBanner" inline-actions class="text-white bg-orange" v-show="showBanner">
+      Noticia de Emergencia o Flash Informativo (Aquí iría la breve descripción de la noticia o el suceso)
       <template v-slot:action>
-        <q-btn flat color="white" label="VER NOTICIA" />
+        <q-btn flat color="white" label="VER NOTICIA" @click="verNoticia" />
       </template>
     </q-banner>
 
@@ -64,8 +64,8 @@
             <div class="col">
               <q-card-section class="text-left">
                 {{ store.nombreUsuario }}
-                <q-badge color="primary">HELP DESK</q-badge>
-                <q-badge rounded color="orange" label="ecanarte@jpconstrucred.com" />
+                <q-badge color="primary">{{ store.user.email }}</q-badge>
+                <q-badge rounded color="orange">{{ store.user.cargo }}</q-badge>
 
               </q-card-section>
             </div>
@@ -147,44 +147,81 @@
           </q-card-section>
         </q-card>
       </div>
+
+
       <div class="col-6 col-md-3 items-lg-end">
-        <q-card class="q-pa-md">
-          <q-card-section>
-            <div class="row">
-              <!-- Columna de departamentos -->
-              <div class="col-md-6">
-                <q-select v-model="departamentoSeleccionado" label="Departamentos" filled emit-value map-options
-                  :options="departamentos" @update:model-value="MostrarEmpleados()" />
-              </div>
-              <!-- Columna de empleados -->
-              <div class="col-md-6">
-                <q-list>
-                  <q-item v-for="(empleado, index) in empleados" :key="index">
-                    <q-item-section>{{ empleado }}</q-item-section>
-                  </q-item>
-                </q-list>
-              </div>
+        <div class="col">
+          <q-card class="rounded-borders">
+            <!-- Menú de navegación -->
+            <div class="q-pa-md" style="max-width: 250px;">
+              <q-list bordered padding class="text-primary">
+                <!-- Opción de bandeja de entrada -->
+                <q-item clickable v-ripple :class="{ 'my-menu-link': link === 'inbox' }" @click="showContent('inbox')">
+                  <q-item-section avatar>
+                    <q-icon name="inbox" />
+                  </q-item-section>
+                  <q-item-section>Inbox</q-item-section>
+                </q-item>
+                <!-- Opción de bandeja de salida -->
+                <q-item clickable v-ripple :class="{ 'my-menu-link': link === 'outbox' }"
+                  @click="showContent('outbox')">
+                  <q-item-section avatar>
+                    <q-icon name="send" />
+                  </q-item-section>
+                  <q-item-section>Outbox</q-item-section>
+                </q-item>
+                <!-- Opción de papelera -->
+                <q-item clickable v-ripple :class="{ 'my-menu-link': link === 'trash' }" @click="showContent('trash')">
+                  <q-item-section avatar>
+                    <q-icon name="delete" />
+                  </q-item-section>
+                  <q-item-section>Trash</q-item-section>
+                </q-item>
+                <!-- Separador -->
+                <q-separator spaced />
+              </q-list>
             </div>
-          </q-card-section>
-        </q-card>
+            <!-- Contenido dinámico a la derecha -->
+            <div class="q-pa-md">
+              <div v-if="link === 'inbox'">
+                <!-- Contenido de la bandeja de entrada -->
+                <p>Contenido de la bandeja de entrada...</p>
+              </div>
+              <div v-else-if="link === 'outbox'">
+                <!-- Contenido de la bandeja de salida -->
+                <p>Contenido de la bandeja de salida...</p>
+              </div>
+              <div v-else-if="link === 'trash'">
+                <!-- Contenido de la papelera -->
+                <p>Contenido de la papelera...</p>
+              </div>
+              <!-- Agrega más contenido según sea necesario -->
+            </div>
+          </q-card>
+        </div>
       </div>
 
     </div>
     <div class="row q-col-gutter-sm">
       <div class="col-6 col-md-3">
-
       </div>
       <div class="col-6 col-md-6 flex flex-center">
-
       </div>
-      <div class="col-6 col-md-3 items-lg-end">
-
+      <div class="col-6 col-md-6 flex flex-center">
+        <q-btn id="abrir" class="button-ws" style="position: fixed; bottom: 40px; right: 40px;" @click="openModal">
+          <q-icon name="fab fa-whatsapp" />
+        </q-btn>
       </div>
+      <q-card v-if="modalVisible" position="fixed" top="0" left="0" width="100%" height="100%">
+        <q-card-title>Título de la tarjeta</q-card-title>
+        <q-card-text>
+          Contenido de la tarjeta
+        </q-card-text>
+        <q-card-actions>
+        </q-card-actions>
+      </q-card>
 
     </div>
-
-
-
     <!-- Componente de modales -->
     <modales-entidad :comportamiento="modales" />
   </q-page>

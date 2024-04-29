@@ -19,11 +19,14 @@ import { TableroPersonal } from '../domain/TableroPersonal'
 import { useNotificacionStore } from 'stores/notificacion'
 import { useNotificaciones } from 'shared/notificaciones'
 
+
+
 export default defineComponent({
   components: {
     ModalesEntidad,
     LottiePlayer: Vue3Lottie,
     SolicitarFecha,
+
   },
   setup() {
 
@@ -31,7 +34,7 @@ export default defineComponent({
 
     const departamentoSeleccionado = ref('')
     const departamentos = ref(['Departamento 1', 'Departamento 2', 'Departamento 3'])
-    const empleados: Ref<String[]> = ref([''])
+    const listadoEmpleados: Ref<String[]> = ref([''])
 
     const store = useAuthenticationStore()
     const controller = new TableroPersonalController()
@@ -47,6 +50,19 @@ export default defineComponent({
     const subtareasPorAsignar = ref([])
 
     const imagenPerfil = `https://ui-avatars.com/api/?name=${store.user.nombres.substr(0, 1)}+${store.user.apellidos.substr(0, 1)}&bold=true&background=0879dc28&color=0879dc`
+
+    const el = '#app'
+
+    var showBanner=false
+    
+    var modalVisible = ref(true)
+
+    const agentes = ref([
+      { nombre: 'Agente 1', numero: '0967997798' },
+      { nombre: 'Agente 2', numero: '0967997798' },
+      { nombre: 'Agente 3', numero: '0967997798' }
+    ])
+
 
     const lorem = 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.'
     const tipoSolicitud = ref('')
@@ -84,9 +100,25 @@ export default defineComponent({
       return data.value.slice(start, end);
     });
 
+
+    function mounted() {
+      // Mostrar el banner después de 20 segundos (20000 milisegundos)
+      setTimeout(() => {
+        showBanner = true;
+      }, 20000);
+    }
+
     function verSubtarea() {
       // modales.abrirModalEntidad('SubtareaAsignadaPage')
     }
+
+    function openModal() {
+      modalVisible=ref(false);
+  }
+
+  function openWhatsApp(numero) {
+      window.location.href = `https://wa.me/${numero}`;
+  }
 
     async function obtenerSubtareasPendientesAsignar() {
       const filtros = {
@@ -128,16 +160,16 @@ export default defineComponent({
     function MostrarEmpleados() {
       switch (departamentoSeleccionado.value) {
         case 'Departamento 1':
-          empleados.value = ['Empleado 1.1', 'Empleado 1.2', 'Empleado 1.3']
+          listadoEmpleados.value = ['Empleado 1.1', 'Empleado 1.2', 'Empleado 1.3']
           break;
         case 'Departamento 2':
-          empleados.value = ['Empleado 2.1', 'Empleado 2.2', 'Empleado 2.3']
+          listadoEmpleados.value = ['Empleado 2.1', 'Empleado 2.2', 'Empleado 2.3']
           break;
         case 'Departamento 3':
-          empleados.value = ['Empleado 3.1', 'Empleado 3.2', 'Empleado 3.3']
+          listadoEmpleados.value = ['Empleado 3.1', 'Empleado 3.2', 'Empleado 3.3']
           break;
         default:
-          empleados.value = []
+          listadoEmpleados.value = []
       }
     }
 
@@ -176,8 +208,13 @@ export default defineComponent({
       MostrarEmpleados,
       departamentoSeleccionado,
       departamentos,
-      empleados,
+      listadoEmpleados,
+      modalVisible,
+      openModal,
 
+      showBanner,
+      mounted,
+      
     }
   },
 })

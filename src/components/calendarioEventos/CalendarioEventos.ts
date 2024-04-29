@@ -5,13 +5,15 @@ import {
   parsed,
   parseDate,
   today,
-  indexOf
+  indexOf,
 } from '@quasar/quasar-ui-qcalendar/src/index.js'
 import '@quasar/quasar-ui-qcalendar/src/QCalendarVariables.sass'
 import '@quasar/quasar-ui-qcalendar/src/QCalendarTransitions.sass'
 import '@quasar/quasar-ui-qcalendar/src/QCalendarMonth.sass'
 
 import { defineComponent } from 'vue'
+
+
 
 // The function below is used to set up our demo data
 const CURRENT_DAY = new Date()

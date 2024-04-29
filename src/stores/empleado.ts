@@ -15,8 +15,6 @@ export const useEmpleadoStore = defineStore('empleadoStore', () => {
     async function cargarEmpleado(){
         await getEmpleado()
     }
-
-
     return {
         empleado,
         idEmpleado,
