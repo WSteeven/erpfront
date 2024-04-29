@@ -5,7 +5,7 @@
       @prev="onPrev"
       @next="onNext"
     />
-    <div class="row justify-center">
+    <div class="row justify-center" v-if="calendar_cargado">
       <div style="display: flex; max-width: 800px; width: 100%">
         <q-calendar-month
           ref="refCalendar"
