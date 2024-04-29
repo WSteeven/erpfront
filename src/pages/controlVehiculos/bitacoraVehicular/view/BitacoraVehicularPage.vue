@@ -172,6 +172,7 @@
           <div class="col-6 col-md-3">
             <label class="q-mb-sm block">Tanque inicio</label>
             <q-input
+              v-if="!$q.screen.xs"
               v-model="bitacora.tanque_inicio"
               type="number"
               :disable="disabled || bloquear_km_tanque"
@@ -194,6 +195,7 @@
                 ></q-icon></template
             ></q-input>
             <q-knob
+              v-if="$q.platform.is.android || $q.screen.xs"
               show-value
               class="text-white q-ma-md"
               v-model="bitacora.tanque_inicio"
@@ -218,6 +220,7 @@
           <div class="col-6 col-md-3">
             <label class="q-mb-sm block">Tanque final</label>
             <q-input
+              v-if="!$q.screen.xs"
               ref="tFinal"
               type="number"
               v-model="bitacora.tanque_final"
@@ -238,6 +241,7 @@
               ></template>
             </q-input>
             <q-knob
+              v-if="$q.platform.is.android || $q.screen.xs"
               show-value
               class="text-white q-ma-md"
               v-model="bitacora.tanque_final"

@@ -18,7 +18,7 @@ import { acciones, accionesTabla, convertir_fecha, maskFecha } from 'config/util
 import { useFiltrosListadosSelects } from 'shared/filtrosListadosGenerales';
 import { useAuthenticationStore } from 'stores/authentication';
 import { AsignacionVehiculoController } from 'pages/controlVehiculos/asignarVehiculos/infraestructure/AsignacionVehiculoController';
-import { encontrarUltimoIdListado, notificarErrores, notificarMensajesError, obtenerFechaActual, } from 'shared/utils';
+import { encontrarUltimoIdListado, notificarErrores, obtenerFechaActual, } from 'shared/utils';
 import { useNotificaciones } from 'shared/notificaciones';
 import { CustomActionTable } from 'components/tables/domain/CustomActionTable';
 import { TareaController } from 'pages/gestionTrabajos/tareas/infraestructure/TareaController';
@@ -29,21 +29,26 @@ import { optionsDefault, optionsEstados, optionsEstadosCualitativos, optionsEsta
 import { AxiosHttpRepository } from 'shared/http/infraestructure/AxiosHttpRepository';
 import { apiConfig, endpoints } from 'config/api';
 import { AxiosResponse } from 'axios';
+import { useQuasar } from 'quasar';
+import { useCargandoStore } from 'stores/cargando';
+import { useNotificacionStore } from 'stores/notificacion';
 
 
 export default defineComponent({
     // name:'ControlDiarioVehiculo',
-    components: { TabLayoutFilterTabs2, SelectorImagen, EssentialPopupEditableTable, },
+    components: { TabLayoutFilterTabs2, SelectorImagen, EssentialPopupEditableTable },
     setup(props, { emit }) {
         const mixin = new ContenedorSimpleMixin(BitacoraVehicular, new BitacoraVehicularController())
         const { entidad: bitacora, disabled, listadosAuxiliares, accion } = mixin.useReferencias()
         const { setValidador, cargarVista, obtenerListados, reestablecer, listar } = mixin.useComportamiento()
         const { onReestablecer, onConsultado, onBeforeModificar } = mixin.useHooks()
-        const { confirmar, prompt, notificarCorrecto } = useNotificaciones()
+        const { confirmar, prompt, notificarCorrecto, notificarAdvertencia, notificarError } = useNotificaciones()
 
         /****************************************
          * Stores
          ****************************************/
+        useNotificacionStore().setQuasar(useQuasar())
+        useCargandoStore().setQuasar(useQuasar())
         const store = useAuthenticationStore()
         const cargando = new StatusEssentialLoading()
 
@@ -141,7 +146,7 @@ export default defineComponent({
         }
 
         async function obtenerUltimaBitacora() {
-            const response = (await new BitacoraVehicularController().listar({ chofer_id: store.user.id, vehiculo_id: bitacora.vehiculo, firmada: 1, filtrar: 1 }))
+            const response = (await new BitacoraVehicularController().listar({ vehiculo_id: bitacora.vehiculo, firmada: 1, filtrar: 1 }))
             console.log(response)
             return response.result[0]
         }
@@ -255,8 +260,12 @@ export default defineComponent({
             icono: 'bi-check2-circle',
             color: 'positive',
             accion: async ({ entidad, posicion }) => {
-                console.log('diste clic en finalizar')
-                await firmarBitacora(entidad.id)
+                console.log('diste clic en finalizar', bitacora)
+                bitacora.id = entidad.id
+                bitacora.km_inicial = entidad.km_inicial
+                // bitacora.km_final = entidad.km_final
+                // await firmarBitacora(entidad.id)
+                await checkFinalizada(true, null)
             },
             visible: () => tabDefecto.value === '0'
         }
