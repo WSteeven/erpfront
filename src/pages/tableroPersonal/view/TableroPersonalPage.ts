@@ -4,7 +4,6 @@ import loginJson from 'src/assets/lottie/welcome.json'
 import { Ref, computed, defineComponent, reactive, ref } from 'vue'
 import { date } from 'quasar'
 
-
 // Componentes
 import ModalesEntidad from 'components/modales/view/ModalEntidad.vue'
 import SolicitarFecha from 'shared/prompts/SolicitarFecha.vue'
@@ -29,12 +28,11 @@ export default defineComponent({
 
   },
   setup() {
-
     const timeStamp = Date.now()
 
     const departamentoSeleccionado = ref('')
     const departamentos = ref(['Departamento 1', 'Departamento 2', 'Departamento 3'])
-    const listadoEmpleados: Ref<String[]> = ref([''])
+    const empleados: Ref<String[]> = ref([''])
 
     const store = useAuthenticationStore()
     const controller = new TableroPersonalController()
@@ -44,6 +42,8 @@ export default defineComponent({
     const autoplay = ref(true)
     const date = ref(timeStamp)
 
+    var showBanner=false
+
     const filtrosTareas = ['Recientes', 'sdsd']
     const filtroTarea = ref('Recientes')
 
@@ -51,29 +51,15 @@ export default defineComponent({
 
     const imagenPerfil = `https://ui-avatars.com/api/?name=${store.user.nombres.substr(0, 1)}+${store.user.apellidos.substr(0, 1)}&bold=true&background=0879dc28&color=0879dc`
 
-    const el = '#app'
-
-    var showBanner=false
-    
-    var modalVisible = ref(true)
-
-    const agentes = ref([
-      { nombre: 'Agente 1', numero: '0967997798' },
-      { nombre: 'Agente 2', numero: '0967997798' },
-      { nombre: 'Agente 3', numero: '0967997798' }
-    ])
-
-
-    const lorem = 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.'
+    const lorem =
+      'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.'
     const tipoSolicitud = ref('')
     const descripcion = ref('')
     const tiposSolicitud = ref([
       { label: 'Vacaciones', value: 'vacaciones' },
       { label: 'Enfermedad', value: 'enfermedad' },
-      { label: 'Licencia de trabajo', value: 'licencia' }
+      { label: 'Licencia de trabajo', value: 'licencia' },
     ])
-
-
 
     async function index() {
       const { response } = await controller.listar()
@@ -84,21 +70,52 @@ export default defineComponent({
 
     const modales = new ComportamientoModalesTableroPersonal()
 
-    const events = ['2024/04/01', '2024/04/05', '2024/04/06', '2024/04/09', '2024/04/23']
-
-
-    const data = ref([{ imagen: 'https://cdn.quasar.dev/img/mountains.jpg', titulo: 'noticia 1', autor: 'autor', descripcion: lorem },
-    { imagen: 'https://cdn.quasar.dev/img/mountains.jpg', titulo: 'noticia 2', autor: 'autor', descripcion: lorem },
-    { imagen: 'https://cdn.quasar.dev/img/mountains.jpg', titulo: 'noticia 3', autor: 'autor', descripcion: lorem },
-    { imagen: 'https://cdn.quasar.dev/img/mountains.jpg', titulo: 'noticia 4', autor: 'autor', descripcion: lorem },
-    { imagen: 'https://cdn.quasar.dev/img/mountains.jpg', titulo: 'noticia 5', autor: 'autor', descripcion: lorem }])
-    const currentPage = ref(1); // Current page number (starts at 1)
-    const perPage = ref(2); // Number of cards per page
+    const eventos = [
+      '2024/04/01',
+      '2024/04/05',
+      '2024/04/06',
+      '2024/04/09',
+      '2024/04/23',
+    ]
+    const data = ref([
+      {
+        imagen: 'https://cdn.quasar.dev/img/mountains.jpg',
+        titulo: 'noticia 1',
+        autor: 'autor',
+        descripcion: lorem,
+      },
+      {
+        imagen: 'https://cdn.quasar.dev/img/mountains.jpg',
+        titulo: 'noticia 2',
+        autor: 'autor',
+        descripcion: lorem,
+      },
+      {
+        imagen: 'https://cdn.quasar.dev/img/mountains.jpg',
+        titulo: 'noticia 3',
+        autor: 'autor',
+        descripcion: lorem,
+      },
+      {
+        imagen: 'https://cdn.quasar.dev/img/mountains.jpg',
+        titulo: 'noticia 4',
+        autor: 'autor',
+        descripcion: lorem,
+      },
+      {
+        imagen: 'https://cdn.quasar.dev/img/mountains.jpg',
+        titulo: 'noticia 5',
+        autor: 'autor',
+        descripcion: lorem,
+      },
+    ])
+    const currentPage = ref(1) // Current page number (starts at 1)
+    const perPage = ref(2) // Number of cards per page
     const displayedCards = computed(() => {
-      const start = (currentPage.value - 1) * perPage.value;
-      const end = start + perPage.value;
-      return data.value.slice(start, end);
-    });
+      const start = (currentPage.value - 1) * perPage.value
+      const end = start + perPage.value
+      return data.value.slice(start, end)
+    })
 
 
     function mounted() {
@@ -112,9 +129,6 @@ export default defineComponent({
       // modales.abrirModalEntidad('SubtareaAsignadaPage')
     }
 
-    function openModal() {
-      modalVisible=ref(false);
-  }
 
   function openWhatsApp(numero) {
       window.location.href = `https://wa.me/${numero}`;
@@ -136,57 +150,42 @@ export default defineComponent({
      */
     const { confirmar } = useNotificaciones()
 
-
-    function eventsFn(date) {
-      if (date === '2024/04/01' ||
-        date === '2024/04/05' ||
-        date === '2024/04/06' ||
-        date === '2024/04/09' ||
-        date === '2024/04/24') {
-        return true
+    function verEvento(date) {
+      const result = eventos.filter((evento) => evento === date)
+      if (result.length > 0) {
+        modales.abrirModalEntidad('VisualizarEventoPage')
       }
-      return false
     }
-
 
     function enviarSolicitud() {
       // Aquí puedes implementar la lógica para enviar la solicitud
       console.log('Solicitud enviada:', {
         tipo: tipoSolicitud,
-        descripcion: descripcion
-      });
+        descripcion: descripcion,
+      })
     }
 
     function MostrarEmpleados() {
       switch (departamentoSeleccionado.value) {
         case 'Departamento 1':
-          listadoEmpleados.value = ['Empleado 1.1', 'Empleado 1.2', 'Empleado 1.3']
+          empleados.value = ['Empleado 1.1', 'Empleado 1.2', 'Empleado 1.3']
           break;
         case 'Departamento 2':
-          listadoEmpleados.value = ['Empleado 2.1', 'Empleado 2.2', 'Empleado 2.3']
+          empleados.value = ['Empleado 2.1', 'Empleado 2.2', 'Empleado 2.3']
           break;
         case 'Departamento 3':
-          listadoEmpleados.value = ['Empleado 3.1', 'Empleado 3.2', 'Empleado 3.3']
+          empleados.value = ['Empleado 3.1', 'Empleado 3.2', 'Empleado 3.3']
           break;
         default:
-          listadoEmpleados.value = []
+          empleados.value = []
       }
     }
-
-
 
     return {
       tablero,
       store,
       usuarios,
       loginJson,
-      /* tab: ref(
-          store.esTecnicoLider
-              ? 'asignadas'
-              : store.esCoordinador
-                  ? 'pendientes'
-                  : ''
-      ), */
       filtrosTareas,
       filtroTarea,
       modales,
@@ -197,8 +196,7 @@ export default defineComponent({
       autoplay,
       imagenPerfil,
       date,
-      events,
-      eventsFn,
+      eventos,
       tiposSolicitud,
       lorem,
       data,
@@ -208,13 +206,8 @@ export default defineComponent({
       MostrarEmpleados,
       departamentoSeleccionado,
       departamentos,
-      listadoEmpleados,
-      modalVisible,
-      openModal,
+      empleados,
 
-      showBanner,
-      mounted,
-      
     }
   },
 })

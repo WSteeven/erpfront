@@ -8,13 +8,10 @@ import {
 } from '@quasar/quasar-ui-qcalendar/src/index.js'
 
 
-
 export default defineComponent({
-
   components: {
-    CalendarioEventos,
+    CalendarioEventos
   },
-
   setup() {
 
     /***********
@@ -39,8 +36,6 @@ export default defineComponent({
     const date = ref('2019/02/01')
     const events = ref(['2019/02/01', '2019/02/05', '2019/02/06'])
     const tiposEvento = ref(['Cumpleaños', 'Capacitaciones'])
-
-
 
     const CURRENT_DAY = new Date()
     function getCurrentDay(day) {
