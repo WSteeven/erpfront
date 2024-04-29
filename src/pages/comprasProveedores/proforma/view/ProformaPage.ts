@@ -67,10 +67,10 @@ export default defineComponent({
         const subtotal_con_impuestos = computed(() =>
             proforma.listadoProductos.reduce((prev, curr) => prev + calcularSubtotalConImpuestosLista(curr), 0).toFixed(2)
         )
-        const subtotal = computed(() => (Number(subtotal_con_impuestos.value) + Number(subtotal_sin_impuestos.value)).toFixed(2))
+        const subtotal = computed(() => proforma.listadoProductos.reduce((prev, curr) => prev + parseFloat(curr.subtotal), 0).toFixed(2))
         const descuento = computed(() => proforma.descuento_general == 0 ? proforma.listadoProductos.reduce((prev, curr) => prev + parseFloat(curr.descuento), 0).toFixed(2) : proforma.descuento_general)
         const iva = computed(() => (subtotal_con_impuestos.value * proforma.iva / 100).toFixed(2))
-        const total = computed(() => proforma.descuento_general > 0 ? (Number(subtotal.value) + Number(iva.value) - Number(descuento.value)).toFixed(2) : (Number(subtotal.value) + Number(iva.value)).toFixed(2))
+        const total = computed(() => proforma.descuento_general > 0 ? (Number(subtotal.value) + Number(iva.value) - Number(descuento.value)).toFixed(2) : (Number(subtotal_con_impuestos.value) + Number(subtotal_sin_impuestos.value) + Number(iva.value)).toFixed(2))
 
         // Flags
         const tabDefecto = ref('1')

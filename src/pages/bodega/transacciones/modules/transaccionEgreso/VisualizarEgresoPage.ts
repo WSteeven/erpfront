@@ -55,11 +55,11 @@ export default defineComponent({
       transaccion.hydrate(transaccionStore.transaccion)
       listadoAux = JSON.parse(JSON.stringify(transaccionEgresoStore.transaccion.listadoProductosTransaccion))
     }
-    if (transaccionEgresoStore.estadoPendiente) {
-      transaccion.listadoProductosTransaccion.forEach((item) => {
-        item.recibido = item.cantidad
-      })
-    }
+    // if (transaccionEgresoStore.estadoPendiente) {
+    //   transaccion.listadoProductosTransaccion.forEach((item) => {
+    //     item.recibido = item.cantidad
+    //   })
+    // }
 
     const esBodeguero = store.esBodeguero
     const esCoordinador = store.esCoordinador
@@ -97,6 +97,9 @@ export default defineComponent({
               notificarCorrecto('Documento aprobado y firmado correctamente')
               emit('cerrar-modal', false)
               emit('guardado', 'aceptado')
+              transaccionStore.resetearTransaccion()
+              transaccionEgresoStore.resetearTransaccion()
+              transaccionEgresoStore.estadoPendiente = false
             })
           } catch (e) {
             notificarError('No se pudo aprobar ni firmar el documento')
@@ -128,6 +131,9 @@ export default defineComponent({
                 notificarCorrecto('Documento parcial aprobado y firmado correctamente')
                 emit('cerrar-modal', false)
                 emit('guardado', 'parcial')
+                transaccionStore.resetearTransaccion()
+                transaccionEgresoStore.resetearTransaccion()
+                transaccionEgresoStore.estadoPendiente = false
               })
             } catch (e) {
               notificarError('Ha ocurrido un error')

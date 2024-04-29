@@ -192,11 +192,11 @@ export default defineComponent({
         required,
       },
       cantidad: {
-        maxValue:maxValue(9999),
+        maxValue: maxValue(9999),
         required,
       },
       valor_u: {
-        maxValue:maxValue(9999),
+        maxValue: maxValue(9999),
         required,
       },
       total: {
@@ -422,9 +422,7 @@ export default defineComponent({
       }
       update(() => {
         const needle = val.toLowerCase()
-        sub_detalles.value = listadoSubdetalles.value.filter((v) => {
-          v.descripcion.toLowerCase().indexOf(needle) > -1
-        })
+        sub_detalles.value = listadoSubdetalles.value.filter((v) =>v.descripcion.toLowerCase().indexOf(needle) > -1)
       })
     }
     /**Filtro de proyectos */
@@ -655,7 +653,7 @@ export default defineComponent({
       mostarPlaca,
       listadoTareas,
       es_consultar,
-      estadosGastos
+      estadosGastos,
     }
   },
 })

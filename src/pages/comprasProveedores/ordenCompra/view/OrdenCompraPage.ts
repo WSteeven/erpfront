@@ -29,7 +29,7 @@ import { ProveedorController } from "sistema/proveedores/infraestructure/Proveed
 import { acciones, accionesTabla, autorizaciones, autorizacionesTransacciones, estados } from "config/utils";
 import { tabOptionsOrdenCompra, opcionesForma, opcionesTiempo, } from "config/utils_compras_proveedores";
 import { useAuthenticationStore } from "stores/authentication";
-import { formatearFecha, } from "shared/utils";
+import { calcularSubtotalConImpuestosLista, calcularSubtotalSinImpuestosLista, formatearFecha, } from "shared/utils";
 import { CustomActionTable } from "components/tables/domain/CustomActionTable";
 import { useFiltrosListadosSelects } from "shared/filtrosListadosGenerales";
 import { usePreordenStore } from "stores/comprasProveedores/preorden";
@@ -68,10 +68,16 @@ export default defineComponent({
 
 
     //variables
+    const subtotal_sin_impuestos = computed(() =>
+      orden.listadoProductos.reduce((prev, curr) => prev + calcularSubtotalSinImpuestosLista(curr), 0).toFixed(2)
+    )
+    const subtotal_con_impuestos = computed(() =>
+      orden.listadoProductos.reduce((prev, curr) => prev + calcularSubtotalConImpuestosLista(curr), 0).toFixed(2)
+    )
     const subtotal = computed(() => orden.listadoProductos.reduce((prev, curr) => prev + parseFloat(curr.subtotal), 0).toFixed(2))
-    const iva = computed(() => orden.listadoProductos.reduce((prev, curr) => prev + parseFloat(curr.iva), 0).toFixed(2))
     const descuento = computed(() => orden.listadoProductos.reduce((prev, curr) => prev + parseFloat(curr.descuento), 0).toFixed(2))
-    const total = computed(() => orden.listadoProductos.reduce((prev, curr) => prev + parseFloat(curr.total), 0).toFixed(2))
+    const iva = computed(() => (subtotal_con_impuestos.value * orden.iva / 100).toFixed(2))
+    const total = computed(() => (Number(subtotal_con_impuestos.value) + Number(subtotal_sin_impuestos.value) + Number(iva.value)).toFixed(2))
 
     // Flags
     const refArchivo = ref()
@@ -160,7 +166,7 @@ export default defineComponent({
     })
     onConsultado(() => {
       // console.log(accion.value)
-      if (accion.value === acciones.editar && (store.user.id === orden.autorizador || store.esCompras))
+      if (accion.value === acciones.editar && (store.user.id === orden.autorizador || store.esCompras || store.user.id === orden.solicitante))
         soloLectura.value = false
       else
         soloLectura.value = true
@@ -563,7 +569,8 @@ export default defineComponent({
 
 
       //variables computadas
-      subtotal, total, descuento, iva,
+      subtotal_sin_impuestos, subtotal_con_impuestos, subtotal,
+      total, descuento, iva,
     }
   }
 })
