@@ -11,49 +11,32 @@
     <!-- Columns start at 33.3% wide on mobile and bump up to 50% wide on desktop -->
     <div class="row q-col-gutter-sm q-mt-md q-mx-md q-mb-md">
       <div class="col-4 col-md-8">
-        <q-carousel
-          animated
-          v-model="slide"
-          navigation
-          infinite
-          :autoplay="autoplay"
-          arrows
-          transition-prev="slide-right"
-          transition-next="slide-left"
-          @mouseenter="autoplay = false"
-          @mouseleave="autoplay = true"
-        >
-          <q-carousel-slide
-            :name="1"
-            img-src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSu9oEYyY5HK3BpL2GsAOV6wHrbHb1FkoTGu2pKqXKNlw&s"
-          >
+        <q-carousel animated v-model="slide" navigation infinite :autoplay="autoplay" arrows
+          transition-prev="slide-right" transition-next="slide-left" @mouseenter="autoplay = false"
+          @mouseleave="autoplay = true">
+          <q-carousel-slide :name="1"
+            img-src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSu9oEYyY5HK3BpL2GsAOV6wHrbHb1FkoTGu2pKqXKNlw&s">
             <div class="absolute-bottom custom-caption">
               <div class="text-h2">Primera Noticia</div>
               <div class="text-subtitle1">JPCONSTRUCRED</div>
             </div>
           </q-carousel-slide>
-          <q-carousel-slide
-            :name="2"
-            img-src="https://media.licdn.com/dms/image/C5622AQGTv_MeiL8E9A/feedshare-shrink_800/0/1652387694729?e=2147483647&v=beta&t=VUJzxfpA4GRO2jKQ2pWDXnR8LNfh6IuirXfr1dZvODU"
-          >
+          <q-carousel-slide :name="2"
+            img-src="https://media.licdn.com/dms/image/C5622AQGTv_MeiL8E9A/feedshare-shrink_800/0/1652387694729?e=2147483647&v=beta&t=VUJzxfpA4GRO2jKQ2pWDXnR8LNfh6IuirXfr1dZvODU">
             <div class="absolute-bottom custom-caption">
               <div class="text-h2">Segunda Noticia</div>
               <div class="text-subtitle1">JPCONSTRUCRED</div>
             </div>
           </q-carousel-slide>
-          <q-carousel-slide
-            :name="3"
-            img-src="https://media.licdn.com/dms/image/C4D22AQHURssxoX0FAQ/feedshare-shrink_800/0/1643980715005?e=2147483647&v=beta&t=HLwKY4gOCsBPIBzusmztCrpCckmg858lLRvzotJFOK8"
-          >
+          <q-carousel-slide :name="3"
+            img-src="https://media.licdn.com/dms/image/C4D22AQHURssxoX0FAQ/feedshare-shrink_800/0/1643980715005?e=2147483647&v=beta&t=HLwKY4gOCsBPIBzusmztCrpCckmg858lLRvzotJFOK8">
             <div class="absolute-bottom custom-caption">
               <div class="text-h2">Tercer Noticia</div>
               <div class="text-subtitle1">JPCONSTRUCRED</div>
             </div>
           </q-carousel-slide>
-          <q-carousel-slide
-            :name="4"
-            img-src="https://media.licdn.com/dms/image/C4E22AQFcGv81a4EkZg/feedshare-shrink_800/0/1640622491601?e=2147483647&v=beta&t=h-G900B6dvVy8Lp45OlGGSqA3foD5opmAFBmgeIYGgo"
-          >
+          <q-carousel-slide :name="4"
+            img-src="https://media.licdn.com/dms/image/C4E22AQFcGv81a4EkZg/feedshare-shrink_800/0/1640622491601?e=2147483647&v=beta&t=h-G900B6dvVy8Lp45OlGGSqA3foD5opmAFBmgeIYGgo">
             <div class="absolute-bottom custom-caption">
               <div class="text-h2">Cuarta Noticia</div>
               <div class="text-subtitle1">JPCONSTRUCRED</div>
@@ -72,13 +55,7 @@
           <div class="row q-pa-md">
             <div class="col-auto">
               <div class="relative-position">
-                <q-img
-                  :src="imagenPerfil"
-                  width="100px"
-                  height="100px"
-                  fit="cover"
-                  class="rounded-full"
-                />
+                <q-img :src="imagenPerfil" width="100px" height="100px" fit="cover" class="rounded-full" />
               </div>
             </div>
             <div class="col">
@@ -86,125 +63,86 @@
                 {{ store.nombreUsuario }}
                 <q-badge color="primary">HELP DESK</q-badge>
                 <q-badge rounded color="orange" label="ecanarte@jpconstrucred.com" />
-        <q-separator />
-        <div class="flex flex-center">
-            <div class="col-6">
-              <q-card flat class="my-card rounded-borders banner-transparent">
-                <q-img
-                  src="https://templates-flatlogic.herokuapp.com/vue-material/img/folder-green.3bc0a33b.svg"
-                  width="175px"
-                  height="125px"
-                >
-                  <!-- Ajustar el tamaño de la imagen -->
-                  <div class="absolute-full text-caption banner-transparent">
-                    <!-- Cambiar el tamaño del texto -->
-                    <div class="text-body2 q-my-lg">
-                      <q-btn
-                        outline
-                        rounded
-                        color="clare"
-                        label="Instructivos"
-                        class="custom-border-button"
-                        target="_blank"
-                        href="https://drive.google.com/drive/folders/1Zv3eTjramxByFRht-L5Gz_nrulgFE32V?usp=sharing_eip_m&ts=64386770"
-                      />
-                    </div>
+                <q-separator />
+                <div class="flex flex-center">
+                  <div class="col-6">
+                    <q-card flat class="my-card rounded-borders banner-transparent">
+                      <q-img src="https://templates-flatlogic.herokuapp.com/vue-material/img/folder-green.3bc0a33b.svg"
+                        width="175px" height="125px">
+                        <!-- Ajustar el tamaño de la imagen -->
+                        <div class="absolute-full text-caption banner-transparent">
+                          <!-- Cambiar el tamaño del texto -->
+                          <div class="text-body2 q-my-lg">
+                            <q-btn outline rounded color="clare" label="Instructivos" class="custom-border-button"
+                              target="_blank"
+                              href="https://drive.google.com/drive/folders/1Zv3eTjramxByFRht-L5Gz_nrulgFE32V?usp=sharing_eip_m&ts=64386770" />
+                          </div>
+                        </div>
+                      </q-img>
+                      <q-card-actions> </q-card-actions>
+                    </q-card>
                   </div>
-                </q-img>
-                <q-card-actions> </q-card-actions>
-              </q-card>
-            </div>
-            <div class="col-6 margen-pequeno">
-              <q-card flat class="my-card rounded-borders banner-transparent">
-                <q-img
-                  src="https://templates-flatlogic.herokuapp.com/vue-material/img/folder-yellow.d553d1c6.svg"
-                  width="175px"
-                  height="125px"
-                >
-                  <!-- Ajustar el tamaño de la imagen -->
-                  <div class="absolute-full text-caption banner-transparent">
-                    <!-- Cambiar el tamaño del texto -->
-                    <div class="text-body2 q-my-lg">
-                      <q-btn
-                        outline
-                        rounded
-                        color="clare"
-                        label="Normativas"
-                        class="custom-border-button"
-                        target="_blank"
-                        href="https://drive.google.com/drive/folders/1Zv3eTjramxByFRht-L5Gz_nrulgFE32V?usp=sharing_eip_m&ts=64386770"
-                      />
-                    </div>
+                  <div class="col-6 margen-pequeno">
+                    <q-card flat class="my-card rounded-borders banner-transparent">
+                      <q-img src="https://templates-flatlogic.herokuapp.com/vue-material/img/folder-yellow.d553d1c6.svg"
+                        width="175px" height="125px">
+                        <!-- Ajustar el tamaño de la imagen -->
+                        <div class="absolute-full text-caption banner-transparent">
+                          <!-- Cambiar el tamaño del texto -->
+                          <div class="text-body2 q-my-lg">
+                            <q-btn outline rounded color="clare" label="Normativas" class="custom-border-button"
+                              target="_blank"
+                              href="https://drive.google.com/drive/folders/1Zv3eTjramxByFRht-L5Gz_nrulgFE32V?usp=sharing_eip_m&ts=64386770" />
+                          </div>
+                        </div>
+                      </q-img>
+                      <q-card-actions> </q-card-actions>
+                    </q-card>
                   </div>
-                </q-img>
-                <q-card-actions> </q-card-actions>
-              </q-card>
+                </div>
+              </q-card-section>
             </div>
           </div>
-        </div>
+        </q-card>
       </div>
-    </div>
-    <div class="row q-col-gutter-sm">
-      <div class="col-6 col-md-3">
-        <q-date
-          v-model="date"
-          :events="eventos"
-          @update:model-value="verEvento(date)"
-          :event-color="(date) => (date[9] % 2 === 0 ? 'teal' : 'orange')"
-          minimal
-        />
-        <q-card class="solicitudes q-my-md">
+      <div class="row q-col-gutter-sm">
+        <div class="col-6 col-md-3">
+          <q-date v-model="date" :events="eventos" @update:model-value="verEvento(date)"
+            :event-color="(date) => (date[9] % 2 === 0 ? 'teal' : 'orange')" minimal />
           <q-card class="solicitudes q-my-md">
-            <q-card-section>
-              <div class="text-h6">SOLICITUDES</div>
-            </q-card-section>
-            <q-separator />
-            <q-card-section>
-              <q-select
-                v-model="tipoSolicitud"
-                label="Tipo de Solicitud"
-                outlined
-                :options="tiposSolicitud"
-              />
-              <q-input
-                v-model="descripcion"
-                label="Descripción"
-                outlined
-                type="textarea"
-                rows="3"
-              />
-            </q-card-section>
-            <q-card-actions vertical>
-              <q-btn @click="enviarSolicitud" color="primary" flat>Enviar</q-btn>
-              <q-btn flat @click="limpiarFormulario" color="primary">Limpiar</q-btn>
-            </q-card-actions>
+            <q-card class="solicitudes q-my-md">
+              <q-card-section>
+                <div class="text-h6">SOLICITUDES</div>
+              </q-card-section>
+              <q-separator />
+              <q-card-section>
+                <q-select v-model="tipoSolicitud" label="Tipo de Solicitud" outlined :options="tiposSolicitud" />
+                <q-input v-model="descripcion" label="Descripción" outlined type="textarea" rows="3" />
+              </q-card-section>
+              <q-card-actions vertical>
+                <q-btn @click="enviarSolicitud" color="primary" flat>Enviar</q-btn>
+                <q-btn flat @click="limpiarFormulario" color="primary">Limpiar</q-btn>
+              </q-card-actions>
+            </q-card>
           </q-card>
-        </q-card>
-      </div>
-      <div class="col-3 col-md-3">
-        <q-card class="my-card">
-          <img src="https://cdn.quasar.dev/img/mountains.jpg" />
+        </div>
+        <div class="col-3 col-md-3">
+          <q-card class="my-card">
+            <img src="https://cdn.quasar.dev/img/mountains.jpg" />
 
-          <q-card-section>
-            <div class="text-h6">Noticia</div>
-            <div class="text-subtitle2">Autor Noticia</div>
-          </q-card-section>
+            <q-card-section>
+              <div class="text-h6">Noticia</div>
+              <div class="text-subtitle2">Autor Noticia</div>
+            </q-card-section>
 
-          <q-card-section class="q-pt-none">
-            {{ lorem }}
-            <q-pagination
-              v-if="data.length > 2"
-              class="q-pa-md row q-gutter-md justify-center align-center"
-              v-model="currentPage"
-              :boundary-links="true"
-              :direction-links="true"
-              :round="true"
-              :per-page="perPage"
-              :max="Math.ceil(data.length / perPage)"
-              :total="Math.ceil(data.length / perPage)"
-            />
-          </q-card-section>
-        </q-card>
+            <q-card-section class="q-pt-none">
+              {{ lorem }}
+              <q-pagination v-if="data.length > 2" class="q-pa-md row q-gutter-md justify-center align-center"
+                v-model="currentPage" :boundary-links="true" :direction-links="true" :round="true" :per-page="perPage"
+                :max="Math.ceil(data.length / perPage)" :total="Math.ceil(data.length / perPage)" />
+            </q-card-section>
+          </q-card>
+        </div>
       </div>
 
 
@@ -240,84 +178,75 @@
                 <!-- Separador -->
                 <q-separator spaced />
               </q-list>
-        <q-card class="q-pa-md">
-          <q-card-section>
-            <div class="row">
-              <!-- Columna de departamentos -->
-              <div class="col-md-6">
-                <q-select
-                  v-model="departamentoSeleccionado"
-                  label="Departamentos"
-                  filled
-                  emit-value
-                  map-options
-                  :options="departamentos"
-                  @update:model-value="MostrarEmpleados()"
-                />
-              </div>
-              <!-- Columna de empleados -->
-              <div class="col-md-6">
-                <q-list>
-                  <q-item v-for="(empleado, index) in empleados" :key="index">
-                    <q-item-section>{{ empleado }}</q-item-section>
-                  </q-item>
-                </q-list>
-              </div>
+              <q-card class="q-pa-md">
+                <q-card-section>
+                  <div class="row">
+                    <!-- Columna de departamentos -->
+                    <div class="col-md-6">
+                      <q-select v-model="departamentoSeleccionado" label="Departamentos" filled emit-value map-options
+                        :options="departamentos" @update:model-value="MostrarEmpleados()" />
+                    </div>
+                    <!-- Columna de empleados -->
+                    <div class="col-md-6">
+                      <q-list>
+                        <q-item v-for="(empleado, index) in empleados" :key="index">
+                          <q-item-section>{{ empleado }}</q-item-section>
+                        </q-item>
+                      </q-list>
+                    </div>
+                  </div>
+                  <!-- Contenido dinámico a la derecha -->
+                  <div class="q-pa-md">
+                    <div v-if="link === 'inbox'">
+                      <!-- Contenido de la bandeja de entrada -->
+                      <p>Contenido de la bandeja de entrada...</p>
+                    </div>
+                    <div v-else-if="link === 'outbox'">
+                      <!-- Contenido de la bandeja de salida -->
+                      <p>Contenido de la bandeja de salida...</p>
+                    </div>
+                    <div v-else-if="link === 'trash'">
+                      <!-- Contenido de la papelera -->
+                      <p>Contenido de la papelera...</p>
+                    </div>
+                    <!-- Agrega más contenido según sea necesario -->
+                  </div>
+                </q-card-section>
+              </q-card>
             </div>
-            <!-- Contenido dinámico a la derecha -->
-            <div class="q-pa-md">
-              <div v-if="link === 'inbox'">
-                <!-- Contenido de la bandeja de entrada -->
-                <p>Contenido de la bandeja de entrada...</p>
-              </div>
-              <div v-else-if="link === 'outbox'">
-                <!-- Contenido de la bandeja de salida -->
-                <p>Contenido de la bandeja de salida...</p>
-              </div>
-              <div v-else-if="link === 'trash'">
-                <!-- Contenido de la papelera -->
-                <p>Contenido de la papelera...</p>
-              </div>
-              <!-- Agrega más contenido según sea necesario -->
-            </div>
-            </q-card-section>
           </q-card>
         </div>
       </div>
-    </div>
-    <div class="row q-col-gutter-sm">
-      <div class="col-6 col-md-3"></div>
-      <div class="col-6 col-md-6 flex flex-center"></div>
-      <div class="col-6 col-md-3 items-lg-end"></div>
-    </div>
+      <div class="row q-col-gutter-sm">
+        <div class="col-6 col-md-3"></div>
+        <div class="col-6 col-md-6 flex flex-center"></div>
+        <div class="col-6 col-md-3 items-lg-end"></div>
+      </div>
 
-    <!-- Componente de modales -->
-    <modales-entidad
-      :comportamiento="modales"
-      :fullWidth="false"
-      :maximized="false"
-      :persistente="false"
-    />
+      <!-- Componente de modales -->
+      <modales-entidad :comportamiento="modales" :fullWidth="false" :maximized="false" :persistente="false" />
+    </div>
   </q-page>
 </template>
 
-<style>
-.custom-caption {
-  text-align: center;
-  padding: 12px;
-  color: white;
-  background-color: rgba(0, 0, 0, 0.3);
-}
+  <style>
+  .custom-caption {
+    text-align: center;
+    padding: 12px;
+    color: white;
+    background-color: rgba(0, 0, 0, 0.3);
+  }
 
-.banner-transparent {
-  background: rgba(0, 0, 0, 0) !important;
-  margin-top: 8%;
-  border: none !important;
-}
-.margen-pequeno{
-  padding-left: 4%;
-  padding-right: 4%;
-}
+  .banner-transparent {
+    background: rgba(0, 0, 0, 0) !important;
+    margin-top: 8%;
+    border: none !important;
+  }
+
+  .margen-pequeno {
+    padding-left: 4%;
+    padding-right: 4%;
+  }
 </style>
 
-<script src="./TableroPersonalPage.ts"></script>
+  <script src="./TableroPersonalPage.ts"></script>
