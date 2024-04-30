@@ -8,6 +8,7 @@
     :tabDefecto="tabDefecto"
     :filtrar="filtrarBitacoras"
     :accion1="btnMarcarFinalizada"
+    :accion2="btnImprimir"
   >
     <template #formulario>
       <q-form @submit.prevent>

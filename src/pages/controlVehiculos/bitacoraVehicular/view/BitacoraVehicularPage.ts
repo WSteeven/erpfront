@@ -18,7 +18,7 @@ import { acciones, accionesTabla, convertir_fecha, maskFecha } from 'config/util
 import { useFiltrosListadosSelects } from 'shared/filtrosListadosGenerales';
 import { useAuthenticationStore } from 'stores/authentication';
 import { AsignacionVehiculoController } from 'pages/controlVehiculos/asignarVehiculos/infraestructure/AsignacionVehiculoController';
-import { encontrarUltimoIdListado, notificarErrores, obtenerFechaActual, } from 'shared/utils';
+import { encontrarUltimoIdListado, imprimirArchivo, notificarErrores, obtenerFechaActual, } from 'shared/utils';
 import { useNotificaciones } from 'shared/notificaciones';
 import { CustomActionTable } from 'components/tables/domain/CustomActionTable';
 import { TareaController } from 'pages/gestionTrabajos/tareas/infraestructure/TareaController';
@@ -226,6 +226,20 @@ export default defineComponent({
                 cargando.desactivar()
             }
         }
+        async function imprimirPdf(id: number) {
+            try {
+                cargando.activar()
+                const axios = AxiosHttpRepository.getInstance()
+                const url = apiConfig.URL_BASE + '/' + axios.getEndpoint(endpoints.bitacoras_vehiculos) + '/imprimir/' + id
+                const filename = 'bitacora_vehicular_' + id + '_' + Date.now()
+                await imprimirArchivo(url, 'GET', 'blob', 'pdf', filename)
+                console.log('Bitácora vehicular con éxito')
+            } catch (e) {
+                notificarAdvertencia('Error al imprimir la bitácora. ' + e)
+            } finally {
+                cargando.desactivar()
+            }
+        }
 
         /****************************************
          * Botones de tabla
@@ -253,6 +267,16 @@ export default defineComponent({
                 eliminar({ posicion })
             },
             visible: () => true
+        }
+
+        const btnImprimir: CustomActionTable = {
+            titulo: 'Imprimir',
+            icono: 'bi-printer',
+            color: 'secondary',
+            accion: async ({ entidad, posicion }) => {
+                imprimirPdf(entidad.id)
+            },
+            visible: () => tabDefecto.value === '1'
         }
 
         const btnMarcarFinalizada: CustomActionTable = {
@@ -298,6 +322,7 @@ export default defineComponent({
             btnAgregarActividad,
             btnMarcarFinalizada,
             btnEliminar,
+            btnImprimir,
 
 
 
