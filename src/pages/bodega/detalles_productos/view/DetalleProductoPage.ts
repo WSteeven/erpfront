@@ -255,6 +255,14 @@ export default defineComponent({
       confirmar('¿Está seguro de continuar?', () => detalle.seriales.splice(posicion, 1))
     }
 
+    function checkGenerico(val, evt) {
+      if (!val) {
+        detalle.tiene_serial = false
+        detalle.varios_items = false
+        detalle.tiene_adicionales = false
+      }
+    }
+
     /**************************************************************
      * Botones de tablas
      **************************************************************/
@@ -471,6 +479,9 @@ export default defineComponent({
 
       botonDesactivarDetalle,
       botonActivarDetalle,
+
+      //funciones
+      checkGenerico,
     }
   }
 })
