@@ -57,6 +57,7 @@
             ></q-toggle>
           </div>
           <!-- Solicitante -->
+
           <div
             v-if="
               (accion == acciones.nuevo &&
