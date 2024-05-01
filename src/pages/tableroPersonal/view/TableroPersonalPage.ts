@@ -1,7 +1,7 @@
 // Dependencias
 import { useAuthenticationStore } from 'stores/authentication'
 import loginJson from 'src/assets/lottie/welcome.json'
-import { Ref, computed, defineComponent, reactive, ref } from 'vue'
+import { Ref, computed, defineComponent, onMounted, reactive, ref } from 'vue'
 import { date } from 'quasar'
 
 // Componentes
@@ -42,7 +42,7 @@ export default defineComponent({
     const autoplay = ref(true)
     const date = ref(timeStamp)
 
-    var showBanner = false
+    const showBanner = ref(false)
 
     const filtrosTareas = ['Recientes', 'sdsd']
     const filtroTarea = ref('Recientes')
@@ -71,11 +71,11 @@ export default defineComponent({
     const modales = new ComportamientoModalesTableroPersonal()
 
     const eventos = [
-      '2024/04/01',
-      '2024/04/05',
-      '2024/04/06',
-      '2024/04/09',
-      '2024/04/23',
+      '2024/05/01',
+      '2024/05/05',
+      '2024/05/06',
+      '2024/05/09',
+      '2024/05/23',
     ]
     const data = ref([
       {
@@ -118,12 +118,15 @@ export default defineComponent({
     })
 
 
-    function mounted() {
+
+
+    onMounted(() => {
+      console.log('esta capturando la funcion')
       // Mostrar el banner después de 20 segundos (20000 milisegundos)
       setTimeout(() => {
-        showBanner = true;
-      }, 20000);
-    }
+        showBanner.value = true;
+      }, 5000);
+    })
 
     function verSubtarea() {
       // modales.abrirModalEntidad('SubtareaAsignadaPage')
@@ -207,7 +210,8 @@ export default defineComponent({
       departamentoSeleccionado,
       departamentos,
       empleados,
-      verEvento
+      verEvento,
+      showBanner,
 
     }
   },

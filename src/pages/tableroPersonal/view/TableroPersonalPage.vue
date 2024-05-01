@@ -1,6 +1,6 @@
 <template>
   <q-page padding>
-    <q-banner inline-actions class="text-white bg-orange">
+    <q-banner v-if="showBanner" inline-actions class="text-white bg-orange">
       Noticia de Emergencia o Flash Informativo (Aqui iria la breve descripcion de la
       noticia o el suceso)
       <template v-slot:action>
@@ -86,6 +86,7 @@
                 {{ store.nombreUsuario }}
               <q-badge color="primary">{{ store.user.email}}</q-badge>
               <q-badge rounded color="orange">{{ store.user.cargo}} </q-badge>
+              <q-badge rounded color="orange">{{ store.user.fecha}} </q-badge>
               </q-card-section>
             </div>
           </div>
