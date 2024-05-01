@@ -1,7 +1,7 @@
 // Dependencias
 import { useAuthenticationStore } from 'stores/authentication'
 import loginJson from 'src/assets/lottie/welcome.json'
-import { Ref, computed, defineComponent, reactive, ref } from 'vue'
+import { Ref, computed, defineComponent, onMounted, reactive, ref } from 'vue'
 import { date } from 'quasar'
 
 // Componentes
@@ -17,6 +17,10 @@ import { TableroPersonalController } from '../infraestructure/TableroPersonalCon
 import { TableroPersonal } from '../domain/TableroPersonal'
 import { useNotificacionStore } from 'stores/notificacion'
 import { useNotificaciones } from 'shared/notificaciones'
+import { Departamento } from 'pages/recursosHumanos/departamentos/domain/Departamento'
+import { DepartamentoController } from 'pages/recursosHumanos/departamentos/infraestructure/DepartamentoController'
+import { Empleado } from 'pages/recursosHumanos/empleados/domain/Empleado'
+import { EmpleadoController } from 'pages/recursosHumanos/empleados/infraestructure/EmpleadoController'
 
 
 
@@ -31,9 +35,8 @@ export default defineComponent({
     const timeStamp = Date.now()
 
     const departamentoSeleccionado = ref('')
-    const departamentos = ref(['Departamento 1', 'Departamento 2', 'Departamento 3'])
-    const empleados: Ref<String[]> = ref([''])
-
+    const empleados: Ref<Empleado []> = ref([])
+    const departamentos : Ref<Departamento []> = ref([])
     const store = useAuthenticationStore()
     const controller = new TableroPersonalController()
     const tablero = reactive(new TableroPersonal())
@@ -42,7 +45,8 @@ export default defineComponent({
     const autoplay = ref(true)
     const date = ref(timeStamp)
 
-    var showBanner = false
+    const showBanner = ref(false)
+    const showDepartamentos = ref(false)
 
     const filtrosTareas = ['Recientes', 'sdsd']
     const filtroTarea = ref('Recientes')
@@ -117,13 +121,20 @@ export default defineComponent({
       return data.value.slice(start, end)
     })
 
-
-    function mounted() {
-      // Mostrar el banner después de 20 segundos (20000 milisegundos)
-      setTimeout(() => {
-        showBanner = true;
-      }, 20000);
+    async function consultarEmpleadoDepartamento(departamento_id:number){
+      const empleadoController = new EmpleadoController()
+      empleados.value = (await empleadoController.listar({departamento_id:departamento_id,estado:1})).result
     }
+
+    onMounted(async() => {
+      const departamentoController  = new DepartamentoController()
+      departamentos.value =  (await departamentoController.listar({activo:1})).result
+      showDepartamentos.value= true
+      setTimeout(() => {
+        showBanner.value = true;
+      }, 10000);
+    }),
+
 
     function verSubtarea() {
       // modales.abrirModalEntidad('SubtareaAsignadaPage')
@@ -165,21 +176,6 @@ export default defineComponent({
       })
     }
 
-    function MostrarEmpleados() {
-      switch (departamentoSeleccionado.value) {
-        case 'Departamento 1':
-          empleados.value = ['Empleado 1.1', 'Empleado 1.2', 'Empleado 1.3']
-          break;
-        case 'Departamento 2':
-          empleados.value = ['Empleado 2.1', 'Empleado 2.2', 'Empleado 2.3']
-          break;
-        case 'Departamento 3':
-          empleados.value = ['Empleado 3.1', 'Empleado 3.2', 'Empleado 3.3']
-          break;
-        default:
-          empleados.value = []
-      }
-    }
 
     return {
       tablero,
@@ -189,7 +185,7 @@ export default defineComponent({
       filtrosTareas,
       filtroTarea,
       modales,
-      verSubtarea,
+      //verSubtarea,
       timeStamp,
       subtareasPorAsignar,
       slide,
@@ -203,11 +199,12 @@ export default defineComponent({
       currentPage,
       perPage,
       displayedCards,
-      MostrarEmpleados,
       departamentoSeleccionado,
       departamentos,
       empleados,
-      verEvento
+      showDepartamentos,
+      verEvento,
+      consultarEmpleadoDepartamento
 
     }
   },

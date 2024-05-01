@@ -84,15 +84,15 @@
             <div class="col">
               <q-card-section class="text-left">
                 {{ store.nombreUsuario }}
-              <q-badge color="primary">{{ store.user.email}}</q-badge>
-              <q-badge rounded color="orange">{{ store.user.cargo}} </q-badge>
+                <q-badge color="primary">{{ store.user.email }}</q-badge>
+                <q-badge rounded color="orange">{{ store.user.cargo }} </q-badge>
               </q-card-section>
             </div>
           </div>
         </q-card>
         <q-separator />
         <div class="flex flex-center">
-          <div class="row q-col-gutter-lm q-mt-md q-mx-md ">
+          <div class="row q-col-gutter-lm q-mt-md q-mx-md">
             <div class="col-6">
               <q-card flat class="my-card rounded-borders banner-transparent">
                 <q-img
@@ -157,6 +157,8 @@
           @update:model-value="verEvento(date)"
           :event-color="(date) => (date[9] % 2 === 0 ? 'teal' : 'orange')"
           minimal
+          style="width: max-content;"
+
         />
         <q-card class="solicitudes q-my-md">
           <q-card class="solicitudes q-my-md">
@@ -212,30 +214,34 @@
         </q-card>
       </div>
       <div class="col-6 col-md-3 items-lg-end">
-        <q-card class="q-pa-md">
+        <q-card class="q-pa-md" v-if="showDepartamentos">
           <q-card-section>
-            <div class="row">
-              <!-- Columna de departamentos -->
-              <div class="col-md-6">
-                <q-select
-                  v-model="departamentoSeleccionado"
-                  label="Departamentos"
-                  filled
-                  emit-value
-                  map-options
-                  :options="departamentos"
-                  @update:model-value="MostrarEmpleados()"
-                />
-              </div>
-              <!-- Columna de empleados -->
-              <div class="col-md-6">
-                <q-list>
-                  <q-item v-for="(empleado, index) in empleados" :key="index">
-                    <q-item-section>{{ empleado }}</q-item-section>
-                  </q-item>
-                </q-list>
-              </div>
-            </div>
+            <q-list bordered class="rounded-borders">
+              <q-expansion-item
+                v-for="(departamento, index) in departamentos"
+                :key="index"
+                expand-separator
+                :label="departamento.nombre"
+                group="evento"
+                dense
+                :caption="departamento.responsable"
+                @click="consultarEmpleadoDepartamento(departamento.id)"
+              >
+                <q-card           v-for="(empleado, index) in empleados"
+                :key="index">
+                  <div class="row q-col-gutter-sm q-my-xs q-mx-md">
+                    <div class="col-6 col-md-2">
+                  <q-avatar>
+                    <img :src="empleado.foto_url" />
+                  </q-avatar>
+                    </div>
+                    <div class="col-6 col-md-10 q-my-md margen-pequeno">
+                      <p class="margen-pequeno">{{ empleado.nombres+' '+empleado.apellidos }}</p>
+                    </div>
+                  </div>
+                </q-card>
+              </q-expansion-item>
+            </q-list>
           </q-card-section>
         </q-card>
       </div>
@@ -269,7 +275,7 @@
   margin-top: 8%;
   border: none !important;
 }
-.margen-pequeno{
+.margen-pequeno {
   padding-left: 4%;
   padding-right: 4%;
 }
