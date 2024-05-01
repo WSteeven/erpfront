@@ -42,7 +42,7 @@ export default defineComponent({
     const autoplay = ref(true)
     const date = ref(timeStamp)
 
-    var showBanner=false
+    var showBanner = false
 
     const filtrosTareas = ['Recientes', 'sdsd']
     const filtroTarea = ref('Recientes')
@@ -130,9 +130,9 @@ export default defineComponent({
     }
 
 
-  function openWhatsApp(numero) {
+    function openWhatsApp(numero) {
       window.location.href = `https://wa.me/${numero}`;
-  }
+    }
 
     async function obtenerSubtareasPendientesAsignar() {
       const filtros = {
@@ -207,6 +207,7 @@ export default defineComponent({
       departamentoSeleccionado,
       departamentos,
       empleados,
+      verEvento
 
     }
   },
