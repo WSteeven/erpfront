@@ -32,6 +32,7 @@ export function useOrquestadorSelectorProductos(entidad: PreingresoMaterial, end
     const limpiar = () => singleSelector.limpiar()
 
     const seleccionar = (items: Producto[]) => {
+        console.log(items)
         let ids: any = []
         ids = entidad.listadoProductos.map((entidad: Producto) => entidad.id)
         items.forEach((item: any) => {

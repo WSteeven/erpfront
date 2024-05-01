@@ -94,4 +94,20 @@ export const configuracionColumnasItemPreingreso: ColumnConfig<ItemPreingresoMat
         visible: false,
         hint: 'Opcional',
     },
+    {
+        name: 'nombre_alternativo',
+        field: 'nombre_alternativo',
+        label: 'Nombre alternativo',
+        align: 'left',
+        editable: true,
+        visible: false,
+        hint: 'Opcional, llena este campo solo en caso de que el ítem sea genérico',
+    },
+    {
+        name: 'es_generico',
+        field: 'es_generico',
+        label: 'es_generico',
+        editable: false,
+        visible: false,
+    },
 ]

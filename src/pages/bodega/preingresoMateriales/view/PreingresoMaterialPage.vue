@@ -478,6 +478,7 @@
               </template>
             </gestor-archivos>
           </div>
+          {{ preingreso.listadoProductos }}
           <!-- Configuracion para seleccionar productos -->
           <!-- Selector de productos -->
           <div class="col-12 col-md-12">
@@ -561,8 +562,8 @@
               :altoFijo="false"
               :accion1="btnVerFotografia"
               :accion2="btnEliminarFila"
+              @guardarFila="(fila) => guardarFilaEditada(fila)"
             >
-              <!-- @guardarFila="(fila) => guardarFilaEditada(fila)" -->
               <!-- :accion1Header="btnAddRow" -->
             </essential-popup-editable-table>
           </div>

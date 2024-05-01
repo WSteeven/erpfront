@@ -367,6 +367,12 @@ export default defineComponent({
       cargando.desactivar()
     }
 
+    function guardarFilaEditada(fila) {
+      console.log(fila)
+      const indice = preingreso.listadoProductos.findIndex((item) => item.id === fila.id)
+      preingreso.listadoProductos[indice]['descripcion'] = preingreso.listadoProductos[indice]['es_generico'] && preingreso.listadoProductos[indice]['nombre_alternativo'].length > 5 ? fila.nombre_alternativo : preingreso.listadoProductos[indice]['descripcion']
+    }
+
     /*******************************************************************************************
      * Botones de tabla
      ******************************************************************************************/
@@ -489,6 +495,7 @@ export default defineComponent({
         })
       },
 
+      guardarFilaEditada,
     }
   }
 })

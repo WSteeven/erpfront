@@ -13,6 +13,8 @@ export class ItemPreingresoMaterial extends EntidadAuditable {
     punta_final: number | null
     fotografia: string | null
     condicion: string | null
+    nombre_alternativo: string | null
+    es_generico: boolean
 
     constructor() {
         super()
@@ -28,6 +30,9 @@ export class ItemPreingresoMaterial extends EntidadAuditable {
         this.punta_inicial = null
         this.fotografia = null
         this.condicion = null
+
+        this.nombre_alternativo = null
+        this.es_generico = false
 
     }
 }
