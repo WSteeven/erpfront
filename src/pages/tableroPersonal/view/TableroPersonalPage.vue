@@ -232,7 +232,7 @@
                   <div class="row q-col-gutter-sm q-my-xs q-mx-md">
                     <div class="col-6 col-md-2">
                   <q-avatar>
-                    <img :src="empleado.foto_url" />
+                    <img  :src="empleado.foto_url == null?`https://ui-avatars.com/api/?name=${$sanitize(empleado.nombres.substr(0, 1))}${empleado.apellidos.substr(0, 1)}&bold=true&background=0879dc28&color=0879dc`: empleado.foto_url" />
                   </q-avatar>
                     </div>
                     <div class="col-6 col-md-10 q-my-md margen-pequeno">

@@ -185,7 +185,6 @@ export default defineComponent({
       filtrosTareas,
       filtroTarea,
       modales,
-      //verSubtarea,
       timeStamp,
       subtareasPorAsignar,
       slide,
