@@ -57,7 +57,7 @@ export const useBotonesTablaTarea = (mixin: ContenedorSimpleMixin<Tarea>) => {
                 filaFinalizar.novedad = novedad
 
                 if (entidad.cliente_id === clientes.NEDETEL) mostrarSolicitarImagen.value = true
-                else imagenSubida()
+                else imagenSubida
               },
             }
 
@@ -78,13 +78,19 @@ export const useBotonesTablaTarea = (mixin: ContenedorSimpleMixin<Tarea>) => {
             delete (filaFinalizar as any).codigo_tarea_cliente
 
             if (entidad.cliente_id === clientes.NEDETEL) mostrarSolicitarImagen.value = true
-            else imagenSubida()
+            else imagenSubida
           },
         }
 
         prompt(data)
       }
     }
+  }
+
+  function notificarTransferenciaMaterialTareaAStock(accion: () => void) {
+    confirmar('Los materiales serán transferidos automáticamente al stock personal de cada empleado responsable. ¿Desea continuar?', async () => {
+      // accion()
+    })
   }
 
   const btnVerImagenInforme: CustomActionTable = {
@@ -117,7 +123,8 @@ export const useBotonesTablaTarea = (mixin: ContenedorSimpleMixin<Tarea>) => {
 
   // Funcion que finaliza la tarea ya sea directamente o luego de subir la imagen solicitada
   function imagenSubida(imagen?) {
-    confirmar('¿Está seguro de finalizar la tarea?', async () => {
+    
+    confirmar('Los materiales serán transferidos automáticamente al stock personal de cada empleado responsable. ¿Desea finalizar?', async () => {
       const posicion = filaFinalizar.posicion
       const id = filaFinalizar.id
 
