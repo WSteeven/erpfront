@@ -40,7 +40,10 @@ export const endpoints = {
   cantones: new Endpoint('cantones'),
   parroquias: new Endpoint('parroquias'),
 
-  // Modulo de RR HH
+
+   /********************
+   * Modulo de  RR HH
+   *********************/
   cargos: new Endpoint('cargos'),
 
   motivo_permiso_empleado: new Endpoint(
@@ -176,7 +179,10 @@ export const endpoints = {
   alimentacion: new Endpoint('recursos-humanos/alimentacion'),
   detalle_alimentacion: new Endpoint('recursos-humanos/detalle-alimentacion'),
   finalizar_asignacion_alimentacion: new Endpoint('recursos-humanos/finalizar-asignacion-alimentacion'),
-
+   /********************
+   * Modulo de  Seleccion y contratacion
+   *********************/
+   solicitud_puesto_empleo: new Endpoint('recursos-humanos/solicitud-puesto-empleo'),
 
   //Modulo de Vehiculos
   combustibles: new Endpoint('vehiculos/combustibles'),

@@ -565,6 +565,18 @@ export const useMenuStore = defineStore('menu', () => {
           can: store.can('puede.acceder.grupos'),
         },
         {
+          title: 'Seleccion y Contratacion',
+          icon: 'bi-person-lines-fill',
+          can: true,
+          children: [
+              {
+                title: 'Solicitud de Puesto de Empleo',
+                link: 'solicitud-puesto-empleo',
+                icon: 'bi-app',
+                can: store.can('puede.acceder.solicitud_puesto_empleo'),
+              },
+          ]},
+        {
           title: 'Nominas y prestamos',
           icon: 'fa-solid fa-people-line',
           can: true,
