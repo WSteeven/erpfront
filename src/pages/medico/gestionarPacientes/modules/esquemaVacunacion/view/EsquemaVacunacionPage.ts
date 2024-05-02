@@ -1,4 +1,5 @@
 // Dependencias
+import { configuracionColumnasEsquemaVacunacionDetallado } from 'medico/gestionarPacientes/domain/configuracionColumnasEsquemaVacunacionDetallado'
 import { useFiltrosListadosSelects } from 'shared/filtrosListadosGenerales'
 import { computed, defineComponent, ref, watch, watchEffect } from 'vue'
 import { useMedicoStore } from 'stores/medico'
@@ -13,10 +14,7 @@ import EssentialTable from 'components/tables/view/EssentialTable.vue'
 import { ContenedorSimpleMixin } from 'shared/contenedor/modules/simple/application/ContenedorSimpleMixin'
 import { TipoVacunaController } from '../../tiposVacunas/infraestructure/TipoVacunaController'
 import { EsquemaVacunaController } from '../infraestructure/EsquemaVacunaController'
-import { TipoVacuna } from '../../tiposVacunas/domain/TipoVacuna'
 import { EsquemaVacuna } from '../domain/EsquemaVacuna'
-import { configuracionColumnasEsquemaVacunacion } from 'pages/medico/gestionarPacientes/domain/configuracionColumnasEsquemaVacunacion'
-import { configuracionColumnasEsquemaVacunacionDetallado } from 'pages/medico/gestionarPacientes/domain/configuracionColumnasEsquemaVacunacionDetallado'
 
 export default defineComponent({
   name: 'esquemas_vacunas',
@@ -55,6 +53,7 @@ export default defineComponent({
     const idEsquema = ref()
     const archivoSubido = ref(false)
     const esquemaVacunacion = ref([])
+    const mostrarEsquema = computed(() => listado.value.length && accion.value === acciones.consultar)
 
     /************
      * Funciones
@@ -89,6 +88,7 @@ export default defineComponent({
      * Hooks
      ********/
     onReestablecer(() => {
+      if(mostrarEsquema) emit('cerrar-modal')
       refArchivo.value.limpiarListado()
       const stop = watch(archivoSubido, () => {
         stop()
@@ -97,9 +97,8 @@ export default defineComponent({
     })
 
     onGuardado(async (id, responseData) => {
-      console.log('guardado...')
       idEsquema.value = id
-      
+
       setTimeout(async () => {
         await subirArchivos()
       }, 1)
@@ -171,9 +170,9 @@ export default defineComponent({
       acciones,
       subirArchivos,
       maskFecha,
-      mostrarEsquema: computed(() => listado.value.length && accion.value === acciones.consultar),
       configuracionColumnasEsquemaVacunacionDetallado,
       // esquemaVacunacion,
+      mostrarEsquema,
     }
   }
 })

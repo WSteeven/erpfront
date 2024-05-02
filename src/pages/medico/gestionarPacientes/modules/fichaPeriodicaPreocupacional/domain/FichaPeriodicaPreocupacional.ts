@@ -1,8 +1,6 @@
 import { ResultadoExamenPreocupacional } from './ResultadoExamenPreocupacional'
-import { DescripcionAntecedenteTrabajo } from './DescripcionAntecedenteTrabajo'
 import { AntecedenteGinecoObstetrico } from './AntecedenteGinecoObstetrico'
 import { RevisionActualOrganoSistema } from './RevisionActualOrganoSistema'
-import { EntidadAuditable } from 'shared/entidad/domain/entidadAuditable'
 import { AntecedenteTrabajoAnterior } from './AntecedenteTrabajoAnterior'
 import { ResultadoHabitoToxico } from './ResultadoHabitoToxico'
 import { FrPuestoTrabajoActual } from './FrPuestoTrabajoActual'
@@ -11,12 +9,14 @@ import { AntecedentePersonal } from './AntecedentePersonal'
 import { MedicacionHabitual } from './MedicacionHabitual'
 import { ActividadFisica } from './ActividadFisica'
 import { FichaMedica } from '../../seccionesFichas/domain/FichaMedica'
+import { AptitudMedica } from '../../seccionesFichas/aptitudMedicaTrabajo/domain/AptitudMedica'
 
 export class FichaPeriodicaPreocupacional extends FichaMedica {
   numero_archivo: number | null
   registro_empleado_examen: number | null
   religion: number | null
   orientacion_sexual: number | null
+  cargo: number | null
   identidad_genero: number | null
   lateralidad: string | null
   motivo_consulta: string | null
@@ -32,8 +32,10 @@ export class FichaPeriodicaPreocupacional extends FichaMedica {
   enfermedad_actual: string | null
   revisiones_actuales_organos_sistemas: RevisionActualOrganoSistema[]
   antecedentes_clinicos_quirurgicos: string | null
-  resultados_examenes_preocupacionales: ResultadoExamenPreocupacional[]
+  examenes_realizados: ResultadoExamenPreocupacional[]
+  // resultados_examenes_preocupacionales: ResultadoExamenPreocupacional[]
   recomendaciones_tratamiento: string | null
+  aptitud_medica: AptitudMedica
 
   constructor() {
     super()
@@ -42,6 +44,7 @@ export class FichaPeriodicaPreocupacional extends FichaMedica {
     this.religion = null
     this.orientacion_sexual = null
     this.identidad_genero = null
+    this.cargo = null
     this.lateralidad = null
     this.motivo_consulta = null
     this.antecedente_gineco_obstetrico = new AntecedenteGinecoObstetrico()
@@ -56,7 +59,8 @@ export class FichaPeriodicaPreocupacional extends FichaMedica {
     this.enfermedad_actual = null
     this.revisiones_actuales_organos_sistemas = []
     this.antecedentes_clinicos_quirurgicos = null
-    this.resultados_examenes_preocupacionales = []
+    this.examenes_realizados = []
     this.recomendaciones_tratamiento = null
+    this.aptitud_medica = new AptitudMedica()
   }
 }

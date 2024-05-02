@@ -6,7 +6,7 @@
     :permitir-editar="itemsExamenes.length"
   >
     <template #formulario>
-      <div class="row bg-desenfoque rounded q-px-md">
+      <div v-if="itemsExamenes.length" class="row bg-desenfoque rounded q-px-md">
         <!-- Manejo de archivos -->
         <!-- <div v-if="itemsExamenes.length" class="col-12 q-mb-md">
           <gestor-archivos
@@ -73,6 +73,7 @@
           ></q-input>
         </div> -->
       </div>
+      <div v-else>Aún no tienes exámenes médicos solicitados.</div>
     </template>
 
     <template #custom-buttons>

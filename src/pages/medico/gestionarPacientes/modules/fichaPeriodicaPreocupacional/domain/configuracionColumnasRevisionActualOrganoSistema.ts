@@ -4,8 +4,8 @@ import { RevisionActualOrganoSistema } from './RevisionActualOrganoSistema'
 
 export const configuracionColumnasRevisionActualOrganoSistema: ColumnConfig<RevisionActualOrganoSistema>[] = [
   {
-    name: 'organo_sistema',
-    field: 'organo_sistema',
+    name: 'organo',
+    field: 'organo',
     label: 'Organo sistema',
     align: 'left',
     sortable: true,

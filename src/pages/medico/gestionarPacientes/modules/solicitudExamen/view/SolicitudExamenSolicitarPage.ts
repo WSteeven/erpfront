@@ -30,7 +30,7 @@ export default defineComponent({
      *********/
     const medicoStore = useMedicoStore()
     const empleado = medicoStore.empleado
-    const canton = ref(empleado.canton)
+    const canton = ref(empleado?.canton)
 
     /************
      * Variables
@@ -106,7 +106,7 @@ export default defineComponent({
      * Init
      *******/
     solicitudExamen.hydrate(medicoStore.solicitudExamen)
-    solicitudExamen.registro_empleado_examen = medicoStore.idRegistroEmpleadoExamen
+    solicitudExamen.registro_empleado_examen = medicoStore.idRegistroEmpleadoExamen ?? null
     accion.value = medicoStore.accion
 
     return {

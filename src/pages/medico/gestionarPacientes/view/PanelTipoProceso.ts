@@ -1,27 +1,27 @@
 // Dependencias
 import { configuracionColumnasSolicitudExamen } from '../../solicitudesExamenes/domain/configuracionColumnasSolicitudExamen'
 import { configuracionColumnasExamenes } from '../domain/configuracionColumnasExamenes'
-import { CustomActionPrompt } from 'components/tables/domain/CustomActionPrompt'
-import { isAxiosError, notificarMensajesError } from 'shared/utils'
 import { estadosSolicitudesExamenes, tiposProcesosExamenes } from 'config/utils/medico'
-import { computed, defineComponent, ref, watch } from 'vue'
+import { useBotonesSolicitudExamen } from '../application/UseBotonesSolicitudExamen'
+import { CustomActionPrompt } from 'components/tables/domain/CustomActionPrompt'
+import { EntidadAuditable } from 'shared/entidad/domain/entidadAuditable'
+import { isAxiosError, notificarMensajesError } from 'shared/utils'
 import { useNotificaciones } from 'shared/notificaciones'
 import { useExamenes } from '../application/UseExamenes'
+import { computed, defineComponent, ref, } from 'vue'
+import { useMedicoStore } from 'stores/medico'
+import { accionesTabla } from 'config/utils'
 
 // Componentes
 import EssentialTable from 'components/tables/view/EssentialTable.vue'
 import ModalesEntidad from 'components/modales/view/ModalEntidad.vue'
 
 // Logica y controladores
-import { Empleado } from 'recursosHumanos/empleados/domain/Empleado'
-import { accionesTabla } from 'config/utils'
-import { useBotonesSolicitudExamen } from '../application/UseBotonesSolicitudExamen'
-import { Examen } from 'pages/medico/examenes/domain/Examen'
-import { useMedicoStore } from 'stores/medico'
-import { ComportamientoModalesGestionPaciente } from '../application/ComportamientoModalesGestionPaciente'
 import { ContenedorSimpleMixin } from 'shared/contenedor/modules/simple/application/ContenedorSimpleMixin'
-import { EntidadAuditable } from 'shared/entidad/domain/entidadAuditable'
+import { ComportamientoModalesGestionPaciente } from '../application/ComportamientoModalesGestionPaciente'
 import { RegistroEmpleadoExamen } from 'pages/medico/examenes/domain/RegistroEmpleadoExamen'
+import { Empleado } from 'recursosHumanos/empleados/domain/Empleado'
+import { Examen } from 'pages/medico/examenes/domain/Examen'
 
 export default defineComponent({
   components: {
@@ -60,8 +60,8 @@ export default defineComponent({
       switch (tabEstadoExamen.value) {
         case estadosSolicitudesExamenes.PENDIENTE_SOLICITAR.value:
           return (examenes.value.length * 48 + 420) + 'px'
-        case estadosSolicitudesExamenes.SOLICITADO.value || estadosSolicitudesExamenes.APROBADO_POR_COMPRAS.value:
-          return (solicitudesExamenes.value.length * 48 + 420) + 'px'
+        case estadosSolicitudesExamenes.SOLICITADO.value:
+          return (solicitudesExamenes.value.length * 48 + 720) + 'px'
       }
     })
 
@@ -145,8 +145,9 @@ export default defineComponent({
     const seleccionarRegistro = (registro: RegistroEmpleadoExamen) => {
       // Si las fichas ya fueron llenadas
       medicoStore.idRegistroEmpleadoExamen = registro.id ?? undefined
-      medicoStore.idFichaAptitud = registro.ficha_aptitud ?? undefined
-      medicoStore.idFichaRetiro = registro.ficha_retiro ?? undefined
+      medicoStore.idFichaAptitud = registro.ficha_aptitud
+      medicoStore.idFichaRetiro = registro.ficha_retiro
+      medicoStore.idFichaPreocupacional = registro.ficha_preocupacional
 
       tabRegistro.value = registro.id
       examenes.value = []
@@ -178,7 +179,7 @@ export default defineComponent({
     }
 
     const abrirFichaPeriodicaProcupacional = () => {
-      modales.abrirModalEntidad('FichaPeriodicaPreocupacionalPage')
+      modales.abrirModalEntidad('FichaPreocupacionalPage')
     }
 
     const abrirFichaRetiro = () => {
@@ -199,10 +200,13 @@ export default defineComponent({
       estadosSolicitudesExamenes,
       tipoSeleccion: computed(() => seleccionVariosExamen.value && tabEstadoExamen.value === estadosSolicitudesExamenes.PENDIENTE_SOLICITAR.value ? 'multiple' : 'none'),
       textoFichaAptitud: computed(() => medicoStore.idFichaAptitud ? 'Consultar ficha de aptitud' : 'Llenar ficha de aptitud'),
-      textoFichaPeriodicaPreocupacional: computed(() => medicoStore.idFichaPeriodicaPreocupacional ? 'Consultar ficha preocupacional' : 'Llenar ficha preocupacional'),
+      textoFichaPeriodicaPreocupacional: computed(() => medicoStore.idFichaPeriodicaPreocupacional ? 'Consultar ficha periódica' : 'Llenar ficha periódica'),
+      textoFichaPreocupacional: computed(() => medicoStore.idFichaPreocupacional ? 'Consultar ficha preocupacional' : 'Llenar ficha preocupacional'),
       textoFichaRetiro: computed(() => medicoStore.idFichaRetiro ? 'Consultar ficha retiro' : 'Llenar ficha retiro'),
       mostrarFichaPreocupacional: computed(() => props.tipoProceso === tiposProcesosExamenes.INGRESO),
       mostrarFichaRetiro: computed(() => props.tipoProceso === tiposProcesosExamenes.RETIRO),
+      mostrarResultadosExamenes: computed(() => tabEstadoExamen.value === estadosSolicitudesExamenes.SOLICITADO.value),
+      mostrarConsultaMedica: computed(() => tabEstadoExamen.value === estadosSolicitudesExamenes.SOLICITADO.value),
       // columnas
       configuracionColumnasExamenes,
       configuracionColumnasSolicitudExamen,

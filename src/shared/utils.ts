@@ -13,6 +13,7 @@ import { ServiceWorkerClass } from './notificacionesServiceWorker/ServiceWorkerC
 import { ItemProforma } from 'pages/comprasProveedores/proforma/domain/ItemProforma'
 import { pipeline } from 'stream'
 import { useAuthenticationStore } from 'stores/authentication'
+import { SelectOption } from 'components/tables/domain/SelectOption'
 
 const authenticationStore = useAuthenticationStore()
 const usuario = authenticationStore.user
@@ -47,7 +48,7 @@ export function descargarArchivo(
   data: any,
   titulo: string,
   formato: string,
-  tipo ='application'
+  tipo = 'application'
 ): void {
   const link = document.createElement('a')
   link.href = URL.createObjectURL(
@@ -718,8 +719,8 @@ export function filtrarEmpleadosPorRoles(empleados, roles) {
 export function filtarVisualizacionEmpleadosSaldos(empleados) {
   const filtrados =
     authenticationStore.esContabilidad ||
-    authenticationStore.esCoordinador ||
-    authenticationStore.esAdministrador
+      authenticationStore.esCoordinador ||
+      authenticationStore.esAdministrador
       ? empleados
       : empleados.filter((empleado) => empleado.jefe_id === usuario.id)
   return filtrados
@@ -737,4 +738,13 @@ export async function notificarErrores(err) {
   } else {
     console.log(axiosError)
   }
+}
+
+export const mapearOptionsSelect = (listadoOpciones: { id: number, nombre: string }[]): SelectOption[] => {
+  return listadoOpciones.map((opcion: { id: number, nombre: string }) => {
+    return {
+      label: opcion.nombre,
+      value: opcion.id,
+    }
+  })
 }

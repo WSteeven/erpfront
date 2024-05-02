@@ -19,9 +19,10 @@ export const useMedicoStore = defineStore('medico', () => {
   const tiposVacunasYaRealizadosPaciente: Ref<number[]> = ref([])
   const idTipoVacuna: Ref<number | undefined> = ref()
   // Fichas
-  const idFichaAptitud: Ref<number | undefined> = ref()
-  const idFichaPeriodicaPreocupacional: Ref<number | undefined> = ref()
-  const idFichaRetiro: Ref<number | undefined> = ref()
+  const idFichaAptitud: Ref<number | null> = ref(null)
+  const idFichaPeriodicaPreocupacional: Ref<number | null> = ref(null)
+  const idFichaPreocupacional: Ref<number | null> = ref(null)
+  const idFichaRetiro: Ref<number | null> = ref(null)
 
   return {
     examenSolicitado,
@@ -38,6 +39,7 @@ export const useMedicoStore = defineStore('medico', () => {
     // Fichas
     idFichaAptitud,
     idFichaPeriodicaPreocupacional,
+    idFichaPreocupacional,
     idFichaRetiro,
   }
 })

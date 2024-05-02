@@ -8,57 +8,116 @@
         default-opened
       >
         <div class="row q-col-gutter-x-sm q-pa-md">
-
-
-          <div class="col-12 col-md-6 q-mb-md">
-            <label class="q-mb-sm block">Religión:</label>
+          <div class="col-12 col-md-3 q-mb-md">
+            <label class="q-mb-md block">Religión:</label>
             <div class="q-gutter-sm">
-              <q-radio
-                v-for="religion in listadosAuxiliares.religiones"
-                :key="religion.nombre"
-                v-model="fichaPeriodica.religion"
-                :val="religion.id"
-                :label="`${religion.nombre}`"
+              <q-select
+                v-model="fichaPreocupacional.religion"
+                :options="mapearOptionsSelect(listadosAuxiliares.religiones)"
+                transition-show="jump-up"
+                transition-hide="jump-down"
                 :disable="disabled"
-              />
+                options-dense
+                dense
+                outlined
+                :input-debounce="0"
+                use-input
+                hint="Obligatorio"
+                :option-value="(v) => v.value"
+                :option-label="(v) => v.label"
+                emit-value
+                map-options
+                :error="!!v$.religion.$errors.length"
+                @blur="v$.religion.$touch"
+              >
+                <template v-slot:error>
+                  <div v-for="error of v$.religion.$errors" :key="error.$uid">
+                    <div>{{ error.$message }}</div>
+                  </div>
+                </template>
+              </q-select>
             </div>
           </div>
 
-          <div class="col-12 col-md-6 q-mb-md">
-            <label class="q-mb-sm block">Orientaciones sexuales:</label>
+          <div class="col-12 col-md-3 q-mb-md">
+            <label class="q-mb-sm block q-mb-md">Orientaciones sexuales:</label>
             <div class="q-gutter-sm">
-              <q-radio
-                v-for="orientacion in listadosAuxiliares.orientacionesSexuales"
-                :key="orientacion.nombre"
-                v-model="fichaPeriodica.orientacion_sexual"
-                :val="orientacion.id"
-                :label="`${orientacion.nombre}`"
+              <q-select
+                v-model="fichaPreocupacional.orientacion_sexual"
+                :options="
+                  mapearOptionsSelect(listadosAuxiliares.orientacionesSexuales)
+                "
+                transition-show="jump-up"
+                transition-hide="jump-down"
                 :disable="disabled"
-              />
+                options-dense
+                dense
+                outlined
+                :input-debounce="0"
+                use-input
+                hint="Obligatorio"
+                :option-value="(v) => v.value"
+                :option-label="(v) => v.label"
+                emit-value
+                map-options
+                :error="!!v$.orientacion_sexual.$errors.length"
+                @blur="v$.orientacion_sexual.$touch"
+              >
+                <template v-slot:error>
+                  <div
+                    v-for="error of v$.orientacion_sexual.$errors"
+                    :key="error.$uid"
+                  >
+                    <div>{{ error.$message }}</div>
+                  </div>
+                </template>
+              </q-select>
             </div>
           </div>
 
-          <div class="col-12 col-md-6 q-mb-md">
-            <label class="q-mb-sm block">Identidad género:</label>
+          <div class="col-12 col-md-3 q-mb-md">
+            <label class="q-mb-sm block q-mb-md">Identidad género:</label>
             <div class="q-gutter-sm">
-              <q-radio
-                v-for="identidad in listadosAuxiliares.identidadesGeneros"
-                :key="identidad.nombre"
-                v-model="fichaPeriodica.identidad_genero"
-                :val="identidad.id"
-                :label="`${identidad.nombre}`"
+              <q-select
+                v-model="fichaPreocupacional.identidad_genero"
+                :options="
+                  mapearOptionsSelect(listadosAuxiliares.identidadesGeneros)
+                "
+                transition-show="jump-up"
+                transition-hide="jump-down"
                 :disable="disabled"
-              />
+                options-dense
+                dense
+                outlined
+                :input-debounce="0"
+                use-input
+                hint="Obligatorio"
+                :option-value="(v) => v.value"
+                :option-label="(v) => v.label"
+                emit-value
+                map-options
+                :error="!!v$.identidad_genero.$errors.length"
+                @blur="v$.identidad_genero.$touch"
+              >
+                <template v-slot:error>
+                  <div
+                    v-for="error of v$.identidad_genero.$errors"
+                    :key="error.$uid"
+                  >
+                    <div>{{ error.$message }}</div>
+                  </div>
+                </template>
+              </q-select>
             </div>
           </div>
 
           <div class="col-12 col-md-3 q-mb-md">
             <label class="q-mb-sm block">Número de archivo</label>
             <q-input
-              v-model="fichaPeriodica.numero_archivo"
+              v-model="fichaPreocupacional.numero_archivo"
               placeholder="Obligatorio"
               type="number"
-              :disable="disabled"
+              disable
               outlined
               dense
             >
@@ -68,7 +127,7 @@
           <div class="col-12 col-md-3 col-sm-3">
             <label class="q-mb-sm block">Grupo sanguíneo</label>
             <q-select
-              v-model="fichaPeriodica.grupo_sanguineo"
+              v-model="fichaPreocupacional.grupo_sanguineo"
               :options="tipos_sangre"
               transition-show="jump-up"
               transition-hide="jump-down"
@@ -90,13 +149,51 @@
           <div class="col-12 col-md-3">
             <label class="q-mb-sm block">Lateralidad</label>
             <q-input
-              v-model="fichaPeriodica.lateralidad"
-              placeholder="Opcional"
+              v-model="fichaPreocupacional.lateralidad"
+              placeholder="Obligatorio"
               :disable="disabled"
               outlined
               dense
+              :error="!!v$.lateralidad.$errors.length"
+              @blur="v$.lateralidad.$touch"
             >
+              <template v-slot:error>
+                <div v-for="error of v$.lateralidad.$errors" :key="error.$uid">
+                  <div>{{ error.$message }}</div>
+                </div>
+              </template>
             </q-input>
+          </div>
+
+          <!--Cargo -->
+          <div class="col-12 col-md-3 col-sm-3">
+            <label class="q-mb-sm block">Cargo</label>
+            <q-select
+              v-model="fichaPreocupacional.cargo"
+              :options="cargos"
+              transition-show="jump-up"
+              transition-hide="jump-down"
+              :disable="disabled"
+              options-dense
+              dense
+              outlined
+              use-input
+              input-debounce="0"
+              @blur="v$.cargo.$touch"
+              @filter="filtrarCargos"
+              :error="!!v$.cargo.$errors.length"
+              error-message="Debes seleccionar un cargo"
+              :option-value="(v) => v.id"
+              :option-label="(v) => v.nombre"
+              emit-value
+              map-options
+            >
+              <template v-slot:error>
+                <div v-for="error of v$.cargo.$errors" :key="error.$uid">
+                  <div class="error-msg">{{ error.$message }}</div>
+                </div>
+              </template>
+            </q-select>
           </div>
         </div>
       </q-expansion-item>
@@ -111,7 +208,7 @@
           <div class="col-12">
             <label class="q-mb-sm block">Descripción</label>
             <q-input
-              v-model="fichaPeriodica.motivo_consulta"
+              v-model="fichaPreocupacional.motivo_consulta"
               placeholder="Anotar la causa del problema en la versión del informante"
               :disable="disabled"
               outlined
@@ -136,7 +233,8 @@
             <label class="q-mb-sm block">Descripción</label>
             <q-input
               v-model="
-                fichaPeriodica.antecedente_personal.antecedentes_quirurgicos
+                fichaPreocupacional.antecedente_personal
+                  .antecedentes_quirurgicos
               "
               placeholder="Anotar la causa del problema en la versión del informante"
               :disable="disabled"
@@ -157,7 +255,9 @@
           <div v-if="mostrarFemenino" class="col-12 col-md-3 q-mb-md">
             <label class="q-mb-sm block">Menarquía</label>
             <q-input
-              v-model="fichaPeriodica.antecedente_gineco_obstetrico.menarquia"
+              v-model="
+                fichaPreocupacional.antecedente_gineco_obstetrico.menarquia
+              "
               placeholder="Opcional"
               :disable="disabled"
               outlined
@@ -169,7 +269,7 @@
           <div v-if="mostrarFemenino" class="col-12 col-md-3 q-mb-md">
             <label class="q-mb-sm block">Ciclos</label>
             <q-input
-              v-model="fichaPeriodica.antecedente_gineco_obstetrico.ciclos"
+              v-model="fichaPreocupacional.antecedente_gineco_obstetrico.ciclos"
               placeholder="Opcional"
               type="number"
               :disable="disabled"
@@ -183,7 +283,7 @@
             <label class="q-mb-sm block">Fecha de última menstruación</label>
             <q-input
               v-model="
-                fichaPeriodica.antecedente_gineco_obstetrico
+                fichaPreocupacional.antecedente_gineco_obstetrico
                   .fecha_ultima_menstruacion
               "
               placeholder="Opcional"
@@ -198,7 +298,7 @@
           <div v-if="mostrarFemenino" class="col-12 col-md-3 q-mb-md">
             <label class="q-mb-sm block">Gestas</label>
             <q-input
-              v-model="fichaPeriodica.antecedente_gineco_obstetrico.gestas"
+              v-model="fichaPreocupacional.antecedente_gineco_obstetrico.gestas"
               placeholder="Opcional"
               type="number"
               :disable="disabled"
@@ -211,7 +311,7 @@
           <div v-if="mostrarFemenino" class="col-12 col-md-3 q-mb-md">
             <label class="q-mb-sm block">Partos</label>
             <q-input
-              v-model="fichaPeriodica.antecedente_gineco_obstetrico.partos"
+              v-model="fichaPreocupacional.antecedente_gineco_obstetrico.partos"
               placeholder="Opcional"
               type="number"
               :disable="disabled"
@@ -224,7 +324,9 @@
           <div v-if="mostrarFemenino" class="col-12 col-md-3 q-mb-md">
             <label class="q-mb-sm block">Cesáreas</label>
             <q-input
-              v-model="fichaPeriodica.antecedente_gineco_obstetrico.cesareas"
+              v-model="
+                fichaPreocupacional.antecedente_gineco_obstetrico.cesareas
+              "
               placeholder="Opcional"
               type="number"
               :disable="disabled"
@@ -237,7 +339,9 @@
           <div v-if="mostrarFemenino" class="col-12 col-md-3 q-mb-md">
             <label class="q-mb-sm block">Abortos</label>
             <q-input
-              v-model="fichaPeriodica.antecedente_gineco_obstetrico.abortos"
+              v-model="
+                fichaPreocupacional.antecedente_gineco_obstetrico.abortos
+              "
               placeholder="Opcional"
               type="number"
               :disable="disabled"
@@ -250,26 +354,46 @@
           <div class="col-12 col-md-3 q-mb-md">
             <label class="q-mb-sm block">Hijos vivos</label>
             <q-input
-              v-model="fichaPeriodica.antecedente_personal.hijos_vivos"
-              placeholder="Opcional"
+              v-model="fichaPreocupacional.antecedente_personal.hijos_vivos"
+              placeholder="Obligatorio"
               type="number"
               :disable="disabled"
               outlined
               dense
+              :error="!!v$.antecedente_personal.hijos_vivos.$errors.length"
+              @blur="v$.antecedente_personal.hijos_vivos.$touch"
             >
+              <template v-slot:error>
+                <div
+                  v-for="error of v$.antecedente_personal.hijos_vivos.$errors"
+                  :key="error.$uid"
+                >
+                  <div>{{ error.$message }}</div>
+                </div>
+              </template>
             </q-input>
           </div>
 
           <div class="col-12 col-md-3 q-mb-md">
             <label class="q-mb-sm block">Hijos muertos</label>
             <q-input
-              v-model="fichaPeriodica.antecedente_personal.hijos_muertos"
-              placeholder="Opcional"
+              v-model="fichaPreocupacional.antecedente_personal.hijos_muertos"
+              placeholder="Obligatorio"
               type="number"
               :disable="disabled"
               outlined
               dense
+              :error="!!v$.antecedente_personal.hijos_muertos.$errors.length"
+              @blur="v$.antecedente_personal.hijos_muertos.$touch"
             >
+              <template v-slot:error>
+                <div
+                  v-for="error of v$.antecedente_personal.hijos_muertos.$errors"
+                  :key="error.$uid"
+                >
+                  <div>{{ error.$message }}</div>
+                </div>
+              </template>
             </q-input>
           </div>
 
@@ -277,13 +401,17 @@
             <label class="q-mb-sm block">Vida sexual activa</label>
             <div class="q-gutter-sm">
               <q-radio
-                v-model="fichaPeriodica.antecedente_personal.vida_sexual_activa"
+                v-model="
+                  fichaPreocupacional.antecedente_personal.vida_sexual_activa
+                "
                 :val="true"
                 label="Si"
                 :disable="disabled"
               />
               <q-radio
-                v-model="fichaPeriodica.antecedente_personal.vida_sexual_activa"
+                v-model="
+                  fichaPreocupacional.antecedente_personal.vida_sexual_activa
+                "
                 :val="false"
                 label="No"
                 :disable="disabled"
@@ -298,7 +426,7 @@
             <div class="q-gutter-sm">
               <q-radio
                 v-model="
-                  fichaPeriodica.antecedente_personal
+                  fichaPreocupacional.antecedente_personal
                     .tiene_metodo_planificacion_familiar
                 "
                 :val="true"
@@ -307,7 +435,7 @@
               />
               <q-radio
                 v-model="
-                  fichaPeriodica.antecedente_personal
+                  fichaPreocupacional.antecedente_personal
                     .tiene_metodo_planificacion_familiar
                 "
                 :val="false"
@@ -319,7 +447,7 @@
 
           <div
             v-if="
-              fichaPeriodica.antecedente_personal
+              fichaPreocupacional.antecedente_personal
                 .tiene_metodo_planificacion_familiar
             "
             class="col-12 col-md-3 q-mb-md"
@@ -329,7 +457,7 @@
             >
             <q-input
               v-model="
-                fichaPeriodica.antecedente_personal
+                fichaPreocupacional.antecedente_personal
                   .tipo_metodo_planificacion_familiar
               "
               placeholder="Opcional"
@@ -345,7 +473,7 @@
               :configuracionColumnas="
                 configuracionColumnasResultadoExamenPreocupacional
               "
-              :datos="fichaPeriodica.resultados_examenes_preocupacionales"
+              :datos="fichaPreocupacional.examenes_realizados"
               :permitirConsultar="false"
               :permitirEliminar="false"
               :permitirEditar="false"
@@ -398,7 +526,7 @@
                 ...configuracionColumnasActividadFisica,
                 accionesTabla,
               ]"
-              :datos="fichaPeriodica.actividades_fisicas"
+              :datos="fichaPreocupacional.actividades_fisicas"
               :permitirConsultar="false"
               :permitirEliminar="false"
               :permitirEditar="false"
@@ -429,7 +557,7 @@
                 ...configuracionColumnasMedicacionHabitual,
                 accionesTabla,
               ]"
-              :datos="fichaPeriodica.medicacion_habituales"
+              :datos="fichaPreocupacional.medicacion_habituales"
               :permitirConsultar="false"
               :permitirEliminar="false"
               :permitirEditar="false"
@@ -472,7 +600,7 @@
                 ...configuracionColumnasAntecedenteTrabajoAnterior,
                 accionesTabla,
               ]"
-              :datos="fichaPeriodica.antecedentes_trabajos_anteriores"
+              :datos="fichaPreocupacional.antecedentes_trabajos_anteriores"
               :permitirConsultar="false"
               :permitirEliminar="false"
               :permitirEditar="false"
@@ -498,13 +626,13 @@
             >
             <div class="q-gutter-sm">
               <q-radio
-                v-model="fichaPeriodica.accidente_trabajo.calificado_iess"
+                v-model="fichaPreocupacional.accidente_trabajo.calificado_iess"
                 :val="true"
                 label="Si"
                 :disable="disabled"
               />
               <q-radio
-                v-model="fichaPeriodica.accidente_trabajo.calificado_iess"
+                v-model="fichaPreocupacional.accidente_trabajo.calificado_iess"
                 :val="false"
                 label="No"
                 :disable="disabled"
@@ -513,12 +641,12 @@
           </div>
 
           <div
-            v-if="fichaPeriodica.accidente_trabajo.calificado_iess"
+            v-if="fichaPreocupacional.accidente_trabajo.calificado_iess"
             class="col-12 col-md-6 q-mb-md"
           >
             <label class="q-mb-sm block">Especificar</label>
             <q-input
-              v-model="fichaPeriodica.accidente_trabajo.descripcion"
+              v-model="fichaPreocupacional.accidente_trabajo.descripcion"
               placeholder="Opcional"
               :disable="disabled"
               outlined
@@ -527,10 +655,10 @@
             </q-input>
           </div>
 
-          <div class="col-12 col-md-6">
+          <div class="col-12 col-md-6 q-mb-md">
             <label class="q-mb-sm block">Fecha</label>
             <q-input
-              v-model="fichaPeriodica.accidente_trabajo.fecha"
+              v-model="fichaPreocupacional.accidente_trabajo.fecha"
               placeholder="Opcional"
               outlined
               :disable="disabled"
@@ -545,7 +673,7 @@
                     transition-hide="scale"
                   >
                     <q-date
-                      v-model="fichaPeriodica.accidente_trabajo.fecha"
+                      v-model="fichaPreocupacional.accidente_trabajo.fecha"
                       :mask="maskFecha"
                       today-btn
                     >
@@ -567,7 +695,7 @@
           <div class="col-12 col-md-6 q-mb-md">
             <label class="q-mb-sm block">Observación</label>
             <q-input
-              v-model="fichaPeriodica.accidente_trabajo.observacion"
+              v-model="fichaPreocupacional.accidente_trabajo.observacion"
               placeholder="Opcional"
               :disable="disabled"
               outlined
@@ -586,13 +714,17 @@
             >
             <div class="q-gutter-sm">
               <q-radio
-                v-model="fichaPeriodica.enfermedad_profesional.calificado_iess"
+                v-model="
+                  fichaPreocupacional.enfermedad_profesional.calificado_iess
+                "
                 :val="true"
                 label="Si"
                 :disable="disabled"
               />
               <q-radio
-                v-model="fichaPeriodica.enfermedad_profesional.calificado_iess"
+                v-model="
+                  fichaPreocupacional.enfermedad_profesional.calificado_iess
+                "
                 :val="false"
                 label="No"
                 :disable="disabled"
@@ -601,12 +733,12 @@
           </div>
 
           <div
-            v-if="fichaPeriodica.enfermedad_profesional.calificado_iess"
+            v-if="fichaPreocupacional.enfermedad_profesional.calificado_iess"
             class="col-12 col-md-6 q-mb-md"
           >
             <label class="q-mb-sm block">Especificar</label>
             <q-input
-              v-model="fichaPeriodica.enfermedad_profesional.descripcion"
+              v-model="fichaPreocupacional.enfermedad_profesional.descripcion"
               placeholder="Opcional"
               :disable="disabled"
               outlined
@@ -615,10 +747,10 @@
             </q-input>
           </div>
 
-          <div class="col-12 col-md-6">
+          <div class="col-12 col-md-6 q-mb-md">
             <label class="q-mb-sm block">Fecha</label>
             <q-input
-              v-model="fichaPeriodica.enfermedad_profesional.fecha"
+              v-model="fichaPreocupacional.enfermedad_profesional.fecha"
               placeholder="Opcional"
               outlined
               :disable="disabled"
@@ -633,7 +765,7 @@
                     transition-hide="scale"
                   >
                     <q-date
-                      v-model="fichaPeriodica.enfermedad_profesional.fecha"
+                      v-model="fichaPreocupacional.enfermedad_profesional.fecha"
                       :mask="maskFecha"
                       today-btn
                     >
@@ -655,7 +787,7 @@
           <div class="col-12 q-mb-md">
             <label class="q-mb-sm block">Observación</label>
             <q-input
-              v-model="fichaPeriodica.enfermedad_profesional.observacion"
+              v-model="fichaPreocupacional.enfermedad_profesional.observacion"
               placeholder="Opcional"
               :disable="disabled"
               outlined
@@ -673,7 +805,7 @@
       >
         <div class="row q-col-gutter-x-sm q-pa-md">
           <div class="col-12 q-mb-md">
-            <!-- {{ fichaPeriodica.antecedentes_familiares }} -->
+            <!-- {{ fichaPreocupacional.antecedentes_familiares }} -->
             <essential-table
               :configuracionColumnas="configuracionColumnasAntecedenteFamiliar"
               :datos="listadosAuxiliares.antecedentes_familiares"
@@ -712,10 +844,11 @@
             >
             <essential-table
               v-if="mostrarTablaFrPuestoTrabajoActualReactive"
-              :configuracionColumnas="
-                [...configuracionColumnasFrPuestoTrabajoActualReactive, accionesTabla]
-              "
-              :datos="fichaPeriodica.fr_puestos_trabajos_actuales"
+              :configuracionColumnas="[
+                ...configuracionColumnasFrPuestoTrabajoActualReactive,
+                accionesTabla,
+              ]"
+              :datos="fichaPreocupacional.fr_puestos_trabajos_actuales"
               :permitirConsultar="false"
               :permitirEliminar="false"
               :permitirEditar="false"
@@ -743,7 +876,7 @@
           <div class="col-12">
             <label class="q-mb-sm block">Descripción</label>
             <q-input
-              v-model="fichaPeriodica.actividades_extralaborales"
+              v-model="fichaPreocupacional.actividades_extralaborales"
               placeholder="Opcional"
               :disable="disabled"
               outlined
@@ -764,7 +897,7 @@
           <div class="col-12">
             <label class="q-mb-sm block">Descripción</label>
             <q-input
-              v-model="fichaPeriodica.enfermedad_actual"
+              v-model="fichaPreocupacional.enfermedad_actual"
               placeholder="Opcional"
               :disable="disabled"
               outlined
@@ -782,12 +915,13 @@
         default-opened
       >
         <div class="row q-col-gutter-x-sm q-pa-md">
+          {{ listadosAuxiliares.revisiones_actuales_organos_sistemas }}
           <div class="col-12 q-mb-md">
             <essential-table
               :configuracionColumnas="
                 configuracionColumnasRevisionActualOrganoSistema
               "
-              :datos="fichaPeriodica.revisiones_actuales_organos_sistemas"
+              :datos="listadosAuxiliares.revisiones_actuales_organos_sistemas"
               :permitirConsultar="false"
               :permitirEliminar="false"
               :permitirEditar="false"
@@ -810,112 +944,43 @@
         header-class="text-bold bg-desenfoque text-primary"
         default-opened
       >
-        <div class="row q-col-gutter-sm q-pa-md">
-          <div class="col-12 col-md-3">
-            <label class="q-mb-sm block">Presión arterial(mmHg)</label>
-            <q-input
-              v-model="fichaPeriodica.constante_vital.presion_aterial"
-              placeholder="Opcional"
-              :disable="disabled"
-              outlined
-              dense
-            >
-            </q-input>
-          </div>
-
-          <div class="col-12 col-md-3">
-            <label class="q-mb-sm block">Temperatura (C°)</label>
-            <q-input
-              v-model="fichaPeriodica.constante_vital.temperatura"
-              placeholder="Opcional"
-              :disable="disabled"
-              outlined
-              dense
-            >
-            </q-input>
-          </div>
-
-          <div class="col-12 col-md-3">
-            <label class="q-mb-sm block">Frecuencia cardiaca(Lat/min)</label>
-            <q-input
-              v-model="fichaPeriodica.constante_vital.frecuencia_cardiaca"
-              placeholder="Opcional"
-              :disable="disabled"
-              outlined
-              dense
-            >
-            </q-input>
-          </div>
-
-          <div class="col-12 col-md-3">
-            <label class="q-mb-sm block">Saturación de oxígeno(O2%)</label>
-            <q-input
-              v-model="fichaPeriodica.constante_vital.saturacion_oxigeno"
-              placeholder="Opcional"
-              :disable="disabled"
-              outlined
-              dense
-            >
-            </q-input>
-          </div>
-
-          <div class="col-12 col-md-3">
-            <label class="q-mb-sm block">Frecuencia respiratoria(R/min)</label>
-            <q-input
-              v-model="fichaPeriodica.constante_vital.frecuencia_respiratoria"
-              placeholder="Opcional"
-              :disable="disabled"
-              outlined
-              dense
-            >
-            </q-input>
-          </div>
-
-          <div class="col-12 col-md-3">
-            <label class="q-mb-sm block">Peso(Kg)</label>
-            <q-input
-              v-model="fichaPeriodica.constante_vital.peso"
-              placeholder="Opcional"
-              :disable="disabled"
-              outlined
-              dense
-            >
-            </q-input>
-          </div>
-          <div class="col-12 col-md-3">
-            <label class="q-mb-sm block">Talla(cm)</label>
-            <q-input
-              v-model="fichaPeriodica.constante_vital.talla"
-              placeholder="Opcional"
-              :disable="disabled"
-              outlined
-              dense
-            >
-            </q-input>
-          </div>
-          <div class="col-12 col-md-3">
-            <label class="q-mb-sm block">Indice de masa corporal(Kg/m2)</label>
-            <q-input
-              v-model="fichaPeriodica.constante_vital.indice_masa_corporal"
-              placeholder="Opcional"
-              :disable="disabled"
-              outlined
-              dense
-            >
-            </q-input>
-          </div>
-          <div class="col-12 col-md-3">
-            <label class="q-mb-sm block">Perímetro abdominal(cm)</label>
-            <q-input
-              v-model="fichaPeriodica.constante_vital.perimetro_abdominal"
-              placeholder="Opcional"
-              :disable="disabled"
-              outlined
-              dense
-            >
-            </q-input>
-          </div>
+        <div class="q-pa-md">
+          <contantes-vitales
+            :constante-vital="fichaPreocupacional.constante_vital"
+            :disable="disabled"
+            @update:model-value="hidratarConstanteVital"
+            :validador="v$"
+          ></contantes-vitales>
         </div>
+      </q-expansion-item>
+
+      <q-expansion-item
+        class="overflow-hidden q-mb-md rounded bg-desenfoque-2"
+        label="Examen físico regional"
+        header-class="text-bold bg-desenfoque text-primary"
+        default-opened
+      >
+        <div class="q-pa-md">
+          <examen-fisico-regional-component
+            :disable="disabled"
+            @update:model-value="hidratarExamenFisicoRegional"
+          ></examen-fisico-regional-component>
+          <!-- :validador="v$" -->
+        </div>
+      </q-expansion-item>
+
+      <q-expansion-item
+        class="overflow-hidden q-mb-md rounded bg-desenfoque-2"
+        label="Aptitud médica para el trabajo"
+        header-class="text-bold bg-desenfoque text-primary"
+        default-opened
+      >
+        <aptitud-medica-trabajo
+          :aptitud-medica="fichaPreocupacional.aptitud_medica"
+          :disable="disabled"
+          @update:model-value="hidratarAptitudMedica"
+        >
+        </aptitud-medica-trabajo>
       </q-expansion-item>
 
       <q-expansion-item
@@ -928,7 +993,7 @@
           <div class="col-12">
             <label class="q-mb-sm block">Descripción</label>
             <q-input
-              v-model="fichaPeriodica.recomendaciones_tratamiento"
+              v-model="fichaPreocupacional.recomendaciones_tratamiento"
               placeholder="Opcional"
               :disable="disabled"
               outlined
@@ -939,7 +1004,22 @@
         </div>
       </q-expansion-item>
     </template>
+
+    <template #custom-buttons>
+      <div class="row q-gutter-x-xs">
+        <q-btn
+          v-if="fichaPreocupacional.id && mostrarDescargarPdf"
+          class="bg-white text-positive"
+          no-caps
+          push
+          @click="descargarPdf()"
+        >
+          <q-icon name="bi-download" size="xs" class="q-mr-sm"></q-icon>
+          Descargar PDF</q-btn
+        >
+      </div>
+    </template>
   </simple-layout>
 </template>
 
-<script src="./FichaPeriodicaPreocupacionalPage.ts"></script>
+<script src="./FichaPreocupacionalPage.ts"></script>

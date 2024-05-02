@@ -1,7 +1,7 @@
 <template>
   <q-splitter v-model="splitterModel">
     <template v-slot:before>
-      <div class="text-center bg-primary q-pb-md q-pt-sm">
+      <div class="text-center bg-indigo q-pb-md q-pt-sm">
         <q-btn
           class="bg-white text-primary"
           push
@@ -18,7 +18,7 @@
         v-model="tabRegistro"
         vertical
         indicator-color="transparent"
-        class="bg-primary text-white q-px-xs alto-tabla"
+        class="bg-indigo text-white q-px-xs alto-tabla"
         active-bg-color="white"
         active-class="text-black bg-desenfoque border-grey text-bold"
         :style="'height:' + altoTabla"
@@ -28,7 +28,7 @@
           :key="registro.id"
           :name="registro.id"
           class="q-mb-xs"
-          :class="{ 'bg-blue': tabRegistro !== registro.id }"
+          :class="{ 'bg-indigo': tabRegistro !== registro.id }"
           no-caps
           @click="seleccionarRegistro(registro)"
         >
@@ -60,60 +60,13 @@
           <div class="row q-pa-md">
             <div class="col-12 col-md-6">
               <label class="q-mb-sm block"> Fecha y hora de registro </label>
-              <div class="text-bold">{{ registro.created_at }}</div>
+              <div class="text-bold text-black">{{ registro.created_at }}</div>
             </div>
 
             <div class="col-12 col-md-6 q-mb-md">
               <label class="q-mb-sm block"> Observación </label>
-              <div class="text-bold">{{ registro.observacion }}</div>
+              <div class="text-bold text-black">{{ registro.observacion }}</div>
             </div>
-
-            <q-btn
-              class="col-12 q-mb-sm bg-white text-black"
-              no-caps
-              push
-              @click="abrirFichaAptitud()"
-            >
-              <q-icon
-                name="bi-table"
-                class="q-mr-sm"
-                color="positive"
-                size="xs"
-              ></q-icon>
-              {{ textoFichaAptitud }}
-            </q-btn>
-
-            <q-btn
-              v-if="mostrarFichaPreocupacional"
-              class="col-12 bg-white text-dark"
-              no-caps
-              push
-              @click="abrirFichaPeriodicaProcupacional()"
-            >
-              <q-icon
-                name="bi-table"
-                class="q-mr-sm"
-                color="primary"
-                size="xs"
-              ></q-icon>
-              {{ textoFichaPeriodicaPreocupacional }}
-            </q-btn>
-
-            <q-btn
-              v-if="mostrarFichaRetiro"
-              class="col-12 bg-white text-dark"
-              no-caps
-              push
-              @click="abrirFichaRetiro()"
-            >
-              <q-icon
-                name="bi-table"
-                class="q-mr-sm"
-                color="primary"
-                size="xs"
-              ></q-icon>
-              {{ textoFichaRetiro }}
-            </q-btn>
           </div>
         </q-tab-panel>
       </q-tab-panels>
@@ -123,10 +76,9 @@
           v-model="tabEstadoExamen"
           align="justify"
           active-color="primary"
-          indicator-color="primary"
-          active-bg-color="blue-1"
+          indicator-color="transparent"
+          active-bg-color="white"
           active-class="tab-active"
-          class="border-bottom-grey-5"
           dense
         >
           <q-tab
@@ -203,8 +155,71 @@
 
           <q-tab-panel
             :name="estadosSolicitudesExamenes.SOLICITADO.value"
-            class="q-pa-none"
+            class="q-pa-none bg-white"
           >
+            <div class="row q-pa-md">
+              <label class="q-mb-sm"
+                ><b>Paso 1:</b> Complete el diagnóstico y la receta y los
+                resultados de los exámenes</label
+              >
+              <q-btn
+                v-if="mostrarConsultaMedica"
+                class="col-12 bg-blue-grey q-mb-xs"
+                color="blue-grey"
+                no-caps
+                @click="btnCitaMedica()"
+              >
+                <q-icon name="bi-table" class="q-mr-sm" size="xs"></q-icon>
+                {{ 'Diagnóstico y receta' }}
+              </q-btn>
+
+              <q-btn
+                v-if="mostrarResultadosExamenes"
+                class="col-12 q-mb-md"
+                no-caps
+                color="positive"
+                @click="btnResultados()"
+              >
+                <q-icon name="bi-table" class="q-mr-sm" size="xs"></q-icon>
+                {{ 'Resultados de los exámenes' }}
+              </q-btn>
+
+              <label class="q-mb-sm block full-width"
+                ><b>Paso 2:</b> Luego genere las fichas médicas</label
+              >
+              <q-btn
+                class="col-12 q-mb-sm"
+                no-caps
+                push
+                color="indigo"
+                @click="abrirFichaAptitud()"
+              >
+                <q-icon name="bi-table" class="q-mr-sm" size="xs"></q-icon>
+                {{ textoFichaAptitud }}
+              </q-btn>
+
+              <q-btn
+                v-if="mostrarFichaRetiro"
+                class="col-12 bg-white text-dark q-mb-md block"
+                no-caps
+                color="indigo"
+                @click="abrirFichaRetiro()"
+              >
+                <q-icon name="bi-table" class="q-mr-sm" size="xs"></q-icon>
+                {{ textoFichaRetiro }}
+              </q-btn>
+
+              <q-btn
+                v-if="mostrarFichaPreocupacional"
+                class="col-12"
+                no-caps
+                color="indigo"
+                @click="abrirFichaPeriodicaProcupacional()"
+              >
+                <q-icon name="bi-table" class="q-mr-sm" size="xs"></q-icon>
+                {{ textoFichaPreocupacional }}
+              </q-btn>
+            </div>
             <essential-table
               titulo="Solicitudes de exámenes"
               :configuracionColumnas="[
@@ -215,10 +230,7 @@
               :permitirConsultar="false"
               :permitirEditar="false"
               :permitirEliminar="false"
-              :accion1Header="btnResultados"
-              :accion2Header="btnCitaMedica"
-              :accion1="btnConsultarEstadoSolicitudExamen"
-              :accion2="btnSubirResultadosExamenes"
+              :accion1="btnSubirResultadosExamenes"
               :alto-fijo="false"
             ></essential-table>
           </q-tab-panel>

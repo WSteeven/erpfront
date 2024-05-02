@@ -38,6 +38,7 @@
           <contantes-vitales
             :constante-vital="fichaRetiro.constante_vital"
             :disable="disabled"
+            :validador="v$"
             @update:model-value="hidratarConstanteVital"
           ></contantes-vitales>
         </div>
@@ -84,39 +85,7 @@
         header-class="text-bold bg-desenfoque text-primary"
         default-opened
       >
-        <div class="row q-col-gutter-x-sm q-pa-md">
-          <div class="col-12 q-mb-md">
-            <essential-table
-              v-if="configuracionColumnasExamenFisicoRegional.length"
-              :configuracionColumnas="configuracionColumnasExamenFisicoRegional"
-              :datos="fichaRetiro.examenes_fisicos_regionales"
-              :permitirConsultar="false"
-              :permitirEliminar="false"
-              :permitirEditar="false"
-              :mostrarBotones="false"
-              :permitir-editar-celdas="true"
-              :mostrar-header="false"
-              :mostrar-footer="false"
-              :alto-fijo="false"
-              :ajustarCeldas="false"
-              separador="cell"
-            >
-            </essential-table>
-          </div>
 
-          <div class="col-12 q-mb-md">
-            <label class="q-mb-sm block">Observaciones</label>
-            <q-input
-              v-model="fichaRetiro.observaciones_examen_fisico_regional"
-              placeholder="Opcional"
-              :disable="disabled"
-              autogrow
-              outlined
-              dense
-            >
-            </q-input>
-          </div>
-        </div>
       </q-expansion-item>
     </template>
 

@@ -82,7 +82,7 @@ export default defineComponent({
     permitirModificar: {
       type: Boolean,
       required: false,
-      default: false,
+      default: true,
     },
     permitirCancelar: {
       type: Boolean,

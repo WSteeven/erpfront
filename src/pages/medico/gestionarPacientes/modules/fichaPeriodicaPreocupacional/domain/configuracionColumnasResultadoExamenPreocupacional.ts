@@ -3,8 +3,8 @@ import { ColumnConfig } from 'components/tables/domain/ColumnConfig'
 
 export const configuracionColumnasResultadoExamenPreocupacional: ColumnConfig<ResultadoExamenPreocupacional>[] = [
   {
-    name: 'tipo_antecedente',
-    field: 'tipo_antecedente',
+    name: 'examen',
+    field: 'examen',
     label: 'Exámenes realizados',
     align: 'left',
     sortable: true

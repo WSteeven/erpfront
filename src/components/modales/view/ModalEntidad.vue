@@ -45,6 +45,7 @@
           :is="componente"
           :mixin-modal="mixinModal"
           :accion="accion"
+          :datos="datos"
           @cerrar-modal="
             (confirmarCerrar) => cerrarModalEntidad(confirmarCerrar)
           "
@@ -57,6 +58,7 @@
           v-else
           :is="componente"
           :accion="accion"
+          :datos="datos"
           @cerrar-modal="
             (confirmarCerrar) => cerrarModalEntidad(confirmarCerrar)
           "

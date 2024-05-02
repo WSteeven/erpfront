@@ -43,6 +43,13 @@ export const configuracionColumnasEsquemaVacunacionDetallado: ColumnConfig<Esque
     sortable: true
   },
   {
+    name: 'establecimiento_salud',
+    field: 'establecimiento_salud',
+    label: 'Establecimiento de salud',
+    align: 'left',
+    sortable: true
+  },
+  {
     name: 'lote',
     field: 'lote',
     label: 'Lote',

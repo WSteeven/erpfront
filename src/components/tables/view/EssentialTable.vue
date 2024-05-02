@@ -63,7 +63,7 @@
         v-if="props.col.editable"
         :key="props.col.name"
         :props="props"
-        :class="{ 'bg-white text-bold': props.col.editable }"
+        :class="{ 'text-bold': props.col.editable, 'bg-body': $q.dark.isActive }"
       >
         <!-- <q-popup-edit
           v-model="props.row[props.col.name]"
@@ -80,7 +80,7 @@
               ['text', 'number', 'date', 'time'].includes(props.col.type))
           "
           v-model="props.row[props.col.name]"
-          bg-color="grey-3"
+          :bg-color="$q.dark.isActive ? 'grey-10' : 'grey-3'"
           :type="props.col.type ? props.col.type : 'text'"
           :hint="props.col.hint"
           dense
@@ -138,10 +138,12 @@
         />
       </q-td>
 
-      <q-td v-else :props="props" >
-        <span v-if="!['select', 'boolean'].includes(props.col.type)">{{
-          props.row[props.col.name]
-        }}</span>
+      <q-td v-else :props="props">
+        <span
+          v-if="!['select', 'boolean'].includes(props.col.type)"
+          :class="{ 'text-white': $q.dark.isActive, 'text-dark': !$q.dark.isActive }"
+          >{{ props.row[props.col.name] }}</span
+        >
       </q-td>
     </template>
 

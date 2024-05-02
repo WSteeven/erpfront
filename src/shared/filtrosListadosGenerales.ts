@@ -25,6 +25,7 @@ export const useFiltrosListadosSelects = (listadosAuxiliares, entidad?: Ref<any>
   const empleadosOrigen = ref(listadosAuxiliares.empleadosOrigen)
   const bancos = ref(listadosAuxiliares.bancos)
   const categorias = ref(listadosAuxiliares.categorias)
+  const cargos = ref(listadosAuxiliares.cargos)
 
   //bodega
   const sucursales = ref(listadosAuxiliares.sucursales)
@@ -393,6 +394,10 @@ export const useFiltrosListadosSelects = (listadosAuxiliares, entidad?: Ref<any>
     return filtrarLista(val, update, tareasDestino, 'codigo_tarea', listadosAuxiliares.tareasDestino)
   }
 
+  function filtrarCargos(val, update) {
+    return filtrarLista(val, update, cargos, 'nombre', listadosAuxiliares.cargos)
+  }
+
   /****************
    * Modulo medico
    ****************/
@@ -449,6 +454,7 @@ export const useFiltrosListadosSelects = (listadosAuxiliares, entidad?: Ref<any>
     enfermedades, filtrarEnfermedades,
     tiposVacunas, filtrarTiposVacunas,
     laboratoriosClinicos, filtrarLaboratoriosClinicos,
+    cargos, filtrarCargos,
     // tiposEvaluacionesMedicasRetiros, filtrarTiposEvaluacionesMedicasRetiros,
     // tiposAptitudesMedicasLaborales, filtrarTiposAptitudesMedicasLaborales,
   }

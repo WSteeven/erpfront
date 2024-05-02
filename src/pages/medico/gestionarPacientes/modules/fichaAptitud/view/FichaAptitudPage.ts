@@ -55,7 +55,7 @@ export default defineComponent({
     cargarVista(async () => {
       await obtenerListados({
         tiposEvaluacionesMedicasRetiros: new TipoEvaluacionMedicaRetiroController(),
-        tiposAptitudesMedicasLaborales: new TipoAptitudMedicaLaboralController(),
+        // tiposAptitudesMedicasLaborales: new TipoAptitudMedicaLaboralController(),
       })
 
       tiposEvaluacionesMedicasRetiros.value = listadosAuxiliares.tiposEvaluacionesMedicasRetiros.map((tipo: TipoEvaluacionMedicaRetiro, index: number) => {

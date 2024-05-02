@@ -12,6 +12,8 @@ import { ExamenSolicitado } from 'pages/medico/solicitudesExamenes/domain/Examen
 import { SolicitudExamen } from 'pages/medico/solicitudesExamenes/domain/SolicitudExamen'
 import { Examen } from 'pages/medico/examenes/domain/Examen'
 import { DetalleExamen } from '../domain/DetalleExamen'
+import { ContenedorSimpleMixin } from 'shared/contenedor/modules/simple/application/ContenedorSimpleMixin'
+import { EntidadAuditable } from 'shared/entidad/domain/entidadAuditable'
 
 export function useBotonesSolicitudExamen(tabEstadoExamen: Ref, modales?: ComportamientoModalesGestionPaciente) {
   /*********
@@ -84,7 +86,7 @@ export function useBotonesSolicitudExamen(tabEstadoExamen: Ref, modales?: Compor
     }
   } */
 
-  const btnResultados: CustomActionTable = {
+  /*const btnResultados: CustomActionTable = {
     titulo: 'Resultados de los exámenes',
     icono: 'bi-table',
     color: 'positive',
@@ -95,9 +97,9 @@ export function useBotonesSolicitudExamen(tabEstadoExamen: Ref, modales?: Compor
 
       modales?.abrirModalEntidad('ResultadosExamenPage')
     }
-  }
+  }*/
 
-  const btnCitaMedica: CustomActionTable = {
+  /* const btnCitaMedica: CustomActionTable = {
     titulo: 'Diagnóstico y receta',
     icono: 'bi-capsule-pill',
     color: 'blue-grey',
@@ -107,6 +109,14 @@ export function useBotonesSolicitudExamen(tabEstadoExamen: Ref, modales?: Compor
       // medicoStore.empleado = entidad.paciente_id
       modales?.abrirModalEntidad('DiagnosticoRecetaPage')
     }
+  }*/
+  const btnResultados = () => {
+    modales?.abrirModalEntidad('ResultadosExamenPage')
+  }
+
+  const btnCitaMedica = () => {
+    medicoStore.idCita = null
+    modales?.abrirModalEntidad('DiagnosticoRecetaPage')
   }
 
   /********
@@ -153,9 +163,9 @@ export function useBotonesSolicitudExamen(tabEstadoExamen: Ref, modales?: Compor
   }
 
   const btnSubirResultadosExamenes: CustomActionTable<SolicitudExamen> = {
-    titulo: 'Subir resultados',
+    titulo: 'Consultar/Subir resultados',
     icono: 'bi-upload',
-    color: 'positive',
+    color: 'primary',
     visible: () => [estadosSolicitudesExamenes.SOLICITADO.value].includes(tabEstadoExamen.value),
     accion: ({ entidad }) => {
       medicoStore.accion = acciones.consultar
@@ -165,9 +175,8 @@ export function useBotonesSolicitudExamen(tabEstadoExamen: Ref, modales?: Compor
       solicitudExamen.hydrate(entidad)
       solicitudExamen.examenes_solicitados = examenesSolicitados
       medicoStore.solicitudExamen = solicitudExamen
-      console.log(examenesSolicitados)
-      console.log(solicitudExamen)
-      modales?.abrirModalEntidad('SubirResultadosExamenesPage')
+
+      modales?.abrirModalEntidad('SubirResultadosExamenesPage', { solicitud_examen: entidad })
     }
   }
 

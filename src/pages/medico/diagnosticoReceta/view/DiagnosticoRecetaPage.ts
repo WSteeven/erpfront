@@ -124,11 +124,13 @@ export default defineComponent({
     })
 
     onReestablecer(() => {
+      console.log('onReestablecer')
       consulta.diagnosticos = []
       emit('cerrar-modal')
     })
 
     onGuardado((id, responseData) => {
+      console.log('onGuarado')
       emit('guardado', { page: 'DiagnosticoRecetaPage', entidad: responseData.modelo, hook: 'onGuardado' })
     })
 

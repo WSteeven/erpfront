@@ -41,8 +41,8 @@ export function useBotonesEsquemaVacuna(modales: ComportamientoModalesGestionPac
    *******/
   const btnEditarVacunaAplicada: CustomActionTable<EsquemaVacuna> = {
     titulo: 'Consultar dosis aplicadas',
-    icono: 'bi-eye',
-    color: 'blue-grey',
+    icono: 'bi-table',
+    color: 'primary',
     accion: ({ entidad }) => {
       medicoStore.accion = acciones.consultar
       // medicoStore.esquemaVacuna = entidad
