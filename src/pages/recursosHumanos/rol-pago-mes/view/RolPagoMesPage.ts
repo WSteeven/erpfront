@@ -43,6 +43,10 @@ import { AxiosHttpRepository } from 'shared/http/infraestructure/AxiosHttpReposi
 import { CustomActionPrompt } from 'components/tables/domain/CustomActionPrompt'
 import { HttpResponseGet } from 'shared/http/domain/HttpResponse'
 import { StatusEssentialLoading } from 'components/loading/application/StatusEssentialLoading'
+import { Archivo } from 'pages/gestionTrabajos/subtareas/modules/gestorArchivosTrabajos/domain/Archivo'
+import { ArchivoRolPagoMesController } from '../infrestucture/ArchivoRolPagoMesController'
+import ArchivoSeguimiento from 'gestionTrabajos/subtareas/modules/gestorArchivosTrabajos/view/ArchivoSeguimiento.vue'
+
 
 export default defineComponent({
   name: 'RolPagoMes',
@@ -52,6 +56,7 @@ export default defineComponent({
     SelectorImagen,
     EssentialTable,
     EssentialTableTabs,
+    ArchivoSeguimiento
   },
   setup() {
     const mixin = new ContenedorSimpleMixin(
@@ -70,12 +75,17 @@ export default defineComponent({
       RolPago,
       new RolPagoController()
     )
+    const mixinArchivoRolPago = new ContenedorSimpleMixin(
+      Archivo,
+      new ArchivoRolPagoMesController()
+    )
     const { listado: roles_empleados } = mixinRolEmpleado.useReferencias()
     const { listar: listarRolEmpleado, eliminar } =
       mixinRolEmpleado.useComportamiento()
     const authenticationStore = useAuthenticationStore()
 
     const cargando = new StatusEssentialLoading()
+    const refArchivoRolPago = ref()
 
     /**********
      * Modales
@@ -448,7 +458,15 @@ export default defineComponent({
         cargando.desactivar()
       }
     }
-    
+    const esNuevo = computed(() => {
+      return accion.value === 'NUEVO'
+    })
+    async function subirArchivos() {
+      await refArchivoRolPago.value.subir(rolpago)
+    }
+    const enviar_masivo = computed(() =>  refArchivoRolPago.value?.quiero_subir_archivos)
+     const mostrarBotonSubir = computed(() => refArchivoRolPago.value?.quiero_subir_archivos)
+
     return {
       removeAccents,
       mixin,
@@ -479,6 +497,7 @@ export default defineComponent({
       filtrarRolPagoMes,
       filtrarRolPagoEmpleado,
       obtenerNombreMes,
+      subirArchivos,
       disabled,
       btnEnviarRolPago,
       configuracionColumnasRolPago,
@@ -502,9 +521,17 @@ export default defineComponent({
       btnCashRolPago,
       btnRefrescar,
       btnActualizarEmpleadosRol,
+      refArchivoRolPago,
+      esNuevo,
+      mostrarBotonSubir,
+      endpoint: endpoints.archivo_rol_pago_mes,
+      mixinArchivoRolPago,
+      enviar_masivo,
       configuracionColumnas: configuracionColumnasRolPagoMes,
       accionesTabla,
       tabActualRolPago,
+
+
     }
   },
 })

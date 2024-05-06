@@ -5,7 +5,7 @@
     :full="true"
     :permitirEditar="false"
     :permitirEliminar="false"
-    :mostrarButtonSubmits="tab === 'rol_pago'"
+    :mostrarButtonSubmits="tab === 'rol_pago' && !enviar_masivo"
     :tabOptions="tabOptionsEstadosRolPago"
     :accion1="btnFinalizarRolPago"
     :accion2="btnImprimirRolPago"
@@ -40,6 +40,7 @@
         <q-tab-panel name="rol_pago">
           <q-form @submit.prevent>
             <div class="row q-col-gutter-sm q-py-md">
+
               <!-- Mes -->
               <div class="col-12 col-md-3">
                 <label class="q-mb-sm block"> Mes </label>
@@ -111,6 +112,33 @@
                   outlined
                   dense
                 ></q-checkbox>
+              </div>
+              <div class="col-12 col-md-12">
+                <archivo-seguimiento
+                  ref="refArchivoRolPago"
+                  :mixin="mixinArchivoRolPago"
+                  :endpoint="endpoint"
+                  :disable="!esNuevo"
+                  :permitir-eliminar="false"
+                  :listar-al-guardar="false"
+                  :esMultiple="false"
+                  label="Archivo Masivo"
+                  :multiple="false"
+                >
+                  <template #boton-subir>
+                    <q-btn
+                      v-if="mostrarBotonSubir"
+                      color="positive"
+                      push
+                      no-caps
+                      class="full-width q-mb-lg"
+                      @click="subirArchivos()"
+                    >
+                      <q-icon name="bi-upload" class="q-mr-sm" size="xs"></q-icon>
+                      Subir archivos seleccionados</q-btn
+                    >
+                  </template>
+                </archivo-seguimiento>
               </div>
             </div>
           </q-form>

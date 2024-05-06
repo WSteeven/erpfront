@@ -92,6 +92,8 @@ export const endpoints = {
   extension_covertura_salud: new Endpoint(
     'recursos-humanos/extension_covertura_salud'
   ),
+  archivo_rol_pago_mes: new Endpoint('recursos-humanos/archivo-rol-pago-mes'),
+
 
   porcentaje_iess: new Endpoint('recursos-humanos/porcentaje_iess'),
   porcentaje_anticipo: new Endpoint('recursos-humanos/porcentaje_anticipo'),
