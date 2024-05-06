@@ -30,6 +30,13 @@ export const configuracionColumnasItemPreingreso: ColumnConfig<ItemPreingresoMat
         sortable: true
     },
     {
+        name: 'descripcion_original',
+        field: 'descripcion_original',
+        label: 'Descripción Original',
+        editable: false,
+        visible: false,
+    },
+    {
         name: 'descripcion',
         field: 'descripcion',
         label: 'Descripción',

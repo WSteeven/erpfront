@@ -29,7 +29,7 @@ import { CustomActionTable } from "components/tables/domain/CustomActionTable";
 import { LocalStorage, useQuasar } from "quasar";
 import { useOrquestadorSelectorProductos } from "../application/OrquestadorSelectorProductos";
 import { ItemPreingresoMaterial } from "../domain/ItemPreingresoMaterial";
-import { encontrarUltimoIdListado, filtrarEmpleadosPorRoles, filtrarLista, ordenarLista } from "shared/utils";
+import { encontrarUltimoIdListado, filtrarEmpleadosPorRoles, ordenarLista } from "shared/utils";
 import { UnidadMedidaController } from "pages/bodega/unidades_medidas/infraestructure/UnidadMedidaController";
 import { UnidadMedida } from "pages/bodega/unidades_medidas/domain/UnidadMedida";
 import { StatusEssentialLoading } from "components/loading/application/StatusEssentialLoading";
@@ -370,7 +370,7 @@ export default defineComponent({
     function guardarFilaEditada(fila) {
       console.log(fila)
       const indice = preingreso.listadoProductos.findIndex((item) => item.id === fila.id)
-      preingreso.listadoProductos[indice]['descripcion'] = preingreso.listadoProductos[indice]['es_generico'] && preingreso.listadoProductos[indice]['nombre_alternativo'].length > 5 ? fila.nombre_alternativo : preingreso.listadoProductos[indice]['descripcion']
+      preingreso.listadoProductos[indice]['descripcion'] = preingreso.listadoProductos[indice]['es_generico'] && preingreso.listadoProductos[indice]['nombre_alternativo'].length > 5 ? preingreso.listadoProductos[indice]['descripcion'] + ': ' + fila.nombre_alternativo : preingreso.listadoProductos[indice]['descripcion']
     }
 
     /*******************************************************************************************

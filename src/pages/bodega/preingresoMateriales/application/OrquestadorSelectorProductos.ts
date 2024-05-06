@@ -38,6 +38,7 @@ export function useOrquestadorSelectorProductos(entidad: PreingresoMaterial, end
         items.forEach((item: any) => {
             item.cantidad = 1
             item.producto = item.producto
+            item.descripcion_original = item.descripcion
             item.descripcion = item.descripcion
             item.condicion = 'NUEVO'
             item.serial = ''

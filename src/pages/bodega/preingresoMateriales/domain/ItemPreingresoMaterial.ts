@@ -4,6 +4,7 @@ export class ItemPreingresoMaterial extends EntidadAuditable {
     preingreso: number | null
     producto: number | null //producto padre del detalle
     descripcion: number | null //el detalle_id
+    descripcion_original: string | null //el detalle_id
     // detalle: number | null //el detalle_id
     cantidad: number | null
     unidad_medida: number | null //producto padre del detalle
@@ -21,6 +22,7 @@ export class ItemPreingresoMaterial extends EntidadAuditable {
         this.preingreso = null
         this.cantidad = null
         this.descripcion = null
+        this.descripcion_original = null
         // this.detalle = null
         this.producto = null
         this.unidad_medida = null
