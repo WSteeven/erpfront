@@ -25,6 +25,7 @@ export const useBotonesTablaTarea = (mixin: ContenedorSimpleMixin<Tarea>) => {
     imagen_informe: null,
   }
   const refVisorImagen = ref()
+  const entidadTarea = ref()
 
   const btnFinalizarTarea: CustomActionTable = {
     titulo: 'Finalizar tarea',
@@ -41,7 +42,11 @@ export const useBotonesTablaTarea = (mixin: ContenedorSimpleMixin<Tarea>) => {
       filaFinalizar.id = entidad.id
       filaFinalizar.posicion = posicion
 
+      console.log('fuera del if')
+      entidadTarea.value = entidad
+
       if (!entidad.codigo_tarea_cliente) {
+        console.log('dentro del if')
         const data: CustomActionPrompt = {
           titulo: 'Finalizar tarea',
           mensaje: 'Para finalizar la tarea ingrese el código de tarea que le otorgó el cliente corporativo.',
@@ -57,7 +62,7 @@ export const useBotonesTablaTarea = (mixin: ContenedorSimpleMixin<Tarea>) => {
                 filaFinalizar.novedad = novedad
 
                 if (entidad.cliente_id === clientes.NEDETEL) mostrarSolicitarImagen.value = true
-                else imagenSubida
+                else imagenSubida()
               },
             }
 
@@ -69,6 +74,7 @@ export const useBotonesTablaTarea = (mixin: ContenedorSimpleMixin<Tarea>) => {
         prompt(data)
 
       } else {
+        console.log('dentro del else')
 
         const data: CustomActionPrompt = {
           titulo: 'Novedad',
@@ -78,7 +84,7 @@ export const useBotonesTablaTarea = (mixin: ContenedorSimpleMixin<Tarea>) => {
             delete (filaFinalizar as any).codigo_tarea_cliente
 
             if (entidad.cliente_id === clientes.NEDETEL) mostrarSolicitarImagen.value = true
-            else imagenSubida
+            else imagenSubida()
           },
         }
 
@@ -123,8 +129,10 @@ export const useBotonesTablaTarea = (mixin: ContenedorSimpleMixin<Tarea>) => {
 
   // Funcion que finaliza la tarea ya sea directamente o luego de subir la imagen solicitada
   function imagenSubida(imagen?) {
-    
-    confirmar('Los materiales serán transferidos automáticamente al stock personal de cada empleado responsable. ¿Desea finalizar?', async () => {
+
+    console.log('imagen a subir')
+    const mensaje = entidadTarea.value.cliente_id === clientes.NEDETEL ? 'Los materiales serán transferidos automáticamente al stock personal de cada empleado responsable. ¿Desea finalizar?' : '¿Desea finalizar?'
+    confirmar(mensaje, async () => {
       const posicion = filaFinalizar.posicion
       const id = filaFinalizar.id
 
