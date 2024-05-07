@@ -141,13 +141,13 @@ export default defineComponent({
          */
         async function obtenerVehiculoAsignado() {
             const response = (await new AsignacionVehiculoController().listar({ filtro: 1, responsable_id: store.user.id, estado: 'ACEPTADO' }))
-            console.log(response)
+            // console.log(response)
             return response.result[0]
         }
 
         async function obtenerUltimaBitacora() {
             const response = (await new BitacoraVehicularController().listar({ vehiculo_id: bitacora.vehiculo, firmada: 1, filtrar: 1 }))
-            console.log(response)
+            // console.log(response)
             return response.result[0]
         }
 
@@ -210,7 +210,7 @@ export default defineComponent({
                 cargando.activar()
                 const url = apiConfig.URL_BASE + '/' + axios.getEndpoint(endpoints.bitacoras_vehiculos) + '/firmar-bitacora/' + id
                 const response: AxiosResponse = await axios.post(url)
-                console.log(response)
+                // console.log(response)
                 if (response.status = 200) notificarCorrecto(response.data.mensaje)
                 //se filtra los registros para mostrar en el lado correcto la bitacora actualizada
                 await filtrarBitacoras('1')
@@ -233,7 +233,7 @@ export default defineComponent({
                 const url = apiConfig.URL_BASE + '/' + axios.getEndpoint(endpoints.bitacoras_vehiculos) + '/imprimir/' + id
                 const filename = 'bitacora_vehicular_' + id + '_' + Date.now()
                 await imprimirArchivo(url, 'GET', 'blob', 'pdf', filename)
-                console.log('Bitácora vehicular con éxito')
+                // console.log('Bitácora vehicular con éxito')
             } catch (e) {
                 notificarAdvertencia('Error al imprimir la bitácora. ' + e)
             } finally {
@@ -274,7 +274,7 @@ export default defineComponent({
             icono: 'bi-printer',
             color: 'secondary',
             accion: async ({ entidad, posicion }) => {
-                imprimirPdf(entidad.id)
+                await imprimirPdf(entidad.id)
             },
             visible: () => tabDefecto.value === '1'
         }
@@ -284,7 +284,7 @@ export default defineComponent({
             icono: 'bi-check2-circle',
             color: 'positive',
             accion: async ({ entidad, posicion }) => {
-                console.log('diste clic en finalizar', bitacora)
+                // console.log('diste clic en finalizar', bitacora)
                 bitacora.id = entidad.id
                 bitacora.km_inicial = entidad.km_inicial
                 // bitacora.km_final = entidad.km_final
