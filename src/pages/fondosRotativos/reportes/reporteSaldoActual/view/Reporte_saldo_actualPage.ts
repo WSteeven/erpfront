@@ -57,7 +57,6 @@ export default defineComponent({
      * Validaciones
      **************/
     const reglas = {
-
       usuario: {
         required: true,
         minLength: 3,
@@ -83,7 +82,7 @@ export default defineComponent({
         usuarios: {
           controller: new EmpleadoController(),
           params: {
-            campos: 'id,nombres,apellidos',
+            campos: 'id,nombres,apellidos,jefe_id',
             estado: 1,
           },
         },
