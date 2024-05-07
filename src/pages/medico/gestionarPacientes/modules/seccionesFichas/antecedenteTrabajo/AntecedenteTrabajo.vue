@@ -9,7 +9,7 @@
         <q-radio
           v-for="option in selectOptionsSiNo"
           :key="option.label"
-          v-model="entidad.calificado_iess"
+          v-model="entidad.calificado_iss"
           :val="option.value"
           :label="`${option.label}`"
           :disable="disable"
@@ -17,7 +17,7 @@
       </div>
     </div>
 
-    <div v-if="entidad.calificado_iess" class="col-12 col-md-6 q-mb-md">
+    <div v-if="entidad.calificado_iss" class="col-12 col-md-6 q-mb-md">
       <label class="q-mb-sm block">Especificar</label>
       <q-input
         v-model="entidad.descripcion"

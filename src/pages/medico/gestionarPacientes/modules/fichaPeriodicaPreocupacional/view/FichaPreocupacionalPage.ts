@@ -109,10 +109,10 @@ export default defineComponent({
         religiones: new ReligionController(),
         orientacionesSexuales: new OrientacionSexualController(),
         identidadesGeneros: new IdentidadGeneroController(),
-        tiposAntecedentes: {
-          controller: new TipoAntecedenteController(),
-          params: { genero: medicoStore.empleado?.genero },
-        },
+        tiposAntecedentes: new TipoAntecedenteController(),
+          // controller: new TipoAntecedenteController(),
+          // params: { genero: medicoStore.empleado?.genero },
+        // },
         tiposHabitosToxicos: new TipoHabitoToxicoController(),
         tiposAntecedentesFamiliares: new TipoAntecedenteFamiliarController(),
         categoriasFactoresRiesgos: new CategoriaFactorRiesgoController(),
@@ -129,7 +129,7 @@ export default defineComponent({
 
       fichaPreocupacional.examenes_realizados = listadosAuxiliares.tiposAntecedentes.map((tipo: TipoAntecedente) => {
         const res = new ResultadoExamenPreocupacional()
-        res.examen = tipo.nombre
+        res.examen = tipo.examen
         res.examen_id = tipo.id
         return res
       })
