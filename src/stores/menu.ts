@@ -567,7 +567,7 @@ export const useMenuStore = defineStore('menu', () => {
         {
           title: 'Seleccion y Contratacion',
           icon: 'bi-person-lines-fill',
-          can: true,
+          can: store.can('puede.ver.modulo.seleccion_contratacion'),
           children: [
               {
                 title: 'Solicitud de Puesto de Empleo',
