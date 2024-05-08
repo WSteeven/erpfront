@@ -103,7 +103,7 @@ export default defineComponent({
                 })
                 cargando.desactivar()
                 tareas.value = listadosAuxiliares.tareas
-                tickets.value = listadosAuxiliares.tareas
+                tickets.value = listadosAuxiliares.tickets
             }
         })
         onBeforeModificar(() => {
@@ -122,6 +122,16 @@ export default defineComponent({
             tanque_inicio: { required },
             tanque_final: { required },
             vehiculo: { required },
+            checklistImagenVehiculo: {
+                imagen_frontal: { requiredIf: requiredIf(() => bitacora.firmada) },
+                imagen_trasera: { requiredIf: requiredIf(() => bitacora.firmada) },
+                imagen_lateral_derecha: { requiredIf: requiredIf(() => bitacora.firmada) },
+                imagen_lateral_izquierda: { requiredIf: requiredIf(() => bitacora.firmada) },
+                imagen_tablero_km: { requiredIf: requiredIf(() => bitacora.firmada) },
+                imagen_tablero_radio: { requiredIf: requiredIf(() => bitacora.firmada) },
+                imagen_asientos: { requiredIf: requiredIf(() => bitacora.firmada) },
+                imagen_accesorios: { requiredIf: requiredIf(() => bitacora.firmada) },
+            },
         }
         const v$ = useVuelidate(reglas, bitacora)
         setValidador(v$.value)

@@ -225,6 +225,7 @@
               ref="tFinal"
               type="number"
               v-model="bitacora.tanque_final"
+              :disable="disabled"
               mask="###"
               :rules="[
                 (val) =>
@@ -264,6 +265,7 @@
             <q-select
               v-model="bitacora.tareas"
               :options="tareas"
+              :disable="disabled"
               options-dense
               clearable
               dense
@@ -302,6 +304,7 @@
               v-model="bitacora.tickets"
               :options="tickets"
               options-dense
+              :disable="disabled"
               clearable
               dense
               outlined
@@ -333,6 +336,8 @@
             </q-select>
           </div>
         </div>
+
+        <!-- {{bitacora}} -->
 
         <!-- Marcar como finalizada (firmada) -->
         <div
@@ -369,7 +374,9 @@
                 "
                 :datos="bitacora.actividadesRealizadas"
                 :permitirConsultar="false"
-                :permitirEditarCeldas="true"
+                :permitirEditarCeldas="
+                  accion == acciones.nuevo || accion == acciones.editar
+                "
                 :permitirEditarModal="true"
                 :permitirEditar="$q.screen.xs"
                 :permitirEliminar="false"
@@ -498,6 +505,7 @@
                       bitacora.checklistVehiculo.observacion_checklist_interior
                     "
                     placeholder="Opcional"
+                    :disable="disabled"
                     hint="Ingresa alguna observación o novedad presentada en el interior del vehículo"
                     outlined
                     dense
@@ -622,6 +630,7 @@
                     v-model="
                       bitacora.checklistVehiculo.observacion_checklist_bajo_capo
                     "
+                    :disable="disabled"
                     placeholder="Opcional"
                     hint="Ingresa alguna observación o novedad presentada bajo el capó del vehículo"
                     outlined
@@ -699,6 +708,7 @@
                     v-model="
                       bitacora.checklistVehiculo.observacion_checklist_exterior
                     "
+                    :disable="disabled"
                     placeholder="Opcional"
                     hint="Ingresa alguna observación o novedad presentada bajo el vehículo y en el exterior"
                     outlined
@@ -850,6 +860,7 @@
                   bitacora.checklistAccesoriosVehiculo
                     .observacion_accesorios_vehiculo
                 "
+                :disable="disabled"
                 placeholder="Opcional"
                 hint="Ingresa alguna observación o novedad acerca de los accesorios del vehículo"
                 outlined
@@ -887,6 +898,10 @@
                 file_extensiones=".jpg, image/*"
                 :imagen="bitacora.checklistImagenVehiculo.imagen_frontal"
                 :comprimir="true"
+                :disable="disabled"
+                :error="
+                  !!v$.checklistImagenVehiculo.imagen_frontal.$errors.length
+                "
                 :alto="'200px'"
                 @update:model-value="
                   (data) =>
@@ -902,6 +917,10 @@
                 file_extensiones=".jpg, image/*"
                 :imagen="bitacora.checklistImagenVehiculo.imagen_trasera"
                 :comprimir="true"
+                :disable="disabled"
+                :error="
+                  !!v$.checklistImagenVehiculo.imagen_trasera.$errors.length
+                "
                 :alto="'200px'"
                 @update:model-value="
                   (data) =>
@@ -919,6 +938,11 @@
                   bitacora.checklistImagenVehiculo.imagen_lateral_izquierda
                 "
                 :comprimir="true"
+                :disable="disabled"
+                :error="
+                  !!v$.checklistImagenVehiculo.imagen_lateral_izquierda.$errors
+                    .length
+                "
                 :alto="'200px'"
                 @update:model-value="
                   (data) =>
@@ -937,6 +961,11 @@
                   bitacora.checklistImagenVehiculo.imagen_lateral_derecha
                 "
                 :comprimir="true"
+                :disable="disabled"
+                :error="
+                  !!v$.checklistImagenVehiculo.imagen_lateral_derecha.$errors
+                    .length
+                "
                 :alto="'200px'"
                 @update:model-value="
                   (data) =>
@@ -953,6 +982,10 @@
                 file_extensiones=".jpg, image/*"
                 :imagen="bitacora.checklistImagenVehiculo.imagen_tablero_km"
                 :comprimir="true"
+                :disable="disabled"
+                :error="
+                  !!v$.checklistImagenVehiculo.imagen_tablero_km.$errors.length
+                "
                 :alto="'200px'"
                 @update:model-value="
                   (data) =>
@@ -968,6 +1001,11 @@
                 file_extensiones=".jpg, image/*"
                 :imagen="bitacora.checklistImagenVehiculo.imagen_tablero_radio"
                 :comprimir="true"
+                :disable="disabled"
+                :error="
+                  !!v$.checklistImagenVehiculo.imagen_tablero_radio.$errors
+                    .length
+                "
                 :alto="'200px'"
                 @update:model-value="
                   (data) =>
@@ -984,12 +1022,18 @@
                 file_extensiones=".jpg, image/*"
                 :imagen="bitacora.checklistImagenVehiculo.imagen_asientos"
                 :comprimir="true"
+                :disable="disabled"
+                :error="
+                  !!v$.checklistImagenVehiculo.imagen_asientos.$errors.length
+                "
                 :alto="'200px'"
                 @update:model-value="
                   (data) =>
                     (bitacora.checklistImagenVehiculo.imagen_asientos = data)
                 "
-              ></selector-imagen>
+              >
+                
+              </selector-imagen>
             </div>
             <!-- herramientas y accesorios -->
             <div class="col-md-3 col-sm-4 col-xs-6">
@@ -1004,6 +1048,10 @@
                 file_extensiones=".jpg, image/*"
                 :imagen="bitacora.checklistImagenVehiculo.imagen_accesorios"
                 :comprimir="true"
+                :disable="disabled"
+                :error="
+                  !!v$.checklistImagenVehiculo.imagen_accesorios.$errors.length
+                "
                 :alto="'200px'"
                 @update:model-value="
                   (data) =>
@@ -1017,6 +1065,7 @@
               <q-input
                 autogrow
                 v-model="bitacora.checklistImagenVehiculo.observacion"
+                :disable="disabled"
                 placeholder="Opcional"
                 hint="Ingresa alguna observación o novedad presentada en el vehículo"
                 outlined
