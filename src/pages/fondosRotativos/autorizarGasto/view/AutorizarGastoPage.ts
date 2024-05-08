@@ -159,7 +159,7 @@ export default defineComponent({
         diferenciaMilisegundos / (1000 * 60 * 60 * 24)
       )
       // Check if target date is within current week (inclusive)
-      if (diferenciaEnDias <= 8 || authenticationStore.esAdministrador) {
+      if (diferenciaEnDias <= 30 || authenticationStore.esAdministrador) {
         return true
       } else {
         return false
