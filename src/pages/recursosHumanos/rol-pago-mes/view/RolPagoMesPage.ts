@@ -46,7 +46,7 @@ import { HttpResponseGet } from 'shared/http/domain/HttpResponse'
 import { StatusEssentialLoading } from 'components/loading/application/StatusEssentialLoading'
 import { Archivo } from 'pages/gestionTrabajos/subtareas/modules/gestorArchivosTrabajos/domain/Archivo'
 import { ArchivoRolPagoMesController } from '../infrestucture/ArchivoRolPagoMesController'
-import ArchivoSeguimiento from 'gestionTrabajos/subtareas/modules/gestorArchivosTrabajos/view/ArchivoSeguimiento.vue'
+import GestorDocumentos from 'components/documentos/view/GestorDocumentos.vue'
 
 export default defineComponent({
   name: 'RolPagoMes',
@@ -56,7 +56,7 @@ export default defineComponent({
     SelectorImagen,
     EssentialTable,
     EssentialTableTabs,
-    ArchivoSeguimiento,
+    GestorDocumentos,
   },
   setup() {
     const mixin = new ContenedorSimpleMixin(
@@ -85,6 +85,8 @@ export default defineComponent({
       Archivo,
       new ArchivoRolPagoMesController()
     )
+    const { reestablecer: restablecerArchivo } =
+      mixinArchivoRolPago.useComportamiento()
     const { listado: roles_empleados } = mixinRolEmpleado.useReferencias()
     const { listar: listarRolEmpleado, eliminar } =
       mixinRolEmpleado.useComportamiento()
@@ -482,7 +484,8 @@ export default defineComponent({
     async function subirArchivos() {
       if (await v$.value.$validate()) {
         await refArchivoRolPago.value.subir(rolpago)
-        reestablecer();
+        restablecerArchivo()
+        reestablecer()
       }
     }
     const enviar_masivo = computed(

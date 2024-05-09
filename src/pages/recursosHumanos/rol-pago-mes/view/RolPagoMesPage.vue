@@ -40,7 +40,6 @@
         <q-tab-panel name="rol_pago">
           <q-form @submit.prevent>
             <div class="row q-col-gutter-sm q-py-md">
-
               <!-- Mes -->
               <div class="col-12 col-md-3">
                 <label class="q-mb-sm block"> Mes </label>
@@ -114,7 +113,7 @@
                 ></q-checkbox>
               </div>
               <div class="col-12 col-md-12">
-                <archivo-seguimiento
+                <gestor-documentos
                   ref="refArchivoRolPago"
                   :mixin="mixinArchivoRolPago"
                   :endpoint="endpoint"
@@ -122,8 +121,7 @@
                   :permitir-eliminar="false"
                   :listar-al-guardar="false"
                   :esMultiple="false"
-                  label="Archivo Masivo"
-                  :multiple="false"
+                  :esObligatorio="false"
                 >
                   <template #boton-subir>
                     <q-btn
@@ -138,7 +136,7 @@
                       Subir archivos seleccionados</q-btn
                     >
                   </template>
-                </archivo-seguimiento>
+                </gestor-documentos>
               </div>
             </div>
           </q-form>
