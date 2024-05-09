@@ -25,5 +25,19 @@ export class BitacoraVehicularPusherEvent {
                 link: e.notificacion.link,
             })
         })
+
+        const bitacoraAdvertencia = pusher.subscribe('bitacora-vehiculo-advertencia-' + this.store.user.id)
+        bitacoraAdvertencia.bind('bitacora-vehiculo-advertencia', function (e) {
+            notificacionStore.actualizar()
+            notificarAdvertencia('Un vehículo ha finalizado su jornada con advertencias')
+
+            //lanzamos la notificación push en el navegador del destinatario
+            pushEventMesaggeServiceWorker({
+                titulo: 'Vehículo con señales de advertencia',
+                mensaje: e.notificacion.mensaje,
+                link: e.notificacion.link,
+                icono: 'bi-exclamation-triangle-fill'
+            })
+        })
     }
 }

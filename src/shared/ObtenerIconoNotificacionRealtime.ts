@@ -57,6 +57,8 @@ export class ObtenerIconoNotificacionRealtime {
         return iconos.ordenes_reparaciones_vehiculos.icono
       case iconos.bitacora_vehiculo.label:
         return iconos.bitacora_vehiculo.icono
+      case iconos.bitacora_vehiculo_advertencia.label:
+        return iconos.bitacora_vehiculo_advertencia.icono
 
     }
   }
