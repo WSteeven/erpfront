@@ -16,6 +16,8 @@ import { SolicitudPuestoEmpleoController } from '../infraestructure/SolicitudPue
 import { SolicitudPuestoEmpleo } from '../domain/SolicitudPuestoEmpleo'
 import { removeAccents } from 'shared/utils'
 import { acciones, accionesTabla, estadosTransacciones, rolesSistema, tabOptionsPedidos } from 'config/utils'
+import { TipoPuestoTrabajoController } from '../../tipo-puesto-trabajo/infraestructure/TipoPuestoTrabajoController'
+import { AutorizacionController } from 'pages/administracion/autorizaciones/infraestructure/AutorizacionController'
 
 
 export default defineComponent({
@@ -25,9 +27,9 @@ export default defineComponent({
       SolicitudPuestoEmpleo,
       new SolicitudPuestoEmpleoController()
     )
-    const { entidad: solicitudPuestoEmpleo,accion, disabled } = mixin.useReferencias()
+    const { entidad: solicitudPuestoEmpleo,accion, disabled,listadosAuxiliares } = mixin.useReferencias()
 
-    const { setValidador } = mixin.useComportamiento()
+    const { setValidador,obtenerListados,cargarVista } = mixin.useComportamiento()
     const { onReestablecer, onGuardado, onConsultado } = mixin.useHooks()
 
     const refArchivo = ref()
@@ -45,6 +47,9 @@ export default defineComponent({
     }
 
     const v$ = useVuelidate(reglas, solicitudPuestoEmpleo)
+    const tipos_puestos_trabajo = ref([])
+    const autorizaciones = ref([])
+
     setValidador(v$.value)
     async function subirArchivos() {
       await refArchivo.value.subir()
@@ -56,7 +61,23 @@ export default defineComponent({
         subirArchivos()
       }, 1)
     })
-
+    cargarVista(async () => {
+      await obtenerListados({
+        tipos_puestos_trabajo: {
+          controller: new TipoPuestoTrabajoController(),
+          params: {
+            campos: 'id,nombre',
+          },
+        }, autorizaciones: {
+          controller: new AutorizacionController(),
+          params: {
+            campos: 'id,nombre',
+          },
+        },
+      })
+      tipos_puestos_trabajo.value = listadosAuxiliares.tipos_puestos_trabajo
+      autorizaciones.value = listadosAuxiliares.autorizaciones
+    })
     return {
       removeAccents,
       solicitudPuestoEmpleo,
@@ -68,6 +89,8 @@ export default defineComponent({
       accionesTabla,
       configuracionColumnas: configuracionColumnasSolicitudPuestoEmpleo,
       refArchivo,
+      tipos_puestos_trabajo,
+      autorizaciones
     }
   },
 })

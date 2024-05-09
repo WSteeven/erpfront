@@ -8,7 +8,7 @@
       <q-form @submit.prevent>
         <div class="row q-col-gutter-sm q-py-md">
           <!-- nombre -->
-          <div class="col-12 col-md-6">
+          <div class="col-12 col-md-3">
             <label class="q-mb-sm block">Nombre del Puesto</label>
             <q-input
               v-model="solicitudPuestoEmpleo.nombre"
@@ -28,18 +28,50 @@
               </template>
             </q-input>
           </div>
-           <!-- Manejo de archivos -->
-           <div class="col-12 col-md-6 q-mb-md">
+          <!-- Tipos de Puestos de Trabajo-->
+          <div class="col-12 col-md-3 col-sm-3">
+            <label class="q-mb-sm block">Tipo de Puesto</label>
+            <q-select
+              v-model="solicitudPuestoEmpleo.tipo_puesto"
+              :options="tipos_puestos_trabajo"
+              transition-show="jump-up"
+              transition-hide="jump-down"
+              :disable="disabled"
+              options-dense
+              dense
+              outlined
+              :input-debounce="0"
+              use-input
+              @blur="v$.tipo_puesto.$touch"
+              :error="!!v$.tipo_puesto.$errors.length"
+              :option-value="(v) => v.id"
+              :option-label="(v) => v.nombre"
+              emit-value
+              map-options
+            >
+              <template v-slot:error>
+                <div v-for="error of v$.tipo_puesto.$errors" :key="error.$uid">
+                  <div class="error-msg">{{ error.$message }}</div>
+                </div>
+              </template>
+
+              <template v-slot:no-option>
+                <q-item>
+                  <q-item-section class="text-grey"> No hay resultados </q-item-section>
+                </q-item>
+              </template>
+            </q-select>
+          </div>
+          <!-- Manejo de archivos -->
+          <div class="col-12 col-md-6 q-mb-md">
             <gestor-archivos
               ref="refArchivo"
               label="Manual de Funciones "
               :mixin="mixin"
               :disable="disabled"
               :listarAlGuardar="false"
-              :quiero_subir_archivos ="true"
-              :permitir-eliminar="
-                accion == acciones.nuevo || accion == acciones.editar
-              "
+              :quiero_subir_archivos="true"
+              :permitir-eliminar="accion == acciones.nuevo || accion == acciones.editar"
               :idModelo="idDevolucion"
             >
               <template #boton-subir>
@@ -57,8 +89,42 @@
               </template>
             </gestor-archivos>
           </div>
+          <!-- Autorización -->
+          <div class="col-12 col-md-3 col-sm-3">
+            <label class="q-mb-sm block">Autorización</label>
+            <q-select
+              v-model="solicitudPuestoEmpleo.autorizacion"
+              :options="autorizaciones"
+              transition-show="jump-up"
+              transition-hide="jump-down"
+              :disable="disabled"
+              options-dense
+              dense
+              outlined
+              :input-debounce="0"
+              use-input
+              @blur="v$.autorizacion.$touch"
+              :error="!!v$.autorizacion.$errors.length"
+              :option-value="(v) => v.id"
+              :option-label="(v) => v.nombre"
+              emit-value
+              map-options
+            >
+              <template v-slot:error>
+                <div v-for="error of v$.autorizacion.$errors" :key="error.$uid">
+                  <div class="error-msg">{{ error.$message }}</div>
+                </div>
+              </template>
+
+              <template v-slot:no-option>
+                <q-item>
+                  <q-item-section class="text-grey"> No hay resultados </q-item-section>
+                </q-item>
+              </template>
+            </q-select>
+          </div>
           <!-- Descripcion de vacante -->
-          <div class="col-12 col-md-6">
+          <div class="col-12 col-md-9">
             <div class="row justify-between">
               <label class="q-mb-sm block">Descripción de Vacante</label>
               <b class="text-italic">*No enviar imágenes demasiado grandes</b>
