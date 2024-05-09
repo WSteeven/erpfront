@@ -6,6 +6,7 @@
     ajustarCeldas
     :tab-options="tabOptionsBitacoras"
     :tabDefecto="tabDefecto"
+    :permitirEditar="tabDefecto !== '1'"
     :filtrar="filtrarBitacoras"
     :accion1="btnMarcarFinalizada"
     :accion2="btnImprimir"
@@ -149,6 +150,7 @@
               </template>
             </q-input>
           </div>
+
           <!-- km final -->
           <div class="col-6 col-md-3">
             <label class="q-mb-sm block">Km final</label>
@@ -159,6 +161,7 @@
               :disable="disabled"
               :readonly="disabled"
               :error="!!v$.km_final.$errors.length"
+              @blur="v$.km_final.$touch"
               outlined
               dense
             >
@@ -169,6 +172,7 @@
               </template>
             </q-input>
           </div>
+
           <!-- Tanque inicio -->
           <div class="col-6 col-md-3">
             <label class="q-mb-sm block">Tanque inicio</label>
@@ -337,8 +341,6 @@
           </div>
         </div>
 
-        <!-- {{bitacora}} -->
-
         <!-- Marcar como finalizada (firmada) -->
         <div
           class="col-12 col-md-3 q-mb-xl"
@@ -349,10 +351,10 @@
             v-model="bitacora.firmada"
             label="¿Marcar como finalizada?"
             :disable="disabled"
-            @update:model-value="checkFinalizada"
             outlined
             dense
           ></q-checkbox>
+          <!-- @update:model-value="checkFinalizada" -->
         </div>
 
         <!-- Actividades realizadas -->
@@ -1032,7 +1034,6 @@
                     (bitacora.checklistImagenVehiculo.imagen_asientos = data)
                 "
               >
-                
               </selector-imagen>
             </div>
             <!-- herramientas y accesorios -->

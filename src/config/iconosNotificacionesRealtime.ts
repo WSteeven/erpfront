@@ -93,7 +93,7 @@ export const iconos = {
     icono: 'bi-file-text',
   },
   bitacora_vehiculo_advertencia: {
-    label: 'BITACORA VEHICULAR',
-    icono: 'bi-cone-striped',
+    label: 'ADVERTENCIA BITACORA VEHICULAR',
+    icono: 'bi-exclamation-triangle-fill',
   },
 }

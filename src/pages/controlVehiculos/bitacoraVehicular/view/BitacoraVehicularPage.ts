@@ -1,7 +1,7 @@
 //Dependencias
 import { configuracionColumnasBitacoraVehicular } from '../domain/configuracionColumnasBitacoraVehicular';
 import { configuracionColumnasActividadesRealizadas } from '../domain/configuracionColumnasActividadesRealizadas';
-import { required, requiredIf } from "shared/i18n-validators";
+import { minValue, required, requiredIf } from "shared/i18n-validators";
 import { useVuelidate } from '@vuelidate/core'
 import { computed, defineComponent, ref } from "vue";
 
@@ -40,7 +40,7 @@ export default defineComponent({
     setup(props, { emit }) {
         const mixin = new ContenedorSimpleMixin(BitacoraVehicular, new BitacoraVehicularController())
         const { entidad: bitacora, disabled, listadosAuxiliares, accion } = mixin.useReferencias()
-        const { setValidador, cargarVista, obtenerListados, reestablecer, listar } = mixin.useComportamiento()
+        const { setValidador, cargarVista, obtenerListados, reestablecer, listar, editar } = mixin.useComportamiento()
         const { onReestablecer, onConsultado, onBeforeModificar } = mixin.useHooks()
         const { confirmar, prompt, notificarCorrecto, notificarAdvertencia, notificarError } = useNotificaciones()
 
@@ -201,12 +201,17 @@ export default defineComponent({
             confirmar('¿Está seguro de continuar?', () => bitacora.actividadesRealizadas.splice(posicion, 1))
         }
 
-        function checkFinalizada(val, evt) {
+        async function checkFinalizada(val, evt) {
+            const formularioValidado = await v$.value.$validate()
             if (val) {
                 confirmar('¿Está seguro de marcar como finalizada esta bitácora? Después de esto no podrás modificarla!', () =>
                     confirmar('Al dar click en OK se finalizará y se firmará automaticamente este registro!. ¿Desea continuar? ', async () => {
-                        await firmarBitacora(bitacora.id!)
-                        await reestablecer()
+                        if (formularioValidado) {
+                            await firmarBitacora(bitacora.id!)
+                            await reestablecer()
+                        }
+                        if (!formularioValidado) notificarAdvertencia('Verifique el formulario')
+                        
                     },
                         () => bitacora.firmada = false
                     ),
@@ -298,8 +303,8 @@ export default defineComponent({
                 bitacora.id = entidad.id
                 bitacora.km_inicial = entidad.km_inicial
                 // bitacora.km_final = entidad.km_final
-                // await firmarBitacora(entidad.id)
-                await checkFinalizada(true, null)
+                await firmarBitacora(entidad.id)
+                // await checkFinalizada(true, null)
             },
             visible: () => tabDefecto.value === '0'
         }
