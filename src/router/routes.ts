@@ -1349,6 +1349,17 @@ const routes: RouteRecordRaw[] = [
           import('pages/sistema/authentication/login/view/LoginPage.vue'),
       },
     ],
+  }, {
+    path: '/login-postulante',
+    component: () => import('layouts/FullLayout.vue'),
+    children: [
+      {
+        path: '',
+        name: 'Login_postulante',
+        component: () =>
+          import('pages/recursosHumanos/seleccion_contratacion_personal/login-postulante/view/LoginPostulantePage.vue'),
+      },
+    ],
   },
   {
     path: '/recuperar-contrasena',

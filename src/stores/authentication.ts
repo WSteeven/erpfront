@@ -19,13 +19,8 @@ import { SubDetalleFondoController } from 'pages/fondosRotativos/subDetalleFondo
 import { CantonController } from 'sistema/ciudad/infraestructure/CantonControllerontroller'
 import { TareaController } from 'pages/gestionTrabajos/tareas/infraestructure/TareaController'
 import { EmpleadoController } from 'pages/recursosHumanos/empleados/infraestructure/EmpleadoController'
-import { ConceptoIngresoController } from 'pages/recursosHumanos/concepto_ingreso/infraestructure/ConceptoIngresoController'
-import { DescuentosGenralesController } from 'pages/recursosHumanos/descuentos_generales/infraestructure/DescuentosGenralesController'
-import { DescuentosLeyController } from 'pages/recursosHumanos/descuentos_ley/infraestructure/DescuentosLeyController'
-import { HorasExtrasSubTipoController } from 'pages/recursosHumanos/horas_extras_subtipo/infraestructure/HorasExtrasSubTipoController'
-import { HorasExtrasTipoController } from 'pages/recursosHumanos/horas_extras_tipo/infraestructure/HorasExtrasTipoController'
-import { MultaController } from 'pages/recursosHumanos/multas/infraestructure/MultaController'
 import { UltimoSaldoController } from 'pages/fondosRotativos/reportes/reporteSaldoActual/infrestucture/UltimoSaldoController'
+import { UserLoginPostulante } from 'pages/recursosHumanos/seleccion_contratacion_personal/login-postulante/domain/UserLoginPostulante'
 
 export const useAuthenticationStore = defineStore('authentication', () => {
   // Variables locales
@@ -125,6 +120,32 @@ export const useAuthenticationStore = defineStore('authentication', () => {
 
   // Actions
   const login = async (credentiales: UserLogin): Promise<Empleado> => {
+    try {
+      /*const csrf_cookie = axios.getEndpoint(endpoints.csrf_cookie)
+      console.log('authentication...')
+      await axios.get(csrf_cookie) */
+
+      const login = axios.getEndpoint(endpoints.login)
+      const response: AxiosResponse = await axios.post(login, credentiales)
+
+      LocalStorage.set('token', response.data.access_token)
+      setUser(response.data.modelo)
+      roles.value = response.data.modelo.roles
+      permisos.value = response.data.modelo.permisos
+
+      cargarDatosLS()
+
+      return response.data.modelo
+    } catch (error: unknown) {
+      console.log(error)
+
+      const axiosError = error as AxiosError
+      throw new ApiError(axiosError)
+    }
+  }
+
+   // Actions
+   const loginPostulante = async (credentiales: UserLoginPostulante): Promise<Empleado> => {
     try {
       /*const csrf_cookie = axios.getEndpoint(endpoints.csrf_cookie)
       console.log('authentication...')
@@ -318,6 +339,7 @@ export const useAuthenticationStore = defineStore('authentication', () => {
     nombre_usuario,
     saldo_actual,
     login,
+    loginPostulante,
     enviarCorreoRecuperacion,
     recuperacionCuenta,
     nombreUsuario,
