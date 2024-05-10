@@ -31,6 +31,13 @@ export const configuracionColumnasBitacoraVehicular: ColumnConfig<BitacoraVehicu
         sortable: true,
     },
     {
+        name: 'km_inicial',
+        field: 'km_inicial',
+        label: 'Km Inicio',
+        align: 'left',
+        sortable: true,
+    },
+    {
         name: 'km_final',
         field: 'km_final',
         label: 'Km Final',

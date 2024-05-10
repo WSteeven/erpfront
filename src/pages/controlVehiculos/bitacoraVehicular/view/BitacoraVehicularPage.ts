@@ -32,6 +32,7 @@ import { AxiosResponse } from 'axios';
 import { useQuasar } from 'quasar';
 import { useCargandoStore } from 'stores/cargando';
 import { useNotificacionStore } from 'stores/notificacion';
+import { UltimaBitacoraController } from '../infraestructure/UltimaBitacoraController';
 
 
 export default defineComponent({
@@ -156,9 +157,9 @@ export default defineComponent({
         }
 
         async function obtenerUltimaBitacora() {
-            const response = (await new BitacoraVehicularController().listar({ vehiculo_id: bitacora.vehiculo, firmada: 1, filtrar: 1 }))
-            console.log(response)
-            return response.result[0]
+            const response = (await new UltimaBitacoraController().listar({ vehiculo_id: bitacora.vehiculo, firmada: 1, filtrar: 1 }))
+            console.log(response.response.data.modelo)
+            return response.response.data.modelo
         }
 
 
@@ -180,6 +181,10 @@ export default defineComponent({
             if (bitacoraDefault.value) {
                 bitacora.km_inicial = bitacoraDefault.value.km_final
                 bitacora.tanque_inicio = bitacoraDefault.value.tanque_final
+                bitacora.checklistAccesoriosVehiculo = bitacoraDefault.value.checklistAccesoriosVehiculo
+                bitacora.checklistVehiculo = bitacoraDefault.value.checklistVehiculo
+                bitacora.checklistImagenVehiculo.observacion = ''
+
                 bloquear_km_tanque.value = true
             } else { bloquear_km_tanque.value = false }
         }
