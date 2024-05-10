@@ -142,9 +142,60 @@
               <small>{{ error.$message }}</small>
             </div>
           </div>
-
+          <div class="col-12 col-md-3 col-sm-12">
+                  <q-btn
+                    color="primary"
+                    @click="agregarDiscapacidad()"
+                    class="col-12 col-md-3 full-width"
+                    >Agregar conocimiento</q-btn
+                  >
+                  <essential-table
+                    :configuracionColumnas="[
+                      ...configuracionColumnasConocimientoReactive,
+                      accionesTabla,
+                    ]"
+                    :datos="solicitudPuestoEmpleo.conocimientos"
+                    :permitirConsultar="false"
+                    :permitirEliminar="false"
+                    :permitirEditar="false"
+                    :mostrarBotones="false"
+                    :permitir-editar-celdas="true"
+                    :mostrar-header="false"
+                    :grid="false"
+                    :accion1="btnEliminarPuestoEmpleo"
+                    :alto-fijo="false"
+                    :ajustarCeldas="true"
+                  >
+                  </essential-table>
+                </div>
+                <div class="col-12 col-md-3 col-sm-12">
+                  <q-btn
+                    color="primary"
+                    @click="agregarFormacionAcademica()"
+                    class="col-12 col-md-3 full-width"
+                    >Agregar Titulo Academico</q-btn
+                  >
+                  <essential-table
+                    :configuracionColumnas="[
+                      ...configuracionColumnasFormacionAcademicaReactive,
+                      accionesTabla,
+                    ]"
+                    :datos="solicitudPuestoEmpleo.formaciones_academicas"
+                    :permitirConsultar="false"
+                    :permitirEliminar="false"
+                    :permitirEditar="false"
+                    :mostrarBotones="false"
+                    :permitir-editar-celdas="true"
+                    :mostrar-header="false"
+                    :grid="false"
+                    :accion1="btnEliminarFormacionAcademica"
+                    :alto-fijo="false"
+                    :ajustarCeldas="true"
+                  >
+                  </essential-table>
+                </div>
           <!-- años de experiencia -->
-          <div class="col-12 col-md-6">
+          <div class="col-12 col-md-3">
             <label class="q-mb-sm block">Años de Experiencia</label>
             <q-input
               v-model="solicitudPuestoEmpleo.anios_experiencia"

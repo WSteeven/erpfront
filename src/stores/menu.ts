@@ -575,6 +575,12 @@ export const useMenuStore = defineStore('menu', () => {
                 icon: 'bi-app',
                 can: store.can('puede.acceder.solicitud_puesto_empleo'),
               },
+              {
+                title: 'Publicacion de Puesto de Empleo',
+                link: 'publicacion-puesto-empleo',
+                icon: 'bi-app',
+                can: store.can('puede.acceder.publicacion_puesto_empleo'),
+              },
           ]},
         {
           title: 'Nominas y prestamos',

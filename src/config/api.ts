@@ -185,6 +185,7 @@ export const endpoints = {
    * Modulo de  Seleccion y contratacion
    *********************/
    solicitud_puesto_empleo: new Endpoint('recursos-humanos/solicitud-puesto-empleo'),
+   publicacion_puesto_empleo: new Endpoint('recursos-humanos/publicacion-puesto-empleo'),
    tipos_puestos_trabajos: new Endpoint('recursos-humanos/tipos_puestos_trabajos'),
 
   //Modulo de Vehiculos

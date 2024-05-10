@@ -1,5 +1,4 @@
 // Dependencias
-import { configuracionColumnasSolicitudPuestoEmpleo } from '../domain/configuracionColumnasSolicitudPuestoEmpleo'
 import { required } from '@vuelidate/validators'
 import { useVuelidate } from '@vuelidate/core'
 import { defineComponent, ref } from 'vue'
@@ -11,8 +10,6 @@ import GestorArchivos from 'components/gestorArchivos/GestorArchivos.vue'
 
 //Logica y controladores
 import { ContenedorSimpleMixin } from 'shared/contenedor/modules/simple/application/ContenedorSimpleMixin'
-import { SolicitudPuestoEmpleoController } from '../infraestructure/SolicitudPuestoEmpleoController'
-import { SolicitudPuestoEmpleo } from '../domain/SolicitudPuestoEmpleo'
 import { removeAccents } from 'shared/utils'
 import {
   acciones,
@@ -24,18 +21,23 @@ import {
 import { TipoPuestoTrabajoController } from '../../tipo-puesto-trabajo/infraestructure/TipoPuestoTrabajoController'
 import { AutorizacionController } from 'pages/administracion/autorizaciones/infraestructure/AutorizacionController'
 import EssentialTable from 'components/tables/view/EssentialTable.vue'
-import { configuracionColumnasConocimientoReactive } from '../domain/configuracionColumnasConocimientoReactive'
-import { configuracionColumnasFormacionAcademicaReactive } from '../domain/configuracionColumnasFormacionAcademicaReactive'
+import { PublicacionPuestoTrabajo } from '../domain/PublicacionPuestoTrabajo'
+import { PublicacionPuestoTrabajoController } from '../infraestructure/PublicacionPuestoTrabajoController'
+import { configuracionColumnasPublicacionPuestoTrabajo } from '../domain/configuracionColumnasPublicacionPuestoTrabajo'
+import { configuracionColumnasConocimientoReactive } from '../../solicitud_puesto_trabajo/domain/configuracionColumnasConocimientoReactive'
+import { configuracionColumnasFormacionAcademicaReactive } from '../../solicitud_puesto_trabajo/domain/configuracionColumnasFormacionAcademicaReactive'
+import { format } from '@formkit/tempo'
+import ImagenComprimidaComponent from 'components/ImagenComprimidaComponent.vue'
 
 export default defineComponent({
-  components: { TabLayout, EssentialEditor, EssentialTable, GestorArchivos },
+  components: { TabLayout, EssentialEditor, EssentialTable, GestorArchivos,ImagenComprimidaComponent },
   setup() {
     const mixin = new ContenedorSimpleMixin(
-      SolicitudPuestoEmpleo,
-      new SolicitudPuestoEmpleoController()
+      PublicacionPuestoTrabajo,
+      new PublicacionPuestoTrabajoController()
     )
     const {
-      entidad: solicitudPuestoEmpleo,
+      entidad: publicacionPuestoTrabajo,
       accion,
       disabled,
       listadosAuxiliares,
@@ -52,14 +54,16 @@ export default defineComponent({
     const reglas = {
       nombre: { required },
       tipo_puesto: { required },
-      autorizacion: { required },
+      imagen_referencia: { required },
+      publicidad: { required },
+      fecha_caducidad: { required },
       descripcion_vacante: { required },
       anios_experiencia: { required },
       conocimientos: { required },
       formaciones_academicas: { required },
     }
 
-    const v$ = useVuelidate(reglas, solicitudPuestoEmpleo)
+    const v$ = useVuelidate(reglas, publicacionPuestoTrabajo)
     const tipos_puestos_trabajo = ref([])
     const autorizaciones = ref([])
 
@@ -93,32 +97,41 @@ export default defineComponent({
       autorizaciones.value = listadosAuxiliares.autorizaciones
     })
 
-    function btnEliminarPuestoEmpleo() {
+    function btnEliminarConocimiento() {
       console.log('eliminar')
     }
     function btnEliminarFormacionAcademica() {
       console.log('eliminar')
     }
-    function agregarDiscapacidad() {
+    function agregarConocimiento() {
       console.log('agregar')
     }
     function agregarFormacionAcademica() {
       console.log('agregar')
     }
+    function optionsFechaCaducidad(date) {
+
+      const fecha_actual = format(new Date(), 'YYYY/MM/DD')
+
+      return (
+        date <= fecha_actual
+      )
+    }
     return {
       removeAccents,
-      btnEliminarPuestoEmpleo,
+      btnEliminarConocimiento,
       btnEliminarFormacionAcademica,
-      agregarDiscapacidad,
+      agregarConocimiento,
       agregarFormacionAcademica,
-      solicitudPuestoEmpleo,
+      optionsFechaCaducidad,
+      publicacionPuestoTrabajo,
       mixin,
       disabled,
       accion,
       v$,
       acciones,
       accionesTabla,
-      configuracionColumnas: configuracionColumnasSolicitudPuestoEmpleo,
+      configuracionColumnas: configuracionColumnasPublicacionPuestoTrabajo,
       configuracionColumnasConocimientoReactive,
       configuracionColumnasFormacionAcademicaReactive,
       refArchivo,
