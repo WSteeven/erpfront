@@ -1,7 +1,7 @@
 //Dependencias
 import { configuracionColumnasBitacoraVehicular } from '../domain/configuracionColumnasBitacoraVehicular';
 import { configuracionColumnasActividadesRealizadas } from '../domain/configuracionColumnasActividadesRealizadas';
-import { minValue, required, requiredIf } from "shared/i18n-validators";
+import { required, requiredIf } from "shared/i18n-validators";
 import { useVuelidate } from '@vuelidate/core'
 import { computed, defineComponent, ref } from "vue";
 
@@ -157,7 +157,7 @@ export default defineComponent({
 
         async function obtenerUltimaBitacora() {
             const response = (await new BitacoraVehicularController().listar({ vehiculo_id: bitacora.vehiculo, firmada: 1, filtrar: 1 }))
-            // console.log(response)
+            console.log(response)
             return response.result[0]
         }
 
@@ -211,7 +211,7 @@ export default defineComponent({
                             await reestablecer()
                         }
                         if (!formularioValidado) notificarAdvertencia('Verifique el formulario')
-                        
+
                     },
                         () => bitacora.firmada = false
                     ),
