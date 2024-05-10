@@ -86,7 +86,7 @@
           </div>
 
           <!-- activo -->
-          <div class="col-12 col-md-3" v-if="accion == acciones.editar">
+          <div class="col-12 col-md-3" v-if="accion == acciones.editar||accion == acciones.consultar">
             <br />
             <q-toggle
               v-model="plan.activo"
