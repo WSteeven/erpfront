@@ -82,7 +82,6 @@ export default defineComponent({
         usuarios: {
           controller: new EmpleadoController(),
           params: {
-            campos: 'id,nombres,apellidos,jefe_id',
             estado: 1,
           },
         },

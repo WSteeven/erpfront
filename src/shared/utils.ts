@@ -5,14 +5,12 @@ import { date } from 'quasar'
 import { ColumnConfig } from 'src/components/tables/domain/ColumnConfig'
 import { EntidadAuditable } from './entidad/domain/entidadAuditable'
 import { ApiError } from './error/domain/ApiError'
-import { HttpResponseGet } from './http/domain/HttpResponse'
 import { AxiosHttpRepository } from './http/infraestructure/AxiosHttpRepository'
 import { useNotificaciones } from './notificaciones'
-import { Empleado } from 'pages/recursosHumanos/empleados/domain/Empleado'
 import { ServiceWorkerClass } from './notificacionesServiceWorker/ServiceWorkerClass'
 import { ItemProforma } from 'pages/comprasProveedores/proforma/domain/ItemProforma'
-import { pipeline } from 'stream'
 import { useAuthenticationStore } from 'stores/authentication'
+import { rolesSistema } from 'config/utils'
 
 const authenticationStore = useAuthenticationStore()
 const usuario = authenticationStore.user
@@ -715,17 +713,29 @@ export function filtrarEmpleadosPorRoles(empleados, roles) {
   return filtrados
 }
 export function filtarVisualizacionEmpleadosSaldos(empleados) {
+  if (authenticationStore.can('puede.buscar.tecnicos')) {
+    const filtrados_busqueda =
+      authenticationStore.esContabilidad ||
+      authenticationStore.esCoordinador ||
+      authenticationStore.esAdministrador
+        ? empleados
+        : empleados.filter((empleado) => empleado.departamento === rolesSistema.tecnico && extraerRol(empleado.roles.split(', '), rolesSistema.tecnico)&& !extraerRol(empleado.roles.split(', '), rolesSistema.coordinador))
+    return filtrados_busqueda
+  }
+
   const filtrados =
     authenticationStore.esContabilidad ||
     authenticationStore.esCoordinador ||
     authenticationStore.esAdministrador
       ? empleados
       : empleados.filter((empleado) => empleado.jefe_id === usuario.id)
+
   return filtrados
 }
 export function filtarJefeImediato(empleados) {
   return empleados.filter((empleado) => empleado.id === usuario.jefe_id)[0]
 }
+
 
 export async function notificarErrores(err) {
   const axiosError = err as AxiosError
