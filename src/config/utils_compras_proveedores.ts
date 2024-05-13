@@ -129,6 +129,12 @@ export const opcionesCalificacionProveedor = [
   { value: 'CALIFICADO', label: 'CALIFICADO' },
   { value: 'PARCIAL', label: 'PARCIAL' },
 ]
+export const opcionesEstadosOC = [
+  { value: 'PENDIENTES' },
+  { value: 'REVISADAS' },
+  { value: 'REALIZADAS', },
+  { value: 'PAGADAS', },
+]
 
 export const estadosOrdenesCompras = {
   PENDIENTE: 'PENDIENTE',
