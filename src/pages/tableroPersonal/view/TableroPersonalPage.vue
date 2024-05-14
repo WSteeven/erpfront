@@ -213,7 +213,7 @@
           </q-card-section>
         </q-card>
       </div>
-      <div class="col-6 col-md-3 items-lg-end">
+      <div class="col-6 col-md-6 items-lg-end">
         <q-card class="q-pa-md" v-if="showDepartamentos">
           <q-card-section>
             <q-list bordered class="rounded-borders">

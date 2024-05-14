@@ -203,7 +203,10 @@ export default defineComponent({
       empleados,
       showDepartamentos,
       verEvento,
-      consultarEmpleadoDepartamento
+      consultarEmpleadoDepartamento,
+
+      showBanner,
+      
     }
   },
 })
