@@ -723,10 +723,14 @@
           <div class="col-12">
             <essential-table
               titulo="Productos Seleccionados"
-              :configuracionColumnas="[
-                ...configuracionColumnasProductosSeleccionados,
-                accionesTabla,
-              ]"
+              :configuracionColumnas="
+                accion == acciones.consultar
+                  ? configuracionColumnasProductosSeleccionadosDespachados
+                  : [
+                      ...configuracionColumnasProductosSeleccionados,
+                      accionesTabla,
+                    ]
+              "
               :datos="transaccion.listadoProductosTransaccion"
               :permitirConsultar="false"
               :permitirEditar="false"

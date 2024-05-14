@@ -20,6 +20,7 @@
         no-caps
         inline-label
       >
+        <q-tab name="personal" label="Stock personal" icon="bi-person"> </q-tab>
         <q-tab
           :name="destinosTareas.paraClienteFinal"
           label="Material para cliente final y mantenimiento"
@@ -30,7 +31,6 @@
           label="Material para proyectos"
           icon="bi-diagram-2"
         />
-        <q-tab name="personal" label="Stock personal" icon="bi-person"> </q-tab>
       </q-tabs>
 
       <q-tab-panels v-model="tab" animated>
@@ -350,7 +350,7 @@
           </q-btn>
 
           <!-- Boton transferir a stock personal -->
-          <q-btn
+          <!-- <q-btn
             v-if="mostrarBtnTransferirStockPersonal"
             class="bg-grey-4 text-primary"
             @click="
@@ -363,7 +363,7 @@
           >
             <q-icon name="bi-box-seam" size="xs" class="q-pr-sm"></q-icon>
             <span>Transferir a stock personal</span>
-          </q-btn>
+          </q-btn> -->
 
           <!-- Boton transferir a otro técnico -->
           <!-- color="grey-4" -->

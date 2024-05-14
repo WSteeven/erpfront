@@ -517,9 +517,18 @@ export default defineComponent({
       modalesEmpleado.abrirModalEntidad('EmpleadoInfoPage')
     }
 
+    const configuracionColumnasProductosSeleccionadosDespachados = [...configuracionColumnasProductosSeleccionados,
+    {
+      name: 'recibido',
+      field: 'recibido',
+      label: 'Recibido',
+      align: 'left'
+    }
+    ]
     return {
       mixin, transaccion, disabled, accion, v$, soloLectura,
       configuracionColumnas: configuracionColumnasTransaccionEgreso,
+      configuracionColumnasProductosSeleccionadosDespachados,
       acciones, accionesTabla,
       //listados
       autorizaciones,

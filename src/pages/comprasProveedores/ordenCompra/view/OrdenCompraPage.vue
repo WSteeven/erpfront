@@ -647,12 +647,27 @@
                 dense
                 v-if="orden.listadoProductos.length > 0"
               >
-                <q-item>
+              <q-item>
                   <q-item-section>Subtotal: </q-item-section>
                   <q-separator vertical></q-separator>
                   <q-item-section avatar>{{ subtotal }}</q-item-section>
                 </q-item>
-
+                <q-item>
+                  <q-item-section>Subtotal 0%: </q-item-section>
+                  <q-separator vertical></q-separator>
+                  <q-item-section avatar>{{
+                    subtotal_sin_impuestos
+                  }}</q-item-section>
+                </q-item>
+                <q-item>
+                  <q-item-section
+                    >Subtotal ({{ orden.iva }} %):
+                  </q-item-section>
+                  <q-separator vertical></q-separator>
+                  <q-item-section avatar>{{
+                    subtotal_con_impuestos
+                  }}</q-item-section>
+                </q-item>
                 <q-item>
                   <q-item-section class="q-mr-md">Descuento: </q-item-section>
                   <q-separator vertical></q-separator>
@@ -660,7 +675,9 @@
                 </q-item>
 
                 <q-item>
-                  <q-item-section>IVA ({{ orden.iva }} %): </q-item-section>
+                  <q-item-section
+                    >IVA ({{ orden.iva }} %):
+                  </q-item-section>
                   <q-separator vertical></q-separator>
                   <q-item-section avatar>{{ iva }}</q-item-section>
                 </q-item>
