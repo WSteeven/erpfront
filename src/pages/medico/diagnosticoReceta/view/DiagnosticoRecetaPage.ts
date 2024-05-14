@@ -117,6 +117,10 @@ export default defineComponent({
     onBeforeGuardar(() => {
       consulta.diagnosticos = consulta.diagnosticos.map((enfermedad: any) => {
         const diagnostico = new DiagnosticoCitaMedica()
+        diagnostico.id = enfermedad.id
+        diagnostico.codigo_nombre_enfermedad = enfermedad.codigo_nombre_enfermedad
+        diagnostico.codigo = enfermedad.codigo
+        diagnostico.nombre_enfermedad = enfermedad.nombre_enfermedad
         diagnostico.cie = enfermedad.id
         diagnostico.recomendacion = enfermedad.recomendacion
         return diagnostico
@@ -126,16 +130,18 @@ export default defineComponent({
     onReestablecer(() => {
       console.log('onReestablecer')
       consulta.diagnosticos = []
-      emit('cerrar-modal')
+      // emit('cerrar-modal')
     })
 
     onGuardado((id, responseData) => {
       console.log('onGuarado')
-      emit('guardado', { page: 'DiagnosticoRecetaPage', entidad: responseData.modelo, hook: 'onGuardado' })
+      emit('guardado', { page: 'DiagnosticoRecetaPage', entidad: responseData.modelo, hook: 'onGuardado' }) // Para CitaMedicaPage
+      emit('cerrar-modal')
     })
 
     onModificado((id, responseData) => {
       emit('guardado', { page: 'DiagnosticoRecetaPage', entidad: responseData.modelo, hook: 'onModificado' })
+      emit('cerrar-modal')
     })
 
     /*******

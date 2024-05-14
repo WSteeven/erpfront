@@ -13,7 +13,6 @@ export const configuracionColumnasCampos: ColumnConfig<ConfiguracionExamenCampo>
     name: 'resultado',
     field: 'resultado',
     label: 'Resultado',
-    type: 'number',
     align: 'left',
     sortable: true,
     editable: true,

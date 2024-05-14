@@ -1,5 +1,6 @@
 <template>
   <div class="row q-col-gutter-x-sm q-pa-md">
+    {{ datos }}
     <div class="col-12 q-mb-md">
       <essential-table
         v-if="configuracionColumnasExamenFisicoRegional.length"
@@ -48,7 +49,7 @@
 <script lang="ts" setup>
 // Dependencias
 import { StatusEssentialLoading } from 'components/loading/application/StatusEssentialLoading'
-import { Ref, ref, reactive, watch, watchEffect } from 'vue'
+import { Ref, ref, reactive, watch, watchEffect, computed } from 'vue'
 
 // Componentes
 import EssentialTable from 'components/tables/view/EssentialTable.vue'
@@ -62,7 +63,7 @@ import { RegionCuerpo } from '../../fichaPeriodicaPreocupacional/domain/RegionCu
 
 const emit = defineEmits(['update:modelValue'])
 
-defineProps({
+const props = defineProps({
   disable: {
     type: Boolean,
     default: false,
@@ -71,6 +72,7 @@ defineProps({
     type: Object,
     required: false,
   },
+  datos: Object,
 })
 
 /************
@@ -82,6 +84,7 @@ const listadoExamenFisicoRegional = ref<ExamenFisicoRegional[]>([])
 const regionesCuerpo: Ref<RegionCuerpo[]> = ref([])
 const categoriasExamenesFisicos: Ref<CategoriaExamenFisico[]> = ref([])
 const cargando = new StatusEssentialLoading()
+const fila = reactive({})
 
 /*****************
  * Controladores
@@ -165,13 +168,12 @@ const consultar = async () => {
     })
   })
 
-  let fila = {}
   regionesCuerpo.value.forEach((region: RegionCuerpo) => {
     fila[region.nombre ?? ''] = null
   })
 
   console.log(fila)
-  listado.value.push(JSON.parse(JSON.stringify(fila)))
+  // listado.value.push(JSON.parse(JSON.stringify(fila)))
 }
 
 /*************
@@ -182,5 +184,11 @@ watch(listado, emitir, { deep: true })
 /*******
  * Init
  *******/
-consultar()
+consultar()/*.then(() => {
+  // listado.value.push(JSON.parse(JSON.stringify(fila)))
+  const ddd = computed(() => props.datos)
+  listado.value = ddd.value
+  console.log(listado.value)
+  console.log(ddd.value)
+})*/
 </script>

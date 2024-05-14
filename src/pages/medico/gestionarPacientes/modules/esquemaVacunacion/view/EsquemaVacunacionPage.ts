@@ -4,6 +4,7 @@ import { useFiltrosListadosSelects } from 'shared/filtrosListadosGenerales'
 import { computed, defineComponent, ref, watch, watchEffect } from 'vue'
 import { useMedicoStore } from 'stores/medico'
 import { acciones, maskFecha } from 'config/utils'
+import { required } from 'shared/i18n-validators'
 
 // Componentes
 import SimpleLayout from 'src/shared/contenedor/modules/simple/view/SimpleLayout.vue'
@@ -15,6 +16,7 @@ import { ContenedorSimpleMixin } from 'shared/contenedor/modules/simple/applicat
 import { TipoVacunaController } from '../../tiposVacunas/infraestructure/TipoVacunaController'
 import { EsquemaVacunaController } from '../infraestructure/EsquemaVacunaController'
 import { EsquemaVacuna } from '../domain/EsquemaVacuna'
+import useVuelidate from '@vuelidate/core'
 
 export default defineComponent({
   name: 'esquemas_vacunas',
@@ -35,7 +37,7 @@ export default defineComponent({
      ********/
     const mixin = new ContenedorSimpleMixin(EsquemaVacuna, new EsquemaVacunaController())
     const { entidad: esquema, listadosAuxiliares, accion, disabled, listado } = mixin.useReferencias()
-    const { cargarVista, obtenerListados, listar, consultar } = mixin.useComportamiento()
+    const { cargarVista, obtenerListados, listar, setValidador, consultar } = mixin.useComportamiento()
     const { onReestablecer, onModificado, onGuardado, onConsultado } = mixin.useHooks()
 
     cargarVista(async () => {
@@ -109,6 +111,19 @@ export default defineComponent({
       // emit('cerrar-modal')
     })
 
+    /*********
+     * Reglas
+     *********/
+    const reglas = {
+      tipo_vacuna: { required },
+      fecha: { required },
+      responsable_vacunacion: { required },
+      establecimiento_salud: { required },
+    }
+
+    const v$ = useVuelidate(reglas, esquema)
+    setValidador(v$.value)
+
     /* onModificado(async (id, responseData) => {
       console.log('modificado...')
       idEsquema.value = id
@@ -156,6 +171,7 @@ export default defineComponent({
     else listado.value = []
 
     return {
+      v$,
       mixin,
       esquema,
       totalDosis,

@@ -163,7 +163,7 @@ export function useBotonesSolicitudExamen(tabEstadoExamen: Ref, modales?: Compor
   }
 
   const btnSubirResultadosExamenes: CustomActionTable<SolicitudExamen> = {
-    titulo: 'Consultar/Subir resultados',
+    titulo: 'Consultar/Adjuntar resultados',
     icono: 'bi-upload',
     color: 'primary',
     visible: () => [estadosSolicitudesExamenes.SOLICITADO.value].includes(tabEstadoExamen.value),

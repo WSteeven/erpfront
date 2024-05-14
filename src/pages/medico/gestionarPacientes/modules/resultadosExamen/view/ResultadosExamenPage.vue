@@ -3,10 +3,10 @@
     :mixin="mixin"
     :mostrar-listado="false"
     :permitir-guardar="false"
-    :permitir-editar="itemsExamenes.length"
+    :permitir-editar="!!itemsExamenes.length"
   >
     <template #formulario>
-      <div v-if="itemsExamenes.length" class="row bg-desenfoque rounded q-px-md">
+      <div v-if="itemsExamenes.length" class="row rounded q-px-md">
         <!-- Manejo de archivos -->
         <!-- <div v-if="itemsExamenes.length" class="col-12 q-mb-md">
           <gestor-archivos
@@ -46,7 +46,7 @@
           <div
             v-for="categoria in itemExamen.categorias"
             :key="categoria.id"
-            class="col-12 text-center text-bold q-mb-md"
+            class="col-12 text-center text-bold q-mb-xs"
           >
             <essential-table
               :titulo="categoria.categoria"

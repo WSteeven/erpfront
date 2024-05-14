@@ -233,7 +233,7 @@
                 <label class="q-mb-sm block">RP</label>
                 <q-input
                   v-model="consulta.receta.rp"
-                  placeholder="Escriba la receta para el paciente..."
+                  placeholder="Escriba la receta para el paciente (Opcional)"
                   :disable="disabled"
                   outlined
                   dense
@@ -247,7 +247,7 @@
                 <label class="q-mb-sm block">Prescripción</label>
                 <q-input
                   v-model="consulta.receta.prescripcion"
-                  placeholder="Escriba la prescripción..."
+                  placeholder="Escriba la prescripción (Opcional)"
                   :disable="disabled"
                   outlined
                   dense

@@ -120,12 +120,12 @@
       <div class="row q-gutter-x-xs">
         <q-btn
           v-if="fichaAptitud.id && mostrarDescargarPdf"
-          class="bg-white text-positive"
+          class="bg-white text-pink-10"
           no-caps
           push
           @click="descargarPdf()"
         >
-          <q-icon name="bi-download" size="xs" class="q-mr-sm"></q-icon>
+          <q-icon name="bi-file-earmark-pdf" size="xs" class="q-mr-sm"></q-icon>
           Descargar PDF</q-btn
         >
         <!-- <q-btn

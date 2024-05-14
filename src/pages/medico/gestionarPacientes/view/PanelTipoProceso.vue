@@ -169,8 +169,12 @@
                 no-caps
                 @click="btnCitaMedica()"
               >
-                <q-icon name="bi-table" class="q-mr-sm" size="xs"></q-icon>
-                {{ 'Diagnóstico y receta' }}
+                <q-icon
+                  name="bi-capsule-pill"
+                  class="q-mr-sm"
+                  size="xs"
+                ></q-icon>
+                {{ 'Diagnóstico y receta (Consulta médica)' }}
               </q-btn>
 
               <q-btn
@@ -187,16 +191,16 @@
               <label class="q-mb-sm block full-width"
                 ><b>Paso 2:</b> Luego genere las fichas médicas</label
               >
-              <q-btn
+              <!-- <q-btn
                 class="col-12 q-mb-sm"
                 no-caps
                 push
                 color="indigo"
                 @click="abrirFichaAptitud()"
               >
-                <q-icon name="bi-table" class="q-mr-sm" size="xs"></q-icon>
+                <q-icon name="bi-ui-checks-grid" class="q-mr-sm" size="xs"></q-icon>
                 {{ textoFichaAptitud }}
-              </q-btn>
+              </q-btn> -->
 
               <q-btn
                 v-if="mostrarFichaRetiro"
@@ -205,10 +209,11 @@
                 color="indigo"
                 @click="abrirFichaRetiro()"
               >
-                <q-icon name="bi-table" class="q-mr-sm" size="xs"></q-icon>
+                <q-icon name="bi-ui-checks" class="q-mr-sm" size="xs"></q-icon>
                 {{ textoFichaRetiro }}
               </q-btn>
 
+              <!-- Preocupacional -->
               <q-btn
                 v-if="mostrarFichaPreocupacional"
                 class="col-12"
@@ -216,8 +221,19 @@
                 color="indigo"
                 @click="abrirFichaPeriodicaProcupacional()"
               >
-                <q-icon name="bi-table" class="q-mr-sm" size="xs"></q-icon>
+                <q-icon name="bi-ui-checks" class="q-mr-sm" size="xs"></q-icon>
                 {{ textoFichaPreocupacional }}
+              </q-btn>
+
+              <q-btn
+                v-if="mostrarFichaPeriodica"
+                class="col-12"
+                no-caps
+                color="indigo"
+                @click="abrirFichaPeriodica()"
+              >
+                <q-icon name="bi-ui-checks" class="q-mr-sm" size="xs"></q-icon>
+                {{ textoFichaPeriodica }}
               </q-btn>
             </div>
             <essential-table
