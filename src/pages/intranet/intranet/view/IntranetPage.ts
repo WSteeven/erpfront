@@ -20,6 +20,7 @@ import { useConfiguracionGeneralStore } from 'stores/configuracion_general'
 import { useMovilizacionSubtareaStore } from 'stores/movilizacionSubtarea'
 import { ComputedRef } from 'vue'
 import { useQuasar } from 'quasar'
+import { StatusEssentialLoading } from 'components/loading/application/StatusEssentialLoading'
 
 
 
@@ -36,19 +37,21 @@ export default defineComponent({
         const departamentoSeleccionado = ref('')
         const empleados: Ref<Empleado[]> = ref([])
         const departamentos: Ref<Departamento[]> = ref([])
-        const store = useAuthenticationStore()
         const usuarios = 20
         const slide = ref(1)
         const search = ref()
         const autoplay = ref(true)
         const date = ref(timeStamp)
         const $q = useQuasar()
+        const modulosPermitidos = ref([])
 
         const showBanner = ref(false)
         const showDepartamentos = ref(false)
         /*********
          * Stores
-         *********/
+        *********/
+        const cargando = new StatusEssentialLoading()
+        const store = useAuthenticationStore()
         const movilizacionSubtareaStore = useMovilizacionSubtareaStore()
         const configuracionGeneralStore = useConfiguracionGeneralStore()
 
@@ -77,7 +80,7 @@ export default defineComponent({
         type tipo = 'center middle' | 'top start'
         const selfCenterMiddle: ComputedRef<tipo> = computed(() =>
             $q.screen.xs ? 'center middle' : 'top start'
-          )
+        )
 
         const modales = new ComportamientoModalesIntranet()
 
@@ -127,10 +130,30 @@ export default defineComponent({
             const end = start + perPage.value
             return data.value.slice(start, end)
         })
+        function obtenerModulosPermitidos() {
+            const regex = /\bmodulo_\w+\b/g
+            const modulos = store.user.permisos.filter((permiso) => regex.test(permiso))
+            modulosPermitidos.value = modulos.map(permiso => permiso.replace('puede.ver.modulo_', '').split('_').join(' '));
+        }
 
-        async function consultarEmpleadoDepartamento(departamento_id: number) {
-            const empleadoController = new EmpleadoController()
-            empleados.value = (await empleadoController.listar({ departamento_id: departamento_id, estado: 1 })).result
+        obtenerModulosPermitidos()
+
+        function goToModule(modulo) {
+            console.log('Diste click en ', modulo);
+
+        }
+        async function consultarEmpleadosDepartamento(departamento_id: number) {
+            console.log(store)
+            try {
+                cargando.activar()
+                const empleadoController = new EmpleadoController()
+                empleados.value = (await empleadoController.listar({ departamento_id: departamento_id, estado: 1 })).result
+                console.log(empleados.value)
+            } catch (err) {
+                console.log(err)
+            } finally {
+                cargando.desactivar()
+            }
         }
 
         onMounted(async () => {
@@ -221,10 +244,12 @@ export default defineComponent({
             departamentos,
             empleados,
             showDepartamentos,
+            modulosPermitidos,
             verEvento,
-            consultarEmpleadoDepartamento,
+            consultarEmpleadosDepartamento,
             enviarSolicitud,
             limpiarFormulario,
+            goToModule,
             width: computed(() => ($q.screen.xs ? '100%' : '450px')),
             selfCenterMiddle,
             showBanner,
