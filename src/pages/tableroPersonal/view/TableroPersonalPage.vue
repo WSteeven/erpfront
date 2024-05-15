@@ -1,38 +1,42 @@
 <template>
   <q-page padding>
-    <div class="row q-col-gutter-sm">
-      <div class="col-6 col-md-3"></div>
-      <div class="col-6 col-md-6 flex flex-center"></div>
-      <div class="col-6 col-md-3 items-lg-end"></div>
+    <div class="text-center text-shadow q-py-md">
+      <div class="text-subtitle2 q-mb-md">{{ fecha }}</div>
+      <div class="text-subtitle1 q-mb-md">
+        Bienvenido, {{ store.nombreUsuario }}.
+      </div>
+      <div v-if="store.user?.grupo" class="text-subtitle2 q-mb-md">
+        Grupo, {{ store.user.grupo }}.
+      </div>
+
+      <lottie-player
+        :animationData="loginJson"
+        background="transparent"
+        :speed="1"
+        style="width: 400px; height: 400px"
+        loop
+        autoplay
+      ></lottie-player>
+
+      <q-btn
+        color="primary"
+        href="https://drive.google.com/drive/folders/1Zv3eTjramxByFRht-L5Gz_nrulgFE32V?usp=sharing_eip_m&ts=64386770"
+        target="_blank"
+        no-caps
+        push
+        glossy
+        >Manuales de usuario</q-btn
+      >
+      <!--<q-chip
+        v-if="store.esCoordinador || store.esTecnicoLider"
+        icon="bi-check"
+        color="white"
+        >16 Trabajos finalizados</q-chip
+      > -->
     </div>
 
-    <!-- Componente de modales -->
-    <modales-entidad
-      :comportamiento="modales"
-      :fullWidth="false"
-      :maximized="false"
-      :persistente="false"
-    />
+    <modales-entidad :comportamiento="modales" />
   </q-page>
 </template>
-
-<style>
-.custom-caption {
-  text-align: center;
-  padding: 12px;
-  color: white;
-  background-color: rgba(0, 0, 0, 0.3);
-}
-
-.banner-transparent {
-  background: rgba(0, 0, 0, 0) !important;
-  margin-top: 8%;
-  border: none !important;
-}
-.margen-pequeno {
-  padding-left: 4%;
-  padding-right: 4%;
-}
-</style>
 
 <script src="./TableroPersonalPage.ts"></script>

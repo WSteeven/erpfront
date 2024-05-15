@@ -21,6 +21,7 @@ import { useMovilizacionSubtareaStore } from 'stores/movilizacionSubtarea'
 import { ComputedRef } from 'vue'
 import { useQuasar } from 'quasar'
 import { StatusEssentialLoading } from 'components/loading/application/StatusEssentialLoading'
+import { useRouter } from 'vue-router'
 
 
 
@@ -55,7 +56,7 @@ export default defineComponent({
         const movilizacionSubtareaStore = useMovilizacionSubtareaStore()
         const configuracionGeneralStore = useConfiguracionGeneralStore()
 
-
+        const Router = useRouter()
         const filtrosTareas = ['Recientes', 'sdsd']
         const filtroTarea = ref('Recientes')
 
@@ -140,7 +141,12 @@ export default defineComponent({
 
         function goToModule(modulo) {
             console.log('Diste click en ', modulo);
-
+        }
+        async function logout() {
+            cargando.activar()
+            await store.logout()
+            Router.replace({ name: 'Login' })
+            cargando.desactivar()
         }
         async function consultarEmpleadosDepartamento(departamento_id: number) {
             console.log(store)
@@ -166,25 +172,9 @@ export default defineComponent({
         }),
 
 
-            function verSubtarea() {
-                // modales.abrirModalEntidad('SubtareaAsignadaPage')
-            }
-
-
         function openWhatsApp(numero) {
             window.location.href = `https://wa.me/${numero}`;
         }
-
-        async function obtenerSubtareasPendientesAsignar() {
-            const filtros = {
-                estado: 'CREADO',
-                coordinador_id: store.user.id,
-            }
-            // const { result } = await new SubtareaController().listar(filtros)
-            // subtareasPorAsignar.value = result
-        }
-
-        // obtenerSubtareasPendientesAsignar()
 
         /**
          * Funcion para probar componente de fecha enviando al backend
@@ -245,6 +235,7 @@ export default defineComponent({
             empleados,
             showDepartamentos,
             modulosPermitidos,
+            logout,
             verEvento,
             consultarEmpleadosDepartamento,
             enviarSolicitud,

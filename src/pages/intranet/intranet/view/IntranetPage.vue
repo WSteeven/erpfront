@@ -299,9 +299,9 @@
             <div class="col">
               <q-card-section class="text-left">
                 {{ store.nombreUsuario }}
-                <q-badge color="primary">{{ store.user.email }}</q-badge>
+                <q-badge color="primary">{{ store.user?.email }}</q-badge>
                 <q-badge rounded color="orange"
-                  >{{ store.user.cargo }}
+                  >{{ store.user?.cargo }}
                 </q-badge>
               </q-card-section>
             </div>
