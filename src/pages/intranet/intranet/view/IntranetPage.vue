@@ -411,17 +411,24 @@
         <label>Modulos Permitidos</label>
         <div class="row">
           <div
-            class="col-4 q-pa-md"
+            class="col-6 q-pa-md"
             v-for="(modulo, index) in modulosPermitidos"
             :key="index"
           >
-            <q-btn
-              class="glossy"
-              :label="modulo"
-              color="primary"
-              rounded
-              @click="goToModule(modulo)"
+          <q-card style="width: 300px; height: 200px;">
+            <div class="text-center">
+            <q-btn 
+            outline 
+            color="primary"
+            :label="modulo"
+            :icon="getIcon(modulo)"
+            @click="goToModule(modulo)"
+            size="lg"
             />
+        </div>
+
+          </q-card>
+            
           </div>
         </div>
       </div>

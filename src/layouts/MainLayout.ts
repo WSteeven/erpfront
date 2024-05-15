@@ -268,6 +268,7 @@ export default defineComponent({
       enCamino,
       motivo,
       modales,
+      route,
       abrirMovilizacionSubtarea,
       abrirTransferirTareas,
       links: menu.links,
