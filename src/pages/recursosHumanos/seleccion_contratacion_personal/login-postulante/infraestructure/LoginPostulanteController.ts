@@ -32,6 +32,20 @@ export class LoginPostulanteController {
       throw error
     }
   }
+async loginterceros(driver) {
+    try {
+      await this.store.loginTerceros(driver)
+    } catch (error: unknown) {
+           throw error
+    }
+  }
+  async obtenerSesion() {
+    try {
+      await this.store.obtenerSesion()
+    } catch (error: unknown) {
+           throw error
+    }
+  }
 
   async logout(): Promise<void> {
     return this.store

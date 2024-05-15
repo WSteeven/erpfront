@@ -12,6 +12,8 @@ export const endpoints = {
   configuracion: new Endpoint('configuracion'),
   auditorias: new Endpoint('auditorias'),
   login: new Endpoint('usuarios/login'),
+  login_terceros: new Endpoint('login-social-network/'),
+  sesion_terceros: new Endpoint('auth-social'),
   logout: new Endpoint('usuarios/logout'),
   cambiarContrasena: new Endpoint('usuarios/cambiar-contrasena'),
   enviar_correo_recuperacion: new Endpoint('usuarios/recuperar-password'),

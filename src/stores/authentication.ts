@@ -144,8 +144,10 @@ export const useAuthenticationStore = defineStore('authentication', () => {
     }
   }
 
-   // Actions
-   const loginPostulante = async (credentiales: UserLoginPostulante): Promise<Empleado> => {
+  // Actions
+  const loginPostulante = async (
+    credentiales: UserLoginPostulante
+  ): Promise<Empleado> => {
     try {
       /*const csrf_cookie = axios.getEndpoint(endpoints.csrf_cookie)
       console.log('authentication...')
@@ -153,7 +155,7 @@ export const useAuthenticationStore = defineStore('authentication', () => {
 
       const login = axios.getEndpoint(endpoints.login)
       const response: AxiosResponse = await axios.post(login, credentiales)
-
+      console.log(response)
       LocalStorage.set('token', response.data.access_token)
       setUser(response.data.modelo)
       roles.value = response.data.modelo.roles
@@ -165,6 +167,30 @@ export const useAuthenticationStore = defineStore('authentication', () => {
     } catch (error: unknown) {
       console.log(error)
 
+      const axiosError = error as AxiosError
+      throw new ApiError(axiosError)
+    }
+  }
+  const loginTerceros = async (driver) => {
+    try {
+      const login = axios.getEndpoint(endpoints.login_terceros)
+      const url = login + driver
+      const response: AxiosResponse = await axios.get(url);
+      const url_redirect = response.data.url
+      window.location.href = url_redirect;
+    } catch (error) {
+      console.log(error)
+      const axiosError = error as AxiosError
+      throw new ApiError(axiosError)
+    }
+  }
+  const obtenerSesion = async () => {
+    try {
+      const login = axios.getEndpoint(endpoints.sesion_terceros)
+      const response: AxiosResponse = await axios.get(login);
+      console.log(response);
+
+    } catch (error) {
       const axiosError = error as AxiosError
       throw new ApiError(axiosError)
     }
@@ -339,7 +365,9 @@ export const useAuthenticationStore = defineStore('authentication', () => {
     nombre_usuario,
     saldo_actual,
     login,
+    loginTerceros,
     loginPostulante,
+    obtenerSesion,
     enviarCorreoRecuperacion,
     recuperacionCuenta,
     nombreUsuario,

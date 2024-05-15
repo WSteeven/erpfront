@@ -36,6 +36,7 @@
               no-caps
               unelevated
               icon="bi-linkedin"
+              @click="loginTerceros('linkedin')"
             >
             </q-btn>
           </div>
@@ -48,6 +49,7 @@
               no-caps
               unelevated
               icon="bi-google"
+              @click="loginTerceros('google')"
             >
             </q-btn>
           </div>
@@ -60,6 +62,7 @@
               no-caps
               unelevated
               icon="bi-facebook"
+              @click="loginTerceros('facebook')"
             >
             </q-btn>
           </div>

@@ -1,6 +1,6 @@
 // Dependencias
 import { isAxiosError, notificarMensajesError, removeAccents } from 'shared/utils'
-import { computed, defineComponent, reactive, ref, watchEffect } from 'vue'
+import { computed, defineComponent, onMounted, reactive, ref, watchEffect } from 'vue'
 import { useQuasar } from 'quasar'
 import { useRouter } from 'vue-router'
 
@@ -13,6 +13,7 @@ import { StatusEssentialLoading } from 'components/loading/application/StatusEss
 import { useNotificaciones } from 'shared/notificaciones'
 import { UserLogin } from 'sistema/authentication/login/domain/UserLogin'
 import { LoginController } from 'sistema/authentication/login/infraestructure/LoginController'
+import { LoginPostulanteController } from '../infraestructure/LoginPostulanteController'
 
 export default defineComponent({
   name: 'LoginPostulante',
@@ -25,11 +26,29 @@ export default defineComponent({
 
       const loginUser = reactive(new UserLogin())
 
-      const loginController = new LoginController()
+      const loginController = new LoginPostulanteController()
 
       const notificaciones = useNotificaciones()
       const cargando = new StatusEssentialLoading()
       const Router = useRouter()
+
+
+      onMounted(async() => {
+        try {
+          cargando.activar()
+          await loginController.obtenerSesion()
+
+          //notificaciones.notificarCorrecto('Bienvenido a ' + nombreEmpresa.value)
+
+        } catch (error: any) {
+          if (isAxiosError(error)) {
+            const mensajes: string[] = error.erroresValidacion
+            notificarMensajesError(mensajes, notificaciones)
+          }
+        } finally {
+          cargando.desactivar()
+        }
+      })
 
       watchEffect(() => document.title = nombreEmpresa.value ?? '')
       const $q = useQuasar()
@@ -57,6 +76,23 @@ export default defineComponent({
         Router.replace('/recuperar-contrasena')
       }
 
+      const loginTerceros = async (driver) => {
+
+        if (!$q.loading.isActive) {
+          try {
+            cargando.activar()
+            await loginController.loginterceros(driver)
+            notificaciones.notificarCorrecto('Bienvenido a ' + nombreEmpresa.value)
+          } catch (error: any) {
+            if (isAxiosError(error)) {
+              const mensajes: string[] = error.erroresValidacion
+              notificarMensajesError(mensajes, notificaciones)
+            }
+          } finally {
+            cargando.desactivar()
+          }
+        }
+      }
 
       const enableLoginButton = computed(
         () => loginUser.name !== '' && loginUser.password !== ''
@@ -65,6 +101,7 @@ export default defineComponent({
       return {
         isPwd: ref(true),
         loginUser,
+        loginTerceros,
         logoClaro: computed(() => configuracionGeneralStore.configuracion?.logo_claro),
         logoOscuro: computed(() => configuracionGeneralStore.configuracion?.logo_oscuro),
         enableLoginButton,
