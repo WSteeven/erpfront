@@ -714,6 +714,15 @@ const routes: RouteRecordRaw[] = [
           ),
         meta: { requiresAuth: false },
       },
+      {
+        path: 'reporte-ordenes-compras',
+        name: 'reporte_ordenes_compras',
+        component: () =>
+          import(
+            'pages/comprasProveedores/reportes/modules/rpt_ordenes_compras/view/ReporteOrdenesCompras.vue'
+          ),
+        meta: { requiresAuth: false },
+      },
 
       //Routes for administracion
       {
