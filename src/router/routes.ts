@@ -1362,6 +1362,20 @@ const routes: RouteRecordRaw[] = [
     ],
   },
   {
+    path: '/puestos-disponibles',
+    component: () => import('layouts/PostulanteLayout.vue'),
+    children: [
+      {
+        path: '',
+        name: 'puestos_disponibles',
+        component: () =>
+          import(
+            'pages/recursosHumanos/seleccion_contratacion_personal/puesto-disponible/view/PuestoDisponiblePage.vue'
+          ),
+      },
+    ],
+  },
+  {
     path: '/puestos-aplicados',
     component: () => import('layouts/PostulanteLayout.vue'),
     children: [
@@ -1370,7 +1384,7 @@ const routes: RouteRecordRaw[] = [
         name: 'puestos_aplicados',
         component: () =>
           import(
-            'pages/recursosHumanos/seleccion_contratacion_personal/puesto-disponible/view/PuestoAplicadoPage.vue'
+            'pages/recursosHumanos/seleccion_contratacion_personal/puesto-aplicado/view/PuestoAplicadoPage.vue'
           ),
       },
     ],
