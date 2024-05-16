@@ -1362,6 +1362,20 @@ const routes: RouteRecordRaw[] = [
     ],
   },
   {
+    path: '/puestos-aplicados',
+    component: () => import('layouts/PostulanteLayout.vue'),
+    children: [
+      {
+        path: '',
+        name: 'puestos_aplicados',
+        component: () =>
+          import(
+            'pages/recursosHumanos/seleccion_contratacion_personal/puesto-disponible/view/PuestoAplicadoPage.vue'
+          ),
+      },
+    ],
+  },
+  {
     path: '/recuperar-contrasena',
     component: () => import('layouts/FullLayout.vue'),
     children: [
