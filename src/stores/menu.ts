@@ -205,7 +205,7 @@ export const useMenuStore = defineStore('menu', () => {
           title: 'Empleados',
           link: 'empleados',
           icon: 'bi-person-lines-fill',
-          can: store.can('puede.ver.empleados') && store.esBodeguero,
+          can: store.can('puede.acceder.empleados') && store.esBodeguero,
         },
         {
           title: 'Marcas',
