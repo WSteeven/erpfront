@@ -1,7 +1,7 @@
 
 // Dependencias
 import EssentialLoading from 'components/loading/view/EssentialLoading.vue'
-import { defineComponent, ref, computed,  ComputedRef } from 'vue'
+import { defineComponent, ref, computed,  ComputedRef, onMounted } from 'vue'
 import { useAuthenticationStore } from 'src/stores/authentication'
 import { LocalStorage, useQuasar } from 'quasar'
 import {  useRouter } from 'vue-router'
@@ -20,10 +20,11 @@ import EssentialLink from 'components/EssentialLink.vue'
 import { ComportamientoModalesMainLayout } from './modales/application/ComportamientoModalesMainLayout'
 import { useConfiguracionGeneralStore } from 'stores/configuracion_general'
 import { useIdle, } from '@vueuse/core'
-import { formatearFechaTexto } from 'shared/utils'
+import { formatearFechaTexto, isAxiosError, notificarMensajesError } from 'shared/utils'
 import { NotIdle } from 'idlejs'
 import { StatusEssentialLoading } from 'components/loading/application/StatusEssentialLoading'
 import { useMenuPostulanteStore } from 'stores/menuPostulante'
+import { LoginPostulanteController } from 'pages/recursosHumanos/seleccion_contratacion_personal/login-postulante/infraestructure/LoginPostulanteController'
 
 export default defineComponent({
   name: 'PostulanteLayout',
@@ -46,6 +47,7 @@ export default defineComponent({
      *********/
     const authenticationStore = useAuthenticationStore()
     const configuracionGeneralStore = useConfiguracionGeneralStore()
+
     /*******
      * Init
      *******/
@@ -60,7 +62,7 @@ export default defineComponent({
      ************/
     const cargando = new StatusEssentialLoading()
     const Router = useRouter()
-    const grupo = authenticationStore.user.grupo
+    //const grupo = authenticationStore.user.grupo
 
     const saldo = computed(() => {
       authenticationStore.consultar_saldo_actual()
@@ -70,7 +72,8 @@ export default defineComponent({
     const nombreUsuario = computed(() => {
       const usuario = authenticationStore.user
       if (usuario) {
-        return `${usuario.nombres} ${usuario.apellidos ?? ''} `
+       // return `${usuario.nombres} ${usuario.apellidos ?? ''} `
+        return " "
       }
       return ''
     })
@@ -96,7 +99,7 @@ export default defineComponent({
 
 
     //Poner la imagen de perfil
-    const imagenPerfil = `https://ui-avatars.com/api/?name=${authenticationStore.user.nombres.substr(0, 1)}+${authenticationStore.user.apellidos.substr(0, 1)}&bold=true&background=0879dc28&color=0879dc`
+    const imagenPerfil = ""//`https://ui-avatars.com/api/?name=${authenticationStore.user.nombres.substr(0, 1)}+${authenticationStore.user.apellidos.substr(0, 1)}&bold=true&background=0879dc28&color=0879dc`
 
 
 
@@ -204,7 +207,6 @@ export default defineComponent({
       dayjs,
       imagenPerfil,
       selfCenterMiddle,
-      grupo,
       mostrarTransferirTareas: authenticationStore.esCoordinador || authenticationStore.esJefeTecnico,
     }
   },

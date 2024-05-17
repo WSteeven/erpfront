@@ -33,22 +33,6 @@ export default defineComponent({
       const Router = useRouter()
 
 
-      onMounted(async() => {
-        try {
-          cargando.activar()
-          await loginController.obtenerSesion()
-
-          //notificaciones.notificarCorrecto('Bienvenido a ' + nombreEmpresa.value)
-
-        } catch (error: any) {
-          if (isAxiosError(error)) {
-            const mensajes: string[] = error.erroresValidacion
-            notificarMensajesError(mensajes, notificaciones)
-          }
-        } finally {
-          cargando.desactivar()
-        }
-      })
 
       watchEffect(() => document.title = nombreEmpresa.value ?? '')
       const $q = useQuasar()

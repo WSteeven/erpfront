@@ -93,9 +93,6 @@
                   {{ nombreUsuario }}
                 </div>
 
-                <div v-if="grupo" class="q-mb-md">
-                  Grupo <strong>{{ grupo }}</strong>
-                </div>
 
                 <div class="text-subtitle2 text-center q-mb-md">
                   Saldo Actual: $ {{ saldo }}

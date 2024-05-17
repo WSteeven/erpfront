@@ -1,17 +1,17 @@
 import { Empleado } from 'recursosHumanos/empleados/domain/Empleado'
-import { useAuthenticationStore } from 'src/stores/authentication'
 import { ApiError } from 'shared/error/domain/ApiError'
 import { rolesSistema } from 'config/utils'
 import { useRouter } from 'vue-router'
 import { UserLoginPostulante } from '../domain/UserLoginPostulante'
+import { useAuthenticationExternalStore } from 'stores/authenticationExternal'
 
 export class LoginPostulanteController {
-  store = useAuthenticationStore()
+  store = useAuthenticationExternalStore()
   Router = useRouter()
 
   async login(userLogin: UserLoginPostulante): Promise<Empleado> {
     try {
-      const usuario = await this.store.loginPostulante(userLogin)
+      const usuario = await this.store.login(userLogin)
       const roles = usuario.roles
       if (roles?.includes(rolesSistema.tecnico_lider)) {
         this.Router.replace({ name: 'trabajo_agendado' })
@@ -39,9 +39,9 @@ async loginterceros(driver) {
            throw error
     }
   }
-  async obtenerSesion() {
+  async obtenerSesionUser() {
     try {
-      await this.store.obtenerSesion()
+      this.store.obtenerSesion()
     } catch (error: unknown) {
            throw error
     }

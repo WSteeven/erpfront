@@ -1,5 +1,4 @@
 import { AxiosHttpRepository } from 'shared/http/infraestructure/AxiosHttpRepository'
-import { UserLogin } from 'src/pages/sistema/authentication/login/domain/UserLogin'
 import { ApiError } from 'shared/error/domain/ApiError'
 import { rolesSistema } from 'config/utils'
 import { endpoints } from 'src/config/api'
@@ -20,7 +19,7 @@ import { CantonController } from 'sistema/ciudad/infraestructure/CantonControlle
 import { TareaController } from 'pages/gestionTrabajos/tareas/infraestructure/TareaController'
 import { EmpleadoController } from 'pages/recursosHumanos/empleados/infraestructure/EmpleadoController'
 import { UltimoSaldoController } from 'pages/fondosRotativos/reportes/reporteSaldoActual/infrestucture/UltimoSaldoController'
-import { UserLoginPostulante } from 'pages/recursosHumanos/seleccion_contratacion_personal/login-postulante/domain/UserLoginPostulante'
+import { UserLogin } from 'sistema/authentication/login/domain/UserLogin'
 
 export const useAuthenticationStore = defineStore('authentication', () => {
   // Variables locales
@@ -119,34 +118,8 @@ export const useAuthenticationStore = defineStore('authentication', () => {
   }
 
   // Actions
-  const login = async (credentiales: UserLogin): Promise<Empleado> => {
-    try {
-      /*const csrf_cookie = axios.getEndpoint(endpoints.csrf_cookie)
-      console.log('authentication...')
-      await axios.get(csrf_cookie) */
-
-      const login = axios.getEndpoint(endpoints.login)
-      const response: AxiosResponse = await axios.post(login, credentiales)
-
-      LocalStorage.set('token', response.data.access_token)
-      setUser(response.data.modelo)
-      roles.value = response.data.modelo.roles
-      permisos.value = response.data.modelo.permisos
-
-      cargarDatosLS()
-
-      return response.data.modelo
-    } catch (error: unknown) {
-      console.log(error)
-
-      const axiosError = error as AxiosError
-      throw new ApiError(axiosError)
-    }
-  }
-
-  // Actions
-  const loginPostulante = async (
-    credentiales: UserLoginPostulante
+  const login = async (
+    credentiales: UserLogin
   ): Promise<Empleado> => {
     try {
       /*const csrf_cookie = axios.getEndpoint(endpoints.csrf_cookie)
@@ -167,30 +140,6 @@ export const useAuthenticationStore = defineStore('authentication', () => {
     } catch (error: unknown) {
       console.log(error)
 
-      const axiosError = error as AxiosError
-      throw new ApiError(axiosError)
-    }
-  }
-  const loginTerceros = async (driver) => {
-    try {
-      const login = axios.getEndpoint(endpoints.login_terceros)
-      const url = login + driver
-      const response: AxiosResponse = await axios.get(url);
-      const url_redirect = response.data.url
-      window.location.href = url_redirect;
-    } catch (error) {
-      console.log(error)
-      const axiosError = error as AxiosError
-      throw new ApiError(axiosError)
-    }
-  }
-  const obtenerSesion = async () => {
-    try {
-      const login = axios.getEndpoint(endpoints.sesion_terceros)
-      const response: AxiosResponse = await axios.get(login);
-      console.log(response);
-
-    } catch (error) {
       const axiosError = error as AxiosError
       throw new ApiError(axiosError)
     }
@@ -365,9 +314,6 @@ export const useAuthenticationStore = defineStore('authentication', () => {
     nombre_usuario,
     saldo_actual,
     login,
-    loginTerceros,
-    loginPostulante,
-    obtenerSesion,
     enviarCorreoRecuperacion,
     recuperacionCuenta,
     nombreUsuario,

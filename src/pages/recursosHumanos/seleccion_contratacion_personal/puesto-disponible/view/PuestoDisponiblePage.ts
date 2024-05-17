@@ -2,7 +2,7 @@
 import { configuracionColumnasTipoPuestoTrabajo } from '../domain/configuracionColumnasTipoPuestoTrabajo'
 import { required } from '@vuelidate/validators'
 import { useVuelidate } from '@vuelidate/core'
-import { defineComponent } from 'vue'
+import { defineComponent, onMounted } from 'vue'
 
 // Componentes
 import TabLayout from 'shared/contenedor/modules/simple/view/TabLayout.vue'
@@ -11,7 +11,9 @@ import TabLayout from 'shared/contenedor/modules/simple/view/TabLayout.vue'
 import { ContenedorSimpleMixin } from 'shared/contenedor/modules/simple/application/ContenedorSimpleMixin'
 import { TipoPuestoTrabajoController } from '../infraestructure/TipoPuestoTrabajoController'
 import { TipoPuestoTrabajo } from '../domain/TipoPuestoTrabajo'
-import { removeAccents } from 'shared/utils'
+import { isAxiosError, notificarMensajesError, removeAccents } from 'shared/utils'
+import { StatusEssentialLoading } from 'components/loading/application/StatusEssentialLoading'
+import { LoginPostulanteController } from '../../login-postulante/infraestructure/LoginPostulanteController'
 
 export default defineComponent({
   components: { TabLayout },
@@ -22,6 +24,8 @@ export default defineComponent({
     )
     const { entidad: tipo_puesto_trabajo, disabled } = mixin.useReferencias()
     const { setValidador } = mixin.useComportamiento()
+    const cargando = new StatusEssentialLoading()
+        const loginController = new LoginPostulanteController()
 
     const puestos_trabajos = [
       {
@@ -61,7 +65,22 @@ export default defineComponent({
 
     const v$ = useVuelidate(reglas, tipo_puesto_trabajo)
     setValidador(v$.value)
+    onMounted(async() => {
+      try {
+        cargando.activar()
+        await loginController.obtenerSesionUser()
+      } catch (error: any) {
+        console.log('montar errror',error);
 
+        if (isAxiosError(error)) {
+          const mensajes: string[] = error.erroresValidacion
+          console.log('montar errror',error.mensaje);
+          //notificarMensajesError(mensajes, notificaciones)
+        }
+      } finally {
+        cargando.desactivar()
+      }
+    })
     return {
       removeAccents,
       mixin,
