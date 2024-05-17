@@ -30,7 +30,7 @@ export const filtroEgresos = (label: string, egresos: any, etiquetas: any, key: 
                         return egresos.value.filter((objeto) => objeto.estado === label)
                         break
                     default:
-                        return egresos.value.filter((objeto) => objeto.firmada || objeto.estado_comprobante == 'ACEPTADA')
+                        return egresos.value.filter((objeto) => objeto.firmada || objeto.estado_comprobante == 'ACEPTADA' || (objeto.estado == 'COMPLETA' && objeto.firmada == null && objeto.estado_comprobante == null))
                 }
             }
             return egresos.value.filter((objeto) => objeto.motivo === label)
