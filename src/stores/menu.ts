@@ -861,6 +861,12 @@ export const useMenuStore = defineStore('menu', () => {
       can: store.can('puede.ver.modulo_ventas') || store.esAdministrador,
       children: [
         {
+          title: 'Dashboard',
+          link: 'ventas/dashboard-ventas',
+          icon: 'bi-app',
+          can: store.can('puede.ver.dashboard_ventas_empresa') || store.esAdministrador,
+        },
+        {
           title: 'Proformas',
           link: 'proformas',
           icon: 'bi-app',

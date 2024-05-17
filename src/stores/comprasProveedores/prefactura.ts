@@ -55,6 +55,21 @@ export const usePrefacturaStore = defineStore('prefactura', () => {
         prefactura.hydrate(prefacturaReset)
     }
 
+    async function consultarDashboard(data) {
+        try {
+            statusLoading.activar()
+            const axios = AxiosHttpRepository.getInstance()
+            const url = apiConfig.URL_BASE + '/' + axios.getEndpoint(endpoints.dashboard_ventas_empresa)
+            const response: AxiosResponse = await axios.post(url, data)
+            // console.log(response.data.results)
+            return response.data.results
+        } catch (error) {
+            notificarError('Error al consultar el dashboard' + error)
+        } finally {
+            statusLoading.desactivar()
+        }
+    }
+
     return {
         prefactura,
         accionPrefactura,
@@ -63,5 +78,7 @@ export const usePrefacturaStore = defineStore('prefactura', () => {
         anularPrefactura,
         resetearprefactura,
         imprimirPdf,
+        consultarDashboard,
+
     }
 })
