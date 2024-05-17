@@ -8,16 +8,7 @@ export const useMenuPostulanteStore = defineStore('menu', () => {
 
   // State
   const links: Ref<MenuOption[]> = computed(() => [
-    {
-      header: 'Modulos',
-    },
-    {
-      title: 'Inicio',
-      icon: 'bi-house-fill',
-      link: 'puestos-disponibles',
-      can: true,
-    },
-    {
+      {
       title: 'Aplicados',
       icon: 'bi-check2-square',
       link: 'puestos-aplicados',
