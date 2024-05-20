@@ -464,6 +464,7 @@
                 :alto-fijo="false"
                 :accion1="botonVer"
                 :accion2="btnSeguimiento"
+                :mostrar-exportar="true"
               ></essential-table>
             </div>
           </div>
@@ -620,6 +621,7 @@
                 :alto-fijo="false"
                 :accion1="botonVer"
                 :accion2="btnSeguimiento"
+                :mostrar-exportar="true"
               ></essential-table>
             </div>
           </div>
@@ -651,6 +653,7 @@
                 :alto-fijo="false"
                 :accion1="botonVer"
                 :accion2="btnSeguimiento"
+                :mostrar-exportar="true"
               ></essential-table>
             </div>
           </div>
@@ -718,6 +721,7 @@
                 :alto-fijo="false"
                 :accion1="botonVer"
                 :accion2="btnSeguimiento"
+                :mostrar-exportar="true"
               ></essential-table>
             </div>
           </div>
