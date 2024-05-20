@@ -235,6 +235,18 @@
                 <q-icon name="bi-ui-checks" class="q-mr-sm" size="xs"></q-icon>
                 {{ textoFichaPeriodica }}
               </q-btn>
+
+              <q-btn
+                v-if="mostrarFichaReintegro"
+                class="col-12"
+                no-caps
+                color="indigo"
+                @click="abrirFichaReintegro()"
+              >
+                <q-icon name="bi-ui-checks" class="q-mr-sm" size="xs"></q-icon>
+                {{ textoFichaReintegro }}
+              </q-btn>
+
             </div>
             <essential-table
               titulo="Solicitudes de exámenes"

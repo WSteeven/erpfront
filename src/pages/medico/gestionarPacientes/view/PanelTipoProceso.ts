@@ -121,11 +121,12 @@ export default defineComponent({
     }
 
     // const guardadoCitaMedica = (params: { page: keyof CitaMedicaModales, entidad: ConsultaMedica, hook }) => {
-    const actualizarListadoExamenes = (data) => {//{ data, page }) => {
+    const actualizarListadoExamenes = (params) => {//{ data, page }) => {
       console.log('ceradno modal jejej')
-      console.log(data)
+      console.log(params)
       let index: number, examen: Examen
-      const { page, detalle_resultado_examen, idExamenesSolicitados } = data
+      const { page } = params
+      const { idExamenesSolicitados } = params.data // detalle_resultado_examen
 
       switch (page) {
         case 'SolicitudExamenSolicitarPage':
@@ -152,6 +153,7 @@ export default defineComponent({
       medicoStore.idFichaRetiro = registro.ficha_retiro
       medicoStore.idFichaPreocupacional = registro.ficha_preocupacional
       medicoStore.idFichaPeriodica = registro.ficha_periodica
+      medicoStore.idFichaReintegro = registro.ficha_reintegro
 
       tabRegistro.value = registro.id
       examenes.value = []
@@ -182,17 +184,10 @@ export default defineComponent({
       modales.abrirModalEntidad('FichaAptitudPage')
     }
 
-    const abrirFichaPeriodicaProcupacional = () => {
-      modales.abrirModalEntidad('FichaPreocupacionalPage')
-    }
-
-    const abrirFichaPeriodica = () => {
-      modales.abrirModalEntidad('FichaPeriodicaPage')
-    }
-
-    const abrirFichaRetiro = () => {
-      modales.abrirModalEntidad('FichaRetiroPage')
-    }
+    const abrirFichaPeriodicaProcupacional = () => modales.abrirModalEntidad('FichaPreocupacionalPage')
+    const abrirFichaPeriodica = () => modales.abrirModalEntidad('FichaPeriodicaPage')
+    const abrirFichaReintegro = () => modales.abrirModalEntidad('FichaReintegroPage')
+    const abrirFichaRetiro = () => modales.abrirModalEntidad('FichaRetiroPage')
 
     const resetearTabRegistro = () => tabRegistro.value = null
 
@@ -210,9 +205,11 @@ export default defineComponent({
       textoFichaAptitud: computed(() => medicoStore.idFichaAptitud ? 'Consultar ficha de aptitud' : 'Llenar ficha de aptitud'),
       textoFichaPeriodica: computed(() => medicoStore.idFichaPeriodica ? 'Consultar ficha periódica' : 'Llenar ficha periódica'),
       textoFichaPreocupacional: computed(() => medicoStore.idFichaPreocupacional ? 'Consultar ficha preocupacional' : 'Llenar ficha preocupacional'),
+      textoFichaReintegro: computed(() => medicoStore.idFichaReintegro ? 'Consultar ficha de reintegro' : 'Llenar ficha de reintegro'),
       textoFichaRetiro: computed(() => medicoStore.idFichaRetiro ? 'Consultar ficha retiro' : 'Llenar ficha retiro'),
       mostrarFichaPreocupacional: computed(() => props.tipoProceso === tiposProcesosExamenes.INGRESO),
       mostrarFichaPeriodica: computed(() => props.tipoProceso === tiposProcesosExamenes.PERIODICO),
+      mostrarFichaReintegro: computed(() => props.tipoProceso === tiposProcesosExamenes.REINTEGRO),
       mostrarFichaRetiro: computed(() => props.tipoProceso === tiposProcesosExamenes.RETIRO),
       mostrarResultadosExamenes: computed(() => tabEstadoExamen.value === estadosSolicitudesExamenes.SOLICITADO.value),
       mostrarConsultaMedica: computed(() => tabEstadoExamen.value === estadosSolicitudesExamenes.SOLICITADO.value),
@@ -236,6 +233,7 @@ export default defineComponent({
       abrirFichaAptitud,
       abrirFichaPeriodicaProcupacional,
       abrirFichaPeriodica,
+      abrirFichaReintegro,
       abrirFichaRetiro,
       resetearTabRegistro,
       /*****************************

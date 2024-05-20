@@ -20,7 +20,7 @@
     <div v-if="entidad.calificado_iss" class="col-12 col-md-6 q-mb-md">
       <label class="q-mb-sm block">Especificar</label>
       <q-input
-        v-model="entidad.descripcion"
+        v-model="entidad.instituto_seguridad_social"
         placeholder="Opcional"
         :disable="disable"
         outlined

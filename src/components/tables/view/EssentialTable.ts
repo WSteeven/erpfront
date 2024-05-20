@@ -199,6 +199,10 @@ export default defineComponent({
     grid: {
       type: Boolean,
       default: true,
+    },
+    disable: {
+      type: Boolean,
+      default: false,
     }
   },
   emits: ['consultar', 'editar', 'eliminar', 'accion1', 'accion2', 'accion3', 'accion4', 'accion5', 'accion6', 'accion7', 'accion8', 'accion9', 'accion10', 'selected', 'onScroll', 'filtrar', 'toggle-filtros', 'guardar-fila', 'update:selected', 'fila-modificada'],

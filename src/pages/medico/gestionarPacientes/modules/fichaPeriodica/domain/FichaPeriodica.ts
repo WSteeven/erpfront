@@ -36,6 +36,7 @@ export class FichaPeriodica extends FichaMedica {
   // resultados_examenes_preocupacionales: ResultadoExamenPreocupacional[]
   recomendaciones_tratamiento: string | null
   aptitud_medica: AptitudMedica
+  incidentes: string | null
 
   constructor() {
     super()
@@ -62,5 +63,6 @@ export class FichaPeriodica extends FichaMedica {
     this.examenes_realizados = []
     this.recomendaciones_tratamiento = null
     this.aptitud_medica = new AptitudMedica()
+    this.incidentes = null
   }
 }

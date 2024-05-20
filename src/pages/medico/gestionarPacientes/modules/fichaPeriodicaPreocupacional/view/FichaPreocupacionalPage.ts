@@ -49,7 +49,7 @@ import { ReligionController } from '../infraestructure/ReligionController'
 import { CategoriaFactorRiesgo } from '../domain/CategoriaFactorRiesgo'
 import { ResultadoHabitoToxico } from '../domain/ResultadoHabitoToxico'
 import { FrPuestoTrabajoActual } from '../domain/FrPuestoTrabajoActual'
-import { ExamenFisicoRegional } from '../domain/ExamenFisicoRegional'
+// import { ExamenFisicoRegional } from '../../seccionesFichas/domain/ExamenFisicoRegional'
 import { AntecedenteFamiliar } from '../domain/AntecedenteFamiliar'
 import { MedicacionHabitual } from '../domain/MedicacionHabitual'
 import { TipoFactorRiesgo } from '../domain/TipoFactorRiesgo'
@@ -57,7 +57,8 @@ import { TipoHabitoToxico } from '../domain/TipoHabitoToxico'
 import { TipoAntecedente } from '../domain/TipoAntecedente'
 import { ActividadFisica } from '../domain/ActividadFisica'
 import { SistemaOrgano } from '../domain/SistemaOrgano'
-import { ConstanteVital } from '../domain/ConstanteVital'
+import { ConstanteVital } from '../../seccionesFichas/domain/ConstanteVital'
+import { ExamenFisicoRegional } from '../../seccionesFichas/examenFisicoRegional/domain/ExamenFisicoRegional'
 
 export default defineComponent({
   name: 'fichas_preocupacionales',
@@ -86,6 +87,7 @@ export default defineComponent({
     const tipoFilaFrPuestoTrabajoActual = new FrPuestoTrabajoActual()
     const tipoFilaAntecedenteTrabajoAnterior = new AntecedenteTrabajoAnterior()
     const { notificarAdvertencia } = useNotificaciones()
+    const examenesFisicosRegionalesAuxiliar = ref()
 
     /****************
      * Controladores
@@ -276,7 +278,8 @@ export default defineComponent({
 
     const hidratarConstanteVital = (constanteVital: ConstanteVital) => fichaPreocupacional.constante_vital.hydrate(constanteVital)
     const hidratarAptitudMedica = (aptitudMedica: AptitudMedica) => fichaPreocupacional.aptitud_medica.hydrate(aptitudMedica)
-    const hidratarExamenFisicoRegional = (examen: ExamenFisicoRegional[]) => fichaPreocupacional.examenes_fisicos_regionales = examen
+    const hidratarExamenFisicoRegional = (examen: ExamenFisicoRegional[]) => examenesFisicosRegionalesAuxiliar.value = examen// fichaReintegro.examenes_fisicos_regionales = examen
+    // const hidratarExamenFisicoRegional = (examen: ExamenFisicoRegional[]) => fichaPreocupacional.examenes_fisicos_regionales = examen
 
     const configurarColumnasAntecedenteTrabajoAnterior = async () => {
       configuracionColumnasAntecedenteTrabajoAnteriorReactive.value = [...configuracionColumnasAntecedenteTrabajoAnterior]
@@ -340,6 +343,7 @@ export default defineComponent({
      ********/
     onBeforeGuardar(() => {
       fichaPreocupacional.registro_empleado_examen = medicoStore.idRegistroEmpleadoExamen ?? null
+      fichaPreocupacional.examenes_fisicos_regionales = examenesFisicosRegionalesAuxiliar.value
 
       // Antecedentes familiares
       fichaPreocupacional.antecedentes_familiares = [...listadosAuxiliares.antecedentes_familiares.filter((antecedente: AntecedenteFamiliar) => antecedente.descripcion)]
@@ -417,7 +421,7 @@ export default defineComponent({
         console.log(revision)
         // console.log(revision)
         const antecedenteAux = fichaPreocupacional.revisiones_actuales_organos_sistemas.find((antecedenteLleno: RevisionActualOrganoSistema) => antecedenteLleno.organo_id === revision.organo_id)
-        
+
         if (antecedenteAux) {
           revision.descripcion = antecedenteAux.descripcion
         }
@@ -427,7 +431,7 @@ export default defineComponent({
       // Antecedentes familiares
       listadosAuxiliares.antecedentes_familiares = listadosAuxiliares.antecedentes_familiares.map((antecedente: AntecedenteFamiliar) => {
         const antecedenteAux = fichaPreocupacional.antecedentes_familiares.find((antecedenteLleno: AntecedenteFamiliar) => antecedenteLleno.tipo_antecedente_familiar_id === antecedente.tipo_antecedente_familiar_id)
-        
+
         if (antecedenteAux) {
           antecedente.descripcion = antecedenteAux.descripcion
           antecedente.parentesco = antecedenteAux.parentesco

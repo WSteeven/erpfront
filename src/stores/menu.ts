@@ -215,7 +215,7 @@ export const useMenuStore = defineStore('menu', () => {
           title: 'Reporte Cuestionario Psicosocial',
           link: 'reporte-cuestionarios-pisicosocial',
           icon: 'bi-app',
-          can: store.can('puede.ver.reporte_cuestionarios_pisicosocial'),
+          can: store.can('puede.ver.reporte_cuestionarios_psicosocial'),
         },
         {
           title: 'CIE',
@@ -223,11 +223,11 @@ export const useMenuStore = defineStore('menu', () => {
           icon: 'bi-app',
           can: store.can('puede.ver.cies'),
         },
-        {
+        /* {
           title: 'Firmar fichas médicas',
           link: 'firmar-fichas-medicas',
           icon: 'bi-app',
-        },
+        }, */
         {
           title: 'Configuracion Cuestionario Empleado',
           link: 'configuraciones-cuestionarios-empleados',

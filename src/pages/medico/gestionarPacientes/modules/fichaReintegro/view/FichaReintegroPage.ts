@@ -2,7 +2,7 @@ import { AptitudMedica } from '../../seccionesFichas/aptitudMedicaTrabajo/domain
 import { AxiosHttpRepository } from 'shared/http/infraestructure/AxiosHttpRepository'
 import { useFiltrosListadosSelects } from 'shared/filtrosListadosGenerales'
 import { imprimirArchivo, mapearOptionsSelect } from 'shared/utils'
-import { acciones, accionesTabla, maskFecha, selectOptionsSiNo } from 'config/utils'
+import { acciones, accionesTabla, maskFecha } from 'config/utils'
 import { useAuthenticationStore } from 'stores/authentication'
 import { required } from 'shared/i18n-validators'
 import { apiConfig, endpoints } from 'config/api'
@@ -19,15 +19,15 @@ import EssentialTable from 'components/tables/view/EssentialTable.vue'
 
 // Logica y controladores
 import { ContenedorSimpleMixin } from 'shared/contenedor/modules/simple/application/ContenedorSimpleMixin'
+import { ExamenFisicoRegional } from '../domain/ExamenFisicoRegional'
+import { FichaReintegro } from '../domain/FichaReintegro'
+import { InformacionDefectoFichaReintegroController } from '../infraestructure/InformacionDefectoFichaReintegroController'
 import { CargoController } from 'pages/recursosHumanos/cargos/infraestructure/CargoController'
+import { FichaReintegroController } from '../infraestructure/FichaReintegroController'
 import { ConstanteVital } from '../../seccionesFichas/domain/ConstanteVital'
-import { InformacionDefectoFichaRetiroController } from '../infraestructure/InformacionDefectoFichaRetiroController'
-import { FichaRetiro } from '../domain/FichaRetiro'
-import { FichaRetiroController } from '../infraestructure/FichaRetiroController'
-import { ExamenFisicoRegional } from '../../seccionesFichas/examenFisicoRegional/domain/ExamenFisicoRegional'
 
 export default defineComponent({
-  name: 'fichas_retiros',
+  name: 'fichas_periodicas',
   components: {
     SimpleLayout,
     EssentialTable,
@@ -50,13 +50,13 @@ export default defineComponent({
     /****************
      * Controladores
      ****************/
-    const informacionDefectoFichaController = new InformacionDefectoFichaRetiroController()
+    const informacionDefectoFichaController = new InformacionDefectoFichaReintegroController()
 
     /********
     * Mixin
     *********/
-    const mixin = new ContenedorSimpleMixin(FichaRetiro, new FichaRetiroController())
-    const { entidad: fichaRetiro, listadosAuxiliares, disabled, accion } = mixin.useReferencias()
+    const mixin = new ContenedorSimpleMixin(FichaReintegro, new FichaReintegroController())
+    const { entidad: fichaReintegro, listadosAuxiliares, disabled, accion } = mixin.useReferencias()
     const { setValidador, cargarVista, obtenerListados, consultar } = mixin.useComportamiento()
     const { onBeforeGuardar, onReestablecer, onConsultado, onGuardado } = mixin.useHooks()
 
@@ -70,7 +70,7 @@ export default defineComponent({
       })
 
       // Consultar ficha
-      if (medicoStore.idFichaRetiro) consultar({ id: medicoStore.idFichaRetiro })
+      if (medicoStore.idFichaReintegro) consultar({ id: medicoStore.idFichaReintegro })
       else consultarInformacionDefectoFicha()
     })
 
@@ -81,29 +81,29 @@ export default defineComponent({
 
     const consultarInformacionDefectoFicha = async () => {
       const { response } = await informacionDefectoFichaController.listar({ registro_empleado_examen_id: medicoStore.idRegistroEmpleadoExamen })
-      fichaRetiro.motivo_consulta = response.data.modelo.motivo_consulta
-      fichaRetiro.cargo = response.data.modelo.cargo
-      fichaRetiro.fecha_inicio_labores = response.data.modelo.fecha_inicio_labores
-      fichaRetiro.fecha_salida = response.data.modelo.fecha_salida
+      fichaReintegro.motivo_consulta = response.data.modelo.motivo_consulta
+      fichaReintegro.cargo = response.data.modelo.cargo
+      fichaReintegro.fecha_reingreso = response.data.modelo.fecha_reingreso
+      fichaReintegro.fecha_ultimo_dia_laboral = response.data.modelo.fecha_ultimo_dia_laboral
     }
 
     const descargarPdf = async () => {
       const axios = AxiosHttpRepository.getInstance()
-      const url = apiConfig.URL_BASE + '/' + axios.getEndpoint(endpoints.fichas_retiros_imprimir) + '/' + fichaRetiro.id
-      const filename = 'ficha_retiro_' + fichaRetiro.id + '_' + Date.now()
+      const url = apiConfig.URL_BASE + '/' + axios.getEndpoint(endpoints.fichas_reintegro_imprimir) + '/' + fichaReintegro.id
+      const filename = 'ficha_reintegro_' + fichaReintegro.id + '_' + Date.now()
       imprimirArchivo(url, 'GET', 'blob', 'pdf', filename)
     }
 
-    const hidratarConstanteVital = (constanteVital: ConstanteVital) => fichaRetiro.constante_vital.hydrate(constanteVital)
-    const hidratarAptitudMedica = (aptitudMedica: AptitudMedica) => fichaRetiro.aptitud_medica.hydrate(aptitudMedica)
-    const hidratarExamenFisicoRegional = (examen: ExamenFisicoRegional[]) => examenesFisicosRegionalesAuxiliar.value = examen// fichaRetiro.examenes_fisicos_regionales = examen
+    const hidratarConstanteVital = (constanteVital: ConstanteVital) => fichaReintegro.constante_vital.hydrate(constanteVital)
+    const hidratarAptitudMedica = (aptitudMedica: AptitudMedica) => fichaReintegro.aptitud_medica.hydrate(aptitudMedica)
+    const hidratarExamenFisicoRegional = (examen: ExamenFisicoRegional[]) => examenesFisicosRegionalesAuxiliar.value = examen// fichaReintegro.examenes_fisicos_regionales = examen
 
     /********
     * Hooks
     ********/
     onBeforeGuardar(() => {
-      fichaRetiro.registro_empleado_examen = medicoStore.idRegistroEmpleadoExamen ?? null
-      fichaRetiro.examenes_fisicos_regionales = examenesFisicosRegionalesAuxiliar.value
+      fichaReintegro.registro_empleado_examen = medicoStore.idRegistroEmpleadoExamen ?? null
+      fichaReintegro.examenes_fisicos_regionales = examenesFisicosRegionalesAuxiliar.value
     })
 
     onReestablecer(() => {
@@ -114,14 +114,13 @@ export default defineComponent({
       accion.value = acciones.consultar
     })
 
-    onGuardado((id: number) => medicoStore.idFichaRetiro = id)
+    onGuardado((id: number) => medicoStore.idFichaReintegro = id)
 
     /*********
      * Reglas
      *********/
     const reglas = {
-      fecha_inicio_labores: { required },
-      fecha_salida: { required },
+      causa_salida: { required },
       cargo: { required },
       constante_vital: {
         presion_arterial: { required },
@@ -136,7 +135,7 @@ export default defineComponent({
       }
     }
 
-    const v$ = useVuelidate(reglas, fichaRetiro)
+    const v$ = useVuelidate(reglas, fichaReintegro)
     setValidador(v$.value)
 
     /*******
@@ -147,7 +146,7 @@ export default defineComponent({
       // Mixin
       mixin,
       disabled,
-      fichaRetiro,
+      fichaReintegro,
       listadosAuxiliares,
       // Variables
       v$,
@@ -163,7 +162,6 @@ export default defineComponent({
       hidratarAptitudMedica,
       hidratarExamenFisicoRegional,
       mostrarDescargarPdf: authenticationStore.esMedico,
-      selectOptionsSiNo,
     }
   }
 })

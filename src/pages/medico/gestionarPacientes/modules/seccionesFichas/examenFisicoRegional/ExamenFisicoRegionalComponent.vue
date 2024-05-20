@@ -1,9 +1,17 @@
 <template>
   <div class="row q-col-gutter-x-sm q-pa-md">
-    {{ datos }}
+    <!-- <div class="col-12 bg-green">
+      Datos <br />
+      {{ datos }}
+    </div>
+    <div class="col-12 bg-cyan">
+      Listado <br />
+      {{ listado }}
+    </div>  -->
     <div class="col-12 q-mb-md">
+      <!-- v-if="configuracionColumnasExamenFisicoRegional.length" -->
       <essential-table
-        v-if="configuracionColumnasExamenFisicoRegional.length"
+        v-if="mostrarTabla"
         :configuracionColumnas="configuracionColumnasExamenFisicoRegional"
         :datos="listado"
         :permitirConsultar="false"
@@ -16,6 +24,7 @@
         :alto-fijo="false"
         :ajustarCeldas="false"
         separador="cell"
+        :disable="disable"
       >
       </essential-table>
     </div>
@@ -49,7 +58,7 @@
 <script lang="ts" setup>
 // Dependencias
 import { StatusEssentialLoading } from 'components/loading/application/StatusEssentialLoading'
-import { Ref, ref, reactive, watch, watchEffect, computed } from 'vue'
+import { Ref, ref, reactive, watch, computed } from 'vue'
 
 // Componentes
 import EssentialTable from 'components/tables/view/EssentialTable.vue'
@@ -58,8 +67,8 @@ import EssentialTable from 'components/tables/view/EssentialTable.vue'
 import { CategoriaExamenFisicoController } from '../../fichaPeriodicaPreocupacional/infraestructure/CategoriaExamenFisicoController'
 import { RegionCuerpoController } from '../../fichaPeriodicaPreocupacional/infraestructure/RegionCuerpoController'
 import { CategoriaExamenFisico } from '../../fichaPeriodicaPreocupacional/domain/CategoriaExamenFisico'
-import { ExamenFisicoRegional } from '../../fichaPeriodicaPreocupacional/domain/ExamenFisicoRegional'
 import { RegionCuerpo } from '../../fichaPeriodicaPreocupacional/domain/RegionCuerpo'
+import { ExamenFisicoRegional } from './domain/ExamenFisicoRegional'
 
 const emit = defineEmits(['update:modelValue'])
 
@@ -72,19 +81,23 @@ const props = defineProps({
     type: Object,
     required: false,
   },
-  datos: Object,
+  datos: {
+    type: Object as () => ExamenFisicoRegional[],
+    required: true,
+  },
 })
 
 /************
  * Variables
  ************/
 const configuracionColumnasExamenFisicoRegional: Ref<any> = ref([])
-const listado = ref<any>([])
-const listadoExamenFisicoRegional = ref<ExamenFisicoRegional[]>([])
+const listado = ref<any>([]) // Origen datos
+const listadoExamenFisicoRegional = ref<ExamenFisicoRegional[]>([]) // Lo que se devuelve
 const regionesCuerpo: Ref<RegionCuerpo[]> = ref([])
 const categoriasExamenesFisicos: Ref<CategoriaExamenFisico[]> = ref([])
 const cargando = new StatusEssentialLoading()
 const fila = reactive({})
+const mostrarTabla = ref(false)
 
 /*****************
  * Controladores
@@ -99,6 +112,7 @@ const regionesCuerpoController = new RegionCuerpoController()
 const emitir = () => emit('update:modelValue', recuperarArray())
 
 const recuperarArray = () => {
+  console.log(listado.value)
   listadoExamenFisicoRegional.value = Object.values(listado.value[0])
     .filter((value) => Array.isArray(value))
     .flatMap((value) => value)
@@ -108,7 +122,9 @@ const recuperarArray = () => {
         (cat: CategoriaExamenFisico) => cat.id === categoria_examen_fisico_id
       )?.nombre
       exam.categoria_examen_fisico_id = categoria_examen_fisico_id
-      exam.observacion = null
+      exam.observacion = props.datos
+        ? obtenerObservacion(categoria_examen_fisico_id)
+        : null
       return exam
     })
 
@@ -141,7 +157,7 @@ const consultarRegionesCuerpo = async () => {
   }
 }
 
-const consultar = async () => {
+const consultarConstruirColumnas = async () => {
   await consultarCategoriasExamenesFisicos()
   await consultarRegionesCuerpo()
 
@@ -173,7 +189,19 @@ const consultar = async () => {
   })
 
   console.log(fila)
-  // listado.value.push(JSON.parse(JSON.stringify(fila)))
+  await listado.value.push(JSON.parse(JSON.stringify(fila)))
+
+  mostrarTabla.value = true
+
+  mapearDatosAListado()
+}
+
+const obtenerObservacion = (idCategoria: number) => {
+  const examen: ExamenFisicoRegional | undefined = props.datos.find(
+    (examen: ExamenFisicoRegional) =>
+      examen.categoria_examen_fisico_id === idCategoria
+  )
+  return examen?.observacion ?? null
 }
 
 /*************
@@ -184,11 +212,38 @@ watch(listado, emitir, { deep: true })
 /*******
  * Init
  *******/
-consultar()/*.then(() => {
-  // listado.value.push(JSON.parse(JSON.stringify(fila)))
-  const ddd = computed(() => props.datos)
-  listado.value = ddd.value
-  console.log(listado.value)
-  console.log(ddd.value)
-})*/
+consultarConstruirColumnas()
+
+// onConsultado
+const mapearDatosAListado = () => {
+  watch(
+    computed(() => props.datos),
+    (datos) => {
+      //const datos: ExamenFisicoRegional[] = props.datos
+      if (datos) {
+        datos.forEach((examen) => {
+          const region = examen.region_cuerpo ?? ''
+          if (fila.hasOwnProperty(region)) {
+            if (fila[region] === null) {
+              fila[region] = [examen.categoria_examen_fisico_id]
+            } else {
+              fila[region]?.push(examen.categoria_examen_fisico_id)
+            }
+          }
+        })
+
+        console.log('Fila agregada al consultar')
+        console.log(fila)
+        listado.value = [fila]
+      }
+    }
+  )
+  // listadoExamenFisicoRegional.value = datos
+}
+
+// onConsultar
+/* watch(
+  computed(() => props.datos),
+  () => mapearDatosAListado()
+) */
 </script>

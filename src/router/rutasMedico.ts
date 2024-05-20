@@ -9,7 +9,7 @@ const rutasMedico: RouteRecordRaw[] = [
   },
   {
     path: '/cuestionario-psicosocial',
-    name: 'cuestionario_psicosocial',
+    name: 'cuestionarios_psicosocial',
     component: () => import('medico/cuestionarioPsicosocial/view/CuestionarioPsicosocialPage.vue'),
     meta: { requiresAuth: true },
   },
@@ -45,7 +45,7 @@ const rutasMedico: RouteRecordRaw[] = [
   },
   {
     path: '/reporte-cuestionarios-pisicosocial',
-    name: 'reporte_cuestionarios_pisicosocial',
+    name: 'reporte_cuestionarios_psicosocial',
     component: () => import('medico/cuestionarioPsicosocial/view/ReporteCuestionarioPisicosocial.vue'),
     meta: { requiresAuth: true },
   },

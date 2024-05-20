@@ -47,15 +47,15 @@ export default defineComponent({
      * Botones tabla
      ****************/
     const btnImprimirReporte: CustomActionTable = {
-      titulo: 'Imprimir reporte',
-      icono: 'bi-printer',
+      titulo: 'Exportar .xlsx con respuestas',
+      icono: 'bi-table',
       color: 'positive',
       visible: () => authenticationStore.can('puede.ver.reporte_cuestionarios_psicosocial'),
       accion: () => imprimirReporte()
     }
 
     const btnImprimirRespuestas: CustomActionTable = {
-      titulo: 'Imprimir respuestas',
+      titulo: 'Exportar txt (FPSICO 4.1)',
       icono: 'bi-printer',
       color: 'primary',
       visible: () => authenticationStore.can('puede.ver.reporte_cuestionarios_psicosocial'),

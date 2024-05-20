@@ -135,7 +135,7 @@ export default defineComponent({
 
     onGuardado((id, responseData) => {
       console.log('onGuarado')
-      emit('guardado', { page: 'DiagnosticoRecetaPage', entidad: responseData.modelo, hook: 'onGuardado' }) // Para CitaMedicaPage
+      emit('guardado', { page: 'DiagnosticoRecetaPage', entidad: responseData.modelo, hook: 'onGuardado', data: {} }) // Para CitaMedicaPage
       emit('cerrar-modal')
     })
 

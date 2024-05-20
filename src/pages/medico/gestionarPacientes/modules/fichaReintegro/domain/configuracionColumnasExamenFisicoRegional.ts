@@ -1,5 +1,5 @@
 import { ColumnConfig } from 'components/tables/domain/ColumnConfig'
-import { ExamenFisicoRegional } from '../../seccionesFichas/domain/ExamenFisicoRegional'
+import { ExamenFisicoRegional } from './ExamenFisicoRegional'
 
 export const configuracionColumnasExamenFisicoRegional: ColumnConfig<ExamenFisicoRegional>[] = [
   {

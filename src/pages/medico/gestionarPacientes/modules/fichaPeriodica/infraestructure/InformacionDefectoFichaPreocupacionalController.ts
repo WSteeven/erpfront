@@ -4,7 +4,7 @@ import { endpoints } from 'config/api'
 
 export class InformacionDefectoFichaPreocupacionalController extends TransaccionSimpleController<FichaPeriodicaPreocupacional> {
   constructor() {
-    super(endpoints.fichas_preocupacionales_consultar_informacion_defecto)
+    super(endpoints.fichas_periodicas_consultar_informacion_defecto)
   }
 }
 

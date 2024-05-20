@@ -83,6 +83,7 @@
           :bg-color="$q.dark.isActive ? 'grey-10' : 'grey-3'"
           :type="props.col.type ? props.col.type : 'text'"
           :hint="props.col.hint"
+          :disable="disable"
           dense
           outlined
         />
@@ -99,6 +100,7 @@
           dense
           emit-value
           map-options
+          :disable="disable"
         />
 
         <q-select
@@ -114,6 +116,7 @@
           dense
           emit-value
           map-options
+          :disable="disable"
         >
           <template v-slot:option="{ itemProps, opt, selected, toggleOption }">
             <q-item v-bind="itemProps">
@@ -135,6 +138,7 @@
           v-model="props.row[props.col.name]"
           :label="props.row[props.col.name] ? 'SI' : 'NO'"
           keep-color
+          :disable="disable"
         />
       </q-td>
 

@@ -1,7 +1,7 @@
 import { EntidadAuditable } from 'shared/entidad/domain/entidadAuditable'
 
 export class DescripcionAntecedenteTrabajo extends EntidadAuditable {
-  calificado_iss: number
+  calificado_iss: boolean
   instituto_seguridad_social: string | null
   fecha: string | null
   observacion: string | null
@@ -10,7 +10,7 @@ export class DescripcionAntecedenteTrabajo extends EntidadAuditable {
 
   constructor() {
     super()
-    this.calificado_iss = 1
+    this.calificado_iss = true
     this.instituto_seguridad_social = null
     this.fecha = null
     this.observacion = null
