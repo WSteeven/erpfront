@@ -5,12 +5,12 @@
         <div class="col">
           <q-card class="rounded-card custom-shadow">
             <div class="row q-col-gutter-sm q-pa-sm q-py-md">
-              <!--Proveedor -->
+              <!--Cliente -->
               <div class="col-12 col-md-3">
-                <label class="q-mb-sm block">Proveedor</label>
+                <label class="q-mb-sm block">Cliente</label>
                 <q-select
-                  v-model="reporte.proveedor"
-                  :options="proveedores"
+                  v-model="reporte.cliente"
+                  :options="clientes"
                   transition-show="scale"
                   transition-hide="scale"
                   options-dense
@@ -20,8 +20,8 @@
                   use-input
                   input-debounce="0"
                   hint="Opcional"
-                  @filter="filtrarProveedores"
-                  @popup-show="ordenarLista(proveedores, 'razon_social')"
+                  @filter="filtrarClientes"
+                  @popup-show="ordenarLista(clientes, 'razon_social')"
                   @update:model-value="buscarReporte('consulta')"
                   :option-label="(v) => v.razon_social"
                   :option-value="(v) => v.id"
@@ -55,20 +55,20 @@
 
               <!--Tipo de calificacion-->
               <div class="col-12 col-md-3">
-                <label class="q-mb-sm block">Estado de Orden</label>
+                <label class="q-mb-sm block">Estado de Prefactura</label>
                 <q-select
                   v-model="reporte.estado"
-                  :options="opcionesEstadosOC"
+                  :options="opcionesEstadosPrefacturas"
                   transition-show="jump-up"
                   transition-hide="jump-down"
                   options-dense
                   multiple
                   dense
                   use-chips
-                  hint="opcional"
+                  hint="Opcional"
                   outlined
                   :option-value="(v) => v.value"
-                  :option-label="(v) => v.value"
+                  :option-label="(v) => v.label"
                   emit-value
                   map-options
                   ><template
@@ -76,7 +76,7 @@
                   >
                     <q-item v-bind="itemProps">
                       <q-item-section>
-                        {{ opt.value }}
+                        {{ opt.label }}
                         <q-item-label v-bind:inner-h-t-m-l="opt.nombre" />
                       </q-item-section>
                       <q-item-section side>
@@ -262,7 +262,7 @@
                   :permitirEditar="false"
                   :mostrarBotones="false"
                   :permitir-buscar="true"
-                  :accion1="btnVerOrden"
+                  :accion1="btnVer"
                   :accion2="btnImprimir"
                   :alto-fijo="false"
                   :ajustarCeldas="true"

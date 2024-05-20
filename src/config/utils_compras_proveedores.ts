@@ -129,6 +129,10 @@ export const opcionesCalificacionProveedor = [
   { value: 'CALIFICADO', label: 'CALIFICADO' },
   { value: 'PARCIAL', label: 'PARCIAL' },
 ]
+export const opcionesEstadosPrefacturas = [
+  { value: '2', label: 'CREADAS' },
+  { value: '4', label: 'ANULADAS' },
+]
 export const opcionesEstadosOC = [
   { value: 'PENDIENTES' },
   { value: 'REVISADAS' },

@@ -7,6 +7,25 @@ import ModalEntidad from "components/modales/view/ModalEntidad.vue"
 
 //Logica y controladores
 import { ContenedorSimpleMixin } from "shared/contenedor/modules/simple/application/ContenedorSimpleMixin";
+import { defineComponent, reactive, ref } from "vue";
+import { Prefactura } from "pages/comprasProveedores/prefactura/domain/Prefactura";
+import { PrefacturaController } from "pages/comprasProveedores/prefactura/infraestructure/PrefacturaController";
+import { useNotificacionStore } from "stores/notificacion";
+import { useCargandoStore } from "stores/cargando";
+import { useNotificaciones } from "shared/notificaciones";
+import { useAuthenticationStore } from "stores/authentication";
+import { usePrefacturaStore } from "stores/comprasProveedores/prefactura";
+import { StatusEssentialLoading } from "components/loading/application/StatusEssentialLoading";
+import { ClientesPrefacturasController } from "pages/comprasProveedores/dashboard/infraestructure/ClientesPrefacturasController";
+import { obtenerFechaActual, ordenarLista } from "shared/utils";
+import { accionesTabla, maskFecha } from "config/utils";
+import { useFiltrosListadosSelects } from "shared/filtrosListadosGenerales";
+import { required } from "shared/i18n-validators";
+import useVuelidate from "@vuelidate/core";
+import { CustomActionTable } from "components/tables/domain/CustomActionTable";
+import { configuracionColumnasPrefactura } from "pages/comprasProveedores/prefactura/domain/configuracionColumnasPrefactura";
+import { opcionesEstadosPrefacturas } from "config/utils_compras_proveedores";
+import { ComportamientoModalesPrefactura } from "pages/comprasProveedores/prefactura/application/ComportamientoModalesPrefactura";
 
 
 export default defineComponent({
@@ -23,15 +42,14 @@ export default defineComponent({
         useCargandoStore().setQuasar(useQuasar())
         const { notificarError, notificarAdvertencia } = useNotificaciones()
         const store = useAuthenticationStore()
-        const ordenCompraStore = useOrdenCompraStore()
+        const prefacturaStore = usePrefacturaStore()
         const cargando = new StatusEssentialLoading()
-        const modales = new ComportamientoModalesProveedores()
+        const modales = new ComportamientoModalesPrefactura()
 
         //variables
-        const detalleDepartamentoProveedor = ref()
         const reporte = reactive({
             estado: null,
-            proveedor: null,
+            cliente: null,
             accion: null,
             fecha_inicio: null,
             fecha_fin: ''
@@ -39,13 +57,13 @@ export default defineComponent({
         const listado = ref([])
         cargarVista(async () => {
             await obtenerListados({
-                proveedores: new ProveedoresOrdenesController(),
+                clientes: new ClientesPrefacturasController(),
             })
-            proveedores.value = listadosAuxiliares.proveedores
+            clientes.value = listadosAuxiliares.proveedores
             reporte.fecha_fin = obtenerFechaActual(maskFecha)
         })
 
-        const { proveedores, filtrarProveedores } = useFiltrosListadosSelects(listadosAuxiliares)
+        const { clientes, filtrarClientes } = useFiltrosListadosSelects(listadosAuxiliares)
 
         // Reglas de validacion
         const reglas = {
@@ -65,7 +83,7 @@ export default defineComponent({
         async function buscarReporte(accion: string) {
             if (await v$.value.$validate()) {
                 try {
-                    listado.value = await ordenCompraStore.buscarReporte(accion, reporte, listado.value)
+                    listado.value = await prefacturaStore.buscarReporte(accion, reporte, listado.value)
                 } catch (e) {
                     console.error(e)
                 }
@@ -75,15 +93,14 @@ export default defineComponent({
         /*************************
          * BOTONES
          ************************/
-        const btnVerOrden: CustomActionTable = {
+        const btnVer: CustomActionTable = {
             titulo: '',
             icono: 'bi-eye',
             color: 'primary',
             accion: async ({ entidad }) => {
-                ordenCompraStore.idOrden = entidad.id
-                console.log("ordenCompraStore.showPreview()")
-                // await ordenCompraStore.showPreview()
-                modales.abrirModalEntidad('VisualizarProveedorPage')
+                prefacturaStore.idPrefactura = entidad.id
+                prefacturaStore.consultar()
+                modales.abrirModalEntidad('VisualizarPrefactura')
             }
         }
         const btnImprimir: CustomActionTable = {
@@ -91,28 +108,28 @@ export default defineComponent({
             color: 'secondary',
             icono: 'bi-printer',
             accion: async ({ entidad }) => {
-                ordenCompraStore.idOrden = entidad.id
-                await ordenCompraStore.imprimirPdf()
+                prefacturaStore.idPrefactura = entidad.id
+                await prefacturaStore.imprimirPdf()
             },
         }
 
-        const configuracionColumnas = [...configuracionColumnasPrefacturas, accionesTabla]
+        const configuracionColumnas = [...configuracionColumnasPrefactura, accionesTabla]
         return {
             configuracionColumnas, v$,
             reporte,
-            modales,
             maskFecha,
             //listados
             listado,
-            proveedores, filtrarProveedores,
-            opcionesEstadosOC,
+            clientes, filtrarClientes,
+            opcionesEstadosPrefacturas,
+            modales,
 
             //funciones
             buscarReporte,
             ordenarLista,
-           
+
             //botones de tabla
-            btnVerOrden,
+            btnVer,
             btnImprimir,
 
         }
