@@ -36,7 +36,22 @@ export default defineComponent({
 
       watchEffect(() => document.title = nombreEmpresa.value ?? '')
       const $q = useQuasar()
+      onMounted(async() => {
+        try {
+          cargando.activar()
+          await loginController.obtenerSesionUser()
+        } catch (error: any) {
+          console.log('montar errror',error);
 
+          if (isAxiosError(error)) {
+            const mensajes: string[] = error.erroresValidacion
+            console.log('montar errror',error.mensaje);
+            //notificarMensajesError(mensajes, notificaciones)
+          }
+        } finally {
+          cargando.desactivar()
+        }
+      })
       const login = async () => {
 
         if (!$q.loading.isActive) {

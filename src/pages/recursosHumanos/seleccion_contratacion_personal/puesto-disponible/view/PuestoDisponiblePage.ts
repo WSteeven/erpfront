@@ -65,22 +65,7 @@ export default defineComponent({
 
     const v$ = useVuelidate(reglas, tipo_puesto_trabajo)
     setValidador(v$.value)
-    onMounted(async() => {
-      try {
-        cargando.activar()
-        await loginController.obtenerSesionUser()
-      } catch (error: any) {
-        console.log('montar errror',error);
 
-        if (isAxiosError(error)) {
-          const mensajes: string[] = error.erroresValidacion
-          console.log('montar errror',error.mensaje);
-          //notificarMensajesError(mensajes, notificaciones)
-        }
-      } finally {
-        cargando.desactivar()
-      }
-    })
     return {
       removeAccents,
       mixin,
