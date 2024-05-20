@@ -878,6 +878,19 @@ export const useMenuStore = defineStore('menu', () => {
           icon: 'bi-app',
           can: store.can('puede.ver.prefacturas') || store.esAdministrador,
         },
+        {
+          title: 'Reportes',
+          icon: 'bi-clipboard2-data-fill',
+          can: store.esAdministrador || store.esCompras || store.can('puede.ver.reportes_modulo_ventas'),
+          children: [
+            {
+              title: 'Reporte de Prefacturas',
+              link: 'reporte-prefacturas',
+              icon: 'bi-boxes',
+              can: true,
+            }
+          ],
+        },
       ],
     },
     /*********************************************************
