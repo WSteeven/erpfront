@@ -1,5 +1,5 @@
 <template>
-  <q-layout view="lHh Lpr lFf">
+  <q-layout view="lHh Lpr lFf" v-if="isMount">
     <!-- Navbar -->
     <q-header class="bg-desenfoque">
       <q-toolbar class="row justify-between q-py-sm border-bottom">
@@ -54,13 +54,12 @@
               'q-gutter-x-sm': !$q.screen.xs,
             }"
           >
-
           </span>
 
           <!-- Perfil -->
           <q-btn dense round flat glossy @click.self="mostrarMenu = true">
             <q-avatar size="38px">
-              <img v-bind:src="imagenPerfil" />
+              <img  v-bind:src="imagenPerfil" />
             </q-avatar>
 
             <q-menu
@@ -93,11 +92,6 @@
                   {{ nombreUsuario }}
                 </div>
 
-
-                <div class="text-subtitle2 text-center q-mb-md">
-                  Saldo Actual: $ {{ saldo }}
-                </div>
-
                 <!-- <div class=" text-center q-mb-md" v-if="ultimaConexion">
                   Ultima conexión
                   <br><strong>{{ ultimaConexion }}</strong>
@@ -108,24 +102,6 @@
                     <q-icon name="bi-person"></q-icon>
                   </q-avatar>
                   <q-item-section> Perfil </q-item-section>
-                </q-item>
-
-                <!--<q-item clickable :to="{ name: 'perfil' }" class="full-width">
-                  <q-avatar>
-                    <q-icon name="bi-gear"></q-icon>
-                  </q-avatar>
-                  <q-item-section> Configuración </q-item-section>
-                </q-item> -->
-
-                <q-item
-                  clickable
-                  :to="{ name: 'mi_bodega' }"
-                  class="full-width"
-                >
-                  <q-avatar>
-                    <q-icon name="bi-box-seam"></q-icon>
-                  </q-avatar>
-                  <q-item-section> Mi bodega </q-item-section>
                 </q-item>
 
                 <q-item clickable class="full-width">
@@ -154,21 +130,6 @@
           </q-btn>
         </span>
       </q-toolbar>
-
-      <div class="text-center">
-        <q-chip v-if="enCamino" class="bg-grey-2 q-mx-auto q-mb-md">
-          <q-icon
-            name="bi-car-front-fill"
-            color="positive"
-            class="q-mr-xs"
-          ></q-icon>
-          <div class="text-positive">
-            Destino:&nbsp;<b>{{ enCamino }}</b>
-          </div>
-          <q-separator vertical class="q-mx-md"></q-separator>
-          <span class="text-grey-8">VIAJE DE {{ motivo }}</span>
-        </q-chip>
-      </div>
     </q-header>
 
     <!-- Drawer -->
@@ -188,11 +149,7 @@
 
       <!-- Drawer Body -->
       <q-scroll-area
-        style="
-          height: calc(94% - 100px);
-          margin-top: 100px;
-          margin-bottom: 20px;
-        "
+        style="height: calc(94% - 100px); margin-top: 100px; margin-bottom: 20px"
       >
         <q-list>
           <div v-for="item in links" :key="item.title">

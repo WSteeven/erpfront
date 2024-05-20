@@ -1,5 +1,7 @@
 import { route } from 'quasar/wrappers'
 import { useAuthenticationStore } from 'src/stores/authentication'
+import { useAuthenticationExternalStore } from 'src/stores/authenticationExternal'
+
 import {
   createMemoryHistory,
   createRouter,
@@ -22,8 +24,8 @@ export default route(function (/* { store, ssrContext } */) {
   const createHistory = process.env.SERVER
     ? createMemoryHistory
     : process.env.VUE_ROUTER_MODE === 'history'
-      ? createWebHistory
-      : createWebHashHistory
+    ? createWebHistory
+    : createWebHashHistory
 
   const Router = createRouter({
     scrollBehavior: () => ({ left: 0, top: 0 }),
@@ -36,9 +38,10 @@ export default route(function (/* { store, ssrContext } */) {
   })
 
   const authentication = useAuthenticationStore()
+  const authenticationExternal = useAuthenticationExternalStore()
 
   Router.beforeEach(async (to, _, next) => {
-    const sessionIniciada = await authentication.isUserLoggedIn()
+    const sessionIniciada = to.name.toLowerCase().indexOf('puesto'.toLowerCase()) !== -1? await authenticationExternal.isUserLoggedIn(): await authentication.isUserLoggedIn()
     // Si la ruta requiere autenticacion
     if (to.matched.some((ruta) => ruta.meta.requiresAuth)) {
       if (sessionIniciada) {

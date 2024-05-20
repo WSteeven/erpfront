@@ -7,6 +7,7 @@ import { computed, ref } from 'vue'
 import { LocalStorage } from 'quasar'
 import { AxiosError, AxiosResponse } from 'axios'
 import { Empleado } from 'pages/recursosHumanos/empleados/domain/Empleado'
+import {Postulante } from 'pages/recursosHumanos/seleccion_contratacion_personal/postulante/domain/Postulante'
 import { EstadosTransaccionController } from 'pages/administracion/estados_transacciones/infraestructure/EstadosTransaccionController'
 import { AutorizacionController } from 'pages/administracion/autorizaciones/infraestructure/AutorizacionController'
 import { SucursalController } from 'pages/administracion/sucursales/infraestructure/SucursalController'
@@ -20,7 +21,6 @@ import { TareaController } from 'pages/gestionTrabajos/tareas/infraestructure/Ta
 import { EmpleadoController } from 'pages/recursosHumanos/empleados/infraestructure/EmpleadoController'
 import { UltimoSaldoController } from 'pages/fondosRotativos/reportes/reporteSaldoActual/infrestucture/UltimoSaldoController'
 import { UserLoginPostulante } from 'pages/recursosHumanos/seleccion_contratacion_personal/login-postulante/domain/UserLoginPostulante'
-
 export const useAuthenticationExternalStore = defineStore(
   'authentication_external',
   () => {
@@ -42,88 +42,6 @@ export const useAuthenticationExternalStore = defineStore(
         }`
     )
 
-    const esCoordinador = computed(() =>
-      user.value
-        ? extraerRol(user.value.roles, rolesSistema.coordinador)
-        : false
-    )
-    const esCoordinadorBackup = computed(() =>
-      user.value
-        ? extraerRol(user.value.roles, rolesSistema.coordinadorBackup)
-        : false
-    )
-    const esCoordinadorBodega = computed(() =>
-      user.value
-        ? extraerRol(user.value.roles, rolesSistema.coordinadorBodega)
-        : false
-    )
-    const esFiscalizador = computed(() =>
-      user.value
-        ? extraerRol(user.value.roles, rolesSistema.fiscalizador)
-        : false
-    )
-    const esJefeTecnico = computed(() =>
-      user.value
-        ? extraerRol(user.value.roles, rolesSistema.jefe_tecnico)
-        : false
-    )
-    const esSupervisorCampo = computed(() =>
-      user.value ? extraerRol(user.value.roles, rolesSistema.supervisor) : false
-    )
-    const esTecnicoLider = computed(() =>
-      user.value
-        ? extraerRol(user.value.roles, rolesSistema.tecnico_lider)
-        : false
-    )
-    const esBodeguero = computed(() =>
-      user.value ? extraerRol(user.value.roles, rolesSistema.bodega) : false
-    )
-    const esBodegueroTelconet = computed(() =>
-      user.value
-        ? extraerRol(user.value.roles, rolesSistema.bodegaTelconet)
-        : false
-    )
-    const esActivosFijos = computed(() =>
-      user.value
-        ? extraerRol(user.value.roles, rolesSistema.activos_fijos)
-        : false
-    )
-    const esTecnico = computed(() =>
-      user.value ? extraerRol(user.value.roles, rolesSistema.tecnico) : false
-    )
-    const esRecursosHumanos = computed(() =>
-      user.value ? extraerRol(user.value.roles, rolesSistema.rrhh) : false
-    )
-    const esGerente = computed(() =>
-      user.value ? extraerRol(user.value.roles, rolesSistema.gerente) : false
-    )
-    const esContabilidad = computed(() =>
-      user.value
-        ? extraerRol(user.value.roles, rolesSistema.contabilidad)
-        : false
-    )
-    const esCompras = computed(() =>
-      user.value ? extraerRol(user.value.roles, rolesSistema.compras) : false
-    )
-    const esAdministrador = computed(() =>
-      user.value
-        ? extraerRol(user.value.roles, rolesSistema.administrador)
-        : false
-    )
-    //ventas
-    const esJefeVentasClaro = computed(() =>
-      user.value
-        ? extraerRol(user.value.roles, rolesSistema.jefe_ventas)
-        : false
-    )
-    const esSupervisorVentasClaro = computed(() =>
-      user.value
-        ? extraerRol(user.value.roles, rolesSistema.supervisor_ventas)
-        : false
-    )
-    const esVendedor = computed(() =>
-      user.value ? extraerRol(user.value.roles, rolesSistema.vendedor) : false
-    )
 
     function extraerRol(roles: string[], rolConsultar: string) {
       return roles.some((rol: string) => rol === rolConsultar)
@@ -158,7 +76,6 @@ export const useAuthenticationExternalStore = defineStore(
         const url = login + driver
         const response: AxiosResponse = await axios.get(url)
         LocalStorage.set('token', response.data.access_token)
-
         const url_redirect = response.data.url
         window.location.href = url_redirect
       } catch (error) {
@@ -171,7 +88,10 @@ export const useAuthenticationExternalStore = defineStore(
       try {
         const login = axios.getEndpoint(endpoints.sesion_terceros)
         const response: AxiosResponse = await axios.get(login)
-        console.log(response)
+        LocalStorage.set('token', response.data.access_token)
+        setUser(response.data.modelo)
+
+        return response.data.modelo
       } catch (error) {
         const axiosError = error as AxiosError
         throw new ApiError(axiosError)
@@ -213,79 +133,25 @@ export const useAuthenticationExternalStore = defineStore(
       }
     }
 
-    /**
-     * Función para cargar datos en el Local Storage
-     */
-    async function cargarDatosLS() {
-      const autorizaciones = (
-        await new AutorizacionController().listar({ campos: 'id,nombre' })
-      ).result
-      LocalStorage.set('autorizaciones', JSON.stringify(autorizaciones))
-      const sucursales = (
-        await new SucursalController().listar({ campos: 'id,lugar,cliente_id' })
-      ).result
-      LocalStorage.set('sucursales', JSON.stringify(sucursales))
-      const condiciones = (
-        await new CondicionController().listar({ campos: 'id,nombre' })
-      ).result
-      LocalStorage.set('condiciones', JSON.stringify(condiciones))
-      const estados_transacciones = (
-        await new EstadosTransaccionController().listar({ campos: 'id,nombre' })
-      ).result
-      LocalStorage.set(
-        'estados_transacciones',
-        JSON.stringify(estados_transacciones)
-      )
-      const cantones = (
-        await new CantonController().listar({ campos: 'id,canton' })
-      ).result
-      LocalStorage.set('cantones', JSON.stringify(cantones))
-      const detalles = (
-        await new DetalleFondoController().listar({ campos: 'id,descripcion' })
-      ).result
-      LocalStorage.set('detalles', JSON.stringify(detalles))
-      const sub_detalles = (
-        await new SubDetalleFondoController().listar({
-          campos: 'id,descripcion',
-        })
-      ).result
-      LocalStorage.set('sub_detalles', JSON.stringify(sub_detalles))
-      const tareas = (
-        await new TareaController().listar({ campos: 'id,titulo' })
-      ).result
-      LocalStorage.set('tareas', JSON.stringify(tareas))
-      const usuariosInactivos = (
-        await new EmpleadoController().listar({
-          campos: 'id,nombres,apellidos',
-          estado: 0,
-        })
-      ).result
-      LocalStorage.set('usuariosInactivos', JSON.stringify(usuariosInactivos))
-    }
-    /**
-     * Función para limpiar los datos del Local Storage
-     */
-    function limpiarLS() {
-      LocalStorage.remove('autorizaciones')
-      LocalStorage.remove('sucursales')
-      LocalStorage.remove('condiciones')
-      LocalStorage.remove('estados_transacciones')
-      LocalStorage.remove('lugares')
-      LocalStorage.remove('detalles')
-    }
 
+
+/**
+ * La función "cerrar sesión" cierra la sesión del usuario enviando una solicitud POST al endpoint
+ * de cierre de sesión, eliminando el token del almacenamiento local y actualizando el título del
+ * documento.
+ */
     async function logout() {
-      await axios.post(axios.getEndpoint(endpoints.logout))
+      await axios.post(axios.getEndpoint(endpoints.logout_postulante))
       LocalStorage.remove('token')
-      limpiarLS()
       await getUser()
       document.title = 'JPCONSTRUCRED'
     }
 
-    const setUser = (userData: Empleado | null) => {
+    const setUser = (userData: Postulante | null) => {
       user.value = userData
       auth.value = Boolean(userData)
     }
+
     const setSaldo = (saldo: number) => {
       saldo_actual.value = saldo
     }
@@ -299,13 +165,11 @@ export const useAuthenticationExternalStore = defineStore(
 
     const getUser = async () => {
       try {
-        const userApi = axios.getEndpoint(endpoints.api_user)
+        const userApi = axios.getEndpoint(endpoints.api_user_postulante)
         const response = await axios.get<AxiosResponse>(userApi)
-
-        setUser(response.data)
-
-        permisos.value = response.data.permisos
-        return response.data
+        setUser(response.data.data)
+        //permisos.value = response.data.permisos
+        return response.data.data
       } catch (e) {
         setUser(null)
       }
@@ -364,25 +228,6 @@ export const useAuthenticationExternalStore = defineStore(
       setNombreusuario,
       actualizarContrasena,
       isUserLoggedIn,
-      esCoordinador,
-      esCoordinadorBackup,
-      esCoordinadorBodega,
-      esJefeTecnico,
-      esTecnico,
-      esTecnicoLider,
-      esBodeguero,
-      esBodegueroTelconet,
-      esActivosFijos,
-      esRecursosHumanos,
-      esGerente,
-      esCompras,
-      esContabilidad,
-      esAdministrador,
-      esJefeVentasClaro,
-      esSupervisorVentasClaro,
-      esVendedor,
-      esFiscalizador,
-      esSupervisorCampo,
       consultar_saldo_actual,
       extraerRol,
       listadoUsuarios,

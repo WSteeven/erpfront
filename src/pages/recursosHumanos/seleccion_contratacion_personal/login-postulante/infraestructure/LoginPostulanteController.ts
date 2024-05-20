@@ -41,7 +41,9 @@ async loginterceros(driver) {
   }
   async obtenerSesionUser() {
     try {
-      this.store.obtenerSesion()
+      const usuario = this.store.obtenerSesion()
+
+      this.Router.replace({ name: 'puestos_disponibles' })
     } catch (error: unknown) {
            throw error
     }

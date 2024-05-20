@@ -18,7 +18,12 @@
       <div
         class="col-12 col-md-4 column items-center bg-body-table justify-center window-height"
       >
-        <q-avatar v-if="$q.screen.xs" square size="120px" class="q-mx-auto block q-mb-md">
+        <q-avatar
+          v-if="$q.screen.xs"
+          square
+          size="120px"
+          class="q-mx-auto block q-mb-md"
+        >
           <img src="~assets/logo.png" />
         </q-avatar>
 
@@ -74,7 +79,7 @@
           <!-- Usuario -->
           <div class="col-12 q-mb-sm">
             <q-input
-              v-model="loginUser.name"
+            v-model="loginUser.name"
               label="Usuario"
               outlined
               dense
@@ -85,7 +90,7 @@
           <!-- Contraseña -->
           <div class="col-12 q-mb-sm">
             <q-input
-              v-model="loginUser.password"
+            v-model="loginUser.password"
               label="Contraseña"
               outlined
               dense
@@ -102,22 +107,10 @@
               </template>
             </q-input>
           </div>
-          <div class="q-pa-md row justify-center">
-            <div class="col-6 q-my-sm">
-              <p>¿Quieres ser parte de JP CONSTRUCRED?</p>
-            </div>
-            <div class="col-2">
-              <!-- Botones -->
-              <q-btn
-                flat
-                color="primary"
-                label="Registrate"
-                class="full-width q-mb-sm"
-                no-caps
-                unelevated
-              >
-              </q-btn>
-            </div>
+
+          <!-- Recuerdame -->
+          <div class="col-12 q-mb-sm">
+            <q-toggle v-model="loginUser.remember_session" label="Recuérdame" />
           </div>
 
           <div class="col-12">
@@ -130,6 +123,19 @@
               no-caps
               unelevated
               @click="login()"
+            >
+            </q-btn>
+          </div>
+          <div class="col-12">
+            <!-- Botones -->
+            <q-btn
+              flat
+              color="primary"
+              label="Recuperar contraseña"
+              class="full-width q-mb-sm"
+              no-caps
+              unelevated
+              @click="recuperarPassword()"
             >
             </q-btn>
           </div>
@@ -146,29 +152,18 @@ h2 {
   line-height: 1.2;
   font-size: 1.714rem;
 }
-.container {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-}
 
+.empresa {
+  position: fixed;
+  top: 16px;
+  left: 16px;
+}
 .separator {
   flex: 0 0 auto;
   width: 30%;
   height: 1px;
   background-color: #ddd;
 }
-
-.text {
-  flex: 0 0 auto;
-  font-weight: bold;
-}
-.empresa {
-  position: fixed;
-  top: 16px;
-  left: 16px;
-}
-
 .fondo {
   background: rgb(94, 88, 252);
   background: linear-gradient(

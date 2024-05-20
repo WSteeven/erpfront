@@ -1,10 +1,10 @@
-
 // Dependencias
 import EssentialLoading from 'components/loading/view/EssentialLoading.vue'
-import { defineComponent, ref, computed,  ComputedRef, onMounted } from 'vue'
-import { useAuthenticationStore } from 'src/stores/authentication'
+import { defineComponent, ref, computed, ComputedRef, onMounted } from 'vue'
+import { useAuthenticationExternalStore } from 'src/stores/authenticationExternal'
+
 import { LocalStorage, useQuasar } from 'quasar'
-import {  useRouter } from 'vue-router'
+import { useRouter } from 'vue-router'
 import Swal from 'sweetalert2'
 import dayjs from 'dayjs'
 import es from 'dayjs/locale/es'
@@ -19,12 +19,16 @@ import EssentialLink from 'components/EssentialLink.vue'
 // Logica y controladores
 import { ComportamientoModalesMainLayout } from './modales/application/ComportamientoModalesMainLayout'
 import { useConfiguracionGeneralStore } from 'stores/configuracion_general'
-import { useIdle, } from '@vueuse/core'
-import { formatearFechaTexto, isAxiosError, notificarMensajesError } from 'shared/utils'
+import { useIdle } from '@vueuse/core'
+import {
+  formatearFechaTexto,
+  isAxiosError,
+  notificarMensajesError,
+} from 'shared/utils'
 import { NotIdle } from 'idlejs'
 import { StatusEssentialLoading } from 'components/loading/application/StatusEssentialLoading'
 import { useMenuPostulanteStore } from 'stores/menuPostulante'
-import { LoginPostulanteController } from 'pages/recursosHumanos/seleccion_contratacion_personal/login-postulante/infraestructure/LoginPostulanteController'
+import { LoginPostulanteController } from 'src/pages/recursosHumanos/seleccion_contratacion_personal/login-postulante/infraestructure/LoginPostulanteController'
 
 export default defineComponent({
   name: 'PostulanteLayout',
@@ -41,11 +45,10 @@ export default defineComponent({
     const menu = useMenuPostulanteStore()
 
     const menuVisible = ref(false)
-
     /*********
      * Stores
      *********/
-    const authenticationStore = useAuthenticationStore()
+    const authenticationStore = useAuthenticationExternalStore()
     const configuracionGeneralStore = useConfiguracionGeneralStore()
 
     /*******
@@ -55,8 +58,6 @@ export default defineComponent({
     dayjs.extend(relativeTime)
     dayjs.locale(es)
 
-
-
     /************
      * Variables
      ************/
@@ -64,16 +65,17 @@ export default defineComponent({
     const Router = useRouter()
     //const grupo = authenticationStore.user.grupo
 
-    const saldo = computed(() => {
-      authenticationStore.consultar_saldo_actual()
-      return `${authenticationStore.saldo_actual ?? 0} `
-    })
-
+    const logoClaro = computed(
+      () => configuracionGeneralStore.configuracion?.logo_claro
+    )
+    const logoOscuro = computed(
+      () => configuracionGeneralStore.configuracion?.logo_oscuro
+    )
+    const isMount = ref(false)
     const nombreUsuario = computed(() => {
       const usuario = authenticationStore.user
       if (usuario) {
-       // return `${usuario.nombres} ${usuario.apellidos ?? ''} `
-        return " "
+        return `${usuario.nombres} ${usuario.apellidos ?? ''} `
       }
       return ''
     })
@@ -81,7 +83,7 @@ export default defineComponent({
     async function logout() {
       cargando.activar()
       await authenticationStore.logout()
-      Router.replace({ name: 'Login' })
+      Router.replace({ name: 'LoginPostulante' })
       cargando.desactivar()
     }
 
@@ -95,16 +97,34 @@ export default defineComponent({
       $q.dark.set(Boolean(modoOscuro.value))
       LocalStorage.set('dark', modoOscuro.value)
     }
-
-
-
     //Poner la imagen de perfil
-    const imagenPerfil = ""//`https://ui-avatars.com/api/?name=${authenticationStore.user.nombres.substr(0, 1)}+${authenticationStore.user.apellidos.substr(0, 1)}&bold=true&background=0879dc28&color=0879dc`
-
-
-
-
-
+    const imagenPerfil = computed(() => {
+      const usuario = authenticationStore.user
+      if (usuario) {
+        return `https://ui-avatars.com/api/?name=${usuario.nombres.substr(0,1)}+${usuario.apellidos.substr(0,1)}&bold=true&background=0879dc28&color=0879dc`
+      }
+      return ' '
+    })
+    onMounted(async () => {
+      try {
+        cargando.activar()
+        const token = LocalStorage.getItem('token')
+        if (token !== null) {
+          const loginController = new LoginPostulanteController()
+          await loginController.obtenerSesionUser()
+          isMount.value = true
+        }
+      } catch (error: any) {
+        console.log('montar errror', error)
+        if (isAxiosError(error)) {
+          const mensajes: string[] = error.erroresValidacion
+          console.log('montar errror', error.mensaje)
+          //notificarMensajesError(mensajes, notificaciones)
+        }
+      } finally {
+        cargando.desactivar()
+      }
+    })
 
     type tipo = 'center middle' | 'top start'
     const selfCenterMiddle: ComputedRef<tipo> = computed(() =>
@@ -112,10 +132,9 @@ export default defineComponent({
     )
 
     /**********
-    * Modales
-    **********/
+     * Modales
+     **********/
     const modales = new ComportamientoModalesMainLayout()
-
 
     /**
      * Este código es responsable de manejar la inactividad del usuario y cerrar sesión después de un
@@ -159,14 +178,21 @@ export default defineComponent({
       const LIMIT = 4 * 60 * 60 * 1000 // 4 horas for logout session
       setInterval(() => {
         if (authenticationStore.user) {
-          const la = new Date(JSON.parse(LocalStorage.getItem('lastActivity')!)).getTime()
+          const la = new Date(
+            JSON.parse(LocalStorage.getItem('lastActivity')!)
+          ).getTime()
           // console.log('Resta de tiempo', new Date().getTime() - la)
           // console.log('Tiempo limite', LIMIT)
           // console.log('Resultado', new Date().getTime() - la > LIMIT, new Date().toLocaleTimeString())
           if (new Date().getTime() - la > LIMIT) {
             logout()
             LocalStorage.remove('lastActivity')
-            LocalStorage.set('ultima_conexion', formatearFechaTexto(lastActive.value) + ' ' + new Date(lastActive.value).toLocaleTimeString('en-US'))
+            LocalStorage.set(
+              'ultima_conexion',
+              formatearFechaTexto(lastActive.value) +
+                ' ' +
+                new Date(lastActive.value).toLocaleTimeString('en-US')
+            )
             Swal.fire({
               icon: 'error',
               title: 'Has excedido el tiempo de inactividad',
@@ -181,13 +207,14 @@ export default defineComponent({
     }
 
     // Establecer favicon
-    configuracionGeneralStore.consultarConfiguracion().then(() =>
-      configuracionGeneralStore.cambiarFavicon())
+    configuracionGeneralStore
+      .consultarConfiguracion()
+      .then(() => configuracionGeneralStore.cambiarFavicon())
 
     return {
-      // logoClaro: `${process.env.API_URL}/storage/configuracion_general/logo_claro.jpeg`,
-      logoClaro: computed(() => configuracionGeneralStore.configuracion?.logo_claro),
-      logoOscuro: computed(() => configuracionGeneralStore.configuracion?.logo_oscuro),
+      isMount,
+      logoClaro,
+      logoOscuro,
       modales,
       links: menu.links,
       leftDrawerOpen,
@@ -196,7 +223,6 @@ export default defineComponent({
       },
       logout,
       nombreUsuario,
-      saldo,
       menuVisible,
       modoOscuro,
       toggleDarkMode,
@@ -207,7 +233,8 @@ export default defineComponent({
       dayjs,
       imagenPerfil,
       selfCenterMiddle,
-      mostrarTransferirTareas: authenticationStore.esCoordinador || authenticationStore.esJefeTecnico,
+      mostrarTransferirTareas:
+        authenticationStore.esCoordinador || authenticationStore.esJefeTecnico,
     }
   },
 })

@@ -1364,7 +1364,7 @@ const routes: RouteRecordRaw[] = [
     children: [
       {
         path: '',
-        name: 'Login_postulante',
+        name: 'LoginPostulante',
         component: () =>
           import('pages/recursosHumanos/seleccion_contratacion_personal/login-postulante/view/LoginPostulantePage.vue'),
       },
