@@ -183,7 +183,7 @@ export default defineComponent({
                 bitacora.tanque_inicio = bitacoraDefault.value.tanque_final
                 bitacora.checklistAccesoriosVehiculo = bitacoraDefault.value.checklistAccesoriosVehiculo
                 bitacora.checklistVehiculo = bitacoraDefault.value.checklistVehiculo
-                bitacora.checklistImagenVehiculo.observacion = ''
+                bitacora.checklistImagenVehiculo.observacion = ' '
 
                 bloquear_km_tanque.value = true
             } else { bloquear_km_tanque.value = false }
