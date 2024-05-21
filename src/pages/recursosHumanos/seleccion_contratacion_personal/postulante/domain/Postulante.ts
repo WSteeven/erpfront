@@ -6,6 +6,8 @@ export class Postulante extends EntidadAuditable {
   tipo_documento_identificacion: string | null
   numero_documento_identificacion: string | null
   telefono: string | null
+  email: string | null
+  password : string | null
   constructor() {
     super()
     this.nombres = null
@@ -13,5 +15,7 @@ export class Postulante extends EntidadAuditable {
     this.tipo_documento_identificacion = null
     this.numero_documento_identificacion = null
     this.telefono = null
+    this.email = null
+    this.password = null
   }
 }

@@ -26,6 +26,9 @@ import { AutorizacionController } from 'pages/administracion/autorizaciones/infr
 import EssentialTable from 'components/tables/view/EssentialTable.vue'
 import { configuracionColumnasConocimientoReactive } from '../domain/configuracionColumnasConocimientoReactive'
 import { configuracionColumnasFormacionAcademicaReactive } from '../domain/configuracionColumnasFormacionAcademicaReactive'
+import { tipo_puesto } from 'config/recursosHumanos.utils'
+import { CargoController } from 'pages/recursosHumanos/cargos/infraestructure/CargoController'
+import { requiredIf } from 'shared/i18n-validators'
 
 export default defineComponent({
   components: { TabLayout, EssentialEditor, EssentialTable, GestorArchivos },
@@ -57,11 +60,13 @@ export default defineComponent({
       anios_experiencia: { required },
       conocimientos: { required },
       formaciones_academicas: { required },
+      puesto: { requiredIfpuesto: requiredIf(() => solicitudPuestoEmpleo.tipo_puesto !== tipo_puesto.nuevo ) },
     }
 
     const v$ = useVuelidate(reglas, solicitudPuestoEmpleo)
     const tipos_puestos_trabajo = ref([])
     const autorizaciones = ref([])
+    const cargos = ref([])
 
     setValidador(v$.value)
     async function subirArchivos() {
@@ -88,10 +93,18 @@ export default defineComponent({
             campos: 'id,nombre',
           },
         },
+        cargos: {
+          controller: new CargoController(),
+          params: { estado: 1 },
+        },
       })
       tipos_puestos_trabajo.value = listadosAuxiliares.tipos_puestos_trabajo
       autorizaciones.value = listadosAuxiliares.autorizaciones
+      cargos.value = listadosAuxiliares.cargos
     })
+    function cambiarTipoPuesto(){
+      solicitudPuestoEmpleo.puesto=null
+    }
 
     function btnEliminarPuestoEmpleo() {
       console.log('eliminar')
@@ -124,6 +137,9 @@ export default defineComponent({
       refArchivo,
       tipos_puestos_trabajo,
       autorizaciones,
+      cargos,
+      tipo_puesto,
+      cambiarTipoPuesto
     }
   },
 })

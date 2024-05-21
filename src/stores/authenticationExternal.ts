@@ -7,18 +7,9 @@ import { computed, ref } from 'vue'
 import { LocalStorage } from 'quasar'
 import { AxiosError, AxiosResponse } from 'axios'
 import { Empleado } from 'pages/recursosHumanos/empleados/domain/Empleado'
-import {Postulante } from 'pages/recursosHumanos/seleccion_contratacion_personal/postulante/domain/Postulante'
-import { EstadosTransaccionController } from 'pages/administracion/estados_transacciones/infraestructure/EstadosTransaccionController'
-import { AutorizacionController } from 'pages/administracion/autorizaciones/infraestructure/AutorizacionController'
-import { SucursalController } from 'pages/administracion/sucursales/infraestructure/SucursalController'
-import { CondicionController } from 'pages/administracion/condiciones/infraestructure/CondicionController'
+import { Postulante } from 'pages/recursosHumanos/seleccion_contratacion_personal/postulante/domain/Postulante'
 import { ForgotPassword } from 'sistema/authentication/forgotPassword/domain/ForgotPassword'
 import { ResetPassword } from 'sistema/authentication/resetPassword/domain/ResetPassword'
-import { DetalleFondoController } from 'pages/fondosRotativos/detalleFondo/infrestructure/DetalleFondoController'
-import { SubDetalleFondoController } from 'pages/fondosRotativos/subDetalleFondo/infrestructure/SubDetalleFondoController'
-import { CantonController } from 'sistema/ciudad/infraestructure/CantonControllerontroller'
-import { TareaController } from 'pages/gestionTrabajos/tareas/infraestructure/TareaController'
-import { EmpleadoController } from 'pages/recursosHumanos/empleados/infraestructure/EmpleadoController'
 import { UltimoSaldoController } from 'pages/fondosRotativos/reportes/reporteSaldoActual/infrestucture/UltimoSaldoController'
 import { UserLoginPostulante } from 'pages/recursosHumanos/seleccion_contratacion_personal/login-postulante/domain/UserLoginPostulante'
 export const useAuthenticationExternalStore = defineStore(
@@ -42,7 +33,6 @@ export const useAuthenticationExternalStore = defineStore(
         }`
     )
 
-
     function extraerRol(roles: string[], rolConsultar: string) {
       return roles.some((rol: string) => rol === rolConsultar)
     }
@@ -60,8 +50,6 @@ export const useAuthenticationExternalStore = defineStore(
         roles.value = response.data.modelo.roles
         permisos.value = response.data.modelo.permisos
 
-        cargarDatosLS()
-
         return response.data.modelo
       } catch (error: unknown) {
         console.log(error)
@@ -70,6 +58,26 @@ export const useAuthenticationExternalStore = defineStore(
         throw new ApiError(axiosError)
       }
     }
+
+    const registro = async (
+      credentiales: Postulante
+    ): Promise<UserLoginPostulante> => {
+      try {
+        const registrar = axios.getEndpoint(endpoints.registro)
+        const response: AxiosResponse = await axios.post(
+          registrar,
+          credentiales
+        )
+        LocalStorage.set('token', response.data.access_token)
+        setUser(response.data.modelo)
+        return response.data.modelo
+
+      } catch (error) {
+        const axiosError = error as AxiosError
+        throw new ApiError(axiosError)
+      }
+    }
+
     const loginTerceros = async (driver) => {
       try {
         const login = axios.getEndpoint(endpoints.login_terceros)
@@ -133,13 +141,11 @@ export const useAuthenticationExternalStore = defineStore(
       }
     }
 
-
-
-/**
- * La función "cerrar sesión" cierra la sesión del usuario enviando una solicitud POST al endpoint
- * de cierre de sesión, eliminando el token del almacenamiento local y actualizando el título del
- * documento.
- */
+    /**
+     * La función "cerrar sesión" cierra la sesión del usuario enviando una solicitud POST al endpoint
+     * de cierre de sesión, eliminando el token del almacenamiento local y actualizando el título del
+     * documento.
+     */
     async function logout() {
       await axios.post(axios.getEndpoint(endpoints.logout_postulante))
       LocalStorage.remove('token')
@@ -231,6 +237,7 @@ export const useAuthenticationExternalStore = defineStore(
       consultar_saldo_actual,
       extraerRol,
       listadoUsuarios,
+      registro,
     }
   }
 )

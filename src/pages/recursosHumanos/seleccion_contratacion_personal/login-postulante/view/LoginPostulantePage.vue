@@ -18,13 +18,8 @@
       <div
         class="col-12 col-md-4 column items-center bg-body-table justify-center window-height"
       >
-        <q-avatar
-          v-if="$q.screen.xs"
-          square
-          size="120px"
-          class="q-mx-auto block q-mb-md"
-        >
-          <img src="~assets/logo.png" />
+        <q-avatar v-if="$q.screen.xs" square size="120px" class="q-mx-auto block q-mb-md">
+          <img :src="!$q.dark.isActive ? logoClaro : logoOscuro" />
         </q-avatar>
 
         <form @submit.prevent="login" class="full-width q-px-lg">
@@ -79,7 +74,7 @@
           <!-- Usuario -->
           <div class="col-12 q-mb-sm">
             <q-input
-            v-model="loginUser.name"
+              v-model="loginUser.name"
               label="Usuario"
               outlined
               dense
@@ -90,7 +85,7 @@
           <!-- Contraseña -->
           <div class="col-12 q-mb-sm">
             <q-input
-            v-model="loginUser.password"
+              v-model="loginUser.password"
               label="Contraseña"
               outlined
               dense
@@ -139,37 +134,59 @@
             >
             </q-btn>
           </div>
+          <div class="q-pa-md row justify-center">
+            <div class="col-6 q-my-sm">
+              <p>¿Quieres ser parte de JP CONSTRUCRED?</p>
+            </div>
+            <div class="col-2">
+              <!-- Botones -->
+              <q-btn
+                flat
+                color="primary"
+                label="Registrate"
+                class="full-width q-mb-sm"
+                no-caps
+                unelevated
+                @click="registro()"
+
+              >
+              </q-btn>
+            </div>
+          </div>
         </form>
       </div>
     </div>
   </q-page>
 </template>
-
 <script src="./LoginPostulantePage.ts"></script>
-
 <style>
-h2 {
-  line-height: 1.2;
-  font-size: 1.714rem;
-}
+    h2 {
+      line-height: 1.2;
+      font-size: 1.714rem;
+    }
 
-.empresa {
-  position: fixed;
-  top: 16px;
-  left: 16px;
-}
-.separator {
-  flex: 0 0 auto;
-  width: 30%;
-  height: 1px;
-  background-color: #ddd;
-}
-.fondo {
-  background: rgb(94, 88, 252);
-  background: linear-gradient(
-    90deg,
-    rgba(94, 88, 252, 1) 0%,
-    rgba(110, 143, 255, 1) 100%
-  );
-}
+    .empresa {
+      position: fixed;
+      top: 16px;
+      left: 16px;
+    }
+    .container {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .separator {
+      flex: 0 0 auto;
+      width: 30%;
+      height: 1px;
+      background-color: #ddd;
+    }
+    .fondo {
+      background: rgb(94, 88, 252);
+      background: linear-gradient(
+        90deg,
+        rgba(94, 88, 252, 1) 0%,
+        rgba(110, 143, 255, 1) 100%
+      );
+    }
 </style>

@@ -1358,7 +1358,8 @@ const routes: RouteRecordRaw[] = [
           import('pages/sistema/authentication/login/view/LoginPage.vue'),
       },
     ],
-  }, {
+  },
+  {
     path: '/login-postulante',
     component: () => import('layouts/FullLayout.vue'),
     children: [
@@ -1367,6 +1368,18 @@ const routes: RouteRecordRaw[] = [
         name: 'LoginPostulante',
         component: () =>
           import('pages/recursosHumanos/seleccion_contratacion_personal/login-postulante/view/LoginPostulantePage.vue'),
+      },
+    ],
+  },
+  {
+    path: '/registro-postulante',
+    component: () => import('layouts/FullLayout.vue'),
+    children: [
+      {
+        path: '',
+        name: 'RegistroPostulante',
+        component: () =>
+          import('pages/recursosHumanos/seleccion_contratacion_personal/postulante/view/PostulanteRegistroPage.vue'),
       },
     ],
   },

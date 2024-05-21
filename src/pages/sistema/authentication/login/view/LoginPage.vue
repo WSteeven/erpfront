@@ -24,7 +24,7 @@
           size="120px"
           class="q-mx-auto block q-mb-md"
         >
-          <img src="~assets/logo.png" />
+          <img :src="!$q.dark.isActive ? logoClaro : logoOscuro" />
         </q-avatar>
 
         <form @submit.prevent="login" class="full-width q-px-lg">

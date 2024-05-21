@@ -554,6 +554,11 @@ export const niveles_academicos = [
   { nombre: 'ESTUDIO SECUNDARIO' },
   { nombre: 'TITULO SUPERIOR' },
 ]
+export const tipos_documentos_identificaciones = [
+  { nombre: 'Cedula', value:'CEDULA' },
+  { nombre: 'R.U.C.' , value:'RUC' },
+  { nombre: 'Pasaporte',value: 'PASAPORTE' },
+]
 
 export const tipos_sangre = [
   { nombre: 'A +' },

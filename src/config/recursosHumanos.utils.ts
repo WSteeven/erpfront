@@ -31,3 +31,9 @@ export const estadosAlimentacion = {
   activa: '0',
   finalizado: '1',
 }
+
+export const tipo_puesto ={
+  nuevo:1,
+  vacante:2,
+  pasante:3
+}

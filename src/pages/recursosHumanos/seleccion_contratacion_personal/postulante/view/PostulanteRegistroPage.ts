@@ -1,17 +1,6 @@
 // Dependencias
-import {
-  isAxiosError,
-  notificarMensajesError,
-  removeAccents,
-} from 'shared/utils'
-import {
-  computed,
-  defineComponent,
-  onMounted,
-  reactive,
-  ref,
-  watchEffect,
-} from 'vue'
+import { isAxiosError, notificarMensajesError } from 'shared/utils'
+import { computed, defineComponent, reactive, ref, watchEffect } from 'vue'
 import { useQuasar, LocalStorage } from 'quasar'
 
 import { useRouter } from 'vue-router'
@@ -22,9 +11,11 @@ import { useRouter } from 'vue-router'
 import { useConfiguracionGeneralStore } from 'stores/configuracion_general'
 import { StatusEssentialLoading } from 'components/loading/application/StatusEssentialLoading'
 import { useNotificaciones } from 'shared/notificaciones'
-import { UserLogin } from 'sistema/authentication/login/domain/UserLogin'
-import { LoginController } from 'sistema/authentication/login/infraestructure/LoginController'
-import { LoginPostulanteController } from '../infraestructure/LoginPostulanteController'
+import { PostulanteRegistroController } from '../infraestructure/PostulanteRegistroController'
+import { Postulante } from '../domain/Postulante'
+import useVuelidate from '@vuelidate/core'
+import { required } from 'shared/i18n-validators'
+import { tipos_documentos_identificaciones } from 'config/utils'
 
 export default defineComponent({
   name: 'LoginPostulante',
@@ -38,9 +29,9 @@ export default defineComponent({
       () => configuracionGeneralStore.configuracion?.nombre_empresa
     )
 
-    const loginUser = reactive(new UserLogin())
+    const postulante = reactive(new Postulante())
 
-    const loginController = new LoginPostulanteController()
+    const postulanteRegistroController = new PostulanteRegistroController()
 
     const notificaciones = useNotificaciones()
     const cargando = new StatusEssentialLoading()
@@ -48,34 +39,42 @@ export default defineComponent({
 
     watchEffect(() => (document.title = nombreEmpresa.value ?? ''))
     const $q = useQuasar()
-    onMounted(async () => {
-      try {
-        cargando.activar()
-        const token = LocalStorage.getItem('token')
-        if (token !== null) {
-          await loginController.obtenerSesionUser()
-        }
-      } catch (error: any) {
-        console.log('montar errror', error)
+    const reglas = {
+      nombres: {
+        required: required,
+      },
+      apellidos: {
+        required: required,
+      },
+      numero_documento_identificacion: {
+        required: required,
+      },
+      telefono: {
+        required: required,
+      },
+      email: {
+        required: required,
+      },
+      password: {
+        required: required,
+      },
+      tipo_documento_identificacion: {
+        required: required,
+      },
+    }
+    const v$ = useVuelidate(reglas, postulante)
 
-        if (isAxiosError(error)) {
-          const mensajes: string[] = error.erroresValidacion
-          console.log('montar errror', error.mensaje)
-          //notificarMensajesError(mensajes, notificaciones)
-        }
-      } finally {
-        cargando.desactivar()
-      }
-    })
-    const login = async () => {
+    const registro = async () => {
       if (!$q.loading.isActive) {
         try {
           cargando.activar()
-          await loginController.login(loginUser)
-
-          notificaciones.notificarCorrecto(
-            'Bienvenido a ' + nombreEmpresa.value
-          )
+          if (await v$.value.$validate()) {
+            await postulanteRegistroController.registro(postulante)
+            cargando.desactivar()
+            notificaciones.notificarCorrecto(
+              'Bienvenido a ' + nombreEmpresa.value
+            )
+          }
         } catch (error: any) {
           if (isAxiosError(error)) {
             const mensajes: string[] = error.erroresValidacion
@@ -90,15 +89,11 @@ export default defineComponent({
       Router.replace('/recuperar-contrasena')
     }
 
-    const registro=() => {
-      Router.replace('/registro-postulante')
-    }
-
     const loginTerceros = async (driver) => {
       if (!$q.loading.isActive) {
         try {
           cargando.activar()
-          await loginController.loginterceros(driver)
+          // await loginController.loginterceros(driver)
           notificaciones.notificarCorrecto(
             'Bienvenido a ' + nombreEmpresa.value
           )
@@ -114,14 +109,14 @@ export default defineComponent({
     }
 
     const enableLoginButton = computed(
-      () => loginUser.name !== '' && loginUser.password !== ''
+      () => postulante.nombres !== '' && postulante.password !== ''
     )
 
     return {
+      v$,
       isPwd: ref(true),
-      loginUser,
+      postulante,
       loginTerceros,
-      registro,
       logoClaro: computed(
         () => configuracionGeneralStore.configuracion?.logo_claro
       ),
@@ -129,10 +124,11 @@ export default defineComponent({
         () => configuracionGeneralStore.configuracion?.logo_oscuro
       ),
       enableLoginButton,
-      login,
+      registro,
       recuperarPassword,
       nombreEmpresa,
       cargando,
+      tipos_documentos_identificaciones,
     }
   },
 })

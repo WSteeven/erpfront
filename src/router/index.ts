@@ -41,7 +41,8 @@ export default route(function (/* { store, ssrContext } */) {
   const authenticationExternal = useAuthenticationExternalStore()
 
   Router.beforeEach(async (to, _, next) => {
-    const sessionIniciada = to.name.toLowerCase().indexOf('puesto'.toLowerCase()) !== -1? await authenticationExternal.isUserLoggedIn(): await authentication.isUserLoggedIn()
+    const sessionIniciada =  await authentication.isUserLoggedIn()
+    //const sessionIniciada = to.name.toLowerCase().indexOf('puesto'.toLowerCase()) !== -1? await authenticationExternal.isUserLoggedIn(): await authentication.isUserLoggedIn()
     // Si la ruta requiere autenticacion
     if (to.matched.some((ruta) => ruta.meta.requiresAuth)) {
       if (sessionIniciada) {

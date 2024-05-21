@@ -191,6 +191,8 @@ export const endpoints = {
    solicitud_puesto_empleo: new Endpoint('recursos-humanos/solicitud-puesto-empleo'),
    publicacion_puesto_empleo: new Endpoint('recursos-humanos/publicacion-puesto-empleo'),
    tipos_puestos_trabajos: new Endpoint('recursos-humanos/tipos_puestos_trabajos'),
+   postulantes: new Endpoint('recursos-humanos/postulantes'),
+   registro: new Endpoint('recursos-humanos/registro'),
 
   //Modulo de Vehiculos
   combustibles: new Endpoint('vehiculos/combustibles'),

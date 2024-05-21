@@ -59,7 +59,7 @@ export default defineComponent({
      * Init
      *******/
     if (authenticationStore.esTecnico) movilizacionSubtareaStore.getSubtareaDestino(authenticationStore.user.id)
-    
+
     /***************************
      * Permitir Notificaciones push
      ***************************/
@@ -75,7 +75,7 @@ export default defineComponent({
 
     dayjs.extend(relativeTime)
     dayjs.locale(es)
-    
+
 
 
     /************
@@ -85,7 +85,7 @@ export default defineComponent({
     const Router = useRouter()
     const route = useRoute()
     const tituloPagina = computed(() => mainLayoutStore.tituloPagina)
-    const grupo = authenticationStore.user.grupo
+    const grupo = authenticationStore.user?.grupo
 
     const saldo = computed(() => {
       authenticationStore.consultar_saldo_actual()

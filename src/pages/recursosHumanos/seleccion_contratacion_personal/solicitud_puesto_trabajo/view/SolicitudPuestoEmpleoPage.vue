@@ -8,10 +8,12 @@
       <q-form @submit.prevent>
         <div class="row q-col-gutter-sm q-py-md">
           <!-- nombre -->
-          <div class="col-12 col-md-3">
+          <div class="col-12 col-md-4" v-if="solicitudPuestoEmpleo.tipo_puesto === tipo_puesto.nuevo">
             <label class="q-mb-sm block">Nombre del Puesto</label>
             <q-input
               v-model="solicitudPuestoEmpleo.nombre"
+              @blur="v$.nombre.$touch"
+
               @update:model-value="
                 (v) => (solicitudPuestoEmpleo.nombre = removeAccents(v))
               "
@@ -28,8 +30,42 @@
               </template>
             </q-input>
           </div>
+                    <!-- Caqrgos -->
+                    <div class="col-12 col-md-4 col-sm-3"  v-if="solicitudPuestoEmpleo.tipo_puesto !== tipo_puesto.nuevo">
+            <label class="q-mb-sm block">Cargos</label>
+            <q-select
+              v-model="solicitudPuestoEmpleo.puesto"
+              :options="cargos"
+              transition-show="jump-up"
+              transition-hide="jump-down"
+              :disable="disabled"
+              options-dense
+              dense
+              outlined
+              :input-debounce="0"
+              use-input
+              @blur="v$.puesto.$touch"
+              :error="!!v$.puesto.$errors.length"
+              :option-value="(v) => v.id"
+              :option-label="(v) => v.nombre"
+              emit-value
+              map-options
+            >
+              <template v-slot:error>
+                <div v-for="error of v$.puesto.$errors" :key="error.$uid">
+                  <div class="error-msg">{{ error.$message }}</div>
+                </div>
+              </template>
+
+              <template v-slot:no-option>
+                <q-item>
+                  <q-item-section class="text-grey"> No hay resultados </q-item-section>
+                </q-item>
+              </template>
+            </q-select>
+          </div>
           <!-- Tipos de Puestos de Trabajo-->
-          <div class="col-12 col-md-3 col-sm-3">
+          <div class="col-12 col-md-4 col-sm-3">
             <label class="q-mb-sm block">Tipo de Puesto</label>
             <q-select
               v-model="solicitudPuestoEmpleo.tipo_puesto"
@@ -43,6 +79,8 @@
               :input-debounce="0"
               use-input
               @blur="v$.tipo_puesto.$touch"
+              @update:model-value="cambiarTipoPuesto()"
+
               :error="!!v$.tipo_puesto.$errors.length"
               :option-value="(v) => v.id"
               :option-label="(v) => v.nombre"
@@ -62,35 +100,8 @@
               </template>
             </q-select>
           </div>
-          <!-- Manejo de archivos -->
-          <div class="col-12 col-md-6 q-mb-md">
-            <gestor-archivos
-              ref="refArchivo"
-              label="Manual de Funciones "
-              :mixin="mixin"
-              :disable="disabled"
-              :listarAlGuardar="false"
-              :quiero_subir_archivos="true"
-              :permitir-eliminar="accion == acciones.nuevo || accion == acciones.editar"
-              :idModelo="idDevolucion"
-            >
-              <template #boton-subir>
-                <q-btn
-                  v-if="false"
-                  color="positive"
-                  push
-                  no-caps
-                  class="full-width q-mb-lg"
-                  @click="subirArchivos()"
-                >
-                  <q-icon name="bi-upload" class="q-mr-sm" size="xs"></q-icon>
-                  Subir archivos seleccionados</q-btn
-                >
-              </template>
-            </gestor-archivos>
-          </div>
           <!-- Autorización -->
-          <div class="col-12 col-md-3 col-sm-3">
+          <div class="col-12 col-md-4 col-sm-3">
             <label class="q-mb-sm block">Autorización</label>
             <q-select
               v-model="solicitudPuestoEmpleo.autorizacion"
@@ -132,7 +143,15 @@
             <essential-editor
               v-model="solicitudPuestoEmpleo.descripcion_vacante"
               :disable="disabled"
+              @blur="v$.descripcion_vacante.$touch"
+              :error="!!v$.descripcion_vacante.$errors.length"
+
             >
+            <template v-slot:error>
+                <div v-for="error of v$.descripcion_vacante.$errors" :key="error.$uid">
+                  <div class="error-msg">{{ error.$message }}</div>
+                </div>
+              </template>
             </essential-editor>
             <div
               v-for="error of v$.descripcion_vacante.$errors"
@@ -143,57 +162,57 @@
             </div>
           </div>
           <div class="col-12 col-md-3 col-sm-12">
-                  <q-btn
-                    color="primary"
-                    @click="agregarDiscapacidad()"
-                    class="col-12 col-md-3 full-width"
-                    >Agregar conocimiento</q-btn
-                  >
-                  <essential-table
-                    :configuracionColumnas="[
-                      ...configuracionColumnasConocimientoReactive,
-                      accionesTabla,
-                    ]"
-                    :datos="solicitudPuestoEmpleo.conocimientos"
-                    :permitirConsultar="false"
-                    :permitirEliminar="false"
-                    :permitirEditar="false"
-                    :mostrarBotones="false"
-                    :permitir-editar-celdas="true"
-                    :mostrar-header="false"
-                    :grid="false"
-                    :accion1="btnEliminarPuestoEmpleo"
-                    :alto-fijo="false"
-                    :ajustarCeldas="true"
-                  >
-                  </essential-table>
-                </div>
-                <div class="col-12 col-md-3 col-sm-12">
-                  <q-btn
-                    color="primary"
-                    @click="agregarFormacionAcademica()"
-                    class="col-12 col-md-3 full-width"
-                    >Agregar Titulo Academico</q-btn
-                  >
-                  <essential-table
-                    :configuracionColumnas="[
-                      ...configuracionColumnasFormacionAcademicaReactive,
-                      accionesTabla,
-                    ]"
-                    :datos="solicitudPuestoEmpleo.formaciones_academicas"
-                    :permitirConsultar="false"
-                    :permitirEliminar="false"
-                    :permitirEditar="false"
-                    :mostrarBotones="false"
-                    :permitir-editar-celdas="true"
-                    :mostrar-header="false"
-                    :grid="false"
-                    :accion1="btnEliminarFormacionAcademica"
-                    :alto-fijo="false"
-                    :ajustarCeldas="true"
-                  >
-                  </essential-table>
-                </div>
+            <q-btn
+              color="primary"
+              @click="agregarDiscapacidad()"
+              class="col-12 col-md-3 full-width"
+              >Agregar conocimiento</q-btn
+            >
+            <essential-table
+              :configuracionColumnas="[
+                ...configuracionColumnasConocimientoReactive,
+                accionesTabla,
+              ]"
+              :datos="solicitudPuestoEmpleo.conocimientos"
+              :permitirConsultar="false"
+              :permitirEliminar="false"
+              :permitirEditar="false"
+              :mostrarBotones="false"
+              :permitir-editar-celdas="true"
+              :mostrar-header="false"
+              :grid="false"
+              :accion1="btnEliminarPuestoEmpleo"
+              :alto-fijo="false"
+              :ajustarCeldas="true"
+            >
+            </essential-table>
+          </div>
+          <div class="col-12 col-md-3 col-sm-12">
+            <q-btn
+              color="primary"
+              @click="agregarFormacionAcademica()"
+              class="col-12 col-md-3 full-width"
+              >Agregar Titulo Academico</q-btn
+            >
+            <essential-table
+              :configuracionColumnas="[
+                ...configuracionColumnasFormacionAcademicaReactive,
+                accionesTabla,
+              ]"
+              :datos="solicitudPuestoEmpleo.formaciones_academicas"
+              :permitirConsultar="false"
+              :permitirEliminar="false"
+              :permitirEditar="false"
+              :mostrarBotones="false"
+              :permitir-editar-celdas="true"
+              :mostrar-header="false"
+              :grid="false"
+              :accion1="btnEliminarFormacionAcademica"
+              :alto-fijo="false"
+              :ajustarCeldas="true"
+            >
+            </essential-table>
+          </div>
           <!-- años de experiencia -->
           <div class="col-12 col-md-3">
             <label class="q-mb-sm block">Años de Experiencia</label>
@@ -202,6 +221,7 @@
               placeholder="Obligatorio"
               type="number"
               :disable="disabled"
+              @blur="v$.anios_experiencia.$touch"
               :error="!!v$.anios_experiencia.$errors.length"
               outlined
               dense
