@@ -77,6 +77,20 @@ export const tabOptionsAsignacionVehiculos: TabOption[] = [
   { label: 'ANULADAS', value: 'ANULADO' },
 ]
 
+export const tabOptionsMantenimientosVehiculos: TabOption[] = [
+  { label: 'PENDIENTE', value: 'PENDIENTE' },
+  { label: 'REALIZADO', value: 'REALIZADO' },
+  { label: 'RETRASADO', value: 'RETRASADO' },
+  { label: 'POSTERGADO', value: 'POSTERGADO' },
+  { label: 'NO REALIZADO', value: 'NO REALIZADO' },
+]
+export const estadosMantenimientosVehiculos = [
+  { label: 'PENDIENTE' },
+  { label: 'REALIZADO' },
+  { label: 'RETRASADO' },
+  { label: 'POSTERGADO' },
+  { label: 'NO REALIZADO' },
+]
 export const estadosAsignacionesVehiculos = [
   { label: 'PENDIENTE' },
   { label: 'ACEPTADO' },

@@ -198,6 +198,7 @@ export const endpoints = {
   seguros: new Endpoint('vehiculos/seguros'),
   servicios: new Endpoint('vehiculos/servicios'),
   planes_mantenimientos: new Endpoint('vehiculos/planes-mantenimientos'),
+  mantenimientos_vehiculos: new Endpoint('vehiculos/mantenimientos-vehiculos'),
 
   //Modulo de compras y proveedores
   dashboard_compras: new Endpoint('compras/dashboard'),

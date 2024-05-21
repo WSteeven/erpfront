@@ -785,6 +785,12 @@ export const useMenuStore = defineStore('menu', () => {
           icon: 'bi-tools',
           children: [
             {
+              title: 'Mantenimientos de Vehiculos',
+              link: 'mantenimientos-vehiculos',
+              icon: 'bi-tools',
+              can: store.can('puede.acceder.mantenimientos_vehiculos'),
+            },
+            {
               title: 'Servicios de Mantenimientos',
               link: 'servicios',
               icon: 'bi-gear-fill',
