@@ -6,7 +6,7 @@ import { getVisibleColumns, formatBytes } from 'shared/utils'
 import { TipoSeleccion, TipoSeparador } from 'config/utils'
 import { offset } from 'config/utils_tablas'
 import { CustomActionTable } from '../domain/CustomActionTable'
-import exportFile from 'quasar/src/utils/export-file.js'
+import { exportFile } from 'quasar'
 
 // Componentes
 import CustomButtons from './CustomButtonsTable.vue'
