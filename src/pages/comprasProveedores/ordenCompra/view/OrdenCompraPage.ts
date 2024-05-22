@@ -163,9 +163,11 @@ export default defineComponent({
       orden.autorizacion = 1
 
       refArchivo.value.limpiarListado()
+      obtenerTareas(false)
     })
     onConsultado(() => {
       // console.log(accion.value)
+      obtenerTareas(true)
       if (accion.value === acciones.editar && (store.user.id === orden.autorizador || store.esCompras || store.user.id === orden.solicitante))
         soloLectura.value = false
       else
@@ -238,6 +240,19 @@ export default defineComponent({
         default: //si tab es 1 u 7 entra aquí
           listar({ autorizacion_id: tab, estado_id: 1, solicitante_id: store.user.id })
       }
+    }
+    async function obtenerTareas(soloUna = false) {
+      let response
+      if (soloUna)
+        response = await new TareaController().listar({ campos: 'id,codigo_tarea,titulo', id: orden.tarea, })
+      else
+        response = await new TareaController().listar({
+          campos: 'id,codigo_tarea,titulo,cliente_id',
+          formulario: true,
+          empleado_id: store.user.id
+        })
+      listadosAuxiliares.tareas = response.result
+      tareas.value = listadosAuxiliares.tareas
     }
     function eliminar({ posicion }) {
       confirmar('¿Está seguro de continuar?', () => orden.listadoProductos.splice(posicion, 1))
