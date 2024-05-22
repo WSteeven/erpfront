@@ -7,6 +7,7 @@ export const configuracionColumnasConocimientoReactive: ColumnConfig<Conocimient
         field: 'nombre',
         label: 'Conocimiento',
         align: 'left',
-        sortable: true
+        sortable: true,
+        editable: true
     },
 ]

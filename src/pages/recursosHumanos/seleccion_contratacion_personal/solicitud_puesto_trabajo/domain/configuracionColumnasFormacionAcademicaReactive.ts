@@ -7,6 +7,7 @@ export const configuracionColumnasFormacionAcademicaReactive: ColumnConfig<Forma
         field: 'nombre',
         label: 'Titulos',
         align: 'left',
+        editable: true,
         sortable: true
     },
 ]

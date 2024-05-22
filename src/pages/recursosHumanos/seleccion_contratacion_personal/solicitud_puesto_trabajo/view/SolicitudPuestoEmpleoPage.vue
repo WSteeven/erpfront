@@ -13,7 +13,6 @@
             <q-input
               v-model="solicitudPuestoEmpleo.nombre"
               @blur="v$.nombre.$touch"
-
               @update:model-value="
                 (v) => (solicitudPuestoEmpleo.nombre = removeAccents(v))
               "
@@ -29,40 +28,6 @@
                 </div>
               </template>
             </q-input>
-          </div>
-                    <!-- Caqrgos -->
-                    <div class="col-12 col-md-4 col-sm-3"  v-if="solicitudPuestoEmpleo.tipo_puesto !== tipo_puesto.nuevo">
-            <label class="q-mb-sm block">Cargos</label>
-            <q-select
-              v-model="solicitudPuestoEmpleo.puesto"
-              :options="cargos"
-              transition-show="jump-up"
-              transition-hide="jump-down"
-              :disable="disabled"
-              options-dense
-              dense
-              outlined
-              :input-debounce="0"
-              use-input
-              @blur="v$.puesto.$touch"
-              :error="!!v$.puesto.$errors.length"
-              :option-value="(v) => v.id"
-              :option-label="(v) => v.nombre"
-              emit-value
-              map-options
-            >
-              <template v-slot:error>
-                <div v-for="error of v$.puesto.$errors" :key="error.$uid">
-                  <div class="error-msg">{{ error.$message }}</div>
-                </div>
-              </template>
-
-              <template v-slot:no-option>
-                <q-item>
-                  <q-item-section class="text-grey"> No hay resultados </q-item-section>
-                </q-item>
-              </template>
-            </q-select>
           </div>
           <!-- Tipos de Puestos de Trabajo-->
           <div class="col-12 col-md-4 col-sm-3">
@@ -80,7 +45,6 @@
               use-input
               @blur="v$.tipo_puesto.$touch"
               @update:model-value="cambiarTipoPuesto()"
-
               :error="!!v$.tipo_puesto.$errors.length"
               :option-value="(v) => v.id"
               :option-label="(v) => v.nombre"
@@ -100,8 +64,46 @@
               </template>
             </q-select>
           </div>
+          <!-- Cargos -->
+          <div class="col-12 col-md-4 col-sm-3" v-if="solicitudPuestoEmpleo.tipo_puesto !== tipo_puesto.nuevo">
+            <label class="q-mb-sm block">Cargos</label>
+            <q-select
+              v-model="solicitudPuestoEmpleo.puesto"
+              :options="cargos"
+              transition-show="jump-up"
+              transition-hide="jump-down"
+              :disable="disabled"
+              options-dense
+              dense
+              outlined
+              :input-debounce="0"
+              use-input
+              @blur="v$.puesto.$touch"
+              @filter="filtrarCargos"
+              :error="!!v$.puesto.$errors.length"
+              :option-value="(v) => v.id"
+              :option-label="(v) => v.nombre"
+              emit-value
+              map-options
+            >
+              <template v-slot:error>
+                <div v-for="error of v$.puesto.$errors" :key="error.$uid">
+                  <div class="error-msg">{{ error.$message }}</div>
+                </div>
+              </template>
+
+              <template v-slot:no-option>
+                <q-item>
+                  <q-item-section class="text-grey"> No hay resultados </q-item-section>
+                </q-item>
+              </template>
+            </q-select>
+          </div>
           <!-- Autorización -->
-          <div class="col-12 col-md-4 col-sm-3">
+          <div
+            class="col-12 col-md-4 col-sm-3"
+            v-if="authenticationStore.can('puede.autorizar.solicitud_puesto_empleo')"
+          >
             <label class="q-mb-sm block">Autorización</label>
             <q-select
               v-model="solicitudPuestoEmpleo.autorizacion"
@@ -145,9 +147,8 @@
               :disable="disabled"
               @blur="v$.descripcion_vacante.$touch"
               :error="!!v$.descripcion_vacante.$errors.length"
-
             >
-            <template v-slot:error>
+              <template v-slot:error>
                 <div v-for="error of v$.descripcion_vacante.$errors" :key="error.$uid">
                   <div class="error-msg">{{ error.$message }}</div>
                 </div>
@@ -164,7 +165,7 @@
           <div class="col-12 col-md-3 col-sm-12">
             <q-btn
               color="primary"
-              @click="agregarDiscapacidad()"
+              @click="agregarConocimiento()"
               class="col-12 col-md-3 full-width"
               >Agregar conocimiento</q-btn
             >
