@@ -1,27 +1,32 @@
-import { ContenedorSimpleMixin } from "shared/contenedor/modules/simple/application/ContenedorSimpleMixin";
+// Dependencias
+import { configuracionColumnasMantenimientosVehiculos } from "../domain/configuracionColumnasMantenimientosVehiculos";
+import { requiredIf } from "shared/i18n-validators";
+import { useCargandoStore } from "stores/cargando";
+import useVuelidate from "@vuelidate/core";
+import { useQuasar } from "quasar";
+import { defineComponent, ref } from "vue";
+
+// Componentes
 import TabLayoutFilterTabs2 from "shared/contenedor/modules/simple/view/TabLayoutFilterTabs2.vue";
-import { defineComponent } from "vue";
+import SelectorImagen from "components/SelectorImagen.vue";
+
+// Logica y controladores
+import { ContenedorSimpleMixin } from "shared/contenedor/modules/simple/application/ContenedorSimpleMixin";
 import { MantenimientoVehiculo } from "../domain/MantenimientoVehiculo";
 import { MantenimientoVehiculoController } from "../infraestructure/MantenimientoVehiculoController";
 import { useNotificaciones } from "shared/notificaciones";
 import { useNotificacionStore } from "stores/notificacion";
-import { useQuasar } from "quasar";
-import { useCargandoStore } from "stores/cargando";
 import { useAuthenticationStore } from "stores/authentication";
 import { StatusEssentialLoading } from "components/loading/application/StatusEssentialLoading";
 import { useFiltrosListadosSelects } from "shared/filtrosListadosGenerales";
 import { EmpleadoController } from "pages/recursosHumanos/empleados/infraestructure/EmpleadoController";
 import { VehiculoController } from "pages/controlVehiculos/vehiculos/infraestructure/VehiculoController";
 import { ServicioController } from "pages/controlVehiculos/servicios/infraestructure/ServicioController";
-import { acciones, accionesTabla } from "config/utils";
-import { requiredIf } from "shared/i18n-validators";
-import useVuelidate from "@vuelidate/core";
+import { acciones, accionesTabla, maskFecha } from "config/utils";
 import { estadosMantenimientosVehiculos, tabOptionsMantenimientosVehiculos } from "config/vehiculos.utils";
-import { configuracionColumnasMantenimientosVehiculos } from "../domain/configuracionColumnasMantenimientosVehiculos";
-import { ref } from "vue";
 
 export default defineComponent({
-    components: { TabLayoutFilterTabs2 },
+    components: { TabLayoutFilterTabs2, SelectorImagen },
     setup() {
         const mixin = new ContenedorSimpleMixin(MantenimientoVehiculo, new MantenimientoVehiculoController())
         const { entidad: mantenimiento, disabled, listadosAuxiliares, accion } = mixin.useReferencias()
@@ -37,7 +42,9 @@ export default defineComponent({
         const store = useAuthenticationStore()
         const cargando = new StatusEssentialLoading()
 
-        const tabDefecto = ref()
+        const tabDefecto = ref('PENDIENTE')
+        const REALIZADO = 'REALIZADO'
+        const POSTERGADO = 'POSTERGADO'
 
         const { vehiculos, filtrarVehiculos,
             empleados, filtrarEmpleados,
@@ -66,7 +73,8 @@ export default defineComponent({
          * Reglas de validacion
         **************************************************************/
         const reglas = {
-            fecha_realizado: { requiredIf: requiredIf(() => mantenimiento.estado === 'REALIZADO') }
+            fecha_realizado: { requiredIf: requiredIf(() => mantenimiento.estado === 'REALIZADO') },
+            km_realizado: { requiredIf: requiredIf(() => mantenimiento.estado === 'REALIZADO') }
         }
 
         const v$ = useVuelidate(reglas, mantenimiento)
@@ -78,6 +86,14 @@ export default defineComponent({
         function filtrarMantenimientos(tab: string) {
             tabDefecto.value = tab
             listar({ estado: tab })
+        }
+
+        function estadoSeleccionado(val) {
+            console.log(val);
+            if (val !== REALIZADO) {
+                mantenimiento.fecha_realizado = null
+                mantenimiento.km_realizado = null
+            }
         }
 
 
@@ -93,6 +109,9 @@ export default defineComponent({
             configuracionColumnas: configuracionColumnasMantenimientosVehiculos,
             accionesTabla,
             tabDefecto,
+            maskFecha,
+            REALIZADO,
+            POSTERGADO,
 
             // listados
             vehiculos, filtrarVehiculos,
@@ -103,6 +122,7 @@ export default defineComponent({
 
             // funciones
             filtrarMantenimientos,
+            estadoSeleccionado,
 
 
         }

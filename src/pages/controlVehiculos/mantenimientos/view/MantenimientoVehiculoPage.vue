@@ -167,12 +167,130 @@
               dense
               outlined
               :disable="disabled"
+              @update:model-value="estadoSeleccionado"
               :option-label="(v) => v.label"
               :option-value="(v) => v.label"
               emit-value
               map-options
             ></q-select>
           </div>
+
+          <!-- Fecha de realizado -->
+          <div
+            class="col-12 col-md-3"
+            v-if="mantenimiento.estado === REALIZADO"
+          >
+            <label class="q-mb-sm block">Fecha Realizado</label>
+            <q-input
+              v-model="mantenimiento.fecha_realizado"
+              placeholder="Obligatorio"
+              :error="!!v$.fecha_realizado.$errors.length"
+              @blur="v$.fecha_realizado.$touch"
+              :disable="disabled"
+              outlined
+              dense
+            >
+              <template v-slot:append>
+                <q-icon name="event" class="cursor-pointer">
+                  <q-popup-proxy
+                    cover
+                    transition-show="scale"
+                    transition-hide="scale"
+                  >
+                    <q-date
+                      v-model="mantenimiento.fecha_realizado"
+                      :mask="maskFecha"
+                      today-btn
+                    >
+                      <div class="row items-center justify-end">
+                        <q-btn
+                          v-close-popup
+                          label="Cerrar"
+                          color="primary"
+                          flat
+                        />
+                      </div>
+                    </q-date>
+                  </q-popup-proxy>
+                </q-icon>
+              </template>
+              <template v-slot:error>
+                <div
+                  style="clear: inherit"
+                  v-for="error of v$.fecha_realizado.$errors"
+                  :key="error.$uid"
+                >
+                  <div class="error-msg">{{ error.$message }}</div>
+                </div>
+              </template>
+            </q-input>
+          </div>
+
+          <!-- km realizado -->
+          <div class="col-6 col-md-3" v-if="mantenimiento.estado === REALIZADO">
+            <label class="q-mb-sm block">Km Realizado</label>
+            <q-input
+              type="number"
+              v-model="mantenimiento.km_realizado"
+              placeholder="Obligatorio"
+              :disable="disabled"
+              :error="!!v$.km_realizado.$errors.length"
+              @blur="v$.km_realizado.$touch"
+              outlined
+              dense
+            >
+              <template v-slot:error>
+                <div v-for="error of v$.km_realizado.$errors" :key="error.$uid">
+                  <div class="error-msg">{{ error.$message }}</div>
+                </div>
+              </template>
+            </q-input>
+          </div>
+
+          <!-- Imagen de Evidencia -->
+          <div class="col-12 col-md-3 col-sm-3">
+            <label for="q-mb-xl block">Imagen Evidencia</label>
+            <selector-imagen
+              file_extensiones=".jpg, image/*"
+              :imagen="mantenimiento.imagen_evidencia"
+              :alto="'80px'"
+              @update:model-value="
+                (data) => (mantenimiento.imagen_evidencia = data)
+              "
+            ></selector-imagen>
+          </div>
+
+          <!-- Motivo postergacion -->
+          <div
+            class="col-12 col-md-3 col-sm-6"
+            v-if="mantenimiento.estado === POSTERGADO"
+          >
+            <label class="q-mb-sm block">Motivo Postergación</label>
+            <q-input
+              autogrow
+              v-model="mantenimiento.motivo_postergacion"
+              placeholder="Opcional"
+              :disable="disabled"
+              hint="Ingresa alguna observación o novedad presentada con este mantenimiento preventivo"
+              outlined
+              dense
+            ></q-input>
+          </div>
+
+          <!-- Observación -->
+          <div class="col-12 col-md-3 col-sm-6">
+            <label class="q-mb-sm block">Observación</label>
+            <q-input
+              autogrow
+              v-model="mantenimiento.observacion"
+              placeholder="Opcional"
+              :disable="disabled"
+              hint="Ingresa alguna observación o novedad presentada con este mantenimiento preventivo"
+              outlined
+              dense
+            ></q-input>
+          </div>
+          <!-- Fin del formulario -->
         </div>
       </q-form>
     </template>
