@@ -174,6 +174,70 @@ export const useMenuStore = defineStore('menu', () => {
         },
       ],
     },
+    /********************
+    * Modulo medico
+    ********************/
+    {
+      title: 'Médico',
+      icon: 'bi-heart-pulse-fill',
+      can: store.can('puede.ver.modulo_medico'),
+      children: [
+        {
+          title: 'Gestionar pacientes',
+          link: 'gestionar-pacientes',
+          icon: 'bi-app',
+          can: store.can('puede.ver.gestionar_pacientes'),
+        },
+        {
+          title: 'Cuestionario de evaluación de riesgos psicosociales',
+          link: 'cuestionario-psicosocial',
+          icon: 'bi-app',
+          can: store.can('puede.ver.cuestionarios_psicosocial'),
+        }, {
+          title: 'Cuestionario de diagnostico consumo de drogas',
+          link: 'cuestionario-diagnostico-consumo-drogas',
+          icon: 'bi-app',
+          can: store.can('puede.ver.cuestionario_diagnostico_consumo_drogas'),
+        },
+        {
+          title: 'Cita médica',
+          link: 'citas-medicas',
+          icon: 'bi-app',
+          can: store.can('puede.ver.citas_medicas'),
+        },
+        {
+          title: 'Solicitudes de exámenes',
+          link: 'solicitudes-examenes',
+          icon: 'bi-app',
+          can: store.can('puede.ver.solicitudes_examenes'),
+        },
+        {
+          title: 'Reporte Cuestionario Psicosocial',
+          link: 'reporte-cuestionarios-pisicosocial',
+          icon: 'bi-app',
+          can: store.can('puede.ver.reporte_cuestionarios_pisicosocial'),
+        },
+        {
+          title: 'CIE',
+          link: 'cie',
+          icon: 'bi-app',
+          can: store.can('puede.ver.cies'),
+        },
+        {
+          title: 'Firmar fichas médicas',
+          link: 'firmar-fichas-medicas',
+          icon: 'bi-app',
+        },
+        {
+          title: 'Configuracion Cuestionario Empleado',
+          link: 'configuraciones-cuestionarios-empleados',
+          icon: 'bi-circle',
+          can: store.can('puede.ver.configuraciones_cuestionarios_empleados'),
+        },
+      ]
+    },
+    /**
+     * Modulo de bodega.
     /*****************************************************************************
      * MÓDULO DE BODEGA.
      * Toda la estructura de pedidos, devoluciones y despachos de materiales

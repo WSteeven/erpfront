@@ -11,6 +11,7 @@ import { ServiceWorkerClass } from './notificacionesServiceWorker/ServiceWorkerC
 import { ItemProforma } from 'pages/comprasProveedores/proforma/domain/ItemProforma'
 import { useAuthenticationStore } from 'stores/authentication'
 import { rolesSistema } from 'config/utils'
+import { SelectOption } from 'components/tables/domain/SelectOption'
 
 const authenticationStore = useAuthenticationStore()
 const usuario = authenticationStore.user
@@ -44,11 +45,12 @@ export function validarEmail(email?: string): boolean {
 export function descargarArchivo(
   data: any,
   titulo: string,
-  formato: string
+  formato: string,
+  tipo = 'application'
 ): void {
   const link = document.createElement('a')
   link.href = URL.createObjectURL(
-    new Blob([data], { type: `application/${formato}` })
+    new Blob([data], { type: `${tipo}/${formato}` })
   )
   link.setAttribute('download', `${titulo}.${formato}`)
   document.body.appendChild(link)
@@ -350,7 +352,7 @@ export async function imprimirArchivo(
   data?: any
 ) {
   const statusLoading = new StatusEssentialLoading()
-  const { notificarAdvertencia, notificarError } = useNotificaciones()
+  const { notificarError } = useNotificaciones()
   statusLoading.activar()
   const axiosHttpRepository = AxiosHttpRepository.getInstance()
   axios({
@@ -725,8 +727,8 @@ export function filtarVisualizacionEmpleadosSaldos(empleados) {
 
   const filtrados =
     authenticationStore.esContabilidad ||
-    authenticationStore.esCoordinador ||
-    authenticationStore.esAdministrador
+      authenticationStore.esCoordinador ||
+      authenticationStore.esAdministrador
       ? empleados
       : empleados.filter((empleado) => empleado.jefe_id === usuario.id)
 
@@ -746,4 +748,13 @@ export async function notificarErrores(err) {
   } else {
     console.log(axiosError)
   }
+}
+
+export const mapearOptionsSelect = (listadoOpciones: { id: number, nombre: string }[]): SelectOption[] => {
+  return listadoOpciones.map((opcion: { id: number, nombre: string }) => {
+    return {
+      label: opcion.nombre,
+      value: opcion.id,
+    }
+  })
 }

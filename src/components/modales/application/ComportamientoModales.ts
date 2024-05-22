@@ -1,5 +1,5 @@
 // Dependencias
-import { computed, ref, UnwrapRef } from 'vue'
+import { computed, ref } from 'vue'
 
 // Logica y controladores
 import { ComponenteModal } from '../domain/ComponenteModal.domain'
@@ -10,9 +10,6 @@ export class ComportamientoModales<T extends ModalesEntidad<T>> {
   protected modales: T
 
   protected componenteActual = ref<ComponenteModal>()
-
-  private modal: UnwrapRef<any>
-
   public abierto = ref(false)
 
   constructor(modales: T) {
@@ -30,18 +27,20 @@ export class ComportamientoModales<T extends ModalesEntidad<T>> {
       set: (valor) => (this.abierto.value = valor),
       get: () => this.abierto.value,
     })
+    const datos = computed(() => this.componenteActual.value?.datos)
 
     return {
       componente,
       titulo,
       abierto,
-      // propiedades,
+      datos,
       refModalEntidades: this.refModalEntidades,
     }
   }
 
-  abrirModalEntidad(id: keyof T): void {
+  abrirModalEntidad(id: keyof T, datos?: any): void {
     const componente = this.obtenerModal(id)
+    componente.datos = datos
 
     if (componente) {
       this.componenteActual.value = componente

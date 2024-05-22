@@ -14,9 +14,11 @@ export class Empleado extends EntidadAuditable {
   correo_personal: string | null
   password: string | null
   usuario: string | null
-  canton: string | null
+  canton: number | null
+  nombre_canton: string | null
   estado: boolean | null
   cargo: number | null
+  nombre_cargo: string | null
   area: number | null
   area_info: string | null
   num_cuenta: string | null
@@ -64,8 +66,9 @@ export class Empleado extends EntidadAuditable {
   banco_info: string | null
   acumula_fondos_reserva: boolean | null
   familiares: any[] | null
+  discapacidades: any[] | null
   generar_usuario: boolean
-
+  edad: number | null
 
   constructor() {
     super()
@@ -83,8 +86,10 @@ export class Empleado extends EntidadAuditable {
     this.password = null
     this.usuario = null
     this.canton = null
+    this.nombre_canton = null
     this.estado = true
     this.cargo = null
+    this.nombre_cargo = null
     this.area = null
     this.area_info = null
     this.num_cuenta = null
@@ -131,7 +136,9 @@ export class Empleado extends EntidadAuditable {
     this.esta_en_rol_pago = true
     this.acumula_fondos_reserva = false
     this.realiza_factura = false
-    this.familiares = [],
-      this.generar_usuario = false
+    this.familiares = []
+    this.discapacidades = []
+    this.generar_usuario = false
+    this.edad = null
   }
 }
