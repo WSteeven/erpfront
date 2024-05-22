@@ -54,11 +54,15 @@ export default defineComponent({
 
     //Reglas de validacion
     const reglas = {
-      nombre: { required },
+      nombre: {
+        requiredIfNombre: requiredIf(
+          () => solicitudPuestoEmpleo.tipo_puesto == tipo_puesto.nuevo
+        ),
+      },
       tipo_puesto: { required },
-      autorizacion: { requiredIfautorizacion:requiredIf(()=> authenticationStore.esGerente ) },
-      descripcion_vacante: { required },
-      anios_experiencia: { required },
+      autorizacion: { requiredIfAutorizacion:requiredIf(()=> authenticationStore.esGerente ) },
+      descripcion: { required },
+      anos_experiencia: { required },
       conocimientos: { required },
       formaciones_academicas: { required },
       puesto: {

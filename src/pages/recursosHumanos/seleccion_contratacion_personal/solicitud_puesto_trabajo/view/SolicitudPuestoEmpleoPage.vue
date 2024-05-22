@@ -6,6 +6,7 @@
   >
     <template #formulario>
       <q-form @submit.prevent>
+
         <div class="row q-col-gutter-sm q-py-md">
           <!-- nombre -->
           <div class="col-12 col-md-4" v-if="solicitudPuestoEmpleo.tipo_puesto === tipo_puesto.nuevo">
@@ -143,19 +144,19 @@
               <b class="text-italic">*No enviar imágenes demasiado grandes</b>
             </div>
             <essential-editor
-              v-model="solicitudPuestoEmpleo.descripcion_vacante"
+              v-model="solicitudPuestoEmpleo.descripcion"
               :disable="disabled"
-              @blur="v$.descripcion_vacante.$touch"
-              :error="!!v$.descripcion_vacante.$errors.length"
+              @blur="v$.descripcion.$touch"
+              :error="!!v$.descripcion.$errors.length"
             >
               <template v-slot:error>
-                <div v-for="error of v$.descripcion_vacante.$errors" :key="error.$uid">
+                <div v-for="error of v$.descripcion.$errors" :key="error.$uid">
                   <div class="error-msg">{{ error.$message }}</div>
                 </div>
               </template>
             </essential-editor>
             <div
-              v-for="error of v$.descripcion_vacante.$errors"
+              v-for="error of v$.descripcion.$errors"
               :key="error.$uid"
               class="text-negative text-uppercase"
             >
@@ -218,17 +219,17 @@
           <div class="col-12 col-md-3">
             <label class="q-mb-sm block">Años de Experiencia</label>
             <q-input
-              v-model="solicitudPuestoEmpleo.anios_experiencia"
+              v-model="solicitudPuestoEmpleo.anos_experiencia"
               placeholder="Obligatorio"
               type="number"
               :disable="disabled"
-              @blur="v$.anios_experiencia.$touch"
-              :error="!!v$.anios_experiencia.$errors.length"
+              @blur="v$.anos_experiencia.$touch"
+              :error="!!v$.anos_experiencia.$errors.length"
               outlined
               dense
             >
               <template v-slot:error>
-                <div v-for="error of v$.anios_experiencia.$errors" :key="error.$uid">
+                <div v-for="error of v$.anos_experiencia.$errors" :key="error.$uid">
                   <div class="error-msg">{{ error.$message }}</div>
                 </div>
               </template>
