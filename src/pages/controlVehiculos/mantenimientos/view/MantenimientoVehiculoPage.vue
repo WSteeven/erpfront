@@ -175,6 +175,22 @@
             ></q-select>
           </div>
 
+          <!-- km retraso -->
+          <div
+            class="col-6 col-md-3"
+            v-if="mantenimiento.estado === 'RETRASADO'"
+          >
+            <label class="q-mb-sm block">Kms Retrasado</label>
+            <q-input
+              type="number"
+              v-model="mantenimiento.km_realizado"
+              placeholder="Obligatorio"
+              disable
+              outlined
+              dense
+            />
+          </div>
+
           <!-- Fecha de realizado -->
           <div
             class="col-12 col-md-3"
@@ -247,6 +263,60 @@
             </q-input>
           </div>
 
+          <!-- Dias postergado -->
+          <div
+            class="col-6 col-md-3"
+            v-if="mantenimiento.estado === POSTERGADO"
+          >
+            <label class="q-mb-sm block">Días de postergación</label>
+            <q-input
+              type="number"
+              v-model="mantenimiento.dias_postergado"
+              placeholder="Obligatorio"
+              :disable="disabled"
+              :error="!!v$.dias_postergado.$errors.length"
+              @blur="v$.dias_postergado.$touch"
+              outlined
+              dense
+            >
+              <template v-slot:error>
+                <div
+                  v-for="error of v$.dias_postergado.$errors"
+                  :key="error.$uid"
+                >
+                  <div class="error-msg">{{ error.$message }}</div>
+                </div>
+              </template>
+            </q-input>
+          </div>
+
+          <!-- Motivo postergacion -->
+          <div
+            class="col-12 col-md-3 col-sm-6"
+            v-if="mantenimiento.estado === POSTERGADO"
+          >
+            <label class="q-mb-sm block">Motivo Postergación</label>
+            <q-input
+              autogrow
+              v-model="mantenimiento.motivo_postergacion"
+              placeholder="Obligatorio"
+              :disable="disabled"
+              hint="Ingresa alguna observación o novedad presentada con este mantenimiento preventivo"
+              :error="!!v$.motivo_postergacion.$errors.length"
+              @blur="v$.motivo_postergacion.$touch"
+              outlined
+              dense
+              ><template v-slot:error>
+                <div
+                  v-for="error of v$.motivo_postergacion.$errors"
+                  :key="error.$uid"
+                >
+                  <div class="error-msg">{{ error.$message }}</div>
+                </div>
+              </template></q-input
+            >
+          </div>
+
           <!-- Imagen de Evidencia -->
           <div class="col-12 col-md-3 col-sm-3">
             <label for="q-mb-xl block">Imagen Evidencia</label>
@@ -260,23 +330,6 @@
             ></selector-imagen>
           </div>
 
-          <!-- Motivo postergacion -->
-          <div
-            class="col-12 col-md-3 col-sm-6"
-            v-if="mantenimiento.estado === POSTERGADO"
-          >
-            <label class="q-mb-sm block">Motivo Postergación</label>
-            <q-input
-              autogrow
-              v-model="mantenimiento.motivo_postergacion"
-              placeholder="Opcional"
-              :disable="disabled"
-              hint="Ingresa alguna observación o novedad presentada con este mantenimiento preventivo"
-              outlined
-              dense
-            ></q-input>
-          </div>
-
           <!-- Observación -->
           <div class="col-12 col-md-3 col-sm-6">
             <label class="q-mb-sm block">Observación</label>
@@ -285,10 +338,18 @@
               v-model="mantenimiento.observacion"
               placeholder="Opcional"
               :disable="disabled"
+              :error="!!v$.observacion.$errors.length"
+              @blur="v$.observacion.$touch"
               hint="Ingresa alguna observación o novedad presentada con este mantenimiento preventivo"
               outlined
               dense
-            ></q-input>
+            >
+              <template v-slot:error>
+                <div v-for="error of v$.observacion.$errors" :key="error.$uid">
+                  <div class="error-msg">{{ error.$message }}</div>
+                </div>
+              </template>
+            </q-input>
           </div>
           <!-- Fin del formulario -->
         </div>

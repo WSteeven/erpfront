@@ -73,8 +73,11 @@ export default defineComponent({
          * Reglas de validacion
         **************************************************************/
         const reglas = {
-            fecha_realizado: { requiredIf: requiredIf(() => mantenimiento.estado === 'REALIZADO') },
-            km_realizado: { requiredIf: requiredIf(() => mantenimiento.estado === 'REALIZADO') }
+            fecha_realizado: { requiredIf: requiredIf(() => mantenimiento.estado === REALIZADO) },
+            km_realizado: { requiredIf: requiredIf(() => mantenimiento.estado === REALIZADO) },
+            dias_postergado: { requiredIf: requiredIf(() => mantenimiento.estado === POSTERGADO) },
+            motivo_postergacion: { requiredIf: requiredIf(() => mantenimiento.estado === POSTERGADO) },
+            observacion: { requiredIf: requiredIf(() => mantenimiento.estado === 'NO REALIZADO') },
         }
 
         const v$ = useVuelidate(reglas, mantenimiento)
