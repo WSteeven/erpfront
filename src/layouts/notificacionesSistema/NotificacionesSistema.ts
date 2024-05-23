@@ -25,6 +25,7 @@ import { MultaConductorPusherEvent } from 'pages/controlVehiculos/conductores/mo
 import { AsignarVehiculoPusherEvent } from 'pages/controlVehiculos/asignarVehiculos/application/AsignarVehiculoPusherEvent'
 import { OrdenReparacionPusherEvent } from 'src/pusherEvents/vehiculos/OrdenReparacionPusherEvent'
 import { BitacoraVehicularPusherEvent } from 'src/pusherEvents/vehiculos/BitacoraVehicularPusherEvent'
+import { MantenimientoVehiculoPusherEvent } from 'src/pusherEvents/vehiculos/MantenimientVehiculoPusherEvent'
 
 
 export class NotificacionesSistema {
@@ -135,5 +136,8 @@ export class NotificacionesSistema {
 
     const bitacorasVehiculos = new BitacoraVehicularPusherEvent()
     bitacorasVehiculos.start()
+
+    new MantenimientoVehiculoPusherEvent().start()
+
   }
 }

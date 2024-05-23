@@ -96,4 +96,8 @@ export const iconos = {
     label: 'ADVERTENCIA BITACORA VEHICULAR',
     icono: 'bi-exclamation-triangle-fill',
   },
+  mantenimientos_vehiculos: {
+    label: 'MANTENIMIENTO DE VEHICULOS',
+    icono: 'bi-exclamation-triangle-fill',
+  },
 }

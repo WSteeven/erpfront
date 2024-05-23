@@ -67,6 +67,7 @@ export default defineComponent({
 
         cargarVista(async () => {
             usuarioDefault.value = await obtenerVehiculoAsignado()
+            cargarDatosDefecto()
             bitacoraDefault.value = await obtenerUltimaBitacora()
             // await obtenerListados({
             //     empleados: new ChoferController(),
@@ -77,7 +78,6 @@ export default defineComponent({
             //     } */
             // })
             //cargar datos por defecto
-            cargarDatosDefecto()
             cargarDatosBitacoraDefecto()
         })
 
@@ -85,8 +85,9 @@ export default defineComponent({
          * HOOKS
          ****************************************/
         //Estos metodos funcionan si no se usa el keep alive 
-        onReestablecer(() => {
+        onReestablecer(async () => {
             cargarDatosDefecto()
+            bitacoraDefault.value = await obtenerUltimaBitacora()
             cargarDatosBitacoraDefecto()
         })
         onConsultado(async () => {
@@ -157,9 +158,16 @@ export default defineComponent({
         }
 
         async function obtenerUltimaBitacora() {
-            const response = (await new UltimaBitacoraController().listar({ vehiculo_id: bitacora.vehiculo, firmada: 1, filtrar: 1 }))
-            console.log(response.response.data.modelo)
-            return response.response.data.modelo
+            try {
+                cargando.activar()
+                const response = (await new UltimaBitacoraController().listar({ vehiculo_id: bitacora.vehiculo_id, firmada: 1, filtrar: 1 }))
+                console.log(response.response.data.modelo)
+                return response.response.data.modelo
+            } catch (e) {
+                console.log('Error en obtenerUltimaBitacora', e)
+            } finally {
+                cargando.desactivar()
+            }
         }
 
 
