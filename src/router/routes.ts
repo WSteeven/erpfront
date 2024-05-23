@@ -662,10 +662,24 @@ const routes: RouteRecordRaw[] = [
         meta: { requiresAuth: true },
       },
       {
+        path: '/reporte-prefacturas',
+        name: 'reporte_prefacturas',
+        component: () =>
+          import('pages/comprasProveedores/reportes/modules/rpt_prefacturas/view/ReportePrefactura.vue'),
+        meta: { requiresAuth: false },
+      },
+      {
         path: '/proformas',
         name: 'proformas',
         component: () =>
           import('pages/comprasProveedores/proforma/view/ProformaPage.vue'),
+        meta: { requiresAuth: true },
+      },
+      {
+        path: '/ventas/dashboard-ventas',
+        name: 'dashboard_ventas_empresa',
+        component: () =>
+          import('pages/comprasProveedores/dashboard/view/DashboardVentas.vue'),
         meta: { requiresAuth: true },
       },
       {
@@ -711,6 +725,15 @@ const routes: RouteRecordRaw[] = [
         component: () =>
           import(
             'pages/comprasProveedores/reportes/modules/rpt_proveedores/view/ReporteProveedores.vue'
+          ),
+        meta: { requiresAuth: false },
+      },
+      {
+        path: 'reporte-ordenes-compras',
+        name: 'reporte_ordenes_compras',
+        component: () =>
+          import(
+            'pages/comprasProveedores/reportes/modules/rpt_ordenes_compras/view/ReporteOrdenesCompras.vue'
           ),
         meta: { requiresAuth: false },
       },
