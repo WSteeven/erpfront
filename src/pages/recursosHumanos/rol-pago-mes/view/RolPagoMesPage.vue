@@ -100,6 +100,18 @@
                 >
                 </q-input>
               </div>
+              <!-- Es quincena -->
+              <div class="col-12 col-md-3">
+                <q-checkbox
+                  class="q-mt-lg q-pt-md"
+                  v-model="rolpago.es_quincena"
+                  label="Es quincena"
+                  :disable="disabled"
+                  @update:model-value="obtenerNombreMes"
+                  outlined
+                  dense
+                ></q-checkbox>
+              </div>
             </div>
           </q-form>
         </q-tab-panel>
