@@ -289,7 +289,7 @@ export default defineComponent({
             (parseInt(vacacion.numero_dias.toString()) - 1)
         )
         vacacion.fecha_fin = format(fechaInicio, 'YYYY-MM-DD')
-      
+
       } else {
         vacacion.fecha_fin = null
       }
@@ -388,7 +388,8 @@ export default defineComponent({
       return date > currentDateString
     }
     function optionFechaInicioRango2(date){
-       const fechaInicio = new Date(vacacion.fecha_fin_rango1_vacaciones)
+      const fecha_fin_rango1= vacacion.fecha_fin_rango1_vacaciones !== null? vacacion.fecha_fin_rango1_vacaciones:new Date().toString()
+       const fechaInicio = new Date(fecha_fin_rango1)
         fechaInicio.setDate(
           fechaInicio.getDate() +
             (2)

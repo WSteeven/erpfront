@@ -626,7 +626,7 @@ export const useMenuStore = defineStore('menu', () => {
             {
               title: 'Alimentacion',
               icon: 'img:statics/icons/alimentacion_04.svg',
-              can: true,
+              can: store.can('puede.acceder.modulo_alimentacion'),
               children: [
                 {
                   title: 'Asignar Alimentacion',
