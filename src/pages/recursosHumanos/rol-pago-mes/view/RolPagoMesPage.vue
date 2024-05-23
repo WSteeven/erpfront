@@ -100,44 +100,6 @@
                 >
                 </q-input>
               </div>
-              <!-- Aceptar Sugerencias -->
-              <div class="col-12 col-md-3">
-                <q-checkbox
-                  class="q-mt-lg q-pt-md"
-                  v-model="rolpago.es_quincena"
-                  label="Es quincena"
-                  :disable="disabled"
-                  @update:model-value="obtenerNombreMes"
-                  outlined
-                  dense
-                ></q-checkbox>
-              </div>
-              <div class="col-12 col-md-12">
-                <gestor-documentos
-                  ref="refArchivoRolPago"
-                  :mixin="mixinArchivoRolPago"
-                  :endpoint="endpoint"
-                  :disable="!esNuevo"
-                  :permitir-eliminar="false"
-                  :listar-al-guardar="false"
-                  :esMultiple="false"
-                  :esObligatorio="false"
-                >
-                  <template #boton-subir>
-                    <q-btn
-                      v-if="mostrarBotonSubir"
-                      color="positive"
-                      push
-                      no-caps
-                      class="full-width q-mb-lg"
-                      @click="subirArchivos()"
-                    >
-                      <q-icon name="bi-upload" class="q-mr-sm" size="xs"></q-icon>
-                      Subir archivos seleccionados</q-btn
-                    >
-                  </template>
-                </gestor-documentos>
-              </div>
             </div>
           </q-form>
         </q-tab-panel>

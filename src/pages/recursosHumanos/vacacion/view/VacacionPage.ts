@@ -29,6 +29,7 @@ import { CustomActionTable } from 'components/tables/domain/CustomActionTable'
 import TabLayoutFilterTabs2 from 'shared/contenedor/modules/simple/view/TabLayoutFilterTabs2.vue'
 import { LocalStorage } from 'quasar'
 import { AutorizacionController } from 'pages/administracion/autorizaciones/infraestructure/AutorizacionController'
+import { format } from '@formkit/tempo'
 
 export default defineComponent({
   components: { TabLayoutFilterTabs2, SelectorImagen, EssentialTable },
@@ -65,11 +66,16 @@ export default defineComponent({
     onConsultado(() => {
       esAutorizador.value =
         store.user.id == vacacion.id_jefe_inmediato ? true : false
-        setTimeout(() => {
-          vacacion.derecho_vacaciones =  15 + dias_adicionales.value -parseInt(vacacion.descuento_vacaciones != null ? vacacion.descuento_vacaciones.toString() : '0')
-        }, 3000);
-
-
+      setTimeout(() => {
+        vacacion.derecho_vacaciones =
+          15 +
+          dias_adicionales.value -
+          parseInt(
+            vacacion.descuento_vacaciones != null
+              ? vacacion.descuento_vacaciones.toString()
+              : '0'
+          )
+      }, 3000)
     })
     cargarVista(async () => {
       await obtenerListados({
@@ -86,7 +92,11 @@ export default defineComponent({
         },
         autorizaciones: {
           controller: new AutorizacionController(),
-          params: { campos: 'id,nombre', es_validado: false, es_modulo_rhh:true },
+          params: {
+            campos: 'id,nombre',
+            es_validado: false,
+            es_modulo_rhh: true,
+          },
         },
       })
       autorizaciones.value = listadosAuxiliares.autorizaciones
@@ -143,13 +153,16 @@ export default defineComponent({
         },
         params: {
           empleado:
-          vacacion.empleado == null ? store.user.id : vacacion.empleado,
+            vacacion.empleado == null ? store.user.id : vacacion.empleado,
         },
       })
         .then((response) => {
           const responseData = response.data
           if (responseData) {
-            const num_dias = responseData.duracion != null?  parseInt(responseData.duracion.toString()):0
+            const num_dias =
+              responseData.duracion != null
+                ? parseInt(responseData.duracion.toString())
+                : 0
             vacacion.descuento_vacaciones =
               responseData.duracion != null ? Math.floor(num_dias / 24) : 0
             data.dias_descuento_vacaciones = Math.floor(
@@ -193,7 +206,7 @@ export default defineComponent({
     }
     const dias_adicionales = computed(() => {
       const fecha_ingreso =
-      vacacion.empleado == null ? store.user.id : vacacion.empleado
+        vacacion.empleado == null ? store.user.id : vacacion.empleado
 
       if (fecha_ingreso == null) {
         return 0
@@ -269,16 +282,14 @@ export default defineComponent({
         vacacion.numero_dias !== null &&
         vacacion.numero_dias !== undefined
       ) {
-        const fechaInicio = convertir_fecha(vacacion.fecha_inicio)
-        const fechaFinal = fechaInicio
-        fechaFinal.setDate(
-          fechaInicio.getDate() + parseInt(vacacion.numero_dias.toString())-1
+        const fechaInicio = new Date(vacacion.fecha_inicio)
+
+        fechaInicio.setDate(
+          fechaInicio.getDate() +
+            (parseInt(vacacion.numero_dias.toString()) - 1)
         )
-        // Formatear la fecha a "año-mes-día"
-        const anio = fechaFinal.getFullYear()
-        const mes = ('0' + (fechaFinal.getMonth() + 1)).slice(-2)
-        const dia = ('0' + fechaFinal.getDate()).slice(-2)
-        vacacion.fecha_fin = dia + '-' + mes + '-' + anio
+        vacacion.fecha_fin = format(fechaInicio, 'YYYY-MM-DD')
+      
       } else {
         vacacion.fecha_fin = null
       }
@@ -294,19 +305,12 @@ export default defineComponent({
         vacacion.numero_dias_rango1 !== null &&
         vacacion.numero_dias_rango1 !== undefined
       ) {
-        const fechaInicio = convertir_fecha(
-          vacacion.fecha_inicio_rango1_vacaciones
-        )
-        const fechaFinal = fechaInicio
-        fechaFinal.setDate(
+        const fechaInicio = new Date(vacacion.fecha_inicio_rango1_vacaciones)
+        fechaInicio.setDate(
           fechaInicio.getDate() +
-            parseInt(vacacion.numero_dias_rango1.toString())-1
+            (parseInt(vacacion.numero_dias_rango1.toString()) - 1)
         )
-        // Formatear la fecha a "año-mes-día"
-        const anio = fechaFinal.getFullYear()
-        const mes = ('0' + (fechaFinal.getMonth() + 1)).slice(-2)
-        const dia = ('0' + fechaFinal.getDate()).slice(-2)
-        vacacion.fecha_fin_rango1_vacaciones = dia + '-' + mes + '-' + anio
+        vacacion.fecha_fin_rango1_vacaciones = format(fechaInicio, 'YYYY-MM-DD')
       } else {
         vacacion.fecha_fin_rango1_vacaciones = null
       }
@@ -321,19 +325,12 @@ export default defineComponent({
         vacacion.numero_dias_rango2 !== null &&
         vacacion.numero_dias_rango2 !== undefined
       ) {
-        const fechaInicio = convertir_fecha(
-          vacacion.fecha_inicio_rango2_vacaciones
-        )
-        const fechaFinal = fechaInicio
-        fechaFinal.setDate(
+         const fechaInicio = new Date(vacacion.fecha_inicio_rango2_vacaciones)
+        fechaInicio.setDate(
           fechaInicio.getDate() +
-            parseInt(vacacion.numero_dias_rango2.toString())-1
+            (parseInt(vacacion.numero_dias_rango2.toString()) - 1)
         )
-        // Formatear la fecha a "año-mes-día"
-        const anio = fechaFinal.getFullYear()
-        const mes = ('0' + (fechaFinal.getMonth() + 1)).slice(-2)
-        const dia = ('0' + fechaFinal.getDate()).slice(-2)
-        vacacion.fecha_fin_rango2_vacaciones = dia + '-' + mes + '-' + anio
+        vacacion.fecha_fin_rango2_vacaciones = format(fechaInicio, 'YYYY-MM-DD')
       } else {
         vacacion.fecha_fin_rango2_vacaciones = null
       }
@@ -386,12 +383,19 @@ export default defineComponent({
       tabVacacion = tabSeleccionado
     }
     function optionsFechaInicio(date) {
-      const currentDate = new Date() // Obtener la fecha actual
-      const year = currentDate.getFullYear() // Obtener el año
-      const month = String(currentDate.getMonth() + 1).padStart(2, '0') // Obtener el mes y asegurarse de que tenga dos dígitos
-      const day = String(currentDate.getDate()).padStart(2, '0') // Obtener el día y asegurarse de que tenga dos dígitos
-      const currentDateString = `${year}/${month}/${day}` // Formatear la fecha actual
+      const currentDateString = format(new Date(), 'YYYY/MM/DD')
+
+      return date > currentDateString
+    }
+    function optionFechaInicioRango2(date){
+       const fechaInicio = new Date(vacacion.fecha_fin_rango1_vacaciones)
+        fechaInicio.setDate(
+          fechaInicio.getDate() +
+            (2)
+        )
+            const currentDateString = format(fechaInicio, 'YYYY/MM/DD')
       return date >= currentDateString
+
     }
 
     return {
@@ -402,6 +406,7 @@ export default defineComponent({
       empleado,
       editarVacacion,
       optionsFechaInicio,
+      optionFechaInicioRango2,
       filtrarPeriodo,
       filtrarVacacion,
       calcular_fecha_fin_rango1,
