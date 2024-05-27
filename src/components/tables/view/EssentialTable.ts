@@ -268,10 +268,11 @@ export default defineComponent({
       // emit('update:selected', selected.value);
     }
 
-    watch(selected, () => {
+    // medico pendiente xq le da problema a mile al seleccionar
+    /*watch(selected, () => {
       console.log(selected.value)
       emit('selected', selected.value)
-    })
+    }) */
 
     /*const emitSelectedChange = () => {
       emit('update:selected', selected.value);
