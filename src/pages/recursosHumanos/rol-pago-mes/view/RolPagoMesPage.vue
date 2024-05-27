@@ -100,7 +100,7 @@
                 >
                 </q-input>
               </div>
-              <!-- Aceptar Sugerencias -->
+              <!-- Es quincena -->
               <div class="col-12 col-md-3">
                 <q-checkbox
                   class="q-mt-lg q-pt-md"
@@ -111,32 +111,6 @@
                   outlined
                   dense
                 ></q-checkbox>
-              </div>
-              <div class="col-12 col-md-12">
-                <gestor-documentos
-                  ref="refArchivoRolPago"
-                  :mixin="mixinArchivoRolPago"
-                  :endpoint="endpoint"
-                  :disable="!esNuevo"
-                  :permitir-eliminar="false"
-                  :listar-al-guardar="false"
-                  :esMultiple="false"
-                  :esObligatorio="false"
-                >
-                  <template #boton-subir>
-                    <q-btn
-                      v-if="mostrarBotonSubir"
-                      color="positive"
-                      push
-                      no-caps
-                      class="full-width q-mb-lg"
-                      @click="subirArchivos()"
-                    >
-                      <q-icon name="bi-upload" class="q-mr-sm" size="xs"></q-icon>
-                      Subir archivos seleccionados</q-btn
-                    >
-                  </template>
-                </gestor-documentos>
               </div>
             </div>
           </q-form>
@@ -166,7 +140,7 @@
             :permitirEliminar="false"
             :mostrar-botones="false"
             :mostrarFooter="true"
-            :permitirFiltrar="true"
+            :permitirFiltrar="false"
             @tab-seleccionado="filtrarRolPagoEmpleado"
             :tabDefecto="tabActual"
             :alto-fijo="true"

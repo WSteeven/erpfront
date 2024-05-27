@@ -206,6 +206,8 @@ export const endpoints = {
   dashboard_compras: new Endpoint('compras/dashboard'),
   empleados_ordenes: new Endpoint('compras/empleados-ordenes'),
   proveedores_ordenes: new Endpoint('compras/proveedores-ordenes'),
+  clientes_prefacturas: new Endpoint('compras/clientes-prefacturas'),
+  dashboard_ventas_empresa: new Endpoint('compras/dashboard-ventas'),
   calificacion_proveedor: new Endpoint('compras/calificaciones-proveedores'),
   categorias_ofertas: new Endpoint('compras/categorias-ofertas'),
   contactos_proveedores: new Endpoint('compras/contactos-proveedores'),

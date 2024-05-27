@@ -277,9 +277,10 @@ export default defineComponent({
     }
 
     /**Verifica si es un mes */
-    function checkValue(reason) {
+      function checkValue (val, reason, details) {
+      console.log(val, reason, details)
       is_month.value = reason === 'month' ? false : true
-      obtenerNombreMes()
+            obtenerNombreMes()
     }
 
     const editarRolPago: CustomActionTable = {

@@ -664,10 +664,24 @@ const routes: RouteRecordRaw[] = [
         meta: { requiresAuth: true },
       },
       {
+        path: '/reporte-prefacturas',
+        name: 'reporte_prefacturas',
+        component: () =>
+          import('pages/comprasProveedores/reportes/modules/rpt_prefacturas/view/ReportePrefactura.vue'),
+        meta: { requiresAuth: false },
+      },
+      {
         path: '/proformas',
         name: 'proformas',
         component: () =>
           import('pages/comprasProveedores/proforma/view/ProformaPage.vue'),
+        meta: { requiresAuth: true },
+      },
+      {
+        path: '/ventas/dashboard-ventas',
+        name: 'dashboard_ventas_empresa',
+        component: () =>
+          import('pages/comprasProveedores/dashboard/view/DashboardVentas.vue'),
         meta: { requiresAuth: true },
       },
       {
