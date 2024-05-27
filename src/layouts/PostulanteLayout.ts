@@ -23,7 +23,6 @@ import { useIdle } from '@vueuse/core'
 import {
   formatearFechaTexto,
   isAxiosError,
-  notificarMensajesError,
 } from 'shared/utils'
 import { NotIdle } from 'idlejs'
 import { StatusEssentialLoading } from 'components/loading/application/StatusEssentialLoading'
@@ -71,7 +70,6 @@ export default defineComponent({
     const logoOscuro = computed(
       () => configuracionGeneralStore.configuracion?.logo_oscuro
     )
-    const isMount = ref(false)
     const nombreUsuario = computed(() => {
       const usuario = authenticationStore.user
       if (usuario) {
@@ -109,10 +107,9 @@ export default defineComponent({
       try {
         cargando.activar()
         const token = LocalStorage.getItem('token')
-        if (token == null) {
+        if (token === undefined) {
           const loginController = new LoginPostulanteController()
           await loginController.obtenerSesionUser()
-          isMount.value = true
         }
       } catch (error: any) {
         console.log('montar errror', error)
@@ -212,7 +209,6 @@ export default defineComponent({
       .then(() => configuracionGeneralStore.cambiarFavicon())
 
     return {
-      isMount,
       logoClaro,
       logoOscuro,
       modales,
@@ -233,8 +229,6 @@ export default defineComponent({
       dayjs,
       imagenPerfil,
       selfCenterMiddle,
-      mostrarTransferirTareas:
-        authenticationStore.esCoordinador || authenticationStore.esJefeTecnico,
     }
   },
 })

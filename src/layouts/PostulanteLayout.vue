@@ -1,5 +1,5 @@
 <template>
-  <q-layout view="lHh Lpr lFf" v-if="isMount">
+  <q-layout view="lHh Lpr lFf">
     <!-- Navbar -->
     <q-header class="bg-desenfoque">
       <q-toolbar class="row justify-between q-py-sm border-bottom">
