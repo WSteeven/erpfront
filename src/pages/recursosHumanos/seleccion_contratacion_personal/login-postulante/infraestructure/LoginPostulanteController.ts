@@ -25,18 +25,18 @@ export class LoginPostulanteController {
         switch (error.status) {
           case 412:
             this.Router.replace({ name: 'ResetearContrasena' })
-            this.store.setNombreusuario(userLogin.name!);
-            break;
+            this.store.setNombreusuario(userLogin.name!)
+            break
         }
       }
       throw error
     }
   }
-async loginterceros(driver) {
+  async loginterceros(driver) {
     try {
       await this.store.loginTerceros(driver)
     } catch (error: unknown) {
-           throw error
+      throw error
     }
   }
   async obtenerSesionUser() {
@@ -45,7 +45,7 @@ async loginterceros(driver) {
 
       this.Router.replace({ name: 'puestos_disponibles' })
     } catch (error: unknown) {
-           throw error
+      throw error
     }
   }
 

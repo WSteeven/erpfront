@@ -109,7 +109,7 @@ export default defineComponent({
       try {
         cargando.activar()
         const token = LocalStorage.getItem('token')
-        if (token !== null) {
+        if (token == null) {
           const loginController = new LoginPostulanteController()
           await loginController.obtenerSesionUser()
           isMount.value = true

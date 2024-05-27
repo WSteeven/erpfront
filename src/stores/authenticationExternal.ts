@@ -71,7 +71,6 @@ export const useAuthenticationExternalStore = defineStore(
         LocalStorage.set('token', response.data.access_token)
         setUser(response.data.modelo)
         return response.data.modelo
-
       } catch (error) {
         const axiosError = error as AxiosError
         throw new ApiError(axiosError)
@@ -98,7 +97,6 @@ export const useAuthenticationExternalStore = defineStore(
         const response: AxiosResponse = await axios.get(login)
         LocalStorage.set('token', response.data.access_token)
         setUser(response.data.modelo)
-
         return response.data.modelo
       } catch (error) {
         const axiosError = error as AxiosError
