@@ -128,15 +128,15 @@ input[type='time']::-webkit-calendar-picker-indicator {
 }
 
 .border-primary {
-  border: 1px solid $primary;
+  border: 1px solid $primary !important;
 }
 
 .border-grey {
-  border: 1px solid $grey-4;
+  border: 1px solid $grey-4 !important;
 }
 
 .border-blue-grey-dashed {
-  border: 1px dashed $blue-grey;
+  border: 1px dashed $blue-grey !important;
 }
 
 .border-bottom-blue-grey-dashed {

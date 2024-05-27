@@ -211,6 +211,10 @@ $border-color: #464646;
     border-bottom: 1px solid $grey-8;
   }
 
+  .border-white {
+    border: 1px solid $grey-8 !important;
+  }
+
   // background
   ul.circles {
     background: linear-gradient(

@@ -44,7 +44,7 @@
   }
 
   .bg-desenfoque {
-    background-color: rgba($grey-2, 0.6) !important;
+    background-color: rgba($grey-2, 0.5) !important;
     backdrop-filter: blur(10px) !important;
   }
 
@@ -147,6 +147,10 @@
 
   .borde {
     border: 1px solid #ddd;
+  }
+
+  .border-white {
+    border: 1px solid #fff !important;
   }
 
   .double-border {

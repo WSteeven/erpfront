@@ -79,8 +79,8 @@ export default defineComponent({
     const guardarCuestionario = async () => {
       try {
         await guardar(respuestaCuestionarioEmpleado)
-        listadosAuxiliares.preguntas = []
-        mensaje.value = 'Gracias por completar el cuestionario.'
+        // listadosAuxiliares.preguntas = []
+        // mensaje.value = 'Gracias por completar el cuestionario.'
       } catch (e) {
         console.log(e)
       }
@@ -93,7 +93,8 @@ export default defineComponent({
     onBeforeGuardar(() => {
       respuestaCuestionarioEmpleado.cuestionario = listadosAuxiliares.preguntas.map((item: any) => {
         return {
-          id_cuestionario:  item.respuesta ,
+          respuesta: typeof item.respuesta === 'string' ? item.respuesta : null,
+          id_cuestionario: typeof item.respuesta === 'string' ? item.cuestionario[0].id : item.respuesta,
         }
       })
     })
@@ -106,7 +107,7 @@ export default defineComponent({
     async function consultarPreguntas() {
       cargando.activar()
       try {
-        const { result } = await preguntaController.listar({'tipo_cuestionario_id':2})
+        const { result } = await preguntaController.listar({ 'tipo_cuestionario_id': 2 })
         listadosAuxiliares.preguntas = result
       } catch (e) {
         if (isAxiosError(e)) {

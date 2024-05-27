@@ -189,6 +189,12 @@ export const useMenuStore = defineStore('menu', () => {
           can: store.can('puede.ver.gestionar_pacientes'),
         },
         {
+          title: 'Cuestionarios',
+          link: 'cuestionarios',
+          icon: 'bi-app',
+          can: store.can('puede.ver.cuestionarios'),
+        },
+        /* {
           title: 'Cuestionario de evaluación de riesgos psicosociales',
           link: 'cuestionario-psicosocial',
           icon: 'bi-app',
@@ -198,7 +204,7 @@ export const useMenuStore = defineStore('menu', () => {
           link: 'cuestionario-diagnostico-consumo-drogas',
           icon: 'bi-app',
           can: store.can('puede.ver.cuestionario_diagnostico_consumo_drogas'),
-        },
+        }, */
         {
           title: 'Cita médica',
           link: 'citas-medicas',
@@ -212,7 +218,7 @@ export const useMenuStore = defineStore('menu', () => {
           can: store.can('puede.ver.solicitudes_examenes'),
         },
         {
-          title: 'Reporte Cuestionario Psicosocial',
+          title: 'Reportes',
           link: 'reporte-cuestionarios-pisicosocial',
           icon: 'bi-app',
           can: store.can('puede.ver.reporte_cuestionarios_psicosocial'),

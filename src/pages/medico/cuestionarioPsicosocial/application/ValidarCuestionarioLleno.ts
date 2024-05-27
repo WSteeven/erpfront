@@ -10,6 +10,7 @@ export class ValidarCuestionarioLleno implements Validador {
 
   async validar(): Promise<boolean> {
     const cuestionariosConIdValido = this.respuestaCuestionarioEmpleado.cuestionario.filter((cuestionario) => cuestionario.id_cuestionario)
+    console.log(cuestionariosConIdValido)
 
     if (this.respuestaCuestionarioEmpleado.cuestionario.length !== cuestionariosConIdValido.length) {
       throw new Error('No ha llenado todo el cuestionario!')
