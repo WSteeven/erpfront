@@ -183,7 +183,7 @@
             <label class="q-mb-sm block">Kms Retrasado</label>
             <q-input
               type="number"
-              v-model="mantenimiento.km_realizado"
+              v-model="mantenimiento.km_retraso"
               placeholder="Obligatorio"
               disable
               outlined

@@ -26,7 +26,6 @@
               dense
             ></q-input>
           </div>
-          {{ v$.$errors }}
           <!-- Chofer -->
           <div
             class="col-12 col-md-3 q-mb-md"

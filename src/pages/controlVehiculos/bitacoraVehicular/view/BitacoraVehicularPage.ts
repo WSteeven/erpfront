@@ -42,7 +42,7 @@ export default defineComponent({
         const mixin = new ContenedorSimpleMixin(BitacoraVehicular, new BitacoraVehicularController())
         const { entidad: bitacora, disabled, listadosAuxiliares, accion } = mixin.useReferencias()
         const { setValidador, cargarVista, obtenerListados, reestablecer, listar, editar } = mixin.useComportamiento()
-        const { onReestablecer, onConsultado, onBeforeModificar } = mixin.useHooks()
+        const { onReestablecer, onConsultado, onBeforeModificar, onModificado } = mixin.useHooks()
         const { confirmar, prompt, notificarCorrecto, notificarAdvertencia, notificarError } = useNotificaciones()
 
         /****************************************
@@ -112,6 +112,9 @@ export default defineComponent({
             bitacora.checklistAccesoriosVehiculo.bitacora_id = bitacora.id
             bitacora.checklistImagenVehiculo.bitacora_id = bitacora.id
             bitacora.checklistVehiculo.bitacora_id = bitacora.id
+        })
+        onModificado(() => {
+            listar({ firmada: tabDefecto.value, chofer_id: store.user.id })
         })
 
         //Reglas de validacion
@@ -193,6 +196,7 @@ export default defineComponent({
             if (bitacoraDefault.value) {
                 bitacora.km_inicial = bitacoraDefault.value.km_final
                 bitacora.tanque_inicio = bitacoraDefault.value.tanque_final
+                bitacora.tanque_final = bitacoraDefault.value.tanque_final
                 bitacora.checklistAccesoriosVehiculo = bitacoraDefault.value.checklistAccesoriosVehiculo
                 bitacora.checklistVehiculo = bitacoraDefault.value.checklistVehiculo
                 bitacora.checklistImagenVehiculo.observacion = ' '
