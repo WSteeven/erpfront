@@ -22,7 +22,7 @@
               v-model="solicitudPrestamo.fecha"
               placeholder="Obligatorio"
               :error="!!v$.fecha.$errors.length"
-              :disable="accion.value != 'NUEVO' ? false : true"
+              :disable="accion.value !== acciones.nuevo && solicitudPrestamo.estado !== autorizacionesId.CANCELADO ? false : true"
               @blur="v$.fecha.$touch"
               outlined
               dense
@@ -58,7 +58,7 @@
               v-model="solicitudPrestamo.monto"
               placeholder="Obligatorio"
               type="number"
-              :disable="accion.value != 'NUEVO' ? false : true"
+              :disable="accion.value !== acciones.nuevo && solicitudPrestamo.estado !== autorizacionesId.CANCELADO ? false : true"
               :error="!!v$.monto.$errors.length"
               lazy-rules
               :rules="maximoValorsolicitudPrestamo"
@@ -79,7 +79,7 @@
             <q-input
               v-model="solicitudPrestamo.plazo"
               type="number"
-              :disable="accion.value != 'NUEVO' ? false : true || disabled"
+              :disable="accion.value !== acciones.nuevo && solicitudPrestamo.estado !== autorizacionesId.CANCELADO ? false : true || disabled"
               :error="!!v$.plazo.$errors.length"
               placeholder="Obligatorio"
               @blur="v$.plazo.$touch"

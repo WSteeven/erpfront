@@ -1,10 +1,9 @@
 // Dependencias
 import { configuracionColumnasPermisoEmpleado } from '../domain/configuracionColumnasPermisoEmpleado'
 import { useVuelidate } from '@vuelidate/core'
-import { computed, defineComponent, reactive, ref, watchEffect } from 'vue'
+import { computed, defineComponent, ref, watchEffect } from 'vue'
 
 // Componentes
-import TabLayout from 'shared/contenedor/modules/simple/view/TabLayout.vue'
 import SelectorImagen from 'components/SelectorImagen.vue'
 
 //Logica y controladores
@@ -13,25 +12,19 @@ import { PermisoEmpleadoController } from '../infraestructure/PermisoEmpleadoCon
 import { PermisoEmpleado } from '../domain/PermisoEmpleado'
 import { removeAccents } from 'shared/utils'
 import {
-  convertir_fecha,
+  autorizacionesId,
   convertir_fecha_guion,
   convertir_fecha_hora,
   maskFecha,
   tabOptionsPermiso,
 } from 'config/utils'
-import {
-  requiredIf,
-  maxLength,
-  minLength,
-  required,
-} from 'shared/i18n-validators'
+import { requiredIf, required } from 'shared/i18n-validators'
 import { MotivoPermisoEmpleadoController } from 'pages/recursosHumanos/motivo/infraestructure/MotivoPermisoEmpleadoController'
 import { EmpleadoController } from 'pages/recursosHumanos/empleados/infraestructure/EmpleadoController'
 import { endpoints } from 'config/api'
 import { Archivo } from 'pages/gestionTrabajos/subtareas/modules/gestorArchivosTrabajos/domain/Archivo'
 import { ArchivoPermisoEmpleadoController } from '../infraestructure/ArchivoPermisoEmpleadoController'
 import { useAuthenticationStore } from 'stores/authentication'
-import { LocalStorage } from 'quasar'
 import GestorDocumentos from 'components/documentos/view/GestorDocumentos.vue'
 import { useNotificaciones } from 'shared/notificaciones'
 import TabLayoutFilterTabs2 from 'shared/contenedor/modules/simple/view/TabLayoutFilterTabs2.vue'
@@ -61,7 +54,6 @@ export default defineComponent({
       entidad: permiso,
       disabled,
       accion,
-      listado,
       listadosAuxiliares,
     } = mixin.useReferencias()
     const { setValidador, consultar, cargarVista, obtenerListados, listar } =
@@ -70,18 +62,11 @@ export default defineComponent({
       onBeforeGuardar,
       onGuardado,
       onBeforeModificar,
-      onModificado,
       onConsultado,
       onReestablecer,
     } = mixin.useHooks()
     const store = useAuthenticationStore()
-    const {
-      confirmar,
-      prompt,
-      notificarCorrecto,
-      notificarAdvertencia,
-      notificarError,
-    } = useNotificaciones()
+    const { notificarAdvertencia } = useNotificaciones()
 
     const tipos_permisos = ref([])
     const empleados = ref([])
@@ -176,13 +161,17 @@ export default defineComponent({
         },
         autorizaciones: {
           controller: new AutorizacionController(),
-          params: { campos: 'id,nombre', es_validado: false , es_modulo_rhh:true},
+          params: {
+            campos: 'id,nombre',
+            es_validado: false,
+            es_modulo_rhh: true,
+          },
         },
       })
 
       empleados.value = listadosAuxiliares.empleados
       tipos_permisos.value = listadosAuxiliares.tipos_permisos
-      autorizaciones.value = listadosAuxiliares.autorizaciones
+      autorizaciones.value = listadosAuxiliares.autorizaciones.filter((v) => v.id !== autorizacionesId.VALIDADO )
     })
     function optionsFechaInicio(date) {
       const currentDate =
@@ -213,17 +202,13 @@ export default defineComponent({
 
     function optionsFechaRecuperacion(date) {
       const fechaFin = convertir_fecha_guion(
-        permiso.fecha_hora_fin !== null
-          ? permiso.fecha_hora_fin
-          : ' '
+        permiso.fecha_hora_fin !== null ? permiso.fecha_hora_fin : ' '
       )
       return date > fechaFin
     }
     function optionsFechaSugerida(date) {
       const fechaFin = convertir_fecha_guion(
-        permiso.fecha_hora_fin !== null
-          ? permiso.fecha_hora_fin
-          : ' '
+        permiso.fecha_hora_fin !== null ? permiso.fecha_hora_fin : ' '
       )
       return date > fechaFin
     }

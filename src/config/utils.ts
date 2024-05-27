@@ -606,6 +606,12 @@ export const estadosVentas = {
   RECHAZADO: 'RECHAZADO',
   PENDIENTE: 'PENDIENTE', // Se usa en vez de ASIGNADO en el dashboard
 }
+export const autorizacionesId ={
+  PENDIENTE: 1,
+  APROBADO: 2,
+  CANCELADO: 3,
+  VALIDADO:4
+}
 export const autorizaciones = [
   { nombre: 'Pendiente', id: 1 }, //autorizacion PENDIENTE
   { nombre: 'Aprobado', id: 2 }, //autorizacion APROBADO

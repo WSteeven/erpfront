@@ -635,6 +635,24 @@ export const useMenuStore = defineStore('menu', () => {
           can: store.can('puede.acceder.grupos'),
         },
         {
+          title: 'Seleccion y Contratacion',
+          icon: 'bi-person-lines-fill',
+          can: store.can('puede.ver.modulo.seleccion_contratacion'),
+          children: [
+              {
+                title: 'Solicitud de Puesto de Empleo',
+                link: 'solicitud-puesto-empleo',
+                icon: 'bi-app',
+                can: store.can('puede.acceder.solicitud_puesto_empleo'),
+              },
+              {
+                title: 'Publicacion de Puesto de Empleo',
+                link: 'publicacion-puesto-empleo',
+                icon: 'bi-app',
+                can: store.can('puede.acceder.publicacion_puesto_empleo'),
+              },
+          ]},
+        {
           title: 'Nominas y prestamos',
           icon: 'fa-solid fa-people-line',
           can: true,
@@ -678,7 +696,7 @@ export const useMenuStore = defineStore('menu', () => {
             {
               title: 'Alimentacion',
               icon: 'img:statics/icons/alimentacion_04.svg',
-              can: true,
+              can: store.can('puede.acceder.modulo_alimentacion'),
               children: [
                 {
                   title: 'Asignar Alimentacion',
