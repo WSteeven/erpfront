@@ -484,7 +484,7 @@
         <!-- Aplica keep-alive aquí -->
         <keep-alive
           :exclude="[
-            'Ingresos',
+            'transacciones_ingresos',
             'Egresos',
             'OrdenCompraPage',
             'PreordenCompra',
