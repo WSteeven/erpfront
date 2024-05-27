@@ -1,15 +1,6 @@
 <template>
   <q-page padding>
     <slot name="modales" />
-
-    <div class="text-left q-mb-md">
-      <b class="block text-subtitle1 text-thin text-primary">
-        <!-- <q-icon name="bi-app-indicator" class="q-mr-sm"></q-icon> -->
-        {{ tituloTabla }}</b
-      >
-      <small class="text-grey-9 text-bold">{{ subtituloPagina }}</small>
-    </div>
-
     <!-- Tabs -->
     <q-tabs
       v-model="tabs"
@@ -34,6 +25,22 @@
         no-caps
         @click="forzarListar()"
       />
+      <q-tab
+        v-if="customPanel1?.label"
+        :name="customPanel1?.label"
+        :label="customPanel1?.label"
+        :class="{ 'tab-inactive': tabs !== customPanel1?.label }"
+        no-caps
+        @click="ejecutarUnaVezCustomPanel1()"
+      />
+      <q-tab
+        v-if="customPanel2?.label"
+        :name="customPanel2?.label"
+        :label="customPanel2?.label"
+        :class="{ 'tab-inactive': tabs !== customPanel2?.label }"
+        no-caps
+        @click="ejecutarUnaVezCustomPanel2()"
+      />
     </q-tabs>
 
     <!-- Tab content -->
@@ -42,7 +49,7 @@
       animated
       transition-prev="scale"
       transition-next="scale"
-      :class="{ 'rounded-tabpanel': !$q.screen.xs }"
+      :class="{ 'bg-desenfoque rounded-tabpanel': !$q.screen.xs }"
       keep-alive
     >
       <!-- Formulario -->
@@ -80,6 +87,7 @@
           </div>
         </div>
       </q-tab-panel>
+
       <!-- Listado -->
       <q-tab-panel name="listado">
         <essential-table-tabs
@@ -110,6 +118,14 @@
           :ajustarCeldas="ajustarCeldas"
         ></essential-table-tabs>
         <!-- :tab-defecto="tabDefecto" -->
+      </q-tab-panel>
+
+      <q-tab-panel :name="customPanel1?.label">
+        <slot :name="customPanel1?.label" />
+      </q-tab-panel>
+
+      <q-tab-panel :name="customPanel2?.label">
+        <slot :name="customPanel2?.label" />
       </q-tab-panel>
     </q-tab-panels>
   </q-page>

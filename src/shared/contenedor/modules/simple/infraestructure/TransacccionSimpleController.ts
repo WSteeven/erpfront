@@ -13,16 +13,19 @@ import { FiltrableRepository } from 'shared/controller/infraestructure/Filtrable
 import { ListableFileRepository } from 'shared/controller/infraestructure/ListableFilesRepository'
 import { GuardableFileRepository } from 'shared/controller/infraestructure/GuardableFileRepository'
 import { EliminableFileRepository } from 'shared/controller/infraestructure/EliminableFileRepository'
+import { GuardableListadoRepository } from 'shared/controller/infraestructure/GuardableListadoRepository'
+import { EditableListadoRepository } from 'shared/controller/infraestructure/EditableListadoRepository'
 
 export abstract class TransaccionSimpleController<T extends EntidadAuditable>
-  implements Controller<T>
-{
+  implements Controller<T> {
   //, Importable<T>
   // Repositorios
   private consultableRepository: ConsultableRepository<T>
   private guardableRepository: GuardableRepository<T>
+  private guardableListadoRepository: GuardableListadoRepository<T>
   private guardableFileRepository: GuardableFileRepository<T>
   private editableRepository: EditableRepository<T>
+  private editableListadoRepository: EditableListadoRepository<T>
   private eliminableRepository: EliminableRepository<T>
   private eliminableFileRepository: EliminableFileRepository<T>
   private listableRepository: ListableRepository<T>
@@ -34,8 +37,11 @@ export abstract class TransaccionSimpleController<T extends EntidadAuditable>
   protected constructor(endpoint: Endpoint) {
     this.consultableRepository = new ConsultableRepository(endpoint)
     this.guardableRepository = new GuardableRepository(endpoint)
+    this.guardableListadoRepository = new GuardableListadoRepository(endpoint)
     this.guardableFileRepository = new GuardableFileRepository(endpoint)
     this.editableRepository = new EditableRepository(endpoint)
+    this.editableRepository = new EditableRepository(endpoint)
+    this.editableListadoRepository = new EditableListadoRepository(endpoint)
     this.eliminableFileRepository = new EliminableFileRepository(endpoint)
     this.eliminableRepository = new EliminableRepository(endpoint)
     this.listableRepository = new ListableRepository(endpoint)
@@ -45,7 +51,7 @@ export abstract class TransaccionSimpleController<T extends EntidadAuditable>
     // this.importableRepository = new ImportableRepository(endpoint)
   }
 
-  async listarFiles<C = T>(id:number, params?: any) {
+  async listarFiles<C = T>(id: number, params?: any) {
     return this.listableFileRepository.listarArchivos<C>(id, params)
   }
 
@@ -61,16 +67,24 @@ export abstract class TransaccionSimpleController<T extends EntidadAuditable>
     return await this.consultableRepository.consultar(id, params)
   }
 
-  async guardarFiles(id:number, entidad: T) {
+  async guardarFiles(id: number, entidad: T) {
     return await this.guardableFileRepository.guardarArchivos(id, entidad)
   }
   async guardar(entidad: T, params?: ParamsType) {
     return await this.guardableRepository.guardar(entidad, params)
   }
 
+  async guardarListado(listado: T[], params?: ParamsType) {
+    return await this.guardableListadoRepository.guardarListado(listado, params)
+  }
+
   // Promise<ResponseItem<T, HttpResponsePut<T>>>
   async editar(entidad: T, params?: any) {
     return await this.editableRepository.editar(entidad.id, entidad, params)
+  }
+
+  async editarListado(listado: T[], params?: any) {
+    return await this.editableListadoRepository.editarListado(listado, params)
   }
 
   async editarParcial(id: number, data: { [key: string]: any }, params?: any) {

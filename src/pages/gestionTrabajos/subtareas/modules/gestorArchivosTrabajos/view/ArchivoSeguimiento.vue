@@ -6,7 +6,7 @@
     <q-toggle
       v-if="permitirSubir"
       v-model="quiero_subir_archivos"
-      label="Quiero compartir archivos"
+      :label="label"
       :disable="disable"
       checked-icon="bi-eye"
       color="positive"
@@ -19,7 +19,7 @@
     <q-uploader
       ref="refGestor"
       label="Selecciona o arrastra tus archivos aquí (Máximo 10mb)"
-      multiple
+      :multiple="multiple"
       style="width: 100%"
       flat
       :factory="factoryFn"

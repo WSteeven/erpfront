@@ -1,4 +1,5 @@
 //Dependencias
+import { configuracionColumnasTipoDiscapacidadPorcentaje } from '../domain/configuracionColumnasTipoDiscapacidadPorcentaje'
 import { configuracionColumnasEmpleados } from '../domain/configuracionColumnasEmpleados'
 import {
   maxLength,
@@ -18,16 +19,16 @@ import {
   talla_letras,
   tipos_sangre,
 } from 'config/utils'
-import { defineComponent, ref, watchEffect, computed } from 'vue'
+import { defineComponent, ref, watchEffect, computed, Ref } from 'vue'
 
 // Componentes
 import TabLayout from 'shared/contenedor/modules/simple/view/TabLayout.vue'
 import SelectorImagen from 'components/SelectorImagen.vue'
 import GestorArchivos from 'components/gestorArchivos/GestorArchivos.vue'
+import EssentialTable from 'components/tables/view/EssentialTable.vue'
 
 //Logica y controladores
 import { ContenedorSimpleMixin } from 'shared/contenedor/modules/simple/application/ContenedorSimpleMixin'
-import EssentialTable from 'components/tables/view/EssentialTable.vue'
 import { RolController } from 'pages/administracion/roles/infraestructure/RolController'
 import { GrupoController } from 'pages/recursosHumanos/grupos/infraestructure/GrupoController'
 import { EmpleadoController } from '../infraestructure/EmpleadoController'
@@ -51,12 +52,16 @@ import { Familiares } from 'pages/recursosHumanos/familiares/domain/Familiares'
 import { FamiliaresController } from 'pages/recursosHumanos/familiares/infraestructure/FamiliaresController'
 import { AxiosHttpRepository } from 'shared/http/infraestructure/AxiosHttpRepository'
 import { apiConfig, endpoints } from 'config/api'
-import { imprimirArchivo } from 'shared/utils'
+import { encontrarUltimoIdListado, imprimirArchivo } from 'shared/utils'
 import { useCargandoStore } from 'stores/cargando'
 import { AxiosResponse } from 'axios'
 import { useNotificaciones } from 'shared/notificaciones'
 import { useConfiguracionGeneralStore } from 'stores/configuracion_general'
 import { ArchivoController } from 'pages/gestionTrabajos/subtareas/modules/gestorArchivosTrabajos/infraestructure/ArchivoController'
+import { TipoDiscapacidadController } from 'pages/recursosHumanos/tipo-discapacidad/infraestructure/TipoDiscapacidadController'
+import { TipoDiscapacidadPorcentaje } from '../domain/TipoDiscapacidadPorcentaje'
+import { TipoDiscapacidad } from 'pages/recursosHumanos/tipo-discapacidad/domain/TipoDiscapacidad'
+import { reactive } from 'vue'
 
 export default defineComponent({
   components: {
@@ -72,12 +77,16 @@ export default defineComponent({
      *********/
     useNotificacionStore().setQuasar(useQuasar())
     useCargandoStore().setQuasar(useQuasar())
-    const { notificarCorrecto } = useNotificaciones()
+    const { notificarCorrecto, confirmar } = useNotificaciones()
 
     /***********
      * Mixin
      ************/
-    const mixin = new ContenedorSimpleMixin(Empleado, new EmpleadoController(), new ArchivoController())
+    const mixin = new ContenedorSimpleMixin(
+      Empleado,
+      new EmpleadoController(),
+      new ArchivoController()
+    )
     const {
       entidad: empleado,
       disabled,
@@ -88,6 +97,10 @@ export default defineComponent({
       mixin.useComportamiento()
     const { onConsultado, onGuardado } = mixin.useHooks()
 
+    /************
+     * Variables
+     ************/
+    const configuracionColumnasTipoDiscapacidadPorcentajeReactive = reactive(configuracionColumnasTipoDiscapacidadPorcentaje)
     const opciones_cantones = ref([])
     const opciones_roles = ref([])
     const opciones_cargos = ref([])
@@ -96,6 +109,7 @@ export default defineComponent({
     const bancos = ref([])
     const areas = ref([])
     const tipos_contrato = ref([])
+    const tiposDiscapacidades = ref([])
     const opcionesDepartamentos = ref([])
     const refFamiliares = ref()
     const modales = new ComportamientoModalesEmpleado()
@@ -111,9 +125,10 @@ export default defineComponent({
 
     const refArchivo = ref()
     const idEmpleado = ref()
+    const idsTiposDiscapacidades: Ref<number[]> = ref([])
 
     cargarVista(async () => {
-      obtenerListados({
+      await obtenerListados({
         cantones: new CantonController(),
         cargos: {
           controller: new CargoController(),
@@ -123,6 +138,10 @@ export default defineComponent({
         roles: {
           controller: new RolController(),
           params: { campos: 'id,name' },
+        },
+        tiposDiscapacidades: {
+          controller: new TipoDiscapacidadController(),
+          params: { campos: 'id,nombres' },
         },
         empleados: {
           controller: new EmpleadoController(),
@@ -143,7 +162,11 @@ export default defineComponent({
           params: { activo: 1 },
         },
       })
+      configuracionColumnasTipoDiscapacidadPorcentajeReactive.find((item) => item.field === 'tipo_discapacidad')!.options = listadosAuxiliares.tiposDiscapacidades.map((v: TipoDiscapacidad) => { return { label: v.nombre, value: v.id } })
+      console.log(configuracionColumnasTipoDiscapacidadPorcentaje);
+
     })
+
     /***************************
      * Configuracion de columnas
      ****************************/
@@ -151,6 +174,9 @@ export default defineComponent({
       ...configuracionColumnasFamiliaresEmpleado,
       accionesTabla,
     ]
+
+
+
     /*************
      * Validaciones
      **************/
@@ -216,7 +242,6 @@ export default defineComponent({
      * Hooks
      ********/
 
-    
     async function guardado(data) {
       empleado.familiares!.push(data.model)
     }
@@ -229,7 +254,7 @@ export default defineComponent({
 
       setTimeout(() => {
         refArchivo.value.listarArchivosAlmacenados(empleado.id)
-      }, 1);
+      }, 1)
     })
 
     onGuardado((id: number) => {
@@ -370,6 +395,21 @@ export default defineComponent({
         entidad.estado = false
       },
     }
+    /*const btnAgregarDiscapacidad: CustomActionTable = {
+      titulo: 'Agregar fila',
+      icono: 'bi-plus',
+      color: 'positive',
+      tooltip: 'Agregar',
+
+    } */
+
+    const agregarDiscapacidad = () => {
+      console.log('agregar discapácidad');
+      const fila = new TipoDiscapacidadPorcentaje()
+      fila.id = empleado.discapacidades?.length ? encontrarUltimoIdListado(empleado.discapacidades) + 1 : 1
+      empleado.discapacidades?.push(fila)
+    }
+
     function reestablecer_usuario() {
       if (accion.value == acciones.editar && empleado.generar_usuario) {
         generarUsename()
@@ -377,6 +417,13 @@ export default defineComponent({
         empleado.usuario = nombre_usuario.value
         empleado.email = email_usuario.value
       }
+    }
+
+    const btnEliminarDiscapacidad: CustomActionTable<TipoDiscapacidadPorcentaje> = {
+      titulo: 'Eliminar',
+      icono: 'bi-x',
+      color: 'negative',
+      accion: ({ posicion }) => confirmar('¿Está seguro de continuar?', () => empleado.discapacidades?.splice(posicion, 1))
     }
 
     function obtenerUsername() {
@@ -418,8 +465,120 @@ export default defineComponent({
         estado ? 'Ha Habilitado empleado' : 'Ha deshabilitado empleado'
       )
     }
+
+    //  FILTROS
+    //filtro de empleados
+    function filtroEmpleados(val, update) {
+      if (val === '') {
+        update(() => {
+          opciones_empleados.value = listadosAuxiliares.empleados
+        })
+        return
+      }
+      update(() => {
+        const needle = val.toLowerCase()
+        opciones_empleados.value = listadosAuxiliares.empleados.filter(
+          (v) =>
+            v.nombres.toLowerCase().indexOf(needle) > -1 ||
+            v.apellidos.toLowerCase().indexOf(needle) > -1
+        )
+      })
+    }
+    //filtro de cantones
+    function filtroCantones(val, update) {
+      if (val === '') {
+        update(() => {
+          opciones_cantones.value = listadosAuxiliares.cantones
+        })
+        return
+      }
+      update(() => {
+        const needle = val.toLowerCase()
+        opciones_cantones.value = listadosAuxiliares.cantones.filter(
+          (v) => v.canton.toLowerCase().indexOf(needle) > -1
+        )
+      })
+    }
+    //filtro de cargos
+    function filtroCargos(val, update) {
+      if (val === '') {
+        update(() => {
+          opciones_cargos.value = listadosAuxiliares.cargos
+        })
+        return
+      }
+      update(() => {
+        const needle = val.toLowerCase()
+        opciones_cargos.value = listadosAuxiliares.cargos.filter(
+          (v) => v.nombre.toLowerCase().indexOf(needle) > -1
+        )
+      })
+    }
+    function filtroRoles(val, update) {
+      if (val === '') {
+        update(() => {
+          opciones_roles.value = listadosAuxiliares.roles
+        })
+        return
+      }
+      update(() => {
+        const needle = val.toLowerCase()
+        opciones_roles.value = listadosAuxiliares.roles.filter(
+          (v) => v.nombre.toLowerCase().indexOf(needle) > -1
+        )
+      })
+    }
+    function filtroDepartamentos(val, update) {
+      if (val === '') {
+        update(() => {
+          opcionesDepartamentos.value = listadosAuxiliares.departamentos
+        })
+        return
+      }
+      update(() => {
+        const needle = val.toLowerCase()
+        opcionesDepartamentos.value = listadosAuxiliares.departamentos.filter(
+          (v) => v.nombre.toLowerCase().indexOf(needle) > -1
+        )
+      })
+    }
+    function filtrobancos(val, update) {
+      if (val === '') {
+        update(() => {
+          bancos.value = listadosAuxiliares.bancos
+        })
+        return
+      }
+      update(() => {
+        const needle = val.toLowerCase()
+        opcionesDepartamentos.value = listadosAuxiliares.bancos.filter(
+          (v) => v.nombre.toLowerCase().indexOf(needle) > -1
+        )
+      })
+    }
+    function filtrarTipoDiscapacidad(val, update) {
+      if (val === '') {
+        update(() => {
+          tiposDiscapacidades.value = listadosAuxiliares.tiposDiscapacidades
+        })
+        return
+      }
+      update(() => {
+        const needle = val.toLowerCase()
+        tiposDiscapacidades.value = listadosAuxiliares.tiposDiscapacidades.filter(
+          (v) => v.nombre.toLowerCase().indexOf(needle) > -1
+        )
+      })
+    }
+
+    /*******
+     * Init
+     *******/
+    agregarDiscapacidad()
+
     return {
-      mixin, mixinFamiliares,
+      mixin,
+      mixinFamiliares,
       empleado,
       disabled,
       accion,
@@ -457,101 +616,24 @@ export default defineComponent({
       btnImprimirEmpleados,
       btnHabilitarEmpleado,
       btnDesHabilitarEmpleado,
+      btnEliminarDiscapacidad,
       modales,
+      idsTiposDiscapacidades,
+      tiposDiscapacidades,
       //funciones
       subirArchivos,
       obtenerUsername,
       guardado,
-      //  FILTROS
-      //filtro de empleados
-      filtroEmpleados(val, update) {
-        if (val === '') {
-          update(() => {
-            opciones_empleados.value = listadosAuxiliares.empleados
-          })
-          return
-        }
-        update(() => {
-          const needle = val.toLowerCase()
-          opciones_empleados.value = listadosAuxiliares.empleados.filter(
-            (v) =>
-              v.nombres.toLowerCase().indexOf(needle) > -1 ||
-              v.apellidos.toLowerCase().indexOf(needle) > -1
-          )
-        })
-      },
-      //filtro de cantones
-      filtroCantones(val, update) {
-        if (val === '') {
-          update(() => {
-            opciones_cantones.value = listadosAuxiliares.cantones
-          })
-          return
-        }
-        update(() => {
-          const needle = val.toLowerCase()
-          opciones_cantones.value = listadosAuxiliares.cantones.filter(
-            (v) => v.canton.toLowerCase().indexOf(needle) > -1
-          )
-        })
-      },
-      //filtro de cargos
-      filtroCargos(val, update) {
-        if (val === '') {
-          update(() => {
-            opciones_cargos.value = listadosAuxiliares.cargos
-          })
-          return
-        }
-        update(() => {
-          const needle = val.toLowerCase()
-          opciones_cargos.value = listadosAuxiliares.cargos.filter(
-            (v) => v.nombre.toLowerCase().indexOf(needle) > -1
-          )
-        })
-      },
-      filtroRoles(val, update) {
-        if (val === '') {
-          update(() => {
-            opciones_roles.value = listadosAuxiliares.roles
-          })
-          return
-        }
-        update(() => {
-          const needle = val.toLowerCase()
-          opciones_roles.value = listadosAuxiliares.roles.filter(
-            (v) => v.nombre.toLowerCase().indexOf(needle) > -1
-          )
-        })
-      },
-      filtroDepartamentos(val, update) {
-        if (val === '') {
-          update(() => {
-            opcionesDepartamentos.value = listadosAuxiliares.departamentos
-          })
-          return
-        }
-        update(() => {
-          const needle = val.toLowerCase()
-          opcionesDepartamentos.value = listadosAuxiliares.departamentos.filter(
-            (v) => v.nombre.toLowerCase().indexOf(needle) > -1
-          )
-        })
-      },
-      filtrobancos(val, update) {
-        if (val === '') {
-          update(() => {
-            bancos.value = listadosAuxiliares.bancos
-          })
-          return
-        }
-        update(() => {
-          const needle = val.toLowerCase()
-          opcionesDepartamentos.value = listadosAuxiliares.bancos.filter(
-            (v) => v.nombre.toLowerCase().indexOf(needle) > -1
-          )
-        })
-      },
+      filtroEmpleados,
+      filtroCantones,
+      filtroCargos,
+      filtroRoles,
+      filtroDepartamentos,
+      filtrobancos,
+      filtrarTipoDiscapacidad,
+      configuracionColumnasTipoDiscapacidadPorcentajeReactive,
+      agregarDiscapacidad,
+      accionesTabla,
     }
   },
 })

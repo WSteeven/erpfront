@@ -20,12 +20,14 @@ import { CantonController } from 'sistema/ciudad/infraestructure/CantonControlle
 import { TareaController } from 'pages/gestionTrabajos/tareas/infraestructure/TareaController'
 import { EmpleadoController } from 'pages/recursosHumanos/empleados/infraestructure/EmpleadoController'
 import { UltimoSaldoController } from 'pages/fondosRotativos/reportes/reporteSaldoActual/infrestucture/UltimoSaldoController'
+import { useListadosSistemaStore } from './listadosSistema'
 import { UserLoginPostulante } from 'pages/recursosHumanos/seleccion_contratacion_personal/login-postulante/domain/UserLoginPostulante'
 
 export const useAuthenticationStore = defineStore('authentication', () => {
   // Variables locales
   const axios = AxiosHttpRepository.getInstance()
   let usuarioFueConsultado = false
+  const listadosSistemaStore = useListadosSistemaStore()
 
   // State
   const user = ref()
@@ -36,8 +38,7 @@ export const useAuthenticationStore = defineStore('authentication', () => {
   const saldo_actual = ref(0)
   const nombreUsuario = computed(
     () =>
-      `${user.value?.nombres}${
-        user.value?.apellidos ? ' ' + user.value.apellidos : ''
+      `${user.value?.nombres}${user.value?.apellidos ? ' ' + user.value.apellidos : ''
       }`
   )
 
@@ -114,6 +115,8 @@ export const useAuthenticationStore = defineStore('authentication', () => {
     user.value ? extraerRol(user.value.roles, rolesSistema.vendedor) : false
   )
 
+  const esMedico = computed(() => user.value ? extraerRol(user.value.roles, rolesSistema.medico) : false)
+
   function extraerRol(roles: string[], rolConsultar: string) {
     return roles.some((rol: string) => rol === rolConsultar)
   }
@@ -133,7 +136,7 @@ export const useAuthenticationStore = defineStore('authentication', () => {
       roles.value = response.data.modelo.roles
       permisos.value = response.data.modelo.permisos
 
-      cargarDatosLS()
+      listadosSistemaStore.cargarDatosLS()
 
       return response.data.modelo
     } catch (error: unknown) {
@@ -159,7 +162,7 @@ export const useAuthenticationStore = defineStore('authentication', () => {
       roles.value = response.data.modelo.roles
       permisos.value = response.data.modelo.permisos
 
-      cargarDatosLS()
+      listadosSistemaStore.cargarDatosLS()
 
       return response.data.modelo
     } catch (error: unknown) {
@@ -205,10 +208,10 @@ export const useAuthenticationStore = defineStore('authentication', () => {
     }
   }
 
-  /**
+  /** BORRAR
    * Función para cargar datos en el Local Storage
    */
-  async function cargarDatosLS() {
+  /* async function cargarDatosLS() {
     const autorizaciones = (
       await new AutorizacionController().listar({ campos: 'id,nombre' })
     ).result
@@ -250,23 +253,24 @@ export const useAuthenticationStore = defineStore('authentication', () => {
       })
     ).result
     LocalStorage.set('usuariosInactivos', JSON.stringify(usuariosInactivos))
-  }
+  } */
+
   /**
    * Función para limpiar los datos del Local Storage
    */
-  function limpiarLS() {
+  /* function limpiarLS() {
     LocalStorage.remove('autorizaciones')
     LocalStorage.remove('sucursales')
     LocalStorage.remove('condiciones')
     LocalStorage.remove('estados_transacciones')
     LocalStorage.remove('lugares')
     LocalStorage.remove('detalles')
-  }
+  } */
 
   async function logout() {
     await axios.post(axios.getEndpoint(endpoints.logout))
     LocalStorage.remove('token')
-    limpiarLS()
+    listadosSistemaStore.limpiarLS()
     await getUser()
     document.title = 'JPCONSTRUCRED'
   }
@@ -371,6 +375,7 @@ export const useAuthenticationStore = defineStore('authentication', () => {
     esVendedor,
     esFiscalizador,
     esSupervisorCampo,
+    esMedico,
     consultar_saldo_actual,
     extraerRol,
     listadoUsuarios,

@@ -19,7 +19,7 @@
     <!-- Boton modificar -->
     <q-btn
       form="formulario"
-      v-if="accion === editar || permitirModificar"
+      v-if="accion === editar && permitirModificar"
       color="primary"
       type="submit"
       no-caps
@@ -82,7 +82,7 @@ export default defineComponent({
     permitirModificar: {
       type: Boolean,
       required: false,
-      default: false,
+      default: true,
     },
     permitirCancelar: {
       type: Boolean,
