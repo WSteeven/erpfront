@@ -571,10 +571,6 @@ export default defineComponent({
       })
     }
 
-    /*******
-     * Init
-     *******/
-    agregarDiscapacidad()
 
     return {
       mixin,
