@@ -1,7 +1,7 @@
 //Dependencias
 import { configuracionColumnasBitacoraVehicular } from '../domain/configuracionColumnasBitacoraVehicular';
 import { configuracionColumnasActividadesRealizadas } from '../domain/configuracionColumnasActividadesRealizadas';
-import { required, requiredIf } from "shared/i18n-validators";
+import { minValue, required, requiredIf } from "shared/i18n-validators";
 import { useVuelidate } from '@vuelidate/core'
 import { computed, defineComponent, ref } from "vue";
 
@@ -122,7 +122,11 @@ export default defineComponent({
             km_inicial: { required },
             km_final: { requiredIf: requiredIf(() => accion.value == acciones.editar && bitacora.firmada) },
             tanque_inicio: { required },
-            tanque_final: { required },
+            tanque_final: {
+                required,
+                requiredIf: requiredIf(() => accion.value == acciones.editar && bitacora.firmada),
+                minValue: minValue(25)
+            },
             vehiculo: { required },
             checklistImagenVehiculo: {
                 imagen_frontal: { requiredIf: requiredIf(() => bitacora.firmada) },

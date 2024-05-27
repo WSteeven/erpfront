@@ -26,6 +26,7 @@
               dense
             ></q-input>
           </div>
+          {{ v$.$errors }}
           <!-- Chofer -->
           <div
             class="col-12 col-md-3 q-mb-md"
@@ -231,14 +232,12 @@
               v-model="bitacora.tanque_final"
               :disable="disabled"
               mask="###"
-              :rules="[
-                (val) =>
-                  (val <= 100 && val >= 0) || 'Ingresa un valor entre 0 y 100',
-              ]"
+              :error="!!v$.tanque_final.$errors.length"
+              @blur="v$.tanque_final.$touch"
               dense
               outlined
             >
-              <template v-slot:error>Ingresa un valor entre 0 y 100</template>
+              <template v-slot:error>Ingresa un valor entre 25 y 100</template>
               <template v-slot:prepend
                 ><q-icon name="bi-fuel-pump-fill"></q-icon
               ></template>
