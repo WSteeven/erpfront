@@ -275,7 +275,7 @@ export const useMenuStore = defineStore('menu', () => {
           title: 'Empleados',
           link: 'empleados',
           icon: 'bi-person-lines-fill',
-          can: store.can('puede.ver.empleados') && store.esBodeguero,
+          can: store.can('puede.acceder.empleados') && store.esBodeguero,
         },
         {
           title: 'Marcas',
@@ -931,6 +931,12 @@ export const useMenuStore = defineStore('menu', () => {
       can: store.can('puede.ver.modulo_ventas') || store.esAdministrador,
       children: [
         {
+          title: 'Dashboard',
+          link: 'ventas/dashboard-ventas',
+          icon: 'bi-app',
+          can: store.can('puede.ver.dashboard_ventas_empresa') || store.esAdministrador,
+        },
+        {
           title: 'Proformas',
           link: 'proformas',
           icon: 'bi-app',
@@ -941,6 +947,19 @@ export const useMenuStore = defineStore('menu', () => {
           link: 'prefacturas',
           icon: 'bi-app',
           can: store.can('puede.ver.prefacturas') || store.esAdministrador,
+        },
+        {
+          title: 'Reportes',
+          icon: 'bi-clipboard2-data-fill',
+          can: store.esAdministrador || store.esCompras || store.can('puede.ver.reportes_modulo_ventas'),
+          children: [
+            {
+              title: 'Reporte de Prefacturas',
+              link: 'reporte-prefacturas',
+              icon: 'bi-boxes',
+              can: true,
+            }
+          ],
         },
       ],
     },

@@ -213,7 +213,7 @@ export default defineComponent({
       },
       vehiculo: {
         required: requiredIf(
-          () => esCombustibleEmpresa.value && !!gasto.es_vehiculo_alquilado
+          () => esCombustibleEmpresa.value && !gasto.es_vehiculo_alquilado
         ),
       },
       observacion: {

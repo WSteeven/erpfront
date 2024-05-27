@@ -10,6 +10,7 @@ export class OrdenCompraModales{
     SeguimientoNovedadesOrdenesCompras: ComponenteModal
 
     constructor(){
-        this.SeguimientoNovedadesOrdenesCompras = markRaw(new ComponenteModal('Registro de novedades de la orden de compra', SeguimientoOrdenCompraPage))
+        this.SeguimientoNovedadesOrdenesCompras = markRaw(
+            new ComponenteModal('Registro de novedades de la orden de compra', SeguimientoOrdenCompraPage))
     }
 }
