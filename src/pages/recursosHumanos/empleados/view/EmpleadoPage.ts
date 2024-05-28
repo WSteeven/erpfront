@@ -62,6 +62,7 @@ import { TipoDiscapacidadController } from 'pages/recursosHumanos/tipo-discapaci
 import { TipoDiscapacidadPorcentaje } from '../domain/TipoDiscapacidadPorcentaje'
 import { TipoDiscapacidad } from 'pages/recursosHumanos/tipo-discapacidad/domain/TipoDiscapacidad'
 import { reactive } from 'vue'
+import { parentezcos } from 'config/recursosHumanos.utils'
 
 export default defineComponent({
   components: {
@@ -95,7 +96,7 @@ export default defineComponent({
     } = mixin.useReferencias()
     const { setValidador, cargarVista, obtenerListados } =
       mixin.useComportamiento()
-    const { onConsultado, onGuardado } = mixin.useHooks()
+    const { onConsultado, onGuardado, onReestablecer } = mixin.useHooks()
 
     /************
      * Variables
@@ -121,12 +122,12 @@ export default defineComponent({
       Familiares,
       new FamiliaresController()
     )
-    const { eliminar } = mixinFamiliares.useComportamiento()
 
     const refArchivo = ref()
     const idEmpleado = ref()
     const idsTiposDiscapacidades: Ref<number[]> = ref([])
-
+    const idsParentescos: Ref<number[]> = ref([])
+    const construccionConfiguracionColumnas = ref(false)
     cargarVista(async () => {
       await obtenerListados({
         cantones: new CantonController(),
@@ -143,6 +144,7 @@ export default defineComponent({
           controller: new TipoDiscapacidadController(),
           params: { campos: 'id,nombres' },
         },
+
         empleados: {
           controller: new EmpleadoController(),
           params: {
@@ -162,18 +164,17 @@ export default defineComponent({
           params: { activo: 1 },
         },
       })
+
       configuracionColumnasTipoDiscapacidadPorcentajeReactive.find((item) => item.field === 'tipo_discapacidad')!.options = listadosAuxiliares.tiposDiscapacidades.map((v: TipoDiscapacidad) => { return { label: v.nombre, value: v.id } })
-      console.log(configuracionColumnasTipoDiscapacidadPorcentaje);
+      configuracionColumnasFamiliaresEmpleado.find((item) => item.field === 'parentezco')!.options = parentezcos.map((v: any) => { return { label: v.nombre, value: v.value} })
+      construccionConfiguracionColumnas.value = true
+
 
     })
 
-    /***************************
-     * Configuracion de columnas
-     ****************************/
-    const columnasFamiliares: any = [
-      ...configuracionColumnasFamiliaresEmpleado,
-      accionesTabla,
-    ]
+    const habilitarBotonAgregarFamiliares = computed(() =>
+      accion.value == acciones.nuevo || accion.value == acciones.editar
+    )
 
 
 
@@ -241,17 +242,15 @@ export default defineComponent({
     /********
      * Hooks
      ********/
-
-    async function guardado(data) {
-      empleado.familiares!.push(data.model)
-    }
+    onReestablecer(()=>{
+      empleado.familiares=[]
+    })
 
     onConsultado(() => {
       idEmpleado.value = empleado.id
       empleado.tiene_grupo = !!empleado.grupo
       nombre_usuario.value = empleado.usuario
       email_usuario.value = empleado.email
-
       setTimeout(() => {
         refArchivo.value.listarArchivosAlmacenados(empleado.id)
       }, 1)
@@ -268,23 +267,7 @@ export default defineComponent({
       const hoy = convertir_fecha(new Date())
       return date <= hoy
     }
-    const abrirModalFamiliares: CustomActionTable = {
-      titulo: 'Agregar Familiar',
-      icono: 'bi-person-fill-add',
-      color: 'positive',
-      tooltip:
-        'Puede modificar o eliminar un familiar desde el panel familiares de empleados',
-      accion: () => {
-        familiarStore.idEmpleado = empleado.id
-        familiarStore.listar_familiares = false
-        familiarStore.accion = acciones.nuevo
 
-        modales.abrirModalEntidad('FamiliaresPage')
-      },
-      visible: () => {
-        return accion.value == acciones.nuevo || accion.value == acciones.editar
-      },
-    }
 
     async function subirArchivos() {
       await refArchivo.value.subir()
@@ -342,14 +325,11 @@ export default defineComponent({
       },
     }
     const btnEliminarFamiliar: CustomActionTable = {
-      titulo: '',
-      icono: 'bi-trash',
-      color: 'secondary',
+      titulo: 'Eliminar',
+      icono: 'bi-x',
+      color: 'negative',
       visible: () => authenticationStore.can('puede.eliminar.familiares'),
-      accion: ({ entidad }) => {
-        accion.value = 'ELIMINAR'
-        eliminar(entidad)
-      },
+      accion: ({ posicion }) => confirmar('¿Está seguro de continuar?', () => empleado.familiares?.splice(posicion, 1))
     }
     const btnImprimirEmpleados: CustomActionTable = {
       titulo: 'Reporte General',
@@ -395,19 +375,18 @@ export default defineComponent({
         entidad.estado = false
       },
     }
-    /*const btnAgregarDiscapacidad: CustomActionTable = {
-      titulo: 'Agregar fila',
-      icono: 'bi-plus',
-      color: 'positive',
-      tooltip: 'Agregar',
-
-    } */
 
     const agregarDiscapacidad = () => {
-      console.log('agregar discapácidad');
       const fila = new TipoDiscapacidadPorcentaje()
       fila.id = empleado.discapacidades?.length ? encontrarUltimoIdListado(empleado.discapacidades) + 1 : 1
       empleado.discapacidades?.push(fila)
+    }
+
+    const agregarFamiliares =() =>{
+      const fila = new Familiares()
+      fila.id = empleado.familiares?.length ? encontrarUltimoIdListado(empleado.familiares)+1  :1
+      empleado.familiares?.push(fila)
+
     }
 
     function reestablecer_usuario() {
@@ -583,7 +562,6 @@ export default defineComponent({
       v$,
       reestablecer_usuario,
       configuracionColumnas: configuracionColumnasEmpleados,
-      columnasFamiliares,
       idEmpleado,
       isPwd: ref(true),
       listadosAuxiliares,
@@ -603,7 +581,6 @@ export default defineComponent({
       niveles_academicos,
       refFamiliares,
       optionsFecha,
-      abrirModalFamiliares,
       //metodos
       opcionesDepartamentos,
       btnConsultarFamiliar,
@@ -615,11 +592,11 @@ export default defineComponent({
       btnEliminarDiscapacidad,
       modales,
       idsTiposDiscapacidades,
+      idsParentescos,
       tiposDiscapacidades,
       //funciones
       subirArchivos,
       obtenerUsername,
-      guardado,
       filtroEmpleados,
       filtroCantones,
       filtroCargos,
@@ -628,8 +605,12 @@ export default defineComponent({
       filtrobancos,
       filtrarTipoDiscapacidad,
       configuracionColumnasTipoDiscapacidadPorcentajeReactive,
+      configuracionColumnasFamiliaresEmpleado,
       agregarDiscapacidad,
+      agregarFamiliares,
       accionesTabla,
+      construccionConfiguracionColumnas,
+      habilitarBotonAgregarFamiliares
     }
   },
 })
