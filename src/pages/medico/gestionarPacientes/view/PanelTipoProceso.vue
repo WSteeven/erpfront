@@ -150,6 +150,7 @@
               @selected="seleccionarExamen"
               :alto-fijo="false"
               :permitir-editar-celdas="true"
+              :emitir-al-seleccionar="true"
             ></essential-table>
           </q-tab-panel>
 

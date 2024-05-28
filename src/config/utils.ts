@@ -472,6 +472,15 @@ export const tiposReportesIngresos = {
   tarea: 5,
   transferencia: 6,
 }
+export const numDiaSemana ={
+  domingo: 0,
+  lunes:1,
+  martes:2,
+  miercoles:3,
+  jueves:4,
+  viernes:5,
+  sabado:6
+}
 
 export const opcionesReportesEgresos = [
   { value: 0, label: 'POR SOLICITANTE' },
@@ -557,6 +566,7 @@ export const niveles_academicos = [
   { nombre: 'ESTUDIO SECUNDARIO' },
   { nombre: 'TITULO SUPERIOR' },
 ]
+
 
 export const tipos_sangre = [
   { nombre: 'A +' },

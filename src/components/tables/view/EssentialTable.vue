@@ -58,9 +58,9 @@
     </template>
 
     <!-- Editar celdas -->
-    <template v-if="permitirEditarCeldas" v-slot:body-cell="props">
+    <template v-slot:body-cell="props">
       <q-td
-        v-if="props.col.editable"
+        v-if="permitirEditarCeldas && props.col.editable"
         :key="props.col.name"
         :props="props"
         :class="{ 'text-bold': props.col.editable, 'bg-body': $q.dark.isActive }"

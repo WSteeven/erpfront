@@ -203,7 +203,11 @@ export default defineComponent({
     disable: {
       type: Boolean,
       default: false,
-    }
+    },
+    emitirAlSeleccionar: {
+      type: Boolean,
+      default: false,
+    },
   },
   emits: ['consultar', 'editar', 'eliminar', 'accion1', 'accion2', 'accion3', 'accion4', 'accion5', 'accion6', 'accion7', 'accion8', 'accion9', 'accion10', 'selected', 'onScroll', 'filtrar', 'toggle-filtros', 'guardar-fila', 'update:selected', 'fila-modificada'],
   setup(props, { emit }) {
@@ -268,10 +272,13 @@ export default defineComponent({
       // emit('update:selected', selected.value);
     }
 
-    watch(selected, () => {
-      console.log(selected.value)
-      emit('selected', selected.value)
-    })
+    // medico pendiente xq le da problema a mile al seleccionar
+    if (props.emitirAlSeleccionar) {
+      watch(selected, () => {
+        console.log(selected.value)
+        emit('selected', selected.value)
+      })
+    }
 
     /*const emitSelectedChange = () => {
       emit('update:selected', selected.value);
