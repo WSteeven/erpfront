@@ -143,27 +143,35 @@ export default defineComponent({
       },
     }
 
-    function permitirAnular(fecha) {
-      // Create Date objects for current week's start and end (Sunday - Saturday)
-      const today = new Date()
-      const day = today.getDay() // Get current day of the week (0-6)
-      const weekStart = new Date(today.setDate(today.getDate() - day))
-      weekStart.setHours(0, 0, 0, 0) // Set start of day for Sunday
-      const weekEnd = new Date(weekStart.getTime() + 6 * 24 * 60 * 60 * 1000)
-      weekEnd.setHours(23, 59, 59, 999) // Set end of day for Saturday
-      // Convert target date to Date object
-      const fechaDate = parse(fecha, 'YYYY-MM-DD', 'America/Guayaquil')
-      // Calculate difference in milliseconds between target date and week start
-      const diferenciaMilisegundos = weekStart.getTime() - fechaDate.getTime()
-      const diferenciaEnDias = Math.floor(
-        diferenciaMilisegundos / (1000 * 60 * 60 * 24)
+    function permitirAnular(date) {
+      const currentDate = new Date()
+      // Obtén el primer día del mes actual
+      const firstDayOfCurrentMonth = new Date(
+        currentDate.getFullYear(),
+        currentDate.getMonth(),
+        1
       )
-      // Check if target date is within current week (inclusive)
-      if (diferenciaEnDias <= 30 || authenticationStore.esAdministrador) {
-        return true
-      } else {
-        return false
-      }
+      // Obtén el último día del mes anterior
+      const lastDayOfPreviousMonth = new Date(firstDayOfCurrentMonth)
+      lastDayOfPreviousMonth.setDate(firstDayOfCurrentMonth.getDate() - 1)
+      // Obtén el primer día del mes anterior
+      const firstDayOfPreviousMonth = new Date(
+        lastDayOfPreviousMonth.getFullYear(),
+        lastDayOfPreviousMonth.getMonth(),
+        1
+      )
+      //obtener la ultima fecha del mes actula
+      const lastDayOfMonth = new Date(new Date().getFullYear(), new Date().getMonth() + 1, 0);
+      // Convierte la fecha dada a un objeto Date si no lo es ya
+      const givenDate = parse(date, 'YYYY-MM-DD', 'America/Guayaquil')
+
+
+
+      // Compara la fecha dada con el rango del mes anterior
+      return (
+        givenDate >= firstDayOfPreviousMonth &&
+        givenDate <= lastDayOfMonth
+      ) || authenticationStore.esAdministrador
     }
 
     async function guardado() {
