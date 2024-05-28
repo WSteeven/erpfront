@@ -309,6 +309,159 @@
                 :disable="disabled"
               />
             </div>
+            <!-- Auto Identificacion Etnico -->
+            <div class="col-12 col-md-3 col-sm-3">
+              <label class="q-mb-sm block">AutoIdentificacion Etnica</label>
+              <q-select
+                v-model="empleado.autoidentificacion_etnica"
+                :options="autoidentificaciones_etnicas"
+                transition-show="jump-up"
+                transition-hide="jump-down"
+                :disable="disabled"
+                options-dense
+                dense
+                outlined
+                :input-debounce="0"
+                use-input
+                @blur="v$.autoidentificacion_etnica.$touch"
+                :error="!!v$.autoidentificacion_etnica.$errors.length"
+                :option-value="(v) => v.value"
+                :option-label="(v) => v.nombre"
+                emit-value
+                map-options
+              >
+                <template v-slot:error>
+                  <div v-for="error of v$.autoidentificacion_etnica.$errors" :key="error.$uid">
+                    <div class="error-msg">{{ error.$message }}</div>
+                  </div>
+                </template>
+
+                <template v-slot:no-option>
+                  <q-item>
+                    <q-item-section class="text-grey"> No hay resultados </q-item-section>
+                  </q-item>
+                </template>
+              </q-select>
+            </div>
+
+
+
+
+            <!-- Orientacion Sexual -->
+            <div class="col-12 col-md-3 col-sm-3">
+              <label class="q-mb-sm block">Orientacion Sexual</label>
+              <q-select
+                v-model="empleado.orientacion_sexual"
+                :options="orientaciones_sexuales"
+                transition-show="jump-up"
+                transition-hide="jump-down"
+                :disable="disabled"
+                options-dense
+                dense
+                outlined
+                :input-debounce="0"
+                use-input
+                @blur="v$.orientacion_sexual.$touch"
+                :error="!!v$.orientacion_sexual.$errors.length"
+                :option-value="(v) => v.id"
+                :option-label="(v) => v.nombre"
+                emit-value
+                map-options
+              >
+                <template v-slot:error>
+                  <div v-for="error of v$.orientacion_sexual.$errors" :key="error.$uid">
+                    <div class="error-msg">{{ error.$message }}</div>
+                  </div>
+                </template>
+
+                <template v-slot:no-option>
+                  <q-item>
+                    <q-item-section class="text-grey"> No hay resultados </q-item-section>
+                  </q-item>
+                </template>
+              </q-select>
+            </div>
+            <!-- Identidad de genero -->
+            <div class="col-12 col-md-3 col-sm-3">
+              <label class="q-mb-sm block">Identidad de Genero</label>
+              <q-select
+                v-model="empleado.identidad_genero"
+                :options="identidades_genero"
+                transition-show="jump-up"
+                transition-hide="jump-down"
+                :disable="disabled"
+                options-dense
+                dense
+                outlined
+                :input-debounce="0"
+                use-input
+                @blur="v$.identidad_genero.$touch"
+                :error="!!v$.identidad_genero.$errors.length"
+                :option-value="(v) => v.id"
+                :option-label="(v) => v.nombre"
+                emit-value
+                map-options
+              >
+                <template v-slot:error>
+                  <div v-for="error of v$.identidad_genero.$errors" :key="error.$uid">
+                    <div class="error-msg">{{ error.$message }}</div>
+                  </div>
+                </template>
+
+                <template v-slot:no-option>
+                  <q-item>
+                    <q-item-section class="text-grey"> No hay resultados </q-item-section>
+                  </q-item>
+                </template>
+              </q-select>
+            </div>
+            <!-- Religion -->
+            <div class="col-12 col-md-3 col-sm-3">
+              <label class="q-mb-sm block">Religion</label>
+              <q-select
+                v-model="empleado.religion"
+                :options="religiones"
+                transition-show="jump-up"
+                transition-hide="jump-down"
+                :disable="disabled"
+                options-dense
+                dense
+                outlined
+                :input-debounce="0"
+                use-input
+                @blur="v$.religion.$touch"
+                :error="!!v$.religion.$errors.length"
+                :option-value="(v) => v.id"
+                :option-label="(v) => v.nombre"
+                emit-value
+                map-options
+              >
+                <template v-slot:error>
+                  <div v-for="error of v$.religion.$errors" :key="error.$uid">
+                    <div class="error-msg">{{ error.$message }}</div>
+                  </div>
+                </template>
+
+                <template v-slot:no-option>
+                  <q-item>
+                    <q-item-section class="text-grey"> No hay resultados </q-item-section>
+                  </q-item>
+                </template>
+              </q-select>
+            </div>
+            <!-- Trabajador Sustituto -->
+            <div class="col-12 col-md-3 col-sm-3">
+              <label class="q-mb-sm block">Trabajador Sustituto</label>
+              <q-toggle
+                :label="empleado.trabajador_sustituto ? 'SI' : 'NO'"
+                v-model="empleado.trabajador_sustituto"
+                color="primary"
+                keep-color
+                icon="bi-check2-circle"
+                unchecked-icon="clear"
+                :disable="disabled"
+              />
+            </div>
             <!-- Convencional -->
             <div class="col-12 col-md-3 col-sm-3">
               <label class="q-mb-sm block">Convencional</label>
@@ -1366,9 +1519,8 @@
           default-opened
         >
           <div class="row q-col-gutter-sm q-pa-sm">
-
             <q-btn
-            v-if="habilitarBotonAgregarFamiliares"
+              v-if="habilitarBotonAgregarFamiliares"
               color="positive"
               class="q-mx-lg"
               :class="{ 'q-mb-sm': $q.screen.xs, 'full-width': $q.screen.xs }"

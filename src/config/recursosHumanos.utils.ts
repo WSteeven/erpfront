@@ -36,3 +36,11 @@ export const parentezcos = [
   { nombre: 'HIJO', value: 'HIJO' },
   { nombre: 'HIJA', value: 'HIJA' },
 ]
+
+export const autoidentificaciones_etnicas = [
+  { nombre: 'INDIGENA', value: 'INDIGENA'  },
+  { nombre: 'AFRODECENDIENTE/AFROECUATORIANO', value: 'AFRODECENDIENTE' },
+  { nombre: 'MESTIZO', value: 'MESTIZO' },
+  { nombre: 'BLANCO', value: 'BLANCO' },
+  { nombre: 'MONTUBIO', value: 'MONTUBIO' },
+]

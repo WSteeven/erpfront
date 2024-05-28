@@ -62,7 +62,13 @@ import { TipoDiscapacidadController } from 'pages/recursosHumanos/tipo-discapaci
 import { TipoDiscapacidadPorcentaje } from '../domain/TipoDiscapacidadPorcentaje'
 import { TipoDiscapacidad } from 'pages/recursosHumanos/tipo-discapacidad/domain/TipoDiscapacidad'
 import { reactive } from 'vue'
-import { parentezcos } from 'config/recursosHumanos.utils'
+import {
+  autoidentificaciones_etnicas,
+  parentezcos,
+} from 'config/recursosHumanos.utils'
+import { OrientacionSexualController } from 'pages/medico/gestionarPacientes/modules/fichaPeriodica/infraestructure/OrientacionSexualController'
+import { IdentidadGeneroController } from 'pages/medico/gestionarPacientes/modules/fichaPeriodica/infraestructure/IdentidadGeneroController'
+import { ReligionController } from 'pages/medico/gestionarPacientes/modules/fichaPeriodica/infraestructure/ReligionController'
 
 export default defineComponent({
   components: {
@@ -101,7 +107,9 @@ export default defineComponent({
     /************
      * Variables
      ************/
-    const configuracionColumnasTipoDiscapacidadPorcentajeReactive = reactive(configuracionColumnasTipoDiscapacidadPorcentaje)
+    const configuracionColumnasTipoDiscapacidadPorcentajeReactive = reactive(
+      configuracionColumnasTipoDiscapacidadPorcentaje
+    )
     const opciones_cantones = ref([])
     const opciones_roles = ref([])
     const opciones_cargos = ref([])
@@ -112,6 +120,9 @@ export default defineComponent({
     const tipos_contrato = ref([])
     const tiposDiscapacidades = ref([])
     const opcionesDepartamentos = ref([])
+    const orientaciones_sexuales = ref([])
+    const identidades_genero = ref([])
+    const religiones = ref([])
     const refFamiliares = ref()
     const modales = new ComportamientoModalesEmpleado()
     const familiarStore = useFamiliarStore()
@@ -163,20 +174,29 @@ export default defineComponent({
           controller: new DepartamentoController(),
           params: { activo: 1 },
         },
+        orientaciones_sexuales: new OrientacionSexualController(),
+        identidades_genero: new IdentidadGeneroController(),
+        religiones: new ReligionController(),
       })
 
-      configuracionColumnasTipoDiscapacidadPorcentajeReactive.find((item) => item.field === 'tipo_discapacidad')!.options = listadosAuxiliares.tiposDiscapacidades.map((v: TipoDiscapacidad) => { return { label: v.nombre, value: v.id } })
-      configuracionColumnasFamiliaresEmpleado.find((item) => item.field === 'parentezco')!.options = parentezcos.map((v: any) => { return { label: v.nombre, value: v.value} })
+      configuracionColumnasTipoDiscapacidadPorcentajeReactive.find(
+        (item) => item.field === 'tipo_discapacidad'
+      )!.options = listadosAuxiliares.tiposDiscapacidades.map(
+        (v: TipoDiscapacidad) => {
+          return { label: v.nombre, value: v.id }
+        }
+      )
+      configuracionColumnasFamiliaresEmpleado.find(
+        (item) => item.field === 'parentezco'
+      )!.options = parentezcos.map((v: any) => {
+        return { label: v.nombre, value: v.value }
+      })
       construccionConfiguracionColumnas.value = true
-
-
     })
 
-    const habilitarBotonAgregarFamiliares = computed(() =>
-      accion.value == acciones.nuevo || accion.value == acciones.editar
+    const habilitarBotonAgregarFamiliares = computed(
+      () => accion.value == acciones.nuevo || accion.value == acciones.editar
     )
-
-
 
     /*************
      * Validaciones
@@ -225,6 +245,10 @@ export default defineComponent({
       talla_camisa: { required },
       talla_pantalon: { required: requiredIf(() => empleado.tiene_grupo) },
       talla_guantes: { required: requiredIf(() => empleado.tiene_grupo) },
+      autoidentificacion_etnica: { required },
+      orientacion_sexual: { required },
+      identidad_genero: { required },
+      religion: { required },
     }
 
     const v$ = useVuelidate(reglas, empleado)
@@ -237,13 +261,16 @@ export default defineComponent({
     tipos_contrato.value = listadosAuxiliares.tipos_contrato
     opcionesDepartamentos.value = listadosAuxiliares.departamentos
     estado_civiles.value = listadosAuxiliares.estado_civiles
+    orientaciones_sexuales.value = listadosAuxiliares.orientaciones_sexuales
+    identidades_genero.value = listadosAuxiliares.identidades_genero
+    religiones.value = listadosAuxiliares.religiones
     areas.value = listadosAuxiliares.areas
     bancos.value = listadosAuxiliares.bancos
     /********
      * Hooks
      ********/
-    onReestablecer(()=>{
-      empleado.familiares=[]
+    onReestablecer(() => {
+      empleado.familiares = []
     })
 
     onConsultado(() => {
@@ -267,7 +294,6 @@ export default defineComponent({
       const hoy = convertir_fecha(new Date())
       return date <= hoy
     }
-
 
     async function subirArchivos() {
       await refArchivo.value.subir()
@@ -329,7 +355,10 @@ export default defineComponent({
       icono: 'bi-x',
       color: 'negative',
       visible: () => authenticationStore.can('puede.eliminar.familiares'),
-      accion: ({ posicion }) => confirmar('¿Está seguro de continuar?', () => empleado.familiares?.splice(posicion, 1))
+      accion: ({ posicion }) =>
+        confirmar('¿Está seguro de continuar?', () =>
+          empleado.familiares?.splice(posicion, 1)
+        ),
     }
     const btnImprimirEmpleados: CustomActionTable = {
       titulo: 'Reporte General',
@@ -378,15 +407,18 @@ export default defineComponent({
 
     const agregarDiscapacidad = () => {
       const fila = new TipoDiscapacidadPorcentaje()
-      fila.id = empleado.discapacidades?.length ? encontrarUltimoIdListado(empleado.discapacidades) + 1 : 1
+      fila.id = empleado.discapacidades?.length
+        ? encontrarUltimoIdListado(empleado.discapacidades) + 1
+        : 1
       empleado.discapacidades?.push(fila)
     }
 
-    const agregarFamiliares =() =>{
+    const agregarFamiliares = () => {
       const fila = new Familiares()
-      fila.id = empleado.familiares?.length ? encontrarUltimoIdListado(empleado.familiares)+1  :1
+      fila.id = empleado.familiares?.length
+        ? encontrarUltimoIdListado(empleado.familiares) + 1
+        : 1
       empleado.familiares?.push(fila)
-
     }
 
     function reestablecer_usuario() {
@@ -398,12 +430,16 @@ export default defineComponent({
       }
     }
 
-    const btnEliminarDiscapacidad: CustomActionTable<TipoDiscapacidadPorcentaje> = {
-      titulo: 'Eliminar',
-      icono: 'bi-x',
-      color: 'negative',
-      accion: ({ posicion }) => confirmar('¿Está seguro de continuar?', () => empleado.discapacidades?.splice(posicion, 1))
-    }
+    const btnEliminarDiscapacidad: CustomActionTable<TipoDiscapacidadPorcentaje> =
+      {
+        titulo: 'Eliminar',
+        icono: 'bi-x',
+        color: 'negative',
+        accion: ({ posicion }) =>
+          confirmar('¿Está seguro de continuar?', () =>
+            empleado.discapacidades?.splice(posicion, 1)
+          ),
+      }
 
     function obtenerUsername() {
       if (accion.value == acciones.editar && empleado.generar_usuario) {
@@ -544,12 +580,12 @@ export default defineComponent({
       }
       update(() => {
         const needle = val.toLowerCase()
-        tiposDiscapacidades.value = listadosAuxiliares.tiposDiscapacidades.filter(
-          (v) => v.nombre.toLowerCase().indexOf(needle) > -1
-        )
+        tiposDiscapacidades.value =
+          listadosAuxiliares.tiposDiscapacidades.filter(
+            (v) => v.nombre.toLowerCase().indexOf(needle) > -1
+          )
       })
     }
-
 
     return {
       mixin,
@@ -581,6 +617,9 @@ export default defineComponent({
       niveles_academicos,
       refFamiliares,
       optionsFecha,
+      orientaciones_sexuales,
+      identidades_genero,
+      religiones,
       //metodos
       opcionesDepartamentos,
       btnConsultarFamiliar,
@@ -610,7 +649,8 @@ export default defineComponent({
       agregarFamiliares,
       accionesTabla,
       construccionConfiguracionColumnas,
-      habilitarBotonAgregarFamiliares
+      habilitarBotonAgregarFamiliares,
+      autoidentificaciones_etnicas,
     }
   },
 })

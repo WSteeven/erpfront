@@ -69,6 +69,11 @@ export class Empleado extends EntidadAuditable {
   discapacidades: any[] | null
   generar_usuario: boolean
   edad: number | null
+  autoidentificacion_etnica: string | null
+trabajador_sustituto: boolean | null
+orientacion_sexual: number | null
+identidad_genero: number | null
+religion: number | null
 
   constructor() {
     super()
@@ -140,5 +145,10 @@ export class Empleado extends EntidadAuditable {
     this.discapacidades = []
     this.generar_usuario = false
     this.edad = null
+    this.autoidentificacion_etnica = null
+    this.trabajador_sustituto = false
+    this.orientacion_sexual = null
+    this.identidad_genero = null
+    this.religion = null
   }
 }
