@@ -128,7 +128,7 @@ export default defineComponent({
 
       listadosAuxiliares.examenes_realizados = listadosAuxiliares.tiposAntecedentes.map((tipo: TipoAntecedente) => {
         const res = new ResultadoExamenPreocupacional()
-        res.examen = tipo.examen
+        res.examen = tipo.nombre
         res.examen_id = tipo.id
         return res
       })
