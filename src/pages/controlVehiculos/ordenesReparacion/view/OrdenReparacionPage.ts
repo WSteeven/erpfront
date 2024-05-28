@@ -5,6 +5,7 @@ import { configuracionColumnasOrdenesReparaciones } from "../domain/configuracio
 //Componentes
 import TabLayoutFilterTabs2 from "shared/contenedor/modules/simple/view/TabLayoutFilterTabs2.vue";
 import EssentialTable from "components/tables/view/EssentialTable";
+import GestorArchivos from "components/gestorArchivos/GestorArchivos.vue";
 
 //Logica y controladores
 import { ContenedorSimpleMixin } from "shared/contenedor/modules/simple/application/ContenedorSimpleMixin";
@@ -24,12 +25,12 @@ import { AsignacionVehiculoController } from "pages/controlVehiculos/asignarVehi
 
 
 export default defineComponent({
-    components: { TabLayoutFilterTabs2, EssentialTable },
+    components: { TabLayoutFilterTabs2, EssentialTable, GestorArchivos },
     setup() {
         const mixin = new ContenedorSimpleMixin(OrdenReparacion, new OrdenReparacionController())
         const { entidad: orden, disabled, listadosAuxiliares, accion } = mixin.useReferencias()
         const { setValidador, cargarVista, obtenerListados, listar } = mixin.useComportamiento()
-        const { onReestablecer, onConsultado } = mixin.useHooks()
+        const { onReestablecer, onConsultado, onGuardado, onModificado } = mixin.useHooks()
         const { confirmar, prompt, } = useNotificaciones()
         /****************************************
         * Stores
@@ -37,6 +38,8 @@ export default defineComponent({
         const store = useAuthenticationStore()
         const cargando = new StatusEssentialLoading()
 
+        const refArchivo = ref()
+        const idOrden = ref()
         const tabActual = ref('1')
         const usuarioDefault = ref()
 
@@ -66,7 +69,21 @@ export default defineComponent({
          ****************************************/
         //Estos metodos funcionan si no se usa el keep alive 
         onReestablecer(() => {
+            refArchivo.value.limpiarListado()
             cargarDatosDefecto()
+        })
+        onConsultado(() => {
+            setTimeout(() => {
+                refArchivo.value.listarArchivosAlmacenados(orden.id)
+            }, 1);
+        })
+        onGuardado((id: number) => {
+            idOrden.value = id
+            setTimeout(() => subirArchivos(), 1)
+        })
+        onModificado((id: number) => {
+            idOrden.value = id
+            setTimeout(() => subirArchivos(), 1)
         })
 
         /****************************************
@@ -76,6 +93,9 @@ export default defineComponent({
             tabActual.value = tab
             listar({ autorizacion_id: tab })
 
+        }
+        async function subirArchivos() {
+            await refArchivo.value.subir()
         }
         /**
          * La función obtiene el vehículo asignado para el usuario actual con un estado específico.
@@ -107,6 +127,8 @@ export default defineComponent({
 
             tabActual,
             store,
+            refArchivo,
+            idOrden,
 
             //listados
             servicios, filtrarServicios,

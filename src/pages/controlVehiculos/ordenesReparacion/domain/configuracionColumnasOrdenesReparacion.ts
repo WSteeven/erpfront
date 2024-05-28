@@ -5,7 +5,7 @@ export const configuracionColumnasOrdenesReparaciones: ColumnConfig<OrdenReparac
     {
         name: 'fecha',
         field: 'fecha',
-        label: 'fecha',
+        label: 'Fecha',
         align: 'left',
         sortable: true,
     },
