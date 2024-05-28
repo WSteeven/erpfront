@@ -11,15 +11,19 @@ import { VehiculoController } from "pages/controlVehiculos/vehiculos/infraestruc
 import { useFiltrosListadosSelects } from "shared/filtrosListadosGenerales";
 import { required } from "shared/i18n-validators";
 import useVuelidate from "@vuelidate/core";
-import { imprimirArchivo, notificarErrores } from "shared/utils";
+import { imprimirArchivo, notificarErrores, obtenerFechaActual } from "shared/utils";
 import { AxiosHttpRepository } from "shared/http/infraestructure/AxiosHttpRepository";
 import { apiConfig, endpoints } from "config/api";
 import { Vehiculo } from "pages/controlVehiculos/vehiculos/domain/Vehiculo";
 import { AxiosResponse } from "axios";
 import { useNotificaciones } from "shared/notificaciones";
 import { historialVehiculos, optionsHistorialVehiculos } from "config/vehiculos.utils";
+import { maskFecha } from "config/utils";
+import EssentialTable from "components/tables/view/EssentialTable.vue";
+import { configuracionColumnasCustodios } from "../domain/configuracionColumnasCustodios";
 
 export default defineComponent({
+    components: { EssentialTable },
     setup() {
 
         const mixin = new ContenedorSimpleMixin(HistorialVehiculo, new HistorialVehiculoController())
@@ -37,6 +41,7 @@ export default defineComponent({
 
         const vehiculoSeleccionado = ref()
         const listado = ref()
+        const resultados = ref()
         const { vehiculos, filtrarVehiculos,
             empleados, filtrarEmpleados,
         } = useFiltrosListadosSelects(listadosAuxiliares)
@@ -46,9 +51,12 @@ export default defineComponent({
                 vehiculos: new VehiculoController(),
                 empleados: new ConductorController(),
             })
+            historial.fecha_fin = obtenerFechaActual(maskFecha)
         })
         const reglas = {
             vehiculo: { required },
+            fecha_inicio: { required },
+            fecha_fin: { required },
             opciones: { required },
         }
         const v$ = useVuelidate(reglas, historial)
@@ -60,33 +68,36 @@ export default defineComponent({
         }
 
         async function buscarReporte(accion) {
-            try {
-                cargando.activar()
-                const axios = AxiosHttpRepository.getInstance()
-                const url = apiConfig.URL_BASE + '/' + axios.getEndpoint(endpoints.historial_vehiculos) + '/' + historial.vehiculo
-                const filename = 'historial_vehiculo_' + vehiculoSeleccionado.value.placa
-                switch (accion) {
-                    case 'excel':
-                        historial.accion = 'excel'
-                        imprimirArchivo(url, 'POST', 'blob', 'xlsx', filename, historial)
-                        break
-                    case 'pdf':
-                        historial.accion = 'pdf'
-                        imprimirArchivo(url, 'POST', 'blob', 'pdf', filename, historial)
-                        break
-                    default:
-                        historial.accion = ''
-                        const response: AxiosResponse = await axios.post(url, historial)
-                        console.log(response)
-                        if (response.data.results) {
-                            if (response.data.results.length < 1) notificarAdvertencia('No se obtuvieron resultados')
-                            console.log(response.data.results)
-                        } else console.log(listado.value)
+            if (await v$.value.$validate()) {
+                try {
+                    cargando.activar()
+                    const axios = AxiosHttpRepository.getInstance()
+                    const url = apiConfig.URL_BASE + '/' + axios.getEndpoint(endpoints.historial_vehiculos) + '/' + historial.vehiculo
+                    const filename = 'historial_vehiculo_' + vehiculoSeleccionado.value.placa
+                    switch (accion) {
+                        case 'excel':
+                            historial.accion = 'excel'
+                            imprimirArchivo(url, 'POST', 'blob', 'xlsx', filename, historial)
+                            break
+                        case 'pdf':
+                            historial.accion = 'pdf'
+                            imprimirArchivo(url, 'POST', 'blob', 'pdf', filename, historial)
+                            break
+                        default:
+                            historial.accion = ''
+                            const response: AxiosResponse = await axios.post(url, historial)
+                            console.log(response)
+                            if (response.data.results) {
+                                if (response.data.results.length < 1) notificarAdvertencia('No se obtuvieron resultados')
+                                console.log(response.data.results)
+                                resultados.value = response.data.results
+                            } else console.log(listado.value)
+                    }
+                } catch (error) {
+                    await notificarErrores(error)
+                } finally {
+                    cargando.desactivar()
                 }
-            } catch (error) {
-                await notificarErrores(error)
-            } finally {
-                cargando.desactivar()
             }
         }
 
@@ -94,10 +105,12 @@ export default defineComponent({
 
         return {
             historial, v$,
+            configuracionColumnasCustodios,
             vehiculos, filtrarVehiculos,
             empleados, filtrarEmpleados,
             opciones: optionsHistorialVehiculos,
-
+            maskFecha,
+            resultados,
 
             buscarReporte,
             obtenerVehiculoSeleccionado,
