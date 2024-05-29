@@ -108,9 +108,8 @@ export default defineComponent({
       fecha: { required },
       monto: { required },
       motivo: { required },
-      foto: { required },
       estado: requiredIf(esValidador.value),
-      observacion: { requiredValidador: requiredIf(esValidador.value) },
+      observacion: { requiredValidador: requiredIf(esValidador.value ) },
       periodo: {
         requiredIf: requiredIf(
           solicitudPrestamo.cargo_utilidad != null
