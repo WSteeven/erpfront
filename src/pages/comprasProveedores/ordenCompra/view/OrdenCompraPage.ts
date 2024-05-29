@@ -29,7 +29,7 @@ import { ProveedorController } from "sistema/proveedores/infraestructure/Proveed
 import { acciones, accionesTabla, autorizaciones, autorizacionesTransacciones, estados } from "config/utils";
 import { tabOptionsOrdenCompra, opcionesForma, opcionesTiempo, } from "config/utils_compras_proveedores";
 import { useAuthenticationStore } from "stores/authentication";
-import { formatearFecha, } from "shared/utils";
+import { calcularSubtotalConImpuestosLista, calcularSubtotalSinImpuestosLista, formatearFecha, } from "shared/utils";
 import { CustomActionTable } from "components/tables/domain/CustomActionTable";
 import { useFiltrosListadosSelects } from "shared/filtrosListadosGenerales";
 import { usePreordenStore } from "stores/comprasProveedores/preorden";
@@ -68,10 +68,16 @@ export default defineComponent({
 
 
     //variables
+    const subtotal_sin_impuestos = computed(() =>
+      orden.listadoProductos.reduce((prev, curr) => prev + calcularSubtotalSinImpuestosLista(curr), 0).toFixed(2)
+    )
+    const subtotal_con_impuestos = computed(() =>
+      orden.listadoProductos.reduce((prev, curr) => prev + calcularSubtotalConImpuestosLista(curr), 0).toFixed(2)
+    )
     const subtotal = computed(() => orden.listadoProductos.reduce((prev, curr) => prev + parseFloat(curr.subtotal), 0).toFixed(2))
-    const iva = computed(() => orden.listadoProductos.reduce((prev, curr) => prev + parseFloat(curr.iva), 0).toFixed(2))
     const descuento = computed(() => orden.listadoProductos.reduce((prev, curr) => prev + parseFloat(curr.descuento), 0).toFixed(2))
-    const total = computed(() => orden.listadoProductos.reduce((prev, curr) => prev + parseFloat(curr.total), 0).toFixed(2))
+    const iva = computed(() => (subtotal_con_impuestos.value * orden.iva / 100).toFixed(2))
+    const total = computed(() => (Number(subtotal_con_impuestos.value) + Number(subtotal_sin_impuestos.value) + Number(iva.value)).toFixed(2))
 
     // Flags
     const refArchivo = ref()
@@ -140,7 +146,7 @@ export default defineComponent({
       })
       //comprueba si hay una preorden en el store para llenar automaticamente los datos en la orden de compra
       orden.autorizacion = 1
-      if (preordenStore.preorden.id) {
+      if (preordenStore.preorden.id) {8
         orden.tiene_preorden = true
         cargarDatosPreorden()
       }
@@ -157,15 +163,17 @@ export default defineComponent({
       orden.autorizacion = 1
 
       refArchivo.value.limpiarListado()
+      obtenerTareas(false)
     })
     onConsultado(() => {
       // console.log(accion.value)
-      if (accion.value === acciones.editar && (store.user.id === orden.autorizador || store.esCompras))
+      obtenerTareas(true)
+      if (accion.value === acciones.editar && (store.user.id === orden.autorizador || store.esCompras || store.user.id === orden.solicitante))
         soloLectura.value = false
       else
         soloLectura.value = true
       setTimeout(() => {
-        refArchivo.value.listarArchivosAlmacenados(orden.id)
+        if(orden.id) refArchivo.value.listarArchivosAlmacenados(orden.id)
       }, 1);
     })
     onModificado((id: number) => {
@@ -232,6 +240,19 @@ export default defineComponent({
         default: //si tab es 1 u 7 entra aquí
           listar({ autorizacion_id: tab, estado_id: 1, solicitante_id: store.user.id })
       }
+    }
+    async function obtenerTareas(soloUna = false) {
+      let response
+      if (soloUna)
+        response = await new TareaController().listar({ campos: 'id,codigo_tarea,titulo', id: orden.tarea, })
+      else
+        response = await new TareaController().listar({
+          campos: 'id,codigo_tarea,titulo,cliente_id',
+          formulario: true,
+          empleado_id: store.user.id
+        })
+      listadosAuxiliares.tareas = response.result
+      tareas.value = listadosAuxiliares.tareas
     }
     function eliminar({ posicion }) {
       confirmar('¿Está seguro de continuar?', () => orden.listadoProductos.splice(posicion, 1))
@@ -563,7 +584,8 @@ export default defineComponent({
 
 
       //variables computadas
-      subtotal, total, descuento, iva,
+      subtotal_sin_impuestos, subtotal_con_impuestos, subtotal,
+      total, descuento, iva,
     }
   }
 })

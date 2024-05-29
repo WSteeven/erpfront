@@ -8,11 +8,10 @@
     :modalMaximized="modalMaximized"
   ></EditarTablaModal>
 
-  <!-- ref="referencia" -->
+  <!-- :hide-header="grid" -->
   <q-table
     ref="refTable"
-    :hide-header="grid"
-    :grid="grid || $q.screen.xs"
+    :grid="grid && $q.screen.xs"
     :columns="configuracionColumnas"
     :rows="listado"
     :filter="filter"
@@ -23,6 +22,7 @@
     :hide-bottom="!mostrarFooter"
     flat
     bordered
+    square
     :selection="tipoSeleccion"
     v-model:selected="selected"
     :style="estilos"
@@ -58,22 +58,96 @@
     </template>
 
     <!-- Editar celdas -->
-    <template v-if="permitirEditarCeldas" v-slot:body-cell="props">
-      <q-td :key="props.col.name" :props="props">
-        {{ props.row[props.col.name] }}
-        <q-popup-edit
+    <template v-slot:body-cell="props">
+      <q-td
+        v-if="permitirEditarCeldas && props.col.editable"
+        :key="props.col.name"
+        :props="props"
+        :class="{ 'text-bold': props.col.editable, 'bg-body': $q.dark.isActive }"
+      >
+        <!-- <q-popup-edit
           v-model="props.row[props.col.name]"
           v-slot="scope"
           auto-save
+          @hide="guardarCeldaEditada(props.row)"
         >
-          <q-input
-            v-model="scope.value"
-            placeholder="Ingrese"
-            dense
-            autofocus
-            @keyup.enter="scope.set"
-          />
-        </q-popup-edit>
+        </q-popup-edit> -->
+
+        <q-input
+          v-if="
+            props.col.editable &&
+            (!props.col.type ||
+              ['text', 'number', 'date', 'time'].includes(props.col.type))
+          "
+          v-model="props.row[props.col.name]"
+          :bg-color="$q.dark.isActive ? 'grey-10' : 'grey-3'"
+          :type="props.col.type ? props.col.type : 'text'"
+          :hint="props.col.hint"
+          :disable="disable"
+          dense
+          outlined
+        />
+        <!-- @keyup.enter="scope.set" -->
+
+        <q-select
+          v-if="props.col.type === 'select'"
+          v-model="props.row[props.col.name]"
+          :options="props.col.options"
+          :options-label="(v) => v.label"
+          :options-value="(v) => v.value"
+          options-dense
+          outlined
+          dense
+          emit-value
+          map-options
+          :disable="disable"
+        />
+
+        <q-select
+          v-if="props.col.type === 'select_multiple'"
+          v-model="props.row[props.col.name]"
+          :options="props.col.options"
+          :options-label="(v) => v.label"
+          :options-value="(v) => v.value"
+          use-chips
+          multiple
+          options-dense
+          outlined
+          dense
+          emit-value
+          map-options
+          :disable="disable"
+        >
+          <template v-slot:option="{ itemProps, opt, selected, toggleOption }">
+            <q-item v-bind="itemProps">
+              <q-item-section>
+                {{ opt.label }}
+              </q-item-section>
+              <q-item-section side>
+                <q-toggle
+                  :model-value="selected"
+                  @update:model-value="toggleOption(opt)"
+                />
+              </q-item-section>
+            </q-item>
+          </template>
+        </q-select>
+
+        <q-toggle
+          v-if="props.col.type === 'boolean'"
+          v-model="props.row[props.col.name]"
+          :label="props.row[props.col.name] ? 'SI' : 'NO'"
+          keep-color
+          :disable="disable"
+        />
+      </q-td>
+
+      <q-td v-else :props="props">
+        <span
+          v-if="!['select', 'boolean'].includes(props.col.type)"
+          :class="{ 'text-white': $q.dark.isActive, 'text-dark': !$q.dark.isActive }"
+          >{{ props.row[props.col.name] }}</span
+        >
       </q-td>
     </template>
 
@@ -91,19 +165,25 @@
 
       <div
         v-if="titulo"
-        class="row text-primary text-subtitle2 q-mb-lg items-center justify-center block"
+        class="row text-primary text-subtitle2 q-mb-lg items-center justify-between col-12"
         :class="{
           'titulo-tabla2': !$q.screen.xs,
           'justify-center': $q.screen.xs,
+          'bg-grey-9': $q.dark.isActive,
         }"
       >
-        <q-icon
-          v-if="!$q.screen.xs"
-          name="bi-grip-vertical"
-          color="info"
-          class="q-mr-sm"
-        ></q-icon>
-        {{ titulo }}
+        <span>
+          <q-icon
+            v-if="!$q.screen.xs"
+            name="bi-grip-vertical"
+            color="info"
+            class="q-mr-sm"
+          ></q-icon>
+          <span>{{ titulo }}</span>
+        </span>
+        <span>
+          <slot name="custom-header" />
+        </span>
       </div>
 
       <div v-if="permitirBuscar" class="row q-col-gutter-xs full-width q-mb-md">
@@ -176,9 +256,14 @@
         v-if="permitirFiltrar || (true && mostrarCantidadElementos)"
         class="row full-width justify-between q-col-gutter-x-sm items-center q-mb-md"
       >
-        <q-chip class="q-px-md" :class="{ 'bg-grey-8': $q.dark.isActive }">
+        <span class="row items-center q-px-md">
+          <q-icon
+            name="bi-circle-fill"
+            color="positive"
+            class="q-mr-sm"
+          ></q-icon>
           {{ 'Total de elementos: ' }} <b>{{ datos.length }}</b>
-        </q-chip>
+        </span>
 
         <div class="row q-gutter-xs justify-end q-mb-md">
           <q-btn
@@ -266,6 +351,9 @@
           >
         </div>
       </div>
+
+      <!-- <q-separator color="red" class="q-py-sm q-my-sm" inset></q-separator>dd -->
+      <!-- <q-separator color="grey-4" class=" block full-width q-mb-md" inset></q-separator> -->
 
       <!-- Filtros -->
       <div class="row col-12">
@@ -627,6 +715,15 @@
                   ></q-icon>
                 </span>
 
+                <span v-if="col.name === 'es_dosis_unica'">
+                  <q-icon
+                    v-if="col.value"
+                    name="bi-check-circle-fill"
+                    color="positive"
+                    size="xs"
+                  ></q-icon>
+                </span>
+
                 <span v-if="col.name === 'tamanio_bytes'">
                   {{ formatBytes(col.value) }}
                 </span>
@@ -725,6 +822,30 @@
                     ><small>{{ 'TICKET FINALIZADO' }}</small>
                   </q-chip>
 
+                  <q-chip
+                    v-if="col.value === 1 || col.value"
+                    class="bg-green-1 text-positive"
+                  >
+                    <q-icon
+                      name="bi-check-circle-fill"
+                      color="positive"
+                      size="14px"
+                      class="q-mr-xs"
+                    ></q-icon>
+                  </q-chip>
+
+                  <q-chip
+                    v-if="col.value === 0 || !col.value"
+                    class="bg-pink-1 text-positive"
+                  >
+                    <q-icon
+                      name="bi-x-circle-fill"
+                      color="negative"
+                      size="14px"
+                      class="q-mr-xs"
+                    ></q-icon>
+                  </q-chip>
+
                   <!--<q-chip
                     v-if="col.value === 'TICKET TRANSFERIDO'"
                     class="bg-green-1 text-positive"
@@ -752,6 +873,8 @@
                       'tamanio_bytes',
                       'tiene_subtareas',
                       'observacion',
+                      'dado_alta',
+                      'es_dosis_unica',
                     ].includes(col.name)
                   "
                   >{{ col.value }}</span
@@ -853,6 +976,17 @@
 
     <!-- Resumen tendido -->
     <template #body-cell-instalo_manga="props">
+      <q-td :props="props">
+        <q-icon
+          v-if="props.value"
+          name="bi-check-circle-fill"
+          color="positive"
+          size="xs"
+        ></q-icon>
+      </q-td>
+    </template>
+
+    <template #body-cell-es_dosis_unica="props">
       <q-td :props="props">
         <q-icon
           v-if="props.value"
@@ -1293,7 +1427,7 @@
           ></q-icon>
           PARCIAL
         </q-chip>
-        <q-chip
+        <!-- <q-chip
           v-if="props.value === estadosTransacciones['pendiente']"
           :class="{ 'bg-yellow-1': !$q.dark.isActive }"
         >
@@ -1303,7 +1437,7 @@
             class="q-mr-xs"
           ></q-icon>
           PENDIENTE
-        </q-chip>
+        </q-chip> -->
         <q-chip
           v-if="props.value === estadosTransacciones.no_realizada"
           :class="{ 'bg-red-1': !$q.dark.isActive }"
@@ -1438,6 +1572,28 @@
             class="q-mr-xs"
           ></q-icon
           >DEVUELTO
+        </q-chip>
+      </q-td>
+    </template>
+
+    <template #body-cell-dado_alta="props">
+      <q-td :props="props">
+        <q-chip
+          v-if="props.value === 1 || props.value"
+          :class="{ 'bg-green-1': !$q.dark.isActive }"
+        >
+          <q-icon
+            name="bi-check-circle-fill"
+            color="positive"
+            size="xs"
+          ></q-icon>
+        </q-chip>
+
+        <q-chip
+          v-if="props.value === 0 || !props.value"
+          :class="{ 'bg-pink-1': !$q.dark.isActive }"
+        >
+          <q-icon name="bi-x-circle-fill" color="negative" size="xs"></q-icon>
         </q-chip>
       </q-td>
     </template>
@@ -1640,7 +1796,7 @@
     </template>
   </q-table>
 
-  <div
+  <!-- <div
     v-if="!$q.screen.xs && permitirEditarCeldas && listado.length"
     class="text-right text-grey-7"
   >
@@ -1653,7 +1809,7 @@
       ></q-icon>
       <small>Haz clic sobre una celda para editarla</small>
     </q-chip>
-  </div>
+  </div> -->
 
   <previsualizar-tabla-pdf
     :configuracionColumnas="configuracionColumnas"

@@ -1,4 +1,5 @@
 import { Endpoint } from 'shared/http/domain/Endpoint'
+import { medico } from './endpoints/medico'
 
 export const apiConfig = {
   // URL_BASE: 'http://localhost:8000',
@@ -41,7 +42,10 @@ export const endpoints = {
   cantones: new Endpoint('cantones'),
   parroquias: new Endpoint('parroquias'),
 
-  // Modulo de RR HH
+
+   /********************
+   * Modulo de  RR HH
+   *********************/
   cargos: new Endpoint('cargos'),
 
   motivo_permiso_empleado: new Endpoint(
@@ -90,6 +94,8 @@ export const endpoints = {
   extension_covertura_salud: new Endpoint(
     'recursos-humanos/extension_covertura_salud'
   ),
+  archivo_rol_pago_mes: new Endpoint('recursos-humanos/archivo-rol-pago-mes'),
+
 
   porcentaje_iess: new Endpoint('recursos-humanos/porcentaje_iess'),
   porcentaje_anticipo: new Endpoint('recursos-humanos/porcentaje_anticipo'),
@@ -172,12 +178,18 @@ export const endpoints = {
     'recursos-humanos/crear-cash-alimentacion/'
   ),
   rubros: new Endpoint('recursos-humanos/rubros'),
+  tipos_discapacidades: new Endpoint('recursos-humanos/tipos-discapacidades'),
   anular_prestamo_empresarial: new Endpoint('recursos-humanos/anular-prestamo-empresarial'),
   asignar_alimentacion: new Endpoint('recursos-humanos/asignar-alimentacion'),
   alimentacion: new Endpoint('recursos-humanos/alimentacion'),
   detalle_alimentacion: new Endpoint('recursos-humanos/detalle-alimentacion'),
   finalizar_asignacion_alimentacion: new Endpoint('recursos-humanos/finalizar-asignacion-alimentacion'),
-
+   /********************
+   * Modulo de  Seleccion y contratacion
+   *********************/
+   solicitud_puesto_empleo: new Endpoint('recursos-humanos/solicitud-puesto-empleo'),
+   publicacion_puesto_empleo: new Endpoint('recursos-humanos/publicacion-puesto-empleo'),
+   tipos_puestos_trabajos: new Endpoint('recursos-humanos/tipos_puestos_trabajos'),
 
   /******************************
    * Modulo de Vehiculos
@@ -204,6 +216,8 @@ export const endpoints = {
   dashboard_compras: new Endpoint('compras/dashboard'),
   empleados_ordenes: new Endpoint('compras/empleados-ordenes'),
   proveedores_ordenes: new Endpoint('compras/proveedores-ordenes'),
+  clientes_prefacturas: new Endpoint('compras/clientes-prefacturas'),
+  dashboard_ventas_empresa: new Endpoint('compras/dashboard-ventas'),
   calificacion_proveedor: new Endpoint('compras/calificaciones-proveedores'),
   categorias_ofertas: new Endpoint('compras/categorias-ofertas'),
   contactos_proveedores: new Endpoint('compras/contactos-proveedores'),
@@ -451,6 +465,10 @@ export const endpoints = {
   rechazos_tickets: new Endpoint('tickets/tickets/obtener-rechazados'),
   linea_tiempo_tickets: new Endpoint('tickets/linea-tiempo'),
 
+  /****************
+   * Modulo medico
+   ****************/
+  ...medico,
   /********************
    * Modulo de Ventas de Claro
    *********************/

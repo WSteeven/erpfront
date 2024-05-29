@@ -34,6 +34,7 @@ export default defineComponent({
       razon_social: { required },
       tipo_contribuyente: { required },
       nombre_empresa: { required },
+      ciiu:{ required}
     }
 
     const v$ = useVuelidate(reglas, configuracion)

@@ -7,8 +7,10 @@ export class ActionHooks<T> extends Hooks<T> {
   onBeforeModificar: () => void
   onModificado: (id?: number, response_data?: any) => void
   onBeforeConsultar: () => void
-  onConsultado: () => void
+  onConsultado: (entidad?: any) => void
   onReestablecer: () => void
+  onListado: () => void
+  onListadosCargados: () => void
 
   constructor() {
     super()
@@ -19,5 +21,7 @@ export class ActionHooks<T> extends Hooks<T> {
     this.onBeforeConsultar = () => { }
     this.onConsultado = () => { }
     this.onReestablecer = () => { }
+    this.onListado = () => { }
+    this.onListadosCargados = () => { }
   }
 }

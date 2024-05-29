@@ -1,4 +1,14 @@
 <template>
+  <!-- PENDIENTE -->
+  <q-chip
+    v-if="props.propsTable.value === estadosCitaMedica.PENDIENTE"
+    :class="{ 'bg-yellow-1': !$q.dark.isActive }"
+    class="text-warning q-mx-none"
+  >
+    <q-icon name="bi-circle-fill" color="warning" class="q-mr-xs"></q-icon
+    >{{ estadosCitaMedica.PENDIENTE }}
+  </q-chip>
+
   <!-- CREADO -->
   <q-chip
     v-if="props.propsTable.value === estadosTrabajos.CREADO"
@@ -159,6 +169,7 @@
 <script setup>
 import { estadosTickets } from 'config/tickets.utils'
 import { estadosTrabajos } from 'config/utils'
+import { estadosCitaMedica } from 'config/utils/medico'
 
 const props = defineProps({
   propsTable: {

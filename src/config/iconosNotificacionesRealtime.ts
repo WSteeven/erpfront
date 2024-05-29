@@ -84,6 +84,10 @@ export const iconos = {
     label: 'ORDEN_REPARACION_VEHICULO',
     icono: 'bi-tools'
   },
+  diasDescanso: {
+    label: 'DIAS DE DESCANSO',
+    icono: 'bi-house-heart',
+  },
   transferencia_saldo: {
     label: 'TRANSFERENCIA DE SALDO',
     icono: 'bi-cash',

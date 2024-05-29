@@ -43,6 +43,8 @@ export class ObtenerIconoNotificacionRealtime {
         return iconos.proforma.icono
       case iconos.proveedor.label:
         return iconos.proveedor.icono
+      case iconos.diasDescanso.label:
+        return iconos.diasDescanso.icono
 
       /*******************
        * MODULO DE VEHICULOS

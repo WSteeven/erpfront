@@ -144,9 +144,14 @@ export default defineComponent({
       listadosAuxiliares.condiciones = JSON.parse(LocalStorage.getItem('condiciones')!.toString())
       condiciones.value = listadosAuxiliares.condiciones
 
+      // en la carga inicial se coloca el solicitante
+      devolucion.solicitante = store.user.id
+
       //logica para autocompletar el formulario de devolucion
       if (listadoMaterialesDevolucion.listadoMateriales.length) {
+        devolucion.devolver_materiales_tecnicos = listadoMaterialesDevolucion.empleado_id !== store.user.id
         devolucion.tarea = listadoMaterialesDevolucion.tareaId ? listadoMaterialesDevolucion.tareaId : null
+        devolucion.solicitante = listadoMaterialesDevolucion.empleado_id
         devolucion.cliente = listadoMaterialesDevolucion.cliente_id
         filtrarCliente(devolucion.cliente)
         devolucion.es_tarea = !!devolucion.tarea
@@ -165,8 +170,6 @@ export default defineComponent({
       }
       listadosAuxiliares.sucursales = JSON.parse(LocalStorage.getItem('sucursales')!.toString())
       sucursales.value = listadosAuxiliares.sucursales
-      // en la carga inicial se coloca el solicitante
-      devolucion.solicitante = store.user.id
     })
 
     //reglas de validacion

@@ -4,7 +4,6 @@ export class EntidadAuditable extends Hidratable { //implements Auditable {
   id: number | null
   created_at: string | null
   updated_at: string | null
-
   // negocio: number | null
   // usuario_inserta: number | null
   // usuario_modifica: number | null

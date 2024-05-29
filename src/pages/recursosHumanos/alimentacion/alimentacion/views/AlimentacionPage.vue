@@ -17,20 +17,16 @@
     <q-form @submit.prevent>
     <div class="row q-col-gutter-sm q-py-md">
       <!-- Mes -->
-      <div class="col-12 col-md-3">
-        <label class="q-mb-sm block"> Mes </label>
+         <div class="col-12 col-md-3">
+        <label class="q-mb-sm block">Mes</label>
         <q-input
-          v-model="alimentacion.mes"
-          placeholder="Obligatorio"
-          :value="alimentacion.mes"
-          mask="##-####"
-          :error="!!v$.mes.$errors.length"
+        v-model="alimentacion.mes"
+        placeholder="Obligatorio" 
+        :error="!!v$.mes.$errors.length"
           :disable="accion == 'CONSULTAR' || accion == 'EDITAR'"
-          @blur="v$.mes.$touch"
-          readonly
-          outlined
-          dense
-        >
+                    @blur="v$.mes.$touch"
+
+        outlined dense readonly>
           <template v-slot:append>
             <q-icon name="event" class="cursor-pointer">
               <q-popup-proxy
@@ -40,7 +36,7 @@
                 v-model="is_month"
               >
                 <q-date
-                  v-model="alimentacion.mes"
+                   v-model="alimentacion.mes"
                   minimal
                   mask="MM-YYYY"
                   emit-immediately
@@ -53,12 +49,6 @@
                 </q-date>
               </q-popup-proxy>
             </q-icon>
-          </template>
-
-          <template v-slot:error>
-            <div v-for="error of v$.mes.$errors" :key="error.$uid">
-              <div class="error-msg">{{ error.$message }}</div>
-            </div>
           </template>
         </q-input>
       </div>

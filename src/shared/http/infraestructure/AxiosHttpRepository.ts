@@ -71,7 +71,6 @@ export class AxiosHttpRepository implements HttpRepository {
     }
     // si recibe un endpoint y una id
     else {
-      //accessor = `${endpoint.endpoint.accessor}${endpoint.id ?? ''}/`
       accessor = `${endpoint.endpoint.accessor}/${endpoint.id ?? ''}`
       includeApiPath = endpoint.endpoint.includeApiPath
     }

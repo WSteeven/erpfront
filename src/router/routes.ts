@@ -1,5 +1,6 @@
 import { truncate } from 'fs'
 import { RouteRecordRaw } from 'vue-router'
+import rutasMedico from './rutasMedico'
 
 const routes: RouteRecordRaw[] = [
   {
@@ -208,6 +209,7 @@ const routes: RouteRecordRaw[] = [
           ),
         meta: { requiresAuth: true },
       },*/
+      ...rutasMedico,
       /********************
        * Modulo de tickets
        ********************/
@@ -764,10 +766,24 @@ const routes: RouteRecordRaw[] = [
         meta: { requiresAuth: true },
       },
       {
+        path: '/reporte-prefacturas',
+        name: 'reporte_prefacturas',
+        component: () =>
+          import('pages/comprasProveedores/reportes/modules/rpt_prefacturas/view/ReportePrefactura.vue'),
+        meta: { requiresAuth: false },
+      },
+      {
         path: '/proformas',
         name: 'proformas',
         component: () =>
           import('pages/comprasProveedores/proforma/view/ProformaPage.vue'),
+        meta: { requiresAuth: true },
+      },
+      {
+        path: '/ventas/dashboard-ventas',
+        name: 'dashboard_ventas_empresa',
+        component: () =>
+          import('pages/comprasProveedores/dashboard/view/DashboardVentas.vue'),
         meta: { requiresAuth: true },
       },
       {
@@ -813,6 +829,15 @@ const routes: RouteRecordRaw[] = [
         component: () =>
           import(
             'pages/comprasProveedores/reportes/modules/rpt_proveedores/view/ReporteProveedores.vue'
+          ),
+        meta: { requiresAuth: false },
+      },
+      {
+        path: 'reporte-ordenes-compras',
+        name: 'reporte_ordenes_compras',
+        component: () =>
+          import(
+            'pages/comprasProveedores/reportes/modules/rpt_ordenes_compras/view/ReporteOrdenesCompras.vue'
           ),
         meta: { requiresAuth: false },
       },
@@ -1423,6 +1448,20 @@ const routes: RouteRecordRaw[] = [
           import('pages/recursosHumanos/alimentacion/alimentacion/views/AlimentacionPage.vue'),
         meta: { requiresAuth: true },
       },
+      {
+        path: '/solicitud-puesto-empleo',
+        name: 'solicitud_puesto_empleo',
+        component: () =>
+          import('pages/recursosHumanos/seleccion_contratacion_personal/solicitud_puesto_trabajo/view/SolicitudPuestoEmpleoPage.vue'),
+        meta: { requiresAuth: true },
+      },
+      {
+        path: '/publicacion-puesto-empleo',
+        name: 'publicacion_puesto_empleo',
+        component: () =>
+          import('pages/recursosHumanos/seleccion_contratacion_personal/publicacion_puesto_trabajo/view/PublicacionPuestoTrabajoPage.vue'),
+        meta: { requiresAuth: true },
+      },
 
     ],
   },
@@ -1435,6 +1474,17 @@ const routes: RouteRecordRaw[] = [
         name: 'Login',
         component: () =>
           import('pages/sistema/authentication/login/view/LoginPage.vue'),
+      },
+    ],
+  }, {
+    path: '/login-postulante',
+    component: () => import('layouts/FullLayout.vue'),
+    children: [
+      {
+        path: '',
+        name: 'Login_postulante',
+        component: () =>
+          import('pages/recursosHumanos/seleccion_contratacion_personal/login-postulante/view/LoginPostulantePage.vue'),
       },
     ],
   },

@@ -1,9 +1,10 @@
 //Dependencias
+import { configuracionColumnasTipoDiscapacidadPorcentaje } from '../domain/configuracionColumnasTipoDiscapacidadPorcentaje'
 import { configuracionColumnasEmpleados } from '../domain/configuracionColumnasEmpleados'
 import { maxLength, minLength, numeric, required, requiredIf, } from 'shared/i18n-validators'
 import { useVuelidate } from '@vuelidate/core'
 import { acciones, accionesTabla, convertir_fecha, maskFecha, niveles_academicos, rolesSistema, talla_letras, tipos_sangre, } from 'config/utils'
-import { defineComponent, ref, watchEffect, computed, reactive } from 'vue'
+import { defineComponent, ref, watchEffect, computed, Ref } from 'vue'
 
 // Componentes
 import TabLayout from 'shared/contenedor/modules/simple/view/TabLayout.vue'
@@ -36,7 +37,7 @@ import { Familiares } from 'pages/recursosHumanos/familiares/domain/Familiares'
 import { FamiliaresController } from 'pages/recursosHumanos/familiares/infraestructure/FamiliaresController'
 import { AxiosHttpRepository } from 'shared/http/infraestructure/AxiosHttpRepository'
 import { apiConfig, endpoints } from 'config/api'
-import { imprimirArchivo, ordenarLista } from 'shared/utils'
+import { encontrarUltimoIdListado, imprimirArchivo,  ordenarLista } from 'shared/utils'
 import { useCargandoStore } from 'stores/cargando'
 import { AxiosResponse } from 'axios'
 import { useNotificaciones } from 'shared/notificaciones'
@@ -45,6 +46,11 @@ import { ArchivoController } from 'pages/gestionTrabajos/subtareas/modules/gesto
 import { Conductor } from 'vehiculos/conductores/domain/Conductor'
 import { useFiltrosListadosSelects } from 'shared/filtrosListadosGenerales'
 import { ValidarChofer } from '../application/ValidarChofer'
+import { TipoDiscapacidadController } from 'pages/recursosHumanos/tipo-discapacidad/infraestructure/TipoDiscapacidadController'
+import { TipoDiscapacidadPorcentaje } from '../domain/TipoDiscapacidadPorcentaje'
+import { TipoDiscapacidad } from 'pages/recursosHumanos/tipo-discapacidad/domain/TipoDiscapacidad'
+import { reactive } from 'vue'
+import { CantonController } from 'sistema/ciudad/infraestructure/CantonControllerontroller'
 
 export default defineComponent({
   components: { TabLayout, SelectorImagen, ModalesEntidad, EssentialTable, GestorArchivos, InformacionLicencia, },
@@ -54,7 +60,7 @@ export default defineComponent({
      *********/
     useNotificacionStore().setQuasar(useQuasar())
     useCargandoStore().setQuasar(useQuasar())
-    const { notificarCorrecto } = useNotificaciones()
+    const { notificarCorrecto, confirmar } = useNotificaciones()
 
     /***********
      * Mixin
@@ -81,6 +87,14 @@ export default defineComponent({
       grupos, filtrarGrupos,
       departamentos, filtrarDepartamentos
     } = useFiltrosListadosSelects(listadosAuxiliares)
+    
+    /************
+     * Variables
+     ************/
+    const configuracionColumnasTipoDiscapacidadPorcentajeReactive = reactive(configuracionColumnasTipoDiscapacidadPorcentaje)
+    const tipos_contrato = ref([])
+    const tiposDiscapacidades = ref([])
+    const opcionesDepartamentos = ref([])
     const refFamiliares = ref()
     const modales = new ComportamientoModalesEmpleado()
     const familiarStore = useFamiliarStore()
@@ -93,9 +107,10 @@ export default defineComponent({
     const refArchivo = ref()
     const mostrarBotonSubirArchivos = computed(() => refArchivo.value != undefined ? refArchivo.value.quiero_subir_archivos : false)
     const idEmpleado = ref()
+    const idsTiposDiscapacidades: Ref<number[]> = ref([])
 
     cargarVista(async () => {
-      obtenerListados({
+        await obtenerListados({
         areas: new AreasController(),
         bancos: new BancoController(),
         cargos: {
@@ -105,6 +120,10 @@ export default defineComponent({
         departamentos: {
           controller: new DepartamentoController(),
           params: { activo: 1 },
+        },
+        tiposDiscapacidades: {
+          controller: new TipoDiscapacidadController(),
+          params: { campos: 'id,nombres' },
         },
         empleados: {
           controller: new EmpleadoController(),
@@ -136,7 +155,11 @@ export default defineComponent({
       grupos.value = listadosAuxiliares.grupos
       roles.value = listadosAuxiliares.roles
       tiposContratos.value = listadosAuxiliares.tipos_contratos
+      configuracionColumnasTipoDiscapacidadPorcentajeReactive.find((item) => item.field === 'tipo_discapacidad')!.options = listadosAuxiliares.tiposDiscapacidades.map((v: TipoDiscapacidad) => { return { label: v.nombre, value: v.id } })
+      console.log(configuracionColumnasTipoDiscapacidadPorcentaje);
+
     })
+
     /***************************
      * Configuracion de columnas
      ****************************/
@@ -144,6 +167,9 @@ export default defineComponent({
       ...configuracionColumnasFamiliaresEmpleado,
       accionesTabla,
     ]
+
+
+
     /*************
      * Validaciones
      **************/
@@ -388,6 +414,21 @@ export default defineComponent({
         entidad.estado = false
       },
     }
+    /*const btnAgregarDiscapacidad: CustomActionTable = {
+      titulo: 'Agregar fila',
+      icono: 'bi-plus',
+      color: 'positive',
+      tooltip: 'Agregar',
+
+    } */
+
+    const agregarDiscapacidad = () => {
+      console.log('agregar discapácidad');
+      const fila = new TipoDiscapacidadPorcentaje()
+      fila.id = empleado.discapacidades?.length ? encontrarUltimoIdListado(empleado.discapacidades) + 1 : 1
+      empleado.discapacidades?.push(fila)
+    }
+
     function reestablecer_usuario() {
       if (accion.value == acciones.editar && empleado.generar_usuario) {
         generarUsename()
@@ -395,6 +436,13 @@ export default defineComponent({
         empleado.usuario = nombre_usuario.value
         empleado.email = email_usuario.value
       }
+    }
+
+    const btnEliminarDiscapacidad: CustomActionTable<TipoDiscapacidadPorcentaje> = {
+      titulo: 'Eliminar',
+      icono: 'bi-x',
+      color: 'negative',
+      accion: ({ posicion }) => confirmar('¿Está seguro de continuar?', () => empleado.discapacidades?.splice(posicion, 1))
     }
 
     function obtenerUsername() {
@@ -446,7 +494,8 @@ export default defineComponent({
       }
     }
     return {
-      mixin, mixinFamiliares,
+      mixin,
+      mixinFamiliares,
       empleado,
       disabled,
       accion,
@@ -484,7 +533,10 @@ export default defineComponent({
       btnImprimirEmpleados,
       btnHabilitarEmpleado,
       btnDesHabilitarEmpleado,
+      btnEliminarDiscapacidad,
       modales,
+      idsTiposDiscapacidades,
+      tiposDiscapacidades,
       //funciones
       subirArchivos,
       obtenerUsername,
@@ -494,6 +546,10 @@ export default defineComponent({
       mostrarBotonSubirArchivos,
 
       conductor,
+      filtrarTipoDiscapacidad,
+      configuracionColumnasTipoDiscapacidadPorcentajeReactive,
+      agregarDiscapacidad,
+      accionesTabla,
     }
   },
 })

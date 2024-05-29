@@ -19,18 +19,15 @@ import { SubDetalleFondoController } from 'pages/fondosRotativos/subDetalleFondo
 import { CantonController } from 'sistema/ciudad/infraestructure/CantonControllerontroller'
 import { TareaController } from 'pages/gestionTrabajos/tareas/infraestructure/TareaController'
 import { EmpleadoController } from 'pages/recursosHumanos/empleados/infraestructure/EmpleadoController'
-import { ConceptoIngresoController } from 'pages/recursosHumanos/concepto_ingreso/infraestructure/ConceptoIngresoController'
-import { DescuentosGenralesController } from 'pages/recursosHumanos/descuentos_generales/infraestructure/DescuentosGenralesController'
-import { DescuentosLeyController } from 'pages/recursosHumanos/descuentos_ley/infraestructure/DescuentosLeyController'
-import { HorasExtrasSubTipoController } from 'pages/recursosHumanos/horas_extras_subtipo/infraestructure/HorasExtrasSubTipoController'
-import { HorasExtrasTipoController } from 'pages/recursosHumanos/horas_extras_tipo/infraestructure/HorasExtrasTipoController'
-import { MultaController } from 'pages/recursosHumanos/multas/infraestructure/MultaController'
 import { UltimoSaldoController } from 'pages/fondosRotativos/reportes/reporteSaldoActual/infrestucture/UltimoSaldoController'
+import { useListadosSistemaStore } from './listadosSistema'
+import { UserLoginPostulante } from 'pages/recursosHumanos/seleccion_contratacion_personal/login-postulante/domain/UserLoginPostulante'
 
 export const useAuthenticationStore = defineStore('authentication', () => {
   // Variables locales
   const axios = AxiosHttpRepository.getInstance()
   let usuarioFueConsultado = false
+  const listadosSistemaStore = useListadosSistemaStore()
 
   // State
   const user = ref()
@@ -67,6 +64,8 @@ export const useAuthenticationStore = defineStore('authentication', () => {
   const esSupervisorVentasClaro = computed(() => user.value ? extraerRol(user.value.roles, rolesSistema.supervisor_ventas) : false)
   const esVendedor = computed(() => user.value ? extraerRol(user.value.roles, rolesSistema.vendedor) : false)
 
+  const esMedico = computed(() => user.value ? extraerRol(user.value.roles, rolesSistema.medico) : false)
+
   function extraerRol(roles: string[], rolConsultar: string) {
     return roles.some((rol: string) => rol === rolConsultar)
   }
@@ -86,7 +85,33 @@ export const useAuthenticationStore = defineStore('authentication', () => {
       roles.value = response.data.modelo.roles
       permisos.value = response.data.modelo.permisos
 
-      cargarDatosLS()
+      listadosSistemaStore.cargarDatosLS()
+
+      return response.data.modelo
+    } catch (error: unknown) {
+      console.log(error)
+
+      const axiosError = error as AxiosError
+      throw new ApiError(axiosError)
+    }
+  }
+
+   // Actions
+   const loginPostulante = async (credentiales: UserLoginPostulante): Promise<Empleado> => {
+    try {
+      /*const csrf_cookie = axios.getEndpoint(endpoints.csrf_cookie)
+      console.log('authentication...')
+      await axios.get(csrf_cookie) */
+
+      const login = axios.getEndpoint(endpoints.login)
+      const response: AxiosResponse = await axios.post(login, credentiales)
+
+      LocalStorage.set('token', response.data.access_token)
+      setUser(response.data.modelo)
+      roles.value = response.data.modelo.roles
+      permisos.value = response.data.modelo.permisos
+
+      listadosSistemaStore.cargarDatosLS()
 
       return response.data.modelo
     } catch (error: unknown) {
@@ -132,10 +157,10 @@ export const useAuthenticationStore = defineStore('authentication', () => {
     }
   }
 
-  /**
+  /** BORRAR
    * Función para cargar datos en el Local Storage
    */
-  async function cargarDatosLS() {
+  /* async function cargarDatosLS() {
     const autorizaciones = (
       await new AutorizacionController().listar({ campos: 'id,nombre' })
     ).result
@@ -177,23 +202,24 @@ export const useAuthenticationStore = defineStore('authentication', () => {
       })
     ).result
     LocalStorage.set('usuariosInactivos', JSON.stringify(usuariosInactivos))
-  }
+  } */
+
   /**
    * Función para limpiar los datos del Local Storage
    */
-  function limpiarLS() {
+  /* function limpiarLS() {
     LocalStorage.remove('autorizaciones')
     LocalStorage.remove('sucursales')
     LocalStorage.remove('condiciones')
     LocalStorage.remove('estados_transacciones')
     LocalStorage.remove('lugares')
     LocalStorage.remove('detalles')
-  }
+  } */
 
   async function logout() {
     await axios.post(axios.getEndpoint(endpoints.logout))
     LocalStorage.remove('token')
-    limpiarLS()
+    listadosSistemaStore.limpiarLS()
     await getUser()
     document.title = 'JPCONSTRUCRED'
   }
@@ -266,6 +292,7 @@ export const useAuthenticationStore = defineStore('authentication', () => {
     nombre_usuario,
     saldo_actual,
     login,
+    loginPostulante,
     enviarCorreoRecuperacion,
     recuperacionCuenta,
     nombreUsuario,
@@ -293,6 +320,7 @@ export const useAuthenticationStore = defineStore('authentication', () => {
     esJefeVentasClaro, esSupervisorVentasClaro, esVendedor,
     esFiscalizador,
     esSupervisorCampo,
+    esMedico,
     consultar_saldo_actual,
     extraerRol,
     listadoUsuarios,

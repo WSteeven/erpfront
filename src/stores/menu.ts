@@ -174,6 +174,76 @@ export const useMenuStore = defineStore('menu', () => {
         },
       ],
     },
+    /********************
+    * Modulo medico
+    ********************/
+    {
+      title: 'Médico',
+      icon: 'bi-heart-pulse-fill',
+      can: store.can('puede.ver.modulo_medico'),
+      children: [
+        {
+          title: 'Gestionar pacientes',
+          link: 'gestionar-pacientes',
+          icon: 'bi-app',
+          can: store.can('puede.ver.gestionar_pacientes'),
+        },
+        {
+          title: 'Cuestionarios',
+          link: 'cuestionarios',
+          icon: 'bi-app',
+          can: store.can('puede.ver.cuestionarios'),
+        },
+        /* {
+          title: 'Cuestionario de evaluación de riesgos psicosociales',
+          link: 'cuestionario-psicosocial',
+          icon: 'bi-app',
+          can: store.can('puede.ver.cuestionarios_psicosocial'),
+        }, {
+          title: 'Cuestionario de diagnostico consumo de drogas',
+          link: 'cuestionario-diagnostico-consumo-drogas',
+          icon: 'bi-app',
+          can: store.can('puede.ver.cuestionario_diagnostico_consumo_drogas'),
+        }, */
+        {
+          title: 'Cita médica',
+          link: 'citas-medicas',
+          icon: 'bi-app',
+          can: store.can('puede.ver.citas_medicas'),
+        },
+        {
+          title: 'Solicitudes de exámenes',
+          link: 'solicitudes-examenes',
+          icon: 'bi-app',
+          can: store.can('puede.ver.solicitudes_examenes'),
+        },
+        {
+          title: 'Reportes',
+          link: 'reporte-cuestionarios-pisicosocial',
+          icon: 'bi-app',
+          can: store.can('puede.ver.reporte_cuestionarios_psicosocial'),
+        },
+        {
+          title: 'CIE',
+          link: 'cie',
+          icon: 'bi-app',
+          can: store.can('puede.ver.cies'),
+        },
+        /* {
+          title: 'Firmar fichas médicas',
+          link: 'firmar-fichas-medicas',
+          icon: 'bi-app',
+        }, */
+        {
+          title: 'Configuracion Cuestionario Empleado',
+          link: 'configuraciones-cuestionarios-empleados',
+          icon: 'bi-circle',
+          can: store.can('puede.ver.configuraciones_cuestionarios_empleados'),
+        },
+      ]
+    },
+    /**
+     * Modulo de bodega.
     /*****************************************************************************
      * MÓDULO DE BODEGA.
      * Toda la estructura de pedidos, devoluciones y despachos de materiales
@@ -205,7 +275,7 @@ export const useMenuStore = defineStore('menu', () => {
           title: 'Empleados',
           link: 'empleados',
           icon: 'bi-person-lines-fill',
-          can: store.can('puede.ver.empleados') && store.esBodeguero,
+          can: store.can('puede.acceder.empleados') && store.esBodeguero,
         },
         {
           title: 'Marcas',
@@ -565,6 +635,24 @@ export const useMenuStore = defineStore('menu', () => {
           can: store.can('puede.acceder.grupos'),
         },
         {
+          title: 'Seleccion y Contratacion',
+          icon: 'bi-person-lines-fill',
+          can: store.can('puede.ver.modulo.seleccion_contratacion'),
+          children: [
+              {
+                title: 'Solicitud de Puesto de Empleo',
+                link: 'solicitud-puesto-empleo',
+                icon: 'bi-app',
+                can: store.can('puede.acceder.solicitud_puesto_empleo'),
+              },
+              {
+                title: 'Publicacion de Puesto de Empleo',
+                link: 'publicacion-puesto-empleo',
+                icon: 'bi-app',
+                can: store.can('puede.acceder.publicacion_puesto_empleo'),
+              },
+          ]},
+        {
           title: 'Nominas y prestamos',
           icon: 'fa-solid fa-people-line',
           can: true,
@@ -614,7 +702,7 @@ export const useMenuStore = defineStore('menu', () => {
             {
               title: 'Alimentacion',
               icon: 'img:statics/icons/alimentacion_04.svg',
-              can: true,
+              can: store.can('puede.acceder.modulo_alimentacion'),
               children: [
                 {
                   title: 'Asignar Alimentacion',
@@ -919,7 +1007,13 @@ export const useMenuStore = defineStore('menu', () => {
               title: 'Reporte de Proveedores',
               link: 'reporte-proveedores',
               icon: 'bi-boxes',
-              can: true || store.can('puede.ver.reporte_proveedores'),
+              can: store.can('puede.ver.reporte_proveedores'),
+            },
+            {
+              title: 'Reporte de Ordenes de Compras',
+              link: 'reporte-ordenes-compras',
+              icon: 'bi-cart-plus',
+              can: store.can('puede.ver.reporte_ordenes_compras'),
             },
           ],
         },
@@ -944,6 +1038,12 @@ export const useMenuStore = defineStore('menu', () => {
       can: store.can('puede.ver.modulo_ventas') || store.esAdministrador,
       children: [
         {
+          title: 'Dashboard',
+          link: 'ventas/dashboard-ventas',
+          icon: 'bi-app',
+          can: store.can('puede.ver.dashboard_ventas_empresa') || store.esAdministrador,
+        },
+        {
           title: 'Proformas',
           link: 'proformas',
           icon: 'bi-app',
@@ -954,6 +1054,19 @@ export const useMenuStore = defineStore('menu', () => {
           link: 'prefacturas',
           icon: 'bi-app',
           can: store.can('puede.ver.prefacturas') || store.esAdministrador,
+        },
+        {
+          title: 'Reportes',
+          icon: 'bi-clipboard2-data-fill',
+          can: store.esAdministrador || store.esCompras || store.can('puede.ver.reportes_modulo_ventas'),
+          children: [
+            {
+              title: 'Reporte de Prefacturas',
+              link: 'reporte-prefacturas',
+              icon: 'bi-boxes',
+              can: true,
+            }
+          ],
         },
       ],
     },

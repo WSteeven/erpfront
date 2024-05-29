@@ -683,7 +683,6 @@
                     </template>
                   </q-select>
                 </div>
-
                 <!-- Talla de guantes -->
                 <div
                   class="col-12 col-md-3 col-sm-3"
@@ -738,6 +737,88 @@
                       </div>
                     </template>
                   </q-input>
+                </div>
+                <!-- Casa propia -->
+                <div class="col-12 col-md-3 col-sm-3">
+                  <label class="q-mb-sm block">La casa donde vive es</label>
+                  <q-toggle
+                    :label="empleado.casa_propia ? 'PROPIA' : 'ALQUILADA'"
+                    v-model="empleado.casa_propia"
+                    color="primary"
+                    keep-color
+                    icon="bi-check2-circle"
+                    unchecked-icon="clear"
+                    :disable="disabled"
+                  />
+                </div>
+                <!-- Vive con discapacitados -->
+                <div class="col-12 col-md-3 col-sm-3">
+                  <label class="q-mb-sm block"
+                    >Convive con personas discapacitadas</label
+                  >
+                  <q-toggle
+                    :label="empleado.vive_con_discapacitados ? 'SI' : 'NO'"
+                    v-model="empleado.vive_con_discapacitados"
+                    color="primary"
+                    keep-color
+                    icon="bi-check2-circle"
+                    unchecked-icon="clear"
+                    :disable="disabled"
+                  />
+                </div>
+                <!-- Casa propia -->
+                <div class="col-12 col-md-3 col-sm-3">
+                  <label class="q-mb-sm block"
+                    >Tiene a su cargo personas discapacitadas</label
+                  >
+                  <q-toggle
+                    :label="empleado.responsable_discapacitados ? 'SI' : 'NO'"
+                    v-model="empleado.responsable_discapacitados"
+                    color="primary"
+                    keep-color
+                    icon="bi-check2-circle"
+                    unchecked-icon="clear"
+                    :disable="disabled"
+                  />
+                </div>
+                <!-- Vive con discapacitados -->
+                <div class="col-12 col-md-3 col-sm-3">
+                  <label class="q-mb-sm block">Tiene Discapacidad</label>
+                  <q-toggle
+                    :label="empleado.tiene_discapacidad ? 'SI' : 'NO'"
+                    v-model="empleado.tiene_discapacidad"
+                    color="primary"
+                    keep-color
+                    icon="bi-check2-circle"
+                    unchecked-icon="clear"
+                    :disable="disabled"
+                  />
+                </div>
+                <div class="col-12 col-md-6 col-sm-12" v-if="empleado.tiene_discapacidad">
+                  <q-btn
+                    color="primary"
+                    @click="agregarDiscapacidad()"
+                    class="col-12 col-md-3 full-width"
+                    >Agregar discapacidad</q-btn
+                  >
+                  <essential-table
+                    :configuracionColumnas="[
+                      ...configuracionColumnasTipoDiscapacidadPorcentajeReactive,
+                      accionesTabla,
+                    ]"
+                    :datos="empleado.discapacidades"
+                    :permitirConsultar="false"
+                    :permitirEliminar="false"
+                    :permitirEditar="false"
+                    :mostrarBotones="false"
+                    :permitir-editar-celdas="true"
+                    :mostrar-header="false"
+                    :grid="false"
+                    :accion1="btnEliminarDiscapacidad"
+                    :alto-fijo="false"
+                    :ajustarCeldas="true"
+                  >
+                  </essential-table>
                 </div>
               </div>
             </q-expansion-item>
@@ -1401,6 +1482,36 @@
                 dense
               />
             </div>
+            <div class="col-12 col-md-6 col-sm-3">
+              <!--  <label class="q-mb-sm block">Tipos de Discapacidades</label>
+              <q-select
+                v-model="idsTiposDiscapacidades"
+                :options="tiposDiscapacidades"
+                transition-show="scale"
+                transition-hide="scale"
+                hint="Opcional"
+                @filter="filtrarTipoDiscapacidad"
+                :disable="disabled"
+                options-dense
+                dense
+                outlined
+                :option-label="(i) => i.nombre"
+                use-input
+                input-debounce="0"
+                emit-value
+                map-options
+                use-chips
+                multiple
+              >
+                <template v-slot:no-option>
+                  <q-item>
+                    <q-item-section class="text-grey">
+                      Primero cargue registros en el formulario de Tipo de Discapacidad
+                    </q-item-section>
+                  </q-item>
+                </template>
+              </q-select>-->
+            </div>
           </div>
         </q-expansion-item>
 
@@ -1476,12 +1587,12 @@
         </q-expansion-item>
       </q-form>
     </template>
+    <modales-entidad
+      :comportamiento="modales"
+      @guardado="(data) => guardado(data)"
+      :mixin-modal="mixinFamiliares"
+    ></modales-entidad>
   </tab-layout>
-  <modales-entidad
-    :comportamiento="modales"
-    @guardado="(data) => guardado(data)"
-    :mixin-modal="mixinFamiliares"
-  ></modales-entidad>
 </template>
 
 <script src="./EmpleadoPage.ts" />

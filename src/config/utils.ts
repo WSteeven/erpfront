@@ -1,3 +1,4 @@
+import { SelectOption } from 'components/tables/domain/SelectOption'
 import { TabOption } from 'components/tables/domain/TabOption'
 
 export const maskFecha = 'YYYY-MM-DD'
@@ -18,7 +19,7 @@ export const acciones = {
   eliminar: 'ELIMINAR',
   consultar: 'CONSULTAR',
   editar: 'EDITAR',
-}
+} as const
 
 export const tiposElementos = ['POSTE', 'POZO', 'AMERICANO', 'NODO']
 export const tiposTension = [
@@ -350,16 +351,16 @@ export const tipos_filtros = [
   { value: '9', name: 'CIUDAD' },
 ]
 export const tipo_filtro = {
-  TODOS:'0',
-  PROYECTO:'1',
+  TODOS: '0',
+  PROYECTO: '1',
   TAREA: '2',
   DETALLE: '3',
   SUBDETALLE: '4',
-  AUTORIZACIONES : '5',
-  EMPLEADO : '6',
-  RUC : '7',
+  AUTORIZACIONES: '5',
+  EMPLEADO: '6',
+  RUC: '7',
   SIN_FACTURA: '8',
-  CIUDAD : '9',
+  CIUDAD: '9',
 }
 export const tipo_saldo = {
   ACREDITACIONES: '1',
@@ -409,10 +410,12 @@ export const rolesSistema = {
   tecnico_lider: 'LIDER DE GRUPO',
   tecnico: 'TECNICO',
   autorizador: 'AUTORIZADOR',
+  medico: 'MEDICO',
   //Roles de ventas de Claro
   jefe_ventas: 'JEFE_VENTAS',
   supervisor_ventas: 'SUPERVISOR_VENTAS',
   vendedor: 'VENDEDOR',
+  financiero: 'FINANCIERO',
 }
 
 export const cargosSistema = {
@@ -470,6 +473,15 @@ export const tiposReportesIngresos = {
   devolucion: 4,
   tarea: 5,
   transferencia: 6,
+}
+export const numDiaSemana ={
+  domingo: 0,
+  lunes:1,
+  martes:2,
+  miercoles:3,
+  jueves:4,
+  viernes:5,
+  sabado:6
 }
 
 export const opcionesReportesEgresos = [
@@ -557,6 +569,7 @@ export const niveles_academicos = [
   { nombre: 'TITULO SUPERIOR' },
 ]
 
+
 export const tipos_sangre = [
   { nombre: 'A +' },
   { nombre: 'B +' },
@@ -605,6 +618,12 @@ export const estadosVentas = {
   RECHAZADO: 'RECHAZADO',
   PENDIENTE: 'PENDIENTE', // Se usa en vez de ASIGNADO en el dashboard
 }
+export const autorizacionesId ={
+  PENDIENTE: 1,
+  APROBADO: 2,
+  CANCELADO: 3,
+  VALIDADO:4
+}
 export const autorizaciones = [
   { nombre: 'Pendiente', id: 1 }, //autorizacion PENDIENTE
   { nombre: 'Aprobado', id: 2 }, //autorizacion APROBADO
@@ -623,8 +642,19 @@ export const tabOptionsTransaccionesEgresos: TabOption[] = [
   { label: 'Completas', value: 'COMPLETA' },
   { label: 'Anuladas', value: 'ANULADA' },
 ]
+
+export const tabOptionsEstadosEmpleados: TabOption[] = [
+  { label: 'Activos', value: '1' },
+  { label: 'Inactivos', value: '0' },
+]
+
 export const tabOptionsValoresAcreditar: TabOption[] = [
   // { label: 'Todo', value: '' },
   { label: 'Activas', value: '1' },
   { label: 'Inactivas', value: '0' },
-];
+]
+
+export const selectOptionsSiNo: SelectOption[] = [
+  { label: 'Sí', value: true },
+  { label: 'No', value: false },
+]

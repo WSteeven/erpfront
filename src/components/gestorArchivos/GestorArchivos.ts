@@ -2,7 +2,7 @@
  * @author Wilson Cordova
  * @description Este componente trabaja con la tabla archivos y es polimorfica para otros modelos
  * A nivel de backend hacer los métodos correspondientes en el controlador y la relación en el modelo.
- * 
+ *
  */
 // Dependencias
 import { configuracionColumnasArchivoSubtarea } from 'pages/gestionTrabajos/subtareas/modules/gestorArchivosTrabajos/domain/configuracionColumnasArchivoSubtarea'
@@ -44,6 +44,10 @@ export default defineComponent({
     permitirSubir: {
       type: Boolean,
       default: true,
+    },
+    quieroSubirArchivos:{
+      type: Boolean,
+      default: false,
     },
     idModelo: {
       type: Number,
@@ -104,7 +108,7 @@ export default defineComponent({
     /************
     * Funciones
     *************/
-    const quiero_subir_archivos = ref(false)
+    const quiero_subir_archivos = ref(props.quieroSubirArchivos)
 
     async function factoryFn(files) {
       const fd = new FormData()

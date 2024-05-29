@@ -22,7 +22,7 @@ import { ContenedorSimpleMixin } from "shared/contenedor/modules/simple/applicat
 import { useOrdenCompraStore } from "stores/comprasProveedores/ordenCompra";
 import { CustomActionTable } from "components/tables/domain/CustomActionTable";
 import { obtenerFechaActual, ordenarLista } from "shared/utils";
-import { accionesTabla } from "config/utils";
+import { accionesTabla, maskFecha } from "config/utils";
 import { useNotificaciones } from "shared/notificaciones";
 import { optionsPie } from "config/graficoGenerico";
 import { filtroOrdenesComprasAprobadas, filtroOrdenesComprasCreadas, filtroOrdenesComprasProveedores } from "../application/FiltrosDashboardOrdenesCompras";
@@ -47,8 +47,9 @@ export default defineComponent({
     const dashboard = reactive({
       fecha_inicio: '',
       fecha_fin: '',
-      proveedor: '',
-      empleado: '',
+      proveedor: null,
+      empleado: null,
+      todos: false,
       tipo: '',
     })
     const store = useAuthenticationStore()
@@ -66,9 +67,11 @@ export default defineComponent({
     const cantOrdenesAnuladas = ref()
     const ESTADO = 'ESTADO'
     const PROVEEDOR = 'PROVEEDOR'
+    const VALORES = 'VALORES'
     const opcionesTipos = [
       { label: 'ESTADO', value: 'ESTADO' },
       { label: 'PROVEEDOR', value: 'PROVEEDOR' },
+      { label: VALORES, value: VALORES },
     ]
     const opcionesGrafico = {
       grafico: 'grafico',
@@ -79,12 +82,14 @@ export default defineComponent({
       aprobadas: 'APROBADAS',
       //graficos de proveedores
       proveedores: 'PROVEEDORES',
+      valores: VALORES,
     }
     const tabs = ref(opcionesGrafico.grafico)
 
     const graficos = ref()
     const ordenes = ref()
     const labelTabla = ref()
+    const modoUnaColumna = ref(false)
 
     const { empleados, filtrarEmpleados, proveedores, filtrarProveedores } = useFiltrosListadosSelects(listadosAuxiliares)
     cargarVista(async () => {
@@ -105,7 +110,7 @@ export default defineComponent({
         },
       })
       dashboard.empleado = store.user.id
-      dashboard.fecha_fin = obtenerFechaActual()
+      dashboard.fecha_fin = obtenerFechaActual(maskFecha)
       empleados.value = listadosAuxiliares.empleados
       proveedores.value = listadosAuxiliares.proveedores
     })
@@ -114,7 +119,7 @@ export default defineComponent({
       fecha_inicio: { required },
       fecha_fin: { required },
       tipo: { required },
-      empleado: { required },
+      empleado: { required: requiredIf(() => !dashboard.todos) },
       proveedor: { requiredIf: requiredIf(dashboard.tipo == PROVEEDOR) },
     }
 
@@ -157,7 +162,7 @@ export default defineComponent({
         try {
           obtenerProveedores();
           const results = await ordenCompraStore.consultarDashboard(dashboard)
-          // console.log(results)
+          console.log(results)
           cantOrdenesCreadas.value = results.cant_ordenes_creadas
           cantOrdenesPendientes.value = results.cant_ordenes_pendientes
           cantOrdenesAprobadas.value = results.cant_ordenes_aprobadas
@@ -169,6 +174,7 @@ export default defineComponent({
           cantOrdenesProveedor.value = results.cant_ordenes_proveedores
           ordenes.value = results.todas
           graficos.value = results.graficos
+          modoUnaColumna.value = graficos.value.length > 1 ? false : true
         } catch (error) {
           console.log(error)
         }
@@ -195,17 +201,18 @@ export default defineComponent({
     }
     async function obtenerProveedores(limpiarProveedor = false) {
       cargando.activar()
-      if (limpiarProveedor) dashboard.proveedor = ''
+      if (limpiarProveedor) dashboard.proveedor = null
       if (dashboard.tipo == PROVEEDOR) {
         const response = await new ProveedoresOrdenesController().listar({ solicitante_id: dashboard.empleado })
         listadosAuxiliares.proveedores = response.result
         proveedores.value = response.result
-      } else { dashboard.proveedor = '' }
+      } else { dashboard.proveedor = null }
       cargando.desactivar()
     }
 
     return {
       configuracionColumnas: configuracionColumnasOrdenesCompras, accionesTabla,
+      ordenes,
       ordenesPorEstado,
       v$,
       dashboard,
@@ -227,14 +234,16 @@ export default defineComponent({
       tabs, opcionesGrafico, mostrarTitulosSeccion, identificadorGrafico,
       graficos,
       modales,
-      modoUnaColumna: ref(false),
+      modoUnaColumna,
       labelTabla,
       ESTADO,
       PROVEEDOR,
+      VALORES,
       empleados, filtrarEmpleados,
       proveedores, filtrarProveedores,
       obtenerProveedores,
       ordenarLista,
+      maskFecha,
     }
   },
 })

@@ -1,4 +1,6 @@
-type tipos = 'text' | 'number' | 'textarea' | 'select' | 'boolean' | 'date' | 'search' | 'imagen' | 'datetime' | 'toggle'
+import { SelectOption } from "./SelectOption"
+
+type tipos = 'text' | 'number' | 'textarea' | 'select' | 'boolean' | 'date' | 'search' | 'imagen' | 'datetime' | 'toggle' | 'select_multiple'
 type align = 'left' | 'center' | 'right'
 
 export interface ColumnConfig<T> {
@@ -13,7 +15,7 @@ export interface ColumnConfig<T> {
   style?: string
   type?: tipos
   editable?: boolean
-  options?: any[]
+  options?: SelectOption[]
   hint?: string,
   requerido?: boolean
   filtrar?: boolean

@@ -26,6 +26,8 @@ import { AsignarVehiculoPusherEvent } from 'pages/controlVehiculos/asignarVehicu
 import { OrdenReparacionPusherEvent } from 'src/pusherEvents/vehiculos/OrdenReparacionPusherEvent'
 import { BitacoraVehicularPusherEvent } from 'src/pusherEvents/vehiculos/BitacoraVehicularPusherEvent'
 import { MantenimientoVehiculoPusherEvent } from 'src/pusherEvents/vehiculos/MantenimientVehiculoPusherEvent'
+import { SolicitudExamenPusherEvent } from 'src/pusherEvents/medico/SolicitudExamenPusherEvent'
+import { DiasDescansoPusherEvent } from 'src/pusherEvents/medico/DiasDescansoPusherEvent'
 
 
 export class NotificacionesSistema {
@@ -42,14 +44,14 @@ export class NotificacionesSistema {
     const preingresoMaterialEvent = new PreingresoMaterialPusherEvent()
     preingresoMaterialEvent.start()
 
-    //Devoluciones
+    // Devoluciones
     const devolucionPusherEvent = new DevolucionPusherEvent()
     devolucionPusherEvent.start()
 
-    //Ingresos
+    // Ingresos
     const ingresoPusherEvent = new IngresoPusherEvent()
     ingresoPusherEvent.start()
-    //Egresos
+    // Egresos
     const egresoPusherEvent = new EgresoPusherEvent()
     egresoPusherEvent.start()
 
@@ -83,9 +85,11 @@ export class NotificacionesSistema {
     // Permiso de Empleado
     const permisoEmpleadoPusherEvent = new PermisoEmpleadoPusherEvent()
     permisoEmpleadoPusherEvent.start()
+
     //Notificar permisos de empleados de fecha actual a recursos humanos
     const notificarPermisoEmpleadoPusherEvent = new NotificarPermisoEmpleadoPusherEvent()
     notificarPermisoEmpleadoPusherEvent.start()
+
     // Licencia
     const licenciaPusherEvent = new LicenciaPusherEvent()
     licenciaPusherEvent.start()
@@ -97,10 +101,10 @@ export class NotificacionesSistema {
     //Vacacion
     const vacacionPusherEvent = new VacacionPusherEvent()
     vacacionPusherEvent.start()
+
     // Notificar Vacaciones
     const notificarVacacionPusherEvent = new NotificarVacacionPusherEvent()
     notificarVacacionPusherEvent.start()
-
 
     // Proveedor
     const proveedorPusherEvent = new ProveedorEvent()
@@ -139,5 +143,13 @@ export class NotificacionesSistema {
 
     new MantenimientoVehiculoPusherEvent().start()
 
+    /******************
+     *  Modulo medico
+     ******************/
+    const solicitudExamenPusherEvent = new SolicitudExamenPusherEvent()
+    solicitudExamenPusherEvent.start()
+
+    const diasDescansoPusherEvent = new DiasDescansoPusherEvent()
+    diasDescansoPusherEvent.start()
   }
 }

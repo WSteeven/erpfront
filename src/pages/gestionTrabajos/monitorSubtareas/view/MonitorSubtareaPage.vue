@@ -14,7 +14,7 @@
         glossy
         push
         >Ir a Control de tareas</q-btn
-      >
+      > 
     </div>
 
     <essential-table-tabs
