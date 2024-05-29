@@ -1235,6 +1235,19 @@
 
     <template #body-cell-estado="props">
       <q-td :props="props">
+        <!-- estado retrasado -->
+        <q-chip
+          v-if="props.value === 'RETRASADO'"
+          :class="{ 'bg-orange-2': !$q.dark.isActive }"
+          class="text-orange-6 q-mx-none"
+        >
+          <q-icon
+            name="bi-circle-fill"
+            color="warning"
+            class="q-mr-xs"
+          ></q-icon>
+          RETRASADO
+        </q-chip>
         <!-- estado aceptado -->
         <q-chip
           v-if="props.value === 'ACEPTADO'"

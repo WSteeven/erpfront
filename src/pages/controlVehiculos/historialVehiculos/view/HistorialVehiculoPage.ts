@@ -1,26 +1,34 @@
+// Dependencies
+import { configuracionColumnasMantenimientosCorrectivos } from "../domain/configuracionColumnasMantenimientosCorrectivos";
+import { configuracionColumnasMantenimientosPreventivos } from "../domain/configuracionColumnasMantenimientosPreventivos";
+import { configuracionColumnasCustodios } from "../domain/configuracionColumnasCustodios";
+import { required } from "shared/i18n-validators";
 import { defineComponent, ref } from "vue";
+import useVuelidate from "@vuelidate/core";
+import { maskFecha } from "config/utils";
+import { AxiosResponse } from "axios";
+import { useQuasar } from "quasar";
+
+// Components
+import EssentialTable from "components/tables/view/EssentialTable.vue";
+
+// Logica y controladores
 import { HistorialVehiculo } from "../domain/HistorialVehiculo";
 import { ContenedorSimpleMixin } from "shared/contenedor/modules/simple/application/ContenedorSimpleMixin";
 import { HistorialVehiculoController } from "../infraestructura/HistorialVehiculoController";
 import { useNotificacionStore } from "stores/notificacion";
-import { useQuasar } from "quasar";
 import { useCargandoStore } from "stores/cargando";
 import { StatusEssentialLoading } from "components/loading/application/StatusEssentialLoading";
 import { ConductorController } from "pages/controlVehiculos/conductores/infraestructure/ConductorController";
 import { VehiculoController } from "pages/controlVehiculos/vehiculos/infraestructure/VehiculoController";
 import { useFiltrosListadosSelects } from "shared/filtrosListadosGenerales";
-import { required } from "shared/i18n-validators";
-import useVuelidate from "@vuelidate/core";
 import { imprimirArchivo, notificarErrores, obtenerFechaActual } from "shared/utils";
 import { AxiosHttpRepository } from "shared/http/infraestructure/AxiosHttpRepository";
 import { apiConfig, endpoints } from "config/api";
 import { Vehiculo } from "pages/controlVehiculos/vehiculos/domain/Vehiculo";
-import { AxiosResponse } from "axios";
 import { useNotificaciones } from "shared/notificaciones";
 import { historialVehiculos, optionsHistorialVehiculos } from "config/vehiculos.utils";
-import { maskFecha } from "config/utils";
-import EssentialTable from "components/tables/view/EssentialTable.vue";
-import { configuracionColumnasCustodios } from "../domain/configuracionColumnasCustodios";
+import { ServicioController } from "pages/controlVehiculos/servicios/infraestructure/ServicioController";
 
 export default defineComponent({
     components: { EssentialTable },
@@ -50,8 +58,11 @@ export default defineComponent({
             await obtenerListados({
                 vehiculos: new VehiculoController(),
                 empleados: new ConductorController(),
+                servicios: { controller: new ServicioController(), params: { tipo: 'CORRECTIVO' } }
             })
             historial.fecha_fin = obtenerFechaActual(maskFecha)
+
+            configuracionColumnasMantenimientosCorrectivos.find((item) => item.field === 'servicios')!.options = listadosAuxiliares.servicios.map((v) => { return { label: v.nombre, value: v.id } })
         })
         const reglas = {
             vehiculo: { required },
@@ -106,6 +117,8 @@ export default defineComponent({
         return {
             historial, v$,
             configuracionColumnasCustodios,
+            configuracionColumnasMantenimientosPreventivos,
+            configuracionColumnasMantenimientosCorrectivos,
             vehiculos, filtrarVehiculos,
             empleados, filtrarEmpleados,
             opciones: optionsHistorialVehiculos,

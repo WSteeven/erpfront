@@ -25,4 +25,10 @@ export const configuracionColumnasCustodios: ColumnConfig<any>[] = [
         label: 'Responsable',
         align: 'left',
     },
+    {
+        name: 'observacion_entrega',
+        field: 'observacion_entrega',
+        label: 'Observacion Entrega',
+        align: 'left',
+    },
 ]
