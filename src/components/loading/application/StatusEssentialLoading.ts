@@ -30,4 +30,14 @@ export class StatusEssentialLoading {
   desactivar(): void {
     this.$q.loading.hide()
   }
+  async cargarConsulta(callback: () => Promise<any>): Promise<any> {
+    try {
+      this.activar()
+      return await callback()
+    } catch (e) {
+      throw e
+    } finally {
+      this.desactivar()
+    }
+  }
 }

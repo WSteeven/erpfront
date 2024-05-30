@@ -2,6 +2,13 @@ import { ColumnConfig } from "components/tables/domain/ColumnConfig";
 
 export const configuracionColumnasMantenimientosCorrectivos: ColumnConfig<any>[] = [
     {
+        name: 'solicitante',
+        field: 'solicitante',
+        label: 'Empleado Solicitante',
+        align: 'left',
+        sortable: true,
+    },
+    {
         name: 'fecha',
         field: 'fecha',
         label: 'Fecha',
@@ -9,9 +16,15 @@ export const configuracionColumnasMantenimientosCorrectivos: ColumnConfig<any>[]
         sortable: true,
     },
     {
-        name: 'solicitante',
-        field: 'solicitante',
-        label: 'Solicitante',
+        name: 'servicios',
+        field: 'servicios',
+        label: 'Servicios',
+        align: 'left',
+    },
+    {
+        name: 'km_realizado',
+        field: 'km_realizado',
+        label: 'Km Realizado',
         align: 'left',
         sortable: true,
     },
@@ -23,9 +36,9 @@ export const configuracionColumnasMantenimientosCorrectivos: ColumnConfig<any>[]
         sortable: true,
     },
     {
-        name: 'servicios',
-        field: 'servicios',
-        label: 'Servicios',
+        name: 'observacion',
+        field: 'observacion',
+        label: 'Observación',
         align: 'left',
     },
 ]

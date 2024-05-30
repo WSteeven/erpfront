@@ -378,10 +378,15 @@
                   default-opened
                 >
                   <div class="row q-col-gutter-sm q-pa-sm">
-                    <div class="col-12" v-if="resultados.mantenimientos.programados.length>0">
+                    <div
+                      class="col-12"
+                      v-if="resultados.mantenimientos.programados.length > 0"
+                    >
                       <essential-table
                         titulo="Programados/Preventivos/Periodicos"
-                        :configuracionColumnas="configuracionColumnasMantenimientosPreventivos"
+                        :configuracionColumnas="
+                          configuracionColumnasMantenimientosPreventivos
+                        "
                         :datos="resultados.mantenimientos.programados"
                         :permitirConsultar="false"
                         :permitirEliminar="false"
@@ -392,10 +397,15 @@
                         ajustarCeldas
                       />
                     </div>
-                    <div class="col-12" v-if="resultados.mantenimientos.correctivos.length>0">
+                    <div
+                      class="col-12"
+                      v-if="resultados.mantenimientos.correctivos.length > 0"
+                    >
                       <essential-table
-                        titulo="Programados/Preventivos/Periodicos"
-                        :configuracionColumnas="configuracionColumnasMantenimientosCorrectivos"
+                        titulo="Correctivos"
+                        :configuracionColumnas="
+                          configuracionColumnasMantenimientosCorrectivos
+                        "
                         :datos="resultados.mantenimientos.correctivos"
                         :permitirConsultar="false"
                         :permitirEliminar="false"
@@ -406,7 +416,34 @@
                         ajustarCeldas
                       />
                     </div>
+                  </div>
+                </q-expansion-item>
 
+                <q-expansion-item
+                  v-if="resultados?.incidentes !== undefined"
+                  class="overflow-hidden q-mb-md expansion"
+                  label="Incidentes"
+                  header-class="text-bold bg-header-collapse"
+                  default-opened
+                >
+                  <div class="row q-col-gutter-sm q-pa-sm">
+                    <div
+                      class="col-12"
+                      v-if="resultados.incidentes.length > 0"
+                    >
+                      <essential-table
+                        titulo="Incidentes"
+                        :configuracionColumnas="configuracionColumnasIncidentes"
+                        :datos="resultados.incidentes"
+                        :permitirConsultar="false"
+                        :permitirEliminar="false"
+                        :permitirEditar="false"
+                        :mostrarBotones="false"
+                        permitir-buscar
+                        :alto-fijo="false"
+                        ajustarCeldas
+                      />
+                    </div>
                   </div>
                 </q-expansion-item>
               </div>

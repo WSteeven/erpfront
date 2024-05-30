@@ -1712,6 +1712,23 @@
         ></q-icon>
       </q-td>
     </template>
+    
+    <template #body-cell-aplica_seguro="props">
+      <q-td :props="props">
+        <q-icon
+          v-if="props.value"
+          name="bi-check-circle-fill"
+          color="positive"
+          size="sm"
+        ></q-icon>
+        <q-icon
+          v-if="!props.value"
+          name="bi-x-circle-fill"
+          color="negative"
+          size="sm"
+        ></q-icon>
+      </q-td>
+    </template>
 
     <!-- tiene firma -->
     <template #body-cell-firma_url="props">

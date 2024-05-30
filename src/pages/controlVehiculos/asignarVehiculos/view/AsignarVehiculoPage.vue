@@ -79,9 +79,18 @@
                   <div class="error-msg">{{ error.$message }}</div>
                 </div>
               </template>
+              <template v-slot:after>
+                <q-btn
+                  color="positive"
+                  @click="
+                    recargarEmpleados
+                  "
+                >
+                  <q-icon size="xs" class="q-mr-sm" name="bi-arrow-clockwise" />
+                </q-btn>
+              </template>
             </q-select>
           </div>
-
           <!-- Vehiculo -->
           <div class="col-12 col-md-3 q-mb-md">
             <label class="q-mb-sm block">Vehículo</label>

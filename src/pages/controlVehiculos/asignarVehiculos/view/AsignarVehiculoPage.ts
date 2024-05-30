@@ -14,7 +14,7 @@ import { ConductorController } from "pages/controlVehiculos/conductores/infraest
 import { required } from "shared/i18n-validators";
 import useVuelidate from "@vuelidate/core";
 import { useFiltrosListadosSelects } from "shared/filtrosListadosGenerales";
-import { imprimirArchivo, ordenarLista } from "shared/utils";
+import { imprimirArchivo, obtenerFechaActual, ordenarLista } from "shared/utils";
 import { useAuthenticationStore } from "stores/authentication";
 import { acciones, convertir_fecha, maskFecha } from "config/utils";
 import { VehiculoController } from "pages/controlVehiculos/vehiculos/infraestructure/VehiculoController";
@@ -26,7 +26,7 @@ import { useNotificaciones } from "shared/notificaciones";
 import { LocalStorage, useQuasar } from "quasar";
 import { useNotificacionStore } from "stores/notificacion";
 import { useCargandoStore } from "stores/cargando";
-import { valida2rCedula } from "shared/validadores/validaciones";
+import { recargarGenerico } from "shared/funcionesActualizacionListados";
 
 
 export default defineComponent({
@@ -83,6 +83,7 @@ export default defineComponent({
 
             asignacion.entrega = store.user.id
             asignacion.estado = pendiente.label
+            asignacion.fecha_entrega = obtenerFechaActual(maskFecha)
         })
         /*********************************
          * Validaciones
@@ -105,7 +106,7 @@ export default defineComponent({
             const estadosDB = [asignacion.estado_mecanico, asignacion.estado_mecanico, asignacion.estado_electrico]
             console.log(asignacion, estadosDB)
             const todosNulos = estadosDB.every(function (value) { return value === null })
-            
+
             console.log(todosNulos)
             if (todosNulos)
                 LocalStorage.set('estadosVehiculos', JSON.stringify(estadosDefault))
@@ -117,6 +118,8 @@ export default defineComponent({
         onReestablecer(() => {
             asignacion.entrega = store.user.id
             asignacion.estado = pendiente.label
+
+            asignacion.fecha_entrega = obtenerFechaActual(maskFecha)
         })
         /*********************************
          * Funciones
@@ -167,6 +170,7 @@ export default defineComponent({
             const hoy = convertir_fecha(new Date())
             return date <= hoy
         }
+        
 
         async function imprimirPdf(id: number, placa: string) {
             try {
@@ -219,6 +223,9 @@ export default defineComponent({
                 }
             })
         }
+        async function recargarEmpleados(){
+            await recargarGenerico(listadosAuxiliares, 'empleados', empleados, new ConductorController())
+        }
 
         /**************************
         * Botones de tabla
@@ -245,6 +252,7 @@ export default defineComponent({
 
 
             //listados
+            listadosAuxiliares,
             empleados, filtrarEmpleados,
             vehiculos, filtrarVehiculos,
             cantones, filtrarCantones,
@@ -261,6 +269,7 @@ export default defineComponent({
             filtrarAccesorios,
             crearEstado,
             filtrarEstados,
+            recargarEmpleados,
 
 
             //botones de tablas

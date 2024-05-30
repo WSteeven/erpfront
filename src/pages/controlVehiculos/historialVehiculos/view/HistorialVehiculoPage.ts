@@ -29,6 +29,7 @@ import { Vehiculo } from "pages/controlVehiculos/vehiculos/domain/Vehiculo";
 import { useNotificaciones } from "shared/notificaciones";
 import { historialVehiculos, optionsHistorialVehiculos } from "config/vehiculos.utils";
 import { ServicioController } from "pages/controlVehiculos/servicios/infraestructure/ServicioController";
+import { configuracionColumnasIncidentes } from "../domain/configuracionColumnasIncidentes";
 
 export default defineComponent({
     components: { EssentialTable },
@@ -62,7 +63,6 @@ export default defineComponent({
             })
             historial.fecha_fin = obtenerFechaActual(maskFecha)
 
-            configuracionColumnasMantenimientosCorrectivos.find((item) => item.field === 'servicios')!.options = listadosAuxiliares.servicios.map((v) => { return { label: v.nombre, value: v.id } })
         })
         const reglas = {
             vehiculo: { required },
@@ -119,6 +119,7 @@ export default defineComponent({
             configuracionColumnasCustodios,
             configuracionColumnasMantenimientosPreventivos,
             configuracionColumnasMantenimientosCorrectivos,
+            configuracionColumnasIncidentes,
             vehiculos, filtrarVehiculos,
             empleados, filtrarEmpleados,
             opciones: optionsHistorialVehiculos,

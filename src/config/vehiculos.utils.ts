@@ -180,6 +180,7 @@ export const optionsDefault = [
 
 export const historialVehiculos = {
   todos: 'TODOS',
+  custodios: 'CUSTODIOS',
   mantenimientos: 'MANTENIMIENTOS',
   incidentes: 'INCIDENTES',
 }
@@ -190,6 +191,12 @@ export const optionsHistorialVehiculos = [
     value: historialVehiculos.todos,
     checkedIcon: 'bi-check-circle-fill',
     uncheckedIcon: 'bi-check-circle-fill',
+  },
+  {
+    label: 'Custodios',
+    value: historialVehiculos.custodios,
+    checkedIcon: 'bi-person-badge-fill',
+    uncheckedIcon: 'bi-person-badge',
   },
   {
     label: 'Mantenimientos',
