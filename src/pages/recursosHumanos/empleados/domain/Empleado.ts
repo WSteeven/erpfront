@@ -131,7 +131,7 @@ export class Empleado extends EntidadAuditable {
     this.talla_camisa = null
     this.talla_guantes = null
     this.talla_pantalon = null
-    this.genero = 'M'
+    this.genero = null
     this.banco_info = null
     this.esta_en_rol_pago = true
     this.acumula_fondos_reserva = false

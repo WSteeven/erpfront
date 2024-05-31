@@ -218,10 +218,10 @@ export const useMenuStore = defineStore('menu', () => {
           can: store.can('puede.ver.solicitudes_examenes'),
         },
         {
-          title: 'Reportes',
-          link: 'reporte-cuestionarios-pisicosocial',
+          title: 'Reportes cuestionarios',
+          link: 'reportes-cuestionarios',
           icon: 'bi-app',
-          can: store.can('puede.ver.reporte_cuestionarios_psicosocial'),
+          can: store.can('puede.ver.reportes_cuestionarios'),
         },
         {
           title: 'CIE',

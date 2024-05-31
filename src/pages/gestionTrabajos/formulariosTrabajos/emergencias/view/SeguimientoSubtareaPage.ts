@@ -451,6 +451,8 @@ export default defineComponent({
     }
 
     async function obtenerClientesMaterialesTarea() {
+      console.log(subtarea)
+      console.log(trabajoAsignadoStore.subtarea)
       if (parametrosGenerales.proyecto_id && parametrosGenerales.etapa_id) consultarClientesMaterialesTarea({ proyecto_id: parametrosGenerales.proyecto_id, etapa_id: parametrosGenerales.etapa_id, filtrar_por_etapa: true })
       else if (parametrosGenerales.proyecto_id) consultarClientesMaterialesTarea({ proyecto_id: parametrosGenerales.proyecto_id, etapa_id: parametrosGenerales.etapa_id, filtrar_por_proyecto: true })
       else consultarClientesMaterialesTarea({ tarea_id: subtarea.tarea_id, filtrar_por_tarea: true })

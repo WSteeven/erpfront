@@ -98,7 +98,7 @@ export default defineComponent({
 
     async function imprimirReporte(): Promise<void> {
       const fechaActual = new Date()
-      const filename = 'reporte_cuestionarios_pisicosocial_' + fechaActual.toLocaleString()
+      const filename = 'reporte_cuestionarios_' + filtro.tipo_cuestionario + "_" + fechaActual.toLocaleString()
       const urlPdf = apiConfig.URL_BASE + '/' + AxiosHttpRepository.getInstance().getEndpoint(medico.reporte_cuestionario) + '?imprimir=true&anio=' + filtro.anio + '&tipo_cuestionario_id=' + filtro.tipo_cuestionario
       imprimirArchivo(urlPdf, 'GET', 'blob', 'xlsx', filename)
       // const url_pdf = apiConfig.URL_BASE + '/api/medico/reporte-cuestionario?imprimir=true'

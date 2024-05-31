@@ -192,7 +192,7 @@
               <label class="q-mb-sm block full-width"
                 ><b>Paso 2:</b> Luego genere las fichas médicas</label
               >
-              <!-- <q-btn
+              <q-btn
                 class="col-12 q-mb-sm"
                 no-caps
                 push
@@ -201,7 +201,7 @@
               >
                 <q-icon name="bi-ui-checks-grid" class="q-mr-sm" size="xs"></q-icon>
                 {{ textoFichaAptitud }}
-              </q-btn> -->
+              </q-btn> 
 
               <q-btn
                 v-if="mostrarFichaRetiro"

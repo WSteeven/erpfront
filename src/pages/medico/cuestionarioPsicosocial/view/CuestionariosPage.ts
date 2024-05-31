@@ -59,7 +59,7 @@ export default defineComponent({
       accion,
       listadosAuxiliares,
     } = mixin.useReferencias()
-    const { onBeforeGuardar } = mixin.useHooks()
+    // const { onBeforeGuardar } = mixin.useHooks()
 
     cargarVista(async () => {
       await obtenerListados({
@@ -101,11 +101,27 @@ export default defineComponent({
       })
     }
 
+    const mapearRespuestas = () => {
+      return respuestaCuestionarioEmpleado.cuestionario = listadosAuxiliares.preguntas.map(
+        (item: any) => {
+          return {
+            // respuesta: typeof item.respuesta === 'string' ? item.respuesta : null,
+            respuesta_texto: typeof item.respuesta === 'string' ? item.respuesta : null,
+            id_cuestionario:
+              typeof item.respuesta === 'string'
+                ? item.cuestionario[0].id
+                : item.respuesta,
+          }
+        }
+      )
+    }
+
     const guardarCuestionario = async () => {
       confirmar(
         'Las respuestas serán enviadas y no podrán ser modificadas. ¿Desea continuar?',
         async () => {
           try {
+            mapearRespuestas()
             await guardar(respuestaCuestionarioEmpleado)
             listadosAuxiliares.preguntas = []
             mensaje.value = 'Gracias por completar el cuestionario.'
@@ -119,7 +135,7 @@ export default defineComponent({
     /********
      * Hooks
      ********/
-    onBeforeGuardar(() => {
+    /* onBeforeGuardar(() => {
       respuestaCuestionarioEmpleado.cuestionario = listadosAuxiliares.preguntas.map(
         (item: any) => {
           return {
@@ -132,7 +148,7 @@ export default defineComponent({
           }
         }
       )
-    })
+    }) */
 
     /*******
      * Init

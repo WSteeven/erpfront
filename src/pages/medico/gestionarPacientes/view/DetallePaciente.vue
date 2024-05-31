@@ -5,6 +5,7 @@
     </div>
 
     <div class="col-12 col-md-10">
+      
       <div class="row q-col-gutter-md">
         <div class="col-12 text-primary text-bold text-h6 q-mb-md">
           {{ nombres }}

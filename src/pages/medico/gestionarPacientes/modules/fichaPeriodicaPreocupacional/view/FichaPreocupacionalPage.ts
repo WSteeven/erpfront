@@ -267,6 +267,7 @@ export default defineComponent({
       fichaPreocupacional.motivo_consulta = response.data.modelo.motivo_consulta
       fichaPreocupacional.recomendaciones_tratamiento = response.data.modelo.recomendaciones_tratamiento
       fichaPreocupacional.enfermedad_actual = response.data.modelo.enfermedad_actual
+      fichaPreocupacional.cargo = response.data.modelo.cargo
     }
 
     const descargarPdf = async () => {

@@ -38,3 +38,4 @@ export class CitaMedica extends EntidadAuditable {
     this.tipo_cambio_cargo = null
   }
 }
+

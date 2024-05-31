@@ -239,8 +239,7 @@ export default defineComponent({
 
     onGuardado((id, responseData) => {
       const modelo = responseData.modelo as CitaMedica
-      // console.log(modelo)
-      // console.log(tabCita.value)
+      
       if (tabCita.value === estadosCitaMedica.PENDIENTE) {
         if (modelo.tipo_cita_medica === tiposCitaMedica.ENFERMEDAD_COMUN.value) {
           enfermedadesComunes.value.push(modelo)
@@ -291,10 +290,6 @@ export default defineComponent({
     citaMedica.paciente = authenticationStore.user.id
     empleado.hydrate(authenticationStore.user)
 
-
-    // consultarCitasMedicasEnfermedadComun()
-    // consultarCitasMedicasAccidenteTrabajo()
-
     const enfermedadComunTabPanel = {
       label: tiposCitaMedica.ENFERMEDAD_COMUN.label,
       accion: consultarCitasMedicasEnfermedadComun,
@@ -305,7 +300,7 @@ export default defineComponent({
       accion: consultarCitasMedicasAccidenteTrabajo,
     }
 
-    const esPaciente = computed(() => citaMedica.paciente_id === authenticationStore.user.id)
+    const esPaciente = computed(() => citaMedica.paciente_id === authenticationStore.user?.id)
 
     return {
       v$,
