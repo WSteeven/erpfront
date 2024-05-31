@@ -18,7 +18,7 @@ import { ContenedorSimpleMixin } from 'shared/contenedor/modules/simple/applicat
 import { PrestamoController } from '../infraestructure/PrestamoController'
 import { Prestamo } from '../domain/Prestamo'
 import { removeAccents } from 'shared/utils'
-import { accionesTabla, maskFecha, tabPrestamoEmpresarial } from 'config/utils'
+import { acciones, accionesTabla, maskFecha, tabPrestamoEmpresarial } from 'config/utils'
 import { MotivoPermisoEmpleadoController } from 'pages/recursosHumanos/motivo/infraestructure/MotivoPermisoEmpleadoController'
 import EssentialTable from 'components/tables/view/EssentialTable.vue'
 import { EmpleadoController } from 'pages/recursosHumanos/empleados/infraestructure/EmpleadoController'
@@ -29,6 +29,7 @@ import { useRecursosHumanosStore } from 'stores/recursosHumanos'
 import { PeriodoController } from 'pages/recursosHumanos/periodo/infraestructure/PeriodoController'
 import { PrestamoCustomController } from '../infraestructure/PrestamoCustomController'
 import { useAuthenticationStore } from 'stores/authentication'
+import { format, parse } from '@formkit/tempo'
 
 export default defineComponent({
   components: { TabLayoutFilterTabs2, SelectorImagen, EssentialTable },
@@ -132,49 +133,32 @@ export default defineComponent({
       const week = 7 * day
       const month = 4 * week
       const year = 12 * month
-      const partes = prestamo.fecha!.split('-')
-      const fechaActual = new Date(
-        parseInt(partes[2]),
-        parseInt(partes[1]) - 1,
-        parseInt(partes[0])
-      )
+      const fechaPrestamo = parse(prestamo.fecha !== null?prestamo.fecha:new Date().toString() ,"YYYY-MM-DD")
       switch (plazo) {
         case 'dias':
-          fechaActual.setDate(fechaActual.getDate() + cuota)
+          fechaPrestamo.setDate(fechaPrestamo.getDate() + cuota)
           break
         case 'semanas':
-          fechaActual.setDate(fechaActual.getTime() + week * cuota)
+          fechaPrestamo.setDate(fechaPrestamo.getTime() + week * cuota)
           break
         case 'meses':
-          fechaActual.setDate(30) // Establecer el día 30
+          fechaPrestamo.setDate(30) // Establecer el día 30
           // Incrementar los meses en index-1 para asegurarse de que la fecha sea el último día del mes
-          fechaActual.setMonth(fechaActual.getMonth() + cuota - 1)
+          fechaPrestamo.setMonth(fechaPrestamo.getMonth() + cuota - 1)
           break
         case 'anios':
-          fechaActual.setDate(fechaActual.getTime() + year * cuota)
+          fechaPrestamo.setDate(fechaPrestamo.getTime() + year * cuota)
           break
       }
       // Formatear la fecha en formato 'YYYY-MM-DD'
-      // Obtiene los componentes de la fecha
-      const dia =
-        fechaActual.getDate() >= 10
-          ? fechaActual.getDate()
-          : '0' + fechaActual.getDate()
-      const mes =
-        fechaActual.getMonth() >= 9
-          ? fechaActual.getMonth() + 1
-          : '0' + (fechaActual.getMonth() + 1) // Los meses en JavaScript se indexan desde 0 (enero es 0)
-      const año = fechaActual.getFullYear()
-      // Formatea los componentes de la fecha en el nuevo formato
-      const fechaFormateada = dia + '-' + mes + '-' + año
-      return fechaFormateada
+      return format(fechaPrestamo, 'YYYY-MM-DD')
     }
     const v$ = useVuelidate(reglas, prestamo)
     setValidador(v$.value)
 
     watchEffect(() => {
       try {
-        if (accion.value == 'NUEVO' ? true : false) {
+        if (accion.value == acciones.nuevo? true : false) {
           if (prestamo.plazo != null) {
             const valor_cuota = prestamo.monto !== null ? prestamo.monto : 0
             const plazo_prestamo = prestamo.plazo != null ? prestamo.plazo : 0
@@ -234,9 +218,11 @@ export default defineComponent({
           (couta) => couta.num_cuota === prestamo.plazo + 1
         )
         if (indice_couta == -1) {
+          const periodo_seleccionado = periodos.value.find((periodo) => periodo.id === prestamo.periodo);
+
           const nuevaCuota = {
             num_cuota: prestamo.plazos!.length + 1,
-            // fecha_pago: '15-04-' + prestamo.utilidad,
+            fecha_vencimiento:  periodo_seleccionado.nombre.split('-')[0]+'-04-15',
             valor_couta: prestamo.valor_utilidad,
             pago_couta: false,
           }

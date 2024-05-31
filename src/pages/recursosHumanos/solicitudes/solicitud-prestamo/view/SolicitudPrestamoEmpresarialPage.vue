@@ -22,7 +22,7 @@
               v-model="solicitudPrestamo.fecha"
               placeholder="Obligatorio"
               :error="!!v$.fecha.$errors.length"
-              :disable="accion.value !== acciones.nuevo && solicitudPrestamo.estado !== autorizacionesId.CANCELADO ? false : true"
+              :disable="(accion.value !== acciones.nuevo && solicitudPrestamo.estado !== autorizacionesId.CANCELADO ? false : true) || disabled"
               @blur="v$.fecha.$touch"
               outlined
               dense
@@ -58,7 +58,7 @@
               v-model="solicitudPrestamo.monto"
               placeholder="Obligatorio"
               type="number"
-              :disable="accion.value !== acciones.nuevo && solicitudPrestamo.estado !== autorizacionesId.CANCELADO ? false : true"
+              :disable="(accion.value !== acciones.nuevo && solicitudPrestamo.estado !== autorizacionesId.CANCELADO ? false : true) || disabled"
               :error="!!v$.monto.$errors.length"
               lazy-rules
               :rules="maximoValorsolicitudPrestamo"
@@ -75,11 +75,11 @@
           </div>
           <!-- Plazo -->
           <div class="col-12 col-md-3" v-if="esValidador || esAutorizador">
-            <label class="q-mb-sm block">Plazo </label>
+            <label class="q-mb-sm block">Plazo (Meses) </label>
             <q-input
               v-model="solicitudPrestamo.plazo"
               type="number"
-              :disable="accion.value !== acciones.nuevo && solicitudPrestamo.estado !== autorizacionesId.CANCELADO ? false : true || disabled"
+              :disable="(accion.value !== acciones.nuevo && solicitudPrestamo.estado !== autorizacionesId.CANCELADO ? false : true) || disabled"
               :error="!!v$.plazo.$errors.length"
               placeholder="Obligatorio"
               @blur="v$.plazo.$touch"
@@ -99,7 +99,7 @@
             <q-input
               v-model="solicitudPrestamo.motivo"
               placeholder="Obligatorio"
-              :disable="!puede_editar"
+              :disable="restringirMotivo"
               type="textarea"
               :error="!!v$.motivo.$errors.length"
               @blur="v$.motivo.$touch"
@@ -120,7 +120,7 @@
             <q-input
               v-model="solicitudPrestamo.observacion"
               placeholder="Obligatorio"
-              :disable="disabled"
+              :disable="!esValidador || disabled"
               type="textarea"
               :error="!!v$.observacion.$errors.length"
               @blur="v$.observacion.$touch"
@@ -140,7 +140,7 @@
               class="q-mt-lg q-pt-md"
               v-model="solicitudPrestamo.cargo_utilidad"
               label="Cargo a Utilidades"
-              :disable="disabled"
+              :disable="(accion.value !== acciones.nuevo && solicitudPrestamo.estado !== autorizacionesId.CANCELADO ? false : true) || disabled"
               outlined
               dense
             ></q-checkbox>
@@ -156,7 +156,7 @@
               options-dense
               dense
               outlined
-              :disable="disabled"
+              :disable="(accion.value !== acciones.nuevo && solicitudPrestamo.estado !== autorizacionesId.CANCELADO ? false : true) || disabled"
               :readonly="disabled"
               use-input
               input-debounce="0"
@@ -187,7 +187,7 @@
               v-model="solicitudPrestamo.valor_utilidad"
               placeholder="Obligatorio"
               type="number"
-              :disable="disabled"
+              :disable="(accion.value !== acciones.nuevo && solicitudPrestamo.estado !== autorizacionesId.CANCELADO ? false : true) || disabled"
               :error="!!v$.valor_utilidad.$errors.length"
               @blur="v$.valor_utilidad.$touch"
               outlined
@@ -229,25 +229,6 @@
                 </q-item>
               </template>
             </q-select>
-          </div>
-          <!-- Foto -->
-          <div class="col-12 col-md-3">
-            <label class="q-mb-sm block">Foto</label>
-            <selector-imagen
-              :imagen="solicitudPrestamo.foto"
-              file_extensiones=".jpg, image/*"
-              :error="!!v$.foto.$errors.length"
-              :disable="!puede_editar"
-              error-message="Debes de cargar imagen de comprobante"
-              @blur="v$.foto.$touch"
-              @update:modelValue="(data) => (solicitudPrestamo.foto = data)"
-            >
-              <template v-slot:error>
-                <div v-for="error of v$.foto.$errors" :key="error.$uid">
-                  <div class="error-msg">{{ error.$message }}</div>
-                </div>
-              </template>
-            </selector-imagen>
           </div>
           <!--nivel endeudamiento-->
           <!--Total descuentos-->

@@ -25,7 +25,7 @@
         >
           <label class="q-mb-sm block">Empleado</label>
           <q-select
-            v-model="consolidado.usuario"
+            v-model="consolidado.empleado"
             :options="usuarios"
             transition-show="jump-up"
             transition-hide="jump-down"
