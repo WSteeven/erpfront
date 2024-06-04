@@ -69,7 +69,7 @@ export default defineComponent({
       if (authenticationStore.esAdministrador) {
         return true
       } else {
-        return departamento.id === authenticationStore.user.departamento
+        return departamento.responsable_id === authenticationStore.user.id
       }
     }))
 
