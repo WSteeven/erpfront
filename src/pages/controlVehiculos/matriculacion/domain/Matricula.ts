@@ -8,6 +8,7 @@ export class Matricula extends EntidadAuditable {
     valor_estimado_pagar: string | null
     matriculador: string | null
     matriculado: boolean
+    fecha_pago: string | null
     observacion: string | null
     monto: string | null
     estado: boolean
@@ -21,6 +22,7 @@ export class Matricula extends EntidadAuditable {
         this.valor_estimado_pagar = null
         this.matriculador = null
         this.matriculado = true
+        this.fecha_pago = null
         this.estado = this.matriculado
         this.observacion = null
         this.monto = null

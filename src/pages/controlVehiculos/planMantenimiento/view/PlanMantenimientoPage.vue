@@ -86,7 +86,10 @@
           </div>
 
           <!-- activo -->
-          <div class="col-12 col-md-3" v-if="accion == acciones.editar||accion == acciones.consultar">
+          <div
+            class="col-12 col-md-3"
+            v-if="accion == acciones.editar || accion == acciones.consultar"
+          >
             <br />
             <q-toggle
               v-model="plan.activo"
@@ -142,12 +145,9 @@
             </div>
           </div>
           <!-- {{ plan.listadoServicios }} -->
-          
+
           <!-- Tabla de servicios seleccionados -->
-          <div
-            class="col-12"
-            v-if="plan.listadoServicios.length > 0 || accion == acciones.editar"
-          >
+          <div class="col-12" v-if="plan.listadoServicios.length > 0">
             <essential-table
               titulo="Productos Seleccionados"
               :configuracionColumnas="
@@ -160,15 +160,17 @@
               :desplegarDesde="3"
               :permitirConsultar="false"
               :permitirEditar="false"
+              permitir-editar-celdas
+              :disable="disabled"
               :permitirEliminar="false"
               :mostrarBotones="false"
               :ajustarCeldas="true"
               :altoFijo="false"
               :accion1Header="btnAgregarServicio"
-              :accion1="btnEditarFila"
-              :accion2="btnEditarNotificar"
-              :accion3="btnEliminarFila"
+              :accion1="btnEliminarFila"
             >
+              <!-- :accion2="btnEditarNotificar"
+              :accion3="btnEliminarFila" -->
             </essential-table>
           </div>
         </div>

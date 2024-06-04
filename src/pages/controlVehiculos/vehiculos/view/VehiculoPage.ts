@@ -18,7 +18,7 @@ import { MarcaController } from 'pages/bodega/marcas/infraestructure/MarcaContro
 import { ModeloController } from 'pages/bodega/modelos/infraestructure/ModeloController';
 import { CombustibleController } from 'pages/controlVehiculos/combustible/infraestructure/CombustibleController';
 import { acciones, maskFecha } from 'config/utils';
-import { opciones_traccion_vehiculos } from 'config/vehiculos.utils';
+import { opciones_traccion_vehiculos, tiposCategoriasVehiculos } from 'config/vehiculos.utils';
 import { ArchivoController } from 'pages/gestionTrabajos/subtareas/modules/gestorArchivosTrabajos/infraestructure/ArchivoController';
 import { computed } from 'vue';
 import { useAuthenticationStore } from 'stores/authentication';
@@ -90,6 +90,7 @@ export default defineComponent({
         //Reglas de validacion
         const reglas = {
             placa: { required },
+            propietario: { required },
             num_motor: { required },
             num_chasis: { required },
             anio_fabricacion: { required, maximo: maxLength(4) },
@@ -97,6 +98,7 @@ export default defineComponent({
             rendimiento: { required, maximo: maxLength(2) },
             modelo: { required },
             combustible: { required },
+            tipo: { required },
             tipo_vehiculo: { required },
             prendador: { requiredIf: requiredIf(() => vehiculo.tiene_gravamen) },
             traccion: { required },
@@ -193,6 +195,7 @@ export default defineComponent({
             combustibles, filtrarCombustibles,
             opciones_traccion_vehiculos,
             tiposVehiculos, filtrarTiposVehiculos,
+            tiposCategoriasVehiculos,
 
             //funciones
             recargarSeguros,

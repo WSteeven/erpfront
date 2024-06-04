@@ -37,7 +37,7 @@ export default defineComponent({
         const mixin = new ContenedorSimpleMixin(PlanMantenimiento, new PlanMantenimientoController())
         const { entidad: plan, listado, accion, disabled, listadosAuxiliares } = mixin.useReferencias()
         const { setValidador, obtenerListados, cargarVista } = mixin.useComportamiento()
-        const { onConsultado, onReestablecer } = mixin.useHooks()
+        const { onConsultado, onReestablecer, onBeforeConsultar } = mixin.useHooks()
         const { confirmar, prompt, notificarCorrecto, notificarError } = useNotificaciones()
 
         useNotificacionStore().setQuasar(useQuasar())
@@ -62,6 +62,9 @@ export default defineComponent({
         /********************************
          * HOOKS
          ********************************/
+        onBeforeConsultar(() => {
+            plan.hydrate(new PlanMantenimiento())
+        })
         onConsultado(() => {
             const vehiculoSeleccionado = vehiculos.value.filter((v) => v.id === plan.vehiculo)[0]
             console.log(vehiculoSeleccionado)
@@ -182,14 +185,22 @@ export default defineComponent({
         configuracionColumnasServicios.find((item) => item.field == 'nombre')!.editable = false
         configuracionColumnasServicios.find((item) => item.field == 'intervalo')!.editable = true
         configuracionColumnasServicios.find((item) => item.field == 'intervalo')!.type = 'number'
+        configuracionColumnasServicios.find((item) => item.field == 'notificar_antes')!.editable = true
+        configuracionColumnasServicios.find((item) => item.field == 'notificar_antes')!.type = 'number'
 
-
+        const configuracionColumnsServicios = [...configuracionColumnasServicios, {
+            name: 'datos_adicionales',
+            field: 'datos_adicionales',
+            label: 'Datos adicionales',
+            align: 'left',
+            editable: true,
+        }]
 
 
         return {
             mixin, v$, plan, disabled, accion, acciones,
             configuracionColumnas: configuracionColumnasPlanMantenimiento,
-            configuracionColumnasServicios, accionesTabla,
+            configuracionColumnasServicios: configuracionColumnsServicios, accionesTabla,
             modales,
             vehiculo,
             //listados

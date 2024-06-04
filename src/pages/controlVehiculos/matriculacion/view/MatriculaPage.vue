@@ -204,6 +204,18 @@
               dense
             />
           </div>
+
+          <!-- Fecha de matricula -->
+          <div v-if="matricula.fecha_pago" class="col-12 col-md-3">
+            <label class="q-mb-sm block">Fecha de pago</label>
+            <q-input
+              autogrow
+              v-model="matricula.fecha_pago"
+              disable
+              outlined
+              dense
+            />
+          </div>
         </div>
       </q-form>
     </template>

@@ -11,6 +11,11 @@ export const opciones_traccion_vehiculos = [
   { value: '2X1', label: '2X1' },
 ]
 
+export const tiposCategoriasVehiculos = [
+  {value: 'PROPIO'},
+  {value: 'ALQUILADO'},
+]
+
 export const tiposLicencias = [
   { value: 'A', label: 'A', caption: 'NO PROFESIONAL' },
   { value: 'B', label: 'B', caption: 'NO PROFESIONAL' },
@@ -75,6 +80,7 @@ export const tabOptionsAsignacionVehiculos: TabOption[] = [
   { label: 'FIRMADAS', value: 'FIRMADA' },
   { label: 'RECHAZADAS', value: 'RECHAZADO' },
   { label: 'ANULADAS', value: 'ANULADO' },
+  { label: 'DEVUELTAS', value: 'DEVUELTO' },
 ]
 
 export const tabOptionsMantenimientosVehiculos: TabOption[] = [

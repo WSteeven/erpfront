@@ -18,6 +18,9 @@ export class Vehiculo extends EntidadAuditable {
     capacidad_tanque: number | null
     color: string | null
     seguro: number | null
+    tipo: string | null
+    tiene_rastreo: boolean
+    propietario: string | null
 
     constructor() {
         super()
@@ -38,5 +41,8 @@ export class Vehiculo extends EntidadAuditable {
         this.seguro = null
         this.tiene_gravamen = false
         this.prendador = null
+        this.tipo = null
+        this.tiene_rastreo = false
+        this.propietario = null
     }
 }

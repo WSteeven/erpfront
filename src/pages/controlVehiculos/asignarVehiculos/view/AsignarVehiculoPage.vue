@@ -9,7 +9,8 @@
     titulo-pagina="Asignación de Vehículos"
     :permitirEditar="puedeEditar"
     :permitirEliminar="tabActual == 'PENDIENTE'"
-    :accion1="btnImprimirActaResponsabilidad"
+    :accion1="btnDevolverVehiculo"
+    :accion2="btnImprimirActaResponsabilidad"
   >
     <!-- :permitirEditar="tabActual=='PENDIENTE' && asignacion.responsable==store.user.id" -->
     <template #formulario>
@@ -80,12 +81,7 @@
                 </div>
               </template>
               <template v-slot:after>
-                <q-btn
-                  color="positive"
-                  @click="
-                    recargarEmpleados
-                  "
-                >
+                <q-btn color="positive" @click="recargarEmpleados">
                   <q-icon size="xs" class="q-mr-sm" name="bi-arrow-clockwise" />
                 </q-btn>
               </template>
@@ -137,6 +133,11 @@
                   <div class="error-msg">{{ error.$message }}</div>
                 </div>
               </template>
+              <template v-slot:after>
+                <q-btn color="positive" @click="recargarVehiculos">
+                  <q-icon size="xs" class="q-mr-sm" name="bi-arrow-clockwise" />
+                </q-btn>
+              </template>
             </q-select>
           </div>
 
@@ -152,6 +153,7 @@
               options-dense
               dense
               outlined
+              :error="!!v$.canton.$errors.length"
               :option-label="(item) => item.canton"
               :option-value="(item) => item.id"
               @filter="filtrarCantones"
@@ -166,6 +168,11 @@
                     No hay resultados
                   </q-item-section>
                 </q-item>
+              </template>
+              <template v-slot:error>
+                <div v-for="error of v$.canton.$errors" :key="error.$uid">
+                  <div class="error-msg">{{ error.$message }}</div>
+                </div>
               </template>
             </q-select>
           </div>
@@ -250,11 +257,20 @@
               use-input
               use-chips
               multiple
+              :error="!!v$.estado_carroceria.$errors.length"
               input-debounce="0"
               @new-value="crearEstado"
               :options="estados"
               @filter="filtrarEstados"
             >
+              <template v-slot:error>
+                <div
+                  v-for="error of v$.estado_carroceria.$errors"
+                  :key="error.$uid"
+                >
+                  <div class="error-msg">{{ error.$message }}</div>
+                </div>
+              </template>
             </q-select>
           </div>
 
@@ -271,11 +287,20 @@
               use-input
               use-chips
               multiple
+              :error="!!v$.estado_mecanico.$errors.length"
               input-debounce="0"
               @new-value="crearEstado"
               :options="estados"
               @filter="filtrarEstados"
             >
+              <template v-slot:error>
+                <div
+                  v-for="error of v$.estado_mecanico.$errors"
+                  :key="error.$uid"
+                >
+                  <div class="error-msg">{{ error.$message }}</div>
+                </div>
+              </template>
             </q-select>
           </div>
 
@@ -292,11 +317,20 @@
               use-input
               use-chips
               multiple
+              :error="!!v$.estado_electrico.$errors.length"
               input-debounce="0"
               @new-value="crearEstado"
               :options="estados"
               @filter="filtrarEstados"
             >
+              <template v-slot:error>
+                <div
+                  v-for="error of v$.estado_electrico.$errors"
+                  :key="error.$uid"
+                >
+                  <div class="error-msg">{{ error.$message }}</div>
+                </div>
+              </template>
             </q-select>
           </div>
 
@@ -351,11 +385,17 @@
               use-input
               use-chips
               multiple
+              :error="!!v$.accesorios.$errors.length"
               input-debounce="0"
               @new-value="crearAccesorio"
               :options="accesorios"
               @filter="filtrarAccesorios"
             >
+              <template v-slot:error>
+                <div v-for="error of v$.accesorios.$errors" :key="error.$uid">
+                  <div class="error-msg">{{ error.$message }}</div>
+                </div>
+              </template>
             </q-select>
           </div>
         </div>

@@ -805,7 +805,7 @@ export const useMenuStore = defineStore('menu', () => {
         {
           title: 'Conductores',
           link: 'conductores',
-          icon: 'bi-person-vcard-fill',
+          icon: 'bi-circle',
           can: store.can('puede.acceder.conductores'),
         },
         {
@@ -817,7 +817,7 @@ export const useMenuStore = defineStore('menu', () => {
         {
           title: 'Vehículos',
           link: 'vehiculos',
-          icon: 'bi-car-front-fill',
+          icon: 'bi-circle',
           can: store.can('puede.acceder.vehiculos'),
         },
         {
@@ -871,7 +871,7 @@ export const useMenuStore = defineStore('menu', () => {
         {
           title: 'Matrículas',
           link: 'matriculas',
-          icon: 'bi-calendar3-week-fill',
+          icon: 'bi-circle',
           can: store.can('puede.acceder.matriculas_vehiculos'),
         },
         {

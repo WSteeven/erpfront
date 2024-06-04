@@ -84,6 +84,7 @@
           :type="props.col.type ? props.col.type : 'text'"
           :hint="props.col.hint"
           :disable="disable"
+          autogrow
           dense
           outlined
         />

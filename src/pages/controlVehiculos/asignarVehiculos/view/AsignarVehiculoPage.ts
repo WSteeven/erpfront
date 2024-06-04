@@ -27,6 +27,9 @@ import { LocalStorage, useQuasar } from "quasar";
 import { useNotificacionStore } from "stores/notificacion";
 import { useCargandoStore } from "stores/cargando";
 import { recargarGenerico } from "shared/funcionesActualizacionListados";
+import { CustomActionPrompt } from "components/tables/domain/CustomActionPrompt";
+import { ParamsType } from "config/types";
+import { AxiosResponse } from "axios";
 
 
 export default defineComponent({
@@ -36,7 +39,7 @@ export default defineComponent({
         const { entidad: asignacion, disabled, listadosAuxiliares, accion, listado } = mixin.useReferencias()
         const { setValidador, obtenerListados, cargarVista, listar, } = mixin.useComportamiento()
         const { onConsultado, onReestablecer, onBeforeGuardar } = mixin.useHooks()
-        const { notificarCorrecto, notificarAdvertencia, notificarError } = useNotificaciones()
+        const { confirmar, prompt, notificarCorrecto, notificarAdvertencia, notificarError } = useNotificaciones()
 
         //stores
         useNotificacionStore().setQuasar(useQuasar())
@@ -47,8 +50,9 @@ export default defineComponent({
         const [pendiente, aceptado, rechazado, anulado] = estadosAsignacionesVehiculos
         const tabActual = ref(pendiente.label)
         // const puedeEditar = ref(false)
-        const puedeEditar = computed(() => tabActual.value == pendiente.label && listado.value.some((item) => item.responsable_id == store.user.id))
+        const puedeEditar = computed(() => tabActual.value == pendiente.label && listado.value.some((item) => item.responsable_id == store.user.id || item.entrega_id == store.user.id))
         const soloLectura = computed(() => accion.value == acciones.editar)
+        const FIRMADA = 'FIRMADA'
 
         let accesoriosDefault = [
             'GATA HIDRAULICA',
@@ -90,6 +94,11 @@ export default defineComponent({
          *********************************/
         const reglas = {
             vehiculo: { required },
+            canton: { required },
+            accesorios: { required },
+            estado_carroceria: { required },
+            estado_mecanico: { required },
+            estado_electrico: { required },
             responsable: { required },
             fecha_entrega: { required },
         }
@@ -103,7 +112,7 @@ export default defineComponent({
         onConsultado(() => {
             LocalStorage.set('accesoriosVehiculos', JSON.stringify(asignacion.accesorios))
             //concatenamos los valores de las 3 variables para tener uno solo 
-            const estadosDB = [asignacion.estado_mecanico, asignacion.estado_mecanico, asignacion.estado_electrico]
+            const estadosDB = [...(asignacion.estado_mecanico ? asignacion.estado_mecanico : []), ...(asignacion.estado_electrico ? asignacion.estado_electrico : []), ...(asignacion.estado_electrico ? asignacion.estado_electrico : [])]
             console.log(asignacion, estadosDB)
             const todosNulos = estadosDB.every(function (value) { return value === null })
 
@@ -150,14 +159,20 @@ export default defineComponent({
                         estado: pendiente.label,
                     })
                     break
-                case 'FIRMADA': //aceptadas
+                case FIRMADA: //aceptadas
                     listar({
                         estado: aceptado.label,
+                        devuelto: 0,
                     })
                     break
                 case anulado.label:
                     listar({
                         estado: anulado.label,
+                    })
+                    break
+                case 'DEVUELTO':
+                    listar({
+                        devuelto: 1333,
                     })
                     break
                 default: //aqui van las rechazadas
@@ -170,7 +185,7 @@ export default defineComponent({
             const hoy = convertir_fecha(new Date())
             return date <= hoy
         }
-        
+
 
         async function imprimirPdf(id: number, placa: string) {
             try {
@@ -223,10 +238,29 @@ export default defineComponent({
                 }
             })
         }
-        async function recargarEmpleados(){
+        async function recargarVehiculos() {
+            await recargarGenerico(listadosAuxiliares, 'vehiculos', vehiculos, new VehiculoController())
+        }
+        async function recargarEmpleados() {
             await recargarGenerico(listadosAuxiliares, 'empleados', empleados, new ConductorController())
         }
 
+        async function devolverVehiculo(id: number, params: ParamsType) {
+            try {
+                cargando.activar()
+                const axios = AxiosHttpRepository.getInstance()
+                const url = apiConfig.URL_BASE + '/' + axios.getEndpoint(endpoints.asignaciones_vehiculos) + '/devolver-vehiculo/' + id
+                const response: AxiosResponse = await axios.post(url, params)
+                if (response.status = 200) {
+                    notificarCorrecto(response.data.mensaje)
+                    return true
+                } else notificarAdvertencia(response.data.mensaje)
+            } catch (error) {
+                notificarError('Error al marcar como pagada la matrícula. ' + error)
+            } finally {
+                cargando.desactivar()
+            }
+        }
         /**************************
         * Botones de tabla
         ***************************/
@@ -237,7 +271,26 @@ export default defineComponent({
             accion: async ({ entidad }) => {
                 await imprimirPdf(entidad.id, entidad.vehiculo)
             },
-            visible: () => tabActual.value === 'FIRMADA'
+            visible: () => tabActual.value === FIRMADA
+        }
+
+        const btnDevolverVehiculo: CustomActionTable = {
+            titulo: 'Devolver Vehículo',
+            color: 'primary',
+            accion: async ({ entidad }) => {
+                const data: CustomActionPrompt = {
+                    titulo: 'Observación',
+                    mensaje: 'Ingrese alguna observación',
+                    requerido: true,
+                    accion: async (data) => {
+                        //Aqui se guarda a la base de datos
+                        await devolverVehiculo(entidad.id, { observacion: data })
+                        await filtrarAsignaciones(tabActual.value)
+                    }
+                }
+                prompt(data)
+            },
+            visible: () => tabActual.value === FIRMADA
         }
 
         return {
@@ -270,10 +323,12 @@ export default defineComponent({
             crearEstado,
             filtrarEstados,
             recargarEmpleados,
+            recargarVehiculos,
 
 
             //botones de tablas
             btnImprimirActaResponsabilidad,
+            btnDevolverVehiculo
         }
     }
 })

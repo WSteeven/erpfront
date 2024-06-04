@@ -8,6 +8,57 @@
     <template #formulario>
       <q-form @submit.prevent>
         <div class="row q-col-gutter-sm q-py-md">
+          <!-- Tipo de vehiculo -->
+          <div class="col-12 col-md-3 col-sm-6 q-mb-md">
+            <label class="q-mb-sm block">Tipo</label>
+            <q-select
+              v-model="vehiculo.tipo"
+              :options="tiposCategoriasVehiculos"
+              transition-show="scale"
+              transition-hide="scale"
+              options-dense
+              dense
+              outlined
+              :disable="disabled"
+              :error="!!v$.tipo.$errors.length"
+              :option-label="(item) => item.value"
+              :option-value="(item) => item.value"
+              emit-value
+              map-options
+              ><template v-slot:no-option>
+                <q-item>
+                  <q-item-section class="text-grey">
+                    No hay resultados
+                  </q-item-section>
+                </q-item>
+              </template>
+              <template v-slot:error>
+                <div v-for="error of v$.tipo.$errors" :key="error.$uid">
+                  <div class="error-msg">{{ error.$message }}</div>
+                </div>
+              </template>
+            </q-select>
+          </div>
+
+          <!-- Propietario -->
+          <div class="col-12 col-md-3 col-sm-6">
+            <label class="q-mb-sm block">Propietario</label>
+            <q-input
+              v-model="vehiculo.propietario"
+              placeholder="Obligatorio"
+              :disable="disabled"
+              :error="!!v$.propietario.$errors.length"
+              outlined
+              dense
+            >
+              <template v-slot:error>
+                <div v-for="error of v$.propietario.$errors" :key="error.$uid">
+                  <div class="error-msg">{{ error.$message }}</div>
+                </div>
+              </template>
+            </q-input>
+          </div>
+          
           <!-- Marca -->
           <div class="col-12 col-md-3 col-sm-6 q-mb-md">
             <label class="q-mb-sm block">Marca</label>
@@ -400,13 +451,32 @@
             </q-select>
           </div>
 
+          <!-- tiene rastreo -->
+          <div class="col-12 col-md-3 col-sm-6">
+            <label class="q-mb-sm block">Tiene rastreo</label>
+            <q-toggle
+              :label="vehiculo.tiene_rastreo ? 'SI' : 'NO'"
+              v-model="vehiculo.tiene_rastreo"
+              color="primary"
+              keep-color
+              icon="bi-check2-circle"
+              unchecked-icon="clear"
+              :disable="disabled"
+            />
+          </div>
+
           <!-- tiene gravamen -->
           <div class="col-12 col-md-3 col-sm-6">
             <label class="q-mb-sm block">¿Está prendado?</label>
             <q-toggle
               :label="vehiculo.tiene_gravamen ? 'SI' : 'NO'"
               v-model="vehiculo.tiene_gravamen"
-              @update:model-value="() =>(vehiculo.prendador = vehiculo.tiene_gravamen? vehiculo.prendador: null)"
+              @update:model-value="
+                () =>
+                  (vehiculo.prendador = vehiculo.tiene_gravamen
+                    ? vehiculo.prendador
+                    : null)
+              "
               color="primary"
               keep-color
               icon="bi-check2-circle"
