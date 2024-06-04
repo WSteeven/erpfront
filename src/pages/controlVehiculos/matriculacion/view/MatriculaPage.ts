@@ -160,6 +160,31 @@ export default defineComponent({
             },
             visible: () => { return accion.value == acciones.nuevo || accion.value == acciones.editar }
         }
+        const btnColocarValorEstimadoPagar: CustomActionTable = {
+            titulo: 'Valor a Pagar',
+            color: 'primary',
+            tooltip: 'Configurar Valor a Pagar',
+            icono:'bi-wrench',
+            accion: ({ entidad }) => {
+                const data: CustomActionPrompt = {
+                    titulo: 'Valor estimado a Pagar',
+                    mensaje: 'Ingresa el valor estimado a pagar de matricula',
+                    validacion: (val) => {
+                        const patron = /^(\d{1,3}(?:,\d{3})*(?:\.\d+)?|\d+)?$/
+                        return patron.test(val)
+                    },
+                    requerido: true,
+                    accion: async (data) => {
+                        matriculaStore.idMatricula = entidad.id
+                        const result = await matriculaStore.setValorEstimadoPagar({valor_estimado_pagar: data})
+                        console.log(result)
+                        entidad.valor_estimado_pagar = result.valor_estimado_pagar
+                    }
+                }
+                prompt(data)
+            }
+        }
+
         const btnPagarMatricula: CustomActionTable = {
             titulo: ' Pagar',
             icono: 'bi-cash-coin',
@@ -222,6 +247,7 @@ export default defineComponent({
             is_month_fecha_matricula, is_month_proxima_matricula,
 
             //botones de tabla
+            btnColocarValorEstimadoPagar,
             btnConsultarMatricula,
             btnConsultarMultas,
             btnPagarMatricula,

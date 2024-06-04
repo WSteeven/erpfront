@@ -18,6 +18,13 @@ export const configuracionColumnasMatriculas: ColumnConfig<Matricula>[] = [
         editable: false,
     },
     {
+        name: 'valor_estimado_pagar',
+        field: 'valor_estimado_pagar',
+        label: 'Valor a Pagar',
+        align: 'left',
+        sortable: true
+    },
+    {
         name: 'proxima_matricula',
         field: 'proxima_matricula',
         label: 'Próxima matrícula',

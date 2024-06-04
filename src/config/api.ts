@@ -209,6 +209,7 @@ export const endpoints = {
   multas_conductores: new Endpoint('vehiculos/multas'),
   seguros: new Endpoint('vehiculos/seguros'),
   servicios: new Endpoint('vehiculos/servicios'),
+  tanqueos: new Endpoint('vehiculos/tanqueos'),
   planes_mantenimientos: new Endpoint('vehiculos/planes-mantenimientos'),
   mantenimientos_vehiculos: new Endpoint('vehiculos/mantenimientos-vehiculos'),
 

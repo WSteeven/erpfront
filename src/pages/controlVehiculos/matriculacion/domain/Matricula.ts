@@ -5,6 +5,7 @@ export class Matricula extends EntidadAuditable {
     placa: string
     fecha_matricula: string | null
     proxima_matricula: string | null
+    valor_estimado_pagar: string | null
     matriculador: string | null
     matriculado: boolean
     observacion: string | null
@@ -17,6 +18,7 @@ export class Matricula extends EntidadAuditable {
         this.placa = ''
         this.fecha_matricula = null
         this.proxima_matricula = null
+        this.valor_estimado_pagar = null
         this.matriculador = null
         this.matriculado = true
         this.estado = this.matriculado

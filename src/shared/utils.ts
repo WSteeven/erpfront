@@ -343,8 +343,8 @@ export function obtenerFechaActualTexto() {
 }
 
 // 20-04-2022 12:30:00
-export function obtenerFechaHoraActual() {
-  return date.formatDate(Date.now(), 'DD-MM-YYYY HH:mm:ss')
+export function obtenerFechaHoraActual(formato = 'DD-MM-YYYY HH:mm:ss') {
+  return date.formatDate(Date.now(), formato)
 }
 
 export function obtenerMensajesError() {
@@ -814,10 +814,10 @@ export function filtarVisualizacionEmpleadosSaldos(empleados) {
   if (authenticationStore.can('puede.buscar.tecnicos')) {
     const filtrados_busqueda =
       authenticationStore.esContabilidad ||
-      authenticationStore.esCoordinador ||
-      authenticationStore.esAdministrador
+        authenticationStore.esCoordinador ||
+        authenticationStore.esAdministrador
         ? empleados
-        : empleados.filter((empleado) => empleado.departamento === rolesSistema.tecnico && extraerRol(empleado.roles.split(', '), rolesSistema.tecnico)&& !extraerRol(empleado.roles.split(', '), rolesSistema.coordinador))
+        : empleados.filter((empleado) => empleado.departamento === rolesSistema.tecnico && extraerRol(empleado.roles.split(', '), rolesSistema.tecnico) && !extraerRol(empleado.roles.split(', '), rolesSistema.coordinador))
     return filtrados_busqueda
   }
 

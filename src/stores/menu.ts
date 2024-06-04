@@ -639,19 +639,20 @@ export const useMenuStore = defineStore('menu', () => {
           icon: 'bi-person-lines-fill',
           can: store.can('puede.ver.modulo.seleccion_contratacion'),
           children: [
-              {
-                title: 'Solicitud de Puesto de Empleo',
-                link: 'solicitud-puesto-empleo',
-                icon: 'bi-app',
-                can: store.can('puede.acceder.solicitud_puesto_empleo'),
-              },
-              {
-                title: 'Publicacion de Puesto de Empleo',
-                link: 'publicacion-puesto-empleo',
-                icon: 'bi-app',
-                can: store.can('puede.acceder.publicacion_puesto_empleo'),
-              },
-          ]},
+            {
+              title: 'Solicitud de Puesto de Empleo',
+              link: 'solicitud-puesto-empleo',
+              icon: 'bi-app',
+              can: store.can('puede.acceder.solicitud_puesto_empleo'),
+            },
+            {
+              title: 'Publicacion de Puesto de Empleo',
+              link: 'publicacion-puesto-empleo',
+              icon: 'bi-app',
+              can: store.can('puede.acceder.publicacion_puesto_empleo'),
+            },
+          ]
+        },
         {
           title: 'Nominas y prestamos',
           icon: 'fa-solid fa-people-line',
@@ -838,6 +839,12 @@ export const useMenuStore = defineStore('menu', () => {
           can: store.can('puede.acceder.combustibles'),
         },
         {
+          title: 'Tanqueo de Combustible',
+          link: 'tanqueos-vehiculos',
+          icon: 'bi-circle',
+          can: store.can('puede.acceder.tanqueos_vehiculos'),
+        },
+        {
           title: 'Control diario',
           link: 'control-vehiculos',
           icon: 'bi-circle',
@@ -892,6 +899,19 @@ export const useMenuStore = defineStore('menu', () => {
             },
           ]
         },
+        {
+          title: 'Reportes',
+          icon: 'bi-clipboard2-data',
+          can:store.can('puede.ver.reportes_vehiculos'),
+          children: [
+            {
+              title: 'Reporte de matriculas',
+              link: 'reporte-matriculas',
+              icon: 'bi-dash',
+              can: true,
+            },
+          ]
+        }
       ],
     },
 

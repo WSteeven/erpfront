@@ -645,6 +645,13 @@ const routes: RouteRecordRaw[] = [
         meta: { requiresAuth: true },
       },
       {
+        path: '/tanqueos-vehiculos',
+        name: 'tanqueos_vehiculos',
+        component: () =>
+          import('pages/controlVehiculos/tanqueoCombustible/view/TanqueoPage.vue'),
+        meta: { requiresAuth: true },
+      },
+      {
         path: '/vehiculos',
         name: 'vehiculos',
         component: () =>
@@ -679,6 +686,15 @@ const routes: RouteRecordRaw[] = [
           import('pages/controlVehiculos/mantenimientos/view/MantenimientoVehiculoPage.vue'),
         meta: { requiresAuth: true },
       },
+      //reportes de vehiculos
+      {
+        path: '/reporte-matriculas',
+        name: 'reporte_matriculas',
+        component: () =>
+          import('pages/controlVehiculos/reportes/modules/rpt_matriculas/view/ReporteMatriculaPage.vue'),
+        meta: { requiresAuth: false },
+      },
+
 
       //Routes for Activos Fijos
       {

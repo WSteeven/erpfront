@@ -2,6 +2,7 @@ import { SelectOption } from 'components/tables/domain/SelectOption'
 import { TabOption } from 'components/tables/domain/TabOption'
 
 export const maskFecha = 'YYYY-MM-DD'
+export const maskFechaHora = 'YYYY-MM-DD HH:mm:ss'
 // export const maskFecha = 'DD-MM-YYYY'
 //export const maskFecha = 'YYYY/MM/DD'
 // Tipos

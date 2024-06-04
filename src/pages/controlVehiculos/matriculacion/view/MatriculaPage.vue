@@ -10,7 +10,9 @@
     :accion1Header="btnConsultarMatricula"
     :accion2Header="btnConsultarMultas"
     :permitirEditar="false"
-    :accion1="btnPagarMatricula"
+    puedeExportar
+    :accion1="btnColocarValorEstimadoPagar"
+    :accion2="btnPagarMatricula"
   >
     <template #formulario>
       <q-form @submit.prevent>

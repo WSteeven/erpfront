@@ -32,9 +32,28 @@ export const useVehiculoStore = defineStore('vehiculo', () => {
         return false
     }
 
+    async function setValorEstimadoPagar(data) {
+        try {
+            statusLoading.activar()
+            const axios = AxiosHttpRepository.getInstance()
+            const url = apiConfig.URL_BASE + '/' + axios.getEndpoint(endpoints.matriculas) + '/registrar-estimado-pagar/' + idMatricula.value
+            const response: AxiosResponse = await axios.post(url, data)
+            if (response.status = 200) {
+                notificarCorrecto(response.data.mensaje)
+                return response.data.modelo
+            } else notificarAdvertencia(response.data.mensaje)
+        } catch (e) {
+            notificarError('Error al ingresar valor estimado de pago de matrícula. ' + e)
+        }
+        finally {
+            statusLoading.desactivar()
+        }
+    }
+
     return {
         idMatricula,
 
+        setValorEstimadoPagar,
         pagarMatricula,
     }
 })
