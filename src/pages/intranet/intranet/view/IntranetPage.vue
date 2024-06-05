@@ -59,7 +59,7 @@
               <div class="text-subtitle1">JPCONSTRUCRED</div>
             </div>
           </q-carousel-slide>
-        </q-carousel> 
+        </q-carousel>
         <p>Aqui habia un carrusel</p>
       </div>
       <div class="col-4 col-md-3">
@@ -158,18 +158,20 @@
       </div>
     </div>
     <div class="row q-col-gutter-sm q-ml-sm q-pl-sm">
-       <div class="col-6 col-md-3">
+      <div class="col-6 col-md-3">
         <label class="q-mb-sm block"
           ><strong>Noticias Programadas</strong></label
         >
         <q-date
           v-model="date"
+          :mask="maskFecha"
           :events="eventos"
-          @update:model-value="verEvento(date)"
           :event-color="(date) => (date[9] % 2 === 0 ? 'teal' : 'orange')"
           minimal
+          @update:model-value="verEvento(date)"
           style="width: max-content"
         />
+        <!--  -->
         <q-card class="solicitudes q-my-md">
           <q-card-section>
             <div class="text-h6">SOLICITUDES</div>

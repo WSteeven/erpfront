@@ -10,6 +10,7 @@ import { Vue3Lottie } from 'vue3-lottie'
 import 'vue3-lottie/dist/style.css'
 
 // Logica y controladores
+import { maskFecha } from 'src/config/utils'
 import { ComportamientoModalesIntranet } from '../application/ComportamientoModalesIntranet'
 import { useNotificaciones } from 'shared/notificaciones'
 import { Departamento } from 'pages/recursosHumanos/departamentos/domain/Departamento'
@@ -23,6 +24,8 @@ import { useQuasar } from 'quasar'
 import { StatusEssentialLoading } from 'components/loading/application/StatusEssentialLoading'
 import { useRouter } from 'vue-router'
 import { useMenuStore } from 'stores/menu'
+import { obtenerFechaActual } from '../../../../shared/utils'
+import { MenuOption } from 'shared/menu/MenuOption'
 
 
 
@@ -34,7 +37,6 @@ export default defineComponent({
 
     },
     setup() {
-        const timeStamp = Date.now()
 
         const departamentoSeleccionado = ref('')
         const empleados: Ref<Empleado[]> = ref([])
@@ -43,9 +45,9 @@ export default defineComponent({
         const slide = ref(1)
         const search = ref()
         const autoplay = ref(true)
-        const date = ref(timeStamp)
+        const date = ref(obtenerFechaActual(maskFecha))
         const $q = useQuasar()
-        const modulosPermitidos = ref([])
+        const modulosPermitidos = ref()
 
         const showBanner = ref(true)
         const showDepartamentos = ref(true)
@@ -134,7 +136,7 @@ export default defineComponent({
             return data.value.slice(start, end)
         })
         function obtenerModulosPermitidos() {
-            modulosPermitidos.value = menuStore.links.filter((link) => link.can && link.module)
+            modulosPermitidos.value = menuStore.links.filter((link:MenuOption) => link.can && link.module)
             modulosPermitidos.value = modulosPermitidos.value.map((modulo) => {
                 modulo.link = modulo.children.find((child) => child.can).link
                 return modulo
@@ -221,7 +223,6 @@ export default defineComponent({
             filtrosTareas,
             filtroTarea,
             modales,
-            timeStamp,
             subtareasPorAsignar,
             slide,
             autoplay,
@@ -251,6 +252,7 @@ export default defineComponent({
             selfCenterMiddle,
             showBanner,
             search,
+            maskFecha,
         }
     },
 })
