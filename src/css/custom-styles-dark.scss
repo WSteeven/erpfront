@@ -75,14 +75,14 @@ $border-color: #464646;
   .tab-active {
     background-color: $dark-color;
     color: $text-color;
-    border-radius: 16px 4px 0 0;
+    border-radius: 16px 16px 0 0;
     box-shadow: rgba(0, 0, 0, 0.12) 0px 5px 15px;
   }
 
   .tab-inactive {
     background-color: rgba($dark-color, 0.6);
     color: $text-color-transparency;
-    border-radius: 16px 4px 0 0;
+    border-radius: 16px 16px 0 0;
     box-shadow: rgba(0, 0, 0, 0.12) 0px 5px 15px;
   }
 
@@ -169,10 +169,10 @@ $border-color: #464646;
   .link-active {
     background: $primary; //rgba($bg-body, 1);
     // border-right: 3px solid $primary;
-    border-radius: 16px;
+    border-radius: 8px;
 
     i {
-      color: $primary;
+      color: white;
     }
 
     /* .q-item__label {

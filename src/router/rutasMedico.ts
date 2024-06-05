@@ -67,6 +67,12 @@ const rutasMedico: RouteRecordRaw[] = [
     component: () => import('medico/firmarFichasMedicas/view/FirmarFichaMedicaPage.vue'),
     meta: { requiresAuth: true },
   },
+  {
+    path: '/laboratorios-clinicos',
+    name: 'laboratorios_clinicos',
+    component: () => import('medico/laboratoriosMedicos/view/LaboratorioClinicoPage.vue'),
+    meta: { requiresAuth: true },
+  },
 ]
 
 export default rutasMedico

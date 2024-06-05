@@ -1,14 +1,14 @@
 <template>
-  <q-splitter v-model="splitterModel">
+  <q-splitter v-model="splitterModel" class="bg-primary">
     <template v-slot:before>
-      <div class="text-center bg-indigo q-pb-md q-pt-sm">
+      <div class="text-center bg-primary q-pb-md q-pt-sm">
         <q-btn
-          class="bg-white text-primary"
+          class="bg-positive text-white"
           push
           no-caps
           @click="agregarRegistro()"
         >
-          <q-icon name="bi-plus-circle-fill" size="xs" class="q-mr-sm"></q-icon>
+          <q-icon name="bi-plus-circle" size="xs" class="q-mr-sm"></q-icon>
           Nuevo registro</q-btn
         >
       </div>
@@ -18,17 +18,17 @@
         v-model="tabRegistro"
         vertical
         indicator-color="transparent"
-        class="bg-indigo text-white q-px-xs alto-tabla"
+        class="bg-primary text-white q-px-xs alto-tabla"
         active-bg-color="white"
-        active-class="text-black bg-desenfoque border-grey text-bold"
+        active-class="tab-active text-black bg-white border-grey text-bold"
         :style="'height:' + altoTabla"
       >
         <q-tab
           v-for="registro in registros"
           :key="registro.id"
           :name="registro.id"
-          class="q-mb-xs"
-          :class="{ 'bg-indigo': tabRegistro !== registro.id }"
+          class="q-mb-xs rounded-field"
+          :class="{ 'bg-primary': tabRegistro !== registro.id }"
           no-caps
           @click="seleccionarRegistro(registro)"
         >
@@ -36,7 +36,7 @@
             name="bi-person"
             size="xs"
             class="q-mb-xs"
-            :class="{ 'text-primary': tabRegistro === registro.id }"
+            :class="{ 'text-primaryd': tabRegistro === registro.id }"
           ></q-icon>
           <span>Registro # {{ registro.numero_registro }}</span>
         </q-tab>
@@ -49,23 +49,28 @@
         animated
         transition-prev="scale"
         transition-next="scale"
+        class="bg-primary"
         helpalive
       >
         <q-tab-panel
           v-for="registro in registros"
           :key="registro.id"
           :name="registro.id"
-          class="text-primary bg-grey-4 q-pa-none"
+          class="text-white q-pa-none"
         >
           <div class="row q-pa-md">
             <div class="col-12 col-md-6">
               <label class="q-mb-sm block"> Fecha y hora de registro </label>
-              <div class="text-bold text-black">{{ registro.created_at }}</div>
+              <div class="text-bold">
+                <q-icon name="bi-calendar" class="q-mr-sm"></q-icon>
+                {{ registro.created_at }}</div>
             </div>
 
             <div class="col-12 col-md-6 q-mb-md">
               <label class="q-mb-sm block"> Observación </label>
-              <div class="text-bold text-black">{{ registro.observacion }}</div>
+              <div class="text-bold">
+                <q-icon name="bi-list" class="q-mr-sm"></q-icon>
+                {{ registro.observacion }}</div>
             </div>
           </div>
         </q-tab-panel>
@@ -156,7 +161,7 @@
 
           <q-tab-panel
             :name="estadosSolicitudesExamenes.SOLICITADO.value"
-            class="q-pa-none bg-white"
+            class="q-pa-none bg-desenfoque"
           >
             <div class="row q-pa-md">
               <label class="q-mb-sm"
@@ -167,6 +172,7 @@
                 v-if="mostrarConsultaMedica"
                 class="col-12 bg-blue-grey q-mb-xs"
                 color="blue-grey"
+                unelevated
                 no-caps
                 @click="btnCitaMedica()"
               >
@@ -183,6 +189,7 @@
                 class="col-12 q-mb-md"
                 no-caps
                 color="positive"
+                unelevated
                 @click="btnResultados()"
               >
                 <q-icon name="bi-table" class="q-mr-sm" size="xs"></q-icon>
@@ -197,6 +204,7 @@
                 no-caps
                 push
                 color="indigo"
+                unelevated
                 @click="abrirFichaAptitud()"
               >
                 <q-icon name="bi-ui-checks-grid" class="q-mr-sm" size="xs"></q-icon>
@@ -208,6 +216,7 @@
                 class="col-12 bg-white text-dark q-mb-md block"
                 no-caps
                 color="indigo"
+                unelevated
                 @click="abrirFichaRetiro()"
               >
                 <q-icon name="bi-ui-checks" class="q-mr-sm" size="xs"></q-icon>
@@ -220,6 +229,7 @@
                 class="col-12"
                 no-caps
                 color="indigo"
+                unelevated
                 @click="abrirFichaPeriodicaProcupacional()"
               >
                 <q-icon name="bi-ui-checks" class="q-mr-sm" size="xs"></q-icon>
@@ -231,6 +241,7 @@
                 class="col-12"
                 no-caps
                 color="indigo"
+                unelevated
                 @click="abrirFichaPeriodica()"
               >
                 <q-icon name="bi-ui-checks" class="q-mr-sm" size="xs"></q-icon>
@@ -243,6 +254,7 @@
                 no-caps
                 color="indigo"
                 @click="abrirFichaReintegro()"
+                unelevated
               >
                 <q-icon name="bi-ui-checks" class="q-mr-sm" size="xs"></q-icon>
                 {{ textoFichaReintegro }}
@@ -289,9 +301,10 @@
 
       <div
         v-else
-        class="row text-primary h-100 q-py-xl items-center justify-center"
+        class="column text-white h-100 q-py-xl items-center justify-center"
       >
-        Crea un registro y luego seleccionalo
+      <q-icon name="bi-stars" size="md"></q-icon>  <br>
+      Crea un registro y luego seleccionalo
       </div>
 
       <modales-entidad

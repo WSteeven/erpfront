@@ -186,13 +186,13 @@ export const useMenuStore = defineStore('menu', () => {
           title: 'Gestionar pacientes',
           link: 'gestionar-pacientes',
           icon: 'bi-app',
-          can: store.can('puede.ver.gestionar_pacientes'),
+          can: store.can('puede.acceder.gestionar_pacientes'),
         },
         {
           title: 'Cuestionarios',
           link: 'cuestionarios',
           icon: 'bi-app',
-          can: store.can('puede.ver.cuestionarios'),
+          can: store.can('puede.acceder.cuestionarios'),
         },
         /* {
           title: 'Cuestionario de evaluación de riesgos psicosociales',
@@ -209,25 +209,25 @@ export const useMenuStore = defineStore('menu', () => {
           title: 'Cita médica',
           link: 'citas-medicas',
           icon: 'bi-app',
-          can: store.can('puede.ver.citas_medicas'),
+          can: store.can('puede.acceder.citas_medicas'),
         },
         {
           title: 'Solicitudes de exámenes',
           link: 'solicitudes-examenes',
           icon: 'bi-app',
-          can: store.can('puede.ver.solicitudes_examenes'),
+          can: store.can('puede.acceder.solicitudes_examenes'),
         },
         {
           title: 'Reportes cuestionarios',
           link: 'reportes-cuestionarios',
           icon: 'bi-app',
-          can: store.can('puede.ver.reportes_cuestionarios'),
+          can: store.can('puede.acceder.reportes_cuestionarios'),
         },
         {
           title: 'CIE',
           link: 'cie',
           icon: 'bi-app',
-          can: store.can('puede.ver.cies'),
+          can: store.can('puede.acceder.cies'),
         },
         /* {
           title: 'Firmar fichas médicas',
@@ -238,7 +238,13 @@ export const useMenuStore = defineStore('menu', () => {
           title: 'Configuracion Cuestionario Empleado',
           link: 'configuraciones-cuestionarios-empleados',
           icon: 'bi-circle',
-          can: store.can('puede.ver.configuraciones_cuestionarios_empleados'),
+          can: store.can('puede.acceder.configuraciones_cuestionarios_empleados'),
+        },
+        {
+          title: 'Laboratorios clínicos',
+          link: 'laboratorios-clinicos',
+          icon: 'bi-circle',
+          can: store.can('puede.acceder.laboratorios_clinicos'),
         },
       ]
     },
@@ -639,19 +645,20 @@ export const useMenuStore = defineStore('menu', () => {
           icon: 'bi-person-lines-fill',
           can: store.can('puede.ver.modulo.seleccion_contratacion'),
           children: [
-              {
-                title: 'Solicitud de Puesto de Empleo',
-                link: 'solicitud-puesto-empleo',
-                icon: 'bi-app',
-                can: store.can('puede.acceder.solicitud_puesto_empleo'),
-              },
-              {
-                title: 'Publicacion de Puesto de Empleo',
-                link: 'publicacion-puesto-empleo',
-                icon: 'bi-app',
-                can: store.can('puede.acceder.publicacion_puesto_empleo'),
-              },
-          ]},
+            {
+              title: 'Solicitud de Puesto de Empleo',
+              link: 'solicitud-puesto-empleo',
+              icon: 'bi-app',
+              can: store.can('puede.acceder.solicitud_puesto_empleo'),
+            },
+            {
+              title: 'Publicacion de Puesto de Empleo',
+              link: 'publicacion-puesto-empleo',
+              icon: 'bi-app',
+              can: store.can('puede.acceder.publicacion_puesto_empleo'),
+            },
+          ]
+        },
         {
           title: 'Nominas y prestamos',
           icon: 'fa-solid fa-people-line',
