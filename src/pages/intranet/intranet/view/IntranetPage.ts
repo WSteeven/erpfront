@@ -30,11 +30,9 @@ export default defineComponent({
         ModalesEntidad,
         LottiePlayer: Vue3Lottie,
         SolicitarFecha,
-
     },
     setup() {
         const timeStamp = Date.now()
-
         const departamentoSeleccionado = ref('')
         const empleados: Ref<Empleado[]> = ref([])
         const departamentos: Ref<Departamento[]> = ref([])
@@ -45,7 +43,6 @@ export default defineComponent({
         const date = ref(timeStamp)
         const $q = useQuasar()
         const modulosPermitidos = ref([])
-
         const showBanner = ref(false)
         const showDepartamentos = ref(false)
         /*********
@@ -172,9 +169,9 @@ export default defineComponent({
         }),
 
 
-        function openWhatsApp(numero) {
-            window.location.href = `https://wa.me/${numero}`;
-        }
+            function openWhatsApp(numero) {
+                window.location.href = `https://wa.me/${numero}`;
+            }
 
         /**
          * Funcion para probar componente de fecha enviando al backend

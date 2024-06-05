@@ -5,15 +5,15 @@ import rutasMedico from './rutasMedico'
 const routes: RouteRecordRaw[] = [
   // {
   //   path: '/intranet',
-  //   component: () => import('layouts/FullLayout.vue'),
+  //  component: () => import('layouts/FullLayout.vue'),
   //   children: [
-  //     {
-  //       path: '',
-  //       name: 'intranet',
-  //       component: () => import('pages/intranet/intranet/view/IntranetPage.vue'),
-  //       meta: { requiresAuth: false },
-  //     },
-  //   ],
+  //  {
+  //   path: '',
+  //  name: 'intranet',
+  //  component: () => import('pages/intranet/intranet/view/IntranetPage.vue'),
+  // meta: { requiresAuth: false },
+  //   },
+  // ],
   // },
   {
     path: '/',
