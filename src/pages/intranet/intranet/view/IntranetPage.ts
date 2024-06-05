@@ -50,6 +50,11 @@ export default defineComponent({
 
         const showBanner = ref(true)
         const showDepartamentos = ref(true)
+
+
+        
+
+
         /*********
          * Stores
         *********/
@@ -135,7 +140,7 @@ export default defineComponent({
             return data.value.slice(start, end)
         })
         function obtenerModulosPermitidos() {
-            modulosPermitidos.value = menuStore.links.filter((link:MenuOption) => link.can && link.module)
+            modulosPermitidos.value = menuStore.links.filter((link: MenuOption) => link.can && link.module)
             modulosPermitidos.value = modulosPermitidos.value.map((modulo) => {
                 modulo.link = modulo.children.find((child) => child.can).link
                 return modulo
@@ -181,9 +186,9 @@ export default defineComponent({
 
         consultarDepartamentos()
 
-            function openWhatsApp(numero) {
-                window.location.href = `https://wa.me/${numero}`;
-            }
+        function openWhatsApp(numero) {
+            window.location.href = `https://wa.me/${numero}`;
+        }
 
         /**
          * Funcion para probar componente de fecha enviando al backend
@@ -208,6 +213,7 @@ export default defineComponent({
             solicitud.tipo_solicitud = ''
             solicitud.descripcion = ''
         }
+
 
 
         return {
@@ -252,6 +258,8 @@ export default defineComponent({
             showBanner,
             search,
             maskFecha,
+
+
         }
     },
 })
