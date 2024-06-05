@@ -14,7 +14,7 @@ export const useMenuStore = defineStore('menu', () => {
     {
       title: 'Inicio',
       icon: 'bi-house-fill',
-      link: '/',
+      link: '/intranet',
       can: true, //!store.can('puede.ver.trabajo_asignado'),
     },
     {
@@ -42,6 +42,7 @@ export const useMenuStore = defineStore('menu', () => {
       title: 'Proyectos y tareas',
       icon: 'bi-pin-angle-fill',
       can: store.can('puede.ver.modulo_tareas'),
+      module: true,
       children: [
         {
           title: 'Dashboard',
@@ -130,7 +131,8 @@ export const useMenuStore = defineStore('menu', () => {
     {
       title: 'Tickets',
       icon: 'bi-ticket-perforated-fill',
-      can: store.can('puede.ver.tickets'),
+      can: store.can('puede.ver.modulo_tickets'),
+      module: true,
       children: [
         {
           title: 'Dashboard',
@@ -187,6 +189,7 @@ export const useMenuStore = defineStore('menu', () => {
       title: 'Médico',
       icon: 'bi-heart-pulse-fill',
       can: store.can('puede.ver.modulo_medico'),
+      module: true,
       children: [
         {
           title: 'Gestionar pacientes',
@@ -252,6 +255,7 @@ export const useMenuStore = defineStore('menu', () => {
       title: 'Bodega',
       icon: 'bi-building-fill',
       can: store.can('puede.ver.modulo_bodega'),
+      module: true,
       children: [
         {
           title: 'Dashboard',
@@ -609,6 +613,7 @@ export const useMenuStore = defineStore('menu', () => {
       title: 'RR HH',
       icon: 'bi-people',
       can: store.can('puede.ver.modulo_recursos_humanos'),
+      module: true,
       children: [
         {
           title: 'Empleados',
@@ -768,6 +773,7 @@ export const useMenuStore = defineStore('menu', () => {
       title: 'Vehículos',
       icon: 'garage',
       can: store.esAdministrador || store.can('puede.ver.modulo_vehiculos'),
+      module: true,
       children: [
         {
           title: 'Combustibles',
@@ -810,6 +816,7 @@ export const useMenuStore = defineStore('menu', () => {
       title: 'Compras y proveedores',
       icon: 'bi-bag-fill',
       can: store.can('puede.ver.modulo_compras') || store.esAdministrador,
+      module: true,
       children: [
         {
           title: 'Dashboard',
@@ -923,6 +930,7 @@ export const useMenuStore = defineStore('menu', () => {
       title: 'Ventas',
       icon: 'sell',
       can: store.can('puede.ver.modulo_ventas') || store.esAdministrador,
+      module: true,
       children: [
         {
           title: 'Proformas',
@@ -945,6 +953,7 @@ export const useMenuStore = defineStore('menu', () => {
       title: 'Ventas de Claro',
       icon: 'img:statics/icons/Claro-Logo.svg', //'bi-c-circle-fill',
       can: store.can('puede.ver.modulo_ventas_claro'),
+      module: true,
       children: [
         {
           title: 'Dashboard',
@@ -1182,6 +1191,7 @@ export const useMenuStore = defineStore('menu', () => {
       title: 'Bodega',
       icon: 'bi-building-fill',
       can: store.can('puede.ver.modulo_administracion'),
+      module: true,
       children: [
         {
           title: 'Autorizaciones',

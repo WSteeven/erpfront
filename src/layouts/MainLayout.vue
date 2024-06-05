@@ -4,6 +4,7 @@
     <q-header class="bg-desenfoque">
       <q-toolbar class="row justify-between q-py-sm border-bottom">
         <q-btn
+        v-if="route.name!=='intranet'"
           dense
           aria-label="Menu"
           @click="toggleLeftDrawer"
@@ -40,7 +41,12 @@
             />
           </svg>
         </q-btn>
-
+        <img
+        v-if="route.name==='intranet'"
+          :src="!$q.dark.isActive ? logoClaro : logoOscuro"
+          height="30"
+          class="custom-shadow "
+        />
         <span
           class="row"
           :class="{
@@ -401,6 +407,7 @@
       v-model="leftDrawerOpen"
       class="bg-drawer border-right q-px-sm q-py-sm"
       show-if-above
+      v-if="route.name!=='intranet'"
     >
       <!-- Drawer Header -->
       <div class="absolute-top q-pa-sm q-ma-sm rounded-card">
