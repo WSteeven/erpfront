@@ -821,6 +821,12 @@ export const useMenuStore = defineStore('menu', () => {
           can: store.can('puede.acceder.vehiculos'),
         },
         {
+          title: 'Transferencias Vehículos entre Choferes',
+          link: 'transferencias-vehiculos',
+          icon: 'bi-circle',
+          can: store.can('puede.acceder.transferencias_vehiculos'),
+        },
+        {
           title: 'Asignar Vehículos a Choferes',
           link: 'asignaciones-vehiculos',
           icon: 'bi-circle',

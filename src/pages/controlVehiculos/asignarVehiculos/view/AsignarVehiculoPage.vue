@@ -10,7 +10,8 @@
     :permitirEditar="puedeEditar"
     :permitirEliminar="tabActual == 'PENDIENTE'"
     :accion1="btnDevolverVehiculo"
-    :accion2="btnImprimirActaResponsabilidad"
+    :accion2="btnTransferirVehiculo"
+    :accion3="btnImprimirActaResponsabilidad"
   >
     <!-- :permitirEditar="tabActual=='PENDIENTE' && asignacion.responsable==store.user.id" -->
     <template #formulario>
@@ -397,6 +398,35 @@
                 </div>
               </template>
             </q-select>
+          </div>
+
+          <!-- Tabla de archivos -->
+          <div class="col-12 q-mb-md">
+            <gestor-archivos
+              ref="refArchivo"
+              label="Quiero compartir archivos e imagenes del vehículo"
+              :mixin="mixin"
+              :disable="disabled"
+              :listarAlGuardar="false"
+              :permitir-eliminar="
+                accion == acciones.nuevo || accion == acciones.editar
+              "
+              :idModelo="idRegistro"
+            >
+              <template #boton-subir>
+                <q-btn
+                  v-if="false"
+                  color="positive"
+                  push
+                  no-caps
+                  class="full-width q-mb-lg"
+                  @click="subirArchivos()"
+                >
+                  <q-icon name="bi-upload" class="q-mr-sm" size="xs"></q-icon>
+                  Subir archivos seleccionados</q-btn
+                >
+              </template>
+            </gestor-archivos>
           </div>
         </div>
       </q-form>

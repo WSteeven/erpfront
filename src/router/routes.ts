@@ -584,13 +584,22 @@ const routes: RouteRecordRaw[] = [
         meta: { requiresAuth: false },
       },
       {
+        path: 'transferencias-vehiculos',
+        name: 'transferencias_vehiculos',
+        component: () =>
+          import(
+            'pages/controlVehiculos/transferenciaVehiculos/view/TransferenciaVehiculoPage.vue'
+          ),
+        meta: { requiresAuth: true },
+      },
+      {
         path: '/asignaciones-vehiculos',
         name: 'asignaciones_vehiculos',
         component: () =>
           import(
             'pages/controlVehiculos/asignarVehiculos/view/AsignarVehiculoPage.vue'
           ),
-        meta: { requiresAuth: false },
+        meta: { requiresAuth: true },
       },
       {
         path: '/historial-vehiculos',

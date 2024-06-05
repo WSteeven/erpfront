@@ -5,6 +5,7 @@ import { configuracionColumnasAsignacionVehiculos } from "../domain/configuracio
 
 //Components
 import TabLayoutFilterTabs2 from "shared/contenedor/modules/simple/view/TabLayoutFilterTabs2.vue"
+import GestorArchivos from "components/gestorArchivos/GestorArchivos.vue";
 
 // Logica y controladores
 import { AsignacionVehiculo } from "../domain/AsignacionVehiculo";
@@ -30,26 +31,32 @@ import { recargarGenerico } from "shared/funcionesActualizacionListados";
 import { CustomActionPrompt } from "components/tables/domain/CustomActionPrompt";
 import { ParamsType } from "config/types";
 import { AxiosResponse } from "axios";
+import { ArchivoController } from "pages/gestionTrabajos/subtareas/modules/gestorArchivosTrabajos/infraestructure/ArchivoController";
+import { useVehiculoStore } from "stores/vehiculos/vehiculo";
+import { useRouter } from "vue-router";
 
 
 export default defineComponent({
-    components: { TabLayoutFilterTabs2 },
+    components: { TabLayoutFilterTabs2, GestorArchivos },
     setup() {
-        const mixin = new ContenedorSimpleMixin(AsignacionVehiculo, new AsignacionVehiculoController())
+        const mixin = new ContenedorSimpleMixin(AsignacionVehiculo, new AsignacionVehiculoController(), new ArchivoController())
         const { entidad: asignacion, disabled, listadosAuxiliares, accion, listado } = mixin.useReferencias()
         const { setValidador, obtenerListados, cargarVista, listar, } = mixin.useComportamiento()
-        const { onConsultado, onReestablecer, onBeforeGuardar } = mixin.useHooks()
+        const { onGuardado, onConsultado, onReestablecer, onBeforeGuardar } = mixin.useHooks()
         const { confirmar, prompt, notificarCorrecto, notificarAdvertencia, notificarError } = useNotificaciones()
 
         //stores
         useNotificacionStore().setQuasar(useQuasar())
         useCargandoStore().setQuasar(useQuasar())
         const store = useAuthenticationStore()
+        const vehiculoStore = useVehiculoStore()
         const cargando = new StatusEssentialLoading()
+        const router = useRouter()
 
         const [pendiente, aceptado, rechazado, anulado] = estadosAsignacionesVehiculos
         const tabActual = ref(pendiente.label)
-        // const puedeEditar = ref(false)
+        const refArchivo = ref()
+        const idRegistro = ref()
         const puedeEditar = computed(() => tabActual.value == pendiente.label && listado.value.some((item) => item.responsable_id == store.user.id || item.entrega_id == store.user.id))
         const soloLectura = computed(() => accion.value == acciones.editar)
         const FIRMADA = 'FIRMADA'
@@ -109,7 +116,16 @@ export default defineComponent({
         /*********************************
          * HOOKS
         *********************************/
+        onGuardado((id: number) => {
+            idRegistro.value = id
+            setTimeout(async () => {
+                await refArchivo.value.subir()
+            }, 1)
+        })
         onConsultado(() => {
+            setTimeout(() => {
+                refArchivo.value.listarArchivosAlmacenados(asignacion.id)
+            }, 1)
             LocalStorage.set('accesoriosVehiculos', JSON.stringify(asignacion.accesorios))
             //concatenamos los valores de las 3 variables para tener uno solo 
             const estadosDB = [...(asignacion.estado_mecanico ? asignacion.estado_mecanico : []), ...(asignacion.estado_electrico ? asignacion.estado_electrico : []), ...(asignacion.estado_electrico ? asignacion.estado_electrico : [])]
@@ -125,6 +141,7 @@ export default defineComponent({
             obtenerAccesoriosLS()
         })
         onReestablecer(() => {
+            refArchivo.value.limpiarListado()
             asignacion.entrega = store.user.id
             asignacion.estado = pendiente.label
 
@@ -172,7 +189,7 @@ export default defineComponent({
                     break
                 case 'DEVUELTO':
                     listar({
-                        devuelto: 1333,
+                        devuelto: 1,
                     })
                     break
                 default: //aqui van las rechazadas
@@ -292,6 +309,19 @@ export default defineComponent({
             },
             visible: () => tabActual.value === FIRMADA
         }
+        const btnTransferirVehiculo: CustomActionTable = {
+            titulo: 'Transferir',
+            tooltip: 'Transferir el vehículo a otro chofer',
+            color: 'positive',
+            icono: 'bi-arrow-left-right',
+            accion: ({ entidad, posicion }) => {
+                vehiculoStore.idAsignacion = entidad.id
+                vehiculoStore.asignacion = entidad
+                console.log('Asignación de vehículo a transferir: ', vehiculoStore.asignacion)
+                router.push('transferencias-vehiculos')
+            },
+            visible: () => tabActual.value === FIRMADA
+        }
 
         return {
             mixin, v$, accion, acciones, disabled,
@@ -302,6 +332,8 @@ export default defineComponent({
             maskFecha,
             store,
             puedeEditar, soloLectura,
+            refArchivo,
+            idRegistro,
 
 
             //listados
@@ -328,7 +360,8 @@ export default defineComponent({
 
             //botones de tablas
             btnImprimirActaResponsabilidad,
-            btnDevolverVehiculo
+            btnTransferirVehiculo,
+            btnDevolverVehiculo,
         }
     }
 })

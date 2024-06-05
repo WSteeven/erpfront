@@ -1,15 +1,20 @@
 import { AxiosResponse } from "axios";
 import { StatusEssentialLoading } from "components/loading/application/StatusEssentialLoading";
 import { apiConfig, endpoints } from "config/api";
+import { AsignacionVehiculo } from "pages/controlVehiculos/asignarVehiculos/domain/AsignacionVehiculo";
 import { defineStore } from "pinia";
 import { AxiosHttpRepository } from "shared/http/infraestructure/AxiosHttpRepository";
 import { useNotificaciones } from "shared/notificaciones";
-import { ref } from "vue";
+import { reactive, ref } from "vue";
 
 export const useVehiculoStore = defineStore('vehiculo', () => {
     //State
     const idVehiculo = ref()
     const idMatricula = ref()
+    const idAsignacion = ref()
+    const asignacion = reactive(new AsignacionVehiculo())
+    const asignacionReset = new AsignacionVehiculo()
+
     const statusLoading = new StatusEssentialLoading()
     const { notificarCorrecto, notificarAdvertencia, notificarError } = useNotificaciones()
 
@@ -50,10 +55,21 @@ export const useVehiculoStore = defineStore('vehiculo', () => {
         }
     }
 
+    /**
+     * 
+     */
+    function resetearAsignacionVehiculo() {
+        asignacion.hydrate(asignacionReset)
+    }
+
     return {
         idMatricula,
 
         setValorEstimadoPagar,
         pagarMatricula,
+
+        idAsignacion,
+        asignacion,
+        resetearAsignacionVehiculo,
     }
 })

@@ -123,6 +123,26 @@
               </template>
             </q-input>
           </div>
+          
+          <!-- Valor -->
+          <div class="col-12 col-md-3 col-sm-6">
+            <label class="q-mb-sm block">Valor</label>
+            <q-input
+              type="number"
+              v-model="tanqueo.km_tanqueo"
+              placeholder="Obligatorio"
+              :readonly="disabled"
+              :error="!!v$.km_tanqueo.$errors.length"
+              outlined
+              dense
+            >
+              <template v-slot:error>
+                <div v-for="error of v$.km_tanqueo.$errors" :key="error.$uid">
+                  <div class="error-msg">{{ error.$message }}</div>
+                </div>
+              </template>
+            </q-input>
+          </div>
           <!-- Imagen comprobante -->
           <div class="col-12 col-md-3 col-sm-6">
             <label for="q-mb-sm block">Imagen Comprobante</label>

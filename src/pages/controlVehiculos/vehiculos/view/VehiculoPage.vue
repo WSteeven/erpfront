@@ -10,7 +10,7 @@
         <div class="row q-col-gutter-sm q-py-md">
           <!-- Tipo de vehiculo -->
           <div class="col-12 col-md-3 col-sm-6 q-mb-md">
-            <label class="q-mb-sm block">Tipo</label>
+            <label class="q-mb-sm block">Categoria</label>
             <q-select
               v-model="vehiculo.tipo"
               :options="tiposCategoriasVehiculos"

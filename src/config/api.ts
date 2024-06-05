@@ -206,6 +206,7 @@ export const endpoints = {
   matriculas: new Endpoint('vehiculos/matriculas'),
   ordenes_reparaciones: new Endpoint('vehiculos/ordenes-reparaciones'),
   asignaciones_vehiculos: new Endpoint('vehiculos/asignaciones-vehiculos'),
+  transferencias_vehiculos: new Endpoint('vehiculos/transferencias-vehiculos'),
   multas_conductores: new Endpoint('vehiculos/multas'),
   seguros: new Endpoint('vehiculos/seguros'),
   servicios: new Endpoint('vehiculos/servicios'),

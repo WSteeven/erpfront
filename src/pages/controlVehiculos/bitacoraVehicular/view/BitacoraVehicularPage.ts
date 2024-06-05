@@ -193,7 +193,8 @@ export default defineComponent({
         }
 
         function cargarDatosBitacoraDefecto() {
-            if (bitacoraDefault.value) {
+            // console.log(bitacoraDefault.value.id)
+            if (bitacoraDefault.value.id) {
                 bitacora.km_inicial = bitacoraDefault.value.km_final
                 bitacora.tanque_inicio = bitacoraDefault.value.tanque_final
                 bitacora.tanque_final = bitacoraDefault.value.tanque_final
@@ -201,7 +202,7 @@ export default defineComponent({
                 bitacora.checklistVehiculo = bitacoraDefault.value.checklistVehiculo
                 bitacora.checklistImagenVehiculo.observacion = ' '
 
-                bloquear_km_tanque.value = true
+                bloquear_km_tanque.value = false
             } else { bloquear_km_tanque.value = false }
         }
 
