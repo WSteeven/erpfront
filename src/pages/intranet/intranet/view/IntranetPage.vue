@@ -1,214 +1,4 @@
 <template>
-  <!-- Navbar -->
-  <q-header class="bg-desenfoque">
-    <!-- Drawer Header -->
-    <div class="row items-center justify-start">
-      <div class="absolute-top q-pa-sm q-ma-sm rounded-card">
-        <img
-          :src="!$q.dark.isActive ? logoClaro : logoOscuro"
-          height="30"
-          class="q-mx-auto"
-        />
-      </div>
-
-      <q-toolbar class="row items-center justify-end q-py-sm border-bottom">
-        <span
-          class="row"
-          :class="{
-            'q-gutter-x-sm': $q.screen.xs,
-            'q-gutter-x-md': !$q.screen.xs,
-          }"
-        >
-          <span
-            class="row"
-            :class="{
-              'q-gutter-x-xs': $q.screen.xs,
-              'q-gutter-x-sm': !$q.screen.xs,
-            }"
-          >
-            <!-- Boton transferir tareas -->
-            <!-- v-if="mostrarTransferirTareas" -->
-            <q-btn dense unelevated no-caps class="q-px-sm bg-grey-4d">
-              <!-- @click="abrirTransferirTareas()" -->
-              <q-icon
-                name="bi-arrow-left-right"
-                :class="{ 'q-mx-sm': !$q.screen.xs }"
-                class="bg-icon color-icon-navbar q-pa-xs rounded-field"
-                size="xs"
-              ></q-icon>
-              <span v-if="!$q.screen.xs" class="text-color"
-                >Transferir tareas activas</span
-              >
-              <q-tooltip class="bg-dark">Transferir tareas activas</q-tooltip>
-            </q-btn>
-
-            <!-- Boton movilizacion -->
-            <q-btn dense unelevated no-caps class="q-px-sm">
-              <!-- @click="abrirMovilizacionSubtarea()" -->
-              <q-icon
-                name="bi-car-front"
-                :class="{ 'q-mr-sm': !$q.screen.xs }"
-                class="bg-icon color-icon-navbar q-pa-xs rounded-field"
-                size="xs"
-              ></q-icon>
-              <span v-if="!$q.screen.xs" class="text-color">Movilización</span>
-              <q-tooltip class="bg-dark">Movilización</q-tooltip>
-            </q-btn>
-
-            <!-- Boton Mi bodega -->
-            <q-btn
-              dense
-              unelevated
-              no-caps
-              class="q-px-sm"
-              :to="{ name: 'mi_bodega' }"
-            >
-              <q-icon
-                name="bi-box-seam"
-                :class="{ 'q-mr-sm': !$q.screen.xs }"
-                class="bg-icon color-icon-navbar q-pa-xs rounded-field"
-                size="xs"
-              ></q-icon>
-              <span v-if="!$q.screen.xs" class="text-color">Mi bodega</span>
-              <q-tooltip class="bg-dark">Mi bodega</q-tooltip>
-            </q-btn>
-
-            <!-- <q-separator vertical inset></q-separator> -->
-
-            <!-- Boton notificaciones -->
-            <q-btn dense unelevated no-caps class="q-pl-sm">
-              <!-- @click.self="mostrarNotificaciones = true" -->
-              <q-icon
-                name="bi-bell"
-                :class="{ 'q-mr-sm': !$q.screen.xs }"
-                class="bg-icon color-icon-navbar q-pa-xs rounded-field"
-                size="xs"
-              ></q-icon>
-
-              <!-- <span v-if="!$q.screen.xs">Notificaciones</span> -->
-              <q-tooltip class="bg-dark">Notificaciones</q-tooltip>
-
-              <!-- v-if="notificaciones.length > 0" -->
-              <q-badge color="positive" floating><span>11</span> </q-badge>
-            </q-btn>
-          </span>
-
-          <!-- Perfil -->
-          <q-btn dense round flat glossy @click.self="mostrarMenu = true">
-            <q-avatar size="38px">
-              <img v-bind:src="imagenPerfil" />
-            </q-avatar>
-
-            <q-menu
-              v-model="mostrarMenu"
-              :self="selfCenterMiddle"
-              transition-show="jump-down"
-              transition-hide="jump-out"
-              :style="{ 'min-width': width }"
-              class="window-height bg-desenfoque custom-shadow"
-              max-height="100vh"
-            >
-              <div class="column items-center q-py-sm window-height">
-                <div class="full-width text-right q-pr-md">
-                  <q-btn
-                    icon="bi-x"
-                    round
-                    dense
-                    unelevated
-                    outline
-                    color="grey-8"
-                    @click="mostrarMenu = false"
-                  ></q-btn>
-                </div>
-
-                <q-avatar size="72px" class="double-border q-mb-md">
-                  <img v-bind:src="imagenPerfil" />
-                </q-avatar>
-
-                <div class="text-subtitle1 text-center">
-                  {{ nombreUsuario }}
-                </div>
-
-                <div v-if="grupo" class="q-mb-md">
-                  Grupo <strong>{{ grupo }}</strong>
-                </div>
-
-                <div class="text-subtitle2 text-center q-mb-md">
-                  Saldo Actual: $ {{ saldo }}
-                </div>
-
-                <!-- <div class=" text-center q-mb-md" v-if="ultimaConexion">
-                  Ultima conexión
-                  <br><strong>{{ ultimaConexion }}</strong>
-                </div> -->
-
-                <q-item clickable :to="{ name: 'perfil' }" class="full-width">
-                  <q-avatar>
-                    <q-icon name="bi-person"></q-icon>
-                  </q-avatar>
-                  <q-item-section> Perfil </q-item-section>
-                </q-item>
-
-                <!--<q-item clickable :to="{ name: 'perfil' }" class="full-width">
-                  <q-avatar>
-                    <q-icon name="bi-gear"></q-icon>
-                  </q-avatar>
-                  <q-item-section> Configuración </q-item-section>
-                </q-item> -->
-
-                <q-item
-                  clickable
-                  :to="{ name: 'mi_bodega' }"
-                  class="full-width"
-                >
-                  <q-avatar>
-                    <q-icon name="bi-box-seam"></q-icon>
-                  </q-avatar>
-                  <q-item-section> Mi bodega </q-item-section>
-                </q-item>
-
-                <q-item clickable class="full-width">
-                  <q-toggle
-                    v-model="modoOscuro"
-                    checked-icon="bi-moon-fill"
-                    label="Modo oscuro"
-                    unchecked-icon="bi-sun-fill"
-                    @click="toggleDarkMode()"
-                  />
-                </q-item>
-
-                <q-item
-                  clickable
-                  class="full-width"
-                  @click="logout()"
-                  :disable="$q.loading.isActive"
-                >
-                  <q-avatar>
-                    <q-icon name="bi-box-arrow-left"></q-icon>
-                  </q-avatar>
-                  <q-item-section> Cerrar sesión </q-item-section>
-                </q-item>
-              </div>
-            </q-menu>
-          </q-btn>
-        </span>
-      </q-toolbar>
-    </div>
-    <div class="text-center">
-      <q-chip v-if="enCamino" class="bg-grey-2 q-mx-auto q-mb-md">
-        <q-icon
-          name="bi-car-front-fill"
-          color="positive"
-          class="q-mr-xs"
-        ></q-icon>
-        <div class="text-positive">
-          Destino:&nbsp;<b>{{ enCamino }}</b>
-        </div>
-        <q-separator vertical class="q-mx-md"></q-separator>
-        <span class="text-grey-8">VIAJE DE {{ motivo }}</span>
-      </q-chip>
-    </div>
-  </q-header>
   <q-page padding>
     <q-banner v-if="showBanner" inline-actions class="text-white bg-orange">
       Noticia de Emergencia o Flash Informativo (Aqui iria la breve descripcion
@@ -269,7 +59,8 @@
               <div class="text-subtitle1">JPCONSTRUCRED</div>
             </div>
           </q-carousel-slide>
-        </q-carousel>
+        </q-carousel> 
+        <p>Aqui habia un carrusel</p>
       </div>
       <div class="col-4 col-md-3">
         <q-input
@@ -367,7 +158,7 @@
       </div>
     </div>
     <div class="row q-col-gutter-sm q-ml-sm q-pl-sm">
-      <div class="col-6 col-md-3">
+       <div class="col-6 col-md-3">
         <label class="q-mb-sm block"
           ><strong>Noticias Programadas</strong></label
         >
@@ -408,27 +199,25 @@
         </q-card>
       </div>
       <div class="col-3 col-md-6">
-        <label>Modulos Permitidos</label>
+        <label><strong>Modulos Permitidos</strong></label>
         <div class="row">
           <div
             class="col-6 q-pa-md"
             v-for="(modulo, index) in modulosPermitidos"
             :key="index"
           >
-          <q-card style="width: 300px; height: 200px;">
-            <div class="text-center">
-            <q-btn 
-            outline 
-            color="primary"
-            :label="modulo"
-            :icon="getIcon(modulo)"
-            @click="goToModule(modulo)"
-            size="lg"
-            />
-        </div>
-
-          </q-card>
-            
+            <q-card style="width: 300px; height: 200px">
+              <div class="text-center">
+                <q-btn
+                  outline
+                  color="primary"
+                  :label="modulo.title"
+                  :icon="modulo.icon"
+                  :href="modulo.link"
+                  size="lg"
+                />
+              </div>
+            </q-card>
           </div>
         </div>
       </div>

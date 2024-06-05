@@ -22,6 +22,7 @@ import { ComputedRef } from 'vue'
 import { useQuasar } from 'quasar'
 import { StatusEssentialLoading } from 'components/loading/application/StatusEssentialLoading'
 import { useRouter } from 'vue-router'
+import { useMenuStore } from 'stores/menu'
 
 
 
@@ -46,11 +47,12 @@ export default defineComponent({
         const $q = useQuasar()
         const modulosPermitidos = ref([])
 
-        const showBanner = ref(false)
-        const showDepartamentos = ref(false)
+        const showBanner = ref(true)
+        const showDepartamentos = ref(true)
         /*********
          * Stores
         *********/
+        const menuStore = useMenuStore()
         const cargando = new StatusEssentialLoading()
         const store = useAuthenticationStore()
         const movilizacionSubtareaStore = useMovilizacionSubtareaStore()
@@ -86,11 +88,11 @@ export default defineComponent({
         const modales = new ComportamientoModalesIntranet()
 
         const eventos = [
-            '2024/05/01',
-            '2024/05/05',
-            '2024/05/06',
-            '2024/05/09',
-            '2024/05/23',
+            '2024/06/01',
+            '2024/06/05',
+            '2024/06/06',
+            '2024/06/09',
+            '2024/06/23',
         ]
         const data = ref([
             {
@@ -132,14 +134,22 @@ export default defineComponent({
             return data.value.slice(start, end)
         })
         function obtenerModulosPermitidos() {
-            const regex = /\bmodulo_\w+\b/g
-            const modulos = store.user.permisos.filter((permiso) => regex.test(permiso))
-            modulosPermitidos.value = modulos.map(permiso => permiso.replace('puede.ver.modulo_', '').split('_').join(' '));
+            modulosPermitidos.value = menuStore.links.filter((link) => link.can && link.module)
+            modulosPermitidos.value = modulosPermitidos.value.map((modulo) => {
+                modulo.link = modulo.children.find((child) => child.can).link
+                return modulo
+            })
+            // console.log(modulosPermitidos.value);
+
         }
 
         obtenerModulosPermitidos()
 
-        function goToModule(modulo) {
+        function getIcon(modulo: string) {
+            console.log('getIcon', modulo, Date.now().toString())
+        }
+
+        function goToModule(modulo: string) {
             console.log('Diste click en ', modulo);
         }
         async function logout() {
@@ -162,15 +172,13 @@ export default defineComponent({
             }
         }
 
-        onMounted(async () => {
+        async function consultarDepartamentos() {
+
             const departamentoController = new DepartamentoController()
             departamentos.value = (await departamentoController.listar({ activo: 1 })).result
-            showDepartamentos.value = true
-            setTimeout(() => {
-                showBanner.value = true;
-            }, 10000);
-        }),
+        }
 
+        consultarDepartamentos()
 
         function openWhatsApp(numero) {
             window.location.href = `https://wa.me/${numero}`;
@@ -200,9 +208,6 @@ export default defineComponent({
             solicitud.descripcion = ''
         }
 
-        // Establecer favicon
-        configuracionGeneralStore.consultarConfiguracion().then(() =>
-            configuracionGeneralStore.cambiarFavicon())
 
         return {
             logoClaro: computed(() => configuracionGeneralStore.configuracion?.logo_claro),
@@ -240,6 +245,7 @@ export default defineComponent({
             consultarEmpleadosDepartamento,
             enviarSolicitud,
             limpiarFormulario,
+            getIcon,
             goToModule,
             width: computed(() => ($q.screen.xs ? '100%' : '450px')),
             selfCenterMiddle,
