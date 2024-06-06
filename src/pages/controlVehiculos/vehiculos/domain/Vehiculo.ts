@@ -21,6 +21,9 @@ export class Vehiculo extends EntidadAuditable {
     tipo: string | null
     tiene_rastreo: boolean
     propietario: string | null
+    custodio: string | null
+    conductor_externo: string | null
+    identificacion_conductor_externo: string | null
 
     constructor() {
         super()
@@ -44,5 +47,8 @@ export class Vehiculo extends EntidadAuditable {
         this.tipo = null
         this.tiene_rastreo = false
         this.propietario = null
+        this.custodio = null
+        this.conductor_externo = null
+        this.identificacion_conductor_externo = null
     }
 }

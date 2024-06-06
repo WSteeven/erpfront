@@ -104,6 +104,8 @@ export default defineComponent({
             traccion: { required },
             aire_acondicionado: { required },
             capacidad_tanque: { required },
+            conductor_externo: { requiredIf: requiredIf(() => vehiculo.tipo == 'ALQUILADO') },
+            identificacion_conductor_externo: { requiredIf: requiredIf(() => vehiculo.tipo == 'ALQUILADO') },
         }
         const v$ = useVuelidate(reglas, vehiculo)
         setValidador(v$.value)

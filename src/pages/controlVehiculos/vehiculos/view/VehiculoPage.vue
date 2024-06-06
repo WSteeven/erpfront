@@ -39,6 +39,20 @@
               </template>
             </q-select>
           </div>
+          <div
+            v-if="vehiculo.tipo === 'PROPIO'"
+            class="col-12 col-md-3 col-sm-6"
+          >
+            <label class="q-mb-sm block">Custodio Empresa</label>
+            <q-input
+              v-model="vehiculo.custodio"
+              autogrow
+              placeholder="Obligatorio"
+              disable
+              outlined
+              dense
+            />
+          </div>
 
           <!-- Propietario -->
           <div class="col-12 col-md-3 col-sm-6">
@@ -58,7 +72,58 @@
               </template>
             </q-input>
           </div>
-          
+
+          <!-- Conducto externo -->
+          <div
+            class="col-12 col-md-3 col-sm-6"
+            v-if="vehiculo.tipo === 'ALQUILADO'"
+          >
+            <label class="q-mb-sm block">Conductor Externo</label>
+            <q-input
+              v-model="vehiculo.conductor_externo"
+              placeholder="Obligatorio"
+              :disable="disabled"
+              :error="!!v$.conductor_externo.$errors.length"
+              outlined
+              dense
+            >
+              <template v-slot:error>
+                <div
+                  v-for="error of v$.conductor_externo.$errors"
+                  :key="error.$uid"
+                >
+                  <div class="error-msg">{{ error.$message }}</div>
+                </div>
+              </template>
+            </q-input>
+          </div>
+          <!-- Propietario -->
+          <div
+            class="col-12 col-md-3 col-sm-6"
+            v-if="vehiculo.tipo === 'ALQUILADO'"
+          >
+            <label class="q-mb-sm block"
+              >Identificación Conductor Externo</label
+            >
+            <q-input
+              v-model="vehiculo.identificacion_conductor_externo"
+              placeholder="Obligatorio"
+              :disable="disabled"
+              :error="!!v$.identificacion_conductor_externo.$errors.length"
+              outlined
+              dense
+            >
+              <template v-slot:error>
+                <div
+                  v-for="error of v$.identificacion_conductor_externo.$errors"
+                  :key="error.$uid"
+                >
+                  <div class="error-msg">{{ error.$message }}</div>
+                </div>
+              </template>
+            </q-input>
+          </div>
+
           <!-- Marca -->
           <div class="col-12 col-md-3 col-sm-6 q-mb-md">
             <label class="q-mb-sm block">Marca</label>

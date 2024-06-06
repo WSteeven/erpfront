@@ -3,23 +3,26 @@ import { EntidadAuditable } from "shared/entidad/domain/entidadAuditable";
 export class TransferenciaVehiculo extends EntidadAuditable {
     vehiculo: number | null
     entrega: number | null
+    canton: number | null
     responsable: number | null
-    observacion: string | null
-    estado: number | null
+    observacion_recibe: string | null
+    observacion_entrega: string | null
     fecha_entrega: string | null
-    fecha_aceptacion: string | null
-    canton: string | null
+    estado: string | null
     accesorios: string | null
     estado_carroceria: string | null
     estado_mecanico: string | null
     estado_electrico: string | null
+
+    fecha_aceptacion: string | null
 
     constructor() {
         super()
         this.vehiculo = null
         this.entrega = null
         this.responsable = null
-        this.observacion = null
+        this.observacion_recibe = null
+        this.observacion_entrega = null
         this.estado = null
         this.fecha_entrega = null
         this.fecha_aceptacion = null
