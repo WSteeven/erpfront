@@ -146,7 +146,7 @@ export default defineComponent({
       })
       //comprueba si hay una preorden en el store para llenar automaticamente los datos en la orden de compra
       orden.autorizacion = 1
-      if (preordenStore.preorden.id) {
+      if (preordenStore.preorden.id) {8
         orden.tiene_preorden = true
         cargarDatosPreorden()
       }
@@ -173,7 +173,7 @@ export default defineComponent({
       else
         soloLectura.value = true
       setTimeout(() => {
-        refArchivo.value.listarArchivosAlmacenados(orden.id)
+        if(orden.id) refArchivo.value.listarArchivosAlmacenados(orden.id)
       }, 1);
     })
     onModificado((id: number) => {

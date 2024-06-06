@@ -1,4 +1,5 @@
 import { Endpoint } from 'shared/http/domain/Endpoint'
+import { medico } from './endpoints/medico'
 
 export const apiConfig = {
   // URL_BASE: 'http://localhost:8000',
@@ -176,6 +177,7 @@ export const endpoints = {
     'recursos-humanos/crear-cash-alimentacion/'
   ),
   rubros: new Endpoint('recursos-humanos/rubros'),
+  tipos_discapacidades: new Endpoint('recursos-humanos/tipos-discapacidades'),
   anular_prestamo_empresarial: new Endpoint('recursos-humanos/anular-prestamo-empresarial'),
   asignar_alimentacion: new Endpoint('recursos-humanos/asignar-alimentacion'),
   alimentacion: new Endpoint('recursos-humanos/alimentacion'),
@@ -447,6 +449,10 @@ export const endpoints = {
   rechazos_tickets: new Endpoint('tickets/tickets/obtener-rechazados'),
   linea_tiempo_tickets: new Endpoint('tickets/linea-tiempo'),
 
+  /****************
+   * Modulo medico
+   ****************/
+  ...medico,
   /********************
    * Modulo de Ventas de Claro
    *********************/

@@ -1,9 +1,14 @@
 // Dependencias
 import { configuracionColumnasCategoriaTipoTicket } from '../domain/configuracionColumnasCategoriaTipoTicket'
+import { StatusEssentialLoading } from 'components/loading/application/StatusEssentialLoading'
+import { CustomActionTable } from 'components/tables/domain/CustomActionTable'
+import { isAxiosError, notificarMensajesError } from 'shared/utils'
+import { useAuthenticationStore } from 'stores/authentication'
 import { useNotificacionStore } from 'stores/notificacion'
+import { useNotificaciones } from 'shared/notificaciones'
 import { required } from 'shared/i18n-validators'
-import useVuelidate from '@vuelidate/core'
 import { computed, defineComponent } from 'vue'
+import useVuelidate from '@vuelidate/core'
 import { useQuasar } from 'quasar'
 
 // Componentes
@@ -14,14 +19,9 @@ import EssentialTable from 'components/tables/view/EssentialTable.vue'
 import { ContenedorSimpleMixin } from 'shared/contenedor/modules/simple/application/ContenedorSimpleMixin'
 import { DepartamentoController } from 'recursosHumanos/departamentos/infraestructure/DepartamentoController'
 import { useFiltrosListadosTickets } from 'pages/gestionTickets/tickets/application/FiltrosListadosTicket'
-import { CategoriaTipoTicket } from '../domain/CategoriaTipoTicket'
 import { CategoriaTipoTicketController } from '../infraestructure/CategoriaTipoTicketController'
-import { useAuthenticationStore } from 'stores/authentication'
 import { Departamento } from 'pages/recursosHumanos/departamentos/domain/Departamento'
-import { CustomActionTable } from 'components/tables/domain/CustomActionTable'
-import { useNotificaciones } from 'shared/notificaciones'
-import { StatusEssentialLoading } from 'components/loading/application/StatusEssentialLoading'
-import { isAxiosError, notificarMensajesError } from 'shared/utils'
+import { CategoriaTipoTicket } from '../domain/CategoriaTipoTicket'
 
 export default defineComponent({
   components: {
@@ -29,10 +29,16 @@ export default defineComponent({
     EssentialTable,
   },
   setup() {
+    /*********
+     * Stores
+     *********/
     const authenticationStore = useAuthenticationStore()
 
     const controller = new CategoriaTipoTicketController()
 
+    /********
+     * Mixin
+     ********/
     const mixin = new ContenedorSimpleMixin(
       CategoriaTipoTicket,
       controller,
@@ -53,7 +59,8 @@ export default defineComponent({
       if (authenticationStore.esAdministrador) {
         return true
       } else {
-        return departamento.id === authenticationStore.user.departamento
+        // return departamento.id === authenticationStore.user.departamento
+        return departamento.responsable_id === authenticationStore.user.id
       }
     }))
 
@@ -94,7 +101,6 @@ export default defineComponent({
         notificaciones.confirmar('¿Está seguro de continuar?', async () => {
           try {
             cargando.activar()
-            console.log(entidad)
             const { response, result } = await controller.editarParcial(entidad.id, { activo: !entidad.activo })
             listado.value.splice(posicion, 1, result)
             notificaciones.notificarCorrecto(response.data.mensaje)

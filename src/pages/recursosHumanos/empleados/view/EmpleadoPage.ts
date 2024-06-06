@@ -1,4 +1,5 @@
 //Dependencias
+import { configuracionColumnasTipoDiscapacidadPorcentaje } from '../domain/configuracionColumnasTipoDiscapacidadPorcentaje'
 import { configuracionColumnasEmpleados } from '../domain/configuracionColumnasEmpleados'
 import {
   maxLength,
@@ -18,16 +19,16 @@ import {
   talla_letras,
   tipos_sangre,
 } from 'config/utils'
-import { defineComponent, ref, watchEffect, computed } from 'vue'
+import { defineComponent, ref, watchEffect, computed, Ref } from 'vue'
 
 // Componentes
 import TabLayout from 'shared/contenedor/modules/simple/view/TabLayout.vue'
 import SelectorImagen from 'components/SelectorImagen.vue'
 import GestorArchivos from 'components/gestorArchivos/GestorArchivos.vue'
+import EssentialTable from 'components/tables/view/EssentialTable.vue'
 
 //Logica y controladores
 import { ContenedorSimpleMixin } from 'shared/contenedor/modules/simple/application/ContenedorSimpleMixin'
-import EssentialTable from 'components/tables/view/EssentialTable.vue'
 import { RolController } from 'pages/administracion/roles/infraestructure/RolController'
 import { GrupoController } from 'pages/recursosHumanos/grupos/infraestructure/GrupoController'
 import { EmpleadoController } from '../infraestructure/EmpleadoController'
@@ -51,12 +52,23 @@ import { Familiares } from 'pages/recursosHumanos/familiares/domain/Familiares'
 import { FamiliaresController } from 'pages/recursosHumanos/familiares/infraestructure/FamiliaresController'
 import { AxiosHttpRepository } from 'shared/http/infraestructure/AxiosHttpRepository'
 import { apiConfig, endpoints } from 'config/api'
-import { imprimirArchivo } from 'shared/utils'
+import { encontrarUltimoIdListado, imprimirArchivo } from 'shared/utils'
 import { useCargandoStore } from 'stores/cargando'
 import { AxiosResponse } from 'axios'
 import { useNotificaciones } from 'shared/notificaciones'
 import { useConfiguracionGeneralStore } from 'stores/configuracion_general'
 import { ArchivoController } from 'pages/gestionTrabajos/subtareas/modules/gestorArchivosTrabajos/infraestructure/ArchivoController'
+import { TipoDiscapacidadController } from 'pages/recursosHumanos/tipo-discapacidad/infraestructure/TipoDiscapacidadController'
+import { TipoDiscapacidadPorcentaje } from '../domain/TipoDiscapacidadPorcentaje'
+import { TipoDiscapacidad } from 'pages/recursosHumanos/tipo-discapacidad/domain/TipoDiscapacidad'
+import { reactive } from 'vue'
+import {
+  autoidentificaciones_etnicas,
+  parentezcos,
+} from 'config/recursosHumanos.utils'
+import { OrientacionSexualController } from 'pages/medico/gestionarPacientes/modules/fichaPeriodica/infraestructure/OrientacionSexualController'
+import { IdentidadGeneroController } from 'pages/medico/gestionarPacientes/modules/fichaPeriodica/infraestructure/IdentidadGeneroController'
+import { ReligionController } from 'pages/medico/gestionarPacientes/modules/fichaPeriodica/infraestructure/ReligionController'
 
 export default defineComponent({
   components: {
@@ -72,12 +84,16 @@ export default defineComponent({
      *********/
     useNotificacionStore().setQuasar(useQuasar())
     useCargandoStore().setQuasar(useQuasar())
-    const { notificarCorrecto } = useNotificaciones()
+    const { notificarCorrecto, confirmar } = useNotificaciones()
 
     /***********
      * Mixin
      ************/
-    const mixin = new ContenedorSimpleMixin(Empleado, new EmpleadoController(), new ArchivoController())
+    const mixin = new ContenedorSimpleMixin(
+      Empleado,
+      new EmpleadoController(),
+      new ArchivoController()
+    )
     const {
       entidad: empleado,
       disabled,
@@ -86,8 +102,14 @@ export default defineComponent({
     } = mixin.useReferencias()
     const { setValidador, cargarVista, obtenerListados } =
       mixin.useComportamiento()
-    const { onConsultado, onGuardado } = mixin.useHooks()
+    const { onConsultado, onGuardado, onReestablecer } = mixin.useHooks()
 
+    /************
+     * Variables
+     ************/
+    const configuracionColumnasTipoDiscapacidadPorcentajeReactive = reactive(
+      configuracionColumnasTipoDiscapacidadPorcentaje
+    )
     const opciones_cantones = ref([])
     const opciones_roles = ref([])
     const opciones_cargos = ref([])
@@ -96,7 +118,11 @@ export default defineComponent({
     const bancos = ref([])
     const areas = ref([])
     const tipos_contrato = ref([])
+    const tiposDiscapacidades = ref([])
     const opcionesDepartamentos = ref([])
+    const orientaciones_sexuales = ref([])
+    const identidades_genero = ref([])
+    const religiones = ref([])
     const refFamiliares = ref()
     const modales = new ComportamientoModalesEmpleado()
     const familiarStore = useFamiliarStore()
@@ -107,13 +133,14 @@ export default defineComponent({
       Familiares,
       new FamiliaresController()
     )
-    const { eliminar } = mixinFamiliares.useComportamiento()
 
     const refArchivo = ref()
     const idEmpleado = ref()
-
+    const idsTiposDiscapacidades: Ref<number[]> = ref([])
+    const idsParentescos: Ref<number[]> = ref([])
+    const construccionConfiguracionColumnas = ref(false)
     cargarVista(async () => {
-      obtenerListados({
+      await obtenerListados({
         cantones: new CantonController(),
         cargos: {
           controller: new CargoController(),
@@ -124,6 +151,11 @@ export default defineComponent({
           controller: new RolController(),
           params: { campos: 'id,name' },
         },
+        tiposDiscapacidades: {
+          controller: new TipoDiscapacidadController(),
+          params: { campos: 'id,nombres' },
+        },
+
         empleados: {
           controller: new EmpleadoController(),
           params: {
@@ -142,15 +174,30 @@ export default defineComponent({
           controller: new DepartamentoController(),
           params: { activo: 1 },
         },
+        orientaciones_sexuales: new OrientacionSexualController(),
+        identidades_genero: new IdentidadGeneroController(),
+        religiones: new ReligionController(),
       })
+
+      configuracionColumnasTipoDiscapacidadPorcentajeReactive.find(
+        (item) => item.field === 'tipo_discapacidad'
+      )!.options = listadosAuxiliares.tiposDiscapacidades.map(
+        (v: TipoDiscapacidad) => {
+          return { label: v.nombre, value: v.id }
+        }
+      )
+      configuracionColumnasFamiliaresEmpleado.find(
+        (item) => item.field === 'parentezco'
+      )!.options = parentezcos.map((v: any) => {
+        return { label: v.nombre, value: v.value }
+      })
+      construccionConfiguracionColumnas.value = true
     })
-    /***************************
-     * Configuracion de columnas
-     ****************************/
-    const columnasFamiliares: any = [
-      ...configuracionColumnasFamiliaresEmpleado,
-      accionesTabla,
-    ]
+
+    const habilitarBotonAgregarFamiliares = computed(
+      () => accion.value == acciones.nuevo || accion.value == acciones.editar
+    )
+
     /*************
      * Validaciones
      **************/
@@ -198,6 +245,10 @@ export default defineComponent({
       talla_camisa: { required },
       talla_pantalon: { required: requiredIf(() => empleado.tiene_grupo) },
       talla_guantes: { required: requiredIf(() => empleado.tiene_grupo) },
+      autoidentificacion_etnica: { required },
+      orientacion_sexual: { required },
+      identidad_genero: { required },
+      religion: { required },
     }
 
     const v$ = useVuelidate(reglas, empleado)
@@ -210,26 +261,26 @@ export default defineComponent({
     tipos_contrato.value = listadosAuxiliares.tipos_contrato
     opcionesDepartamentos.value = listadosAuxiliares.departamentos
     estado_civiles.value = listadosAuxiliares.estado_civiles
+    orientaciones_sexuales.value = listadosAuxiliares.orientaciones_sexuales
+    identidades_genero.value = listadosAuxiliares.identidades_genero
+    religiones.value = listadosAuxiliares.religiones
     areas.value = listadosAuxiliares.areas
     bancos.value = listadosAuxiliares.bancos
     /********
      * Hooks
      ********/
-
-    
-    async function guardado(data) {
-      empleado.familiares!.push(data.model)
-    }
+    onReestablecer(() => {
+      empleado.familiares = []
+    })
 
     onConsultado(() => {
       idEmpleado.value = empleado.id
       empleado.tiene_grupo = !!empleado.grupo
       nombre_usuario.value = empleado.usuario
       email_usuario.value = empleado.email
-
       setTimeout(() => {
         refArchivo.value.listarArchivosAlmacenados(empleado.id)
-      }, 1);
+      }, 1)
     })
 
     onGuardado((id: number) => {
@@ -242,23 +293,6 @@ export default defineComponent({
     function optionsFecha(date) {
       const hoy = convertir_fecha(new Date())
       return date <= hoy
-    }
-    const abrirModalFamiliares: CustomActionTable = {
-      titulo: 'Agregar Familiar',
-      icono: 'bi-person-fill-add',
-      color: 'positive',
-      tooltip:
-        'Puede modificar o eliminar un familiar desde el panel familiares de empleados',
-      accion: () => {
-        familiarStore.idEmpleado = empleado.id
-        familiarStore.listar_familiares = false
-        familiarStore.accion = acciones.nuevo
-
-        modales.abrirModalEntidad('FamiliaresPage')
-      },
-      visible: () => {
-        return accion.value == acciones.nuevo || accion.value == acciones.editar
-      },
     }
 
     async function subirArchivos() {
@@ -317,14 +351,14 @@ export default defineComponent({
       },
     }
     const btnEliminarFamiliar: CustomActionTable = {
-      titulo: '',
-      icono: 'bi-trash',
-      color: 'secondary',
+      titulo: 'Eliminar',
+      icono: 'bi-x',
+      color: 'negative',
       visible: () => authenticationStore.can('puede.eliminar.familiares'),
-      accion: ({ entidad }) => {
-        accion.value = 'ELIMINAR'
-        eliminar(entidad)
-      },
+      accion: ({ posicion }) =>
+        confirmar('¿Está seguro de continuar?', () =>
+          empleado.familiares?.splice(posicion, 1)
+        ),
     }
     const btnImprimirEmpleados: CustomActionTable = {
       titulo: 'Reporte General',
@@ -370,6 +404,23 @@ export default defineComponent({
         entidad.estado = false
       },
     }
+
+    const agregarDiscapacidad = () => {
+      const fila = new TipoDiscapacidadPorcentaje()
+      fila.id = empleado.discapacidades?.length
+        ? encontrarUltimoIdListado(empleado.discapacidades) + 1
+        : 1
+      empleado.discapacidades?.push(fila)
+    }
+
+    const agregarFamiliares = () => {
+      const fila = new Familiares()
+      fila.id = empleado.familiares?.length
+        ? encontrarUltimoIdListado(empleado.familiares) + 1
+        : 1
+      empleado.familiares?.push(fila)
+    }
+
     function reestablecer_usuario() {
       if (accion.value == acciones.editar && empleado.generar_usuario) {
         generarUsename()
@@ -378,6 +429,17 @@ export default defineComponent({
         empleado.email = email_usuario.value
       }
     }
+
+    const btnEliminarDiscapacidad: CustomActionTable<TipoDiscapacidadPorcentaje> =
+      {
+        titulo: 'Eliminar',
+        icono: 'bi-x',
+        color: 'negative',
+        accion: ({ posicion }) =>
+          confirmar('¿Está seguro de continuar?', () =>
+            empleado.discapacidades?.splice(posicion, 1)
+          ),
+      }
 
     function obtenerUsername() {
       if (accion.value == acciones.editar && empleado.generar_usuario) {
@@ -418,8 +480,116 @@ export default defineComponent({
         estado ? 'Ha Habilitado empleado' : 'Ha deshabilitado empleado'
       )
     }
+
+    //  FILTROS
+    //filtro de empleados
+    function filtroEmpleados(val, update) {
+      if (val === '') {
+        update(() => {
+          opciones_empleados.value = listadosAuxiliares.empleados
+        })
+        return
+      }
+      update(() => {
+        const needle = val.toLowerCase()
+        opciones_empleados.value = listadosAuxiliares.empleados.filter(
+          (v) =>
+            v.nombres.toLowerCase().indexOf(needle) > -1 ||
+            v.apellidos.toLowerCase().indexOf(needle) > -1
+        )
+      })
+    }
+    //filtro de cantones
+    function filtroCantones(val, update) {
+      if (val === '') {
+        update(() => {
+          opciones_cantones.value = listadosAuxiliares.cantones
+        })
+        return
+      }
+      update(() => {
+        const needle = val.toLowerCase()
+        opciones_cantones.value = listadosAuxiliares.cantones.filter(
+          (v) => v.canton.toLowerCase().indexOf(needle) > -1
+        )
+      })
+    }
+    //filtro de cargos
+    function filtroCargos(val, update) {
+      if (val === '') {
+        update(() => {
+          opciones_cargos.value = listadosAuxiliares.cargos
+        })
+        return
+      }
+      update(() => {
+        const needle = val.toLowerCase()
+        opciones_cargos.value = listadosAuxiliares.cargos.filter(
+          (v) => v.nombre.toLowerCase().indexOf(needle) > -1
+        )
+      })
+    }
+    function filtroRoles(val, update) {
+      if (val === '') {
+        update(() => {
+          opciones_roles.value = listadosAuxiliares.roles
+        })
+        return
+      }
+      update(() => {
+        const needle = val.toLowerCase()
+        opciones_roles.value = listadosAuxiliares.roles.filter(
+          (v) => v.nombre.toLowerCase().indexOf(needle) > -1
+        )
+      })
+    }
+    function filtroDepartamentos(val, update) {
+      if (val === '') {
+        update(() => {
+          opcionesDepartamentos.value = listadosAuxiliares.departamentos
+        })
+        return
+      }
+      update(() => {
+        const needle = val.toLowerCase()
+        opcionesDepartamentos.value = listadosAuxiliares.departamentos.filter(
+          (v) => v.nombre.toLowerCase().indexOf(needle) > -1
+        )
+      })
+    }
+    function filtrobancos(val, update) {
+      if (val === '') {
+        update(() => {
+          bancos.value = listadosAuxiliares.bancos
+        })
+        return
+      }
+      update(() => {
+        const needle = val.toLowerCase()
+        opcionesDepartamentos.value = listadosAuxiliares.bancos.filter(
+          (v) => v.nombre.toLowerCase().indexOf(needle) > -1
+        )
+      })
+    }
+    function filtrarTipoDiscapacidad(val, update) {
+      if (val === '') {
+        update(() => {
+          tiposDiscapacidades.value = listadosAuxiliares.tiposDiscapacidades
+        })
+        return
+      }
+      update(() => {
+        const needle = val.toLowerCase()
+        tiposDiscapacidades.value =
+          listadosAuxiliares.tiposDiscapacidades.filter(
+            (v) => v.nombre.toLowerCase().indexOf(needle) > -1
+          )
+      })
+    }
+
     return {
-      mixin, mixinFamiliares,
+      mixin,
+      mixinFamiliares,
       empleado,
       disabled,
       accion,
@@ -428,7 +598,6 @@ export default defineComponent({
       v$,
       reestablecer_usuario,
       configuracionColumnas: configuracionColumnasEmpleados,
-      columnasFamiliares,
       idEmpleado,
       isPwd: ref(true),
       listadosAuxiliares,
@@ -448,7 +617,9 @@ export default defineComponent({
       niveles_academicos,
       refFamiliares,
       optionsFecha,
-      abrirModalFamiliares,
+      orientaciones_sexuales,
+      identidades_genero,
+      religiones,
       //metodos
       opcionesDepartamentos,
       btnConsultarFamiliar,
@@ -457,101 +628,29 @@ export default defineComponent({
       btnImprimirEmpleados,
       btnHabilitarEmpleado,
       btnDesHabilitarEmpleado,
+      btnEliminarDiscapacidad,
       modales,
+      idsTiposDiscapacidades,
+      idsParentescos,
+      tiposDiscapacidades,
       //funciones
       subirArchivos,
       obtenerUsername,
-      guardado,
-      //  FILTROS
-      //filtro de empleados
-      filtroEmpleados(val, update) {
-        if (val === '') {
-          update(() => {
-            opciones_empleados.value = listadosAuxiliares.empleados
-          })
-          return
-        }
-        update(() => {
-          const needle = val.toLowerCase()
-          opciones_empleados.value = listadosAuxiliares.empleados.filter(
-            (v) =>
-              v.nombres.toLowerCase().indexOf(needle) > -1 ||
-              v.apellidos.toLowerCase().indexOf(needle) > -1
-          )
-        })
-      },
-      //filtro de cantones
-      filtroCantones(val, update) {
-        if (val === '') {
-          update(() => {
-            opciones_cantones.value = listadosAuxiliares.cantones
-          })
-          return
-        }
-        update(() => {
-          const needle = val.toLowerCase()
-          opciones_cantones.value = listadosAuxiliares.cantones.filter(
-            (v) => v.canton.toLowerCase().indexOf(needle) > -1
-          )
-        })
-      },
-      //filtro de cargos
-      filtroCargos(val, update) {
-        if (val === '') {
-          update(() => {
-            opciones_cargos.value = listadosAuxiliares.cargos
-          })
-          return
-        }
-        update(() => {
-          const needle = val.toLowerCase()
-          opciones_cargos.value = listadosAuxiliares.cargos.filter(
-            (v) => v.nombre.toLowerCase().indexOf(needle) > -1
-          )
-        })
-      },
-      filtroRoles(val, update) {
-        if (val === '') {
-          update(() => {
-            opciones_roles.value = listadosAuxiliares.roles
-          })
-          return
-        }
-        update(() => {
-          const needle = val.toLowerCase()
-          opciones_roles.value = listadosAuxiliares.roles.filter(
-            (v) => v.nombre.toLowerCase().indexOf(needle) > -1
-          )
-        })
-      },
-      filtroDepartamentos(val, update) {
-        if (val === '') {
-          update(() => {
-            opcionesDepartamentos.value = listadosAuxiliares.departamentos
-          })
-          return
-        }
-        update(() => {
-          const needle = val.toLowerCase()
-          opcionesDepartamentos.value = listadosAuxiliares.departamentos.filter(
-            (v) => v.nombre.toLowerCase().indexOf(needle) > -1
-          )
-        })
-      },
-      filtrobancos(val, update) {
-        if (val === '') {
-          update(() => {
-            bancos.value = listadosAuxiliares.bancos
-          })
-          return
-        }
-        update(() => {
-          const needle = val.toLowerCase()
-          opcionesDepartamentos.value = listadosAuxiliares.bancos.filter(
-            (v) => v.nombre.toLowerCase().indexOf(needle) > -1
-          )
-        })
-      },
+      filtroEmpleados,
+      filtroCantones,
+      filtroCargos,
+      filtroRoles,
+      filtroDepartamentos,
+      filtrobancos,
+      filtrarTipoDiscapacidad,
+      configuracionColumnasTipoDiscapacidadPorcentajeReactive,
+      configuracionColumnasFamiliaresEmpleado,
+      agregarDiscapacidad,
+      agregarFamiliares,
+      accionesTabla,
+      construccionConfiguracionColumnas,
+      habilitarBotonAgregarFamiliares,
+      autoidentificaciones_etnicas,
     }
   },
 })

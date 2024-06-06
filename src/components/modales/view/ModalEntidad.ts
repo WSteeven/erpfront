@@ -16,7 +16,7 @@ export default defineComponent({
     accion: {
       type: Function,
       required: false,
-      default: () =>{},
+      default: () => { },
     },
     confirmarCerrar: {
       type: Boolean,
@@ -32,9 +32,9 @@ export default defineComponent({
     }
   },
   // emits: ['seleccionar', 'accion1'],
-  emits: ['guardado', 'cerrado'],
+  emits: ['guardado', 'modificado', 'cerrado'],
   setup(props, { emit }) {
-    const { componente, titulo, abierto } = props.comportamiento.useModal()
+    const { componente, titulo, abierto, datos } = props.comportamiento.useModal()
     const { confirmar } = useNotificaciones()
 
     function cerrarModalEntidad(confirmarCerrar = true && props.confirmarCerrar) {
@@ -59,6 +59,7 @@ export default defineComponent({
       cerrarModalEntidad,
       duracion,
       abierto,
+      datos,
       emit,
     }
   },

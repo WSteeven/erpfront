@@ -29,6 +29,12 @@ export const configuracionColumnasConfiguracionGeneral: ColumnConfig<Configuraci
         label: 'Nombre ruc',
         align: 'left',
         sortable: true
+    },    {
+        name: 'ciiu',
+        field: 'ciiu',
+        label: 'Ciiu',
+        align: 'left',
+        sortable: true
     },
     {
         name: 'direccion_principal',

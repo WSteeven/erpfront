@@ -3,7 +3,7 @@ import { Banco } from "../domain/Banco";
 import { endpoints } from "config/api";
 
 export class BancoController extends TransaccionSimpleController<Banco>{
-  constructor(){
+  constructor() {
     super(endpoints.banco)
   }
 }

@@ -19,7 +19,6 @@ export class ActualizarNotificacionesPusherEvent {
     pusher.bind('actualizar-notificaciones-event', function (e) {
       // notificacionStore.agregar(e.notificacion)
       notificacionesPusherStore.listar() //cargar las notificaciones de la base de datos
-      console.log('actualizar-notificaciones jejeje')
     })
   }
 

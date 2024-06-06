@@ -10,13 +10,16 @@ export class Empleado extends EntidadAuditable {
   direccion: string | null
   estado_civil: string | null
   jefe: string | null
+  jefe_inmediato: string | null
   email: string | null
   correo_personal: string | null
   password: string | null
   usuario: string | null
-  canton: string | null
+  canton: number | null
+  nombre_canton: string | null
   estado: boolean | null
   cargo: number | null
+  nombre_cargo: string | null
   area: number | null
   area_info: string | null
   num_cuenta: string | null
@@ -64,8 +67,14 @@ export class Empleado extends EntidadAuditable {
   banco_info: string | null
   acumula_fondos_reserva: boolean | null
   familiares: any[] | null
+  discapacidades: any[] | null
   generar_usuario: boolean
-
+  edad: number | null
+  autoidentificacion_etnica: string | null
+trabajador_sustituto: boolean | null
+orientacion_sexual: number | null
+identidad_genero: number | null
+religion: number | null
 
   constructor() {
     super()
@@ -78,13 +87,16 @@ export class Empleado extends EntidadAuditable {
     this.direccion = null
     this.estado_civil = null
     this.jefe = null
+    this.jefe_inmediato = null
     this.email = null
     this.correo_personal = null
     this.password = null
     this.usuario = null
     this.canton = null
+    this.nombre_canton = null
     this.estado = true
     this.cargo = null
+    this.nombre_cargo = null
     this.area = null
     this.area_info = null
     this.num_cuenta = null
@@ -126,12 +138,19 @@ export class Empleado extends EntidadAuditable {
     this.talla_camisa = null
     this.talla_guantes = null
     this.talla_pantalon = null
-    this.genero = 'M'
+    this.genero = null
     this.banco_info = null
     this.esta_en_rol_pago = true
     this.acumula_fondos_reserva = false
     this.realiza_factura = false
-    this.familiares = [],
-      this.generar_usuario = false
+    this.familiares = []
+    this.discapacidades = []
+    this.generar_usuario = false
+    this.edad = null
+    this.autoidentificacion_etnica = null
+    this.trabajador_sustituto = false
+    this.orientacion_sexual = null
+    this.identidad_genero = null
+    this.religion = null
   }
 }

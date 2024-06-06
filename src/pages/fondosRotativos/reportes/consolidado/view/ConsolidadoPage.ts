@@ -209,7 +209,7 @@ export default defineComponent({
       }
     }
     function mostrarEmpleados() {
-      consolidado.usuario = null
+      consolidado.empleado = null
     }
     async function recargarEmpleadosInactivos() {
       usuariosInactivos.value = (

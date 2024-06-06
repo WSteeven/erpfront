@@ -14,7 +14,7 @@ import { useTicketStore } from 'stores/ticket'
 import { reactive } from 'vue'
 
 export const useBotonesTablaTicket = (mixin: ContenedorSimpleMixin<Ticket | any>, modales: ComportamientoModalesTicket | any) => {
-  const { confirmar, prompt, notificarAdvertencia, notificarCorrecto, promptItems } = useNotificaciones()
+  const { confirmar, prompt, notificarCorrecto, promptItems } = useNotificaciones()
   const notificaciones = useNotificaciones()
   const { listado, listadosAuxiliares } = mixin.useReferencias()
 
@@ -29,7 +29,7 @@ export const useBotonesTablaTicket = (mixin: ContenedorSimpleMixin<Ticket | any>
     titulo: 'Transferir',
     icono: 'bi-arrow-right',
     color: 'secondary',
-    visible: ({ entidad }) => [estadosTickets.ASIGNADO, estadosTickets.REASIGNADO, estadosTickets.EJECUTANDO].includes(entidad.estado),
+    visible: ({ entidad }) => [estadosTickets.ASIGNADO, estadosTickets.REASIGNADO, estadosTickets.EJECUTANDO, estadosTickets.PAUSADO].includes(entidad.estado),
     accion: ({ entidad, posicion }) => {
       ticketStore.filaTicket = entidad
       ticketStore.posicionFilaTicket = posicion

@@ -12,7 +12,6 @@ export class SolicitudPrestamo extends EntidadAuditable {
   estado: number |null
   estado_info: string|null
   motivo:string | null
-  foto:string | null
   observacion: string | null
   cargo_utilidad:boolean | null
 
@@ -29,7 +28,6 @@ export class SolicitudPrestamo extends EntidadAuditable {
     this.estado = null
     this.estado_info= null
     this.motivo=null
-    this.foto=null
     this.observacion = null
     this.cargo_utilidad = false
   }

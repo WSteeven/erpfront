@@ -1,8 +1,5 @@
 // Dependencias
-import {
-  requiredIf,
-  required,
-} from 'shared/i18n-validators'
+import { requiredIf, required } from 'shared/i18n-validators'
 import { maxValue, minValue } from '@vuelidate/validators'
 import { useVuelidate } from '@vuelidate/core'
 import { defineComponent, ref, computed } from 'vue'
@@ -45,8 +42,7 @@ export default defineComponent({
     } = mixin.useReferencias()
     const { setValidador, cargarVista, obtenerListados, listar } =
       mixin.useComportamiento()
-    const { onConsultado} =
-      mixin.useHooks()
+    const { onConsultado } = mixin.useHooks()
     const maximoAPrestar = ref()
     const esMayorsolicitudPrestamo = ref(false)
     const puede_editar = ref(true)
@@ -57,19 +53,30 @@ export default defineComponent({
     const autorizaciones = ref()
     const periodos = ref()
     const ver_boton_editar = computed(() => {
-      let validar = false;
+      let validar = false
       if (esValidador.value === true) {
-        validar=  tabSolicitudPrestaamo.value==='1'?true:false
+        validar = tabSolicitudPrestaamo.value === '1' ? true : false
       }
       if (esAutorizador.value === true) {
-        validar =tabSolicitudPrestaamo.value==='4'?true:false
+        validar = tabSolicitudPrestaamo.value === '4' ? true : false
       }
-      return validar;
+      return validar
     })
     const sueldo_basico = computed(() => {
       recursosHumanosStore.obtener_sueldo_basico()
       return recursosHumanosStore.sueldo_basico
     })
+    const restringirMotivo = computed(() => {
+      if (accion.value === acciones.editar) {
+        return (
+          solicitudPrestamo.estado === autorizacionesId.CANCELADO ||
+          store.user.id !== solicitudPrestamo.solicitante
+        )
+      } else {
+        return disabled.value
+      }
+    })
+
     recursosHumanosStore.nivel_endeudamiento(
       solicitudPrestamo.solicitante == null
         ? store.user.id
@@ -89,7 +96,11 @@ export default defineComponent({
         },
         autorizaciones: {
           controller: new AutorizacionController(),
-          params: { campos: 'id,nombre', es_validado: false, es_modulo_rhh:true },
+          params: {
+            campos: 'id,nombre',
+            es_validado: false,
+            es_modulo_rhh: true,
+          },
         },
       })
       autorizaciones.value = listadosAuxiliares.autorizaciones
@@ -108,7 +119,6 @@ export default defineComponent({
       fecha: { required },
       monto: { required },
       motivo: { required },
-      foto: { required },
       estado: requiredIf(esValidador.value),
       observacion: { requiredValidador: requiredIf(esValidador.value) },
       periodo: {
@@ -128,7 +138,11 @@ export default defineComponent({
       plazo: {
         minValue: minValue(1),
         maxValue: maxValue(12),
-        requiredIfPlazo: requiredIf(() => esValidador.value && solicitudPrestamo.estado !== autorizacionesId.CANCELADO)
+        requiredIfPlazo: requiredIf(
+          () =>
+            esValidador.value &&
+            solicitudPrestamo.estado !== autorizacionesId.CANCELADO
+        ),
       },
     }))
     const plazo_pago = ref({ id: 0, vencimiento: '', plazo: 0 })
@@ -173,13 +187,13 @@ export default defineComponent({
         )
       })
     }
-const maximoValorsolicitudPrestamo = [
-  (val) =>
-    val <= parseInt(sueldo_basico.value) * 2 ||
-    'Solo se permite prestamo menor o igual a 2 SBU ($ ' +
-      parseInt(sueldo_basico.value) * 2 +
-      ')',
-]
+    const maximoValorsolicitudPrestamo = [
+      (val) =>
+        val <= parseInt(sueldo_basico.value) * 2 ||
+        'Solo se permite prestamo menor o igual a 2 SBU ($ ' +
+          parseInt(sueldo_basico.value) * 2 +
+          ')',
+    ]
     return {
       removeAccents,
       mixin,
@@ -208,7 +222,8 @@ const maximoValorsolicitudPrestamo = [
       tabSolicitudPrestaamo,
       accionesTabla,
       ver_boton_editar,
-      acciones
+      acciones,
+      restringirMotivo,
     }
   },
 })

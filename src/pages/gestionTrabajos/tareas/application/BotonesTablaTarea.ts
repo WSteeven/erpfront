@@ -41,8 +41,6 @@ export const useBotonesTablaTarea = (mixin: ContenedorSimpleMixin<Tarea>) => {
 
       filaFinalizar.id = entidad.id
       filaFinalizar.posicion = posicion
-
-      console.log('fuera del if')
       entidadTarea.value = entidad
 
       if (!entidad.codigo_tarea_cliente) {

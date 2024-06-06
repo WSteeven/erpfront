@@ -16,6 +16,7 @@ import {
   convertir_fecha_guion,
   convertir_fecha_hora,
   maskFecha,
+  numDiaSemana,
   tabOptionsPermiso,
 } from 'config/utils'
 import { requiredIf, required } from 'shared/i18n-validators'
@@ -31,6 +32,7 @@ import TabLayoutFilterTabs2 from 'shared/contenedor/modules/simple/view/TabLayou
 import { CustomActionTable } from 'components/tables/domain/CustomActionTable'
 import ArchivoSeguimiento from 'pages/gestionTrabajos/subtareas/modules/gestorArchivosTrabajos/view/ArchivoSeguimiento.vue'
 import { AutorizacionController } from 'pages/administracion/autorizaciones/infraestructure/AutorizacionController'
+import { addDay, format, parse } from '@formkit/tempo'
 
 export default defineComponent({
   components: {
@@ -82,19 +84,42 @@ export default defineComponent({
     })
     const dias_permiso = computed(() => {
       if (permiso.fecha_hora_inicio != null && permiso.fecha_hora_fin != null) {
-        const fechaInicio = convertir_fecha_hora(permiso.fecha_hora_inicio)
-        const fechaFin = convertir_fecha_hora(permiso.fecha_hora_fin)
+        const fechaInicio = parse(
+          permiso.fecha_hora_inicio != null
+            ? permiso.fecha_hora_inicio
+            : new Date().toString(),
+          'DD-MM-YYYY HH:mm:ss'
+        )
+        const fechaFin = parse(
+          permiso.fecha_hora_fin != null
+            ? permiso.fecha_hora_fin
+            : new Date().toString(),
+          'DD-MM-YYYY HH:mm:ss'
+        )
         // Calcula la diferencia en dias
-        const diferenciaDias = fechaFin.getDate() - fechaInicio.getDate()
-        return diferenciaDias
+        const diferenciaMilisegundos =
+          fechaFin.getTime() - fechaInicio.getTime()
+        const diferenciaHoras = diferenciaMilisegundos / (1000 * 60 * 60)
+        const diferenciaDias = diferenciaHoras / 24
+        return Math.round(diferenciaDias)
       } else {
         return 0
       }
     })
     const horas_permisos = computed(() => {
       if (permiso.fecha_hora_inicio != null && permiso.fecha_hora_fin != null) {
-        const fechaInicio = convertir_fecha_hora(permiso.fecha_hora_inicio)
-        const fechaFin = convertir_fecha_hora(permiso.fecha_hora_fin)
+        const fechaInicio = parse(
+          permiso.fecha_hora_inicio != null
+            ? permiso.fecha_hora_inicio
+            : new Date().toString(),
+          'DD-MM-YYYY HH:mm:ss'
+        )
+        const fechaFin = parse(
+          permiso.fecha_hora_fin != null
+            ? permiso.fecha_hora_fin
+            : new Date().toString(),
+          'DD-MM-YYYY HH:mm:ss'
+        )
         // Calcula la diferencia en milisegundos
         const diferenciaMilisegundos =
           fechaFin.getTime() - fechaInicio.getTime()
@@ -171,40 +196,52 @@ export default defineComponent({
 
       empleados.value = listadosAuxiliares.empleados
       tipos_permisos.value = listadosAuxiliares.tipos_permisos
-      autorizaciones.value = listadosAuxiliares.autorizaciones.filter((v) => v.id !== autorizacionesId.VALIDADO )
+      autorizaciones.value = listadosAuxiliares.autorizaciones.filter(
+        (v) => v.id !== autorizacionesId.VALIDADO
+      )
     })
     function optionsFechaInicio(date) {
-      const currentDate =
-        permiso.fecha_hora_inicio != null
-          ? convertir_fecha_hora(permiso.fecha_hora_inicio)
-          : new Date() // Obtener la fecha actual
-      const year = currentDate.getFullYear() // Obtener el año
-      const month = String(currentDate.getMonth() + 1).padStart(2, '0') // Obtener el mes y asegurarse de que tenga dos dígitos
-      const day = String(currentDate.getDate()).padStart(2, '0') // Obtener el día y asegurarse de que tenga dos dígitos
-      const currentDateString = `${year}/${month}/${day}` // Formatear la fecha actual
-      return date >= currentDateString
+      const currentDateString = format(new Date(), 'YYYY/MM/DD')
+      return (
+        date >= currentDateString &&
+        new Date(date).getDay() < numDiaSemana.sabado &&
+        new Date(date).getDay() > numDiaSemana.domingo
+      )
     }
     function optionsFecha(date) {
-      const fechaActual = convertir_fecha_hora(permiso.fecha_hora_inicio)
-      const fechaIngresada = new Date(date)
-      const diferenciaMilisegundos =
-        fechaIngresada.getTime() - fechaActual.getTime()
-      const diferenciaDias = Math.floor(
-        diferenciaMilisegundos / (1000 * 60 * 60 * 24)
-      ) // Diferencia en días
+      const fecha_hora_inicio = format(
+        new Date(convertir_fecha_hora(permiso.fecha_hora_inicio)),
+        'YYYY/MM/DD'
+      )
       return (
-        diferenciaDias === -1 ||
-        diferenciaDias === 0 ||
-        diferenciaDias === 1 ||
-        diferenciaDias === 2
+        date >= fecha_hora_inicio &&
+        new Date(date).getDay() < numDiaSemana.sabado &&
+        new Date(date).getDay() > numDiaSemana.domingo
       )
     }
 
+/**
+ * La función `opcionesFechaRecuperacion` verifica si una fecha determinada está dentro de ciertas
+ * restricciones en función de los parámetros de entrada.
+ * @param date - La función `opcionesFechaRecuperacion` toma un parámetro `fecha` y verifica si
+ * se suguiere fecha obtine la fecha sugerida caso contrario obtine la fecha de finalizacion. La función parece estar verificando si la "fecha" proporcionada cumple con
+ * ciertas condiciones basadas en los valores de las variables "permiso", "dias_permiso" y
+ * "numDiaSemana".
+ * @returns La función `opcionesFechaRecuperacion` devuelve un valor booleano basado en las condiciones
+ * proporcionadas. La declaración de retorno verifica si la entrada `fecha` es mayor que una fecha
+ * formateada calculada en base a ciertas condiciones que involucran las variables `fecha_hora_fin`,
+ * `dias_permiso.value` y `numDiaSemana`. Si se cumplen todas las condiciones, la función devuelve
+ * "verdadero", de lo contrario devuelve falso
+ */
     function optionsFechaRecuperacion(date) {
-      const fechaFin = convertir_fecha_guion(
-        permiso.fecha_hora_fin !== null ? permiso.fecha_hora_fin : ' '
+      const fecha_hora_fin = permiso.suguiere_fecha
+      ? new Date(permiso.fecha_hora_reagendamiento || Date.now())
+      : new Date(permiso.fecha_hora_fin ? convertir_fecha_hora(permiso.fecha_hora_fin) : Date.now());
+        return (
+        date > format(addDay(fecha_hora_fin,(dias_permiso.value>0?dias_permiso.value-1:0)), 'YYYY/MM/DD') &&
+        new Date(date).getDay() < numDiaSemana.sabado &&
+        new Date(date).getDay() > numDiaSemana.domingo
       )
-      return date > fechaFin
     }
     function optionsFechaSugerida(date) {
       const fechaFin = convertir_fecha_guion(

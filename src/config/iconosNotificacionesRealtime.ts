@@ -67,6 +67,10 @@ export const iconos = {
     label: 'PROVEEDOR',
     icono: 'bi-stars',
   },
+  diasDescanso: {
+    label: 'DIAS DE DESCANSO',
+    icono: 'bi-house-heart',
+  },
   transferencia_saldo:{
     label: 'TRANSFERENCIA DE SALDO',
     icono: 'bi-cash',
