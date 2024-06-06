@@ -110,7 +110,7 @@
                   <q-date
                     v-model="consolidado.fecha_inicio"
                     :mask="maskFecha"
-                    :options="optionsFechaInicio"
+
                     today-btn
                   >
                     <div class="row items-center justify-end">
@@ -145,7 +145,6 @@
                   <q-date
                     v-model="consolidado.fecha_fin"
                     :mask="maskFecha"
-                    :options="optionsFechaFin"
                     today-btn
                   >
                     <div class="row items-center justify-end">
