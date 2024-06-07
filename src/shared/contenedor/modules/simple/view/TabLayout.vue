@@ -49,7 +49,7 @@
       transition-prev="scale"
       transition-next="scale"
       class="bg-desenfoque border-white"
-      helpalive
+      keep-alive
       :class="{ 'rounded-tabpanel': !$q.screen.xs }"
     >
       <!-- Formulario -->

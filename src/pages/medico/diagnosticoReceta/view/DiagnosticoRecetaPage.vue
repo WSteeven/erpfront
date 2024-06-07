@@ -56,7 +56,7 @@
                   animated
                   transition-prev="scale"
                   transition-next="scale"
-                  helpalive
+                  keep-alive
                   class="bg-desenfoque border-grey custom-shadow"
                 >
                   <q-tab-panel :name="tiposEnfermedades.HISTORIAL_CLINICO">

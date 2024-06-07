@@ -50,7 +50,7 @@
         transition-prev="scale"
         transition-next="scale"
         class="bg-primary"
-        helpalive
+        keep-alive
       >
         <q-tab-panel
           v-for="registro in registros"
@@ -130,7 +130,7 @@
           transition-prev="scale"
           transition-next="scale"
           class="q-mb-md"
-          helpalive
+          keep-alive
         >
           <q-tab-panel
             :name="estadosSolicitudesExamenes.PENDIENTE_SOLICITAR.value"
