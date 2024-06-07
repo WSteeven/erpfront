@@ -13,8 +13,10 @@ export class TransferenciaVehiculo extends EntidadAuditable {
     estado_carroceria: string | null
     estado_mecanico: string | null
     estado_electrico: string | null
-
     fecha_aceptacion: string | null
+    devuelve: number | null
+    asignacion: number | null
+    transferencia: number | null
 
     constructor() {
         super()
@@ -31,5 +33,8 @@ export class TransferenciaVehiculo extends EntidadAuditable {
         this.estado_carroceria = null
         this.estado_mecanico = null
         this.estado_electrico = null
+        this.devuelve = null
+        this.asignacion = null
+        this.transferencia = null
     }
 }

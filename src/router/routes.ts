@@ -697,6 +697,27 @@ const routes: RouteRecordRaw[] = [
       },
       //reportes de vehiculos
       {
+        path: '/reporte-combustibles',
+        name: 'reporte_combustibles',
+        component: () =>
+          import('pages/controlVehiculos/reportes/modules/rpt_combustibles/view/ReporteCombustiblePage.vue'),
+        meta: { requiresAuth: false },
+      },
+      {
+        path: 'reporte-seguros',
+        name: 'reporte_seguros',
+        component: () =>
+          import('pages/controlVehiculos/reportes/modules/rpt_seguros/view/ReporteSeguroPage.vue'),
+        meta: { requiresAuth: false },
+      },
+      {
+        path: 'reporte-tiempos-vehiculos',
+        name: 'reporte_tiempos_vehiculos',
+        component: () =>
+          import('pages/controlVehiculos/reportes/modules/rpt_vehiculos/view/ReporteVehiculoPage.vue'),
+        meta: { requiresAuth: false },
+      },
+      {
         path: '/reporte-matriculas',
         name: 'reporte_matriculas',
         component: () =>

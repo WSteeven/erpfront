@@ -869,7 +869,7 @@ export const useMenuStore = defineStore('menu', () => {
           can: store.can('puede.acceder.ordenes_reparaciones'),
         },
         {
-          title: 'Seguros vehiculares',
+          title: 'Pólizas Seguros Vehiculares',
           link: 'seguros',
           icon: 'bi-circle',//'bi-shield-lock-fill',
           can: store.can('puede.acceder.seguros_vehiculares'),
@@ -910,6 +910,24 @@ export const useMenuStore = defineStore('menu', () => {
           icon: 'bi-clipboard2-data',
           can:store.can('puede.ver.reportes_vehiculos'),
           children: [
+            {
+              title: 'Reporte de Combustibles',
+              link: 'reporte-combustibles',
+              icon: 'bi-dash',
+              can: true,
+            },
+            {
+              title: 'Reporte de Pólizas',
+              link: 'reporte-seguros',
+              icon: 'bi-dash',
+              can: true,
+            },
+            {
+              title: 'Reporte de Tiempos de Vehículos',
+              link: 'reporte-tiempos-vehiculos',
+              icon: 'bi-dash',
+              can: true,
+            },
             {
               title: 'Reporte de matriculas',
               link: 'reporte-matriculas',

@@ -9,6 +9,7 @@ import { acciones, maskFecha } from "config/utils";
 
 //Componentes
 import TabLayoutFilterTabs2 from "shared/contenedor/modules/simple/view/TabLayoutFilterTabs2.vue"
+import GestorArchivos from "components/gestorArchivos/GestorArchivos.vue";
 
 
 //Logica y controladores
@@ -31,7 +32,7 @@ import { useVehiculoStore } from "stores/vehiculos/vehiculo";
 
 
 export default defineComponent({
-    components: { TabLayoutFilterTabs2 },
+    components: { TabLayoutFilterTabs2, GestorArchivos },
     setup() {
         const mixin = new ContenedorSimpleMixin(TransferenciaVehiculo, new TransferenciaVehiculoController())
         const { entidad: transferencia, disabled, listadosAuxiliares, accion, listado } = mixin.useReferencias()
@@ -47,6 +48,7 @@ export default defineComponent({
         const tabActual = ref(pendiente.label)
         const refArchivo = ref()
         const idRegistro = ref()
+        const btnSubirArchivos = ref(false)
 
         let accesoriosDefault = [
             'GATA HIDRAULICA',
@@ -114,8 +116,10 @@ export default defineComponent({
         onGuardado((id: number) => {
             idRegistro.value = id
             setTimeout(async () => {
-                await refArchivo.value.subir()
+                subirArchivos()
             }, 1)
+
+            vehiculoStore.resetearAsignacionVehiculo()
         })
         onConsultado(() => {
             setTimeout(() => {
@@ -147,9 +151,14 @@ export default defineComponent({
          * FUNCIONES
         *********************************/
 
+        async function subirArchivos() {
+            await refArchivo.value.subir()
+        }
+
         async function cargarDatosAsignacion() {
             // Copiamos los valores de las variables de asignacion en la transferencia
             console.log("A copiar", vehiculoStore.asignacion)
+            transferencia.asignacion = vehiculoStore.asignacion.id
             transferencia.vehiculo = vehiculoStore.asignacion.vehiculo_id
             transferencia.entrega = vehiculoStore.asignacion.responsable_id
             transferencia.canton = vehiculoStore.asignacion.canton_id
@@ -285,6 +294,9 @@ export default defineComponent({
             mixin, transferencia, v$, accion, acciones, disabled,
             configuracionColumnas: configuracionColumnasTransferenciasVehiculos,
             tabActual,
+            refArchivo,
+            idRegistro,
+            btnSubirArchivos,
 
             tabOptions: tabOptionsTransferenciasVehiculos,
 
@@ -305,6 +317,7 @@ export default defineComponent({
             filtrarEstados,
             recargarVehiculos,
             recargarEmpleados,
+            subirArchivos,
 
             //tableButtons
             btnImprimirActaResponsabilidadTransferencia,

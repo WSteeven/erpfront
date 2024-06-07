@@ -42,7 +42,7 @@ export default defineComponent({
         const mixin = new ContenedorSimpleMixin(AsignacionVehiculo, new AsignacionVehiculoController(), new ArchivoController())
         const { entidad: asignacion, disabled, listadosAuxiliares, accion, listado } = mixin.useReferencias()
         const { setValidador, obtenerListados, cargarVista, listar, } = mixin.useComportamiento()
-        const { onGuardado, onConsultado, onReestablecer, onBeforeGuardar } = mixin.useHooks()
+        const { onGuardado, onConsultado, onReestablecer, onBeforeGuardar, onBeforeConsultar } = mixin.useHooks()
         const { confirmar, prompt, notificarCorrecto, notificarAdvertencia, notificarError } = useNotificaciones()
 
         //stores
@@ -57,6 +57,7 @@ export default defineComponent({
         const tabActual = ref(pendiente.label)
         const refArchivo = ref()
         const idRegistro = ref()
+        const btnSubirArchivos = ref(false)
         const puedeEditar = computed(() => tabActual.value == pendiente.label && listado.value.some((item) => item.responsable_id == store.user.id || item.entrega_id == store.user.id))
         const soloLectura = computed(() => accion.value == acciones.editar)
         const FIRMADA = 'FIRMADA'
@@ -116,10 +117,11 @@ export default defineComponent({
         /*********************************
          * HOOKS
         *********************************/
+        onBeforeConsultar(() => btnSubirArchivos.value = false)
         onGuardado((id: number) => {
             idRegistro.value = id
             setTimeout(async () => {
-                await refArchivo.value.subir()
+                subirArchivos()
             }, 1)
         })
         onConsultado(() => {
@@ -203,6 +205,9 @@ export default defineComponent({
             return date <= hoy
         }
 
+        async function subirArchivos() {
+            await refArchivo.value.subir()
+        }
 
         async function imprimirPdf(id: number, placa: string) {
             try {
@@ -335,6 +340,8 @@ export default defineComponent({
             refArchivo,
             idRegistro,
 
+            btnSubirArchivos,
+
 
             //listados
             listadosAuxiliares,
@@ -356,6 +363,7 @@ export default defineComponent({
             filtrarEstados,
             recargarEmpleados,
             recargarVehiculos,
+            subirArchivos,
 
 
             //botones de tablas

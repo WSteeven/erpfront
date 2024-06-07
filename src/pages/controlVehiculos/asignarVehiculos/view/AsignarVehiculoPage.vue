@@ -404,6 +404,7 @@
           <div class="col-12 q-mb-md">
             <gestor-archivos
               ref="refArchivo"
+              :quieroSubirArchivos="btnSubirArchivos"
               label="Quiero compartir archivos e imagenes del vehículo"
               :mixin="mixin"
               :disable="disabled"
