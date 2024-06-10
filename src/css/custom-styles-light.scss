@@ -53,6 +53,10 @@
     backdrop-filter: blur(10px) !important;
   }
 
+  .bg-border {
+    background-color: #fff;
+  }
+
   .bg-header-collapse {
     background-color: $grey-1;
   }
@@ -177,6 +181,13 @@
   .toggle-button-primary {
     border: 1px solid $primary;
     background-color: #fff;
+  }
+
+  .toggle-button-positive {
+    border: 1px solid $positive;
+    background-color: transparent;
+    background-color: rgba($grey-2, 0.5) !important;
+      backdrop-filter: blur(10px) !important;
   }
 
   .toggle-button-grey {

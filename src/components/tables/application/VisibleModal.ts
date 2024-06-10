@@ -1,17 +1,17 @@
 import { ref } from 'vue'
 
-export class EstadoPrevisualizarTablaPDF {
+export class VisibleModal {
   constructor() {
     //
   }
 
   private abierto = ref(false)
 
-  abrirVistaPrevia() {
+  abrir() {
     this.abierto.value = true
   }
 
-  cerrarVistaPrevia() {
+  cerrar() {
     this.abierto.value = false
   }
 

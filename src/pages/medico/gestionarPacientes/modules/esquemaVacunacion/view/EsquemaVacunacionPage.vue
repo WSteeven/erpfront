@@ -219,19 +219,6 @@
             "
             :idModelo="idEsquema"
           >
-            <template #boton-subir>
-              <q-btn
-                v-if="false"
-                color="positive"
-                push
-                no-caps
-                class="full-width q-mb-lg"
-                @click="subirArchivos()"
-              >
-                <q-icon name="bi-upload" class="q-mr-sm" size="xs"></q-icon>
-                Subir archivos seleccionados</q-btn
-              >
-            </template>
           </gestor-archivos>
         </div>
       </div>

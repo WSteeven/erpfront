@@ -56,4 +56,11 @@ export const configuracionColumnasEsquemaVacunacionDetallado: ColumnConfig<Esque
     align: 'left',
     sortable: true
   },
+  {
+    name: 'archivos',
+    field: 'archivos',
+    label: 'Archivos',
+    align: 'left',
+    sortable: true
+  },
 ]
