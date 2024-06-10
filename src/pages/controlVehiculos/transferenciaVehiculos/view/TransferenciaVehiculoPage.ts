@@ -215,6 +215,7 @@ export default defineComponent({
                     listar({
                         estado: aceptado.label,
                         devuelto: 0,
+                        transferido: 0,
                     })
                     break
                 case anulado.label:
@@ -366,7 +367,7 @@ export default defineComponent({
             color: 'positive',
             icono: 'bi-arrow-left-right',
             accion: async ({ entidad, posicion }) => {
-                console.log('Diste clicn en transferir un vehículo', entidad)
+                // console.log('Diste clicn en transferir un vehículo', entidad)
                 accion.value = acciones.nuevo
                 // Se asignan los valores de la entidad al objeto transferencia
                 transferencia.hydrate(new TransferenciaVehiculo())
@@ -388,12 +389,11 @@ export default defineComponent({
                 transferencia.devuelve = null
                 transferencia.asignacion = null
                 transferencia.transferencia = entidad.id
-                transferencia.entrega = entidad.responsable
                 transferencia.responsable = null
                 transferencia.responsable_id = null
                 tabs.value = 'formulario'
 
-                console.log('Objeto Transferencia', transferencia)
+                // console.log('Objeto Transferencia', transferencia)
             },
             visible: ({ entidad }) => tabActual.value === aceptado.label && store.user.id === entidad.responsable_id
         }
