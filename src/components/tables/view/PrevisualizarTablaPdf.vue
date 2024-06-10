@@ -63,7 +63,7 @@
 <script lang="ts" setup>
 import html2pdf from 'html2pdf.js'
 import { ref } from 'vue'
-import { EstadoPrevisualizarTablaPDF } from '../application/EstadoPrevisualizarTablaPDF'
+import { VisibleModal } from '../application/VisibleModal'
 import { ColumnConfig } from '../domain/ColumnConfig'
 import { EntidadAuditable } from 'shared/entidad/domain/entidadAuditable'
 
@@ -80,7 +80,7 @@ const props = defineProps({
     required: true,
   },
   printTable: {
-    type: Object as () => EstadoPrevisualizarTablaPDF,
+    type: Object as () => VisibleModal,
     required: true,
   },
   titulo: {
@@ -92,7 +92,7 @@ const refPDF = ref()
 const { abierto } = props.printTable.estadoAbierto()
 
 function cerrar() {
-  props.printTable.cerrarVistaPrevia()
+  props.printTable.cerrar()
 }
 
 function imprimir() {

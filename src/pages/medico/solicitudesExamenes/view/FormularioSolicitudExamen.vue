@@ -23,7 +23,7 @@
             class="rounded q-mb-md"
             :class="{
               'col-12': solicitudExamen.id,
-              'col-6 custom-shadow q-pa-md border-grey': !solicitudExamen.id,
+              'col-6 custom-shadow q-pa-md border-white': !solicitudExamen.id,
             }"
           >
             <!-- <q-card-section> -->
@@ -31,14 +31,14 @@
               <label v-if="solicitudExamen.id" class="q-mb-sm block"
                 >Cantón</label
               >
-              <label v-else class="q-mb-sm block text-positive text-bold"
+              <label v-else class="q-mb-sm block text-bold"
                 >Seleccione un cantón para filtrar los laboratorios
                 clínicos</label
               >
               <q-btn
                 v-if="!solicitudExamen.id"
                 icon="bi-x"
-                push
+                class="rounded"
                 unelevated
                 color="negative"
                 dense
@@ -109,16 +109,20 @@
             > -->
             <q-btn
               v-if="index === 0 && accion === acciones.nuevo"
-              class="bg-white q-px-sm text-positive q-py-none"
+              class="bg-white q-px-sm"
+              outline
+              color="grey-7"
               dense
+              flat
+              size="sm"
               no-caps
               rounded
-              push
+              unelevated
               @click="() => (mostrarCambiarCanton = !mostrarCambiarCanton)"
             >
-              <q-icon size="14px" name="bi-arrow-left-right" class="q-mr-sm" />
-              <small>Seleccionar otro cantón</small></q-btn
-            >
+              <q-icon size="12px" name="bi-arrow-left-right" class="q-mr-sm" />
+              <div>Seleccionar otro cantón</div>
+            </q-btn>
           </label>
 
           <q-select

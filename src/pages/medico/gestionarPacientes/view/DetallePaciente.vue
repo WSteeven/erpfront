@@ -1,5 +1,5 @@
 <template>
-  <div class="row bg-white q-py-md">
+  <div class="row bg-desenfoque q-py-md">
     <div class="col-12 col-md-2 justify-center row items-center">
       <q-img :src="empleado.foto_url ?? ''" width="60%" class="items-center"></q-img>
     </div>

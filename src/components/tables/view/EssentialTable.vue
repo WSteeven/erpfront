@@ -63,7 +63,10 @@
         v-if="permitirEditarCeldas && props.col.editable"
         :key="props.col.name"
         :props="props"
-        :class="{ 'text-bold': props.col.editable, 'bg-body': $q.dark.isActive }"
+        :class="{
+          'text-bold': props.col.editable,
+          'bg-body': $q.dark.isActive,
+        }"
       >
         <!-- <q-popup-edit
           v-model="props.row[props.col.name]"
@@ -146,7 +149,10 @@
       <q-td v-else :props="props">
         <span
           v-if="!['select', 'boolean'].includes(props.col.type)"
-          :class="{ 'text-white': $q.dark.isActive, 'text-dark': !$q.dark.isActive }"
+          :class="{
+            'text-white': $q.dark.isActive,
+            'text-dark': !$q.dark.isActive,
+          }"
           >{{ props.row[props.col.name] }}</span
         >
       </q-td>
@@ -884,6 +890,21 @@
           </q-item>
         </q-list>
       </q-card>
+    </template>
+
+    <template #body-cell-archivos="props">
+      <q-td :props="props">
+        <q-btn
+          dense
+          no-caps
+          unelevated
+          class="q-px-sm text-primary border-primary"
+          @click="verVisorArchivos({ entidad: props.row, posicion: props.rowIndex })"
+        >
+          <q-icon name="bi-archive" size="xs" class="q-mr-sm"></q-icon>
+          {{ props.value.length + ' archivos' }}
+        </q-btn>
+      </q-td>
     </template>
 
     <!-- Estilos de celdas -->
@@ -1786,12 +1807,17 @@
     </q-chip>
   </div> -->
 
-  <previsualizar-tabla-pdf
+  <visor-archivos
+    :visible-modal="visibleModalVisorArchivos"
+    :archivos="archivos"
+  ></visor-archivos>
+
+  <!-- <previsualizar-tabla-pdf
     :configuracionColumnas="configuracionColumnas"
     :datos="datos"
     :print-table="printTable"
     :titulo="'Listado de ' + titulo"
-  ></previsualizar-tabla-pdf>
+  ></previsualizar-tabla-pdf> -->
 </template>
 
 <style lang="scss">

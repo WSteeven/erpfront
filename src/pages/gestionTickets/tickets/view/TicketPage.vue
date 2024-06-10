@@ -24,11 +24,12 @@
           header-class="text-bold bg-header-collapse"
           default-opened
         >
-          <q-separator></q-separator>
-          <div class="col-12 text-primary bg-background-header-grey q-px-md q-py-sm q-mb-md">
-            <q-icon name="bi-ticket-detailed"></q-icon>
+          <q-separator color="primary"></q-separator>
+          <div class="col-12 bg-blue-1 text-primary text-bold q-px-md q-py-sm">
+            <q-icon name="bi-ticket-detailed" class="q-mr-sm"></q-icon>
             Detalles
           </div>
+          <q-separator color="primary"></q-separator>
           <div class="row q-col-gutter-sm q-pa-md">
             <!-- Asunto -->
             <div class="col-12">
@@ -493,11 +494,12 @@
             </div>
           </div>
 
-          <q-separator></q-separator>
-          <div class="col-12 text-primary bg-background-header-grey q-px-md q-py-sm q-mb-md">
-            <q-icon name="bi-archive"></q-icon>
+          <q-separator color="primary"></q-separator>
+          <div class="col-12 text-primary bg-blue-1 q-px-md q-py-sm text-bold">
+            <q-icon name="bi-archive" class="q-mr-sm"></q-icon>
             Archivos
           </div>
+          <q-separator color="primary"></q-separator>
           <div class="row q-px-md q-col-gutter-sm">
             <div class="col-12 q-mb-md">
               <archivo-seguimiento
