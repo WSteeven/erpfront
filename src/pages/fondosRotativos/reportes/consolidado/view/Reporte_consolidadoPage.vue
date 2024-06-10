@@ -222,8 +222,7 @@
             v-model="is_inactivo"
             color="secondary"
             label="Inactivo"
-            true-value="true"
-            false-value="false"
+            
           ></q-checkbox>
         </div>
       </q-card-section>
