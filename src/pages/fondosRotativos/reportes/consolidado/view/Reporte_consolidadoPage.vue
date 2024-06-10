@@ -20,7 +20,7 @@
               consolidado.tipo_saldo == tipo_saldo.CONSOLIDADO ||
               consolidado.tipo_saldo == tipo_saldo.ESTADO_CUENTA ||
               consolidado.tipo_saldo == tipo_saldo.TRANSFERENCIA_SALDOS) &&
-            is_inactivo == 'false'
+            !is_inactivo
           "
         >
           <label class="q-mb-sm block">Empleado</label>
@@ -59,12 +59,12 @@
               consolidado.tipo_saldo == tipo_saldo.CONSOLIDADO ||
               consolidado.tipo_saldo == tipo_saldo.ESTADO_CUENTA ||
               consolidado.tipo_saldo == tipo_saldo.TRANSFERENCIA_SALDOS) &&
-            is_inactivo == 'true'
+            is_inactivo
           "
         >
           <label class="q-mb-sm block">Empleado</label>
           <q-select
-            v-model="consolidado.usuario"
+            v-model="consolidado.empleado"
             :options="usuariosInactivos"
             transition-show="jump-up"
             transition-hide="jump-down"
