@@ -1,7 +1,7 @@
 // Dependencias
 import { accionesActivos, autorizacionesTransacciones, estadosTransacciones, estadosInventarios, estadosControlStock, estadosCondicionesId, estadosCondicionesValue } from 'config/utils'
 import { estadosCalificacionProveedor } from 'config/utils_compras_proveedores'
-import { EstadoPrevisualizarTablaPDF } from '../application/EstadoPrevisualizarTablaPDF'
+// import { VisibleModal } from '../application/VisibleModal'
 import { computed, defineComponent, ref, watchEffect, nextTick, Ref, watch } from 'vue'
 import { EntidadAuditable } from 'shared/entidad/domain/entidadAuditable'
 import { Instanciable } from 'shared/entidad/domain/instanciable'
@@ -10,6 +10,7 @@ import { getVisibleColumns, formatBytes } from 'shared/utils'
 import { ColumnConfig } from '../domain/ColumnConfig'
 import { TipoSeleccion } from 'config/utils'
 import { offset } from 'config/utils_tablas'
+import { ParamsType } from 'config/types'
 import { exportFile } from 'quasar'
 
 // Componentes
@@ -19,7 +20,8 @@ import BotonesPaginacion from './BotonesPaginacion.vue'
 import EditarTablaModal from './EditarTablaModal.vue'
 import EstadosSubtareas from './EstadosSubtareas.vue'
 import CustomButtons from './CustomButtonsTable.vue'
-import { ParamsType } from 'config/types'
+import VisorArchivos from './VisorArchivos.vue'
+import { VisibleModal } from '../application/VisibleModal'
 
 export default defineComponent({
   components: {
@@ -29,6 +31,7 @@ export default defineComponent({
     EstadosSubtareas,
     BotonesPaginacion,
     TableFilters,
+    VisorArchivos,
   },
   props: {
     referencia: Object as () => Ref,
@@ -264,11 +267,15 @@ export default defineComponent({
       }
     }
 
-    // Variables
+    /************
+     * Variables
+     ************/
     const filter = ref()
     const selected = ref([])
     const visibleColumns = ref(getVisibleColumns(props.configuracionColumnas))
     const refTable = ref()
+    const archivos = ref([])
+    const visorArchivosVisible = ref(false)
 
     // Observers
     const seleccionar = () => {
@@ -288,10 +295,18 @@ export default defineComponent({
       emit('update:selected', selected.value);
     };*/
 
-    const printTable = new EstadoPrevisualizarTablaPDF()
+    const visibleModalVisorArchivos = new VisibleModal()
+
+    /************
+     * Funciones
+     ************/
+    const verVisorArchivos = ({ entidad, posicion }) => {
+      archivos.value = listado.value[posicion].archivos
+      visibleModalVisorArchivos.abrir()
+    }
 
     function previsualizarPdf() {
-      printTable.abrirVistaPrevia()
+      // printTable.abrir()
     }
 
     function limpiarFila() {
@@ -480,7 +495,6 @@ export default defineComponent({
       visibleColumns,
       seleccionar,
       previsualizarPdf,
-      printTable,
       fila,
       limpiarFila,
       guardarFila,
@@ -512,6 +526,9 @@ export default defineComponent({
       extraerColor,
       guardarCeldaEditada,
       clearSelection,
+      verVisorArchivos,
+      archivos,
+      visibleModalVisorArchivos,
     }
   },
 })

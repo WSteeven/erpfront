@@ -29,16 +29,16 @@ import EssentialTable from 'components/tables/view/EssentialTable.vue'
 
 // Logica y controladores
 import { InformacionDefectoFichaPreocupacionalController } from '../infraestructure/InformacionDefectoFichaPreocupacionalController'
-import { FichaPeriodicaController } from '../infraestructure/FichaPeriodicaController'
-import { ContenedorSimpleMixin } from 'shared/contenedor/modules/simple/application/ContenedorSimpleMixin'
 import { TipoAntecedenteFamiliarController } from '../infraestructure/TipoAntecedenteFamiliarController'
 import { CategoriaFactorRiesgoController } from '../infraestructure/CategoriaFactorRiesgoController'
 import { CargoController } from 'pages/recursosHumanos/cargos/infraestructure/CargoController'
 import { TipoHabitoToxicoController } from '../infraestructure/TipoHabitoToxicoController'
 import { TipoFactorRiesgoController } from '../infraestructure/TipoFactorRiesgoController'
-import { ResultadoExamenPreocupacional } from '../domain/ResultadoExamenPreocupacional'
-import { FichaPeriodica } from '../domain/FichaPeriodica'
+import { FichaPeriodicaController } from '../infraestructure/FichaPeriodicaController'
 import { SistemaOrganoController } from '../infraestructure/SistemaOrganoController'
+import { ExamenFisicoRegional } from '../../seccionesFichas/examenFisicoRegional/domain/ExamenFisicoRegional'
+import { ContenedorSimpleMixin } from 'shared/contenedor/modules/simple/application/ContenedorSimpleMixin'
+import { ResultadoExamenPreocupacional } from '../domain/ResultadoExamenPreocupacional'
 import { RevisionActualOrganoSistema } from '../domain/RevisionActualOrganoSistema'
 import { AntecedenteTrabajoAnterior } from '../domain/AntecedenteTrabajoAnterior'
 import { ConstanteVital } from '../../seccionesFichas/domain/ConstanteVital'
@@ -46,12 +46,12 @@ import { TipoAntecedenteFamiliar } from '../domain/TipoAntecedenteFamiliar'
 import { ResultadoHabitoToxico } from '../domain/ResultadoHabitoToxico'
 import { FrPuestoTrabajoActual } from '../domain/FrPuestoTrabajoActual'
 import { CategoriaFactorRiesgo } from '../domain/CategoriaFactorRiesgo'
-import { ExamenFisicoRegional } from '../domain/ExamenFisicoRegional'
 import { AntecedenteFamiliar } from '../domain/AntecedenteFamiliar'
 import { MedicacionHabitual } from '../domain/MedicacionHabitual'
 import { TipoFactorRiesgo } from '../domain/TipoFactorRiesgo'
 import { TipoHabitoToxico } from '../domain/TipoHabitoToxico'
 import { ActividadFisica } from '../domain/ActividadFisica'
+import { FichaPeriodica } from '../domain/FichaPeriodica'
 import { SistemaOrgano } from '../domain/SistemaOrgano'
 
 export default defineComponent({
@@ -79,7 +79,6 @@ export default defineComponent({
     const mostrarTablaFrPuestoTrabajoActualReactive = ref(false)
     const mostrarTablaAntecedenteTrabajoAnteriorReactive = ref(false)
     const tipoFilaFrPuestoTrabajoActual = new FrPuestoTrabajoActual()
-    const tipoFilaAntecedenteTrabajoAnterior = new AntecedenteTrabajoAnterior()
     const { notificarAdvertencia } = useNotificaciones()
     const examenesFisicosRegionalesAuxiliar = ref()
 
@@ -98,10 +97,6 @@ export default defineComponent({
 
     cargarVista(async () => {
       await obtenerListados({
-        // religiones: new ReligionController(),
-        // orientacionesSexuales: new OrientacionSexualController(),
-        // identidadesGeneros: new IdentidadGeneroController(),
-        // tiposAntecedentes: new TipoAntecedenteController(),
         tiposHabitosToxicos: new TipoHabitoToxicoController(),
         tiposAntecedentesFamiliares: new TipoAntecedenteFamiliarController(),
         categoriasFactoresRiesgos: new CategoriaFactorRiesgoController(),
@@ -116,13 +111,6 @@ export default defineComponent({
         revisiones_actuales_organos_sistemas: [],
         examenes_realizados: [],
       })
-
-      /* listadosAuxiliares.examenes_realizados = listadosAuxiliares.tiposAntecedentes.map((tipo: TipoAntecedente) => {
-        const res = new ResultadoExamenPreocupacional()
-        res.examen = tipo.examen
-        res.examen_id = tipo.id
-        return res
-      }) */
 
       listadosAuxiliares.habitos_toxicos = listadosAuxiliares.tiposHabitosToxicos.map((tipo: TipoHabitoToxico) => {
         const res = new ResultadoHabitoToxico()
@@ -146,7 +134,6 @@ export default defineComponent({
       })
 
       configurarColumnasFrPuestoTrabajoActual()
-
       configurarFilaFrPuestoTrabajoActual()
 
       // Consultar ficha
@@ -332,7 +319,7 @@ export default defineComponent({
       listadosAuxiliares.revisiones_actuales_organos_sistemas = listadosAuxiliares.revisiones_actuales_organos_sistemas.map((revision: RevisionActualOrganoSistema) => {
         console.log(revision)
         const antecedenteAux = fichaPeriodica.revisiones_actuales_organos_sistemas.find((antecedenteLleno: RevisionActualOrganoSistema) => antecedenteLleno.organo_id === revision.organo_id)
-        
+
         if (antecedenteAux) {
           revision.descripcion = antecedenteAux.descripcion
         }
@@ -342,7 +329,7 @@ export default defineComponent({
       // Antecedentes familiares
       listadosAuxiliares.antecedentes_familiares = listadosAuxiliares.antecedentes_familiares.map((antecedente: AntecedenteFamiliar) => {
         const antecedenteAux = fichaPeriodica.antecedentes_familiares.find((antecedenteLleno: AntecedenteFamiliar) => antecedenteLleno.tipo_antecedente_familiar_id === antecedente.tipo_antecedente_familiar_id)
-        
+
         if (antecedenteAux) {
           antecedente.descripcion = antecedenteAux.descripcion
           antecedente.parentesco = antecedenteAux.parentesco
@@ -391,12 +378,7 @@ export default defineComponent({
     /*******
      * Init
      *******/
-    // insertarFilaActividadFisica()
-    // insertarFilaMedicacionHabitual()
-    // insertarFilaAntecedenteTrabajoAnterior()
-    // insertarFilaAntecedenteTrabajoAnterior()
     consultarInformacionDefectoFicha()
-    // listar()
     fichaPeriodica.numero_archivo = authenticationStore.user.identificacion
 
     return {
@@ -417,7 +399,6 @@ export default defineComponent({
       configuracionColumnasRevisionActualOrganoSistema,
       insertarFilaActividadFisica,
       insertarFilaMedicacionHabitual,
-      // insertarFilaAntecedenteTrabajoAnterior,
       mapearOptionsSelect,
       cargos,
       filtrarCargos,
@@ -425,13 +406,10 @@ export default defineComponent({
       hidratarAptitudMedica,
       hidratarExamenFisicoRegional,
       descargarPdf,
-      // insertarFilaAntecedenteFamiliar,
       insertarFilaFrPuestoTrabajoActualReactive,
       btnEliminarActividadFisica,
       btnEliminarMedicacionHabitual,
-      // btnEliminarAntecedenteTrabajoAnterior,
       btnEliminarFrPuestoTrabajoActual,
-      // btnEliminarAntecedenteFamiliar,
       accionesTabla,
       mostrarTablaFrPuestoTrabajoActualReactive,
       mostrarTablaAntecedenteTrabajoAnteriorReactive,

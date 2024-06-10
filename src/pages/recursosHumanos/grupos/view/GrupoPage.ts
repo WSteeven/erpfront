@@ -18,6 +18,7 @@ import { regiones } from 'config/utils'
 import { EmpleadoController } from 'pages/recursosHumanos/empleados/infraestructure/EmpleadoController'
 import { ordernarListaString } from 'shared/utils'
 import { Empleado } from 'pages/recursosHumanos/empleados/domain/Empleado'
+import { configuracionColumnasEmpleadosLite } from 'pages/recursosHumanos/empleados/domain/configuracionColumnasEmpleadosLite'
 
 export default defineComponent({
   components: {
@@ -73,6 +74,7 @@ export default defineComponent({
 
     return {
       // mixin
+      configuracionColumnasEmpleadosLite,
       v$,
       mixin,
       grupo,

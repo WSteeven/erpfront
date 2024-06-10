@@ -18,7 +18,7 @@
             label="Diagnóstico"
             header-class="text-bold bg-desenfoque text-primary"
             default-opened
-            icon="bi-clipboard2-pulse-fill"
+            icon="bi-clipboard2-pulse"
           >
             <div class="row q-col-gutter-sm q-pa-md">
               <div class="col-12">
@@ -56,7 +56,7 @@
                   animated
                   transition-prev="scale"
                   transition-next="scale"
-                  helpalive
+                  keep-alive
                   class="bg-desenfoque border-grey custom-shadow"
                 >
                   <q-tab-panel :name="tiposEnfermedades.HISTORIAL_CLINICO">
@@ -140,7 +140,7 @@
 
                   <q-tab-panel :name="tiposEnfermedades.COMUNES">
                     <div class="row q-mb-xl">
-                      <div class="col-12 q-mb-md">
+                      <div v-if="consulta.created_at" class="col-12 q-mb-md">
                         <label class="q-mb-sm block">Fecha de atención</label>
                         <b>{{ consulta.created_at }}</b>
                       </div>
@@ -223,6 +223,25 @@
         <div class="col-12">
           <q-expansion-item
             class="overflow-hidden q-mb-md rounded bg-desenfoque-2"
+            label="Constantes vitales"
+            header-class="text-bold bg-desenfoque text-primary"
+            default-opened
+            icon="bi-heart-pulse"
+          >
+            <div class="row q-col-gutter-sm q-pa-md">
+              <contantes-vitales
+                :constante-vital="consulta.constante_vital"
+                :disable="disabled"
+                @update:model-value="hidratarConstanteVital"
+                :validador="v$"
+              ></contantes-vitales>
+            </div>
+          </q-expansion-item>
+        </div>
+
+        <div class="col-12">
+          <q-expansion-item
+            class="overflow-hidden q-mb-md rounded bg-desenfoque-2"
             label="Receta"
             header-class="text-bold bg-desenfoque text-primary"
             default-opened
@@ -268,16 +287,30 @@
 
           <q-expansion-item
             class="overflow-hidden q-mb-md rounded bg-desenfoque-2"
-            label="Observación"
+            label="Informacón adicional"
             header-class="text-bold bg-desenfoque text-primary"
             default-opened
             icon="bi-chat-left-text"
           >
             <div class="row q-col-gutter-sm q-pa-md">
-              <div class="col-12 q-mb-md">
-                <label class="q-mb-sm block">Escriba una observación</label>
+              <div class="col-12 col-md-6 q-mb-md">
+                <label class="q-mb-sm block">Evolución</label>
                 <q-input
-                  v-model="consulta.observacion"
+                  v-model="consulta.evolucion"
+                  placeholder="Opcional"
+                  :disable="disabled"
+                  outlined
+                  dense
+                  autogrow
+                  type="textarea"
+                >
+                </q-input>
+              </div>
+
+              <div class="col-12 col-md-6 q-mb-md">
+                <label class="q-mb-sm block">Examen físico</label>
+                <q-input
+                  v-model="consulta.examen_fisico"
                   placeholder="Opcional"
                   :disable="disabled"
                   outlined

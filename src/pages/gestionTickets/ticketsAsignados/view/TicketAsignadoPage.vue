@@ -1,13 +1,11 @@
 <template>
   <q-page :padding="!$q.screen.xs">
-    <div class="q-mb-md text-right">
-      <b class="block text-subtitle1 text-primary q-mb-sm">
-        <!-- <q-icon name="bi-app-indicator" class="q-mr-sm"></q-icon> -->
-        {{ 'Tickets asignados' }}</b
+    <div
+      class="row items-center justify-between bg-desenfoque rounded border-white q-px-md q-mb-sm q-py-sm"
+    >
+      <small class="text-primary">
+        {{ 'Mis tickets asignados' }}</small
       >
-      <div class="q-mb-sm">
-        Bienvenido, <b>{{ authenticationStore.nombreUsuario }}</b>
-      </div>
       <small>
         <b>{{ fecha }}</b>
       </small>
@@ -41,6 +39,7 @@
       animated
       transition-prev="scale"
       transition-next="scale"
+      class="bg-desenfoque border-white rounded"
       keep-alive
     >
       <!-- Graficos -->

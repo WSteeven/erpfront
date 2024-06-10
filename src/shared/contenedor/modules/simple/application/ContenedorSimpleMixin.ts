@@ -188,8 +188,8 @@ export class ContenedorSimpleMixin<T extends EntidadAuditable> extends Contenedo
   // @noImplicitAny: false
   private async guardar(data: T, agregarAlListado = true, params?: ParamsType): Promise<any> {
 
-    // aqui estaba onbeforeguardar
-    
+    // aqui estaba onbeforeguardar POR EL CUESTIONARIO PSICOSOCIAL PERO EL SISTEMA YA FUNCIONA CON EL OB BEFORE GUARDAR EN LA LINEA 204
+
     if (!this.seCambioEntidad(this.entidad_vacia)) {
       this.notificaciones.notificarAdvertencia(
         'No se ha efectuado ningun cambio'
@@ -197,8 +197,8 @@ export class ContenedorSimpleMixin<T extends EntidadAuditable> extends Contenedo
       throw new Error('No se ha efectuado ningun cambio')
       // return console.log('No se ha efectuado ningun cambio')
     }
-    
-    
+
+
     if (this.refs.validador.value && !(await this.refs.validador.value.$validate()) || !(await this.ejecutarValidaciones())) {
       this.notificaciones.notificarAdvertencia('Verifique el formulario')
       throw new Error('Verifique el formulario')

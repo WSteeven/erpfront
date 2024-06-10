@@ -26,8 +26,8 @@ export function useBotonesEsquemaVacuna(modales: ComportamientoModalesGestionPac
    *********/
   const btnAgregarVacunaAplicada: CustomActionTable<EsquemaVacuna> = {
     titulo: 'Agregar vacuna aplicada',
-    icono: 'bi-plus',
-    color: 'blue-grey',
+    icono: 'bi-plus-circle',
+    color: 'positive',
     accion: async () => {
       medicoStore.accion = acciones.nuevo
       medicoStore.esquemaVacuna = undefined

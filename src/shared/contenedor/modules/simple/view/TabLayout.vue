@@ -48,6 +48,7 @@
       animated
       transition-prev="scale"
       transition-next="scale"
+      class="bg-desenfoque border-white"
       keep-alive
       :class="{ 'rounded-tabpanel': !$q.screen.xs }"
     >

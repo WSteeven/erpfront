@@ -1,10 +1,10 @@
 // Dependencias
 import { configuracionColumnasEsquemaVacunacionDetallado } from 'medico/gestionarPacientes/domain/configuracionColumnasEsquemaVacunacionDetallado'
 import { useFiltrosListadosSelects } from 'shared/filtrosListadosGenerales'
-import { computed, defineComponent, ref, watch, watchEffect } from 'vue'
-import { useMedicoStore } from 'stores/medico'
+import { computed, defineComponent, ref, watch } from 'vue'
 import { acciones, maskFecha } from 'config/utils'
 import { required } from 'shared/i18n-validators'
+import { useMedicoStore } from 'stores/medico'
 
 // Componentes
 import SimpleLayout from 'src/shared/contenedor/modules/simple/view/SimpleLayout.vue'
@@ -37,8 +37,8 @@ export default defineComponent({
      ********/
     const mixin = new ContenedorSimpleMixin(EsquemaVacuna, new EsquemaVacunaController())
     const { entidad: esquema, listadosAuxiliares, accion, disabled, listado } = mixin.useReferencias()
-    const { cargarVista, obtenerListados, listar, setValidador, consultar } = mixin.useComportamiento()
-    const { onReestablecer, onModificado, onGuardado, onConsultado } = mixin.useHooks()
+    const { cargarVista, obtenerListados, listar, setValidador } = mixin.useComportamiento()
+    const { onReestablecer, onGuardado } = mixin.useHooks()
 
     cargarVista(async () => {
       await obtenerListados({
@@ -54,32 +54,12 @@ export default defineComponent({
     const refArchivo = ref()
     const idEsquema = ref()
     const archivoSubido = ref(false)
-    const esquemaVacunacion = ref([])
-    const mostrarEsquema = computed(() => listado.value.length && accion.value === acciones.consultar)
+    const mostrarEsquema = computed(() => !!listado.value.length && accion.value === acciones.consultar)
 
     /************
      * Funciones
      ************/
     const { tiposVacunas, filtrarTiposVacunas } = useFiltrosListadosSelects(listadosAuxiliares)
-
-    /*const seleccionarTipoVacuna = (idTipoVacuna: number) => {
-      const tipoVacuna = listadosAuxiliares.tiposVacunas.find((tipo: TipoVacuna) => tipo.id === idTipoVacuna)
-      console.log(tipoVacuna)
-      totalDosis.value = tipoVacuna.dosis_totales ?? 0
-      console.log(totalDosis.value)
-      console.log(tipoVacuna.dosis_totales)
-    }*/
-
-    /*const quitarTiposVacunasYaRealizados = () => {
-      if (habilitarTipoVacuna.value) {
-        let indicesAEliminar = listadosAuxiliares.tiposVacunas
-          .map((tipoVacuna: TipoVacuna, index) => (tipoVacuna.id && medicoStore.tiposVacunasYaRealizadosPaciente.includes(tipoVacuna.id) ? index : -1))
-          .filter((index) => index !== -1)
-
-        const array = listadosAuxiliares.tiposVacunas.filter((_, index) => !indicesAEliminar.includes(index))
-        listadosAuxiliares.tiposVacunas = array
-      }
-    }*/
 
     async function subirArchivos() {
       await refArchivo.value.subir()
@@ -90,7 +70,8 @@ export default defineComponent({
      * Hooks
      ********/
     onReestablecer(() => {
-      if(mostrarEsquema) emit('cerrar-modal')
+      console.log(mostrarEsquema.value)
+      if (mostrarEsquema.value) emit('cerrar-modal')
       refArchivo.value.limpiarListado()
       const stop = watch(archivoSubido, () => {
         stop()
@@ -106,9 +87,6 @@ export default defineComponent({
       }, 1)
 
       emit('guardado', { esquemaVacuna: responseData.modelo, page: 'EsquemaVacunaPage' })
-
-      // await refArchivo.value.limpiarListado()
-      // emit('cerrar-modal')
     })
 
     /*********
@@ -148,21 +126,6 @@ export default defineComponent({
       }, 1);
     }
 
-    /*const stop = watchEffect(() => {
-      if (esquema.tipo_vacuna_id && listadosAuxiliares.tiposVacunas.length) {
-        seleccionarTipoVacuna(esquema.tipo_vacuna_id)
-        quitarTiposVacunasYaRealizados()
-        stop()
-      }
-    })*/
-
-    /* const stopTipoVacuna = watchEffect(() => {
-      if (listadosAuxiliares.tiposVacunas.length) {
-        quitarTiposVacunasYaRealizados()
-        stopTipoVacuna()
-      }
-    })*/
-
     esquema.paciente = medicoStore.empleado?.id ?? null
     accion.value = medicoStore.accion
     habilitarTipoVacuna.value = medicoStore.accion === acciones.nuevo
@@ -187,7 +150,6 @@ export default defineComponent({
       subirArchivos,
       maskFecha,
       configuracionColumnasEsquemaVacunacionDetallado,
-      // esquemaVacunacion,
       mostrarEsquema,
     }
   }

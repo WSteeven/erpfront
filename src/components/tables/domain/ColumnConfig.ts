@@ -20,5 +20,6 @@ export interface ColumnConfig<T> {
   requerido?: boolean
   filtrar?: boolean
   default?: boolean
+  placeholder?: string
   filtro?: (val, update) => void
 }

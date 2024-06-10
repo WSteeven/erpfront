@@ -53,6 +53,10 @@
     backdrop-filter: blur(10px) !important;
   }
 
+  .bg-border {
+    background-color: #fff;
+  }
+
   .bg-header-collapse {
     background-color: $grey-1;
   }
@@ -63,14 +67,17 @@
 
   .tab-active {
     background-color: rgba($grey-2, 0.6);
-    border-radius: 16px 4px 0 0;
+    border-radius: 16px 16px 0 0;
     box-shadow: rgba(0, 0, 0, 0.12) 0px 5px 15px;
+    border: 1px solid #fff ;
+    border-bottom: none !important;
     color: $primary;
   }
 
   .tab-inactive {
     background-color: $grey-5;
-    border-radius: 16px 4px 0 0;
+    border-radius: 16px 16px 0 0;
+    border: 1px solid rgba(#fff, .4) !important;
     box-shadow: rgba(0, 0, 0, 0.12) 0px 5px 15px;
   }
 
@@ -176,6 +183,13 @@
     background-color: #fff;
   }
 
+  .toggle-button-positive {
+    border: 1px solid $positive;
+    background-color: transparent;
+    background-color: rgba($grey-2, 0.5) !important;
+      backdrop-filter: blur(10px) !important;
+  }
+
   .toggle-button-grey {
     border: 1px solid $grey;
     background-color: transparent;
@@ -266,7 +280,7 @@
   .link-active {
     background: $primary; //rgba(#efeff7, 1);
     // border-right: 3px solid $primary;
-    border-radius: 16px;
+    border-radius: 8px;
     color: white;
 
     i {

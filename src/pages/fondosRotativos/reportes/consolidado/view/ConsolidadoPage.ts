@@ -57,8 +57,8 @@ export default defineComponent({
       },
     }
 
-    const is_all_empleados = ref('false')
-    const is_inactivo = ref('false')
+    const is_all_empleados = ref(false)
+    const is_inactivo = ref(false)
     const tipos_saldos_consolidado = ref()
     tipos_saldos_consolidado.value = tipos_saldos
     listadosAuxiliares.tipos_saldos = tipos_saldos_consolidado
@@ -209,7 +209,7 @@ export default defineComponent({
       }
     }
     function mostrarEmpleados() {
-      consolidado.usuario = null
+      consolidado.empleado = null
     }
     async function recargarEmpleadosInactivos() {
       usuariosInactivos.value = (
@@ -236,7 +236,7 @@ export default defineComponent({
       return date >= fecha_inicio && date <= fecha_actual
     }
     function limpiar() {
-      is_all_empleados.value = 'false'
+      is_all_empleados.value = false
     }
     return {
       mixin,

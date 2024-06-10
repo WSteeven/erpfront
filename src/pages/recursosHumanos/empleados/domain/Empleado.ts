@@ -10,6 +10,7 @@ export class Empleado extends EntidadAuditable {
   direccion: string | null
   estado_civil: string | null
   jefe: string | null
+  jefe_inmediato: string | null
   email: string | null
   correo_personal: string | null
   password: string | null
@@ -88,6 +89,7 @@ religion: number | null
     this.direccion = null
     this.estado_civil = null
     this.jefe = null
+    this.jefe_inmediato = null
     this.email = null
     this.correo_personal = null
     this.password = null
@@ -138,7 +140,7 @@ religion: number | null
     this.talla_camisa = null
     this.talla_guantes = null
     this.talla_pantalon = null
-    this.genero = 'M'
+    this.genero = null
     this.banco_info = null
     this.esta_en_rol_pago = true
     this.acumula_fondos_reserva = false

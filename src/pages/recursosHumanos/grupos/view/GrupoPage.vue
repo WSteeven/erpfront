@@ -92,6 +92,22 @@
               color="positive"
             />
           </div>
+
+          <!-- Listado de productos -->
+          <div
+            v-if="grupo.empleados?.length > 0"
+            class="col-12 col-md-12 q-mt-xl"
+          >
+            <essential-table
+              titulo="Empleados del grupo"
+              :datos="grupo.empleados"
+              :configuracionColumnas="configuracionColumnasEmpleadosLite"
+              ajustarCeldas
+              :altoFijo="false"
+              :mostrarBotones="false"
+            >
+            </essential-table>
+          </div>
         </div>
       </q-form>
     </template>

@@ -2,31 +2,30 @@
 import { StatusEssentialLoading } from 'components/loading/application/StatusEssentialLoading'
 import { configuracionColumnasCitaMedica } from '../domain/configuracionColumnasCitaMedica'
 import { estadosCitaMedica, tabOptionsEstadosCitaMedica, selectAgendarCitaMedicaMedico, selectAgendarCitaMedicaPaciente, opcionesDestinoCitaMedica, selectTipoCitaMedica, selectTipoCambioCargo, tiposCitaMedica } from 'config/utils/medico'
+import { useFiltrosListadosSelects } from 'shared/filtrosListadosGenerales'
+import { useBotonesCitaMedica } from '../application/UseBotonesCitaMedica'
+import { ColumnConfig } from 'components/tables/domain/ColumnConfig'
 import { Ref, computed, defineComponent, reactive, ref } from 'vue'
+import { acciones, accionesTabla, maskFecha } from 'config/utils'
 import { useAuthenticationStore } from 'stores/authentication'
 import { CitaMedica } from '../domain/CitaMedica'
-import { required } from 'shared/i18n-validators'
+import { required, requiredIf } from 'shared/i18n-validators'
 import useVuelidate from '@vuelidate/core'
-import { acciones, accionesTabla, maskFecha } from 'config/utils'
 
 // Componentes
 import TabLayoutFilterTabs2 from 'shared/contenedor/modules/simple/view/TabLayoutFilterTabs2.vue'
 import DetallePaciente from 'medico/gestionarPacientes/view/DetallePaciente.vue'
 import ModalesEntidad from 'components/modales/view/ModalEntidad.vue'
 import EssentialTableTabs from 'components/tables/view/EssentialTableTabs.vue'
-// import EstadosSubtareas from 'components/tables/view/EstadosSubtareas.vue'
 
 // Logica y controladores
 import { ContenedorSimpleMixin } from 'shared/contenedor/modules/simple/application/ContenedorSimpleMixin'
 import { EmpleadoController } from 'pages/recursosHumanos/empleados/infraestructure/EmpleadoController'
 import { ComportamientoModalesCitaMedica } from '../domain/ComportamientoModalesCitaMedica'
+import { ConsultaMedica } from 'pages/medico/diagnosticoReceta/domain/ConsultaMedica'
 import { CitaMedicaController } from '../infraestructure/CitaMedicaController'
 import { Empleado } from 'pages/recursosHumanos/empleados/domain/Empleado'
-import { useBotonesCitaMedica } from '../application/UseBotonesCitaMedica'
-import { useFiltrosListadosSelects } from 'shared/filtrosListadosGenerales'
 import { CitaMedicaModales } from '../domain/CitaMedicaModales'
-import { ConsultaMedica } from 'pages/medico/diagnosticoReceta/domain/ConsultaMedica'
-import { ColumnConfig } from 'components/tables/domain/ColumnConfig'
 
 export default defineComponent({
   components: {
@@ -78,10 +77,10 @@ export default defineComponent({
     const tabLayout = ref()
     const empleado = reactive(new Empleado())
     const cargando = new StatusEssentialLoading()
-    const fecha_cita_medica = ref()
-    const hora_cita_medica = ref()
-    const fechaAccidente = ref()
-    const horaAccidente = ref()
+    // const fecha_cita_medica = ref()
+    // const hora_cita_medica = ref()
+    // const fechaAccidente = ref()
+    // const horaAccidente = ref()
     const destinoCitaMedica = ref(opcionesDestinoCitaMedica.PARA_MI)
     const enfermedadesComunes: Ref<CitaMedica[]> = ref([])
     const accidentesTrabajo: Ref<CitaMedica[]> = ref([])
@@ -207,6 +206,10 @@ export default defineComponent({
       sintomas: { required },
       paciente: { required },
       tipo_cita_medica: { required },
+      fecha_accidente: { requiredIf: requiredIf(() => citaMedica.tipo_cita_medica == tiposCitaMedica.ACCIDENTE_DE_TRABAJO.value) },
+      hora_accidente: { requiredIf: requiredIf(() => citaMedica.tipo_cita_medica == tiposCitaMedica.ACCIDENTE_DE_TRABAJO.value) },
+      fecha_cita_medica: { requiredIf: requiredIf(() => citaMedica.estado_cita_medica == estadosCitaMedica.AGENDADO) },
+      hora_cita_medica: { requiredIf: requiredIf(() => citaMedica.estado_cita_medica == estadosCitaMedica.AGENDADO) },
     }
 
     const v$ = useVuelidate(reglas, citaMedica)
@@ -219,28 +222,27 @@ export default defineComponent({
       const fecha_hora = citaMedica.fecha_hora_cita?.split(' ') ?? []
       const fechaHoraAccidente = citaMedica.fecha_hora_accidente?.split(' ') ?? []
 
-      fecha_cita_medica.value = fecha_hora[0]
-      hora_cita_medica.value = fecha_hora[1]
+      citaMedica.fecha_cita_medica = fecha_hora[0]
+      citaMedica.hora_cita_medica = fecha_hora[1]
 
-      fechaAccidente.value = fechaHoraAccidente[0]
-      horaAccidente.value = fechaHoraAccidente[1]
+      citaMedica.fecha_accidente = fechaHoraAccidente[0]
+      citaMedica.hora_accidente = fechaHoraAccidente[1]
 
       if (citaMedica.paciente_id) await consultarEmpleado(citaMedica.paciente_id)
     })
 
     onBeforeGuardar(() => {
-      citaMedica.fecha_hora_accidente = fechaAccidente.value + ' ' + horaAccidente.value
+      citaMedica.fecha_hora_accidente = citaMedica.fecha_accidente + ' ' + citaMedica.hora_accidente
     })
 
     onBeforeModificar(() => {
-      citaMedica.fecha_hora_cita = fecha_cita_medica.value + ' ' + hora_cita_medica.value
+      citaMedica.fecha_hora_cita = citaMedica.fecha_cita_medica + ' ' + citaMedica.hora_cita_medica
       citaMedica.paciente = citaMedica.paciente_id
     })
 
     onGuardado((id, responseData) => {
       const modelo = responseData.modelo as CitaMedica
-      // console.log(modelo)
-      // console.log(tabCita.value)
+
       if (tabCita.value === estadosCitaMedica.PENDIENTE) {
         if (modelo.tipo_cita_medica === tiposCitaMedica.ENFERMEDAD_COMUN.value) {
           enfermedadesComunes.value.push(modelo)
@@ -273,10 +275,10 @@ export default defineComponent({
     })
 
     onReestablecer(() => {
-      hora_cita_medica.value = null
+      /* hora_cita_medica.value = null
       fecha_cita_medica.value = null
-      horaAccidente.value = null
-      fechaAccidente.value = null
+      citaMedica.hora_accidente = null
+      citaMedica.fecha_accidente = null */
       citaMedica.estado_cita_medica = estadosCitaMedica.PENDIENTE
       empleados.value = listadosAuxiliares.empleados
       citaMedica.paciente = authenticationStore.user.id
@@ -291,10 +293,6 @@ export default defineComponent({
     citaMedica.paciente = authenticationStore.user.id
     empleado.hydrate(authenticationStore.user)
 
-
-    // consultarCitasMedicasEnfermedadComun()
-    // consultarCitasMedicasAccidenteTrabajo()
-
     const enfermedadComunTabPanel = {
       label: tiposCitaMedica.ENFERMEDAD_COMUN.label,
       accion: consultarCitasMedicasEnfermedadComun,
@@ -305,7 +303,7 @@ export default defineComponent({
       accion: consultarCitasMedicasAccidenteTrabajo,
     }
 
-    const esPaciente = computed(() => citaMedica.paciente_id === authenticationStore.user.id)
+    const esPaciente = computed(() => citaMedica.paciente_id === authenticationStore.user?.id)
 
     return {
       v$,
@@ -330,10 +328,8 @@ export default defineComponent({
       estaRechazado: computed(() => citaMedica.estado_cita_medica === estadosCitaMedica.RECHAZADO),
       esAccidenteTrabajo: computed(() => citaMedica.tipo_cita_medica === tiposCitaMedica.ACCIDENTE_DE_TRABAJO.value),
       maskFecha,
-      fecha_cita_medica,
-      hora_cita_medica,
-      fechaAccidente,
-      horaAccidente,
+      /* fecha_cita_medica,
+      hora_cita_medica, */
       selectEstadoCita: computed(() => {
         if (authenticationStore.esMedico) {
           /* if (!esPaciente.value) {

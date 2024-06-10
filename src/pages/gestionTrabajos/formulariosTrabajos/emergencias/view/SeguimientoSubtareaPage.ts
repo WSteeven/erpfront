@@ -2,10 +2,13 @@
 import { configuracionColumnasMaterialOcupadoFormulario } from 'gestionTrabajos/formulariosTrabajos/emergencias/domain/configuracionColumnasMaterialOcupadoFormulario'
 import { configuracionColumnasTrabajoRealizado } from 'gestionTrabajos/formulariosTrabajos/emergencias/domain/configuracionColumnasTrabajoRealizado'
 import { AxiosHttpRepository } from 'shared/http/infraestructure/AxiosHttpRepository'
+import { computed, defineComponent, onMounted, reactive, Ref, ref, watch } from 'vue'
 import { regiones, atenciones, accionesTabla, estadosTrabajos } from 'config/utils'
 import { CustomActionPrompt } from 'components/tables/domain/CustomActionPrompt'
 import { CustomActionTable } from 'components/tables/domain/CustomActionTable'
-import { computed, defineComponent, onMounted, reactive, Ref, ref, watch } from 'vue'
+import { imprimirArchivo, obtenerFechaActual } from 'shared/utils'
+import { useTrabajoAsignadoStore } from 'stores/trabajoAsignado'
+import { useAuthenticationStore } from 'stores/authentication'
 import { useNotificaciones } from 'shared/notificaciones'
 import { apiConfig, endpoints } from 'config/api'
 import { AxiosResponse } from 'axios'
@@ -22,27 +25,24 @@ import VisorImagen from 'components/VisorImagen.vue'
 
 // Logica y controladores
 import { MotivoCanceladoTicketController } from 'pages/gestionTickets/motivosCanceladosTickets/infraestructure/MotivoCanceladoTicketController'
-import { ComportamientoModalesTicketAsignado } from 'pages/gestionTickets/ticketsAsignados/application/ComportamientoModalesTicketAsignado'
 import { ActividadRealizadaSeguimientoSubtareaController } from '../infraestructure/ActividadRealizadaSeguimientoSubtareaController'
+import { TicketController } from 'pages/gestionTickets/tickets/infraestructure/TicketController'
+import { ArchivoSeguimientoController } from '../infraestructure/ArchivoSeguimientoController'
+import { ComportamientoModalesTicketAsignado } from 'pages/gestionTickets/ticketsAsignados/application/ComportamientoModalesTicketAsignado'
 import { MaterialOcupadoFormulario } from 'gestionTrabajos/formulariosTrabajos/emergencias/domain/MaterialOcupadoFormulario'
 import { ContenedorSimpleMixin } from 'shared/contenedor/modules/simple/application/ContenedorSimpleMixin'
+import { useMaterialesEmpleado } from 'pages/gestionTrabajos/miBodega/application/UseMaterialesEmpleado'
+import { useMaterialesProyecto } from 'pages/gestionTrabajos/miBodega/application/UseMaterialesProyecto'
 import { Archivo } from 'pages/gestionTrabajos/subtareas/modules/gestorArchivosTrabajos/domain/Archivo'
+import { FiltroMiBodegaProyecto } from 'pages/gestionTrabajos/miBodega/domain/FiltroMiBodegaProyecto'
+import { FiltroMiBodegaEmpleado } from 'pages/gestionTrabajos/miBodega/domain/FiltroMiBodegaEmpleado'
 import ActividadRealizadaSeguimientoSubtarea from '../domain/ActividadRealizadaSeguimientoSubtarea'
 import { useBotonesTablaTicket } from 'pages/gestionTickets/tickets/application/BotonesTablaTicket'
-import { TicketController } from 'pages/gestionTickets/tickets/infraestructure/TicketController'
 import { configuracionColumnasSumaMaterial } from '../domain/configuracionColumnasSumaMaterial'
 import { configuracionColumnasSolicitudAts } from '../domain/configuracionColumnasSolicitudAts'
-import { ArchivoSeguimientoController } from '../infraestructure/ArchivoSeguimientoController'
 import { useGestionAtsApplication } from '../application/GestionAtsApplication'
 import { Subtarea } from 'pages/gestionTrabajos/subtareas/domain/Subtarea'
 import { Ticket } from 'pages/gestionTickets/tickets/domain/Ticket'
-import { imprimirArchivo, obtenerFechaActual } from 'shared/utils'
-import { useTrabajoAsignadoStore } from 'stores/trabajoAsignado'
-import { useAuthenticationStore } from 'stores/authentication'
-import { useMaterialesProyecto } from 'pages/gestionTrabajos/miBodega/application/UseMaterialesProyecto'
-import { FiltroMiBodegaProyecto } from 'pages/gestionTrabajos/miBodega/domain/FiltroMiBodegaProyecto'
-import { useMaterialesEmpleado } from 'pages/gestionTrabajos/miBodega/application/UseMaterialesEmpleado'
-import { FiltroMiBodegaEmpleado } from 'pages/gestionTrabajos/miBodega/domain/FiltroMiBodegaEmpleado'
 
 export default defineComponent({
   components: {
@@ -141,7 +141,6 @@ export default defineComponent({
       subtarea_id: trabajoAsignadoStore.subtarea.id,
       proyecto_id: trabajoAsignadoStore.proyecto_id,
       etapa_id: trabajoAsignadoStore.etapa_id,
-      // cliente_id: trabajoAsignadoStore.cliente_id,
       empleado_id: obtenerIdEmpleadoResponsable(),
     }
 
@@ -182,8 +181,6 @@ export default defineComponent({
     obtenerClientesMaterialesTarea()
     obtenerClientesMaterialesEmpleado()
     consultarTicketsATS(subtarea.id)
-    // seleccionarClienteMaterialTarea()
-    // seleccionarClienteMaterialStock()
 
     onMounted(() => refArchivoSeguimiento.value.listarArchivos({ subtarea_id: trabajoAsignadoStore.subtarea.id }))
 
@@ -207,6 +204,7 @@ export default defineComponent({
             entidad.cantidad_anterior = entidad.cantidad_utilizada ?? 0
             entidad.cantidad_utilizada = valor
             const modelo = await actualizarCantidadUtilizadaTarea(entidad)
+            modelo.id = entidad.id
             materialesTarea.value[posicion] = modelo
           }
         }
@@ -230,6 +228,7 @@ export default defineComponent({
             entidad.cantidad_anterior = entidad.cantidad_utilizada ?? 0
             entidad.cantidad_utilizada = valor
             const modelo = await actualizarCantidadUtilizadaStock(entidad)
+            modelo.id = entidad.id
             materialesStock.value[posicion] = modelo
           }
         }
@@ -263,6 +262,7 @@ export default defineComponent({
             entidad.cantidad_anterior = entidad.cantidad_utilizada
             entidad.cantidad_utilizada = valor
             const modelo = await actualizarCantidadUtilizadaHistorial(entidad)
+            modelo.id = entidad.id
             historialMaterialTareaUsadoPorFecha.value[posicion] = modelo
           }
         }
@@ -286,6 +286,7 @@ export default defineComponent({
             entidad.cantidad_anterior = entidad.cantidad_utilizada
             entidad.cantidad_utilizada = valor
             const modelo = await actualizarCantidadUtilizadaHistorialStock(entidad)
+            modelo.id = entidad.id
             historialMaterialStockUsadoPorFecha.value[posicion] = modelo
           }
         }
@@ -298,14 +299,6 @@ export default defineComponent({
     *************/
     async function actualizarCantidadUtilizadaHistorial(material) {
       const params = {
-        /* tarea_id: trabajoAsignadoStore.idTareaSeleccionada,
-        subtarea_id: trabajoAsignadoStore.subtarea.id,
-        empleado_id: obtenerIdEmpleadoResponsable(),
-        detalle_producto_id: material.detalle_producto_id,
-        cantidad_utilizada: material.cantidad_utilizada,
-        cantidad_anterior: material.cantidad_anterior,
-        fecha: fecha_historial.value,
-        cliente_id: material.cliente_id,*/
         ...parametrosGenerales,
         detalle_producto_id: material.detalle_producto_id,
         cantidad_utilizada: material.cantidad_utilizada,
@@ -320,21 +313,14 @@ export default defineComponent({
 
     async function actualizarCantidadUtilizadaHistorialStock(material) {
       const params = {
-        /*tarea_id: trabajoAsignadoStore.idTareaSeleccionada,
-        subtarea_id: trabajoAsignadoStore.subtarea.id,
-        empleado_id: obtenerIdEmpleadoResponsable(),
-        detalle_producto_id: material.detalle_producto_id,
-        cantidad_utilizada: material.cantidad_utilizada,
-        cantidad_anterior: material.cantidad_anterior,
-        fecha: fecha_historial_stock.value,
-        cliente_id: material.cliente_id,*/
         ...parametrosGenerales,
         detalle_producto_id: material.detalle_producto_id,
         cantidad_utilizada: material.cantidad_utilizada,
         cantidad_anterior: material.cantidad_anterior,
-        fecha: fecha_historial.value,
+        fecha: fecha_historial_stock.value,
         cliente_id: material.cliente_id,
       }
+      
       const ruta = axios.getEndpoint(endpoints.actualizar_cantidad_utilizada_historial_stock, params)
       const response: AxiosResponse = await axios.post(ruta)
       return response.data.modelo
@@ -342,12 +328,6 @@ export default defineComponent({
 
     async function actualizarCantidadUtilizadaTarea(material) {
       const params = {
-        /* tarea_id: trabajoAsignadoStore.idTareaSeleccionada,
-        subtarea_id: trabajoAsignadoStore.subtarea.id,
-        proyecto_id: trabajoAsignadoStore.proyecto_id,
-        etapa_id: trabajoAsignadoStore.etapa_id,
-        cliente_id: trabajoAsignadoStore.cliente_id,
-        empleado_id: obtenerIdEmpleadoResponsable(), */
         ...parametrosGenerales,
         detalle_producto_id: material.detalle_producto_id,
         cantidad_utilizada: material.cantidad_utilizada,
@@ -377,7 +357,7 @@ export default defineComponent({
 
     function obtenerIdEmpleadoResponsable() {
       if (esLider) return authenticationStore.user.id
-      else return trabajoAsignadoStore.subtarea.empleado_responsable_id // idEmpleadoResponsable
+      else return trabajoAsignadoStore.subtarea.empleado_responsable_id
     }
 
     async function obtenerMaterialesTarea(cliente: number) {
@@ -442,11 +422,6 @@ export default defineComponent({
     }
 
     function obtenerClientesMaterialesEmpleado() {
-      /*FcargarVista(async () => {
-        const ruta = axios.getEndpoint(endpoints.obtener_clientes_materiales_empleado) //+ '/' + obtenerIdEmpleadoResponsable()
-        const response: AxiosResponse = await axios.get(ruta, { empleado_id: obtenerIdEmpleadoResponsable() })
-        clientes.value = response.data.results
-      })*/
       consultarClientesMaterialesEmpleado({ empleado_id: obtenerIdEmpleadoResponsable() })
     }
 
@@ -457,7 +432,6 @@ export default defineComponent({
     }
 
     async function descargarExcel() {
-      console.log(subtarea)
       const ruta = apiConfig.URL_BASE + '/' + axios.getEndpoint(endpoints.exportExcelSeguimiento) + '/' + subtarea.id
       imprimirArchivo(ruta, 'GET', 'blob', 'xlsx', 'reporte_hoy_')
     }
@@ -482,31 +456,10 @@ export default defineComponent({
       guardarActividad(actividad)
     }
 
-    /*function seleccionarClienteMaterialTarea() {
-      clienteMaterialTarea.value = subtarea.cliente_id
-
-      const clienteEncontrado = listadosAuxiliares.clientesMaterialesTarea.value.find((cliente: any) => cliente.cliente_id === subtarea.cliente_id)
-
-      if (clienteEncontrado) obtenerMaterialesTarea(clienteMaterialTarea.value)
-    }
-
-    function seleccionarClienteMaterialStock() {
-      clienteMaterialStock.value = subtarea.cliente_id
-
-      const clienteEncontrado = listadosAuxiliares.clientesMaterialesEmpleado.value.find((cliente: any) => cliente.cliente_id === subtarea.cliente_id)
-
-      if (clienteEncontrado) obtenerMaterialesStock(clienteMaterialStock.value)
-    }*/
-
     function actualizarTablaMaterialesTarea() {
       clienteMaterialTarea.value = undefined
       materialesTareaTodos.value = []
     }
-
-    /**********
-     * Filtros
-     **********/
-    // const { filtrarClientes } = useFiltrosListadosSelects(listadosAuxiliares)
 
     /*************
      * Observers
@@ -526,10 +479,6 @@ export default defineComponent({
         )
       }
     })
-
-    console.log(subtarea)
-    console.log(subtarea.proyecto_id)
-    console.log(subtarea.proyecto_id === null)
 
     return {
       refVisorImagen,
