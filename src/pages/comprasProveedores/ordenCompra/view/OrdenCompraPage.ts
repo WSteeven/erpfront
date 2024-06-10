@@ -45,6 +45,7 @@ import { UnidadMedidaController } from "pages/bodega/unidades_medidas/infraestru
 import { UnidadMedida } from "pages/bodega/unidades_medidas/domain/UnidadMedida";
 import { PreordenCompra } from "pages/comprasProveedores/preordenCompra/domain/PreordenCompra";
 import { ArchivoController } from "pages/gestionTrabajos/subtareas/modules/gestorArchivosTrabajos/infraestructure/ArchivoController";
+import { Transferencia } from "pages/bodega/transferencia/domain/Transferencia";
 
 
 export default defineComponent({

@@ -8,7 +8,9 @@
     :filtrar="filtrarTransferencias"
     titulo-pagina="Transferencia de Vehículos"
     :permitirEditar="tabActual == 'PENDIENTE'"
-    :accion1="btnImprimirActaResponsabilidadTransferencia"
+    :accion1="btnDevolverVehiculo"
+    :accion2="btnTransferirVehiculo"
+    :accion3="btnImprimirActaResponsabilidadTransferencia"
   >
     <!-- :permitirEliminar="tabActual == 'PENDIENTE'" -->
     <!-- :permitirEditar="tabActual=='PENDIENTE' && transferencia.responsable==store.user.id" -->
@@ -225,6 +227,35 @@
             </q-input>
           </div>
 
+          <!-- motivo -->
+          <div class="col-12 col-md-3 q-mb-md">
+            <label class="q-mb-sm block">Motivo</label>
+            <q-select
+              v-model="transferencia.motivo"
+              options-dense
+              hint="Selecciona o ingresa un motivo"
+              :disable="disabled"
+              dense
+              outlined
+              use-input
+              use-chips
+              :error="!!v$.motivo.$errors.length"
+              input-debounce="0"
+              @new-value="crearMotivo"
+              :options="motivos"
+              @filter="filtrarMotivos"
+            >
+              <template v-slot:error>
+                <div
+                  v-for="error of v$.motivo.$errors"
+                  :key="error.$uid"
+                >
+                  <div class="error-msg">{{ error.$message }}</div>
+                </div>
+              </template>
+            </q-select>
+          </div>
+
           <!-- Observacion entrega -->
           <div
             class="col-12 col-md-3"
@@ -362,7 +393,7 @@
               options-dense
               dense
               outlined
-              :disable="accion == acciones.editar ? false : true"
+              :disable="disabled|| store.user.id !==transferencia.responsable_id"
               :option-value="(v) => v.label"
               :option-label="(v) => v.label"
               emit-value

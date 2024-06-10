@@ -434,4 +434,4 @@
     </template>
   </tab-layout-filter-tabs2>
 </template>
-<script src="./AsignarVehiculoPage.ts" />
+<script src="./AsignacionVehiculoPage.ts" />

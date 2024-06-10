@@ -5,9 +5,11 @@ export class TransferenciaVehiculo extends EntidadAuditable {
     entrega: number | null
     canton: number | null
     responsable: number | null
+    responsable_id: number | null
     observacion_recibe: string | null
     observacion_entrega: string | null
     fecha_entrega: string | null
+    motivo: string | null
     estado: string | null
     accesorios: string | null
     estado_carroceria: string | null
@@ -23,8 +25,10 @@ export class TransferenciaVehiculo extends EntidadAuditable {
         this.vehiculo = null
         this.entrega = null
         this.responsable = null
+        this.responsable_id = null
         this.observacion_recibe = null
         this.observacion_entrega = null
+        this.motivo = null
         this.estado = null
         this.fecha_entrega = null
         this.fecha_aceptacion = null

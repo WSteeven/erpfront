@@ -80,6 +80,10 @@ export const iconos = {
     label: 'ASIGNACION_VEHICULO',
     icono: 'bi-file-text'
   },
+  transferencia_vehiculo: {
+    label: 'TRANSFERENCIA_VEHICULO',
+    icono: 'bi-file-text'
+  },
   ordenes_reparaciones_vehiculos: {
     label: 'ORDEN_REPARACION_VEHICULO',
     icono: 'bi-tools'

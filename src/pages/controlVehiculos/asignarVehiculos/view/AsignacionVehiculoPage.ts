@@ -2,6 +2,8 @@
 import { computed, defineComponent, ref } from "vue";
 import { ContenedorSimpleMixin } from "shared/contenedor/modules/simple/application/ContenedorSimpleMixin";
 import { configuracionColumnasAsignacionVehiculos } from "../domain/configuracionColumnasAsignacionVehiculos";
+import { required } from "shared/i18n-validators";
+import useVuelidate from "@vuelidate/core";
 
 //Components
 import TabLayoutFilterTabs2 from "shared/contenedor/modules/simple/view/TabLayoutFilterTabs2.vue"
@@ -12,8 +14,6 @@ import { AsignacionVehiculo } from "../domain/AsignacionVehiculo";
 import { AsignacionVehiculoController } from "../infraestructure/AsignacionVehiculoController";
 import { tabOptionsAsignacionVehiculos, estadosAsignacionesVehiculos } from "config/vehiculos.utils";
 import { ConductorController } from "pages/controlVehiculos/conductores/infraestructure/ConductorController";
-import { required } from "shared/i18n-validators";
-import useVuelidate from "@vuelidate/core";
 import { useFiltrosListadosSelects } from "shared/filtrosListadosGenerales";
 import { imprimirArchivo, obtenerFechaActual, ordenarLista } from "shared/utils";
 import { useAuthenticationStore } from "stores/authentication";

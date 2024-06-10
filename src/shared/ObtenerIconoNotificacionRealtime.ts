@@ -55,6 +55,8 @@ export class ObtenerIconoNotificacionRealtime {
         return iconos.multa_conductor.icono
       case iconos.asignacion_vehiculo.label:
         return iconos.asignacion_vehiculo.icono
+      case iconos.transferencia_vehiculo.label:
+        return iconos.transferencia_vehiculo.icono
       case iconos.ordenes_reparaciones_vehiculos.label:
         return iconos.ordenes_reparaciones_vehiculos.icono
       case iconos.bitacora_vehiculo.label:

@@ -22,7 +22,7 @@ import { IngresoPusherEvent } from 'pages/bodega/transacciones/modules/transacci
 import { MatriculaPusherEvent } from 'pages/controlVehiculos/matriculacion/application/MatriculaPusherEvent'
 import { NotificarPermisoEmpleadoPusherEvent } from 'src/pusherEvents/recursosHumanos/nominasPermisos/NotificarPermisoEmpleadoPusherEvent'
 import { MultaConductorPusherEvent } from 'pages/controlVehiculos/conductores/modules/multas/application/MultaPusherEvent'
-import { AsignarVehiculoPusherEvent } from 'pages/controlVehiculos/asignarVehiculos/application/AsignarVehiculoPusherEvent'
+import { AsignarVehiculoPusherEvent } from 'src/pusherEvents/vehiculos/AsignarVehiculoPusherEvent'
 import { OrdenReparacionPusherEvent } from 'src/pusherEvents/vehiculos/OrdenReparacionPusherEvent'
 import { BitacoraVehicularPusherEvent } from 'src/pusherEvents/vehiculos/BitacoraVehicularPusherEvent'
 import { MantenimientoVehiculoPusherEvent } from 'src/pusherEvents/vehiculos/MantenimientVehiculoPusherEvent'
@@ -134,6 +134,9 @@ export class NotificacionesSistema {
 
     const asignacionVehiculoEvent = new AsignarVehiculoPusherEvent()
     asignacionVehiculoEvent.start()
+    
+    const transferenciaVehiculoEvent = new AsignarVehiculoPusherEvent()
+    transferenciaVehiculoEvent.start()
 
     const ordenesReparacionesVehiculos = new OrdenReparacionPusherEvent()
     ordenesReparacionesVehiculos.start()

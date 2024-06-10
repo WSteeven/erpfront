@@ -597,7 +597,7 @@ const routes: RouteRecordRaw[] = [
         name: 'asignaciones_vehiculos',
         component: () =>
           import(
-            'pages/controlVehiculos/asignarVehiculos/view/AsignarVehiculoPage.vue'
+            'pages/controlVehiculos/asignarVehiculos/view/AsignacionVehiculoPage.vue'
           ),
         meta: { requiresAuth: true },
       },
