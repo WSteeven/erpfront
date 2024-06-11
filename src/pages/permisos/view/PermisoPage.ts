@@ -16,7 +16,7 @@ import { useRouter } from 'vue-router'
 // Logica y controladores
 
 export default defineComponent({
-  components: { EssentialTable,ModalEntidad },
+  components: { EssentialTable, ModalEntidad },
   setup() {
     /*********
      * Stores
@@ -50,16 +50,18 @@ export default defineComponent({
     })
     roles.value = listadosAuxiliares.roles
     async function obtenerPermisoRol(val) {
-      if(val){
-        listar({ id_rol:val, tipo: 'ASIGNADOS' })
-        permisosSinAsignar.value = (await controller.listar({id_rol: val,tipo: 'NO ASIGNADOS',})).result
+      if (val) {
+        listar({ id_rol: val, tipo: 'ASIGNADOS' })
+        permisosSinAsignar.value = (await controller.listar({ id_rol: val, tipo: 'NO ASIGNADOS', })).result
       }
     }
-    function botonAsignarPermisos() {
-      refPermisosSinAsignar.value.seleccionar()
+    async function botonAsignarPermisos() {
+      await refPermisosSinAsignar.value.seleccionar()
+      await refPermisosSinAsignar.value.clearSelection()
     }
-    function botonEliminarPermisos() {
-     refPermisosAsignados.value.seleccionar()
+    async function botonEliminarPermisos() {
+      await refPermisosAsignados.value.seleccionar()
+      await refPermisosAsignados.value.clearSelection()
     }
     function asignarPermiso(permisos: any) {
       const permisosName = permisos.map((permiso: Permiso) => permiso.id)
@@ -70,8 +72,8 @@ export default defineComponent({
       })
       obtenerPermisoRol(rol.value)
     }
-    function eliminarPermiso(permisos: any){
-     const permisosName = permisos.map((permiso: Permiso) => permiso.id)
+    function eliminarPermiso(permisos: any) {
+      const permisosName = permisos.map((permiso: Permiso) => permiso.id)
       aisnarPermisoController.guardar({
         id_rol: rol.value,
         permisos: permisosName,
@@ -79,12 +81,12 @@ export default defineComponent({
       })
       obtenerPermisoRol(rol.value)
     }
-     /**Modales */
-     const modales = new ComportamientoModalesPermisoNuevo()
-     function crear_permiso() {
-       modales.abrirModalEntidad('PermisoNuevoPage')
-     }
-     const crearRol = () => {
+    /**Modales */
+    const modales = new ComportamientoModalesPermisoNuevo()
+    function crear_permiso() {
+      modales.abrirModalEntidad('PermisoNuevoPage')
+    }
+    const crearRol = () => {
       Router.replace('/roles')
     }
 
@@ -107,16 +109,16 @@ export default defineComponent({
       roles,
       refPermisosSinAsignar,
       refPermisosAsignados,
-      filtrarRol(val, update){
-        if(val===''){
-          update(()=>{
+      filtrarRol(val, update) {
+        if (val === '') {
+          update(() => {
             roles.value = listadosAuxiliares.roles
           })
           return
         }
-        update(()=>{
+        update(() => {
           const needle = val.toLowerCase()
-          roles.value = listadosAuxiliares.roles.filter((v)=>v.nombre.toLowerCase().indexOf(needle)>-1)
+          roles.value = listadosAuxiliares.roles.filter((v) => v.nombre.toLowerCase().indexOf(needle) > -1)
         })
       },
 
