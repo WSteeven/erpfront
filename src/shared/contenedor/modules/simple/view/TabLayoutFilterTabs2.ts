@@ -43,7 +43,7 @@ export default defineComponent({
       type: Boolean,
       default: true,
     },
-    
+
     permitirConsultar: {
       type: Boolean,
       default: true,
@@ -269,10 +269,8 @@ export default defineComponent({
       accionPersonalizada,
       esBodeguero,
       esCoordinador,
-      forzarListar,
       // Valor del essentialLoading
       storeCargando: useCargandoStore(),
-      puedeExportar: props.puedeExportar,
       // custom tab panel
       ejecutarUnaVezCustomPanel1,
       ejecutarUnaVezCustomPanel2,
