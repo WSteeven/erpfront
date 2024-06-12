@@ -11,6 +11,7 @@
     tabDefecto="3"
     :forzarListar="true"
     :accion1="editarGasto"
+    :puede-exportar="true"
   >
     <template #formulario>
       <q-form @submit.prevent>

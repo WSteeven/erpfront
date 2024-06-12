@@ -43,6 +43,7 @@ export default defineComponent({
       type: Boolean,
       default: true,
     },
+    
     permitirConsultar: {
       type: Boolean,
       default: true,
