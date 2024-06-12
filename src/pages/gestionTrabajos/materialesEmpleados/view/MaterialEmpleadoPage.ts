@@ -215,12 +215,13 @@ export default defineComponent({
 
     async function guardado(data) {
       console.log(data)
-      refrescarListadosEmpleado('clientes')
       switch (data.tipo) {
         case destinosTareas.personal:
+          refrescarListadosEmpleado('clientes')
           consultarProductosStock()
           break
         case destinosTareas.paraClienteFinal:
+          refrescarListadosTareas('clientes')
           consultarProductosTarea({ empleado_id: empleadoSeleccionado.value })
           break
         default: //para proyecto
@@ -229,18 +230,19 @@ export default defineComponent({
       }
     }
 
-    async function actualizarCantidadItem(cantidad: number, detalle: number, cliente: number) {
+    async function actualizarCantidadItem(cantidad: number, detalle: number, cliente: number, tarea_id?: number | null) {
       try {
         const axios = AxiosHttpRepository.getInstance()
         const url = apiConfig.URL_BASE + '/' + axios.getEndpoint(endpoints.actualizar_cantidad_material_empleado)
-        const response: AxiosResponse = await axios.post(url, { tipo: tab.value, cantidad: cantidad, empleado: empleadoSeleccionado.value, detalle_producto_id: detalle, cliente_id: cliente })
+        const data = tab.value == destinosTareas.paraClienteFinal ? { tarea_id, tipo: tab.value, cantidad, empleado: empleadoSeleccionado.value, detalle_producto_id: detalle, cliente_id: cliente } : { tipo: tab.value, cantidad: cantidad, empleado: empleadoSeleccionado.value, detalle_producto_id: detalle, cliente_id: cliente }
+        const response: AxiosResponse = await axios.post(url, data)
         console.log(response)
         if (response.status = 200) {
           notificarCorrecto(response.data.mensaje)
           return true
         } else notificarAdvertencia(response.data.mensaje)
       } catch (error) {
-        notificarError('Error al marcar como pagada la matrícula. ' + error)
+        notificarError('Error al actualizar el ítem. ' + error)
       }
     }
 
@@ -311,7 +313,7 @@ export default defineComponent({
           tipo: 'number',
           defecto: entidad.stock_actual,
           accion: (data) => {
-            cargando.cargarConsulta(() => actualizarCantidadItem(data, entidad.detalle_producto_id, entidad.cliente_id))
+            cargando.cargarConsulta(() => actualizarCantidadItem(data, entidad.detalle_producto_id, entidad.cliente_id, entidad.tarea_id))
             entidad.stock_actual = data
           }
         }

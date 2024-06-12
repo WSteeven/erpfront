@@ -77,17 +77,17 @@
             </template>
           </q-select>
         </div>
-        {{ registro }}
-        <div class="row justify-end q-col-gutter-x-xs">
-          <ButtonSubmits
-            permitirGuardar
-            :accion="acciones.editar"
-            :disabled="cargando.cargando"
-            @cancelar="reestablecer()"
-            @editar="guardar()"
-          >
-          </ButtonSubmits>
-        </div>
+      </div>
+
+      <div class="row justify-end q-col-gutter-x-xs">
+        <ButtonSubmits
+          permitirGuardar
+          :accion="acciones.editar"
+          :disabled="cargando.cargando"
+          @cancelar="reestablecer()"
+          @editar="guardar()"
+        >
+        </ButtonSubmits>
       </div>
     </q-card-section>
   </q-card>
