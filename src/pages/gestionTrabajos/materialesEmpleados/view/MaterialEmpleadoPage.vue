@@ -62,7 +62,12 @@
           label="Material para proyectos"
           icon="bi-diagram-2"
         />
-        <q-tab name="personal" label="Stock personal" icon="bi-person"> </q-tab>
+        <q-tab
+          :name="destinosTareas.personal"
+          label="Stock personal"
+          icon="bi-person"
+        >
+        </q-tab>
       </q-tabs>
 
       <q-tab-panels v-model="tab" animated>
@@ -314,7 +319,7 @@
           </div>
         </q-tab-panel>
 
-        <q-tab-panel name="personal">
+        <q-tab-panel :name="destinosTareas.personal">
           <div class="row justify-center q-gutter-sm q-mb-md">
             <div class="col-12">
               <label class="q-mb-sm block"
@@ -420,7 +425,11 @@
         <div class="col-12 q-px-md">
           <essential-table
             titulo="Listado de materiales para tarea"
-            :configuracionColumnas="configuracionColumnasMaterialEmpleadoTarea"
+            :configuracionColumnas="
+              store.esAdministrador
+                ? [...configuracionColumnasMaterialEmpleadoTarea, accionesTabla]
+                : configuracionColumnasMaterialEmpleadoTarea
+            "
             :datos="listadosAuxiliares.productos"
             :permitirConsultar="false"
             :permitirEliminar="false"
@@ -429,10 +438,17 @@
             :alto-fijo="false"
             :ajustar-celdas="true"
             :mostrar-exportar="true"
+            :accion1="btnCambiarClientePropietario"
+            :accion2="btnModificarStock"
           ></essential-table>
         </div>
       </div>
     </q-card>
+    <modal-entidad
+    :comportamiento="modales"
+    @guardado="(data) => guardado(data)"
+    :persistente="false"
+  ></modal-entidad>
   </q-page>
 </template>
 

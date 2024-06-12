@@ -335,6 +335,8 @@ export const endpoints = {
   designar_secretario_grupo: new Endpoint('tareas/designar-secretario-grupo'),
   archivos_subtareas: new Endpoint('tareas/archivos-subtareas'),
   archivos_seguimientos: new Endpoint('tareas/archivos-seguimientos'),
+  actualizar_materiales_empleados: new Endpoint('actualizar-materiales-empleados'),
+  actualizar_cantidad_material_empleado: new Endpoint('actualizar-cantidad-material-empleado'),
   materiales_empleado_tarea: new Endpoint('tareas/materiales-empleado-tarea'),
   materiales_empleado: new Endpoint('tareas/materiales-empleado'),
   materiales_empleado_consolidado: new Endpoint('tareas/materiales-empleado-consolidado'),

@@ -33,21 +33,33 @@ import { EmpleadoController } from 'pages/recursosHumanos/empleados/infraestruct
 import { StatusEssentialLoading } from 'components/loading/application/StatusEssentialLoading'
 import { Empleado } from 'pages/recursosHumanos/empleados/domain/Empleado'
 import { ordernarListaString } from 'shared/utils'
+import { accionesTabla } from 'config/utils'
+import { CustomActionTable } from 'components/tables/domain/CustomActionTable'
+import ModalEntidad from 'components/modales/view/ModalEntidad.vue'
+import { ComportamientoModalesMaterialEmpleado } from '../application/ComportamientoModalesMaterialEmpleado'
+import { CustomActionPrompt } from 'components/tables/domain/CustomActionPrompt'
+import { AxiosHttpRepository } from 'shared/http/infraestructure/AxiosHttpRepository'
+import { apiConfig, endpoints } from 'config/api'
+import { AxiosResponse } from 'axios'
 
 export default defineComponent({
-  components: { EssentialTable },
+  components: { EssentialTable, ModalEntidad },
   setup() {
     /*********
      * Stores
      *********/
     const transferenciaProductoEmpleadoStore = useTransferenciaProductoEmpleadoStore()
+    const store = useAuthenticationStore()
     useNotificacionStore().setQuasar(useQuasar())
     useCargandoStore().setQuasar(useQuasar())
+
+    // modales
+    const modales = new ComportamientoModalesMaterialEmpleado()
 
     /************
      * Variables
      ************/
-    const { notificarAdvertencia } = useNotificaciones()
+    const { notificarCorrecto, notificarAdvertencia, notificarError, prompt } = useNotificaciones()
     const cargando = new StatusEssentialLoading()
     const tab = ref()
     const empleadoSeleccionado = ref()
@@ -201,6 +213,37 @@ export default defineComponent({
       empleados.value.sort((a: Empleado, b: Empleado) => ordernarListaString(a.apellidos!, b.apellidos!))
     }
 
+    async function guardado(data) {
+      console.log(data)
+      refrescarListadosEmpleado('clientes')
+      switch (data.tipo) {
+        case destinosTareas.personal:
+          consultarProductosStock()
+          break
+        case destinosTareas.paraClienteFinal:
+          consultarProductosTarea({ empleado_id: empleadoSeleccionado.value })
+          break
+        default: //para proyecto
+          consultarProductosProyectoEtapa()
+          break
+      }
+    }
+
+    async function actualizarCantidadItem(cantidad: number, detalle: number, cliente: number) {
+      try {
+        const axios = AxiosHttpRepository.getInstance()
+        const url = apiConfig.URL_BASE + '/' + axios.getEndpoint(endpoints.actualizar_cantidad_material_empleado)
+        const response: AxiosResponse = await axios.post(url, { tipo: tab.value, cantidad: cantidad, empleado: empleadoSeleccionado.value, detalle_producto_id: detalle, cliente_id: cliente })
+        console.log(response)
+        if (response.status = 200) {
+          notificarCorrecto(response.data.mensaje)
+          return true
+        } else notificarAdvertencia(response.data.mensaje)
+      } catch (error) {
+        notificarError('Error al marcar como pagada la matrícula. ' + error)
+      }
+    }
+
     /*******
      * Init
     *******/
@@ -225,7 +268,7 @@ export default defineComponent({
           transferenciaProductoEmpleadoStore.listadoMateriales = listadosAuxiliares.productosProyectosEtapas
           // consultarClientesMaterialesTarea({ empleado_id: empleadoSeleccionado.value, filtrar_por_proyecto: true })
           break
-        case 'personal':
+        case destinosTareas.personal:
           listadosAuxiliares.productos = listadosAuxiliares.productosStock
           transferenciaProductoEmpleadoStore.listadoMateriales = listadosAuxiliares.productosStock
           break
@@ -237,6 +280,46 @@ export default defineComponent({
      **********/
     const { tareas, filtrarTareas, proyectos, filtrarProyectos, etapas, filtrarEtapas, empleados, filtrarEmpleados } = useFiltrosListadosSelects(listadosAuxiliares)
 
+    /**********
+     * BOTONES DE TABLA
+     **********/
+    const btnCambiarClientePropietario: CustomActionTable = {
+      titulo: 'Propietario',
+      tooltip: 'Cambiar Cliente Propietario',
+      icono: 'bi-arrow-left-right',
+      color: 'positive',
+      accion: ({ entidad, posicion }) => {
+        console.log('btnCambiarClientePropietario', tab.value, entidad, posicion)
+        const fila = entidad
+        fila['tipo'] = tab.value
+        fila['empleado'] = empleadoSeleccionado.value
+        transferenciaProductoEmpleadoStore.filaAModificar = fila
+        modales.abrirModalEntidad('CambiarClientePropietarioMaterialPage')
+      },
+      visible: () => store.esAdministrador
+    }
+    const btnModificarStock: CustomActionTable = {
+      titulo: 'Stock',
+      tooltip: 'Modificar Stock',
+      icono: 'bi-pencil-square',
+      color: 'primary',
+      accion: ({ entidad, posicion }) => {
+        console.log('btnModificarStock', tab.value, entidad, posicion)
+        const data: CustomActionPrompt = {
+          titulo: 'Modifica',
+          mensaje: 'Ingresa la nueva cantidad',
+          tipo: 'number',
+          defecto: entidad.stock_actual,
+          accion: (data) => {
+            cargando.cargarConsulta(() => actualizarCantidadItem(data, entidad.detalle_producto_id, entidad.cliente_id))
+            entidad.stock_actual = data
+          }
+        }
+        prompt(data)
+      },
+      visible: () => store.esAdministrador
+    }
+
     return {
       tab,
       configuracionColumnasMaterialEmpleadoTarea,
@@ -246,6 +329,8 @@ export default defineComponent({
       filtroEmpleado,
       destinosTareas,
       transferenciaProductoEmpleadoStore,
+      store, accionesTabla,
+      modales,
       consultarEtapas,
       tareas,
       proyectos,
@@ -269,6 +354,10 @@ export default defineComponent({
       empleadoSeleccionado,
       resetearFiltros,
       consultarProductosStock,
+      guardado,
+      //botones de tabla
+      btnCambiarClientePropietario,
+      btnModificarStock
     }
   },
 })
