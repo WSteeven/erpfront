@@ -9,158 +9,212 @@
     default-opened
   >
     <div class="row q-col-gutter-sm q-pa-sm">
-      <!--Tipo de Licencia -->
+      <!-- Puntos y tipo de licencia -->
       <div class="col-12 col-md-3">
-        <label class="q-mb-sm block">Tipo de Licencia</label>
-        <q-select
-          v-model="conductor.tipo_licencia"
-          :options="tiposLicencias"
-          transition-show="jump-up"
-          transition-hide="jump-down"
-          :disable="disabled"
-          options-dense
-          dense
-          outlined
-          use-chips
-          multiple
-          :error="!!v$.tipo_licencia.$errors.length"
-          error-message="Debes seleccionar un tipo de licencia"
-          :option-value="(v) => v.value"
-          :option-label="(v) => v.label"
-          emit-value
-          map-options
-        >
-          <template v-slot:option="{ itemProps, opt, selected, toggleOption }">
-            <q-item v-bind="itemProps">
-              <q-item-section>
-                <q-item-label
-                  ><strong>{{ opt.label }}</strong> -
-                  {{ opt.caption }}</q-item-label
-                >
-              </q-item-section>
-              <q-item-section side>
-                <q-toggle
-                  :model-value="selected"
-                  @update:model-value="toggleOption(opt)"
-                />
-              </q-item-section>
-            </q-item>
-          </template>
-          <template v-slot:error>
-            <div v-for="error of v$.tipo_licencia.$errors" :key="error.$uid">
-              <div class="error-msg">{{ error.$message }}</div>
-            </div>
-          </template>
-          <template v-slot:no-option>
-            <q-item>
-              <q-item-section class="text-grey">
-                No hay resultados
-              </q-item-section>
-            </q-item>
-          </template>
-        </q-select>
+        <!-- puntos -->
+        <div class="col-12 col-md-12">
+          <label class="q-mb-sm block">Puntos</label>
+          <q-input
+            v-model="conductor.puntos"
+            type="number"
+            step=".5"
+            :disable="disabled"
+            :error="!!v$.puntos.$errors.length"
+            hint="Todo conductor debe tener un puntaje mayor o igual a 20 pts"
+            error-message="Debe ingresar un valor entre 0 y 30"
+            @blur="v$.puntos.$touch"
+            outlined
+            dense
+            ><template v-slot:error>
+              <div v-for="error of v$.puntos.$errors" :key="error.$uid">
+                <div class="error-msg">{{ error.$message }}</div>
+              </div>
+            </template>
+          </q-input>
+        </div>
+        <!--Tipo de Licencia -->
+        <div class="col-12 col-md-12 q-mt-lg">
+          <label class="q-mb-sm block">Tipo de Licencia</label>
+          <q-select
+            v-model="conductor.tipo_licencia"
+            :options="tiposLicencias"
+            transition-show="jump-up"
+            transition-hide="jump-down"
+            hint="Obligatorio"
+            :disable="disabled"
+            options-dense
+            dense
+            outlined
+            use-chips
+            multiple
+            :error="!!v$.tipo_licencia.$errors.length"
+            error-message="Debes seleccionar un tipo de licencia"
+            @add="agregarLicencia"
+            @remove="quitarLicencia"
+            :option-value="(v) => v.value"
+            :option-label="(v) => v.label"
+            emit-value
+            map-options
+          >
+            <template
+              v-slot:option="{ itemProps, opt, selected, toggleOption }"
+            >
+              <q-item v-bind="itemProps">
+                <q-item-section>
+                  <q-item-label
+                    ><strong>{{ opt.label }}</strong> -
+                    {{ opt.caption }}</q-item-label
+                  >
+                </q-item-section>
+                <q-item-section side>
+                  <q-toggle
+                    :model-value="selected"
+                    @update:model-value="toggleOption(opt)"
+                  />
+                </q-item-section>
+              </q-item>
+            </template>
+            <template v-slot:error>
+              <div v-for="error of v$.tipo_licencia.$errors" :key="error.$uid">
+                <div class="error-msg">{{ error.$message }}</div>
+              </div>
+            </template>
+            <template v-slot:no-option>
+              <q-item>
+                <q-item-section class="text-grey">
+                  No hay resultados
+                </q-item-section>
+              </q-item>
+            </template>
+          </q-select>
+        </div>
       </div>
-      <!-- Fecha Inicio Vigencia -->
-      <div class="col-6 col-md-3">
-        <label class="q-mb-sm block">Fecha Inicial Vigencia</label>
-        <q-input
-          v-model="conductor.inicio_vigencia"
-          placeholder="Obligatorio"
-          :error="!!v$.inicio_vigencia.$errors.length"
-          :disable="disabled"
-          outlined
-          dense
-        >
-          <template v-slot:append>
-            <q-icon name="event" class="cursor-pointer">
-              <q-popup-proxy
-                cover
-                transition-show="scale"
-                transition-hide="scale"
-              >
-                <q-date
-                  v-model="conductor.inicio_vigencia"
-                  :mask="maskFecha"
-                  today-btn
-                  @update:model-value="calcularFechaFinal"
-                >
-                  <div class="row items-center justify-end">
-                    <q-btn v-close-popup label="Cerrar" color="primary" flat />
-                  </div>
-                </q-date>
-              </q-popup-proxy>
-            </q-icon>
-          </template>
 
-          <template v-slot:error>
-            <div v-for="error of v$.inicio_vigencia.$errors" :key="error.$uid">
-              <div class="error-msg">{{ error.$message }}</div>
+      <q-separator
+        class="q-mx-sm block"
+        vertical
+        v-if="conductor.licencias !== undefined"
+      ></q-separator>
+      <!-- Foreach de los diferentes tipos de licencia -->
+      <div class="col-12 col-md-8">
+        <div class="col-12 col-md-12" v-if="conductor.licencias !== undefined">
+          <div
+            class="row q-col-gutter-sm"
+            v-for="(licencia, index) in conductor.licencias"
+            :key="licencia.tipo_licencia!"
+          >
+            <div class="col-2 col-md-2">
+              <label class="q-mb-sm block">Tipo</label>
+              <q-chip>{{ licencia.tipo_licencia }}</q-chip>
             </div>
-          </template>
-        </q-input>
-      </div>
-      <!-- Fecha Fin Vigencia -->
-      <div class="col-6 col-md-3">
-        <label class="q-mb-sm block">Fecha Final Vigencia</label>
-        <q-input
-          v-model="conductor.fin_vigencia"
-          placeholder="Obligatorio"
-          :error="!!v$.fin_vigencia.$errors.length"
-          :disable="disabled"
-          outlined
-          dense
-        >
-          <template v-slot:append>
-            <q-icon name="event" class="cursor-pointer">
-              <q-popup-proxy
-                cover
-                transition-show="scale"
-                transition-hide="scale"
+            <!-- Fecha Inicio Vigencia -->
+            <div class="col-6 col-md-4">
+              <label class="q-mb-sm block">Fecha Inicial Vigencia</label>
+              <q-input
+                v-model="licencia.inicio_vigencia"
+                placeholder="Obligatorio"
+                :disable="disabled"
+                :error="
+                  !!v$.licencias.$each.$response.$errors[index].inicio_vigencia
+                    .length
+                "
+                outlined
+                dense
               >
-                <q-date
-                  v-model="conductor.fin_vigencia"
-                  :mask="maskFecha"
-                  today-btn
-                >
-                  <div class="row items-center justify-end">
-                    <q-btn v-close-popup label="Cerrar" color="primary" flat />
+                <!-- :error="!!v$.inicio_vigencia.$errors.length" -->
+                <template v-slot:append>
+                  <q-icon name="event" class="cursor-pointer">
+                    <q-popup-proxy
+                      cover
+                      transition-show="scale"
+                      transition-hide="scale"
+                    >
+                      <q-date
+                        v-model="licencia.inicio_vigencia"
+                        :mask="maskFecha"
+                        today-btn
+                        @update:model-value="calcularFechaFinal(index)"
+                      >
+                        <div class="row items-center justify-end">
+                          <q-btn
+                            v-close-popup
+                            label="Cerrar"
+                            color="primary"
+                            flat
+                          />
+                        </div>
+                      </q-date>
+                    </q-popup-proxy>
+                  </q-icon>
+                </template>
+                <!-- v-for="error in v$.collection.$each.$response.$errors[index].name" -->
+                <template v-slot:error>
+                  <div
+                    v-for="error of v$.licencias.$each.$response.$errors[index]
+                      .inicio_vigencia"
+                    :key="error.$uid"
+                  >
+                    <div class="error-msg">{{ error.$message }}</div>
                   </div>
-                </q-date>
-              </q-popup-proxy>
-            </q-icon>
-          </template>
+                </template>
+              </q-input>
+            </div>
+            <!-- Fecha Fin Vigencia -->
+            <div class="col-6 col-md-4">
+              <label class="q-mb-sm block">Fecha Final Vigencia</label>
+              <q-input
+                v-model="licencia.fin_vigencia"
+                placeholder="Obligatorio"
+                :error="
+                  !!v$.licencias.$each.$response.$errors[index].fin_vigencia
+                    .length
+                "
+                :disable="disabled"
+                outlined
+                dense
+              >
+                <template v-slot:append>
+                  <q-icon name="event" class="cursor-pointer">
+                    <q-popup-proxy
+                      cover
+                      transition-show="scale"
+                      transition-hide="scale"
+                    >
+                      <q-date
+                        v-model="licencia.fin_vigencia"
+                        :mask="maskFecha"
+                        today-btn
+                      >
+                        <div class="row items-center justify-end">
+                          <q-btn
+                            v-close-popup
+                            label="Cerrar"
+                            color="primary"
+                            flat
+                          />
+                        </div>
+                      </q-date>
+                    </q-popup-proxy>
+                  </q-icon>
+                </template>
 
-          <template v-slot:error>
-            <div v-for="error of v$.fin_vigencia.$errors" :key="error.$uid">
-              <div class="error-msg">{{ error.$message }}</div>
+                <template v-slot:error>
+                  <div
+                    v-for="error of v$.licencias.$each.$response.$errors[index]
+                      .fin_vigencia"
+                    :key="error.$uid"
+                  >
+                    <div class="error-msg">{{ error.$message }}</div>
+                  </div>
+                </template>
+              </q-input>
             </div>
-          </template>
-        </q-input>
-      </div>
-      <!-- puntos -->
-      <div class="col-12 col-md-3">
-        <label class="q-mb-sm block">Puntos</label>
-        <q-input
-          v-model="conductor.puntos"
-          type="number"
-          step=".5"
-          :disable="disabled"
-          :error="!!v$.puntos.$errors.length"
-          hint="Todo conductor debe tener un puntaje mayor o igual a 20 pts"
-          error-message="Debe ingresar un valor entre 0 y 30"
-          @blur="v$.puntos.$touch"
-          outlined
-          dense
-          ><template v-slot:error>
-            <div v-for="error of v$.puntos.$errors" :key="error.$uid">
-              <div class="error-msg">{{ error.$message }}</div>
-            </div>
-          </template>
-        </q-input>
+          </div>
+        </div>
       </div>
 
       <!-- Boton consultar RUC -->
-      <div class="col-12 col-md-3">
+      <div class="col-12 col-md-12">
         <q-btn
           color="primary"
           dense
@@ -237,7 +291,6 @@ import { configuracionColumnasMultasConductores } from '../domain/configuracionC
 import { tiposLicencias } from 'config/vehiculos.utils'
 import { maxValue, minValue, required } from 'shared/i18n-validators'
 import useVuelidate from '@vuelidate/core'
-import { addDay, addYear, format } from '@formkit/tempo'
 import { CustomActionTable } from 'components/tables/domain/CustomActionTable'
 import { ComportamientoModalesConductores } from '../application/ComportamientoModalesConductores'
 import { useNotificaciones } from 'shared/notificaciones'
@@ -245,6 +298,10 @@ import { CustomActionPrompt } from 'components/tables/domain/CustomActionPrompt'
 import { ref } from 'vue'
 import { useConductorStore } from 'stores/vehiculos/conductor'
 import { MultaConductorController } from '../modules/multas/infraestructure/MultaConductorController'
+import { FechaLicencia } from '../domain/FechaLicencia'
+import { Ref } from 'vue'
+import { helpers } from '@vuelidate/validators'
+import { addDay, addYear, format } from '@formkit/tempo'
 
 const props = defineProps({
   mixin: {
@@ -271,7 +328,7 @@ const { setValidador } = props.mixin.useComportamiento()
 const { confirmar, prompt } = useNotificaciones()
 const modales = new ComportamientoModalesConductores()
 const conductorStore = useConductorStore()
-
+const licencias: Ref<FechaLicencia[]> = ref([])
 const conductor = props.conductor
 const mostrarSolicitarFecha = ref(false)
 const dataMulta = {
@@ -285,8 +342,13 @@ const dataMulta = {
 const reglas = {
   tipo_licencia: { required },
   puntos: { required, maximo: maxValue(30), minimo: minValue(0) },
-  inicio_vigencia: { required },
-  fin_vigencia: { required },
+  licencias: {
+    $each: helpers.forEach({
+      tipo_licencia: { required },
+      inicio_vigencia: { required },
+      fin_vigencia: { required },
+    }),
+  },
 }
 const v$ = useVuelidate(reglas, conductor)
 setValidador(v$.value)
@@ -304,16 +366,17 @@ async function guardado(data) {
       console.log('No se recibio data')
   }
 }
-function calcularFechaFinal() {
-  conductor.fin_vigencia = format(
-    addYear(conductor.inicio_vigencia!, 5),
+function calcularFechaFinal(index) {
+  conductor.licencias[index].fin_vigencia = format(
+    addYear(conductor.licencias[index].inicio_vigencia!, 5),
     maskFecha
   )
-  conductor.fin_vigencia = format(
-    addDay(conductor.fin_vigencia!, -1),
+  conductor.licencias[index].fin_vigencia = format(
+    addDay(conductor.licencias[index].fin_vigencia!, -1),
     maskFecha
   )
 }
+
 function consultarMultasANT() {
   props.identificacion
     ? window.open(
@@ -325,6 +388,7 @@ function consultarMultasANT() {
         '_blank'
       )
 }
+
 async function consultarMultasConductor() {
   const { result } = await new MultaConductorController().listar({
     empleado_id: conductor.empleado,
@@ -335,6 +399,17 @@ async function fechaIngresada(fecha?) {
   // console.log('Fecha ingresada: ', fecha)
   dataMulta.fecha_pago = fecha
   if (await conductorStore.pagarMulta(dataMulta)) consultarMultasConductor()
+}
+function agregarLicencia(data) {
+  // Aqui se recibe clave valor data = {index:1, value:'A'}
+  console.log(data)
+
+  const fecha = new FechaLicencia()
+  fecha.tipo_licencia = data.value
+  conductor.licencias.push(fecha)
+}
+function quitarLicencia(data) {
+  conductor.licencias.splice(data.index, 1)
 }
 
 /**************************************************************

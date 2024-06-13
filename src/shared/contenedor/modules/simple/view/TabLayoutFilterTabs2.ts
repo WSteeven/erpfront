@@ -261,6 +261,7 @@ export default defineComponent({
       consultar,
       editar,
       eliminar,
+      forzarListar,
       puedeVer,
       puedeCrear,
       puedeEditar,
