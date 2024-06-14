@@ -211,4 +211,8 @@ export abstract class Contenedor<
     this.entidad_copia[key] = value
     this.entidad_vacia[key] = value
   } */
+
+  public getController() {
+    return this.controller
+  }
 }

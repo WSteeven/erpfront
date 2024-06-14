@@ -147,3 +147,8 @@ export const opcionesTiposCuestionarios = {
   CUESTIONARIO_PSICOSOCIAL: 1,
   CUESTIONARIO_DIAGNOSTICO_CONSUMO_DE_DROGAS: 2,
 }
+
+export const opcionesPrivacidadCuestionarios = {
+  INTERNO: 'INTERNO',
+  PUBLICO: 'PUBLICO',
+}

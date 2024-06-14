@@ -26,7 +26,7 @@
     :selection="tipoSeleccion"
     v-model:selected="selected"
     :style="estilos"
-    class="bg-body-table my-sticky-column-table my-sticky-header-column-table borde"
+    class="bg-body-table my-sticky-column-table my-sticky-header-column-table borde rounded"
     :class="{
       'alto-fijo-desktop': !inFullscreen && altoFijo && !$q.screen.xs,
       'alto-fijo-mobile': !inFullscreen && altoFijo && $q.screen.xs,
@@ -830,7 +830,7 @@
                   </q-chip>
 
                   <q-chip
-                    v-if="col.value === 1 || col.value"
+                    v-if="col.value === 1 || col.value === true"
                     class="bg-green-1 text-positive"
                   >
                     <q-icon
@@ -842,7 +842,7 @@
                   </q-chip>
 
                   <q-chip
-                    v-if="col.value === 0 || !col.value"
+                    v-if="col.value === 0 || col.value === false"
                     class="bg-pink-1 text-positive"
                   >
                     <q-icon
@@ -900,7 +900,9 @@
           no-caps
           unelevated
           class="q-px-sm text-primary border-primary"
-          @click="verVisorArchivos({ entidad: props.row, posicion: props.rowIndex })"
+          @click="
+            verVisorArchivos({ entidad: props.row, posicion: props.rowIndex })
+          "
         >
           <q-icon name="bi-archive" size="xs" class="q-mr-sm"></q-icon>
           {{ props.value.length + ' archivos' }}

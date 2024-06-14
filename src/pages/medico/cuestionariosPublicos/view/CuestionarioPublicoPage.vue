@@ -1,5 +1,5 @@
 <template>
-  <q-page padding>
+  <q-page padding class="bg-body">
     <transition name="scale" mode="out-in">
       <q-card
         v-if="!listadosAuxiliares.preguntas.length"
@@ -15,7 +15,7 @@
 
           <div class="text-center full-width">
             <q-btn
-              v-for="(tipo, index) in tiposCuestionarios"
+              v-for="(tipo, index) in listadosAuxiliares.tiposCuestionarios"
               :key="index"
               class="full-width text-primary bg-white q-mb-sm"
               no-caps
@@ -23,8 +23,18 @@
               :disable="tipo.finalizado"
               @click="consultarPreguntas(tipo.id)"
             >
-            <q-icon v-if="tipo.finalizado" name="bi-check-circle-fill" class="q-mr-sm" color="positive"></q-icon>
-            <q-icon v-else name="bi-check-circle" class="q-mr-sm" color="positive"></q-icon>
+              <q-icon
+                v-if="tipo.finalizado"
+                name="bi-check-circle-fill"
+                class="q-mr-sm"
+                color="positive"
+              ></q-icon>
+              <q-icon
+                v-else
+                name="bi-check-circle"
+                class="q-mr-sm"
+                color="positive"
+              ></q-icon>
               {{ tipo.titulo }}
             </q-btn>
           </div>
@@ -34,22 +44,34 @@
 
     <transition name="scale" mode="out-in">
       <div v-if="listadosAuxiliares.preguntas.length">
+        <q-btn
+          color="primary"
+          no-caps
+          unelevated
+          square
+          class="q-mb-md"
+          @click="listadosAuxiliares.preguntas = []"
+        >
+          <q-icon name="bi-arrow-left" class="q-mr-sm"></q-icon>
+          Volver a ver los cuestionarios disponibles</q-btn
+        >
+{{ cedulaValida }}
         <q-card flat class="q-mb-sm bg-desenfoque border-white">
-          <slot name="persona"></slot>
-          <q-card-section>
-            <q-btn
-              color="primary"
-              no-caps
-              unelevated
-              square
-              @click="listadosAuxiliares.preguntas = []"
-            >
-              <q-icon name="bi-arrow-left" class="q-mr-sm"></q-icon>
-              Volver a ver los cuestionarios disponibles</q-btn
-            >
-          </q-card-section>
+          <informacion-persona
+            ref="refInformacionPersona"
+            v-model="cuestionarioPublico"
+            :mixin="mixin"
+            :validador="v$"
+            :tipo-cuestionario="tipoCuestionarioSeleccionado"
+            @cedula-validada="(validado) => (cedulaValida = validado)"
+          ></informacion-persona>
         </q-card>
+      </div>
+    </transition>
+    <!-- @update:model-value="hidratarPersona" -->
 
+    <transition name="scale" mode="out-in">
+      <div v-if="listadosAuxiliares.preguntas.length">
         <q-card
           v-if="listadosAuxiliares.preguntas.length"
           flat
@@ -80,7 +102,7 @@
               ></q-rating>
             </div>
 
-            <div class="row q-col-gutter-x-sm">
+            <div class="row q-col-gutter-sm">
               <div
                 v-for="item in listadosAuxiliares.preguntas"
                 :key="item.id"
@@ -127,4 +149,4 @@
   </q-page>
 </template>
 
-<script src="./CuestionariosPage.ts"></script>
+<script src="./CuestionarioPublicoPage.ts"></script>

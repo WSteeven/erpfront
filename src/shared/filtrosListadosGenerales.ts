@@ -1,20 +1,20 @@
-import { Empresa } from "pages/administracion/empresas/domain/Empresa";
-import { Ref, ref } from "vue";
-import { ordenarLista, ordernarListaString } from "./utils";
-import { Banco } from "pages/recursosHumanos/banco/domain/Banco";
-import { CategoriaOferta } from "pages/comprasProveedores/categoriaOfertas/domain/CategoriaOferta";
-import { Producto } from "pages/bodega/productos/domain/Producto";
-import { Canton } from "sistema/ciudad/domain/Canton";
-import { Vehiculo } from "pages/controlVehiculos/vehiculos/domain/Vehiculo";
-import { Servicio } from "pages/controlVehiculos/servicios/domain/Servicio";
-import { Empleado } from "pages/recursosHumanos/empleados/domain/Empleado";
-import { CentroCosto } from "pages/gestionTrabajos/centroCostos/domain/CentroCostos";
-import { SeguroVehicular } from "pages/controlVehiculos/seguros/domain/SeguroVehicular";
+import { Empresa } from 'pages/administracion/empresas/domain/Empresa'
+import { Ref, ref } from 'vue'
+import { ordenarLista, ordernarListaString } from './utils'
+import { Banco } from 'pages/recursosHumanos/banco/domain/Banco'
+import { CategoriaOferta } from 'pages/comprasProveedores/categoriaOfertas/domain/CategoriaOferta'
+import { Producto } from 'pages/bodega/productos/domain/Producto'
+import { Canton } from 'sistema/ciudad/domain/Canton'
+import { Vehiculo } from 'pages/controlVehiculos/vehiculos/domain/Vehiculo'
+import { Servicio } from 'pages/controlVehiculos/servicios/domain/Servicio'
+import { Empleado } from 'pages/recursosHumanos/empleados/domain/Empleado'
+import { CentroCosto } from 'pages/gestionTrabajos/centroCostos/domain/CentroCostos'
+import { SeguroVehicular } from 'pages/controlVehiculos/seguros/domain/SeguroVehicular'
 
 export const useFiltrosListadosSelects = (listadosAuxiliares, entidad?: Ref<any>) => {
-  /**************************************************************
+  /************
    * Variables
-   **************************************************************/
+   ************/
   const paises = ref(listadosAuxiliares.paises)
   const productos = ref(listadosAuxiliares.productos)
   const provincias = ref(listadosAuxiliares.provincias)
@@ -162,8 +162,8 @@ export const useFiltrosListadosSelects = (listadosAuxiliares, entidad?: Ref<any>
    * lista en consecuencia.
    * @param val - val es un parámetro de cadena que representa el valor que se utilizará para filtrar
    * la lista de países.
-   * @param update - "actualizar" es una función que se utiliza para actualizar el valor de la variable
-   * reactiva "paises". Es probable que sea una función proporcionada por un marco Vue.js o React.
+   * @param update - 'actualizar' es una función que se utiliza para actualizar el valor de la variable
+   * reactiva 'paises'. Es probable que sea una función proporcionada por un marco Vue.js o React.
    * @returns Si el parámetro `val` es una cadena vacía, la función no devuelve nada (`undefined`). De
    * lo contrario, actualiza el valor de `paises` y no devuelve nada (`undefined`).
    */
@@ -183,9 +183,9 @@ export const useFiltrosListadosSelects = (listadosAuxiliares, entidad?: Ref<any>
    * La función filtra una lista de provincias en función de un valor de búsqueda determinado.
    * @param val - El valor de entrada para filtrar la lista de provincias.
    * @param update - update es una función que se utiliza para actualizar el valor de la variable
-   * reactiva "provincias". Toma como argumento una función de devolución de llamada, que se ejecuta
-   * para actualizar el valor de "provincias". La función de devolución de llamada se ejecuta de forma
-   * asíncrona, lo que significa que el valor actualizado de "provincias
+   * reactiva 'provincias'. Toma como argumento una función de devolución de llamada, que se ejecuta
+   * para actualizar el valor de 'provincias'. La función de devolución de llamada se ejecuta de forma
+   * asíncrona, lo que significa que el valor actualizado de 'provincias
    * @returns La función no devuelve nada, actualiza el valor de la variable `provincias`.
    */
   function filtrarProvincias(val, update) {
@@ -232,8 +232,8 @@ export const useFiltrosListadosSelects = (listadosAuxiliares, entidad?: Ref<any>
    * Esta función filtra una lista de parroquias según un valor de búsqueda dado.
    * @param val - Un valor de cadena que representa la consulta de búsqueda para filtrar la lista de
    * parroquias.
-   * @param update - una función que actualiza el valor de la variable reactiva "parroquias". Se pasa
-   * como parámetro a la función "filtrarParroquias" y se llama usando la función "update" de Vue.js.
+   * @param update - una función que actualiza el valor de la variable reactiva 'parroquias'. Se pasa
+   * como parámetro a la función 'filtrarParroquias' y se llama usando la función 'update' de Vue.js.
    * @returns La función no devuelve nada explícitamente, pero devuelve el control a la función de
    * llamada después de ejecutar su lógica.
    */
@@ -294,8 +294,8 @@ export const useFiltrosListadosSelects = (listadosAuxiliares, entidad?: Ref<any>
    * @param val - El valor que se utilizará para filtrar la lista de proveedores. Es una cadena que se
    * convertirá a minúsculas para el filtrado que no distingue entre mayúsculas y minúsculas.
    * @param update - update es una función que se utiliza para actualizar el valor de la variable
-   * "proveedores". Se pasa como parámetro a la función "filtrarProveedores" y se llama usando la
-   * sintaxis de la función flecha para actualizar el valor de "proveedores" según los criterios de
+   * 'proveedores'. Se pasa como parámetro a la función 'filtrarProveedores' y se llama usando la
+   * sintaxis de la función flecha para actualizar el valor de 'proveedores' según los criterios de
    * filtrado.
    * @returns nada (indefinido). Está utilizando la función `update` para modificar el valor de
    * `proveedores` en función de la entrada `val` y la matriz `listadosAuxiliares.proveedores`.
@@ -478,6 +478,8 @@ export const useFiltrosListadosSelects = (listadosAuxiliares, entidad?: Ref<any>
   }
 
 
+  const filtrarEstadosCiviles = (val, update) => filtrarLista(val, update, estadosCiviles, 'nombre', listadosAuxiliares.estados_civiles)
+
   /****************
    * Modulo medico
    ****************/
@@ -520,12 +522,12 @@ export const useFiltrosListadosSelects = (listadosAuxiliares, entidad?: Ref<any>
     empleadosOrigen, filtrarEmpleadosOrigen, ordenarEmpleadosOrigen,
     motivos, filtrarMotivos,
     sucursales, filtrarSucursales,
+    filtrarEstadosCiviles, estadosCiviles,
     cargos, filtrarCargos,
     roles, filtrarRoles,
     departamentos, filtrarDepartamentos,
     grupos, filtrarGrupos,
     areas, filtrarAreas,
-    estadosCiviles,
     tiposContratos,
 
     tickets, filtrarTickets,
