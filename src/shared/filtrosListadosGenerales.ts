@@ -26,6 +26,7 @@ export const useFiltrosListadosSelects = (listadosAuxiliares, entidad?: Ref<any>
   const bancos = ref(listadosAuxiliares.bancos)
   const categorias = ref(listadosAuxiliares.categorias)
   const cargos = ref(listadosAuxiliares.cargos)
+  const estadosCiviles = ref(listadosAuxiliares.estados_civiles)
 
   //bodega
   const sucursales = ref(listadosAuxiliares.sucursales)
@@ -398,6 +399,8 @@ export const useFiltrosListadosSelects = (listadosAuxiliares, entidad?: Ref<any>
     return filtrarLista(val, update, cargos, 'nombre', listadosAuxiliares.cargos)
   }
 
+  const filtrarEstadosCiviles = (val, update) => filtrarLista(val, update, estadosCiviles, 'nombre', listadosAuxiliares.estados_civiles)
+
   /****************
    * Modulo medico
    ****************/
@@ -438,6 +441,7 @@ export const useFiltrosListadosSelects = (listadosAuxiliares, entidad?: Ref<any>
     productos, filtrarProductos,
     motivos, filtrarMotivos,
     sucursales, filtrarSucursales,
+    filtrarEstadosCiviles, estadosCiviles,
 
     tareas, filtrarTareas,
     proyectos, filtrarProyectos,

@@ -7,6 +7,7 @@ export const apiConfig = {
 }
 
 export const endpoints = {
+  validar_cedula: new Endpoint('validar-cedula'),
   // Autenticacion
   csrf_cookie: new Endpoint('api/csrf-cookie', false),
   usuarios: new Endpoint('usuarios'),

@@ -1,10 +1,11 @@
+import { CuestionarioPublico } from 'pages/medico/cuestionariosPublicos/domain/CuestionarioPublico'
 import { RespuestaCuestionarioEmpleado } from '../domain/RespuestaCuestionarioEmpleado'
 import { Validador } from 'shared/validadores/domain/Validador'
 
 export class ValidarCuestionarioLleno implements Validador {
-  private respuestaCuestionarioEmpleado: RespuestaCuestionarioEmpleado
+  private respuestaCuestionarioEmpleado: RespuestaCuestionarioEmpleado | CuestionarioPublico
 
-  constructor(respuestaCuestionarioEmpleado: RespuestaCuestionarioEmpleado) {
+  constructor(respuestaCuestionarioEmpleado: RespuestaCuestionarioEmpleado | CuestionarioPublico) {
     this.respuestaCuestionarioEmpleado = respuestaCuestionarioEmpleado
   }
 

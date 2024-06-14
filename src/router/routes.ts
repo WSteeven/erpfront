@@ -1414,6 +1414,18 @@ const routes: RouteRecordRaw[] = [
       },
     ],
   },
+  {
+    path: '/cuestionarios-publicos',
+    component: () => import('layouts/FullLayout.vue'),
+    children: [
+      {
+        path: '',
+        name: 'cuestionarios_publicos',
+        component: () =>
+          import('medico/cuestionariosPublicos/view/CuestionarioPublicoPage.vue'),
+      },
+    ],
+  },
 
   // Always leave this as last one,
   // but you can also remove it

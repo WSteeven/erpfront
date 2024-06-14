@@ -52,7 +52,7 @@ const rutasMedico: RouteRecordRaw[] = [
   {
     path: '/reportes-cuestionarios',
     name: 'reportes_cuestionarios',
-    component: () => import('medico/cuestionarioPsicosocial/view/ReporteCuestionarioPisicosocial.vue'),
+    component: () => import('medico/reportesCuestionarios/view/ReporteCuestionarioPage.vue'),
     meta: { requiresAuth: true },
   },
   {

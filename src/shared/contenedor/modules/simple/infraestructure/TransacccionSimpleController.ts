@@ -32,6 +32,7 @@ export abstract class TransaccionSimpleController<T extends EntidadAuditable>
   private listableFileRepository: ListableFileRepository<T>
   private filtrableRepository: FiltrableRepository<T>
   private descargableRepository: DescargableRepository
+  private endpoint: Endpoint
   // private importableRepository: ImportableRepository<T>
 
   protected constructor(endpoint: Endpoint) {
@@ -48,6 +49,7 @@ export abstract class TransaccionSimpleController<T extends EntidadAuditable>
     this.listableFileRepository = new ListableFileRepository(endpoint)
     this.filtrableRepository = new FiltrableRepository(endpoint)
     this.descargableRepository = new DescargableRepository(endpoint)
+    this.endpoint = endpoint
     // this.importableRepository = new ImportableRepository(endpoint)
   }
 
@@ -100,5 +102,9 @@ export abstract class TransaccionSimpleController<T extends EntidadAuditable>
 
   async descargarListado(params?: any) {
     return await this.descargableRepository.descargarListado(params)
+  }
+
+  getEndpoint() {
+    return this.endpoint
   }
 }

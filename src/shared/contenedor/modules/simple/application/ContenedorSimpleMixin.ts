@@ -196,8 +196,9 @@ export class ContenedorSimpleMixin<T extends EntidadAuditable> extends Contenedo
       // return console.log('No se ha efectuado ningun cambio')
     }
 
-
+    console.log('antes de validar')
     if (this.refs.validador.value && !(await this.refs.validador.value.$validate()) || !(await this.ejecutarValidaciones())) {
+      console.log('validando...')
       this.notificaciones.notificarAdvertencia('Verifique el formulario')
       throw new Error('Verifique el formulario')
     }
@@ -241,6 +242,8 @@ export class ContenedorSimpleMixin<T extends EntidadAuditable> extends Contenedo
         const mensajes: string[] = error.erroresValidacion
         await notificarMensajesError(mensajes, this.notificaciones)
       }
+
+      throw error
       //})
     } finally {
       this.statusEssentialLoading.desactivar()
