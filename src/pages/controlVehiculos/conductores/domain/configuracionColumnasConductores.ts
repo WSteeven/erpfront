@@ -17,9 +17,9 @@ export const configuracioncolumnasConductores: ColumnConfig<Conductor>[] = [
         sortable: true
     },
     {
-        name: 'tipo_licencia',
-        field: 'tipo_licencia',
-        label: 'Licencia',
+        name: 'licencias',
+        field: 'licencias',
+        label: 'Cant. Licencias',
         align: 'left',
         sortable: true,
         editable: false,
@@ -31,20 +31,6 @@ export const configuracioncolumnasConductores: ColumnConfig<Conductor>[] = [
         align: 'left',
         sortable: true,
         editable: false,
-    },
-    {
-        name: 'inicio_vigencia',
-        field: 'inicio_vigencia',
-        label: 'Vigente desde',
-        align: 'left',
-        sortable: true
-    },
-    {
-        name: 'fin_vigencia',
-        field: 'fin_vigencia',
-        label: 'Vigente hasta',
-        align: 'left',
-        sortable: true
     },
     {
         name: 'multas',

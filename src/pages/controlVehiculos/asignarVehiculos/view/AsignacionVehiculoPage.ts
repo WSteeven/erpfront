@@ -131,10 +131,10 @@ export default defineComponent({
             LocalStorage.set('accesoriosVehiculos', JSON.stringify(asignacion.accesorios))
             //concatenamos los valores de las 3 variables para tener uno solo 
             const estadosDB = [...(asignacion.estado_mecanico ? asignacion.estado_mecanico : []), ...(asignacion.estado_electrico ? asignacion.estado_electrico : []), ...(asignacion.estado_electrico ? asignacion.estado_electrico : [])]
-            console.log(asignacion, estadosDB)
+            // console.log(asignacion, estadosDB)
             const todosNulos = estadosDB.every(function (value) { return value === null })
 
-            console.log(todosNulos)
+            // console.log(todosNulos)
             if (todosNulos)
                 LocalStorage.set('estadosVehiculos', JSON.stringify(estadosDefault))
             else
@@ -182,6 +182,7 @@ export default defineComponent({
                     listar({
                         estado: aceptado.label,
                         devuelto: 0,
+                        transferido: 0,
                     })
                     break
                 case anulado.label:
@@ -322,7 +323,7 @@ export default defineComponent({
             accion: ({ entidad, posicion }) => {
                 vehiculoStore.idAsignacion = entidad.id
                 vehiculoStore.asignacion = entidad
-                console.log('Asignación de vehículo a transferir: ', vehiculoStore.asignacion)
+                // console.log('Asignación de vehículo a transferir: ', vehiculoStore.asignacion)
                 router.push('transferencias-vehiculos')
             },
             visible: () => tabActual.value === FIRMADA

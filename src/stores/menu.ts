@@ -668,7 +668,7 @@ export const useMenuStore = defineStore('menu', () => {
               title: 'Multas de Conductores',
               link: 'multas-conductores',
               icon: 'bi-file-text',
-              can: true, // store.can('puede.acceder.permiso_nomina'),
+              can:  store.can('puede.acceder.multas_conductores'),
             },
             {
               title: 'Permiso',

@@ -1,44 +1,43 @@
 // Dependencies
-import { configuracioncolumnasConductores } from "../domain/configuracionColumnasConductores";
 import { configuracionColumnasMultasConductores } from "../domain/configuracionColumnasMultasConductores";
-import { defineComponent, reactive, ref } from "vue";
+import { configuracioncolumnasConductores } from "../domain/configuracionColumnasConductores";
 import { required, minValue, maxValue } from "shared/i18n-validators";
+import { acciones, accionesTabla, maskFecha } from "config/utils";
+import { obtenerFechaActual, sumarFechas } from "shared/utils";
+import { defineComponent, reactive, ref } from "vue";
+import useVuelidate from "@vuelidate/core";
+import { LocalStorage, } from "quasar";
 
 //Components
-import TabLayoutFilterTabs2 from "shared/contenedor/modules/simple/view/TabLayoutFilterTabs2.vue";
-import ModalesEntidad from 'components/modales/view/ModalEntidad.vue';
-import EssentialTable from 'components/tables/view/EssentialTable.vue';
+import TabLayout from "shared/contenedor/modules/simple/view/TabLayout.vue";
 import GestorArchivos from 'components/gestorArchivos/GestorArchivos.vue';
-import SolicitarFecha from 'shared/prompts/SolicitarFecha.vue'
+import EssentialTable from 'components/tables/view/EssentialTable.vue';
+import ModalesEntidad from 'components/modales/view/ModalEntidad.vue';
 import InformacionLicencia from '../view/InformacionLicencia.vue'
+import SolicitarFecha from 'shared/prompts/SolicitarFecha.vue'
 
 // Logica y Controladores
-import { ContenedorSimpleMixin } from "shared/contenedor/modules/simple/application/ContenedorSimpleMixin";
-import { Conductor } from "../domain/Conductor";
-import { ConductorController } from "../infraestructure/ConductorController";
-import { EmpleadoController } from "pages/recursosHumanos/empleados/infraestructure/EmpleadoController";
 import { EmpleadoRoleController } from "pages/recursosHumanos/empleados/infraestructure/EmpleadoRolesController";
-import useVuelidate from "@vuelidate/core";
+import { ContenedorSimpleMixin } from "shared/contenedor/modules/simple/application/ContenedorSimpleMixin";
+import { EmpleadoController } from "pages/recursosHumanos/empleados/infraestructure/EmpleadoController";
+import { MultaConductorController } from "../modules/multas/infraestructure/MultaConductorController";
+import { ComportamientoModalesConductores } from "../application/ComportamientoModalesConductores";
+import { StatusEssentialLoading } from "components/loading/application/StatusEssentialLoading";
+import { CustomActionPrompt } from "components/tables/domain/CustomActionPrompt";
+import { CustomActionTable } from "components/tables/domain/CustomActionTable";
+import { tabOptionsConductores, tiposLicencias } from "config/vehiculos.utils";
+import { ConductorController } from "../infraestructure/ConductorController";
 import { useFiltrosListadosSelects } from "shared/filtrosListadosGenerales";
 import { Empleado } from "pages/recursosHumanos/empleados/domain/Empleado";
-import { StatusEssentialLoading } from "components/loading/application/StatusEssentialLoading";
-import { LocalStorage, } from "quasar";
-import { tabOptionsConductores, tiposLicencias } from "config/vehiculos.utils";
-import { acciones, accionesTabla, maskFecha } from "config/utils";
-import { CustomActionTable } from "components/tables/domain/CustomActionTable";
-import { ComportamientoModalesConductores } from "../application/ComportamientoModalesConductores";
-import { MultaConductorController } from "../modules/multas/infraestructure/MultaConductorController";
 import { useConductorStore } from "stores/vehiculos/conductor";
 import { useNotificaciones } from "shared/notificaciones";
-import { CustomActionPrompt } from "components/tables/domain/CustomActionPrompt";
-import { obtenerFechaActual, sumarFechas } from "shared/utils";
+import { Conductor } from "../domain/Conductor";
 
-import { addYear, addDay, format } from "@formkit/tempo"
 
 
 
 export default defineComponent({
-    components: { TabLayoutFilterTabs2, ModalesEntidad, EssentialTable, GestorArchivos, SolicitarFecha, InformacionLicencia },
+    components: { TabLayout, ModalesEntidad, EssentialTable, GestorArchivos, SolicitarFecha, InformacionLicencia },
     setup() {
         const mixin = new ContenedorSimpleMixin(Conductor, new ConductorController())
         const { entidad: conductor, disabled, listadosAuxiliares, accion } = mixin.useReferencias()
@@ -76,8 +75,6 @@ export default defineComponent({
             empleado: { required },
             tipo_licencia: { required },
             puntos: { required, maximo: maxValue(30), minimo: minValue(0) },
-            inicio_vigencia: { required },
-            fin_vigencia: { required },
         }
         const v$ = useVuelidate(reglas, conductor)
         setValidador(v$.value)
@@ -125,42 +122,7 @@ export default defineComponent({
             }
         }
 
-        async function filtrarConductores(tab: string) {
-            switch (tab) {
-                case '1': //licencias vigentes
-                    // una licencia es vigente si la fecha de fin_vigencia >= a tres meses posteriores a la fecha actual
-                    listar({
-                        'fin_vigencia[operator]': '>',
-                        'fin_vigencia[value]': sumarFechas(obtenerFechaActual(), 0, 3, 0, maskFecha),
-                    })
-                    break
-                case '2':// por caducar
-                    // una licencia esta por caducar cuando fin_vigencia > fecha_actual y menor a tres meses posteriores a la fecha actual
-                    listar({
-                        'fin_vigencia[start]': obtenerFechaActual(maskFecha),
-                        'fin_vigencia[end]': sumarFechas(obtenerFechaActual(), 0, 3, 0, maskFecha),
-                    })
-                    break
-                case '3'://licencias vencidas
-                    listar({
-                        'fin_vigencia[operator]': '<=',
-                        'fin_vigencia[value]': obtenerFechaActual(maskFecha),
-                    })
-                    break
-                default:
-                    listar()
-            }
-        }
-        async function fechaIngresada(fecha?) {
-            console.log('Fecha ingresada: ', fecha)
-            dataMulta.fecha_pago = fecha
-            if (await conductorStore.pagarMulta(dataMulta)) consultarMultasConductor()
-        }
-        function calcularFechaFinal() {
-            conductor.fin_vigencia = format(addYear(conductor.inicio_vigencia!, 5), maskFecha) //sumarFechas(conductor.inicio_vigencia!, 5, 0, -1, maskFecha)
-            conductor.fin_vigencia = format(addDay(conductor.fin_vigencia!, -1), maskFecha)
-        }
-
+        
         async function recargarChoferes() {
             cargando.activar()
             listadosAuxiliares.empleados = (await new EmpleadoRoleController().listar({ roles: ['CHOFER'] })).result
@@ -236,10 +198,7 @@ export default defineComponent({
             tiposLicencias,
 
             //funciones
-            filtrarConductores,
-            calcularFechaFinal,
             guardado,
-            fechaIngresada,
             recargarChoferes,
         }
     }

@@ -426,7 +426,7 @@
           <essential-table
             titulo="Listado de materiales para tarea"
             :configuracionColumnas="
-              store.esAdministrador
+              store.can('puede.modificar_stock.materiales_empleados')
                 ? [...configuracionColumnasMaterialEmpleadoTarea, accionesTabla]
                 : configuracionColumnasMaterialEmpleadoTarea
             "

@@ -1,11 +1,8 @@
 <template>
-  <tab-layout-filter-tabs2
+  <tab-layout
     :mixin="mixin"
     :configuracionColumnas="configuracionColumnas"
-    :ajustarCeldas="true"
-    :tab-options="tabOptionsConductores"
-    tabDefecto="1"
-    :filtrar="filtrarConductores"
+    ajustarCeldas
     titulo-pagina="Conductores"
   >
     <template #formulario>
@@ -144,7 +141,7 @@
         ></informacion-licencia>
       </q-form>
     </template>
-  </tab-layout-filter-tabs2>
+  </tab-layout>
 </template>
 
 <script src="./ConductorPage.ts"></script>

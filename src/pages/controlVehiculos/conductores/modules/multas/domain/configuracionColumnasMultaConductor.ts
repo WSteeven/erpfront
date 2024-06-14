@@ -39,6 +39,13 @@ export const configuracionColumnasMultasConductores: ColumnConfig<MultaConductor
         sortable: true
     },
     {
+        name: 'descontable',
+        field: 'descontable',
+        label: 'Se descuenta',
+        align: 'left',
+        sortable: true
+    },
+    {
         name: 'estado',
         field: 'estado',
         label: 'Estado',

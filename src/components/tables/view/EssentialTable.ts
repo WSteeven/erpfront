@@ -21,6 +21,7 @@ import EditarTablaModal from './EditarTablaModal.vue'
 import EstadosSubtareas from './EstadosSubtareas.vue'
 import CustomButtons from './CustomButtonsTable.vue'
 import VisorArchivos from './VisorArchivos.vue'
+import CampoDescontable from './partials/CampoDescontable.vue'
 import { VisibleModal } from '../application/VisibleModal'
 
 export default defineComponent({
@@ -28,6 +29,7 @@ export default defineComponent({
     PrevisualizarTablaPdf,
     EditarTablaModal,
     CustomButtons,
+    CampoDescontable,
     EstadosSubtareas,
     BotonesPaginacion,
     TableFilters,

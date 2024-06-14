@@ -298,7 +298,7 @@ export default defineComponent({
         transferenciaProductoEmpleadoStore.filaAModificar = fila
         modales.abrirModalEntidad('CambiarClientePropietarioMaterialPage')
       },
-      visible: () => store.esAdministrador
+      visible: () => store.can('puede.modificar_stock.materiales_empleados')
     }
     const btnModificarStock: CustomActionTable = {
       titulo: 'Stock',
@@ -319,7 +319,7 @@ export default defineComponent({
         }
         prompt(data)
       },
-      visible: () => store.esAdministrador
+      visible: () => store.can('puede.modificar_stock.materiales_empleados')
     }
 
     return {

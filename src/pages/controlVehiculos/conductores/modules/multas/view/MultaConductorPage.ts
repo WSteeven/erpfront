@@ -1,4 +1,5 @@
 // Dependencies
+import { configuracionColumnasMultasConductores } from "../domain/configuracionColumnasMultaConductor";
 import { defineComponent, reactive, ref } from "vue";
 import { required, requiredIf } from "shared/i18n-validators";
 
@@ -12,7 +13,6 @@ import { MultaConductorController } from "../infraestructure/MultaConductorContr
 import { useAuthenticationStore } from "stores/authentication";
 import { ConductorController } from "pages/controlVehiculos/conductores/infraestructure/ConductorController";
 import useVuelidate from "@vuelidate/core";
-import { configuracionColumnasMultasConductores } from "../domain/configuracionColumnasMultaConductor";
 import { useFiltrosListadosSelects } from "shared/filtrosListadosGenerales";
 import { StatusEssentialLoading } from "components/loading/application/StatusEssentialLoading";
 import { Empleado } from "pages/recursosHumanos/empleados/domain/Empleado";
