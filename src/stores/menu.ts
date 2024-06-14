@@ -827,16 +827,16 @@ export const useMenuStore = defineStore('menu', () => {
           can: store.can('puede.acceder.vehiculos'),
         },
         {
+          title: 'Vehículos Asignados',
+          link: 'asignaciones-vehiculos',
+          icon: 'bi-circle',
+          can: store.can('puede.acceder.asignaciones_vehiculos'),
+        },
+        {
           title: 'Transferencias Vehículos entre Choferes',
           link: 'transferencias-vehiculos',
           icon: 'bi-circle',
           can: store.can('puede.acceder.transferencias_vehiculos'),
-        },
-        {
-          title: 'Asignar Vehículos a Choferes',
-          link: 'asignaciones-vehiculos',
-          icon: 'bi-circle',
-          can: store.can('puede.acceder.asignaciones_vehiculos'),
         },
         {
           title: 'Tipos de Vehículos',
@@ -857,7 +857,7 @@ export const useMenuStore = defineStore('menu', () => {
           can: store.can('puede.acceder.tanqueos_vehiculos'),
         },
         {
-          title: 'Control diario',
+          title: 'Control Diario',
           link: 'control-vehiculos',
           icon: 'bi-circle',
           can: store.can('puede.acceder.bitacoras_vehiculos'),
@@ -890,6 +890,7 @@ export const useMenuStore = defineStore('menu', () => {
           title: 'Mantenimiento',
           link: 'servicios',
           icon: 'bi-tools',
+          can: store.can('puede.acceder.mantenimientos_vehiculos'),
           children: [
             {
               title: 'Mantenimientos de Vehiculos',

@@ -58,7 +58,7 @@ export default defineComponent({
         /****************************************
         * HOOKS
         ****************************************/
-        //Estos metodos funcionan si no se usa el keep alive 
+        //Estos metodos funcionan si no se usa el keep alive
         onReestablecer(async () => {
             cargarDatosDefecto()
             tanqueo.fecha_hora = obtenerFechaHoraActual('YYYY-MM-DD HH:mm:ss')
@@ -95,6 +95,7 @@ export default defineComponent({
             vehiculo: { required },
             fecha_hora: { required },
             km_tanqueo: { required },
+            monto: { required },
             imagen_comprobante: { required },
             imagen_tablero: { required },
         }

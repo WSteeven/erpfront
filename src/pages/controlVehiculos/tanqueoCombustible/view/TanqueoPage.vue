@@ -66,6 +66,7 @@
             <label class="q-mb-sm block">Fecha</label>
             <q-input
               v-model="tanqueo.fecha_hora"
+              placeholder="Obligatorio"
               :error="!!v$.fecha_hora.$errors.length"
               @blur="v$.fecha_hora.$touch"
               outlined
@@ -123,21 +124,21 @@
               </template>
             </q-input>
           </div>
-          
+
           <!-- Valor -->
           <div class="col-12 col-md-3 col-sm-6">
-            <label class="q-mb-sm block">Valor</label>
+            <label class="q-mb-sm block">Monto</label>
             <q-input
               type="number"
-              v-model="tanqueo.km_tanqueo"
+              v-model="tanqueo.monto"
               placeholder="Obligatorio"
               :readonly="disabled"
-              :error="!!v$.km_tanqueo.$errors.length"
+              :error="!!v$.monto.$errors.length"
               outlined
               dense
             >
               <template v-slot:error>
-                <div v-for="error of v$.km_tanqueo.$errors" :key="error.$uid">
+                <div v-for="error of v$.monto.$errors" :key="error.$uid">
                   <div class="error-msg">{{ error.$message }}</div>
                 </div>
               </template>
@@ -148,6 +149,7 @@
             <label for="q-mb-sm block">Imagen Comprobante</label>
             <selector-imagen
               file_extensiones=".jpg, image/*"
+              placeholder="Obligatorio"
               :imagen="tanqueo.imagen_comprobante"
               :error="!!v$.imagen_comprobante.$errors.length"
               :alto="'200px'"
@@ -162,6 +164,7 @@
             <label for="q-mb-sm block">Imagen Tablero</label>
             <selector-imagen
               file_extensiones=".jpg, image/*"
+              placeholder="Obligatorio"
               :imagen="tanqueo.imagen_tablero"
               :error="!!v$.imagen_tablero.$errors.length"
               :alto="'200px'"

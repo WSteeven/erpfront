@@ -9,6 +9,7 @@
     @clear="limpiar()"
     :disable="disable"
     accept=".png, .jpg, .jpeg"
+    :label="placeholder"
     :error="error"
     :hint="hint"
   >
@@ -95,6 +96,7 @@ const props = defineProps({
   error: Boolean,
   alto: String,
   hint: String,
+  placeholder: { type: String, default: 'Opcional' },
   texto1: String,
   texto2: String,
   texto3: String,

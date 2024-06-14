@@ -22,6 +22,7 @@ import useVuelidate from "@vuelidate/core";
 import { obtenerFechaActual } from "shared/utils";
 import { acciones, autorizaciones, maskFecha } from "config/utils";
 import { AsignacionVehiculoController } from "pages/controlVehiculos/asignarVehiculos/infraestructure/AsignacionVehiculoController";
+import { TransferenciaVehiculoController } from "pages/controlVehiculos/transferenciaVehiculos/infraestructure/TransferenciaVehiculoController";
 
 
 export default defineComponent({
@@ -67,7 +68,7 @@ export default defineComponent({
         /****************************************
          * HOOKS
          ****************************************/
-        //Estos metodos funcionan si no se usa el keep alive 
+        //Estos metodos funcionan si no se usa el keep alive
         onReestablecer(() => {
             refArchivo.value.limpiarListado()
             cargarDatosDefecto()
@@ -105,7 +106,13 @@ export default defineComponent({
         async function obtenerVehiculoAsignado() {
             const response = (await new AsignacionVehiculoController().listar({ filtro: 1, responsable_id: store.user.id, estado: 'ACEPTADO' }))
             console.log(response)
-            return response.result[0]
+            if(response.result.length==0){
+              const response = (await new TransferenciaVehiculoController().listar({ responsable_id: store.user.id, estado: 'ACEPTADO' }))
+              console.log(response)
+              return response.result[0]
+            }else{
+              return response.result[0]
+            }
         }
         function cargarDatosDefecto() {
             if (usuarioDefault.value) {
