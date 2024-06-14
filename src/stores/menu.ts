@@ -665,6 +665,12 @@ export const useMenuStore = defineStore('menu', () => {
           can: true,
           children: [
             {
+              title: 'Multas de Conductores',
+              link: 'multas-conductores',
+              icon: 'bi-file-text',
+              can: true, // store.can('puede.acceder.permiso_nomina'),
+            },
+            {
               title: 'Permiso',
               link: 'permiso-nomina',
               icon: 'fa-solid fa-person-chalkboard',
@@ -788,32 +794,159 @@ export const useMenuStore = defineStore('menu', () => {
       ],
     },
 
-    //Modulo de Vehículos
+    /*****************************************
+     * MODULO DE VEHICULOS
+     *****************************************/
     {
       title: 'Vehículos',
       icon: 'garage',
       can: store.esAdministrador || store.can('puede.ver.modulo_vehiculos'),
       children: [
         {
-          title: 'Combustibles',
-          link: 'combustibles',
-          icon: 'bi-fuel-pump-fill',
-          can: store.can('puede.ver.combustibles'),
+          title: 'Historial Vehicular',
+          link: 'historial-vehiculos',
+          icon: 'bi-circle',
+          can: store.can('puede.acceder.historial_vehiculos'),
         },
         {
-          title: 'Control diario',
-          link: 'control-vehiculos',
-          icon: 'bi-card-checklist',
-          can: store.can('puede.ver.bitacoras_vehiculos'),
+          title: 'Conductores',
+          link: 'conductores',
+          icon: 'bi-circle',
+          can: store.can('puede.acceder.conductores'),
+        },
+        {
+          title: 'Multas de Conductores',
+          link: 'multas-conductores',
+          icon: 'bi-circle',
+          can: store.can('puede.acceder.multas_conductores'),
         },
         {
           title: 'Vehículos',
           link: 'vehiculos',
-          icon: 'bi-car-front-fill',
-          can: store.can('puede.ver.vehiculos'),
+          icon: 'bi-circle',
+          can: store.can('puede.acceder.vehiculos'),
         },
+        {
+          title: 'Vehículos Asignados',
+          link: 'asignaciones-vehiculos',
+          icon: 'bi-circle',
+          can: store.can('puede.acceder.asignaciones_vehiculos'),
+        },
+        {
+          title: 'Transferencias Vehículos entre Choferes',
+          link: 'transferencias-vehiculos',
+          icon: 'bi-circle',
+          can: store.can('puede.acceder.transferencias_vehiculos'),
+        },
+        {
+          title: 'Tipos de Vehículos',
+          link: 'tipos-vehiculos',
+          icon: 'bi-circle',
+          can: store.can('puede.acceder.tipos_vehiculos'),
+        },
+        {
+          title: 'Combustibles',
+          link: 'combustibles',
+          icon: 'bi-circle',
+          can: store.can('puede.acceder.combustibles'),
+        },
+        {
+          title: 'Tanqueo de Combustible',
+          link: 'tanqueos-vehiculos',
+          icon: 'bi-circle',
+          can: store.can('puede.acceder.tanqueos_vehiculos'),
+        },
+        {
+          title: 'Control Diario',
+          link: 'control-vehiculos',
+          icon: 'bi-circle',
+          can: store.can('puede.acceder.bitacoras_vehiculos'),
+        },
+        {
+          title: 'Registro de Incidentes',
+          link: 'registros-incidentes',
+          icon: 'bi-circle',
+          can: store.can('puede.acceder.registros_incidentes'),
+        },
+        {
+          title: 'Orden Interna de Reparación',
+          link: 'ordenes-reparaciones',
+          icon: 'bi-circle',
+          can: store.can('puede.acceder.ordenes_reparaciones'),
+        },
+        {
+          title: 'Pólizas Seguros Vehiculares',
+          link: 'seguros',
+          icon: 'bi-circle',//'bi-shield-lock-fill',
+          can: store.can('puede.acceder.seguros_vehiculares'),
+        },
+        {
+          title: 'Matrículas',
+          link: 'matriculas',
+          icon: 'bi-circle',
+          can: store.can('puede.acceder.matriculas_vehiculos'),
+        },
+        {
+          title: 'Mantenimiento',
+          link: 'servicios',
+          icon: 'bi-tools',
+          can: store.can('puede.acceder.mantenimientos_vehiculos'),
+          children: [
+            {
+              title: 'Mantenimientos de Vehiculos',
+              link: 'mantenimientos-vehiculos',
+              icon: 'bi-tools',
+              can: store.can('puede.acceder.mantenimientos_vehiculos'),
+            },
+            {
+              title: 'Servicios de Mantenimientos',
+              link: 'servicios',
+              icon: 'bi-gear-fill',
+              can: store.can('puede.acceder.servicios_mantenimientos'),
+            },
+            {
+              title: 'Planes de Mantenimiento',
+              link: 'planes-mantenimientos',
+              icon: 'bi-gear-fill',
+              can: store.can('puede.acceder.planes_mantenimientos'),
+            },
+          ]
+        },
+        {
+          title: 'Reportes',
+          icon: 'bi-clipboard2-data',
+          can:store.can('puede.ver.reportes_vehiculos'),
+          children: [
+            {
+              title: 'Reporte de Combustibles',
+              link: 'reporte-combustibles',
+              icon: 'bi-dash',
+              can: true,
+            },
+            {
+              title: 'Reporte de Pólizas',
+              link: 'reporte-seguros',
+              icon: 'bi-dash',
+              can: true,
+            },
+            {
+              title: 'Reporte de Tiempos de Vehículos',
+              link: 'reporte-tiempos-vehiculos',
+              icon: 'bi-dash',
+              can: true,
+            },
+            {
+              title: 'Reporte de matriculas',
+              link: 'reporte-matriculas',
+              icon: 'bi-dash',
+              can: true,
+            },
+          ]
+        }
       ],
     },
+
+
     //Modulo Activos Fijos
     {
       title: 'Activos fijos',

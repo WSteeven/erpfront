@@ -45,23 +45,25 @@
           :is="componente"
           :mixin-modal="mixinModal"
           :accion="accion"
+          :mostrarListado="mostrarListado"
           :datos="datos"
           @cerrar-modal="
             (confirmarCerrar) => cerrarModalEntidad(confirmarCerrar)
-          "
+            "
           @guardado="(data) => emit('guardado', data)"
           @modificado="(data) => emit('modificado', data)"
-        ></component>
-        <!--  @seleccionar="emit('seleccionar')" -->
-
+          ></component>
+          <!--  @seleccionar="emit('seleccionar')" -->
+        
         <component
           v-else
           :is="componente"
           :accion="accion"
+          :mostrarListado="mostrarListado"
           :datos="datos"
           @cerrar-modal="
             (confirmarCerrar) => cerrarModalEntidad(confirmarCerrar)
-          "
+            "
           @guardado="(data) => emit('guardado', data)"
           @modificado="(data) => emit('modificado', data)"
         ></component>

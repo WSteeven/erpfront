@@ -19,7 +19,13 @@ import { ActualizarNotificacionesPusherEvent } from 'src/pusherEvents/Actualizar
 import { NotificarVacacionPusherEvent } from 'src/pusherEvents/recursosHumanos/nominasPermisos/NotificarVacacionPusherEvent'
 import { PreingresoMaterialPusherEvent } from 'pages/bodega/preingresoMateriales/application/PreingresoPusherEvent'
 import { IngresoPusherEvent } from 'pages/bodega/transacciones/modules/transaccionIngreso/application/IngresoPusherEvent'
+import { MatriculaPusherEvent } from 'pages/controlVehiculos/matriculacion/application/MatriculaPusherEvent'
 import { NotificarPermisoEmpleadoPusherEvent } from 'src/pusherEvents/recursosHumanos/nominasPermisos/NotificarPermisoEmpleadoPusherEvent'
+import { MultaConductorPusherEvent } from 'pages/controlVehiculos/conductores/modules/multas/application/MultaPusherEvent'
+import { AsignarVehiculoPusherEvent } from 'src/pusherEvents/vehiculos/AsignarVehiculoPusherEvent'
+import { OrdenReparacionPusherEvent } from 'src/pusherEvents/vehiculos/OrdenReparacionPusherEvent'
+import { BitacoraVehicularPusherEvent } from 'src/pusherEvents/vehiculos/BitacoraVehicularPusherEvent'
+import { MantenimientoVehiculoPusherEvent } from 'src/pusherEvents/vehiculos/MantenimientVehiculoPusherEvent'
 import { SolicitudExamenPusherEvent } from 'src/pusherEvents/medico/SolicitudExamenPusherEvent'
 import { DiasDescansoPusherEvent } from 'src/pusherEvents/medico/DiasDescansoPusherEvent'
 
@@ -115,6 +121,30 @@ export class NotificacionesSistema {
     // Proforma
     const proformaPusherEvent = new ProformaEvent()
     proformaPusherEvent.start()
+
+
+    /*******************
+     * MODULO VEHICULOS
+     ********************/
+    const matriculaPusherEvent = new MatriculaPusherEvent()
+    matriculaPusherEvent.start()
+
+    const multaPusherEvent = new MultaConductorPusherEvent()
+    multaPusherEvent.start()
+
+    const asignacionVehiculoEvent = new AsignarVehiculoPusherEvent()
+    asignacionVehiculoEvent.start()
+    
+    const transferenciaVehiculoEvent = new AsignarVehiculoPusherEvent()
+    transferenciaVehiculoEvent.start()
+
+    const ordenesReparacionesVehiculos = new OrdenReparacionPusherEvent()
+    ordenesReparacionesVehiculos.start()
+
+    const bitacorasVehiculos = new BitacoraVehicularPusherEvent()
+    bitacorasVehiculos.start()
+
+    new MantenimientoVehiculoPusherEvent().start()
 
     /******************
      *  Modulo medico

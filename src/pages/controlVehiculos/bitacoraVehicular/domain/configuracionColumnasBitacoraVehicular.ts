@@ -3,6 +3,13 @@ import { BitacoraVehicular } from "./BitacoraVehicular";
 
 export const configuracionColumnasBitacoraVehicular: ColumnConfig<BitacoraVehicular>[] = [
     {
+        name: 'id',
+        field: 'id',
+        label: 'N°',
+        align: 'left',
+        sortable: true,
+    },
+    {
         name: 'vehiculo',
         field: 'vehiculo',
         label: 'Placa',
@@ -20,6 +27,13 @@ export const configuracionColumnasBitacoraVehicular: ColumnConfig<BitacoraVehicu
         name: 'fecha',
         field: 'fecha',
         label: 'fecha',
+        align: 'left',
+        sortable: true,
+    },
+    {
+        name: 'km_inicial',
+        field: 'km_inicial',
+        label: 'Km Inicio',
         align: 'left',
         sortable: true,
     },

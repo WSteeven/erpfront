@@ -33,7 +33,7 @@ export const configuracionColumnasVehiculos: ColumnConfig<Vehiculo>[]=[
     {
         name: 'anio_fabricacion',
         field: 'anio_fabricacion',
-        label: 'Año de fabricación',
+        label: 'Año Fabricación',
         align: 'left',
         sortable:true,
     },

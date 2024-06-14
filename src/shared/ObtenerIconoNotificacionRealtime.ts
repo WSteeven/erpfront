@@ -31,6 +31,10 @@ export class ObtenerIconoNotificacionRealtime {
         return iconos.solicitud_prestamo_empleado.icono
       case iconos.vacacion.label:
         return iconos.vacacion.icono
+
+      /*******************
+       * MODULO DE COMPRAS Y PROVEEDORES
+       ********************/
       case iconos.preorden.label:
         return iconos.preorden.icono
       case iconos.orden.label:
@@ -41,6 +45,27 @@ export class ObtenerIconoNotificacionRealtime {
         return iconos.proveedor.icono
       case iconos.diasDescanso.label:
         return iconos.diasDescanso.icono
+
+      /*******************
+       * MODULO DE VEHICULOS
+       ********************/
+      case iconos.matricula.label:
+        return iconos.matricula.icono
+      case iconos.multa_conductor.label:
+        return iconos.multa_conductor.icono
+      case iconos.asignacion_vehiculo.label:
+        return iconos.asignacion_vehiculo.icono
+      case iconos.transferencia_vehiculo.label:
+        return iconos.transferencia_vehiculo.icono
+      case iconos.ordenes_reparaciones_vehiculos.label:
+        return iconos.ordenes_reparaciones_vehiculos.icono
+      case iconos.bitacora_vehiculo.label:
+        return iconos.bitacora_vehiculo.icono
+      case iconos.bitacora_vehiculo_advertencia.label:
+        return iconos.bitacora_vehiculo_advertencia.icono
+      case iconos.mantenimientos_vehiculos.label:
+        return iconos.mantenimientos_vehiculos.icono
+
     }
   }
 }

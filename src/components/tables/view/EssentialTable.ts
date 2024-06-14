@@ -51,6 +51,10 @@ export default defineComponent({
       type: Object as () => ColumnConfig<EntidadAuditable>[],
       required: true,
     },
+    desplegarDesde: {
+      type: Number,
+      default: 2,
+    },
     datos: {
       type: Array,
       required: true,

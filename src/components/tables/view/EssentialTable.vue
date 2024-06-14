@@ -552,6 +552,7 @@
 
           <CustomButtons
             v-if="accion1"
+            :desplegarDesde="desplegarDesde"
             :accion1="accion1"
             :accion2="accion2"
             :accion3="accion3"
@@ -1392,6 +1393,31 @@
 
     <template #body-cell-estado="props">
       <q-td :props="props">
+        <!-- estado retrasado -->
+        <q-chip
+          v-if="props.value === 'RETRASADO'"
+          :class="{ 'bg-orange-2': !$q.dark.isActive }"
+          class="text-orange-6 q-mx-none"
+        >
+          <q-icon
+            name="bi-circle-fill"
+            color="warning"
+            class="q-mr-xs"
+          ></q-icon>
+          RETRASADO
+        </q-chip>
+        <!-- estado aceptado -->
+        <q-chip
+          v-if="props.value === 'ACEPTADO'"
+          :class="{ 'bg-green-1': !$q.dark.isActive }"
+        >
+          <q-icon
+            name="bi-circle-fill"
+            color="positive"
+            class="q-mr-xs"
+          ></q-icon>
+          ACEPTADO
+        </q-chip>
         <q-chip
           v-if="props.value === 'COMPLETADO'"
           :class="{ 'bg-green-1': !$q.dark.isActive }"
@@ -1695,6 +1721,23 @@
       </q-td>
     </template>
     <template #body-cell-activo="props">
+      <q-td :props="props">
+        <q-icon
+          v-if="props.value"
+          name="bi-check-circle-fill"
+          color="positive"
+          size="sm"
+        ></q-icon>
+        <q-icon
+          v-if="!props.value"
+          name="bi-x-circle-fill"
+          color="negative"
+          size="sm"
+        ></q-icon>
+      </q-td>
+    </template>
+    
+    <template #body-cell-aplica_seguro="props">
       <q-td :props="props">
         <q-icon
           v-if="props.value"

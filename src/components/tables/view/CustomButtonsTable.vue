@@ -6,9 +6,9 @@
       'column justify-end q-gutter-y-sm': $q.screen.xs,
     }"
   > -->
-  <span class="text-left">
+  <span class="block text-center">
     <q-btn-group
-      v-if="totalAcciones <= 2"
+      v-if="totalAcciones <= desplegarDesde"
       dense
       :rounded="$q.screen.sm || $q.screen.md || $q.screen.lg || $q.screen.xl"
       :square="$q.screen.xs"
@@ -528,6 +528,10 @@ const props = defineProps({
   propsTable: {
     type: Object,
     required: true,
+  },
+  desplegarDesde: {
+    type: Number,
+    default: 2,
   },
   accion1: {
     type: Object as () => CustomActionTable,

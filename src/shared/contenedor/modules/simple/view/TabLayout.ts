@@ -136,10 +136,6 @@ export default defineComponent({
       type: String,
       default: 'Guardar',
     },
-    listar: {
-      type: Boolean,
-      default: true,
-    },
     ajustarCeldas: { //valor que se envia para que el contenido de la celda se autoaujuste al tamaño de la celda en lugar de aumentar su tamaño
       type: Boolean,
       default: false,
@@ -152,7 +148,6 @@ export default defineComponent({
     const { entidad, listado, accion, filtros, tabs } = props.mixin.useReferencias()
 
     const Router = useRouter()
-    let listadoCargado = false
 
     let columnas: any = props.configuracionColumnas ?? []
 
@@ -166,9 +161,8 @@ export default defineComponent({
       }]
     }
 
-    if (!listadoCargado && props.mostrarListado && props.listar) {
+    if (props.mostrarListado) {
       listar()
-      listadoCargado = true
     }
 
     const seleccionado = ref()

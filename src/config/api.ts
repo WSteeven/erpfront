@@ -35,6 +35,7 @@ export const endpoints = {
   asignar_permisos_individual: new Endpoint('asignar-permisos-usuario'),
   crear_permiso: new Endpoint('crear-permiso'),
   //Archivos
+  actividades: new Endpoint('actividades'),
   archivos: new Endpoint('archivos'),
   // Ubicacion
   paises: new Endpoint('paises'),
@@ -191,11 +192,28 @@ export const endpoints = {
    publicacion_puesto_empleo: new Endpoint('recursos-humanos/publicacion-puesto-empleo'),
    tipos_puestos_trabajos: new Endpoint('recursos-humanos/tipos_puestos_trabajos'),
 
-  //Modulo de Vehiculos
+  /******************************
+   * Modulo de Vehiculos
+   ******************************/
   combustibles: new Endpoint('vehiculos/combustibles'),
   vehiculos: new Endpoint('vehiculos/vehiculos'),
+  tipos_vehiculos: new Endpoint('vehiculos/tipos-vehiculos'),
   bitacoras_vehiculos: new Endpoint('vehiculos/bitacoras-vehiculos'),
+  ultima_bitacora: new Endpoint('vehiculos/ultima-bitacora'),
+  registros_incidentes: new Endpoint('vehiculos/registros-incidentes'),
+  historial_vehiculos: new Endpoint('vehiculos/historial'),
   empleados_choferes: new Endpoint('vehiculos/empleados-choferes'),
+  conductores: new Endpoint('vehiculos/conductores'),
+  matriculas: new Endpoint('vehiculos/matriculas'),
+  ordenes_reparaciones: new Endpoint('vehiculos/ordenes-reparaciones'),
+  asignaciones_vehiculos: new Endpoint('vehiculos/asignaciones-vehiculos'),
+  transferencias_vehiculos: new Endpoint('vehiculos/transferencias-vehiculos'),
+  multas_conductores: new Endpoint('vehiculos/multas'),
+  seguros: new Endpoint('vehiculos/seguros'),
+  servicios: new Endpoint('vehiculos/servicios'),
+  tanqueos: new Endpoint('vehiculos/tanqueos'),
+  planes_mantenimientos: new Endpoint('vehiculos/planes-mantenimientos'),
+  mantenimientos_vehiculos: new Endpoint('vehiculos/mantenimientos-vehiculos'),
 
   //Modulo de compras y proveedores
   dashboard_compras: new Endpoint('compras/dashboard'),
@@ -318,6 +336,8 @@ export const endpoints = {
   designar_secretario_grupo: new Endpoint('tareas/designar-secretario-grupo'),
   archivos_subtareas: new Endpoint('tareas/archivos-subtareas'),
   archivos_seguimientos: new Endpoint('tareas/archivos-seguimientos'),
+  actualizar_materiales_empleados: new Endpoint('actualizar-materiales-empleados'),
+  actualizar_cantidad_material_empleado: new Endpoint('actualizar-cantidad-material-empleado'),
   materiales_empleado_tarea: new Endpoint('tareas/materiales-empleado-tarea'),
   materiales_empleado: new Endpoint('tareas/materiales-empleado'),
   materiales_empleado_consolidado: new Endpoint('tareas/materiales-empleado-consolidado'),

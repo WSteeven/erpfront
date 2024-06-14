@@ -69,6 +69,8 @@ export class Empleado extends EntidadAuditable {
   familiares: any[] | null
   discapacidades: any[] | null
   generar_usuario: boolean
+  conductor: any
+
   edad: number | null
   autoidentificacion_etnica: string | null
 trabajador_sustituto: boolean | null
@@ -144,6 +146,8 @@ religion: number | null
     this.acumula_fondos_reserva = false
     this.realiza_factura = false
     this.familiares = []
+    this.generar_usuario = false
+    this.conductor = []
     this.discapacidades = []
     this.generar_usuario = false
     this.edad = null

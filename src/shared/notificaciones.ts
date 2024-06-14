@@ -66,7 +66,7 @@ export function useNotificaciones() {
     })
   }
 
-  function confirmar(mensaje: string | string[], callback: () => void) {
+  function confirmar(mensaje: string | string[], callback: () => void, cancel?: () => void) {
     $q.dialog({
       html: true,
       title: 'Confirmación',
@@ -77,7 +77,8 @@ export function useNotificaciones() {
       .onOk(async () => {
         await callback()
       })
-      .onCancel(() => {
+      .onCancel(async () => {
+        if (cancel) await cancel()
         // console.log('>>>> Cancel')
       })
   }

@@ -42,78 +42,27 @@ export const useAuthenticationStore = defineStore('authentication', () => {
       }`
   )
 
-  const esCoordinador = computed(() =>
-    user.value ? extraerRol(user.value.roles, rolesSistema.coordinador) : false
-  )
-  const esCoordinadorBackup = computed(() =>
-    user.value
-      ? extraerRol(user.value.roles, rolesSistema.coordinadorBackup)
-      : false
-  )
-  const esCoordinadorBodega = computed(() =>
-    user.value
-      ? extraerRol(user.value.roles, rolesSistema.coordinadorBodega)
-      : false
-  )
-  const esFiscalizador = computed(() =>
-    user.value ? extraerRol(user.value.roles, rolesSistema.fiscalizador) : false
-  )
-  const esJefeTecnico = computed(() =>
-    user.value ? extraerRol(user.value.roles, rolesSistema.jefe_tecnico) : false
-  )
-  const esSupervisorCampo = computed(() =>
-    user.value ? extraerRol(user.value.roles, rolesSistema.supervisor) : false
-  )
-  const esTecnicoLider = computed(() =>
-    user.value
-      ? extraerRol(user.value.roles, rolesSistema.tecnico_lider)
-      : false
-  )
-  const esBodeguero = computed(() =>
-    user.value ? extraerRol(user.value.roles, rolesSistema.bodega) : false
-  )
-  const esBodegueroTelconet = computed(() =>
-    user.value
-      ? extraerRol(user.value.roles, rolesSistema.bodegaTelconet)
-      : false
-  )
-  const esActivosFijos = computed(() =>
-    user.value
-      ? extraerRol(user.value.roles, rolesSistema.activos_fijos)
-      : false
-  )
-  const esTecnico = computed(() =>
-    user.value ? extraerRol(user.value.roles, rolesSistema.tecnico) : false
-  )
-  const esRecursosHumanos = computed(() =>
-    user.value ? extraerRol(user.value.roles, rolesSistema.rrhh) : false
-  )
-  const esGerente = computed(() =>
-    user.value ? extraerRol(user.value.roles, rolesSistema.gerente) : false
-  )
-  const esContabilidad = computed(() =>
-    user.value ? extraerRol(user.value.roles, rolesSistema.contabilidad) : false
-  )
-  const esCompras = computed(() =>
-    user.value ? extraerRol(user.value.roles, rolesSistema.compras) : false
-  )
-  const esAdministrador = computed(() =>
-    user.value
-      ? extraerRol(user.value.roles, rolesSistema.administrador)
-      : false
-  )
+  const esCoordinador = computed(() => user.value ? extraerRol(user.value.roles, rolesSistema.coordinador) : false)
+  const esCoordinadorBackup = computed(() => user.value ? extraerRol(user.value.roles, rolesSistema.coordinadorBackup) : false)
+  const esCoordinadorBodega = computed(() => user.value ? extraerRol(user.value.roles, rolesSistema.coordinadorBodega) : false)
+  const esFiscalizador = computed(() => user.value ? extraerRol(user.value.roles, rolesSistema.fiscalizador) : false)
+  const esJefeTecnico = computed(() => user.value ? extraerRol(user.value.roles, rolesSistema.jefe_tecnico) : false)
+  const esSupervisorCampo = computed(() => user.value ? extraerRol(user.value.roles, rolesSistema.supervisor) : false)
+  const esTecnicoLider = computed(() => user.value ? extraerRol(user.value.roles, rolesSistema.tecnico_lider) : false)
+  const esBodeguero = computed(() => user.value ? extraerRol(user.value.roles, rolesSistema.bodega) : false)
+  const esBodegueroTelconet = computed(() => user.value ? extraerRol(user.value.roles, rolesSistema.bodegaTelconet) : false)
+  const esActivosFijos = computed(() => user.value ? extraerRol(user.value.roles, rolesSistema.activos_fijos) : false)
+  const esTecnico = computed(() => user.value ? extraerRol(user.value.roles, rolesSistema.tecnico) : false)
+  const esRecursosHumanos = computed(() => user.value ? extraerRol(user.value.roles, rolesSistema.rrhh) : false)
+  const esGerente = computed(() => user.value ? extraerRol(user.value.roles, rolesSistema.gerente) : false)
+  const esContabilidad = computed(() => user.value ? extraerRol(user.value.roles, rolesSistema.contabilidad) : false)
+  const esCompras = computed(() => user.value ? extraerRol(user.value.roles, rolesSistema.compras) : false)
+  const esAdministrador = computed(() => user.value ? extraerRol(user.value.roles, rolesSistema.administrador) : false)
+  const esAdministradorVehiculos = computed(() => user.value ? extraerRol(user.value.roles, rolesSistema.administradorVehiculos) : false)
   //ventas
-  const esJefeVentasClaro = computed(() =>
-    user.value ? extraerRol(user.value.roles, rolesSistema.jefe_ventas) : false
-  )
-  const esSupervisorVentasClaro = computed(() =>
-    user.value
-      ? extraerRol(user.value.roles, rolesSistema.supervisor_ventas)
-      : false
-  )
-  const esVendedor = computed(() =>
-    user.value ? extraerRol(user.value.roles, rolesSistema.vendedor) : false
-  )
+  const esJefeVentasClaro = computed(() => user.value ? extraerRol(user.value.roles, rolesSistema.jefe_ventas) : false)
+  const esSupervisorVentasClaro = computed(() => user.value ? extraerRol(user.value.roles, rolesSistema.supervisor_ventas) : false)
+  const esVendedor = computed(() => user.value ? extraerRol(user.value.roles, rolesSistema.vendedor) : false)
 
   const esMedico = computed(() => user.value ? extraerRol(user.value.roles, rolesSistema.medico) : false)
 
@@ -367,12 +316,8 @@ export const useAuthenticationStore = defineStore('authentication', () => {
     esActivosFijos,
     esRecursosHumanos,
     esGerente,
-    esCompras,
-    esContabilidad,
-    esAdministrador,
-    esJefeVentasClaro,
-    esSupervisorVentasClaro,
-    esVendedor,
+    esCompras, esContabilidad, esAdministrador, esAdministradorVehiculos,
+    esJefeVentasClaro, esSupervisorVentasClaro, esVendedor,
     esFiscalizador,
     esSupervisorCampo,
     esMedico,

@@ -254,6 +254,60 @@ export function obtenerFechaActual(formato = 'DD-MM-YYYY') {
 }
 
 /**
+ * La función `sumarFechas` toma una cadena de fecha y le agrega un número específico de años, meses y
+ * días, devolviendo la fecha resultante en el formato "DD-MM-AAAA".
+ * @param {string} fechaString - El parámetro `fechaString` es una cadena que representa una fecha en
+ * el formato "DD-MM-AAAA".
+ * @param {number} anios - El parámetro "anios" representa el número de años que se agregarán o restarán a la
+ * fecha dada.
+ * @param {number} meses - El parámetro "meses" representa el número de meses que se agregarán o restarán a la
+ * fecha dada.
+ * @param {number} dias - El parámetro "dias" representa el número de días que se agregarán o restarán a la fecha
+ * dada.
+ * @returns una cadena en el formato "DD-MM-AAAA", que representa la fecha obtenida sumando o restando el número
+ * especificado de años, meses y días a la fecha de entrada.
+ */
+export function sumarFechas(fechaString: string, anios: number, meses: number, dias: number, formato = 'DD-MM-YYYY') {
+  // Paso 1: Se divide el string de fecha en dia, mes, año y se construye la fecha en formato valido de fecha 
+  const partesFecha = fechaString.split('-')
+  const fecha = new Date(Number(partesFecha[2]), Number(partesFecha[1]) - 1, Number(partesFecha[0]))
+
+  // Paso 2: Suma los años a la fecha
+  fecha.setFullYear(fecha.getFullYear() + anios);
+  //Paso 3: Suma los meses a la fecha
+  fecha.setMonth(fecha.getMonth() + meses)
+  //Paso 4: Se suma los días
+  fecha.setDate(fecha.getDate() + dias)
+  // Paso 5: Formatea la nueva fecha en el formato deseado (DD-MM-YYYY)
+  const dia = fecha.getDate().toString().padStart(2, "0");
+  const mes = (fecha.getMonth() + 1).toString().padStart(2, "0");
+  const anio = fecha.getFullYear().toString();
+
+  // Resultado final
+  return date.formatDate(fecha, formato)
+  // return `${dia}-${mes}-${anio}`
+}
+
+/**
+ * La función "obtenerPrimerUltimoDiaMes" devuelve el primer y último día del mes actual en el formato
+ * especificado.
+ * @param [formato=DD-MM-YYYY] - El parámetro "formato" es opcional y especifica el formato en el que
+ * se deben devolver las fechas. El valor predeterminado es 'DD-MM-AAAA', lo que significa que las
+ * fechas tendrán el formato día-mes-año.
+ * @returns un objeto con dos propiedades: "primerDia" y "ultimoDia". Los valores de estas propiedades
+ * son las fechas formateadas del primer y último día del mes actual, respectivamente.
+ */
+export function obtenerPrimerUltimoDiaMes(formato = 'DD-MM-YYYY') {
+  const fecha = new Date()
+  const primerDia = new Date(fecha.getFullYear(), fecha.getMonth(), 1)
+  const ultimoDia = new Date(fecha.getFullYear(), fecha.getMonth() + 1, 0)
+  return {
+    primerDia: date.formatDate(primerDia, formato),
+    ultimoDia: date.formatDate(ultimoDia, formato)
+  }
+}
+
+/**
  * Funcion para remover tildes o acentos de una cadena
  * @param accents cadena que se va a limpiar
  * @returns cadena sin acentos ni tildes
@@ -289,8 +343,8 @@ export function obtenerFechaActualTexto() {
 }
 
 // 20-04-2022 12:30:00
-export function obtenerFechaHoraActual() {
-  return date.formatDate(Date.now(), 'DD-MM-YYYY HH:mm:ss')
+export function obtenerFechaHoraActual(formato = 'DD-MM-YYYY HH:mm:ss') {
+  return date.formatDate(Date.now(), formato)
 }
 
 export function obtenerMensajesError() {
@@ -699,6 +753,48 @@ export function convertirNumeroPositivo(entidad, campo) {
 }
 
 /**
+ * La función "obtenerMesMatricula" devuelve el mes correspondiente en función del dígito dado.
+ * @param digito - El parámetro "digito" representa el dígito de la matrícula de un coche.
+ * @returns el mes correspondiente al dígito dado. Si el dígito es '1', devuelve 1 (febrero), si el
+ * dígito es '2', devuelve 2 (marzo), y así sucesivamente. Si el dígito es '11' devuelve nulo,
+ * indicando que es diciembre y no quedan más meses para el registro.
+ */
+export function obtenerMesMatricula(digito) {
+  //recordemos que en javascript los meses empiezan por 0=enero, 1=febrero y así sucesivamente.
+  switch (digito) {
+    //enero es cero en meses de javascript
+    case '1': return 1 //febrero
+    case '2': return 2 //marzo
+    case '3': return 3 //abril
+    case '4': return 4 //mayo
+    case '5': return 5 //junio
+    case '6': return 6 //julio
+    case '7': return 7 //agosto
+    case '8': return 8 //septiembre
+    case '9': return 9 //octubre
+    case '0': return 10 //noviembre
+    // case '11': return null //diciembre, se retorna null por los rezagados
+    default: return null
+  }
+
+}
+
+/**
+ * La función "obtenerUltimoDigito" toma una cadena como entrada y devuelve el último dígito encontrado
+ * en la cadena como un número entero.
+ * @param {string} texto - El parámetro "texto" es una cadena que representa el texto de entrada.
+ * @returns el último dígito encontrado en el texto dado como un número entero. Si no se encuentra
+ * ningún dígito, devuelve nulo.
+ */
+export function obtenerUltimoDigito(texto: string) {
+  texto = String(texto)
+  const ultimoDigito = texto.match(/\d(?!.*\d)/)
+  if (ultimoDigito)
+    return ultimoDigito[0]
+  // return parseInt(ultimoDigito[0], 10)
+  else return null
+}
+/*
  * La función filtra a los empleados según sus roles.
  * @param empleados - Una lista de empleados consultados en la base de datos. Cada objeto de empleado debe tener una
  * propiedad llamada "roles", que es una cadena que representa todos los roles del empleado.
@@ -718,10 +814,10 @@ export function filtarVisualizacionEmpleadosSaldos(empleados) {
   if (authenticationStore.can('puede.buscar.tecnicos')) {
     const filtrados_busqueda =
       authenticationStore.esContabilidad ||
-      authenticationStore.esCoordinador ||
-      authenticationStore.esAdministrador
+        authenticationStore.esCoordinador ||
+        authenticationStore.esAdministrador
         ? empleados
-        : empleados.filter((empleado) => empleado.departamento === rolesSistema.tecnico && extraerRol(empleado.roles.split(', '), rolesSistema.tecnico)&& !extraerRol(empleado.roles.split(', '), rolesSistema.coordinador))
+        : empleados.filter((empleado) => empleado.departamento === rolesSistema.tecnico && extraerRol(empleado.roles.split(', '), rolesSistema.tecnico) && !extraerRol(empleado.roles.split(', '), rolesSistema.coordinador))
     return filtrados_busqueda
   }
 

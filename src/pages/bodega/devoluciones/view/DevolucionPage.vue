@@ -415,7 +415,6 @@
               </template>
             </q-input>
           </div>
-
           <!-- Manejo de archivos -->
           <div class="col-12 q-mb-md">
             <gestor-archivos
