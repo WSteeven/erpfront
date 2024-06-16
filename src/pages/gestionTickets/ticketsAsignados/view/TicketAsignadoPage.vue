@@ -66,6 +66,7 @@
           :permitirEditar="false"
           :permitirEliminar="false"
           :mostrar-botones="false"
+          ajustar-celdas
           :tab-options="tabOptionsEstadosTicketsAsignados"
           @tab-seleccionado="filtrarTrabajoAsignado"
           :tab-defecto="tabActual"

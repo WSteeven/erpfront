@@ -59,7 +59,7 @@ export default defineComponent({
      * Init
      *******/
     if (authenticationStore.esTecnico) movilizacionSubtareaStore.getSubtareaDestino(authenticationStore.user.id)
-    
+
     /***************************
      * Permitir Notificaciones push
      ***************************/
@@ -75,7 +75,7 @@ export default defineComponent({
 
     dayjs.extend(relativeTime)
     dayjs.locale(es)
-    
+
 
 
     /************
@@ -163,9 +163,6 @@ export default defineComponent({
 
       return notificacionesAgrupadasYOrdenadas
     }
-
-    const nombreEmpresa = computed(() => configuracionGeneralStore.configuracion?.nombre_empresa)
-    watchEffect(() => document.title = (notificaciones.value.length ? `(${notificaciones.value.length})` : '') + ' ' + nombreEmpresa.value)
 
     async function marcarLeida(id) {
       notificacionesPusherStore.idNotificacion = id
@@ -260,6 +257,10 @@ export default defineComponent({
     // Establecer favicon
     configuracionGeneralStore.consultarConfiguracion().then(() =>
       configuracionGeneralStore.cambiarFavicon())
+
+    // Titulo pagina
+    const nombreEmpresa = computed(() => configuracionGeneralStore.configuracion?.nombre_empresa)
+    watchEffect(() => document.title = (notificaciones.value.length ? `(${notificaciones.value.length})` : '') + ' ' + nombreEmpresa.value)
 
     return {
       // logoClaro: `${process.env.API_URL}/storage/configuracion_general/logo_claro.jpeg`,

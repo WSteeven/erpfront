@@ -15,6 +15,7 @@
     :accion4="btnCancelar"
     :accion5="btnCalificarSolicitante"
     subtitulo-pagina="Módulo de Tickets"
+    ajustar-celdas
   >
     <template #formulario>
       <div class="q-pa-md">

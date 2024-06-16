@@ -55,7 +55,7 @@
           <q-icon name="bi-arrow-left" class="q-mr-sm"></q-icon>
           Volver a ver los cuestionarios disponibles</q-btn
         >
-{{ cedulaValida }}
+
         <q-card flat class="q-mb-sm bg-desenfoque border-white">
           <informacion-persona
             ref="refInformacionPersona"
