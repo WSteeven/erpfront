@@ -1,11 +1,11 @@
 // Dependencias
 import { ContenedorSimpleMixin } from 'shared/contenedor/modules/simple/application/ContenedorSimpleMixin'
 import { useNotificaciones } from 'shared/notificaciones'
-import { defineComponent, ref } from 'vue'
+import { computed, defineComponent, ref } from 'vue'
 
 // Componentes
 import { ComportamientoModales } from '../application/ComportamientoModales'
-
+import { useConfiguracionGeneralStore } from 'stores/configuracion_general'
 
 export default defineComponent({
   props: {
@@ -38,6 +38,11 @@ export default defineComponent({
   // emits: ['seleccionar', 'accion1'],
   emits: ['guardado', 'modificado', 'cerrado'],
   setup(props, { emit }) {
+    /**********
+     * Stores
+     **********/
+    const configuracionGeneralStore = useConfiguracionGeneralStore()
+
     const { componente, titulo, abierto, datos } = props.comportamiento.useModal()
     const { confirmar } = useNotificaciones()
 
@@ -58,6 +63,8 @@ export default defineComponent({
     // }
 
     return {
+      logoClaro: computed(() => configuracionGeneralStore.configuracion?.logo_claro),
+      logoOscuro: computed(() => configuracionGeneralStore.configuracion?.logo_oscuro),
       componente,
       titulo,
       cerrarModalEntidad,

@@ -46,6 +46,7 @@ export default defineComponent({
                 tiposCuestionarios: new TipoCuestionarioController(),
                 preguntas: [],
             })
+            listadosAuxiliares.tiposCuestionarios = [listadosAuxiliares.tiposCuestionarios[0]]
         })
 
         /************

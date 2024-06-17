@@ -11,7 +11,7 @@
       <!-- <q-linear-progress :value="1" color="grey-4" /> -->
       <q-toolbar class="bg-body border-bottoffm superior-fixed" rounded>
         <q-avatar square>
-          <img src="~assets/logo.png" />
+          <img :src="!$q.dark.isActive ? logoClaro : logoOscuro" />
         </q-avatar>
 
         <q-toolbar-title class="text-primary text-subtitle1"
