@@ -1,6 +1,5 @@
-import { ColumnConfig } from "components/tables/domain/ColumnConfig";
-import { accionesTabla } from "config/utils";
-import { Matricula } from "pages/controlVehiculos/matriculacion/domain/Matricula";
+import { ColumnConfig } from 'components/tables/domain/ColumnConfig';
+import { Matricula } from 'pages/controlVehiculos/matriculacion/domain/Matricula';
 
 export const configuracionColumnasMatriculas: ColumnConfig<Matricula>[] = [
     {

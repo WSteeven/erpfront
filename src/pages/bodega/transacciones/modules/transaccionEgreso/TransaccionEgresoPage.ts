@@ -13,7 +13,7 @@ import { configuracionColumnasDetallesProductos } from 'pages/bodega/detalles_pr
 import { acciones, estadosTransacciones, motivosTransaccionesBodega, tabOptionsTransaccionesEgresos, accionesTabla } from 'config/utils'
 
 // Componentes
-import TabLayoutFilterTabs2 from "shared/contenedor/modules/simple/view/TabLayoutFilterTabs2.vue";
+import TabLayoutFilterTabs2 from 'shared/contenedor/modules/simple/view/TabLayoutFilterTabs2.vue';
 import EssentialTable from 'components/tables/view/EssentialTable.vue'
 import EssentialSelectableTable from 'components/tables/view/EssentialSelectableTable.vue'
 import LabelInfoEmpleado from 'components/modales/modules/LabelInfoEmpleado.vue'
@@ -281,9 +281,9 @@ export default defineComponent({
     }
 
     /**
-     * La función "llenarTransaccion" llena una transacción con datos de un pedido específico, y si hay
+     * La función 'llenarTransaccion' llena una transacción con datos de un pedido específico, y si hay
      * un error, borra la transacción y los campos relacionados.
-     * @param {number} id - El parámetro "id" es un número que representa el ID de un pedido.
+     * @param {number} id - El parámetro 'id' es un número que representa el ID de un pedido.
      */
     async function llenarTransaccion(id: number) {
       limpiarTransaccion()

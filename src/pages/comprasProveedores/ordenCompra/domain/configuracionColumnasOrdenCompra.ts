@@ -1,5 +1,5 @@
-import { ColumnConfig } from "components/tables/domain/ColumnConfig";
-import { OrdenCompra } from "./OrdenCompra";
+import { ColumnConfig } from 'components/tables/domain/ColumnConfig';
+import { OrdenCompra } from './OrdenCompra';
 
 export const configuracionColumnasOrdenesCompras: ColumnConfig<OrdenCompra>[] = [
   {
@@ -32,7 +32,7 @@ export const configuracionColumnasOrdenesCompras: ColumnConfig<OrdenCompra>[] = 
     label: 'Descripción',
     style: 'max-width: 300px; overflow: auto;',
     align: 'left',
-    sortable: true, 
+    sortable: true,
     visible: true,
   },
   {
@@ -41,7 +41,7 @@ export const configuracionColumnasOrdenesCompras: ColumnConfig<OrdenCompra>[] = 
     label: 'Solicitante',
     align: 'left',
     sortable: true,
-    visible:true,
+    visible: true,
   },
   {
     name: 'proveedor',
@@ -49,7 +49,7 @@ export const configuracionColumnasOrdenesCompras: ColumnConfig<OrdenCompra>[] = 
     label: 'Proveedor',
     align: 'left',
     sortable: true,
-    visible:true,
+    visible: true,
   },
   {
     name: 'autorizador',
@@ -57,7 +57,7 @@ export const configuracionColumnasOrdenesCompras: ColumnConfig<OrdenCompra>[] = 
     label: 'Autorizador',
     align: 'left',
     sortable: true,
-    visible:true,
+    visible: true,
   },
   {
     name: 'autorizacion',
@@ -65,7 +65,7 @@ export const configuracionColumnasOrdenesCompras: ColumnConfig<OrdenCompra>[] = 
     label: 'Autorización',
     align: 'left',
     sortable: true,
-    visible:true,
+    visible: true,
   },
   {
     name: 'estado',
@@ -73,7 +73,7 @@ export const configuracionColumnasOrdenesCompras: ColumnConfig<OrdenCompra>[] = 
     label: 'Revisada Compras',
     align: 'left',
     sortable: true,
-    visible:true,
+    visible: true,
   },
   {
     name: 'realizada',
@@ -81,7 +81,7 @@ export const configuracionColumnasOrdenesCompras: ColumnConfig<OrdenCompra>[] = 
     label: 'Realizada',
     align: 'left',
     sortable: true,
-    visible:true,
+    visible: true,
   },
   {
     name: 'pagada',
@@ -89,7 +89,7 @@ export const configuracionColumnasOrdenesCompras: ColumnConfig<OrdenCompra>[] = 
     label: 'Pagada',
     align: 'left',
     sortable: true,
-    visible:true,
+    visible: true,
   },
   {
     name: 'novedades',
@@ -97,7 +97,7 @@ export const configuracionColumnasOrdenesCompras: ColumnConfig<OrdenCompra>[] = 
     label: 'Novedades',
     align: 'left',
     sortable: true,
-    visible:true,
+    visible: true,
   },
   {
     name: 'sum_total',
@@ -105,6 +105,6 @@ export const configuracionColumnasOrdenesCompras: ColumnConfig<OrdenCompra>[] = 
     label: 'Total',
     align: 'left',
     sortable: true,
-    visible:true,
+    visible: true,
   },
 ]

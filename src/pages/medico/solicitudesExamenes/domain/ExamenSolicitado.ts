@@ -1,4 +1,4 @@
-import { EntidadAuditable } from "shared/entidad/domain/entidadAuditable"
+import { EntidadAuditable } from 'shared/entidad/domain/entidadAuditable'
 
 export class ExamenSolicitado extends EntidadAuditable {
   id: number | null // estadoSolicitudExamen

@@ -1,8 +1,8 @@
-import { ContenedorSimpleMixin } from "shared/contenedor/modules/simple/application/ContenedorSimpleMixin";
-import { useEmpleadoStore } from "stores/empleado";
-import { defineComponent, onBeforeUnmount, reactive } from "vue";
-import { Empleado } from "../domain/Empleado";
-import { EmpleadoController } from "../infraestructure/EmpleadoController";
+import { ContenedorSimpleMixin } from 'shared/contenedor/modules/simple/application/ContenedorSimpleMixin';
+import { useEmpleadoStore } from 'stores/empleado';
+import { defineComponent, onBeforeUnmount, reactive } from 'vue';
+import { Empleado } from '../domain/Empleado';
+import { EmpleadoController } from '../infraestructure/EmpleadoController';
 
 export default defineComponent({
     setup() {
@@ -11,10 +11,10 @@ export default defineComponent({
          * Stores
          *********/
         const empleadoStore = useEmpleadoStore()
-        
-        
+
+
         return {
-            empleado:empleadoStore.empleado,
+            empleado: empleadoStore.empleado,
         }
     }
 })

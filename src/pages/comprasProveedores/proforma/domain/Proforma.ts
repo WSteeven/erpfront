@@ -1,4 +1,4 @@
-import { EntidadAuditable } from "shared/entidad/domain/entidadAuditable";
+import { EntidadAuditable } from 'shared/entidad/domain/entidadAuditable';
 
 export class Proforma extends EntidadAuditable {
     autorizacion_id: number | null
@@ -11,7 +11,7 @@ export class Proforma extends EntidadAuditable {
     codigo: number | null
     created_at: string | null
     descripcion: string | null
-    descuento_general: number 
+    descuento_general: number
     estado: number | null
     forma: string | null
     iva: number
@@ -23,7 +23,7 @@ export class Proforma extends EntidadAuditable {
 
     //variables auxiliares
     copia_proforma: boolean
-    id_aux: number|null
+    id_aux: number | null
     modificar_descuento: boolean
     modificar_iva: boolean
     tiene_pedido: boolean
@@ -32,12 +32,12 @@ export class Proforma extends EntidadAuditable {
     constructor() {
         super()
         this.autorizacion = null
-        this.autorizacion_id= null
+        this.autorizacion_id = null
         this.autorizador = null
         this.autorizador_id = null
         this.causa_anulacion = null
         this.cliente = null
-        this.cliente_id= null
+        this.cliente_id = null
         this.codigo = null
         this.copia_proforma = false
         this.created_at = null

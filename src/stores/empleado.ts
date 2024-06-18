@@ -1,7 +1,7 @@
-import { Empleado } from "pages/recursosHumanos/empleados/domain/Empleado";
-import { EmpleadoController } from "pages/recursosHumanos/empleados/infraestructure/EmpleadoController";
-import { defineStore } from "pinia";
-import { reactive, ref } from "vue";
+import { Empleado } from 'pages/recursosHumanos/empleados/domain/Empleado';
+import { EmpleadoController } from 'pages/recursosHumanos/empleados/infraestructure/EmpleadoController';
+import { defineStore } from 'pinia';
+import { reactive, ref } from 'vue';
 
 export const useEmpleadoStore = defineStore('empleadoStore', () => {
     const idEmpleado = ref()
@@ -12,7 +12,7 @@ export const useEmpleadoStore = defineStore('empleadoStore', () => {
         empleado.hydrate(result[0])
     }
 
-    async function cargarEmpleado(){
+    async function cargarEmpleado() {
         await getEmpleado()
     }
 

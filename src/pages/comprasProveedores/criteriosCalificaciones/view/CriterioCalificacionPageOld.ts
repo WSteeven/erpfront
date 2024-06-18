@@ -1,24 +1,24 @@
 //Dependencias
-import { configuracionColumnasCriteriosCalificaciones } from "../domain/configuracionColumnasCriteriosCalificaciones";
-import { required } from "shared/i18n-validators";
+import { configuracionColumnasCriteriosCalificaciones } from '../domain/configuracionColumnasCriteriosCalificaciones';
+import { required } from 'shared/i18n-validators';
 
 //Componentes
-import TabLayout from "shared/contenedor/modules/simple/view/TabLayout.vue";
+import TabLayout from 'shared/contenedor/modules/simple/view/TabLayout.vue';
 import TablaFilasDinamicas from 'components/tables/view/TablaFilasDinamicas.vue'
-import EssentialTable from "components/tables/view/EssentialTable.vue";
+import EssentialTable from 'components/tables/view/EssentialTable.vue';
 
 
 //Logica y Controladores
-import { Ref, defineComponent, ref } from "vue";
-import { ContenedorSimpleMixin } from "shared/contenedor/modules/simple/application/ContenedorSimpleMixin";
-import { CriterioCalificacion } from "../domain/CriterioCalificacion";
-import { CriterioCalificacionController } from "../infraestructure/CriterioCalificacionController";
-import { useAuthenticationStore } from "stores/authentication";
-import { OfertaProveedorController } from "sistema/proveedores/modules/ofertas_proveedores/infraestructure/OfertaProveedorController";
-import { DepartamentoController } from "pages/recursosHumanos/departamentos/infraestructure/DepartamentoController";
-import { Departamento } from "pages/recursosHumanos/departamentos/domain/Departamento";
-import useVuelidate from "@vuelidate/core";
-import { CustomActionTable } from "components/tables/domain/CustomActionTable";
+import { Ref, defineComponent, ref } from 'vue';
+import { ContenedorSimpleMixin } from 'shared/contenedor/modules/simple/application/ContenedorSimpleMixin';
+import { CriterioCalificacion } from '../domain/CriterioCalificacion';
+import { CriterioCalificacionController } from '../infraestructure/CriterioCalificacionController';
+import { useAuthenticationStore } from 'stores/authentication';
+import { OfertaProveedorController } from 'sistema/proveedores/modules/ofertas_proveedores/infraestructure/OfertaProveedorController';
+import { DepartamentoController } from 'pages/recursosHumanos/departamentos/infraestructure/DepartamentoController';
+import { Departamento } from 'pages/recursosHumanos/departamentos/domain/Departamento';
+import useVuelidate from '@vuelidate/core';
+import { CustomActionTable } from 'components/tables/domain/CustomActionTable';
 
 
 
@@ -44,13 +44,13 @@ export default defineComponent({
     /**************************************************************
     * Validaciones
     **************************************************************/
-    
+
     /**************************************************************
     * Funciones
     **************************************************************/
     const agregarCriterioBienes: CustomActionTable = {
-      titulo: "Agregar Criterio para calificar Bienes",
-      tooltip: "Agregar Criterio Bienes",
+      titulo: 'Agregar Criterio para calificar Bienes',
+      tooltip: 'Agregar Criterio Bienes',
       icono: 'bi-person-fill-add',
       color: 'positive',
       accion: (param) => {

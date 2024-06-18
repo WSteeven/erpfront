@@ -1,6 +1,6 @@
 //Dependencias
-import { configuracionColumnasEtapa } from "pages/gestionTrabajos/proyectos/modules/etapas/domain/configuracionColumnasEtapas";
-import { defineComponent } from "vue";
+import { configuracionColumnasEtapa } from 'pages/gestionTrabajos/proyectos/modules/etapas/domain/configuracionColumnasEtapas';
+import { defineComponent } from 'vue';
 
 
 //Componentes
@@ -8,25 +8,25 @@ import TabLayout from 'shared/contenedor/modules/simple/view/TabLayout.vue'
 import EssentialTable from 'components/tables/view/EssentialTable.vue'
 
 //Logica y controladores
-import { ContenedorSimpleMixin } from "shared/contenedor/modules/simple/application/ContenedorSimpleMixin";
-import { EtapaController } from "../infraestructure/EtapaController";
-import { Etapa } from "../domain/Etapa";
-import { EmpleadoRoleController } from "pages/recursosHumanos/empleados/infraestructure/EmpleadoRolesController";
-import { rolesSistema } from "config/utils";
-import { ProyectoController } from "pages/gestionTrabajos/proyectos/infraestructure/ProyectoController";
-import { useFiltrosListadosSelects } from "shared/filtrosListadosGenerales";
-import { useFiltrosListadosTarea } from "pages/gestionTrabajos/tareas/application/FiltrosListadosTarea";
-import { required } from "shared/i18n-validators";
-import useVuelidate from "@vuelidate/core";
+import { ContenedorSimpleMixin } from 'shared/contenedor/modules/simple/application/ContenedorSimpleMixin';
+import { EtapaController } from '../infraestructure/EtapaController';
+import { Etapa } from '../domain/Etapa';
+import { EmpleadoRoleController } from 'pages/recursosHumanos/empleados/infraestructure/EmpleadoRolesController';
+import { rolesSistema } from 'config/utils';
+import { ProyectoController } from 'pages/gestionTrabajos/proyectos/infraestructure/ProyectoController';
+import { useFiltrosListadosSelects } from 'shared/filtrosListadosGenerales';
+import { useFiltrosListadosTarea } from 'pages/gestionTrabajos/tareas/application/FiltrosListadosTarea';
+import { required } from 'shared/i18n-validators';
+import useVuelidate from '@vuelidate/core';
 
 
 export default defineComponent({
   components: { TabLayout, EssentialTable },
-  setup(props, {emit}) {
+  setup(props, { emit }) {
     const mixin = new ContenedorSimpleMixin(Etapa, new EtapaController())
     const { entidad: etapa, disabled, accion, listadosAuxiliares } = mixin.useReferencias()
     const { cargarVista, obtenerListados, setValidador } = mixin.useComportamiento()
-    const {onGuardado} = mixin.useHooks()
+    const { onGuardado } = mixin.useHooks()
 
     cargarVista(async () => {
       await obtenerListados({

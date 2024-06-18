@@ -1,29 +1,29 @@
 // Dependencias
-import { configuracionColumnasMantenimientosVehiculos } from "../domain/configuracionColumnasMantenimientosVehiculos";
-import { requiredIf } from "shared/i18n-validators";
-import { useCargandoStore } from "stores/cargando";
-import useVuelidate from "@vuelidate/core";
-import { useQuasar } from "quasar";
-import { defineComponent, ref } from "vue";
+import { configuracionColumnasMantenimientosVehiculos } from '../domain/configuracionColumnasMantenimientosVehiculos';
+import { requiredIf } from 'shared/i18n-validators';
+import { useCargandoStore } from 'stores/cargando';
+import useVuelidate from '@vuelidate/core';
+import { useQuasar } from 'quasar';
+import { defineComponent, ref } from 'vue';
 
 // Componentes
-import TabLayoutFilterTabs2 from "shared/contenedor/modules/simple/view/TabLayoutFilterTabs2.vue";
-import SelectorImagen from "components/SelectorImagen.vue";
+import TabLayoutFilterTabs2 from 'shared/contenedor/modules/simple/view/TabLayoutFilterTabs2.vue';
+import SelectorImagen from 'components/SelectorImagen.vue';
 
 // Logica y controladores
-import { ContenedorSimpleMixin } from "shared/contenedor/modules/simple/application/ContenedorSimpleMixin";
-import { MantenimientoVehiculo } from "../domain/MantenimientoVehiculo";
-import { MantenimientoVehiculoController } from "../infraestructure/MantenimientoVehiculoController";
-import { useNotificaciones } from "shared/notificaciones";
-import { useNotificacionStore } from "stores/notificacion";
-import { useAuthenticationStore } from "stores/authentication";
-import { StatusEssentialLoading } from "components/loading/application/StatusEssentialLoading";
-import { useFiltrosListadosSelects } from "shared/filtrosListadosGenerales";
-import { EmpleadoController } from "pages/recursosHumanos/empleados/infraestructure/EmpleadoController";
-import { VehiculoController } from "pages/controlVehiculos/vehiculos/infraestructure/VehiculoController";
-import { ServicioController } from "pages/controlVehiculos/servicios/infraestructure/ServicioController";
-import { acciones, accionesTabla, maskFecha } from "config/utils";
-import { estadosMantenimientosVehiculos, tabOptionsMantenimientosVehiculos } from "config/vehiculos.utils";
+import { ContenedorSimpleMixin } from 'shared/contenedor/modules/simple/application/ContenedorSimpleMixin';
+import { MantenimientoVehiculo } from '../domain/MantenimientoVehiculo';
+import { MantenimientoVehiculoController } from '../infraestructure/MantenimientoVehiculoController';
+import { useNotificaciones } from 'shared/notificaciones';
+import { useNotificacionStore } from 'stores/notificacion';
+import { useAuthenticationStore } from 'stores/authentication';
+import { StatusEssentialLoading } from 'components/loading/application/StatusEssentialLoading';
+import { useFiltrosListadosSelects } from 'shared/filtrosListadosGenerales';
+import { EmpleadoController } from 'pages/recursosHumanos/empleados/infraestructure/EmpleadoController';
+import { VehiculoController } from 'pages/controlVehiculos/vehiculos/infraestructure/VehiculoController';
+import { ServicioController } from 'pages/controlVehiculos/servicios/infraestructure/ServicioController';
+import { acciones, accionesTabla, maskFecha } from 'config/utils';
+import { estadosMantenimientosVehiculos, tabOptionsMantenimientosVehiculos } from 'config/vehiculos.utils';
 
 export default defineComponent({
     components: { TabLayoutFilterTabs2, SelectorImagen },

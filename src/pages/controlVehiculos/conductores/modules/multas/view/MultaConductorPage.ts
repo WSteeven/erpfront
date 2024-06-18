@@ -1,26 +1,26 @@
 // Dependencies
-import { configuracionColumnasMultasConductores } from "../domain/configuracionColumnasMultaConductor";
-import { defineComponent, reactive, ref } from "vue";
-import { required, requiredIf } from "shared/i18n-validators";
+import { configuracionColumnasMultasConductores } from '../domain/configuracionColumnasMultaConductor';
+import { defineComponent, reactive, ref } from 'vue';
+import { required, requiredIf } from 'shared/i18n-validators';
 
 //Componentes
-import TabLayout from "shared/contenedor/modules/simple/view/TabLayout.vue";
+import TabLayout from 'shared/contenedor/modules/simple/view/TabLayout.vue';
 
 //Logica y controladores
-import { ContenedorSimpleMixin } from "shared/contenedor/modules/simple/application/ContenedorSimpleMixin";
-import { MultaConductor } from "../domain/MultaConductor";
-import { MultaConductorController } from "../infraestructure/MultaConductorController";
-import { useAuthenticationStore } from "stores/authentication";
-import { ConductorController } from "pages/controlVehiculos/conductores/infraestructure/ConductorController";
-import useVuelidate from "@vuelidate/core";
-import { useFiltrosListadosSelects } from "shared/filtrosListadosGenerales";
-import { StatusEssentialLoading } from "components/loading/application/StatusEssentialLoading";
-import { Empleado } from "pages/recursosHumanos/empleados/domain/Empleado";
-import { EmpleadoController } from "pages/recursosHumanos/empleados/infraestructure/EmpleadoController";
-import { maskFecha } from "config/utils";
-import { VehiculoController } from "pages/controlVehiculos/vehiculos/infraestructure/VehiculoController";
-import { LocalStorage } from "quasar";
-import { useConductorStore } from "stores/vehiculos/conductor";
+import { ContenedorSimpleMixin } from 'shared/contenedor/modules/simple/application/ContenedorSimpleMixin';
+import { MultaConductor } from '../domain/MultaConductor';
+import { MultaConductorController } from '../infraestructure/MultaConductorController';
+import { useAuthenticationStore } from 'stores/authentication';
+import { ConductorController } from 'pages/controlVehiculos/conductores/infraestructure/ConductorController';
+import useVuelidate from '@vuelidate/core';
+import { useFiltrosListadosSelects } from 'shared/filtrosListadosGenerales';
+import { StatusEssentialLoading } from 'components/loading/application/StatusEssentialLoading';
+import { Empleado } from 'pages/recursosHumanos/empleados/domain/Empleado';
+import { EmpleadoController } from 'pages/recursosHumanos/empleados/infraestructure/EmpleadoController';
+import { maskFecha } from 'config/utils';
+import { VehiculoController } from 'pages/controlVehiculos/vehiculos/infraestructure/VehiculoController';
+import { LocalStorage } from 'quasar';
+import { useConductorStore } from 'stores/vehiculos/conductor';
 
 
 export default defineComponent({

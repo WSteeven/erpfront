@@ -136,8 +136,8 @@ export default defineComponent({
     }
     onConsultado(() => {
       es_jefe_inmediato.value =
-      store.user.id == licencia.id_jefe_inmediato ? true : false
-        setTimeout(() => {
+        store.user.id == licencia.id_jefe_inmediato ? true : false
+      setTimeout(() => {
         refArchivoPrestamoEmpresarial.value.listarArchivos({
           licencia_id: licencia.id,
         })
@@ -162,7 +162,7 @@ export default defineComponent({
           controller: new AutorizacionController(),
           params: {
             campos: 'id,nombre',
-            es_modulo_rhh:true,
+            es_modulo_rhh: true,
             es_jefe_inmediato:
               store.user.id == licencia.id_jefe_inmediato ? true : false,
           },
@@ -170,7 +170,7 @@ export default defineComponent({
       })
       empleados.value = listadosAuxiliares.empleados
       tipos_licencias.value = listadosAuxiliares.tipos_licencias
-      autorizaciones.value =listadosAuxiliares.autorizaciones
+      autorizaciones.value = listadosAuxiliares.autorizaciones
     })
     function filtrarEmpleados(val, update) {
       if (val === '')
@@ -210,10 +210,10 @@ export default defineComponent({
         const fechaFinal = fechaInicio
         fechaFinal.setDate(
           fechaInicio.getDate() +
-            parseInt(licencia.dias_licencia.toString()) -
-            1
+          parseInt(licencia.dias_licencia.toString()) -
+          1
         )
-        // Formatear la fecha a "año-mes-día"
+        // Formatear la fecha a 'año-mes-día'
         const anio = fechaFinal.getFullYear()
         const mes = ('0' + (fechaFinal.getMonth() + 1)).slice(-2)
         const dia = ('0' + fechaFinal.getDate()).slice(-2)

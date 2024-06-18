@@ -1,5 +1,5 @@
-import { ColumnConfig } from "components/tables/domain/ColumnConfig";
-import { Comision } from "./Comision";
+import { ColumnConfig } from 'components/tables/domain/ColumnConfig';
+import { Comision } from './Comision';
 
 export const configuracionColumnasComision: ColumnConfig<Comision>[] = [
   {

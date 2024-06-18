@@ -1,5 +1,5 @@
-import { StatusEssentialLoading } from "components/loading/application/StatusEssentialLoading"
-import { TransaccionSimpleController } from "./contenedor/modules/simple/infraestructure/TransacccionSimpleController"
+import { StatusEssentialLoading } from 'components/loading/application/StatusEssentialLoading'
+import { TransaccionSimpleController } from './contenedor/modules/simple/infraestructure/TransacccionSimpleController'
 
 
 export async function cargarConsulta(callback: () => Promise<any>): Promise<any> {
@@ -16,7 +16,7 @@ export async function cargarConsulta(callback: () => Promise<any>): Promise<any>
 }
 
 
-export async function recargarGenerico(listadosAuxiliares, name, lista, controller:TransaccionSimpleController<any>) {
+export async function recargarGenerico(listadosAuxiliares, name, lista, controller: TransaccionSimpleController<any>) {
     const controlador = controller
     const resultados = await cargarConsulta(controlador.listar.bind(controlador))
     // console.log(resultados)

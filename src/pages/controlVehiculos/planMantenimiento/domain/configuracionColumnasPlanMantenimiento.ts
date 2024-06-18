@@ -1,5 +1,5 @@
-import { ColumnConfig } from "components/tables/domain/ColumnConfig";
-import { PlanMantenimiento } from "./PlanMantenimiento";
+import { ColumnConfig } from 'components/tables/domain/ColumnConfig';
+import { PlanMantenimiento } from './PlanMantenimiento';
 
 export const configuracionColumnasPlanMantenimiento: ColumnConfig<PlanMantenimiento>[] = [
     {

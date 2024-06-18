@@ -1,9 +1,8 @@
-import { CategoriaTipoTicket } from "pages/gestionTickets/categoriasTiposTickets/domain/CategoriaTipoTicket"
-import { Ticket } from "../domain/Ticket"
-import { DestinatarioTicket } from "../domain/DestinatarioTicket"
-import { TipoTicket } from "pages/gestionTickets/tiposTickets/domain/TipoTicket"
-import { Departamento } from "pages/recursosHumanos/departamentos/domain/Departamento"
-import { Ref, UnwrapRef, ref } from "vue"
+import { CategoriaTipoTicket } from 'pages/gestionTickets/categoriasTiposTickets/domain/CategoriaTipoTicket'
+import { DestinatarioTicket } from '../domain/DestinatarioTicket'
+import { TipoTicket } from 'pages/gestionTickets/tiposTickets/domain/TipoTicket'
+import { Departamento } from 'pages/recursosHumanos/departamentos/domain/Departamento'
+import { Ref, ref } from 'vue'
 
 export function useDestinatariosTickets(listadosAuxiliares: any) {
   const destinatarios: Ref<DestinatarioTicket[]> = ref([])

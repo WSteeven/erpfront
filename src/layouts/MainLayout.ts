@@ -153,7 +153,7 @@ export default defineComponent({
         grupos[tipo].push(notificacion)
       })
 
-      // Ordenar las notificaciones dentro de cada grupo según el campo "tipo"
+      // Ordenar las notificaciones dentro de cada grupo según el campo 'tipo'
       const tiposOrdenados = Object.keys(grupos).sort()
 
       const notificacionesAgrupadasYOrdenadas = {}

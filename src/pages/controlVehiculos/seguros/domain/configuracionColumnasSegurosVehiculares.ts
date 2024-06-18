@@ -1,5 +1,5 @@
-import { ColumnConfig } from "components/tables/domain/ColumnConfig";
-import { SeguroVehicular } from "./SeguroVehicular";
+import { ColumnConfig } from 'components/tables/domain/ColumnConfig';
+import { SeguroVehicular } from './SeguroVehicular';
 
 export const configuracionColumnasSegurosVehiculares: ColumnConfig<SeguroVehicular>[] = [
     {

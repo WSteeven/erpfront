@@ -1,22 +1,22 @@
 //Dependencias
-import { configuracionColumnasServicios } from "../domain/configuracionColumnasServicios";
-import { defineComponent, reactive, ref } from "vue";
-import { required, minValue, maxValue, requiredIf, numeric, integer } from "shared/i18n-validators";
+import { configuracionColumnasServicios } from '../domain/configuracionColumnasServicios';
+import { defineComponent, reactive, ref } from 'vue';
+import { required, minValue, maxValue, requiredIf, numeric, integer } from 'shared/i18n-validators';
 
 //Componentes
-import TabLayoutFilterTabs2 from "shared/contenedor/modules/simple/view/TabLayoutFilterTabs2.vue"
+import TabLayoutFilterTabs2 from 'shared/contenedor/modules/simple/view/TabLayoutFilterTabs2.vue'
 
 //Logica y controladores
-import { ContenedorSimpleMixin } from "shared/contenedor/modules/simple/application/ContenedorSimpleMixin";
-import { Servicio } from "../domain/Servicio";
-import { ServicioController } from "../infraestructure/ServicioController";
-import useVuelidate from "@vuelidate/core";
-import { tabOptionsSeguros, tabOptionsServicios, tiposServicios } from "config/vehiculos.utils";
-import { CustomActionTable } from "components/tables/domain/CustomActionTable";
-import { CustomActionPrompt } from "components/tables/domain/CustomActionPrompt";
-import { CambiarEstadoServicio } from "../application/CambiarEstadoServicio";
-import { useNotificaciones } from "shared/notificaciones";
-import { useAuthenticationStore } from "stores/authentication";
+import { ContenedorSimpleMixin } from 'shared/contenedor/modules/simple/application/ContenedorSimpleMixin';
+import { Servicio } from '../domain/Servicio';
+import { ServicioController } from '../infraestructure/ServicioController';
+import useVuelidate from '@vuelidate/core';
+import { tabOptionsSeguros, tabOptionsServicios, tiposServicios } from 'config/vehiculos.utils';
+import { CustomActionTable } from 'components/tables/domain/CustomActionTable';
+import { CustomActionPrompt } from 'components/tables/domain/CustomActionPrompt';
+import { CambiarEstadoServicio } from '../application/CambiarEstadoServicio';
+import { useNotificaciones } from 'shared/notificaciones';
+import { useAuthenticationStore } from 'stores/authentication';
 
 export default defineComponent({
     components: { TabLayoutFilterTabs2 },

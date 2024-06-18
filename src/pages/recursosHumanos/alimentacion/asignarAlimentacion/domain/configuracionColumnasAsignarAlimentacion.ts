@@ -1,5 +1,5 @@
-import { ColumnConfig } from "components/tables/domain/ColumnConfig";
-import { AsignarAlimentacion } from "./AsignarAlimentacion";
+import { ColumnConfig } from 'components/tables/domain/ColumnConfig';
+import { AsignarAlimentacion } from './AsignarAlimentacion';
 
 export const configuracionColumnasAsignarAlimentacion: ColumnConfig<AsignarAlimentacion>[] = [
   {

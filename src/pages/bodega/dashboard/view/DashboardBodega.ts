@@ -1,4 +1,4 @@
-import { computed, defineComponent, reactive, ref } from "vue";
+import { computed, defineComponent, reactive, ref } from 'vue';
 
 // Componentes
 import TabLayout from 'shared/contenedor/modules/simple/view/TabLayout.vue'
@@ -10,28 +10,28 @@ import SelectorImagen from 'components/SelectorImagen.vue'
 import { Bar, Pie } from 'vue-chartjs'
 
 
-import { ContenedorSimpleMixin } from "shared/contenedor/modules/simple/application/ContenedorSimpleMixin";
-import { Inventario } from "pages/bodega/inventario/domain/Inventario";
-import { InventarioController } from "pages/bodega/inventario/infraestructure/InventarioController";
-import { useNotificaciones } from "shared/notificaciones";
-import { useAuthenticationStore } from "stores/authentication";
-import { StatusEssentialLoading } from "components/loading/application/StatusEssentialLoading";
-import { useFiltrosListadosSelects } from "shared/filtrosListadosGenerales";
-import { obtenerFechaActual } from "shared/utils";
-import { required, requiredIf } from "shared/i18n-validators";
-import useVuelidate from "@vuelidate/core";
-import { CustomActionTable } from "components/tables/domain/CustomActionTable";
-import { useBodegaStore } from "stores/bodega/bodega";
-import { optionsPie } from "config/graficoGenerico";
-import { accionesTabla, estadosTransacciones, maskFecha } from "config/utils";
-import { filtroDevoluciones, filtroEgresos, filtroIngresos, filtroPedidos } from "../application/FiltrosDashboard";
-import { configuracionColumnasTransacciones } from "../domain/configuracionColumnasTransacciones";
-import { ComportamientoModalesBodega } from "../application/ComportamientoModalesBodega";
-import { useTransaccionEgresoStore } from "stores/transaccionEgreso";
-import { configuracionColumnasDevoluciones } from "pages/bodega/devoluciones/domain/configuracionColumnasDevoluciones";
-import { configuracionColumnasPedidos } from "pages/bodega/pedidos/domain/configuracionColumnasPedidos";
-import { usePedidoStore } from "stores/pedido";
-import { useDevolucionStore } from "stores/devolucion";
+import { ContenedorSimpleMixin } from 'shared/contenedor/modules/simple/application/ContenedorSimpleMixin';
+import { Inventario } from 'pages/bodega/inventario/domain/Inventario';
+import { InventarioController } from 'pages/bodega/inventario/infraestructure/InventarioController';
+import { useNotificaciones } from 'shared/notificaciones';
+import { useAuthenticationStore } from 'stores/authentication';
+import { StatusEssentialLoading } from 'components/loading/application/StatusEssentialLoading';
+import { useFiltrosListadosSelects } from 'shared/filtrosListadosGenerales';
+import { obtenerFechaActual } from 'shared/utils';
+import { required, requiredIf } from 'shared/i18n-validators';
+import useVuelidate from '@vuelidate/core';
+import { CustomActionTable } from 'components/tables/domain/CustomActionTable';
+import { useBodegaStore } from 'stores/bodega/bodega';
+import { optionsPie } from 'config/graficoGenerico';
+import { accionesTabla, estadosTransacciones, maskFecha } from 'config/utils';
+import { filtroDevoluciones, filtroEgresos, filtroIngresos, filtroPedidos } from '../application/FiltrosDashboard';
+import { configuracionColumnasTransacciones } from '../domain/configuracionColumnasTransacciones';
+import { ComportamientoModalesBodega } from '../application/ComportamientoModalesBodega';
+import { useTransaccionEgresoStore } from 'stores/transaccionEgreso';
+import { configuracionColumnasDevoluciones } from 'pages/bodega/devoluciones/domain/configuracionColumnasDevoluciones';
+import { configuracionColumnasPedidos } from 'pages/bodega/pedidos/domain/configuracionColumnasPedidos';
+import { usePedidoStore } from 'stores/pedido';
+import { useDevolucionStore } from 'stores/devolucion';
 
 
 export default defineComponent({

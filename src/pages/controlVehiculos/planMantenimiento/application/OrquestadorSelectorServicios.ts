@@ -10,7 +10,6 @@ export function useOrquestadorSelectorServicios(entidad: PlanMantenimiento, endp
     const refListadoSeleccionable = ref()
     const listado: Ref<EntidadAuditable[]> = ref([])
     const criterioBusqueda = ref()
-    const store = useAuthenticationStore()
     const singleSelector = {
         refListadoSeleccionable: refListadoSeleccionable,
         listadoSeleccionable: listado,

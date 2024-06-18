@@ -1,5 +1,4 @@
 import { ColumnConfig } from 'components/tables/domain/ColumnConfig'
-import { ActividadFisica } from './ActividadFisica'
 import { RevisionActualOrganoSistema } from './RevisionActualOrganoSistema'
 
 export const configuracionColumnasRevisionActualOrganoSistema: ColumnConfig<RevisionActualOrganoSistema>[] = [

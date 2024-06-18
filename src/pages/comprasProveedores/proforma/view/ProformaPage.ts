@@ -1,44 +1,44 @@
 // Dependencias
-import { configuracionColumnasProformas } from "../domain/configuracionColumnasProforma";
-import { configuracionColumnasDetallesProforma } from "../domain/configuracionColumnasDetallesProforma";
+import { configuracionColumnasProformas } from '../domain/configuracionColumnasProforma';
+import { configuracionColumnasDetallesProforma } from '../domain/configuracionColumnasDetallesProforma';
 import { required } from 'shared/i18n-validators'
 import { useVuelidate } from '@vuelidate/core'
 import { computed, defineComponent, ref, watch, } from 'vue'
 
 
 // Componentes
-import TabLayoutFilterTabs2 from "shared/contenedor/modules/simple/view/TabLayoutFilterTabs2.vue";
-import EssentialTable from "components/tables/view/EssentialTable.vue";
-import EssentialSelectableTable from "components/tables/view/EssentialSelectableTable.vue"
-import ModalesEntidad from "components/modales/view/ModalEntidad.vue";
-import EssentialPopupEditableTable from "components/tables/view/EssentialPopupEditableTable.vue"
+import TabLayoutFilterTabs2 from 'shared/contenedor/modules/simple/view/TabLayoutFilterTabs2.vue';
+import EssentialTable from 'components/tables/view/EssentialTable.vue';
+import EssentialSelectableTable from 'components/tables/view/EssentialSelectableTable.vue'
+import ModalesEntidad from 'components/modales/view/ModalEntidad.vue';
+import EssentialPopupEditableTable from 'components/tables/view/EssentialPopupEditableTable.vue'
 
 // Logica y controladores
-import { ContenedorSimpleMixin } from "shared/contenedor/modules/simple/application/ContenedorSimpleMixin";
-import { Proforma } from "../domain/Proforma";
-import { ProformaController } from "../infraestructure/ProformaController";
-import { useNotificaciones } from "shared/notificaciones";
-import { useNotificacionStore } from "stores/notificacion";
-import { LocalStorage, useQuasar } from "quasar";
-import { useCargandoStore } from "stores/cargando";
-import { EmpleadoController } from "pages/recursosHumanos/empleados/infraestructure/EmpleadoController";
-import { acciones, accionesTabla, } from "config/utils";
-import { tabOptionsProformas, opcionesForma, opcionesTiempo } from "config/utils_compras_proveedores";
-import { useAuthenticationStore } from "stores/authentication";
-import { calcularDescuento, calcularSubtotalConImpuestosLista, calcularSubtotalSinImpuestosLista, encontrarUltimoIdListado, formatearFecha } from "shared/utils";
-import { CustomActionTable } from "components/tables/domain/CustomActionTable";
-import { useFiltrosListadosSelects } from "shared/filtrosListadosGenerales";
-import { usePreordenStore } from "stores/comprasProveedores/preorden";
-import { ValidarListadoProductos } from "../application/validaciones/ValidarListadoProductos";
-import { CustomActionPrompt } from "components/tables/domain/CustomActionPrompt";
-import { ClienteController } from "sistema/clientes/infraestructure/ClienteController";
-import { ItemProforma } from "../domain/ItemProforma";
-import { useProformaStore } from "stores/comprasProveedores/proforma";
-import { EmpleadoPermisoController } from "pages/recursosHumanos/empleados/infraestructure/EmpleadoPermisosController";
-import { useRouter } from "vue-router";
-import { requiredIf } from "@vuelidate/validators";
-import { UnidadMedidaController } from "pages/bodega/unidades_medidas/infraestructure/UnidadMedidaController";
-import { UnidadMedida } from "pages/bodega/unidades_medidas/domain/UnidadMedida";
+import { ContenedorSimpleMixin } from 'shared/contenedor/modules/simple/application/ContenedorSimpleMixin';
+import { Proforma } from '../domain/Proforma';
+import { ProformaController } from '../infraestructure/ProformaController';
+import { useNotificaciones } from 'shared/notificaciones';
+import { useNotificacionStore } from 'stores/notificacion';
+import { LocalStorage, useQuasar } from 'quasar';
+import { useCargandoStore } from 'stores/cargando';
+import { EmpleadoController } from 'pages/recursosHumanos/empleados/infraestructure/EmpleadoController';
+import { acciones, accionesTabla, } from 'config/utils';
+import { tabOptionsProformas, opcionesForma, opcionesTiempo } from 'config/utils_compras_proveedores';
+import { useAuthenticationStore } from 'stores/authentication';
+import { calcularDescuento, calcularSubtotalConImpuestosLista, calcularSubtotalSinImpuestosLista, encontrarUltimoIdListado, formatearFecha } from 'shared/utils';
+import { CustomActionTable } from 'components/tables/domain/CustomActionTable';
+import { useFiltrosListadosSelects } from 'shared/filtrosListadosGenerales';
+import { usePreordenStore } from 'stores/comprasProveedores/preorden';
+import { ValidarListadoProductos } from '../application/validaciones/ValidarListadoProductos';
+import { CustomActionPrompt } from 'components/tables/domain/CustomActionPrompt';
+import { ClienteController } from 'sistema/clientes/infraestructure/ClienteController';
+import { ItemProforma } from '../domain/ItemProforma';
+import { useProformaStore } from 'stores/comprasProveedores/proforma';
+import { EmpleadoPermisoController } from 'pages/recursosHumanos/empleados/infraestructure/EmpleadoPermisosController';
+import { useRouter } from 'vue-router';
+import { requiredIf } from '@vuelidate/validators';
+import { UnidadMedidaController } from 'pages/bodega/unidades_medidas/infraestructure/UnidadMedidaController';
+import { UnidadMedida } from 'pages/bodega/unidades_medidas/domain/UnidadMedida';
 
 
 export default defineComponent({
@@ -194,8 +194,8 @@ export default defineComponent({
         }
 
         /**
-         * La función "actualizarListado" se ejecuta cuando se cambia el campo IVA general, itera sobre cada fila en el arreglo "listadoProductos" del
-         * objeto "orden" y llama a la función "calcularValores" para cada fila.
+         * La función 'actualizarListado' se ejecuta cuando se cambia el campo IVA general, itera sobre cada fila en el arreglo 'listadoProductos' del
+         * objeto 'orden' y llama a la función 'calcularValores' para cada fila.
          */
         function actualizarListado() {
             proforma.listadoProductos.forEach((fila) => {
@@ -203,7 +203,7 @@ export default defineComponent({
             })
         }
         /**
-         * La función "actualizarDescuento" actualiza los valores de descuento de cada producto en una
+         * La función 'actualizarDescuento' actualiza los valores de descuento de cada producto en una
          * proforma si se aplica un descuento general.
          */
         function actualizarDescuento() {

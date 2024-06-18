@@ -1,32 +1,32 @@
 //Dependencias
-import { useQuasar } from "quasar";
+import { useQuasar } from 'quasar';
 
 //Componentes
-import EssentialTable from "components/tables/view/EssentialTable.vue"
-import ModalEntidad from "components/modales/view/ModalEntidad.vue"
+import EssentialTable from 'components/tables/view/EssentialTable.vue'
+import ModalEntidad from 'components/modales/view/ModalEntidad.vue'
 
 //Logica y controladores
-import { ContenedorSimpleMixin } from "shared/contenedor/modules/simple/application/ContenedorSimpleMixin";
-import { Proveedor } from "sistema/proveedores/domain/Proveedor";
-import { ProveedorController } from "sistema/proveedores/infraestructure/ProveedorController";
-import { useCargandoStore } from "stores/cargando";
-import { useNotificacionStore } from "stores/notificacion";
-import { defineComponent, reactive, ref } from "vue";
-import { StatusEssentialLoading } from "components/loading/application/StatusEssentialLoading";
-import { useNotificaciones } from "shared/notificaciones";
-import { CustomActionTable } from "components/tables/domain/CustomActionTable";
-import { ComportamientoModalesProveedores } from "sistema/proveedores/application/ComportamientoModalesProveedores";
-import { configuracionColumnasProveedores } from "sistema/proveedores/domain/configuracionColumnasProveedores";
-import { accionesTabla, maskFecha } from "config/utils";
-import { useFiltrosListadosSelects } from "shared/filtrosListadosGenerales";
-import { opcionesEstadosOC } from "config/utils_compras_proveedores";
-import { useAuthenticationStore } from "stores/authentication";
-import { ProveedoresOrdenesController } from "pages/comprasProveedores/dashboard/infraestructure/ProveedoresOrdenesController";
-import { obtenerFechaActual, ordenarLista } from "shared/utils";
-import { required, requiredIf } from "shared/i18n-validators";
-import useVuelidate from "@vuelidate/core";
-import { useOrdenCompraStore } from "stores/comprasProveedores/ordenCompra";
-import { configuracionColumnasOrdenesCompras } from "pages/comprasProveedores/ordenCompra/domain/configuracionColumnasOrdenCompra";
+import { ContenedorSimpleMixin } from 'shared/contenedor/modules/simple/application/ContenedorSimpleMixin';
+import { Proveedor } from 'sistema/proveedores/domain/Proveedor';
+import { ProveedorController } from 'sistema/proveedores/infraestructure/ProveedorController';
+import { useCargandoStore } from 'stores/cargando';
+import { useNotificacionStore } from 'stores/notificacion';
+import { defineComponent, reactive, ref } from 'vue';
+import { StatusEssentialLoading } from 'components/loading/application/StatusEssentialLoading';
+import { useNotificaciones } from 'shared/notificaciones';
+import { CustomActionTable } from 'components/tables/domain/CustomActionTable';
+import { ComportamientoModalesProveedores } from 'sistema/proveedores/application/ComportamientoModalesProveedores';
+import { configuracionColumnasProveedores } from 'sistema/proveedores/domain/configuracionColumnasProveedores';
+import { accionesTabla, maskFecha } from 'config/utils';
+import { useFiltrosListadosSelects } from 'shared/filtrosListadosGenerales';
+import { opcionesEstadosOC } from 'config/utils_compras_proveedores';
+import { useAuthenticationStore } from 'stores/authentication';
+import { ProveedoresOrdenesController } from 'pages/comprasProveedores/dashboard/infraestructure/ProveedoresOrdenesController';
+import { obtenerFechaActual, ordenarLista } from 'shared/utils';
+import { required, requiredIf } from 'shared/i18n-validators';
+import useVuelidate from '@vuelidate/core';
+import { useOrdenCompraStore } from 'stores/comprasProveedores/ordenCompra';
+import { configuracionColumnasOrdenesCompras } from 'pages/comprasProveedores/ordenCompra/domain/configuracionColumnasOrdenCompra';
 
 
 export default defineComponent({
@@ -101,7 +101,7 @@ export default defineComponent({
             color: 'primary',
             accion: async ({ entidad }) => {
                 ordenCompraStore.idOrden = entidad.id
-                console.log("ordenCompraStore.showPreview()")
+                console.log('ordenCompraStore.showPreview()')
                 // await ordenCompraStore.showPreview()
                 modales.abrirModalEntidad('VisualizarProveedorPage')
             }

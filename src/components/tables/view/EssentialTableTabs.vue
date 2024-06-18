@@ -285,7 +285,6 @@ export default defineComponent({
   ],
   setup(props, { emit }) {
     const refTabla = ref()
-    const selected = ref([])
     const tabSeleccionado = ref(props.tabDefecto)
     const mostrarTabs = ref(true)
     const activeColor = computed(
@@ -342,10 +341,10 @@ export default defineComponent({
       refTabla.value.seleccionar()
     } */
 
-    function seleccionado(selected) {
+    function seleccionado(seleccionado) {
       console.log('En tabs')
-      console.log(selected)
-      emit('selected', selected)
+      console.log(seleccionado)
+      emit('selected', seleccionado)
     }
 
     return {

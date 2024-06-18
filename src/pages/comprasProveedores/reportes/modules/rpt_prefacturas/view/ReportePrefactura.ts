@@ -1,31 +1,31 @@
 //Dependencias
-import { useQuasar } from "quasar";
+import { useQuasar } from 'quasar';
 
 //Componentes
-import EssentialTable from "components/tables/view/EssentialTable.vue"
-import ModalEntidad from "components/modales/view/ModalEntidad.vue"
+import EssentialTable from 'components/tables/view/EssentialTable.vue'
+import ModalEntidad from 'components/modales/view/ModalEntidad.vue'
 
 //Logica y controladores
-import { ContenedorSimpleMixin } from "shared/contenedor/modules/simple/application/ContenedorSimpleMixin";
-import { defineComponent, reactive, ref } from "vue";
-import { Prefactura } from "pages/comprasProveedores/prefactura/domain/Prefactura";
-import { PrefacturaController } from "pages/comprasProveedores/prefactura/infraestructure/PrefacturaController";
-import { useNotificacionStore } from "stores/notificacion";
-import { useCargandoStore } from "stores/cargando";
-import { useNotificaciones } from "shared/notificaciones";
-import { useAuthenticationStore } from "stores/authentication";
-import { usePrefacturaStore } from "stores/comprasProveedores/prefactura";
-import { StatusEssentialLoading } from "components/loading/application/StatusEssentialLoading";
-import { ClientesPrefacturasController } from "pages/comprasProveedores/dashboard/infraestructure/ClientesPrefacturasController";
-import { obtenerFechaActual, ordenarLista } from "shared/utils";
-import { accionesTabla, maskFecha } from "config/utils";
-import { useFiltrosListadosSelects } from "shared/filtrosListadosGenerales";
-import { required } from "shared/i18n-validators";
-import useVuelidate from "@vuelidate/core";
-import { CustomActionTable } from "components/tables/domain/CustomActionTable";
-import { configuracionColumnasPrefactura } from "pages/comprasProveedores/prefactura/domain/configuracionColumnasPrefactura";
-import { opcionesEstadosPrefacturas } from "config/utils_compras_proveedores";
-import { ComportamientoModalesPrefactura } from "pages/comprasProveedores/prefactura/application/ComportamientoModalesPrefactura";
+import { ContenedorSimpleMixin } from 'shared/contenedor/modules/simple/application/ContenedorSimpleMixin';
+import { defineComponent, reactive, ref } from 'vue';
+import { Prefactura } from 'pages/comprasProveedores/prefactura/domain/Prefactura';
+import { PrefacturaController } from 'pages/comprasProveedores/prefactura/infraestructure/PrefacturaController';
+import { useNotificacionStore } from 'stores/notificacion';
+import { useCargandoStore } from 'stores/cargando';
+import { useNotificaciones } from 'shared/notificaciones';
+import { useAuthenticationStore } from 'stores/authentication';
+import { usePrefacturaStore } from 'stores/comprasProveedores/prefactura';
+import { StatusEssentialLoading } from 'components/loading/application/StatusEssentialLoading';
+import { ClientesPrefacturasController } from 'pages/comprasProveedores/dashboard/infraestructure/ClientesPrefacturasController';
+import { obtenerFechaActual, ordenarLista } from 'shared/utils';
+import { accionesTabla, maskFecha } from 'config/utils';
+import { useFiltrosListadosSelects } from 'shared/filtrosListadosGenerales';
+import { required } from 'shared/i18n-validators';
+import useVuelidate from '@vuelidate/core';
+import { CustomActionTable } from 'components/tables/domain/CustomActionTable';
+import { configuracionColumnasPrefactura } from 'pages/comprasProveedores/prefactura/domain/configuracionColumnasPrefactura';
+import { opcionesEstadosPrefacturas } from 'config/utils_compras_proveedores';
+import { ComportamientoModalesPrefactura } from 'pages/comprasProveedores/prefactura/application/ComportamientoModalesPrefactura';
 
 
 export default defineComponent({

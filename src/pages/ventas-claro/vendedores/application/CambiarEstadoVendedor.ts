@@ -1,6 +1,6 @@
-import { AxiosResponse } from "axios";
-import { endpoints } from "config/api";
-import { AxiosHttpRepository } from "shared/http/infraestructure/AxiosHttpRepository";
+import { AxiosResponse } from 'axios';
+import { endpoints } from 'config/api';
+import { AxiosHttpRepository } from 'shared/http/infraestructure/AxiosHttpRepository';
 
 export class CambiarEstadoVendedor {
     axios: AxiosHttpRepository
@@ -9,7 +9,7 @@ export class CambiarEstadoVendedor {
         this.axios = AxiosHttpRepository.getInstance()
     }
 
-    async anular(id: number, data:any) {
+    async anular(id: number, data: any) {
         return this.solicitud('/desactivar/', id, data)
     }
 

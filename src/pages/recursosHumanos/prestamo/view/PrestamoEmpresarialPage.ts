@@ -42,7 +42,7 @@ export default defineComponent({
       listadosAuxiliares,
       listado
     } = mixin.useReferencias()
-    const { setValidador, obtenerListados, cargarVista,listar } =
+    const { setValidador, obtenerListados, cargarVista, listar } =
       mixin.useComportamiento()
     const { onBeforeModificar } =
       mixin.useHooks()
@@ -133,7 +133,7 @@ export default defineComponent({
       const week = 7 * day
       const month = 4 * week
       const year = 12 * month
-      const fechaPrestamo = parse(prestamo.fecha !== null?prestamo.fecha:new Date().toString() ,"YYYY-MM-DD")
+      const fechaPrestamo = parse(prestamo.fecha !== null ? prestamo.fecha : new Date().toString(), 'YYYY-MM-DD')
       switch (plazo) {
         case 'dias':
           fechaPrestamo.setDate(fechaPrestamo.getDate() + cuota)
@@ -158,7 +158,7 @@ export default defineComponent({
 
     watchEffect(() => {
       try {
-        if (accion.value == acciones.nuevo? true : false) {
+        if (accion.value == acciones.nuevo ? true : false) {
           if (prestamo.plazo != null) {
             const valor_cuota = prestamo.monto !== null ? prestamo.monto : 0
             const plazo_prestamo = prestamo.plazo != null ? prestamo.plazo : 0
@@ -190,7 +190,7 @@ export default defineComponent({
               ? prestamo.plazos[prestamo.plazo - 1].fecha_vencimiento
               : null
         }
-      } catch (error) {}
+      } catch (error) { }
     })
     function filtrarEmpleado(val, update) {
       if (val === '') {
@@ -222,7 +222,7 @@ export default defineComponent({
 
           const nuevaCuota = {
             num_cuota: prestamo.plazos!.length + 1,
-            fecha_vencimiento:  periodo_seleccionado.nombre.split('-')[0]+'-04-15',
+            fecha_vencimiento: periodo_seleccionado.nombre.split('-')[0] + '-04-15',
             valor_couta: prestamo.valor_utilidad,
             pago_couta: false,
           }
@@ -377,7 +377,7 @@ export default defineComponent({
               ) {
                 notificarError(
                   'No se pudo pagar, debes ingresar monto menor o igual a ' +
-                    prestamo.plazos![indice_couta].valor_couta
+                  prestamo.plazos![indice_couta].valor_couta
                 )
                 return
               }
@@ -443,14 +443,14 @@ export default defineComponent({
       icono: 'bi-trash',
       color: 'negative',
       visible: () =>
-        authenticationStore.can('puede.eliminar.prestamo_empresarial') && tabActualPrestamoEmpresarial=='ACTIVO',
+        authenticationStore.can('puede.eliminar.prestamo_empresarial') && tabActualPrestamoEmpresarial == 'ACTIVO',
       accion: ({ entidad, posicion }) => {
-       accion.value = 'ELIMINAR'
-       eliminar_prestamoempresarial({entidad,posicion})
+        accion.value = 'ELIMINAR'
+        eliminar_prestamoempresarial({ entidad, posicion })
 
       },
     }
-    async  function eliminar_prestamoempresarial({ entidad, posicion }) {
+    async function eliminar_prestamoempresarial({ entidad, posicion }) {
       try {
 
         const data: CustomActionPrompt = {
@@ -460,17 +460,17 @@ export default defineComponent({
             entidad.estado = false
             entidad.motivo = data
             entidad.descripcion_prestamoempresarial = data
-              await prestamoEmpresarialCustomController.anularPrestamoEmpresarial(entidad)
-              notificarCorrecto('Se ha eliminado PrestamoEmpresarial')
-              listado.value.splice(posicion,1);
+            await prestamoEmpresarialCustomController.anularPrestamoEmpresarial(entidad)
+            notificarCorrecto('Se ha eliminado PrestamoEmpresarial')
+            listado.value.splice(posicion, 1);
           },
         }
         prompt(data)
-    } catch (e: any) {
-      notificarError(
-        'No se pudo anular, debes ingresar un motivo para la anulacion'
-      )
-    }
+      } catch (e: any) {
+        notificarError(
+          'No se pudo anular, debes ingresar un motivo para la anulacion'
+        )
+      }
     }
     let tabActualPrestamoEmpresarial = 'ACTIVO'
 
@@ -500,8 +500,8 @@ export default defineComponent({
         (val) =>
           (val && val <= parseInt(sueldo_basico.value) * 2) ||
           'Solo se permite prestamo menor o igual a 2 SBU (' +
-            parseInt(sueldo_basico.value) * 2 +
-            ')',
+          parseInt(sueldo_basico.value) * 2 +
+          ')',
       ],
       botonmodificar_couta,
       botonpagar_couta,

@@ -1,10 +1,10 @@
-import { endpoints } from "config/api";
-import { OrdenCompra } from "../domain/OrdenCompra";
-import { Ref, ref } from "vue";
-import { EntidadAuditable } from "shared/entidad/domain/entidadAuditable";
-import { useSelector } from "components/tables/application/selector";
-import { Producto } from "pages/bodega/productos/domain/Producto";
-import { encontrarUltimoIdListado } from "shared/utils";
+import { endpoints } from 'config/api';
+import { OrdenCompra } from '../domain/OrdenCompra';
+import { Ref, ref } from 'vue';
+import { EntidadAuditable } from 'shared/entidad/domain/entidadAuditable';
+import { useSelector } from 'components/tables/application/selector';
+import { Producto } from 'pages/bodega/productos/domain/Producto';
+import { encontrarUltimoIdListado } from 'shared/utils';
 
 export function useOrquestadorSelectorProductos(entidad: OrdenCompra, endpoint: keyof typeof endpoints) {
     const refListadoSeleccionable = ref()
@@ -32,8 +32,6 @@ export function useOrquestadorSelectorProductos(entidad: OrdenCompra, endpoint: 
     const limpiar = () => singleSelector.limpiar()
 
     const seleccionar = (items: Producto[]) => {
-        let ids: any = []
-        ids = entidad.listadoProductos.map((entidad: Producto) => entidad.id)
         items.forEach((item: any) => {
             item.cantidad = 1
             item.producto = item.nombre

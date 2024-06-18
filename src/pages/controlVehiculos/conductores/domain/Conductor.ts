@@ -1,5 +1,5 @@
-import { Empleado } from "pages/recursosHumanos/empleados/domain/Empleado";
-import { EntidadAuditable } from "shared/entidad/domain/entidadAuditable";
+import { Empleado } from 'pages/recursosHumanos/empleados/domain/Empleado';
+import { EntidadAuditable } from 'shared/entidad/domain/entidadAuditable';
 
 export class Conductor extends EntidadAuditable {
     empleado: number | null
@@ -21,7 +21,7 @@ export class Conductor extends EntidadAuditable {
         this.plaza = null
         this.info_empleado = null
         this.licencias = []
-    
+
         this.multas = []
     }
 }

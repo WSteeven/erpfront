@@ -1,5 +1,5 @@
-import { ColumnConfig } from "components/tables/domain/ColumnConfig";
-import { Proforma } from "./Proforma";
+import { ColumnConfig } from 'components/tables/domain/ColumnConfig';
+import { Proforma } from './Proforma';
 
 export const configuracionColumnasProformas: ColumnConfig<Proforma>[] = [
   {

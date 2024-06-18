@@ -1,4 +1,4 @@
-import { TabOption } from "components/tables/domain/TabOption"
+import { TabOption } from 'components/tables/domain/TabOption'
 
 
 export const opciones_traccion_vehiculos = [
@@ -12,8 +12,8 @@ export const opciones_traccion_vehiculos = [
 ]
 
 export const tiposCategoriasVehiculos = [
-  {value: 'PROPIO'},
-  {value: 'ALQUILADO'},
+  { value: 'PROPIO' },
+  { value: 'ALQUILADO' },
 ]
 
 export const tiposLicencias = [
