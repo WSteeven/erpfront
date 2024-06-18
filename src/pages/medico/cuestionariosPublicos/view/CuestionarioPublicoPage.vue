@@ -27,13 +27,13 @@
                 v-if="tipo.finalizado"
                 name="bi-check-circle-fill"
                 class="q-mr-sm"
-                color="positive"
+                color="primary"
               ></q-icon>
               <q-icon
                 v-else
                 name="bi-check-circle"
                 class="q-mr-sm"
-                color="positive"
+                color="accent"
               ></q-icon>
               {{ tipo.titulo }}
             </q-btn>
