@@ -245,8 +245,47 @@
             />
           </div>
 
-          <!-- estado carroceria -->
+          <!-- Select estado -->
           <div class="col-12 col-md-3 q-mb-md">
+            <label
+              color="light-green-2"
+              class="text-positive text-bold q-mb-sm inline-block bg-light-green-2 rounded q-px-md"
+              >Estado
+            </label>
+            <q-select
+              v-model="asignacion.estado"
+              :options="estadosAsignacionesVehiculos"
+              options-dense
+              dense
+              outlined
+              :disable="accion == acciones.editar ? false : true"
+              :option-value="(v) => v.label"
+              :option-label="(v) => v.label"
+              emit-value
+              map-options
+            >
+            </q-select>
+          </div>
+
+          <!-- Observacion recibe -->
+          <div
+            class="col-12 col-md-3"
+            v-if="asignacion.observacion_recibe || accion == acciones.editar"
+          >
+            <label class="q-mb-sm block">Observación (receptor)</label>
+            <q-input
+              v-model="asignacion.observacion_recibe"
+              placeholder="Opcional"
+              autogrow
+              :disable="disabled"
+              outlined
+              dense
+            />
+          </div>
+
+
+          <!-- estado carroceria -->
+          <div class="col-12 col-md-12 q-mb-md">
             <label class="q-mb-sm block">Estado de carrocería</label>
             <q-select
               v-model="asignacion.estado_carroceria"
@@ -276,7 +315,7 @@
           </div>
 
           <!-- estado mecanico -->
-          <div class="col-12 col-md-3 q-mb-md">
+          <div class="col-12 col-md-12 q-mb-md">
             <label class="q-mb-sm block">Estado Mecánico</label>
             <q-select
               v-model="asignacion.estado_mecanico"
@@ -306,7 +345,7 @@
           </div>
 
           <!-- estado electrico -->
-          <div class="col-12 col-md-3 q-mb-md">
+          <div class="col-12 col-md-12 q-mb-md">
             <label class="q-mb-sm block">Estado Eléctrico y A/AC</label>
             <q-select
               v-model="asignacion.estado_electrico"
@@ -335,46 +374,9 @@
             </q-select>
           </div>
 
-          <!-- Observacion recibe -->
-          <div
-            class="col-12 col-md-3"
-            v-if="asignacion.observacion_recibe || accion == acciones.editar"
-          >
-            <label class="q-mb-sm block">Observación (receptor)</label>
-            <q-input
-              v-model="asignacion.observacion_recibe"
-              placeholder="Opcional"
-              autogrow
-              :disable="disabled"
-              outlined
-              dense
-            />
-          </div>
-
-          <!-- Select estado -->
-          <div class="col-12 col-md-3 q-mb-md">
-            <label
-              color="light-green-2"
-              class="text-positive text-bold q-mb-sm inline-block bg-light-green-2 rounded q-px-md"
-              >Estado
-            </label>
-            <q-select
-              v-model="asignacion.estado"
-              :options="estadosAsignacionesVehiculos"
-              options-dense
-              dense
-              outlined
-              :disable="accion == acciones.editar ? false : true"
-              :option-value="(v) => v.label"
-              :option-label="(v) => v.label"
-              emit-value
-              map-options
-            >
-            </q-select>
-          </div>
-
+          
           <!-- accesorios -->
-          <div class="col-12 col-md-3 q-mb-md">
+          <div class="col-12 col-md-12 q-mb-md">
             <label class="q-mb-sm block">Accesorios</label>
             <q-select
               v-model="asignacion.accesorios"
