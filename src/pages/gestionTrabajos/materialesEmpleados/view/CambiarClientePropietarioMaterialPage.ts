@@ -1,19 +1,19 @@
-import useVuelidate from "@vuelidate/core";
-import { AxiosResponse } from "axios";
-import ButtonSubmits from "components/buttonSubmits/buttonSubmits.vue";
+import useVuelidate from '@vuelidate/core';
+import { AxiosResponse } from 'axios';
+import ButtonSubmits from 'components/buttonSubmits/buttonSubmits.vue';
 
-import { StatusEssentialLoading } from "components/loading/application/StatusEssentialLoading";
-import { apiConfig, endpoints } from "config/api";
+import { StatusEssentialLoading } from 'components/loading/application/StatusEssentialLoading';
+import { apiConfig, endpoints } from 'config/api';
 
 
-import { acciones } from "config/utils";
-import { MaterialEmpleadoTarea } from "pages/gestionTrabajos/miBodega/domain/MaterialEmpleadoTarea";
-import { AxiosHttpRepository } from "shared/http/infraestructure/AxiosHttpRepository";
-import { required, maxValue, minValue } from "shared/i18n-validators";
-import { useNotificaciones } from "shared/notificaciones";
-import { ClienteController } from "sistema/clientes/infraestructure/ClienteController";
-import { useTransferenciaProductoEmpleadoStore } from "stores/transferenciaProductoEmpleado";
-import { defineComponent, onMounted, reactive, ref } from "vue";
+import { acciones } from 'config/utils';
+import { MaterialEmpleadoTarea } from 'pages/gestionTrabajos/miBodega/domain/MaterialEmpleadoTarea';
+import { AxiosHttpRepository } from 'shared/http/infraestructure/AxiosHttpRepository';
+import { required, maxValue, minValue } from 'shared/i18n-validators';
+import { useNotificaciones } from 'shared/notificaciones';
+import { ClienteController } from 'sistema/clientes/infraestructure/ClienteController';
+import { useTransferenciaProductoEmpleadoStore } from 'stores/transferenciaProductoEmpleado';
+import { defineComponent, onMounted, reactive, ref } from 'vue';
 
 export default defineComponent({
     components: { ButtonSubmits },

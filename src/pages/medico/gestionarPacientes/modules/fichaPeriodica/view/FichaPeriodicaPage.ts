@@ -287,9 +287,9 @@ export default defineComponent({
         const newItem: AntecedenteTrabajoAnterior = new AntecedenteTrabajoAnterior()
 
         for (const key in antecedente) {
-          if (antecedente.hasOwnProperty(key) && !["id", "created_at", "updated_at"].includes(key)) {
+          if (antecedente.hasOwnProperty(key) && !['id', 'created_at', 'updated_at'].includes(key)) {
             const value = antecedente[key]
-            if (typeof value === "boolean" && value === true) {
+            if (typeof value === 'boolean' && value === true) {
               riesgos.push(parseInt(key))
             } else {
               newItem[key] = value

@@ -220,25 +220,25 @@ export default defineComponent({
       )
     }
 
-/**
- * La función `opcionesFechaRecuperacion` verifica si una fecha determinada está dentro de ciertas
- * restricciones en función de los parámetros de entrada.
- * @param date - La función `opcionesFechaRecuperacion` toma un parámetro `fecha` y verifica si
- * se suguiere fecha obtine la fecha sugerida caso contrario obtine la fecha de finalizacion. La función parece estar verificando si la "fecha" proporcionada cumple con
- * ciertas condiciones basadas en los valores de las variables "permiso", "dias_permiso" y
- * "numDiaSemana".
- * @returns La función `opcionesFechaRecuperacion` devuelve un valor booleano basado en las condiciones
- * proporcionadas. La declaración de retorno verifica si la entrada `fecha` es mayor que una fecha
- * formateada calculada en base a ciertas condiciones que involucran las variables `fecha_hora_fin`,
- * `dias_permiso.value` y `numDiaSemana`. Si se cumplen todas las condiciones, la función devuelve
- * "verdadero", de lo contrario devuelve falso
- */
+    /**
+     * La función `opcionesFechaRecuperacion` verifica si una fecha determinada está dentro de ciertas
+     * restricciones en función de los parámetros de entrada.
+     * @param date - La función `opcionesFechaRecuperacion` toma un parámetro `fecha` y verifica si
+     * se suguiere fecha obtine la fecha sugerida caso contrario obtine la fecha de finalizacion. La función parece estar verificando si la 'fecha' proporcionada cumple con
+     * ciertas condiciones basadas en los valores de las variables 'permiso', 'dias_permiso' y
+     * 'numDiaSemana'.
+     * @returns La función `opcionesFechaRecuperacion` devuelve un valor booleano basado en las condiciones
+     * proporcionadas. La declaración de retorno verifica si la entrada `fecha` es mayor que una fecha
+     * formateada calculada en base a ciertas condiciones que involucran las variables `fecha_hora_fin`,
+     * `dias_permiso.value` y `numDiaSemana`. Si se cumplen todas las condiciones, la función devuelve
+     * 'verdadero', de lo contrario devuelve falso
+     */
     function optionsFechaRecuperacion(date) {
       const fecha_hora_fin = permiso.suguiere_fecha
-      ? new Date(permiso.fecha_hora_reagendamiento || Date.now())
-      : new Date(permiso.fecha_hora_fin ? convertir_fecha_hora(permiso.fecha_hora_fin) : Date.now());
-        return (
-        date > format(addDay(fecha_hora_fin,(dias_permiso.value>0?dias_permiso.value-1:0)), 'YYYY/MM/DD') &&
+        ? new Date(permiso.fecha_hora_reagendamiento || Date.now())
+        : new Date(permiso.fecha_hora_fin ? convertir_fecha_hora(permiso.fecha_hora_fin) : Date.now());
+      return (
+        date > format(addDay(fecha_hora_fin, (dias_permiso.value > 0 ? dias_permiso.value - 1 : 0)), 'YYYY/MM/DD') &&
         new Date(date).getDay() < numDiaSemana.sabado &&
         new Date(date).getDay() > numDiaSemana.domingo
       )

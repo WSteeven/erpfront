@@ -1,9 +1,7 @@
-import Pusher from 'pusher-js'
 import { useNotificaciones } from 'shared/notificaciones'
 import { pushEventMesaggeServiceWorker } from 'shared/utils'
 import { useAuthenticationStore } from 'stores/authentication'
 import { useNotificationRealtimeStore } from 'stores/notificationRealtime'
-import { Ref } from 'vue'
 
 export class TransferenciaSaldoPusherEvent {
    authenticationStore = useAuthenticationStore()

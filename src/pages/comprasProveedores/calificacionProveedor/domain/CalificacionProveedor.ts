@@ -1,10 +1,10 @@
-import { EntidadAuditable } from "shared/entidad/domain/entidadAuditable";
+import { EntidadAuditable } from 'shared/entidad/domain/entidadAuditable';
 
-export class CalificacionProveedor extends EntidadAuditable{
+export class CalificacionProveedor extends EntidadAuditable {
 
     listadoCriterios: any[]
 
-    constructor(){
+    constructor() {
         super()
         this.listadoCriterios = []
     }

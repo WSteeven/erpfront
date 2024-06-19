@@ -1,7 +1,7 @@
-import { Validador } from "shared/validadores/domain/Validador";
-import { Empleado } from "../domain/Empleado";
-import { Conductor } from "pages/controlVehiculos/conductores/domain/Conductor";
-import { rolesSistema } from "config/utils";
+import { Validador } from 'shared/validadores/domain/Validador';
+import { Empleado } from '../domain/Empleado';
+import { Conductor } from 'pages/controlVehiculos/conductores/domain/Conductor';
+import { rolesSistema } from 'config/utils';
 
 export class ValidarChofer implements Validador {
     private empleado: Empleado

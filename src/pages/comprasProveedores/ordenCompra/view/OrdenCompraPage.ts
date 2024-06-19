@@ -1,51 +1,51 @@
 // Dependencias
-import { configuracionColumnasOrdenesCompras } from "../domain/configuracionColumnasOrdenCompra";
-import { configuracionColumnasProductos } from "../domain/configuracionColumnasProductos";
-import { configuracionColumnasDetallesProductos } from "../domain/configuracionColumnasDetallesProductos";
-import { configuracionColumnasItemOrdenCompra } from "pages/comprasProveedores/itemsOrdenCompra/domain/configuracionColumnasItemOrdenCompra";
+import { configuracionColumnasOrdenesCompras } from '../domain/configuracionColumnasOrdenCompra';
+import { configuracionColumnasProductos } from '../domain/configuracionColumnasProductos';
+import { configuracionColumnasDetallesProductos } from '../domain/configuracionColumnasDetallesProductos';
+import { configuracionColumnasItemOrdenCompra } from 'pages/comprasProveedores/itemsOrdenCompra/domain/configuracionColumnasItemOrdenCompra';
 import { required, requiredIf, } from 'shared/i18n-validators'
 import { useVuelidate } from '@vuelidate/core'
 import { computed, defineComponent, ref, } from 'vue'
 
 
 // Componentes
-import TabLayoutFilterTabs2 from "shared/contenedor/modules/simple/view/TabLayoutFilterTabs2.vue";
-import EssentialTable from "components/tables/view/EssentialTable.vue";
-import EssentialSelectableTable from "components/tables/view/EssentialSelectableTable.vue"
-import ModalesEntidad from "components/modales/view/ModalEntidad.vue";
-import EssentialPopupEditableTable from "components/tables/view/EssentialPopupEditableTable.vue"
+import TabLayoutFilterTabs2 from 'shared/contenedor/modules/simple/view/TabLayoutFilterTabs2.vue';
+import EssentialTable from 'components/tables/view/EssentialTable.vue';
+import EssentialSelectableTable from 'components/tables/view/EssentialSelectableTable.vue'
+import ModalesEntidad from 'components/modales/view/ModalEntidad.vue';
+import EssentialPopupEditableTable from 'components/tables/view/EssentialPopupEditableTable.vue'
 import GestorArchivos from 'components/gestorArchivos/GestorArchivos.vue';
 
 // Logica y controladores
-import { ContenedorSimpleMixin } from "shared/contenedor/modules/simple/application/ContenedorSimpleMixin";
-import { OrdenCompra } from "../domain/OrdenCompra";
-import { OrdenCompraController } from "../infraestructure/OrdenCompraController";
-import { useNotificaciones } from "shared/notificaciones";
-import { useNotificacionStore } from "stores/notificacion";
-import { useQuasar } from "quasar";
-import { useCargandoStore } from "stores/cargando";
-import { EmpleadoController } from "pages/recursosHumanos/empleados/infraestructure/EmpleadoController";
-import { ProveedorController } from "sistema/proveedores/infraestructure/ProveedorController";
-import { acciones, accionesTabla, autorizaciones, autorizacionesTransacciones, estados } from "config/utils";
-import { tabOptionsOrdenCompra, opcionesForma, opcionesTiempo, } from "config/utils_compras_proveedores";
-import { useAuthenticationStore } from "stores/authentication";
-import { calcularSubtotalConImpuestosLista, calcularSubtotalSinImpuestosLista, formatearFecha, } from "shared/utils";
-import { CustomActionTable } from "components/tables/domain/CustomActionTable";
-import { useFiltrosListadosSelects } from "shared/filtrosListadosGenerales";
-import { usePreordenStore } from "stores/comprasProveedores/preorden";
-import { ValidarListadoProductos } from "../application/validaciones/ValidarListadoProductos";
-import { useOrdenCompraStore } from "stores/comprasProveedores/ordenCompra";
-import { CustomActionPrompt } from "components/tables/domain/CustomActionPrompt";
-import { EmpleadoPermisoController } from "pages/recursosHumanos/empleados/infraestructure/EmpleadoPermisosController";
-import { useOrquestadorSelectorProductos } from "../application/OrquestadorSelectorProductos";
-import { TareaController } from "pages/gestionTrabajos/tareas/infraestructure/TareaController";
-import { Empleado } from "pages/recursosHumanos/empleados/domain/Empleado";
-import { ComportamientoModalesOrdenCompra } from "../application/ComportamientoModalesOrdenCompra";
-import { UnidadMedidaController } from "pages/bodega/unidades_medidas/infraestructure/UnidadMedidaController";
-import { UnidadMedida } from "pages/bodega/unidades_medidas/domain/UnidadMedida";
-import { PreordenCompra } from "pages/comprasProveedores/preordenCompra/domain/PreordenCompra";
-import { ArchivoController } from "pages/gestionTrabajos/subtareas/modules/gestorArchivosTrabajos/infraestructure/ArchivoController";
-import { Transferencia } from "pages/bodega/transferencia/domain/Transferencia";
+import { ContenedorSimpleMixin } from 'shared/contenedor/modules/simple/application/ContenedorSimpleMixin';
+import { OrdenCompra } from '../domain/OrdenCompra';
+import { OrdenCompraController } from '../infraestructure/OrdenCompraController';
+import { useNotificaciones } from 'shared/notificaciones';
+import { useNotificacionStore } from 'stores/notificacion';
+import { useQuasar } from 'quasar';
+import { useCargandoStore } from 'stores/cargando';
+import { EmpleadoController } from 'pages/recursosHumanos/empleados/infraestructure/EmpleadoController';
+import { ProveedorController } from 'sistema/proveedores/infraestructure/ProveedorController';
+import { acciones, accionesTabla, autorizaciones, autorizacionesTransacciones, estados } from 'config/utils';
+import { tabOptionsOrdenCompra, opcionesForma, opcionesTiempo, } from 'config/utils_compras_proveedores';
+import { useAuthenticationStore } from 'stores/authentication';
+import { calcularSubtotalConImpuestosLista, calcularSubtotalSinImpuestosLista, formatearFecha, } from 'shared/utils';
+import { CustomActionTable } from 'components/tables/domain/CustomActionTable';
+import { useFiltrosListadosSelects } from 'shared/filtrosListadosGenerales';
+import { usePreordenStore } from 'stores/comprasProveedores/preorden';
+import { ValidarListadoProductos } from '../application/validaciones/ValidarListadoProductos';
+import { useOrdenCompraStore } from 'stores/comprasProveedores/ordenCompra';
+import { CustomActionPrompt } from 'components/tables/domain/CustomActionPrompt';
+import { EmpleadoPermisoController } from 'pages/recursosHumanos/empleados/infraestructure/EmpleadoPermisosController';
+import { useOrquestadorSelectorProductos } from '../application/OrquestadorSelectorProductos';
+import { TareaController } from 'pages/gestionTrabajos/tareas/infraestructure/TareaController';
+import { Empleado } from 'pages/recursosHumanos/empleados/domain/Empleado';
+import { ComportamientoModalesOrdenCompra } from '../application/ComportamientoModalesOrdenCompra';
+import { UnidadMedidaController } from 'pages/bodega/unidades_medidas/infraestructure/UnidadMedidaController';
+import { UnidadMedida } from 'pages/bodega/unidades_medidas/domain/UnidadMedida';
+import { PreordenCompra } from 'pages/comprasProveedores/preordenCompra/domain/PreordenCompra';
+import { ArchivoController } from 'pages/gestionTrabajos/subtareas/modules/gestorArchivosTrabajos/infraestructure/ArchivoController';
+import { Transferencia } from 'pages/bodega/transferencia/domain/Transferencia';
 
 
 export default defineComponent({
@@ -147,7 +147,8 @@ export default defineComponent({
       })
       //comprueba si hay una preorden en el store para llenar automaticamente los datos en la orden de compra
       orden.autorizacion = 1
-      if (preordenStore.preorden.id) {8
+      if (preordenStore.preorden.id) {
+        8
         orden.tiene_preorden = true
         cargarDatosPreorden()
       }
@@ -174,7 +175,7 @@ export default defineComponent({
       else
         soloLectura.value = true
       setTimeout(() => {
-        if(orden.id) refArchivo.value.listarArchivosAlmacenados(orden.id)
+        if (orden.id) refArchivo.value.listarArchivosAlmacenados(orden.id)
       }, 1);
     })
     onModificado((id: number) => {
@@ -306,8 +307,8 @@ export default defineComponent({
       })
     }
     /**
-     * La función "limpiarOrden" reinicia el objeto "orden" reemplazándolo con una nueva instancia
-     * de la clase "OrdenCompra".
+     * La función 'limpiarOrden' reinicia el objeto 'orden' reemplazándolo con una nueva instancia
+     * de la clase 'OrdenCompra'.
      */
     function limpiarOrden() {
       orden.hydrate(new OrdenCompra())
@@ -333,8 +334,8 @@ export default defineComponent({
     }
 
     /**
-     * La función "actualizarListado" se ejecuta cuando se cambia el campo IVA general, itera sobre cada fila en el arreglo "listadoProductos" del
-     * objeto "orden" y llama a la función "calcularValores" para cada fila.
+     * La función 'actualizarListado' se ejecuta cuando se cambia el campo IVA general, itera sobre cada fila en el arreglo 'listadoProductos' del
+     * objeto 'orden' y llama a la función 'calcularValores' para cada fila.
      */
     function actualizarListado() {
       orden.listadoProductos.forEach((fila) => {

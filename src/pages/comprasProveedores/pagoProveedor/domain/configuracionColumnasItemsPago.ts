@@ -1,5 +1,5 @@
-import { ColumnConfig } from "components/tables/domain/ColumnConfig";
-import { ItemPago } from "./ItemPago";
+import { ColumnConfig } from 'components/tables/domain/ColumnConfig';
+import { ItemPago } from './ItemPago';
 
 export const configuracionColumnasItemsPago: ColumnConfig<ItemPago>[] = [
     // {

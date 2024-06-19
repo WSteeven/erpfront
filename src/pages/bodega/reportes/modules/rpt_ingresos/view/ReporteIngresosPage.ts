@@ -1,26 +1,26 @@
 //Dependencias
 import { configuracionColumnasTransaccionIngreso } from 'pages/bodega/transacciones/domain/configuracionColumnasTransaccionIngreso';
-import { defineComponent, reactive, ref } from "vue";
-import { required } from "shared/i18n-validators";
-import { LocalStorage, useQuasar, } from "quasar";
-import useVuelidate from "@vuelidate/core";
+import { defineComponent, reactive, ref } from 'vue';
+import { required } from 'shared/i18n-validators';
+import { LocalStorage, useQuasar, } from 'quasar';
+import useVuelidate from '@vuelidate/core';
 
 //Componentes
-import EssentialTable from "components/tables/view/EssentialTable.vue";
+import EssentialTable from 'components/tables/view/EssentialTable.vue';
 import { Chart as ChartJS, ArcElement, Tooltip, Legend } from 'chart.js'
 import ModalEntidad from 'components/modales/view/ModalEntidad.vue';
 
 
 //Logica y controladores
-import { StatusEssentialLoading } from "components/loading/application/StatusEssentialLoading";
-import { AxiosHttpRepository } from "shared/http/infraestructure/AxiosHttpRepository";
-import { AxiosResponse } from "axios"
-import { apiConfig, endpoints } from "config/api";
-import { useNotificaciones } from "shared/notificaciones";
-import { ContenedorSimpleMixin } from "shared/contenedor/modules/simple/application/ContenedorSimpleMixin";
-import { TransaccionIngresoController } from "pages/bodega/transacciones/infraestructure/TransaccionIngresoController";
-import { Transaccion } from "pages/bodega/transacciones/domain/Transaccion";
-import { EmpleadoController } from "pages/recursosHumanos/empleados/infraestructure/EmpleadoController";
+import { StatusEssentialLoading } from 'components/loading/application/StatusEssentialLoading';
+import { AxiosHttpRepository } from 'shared/http/infraestructure/AxiosHttpRepository';
+import { AxiosResponse } from 'axios'
+import { apiConfig, endpoints } from 'config/api';
+import { useNotificaciones } from 'shared/notificaciones';
+import { ContenedorSimpleMixin } from 'shared/contenedor/modules/simple/application/ContenedorSimpleMixin';
+import { TransaccionIngresoController } from 'pages/bodega/transacciones/infraestructure/TransaccionIngresoController';
+import { Transaccion } from 'pages/bodega/transacciones/domain/Transaccion';
+import { EmpleadoController } from 'pages/recursosHumanos/empleados/infraestructure/EmpleadoController';
 import { accionesTabla, opcionesReportesIngresos, tiposReportesIngresos } from 'config/utils';
 import { MotivoController } from 'pages/administracion/motivos/infraestructure/MotivoController';
 import { ComportamientoModalesTransaccionIngreso } from 'pages/bodega/transacciones/modules/transaccionIngreso/application/ComportamientoModalesGestionarIngreso';

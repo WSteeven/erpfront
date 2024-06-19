@@ -4,7 +4,6 @@ import { Endpoint } from 'shared/http/domain/Endpoint'
 import { ApiError } from '../../error/domain/ApiError'
 import { ResponseItem } from '../domain/ResponseItem'
 import { AxiosError, AxiosResponse } from 'axios'
-import { ParamsType } from 'config/types'
 
 export class GuardableActivityRepository<T> {
   private readonly httpRepository = AxiosHttpRepository.getInstance()

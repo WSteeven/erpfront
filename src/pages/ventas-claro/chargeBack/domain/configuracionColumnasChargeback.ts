@@ -1,5 +1,5 @@
-import { ColumnConfig } from "components/tables/domain/ColumnConfig";
-import { Chargeback } from "./Chargeback";
+import { ColumnConfig } from 'components/tables/domain/ColumnConfig';
+import { Chargeback } from './Chargeback';
 
 export const configuracionColumnasChargeback: ColumnConfig<Chargeback>[] = [
   {

@@ -1,14 +1,14 @@
-import { useNotificaciones } from "shared/notificaciones";
-import { pushEventMesaggeServiceWorker } from "shared/utils";
-import { useAuthenticationStore } from "stores/authentication";
-import { useNotificationRealtimeStore } from "stores/notificationRealtime";
+import { useNotificaciones } from 'shared/notificaciones';
+import { pushEventMesaggeServiceWorker } from 'shared/utils';
+import { useAuthenticationStore } from 'stores/authentication';
+import { useNotificationRealtimeStore } from 'stores/notificationRealtime';
 
 export class MultaConductorPusherEvent {
     store = useAuthenticationStore()
     notificacionesPusherStore = useNotificationRealtimeStore()
 
     start() {
-        const { notificarCorrecto, notificarAdvertencia } = useNotificaciones()
+        const { notificarCorrecto } = useNotificaciones()
         const notificacionStore = this.notificacionesPusherStore
         const pusher = notificacionStore.pusher
 

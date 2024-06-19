@@ -277,7 +277,6 @@ export default defineComponent({
     const visibleColumns = ref(getVisibleColumns(props.configuracionColumnas))
     const refTable = ref()
     const archivos = ref([])
-    const visorArchivosVisible = ref(false)
 
     // Observers
     const seleccionar = () => {
@@ -302,7 +301,7 @@ export default defineComponent({
     /************
      * Funciones
      ************/
-    const verVisorArchivos = ({ entidad, posicion }) => {
+    const verVisorArchivos = ({ posicion }) => {
       archivos.value = listado.value[posicion].archivos
       visibleModalVisorArchivos.abrir()
     }
@@ -381,7 +380,7 @@ export default defineComponent({
 
     const mostrarFiltros = ref(false)
     const tituloBotonFiltros = computed(() =>
-      mostrarFiltros.value ? "Ocultar filtros" : "Mostrar filtros"
+      mostrarFiltros.value ? 'Ocultar filtros' : 'Mostrar filtros'
     )
 
     function filtrar() {

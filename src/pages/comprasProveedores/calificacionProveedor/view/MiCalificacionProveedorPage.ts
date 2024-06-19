@@ -1,20 +1,20 @@
 // Dependencies
-import { defineComponent, ref, onMounted, computed } from "vue"
+import { defineComponent, ref, onMounted, computed } from 'vue'
 
 //Components
-import EssentialTable from "components/tables/view/EssentialTable.vue"
-import GestorArchivos from "components/gestorArchivos/GestorArchivos.vue"
+import EssentialTable from 'components/tables/view/EssentialTable.vue'
+import GestorArchivos from 'components/gestorArchivos/GestorArchivos.vue'
 
 //Logica y controladores
-import { useProveedorStore } from "stores/comprasProveedores/proveedor"
-import { ContenedorSimpleMixin } from "shared/contenedor/modules/simple/application/ContenedorSimpleMixin"
-import { CalificacionProveedor } from "../domain/CalificacionProveedor"
-import { CalificacionProveedorController } from "../infraestructure/CalificacionProveedorController"
-import { OfertaProveedorController } from "sistema/proveedores/modules/ofertas_proveedores/infraestructure/OfertaProveedorController"
-import { configuracionColumnasCriteriosCalificacionesConCalificacion } from "pages/comprasProveedores/criteriosCalificaciones/domain/configuracionColumnasCriteriosCalificacionesConCalificacion"
-import { useCalificacionProveedorStore } from "stores/comprasProveedores/calificacionProveedor"
-import { DetalleDepartamentoProveedorController } from "pages/comprasProveedores/detallesDepartamentosProveedor/infraestructure/DetalleDepartamentoProveedorController"
-import { DetalleDepartamentoProveedor } from "pages/comprasProveedores/detallesDepartamentosProveedor/domain/DetalleDepartamentoProveedor"
+import { useProveedorStore } from 'stores/comprasProveedores/proveedor'
+import { ContenedorSimpleMixin } from 'shared/contenedor/modules/simple/application/ContenedorSimpleMixin'
+import { CalificacionProveedor } from '../domain/CalificacionProveedor'
+import { CalificacionProveedorController } from '../infraestructure/CalificacionProveedorController'
+import { OfertaProveedorController } from 'sistema/proveedores/modules/ofertas_proveedores/infraestructure/OfertaProveedorController'
+import { configuracionColumnasCriteriosCalificacionesConCalificacion } from 'pages/comprasProveedores/criteriosCalificaciones/domain/configuracionColumnasCriteriosCalificacionesConCalificacion'
+import { useCalificacionProveedorStore } from 'stores/comprasProveedores/calificacionProveedor'
+import { DetalleDepartamentoProveedorController } from 'pages/comprasProveedores/detallesDepartamentosProveedor/infraestructure/DetalleDepartamentoProveedorController'
+import { DetalleDepartamentoProveedor } from 'pages/comprasProveedores/detallesDepartamentosProveedor/domain/DetalleDepartamentoProveedor'
 
 //Logica y controladores
 
@@ -57,7 +57,7 @@ export default defineComponent({
             calificacionProveedorStore.idDepartamento = proveedorStore.idDepartamento
             await calificacionProveedorStore.consultarCalificacionMiDepartamento()
             departamentosCalificadores.value = calificacionProveedorStore.departamentosCalificadoresProveedor
-                console.log(departamentosCalificadores.value)
+            console.log(departamentosCalificadores.value)
 
             await calificacionProveedorStore.departamentosCalificadoresProveedor.forEach(async (v: any, index) => {
                 console.log(v)

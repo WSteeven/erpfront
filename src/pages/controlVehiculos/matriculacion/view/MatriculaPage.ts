@@ -1,28 +1,28 @@
 // Dependencies
-import { configuracionColumnasMatriculas } from "../domain/configuracionColumnasMatriculas";
-import { required, requiredIf } from "shared/i18n-validators";
-import { defineComponent, reactive, ref } from "vue";
-import useVuelidate from "@vuelidate/core";
+import { configuracionColumnasMatriculas } from '../domain/configuracionColumnasMatriculas';
+import { required, requiredIf } from 'shared/i18n-validators';
+import { defineComponent, reactive, ref } from 'vue';
+import useVuelidate from '@vuelidate/core';
 
 //Components
-import TabLayoutFilterTabs2 from "shared/contenedor/modules/simple/view/TabLayoutFilterTabs2.vue";
+import TabLayoutFilterTabs2 from 'shared/contenedor/modules/simple/view/TabLayoutFilterTabs2.vue';
 
 
 // Logica y Controladores
-import { ContenedorSimpleMixin } from "shared/contenedor/modules/simple/application/ContenedorSimpleMixin";
-import { Matricula } from "../domain/Matricula";
-import { MatricularController } from "../infraestructure/MatriculaController";
-import { useNotificaciones } from "shared/notificaciones";
-import { VehiculoController } from "pages/controlVehiculos/vehiculos/infraestructure/VehiculoController";
-import { useFiltrosListadosSelects } from "shared/filtrosListadosGenerales";
-import { tabOptionsMatriculas } from "config/vehiculos.utils";
-import { obtenerFechaActual, obtenerMesMatricula, obtenerPrimerUltimoDiaMes, obtenerUltimoDigito, sumarFechas } from "shared/utils";
-import { Vehiculo } from "pages/controlVehiculos/vehiculos/domain/Vehiculo";
-import { date } from "quasar";
-import { CustomActionTable } from "components/tables/domain/CustomActionTable";
-import { acciones, maskFecha } from "config/utils";
-import { useVehiculoStore } from "stores/vehiculos/vehiculo";
-import { CustomActionPrompt } from "components/tables/domain/CustomActionPrompt";
+import { ContenedorSimpleMixin } from 'shared/contenedor/modules/simple/application/ContenedorSimpleMixin';
+import { Matricula } from '../domain/Matricula';
+import { MatricularController } from '../infraestructure/MatriculaController';
+import { useNotificaciones } from 'shared/notificaciones';
+import { VehiculoController } from 'pages/controlVehiculos/vehiculos/infraestructure/VehiculoController';
+import { useFiltrosListadosSelects } from 'shared/filtrosListadosGenerales';
+import { tabOptionsMatriculas } from 'config/vehiculos.utils';
+import { obtenerFechaActual, obtenerMesMatricula, obtenerPrimerUltimoDiaMes, obtenerUltimoDigito, sumarFechas } from 'shared/utils';
+import { Vehiculo } from 'pages/controlVehiculos/vehiculos/domain/Vehiculo';
+import { date } from 'quasar';
+import { CustomActionTable } from 'components/tables/domain/CustomActionTable';
+import { acciones, maskFecha } from 'config/utils';
+import { useVehiculoStore } from 'stores/vehiculos/vehiculo';
+import { CustomActionPrompt } from 'components/tables/domain/CustomActionPrompt';
 
 export default defineComponent({
     components: { TabLayoutFilterTabs2 },
@@ -164,7 +164,7 @@ export default defineComponent({
             titulo: 'Valor a Pagar',
             color: 'primary',
             tooltip: 'Configurar Valor a Pagar',
-            icono:'bi-wrench',
+            icono: 'bi-wrench',
             accion: ({ entidad }) => {
                 const data: CustomActionPrompt = {
                     titulo: 'Valor estimado a Pagar',
@@ -176,7 +176,7 @@ export default defineComponent({
                     requerido: true,
                     accion: async (data) => {
                         matriculaStore.idMatricula = entidad.id
-                        const result = await matriculaStore.setValorEstimadoPagar({valor_estimado_pagar: data})
+                        const result = await matriculaStore.setValorEstimadoPagar({ valor_estimado_pagar: data })
                         console.log(result)
                         entidad.valor_estimado_pagar = result.valor_estimado_pagar
                     }

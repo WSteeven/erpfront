@@ -1,4 +1,4 @@
-import { TabOption } from "components/tables/domain/TabOption";
+import { TabOption } from 'components/tables/domain/TabOption';
 
 export const tabOptionsEstadosRolPagoEmpleado: TabOption[] = [
   { label: 'Todo', value: '' },
@@ -32,13 +32,13 @@ export const estadosAlimentacion = {
   finalizado: '1',
 }
 export const parentezcos = [
-  { nombre: 'CÓNYUGE', value: 'CÓNYUGE'  },
+  { nombre: 'CÓNYUGE', value: 'CÓNYUGE' },
   { nombre: 'HIJO', value: 'HIJO' },
   { nombre: 'HIJA', value: 'HIJA' },
 ]
 
 export const autoidentificaciones_etnicas = [
-  { nombre: 'INDIGENA', value: 'INDIGENA'  },
+  { nombre: 'INDIGENA', value: 'INDIGENA' },
   { nombre: 'AFRODECENDIENTE/AFROECUATORIANO', value: 'AFRODECENDIENTE' },
   { nombre: 'MESTIZO', value: 'MESTIZO' },
   { nombre: 'BLANCO', value: 'BLANCO' },

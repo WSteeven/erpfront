@@ -1,7 +1,7 @@
-import { CustomActionTable } from "components/tables/domain/CustomActionTable"
-import { SolicitudExamen } from "../domain/SolicitudExamen"
-import { Ref } from "vue"
-import { estadosSolicitudesExamenes } from "config/utils/medico"
+import { CustomActionTable } from 'components/tables/domain/CustomActionTable'
+import { SolicitudExamen } from '../domain/SolicitudExamen'
+import { Ref } from 'vue'
+import { estadosSolicitudesExamenes } from 'config/utils/medico'
 
 export function useBotoncesTablaSolicitudExamen(tabEstadoSolicitudExamen: Ref<string>) {
 
@@ -10,7 +10,7 @@ export function useBotoncesTablaSolicitudExamen(tabEstadoSolicitudExamen: Ref<st
     icono: 'bi-cash-coin',
     color: 'positive',
     visible: () => tabEstadoSolicitudExamen.value === estadosSolicitudesExamenes.SOLICITADO.value,
-    accion: ({ entidad }) => {
+    accion: () => {
       /*medicoStore.accion = acciones.consultar
       const examenesSolicitados: ExamenSolicitado[] = mapearExamenesSolicitados(entidad.examenes_solicitados)
 

@@ -1,21 +1,13 @@
-import { CausaIntervencion } from 'pages/gestionTrabajos/causasIntervenciones/domain/CausaIntervencion'
-import {
-  imprimirArchivo,
-  isAxiosError,
-  notificarMensajesError,
-} from 'shared/utils'
+import {imprimirArchivo} from 'shared/utils'
 import { CustomActionPrompt } from 'components/tables/domain/CustomActionPrompt'
 import { CustomActionTable } from 'components/tables/domain/CustomActionTable'
 import { useAuthenticationStore } from 'stores/authentication'
 import { useNotificaciones } from 'shared/notificaciones'
-import { acciones, estadosRolPago } from 'config/utils'
+import {estadosRolPago } from 'config/utils'
 import { RolPago } from 'pages/recursosHumanos/rol-pago/domain/RolPago'
-import { Ref, reactive } from 'vue'
-import { clientes } from 'config/clientes'
-import { useRolPagoStore } from 'stores/rolPago'
+import { reactive } from 'vue'
 import { AxiosHttpRepository } from 'shared/http/infraestructure/AxiosHttpRepository'
 import { apiConfig, endpoints } from 'config/api'
-import { CambiarEstadoRolPago } from './CambiarEstadoRolPago'
 import { RolPagoMes } from 'pages/recursosHumanos/rol-pago-mes/domain/RolPagoMes'
 
 export const useBotonesImpresionTablaRolPago = (rolPago: RolPagoMes) => {
@@ -39,7 +31,7 @@ export const useBotonesImpresionTablaRolPago = (rolPago: RolPagoMes) => {
     visible: ({ entidad }) =>
       [estadosRolPago.EJECUTANDO, estadosRolPago.REALIZADO].includes(
         entidad.estado
-      ) && authenticationStore.esRecursosHumanos&&!entidad.es_quincena,
+      ) && authenticationStore.esRecursosHumanos && !entidad.es_quincena,
     accion: ({ entidad }) => {
       generar_reporte(entidad)
     },
@@ -62,7 +54,7 @@ export const useBotonesImpresionTablaRolPago = (rolPago: RolPagoMes) => {
       apiConfig.URL_BASE +
       '/' +
       axios.getEndpoint(endpoints.imprimir_rol_pago_general) +
-      rolPago.id+'?tipo='+tipo
+      rolPago.id + '?tipo=' + tipo
 
     imprimirArchivo(url_pdf, 'GET', 'blob', tipo, filename, null)
   }
@@ -70,7 +62,7 @@ export const useBotonesImpresionTablaRolPago = (rolPago: RolPagoMes) => {
     titulo: 'Generar Reporte',
     icono: 'bi-file-earmark-ruled',
     color: 'primary',
-   // visible: ()=>  rolPago.finalizado!=null ? rolPago.finalizado:false,
+    // visible: ()=>  rolPago.finalizado!=null ? rolPago.finalizado:false,
     accion: () => {
       const config: CustomActionPrompt = reactive({
         mensaje: 'Confirme el tipo de reporte',
@@ -97,9 +89,9 @@ export const useBotonesImpresionTablaRolPago = (rolPago: RolPagoMes) => {
     btnGenerarReporte,
   }
 }
-function confirmarFinalizar(arg0: {
-  entidad: any
-  causa_intervencion_id: any
-}) {
-  throw new Error('Function not implemented.')
-}
+// function confirmarFinalizar(arg0: {
+//   entidad: any
+//   causa_intervencion_id: any
+// }) {
+//   throw new Error('Function not implemented.')
+// }

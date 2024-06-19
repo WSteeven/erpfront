@@ -15,7 +15,6 @@ export class LoginController {
       const usuario = await this.store.login(userLogin)
       const roles = usuario.roles
 
-      const existeYEsArreglo = typeof (roles) === 'object' && roles
 
       //if (existeYEsArreglo && (this.store.extraerRol(roles, rolesSistema.tecnico_lider) || this.store.extraerRol(roles, rolesSistema.tecnico_secretario))) {
       // console.log(roles)

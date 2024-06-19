@@ -1,15 +1,15 @@
-import { defineComponent, ref } from "vue";
-import { configuracionColumnasItemsPreorden } from "../domain/configuracionColumnasItemsPreordenes";
+import { defineComponent, ref } from 'vue';
+import { configuracionColumnasItemsPreorden } from '../domain/configuracionColumnasItemsPreordenes';
 
 //Componentes
-import EssentialSelectableTable from "components/tables/view/EssentialSelectableTable.vue"
-import EssentialTable from "components/tables/view/EssentialTable.vue"
+import EssentialSelectableTable from 'components/tables/view/EssentialSelectableTable.vue'
+import EssentialTable from 'components/tables/view/EssentialTable.vue'
 
-import { usePreordenStore } from "stores/comprasProveedores/preorden";
+import { usePreordenStore } from 'stores/comprasProveedores/preorden';
 
 export default defineComponent({
     components: { EssentialSelectableTable, EssentialTable },
-    emits:['cerrar-modal', 'guardado'],
+    emits: ['cerrar-modal', 'guardado'],
     setup(props, { emit }) {
         const preordenStore = usePreordenStore()
         const productosSeleccionados = ref([])

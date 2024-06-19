@@ -1,7 +1,7 @@
 import { ColumnConfig } from 'components/tables/domain/ColumnConfig'
 import { FrPuestoTrabajoActual } from './FrPuestoTrabajoActual'
 
-export const configuracionColumnasFrPuestoTrabajoActual: ColumnConfig<any>[] = [
+export const configuracionColumnasFrPuestoTrabajoActual: ColumnConfig<FrPuestoTrabajoActual>[] = [
   {
     name: 'puesto_trabajo',
     field: 'puesto_trabajo',

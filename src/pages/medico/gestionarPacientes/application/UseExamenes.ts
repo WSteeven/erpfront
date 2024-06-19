@@ -25,7 +25,7 @@ export function useExamenes() {
 
   const examenes: Ref<Examen[]> = ref([])
   const solicitudesExamenes: Ref<SolicitudExamen[]> = ref([])
-  const solicitudesExamenesAprobadas: Ref<SolicitudExamen[]> = ref([])
+  // const solicitudesExamenesAprobadas: Ref<SolicitudExamen[]> = ref([])
   const registros: Ref<RegistroEmpleadoExamen[]> = ref([])
   // const listadoGeneral: Ref<Examen | any[]> = ref([])
 
@@ -83,17 +83,17 @@ export function useExamenes() {
     }
   }
 
-  const consultarSolicitudesExamenesAprobadas = async (tab: number, idRegistroEmpleadoExamen: number) => {
-    cargando.activar()
-    try {
-      const { result } = await solicitudExamenController.listar({ registro_empleado_examen_id: idRegistroEmpleadoExamen, estado_solicitud_examen: tab })
-      solicitudesExamenesAprobadas.value = result
-    } catch (e) {
-      console.log(e)
-    } finally {
-      cargando.desactivar()
-    }
-  }
+  // const consultarSolicitudesExamenesAprobadas = async (tab: number, idRegistroEmpleadoExamen: number) => {
+  //   cargando.activar()
+  //   try {
+  //     const { result } = await solicitudExamenController.listar({ registro_empleado_examen_id: idRegistroEmpleadoExamen, estado_solicitud_examen: tab })
+  //     solicitudesExamenesAprobadas.value = result
+  //   } catch (e) {
+  //     console.log(e)
+  //   } finally {
+  //     cargando.desactivar()
+  //   }
+  // }
 
   const guardarRegistro = async (motivo: string, idEmpleado: number, tipoProcesoExamen: string) => {
     const registro = new RegistroEmpleadoExamen()

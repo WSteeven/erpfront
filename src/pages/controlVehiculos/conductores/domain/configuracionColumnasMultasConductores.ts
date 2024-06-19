@@ -1,5 +1,5 @@
-import { ColumnConfig } from "components/tables/domain/ColumnConfig";
-import { MultaConductor } from "../modules/multas/domain/MultaConductor";
+import { ColumnConfig } from 'components/tables/domain/ColumnConfig';
+import { MultaConductor } from '../modules/multas/domain/MultaConductor';
 
 export const configuracionColumnasMultasConductores: ColumnConfig<MultaConductor>[] = [
     {

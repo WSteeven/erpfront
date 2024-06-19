@@ -1,4 +1,4 @@
-import { iconos } from "config/iconosNotificacionesRealtime";
+import { iconos } from 'config/iconosNotificacionesRealtime';
 
 export class ObtenerIconoNotificacionRealtime {
   obtener(tipoNotificacion: string) {

@@ -59,9 +59,9 @@ export abstract class TransaccionSimpleController<T extends EntidadAuditable>
     // this.importableRepository = new ImportableRepository(endpoint)
   }
 
-  async listarActividades<C = T>(id: number, params?: any) {
-    return this.listableActivityRepository.listarActividades<C>(id, params)
-  }
+  // async listarActividades<C = T>(id: number, params?: any) {
+    // return this.listableActivityRepository.listarActividades<C>(id, params)
+  // }
   async listarFiles<C = T>(id: number, params?: any) {
     return this.listableFileRepository.listarArchivos<C>(id, params)
   }
@@ -105,10 +105,10 @@ export abstract class TransaccionSimpleController<T extends EntidadAuditable>
     return await this.editableRepository.editarParcial(id, data, params)
   }
 
-  async eliminarFile(id: number, params?: any) {
+  async eliminarFile(id: number) {
     return await this.eliminableFileRepository.eliminarFile(id)
   }
-  async eliminar(id: number, params?: any) {
+  async eliminar(id: number) {
     return await this.eliminableRepository.eliminar(id) //, params)
   }
 

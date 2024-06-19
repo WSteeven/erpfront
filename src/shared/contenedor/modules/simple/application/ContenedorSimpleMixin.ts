@@ -260,7 +260,7 @@ export class ContenedorSimpleMixin<T extends EntidadAuditable> extends Contenedo
       if (data.id === null) {
         return this.notificaciones.notificarAdvertencia('No se puede eliminar el recurso con id null')
       }
-      this.controllerFiles?.eliminarFile(data.id, this.argsDefault).then(({ response }) => {
+      this.controllerFiles?.eliminarFile(data.id).then(({ response }) => {
         this.notificaciones.notificarCorrecto(response.data.mensaje)
         this.eliminarElementoListaArchivosActual(data)
         // this.reestablecer()
@@ -294,7 +294,8 @@ export class ContenedorSimpleMixin<T extends EntidadAuditable> extends Contenedo
   private async listarActividades(id: number, params?: ParamsType, append = false) {
     this.statusEssentialLoading.activar()
     try {
-      const { result } = await this.controller.listarActividades(id, params)
+      // const { result } = await this.controller.listarActividades(id, params)
+      const result  = []
       if (result.length == 0) this.notificaciones.notificarCorrecto('Aún no se han agregado elementos')
 
       if (append) this.refs.listadoActividades.value.push(...result)
@@ -309,10 +310,9 @@ export class ContenedorSimpleMixin<T extends EntidadAuditable> extends Contenedo
    * Aqui se guardan los archivos
    * @param data
    * @param agregarAlListado
-   * @param params
    * @returns
    */
-  private async guardarArchivos(id: number, data: T, params?: ParamsType): Promise<any> {
+  private async guardarArchivos(id: number, data: T): Promise<any> {
 
     this.statusEssentialLoading.activar()
     try {
@@ -333,7 +333,7 @@ export class ContenedorSimpleMixin<T extends EntidadAuditable> extends Contenedo
     }
   }
 
-  private async guardarActividades(id: number, data: T, params?: ParamsType): Promise<any> {
+  private async guardarActividades(id: number, data: T): Promise<any> {
     this.statusEssentialLoading.activar()
     try {
       const { response } = await this.controller.guardarActivities(id, data)
@@ -460,7 +460,7 @@ export class ContenedorSimpleMixin<T extends EntidadAuditable> extends Contenedo
       }
 
       this.controller
-        .eliminar(data.id, this.argsDefault)
+        .eliminar(data.id)
         .then(({ response }) => {
           this.notificaciones.notificarCorrecto(response.data.mensaje)
           this.eliminarElementoListaActual(data)
@@ -492,10 +492,10 @@ export class ContenedorSimpleMixin<T extends EntidadAuditable> extends Contenedo
 
   /* private descargarArchivoBinario(formato: string) {
     if (this.refs.listado.value.length !== 0) {
-      const paramsListado: { [key: string]: any } = { opcion: "print" }
+      const paramsListado: { [key: string]: any } = { opcion: 'print' }
 
-      if (formato !== "pdf") {
-        paramsListado.opcion = "export"
+      if (formato !== 'pdf') {
+        paramsListado.opcion = 'export'
         paramsListado.format = formato
       }
 
@@ -506,7 +506,7 @@ export class ContenedorSimpleMixin<T extends EntidadAuditable> extends Contenedo
         })
         .catch(() =>
           this.notificaciones.notificarError(
-            "No se consiguio obtener el archivo del servidor."
+            'No se consiguio obtener el archivo del servidor.'
           )
         )
     }

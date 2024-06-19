@@ -8,17 +8,8 @@ import { computed, ref } from 'vue'
 import { LocalStorage } from 'quasar'
 import { AxiosError, AxiosResponse } from 'axios'
 import { Empleado } from 'pages/recursosHumanos/empleados/domain/Empleado'
-import { EstadosTransaccionController } from 'pages/administracion/estados_transacciones/infraestructure/EstadosTransaccionController'
-import { AutorizacionController } from 'pages/administracion/autorizaciones/infraestructure/AutorizacionController'
-import { SucursalController } from 'pages/administracion/sucursales/infraestructure/SucursalController'
-import { CondicionController } from 'pages/administracion/condiciones/infraestructure/CondicionController'
 import { ForgotPassword } from 'sistema/authentication/forgotPassword/domain/ForgotPassword'
 import { ResetPassword } from 'sistema/authentication/resetPassword/domain/ResetPassword'
-import { DetalleFondoController } from 'pages/fondosRotativos/detalleFondo/infrestructure/DetalleFondoController'
-import { SubDetalleFondoController } from 'pages/fondosRotativos/subDetalleFondo/infrestructure/SubDetalleFondoController'
-import { CantonController } from 'sistema/ciudad/infraestructure/CantonControllerontroller'
-import { TareaController } from 'pages/gestionTrabajos/tareas/infraestructure/TareaController'
-import { EmpleadoController } from 'pages/recursosHumanos/empleados/infraestructure/EmpleadoController'
 import { UltimoSaldoController } from 'pages/fondosRotativos/reportes/reporteSaldoActual/infrestucture/UltimoSaldoController'
 import { useListadosSistemaStore } from './listadosSistema'
 import { UserLoginPostulante } from 'pages/recursosHumanos/seleccion_contratacion_personal/login-postulante/domain/UserLoginPostulante'
@@ -156,65 +147,6 @@ export const useAuthenticationStore = defineStore('authentication', () => {
       setSaldo(0)
     }
   }
-
-  /** BORRAR
-   * Función para cargar datos en el Local Storage
-   */
-  /* async function cargarDatosLS() {
-    const autorizaciones = (
-      await new AutorizacionController().listar({ campos: 'id,nombre' })
-    ).result
-    LocalStorage.set('autorizaciones', JSON.stringify(autorizaciones))
-    const sucursales = (
-      await new SucursalController().listar({ campos: 'id,lugar,cliente_id' })
-    ).result
-    LocalStorage.set('sucursales', JSON.stringify(sucursales))
-    const condiciones = (
-      await new CondicionController().listar({ campos: 'id,nombre' })
-    ).result
-    LocalStorage.set('condiciones', JSON.stringify(condiciones))
-    const estados_transacciones = (
-      await new EstadosTransaccionController().listar({ campos: 'id,nombre' })
-    ).result
-    LocalStorage.set(
-      'estados_transacciones',
-      JSON.stringify(estados_transacciones)
-    )
-    const cantones = (
-      await new CantonController().listar({ campos: 'id,canton' })
-    ).result
-    LocalStorage.set('cantones', JSON.stringify(cantones))
-    const detalles = (
-      await new DetalleFondoController().listar({ campos: 'id,descripcion' })
-    ).result
-    LocalStorage.set('detalles', JSON.stringify(detalles))
-    const sub_detalles = (
-      await new SubDetalleFondoController().listar({ campos: 'id,descripcion' })
-    ).result
-    LocalStorage.set('sub_detalles', JSON.stringify(sub_detalles))
-    const tareas = (await new TareaController().listar({ campos: 'id,titulo' }))
-      .result
-    LocalStorage.set('tareas', JSON.stringify(tareas))
-    const usuariosInactivos = (
-      await new EmpleadoController().listar({
-        campos: 'id,nombres,apellidos',
-        estado: 0,
-      })
-    ).result
-    LocalStorage.set('usuariosInactivos', JSON.stringify(usuariosInactivos))
-  } */
-
-  /**
-   * Función para limpiar los datos del Local Storage
-   */
-  /* function limpiarLS() {
-    LocalStorage.remove('autorizaciones')
-    LocalStorage.remove('sucursales')
-    LocalStorage.remove('condiciones')
-    LocalStorage.remove('estados_transacciones')
-    LocalStorage.remove('lugares')
-    LocalStorage.remove('detalles')
-  } */
 
   async function logout() {
     await axios.post(axios.getEndpoint(endpoints.logout))

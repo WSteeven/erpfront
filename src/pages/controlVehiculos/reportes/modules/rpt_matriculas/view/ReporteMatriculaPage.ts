@@ -1,29 +1,29 @@
 //Dependencias
-import { configuracionColumnasMatriculas } from "../domain/configuracionColumnasMatriculas";
-import { defineComponent, reactive, ref } from "vue";
-import { AxiosResponse } from "axios";
-import { useQuasar } from "quasar";
+import { configuracionColumnasMatriculas } from '../domain/configuracionColumnasMatriculas';
+import { defineComponent, reactive, ref } from 'vue';
+import { AxiosResponse } from 'axios';
+import { useQuasar } from 'quasar';
 
 
 // Componentes
-import GraficoGenerico from "components/chartJS/GraficoGenerico.vue";
-import EssentialTable from "components/tables/view/EssentialTable.vue";
-import ModalEntidad from "components/modales/view/ModalEntidad.vue";
+import GraficoGenerico from 'components/chartJS/GraficoGenerico.vue';
+import EssentialTable from 'components/tables/view/EssentialTable.vue';
+import ModalEntidad from 'components/modales/view/ModalEntidad.vue';
 
 //Logica y controladores
-import { StatusEssentialLoading } from "components/loading/application/StatusEssentialLoading";
-import { apiConfig, endpoints } from "config/api";
-import { optionsPie } from "config/graficoGenerico";
-import { Matricula } from "pages/controlVehiculos/matriculacion/domain/Matricula";
-import { MatricularController } from "pages/controlVehiculos/matriculacion/infraestructure/MatriculaController";
-import { ContenedorSimpleMixin } from "shared/contenedor/modules/simple/application/ContenedorSimpleMixin";
-import { AxiosHttpRepository } from "shared/http/infraestructure/AxiosHttpRepository";
-import { useNotificaciones } from "shared/notificaciones";
-import { imprimirArchivo } from "shared/utils";
-import { useCargandoStore } from "stores/cargando";
-import { useNotificacionStore } from "stores/notificacion";
-import { accionesTabla } from "config/utils";
-import { CustomActionTable } from "components/tables/domain/CustomActionTable";
+import { StatusEssentialLoading } from 'components/loading/application/StatusEssentialLoading';
+import { apiConfig, endpoints } from 'config/api';
+import { optionsPie } from 'config/graficoGenerico';
+import { Matricula } from 'pages/controlVehiculos/matriculacion/domain/Matricula';
+import { MatricularController } from 'pages/controlVehiculos/matriculacion/infraestructure/MatriculaController';
+import { ContenedorSimpleMixin } from 'shared/contenedor/modules/simple/application/ContenedorSimpleMixin';
+import { AxiosHttpRepository } from 'shared/http/infraestructure/AxiosHttpRepository';
+import { useNotificaciones } from 'shared/notificaciones';
+import { imprimirArchivo } from 'shared/utils';
+import { useCargandoStore } from 'stores/cargando';
+import { useNotificacionStore } from 'stores/notificacion';
+import { accionesTabla } from 'config/utils';
+import { CustomActionTable } from 'components/tables/domain/CustomActionTable';
 
 export default defineComponent({
     components: { EssentialTable, GraficoGenerico },

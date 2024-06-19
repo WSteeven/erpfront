@@ -1,24 +1,18 @@
-import { DesignarSecretarioGrupoController } from '../infraestructure/DesignarSecretarioGrupoController'
-import { isAxiosError, notificarMensajesError, quitarItemDeArray, stringToArray } from 'shared/utils'
-import { DesignarLiderGrupoController } from '../infraestructure/DesignarLiderGrupoController'
 import { CustomActionTable } from 'components/tables/domain/CustomActionTable'
 import { Empleado } from 'pages/recursosHumanos/empleados/domain/Empleado'
 import { useNotificaciones } from 'shared/notificaciones'
-import { acciones, rolesSistema } from 'config/utils'
-import { modosAsignacionTrabajo } from 'config/tareas.utils'
+import { acciones } from 'config/utils'
 import { ComputedRef, ref, Ref } from 'vue'
 import { EmpleadoGrupo } from '../domain/EmpleadoGrupo'
 
 export const useBotonesTablaDesignacionSubtarea = (empleadosSeleccionados: Ref<Empleado[]>, data: ComputedRef) => {
   const refEmpleadosGrupo = ref()
   const empleadoGrupoQuitar = ref()
-  const asignarLider = ref(false)
-  const asignarSecretario = ref(false)
   let emit
 
-  const { accion, modo_asignacion_trabajo, grupo } = data.value
+  const { accion } = data.value
 
-  const { notificarCorrecto, notificarAdvertencia, confirmar } = useNotificaciones()
+  const {  notificarAdvertencia, confirmar } = useNotificaciones()
 
   function setEmit(emitir) {
     emit = emitir

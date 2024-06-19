@@ -1,7 +1,7 @@
 import { defineStore } from 'pinia'
 import { ref } from 'vue'
 import { AxiosHttpRepository } from 'shared/http/infraestructure/AxiosHttpRepository'
-import { AxiosError, AxiosResponse } from 'axios'
+import {  AxiosResponse } from 'axios'
 import { endpoints } from 'src/config/api'
 
 export const useRecursosHumanosStore = defineStore('fondo_rotativo', () => {

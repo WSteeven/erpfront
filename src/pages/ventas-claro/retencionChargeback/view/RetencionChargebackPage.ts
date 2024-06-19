@@ -5,8 +5,8 @@ import { configuracionColumnasRetencionesChargebacks } from '../domain/configura
 import TabLayoutFilterTabs2 from 'shared/contenedor/modules/simple/view/TabLayoutFilterTabs2.vue';
 
 //Logica y controladores
-import { ContenedorSimpleMixin } from "shared/contenedor/modules/simple/application/ContenedorSimpleMixin";
-import { defineComponent, ref } from "vue";
+import { ContenedorSimpleMixin } from 'shared/contenedor/modules/simple/application/ContenedorSimpleMixin';
+import { defineComponent, ref } from 'vue';
 import { Retencion } from '../domain/Retencion';
 import { RetencionController } from '../infraestructure/RetencionController';
 import { useNotificaciones } from 'shared/notificaciones';

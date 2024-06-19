@@ -1,9 +1,9 @@
 //Dependencias
 import { configuracionColumnasPlanMantenimiento } from '../domain/configuracionColumnasPlanMantenimiento';
 import { configuracionColumnasServicios } from 'pages/controlVehiculos/servicios/domain/configuracionColumnasServicios';
-import { required } from "shared/i18n-validators";
+import { required } from 'shared/i18n-validators';
 import { useVuelidate } from '@vuelidate/core'
-import { computed, defineComponent, reactive, ref } from "vue";
+import { computed, defineComponent, reactive, ref } from 'vue';
 
 // componentes
 import TabLayout from 'shared/contenedor/modules/simple/view/TabLayout.vue'

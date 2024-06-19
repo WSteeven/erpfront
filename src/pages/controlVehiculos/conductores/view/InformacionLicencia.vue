@@ -299,7 +299,6 @@ import { ref } from 'vue'
 import { useConductorStore } from 'stores/vehiculos/conductor'
 import { MultaConductorController } from '../modules/multas/infraestructure/MultaConductorController'
 import { FechaLicencia } from '../domain/FechaLicencia'
-import { Ref } from 'vue'
 import { helpers } from '@vuelidate/validators'
 import { addDay, addYear, format } from '@formkit/tempo'
 
@@ -328,7 +327,6 @@ const { setValidador } = props.mixin.useComportamiento()
 const { confirmar, prompt } = useNotificaciones()
 const modales = new ComportamientoModalesConductores()
 const conductorStore = useConductorStore()
-const licencias: Ref<FechaLicencia[]> = ref([])
 const conductor = props.conductor
 const mostrarSolicitarFecha = ref(false)
 const dataMulta = {

@@ -1,8 +1,6 @@
 import { useAuthenticationStore } from 'stores/authentication'
 import { useNotificationRealtimeStore } from 'stores/notificationRealtime'
 import { pushEventMesaggeServiceWorker } from 'shared/utils'
-import { Ref } from 'vue'
-import { computed } from 'vue'
 
 export class TicketPusherEvent {
 
