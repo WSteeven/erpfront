@@ -1,4 +1,4 @@
-import { TabOption } from "components/tables/domain/TabOption"
+import { TabOption } from 'components/tables/domain/TabOption'
 
 export const opcionesTipoContribuyente = [
   { value: 'PERSONA NATURAL', label: 'PERSONA NATURAL' },

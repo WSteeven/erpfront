@@ -13,7 +13,7 @@ import { Transaccion } from 'pages/bodega/transacciones/domain/Transaccion';
 import { TransaccionController } from 'pages/bodega/transacciones/infraestructure/TransaccionController';
 import { ContenedorSimpleMixin } from 'shared/contenedor/modules/simple/application/ContenedorSimpleMixin';
 import { useTransaccionEgresoStore } from 'stores/transaccionEgreso';
-import { defineComponent } from "vue";
+import { defineComponent } from 'vue';
 import { ComportamientoModalesGestionarEgreso } from 'pages/bodega/transacciones/modules/GestionarEgreso/application/ComportamientoModalesGestionarEgreso';
 
 
@@ -40,11 +40,11 @@ export default defineComponent({
         filtrarTabs('PENDIENTE')
 
 
-        const botonVerTransaccion:CustomActionTable={
-            titulo:'',
-            icono:'bi-eye',
-            color:'primary',
-            accion: async({entidad})=>{
+        const botonVerTransaccion: CustomActionTable = {
+            titulo: '',
+            icono: 'bi-eye',
+            color: 'primary',
+            accion: async ({ entidad }) => {
                 transaccionStore.idTransaccion = entidad.id
                 await transaccionStore.showPreview()
                 modales.abrirModalEntidad('VisualizarEgresoPage')

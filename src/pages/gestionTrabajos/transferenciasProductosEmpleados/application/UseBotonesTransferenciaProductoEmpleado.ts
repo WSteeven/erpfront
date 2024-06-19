@@ -24,7 +24,8 @@ export function useBotonesTransferenciaProductoEmpleado(listado, tabSeleccionado
           mensaje: 'Ingresa el motivo de la anulación',
           accion: async (data) => {
             try {
-              const { result } = await new CambiarEstadoDevolucion().anular(entidad.id, data)
+              // const { result } = await new CambiarEstadoDevolucion().anular(entidad.id, data)
+              await new CambiarEstadoDevolucion().anular(entidad.id, data)
               notificarCorrecto('Devolución anulada exitosamente!')
               if (posicion >= 0) {
                 listado.value.splice(posicion, 1,)
@@ -46,7 +47,7 @@ export function useBotonesTransferenciaProductoEmpleado(listado, tabSeleccionado
     titulo: 'Imprimir',
     color: 'secondary',
     icono: 'bi-printer',
-    accion: async ({ entidad, posicion }) => {
+    accion: async ({ entidad }) => {
       devolucionStore.idDevolucion = entidad.id
       await devolucionStore.imprimirPdf()
     },
@@ -57,12 +58,12 @@ export function useBotonesTransferenciaProductoEmpleado(listado, tabSeleccionado
     titulo: 'Gestionar',
     color: 'primary',
     icono: 'bi-pencil-square',
-    accion: ({ entidad, posicion }) => {
+    accion: ({ entidad }) => {
       devolucionStore.devolucion = entidad
       console.log('Devolución a ingresar a bodega es: ', devolucionStore.devolucion)
       router.push('transacciones-ingresos')
     },
-    visible: ({ entidad }) => (tabSeleccionado.value == 'APROBADO' || tabSeleccionado.value == 'PARCIAL') && store.esBodeguero ? true : false
+    visible: () => (tabSeleccionado.value == 'APROBADO' || tabSeleccionado.value == 'PARCIAL') && store.esBodeguero ? true : false
   }
 
   return {

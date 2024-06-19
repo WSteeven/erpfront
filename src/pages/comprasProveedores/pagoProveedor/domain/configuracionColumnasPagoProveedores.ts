@@ -1,6 +1,5 @@
-import { ColumnConfig } from "components/tables/domain/ColumnConfig";
-import { ExtensionConyugal } from "pages/recursosHumanos/extension-conyugal/domain/ExtensionConyugal";
-import { PagoProveedor } from "./PagoProveedor";
+import { ColumnConfig } from 'components/tables/domain/ColumnConfig';
+import { PagoProveedor } from './PagoProveedor';
 
 export const configuracionColumnasPagoProveedores: ColumnConfig<PagoProveedor>[] = [
     {

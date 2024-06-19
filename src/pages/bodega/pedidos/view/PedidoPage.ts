@@ -217,10 +217,10 @@ export default defineComponent({
     }
 
     /**
-     * La función "limpiarCampos" borra los campos "etapa" o "tarea" si los parámetros correspondientes
+     * La función 'limpiarCampos' borra los campos 'etapa' o 'tarea' si los parámetros correspondientes
      * son verdaderos.
-     * @param [etapa=false] - Si se establece en verdadero, el campo "etapa" se establecerá en nulo.
-     * @param [tarea=false] - Si se establece en verdadero, la propiedad "tarea" se establecerá en nula.
+     * @param [etapa=false] - Si se establece en verdadero, el campo 'etapa' se establecerá en nulo.
+     * @param [tarea=false] - Si se establece en verdadero, la propiedad 'tarea' se establecerá en nula.
      */
     function limpiarCampos(etapa = false, tarea = false) {
       if (accion.value == acciones.nuevo) {
@@ -294,8 +294,8 @@ export default defineComponent({
     }
 
     /**
-     * La función "obtenerTareasTecnico" recupera una lista de tareas para un empleado, proyecto y
-     * etapa específicos, y actualiza la variable "tareas" con el resultado.
+     * La función 'obtenerTareasTecnico' recupera una lista de tareas para un empleado, proyecto y
+     * etapa específicos, y actualiza la variable 'tareas' con el resultado.
      */
     async function obtenerTareasTecnico() {
       cargando.activar()

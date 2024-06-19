@@ -1,4 +1,4 @@
-import { EntidadAuditable } from "shared/entidad/domain/entidadAuditable";
+import { EntidadAuditable } from 'shared/entidad/domain/entidadAuditable';
 
 export class PublicacionPuestoTrabajo extends EntidadAuditable {
   nombre: string | null
@@ -8,8 +8,8 @@ export class PublicacionPuestoTrabajo extends EntidadAuditable {
   fecha_caducidad: Date | null
   descripcion_vacante: string | null
   anios_experiencia: number | null
-  conocimientos:  any[] | null
-  formaciones_academicas:  any[] | null
+  conocimientos: any[] | null
+  formaciones_academicas: any[] | null
   numero_postulantes: number
 
   constructor() {
@@ -23,6 +23,6 @@ export class PublicacionPuestoTrabajo extends EntidadAuditable {
     this.anios_experiencia = null
     this.conocimientos = []
     this.formaciones_academicas = []
-    this.numero_postulantes =0
+    this.numero_postulantes = 0
   }
 }

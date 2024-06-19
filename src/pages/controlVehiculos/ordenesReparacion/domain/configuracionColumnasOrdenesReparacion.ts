@@ -1,5 +1,5 @@
-import { ColumnConfig } from "components/tables/domain/ColumnConfig";
-import { OrdenReparacion } from "./OrdenReparacion";
+import { ColumnConfig } from 'components/tables/domain/ColumnConfig';
+import { OrdenReparacion } from './OrdenReparacion';
 
 export const configuracionColumnasOrdenesReparaciones: ColumnConfig<OrdenReparacion>[] = [
     {

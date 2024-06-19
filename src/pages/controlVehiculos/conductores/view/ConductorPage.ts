@@ -1,15 +1,14 @@
 // Dependencies
-import { configuracionColumnasMultasConductores } from "../domain/configuracionColumnasMultasConductores";
-import { configuracioncolumnasConductores } from "../domain/configuracionColumnasConductores";
-import { required, minValue, maxValue } from "shared/i18n-validators";
-import { acciones, accionesTabla, maskFecha } from "config/utils";
-import { obtenerFechaActual, sumarFechas } from "shared/utils";
-import { defineComponent, reactive, ref } from "vue";
-import useVuelidate from "@vuelidate/core";
-import { LocalStorage, } from "quasar";
+import { configuracionColumnasMultasConductores } from '../domain/configuracionColumnasMultasConductores';
+import { configuracioncolumnasConductores } from '../domain/configuracionColumnasConductores';
+import { required, minValue, maxValue } from 'shared/i18n-validators';
+import { acciones, accionesTabla, maskFecha } from 'config/utils';
+import { defineComponent, reactive, ref } from 'vue';
+import useVuelidate from '@vuelidate/core';
+import { LocalStorage, } from 'quasar';
 
 //Components
-import TabLayout from "shared/contenedor/modules/simple/view/TabLayout.vue";
+import TabLayout from 'shared/contenedor/modules/simple/view/TabLayout.vue';
 import GestorArchivos from 'components/gestorArchivos/GestorArchivos.vue';
 import EssentialTable from 'components/tables/view/EssentialTable.vue';
 import ModalesEntidad from 'components/modales/view/ModalEntidad.vue';
@@ -17,21 +16,21 @@ import InformacionLicencia from '../view/InformacionLicencia.vue'
 import SolicitarFecha from 'shared/prompts/SolicitarFecha.vue'
 
 // Logica y Controladores
-import { EmpleadoRoleController } from "pages/recursosHumanos/empleados/infraestructure/EmpleadoRolesController";
-import { ContenedorSimpleMixin } from "shared/contenedor/modules/simple/application/ContenedorSimpleMixin";
-import { EmpleadoController } from "pages/recursosHumanos/empleados/infraestructure/EmpleadoController";
-import { MultaConductorController } from "../modules/multas/infraestructure/MultaConductorController";
-import { ComportamientoModalesConductores } from "../application/ComportamientoModalesConductores";
-import { StatusEssentialLoading } from "components/loading/application/StatusEssentialLoading";
-import { CustomActionPrompt } from "components/tables/domain/CustomActionPrompt";
-import { CustomActionTable } from "components/tables/domain/CustomActionTable";
-import { tabOptionsConductores, tiposLicencias } from "config/vehiculos.utils";
-import { ConductorController } from "../infraestructure/ConductorController";
-import { useFiltrosListadosSelects } from "shared/filtrosListadosGenerales";
-import { Empleado } from "pages/recursosHumanos/empleados/domain/Empleado";
-import { useConductorStore } from "stores/vehiculos/conductor";
-import { useNotificaciones } from "shared/notificaciones";
-import { Conductor } from "../domain/Conductor";
+import { EmpleadoRoleController } from 'pages/recursosHumanos/empleados/infraestructure/EmpleadoRolesController';
+import { ContenedorSimpleMixin } from 'shared/contenedor/modules/simple/application/ContenedorSimpleMixin';
+import { EmpleadoController } from 'pages/recursosHumanos/empleados/infraestructure/EmpleadoController';
+import { MultaConductorController } from '../modules/multas/infraestructure/MultaConductorController';
+import { ComportamientoModalesConductores } from '../application/ComportamientoModalesConductores';
+import { StatusEssentialLoading } from 'components/loading/application/StatusEssentialLoading';
+import { CustomActionPrompt } from 'components/tables/domain/CustomActionPrompt';
+import { CustomActionTable } from 'components/tables/domain/CustomActionTable';
+import { tabOptionsConductores, tiposLicencias } from 'config/vehiculos.utils';
+import { ConductorController } from '../infraestructure/ConductorController';
+import { useFiltrosListadosSelects } from 'shared/filtrosListadosGenerales';
+import { Empleado } from 'pages/recursosHumanos/empleados/domain/Empleado';
+import { useConductorStore } from 'stores/vehiculos/conductor';
+import { useNotificaciones } from 'shared/notificaciones';
+import { Conductor } from '../domain/Conductor';
 
 
 
@@ -41,9 +40,9 @@ export default defineComponent({
     setup() {
         const mixin = new ContenedorSimpleMixin(Conductor, new ConductorController())
         const { entidad: conductor, disabled, listadosAuxiliares, accion } = mixin.useReferencias()
-        const { setValidador, obtenerListados, cargarVista, listar, consultar } = mixin.useComportamiento()
-        const { onReestablecer, onGuardado, onConsultado, onModificado } = mixin.useHooks()
-        const { confirmar, prompt, notificarCorrecto, notificarError } = useNotificaciones()
+        const { setValidador, obtenerListados, cargarVista, consultar } = mixin.useComportamiento()
+        const { onReestablecer,  onConsultado } = mixin.useHooks()
+        const { confirmar, prompt,  } = useNotificaciones()
 
         const empleado: Empleado = reactive(new Empleado())
         const conductorStore = useConductorStore()
@@ -122,7 +121,7 @@ export default defineComponent({
             }
         }
 
-        
+
         async function recargarChoferes() {
             cargando.activar()
             listadosAuxiliares.empleados = (await new EmpleadoRoleController().listar({ roles: ['CHOFER'] })).result

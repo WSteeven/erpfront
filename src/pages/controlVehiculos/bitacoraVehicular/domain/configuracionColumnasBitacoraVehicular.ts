@@ -1,5 +1,5 @@
-import { ColumnConfig } from "components/tables/domain/ColumnConfig";
-import { BitacoraVehicular } from "./BitacoraVehicular";
+import { ColumnConfig } from 'components/tables/domain/ColumnConfig';
+import { BitacoraVehicular } from './BitacoraVehicular';
 
 export const configuracionColumnasBitacoraVehicular: ColumnConfig<BitacoraVehicular>[] = [
     {

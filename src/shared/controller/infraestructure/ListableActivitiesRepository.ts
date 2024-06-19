@@ -1,7 +1,7 @@
-import { Endpoint } from "shared/http/domain/Endpoint";
-import { ApiError } from "shared/error/domain/ApiError";
-import { AxiosHttpRepository } from "shared/http/infraestructure/AxiosHttpRepository";
-import { AxiosError, AxiosResponse } from "axios";
+import { Endpoint } from 'shared/http/domain/Endpoint';
+import { ApiError } from 'shared/error/domain/ApiError';
+import { AxiosHttpRepository } from 'shared/http/infraestructure/AxiosHttpRepository';
+import { AxiosError, AxiosResponse } from 'axios';
 
 export class ListableActivityRepository<T> {
     private readonly httpRepository = AxiosHttpRepository.getInstance()
@@ -12,7 +12,7 @@ export class ListableActivityRepository<T> {
     }
 
 
-    async listarActividades<C = T>(id: number, params: Record<string, any>) {
+    async listarActividades(id: number, params: Record<string, any>) {
         let ruta
         try {
             if (params) {

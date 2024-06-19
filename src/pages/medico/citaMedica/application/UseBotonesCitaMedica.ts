@@ -1,15 +1,14 @@
-import { CustomActionTable } from "components/tables/domain/CustomActionTable"
-import { CitaMedica } from "../domain/CitaMedica"
-import { useAuthenticationStore } from "stores/authentication"
-import { estadosCitaMedica } from "config/utils/medico"
-import { Ref } from "vue"
-import { CambiarEstadoCitaMedica } from "./CambiarEstadoCitaMedica"
-import { CustomActionPrompt } from "components/tables/domain/CustomActionPrompt"
-import { useNotificaciones } from "shared/notificaciones"
-import { ContenedorSimpleMixin } from "shared/contenedor/modules/simple/application/ContenedorSimpleMixin"
-import { acciones } from "config/utils"
-import { ComportamientoModalesCitaMedica } from "../domain/ComportamientoModalesCitaMedica"
-import { useMedicoStore } from "stores/medico"
+import { CustomActionTable } from 'components/tables/domain/CustomActionTable'
+import { CitaMedica } from '../domain/CitaMedica'
+import { useAuthenticationStore } from 'stores/authentication'
+import { estadosCitaMedica } from 'config/utils/medico'
+import { Ref } from 'vue'
+import { CambiarEstadoCitaMedica } from './CambiarEstadoCitaMedica'
+import { CustomActionPrompt } from 'components/tables/domain/CustomActionPrompt'
+import { useNotificaciones } from 'shared/notificaciones'
+import { acciones } from 'config/utils'
+import { ComportamientoModalesCitaMedica } from '../domain/ComportamientoModalesCitaMedica'
+import { useMedicoStore } from 'stores/medico'
 
 export function useBotonesCitaMedica(listado: Ref<CitaMedica[]>, accion: Ref<string>, consultar: (params: any) => void, tabEstado: Ref<string>, modales: ComportamientoModalesCitaMedica) {
   // export function useBotonesCitaMedica(mixin: ContenedorSimpleMixin<CitaMedica>, tabEstado: Ref<string>, modales: ComportamientoModalesCitaMedica) {

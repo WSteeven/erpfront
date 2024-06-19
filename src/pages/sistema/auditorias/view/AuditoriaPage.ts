@@ -1,11 +1,11 @@
 import { required } from 'shared/i18n-validators'
-import { ContenedorSimpleMixin } from "shared/contenedor/modules/simple/application/ContenedorSimpleMixin";
-import { computed, defineComponent } from "vue";
-import { Auditoria } from "../domain/Auditoria";
-import { AuditoriaController } from "../infraestructure/AuditoriaController";
-import { EmpleadoController } from "pages/recursosHumanos/empleados/infraestructure/EmpleadoController";
-import { useFiltrosListadosSelects } from "shared/filtrosListadosGenerales";
-import { useQuasar } from "quasar";
+import { ContenedorSimpleMixin } from 'shared/contenedor/modules/simple/application/ContenedorSimpleMixin';
+import { computed, defineComponent } from 'vue';
+import { Auditoria } from '../domain/Auditoria';
+import { AuditoriaController } from '../infraestructure/AuditoriaController';
+import { EmpleadoController } from 'pages/recursosHumanos/empleados/infraestructure/EmpleadoController';
+import { useFiltrosListadosSelects } from 'shared/filtrosListadosGenerales';
+import { useQuasar } from 'quasar';
 import useVuelidate from '@vuelidate/core';
 import { StatusEssentialLoading } from 'components/loading/application/StatusEssentialLoading';
 import { obtenerFechaActual } from 'shared/utils';
@@ -26,7 +26,7 @@ export default defineComponent({
                     params: { campos: 'id,nombres,apellidos,cargo_id', estado: 1 }
                 }
             })
-            auditoria.fecha_fin=obtenerFechaActual()
+            auditoria.fecha_fin = obtenerFechaActual()
         })
 
         const reglas = {

@@ -10,6 +10,7 @@ import { ContenedorSimpleMixin } from 'shared/contenedor/modules/simple/applicat
 import { CustomActionTable } from 'components/tables/domain/CustomActionTable'
 import { useNotificationRealtimeStore } from 'stores/notificationRealtime'
 import { useNotificaciones } from 'shared/notificaciones'
+import { accionesTabla } from 'config/utils'
 
 //Logica y controladores
 
@@ -51,7 +52,7 @@ export default defineComponent({
 
     return {
       mixin, notificacion, disabled, accion, listado,
-      configuracionColumnas: configuracionColumnasNotificaciones,
+      configuracionColumnas: configuracionColumnasNotificaciones, accionesTabla,
       BotonMarcarLeido,
       totalNoLeidas,
     }

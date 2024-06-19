@@ -1,12 +1,11 @@
-import { AxiosResponse } from "axios";
-import { StatusEssentialLoading } from "components/loading/application/StatusEssentialLoading";
-import { apiConfig, endpoints } from "config/api";
-import { Conductor } from "pages/controlVehiculos/conductores/domain/Conductor";
-import { Empleado } from "pages/recursosHumanos/empleados/domain/Empleado";
-import { defineStore } from "pinia";
-import { AxiosHttpRepository } from "shared/http/infraestructure/AxiosHttpRepository";
-import { useNotificaciones } from "shared/notificaciones";
-import { reactive, ref } from "vue";
+import { AxiosResponse } from 'axios';
+import { StatusEssentialLoading } from 'components/loading/application/StatusEssentialLoading';
+import { apiConfig, endpoints } from 'config/api';
+import { Conductor } from 'pages/controlVehiculos/conductores/domain/Conductor';
+import { defineStore } from 'pinia';
+import { AxiosHttpRepository } from 'shared/http/infraestructure/AxiosHttpRepository';
+import { useNotificaciones } from 'shared/notificaciones';
+import { reactive, ref } from 'vue';
 
 export const useConductorStore = defineStore('conductor', () => {
     //State
@@ -28,7 +27,7 @@ export const useConductorStore = defineStore('conductor', () => {
             if (response.status = 200) {
                 notificarCorrecto(response.data.mensaje)
                 return true
-            }else notificarAdvertencia(response.data.mensaje)
+            } else notificarAdvertencia(response.data.mensaje)
         } catch (e) {
             notificarError('Error al marcar como pagada la multa. ' + e)
         } finally {
@@ -37,12 +36,12 @@ export const useConductorStore = defineStore('conductor', () => {
         return false
     }
 
-    function resetearConductor(){
+    function resetearConductor() {
         conductor.hydrate(new Conductor())
     }
 
     return {
-        conductor, idConductor, 
+        conductor, idConductor,
         accionMulta,
         tabs,
         mostrarListado,
@@ -50,6 +49,6 @@ export const useConductorStore = defineStore('conductor', () => {
 
         resetearConductor,
         pagarMulta,
-        
+
     }
 })

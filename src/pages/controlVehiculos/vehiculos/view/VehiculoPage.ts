@@ -1,8 +1,8 @@
 //Dependencias
 import { configuracionColumnasVehiculos } from '../domain/configuracionColumnasVehiculos'
-import { required, maxLength, minLength, requiredIf } from "shared/i18n-validators";
+import { required, maxLength, minLength, requiredIf } from 'shared/i18n-validators';
 import { useVuelidate } from '@vuelidate/core'
-import { defineComponent, ref } from "vue";
+import { defineComponent, ref } from 'vue';
 
 // componentes
 import TabLayout from 'shared/contenedor/modules/simple/view/TabLayout.vue'

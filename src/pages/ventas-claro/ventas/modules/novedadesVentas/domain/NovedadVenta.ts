@@ -1,4 +1,4 @@
-import { EntidadAuditable } from "shared/entidad/domain/entidadAuditable";
+import { EntidadAuditable } from 'shared/entidad/domain/entidadAuditable';
 
 export default class NovedadVenta extends EntidadAuditable {
     fecha_hora: string | null

@@ -255,16 +255,16 @@ export function obtenerFechaActual(formato = 'DD-MM-YYYY') {
 
 /**
  * La función `sumarFechas` toma una cadena de fecha y le agrega un número específico de años, meses y
- * días, devolviendo la fecha resultante en el formato "DD-MM-AAAA".
+ * días, devolviendo la fecha resultante en el formato 'DD-MM-AAAA'.
  * @param {string} fechaString - El parámetro `fechaString` es una cadena que representa una fecha en
- * el formato "DD-MM-AAAA".
- * @param {number} anios - El parámetro "anios" representa el número de años que se agregarán o restarán a la
+ * el formato 'DD-MM-AAAA'.
+ * @param {number} anios - El parámetro 'anios' representa el número de años que se agregarán o restarán a la
  * fecha dada.
- * @param {number} meses - El parámetro "meses" representa el número de meses que se agregarán o restarán a la
+ * @param {number} meses - El parámetro 'meses' representa el número de meses que se agregarán o restarán a la
  * fecha dada.
- * @param {number} dias - El parámetro "dias" representa el número de días que se agregarán o restarán a la fecha
+ * @param {number} dias - El parámetro 'dias' representa el número de días que se agregarán o restarán a la fecha
  * dada.
- * @returns una cadena en el formato "DD-MM-AAAA", que representa la fecha obtenida sumando o restando el número
+ * @returns una cadena en el formato 'DD-MM-AAAA', que representa la fecha obtenida sumando o restando el número
  * especificado de años, meses y días a la fecha de entrada.
  */
 export function sumarFechas(fechaString: string, anios: number, meses: number, dias: number, formato = 'DD-MM-YYYY') {
@@ -279,9 +279,9 @@ export function sumarFechas(fechaString: string, anios: number, meses: number, d
   //Paso 4: Se suma los días
   fecha.setDate(fecha.getDate() + dias)
   // Paso 5: Formatea la nueva fecha en el formato deseado (DD-MM-YYYY)
-  const dia = fecha.getDate().toString().padStart(2, "0");
-  const mes = (fecha.getMonth() + 1).toString().padStart(2, "0");
-  const anio = fecha.getFullYear().toString();
+  // const dia = fecha.getDate().toString().padStart(2, '0');
+  // const mes = (fecha.getMonth() + 1).toString().padStart(2, '0');
+  // const anio = fecha.getFullYear().toString();
 
   // Resultado final
   return date.formatDate(fecha, formato)
@@ -289,12 +289,12 @@ export function sumarFechas(fechaString: string, anios: number, meses: number, d
 }
 
 /**
- * La función "obtenerPrimerUltimoDiaMes" devuelve el primer y último día del mes actual en el formato
+ * La función 'obtenerPrimerUltimoDiaMes' devuelve el primer y último día del mes actual en el formato
  * especificado.
- * @param [formato=DD-MM-YYYY] - El parámetro "formato" es opcional y especifica el formato en el que
+ * @param [formato=DD-MM-YYYY] - El parámetro 'formato' es opcional y especifica el formato en el que
  * se deben devolver las fechas. El valor predeterminado es 'DD-MM-AAAA', lo que significa que las
  * fechas tendrán el formato día-mes-año.
- * @returns un objeto con dos propiedades: "primerDia" y "ultimoDia". Los valores de estas propiedades
+ * @returns un objeto con dos propiedades: 'primerDia' y 'ultimoDia'. Los valores de estas propiedades
  * son las fechas formateadas del primer y último día del mes actual, respectivamente.
  */
 export function obtenerPrimerUltimoDiaMes(formato = 'DD-MM-YYYY') {
@@ -466,9 +466,9 @@ export function filtrarLista(val, update, lista, clave, defaultValue = []) {
  * La función `ordenarLista` ordena una lista determinada según una clave específica.
  * Esta función sirve para ordenar cualquier lista que se muestra en un select.
  * En el metodo popup-show debe envíar como argumentos la lista y la clave por la cual quiere ordenar los registros.
- * @param lista - El parámetro "lista" es una matriz de objetos que desea ordenar.
- * @param {string} clave - El parámetro "clave" es una cadena que representa la clave o propiedad de
- * los objetos en la matriz "lista" que se utilizará para ordenar.
+ * @param lista - El parámetro 'lista' es una matriz de objetos que desea ordenar.
+ * @param {string} clave - El parámetro 'clave' es una cadena que representa la clave o propiedad de
+ * los objetos en la matriz 'lista' que se utilizará para ordenar.
  */
 export function ordenarLista(lista, clave: string) {
   lista.sort((a, b) => ordernarListaString(a[clave], b[clave]))
@@ -514,7 +514,7 @@ export function extraerRol(roles: string[], rolConsultar: string) {
 }
 
 /**
- * La función "extraerPermiso" comprueba si existe un permiso dado en una lista de permisos.
+ * La función 'extraerPermiso' comprueba si existe un permiso dado en una lista de permisos.
  * @param {string[]} permisos - Una matriz de cadenas que representan los permisos.
  * @param {string} permisoConsultar - El parámetro `permisoConsultar` es una cadena que representa el
  * permiso a consultar. Debe ser en base a la estructura de establecida para nombres de permisos (Ej. 'puede.ver.accion')
@@ -568,12 +568,12 @@ export function formatearFechaSeparador(
 }
 
 export function formatearFechaTexto(fecha: number) {
-  const opciones = {
-    weekday: 'long',
-    year: 'numeric',
-    month: 'long',
-    day: 'numeric',
-  }
+  // const opciones = {
+  //   weekday: 'long',
+  //   year: 'numeric',
+  //   month: 'long',
+  //   day: 'numeric',
+  // }
   return new Date(fecha).toLocaleDateString('es-Es', {
     weekday: 'long',
     year: 'numeric',
@@ -679,9 +679,9 @@ export function tieneElementosRepetidosObjeto(arrayDeObjetos) {
  * proporcionado.
  * @param {number} subtotal - El subtotal es el monto total antes de aplicar cualquier descuento. Es un
  * valor numérico.
- * @param {number} porcentaje_descuento - El parámetro "porcentaje_descuento" representa el porcentaje
+ * @param {number} porcentaje_descuento - El parámetro 'porcentaje_descuento' representa el porcentaje
  * de descuento que se aplicará al subtotal.
- * @param {number} decimales - El parámetro "decimales" es el número de decimales al que se redondeará
+ * @param {number} decimales - El parámetro 'decimales' es el número de decimales al que se redondeará
  * el resultado.
  * @returns el importe del descuento calculado como una cadena con el número especificado de decimales.
  */
@@ -698,11 +698,11 @@ export function calcularDescuento(
  * porcentaje de IVA y número de decimales.
  * @param {number} subtotal - El subtotal es el monto total antes de que se apliquen descuentos o
  * impuestos. Representa el monto base sobre el cual se realizarán los cálculos.
- * @param {number} descuento - El parámetro "descuento" representa el monto del descuento aplicado al
+ * @param {number} descuento - El parámetro 'descuento' representa el monto del descuento aplicado al
  * subtotal antes de calcular el impuesto.
- * @param {number} porcentaje_iva - El parámetro "porcentaje_iva" representa el valor porcentual del
+ * @param {number} porcentaje_iva - El parámetro 'porcentaje_iva' representa el valor porcentual del
  * IVA (Impuesto al Valor Agregado) a aplicar al subtotal luego de restar el descuento.
- * @param {number} decimales - El parámetro "decimales" es el número de decimales al que se redondeará
+ * @param {number} decimales - El parámetro 'decimales' es el número de decimales al que se redondeará
  * el resultado.
  * @returns el valor calculado del IVA (Impuesto al Valor Agregado) en base a los parámetros dados.
  */
@@ -729,10 +729,10 @@ export function calcularSubtotalConImpuestosLista(val: ItemProforma) {
 }
 
 /**
- * La función "encontrarUltimoIdListado" toma una lista de objetos y devuelve el id del objeto con el
+ * La función 'encontrarUltimoIdListado' toma una lista de objetos y devuelve el id del objeto con el
  * valor de id más alto.
- * @param {any} listado - El parámetro "listado" es una matriz de objetos. Cada objeto de la matriz
- * tiene una propiedad llamada "id" que representa el identificador único del objeto.
+ * @param {any} listado - El parámetro 'listado' es una matriz de objetos. Cada objeto de la matriz
+ * tiene una propiedad llamada 'id' que representa el identificador único del objeto.
  * @returns el último valor de identificación de la matriz de listado dada.
  */
 export function encontrarUltimoIdListado(listado: any) {
@@ -753,8 +753,8 @@ export function convertirNumeroPositivo(entidad, campo) {
 }
 
 /**
- * La función "obtenerMesMatricula" devuelve el mes correspondiente en función del dígito dado.
- * @param digito - El parámetro "digito" representa el dígito de la matrícula de un coche.
+ * La función 'obtenerMesMatricula' devuelve el mes correspondiente en función del dígito dado.
+ * @param digito - El parámetro 'digito' representa el dígito de la matrícula de un coche.
  * @returns el mes correspondiente al dígito dado. Si el dígito es '1', devuelve 1 (febrero), si el
  * dígito es '2', devuelve 2 (marzo), y así sucesivamente. Si el dígito es '11' devuelve nulo,
  * indicando que es diciembre y no quedan más meses para el registro.
@@ -780,9 +780,9 @@ export function obtenerMesMatricula(digito) {
 }
 
 /**
- * La función "obtenerUltimoDigito" toma una cadena como entrada y devuelve el último dígito encontrado
+ * La función 'obtenerUltimoDigito' toma una cadena como entrada y devuelve el último dígito encontrado
  * en la cadena como un número entero.
- * @param {string} texto - El parámetro "texto" es una cadena que representa el texto de entrada.
+ * @param {string} texto - El parámetro 'texto' es una cadena que representa el texto de entrada.
  * @returns el último dígito encontrado en el texto dado como un número entero. Si no se encuentra
  * ningún dígito, devuelve nulo.
  */
@@ -797,11 +797,11 @@ export function obtenerUltimoDigito(texto: string) {
 /*
  * La función filtra a los empleados según sus roles.
  * @param empleados - Una lista de empleados consultados en la base de datos. Cada objeto de empleado debe tener una
- * propiedad llamada "roles", que es una cadena que representa todos los roles del empleado.
+ * propiedad llamada 'roles', que es una cadena que representa todos los roles del empleado.
  * @param roles - Una variedad de roles para filtrar a los empleados.Los roles
- * deben estar separados por comas y espacios (por ejemplo, ["rol1, rol2, rol3"]).
+ * deben estar separados por comas y espacios (por ejemplo, ['rol1, rol2, rol3']).
  * @return una lista de empleados que tienen al menos uno de los roles especificados en el parámetro
- * "roles".
+ * 'roles'.
  */
 export function filtrarEmpleadosPorRoles(empleados, roles) {
   const filtrados = empleados.filter((empleado) => {

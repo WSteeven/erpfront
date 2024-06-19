@@ -1,18 +1,18 @@
-import { AxiosResponse } from "axios";
-import { StatusEssentialLoading } from "components/loading/application/StatusEssentialLoading";
-import { apiConfig, endpoints } from "config/api";
-import { defineStore } from "pinia";
-import { useQuasar } from "quasar";
-import { AxiosHttpRepository } from "shared/http/infraestructure/AxiosHttpRepository";
-import { useNotificaciones } from "shared/notificaciones";
-import { notificarErrores } from "shared/utils";
-import { useNotificacionStore } from "stores/notificacion";
+import { AxiosResponse } from 'axios';
+import { StatusEssentialLoading } from 'components/loading/application/StatusEssentialLoading';
+import { apiConfig, endpoints } from 'config/api';
+import { defineStore } from 'pinia';
+import { useQuasar } from 'quasar';
+import { AxiosHttpRepository } from 'shared/http/infraestructure/AxiosHttpRepository';
+import { useNotificaciones } from 'shared/notificaciones';
+import { notificarErrores } from 'shared/utils';
+import { useNotificacionStore } from 'stores/notificacion';
 
 export const useBodegaStore = defineStore('bodega', () => {
     const notificacionesStore = useNotificacionStore()
     notificacionesStore.setQuasar(useQuasar())
 
-    const { notificarCorrecto, notificarAdvertencia, notificarError } = useNotificaciones()
+    const { notificarError } = useNotificaciones()
     const cargando = new StatusEssentialLoading()
 
 

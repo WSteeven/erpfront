@@ -16,7 +16,7 @@ export class ActualizarNotificacionesPusherEvent {
 
     // Suscripcion al canal del pedido creado
     pusher.subscribe('actualizar-notificaciones-tracker')
-    pusher.bind('actualizar-notificaciones-event', function (e) {
+    pusher.bind('actualizar-notificaciones-event', function () {
       // notificacionStore.agregar(e.notificacion)
       notificacionesPusherStore.listar() //cargar las notificaciones de la base de datos
     })

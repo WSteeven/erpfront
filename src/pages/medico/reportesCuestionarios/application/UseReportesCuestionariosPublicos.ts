@@ -31,7 +31,7 @@ export function useReportesCuestionariosPublicos(mixin: ContenedorSimpleMixin<Re
 
     async function descagarReporte(): Promise<void> {
         const fechaActual = new Date()
-        const filename = 'reporte_cuestionarios_' + filtro.tipo_cuestionario + "_" + fechaActual.toLocaleString()
+        const filename = 'reporte_cuestionarios_' + filtro.tipo_cuestionario + '_' + fechaActual.toLocaleString()
 
         const controller = mixin.getController()
         const endpoint = controller.getEndpoint()

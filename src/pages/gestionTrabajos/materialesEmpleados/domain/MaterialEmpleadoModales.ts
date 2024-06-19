@@ -1,9 +1,9 @@
 // Dependencies
-import { ComponenteModal } from "components/modales/domain/ComponenteModal.domain";
-import { markRaw } from "vue";
+import { ComponenteModal } from 'components/modales/domain/ComponenteModal.domain';
+import { markRaw } from 'vue';
 
 //Pages
-import CambiarClientePropietarioMaterialPage from "../view/CambiarClientePropietarioMaterialPage.vue";
+import CambiarClientePropietarioMaterialPage from '../view/CambiarClientePropietarioMaterialPage.vue';
 
 export class MaterialEmpleadoModales {
     CambiarClientePropietarioMaterialPage: ComponenteModal

@@ -1,5 +1,5 @@
-import { ColumnConfig } from "components/tables/domain/ColumnConfig";
-import { Matricula } from "./Matricula";
+import { ColumnConfig } from 'components/tables/domain/ColumnConfig';
+import { Matricula } from './Matricula';
 
 export const configuracionColumnasMatriculas: ColumnConfig<Matricula>[] = [
     {

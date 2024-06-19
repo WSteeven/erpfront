@@ -1,27 +1,27 @@
 //Dependencias
-import { configuracionColumnasPedidos } from "pages/bodega/pedidos/domain/configuracionColumnasPedidos";
-import { computed, defineComponent, reactive, ref } from "vue";
-import { required } from "shared/i18n-validators";
-import { LocalStorage, useQuasar, } from "quasar";
-import useVuelidate from "@vuelidate/core";
+import { configuracionColumnasPedidos } from 'pages/bodega/pedidos/domain/configuracionColumnasPedidos';
+import { computed, defineComponent, reactive, ref } from 'vue';
+import { required } from 'shared/i18n-validators';
+import { LocalStorage, useQuasar, } from 'quasar';
+import useVuelidate from '@vuelidate/core';
 
 //Componentes
 import EssentialTable from 'components/tables/view/EssentialTable.vue'
-import ModalEntidad from "components/modales/view/ModalEntidad.vue";
+import ModalEntidad from 'components/modales/view/ModalEntidad.vue';
 import { Chart as ChartJS, ArcElement, Tooltip, Legend } from 'chart.js'
 import { Doughnut } from 'vue-chartjs'
 
 
 //Logica y controladores
-import { StatusEssentialLoading } from "components/loading/application/StatusEssentialLoading";
-import { useNotificaciones } from "shared/notificaciones";
-import { useNotificacionStore } from "stores/notificacion";
-import { useCargandoStore } from "stores/cargando";
-import { accionesTabla } from "config/utils";
-import { CustomActionTable } from "components/tables/domain/CustomActionTable";
-import { usePedidoStore } from "stores/pedido";
-import { ComportamientoModalesPedido } from "pages/bodega/pedidos/application/ComportamientoModalesPedido";
-import { EmpleadoController } from "pages/recursosHumanos/empleados/infraestructure/EmpleadoController";
+import { StatusEssentialLoading } from 'components/loading/application/StatusEssentialLoading';
+import { useNotificaciones } from 'shared/notificaciones';
+import { useNotificacionStore } from 'stores/notificacion';
+import { useCargandoStore } from 'stores/cargando';
+import { accionesTabla } from 'config/utils';
+import { CustomActionTable } from 'components/tables/domain/CustomActionTable';
+import { usePedidoStore } from 'stores/pedido';
+import { ComportamientoModalesPedido } from 'pages/bodega/pedidos/application/ComportamientoModalesPedido';
+import { EmpleadoController } from 'pages/recursosHumanos/empleados/infraestructure/EmpleadoController';
 
 ChartJS.register(ArcElement, Tooltip, Legend)
 

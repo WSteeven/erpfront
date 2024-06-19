@@ -1,5 +1,5 @@
-import { ColumnConfig } from "components/tables/domain/ColumnConfig";
-import { ValorAcreditar } from "./ValorAcreditar";
+import { ColumnConfig } from 'components/tables/domain/ColumnConfig';
+import { ValorAcreditar } from './ValorAcreditar';
 
 export const configuracionColumnasValorAcreditar: ColumnConfig<ValorAcreditar>[] = [
   {

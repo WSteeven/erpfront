@@ -234,13 +234,13 @@ export function graficarPorCoordinadorUseCase(dashboardTareaController: Dashboar
     lineasTiempo.lineaTiempoSubtareasFinalizadasCoordinador = result.lineaTiempoSubtareasFinalizadasCoordinador
     const labelsLineaTiempoSubtareasFinalizadasCoordinador = result.lineaTiempoSubtareasFinalizadasCoordinador.map((item) => item.codigo_subtarea)
     const valoresLineaTiempoSubtareasFinalizadasCoordinador = result.lineaTiempoSubtareasFinalizadasCoordinador.map((item) => item.tiempo)
-    const coloresLineaTiempoSubtareasFinalizadasCoordinador = result.lineaTiempoSubtareasFinalizadasCoordinador.map((item) => generarColorAzulPastelClaro())
+    const coloresLineaTiempoSubtareasFinalizadasCoordinador = result.lineaTiempoSubtareasFinalizadasCoordinador.map(() => generarColorAzulPastelClaro())
     graficoLineaTiempoSubtareasFinalizadasCoordinador.value = mapearDatos('', labelsLineaTiempoSubtareasFinalizadasCoordinador, valoresLineaTiempoSubtareasFinalizadasCoordinador, 'Tiempo ocupado (h)', coloresLineaTiempoSubtareasFinalizadasCoordinador)
 
     lineasTiempo.lineaTiempoSubtareasRealizadasCoordinador = result.lineaTiempoSubtareasRealizadasCoordinador
     const labelsLineaTiempoSubtareasRealizadasCoordinador = result.lineaTiempoSubtareasRealizadasCoordinador.map((item) => item.codigo_subtarea)
     const valoresLineaTiempoSubtareasRealizadasCoordinador = result.lineaTiempoSubtareasRealizadasCoordinador.map((item) => item.tiempo)
-    const coloresLineaTiempoSubtareasRealizadasCoordinador = result.lineaTiempoSubtareasRealizadasCoordinador.map((item) => generarColorAzulPastelClaro())
+    const coloresLineaTiempoSubtareasRealizadasCoordinador = result.lineaTiempoSubtareasRealizadasCoordinador.map(() => generarColorAzulPastelClaro())
     graficoLineaTiempoSubtareasRealizadasCoordinador.value = mapearDatos('', labelsLineaTiempoSubtareasRealizadasCoordinador, valoresLineaTiempoSubtareasRealizadasCoordinador, 'Tiempo ocupado (h)', coloresLineaTiempoSubtareasRealizadasCoordinador)
   }
 
@@ -301,9 +301,7 @@ export function graficarPorCoordinadorUseCase(dashboardTareaController: Dashboar
     mostrarCantidades.value = false
   }
 
-  function resetearCantidades() {
-    //
-  }
+  
 
   function mapearDatos(titulo: string, labels: string[], valores: number[], tituloLabel: string, colores?: string[]) {
     return {

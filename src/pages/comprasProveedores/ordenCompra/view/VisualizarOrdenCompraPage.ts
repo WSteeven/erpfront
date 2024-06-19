@@ -1,20 +1,20 @@
 //Dependencias
-import { computed, defineComponent, reactive, ref } from "vue";
-import { configuracionColumnasOrdenesCompras } from "../domain/configuracionColumnasOrdenCompra";
-import { configuracionColumnasItemOrdenCompra } from "pages/comprasProveedores/itemsOrdenCompra/domain/configuracionColumnasItemOrdenCompra";
+import { computed, defineComponent, reactive, ref } from 'vue';
+import { configuracionColumnasOrdenesCompras } from '../domain/configuracionColumnasOrdenCompra';
+import { configuracionColumnasItemOrdenCompra } from 'pages/comprasProveedores/itemsOrdenCompra/domain/configuracionColumnasItemOrdenCompra';
 
 // Componentes
-import TabLayout from "shared/contenedor/modules/simple/view/TabLayout.vue";
-import EssentialTable from "components/tables/view/EssentialTable.vue";
-import { useOrdenCompraStore } from "stores/comprasProveedores/ordenCompra";
-import { OrdenCompra } from "../domain/OrdenCompra";
-import { useAuthenticationStore } from "stores/authentication";
-import { OrdenCompraController } from "../infraestructure/OrdenCompraController";
-import { ContenedorSimpleMixin } from "shared/contenedor/modules/simple/application/ContenedorSimpleMixin";
+import TabLayout from 'shared/contenedor/modules/simple/view/TabLayout.vue';
+import EssentialTable from 'components/tables/view/EssentialTable.vue';
+import { useOrdenCompraStore } from 'stores/comprasProveedores/ordenCompra';
+import { OrdenCompra } from '../domain/OrdenCompra';
+import { useAuthenticationStore } from 'stores/authentication';
+import { OrdenCompraController } from '../infraestructure/OrdenCompraController';
+import { ContenedorSimpleMixin } from 'shared/contenedor/modules/simple/application/ContenedorSimpleMixin';
 
 export default defineComponent({
   components: { TabLayout, EssentialTable },
-  emits: ["cerrar-modal"],
+  emits: ['cerrar-modal'],
   setup(props, { emit }) {
     const mixin = new ContenedorSimpleMixin(OrdenCompra, new OrdenCompraController());
     const store = useAuthenticationStore();

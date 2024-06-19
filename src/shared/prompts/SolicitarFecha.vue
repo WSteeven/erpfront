@@ -90,7 +90,7 @@
   </q-dialog>
 </template>
 
-<script lang="ts">
+<script lang='ts'>
 import { ref, defineComponent, computed } from 'vue'
 import { useNotificaciones } from 'shared/notificaciones'
 import { useConfiguracionGeneralStore } from 'stores/configuracion_general'
@@ -113,7 +113,7 @@ export default defineComponent({
     },
     reason:{
       type: String,
-      default: "month"
+      default: 'month'
     },
   },
   emits: ['cerrar'],

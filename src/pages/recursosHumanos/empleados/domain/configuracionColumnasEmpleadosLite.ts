@@ -1,5 +1,5 @@
-import { ColumnConfig } from "components/tables/domain/ColumnConfig";
-import { Empleado } from "./Empleado";
+import { ColumnConfig } from 'components/tables/domain/ColumnConfig';
+import { Empleado } from './Empleado';
 
 export const configuracionColumnasEmpleadosLite: ColumnConfig<Empleado>[] = [
     {

@@ -1,28 +1,28 @@
 //Dependencias
-import { configuracionColumnasContactosProveedores } from "../domain/configuracionColumnasContactosProveedores";
-import { required } from "shared/i18n-validators";
-import useVuelidate from "@vuelidate/core";
+import { configuracionColumnasContactosProveedores } from '../domain/configuracionColumnasContactosProveedores';
+import { required } from 'shared/i18n-validators';
+import useVuelidate from '@vuelidate/core';
 
 //Componentes
-import TabLayout from "shared/contenedor/modules/simple/view/TabLayout.vue";
-import ModalEntidad from "components/modales/view/ModalEntidad.vue";
+import TabLayout from 'shared/contenedor/modules/simple/view/TabLayout.vue';
+import ModalEntidad from 'components/modales/view/ModalEntidad.vue';
 
 //Logica y controladores
-import { defineComponent, onBeforeUnmount, onUnmounted, reactive, ref, watchEffect } from "vue";
-import { ContenedorSimpleMixin } from "shared/contenedor/modules/simple/application/ContenedorSimpleMixin";
-import { ContactoProveedor } from "../domain/ContactoProveedor";
-import { ContactoProveedorController } from "../infraestructure/ContactoProveedorController";
-import { ProveedorController } from "sistema/proveedores/infraestructure/ProveedorController";
-import { StatusEssentialLoading } from "components/loading/application/StatusEssentialLoading";
-import { Proveedor } from "sistema/proveedores/domain/Proveedor";
-import { useFiltrosListadosSelects } from "shared/filtrosListadosGenerales";
-import { opcionesTipoContacto } from "config/utils_compras_proveedores";
-import { CustomActionTable } from "components/tables/domain/CustomActionTable";
-import { ComportamientoModalesContactosProveedor } from "../application/ComportamientoModalesContactosProveedor";
-import { useContactoProveedorStore } from "stores/comprasProveedores/contactoProveedor";
-import { EmpresaController } from "pages/administracion/empresas/infraestructure/EmpresaController";
-import { Empresa } from "pages/administracion/empresas/domain/Empresa";
-import { useAuthenticationStore } from "stores/authentication";
+import { defineComponent, onBeforeUnmount, onUnmounted, reactive, ref, watchEffect } from 'vue';
+import { ContenedorSimpleMixin } from 'shared/contenedor/modules/simple/application/ContenedorSimpleMixin';
+import { ContactoProveedor } from '../domain/ContactoProveedor';
+import { ContactoProveedorController } from '../infraestructure/ContactoProveedorController';
+import { ProveedorController } from 'sistema/proveedores/infraestructure/ProveedorController';
+import { StatusEssentialLoading } from 'components/loading/application/StatusEssentialLoading';
+import { Proveedor } from 'sistema/proveedores/domain/Proveedor';
+import { useFiltrosListadosSelects } from 'shared/filtrosListadosGenerales';
+import { opcionesTipoContacto } from 'config/utils_compras_proveedores';
+import { CustomActionTable } from 'components/tables/domain/CustomActionTable';
+import { ComportamientoModalesContactosProveedor } from '../application/ComportamientoModalesContactosProveedor';
+import { useContactoProveedorStore } from 'stores/comprasProveedores/contactoProveedor';
+import { EmpresaController } from 'pages/administracion/empresas/infraestructure/EmpresaController';
+import { Empresa } from 'pages/administracion/empresas/domain/Empresa';
+import { useAuthenticationStore } from 'stores/authentication';
 
 
 export default defineComponent({
@@ -91,7 +91,7 @@ export default defineComponent({
                 StatusLoading.desactivar()
                 listadosAuxiliares.proveedores = listadosAuxiliares.proveedores.filter((v: Proveedor) => v.empresa == empresaId)
             }
-            contacto.proveedor=null
+            contacto.proveedor = null
         }
         async function obtenerProveedor(proveedorId: number | null) {
             if (proveedorId !== null) {
@@ -115,7 +115,7 @@ export default defineComponent({
                 contactoProveedorStore.idcontacto = entidad.id
                 modales.abrirModalEntidad('ContactoProveedorLogPage')
             },
-            visible:()=>store.esAdministrador
+            visible: () => store.esAdministrador
         }
 
         onBeforeUnmount(() => {

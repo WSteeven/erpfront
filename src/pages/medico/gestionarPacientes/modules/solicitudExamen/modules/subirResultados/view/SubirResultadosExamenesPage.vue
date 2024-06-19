@@ -50,13 +50,13 @@ import { Empleado } from 'pages/recursosHumanos/empleados/domain/Empleado'
 
 const emit = defineEmits(['cerrar-modal'])
 
-interface Parametros {
-  solicitud_examen: SolicitudExamen
-}
+// interface Parametros {
+//   solicitud_examen: SolicitudExamen
+// }
 
-const props = defineProps({
-  datos: Object as () => Parametros,
-})
+// const props = defineProps({
+//   datos: Object as () => Parametros,
+// })
 
 /*********
  * Stores

@@ -1,26 +1,26 @@
 //Dependencias
-import { configuracionColumnasRegistroIncidente } from "../domain/configuracionColumnasRegistroIncidente"
-import { subtiposIncidentes, tiposIncidentes } from "config/vehiculos.utils"
-import { acciones, maskFecha } from "config/utils"
-import { required } from "shared/i18n-validators"
-import { defineComponent, ref } from "vue"
-import { ordenarLista } from "shared/utils"
-import useVuelidate from "@vuelidate/core"
+import { configuracionColumnasRegistroIncidente } from '../domain/configuracionColumnasRegistroIncidente'
+import { subtiposIncidentes, tiposIncidentes } from 'config/vehiculos.utils'
+import { acciones, maskFecha } from 'config/utils'
+import { required } from 'shared/i18n-validators'
+import { defineComponent, ref } from 'vue'
+import { ordenarLista } from 'shared/utils'
+import useVuelidate from '@vuelidate/core'
 
 // Components
-import GestorArchivos from "components/gestorArchivos/GestorArchivos.vue"
-import TabLayout from "shared/contenedor/modules/simple/view/TabLayout.vue"
+import GestorArchivos from 'components/gestorArchivos/GestorArchivos.vue'
+import TabLayout from 'shared/contenedor/modules/simple/view/TabLayout.vue'
 
 //Logica y controladores
-import { ContenedorSimpleMixin } from "shared/contenedor/modules/simple/application/ContenedorSimpleMixin"
-import { RegistroIncidente } from "../domain/RegistroIncidente"
-import { RegistroIncidenteController } from "../infraestructure/RegistroIncidenteController"
-import { useNotificaciones } from "shared/notificaciones"
-import { useAuthenticationStore } from "stores/authentication"
-import { StatusEssentialLoading } from "components/loading/application/StatusEssentialLoading"
-import { VehiculoController } from "pages/controlVehiculos/vehiculos/infraestructure/VehiculoController"
-import { useFiltrosListadosSelects } from "shared/filtrosListadosGenerales"
-import { EmpleadoController } from "pages/recursosHumanos/empleados/infraestructure/EmpleadoController"
+import { ContenedorSimpleMixin } from 'shared/contenedor/modules/simple/application/ContenedorSimpleMixin'
+import { RegistroIncidente } from '../domain/RegistroIncidente'
+import { RegistroIncidenteController } from '../infraestructure/RegistroIncidenteController'
+import { useNotificaciones } from 'shared/notificaciones'
+import { useAuthenticationStore } from 'stores/authentication'
+import { StatusEssentialLoading } from 'components/loading/application/StatusEssentialLoading'
+import { VehiculoController } from 'pages/controlVehiculos/vehiculos/infraestructure/VehiculoController'
+import { useFiltrosListadosSelects } from 'shared/filtrosListadosGenerales'
+import { EmpleadoController } from 'pages/recursosHumanos/empleados/infraestructure/EmpleadoController'
 
 
 export default defineComponent({

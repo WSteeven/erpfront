@@ -1,4 +1,4 @@
-import { EntidadAuditable } from "shared/entidad/domain/entidadAuditable";
+import { EntidadAuditable } from 'shared/entidad/domain/entidadAuditable';
 
 export class PagoProveedor extends EntidadAuditable {
     archivo: string | null

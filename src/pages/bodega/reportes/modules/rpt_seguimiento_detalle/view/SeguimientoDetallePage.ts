@@ -1,7 +1,7 @@
 import { DetalleProducto } from './../../../../detalles_productos/domain/DetalleProducto';
 import EssentialTable from 'components/tables/view/EssentialTable.vue';
-import { DetalleProductoController } from "pages/bodega/detalles_productos/infraestructure/DetalleProductoController"
-import { defineComponent, onMounted, reactive, ref } from "vue"
+import { DetalleProductoController } from 'pages/bodega/detalles_productos/infraestructure/DetalleProductoController'
+import { defineComponent, onMounted, reactive, ref } from 'vue'
 import { configuracionColumnasSeguimientoDetalle } from '../../rpt_inventario/domain/configuracionColumnasSeguimientoDetalle';
 import { StatusEssentialLoading } from 'components/loading/application/StatusEssentialLoading';
 import { useNotificaciones } from 'shared/notificaciones';
@@ -118,13 +118,13 @@ export default defineComponent({
       align: 'left',
       sortable: true,
     },
-    {
-      name: 'created_at',
-      field: 'created_at',
-      label: 'Fecha',
-      align: 'left',
-      sortable: true,
-    },)
+      {
+        name: 'created_at',
+        field: 'created_at',
+        label: 'Fecha',
+        align: 'left',
+        sortable: true,
+      },)
 
     return {
       kardex, v$,

@@ -1,28 +1,28 @@
 // Dependencias
-import { required } from "shared/i18n-validators";
+import { required } from 'shared/i18n-validators';
 import { useVuelidate } from '@vuelidate/core'
-import { defineComponent, ref } from "vue";
+import { defineComponent, ref } from 'vue';
 
 // Components
-import TabLayout from "shared/contenedor/modules/simple/view/TabLayout.vue";
-import SelectorImagen from "components/SelectorImagen.vue";
+import TabLayout from 'shared/contenedor/modules/simple/view/TabLayout.vue';
+import SelectorImagen from 'components/SelectorImagen.vue';
 
 // Logica y controladores
-import { ContenedorSimpleMixin } from "shared/contenedor/modules/simple/application/ContenedorSimpleMixin";
-import { Tanqueo } from "../domain/Tanqueo";
-import { TanqueoController } from "../infraestructure/TanqueoController";
-import { configuracionColumnasTanqueoCombustible } from "../domain/configuracionColumnasTanqueoCombustible";
-import { maskFecha, maskFechaHora } from "config/utils";
-import { VehiculoController } from "pages/controlVehiculos/vehiculos/infraestructure/VehiculoController";
-import BitacoraVehicularPage from "pages/controlVehiculos/bitacoraVehicular/view/BitacoraVehicularPage";
-import { AsignacionVehiculoController } from "pages/controlVehiculos/asignarVehiculos/infraestructure/AsignacionVehiculoController";
-import { useAuthenticationStore } from "stores/authentication";
-import { StatusEssentialLoading } from "components/loading/application/StatusEssentialLoading";
-import { useQuasar } from "quasar";
-import { useNotificacionStore } from "stores/notificacion";
-import { useCargandoStore } from "stores/cargando";
-import { obtenerFechaHoraActual } from "shared/utils";
-import { useFiltrosListadosSelects } from "shared/filtrosListadosGenerales";
+import { ContenedorSimpleMixin } from 'shared/contenedor/modules/simple/application/ContenedorSimpleMixin';
+import { Tanqueo } from '../domain/Tanqueo';
+import { TanqueoController } from '../infraestructure/TanqueoController';
+import { configuracionColumnasTanqueoCombustible } from '../domain/configuracionColumnasTanqueoCombustible';
+import { maskFecha, maskFechaHora } from 'config/utils';
+import { VehiculoController } from 'pages/controlVehiculos/vehiculos/infraestructure/VehiculoController';
+import BitacoraVehicularPage from 'pages/controlVehiculos/bitacoraVehicular/view/BitacoraVehicularPage';
+import { AsignacionVehiculoController } from 'pages/controlVehiculos/asignarVehiculos/infraestructure/AsignacionVehiculoController';
+import { useAuthenticationStore } from 'stores/authentication';
+import { StatusEssentialLoading } from 'components/loading/application/StatusEssentialLoading';
+import { useQuasar } from 'quasar';
+import { useNotificacionStore } from 'stores/notificacion';
+import { useCargandoStore } from 'stores/cargando';
+import { obtenerFechaHoraActual } from 'shared/utils';
+import { useFiltrosListadosSelects } from 'shared/filtrosListadosGenerales';
 
 export default defineComponent({
     components: { TabLayout, SelectorImagen },
@@ -68,8 +68,8 @@ export default defineComponent({
          * Funciones
          ****************************************/
         /**
-         * La función "cargarDatosDefecto" carga datos por defecto en el objeto "bitacora" basándose en
-         * los valores de "usuarioDefault".
+         * La función 'cargarDatosDefecto' carga datos por defecto en el objeto 'bitacora' basándose en
+         * los valores de 'usuarioDefault'.
          */
         function cargarDatosDefecto() {
             if (usuarioDefault.value) {

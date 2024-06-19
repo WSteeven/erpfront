@@ -1,29 +1,29 @@
 // Dependencias
 import { StatusEssentialLoading } from 'components/loading/application/StatusEssentialLoading'
+import { useConfiguracionGeneralStore } from 'stores/configuracion_general'
+import { helpers, required, requiredIf } from 'shared/i18n-validators'
 import { SelectOption } from 'components/tables/domain/SelectOption'
+import { computed, defineComponent, ref, watchEffect } from 'vue'
 import { opcionesTiposCuestionarios } from 'config/utils/medico'
 import { useNotificaciones } from 'shared/notificaciones'
-import { required, requiredIf } from 'shared/i18n-validators'
 import { isAxiosError } from 'shared/utils'
-import { computed, defineComponent, ref, watchEffect } from 'vue'
 import useVuelidate from '@vuelidate/core'
 
 // Componentes
-import CuestionariosPage from 'medico/cuestionarioPsicosocial/view/CuestionariosPage.vue'
-import InformacionPersona from 'medico/cuestionariosPublicos/modules/informacionPersona/view/InformacionPersona.vue'
 import CuestionarioDiagnosticoConsumoDrogasHeader from 'medico/cuestionarioPsicosocial/view/CuestionarioDiagnosticoConsumoDrogasPage.vue'
+import InformacionPersona from 'medico/cuestionariosPublicos/modules/informacionPersona/view/InformacionPersona.vue'
 import CuestionarioPsicosocialHeader from 'medico/cuestionarioPsicosocial/view/CuestionarioPsicosocialPage.vue'
+import CuestionariosPage from 'medico/cuestionarioPsicosocial/view/CuestionariosPage.vue'
 import ButtonSubmits from 'components/buttonSubmits/buttonSubmits.vue'
 
 // Logica y controladores
-import { CuestionarioPublicoController } from '../infraestructure/CuestionarioPublicoController'
-import { ContenedorSimpleMixin } from 'shared/contenedor/modules/simple/application/ContenedorSimpleMixin'
 import { TipoCuestionarioController } from 'pages/medico/cuestionarioPsicosocial/infrestructure/TipoCuestionarioController'
+import { ValidarCuestionarioLleno } from 'pages/medico/cuestionarioPsicosocial/application/ValidarCuestionarioLleno'
 import { PreguntaController } from 'pages/medico/pregunta/infrestructure/RespuestaCuestionarioEmpleadoController'
+import { ContenedorSimpleMixin } from 'shared/contenedor/modules/simple/application/ContenedorSimpleMixin'
+import { CuestionarioPublicoController } from '../infraestructure/CuestionarioPublicoController'
 import { Cuestionario } from 'pages/medico/cuestionarioPsicosocial/domain/Cuestionario'
 import { CuestionarioPublico } from '../domain/CuestionarioPublico'
-import { ValidarCuestionarioLleno } from 'pages/medico/cuestionarioPsicosocial/application/ValidarCuestionarioLleno'
-import { useConfiguracionGeneralStore } from 'stores/configuracion_general'
 
 export default defineComponent({
     components: {
@@ -44,7 +44,7 @@ export default defineComponent({
         cargarVista(async () => {
             await obtenerListados({
                 tiposCuestionarios: new TipoCuestionarioController(),
-                preguntas: [],
+                // preguntas: [],
             })
             listadosAuxiliares.tiposCuestionarios = [listadosAuxiliares.tiposCuestionarios[0]]
         })
@@ -70,11 +70,13 @@ export default defineComponent({
         async function consultarPreguntas(tipoCuestionario: number) {
             tipoCuestionarioSeleccionado.value = tipoCuestionario
             cargando.activar()
+
             try {
                 const { result } = await preguntaController.listar({
                     tipo_cuestionario_id: tipoCuestionario,
                 })
-                listadosAuxiliares.preguntas = result
+                cuestionarioPublico.preguntas = result
+                // cuestionarioPublico.preguntas = result
             } catch (e) {
                 if (isAxiosError(e)) {
                     const mensajes: string[] = e.erroresValidacion
@@ -95,7 +97,7 @@ export default defineComponent({
         }
 
         const mapearRespuestas = () => {
-            return cuestionarioPublico.cuestionario = listadosAuxiliares.preguntas.map(
+            return cuestionarioPublico.cuestionario = cuestionarioPublico.preguntas.map(
                 (item: any) => {
                     return {
                         respuesta_texto: typeof item.respuesta === 'string' ? item.respuesta : null,
@@ -115,7 +117,7 @@ export default defineComponent({
                     try {
                         mapearRespuestas()
                         await guardar(cuestionarioPublico)
-                        listadosAuxiliares.preguntas = []
+                        cuestionarioPublico.preguntas = []
                         mensaje.value = 'Gracias por completar el cuestionario.'
                     } catch (e) {
                         console.log(e)
@@ -135,8 +137,13 @@ export default defineComponent({
          *********/
         const reglas = {
             cuestionario: { required },
+            preguntas: {
+                $each: helpers.forEach({
+                    respuesta: { required },
+                }),
+            },
             persona: {
-                primer_nombre: { required: () => true },
+                primer_nombre: { required },
                 segundo_nombre: { required },
                 primer_apellido: { required },
                 segundo_apellido: { required },
@@ -174,14 +181,17 @@ export default defineComponent({
 
         const v$ = useVuelidate(reglas, cuestionarioPublico) //, { $externalResults })
 
-
         setValidador(v$.value)
 
         const validarCuestionarioLleno = new ValidarCuestionarioLleno(
             cuestionarioPublico
         )
+
         mixin.agregarValidaciones(validarCuestionarioLleno)
 
+        /*******
+         * Init
+         *******/
         // Establecer favicon
         const configuracionGeneralStore = useConfiguracionGeneralStore()
 

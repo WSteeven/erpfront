@@ -1,37 +1,37 @@
 // Dependencias
-import { configuracionColumnasTransferenciasVehiculos } from "../domain/configuracionColumnasTransferenciasVehiculos";
-import { ContenedorSimpleMixin } from "shared/contenedor/modules/simple/application/ContenedorSimpleMixin";
-import { computed, defineComponent, ref } from "vue";
-import { required } from "shared/i18n-validators";
-import useVuelidate from "@vuelidate/core";
-import { acciones, maskFecha } from "config/utils";
+import { configuracionColumnasTransferenciasVehiculos } from '../domain/configuracionColumnasTransferenciasVehiculos';
+import { ContenedorSimpleMixin } from 'shared/contenedor/modules/simple/application/ContenedorSimpleMixin';
+import { computed, defineComponent, ref } from 'vue';
+import { required } from 'shared/i18n-validators';
+import useVuelidate from '@vuelidate/core';
+import { acciones, maskFecha } from 'config/utils';
 
 
 //Componentes
-import TabLayoutFilterTabs2 from "shared/contenedor/modules/simple/view/TabLayoutFilterTabs2.vue"
-import GestorArchivos from "components/gestorArchivos/GestorArchivos.vue";
+import TabLayoutFilterTabs2 from 'shared/contenedor/modules/simple/view/TabLayoutFilterTabs2.vue'
+import GestorArchivos from 'components/gestorArchivos/GestorArchivos.vue';
 
 
 //Logica y controladores
-import { TransferenciaVehiculoController } from "../infraestructure/TransferenciaVehiculoController";
-import { TransferenciaVehiculo } from "../domain/TransferenciaVehiculo";
-import { useAuthenticationStore } from "stores/authentication";
-import { StatusEssentialLoading } from "components/loading/application/StatusEssentialLoading";
-import { useNotificaciones } from "shared/notificaciones";
-import { estadosAsignacionesVehiculos, tabOptionsTransferenciasVehiculos } from "config/vehiculos.utils";
-import { CustomActionTable } from "components/tables/domain/CustomActionTable";
-import { AxiosHttpRepository } from "shared/http/infraestructure/AxiosHttpRepository";
-import { apiConfig, endpoints } from "config/api";
-import { imprimirArchivo, obtenerFechaActual } from "shared/utils";
-import { ConductorController } from "pages/controlVehiculos/conductores/infraestructure/ConductorController";
-import { VehiculoController } from "pages/controlVehiculos/vehiculos/infraestructure/VehiculoController";
-import { useFiltrosListadosSelects } from "shared/filtrosListadosGenerales";
-import { LocalStorage } from "quasar";
-import { recargarGenerico } from "shared/funcionesActualizacionListados";
-import { useVehiculoStore } from "stores/vehiculos/vehiculo";
-import { CustomActionPrompt } from "components/tables/domain/CustomActionPrompt";
-import { ParamsType } from "config/types";
-import { AxiosResponse } from "axios";
+import { TransferenciaVehiculoController } from '../infraestructure/TransferenciaVehiculoController';
+import { TransferenciaVehiculo } from '../domain/TransferenciaVehiculo';
+import { useAuthenticationStore } from 'stores/authentication';
+import { StatusEssentialLoading } from 'components/loading/application/StatusEssentialLoading';
+import { useNotificaciones } from 'shared/notificaciones';
+import { estadosAsignacionesVehiculos, tabOptionsTransferenciasVehiculos } from 'config/vehiculos.utils';
+import { CustomActionTable } from 'components/tables/domain/CustomActionTable';
+import { AxiosHttpRepository } from 'shared/http/infraestructure/AxiosHttpRepository';
+import { apiConfig, endpoints } from 'config/api';
+import { imprimirArchivo, obtenerFechaActual } from 'shared/utils';
+import { ConductorController } from 'pages/controlVehiculos/conductores/infraestructure/ConductorController';
+import { VehiculoController } from 'pages/controlVehiculos/vehiculos/infraestructure/VehiculoController';
+import { useFiltrosListadosSelects } from 'shared/filtrosListadosGenerales';
+import { LocalStorage } from 'quasar';
+import { recargarGenerico } from 'shared/funcionesActualizacionListados';
+import { useVehiculoStore } from 'stores/vehiculos/vehiculo';
+import { CustomActionPrompt } from 'components/tables/domain/CustomActionPrompt';
+import { ParamsType } from 'config/types';
+import { AxiosResponse } from 'axios';
 
 
 export default defineComponent({
@@ -168,7 +168,7 @@ export default defineComponent({
 
         async function cargarDatosAsignacion() {
             // Copiamos los valores de las variables de asignacion en la transferencia
-            console.log("A copiar", vehiculoStore.asignacion)
+            console.log('A copiar', vehiculoStore.asignacion)
             transferencia.asignacion = vehiculoStore.asignacion.id
             transferencia.vehiculo = vehiculoStore.asignacion.vehiculo_id
             transferencia.entrega = vehiculoStore.asignacion.responsable_id

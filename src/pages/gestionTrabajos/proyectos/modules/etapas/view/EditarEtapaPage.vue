@@ -144,7 +144,7 @@ const {
   accion,
   listadosAuxiliares,
 } = mixin.useReferencias()
-const { cargarVista, obtenerListados, setValidador, consultar } =
+const { cargarVista, obtenerListados, consultar } =
   mixin.useComportamiento()
 const { onModificado } = mixin.useHooks()
 

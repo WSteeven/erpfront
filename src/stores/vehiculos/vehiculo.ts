@@ -1,15 +1,15 @@
-import { AxiosResponse } from "axios";
-import { StatusEssentialLoading } from "components/loading/application/StatusEssentialLoading";
-import { apiConfig, endpoints } from "config/api";
-import { AsignacionVehiculo } from "pages/controlVehiculos/asignarVehiculos/domain/AsignacionVehiculo";
-import { defineStore } from "pinia";
-import { AxiosHttpRepository } from "shared/http/infraestructure/AxiosHttpRepository";
-import { useNotificaciones } from "shared/notificaciones";
-import { reactive, ref } from "vue";
+import { AxiosResponse } from 'axios';
+import { StatusEssentialLoading } from 'components/loading/application/StatusEssentialLoading';
+import { apiConfig, endpoints } from 'config/api';
+import { AsignacionVehiculo } from 'pages/controlVehiculos/asignarVehiculos/domain/AsignacionVehiculo';
+import { defineStore } from 'pinia';
+import { AxiosHttpRepository } from 'shared/http/infraestructure/AxiosHttpRepository';
+import { useNotificaciones } from 'shared/notificaciones';
+import { reactive, ref } from 'vue';
 
 export const useVehiculoStore = defineStore('vehiculo', () => {
     //State
-    const idVehiculo = ref()
+    // const idVehiculo = ref()
     const idMatricula = ref()
     const idAsignacion = ref()
     const asignacion = reactive(new AsignacionVehiculo())

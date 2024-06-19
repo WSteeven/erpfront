@@ -1,5 +1,5 @@
-import { EntidadAuditable } from "shared/entidad/domain/entidadAuditable";
-import { Ref, ref } from "vue";
+import { EntidadAuditable } from 'shared/entidad/domain/entidadAuditable';
+import { Ref, ref } from 'vue';
 
 export class HistorialVehiculo extends EntidadAuditable {
     vehiculo: string | null
