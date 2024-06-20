@@ -282,18 +282,11 @@ export default defineComponent({
         vacacion.numero_dias !== null &&
         vacacion.numero_dias !== undefined
       ) {
-<<<<<<< HEAD
         const fechaInicio = new Date(vacacion.fecha_inicio)
 
         fechaInicio.setDate(
           fechaInicio.getDate() +
-          (parseInt(vacacion.numero_dias.toString()) - 1)
-=======
-        const fechaInicio = convertir_fecha(vacacion.fecha_inicio)
-        const fechaFinal = fechaInicio
-        fechaFinal.setDate(
-          fechaInicio.getDate() + parseInt(vacacion.numero_dias.toString())
->>>>>>> 77aa96bf (Arreglo en el calculo de fecha de vacaciones, se quito la resta -1 en la funcion de calculos de fecha fin)
+          (parseInt(vacacion.numero_dias.toString()))
         )
         vacacion.fecha_fin = format(fechaInicio, 'YYYY-MM-DD')
 
@@ -315,11 +308,7 @@ export default defineComponent({
         const fechaInicio = new Date(vacacion.fecha_inicio_rango1_vacaciones)
         fechaInicio.setDate(
           fechaInicio.getDate() +
-<<<<<<< HEAD
-          (parseInt(vacacion.numero_dias_rango1.toString()) - 1)
-=======
-            parseInt(vacacion.numero_dias_rango1.toString())
->>>>>>> 77aa96bf (Arreglo en el calculo de fecha de vacaciones, se quito la resta -1 en la funcion de calculos de fecha fin)
+          (parseInt(vacacion.numero_dias_rango1.toString()))
         )
         vacacion.fecha_fin_rango1_vacaciones = format(fechaInicio, 'YYYY-MM-DD')
       } else {
@@ -339,11 +328,7 @@ export default defineComponent({
         const fechaInicio = new Date(vacacion.fecha_inicio_rango2_vacaciones)
         fechaInicio.setDate(
           fechaInicio.getDate() +
-<<<<<<< HEAD
-          (parseInt(vacacion.numero_dias_rango2.toString()) - 1)
-=======
-            parseInt(vacacion.numero_dias_rango2.toString())
->>>>>>> 77aa96bf (Arreglo en el calculo de fecha de vacaciones, se quito la resta -1 en la funcion de calculos de fecha fin)
+          (parseInt(vacacion.numero_dias_rango2.toString()))
         )
         vacacion.fecha_fin_rango2_vacaciones = format(fechaInicio, 'YYYY-MM-DD')
       } else {
