@@ -1,16 +1,16 @@
 // Dependencias
-import { ComponenteModal } from "components/modales/domain/ComponenteModal.domain";
-import { markRaw } from "vue";
+import { ComponenteModal } from 'components/modales/domain/ComponenteModal.domain';
+import { markRaw } from 'vue';
 
 
 //Paginas
-import MultaConductorPage from "../modules/multas/view/MultaConductorPage.vue"
+import MultaConductorPage from '../modules/multas/view/MultaConductorPage.vue'
 
 
-export class ConductorModales{
+export class ConductorModales {
     MultaConductorPage: ComponenteModal
 
-    constructor(){
+    constructor() {
         this.MultaConductorPage = markRaw(new ComponenteModal('Multas', MultaConductorPage))
     }
 }

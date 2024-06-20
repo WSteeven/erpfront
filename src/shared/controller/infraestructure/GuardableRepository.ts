@@ -18,7 +18,7 @@ export class GuardableRepository<T> {
     try {
       const ruta = this.httpRepository.getEndpoint(this.endpoint, params)
       const formData = this.convertirJsonAFormData(entidad)
-      console.log("gdfgdfgdfgdf")
+      console.log('gdfgdfgdfgdf')
       for (const [clave, valor] of formData.entries()) {
         console.log(`${clave}: ${valor}`);
       }

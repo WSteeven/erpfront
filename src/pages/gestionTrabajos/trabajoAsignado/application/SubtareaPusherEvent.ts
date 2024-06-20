@@ -17,7 +17,7 @@ export class SubtareaListadoPusherEvent {
     const puedeEjecutar = this.puedeEjecutar
 
     pusher.subscribe('subtareas-tracker')
-    pusher.bind('subtarea-event', function (e) {
+    pusher.bind('subtarea-event', function () {
       if (puedeEjecutar.value) accion(estadosTrabajos.AGENDADO)
     })
   }

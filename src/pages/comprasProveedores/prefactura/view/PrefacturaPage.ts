@@ -1,43 +1,43 @@
 // Dependencias
-import { configuracionColumnasPrefactura } from "../domain/configuracionColumnasPrefactura";
-import { configuracionColumnasDetallesPrefactura } from "../domain/configuracionColumnasDetallesPrefactura";
+import { configuracionColumnasPrefactura } from '../domain/configuracionColumnasPrefactura';
+import { configuracionColumnasDetallesPrefactura } from '../domain/configuracionColumnasDetallesPrefactura';
 import { required } from 'shared/i18n-validators'
 import { useVuelidate } from '@vuelidate/core'
 import { computed, defineComponent, ref, watch, } from 'vue'
 
 
 // Componentes
-import TabLayoutFilterTabs2 from "shared/contenedor/modules/simple/view/TabLayoutFilterTabs2.vue";
-import EssentialTable from "components/tables/view/EssentialTable.vue";
-import EssentialSelectableTable from "components/tables/view/EssentialSelectableTable.vue"
-import ModalesEntidad from "components/modales/view/ModalEntidad.vue";
-import EssentialPopupEditableTable from "components/tables/view/EssentialPopupEditableTable.vue"
+import TabLayoutFilterTabs2 from 'shared/contenedor/modules/simple/view/TabLayoutFilterTabs2.vue';
+import EssentialTable from 'components/tables/view/EssentialTable.vue';
+import EssentialSelectableTable from 'components/tables/view/EssentialSelectableTable.vue'
+import ModalesEntidad from 'components/modales/view/ModalEntidad.vue';
+import EssentialPopupEditableTable from 'components/tables/view/EssentialPopupEditableTable.vue'
 
 // Logica y controladores
-import { ContenedorSimpleMixin } from "shared/contenedor/modules/simple/application/ContenedorSimpleMixin";
-import { Prefactura } from "../domain/Prefactura";
-import { PrefacturaController } from "../infraestructure/PrefacturaController";
-import { useNotificaciones } from "shared/notificaciones";
-import { useNotificacionStore } from "stores/notificacion";
-import { LocalStorage, useQuasar } from "quasar";
-import { useCargandoStore } from "stores/cargando";
-import { EmpleadoController } from "pages/recursosHumanos/empleados/infraestructure/EmpleadoController";
-import { acciones, accionesTabla } from "config/utils";
-import { tabOptionsPrefactura, opcionesForma, opcionesTiempo, estadosCalificacionProveedor } from "config/utils_compras_proveedores";
-import { useAuthenticationStore } from "stores/authentication";
-import { calcularSubtotalConImpuestosLista, calcularSubtotalSinImpuestosLista, formatearFecha } from "shared/utils";
-import { CustomActionTable } from "components/tables/domain/CustomActionTable";
-import { StatusEssentialLoading } from "components/loading/application/StatusEssentialLoading";
-import { useFiltrosListadosSelects } from "shared/filtrosListadosGenerales";
-import { usePreordenStore } from "stores/comprasProveedores/preorden";
-import { ValidarListadoProductos } from "../application/validaciones/ValidarListadoProductos";
-import { CustomActionPrompt } from "components/tables/domain/CustomActionPrompt";
-import { ClienteController } from "sistema/clientes/infraestructure/ClienteController";
-import { ItemPrefactura } from "../domain/ItemPrefactura";
-import { usePrefacturaStore } from "stores/comprasProveedores/prefactura";
-import { EmpleadoPermisoController } from "pages/recursosHumanos/empleados/infraestructure/EmpleadoPermisosController";
-import { useRouter } from "vue-router";
-import { useProformaStore } from "stores/comprasProveedores/proforma";
+import { ContenedorSimpleMixin } from 'shared/contenedor/modules/simple/application/ContenedorSimpleMixin';
+import { Prefactura } from '../domain/Prefactura';
+import { PrefacturaController } from '../infraestructure/PrefacturaController';
+import { useNotificaciones } from 'shared/notificaciones';
+import { useNotificacionStore } from 'stores/notificacion';
+import { LocalStorage, useQuasar } from 'quasar';
+import { useCargandoStore } from 'stores/cargando';
+import { EmpleadoController } from 'pages/recursosHumanos/empleados/infraestructure/EmpleadoController';
+import { acciones, accionesTabla } from 'config/utils';
+import { tabOptionsPrefactura, opcionesForma, opcionesTiempo, estadosCalificacionProveedor } from 'config/utils_compras_proveedores';
+import { useAuthenticationStore } from 'stores/authentication';
+import { calcularSubtotalConImpuestosLista, calcularSubtotalSinImpuestosLista, formatearFecha } from 'shared/utils';
+import { CustomActionTable } from 'components/tables/domain/CustomActionTable';
+import { StatusEssentialLoading } from 'components/loading/application/StatusEssentialLoading';
+import { useFiltrosListadosSelects } from 'shared/filtrosListadosGenerales';
+import { usePreordenStore } from 'stores/comprasProveedores/preorden';
+import { ValidarListadoProductos } from '../application/validaciones/ValidarListadoProductos';
+import { CustomActionPrompt } from 'components/tables/domain/CustomActionPrompt';
+import { ClienteController } from 'sistema/clientes/infraestructure/ClienteController';
+import { ItemPrefactura } from '../domain/ItemPrefactura';
+import { usePrefacturaStore } from 'stores/comprasProveedores/prefactura';
+import { EmpleadoPermisoController } from 'pages/recursosHumanos/empleados/infraestructure/EmpleadoPermisosController';
+import { useRouter } from 'vue-router';
+import { useProformaStore } from 'stores/comprasProveedores/proforma';
 
 
 export default defineComponent({
@@ -68,8 +68,8 @@ export default defineComponent({
         )
         const subtotal = computed(() => prefactura.listadoProductos.reduce((prev, curr) => prev + parseFloat(curr.subtotal), 0).toFixed(2))
         const descuento = computed(() => prefactura.descuento_general == 0 ? prefactura.listadoProductos.reduce((prev, curr) => prev + parseFloat(curr.descuento), 0).toFixed(2) : prefactura.descuento_general)
-        const iva = computed(() => (subtotal_con_impuestos.value * prefactura.iva/100).toFixed(2))
-        const total = computed(() => prefactura.descuento_general > 0 ?(Number(subtotal.value) + Number(iva.value) - Number(descuento.value)).toFixed(2): (Number(subtotal_con_impuestos.value) + Number(subtotal_sin_impuestos.value) + Number(iva.value)).toFixed(2))
+        const iva = computed(() => (subtotal_con_impuestos.value * prefactura.iva / 100).toFixed(2))
+        const total = computed(() => prefactura.descuento_general > 0 ? (Number(subtotal.value) + Number(iva.value) - Number(descuento.value)).toFixed(2) : (Number(subtotal_con_impuestos.value) + Number(subtotal_sin_impuestos.value) + Number(iva.value)).toFixed(2))
 
         // Flags
         const tabSeleccionado = ref('2')
@@ -175,8 +175,8 @@ export default defineComponent({
                 limpiarPrefactura()
         }
         /**
-         * La función "limpiarOrden" reinicia el objeto "orden" reemplazándolo con una nueva instancia
-         * de la clase "OrdenCompra".
+         * La función 'limpiarOrden' reinicia el objeto 'orden' reemplazándolo con una nueva instancia
+         * de la clase 'OrdenCompra'.
          */
         function limpiarPrefactura() {
             prefactura.hydrate(new Prefactura())
@@ -218,8 +218,8 @@ export default defineComponent({
         }
 
         /**
-         * La función "actualizarListado" se ejecuta cuando se cambia el campo IVA general, itera sobre cada fila en el arreglo "listadoProductos" del
-         * objeto "orden" y llama a la función "calcularValores" para cada fila.
+         * La función 'actualizarListado' se ejecuta cuando se cambia el campo IVA general, itera sobre cada fila en el arreglo 'listadoProductos' del
+         * objeto 'orden' y llama a la función 'calcularValores' para cada fila.
          */
         function actualizarListado() {
             prefactura.listadoProductos.forEach((fila) => {
@@ -228,7 +228,7 @@ export default defineComponent({
         }
 
         /**
-         * La función "actualizarDescuento" actualiza los valores de descuento de cada producto en una
+         * La función 'actualizarDescuento' actualiza los valores de descuento de cada producto en una
          * proforma si se aplica un descuento general.
          */
         function actualizarDescuento() {

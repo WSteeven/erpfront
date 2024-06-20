@@ -1,5 +1,5 @@
-import { ColumnConfig } from "components/tables/domain/ColumnConfig";
-import { DetalleFondo } from "./DetalleFondo";
+import { ColumnConfig } from 'components/tables/domain/ColumnConfig';
+import { DetalleFondo } from './DetalleFondo';
 
 export const configuracionColumnasDetalleFondo: ColumnConfig<DetalleFondo>[] = [
   {

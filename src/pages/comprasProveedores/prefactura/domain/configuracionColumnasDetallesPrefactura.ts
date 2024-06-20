@@ -1,8 +1,8 @@
 import { opcionesUnidadesMedidas } from 'config/utils';
-import { ColumnConfig } from "components/tables/domain/ColumnConfig";
+import { ColumnConfig } from 'components/tables/domain/ColumnConfig';
 import { ItemPrefactura } from './ItemPrefactura';
 
-export const configuracionColumnasDetallesPrefactura: ColumnConfig<ItemPrefactura>[] =[
+export const configuracionColumnasDetallesPrefactura: ColumnConfig<ItemPrefactura>[] = [
     {
         name: 'cantidad',
         field: 'cantidad',
@@ -26,7 +26,7 @@ export const configuracionColumnasDetallesPrefactura: ColumnConfig<ItemPrefactur
         field: 'unidad_medida',
         label: 'Medida',
         align: 'left',
-        type:'select',
+        type: 'select',
         options: opcionesUnidadesMedidas,
         editable: true,
         sortable: true

@@ -1,9 +1,7 @@
 import { SelectorController } from '../infraestructure/SelectorController'
 import { useNotificaciones } from 'shared/notificaciones'
 import { StatusEssentialLoading } from 'components/loading/application/StatusEssentialLoading'
-import { isAxiosError, notificarMensajesError } from 'shared/utils'
 import { AxiosError } from 'axios'
-import { ApiError } from 'shared/error/domain/ApiError'
 
 export function useSelector(selector: any) {
   const controller = new SelectorController(selector.endpoint)

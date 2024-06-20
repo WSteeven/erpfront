@@ -1,4 +1,3 @@
-import { truncate } from 'fs'
 import { RouteRecordRaw } from 'vue-router'
 import rutasMedico from './rutasMedico'
 

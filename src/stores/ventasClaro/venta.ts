@@ -1,17 +1,15 @@
-import { AxiosError, AxiosResponse } from "axios";
-import { StatusEssentialLoading } from "components/loading/application/StatusEssentialLoading";
-import { endpoints } from "config/api";
-import { Venta } from "pages/ventas-claro/ventas/domain/Venta";
-import { defineStore } from "pinia";
-import { ApiError } from "shared/error/domain/ApiError";
-import { AxiosHttpRepository } from "shared/http/infraestructure/AxiosHttpRepository";
-import { useNotificaciones } from "shared/notificaciones";
-import { isAxiosError, notificarErrores, notificarMensajesError } from "shared/utils";
-import { reactive, ref } from "vue";
+import {  AxiosResponse } from 'axios';
+import { StatusEssentialLoading } from 'components/loading/application/StatusEssentialLoading';
+import { endpoints } from 'config/api';
+import { Venta } from 'pages/ventas-claro/ventas/domain/Venta';
+import { defineStore } from 'pinia';
+import { AxiosHttpRepository } from 'shared/http/infraestructure/AxiosHttpRepository';
+import { useNotificaciones } from 'shared/notificaciones';
+import { notificarErrores } from 'shared/utils';
+import { reactive, ref } from 'vue';
 
 export const useVentaStore = defineStore('venta', () => {
     const venta = reactive(new Venta())
-    const ventaReset = new Venta()
     const filaVenta = reactive(new Venta())
     const fechaActualizacion = ref()
     const posicionFilaVenta = ref()
@@ -19,7 +17,7 @@ export const useVentaStore = defineStore('venta', () => {
     const idVenta = ref()
     const permitirSubir = ref(true)
 
-    const { notificarCorrecto, notificarAdvertencia, notificarError } = useNotificaciones()
+    const { notificarCorrecto } = useNotificaciones()
     const cargando = new StatusEssentialLoading()
 
     async function obtenerComision(idProducto: number, forma_pago: string, idVendedor: number) {

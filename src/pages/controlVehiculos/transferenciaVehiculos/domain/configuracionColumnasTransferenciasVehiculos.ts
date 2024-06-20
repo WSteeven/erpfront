@@ -1,5 +1,5 @@
-import { ColumnConfig } from "components/tables/domain/ColumnConfig";
-import { TransferenciaVehiculo } from "./TransferenciaVehiculo";
+import { ColumnConfig } from 'components/tables/domain/ColumnConfig';
+import { TransferenciaVehiculo } from './TransferenciaVehiculo';
 
 export const configuracionColumnasTransferenciasVehiculos: ColumnConfig<TransferenciaVehiculo>[] = [
     {

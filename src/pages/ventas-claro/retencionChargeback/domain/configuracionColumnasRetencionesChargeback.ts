@@ -1,5 +1,5 @@
-import { ColumnConfig } from "components/tables/domain/ColumnConfig";
-import { Retencion } from "./Retencion";
+import { ColumnConfig } from 'components/tables/domain/ColumnConfig';
+import { Retencion } from './Retencion';
 
 export const configuracionColumnasRetencionesChargebacks: ColumnConfig<Retencion>[] = [
     {

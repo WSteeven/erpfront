@@ -1,8 +1,8 @@
-import { EntidadAuditable } from "shared/entidad/domain/entidadAuditable";
+import { EntidadAuditable } from 'shared/entidad/domain/entidadAuditable';
 
 export class AsignacionVehiculo extends EntidadAuditable {
     vehiculo: string | null
-    vehiculo_id:number | null
+    vehiculo_id: number | null
     entrega: number | null
     responsable: number | null
     responsable_id: number | null

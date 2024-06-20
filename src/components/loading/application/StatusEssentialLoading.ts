@@ -1,6 +1,6 @@
 import { useQuasar, QSpinnerOval } from 'quasar'
 import { useCargandoStore } from 'stores/cargando'
-import { computed, ComputedRef, Ref } from 'vue'
+import { computed, ComputedRef } from 'vue'
 
 export class StatusEssentialLoading {
   public estaCargando: ComputedRef<boolean>
@@ -23,9 +23,9 @@ export class StatusEssentialLoading {
     })
   }
 
-  establecerMensaje(mensaje: string): void {
+  // establecerMensaje(mensaje: string): void {
     // this.mensaje.value = mensaje
-  }
+  // }
 
   desactivar(): void {
     this.$q.loading.hide()

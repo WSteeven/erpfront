@@ -1,5 +1,4 @@
 import { CausaIntervencion } from 'pages/gestionTrabajos/causasIntervenciones/domain/CausaIntervencion'
-import { ObtenerPlantilla } from 'pages/gestionTrabajos/trabajoAsignado/application/ObtenerPlantilla'
 import { MotivoSuspendido } from 'pages/gestionTrabajos/motivosSuspendidos/domain/MotivoSuspendido'
 import { isAxiosError, notificarMensajesError, obtenerUbicacion } from 'shared/utils'
 import { MotivoPausa } from 'pages/gestionTrabajos/motivosPausas/domain/MotivoPausa'
@@ -29,7 +28,7 @@ export const useBotonesTablaSubtarea = (listado: Ref<Subtarea[]>, modales: any, 
   /************
    * Variables
    ************/
-  const { notificarAdvertencia, confirmar, notificarCorrecto, prompt, promptItems } = useNotificaciones()
+  const { notificarAdvertencia, confirmar, notificarCorrecto,  promptItems } = useNotificaciones()
   const notificaciones = useNotificaciones()
   const cambiarEstadoTrabajo = new CambiarEstadoSubtarea()
   let filtrarTrabajoAsignado: (estado: string) => void

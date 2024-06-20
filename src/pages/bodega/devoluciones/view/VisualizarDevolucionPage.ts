@@ -1,22 +1,22 @@
 //dependencies
-import { computed, defineComponent, ref } from "vue";
+import { computed, defineComponent, ref } from 'vue';
 import { configuracionColumnasDevoluciones } from '../domain/configuracionColumnasDevoluciones'
 import { configuracionColumnasProductosSeleccionados } from '../domain/configuracionColumnasProductosSeleccionados'
 
 //Components
-import TabLayout from "shared/contenedor/modules/simple/view/TabLayout.vue";
-import EssentialTable from "components/tables/view/EssentialTable.vue";
+import TabLayout from 'shared/contenedor/modules/simple/view/TabLayout.vue';
+import EssentialTable from 'components/tables/view/EssentialTable.vue';
 
 //logica y controladores
-import { ContenedorSimpleMixin } from "shared/contenedor/modules/simple/application/ContenedorSimpleMixin";
+import { ContenedorSimpleMixin } from 'shared/contenedor/modules/simple/application/ContenedorSimpleMixin';
 import { Devolucion } from '../domain/Devolucion'
 import { DevolucionController } from '../infraestructure/DevolucionController'
-import { useNotificaciones } from "shared/notificaciones";
-import { useNotificacionStore } from "stores/notificacion";
-import { LocalStorage, useQuasar } from "quasar";
-import { useCargandoStore } from "stores/cargando";
-import { useDevolucionStore } from "stores/devolucion";
-import { Condicion } from "pages/administracion/condiciones/domain/Condicion";
+import { useNotificaciones } from 'shared/notificaciones';
+import { useNotificacionStore } from 'stores/notificacion';
+import { LocalStorage, useQuasar } from 'quasar';
+import { useCargandoStore } from 'stores/cargando';
+import { useDevolucionStore } from 'stores/devolucion';
+import { Condicion } from 'pages/administracion/condiciones/domain/Condicion';
 
 export default defineComponent({
     components: { TabLayout, EssentialTable },

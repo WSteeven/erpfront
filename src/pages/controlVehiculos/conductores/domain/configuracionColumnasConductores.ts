@@ -1,5 +1,5 @@
-import { ColumnConfig } from "components/tables/domain/ColumnConfig";
-import { Conductor } from "./Conductor";
+import { ColumnConfig } from 'components/tables/domain/ColumnConfig';
+import { Conductor } from './Conductor';
 
 export const configuracioncolumnasConductores: ColumnConfig<Conductor>[] = [
     {

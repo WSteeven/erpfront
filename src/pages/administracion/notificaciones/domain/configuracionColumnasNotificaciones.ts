@@ -1,7 +1,7 @@
-import { ColumnConfig } from "components/tables/domain/ColumnConfig";
-import { Notificacion } from "./Notificacion";
+import { ColumnConfig } from 'components/tables/domain/ColumnConfig';
+import { Notificacion } from './Notificacion';
 
-export const configuracionColumnasNotificaciones: ColumnConfig<any>[] = [
+export const configuracionColumnasNotificaciones: ColumnConfig<Notificacion>[] = [
   {
     name: 'mensaje',
     field: 'mensaje',
@@ -13,13 +13,6 @@ export const configuracionColumnasNotificaciones: ColumnConfig<any>[] = [
     name: 'leida',
     field: 'leida',
     label: 'Leído',
-    align: 'left',
-    sortable: true
-  },
-  {
-    name: 'acciones',
-    field: 'acciones',
-    label: 'Acciones',
     align: 'left',
     sortable: true
   },

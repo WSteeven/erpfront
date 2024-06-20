@@ -226,13 +226,13 @@ export default defineComponent({
     }
 
     const obtenerListadoFiltros = () => {
-      filtros.search = busqueda.value === "" ? null : busqueda.value
+      filtros.search = busqueda.value === '' ? null : busqueda.value
       const newParams = {...filtrosBusqueda.value}
       newParams.limit = 100
       listar({...filtros, ...newParams}, false)
     }
     const obtenerTodoListadoFiltros = () => {
-      filtros.search = busqueda.value === "" ? null : busqueda.value
+      filtros.search = busqueda.value === '' ? null : busqueda.value
       listar({...filtros, ...filtrosBusqueda.value}, false)
     } */
 

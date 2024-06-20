@@ -1,5 +1,5 @@
-import { ColumnConfig } from "components/tables/domain/ColumnConfig";
-import { RegistroIncidente } from "./RegistroIncidente";
+import { ColumnConfig } from 'components/tables/domain/ColumnConfig';
+import { RegistroIncidente } from './RegistroIncidente';
 
 export const configuracionColumnasRegistroIncidente: ColumnConfig<RegistroIncidente>[] = [
     {

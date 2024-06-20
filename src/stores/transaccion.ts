@@ -7,7 +7,6 @@ import { defineStore } from 'pinia'
 import { reactive, ref } from 'vue'
 import { acciones } from 'config/utils'
 import { imprimirArchivo, notificarErrores, notificarMensajesError } from 'shared/utils'
-import { Comprobante } from 'pages/bodega/comprobantes/domain/Comprobante'
 import { ApiError } from 'shared/error/domain/ApiError'
 import { useNotificaciones } from 'shared/notificaciones'
 

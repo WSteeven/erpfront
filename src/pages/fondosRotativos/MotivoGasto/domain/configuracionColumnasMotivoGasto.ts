@@ -1,5 +1,5 @@
-import { ColumnConfig } from "components/tables/domain/ColumnConfig";
-import { MotivoGasto } from "./MotivoGasto";
+import { ColumnConfig } from 'components/tables/domain/ColumnConfig';
+import { MotivoGasto } from './MotivoGasto';
 
 export const configuracionColumnasMotivoGasto: ColumnConfig<MotivoGasto>[] = [
   {

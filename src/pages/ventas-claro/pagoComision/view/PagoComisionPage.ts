@@ -83,7 +83,7 @@ export default defineComponent({
     /**
      * La función verifica si una fecha determinada está dentro de un rango definido por la última
      * fecha y la fecha actual.
-     * @param fecha - El parámetro "fecha" representa una fecha que se está comparando con la fecha
+     * @param fecha - El parámetro 'fecha' representa una fecha que se está comparando con la fecha
      * actual.
      * @returns un valor booleano. Comprueba si la fecha ingresada es mayor que la última fecha y menor
      * o igual a la fecha actual.

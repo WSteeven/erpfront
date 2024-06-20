@@ -1,7 +1,7 @@
-import { EntidadAuditable } from "shared/entidad/domain/entidadAuditable"
-import { ChecklistVehiculo } from "../modules/checklistVehiculo/domain/ChecklistVehiculo"
-import { ChecklistAccesoriosVehiculo } from "../modules/checklistAccesoriosVehiculo/domain/ChecklistAccesoriosVehiculo"
-import { ChecklistImagenVehiculo } from "../modules/checklistImagenVehiculo/domain/ChecklistImagenVehiculo"
+import { EntidadAuditable } from 'shared/entidad/domain/entidadAuditable'
+import { ChecklistVehiculo } from '../modules/checklistVehiculo/domain/ChecklistVehiculo'
+import { ChecklistAccesoriosVehiculo } from '../modules/checklistAccesoriosVehiculo/domain/ChecklistAccesoriosVehiculo'
+import { ChecklistImagenVehiculo } from '../modules/checklistImagenVehiculo/domain/ChecklistImagenVehiculo'
 
 export class BitacoraVehicular extends EntidadAuditable {
     fecha: string | null

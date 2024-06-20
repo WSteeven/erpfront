@@ -1,6 +1,6 @@
 // Dependencias
-import { ComponenteModal } from 'components/modales/domain/ComponenteModal.domain'
-import { markRaw } from 'vue'
+// import { ComponenteModal } from 'components/modales/domain/ComponenteModal.domain'
+// import { markRaw } from 'vue'
 
 // Paginas
 // import SubtareaAsignadaPage from 'pages/tareas/trabajoAsignado/modules/subtareasAsignadas/view/SubtareaAsignadaPage.vue'

@@ -2,7 +2,7 @@
   <q-page padding class="bg-body">
     <transition name="scale" mode="out-in">
       <q-card
-        v-if="!listadosAuxiliares.preguntas.length"
+        v-if="!cuestionarioPublico.preguntas.length"
         flat
         class="q-mb-sm bg-desenfoque border-white"
       >
@@ -43,14 +43,14 @@
     </transition>
 
     <transition name="scale" mode="out-in">
-      <div v-if="listadosAuxiliares.preguntas.length">
+      <div v-if="cuestionarioPublico.preguntas.length">
         <q-btn
           color="primary"
           no-caps
           unelevated
           square
           class="q-mb-md"
-          @click="listadosAuxiliares.preguntas = []"
+          @click="cuestionarioPublico.preguntas = []"
         >
           <q-icon name="bi-arrow-left" class="q-mr-sm"></q-icon>
           Volver a ver los cuestionarios disponibles</q-btn
@@ -71,9 +71,9 @@
     <!-- @update:model-value="hidratarPersona" -->
 
     <transition name="scale" mode="out-in">
-      <div v-if="listadosAuxiliares.preguntas.length">
+      <div v-if="cuestionarioPublico.preguntas.length">
         <q-card
-          v-if="listadosAuxiliares.preguntas.length"
+          v-if="cuestionarioPublico.preguntas.length"
           flat
           class="q-mb-sm border-white"
         >
@@ -104,7 +104,7 @@
 
             <div class="row q-col-gutter-sm">
               <div
-                v-for="item in listadosAuxiliares.preguntas"
+                v-for="(item, index) in cuestionarioPublico.preguntas"
                 :key="item.id"
                 class="col-12 col-md-6 text-bold text-justify q-mb-md"
               >
@@ -121,21 +121,51 @@
                   options-dense
                   emit-value
                   map-options
-                />
+                  :error="
+                    !!v$.preguntas.$each.$response.$errors[index].respuesta
+                      .length
+                  "
+                >
+                  <template v-slot:error>
+                    <div
+                      v-for="error of v$.preguntas.$each.$response.$errors[
+                        index
+                      ].pregunta"
+                      :key="error.$uid"
+                    >
+                      <div class="error-msg">{{ error.$message }}</div>
+                    </div>
+                  </template>
+                </q-select>
+
                 <q-input
                   v-else
                   v-model="item.respuesta"
                   placeholder="Escriba..."
+                  :error="
+                    !!v$.preguntas.$each.$response.$errors[index].respuesta
+                      .length
+                  "
                   outlined
                   dense
                 >
+                  <template v-slot:error>
+                    <div
+                      v-for="error of v$.preguntas.$each.$response.$errors[
+                        index
+                      ].pregunta"
+                      :key="error.$uid"
+                    >
+                      <div class="error-msg">{{ error.$message }}</div>
+                    </div>
+                  </template>
                 </q-input>
               </div>
             </div>
 
             <div class="row full-width justify-center">
               <button-submits
-                v-if="listadosAuxiliares.preguntas.length"
+                v-if="cuestionarioPublico.preguntas.length"
                 :accion="accion"
                 label-guardar="Guardar y enviar respuestas"
                 :permitirCancelar="false"

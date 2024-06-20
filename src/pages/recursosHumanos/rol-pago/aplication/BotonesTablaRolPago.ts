@@ -1,36 +1,24 @@
-import { CausaIntervencion } from 'pages/gestionTrabajos/causasIntervenciones/domain/CausaIntervencion'
-import { MotivoSuspendido } from 'pages/gestionTrabajos/motivosSuspendidos/domain/MotivoSuspendido'
-import { imprimirArchivo, isAxiosError, notificarMensajesError } from 'shared/utils'
-import { CustomActionPrompt } from 'components/tables/domain/CustomActionPrompt'
 import { CustomActionTable } from 'components/tables/domain/CustomActionTable'
 import { useAuthenticationStore } from 'stores/authentication'
 import { useNotificaciones } from 'shared/notificaciones'
 import { acciones, estadosRolPago } from 'config/utils'
-import { RolPago } from 'pages/recursosHumanos/rol-pago/domain/RolPago'
-import { Ref, reactive } from 'vue'
-import { clientes } from 'config/clientes'
 import { useRolPagoStore } from 'stores/rolPago'
-import { AxiosHttpRepository } from 'shared/http/infraestructure/AxiosHttpRepository'
-import { apiConfig, endpoints } from 'config/api'
 import { CambiarEstadoRolPago } from './CambiarEstadoRolPago'
 
-export const useBotonesTablaRolPago = (listado: Ref<RolPago[]>, modales: any, listadosAuxiliares?: any) => {
+export const useBotonesTablaRolPago = (modales: any) => {
   /***********
   * Stores
   ***********/
   const authenticationStore = useAuthenticationStore()
   const rolPagoStore = useRolPagoStore()
-  const store = useAuthenticationStore()
 
 
-  const esRecursosHumanos = store.esRecursosHumanos
 
 
   /************
    * Variables
    ************/
-  const { notificarAdvertencia, confirmar, notificarCorrecto, prompt, promptItems } = useNotificaciones()
-  const notificaciones = useNotificaciones()
+  const { confirmar, notificarCorrecto } = useNotificaciones()
   const btnIniciar: CustomActionTable = {
     titulo: '',
     icono: 'bi-play-fill',
@@ -42,7 +30,7 @@ export const useBotonesTablaRolPago = (listado: Ref<RolPago[]>, modales: any, li
         const data = {
           estado: estadosRolPago.EJECUTANDO,
         }
-        const { result } = await new CambiarEstadoRolPago().ejecutar(entidad.id, data)
+         await new CambiarEstadoRolPago().ejecutar(entidad.id, data)
         notificarCorrecto('Rol de Pagos se esta Verificando!')
       })
     }
@@ -58,7 +46,7 @@ export const useBotonesTablaRolPago = (listado: Ref<RolPago[]>, modales: any, li
         const data = {
           estado: estadosRolPago.REALIZADO,
         }
-        const { result } = await new CambiarEstadoRolPago().realizar(entidad.id, data)
+         await new CambiarEstadoRolPago().realizar(entidad.id, data)
         notificarCorrecto('Rol de Pagos se esta Verificando!')
       })
     }
@@ -68,7 +56,7 @@ export const useBotonesTablaRolPago = (listado: Ref<RolPago[]>, modales: any, li
     icono: 'fa-solid fa-file-signature',
     color: 'positive',
     visible: ({ entidad }) => entidad.estado === estadosRolPago.EJECUTANDO && (authenticationStore.esRecursosHumanos) && !entidad.es_quincena,
-    accion: ({ entidad, posicion }) => {
+    accion: ({ entidad }) => {
 
       confirmar('¿Tiene el rol de pagos firmado?', async () => {
         rolPagoStore.idRolPagoSeleccionada = entidad.id;
@@ -90,7 +78,7 @@ export const useBotonesTablaRolPago = (listado: Ref<RolPago[]>, modales: any, li
         const data = {
           estado: estadosRolPago.FINALIZADO,
         }
-        const { result } = await new CambiarEstadoRolPago().finalizar(entidad.id, data)
+        await new CambiarEstadoRolPago().finalizar(entidad.id, data)
         notificarCorrecto('Rol finalizado exitosamente!')
       })
     }

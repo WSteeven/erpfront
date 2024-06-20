@@ -1,7 +1,7 @@
 import { AntecedenteTrabajoAnterior } from './AntecedenteTrabajoAnterior'
 import { ColumnConfig } from 'components/tables/domain/ColumnConfig'
 
-export const configuracionColumnasAntecedenteTrabajoAnterior: ColumnConfig<AntecedenteTrabajoAnterior | any>[] = [
+export const configuracionColumnasAntecedenteTrabajoAnterior: ColumnConfig<AntecedenteTrabajoAnterior>[] = [
   {
     name: 'empresa',
     field: 'empresa',

@@ -1,5 +1,5 @@
-import { ColumnConfig } from "components/tables/domain/ColumnConfig";
-import { SubcentroCosto } from "./SubcentroCosto";
+import { ColumnConfig } from 'components/tables/domain/ColumnConfig';
+import { SubcentroCosto } from './SubcentroCosto';
 
 export const configuracionColumnasSubcentroCostos: ColumnConfig<SubcentroCosto>[] = [
     {

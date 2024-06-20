@@ -25,4 +25,12 @@ export const integer = withI18nMessage(validators.integer)
 export const minValue = withI18nMessage(validators.minValue, { withArguments: true })
 export const maxValue = withI18nMessage(validators.maxValue, { withArguments: true })
 
+// export const helpers = withI18nMessage(validators.helpers, { withArguments: true })
 export const helpers = validators.helpers
+
+/* export const forEach = withI18nMessage(validators.helpers.withParams({type: 'forEach'}, validators.helpers.forEach));
+
+export const helpers = {
+    withParams: validators.helpers.withParams,
+    forEach // Include the translated forEach helper
+}; */

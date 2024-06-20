@@ -1,35 +1,35 @@
 // Dependencies
-import { configuracionColumnasMantenimientosCorrectivos } from "../domain/configuracionColumnasMantenimientosCorrectivos";
-import { configuracionColumnasMantenimientosPreventivos } from "../domain/configuracionColumnasMantenimientosPreventivos";
-import { configuracionColumnasCustodios } from "../domain/configuracionColumnasCustodios";
-import { required } from "shared/i18n-validators";
-import { defineComponent, ref } from "vue";
-import useVuelidate from "@vuelidate/core";
-import { maskFecha } from "config/utils";
-import { AxiosResponse } from "axios";
-import { useQuasar } from "quasar";
+import { configuracionColumnasMantenimientosCorrectivos } from '../domain/configuracionColumnasMantenimientosCorrectivos';
+import { configuracionColumnasMantenimientosPreventivos } from '../domain/configuracionColumnasMantenimientosPreventivos';
+import { configuracionColumnasCustodios } from '../domain/configuracionColumnasCustodios';
+import { required } from 'shared/i18n-validators';
+import { defineComponent, ref } from 'vue';
+import useVuelidate from '@vuelidate/core';
+import { maskFecha } from 'config/utils';
+import { AxiosResponse } from 'axios';
+import { useQuasar } from 'quasar';
 
 // Components
-import EssentialTable from "components/tables/view/EssentialTable.vue";
+import EssentialTable from 'components/tables/view/EssentialTable.vue';
 
 // Logica y controladores
-import { HistorialVehiculo } from "../domain/HistorialVehiculo";
-import { ContenedorSimpleMixin } from "shared/contenedor/modules/simple/application/ContenedorSimpleMixin";
-import { HistorialVehiculoController } from "../infraestructura/HistorialVehiculoController";
-import { useNotificacionStore } from "stores/notificacion";
-import { useCargandoStore } from "stores/cargando";
-import { StatusEssentialLoading } from "components/loading/application/StatusEssentialLoading";
-import { ConductorController } from "pages/controlVehiculos/conductores/infraestructure/ConductorController";
-import { VehiculoController } from "pages/controlVehiculos/vehiculos/infraestructure/VehiculoController";
-import { useFiltrosListadosSelects } from "shared/filtrosListadosGenerales";
-import { imprimirArchivo, notificarErrores, obtenerFechaActual } from "shared/utils";
-import { AxiosHttpRepository } from "shared/http/infraestructure/AxiosHttpRepository";
-import { apiConfig, endpoints } from "config/api";
-import { Vehiculo } from "pages/controlVehiculos/vehiculos/domain/Vehiculo";
-import { useNotificaciones } from "shared/notificaciones";
-import { historialVehiculos, optionsHistorialVehiculos } from "config/vehiculos.utils";
-import { ServicioController } from "pages/controlVehiculos/servicios/infraestructure/ServicioController";
-import { configuracionColumnasIncidentes } from "../domain/configuracionColumnasIncidentes";
+import { HistorialVehiculo } from '../domain/HistorialVehiculo';
+import { ContenedorSimpleMixin } from 'shared/contenedor/modules/simple/application/ContenedorSimpleMixin';
+import { HistorialVehiculoController } from '../infraestructura/HistorialVehiculoController';
+import { useNotificacionStore } from 'stores/notificacion';
+import { useCargandoStore } from 'stores/cargando';
+import { StatusEssentialLoading } from 'components/loading/application/StatusEssentialLoading';
+import { ConductorController } from 'pages/controlVehiculos/conductores/infraestructure/ConductorController';
+import { VehiculoController } from 'pages/controlVehiculos/vehiculos/infraestructure/VehiculoController';
+import { useFiltrosListadosSelects } from 'shared/filtrosListadosGenerales';
+import { imprimirArchivo, notificarErrores, obtenerFechaActual } from 'shared/utils';
+import { AxiosHttpRepository } from 'shared/http/infraestructure/AxiosHttpRepository';
+import { apiConfig, endpoints } from 'config/api';
+import { Vehiculo } from 'pages/controlVehiculos/vehiculos/domain/Vehiculo';
+import { useNotificaciones } from 'shared/notificaciones';
+import { historialVehiculos, optionsHistorialVehiculos } from 'config/vehiculos.utils';
+import { ServicioController } from 'pages/controlVehiculos/servicios/infraestructure/ServicioController';
+import { configuracionColumnasIncidentes } from '../domain/configuracionColumnasIncidentes';
 
 export default defineComponent({
     components: { EssentialTable },

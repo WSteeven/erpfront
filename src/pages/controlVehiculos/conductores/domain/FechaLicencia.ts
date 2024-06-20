@@ -1,4 +1,4 @@
-import { EntidadAuditable } from "shared/entidad/domain/entidadAuditable";
+import { EntidadAuditable } from 'shared/entidad/domain/entidadAuditable';
 
 export class FechaLicencia extends EntidadAuditable {
     tipo_licencia: number | null
@@ -7,8 +7,8 @@ export class FechaLicencia extends EntidadAuditable {
 
     constructor() {
         super()
-        this.tipo_licencia= null
-        this.inicio_vigencia= null
-        this.fin_vigencia= null
+        this.tipo_licencia = null
+        this.inicio_vigencia = null
+        this.fin_vigencia = null
     }
 }

@@ -1,12 +1,12 @@
-import { EntidadAuditable } from "shared/entidad/domain/entidadAuditable"
+import { EntidadAuditable } from 'shared/entidad/domain/entidadAuditable'
 
 export class Tanqueo extends EntidadAuditable {
     vehiculo: string | null
     solicitante: string | null
-    solicitante_id:number | null
+    solicitante_id: number | null
     fecha_hora: string | null
     km_tanqueo: string | null
-    monto:number | null
+    monto: number | null
     imagen_comprobante: string | null
     imagen_tablero: string | null
 

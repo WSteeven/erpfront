@@ -1,14 +1,14 @@
 //Dependencias
 import { configuracionColumnasBitacoraVehicular } from '../domain/configuracionColumnasBitacoraVehicular';
 import { configuracionColumnasActividadesRealizadas } from '../domain/configuracionColumnasActividadesRealizadas';
-import { minValue, required, requiredIf } from "shared/i18n-validators";
+import { minValue, required, requiredIf } from 'shared/i18n-validators';
 import { useVuelidate } from '@vuelidate/core'
-import { computed, defineComponent, ref } from "vue";
+import { computed, defineComponent, ref } from 'vue';
 
 // componentes
 import TabLayoutFilterTabs2 from 'shared/contenedor/modules/simple/view/TabLayoutFilterTabs2.vue';
 import SelectorImagen from 'components/SelectorImagen.vue'
-import EssentialPopupEditableTable from "components/tables/view/EssentialPopupEditableTable.vue"
+import EssentialPopupEditableTable from 'components/tables/view/EssentialPopupEditableTable.vue'
 
 // Logica y controladores
 import { ContenedorSimpleMixin } from 'shared/contenedor/modules/simple/application/ContenedorSimpleMixin';
@@ -162,12 +162,12 @@ export default defineComponent({
         async function obtenerVehiculoAsignado() {
             const response = (await new AsignacionVehiculoController().listar({ filtro: 1, responsable_id: store.user.id, estado: 'ACEPTADO' }))
             console.log(response)
-            if(response.result.length==0){
-              const response = (await new TransferenciaVehiculoController().listar({ responsable_id: store.user.id, estado: 'ACEPTADO' }))
-              console.log(response)
-              return response.result[0]
-            }else{
-              return response.result[0]
+            if (response.result.length == 0) {
+                const response = (await new TransferenciaVehiculoController().listar({ responsable_id: store.user.id, estado: 'ACEPTADO' }))
+                console.log(response)
+                return response.result[0]
+            } else {
+                return response.result[0]
             }
         }
 
@@ -186,8 +186,8 @@ export default defineComponent({
 
 
         /**
-         * La función "cargarDatosDefecto" carga datos por defecto en el objeto "bitacora" basándose en
-         * los valores de "usuarioDefault".
+         * La función 'cargarDatosDefecto' carga datos por defecto en el objeto 'bitacora' basándose en
+         * los valores de 'usuarioDefault'.
          */
         function cargarDatosDefecto() {
             if (usuarioDefault.value) {

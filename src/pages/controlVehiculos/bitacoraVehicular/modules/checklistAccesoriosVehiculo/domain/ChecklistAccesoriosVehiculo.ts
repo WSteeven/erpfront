@@ -1,8 +1,8 @@
-import { EntidadAuditable } from "shared/entidad/domain/entidadAuditable";
+import { EntidadAuditable } from 'shared/entidad/domain/entidadAuditable';
 
 export class ChecklistAccesoriosVehiculo extends EntidadAuditable {
     //partes del vehiculo
-    bitacora_id: number| null
+    bitacora_id: number | null
     botiquin: string | null
     extintor: string | null
     caja_herramientas: string | null

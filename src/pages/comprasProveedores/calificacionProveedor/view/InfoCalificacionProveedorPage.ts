@@ -1,22 +1,22 @@
 // Dependencies
-import { defineComponent, ref, onMounted, computed, nextTick } from "vue"
+import { defineComponent, ref, onMounted, computed, nextTick } from 'vue'
 
 //Components
-import EssentialTable from "components/tables/view/EssentialTable.vue"
-import GestorArchivos from "components/gestorArchivos/GestorArchivos.vue"
+import EssentialTable from 'components/tables/view/EssentialTable.vue'
+import GestorArchivos from 'components/gestorArchivos/GestorArchivos.vue'
 
 //Logica y controladores
-import { useProveedorStore } from "stores/comprasProveedores/proveedor"
-import { ContenedorSimpleMixin } from "shared/contenedor/modules/simple/application/ContenedorSimpleMixin"
-import { CalificacionProveedor } from "../domain/CalificacionProveedor"
-import { CalificacionProveedorController } from "../infraestructure/CalificacionProveedorController"
-import { OfertaProveedorController } from "sistema/proveedores/modules/ofertas_proveedores/infraestructure/OfertaProveedorController"
-import { configuracionColumnasCriteriosCalificacionesConCalificacion } from "pages/comprasProveedores/criteriosCalificaciones/domain/configuracionColumnasCriteriosCalificacionesConCalificacion"
-import { useCalificacionProveedorStore } from "stores/comprasProveedores/calificacionProveedor"
-import { DetalleDepartamentoProveedorController } from "pages/comprasProveedores/detallesDepartamentosProveedor/infraestructure/DetalleDepartamentoProveedorController"
-import { DetalleDepartamentoProveedor } from "pages/comprasProveedores/detallesDepartamentosProveedor/domain/DetalleDepartamentoProveedor"
-import { Proveedor } from "sistema/proveedores/domain/Proveedor"
-import { ProveedorController } from "sistema/proveedores/infraestructure/ProveedorController"
+import { useProveedorStore } from 'stores/comprasProveedores/proveedor'
+import { ContenedorSimpleMixin } from 'shared/contenedor/modules/simple/application/ContenedorSimpleMixin'
+import { CalificacionProveedor } from '../domain/CalificacionProveedor'
+import { CalificacionProveedorController } from '../infraestructure/CalificacionProveedorController'
+import { OfertaProveedorController } from 'sistema/proveedores/modules/ofertas_proveedores/infraestructure/OfertaProveedorController'
+import { configuracionColumnasCriteriosCalificacionesConCalificacion } from 'pages/comprasProveedores/criteriosCalificaciones/domain/configuracionColumnasCriteriosCalificacionesConCalificacion'
+import { useCalificacionProveedorStore } from 'stores/comprasProveedores/calificacionProveedor'
+import { DetalleDepartamentoProveedorController } from 'pages/comprasProveedores/detallesDepartamentosProveedor/infraestructure/DetalleDepartamentoProveedorController'
+import { DetalleDepartamentoProveedor } from 'pages/comprasProveedores/detallesDepartamentosProveedor/domain/DetalleDepartamentoProveedor'
+import { Proveedor } from 'sistema/proveedores/domain/Proveedor'
+import { ProveedorController } from 'sistema/proveedores/infraestructure/ProveedorController'
 
 //Logica y controladores
 
@@ -79,9 +79,9 @@ export default defineComponent({
         function cargarArchivos(id: number) {
             refArchivo.value.listarArchivosAlmacenados(id)
         }
-        
+
         onMounted(() => {
-                cargarArchivos(proveedorStore.idProveedor)
+            cargarArchivos(proveedorStore.idProveedor)
             console.log(refArchivo.value)
         }
         )

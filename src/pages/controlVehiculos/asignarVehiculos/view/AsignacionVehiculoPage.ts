@@ -1,39 +1,39 @@
 //Dependencias
-import { computed, defineComponent, ref } from "vue";
-import { ContenedorSimpleMixin } from "shared/contenedor/modules/simple/application/ContenedorSimpleMixin";
-import { configuracionColumnasAsignacionVehiculos } from "../domain/configuracionColumnasAsignacionVehiculos";
-import { required } from "shared/i18n-validators";
-import useVuelidate from "@vuelidate/core";
+import { computed, defineComponent, ref } from 'vue';
+import { ContenedorSimpleMixin } from 'shared/contenedor/modules/simple/application/ContenedorSimpleMixin';
+import { configuracionColumnasAsignacionVehiculos } from '../domain/configuracionColumnasAsignacionVehiculos';
+import { required } from 'shared/i18n-validators';
+import useVuelidate from '@vuelidate/core';
 
 //Components
-import TabLayoutFilterTabs2 from "shared/contenedor/modules/simple/view/TabLayoutFilterTabs2.vue"
-import GestorArchivos from "components/gestorArchivos/GestorArchivos.vue";
+import TabLayoutFilterTabs2 from 'shared/contenedor/modules/simple/view/TabLayoutFilterTabs2.vue'
+import GestorArchivos from 'components/gestorArchivos/GestorArchivos.vue';
 
 // Logica y controladores
-import { AsignacionVehiculo } from "../domain/AsignacionVehiculo";
-import { AsignacionVehiculoController } from "../infraestructure/AsignacionVehiculoController";
-import { tabOptionsAsignacionVehiculos, estadosAsignacionesVehiculos } from "config/vehiculos.utils";
-import { ConductorController } from "pages/controlVehiculos/conductores/infraestructure/ConductorController";
-import { useFiltrosListadosSelects } from "shared/filtrosListadosGenerales";
-import { imprimirArchivo, obtenerFechaActual, ordenarLista } from "shared/utils";
-import { useAuthenticationStore } from "stores/authentication";
-import { acciones, convertir_fecha, maskFecha } from "config/utils";
-import { VehiculoController } from "pages/controlVehiculos/vehiculos/infraestructure/VehiculoController";
-import { CustomActionTable } from "components/tables/domain/CustomActionTable";
-import { StatusEssentialLoading } from "components/loading/application/StatusEssentialLoading";
-import { AxiosHttpRepository } from "shared/http/infraestructure/AxiosHttpRepository";
-import { apiConfig, endpoints } from "config/api";
-import { useNotificaciones } from "shared/notificaciones";
-import { LocalStorage, useQuasar } from "quasar";
-import { useNotificacionStore } from "stores/notificacion";
-import { useCargandoStore } from "stores/cargando";
-import { recargarGenerico } from "shared/funcionesActualizacionListados";
-import { CustomActionPrompt } from "components/tables/domain/CustomActionPrompt";
-import { ParamsType } from "config/types";
-import { AxiosResponse } from "axios";
-import { ArchivoController } from "pages/gestionTrabajos/subtareas/modules/gestorArchivosTrabajos/infraestructure/ArchivoController";
-import { useVehiculoStore } from "stores/vehiculos/vehiculo";
-import { useRouter } from "vue-router";
+import { AsignacionVehiculo } from '../domain/AsignacionVehiculo';
+import { AsignacionVehiculoController } from '../infraestructure/AsignacionVehiculoController';
+import { tabOptionsAsignacionVehiculos, estadosAsignacionesVehiculos } from 'config/vehiculos.utils';
+import { ConductorController } from 'pages/controlVehiculos/conductores/infraestructure/ConductorController';
+import { useFiltrosListadosSelects } from 'shared/filtrosListadosGenerales';
+import { imprimirArchivo, obtenerFechaActual, ordenarLista } from 'shared/utils';
+import { useAuthenticationStore } from 'stores/authentication';
+import { acciones, convertir_fecha, maskFecha } from 'config/utils';
+import { VehiculoController } from 'pages/controlVehiculos/vehiculos/infraestructure/VehiculoController';
+import { CustomActionTable } from 'components/tables/domain/CustomActionTable';
+import { StatusEssentialLoading } from 'components/loading/application/StatusEssentialLoading';
+import { AxiosHttpRepository } from 'shared/http/infraestructure/AxiosHttpRepository';
+import { apiConfig, endpoints } from 'config/api';
+import { useNotificaciones } from 'shared/notificaciones';
+import { LocalStorage, useQuasar } from 'quasar';
+import { useNotificacionStore } from 'stores/notificacion';
+import { useCargandoStore } from 'stores/cargando';
+import { recargarGenerico } from 'shared/funcionesActualizacionListados';
+import { CustomActionPrompt } from 'components/tables/domain/CustomActionPrompt';
+import { ParamsType } from 'config/types';
+import { AxiosResponse } from 'axios';
+import { ArchivoController } from 'pages/gestionTrabajos/subtareas/modules/gestorArchivosTrabajos/infraestructure/ArchivoController';
+import { useVehiculoStore } from 'stores/vehiculos/vehiculo';
+import { useRouter } from 'vue-router';
 
 
 export default defineComponent({

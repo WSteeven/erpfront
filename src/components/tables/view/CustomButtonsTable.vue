@@ -521,7 +521,6 @@
 </template>
 
 <script lang="ts" setup>
-import { computed } from 'vue'
 import { CustomActionTable } from '../domain/CustomActionTable'
 
 const props = defineProps({

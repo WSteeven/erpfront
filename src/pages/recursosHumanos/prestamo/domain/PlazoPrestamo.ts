@@ -1,14 +1,14 @@
-import { EntidadAuditable } from "shared/entidad/domain/entidadAuditable";
+import { EntidadAuditable } from 'shared/entidad/domain/entidadAuditable';
 
 export class PlazoPrestamo extends EntidadAuditable {
-  id:number |null
+  id: number | null
   num_cuota: number | null
-  fecha_vencimiento:string | null
+  fecha_vencimiento: string | null
   fecha_pago: string | null
   valor_couta: string | null
   valor_pagado: string | null
   valor_a_pagar: number | null
-  pago_couta:boolean |null
+  pago_couta: boolean | null
 
   constructor() {
     super()

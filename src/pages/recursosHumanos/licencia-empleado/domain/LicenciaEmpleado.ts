@@ -1,19 +1,19 @@
-import { EntidadAuditable } from "shared/entidad/domain/entidadAuditable";
+import { EntidadAuditable } from 'shared/entidad/domain/entidadAuditable';
 
 export class LicenciaEmpleado extends EntidadAuditable {
   id: number | null
-  empleado:number | null
-  empleado_info: string |null
+  empleado: number | null
+  empleado_info: string | null
   tipo_licencia: string | null
   tipo_licencia_info: string | null
   estado: string | null
   estado_licencia_info: string | null
   fecha_inicio: string | null
   fecha_fin: string | null
-   justificacion: string | null
-   id_jefe_inmediato: number | null
+  justificacion: string | null
+  id_jefe_inmediato: number | null
   jefe_inmediato: string | null
-  documento: string |null
+  documento: string | null
   tieneDocumento: boolean | null
   dias_licencia: number | null
 
@@ -30,8 +30,8 @@ export class LicenciaEmpleado extends EntidadAuditable {
     this.estado_licencia_info = null
     this.justificacion = null
     this.id_jefe_inmediato = null
-    this.jefe_inmediato= null
-    this.documento =null
+    this.jefe_inmediato = null
+    this.documento = null
     this.tieneDocumento = null
     this.dias_licencia = null
 

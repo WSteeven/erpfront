@@ -1,5 +1,4 @@
 import { EntidadAuditable } from 'shared/entidad/domain/entidadAuditable'
-import { AntecedentePersonal } from './AntecedentePersonal'
 
 export class AntecedenteGinecoObstetrico extends EntidadAuditable {
   menarquia: string | null

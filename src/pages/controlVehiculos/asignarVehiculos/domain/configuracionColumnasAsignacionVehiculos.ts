@@ -1,7 +1,7 @@
-import { ColumnConfig } from "components/tables/domain/ColumnConfig";
-import { AsignacionVehiculo } from "./AsignacionVehiculo";
+import { ColumnConfig } from 'components/tables/domain/ColumnConfig';
+import { AsignacionVehiculo } from './AsignacionVehiculo';
 
-export const configuracionColumnasAsignacionVehiculos: ColumnConfig<AsignacionVehiculo>[]=[
+export const configuracionColumnasAsignacionVehiculos: ColumnConfig<AsignacionVehiculo>[] = [
     {
         name: 'vehiculo',
         field: 'vehiculo',
