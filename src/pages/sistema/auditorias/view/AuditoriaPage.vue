@@ -7,6 +7,28 @@
           Logs de Auditorias por Empleado
         </div>
         <div class="row q-col-gutter-sm q-mb-md">
+          <!-- check para saber si buscar por auditable_id o por empleado -->
+          <div class="col-12 col-md-3">
+            <q-checkbox
+              class="q-mt-lg q-pt-md"
+              v-model="checkAuditable"
+              label="¿Auditable?"
+              outlined
+              dense
+            ></q-checkbox>
+          </div>
+          <!-- fecha de fin -->
+          <div class="col-12 col-md-3" v-if="checkAuditable">
+            <label class="q-mb-sm block">Auditable ID </label>
+            <q-input
+              v-model="auditoria.auditable_id"
+              outlined
+              dense
+              type="number"
+              @keyup.enter="consultar"
+            ></q-input>
+          </div>
+
           <!-- empleado -->
           <div class="col-12 col-md-3">
             <label class="q-mb-sm block">Seleccione un empleado</label>
@@ -63,7 +85,7 @@
                   >
                     <q-date
                       v-model="auditoria.fecha_inicio"
-                      mask="DD-MM-YYYY"
+                      :mask="maskFecha"
                       @update:model-value="consultar"
                       today-btn
                     >
@@ -105,7 +127,7 @@
                   >
                     <q-date
                       v-model="auditoria.fecha_fin"
-                      mask="DD-MM-YYYY"
+                      :mask="maskFecha"
                       @update:model-value="consultar"
                       today-btn
                     >
@@ -127,6 +149,39 @@
                 </div>
               </template>
             </q-input>
+          </div>
+
+          <!-- Modelo auditable -->
+          <div class="col-12 col-md-3">
+            <label class="q-mb-sm block">Modelo</label>
+            <q-select
+              v-model="auditoria.auditable_type"
+              :options="modelosAuditables"
+              transition-show="scale"
+              transition-hide="scale"
+              options-dense
+              dense
+              outlined
+              clearable
+              use-input
+              input-debounce="0"
+              @update:model-value="consultar"
+              :option-label="(item) => item"
+              :option-value="(item) => item"
+              ><template v-slot:no-option>
+                <q-item>
+                  <q-item-section class="text-grey">
+                    No hay resultados
+                  </q-item-section>
+                </q-item>
+              </template>
+
+              <template v-slot:error>
+                <div v-for="error of v$.empleado.$errors" :key="error.$uid">
+                  <div class="error-msg">{{ error.$message }}</div>
+                </div>
+              </template>
+            </q-select>
           </div>
         </div>
       </q-card-section>

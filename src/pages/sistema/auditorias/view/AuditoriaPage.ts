@@ -1,6 +1,6 @@
-import { required } from 'shared/i18n-validators'
+import { required, requiredIf } from 'shared/i18n-validators'
 import { ContenedorSimpleMixin } from 'shared/contenedor/modules/simple/application/ContenedorSimpleMixin';
-import { computed, defineComponent } from 'vue';
+import { computed, defineComponent, ref } from 'vue';
 import { Auditoria } from '../domain/Auditoria';
 import { AuditoriaController } from '../infraestructure/AuditoriaController';
 import { EmpleadoController } from 'pages/recursosHumanos/empleados/infraestructure/EmpleadoController';
@@ -9,16 +9,21 @@ import { useQuasar } from 'quasar';
 import useVuelidate from '@vuelidate/core';
 import { StatusEssentialLoading } from 'components/loading/application/StatusEssentialLoading';
 import { obtenerFechaActual } from 'shared/utils';
+import { maskFecha } from 'config/utils';
+import { AxiosHttpRepository } from 'shared/http/infraestructure/AxiosHttpRepository';
+import { apiConfig } from 'config/api';
+import { AxiosResponse } from 'axios';
 
 export default defineComponent({
     components: {},
     setup() {
         const mixin = new ContenedorSimpleMixin(Auditoria, new AuditoriaController())
-        const { entidad: auditoria, listado, listadosAuxiliares, } = mixin.useReferencias()
+        const { entidad: auditoria, listado, listadosAuxiliares } = mixin.useReferencias()
         const { listar, cargarVista, obtenerListados } = mixin.useComportamiento()
 
         const cargando = new StatusEssentialLoading()
-
+        const checkAuditable = ref(false)
+        const modelosAuditables = ref([])
         cargarVista(async () => {
             await obtenerListados({
                 empleados: {
@@ -26,13 +31,13 @@ export default defineComponent({
                     params: { campos: 'id,nombres,apellidos,cargo_id', estado: 1 }
                 }
             })
-            auditoria.fecha_fin = obtenerFechaActual()
+            auditoria.fecha_fin = obtenerFechaActual(maskFecha)
         })
 
         const reglas = {
-            empleado: { required },
-            fecha_inicio: { required },
-            fecha_fin: { required },
+            empleado: { requiredIf: requiredIf(checkAuditable.value) },
+            fecha_inicio: { requiredIf: requiredIf(checkAuditable.value) },
+            fecha_fin: { requiredIf: requiredIf(checkAuditable.value) },
         }
         const v$ = useVuelidate(reglas, auditoria)
         /***************************
@@ -43,6 +48,7 @@ export default defineComponent({
                 try {
                     cargando.activar()
                     await listar(auditoria)
+                    if (auditoria.auditable_type == null) await obtenerModelosAuditables()
                 } catch (error) {
                     console.log(error)
                 } finally {
@@ -51,12 +57,26 @@ export default defineComponent({
             }
         }
 
+        async function obtenerModelosAuditables() {
+            cargando.activar()
+            const axios = AxiosHttpRepository.getInstance()
+            const url = apiConfig.URL_BASE + '/' + 'api/modelos-auditorias'
+            const response: AxiosResponse = await axios.get(url)
+            listadosAuxiliares.modelosAuditables = response.data.results
+            modelosAuditables.value = listadosAuxiliares.modelosAuditables
+            console.log(response)
+            cargando.desactivar()
+        }
+
         const { empleados, filtrarEmpleados, ordenarEmpleados } = useFiltrosListadosSelects(listadosAuxiliares)
         return {
             mixin, listado, v$,
+            maskFecha,
             auditoria,
+            checkAuditable,
             //listados
             empleados, filtrarEmpleados, ordenarEmpleados,
+            modelosAuditables,
 
             // functiones
             consultar,

@@ -1290,7 +1290,7 @@ export const useMenuStore = defineStore('menu', () => {
       title: 'Log de auditorías',
       link: 'auditorias',
       icon: 'bi-journal-text',
-      can: store.can('puede.acceder.auditorias') || store.esAdministrador,
+      can: store.can('puede.acceder.auditorias'),// || store.esAdministrador,
     },
     {
       title: 'Configuracion General',
