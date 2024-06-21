@@ -24,7 +24,7 @@
           </div>
           <!-- Producto -->
           <div class="col-12 col-md-4">
-            <label class="q-mb-sm block">Clase</label>
+            <label class="q-mb-sm block">Producto</label>
             <q-select
               v-model="detalle.producto"
               :options="opciones_productos"
@@ -58,7 +58,7 @@
           </div>
           <!-- Descripcion cuando hay calco -->
           <div class="col-12 col-md-8" v-if="detalle.calco">
-            <label class="q-mb-sm block">Tipo</label>
+            <label class="q-mb-sm block">Descripción</label>
             <q-select
               v-model="descripcion"
               :options="listadoBackup"
@@ -88,7 +88,7 @@
           </div>
           <!-- Descripcion -->
           <div class="col-12 col-md-8" v-if="!detalle.calco">
-            <label class="q-mb-sm block">Tipo</label>
+            <label class="q-mb-sm block">Descripción</label>
             <q-input
               v-model="detalle.descripcion"
               placeholder="Obligatorio"
@@ -267,34 +267,51 @@
               </template>
             </q-select>
           </div>
-
-
+          <!-- Precio compra -->
+          <div class="col-12 col-md-4">
+            <label class="q-mb-sm block">Precio de compra</label>
+            <q-input
+              type="number"
+              mask="##.##"
+              fill-mask
+              unmasked-value
+              v-model="detalle.precio_compra"
+              placeholder="Opcional"
+              :readonly="disabled"
+              outlined
+              dense
+            >
+            </q-input>
+          </div>
           <!-- Tiene serial -->
           <div class="col-12 col-md-4">
             <br />
             <q-checkbox
               v-model="detalle.tiene_serial"
-              label="¿Tiene Serial?"
-              outlined
-              dense
-              :disable="disabled"
-            ></q-checkbox>
-            &nbsp;
-            <q-checkbox
-              v-model="detalle.tiene_lote"
-              label="¿Tiene Lote?"
+              label="Tiene serial"
               outlined
               dense
               :disable="disabled"
             ></q-checkbox>
           </div>
-
-          <!-- Campos Adicionales  -->
+          <!-- Es fibra -->
+          <div class="col-12 col-md-4">
+            <br />
+            <q-checkbox
+              v-model="detalle.es_fibra"
+              label="Es fibra"
+              @update:model-value="checkFibra"
+              outlined
+              dense
+              :disable="disabled"
+            ></q-checkbox>
+          </div>
+          <!-- Es fibra -->
           <div class="col-12 col-md-4">
             <br />
             <q-checkbox
               v-model="detalle.tiene_adicionales"
-              label="Caracteristicas Adicionales:"
+              label="Campos adicionales"
               outlined
               dense
               :disable="disabled"
@@ -318,29 +335,10 @@
               </template>
             </q-input>
           </div>
-          <!-- Lote -->
-          <div v-if=" detalle.tiene_lote || detalle.es_fibra" class="col-12 col-md-4">
-            <label class="q-mb-sm block">Lote</label>
-            <q-input
-              v-model="detalle.lote"
-              placeholder="Obligatorio"
-              :readonly="disabled"
-              :error="!!v$.serial.$errors.length"
-              outlined
-              dense
-            >
-              <template v-slot:error>
-                <div v-for="error of v$.serial.$errors" :key="error.$uid">
-                  <div class="error-msg">{{ error.$message }}</div>
-                </div>
-              </template>
-            </q-input>
-          </div>
-
-          <!-- Caracteristicas Adicionales -->
+          <!-- Campos adicionales -->
           <!-- Color -->
           <div v-if="detalle.tiene_adicionales" class="col-12 col-md-4">
-            <label class="q-mb-sm block">Calibre</label>
+            <label class="q-mb-sm block">Color</label>
             <q-input
               v-model="detalle.color"
               placeholder="Obligatorio"
@@ -352,7 +350,7 @@
           </div>
           <!-- Talla -->
           <div v-if="detalle.tiene_adicionales" class="col-12 col-md-4">
-            <label class="q-mb-sm block">Peso</label>
+            <label class="q-mb-sm block">Talla</label>
             <q-input
               v-model="detalle.talla"
               placeholder="Opcional"
@@ -362,20 +360,31 @@
             >
             </q-input>
           </div>
-          <!-- Talla -->
+          <!-- Tipo -->
           <div v-if="detalle.tiene_adicionales" class="col-12 col-md-4">
-            <label class="q-mb-sm block">Dimensiones</label>
-            <q-input
-              v-model="detalle.talla"
-              placeholder="Opcional"
-              :readonly="disabled"
-              outlined
+            <label class="q-mb-sm block">Tipo</label>
+            <q-select
+              v-model="detalle.tipo"
+              :options="opciones_tipos"
+              hint="Selecciona un tipo"
+              transition-show="scale"
+              transition-hide="scale"
+              options-dense
               dense
+              outlined
+              :readonly="disabled"
+              :option-label="(item) => item"
+              :option-value="(item) => item"
+              emit-value
+              map-options
             >
-            </q-input>
+              <template v-slot:no-option>
+                <q-item>
+                  <q-item-section class="text-grey"> No hay resultados </q-item-section>
+                </q-item>
+              </template>
+            </q-select>
           </div>
-
-
           <!-- Span -->
           <div v-if="detalle.es_fibra" class="col-12 col-md-4 q-mb-md">
             <label class="q-mb-sm block">Span</label>
