@@ -14,6 +14,7 @@
               v-model="checkAuditable"
               label="¿Auditable?"
               outlined
+              @update:model-value="() => (auditoria.auditable_id = null)"
               dense
             ></q-checkbox>
           </div>
@@ -25,7 +26,6 @@
               outlined
               dense
               type="number"
-              @keyup.enter="consultar"
             ></q-input>
           </div>
 
@@ -41,11 +41,11 @@
               :error="!!v$.empleado.$errors.length"
               dense
               outlined
+              clearable
               use-input
               input-debounce="0"
               @filter="filtrarEmpleados"
               @blur="v$.empleado.$touch"
-              @update:model-value="consultar"
               @popup-show="ordenarEmpleados"
               :option-label="(item) => item.apellidos + ' ' + item.nombres"
               :option-value="(item) => item.id"
@@ -86,7 +86,6 @@
                     <q-date
                       v-model="auditoria.fecha_inicio"
                       :mask="maskFecha"
-                      @update:model-value="consultar"
                       today-btn
                     >
                       <div class="row items-center justify-end">
@@ -128,7 +127,6 @@
                     <q-date
                       v-model="auditoria.fecha_fin"
                       :mask="maskFecha"
-                      @update:model-value="consultar"
                       today-btn
                     >
                       <div class="row items-center justify-end">
@@ -165,7 +163,7 @@
               clearable
               use-input
               input-debounce="0"
-              @update:model-value="consultar"
+              @filter="filtrarModelosAuditables"
               :option-label="(item) => item"
               :option-value="(item) => item"
               ><template v-slot:no-option>
@@ -182,6 +180,24 @@
                 </div>
               </template>
             </q-select>
+          </div>
+
+          <!-- Grupo de botones -->
+          <div class="col-12 col-md-12 q-mt-md">
+            <div class="text-center">
+              <!-- Boton consultar -->
+              <q-btn
+                color="primary"
+                class="full-width"
+                no-caps
+                no-wrap
+                push
+                @click="consultar()"
+              >
+                <q-icon name="bi-search" size="xs" class="q-pr-sm"></q-icon>
+                <span>Consultar</span>
+              </q-btn>
+            </div>
           </div>
         </div>
       </q-card-section>

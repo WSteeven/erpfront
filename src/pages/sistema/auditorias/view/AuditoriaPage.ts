@@ -31,6 +31,7 @@ export default defineComponent({
                     params: { campos: 'id,nombres,apellidos,cargo_id', estado: 1 }
                 }
             })
+            await obtenerModelosAuditables()
             auditoria.fecha_fin = obtenerFechaActual(maskFecha)
         })
 
@@ -48,7 +49,6 @@ export default defineComponent({
                 try {
                     cargando.activar()
                     await listar(auditoria)
-                    if (auditoria.auditable_type == null) await obtenerModelosAuditables()
                 } catch (error) {
                     console.log(error)
                 } finally {
@@ -68,6 +68,17 @@ export default defineComponent({
             cargando.desactivar()
         }
 
+        async function filtrarModelosAuditables(val, update) {
+            if (val === '') {
+                update(() => modelosAuditables.value = listadosAuxiliares.modelosAuditables)
+                return
+            }
+            update(() => {
+                const needle = val.toLowerCase()
+                modelosAuditables.value = listadosAuxiliares.modelosAuditables.filter((item) => item.toLowerCase().indexOf(needle) > -1)
+            })
+        }
+
         const { empleados, filtrarEmpleados, ordenarEmpleados } = useFiltrosListadosSelects(listadosAuxiliares)
         return {
             mixin, listado, v$,
@@ -76,7 +87,7 @@ export default defineComponent({
             checkAuditable,
             //listados
             empleados, filtrarEmpleados, ordenarEmpleados,
-            modelosAuditables,
+            modelosAuditables, filtrarModelosAuditables,
 
             // functiones
             consultar,
