@@ -146,6 +146,12 @@ export default defineComponent({
       detalle.color = ''
       detalle.talla = ''
       detalle.tipo = ''
+      detalle.calibre = ''
+      detalle.peso = ''
+      detalle.dimensiones = ''
+      detalle.permiso = ''
+      detalle.caducidad = ''
+
     }
     function limpiarCamposFibra() {
       detalle.serial = null
@@ -211,6 +217,7 @@ export default defineComponent({
       detalle.modelo = result.modelo
       detalle.modelo_id = result.modelo_id
       detalle.serial = result.serial
+      detalle.lote = result.lote
       detalle.precio_compra = result.precio_compra
       detalle.ram = result.ram
       detalle.disco = result.disco
@@ -229,6 +236,12 @@ export default defineComponent({
       detalle.custodia = result.custodia
       detalle.puntas = result.puntas
       detalle.talla = result.talla
+      detalle.calibre = result.calibre
+      detalle.peso = result.peso
+      detalle.dimensiones = result.dimensiones
+      detalle.permiso = result.permiso
+      detalle.caducidad = result.caducidad
+
       detalle.tipo = result.tipo
       detalle.es_computadora = result.es_computadora
       detalle.es_fibra = result.es_fibra

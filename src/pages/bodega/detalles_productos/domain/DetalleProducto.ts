@@ -35,6 +35,13 @@ export class DetalleProducto extends EntidadAuditable {
 
     color: string | null
     talla: string | null
+    calibre: string | null
+    peso: string | null
+    dimensiones: string | null
+    permiso: string | null
+    caducidad: string | null
+
+
     tipo: string | null
     activo: boolean
 
@@ -82,6 +89,11 @@ export class DetalleProducto extends EntidadAuditable {
 
         this.color = null
         this.talla = null
+        this.calibre = null
+        this.peso = null
+        this.dimensiones = null
+        this.permiso = null
+        this.caducidad = null
         this.tipo = null
         this.activo = true
 
