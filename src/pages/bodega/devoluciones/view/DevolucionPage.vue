@@ -352,7 +352,7 @@
             <label class="q-mb-sm block">Autorizacion</label>
             <q-select
               v-model="devolucion.autorizacion"
-              :options="opciones_autorizaciones"
+              :options="autorizaciones"
               transition-show="jum-up"
               transition-hide="jump-down"
               options-dense
@@ -414,6 +414,26 @@
                 </div>
               </template>
             </q-input>
+          </div>
+          <div v-if="devolucion.estado_bodega" class="col-12 col-md-3 q-mb-md">
+            <label class="q-mb-sm block">Estado</label>
+            <q-input
+              autogrow
+              v-model="devolucion.estado_bodega"
+              disable
+              outlined
+              dense
+            />
+          </div>
+          <div v-if="devolucion.causa_anulacion" class="col-12 col-md-3 q-mb-md">
+            <label class="q-mb-sm block">Causa anulación</label>
+            <q-input
+              autogrow
+              v-model="devolucion.causa_anulacion"
+              disable
+              outlined
+              dense
+            />
           </div>
           <!-- Manejo de archivos -->
           <div class="col-12 q-mb-md">

@@ -14,10 +14,10 @@ import { imprimirArchivo } from 'shared/utils';
 import { useNotificacionStore } from 'stores/notificacion';
 import { useCargandoStore } from 'stores/cargando';
 import { useQuasar } from 'quasar';
-import { SucursalesDetalleController } from './infraestructure/SucursalesDetalleController';
+import { SucursalesDetalleController } from '../infraestructure/SucursalesDetalleController';
 import { configuracionColumnasItemPreingreso } from 'pages/bodega/preingresoMateriales/domain/configuracionColumnasItemsPreingreso';
-import { ColumnConfig } from 'components/tables/domain/ColumnConfig';
-import { ItemPreingresoMaterial } from 'pages/bodega/preingresoMateriales/domain/ItemPreingresoMaterial';
+import { columnasTransferencias } from '../domain/columnasTransferencias';
+import { maskFecha } from 'config/utils';
 
 export default defineComponent({
   components: { EssentialTable },
@@ -40,6 +40,7 @@ export default defineComponent({
     const results = ref([])
     const listado = ref([])
     const listadoPreingreso = ref([])
+    const listadoTransferencias = ref([])
     const { notificarError } = useNotificaciones()
     async function cargarDetalles() {
       cargando.activar()
@@ -66,8 +67,10 @@ export default defineComponent({
         // console.log(response)
         if (response.data.results) {
           listado.value = response.data.results
-          listadoPreingreso.value = response.data.results2
+          listadoPreingreso.value = response.data.preingresos
+          listadoTransferencias.value = response.data.transferencias
         }
+
         cargando.desactivar()
       }
       catch (e) {
@@ -131,8 +134,11 @@ export default defineComponent({
       detalles,
       listado,
       listadoPreingreso,
+      listadoTransferencias,
       configuracionColumnasSeguimientoDetalle,
       columnasPreingresos: configuracionColumnasItemPreingreso,
+      columnasTransferencias,
+      maskFecha,
       sucursales,
       imprimirReporte,
       obtenerSucursales,
