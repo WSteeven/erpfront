@@ -286,7 +286,7 @@ export default defineComponent({
 
         fechaInicio.setDate(
           fechaInicio.getDate() +
-          (parseInt(vacacion.numero_dias.toString()) - 1)
+          (parseInt(vacacion.numero_dias.toString()))
         )
         vacacion.fecha_fin = format(fechaInicio, 'YYYY-MM-DD')
 
@@ -308,7 +308,7 @@ export default defineComponent({
         const fechaInicio = new Date(vacacion.fecha_inicio_rango1_vacaciones)
         fechaInicio.setDate(
           fechaInicio.getDate() +
-          (parseInt(vacacion.numero_dias_rango1.toString()) - 1)
+          (parseInt(vacacion.numero_dias_rango1.toString()))
         )
         vacacion.fecha_fin_rango1_vacaciones = format(fechaInicio, 'YYYY-MM-DD')
       } else {
@@ -328,7 +328,7 @@ export default defineComponent({
         const fechaInicio = new Date(vacacion.fecha_inicio_rango2_vacaciones)
         fechaInicio.setDate(
           fechaInicio.getDate() +
-          (parseInt(vacacion.numero_dias_rango2.toString()) - 1)
+          (parseInt(vacacion.numero_dias_rango2.toString()))
         )
         vacacion.fecha_fin_rango2_vacaciones = format(fechaInicio, 'YYYY-MM-DD')
       } else {

@@ -86,3 +86,15 @@ export const motivosMovilizacion = [
   { id: 'IDA', descripcion: 'IDA AL TRABAJO' },
   { id: 'REGRESO', descripcion: 'REGRESO DEL TRABAJO' },
 ]
+
+export const opcionesTipoReporteMaterialUtilizado2 = [
+  { value: 0, label: 'POR TAREA' },
+  { value: 1, label: 'POR PROYECTO' },
+]
+
+export const tiposReportesMaterialUtilizado = {
+  POR_TAREA: 'POR TAREA',
+  POR_PROYECTO: 'POR PROYECTO',
+}
+
+export const opcionesTipoReporteMaterialUtilizado = [tiposReportesMaterialUtilizado.POR_TAREA, tiposReportesMaterialUtilizado.POR_PROYECTO]
