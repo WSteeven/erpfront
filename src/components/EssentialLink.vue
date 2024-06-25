@@ -37,6 +37,7 @@
           :icon="child.icon"
           :children="child.children"
           :can="child.can"
+          :class="{'bg-white border-white rounded q-mb-xs': !!child.children}"
         ></EssentialLink>
       </div>
     </q-expansion-item>
