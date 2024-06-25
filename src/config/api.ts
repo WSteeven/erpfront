@@ -473,6 +473,7 @@ export const endpoints = {
 
   //intranet
   eventos: new Endpoint('intranet/eventos'),
+blog: new Endpoint('intranet/blog'),
 
 
 

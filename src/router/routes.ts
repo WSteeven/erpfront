@@ -25,6 +25,12 @@ const routes: RouteRecordRaw[] = [
         component: () => import('pages/intranet/intranet/view/IntranetPage.vue'),
         meta: { requiresAuth: false },
       },
+      {
+        path: '/blog',
+        name: 'blog',
+        component: () => import('pages/intranet/noticias/view/NoticiasIntranet.vue'),
+        meta: { requiresAuth: false },
+      },
 
       {
         path: '/tablero',
