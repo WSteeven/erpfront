@@ -393,6 +393,7 @@ export const rolesSistema = {
   activos_fijos: 'ACTIVOS FIJOS',
   administrador: 'ADMINISTRADOR',
   administradorVehiculos: 'ADMINISTRADOR_VEHICULOS',
+  mecanicoGeneral: 'MECANICO_GENERAL',
   bodega: 'BODEGA',
   bodegaTelconet: 'BODEGA TELCONET',
   compras: 'COMPRAS',
@@ -475,14 +476,14 @@ export const tiposReportesIngresos = {
   tarea: 5,
   transferencia: 6,
 }
-export const numDiaSemana ={
+export const numDiaSemana = {
   domingo: 0,
-  lunes:1,
-  martes:2,
-  miercoles:3,
-  jueves:4,
-  viernes:5,
-  sabado:6
+  lunes: 1,
+  martes: 2,
+  miercoles: 3,
+  jueves: 4,
+  viernes: 5,
+  sabado: 6
 }
 
 export const opcionesReportesEgresos = [
@@ -619,11 +620,11 @@ export const estadosVentas = {
   RECHAZADO: 'RECHAZADO',
   PENDIENTE: 'PENDIENTE', // Se usa en vez de ASIGNADO en el dashboard
 }
-export const autorizacionesId ={
+export const autorizacionesId = {
   PENDIENTE: 1,
   APROBADO: 2,
   CANCELADO: 3,
-  VALIDADO:4
+  VALIDADO: 4
 }
 export const autorizaciones = [
   { nombre: 'Pendiente', id: 1 }, //autorizacion PENDIENTE

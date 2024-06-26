@@ -8,11 +8,23 @@ export class BitacoraVehicularPusherEvent {
     notificacionesPusherStore = useNotificationRealtimeStore()
 
     start() {
-        const {  notificarAdvertencia } = useNotificaciones()
+        const { notificarAdvertencia } = useNotificaciones()
         const notificacionStore = this.notificacionesPusherStore
         const pusher = notificacionStore.pusher
 
         const bitacoraActualizada = pusher.subscribe('bitacora-vehiculo-' + this.store.user.id)
+        bitacoraActualizada.bind('diferencia-km', (e) => {
+            notificacionStore.actualizar()
+
+            notificarAdvertencia('Se ha creado una bitácora con bastante diferencia de km respecto a la anterior')
+
+            //lanzamos la notificación push en el navegador del destinatario
+            pushEventMesaggeServiceWorker({
+                titulo: 'Diferencia de km en bitacoras',
+                mensaje: e.notificacion.mensaje,
+                link: e.notificacion.link,
+            })
+        })
         bitacoraActualizada.bind('bajo-nivel-combustible', function (e) {
             notificacionStore.actualizar()
 

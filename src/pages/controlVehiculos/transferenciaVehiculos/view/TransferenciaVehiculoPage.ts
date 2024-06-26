@@ -18,11 +18,11 @@ import { TransferenciaVehiculo } from '../domain/TransferenciaVehiculo';
 import { useAuthenticationStore } from 'stores/authentication';
 import { StatusEssentialLoading } from 'components/loading/application/StatusEssentialLoading';
 import { useNotificaciones } from 'shared/notificaciones';
-import { estadosAsignacionesVehiculos, tabOptionsTransferenciasVehiculos } from 'config/vehiculos.utils';
+import { estadosAsignacionesVehiculos, tabOptionsTransferenciasVehiculos, opcionesGaraje } from 'config/vehiculos.utils';
 import { CustomActionTable } from 'components/tables/domain/CustomActionTable';
 import { AxiosHttpRepository } from 'shared/http/infraestructure/AxiosHttpRepository';
 import { apiConfig, endpoints } from 'config/api';
-import { imprimirArchivo, obtenerFechaActual } from 'shared/utils';
+import { imprimirArchivo, obtenerFechaActual, obtenerUbicacion } from 'shared/utils';
 import { ConductorController } from 'pages/controlVehiculos/conductores/infraestructure/ConductorController';
 import { VehiculoController } from 'pages/controlVehiculos/vehiculos/infraestructure/VehiculoController';
 import { useFiltrosListadosSelects } from 'shared/filtrosListadosGenerales';
@@ -32,16 +32,18 @@ import { useVehiculoStore } from 'stores/vehiculos/vehiculo';
 import { CustomActionPrompt } from 'components/tables/domain/CustomActionPrompt';
 import { ParamsType } from 'config/types';
 import { AxiosResponse } from 'axios';
+import { ValidarImagenesAdjuntas } from '../application/validation/ValidarImagenesAdjuntas';
+import { ArchivoController } from 'pages/gestionTrabajos/subtareas/modules/gestorArchivosTrabajos/infraestructure/ArchivoController';
 
 
 export default defineComponent({
     components: { TabLayoutFilterTabs2, GestorArchivos },
     setup() {
-        const mixin = new ContenedorSimpleMixin(TransferenciaVehiculo, new TransferenciaVehiculoController())
-        const { entidad: transferencia, disabled, listadosAuxiliares, accion, listado, tabs } = mixin.useReferencias()
-        const { setValidador, obtenerListados, cargarVista, listar, consultar } = mixin.useComportamiento()
-        const { onGuardado, onConsultado, onReestablecer, onBeforeGuardar } = mixin.useHooks()
-        const { confirmar, prompt, notificarCorrecto, notificarAdvertencia, notificarError } = useNotificaciones()
+        const mixin = new ContenedorSimpleMixin(TransferenciaVehiculo, new TransferenciaVehiculoController(), new ArchivoController())
+        const { entidad: transferencia, disabled, listadosAuxiliares, accion, tabs } = mixin.useReferencias()
+        const { setValidador, obtenerListados, cargarVista, listar } = mixin.useComportamiento()
+        const { onGuardado, onBeforeModificar, onConsultado, onReestablecer } = mixin.useHooks()
+        const { prompt, notificarCorrecto, notificarAdvertencia, notificarError } = useNotificaciones()
 
         //stores
         const store = useAuthenticationStore()
@@ -110,6 +112,9 @@ export default defineComponent({
             vehiculo: { required },
             canton: { required },
             accesorios: { required },
+            garaje: { required },
+            latitud: { required },
+            longitud: { required },
             motivo: { required },
             estado_carroceria: { required },
             estado_mecanico: { required },
@@ -119,6 +124,9 @@ export default defineComponent({
         }
         const v$ = useVuelidate(reglas, transferencia)
         setValidador(v$.value)
+
+        const validarImagenesAdjuntas = new ValidarImagenesAdjuntas(transferencia, refArchivo)
+        mixin.agregarValidaciones(validarImagenesAdjuntas)
 
 
         /*********************************
@@ -132,6 +140,11 @@ export default defineComponent({
 
             vehiculoStore.resetearAsignacionVehiculo()
         })
+        onBeforeModificar(() => {
+            idRegistro.value = transferencia.id
+            setTimeout(() => subirArchivos(), 1)
+        })
+
         onConsultado(() => {
             setTimeout(() => {
                 refArchivo.value.listarArchivosAlmacenados(transferencia.id)
@@ -151,7 +164,11 @@ export default defineComponent({
             obtenerAccesoriosLS()
         })
         onReestablecer(() => {
-            refArchivo.value.limpiarListado()
+            setTimeout(() => {
+                refArchivo.value.limpiarListado()
+                refArchivo.value.quiero_subir_archivos = false
+                refArchivo.value.cantElementos = 0
+            }, 300)
             transferencia.entrega = store.user.id
             transferencia.estado = pendiente.label
 
@@ -163,6 +180,7 @@ export default defineComponent({
         *********************************/
 
         async function subirArchivos() {
+            console.log(refArchivo.value)
             await refArchivo.value.subir()
         }
 
@@ -328,6 +346,12 @@ export default defineComponent({
                 cargando.desactivar()
             }
         }
+        function obtenerCoordenadas() {
+            obtenerUbicacion((ubicacion) => {
+                transferencia.latitud = ubicacion.coords.latitude
+                transferencia.longitud = ubicacion.coords.longitude
+            })
+        }
 
         /**************************
         * BOTONES DE TABLA
@@ -409,7 +433,6 @@ export default defineComponent({
             store,
             tabOptions: tabOptionsTransferenciasVehiculos,
 
-
             //lists for selects
             empleados, filtrarEmpleados,
             cantones, filtrarCantones,
@@ -418,6 +441,8 @@ export default defineComponent({
             accesorios,
             motivos,
             estados,
+            opcionesGaraje,
+
 
             //functions
             filtrarTransferencias,
@@ -427,6 +452,7 @@ export default defineComponent({
             recargarVehiculos,
             recargarEmpleados,
             subirArchivos,
+            obtenerCoordenadas,
 
             //tableButtons
             btnImprimirActaResponsabilidadTransferencia,

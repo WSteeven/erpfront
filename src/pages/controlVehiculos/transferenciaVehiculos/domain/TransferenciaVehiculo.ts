@@ -11,6 +11,9 @@ export class TransferenciaVehiculo extends EntidadAuditable {
     fecha_entrega: string | null
     motivo: string | null
     estado: string | null
+    garaje: string | null
+    latitud: string | null
+    longitud: string | null
     accesorios: string | null
     estado_carroceria: string | null
     estado_mecanico: string | null
@@ -30,6 +33,9 @@ export class TransferenciaVehiculo extends EntidadAuditable {
         this.observacion_entrega = null
         this.motivo = null
         this.estado = null
+        this.garaje = null
+        this.latitud = null
+        this.longitud = null
         this.fecha_entrega = null
         this.fecha_aceptacion = null
         this.canton = null

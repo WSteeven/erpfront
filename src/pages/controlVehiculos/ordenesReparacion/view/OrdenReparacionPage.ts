@@ -23,6 +23,11 @@ import { obtenerFechaActual } from 'shared/utils';
 import { acciones, autorizaciones, maskFecha } from 'config/utils';
 import { AsignacionVehiculoController } from 'pages/controlVehiculos/asignarVehiculos/infraestructure/AsignacionVehiculoController';
 import { TransferenciaVehiculoController } from 'pages/controlVehiculos/transferenciaVehiculos/infraestructure/TransferenciaVehiculoController';
+import { recargarGenerico } from 'shared/funcionesActualizacionListados';
+import { VehiculoController } from 'pages/controlVehiculos/vehiculos/infraestructure/VehiculoController';
+import { useQuasar } from 'quasar';
+import { useNotificacionStore } from 'stores/notificacion';
+import { useCargandoStore } from 'stores/cargando';
 
 
 export default defineComponent({
@@ -36,21 +41,25 @@ export default defineComponent({
         /****************************************
         * Stores
         ****************************************/
-        const store = useAuthenticationStore()
+        useNotificacionStore().setQuasar(useQuasar())
+        useCargandoStore().setQuasar(useQuasar())
         const cargando = new StatusEssentialLoading()
+        const store = useAuthenticationStore()
 
         const refArchivo = ref()
         const idOrden = ref()
         const tabActual = ref('1')
         const usuarioDefault = ref()
 
-        const { servicios, filtrarServicios } = useFiltrosListadosSelects(listadosAuxiliares)
+        const { servicios, filtrarServicios, vehiculos, filtrarVehiculos } = useFiltrosListadosSelects(listadosAuxiliares)
         cargarVista(async () => {
             usuarioDefault.value = await obtenerVehiculoAsignado()
             await obtenerListados({
                 servicios: { controller: new ServicioController(), params: { tipo: 'CORRECTIVO', estado: 1 } },
+                vehiculos: store.esMecanicoGeneral ? new VehiculoController() : [],
             })
             servicios.value = listadosAuxiliares.servicios
+            vehiculos.value = listadosAuxiliares.vehiculos
             cargarDatosDefecto()
         })
 
@@ -70,7 +79,10 @@ export default defineComponent({
          ****************************************/
         //Estos metodos funcionan si no se usa el keep alive
         onReestablecer(() => {
-            refArchivo.value.limpiarListado()
+            setTimeout(() => {
+                refArchivo.value.limpiarListado()
+                refArchivo.value.quiero_subir_archivos = false
+            }, 300)
             cargarDatosDefecto()
         })
         onConsultado(() => {
@@ -107,7 +119,7 @@ export default defineComponent({
             const response = (await new AsignacionVehiculoController().listar({ filtro: 1, responsable_id: store.user.id, estado: 'ACEPTADO' }))
             console.log(response)
             if (response.result.length == 0) {
-                const response = (await new TransferenciaVehiculoController().listar({ responsable_id: store.user.id, estado: 'ACEPTADO' }))
+                const response = (await new TransferenciaVehiculoController().listar({ filtro: 1, responsable_id: store.user.id, estado: 'ACEPTADO' }))
                 console.log(response)
                 return response.result[0]
             } else {
@@ -120,8 +132,18 @@ export default defineComponent({
                 orden.solicitante_id = usuarioDefault.value.responsable_id
                 orden.solicitante = usuarioDefault.value.responsable
                 orden.autorizacion = 1
-                orden.fecha = obtenerFechaActual(maskFecha)
+            } else {
+                if (store.esMecanicoGeneral) {
+                    orden.solicitante_id = store.user.id
+                    orden.solicitante = store.nombreUsuario
+                    orden.autorizacion = 2
+                }
             }
+            orden.fecha = obtenerFechaActual(maskFecha)
+        }
+
+        async function recargarVehiculos() {
+            await recargarGenerico(listadosAuxiliares, 'vehiculos', vehiculos, new VehiculoController())
         }
 
         /****************************************
@@ -139,10 +161,12 @@ export default defineComponent({
 
             //listados
             servicios, filtrarServicios,
+            vehiculos, filtrarVehiculos,
             autorizaciones,
 
             //funciones
             filtrarOrdenesReparaciones,
+            recargarVehiculos,
 
 
             //botones de tabla

@@ -246,10 +246,7 @@
               @filter="filtrarMotivos"
             >
               <template v-slot:error>
-                <div
-                  v-for="error of v$.motivo.$errors"
-                  :key="error.$uid"
-                >
+                <div v-for="error of v$.motivo.$errors" :key="error.$uid">
                   <div class="error-msg">{{ error.$message }}</div>
                 </div>
               </template>
@@ -379,6 +376,82 @@
               dense
             />
           </div>
+          <!-- Select garaje -->
+          <div class="col-12 col-md-3 q-mb-md">
+            <label class="q-mb-sm block">Garaje</label>
+            <q-select
+              v-model="transferencia.garaje"
+              :options="opcionesGaraje"
+              options-dense
+              dense
+              outlined
+              :error="!!v$.garaje.$errors.length"
+              :disable="disabled"
+              :option-value="(v) => v"
+              :option-label="(v) => v"
+              emit-value
+              map-options
+            >
+              <template v-slot:error>
+                <div v-for="error of v$.garaje.$errors" :key="error.$uid">
+                  <div class="error-msg">{{ error.$message }}</div>
+                </div>
+              </template>
+            </q-select>
+          </div>
+
+          <div class="col-12 col-md-3">
+            <label class="q-mb-sm block">Ubicación</label>
+            <q-btn
+              color="positive"
+              no-caps
+              no-wrap
+              class="full-width"
+              @click="obtenerCoordenadas()"
+              :disable="disabled"
+            >
+              <q-icon name="bi-geo-alt" size="xs" class="q-mr-xs"></q-icon>
+              Obtener ubicación</q-btn
+            >
+          </div>
+          <!-- Latitud -->
+          <div class="col-12 col-md-3">
+            <label class="q-mb-sm block">Latitud</label>
+            <q-input
+              v-model="transferencia.latitud"
+              placeholder="Opcional"
+              autogrow
+              :error="!!v$.latitud.$errors.length"
+              :disable="disabled"
+              outlined
+              dense
+              ><template v-slot:error>
+                <div v-for="error of v$.latitud.$errors" :key="error.$uid">
+                  <div class="error-msg">{{ error.$message }}</div>
+                </div>
+              </template></q-input
+            >
+          </div>
+
+          <!-- Longitud -->
+          <div class="col-12 col-md-3">
+            <label class="q-mb-sm block">Longitud</label>
+            <q-input
+              v-model="transferencia.longitud"
+              placeholder="Opcional"
+              autogrow
+              :error="!!v$.longitud.$errors.length"
+              :disable="disabled"
+              outlined
+              dense
+            >
+              <template v-slot:error>
+                <div v-for="error of v$.longitud.$errors" :key="error.$uid">
+                  <div class="error-msg">{{ error.$message }}</div>
+                </div>
+              </template>
+            </q-input>
+          </div>
 
           <!-- Select estado -->
           <div class="col-12 col-md-3 q-mb-md">
@@ -393,7 +466,9 @@
               options-dense
               dense
               outlined
-              :disable="disabled|| store.user.id !==transferencia.responsable_id"
+              :disable="
+                disabled || store.user.id !== transferencia.responsable_id
+              "
               :option-value="(v) => v.label"
               :option-label="(v) => v.label"
               emit-value
