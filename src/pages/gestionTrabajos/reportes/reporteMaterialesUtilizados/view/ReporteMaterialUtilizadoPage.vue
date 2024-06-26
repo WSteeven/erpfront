@@ -41,7 +41,7 @@
           use-input
           input-debounce="0"
           :option-value="(v) => v.id"
-          :option-label="(v) => v.titulo"
+          :option-label="(v) => v.codigo_tarea + ' - '+ v.titulo"
           emit-value
           map-options
         >
