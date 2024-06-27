@@ -918,6 +918,12 @@ export const useMenuStore = defineStore('menu', () => {
           can:store.can('puede.ver.reportes_vehiculos'),
           children: [
             {
+              title: 'Reporte de Conductores y Licencias',
+              link: 'reporte-conductores',
+              icon: 'bi-dash',
+              can: true,
+            },
+            {
               title: 'Reporte de Combustibles',
               link: 'reporte-combustibles',
               icon: 'bi-dash',
