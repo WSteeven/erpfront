@@ -44,9 +44,9 @@ export const endpoints = {
   parroquias: new Endpoint('parroquias'),
 
 
-   /********************
-   * Modulo de  RR HH
-   *********************/
+  /********************
+  * Modulo de  RR HH
+  *********************/
   cargos: new Endpoint('cargos'),
 
   motivo_permiso_empleado: new Endpoint(
@@ -185,12 +185,13 @@ export const endpoints = {
   alimentacion: new Endpoint('recursos-humanos/alimentacion'),
   detalle_alimentacion: new Endpoint('recursos-humanos/detalle-alimentacion'),
   finalizar_asignacion_alimentacion: new Endpoint('recursos-humanos/finalizar-asignacion-alimentacion'),
-   /********************
-   * Modulo de  Seleccion y contratacion
-   *********************/
-   solicitud_puesto_empleo: new Endpoint('recursos-humanos/solicitud-puesto-empleo'),
-   publicacion_puesto_empleo: new Endpoint('recursos-humanos/publicacion-puesto-empleo'),
-   tipos_puestos_trabajos: new Endpoint('recursos-humanos/tipos_puestos_trabajos'),
+
+  /********************
+  * Modulo de  Seleccion y contratacion
+  *********************/
+  solicitud_puesto_empleo: new Endpoint('recursos-humanos/solicitud-puesto-empleo'),
+  publicacion_puesto_empleo: new Endpoint('recursos-humanos/publicacion-puesto-empleo'),
+  tipos_puestos_trabajos: new Endpoint('recursos-humanos/tipos_puestos_trabajos'),
 
   /******************************
    * Modulo de Vehiculos
@@ -214,6 +215,9 @@ export const endpoints = {
   tanqueos: new Endpoint('vehiculos/tanqueos'),
   planes_mantenimientos: new Endpoint('vehiculos/planes-mantenimientos'),
   mantenimientos_vehiculos: new Endpoint('vehiculos/mantenimientos-vehiculos'),
+  reporte_conductor_licencia: new Endpoint('vehiculos/reporte-conductor-licencia'),
+  reporte_combustibles: new Endpoint('vehiculos/reporte-combustibles'),
+  reporte_seguros_vehiculos: new Endpoint('vehiculos/reporte-seguros-vehiculos'),
 
   //Modulo de compras y proveedores
   dashboard_compras: new Endpoint('compras/dashboard'),

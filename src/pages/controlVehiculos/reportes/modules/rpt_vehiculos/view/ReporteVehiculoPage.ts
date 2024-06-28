@@ -1,3 +1,12 @@
+//Dependencies
+import { defineComponent, reactive, ref } from "vue"
+
+//Components
+import EssentialTable from "components/tables/view/EssentialTable.vue"
+
+//Logic and controllers
+import { maskFecha } from "config/utils"
+
 export default defineComponent({
     components: { EssentialTable },
     setup() {

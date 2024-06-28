@@ -5,40 +5,38 @@
         <div class="col">
           <q-card class="rounded-card custom-shadow">
             <div class="row q-col-gutter-sm q-pa-sm q-py-md">
-              <!-- fecha de inicio -->
-              <div class="col-12 col-md-3">
-                <label class="q-mb-sm block">Fecha de inicio</label>
-                <q-input
-                  v-model="reporte.fecha_inicio"
-                  placeholder="Opcional"
-                  outlined
-                  dense
-                >
-                  <template v-slot:append>
-                    <q-icon name="event" class="cursor-pointer">
-                      <q-popup-proxy
-                        cover
-                        transition-show="scale"
-                        transition-hide="scale"
-                      >
-                        <q-date
-                          v-model="reporte.fecha_inicio"
-                          :mask="maskFecha"
-                          today-btn
-                        >
-                          <div class="row items-center justify-end">
-                            <q-btn
-                              v-close-popup
-                              label="Cerrar"
-                              color="primary"
-                              flat
-                            />
-                          </div>
-                        </q-date>
-                      </q-popup-proxy>
-                    </q-icon>
-                  </template>
-                </q-input>
+              <div class="col-12 col-md-12 q-mt-md">
+                <div class="text-center">
+                  <q-btn-group push>
+                    <!-- Boton consultar -->
+                    <q-btn
+                      color="primary"
+                      class="full-width"
+                      no-caps
+                      no-wrap
+                      push
+                      glossy
+                      @click="obtenerSeguros"
+                    >
+                      <q-icon
+                        name="bi-search"
+                        size="xs"
+                        class="q-pr-sm"
+                      ></q-icon>
+                      <span>Buscar</span>
+                    </q-btn>
+                  </q-btn-group>
+                </div>
+              </div>
+              <!-- Tabla -->
+              <div class="col-12 q-mt-xl">
+                <essential-table
+                  v-if="listado.length"
+                  titulo="Valores"
+                  :configuracionColumnas="configuracionColumnas"
+                  :datos="listado"
+                  :altoFijo="false"
+                ></essential-table>
               </div>
             </div>
           </q-card>

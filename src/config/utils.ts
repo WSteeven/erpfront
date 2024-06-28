@@ -660,3 +660,8 @@ export const selectOptionsSiNo: SelectOption[] = [
   { label: 'Sí', value: true },
   { label: 'No', value: false },
 ]
+
+export const opcionesGrafico = {
+  grafico: 'grafico',
+  listado: 'listado'
+}
