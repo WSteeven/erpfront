@@ -73,10 +73,13 @@ export class Empleado extends EntidadAuditable {
 
   edad: number | null
   autoidentificacion_etnica: string | null
-trabajador_sustituto: boolean | null
-orientacion_sexual: number | null
-identidad_genero: number | null
-religion: number | null
+  trabajador_sustituto: boolean | null
+  orientacion_sexual: number | null
+  identidad_genero: number | null
+  religion: number | null
+
+  //propiedad para almacenar la cantidad de archivos
+  archivos: string | number | null
 
   constructor() {
     super()
@@ -156,5 +159,7 @@ religion: number | null
     this.orientacion_sexual = null
     this.identidad_genero = null
     this.religion = null
+
+    this.archivos = null
   }
 }
