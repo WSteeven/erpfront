@@ -86,6 +86,12 @@ export const useMenuStore = defineStore('menu', () => {
           can: store.can('puede.ver.reporte_movilizacion_subtarea'),
         },
         {
+          title: 'Clientes finales',
+          link: 'clientes-finales',
+          icon: 'bi-app',
+          can: store.can('puede.ver.clientes_finales'),
+        },
+        {
           title: 'Centro de Costos',
           icon: 'bi-folder',
           can: store.can('puede.acceder.centros_costos'),
@@ -105,16 +111,23 @@ export const useMenuStore = defineStore('menu', () => {
           ],
         },
         {
-          title: 'Clientes finales',
-          link: 'clientes-finales',
-          icon: 'bi-app',
-          can: store.can('puede.ver.clientes_finales'),
-        },
-        {
           title: 'Reportes',
-          link: 'reportes-modulo-tareas',
-          icon: 'bi-app',
+          icon: 'bi-clipboard2-data-fill',
           can: store.can('puede.ver.reportes_modulo_tareas'),
+          children: [
+            {
+              title: 'Reportes materiales utilizados',
+              link: 'reportes-materiales-utilizados',
+              icon: 'bi-app',
+              can: store.can('puede.ver.reportes_materiales_utilizados'),
+            },
+            {
+              title: 'Reportes tareas finalizadas',
+              link: 'reportes-modulo-tareas',
+              icon: 'bi-app',
+              can: store.can('puede.ver.reportes_modulo_tareas'),
+            },
+          ]
         },
       ],
     },
@@ -194,17 +207,6 @@ export const useMenuStore = defineStore('menu', () => {
           icon: 'bi-app',
           can: store.can('puede.acceder.cuestionarios'),
         },
-        /* {
-          title: 'Cuestionario de evaluación de riesgos psicosociales',
-          link: 'cuestionario-psicosocial',
-          icon: 'bi-app',
-          can: store.can('puede.ver.cuestionarios_psicosocial'),
-        }, {
-          title: 'Cuestionario de diagnostico consumo de drogas',
-          link: 'cuestionario-diagnostico-consumo-drogas',
-          icon: 'bi-app',
-          can: store.can('puede.ver.cuestionario_diagnostico_consumo_drogas'),
-        }, */
         {
           title: 'Cita médica',
           link: 'citas-medicas',
@@ -668,7 +670,7 @@ export const useMenuStore = defineStore('menu', () => {
               title: 'Multas de Conductores',
               link: 'multas-conductores',
               icon: 'bi-file-text',
-              can:  store.can('puede.acceder.multas_conductores'),
+              can: store.can('puede.acceder.multas_conductores'),
             },
             {
               title: 'Permiso',
@@ -915,7 +917,7 @@ export const useMenuStore = defineStore('menu', () => {
         {
           title: 'Reportes',
           icon: 'bi-clipboard2-data',
-          can:store.can('puede.ver.reportes_vehiculos'),
+          can: store.can('puede.ver.reportes_vehiculos'),
           children: [
             {
               title: 'Reporte de Conductores y Licencias',
@@ -1296,7 +1298,7 @@ export const useMenuStore = defineStore('menu', () => {
       title: 'Log de auditorías',
       link: 'auditorias',
       icon: 'bi-journal-text',
-      can: store.can('puede.acceder.auditorias') || store.esAdministrador,
+      can: store.can('puede.acceder.auditorias'),// || store.esAdministrador,
     },
     {
       title: 'Configuracion General',
