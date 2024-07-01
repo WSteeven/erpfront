@@ -124,34 +124,48 @@ export default defineComponent({
         if (fechaInicio >= fechaFin) {
           return "La fecha de inicio debe ser anterior a la fecha de fin.";
         }
+        let tiempoLaboralMilisegundos = 0;
+        let fechaActual = new Date(fechaInicio);
 
-        // Si la fecha de inicio es después del horario de cierre, no hay horas laborales ese día
-        if (fechaInicio.getHours() >= horaFinLaboral || (fechaInicio.getHours() === horaFinLaboral && fechaInicio.getMinutes() >= 0)) {
-          return "0 horas laborales entre las fechas especificadas.";
+        // Iterar sobre cada día entre la fecha de inicio y la fecha de fin
+        while (fechaActual < fechaFin) {
+          // Si la fecha actual es antes del horario laboral, avanzar al próximo día laboral
+          if (fechaActual.getHours() < horaInicioLaboral || (fechaActual.getHours() === horaInicioLaboral && fechaActual.getMinutes() < 0)) {
+            fechaActual.setHours(horaInicioLaboral);
+            fechaActual.setMinutes(0);
+          }
+
+          // Si la fecha actual es después del horario laboral, avanzar al próximo día laboral
+          if (fechaActual.getHours() >= horaFinLaboral || (fechaActual.getHours() === horaFinLaboral && fechaActual.getMinutes() >= 0)) {
+            fechaActual.setDate(fechaActual.getDate() + 1);
+            fechaActual.setHours(horaInicioLaboral);
+            fechaActual.setMinutes(0);
+            continue;
+          }
+
+          // Calcular la fecha de fin del día laboral actual
+          let finDiaLaboral = new Date(fechaActual);
+          finDiaLaboral.setHours(horaFinLaboral);
+          finDiaLaboral.setMinutes(0);
+
+          // Si la fecha de fin es después de la fecha de fin real, ajustarla
+          if (finDiaLaboral > fechaFin) {
+            finDiaLaboral = new Date(fechaFin);
+          }
+
+          // Calcular la diferencia en milisegundos para este día laboral
+          let diferenciaMilisegundos = finDiaLaboral.getTime() - fechaActual.getTime();
+          tiempoLaboralMilisegundos += diferenciaMilisegundos;
+
+          // Avanzar al próximo día laboral
+          fechaActual.setDate(fechaActual.getDate() + 1);
+          fechaActual.setHours(horaInicioLaboral);
+          fechaActual.setMinutes(0);
         }
 
-        // Si la fecha de fin es antes del horario de apertura, no hay horas laborales ese día
-        if (fechaFin.getHours() < horaInicioLaboral || (fechaFin.getHours() === horaInicioLaboral && fechaFin.getMinutes() <= 0)) {
-          return "0 horas laborales entre las fechas especificadas.";
-        }
-
-        // Ajustar la fecha de inicio y fin al horario laboral
-        if (fechaInicio.getHours() < horaInicioLaboral || (fechaInicio.getHours() === horaInicioLaboral && fechaInicio.getMinutes() < 0)) {
-          fechaInicio.setHours(horaInicioLaboral);
-          fechaInicio.setMinutes(0);
-        }
-
-        if (fechaFin.getHours() > horaFinLaboral || (fechaFin.getHours() === horaFinLaboral && fechaFin.getMinutes() > 0)) {
-          fechaFin.setHours(horaFinLaboral);
-          fechaFin.setMinutes(0);
-        }
-
-        // Calcular la diferencia en milisegundos
-        let diferenciaMilisegundos = fechaFin.getTime() - fechaInicio.getTime();
-
-        // Convertir la diferencia de milisegundos a horas y minutos
-        let horas = Math.floor(diferenciaMilisegundos / (1000 * 60 * 60));
-        let minutos = Math.floor((diferenciaMilisegundos % (1000 * 60 * 60)) / (1000 * 60));
+        // Convertir el tiempo laboral total en horas y minutos
+        let horas = Math.floor(tiempoLaboralMilisegundos / milisegundosPorHora) > 8 ? Math.floor(tiempoLaboralMilisegundos / milisegundosPorHora / 9 * 8) : Math.floor(tiempoLaboralMilisegundos / milisegundosPorHora);
+        let minutos = Math.floor((tiempoLaboralMilisegundos % milisegundosPorHora) / (1000 * 60));
 
         // Formatear el resultado como "horas minutos"
         return `${horas} horas ${minutos} minutos`;
@@ -163,9 +177,9 @@ export default defineComponent({
     onBeforeGuardar(() => {
       permiso.tieneDocumento =
         refArchivoPrestamoEmpresarial.value.tamanioListado > 0 ? true : false
-      if (!permiso.tieneDocumento) {
-        notificarAdvertencia('Debe seleccionar al menos un archivo.')
-      }
+      // if (!permiso.tieneDocumento) {
+      //   notificarAdvertencia('Debe seleccionar al menos un archivo.')
+      // }
     })
     onBeforeModificar(() => {
       permiso.tieneDocumento = true
