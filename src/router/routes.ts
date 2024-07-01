@@ -484,6 +484,13 @@ const routes: RouteRecordRaw[] = [
       },
       //reportes de vehiculos
       {
+        path: 'reporte-conductores',
+        name: 'reporte_conductores',
+        component: () =>
+          import('pages/controlVehiculos/reportes/modules/rpt_conductores_licencias/view/ReporteConductorLicenciaPage.vue'),
+        meta: { requiresAuth: false },
+      },
+      {
         path: '/reporte-combustibles',
         name: 'reporte_combustibles',
         component: () =>

@@ -1476,7 +1476,7 @@
         </q-chip>
         <!-- ANULADA -->
         <q-chip
-          v-if="props.value === 'ANULADA'"
+          v-if="props.value === 'ANULADA'||props.value === 'ANULADO'"
           :class="{ 'bg-red-1': !$q.dark.isActive }"
         >
           <q-icon
@@ -1484,7 +1484,7 @@
             color="negative"
             class="q-mr-xs"
           ></q-icon>
-          ANULADA
+          {{props.value}}
         </q-chip>
         <q-icon
           v-if="props.value === 1 || props.value === true"

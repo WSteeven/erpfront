@@ -1,3 +1,4 @@
 <template>
-    <p>Aqui va un reporte de vehiculos</p>
+  <p>Reporte Vehiculo Page</p>
 </template>
+<script src="./ReporteVehiculoPage.ts"></script>

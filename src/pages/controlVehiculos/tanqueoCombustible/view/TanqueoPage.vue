@@ -30,6 +30,7 @@
               use-input
               input-debounce="0"
               @filter="filtrarVehiculos"
+              :error="!!v$.vehiculo.$errors.length"
               :option-label="(item) => item.placa"
               :option-value="(item) => item.id"
               emit-value
@@ -44,6 +45,11 @@
                     }}</q-item-label>
                   </q-item-section>
                 </q-item>
+              </template>
+              <template v-slot:error>
+                <div v-for="error of v$.vehiculo.$errors" :key="error.$uid">
+                  <div class="error-msg">{{ error.$message }}</div>
+                </div>
               </template>
               <template v-slot:no-option>
                 <q-item>
@@ -81,7 +87,7 @@
                   >
                     <q-date
                       v-model="tanqueo.fecha_hora"
-                      :mask="maskFechaHora"
+                      :mask="maskFecha"
                       today-btn
                     >
                       <div class="row items-center justify-end">
@@ -143,6 +149,41 @@
                 </div>
               </template>
             </q-input>
+          </div>
+          <!-- Combustible -->
+          <div class="col-12 col-md-3 col-sm-6 q-mb-md">
+            <label class="q-mb-sm block">Tipo de combustible</label>
+            <q-select
+              v-model="tanqueo.combustible"
+              :options="combustibles"
+              transition-show="scale"
+              transition-hide="scale"
+              options-dense
+              dense
+              outlined
+              :disable="disabled"
+              :error="!!v$.combustible.$errors.length"
+              use-input
+              input-debounce="0"
+              @filter="filtrarCombustibles"
+              :option-label="(item) => item.nombre"
+              :option-value="(item) => item.id"
+              emit-value
+              map-options
+            >
+              <template v-slot:error>
+                <div v-for="error of v$.combustible.$errors" :key="error.$uid">
+                  <div class="error-msg">{{ error.$message }}</div>
+                </div>
+              </template>
+              <template v-slot:no-option>
+                <q-item>
+                  <q-item-section class="text-grey">
+                    No hay resultados
+                  </q-item-section>
+                </q-item>
+              </template>
+            </q-select>
           </div>
           <!-- Imagen comprobante -->
           <div class="col-12 col-md-3 col-sm-6">

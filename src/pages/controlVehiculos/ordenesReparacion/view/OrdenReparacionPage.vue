@@ -27,7 +27,7 @@
           </div>
 
           <!-- Vehiculo -->
-          <div class="col-12 col-md-3 q-mb-md">
+          <div class="col-12 col-md-3 q-mb-md" v-if="!store.esMecanicoGeneral">
             <label class="q-mb-sm block">Vehículo</label>
             <q-input
               v-model="orden.vehiculo"
@@ -37,6 +37,58 @@
               outlined
               dense
             ></q-input>
+          </div>
+          <div class="col-12 col-md-3 q-mb-md" v-if="store.esMecanicoGeneral">
+            <label class="q-mb-sm block">Vehículo</label>
+            <q-select
+              v-model="orden.vehiculo"
+              :options="vehiculos"
+              hint="Agregue elementos desde el panel de vehículos"
+              transition-show="scale"
+              transition-hide="scale"
+              options-dense
+              clearable
+              dense
+              outlined
+              :disable="disabled"
+              use-input
+              input-debounce="0"
+              @filter="filtrarVehiculos"
+              :option-label="(item) => item.placa"
+              :option-value="(item) => item.id"
+              :error="!!v$.vehiculo.$errors.length"
+              @blur="v$.vehiculo.$touch"
+              emit-value
+              map-options
+            >
+              <template v-slot:option="scope">
+                <q-item v-bind="scope.itemProps">
+                  <q-item-section>
+                    <q-item-label>{{ scope.opt.placa }}</q-item-label>
+                    <q-item-label caption>{{
+                      scope.opt.marca + ' ' + scope.opt.modelo
+                    }}</q-item-label>
+                  </q-item-section>
+                </q-item>
+              </template>
+              <template v-slot:no-option>
+                <q-item>
+                  <q-item-section class="text-grey">
+                    No hay resultados
+                  </q-item-section>
+                </q-item>
+              </template>
+              <template v-slot:error>
+                <div v-for="error of v$.vehiculo.$errors" :key="error.$uid">
+                  <div class="error-msg">{{ error.$message }}</div>
+                </div>
+              </template>
+              <template v-slot:after>
+                <q-btn color="positive" @click="recargarVehiculos">
+                  <q-icon size="xs" class="q-mr-sm" name="bi-arrow-clockwise" />
+                </q-btn>
+              </template>
+            </q-select>
           </div>
 
           <!-- Fecha -->

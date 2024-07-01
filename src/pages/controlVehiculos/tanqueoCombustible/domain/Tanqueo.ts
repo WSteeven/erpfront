@@ -2,6 +2,7 @@ import { EntidadAuditable } from 'shared/entidad/domain/entidadAuditable'
 
 export class Tanqueo extends EntidadAuditable {
     vehiculo: string | null
+    combustible: string | null
     solicitante: string | null
     solicitante_id: number | null
     fecha_hora: string | null
@@ -13,6 +14,7 @@ export class Tanqueo extends EntidadAuditable {
     constructor() {
         super()
         this.vehiculo = null
+        this.combustible = null
         this.solicitante = null
         this.solicitante_id = null
         this.fecha_hora = null

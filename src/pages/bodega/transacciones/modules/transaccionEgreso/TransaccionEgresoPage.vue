@@ -760,6 +760,7 @@
   </tab-layout-filter-tabs2>
   <modales-entidad
     :comportamiento="modalesEmpleado"
+    :persistente="false"
     :confirmarCerrar="false"
   ></modales-entidad>
 </template>

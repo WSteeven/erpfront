@@ -111,6 +111,11 @@ export const estadosAsignacionesVehiculos = [
   { label: 'ANULADO' },
 ]
 
+export const opcionesGaraje =[
+  'ALQUILADO',
+  'CASA DEL TECNICO'
+]
+
 export const optionsEstadosExtintor = [
   {
     label: 'Lleno',
