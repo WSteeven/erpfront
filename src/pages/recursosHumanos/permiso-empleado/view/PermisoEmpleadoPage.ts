@@ -4,6 +4,9 @@ import { useVuelidate } from '@vuelidate/core'
 import { computed, defineComponent, ref, watchEffect } from 'vue'
 
 // Componentes
+import ArchivoSeguimiento from 'pages/gestionTrabajos/subtareas/modules/gestorArchivosTrabajos/view/ArchivoSeguimiento.vue'
+import TabLayoutFilterTabs2 from 'shared/contenedor/modules/simple/view/TabLayoutFilterTabs2.vue'
+import GestorDocumentos from 'components/documentos/view/GestorDocumentos.vue'
 import SelectorImagen from 'components/SelectorImagen.vue'
 
 //Logica y controladores
@@ -26,11 +29,8 @@ import { endpoints } from 'config/api'
 import { Archivo } from 'pages/gestionTrabajos/subtareas/modules/gestorArchivosTrabajos/domain/Archivo'
 import { ArchivoPermisoEmpleadoController } from '../infraestructure/ArchivoPermisoEmpleadoController'
 import { useAuthenticationStore } from 'stores/authentication'
-import GestorDocumentos from 'components/documentos/view/GestorDocumentos.vue'
 import { useNotificaciones } from 'shared/notificaciones'
-import TabLayoutFilterTabs2 from 'shared/contenedor/modules/simple/view/TabLayoutFilterTabs2.vue'
 import { CustomActionTable } from 'components/tables/domain/CustomActionTable'
-import ArchivoSeguimiento from 'pages/gestionTrabajos/subtareas/modules/gestorArchivosTrabajos/view/ArchivoSeguimiento.vue'
 import { AutorizacionController } from 'pages/administracion/autorizaciones/infraestructure/AutorizacionController'
 import { addDay, format, parse } from '@formkit/tempo'
 
@@ -78,29 +78,39 @@ export default defineComponent({
     const autorizaciones = ref()
     const esRecursosHumanos = store.esRecursosHumanos
     const esAutorizador = ref(false)
+    //Definimos variables de hora de inicio y fin para la jornada laboral
+    const horaInicioLaboral = 8
+    const horaFinLaboral = 17
+    const milisegundosPorHora = 1000 * 60 * 60;
+    const minuteOptions = [0, 15, 30, 45]
+
+
     const verEmpleado = computed(() => store.can('puede.ver.campo.empleado'))
     const esNuevo = computed(() => {
       return accion.value === 'NUEVO'
     })
     const dias_permiso = computed(() => {
       if (permiso.fecha_hora_inicio != null && permiso.fecha_hora_fin != null) {
-        const fechaInicio = parse(
-          permiso.fecha_hora_inicio != null
-            ? permiso.fecha_hora_inicio
-            : new Date().toString(),
-          'DD-MM-YYYY HH:mm:ss'
-        )
-        const fechaFin = parse(
-          permiso.fecha_hora_fin != null
-            ? permiso.fecha_hora_fin
-            : new Date().toString(),
-          'DD-MM-YYYY HH:mm:ss'
-        )
-        // Calcula la diferencia en dias
-        const diferenciaMilisegundos =
-          fechaFin.getTime() - fechaInicio.getTime()
-        const diferenciaHoras = diferenciaMilisegundos / (1000 * 60 * 60)
-        const diferenciaDias = diferenciaHoras / 24
+        const fechaInicio = parse(permiso.fecha_hora_inicio != null ? permiso.fecha_hora_inicio : new Date().toString(), 'DD-MM-YYYY HH:mm:ss')
+        const fechaFin = parse(permiso.fecha_hora_fin != null ? permiso.fecha_hora_fin : new Date().toString(), 'DD-MM-YYYY HH:mm:ss')
+        let horasLaborales = 0
+        let fechaActual = fechaInicio
+        let diferenciaDias = 0
+
+        while (fechaActual < fechaFin) {
+          if (fechaActual.getHours() >= horaInicioLaboral && fechaActual.getHours() < horaFinLaboral)
+            horasLaborales++
+
+          //Avanzamos a la siguiente hora
+          fechaActual.setTime(fechaActual.getTime() + milisegundosPorHora);
+        }
+        console.log(horasLaborales)
+        if (horasLaborales > 8) {
+          console.log(horasLaborales / 9 * 8)
+          diferenciaDias = horasLaborales / 9
+        } else
+          diferenciaDias = horasLaborales < 8 ? 0 : horasLaborales / 8
+
         return Math.round(diferenciaDias)
       } else {
         return 0
@@ -108,24 +118,43 @@ export default defineComponent({
     })
     const horas_permisos = computed(() => {
       if (permiso.fecha_hora_inicio != null && permiso.fecha_hora_fin != null) {
-        const fechaInicio = parse(
-          permiso.fecha_hora_inicio != null
-            ? permiso.fecha_hora_inicio
-            : new Date().toString(),
-          'DD-MM-YYYY HH:mm:ss'
-        )
-        const fechaFin = parse(
-          permiso.fecha_hora_fin != null
-            ? permiso.fecha_hora_fin
-            : new Date().toString(),
-          'DD-MM-YYYY HH:mm:ss'
-        )
-        // Calcula la diferencia en milisegundos
-        const diferenciaMilisegundos =
-          fechaFin.getTime() - fechaInicio.getTime()
-        // Calcula la diferencia en horas
-        const diferenciaHoras = diferenciaMilisegundos / (1000 * 60 * 60)
-        return diferenciaHoras
+        const fechaInicio = parse(permiso.fecha_hora_inicio != null ? permiso.fecha_hora_inicio : new Date().toString(), 'DD-MM-YYYY HH:mm:ss')
+        const fechaFin = parse(permiso.fecha_hora_fin != null ? permiso.fecha_hora_fin : new Date().toString(), 'DD-MM-YYYY HH:mm:ss')
+        // Verificar que la fecha de inicio sea anterior a la fecha de fin
+        if (fechaInicio >= fechaFin) {
+          return "La fecha de inicio debe ser anterior a la fecha de fin.";
+        }
+
+        // Si la fecha de inicio es después del horario de cierre, no hay horas laborales ese día
+        if (fechaInicio.getHours() >= horaFinLaboral || (fechaInicio.getHours() === horaFinLaboral && fechaInicio.getMinutes() >= 0)) {
+          return "0 horas laborales entre las fechas especificadas.";
+        }
+
+        // Si la fecha de fin es antes del horario de apertura, no hay horas laborales ese día
+        if (fechaFin.getHours() < horaInicioLaboral || (fechaFin.getHours() === horaInicioLaboral && fechaFin.getMinutes() <= 0)) {
+          return "0 horas laborales entre las fechas especificadas.";
+        }
+
+        // Ajustar la fecha de inicio y fin al horario laboral
+        if (fechaInicio.getHours() < horaInicioLaboral || (fechaInicio.getHours() === horaInicioLaboral && fechaInicio.getMinutes() < 0)) {
+          fechaInicio.setHours(horaInicioLaboral);
+          fechaInicio.setMinutes(0);
+        }
+
+        if (fechaFin.getHours() > horaFinLaboral || (fechaFin.getHours() === horaFinLaboral && fechaFin.getMinutes() > 0)) {
+          fechaFin.setHours(horaFinLaboral);
+          fechaFin.setMinutes(0);
+        }
+
+        // Calcular la diferencia en milisegundos
+        let diferenciaMilisegundos = fechaFin.getTime() - fechaInicio.getTime();
+
+        // Convertir la diferencia de milisegundos a horas y minutos
+        let horas = Math.floor(diferenciaMilisegundos / (1000 * 60 * 60));
+        let minutos = Math.floor((diferenciaMilisegundos % (1000 * 60 * 60)) / (1000 * 60));
+
+        // Formatear el resultado como "horas minutos"
+        return `${horas} horas ${minutos} minutos`;
       } else {
         return 0
       }
@@ -319,7 +348,7 @@ export default defineComponent({
       removeAccents,
       mixin,
       permiso,
-      optionsFecha,
+      optionsFecha, minuteOptions,
       filtrarEmpleados,
       filtrarPermisoEmpleado,
       watchEffect,
