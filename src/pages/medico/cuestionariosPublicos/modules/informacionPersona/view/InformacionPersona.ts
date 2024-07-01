@@ -13,6 +13,9 @@ import { ProvinciaController } from 'sistema/provincia/infraestructure/Provincia
 import { Persona } from '../domain/Persona'
 import { opcionesTiposCuestionarios } from 'config/utils/medico'
 import { ValidarCedulaController } from 'shared/validadores/infraestructure/ValidarCedulaController'
+import { ValidarCuestionarioPublicoLlenoController } from 'shared/validadores/infraestructure/ValidarCuestionarioPublicoLlenoController'
+import { useNotificaciones } from 'shared/notificaciones'
+import { isAxiosError, notificarMensajesError } from 'shared/utils'
 
 export default defineComponent({
     props: {
@@ -40,6 +43,7 @@ export default defineComponent({
          *************/
         const persona = reactive(new Persona())
         const cedulaValida = ref(true)
+        const notificaciones = useNotificaciones()
 
         /*********
          * Mixin
@@ -65,10 +69,21 @@ export default defineComponent({
 
         const validarCedula = async (cedula) => {
             const validarCedulaController = new ValidarCedulaController()
-            console.log(cedula)
             const { response } = await validarCedulaController.guardar({ cedula: cedula })
             emit('cedula-validada', response.data)
-            console.log(response)
+        }
+
+        const validarCuestionarioLleno = async (cedula) => {
+            try {
+                const validarCuestionarioPublicoLlenoController = new ValidarCuestionarioPublicoLlenoController()
+                await validarCuestionarioPublicoLlenoController.guardar({ identificacion: cedula, tipo_cuestionario_id: props.tipoCuestionario })
+            } catch (error) {
+                if (isAxiosError(error)) {
+                    const mensajes: string[] = error.erroresValidacion
+                    await notificarMensajesError(mensajes, notificaciones)
+                }
+                // notificarAdvertencia(e)
+            }
         }
 
         return {
@@ -82,6 +97,7 @@ export default defineComponent({
             autoidentificaciones_etnicas,
             mostrarConsumoDrogas: props.tipoCuestionario === opcionesTiposCuestionarios.CUESTIONARIO_DIAGNOSTICO_CONSUMO_DE_DROGAS,
             validarCedula,
+            validarCuestionarioLleno,
         }
     }
 })

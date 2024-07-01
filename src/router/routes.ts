@@ -1357,7 +1357,7 @@ const routes: RouteRecordRaw[] = [
     ],
   },
   {
-    path: '/cuestionarios-publicos',
+    path: '/cuestionarios-publicos/:identificador',
     component: () => import('layouts/FullLayout.vue'),
     children: [
       {

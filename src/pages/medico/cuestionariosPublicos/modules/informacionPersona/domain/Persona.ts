@@ -13,7 +13,7 @@ export class Persona {
     genero: string | null
 
     // Cuestionario alcohol y drogas
-    nombre_empresa: string | null
+    nombre_empresa: string | null | string[]
     ruc: string | null
     cargo: string | null
     identificacion: string | null

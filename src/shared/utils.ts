@@ -854,3 +854,14 @@ export const mapearOptionsSelect = (listadoOpciones: { id: number, nombre: strin
     }
   })
 }
+
+export const copiarAlPortapapeles = async (texto: string) => {
+  const { notificarInformacion, notificarError } = useNotificaciones()
+  
+  try {
+    await navigator.clipboard.writeText(texto);
+    notificarInformacion('Texto copiado al portapapeles');
+  } catch (err) {
+    notificarError('Error al intentar copiar el texto al portapapeles');
+  }
+}
