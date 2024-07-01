@@ -93,6 +93,11 @@
                 @click="actualizarTablaMaterialesTarea()"
               />
               <q-tab
+                name="resumen_material_tarea_utilizado"
+                label="Resumen de material utilizado"
+                @click="actualizarTablaResumenMaterialesTarea()"
+              />
+              <q-tab
                 v-if="esCoordinador"
                 name="historial_material_tarea_usado"
                 label="Historial de material de tarea usado"
@@ -157,6 +162,23 @@
                   :accion1="botonEditarCantidadTarea"
                   :ajustar-celdas="true"
                 ></essential-table>
+              </q-tab-panel>
+
+              <q-tab-panel name="resumen_material_tarea_utilizado">
+                <div class="row q-col-gutter-sm q-pa-sm q-mb-md">
+                  <essential-table
+                    v-if="resumenMaterialSubtareaUsado.length"
+                    titulo="Resumen material tarea usado"
+                    :configuracionColumnas="columnasMaterial"
+                    :datos="resumenMaterialSubtareaUsado"
+                    :alto-fijo="false"
+                    :permitirConsultar="false"
+                    :permitirEliminar="false"
+                    :permitirEditar="false"
+                    :permitirEditarModal="true"
+                    separador="cell"
+                  ></essential-table>
+                </div>
               </q-tab-panel>
 
               <q-tab-panel name="historial_material_tarea_usado">
@@ -232,6 +254,11 @@
                 @click="() => (clienteMaterialStock = null)"
               />
               <q-tab
+                name="resumen_material_stock_utilizado"
+                label="Resumen de material utilizado"
+                @click="actualizarTablaResumenMaterialesStock()"
+              />
+              <q-tab
                 v-if="esCoordinador"
                 name="historial_material_stock_usado"
                 label="Historial de material de stock usado"
@@ -299,6 +326,24 @@
                   :ajustar-celdas="true"
                   :accion1="botonEditarCantidadStock"
                 ></essential-table>
+              </q-tab-panel>
+
+              <q-tab-panel name="resumen_material_stock_utilizado">
+                <div class="row q-col-gutter-sm q-pa-sm q-mb-md">
+                  <essential-table
+                    v-if="resumenMaterialStockUsado.length"
+                    titulo="Resumen material stock usado"
+                    :configuracionColumnas="configuracionColumnasResumenMaterialOcupado"
+                    :datos="resumenMaterialStockUsado"
+                    :alto-fijo="false"
+                    :permitirConsultar="false"
+                    :permitirEliminar="false"
+                    :permitirEditar="false"
+                    :permitirEditarModal="true"
+                    :ajustar-celdas="true"
+                    separador="cell"
+                  ></essential-table>
+                </div>
               </q-tab-panel>
 
               <q-tab-panel name="historial_material_stock_usado">

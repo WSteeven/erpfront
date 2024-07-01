@@ -55,6 +55,8 @@ export const tareas = {
   obtener_suma_material_tarea_usado: new Endpoint('tareas/obtener-suma-material-tarea-usado'),
   obtener_historial_material_tarea_usado_por_fecha: new Endpoint('tareas/obtener-historial-material-tarea-usado-por-fecha'),
   obtener_historial_material_stock_usado_por_fecha: new Endpoint('tareas/obtener-historial-material-stock-usado-por-fecha'),
+  obtener_resumen_material_subtarea_usado: new Endpoint('tareas/obtener-resumen-material-subtarea-usado'),
+  obtener_resumen_material_stock_usado: new Endpoint('tareas/obtener-resumen-material-stock-usado'),
   actualizar_cantidad_utilizada_historial: new Endpoint('tareas/actualizar-cantidad-utilizada-historial'),
   actualizar_cantidad_utilizada_historial_stock: new Endpoint('tareas/actualizar-cantidad-utilizada-historial-stock'),
   actualizar_cantidad_utilizada_tarea: new Endpoint('tareas/actualizar-cantidad-utilizada-tarea'),
