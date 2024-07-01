@@ -22,9 +22,13 @@ export function useReportesCuestionariosPublicos(mixin: ContenedorSimpleMixin<Re
     /************
      * Funciones
      ************/
+    /**
+     * Consulta los reportes basados en el mixin recibido en su instanciacion.
+     * @returns {Promise<void>} Una promesa que carga el listado de reportes
+     */
     const consultar = async () => {
         await cargarVista(async () => {
-            await listar({ anio: filtro.anio, tipo_cuestionario_id: filtro.tipo_cuestionario })
+            await listar(filtro) // { fecha_inicio: filtro.fecha_inicio, fecha_fin: filtro.fecha_fin, tipo_cuestionario_id: filtro.tipo_cuestionario_id, link: filtro.link })
             if (!listado.value.length) notificarAdvertencia('Sin resultados')
         })
     }
@@ -35,7 +39,7 @@ export function useReportesCuestionariosPublicos(mixin: ContenedorSimpleMixin<Re
 
         const controller = mixin.getController()
         const endpoint = controller.getEndpoint()
-        const urlPdf = apiConfig.URL_BASE + '/' + AxiosHttpRepository.getInstance().getEndpoint(endpoint, { imprimir: true, formato: 'xlsx', anio: filtro.anio, tipo_cuestionario_id: filtro.tipo_cuestionario })
+        const urlPdf = apiConfig.URL_BASE + '/' + AxiosHttpRepository.getInstance().getEndpoint(endpoint, { imprimir: true, formato: 'xlsx', ...filtro }) // anio: filtro.anio, tipo_cuestionario_id: filtro.tipo_cuestionario, link: filtro.link })
         imprimirArchivo(urlPdf, 'GET', 'blob', 'xlsx', filename)
     }
 
@@ -45,7 +49,7 @@ export function useReportesCuestionariosPublicos(mixin: ContenedorSimpleMixin<Re
 
         const controller = mixin.getController()
         const endpoint = controller.getEndpoint()
-        const urlPdf = apiConfig.URL_BASE + '/' + AxiosHttpRepository.getInstance().getEndpoint(endpoint, { imprimir: true, formato: 'txt', anio: filtro.anio, tipo_cuestionario_id: filtro.tipo_cuestionario })
+        const urlPdf = apiConfig.URL_BASE + '/' + AxiosHttpRepository.getInstance().getEndpoint(endpoint, { imprimir: true, formato: 'txt', ...filtro }) // anio: filtro.anio, tipo_cuestionario_id: filtro.tipo_cuestionario, link: filtro.link })
         imprimirArchivo(urlPdf, 'GET', 'blob', 'txt', filename) //, null,'plain')
     }
 
