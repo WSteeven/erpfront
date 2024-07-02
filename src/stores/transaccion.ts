@@ -59,6 +59,29 @@ export const useTransaccionStore = defineStore('transaccion', () => {
         const response: AxiosResponse = await axios.get(ruta)
         transaccion.hydrate(response.data.modelo)
     }
+    async function showPreviewEgreso() {
+        const axios = AxiosHttpRepository.getInstance()
+        const ruta = axios.getEndpoint(endpoints.transacciones_egresos) + '/show-preview/' + idTransaccion.value
+        const response: AxiosResponse = await axios.get(ruta)
+        transaccion.hydrate(response.data.modelo)
+    }
+    async function editarItemEgreso(data) {
+        try {
+            statusLoading.activar()
+            const axios = AxiosHttpRepository.getInstance()
+            const ruta = apiConfig.URL_BASE + '/' + axios.getEndpoint(endpoints.modificar_item_egreso)
+            const response: AxiosResponse = await axios.patch(ruta, data)
+            console.log(response)
+            if (response.status === 200) notificaciones.notificarCorrecto('Item actualizado correctamente')
+        } catch (error: any) {
+            const errorApi = new ApiError(error)
+            const mensajes: string[] = errorApi.erroresValidacion
+            notificarMensajesError(mensajes, notificaciones)
+        } finally {
+            statusLoading.desactivar()
+        }
+
+    }
 
 
     function resetearTransaccion() {
@@ -134,6 +157,8 @@ export const useTransaccionStore = defineStore('transaccion', () => {
         imprimirEgreso,
         idTransaccion,
         showPreview,
+        showPreviewEgreso,
+        editarItemEgreso,
         firmarComprobante,
         anularIngreso,
         anularEgreso,

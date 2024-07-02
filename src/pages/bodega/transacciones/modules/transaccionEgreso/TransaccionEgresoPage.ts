@@ -56,6 +56,7 @@ import { ProyectoController } from 'pages/gestionTrabajos/proyectos/infraestruct
 import { StatusEssentialLoading } from 'components/loading/application/StatusEssentialLoading'
 import { TareasEmpleadoController } from 'pages/gestionTrabajos/tareas/infraestructure/TareasEmpleadoController'
 import { EtapaController } from 'pages/gestionTrabajos/proyectos/modules/etapas/infraestructure/EtapaController'
+import { ComportamientoModalesTransaccionEgreso } from './application/ComportamientoModalesGestionarEgresos'
 
 export default defineComponent({
   name: 'Egresos',
@@ -78,6 +79,7 @@ export default defineComponent({
     const empleadoStore = useEmpleadoStore()
 
     const modalesEmpleado = new ComportamientoModalesEmpleado()
+    const modales = new ComportamientoModalesTransaccionEgreso()
 
     //orquestador
     const {
@@ -212,6 +214,18 @@ export default defineComponent({
     function filtrarTransacciones(tab: string) {
       tabDefecto.value = tab
       listar({ estado: tab })
+    }
+    const botonEditarEgreso: CustomActionTable = {
+      titulo: 'Editar',
+      icono: 'bi-pencil-square',
+      color: 'secondary',
+      accion: async ({ entidad }) => {
+        console.log('diste clic en botonEditarEgreso')
+        transaccionStore.idTransaccion = entidad.id
+        await transaccionStore.showPreviewEgreso()
+        modales.abrirModalEntidad('ModificarEgresoPage')
+      },
+      visible: ({ entidad }) => (entidad.estado_comprobante === estadosTransacciones.pendiente || entidad.estado_comprobante == estadosTransacciones.parcial) && store.can('puede.editar.transacciones_egresos')
     }
 
     const botonEditarCantidad: CustomActionTable = {
@@ -556,6 +570,7 @@ export default defineComponent({
 
       //modales
       modalesEmpleado,
+      modales,
 
       //funciones
       filtrarTransacciones,
@@ -614,6 +629,7 @@ export default defineComponent({
       botonEliminar,
       botonImprimir,
       botonAnular,
+      botonEditarEgreso,
       eliminar,
 
       //selector
