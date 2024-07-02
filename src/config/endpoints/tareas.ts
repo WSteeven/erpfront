@@ -68,4 +68,5 @@ export const tareas = {
   obtener_clientes_materiales_tarea: new Endpoint('tareas/obtener-clientes-materiales-tarea'),
   transferencias_productos_empleados: new Endpoint('tareas/transferencias-productos-empleados'),
   reporte_materiales_utilizados: new Endpoint('tareas/reporte-materiales-utilizados'),
+  reporte_materiales: new Endpoint('tareas/reporte-materiales'),
 }

@@ -1,46 +1,41 @@
 // Dependencias
-// import { configuracionColumnasMaterialEmpleadoTarea } from '../domain/configuracionColumnasMaterialEmpleadoTarea'
+import { configuracionColumnasMaterialEmpleadoTarea } from 'pages/gestionTrabajos/miBodega/domain/configuracionColumnasMaterialEmpleadoTarea'
 import { useTransferenciaProductoEmpleadoStore } from 'stores/transferenciaProductoEmpleado'
+import { AxiosHttpRepository } from 'shared/http/infraestructure/AxiosHttpRepository'
 import { computed, defineComponent, onMounted, reactive, ref, watch } from 'vue'
+import { CustomActionPrompt } from 'components/tables/domain/CustomActionPrompt'
+import { CustomActionTable } from 'components/tables/domain/CustomActionTable'
+import { useFiltrosListadosSelects } from 'shared/filtrosListadosGenerales'
+import { useAuthenticationStore } from 'stores/authentication'
+import { useNotificacionStore } from 'stores/notificacion'
+import { useNotificaciones } from 'shared/notificaciones'
 import { destinosTareas } from 'config/tareas.utils'
+import { imprimirArchivo, ordernarListaString } from 'shared/utils'
+import { useCargandoStore } from 'stores/cargando'
+import { apiConfig, endpoints } from 'config/api'
+import { accionesTabla, maskFecha } from 'config/utils'
+import { AxiosResponse } from 'axios'
+import { useQuasar } from 'quasar'
 
 // Componentes
 import EssentialTable from 'components/tables/view/EssentialTable.vue'
+import ModalEntidad from 'components/modales/view/ModalEntidad.vue'
 
 // Logica y controladores
-// import { useMaterialesEmpleado } from '../application/UseMaterialesEmpleado'
-// import { useMaterialesProyecto } from '../application/UseMaterialesProyecto'
-import { useFiltrosListadosSelects } from 'shared/filtrosListadosGenerales'
-import { Proyecto } from 'pages/gestionTrabajos/proyectos/domain/Proyecto'
-// import { FiltroMiBodegaProyecto } from '../domain/FiltroMiBodegaProyecto'
-// import { FiltroMiBodegaEmpleado } from '../domain/FiltroMiBodegaEmpleado'
-// import { useMaterialesTarea } from '../application/UseMaterialesTarea'
-import { Tarea } from 'pages/gestionTrabajos/tareas/domain/Tarea'
-import { useNotificacionStore } from 'stores/notificacion'
-// import { FiltroMiBodega } from '../domain/FiltroMiBodega'
-import { useNotificaciones } from 'shared/notificaciones'
-import { useCargandoStore } from 'stores/cargando'
-import { useQuasar } from 'quasar'
-import { useAuthenticationStore } from 'stores/authentication'
-import { FiltroMiBodega } from 'pages/gestionTrabajos/miBodega/domain/FiltroMiBodega'
+import { ComportamientoModalesMaterialEmpleado } from '../application/ComportamientoModalesMaterialEmpleado'
+import { useMaterialesEmpleado } from 'pages/gestionTrabajos/miBodega/application/UseMaterialesEmpleado'
+import { useMaterialesProyecto } from 'pages/gestionTrabajos/miBodega/application/UseMaterialesProyecto'
+import { EmpleadoController } from 'pages/recursosHumanos/empleados/infraestructure/EmpleadoController'
 import { FiltroMiBodegaProyecto } from 'pages/gestionTrabajos/miBodega/domain/FiltroMiBodegaProyecto'
 import { FiltroMiBodegaEmpleado } from 'pages/gestionTrabajos/miBodega/domain/FiltroMiBodegaEmpleado'
 import { useMaterialesTarea } from 'pages/gestionTrabajos/miBodega/application/UseMaterialesTarea'
-import { useMaterialesEmpleado } from 'pages/gestionTrabajos/miBodega/application/UseMaterialesEmpleado'
-import { useMaterialesProyecto } from 'pages/gestionTrabajos/miBodega/application/UseMaterialesProyecto'
-import { configuracionColumnasMaterialEmpleadoTarea } from 'pages/gestionTrabajos/miBodega/domain/configuracionColumnasMaterialEmpleadoTarea'
-import { EmpleadoController } from 'pages/recursosHumanos/empleados/infraestructure/EmpleadoController'
 import { StatusEssentialLoading } from 'components/loading/application/StatusEssentialLoading'
+import { FiltroMiBodega } from 'pages/gestionTrabajos/miBodega/domain/FiltroMiBodega'
+import { Proyecto } from 'pages/gestionTrabajos/proyectos/domain/Proyecto'
 import { Empleado } from 'pages/recursosHumanos/empleados/domain/Empleado'
-import { ordernarListaString } from 'shared/utils'
-import { accionesTabla } from 'config/utils'
-import { CustomActionTable } from 'components/tables/domain/CustomActionTable'
-import ModalEntidad from 'components/modales/view/ModalEntidad.vue'
-import { ComportamientoModalesMaterialEmpleado } from '../application/ComportamientoModalesMaterialEmpleado'
-import { CustomActionPrompt } from 'components/tables/domain/CustomActionPrompt'
-import { AxiosHttpRepository } from 'shared/http/infraestructure/AxiosHttpRepository'
-import { apiConfig, endpoints } from 'config/api'
-import { AxiosResponse } from 'axios'
+import { Tarea } from 'pages/gestionTrabajos/tareas/domain/Tarea'
+import { requiredIf } from 'shared/i18n-validators'
+import useVuelidate from '@vuelidate/core'
 
 export default defineComponent({
   components: { EssentialTable, ModalEntidad },
@@ -63,6 +58,7 @@ export default defineComponent({
     const cargando = new StatusEssentialLoading()
     const tab = ref()
     const empleadoSeleccionado = ref()
+    const mostrarImprimirReporteMateriales = ref(false)
 
     onMounted(() => {
       tab.value = destinosTareas.paraClienteFinal
@@ -72,6 +68,10 @@ export default defineComponent({
     const filtro = reactive(new FiltroMiBodega())
     const filtroProyecto = reactive(new FiltroMiBodegaProyecto())
     const filtroEmpleado = reactive(new FiltroMiBodegaEmpleado())
+    const filtroReporteMateriales = reactive({
+      fecha_inicio: null,
+      fecha_fin: null,
+    })
 
     const listadosAuxiliares = reactive({
       productos: [],
@@ -246,13 +246,29 @@ export default defineComponent({
       }
     }
 
+    const descargarReporteMateriales = async () => {
+      if (await v$.value.$validate()) {
+        // const fechaActual = new Date()
+        const empleado: any = listadosAuxiliares.empleados.find((empleado: Empleado) => empleado.id === empleadoSeleccionado.value)
+        const filename = 'reporte_materiales_' + empleado?.nombres + ' ' + empleado?.apellidos + '_' + filtroReporteMateriales.fecha_inicio + '-' + filtroReporteMateriales.fecha_fin
+
+        const endpoint = endpoints.reporte_materiales
+        const urlPdf = apiConfig.URL_BASE + '/' + AxiosHttpRepository.getInstance().getEndpoint(endpoint, { empleado_id: empleadoSeleccionado.value, ...filtroReporteMateriales })
+        imprimirArchivo(urlPdf, 'GET', 'blob', 'xlsx', filename)
+      }
+    }
+
+    // Reglas de validacion
+    const reglas = {
+      fecha_inicio: { requiredIf: requiredIf(() => mostrarImprimirReporteMateriales.value) },
+      fecha_fin: { requiredIf: requiredIf(() => mostrarImprimirReporteMateriales.value) },
+    }
+
+    const v$ = useVuelidate(reglas, filtroReporteMateriales)
+
     /*******
      * Init
     *******/
-    // consultarClientesMaterialesTarea({ empleado_id: empleadoSeleccionado.value, filtrar_por_tarea: true })
-    // consultarClientesMaterialesEmpleado()
-    // consultarTareasClienteFinalMantenimiento(empleadoSeleccionado.value)
-    // consultarProyectos().then(() => proyectos.value = listadosAuxiliares.proyectos)
     consultarTodosEmpleados()
 
     /************
@@ -323,6 +339,7 @@ export default defineComponent({
     }
 
     return {
+      v$,
       tab,
       configuracionColumnasMaterialEmpleadoTarea,
       listadosAuxiliares,
@@ -359,7 +376,11 @@ export default defineComponent({
       guardado,
       //botones de tabla
       btnCambiarClientePropietario,
-      btnModificarStock
+      btnModificarStock,
+      descargarReporteMateriales,
+      filtroReporteMateriales,
+      mostrarImprimirReporteMateriales,
+      maskFecha,
     }
   },
 })
