@@ -1,7 +1,7 @@
 import { ColumnConfig } from 'components/tables/domain/ColumnConfig'
 import { MaterialOcupadoFormulario } from 'gestionTrabajos/formulariosTrabajos/emergencias/domain/MaterialOcupadoFormulario'
 
-export const configuracionColumnasMaterialOcupadoFormulario: ColumnConfig<MaterialOcupadoFormulario>[] = [
+export const configuracionColumnasResumenMaterialOcupado: ColumnConfig<MaterialOcupadoFormulario>[] = [
   {
     name: 'detalle_producto',
     field: 'detalle_producto',
@@ -32,12 +32,6 @@ export const configuracionColumnasMaterialOcupadoFormulario: ColumnConfig<Materi
     name: 'despachado',
     field: 'despachado',
     label: 'Despachado',
-    align: 'left',
-  },
-  {
-    name: 'cantidad_utilizada',
-    field: 'cantidad_utilizada',
-    label: 'Cantidad utilizada en el dia',
     align: 'left',
   },
   {

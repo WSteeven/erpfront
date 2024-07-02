@@ -43,6 +43,7 @@ import { configuracionColumnasSolicitudAts } from '../domain/configuracionColumn
 import { useGestionAtsApplication } from '../application/GestionAtsApplication'
 import { Subtarea } from 'pages/gestionTrabajos/subtareas/domain/Subtarea'
 import { Ticket } from 'pages/gestionTickets/tickets/domain/Ticket'
+import { configuracionColumnasResumenMaterialOcupado } from '../domain/configuracionColumnasResumenMaterialOcupado'
 
 export default defineComponent({
   components: {
@@ -97,7 +98,7 @@ export default defineComponent({
       return 'Rango disponible desde ' + trabajoAsignadoStore.subtarea.fecha_hora_ejecucion.substring(0, 10) + ' hasta ' + (trabajoAsignadoStore.subtarea.fecha_hora_finalizacion ?? obtenerFechaActual())
     })
 
-    const mostrarMaterialConStock = ref(false)
+    const mostrarMaterialConStock = ref(true)
     const materialesTareaTodos: Ref<MaterialOcupadoFormulario[]> = ref([])
     const materialesTarea = computed(() => {
       if (mostrarMaterialConStock.value) {
@@ -107,7 +108,7 @@ export default defineComponent({
       }
     })
 
-    const mostrarMaterialStockConStock = ref(false)
+    const mostrarMaterialStockConStock = ref(true)
     const materialesStockTodos: Ref<MaterialOcupadoFormulario[]> = ref([])
     const materialesStock = computed(() => {
       if (mostrarMaterialStockConStock.value) {
@@ -120,6 +121,8 @@ export default defineComponent({
     const sumaMaterialesTareaUsado: Ref<MaterialOcupadoFormulario[]> = ref([])
     const historialMaterialTareaUsadoPorFecha: Ref<MaterialOcupadoFormulario[]> = ref([])
     const historialMaterialStockUsadoPorFecha: Ref<MaterialOcupadoFormulario[]> = ref([])
+    const resumenMaterialSubtareaUsado: Ref<MaterialOcupadoFormulario[]> = ref([])
+    const resumenMaterialStockUsado: Ref<MaterialOcupadoFormulario[]> = ref([])
 
     const esLider = authenticationStore.esTecnicoLider
     const esCoordinador = authenticationStore.esCoordinador || authenticationStore.esJefeTecnico || authenticationStore.esCoordinadorBackup
@@ -320,7 +323,7 @@ export default defineComponent({
         fecha: fecha_historial_stock.value,
         cliente_id: material.cliente_id,
       }
-      
+
       const ruta = axios.getEndpoint(endpoints.actualizar_cantidad_utilizada_historial_stock, params)
       const response: AxiosResponse = await axios.post(ruta)
       return response.data.modelo
@@ -461,6 +464,22 @@ export default defineComponent({
       materialesTareaTodos.value = []
     }
 
+    const actualizarTablaResumenMaterialesTarea = () => {
+      cargarVista(async () => {
+        const ruta = axios.getEndpoint(endpoints.obtener_resumen_material_subtarea_usado, { subtarea_id: trabajoAsignadoStore.subtarea.id, empleado_id: obtenerIdEmpleadoResponsable() })
+        const response: AxiosResponse = await axios.get(ruta)
+        resumenMaterialSubtareaUsado.value = response.data.results.filter((material: MaterialOcupadoFormulario) => material.total_cantidad_utilizada > 0)
+      })
+    }
+
+    const actualizarTablaResumenMaterialesStock = () => {
+      cargarVista(async () => {
+        const ruta = axios.getEndpoint(endpoints.obtener_resumen_material_stock_usado, { subtarea_id: trabajoAsignadoStore.subtarea.id, empleado_id: obtenerIdEmpleadoResponsable() })
+        const response: AxiosResponse = await axios.get(ruta)
+        resumenMaterialStockUsado.value = response.data.results.filter((material: MaterialOcupadoFormulario) => material.total_cantidad_utilizada > 0)
+      })
+    }
+
     /*************
      * Observers
      *************/
@@ -492,6 +511,7 @@ export default defineComponent({
       usarMaterialStock,
       usarMaterialTarea,
       columnasMaterial,
+      configuracionColumnasResumenMaterialOcupado,
       configuracionColumnasMaterialOcupadoFormulario,
       configuracionColumnasSumaMaterial,
       materialesTarea,
@@ -499,6 +519,8 @@ export default defineComponent({
       sumaMaterialesTareaUsado,
       historialMaterialTareaUsadoPorFecha,
       historialMaterialStockUsadoPorFecha,
+      resumenMaterialSubtareaUsado,
+      resumenMaterialStockUsado,
       obtenerHistorialMaterialTareaUsadoPorFecha,
       botonEditarCantidadTarea,
       botonEditarCantidadStock,
@@ -551,6 +573,8 @@ export default defineComponent({
       mostrarMaterialStockConStock,
       mostrarSolicitudesAts,
       actualizarTablaMaterialesTarea,
+      actualizarTablaResumenMaterialesTarea,
+      actualizarTablaResumenMaterialesStock,
     }
   }
 })

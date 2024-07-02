@@ -17,7 +17,7 @@ export function useNotificaciones() {
     position: 'bottom-right',
     multiLine: true,
     progress: true,
-    classes: 'rounded-tabpanel bg-desenfoque border-white',
+    classes: 'rounded-tabpanel shadow-notification bg-desenfoque border-white',
   }
 
   function notificarInformacion(mensaje: string | string[]) {
