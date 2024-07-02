@@ -362,6 +362,15 @@ export default defineComponent({
         }) : accion?.icono
     }
 
+    function extraerColor(accion: CustomActionTable, propsTable: any) {
+      return typeof accion?.color === 'function'
+        ? accion.color({
+          entidad: propsTable.row,
+          posicion: propsTable.rowIndex,
+        })
+        : accion?.color
+    }
+
     const pagination = ref({
       sortBy: 'desc',
       descending: false,
@@ -465,15 +474,6 @@ export default defineComponent({
       // .split('\r').join('\\r')
 
       return `"${formatted}"`
-    }
-
-    function extraerColor(accion: CustomActionTable, propsTable: any) {
-      return typeof accion?.color === 'function'
-        ? accion.color({
-          entidad: propsTable.row,
-          posicion: propsTable.rowIndex,
-        })
-        : accion?.color
     }
 
     function guardarCeldaEditada(fila) {

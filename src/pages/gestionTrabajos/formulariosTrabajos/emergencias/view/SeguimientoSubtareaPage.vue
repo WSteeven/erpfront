@@ -166,18 +166,20 @@
 
               <q-tab-panel name="resumen_material_tarea_utilizado">
                 <div class="row q-col-gutter-sm q-pa-sm q-mb-md">
-                  <essential-table
-                    v-if="resumenMaterialSubtareaUsado.length"
-                    titulo="Resumen material tarea usado"
-                    :configuracionColumnas="columnasMaterial"
-                    :datos="resumenMaterialSubtareaUsado"
-                    :alto-fijo="false"
-                    :permitirConsultar="false"
-                    :permitirEliminar="false"
-                    :permitirEditar="false"
-                    :permitirEditarModal="true"
-                    separador="cell"
-                  ></essential-table>
+                  <div class="col-12">
+                    <essential-table
+                      v-if="resumenMaterialSubtareaUsado.length"
+                      titulo="Resumen material tarea usado"
+                      :configuracionColumnas="columnasMaterial"
+                      :datos="resumenMaterialSubtareaUsado"
+                      :alto-fijo="false"
+                      :permitirConsultar="false"
+                      :permitirEliminar="false"
+                      :permitirEditar="false"
+                      :permitirEditarModal="true"
+                      separador="cell"
+                    ></essential-table>
+                  </div>
                 </div>
               </q-tab-panel>
 
@@ -206,21 +208,23 @@
                       />
                     </div>
                   </div>
-                </div>
 
-                <essential-table
-                  v-if="historialMaterialTareaUsadoPorFecha.length"
-                  titulo="Historial material tarea usado"
-                  :configuracionColumnas="columnasMaterial"
-                  :datos="historialMaterialTareaUsadoPorFecha"
-                  :alto-fijo="false"
-                  :permitirConsultar="false"
-                  :permitirEliminar="false"
-                  :permitirEditar="false"
-                  :permitirEditarModal="true"
-                  separador="cell"
-                  :accion1="botonEditarCantidadTareaHistorial"
-                ></essential-table>
+                  <div class="col-12">
+                    <essential-table
+                      v-if="historialMaterialTareaUsadoPorFecha.length"
+                      titulo="Historial material tarea usado"
+                      :configuracionColumnas="columnasMaterial"
+                      :datos="historialMaterialTareaUsadoPorFecha"
+                      :alto-fijo="false"
+                      :permitirConsultar="false"
+                      :permitirEliminar="false"
+                      :permitirEditar="false"
+                      :permitirEditarModal="true"
+                      separador="cell"
+                      :accion1="botonEditarCantidadTareaHistorial"
+                    ></essential-table>
+                  </div>
+                </div>
               </q-tab-panel>
             </q-tab-panels>
           </q-card>
@@ -309,40 +313,46 @@
                       dense
                     ></q-toggle>
                   </div>
-                </div>
 
-                <essential-table
-                  v-if="materialesStock.length"
-                  titulo="Materiales de stock del responsable"
-                  :configuracionColumnas="columnasMaterial"
-                  :datos="materialesStock"
-                  :alto-fijo="false"
-                  :permitirConsultar="false"
-                  :permitirEliminar="false"
-                  :permitirEditar="false"
-                  :permitir-buscar="true"
-                  :permitirEditarModal="true"
-                  separador="cell"
-                  :ajustar-celdas="true"
-                  :accion1="botonEditarCantidadStock"
-                ></essential-table>
+                  <div class="col-12">
+                    <essential-table
+                      v-if="materialesStock.length"
+                      titulo="Materiales de stock del responsable"
+                      :configuracionColumnas="columnasMaterial"
+                      :datos="materialesStock"
+                      :alto-fijo="false"
+                      :permitirConsultar="false"
+                      :permitirEliminar="false"
+                      :permitirEditar="false"
+                      :permitir-buscar="true"
+                      :permitirEditarModal="true"
+                      separador="cell"
+                      :ajustar-celdas="true"
+                      :accion1="botonEditarCantidadStock"
+                    ></essential-table>
+                  </div>
+                </div>
               </q-tab-panel>
 
               <q-tab-panel name="resumen_material_stock_utilizado">
                 <div class="row q-col-gutter-sm q-pa-sm q-mb-md">
-                  <essential-table
-                    v-if="resumenMaterialStockUsado.length"
-                    titulo="Resumen material stock usado"
-                    :configuracionColumnas="configuracionColumnasResumenMaterialOcupado"
-                    :datos="resumenMaterialStockUsado"
-                    :alto-fijo="false"
-                    :permitirConsultar="false"
-                    :permitirEliminar="false"
-                    :permitirEditar="false"
-                    :permitirEditarModal="true"
-                    :ajustar-celdas="true"
-                    separador="cell"
-                  ></essential-table>
+                  <div class="col">
+                    <essential-table
+                      v-if="resumenMaterialStockUsado.length"
+                      titulo="Resumen material stock usado"
+                      :configuracionColumnas="
+                        configuracionColumnasResumenMaterialOcupado
+                      "
+                      :datos="resumenMaterialStockUsado"
+                      :alto-fijo="false"
+                      :permitirConsultar="false"
+                      :permitirEliminar="false"
+                      :permitirEditar="false"
+                      :permitirEditarModal="true"
+                      :ajustar-celdas="true"
+                      separador="cell"
+                    ></essential-table>
+                  </div>
                 </div>
               </q-tab-panel>
 

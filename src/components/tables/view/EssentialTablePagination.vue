@@ -2001,4 +2001,4 @@
 }
 </style>
 
-<script src="./EssentialTable.ts"></script>
+<script src="./EssentialTablePagination.ts"></script>

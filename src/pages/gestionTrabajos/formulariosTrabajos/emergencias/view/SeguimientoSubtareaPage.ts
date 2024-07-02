@@ -98,7 +98,7 @@ export default defineComponent({
       return 'Rango disponible desde ' + trabajoAsignadoStore.subtarea.fecha_hora_ejecucion.substring(0, 10) + ' hasta ' + (trabajoAsignadoStore.subtarea.fecha_hora_finalizacion ?? obtenerFechaActual())
     })
 
-    const mostrarMaterialConStock = ref(false)
+    const mostrarMaterialConStock = ref(true)
     const materialesTareaTodos: Ref<MaterialOcupadoFormulario[]> = ref([])
     const materialesTarea = computed(() => {
       if (mostrarMaterialConStock.value) {
@@ -108,7 +108,7 @@ export default defineComponent({
       }
     })
 
-    const mostrarMaterialStockConStock = ref(false)
+    const mostrarMaterialStockConStock = ref(true)
     const materialesStockTodos: Ref<MaterialOcupadoFormulario[]> = ref([])
     const materialesStock = computed(() => {
       if (mostrarMaterialStockConStock.value) {
@@ -468,15 +468,15 @@ export default defineComponent({
       cargarVista(async () => {
         const ruta = axios.getEndpoint(endpoints.obtener_resumen_material_subtarea_usado, { subtarea_id: trabajoAsignadoStore.subtarea.id, empleado_id: obtenerIdEmpleadoResponsable() })
         const response: AxiosResponse = await axios.get(ruta)
-        resumenMaterialSubtareaUsado.value = response.data.results
+        resumenMaterialSubtareaUsado.value = response.data.results.filter((material: MaterialOcupadoFormulario) => material.total_cantidad_utilizada > 0)
       })
     }
 
-    const actualizarTablaResumenMaterialesStock= () => {
+    const actualizarTablaResumenMaterialesStock = () => {
       cargarVista(async () => {
         const ruta = axios.getEndpoint(endpoints.obtener_resumen_material_stock_usado, { subtarea_id: trabajoAsignadoStore.subtarea.id, empleado_id: obtenerIdEmpleadoResponsable() })
         const response: AxiosResponse = await axios.get(ruta)
-        resumenMaterialStockUsado.value = response.data.results
+        resumenMaterialStockUsado.value = response.data.results.filter((material: MaterialOcupadoFormulario) => material.total_cantidad_utilizada > 0)
       })
     }
 
