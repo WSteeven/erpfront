@@ -493,7 +493,8 @@
             'RolPagoMes',
             'AcreditacionSemana',
             'TransferenciaProductoEmpleado',
-            // 'ControlDiarioVehiculo'
+            'AsignacionVehiculo',
+            'TransferenciaVehiculo'
           ]"
         >
           <component :is="Component" />
