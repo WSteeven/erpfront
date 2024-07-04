@@ -1,20 +1,22 @@
 // Dependencias
 
-import { required } from '@vuelidate/validators'
+import { required } from 'shared/i18n-validators'
 import { useVuelidate } from '@vuelidate/core'
 import { defineComponent } from 'vue'
 
 // Componentes
 import TabLayout from 'shared/contenedor/modules/simple/view/TabLayout.vue'
+import SelectorImagen from 'components/SelectorImagen.vue'
 
 //Logica y controladores
 import { ContenedorSimpleMixin } from 'shared/contenedor/modules/simple/application/ContenedorSimpleMixin'
 import { PermisoController } from '../infraestructure/PermisoConstroller'
 import { Permiso } from '../domain/Permiso'
-import { configuracionColumnasPermisos } from 'pages/permisos/domain/configuracionColumnasPermisos'
+import { configuracionColumnasPermisosArmas } from '../domain/configuracionColumnasPermisos'
+import { maskFecha } from 'config/utils'
 
 export default defineComponent({
-  components: { TabLayout },
+  components: { TabLayout, SelectorImagen },
   setup() {
     const mixin = new ContenedorSimpleMixin(Permiso, new PermisoController())
     const { entidad: permiso, disabled } = mixin.useReferencias()
@@ -23,8 +25,9 @@ export default defineComponent({
     //Reglas de validacion
     const reglas = {
       nombre: { required },
-      emision: { required },
-      caducidad: { required },
+      fecha_caducidad: { required },
+      fecha_emision: { required },
+      imagen_permiso: { required },
     }
 
     const v$ = useVuelidate(reglas, permiso)
@@ -33,11 +36,10 @@ export default defineComponent({
     return {
       mixin,
       permiso,
-      emision,
-      caducidad,
+      maskFecha,
       v$,
       disabled,
-      configuracionColumnas: configuracionColumnasPermisos,
+      configuracionColumnas: configuracionColumnasPermisosArmas,
     }
   }
 })

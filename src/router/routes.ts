@@ -372,11 +372,11 @@ const routes: RouteRecordRaw[] = [
         meta: { requiresAuth: true },
       },
       {
-        path: '/permisos_armas',
+        path: '/permisos-armas',
         name: 'permisos_armas',
         component: () =>
           import('pages/bodega/permisos/view/PermisoPage.vue'),
-        meta: { requiresAuth: false },
+        meta: { requiresAuth: true },
       },
       {
         path: '/control-stock',

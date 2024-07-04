@@ -4,6 +4,6 @@ import { endpoints } from 'config/api'
 
 export class PermisoController extends TransaccionSimpleController<Permiso>{
     constructor() {
-        super(endpoints.categorias)
+        super(endpoints.permisos_armas)
     }
 }

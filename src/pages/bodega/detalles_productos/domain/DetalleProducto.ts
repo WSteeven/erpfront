@@ -39,6 +39,7 @@ export class DetalleProducto extends EntidadAuditable {
     peso: string | null
     dimensiones: string | null
     permiso: string | null
+    permiso_id: number | null
     caducidad: string | null
 
 
@@ -94,13 +95,14 @@ export class DetalleProducto extends EntidadAuditable {
         this.peso = null
         this.dimensiones = null
         this.permiso = null
+        this.permiso_id = null
         this.caducidad = null
         this.tipo = null
         this.activo = true
 
         this.adicionales = null
         this.es_computadora = false
-        this.esActivo= false
+        this.esActivo = false
         this.es_fibra = false
         this.tiene_serial = false
         this.tiene_lote = false
