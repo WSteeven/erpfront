@@ -7,13 +7,16 @@
     @guardar="guardarFila"
     :modalMaximized="modalMaximized"
   ></EditarTablaModal>
-
+  <!-- {{ pagination }} -->
   <!-- :hide-header="grid" -->
-  <q-table
+  <!-- :rows="listado" -->
+  <!-- {{ rows }} -->
+  <!-- :columns="configuracionColumnas" -->
+  <!-- <q-table
     ref="refTable"
     :grid="grid && $q.screen.xs"
-    :columns="configuracionColumnas"
-    :rows="listado"
+    :columns="columns"
+    :rows="rows"
     :filter="filter"
     @filter="handleFilter()"
     row-key="id"
@@ -38,13 +41,52 @@
       'rounded-header': $q.screen.xs,
       'bg-header-table': mostrarFiltros,
     }"
-    virtual-scroll
-    :virtual-scroll-item-size="offset"
     :pagination="pagination"
     no-data-label="Aún no se han agregado elementos"
     :wrap-cells="ajustarCeldas"
+    @request="onRequest"
+    binary-state-sort
+  > -->
+
+  <q-table
+    flat
+    bordered
+    ref="refTable"
+    title="Treats"
+    :rows="listado"
+    color="primary"
+    :columns="configuracionColumnas"
+    :grid="grid && $q.screen.xs"
+    row-key="id"
+    v-model:pagination="pagination"
+    :loading="loading"
+    :filter="filter"
+    binary-state-sort
+    no-data-label="Aún no se han agregado elementos"
+    :wrap-cells="ajustarCeldas"
+    :selection="tipoSeleccion"
+    v-model:selected="selected"
+    :visible-columns="visibleColumns"
+    :separator="$q.screen.xs ? 'horizontal' : separador"
+    :hide-bottom="!mostrarFooter"
+    :style="estilos"
+    class="bg-body-table my-sticky-column-table my-sticky-header-column-table borde rounded"
+    :class="{
+      'alto-fijo-desktop': !inFullscreen && altoFijo && !$q.screen.xs,
+      'alto-fijo-mobile': !inFullscreen && altoFijo && $q.screen.xs,
+      'my-sticky-dynamic2': !inFullscreen && altoFijo,
+      'bg-body-table-dark-color': $q.screen.xs && $q.dark.isActive,
+      'my-sticky-column-table-dark': $q.dark.isActive,
+      'my-sticky-column-table-light': !$q.dark.isActive,
+      'my-sticky-column-first-table': primeraColumnaFija,
+      'rounded-header': $q.screen.xs,
+      'bg-header-table': mostrarFiltros,
+    }"
+    @request="toSearch"
   >
-    <!-- wrap-cells -->
+    <!-- @update:pagination="onRequest" -->
+    <!--  virtual-scroll
+    :virtual-scroll-item-size="offset" -->
     <!--@virtual-scroll="onScroll" -->
     <template v-slot:no-data="{ message }">
       <div class="full-width row flex-center text-primary q-gutter-sm">
@@ -53,8 +95,19 @@
       </div>
     </template>
 
-    <template #pagination="scope">
-      <botones-paginacion :scope="scope"> </botones-paginacion>
+    <template #bottom>
+      <!-- <botones-paginacion :scope="scope"> </botones-paginacion> -->
+      <div
+        class="row full-width justify-start bg-desenfoque q-py-xs text-center"
+      >
+        <q-pagination
+          v-if="pagination.page"
+          v-model="pagination.page"
+          :max="pagination.last_page"
+          @update:model-value="onRequest"
+          input
+        />
+      </div>
     </template>
 
     <!-- Editar celdas -->
@@ -160,40 +213,47 @@
 
     <!-- Header table -->
     <template v-if="mostrarHeader" v-slot:top="props">
-      <div
-        v-if="mostrarFiltros"
-        class="text-bold text-center full-width rounded q-mb-md"
-      >
-        <q-chip class="bg-white text-positive">
-          <q-icon name="bi-funnel" class="q-mr-sm"></q-icon>
-          Modo filtro activado
-        </q-chip>
-      </div>
+      <transition name="scale" mode="out-in">
+        <div
+          v-if="mostrarFiltros"
+          class="text-bold text-center full-width rounded q-mb-md"
+        >
+          <q-chip class="bg-white text-positive">
+            <q-icon name="bi-funnel" class="q-mr-sm"></q-icon>
+            Modo filtro activado: {{ titulo }}
+          </q-chip>
+        </div>
+      </transition>
+
+      <transition name="scale" mode="out-in">
+        <div
+          v-if="titulo && !mostrarFiltros"
+          class="row text-primary text-subtitle2 q-mb-lg items-center justify-between col-12"
+          :class="{
+            'titulo-tabla2': !$q.screen.xs,
+            'justify-center': $q.screen.xs,
+            'bg-grey-9': $q.dark.isActive,
+          }"
+        >
+          <span>
+            <q-icon
+              v-if="!$q.screen.xs"
+              name="bi-grip-vertical"
+              color="info"
+              class="q-mr-sm"
+            ></q-icon>
+            <span>{{ titulo }}</span>
+          </span>
+          <span>
+            <slot name="custom-header" />
+          </span>
+        </div>
+      </transition>
 
       <div
-        v-if="titulo"
-        class="row text-primary text-subtitle2 q-mb-lg items-center justify-between col-12"
-        :class="{
-          'titulo-tabla2': !$q.screen.xs,
-          'justify-center': $q.screen.xs,
-          'bg-grey-9': $q.dark.isActive,
-        }"
+        v-if="permitirBuscar && !mostrarFiltros"
+        class="row q-col-gutter-xs full-width q-mb-md"
       >
-        <span>
-          <q-icon
-            v-if="!$q.screen.xs"
-            name="bi-grip-vertical"
-            color="info"
-            class="q-mr-sm"
-          ></q-icon>
-          <span>{{ titulo }}</span>
-        </span>
-        <span>
-          <slot name="custom-header" />
-        </span>
-      </div>
-
-      <div v-if="permitirBuscar" class="row q-col-gutter-xs full-width q-mb-md">
         <div class="col-md-8 col-12">
           <q-input
             v-model="filter"
@@ -251,16 +311,9 @@
             </q-btn>
           </div>
         </div>
-        <div class="col-12 col-md-12" v-if="false">
-          <q-chip class="q-px-md" :class="{ 'bg-grey-8': $q.dark.isActive }">
-            {{ 'Total de elementos: ' }}
-            <b>{{ datos == undefined ? 0 : datos.length }}</b>
-          </q-chip>
-        </div>
       </div>
 
       <div
-        v-if="permitirFiltrar || (true && mostrarCantidadElementos)"
         class="row full-width justify-between q-col-gutter-x-sm items-center q-mb-md"
       >
         <span class="row items-center q-px-md">
@@ -269,20 +322,22 @@
             color="positive"
             class="q-mr-sm"
           ></q-icon>
-          {{ 'Total de elementos: ' }} <b>{{ datos.length }}</b>
+          {{ 'Total de elementos: ' }} <b>{{ pagination.total }}</b>
         </span>
 
         <div class="row q-gutter-xs justify-end q-mb-md">
-          <q-btn
-            v-if="mostrarFiltros"
-            color="indigo-4"
-            no-caps
-            push
-            @click="agregarFiltro()"
-          >
-            <q-icon name="bi-plus" size="xs" class="q-mr-sm"></q-icon>
-            Agregar filtro</q-btn
-          >
+          <transition name="scale" mode="out-in">
+            <q-btn
+              v-if="mostrarFiltros"
+              color="positive"
+              no-caps
+              push
+              @click="agregarFiltro()"
+            >
+              <q-icon name="bi-plus" size="xs" class="q-mr-sm"></q-icon>
+              Agregar filtro</q-btn
+            >
+          </transition>
 
           <!-- <q-btn
             v-if="mostrarFiltros"
@@ -294,18 +349,18 @@
             <q-icon name="bi-eraser" class="q-mr-sm" size="xs"></q-icon>
             Resetear filtros</q-btn
           > -->
-
-          <q-btn
-            v-if="mostrarFiltros"
-            color="indigo"
-            no-caps
-            push
-            @click="filtrar()"
-          >
-            <q-icon name="bi-funnel" class="q-mr-sm" size="xs"></q-icon>
-            Aplicar filtros</q-btn
-          >
-
+          <transition name="scale" mode="out-in">
+            <q-btn
+              v-if="mostrarFiltros"
+              color="primary"
+              no-caps
+              push
+              @click="establecerFiltros()"
+            >
+              <q-icon name="bi-funnel" class="q-mr-sm" size="xs"></q-icon>
+              Buscar con filtros</q-btn
+            >
+          </transition>
           <q-btn
             v-if="mostrarExportar"
             color="positive"
@@ -357,6 +412,18 @@
             {{ tituloBotonFiltros }}</q-btn
           >
         </div>
+
+        <div
+          class="row full-width justify-end bg-desenfoque q-py-xs text-center"
+        >
+          <q-pagination
+            v-if="pagination.page"
+            v-model="pagination.page"
+            :max="pagination.last_page"
+            @update:model-value="onRequest"
+            input
+          />
+        </div>
       </div>
 
       <!-- <q-separator color="red" class="q-py-sm q-my-sm" inset></q-separator>dd -->
@@ -368,7 +435,7 @@
           ref="refTableFilters"
           v-if="permitirFiltrar && mostrarFiltros"
           :configuracionColumnas="configuracionColumnas"
-          @filtrar="establecerFiltros"
+          @filtrar="filtrar"
         ></table-filters>
       </div>
 

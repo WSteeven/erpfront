@@ -85,7 +85,7 @@ export default defineComponent({
      * Mixin
      *********/
     const mixin = new ContenedorSimpleMixin(Tarea, new TareaController())
-    const { entidad: tarea, listadosAuxiliares, accion, disabled } = mixin.useReferencias()
+    const { entidad: tarea, listadosAuxiliares, accion, disabled, filtros, pagination, metaPagination } = mixin.useReferencias()
     const { guardar, editar, eliminar, reestablecer, setValidador, obtenerListados, cargarVista, listar } =
       mixin.useComportamiento()
     const { onBeforeGuardar, onReestablecer, onConsultado } = mixin.useHooks()
@@ -215,8 +215,10 @@ export default defineComponent({
     ************/
     let tabActualTarea = '0'
 
-    function filtrarTarea(tabSeleccionado: string) {
-      listar({ finalizado: tabSeleccionado }, false)
+    async function filtrarTarea(tabSeleccionado: string) {
+      await listar({ finalizado: tabSeleccionado, paginate: true }, false)
+      
+      filtros.fields = { finalizado: tabSeleccionado }
       tabActualTarea = tabSeleccionado
     }
 
