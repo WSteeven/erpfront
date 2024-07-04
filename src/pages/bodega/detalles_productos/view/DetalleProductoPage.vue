@@ -482,43 +482,6 @@
               </template>
             </q-select>
           </div>
-          <!-- Caducidad -->
-          <div v-if="detalle.tiene_adicionales" class="col-12 col-md-4">
-            <label class="q-mb-sm block">Caducidad</label>
-            <q-input
-              v-model="detalle.caducidad"
-              placeholder="Opcional"
-              outlined
-              :disable="disabled"
-              type="datetime"
-              dense
-            >
-              <template v-slot:append>
-                <q-icon name="event" class="cursor-pointer">
-                  <q-popup-proxy
-                    cover
-                    transition-show="scale"
-                    transition-hide="scale"
-                  >
-                    <q-date
-                      v-model="detalle.caducidad"
-                      mask="YYYY-MM-DD"
-                      today-btn
-                    >
-                      <div class="row items-center justify-end">
-                        <q-btn
-                          v-close-popup
-                          label="Cerrar"
-                          color="primary"
-                          flat
-                        />
-                      </div>
-                    </q-date>
-                  </q-popup-proxy>
-                </q-icon>
-              </template>
-            </q-input>
-          </div>
 
           <!-- Span -->
           <div v-if="detalle.es_fibra" class="col-12 col-md-4 q-mb-md">

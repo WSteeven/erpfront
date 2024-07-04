@@ -87,13 +87,6 @@ export const configuracionColumnasDetallesProductos: ColumnConfig<DetalleProduct
       align: 'left',
       sortable: true,
     },
-    {
-      name: 'caducidad',
-      field: 'caducidad',
-      label: 'Fecha de Caducidad',
-      align: 'left',
-      sortable: true,
-    },
     /*{
       name: 'computadora',
       field: 'computadora',
