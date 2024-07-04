@@ -15,6 +15,7 @@ export const useTransaccionStore = defineStore('transaccion', () => {
     const transaccion = reactive(new Transaccion()) //la transaccion
     const transaccionReset = new Transaccion()
     const idTransaccion = ref()
+    const tab = ref('')
 
     const notificaciones = useNotificaciones()
     const accionTransaccion = acciones.nuevo
@@ -54,16 +55,20 @@ export const useTransaccionStore = defineStore('transaccion', () => {
         console.log('Egreso impreso con éxito.')
     }
     async function showPreview() {
+        statusLoading.activar()
         const axios = AxiosHttpRepository.getInstance()
         const ruta = axios.getEndpoint(endpoints.transacciones_ingresos) + '/show-preview/' + idTransaccion.value
         const response: AxiosResponse = await axios.get(ruta)
         transaccion.hydrate(response.data.modelo)
+        statusLoading.desactivar()
     }
     async function showPreviewEgreso() {
+        statusLoading.activar()
         const axios = AxiosHttpRepository.getInstance()
         const ruta = axios.getEndpoint(endpoints.transacciones_egresos) + '/show-preview/' + idTransaccion.value
         const response: AxiosResponse = await axios.get(ruta)
         transaccion.hydrate(response.data.modelo)
+        statusLoading.desactivar()
     }
     async function editarItemEgreso(data) {
         try {
@@ -151,6 +156,7 @@ export const useTransaccionStore = defineStore('transaccion', () => {
         // State
         transaccion,
         accionTransaccion,
+        tab,
         cargarTransaccion,
         resetearTransaccion,
         imprimirIngreso,

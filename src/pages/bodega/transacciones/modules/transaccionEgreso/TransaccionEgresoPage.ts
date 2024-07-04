@@ -106,7 +106,7 @@ export default defineComponent({
     let listadoPedido: Ref<any[]> = ref([])
     let coincidencias = ref()
     let listadoCoincidencias = ref()
-    const tabDefecto = ref('PENDIENTE')
+    const tabDefecto = ref(estadosTransacciones.pendiente)
 
 
 
@@ -220,7 +220,8 @@ export default defineComponent({
       icono: 'bi-pencil-square',
       color: 'secondary',
       accion: async ({ entidad }) => {
-        console.log('diste clic en botonEditarEgreso')
+        console.log('diste clic en botonEditarEgreso', tabDefecto.value)
+        transaccionStore.tab = tabDefecto.value
         transaccionStore.idTransaccion = entidad.id
         await transaccionStore.showPreviewEgreso()
         modales.abrirModalEntidad('ModificarEgresoPage')
@@ -281,7 +282,7 @@ export default defineComponent({
         })
       },
       visible: ({ entidad, posicion }) => {
-        return (store.esAdministrador || store.can('puede.anular.egresos')) && entidad.estado === estadosTransacciones.completa && entidad.estado_comprobante == 'PENDIENTE'
+        return (store.esAdministrador || store.can('puede.anular.egresos')) && entidad.estado === estadosTransacciones.completa && entidad.estado_comprobante == estadosTransacciones.pendiente
       }
 
     }
