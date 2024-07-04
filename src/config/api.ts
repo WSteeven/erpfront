@@ -199,6 +199,7 @@ export const endpoints = {
    * Modulo de Vehiculos
    ******************************/
   combustibles: new Endpoint('vehiculos/combustibles'),
+  garajes: new Endpoint('vehiculos/garajes'),
   vehiculos: new Endpoint('vehiculos/vehiculos'),
   tipos_vehiculos: new Endpoint('vehiculos/tipos-vehiculos'),
   bitacoras_vehiculos: new Endpoint('vehiculos/bitacoras-vehiculos'),
@@ -293,6 +294,7 @@ export const endpoints = {
   transacciones: new Endpoint('transacciones'),
   transacciones_egresos: new Endpoint('transacciones-egresos'),
   transacciones_ingresos: new Endpoint('transacciones-ingresos'),
+  modificar_item_egreso: new Endpoint('modificar-item-egreso'),
   gestionar_egresos: new Endpoint('gestionar-egresos'),
   transferencias: new Endpoint('transferencias'),
   traspasos: new Endpoint('traspasos'),

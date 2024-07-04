@@ -288,14 +288,14 @@
             <label class="q-mb-sm block">Garaje</label>
             <q-select
               v-model="asignacion.garaje"
-              :options="opcionesGaraje"
+              :options="garajes"
               options-dense
               dense
               outlined
               :error="!!v$.garaje.$errors.length"
               :disable="disabled"
-              :option-value="(v) => v"
-              :option-label="(v) => v"
+              :option-value="(v) => v.id"
+              :option-label="(v) => v.nombre"
               emit-value
               map-options
             >
@@ -303,6 +303,18 @@
                 <div v-for="error of v$.garaje.$errors" :key="error.$uid">
                   <div class="error-msg">{{ error.$message }}</div>
                 </div>
+              </template>
+              <template v-slot:no-option>
+                <q-item>
+                  <q-item-section class="text-grey">
+                    No hay resultados
+                  </q-item-section>
+                </q-item>
+              </template>
+              <template v-slot:after>
+                <q-btn color="positive" @click="recargarGarajes">
+                  <q-icon size="xs" class="q-mr-sm" name="bi-arrow-clockwise" />
+                </q-btn>
               </template>
             </q-select>
           </div>

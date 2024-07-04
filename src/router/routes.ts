@@ -448,6 +448,13 @@ const routes: RouteRecordRaw[] = [
         meta: { requiresAuth: true },
       },
       {
+        path: '/garajes',
+        name: 'garajes',
+        component: () =>
+          import('pages/controlVehiculos/garajes/view/GarajePage.vue'),
+        meta: { requiresAuth: true },
+      },
+      {
         path: '/vehiculos',
         name: 'vehiculos',
         component: () =>

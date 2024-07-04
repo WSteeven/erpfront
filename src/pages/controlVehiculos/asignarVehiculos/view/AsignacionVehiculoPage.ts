@@ -12,7 +12,7 @@ import GestorArchivos from 'components/gestorArchivos/GestorArchivos.vue';
 // Logica y controladores
 import { AsignacionVehiculo } from '../domain/AsignacionVehiculo';
 import { AsignacionVehiculoController } from '../infraestructure/AsignacionVehiculoController';
-import { tabOptionsAsignacionVehiculos, estadosAsignacionesVehiculos, opcionesGaraje } from 'config/vehiculos.utils';
+import { tabOptionsAsignacionVehiculos, estadosAsignacionesVehiculos } from 'config/vehiculos.utils';
 import { ConductorController } from 'pages/controlVehiculos/conductores/infraestructure/ConductorController';
 import { useFiltrosListadosSelects } from 'shared/filtrosListadosGenerales';
 import { imprimirArchivo, obtenerFechaActual, obtenerUbicacion, ordenarLista } from 'shared/utils';
@@ -35,9 +35,11 @@ import { ArchivoController } from 'pages/gestionTrabajos/subtareas/modules/gesto
 import { useVehiculoStore } from 'stores/vehiculos/vehiculo';
 import { useRouter } from 'vue-router';
 import { ValidarImagenesAdjuntas } from '../application/validation/ValidarImagenesAdjuntas';
+import { GarajeController } from 'pages/controlVehiculos/garajes/infraestructure/GarajeController';
 
 
 export default defineComponent({
+    name: 'AsignacionVehiculo',
     components: { TabLayoutFilterTabs2, GestorArchivos },
     setup() {
         const mixin = new ContenedorSimpleMixin(AsignacionVehiculo, new AsignacionVehiculoController(), new ArchivoController())
@@ -64,6 +66,7 @@ export default defineComponent({
         const soloLectura = computed(() => accion.value == acciones.editar)
         const FIRMADA = 'FIRMADA'
 
+        const garajes = ref([])
         let accesoriosDefault = [
             'GATA HIDRAULICA',
             'LLANTA DE EMERGENCIA',
@@ -86,10 +89,15 @@ export default defineComponent({
             await obtenerListados({
                 empleados: new ConductorController(),
                 vehiculos: new VehiculoController(),
+                garajes: {
+                    controller: new GarajeController(),
+                    params: { activo: 1 }
+                }
             })
             //listados
             empleados.value = listadosAuxiliares.empleados
             vehiculos.value = listadosAuxiliares.vehiculos
+            garajes.value = listadosAuxiliares.garajes
             listadosAuxiliares.cantones = JSON.parse(LocalStorage.getItem('cantones')!.toString())
             cantones.value = listadosAuxiliares.cantones
 
@@ -288,6 +296,9 @@ export default defineComponent({
         async function recargarVehiculos() {
             await recargarGenerico(listadosAuxiliares, 'vehiculos', vehiculos, new VehiculoController())
         }
+        async function recargarGarajes() {
+            await recargarGenerico(listadosAuxiliares, 'garajes', garajes, new GarajeController(), { activo: 1 })
+        }
         async function recargarEmpleados() {
             await recargarGenerico(listadosAuxiliares, 'empleados', empleados, new ConductorController())
         }
@@ -377,7 +388,7 @@ export default defineComponent({
             estadosAsignacionesVehiculos,
             accesorios,
             estados,
-            opcionesGaraje,
+            garajes,
 
 
             //funciones
@@ -390,6 +401,7 @@ export default defineComponent({
             filtrarEstados,
             recargarEmpleados,
             recargarVehiculos,
+            recargarGarajes,
             subirArchivos,
             obtenerCoordenadas,
 

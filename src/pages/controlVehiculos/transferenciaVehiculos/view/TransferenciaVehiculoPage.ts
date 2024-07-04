@@ -18,7 +18,7 @@ import { TransferenciaVehiculo } from '../domain/TransferenciaVehiculo';
 import { useAuthenticationStore } from 'stores/authentication';
 import { StatusEssentialLoading } from 'components/loading/application/StatusEssentialLoading';
 import { useNotificaciones } from 'shared/notificaciones';
-import { estadosAsignacionesVehiculos, tabOptionsTransferenciasVehiculos, opcionesGaraje } from 'config/vehiculos.utils';
+import { estadosAsignacionesVehiculos, tabOptionsTransferenciasVehiculos } from 'config/vehiculos.utils';
 import { CustomActionTable } from 'components/tables/domain/CustomActionTable';
 import { AxiosHttpRepository } from 'shared/http/infraestructure/AxiosHttpRepository';
 import { apiConfig, endpoints } from 'config/api';
@@ -34,9 +34,11 @@ import { ParamsType } from 'config/types';
 import { AxiosResponse } from 'axios';
 import { ValidarImagenesAdjuntas } from '../application/validation/ValidarImagenesAdjuntas';
 import { ArchivoController } from 'pages/gestionTrabajos/subtareas/modules/gestorArchivosTrabajos/infraestructure/ArchivoController';
+import { GarajeController } from 'pages/controlVehiculos/garajes/infraestructure/GarajeController';
 
 
 export default defineComponent({
+    name: 'TransferenciaVehiculo',
     components: { TabLayoutFilterTabs2, GestorArchivos },
     setup() {
         const mixin = new ContenedorSimpleMixin(TransferenciaVehiculo, new TransferenciaVehiculoController(), new ArchivoController())
@@ -74,6 +76,7 @@ export default defineComponent({
         ];
         const estados = ref(estadosDefault)
         const motivos = ref(motivosDefault)
+        const garajes = ref([])
 
 
 
@@ -86,10 +89,15 @@ export default defineComponent({
             await obtenerListados({
                 empleados: new ConductorController(),
                 vehiculos: new VehiculoController(),
+                garajes: {
+                    controller: new GarajeController(),
+                    params: { activo: 1 }
+                }
             })
             //listados
             empleados.value = listadosAuxiliares.empleados
             vehiculos.value = listadosAuxiliares.vehiculos
+            garajes.value = listadosAuxiliares.garajes
             listadosAuxiliares.cantones = JSON.parse(LocalStorage.getItem('cantones')!.toString())
             cantones.value = listadosAuxiliares.cantones
 
@@ -326,6 +334,10 @@ export default defineComponent({
             await recargarGenerico(listadosAuxiliares, 'vehiculos', vehiculos, new VehiculoController())
         }
 
+        async function recargarGarajes() {
+            await recargarGenerico(listadosAuxiliares, 'garajes', garajes, new GarajeController(), { activo: 1 })
+        }
+
         async function recargarEmpleados() {
             await recargarGenerico(listadosAuxiliares, 'empleados', empleados, new ConductorController())
         }
@@ -441,7 +453,7 @@ export default defineComponent({
             accesorios,
             motivos,
             estados,
-            opcionesGaraje,
+            garajes,
 
 
             //functions
@@ -451,6 +463,7 @@ export default defineComponent({
             crearEstado, filtrarEstados,
             recargarVehiculos,
             recargarEmpleados,
+            recargarGarajes,
             subirArchivos,
             obtenerCoordenadas,
 

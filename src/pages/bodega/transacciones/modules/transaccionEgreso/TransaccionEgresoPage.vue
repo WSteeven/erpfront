@@ -4,8 +4,9 @@
     :configuracionColumnas="configuracionColumnas"
     titulo-pagina="Transacciones - Egresos"
     :permitirEditar="false"
-    :accion1="botonImprimir"
-    :accion2="botonAnular"
+    :accion1="botonEditarEgreso"
+    :accion2="botonImprimir"
+    :accion3="botonAnular"
     :tab-options="tabOptionsTransaccionesEgresos"
     :ajustarCeldas="true"
     :tabDefecto="tabDefecto"
@@ -762,6 +763,10 @@
     :comportamiento="modalesEmpleado"
     :persistente="false"
     :confirmarCerrar="false"
+  ></modales-entidad>
+  <modales-entidad
+    :comportamiento="modales"
+    :persistente="false"
   ></modales-entidad>
 </template>
 <script src="./TransaccionEgresoPage.ts" />

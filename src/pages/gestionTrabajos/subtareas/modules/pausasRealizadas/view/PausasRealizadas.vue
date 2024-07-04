@@ -24,7 +24,6 @@ import EssentialTable from 'components/tables/view/EssentialTable.vue'
 
 // Logica y controladores
 import { StatusEssentialLoading } from 'components/loading/application/StatusEssentialLoading'
-import { useSubtareaStore } from 'stores/subtarea'
 
 const props = defineProps({
   idSubtarea: Number,
@@ -36,7 +35,6 @@ defineEmits(['cerrar-modal', 'seleccionar', 'guardado'])
 /*********
  * Stores
  *********/
-const subtareaStore = useSubtareaStore()
 
 /************
  * Variables

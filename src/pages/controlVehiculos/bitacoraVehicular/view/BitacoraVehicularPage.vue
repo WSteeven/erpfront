@@ -275,7 +275,7 @@
           </div>
 
           <!-- Tareas -->
-          <div class="col-12 col-md-3">
+          <div class="col-12 col-md-3" v-if="accion == acciones.editar || accion == acciones.consultar">
             <label class="q-mb-sm block">Tareas</label>
             <q-select
               v-model="bitacora.tareas"
@@ -313,7 +313,7 @@
             </q-select>
           </div>
           <!-- Tickets -->
-          <div class="col-12 col-md-3">
+          <div class="col-12 col-md-3" v-if="accion == acciones.editar || accion == acciones.consultar">
             <label class="q-mb-sm block">Tickets</label>
             <q-select
               v-model="bitacora.tickets"

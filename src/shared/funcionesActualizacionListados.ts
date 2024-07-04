@@ -16,9 +16,9 @@ export async function cargarConsulta(callback: () => Promise<any>): Promise<any>
 }
 
 
-export async function recargarGenerico(listadosAuxiliares, name, lista, controller: TransaccionSimpleController<any>) {
+export async function recargarGenerico(listadosAuxiliares, name, lista, controller: TransaccionSimpleController<any>, params?: any) {
     const controlador = controller
-    const resultados = await cargarConsulta(controlador.listar.bind(controlador))
+    const resultados = await cargarConsulta(controlador.listar.bind(controlador, params))
     // console.log(resultados)
     listadosAuxiliares[name] = resultados.result
     lista.value = resultados.result
