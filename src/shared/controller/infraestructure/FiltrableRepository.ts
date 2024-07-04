@@ -23,7 +23,7 @@ export class FiltrableRepository<T> {
 
       return {
         response,
-        result: response.data.results,
+        result: response.data.data ?? response.data.results,
       }
     } catch (error: unknown) {
       const axiosError = error as AxiosError
