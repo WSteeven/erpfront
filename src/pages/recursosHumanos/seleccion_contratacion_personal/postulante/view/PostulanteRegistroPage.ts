@@ -16,6 +16,7 @@ import { Postulante } from '../domain/Postulante'
 import useVuelidate from '@vuelidate/core'
 import { required } from 'shared/i18n-validators'
 import { tipos_documentos_identificaciones } from 'config/utils'
+import { email } from '@vuelidate/validators'
 
 export default defineComponent({
   name: 'LoginPostulante',
@@ -40,27 +41,13 @@ export default defineComponent({
     watchEffect(() => (document.title = nombreEmpresa.value ?? ''))
     const $q = useQuasar()
     const reglas = {
-      nombres: {
-        required: required,
-      },
-      apellidos: {
-        required: required,
-      },
-      numero_documento_identificacion: {
-        required: required,
-      },
-      telefono: {
-        required: required,
-      },
-      email: {
-        required: required,
-      },
-      password: {
-        required: required,
-      },
-      tipo_documento_identificacion: {
-        required: required,
-      },
+      nombres: { required },
+      apellidos: { required },
+      numero_documento_identificacion: { required },
+      telefono: { required },
+      email: { required, email },
+      password: { required },
+      tipo_documento_identificacion: { required },
     }
     const v$ = useVuelidate(reglas, postulante)
 

@@ -25,37 +25,68 @@ export default defineComponent({
     const { entidad: tipo_puesto_trabajo, disabled } = mixin.useReferencias()
     const { setValidador } = mixin.useComportamiento()
     const cargando = new StatusEssentialLoading()
-        const loginController = new LoginPostulanteController()
+    const loginController = new LoginPostulanteController()
 
     const puestos_trabajos = [
       {
-        id:1,
+        id: 1,
         nombre: 'Puesto 1',
         descripcion_vacante:
           'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.',
         numero_postulantes: 10,
         tiempo_caducidad: 'hace 1 día',
         tipo_empleo: 'Tiempo Completo',
-        imagen_referencia:'https://cdn.quasar.dev/img/parallax2.jpg'
+        imagen_referencia: 'https://cdn.quasar.dev/img/parallax2.jpg'
       },
       {
-        id:2,
+        id: 2,
         nombre: 'Puesto 2',
         descripcion_vacante:
           'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.',
         numero_postulantes: 8,
         tiempo_caducidad: 'hace 3 día',
         tipo_empleo: 'Tiempo Completo',
-        imagen_referencia:'https://cdn.quasar.dev/img/parallax2.jpg'
-      },{
-        id:3,
+        imagen_referencia: 'https://cdn.quasar.dev/img/parallax2.jpg'
+      }, 
+      {
+        id: 3,
         nombre: 'Puesto 3',
         descripcion_vacante:
           'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.',
         numero_postulantes: 11,
         tiempo_caducidad: 'hace 8 día',
         tipo_empleo: 'Tiempo Completo',
-        imagen_referencia:'https://cdn.quasar.dev/img/parallax2.jpg'
+        imagen_referencia: 'https://cdn.quasar.dev/img/parallax2.jpg'
+      },
+      {
+        id: 4,
+        nombre: 'Puesto 4',
+        descripcion_vacante:
+          'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.',
+        numero_postulantes: 11,
+        tiempo_caducidad: 'hace 8 día',
+        tipo_empleo: 'Tiempo Completo',
+        imagen_referencia: 'https://cdn.quasar.dev/img/parallax2.jpg'
+      },
+      {
+        id: 5,
+        nombre: 'Puesto 5',
+        descripcion_vacante:
+          'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.',
+        numero_postulantes: 11,
+        tiempo_caducidad: 'hace 8 día',
+        tipo_empleo: 'Tiempo Completo',
+        imagen_referencia: 'https://cdn.quasar.dev/img/parallax2.jpg'
+      },
+      {
+        id: 6,
+        nombre: 'Puesto 6',
+        descripcion_vacante:
+          'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.',
+        numero_postulantes: 11,
+        tiempo_caducidad: 'hace 8 día',
+        tipo_empleo: 'Tiempo Completo',
+        imagen_referencia: 'https://cdn.quasar.dev/img/parallax2.jpg'
       },
     ]
     //Reglas de validacion

@@ -18,7 +18,12 @@
       <div
         class="col-12 col-md-4 column items-center bg-body-table justify-center window-height"
       >
-        <q-avatar v-if="$q.screen.xs" square size="120px" class="q-mx-auto block q-mb-md">
+        <q-avatar
+          v-if="$q.screen.xs"
+          square
+          size="120px"
+          class="q-mx-auto block q-mb-md"
+        >
           <img :src="!$q.dark.isActive ? logoClaro : logoOscuro" />
         </q-avatar>
 
@@ -27,7 +32,10 @@
             <h2 class="text-bold">Registro de Postulante</h2>
           </div>
           <div class="q-mb-sm">
-            <p>Que bueno volverte a ver otra vez.</p>
+            <p>
+              Que bueno volverte a ver otra vez. Anímate a ser parte de nuestro
+              equipo
+            </p>
           </div>
           <!-- Nombres -->
           <div class="col-12 q-mb-sm">
@@ -35,8 +43,8 @@
             <q-input
               v-model="postulante.nombres"
               placeholder="Obligatorio"
-              :readonly="disabled"
               :error="!!v$.nombres.$errors.length"
+              @blur="v$.nombres.$touch"
               outlined
               dense
             >
@@ -54,8 +62,8 @@
             <q-input
               v-model="postulante.apellidos"
               placeholder="Obligatorio"
-              :readonly="disabled"
               :error="!!v$.apellidos.$errors.length"
+              @blur="v$.apellidos.$touch"
               outlined
               dense
             >
@@ -76,7 +84,6 @@
               :options="tipos_documentos_identificaciones"
               transition-show="jump-up"
               transition-hide="jump-down"
-              :disable="disabled"
               options-dense
               dense
               outlined
@@ -100,7 +107,9 @@
 
               <template v-slot:no-option>
                 <q-item>
-                  <q-item-section class="text-grey"> No hay resultados </q-item-section>
+                  <q-item-section class="text-grey">
+                    No hay resultados
+                  </q-item-section>
                 </q-item>
               </template>
             </q-select>
@@ -112,8 +121,8 @@
             <q-input
               v-model="postulante.numero_documento_identificacion"
               placeholder="Obligatorio"
-              :readonly="disabled"
               :error="!!v$.numero_documento_identificacion.$errors.length"
+              @blur="v$.numero_documento_identificacion.$touch"
               outlined
               dense
             >
@@ -135,8 +144,8 @@
               v-model="postulante.telefono"
               type="tel"
               placeholder="Obligatorio"
-              :readonly="disabled"
               :error="!!v$.telefono.$errors.length"
+              @blur="v$.telefono.$touch"
               outlined
               dense
             >
@@ -155,8 +164,8 @@
               v-model="postulante.email"
               type="email"
               placeholder="Obligatorio"
-              :readonly="disabled"
               :error="!!v$.email.$errors.length"
+              @blur="v$.email.$touch"
               outlined
               dense
             >
@@ -176,7 +185,8 @@
               v-model="postulante.password"
               outlined
               dense
-              :error="!!v$.email.$errors.length"
+              @blur="v$.password.$touch"
+              :error="!!v$.password.$errors.length"
               :type="isPwd ? 'password' : 'text'"
               hint="No comparta su contraseña con nadie"
             >
@@ -188,7 +198,7 @@
                 />
               </template>
               <template v-slot:error>
-                <div v-for="error of v$.email.$errors" :key="error.$uid">
+                <div v-for="error of v$.password.$errors" :key="error.$uid">
                   <div class="error-msg">{{ error.$message }}</div>
                 </div>
               </template>
