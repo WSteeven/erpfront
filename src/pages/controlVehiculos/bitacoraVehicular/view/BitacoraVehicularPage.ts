@@ -95,7 +95,7 @@ export default defineComponent({
             if (accion.value == acciones.editar) {
                 cargando.activar()
                 await obtenerListados({
-                    tareas: { controller: new TareaController(), params: { campos: 'id,codigo_tarea,titulo' } },
+                    tareas: { controller: new TareaController(), params: { formulario: true, campos: 'id,codigo_tarea,titulo' } },
                     tickets: {
                         controller: new TicketController(),
                         params: {
@@ -302,7 +302,7 @@ export default defineComponent({
                 bitacora.actividadesRealizadas.unshift(fila)
                 // emit('actualizar', bitacora.actividadesRealizadas)
             },
-            visible: () => accion.value ==acciones.editar
+            visible: () => accion.value == acciones.editar
         }
         const btnEliminar: CustomActionTable = {
             titulo: 'Eliminar',

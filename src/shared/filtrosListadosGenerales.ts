@@ -55,8 +55,8 @@ export const useFiltrosListadosSelects = (listadosAuxiliares, entidad?: Ref<any>
   const laboratoriosClinicos = ref(listadosAuxiliares.laboratoriosClinicos)
   const enfermedades = ref(listadosAuxiliares.enfermedades)
   const tiposVacunas = ref(listadosAuxiliares.tiposVacunas)
-  const tiposEvaluacionesMedicasRetiros = ref(listadosAuxiliares.tiposEvaluacionesMedicasRetiros)
-  const tiposAptitudesMedicasLaborales = ref(listadosAuxiliares.tiposAptitudesMedicasLaborales)
+  // const tiposEvaluacionesMedicasRetiros = ref(listadosAuxiliares.tiposEvaluacionesMedicasRetiros)
+  // const tiposAptitudesMedicasLaborales = ref(listadosAuxiliares.tiposAptitudesMedicasLaborales)
 
   //////////////////////////////////////////
   //modulo ventas

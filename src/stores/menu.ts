@@ -847,6 +847,12 @@ export const useMenuStore = defineStore('menu', () => {
           can: store.can('puede.acceder.tipos_vehiculos'),
         },
         {
+          title: 'Garajes',
+          link: 'garajes',
+          icon: 'bi-circle',
+          can: store.can('puede.acceder.garajes'),
+        },
+        {
           title: 'Combustibles',
           link: 'combustibles',
           icon: 'bi-circle',
