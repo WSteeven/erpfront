@@ -31,7 +31,7 @@
           </div>
           <!-- Descripcion cuando hay calco -->
           <div class="col-12 col-md-8" v-if="detalle.calco">
-            <label class="q-mb-sm block">Tipo</label>
+            <label class="q-mb-sm block">Descripcion</label>
             <q-select v-model="descripcion" :options="listadoBackup" options-dense dense outlined use-input
               input-debounce="0" @filter="filtroDetalles" @update:model-value="actualizarDetalle"
               :option-label="(item) => item.descripcion" :option-value="(item) => item.id" emit-value map-options>
@@ -41,14 +41,14 @@
                     <q-item-label>{{ scope.opt.descripcion }}</q-item-label>
                     <q-item-label caption>{{
                       scope.opt.serial ? "Serie: " + scope.opt.serial : scope.opt.serial
-                    }}</q-item-label>
+                      }}</q-item-label>
                   </q-item-section>
                 </q-item>
               </template></q-select>
           </div>
           <!-- Descripcion -->
           <div class="col-12 col-md-8" v-if="!detalle.calco">
-            <label class="q-mb-sm block">Tipo</label>
+            <label class="q-mb-sm block">Descripcion</label>
             <q-input v-model="detalle.descripcion" placeholder="Obligatorio" :readonly="disabled"
               :error="!!v$.descripcion.$errors.length" outlined dense>
               <template v-slot:error>
@@ -142,6 +142,15 @@
               </template>
             </q-select>
           </div>
+
+          <!-- Es un Activo -->
+          <div class="col-12 col-md-3 col-sm-3">
+            <label class="q-mb-sm block">¿Es un Activo?</label>
+            <q-toggle :label="detalle.esActivo ? 'SI' : 'NO'"
+              v-model="detalle.esActivo" color="primary" keep-color icon="bi-check2-circle"
+              unchecked-icon="clear" :disable="disabled" />
+          </div>
+
           <!-- Tiene serial -->
           <div class="col-12 col-md-4">
             <br />
@@ -198,7 +207,8 @@
           <!-- Calibre -->
           <div v-if="detalle.tiene_adicionales" class="col-12 col-md-4">
             <label class="q-mb-sm block">Calibre</label>
-            <q-input v-model="detalle.calibre" placeholder="Opcional" :readonly="disabled" outlined dense suffix="mm"></q-input>
+            <q-input v-model="detalle.calibre" placeholder="Opcional" :readonly="disabled" outlined dense
+              suffix="mm"></q-input>
           </div>
           <!-- Peso -->
           <div v-if="detalle.tiene_adicionales" class="col-12 col-md-4">

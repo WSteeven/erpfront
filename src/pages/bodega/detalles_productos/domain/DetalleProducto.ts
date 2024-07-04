@@ -46,6 +46,7 @@ export class DetalleProducto extends EntidadAuditable {
     activo: boolean
 
     //variables auxiliares
+    esActivo: boolean | null
     tiene_serial: boolean
     tiene_lote: boolean
     es_computadora: boolean
@@ -99,6 +100,7 @@ export class DetalleProducto extends EntidadAuditable {
 
         this.adicionales = null
         this.es_computadora = false
+        this.esActivo= false
         this.es_fibra = false
         this.tiene_serial = false
         this.tiene_lote = false
