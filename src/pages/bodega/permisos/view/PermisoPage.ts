@@ -17,10 +17,17 @@ import { maskFecha } from 'config/utils'
 
 export default defineComponent({
   components: { TabLayout, SelectorImagen },
-  setup() {
+  setup(props, { emit }) {
     const mixin = new ContenedorSimpleMixin(Permiso, new PermisoController())
     const { entidad: permiso, disabled } = mixin.useReferencias()
     const { setValidador } = mixin.useComportamiento()
+    const { onGuardado } = mixin.useHooks()
+
+
+    onGuardado((id, response) => {
+      emit('cerrar-modal', false)
+      emit('guardado', { formulario: 'PermisoArmaPage', id: id, modelo: response.modelo })
+    })
 
     //Reglas de validacion
     const reglas = {

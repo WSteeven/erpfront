@@ -7,6 +7,7 @@ import { defineComponent, ref, watch } from 'vue'
 
 //Componentes
 import TabLayout from 'shared/contenedor/modules/simple/view/TabLayout.vue'
+import LabelAbrirModal from 'components/modales/modules/LabelAbrirModal.vue'
 import EssentialTable from 'components/tables/view/EssentialTable.vue'
 
 //Logica y controladores
@@ -32,9 +33,14 @@ import { ValidarListadoSeriales } from '../application/validaciones/ValidarLista
 import { encontrarUltimoIdListado } from 'shared/utils'
 import { useDetalleStore } from 'stores/detalle'
 import { useAuthenticationStore } from 'stores/authentication'
+import { StatusEssentialLoading } from 'components/loading/application/StatusEssentialLoading'
+import { PermisoController } from 'pages/bodega/permisos/infraestructure/PermisoConstroller'
+import ModalEntidad from 'components/modales/view/ModalEntidad.vue'
+import { ComportamientoModalesDetalleProducto } from '../application/ComportamientoModalesDetallesProductos'
+import { acciones } from 'config/utils'
 
 export default defineComponent({
-  components: { TabLayout, EssentialTable },
+  components: { TabLayout, EssentialTable, LabelAbrirModal, ModalEntidad },
   setup() {
     const mixin = new ContenedorSimpleMixin(DetalleProducto, new DetalleProductoController())
     const { entidad: detalle, disabled, accion, listadosAuxiliares, listado } = mixin.useReferencias()
@@ -45,11 +51,13 @@ export default defineComponent({
     //stores
     const detalleStore = useDetalleStore()
     const store = useAuthenticationStore()
+    const cargando = new StatusEssentialLoading()
 
     //variable aux
     const descripcion = ref()
     const refSeriesModalEditable = ref()
 
+    const modales = new ComportamientoModalesDetalleProducto()
     //listas
     const opciones_productos = ref([])
     const opciones_marcas = ref([])
@@ -59,8 +67,17 @@ export default defineComponent({
     const opciones_hilos = ref([])
     const opciones_rams = ref([])
     const opciones_discos = ref([])
+    const permisos = ref()
     const opciones_procesadores = ref([])
     const listadoBackup = ref<any[]>([])
+    const datos_adicionales = {
+      dimensiones: false,
+      peso: false,
+      tamanio: false,
+      caducidad: false,
+      permiso_id: false,
+      calibre: false,
+    }
 
     //Obtener los listados
     cargarVista(async () => {
@@ -133,6 +150,9 @@ export default defineComponent({
       procesador: { requiredIfInformatica: requiredIf(function () { return detalle.categoria == 'INFORMATICA' ? true : false }) },
       ram: { requiredIfInformatica: requiredIf(function () { return detalle.categoria == 'INFORMATICA' ? true : false }) },
       disco: { requiredIfInformatica: requiredIf(function () { return detalle.categoria == 'INFORMATICA' ? true : false }) },
+
+      // para jpcustody
+      permiso_id: { requiredIf: requiredIf(() => categoria_var.value === 'ARMAS DE FUEGO') }
     }
 
     function limpiarCamposInformatica() {
@@ -201,12 +221,31 @@ export default defineComponent({
       listadoBackup.value = listado.value
       limpiarCamposInformatica()
       limpiarCamposAdicionales()
-      if (detalle.categoria === 'EPP') {
-        detalle.tiene_adicionales = true
+      switch (categoria_var.value) {
+        case 'EPP':
+          detalle.tiene_adicionales = true
+          break
+        case 'ARMAS DE FUEGO':
+          detalle.tiene_adicionales = true
+          obtenerPermisosArmas()
+          datos_adicionales.permiso_id = true
+          break
       }
-
     })
 
+    async function obtenerPermisosArmas() {
+      cargando.activar()
+      const response = await new PermisoController().listar()
+      listadosAuxiliares.permisos = response.result
+      permisos.value = response.result
+      cargando.desactivar()
+    }
+    async function guardado(data) {
+      if (data.formulario === 'PermisoArmaPage') {
+        listadosAuxiliares.permisos.push(data.modelo)
+        // permisos.value.push(data.modelo)
+      }
+    }
 
     async function cargarDetalle(id) {
       const { result } = await new DetalleProductoController().consultar(id)
@@ -313,7 +352,7 @@ export default defineComponent({
       }, visible: ({ entidad }) => !entidad.activo && store.can('puede.activar.detalles')
     }
     return {
-      mixin, detalle, disabled, accion, v$, listado, listadoBackup,
+      mixin, detalle, disabled, accion, v$, listado, listadoBackup, acciones,
       configuracionColumnas: configuracionColumnasDetallesProductos,
       //listados
       opciones_hilos,
@@ -326,6 +365,8 @@ export default defineComponent({
       opciones_procesadores,
       opciones_rams,
       opciones_tipos,
+      permisos,
+      datos_adicionales,
       useVuelidate,
 
       //variables auxiliares
@@ -440,7 +481,7 @@ export default defineComponent({
 
       actualizarCategoria(val) {
         const producto = listadosAuxiliares.productos.filter((v) => v.id === val)
-        // console.log(producto[0])
+        console.log(producto[0])
         categoria_var.value = producto[0]['categoria']
         detalle.categoria = producto[0]['categoria']
         if (detalle.calco) {
@@ -484,6 +525,9 @@ export default defineComponent({
 
       botonDesactivarDetalle,
       botonActivarDetalle,
+      //modales
+      modales,
+      guardado,
     }
   }
 })
