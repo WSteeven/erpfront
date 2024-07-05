@@ -122,7 +122,7 @@
             </q-input>
           </div>
 
-          <!-- Foto de perfil -->
+          <!-- Foto de permiso -->
           <div class="col-12 col-md-6 col-sm-6">
             <label for="q-mb-sm block">Imagen del Permiso</label>
             <selector-imagen
