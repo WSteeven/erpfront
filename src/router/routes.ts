@@ -531,7 +531,17 @@ const routes: RouteRecordRaw[] = [
         meta: { requiresAuth: false },
       },
 
-      //Routes for Recursos Humanos
+      /************************************************************************************
+       * Routes for Recursos Humanos module
+       ************************************************************************************/
+      {
+        path: '/solicitudes-puestos',
+        name:'solicitudes_puestos',
+        component: () =>
+          import(
+            'pages/recursosHumanos/seleccion_contratacion_personal/puesto-disponible/view/PuestoDisponiblePage.vue'
+          ),
+      },
       {
         path: '/cargos',
         name: 'cargos',
@@ -1375,6 +1385,11 @@ const routes: RouteRecordRaw[] = [
       },
     ],
   },
+  /************************************************************************************************
+   * MODULO DE SELECCION Y CONTRATACION PERSONAL
+   * Aquí se lista todo lo referente a este modulo y la parte del login del postulantes para el personal externo.
+   * 
+   ***********************************************************************************************/
   {
     path: '/login-postulante',
     component: () => import('layouts/FullLayout.vue'),

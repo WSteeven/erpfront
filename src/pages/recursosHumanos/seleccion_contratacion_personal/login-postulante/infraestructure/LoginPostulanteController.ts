@@ -13,11 +13,8 @@ export class LoginPostulanteController {
     try {
       const usuario = await this.store.login(userLogin)
       const roles = usuario.roles
-      if (roles?.includes(rolesSistema.tecnico_lider)) {
-        this.Router.replace({ name: 'trabajo_agendado' })
-      } else {
-        this.Router.replace('/')
-      }
+      
+      this.Router.replace({ name: 'puestos_disponibles' })
 
       return usuario
     } catch (error: unknown) {

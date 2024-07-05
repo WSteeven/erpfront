@@ -11,7 +11,7 @@ export class ApiError extends Error {
     super()
     this.mensaje = error.response?.data.mensaje
     this.erroresValidacion = this.obtenerMensajesError(error)
-    this.headers = this.obtenerHeders(error)
+    this.headers = this.obtenerHeaders(error)
     this.status = error.response?.status
   }
 
@@ -23,12 +23,12 @@ export class ApiError extends Error {
     }
     return mensajes
   }
-  private obtenerHeders(error: AxiosError) {
+  private obtenerHeaders(error: AxiosError) {
     let headers = null
-    console.log('tine errores:',error);
+    console.log('tiene errores:',error);
 
     if (error.response?.data.errors) {
-      console.log('tine errores:');
+      console.log('tiene errores:');
 
       headers =  error.response.headers
     }
