@@ -1,6 +1,5 @@
 // Dependencias
-import { configuracionColumnasSolicitudPuestoEmpleo } from '../domain/configuracionColumnasSolicitudPuestoEmpleo'
-import { required,requiredIf } from 'shared/i18n-validators'
+import { required, requiredIf } from 'shared/i18n-validators'
 import { useVuelidate } from '@vuelidate/core'
 import { defineComponent, ref } from 'vue'
 
@@ -12,39 +11,25 @@ import { useFiltrosListadosSelects } from 'shared/filtrosListadosGenerales'
 
 //Logica y controladores
 import { ContenedorSimpleMixin } from 'shared/contenedor/modules/simple/application/ContenedorSimpleMixin'
-import { SolicitudPuestoEmpleoController } from '../infraestructure/SolicitudPuestoEmpleoController'
-import { SolicitudPuestoEmpleo } from '../domain/SolicitudPuestoEmpleo'
 import { encontrarUltimoIdListado, removeAccents } from 'shared/utils'
 import { acciones, accionesTabla } from 'config/utils'
-import { TipoPuestoTrabajoController } from '../../tipo-puesto-trabajo/infraestructure/TipoPuestoTrabajoController'
 import { AutorizacionController } from 'pages/administracion/autorizaciones/infraestructure/AutorizacionController'
 import EssentialTable from 'components/tables/view/EssentialTable.vue'
-import { configuracionColumnasConocimientoReactive } from '../domain/configuracionColumnasConocimientoReactive'
-import { configuracionColumnasFormacionAcademicaReactive } from '../domain/configuracionColumnasFormacionAcademicaReactive'
 import { tipo_puesto } from 'config/recursosHumanos.utils'
 import { CargoController } from 'pages/recursosHumanos/cargos/infraestructure/CargoController'
 import { useAuthenticationStore } from 'stores/authentication'
-import { Conocimiento } from '../domain/Conocimiento'
 import { CustomActionTable } from 'components/tables/domain/CustomActionTable'
 import { useNotificaciones } from 'shared/notificaciones'
-import { FormacionAcademica } from '../domain/FormacionAcademica'
+import { SolicitudPuestoEmpleo } from '../domain/SolicitudPuestoEmpleo'
+import { SolicitudPuestoEmpleoController } from '../infraestructure/SolicitudPuestoEmpleoController'
+import { TipoPuestoTrabajoController } from 'pages/recursosHumanos/seleccion_contratacion_personal/tipo-puesto-trabajo/infraestructure/TipoPuestoTrabajoController'
 
 export default defineComponent({
   components: { TabLayout, EssentialEditor, EssentialTable, GestorArchivos },
   setup() {
-    const mixin = new ContenedorSimpleMixin(
-      SolicitudPuestoEmpleo,
-      new SolicitudPuestoEmpleoController()
-    )
-    const {
-      entidad: solicitudPuestoEmpleo,
-      accion,
-      disabled,
-      listadosAuxiliares,
-    } = mixin.useReferencias()
-
-    const { setValidador, obtenerListados, cargarVista } =
-      mixin.useComportamiento()
+    const mixin = new ContenedorSimpleMixin(SolicitudPuestoEmpleo, new SolicitudPuestoEmpleoController())
+    const { entidad: solicitud, accion, disabled, listadosAuxiliares } = mixin.useReferencias()
+    const { setValidador, obtenerListados, cargarVista } = mixin.useComportamiento()
     const { onReestablecer, onGuardado, onConsultado } = mixin.useHooks()
     const { confirmar } = useNotificaciones()
 
@@ -56,23 +41,23 @@ export default defineComponent({
     const reglas = {
       nombre: {
         requiredIfNombre: requiredIf(
-          () => solicitudPuestoEmpleo.tipo_puesto == tipo_puesto.nuevo
+          () => solicitud.tipo_puesto == tipo_puesto.nuevo
         ),
       },
       tipo_puesto: { required },
-      autorizacion: { requiredIfAutorizacion:requiredIf(()=> authenticationStore.esGerente ) },
+      autorizacion: { requiredIfAutorizacion: requiredIf(() => authenticationStore.esGerente) },
       descripcion: { required },
       anos_experiencia: { required },
       conocimientos: { required },
       formaciones_academicas: { required },
       puesto: {
         requiredIfpuesto: requiredIf(
-          () => solicitudPuestoEmpleo.tipo_puesto !== tipo_puesto.nuevo
+          () => solicitud.tipo_puesto !== tipo_puesto.nuevo
         ),
       },
     }
 
-    const v$ = useVuelidate(reglas, solicitudPuestoEmpleo)
+    const v$ = useVuelidate(reglas, solicitud)
     const tipos_puestos_trabajo = ref([])
     const autorizaciones = ref([])
     const { cargos, filtrarCargos } =
@@ -114,36 +99,36 @@ export default defineComponent({
     })
 
     function cambiarTipoPuesto() {
-      solicitudPuestoEmpleo.puesto = null
+      solicitud.puesto = null
     }
 
-    const  btnEliminarPuestoEmpleo: CustomActionTable<Conocimiento>  = {
+    const btnEliminarPuestoEmpleo: CustomActionTable<Conocimiento> = {
       titulo: '',
       icono: 'bi-x',
       color: 'negative',
       visible: () => authenticationStore.can('puede.eliminar.conocimientos'),
-      accion: ({ posicion }) => confirmar('¿Está seguro de continuar?', () => solicitudPuestoEmpleo.conocimientos?.splice(posicion, 1))
+      accion: ({ posicion }) => confirmar('¿Está seguro de continuar?', () => solicitud.conocimientos?.splice(posicion, 1))
     }
-    const btnEliminarFormacionAcademica: CustomActionTable<FormacionAcademica>  = {
+    const btnEliminarFormacionAcademica: CustomActionTable<FormacionAcademica> = {
       titulo: '',
       icono: 'bi-x',
       color: 'negative',
       visible: () => authenticationStore.can('puede.eliminar.formaciones_academicas'),
-      accion: ({ posicion }) => confirmar('¿Está seguro de continuar?', () => solicitudPuestoEmpleo.formaciones_academicas?.splice(posicion, 1))
+      accion: ({ posicion }) => confirmar('¿Está seguro de continuar?', () => solicitud.formaciones_academicas?.splice(posicion, 1))
     }
     function agregarConocimiento() {
       const fila = new Conocimiento()
-      fila.id = solicitudPuestoEmpleo.conocimientos?.length
-        ? encontrarUltimoIdListado(solicitudPuestoEmpleo.conocimientos) + 1
+      fila.id = solicitud.conocimientos?.length
+        ? encontrarUltimoIdListado(solicitud.conocimientos) + 1
         : 1
-      solicitudPuestoEmpleo.conocimientos?.push(fila)
+      solicitud.conocimientos?.push(fila)
     }
     function agregarFormacionAcademica() {
       const fila = new FormacionAcademica()
-      fila.id = solicitudPuestoEmpleo.formaciones_academicas?.length
-        ? encontrarUltimoIdListado(solicitudPuestoEmpleo.formaciones_academicas) + 1
+      fila.id = solicitud.formaciones_academicas?.length
+        ? encontrarUltimoIdListado(solicitud.formaciones_academicas) + 1
         : 1
-      solicitudPuestoEmpleo.formaciones_academicas?.push(fila)
+      solicitud.formaciones_academicas?.push(fila)
     }
     return {
       removeAccents,
@@ -151,7 +136,7 @@ export default defineComponent({
       btnEliminarFormacionAcademica,
       agregarConocimiento,
       agregarFormacionAcademica,
-      solicitudPuestoEmpleo,
+      solicitud,
       mixin,
       disabled,
       accion,

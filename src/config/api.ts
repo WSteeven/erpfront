@@ -2,6 +2,7 @@ import { Endpoint } from 'shared/http/domain/Endpoint'
 import { medico } from './endpoints/medico'
 import { tareas } from './endpoints/tareas'
 import { tickets } from './endpoints/tickets'
+import { recursosHumanos } from './endpoints/rrhh/recursosHumanos'
 
 export const apiConfig = {
   // URL_BASE: 'http://localhost:8000',
@@ -54,6 +55,7 @@ export const endpoints = {
   /********************
   * Modulo de  RR HH
   *********************/
+  ...recursosHumanos,
   cargos: new Endpoint('cargos'),
 
   motivo_permiso_empleado: new Endpoint(
@@ -83,7 +85,7 @@ export const endpoints = {
   banco: new Endpoint('recursos-humanos/banco'),
   datos_empleado: new Endpoint('recursos-humanos/datos_empleado/'),
   activos_fijos: new Endpoint('activos-fijos'),
-  empleados: new Endpoint('empleados'),
+
   departamentos: new Endpoint('recursos-humanos/departamentos'),
   allroles: new Endpoint('roles'),
   concepto_ingreso: new Endpoint('recursos-humanos/concepto_ingreso'),
@@ -195,7 +197,7 @@ export const endpoints = {
   /********************
   * Modulo de  Seleccion y contratacion
   *********************/
-  solicitud_puesto_empleo: new Endpoint('recursos-humanos/solicitud-puesto-empleo'),
+  
   publicacion_puesto_empleo: new Endpoint('recursos-humanos/publicacion-puesto-empleo'),
   tipos_puestos_trabajos: new Endpoint('recursos-humanos/tipos_puestos_trabajos'),
   postulantes: new Endpoint('recursos-humanos/postulantes'),

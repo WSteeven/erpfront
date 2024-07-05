@@ -321,14 +321,7 @@ const routes: RouteRecordRaw[] = [
       /************************************************************************************
        * Routes for Recursos Humanos module
        ************************************************************************************/
-      {
-        path: '/solicitudes-puestos',
-        name:'solicitudes_puestos',
-        component: () =>
-          import(
-            'pages/recursosHumanos/seleccion_contratacion_personal/puesto-disponible/view/PuestoDisponiblePage.vue'
-          ),
-      },
+      // aqui va las rutasSeleccionContratacionPersonal
       {
         path: '/cargos',
         name: 'cargos',
