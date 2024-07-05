@@ -2,6 +2,7 @@ import { RouteRecordRaw } from 'vue-router'
 import rutasMedico from './rutasMedico'
 import rutasTareas from './rutasTareas'
 import rutasTickets from './rutasTickets'
+import rutasSeleccionContratacionPersonal from './rrhh/rutasSeleccionContratacionPersonal'
 
 const routes: RouteRecordRaw[] = [
   {
@@ -35,6 +36,11 @@ const routes: RouteRecordRaw[] = [
           import('pages/bodega/pedidos/view/imagenComprimida.vue'),
         meta: { requiresAuth: false },
       },
+      /*******************
+       * Módulo de RRHH
+       *******************/
+      ...rutasSeleccionContratacionPersonal,
+
       /*******************
        * Módulo de tareas
        *******************/

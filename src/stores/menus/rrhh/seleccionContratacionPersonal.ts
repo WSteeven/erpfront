@@ -6,9 +6,9 @@ const seleccionContratacionPersonal: Ref<MenuOption[]> = computed(() => {
     const store = useAuthenticationStore()
     return [
         {
-            title: 'Selección de Personal',
-            icon: 'bi-person-bounding-box',
-            can: true,
+            title: 'Seleccion y Contratacion',
+            icon: 'bi-person-lines-fill',
+            can: store.can('puede.ver.modulo.seleccion_contratacion'),
             children: [
                 {
                     title: 'Solicitud de Personal',
@@ -16,11 +16,21 @@ const seleccionContratacionPersonal: Ref<MenuOption[]> = computed(() => {
                     icon: 'bi-file-text',
                     can: store.can('puede.acceder.solicitudes_puestos'),
                 },
-                
-            ],
+                {
+                    title: 'Solicitud de Puesto de Empleo',
+                    link: 'solicitud-puesto-empleo',
+                    icon: 'bi-app',
+                    can: store.can('puede.acceder.solicitud_puesto_empleo'),
+                },
+                {
+                    title: 'Publicacion de Puesto de Empleo',
+                    link: 'publicacion-puesto-empleo',
+                    icon: 'bi-app',
+                    can: store.can('puede.acceder.publicacion_puesto_empleo'),
+                },
+            ]
         },
-
     ]
-}) 
+})
 
 export default seleccionContratacionPersonal

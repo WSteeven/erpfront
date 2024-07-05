@@ -56,22 +56,21 @@
 
             <!-- Descripcion -->
             <div class="col-12">
-              <div class="row justify-between">
-                <label class="q-mb-sm block">Descripción</label>
-                <b class="text-italic">*No enviar imágenes demasiado grandes</b>
-              </div>
               <essential-editor
-                v-model="ticket.descripcion"
+                :value="ticket.descripcion"
                 :disable="disabled"
+                :v="v$"
+                v_error_key="descripcion"
+                :error="!!v$.descripcion.$errors.length"
               >
               </essential-editor>
-              <div
+              <!-- <div
                 v-for="error of v$.descripcion.$errors"
                 :key="error.$uid"
                 class="text-negative text-uppercase"
               >
                 <small>{{ error.$message }}</small>
-              </div>
+              </div> -->
               <!-- <q-input
                 v-model="ticket.descripcion"
                 placeholder="Obligatorio"

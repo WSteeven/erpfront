@@ -23,6 +23,11 @@ import { useNotificaciones } from 'shared/notificaciones'
 import { SolicitudPuestoEmpleo } from '../domain/SolicitudPuestoEmpleo'
 import { SolicitudPuestoEmpleoController } from '../infraestructure/SolicitudPuestoEmpleoController'
 import { TipoPuestoTrabajoController } from 'pages/recursosHumanos/seleccion_contratacion_personal/tipo-puesto-trabajo/infraestructure/TipoPuestoTrabajoController'
+import { Conocimiento } from '../domain/Conocimiento'
+import { FormacionAcademica } from '../domain/FormacionAcademica'
+import { configuracionColumnasSolicitudPuestoEmpleo } from '../domain/configuracionColumnasSolicitudPuestoEmpleo'
+import { configuracionColumnasConocimientoReactive } from '../domain/configuracionColumnasConocimientoReactive'
+import { configuracionColumnasFormacionAcademicaReactive } from '../domain/configuracionColumnasFormacionAcademicaReactive'
 
 export default defineComponent({
   components: { TabLayout, EssentialEditor, EssentialTable, GestorArchivos },
@@ -39,22 +44,14 @@ export default defineComponent({
 
     //Reglas de validacion
     const reglas = {
-      nombre: {
-        requiredIfNombre: requiredIf(
-          () => solicitud.tipo_puesto == tipo_puesto.nuevo
-        ),
-      },
+      nombre: { requiredIfNombre: requiredIf(() => solicitud.tipo_puesto == tipo_puesto.nuevo), },
       tipo_puesto: { required },
       autorizacion: { requiredIfAutorizacion: requiredIf(() => authenticationStore.esGerente) },
       descripcion: { required },
-      anos_experiencia: { required },
+      anios_experiencia: { required },
       conocimientos: { required },
       formaciones_academicas: { required },
-      puesto: {
-        requiredIfpuesto: requiredIf(
-          () => solicitud.tipo_puesto !== tipo_puesto.nuevo
-        ),
-      },
+      puesto: { requiredIfpuesto: requiredIf(() => solicitud.tipo_puesto !== tipo_puesto.nuevo), },
     }
 
     const v$ = useVuelidate(reglas, solicitud)
