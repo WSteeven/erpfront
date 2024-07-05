@@ -31,7 +31,12 @@ const routes: RouteRecordRaw[] = [
         component: () => import('pages/intranet/noticias/view/NoticiasIntranet.vue'),
         meta: { requiresAuth: false },
       },
-
+      {
+        path: '/eventos',
+        name: 'eventos',
+        component: () => import('pages/intranet/eventos/view/EventoPage.vue'),
+        meta: { requiresAuth: false },
+      },
       {
         path: '/tablero',
         name: 'tablero_personal',

@@ -21,8 +21,6 @@ export default defineComponent({
       Evento, new EventoController(),
     )
 
-
-
     const {
       entidad: evento,
       disabled,

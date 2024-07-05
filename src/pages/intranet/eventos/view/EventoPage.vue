@@ -29,8 +29,6 @@
                   <label class="q-mb-sm block">Descripción</label>
                   <q-input v-model="evento.descripcion" label="Descripción" dense outlined textarea />
                 </div>
-
-                
               </div>
               <div class="col-8">
                   <q-btn type="submit" color="primary" label="Agregar Evento" />

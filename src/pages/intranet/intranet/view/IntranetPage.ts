@@ -1,7 +1,7 @@
 // Dependencias
 import { useAuthenticationStore } from 'stores/authentication'
 import loginJson from 'src/assets/lottie/welcome.json'
-import { Ref, computed, defineComponent, onMounted, reactive, ref } from 'vue'
+import { Ref, computed, defineComponent, reactive, ref } from 'vue'
 
 import { QCarousel, QCarouselSlide, QCard, QImg, QCardSection } from 'quasar'
 
@@ -28,6 +28,7 @@ import { useRouter } from 'vue-router'
 import { useMenuStore } from 'stores/menu'
 import { obtenerFechaActual } from '../../../../shared/utils'
 import { MenuOption } from 'shared/menu/MenuOption'
+
 
 
 interface News {
@@ -122,7 +123,7 @@ export default defineComponent({
         image: 'https://www.jeanpazmino.com/images/services/service5.jpg',
         title: 'Nuevas capacitaciones en instalación de fibra óptica',
         description: 'Descubre cómo mejorar tus habilidades en la instalación de fibra óptica con nuestros nuevos cursos especializados.',
-        link: 'link-to-full-news1'
+        link: '../noticiaView.vue'
       },
       {
         image: 'https://www.jeanpazmino.com/images/services/service2.jpg',
@@ -144,28 +145,22 @@ export default defineComponent({
       }
     ]);
 
-
     const socialNetworks = ref([
       { id: 1, name: 'Instructivos', icon: 'fab fa-readme', link: 'https://drive.google.com/drive/folders/1Zv3eTjramxByFRht-L5Gz_nrulgFE32V?usp=sharing_eip_m&ts=64386770' },
       { id: 2, name: 'Reglamentos y Normativas', icon: 'fas fa-book', link: 'https://drive.google.com/drive/folders/1Zv3eTjramxByFRht-L5Gz_nrulgFE32V?usp=sharing_eip_m&ts=64386770' },
       // Agrega más redes sociales según sea necesario
     ])
 
-
-
-
     const readMore = (link: string) => {
       window.open(link, '_blank');
     };
-
-
 
     const currentPage = ref(1) // Current page number (starts at 1)
     const perPage = ref(2) // Number of cards per page
     const displayedCards = computed(() => {
       const start = (currentPage.value - 1) * perPage.value
       const end = start + perPage.value
-      return data.value.slice(start, end)
+      return newsList.value.slice(start, end)
     })
 
     function obtenerModulosPermitidos() {
@@ -194,6 +189,7 @@ export default defineComponent({
       Router.replace({ name: 'Login' })
       cargando.desactivar()
     }
+
     async function consultarEmpleadosDepartamento(departamento_id: number) {
       console.log(store)
       try {
@@ -222,14 +218,11 @@ export default defineComponent({
 
     consultarDepartamentos()
 
-    function openWhatsApp(numero) {
-      window.location.href = `https://wa.me/${numero}`
-    }
 
     /**
      * Funcion para probar componente de fecha enviando al backend
      */
-    const { confirmar } = useNotificaciones()
+    useNotificaciones()
 
     function verEvento(date) {
       const result = eventos.filter((evento) => evento === date)
@@ -275,7 +268,6 @@ export default defineComponent({
       tiposSolicitudes,
       solicitud,
       lorem,
-
       currentPage,
       perPage,
       displayedCards,

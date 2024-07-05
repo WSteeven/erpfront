@@ -36,9 +36,10 @@ export default defineComponent({
   components: {
     EssentialLink,
     EssentialLoading,
-    FooterComponent,
+
     ModalesEntidad,
     ScrollToTopButton,
+    FooterComponent,
   },
 
   setup() {
@@ -59,7 +60,7 @@ export default defineComponent({
      * Init
      *******/
     if (authenticationStore.esTecnico) movilizacionSubtareaStore.getSubtareaDestino(authenticationStore.user.id)
-    
+
     /***************************
      * Permitir Notificaciones push
      ***************************/
@@ -75,7 +76,7 @@ export default defineComponent({
 
     dayjs.extend(relativeTime)
     dayjs.locale(es)
-    
+
 
 
     /************

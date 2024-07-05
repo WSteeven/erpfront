@@ -126,6 +126,7 @@ export const tabOptionsVacaciones: TabOption[] = [
   { label: 'Aprobados', value: '2' },
   { label: 'Cancelados', value: '3' },
 ]
+
 export const tabOptionsPermiso: TabOption[] = [
   { label: 'Pendiente', value: '1' },
   { label: 'Aprobados', value: '2' },
@@ -350,16 +351,16 @@ export const tipos_filtros = [
   { value: '9', name: 'CIUDAD' },
 ]
 export const tipo_filtro = {
-  TODOS:'0',
-  PROYECTO:'1',
+  TODOS: '0',
+  PROYECTO: '1',
   TAREA: '2',
   DETALLE: '3',
   SUBDETALLE: '4',
-  AUTORIZACIONES : '5',
-  EMPLEADO : '6',
-  RUC : '7',
+  AUTORIZACIONES: '5',
+  EMPLEADO: '6',
+  RUC: '7',
   SIN_FACTURA: '8',
-  CIUDAD : '9',
+  CIUDAD: '9',
 }
 export const tipo_saldo = {
   ACREDITACIONES: '1',
@@ -633,4 +634,11 @@ export const tabOptionsValoresAcreditar: TabOption[] = [
   // { label: 'Todo', value: '' },
   { label: 'Activas', value: '1' },
   { label: 'Inactivas', value: '0' },
-];
+]
+
+// INTRANET
+
+//Noticias
+export const tabOptionsNoticias: TabOption[] = [
+  { label: 'Noticias Registradas', value: '1' },
+]

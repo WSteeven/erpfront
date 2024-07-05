@@ -43,7 +43,7 @@
             <q-card-section class="icon-container">
               <a v-for="(modulo, index) in modulosPermitidos" :key="index" :href="modulo.link" target="_blank"
                 class="icon-link">
-                <q-icon :name="modulo.icon" size="100px" class="icon-content">
+                <q-icon :name="modulo.icon" size="100px" class="icon-content" color="blue-14">
                   <q-tooltip anchor="top middle" self="bottom middle">{{ modulo.title }}</q-tooltip>
                 </q-icon>
               </a>
@@ -87,7 +87,10 @@
                         {{ empleado.nombres + ' ' + empleado.apellidos }}
                       </p>
                       <small>{{ empleado.cargo }}</small>
+                      <br>
+                      <small>{{ empleado.telefono }}</small>
                     </div>
+
                   </div>
                 </q-card>
               </div>

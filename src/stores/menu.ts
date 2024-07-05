@@ -18,10 +18,16 @@ export const useMenuStore = defineStore('menu', () => {
       can: true, //!store.can('puede.ver.trabajo_asignado'),
     },
     {
+      title: 'Noticias',
+      icon: 'bi-house-fill',
+      link: '/blog',
+      can: true, //!store.can('puede.ver.trabajo_asignado'),
+    },
+    {
       title: 'Eventos',
       icon: 'bi-calendar-check',
       link: 'eventos',
-      can: true, //!store.can('puede.ver.trabajo_asignado'),
+      can: store.can('puede.ver.eventos'),
     },
     {
       title: 'Trabajo agendado',

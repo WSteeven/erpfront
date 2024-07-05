@@ -106,6 +106,7 @@ export const endpoints = {
     'recursos-humanos/rechazar_prestamo_empresarial'
   ),
   vacacion: new Endpoint('recursos-humanos/vacacion'),
+
   archivo_permiso_empleado: new Endpoint(
     'recursos-humanos/archivo_permiso_empleado'
   ),
@@ -179,6 +180,8 @@ export const endpoints = {
   detalle_alimentacion: new Endpoint('recursos-humanos/detalle-alimentacion'),
   finalizar_asignacion_alimentacion: new Endpoint('recursos-humanos/finalizar-asignacion-alimentacion'),
 
+  //Modulo de Intranet
+  noticia: new Endpoint('blog'),
 
   //Modulo de Vehiculos
   combustibles: new Endpoint('vehiculos/combustibles'),
@@ -472,8 +475,9 @@ export const endpoints = {
   novedades_ventas: new Endpoint('ventas-claro/novedades-ventas'),
 
   //intranet
+
+  blog: new Endpoint('intranet/blog'),
   eventos: new Endpoint('intranet/eventos'),
-blog: new Endpoint('intranet/blog'),
 
 
 
