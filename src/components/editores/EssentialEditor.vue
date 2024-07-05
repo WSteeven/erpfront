@@ -16,12 +16,10 @@
   >
   </q-editor>
   <div v-if="error">
-    <div
-      v-for="error of v$[v_error_key].$errors"
-      :key="error.$uid"
-      class="text-negative text-uppercase"
+    <div v-for="error of v$[v_error_key].$errors" :key="error.$uid"
+      class="text-negative"
     >
-      {{ error.$message }}
+      <small>{{ error.$message }}</small>
     </div>
   </div>
 </template>
