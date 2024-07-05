@@ -12,9 +12,8 @@ import { ContenedorSimpleMixin } from 'shared/contenedor/modules/simple/applicat
 import { Tanqueo } from '../domain/Tanqueo';
 import { TanqueoController } from '../infraestructure/TanqueoController';
 import { configuracionColumnasTanqueoCombustible } from '../domain/configuracionColumnasTanqueoCombustible';
-import { maskFecha, maskFechaHora } from 'config/utils';
+import { maskFecha } from 'config/utils';
 import { VehiculoController } from 'pages/controlVehiculos/vehiculos/infraestructure/VehiculoController';
-import BitacoraVehicularPage from 'pages/controlVehiculos/bitacoraVehicular/view/BitacoraVehicularPage';
 import { AsignacionVehiculoController } from 'pages/controlVehiculos/asignarVehiculos/infraestructure/AsignacionVehiculoController';
 import { useAuthenticationStore } from 'stores/authentication';
 import { StatusEssentialLoading } from 'components/loading/application/StatusEssentialLoading';
@@ -23,6 +22,7 @@ import { useNotificacionStore } from 'stores/notificacion';
 import { useCargandoStore } from 'stores/cargando';
 import { obtenerFechaHoraActual } from 'shared/utils';
 import { useFiltrosListadosSelects } from 'shared/filtrosListadosGenerales';
+import { CombustibleController } from 'pages/controlVehiculos/combustible/infraestructure/CombustibleController';
 
 export default defineComponent({
     components: { TabLayout, SelectorImagen },
@@ -41,8 +41,10 @@ export default defineComponent({
         const store = useAuthenticationStore()
         const cargando = new StatusEssentialLoading()
 
+        
         const usuarioDefault = ref()
         const { vehiculos, filtrarVehiculos,
+            combustibles, filtrarCombustibles,
         } = useFiltrosListadosSelects(listadosAuxiliares)
 
         cargarVista(async () => {
@@ -50,9 +52,11 @@ export default defineComponent({
             cargarDatosDefecto()
             await obtenerListados({
                 vehiculos: new VehiculoController(),
+                combustibles: new CombustibleController()
             })
 
             vehiculos.value = listadosAuxiliares.vehiculos
+            combustibles.value = listadosAuxiliares.combustibles
         })
 
         /****************************************
@@ -61,7 +65,7 @@ export default defineComponent({
         //Estos metodos funcionan si no se usa el keep alive
         onReestablecer(async () => {
             cargarDatosDefecto()
-            tanqueo.fecha_hora = obtenerFechaHoraActual('YYYY-MM-DD HH:mm:ss')
+            tanqueo.fecha_hora = obtenerFechaHoraActual(maskFecha)
         })
 
         /****************************************
@@ -76,7 +80,7 @@ export default defineComponent({
                 tanqueo.vehiculo = usuarioDefault.value.vehiculo_id
                 tanqueo.solicitante_id = usuarioDefault.value.responsable_id
                 tanqueo.solicitante = usuarioDefault.value.responsable
-                tanqueo.fecha_hora = obtenerFechaHoraActual('YYYY-MM-DD HH:mm:ss')
+                tanqueo.fecha_hora = obtenerFechaHoraActual(maskFecha)
             }
         }
         /**
@@ -96,6 +100,7 @@ export default defineComponent({
             fecha_hora: { required },
             km_tanqueo: { required },
             monto: { required },
+            combustible: { required },
             imagen_comprobante: { required },
             imagen_tablero: { required },
         }
@@ -108,10 +113,11 @@ export default defineComponent({
         return {
             mixin, tanqueo, disabled, v$,
             configuracionColumnas: configuracionColumnasTanqueoCombustible,
-            maskFecha, maskFechaHora,
+            maskFecha,
 
             // listados
             vehiculos, filtrarVehiculos,
+            combustibles, filtrarCombustibles,
 
 
         }

@@ -10,6 +10,9 @@ export class AsignacionVehiculo extends EntidadAuditable {
     observacion_entrega: string | null
     fecha_entrega: string | null
     estado: string | null
+    garaje: string | null
+    latitud: string | null
+    longitud: string | null
     canton: number | null
     canton_id: number | null
     accesorios: string | null
@@ -28,6 +31,9 @@ export class AsignacionVehiculo extends EntidadAuditable {
         this.observacion_recibe = null
         this.fecha_entrega = null
         this.estado = null
+        this.garaje = null
+        this.latitud = null
+        this.longitud = null
         this.canton = null
         this.canton_id = null
         this.accesorios = null

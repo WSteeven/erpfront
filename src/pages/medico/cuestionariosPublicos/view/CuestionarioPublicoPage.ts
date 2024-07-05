@@ -18,12 +18,14 @@ import ButtonSubmits from 'components/buttonSubmits/buttonSubmits.vue'
 
 // Logica y controladores
 import { TipoCuestionarioController } from 'pages/medico/cuestionarioPsicosocial/infrestructure/TipoCuestionarioController'
-import { ValidarCuestionarioLleno } from 'pages/medico/cuestionarioPsicosocial/application/ValidarCuestionarioLleno'
 import { PreguntaController } from 'pages/medico/pregunta/infrestructure/RespuestaCuestionarioEmpleadoController'
 import { ContenedorSimpleMixin } from 'shared/contenedor/modules/simple/application/ContenedorSimpleMixin'
 import { CuestionarioPublicoController } from '../infraestructure/CuestionarioPublicoController'
 import { Cuestionario } from 'pages/medico/cuestionarioPsicosocial/domain/Cuestionario'
 import { CuestionarioPublico } from '../domain/CuestionarioPublico'
+import { useRoute } from 'vue-router'
+import { FormularioCuestionario } from 'pages/medico/cuestionarioPsicosocial/domain/FormularioCuestionario'
+import { LinkCuestionarioPublicoController } from 'pages/medico/reportesCuestionarios/infraestructure/LinkCuestionarioPublicoController'
 
 export default defineComponent({
     components: {
@@ -41,13 +43,17 @@ export default defineComponent({
         const { cargarVista, obtenerListados, guardar, setValidador } = mixin.useComportamiento()
         const { entidad: cuestionarioPublico, listadosAuxiliares, accion } = mixin.useReferencias()
 
-        cargarVista(async () => {
-            await obtenerListados({
-                tiposCuestionarios: new TipoCuestionarioController(),
-                // preguntas: [],
+        const linkActivo = ref(true)
+
+        if (linkActivo.value) {
+
+            cargarVista(async () => {
+                await obtenerListados({
+                    tiposCuestionarios: new TipoCuestionarioController(),
+                })
+                // listadosAuxiliares.tiposCuestionarios = [listadosAuxiliares.tiposCuestionarios[0]]
             })
-            listadosAuxiliares.tiposCuestionarios = [listadosAuxiliares.tiposCuestionarios[0]]
-        })
+        }
 
         /************
          * Variables
@@ -75,8 +81,8 @@ export default defineComponent({
                 const { result } = await preguntaController.listar({
                     tipo_cuestionario_id: tipoCuestionario,
                 })
-                cuestionarioPublico.preguntas = result
-                // cuestionarioPublico.preguntas = result
+                cuestionarioPublico.formulario_cuestionario = result
+                console.log(cuestionarioPublico.formulario_cuestionario)
             } catch (e) {
                 if (isAxiosError(e)) {
                     const mensajes: string[] = e.erroresValidacion
@@ -97,18 +103,29 @@ export default defineComponent({
         }
 
         const mapearRespuestas = () => {
-            return cuestionarioPublico.cuestionario = cuestionarioPublico.preguntas.map(
-                (item: any) => {
-                    return {
-                        respuesta_texto: typeof item.respuesta === 'string' ? item.respuesta : null,
-                        id_cuestionario:
-                            typeof item.respuesta === 'string'
-                                ? item.cuestionario[0].id
-                                : item.respuesta,
-                    }
+            return cuestionarioPublico.cuestionario = cuestionarioPublico.formulario_cuestionario.map(
+                (cuestionario: FormularioCuestionario) => {
+                    const cuestionarioAux = new Cuestionario()
+                    cuestionarioAux.respuesta_texto = typeof cuestionario.respuesta === 'string' ? cuestionario.respuesta : null
+                    cuestionarioAux.id_cuestionario = typeof cuestionario.respuesta === 'string' ? cuestionario.cuestionario[0].id : cuestionario.respuesta
+                    // cuestionarioAux.id_cuestionario = typeof cuestionario.respuesta === 'number' ? cuestionario.respuesta : null
+                    return cuestionarioAux
                 }
             )
         }
+        /* const mapearRespuestas = () => {
+            return cuestionarioPublico.cuestionario = cuestionarioPublico.cuestionario.map(
+                (cuestionario: Cuestionario) => {
+                    return {
+                        respuesta_texto: typeof cuestionario.respuesta === 'string' ? cuestionario.respuesta : null,
+                        id_cuestionario:
+                            typeof cuestionario.respuesta === 'string'
+                                ? cuestionario.cuestionario[0].id
+                                : cuestionario.respuesta,
+                    }
+                }
+            )
+        } */
 
         const guardarCuestionario = async () => {
             confirmar(
@@ -116,8 +133,9 @@ export default defineComponent({
                 async () => {
                     try {
                         mapearRespuestas()
+                        console.log(cuestionarioPublico)
                         await guardar(cuestionarioPublico)
-                        cuestionarioPublico.preguntas = []
+                        cuestionarioPublico.cuestionario = []
                         mensaje.value = 'Gracias por completar el cuestionario.'
                     } catch (e) {
                         console.log(e)
@@ -132,12 +150,16 @@ export default defineComponent({
             )
         }
 
+        /* const cuestionarioLleno = (respuesta: string) => {
+            notificarAdvertencia(respuesta)
+        } */
+
         /*********
          * Reglas
          *********/
         const reglas = {
             cuestionario: { required },
-            preguntas: {
+            formulario_cuestionario: {
                 $each: helpers.forEach({
                     respuesta: { required },
                 }),
@@ -171,23 +193,9 @@ export default defineComponent({
 
         const esDrogas = computed(() => tipoCuestionarioSeleccionado.value == opcionesTiposCuestionarios.CUESTIONARIO_DIAGNOSTICO_CONSUMO_DE_DROGAS)
 
-        /* const $externalResults = ref({
-            // foo: 'error', is also supported
-            persona: {
-                identificacion: 'cedula_no_valida', // is also supported
-            },
-            // foo: ['Error one', 'Error Two']
-        }) // works with reactive({}) too. */
-
         const v$ = useVuelidate(reglas, cuestionarioPublico) //, { $externalResults })
 
         setValidador(v$.value)
-
-        const validarCuestionarioLleno = new ValidarCuestionarioLleno(
-            cuestionarioPublico
-        )
-
-        mixin.agregarValidaciones(validarCuestionarioLleno)
 
         /*******
          * Init
@@ -202,8 +210,20 @@ export default defineComponent({
         const nombreEmpresa = computed(() => configuracionGeneralStore.configuracion?.nombre_empresa)
         watchEffect(() => document.title = nombreEmpresa.value ?? '')
 
+        const route = useRoute()
+        const identificador = route.params.identificador
+        cuestionarioPublico.persona.nombre_empresa = identificador
+
+        const consultarLiskActivo = async () => {
+            const { result } = await new LinkCuestionarioPublicoController().listar({ link: identificador })
+            linkActivo.value = result[0].activo
+        }
+
+        consultarLiskActivo()
+
         return {
             v$,
+            linkActivo,
             refInformacionPersona,
             mixin,
             cuestionarioPublico,

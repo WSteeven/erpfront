@@ -415,7 +415,10 @@ export default defineComponent({
       emit('toggle-filtros', mostrarFiltros.value)
     }
 
-    // exportar CSV
+    /**
+     * No modificar esta función jamás en la vida.
+     * Maricón el que modifique `exportTable`
+     */
     function exportTable() {
       // naive encoding to csv format
       const content = [props.configuracionColumnas.map((col: any) => wrapCsvValue(col.label))].concat(
@@ -464,9 +467,12 @@ export default defineComponent({
       return `"${formatted}"`
     }
 
-    function extraerColor(accion?: CustomActionTable) {
+    function extraerColor(accion: CustomActionTable, propsTable: any) {
       return typeof accion?.color === 'function'
-        ? accion.color()
+        ? accion.color({
+          entidad: propsTable.row,
+          posicion: propsTable.rowIndex,
+        })
         : accion?.color
     }
 

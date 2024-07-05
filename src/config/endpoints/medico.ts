@@ -27,6 +27,7 @@ export const medico = {
   esquemas_vacunas: new Endpoint('medico/esquemas-vacunas'),
   tipos_vacunas: new Endpoint('medico/tipos-vacunas'),
   reporte_cuestionario: new Endpoint('medico/reporte-cuestionario'),
+  links_cuestionarios_publicos: new Endpoint('medico/links-cuestionarios-publicos'),
   reporte_cuestionario_publico: new Endpoint('medico/reporte-cuestionario-publico'),
   reporte_cuestionario_alcohol_drogas: new Endpoint('medico/reporte-cuestionario-alcohol-drogas'),
   // configuracion_cuestionario_empleado: new Endpoint('medico/config-cuestionario-empleado'),
@@ -58,4 +59,5 @@ export const medico = {
   fichas_retiros_imprimir: new Endpoint('medico/fichas-retiros/imprimir'),
   tipos_aptitudes_medicas_laborales: new Endpoint('medico/tipos-aptitudes-medicas-laborales'),
   tipos_eval_medicas_retiro: new Endpoint('medico/tipos-eval-medicas-retiro'),
+  verificar_cuestionario_publico_lleno: new Endpoint('medico/verificar-cuestionario-publico-lleno'),
 }

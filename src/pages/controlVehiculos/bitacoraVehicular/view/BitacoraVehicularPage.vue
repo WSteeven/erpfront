@@ -150,7 +150,23 @@
               </template>
             </q-input>
           </div>
-
+          <div class="col-6 col-md-3">
+            <label class="q-mb-sm block">Fotografía
+              <i class="bi bi-info-circle" />
+              <q-tooltip
+                >Fotografía del inicio del día donde se muestre el kilometraje y combustible al inicio del día </q-tooltip
+              >
+            </label>
+            <selector-imagen
+              file_extensiones=".jpg, image/*"
+              :imagen="bitacora.imagen_inicial"
+              :comprimir="true"
+              :disable="disabled"
+              :error="!!v$.imagen_inicial.$errors.length"
+              :alto="'200px'"
+              @update:model-value="(data) => (bitacora.imagen_inicial = data)"
+            ></selector-imagen>
+          </div>
           <!-- km final -->
           <div class="col-6 col-md-3">
             <label class="q-mb-sm block">Km final</label>
@@ -182,10 +198,7 @@
               type="number"
               :disable="disabled || bloquear_km_tanque"
               mask="###"
-              :rules="[
-                (val) =>
-                  (val <= 100 && val >= 0) || 'Ingresa un valor entre 0 y 100',
-              ]"
+              :error="!!v$.tanque_inicio.$errors.length"
               dense
               outlined
               ><template v-slot:error>Ingresa un valor entre 0 y 100</template>
@@ -262,7 +275,7 @@
           </div>
 
           <!-- Tareas -->
-          <div class="col-12 col-md-3">
+          <div class="col-12 col-md-3" v-if="accion == acciones.editar || accion == acciones.consultar">
             <label class="q-mb-sm block">Tareas</label>
             <q-select
               v-model="bitacora.tareas"
@@ -300,7 +313,7 @@
             </q-select>
           </div>
           <!-- Tickets -->
-          <div class="col-12 col-md-3">
+          <div class="col-12 col-md-3" v-if="accion == acciones.editar || accion == acciones.consultar">
             <label class="q-mb-sm block">Tickets</label>
             <q-select
               v-model="bitacora.tickets"

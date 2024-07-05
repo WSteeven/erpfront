@@ -37,7 +37,7 @@ export const configuracionColumnasMaterialOcupadoFormulario: ColumnConfig<Materi
   {
     name: 'cantidad_utilizada',
     field: 'cantidad_utilizada',
-    label: 'Cantidad utilizada hoy',
+    label: 'Cantidad utilizada en el dia',
     align: 'left',
   },
   {

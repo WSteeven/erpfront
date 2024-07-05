@@ -15,7 +15,7 @@ import { AsignacionVehiculoController } from '../infraestructure/AsignacionVehic
 import { tabOptionsAsignacionVehiculos, estadosAsignacionesVehiculos } from 'config/vehiculos.utils';
 import { ConductorController } from 'pages/controlVehiculos/conductores/infraestructure/ConductorController';
 import { useFiltrosListadosSelects } from 'shared/filtrosListadosGenerales';
-import { imprimirArchivo, obtenerFechaActual, ordenarLista } from 'shared/utils';
+import { imprimirArchivo, obtenerFechaActual, obtenerUbicacion, ordenarLista } from 'shared/utils';
 import { useAuthenticationStore } from 'stores/authentication';
 import { acciones, convertir_fecha, maskFecha } from 'config/utils';
 import { VehiculoController } from 'pages/controlVehiculos/vehiculos/infraestructure/VehiculoController';
@@ -34,16 +34,19 @@ import { AxiosResponse } from 'axios';
 import { ArchivoController } from 'pages/gestionTrabajos/subtareas/modules/gestorArchivosTrabajos/infraestructure/ArchivoController';
 import { useVehiculoStore } from 'stores/vehiculos/vehiculo';
 import { useRouter } from 'vue-router';
+import { ValidarImagenesAdjuntas } from '../application/validation/ValidarImagenesAdjuntas';
+import { GarajeController } from 'pages/controlVehiculos/garajes/infraestructure/GarajeController';
 
 
 export default defineComponent({
+    name: 'AsignacionVehiculo',
     components: { TabLayoutFilterTabs2, GestorArchivos },
     setup() {
         const mixin = new ContenedorSimpleMixin(AsignacionVehiculo, new AsignacionVehiculoController(), new ArchivoController())
         const { entidad: asignacion, disabled, listadosAuxiliares, accion, listado } = mixin.useReferencias()
         const { setValidador, obtenerListados, cargarVista, listar, } = mixin.useComportamiento()
-        const { onGuardado, onConsultado, onReestablecer, onBeforeGuardar, onBeforeConsultar } = mixin.useHooks()
-        const { confirmar, prompt, notificarCorrecto, notificarAdvertencia, notificarError } = useNotificaciones()
+        const { onGuardado, onBeforeModificar, onConsultado, onReestablecer, onBeforeConsultar } = mixin.useHooks()
+        const { prompt, notificarCorrecto, notificarAdvertencia, notificarError } = useNotificaciones()
 
         //stores
         useNotificacionStore().setQuasar(useQuasar())
@@ -58,10 +61,12 @@ export default defineComponent({
         const refArchivo = ref()
         const idRegistro = ref()
         const btnSubirArchivos = ref(false)
+        const esResponsable = ref(false)
         const puedeEditar = computed(() => tabActual.value == pendiente.label && listado.value.some((item) => item.responsable_id == store.user.id || item.entrega_id == store.user.id))
         const soloLectura = computed(() => accion.value == acciones.editar)
         const FIRMADA = 'FIRMADA'
 
+        const garajes = ref([])
         let accesoriosDefault = [
             'GATA HIDRAULICA',
             'LLANTA DE EMERGENCIA',
@@ -84,10 +89,15 @@ export default defineComponent({
             await obtenerListados({
                 empleados: new ConductorController(),
                 vehiculos: new VehiculoController(),
+                garajes: {
+                    controller: new GarajeController(),
+                    params: { activo: 1 }
+                }
             })
             //listados
             empleados.value = listadosAuxiliares.empleados
             vehiculos.value = listadosAuxiliares.vehiculos
+            garajes.value = listadosAuxiliares.garajes
             listadosAuxiliares.cantones = JSON.parse(LocalStorage.getItem('cantones')!.toString())
             cantones.value = listadosAuxiliares.cantones
 
@@ -104,6 +114,9 @@ export default defineComponent({
             vehiculo: { required },
             canton: { required },
             accesorios: { required },
+            garaje: { required },
+            latitud: { required },
+            longitud: { required },
             estado_carroceria: { required },
             estado_mecanico: { required },
             estado_electrico: { required },
@@ -113,6 +126,9 @@ export default defineComponent({
         const v$ = useVuelidate(reglas, asignacion)
         setValidador(v$.value)
 
+        const validarImagenesAdjuntas = new ValidarImagenesAdjuntas(refArchivo, asignacion)
+        mixin.agregarValidaciones(validarImagenesAdjuntas)
+
 
         /*********************************
          * HOOKS
@@ -121,10 +137,16 @@ export default defineComponent({
         onGuardado((id: number) => {
             idRegistro.value = id
             setTimeout(async () => {
-                subirArchivos()
+                await subirArchivos()
             }, 1)
         })
-        onConsultado(() => {
+        onBeforeModificar(() => {
+            idRegistro.value = asignacion.id
+            setTimeout(() => subirArchivos(), 1)
+        })
+        onConsultado((entidad) => {
+            console.log(entidad)
+            esResponsable.value = store.user.id === entidad.responsable_id
             setTimeout(() => {
                 refArchivo.value.listarArchivosAlmacenados(asignacion.id)
             }, 1)
@@ -143,7 +165,11 @@ export default defineComponent({
             obtenerAccesoriosLS()
         })
         onReestablecer(() => {
-            refArchivo.value.limpiarListado()
+            setTimeout(() => {
+                refArchivo.value.limpiarListado()
+                refArchivo.value.quiero_subir_archivos = false
+                refArchivo.value.cantElementos = 0
+            }, 300)
             asignacion.entrega = store.user.id
             asignacion.estado = pendiente.label
 
@@ -209,6 +235,12 @@ export default defineComponent({
         async function subirArchivos() {
             await refArchivo.value.subir()
         }
+        function obtenerCoordenadas() {
+            obtenerUbicacion((ubicacion) => {
+                asignacion.latitud = ubicacion.coords.latitude
+                asignacion.longitud = ubicacion.coords.longitude
+            })
+        }
 
         async function imprimirPdf(id: number, placa: string) {
             try {
@@ -263,6 +295,9 @@ export default defineComponent({
         }
         async function recargarVehiculos() {
             await recargarGenerico(listadosAuxiliares, 'vehiculos', vehiculos, new VehiculoController())
+        }
+        async function recargarGarajes() {
+            await recargarGenerico(listadosAuxiliares, 'garajes', garajes, new GarajeController(), { activo: 1 })
         }
         async function recargarEmpleados() {
             await recargarGenerico(listadosAuxiliares, 'empleados', empleados, new ConductorController())
@@ -342,6 +377,7 @@ export default defineComponent({
             idRegistro,
 
             btnSubirArchivos,
+            esResponsable,
 
 
             //listados
@@ -352,6 +388,7 @@ export default defineComponent({
             estadosAsignacionesVehiculos,
             accesorios,
             estados,
+            garajes,
 
 
             //funciones
@@ -364,8 +401,9 @@ export default defineComponent({
             filtrarEstados,
             recargarEmpleados,
             recargarVehiculos,
+            recargarGarajes,
             subirArchivos,
-
+            obtenerCoordenadas,
 
             //botones de tablas
             btnImprimirActaResponsabilidad,

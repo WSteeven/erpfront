@@ -42,9 +42,9 @@ export default defineComponent({
     setup(props, { emit }) {
         const mixin = new ContenedorSimpleMixin(BitacoraVehicular, new BitacoraVehicularController())
         const { entidad: bitacora, disabled, listadosAuxiliares, accion } = mixin.useReferencias()
-        const { setValidador, cargarVista, obtenerListados, reestablecer, listar, editar } = mixin.useComportamiento()
+        const { setValidador, cargarVista, obtenerListados, reestablecer, listar } = mixin.useComportamiento()
         const { onReestablecer, onConsultado, onBeforeModificar, onModificado } = mixin.useHooks()
-        const { confirmar, prompt, notificarCorrecto, notificarAdvertencia, notificarError } = useNotificaciones()
+        const { confirmar, notificarCorrecto, notificarAdvertencia } = useNotificaciones()
 
         /****************************************
          * Stores
@@ -95,7 +95,7 @@ export default defineComponent({
             if (accion.value == acciones.editar) {
                 cargando.activar()
                 await obtenerListados({
-                    tareas: { controller: new TareaController(), params: { campos: 'id,codigo_tarea,titulo' } },
+                    tareas: { controller: new TareaController(), params: { formulario: true, campos: 'id,codigo_tarea,titulo' } },
                     tickets: {
                         controller: new TicketController(),
                         params: {
@@ -124,6 +124,7 @@ export default defineComponent({
             hora_salida: { required },
             hora_llegada: { requiredIf: requiredIf(() => accion.value == acciones.editar && bitacora.firmada) },
             km_inicial: { required },
+            imagen_inicial: { required },
             km_final: { requiredIf: requiredIf(() => accion.value == acciones.editar && bitacora.firmada) },
             tanque_inicio: { required },
             tanque_final: {
@@ -163,7 +164,7 @@ export default defineComponent({
             const response = (await new AsignacionVehiculoController().listar({ filtro: 1, responsable_id: store.user.id, estado: 'ACEPTADO' }))
             console.log(response)
             if (response.result.length == 0) {
-                const response = (await new TransferenciaVehiculoController().listar({ responsable_id: store.user.id, estado: 'ACEPTADO' }))
+                const response = (await new TransferenciaVehiculoController().listar({ filtro: 1, responsable_id: store.user.id, estado: 'ACEPTADO' }))
                 console.log(response)
                 return response.result[0]
             } else {
@@ -202,9 +203,9 @@ export default defineComponent({
         function cargarDatosBitacoraDefecto() {
             // console.log(bitacoraDefault.value.id)
             if (bitacoraDefault.value.id) {
-                bitacora.km_inicial = bitacoraDefault.value.km_final
-                bitacora.tanque_inicio = bitacoraDefault.value.tanque_final
-                bitacora.tanque_final = bitacoraDefault.value.tanque_final
+                // bitacora.km_inicial = bitacoraDefault.value.km_final
+                // bitacora.tanque_inicio = bitacoraDefault.value.tanque_final
+                // bitacora.tanque_final = bitacoraDefault.value.tanque_final
                 bitacora.checklistAccesoriosVehiculo = bitacoraDefault.value.checklistAccesoriosVehiculo
                 bitacora.checklistVehiculo = bitacoraDefault.value.checklistVehiculo
                 bitacora.checklistImagenVehiculo.observacion = ' '
@@ -301,7 +302,7 @@ export default defineComponent({
                 bitacora.actividadesRealizadas.unshift(fila)
                 // emit('actualizar', bitacora.actividadesRealizadas)
             },
-            visible: () => true
+            visible: () => accion.value == acciones.editar
         }
         const btnEliminar: CustomActionTable = {
             titulo: 'Eliminar',

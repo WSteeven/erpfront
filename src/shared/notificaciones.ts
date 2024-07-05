@@ -11,58 +11,57 @@ export function useNotificaciones() {
     return mensaje
   }
 
+  const base = {
+    html: true,
+    textColor: $q.dark.isActive ? 'white' : 'black',
+    position: 'bottom-right',
+    multiLine: true,
+    progress: true,
+    classes: 'rounded-tabpanel shadow-notification bg-desenfoque border-white',
+  }
+
   function notificarInformacion(mensaje: string | string[]) {
     $q.notify({
-      html: true,
-      color: 'light-blue-7',
-      textColor: 'white',
+      ...base,
+      iconColor: 'light-blue-7',
       icon: 'bi-info-circle-fill',
-      message: 'Información',
+      message: '<b>Información</b>',
       caption: obtenerMensaje(mensaje),
-      position: 'bottom',
+      progressClass: 'text-light-blue-7',
     })
   }
 
   function notificarCorrecto(mensaje: string | string[]) {
     $q.notify({
-      html: true,
-      color: 'light-green-2',
-      textColor: 'light-green-8',
+      ...base,
+      iconColor: 'positive',
       icon: 'bi-check-circle-fill',
-      message: 'Correcto',
+      message: '<b>Correcto</b>',
       caption: obtenerMensaje(mensaje),
-      position: 'bottom',
+      progressClass: 'text-positive',
     })
   }
 
   function notificarError(mensaje: string | string[]) {
     $q.notify({
-      html: true,
-      color: 'pink-2',
-      textColor: 'pink-6',
+      ...base,
+      iconColor: 'pink-6',
       icon: 'bi-question-diamond-fill',
-      message: 'Error',
+      message: '<b>Error</b>',
       caption: obtenerMensaje(mensaje),
-      position: 'bottom',
+      progressClass: 'text-pink-6',
     })
   }
 
 
   function notificarAdvertencia(mensaje: string | string[]) {
     $q.notify({
-      html: true,
-      color: 'amber-2',
-      textColor: 'amber-9',
+      ...base,
+      iconColor: 'amber-9',
       icon: 'bi-exclamation-triangle-fill',
+      message: '<b>Advertencia</b>',
       caption: obtenerMensaje(mensaje),
-      message: 'Advertencia',
-      position: 'bottom',
-      closeBtn: false,
-      progress: true,
-      timeout: 2000,
-      actions: [
-        { label: 'X', color: 'amber-9', handler: () => { /* ... */ } }
-      ]
+      progressClass: 'text-amber-9',
     })
   }
 

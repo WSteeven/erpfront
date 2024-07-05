@@ -105,14 +105,11 @@
           () => {
             v$.persona.identificacion.$touch()
             validarCedula(persona.identificacion)
+            validarCuestionarioLleno(persona.identificacion)
           }
         "
         :error="!!v$.persona.identificacion.$errors.length"
       >
-        <!--  () => {
-            ()
-            validarCedula(persona.identificacion)
-          } -->
         <template #error>
           <div
             v-for="error of v$.persona.identificacion.$errors"
@@ -396,7 +393,7 @@
   </div>
 
   <div v-if="mostrarConsumoDrogas" class="row q-col-gutter-sm q-pa-sm">
-    <div class="col-12 col-md-3">
+    <!-- <div class="col-12 col-md-3">
       <label class="q-mb-sm block">Nombre empresa</label>
       <q-input
         v-model="persona.nombre_empresa"
@@ -416,7 +413,7 @@
           </div>
         </template>
       </q-input>
-    </div>
+    </div> -->
 
     <div class="col-12 col-md-3">
       <label class="q-mb-sm block">RUC</label>

@@ -8,6 +8,7 @@ export class Devolucion extends EntidadAuditable {
   tarea: number | null
   tarea_id: number | null
   canton: number | null
+  causa_anulacion: string | null
   estado: string | null
   estado_bodega: string | null
   created_at: string | null
@@ -28,8 +29,8 @@ export class Devolucion extends EntidadAuditable {
   es_tarea: boolean | null
   tiene_observacion_aut: boolean | null
   condicion: string | null
-  misma_condicion: boolean 
-  devolver_materiales_tecnicos: boolean 
+  misma_condicion: boolean
+  devolver_materiales_tecnicos: boolean
 
   constructor() {
     super()
@@ -43,6 +44,7 @@ export class Devolucion extends EntidadAuditable {
     this.tarea = null
     this.tarea_id = null
     this.canton = null
+    this.causa_anulacion = null
     this.estado = null
     this.estado_bodega = null
     this.created_at = null
@@ -57,7 +59,7 @@ export class Devolucion extends EntidadAuditable {
     // variables auxiliares
     this.es_tarea = false
     this.tiene_observacion_aut = false
-    this.condicion =null
+    this.condicion = null
     this.misma_condicion = false
     this.devolver_materiales_tecnicos = false
   }

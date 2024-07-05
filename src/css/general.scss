@@ -63,6 +63,10 @@ body {
   border-radius: 0 16px 16px 16px;
 }
 
+.rounded-notification {
+  border-radius:  0px 24px 0 24px;
+}
+
 .rounded-toolbar {
   border-radius: 32px;
 }
@@ -145,6 +149,10 @@ input[type='time']::-webkit-calendar-picker-indicator {
 
 .border-grey-6 {
   border: 1px solid $grey-6;
+}
+
+.border-grey-6-2px {
+  border: 1px solid $primary;
 }
 
 .border-bottom-grey-5 {

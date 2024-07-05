@@ -830,7 +830,10 @@
                   </q-chip>
 
                   <q-chip
-                    v-if="col.value === 1 || col.value === true"
+                    v-if="
+                      col.name === 'es_dosis_unica' &&
+                      (col.value === 1 || col.value === true)
+                    "
                     class="bg-green-1 text-positive"
                   >
                     <q-icon
@@ -842,7 +845,10 @@
                   </q-chip>
 
                   <q-chip
-                    v-if="col.value === 0 || col.value === false"
+                    v-if="
+                      col.name === 'es_dosis_unica' &&
+                      (col.value === 0 || col.value === false)
+                    "
                     class="bg-pink-1 text-positive"
                   >
                     <q-icon
@@ -1476,7 +1482,7 @@
         </q-chip>
         <!-- ANULADA -->
         <q-chip
-          v-if="props.value === 'ANULADA'"
+          v-if="props.value === 'ANULADA' || props.value === 'ANULADO'"
           :class="{ 'bg-red-1': !$q.dark.isActive }"
         >
           <q-icon
@@ -1484,7 +1490,7 @@
             color="negative"
             class="q-mr-xs"
           ></q-icon>
-          ANULADA
+          {{ props.value }}
         </q-chip>
         <q-icon
           v-if="props.value === 1 || props.value === true"
@@ -1587,20 +1593,20 @@
         </q-chip>
 
         <estados-subtareas :propsTable="props" />
-        
+
         <!-- estados de la tabla prestamos temporales -->
         <q-chip v-if="props.value === 'DEVUELTO'" class="bg-green-1">
           <q-icon
             name="bi-circle-fill"
             color="positive"
             class="q-mr-xs"
-            ></q-icon
-            >DEVUELTO
-          </q-chip>
-        </q-td>
-      </template>
-      <template #body-cell-descontable="props">
-        <q-td :props="props">
+          ></q-icon
+          >DEVUELTO
+        </q-chip>
+      </q-td>
+    </template>
+    <template #body-cell-descontable="props">
+      <q-td :props="props">
         <campo-descontable :propsTable="props" />
       </q-td>
     </template>
@@ -1741,7 +1747,7 @@
         ></q-icon>
       </q-td>
     </template>
-    
+
     <template #body-cell-aplica_seguro="props">
       <q-td :props="props">
         <q-icon
