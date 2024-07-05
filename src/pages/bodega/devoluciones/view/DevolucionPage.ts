@@ -118,8 +118,7 @@ export default defineComponent({
       sucursales, filtrarSucursales } = useFiltrosListadosSelects(listadosAuxiliares)
 
     const condiciones = ref([])
-    // const tareas = ref([])
-    const opciones_autorizaciones = ref([])
+    const autorizaciones = ref([])
     //Obtener los listados
     cargarVista(async () => {
       await obtenerListados({
@@ -134,11 +133,10 @@ export default defineComponent({
           controller: new TareaController(),
           params: { campos: 'id,codigo_tarea,titulo,cliente_id' }
         },
-        // condiciones: new CondicionController()
       })
       //Configurar los listados
       empleados.value = listadosAuxiliares.empleados
-      opciones_autorizaciones.value = JSON.parse(LocalStorage.getItem('autorizaciones')!.toString())
+      autorizaciones.value = JSON.parse(LocalStorage.getItem('autorizaciones')!.toString())
       sucursales.value = listadosAuxiliares.sucursales
       tareas.value = listadosAuxiliares.tareas
       listadosAuxiliares.condiciones = JSON.parse(LocalStorage.getItem('condiciones')!.toString())
@@ -237,6 +235,7 @@ export default defineComponent({
         listadosAuxiliares.sucursales = JSON.parse(LocalStorage.getItem('sucursales')!.toString()).filter((v) => v.cliente_id == value)
 
     }
+    
     async function subirArchivos() {
       await refArchivo.value.subir()
     }
@@ -424,7 +423,7 @@ export default defineComponent({
       clientes,
       tareas,
       filtrarTareas,
-      opciones_autorizaciones,
+      autorizaciones,
       sucursales, filtrarSucursales,
       condiciones,
       store,

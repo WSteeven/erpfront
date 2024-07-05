@@ -562,8 +562,6 @@
               :accion1="btnVerFotografia"
               :accion2="btnEliminarFila"
             >
-              <!-- @guardarFila="(fila) => guardarFilaEditada(fila)" -->
-              <!-- :accion1Header="btnAddRow" -->
             </essential-popup-editable-table>
           </div>
         </div>

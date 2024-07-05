@@ -7,7 +7,7 @@
     </div>
 
     <q-card class="rounded q-mb-md">
-      <q-card-section class="row">
+      <q-card-section class="row q-col-gutter-x-sm">
         <div class="col-12 q-mb-md">
           <label class="q-mb-sm block"
             ><b>Paso 1: </b>Seleccione un empleado</label
@@ -39,6 +39,110 @@
             </template>
           </q-select>
         </div>
+
+        <div v-if="empleadoSeleccionado" class="col-12 col-md-3">
+          <br />
+          <q-toggle
+            v-model="mostrarImprimirReporteMateriales"
+            label="Mostrar imprimir reporte materiales"
+            checked-icon="bi-bag-check"
+            icon="bi-bag"
+            color="positive"
+            dense
+          ></q-toggle>
+        </div>
+
+        <div v-if="mostrarImprimirReporteMateriales" class="col-12 col-md-3">
+          <label class="q-mb-sm block">Fecha de inicio</label>
+          <q-input
+            v-model="filtroReporteMateriales.fecha_inicio"
+            :error="!!v$.fecha_inicio.$errors.length"
+            @blur="v$.fecha_inicio.$touch"
+            outlined
+            dense
+          >
+            <template v-slot:append>
+              <q-icon name="event" class="cursor-pointer">
+                <q-popup-proxy
+                  cover
+                  transition-show="scale"
+                  transition-hide="scale"
+                >
+                  <q-date
+                    v-model="filtroReporteMateriales.fecha_inicio"
+                    :mask="maskFecha"
+                    today-btn
+                  >
+                    <div class="row items-center justify-end">
+                      <q-btn
+                        v-close-popup
+                        label="Cerrar"
+                        color="primary"
+                        flat
+                      />
+                    </div>
+                  </q-date>
+                </q-popup-proxy>
+              </q-icon>
+            </template>
+
+            <template v-slot:error>
+              <div v-for="error of v$.fecha_inicio.$errors" :key="error.$uid">
+                <div class="error-msg">{{ error.$message }}</div>
+              </div>
+            </template>
+          </q-input>
+        </div>
+
+        <div v-if="mostrarImprimirReporteMateriales" class="col-12 col-md-3">
+          <label class="q-mb-sm block">Fecha de fin</label>
+          <q-input
+            v-model="filtroReporteMateriales.fecha_fin"
+            :error="!!v$.fecha_fin.$errors.length"
+            @blur="v$.fecha_fin.$touch"
+            outlined
+            dense
+          >
+            <template v-slot:append>
+              <q-icon name="event" class="cursor-pointer">
+                <q-popup-proxy
+                  cover
+                  transition-show="scale"
+                  transition-hide="scale"
+                >
+                  <q-date
+                    v-model="filtroReporteMateriales.fecha_fin"
+                    :mask="maskFecha"
+                    today-btn
+                  >
+                    <div class="row items-center justify-end">
+                      <q-btn
+                        v-close-popup
+                        label="Cerrar"
+                        color="primary"
+                        flat
+                      />
+                    </div>
+                  </q-date>
+                </q-popup-proxy>
+              </q-icon>
+            </template>
+
+            <template v-slot:error>
+              <div v-for="error of v$.fecha_fin.$errors" :key="error.$uid">
+                <div class="error-msg">{{ error.$message }}</div>
+              </div>
+            </template>
+          </q-input>
+        </div>
+
+        <div v-if="mostrarImprimirReporteMateriales" class="col-12 col-md-3">
+          <label class="block q-mb-sm">&nbsp;</label>
+          <q-btn color="primary" no-caps @click="descargarReporteMateriales()">
+            <q-icon name="bi-download" size="xs" class="q-mr-sm"></q-icon>
+            Imprimir reporte de materiales
+          </q-btn>
+        </div>
       </q-card-section>
     </q-card>
 
@@ -62,7 +166,12 @@
           label="Material para proyectos"
           icon="bi-diagram-2"
         />
-        <q-tab name="personal" label="Stock personal" icon="bi-person"> </q-tab>
+        <q-tab
+          :name="destinosTareas.personal"
+          label="Stock personal"
+          icon="bi-person"
+        >
+        </q-tab>
       </q-tabs>
 
       <q-tab-panels v-model="tab" animated>
@@ -314,7 +423,7 @@
           </div>
         </q-tab-panel>
 
-        <q-tab-panel name="personal">
+        <q-tab-panel :name="destinosTareas.personal">
           <div class="row justify-center q-gutter-sm q-mb-md">
             <div class="col-12">
               <label class="q-mb-sm block"
@@ -420,7 +529,11 @@
         <div class="col-12 q-px-md">
           <essential-table
             titulo="Listado de materiales para tarea"
-            :configuracionColumnas="configuracionColumnasMaterialEmpleadoTarea"
+            :configuracionColumnas="
+              store.can('puede.modificar_stock.materiales_empleados')
+                ? [...configuracionColumnasMaterialEmpleadoTarea, accionesTabla]
+                : configuracionColumnasMaterialEmpleadoTarea
+            "
             :datos="listadosAuxiliares.productos"
             :permitirConsultar="false"
             :permitirEliminar="false"
@@ -429,10 +542,17 @@
             :alto-fijo="false"
             :ajustar-celdas="true"
             :mostrar-exportar="true"
+            :accion1="btnCambiarClientePropietario"
+            :accion2="btnModificarStock"
           ></essential-table>
         </div>
       </div>
     </q-card>
+    <modal-entidad
+      :comportamiento="modales"
+      @guardado="(data) => guardado(data)"
+      :persistente="false"
+    ></modal-entidad>
   </q-page>
 </template>
 

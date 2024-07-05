@@ -27,8 +27,6 @@ export default defineComponent({
     const v$ = useVuelidate(reglas, categoria)
     setValidador(v$.value)
 
-
-
     return {
       mixin,
       categoria,

@@ -1,5 +1,5 @@
-import { ColumnConfig } from "components/tables/domain/ColumnConfig";
-import { EsquemaComision } from "./EsquemaComision";
+import { ColumnConfig } from 'components/tables/domain/ColumnConfig';
+import { EsquemaComision } from './EsquemaComision';
 
 export const configuracionColumnasEsquemaComision: ColumnConfig<EsquemaComision>[] = [
   {

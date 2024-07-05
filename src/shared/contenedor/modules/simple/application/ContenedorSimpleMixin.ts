@@ -46,9 +46,11 @@ export class ContenedorSimpleMixin<T extends EntidadAuditable> extends Contenedo
     return {
       listar: this.listar.bind(this),
       listarArchivos: this.listarArchivos.bind(this),
+      listarActividades: this.listarActividades.bind(this),
       filtrar: this.filtrar.bind(this),
       consultar: this.consultar.bind(this),
       guardarArchivos: this.guardarArchivos.bind(this),
+      guardarActividades: this.guardarActividades.bind(this),
       guardar: this.guardar.bind(this),
       editar: this.editar.bind(this),
       editarParcial: this.editarParcial.bind(this),
@@ -186,7 +188,7 @@ export class ContenedorSimpleMixin<T extends EntidadAuditable> extends Contenedo
   // @noImplicitAny: false
   private async guardar(data: T, agregarAlListado = true, params?: ParamsType): Promise<any> {
 
-    this.hooks.onBeforeGuardar() // <- 19/02/2024 Se movio antes de las validaciones para realizar cambios en las variables, si da error, bajar
+    // aqui estaba onbeforeguardar POR EL CUESTIONARIO PSICOSOCIAL PERO EL SISTEMA YA FUNCIONA CON EL OB BEFORE GUARDAR EN LA LINEA 204
 
     if (!this.seCambioEntidad(this.entidad_vacia)) {
       this.notificaciones.notificarAdvertencia(
@@ -196,11 +198,13 @@ export class ContenedorSimpleMixin<T extends EntidadAuditable> extends Contenedo
       // return console.log('No se ha efectuado ningun cambio')
     }
 
-
+    console.log('antes de validar')
     if (this.refs.validador.value && !(await this.refs.validador.value.$validate()) || !(await this.ejecutarValidaciones())) {
+      console.log('validando...')
       this.notificaciones.notificarAdvertencia('Verifique el formulario')
       throw new Error('Verifique el formulario')
     }
+    this.hooks.onBeforeGuardar() // <- 19/02/2024 Se movio antes de las validaciones para realizar cambios en las variables, si da error, bajar
 
     //return this.cargarVista(async (): Promise<any> => {
     this.statusEssentialLoading.activar()
@@ -240,6 +244,8 @@ export class ContenedorSimpleMixin<T extends EntidadAuditable> extends Contenedo
         const mensajes: string[] = error.erroresValidacion
         await notificarMensajesError(mensajes, this.notificaciones)
       }
+
+      throw error
       //})
     } finally {
       this.statusEssentialLoading.desactivar()
@@ -254,7 +260,7 @@ export class ContenedorSimpleMixin<T extends EntidadAuditable> extends Contenedo
       if (data.id === null) {
         return this.notificaciones.notificarAdvertencia('No se puede eliminar el recurso con id null')
       }
-      this.controllerFiles?.eliminarFile(data.id, this.argsDefault).then(({ response }) => {
+      this.controllerFiles?.eliminarFile(data.id).then(({ response }) => {
         this.notificaciones.notificarCorrecto(response.data.mensaje)
         this.eliminarElementoListaArchivosActual(data)
         // this.reestablecer()
@@ -285,15 +291,28 @@ export class ContenedorSimpleMixin<T extends EntidadAuditable> extends Contenedo
     }
     this.statusEssentialLoading.desactivar()
   }
+  private async listarActividades(id: number, params?: ParamsType, append = false) {
+    this.statusEssentialLoading.activar()
+    try {
+      // const { result } = await this.controller.listarActividades(id, params)
+      const result  = []
+      if (result.length == 0) this.notificaciones.notificarCorrecto('Aún no se han agregado elementos')
+
+      if (append) this.refs.listadoActividades.value.push(...result)
+      else this.refs.listadoActividades.value = result
+    } catch (error) {
+      this.notificaciones.notificarError('Error al obtener el listado de actividades realizadas.')
+    }
+    this.statusEssentialLoading.desactivar()
+  }
 
   /**
    * Aqui se guardan los archivos
    * @param data
    * @param agregarAlListado
-   * @param params
    * @returns
    */
-  private async guardarArchivos(id: number, data: T, params?: ParamsType): Promise<any> {
+  private async guardarArchivos(id: number, data: T): Promise<any> {
 
     this.statusEssentialLoading.activar()
     try {
@@ -314,6 +333,24 @@ export class ContenedorSimpleMixin<T extends EntidadAuditable> extends Contenedo
     }
   }
 
+  private async guardarActividades(id: number, data: T): Promise<any> {
+    this.statusEssentialLoading.activar()
+    try {
+      const { response } = await this.controller.guardarActivities(id, data)
+
+      this.notificaciones.notificarCorrecto(response.data.mensaje)
+
+      return response
+    } catch (error) {
+      if (isAxiosError(error)) {
+        const mensajes: string[] = error.erroresValidacion
+        await notificarMensajesError(mensajes, this.notificaciones)
+      }
+    } finally {
+      this.statusEssentialLoading.desactivar()
+    }
+  }
+
 
 
   // Editar
@@ -325,7 +362,7 @@ export class ContenedorSimpleMixin<T extends EntidadAuditable> extends Contenedo
       )
     }
 
-    if (!this.seCambioEntidad(this.entidad_vacia)) {
+    if (!this.seCambioEntidad(this.entidad_copia)) {
       return this.notificaciones.notificarAdvertencia(
         'No se ha efectuado ningun cambio'
       )
@@ -423,7 +460,7 @@ export class ContenedorSimpleMixin<T extends EntidadAuditable> extends Contenedo
       }
 
       this.controller
-        .eliminar(data.id, this.argsDefault)
+        .eliminar(data.id)
         .then(({ response }) => {
           this.notificaciones.notificarCorrecto(response.data.mensaje)
           this.eliminarElementoListaActual(data)
@@ -455,10 +492,10 @@ export class ContenedorSimpleMixin<T extends EntidadAuditable> extends Contenedo
 
   /* private descargarArchivoBinario(formato: string) {
     if (this.refs.listado.value.length !== 0) {
-      const paramsListado: { [key: string]: any } = { opcion: "print" }
+      const paramsListado: { [key: string]: any } = { opcion: 'print' }
 
-      if (formato !== "pdf") {
-        paramsListado.opcion = "export"
+      if (formato !== 'pdf') {
+        paramsListado.opcion = 'export'
         paramsListado.format = formato
       }
 
@@ -469,7 +506,7 @@ export class ContenedorSimpleMixin<T extends EntidadAuditable> extends Contenedo
         })
         .catch(() =>
           this.notificaciones.notificarError(
-            "No se consiguio obtener el archivo del servidor."
+            'No se consiguio obtener el archivo del servidor.'
           )
         )
     }

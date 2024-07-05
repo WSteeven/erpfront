@@ -21,7 +21,7 @@ export const useConfiguracionGeneralStore = defineStore('configuracion_general',
     // console.log(rutaImagen)
 
     if (rutaImagen) {
-      const link: any = document.querySelector("link[rel*='icon']") || document.createElement('link');
+      const link: any = document.querySelector('link[rel*="icon"]') || document.createElement('link');
       link.type = 'image/x-icon';
       link.rel = 'icon';
       link.href = rutaImagen;

@@ -46,6 +46,10 @@ $border-color: #464646;
     background-color: $bg-body;
   }
 
+  .bg-border {
+    background-color: $text-color-transparency;
+  }
+
   .tab-inactive {
     background-color: #ffffff66;
     border-radius: 16px 4px 0 0;
@@ -75,14 +79,16 @@ $border-color: #464646;
   .tab-active {
     background-color: $dark-color;
     color: $text-color;
-    border-radius: 16px 4px 0 0;
+    border-radius: 16px 16px 0 0;
+    border: 1px solid rgba($text-color-transparency, .4);
     box-shadow: rgba(0, 0, 0, 0.12) 0px 5px 15px;
   }
-
+  
   .tab-inactive {
     background-color: rgba($dark-color, 0.6);
     color: $text-color-transparency;
-    border-radius: 16px 4px 0 0;
+    border-radius: 16px 16px 0 0;
+    border: 1px solid rgba($text-color-transparency, .1);
     box-shadow: rgba(0, 0, 0, 0.12) 0px 5px 15px;
   }
 
@@ -95,6 +101,13 @@ $border-color: #464646;
   .toggle-button-grey {
     border: 1px solid $grey;
     background-color: #000;
+  }
+
+  .toggle-button-positive {
+    border: 1px solid $positive;
+    background-color: transparent;
+    background-color: rgba($dark-color, 0.8);
+    backdrop-filter: blur(10px);
   }
 
   // Tabla
@@ -169,10 +182,10 @@ $border-color: #464646;
   .link-active {
     background: $primary; //rgba($bg-body, 1);
     // border-right: 3px solid $primary;
-    border-radius: 16px;
+    border-radius: 8px;
 
     i {
-      color: $primary;
+      color: white;
     }
 
     /* .q-item__label {
@@ -209,6 +222,10 @@ $border-color: #464646;
 
   .border-bottom {
     border-bottom: 1px solid $grey-8;
+  }
+
+  .border-white {
+    border: 1px solid $grey-8 !important;
   }
 
   // background

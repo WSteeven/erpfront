@@ -256,7 +256,7 @@
             <label class="q-mb-sm block">Menarquía</label>
             <q-input
               v-model="
-                fichaPreocupacional.antecedente_gineco_obstetrico.menarquia
+                fichaPreocupacional.antecedentes_gineco_obstetricos.menarquia
               "
               placeholder="Opcional"
               :disable="disabled"
@@ -269,7 +269,9 @@
           <div v-if="mostrarFemenino" class="col-12 col-md-3 q-mb-md">
             <label class="q-mb-sm block">Ciclos</label>
             <q-input
-              v-model="fichaPreocupacional.antecedente_gineco_obstetrico.ciclos"
+              v-model="
+                fichaPreocupacional.antecedentes_gineco_obstetricos.ciclos
+              "
               placeholder="Opcional"
               type="number"
               :disable="disabled"
@@ -283,22 +285,51 @@
             <label class="q-mb-sm block">Fecha de última menstruación</label>
             <q-input
               v-model="
-                fichaPreocupacional.antecedente_gineco_obstetrico
+                fichaPreocupacional.antecedentes_gineco_obstetricos
                   .fecha_ultima_menstruacion
               "
               placeholder="Opcional"
-              type="number"
-              :disable="disabled"
               outlined
+              :disable="disabled"
+              type="datetime"
               dense
             >
+              <template v-slot:append>
+                <q-icon name="event" class="cursor-pointer">
+                  <q-popup-proxy
+                    cover
+                    transition-show="scale"
+                    transition-hide="scale"
+                  >
+                    <q-date
+                      v-model="
+                        fichaPreocupacional.antecedentes_gineco_obstetricos
+                          .fecha_ultima_menstruacion
+                      "
+                      :mask="maskFecha"
+                      today-btn
+                    >
+                      <div class="row items-center justify-end">
+                        <q-btn
+                          v-close-popup
+                          label="Cerrar"
+                          color="primary"
+                          flat
+                        />
+                      </div>
+                    </q-date>
+                  </q-popup-proxy>
+                </q-icon>
+              </template>
             </q-input>
           </div>
 
           <div v-if="mostrarFemenino" class="col-12 col-md-3 q-mb-md">
             <label class="q-mb-sm block">Gestas</label>
             <q-input
-              v-model="fichaPreocupacional.antecedente_gineco_obstetrico.gestas"
+              v-model="
+                fichaPreocupacional.antecedentes_gineco_obstetricos.gestas
+              "
               placeholder="Opcional"
               type="number"
               :disable="disabled"
@@ -311,7 +342,9 @@
           <div v-if="mostrarFemenino" class="col-12 col-md-3 q-mb-md">
             <label class="q-mb-sm block">Partos</label>
             <q-input
-              v-model="fichaPreocupacional.antecedente_gineco_obstetrico.partos"
+              v-model="
+                fichaPreocupacional.antecedentes_gineco_obstetricos.partos
+              "
               placeholder="Opcional"
               type="number"
               :disable="disabled"
@@ -325,7 +358,7 @@
             <label class="q-mb-sm block">Cesáreas</label>
             <q-input
               v-model="
-                fichaPreocupacional.antecedente_gineco_obstetrico.cesareas
+                fichaPreocupacional.antecedentes_gineco_obstetricos.cesareas
               "
               placeholder="Opcional"
               type="number"
@@ -340,7 +373,7 @@
             <label class="q-mb-sm block">Abortos</label>
             <q-input
               v-model="
-                fichaPreocupacional.antecedente_gineco_obstetrico.abortos
+                fichaPreocupacional.antecedentes_gineco_obstetricos.abortos
               "
               placeholder="Opcional"
               type="number"
@@ -473,7 +506,7 @@
               :configuracionColumnas="
                 configuracionColumnasResultadoExamenPreocupacional
               "
-              :datos="fichaPreocupacional.examenes_realizados"
+              :datos="listadosAuxiliares.examenes_realizados"
               :permitirConsultar="false"
               :permitirEliminar="false"
               :permitirEditar="false"
@@ -490,11 +523,12 @@
 
           <div class="col-12 text-bold q-mb-md">HÁBITOS TÓXICOS</div>
           <div class="col-12 q-mb-md">
+            <div class="text-grey-8 q-mb-md">(Opcional)</div>
             <essential-table
               :configuracionColumnas="
                 configuracionColumnasResultadoHabitoToxico
               "
-              :datos="listadosAuxiliares.resultados_habitos_toxicos"
+              :datos="listadosAuxiliares.habitos_toxicos"
               :permitirConsultar="false"
               :permitirEliminar="false"
               :permitirEditar="false"
@@ -514,12 +548,16 @@
           <div class="col-12 q-mb-md">
             <q-btn
               color="primary"
-              class="q-mb-sm"
+              class="q-mb-sm q-mr-sm"
               icon="bi-arrow-down"
+              :disable="disabled"
               no-caps
               unelevated
               @click="insertarFilaActividadFisica()"
               >Insertar fila</q-btn
+            >
+            <span class="text-grey-8"
+              >(Inserte un máximo de 1 fila) (Opcional)</span
             >
             <essential-table
               :configuracionColumnas="[
@@ -545,19 +583,23 @@
           <div class="col-12 q-mb-md">
             <q-btn
               color="primary"
-              class="q-mb-sm"
+              class="q-mb-sm q-mr-sm"
               icon="bi-arrow-down"
+              :disable="disabled"
               no-caps
               unelevated
               @click="insertarFilaMedicacionHabitual()"
               >Insertar fila</q-btn
+            >
+            <span class="text-grey-8"
+              >(Inserte un máximo de 3 filas) (Opcional)</span
             >
             <essential-table
               :configuracionColumnas="[
                 ...configuracionColumnasMedicacionHabitual,
                 accionesTabla,
               ]"
-              :datos="fichaPreocupacional.medicacion_habituales"
+              :datos="fichaPreocupacional.medicaciones"
               :permitirConsultar="false"
               :permitirEliminar="false"
               :permitirEditar="false"
@@ -585,22 +627,26 @@
           <div class="col-12 text-bold q-mb-md">
             ANTECEDENTES DE EMPLEOS ANTERIORES
           </div>
+
           <div class="col-12 q-mb-md">
             <q-btn
               color="primary"
-              class="q-mb-sm"
+              class="q-mb-sm q-mr-sm"
               icon="bi-arrow-down"
+              :disable="disabled"
               no-caps
               unelevated
               @click="insertarFilaAntecedenteTrabajoAnterior()"
               >Insertar fila</q-btn
             >
+            <span class="text-grey-8">(Opcional)</span>
             <essential-table
+              v-if="mostrarTablaAntecedenteTrabajoAnteriorReactive"
               :configuracionColumnas="[
-                ...configuracionColumnasAntecedenteTrabajoAnterior,
+                ...configuracionColumnasAntecedenteTrabajoAnteriorReactive,
                 accionesTabla,
               ]"
-              :datos="fichaPreocupacional.antecedentes_trabajos_anteriores"
+              :datos="fichaPreocupacional.antecedentes_empleos_anteriores"
               :permitirConsultar="false"
               :permitirEliminar="false"
               :permitirEditar="false"
@@ -626,13 +672,13 @@
             >
             <div class="q-gutter-sm">
               <q-radio
-                v-model="fichaPreocupacional.accidente_trabajo.calificado_iess"
+                v-model="fichaPreocupacional.accidente_trabajo.calificado_iss"
                 :val="true"
                 label="Si"
                 :disable="disabled"
               />
               <q-radio
-                v-model="fichaPreocupacional.accidente_trabajo.calificado_iess"
+                v-model="fichaPreocupacional.accidente_trabajo.calificado_iss"
                 :val="false"
                 label="No"
                 :disable="disabled"
@@ -641,12 +687,14 @@
           </div>
 
           <div
-            v-if="fichaPreocupacional.accidente_trabajo.calificado_iess"
+            v-if="fichaPreocupacional.accidente_trabajo.calificado_iss"
             class="col-12 col-md-6 q-mb-md"
           >
             <label class="q-mb-sm block">Especificar</label>
             <q-input
-              v-model="fichaPreocupacional.accidente_trabajo.descripcion"
+              v-model="
+                fichaPreocupacional.accidente_trabajo.instituto_seguridad_social
+              "
               placeholder="Opcional"
               :disable="disabled"
               outlined
@@ -715,7 +763,7 @@
             <div class="q-gutter-sm">
               <q-radio
                 v-model="
-                  fichaPreocupacional.enfermedad_profesional.calificado_iess
+                  fichaPreocupacional.enfermedad_profesional.calificado_iss
                 "
                 :val="true"
                 label="Si"
@@ -723,7 +771,7 @@
               />
               <q-radio
                 v-model="
-                  fichaPreocupacional.enfermedad_profesional.calificado_iess
+                  fichaPreocupacional.enfermedad_profesional.calificado_iss
                 "
                 :val="false"
                 label="No"
@@ -733,12 +781,15 @@
           </div>
 
           <div
-            v-if="fichaPreocupacional.enfermedad_profesional.calificado_iess"
+            v-if="fichaPreocupacional.enfermedad_profesional.calificado_iss"
             class="col-12 col-md-6 q-mb-md"
           >
             <label class="q-mb-sm block">Especificar</label>
             <q-input
-              v-model="fichaPreocupacional.enfermedad_profesional.descripcion"
+              v-model="
+                fichaPreocupacional.enfermedad_profesional
+                  .instituto_seguridad_social
+              "
               placeholder="Opcional"
               :disable="disabled"
               outlined
@@ -784,7 +835,7 @@
             </q-input>
           </div>
 
-          <div class="col-12 q-mb-md">
+          <div class="col-12 col-md-6 q-mb-md">
             <label class="q-mb-sm block">Observación</label>
             <q-input
               v-model="fichaPreocupacional.enfermedad_profesional.observacion"
@@ -805,6 +856,7 @@
       >
         <div class="row q-col-gutter-x-sm q-pa-md">
           <div class="col-12 q-mb-md">
+            <div class="text-grey-8 q-mb-md">(Opcional)</div>
             <!-- {{ fichaPreocupacional.antecedentes_familiares }} -->
             <essential-table
               :configuracionColumnas="configuracionColumnasAntecedenteFamiliar"
@@ -835,13 +887,14 @@
           <div class="col-12 q-mb-md">
             <q-btn
               color="primary"
-              class="q-mb-sm"
+              class="q-mb-sm q-mr-sm"
               icon="bi-arrow-down"
               no-caps
               unelevated
               @click="insertarFilaFrPuestoTrabajoActualReactive()"
               >Insertar fila</q-btn
             >
+            <span class="text-grey-8">(Opcional)</span>
             <essential-table
               v-if="mostrarTablaFrPuestoTrabajoActualReactive"
               :configuracionColumnas="[
@@ -915,8 +968,8 @@
         default-opened
       >
         <div class="row q-col-gutter-x-sm q-pa-md">
-          {{ listadosAuxiliares.revisiones_actuales_organos_sistemas }}
           <div class="col-12 q-mb-md">
+            <div class="text-grey-8 q-mb-md">(Opcional)</div>
             <essential-table
               :configuracionColumnas="
                 configuracionColumnasRevisionActualOrganoSistema
@@ -962,6 +1015,7 @@
       >
         <div class="q-pa-md">
           <examen-fisico-regional-component
+            :datos="fichaPreocupacional.examenes_fisicos_regionales"
             :disable="disabled"
             @update:model-value="hidratarExamenFisicoRegional"
           ></examen-fisico-regional-component>
@@ -1009,12 +1063,12 @@
       <div class="row q-gutter-x-xs">
         <q-btn
           v-if="fichaPreocupacional.id && mostrarDescargarPdf"
-          class="bg-white text-positive"
+          class="bg-white text-pink-10"
           no-caps
           push
           @click="descargarPdf()"
         >
-          <q-icon name="bi-download" size="xs" class="q-mr-sm"></q-icon>
+          <q-icon name="bi-file-earmark-pdf" size="xs" class="q-mr-sm"></q-icon>
           Descargar PDF</q-btn
         >
       </div>

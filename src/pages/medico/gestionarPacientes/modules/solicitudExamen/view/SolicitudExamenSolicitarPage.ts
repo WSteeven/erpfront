@@ -96,7 +96,8 @@ export default defineComponent({
      ********/
     onGuardado((id: number, responseData) => {
       const idExamenesSolicitados = responseData.modelo.examenes_solicitados.map((ex: ExamenSolicitado) => ex.examen as number)
-      emit('guardado', { data: { idExamenesSolicitados }, page: 'SolicitudExamenSolicitarPage' })
+      // emit('guardado', { data: { idExamenesSolicitados }, page: 'SolicitudExamenSolicitarPage' })
+      emit('guardado', { page: 'SolicitudExamenSolicitarPage', data: { idExamenesSolicitados } })
       emit('cerrar-modal')
     })
 

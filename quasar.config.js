@@ -152,6 +152,7 @@ module.exports = configure(function (/* ctx */) {
           __dirname,
           './src/pages/gestionTickets/motivosCanceladosTickets'
         ),
+        vehiculos: path.join(__dirname, './src/pages/controlVehiculos'),
         // Modulo medico
         medico: path.join(__dirname, './src/pages/medico'),
       },

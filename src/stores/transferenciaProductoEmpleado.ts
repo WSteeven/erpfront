@@ -12,6 +12,9 @@ export const useTransferenciaProductoEmpleadoStore = defineStore('transferenciaP
   const origenProductos = ref() // cliente final, proyecto, personal
   const idEmpleado = ref()
 
+  const filaAModificar= ref() //Representa la fila del materialEmpleado que se va a modificar
+
+
   return {
     listadoMateriales,
     tareaId,
@@ -21,5 +24,6 @@ export const useTransferenciaProductoEmpleadoStore = defineStore('transferenciaP
     idEtapa,
     idProyecto,
     idEmpleado,
+    filaAModificar,
   }
 })

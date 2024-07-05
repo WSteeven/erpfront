@@ -1,5 +1,5 @@
-import { ColumnConfig } from "components/tables/domain/ColumnConfig";
-import { AutorizarTransferencia } from "./AutorizarTransferencia";
+import { ColumnConfig } from 'components/tables/domain/ColumnConfig';
+import { AutorizarTransferencia } from './AutorizarTransferencia';
 
 
 export const configuracionColumnasAutorizarTransferencia: ColumnConfig<AutorizarTransferencia>[] = [

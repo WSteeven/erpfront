@@ -1,5 +1,5 @@
-import { Validador } from "shared/validadores/domain/Validador";
-import { Devolucion } from "../domain/Devolucion";
+import { Validador } from 'shared/validadores/domain/Validador';
+import { Devolucion } from '../domain/Devolucion';
 
 export class ValidarListadoProductos implements Validador {
     private devolucion: Devolucion

@@ -1,24 +1,24 @@
 //Dependencias
-import { configuracionColumnasTransaccionEgreso } from "pages/bodega/transacciones/domain/configuracionColumnasTransaccionEgreso";
-import { defineComponent, reactive, ref } from "vue";
-import { LocalStorage, useQuasar, } from "quasar";
+import { configuracionColumnasTransaccionEgreso } from 'pages/bodega/transacciones/domain/configuracionColumnasTransaccionEgreso';
+import { defineComponent, reactive, ref } from 'vue';
+import { LocalStorage, useQuasar, } from 'quasar';
 
 //Componentes
-import EssentialTable from "components/tables/view/EssentialTable.vue";
+import EssentialTable from 'components/tables/view/EssentialTable.vue';
 import { Chart as ChartJS, ArcElement, Tooltip, Legend } from 'chart.js'
 import ModalEntidad from 'components/modales/view/ModalEntidad.vue';
 
 
 //Logica y controladores
-import { StatusEssentialLoading } from "components/loading/application/StatusEssentialLoading";
-import { AxiosHttpRepository } from "shared/http/infraestructure/AxiosHttpRepository";
-import { AxiosResponse } from "axios"
-import { apiConfig, endpoints } from "config/api";
-import { useNotificaciones } from "shared/notificaciones";
-import { ContenedorSimpleMixin } from "shared/contenedor/modules/simple/application/ContenedorSimpleMixin";
-import { TransaccionIngresoController } from "pages/bodega/transacciones/infraestructure/TransaccionIngresoController";
-import { Transaccion } from "pages/bodega/transacciones/domain/Transaccion";
-import { EmpleadoController } from "pages/recursosHumanos/empleados/infraestructure/EmpleadoController";
+import { StatusEssentialLoading } from 'components/loading/application/StatusEssentialLoading';
+import { AxiosHttpRepository } from 'shared/http/infraestructure/AxiosHttpRepository';
+import { AxiosResponse } from 'axios'
+import { apiConfig, endpoints } from 'config/api';
+import { useNotificaciones } from 'shared/notificaciones';
+import { ContenedorSimpleMixin } from 'shared/contenedor/modules/simple/application/ContenedorSimpleMixin';
+import { TransaccionIngresoController } from 'pages/bodega/transacciones/infraestructure/TransaccionIngresoController';
+import { Transaccion } from 'pages/bodega/transacciones/domain/Transaccion';
+import { EmpleadoController } from 'pages/recursosHumanos/empleados/infraestructure/EmpleadoController';
 import { accionesTabla, opcionesReportesEgresos, tiposReportesEgresos } from 'config/utils';
 import { MotivoController } from 'pages/administracion/motivos/infraestructure/MotivoController';
 import { CustomActionTable } from 'components/tables/domain/CustomActionTable';
@@ -29,7 +29,7 @@ import { imprimirArchivo } from 'shared/utils'
 import { useNotificacionStore } from 'stores/notificacion';
 import { ClienteController } from 'sistema/clientes/infraestructure/ClienteController';
 import { ComportamientoModalesTransaccionEgreso } from 'pages/bodega/transacciones/modules/transaccionEgreso/application/ComportamientoModalesGestionarEgresos';
-import { useCargandoStore } from "stores/cargando";
+import { useCargandoStore } from 'stores/cargando';
 
 ChartJS.register(ArcElement, Tooltip, Legend)
 export default defineComponent({
@@ -49,7 +49,7 @@ export default defineComponent({
       solicitante: null,
       per_retira: null,
       responsable: null,
-      per_autoriza:null,
+      per_autoriza: null,
       per_atiende: null, //bodeguero
       sucursal: null,
       motivo: null,
@@ -185,7 +185,7 @@ export default defineComponent({
       //listados
       sucursales, listado,
       empleados, bodegueros, motivos,
-      tareas,clientes,
+      tareas, clientes,
 
       opcionesReportesEgresos,
       tiposReportesEgresos,

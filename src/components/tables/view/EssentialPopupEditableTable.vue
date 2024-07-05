@@ -23,8 +23,8 @@
   </div>
   <q-table
     ref="referencia"
-    :hide-header="grid"
-    :grid="grid || $q.screen.xs"
+    :hide-header="!mostrarHeader"
+    :grid="grid && $q.screen.xs"
     :columns="configuracionColumnas"
     :rows="listado"
     :filter="filter"
@@ -621,12 +621,14 @@
       </q-card>
     </template>
 
-    <!-- Edicion de celdas -->
+    <!-- 
+      Edicion de celdas
+     -->
+
     <!-- Celdas normales -->
     <template v-slot:body-cell="props" v-if="permitirEditarCeldas">
       <q-td :key="props.col.name" :props="props">
         {{ props.row[props.col.name] }}
-        <!-- :title="'Modificar ' + props.col.label" -->
         <q-popup-edit
           v-if="props.col.editable"
           v-model="props.row[props.col.name]"
@@ -721,6 +723,22 @@
           map-options
         />
         <span v-else>{{ props.row[props.col.name] }}</span>
+      </q-td>
+    </template>
+    <template #body-cell-estado="props">
+      <q-td :props="props">
+        <q-icon
+          v-if="props.value"
+          name="bi-check-circle-fill"
+          color="positive"
+          size="sm"
+        ></q-icon>
+        <q-icon
+          v-if="!props.value"
+          name="bi-x-circle-fill"
+          color="negative"
+          size="sm"
+        ></q-icon>
       </q-td>
     </template>
     <!--Select de unidad de medida-->

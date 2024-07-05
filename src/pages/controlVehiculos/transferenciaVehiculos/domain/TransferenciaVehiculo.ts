@@ -1,0 +1,50 @@
+import { EntidadAuditable } from 'shared/entidad/domain/entidadAuditable';
+
+export class TransferenciaVehiculo extends EntidadAuditable {
+    vehiculo: number | null
+    entrega: number | null
+    canton: number | null
+    responsable: number | null
+    responsable_id: number | null
+    observacion_recibe: string | null
+    observacion_entrega: string | null
+    fecha_entrega: string | null
+    motivo: string | null
+    estado: string | null
+    garaje: string | null
+    latitud: string | null
+    longitud: string | null
+    accesorios: string | null
+    estado_carroceria: string | null
+    estado_mecanico: string | null
+    estado_electrico: string | null
+    fecha_aceptacion: string | null
+    devuelve: number | null
+    asignacion: number | null
+    transferencia: number | null
+
+    constructor() {
+        super()
+        this.vehiculo = null
+        this.entrega = null
+        this.responsable = null
+        this.responsable_id = null
+        this.observacion_recibe = null
+        this.observacion_entrega = null
+        this.motivo = null
+        this.estado = null
+        this.garaje = null
+        this.latitud = null
+        this.longitud = null
+        this.fecha_entrega = null
+        this.fecha_aceptacion = null
+        this.canton = null
+        this.accesorios = null
+        this.estado_carroceria = null
+        this.estado_mecanico = null
+        this.estado_electrico = null
+        this.devuelve = null
+        this.asignacion = null
+        this.transferencia = null
+    }
+}

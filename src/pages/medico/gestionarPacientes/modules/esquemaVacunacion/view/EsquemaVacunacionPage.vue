@@ -23,7 +23,13 @@
             input-debounce="0"
             emit-value
             map-options
+            :error="!!v$.tipo_vacuna.$errors.length"
           >
+            <template v-slot:error>
+              <div v-for="error of v$.tipo_vacuna.$errors" :key="error.$uid">
+                <div>{{ error.$message }}</div>
+              </div>
+            </template>
           </q-select>
         </div>
 
@@ -31,10 +37,11 @@
           <label class="q-mb-sm block">Fecha de aplicación</label>
           <q-input
             v-model="esquema.fecha"
-            placeholder="Opcional"
+            placeholder="Obligatorio"
             outlined
             :disable="disabled"
             type="datetime"
+            :error="!!v$.fecha.$errors.length"
             dense
           >
             <template v-slot:append>
@@ -57,6 +64,12 @@
                 </q-popup-proxy>
               </q-icon>
             </template>
+
+            <template v-slot:error>
+              <div v-for="error of v$.fecha.$errors" :key="error.$uid">
+                <div>{{ error.$message }}</div>
+              </div>
+            </template>
           </q-input>
         </div>
 
@@ -68,7 +81,6 @@
             outlined
             :disable="disabled"
             dense
-            type="number"
           >
           </q-input>
         </div>
@@ -101,7 +113,11 @@
                   transition-show="scale"
                   transition-hide="scale"
                 >
-                  <q-date v-model="esquema.fecha_caducidad" :mask="maskFecha" today-btn>
+                  <q-date
+                    v-model="esquema.fecha_caducidad"
+                    :mask="maskFecha"
+                    today-btn
+                  >
                     <div class="row items-center justify-end">
                       <q-btn
                         v-close-popup
@@ -123,11 +139,20 @@
           >
           <q-input
             v-model="esquema.responsable_vacunacion"
-            placeholder="Opcional"
+            placeholder="Obligatorio"
             outlined
             :disable="disabled"
+            :error="!!v$.responsable_vacunacion.$errors.length"
             dense
           >
+            <template v-slot:error>
+              <div
+                v-for="error of v$.responsable_vacunacion.$errors"
+                :key="error.$uid"
+              >
+                <div>{{ error.$message }}</div>
+              </div>
+            </template>
           </q-input>
         </div>
 
@@ -137,11 +162,20 @@
           >
           <q-input
             v-model="esquema.establecimiento_salud"
-            placeholder="Opcional"
+            placeholder="Obligatorio"
             outlined
             :disable="disabled"
             dense
+            :error="!!v$.establecimiento_salud.$errors.length"
           >
+            <template v-slot:error>
+              <div
+                v-for="error of v$.establecimiento_salud.$errors"
+                :key="error.$uid"
+              >
+                <div>{{ error.$message }}</div>
+              </div>
+            </template>
           </q-input>
         </div>
 
@@ -185,19 +219,6 @@
             "
             :idModelo="idEsquema"
           >
-            <template #boton-subir>
-              <q-btn
-                v-if="false"
-                color="positive"
-                push
-                no-caps
-                class="full-width q-mb-lg"
-                @click="subirArchivos()"
-              >
-                <q-icon name="bi-upload" class="q-mr-sm" size="xs"></q-icon>
-                Subir archivos seleccionados</q-btn
-              >
-            </template>
           </gestor-archivos>
         </div>
       </div>

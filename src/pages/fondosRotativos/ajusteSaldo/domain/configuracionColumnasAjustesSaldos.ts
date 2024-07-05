@@ -1,7 +1,7 @@
-import { ColumnConfig } from "components/tables/domain/ColumnConfig";
-import { AjusteSaldo } from "./AjusteSaldo";
+import { ColumnConfig } from 'components/tables/domain/ColumnConfig';
+import { AjusteSaldo } from './AjusteSaldo';
 
-export const configuracionColumnasAjustesSaldos: ColumnConfig<AjusteSaldo>[]=[
+export const configuracionColumnasAjustesSaldos: ColumnConfig<AjusteSaldo>[] = [
     {
         name: 'solicitante',
         field: 'solicitante',

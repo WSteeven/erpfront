@@ -8,11 +8,12 @@ export class EsquemaVacuna extends EntidadAuditable {
   paciente: number | null
   dosis_totales: number | null
   fecha: string | null
-  lote: number | null
+  lote: string | null
   responsable_vacunacion: string | null
   establecimiento_salud: string | null
   fecha_caducidad: string | null
   es_dosis_unica: boolean
+  archivos: string | null
 
   constructor() {
     super()
@@ -28,5 +29,6 @@ export class EsquemaVacuna extends EntidadAuditable {
     this.establecimiento_salud = null
     this.fecha_caducidad = null
     this.es_dosis_unica = false
+    this.archivos = null
   }
 }

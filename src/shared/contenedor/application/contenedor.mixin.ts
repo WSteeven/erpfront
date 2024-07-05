@@ -9,7 +9,6 @@ import { compararObjetos } from 'shared/utils'
 import { reactive, UnwrapRef } from 'vue'
 import { Validador } from 'shared/validadores/domain/Validador'
 import { useNotificaciones } from 'shared/notificaciones'
-import { Archivo } from 'pages/gestionTrabajos/subtareas/modules/gestorArchivosTrabajos/domain/Archivo'
 import { ArchivoController } from 'pages/gestionTrabajos/subtareas/modules/gestorArchivosTrabajos/infraestructure/ArchivoController'
 // Componentes
 
@@ -211,4 +210,8 @@ export abstract class Contenedor<
     this.entidad_copia[key] = value
     this.entidad_vacia[key] = value
   } */
+
+  public getController() {
+    return this.controller
+  }
 }

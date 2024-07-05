@@ -1,7 +1,7 @@
-import { defineStore } from "pinia";
-import { ref } from "vue";
+import { defineStore } from 'pinia';
+import { ref } from 'vue';
 
-export const useTransferenciaSaldoStore = defineStore('transferencia_saldo', ()=>{
+export const useTransferenciaSaldoStore = defineStore('transferencia_saldo', () => {
   const id_transferencia = ref()
 
   return {

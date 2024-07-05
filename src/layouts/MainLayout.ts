@@ -126,7 +126,7 @@ export default defineComponent({
     notificacionesSistema.init()
 
     //Poner la imagen de perfil
-    const imagenPerfil = `https://ui-avatars.com/api/?name=${authenticationStore.user.nombres.substr(0, 1)}+${authenticationStore.user.apellidos.substr(0, 1)}&bold=true&background=0879dc28&color=0879dc`
+    const imagenPerfil = authenticationStore.user.foto_url // `https://ui-avatars.com/api/?name=${authenticationStore.user.nombres.substr(0, 1)}+${authenticationStore.user.apellidos.substr(0, 1)}&bold=true&background=0879dc28&color=0879dc`
 
     const notificacionesPusherStore = useNotificationRealtimeStore()
     const obtenerIconoNotificacion = new ObtenerIconoNotificacionRealtime()
@@ -153,7 +153,7 @@ export default defineComponent({
         grupos[tipo].push(notificacion)
       })
 
-      // Ordenar las notificaciones dentro de cada grupo según el campo "tipo"
+      // Ordenar las notificaciones dentro de cada grupo según el campo 'tipo'
       const tiposOrdenados = Object.keys(grupos).sort()
 
       const notificacionesAgrupadasYOrdenadas = {}
@@ -163,9 +163,6 @@ export default defineComponent({
 
       return notificacionesAgrupadasYOrdenadas
     }
-
-    const nombreEmpresa = computed(() => configuracionGeneralStore.configuracion?.nombre_empresa)
-    watchEffect(() => document.title = (notificaciones.value.length ? `(${notificaciones.value.length})` : '') + ' ' + nombreEmpresa.value)
 
     async function marcarLeida(id) {
       notificacionesPusherStore.idNotificacion = id
@@ -260,6 +257,10 @@ export default defineComponent({
     // Establecer favicon
     configuracionGeneralStore.consultarConfiguracion().then(() =>
       configuracionGeneralStore.cambiarFavicon())
+
+    // Titulo pagina
+    const nombreEmpresa = computed(() => configuracionGeneralStore.configuracion?.nombre_empresa)
+    watchEffect(() => document.title = (notificaciones.value.length ? `(${notificaciones.value.length})` : '') + ' ' + nombreEmpresa.value)
 
     return {
       // logoClaro: `${process.env.API_URL}/storage/configuracion_general/logo_claro.jpeg`,

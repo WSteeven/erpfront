@@ -8,6 +8,7 @@ import { useMedicoStore } from 'stores/medico'
 import useVuelidate from '@vuelidate/core'
 
 // Componentes
+import ContantesVitales from 'medico/gestionarPacientes/modules/seccionesFichas/constantesVitales/ContantesVitales.vue'
 import SimpleLayout from 'src/shared/contenedor/modules/simple/view/SimpleLayout.vue'
 import DetallePaciente from 'medico/gestionarPacientes/view/DetallePaciente.vue'
 import ButtonSubmits from 'components/buttonSubmits/buttonSubmits.vue'
@@ -23,6 +24,7 @@ import { DiagnosticoCitaMedica } from '../domain/DiagnosticoCitaMedica'
 import { ConsultaMedica } from '../domain/ConsultaMedica'
 import { acciones } from 'config/utils'
 import { useNotificaciones } from 'shared/notificaciones'
+import { ConstanteVital } from 'pages/medico/gestionarPacientes/modules/seccionesFichas/domain/ConstanteVital'
 
 
 export default defineComponent({
@@ -31,6 +33,7 @@ export default defineComponent({
     SimpleLayout,
     DetallePaciente,
     ButtonSubmits,
+    ContantesVitales,
   },
   emits: ['cerrar-modal', 'guardado'],
   setup(props, { emit }) {
@@ -101,11 +104,24 @@ export default defineComponent({
       guardar(consulta)
     }
 
+    const hidratarConstanteVital = (constanteVital: ConstanteVital) => consulta.constante_vital.hydrate(constanteVital)
+
     /*************
    * Validaciones
    **************/
     const reglas = {
       diagnosticos: { required },
+      constante_vital: {
+        presion_arterial: { required },
+        temperatura: { required },
+        frecuencia_cardiaca: { required },
+        saturacion_oxigeno: { required },
+        frecuencia_respiratoria: { required },
+        peso: { required },
+        talla: { required },
+        indice_masa_corporal: { required },
+        perimetro_abdominal: { required },
+      }
     }
 
     const v$ = useVuelidate(reglas, consulta)
@@ -117,6 +133,10 @@ export default defineComponent({
     onBeforeGuardar(() => {
       consulta.diagnosticos = consulta.diagnosticos.map((enfermedad: any) => {
         const diagnostico = new DiagnosticoCitaMedica()
+        diagnostico.id = enfermedad.id
+        diagnostico.codigo_nombre_enfermedad = enfermedad.codigo_nombre_enfermedad
+        diagnostico.codigo = enfermedad.codigo
+        diagnostico.nombre_enfermedad = enfermedad.nombre_enfermedad
         diagnostico.cie = enfermedad.id
         diagnostico.recomendacion = enfermedad.recomendacion
         return diagnostico
@@ -126,16 +146,18 @@ export default defineComponent({
     onReestablecer(() => {
       console.log('onReestablecer')
       consulta.diagnosticos = []
-      emit('cerrar-modal')
+      // emit('cerrar-modal')
     })
 
     onGuardado((id, responseData) => {
       console.log('onGuarado')
-      emit('guardado', { page: 'DiagnosticoRecetaPage', entidad: responseData.modelo, hook: 'onGuardado' })
+      emit('guardado', { page: 'DiagnosticoRecetaPage', entidad: responseData.modelo, hook: 'onGuardado', data: {} }) // Para CitaMedicaPage
+      emit('cerrar-modal')
     })
 
     onModificado((id, responseData) => {
       emit('guardado', { page: 'DiagnosticoRecetaPage', entidad: responseData.modelo, hook: 'onModificado' })
+      emit('cerrar-modal')
     })
 
     /*******
@@ -175,6 +197,7 @@ export default defineComponent({
       // enfermedadesSeleccionadas,
       tiposEnfermedades,
       tabsEnfermedades,
+      hidratarConstanteVital,
     }
   }
 })

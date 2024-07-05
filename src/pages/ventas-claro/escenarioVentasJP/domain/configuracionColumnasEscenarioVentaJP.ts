@@ -1,5 +1,5 @@
-import { ColumnConfig } from "components/tables/domain/ColumnConfig";
-import { EscenarioVentaJP } from "./EscenarioVentaJP";
+import { ColumnConfig } from 'components/tables/domain/ColumnConfig';
+import { EscenarioVentaJP } from './EscenarioVentaJP';
 
 export const configuracionColumnasEscenarioVentaJP: ColumnConfig<EscenarioVentaJP>[] = [
   {

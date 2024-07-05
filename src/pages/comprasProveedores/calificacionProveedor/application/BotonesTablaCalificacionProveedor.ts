@@ -1,17 +1,15 @@
-import { CustomActionPrompt } from "components/tables/domain/CustomActionPrompt"
-import { CustomActionTable } from "components/tables/domain/CustomActionTable"
-import { likertCalificacion } from "config/utils_compras_proveedores"
-import { useNotificaciones } from "shared/notificaciones"
-import { reactive, ref } from "vue"
+import { CustomActionPrompt } from 'components/tables/domain/CustomActionPrompt'
+import { CustomActionTable } from 'components/tables/domain/CustomActionTable'
+import { likertCalificacion } from 'config/utils_compras_proveedores'
+import { useNotificaciones } from 'shared/notificaciones'
+import { reactive, ref } from 'vue'
 
-import ArchivoSeguimiento from "pages/gestionTrabajos/subtareas/modules/gestorArchivosTrabajos/view/ArchivoSeguimiento.vue"
 
 export const useBotonesTablaCalificacionProveedor = (listado) => {
 
     const { confirmar, prompt, promptItems } = useNotificaciones()
     const criteriosBienes = ref<any>([])
     const criteriosServicios = ref<any>([])
-    const refArchivoProveedor = ref()
 
     /************************************************************** 
      * btnes de tabla
@@ -20,8 +18,8 @@ export const useBotonesTablaCalificacionProveedor = (listado) => {
         titulo: 'Quitar',
         color: 'negative',
         icono: 'bi-x',
-        accion: ({ entidad, posicion }) => {
-            eliminarBien({ entidad, posicion })
+        accion: ({  posicion }) => {
+            eliminarBien({ posicion })
         },
         visible: () => true
     }
@@ -29,8 +27,8 @@ export const useBotonesTablaCalificacionProveedor = (listado) => {
         titulo: 'Quitar',
         color: 'negative',
         icono: 'bi-x',
-        accion: ({ entidad, posicion }) => {
-            eliminarServicio({ entidad, posicion })
+        accion: ({ posicion }) => {
+            eliminarServicio({ posicion })
         },
         visible: () => true
     }
@@ -72,20 +70,11 @@ export const useBotonesTablaCalificacionProveedor = (listado) => {
         },
         visible: () => true
     }
-    // const btnSubirArchivosBien: CustomActionTable={
-    //     titulo: 'SubirArchivos',
-    //     icono: 'bi-folder-plus',
-    //     color: 'secondary',
-    //     accion: ({data, posicion} )=>{
-    //         console.log('Diste clic en subir archivos, aquí debe abrirse un modal')
-    //         // refArchivoProveedor.value.quiero_subir_archivos = true
-
-    //     }
-    // }
+    
     const btnCalificarCriterioBien: CustomActionTable = {
         titulo: 'Calificación',
         icono: 'bi-pencil',
-        accion: ({ entidad, posicion }) => {
+        accion: ({ posicion }) => {
             const config: CustomActionPrompt = reactive({
                 titulo: 'Califica',
                 mensaje: 'Ingresa una puntuación',
@@ -115,7 +104,7 @@ export const useBotonesTablaCalificacionProveedor = (listado) => {
     const btnCalificarCriterioServicio: CustomActionTable = {
         titulo: 'Calificación',
         icono: 'bi-pencil',
-        accion: ({ entidad, posicion }) => {
+        accion: ({  posicion }) => {
             const config: CustomActionPrompt = reactive({
                 titulo: 'Califica',
                 mensaje: 'Ingresa una puntuación',
@@ -146,14 +135,14 @@ export const useBotonesTablaCalificacionProveedor = (listado) => {
     /************************************************************** 
      * Funciones
      **************************************************************/
-    function eliminarBien({ entidad, posicion }) {
+    function eliminarBien({ posicion }) {
         confirmar('¿Está seguro de continuar?',
             () => {
                 criteriosBienes.value.splice(posicion, 1)
                 listado.value.splice(posicion, 1)
             })
     }
-    function eliminarServicio({ entidad, posicion }) {
+    function eliminarServicio({  posicion }) {
         confirmar('¿Está seguro de continuar?',
             () => {
                 criteriosServicios.value.splice(posicion, 1)

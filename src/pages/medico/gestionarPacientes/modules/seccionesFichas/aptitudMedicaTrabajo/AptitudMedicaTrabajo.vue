@@ -95,6 +95,7 @@ const consultartipoAptitudMedicaLaboralController = async () => {
   try {
     const { result } = await tipoAptitudMedicaLaboralController.listar()
     tiposAptitudesMedicasLaborales.value = result
+    entidad.tipo_aptitud_id = tiposAptitudesMedicasLaborales.value[0].id
   } catch (e) {
     console.log(e)
   } finally {

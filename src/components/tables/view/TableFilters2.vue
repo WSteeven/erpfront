@@ -121,21 +121,21 @@ export default defineComponent({
       emit('filtrosEditados', filtros)
     }
 
-    function reset() {
-      return props.configuracionColumnas.flatMap((filtro: any) => {
-        if (filtro.field !== 'acciones') {
-          return {
-            field: filtro.field,
-            label: filtro.label,
-            value: null,
-            type: filtro.type,
-            options: filtro.options,
-          }
-        } else {
-          return []
-        }
-      })
-    }
+    // function reset() {
+    //   return props.configuracionColumnas.flatMap((filtro: any) => {
+    //     if (filtro.field !== 'acciones') {
+    //       return {
+    //         field: filtro.field,
+    //         label: filtro.label,
+    //         value: null,
+    //         type: filtro.type,
+    //         options: filtro.options,
+    //       }
+    //     } else {
+    //       return []
+    //     }
+    //   })
+    // }
 
     return {
       camposFiltro,

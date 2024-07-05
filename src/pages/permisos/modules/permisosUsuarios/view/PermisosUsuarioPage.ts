@@ -59,7 +59,7 @@ export default defineComponent({
         // empleados: new EmpleadoController(),
         empleados: {
           controller: new EmpleadoController(),
-          params: { campos: 'id,nombres,apellidos,identificacion' }
+          params: { campos: 'id,nombres,apellidos,identificacion', estado: 1 }
         }
       })
     })
@@ -74,11 +74,11 @@ export default defineComponent({
     }
     function botonAsignarPermisos() {
       refPermisosSinAsignar.value.seleccionar()
-      refPermisosSinAsignar.value.selected=[]
+      refPermisosSinAsignar.value.clearSelection()
     }
     function botonEliminarPermisos() {
       refPermisosAsignados.value.seleccionar()
-      refPermisosAsignados.value.selected=[]
+      refPermisosAsignados.value.clearSelection()
     }
     function asignarPermiso(permisos: any) {
       const permisosIds = permisos.map((permiso: Permiso) => permiso.id)

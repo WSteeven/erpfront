@@ -26,7 +26,7 @@
     :selection="tipoSeleccion"
     v-model:selected="selected"
     :style="estilos"
-    class="bg-body-table my-sticky-column-table my-sticky-header-column-table borde"
+    class="bg-body-table my-sticky-column-table my-sticky-header-column-table borde rounded"
     :class="{
       'alto-fijo-desktop': !inFullscreen && altoFijo && !$q.screen.xs,
       'alto-fijo-mobile': !inFullscreen && altoFijo && $q.screen.xs,
@@ -58,12 +58,15 @@
     </template>
 
     <!-- Editar celdas -->
-    <template v-if="permitirEditarCeldas" v-slot:body-cell="props">
+    <template v-slot:body-cell="props">
       <q-td
-        v-if="props.col.editable"
+        v-if="permitirEditarCeldas && props.col.editable"
         :key="props.col.name"
         :props="props"
-        :class="{ 'text-bold': props.col.editable, 'bg-body': $q.dark.isActive }"
+        :class="{
+          'text-bold': props.col.editable,
+          'bg-body': $q.dark.isActive,
+        }"
       >
         <!-- <q-popup-edit
           v-model="props.row[props.col.name]"
@@ -83,6 +86,8 @@
           :bg-color="$q.dark.isActive ? 'grey-10' : 'grey-3'"
           :type="props.col.type ? props.col.type : 'text'"
           :hint="props.col.hint"
+          :disable="disable"
+          :placeholder="props.col.placeholder"
           dense
           outlined
         />
@@ -99,6 +104,7 @@
           dense
           emit-value
           map-options
+          :disable="disable"
         />
 
         <q-select
@@ -114,6 +120,7 @@
           dense
           emit-value
           map-options
+          :disable="disable"
         >
           <template v-slot:option="{ itemProps, opt, selected, toggleOption }">
             <q-item v-bind="itemProps">
@@ -135,13 +142,17 @@
           v-model="props.row[props.col.name]"
           :label="props.row[props.col.name] ? 'SI' : 'NO'"
           keep-color
+          :disable="disable"
         />
       </q-td>
 
       <q-td v-else :props="props">
         <span
           v-if="!['select', 'boolean'].includes(props.col.type)"
-          :class="{ 'text-white': $q.dark.isActive, 'text-dark': !$q.dark.isActive }"
+          :class="{
+            'text-white': $q.dark.isActive,
+            'text-dark': !$q.dark.isActive,
+          }"
           >{{ props.row[props.col.name] }}</span
         >
       </q-td>
@@ -541,6 +552,7 @@
 
           <CustomButtons
             v-if="accion1"
+            :desplegarDesde="desplegarDesde"
             :accion1="accion1"
             :accion2="accion2"
             :accion3="accion3"
@@ -818,7 +830,10 @@
                   </q-chip>
 
                   <q-chip
-                    v-if="col.value === 1 || col.value"
+                    v-if="
+                      col.name === 'es_dosis_unica' &&
+                      (col.value === 1 || col.value === true)
+                    "
                     class="bg-green-1 text-positive"
                   >
                     <q-icon
@@ -830,7 +845,10 @@
                   </q-chip>
 
                   <q-chip
-                    v-if="col.value === 0 || !col.value"
+                    v-if="
+                      col.name === 'es_dosis_unica' &&
+                      (col.value === 0 || col.value === false)
+                    "
                     class="bg-pink-1 text-positive"
                   >
                     <q-icon
@@ -879,6 +897,23 @@
           </q-item>
         </q-list>
       </q-card>
+    </template>
+
+    <template #body-cell-archivos="props">
+      <q-td :props="props">
+        <q-btn
+          dense
+          no-caps
+          unelevated
+          class="q-px-sm text-primary border-primary"
+          @click="
+            verVisorArchivos({ entidad: props.row, posicion: props.rowIndex })
+          "
+        >
+          <q-icon name="bi-archive" size="xs" class="q-mr-sm"></q-icon>
+          {{ props.value.length + ' archivos' }}
+        </q-btn>
+      </q-td>
     </template>
 
     <!-- Estilos de celdas -->
@@ -1364,6 +1399,31 @@
 
     <template #body-cell-estado="props">
       <q-td :props="props">
+        <!-- estado retrasado -->
+        <q-chip
+          v-if="props.value === 'RETRASADO'"
+          :class="{ 'bg-orange-2': !$q.dark.isActive }"
+          class="text-orange-6 q-mx-none"
+        >
+          <q-icon
+            name="bi-circle-fill"
+            color="warning"
+            class="q-mr-xs"
+          ></q-icon>
+          RETRASADO
+        </q-chip>
+        <!-- estado aceptado -->
+        <q-chip
+          v-if="props.value === 'ACEPTADO'"
+          :class="{ 'bg-green-1': !$q.dark.isActive }"
+        >
+          <q-icon
+            name="bi-circle-fill"
+            color="positive"
+            class="q-mr-xs"
+          ></q-icon>
+          ACEPTADO
+        </q-chip>
         <q-chip
           v-if="props.value === 'COMPLETADO'"
           :class="{ 'bg-green-1': !$q.dark.isActive }"
@@ -1397,7 +1457,7 @@
           ></q-icon>
           PARCIAL
         </q-chip>
-        <q-chip
+        <!-- <q-chip
           v-if="props.value === estadosTransacciones['pendiente']"
           :class="{ 'bg-yellow-1': !$q.dark.isActive }"
         >
@@ -1407,7 +1467,7 @@
             class="q-mr-xs"
           ></q-icon>
           PENDIENTE
-        </q-chip>
+        </q-chip> -->
         <q-chip
           v-if="props.value === estadosTransacciones.no_realizada"
           :class="{ 'bg-red-1': !$q.dark.isActive }"
@@ -1422,7 +1482,7 @@
         </q-chip>
         <!-- ANULADA -->
         <q-chip
-          v-if="props.value === 'ANULADA'"
+          v-if="props.value === 'ANULADA' || props.value === 'ANULADO'"
           :class="{ 'bg-red-1': !$q.dark.isActive }"
         >
           <q-icon
@@ -1430,7 +1490,7 @@
             color="negative"
             class="q-mr-xs"
           ></q-icon>
-          ANULADA
+          {{ props.value }}
         </q-chip>
         <q-icon
           v-if="props.value === 1 || props.value === true"
@@ -1543,6 +1603,11 @@
           ></q-icon
           >DEVUELTO
         </q-chip>
+      </q-td>
+    </template>
+    <template #body-cell-descontable="props">
+      <q-td :props="props">
+        <campo-descontable :propsTable="props" />
       </q-td>
     </template>
 
@@ -1683,6 +1748,23 @@
       </q-td>
     </template>
 
+    <template #body-cell-aplica_seguro="props">
+      <q-td :props="props">
+        <q-icon
+          v-if="props.value"
+          name="bi-check-circle-fill"
+          color="positive"
+          size="sm"
+        ></q-icon>
+        <q-icon
+          v-if="!props.value"
+          name="bi-x-circle-fill"
+          color="negative"
+          size="sm"
+        ></q-icon>
+      </q-td>
+    </template>
+
     <!-- tiene firma -->
     <template #body-cell-firma_url="props">
       <q-td :props="props">
@@ -1781,12 +1863,17 @@
     </q-chip>
   </div> -->
 
-  <previsualizar-tabla-pdf
+  <visor-archivos
+    :visible-modal="visibleModalVisorArchivos"
+    :archivos="archivos"
+  ></visor-archivos>
+
+  <!-- <previsualizar-tabla-pdf
     :configuracionColumnas="configuracionColumnas"
     :datos="datos"
     :print-table="printTable"
     :titulo="'Listado de ' + titulo"
-  ></previsualizar-tabla-pdf>
+  ></previsualizar-tabla-pdf> -->
 </template>
 
 <style lang="scss">

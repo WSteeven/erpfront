@@ -49,7 +49,7 @@
       animated
       transition-prev="scale"
       transition-next="scale"
-      :class="{ 'bg-desenfoque rounded-tabpanel': !$q.screen.xs }"
+      :class="{ 'bg-desenfoque border-white rounded-tabpanel': !$q.screen.xs }"
       keep-alive
     >
       <!-- Formulario -->

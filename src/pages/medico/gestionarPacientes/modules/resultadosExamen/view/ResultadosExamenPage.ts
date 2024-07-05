@@ -154,6 +154,8 @@ export default defineComponent({
     const editarResultadosExamenes = async () => {
       resultadosExamenes.value = []
 
+      console.log(itemsExamenes.value)
+
       itemsExamenes.value.forEach((item: ItemExamen) => {
         item.categorias.forEach((itemExamenCategoria: ItemExamenCategorias) => {
           itemExamenCategoria.campos.forEach((campo: ConfiguracionExamenCampo) => {

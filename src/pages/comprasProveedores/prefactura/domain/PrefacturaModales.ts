@@ -1,9 +1,9 @@
 //Dependencies
-import { ComponenteModal } from "components/modales/domain/ComponenteModal.domain";
-import { markRaw } from "vue";
+import { ComponenteModal } from 'components/modales/domain/ComponenteModal.domain';
+import { markRaw } from 'vue';
 
 // Pages
-import VisualizarPrefacturaPage from "../view/VisualizarPrefacturaPage.vue";
+import VisualizarPrefacturaPage from '../view/VisualizarPrefacturaPage.vue';
 
 
 export class PrefacturaModales {

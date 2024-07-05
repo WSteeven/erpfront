@@ -90,7 +90,7 @@
   </q-dialog>
 </template>
 
-<script lang="ts">
+<script lang='ts'>
 import { ref, defineComponent, computed } from 'vue'
 import { useNotificaciones } from 'shared/notificaciones'
 import { useConfiguracionGeneralStore } from 'stores/configuracion_general'
@@ -110,6 +110,10 @@ export default defineComponent({
     mask: {
       type: String,
       default: maskFecha,
+    },
+    reason:{
+      type: String,
+      default: 'month'
     },
   },
   emits: ['cerrar'],
@@ -132,7 +136,7 @@ export default defineComponent({
       cerrarModalEntidad()
     }
     function checkFecha(val, reason, details) {
-      isMonth.value = reason === 'month' ? false : true
+      isMonth.value = reason === props.reason ? false : true
     }
 
     return {

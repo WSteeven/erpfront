@@ -12,6 +12,7 @@ export class DetalleProducto extends EntidadAuditable {
     modelo: string | null
     modelo_id: string | null
     serial: string | null
+    lote: string | null
     precio_compra: string | null
 
     ram: string | null
@@ -39,6 +40,7 @@ export class DetalleProducto extends EntidadAuditable {
 
     //variables auxiliares
     tiene_serial: boolean
+    tiene_lote: boolean
     es_computadora: boolean
     es_fibra: boolean
     tiene_precio_compra: boolean
@@ -59,6 +61,7 @@ export class DetalleProducto extends EntidadAuditable {
         this.modelo = null
         this.modelo_id = null
         this.serial = null
+        this.lote = null
         this.precio_compra = null
         this.ram = null
         this.disco = null
@@ -86,6 +89,7 @@ export class DetalleProducto extends EntidadAuditable {
         this.es_computadora = false
         this.es_fibra = false
         this.tiene_serial = false
+        this.tiene_lote = false
         this.tiene_precio_compra = false
         this.tiene_adicionales = false
         this.calco = false

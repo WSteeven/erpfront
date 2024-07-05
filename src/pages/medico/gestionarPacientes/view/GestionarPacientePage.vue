@@ -7,51 +7,52 @@
     :tabOptions="tabOptionsEstadosEmpleados"
     tabDefecto="1"
     :filtrar="filtrarEmpleados"
+    :full="true"
   >
     <template #formulario>
-      <div :class="{ 'q-mb-md': empleado.id }">
+      <!-- <div :class="{ 'q-fmb-md bg-white': empleado.id }"> -->
         <detalle-paciente
           v-if="empleado.id"
           :empleado="empleado"
         ></detalle-paciente>
-      </div>
+      <!-- </div> -->
 
+      <q-separator class="q-my-md" color=""></q-separator>
       <!-- Tabs -->
       <div v-show="empleado.id">
         <q-tabs
           v-model="tabs"
           align="justify"
           active-color="primary"
-          indicator-color="primary"
-          active-bg-color="blue-1"
-          class="border-bottom-grey-5"
+          indicator-color="transparent"
+          active-class="tab-active"
           dense
         >
           <q-tab
             :name="tiposProcesosExamenes.INGRESO"
             :label="tiposProcesosExamenes.INGRESO"
-            :class="{ 'tab-inactive': tabs !== '1' }"
+            :class="{ 'tab-inactive': tabs !== tiposProcesosExamenes.INGRESO }"
             @click="seleccionarTabTipoProcesoIngreso()"
             no-caps
           />
           <q-tab
             :name="tiposProcesosExamenes.PERIODICO"
             :label="tiposProcesosExamenes.PERIODICO"
-            :class="{ 'tab-inactive': tabs !== '2' }"
+            :class="{ 'tab-inactive': tabs !== tiposProcesosExamenes.PERIODICO }"
             @click="seleccionarTabTipoProcesoOcupacional()"
             no-caps
           />
           <q-tab
             :name="tiposProcesosExamenes.REINTEGRO"
             :label="tiposProcesosExamenes.REINTEGRO"
-            :class="{ 'tab-inactive': tabs !== '3' }"
+            :class="{ 'tab-inactive': tabs !== tiposProcesosExamenes.REINTEGRO }"
             @click="seleccionarTabTipoProcesoReingreso()"
             no-caps
           />
           <q-tab
             :name="tiposProcesosExamenes.RETIRO"
             :label="tiposProcesosExamenes.RETIRO"
-            :class="{ 'tab-inactive': tabs !== '4' }"
+            :class="{ 'tab-inactive': tabs !== tiposProcesosExamenes.RETIRO }"
             @click="seleccionarTabTipoProcesoSalida()"
             no-caps
           />
@@ -116,6 +117,8 @@
           </transition>
         </div>
       </div>
+
+      <q-separator class="q-my-md" color="white"></q-separator>
 
       <essential-table
         v-if="empleado.id"

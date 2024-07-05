@@ -11,6 +11,7 @@
     tabDefecto="3"
     :forzarListar="true"
     :accion1="editarGasto"
+    :puede-exportar="true"
   >
     <template #formulario>
       <q-form @submit.prevent>
@@ -60,6 +61,11 @@
                 <q-item>
                   <q-item-section class="text-grey"> No hay resultados </q-item-section>
                 </q-item>
+              </template>
+              <template v-slot:after>
+                <q-btn color="positive" @click="recargar('canton')">
+                  <q-icon size="xs" class="q-mr-sm" name="bi-arrow-clockwise" />
+                </q-btn>
               </template>
             </q-select>
           </div>
@@ -244,7 +250,7 @@
                 </q-item>
               </template>
               <template v-slot:after>
-                <q-btn color="positive" @click="recargarDetalle('detalle')">
+                <q-btn color="positive" @click="recargar('detalle')">
                   <q-icon size="xs" class="q-mr-sm" name="bi-arrow-clockwise" />
                 </q-btn>
               </template>
@@ -302,7 +308,7 @@
                 </q-item>
               </template>
               <template v-slot:after>
-                <q-btn color="positive" @click="recargarDetalle('sub_detalle')">
+                <q-btn color="positive" @click="recargar('sub_detalle')">
                   <q-icon size="xs" class="q-mr-sm" name="bi-arrow-clockwise" />
                 </q-btn>
               </template>

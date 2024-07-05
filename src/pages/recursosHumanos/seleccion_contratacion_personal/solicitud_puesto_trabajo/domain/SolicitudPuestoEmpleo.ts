@@ -1,4 +1,4 @@
-import { EntidadAuditable } from "shared/entidad/domain/entidadAuditable";
+import { EntidadAuditable } from 'shared/entidad/domain/entidadAuditable';
 
 export class SolicitudPuestoEmpleo extends EntidadAuditable {
   nombre: string | null
@@ -6,9 +6,10 @@ export class SolicitudPuestoEmpleo extends EntidadAuditable {
   puesto: number | null
   autorizacion: string | null
   descripcion: string | null
-  anos_experiencia: number | null
-  conocimientos:  any[] | null
-  formaciones_academicas:  any[] | null
+  conocimientos: any[] | null
+  formaciones_academicas: any[] | null
+  descripcion_vacante: string | null
+  anios_experiencia: number | null
 
   constructor() {
     super()
@@ -17,7 +18,8 @@ export class SolicitudPuestoEmpleo extends EntidadAuditable {
     this.tipo_puesto = null
     this.autorizacion = null
     this.descripcion = null
-    this.anos_experiencia = null
+    this.descripcion_vacante = null
+    this.anios_experiencia = null
     this.conocimientos = []
     this.formaciones_academicas = []
   }

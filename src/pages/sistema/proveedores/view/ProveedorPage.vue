@@ -12,7 +12,6 @@
     :accion6="botonActualizarCalificacion"
     :ajustarCeldas="true"
     :puedeExportar="true"
-    :listar="false"
   >
     <template #formulario>
       <q-form @submit.prevent>

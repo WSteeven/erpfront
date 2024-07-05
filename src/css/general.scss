@@ -63,6 +63,10 @@ body {
   border-radius: 0 16px 16px 16px;
 }
 
+.rounded-notification {
+  border-radius:  0px 24px 0 24px;
+}
+
 .rounded-toolbar {
   border-radius: 32px;
 }
@@ -128,15 +132,15 @@ input[type='time']::-webkit-calendar-picker-indicator {
 }
 
 .border-primary {
-  border: 1px solid $primary;
+  border: 1px solid $primary !important;
 }
 
 .border-grey {
-  border: 1px solid $grey-4;
+  border: 1px solid $grey-4 !important;
 }
 
 .border-blue-grey-dashed {
-  border: 1px dashed $blue-grey;
+  border: 1px dashed $blue-grey !important;
 }
 
 .border-bottom-blue-grey-dashed {
@@ -145,6 +149,10 @@ input[type='time']::-webkit-calendar-picker-indicator {
 
 .border-grey-6 {
   border: 1px solid $grey-6;
+}
+
+.border-grey-6-2px {
+  border: 1px solid $primary;
 }
 
 .border-bottom-grey-5 {
@@ -214,3 +222,4 @@ input[type='time']::-webkit-calendar-picker-indicator {
   border-top: 2px solid $positive;
   border-bottom: 2px solid $positive;
 }
+

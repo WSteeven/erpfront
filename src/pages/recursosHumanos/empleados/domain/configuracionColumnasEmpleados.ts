@@ -143,4 +143,10 @@ export const configuracionColumnasEmpleados: ColumnConfig<Empleado>[] = [
     align: 'left',
     sortable: true,
   },
+  {
+    name: 'archivos',
+    field: 'archivos',
+    label: 'archivos',
+    visible: false,
+  },
 ]

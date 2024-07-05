@@ -1,5 +1,5 @@
-import { Validador } from "shared/validadores/domain/Validador";
-import { Proveedor } from "sistema/proveedores/domain/Proveedor";
+import { Validador } from 'shared/validadores/domain/Validador';
+import { Proveedor } from 'sistema/proveedores/domain/Proveedor';
 
 export class
   ValidarPropiedadesProveedor implements Validador {

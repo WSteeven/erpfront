@@ -1,10 +1,11 @@
 <template>
-  <div class="row bg-desenfoque q-pa-md rounded">
-    <div class="col-12 col-md-2 text-center">
-      <q-img :src="empleado.foto_url ?? ''" width="60%"></q-img>
+  <div class="row bg-desenfoque q-py-md">
+    <div class="col-12 col-md-2 justify-center row items-center">
+      <q-img :src="empleado.foto_url ?? ''" width="60%" class="items-center"></q-img>
     </div>
 
     <div class="col-12 col-md-10">
+      
       <div class="row q-col-gutter-md">
         <div class="col-12 text-primary text-bold text-h6 q-mb-md">
           {{ nombres }}
@@ -45,6 +46,12 @@
         </div>
 
         <div class="col-12 col-md-3">
+          <div class="text-primary q-mb-sm">Fecha de nacimiento</div>
+          <q-icon name="cake" color="primary" class="q-mr-sm"></q-icon>
+          <span>{{ empleado.fecha_nacimiento }}</span>
+        </div>
+
+        <div class="col-12 col-md-3">
           <div class="text-primary q-mb-sm">Tipo de sangre</div>
           <q-icon
           name="bi-droplet-fill"
@@ -64,7 +71,7 @@
           <span>{{ genero }}</span>
         </div>
 
-        <div v-if="empleado.id" class="col-12 col-md-3">
+        <!-- <div v-if="empleado.id" class="col-12 col-md-3">
           <div class="text-primary q-mb-sm">Peso</div>
           <q-icon name="bi-dot" color="primary" class="q-mr-sm"></q-icon>
           <span>{{ '80KG' }}</span>
@@ -74,7 +81,7 @@
           <div class="text-primary q-mb-sm">Altura</div>
           <q-icon name="bi-dot" color="primary" class="q-mr-sm"></q-icon>
           <span>{{ '1.80m' }}</span>
-        </div>
+        </div> -->
 
         <div class="col-12 col-md-3">
           <div class="text-primary q-mb-sm">Teléfono</div>
@@ -114,6 +121,16 @@
             class="q-mr-sm"
           ></q-icon>
           <span>{{ empleado.fecha_ingreso }}</span>
+        </div>
+
+        <div class="col-12 col-md-3">
+          <div class="text-primary q-mb-sm">Jefe inmediato</div>
+          <q-icon
+            name="bi-list"
+            color="primary"
+            class="q-mr-sm"
+          ></q-icon>
+          <span>{{ empleado.jefe_inmediato }}</span>
         </div>
       </div>
     </div>

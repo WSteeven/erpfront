@@ -46,10 +46,6 @@ export default defineComponent({
       type: Boolean,
       default: true,
     },
-    mostrarFooter: {
-      type: Boolean,
-      default: true,
-    },
     permitirBuscar: {
       type: Boolean,
       default: true,
@@ -75,6 +71,10 @@ export default defineComponent({
       default: true,
     },
     mostrarHeader: {
+      type: Boolean,
+      default: true,
+    },
+    mostrarFooter: {
       type: Boolean,
       default: true,
     },
@@ -162,6 +162,11 @@ export default defineComponent({
       type: Boolean,
       default: true,
     },
+    grid: {
+      type: Boolean,
+      default: true,
+    },
+
   },
   emits: [
     'selected',
@@ -183,7 +188,6 @@ export default defineComponent({
     const fila = ref()
     const posicionFilaEditada = ref()
     const refTableFilters = ref()
-    const grid = ref(false)
     const inFullscreen = ref(false)
     const mostrarFiltros = ref(false)
     const visibleColumns = ref(getVisibleColumns(props.configuracionColumnas))
@@ -229,7 +233,7 @@ export default defineComponent({
     }
 
     function guardarFila(data) {
-      console.log(data)
+      // console.log(data)
       const posicion = props.datos.findIndex(
         (fila: any) => fila.id === data.id
       )
@@ -351,7 +355,6 @@ export default defineComponent({
       refEditarModal,
       referencia,
       refTableFilters,
-      grid,
       filter,
       visibleColumns,
       selected,
@@ -378,6 +381,7 @@ export default defineComponent({
       fila,
       guardarFila,
       limpiarFila,
+      onScroll,
     }
   },
 })

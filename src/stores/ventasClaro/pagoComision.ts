@@ -5,7 +5,7 @@ import { PagoComision } from 'pages/ventas-claro/pagoComision/domain/PagoComisio
 import { defineStore } from 'pinia';
 import { AxiosHttpRepository } from 'shared/http/infraestructure/AxiosHttpRepository';
 import { useNotificaciones } from 'shared/notificaciones';
-import { imprimirArchivo, notificarMensajesError } from 'shared/utils';
+import { imprimirArchivo } from 'shared/utils';
 import { reactive, ref } from 'vue';
 
 export const usePagaComisionStore = defineStore('cortes-comisiones', () => {
@@ -13,7 +13,7 @@ export const usePagaComisionStore = defineStore('cortes-comisiones', () => {
     const corteReset = new PagoComision()
     const idCorte = ref()
 
-    const { notificarCorrecto, notificarAdvertencia, notificarError, confirmar } = useNotificaciones()
+    const { notificarCorrecto, notificarAdvertencia, notificarError } = useNotificaciones()
     const cargando = new StatusEssentialLoading()
 
     async function obtenerFechasDisponiblesCortes() {

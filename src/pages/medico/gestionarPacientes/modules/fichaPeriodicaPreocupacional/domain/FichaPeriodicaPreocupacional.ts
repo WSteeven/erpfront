@@ -20,12 +20,12 @@ export class FichaPeriodicaPreocupacional extends FichaMedica {
   identidad_genero: number | null
   lateralidad: string | null
   motivo_consulta: string | null
-  antecedente_gineco_obstetrico: AntecedenteGinecoObstetrico
+  antecedentes_gineco_obstetricos: AntecedenteGinecoObstetrico
   antecedente_personal: AntecedentePersonal
-  resultados_habitos_toxicos: ResultadoHabitoToxico[]
+  habitos_toxicos: ResultadoHabitoToxico[]
   actividades_fisicas: ActividadFisica[]
-  medicacion_habituales: MedicacionHabitual[]
-  antecedentes_trabajos_anteriores: AntecedenteTrabajoAnterior[]
+  medicaciones: MedicacionHabitual[]
+  antecedentes_empleos_anteriores: AntecedenteTrabajoAnterior[]
   antecedentes_familiares: AntecedenteFamiliar[]
   fr_puestos_trabajos_actuales: FrPuestoTrabajoActual[]
   actividades_extralaborales: string | null
@@ -47,12 +47,12 @@ export class FichaPeriodicaPreocupacional extends FichaMedica {
     this.cargo = null
     this.lateralidad = null
     this.motivo_consulta = null
-    this.antecedente_gineco_obstetrico = new AntecedenteGinecoObstetrico()
+    this.antecedentes_gineco_obstetricos = new AntecedenteGinecoObstetrico()
     this.antecedente_personal = new AntecedentePersonal()
-    this.resultados_habitos_toxicos = []
+    this.habitos_toxicos = []
     this.actividades_fisicas = []
-    this.medicacion_habituales = []
-    this.antecedentes_trabajos_anteriores = []
+    this.medicaciones = []
+    this.antecedentes_empleos_anteriores = []
     this.antecedentes_familiares = []
     this.fr_puestos_trabajos_actuales = []
     this.actividades_extralaborales = null

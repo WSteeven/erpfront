@@ -16,7 +16,7 @@ self.addEventListener('activate', (event) => {
         cacheNames
           .filter((cacheName) => {
             // Lógica para eliminar caches antiguos si es necesario
-            // console.log('evento eliminar caches antiguos')
+            console.log('evento eliminar caches antiguos', cacheName)
           })
           .map((cacheName) => {
             return caches.delete(cacheName);

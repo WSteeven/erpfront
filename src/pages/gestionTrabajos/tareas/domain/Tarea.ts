@@ -1,5 +1,4 @@
-import { destinosTareas, modosAsignacionTrabajo, ubicacionesTrabajo } from 'config/tareas.utils'
-import { Subtarea } from 'pages/gestionTrabajos/subtareas/domain/Subtarea'
+import { destinosTareas,  ubicacionesTrabajo } from 'config/tareas.utils'
 import { EntidadAuditable } from 'shared/entidad/domain/entidadAuditable'
 
 export class Tarea extends EntidadAuditable {

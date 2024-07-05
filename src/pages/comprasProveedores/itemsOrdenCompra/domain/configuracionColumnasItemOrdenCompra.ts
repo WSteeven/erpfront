@@ -1,5 +1,5 @@
-import { ColumnConfig } from "components/tables/domain/ColumnConfig";
-import { ItemOrdenCompra } from "./ItemOrdenCompra";
+import { ColumnConfig } from 'components/tables/domain/ColumnConfig';
+import { ItemOrdenCompra } from './ItemOrdenCompra';
 
 export const configuracionColumnasItemOrdenCompra: ColumnConfig<ItemOrdenCompra>[] = [
   {

@@ -1,11 +1,11 @@
-import { useSelector } from "components/tables/application/selector";
-import { endpoints } from "config/api";
-import { CriterioCalificacion } from "pages/comprasProveedores/criteriosCalificaciones/domain/CriterioCalificacion";
-import { EntidadAuditable } from "shared/entidad/domain/entidadAuditable";
-import { Ref, ref } from "vue";
-import { CalificacionProveedor } from "../domain/CalificacionProveedor";
+import { useSelector } from 'components/tables/application/selector';
+import { endpoints } from 'config/api';
+import { CriterioCalificacion } from 'pages/comprasProveedores/criteriosCalificaciones/domain/CriterioCalificacion';
+import { EntidadAuditable } from 'shared/entidad/domain/entidadAuditable';
+import { Ref, ref } from 'vue';
+import { CalificacionProveedor } from '../domain/CalificacionProveedor';
 
-export function useOrquestadorSelectorCriterios(entidad: CalificacionProveedor, endpoint: keyof typeof endpoints){
+export function useOrquestadorSelectorCriterios(entidad: CalificacionProveedor, endpoint: keyof typeof endpoints) {
     const refListadoSeleccionable = ref()
     const listado: Ref<EntidadAuditable[]> = ref([])
     const criterioBusqueda = ref()

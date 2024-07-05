@@ -1,6 +1,6 @@
-import { Validador } from "shared/validadores/domain/Validador";
-import { DetalleProducto } from "../../domain/DetalleProducto";
-import { tieneElementosRepetidos, tieneElementosRepetidosObjeto } from "shared/utils";
+import { Validador } from 'shared/validadores/domain/Validador';
+import { DetalleProducto } from '../../domain/DetalleProducto';
+import { tieneElementosRepetidosObjeto } from 'shared/utils';
 
 export class ValidarListadoSeriales implements Validador {
     private detalle: DetalleProducto
