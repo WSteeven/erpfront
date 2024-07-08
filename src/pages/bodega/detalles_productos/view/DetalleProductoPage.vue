@@ -410,6 +410,7 @@
               suffix="mm"
             ></q-input>
           </div>
+          
           <!-- Peso -->
           <div v-if="detalle.tiene_adicionales" class="col-12 col-md-4">
             <label class="q-mb-sm block">Peso</label>
@@ -448,6 +449,7 @@
             </q-input>
           </div>
           <!-- Permiso_id -->
+          
           <div
             v-if="detalle.tiene_adicionales && datos_adicionales.permiso_id"
             class="col-12 col-md-4"

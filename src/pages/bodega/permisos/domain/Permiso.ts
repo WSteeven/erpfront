@@ -5,6 +5,7 @@ export class Permiso extends EntidadAuditable {
     fecha_caducidad: string | null
     fecha_emision: string | null
     imagen_permiso: string | null
+    imagen_permiso_reverso: string | null
 
     constructor() {
         super()
@@ -12,5 +13,6 @@ export class Permiso extends EntidadAuditable {
         this.fecha_caducidad = null
         this.fecha_emision = null
         this.imagen_permiso = null
+        this.imagen_permiso_reverso = null
     }
 }

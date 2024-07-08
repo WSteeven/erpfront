@@ -35,6 +35,7 @@ export default defineComponent({
       fecha_caducidad: { required },
       fecha_emision: { required },
       imagen_permiso: { required },
+      imagen_permiso_reverso: { required },
     }
 
     const v$ = useVuelidate(reglas, permiso)

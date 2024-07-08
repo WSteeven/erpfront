@@ -124,7 +124,7 @@
 
           <!-- Foto de permiso -->
           <div class="col-12 col-md-6 col-sm-6">
-            <label for="q-mb-sm block">Imagen del Permiso</label>
+            <label for="q-mb-sm block">Imagen del permiso (anverso)</label>
             <selector-imagen
               file_extensiones=".jpg, image/*"
               :imagen="permiso.imagen_permiso"
@@ -133,6 +133,20 @@
               :error="!!v$.imagen_permiso.$errors.length
                 "
               @update:model-value="(data) => (permiso.imagen_permiso = data)"
+            ></selector-imagen>
+          </div>
+
+          <!-- Foto de permiso reverso -->
+          <div class="col-12 col-md-6 col-sm-6">
+            <label for="q-mb-sm block">Imagen del permiso (reverso)</label>
+            <selector-imagen
+              file_extensiones=".jpg, image/*"
+              :imagen="permiso.imagen_permiso_reverso"
+              :comprimir="true"
+              :alto="'200px'"
+              :error="!!v$.imagen_permiso_reverso.$errors.length
+                "
+              @update:model-value="(data) => (permiso.imagen_permiso_reverso = data)"
             ></selector-imagen>
           </div>
         </div>

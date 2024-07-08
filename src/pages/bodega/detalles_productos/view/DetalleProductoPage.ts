@@ -45,7 +45,7 @@ export default defineComponent({
     const mixin = new ContenedorSimpleMixin(DetalleProducto, new DetalleProductoController())
     const { entidad: detalle, disabled, accion, listadosAuxiliares, listado } = mixin.useReferencias()
     const { setValidador, obtenerListados, cargarVista } = mixin.useComportamiento()
-    const { onGuardado, onReestablecer } = mixin.useHooks()
+    const { onGuardado, onReestablecer, onConsultado } = mixin.useHooks()
     const { confirmar, notificarCorrecto, notificarAdvertencia, notificarError } = useNotificaciones()
 
     //stores
@@ -351,6 +351,16 @@ export default defineComponent({
         })
       }, visible: ({ entidad }) => !entidad.activo && store.can('puede.activar.detalles')
     }
+
+
+    /********
+     * Hooks
+     ********/
+    onConsultado(() => {
+      const producto = listadosAuxiliares.productos.filter((v) => v.id === detalle.producto)
+      categoria_var.value = producto[0]['categoria']
+    })
+
     return {
       mixin, detalle, disabled, accion, v$, listado, listadoBackup, acciones,
       configuracionColumnas: configuracionColumnasDetallesProductos,
@@ -528,6 +538,7 @@ export default defineComponent({
       //modales
       modales,
       guardado,
+      categoria_var,
     }
   }
 })
