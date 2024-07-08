@@ -32,7 +32,7 @@ export default defineComponent({
         const cargando = new StatusEssentialLoading()
         const COMBUSTIBLE = 'COMBUSTIBLE'
         const VEHICULO = 'VEHICULO'
-        const opciones = [COMBUSTIBLE, VEHICULO]
+        const opciones = [COMBUSTIBLE]
         const modoUnaColumna = ref(true)
         const tabs = ref(opcionesGrafico.grafico)
         const reporte = reactive({
