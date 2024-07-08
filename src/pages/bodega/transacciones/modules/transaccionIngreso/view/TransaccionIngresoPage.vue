@@ -7,6 +7,7 @@
     :ajustarCeldas="true"
     :accion1="botonImprimir"
     :accion2="botonAnular"
+    paginate
     :accion1Header="botonActualizar"
   >
     <template #formulario>

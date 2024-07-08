@@ -11,6 +11,7 @@ import { ContenedorSimpleMixin } from 'shared/contenedor/modules/simple/applicat
 import { CustomActionTable } from 'components/tables/domain/CustomActionTable'
 import ButtonSubmits from 'components/buttonSubmits/buttonSubmits.vue'
 import EssentialTable from 'components/tables/view/EssentialTable.vue'
+import EssentialTablePagination from 'components/tables/view/EssentialTablePagination.vue'
 import { useCargandoStore } from 'stores/cargando'
 import { useMainLayoutStore } from 'stores/mainLayout'
 import { getCurrentInstance } from 'vue'
@@ -140,9 +141,14 @@ export default defineComponent({
       type: Boolean,
       default: false,
     },
+    paginate: {
+      type: Boolean,
+      default: false,
+    },
   },
-  components: { EssentialTable, ButtonSubmits },
+  components: { EssentialTable, EssentialTablePagination, ButtonSubmits },
   setup(props) {
+    const refTabla = ref()
     const { listar, filtrar, guardar, editar, eliminar, consultar, reestablecer } = props.mixin.useComportamiento()
 
     const { entidad, listado, accion, filtros, tabs } = props.mixin.useReferencias()
@@ -162,7 +168,11 @@ export default defineComponent({
     }
 
     if (props.mostrarListado) {
-      listar()
+      if(props.paginate) {
+        listar({paginate:1})
+      }else{
+        listar()
+      }
     }
 
     const seleccionado = ref()
@@ -237,6 +247,7 @@ export default defineComponent({
     } */
 
     return {
+      refTabla,
       filtrarTodos,
       tabs,
       tituloTabla,

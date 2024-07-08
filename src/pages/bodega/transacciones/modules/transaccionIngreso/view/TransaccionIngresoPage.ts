@@ -270,6 +270,7 @@ export default defineComponent({
       accion: () => {
         listar()
       },
+      visible:()=> false
     }
     const botonEditarCantidad: CustomActionTable = {
       titulo: 'Editar cantidad',
