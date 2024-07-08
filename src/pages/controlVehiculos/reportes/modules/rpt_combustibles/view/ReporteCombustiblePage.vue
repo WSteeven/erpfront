@@ -250,7 +250,7 @@
 
           <q-card
             class="q-mb-md q-mt-sm rounded no-border custom-shadow"
-            v-if="reporte.tipo == COMBUSTIBLE && results.results.length"
+            v-if="reporte.tipo == COMBUSTIBLE && results?.results.length"
           >
             <div
               class="row text-bold text-primary q-pa-md rounded items-center q-mb-md"
