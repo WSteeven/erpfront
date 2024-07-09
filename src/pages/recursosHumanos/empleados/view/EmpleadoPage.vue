@@ -332,7 +332,7 @@
               />
             </div>
             <!-- Auto Identificacion Etnico -->
-            <div class="col-12 col-md-3 col-sm-3">
+            <!-- <div class="col-12 col-md-3 col-sm-3">
               <label class="q-mb-sm block">AutoIdentificacion Etnica</label>
               <q-select
                 v-model="empleado.autoidentificacion_etnica"
@@ -369,10 +369,10 @@
                   </q-item>
                 </template>
               </q-select>
-            </div>
+            </div> -->
 
             <!-- Orientacion Sexual -->
-            <div class="col-12 col-md-3 col-sm-3">
+            <!-- <div class="col-12 col-md-3 col-sm-3">
               <label class="q-mb-sm block">Orientacion Sexual</label>
               <q-select
                 v-model="empleado.orientacion_sexual"
@@ -409,9 +409,10 @@
                   </q-item>
                 </template>
               </q-select>
-            </div>
+            </div> -->
+
             <!-- Identidad de genero -->
-            <div class="col-12 col-md-3 col-sm-3">
+            <!-- <div class="col-12 col-md-3 col-sm-3">
               <label class="q-mb-sm block">Identidad de Genero</label>
               <q-select
                 v-model="empleado.identidad_genero"
@@ -448,9 +449,10 @@
                   </q-item>
                 </template>
               </q-select>
-            </div>
+            </div> -->
+
             <!-- Religion -->
-            <div class="col-12 col-md-3 col-sm-3">
+            <!-- <div class="col-12 col-md-3 col-sm-3">
               <label class="q-mb-sm block">Religion</label>
               <q-select
                 v-model="empleado.religion"
@@ -484,7 +486,8 @@
                   </q-item>
                 </template>
               </q-select>
-            </div>
+            </div> -->
+
             <!-- Trabajador Sustituto -->
             <div class="col-12 col-md-3 col-sm-3">
               <label class="q-mb-sm block">Trabajador Sustituto</label>

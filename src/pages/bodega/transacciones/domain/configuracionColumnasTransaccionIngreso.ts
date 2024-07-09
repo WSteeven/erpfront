@@ -14,6 +14,7 @@ export const configuracionColumnasTransaccionIngreso: ColumnConfig<Transaccion>[
         field: 'created_at',
         label: 'Fecha',
         align: 'left',
+        type: 'date',
         sortable: true,
     },
     {

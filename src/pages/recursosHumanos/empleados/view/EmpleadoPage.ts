@@ -154,9 +154,9 @@ export default defineComponent({
           controller: new RolController(),
           params: { campos: 'id,name' },
         },
-        orientaciones_sexuales: new OrientacionSexualController(),
-        identidades_genero: new IdentidadGeneroController(),
-        religiones: new ReligionController(),
+        // orientaciones_sexuales: new OrientacionSexualController(),
+        // identidades_genero: new IdentidadGeneroController(),
+        // religiones: new ReligionController(),
       })
     }).then(() => {
       listadosAuxiliares.cantones = JSON.parse(LocalStorage.getItem('cantones')!.toString())
@@ -235,10 +235,10 @@ export default defineComponent({
       talla_camisa: { required },
       talla_pantalon: { required: requiredIf(() => empleado.tiene_grupo) },
       talla_guantes: { required: requiredIf(() => empleado.tiene_grupo) },
-      autoidentificacion_etnica: { required },
-      orientacion_sexual: { required },
-      identidad_genero: { required },
-      religion: { required },
+      // autoidentificacion_etnica: { required },
+      // orientacion_sexual: { required },
+      // identidad_genero: { required },
+      // religion: { required },
     }
 
     const v$ = useVuelidate(reglas, empleado)
