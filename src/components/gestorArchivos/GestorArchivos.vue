@@ -17,7 +17,7 @@
   <div v-if="quiero_subir_archivos" class="col-12 q-mb-sm">
     <q-uploader
       ref="refGestor"
-      label="Selecciona o arrastra tus archivos aquí (Máximo 10mb)"
+      :label="'Selecciona o arrastra tus archivos aquí (Máximo '+(bytesToMB(maxTamanioBytes))+')'"
       multiple
       style="width: 100%"
       flat
@@ -25,7 +25,7 @@
       class="bg-header-collapse expansion"
       color="white"
       text-color="black"
-      max-total-size="10485760"
+      :max-total-size="maxTamanioBytes"
       @rejected="onRejected"
       @added="onFileAdded"
       @removed="onFileRemoved"

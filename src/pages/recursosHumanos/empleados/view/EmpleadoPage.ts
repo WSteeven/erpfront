@@ -1,7 +1,7 @@
 //Dependencias
 import { configuracionColumnasTipoDiscapacidadPorcentaje } from '../domain/configuracionColumnasTipoDiscapacidadPorcentaje'
 import { configuracionColumnasEmpleados } from '../domain/configuracionColumnasEmpleados'
-import { maxLength, minLength, numeric, required, requiredIf, } from 'shared/i18n-validators'
+import { maxLength, maxValue, minLength, minValue, numeric, required, requiredIf, } from 'shared/i18n-validators'
 import { useVuelidate } from '@vuelidate/core'
 import { acciones, accionesTabla, convertir_fecha, maskFecha, niveles_academicos, rolesSistema, talla_letras, tipos_sangre, } from 'config/utils'
 import { defineComponent, ref, watchEffect, computed, Ref } from 'vue'
@@ -50,13 +50,10 @@ import { TipoDiscapacidadController } from 'pages/recursosHumanos/tipo-discapaci
 import { TipoDiscapacidadPorcentaje } from '../domain/TipoDiscapacidadPorcentaje'
 import { TipoDiscapacidad } from 'pages/recursosHumanos/tipo-discapacidad/domain/TipoDiscapacidad'
 import { reactive } from 'vue'
-import {
-  autoidentificaciones_etnicas,
-  parentezcos,
-} from 'config/recursosHumanos.utils'
-import { OrientacionSexualController } from 'pages/medico/gestionarPacientes/modules/fichaPeriodica/infraestructure/OrientacionSexualController'
-import { IdentidadGeneroController } from 'pages/medico/gestionarPacientes/modules/fichaPeriodica/infraestructure/IdentidadGeneroController'
-import { ReligionController } from 'pages/medico/gestionarPacientes/modules/fichaPeriodica/infraestructure/ReligionController'
+import { autoidentificaciones_etnicas, parentezcos } from 'config/recursosHumanos.utils'
+import { helpers } from '@vuelidate/validators'
+import { onMounted } from 'vue'
+import { onUnmounted } from 'vue'
 
 export default defineComponent({
   components: { TabLayout, SelectorImagen, ModalesEntidad, EssentialTable, GestorArchivos, InformacionLicencia, },
@@ -117,6 +114,7 @@ export default defineComponent({
     const refArchivo = ref()
     const mostrarBotonSubirArchivos = computed(() => refArchivo.value != undefined ? refArchivo.value.quiero_subir_archivos : false)
     const idEmpleado = ref()
+    const componenteCargado = ref(false)
     const idsTiposDiscapacidades: Ref<number[]> = ref([])
     const idsParentescos: Ref<number[]> = ref([])
     const construccionConfiguracionColumnas = ref(false)
@@ -171,7 +169,7 @@ export default defineComponent({
       roles.value = listadosAuxiliares.roles
       tiposContratos.value = listadosAuxiliares.tipos_contratos
       configuracionColumnasTipoDiscapacidadPorcentajeReactive.find((item) => item.field === 'tipo_discapacidad')!.options = listadosAuxiliares.tiposDiscapacidades.map((v: TipoDiscapacidad) => { return { label: v.nombre, value: v.id } })
-      console.log(configuracionColumnasTipoDiscapacidadPorcentaje);
+      // console.log(configuracionColumnasTipoDiscapacidadPorcentaje);
 
       configuracionColumnasTipoDiscapacidadPorcentajeReactive.find(
         (item) => item.field === 'tipo_discapacidad'
@@ -192,9 +190,10 @@ export default defineComponent({
       () => accion.value == acciones.nuevo || accion.value == acciones.editar
     )
 
-    /*************
+
+    /****************************
      * Validaciones
-     **************/
+     ****************************/
     const reglas = {
       identificacion: {
         required,
@@ -235,10 +234,23 @@ export default defineComponent({
       talla_camisa: { required },
       talla_pantalon: { required: requiredIf(() => empleado.tiene_grupo) },
       talla_guantes: { required: requiredIf(() => empleado.tiene_grupo) },
-      // autoidentificacion_etnica: { required },
-      // orientacion_sexual: { required },
-      // identidad_genero: { required },
-      // religion: { required },
+      // tipo_licencia: { required: requiredIf(() => mostrarComponenteInformacionLicencia.value) },
+      // puntos: { required: requiredIf(() => mostrarComponenteInformacionLicencia.value) },
+      // conductor: {
+      //   tipo_licencia: { required: requiredIf(() => mostrarComponenteInformacionLicencia.value) },
+      //   puntos: {
+      //     required: requiredIf(() => mostrarComponenteInformacionLicencia.value),
+      //     maximo: maxValue(30),
+      //     minimo: minValue(0),
+      //   },
+      //   licencias: {
+      //     $each: helpers.forEach({
+      //       tipo_licencia: { required: requiredIf(() => mostrarComponenteInformacionLicencia.value) },
+      //       inicio_vigencia: { required: requiredIf(() => mostrarComponenteInformacionLicencia.value) },
+      //       fin_vigencia: { required: requiredIf(() => mostrarComponenteInformacionLicencia.value) },
+      //     }),
+      //   }
+      // }
     }
 
     const v$ = useVuelidate(reglas, empleado)
@@ -284,7 +296,7 @@ export default defineComponent({
         empleado.conductor = []
       }
     })
-    onModificado(() => console.log('modificado'))
+    // onModificado(() => console.log('modificado'))
     onReestablecer(() => {
       refArchivo.value.limpiarListado()
       verificarRolesSeleccionados()
@@ -400,7 +412,7 @@ export default defineComponent({
       },
     }
     async function generar_reporte_general(): Promise<void> {
-      console.log('generar_reporte_general')
+      // console.log('generar_reporte_general')
       const axios = AxiosHttpRepository.getInstance()
       const filename = 'empleados'
       const url_pdf =
@@ -535,6 +547,19 @@ export default defineComponent({
       })
     }
 
+    /**
+     * HOOKS
+     */
+    onMounted(() => {
+      // console.log('EmpleadoPage -> Montado')
+      componenteCargado.value = true
+      // console.log(v$.value)
+    })
+    onUnmounted(() => {
+      // console.log('EmpleadoPage -> Desmontado')
+    })
+
+
     return {
       mixin,
       mixinFamiliares,
@@ -544,6 +569,7 @@ export default defineComponent({
       acciones,
       refArchivo,
       v$,
+      componenteCargado,
       reestablecer_usuario,
       configuracionColumnas: configuracionColumnasEmpleados,
       idEmpleado,

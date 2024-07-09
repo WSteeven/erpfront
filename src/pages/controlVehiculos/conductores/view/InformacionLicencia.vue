@@ -12,7 +12,7 @@
       <!-- Puntos y tipo de licencia -->
       <div class="col-12 col-md-3">
         <!-- puntos -->
-        <div class="col-12 col-md-12" v-if="validar">
+        <div class="col-12 col-md-12">
           <label class="q-mb-sm block">Puntos</label>
           <q-input
             v-model="conductor.puntos"
@@ -33,7 +33,7 @@
           </q-input>
         </div>
         <!--Tipo de Licencia -->
-        <div class="col-12 col-md-12 q-mt-lg" v-if="validar">
+        <div class="col-12 col-md-12 q-mt-lg">
           <label class="q-mb-sm block">Tipo de Licencia</label>
           <q-select
             v-model="conductor.tipo_licencia"
@@ -96,7 +96,7 @@
         v-if="conductor.licencias !== undefined"
       ></q-separator>
       <!-- Foreach de los diferentes tipos de licencia -->
-      <div class="col-12 col-md-8" v-if="validar">
+      <div class="col-12 col-md-8">
         <div class="col-12 col-md-12" v-if="conductor.licencias !== undefined">
           <div
             class="row q-col-gutter-sm"
@@ -342,13 +342,31 @@ const dataMulta = {
   fecha_pago: null,
   comentario: null,
 }
+let reglas
 onMounted(() => console.log('InformacionLicencia -> Montado'))
-onUnmounted(() => console.log('InformacionLicencia -> Desmontado'))
+onUnmounted(() => {
+  console.log('InformacionLicencia -> Desmontado')
+  reglas = {
+    tipo_licencia: { required: requiredIf(false) },
+    puntos: {
+      required: requiredIf(false),
+    },
+    licencias: {
+      $each: helpers.forEach({
+        tipo_licencia: { required: requiredIf(() => false) },
+        inicio_vigencia: { required: requiredIf(() => false) },
+        fin_vigencia: { required: requiredIf(() => false) },
+      }),
+    },
+  }
+  const v$ = useVuelidate(reglas, conductor)
+  setValidador(v$.value)
+})
 
 /***********************
  * Reglas de validacion
  **********************/
-const reglas = {
+reglas = {
   tipo_licencia: { required: requiredIf(() => props.validar) },
   puntos: {
     required: requiredIf(() => props.validar),

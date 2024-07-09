@@ -45,7 +45,7 @@ export default defineComponent({
       type: Boolean,
       default: true,
     },
-    quieroSubirArchivos:{
+    quieroSubirArchivos: {
       type: Boolean,
       default: false,
     },
@@ -57,6 +57,10 @@ export default defineComponent({
       type: String,
       required: false,
     },
+    maxTamanioBytes: {
+      type: Number,
+      default: 10485760 //10 MB
+    }
   },
   emits: ['inicializado'],
   setup(props, { emit }) {
@@ -171,6 +175,13 @@ export default defineComponent({
       return sumatoria
     }
 
+    function bytesToMB(bytes) {
+      if (bytes === 0) return '0 MB';
+  
+      const megabytes = bytes / (1024 * 1024);
+      return megabytes.toFixed(2) + ' MB';
+  }
+
     return {
       listadoArchivos,
       refGestor,
@@ -189,6 +200,7 @@ export default defineComponent({
       subir,
       limpiarListado,
       listarArchivosAlmacenados,
+      bytesToMB,
     }
   }
 })
