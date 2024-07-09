@@ -37,7 +37,7 @@ import { Familiares } from 'pages/recursosHumanos/familiares/domain/Familiares'
 import { FamiliaresController } from 'pages/recursosHumanos/familiares/infraestructure/FamiliaresController'
 import { AxiosHttpRepository } from 'shared/http/infraestructure/AxiosHttpRepository'
 import { apiConfig, endpoints } from 'config/api'
-import { encontrarUltimoIdListado, imprimirArchivo,  ordenarLista } from 'shared/utils'
+import { encontrarUltimoIdListado, imprimirArchivo, ordenarLista } from 'shared/utils'
 import { useCargandoStore } from 'stores/cargando'
 import { AxiosResponse } from 'axios'
 import { useNotificaciones } from 'shared/notificaciones'
@@ -77,7 +77,7 @@ export default defineComponent({
     const { onBeforeGuardar, onBeforeModificar, onConsultado, onModificado, onGuardado, onReestablecer } = mixin.useHooks()
     const mixinFamiliares = new ContenedorSimpleMixin(Familiares, new FamiliaresController())
     const { eliminar } = mixinFamiliares.useComportamiento()
-    
+
     const conductor = reactive(new Conductor())
     /********************************
      * LISTADOS Y FILTROS
@@ -93,7 +93,7 @@ export default defineComponent({
       grupos, filtrarGrupos,
       departamentos, filtrarDepartamentos
     } = useFiltrosListadosSelects(listadosAuxiliares)
-    
+
     /************
      * Variables
      ************/
@@ -111,7 +111,7 @@ export default defineComponent({
     const authenticationStore = useAuthenticationStore()
     const nombre_usuario = ref()
     const email_usuario = ref()
-    
+
     // const mostrarBotonSubirArchivos = ref(false) //computed(()=>{
     const mostrarComponenteInformacionLicencia = ref(false)
     const refArchivo = ref()
@@ -121,7 +121,7 @@ export default defineComponent({
     const idsParentescos: Ref<number[]> = ref([])
     const construccionConfiguracionColumnas = ref(false)
     cargarVista(async () => {
-        await obtenerListados({
+      await obtenerListados({
         areas: new AreasController(),
         bancos: new BancoController(),
         cargos: {
@@ -271,9 +271,9 @@ export default defineComponent({
       else {
         empleado.conductor = []
       }
-    onReestablecer(() => {
-      empleado.familiares = []
-    })
+      onReestablecer(() => {
+        empleado.familiares = []
+      })
 
     })
     onBeforeModificar(() => {
@@ -298,7 +298,9 @@ export default defineComponent({
       if (empleado.roles.includes(rolesSistema.chofer)) {
         mostrarComponenteInformacionLicencia.value = true
         conductor.hydrate(empleado.conductor ? empleado.conductor : new Conductor())
-      } else mostrarComponenteInformacionLicencia.value = false
+      } else {
+        mostrarComponenteInformacionLicencia.value = false
+      }
 
       // listar archivos
       setTimeout(() => {
@@ -459,15 +461,15 @@ export default defineComponent({
     }
 
     const btnEliminarDiscapacidad: CustomActionTable<TipoDiscapacidadPorcentaje> =
-      {
-        titulo: 'Eliminar',
-        icono: 'bi-x',
-        color: 'negative',
-        accion: ({ posicion }) =>
-          confirmar('¿Está seguro de continuar?', () =>
-            empleado.discapacidades?.splice(posicion, 1)
-          ),
-      }
+    {
+      titulo: 'Eliminar',
+      icono: 'bi-x',
+      color: 'negative',
+      accion: ({ posicion }) =>
+        confirmar('¿Está seguro de continuar?', () =>
+          empleado.discapacidades?.splice(posicion, 1)
+        ),
+    }
 
     function obtenerUsername() {
       if (accion.value == acciones.editar && empleado.generar_usuario) {

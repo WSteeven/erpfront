@@ -12,7 +12,7 @@
       <!-- Puntos y tipo de licencia -->
       <div class="col-12 col-md-3">
         <!-- puntos -->
-        <div class="col-12 col-md-12">
+        <div class="col-12 col-md-12" v-if="validar">
           <label class="q-mb-sm block">Puntos</label>
           <q-input
             v-model="conductor.puntos"
@@ -33,7 +33,7 @@
           </q-input>
         </div>
         <!--Tipo de Licencia -->
-        <div class="col-12 col-md-12 q-mt-lg">
+        <div class="col-12 col-md-12 q-mt-lg" v-if="validar">
           <label class="q-mb-sm block">Tipo de Licencia</label>
           <q-select
             v-model="conductor.tipo_licencia"
@@ -96,7 +96,7 @@
         v-if="conductor.licencias !== undefined"
       ></q-separator>
       <!-- Foreach de los diferentes tipos de licencia -->
-      <div class="col-12 col-md-8">
+      <div class="col-12 col-md-8" v-if="validar">
         <div class="col-12 col-md-12" v-if="conductor.licencias !== undefined">
           <div
             class="row q-col-gutter-sm"
@@ -289,13 +289,18 @@ import { Conductor } from '../domain/Conductor'
 import { acciones, accionesTabla, maskFecha } from 'config/utils'
 import { configuracionColumnasMultasConductores } from '../domain/configuracionColumnasMultasConductores'
 import { tiposLicencias } from 'config/vehiculos.utils'
-import { maxValue, minValue, required } from 'shared/i18n-validators'
+import {
+  maxValue,
+  minValue,
+  required,
+  requiredIf,
+} from 'shared/i18n-validators'
 import useVuelidate from '@vuelidate/core'
 import { CustomActionTable } from 'components/tables/domain/CustomActionTable'
 import { ComportamientoModalesConductores } from '../application/ComportamientoModalesConductores'
 import { useNotificaciones } from 'shared/notificaciones'
 import { CustomActionPrompt } from 'components/tables/domain/CustomActionPrompt'
-import { ref } from 'vue'
+import { onMounted, onUnmounted, ref } from 'vue'
 import { useConductorStore } from 'stores/vehiculos/conductor'
 import { MultaConductorController } from '../modules/multas/infraestructure/MultaConductorController'
 import { FechaLicencia } from '../domain/FechaLicencia'
@@ -319,6 +324,10 @@ const props = defineProps({
     type: Boolean,
     default: true,
   },
+  validar: {
+    type: Boolean,
+    default: false,
+  },
 })
 const emit = defineEmits(['guardado'])
 
@@ -333,18 +342,24 @@ const dataMulta = {
   fecha_pago: null,
   comentario: null,
 }
+onMounted(() => console.log('InformacionLicencia -> Montado'))
+onUnmounted(() => console.log('InformacionLicencia -> Desmontado'))
 
 /***********************
  * Reglas de validacion
  **********************/
 const reglas = {
-  tipo_licencia: { required },
-  puntos: { required, maximo: maxValue(30), minimo: minValue(0) },
+  tipo_licencia: { required: requiredIf(() => props.validar) },
+  puntos: {
+    required: requiredIf(() => props.validar),
+    maximo: maxValue(30),
+    minimo: minValue(0),
+  },
   licencias: {
     $each: helpers.forEach({
-      tipo_licencia: { required },
-      inicio_vigencia: { required },
-      fin_vigencia: { required },
+      tipo_licencia: { required: requiredIf(() => props.validar) },
+      inicio_vigencia: { required: requiredIf(() => props.validar) },
+      fin_vigencia: { required: requiredIf(() => props.validar) },
     }),
   },
 }
