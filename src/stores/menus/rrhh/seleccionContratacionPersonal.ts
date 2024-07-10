@@ -17,17 +17,24 @@ const seleccionContratacionPersonal: Ref<MenuOption[]> = computed(() => {
                     can: store.can('puede.acceder.solicitudes_puestos'),
                 },
                 {
-                    title: 'Solicitud de Puesto de Empleo',
-                    link: 'solicitud-puesto-empleo',
-                    icon: 'bi-app',
-                    can: store.can('puede.acceder.solicitud_puesto_empleo'),
-                },
-                {
                     title: 'Publicacion de Puesto de Empleo',
                     link: 'publicacion-puesto-empleo',
                     icon: 'bi-app',
                     can: store.can('puede.acceder.publicacion_puesto_empleo'),
                 },
+                {
+                    title: 'Configuracion',
+                    icon: 'bi-gear-fill',
+                    children: [
+                        {
+                            title: 'Areas de conocimiento',
+                            link: 'areas-conocimientos',
+                            icon: 'bi-circle',
+                            can: store.can('puede.acceder.rrhh_areas_conocimientos'),
+                        },
+                    ]
+                }
+
             ]
         },
     ]

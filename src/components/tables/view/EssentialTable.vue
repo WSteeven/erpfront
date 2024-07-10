@@ -1610,6 +1610,11 @@
         <campo-descontable :propsTable="props" />
       </q-td>
     </template>
+    <template #body-cell-aprobado_rrhh="props">
+      <q-td :props="props">
+        <campo-aprobado-r-r-h-h :propsTable="props" />
+      </q-td>
+    </template>
 
     <template #body-cell-dado_alta="props">
       <q-td :props="props">

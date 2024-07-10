@@ -194,14 +194,7 @@ export const endpoints = {
   alimentacion: new Endpoint('recursos-humanos/alimentacion'),
   detalle_alimentacion: new Endpoint('recursos-humanos/detalle-alimentacion'),
   finalizar_asignacion_alimentacion: new Endpoint('recursos-humanos/finalizar-asignacion-alimentacion'),
-  /********************
-  * Modulo de  Seleccion y contratacion
-  *********************/
   
-  publicacion_puesto_empleo: new Endpoint('recursos-humanos/publicacion-puesto-empleo'),
-  tipos_puestos_trabajos: new Endpoint('recursos-humanos/tipos_puestos_trabajos'),
-  postulantes: new Endpoint('recursos-humanos/postulantes'),
-  registro: new Endpoint('recursos-humanos/registro'),
 
 
 

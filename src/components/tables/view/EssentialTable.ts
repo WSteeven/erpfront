@@ -21,6 +21,7 @@ import EditarTablaModal from './EditarTablaModal.vue'
 import EstadosSubtareas from './EstadosSubtareas.vue'
 import CustomButtons from './CustomButtonsTable.vue'
 import VisorArchivos from './VisorArchivos.vue'
+import CampoAprobadoRRHH from './partials/CampoAprobadoRRHH.vue'
 import CampoDescontable from './partials/CampoDescontable.vue'
 import { VisibleModal } from '../application/VisibleModal'
 
@@ -30,6 +31,7 @@ export default defineComponent({
     EditarTablaModal,
     CustomButtons,
     CampoDescontable,
+    CampoAprobadoRRHH,
     EstadosSubtareas,
     BotonesPaginacion,
     TableFilters,

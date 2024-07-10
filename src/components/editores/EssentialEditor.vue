@@ -1,9 +1,4 @@
 <template>
-  <div class="row justify-between">
-    <label class="q-mb-sm block" v-if="label">{{ label }}</label>
-    <label class="q-mb-sm block" v-else>Descripción</label>
-    <b class="text-italic">*No enviar imágenes demasiado grandes</b>
-  </div>
   <q-editor
     v-model="internalValue"
     min-height="5rem"
@@ -15,13 +10,54 @@
     @input="updateValue"
   >
   </q-editor>
-  <div v-if="error">
-    <div v-for="error of v$[v_error_key].$errors" :key="error.$uid"
-      class="text-negative"
-    >
-      <small>{{ error.$message }}</small>
-    </div>
-  </div>
 </template>
 
-<script src="./EssentialEditor.ts" />
+<script setup>
+import { useQuasar } from 'quasar'
+import { ref } from 'vue'
+
+const props = defineProps({
+  value: String,
+  disable: {
+    type: Boolean,
+    required: true,
+  },
+})
+
+const emit = defineEmits(['update:value'])
+
+const $q = useQuasar()
+const internalValue = ref(props.value)
+
+const toolbar = [
+  [
+    {
+      label: $q.lang.editor.align,
+      icon: $q.iconSet.editor.align,
+      fixedLabel: true,
+      list: 'only-icons',
+      options: ['left', 'center', 'right', 'justify'],
+    },
+  ],
+  ['bold', 'italic', 'strike', 'underline', 'subscript', 'superscript'],
+  ['token', 'hr', 'link', 'custom_btn'],
+  ['fullscreen'],
+  [
+    {
+      label: $q.lang.editor.formatting,
+      icon: $q.iconSet.editor.formatting,
+      list: 'no-icons',
+      options: ['p', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'code'],
+    },
+    'removeFormat',
+  ],
+  ['quote', 'unordered', 'ordered', 'outdent', 'indent'],
+
+  ['undo', 'redo'],
+]
+
+const updateValue = (value) => {
+  internalValue.value = value
+  emit('update:value', value)
+}
+</script>

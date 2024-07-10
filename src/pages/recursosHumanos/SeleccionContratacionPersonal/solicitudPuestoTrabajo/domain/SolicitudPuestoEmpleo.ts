@@ -5,10 +5,11 @@ export class SolicitudPuestoEmpleo extends EntidadAuditable {
   tipo_puesto: number | null
   puesto: number | null
   autorizacion: string | null
-  descripcion: string | null
+  descripcion: string
   conocimientos: any[] | null
   formaciones_academicas: any[] | null
   descripcion_vacante: string | null
+  requiere_experiencia: boolean
   anios_experiencia: number | null
 
   constructor() {
@@ -17,10 +18,11 @@ export class SolicitudPuestoEmpleo extends EntidadAuditable {
     this.puesto = null
     this.tipo_puesto = null
     this.autorizacion = null
-    this.descripcion = null
+    this.descripcion = ''
     this.descripcion_vacante = null
     this.anios_experiencia = null
     this.conocimientos = []
     this.formaciones_academicas = []
+    this.requiere_experiencia = false
   }
 }

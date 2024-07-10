@@ -16,4 +16,11 @@ export const configuracionColumnasCargos: ColumnConfig<Cargo>[] = [
         align: 'left',
         sortable: true
     },
+    {
+        name: 'aprobado_rrhh',
+        field: 'aprobado_rrhh',
+        label: 'Aprobado',
+        align: 'left',
+        sortable: true
+    },
 ]
