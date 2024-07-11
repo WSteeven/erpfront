@@ -1,8 +1,13 @@
 <template>
-  <tab-layout
+  <tab-layout-filter-tabs2
     :mixin="mixin"
     :configuracionColumnas="configuracionColumnas"
     titulo-pagina="Solicitud de Personal"
+    :tab-options="tabOptionsSolicitudesPersonal"
+    :filtrar="filtrarSolicitudes"
+    :tabDefecto="tabActual"
+    ajustarCeldas
+    :accion1="btnPublicar"
   >
     <template #formulario>
       <q-form @submit.prevent>
@@ -81,7 +86,7 @@
             />
             <label v-else class="q-mb-sm block">Cargo</label>
             <q-select
-              v-model="solicitud.puesto"
+              v-model="solicitud.cargo"
               :options="cargos"
               transition-show="jump-up"
               transition-hide="jump-down"
@@ -91,16 +96,17 @@
               outlined
               :input-debounce="0"
               use-input
-              @blur="v$.puesto.$touch"
+              @blur="v$.cargo.$touch"
               @filter="filtrarCargos"
-              :error="!!v$.puesto.$errors.length"
+              @update:model-value="consultarConocimientos"
+              :error="!!v$.cargo.$errors.length"
               :option-value="(v) => v.id"
               :option-label="(v) => v.nombre"
               emit-value
               map-options
             >
               <template v-slot:error>
-                <div v-for="error of v$.puesto.$errors" :key="error.$uid">
+                <div v-for="error of v$.cargo.$errors" :key="error.$uid">
                   <div class="error-msg">{{ error.$message }}</div>
                 </div>
               </template>
@@ -154,8 +160,6 @@
             </q-select>
           </div>
 
-          <!-- {{ v$.$errors }} -->
-
           <!-- Descripcion de vacante -->
           <div class="col-12">
             <div class="row justify-between">
@@ -175,7 +179,7 @@
             </div>
           </div>
           <!-- areas de conocimiento -->
-          <div class="col-12 col-md-3" v-if="solicitud.requiere_experiencia">
+          <div class="col-12 col-md-3">
             <label class="q-mb-sm block">Conocimiento</label>
             <q-select
               v-model="solicitud.areas_conocimiento"
@@ -191,9 +195,38 @@
               @new-value="crearAreaConocimiento"
               :options="areasConocimiento"
               @filter="filtrarAreasConocimiento"
+              :error="!!v$.conocimientos.$errors.length"
+              :option-label="(item) => item?.nombre"
+              :option-value="(item) => item?.id"
+              emit-value
+              map-options
             >
+              <template v-slot:no-option>
+                <q-item>
+                  <q-item-section
+                    class="text-grey"
+                    v-if="solicitud.cargo == null"
+                  >
+                    Selecciona un cargo
+                  </q-item-section>
+                  <q-item-section class="text-grey" v-else>
+                    Escribe un conocimiento y presiona enter
+                  </q-item-section>
+                </q-item>
+              </template>
+              <template v-slot:error>
+                <div
+                  v-for="error of v$.conocimientos.$errors"
+                  :key="error.$uid"
+                >
+                  <div class="error-msg">{{ error.$message }}</div>
+                </div>
+              </template>
             </q-select>
           </div>
+
+          <!-- {{ v$.$errors }} -->
+
           <div class="col-12 col-md-3 col-sm-12" v-if="false">
             <q-btn
               color="positive"
@@ -223,7 +256,7 @@
             >
             </essential-table>
           </div>
-          <div class="col-12 col-md-3 col-sm-12">
+          <div class="col-12 col-md-6 col-sm-12">
             <q-btn
               color="positive"
               @click="agregarFormacionAcademica()"
@@ -267,7 +300,7 @@
           </div>
           <!-- años de experiencia -->
           <div class="col-12 col-md-3" v-if="solicitud.requiere_experiencia">
-            <label class="q-mb-sm block">Años de Experiencia</label>
+            <label class="q-mb-sm block">Tiempo de Experiencia</label>
             <q-select
               v-model="solicitud.anios_experiencia"
               options-dense
@@ -291,10 +324,43 @@
               </template>
             </q-select>
           </div>
+
+          <!-- Manejo de archivos -->
+          <div
+            class="col-12 q-mb-md"
+            v-if="solicitud.tipo_puesto == tipo_puesto.nuevo"
+          >
+            <gestor-archivos
+              ref="refArchivo"
+              label="Manual de funciones"
+              :mixin="mixin"
+              :disable="disabled"
+              quieroSubirArchivos
+              :listarAlGuardar="false"
+              :permitir-eliminar="
+                accion == acciones.nuevo || accion == acciones.editar
+              "
+              :idModelo="1"
+            >
+              <template #boton-subir>
+                <q-btn
+                  v-if="false"
+                  color="positive"
+                  push
+                  no-caps
+                  class="full-width q-mb-lg"
+                  @click="subirArchivos()"
+                >
+                  <q-icon name="bi-upload" class="q-mr-sm" size="xs"></q-icon>
+                  Subir archivos seleccionados</q-btn
+                >
+              </template>
+            </gestor-archivos>
+          </div>
         </div>
       </q-form>
     </template>
-  </tab-layout>
+  </tab-layout-filter-tabs2>
   <modal-entidad
     :comportamiento="modales"
     :persistente="false"

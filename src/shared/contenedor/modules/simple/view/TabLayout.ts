@@ -172,7 +172,7 @@ export default defineComponent({
     })
 
     const nombre = Router.currentRoute.value.name?.toString().replaceAll('_', ' ') ?? ''
-    const tituloTabla = nombre.toLowerCase().substring(0, 1).toUpperCase() + nombre.toLowerCase().substring(1, nombre.length)
+    const tituloTabla = props.tituloPagina ?? nombre.toLowerCase().substring(0, 1).toUpperCase() + nombre.toLowerCase().substring(1, nombre.length)
 
     const accionTabla = {
       consultar: ({ entidad }) => {

@@ -74,6 +74,13 @@ export const useFiltrosListadosSelects = (listadosAuxiliares, entidad?: Ref<any>
   const tiposVehiculos = ref(listadosAuxiliares.tipos_vehiculos)
 
 
+  //////////////////////////////////////////
+  //modulo seleccion y contratacion
+  //////////////////////////////////////////
+  const areasConocimiento = ref(listadosAuxiliares.areasConocimiento)
+
+
+
   /**************************************************************
    * Funciones
    **************************************************************/
@@ -489,6 +496,12 @@ export const useFiltrosListadosSelects = (listadosAuxiliares, entidad?: Ref<any>
   // const filtrarTiposEvaluacionesMedicasRetiros = (val, update) => filtrarLista(val, update, tiposEvaluacionesMedicasRetiros, 'nombre', listadosAuxiliares.tiposEvaluacionesMedicasRetiros)
   // const filtrarTiposAptitudesMedicasLaborales = (val, update) => filtrarLista(val, update, tiposAptitudesMedicasLaborales, 'nombre', listadosAuxiliares.tiposAptitudesMedicasLaborales)
 
+  /****************
+   * Modulo seleccion y contratacion de personal 
+   ****************/
+  const filtrarAreasConocimiento = (val, update) => filtrarLista(val, update, areasConocimiento, 'nombre', listadosAuxiliares.areasConocimiento)
+
+
   /***************************************
    * Filtro global optimizado
    * Actualmente filtra por un solo campo
@@ -555,5 +568,8 @@ export const useFiltrosListadosSelects = (listadosAuxiliares, entidad?: Ref<any>
     laboratoriosClinicos, filtrarLaboratoriosClinicos,
     // tiposEvaluacionesMedicasRetiros, filtrarTiposEvaluacionesMedicasRetiros,
     // tiposAptitudesMedicasLaborales, filtrarTiposAptitudesMedicasLaborales,
+
+    //modulo seleccion y contratacion de personal
+    areasConocimiento, filtrarAreasConocimiento,
   }
 }

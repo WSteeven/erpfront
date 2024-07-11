@@ -1,7 +1,7 @@
 import { EntidadAuditable } from "shared/entidad/domain/entidadAuditable";
 
 export class AreaConocimiento extends EntidadAuditable {
-    cargo: string | null
+    cargo: number | null
     nombre: string | null
     activo: boolean
 

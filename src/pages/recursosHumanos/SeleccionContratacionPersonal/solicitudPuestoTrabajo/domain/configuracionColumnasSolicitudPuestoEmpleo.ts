@@ -17,6 +17,13 @@ export const configuracionColumnasSolicitudPuestoEmpleo: ColumnConfig<SolicitudP
         sortable: true
     },
     {
+        name: 'autorizador',
+        field: 'autorizador',
+        label: 'Autorizador',
+        align: 'left',
+        sortable: true
+    },
+    {
         name: 'autorizacion',
         field: 'autorizacion',
         label: 'Autorización',
@@ -24,15 +31,9 @@ export const configuracionColumnasSolicitudPuestoEmpleo: ColumnConfig<SolicitudP
         sortable: true
     },
     {
-        name: 'descripcion_vacante',
-        field: 'descripcion_vacante',
-        label: 'Descripcion de Vacante',
-        align: 'left',
-        sortable: true
-    },    {
-        name: 'descripcion_vacante',
-        field: 'descripcion_vacante',
-        label: 'Descripcion de Vacante',
+        name: 'cargo',
+        field: 'cargo',
+        label: 'Cargo',
         align: 'left',
         sortable: true
     },

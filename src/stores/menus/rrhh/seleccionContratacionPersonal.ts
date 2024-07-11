@@ -17,10 +17,10 @@ const seleccionContratacionPersonal: Ref<MenuOption[]> = computed(() => {
                     can: store.can('puede.acceder.solicitudes_puestos'),
                 },
                 {
-                    title: 'Publicacion de Puesto de Empleo',
-                    link: 'publicacion-puesto-empleo',
+                    title: 'Vacantes',
+                    link: 'vacantes',
                     icon: 'bi-app',
-                    can: store.can('puede.acceder.publicacion_puesto_empleo'),
+                    can: store.can('puede.acceder.rrhh_vacantes'),
                 },
                 {
                     title: 'Configuracion',

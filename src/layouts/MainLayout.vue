@@ -282,8 +282,14 @@
           <!-- Perfil -->
           <q-btn dense round flat glossy @click.self="mostrarMenu = true">
             <!-- <q-avatar size="32px" > -->
-              <q-badge color="positive" rounded floating> </q-badge>
-              <img :src="imagenPerfil" fit="cover" height="34px" width="34px" class="rounded border-white" />
+            <q-badge color="positive" rounded floating> </q-badge>
+            <img
+              :src="imagenPerfil"
+              fit="cover"
+              height="34px"
+              width="34px"
+              class="rounded border-white"
+            />
             <!-- </q-avatar> -->
 
             <q-menu
@@ -309,7 +315,13 @@
                 </div>
 
                 <!-- <q-avatar size="72px" class="double-border q-mb-md"> -->
-                  <img :src="imagenPerfil" fit="contain" height="72px" width="72px" class="rounded border-white  q-mb-md" />
+                <img
+                  :src="imagenPerfil"
+                  fit="contain"
+                  height="72px"
+                  width="72px"
+                  class="rounded border-white q-mb-md"
+                />
                 <!-- </q-avatar> -->
 
                 <div class="text-subtitle1 text-center">
@@ -494,7 +506,8 @@
             'AcreditacionSemana',
             'TransferenciaProductoEmpleado',
             'AsignacionVehiculo',
-            'TransferenciaVehiculo'
+            'TransferenciaVehiculo',
+            'VacantePage',
           ]"
         >
           <component :is="Component" />
