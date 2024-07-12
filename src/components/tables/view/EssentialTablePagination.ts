@@ -413,16 +413,18 @@ export default defineComponent({
           search: request.filter,
           ...filtros.fields,
         })
+      } else {
+        onRequest(1)
       }
     }
 
-    async function onRequest(props) {
+    async function onRequest(page) {
       loading.value = true
 
       await listar({
         ...filtros.fields,
         paginate: true,
-        page: props
+        page: page
       })
       loading.value = false
     }
