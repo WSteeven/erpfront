@@ -1,6 +1,6 @@
-import { SolicitudPuestoEmpleo } from "pages/recursosHumanos/seleccionContratacionPersonal/solicitudPuestoTrabajo/domain/SolicitudPuestoEmpleo";
-import { defineStore } from "pinia";
-import { reactive, ref } from "vue";
+import { SolicitudPuestoEmpleo } from 'pages/recursosHumanos/seleccionContratacionPersonal/solicitudPuestoTrabajo/domain/SolicitudPuestoEmpleo';
+import { defineStore } from 'pinia';
+import { reactive, ref } from 'vue';
 
 export const useSeleccionContratacionStore = defineStore('seleccionContratacion', () => {
     const solicitudPersonal = reactive(new SolicitudPuestoEmpleo())

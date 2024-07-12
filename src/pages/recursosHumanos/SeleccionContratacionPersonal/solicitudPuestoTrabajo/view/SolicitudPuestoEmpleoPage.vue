@@ -17,7 +17,7 @@
             <label class="q-mb-sm block">Tipo de Puesto</label>
             <q-select
               v-model="solicitud.tipo_puesto"
-              :options="tipos_puestos_trabajo"
+              :options="tiposPuestos"
               transition-show="jump-up"
               transition-hide="jump-down"
               :disable="disabled"
@@ -48,6 +48,10 @@
                 </q-item>
               </template>
             </q-select>
+          </div>
+
+          <div>
+            <p>Holaa uqe tal </p>
           </div>
 
           <!-- nombre -->

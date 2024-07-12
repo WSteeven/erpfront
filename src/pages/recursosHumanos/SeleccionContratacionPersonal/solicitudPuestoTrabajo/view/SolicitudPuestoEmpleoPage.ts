@@ -26,10 +26,12 @@ import { SolicitudPuestoEmpleo } from '../domain/SolicitudPuestoEmpleo'
 import { SolicitudPuestoEmpleoController } from '../infraestructure/SolicitudPuestoEmpleoController'
 import { FormacionAcademica } from '../domain/FormacionAcademica'
 import { configuracionColumnasSolicitudPuestoEmpleo } from '../domain/configuracionColumnasSolicitudPuestoEmpleo'
-import { configuracionColumnasConocimientoReactive } from '../domain/configuracionColumnasConocimientoReactive'
 import { configuracionColumnasFormacionAcademicaReactive } from '../domain/configuracionColumnasFormacionAcademicaReactive'
 import { ComportamientoModalesSolicitudDePersonal } from '../application/ComportamientoModalesSolicitudDePersonal'
-import { aniosExperiencia, tabOptionsSolicitudesPersonal } from 'config/seleccionContratacionPersonal.utils'
+import {
+  aniosExperiencia,
+  tabOptionsSolicitudesPersonal,
+} from 'config/seleccionContratacionPersonal.utils'
 import { AreaConocimiento } from '../../areasConocimiento/domain/AreaConocimiento'
 import { AreaConocimientoController } from '../../areasConocimiento/infraestructure/AreaConocimientoController'
 import { StatusEssentialLoading } from 'components/loading/application/StatusEssentialLoading'
@@ -38,11 +40,27 @@ import { useSeleccionContratacionStore } from 'stores/recursosHumanos/seleccionC
 import { TipoPuestoController } from '../../tiposPuestos/infraestructure/TipoPuestoController'
 
 export default defineComponent({
-  components: { TabLayoutFilterTabs2, EssentialEditor, EssentialTable, GestorArchivos, LabelAbrirModal, ModalEntidad },
+  components: {
+    TabLayoutFilterTabs2,
+    EssentialEditor,
+    EssentialTable,
+    GestorArchivos,
+    LabelAbrirModal,
+    ModalEntidad,
+  },
   setup() {
-    const mixin = new ContenedorSimpleMixin(SolicitudPuestoEmpleo, new SolicitudPuestoEmpleoController())
-    const { entidad: solicitud, accion, disabled, listadosAuxiliares, } = mixin.useReferencias()
-    const { setValidador, obtenerListados, cargarVista, listar } = mixin.useComportamiento()
+    const mixin = new ContenedorSimpleMixin(
+      SolicitudPuestoEmpleo,
+      new SolicitudPuestoEmpleoController()
+    )
+    const {
+      entidad: solicitud,
+      accion,
+      disabled,
+      listadosAuxiliares,
+    } = mixin.useReferencias()
+    const { setValidador, obtenerListados, cargarVista, listar } =
+      mixin.useComportamiento()
     const { onReestablecer, onGuardado, onConsultado } = mixin.useHooks()
     const { confirmar } = useNotificaciones()
 
@@ -51,17 +69,15 @@ export default defineComponent({
 
     /****************************************************************************
      * stores
-    ****************************************************************************/
+     ****************************************************************************/
     const store = useAuthenticationStore()
     const cargando = new StatusEssentialLoading()
     const solicitudStore = useSeleccionContratacionStore()
 
-
     const modales = new ComportamientoModalesSolicitudDePersonal()
 
-
     const router = useRouter()
-    const tipos_puestos_trabajo = ref([])
+    const tiposPuestos = ref([])
     const anios_experiencia = ref(aniosExperiencia)
     const autorizaciones = ref([])
     const areasConocimiento = ref()
@@ -76,20 +92,21 @@ export default defineComponent({
 
     /****************************************************************************
      * HOOKS
-    ****************************************************************************/
+     ****************************************************************************/
     onGuardado((id: number) => {
       idPuestoEmpleo.value = id
       setTimeout(() => {
         subirArchivos()
       }, 1)
     })
-
+   
     cargarVista(async () => {
       await obtenerListados({
-        tipos_puestos_trabajo: {
+        tiposPuestos: {
           controller: new TipoPuestoController(),
           params: {
             campos: 'id,nombre',
+            activo: 1,
           },
         },
         autorizaciones: {
@@ -103,24 +120,36 @@ export default defineComponent({
           params: { estado: 1 },
         },
       })
-      tipos_puestos_trabajo.value = listadosAuxiliares.tipos_puestos_trabajo
+      tiposPuestos.value = listadosAuxiliares.tiposPuestos
       autorizaciones.value = listadosAuxiliares.autorizaciones
       cargos.value = listadosAuxiliares.cargos
     })
 
     /****************************************************************************
      * REGLAS DE VALIDACION
-    ****************************************************************************/
+     ****************************************************************************/
 
     const reglas = {
-      nombre: { requiredIf: requiredIf(() => solicitud.tipo_puesto == tipo_puesto.nuevo), },
+      nombre: {
+        requiredIf: requiredIf(
+          () => solicitud.tipo_puesto == tipo_puesto.nuevo
+        ),
+      },
       tipo_puesto: { required },
       autorizacion: { requiredIf: requiredIf(() => store.esGerente) },
       descripcion: { required },
-      anios_experiencia: { required: requiredIf(() => solicitud.requiere_experiencia) },
-      conocimientos: { required: requiredIf(() => solicitud.tipo_puesto !== tipo_puesto.nuevo) },
+      anios_experiencia: {
+        required: requiredIf(() => solicitud.requiere_experiencia),
+      },
+      conocimientos: {
+        required: requiredIf(() => solicitud.tipo_puesto !== tipo_puesto.nuevo),
+      },
       formaciones_academicas: { required },
-      cargo: { requiredIf: requiredIf(() => solicitud.tipo_puesto !== tipo_puesto.nuevo), },
+      cargo: {
+        requiredIf: requiredIf(
+          () => solicitud.tipo_puesto !== tipo_puesto.nuevo
+        ),
+      },
     }
 
     const v$ = useVuelidate(reglas, solicitud)
@@ -130,36 +159,39 @@ export default defineComponent({
       solicitud.cargo = null
     }
 
-    const btnEliminarFormacionAcademica: CustomActionTable<FormacionAcademica> = {
-      titulo: '',
-      icono: 'bi-x',
-      color: 'negative',
-      // visible: () => store.can('puede.eliminar.formaciones_academicas'),
-      accion: ({ posicion }) => confirmar('¿Está seguro de continuar?', () => solicitud.formaciones_academicas?.splice(posicion, 1))
-    }
+    const btnEliminarFormacionAcademica: CustomActionTable<FormacionAcademica> =
+      {
+        titulo: '',
+        icono: 'bi-x',
+        color: 'negative',
+        // visible: () => store.can('puede.eliminar.formaciones_academicas'),
+        accion: ({ posicion }) =>
+          confirmar('¿Está seguro de continuar?', () =>
+            solicitud.formaciones_academicas?.splice(posicion, 1)
+          ),
+      }
 
     async function filtrarSolicitudes(tab: string) {
       tabActual.value = tab
       switch (tab) {
-        case '1':// PENDIENTES
+        case '1': // PENDIENTES
           listar({
-            'autorizacion_id': 1,
+            autorizacion_id: 1,
           })
           break
         case '2': //APROBADAS
           listar({
             publicada: 0,
-            'autorizacion_id': 2,
-
+            autorizacion_id: 2,
           })
           break
         case '3': //CANCELADAS
-          listar({ 'autorizacion_id': 3 })
+          listar({ autorizacion_id: 3 })
           break
         case '4': // PUBLICADAS
           listar({
             publicada: 1,
-            'autorizacion_id': 2,
+            autorizacion_id: 2,
           })
           break
         default:
@@ -185,7 +217,9 @@ export default defineComponent({
       update(() => {
         if (val == '') anios_experiencia.value = aniosExperiencia
         else {
-          anios_experiencia.value = aniosExperiencia.filter(v => v.toUpperCase().indexOf(val) > -1)
+          anios_experiencia.value = aniosExperiencia.filter(
+            (v) => v.toUpperCase().indexOf(val) > -1
+          )
         }
       })
     }
@@ -195,7 +229,9 @@ export default defineComponent({
       const conocimiento = new AreaConocimiento()
       conocimiento.cargo = solicitud.cargo
       conocimiento.nombre = nombre
-      const result = await new AreaConocimientoController().guardar(conocimiento)
+      const result = await new AreaConocimientoController().guardar(
+        conocimiento
+      )
       console.log(result)
       cargando.desactivar()
       return result.response.data.modelo
@@ -204,7 +240,7 @@ export default defineComponent({
     async function crearAreaConocimiento(val, done) {
       if (val.length > 0) {
         val = val.toUpperCase()
-        if (!areasConocimiento.value.map(v => v.nombre).includes(val)) {
+        if (!areasConocimiento.value.map((v) => v.nombre).includes(val)) {
           //Si no está en el array, se procede a crear en la BD y a setear la respuesta al listado
           const nuevoConocimiento = await crearAreaConocimientoBD(val)
           console.log(nuevoConocimiento, val)
@@ -215,24 +251,33 @@ export default defineComponent({
           done(val, 'add-unique')
           console.log('187', solicitud.areas_conocimiento)
           // Se filtra el listado de seleccionados para limpiar los nulos y undefined
-          solicitud.areas_conocimiento = solicitud.areas_conocimiento.filter(v => v !== null)
-          solicitud.areas_conocimiento = solicitud.areas_conocimiento.filter(v => v !== undefined)
+          solicitud.areas_conocimiento = solicitud.areas_conocimiento.filter(
+            (v) => v !== null
+          )
+          solicitud.areas_conocimiento = solicitud.areas_conocimiento.filter(
+            (v) => v !== undefined
+          )
         }
       }
     }
     function filtrarAreasConocimiento(val, update) {
       val = val.toUpperCase()
       update(() => {
-        if (val == '') areasConocimiento.value = listadosAuxiliares.areasConocimiento
+        if (val == '')
+          areasConocimiento.value = listadosAuxiliares.areasConocimiento
         else {
-          areasConocimiento.value = listadosAuxiliares.areasConocimiento.filter((v: AreaConocimiento) => v.nombre!.toUpperCase().indexOf(val) > -1)
+          areasConocimiento.value = listadosAuxiliares.areasConocimiento.filter(
+            (v: AreaConocimiento) => v.nombre!.toUpperCase().indexOf(val) > -1
+          )
         }
       })
     }
     async function consultarConocimientos(val) {
       solicitud.areas_conocimiento = []
       cargando.activar()
-      const response = await (await new AreaConocimientoController().listar({ cargo_id: val }))
+      const response = await await new AreaConocimientoController().listar({
+        cargo_id: val,
+      })
       listadosAuxiliares.areasConocimiento = response.result //.map(v => v.nombre)
       areasConocimiento.value = listadosAuxiliares.areasConocimiento
       cargando.desactivar()
@@ -252,9 +297,10 @@ export default defineComponent({
         solicitudStore.idSolicitudVacante = entidad.id
         router.push('vacantes')
       },
-      visible: () => { return accion.value == acciones.nuevo || accion.value == acciones.editar }
+      visible: () => {
+        return accion.value == acciones.nuevo || accion.value == acciones.editar
+      },
     }
-
 
     return {
       solicitud,
@@ -265,25 +311,26 @@ export default defineComponent({
       acciones,
       accionesTabla,
       configuracionColumnas: configuracionColumnasSolicitudPuestoEmpleo,
-      configuracionColumnasConocimientoReactive,
       configuracionColumnasFormacionAcademicaReactive,
       refArchivo,
-      tipos_puestos_trabajo,
+      tiposPuestos,
       autorizaciones,
       modales,
       tabOptionsSolicitudesPersonal,
       tabActual,
 
-      
       // listados
-      cargos, filtrarCargos,
-      anios_experiencia, filtrarAniosExperiencia,
-      areasConocimiento, filtrarAreasConocimiento,
-      
+      cargos,
+      filtrarCargos,
+      anios_experiencia,
+      filtrarAniosExperiencia,
+      areasConocimiento,
+      filtrarAreasConocimiento,
+
       tipo_puesto,
-      
+
       store,
-      
+
       // funciones
       removeAccents,
       agregarFormacionAcademica,
@@ -292,11 +339,10 @@ export default defineComponent({
       guardado,
       consultarConocimientos,
       crearAreaConocimiento,
-      
+
       //botones de tabla
       btnEliminarFormacionAcademica,
       btnPublicar,
-
     }
   },
 })

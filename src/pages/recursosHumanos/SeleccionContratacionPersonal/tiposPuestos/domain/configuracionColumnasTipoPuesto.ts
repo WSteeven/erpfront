@@ -9,4 +9,11 @@ export const configuracionColumnasTipoPuestoTrabajo: ColumnConfig<TipoPuesto>[] 
         align: 'left',
         sortable: true
     },
+    {
+        name: 'activo',
+        field: 'activo',
+        label: '¿Activo?',
+        align: 'left',
+        sortable: true
+    },
 ]

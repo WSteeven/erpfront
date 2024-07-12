@@ -1,6 +1,6 @@
-import { MenuOption } from "shared/menu/MenuOption";
-import { useAuthenticationStore } from "stores/authentication";
-import { computed, Ref } from "vue";
+import { MenuOption } from 'shared/menu/MenuOption';
+import { useAuthenticationStore } from 'stores/authentication';
+import { computed, Ref } from 'vue';
 
 const seleccionContratacionPersonal: Ref<MenuOption[]> = computed(() => {
     const store = useAuthenticationStore()
