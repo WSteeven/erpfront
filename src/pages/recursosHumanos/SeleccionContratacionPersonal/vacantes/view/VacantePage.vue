@@ -1,8 +1,12 @@
 <template>
-  <tab-layout
+  <tab-layout-filter-tabs2
     :mixin="mixin"
     :configuracionColumnas="configuracionColumnas"
-    titulo-pagina="Cargos"
+    titulo-pagina="Publicación de Vacante"
+    :tab-options="tabOptions"
+    :filtrar="filtrarVacantes"
+    :tabDefecto="tabActual"
+    ajustarCeldas
   >
     <template #formulario>
       <q-form @submit.prevent>
@@ -298,7 +302,7 @@
         </div>
       </q-form>
     </template>
-  </tab-layout>
+  </tab-layout-filter-tabs2>
 </template>
 
 

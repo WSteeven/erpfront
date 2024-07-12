@@ -10,11 +10,11 @@ import TabLayout from "shared/contenedor/modules/simple/view/TabLayout.vue";
 
 // Logica y controladores
 import { ContenedorSimpleMixin } from "shared/contenedor/modules/simple/application/ContenedorSimpleMixin";
-import { AreaConocimiento } from "../domain/AreaConocimiento";
-import { AreaConocimientoController } from "../infraestructure/AreaConocimientoController";
 import { CargoController } from "pages/recursosHumanos/cargos/infraestructure/CargoController";
 import { useFiltrosListadosSelects } from "shared/filtrosListadosGenerales";
-import { filtrarLista, ordenarLista } from "shared/utils";
+import { ordenarLista } from "shared/utils"
+import { AreaConocimientoController } from "../infraestructure/AreaConocimientoController";
+import { AreaConocimiento } from "../domain/AreaConocimiento";
 
 export default defineComponent({
     components: { TabLayout },

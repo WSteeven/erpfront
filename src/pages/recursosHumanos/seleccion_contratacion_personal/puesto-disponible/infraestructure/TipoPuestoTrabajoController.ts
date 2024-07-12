@@ -4,7 +4,7 @@ import { endpoints } from "config/api";
 
 export class TipoPuestoTrabajoController extends TransaccionSimpleController<TipoPuestoTrabajo>{
   constructor(){
-    super(endpoints.tipos_puestos_trabajos)
+    super(endpoints.tipos_puestos)
   }
 }
 

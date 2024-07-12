@@ -1,10 +1,14 @@
 // Dependencias
+import { configuracionColumnasConocimientoReactive } from '../../solicitudPuestoTrabajo/domain/configuracionColumnasConocimientoReactive'
+import { configuracionColumnasFormacionAcademicaReactive } from '../../solicitudPuestoTrabajo/domain/configuracionColumnasFormacionAcademicaReactive'
+import { configuracionColumnasVacante } from '../domain/configuracionColumnasVacante'
 import { required } from '@vuelidate/validators'
 import { useVuelidate } from '@vuelidate/core'
 import { defineComponent, ref } from 'vue'
+import { format } from '@formkit/tempo'
 
 // Componentes
-import TabLayout from 'shared/contenedor/modules/simple/view/TabLayout.vue'
+import TabLayoutFilterTabs2 from 'shared/contenedor/modules/simple/view/TabLayoutFilterTabs2.vue'
 import EssentialTable from 'components/tables/view/EssentialTable.vue'
 import EssentialEditor from 'components/editores/EssentialEditor.vue'
 import GestorArchivos from 'components/gestorArchivos/GestorArchivos.vue'
@@ -13,13 +17,9 @@ import ImagenComprimidaComponent from 'components/ImagenComprimidaComponent.vue'
 //Logica y controladores
 import { ContenedorSimpleMixin } from 'shared/contenedor/modules/simple/application/ContenedorSimpleMixin'
 import { removeAccents } from 'shared/utils'
-import { acciones, accionesTabla, } from 'config/utils'
+import { acciones, accionesTabla, maskFecha, } from 'config/utils'
 import { TipoPuestoTrabajoController } from 'pages/recursosHumanos/seleccion_contratacion_personal/tipo-puesto-trabajo/infraestructure/TipoPuestoTrabajoController'
 import { AutorizacionController } from 'pages/administracion/autorizaciones/infraestructure/AutorizacionController'
-import { configuracionColumnasPublicacionPuestoTrabajo } from 'pages/recursosHumanos/seleccion_contratacion_personal/publicacion_puesto_trabajo/domain/configuracionColumnasPublicacionPuestoTrabajo'
-import { configuracionColumnasConocimientoReactive } from '../../../SeleccionContratacionPersonal/solicitudPuestoTrabajo/domain/configuracionColumnasConocimientoReactive'
-import { configuracionColumnasFormacionAcademicaReactive } from '../../../SeleccionContratacionPersonal/solicitudPuestoTrabajo/domain/configuracionColumnasFormacionAcademicaReactive'
-import { format } from '@formkit/tempo'
 import { AreaConocimientoController } from '../../areasConocimiento/infraestructure/AreaConocimientoController'
 import { useFiltrosListadosSelects } from 'shared/filtrosListadosGenerales'
 import { Vacante } from '../domain/Vacante'
@@ -28,17 +28,15 @@ import { useAuthenticationStore } from 'stores/authentication'
 import { StatusEssentialLoading } from 'components/loading/application/StatusEssentialLoading'
 import { useSeleccionContratacionStore } from 'stores/recursosHumanos/seleccionContratacion'
 import { SolicitudPuestoEmpleoController } from '../../solicitudPuestoTrabajo/infraestructure/SolicitudPuestoEmpleoController'
-import { AxiosResponse } from 'axios'
-import { ResponseItem } from 'shared/controller/domain/ResponseItem'
-import { aniosExperiencia } from 'config/seleccionContratacionPersonal.utils'
+import { aniosExperiencia, opcionesTablaVacantes, tabOptionsVacantes } from 'config/seleccionContratacionPersonal.utils'
 
 export default defineComponent({
     name: 'VacantePage',
-    components: { TabLayout, EssentialEditor, EssentialTable, GestorArchivos, ImagenComprimidaComponent },
+    components: { TabLayoutFilterTabs2, EssentialEditor, EssentialTable, GestorArchivos, ImagenComprimidaComponent },
     setup() {
         const mixin = new ContenedorSimpleMixin(Vacante, new VacanteController())
         const { entidad: vacante, accion, disabled, listadosAuxiliares, } = mixin.useReferencias()
-        const { setValidador, obtenerListados, cargarVista } = mixin.useComportamiento()
+        const { setValidador, obtenerListados, cargarVista, listar } = mixin.useComportamiento()
         const { onReestablecer, onGuardado, onConsultado } = mixin.useHooks()
 
         /***************************************************************************
@@ -54,6 +52,7 @@ export default defineComponent({
         const anios_experiencia = ref(aniosExperiencia)
         const refArchivo = ref()
         const idPuestoEmpleo = ref()
+        const tabActual = ref(opcionesTablaVacantes.por_publicar)
 
         const { areasConocimiento, filtrarAreasConocimiento } = useFiltrosListadosSelects(listadosAuxiliares)
 
@@ -124,6 +123,28 @@ export default defineComponent({
         /****************************************************************************
          * FUNCIONES
          ****************************************************************************/
+        async function filtrarVacantes(tab: string) {
+            tabActual.value = tab
+            switch (tab) {
+                case opcionesTablaVacantes.por_publicar:
+                    listar()
+
+                    break;
+                case opcionesTablaVacantes.publicadas:
+                    listar()
+
+                    break;
+                case opcionesTablaVacantes.vigentes:
+                    listar()
+
+                    break;
+                case opcionesTablaVacantes.expiradas:
+                    listar()
+
+
+
+            }
+        }
         async function consultarSolicitudEmpleado() {
             try {
                 cargando.activar()
@@ -166,7 +187,7 @@ export default defineComponent({
             const fecha_actual = format(new Date(), 'YYYY/MM/DD')
 
             return (
-                date <= fecha_actual
+                date >= fecha_actual
             )
         }
 
@@ -201,17 +222,23 @@ export default defineComponent({
             v$,
             acciones,
             accionesTabla,
-            configuracionColumnas: configuracionColumnasPublicacionPuestoTrabajo,
+            configuracionColumnas: configuracionColumnasVacante,
             configuracionColumnasConocimientoReactive,
             configuracionColumnasFormacionAcademicaReactive,
             refArchivo,
+            maskFecha,
+            tabActual,
+            tabOptions: tabOptionsVacantes,
             tipos_puestos_trabajo,
             autorizaciones,
 
             //listados
             areasConocimiento, filtrarAreasConocimiento,
+            anios_experiencia,
 
             //funciones
+            filtrarVacantes,
+            filtrarAniosExperiencia,
 
 
             //botones de tabla

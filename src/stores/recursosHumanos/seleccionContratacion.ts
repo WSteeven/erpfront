@@ -1,4 +1,4 @@
-import { SolicitudPuestoEmpleo } from "pages/recursosHumanos/SeleccionContratacionPersonal/solicitudPuestoTrabajo/domain/SolicitudPuestoEmpleo";
+import { SolicitudPuestoEmpleo } from "pages/recursosHumanos/seleccionContratacionPersonal/solicitudPuestoTrabajo/domain/SolicitudPuestoEmpleo";
 import { defineStore } from "pinia";
 import { reactive, ref } from "vue";
 
@@ -11,6 +11,6 @@ export const useSeleccionContratacionStore = defineStore('seleccionContratacion'
         idSolicitudVacante,
         solicitudPersonal,
         solicitudPersonalReset,
-        
+
     }
 })

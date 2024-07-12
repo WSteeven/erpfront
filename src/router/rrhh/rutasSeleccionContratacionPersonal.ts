@@ -7,19 +7,25 @@ const rutasSeleccionContratacionPersonal: RouteRecordRaw[] = [
     {
         path: 'solicitudes-puestos',
         name: 'solicitudes_puestos',
-        component: () => import('pages/recursosHumanos/SeleccionContratacionPersonal/solicitudPuestoTrabajo/view/SolicitudPuestoEmpleoPage.vue'),
+        component: () => import('pages/recursosHumanos/seleccionContratacionPersonal/solicitudPuestoTrabajo/view/SolicitudPuestoEmpleoPage.vue'),
         meta: { requiresAuth: true }
     },
     {
         path: 'vacantes',
         name: 'rrhh_vacantes',
-        component: () => import('pages/recursosHumanos/SeleccionContratacionPersonal/vacantes/view/VacantePage.vue'),
+        component: () => import('pages/recursosHumanos/seleccionContratacionPersonal/vacantes/view/VacantePage.vue'),
         meta: { requiresAuth: true }
     },
     {
         path: 'areas-conocimientos',
         name: 'rrhh_areas_conocimientos',
-        component: () => import('pages/recursosHumanos/SeleccionContratacionPersonal/areasConocimiento/view/AreaConocimientoPage.vue'),
+        component: () => import('pages/recursosHumanos/seleccionContratacionPersonal/areasConocimiento/view/AreaConocimientoPage.vue'),
+        meta: { requiresAuth: true }
+    },
+    {
+        path: 'tipos-puestos',
+        name: 'rrhh_tipos_puestos',
+        component: () => import('pages/recursosHumanos/seleccionContratacionPersonal/tiposPuestos/view/TipoPuestoPage.vue'),
         meta: { requiresAuth: true }
     },
 ];

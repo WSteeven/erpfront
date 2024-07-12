@@ -19,3 +19,18 @@ export const tabOptionsSolicitudesPersonal: TabOption[] = [
   { value: '3', label: 'CANCELADAS', },
   { value: '4', label: 'PUBLICADAS', },
 ]
+
+
+export const opcionesTablaVacantes = {
+  por_publicar: 'POR PUBLICAR',
+  publicadas: 'PUBLICADAS',
+  vigentes: 'VIGENTES',
+  expiradas: 'EXPIRADAS',
+}
+
+export const tabOptionsVacantes: TabOption[] = [
+  { value: opcionesTablaVacantes.por_publicar, label: 'POR PUBLICAR', },
+  { value: opcionesTablaVacantes.publicadas, label: 'PUBLICADAS', },
+  { value: opcionesTablaVacantes.vigentes, label: 'VIGENTES', },
+  { value: opcionesTablaVacantes.expiradas, label: 'EXPIRADAS', },
+]

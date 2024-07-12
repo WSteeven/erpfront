@@ -1,5 +1,5 @@
 // Dependencias
-import { configuracionColumnasTipoPuestoTrabajo } from '../domain/configuracionColumnasTipoPuestoTrabajo'
+import { configuracionColumnasTipoPuestoTrabajo } from '../domain/configuracionColumnasTipoPuesto'
 import { required } from '@vuelidate/validators'
 import { useVuelidate } from '@vuelidate/core'
 import { defineComponent } from 'vue'
@@ -9,30 +9,30 @@ import TabLayout from 'shared/contenedor/modules/simple/view/TabLayout.vue'
 
 //Logica y controladores
 import { ContenedorSimpleMixin } from 'shared/contenedor/modules/simple/application/ContenedorSimpleMixin'
-import { TipoPuestoTrabajoController } from '../infraestructure/TipoPuestoTrabajoController'
-import { TipoPuestoTrabajo } from '../domain/TipoPuestoTrabajo'
 import { removeAccents } from 'shared/utils'
+import { TipoPuesto } from '../domain/TipoPuesto'
+import { TipoPuestoController } from '../infraestructure/TipoPuestoController'
 
 export default defineComponent({
     components: { TabLayout },
     setup() {
-        const mixin = new ContenedorSimpleMixin(TipoPuestoTrabajo, new TipoPuestoTrabajoController())
-        const { entidad: tipo_puesto_trabajo, disabled } = mixin.useReferencias()
+        const mixin = new ContenedorSimpleMixin(TipoPuesto, new TipoPuestoController())
+        const { entidad: tipo, disabled } = mixin.useReferencias()
         const { setValidador } = mixin.useComportamiento()
 
         //Reglas de validacion
         const reglas = {
-          nombre: { required },
+            nombre: { required },
         }
 
-        const v$ = useVuelidate(reglas, tipo_puesto_trabajo)
+        const v$ = useVuelidate(reglas,tipo)
         setValidador(v$.value)
 
 
         return {
             removeAccents,
             mixin,
-            tipo_puesto_trabajo,
+            tipo,
             v$,
             disabled,
             configuracionColumnas: configuracionColumnasTipoPuestoTrabajo,
