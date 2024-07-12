@@ -24,9 +24,6 @@ import { CustomActionTable } from 'components/tables/domain/CustomActionTable'
 import { useNotificaciones } from 'shared/notificaciones'
 import { SolicitudPuestoEmpleo } from '../domain/SolicitudPuestoEmpleo'
 import { SolicitudPuestoEmpleoController } from '../infraestructure/SolicitudPuestoEmpleoController'
-import { TipoPuestoTrabajoController } from 'pages/recursosHumanos/seleccion_contratacion_personal/tipo-puesto-trabajo/infraestructure/TipoPuestoTrabajoController'
-import { TipoPuestoController } from '../../tiposPuestos/infraestructure/TipoPuestoController'
-import { Conocimiento } from '../domain/Conocimiento'
 import { FormacionAcademica } from '../domain/FormacionAcademica'
 import { configuracionColumnasSolicitudPuestoEmpleo } from '../domain/configuracionColumnasSolicitudPuestoEmpleo'
 import { configuracionColumnasConocimientoReactive } from '../domain/configuracionColumnasConocimientoReactive'
@@ -38,6 +35,7 @@ import { AreaConocimientoController } from '../../areasConocimiento/infraestruct
 import { StatusEssentialLoading } from 'components/loading/application/StatusEssentialLoading'
 import { useRouter } from 'vue-router'
 import { useSeleccionContratacionStore } from 'stores/recursosHumanos/seleccionContratacion'
+import { TipoPuestoController } from '../../tiposPuestos/infraestructure/TipoPuestoController'
 
 export default defineComponent({
   components: { TabLayoutFilterTabs2, EssentialEditor, EssentialTable, GestorArchivos, LabelAbrirModal, ModalEntidad },
@@ -89,7 +87,7 @@ export default defineComponent({
     cargarVista(async () => {
       await obtenerListados({
         tipos_puestos_trabajo: {
-          controller: new TipoPuestoTrabajoController(),
+          controller: new TipoPuestoController(),
           params: {
             campos: 'id,nombre',
           },
@@ -132,13 +130,6 @@ export default defineComponent({
       solicitud.cargo = null
     }
 
-    const btnEliminarPuestoEmpleo: CustomActionTable<Conocimiento> = {
-      titulo: '',
-      icono: 'bi-x',
-      color: 'negative',
-      // visible: () => store.can('puede.eliminar.conocimientos'),
-      accion: ({ posicion }) => confirmar('¿Está seguro de continuar?', () => solicitud.conocimientos?.splice(posicion, 1))
-    }
     const btnEliminarFormacionAcademica: CustomActionTable<FormacionAcademica> = {
       titulo: '',
       icono: 'bi-x',
@@ -180,13 +171,6 @@ export default defineComponent({
       if (data.formulario === 'CrearCargoPage') {
         listadosAuxiliares.cargos.push(data.modelo)
       }
-    }
-    function agregarConocimiento() {
-      const fila = new Conocimiento()
-      fila.id = solicitud.conocimientos?.length
-        ? encontrarUltimoIdListado(solicitud.conocimientos) + 1
-        : 1
-      solicitud.conocimientos?.push(fila)
     }
     function agregarFormacionAcademica() {
       const fila = new FormacionAcademica()
@@ -273,11 +257,6 @@ export default defineComponent({
 
 
     return {
-      removeAccents,
-      btnEliminarPuestoEmpleo,
-      btnEliminarFormacionAcademica,
-      agregarConocimiento,
-      agregarFormacionAcademica,
       solicitud,
       mixin,
       disabled,
@@ -295,24 +274,27 @@ export default defineComponent({
       tabOptionsSolicitudesPersonal,
       tabActual,
 
-
+      
       // listados
       cargos, filtrarCargos,
       anios_experiencia, filtrarAniosExperiencia,
       areasConocimiento, filtrarAreasConocimiento,
-
+      
       tipo_puesto,
-
+      
       store,
-
+      
       // funciones
+      removeAccents,
+      agregarFormacionAcademica,
       filtrarSolicitudes,
       cambiarTipoPuesto,
       guardado,
       consultarConocimientos,
       crearAreaConocimiento,
-
+      
       //botones de tabla
+      btnEliminarFormacionAcademica,
       btnPublicar,
 
     }

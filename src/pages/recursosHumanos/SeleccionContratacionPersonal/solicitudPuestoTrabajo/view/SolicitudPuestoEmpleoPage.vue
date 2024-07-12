@@ -226,36 +226,6 @@
           </div>
 
           <!-- {{ v$.$errors }} -->
-
-          <div class="col-12 col-md-3 col-sm-12" v-if="false">
-            <q-btn
-              color="positive"
-              @click="agregarConocimiento()"
-              class="col-12 col-md-3 q-mb-sm"
-              no-caps
-              icon="bi-plus"
-              push
-              >Agregar Conocimiento</q-btn
-            >
-            <essential-table
-              :configuracionColumnas="[
-                ...configuracionColumnasConocimientoReactive,
-                accionesTabla,
-              ]"
-              :datos="solicitud.conocimientos"
-              :permitirConsultar="false"
-              :permitirEliminar="false"
-              :permitirEditar="false"
-              :mostrarBotones="false"
-              :permitir-editar-celdas="true"
-              :mostrar-header="false"
-              :grid="false"
-              :accion1="btnEliminarPuestoEmpleo"
-              :alto-fijo="false"
-              :ajustarCeldas="true"
-            >
-            </essential-table>
-          </div>
           <div class="col-12 col-md-6 col-sm-12">
             <q-btn
               color="positive"
@@ -368,4 +338,4 @@
   ></modal-entidad>
 </template>
 
-<script src="./SolicitudPuestoEmpleoPage.ts"></script>
+<script src="./SolicitudPuestoEmpleoPage.ts" />
