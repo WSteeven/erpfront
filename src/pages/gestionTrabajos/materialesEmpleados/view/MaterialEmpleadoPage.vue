@@ -138,9 +138,14 @@
 
         <div v-if="mostrarImprimirReporteMateriales" class="col-12 col-md-3">
           <label class="block q-mb-sm">&nbsp;</label>
-          <q-btn color="primary" no-caps @click="descargarReporteMateriales()">
+          <q-btn
+            color="primary"
+            no-caps
+            no-wrap
+            @click="descargarReporteMateriales()"
+          >
             <q-icon name="bi-download" size="xs" class="q-mr-sm"></q-icon>
-            Imprimir reporte de materiales
+            Imprimir reporte de materiales de stock
           </q-btn>
         </div>
       </q-card-section>
