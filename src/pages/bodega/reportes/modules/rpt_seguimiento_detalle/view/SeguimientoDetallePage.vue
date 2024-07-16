@@ -52,7 +52,7 @@
                   >
                     <q-date
                       v-model="kardex.fecha_inicio"
-                      mask="DD-MM-YYYY"
+                      :mask="maskFecha"
                       today-btn
                     >
                       <div class="row items-center justify-end">
@@ -98,7 +98,7 @@
                   >
                     <q-date
                       v-model="kardex.fecha_fin"
-                      mask="DD-MM-YYYY"
+                      :mask="maskFecha"
                       today-btn
                     >
                       <div class="row items-center justify-end">
@@ -216,7 +216,9 @@
             ></essential-table>
           </div>
         </div>
-        <div v-else>&nbsp;&nbsp; Aún no hay movimientos de este detalle en inventarios.</div>
+        <div v-else>
+          &nbsp;&nbsp; Aún no hay movimientos de este detalle en inventarios.
+        </div>
         <!-- Listado de preingresos -->
         <div v-if="listadoPreingreso.length" class="row">
           <div class="col-12">
@@ -235,8 +237,31 @@
             ></essential-table>
           </div>
         </div>
-        <div v-else>&nbsp;&nbsp; Aún no hay movimientos de este detalle en preingresos.</div>
+        <div v-else>
+          &nbsp;&nbsp; Aún no hay movimientos de este detalle en preingresos.
+        </div>
 
+        <!-- Listado de transferencias -->
+        <div v-if="listadoTransferencias.length" class="row">
+          <div class="col-12">
+            <essential-table
+              v-if="listadoTransferencias.length"
+              titulo="Listado de transferencias del detalle"
+              :configuracionColumnas="columnasTransferencias"
+              :datos="listadoTransferencias"
+              :permitirConsultar="false"
+              :permitirEliminar="false"
+              :permitirEditar="false"
+              :mostrarBotones="false"
+              :permitir-buscar="false"
+              :alto-fijo="false"
+              ajustarCeldas
+            ></essential-table>
+          </div>
+        </div>
+        <div v-else>
+          &nbsp;&nbsp; Aún no hay movimientos de este detalle en transferencias.
+        </div>
       </q-card>
     </div>
   </q-page>

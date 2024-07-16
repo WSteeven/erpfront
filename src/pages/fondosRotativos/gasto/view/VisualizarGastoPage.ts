@@ -222,9 +222,6 @@ export default defineComponent({
       num_tarea: {
         required,
       },
-      subTarea: {
-        required,
-      },
       proyecto: {
         required,
       },
@@ -237,14 +234,17 @@ export default defineComponent({
         minLength: minLength(cantidadPermitidaFactura),
         required: requiredIf(() => esFactura.value),
       },
-      num_comprobante: {
-        maxLength: maxLength(15),
-      },
+      /*beneficiarios: {
+        required: required
+      },*/
       aut_especial: {
-        required,
+        required: required,
       },
       empleado_info: {
         required,
+      },
+      num_comprobante: {
+        maxLength: maxLength(17),
       },
       detalle: {
         required,
@@ -253,11 +253,11 @@ export default defineComponent({
         required,
       },
       cantidad: {
-        maxValue:maxValue(9999),
+        maxValue: maxValue(9999),
         required,
       },
       valor_u: {
-        maxValue:maxValue(9999),
+        maxValue: maxValue(9999),
         required,
       },
       total: {
@@ -273,16 +273,18 @@ export default defineComponent({
         required: requiredIf(() => esCombustibleEmpresa.value),
       },
       vehiculo: {
-        required: requiredIf(() => esCombustibleEmpresa.value),
+        required: requiredIf(
+          () => esCombustibleEmpresa.value && !gasto.es_vehiculo_alquilado
+        ),
       },
       observacion: {
         required,
       },
-      detalle_estado: {
-        required,
-      },
       placa: {
         required: requiredIf(() => gasto.es_vehiculo_alquilado),
+      },
+      detalle_estado: {
+        required,
       },
       observacion_anulacion:{
         required: requiredIf(() => gasto.estado === estadosGastos.APROBADO),

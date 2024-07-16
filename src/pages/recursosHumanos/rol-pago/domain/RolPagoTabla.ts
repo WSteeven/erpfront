@@ -1,13 +1,13 @@
-import { EntidadAuditable } from "shared/entidad/domain/entidadAuditable";
+import { EntidadAuditable } from 'shared/entidad/domain/entidadAuditable';
 
 export class RolPagoTabla extends EntidadAuditable {
   empleado: number | null
   empleado_info: string | null
-    dias: number | null
-   alimentacion: number | null
+  dias: number | null
+  alimentacion: number | null
   horas_extras: number | null
   comision: number | null
-  bonificacion:   number | null
+  bonificacion: number | null
   extension_convenio_salud: number | null
   multas: number | null
   descuentos: number | null

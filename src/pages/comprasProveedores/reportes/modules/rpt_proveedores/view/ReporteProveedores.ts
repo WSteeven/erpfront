@@ -1,29 +1,29 @@
 //Dependencias
-import { LocalStorage, useQuasar } from "quasar";
+import { LocalStorage, useQuasar } from 'quasar';
 
 //Componentes
-import EssentialTable from "components/tables/view/EssentialTable.vue"
-import ModalEntidad from "components/modales/view/ModalEntidad.vue"
+import EssentialTable from 'components/tables/view/EssentialTable.vue'
+import ModalEntidad from 'components/modales/view/ModalEntidad.vue'
 
 //Logica y controladores
-import { ContenedorSimpleMixin } from "shared/contenedor/modules/simple/application/ContenedorSimpleMixin";
-import { Proveedor } from "sistema/proveedores/domain/Proveedor";
-import { ProveedorController } from "sistema/proveedores/infraestructure/ProveedorController";
-import { useCargandoStore } from "stores/cargando";
-import { useNotificacionStore } from "stores/notificacion";
-import { defineComponent, reactive, ref } from "vue";
-import { StatusEssentialLoading } from "components/loading/application/StatusEssentialLoading";
-import { useNotificaciones } from "shared/notificaciones";
-import { CustomActionTable } from "components/tables/domain/CustomActionTable";
-import { useProveedorStore } from "stores/comprasProveedores/proveedor";
-import { ComportamientoModalesProveedores } from "sistema/proveedores/application/ComportamientoModalesProveedores";
-import { configuracionColumnasProveedores } from "sistema/proveedores/domain/configuracionColumnasProveedores";
-import { accionesTabla } from "config/utils";
-import { useFiltrosListadosSelects } from "shared/filtrosListadosGenerales";
-import { CategoriaOfertaController } from "pages/comprasProveedores/categoriaOfertas/infraestructure/CategoriaOfertaController";
-import { estadosCalificacionProveedor, opcionesCalificacionProveedor } from "config/utils_compras_proveedores";
-import { useAuthenticationStore } from "stores/authentication";
-import { DetalleDepartamentoProveedorController } from "pages/comprasProveedores/detallesDepartamentosProveedor/infraestructure/DetalleDepartamentoProveedorController";
+import { ContenedorSimpleMixin } from 'shared/contenedor/modules/simple/application/ContenedorSimpleMixin';
+import { Proveedor } from 'sistema/proveedores/domain/Proveedor';
+import { ProveedorController } from 'sistema/proveedores/infraestructure/ProveedorController';
+import { useCargandoStore } from 'stores/cargando';
+import { useNotificacionStore } from 'stores/notificacion';
+import { defineComponent, reactive, ref } from 'vue';
+import { StatusEssentialLoading } from 'components/loading/application/StatusEssentialLoading';
+import { useNotificaciones } from 'shared/notificaciones';
+import { CustomActionTable } from 'components/tables/domain/CustomActionTable';
+import { useProveedorStore } from 'stores/comprasProveedores/proveedor';
+import { ComportamientoModalesProveedores } from 'sistema/proveedores/application/ComportamientoModalesProveedores';
+import { configuracionColumnasProveedores } from 'sistema/proveedores/domain/configuracionColumnasProveedores';
+import { accionesTabla } from 'config/utils';
+import { useFiltrosListadosSelects } from 'shared/filtrosListadosGenerales';
+import { CategoriaOfertaController } from 'pages/comprasProveedores/categoriaOfertas/infraestructure/CategoriaOfertaController';
+import { estadosCalificacionProveedor, opcionesCalificacionProveedor } from 'config/utils_compras_proveedores';
+import { useAuthenticationStore } from 'stores/authentication';
+import { DetalleDepartamentoProveedorController } from 'pages/comprasProveedores/detallesDepartamentosProveedor/infraestructure/DetalleDepartamentoProveedorController';
 
 export default defineComponent({
     components: { EssentialTable, ModalEntidad },

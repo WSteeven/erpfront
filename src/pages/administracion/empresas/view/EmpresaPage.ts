@@ -1,22 +1,22 @@
 //Dependencias
-import { configuracionColumnasEmpresas } from "../domain/configuracionColumnasEmpresas";
-import { required, requiredIf } from "shared/i18n-validators";
+import { configuracionColumnasEmpresas } from '../domain/configuracionColumnasEmpresas';
+import { required, requiredIf } from 'shared/i18n-validators';
 import { useVuelidate } from '@vuelidate/core'
-import { defineComponent, ref } from "vue";
+import { defineComponent, ref } from 'vue';
 
 //Componentes
-import TabLayout from "shared/contenedor/modules/simple/view/TabLayout.vue";
+import TabLayout from 'shared/contenedor/modules/simple/view/TabLayout.vue';
 
 //Logica y controladores
-import { ContenedorSimpleMixin } from "shared/contenedor/modules/simple/application/ContenedorSimpleMixin";
-import { Empresa } from "../domain/Empresa";
-import { EmpresaController } from "../infraestructure/EmpresaController";
-import { opcionesTipoContribuyente, opcionesTipoNegocio } from "config/utils_compras_proveedores";
-import { ProvinciaController } from "sistema/provincia/infraestructure/ProvinciaController";
-import { StatusEssentialLoading } from "components/loading/application/StatusEssentialLoading";
-import { useFiltrosListadosSelects } from "shared/filtrosListadosGenerales";
-import { acciones } from "config/utils";
-import { LocalStorage } from "quasar";
+import { ContenedorSimpleMixin } from 'shared/contenedor/modules/simple/application/ContenedorSimpleMixin';
+import { Empresa } from '../domain/Empresa';
+import { EmpresaController } from '../infraestructure/EmpresaController';
+import { opcionesTipoContribuyente, opcionesTipoNegocio } from 'config/utils_compras_proveedores';
+import { ProvinciaController } from 'sistema/provincia/infraestructure/ProvinciaController';
+import { StatusEssentialLoading } from 'components/loading/application/StatusEssentialLoading';
+import { useFiltrosListadosSelects } from 'shared/filtrosListadosGenerales';
+import { acciones } from 'config/utils';
+import { LocalStorage } from 'quasar';
 
 
 
@@ -50,18 +50,18 @@ export default defineComponent({
          * Hooks
          **************************************************************/
         onBeforeConsultar(() => {
-            experiencia_comercial.value=false
+            experiencia_comercial.value = false
         })
         onBeforeGuardar(() => {
             // actualizarCamposRepresentanteLegal()
         })
         onConsultado(() => {
-            experiencia_comercial.value = empresa.antiguedad_proveedor?true:false
+            experiencia_comercial.value = empresa.antiguedad_proveedor ? true : false
             cantones.value = JSON.parse(LocalStorage.getItem('cantones')!.toString())
         })
         onReestablecer(() => {
             cantones.value = JSON.parse(LocalStorage.getItem('cantones')!.toString())
-            experiencia_comercial.value=false
+            experiencia_comercial.value = false
         })
 
         onGuardado(() => {

@@ -99,6 +99,12 @@ export const useMenuStore = defineStore('menu', () => {
           can: store.can('puede.ver.reporte_movilizacion_subtarea'),
         },
         {
+          title: 'Clientes finales',
+          link: 'clientes-finales',
+          icon: 'bi-app',
+          can: store.can('puede.ver.clientes_finales'),
+        },
+        {
           title: 'Centro de Costos',
           icon: 'bi-folder',
           can: store.can('puede.acceder.centros_costos'),
@@ -118,16 +124,23 @@ export const useMenuStore = defineStore('menu', () => {
           ],
         },
         {
-          title: 'Clientes finales',
-          link: 'clientes-finales',
-          icon: 'bi-app',
-          can: store.can('puede.ver.clientes_finales'),
-        },
-        {
           title: 'Reportes',
-          link: 'reportes-modulo-tareas',
-          icon: 'bi-app',
+          icon: 'bi-clipboard2-data-fill',
           can: store.can('puede.ver.reportes_modulo_tareas'),
+          children: [
+            {
+              title: 'Reportes materiales utilizados',
+              link: 'reportes-materiales-utilizados',
+              icon: 'bi-app',
+              can: store.can('puede.ver.reportes_materiales_utilizados'),
+            },
+            {
+              title: 'Reportes tareas finalizadas',
+              link: 'reportes-modulo-tareas',
+              icon: 'bi-app',
+              can: store.can('puede.ver.reportes_modulo_tareas'),
+            },
+          ]
         },
       ],
     },
@@ -201,53 +214,54 @@ export const useMenuStore = defineStore('menu', () => {
           title: 'Gestionar pacientes',
           link: 'gestionar-pacientes',
           icon: 'bi-app',
-          can: store.can('puede.ver.gestionar_pacientes'),
+          can: store.can('puede.acceder.gestionar_pacientes'),
         },
         {
-          title: 'Cuestionario de evaluación de riesgos psicosociales',
-          link: 'cuestionario-psicosocial',
+          title: 'Cuestionarios',
+          link: 'cuestionarios',
           icon: 'bi-app',
-          can: store.can('puede.ver.cuestionarios_psicosocial'),
-        }, {
-          title: 'Cuestionario de diagnostico consumo de drogas',
-          link: 'cuestionario-diagnostico-consumo-drogas',
-          icon: 'bi-app',
-          can: store.can('puede.ver.cuestionario_diagnostico_consumo_drogas'),
+          can: store.can('puede.acceder.cuestionarios'),
         },
         {
           title: 'Cita médica',
           link: 'citas-medicas',
           icon: 'bi-app',
-          can: store.can('puede.ver.citas_medicas'),
+          can: store.can('puede.acceder.citas_medicas'),
         },
         {
           title: 'Solicitudes de exámenes',
           link: 'solicitudes-examenes',
           icon: 'bi-app',
-          can: store.can('puede.ver.solicitudes_examenes'),
+          can: store.can('puede.acceder.solicitudes_examenes'),
         },
         {
-          title: 'Reporte Cuestionario Psicosocial',
-          link: 'reporte-cuestionarios-pisicosocial',
+          title: 'Reportes cuestionarios',
+          link: 'reportes-cuestionarios',
           icon: 'bi-app',
-          can: store.can('puede.ver.reporte_cuestionarios_pisicosocial'),
+          can: store.can('puede.acceder.reportes_cuestionarios'),
         },
         {
           title: 'CIE',
           link: 'cie',
           icon: 'bi-app',
-          can: store.can('puede.ver.cies'),
+          can: store.can('puede.acceder.cies'),
         },
-        {
+        /* {
           title: 'Firmar fichas médicas',
           link: 'firmar-fichas-medicas',
           icon: 'bi-app',
-        },
+        }, */
         {
           title: 'Configuracion Cuestionario Empleado',
           link: 'configuraciones-cuestionarios-empleados',
           icon: 'bi-circle',
-          can: store.can('puede.ver.configuraciones_cuestionarios_empleados'),
+          can: store.can('puede.acceder.configuraciones_cuestionarios_empleados'),
+        },
+        {
+          title: 'Laboratorios clínicos',
+          link: 'laboratorios-clinicos',
+          icon: 'bi-circle',
+          can: store.can('puede.acceder.laboratorios_clinicos'),
         },
       ]
     },
@@ -285,7 +299,7 @@ export const useMenuStore = defineStore('menu', () => {
           title: 'Empleados',
           link: 'empleados',
           icon: 'bi-person-lines-fill',
-          can: store.can('puede.ver.empleados') && store.esBodeguero,
+          can: store.can('puede.acceder.empleados') && store.esBodeguero,
         },
         {
           title: 'Marcas',
@@ -646,10 +660,35 @@ export const useMenuStore = defineStore('menu', () => {
           can: store.can('puede.acceder.grupos'),
         },
         {
+          title: 'Seleccion y Contratacion',
+          icon: 'bi-person-lines-fill',
+          can: store.can('puede.ver.modulo.seleccion_contratacion'),
+          children: [
+            {
+              title: 'Solicitud de Puesto de Empleo',
+              link: 'solicitud-puesto-empleo',
+              icon: 'bi-app',
+              can: store.can('puede.acceder.solicitud_puesto_empleo'),
+            },
+            {
+              title: 'Publicacion de Puesto de Empleo',
+              link: 'publicacion-puesto-empleo',
+              icon: 'bi-app',
+              can: store.can('puede.acceder.publicacion_puesto_empleo'),
+            },
+          ]
+        },
+        {
           title: 'Nominas y prestamos',
           icon: 'fa-solid fa-people-line',
           can: true,
           children: [
+            {
+              title: 'Multas de Conductores',
+              link: 'multas-conductores',
+              icon: 'bi-file-text',
+              can: store.can('puede.acceder.multas_conductores'),
+            },
             {
               title: 'Permiso',
               link: 'permiso-nomina',
@@ -689,7 +728,7 @@ export const useMenuStore = defineStore('menu', () => {
             {
               title: 'Alimentacion',
               icon: 'img:statics/icons/alimentacion_04.svg',
-              can: true,
+              can: store.can('puede.acceder.modulo_alimentacion'),
               children: [
                 {
                   title: 'Asignar Alimentacion',
@@ -774,7 +813,9 @@ export const useMenuStore = defineStore('menu', () => {
       ],
     },
 
-    //Modulo de Vehículos
+    /*****************************************
+     * MODULO DE VEHICULOS
+     *****************************************/
     {
       title: 'Vehículos',
       icon: 'garage',
@@ -782,25 +823,162 @@ export const useMenuStore = defineStore('menu', () => {
       module: true,
       children: [
         {
-          title: 'Combustibles',
-          link: 'combustibles',
-          icon: 'bi-fuel-pump-fill',
-          can: store.can('puede.ver.combustibles'),
+          title: 'Historial Vehicular',
+          link: 'historial-vehiculos',
+          icon: 'bi-circle',
+          can: store.can('puede.acceder.historial_vehiculos'),
         },
         {
-          title: 'Control diario',
-          link: 'control-vehiculos',
-          icon: 'bi-card-checklist',
-          can: store.can('puede.ver.bitacoras_vehiculos'),
+          title: 'Conductores',
+          link: 'conductores',
+          icon: 'bi-circle',
+          can: store.can('puede.acceder.conductores'),
+        },
+        {
+          title: 'Multas de Conductores',
+          link: 'multas-conductores',
+          icon: 'bi-circle',
+          can: store.can('puede.acceder.multas_conductores'),
         },
         {
           title: 'Vehículos',
           link: 'vehiculos',
-          icon: 'bi-car-front-fill',
-          can: store.can('puede.ver.vehiculos'),
+          icon: 'bi-circle',
+          can: store.can('puede.acceder.vehiculos'),
         },
+        {
+          title: 'Vehículos Asignados',
+          link: 'asignaciones-vehiculos',
+          icon: 'bi-circle',
+          can: store.can('puede.acceder.asignaciones_vehiculos'),
+        },
+        {
+          title: 'Transferencias Vehículos entre Choferes',
+          link: 'transferencias-vehiculos',
+          icon: 'bi-circle',
+          can: store.can('puede.acceder.transferencias_vehiculos'),
+        },
+        {
+          title: 'Tipos de Vehículos',
+          link: 'tipos-vehiculos',
+          icon: 'bi-circle',
+          can: store.can('puede.acceder.tipos_vehiculos'),
+        },
+        {
+          title: 'Garajes',
+          link: 'garajes',
+          icon: 'bi-circle',
+          can: store.can('puede.acceder.garajes'),
+        },
+        {
+          title: 'Combustibles',
+          link: 'combustibles',
+          icon: 'bi-circle',
+          can: store.can('puede.acceder.combustibles'),
+        },
+        {
+          title: 'Tanqueo de Combustible',
+          link: 'tanqueos-vehiculos',
+          icon: 'bi-circle',
+          can: store.can('puede.acceder.tanqueos_vehiculos'),
+        },
+        {
+          title: 'Control Diario',
+          link: 'control-vehiculos',
+          icon: 'bi-circle',
+          can: store.can('puede.acceder.bitacoras_vehiculos'),
+        },
+        {
+          title: 'Registro de Incidentes',
+          link: 'registros-incidentes',
+          icon: 'bi-circle',
+          can: store.can('puede.acceder.registros_incidentes'),
+        },
+        {
+          title: 'Orden Interna de Reparación',
+          link: 'ordenes-reparaciones',
+          icon: 'bi-circle',
+          can: store.can('puede.acceder.ordenes_reparaciones'),
+        },
+        {
+          title: 'Pólizas Seguros Vehiculares',
+          link: 'seguros',
+          icon: 'bi-circle',//'bi-shield-lock-fill',
+          can: store.can('puede.acceder.seguros_vehiculares'),
+        },
+        {
+          title: 'Matrículas',
+          link: 'matriculas',
+          icon: 'bi-circle',
+          can: store.can('puede.acceder.matriculas_vehiculos'),
+        },
+        {
+          title: 'Mantenimiento',
+          link: 'servicios',
+          icon: 'bi-tools',
+          can: store.can('puede.acceder.mantenimientos_vehiculos'),
+          children: [
+            {
+              title: 'Mantenimientos de Vehiculos',
+              link: 'mantenimientos-vehiculos',
+              icon: 'bi-tools',
+              can: store.can('puede.acceder.mantenimientos_vehiculos'),
+            },
+            {
+              title: 'Servicios de Mantenimientos',
+              link: 'servicios',
+              icon: 'bi-gear-fill',
+              can: store.can('puede.acceder.servicios_mantenimientos'),
+            },
+            {
+              title: 'Planes de Mantenimiento',
+              link: 'planes-mantenimientos',
+              icon: 'bi-gear-fill',
+              can: store.can('puede.acceder.planes_mantenimientos'),
+            },
+          ]
+        },
+        {
+          title: 'Reportes',
+          icon: 'bi-clipboard2-data',
+          can: store.can('puede.ver.reportes_vehiculos'),
+          children: [
+            {
+              title: 'Reporte de Conductores y Licencias',
+              link: 'reporte-conductores',
+              icon: 'bi-dash',
+              can: true,
+            },
+            {
+              title: 'Reporte de Combustibles',
+              link: 'reporte-combustibles',
+              icon: 'bi-dash',
+              can: true,
+            },
+            {
+              title: 'Reporte de Pólizas',
+              link: 'reporte-seguros',
+              icon: 'bi-dash',
+              can: true,
+            },
+            {
+              title: 'Reporte de Tiempos de Vehículos',
+              link: 'reporte-tiempos-vehiculos',
+              icon: 'bi-dash',
+              can: true,
+            },
+            {
+              title: 'Reporte de matriculas',
+              link: 'reporte-matriculas',
+              icon: 'bi-dash',
+              can: true,
+            },
+          ]
+        }
       ],
     },
+
+
     //Modulo Activos Fijos
     {
       title: 'Activos fijos',
@@ -913,7 +1091,13 @@ export const useMenuStore = defineStore('menu', () => {
               title: 'Reporte de Proveedores',
               link: 'reporte-proveedores',
               icon: 'bi-boxes',
-              can: true || store.can('puede.ver.reporte_proveedores'),
+              can: store.can('puede.ver.reporte_proveedores'),
+            },
+            {
+              title: 'Reporte de Ordenes de Compras',
+              link: 'reporte-ordenes-compras',
+              icon: 'bi-cart-plus',
+              can: store.can('puede.ver.reporte_ordenes_compras'),
             },
           ],
         },
@@ -939,6 +1123,12 @@ export const useMenuStore = defineStore('menu', () => {
       module: true,
       children: [
         {
+          title: 'Dashboard',
+          link: 'ventas/dashboard-ventas',
+          icon: 'bi-app',
+          can: store.can('puede.ver.dashboard_ventas_empresa') || store.esAdministrador,
+        },
+        {
           title: 'Proformas',
           link: 'proformas',
           icon: 'bi-app',
@@ -949,6 +1139,19 @@ export const useMenuStore = defineStore('menu', () => {
           link: 'prefacturas',
           icon: 'bi-app',
           can: store.can('puede.ver.prefacturas') || store.esAdministrador,
+        },
+        {
+          title: 'Reportes',
+          icon: 'bi-clipboard2-data-fill',
+          can: store.esAdministrador || store.esCompras || store.can('puede.ver.reportes_modulo_ventas'),
+          children: [
+            {
+              title: 'Reporte de Prefacturas',
+              link: 'reporte-prefacturas',
+              icon: 'bi-boxes',
+              can: true,
+            }
+          ],
         },
       ],
     },
@@ -1122,7 +1325,7 @@ export const useMenuStore = defineStore('menu', () => {
       title: 'Log de auditorías',
       link: 'auditorias',
       icon: 'bi-journal-text',
-      can: store.can('puede.acceder.auditorias') || store.esAdministrador,
+      can: store.can('puede.acceder.auditorias'),// || store.esAdministrador,
     },
     {
       title: 'Configuracion General',

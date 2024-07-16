@@ -8,6 +8,8 @@
     "minLength": "número mínimo de caracteres insuficiente",
     "minValue": "no puede ingresar un valor inferior al mínimo",
     "maxValue": "no puede ingresar un valor superior al maximo",
-    "numeric": "Debe ser un número mayor a cero"
+    "numeric": "Debe ser un número mayor a cero",
+    "integer": "Ingresa solo números sin decimales",
+    "forEach": "Error en uno de los elementos de la colección."
   }
 }

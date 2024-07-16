@@ -1,4 +1,4 @@
-import { EntidadAuditable } from "shared/entidad/domain/entidadAuditable";
+import { EntidadAuditable } from 'shared/entidad/domain/entidadAuditable';
 
 export class OrdenCompra extends EntidadAuditable {
   codigo: number | null
@@ -25,8 +25,8 @@ export class OrdenCompra extends EntidadAuditable {
   observacion_realizada: string | null
   completada: boolean
   pagada: boolean
-  novedades:number|null
-  sum_total:number|null
+  novedades: number | null
+  sum_total: number | null
 
   //variables auxiliares
   copia_orden: boolean
@@ -66,7 +66,7 @@ export class OrdenCompra extends EntidadAuditable {
     this.observacion_realizada = null
     this.pagada = false
     this.completada = false
-    this.novedades =null
-    this.sum_total =null
+    this.novedades = null
+    this.sum_total = null
   }
 }

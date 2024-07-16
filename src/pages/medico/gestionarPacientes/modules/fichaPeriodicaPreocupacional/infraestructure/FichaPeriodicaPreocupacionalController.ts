@@ -2,9 +2,9 @@ import { TransaccionSimpleController } from 'shared/contenedor/modules/simple/in
 import { FichaPeriodicaPreocupacional } from '../domain/FichaPeriodicaPreocupacional'
 import { endpoints } from 'config/api'
 
-export class FichaPeriodicaPreocupacionalController extends TransaccionSimpleController<FichaPeriodicaPreocupacional>{
+export class FichaPeriodicaPreocupacionalController extends TransaccionSimpleController<FichaPeriodicaPreocupacional> {
   constructor() {
-    super(endpoints.fichas_periodicas_preocupacionales)
+    super(endpoints.fichas_preocupacionales)
   }
 }
 

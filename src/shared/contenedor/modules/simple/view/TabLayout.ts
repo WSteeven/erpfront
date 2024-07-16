@@ -11,6 +11,7 @@ import { ContenedorSimpleMixin } from 'shared/contenedor/modules/simple/applicat
 import { CustomActionTable } from 'components/tables/domain/CustomActionTable'
 import ButtonSubmits from 'components/buttonSubmits/buttonSubmits.vue'
 import EssentialTable from 'components/tables/view/EssentialTable.vue'
+import EssentialTablePagination from 'components/tables/view/EssentialTablePagination.vue'
 import { useCargandoStore } from 'stores/cargando'
 import { useMainLayoutStore } from 'stores/mainLayout'
 import { getCurrentInstance } from 'vue'
@@ -136,23 +137,23 @@ export default defineComponent({
       type: String,
       default: 'Guardar',
     },
-    listar: {
-      type: Boolean,
-      default: true,
-    },
     ajustarCeldas: { //valor que se envia para que el contenido de la celda se autoaujuste al tamaño de la celda en lugar de aumentar su tamaño
       type: Boolean,
       default: false,
     },
+    paginate: {
+      type: Boolean,
+      default: false,
+    },
   },
-  components: { EssentialTable, ButtonSubmits },
+  components: { EssentialTable, EssentialTablePagination, ButtonSubmits },
   setup(props) {
+    const refTabla = ref()
     const { listar, filtrar, guardar, editar, eliminar, consultar, reestablecer } = props.mixin.useComportamiento()
 
     const { entidad, listado, accion, filtros, tabs } = props.mixin.useReferencias()
 
     const Router = useRouter()
-    let listadoCargado = false
 
     let columnas: any = props.configuracionColumnas ?? []
 
@@ -166,9 +167,12 @@ export default defineComponent({
       }]
     }
 
-    if (!listadoCargado && props.mostrarListado && props.listar) {
-      listar()
-      listadoCargado = true
+    if (props.mostrarListado) {
+      if(props.paginate) {
+        listar({paginate:1})
+      }else{
+        listar()
+      }
     }
 
     const seleccionado = ref()
@@ -232,17 +236,18 @@ export default defineComponent({
     }
 
     const obtenerListadoFiltros = () => {
-      filtros.search = busqueda.value === "" ? null : busqueda.value
+      filtros.search = busqueda.value === '' ? null : busqueda.value
       const newParams = {...filtrosBusqueda.value}
       newParams.limit = 100
       listar({...filtros, ...newParams}, false)
     }
     const obtenerTodoListadoFiltros = () => {
-      filtros.search = busqueda.value === "" ? null : busqueda.value
+      filtros.search = busqueda.value === '' ? null : busqueda.value
       listar({...filtros, ...filtrosBusqueda.value}, false)
     } */
 
     return {
+      refTabla,
       filtrarTodos,
       tabs,
       tituloTabla,

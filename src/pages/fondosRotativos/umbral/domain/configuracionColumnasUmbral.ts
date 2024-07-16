@@ -1,5 +1,5 @@
-import { ColumnConfig } from "components/tables/domain/ColumnConfig";
-import { Umbral } from "./Umbral";
+import { ColumnConfig } from 'components/tables/domain/ColumnConfig';
+import { Umbral } from './Umbral';
 
 export const configuracionColumnasUmbral: ColumnConfig<Umbral>[] = [
   {

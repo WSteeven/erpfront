@@ -1,6 +1,8 @@
+import { SelectOption } from 'components/tables/domain/SelectOption'
 import { TabOption } from 'components/tables/domain/TabOption'
 
 export const maskFecha = 'YYYY-MM-DD'
+export const maskFechaHora = 'YYYY-MM-DD HH:mm:ss'
 // export const maskFecha = 'DD-MM-YYYY'
 //export const maskFecha = 'YYYY/MM/DD'
 // Tipos
@@ -174,7 +176,7 @@ export const accionesTabla = {
   field: 'acciones',
   label: 'Acciones',
   align: 'center',
-  //style: 'width: 1000px'
+  // style: 'width: 1000px'
 }
 
 export const tiposTrabajosEstaticos = {
@@ -391,10 +393,13 @@ export const estadosTrabajoArray = [
 export const rolesSistema = {
   activos_fijos: 'ACTIVOS FIJOS',
   administrador: 'ADMINISTRADOR',
+  administradorVehiculos: 'ADMINISTRADOR_VEHICULOS',
+  mecanicoGeneral: 'MECANICO_GENERAL',
   bodega: 'BODEGA',
   bodegaTelconet: 'BODEGA TELCONET',
   compras: 'COMPRAS',
   contabilidad: 'CONTABILIDAD',
+  chofer: 'CHOFER',
   supervisor: 'SUPERVISOR_CAMPO',
   coordinador: 'COORDINADOR',
   coordinadorBodega: 'COORDINADOR DE BODEGA',
@@ -471,6 +476,15 @@ export const tiposReportesIngresos = {
   devolucion: 4,
   tarea: 5,
   transferencia: 6,
+}
+export const numDiaSemana = {
+  domingo: 0,
+  lunes: 1,
+  martes: 2,
+  miercoles: 3,
+  jueves: 4,
+  viernes: 5,
+  sabado: 6
 }
 
 export const opcionesReportesEgresos = [
@@ -558,6 +572,7 @@ export const niveles_academicos = [
   { nombre: 'TITULO SUPERIOR' },
 ]
 
+
 export const tipos_sangre = [
   { nombre: 'A +' },
   { nombre: 'B +' },
@@ -606,6 +621,12 @@ export const estadosVentas = {
   RECHAZADO: 'RECHAZADO',
   PENDIENTE: 'PENDIENTE', // Se usa en vez de ASIGNADO en el dashboard
 }
+export const autorizacionesId = {
+  PENDIENTE: 1,
+  APROBADO: 2,
+  CANCELADO: 3,
+  VALIDADO: 4
+}
 export const autorizaciones = [
   { nombre: 'Pendiente', id: 1 }, //autorizacion PENDIENTE
   { nombre: 'Aprobado', id: 2 }, //autorizacion APROBADO
@@ -642,3 +663,12 @@ export const tabOptionsValoresAcreditar: TabOption[] = [
 export const tabOptionsNoticias: TabOption[] = [
   { label: 'Noticias Registradas', value: '1' },
 ]
+export const selectOptionsSiNo: SelectOption[] = [
+  { label: 'Sí', value: true },
+  { label: 'No', value: false },
+]
+
+export const opcionesGrafico = {
+  grafico: 'grafico',
+  listado: 'listado'
+}

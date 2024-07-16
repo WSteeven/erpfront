@@ -1,8 +1,8 @@
-import { useSelector } from "components/tables/application/selector"
-import { endpoints } from "config/api"
-import { Empleado } from "pages/recursosHumanos/empleados/domain/Empleado"
-import { EntidadAuditable } from "shared/entidad/domain/entidadAuditable"
-import { Ref, ref } from "vue"
+import { useSelector } from 'components/tables/application/selector'
+import { endpoints } from 'config/api'
+import { Empleado } from 'pages/recursosHumanos/empleados/domain/Empleado'
+import { EntidadAuditable } from 'shared/entidad/domain/entidadAuditable'
+import { Ref, ref } from 'vue'
 
 export function useOrquestadorSelectorEmpleadosGrupo(empleados: Ref<Empleado[]>, endpoint: keyof typeof endpoints) {
   const refListadoSeleccionable = ref()

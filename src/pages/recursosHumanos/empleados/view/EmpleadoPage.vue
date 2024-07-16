@@ -49,6 +49,7 @@
               <q-input
                 type="email"
                 v-model="empleado.email"
+                autogrow
                 placeholder="Obligatorio"
                 :disable="
                   accion === acciones.nuevo ||
@@ -281,7 +282,7 @@
               <label class="q-mb-sm block">Estado Civil</label>
               <q-select
                 v-model="empleado.estado_civil"
-                :options="estado_civiles"
+                :options="estadosCiviles"
                 transition-show="jump-up"
                 transition-hide="jump-down"
                 :disable="disabled"
@@ -330,6 +331,176 @@
                 :disable="disabled"
               />
             </div>
+            <!-- Auto Identificacion Etnico -->
+            <!-- <div class="col-12 col-md-3 col-sm-3">
+              <label class="q-mb-sm block">AutoIdentificacion Etnica</label>
+              <q-select
+                v-model="empleado.autoidentificacion_etnica"
+                :options="autoidentificaciones_etnicas"
+                transition-show="jump-up"
+                transition-hide="jump-down"
+                :disable="disabled"
+                options-dense
+                dense
+                outlined
+                :input-debounce="0"
+                use-input
+                @blur="v$.autoidentificacion_etnica.$touch"
+                :error="!!v$.autoidentificacion_etnica.$errors.length"
+                :option-value="(v) => v.value"
+                :option-label="(v) => v.nombre"
+                emit-value
+                map-options
+              >
+                <template v-slot:error>
+                  <div
+                    v-for="error of v$.autoidentificacion_etnica.$errors"
+                    :key="error.$uid"
+                  >
+                    <div class="error-msg">{{ error.$message }}</div>
+                  </div>
+                </template>
+
+                <template v-slot:no-option>
+                  <q-item>
+                    <q-item-section class="text-grey">
+                      No hay resultados
+                    </q-item-section>
+                  </q-item>
+                </template>
+              </q-select>
+            </div> -->
+
+            <!-- Orientacion Sexual -->
+            <!-- <div class="col-12 col-md-3 col-sm-3">
+              <label class="q-mb-sm block">Orientacion Sexual</label>
+              <q-select
+                v-model="empleado.orientacion_sexual"
+                :options="orientaciones_sexuales"
+                transition-show="jump-up"
+                transition-hide="jump-down"
+                :disable="disabled"
+                options-dense
+                dense
+                outlined
+                :input-debounce="0"
+                use-input
+                @blur="v$.orientacion_sexual.$touch"
+                :error="!!v$.orientacion_sexual.$errors.length"
+                :option-value="(v) => v.id"
+                :option-label="(v) => v.nombre"
+                emit-value
+                map-options
+              >
+                <template v-slot:error>
+                  <div
+                    v-for="error of v$.orientacion_sexual.$errors"
+                    :key="error.$uid"
+                  >
+                    <div class="error-msg">{{ error.$message }}</div>
+                  </div>
+                </template>
+
+                <template v-slot:no-option>
+                  <q-item>
+                    <q-item-section class="text-grey">
+                      No hay resultados
+                    </q-item-section>
+                  </q-item>
+                </template>
+              </q-select>
+            </div> -->
+
+            <!-- Identidad de genero -->
+            <!-- <div class="col-12 col-md-3 col-sm-3">
+              <label class="q-mb-sm block">Identidad de Genero</label>
+              <q-select
+                v-model="empleado.identidad_genero"
+                :options="identidades_genero"
+                transition-show="jump-up"
+                transition-hide="jump-down"
+                :disable="disabled"
+                options-dense
+                dense
+                outlined
+                :input-debounce="0"
+                use-input
+                @blur="v$.identidad_genero.$touch"
+                :error="!!v$.identidad_genero.$errors.length"
+                :option-value="(v) => v.id"
+                :option-label="(v) => v.nombre"
+                emit-value
+                map-options
+              >
+                <template v-slot:error>
+                  <div
+                    v-for="error of v$.identidad_genero.$errors"
+                    :key="error.$uid"
+                  >
+                    <div class="error-msg">{{ error.$message }}</div>
+                  </div>
+                </template>
+
+                <template v-slot:no-option>
+                  <q-item>
+                    <q-item-section class="text-grey">
+                      No hay resultados
+                    </q-item-section>
+                  </q-item>
+                </template>
+              </q-select>
+            </div> -->
+
+            <!-- Religion -->
+            <!-- <div class="col-12 col-md-3 col-sm-3">
+              <label class="q-mb-sm block">Religion</label>
+              <q-select
+                v-model="empleado.religion"
+                :options="religiones"
+                transition-show="jump-up"
+                transition-hide="jump-down"
+                :disable="disabled"
+                options-dense
+                dense
+                outlined
+                :input-debounce="0"
+                use-input
+                @blur="v$.religion.$touch"
+                :error="!!v$.religion.$errors.length"
+                :option-value="(v) => v.id"
+                :option-label="(v) => v.nombre"
+                emit-value
+                map-options
+              >
+                <template v-slot:error>
+                  <div v-for="error of v$.religion.$errors" :key="error.$uid">
+                    <div class="error-msg">{{ error.$message }}</div>
+                  </div>
+                </template>
+
+                <template v-slot:no-option>
+                  <q-item>
+                    <q-item-section class="text-grey">
+                      No hay resultados
+                    </q-item-section>
+                  </q-item>
+                </template>
+              </q-select>
+            </div> -->
+
+            <!-- Trabajador Sustituto -->
+            <div class="col-12 col-md-3 col-sm-3">
+              <label class="q-mb-sm block">Trabajador Sustituto</label>
+              <q-toggle
+                :label="empleado.trabajador_sustituto ? 'SI' : 'NO'"
+                v-model="empleado.trabajador_sustituto"
+                color="primary"
+                keep-color
+                icon="bi-check2-circle"
+                unchecked-icon="clear"
+                :disable="disabled"
+              />
+            </div>
             <!-- Convencional -->
             <div class="col-12 col-md-3 col-sm-3">
               <label class="q-mb-sm block">Convencional</label>
@@ -347,7 +518,6 @@
               </q-input>
             </div>
             <!-- Fecha nacimiento -->
-            -
             <div class="col-12 col-md-3 col-sm-3">
               <label class="q-mb-sm block">Fecha de nacimiento</label>
               <q-input
@@ -434,6 +604,7 @@
                 hint="Obligatorio"
                 :error="!!v$.banco.$errors.length"
                 @blur="v$.banco.$touch"
+                @filter="filtrarBancos"
                 :option-value="(v) => v.id"
                 :option-label="(v) => v.nombre"
                 emit-value
@@ -459,7 +630,7 @@
               <label class="q-mb-sm block">Canton</label>
               <q-select
                 v-model="empleado.canton"
-                :options="opciones_cantones"
+                :options="cantones"
                 transition-show="jump-up"
                 transition-hide="jump-down"
                 :disable="disabled"
@@ -468,7 +639,8 @@
                 outlined
                 :input-debounce="0"
                 use-input
-                @filter="filtroCantones"
+                @filter="filtrarCantones"
+                @popup-show="ordenarLista(cantones, 'canton')"
                 :option-value="(v) => v.id"
                 :option-label="(v) => v.canton"
                 emit-value
@@ -532,6 +704,62 @@
               default-opened
             >
               <div class="row q-col-gutter-sm q-pa-sm">
+                <!-- Casa propia -->
+                <div class="col-12 col-md-3 col-sm-3">
+                  <label class="q-mb-sm block">La casa donde vive es</label>
+                  <q-toggle
+                    :label="empleado.casa_propia ? 'PROPIA' : 'ALQUILADA'"
+                    v-model="empleado.casa_propia"
+                    color="primary"
+                    keep-color
+                    icon="bi-check2-circle"
+                    unchecked-icon="clear"
+                    :disable="disabled"
+                  />
+                </div>
+                <!-- Vive con discapacitados -->
+                <div class="col-12 col-md-3 col-sm-3">
+                  <label class="q-mb-sm block"
+                    >Convive con personas discapacitadas</label
+                  >
+                  <q-toggle
+                    :label="empleado.vive_con_discapacitados ? 'SI' : 'NO'"
+                    v-model="empleado.vive_con_discapacitados"
+                    color="primary"
+                    keep-color
+                    icon="bi-check2-circle"
+                    unchecked-icon="clear"
+                    :disable="disabled"
+                  />
+                </div>
+                <!-- Casa propia -->
+                <div class="col-12 col-md-3 col-sm-3">
+                  <label class="q-mb-sm block"
+                    >Tiene a su cargo personas discapacitadas</label
+                  >
+                  <q-toggle
+                    :label="empleado.responsable_discapacitados ? 'SI' : 'NO'"
+                    v-model="empleado.responsable_discapacitados"
+                    color="primary"
+                    keep-color
+                    icon="bi-check2-circle"
+                    unchecked-icon="clear"
+                    :disable="disabled"
+                  />
+                </div>
+                <!-- Vive con discapacitados -->
+                <div class="col-12 col-md-3 col-sm-3">
+                  <label class="q-mb-sm block">Tiene Discapacidad</label>
+                  <q-toggle
+                    :label="empleado.tiene_discapacidad ? 'SI' : 'NO'"
+                    v-model="empleado.tiene_discapacidad"
+                    color="primary"
+                    keep-color
+                    icon="bi-check2-circle"
+                    unchecked-icon="clear"
+                    :disable="disabled"
+                  />
+                </div>
                 <!-- Coordenadas -->
                 <div class="col-12 col-md-3 col-sm-3">
                   <label class="q-mb-sm block"
@@ -736,7 +964,10 @@
                     :disable="disabled"
                   />
                 </div>
-                <div class="col-12 col-md-6 col-sm-12" v-if="empleado.tiene_discapacidad">
+                <div
+                  class="col-12 col-md-6 col-sm-12"
+                  v-if="empleado.tiene_discapacidad"
+                >
                   <q-btn
                     color="primary"
                     @click="agregarDiscapacidad()"
@@ -778,7 +1009,7 @@
               <label class="q-mb-sm block">Jefe inmediato</label>
               <q-select
                 v-model="empleado.jefe"
-                :options="opciones_empleados"
+                :options="empleados"
                 transition-show="jump-up"
                 transition-hide="jump-down"
                 :disable="disabled"
@@ -790,7 +1021,8 @@
                 error-message="Debes seleccionar un jefe"
                 use-input
                 input-debounce="0"
-                @filter="filtroEmpleados"
+                @filter="filtrarEmpleados"
+                @popup-show="ordenarLista(empleados, 'nombres')"
                 :option-value="(v) => v.id"
                 :option-label="(v) => v.nombres + ' ' + v.apellidos"
                 emit-value
@@ -868,7 +1100,7 @@
                 use-input
                 input-debounce="0"
                 @blur="v$.area.$touch"
-                @filter="filtroDepartamentos"
+                @filter="filtrarDepartamentos"
                 :error="!!v$.area.$errors.length"
                 :option-value="(v) => v.id"
                 :option-label="(v) => v.nombre"
@@ -896,7 +1128,7 @@
               <label class="q-mb-sm block">Departamento</label>
               <q-select
                 v-model="empleado.departamento"
-                :options="opcionesDepartamentos"
+                :options="departamentos"
                 transition-show="jump-up"
                 transition-hide="jump-down"
                 :disable="disabled"
@@ -906,7 +1138,8 @@
                 use-input
                 input-debounce="0"
                 @blur="v$.departamento.$touch"
-                @filter="filtroDepartamentos"
+                @filter="filtrarDepartamentos"
+                @popup-show="ordenarLista(departamentos, 'nombre')"
                 :error="!!v$.departamento.$errors.length"
                 :option-value="(v) => v.id"
                 :option-label="(v) => v.nombre"
@@ -937,7 +1170,7 @@
               <label class="q-mb-sm block">Cargo</label>
               <q-select
                 v-model="empleado.cargo"
-                :options="opciones_cargos"
+                :options="cargos"
                 transition-show="jump-up"
                 transition-hide="jump-down"
                 :disable="disabled"
@@ -947,7 +1180,8 @@
                 use-input
                 input-debounce="0"
                 @blur="v$.cargo.$touch"
-                @filter="filtroCargos"
+                @filter="filtrarCargos"
+                @popup-show="ordenarLista(cargos, 'nombre')"
                 :error="!!v$.cargo.$errors.length"
                 error-message="Debes seleccionar un cargo"
                 :option-value="(v) => v.id"
@@ -970,12 +1204,13 @@
                 </template>
               </q-select>
             </div>
+            <!-- {{ v$.$errors }} -->
             <!-- Roles -->
             <div class="col-12 col-md-3 col-sm-3">
               <label class="q-mb-sm block">Roles</label>
               <q-select
                 v-model="empleado.roles"
-                :options="opciones_roles"
+                :options="roles"
                 transition-show="scale"
                 transition-hide="scale"
                 options-dense
@@ -987,7 +1222,9 @@
                 :readonly="disabled"
                 use-input
                 input-debounce="0"
-                @filter="filtroRoles"
+                @filter="filtrarRoles"
+                @popup-show="ordenarLista(roles, 'name')"
+                @update:model-value="verificarRolesSeleccionados"
                 :option-value="(v) => v.name"
                 :option-label="(v) => v.name"
                 :error="!!v$.roles.$errors.length"
@@ -1033,7 +1270,7 @@
               <label class="q-mb-sm block">Tipo Contrato</label>
               <q-select
                 v-model="empleado.tipo_contrato"
-                :options="tipos_contrato"
+                :options="tiposContratos"
                 transition-show="jump-up"
                 transition-hide="jump-down"
                 :disable="disabled"
@@ -1297,7 +1534,7 @@
               <label class="q-mb-sm block">Grupo</label>
               <q-select
                 v-model="empleado.grupo"
-                :options="listadosAuxiliares.grupos"
+                :options="grupos"
                 transition-show="jump-up"
                 transition-hide="jump-down"
                 :disable="disabled"
@@ -1305,8 +1542,12 @@
                 dense
                 outlined
                 clearable
+                use-input
+                input-debounce="0"
                 :error="!!v$.grupo.$errors.length"
                 @blur="v$.grupo.$touch"
+                @filter="filtrarGrupos"
+                @popup-show="ordenarLista(grupos, 'nombre')"
                 :option-value="(v) => v.id"
                 :option-label="(v) => v.nombre"
                 emit-value
@@ -1415,36 +1656,6 @@
                 dense
               />
             </div>
-            <div class="col-12 col-md-6 col-sm-3">
-              <!--  <label class="q-mb-sm block">Tipos de Discapacidades</label>
-              <q-select
-                v-model="idsTiposDiscapacidades"
-                :options="tiposDiscapacidades"
-                transition-show="scale"
-                transition-hide="scale"
-                hint="Opcional"
-                @filter="filtrarTipoDiscapacidad"
-                :disable="disabled"
-                options-dense
-                dense
-                outlined
-                :option-label="(i) => i.nombre"
-                use-input
-                input-debounce="0"
-                emit-value
-                map-options
-                use-chips
-                multiple
-              >
-                <template v-slot:no-option>
-                  <q-item>
-                    <q-item-section class="text-grey">
-                      Primero cargue registros en el formulario de Tipo de Discapacidad
-                    </q-item-section>
-                  </q-item>
-                </template>
-              </q-select>-->
-            </div>
           </div>
         </q-expansion-item>
 
@@ -1455,7 +1666,7 @@
             label="Carpeta Digitalizada del Empleado"
             :mixin="mixin"
             :disable="disabled"
-            :listarAlGuardar="false"
+            :listarAlGuardar="true"
             :permitir-eliminar="
               accion == acciones.nuevo || accion == acciones.editar
             "
@@ -1463,7 +1674,7 @@
           >
             <template #boton-subir>
               <q-btn
-                v-if="accion == acciones.editar"
+                v-if="mostrarBotonSubirArchivos && accion != acciones.nuevo"
                 color="positive"
                 push
                 no-caps
@@ -1477,6 +1688,16 @@
           </gestor-archivos>
         </div>
 
+        <div class="col-12 col-md-12" v-if="componenteCargado">
+          <informacion-licencia
+            v-if="mostrarComponenteInformacionLicencia"
+            :mixin="mixin"
+            :conductor="conductor"
+            :identificacion="empleado.identificacion"
+            :validar="mostrarComponenteInformacionLicencia"
+          />
+        </div>
+
         <q-expansion-item
           class="overflow-hidden q-mb-md expansion"
           label="Familiares"
@@ -1484,26 +1705,48 @@
           default-opened
         >
           <div class="row q-col-gutter-sm q-pa-sm">
+            <q-btn
+              v-if="habilitarBotonAgregarFamiliares"
+              color="positive"
+              class="q-mx-lg"
+              :class="{ 'q-mb-sm': $q.screen.xs, 'full-width': $q.screen.xs }"
+              push
+              rounded
+              no-caps
+              @click="agregarFamiliares()"
+            >
+              <q-icon
+                name="bi-person-fill-add"
+                size="xs"
+                class="q-pr-sm"
+              ></q-icon>
+              <span>Agregar Familiares</span>
+              <q-tooltip class="bg-dark"
+                >Puede modificar o eliminar un familiar desde el panel
+                familiares de empleados</q-tooltip
+              >
+            </q-btn>
+
             <div class="col-12 col-md-12">
               <essential-table
+                v-if="construccionConfiguracionColumnas"
                 ref="refFamiliares"
                 titulo="Familiares"
-                :configuracionColumnas="columnasFamiliares"
+                :configuracionColumnas="[
+                  ...configuracionColumnasFamiliaresEmpleado,
+                  accionesTabla,
+                ]"
                 :datos="empleado.familiares"
-                :accion1Header="abrirModalFamiliares"
-                :accion1="btnConsultarFamiliar"
-                :accion2="btnEditarFamiliar"
-                :accion3="btnEliminarFamiliar"
-                :permitirBuscar="false"
                 :permitirConsultar="false"
-                :permitirEditar="false"
                 :permitirEliminar="false"
+                :permitirEditar="false"
                 :mostrarBotones="false"
-                :mostrarCantidadElementos="false"
-                :permitirEditarModal="false"
-                :modalMaximized="false"
+                :permitir-editar-celdas="true"
+                :mostrar-header="false"
+                :grid="false"
+                :accion1="btnEliminarFamiliar"
                 :alto-fijo="false"
-                :mostrarFooter="false"
+                :ajustarCeldas="true"
               ></essential-table>
             </div>
           </div>

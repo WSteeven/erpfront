@@ -7,6 +7,28 @@
           Logs de Auditorias por Empleado
         </div>
         <div class="row q-col-gutter-sm q-mb-md">
+          <!-- check para saber si buscar por auditable_id o por empleado -->
+          <div class="col-12 col-md-3">
+            <q-checkbox
+              class="q-mt-lg q-pt-md"
+              v-model="checkAuditable"
+              label="¿Auditable?"
+              outlined
+              @update:model-value="() => (auditoria.auditable_id = null)"
+              dense
+            ></q-checkbox>
+          </div>
+          <!-- fecha de fin -->
+          <div class="col-12 col-md-3" v-if="checkAuditable">
+            <label class="q-mb-sm block">Auditable ID </label>
+            <q-input
+              v-model="auditoria.auditable_id"
+              outlined
+              dense
+              type="number"
+            ></q-input>
+          </div>
+
           <!-- empleado -->
           <div class="col-12 col-md-3">
             <label class="q-mb-sm block">Seleccione un empleado</label>
@@ -19,11 +41,11 @@
               :error="!!v$.empleado.$errors.length"
               dense
               outlined
+              clearable
               use-input
               input-debounce="0"
               @filter="filtrarEmpleados"
               @blur="v$.empleado.$touch"
-              @update:model-value="consultar"
               @popup-show="ordenarEmpleados"
               :option-label="(item) => item.apellidos + ' ' + item.nombres"
               :option-value="(item) => item.id"
@@ -63,8 +85,7 @@
                   >
                     <q-date
                       v-model="auditoria.fecha_inicio"
-                      mask="DD-MM-YYYY"
-                      @update:model-value="consultar"
+                      :mask="maskFecha"
                       today-btn
                     >
                       <div class="row items-center justify-end">
@@ -105,8 +126,7 @@
                   >
                     <q-date
                       v-model="auditoria.fecha_fin"
-                      mask="DD-MM-YYYY"
-                      @update:model-value="consultar"
+                      :mask="maskFecha"
                       today-btn
                     >
                       <div class="row items-center justify-end">
@@ -127,6 +147,57 @@
                 </div>
               </template>
             </q-input>
+          </div>
+
+          <!-- Modelo auditable -->
+          <div class="col-12 col-md-3">
+            <label class="q-mb-sm block">Modelo</label>
+            <q-select
+              v-model="auditoria.auditable_type"
+              :options="modelosAuditables"
+              transition-show="scale"
+              transition-hide="scale"
+              options-dense
+              dense
+              outlined
+              clearable
+              use-input
+              input-debounce="0"
+              @filter="filtrarModelosAuditables"
+              :option-label="(item) => item"
+              :option-value="(item) => item"
+              ><template v-slot:no-option>
+                <q-item>
+                  <q-item-section class="text-grey">
+                    No hay resultados
+                  </q-item-section>
+                </q-item>
+              </template>
+
+              <template v-slot:error>
+                <div v-for="error of v$.empleado.$errors" :key="error.$uid">
+                  <div class="error-msg">{{ error.$message }}</div>
+                </div>
+              </template>
+            </q-select>
+          </div>
+
+          <!-- Grupo de botones -->
+          <div class="col-12 col-md-12 q-mt-md">
+            <div class="text-center">
+              <!-- Boton consultar -->
+              <q-btn
+                color="primary"
+                class="full-width"
+                no-caps
+                no-wrap
+                push
+                @click="consultar()"
+              >
+                <q-icon name="bi-search" size="xs" class="q-pr-sm"></q-icon>
+                <span>Consultar</span>
+              </q-btn>
+            </div>
           </div>
         </div>
       </q-card-section>

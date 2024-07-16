@@ -1,6 +1,6 @@
-import { Transaccion } from "pages/bodega/transacciones/domain/Transaccion";
-import { Validador } from "shared/validadores/domain/Validador";
-import { Ref, ref } from "vue";
+import { Transaccion } from 'pages/bodega/transacciones/domain/Transaccion';
+import { Validador } from 'shared/validadores/domain/Validador';
+import { Ref, ref } from 'vue';
 
 export class ValidarListadoProductosIngreso implements Validador {
     private transaccion: Transaccion

@@ -15,7 +15,7 @@ import { maskFecha, tipoReportes, tipo_saldo, tipos_saldos } from 'config/utils'
 import { EmpleadoController } from 'pages/recursosHumanos/empleados/infraestructure/EmpleadoController'
 import { useCargandoStore } from 'stores/cargando'
 import { required } from 'shared/i18n-validators'
-import { format } from '@formkit/tempo'
+import  {addDay, format, monthStart } from '@formkit/tempo'
 
 export default defineComponent({
   components: { TabLayout },
@@ -29,18 +29,9 @@ export default defineComponent({
     /***********
      * Mixin
      ************/
-    const mixin = new ContenedorSimpleMixin(
-      Consolidado,
-      new ConsolidadoController()
-    )
-    const {
-      entidad: consolidado,
-      disabled,
-      accion,
-      listadosAuxiliares,
-    } = mixin.useReferencias()
-    const { setValidador, obtenerListados, cargarVista } =
-      mixin.useComportamiento()
+    const mixin = new ContenedorSimpleMixin(Consolidado, new ConsolidadoController())
+    const { entidad: consolidado, disabled, accion, listadosAuxiliares, } = mixin.useReferencias()
+    const { setValidador, obtenerListados, cargarVista } = mixin.useComportamiento()
 
     /*************
      * Validaciones
@@ -57,8 +48,8 @@ export default defineComponent({
       },
     }
 
-    const is_all_empleados = ref('false')
-    const is_inactivo = ref('false')
+    const is_all_empleados = ref(false)
+    const is_inactivo = ref(false)
     const tipos_saldos_consolidado = ref()
     tipos_saldos_consolidado.value = tipos_saldos
     listadosAuxiliares.tipos_saldos = tipos_saldos_consolidado
@@ -80,6 +71,7 @@ export default defineComponent({
           controller: new TipoFondoController(),
           params: { campos: 'id,descripcion' },
         },
+
       })
 
       usuarios.value = listadosAuxiliares.usuarios
@@ -91,6 +83,14 @@ export default defineComponent({
       tiposFondos.value = listadosAuxiliares.tiposFondos
       tiposFondoRotativoFechas.value =
         listadosAuxiliares.tiposFondoRotativoFechas
+ 
+
+        const primerDiaMes = monthStart(new Date())
+        const ultimoDiaMesAnterior = addDay(primerDiaMes, -1)
+        const primerDiaMesAnterior = monthStart(ultimoDiaMesAnterior)
+
+        consolidado.fecha_inicio =format(primerDiaMesAnterior, maskFecha)
+        consolidado.fecha_fin =format(ultimoDiaMesAnterior, maskFecha)
     })
     /*********
      * Filtros
@@ -209,7 +209,7 @@ export default defineComponent({
       }
     }
     function mostrarEmpleados() {
-      consolidado.usuario = null
+      consolidado.empleado = null
     }
     async function recargarEmpleadosInactivos() {
       usuariosInactivos.value = (
@@ -222,21 +222,21 @@ export default defineComponent({
       LocalStorage.set('usuariosInactivos', JSON.stringify(usuariosInactivos.value))
     }
     function optionsFechaInicio(date) {
-      const fecha_actual = format(new Date(), 'YYYY/MM/DD')
+      const fecha_actual = format(new Date(), maskFecha)
       return date <= fecha_actual
     }
     function optionsFechaFin(date) {
-      const fecha_actual = format(new Date(), 'YYYY/MM/DD')
+      const fecha_actual = format(new Date(), maskFecha)
       const fecha_inicio = format(
         consolidado.fecha_inicio !== null
           ? consolidado.fecha_inicio
           : new Date(),
-        'YYYY/MM/DD'
+          maskFecha
       )
       return date >= fecha_inicio && date <= fecha_actual
     }
     function limpiar() {
-      is_all_empleados.value = 'false'
+      is_all_empleados.value = false
     }
     return {
       mixin,

@@ -1,5 +1,5 @@
-import { CategoriaTipoTicket } from "pages/gestionTickets/categoriasTiposTickets/domain/CategoriaTipoTicket"
-import { TipoTicket } from "pages/gestionTickets/tiposTickets/domain/TipoTicket"
+import { CategoriaTipoTicket } from 'pages/gestionTickets/categoriasTiposTickets/domain/CategoriaTipoTicket'
+import { TipoTicket } from 'pages/gestionTickets/tiposTickets/domain/TipoTicket'
 
 export class DestinatarioTicket {
   departamento_id: number | null

@@ -22,8 +22,13 @@ import { isAxiosError } from 'shared/utils'
 
 export default defineComponent({
   components: { TabLayout, ButtonSubmits },
-
-  setup() {
+  props: {
+    tipoCuestionario: {
+      type: Number,
+      required: true,
+    }
+  },
+  setup(props) {
     /*********
      * Stores
      *********/
@@ -93,7 +98,8 @@ export default defineComponent({
     onBeforeGuardar(() => {
       respuestaCuestionarioEmpleado.cuestionario = listadosAuxiliares.preguntas.map((item: any) => {
         return {
-          id_cuestionario: item.respuesta
+          respuesta: typeof item.respuesta === 'string' ? item.respuesta : null,
+          id_cuestionario: typeof item.respuesta === 'string' ? item.cuestionario[0].id : item.respuesta,
         }
       })
     })
@@ -106,7 +112,7 @@ export default defineComponent({
     async function consultarPreguntas() {
       cargando.activar()
       try {
-        const { result } = await preguntaController.listar({'tipo_cuestionario_id':1})
+        const { result } = await preguntaController.listar({ 'tipo_cuestionario_id': props.tipoCuestionario })
         listadosAuxiliares.preguntas = result
       } catch (e) {
         if (isAxiosError(e)) {

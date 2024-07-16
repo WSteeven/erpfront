@@ -1,14 +1,14 @@
 <template>
-  <q-splitter v-model="splitterModel">
+  <q-splitter v-model="splitterModel" class="bg-primary">
     <template v-slot:before>
       <div class="text-center bg-primary q-pb-md q-pt-sm">
         <q-btn
-          class="bg-white text-primary"
+          class="bg-positive text-white"
           push
           no-caps
           @click="agregarRegistro()"
         >
-          <q-icon name="bi-plus-circle-fill" size="xs" class="q-mr-sm"></q-icon>
+          <q-icon name="bi-plus-circle" size="xs" class="q-mr-sm"></q-icon>
           Nuevo registro</q-btn
         >
       </div>
@@ -20,15 +20,15 @@
         indicator-color="transparent"
         class="bg-primary text-white q-px-xs alto-tabla"
         active-bg-color="white"
-        active-class="text-black bg-desenfoque border-grey text-bold"
+        active-class="tab-active text-black bg-white border-grey text-bold"
         :style="'height:' + altoTabla"
       >
         <q-tab
           v-for="registro in registros"
           :key="registro.id"
           :name="registro.id"
-          class="q-mb-xs"
-          :class="{ 'bg-blue': tabRegistro !== registro.id }"
+          class="q-mb-xs rounded-field"
+          :class="{ 'bg-primary': tabRegistro !== registro.id }"
           no-caps
           @click="seleccionarRegistro(registro)"
         >
@@ -36,7 +36,7 @@
             name="bi-person"
             size="xs"
             class="q-mb-xs"
-            :class="{ 'text-primary': tabRegistro === registro.id }"
+            :class="{ 'text-primaryd': tabRegistro === registro.id }"
           ></q-icon>
           <span>Registro # {{ registro.numero_registro }}</span>
         </q-tab>
@@ -49,45 +49,29 @@
         animated
         transition-prev="scale"
         transition-next="scale"
-        helpalive
+        class="bg-primary"
+        keep-alive
       >
         <q-tab-panel
           v-for="registro in registros"
           :key="registro.id"
           :name="registro.id"
-          class="text-primary bg-grey-4 q-pa-none"
+          class="text-white q-pa-none"
         >
           <div class="row q-pa-md">
             <div class="col-12 col-md-6">
               <label class="q-mb-sm block"> Fecha y hora de registro </label>
-              <div class="text-bold">{{ registro.created_at }}</div>
+              <div class="text-bold">
+                <q-icon name="bi-calendar" class="q-mr-sm"></q-icon>
+                {{ registro.created_at }}</div>
             </div>
 
             <div class="col-12 col-md-6 q-mb-md">
               <label class="q-mb-sm block"> Observación </label>
-              <div class="text-bold">{{ registro.observacion }}</div>
+              <div class="text-bold">
+                <q-icon name="bi-list" class="q-mr-sm"></q-icon>
+                {{ registro.observacion }}</div>
             </div>
-
-            <q-btn
-              class="col-12 q-mb-sm bg-white text-black"
-              no-caps
-              push
-              @click="abrirFichaAptitud()"
-            >
-              <q-icon name="bi-table" class="q-mr-sm" color="positive" size="xs"></q-icon>
-              {{ textoFichaAptitud }}
-            </q-btn>
-
-            <q-btn
-              v-if="mostrarFichaPeriodicaPreocupacional"
-              class="col-12 bg-white text-dark"
-              no-caps
-              push
-              @click="abrirFichaPeriodicaProcupacional()"
-            >
-              <q-icon name="bi-table" class="q-mr-sm" color="primary" size="xs"></q-icon>
-              {{ textoFichaPeriodicaPreocupacional }}
-            </q-btn>
           </div>
         </q-tab-panel>
       </q-tab-panels>
@@ -97,10 +81,9 @@
           v-model="tabEstadoExamen"
           align="justify"
           active-color="primary"
-          indicator-color="primary"
-          active-bg-color="blue-1"
+          indicator-color="transparent"
+          active-bg-color="white"
           active-class="tab-active"
-          class="border-bottom-grey-5"
           dense
         >
           <q-tab
@@ -126,7 +109,7 @@
             :icon="estadosSolicitudesExamenes.SOLICITADO.icono"
             @click="filtrarEstadoExamen(tabEstadoExamen)"
           />
-          <q-tab
+          <!-- <q-tab
             :name="estadosSolicitudesExamenes.APROBADO_POR_COMPRAS.value"
             :label="estadosSolicitudesExamenes.APROBADO_POR_COMPRAS.label"
             :class="{
@@ -138,7 +121,7 @@
             no-caps
             :icon="estadosSolicitudesExamenes.APROBADO_POR_COMPRAS.icono"
             @click="filtrarEstadoExamen(tabEstadoExamen)"
-          />
+          /> -->
         </q-tabs>
 
         <q-tab-panels
@@ -147,7 +130,7 @@
           transition-prev="scale"
           transition-next="scale"
           class="q-mb-md"
-          helpalive
+          keep-alive
         >
           <q-tab-panel
             :name="estadosSolicitudesExamenes.PENDIENTE_SOLICITAR.value"
@@ -172,13 +155,112 @@
               @selected="seleccionarExamen"
               :alto-fijo="false"
               :permitir-editar-celdas="true"
+              :emitir-al-seleccionar="true"
             ></essential-table>
           </q-tab-panel>
 
           <q-tab-panel
             :name="estadosSolicitudesExamenes.SOLICITADO.value"
-            class="q-pa-none"
+            class="q-pa-none bg-desenfoque"
           >
+            <div class="row q-pa-md">
+              <label class="q-mb-sm"
+                ><b>Paso 1:</b> Complete el diagnóstico y la receta y los
+                resultados de los exámenes</label
+              >
+              <q-btn
+                v-if="mostrarConsultaMedica"
+                class="col-12 bg-blue-grey q-mb-xs"
+                color="blue-grey"
+                unelevated
+                no-caps
+                @click="btnCitaMedica()"
+              >
+                <q-icon
+                  name="bi-capsule-pill"
+                  class="q-mr-sm"
+                  size="xs"
+                ></q-icon>
+                {{ 'Diagnóstico y receta (Consulta médica)' }}
+              </q-btn>
+
+              <q-btn
+                v-if="mostrarResultadosExamenes"
+                class="col-12 q-mb-md"
+                no-caps
+                color="positive"
+                unelevated
+                @click="btnResultados()"
+              >
+                <q-icon name="bi-table" class="q-mr-sm" size="xs"></q-icon>
+                {{ 'Resultados de los exámenes' }}
+              </q-btn>
+
+              <label class="q-mb-sm block full-width"
+                ><b>Paso 2:</b> Luego genere las fichas médicas</label
+              >
+              <q-btn
+                class="col-12 q-mb-sm"
+                no-caps
+                push
+                color="indigo"
+                unelevated
+                @click="abrirFichaAptitud()"
+              >
+                <q-icon name="bi-ui-checks-grid" class="q-mr-sm" size="xs"></q-icon>
+                {{ textoFichaAptitud }}
+              </q-btn> 
+
+              <q-btn
+                v-if="mostrarFichaRetiro"
+                class="col-12 bg-white text-dark q-mb-md block"
+                no-caps
+                color="indigo"
+                unelevated
+                @click="abrirFichaRetiro()"
+              >
+                <q-icon name="bi-ui-checks" class="q-mr-sm" size="xs"></q-icon>
+                {{ textoFichaRetiro }}
+              </q-btn>
+
+              <!-- Preocupacional -->
+              <q-btn
+                v-if="mostrarFichaPreocupacional"
+                class="col-12"
+                no-caps
+                color="indigo"
+                unelevated
+                @click="abrirFichaPeriodicaProcupacional()"
+              >
+                <q-icon name="bi-ui-checks" class="q-mr-sm" size="xs"></q-icon>
+                {{ textoFichaPreocupacional }}
+              </q-btn>
+
+              <q-btn
+                v-if="mostrarFichaPeriodica"
+                class="col-12"
+                no-caps
+                color="indigo"
+                unelevated
+                @click="abrirFichaPeriodica()"
+              >
+                <q-icon name="bi-ui-checks" class="q-mr-sm" size="xs"></q-icon>
+                {{ textoFichaPeriodica }}
+              </q-btn>
+
+              <q-btn
+                v-if="mostrarFichaReintegro"
+                class="col-12"
+                no-caps
+                color="indigo"
+                @click="abrirFichaReintegro()"
+                unelevated
+              >
+                <q-icon name="bi-ui-checks" class="q-mr-sm" size="xs"></q-icon>
+                {{ textoFichaReintegro }}
+              </q-btn>
+
+            </div>
             <essential-table
               titulo="Solicitudes de exámenes"
               :configuracionColumnas="[
@@ -189,12 +271,12 @@
               :permitirConsultar="false"
               :permitirEditar="false"
               :permitirEliminar="false"
-              :accion1="btnConsultarEstadoSolicitudExamen"
+              :accion1="btnSubirResultadosExamenes"
               :alto-fijo="false"
             ></essential-table>
           </q-tab-panel>
 
-          <q-tab-panel
+          <!-- <q-tab-panel
             :name="estadosSolicitudesExamenes.APROBADO_POR_COMPRAS.value"
             class="q-pa-none"
           >
@@ -213,15 +295,16 @@
               :accion2Header="btnCitaMedica"
               :alto-fijo="false"
             ></essential-table>
-          </q-tab-panel>
+          </q-tab-panel> -->
         </q-tab-panels>
       </div>
 
       <div
         v-else
-        class="row text-primary h-100 q-py-xl items-center justify-center"
+        class="column text-white h-100 q-py-xl items-center justify-center"
       >
-        Crea un registro y luego seleccionalo
+      <q-icon name="bi-stars" size="md"></q-icon>  <br>
+      Crea un registro y luego seleccionalo
       </div>
 
       <modales-entidad

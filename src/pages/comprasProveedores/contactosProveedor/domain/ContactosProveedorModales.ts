@@ -1,15 +1,15 @@
 //Dependencias
 
-import { ComponenteModal } from "components/modales/domain/ComponenteModal.domain";
-import { markRaw } from "vue";
+import { ComponenteModal } from 'components/modales/domain/ComponenteModal.domain';
+import { markRaw } from 'vue';
 
 //Paginas
-import ContactoProveedorLogPage from "../view/logs/ContactoProveedorLogPage.vue";
+import ContactoProveedorLogPage from '../view/logs/ContactoProveedorLogPage.vue';
 
-export class ContactosProveedorModales{
+export class ContactosProveedorModales {
     ContactoProveedorLogPage: ComponenteModal
 
-    constructor(){
+    constructor() {
         this.ContactoProveedorLogPage = markRaw(new ComponenteModal('Logs de cambios', ContactoProveedorLogPage))
     }
 }

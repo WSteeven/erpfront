@@ -7,7 +7,7 @@ export class ActionHooks<T> extends Hooks<T> {
   onBeforeModificar: () => void
   onModificado: (id?: number, response_data?: any) => void
   onBeforeConsultar: () => void
-  onConsultado: () => void
+  onConsultado: (entidad?: any) => void
   onReestablecer: () => void
   onListado: () => void
   onListadosCargados: () => void

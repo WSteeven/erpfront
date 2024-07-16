@@ -30,7 +30,7 @@ export default defineComponent({
      *********/
     const medicoStore = useMedicoStore()
     const empleado = medicoStore.empleado
-    const canton = ref(empleado.canton)
+    const canton = ref(empleado?.canton)
 
     /************
      * Variables
@@ -96,7 +96,8 @@ export default defineComponent({
      ********/
     onGuardado((id: number, responseData) => {
       const idExamenesSolicitados = responseData.modelo.examenes_solicitados.map((ex: ExamenSolicitado) => ex.examen as number)
-      emit('guardado', { data: { idExamenesSolicitados }, page: 'SolicitudExamenSolicitarPage' })
+      // emit('guardado', { data: { idExamenesSolicitados }, page: 'SolicitudExamenSolicitarPage' })
+      emit('guardado', { page: 'SolicitudExamenSolicitarPage', data: { idExamenesSolicitados } })
       emit('cerrar-modal')
     })
 
@@ -106,7 +107,7 @@ export default defineComponent({
      * Init
      *******/
     solicitudExamen.hydrate(medicoStore.solicitudExamen)
-    solicitudExamen.registro_empleado_examen = medicoStore.idRegistroEmpleadoExamen
+    solicitudExamen.registro_empleado_examen = medicoStore.idRegistroEmpleadoExamen ?? null
     accion.value = medicoStore.accion
 
     return {

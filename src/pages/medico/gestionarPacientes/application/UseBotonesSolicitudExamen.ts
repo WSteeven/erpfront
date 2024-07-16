@@ -84,28 +84,37 @@ export function useBotonesSolicitudExamen(tabEstadoExamen: Ref, modales?: Compor
     }
   } */
 
-  const btnResultados: CustomActionTable = {
+  /*const btnResultados: CustomActionTable = {
     titulo: 'Resultados de los exámenes',
     icono: 'bi-table',
     color: 'positive',
-    visible: () => tabEstadoExamen.value === estadosSolicitudesExamenes.APROBADO_POR_COMPRAS.value,
+    visible: () => tabEstadoExamen.value === estadosSolicitudesExamenes.SOLICITADO.value,
     accion: () => {
       // medicoStore.examenSolicitado = entidad
       // console.log(entidad)
+
       modales?.abrirModalEntidad('ResultadosExamenPage')
     }
-  }
+  }*/
 
-  const btnCitaMedica: CustomActionTable = {
+  /* const btnCitaMedica: CustomActionTable = {
     titulo: 'Diagnóstico y receta',
     icono: 'bi-capsule-pill',
     color: 'blue-grey',
-    visible: () => tabEstadoExamen.value === estadosSolicitudesExamenes.APROBADO_POR_COMPRAS.value,
+    visible: () => tabEstadoExamen.value === estadosSolicitudesExamenes.SOLICITADO.value,
     accion: () => {
       medicoStore.idCita = null
       // medicoStore.empleado = entidad.paciente_id
       modales?.abrirModalEntidad('DiagnosticoRecetaPage')
     }
+  }*/
+  const btnResultados = () => {
+    modales?.abrirModalEntidad('ResultadosExamenPage')
+  }
+
+  const btnCitaMedica = () => {
+    medicoStore.idCita = null
+    modales?.abrirModalEntidad('DiagnosticoRecetaPage')
   }
 
   /********
@@ -136,7 +145,7 @@ export function useBotonesSolicitudExamen(tabEstadoExamen: Ref, modales?: Compor
     titulo: 'Consultar estado',
     icono: 'bi-eye',
     color: 'primary',
-    visible: () => [estadosSolicitudesExamenes.SOLICITADO.value, estadosSolicitudesExamenes.APROBADO_POR_COMPRAS.value].includes(tabEstadoExamen.value),
+    visible: () => [estadosSolicitudesExamenes.SOLICITADO.value].includes(tabEstadoExamen.value),
     accion: ({ entidad }) => {
       medicoStore.accion = acciones.consultar
       const examenesSolicitados: ExamenSolicitado[] = mapearExamenesSolicitados(entidad.examenes_solicitados)
@@ -148,6 +157,24 @@ export function useBotonesSolicitudExamen(tabEstadoExamen: Ref, modales?: Compor
       console.log(examenesSolicitados)
       console.log(solicitudExamen)
       modales?.abrirModalEntidad('SolicitudExamenSolicitarPage')
+    }
+  }
+
+  const btnSubirResultadosExamenes: CustomActionTable<SolicitudExamen> = {
+    titulo: 'Consultar/Adjuntar resultados',
+    icono: 'bi-upload',
+    color: 'primary',
+    visible: () => [estadosSolicitudesExamenes.SOLICITADO.value].includes(tabEstadoExamen.value),
+    accion: ({ entidad }) => {
+      medicoStore.accion = acciones.consultar
+      const examenesSolicitados: ExamenSolicitado[] = mapearExamenesSolicitados(entidad.examenes_solicitados)
+
+      const solicitudExamen = new SolicitudExamen()
+      solicitudExamen.hydrate(entidad)
+      solicitudExamen.examenes_solicitados = examenesSolicitados
+      medicoStore.solicitudExamen = solicitudExamen
+
+      modales?.abrirModalEntidad('SubirResultadosExamenesPage', { solicitud_examen: entidad })
     }
   }
 
@@ -191,6 +218,7 @@ export function useBotonesSolicitudExamen(tabEstadoExamen: Ref, modales?: Compor
     btnResultados,
     btnConsultarEstadoSolicitudExamen,
     btnCitaMedica,
+    btnSubirResultadosExamenes,
     // Other functions
     seleccionarExamen,
     limpiarExamenesSolicitados,

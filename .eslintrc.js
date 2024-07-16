@@ -71,6 +71,9 @@ module.exports = {
   rules: {
     
     'prefer-promise-reject-errors': 'off',
+    '@typescript-eslint/no-explicit-any': 'off', // Desactivar la advertencia de 'any'
+    '@typescript-eslint/no-non-null-assertion': 'off', // Deshabilitar la regla
+
 
     quotes: ['warn', 'single', { avoidEscape: true }],
 

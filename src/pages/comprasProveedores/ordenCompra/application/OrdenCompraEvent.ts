@@ -1,8 +1,8 @@
-import { rolesSistema } from "config/utils";
-import { useNotificaciones } from "shared/notificaciones";
-import { pushEventMesaggeServiceWorker } from "shared/utils";
-import { useAuthenticationStore } from "stores/authentication";
-import { useNotificationRealtimeStore } from "stores/notificationRealtime";
+import { rolesSistema } from 'config/utils';
+import { useNotificaciones } from 'shared/notificaciones';
+import { pushEventMesaggeServiceWorker } from 'shared/utils';
+import { useAuthenticationStore } from 'stores/authentication';
+import { useNotificationRealtimeStore } from 'stores/notificationRealtime';
 
 export class OrdenCompraEvent {
   store = useAuthenticationStore()
@@ -41,17 +41,17 @@ export class OrdenCompraEvent {
     })
 
     // notificar orden de compra pagada al solicitante
-    const notificarOrdenPagada = pusher.subscribe('notificar-ordenes-pagadas-'+this.store.user.id)
-      notificarOrdenPagada.bind('notificar-orden-pagada', (e)=>{
-        notificacionStore.agregar(e.notificacion)
-        notificarCorrecto('La Orden de Compra que solicitaste ha sido pagada')
+    const notificarOrdenPagada = pusher.subscribe('notificar-ordenes-pagadas-' + this.store.user.id)
+    notificarOrdenPagada.bind('notificar-orden-pagada', (e) => {
+      notificacionStore.agregar(e.notificacion)
+      notificarCorrecto('La Orden de Compra que solicitaste ha sido pagada')
 
-        pushEventMesaggeServiceWorker({
-          titulo: 'Orden de compra pagada',
-          mensaje: e.notificacion.mensaje,
-          link: e.notificacion.link,
-        })
+      pushEventMesaggeServiceWorker({
+        titulo: 'Orden de compra pagada',
+        mensaje: e.notificacion.mensaje,
+        link: e.notificacion.link,
       })
+    })
 
     if (this.store.esContabilidad) {
       const notificarOrdenRealizada = pusher.subscribe('notificar-ordenes-realizadas-' + rolesSistema.contabilidad)
@@ -81,8 +81,8 @@ export class OrdenCompraEvent {
         })
       })
 
-      const notificarOrdenPagada = pusher.subscribe('notificar-ordenes-pagadas-compras-'+rolesSistema.compras)
-      notificarOrdenPagada.bind('notificar-orden-pagada', (e)=>{
+      const notificarOrdenPagada = pusher.subscribe('notificar-ordenes-pagadas-compras-' + rolesSistema.compras)
+      notificarOrdenPagada.bind('notificar-orden-pagada', (e) => {
         notificacionStore.agregar(e.notificacion)
         notificarCorrecto('Contabilidad ha pagado una Orden de Compra')
 

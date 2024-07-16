@@ -47,7 +47,7 @@
     </q-tabs>
 
     <div :class="{ 'q-mx-sm': $q.screen.xs }">
-      <essential-table
+      <essential-table-pagination v-if="paginate"
         ref="refTabla"
         :titulo="titulo"
         :configuracionColumnas="configuracionColumnas"
@@ -97,12 +97,69 @@
         :separador="separador"
         :tipoSeleccion="tipoSeleccion"
         @selected="seleccionado"
+        :mixin="mixin"
+      ></essential-table-pagination>
+
+      <essential-table v-else
+        ref="refTabla"
+        :titulo="titulo"
+        :configuracionColumnas="configuracionColumnas"
+        :datos="datos"
+        :permitirConsultar="permitirConsultar"
+        :permitirEditar="permitirEditar"
+        :permitirEliminar="permitirEliminar"
+        :mostrar-botones="mostrarBotones"
+        :accion1="accion1"
+        :accion2="accion2"
+        :accion3="accion3"
+        :accion4="accion4"
+        :accion5="accion5"
+        :accion6="accion6"
+        :accion7="accion7"
+        :accion8="accion8"
+        :accion9="accion9"
+        :accion10="accion10"
+        :accion1Header="accion1Header"
+        :accion2Header="accion2Header"
+        :accion3Header="accion3Header"
+        :accion4Header="accion4Header"
+        :accion5Header="accion5Header"
+        :accion6Header="accion6Header"
+        :alto-fijo="altoFijo"
+        :mostrarFooter="mostrarFooter"
+        :mostrarExportar="mostrarExportar"
+        @consultar="consultar"
+        @editar="editar"
+        @eliminar="eliminar"
+        @accion1="emitAccion1"
+        @accion2="emitAccion2"
+        @accion3="emitAccion3"
+        @accion4="emitAccion4"
+        @accion5="emitAccion5"
+        @accion6="emitAccion6"
+        @accion7="emitAccion7"
+        @accion8="emitAccion8"
+        @accion9="emitAccion9"
+        @accion10="emitAccion10"
+        :permitir-filtrar="permitirFiltrar"
+        :permitir-buscar="permitirBuscar"
+        :primeraColumnaFija="primeraColumnaFija"
+        @filtrar="consultarTodos"
+        @toggle-filtros="toggleFiltros"
+        :ajustarCeldas="ajustarCeldas"
+        :separador="separador"
+        :tipoSeleccion="tipoSeleccion"
+        @selected="seleccionado"
+        :mixin="mixin"
       ></essential-table>
+
+      
     </div>
   </div>
 </template>
 
 <script lang="ts">
+import { ContenedorSimpleMixin } from 'shared/contenedor/modules/simple/application/ContenedorSimpleMixin'
 import { EntidadAuditable } from 'shared/entidad/domain/entidadAuditable'
 import { CustomActionTable } from '../domain/CustomActionTable'
 import { TabOption } from 'components/tables/domain/TabOption'
@@ -111,13 +168,19 @@ import { TipoSeleccion } from 'config/utils'
 import { computed, defineComponent, ref, watchEffect } from 'vue'
 
 // Components
+import EssentialTablePagination from './EssentialTablePagination.vue'
 import EssentialTable from './EssentialTable.vue'
 
 export default defineComponent({
   components: {
     EssentialTable,
+    EssentialTablePagination,
   },
   props: {
+    mixin: {
+      type: Object as () => ContenedorSimpleMixin<EntidadAuditable>,
+      required: true,
+    },
     titulo: {
       type: String,
       default: 'Listado',
@@ -261,6 +324,10 @@ export default defineComponent({
       type: Boolean,
       default: false,
     },
+    paginate: {
+      type: Boolean,
+      default: false,
+    },
   },
 
   emits: [
@@ -285,7 +352,6 @@ export default defineComponent({
   ],
   setup(props, { emit }) {
     const refTabla = ref()
-    const selected = ref([])
     const tabSeleccionado = ref(props.tabDefecto)
     const mostrarTabs = ref(true)
     const activeColor = computed(
@@ -342,10 +408,10 @@ export default defineComponent({
       refTabla.value.seleccionar()
     } */
 
-    function seleccionado(selected) {
+    function seleccionado(seleccionado) {
       console.log('En tabs')
-      console.log(selected)
-      emit('selected', selected)
+      console.log(seleccionado)
+      emit('selected', seleccionado)
     }
 
     return {

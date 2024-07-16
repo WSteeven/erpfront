@@ -8,11 +8,12 @@
     >
       <!-- Campo -->
       <div class="row col-md-4 items-center">
-        <span class="col-md-2">Campo</span>
+        <!-- <span class="col-md-2">Campo</span> -->
         <q-select
           outlined
           v-model="filtro.field"
           :options="configuracionColumnasFilter"
+          hint="Campo"
           :option-label="(item) => item.label"
           :option-value="(item) => item.field"
           @update:model-value="establecerInputType(index, filtro)"
@@ -26,11 +27,12 @@
 
       <!-- Operador -->
       <div class="row col-md-2 items-center">
-        <span class="col-md-4">Operador</span>
+        <!-- <span class="col-md-4">Operador</span> -->
         <q-select
           outlined
           v-model="filtro.operador"
           :options="filtro.operadores"
+          hint="Operador"
           class="col-md-8"
           dense
           options-dense
@@ -39,10 +41,14 @@
 
       <!-- Valor -->
       <div class="row col-md-4 items-center">
-        <span class="col-md-2">Valor</span>
+        <!-- <span class="col-md-2">Valor</span> -->
 
-        <q-checkbox v-if="filtro.type === 'boolean'" v-model="filtro.value"
-          >{{ filtro.label }}
+        <q-checkbox
+          v-if="filtro.type === 'boolean'"
+          v-model="filtro.value"
+          true-value="1"
+          false-value="0"
+          >{{ filtro.field }}
         </q-checkbox>
 
         <q-select
@@ -61,6 +67,8 @@
           v-model="filtro.value"
           :type="filtro.type !== 'date' ? filtro.type : null"
           outlined
+          placeholder="Valor"
+          hint="Valor"
           dense
           clearable
           :class="{
@@ -104,15 +112,15 @@
 
       <div class="row col-md-2 items-center">
         <q-btn
-          color="grey-10"
-          push
+          color="pink-10"
+          outline
           no-caps
           dense
           class="full-width"
           @click="quitarFiltro(index)"
         >
           <q-icon name="bi-x"></q-icon>
-          Quitar filtro</q-btn
+          Quitar</q-btn
         >
       </div>
     </div>
@@ -158,8 +166,8 @@ export default defineComponent({
       columnas.value[index].options = campo.options
       columnas.value[index].operador = null
       columnas.value[index].operadores = obtenerOperadores(filtro)
-      columnas.value[index].value = null
-      columnas.value[index].type == 'boolean' ? false : null
+      columnas.value[index].value = campo.type === 'boolean' ? '0' : null
+      // columnas.value[index].type == 'boolean' ? false : null
     }
 
     function obtenerUri(filtro: any) {
@@ -173,13 +181,13 @@ export default defineComponent({
         valor = formatearFechaHora(filtro.value, filtro.value2)
       else valor = filtro.value
 
-      console.log(valor)
-
       if (operadoresNumeradores.includes(filtro.operador)) {
         return `${filtro.field}[operator]=${filtro.operador}&${filtro.field}[value]=${valor}`
       } else {
         console.log(`${filtro.field}=${valor}`)
-        return `${filtro.field}=${valor}`
+        return filtro.operador === 'like'
+          ? `${filtro.field}[${filtro.operador}]=%${valor}%`
+          : `${filtro.field}=${valor}`
       }
     }
 
@@ -191,7 +199,7 @@ export default defineComponent({
           return ['=', ...operadoresNumeradores]
       }
 
-      return ['=']
+      return ['=', 'like']
     }
 
     function quitarFiltro(index: number) {
@@ -203,11 +211,7 @@ export default defineComponent({
         (filtro) => filtro.field || filtro.value
       )
 
-      // const verificarValores = columnas.value.some((filtro) => filtro.value)
-      // console.log(verificarValores)
-
       const uri = columnas.value.map((filtro) => obtenerUri(filtro)).join('&')
-      // console.log(uri)
       emit('filtrar', uri)
     }
 

@@ -1,7 +1,7 @@
 // Dependencias
 import { accionesActivos, autorizacionesTransacciones, estadosTransacciones, estadosInventarios, estadosControlStock, estadosCondicionesId, estadosCondicionesValue } from 'config/utils'
 import { estadosCalificacionProveedor } from 'config/utils_compras_proveedores'
-import { EstadoPrevisualizarTablaPDF } from '../application/EstadoPrevisualizarTablaPDF'
+// import { VisibleModal } from '../application/VisibleModal'
 import { computed, defineComponent, ref, watchEffect, nextTick, Ref, watch } from 'vue'
 import { EntidadAuditable } from 'shared/entidad/domain/entidadAuditable'
 import { Instanciable } from 'shared/entidad/domain/instanciable'
@@ -10,6 +10,7 @@ import { getVisibleColumns, formatBytes } from 'shared/utils'
 import { ColumnConfig } from '../domain/ColumnConfig'
 import { TipoSeleccion } from 'config/utils'
 import { offset } from 'config/utils_tablas'
+import { ParamsType } from 'config/types'
 import { exportFile } from 'quasar'
 
 // Componentes
@@ -19,16 +20,20 @@ import BotonesPaginacion from './BotonesPaginacion.vue'
 import EditarTablaModal from './EditarTablaModal.vue'
 import EstadosSubtareas from './EstadosSubtareas.vue'
 import CustomButtons from './CustomButtonsTable.vue'
-import { ParamsType } from 'config/types'
+import VisorArchivos from './VisorArchivos.vue'
+import CampoDescontable from './partials/CampoDescontable.vue'
+import { VisibleModal } from '../application/VisibleModal'
 
 export default defineComponent({
   components: {
     PrevisualizarTablaPdf,
     EditarTablaModal,
     CustomButtons,
+    CampoDescontable,
     EstadosSubtareas,
     BotonesPaginacion,
     TableFilters,
+    VisorArchivos,
   },
   props: {
     referencia: Object as () => Ref,
@@ -47,6 +52,10 @@ export default defineComponent({
     configuracionColumnas: {
       type: Object as () => ColumnConfig<EntidadAuditable>[],
       required: true,
+    },
+    desplegarDesde: {
+      type: Number,
+      default: 2,
     },
     datos: {
       type: Array,
@@ -199,7 +208,15 @@ export default defineComponent({
     grid: {
       type: Boolean,
       default: true,
-    }
+    },
+    disable: {
+      type: Boolean,
+      default: false,
+    },
+    emitirAlSeleccionar: {
+      type: Boolean,
+      default: false,
+    },
   },
   emits: ['consultar', 'editar', 'eliminar', 'accion1', 'accion2', 'accion3', 'accion4', 'accion5', 'accion6', 'accion7', 'accion8', 'accion9', 'accion10', 'selected', 'onScroll', 'filtrar', 'toggle-filtros', 'guardar-fila', 'update:selected', 'fila-modificada'],
   setup(props, { emit }) {
@@ -252,11 +269,14 @@ export default defineComponent({
       }
     }
 
-    // Variables
+    /************
+     * Variables
+     ************/
     const filter = ref()
     const selected = ref([])
     const visibleColumns = ref(getVisibleColumns(props.configuracionColumnas))
     const refTable = ref()
+    const archivos = ref([])
 
     // Observers
     const seleccionar = () => {
@@ -264,19 +284,30 @@ export default defineComponent({
       // emit('update:selected', selected.value);
     }
 
-    watch(selected, () => {
-      console.log(selected.value)
-      emit('selected', selected.value)
-    })
+    // medico pendiente xq le da problema a mile al seleccionar
+    if (props.emitirAlSeleccionar) {
+      watch(selected, () => {
+        console.log(selected.value)
+        emit('selected', selected.value)
+      })
+    }
 
     /*const emitSelectedChange = () => {
       emit('update:selected', selected.value);
     };*/
 
-    const printTable = new EstadoPrevisualizarTablaPDF()
+    const visibleModalVisorArchivos = new VisibleModal()
+
+    /************
+     * Funciones
+     ************/
+    const verVisorArchivos = ({ posicion }) => {
+      archivos.value = listado.value[posicion].archivos
+      visibleModalVisorArchivos.abrir()
+    }
 
     function previsualizarPdf() {
-      printTable.abrirVistaPrevia()
+      // printTable.abrir()
     }
 
     function limpiarFila() {
@@ -349,7 +380,7 @@ export default defineComponent({
 
     const mostrarFiltros = ref(false)
     const tituloBotonFiltros = computed(() =>
-      mostrarFiltros.value ? "Ocultar filtros" : "Mostrar filtros"
+      mostrarFiltros.value ? 'Ocultar filtros' : 'Mostrar filtros'
     )
 
     function filtrar() {
@@ -384,7 +415,10 @@ export default defineComponent({
       emit('toggle-filtros', mostrarFiltros.value)
     }
 
-    // exportar CSV
+    /**
+     * No modificar esta función jamás en la vida.
+     * Maricón el que modifique `exportTable`
+     */
     function exportTable() {
       // naive encoding to csv format
       const content = [props.configuracionColumnas.map((col: any) => wrapCsvValue(col.label))].concat(
@@ -433,9 +467,12 @@ export default defineComponent({
       return `"${formatted}"`
     }
 
-    function extraerColor(accion?: CustomActionTable) {
+    function extraerColor(accion: CustomActionTable, propsTable: any) {
       return typeof accion?.color === 'function'
-        ? accion.color()
+        ? accion.color({
+          entidad: propsTable.row,
+          posicion: propsTable.rowIndex,
+        })
         : accion?.color
     }
 
@@ -465,7 +502,6 @@ export default defineComponent({
       visibleColumns,
       seleccionar,
       previsualizarPdf,
-      printTable,
       fila,
       limpiarFila,
       guardarFila,
@@ -497,6 +533,9 @@ export default defineComponent({
       extraerColor,
       guardarCeldaEditada,
       clearSelection,
+      verVisorArchivos,
+      archivos,
+      visibleModalVisorArchivos,
     }
   },
 })

@@ -9,6 +9,7 @@ export const configuracionColumnasFamiliaresEmpleado: ColumnConfig<Familiares>[]
       label: 'Identificacion',
       align: 'left',
       sortable: true,
+      editable: true,
     },
     {
       name: 'nombres',
@@ -16,6 +17,7 @@ export const configuracionColumnasFamiliaresEmpleado: ColumnConfig<Familiares>[]
       label: 'Nombres',
       align: 'left',
       sortable: true,
+      editable: true,
     },
     {
       name: 'apellidos',
@@ -23,6 +25,7 @@ export const configuracionColumnasFamiliaresEmpleado: ColumnConfig<Familiares>[]
       label: 'Apellidos',
       align: 'left',
       sortable: true,
+      editable: true,
     },
     {
       name: 'parentezco',
@@ -30,5 +33,7 @@ export const configuracionColumnasFamiliaresEmpleado: ColumnConfig<Familiares>[]
       label: 'Parentezco',
       align: 'left',
       sortable: true,
+      editable: true,
+      type: 'select',
     },
   ]

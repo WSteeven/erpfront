@@ -194,4 +194,3 @@
 </template>
 
 <script src="./SolicitudExamenSolicitarPage.ts"></script>
-./SolicitudExamenSolicitarPage.js./SolicitudExamenSolicitarPage.js

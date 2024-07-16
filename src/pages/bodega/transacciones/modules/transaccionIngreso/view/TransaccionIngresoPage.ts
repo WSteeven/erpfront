@@ -51,7 +51,7 @@ import { ValidarListadoProductosIngreso } from '../application/validations/Valid
 import { useFiltrosListadosSelects } from 'shared/filtrosListadosGenerales';
 
 export default defineComponent({
-  name: 'Ingresos',
+  name: 'transacciones_ingresos',
   components: { TabLayout, EssentialTable, ModalesEntidad, EssentialSelectableTable },
   // emits: ['creada', 'consultada'],
   setup() {
@@ -270,6 +270,7 @@ export default defineComponent({
       accion: () => {
         listar()
       },
+      visible:()=> false
     }
     const botonEditarCantidad: CustomActionTable = {
       titulo: 'Editar cantidad',

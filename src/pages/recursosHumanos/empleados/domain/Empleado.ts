@@ -10,6 +10,7 @@ export class Empleado extends EntidadAuditable {
   direccion: string | null
   estado_civil: string | null
   jefe: string | null
+  jefe_inmediato: string | null
   email: string | null
   correo_personal: string | null
   password: string | null
@@ -68,7 +69,17 @@ export class Empleado extends EntidadAuditable {
   familiares: any[] | null
   discapacidades: any[] | null
   generar_usuario: boolean
+  conductor: any
 
+  edad: number | null
+  autoidentificacion_etnica: string | null
+  trabajador_sustituto: boolean | null
+  orientacion_sexual: number | null
+  identidad_genero: number | null
+  religion: number | null
+
+  //propiedad para almacenar la cantidad de archivos
+  archivos: string | number | null
 
   constructor() {
     super()
@@ -81,6 +92,7 @@ export class Empleado extends EntidadAuditable {
     this.direccion = null
     this.estado_civil = null
     this.jefe = null
+    this.jefe_inmediato = null
     this.email = null
     this.correo_personal = null
     this.password = null
@@ -131,13 +143,23 @@ export class Empleado extends EntidadAuditable {
     this.talla_camisa = null
     this.talla_guantes = null
     this.talla_pantalon = null
-    this.genero = 'M'
+    this.genero = null
     this.banco_info = null
     this.esta_en_rol_pago = true
     this.acumula_fondos_reserva = false
     this.realiza_factura = false
-    this.familiares = [],
-    this.discapacidades =[],
-      this.generar_usuario = false
+    this.familiares = []
+    this.generar_usuario = false
+    this.conductor = []
+    this.discapacidades = []
+    this.generar_usuario = false
+    this.edad = null
+    this.autoidentificacion_etnica = null
+    this.trabajador_sustituto = false
+    this.orientacion_sexual = null
+    this.identidad_genero = null
+    this.religion = null
+
+    this.archivos = null
   }
 }

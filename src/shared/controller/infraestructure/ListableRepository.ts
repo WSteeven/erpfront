@@ -24,7 +24,8 @@ export class ListableRepository<T> {
       .then((response: HttpResponseGet) => {
         return {
           response,
-          result: response.data.results,
+          result: response.data.data ?? response.data.results,
+          meta: response.data.meta
         }
       })
       .catch((error) => {

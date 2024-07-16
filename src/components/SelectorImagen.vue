@@ -9,6 +9,7 @@
     @clear="limpiar()"
     :disable="disable"
     accept=".png, .jpg, .jpeg"
+    :label="placeholder"
     :error="error"
     :hint="hint"
   >
@@ -17,7 +18,12 @@
     </template>
 
     <template v-slot:error>
-      <slot name="error"></slot>
+      <slot name="error" v-if="slotUsado"></slot>
+      <slot name="error" v-else>
+        <div>
+          <div class="error-msg">Imagen requerida</div>
+        </div></slot
+      >
     </template>
   </q-file>
   <!-- datos de la imagen  -->
@@ -80,7 +86,7 @@
 </template>
 
 <script lang="ts" setup>
-import { computed, ref, watch } from 'vue'
+import { computed, getCurrentInstance, onMounted, ref, watch } from 'vue'
 
 const props = defineProps({
   modelValue: String,
@@ -90,6 +96,7 @@ const props = defineProps({
   error: Boolean,
   alto: String,
   hint: String,
+  placeholder: { type: String, default: 'Opcional' },
   texto1: String,
   texto2: String,
   texto3: String,
@@ -100,7 +107,14 @@ const props = defineProps({
   },
 })
 const emit = defineEmits(['update:modelValue'])
+const instance = getCurrentInstance()
+const slots = instance?.slots
 
+onMounted(() => {
+  slotUsado.value = !!slots?.error
+})
+
+const slotUsado = ref(false)
 const fileSize = ref()
 const img = ref()
 const imagenCodificada = computed(() => props.imagen)

@@ -37,7 +37,7 @@ export const estadosSolicitudesExamenes = {
     icono: 'bi-cart-check',
   },
   APROBADO_POR_COMPRAS: {
-    value: 'APROBADO_POR_COMPRAS',
+    value: 'RESULTADOS DE EXAMENES',
     label: 'Aprobado por compras',
     icono: 'bi-cash-coin',
   },
@@ -128,6 +128,11 @@ export const selectTipoCitaMedica = [
   { label: 'Accidente de trabajo', value: tiposCitaMedica.ACCIDENTE_DE_TRABAJO.value },
 ]
 
+export const selectTipoCambioCargo = [
+  { label: 'Temporal', value: 'TEMPORAL' },
+  { label: 'Permanente', value: 'PERMANENTE' },
+]
+
 export const tiposFichasMedicas = {
   APTITUD: 'APTITUD',
   OCUPACIONAL: 'OCUPACIONAL',
@@ -137,3 +142,13 @@ export const tabOptionsTiposFichasMedicas: TabOption[] = [
   { label: 'Aptitud', value: tiposFichasMedicas.APTITUD, color_icono: 'pink', bg_color: 'pink-1' },
   { label: 'Períodico ocupacional', value: tiposFichasMedicas.OCUPACIONAL, color_icono: 'primary', bg_color: 'blue-2' },
 ]
+
+export const opcionesTiposCuestionarios = {
+  CUESTIONARIO_PSICOSOCIAL: 1,
+  CUESTIONARIO_DIAGNOSTICO_CONSUMO_DE_DROGAS: 2,
+}
+
+export const opcionesPrivacidadCuestionarios = {
+  INTERNO: 'INTERNO',
+  PUBLICO: 'PUBLICO',
+}

@@ -34,6 +34,7 @@ export function useMaterialesEmpleado(filtro: UnwrapRef<FiltroMiBodegaEmpleado>,
       // listadoMaterialesDevolucionStore.origenProductos = 'personal'
       listadoMaterialesDevolucionStore.tareaId = null
       listadoMaterialesDevolucionStore.cliente_id = filtro.cliente_id
+      listadoMaterialesDevolucionStore.empleado_id = filtro.empleado_id
 
       transferenciaProductoEmpleadoStore.listadoMateriales = result
       transferenciaProductoEmpleadoStore.cliente_id = filtro.cliente_id

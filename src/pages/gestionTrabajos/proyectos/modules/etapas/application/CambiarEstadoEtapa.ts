@@ -1,6 +1,6 @@
-import { AxiosResponse } from "axios";
-import { endpoints } from "config/api";
-import { AxiosHttpRepository } from "shared/http/infraestructure/AxiosHttpRepository";
+import { AxiosResponse } from 'axios';
+import { endpoints } from 'config/api';
+import { AxiosHttpRepository } from 'shared/http/infraestructure/AxiosHttpRepository';
 
 export class CambiarEstadoEtapa {
   axios: AxiosHttpRepository
@@ -13,7 +13,7 @@ export class CambiarEstadoEtapa {
     return this.solicitud('/desactivar/', etapaId, { motivo: mensaje })
   }
 
-  async solicitud(accion:string, id:number, data?) {
+  async solicitud(accion: string, id: number, data?) {
     const ruta = this.axios.getEndpoint(endpoints.etapas) + accion + id
     const response: AxiosResponse = await this.axios.post(ruta, data)
     return {

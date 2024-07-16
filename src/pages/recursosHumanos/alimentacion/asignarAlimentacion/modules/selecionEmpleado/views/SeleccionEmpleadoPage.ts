@@ -1,16 +1,16 @@
-import { defineComponent, ref } from "vue";
+import { defineComponent, ref } from 'vue';
 
 //Componentes
-import EssentialSelectableTable from "components/tables/view/EssentialSelectableTable.vue"
-import EssentialTable from "components/tables/view/EssentialTable.vue"
+import EssentialSelectableTable from 'components/tables/view/EssentialSelectableTable.vue'
+import EssentialTable from 'components/tables/view/EssentialTable.vue'
 
-import { usePreordenStore } from "stores/comprasProveedores/preorden";
-import { configuracionColumnasSeleccionEmpleados } from "../domain/configuracionColumnasSeleccionEmpleados";
-import { useAsignacionAlimentacionStore } from "stores/recursosHumanos/asignacionAlimentacion";
+import { usePreordenStore } from 'stores/comprasProveedores/preorden';
+import { configuracionColumnasSeleccionEmpleados } from '../domain/configuracionColumnasSeleccionEmpleados';
+import { useAsignacionAlimentacionStore } from 'stores/recursosHumanos/asignacionAlimentacion';
 
 export default defineComponent({
     components: { EssentialSelectableTable, EssentialTable },
-    emits:['cerrar-modal', 'guardado'],
+    emits: ['cerrar-modal', 'guardado'],
     setup(props, { emit }) {
         const asignacionAlimentacionStore = useAsignacionAlimentacionStore()
         const empleadosSeleccionados = ref([])
@@ -20,9 +20,9 @@ export default defineComponent({
 
         function seleccionar() {
             empleadosSeleccionados.value = refListado.value.selected
-            asignacionAlimentacionStore.asignarAlimentacion(empleadosSeleccionados.value,asignacionAlimentacionStore.valor_asignar)
+            asignacionAlimentacionStore.asignarAlimentacion(empleadosSeleccionados.value, asignacionAlimentacionStore.valor_asignar)
             cerrarModal(false)
-            emit('guardado',empleadosSeleccionados.value)
+            emit('guardado', empleadosSeleccionados.value)
         }
 
         function cerrarModal(confirmar = true) {

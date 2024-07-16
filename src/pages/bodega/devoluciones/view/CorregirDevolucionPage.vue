@@ -171,7 +171,6 @@ export default defineComponent({
     const devolucion = devolucionStore.devolucion
     const opciones_estados = ref([])
 
-    const accion = 'editar'
 
     //limpiar cantidades de devolucion que se va a corregir
     devolucion.listadoProductos =

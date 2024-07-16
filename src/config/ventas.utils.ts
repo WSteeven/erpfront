@@ -1,4 +1,4 @@
-import { TabOption } from "components/tables/domain/TabOption";
+import { TabOption } from 'components/tables/domain/TabOption';
 
 export const tabOptionsRetenciones: TabOption[] = [
     { label: 'No Pagadas', value: '0' }, //inactivo

@@ -39,6 +39,7 @@ import ImagenComprimidaComponent from 'components/ImagenComprimidaComponent.vue'
 import { CustomActionTable } from 'components/tables/domain/CustomActionTable'
 import { filtarJefeImediato, filtrarEmpleadosPorRoles } from 'shared/utils'
 import { format } from '@formkit/tempo'
+import { CantonController } from 'sistema/ciudad/infraestructure/CantonControllerontroller'
 export default defineComponent({
   components: { TabLayoutFilterTabs2, ImagenComprimidaComponent },
   setup() {
@@ -213,7 +214,7 @@ export default defineComponent({
       },
       vehiculo: {
         required: requiredIf(
-          () => esCombustibleEmpresa.value && !!gasto.es_vehiculo_alquilado
+          () => esCombustibleEmpresa.value && !gasto.es_vehiculo_alquilado
         ),
       },
       observacion: {
@@ -536,7 +537,7 @@ export default defineComponent({
       gasto.factura = null
       gasto.ruc = null
     }
-    async function recargarDetalle(tipo: string) {
+    async function recargar(tipo: string) {
       switch (tipo) {
         case 'detalle':
           const detalles = (
@@ -559,29 +560,55 @@ export default defineComponent({
 
           break
         case 'sub_detalle':
-          const sub_detalles = (
-            await new SubDetalleFondoController().listar({
-              campos: 'id,descripcion',
-            })
-          ).result
-          LocalStorage.set('sub_detalles', JSON.stringify(sub_detalles))
-          setTimeout(
-            () =>
-              setInterval(() => {
-                sub_detalles.value =
-                  LocalStorage.getItem('sub_detalles') == null
-                    ? []
-                    : JSON.parse(
-                        LocalStorage.getItem('sub_detalles')!.toString()
-                      )
-                listadosAuxiliares.sub_detalles = sub_detalles.value
-              }, 100),
-            250
-          )
+            const sub_detalles = (
+              await new SubDetalleFondoController().listar({
+                campos: 'id,descripcion',
+              })
+            ).result
+            LocalStorage.set('sub_detalles', JSON.stringify(sub_detalles))
+            setTimeout(
+              () =>
+                setInterval(() => {
+                  sub_detalles.value =
+                    LocalStorage.getItem('sub_detalles') == null
+                      ? []
+                      : JSON.parse(
+                          LocalStorage.getItem('sub_detalles')!.toString()
+                        )
+                  listadosAuxiliares.sub_detalles = sub_detalles.value
+                }, 100),
+              250
+            )
 
-          break
+            break
+            case 'canton':
+              const cantones = (
+                await new CantonController().listar({
+                  campos: 'id,canton',
+                })
+              ).result
+              LocalStorage.set('cantones', JSON.stringify(cantones))
+              setTimeout(
+                () =>
+                  setInterval(() => {
+                    cantones.value =
+                      LocalStorage.getItem('cantones') == null
+                        ? []
+                        : JSON.parse(LocalStorage.getItem('cantones')!.toString())
+                    listadosAuxiliares.cantones = cantones.value
+                  }, 100),
+                250
+              )
+              break
       }
     }
+
+
+
+
+
+
+
 
     const editarGasto: CustomActionTable = {
       titulo: ' ',
@@ -642,7 +669,7 @@ export default defineComponent({
       cambiarDetalle,
       cambiarProyecto,
       optionsFechaGasto,
-      recargarDetalle,
+      recargar,
       editarGasto,
       mascaraFactura,
       mascara_placa,

@@ -80,7 +80,7 @@ export default defineComponent({
 
     const consultarEmpleado = async (id: number) => {
       cargando.activar()
-      const campos = { campos: 'id,foto_url,nombres,apellidos,identificacion,nombre_canton,email,fecha_nacimiento,tipo_sangre,genero,telefono,area_info,nombre_cargo,fecha_ingreso,canton' }
+      const campos = { campos: 'id,foto_url,nombres,apellidos,identificacion,nombre_canton,email,fecha_nacimiento,tipo_sangre,genero,telefono,area_info,nombre_cargo,fecha_ingreso,canton,jefe_inmediato,edad' }
       try {
         const { result } = await empleadoController.consultar(id, campos)
         empleado.hydrate(result)

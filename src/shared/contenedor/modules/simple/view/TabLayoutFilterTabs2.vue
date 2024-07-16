@@ -49,7 +49,7 @@
       animated
       transition-prev="scale"
       transition-next="scale"
-      :class="{ 'bg-desenfoque rounded-tabpanel': !$q.screen.xs }"
+      :class="{ 'bg-desenfoque border-white rounded-tabpanel': !$q.screen.xs }"
       keep-alive
     >
       <!-- Formulario -->
@@ -116,6 +116,9 @@
           @tab-seleccionado="aplicarFiltro"
           :tab-defecto="tabDefecto"
           :ajustarCeldas="ajustarCeldas"
+          :mixin="mixin"
+          :paginate="paginate"
+          :permitirFiltrar="permitirFiltrar"
         ></essential-table-tabs>
         <!-- :tab-defecto="tabDefecto" -->
       </q-tab-panel>

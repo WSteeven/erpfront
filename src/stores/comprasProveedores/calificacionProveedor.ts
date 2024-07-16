@@ -1,6 +1,5 @@
 import { AxiosResponse } from 'axios';
 import { endpoints } from 'config/api';
-import { DetalleDepartamentoProveedor } from 'pages/comprasProveedores/detallesDepartamentosProveedor/domain/DetalleDepartamentoProveedor';
 import { defineStore } from 'pinia';
 import { AxiosHttpRepository } from 'shared/http/infraestructure/AxiosHttpRepository';
 import { ref } from 'vue';
@@ -16,7 +15,7 @@ export const useCalificacionProveedorStore = defineStore('calificacion', () => {
     const verMiCalificacion = ref(false)
 
     /**
-     * La función "consultarDepartamentosCalificanProveedor" recupera el detalle de los departamentos
+     * La función 'consultarDepartamentosCalificanProveedor' recupera el detalle de los departamentos
      * que califican a un proveedor.
      */
     async function consultarDepartamentosCalificanProveedor() {
@@ -26,7 +25,7 @@ export const useCalificacionProveedorStore = defineStore('calificacion', () => {
         departamentosCalificadoresProveedor.value = response.data.results
     }
     /**
-     * La función "consultarCalificacionMiDepartamento" recupera los detalles de un departamento de un
+     * La función 'consultarCalificacionMiDepartamento' recupera los detalles de un departamento de un
      * proveedor y asigna los resultados a una variable.
      */
     async function consultarCalificacionMiDepartamento() {
@@ -39,7 +38,7 @@ export const useCalificacionProveedorStore = defineStore('calificacion', () => {
             departamentosCalificadoresProveedor.value = response.data.results
         } else {
             console.log('entro en el else')
-            departamentosCalificadoresProveedor.value.push(detalleDepartamentoProveedor.value) 
+            departamentosCalificadoresProveedor.value.push(detalleDepartamentoProveedor.value)
         }
     }
 

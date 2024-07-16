@@ -1,6 +1,6 @@
-import { ColumnConfig } from "components/tables/domain/ColumnConfig";
-import { OrdenCompra } from "./OrdenCompra";
-import { DetalleProducto } from "pages/bodega/detalles_productos/domain/DetalleProducto";
+import { ColumnConfig } from 'components/tables/domain/ColumnConfig';
+import { OrdenCompra } from './OrdenCompra';
+import { DetalleProducto } from 'pages/bodega/detalles_productos/domain/DetalleProducto';
 
 export const configuracionColumnasDetallesProductosSeleccionados: ColumnConfig<any>[] = [
   {

@@ -65,9 +65,10 @@ export default defineComponent({
     const authenticationStore = useAuthenticationStore()
 
     /**Verifica si es un mes */
-    function checkValue(reason) {
+    function checkValue (val, reason, details) {
+      console.log(val, reason, details)
       is_month.value = reason === 'month' ? false : true
-      obtenerNombreMes()
+            obtenerNombreMes()
     }
     function obtenerNombreMes() {
       const meses = [
@@ -85,7 +86,7 @@ export default defineComponent({
         'Diciembre',
       ]
       const [mes, anio] = alimentacion.mes!.split('-')
-      alimentacion.nombre = `Rol de Pagos de ${
+      alimentacion.nombre = `Asignacion de Alimentación de ${
         alimentacion.es_quincena ? 'QUINCENA DEL MES DE ' : ''
       }  ${meses[parseInt(mes, 10) - 1]} de ${anio}`
     }

@@ -17,10 +17,12 @@ export const filtroEgresos = (label: string, egresos: any, etiquetas: any, key: 
             return egresos.value.filter((objeto) => !etiquetas.includes(objeto.motivo))
         default:
             console.log('Entro en default: ' + label)
+            console.log(egresos.value);
+
             if (key == 'ESTADOS') {
                 switch (label) {
                     case 'PENDIENTE':
-                        return egresos.value.filter((objeto) => !objeto.firmada)
+                        return egresos.value.filter((objeto) => !objeto.firmada && objeto.estado_comprobante === 'PENDIENTE')
                     case 'PARCIAL':
                         return egresos.value.filter((objeto) => objeto.estado_comprobante === 'PARCIAL')
                         break
@@ -28,7 +30,7 @@ export const filtroEgresos = (label: string, egresos: any, etiquetas: any, key: 
                         return egresos.value.filter((objeto) => objeto.estado === label)
                         break
                     default:
-                        return egresos.value.filter((objeto) => objeto.firmada || objeto.estado_comprobante == 'ACEPTADA')
+                        return egresos.value.filter((objeto) => objeto.firmada || objeto.estado_comprobante == 'ACEPTADA' || (objeto.estado == 'COMPLETA' && objeto.firmada == null && objeto.estado_comprobante == null))
                 }
             }
             return egresos.value.filter((objeto) => objeto.motivo === label)

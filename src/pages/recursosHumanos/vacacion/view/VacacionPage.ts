@@ -29,6 +29,7 @@ import { CustomActionTable } from 'components/tables/domain/CustomActionTable'
 import TabLayoutFilterTabs2 from 'shared/contenedor/modules/simple/view/TabLayoutFilterTabs2.vue'
 import { LocalStorage } from 'quasar'
 import { AutorizacionController } from 'pages/administracion/autorizaciones/infraestructure/AutorizacionController'
+import { format } from '@formkit/tempo'
 
 export default defineComponent({
   components: { TabLayoutFilterTabs2, SelectorImagen, EssentialTable },
@@ -55,9 +56,9 @@ export default defineComponent({
       argumentos. Dentro de la función, establece el valor de una variable `esConsultado` a `true`. */
     onBeforeModificar(() => (esConsultado.value = true))
     /* El código anterior define una función de devolución de llamada que se ejecutará cuando ocurra un
-      evento "consultado". Dentro de la función de devolución de llamada, verifica si la ID del usuario
+      evento 'consultado'. Dentro de la función de devolución de llamada, verifica si la ID del usuario
       es igual a la ID del jefe inmediato de la solicitud de vacaciones. Si son iguales pone el valor
-      de "esAutorizador" a verdadero, en caso contrario lo pone a falso. */
+      de 'esAutorizador' a verdadero, en caso contrario lo pone a falso. */
     /* El código anterior está escrito en TypeScript y define una función llamada `onConsultado`. Dentro de
        la función se está comprobando si el `id` del usuario en la tienda es igual al `id_jefe_inmediato`
        del objeto `vacacion`. Si son iguales pone el valor de `esAutorizador` en `true`, en caso contrario
@@ -65,11 +66,16 @@ export default defineComponent({
     onConsultado(() => {
       esAutorizador.value =
         store.user.id == vacacion.id_jefe_inmediato ? true : false
-        setTimeout(() => {
-          vacacion.derecho_vacaciones =  15 + dias_adicionales.value -parseInt(vacacion.descuento_vacaciones != null ? vacacion.descuento_vacaciones.toString() : '0')
-        }, 3000);
-
-
+      setTimeout(() => {
+        vacacion.derecho_vacaciones =
+          15 +
+          dias_adicionales.value -
+          parseInt(
+            vacacion.descuento_vacaciones != null
+              ? vacacion.descuento_vacaciones.toString()
+              : '0'
+          )
+      }, 3000)
     })
     cargarVista(async () => {
       await obtenerListados({
@@ -86,7 +92,11 @@ export default defineComponent({
         },
         autorizaciones: {
           controller: new AutorizacionController(),
-          params: { campos: 'id,nombre', es_validado: false, es_modulo_rhh:true },
+          params: {
+            campos: 'id,nombre',
+            es_validado: false,
+            es_modulo_rhh: true,
+          },
         },
       })
       autorizaciones.value = listadosAuxiliares.autorizaciones
@@ -116,16 +126,16 @@ export default defineComponent({
     const dias_rango2 = ref()
     let tabVacacion = '1'
 
-    /* El código anterior define una propiedad computada llamada "dias_descuento_vacaciones" en TypeScript.
+    /* El código anterior define una propiedad computada llamada 'dias_descuento_vacaciones' en TypeScript.
        Esta propiedad calculada utiliza una función para calcular su valor. Dentro de la función llama a la
-       función "obtener_descuentos()" y luego devuelve el valor de "data.dias_descuento_vacaciones". */
+       función 'obtener_descuentos()' y luego devuelve el valor de 'data.dias_descuento_vacaciones'. */
     const dias_descuento_vacaciones = computed(() => {
       obtener_descuentos()
       return data.dias_descuento_vacaciones
     })
 
     /**
-     * La función "obtener_descuentos" realiza una solicitud GET a una URL específica y recupera
+     * La función 'obtener_descuentos' realiza una solicitud GET a una URL específica y recupera
      * información de descuento para vacaciones.
      */
     function obtener_descuentos() {
@@ -143,13 +153,16 @@ export default defineComponent({
         },
         params: {
           empleado:
-          vacacion.empleado == null ? store.user.id : vacacion.empleado,
+            vacacion.empleado == null ? store.user.id : vacacion.empleado,
         },
       })
         .then((response) => {
           const responseData = response.data
           if (responseData) {
-            const num_dias = responseData.duracion != null?  parseInt(responseData.duracion.toString()):0
+            const num_dias =
+              responseData.duracion != null
+                ? parseInt(responseData.duracion.toString())
+                : 0
             vacacion.descuento_vacaciones =
               responseData.duracion != null ? Math.floor(num_dias / 24) : 0
             data.dias_descuento_vacaciones = Math.floor(
@@ -162,9 +175,9 @@ export default defineComponent({
         })
     }
     /**
-     * La función "convertirHorasAHumanos" convierte una determinada cantidad de horas a un formato
+     * La función 'convertirHorasAHumanos' convierte una determinada cantidad de horas a un formato
      * legible por humanos, mostrando la cantidad de días y horas restantes.
-     * @param horas - El parámetro "horas" representa la cantidad de horas que desea convertir a un
+     * @param horas - El parámetro 'horas' representa la cantidad de horas que desea convertir a un
      * formato legible por humanos.
      * @returns una cadena que representa las horas de entrada convertidas a un formato legible por
      * humanos.
@@ -193,7 +206,7 @@ export default defineComponent({
     }
     const dias_adicionales = computed(() => {
       const fecha_ingreso =
-      vacacion.empleado == null ? store.user.id : vacacion.empleado
+        vacacion.empleado == null ? store.user.id : vacacion.empleado
 
       if (fecha_ingreso == null) {
         return 0
@@ -243,10 +256,10 @@ export default defineComponent({
       }
     })
     /**
-     * La función "convertir_fecha" toma una cadena que representa una fecha en el formato "dd-mm-yyyy" y
+     * La función 'convertir_fecha' toma una cadena que representa una fecha en el formato 'dd-mm-yyyy' y
      * devuelve un objeto Date.
      * @param fecha - El parámetro `fecha` es una cadena que representa una fecha en el formato
-     * "dd-mm-yyyy".
+     * 'dd-mm-yyyy'.
      * @returns un objeto de fecha que representa la fecha convertida.
      */
     function convertir_fecha(fecha) {
@@ -260,7 +273,7 @@ export default defineComponent({
     }
 
     /**
-     * La función "calcular_fecha_fin" calcula la fecha de finalización de unas vacaciones en función de la
+     * La función 'calcular_fecha_fin' calcula la fecha de finalización de unas vacaciones en función de la
      * fecha de inicio y el número de días.
      */
     function calcular_fecha_fin() {
@@ -269,16 +282,14 @@ export default defineComponent({
         vacacion.numero_dias !== null &&
         vacacion.numero_dias !== undefined
       ) {
-        const fechaInicio = convertir_fecha(vacacion.fecha_inicio)
-        const fechaFinal = fechaInicio
-        fechaFinal.setDate(
-          fechaInicio.getDate() + parseInt(vacacion.numero_dias.toString())-1
+        const fechaInicio = new Date(vacacion.fecha_inicio)
+
+        fechaInicio.setDate(
+          fechaInicio.getDate() +
+          (parseInt(vacacion.numero_dias.toString()))
         )
-        // Formatear la fecha a "año-mes-día"
-        const anio = fechaFinal.getFullYear()
-        const mes = ('0' + (fechaFinal.getMonth() + 1)).slice(-2)
-        const dia = ('0' + fechaFinal.getDate()).slice(-2)
-        vacacion.fecha_fin = dia + '-' + mes + '-' + anio
+        vacacion.fecha_fin = format(fechaInicio, 'YYYY-MM-DD')
+
       } else {
         vacacion.fecha_fin = null
       }
@@ -294,19 +305,12 @@ export default defineComponent({
         vacacion.numero_dias_rango1 !== null &&
         vacacion.numero_dias_rango1 !== undefined
       ) {
-        const fechaInicio = convertir_fecha(
-          vacacion.fecha_inicio_rango1_vacaciones
-        )
-        const fechaFinal = fechaInicio
-        fechaFinal.setDate(
+        const fechaInicio = new Date(vacacion.fecha_inicio_rango1_vacaciones)
+        fechaInicio.setDate(
           fechaInicio.getDate() +
-            parseInt(vacacion.numero_dias_rango1.toString())-1
+          (parseInt(vacacion.numero_dias_rango1.toString()))
         )
-        // Formatear la fecha a "año-mes-día"
-        const anio = fechaFinal.getFullYear()
-        const mes = ('0' + (fechaFinal.getMonth() + 1)).slice(-2)
-        const dia = ('0' + fechaFinal.getDate()).slice(-2)
-        vacacion.fecha_fin_rango1_vacaciones = dia + '-' + mes + '-' + anio
+        vacacion.fecha_fin_rango1_vacaciones = format(fechaInicio, 'YYYY-MM-DD')
       } else {
         vacacion.fecha_fin_rango1_vacaciones = null
       }
@@ -321,19 +325,12 @@ export default defineComponent({
         vacacion.numero_dias_rango2 !== null &&
         vacacion.numero_dias_rango2 !== undefined
       ) {
-        const fechaInicio = convertir_fecha(
-          vacacion.fecha_inicio_rango2_vacaciones
-        )
-        const fechaFinal = fechaInicio
-        fechaFinal.setDate(
+        const fechaInicio = new Date(vacacion.fecha_inicio_rango2_vacaciones)
+        fechaInicio.setDate(
           fechaInicio.getDate() +
-            parseInt(vacacion.numero_dias_rango2.toString())-1
+          (parseInt(vacacion.numero_dias_rango2.toString()))
         )
-        // Formatear la fecha a "año-mes-día"
-        const anio = fechaFinal.getFullYear()
-        const mes = ('0' + (fechaFinal.getMonth() + 1)).slice(-2)
-        const dia = ('0' + fechaFinal.getDate()).slice(-2)
-        vacacion.fecha_fin_rango2_vacaciones = dia + '-' + mes + '-' + anio
+        vacacion.fecha_fin_rango2_vacaciones = format(fechaInicio, 'YYYY-MM-DD')
       } else {
         vacacion.fecha_fin_rango2_vacaciones = null
       }
@@ -377,7 +374,7 @@ export default defineComponent({
       })
     }
     /**
-     * La función "filtrarVacacion" filtra las vacaciones en función de la pestaña seleccionada y actualiza
+     * La función 'filtrarVacacion' filtra las vacaciones en función de la pestaña seleccionada y actualiza
      * la variable tabVacacion.
      * @param {string} tabSeleccionado - Una cadena que representa la pestaña seleccionada.
      */
@@ -386,12 +383,20 @@ export default defineComponent({
       tabVacacion = tabSeleccionado
     }
     function optionsFechaInicio(date) {
-      const currentDate = new Date() // Obtener la fecha actual
-      const year = currentDate.getFullYear() // Obtener el año
-      const month = String(currentDate.getMonth() + 1).padStart(2, '0') // Obtener el mes y asegurarse de que tenga dos dígitos
-      const day = String(currentDate.getDate()).padStart(2, '0') // Obtener el día y asegurarse de que tenga dos dígitos
-      const currentDateString = `${year}/${month}/${day}` // Formatear la fecha actual
+      const currentDateString = format(new Date(), 'YYYY/MM/DD')
+
+      return date > currentDateString
+    }
+    function optionFechaInicioRango2(date) {
+      const fecha_fin_rango1 = vacacion.fecha_fin_rango1_vacaciones !== null ? vacacion.fecha_fin_rango1_vacaciones : new Date().toString()
+      const fechaInicio = new Date(fecha_fin_rango1)
+      fechaInicio.setDate(
+        fechaInicio.getDate() +
+        (2)
+      )
+      const currentDateString = format(fechaInicio, 'YYYY/MM/DD')
       return date >= currentDateString
+
     }
 
     return {
@@ -402,6 +407,7 @@ export default defineComponent({
       empleado,
       editarVacacion,
       optionsFechaInicio,
+      optionFechaInicioRango2,
       filtrarPeriodo,
       filtrarVacacion,
       calcular_fecha_fin_rango1,

@@ -8,25 +8,11 @@ import { computed, ref } from 'vue'
 import { LocalStorage } from 'quasar'
 import { AxiosError, AxiosResponse } from 'axios'
 import { Empleado } from 'pages/recursosHumanos/empleados/domain/Empleado'
-import { EstadosTransaccionController } from 'pages/administracion/estados_transacciones/infraestructure/EstadosTransaccionController'
-import { AutorizacionController } from 'pages/administracion/autorizaciones/infraestructure/AutorizacionController'
-import { SucursalController } from 'pages/administracion/sucursales/infraestructure/SucursalController'
-import { CondicionController } from 'pages/administracion/condiciones/infraestructure/CondicionController'
 import { ForgotPassword } from 'sistema/authentication/forgotPassword/domain/ForgotPassword'
 import { ResetPassword } from 'sistema/authentication/resetPassword/domain/ResetPassword'
-import { DetalleFondoController } from 'pages/fondosRotativos/detalleFondo/infrestructure/DetalleFondoController'
-import { SubDetalleFondoController } from 'pages/fondosRotativos/subDetalleFondo/infrestructure/SubDetalleFondoController'
-import { CantonController } from 'sistema/ciudad/infraestructure/CantonControllerontroller'
-import { TareaController } from 'pages/gestionTrabajos/tareas/infraestructure/TareaController'
-import { EmpleadoController } from 'pages/recursosHumanos/empleados/infraestructure/EmpleadoController'
-import { ConceptoIngresoController } from 'pages/recursosHumanos/concepto_ingreso/infraestructure/ConceptoIngresoController'
-import { DescuentosGenralesController } from 'pages/recursosHumanos/descuentos_generales/infraestructure/DescuentosGenralesController'
-import { DescuentosLeyController } from 'pages/recursosHumanos/descuentos_ley/infraestructure/DescuentosLeyController'
-import { HorasExtrasSubTipoController } from 'pages/recursosHumanos/horas_extras_subtipo/infraestructure/HorasExtrasSubTipoController'
-import { HorasExtrasTipoController } from 'pages/recursosHumanos/horas_extras_tipo/infraestructure/HorasExtrasTipoController'
-import { MultaController } from 'pages/recursosHumanos/multas/infraestructure/MultaController'
 import { UltimoSaldoController } from 'pages/fondosRotativos/reportes/reporteSaldoActual/infrestucture/UltimoSaldoController'
 import { useListadosSistemaStore } from './listadosSistema'
+import { UserLoginPostulante } from 'pages/recursosHumanos/seleccion_contratacion_personal/login-postulante/domain/UserLoginPostulante'
 
 export const useAuthenticationStore = defineStore('authentication', () => {
   // Variables locales
@@ -47,88 +33,63 @@ export const useAuthenticationStore = defineStore('authentication', () => {
       }`
   )
 
-
-  const esCoordinador = computed(() =>
-    user.value ? extraerRol(user.value.roles, rolesSistema.coordinador) : false
-  )
-  const esCoordinadorBackup = computed(() =>
-    user.value
-      ? extraerRol(user.value.roles, rolesSistema.coordinadorBackup)
-      : false
-  )
-  const esCoordinadorBodega = computed(() =>
-    user.value
-      ? extraerRol(user.value.roles, rolesSistema.coordinadorBodega)
-      : false
-  )
-  const esFiscalizador = computed(() =>
-    user.value ? extraerRol(user.value.roles, rolesSistema.fiscalizador) : false
-  )
-  const esJefeTecnico = computed(() =>
-    user.value ? extraerRol(user.value.roles, rolesSistema.jefe_tecnico) : false
-  )
-  const esSupervisorCampo = computed(() =>
-    user.value ? extraerRol(user.value.roles, rolesSistema.supervisor) : false
-  )
-  const esTecnicoLider = computed(() =>
-    user.value
-      ? extraerRol(user.value.roles, rolesSistema.tecnico_lider)
-      : false
-  )
-  const esBodeguero = computed(() =>
-    user.value ? extraerRol(user.value.roles, rolesSistema.bodega) : false
-  )
-  const esBodegueroTelconet = computed(() =>
-    user.value
-      ? extraerRol(user.value.roles, rolesSistema.bodegaTelconet)
-      : false
-  )
-  const esActivosFijos = computed(() =>
-    user.value
-      ? extraerRol(user.value.roles, rolesSistema.activos_fijos)
-      : false
-  )
-  const esTecnico = computed(() =>
-    user.value ? extraerRol(user.value.roles, rolesSistema.tecnico) : false
-  )
-  const esRecursosHumanos = computed(() =>
-    user.value ? extraerRol(user.value.roles, rolesSistema.rrhh) : false
-  )
-  const esGerente = computed(() =>
-    user.value ? extraerRol(user.value.roles, rolesSistema.gerente) : false
-  )
-  const esContabilidad = computed(() =>
-    user.value ? extraerRol(user.value.roles, rolesSistema.contabilidad) : false
-  )
-  const esCompras = computed(() =>
-    user.value ? extraerRol(user.value.roles, rolesSistema.compras) : false
-  )
-  const esAdministrador = computed(() =>
-    user.value
-      ? extraerRol(user.value.roles, rolesSistema.administrador)
-      : false
-  )
+  const esCoordinador = computed(() => user.value ? extraerRol(user.value.roles, rolesSistema.coordinador) : false)
+  const esCoordinadorBackup = computed(() => user.value ? extraerRol(user.value.roles, rolesSistema.coordinadorBackup) : false)
+  const esCoordinadorBodega = computed(() => user.value ? extraerRol(user.value.roles, rolesSistema.coordinadorBodega) : false)
+  const esFiscalizador = computed(() => user.value ? extraerRol(user.value.roles, rolesSistema.fiscalizador) : false)
+  const esJefeTecnico = computed(() => user.value ? extraerRol(user.value.roles, rolesSistema.jefe_tecnico) : false)
+  const esSupervisorCampo = computed(() => user.value ? extraerRol(user.value.roles, rolesSistema.supervisor) : false)
+  const esTecnicoLider = computed(() => user.value ? extraerRol(user.value.roles, rolesSistema.tecnico_lider) : false)
+  const esBodeguero = computed(() => user.value ? extraerRol(user.value.roles, rolesSistema.bodega) : false)
+  const esBodegueroTelconet = computed(() => user.value ? extraerRol(user.value.roles, rolesSistema.bodegaTelconet) : false)
+  const esActivosFijos = computed(() => user.value ? extraerRol(user.value.roles, rolesSistema.activos_fijos) : false)
+  const esTecnico = computed(() => user.value ? extraerRol(user.value.roles, rolesSistema.tecnico) : false)
+  const esRecursosHumanos = computed(() => user.value ? extraerRol(user.value.roles, rolesSistema.rrhh) : false)
+  const esGerente = computed(() => user.value ? extraerRol(user.value.roles, rolesSistema.gerente) : false)
+  const esContabilidad = computed(() => user.value ? extraerRol(user.value.roles, rolesSistema.contabilidad) : false)
+  const esCompras = computed(() => user.value ? extraerRol(user.value.roles, rolesSistema.compras) : false)
+  const esAdministrador = computed(() => user.value ? extraerRol(user.value.roles, rolesSistema.administrador) : false)
+  const esAdministradorVehiculos = computed(() => user.value ? extraerRol(user.value.roles, rolesSistema.administradorVehiculos) : false)
   //ventas
-  const esJefeVentasClaro = computed(() =>
-    user.value ? extraerRol(user.value.roles, rolesSistema.jefe_ventas) : false
-  )
-  const esSupervisorVentasClaro = computed(() =>
-    user.value
-      ? extraerRol(user.value.roles, rolesSistema.supervisor_ventas)
-      : false
-  )
-  const esVendedor = computed(() =>
-    user.value ? extraerRol(user.value.roles, rolesSistema.vendedor) : false
-  )
-
+  const esJefeVentasClaro = computed(() => user.value ? extraerRol(user.value.roles, rolesSistema.jefe_ventas) : false)
+  const esSupervisorVentasClaro = computed(() => user.value ? extraerRol(user.value.roles, rolesSistema.supervisor_ventas) : false)
+  const esVendedor = computed(() => user.value ? extraerRol(user.value.roles, rolesSistema.vendedor) : false)
+  
   const esMedico = computed(() => user.value ? extraerRol(user.value.roles, rolesSistema.medico) : false)
-
+  const esMecanicoGeneral = computed(() => user.value ? extraerRol(user.value.roles, rolesSistema.mecanicoGeneral) : false)
+  
   function extraerRol(roles: string[], rolConsultar: string) {
     return roles.some((rol: string) => rol === rolConsultar)
   }
 
   // Actions
   const login = async (credentiales: UserLogin): Promise<Empleado> => {
+    try {
+      /*const csrf_cookie = axios.getEndpoint(endpoints.csrf_cookie)
+      console.log('authentication...')
+      await axios.get(csrf_cookie) */
+
+      const login = axios.getEndpoint(endpoints.login)
+      const response: AxiosResponse = await axios.post(login, credentiales)
+
+      LocalStorage.set('token', response.data.access_token)
+      setUser(response.data.modelo)
+      roles.value = response.data.modelo.roles
+      permisos.value = response.data.modelo.permisos
+
+      listadosSistemaStore.cargarDatosLS()
+
+      return response.data.modelo
+    } catch (error: unknown) {
+      console.log(error)
+
+      const axiosError = error as AxiosError
+      throw new ApiError(axiosError)
+    }
+  }
+
+   // Actions
+   const loginPostulante = async (credentiales: UserLoginPostulante): Promise<Empleado> => {
     try {
       /*const csrf_cookie = axios.getEndpoint(endpoints.csrf_cookie)
       console.log('authentication...')
@@ -187,65 +148,6 @@ export const useAuthenticationStore = defineStore('authentication', () => {
       setSaldo(0)
     }
   }
-
-  /** BORRAR
-   * Función para cargar datos en el Local Storage
-   */
-  /* async function cargarDatosLS() {
-    const autorizaciones = (
-      await new AutorizacionController().listar({ campos: 'id,nombre' })
-    ).result
-    LocalStorage.set('autorizaciones', JSON.stringify(autorizaciones))
-    const sucursales = (
-      await new SucursalController().listar({ campos: 'id,lugar,cliente_id' })
-    ).result
-    LocalStorage.set('sucursales', JSON.stringify(sucursales))
-    const condiciones = (
-      await new CondicionController().listar({ campos: 'id,nombre' })
-    ).result
-    LocalStorage.set('condiciones', JSON.stringify(condiciones))
-    const estados_transacciones = (
-      await new EstadosTransaccionController().listar({ campos: 'id,nombre' })
-    ).result
-    LocalStorage.set(
-      'estados_transacciones',
-      JSON.stringify(estados_transacciones)
-    )
-    const cantones = (
-      await new CantonController().listar({ campos: 'id,canton' })
-    ).result
-    LocalStorage.set('cantones', JSON.stringify(cantones))
-    const detalles = (
-      await new DetalleFondoController().listar({ campos: 'id,descripcion' })
-    ).result
-    LocalStorage.set('detalles', JSON.stringify(detalles))
-    const sub_detalles = (
-      await new SubDetalleFondoController().listar({ campos: 'id,descripcion' })
-    ).result
-    LocalStorage.set('sub_detalles', JSON.stringify(sub_detalles))
-    const tareas = (await new TareaController().listar({ campos: 'id,titulo' }))
-      .result
-    LocalStorage.set('tareas', JSON.stringify(tareas))
-    const usuariosInactivos = (
-      await new EmpleadoController().listar({
-        campos: 'id,nombres,apellidos',
-        estado: 0,
-      })
-    ).result
-    LocalStorage.set('usuariosInactivos', JSON.stringify(usuariosInactivos))
-  } */
-
-  /**
-   * Función para limpiar los datos del Local Storage
-   */
-  /* function limpiarLS() {
-    LocalStorage.remove('autorizaciones')
-    LocalStorage.remove('sucursales')
-    LocalStorage.remove('condiciones')
-    LocalStorage.remove('estados_transacciones')
-    LocalStorage.remove('lugares')
-    LocalStorage.remove('detalles')
-  } */
 
   async function logout() {
     await axios.post(axios.getEndpoint(endpoints.logout))
@@ -323,6 +225,7 @@ export const useAuthenticationStore = defineStore('authentication', () => {
     nombre_usuario,
     saldo_actual,
     login,
+    loginPostulante,
     enviarCorreoRecuperacion,
     recuperacionCuenta,
     nombreUsuario,
@@ -346,12 +249,8 @@ export const useAuthenticationStore = defineStore('authentication', () => {
     esActivosFijos,
     esRecursosHumanos,
     esGerente,
-    esCompras,
-    esContabilidad,
-    esAdministrador,
-    esJefeVentasClaro,
-    esSupervisorVentasClaro,
-    esVendedor,
+    esCompras, esContabilidad, esAdministrador, esAdministradorVehiculos,esMecanicoGeneral,
+    esJefeVentasClaro, esSupervisorVentasClaro, esVendedor,
     esFiscalizador,
     esSupervisorCampo,
     esMedico,

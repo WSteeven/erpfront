@@ -1,5 +1,4 @@
-import { EntidadAuditable } from "shared/entidad/domain/entidadAuditable";
-import { Ref, ref } from "vue";
+import { EntidadAuditable } from 'shared/entidad/domain/entidadAuditable';
 
 export class Proveedor extends EntidadAuditable {
   empresa: number | null

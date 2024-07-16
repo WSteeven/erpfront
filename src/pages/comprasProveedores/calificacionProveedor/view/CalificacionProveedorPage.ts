@@ -1,32 +1,32 @@
 // Dependencies
-import { computed, defineComponent,  ref, } from "vue";
+import { computed, defineComponent, ref, } from 'vue';
 
 //Components
 import EssentialSelectableTable from 'components/tables/view/EssentialSelectableTable.vue'
-import EssentialTable from "components/tables/view/EssentialTable.vue";
-import GestorArchivos from "components/gestorArchivos/GestorArchivos.vue"
+import EssentialTable from 'components/tables/view/EssentialTable.vue';
+import GestorArchivos from 'components/gestorArchivos/GestorArchivos.vue'
 
 // Logic and controllers
-import { ContenedorSimpleMixin } from "shared/contenedor/modules/simple/application/ContenedorSimpleMixin";
-import { CalificacionProveedorController } from "../infraestructure/CalificacionProveedorController";
-import { CriterioCalificacionController } from "pages/comprasProveedores/criteriosCalificaciones/infraestructure/CriterioCalificacionController";
-import { configuracionColumnasCriteriosCalificaciones } from "pages/comprasProveedores/criteriosCalificaciones/domain/configuracionColumnasCriteriosCalificaciones";
-import { CalificacionProveedor } from "../domain/CalificacionProveedor";
-import { useProveedorStore } from "stores/comprasProveedores/proveedor";
-import { OfertaProveedorController } from "sistema/proveedores/modules/ofertas_proveedores/infraestructure/OfertaProveedorController";
-import { tiposOfertas } from "config/utils_compras_proveedores";
-import { accionesTabla } from "config/utils";
-import { configuracionColumnasCriteriosCalificacionesConCalificacion } from "pages/comprasProveedores/criteriosCalificaciones/domain/configuracionColumnasCriteriosCalificacionesConCalificacion";
-import { configuracionColumnasCriteriosCalificacionesConPeso } from "pages/comprasProveedores/criteriosCalificaciones/domain/configuracionColumnasCriteriosCalificacionesConPeso";
-import { AxiosHttpRepository } from "shared/http/infraestructure/AxiosHttpRepository";
-import { endpoints } from "config/api";
-import { AxiosResponse } from "axios";
-import { useBotonesTablaCalificacionProveedor } from "../application/BotonesTablaCalificacionProveedor";
-import { DetalleDepartamentoProveedorController } from "pages/comprasProveedores/detallesDepartamentosProveedor/infraestructure/DetalleDepartamentoProveedorController";
-import { DetalleDepartamentoProveedor } from "pages/comprasProveedores/detallesDepartamentosProveedor/domain/DetalleDepartamentoProveedor";
-import { ArchivoController } from "pages/gestionTrabajos/subtareas/modules/gestorArchivosTrabajos/infraestructure/ArchivoController";
-import { StatusEssentialLoading } from "components/loading/application/StatusEssentialLoading";
-import { useNotificaciones } from "shared/notificaciones";
+import { ContenedorSimpleMixin } from 'shared/contenedor/modules/simple/application/ContenedorSimpleMixin';
+import { CalificacionProveedorController } from '../infraestructure/CalificacionProveedorController';
+import { CriterioCalificacionController } from 'pages/comprasProveedores/criteriosCalificaciones/infraestructure/CriterioCalificacionController';
+import { configuracionColumnasCriteriosCalificaciones } from 'pages/comprasProveedores/criteriosCalificaciones/domain/configuracionColumnasCriteriosCalificaciones';
+import { CalificacionProveedor } from '../domain/CalificacionProveedor';
+import { useProveedorStore } from 'stores/comprasProveedores/proveedor';
+import { OfertaProveedorController } from 'sistema/proveedores/modules/ofertas_proveedores/infraestructure/OfertaProveedorController';
+import { tiposOfertas } from 'config/utils_compras_proveedores';
+import { accionesTabla } from 'config/utils';
+import { configuracionColumnasCriteriosCalificacionesConCalificacion } from 'pages/comprasProveedores/criteriosCalificaciones/domain/configuracionColumnasCriteriosCalificacionesConCalificacion';
+import { configuracionColumnasCriteriosCalificacionesConPeso } from 'pages/comprasProveedores/criteriosCalificaciones/domain/configuracionColumnasCriteriosCalificacionesConPeso';
+import { AxiosHttpRepository } from 'shared/http/infraestructure/AxiosHttpRepository';
+import { endpoints } from 'config/api';
+import { AxiosResponse } from 'axios';
+import { useBotonesTablaCalificacionProveedor } from '../application/BotonesTablaCalificacionProveedor';
+import { DetalleDepartamentoProveedorController } from 'pages/comprasProveedores/detallesDepartamentosProveedor/infraestructure/DetalleDepartamentoProveedorController';
+import { DetalleDepartamentoProveedor } from 'pages/comprasProveedores/detallesDepartamentosProveedor/domain/DetalleDepartamentoProveedor';
+import { ArchivoController } from 'pages/gestionTrabajos/subtareas/modules/gestorArchivosTrabajos/infraestructure/ArchivoController';
+import { StatusEssentialLoading } from 'components/loading/application/StatusEssentialLoading';
+import { useNotificaciones } from 'shared/notificaciones';
 
 export default defineComponent({
     components: { EssentialTable, EssentialSelectableTable, GestorArchivos },
@@ -36,7 +36,7 @@ export default defineComponent({
         const mixin = new ContenedorSimpleMixin(CalificacionProveedor, new CalificacionProveedorController(), new ArchivoController())
         const { listadosAuxiliares, } = mixin.useReferencias()
         const { cargarVista, obtenerListados } = mixin.useComportamiento()
-        const { confirmar,notificarCorrecto, notificarAdvertencia, notificarError } = useNotificaciones()
+        const { confirmar, notificarCorrecto, notificarAdvertencia, notificarError } = useNotificaciones()
 
 
         /**************************************************************
@@ -115,7 +115,7 @@ export default defineComponent({
          * proceso de varios pasos, verificando ciertos criterios antes de permitir que el usuario
          * continúe.
          * @returns nada (indefinido) en la mayoría de los casos. Sin embargo, puede regresar antes de
-         * tiempo con una declaración de "retorno" si se cumplen ciertas condiciones.
+         * tiempo con una declaración de 'retorno' si se cumplen ciertas condiciones.
          */
         async function botonNext() {
             // console.log(proveedorStore.idDetalleDepartamento)
@@ -203,7 +203,7 @@ export default defineComponent({
             }
         }
         /**
-         * La función "verificarCriteriosBienes" comprueba si la suma de los pesos asignados a los
+         * La función 'verificarCriteriosBienes' comprueba si la suma de los pesos asignados a los
          * elementos de una lista es igual a 100.
          * @returns ya sea verdadero o falso. Si la condición `if (sumaCriteriosBienes == 100)` es
          * verdadera, devuelve verdadero. Si la condición `if (criteriosBienes.value.length > 0)` es
@@ -233,7 +233,7 @@ export default defineComponent({
 
 
         /**
-         * La función "verificarCriteriosServicios" comprueba si la suma de pesos asignados a criterios
+         * La función 'verificarCriteriosServicios' comprueba si la suma de pesos asignados a criterios
          * para servicios es válida.
          * @returns ya sea verdadero o falso. Si la condición `if (sumaCriteriosServicios == 100)` es
          * verdadera, devolverá verdadero. Si alguna de las otras condiciones es verdadera, devolverá
@@ -264,7 +264,7 @@ export default defineComponent({
 
 
         /**
-         * La función "verificarCalificacionesCriterios" comprueba si a todos los criterios de bienes y
+         * La función 'verificarCalificacionesCriterios' comprueba si a todos los criterios de bienes y
          * servicios se les ha asignado una calificación.
          * @returns un valor booleano.
          */
@@ -278,9 +278,9 @@ export default defineComponent({
          * La función `criterioSeleccionado` registra la entrada `fila` y agrega o elimina elementos de
          * `criteriosBienes.value` y `criteriosServicios.value` en función de la propiedad `oferta` de
          * cada elemento en `fila.rows`.
-         * @param fila - El parámetro "fila" es un objeto que representa una fila de datos. Contiene
-         * una propiedad llamada "agregado" que indica si la fila se agregó o eliminó. También contiene
-         * una propiedad llamada "filas", que es una matriz de objetos que representan filas
+         * @param fila - El parámetro 'fila' es un objeto que representa una fila de datos. Contiene
+         * una propiedad llamada 'agregado' que indica si la fila se agregó o eliminó. También contiene
+         * una propiedad llamada 'filas', que es una matriz de objetos que representan filas
          * individuales dentro de la fila principal.
          */
         function criterioSeleccionado(fila) {

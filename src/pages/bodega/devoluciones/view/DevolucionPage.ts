@@ -118,8 +118,7 @@ export default defineComponent({
       sucursales, filtrarSucursales } = useFiltrosListadosSelects(listadosAuxiliares)
 
     const condiciones = ref([])
-    // const tareas = ref([])
-    const opciones_autorizaciones = ref([])
+    const autorizaciones = ref([])
     //Obtener los listados
     cargarVista(async () => {
       await obtenerListados({
@@ -134,19 +133,23 @@ export default defineComponent({
           controller: new TareaController(),
           params: { campos: 'id,codigo_tarea,titulo,cliente_id' }
         },
-        // condiciones: new CondicionController()
       })
       //Configurar los listados
       empleados.value = listadosAuxiliares.empleados
-      opciones_autorizaciones.value = JSON.parse(LocalStorage.getItem('autorizaciones')!.toString())
+      autorizaciones.value = JSON.parse(LocalStorage.getItem('autorizaciones')!.toString())
       sucursales.value = listadosAuxiliares.sucursales
       tareas.value = listadosAuxiliares.tareas
       listadosAuxiliares.condiciones = JSON.parse(LocalStorage.getItem('condiciones')!.toString())
       condiciones.value = listadosAuxiliares.condiciones
 
+      // en la carga inicial se coloca el solicitante
+      devolucion.solicitante = store.user.id
+
       //logica para autocompletar el formulario de devolucion
       if (listadoMaterialesDevolucion.listadoMateriales.length) {
+        devolucion.devolver_materiales_tecnicos = listadoMaterialesDevolucion.empleado_id !== store.user.id
         devolucion.tarea = listadoMaterialesDevolucion.tareaId ? listadoMaterialesDevolucion.tareaId : null
+        devolucion.solicitante = listadoMaterialesDevolucion.empleado_id
         devolucion.cliente = listadoMaterialesDevolucion.cliente_id
         filtrarCliente(devolucion.cliente)
         devolucion.es_tarea = !!devolucion.tarea
@@ -165,8 +168,6 @@ export default defineComponent({
       }
       listadosAuxiliares.sucursales = JSON.parse(LocalStorage.getItem('sucursales')!.toString())
       sucursales.value = listadosAuxiliares.sucursales
-      // en la carga inicial se coloca el solicitante
-      devolucion.solicitante = store.user.id
     })
 
     //reglas de validacion
@@ -234,6 +235,7 @@ export default defineComponent({
         listadosAuxiliares.sucursales = JSON.parse(LocalStorage.getItem('sucursales')!.toString()).filter((v) => v.cliente_id == value)
 
     }
+    
     async function subirArchivos() {
       await refArchivo.value.subir()
     }
@@ -421,7 +423,7 @@ export default defineComponent({
       clientes,
       tareas,
       filtrarTareas,
-      opciones_autorizaciones,
+      autorizaciones,
       sucursales, filtrarSucursales,
       condiciones,
       store,

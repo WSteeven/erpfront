@@ -13,7 +13,7 @@ import { configuracionColumnasDetallesProductos } from 'pages/bodega/detalles_pr
 import { acciones, estadosTransacciones, motivosTransaccionesBodega, tabOptionsTransaccionesEgresos, accionesTabla } from 'config/utils'
 
 // Componentes
-import TabLayoutFilterTabs2 from "shared/contenedor/modules/simple/view/TabLayoutFilterTabs2.vue";
+import TabLayoutFilterTabs2 from 'shared/contenedor/modules/simple/view/TabLayoutFilterTabs2.vue';
 import EssentialTable from 'components/tables/view/EssentialTable.vue'
 import EssentialSelectableTable from 'components/tables/view/EssentialSelectableTable.vue'
 import LabelInfoEmpleado from 'components/modales/modules/LabelInfoEmpleado.vue'
@@ -56,6 +56,7 @@ import { ProyectoController } from 'pages/gestionTrabajos/proyectos/infraestruct
 import { StatusEssentialLoading } from 'components/loading/application/StatusEssentialLoading'
 import { TareasEmpleadoController } from 'pages/gestionTrabajos/tareas/infraestructure/TareasEmpleadoController'
 import { EtapaController } from 'pages/gestionTrabajos/proyectos/modules/etapas/infraestructure/EtapaController'
+import { ComportamientoModalesTransaccionEgreso } from './application/ComportamientoModalesGestionarEgresos'
 
 export default defineComponent({
   name: 'Egresos',
@@ -78,6 +79,7 @@ export default defineComponent({
     const empleadoStore = useEmpleadoStore()
 
     const modalesEmpleado = new ComportamientoModalesEmpleado()
+    const modales = new ComportamientoModalesTransaccionEgreso()
 
     //orquestador
     const {
@@ -104,7 +106,7 @@ export default defineComponent({
     let listadoPedido: Ref<any[]> = ref([])
     let coincidencias = ref()
     let listadoCoincidencias = ref()
-    const tabDefecto = ref('PENDIENTE')
+    const tabDefecto = ref(estadosTransacciones.pendiente)
 
 
 
@@ -213,6 +215,19 @@ export default defineComponent({
       tabDefecto.value = tab
       listar({ estado: tab })
     }
+    const botonEditarEgreso: CustomActionTable = {
+      titulo: 'Editar',
+      icono: 'bi-pencil-square',
+      color: 'secondary',
+      accion: async ({ entidad }) => {
+        console.log('diste clic en botonEditarEgreso', tabDefecto.value)
+        transaccionStore.tab = tabDefecto.value
+        transaccionStore.idTransaccion = entidad.id
+        await transaccionStore.showPreviewEgreso()
+        modales.abrirModalEntidad('ModificarEgresoPage')
+      },
+      visible: ({ entidad }) => (entidad.estado_comprobante === estadosTransacciones.pendiente || entidad.estado_comprobante == estadosTransacciones.parcial) && store.can('puede.editar.transacciones_egresos')
+    }
 
     const botonEditarCantidad: CustomActionTable = {
       titulo: 'Cantidad',
@@ -267,7 +282,7 @@ export default defineComponent({
         })
       },
       visible: ({ entidad, posicion }) => {
-        return (store.esAdministrador || store.can('puede.anular.egresos')) && entidad.estado === estadosTransacciones.completa && entidad.estado_comprobante == 'PENDIENTE'
+        return (store.esAdministrador || store.can('puede.anular.egresos')) && entidad.estado === estadosTransacciones.completa && entidad.estado_comprobante == estadosTransacciones.pendiente
       }
 
     }
@@ -281,9 +296,9 @@ export default defineComponent({
     }
 
     /**
-     * La función "llenarTransaccion" llena una transacción con datos de un pedido específico, y si hay
+     * La función 'llenarTransaccion' llena una transacción con datos de un pedido específico, y si hay
      * un error, borra la transacción y los campos relacionados.
-     * @param {number} id - El parámetro "id" es un número que representa el ID de un pedido.
+     * @param {number} id - El parámetro 'id' es un número que representa el ID de un pedido.
      */
     async function llenarTransaccion(id: number) {
       limpiarTransaccion()
@@ -556,6 +571,7 @@ export default defineComponent({
 
       //modales
       modalesEmpleado,
+      modales,
 
       //funciones
       filtrarTransacciones,
@@ -614,6 +630,7 @@ export default defineComponent({
       botonEliminar,
       botonImprimir,
       botonAnular,
+      botonEditarEgreso,
       eliminar,
 
       //selector

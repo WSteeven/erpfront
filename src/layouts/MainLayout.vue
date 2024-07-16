@@ -248,7 +248,7 @@
                     <q-item-section class="full-width">
                       {{ notificacion.mensaje }}
                       <span class="block text-grey-8 text-weight-regular">
-                        {{ moment(notificacion.created_at).fromNow() }}
+                        {{ dayjs(notificacion.created_at).fromNow() }}
                       </span>
 
                       <q-item-label class="row justify-end q-pt-sm">
@@ -287,17 +287,18 @@
 
           <!-- Perfil -->
           <q-btn dense round flat glossy @click.self="mostrarMenu = true">
-            <q-avatar size="38px">
-              <img v-bind:src="imagenPerfil" />
-            </q-avatar>
+            <!-- <q-avatar size="32px" > -->
+              <q-badge color="positive" rounded floating> </q-badge>
+              <img :src="imagenPerfil" fit="cover" height="34px" width="34px" class="rounded border-white" />
+            <!-- </q-avatar> -->
 
             <q-menu
               v-model="mostrarMenu"
               :self="selfCenterMiddle"
               transition-show="jump-down"
               transition-hide="jump-out"
-              :style="{ 'min-width': width }"
-              class="window-height bg-desenfoque custom-shadow"
+              :style="{ width: width }"
+              class="bg-desenfoque"
               max-height="100vh"
             >
               <div class="column items-center q-py-sm window-height">
@@ -313,9 +314,9 @@
                   ></q-btn>
                 </div>
 
-                <q-avatar size="72px" class="double-border q-mb-md">
-                  <img v-bind:src="imagenPerfil" />
-                </q-avatar>
+                <!-- <q-avatar size="72px" class="double-border q-mb-md"> -->
+                  <img :src="imagenPerfil" fit="contain" height="72px" width="72px" class="rounded border-white  q-mb-md" />
+                <!-- </q-avatar> -->
 
                 <div class="text-subtitle1 text-center">
                   {{ nombreUsuario }}
@@ -474,7 +475,7 @@
         <!-- Aplica keep-alive aquí -->
         <keep-alive
           :exclude="[
-            'Ingresos',
+            'transacciones_ingresos',
             'Egresos',
             'OrdenCompraPage',
             'PreordenCompra',
@@ -482,6 +483,8 @@
             'RolPagoMes',
             'AcreditacionSemana',
             'TransferenciaProductoEmpleado',
+            'AsignacionVehiculo',
+            'TransferenciaVehiculo'
           ]"
         >
           <component :is="Component" />

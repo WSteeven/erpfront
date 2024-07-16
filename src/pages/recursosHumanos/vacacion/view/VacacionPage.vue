@@ -193,6 +193,8 @@
                       v-model="vacacion.fecha_inicio_rango1_vacaciones"
                       :mask="maskFecha"
                       today-btn
+                                    :options="optionsFechaInicio"
+
                     >
                       <div class="row items-center justify-end">
                         <q-btn v-close-popup label="Cerrar" color="primary" flat />
@@ -265,6 +267,8 @@
                       v-model="vacacion.fecha_inicio_rango2_vacaciones"
                       :mask="maskFecha"
                       today-btn
+                                                          :options="optionFechaInicioRango2"
+
                     >
                       <div class="row items-center justify-end">
                         <q-btn v-close-popup label="Cerrar" color="primary" flat />

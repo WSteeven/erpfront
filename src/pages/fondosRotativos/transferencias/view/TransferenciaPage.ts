@@ -8,7 +8,7 @@ import SelectorImagen from 'components/SelectorImagen.vue'
 import { useNotificacionStore } from 'stores/notificacion'
 import { useQuasar } from 'quasar'
 import { useVuelidate } from '@vuelidate/core'
-import { required, maxLength,maxValue } from 'shared/i18n-validators'
+import { required, maxLength, maxValue, requiredIf } from 'shared/i18n-validators'
 import { ContenedorSimpleMixin } from 'shared/contenedor/modules/simple/application/ContenedorSimpleMixin'
 import { TransferenciaController } from '../infrestructure/TransferenciaController'
 import { configuracionColumnasTransferencia } from '../domain/configuracionColumnasTransferencia'
@@ -45,7 +45,6 @@ export default defineComponent({
     const { setValidador, obtenerListados, cargarVista, consultar } =
       mixin.useComportamiento()
     const usuarios = ref([])
-    const esDevolucion = ref(false)
     const tareas = ref([])
     const mostrarListado = ref(true)
     const mostrarAprobacion = ref(false)
@@ -54,11 +53,11 @@ export default defineComponent({
      **************/
     const reglas = {
       usuario_recibe: {
-        requiredIf: esDevolucion.value ? true : false,
+        requiredIf: requiredIf(() => !transferencia.es_devolucion),
       },
       monto: {
         required,
-        maxValue:maxValue(9999),
+        maxValue: maxValue(9999),
         maxLength: maxLength(50),
       },
       cuenta: {
@@ -66,12 +65,13 @@ export default defineComponent({
         maxLength: maxLength(50),
       },
       tarea: {
-        requiredIf: esDevolucion.value ? true : false,
+        requiredIf: requiredIf(() => !transferencia.es_devolucion),
       },
       comprobante: {
         required,
       },
       observacion: {
+        required,
         maxLength: maxLength(150),
       },
     }
@@ -88,7 +88,7 @@ export default defineComponent({
       consultar({ id: transferenciaSaldoStore.id_transferencia })
       mostrarListado.value = false
       mostrarAprobacion.value = true
-      esDevolucion.value = transferencia.usuario_recibe !== null ? true : false
+      // esDevolucion.value = transferencia.usuario_recibe !== null ? true : false
     }
 
     //Obtener el listado de las cantones
@@ -158,21 +158,20 @@ export default defineComponent({
     function existeDevolucion() {
       if (transferencia.es_devolucion) {
         transferencia.usuario_recibe = null
-        transferencia.tarea =0
+        transferencia.tarea = 0
         transferencia.motivo = 'DEVOLUCION'
       } else {
         transferencia.motivo = 'TRANSFERENCIA ENTRE USUARIOS'
+        transferencia.tarea = null
       }
-      esDevolucion.value = transferencia.es_devolucion
     }
 
-  watchEffect(() => {
-      existeDevolucion()
-    })
-     return {
+    // watchEffect(() => {
+    //   existeDevolucion()
+    // })
+    return {
       mixin,
       transferencia,
-      esDevolucion,
       disabled,
       accion,
       v$,

@@ -3,8 +3,8 @@ import { ComponenteModal } from 'components/modales/domain/ComponenteModal.domai
 import { markRaw } from 'vue'
 
 //Paginas
-import EmpresaPage from "pages/administracion/empresas/view/EmpresaPage.vue"
-import ContactoProveedorPage from "pages/comprasProveedores/contactosProveedor/view/ContactoProveedorPage.vue"
+import EmpresaPage from 'pages/administracion/empresas/view/EmpresaPage.vue'
+import ContactoProveedorPage from 'pages/comprasProveedores/contactosProveedor/view/ContactoProveedorPage.vue'
 import CalificacionProveedorPage from 'pages/comprasProveedores/calificacionProveedor/view/CalificacionProveedorPage.vue'
 import InfoCalificacionProveedorPage from 'pages/comprasProveedores/calificacionProveedor/view/InfoCalificacionProveedorPage.vue'
 import MiCalificacionProveedorPage from 'pages/comprasProveedores/calificacionProveedor/view/MiCalificacionProveedorPage.vue'
