@@ -1,4 +1,4 @@
-import { ColumnConfig } from 'components/tables/domain/ColumnConfig'
+import { ColumnConfig } from 'src/components/tables/domain/ColumnConfig'
 import { FormacionAcademica } from './FormacionAcademica'
 
 const optionsNiveles = [

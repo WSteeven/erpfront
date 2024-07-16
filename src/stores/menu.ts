@@ -1,5 +1,5 @@
 import { useAuthenticationStore } from './authentication'
-import { MenuOption } from 'shared/menu/MenuOption'
+import { MenuOption } from 'src/shared/menu/MenuOption'
 import { defineStore } from 'pinia'
 import { computed, Ref } from 'vue'
 import seleccionContratacionPersonal from './menus/rrhh/seleccionContratacionPersonal'

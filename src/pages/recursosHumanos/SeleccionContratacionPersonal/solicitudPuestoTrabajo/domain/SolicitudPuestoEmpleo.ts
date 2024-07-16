@@ -1,4 +1,4 @@
-import { EntidadAuditable } from 'shared/entidad/domain/entidadAuditable';
+import { EntidadAuditable } from 'src/shared/entidad/domain/entidadAuditable'
 
 export class SolicitudPuestoEmpleo extends EntidadAuditable {
   nombre: string | null
@@ -7,8 +7,8 @@ export class SolicitudPuestoEmpleo extends EntidadAuditable {
   autorizador: string | null
   autorizacion: string | null
   descripcion: string
-  conocimientos: any[] | null
-  formaciones_academicas: any[] | null
+  formaciones_academicas: any[]
+  requiere_formacion_academica: boolean
   requiere_experiencia: boolean
   anios_experiencia: number | null
   areas_conocimiento: any[]
@@ -22,8 +22,8 @@ export class SolicitudPuestoEmpleo extends EntidadAuditable {
     this.autorizacion = null
     this.descripcion = ''
     this.anios_experiencia = null
-    this.conocimientos = []
     this.formaciones_academicas = []
+    this.requiere_formacion_academica = false
     this.requiere_experiencia = false
     this.areas_conocimiento = []
   }

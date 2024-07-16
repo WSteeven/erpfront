@@ -100,7 +100,6 @@ module.exports = configure(function (/* ctx */) {
         pages: path.join(__dirname, './src/pages'),
         gestionTrabajos: path.join(__dirname, './src/pages/gestionTrabajos'),
         tareas: path.join(__dirname, './src/pages/gestionTrabajos/tareas'),
-        seleccionContratacion: path.join(__dirname, './src/pages/recursosHumanos/seleccionContratacionPersonal'),
         miBodega: path.join(__dirname, './src/pages/gestionTrabajos/miBodega'),
         trabajos: path.join(__dirname, './src/pages/gestionTrabajos/trabajos'),
         clientesFinales: path.join(
@@ -156,6 +155,8 @@ module.exports = configure(function (/* ctx */) {
         vehiculos: path.join(__dirname, './src/pages/controlVehiculos'),
         // Modulo medico
         medico: path.join(__dirname, './src/pages/medico'),
+        seleccionContratacion: path.join(__dirname,
+          './src/pages/recursosHumanos/SeleccionContratacionPersonal'),
       },
     },
 

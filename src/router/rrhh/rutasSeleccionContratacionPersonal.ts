@@ -6,7 +6,7 @@ import { RouteRecordRaw } from 'vue-router';
 const rutasSeleccionContratacionPersonal: RouteRecordRaw[] = [
     {
         path: 'solicitudes-puestos',
-        name: 'solicitudes_puestos',
+        name: 'rrhh_solicitudes_nuevas_vacantes',
         component: () => import('seleccionContratacion/solicitudPuestoTrabajo/view/SolicitudPuestoEmpleoPage.vue'),
         meta: { requiresAuth: true }
     },

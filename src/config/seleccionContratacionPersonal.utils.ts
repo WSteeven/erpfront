@@ -1,4 +1,4 @@
-import { TabOption } from 'components/tables/domain/TabOption';
+import { TabOption } from 'src/components/tables/domain/TabOption'
 
 export const aniosExperiencia = [
   '3 meses',

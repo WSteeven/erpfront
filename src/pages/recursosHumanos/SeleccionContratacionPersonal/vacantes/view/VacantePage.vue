@@ -37,7 +37,7 @@
             <label class="q-mb-sm block">Tipo de Puesto</label>
             <q-select
               v-model="vacante.tipo_puesto"
-              :options="tipos_puestos_trabajo"
+              :options="tiposPuestos"
               transition-show="jump-up"
               transition-hide="jump-down"
               :disable="disabled"
@@ -67,7 +67,7 @@
             </q-select>
           </div>
           <!-- Imagen de referencia -->
-          <div class="col-12 col-md-3">
+          <!-- <div class="col-12 col-md-3">
             <label class="q-mb-sm block">Imagen de Referencia</label>
             <imagen-comprimida-component
               :imagen="vacante.imagen_referencia"
@@ -82,9 +82,9 @@
                 </div>
               </template>
             </imagen-comprimida-component>
-          </div>
+          </div> -->
           <!-- Publicidad -->
-          <div class="col-12 col-md-3">
+          <!-- <div class="col-12 col-md-3">
             <label class="q-mb-sm block">Publicidad</label>
             <imagen-comprimida-component
               :imagen="vacante.publicidad"
@@ -97,7 +97,7 @@
                 </div>
               </template>
             </imagen-comprimida-component>
-          </div>
+          </div> -->
 
           <!-- Numero de Postulantes -->
           <div class="col-12 col-md-3">
@@ -196,7 +196,7 @@
               <small>{{ error.$message }}</small>
             </div>
           </div>
-          
+
           <!-- areas de conocimiento -->
           <div class="col-12 col-md-3">
             <label class="q-mb-sm block">Conocimiento</label>
@@ -272,7 +272,7 @@
             >
             </essential-table>
           </div>
-          
+
           <!-- años de experiencia -->
           <div class="col-12 col-md-3" v-if="vacante.requiere_experiencia">
             <label class="q-mb-sm block">Tiempo de Experiencia</label>

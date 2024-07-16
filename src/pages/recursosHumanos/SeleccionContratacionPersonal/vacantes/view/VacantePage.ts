@@ -1,5 +1,4 @@
 // Dependencias
-import { configuracionColumnasConocimientoReactive } from '../../solicitudPuestoTrabajo/domain/configuracionColumnasConocimientoReactive'
 import { configuracionColumnasFormacionAcademicaReactive } from '../../solicitudPuestoTrabajo/domain/configuracionColumnasFormacionAcademicaReactive'
 import { configuracionColumnasVacante } from '../domain/configuracionColumnasVacante'
 import { required } from '@vuelidate/validators'
@@ -18,17 +17,16 @@ import ImagenComprimidaComponent from 'components/ImagenComprimidaComponent.vue'
 import { ContenedorSimpleMixin } from 'shared/contenedor/modules/simple/application/ContenedorSimpleMixin'
 import { removeAccents } from 'shared/utils'
 import { acciones, accionesTabla, maskFecha, } from 'config/utils'
-import { TipoPuestoTrabajoController } from 'pages/recursosHumanos/seleccion_contratacion_personal/tipo-puesto-trabajo/infraestructure/TipoPuestoTrabajoController'
 import { AutorizacionController } from 'pages/administracion/autorizaciones/infraestructure/AutorizacionController'
 import { AreaConocimientoController } from '../../areasConocimiento/infraestructure/AreaConocimientoController'
 import { useFiltrosListadosSelects } from 'shared/filtrosListadosGenerales'
 import { Vacante } from '../domain/Vacante'
 import { VacanteController } from '../infraestructure/VacanteController'
-import { useAuthenticationStore } from 'stores/authentication'
 import { StatusEssentialLoading } from 'components/loading/application/StatusEssentialLoading'
 import { useSeleccionContratacionStore } from 'stores/recursosHumanos/seleccionContratacion'
 import { SolicitudPuestoEmpleoController } from '../../solicitudPuestoTrabajo/infraestructure/SolicitudPuestoEmpleoController'
 import { aniosExperiencia, opcionesTablaVacantes, tabOptionsVacantes } from 'config/seleccionContratacionPersonal.utils'
+import { TipoPuestoController } from '../../tiposPuestos/infraestructure/TipoPuestoController'
 
 export default defineComponent({
     name: 'VacantePage',
@@ -37,12 +35,12 @@ export default defineComponent({
         const mixin = new ContenedorSimpleMixin(Vacante, new VacanteController())
         const { entidad: vacante, accion, disabled, listadosAuxiliares, } = mixin.useReferencias()
         const { setValidador, obtenerListados, cargarVista, listar } = mixin.useComportamiento()
-        const { onReestablecer, onGuardado, onConsultado } = mixin.useHooks()
+        const {  onGuardado } = mixin.useHooks()
 
         /***************************************************************************
          * stores
         ****************************************************************************/
-        const store = useAuthenticationStore()
+        // const store = useAuthenticationStore()
         const cargando = new StatusEssentialLoading()
         const solicitudStore = useSeleccionContratacionStore()
 
@@ -57,7 +55,7 @@ export default defineComponent({
         const { areasConocimiento, filtrarAreasConocimiento } = useFiltrosListadosSelects(listadosAuxiliares)
 
 
-        const tipos_puestos_trabajo = ref([])
+        const tiposPuestos = ref([])
         const autorizaciones = ref([])
 
         async function subirArchivos() {
@@ -73,14 +71,14 @@ export default defineComponent({
         cargarVista(async () => {
             //Verificamos si llegó una solicitud de vacante
             if (solicitudStore.idSolicitudVacante > 0) {
-                // consultar la solicitud para empaquetar 
+                // consultar la solicitud para empaquetar
                 await consultarSolicitudEmpleado()
                 if (solicitudStore.solicitudPersonal) cargarDatosSolicitud()
             }
 
             await obtenerListados({
-                tipos_puestos_trabajo: {
-                    controller: new TipoPuestoTrabajoController(),
+                tiposPuestos: {
+                    controller: new TipoPuestoController(),
                     params: {
                         campos: 'id,nombre',
                     },
@@ -94,7 +92,7 @@ export default defineComponent({
                 areasConocimiento: new AreaConocimientoController()
             })
             areasConocimiento.value = listadosAuxiliares.areasConocimiento
-            tipos_puestos_trabajo.value = listadosAuxiliares.tipos_puestos_trabajo
+            tiposPuestos.value = listadosAuxiliares.tiposPuestos
             autorizaciones.value = listadosAuxiliares.autorizaciones
 
 
@@ -223,13 +221,12 @@ export default defineComponent({
             acciones,
             accionesTabla,
             configuracionColumnas: configuracionColumnasVacante,
-            configuracionColumnasConocimientoReactive,
             configuracionColumnasFormacionAcademicaReactive,
             refArchivo,
             maskFecha,
             tabActual,
             tabOptions: tabOptionsVacantes,
-            tipos_puestos_trabajo,
+            tiposPuestos,
             autorizaciones,
 
             //listados

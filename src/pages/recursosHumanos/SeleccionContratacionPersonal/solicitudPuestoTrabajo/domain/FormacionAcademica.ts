@@ -1,4 +1,4 @@
-import { EntidadAuditable } from 'shared/entidad/domain/entidadAuditable';
+import { EntidadAuditable } from "src/shared/entidad/domain/entidadAuditable"
 
 export class FormacionAcademica extends EntidadAuditable {
   nombre: string | null

@@ -1,5 +1,5 @@
-import { MenuOption } from 'shared/menu/MenuOption';
-import { useAuthenticationStore } from 'stores/authentication';
+import { MenuOption } from 'src/shared/menu/MenuOption';
+import { useAuthenticationStore } from 'src/stores/authentication';
 import { computed, Ref } from 'vue';
 
 const seleccionContratacionPersonal: Ref<MenuOption[]> = computed(() => {
@@ -14,7 +14,7 @@ const seleccionContratacionPersonal: Ref<MenuOption[]> = computed(() => {
                     title: 'Solicitud de Personal',
                     link: 'solicitudes-puestos',
                     icon: 'bi-file-text',
-                    can: store.can('puede.acceder.solicitudes_puestos'),
+                    can: store.can('puede.acceder.rrhh_solicitudes_nuevas_vacantes'),
                 },
                 {
                     title: 'Vacantes',

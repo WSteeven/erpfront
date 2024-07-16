@@ -5,6 +5,7 @@
     titulo-pagina="Solicitud de Personal"
     :tab-options="tabOptionsSolicitudesPersonal"
     :filtrar="filtrarSolicitudes"
+    :permitirEditar="tabActual !== '2'"
     :tabDefecto="tabActual"
     ajustarCeldas
     :accion1="btnPublicar"
@@ -50,15 +51,8 @@
             </q-select>
           </div>
 
-          <div>
-            <p>Holaa uqe tal </p>
-          </div>
-
           <!-- nombre -->
-          <div
-            class="col-12 col-md-4"
-            v-if="solicitud.tipo_puesto === tipo_puesto.nuevo"
-          >
+          <div class="col-12 col-md-4">
             <label class="q-mb-sm block">Nombre del Puesto</label>
             <q-input
               v-model="solicitud.nombre"
@@ -79,10 +73,7 @@
           </div>
 
           <!-- Cargo -->
-          <div
-            class="col-12 col-md-4 col-sm-3"
-            v-if="solicitud.tipo_puesto !== tipo_puesto.nuevo"
-          >
+          <div class="col-12 col-md-4 col-sm-3">
             <label-abrir-modal
               v-if="accion == acciones.nuevo || accion == acciones.editar"
               label="Cargo"
@@ -183,7 +174,7 @@
             </div>
           </div>
           <!-- areas de conocimiento -->
-          <div class="col-12 col-md-3">
+          <div class="col-12 col-md-6 col-sm-6">
             <label class="q-mb-sm block">Conocimiento</label>
             <q-select
               v-model="solicitud.areas_conocimiento"
@@ -199,7 +190,7 @@
               @new-value="crearAreaConocimiento"
               :options="areasConocimiento"
               @filter="filtrarAreasConocimiento"
-              :error="!!v$.conocimientos.$errors.length"
+              :error="!!v$.areas_conocimiento.$errors.length"
               :option-label="(item) => item?.nombre"
               :option-value="(item) => item?.id"
               emit-value
@@ -220,7 +211,7 @@
               </template>
               <template v-slot:error>
                 <div
-                  v-for="error of v$.conocimientos.$errors"
+                  v-for="error of v$.areas_conocimiento.$errors"
                   :key="error.$uid"
                 >
                   <div class="error-msg">{{ error.$message }}</div>
@@ -229,8 +220,41 @@
             </q-select>
           </div>
 
+          <!-- Estado -->
+          <div class="col-12 col-md-3 col-sm-3">
+            <label class="q-mb-sm block">Requiere formación académica</label>
+            <q-toggle
+              :label="solicitud.requiere_formacion_academica ? 'SI' : 'NO'"
+              v-model="solicitud.requiere_formacion_academica"
+              color="primary"
+              keep-color
+              icon="bi-check2-circle"
+              unchecked-icon="clear"
+              :disable="disabled"
+              @update:model-value="checkRequiereFormacionAcademica"
+            />
+          </div>
+
+          <!-- Estado -->
+          <div class="col-12 col-md-3 col-sm-3">
+            <label class="q-mb-sm block">Requiere experiencia</label>
+            <q-toggle
+              :label="solicitud.requiere_experiencia ? 'SI' : 'NO'"
+              v-model="solicitud.requiere_experiencia"
+              color="primary"
+              keep-color
+              icon="bi-check2-circle"
+              unchecked-icon="clear"
+              :disable="disabled"
+              @update:model-value="checkRequiereExperiencia"
+            />
+          </div>
+
           <!-- {{ v$.$errors }} -->
-          <div class="col-12 col-md-6 col-sm-12">
+          <div
+            class="col-12 col-md-6 col-sm-12"
+            v-if="solicitud.requiere_formacion_academica"
+          >
             <q-btn
               color="positive"
               @click="agregarFormacionAcademica()"
@@ -252,26 +276,22 @@
               :mostrarBotones="false"
               :permitir-editar-celdas="true"
               :mostrar-header="false"
+              :disable="disabled"
               :grid="false"
               :accion1="btnEliminarFormacionAcademica"
               :alto-fijo="false"
               :ajustarCeldas="true"
             >
             </essential-table>
+            <div
+              v-for="error of v$.formaciones_academicas.$errors"
+              :key="error.$uid"
+              class="text-negative text-uppercase"
+            >
+              <small>Ingresa al menos un título académico</small>
+            </div>
           </div>
-          <!-- Estado -->
-          <div class="col-12 col-md-3 col-sm-3">
-            <label class="q-mb-sm block">Requiere experiencia</label>
-            <q-toggle
-              :label="solicitud.requiere_experiencia ? 'SI' : 'NO'"
-              v-model="solicitud.requiere_experiencia"
-              color="primary"
-              keep-color
-              icon="bi-check2-circle"
-              unchecked-icon="clear"
-              :disable="disabled"
-            />
-          </div>
+
           <!-- años de experiencia -->
           <div class="col-12 col-md-3" v-if="solicitud.requiere_experiencia">
             <label class="q-mb-sm block">Tiempo de Experiencia</label>
@@ -304,17 +324,20 @@
             class="col-12 q-mb-md"
             v-if="solicitud.tipo_puesto == tipo_puesto.nuevo"
           >
+            <!-- formato=".pdf, .doc,.docx" -->
             <gestor-archivos
               ref="refArchivo"
               label="Manual de funciones"
               :mixin="mixin"
               :disable="disabled"
-              quieroSubirArchivos
+              :quieroSubirArchivos="accion == acciones.nuevo"
+              formato=".pdf,.docx,.docx"
+              :maxFiles="1"
               :listarAlGuardar="false"
               :permitir-eliminar="
                 accion == acciones.nuevo || accion == acciones.editar
               "
-              :idModelo="1"
+              :idModelo="idRegistro"
             >
               <template #boton-subir>
                 <q-btn
