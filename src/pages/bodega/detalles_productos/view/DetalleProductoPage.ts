@@ -56,6 +56,7 @@ export default defineComponent({
     //variable aux
     const descripcion = ref()
     const refSeriesModalEditable = ref()
+    const categoria_var = ref('')
 
     const modales = new ComportamientoModalesDetalleProducto()
     //listas
@@ -214,8 +215,6 @@ export default defineComponent({
       // rowsNumber: xx if getting data from a server
     })
     const opciones_tipos = ['HOMBRE', 'MUJER']
-
-    const categoria_var = ref('')
 
     watch(categoria_var, () => {
       listadoBackup.value = listado.value
