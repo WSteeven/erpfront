@@ -64,7 +64,7 @@
 
               <div
                 class="col-12 col-md-3 q-mb-md"
-                v-if="reporte.tipo === VEHICULO"
+                v-if="false && reporte.tipo === VEHICULO"
               >
                 <label class="q-mb-sm block">Vehículo</label>
                 <q-select
@@ -250,7 +250,7 @@
 
           <q-card
             class="q-mb-md q-mt-sm rounded no-border custom-shadow"
-            v-if="reporte.tipo == COMBUSTIBLE && results.results.length"
+            v-if="reporte.tipo == COMBUSTIBLE && results?.results.length"
           >
             <div
               class="row text-bold text-primary q-pa-md rounded items-center q-mb-md"
@@ -293,7 +293,7 @@
                     <essential-table
                       v-if="results.results?.length"
                       titulo="Valores"
-                      :configuracionColumnas="configuracionColumnas"
+                      :configuracionColumnas="configuracionColumnasCombustibles"
                       :datos="results.results"
                       :altoFijo="false"
                     ></essential-table>
@@ -316,6 +316,24 @@
                 >
               </q-tab-panel></q-tab-panels
             >
+          </q-card>
+
+          <q-card
+            class="q-mb-md q-mt-sm rounded no-border custom-shadow"
+            v-if="reporte.tipo == VEHICULO && results?.results.length"
+          >
+            <div class="row q-col-gutter-sm q-py-md q-mb-lg">
+              <div class="col-12">
+                <essential-table
+                  v-if="results.results?.length"
+                  titulo="Valores"
+                  :configuracionColumnas="configuracionColumnasVehiculos"
+                  :datos="results.results"
+                  mostrarExportar
+                  :altoFijo="false"
+                ></essential-table>
+              </div>
+            </div>
           </q-card>
         </div>
       </q-page>

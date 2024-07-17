@@ -64,6 +64,10 @@ export default defineComponent({
     maxFiles: {
       type: Number,
       default: 15 // **NOTA** :  valor temporal, actualizar a 1 cuando ya se controle el maximo de archivos en los componentes que llaman a GestorArchivos
+    },
+    maxTamanioBytes: {
+      type: Number,
+      default: 10485760 //10 MB
     }
   },
   emits: ['inicializado'],
@@ -201,6 +205,13 @@ export default defineComponent({
       return sumatoria
     }
 
+    function bytesToMB(bytes) {
+      if (bytes === 0) return '0 MB';
+
+      const megabytes = bytes / (1024 * 1024);
+      return megabytes.toFixed(2) + ' MB';
+  }
+
     return {
       listadoArchivos,
       refGestor,
@@ -219,6 +230,7 @@ export default defineComponent({
       subir,
       limpiarListado,
       listarArchivosAlmacenados,
+      bytesToMB,
     }
   }
 })

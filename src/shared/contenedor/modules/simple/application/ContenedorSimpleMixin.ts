@@ -147,30 +147,34 @@ export class ContenedorSimpleMixin<T extends EntidadAuditable> extends Contenedo
   }
 
   private async listar(params?: ParamsType, append = false) {
-    //this.cargarVista(async () => {
     this.statusEssentialLoading.activar()
     try {
-      const { result } = await this.controller.listar(params)
+      const { result, meta } = await this.controller.listar(params)
       if (result.length == 0) this.notificaciones.notificarCorrecto('Aún no se han agregado elementos')
 
       if (append) this.refs.listado.value.push(...result)
       else this.refs.listado.value = result
+
+      this.refs.pagination.value.last_page = meta?.last_page
+      this.refs.pagination.value.page = meta?.current_page
+      this.refs.pagination.value.total = meta?.total
     } catch (error) {
-      this.notificaciones.notificarError('Error al obtener el listado.')
+      this.notificaciones.notificarError(error + '')
+    } finally {
+      this.statusEssentialLoading.desactivar()
     }
 
     this.hooks.onListado()
-    this.statusEssentialLoading.desactivar()
-    //})
   }
 
   private async filtrar(uri: string) {
     this.cargarVista(async () => {
       try {
         const { result } = await this.controller.filtrar(uri)
-        if (result.length == 0) this.notificaciones.notificarCorrecto('No se encontraron coincidencias.')
+        if (result.length == 0) this.notificaciones.notificarInformacion('No se encontraron coincidencias.')
 
         this.refs.listado.value = result
+        this.notificaciones.notificarInformacion('Resultados encontrados.')
       } catch (error) {
         this.notificaciones.notificarError('Error al obtener el listado.')
       }
@@ -295,7 +299,7 @@ export class ContenedorSimpleMixin<T extends EntidadAuditable> extends Contenedo
     this.statusEssentialLoading.activar()
     try {
       // const { result } = await this.controller.listarActividades(id, params)
-      const result  = []
+      const result = []
       if (result.length == 0) this.notificaciones.notificarCorrecto('Aún no se han agregado elementos')
 
       if (append) this.refs.listadoActividades.value.push(...result)

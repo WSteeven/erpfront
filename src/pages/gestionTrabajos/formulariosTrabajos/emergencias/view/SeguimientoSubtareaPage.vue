@@ -100,7 +100,7 @@
               <q-tab
                 v-if="esCoordinador"
                 name="historial_material_tarea_usado"
-                label="Historial de material de tarea usado"
+                label="Editar historial de material de tarea usado"
                 @click="resetearFiltroHistorialTarea()"
               >
               </q-tab>
@@ -265,7 +265,7 @@
               <q-tab
                 v-if="esCoordinador"
                 name="historial_material_stock_usado"
-                label="Historial de material de stock usado"
+                label="Editar historial de material de stock usado"
                 @click="resetearFiltroHistorialStock()"
               >
               </q-tab>

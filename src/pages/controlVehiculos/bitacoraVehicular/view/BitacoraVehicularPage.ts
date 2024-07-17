@@ -34,6 +34,9 @@ import { useCargandoStore } from 'stores/cargando';
 import { useNotificacionStore } from 'stores/notificacion';
 import { UltimaBitacoraController } from '../infraestructure/UltimaBitacoraController';
 import { TransferenciaVehiculoController } from 'pages/controlVehiculos/transferenciaVehiculos/infraestructure/TransferenciaVehiculoController';
+import { ChecklistAccesoriosVehiculo } from '../modules/checklistAccesoriosVehiculo/domain/ChecklistAccesoriosVehiculo';
+import { ChecklistImagenVehiculo } from '../modules/checklistImagenVehiculo/domain/ChecklistImagenVehiculo';
+import { ChecklistVehiculo } from '../modules/checklistVehiculo/domain/ChecklistVehiculo';
 
 
 export default defineComponent({
@@ -93,9 +96,12 @@ export default defineComponent({
         })
         onConsultado(async () => {
             if (accion.value == acciones.editar) {
-                cargando.activar()
+                if (bitacora.checklistAccesoriosVehiculo == null) bitacora.checklistAccesoriosVehiculo = new ChecklistAccesoriosVehiculo()
+                if (bitacora.checklistImagenVehiculo == null) bitacora.checklistImagenVehiculo = new ChecklistImagenVehiculo()
+                if (bitacora.checklistVehiculo == null) bitacora.checklistVehiculo = new ChecklistVehiculo()
+
                 await obtenerListados({
-                    tareas: { controller: new TareaController(), params: { formulario: true, campos: 'id,codigo_tarea,titulo' } },
+                    tareas: { controller: new TareaController(), params: { formulario: true, empleado_id: store.user.id, campos: 'id,codigo_tarea,titulo' } },
                     tickets: {
                         controller: new TicketController(),
                         params: {
@@ -104,7 +110,7 @@ export default defineComponent({
                         }
                     },
                 })
-                cargando.desactivar()
+
                 tareas.value = listadosAuxiliares.tareas
                 tickets.value = listadosAuxiliares.tickets
             }
@@ -128,7 +134,6 @@ export default defineComponent({
             km_final: { requiredIf: requiredIf(() => accion.value == acciones.editar && bitacora.firmada) },
             tanque_inicio: { required },
             tanque_final: {
-                required,
                 requiredIf: requiredIf(() => accion.value == acciones.editar && bitacora.firmada),
                 minValue: minValue(25)
             },
@@ -161,7 +166,7 @@ export default defineComponent({
          * `resultado` de la respuesta del método `listar` en la clase `AsignacionVehiculoController`.
          */
         async function obtenerVehiculoAsignado() {
-            const response = (await new AsignacionVehiculoController().listar({ filtro: 1, responsable_id: store.user.id, estado: 'ACEPTADO' }))
+            const response = (await new AsignacionVehiculoController().listar({ filtro: 1, responsable_id: store.user.id, estado: 'ACEPTADO', transferido: 0 }))
             console.log(response)
             if (response.result.length == 0) {
                 const response = (await new TransferenciaVehiculoController().listar({ filtro: 1, responsable_id: store.user.id, estado: 'ACEPTADO' }))

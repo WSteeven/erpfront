@@ -1,5 +1,6 @@
 import { computed, ComputedRef, reactive, Ref, ref, UnwrapRef } from 'vue'
 import { acciones } from 'config/utils'
+import { MetaPagination } from './MetaPagination'
 
 export class Referencias<T> {
   tabs: Ref
@@ -15,6 +16,16 @@ export class Referencias<T> {
   disabled: ComputedRef<boolean>
   listadosAuxiliares: UnwrapRef<any>
   errors: Ref
+  metaPagination: Ref<MetaPagination | undefined>
+  pagination = ref({
+    sortBy: 'desc',
+    descending: false,
+    page: 1,
+    rowsPerPage: 3, // props.altoFijo ? 15 : 0,
+    rowsNumber: 10,
+    last_page: 2,
+    total: 0,
+  })
 
   constructor() {
     this.errors = ref()
@@ -40,6 +51,7 @@ export class Referencias<T> {
     this.currentPageListado = ref(1)
     this.nextPageUrl = ref()
     this.accion = ref(acciones.nuevo)
+    this.metaPagination = ref()
 
     // Boolean para desactivar la edicion en formularios
     this.disabled = computed(() => {
