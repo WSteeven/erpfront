@@ -166,7 +166,7 @@ export default defineComponent({
          * `resultado` de la respuesta del método `listar` en la clase `AsignacionVehiculoController`.
          */
         async function obtenerVehiculoAsignado() {
-            const response = (await new AsignacionVehiculoController().listar({ filtro: 1, responsable_id: store.user.id, estado: 'ACEPTADO' }))
+            const response = (await new AsignacionVehiculoController().listar({ filtro: 1, responsable_id: store.user.id, estado: 'ACEPTADO', transferido: 0 }))
             console.log(response)
             if (response.result.length == 0) {
                 const response = (await new TransferenciaVehiculoController().listar({ filtro: 1, responsable_id: store.user.id, estado: 'ACEPTADO' }))

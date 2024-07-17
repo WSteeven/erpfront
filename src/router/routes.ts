@@ -1069,8 +1069,8 @@ const routes: RouteRecordRaw[] = [
         meta: { requiresAuth: true },
       },
       {
-        path: '/prestamo-quirorafario',
-        name: 'prestamo_quirorafario',
+        path: 'prestamos-quirografarios',
+        name: 'prestamos_quirografarios',
         component: () =>
           import(
             'pages/recursosHumanos/prestamo-quirorafarios/view/PrestamoQuirorafarioPage.vue'

@@ -1,28 +1,23 @@
 // Dependencias
 import { configuracionColumnasExtensionConyugal } from '../domain/configuracionColumnasExtensionConyugal'
 import { useVuelidate } from '@vuelidate/core'
-import { computed, defineComponent, reactive, ref, watchEffect } from 'vue'
+import { computed, defineComponent, ref, watchEffect } from 'vue'
 
 // Componentes
 import TabLayout from 'shared/contenedor/modules/simple/view/TabLayout.vue'
 import SelectorImagen from 'components/SelectorImagen.vue'
+import GestorDocumentos from 'components/documentos/view/GestorDocumentos.vue'
 
 //Logica y controladores
 import { ContenedorSimpleMixin } from 'shared/contenedor/modules/simple/application/ContenedorSimpleMixin'
 import { ExtensionConyugal } from '../domain/ExtensionConyugal'
 import { removeAccents } from 'shared/utils'
-import { maskFecha, tabOptionsSolicitudPedido } from 'config/utils'
-import {
-  requiredIf,
-  maxLength,
-  minLength,
-  required,
-} from 'shared/i18n-validators'
+import { maskFecha } from 'config/utils'
+import { required } from 'shared/i18n-validators'
 import { endpoints } from 'config/api'
 import { Archivo } from 'pages/gestionTrabajos/subtareas/modules/gestorArchivosTrabajos/domain/Archivo'
 import { ArchivoExtensionConyugalController } from '../infraestructure/ArchivoExtensionConyugalController'
 import { useAuthenticationStore } from 'stores/authentication'
-import GestorDocumentos from 'components/documentos/view/GestorDocumentos.vue'
 import { useNotificaciones } from 'shared/notificaciones'
 import { CustomActionTable } from 'components/tables/domain/CustomActionTable'
 import { ExtensionConyugalController } from '../infraestructure/ExtensionConyugalController'
@@ -31,21 +26,14 @@ export default defineComponent({
   components: { TabLayout, SelectorImagen, GestorDocumentos },
   emits: ['cerrar-modal'],
   setup(props, { emit }) {
-    const mixin = new ContenedorSimpleMixin(
-      ExtensionConyugal,
-      new ExtensionConyugalController()
-    )
+    const mixin = new ContenedorSimpleMixin(ExtensionConyugal, new ExtensionConyugalController())
     const mixinExtensionConyugal = new ContenedorSimpleMixin(Archivo, new ArchivoExtensionConyugalController())
+    const { entidad: extensionconyugal, disabled, accion, } = mixin.useReferencias()
+    const { setValidador, consultar, listar } = mixin.useComportamiento()
+    const { onBeforeGuardar, onGuardado, onBeforeModificar, onReestablecer, } = mixin.useHooks()
 
-    const {
-      entidad: extensionconyugal,
-      disabled,
-      accion,
-    } = mixin.useReferencias()
-    const { setValidador, consultar, cargarVista, obtenerListados, listar } = mixin.useComportamiento()
-    const { onBeforeGuardar, onGuardado, onBeforeModificar, onModificado, onConsultado, onReestablecer, } = mixin.useHooks()
     const store = useAuthenticationStore()
-    const { confirmar, prompt, notificarCorrecto, notificarAdvertencia, notificarError, } = useNotificaciones()
+    const { notificarAdvertencia } = useNotificaciones()
     const is_month = ref(false)
     const refArchivoExtensionConyugal = ref()
     const esRecursosHumanos = store.esRecursosHumanos
@@ -57,17 +45,17 @@ export default defineComponent({
     const auxmes = ref()
 
 
-    function convertir_fecha(fecha) {
-      const dateParts = fecha.split('-') // Dividir el string en partes usando el guión como separador
-      let tiempo = dateParts[2]
-      tiempo = tiempo.split(' ')
-      tiempo = tiempo[1].split(':')
-      const dia = parseInt(dateParts[0], 10) // Obtener el día como entero
-      const mes = parseInt(dateParts[1], 10) - 1 // Obtener el mes como entero (restar 1 porque en JavaScript los meses comienzan desde 0)
-      const anio = parseInt(dateParts[2], 10)
-      const fecha_convert = new Date(anio, mes, dia, tiempo[0], tiempo[1], 0)
-      return fecha_convert
-    }
+    // function convertir_fecha(fecha) {
+    //   const dateParts = fecha.split('-') // Dividir el string en partes usando el guión como separador
+    //   let tiempo = dateParts[2]
+    //   tiempo = tiempo.split(' ')
+    //   tiempo = tiempo[1].split(':')
+    //   const dia = parseInt(dateParts[0], 10) // Obtener el día como entero
+    //   const mes = parseInt(dateParts[1], 10) - 1 // Obtener el mes como entero (restar 1 porque en JavaScript los meses comienzan desde 0)
+    //   const anio = parseInt(dateParts[2], 10)
+    //   const fecha_convert = new Date(anio, mes, dia, tiempo[0], tiempo[1], 0)
+    //   return fecha_convert
+    // }
     onBeforeGuardar(() => {
       extensionconyugal.tieneDocumento =
         refArchivoExtensionConyugal.value.tamanioListado > 0 ? true : false
@@ -79,9 +67,9 @@ export default defineComponent({
     onBeforeModificar(() => {
       extensionconyugal.tieneDocumento = true
     })
-    onGuardado((id: number) => {
-      subirArchivos()
-      listar()
+    onGuardado(async (id: number) => {
+      await subirArchivos()
+      await listar()
       // emit('cerrar-modal')
     })
     async function subirArchivos() {
