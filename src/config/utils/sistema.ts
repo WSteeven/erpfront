@@ -1,1 +1,5 @@
-//
+export const empresas = {
+    JPCONSTRUCRED: 'JPCONSTRUCRED',
+    JPCUSTODY: 'JPCUSTODY',
+    CCLEDARE: 'CCLEDARE',
+}

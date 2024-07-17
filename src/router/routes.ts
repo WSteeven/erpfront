@@ -2,7 +2,13 @@ import { RouteRecordRaw } from 'vue-router'
 import rutasMedico from './rutasMedico'
 import rutasTareas from './rutasTareas'
 import rutasTickets from './rutasTickets'
+import rutasActivosFijos from './rutasActivosFijos'
+import { empresas } from 'config/utils/sistema'
 
+const JPCONSTRUCRED = process.env.VUE_APP_ID == empresas.JPCONSTRUCRED
+const JPCUSTODY = process.env.VUE_APP_ID == empresas.JPCUSTODY
+const CCLEDARE = process.env.VUE_APP_ID == empresas.CCLEDARE
+console.log(process.env.VUE_APP_ID)
 const routes: RouteRecordRaw[] = [
   {
     path: '/',
@@ -49,6 +55,11 @@ const routes: RouteRecordRaw[] = [
        * Modulo de tickets
        ********************/
       ...rutasTickets,
+
+      /**************************
+       * Modulo de activos fijos
+       **************************/
+      ...rutasActivosFijos,
 
       /********
        * Otros
@@ -187,10 +198,16 @@ const routes: RouteRecordRaw[] = [
       {
         path: '/detalles',
         name: 'detalles',
-        component: () =>
-          import(
-            'pages/bodega/detalles_productos/view/DetalleProductoPage.vue'
-          ),
+        component: () => {
+          switch (process.env.VUE_APP_ID) {
+            case empresas.JPCONSTRUCRED: return import(
+              'pages/bodega/detalles_productos/view/DetalleProductoPage.vue'
+            )
+            case empresas.JPCUSTODY: return import(
+              'pages/bodega/detalles_productos/view/jpcustody/DetalleProductoPage.vue'
+            )
+          }
+        },
         meta: { requiresAuth: true },
       },
       {

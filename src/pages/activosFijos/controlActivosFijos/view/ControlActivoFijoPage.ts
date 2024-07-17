@@ -3,10 +3,12 @@ import { configuracionColumnasActivosFijos } from '../domain/configuracionColumn
 import { required } from '@vuelidate/validators'
 import { useVuelidate } from '@vuelidate/core'
 import { defineComponent, ref } from 'vue'
-//Componentes
-import TabLayout from 'shared/contenedor/modules/simple/view/TabLayout.vue'
 
-//Logica y controladores
+// Componentes
+import TabLayout from 'shared/contenedor/modules/simple/view/TabLayout.vue'
+import SelectorImagen from 'components/SelectorImagen.vue'
+
+// Logica y controladores
 import { ContenedorSimpleMixin } from 'shared/contenedor/modules/simple/application/ContenedorSimpleMixin'
 import { ActivoFijo } from '../domain/ActivoFijo'
 import { LocalStorage } from 'quasar'
@@ -18,7 +20,7 @@ import { useActivoFijoStore } from 'stores/activo_fijo'
 import { CustomActionTable } from 'components/tables/domain/CustomActionTable'
 
 export default defineComponent({
-  components: { TabLayout },
+  components: { TabLayout, SelectorImagen },
   setup() {
     const mixin = new ContenedorSimpleMixin(ActivoFijo, new ActivoFijoController())
     const { entidad: activo, disabled, accion, listadosAuxiliares } = mixin.useReferencias()
@@ -73,11 +75,11 @@ export default defineComponent({
     /*******************************************************************************************
      * Funciones
      ******************************************************************************************/
-    const botonImprimir:CustomActionTable={
+    const botonImprimir: CustomActionTable = {
       titulo: 'Imprimir',
-      color:'secondary',
+      color: 'secondary',
       icono: 'bi-printer',
-      accion: async({entidad})=>{
+      accion: async ({ entidad }) => {
         activoFijoStore.idActivo = entidad.id
         await activoFijoStore.imprimirPdf()
       }

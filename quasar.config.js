@@ -28,7 +28,7 @@ module.exports = configure(function (/* ctx */) {
     // app boot file (/src/boot)
     // --> boot files are part of "main.js"
     // https://v2.quasar.dev/quasar-cli-vite/boot-files
-    boot: ['axios'],
+    boot: ['axios', 'global-variables'],
 
     // https://v2.quasar.dev/quasar-cli-vite/quasar-config-js#css
     css: ['app.scss'],
@@ -155,6 +155,10 @@ module.exports = configure(function (/* ctx */) {
         vehiculos: path.join(__dirname, './src/pages/controlVehiculos'),
         // Modulo medico
         medico: path.join(__dirname, './src/pages/medico'),
+        controlActivosFijos: path.join(
+          __dirname,
+          './src/pages/activosFijos/controlActivosFijos'
+        ),
       },
     },
 

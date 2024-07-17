@@ -13,7 +13,7 @@ export const useMenuStore = defineStore('menu', () => {
     },
     {
       title: 'Inicio',
-      icon: 'bi-house-fill',
+      icon: 'home',
       link: '/',
       can: true, //!store.can('puede.ver.trabajo_asignado'),
     },
@@ -442,6 +442,22 @@ export const useMenuStore = defineStore('menu', () => {
               icon: 'bi-dash',
             },
           ],
+        },
+      ],
+    },
+    /*****************
+     * Activos fijos
+     *****************/
+    {
+      title: 'Activos fijos',
+      icon: 'home_work',
+      can: store.can('puede.acceder.modulo_activos_fijos'),
+      children: [
+        {
+          title: 'Control',
+          link: 'control-activos-fijos',
+          can: store.can('puede.acceder.control_activos_fijos'),
+          icon: 'bi-app',
         },
       ],
     },
