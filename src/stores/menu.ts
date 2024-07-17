@@ -745,10 +745,10 @@ export const useMenuStore = defineStore('menu', () => {
                   can: store.can('puede.acceder.prestamo_hipotecario'),
                 },
                 {
-                  title: 'Prestamos Quirorafario',
-                  link: 'prestamo-quirorafario',
+                  title: 'Prestamos Quirografario',
+                  link: 'prestamos-quirografarios',
                   icon: 'fa-solid fa-hands-holding',
-                  can: store.can('puede.acceder.prestamo_quirorafario'),
+                  can: store.can('puede.acceder.prestamos_quirografarios'),
                 },
                 {
                   title: 'Solicitud de Prestamos Empresariales',
