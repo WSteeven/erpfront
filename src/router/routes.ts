@@ -171,6 +171,13 @@ const routes: RouteRecordRaw[] = [
         meta: { requiresAuth: true },
       },
       {
+        path: '/permisos-armas',
+        name: 'permisos_armas',
+        component: () =>
+          import('pages/bodega/permisos/view/PermisoPage.vue'),
+        meta: { requiresAuth: true },
+      },
+      {
         path: '/control-stock',
         name: 'control_stock',
         component: () =>
@@ -201,7 +208,7 @@ const routes: RouteRecordRaw[] = [
         component: () => {
           switch (process.env.VUE_APP_ID) {
             case empresas.JPCONSTRUCRED: return import(
-              'pages/bodega/detalles_productos/view/DetalleProductoPage.vue'
+              'pages/bodega/detalles_productos/view/jpconstrucred/DetalleProductoPage.vue'
             )
             case empresas.JPCUSTODY: return import(
               'pages/bodega/detalles_productos/view/jpcustody/DetalleProductoPage.vue'

@@ -311,6 +311,13 @@ export const useMenuStore = defineStore('menu', () => {
           can: store.can('puede.acceder.detalles'),
         },
         {
+          title: 'Permisos de Armas',
+          link: 'permisos-armas',
+          icon: 'bi-app',
+          // can: store.esBodeguero,// can('puede.ver.detalles'),
+          can: store.can('puede.acceder.permisos_armas'),
+        },
+        {
           title: 'Inventario',
           link: 'inventarios',
           icon: 'bi-circle',

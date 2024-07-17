@@ -265,6 +265,7 @@ export const endpoints = {
   codigos_clientes: new Endpoint('codigos-clientes'),
   detalles_materiales: new Endpoint('detalles-materiales'),
   detalles: new Endpoint('detalles'),
+  permisos_armas: new Endpoint('permisos-armas'),
   devoluciones: new Endpoint('devoluciones'),
   detalle_producto_transaccion: new Endpoint(
     'detalles-productos-transacciones'
