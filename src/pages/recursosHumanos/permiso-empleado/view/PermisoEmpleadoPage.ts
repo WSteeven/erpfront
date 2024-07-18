@@ -14,14 +14,7 @@ import { ContenedorSimpleMixin } from 'shared/contenedor/modules/simple/applicat
 import { PermisoEmpleadoController } from '../infraestructure/PermisoEmpleadoController'
 import { PermisoEmpleado } from '../domain/PermisoEmpleado'
 import { removeAccents } from 'shared/utils'
-import {
-  autorizacionesId,
-  convertir_fecha_guion,
-  convertir_fecha_hora,
-  maskFecha,
-  numDiaSemana,
-  tabOptionsPermiso,
-} from 'config/utils'
+import {autorizacionesId,convertir_fecha_guion,convertir_fecha_hora,maskFecha,numDiaSemana,tabOptionsPermiso,} from 'config/utils'
 import { requiredIf, required } from 'shared/i18n-validators'
 import { MotivoPermisoEmpleadoController } from 'pages/recursosHumanos/motivo/infraestructure/MotivoPermisoEmpleadoController'
 import { EmpleadoController } from 'pages/recursosHumanos/empleados/infraestructure/EmpleadoController'
@@ -29,46 +22,21 @@ import { endpoints } from 'config/api'
 import { Archivo } from 'pages/gestionTrabajos/subtareas/modules/gestorArchivosTrabajos/domain/Archivo'
 import { ArchivoPermisoEmpleadoController } from '../infraestructure/ArchivoPermisoEmpleadoController'
 import { useAuthenticationStore } from 'stores/authentication'
-import { useNotificaciones } from 'shared/notificaciones'
 import { CustomActionTable } from 'components/tables/domain/CustomActionTable'
 import { AutorizacionController } from 'pages/administracion/autorizaciones/infraestructure/AutorizacionController'
 import { addDay, format, parse } from '@formkit/tempo'
 
 export default defineComponent({
-  components: {
-    TabLayoutFilterTabs2,
-    SelectorImagen,
-    GestorDocumentos,
-    ArchivoSeguimiento,
-  },
+  components: {TabLayoutFilterTabs2,SelectorImagen,GestorDocumentos,ArchivoSeguimiento,},
   emits: ['cerrar-modal'],
   setup(props, { emit }) {
-    const mixin = new ContenedorSimpleMixin(
-      PermisoEmpleado,
-      new PermisoEmpleadoController()
-    )
-    const mixinArchivoPrestamoEmpleado = new ContenedorSimpleMixin(
-      Archivo,
-      new ArchivoPermisoEmpleadoController()
-    )
+    const mixin = new ContenedorSimpleMixin(PermisoEmpleado, new PermisoEmpleadoController())
+    const mixinArchivoPrestamoEmpleado = new ContenedorSimpleMixin(Archivo, new ArchivoPermisoEmpleadoController())
 
-    const {
-      entidad: permiso,
-      disabled,
-      accion,
-      listadosAuxiliares,
-    } = mixin.useReferencias()
-    const { setValidador, consultar, cargarVista, obtenerListados, listar } =
-      mixin.useComportamiento()
-    const {
-      onBeforeGuardar,
-      onGuardado,
-      onBeforeModificar,
-      onConsultado,
-      onReestablecer,
-    } = mixin.useHooks()
+    const { entidad: permiso, disabled, accion, listadosAuxiliares, } = mixin.useReferencias()
+    const { setValidador, consultar, cargarVista, obtenerListados, listar } = mixin.useComportamiento()
+    const { onBeforeGuardar, onGuardado, onBeforeModificar, onConsultado, onReestablecer, } = mixin.useHooks()
     const store = useAuthenticationStore()
-    const { notificarAdvertencia } = useNotificaciones()
 
     const tipos_permisos = ref([])
     const empleados = ref([])
@@ -83,7 +51,7 @@ export default defineComponent({
     const horaFinLaboral = 17
     const milisegundosPorHora = 1000 * 60 * 60;
     const minuteOptions = [0, 15, 30, 45]
-
+    const mask = "YYYY-MM-DD HH:mm"
 
     const verEmpleado = computed(() => store.can('puede.ver.campo.empleado'))
     const esNuevo = computed(() => {
@@ -91,8 +59,8 @@ export default defineComponent({
     })
     const dias_permiso = computed(() => {
       if (permiso.fecha_hora_inicio != null && permiso.fecha_hora_fin != null) {
-        const fechaInicio = parse(permiso.fecha_hora_inicio != null ? permiso.fecha_hora_inicio : new Date().toString(), 'DD-MM-YYYY HH:mm:ss')
-        const fechaFin = parse(permiso.fecha_hora_fin != null ? permiso.fecha_hora_fin : new Date().toString(), 'DD-MM-YYYY HH:mm:ss')
+        const fechaInicio = parse(permiso.fecha_hora_inicio != null ? permiso.fecha_hora_inicio : new Date().toString(), mask)
+        const fechaFin = parse(permiso.fecha_hora_fin != null ? permiso.fecha_hora_fin : new Date().toString(), mask)
         let horasLaborales = 0
         let fechaActual = fechaInicio
         let diferenciaDias = 0
@@ -104,9 +72,9 @@ export default defineComponent({
           //Avanzamos a la siguiente hora
           fechaActual.setTime(fechaActual.getTime() + milisegundosPorHora);
         }
-        console.log(horasLaborales)
+        // console.log(horasLaborales)
         if (horasLaborales > 8) {
-          console.log(horasLaborales / 9 * 8)
+          // console.log(horasLaborales / 9 * 8)
           diferenciaDias = horasLaborales / 9
         } else
           diferenciaDias = horasLaborales < 8 ? 0 : horasLaborales / 8
@@ -118,8 +86,8 @@ export default defineComponent({
     })
     const horas_permisos = computed(() => {
       if (permiso.fecha_hora_inicio != null && permiso.fecha_hora_fin != null) {
-        const fechaInicio = parse(permiso.fecha_hora_inicio != null ? permiso.fecha_hora_inicio : new Date().toString(), 'DD-MM-YYYY HH:mm:ss')
-        const fechaFin = parse(permiso.fecha_hora_fin != null ? permiso.fecha_hora_fin : new Date().toString(), 'DD-MM-YYYY HH:mm:ss')
+        const fechaInicio = parse(permiso.fecha_hora_inicio != null ? permiso.fecha_hora_inicio : new Date().toString(), mask)
+        const fechaFin = parse(permiso.fecha_hora_fin != null ? permiso.fecha_hora_fin : new Date().toString(), mask)
         // Verificar que la fecha de inicio sea anterior a la fecha de fin
         if (fechaInicio >= fechaFin) {
           return "La fecha de inicio debe ser anterior a la fecha de fin.";
@@ -311,10 +279,10 @@ export default defineComponent({
       fecha_hora_inicio: { required },
       fecha_hora_fin: { required },
       fecha_recuperacion: {
-        required: requiredIf(() => permiso.recuperables == true),
+        required: requiredIf(() => permiso.recupero == true),
       },
       hora_recuperacion: {
-        required: requiredIf(() => permiso.recuperables == true),
+        required: requiredIf(() => permiso.recupero == true),
       },
       justificacion: { required },
       observacion: { required: requiredIf(() => esAutorizador.value) },
@@ -390,6 +358,7 @@ export default defineComponent({
       disabled,
       tabOptionsPermiso,
       configuracionColumnas: configuracionColumnasPermisoEmpleado,
+      mask,
     }
   },
 })
