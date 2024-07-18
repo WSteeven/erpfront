@@ -67,7 +67,7 @@
             </q-select>
           </div>
           <!-- Imagen de referencia -->
-          <!-- <div class="col-12 col-md-3">
+           <div class="col-12 col-md-3">
             <label class="q-mb-sm block">Imagen de Referencia</label>
             <imagen-comprimida-component
               :imagen="vacante.imagen_referencia"
@@ -82,9 +82,9 @@
                 </div>
               </template>
             </imagen-comprimida-component>
-          </div> -->
+          </div>
           <!-- Publicidad -->
-          <!-- <div class="col-12 col-md-3">
+          <div class="col-12 col-md-3">
             <label class="q-mb-sm block">Publicidad</label>
             <imagen-comprimida-component
               :imagen="vacante.publicidad"
@@ -97,7 +97,7 @@
                 </div>
               </template>
             </imagen-comprimida-component>
-          </div> -->
+          </div>
 
           <!-- Numero de Postulantes -->
           <div class="col-12 col-md-3">
@@ -144,7 +144,7 @@
               </template>
 
               <template v-slot:error>
-                <div v-for="error of v$.fecha_viat.$errors" :key="error.$uid">
+                <div v-for="error of v$.fecha_caducidad.$errors" :key="error.$uid">
                   <div class="error-msg">{{ error.$message }}</div>
                 </div>
               </template>
@@ -213,7 +213,7 @@
               input-debounce="0"
               :options="areasConocimiento"
               @filter="filtrarAreasConocimiento"
-              :error="!!v$.conocimientos.$errors.length"
+              :error="!!v$.areas_conocimiento.$errors.length"
               :option-label="(item) => item?.nombre"
               :option-value="(item) => item?.id"
               emit-value
@@ -234,7 +234,7 @@
               </template>
               <template v-slot:error>
                 <div
-                  v-for="error of v$.conocimientos.$errors"
+                  v-for="error of v$.areas_conocimiento.$errors"
                   :key="error.$uid"
                 >
                   <div class="error-msg">{{ error.$message }}</div>

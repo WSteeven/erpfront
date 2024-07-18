@@ -28,6 +28,7 @@ import { BitacoraVehicularPusherEvent } from 'src/pusherEvents/vehiculos/Bitacor
 import { MantenimientoVehiculoPusherEvent } from 'src/pusherEvents/vehiculos/MantenimientVehiculoPusherEvent'
 import { SolicitudExamenPusherEvent } from 'src/pusherEvents/medico/SolicitudExamenPusherEvent'
 import { DiasDescansoPusherEvent } from 'src/pusherEvents/medico/DiasDescansoPusherEvent'
+import { SolicitudEmpleadoPusherEvent } from 'src/pusherEvents/recursosHumanos/seleccionContratacionPersonal/SolicitudEmpleadoPusherEvent'
 
 
 export class NotificacionesSistema {
@@ -134,7 +135,7 @@ export class NotificacionesSistema {
 
     const asignacionVehiculoEvent = new AsignarVehiculoPusherEvent()
     asignacionVehiculoEvent.start()
-    
+
     const transferenciaVehiculoEvent = new AsignarVehiculoPusherEvent()
     transferenciaVehiculoEvent.start()
 
@@ -154,5 +155,14 @@ export class NotificacionesSistema {
 
     const diasDescansoPusherEvent = new DiasDescansoPusherEvent()
     diasDescansoPusherEvent.start()
+
+    /*******************
+    * MODULO SELECCION Y CONTRATACION DE PERSONAL
+    ********************/
+    const solicitudEmpleadoPusherEvent = new SolicitudEmpleadoPusherEvent()
+    solicitudEmpleadoPusherEvent.start()
+
+
+
   }
 }

@@ -27,6 +27,8 @@ import { useSeleccionContratacionStore } from 'stores/recursosHumanos/seleccionC
 import { SolicitudPuestoEmpleoController } from '../../solicitudPuestoTrabajo/infraestructure/SolicitudPuestoEmpleoController'
 import { aniosExperiencia, opcionesTablaVacantes, tabOptionsVacantes } from 'config/seleccionContratacionPersonal.utils'
 import { TipoPuestoController } from '../../tiposPuestos/infraestructure/TipoPuestoController'
+import { requiredIf } from 'shared/i18n-validators'
+import { tipo_puesto } from 'config/recursosHumanos.utils'
 
 export default defineComponent({
     name: 'VacantePage',
@@ -110,8 +112,12 @@ export default defineComponent({
             fecha_caducidad: { required },
             descripcion: { required },
             anios_experiencia: { required },
-            conocimientos: { required },
-            formaciones_academicas: { required },
+            areas_conocimiento: {
+              required: requiredIf(() => vacante.tipo_puesto !== tipo_puesto.pasante),
+            },
+            formaciones_academicas: {
+              required: requiredIf(() => vacante.requiere_formacion_academica),
+            },
         }
 
         const v$ = useVuelidate(reglas, vacante)
@@ -160,8 +166,9 @@ export default defineComponent({
             // Cargar datos de solicitud
             vacante.anios_experiencia = solicitudStore.solicitudPersonal.anios_experiencia
             vacante.areas_conocimiento = solicitudStore.solicitudPersonal.areas_conocimiento
-            vacante.conocimientos = solicitudStore.solicitudPersonal.conocimientos
+            vacante.requiere_experiencia = solicitudStore.solicitudPersonal.requiere_experiencia
             vacante.descripcion = solicitudStore.solicitudPersonal.descripcion ?? ''
+            vacante.requiere_formacion_academica = solicitudStore.solicitudPersonal.requiere_formacion_academica
             vacante.formaciones_academicas = solicitudStore.solicitudPersonal.formaciones_academicas
             vacante.nombre = solicitudStore.solicitudPersonal.nombre
             vacante.requiere_experiencia = solicitudStore.solicitudPersonal.requiere_experiencia

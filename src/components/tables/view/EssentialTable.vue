@@ -88,6 +88,7 @@
           :hint="props.col.hint"
           :disable="disable"
           :placeholder="props.col.placeholder"
+          autogrow
           dense
           outlined
         />
@@ -101,6 +102,7 @@
           :options-value="(v) => v.value"
           options-dense
           outlined
+          autogrow
           dense
           emit-value
           map-options
@@ -115,6 +117,7 @@
           :options-value="(v) => v.value"
           use-chips
           multiple
+          autogrow
           options-dense
           outlined
           dense

@@ -118,9 +118,12 @@
           <!-- Autorización -->
           <div
             class="col-12 col-md-4 col-sm-3"
-            v-if="store.can('puede.autorizar.solicitud_puesto_empleo')"
+            v-if="store.can('puede.autorizar.rrhh_solicitudes_nuevas_vacantes')"
           >
-            <label class="q-mb-sm block">Autorización</label>
+          <label
+              color="light-green-2"
+              class="text-positive text-bold q-mb-sm inline-block bg-light-green-2 rounded q-px-md"
+              >Autorización</label>
             <q-select
               v-model="solicitud.autorizacion"
               :options="autorizaciones"

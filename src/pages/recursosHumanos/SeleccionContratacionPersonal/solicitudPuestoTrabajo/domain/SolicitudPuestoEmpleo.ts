@@ -4,6 +4,7 @@ export class SolicitudPuestoEmpleo extends EntidadAuditable {
   nombre: string | null
   tipo_puesto: number | null
   cargo: number | null
+  solicitante: string | null
   autorizador: string | null
   autorizacion: string | null
   descripcion: string
@@ -18,6 +19,7 @@ export class SolicitudPuestoEmpleo extends EntidadAuditable {
     this.nombre = null
     this.cargo = null
     this.tipo_puesto = null
+    this.solicitante = null
     this.autorizador = null
     this.autorizacion = null
     this.descripcion = ''

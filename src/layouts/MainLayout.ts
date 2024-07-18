@@ -3,11 +3,11 @@
 import { Notificacion } from 'pages/administracion/notificaciones/domain/Notificacion'
 import EssentialLoading from 'components/loading/view/EssentialLoading.vue'
 import { useNotificationRealtimeStore } from 'stores/notificationRealtime'
-import { defineComponent, ref, computed, Ref, ComputedRef, watch, watchEffect, createApp } from 'vue'
+import { defineComponent, ref, computed, Ref, ComputedRef,  watchEffect } from 'vue'
 import { useAuthenticationStore } from 'src/stores/authentication'
 import { LocalStorage, useQuasar } from 'quasar'
 import { useMenuStore } from 'src/stores/menu'
-import { useRoute, useRouter } from 'vue-router'
+import {  useRouter } from 'vue-router'
 import Swal from 'sweetalert2'
 import dayjs from 'dayjs'
 import es from 'dayjs/locale/es'
@@ -83,7 +83,6 @@ export default defineComponent({
      ************/
     const cargando = new StatusEssentialLoading()
     const Router = useRouter()
-    const route = useRoute()
     const tituloPagina = computed(() => mainLayoutStore.tituloPagina)
     const grupo = authenticationStore.user?.grupo
 
@@ -200,7 +199,7 @@ export default defineComponent({
     // const mostrarAlertaInactividad = computed(() => {
     //   return (tiempoInactividad / 1000) - idledFor.value < 10 //true cuando sean 10 segundos restantes
     // })
-    const { idle, lastActive } = useIdle(tiempoInactividad) //5 minutos de inactividad
+    const { lastActive } = useIdle(tiempoInactividad) //5 minutos de inactividad
     // const now = useTimestamp({ interval: 1000 })
     // const idledFor = computed(() => Math.floor((now.value - lastActive.value) / 1000),) //Tiempo de inactividad transcurrido en segundos 1,2,3...,n
     // const ultimaConexion = LocalStorage.getItem('ultima_conexion')
@@ -221,7 +220,7 @@ export default defineComponent({
     })
     */
     if (authenticationStore.user) {
-      const notIdle = new NotIdle()
+      new NotIdle()
         .whenInteractive()
         .within(60, 1000) // un minuto
         .do(() => {
@@ -233,7 +232,7 @@ export default defineComponent({
       const LIMIT = 4 * 60 * 60 * 1000 // 4 horas for logout session
       setInterval(() => {
         if (authenticationStore.user) {
-          let la = new Date(JSON.parse(LocalStorage.getItem('lastActivity')!)).getTime()
+          const la = new Date(JSON.parse(LocalStorage.getItem('lastActivity')!)).getTime()
           // console.log('Resta de tiempo', new Date().getTime() - la)
           // console.log('Tiempo limite', LIMIT)
           // console.log('Resultado', new Date().getTime() - la > LIMIT, new Date().toLocaleTimeString())
