@@ -1,6 +1,5 @@
 import { AxiosHttpRepository } from 'shared/http/infraestructure/AxiosHttpRepository'
 import { ApiError } from 'shared/error/domain/ApiError'
-import { rolesSistema } from 'config/utils'
 import { endpoints } from 'src/config/api'
 import { defineStore } from 'pinia'
 import { computed, ref } from 'vue'
@@ -37,8 +36,8 @@ export const useAuthenticationExternalStore = defineStore('authentication_extern
   // Actions
   /**
    * Este metodo realiza el inicio de sesion de un usuario externo
-   * @param credentiales 
-   * @returns 
+   * @param credentiales
+   * @returns
    */
   const login = async (
     credentiales: UserLoginPostulante
@@ -71,6 +70,7 @@ export const useAuthenticationExternalStore = defineStore('authentication_extern
         credentiales
       )
       LocalStorage.set('token', response.data.access_token)
+      LocalStorage.set('method_access', 'external')
       setUser(response.data.modelo)
       return response.data.modelo
     } catch (error) {
@@ -86,6 +86,7 @@ export const useAuthenticationExternalStore = defineStore('authentication_extern
       const response: AxiosResponse = await axios.post(url, { driver, oauth: 1 })
       console.log('login terceros', response)
       LocalStorage.set('token', response.data.access_token)
+      LocalStorage.set('method_access', 'external')
       const url_redirect = response.data.url
       window.location.href = url_redirect
     } catch (error) {

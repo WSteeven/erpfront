@@ -1336,7 +1336,7 @@ const routes: RouteRecordRaw[] = [
   /************************************************************************************************
    * MODULO DE SELECCION Y CONTRATACION PERSONAL
    * Aquí se lista todo lo referente a este modulo y la parte del login del postulantes para el personal externo.
-   * 
+   *
    ***********************************************************************************************/
   {
     path: '/login-postulante',
@@ -1371,25 +1371,33 @@ const routes: RouteRecordRaw[] = [
         name: 'puestos_disponibles',
         component: () =>
           import(
-            'pages/recursosHumanos/seleccion_contratacion_personal/puesto-disponible/view/PuestoDisponiblePage.vue'
+            'pages/recursosHumanos/SeleccionContratacionPersonal/vacantesDisponibles/view/PuestoDisponiblePage.vue'
           ),
       },
-    ],
-  },
-  {
-    path: '/puestos-aplicados',
-    component: () => import('layouts/PostulanteLayout.vue'),
-    children: [
       {
-        path: '',
+        path: '/puestos-aplicados',
         name: 'puestos_aplicados',
         component: () =>
           import(
-            'pages/recursosHumanos/seleccion_contratacion_personal/puesto-aplicado/view/PuestoAplicadoPage.vue'
+            'pages/recursosHumanos/SeleccionContratacionPersonal/vacantesAplicadas/view/PuestoAplicadoPage.vue'
           ),
       },
     ],
   },
+  // {
+  //   path: '/puestos-aplicados',
+  //   component: () => import('layouts/PostulanteLayout.vue'),
+  //   children: [
+  //     {
+  //       path: '',
+  //       name: 'puestos_aplicados',
+  //       component: () =>
+  //         import(
+  //           'pages/recursosHumanos/seleccion_contratacion_personal/puesto-aplicado/view/PuestoAplicadoPage.vue'
+  //         ),
+  //     },
+  //   ],
+  // },
   {
     path: '/recuperar-contrasena',
     component: () => import('layouts/FullLayout.vue'),

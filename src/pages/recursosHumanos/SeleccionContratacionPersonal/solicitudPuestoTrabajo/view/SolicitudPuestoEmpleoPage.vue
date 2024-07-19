@@ -5,7 +5,7 @@
     titulo-pagina="Solicitud de Personal"
     :tab-options="tabOptionsSolicitudesPersonal"
     :filtrar="filtrarSolicitudes"
-    :permitirEditar="tabActual !== '2'"
+    :permitirEditar="tabActual =='1'"
     :tabDefecto="tabActual"
     ajustarCeldas
     :accion1="btnPublicar"
@@ -120,10 +120,11 @@
             class="col-12 col-md-4 col-sm-3"
             v-if="store.can('puede.autorizar.rrhh_solicitudes_nuevas_vacantes')"
           >
-          <label
+            <label
               color="light-green-2"
               class="text-positive text-bold q-mb-sm inline-block bg-light-green-2 rounded q-px-md"
-              >Autorización</label>
+              >Autorización</label
+            >
             <q-select
               v-model="solicitud.autorizacion"
               :options="autorizaciones"
@@ -223,7 +224,7 @@
             </q-select>
           </div>
 
-          <!-- Estado -->
+          <!-- Requiere formacion academica -->
           <div class="col-12 col-md-3 col-sm-3">
             <label class="q-mb-sm block">Requiere formación académica</label>
             <q-toggle

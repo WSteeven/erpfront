@@ -185,6 +185,7 @@ export default defineComponent({
     }
 
     async function filtrarSolicitudes(tab: string) {
+      // console.log(tab)
       tabActual.value = tab
       switch (tab) {
         case '1': // PENDIENTES

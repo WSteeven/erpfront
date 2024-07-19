@@ -22,15 +22,15 @@ export const tabOptionsSolicitudesPersonal: TabOption[] = [
 
 
 export const opcionesTablaVacantes = {
-  por_publicar: 'POR PUBLICAR',
+  inactivas: 'INACTIVAS',
   publicadas: 'PUBLICADAS',
   vigentes: 'VIGENTES',
   expiradas: 'EXPIRADAS',
 }
 
 export const tabOptionsVacantes: TabOption[] = [
-  { value: opcionesTablaVacantes.por_publicar, label: 'POR PUBLICAR', },
-  { value: opcionesTablaVacantes.publicadas, label: 'PUBLICADAS', },
-  { value: opcionesTablaVacantes.vigentes, label: 'VIGENTES', },
-  { value: opcionesTablaVacantes.expiradas, label: 'EXPIRADAS', },
+  { value: opcionesTablaVacantes.publicadas, label: opcionesTablaVacantes.publicadas },
+  { value: opcionesTablaVacantes.inactivas, label: opcionesTablaVacantes.inactivas },
+  { value: opcionesTablaVacantes.vigentes, label:  opcionesTablaVacantes.vigentes },
+  { value: opcionesTablaVacantes.expiradas, label: opcionesTablaVacantes.expiradas },
 ]

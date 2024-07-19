@@ -1,4 +1,4 @@
-import { Endpoint } from "shared/http/domain/Endpoint";
+import { Endpoint } from 'shared/http/domain/Endpoint';
 
 /********************
  * Endpoints Modulo de  Seleccion y Contratacion de Personal
@@ -10,6 +10,6 @@ export const seleccionContratacionPersonal = {
     vacantes: new Endpoint('seleccion-contratacion/vacantes'),
     tipos_puestos: new Endpoint('seleccion-contratacion/tipos-puestos'),
     postulantes: new Endpoint('seleccion-contratacion/postulantes'),
-    registro: new Endpoint('seleccion-contratacion/registro'),
+    registro: new Endpoint('recursos-humanos/registro'),
 
 }

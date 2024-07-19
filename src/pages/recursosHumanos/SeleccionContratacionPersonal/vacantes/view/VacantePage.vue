@@ -16,9 +16,7 @@
             <label class="q-mb-sm block">Nombre del Puesto</label>
             <q-input
               v-model="vacante.nombre"
-              @update:model-value="
-                (v) => (vacante.nombre = removeAccents(v))
-              "
+              @update:model-value="(v) => (vacante.nombre = removeAccents(v))"
               placeholder="Obligatorio"
               :disable="disabled"
               :error="!!v$.nombre.$errors.length"
@@ -61,42 +59,45 @@
 
               <template v-slot:no-option>
                 <q-item>
-                  <q-item-section class="text-grey"> No hay resultados </q-item-section>
+                  <q-item-section class="text-grey">
+                    No hay resultados
+                  </q-item-section>
                 </q-item>
               </template>
             </q-select>
           </div>
           <!-- Imagen de referencia -->
-           <div class="col-12 col-md-3">
+          <div class="col-12 col-md-3">
             <label class="q-mb-sm block">Imagen de Referencia</label>
-            <imagen-comprimida-component
-              :imagen="vacante.imagen_referencia"
+            <selector-imagen
               file_extensiones=".jpg, image/*"
-              @update:modelValue="
-                (data) => (vacante.imagen_referencia = data)
-              "
+              placeholder="Opcional"
+              :imagen="vacante.imagen_referencia"
+              :error="!!v$.imagen_referencia.$errors.length"
+              alto="200px"
+              @update:modelValue="(data) => (vacante.imagen_referencia = data)"
             >
               <template v-slot:error>
-                <div v-for="error of v$.imagen_referencia.$errors" :key="error.$uid">
+                <div
+                  v-for="error of v$.imagen_referencia.$errors"
+                  :key="error.$uid"
+                >
                   <div class="error-msg">{{ error.$message }}</div>
                 </div>
               </template>
-            </imagen-comprimida-component>
+            </selector-imagen>
           </div>
           <!-- Publicidad -->
           <div class="col-12 col-md-3">
             <label class="q-mb-sm block">Publicidad</label>
-            <imagen-comprimida-component
-              :imagen="vacante.publicidad"
+            <selector-imagen
               file_extensiones=".jpg, image/*"
-              @update:modelValue="(data) => (vacante.publicidad = data)"
-            >
-              <template v-slot:error>
-                <div v-for="error of v$.publicidad.$errors" :key="error.$uid">
-                  <div class="error-msg">{{ error.$message }}</div>
-                </div>
-              </template>
-            </imagen-comprimida-component>
+              placeholder="Opcional"
+              :imagen="vacante.imagen_publicidad"
+              :error="!!v$.imagen_publicidad.$errors.length"
+              alto="200px"
+              @update:modelValue="(data) => (vacante.imagen_publicidad = data)"
+            />
           </div>
 
           <!-- Numero de Postulantes -->
@@ -112,10 +113,11 @@
             </q-input>
           </div>
 
-
           <!-- Fecha de caducidad Publicación-->
           <div class="col-12 col-md-3">
-            <label class="q-mb-sm block">Fecha de Caducidad de Publicación</label>
+            <label class="q-mb-sm block"
+              >Fecha de Caducidad de Publicación</label
+            >
             <q-input
               v-model="vacante.fecha_caducidad"
               placeholder="Obligatorio"
@@ -128,7 +130,11 @@
             >
               <template v-slot:append>
                 <q-icon name="event" class="cursor-pointer">
-                  <q-popup-proxy cover transition-show="scale" transition-hide="scale">
+                  <q-popup-proxy
+                    cover
+                    transition-show="scale"
+                    transition-hide="scale"
+                  >
                     <q-date
                       v-model="vacante.fecha_caducidad"
                       :mask="maskFecha"
@@ -136,7 +142,12 @@
                       today-btn
                     >
                       <div class="row items-center justify-end">
-                        <q-btn v-close-popup label="Cerrar" color="primary" flat />
+                        <q-btn
+                          v-close-popup
+                          label="Cerrar"
+                          color="primary"
+                          flat
+                        />
                       </div>
                     </q-date>
                   </q-popup-proxy>
@@ -144,12 +155,31 @@
               </template>
 
               <template v-slot:error>
-                <div v-for="error of v$.fecha_caducidad.$errors" :key="error.$uid">
+                <div
+                  v-for="error of v$.fecha_caducidad.$errors"
+                  :key="error.$uid"
+                >
                   <div class="error-msg">{{ error.$message }}</div>
                 </div>
               </template>
             </q-input>
           </div>
+
+          <!-- Publicación activa -->
+          <div class="col-12 col-md-3 col-sm-3">
+            <label class="q-mb-sm block">¿Publicación activa?</label>
+            <q-toggle
+              :label="vacante.activo ? 'SI' : 'NO'"
+              v-model="vacante.activo"
+              color="primary"
+              keep-color
+              icon="bi-check2-circle"
+              unchecked-icon="clear"
+              :disable="disabled"
+              @update:model-value="checkRequiereFormacionAcademica"
+            />
+          </div>
+
           <!-- Manejo de archivos -->
           <div class="col-12 col-md-6 q-mb-md" v-if="false">
             <gestor-archivos
@@ -159,7 +189,9 @@
               :disable="disabled"
               :listarAlGuardar="false"
               quieroSubirArchivos
-              :permitir-eliminar="accion == acciones.nuevo || accion == acciones.editar"
+              :permitir-eliminar="
+                accion == acciones.nuevo || accion == acciones.editar
+              "
               :idModelo="1"
             >
               <template #boton-subir>
@@ -183,10 +215,7 @@
               <label class="q-mb-sm block">Descripción de Vacante</label>
               <b class="text-italic">*No enviar imágenes demasiado grandes</b>
             </div>
-            <essential-editor
-              v-model="vacante.descripcion"
-              :disable="disabled"
-            >
+            <essential-editor v-model="vacante.descripcion" :disable="disabled">
             </essential-editor>
             <div
               v-for="error of v$.descripcion.$errors"
@@ -243,7 +272,38 @@
             </q-select>
           </div>
 
-          <div class="col-12 col-md-6 col-sm-12">
+          <!-- Requiere formacion academica -->
+          <div class="col-12 col-md-3 col-sm-3">
+            <label class="q-mb-sm block">Requiere formación académica</label>
+            <q-toggle
+              :label="vacante.requiere_formacion_academica ? 'SI' : 'NO'"
+              v-model="vacante.requiere_formacion_academica"
+              color="primary"
+              keep-color
+              icon="bi-check2-circle"
+              unchecked-icon="clear"
+              :disable="disabled"
+              @update:model-value="checkRequiereFormacionAcademica"
+            />
+          </div>
+
+          <!-- Estado -->
+          <div class="col-12 col-md-3 col-sm-3">
+            <label class="q-mb-sm block">Requiere experiencia</label>
+            <q-toggle
+              :label="vacante.requiere_experiencia ? 'SI' : 'NO'"
+              v-model="vacante.requiere_experiencia"
+              color="primary"
+              keep-color
+              icon="bi-check2-circle"
+              unchecked-icon="clear"
+              :disable="disabled"
+              @update:model-value="checkRequiereExperiencia"
+            />
+          </div>
+
+
+          <div class="col-12 col-md-6 col-sm-12" v-if="vacante.requiere_formacion_academica">
             <q-btn
               color="positive"
               @click="agregarFormacionAcademica()"
@@ -304,6 +364,5 @@
     </template>
   </tab-layout-filter-tabs2>
 </template>
-
 
 <script src="./VacantePage.ts" />

@@ -1,9 +1,7 @@
-import { TransaccionSimpleController } from "shared/contenedor/modules/simple/infraestructure/TransacccionSimpleController";
-import { Postulante } from "../domain/Postulante";
-import { endpoints } from "config/api";
-import { useAuthenticationExternalStore } from "stores/authenticationExternal";
-import { useRouter } from "vue-router";
-import { ApiError } from "shared/error/domain/ApiError";
+import { Postulante } from '../domain/Postulante';
+import { useAuthenticationExternalStore } from 'stores/authenticationExternal';
+import { useRouter } from 'vue-router';
+import { ApiError } from 'shared/error/domain/ApiError';
 
 export class PostulanteRegistroController {
   store = useAuthenticationExternalStore()

@@ -1,5 +1,5 @@
-import { ColumnConfig } from "components/tables/domain/ColumnConfig";
-import { Vacante } from "./Vacante";
+import { ColumnConfig } from 'components/tables/domain/ColumnConfig';
+import { Vacante } from './Vacante';
 
 export const configuracionColumnasVacante: ColumnConfig<Vacante>[] = [
     {
@@ -16,36 +16,10 @@ export const configuracionColumnasVacante: ColumnConfig<Vacante>[] = [
         align: 'left',
         sortable: true
     },
-    {
-        name: 'imagen_referencia',
-        field: 'imagen_referencia',
-        label: 'Imagen de Referencia',
-        align: 'left',
-        sortable: true
-    },
-    {
-        name: 'publicidad',
-        field: 'publicidad',
-        label: 'Publicidad',
-        align: 'left',
-        sortable: true
-    }, {
+     {
         name: 'fecha_caducidad',
         field: 'fecha_caducidad',
         label: 'Fecha de Caducidad de Publicación',
-        align: 'left',
-        sortable: true
-    },
-    {
-        name: 'descripcion_vacante',
-        field: 'descripcion_vacante',
-        label: 'Descripcion de Vacante',
-        align: 'left',
-        sortable: true
-    }, {
-        name: 'descripcion_vacante',
-        field: 'descripcion_vacante',
-        label: 'Descripcion de Vacante',
         align: 'left',
         sortable: true
     },

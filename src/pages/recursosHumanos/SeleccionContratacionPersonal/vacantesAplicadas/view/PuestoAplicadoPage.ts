@@ -12,9 +12,10 @@ import { ContenedorSimpleMixin } from 'shared/contenedor/modules/simple/applicat
 import { TipoPuestoTrabajoController } from '../infraestructure/TipoPuestoTrabajoController'
 import { TipoPuestoTrabajo } from '../domain/TipoPuestoTrabajo'
 import { removeAccents } from 'shared/utils'
+import BasicContainer from 'shared/contenedor/modules/basic/view/BasicContainer.vue'
 
 export default defineComponent({
-  components: { TabLayout },
+  components: { BasicContainer },
   setup() {
     const mixin = new ContenedorSimpleMixin(
       TipoPuestoTrabajo,

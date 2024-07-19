@@ -1,32 +1,32 @@
 // Dependencias
-import { configuracionColumnasTipoPuestoTrabajo } from '../domain/configuracionColumnasTipoPuestoTrabajo'
-import { required } from '@vuelidate/validators'
-import { useVuelidate } from '@vuelidate/core'
-import { defineComponent, onMounted } from 'vue'
+import { defineComponent } from 'vue'
 
 // Componentes
-import TabLayout from 'shared/contenedor/modules/simple/view/TabLayout.vue'
+import BasicContainer from 'shared/contenedor/modules/basic/view/BasicContainer.vue'
 
 //Logica y controladores
-import { ContenedorSimpleMixin } from 'shared/contenedor/modules/simple/application/ContenedorSimpleMixin'
-import { TipoPuestoTrabajoController } from '../infraestructure/TipoPuestoTrabajoController'
-import { TipoPuestoTrabajo } from '../domain/TipoPuestoTrabajo'
-import { isAxiosError, notificarMensajesError, removeAccents } from 'shared/utils'
 import { StatusEssentialLoading } from 'components/loading/application/StatusEssentialLoading'
-import { LoginPostulanteController } from '../../login-postulante/infraestructure/LoginPostulanteController'
+import { VacanteController } from '../../vacantes/infraestructure/VacanteController'
+import { useNotificaciones } from 'shared/notificaciones'
+import { ref } from 'vue'
+
 
 export default defineComponent({
-  components: { TabLayout },
+  components: { BasicContainer },
   setup() {
-    const mixin = new ContenedorSimpleMixin(
-      TipoPuestoTrabajo,
-      new TipoPuestoTrabajoController()
-    )
-    const { entidad: tipo_puesto_trabajo, disabled } = mixin.useReferencias()
-    const { setValidador } = mixin.useComportamiento()
     const cargando = new StatusEssentialLoading()
-    const loginController = new LoginPostulanteController()
+    const { notificarError } = useNotificaciones()
+    async function obtenerVacantes(){
+      try{
+      const results = (await new VacanteController().listar({'activo':1})).result
+      console.log(results)
+      }catch(error:any){
+        notificarError('Error al obtener las vacantes disponibles')
+      }
+    }
 
+    const results = cargando.cargarConsulta(()=>obtenerVacantes())
+    console.log(results)
     const puestos_trabajos = [
       {
         id: 1,
@@ -47,7 +47,7 @@ export default defineComponent({
         tiempo_caducidad: 'hace 3 día',
         tipo_empleo: 'Tiempo Completo',
         imagen_referencia: 'https://cdn.quasar.dev/img/parallax2.jpg'
-      }, 
+      },
       {
         id: 3,
         nombre: 'Puesto 3',
@@ -89,22 +89,11 @@ export default defineComponent({
         imagen_referencia: 'https://cdn.quasar.dev/img/parallax2.jpg'
       },
     ]
-    //Reglas de validacion
-    const reglas = {
-      nombre: { required },
-    }
 
-    const v$ = useVuelidate(reglas, tipo_puesto_trabajo)
-    setValidador(v$.value)
 
     return {
-      removeAccents,
-      mixin,
-      tipo_puesto_trabajo,
+      val:ref(),
       puestos_trabajos,
-      v$,
-      disabled,
-      configuracionColumnas: configuracionColumnasTipoPuestoTrabajo,
     }
   },
 })
