@@ -1,7 +1,7 @@
 import { ColumnConfig } from 'components/tables/domain/ColumnConfig'
-import { Permiso } from './Permiso'
+import { PermisoArma } from './PermisoArma'
 
-export const configuracionColumnasPermisosArmas: ColumnConfig<Permiso>[] = [
+export const configuracionColumnasPermisoArma: ColumnConfig<PermisoArma>[] = [
     {
         name: 'nombre',
         field: 'nombre',

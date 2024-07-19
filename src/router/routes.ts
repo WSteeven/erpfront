@@ -174,7 +174,7 @@ const routes: RouteRecordRaw[] = [
         path: '/permisos-armas',
         name: 'permisos_armas',
         component: () =>
-          import('pages/bodega/permisos/view/PermisoPage.vue'),
+          import('pages/bodega/permisosArmas/view/PermisoArmaPage.vue'),
         meta: { requiresAuth: true },
       },
       {

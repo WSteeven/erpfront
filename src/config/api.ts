@@ -2,6 +2,7 @@ import { Endpoint } from 'shared/http/domain/Endpoint'
 import { medico } from './endpoints/medico'
 import { tareas } from './endpoints/tareas'
 import { tickets } from './endpoints/tickets'
+import { activosFijos } from './endpoints/activosFijos'
 
 export const apiConfig = {
   // URL_BASE: 'http://localhost:8000',
@@ -324,6 +325,11 @@ export const endpoints = {
   * Modulo de tickets
   *********************/
   ...tickets,
+
+  /**************************
+  * Modulo de activos fijos
+  ***************************/
+  ...activosFijos,
 
   // Modulo Fondos Rotativos
   empleados_saldos_fr: new Endpoint('fondos-rotativos/empleados-saldos-fr'),

@@ -1,6 +1,6 @@
 import { EntidadAuditable } from 'shared/entidad/domain/entidadAuditable'
 
-export class Permiso extends EntidadAuditable {
+export class PermisoArma extends EntidadAuditable {
     nombre: string | null
     fecha_caducidad: string | null
     fecha_emision: string | null

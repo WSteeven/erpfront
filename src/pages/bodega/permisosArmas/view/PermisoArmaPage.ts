@@ -7,18 +7,19 @@ import { defineComponent } from 'vue'
 // Componentes
 import TabLayout from 'shared/contenedor/modules/simple/view/TabLayout.vue'
 import SelectorImagen from 'components/SelectorImagen.vue'
+import FormularioPermisoArma from 'src/pages/bodega/permisosArmas/view/FormularioPermisoArma.vue'
 
 //Logica y controladores
 import { ContenedorSimpleMixin } from 'shared/contenedor/modules/simple/application/ContenedorSimpleMixin'
 import { PermisoController } from '../infraestructure/PermisoConstroller'
-import { Permiso } from '../domain/Permiso'
-import { configuracionColumnasPermisosArmas } from '../domain/configuracionColumnasPermisos'
+import { PermisoArma } from '../domain/PermisoArma'
+import { configuracionColumnasPermisoArma } from '../domain/configuracionColumnasPermisoArma'
 import { maskFecha } from 'config/utils'
 
 export default defineComponent({
-  components: { TabLayout, SelectorImagen },
+  components: { TabLayout, SelectorImagen, FormularioPermisoArma },
   setup(props, { emit }) {
-    const mixin = new ContenedorSimpleMixin(Permiso, new PermisoController())
+    const mixin = new ContenedorSimpleMixin(PermisoArma, new PermisoController())
     const { entidad: permiso, disabled } = mixin.useReferencias()
     const { setValidador } = mixin.useComportamiento()
     const { onGuardado } = mixin.useHooks()
@@ -47,7 +48,7 @@ export default defineComponent({
       maskFecha,
       v$,
       disabled,
-      configuracionColumnas: configuracionColumnasPermisosArmas,
+      configuracionColumnas: configuracionColumnasPermisoArma,
     }
   }
 })

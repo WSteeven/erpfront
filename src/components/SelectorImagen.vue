@@ -90,7 +90,7 @@ import { computed, getCurrentInstance, onMounted, ref, watch } from 'vue'
 
 const props = defineProps({
   modelValue: String,
-  imagen: String,
+  imagen: String as () => string | null | undefined,
   disable: Boolean,
   file_extensiones: String,
   error: Boolean,
