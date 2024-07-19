@@ -13,7 +13,6 @@ export class PermisoEmpleado extends EntidadAuditable {
   fecha_recuperacion: string | null
   hora_recuperacion: string | null
   dias_permiso: number | null
-  recuperables: boolean | null
   justificacion: string | null
   documento: string | null
   observacion: string | null
@@ -40,7 +39,6 @@ export class PermisoEmpleado extends EntidadAuditable {
     this.fecha_hora_fin = null
     this.fecha_recuperacion = null
     this.hora_recuperacion = null
-    this.recuperables = null
     this.dias_permiso = null
     this.justificacion = null
     this.documento = null
@@ -53,7 +51,6 @@ export class PermisoEmpleado extends EntidadAuditable {
     this.recupero = false
     this.suguiere_fecha = false
     this.tieneDocumento = null
-    this.recuperables = false
     this.cargo_vacaciones = false
     this.aceptar_sugerencia = false
   }
