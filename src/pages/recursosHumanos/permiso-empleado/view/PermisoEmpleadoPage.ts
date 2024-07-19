@@ -14,7 +14,7 @@ import { ContenedorSimpleMixin } from 'shared/contenedor/modules/simple/applicat
 import { PermisoEmpleadoController } from '../infraestructure/PermisoEmpleadoController'
 import { PermisoEmpleado } from '../domain/PermisoEmpleado'
 import { removeAccents } from 'shared/utils'
-import {autorizacionesId,convertir_fecha_guion,convertir_fecha_hora,maskFecha,numDiaSemana,tabOptionsPermiso,} from 'config/utils'
+import { autorizacionesId, convertir_fecha_guion, convertir_fecha_hora, maskFecha, numDiaSemana, tabOptionsPermiso, } from 'config/utils'
 import { requiredIf, required } from 'shared/i18n-validators'
 import { MotivoPermisoEmpleadoController } from 'pages/recursosHumanos/motivo/infraestructure/MotivoPermisoEmpleadoController'
 import { EmpleadoController } from 'pages/recursosHumanos/empleados/infraestructure/EmpleadoController'
@@ -27,7 +27,7 @@ import { AutorizacionController } from 'pages/administracion/autorizaciones/infr
 import { addDay, format, parse } from '@formkit/tempo'
 
 export default defineComponent({
-  components: {TabLayoutFilterTabs2,SelectorImagen,GestorDocumentos,ArchivoSeguimiento,},
+  components: { TabLayoutFilterTabs2, SelectorImagen, GestorDocumentos, ArchivoSeguimiento, },
   emits: ['cerrar-modal'],
   setup(props, { emit }) {
     const mixin = new ContenedorSimpleMixin(PermisoEmpleado, new PermisoEmpleadoController())
@@ -292,7 +292,19 @@ export default defineComponent({
     setValidador(v$.value)
     let tabPermisoEmpleado = '1'
     function filtrarPermisoEmpleado(tabSeleccionado: string) {
-      listar({ estado_permiso_id: tabSeleccionado }, false)
+      switch (tabSeleccionado) {
+        case '1': // pendientes
+          listar({ estado_permiso_id: tabSeleccionado })
+          break
+        case '2': //aprobados
+          listar({ estado_permiso_id: tabSeleccionado, recupero: 0 })
+          break
+        case '3': //cancelados o anulados
+          listar({ estado_permiso_id: tabSeleccionado, recupero: 0 })
+          break
+        default: // recuperados
+          listar({ recupero: 1 })
+      }
       tabPermisoEmpleado = tabSeleccionado
     }
 

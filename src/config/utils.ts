@@ -132,6 +132,7 @@ export const tabOptionsPermiso: TabOption[] = [
   { label: 'Pendiente', value: '1' },
   { label: 'Aprobados', value: '2' },
   { label: 'Cancelados', value: '3' },
+  { label: 'Recuperados', value: '4' }
 ]
 export const tabOptionsTraspasos: TabOption[] = [
   { label: 'Pendientes', value: '0' },
