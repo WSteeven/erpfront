@@ -16,16 +16,18 @@ export default defineComponent({
   setup() {
     const cargando = new StatusEssentialLoading()
     const { notificarError } = useNotificaciones()
-    async function obtenerVacantes(){
-      try{
-      const results = (await new VacanteController().listar({'activo':1})).result
-      console.log(results)
-      }catch(error:any){
+
+    const vacantesDisponibles = ref()
+    async function obtenerVacantes() {
+      try {
+        const results = (await new VacanteController().listar({ 'activo': 1 })).result
+        vacantesDisponibles.value = results
+      } catch (error: any) {
         notificarError('Error al obtener las vacantes disponibles')
       }
     }
 
-    const results = cargando.cargarConsulta(()=>obtenerVacantes())
+    const results = cargando.cargarConsulta(() => obtenerVacantes())
     console.log(results)
     const puestos_trabajos = [
       {
@@ -92,8 +94,12 @@ export default defineComponent({
 
 
     return {
-      val:ref(),
+      val: ref(),
       puestos_trabajos,
+      vacantesDisponibles,
+
+      expanded: ref(false)
+
     }
   },
 })
