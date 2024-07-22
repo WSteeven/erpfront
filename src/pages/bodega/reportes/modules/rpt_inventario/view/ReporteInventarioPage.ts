@@ -42,6 +42,18 @@ export default defineComponent({
       sucursales,
       sucursal,
       generarReporte,
+      filtroSucursales(val, update) {
+        if (val === '') {
+          update(() => {
+            sucursales.value = JSON.parse(LocalStorage.getItem('sucursales')!.toString())
+          })
+          return
+        }
+        update(() => {
+          const needle = val.toLowerCase()
+          sucursales.value = JSON.parse(LocalStorage.getItem('sucursales')!.toString()).filter((v) => v.lugar.toLowerCase().indexOf(needle) > -1)
+        })
+      },
     }
   }
 })

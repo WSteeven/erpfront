@@ -150,10 +150,9 @@
         :separador="separador"
         :tipoSeleccion="tipoSeleccion"
         @selected="seleccionado"
-        :mixin="mixin"
       ></essential-table>
 
-      
+
     </div>
   </div>
 </template>

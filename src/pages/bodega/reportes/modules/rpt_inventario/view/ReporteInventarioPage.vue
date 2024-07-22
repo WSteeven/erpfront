@@ -21,10 +21,9 @@
             options-dense
             dense
             outlined
-            :disable="disabled"
-            :readonly="disabled"
             use-input
             input-debounce="0"
+            @filter="filtroSucursales"
             :option-value="(v) => v.id"
             :option-label="(v) => v.lugar"
             emit-value

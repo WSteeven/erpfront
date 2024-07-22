@@ -9,6 +9,7 @@
     @tab-seleccionado="tabEs"
     :permitirEditar="puedeEditar"
     :accion2="botonImprimir"
+    ajustarCeldas
   >
     <template #formulario>
       <q-form @submit.prevent>
@@ -358,6 +359,7 @@
               :readonly="disabled"
               :error="!!v$.observacion_est.$errors.length"
               outlined
+              autogrow
               dense
             >
               <template v-slot:error>
@@ -385,7 +387,7 @@
                     listarProductos({
                       sucursal_id: transferencia.sucursal_salida,
                       cliente_id: transferencia.cliente,
-                      zeros: true,
+                      zeros: false,
                     })
                   "
                   @blur="
@@ -402,7 +404,7 @@
                     listarProductos({
                       sucursal_id: transferencia.sucursal_salida,
                       cliente_id: transferencia.cliente,
-                      zeros: true,
+                      zeros: false,
                     })
                   "
                   icon="search"
@@ -433,7 +435,6 @@
               :accion1="botonEditarCantidad"
               :accion2="botonEliminar"
               :ajustarCeldas="true"
-              @eliminar="eliminar"
             ></essential-table>
           </div>
         </div>
