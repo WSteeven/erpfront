@@ -3,6 +3,8 @@
     :mixin="mixin"
     :configuracionColumnas="configuracionColumnas"
     titulo-pagina="Sucursales"
+    ajustarCeldas
+    :paginate="false"
   >
     <template #formulario>
       <q-form @submit.prevent>
@@ -14,7 +16,7 @@
               v-model="sucursal.lugar"
               placeholder="Obligatorio"
               :readonly="disabled"
-              :error="!!v$.lugar.$errors - length"
+              :error="!!v$.lugar.$errors.length"
               outlined
               dense
             >
@@ -101,8 +103,7 @@
               :error="!!v$.cliente.$errors.length"
               @filter="filtroClientes"
               @popup-show="ordenarClientes"
-              :disable="disabled || soloLectura"
-              :readonly="disabled || soloLectura"
+              :disable="disabled"
               :option-label="(v) => v.razon_social"
               :option-value="(v) => v.id"
               emit-value
@@ -121,7 +122,7 @@
                 </div>
               </template>
             </q-select>
-          </div> 
+          </div>
         </div>
       </q-form>
     </template>

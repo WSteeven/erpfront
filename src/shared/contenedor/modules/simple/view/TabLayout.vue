@@ -125,7 +125,6 @@
           :accion8="accion8"
           :accion9="accion9"
           :accion10="accion10"
-          :paginate="paginate"
           :accion1Header="accion1Header"
           :accion2Header="accion2Header"
           :accion3Header="accion3Header"
