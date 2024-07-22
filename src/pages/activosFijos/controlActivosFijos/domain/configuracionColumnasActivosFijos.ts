@@ -3,68 +3,52 @@ import { ActivoFijo } from './ActivoFijo'
 
 export const configuracionColumnasActivosFijos: ColumnConfig<ActivoFijo>[] = [
     {
-        name: 'cantidad',
-        field: 'cantidad',
-        label: 'Cantidad',
+        name: 'detalle_producto_id',
+        field: 'detalle_producto_id',
+        label: 'Id. Detalle',
         align: 'left',
         sortable: true
     },
     {
-        name: 'empleado',
-        field: 'empleado',
-        label: 'Custodio',
+        name: 'descripcion',
+        field: 'descripcion',
+        label: 'Activo fijo',
         align: 'left',
         sortable: true
     },
     {
-        name: 'detalle_id',
-        field: 'detalle_id',
-        label: 'Producto',
+        name: 'serie',
+        field: 'serie',
+        label: 'Serie',
         align: 'left',
         sortable: true
     },
     {
-        name: 'accion',
-        field: 'accion',
-        label: 'Acción',
+        name: 'fecha_caducidad',
+        field: 'fecha_caducidad',
+        label: 'Fecha de caducidad',
         align: 'left',
         sortable: true
     },
     {
-        name: 'fecha_desde',
-        field: 'fecha_desde',
-        label: 'Desde',
+        name: 'unidad_medida',
+        field: 'unidad_medida',
+        label: 'Unidad de medida',
         align: 'left',
         sortable: true,
-        style: 'width:100px'
     },
     {
-        name: 'condicion',
-        field: 'condicion',
-        label: 'Estado del activo',
-        align: 'left',
-        sortable: true,
-        // style: 'color: red' //cada celda es un td
-    },
-    {
-        name: 'observacion',
-        field: 'observacion',
-        label: 'Observacion',
+        name: 'egresos',
+        field: 'egresos',
+        label: 'Salidas(egresos)',
         align: 'left',
         sortable: true
     },
     {
-        name: 'sucursal',
-        field: 'sucursal',
-        label: 'Bodega',
+        name: 'diferencia',
+        field: 'diferencia',
+        label: 'Diferencia',
         align: 'left',
         sortable: true
     },
-    /* {
-        name: 'lugar',
-        field: 'lugar',
-        label: 'lugar',
-        align: 'left',
-        sortable: true
-    }, */
 ]

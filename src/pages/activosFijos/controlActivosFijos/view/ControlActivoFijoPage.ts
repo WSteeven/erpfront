@@ -34,6 +34,9 @@ export default defineComponent({
     const activoFijoStore = useActivoFijoStore()
     const authenticationStore = useAuthenticationStore()
 
+    /********
+     * Mixin
+     ********/
     const mixin = new ContenedorSimpleMixin(ActivoFijo, new ActivoFijoController())
     const { entidad: activo, disabled, accion, listadosAuxiliares } = mixin.useReferencias()
     const { setValidador, cargarVista, obtenerListados } = mixin.useComportamiento()
@@ -44,7 +47,7 @@ export default defineComponent({
     const tabsOpcionesConsultas = ref()
     const parametrosDefecto = {
       responsable_id: 3,
-      detalle_producto_id: activo.detalle_producto_id,
+      detalle_producto_id: activo.detalle_producto.id,
     }
 
     /************
