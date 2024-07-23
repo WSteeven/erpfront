@@ -52,6 +52,7 @@
               outlined
               dense
               :type="isPwd ? 'password' : 'text'"
+              class="normal-text"
               hint="No comparta su contraseña con nadie"
               @keyup.enter="login()"
             >
@@ -104,7 +105,7 @@
 
 <script src="./LoginPage.ts"></script>
 
-<style>
+<style scope>
 h2 {
   line-height: 1.2;
   font-size: 1.714rem;
@@ -123,5 +124,9 @@ h2 {
     rgba(94, 88, 252, 1) 0%,
     rgba(110, 143, 255, 1) 100%
   );
+}
+
+.q-field .q-field__inner {
+  text-transform: none !important;
 }
 </style>
