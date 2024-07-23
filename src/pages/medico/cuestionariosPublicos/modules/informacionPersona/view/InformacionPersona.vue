@@ -415,7 +415,7 @@
       </q-input>
     </div> -->
 
-    <div class="col-12 col-md-3">
+    <!-- <div class="col-12 col-md-3">
       <label class="q-mb-sm block">RUC</label>
       <q-input
         v-model="persona.ruc"
@@ -432,7 +432,7 @@
           </div>
         </template>
       </q-input>
-    </div>
+    </div> -->
 
     <div class="col-12 col-md-3">
       <label class="q-mb-sm block">Cargo</label>

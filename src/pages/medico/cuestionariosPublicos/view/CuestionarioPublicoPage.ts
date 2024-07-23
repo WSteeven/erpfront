@@ -159,9 +159,14 @@ export default defineComponent({
          *********/
         const reglas = {
             cuestionario: { required },
-            formulario_cuestionario: {
+            /* formulario_cuestionario: {
                 $each: helpers.forEach({
                     respuesta: { required },
+                }),
+            }, */
+            formulario_cuestionario: {
+                $each: helpers.forEach({
+                    respuesta: { requiredIf: requiredIf(() => tipoCuestionarioSeleccionado.value === 1) }
                 }),
             },
             persona: {
@@ -180,7 +185,7 @@ export default defineComponent({
                 fecha_nacimiento: { required },
                 genero: { required },
                 nombre_empresa: { requiredIf: requiredIf(() => esDrogas.value) },
-                ruc: { requiredIf: requiredIf(() => esDrogas.value) },
+                // ruc: { requiredIf: requiredIf(() => esDrogas.value) },
                 cargo: { requiredIf: requiredIf(() => esDrogas.value) },
                 tipo_afiliacion_seguridad_social: { requiredIf: requiredIf(() => esDrogas.value) },
                 numero_hijos: { requiredIf: requiredIf(() => esDrogas.value) },
