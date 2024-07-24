@@ -3,7 +3,7 @@
     <transition name="scale" mode="out-in">
       <slot name="modales" />
     </transition>
-    <q-card class="rounded bg-desenfoque border-blue custom-shadow">
+    <q-card class="rounded bg-tabla border-blue custom-shadow">
       <slot name="contenido" />
     </q-card>
   </q-page>

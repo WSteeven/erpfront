@@ -671,3 +671,8 @@ export const opcionesGrafico = {
   grafico: 'grafico',
   listado: 'listado'
 }
+
+export const tipoAutenticacion = {
+  empleado: 'private',
+  usuario_externo: 'external'
+}

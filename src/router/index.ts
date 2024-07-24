@@ -11,6 +11,7 @@ import {
 
 import routes from './routes'
 import { LocalStorage } from 'quasar'
+import { tipoAutenticacion } from 'config/utils'
 
 /*
  * If not building with SSR mode, you can
@@ -25,8 +26,8 @@ export default route(function (/* { store, ssrContext } */) {
   const createHistory = process.env.SERVER
     ? createMemoryHistory
     : process.env.VUE_ROUTER_MODE === 'history'
-    ? createWebHistory
-    : createWebHashHistory
+      ? createWebHistory
+      : createWebHashHistory
 
   const Router = createRouter({
     scrollBehavior: () => ({ left: 0, top: 0 }),
@@ -40,12 +41,10 @@ export default route(function (/* { store, ssrContext } */) {
 
   const authentication = useAuthenticationStore()
   const authenticationExternal = useAuthenticationExternalStore()
-  const method_access = LocalStorage.getItem('method_access')
-  if(method_access!== 'external'){
+  const method_access = LocalStorage.getItem('method_access') // esto indica si el usuario accede como empleado (private) o como usuario externo (external)
 
-  }
-  async function routerInternal(to, _, next){
-    const sessionIniciada =  await authentication.isUserLoggedIn()
+  async function routerInternal(to, _, next) {
+    const sessionIniciada = await authentication.isUserLoggedIn()
 
     // Si la ruta requiere autenticacion
     if (to.matched.some((ruta) => ruta.meta.requiresAuth)) {
@@ -67,8 +66,8 @@ export default route(function (/* { store, ssrContext } */) {
       next()
     }
   }
-  async function routerExternal(to, _, next){
-    const sessionIniciada =  await authenticationExternal.isUserLoggedIn()
+  async function routerExternal(to, _, next) {
+    const sessionIniciada = await authenticationExternal.isUserLoggedIn()
     // Si la ruta requiere autenticacion
     if (to.matched.some((ruta) => ruta.meta.requiresAuth)) {
       if (sessionIniciada) {
@@ -90,32 +89,16 @@ export default route(function (/* { store, ssrContext } */) {
     }
   }
   Router.beforeEach(async (to, _, next) => {
-    if(method_access=='external'){
-      await routerExternal(to, _, next)
-    }else{
-      await routerInternal(to, _, next)
+    switch (method_access) {
+      case tipoAutenticacion.usuario_externo:
+        await routerExternal(to, _, next)
+        break
+      case tipoAutenticacion.empleado:
+        await routerInternal(to, _, next)
+        break
+      default:
+        await routerInternal(to, _, next)
     }
-    // const sessionIniciada =  await authentication.isUserLoggedIn()
-    //const sessionIniciada = to.name.toLowerCase().indexOf('puesto'.toLowerCase()) !== -1? await authenticationExternal.isUserLoggedIn(): await authentication.isUserLoggedIn()
-    // Si la ruta requiere autenticacion
-    // if (to.matched.some((ruta) => ruta.meta.requiresAuth)) {
-    //   if (sessionIniciada) {
-    //     if (authentication.can('puede.ver.' + to.name?.toString())) {
-    //       next()
-    //     } else {
-    //       next({ name: '404' })
-    //     }
-    //   } else {
-    //     next({ name: 'Login' })
-    //   }
-    // } else if (
-    //   sessionIniciada &&
-    //   ['Login', 'ResetPassword', 'Register'].includes(to.name?.toString() ?? '')
-    // ) {
-    //   next({ name: 'tablero_personal' })
-    // } else {
-    //   next()
-    // }
   })
   return Router
 })

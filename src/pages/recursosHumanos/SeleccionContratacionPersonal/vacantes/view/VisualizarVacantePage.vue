@@ -34,9 +34,9 @@
         </div>
         <div class="text-h6 q-pt-md">Descripción de la oferta</div>
         <div v-html="vacante.descripcion" />
-        <div>
+        <div v-if="vacante.anios_experiencia !== null">
           <strong>Experiencia requerida en el cargo:</strong> Mínimo
-          {{ vacante.anios_experiencia.toLowerCase() }}
+          {{ vacante.anios_experiencia?.toLowerCase() }}
         </div>
         <div class="text-h6 q-pt-sm">Conocimientos requeridos</div>
         <div>
@@ -50,10 +50,21 @@
           </ul>
         </div>
         <!-- <div>Creada {{ dayjs(vacante.created_at).fromNow() }}</div> -->
-         <div class="row items-center">
-            <q-btn class="col-10">Postularme</q-btn>
-            <q-btn class="col-2" icon="bi-heart-fill"  color="red" unelevated @click="agregarAFavoritos(vacante.id)"></q-btn>
-         </div>
+        <div class="column items-center">
+          <div class="row">
+            <q-btn glossy rounded
+            @click="btnPostular(vacante.id)"
+            color="primary">Postularme</q-btn>
+            <q-btn
+              icon="bi-heart"
+              color="red"
+              round
+              flat
+              unelevated
+              @click="btnAgregarAFavoritos(vacante.id)"
+            ></q-btn>
+          </div>
+        </div>
       </q-card-section>
     </template>
   </basic-container>

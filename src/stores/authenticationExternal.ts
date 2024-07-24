@@ -11,6 +11,7 @@ import { ForgotPassword } from 'sistema/authentication/forgotPassword/domain/For
 import { ResetPassword } from 'sistema/authentication/resetPassword/domain/ResetPassword'
 import { UltimoSaldoController } from 'pages/fondosRotativos/reportes/reporteSaldoActual/infrestucture/UltimoSaldoController'
 import { UserLoginPostulante } from 'pages/recursosHumanos/seleccion_contratacion_personal/login-postulante/domain/UserLoginPostulante'
+import { tipoAutenticacion } from 'config/utils'
 export const useAuthenticationExternalStore = defineStore('authentication_external', () => {
   // Variables locales
   const axios = AxiosHttpRepository.getInstance()
@@ -70,7 +71,7 @@ export const useAuthenticationExternalStore = defineStore('authentication_extern
         credentiales
       )
       LocalStorage.set('token', response.data.access_token)
-      LocalStorage.set('method_access', 'external')
+      LocalStorage.set('method_access', tipoAutenticacion.usuario_externo)
       setUser(response.data.modelo)
       return response.data.modelo
     } catch (error) {
@@ -86,7 +87,7 @@ export const useAuthenticationExternalStore = defineStore('authentication_extern
       const response: AxiosResponse = await axios.post(url, { driver, oauth: 1 })
       console.log('login terceros', response)
       LocalStorage.set('token', response.data.access_token)
-      LocalStorage.set('method_access', 'external')
+      LocalStorage.set('method_access', tipoAutenticacion.usuario_externo)
       const url_redirect = response.data.url
       window.location.href = url_redirect
     } catch (error) {
@@ -151,6 +152,7 @@ export const useAuthenticationExternalStore = defineStore('authentication_extern
   async function logout() {
     await axios.post(axios.getEndpoint(endpoints.logout_postulante))
     LocalStorage.remove('token')
+    LocalStorage.remove('method_access')
     await getUser()
     document.title = 'JPCONSTRUCRED'
   }
