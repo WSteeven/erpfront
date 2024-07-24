@@ -298,7 +298,7 @@
 
           <!-- años de experiencia -->
           <div class="col-12 col-md-3" v-if="solicitud.requiere_experiencia">
-            <label class="q-mb-sm block">Tiempo de Experiencia</label>
+            <label class="q-mb-sm block">Tiempo de experiencia en el mismo cargo</label>
             <q-select
               v-model="solicitud.anios_experiencia"
               options-dense

@@ -33,7 +33,7 @@ import { AreaConocimiento } from '../../areasConocimiento/domain/AreaConocimient
 import { AreaConocimientoController } from '../../areasConocimiento/infraestructure/AreaConocimientoController'
 import { StatusEssentialLoading } from 'components/loading/application/StatusEssentialLoading'
 import { useRouter } from 'vue-router'
-import { useSeleccionContratacionStore } from 'stores/recursosHumanos/seleccionContratacion'
+import { useSeleccionContratacionStore } from 'stores/recursosHumanos/seleccionContratacion/seleccionContratacion'
 import { TipoPuestoController } from '../../tiposPuestos/infraestructure/TipoPuestoController'
 import { ValidarFormacionesAcademicas } from '../application/validation/ValidarFormacionesAcademicas'
 

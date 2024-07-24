@@ -28,111 +28,78 @@
           class="col-12 col-md-4 q-my-md q-mx-md"
           v-for="vacante of vacantesDisponibles"
           :key="vacante.id"
-          :class="{
-            'puesto-card': $q.screen.md || $q.screen.lg || $q.screen.xl,
-          }"
+
           flat
           bordered
         >
-          <q-card-section>
-            <div class="text-h5 q-mt-sm q-mb-xs text-center text-bold">
-              {{ vacante.nombre }}
+        <!-- :class="{'puesto-card': $q.screen.md || $q.screen.lg || $q.screen.xl,}" -->
+          <q-card-section class="q-pa-none">
+            <div class="row q-pb-sm">
+              <div class="col-6 flex flex-center">
+                <q-img
+                  class="rounded-borders"
+                  loading="lazy"
+                  :src="vacante.imagen_referencia"
+                />
+              </div>
+              <div class="col-6 flex flex-center q-px-sm">
+                <div class="text-h6 q-mt-sm q-mb-xs text-center text-bold">
+                  {{ vacante.nombre }}
+                </div>
+                <div class="text-caption text-grey text-justify">
+                  <p class="multiline-ellipsis">
+                    {{ removeHTMLTags(vacante.descripcion) }}
+                  </p>
+                </div>
+              </div>
             </div>
           </q-card-section>
-          <q-card-section horizontal>
-            <q-card-section class="col-5 flex flex-center">
-              <q-img
-                class="rounded-borders"
-                loading="lazy"
-                :src="vacante.imagen_referencia"
-              />
-            </q-card-section>
-            <q-card-section class="q-pt-xs">
-              <div class="ellipsis">
-                <div
-                  class="text-caption text-grey text-justify"
-                  :class="{ collapsed: !expanded }"
-                  v-html="vacante.descripcion"
-                ></div>
-                <button @click="toggleExpand">
-                  {{ expanded ? 'Ver menos' : 'Ver más' }}
-                </button>
-              </div>
-            </q-card-section>
-          </q-card-section>
           <q-separator />
-          <q-card-actions class="flex justify-center centers">
-            <q-btn flat icon="bi-clock">
-              <p class="q-mx-sm q-my-sm">
-                {{ vacante?.tiempo_caducidad }}
-              </p>
-            </q-btn>
-            <q-btn flat icon="bi-suitcase-lg-fill">
-              <p class="q-mx-sm q-my-sm">
+          <q-card-section class="row flex">
+            <div class="col col-md-6">
+              <q-icon class="bi-clock-fill" />
+              <strong class="q-px-sm">
+                {{
+                  dayjs() > dayjs(vacante.fecha_caducidad)
+                    ? 'Finalizado'
+                    : 'Finaliza ' + dayjs().to(vacante.fecha_caducidad)
+                }}
+              </strong>
+            </div>
+            <div class="col col-md-6">
+              <q-icon class="bi-suitcase-lg-fill" />
+              <strong class="q-px-sm">
                 {{ vacante.tipo_empleo }}
-              </p></q-btn
-            >
-            <q-btn flat icon="bi-people-fill">
-              <p class="q-mx-sm q-my-sm">Postulantes</p>
-              <span class="q-mx-sm">{{
-                vacante.numero_postulantes
-              }}</span></q-btn
-            >
-          </q-card-actions>
-        </q-card>
-        <!-- Recorrido de empleos -->
-        <q-card
-          class="col-12 col-md-4 q-my-md q-mx-md"
-          v-for="puesto_trabajo of puestos_trabajos"
-          :key="puesto_trabajo.id"
-          :class="{
-            'puesto-card': $q.screen.md || $q.screen.lg || $q.screen.xl,
-          }"
-          flat
-          bordered
-        >
-          <q-card-section>
-            <div class="text-h5 q-mt-sm q-mb-xs text-center text-bold">
-              {{ puesto_trabajo.nombre }}
+              </strong>
             </div>
-          </q-card-section>
-          <q-card-section horizontal>
-            <q-card-section class="col-5 flex flex-center">
-              <q-img
-                class="rounded-borders"
-                loading="lazy"
-                :src="puesto_trabajo.imagen_referencia"
-              />
-            </q-card-section>
-            <q-card-section class="q-pt-xs">
-              <div class="text-caption text-grey text-justify">
-                {{ puesto_trabajo.descripcion_vacante }}
-              </div>
-            </q-card-section>
+            <!-- <div class="col col-md-6">
+              <q-icon class="bi-people-fill" />
+              <strong class="q-px-sm"
+                >Postulantes {{ vacante.numero_postulantes }}</strong
+              >
+            </div> -->
           </q-card-section>
           <q-separator />
-          <q-card-actions class="flex justify-center centers">
-            <q-btn flat icon="bi-clock">
-              <p class="q-mx-sm q-my-sm">
-                {{ puesto_trabajo.tiempo_caducidad }}
-              </p>
-            </q-btn>
-            <q-btn flat icon="bi-suitcase-lg-fill">
-              <p class="q-mx-sm q-my-sm">
-                {{ puesto_trabajo.tipo_empleo }}
-              </p></q-btn
-            >
-            <q-btn flat icon="bi-people-fill">
-              <p class="q-mx-sm q-my-sm">Postulantes</p>
-              <span class="q-mx-sm">{{
-                puesto_trabajo.numero_postulantes
-              }}</span></q-btn
+          <q-card-actions>
+            <q-btn
+              unelevated
+              glossy
+              rounded
+              color="primary"
+              @click="visualizarVacante(vacante.id)"
+              class="flex block full-width"
+              >Visualizar</q-btn
             >
           </q-card-actions>
         </q-card>
       </div>
     </template>
   </basic-container>
+  <modal-entidad
+    :comportamiento="modales"
+    :persistente="false"
+    @guardado="(data) => guardado(data)"
+  ></modal-entidad>
 </template>
 
 <script src="./PuestoDisponiblePage.ts"></script>
@@ -143,13 +110,12 @@
   height: 400px;
 }
 
-.contenido-html {
-  max-height: 170px; /* Altura máxima inicial */
+.multiline-ellipsis {
+  display: -webkit-box;
+  -webkit-line-clamp: 14;
+  -webkit-box-orient: vertical;
   overflow: hidden;
-  position: relative;
-}
-
-.contenido-html.collapsed {
-  max-height: none; /* Muestra todo el contenido cuando se expande */
+  text-overflow: ellipsis;
+  line-height: 1.2em; /* Ajusta la altura de la línea */
 }
 </style>
