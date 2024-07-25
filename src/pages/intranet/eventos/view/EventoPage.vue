@@ -1,51 +1,134 @@
 <template>
-  <q-page class="q-pa-md">
-    <div class="row q-col-gutter-sm q-mb-md">
-      <div class="col-12 col-md-4 q-mb-md">
-
-        <q-card class="q-pa-md">
-          <q-card-section>
-
-            <q-form @submit.prevent="agregarEvento">
-              <div class="row q-col-gutter-sm q-mb-md">
-                <div class="col-12">
-                  <label class="q-mb-sm block">Nombre de Evento </label>
-                  <q-input v-model="evento.titulo" label="Título" dense outlined required />
-                </div>
-                <div class="col-12">
-                  <label class="q-mb-sm block">Tipo de Evento</label>
-                  <q-select v-model="evento.tipo" label="Tipo de Evento" outlined :options="tiposEvento" dense
-                    required />
-                </div>
-                <div class="col-12">
-                  <label class="q-mb-sm block">Fecha de Inicio</label>
-                  <q-input v-model="date" filled type="date" hint="" />
-                </div>
-                <div class="col-12">
-                  <label class="q-mb-sm block">Fecha de Fin</label>
-                  <q-input v-model="date" filled type="date" hint="" />
-                </div>
-                <div class="col-12">
-                  <label class="q-mb-sm block">Descripción</label>
-                  <q-input v-model="evento.descripcion" label="Descripción" dense outlined textarea />
-                </div>
-              </div>
-              <div class="col-8">
-                  <q-btn type="submit" color="primary" label="Agregar Evento" />
-                </div>
-            </q-form>
-
-          </q-card-section>
-        </q-card>
-
-      </div>
-      <div class="col-8 col-md-8 q-mb-md">
-
-        <CalendarioEventos :eventos="eventos"></CalendarioEventos>
-
-      </div>
+  <q-page>
+    <div class="container">
+      <q-card class="form-container">
+        <q-card-section>
+          <q-form @submit.prevent="addEvent">
+            <q-card class="scrollable-card">
+              <q-card-section>
+                <div class="text-h6">REGISTRAR EVENTO</div>
+              </q-card-section>
+              <q-card-section>
+                <q-input
+                  v-model="newEvent.title"
+                  label="Título del Evento"
+                  outlined
+                  required
+                  dense
+                  class="q-mb-xs q-pa-xs"
+                />
+                <q-input
+                  v-model="newEvent.with"
+                  label="Anfitrión"
+                  outlined
+                  required
+                  dense
+                  class="q-mb-xs q-pa-xs"
+                />
+                <q-input
+                  v-model="newEvent.time.start"
+                  label="Fecha de Inicio"
+                  type="datetime-local"
+                  outlined
+                  required
+                  dense
+                  class="q-mb-xs q-pa-xs"
+                />
+                <q-input
+                  v-model="newEvent.time.end"
+                  label="Fecha de Fin"
+                  type="datetime-local"
+                  outlined
+                  required
+                  dense
+                  class="q-mb-xs q-pa-xs"
+                />
+                <q-select
+                  v-model="newEvent.colorScheme"
+                  :options="['Capacitaciones', 'Reunión', 'General']"
+                  label="Tipo de Evento"
+                  outlined
+                  required
+                  dense
+                  class="q-mb-xs q-pa-xs"
+                />
+                <q-checkbox
+                  v-model="newEvent.isEditable"
+                  label="Es editable"
+                  dense
+                  class="q-mb-xs q-pa-xs"
+                />
+                <q-checkbox
+                  v-model="newEvent.isCustom"
+                  label="Es personalizado"
+                  dense
+                  class="q-mb-xs q-pa-xs"
+                />
+                <q-input
+                  v-model="newEvent.description"
+                  label="Descripción"
+                  type="textarea"
+                  outlined
+                  dense
+                  class="q-mb-xs q-pa-xs"
+                />
+                <q-btn
+                  type="submit"
+                  label="Agregar Evento"
+                  color="primary"
+                  dense
+                  class="q-mt-md q-pa-xs"
+                />
+              </q-card-section>
+            </q-card>
+          </q-form>
+        </q-card-section>
+      </q-card>
+      <q-card class="calendar-container">
+        <q-card-section>
+          <Qalendar
+            :selected-date="new Date()"
+            :events="events"
+            :config="config"
+            @event-was-clicked="console.log('Evento clicado');"
+            @event-was-dragged="console.log('Evento arrastrado:');"
+            @event-was-resized="console.log('Evento redimensionado:');"
+          />
+        </q-card-section>
+      </q-card>
     </div>
   </q-page>
 </template>
 
-<script src="./EventoPage.ts"></script>
+<script lang="ts" src="./EventoPage.ts"></script>
+
+<style scoped>
+@import 'qalendar/dist/style.css';
+
+.container {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  padding: 16px;
+  height: 100vh;
+}
+
+.form-container {
+  width: 35%;
+  height: 100%;
+  overflow: hidden;
+  border-radius: 16px;
+}
+
+.calendar-container {
+  width: 62%;
+  height: 100%;
+  overflow: hidden;
+  border-radius: 16px;
+}
+
+.scrollable-card {
+  height: 100%;
+  overflow-y: auto;
+}
+</style>

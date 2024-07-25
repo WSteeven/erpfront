@@ -1,34 +1,46 @@
 <template>
-  <div class="news-list">
-    <div v-for="(news, index) in newsList" :key="index" class="news-item">
+  <div>
+    <h1>Detalles de la Noticia</h1>
+    <div v-if="news" class="news-item">
       <img :src="news.image" alt="news image" />
       <h2>{{ news.title }}</h2>
       <p>{{ news.description }}</p>
-      <router-link :to="{ name: 'NewsDetail', params: { id: index } }"
-        >Leer más</router-link
-      >
+      <router-link :to="news.link">Leer más</router-link>
+    </div>
+    <div v-else>
+      <p>No se encontró la noticia.</p>
     </div>
   </div>
 </template>
 
-<script src="./IntranetPage.ts"></script>
+<script lang="ts">
+import { defineComponent, ref, onMounted } from 'vue';
+import { getNewsById } from '../view/IntranetPage'; // Ajusta la ruta según la estructura de tu proyecto
+
+export default defineComponent({
+  name: 'NoticiaView',
+  setup() {
+    const news = ref<News | undefined>(undefined);
+    const id = 0; // Aquí puedes definir el ID que deseas buscar
+
+    onMounted(() => {
+      news.value = getNewsById(id);
+    });
+
+    return {
+      news
+    };
+  }
+});
+</script>
 
 <style scoped>
-.news-list {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 16px;
-}
-
 .news-item {
-  border: 1px solid #ccc;
-  padding: 16px;
-  width: calc(33.333% - 32px);
-  box-sizing: border-box;
+  margin-bottom: 20px;
 }
 
 .news-item img {
-  max-width: 100%;
+  width: 100%;
   height: auto;
 }
 </style>

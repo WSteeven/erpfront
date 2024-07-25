@@ -11,6 +11,6 @@ export class Evento extends EntidadAuditable {
     this.tipo_evento = null
     this.fecha_hora_inicio = null
     this.fecha_hora_fin = null
-    this.descripcion=null
+    this.descripcion = null
   }
 }

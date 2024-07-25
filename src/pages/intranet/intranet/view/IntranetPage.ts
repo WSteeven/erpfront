@@ -29,6 +29,9 @@ import { useMenuStore } from 'stores/menu'
 import { obtenerFechaActual } from '../../../../shared/utils'
 import { MenuOption } from 'shared/menu/MenuOption'
 
+// Importar eventos de EventoPage.ts
+import  events from 'pages/intranet/eventos/view/EventoPage'
+
 interface News {
   image: string
   title: string
@@ -79,13 +82,15 @@ export default defineComponent({
 
     const subtareasPorAsignar = ref([])
 
-    const imagenPerfil = `https://ui-avatars.com/api/?name=${store.user.nombres.substr(
-      0,
-      1
-    )}+${store.user.apellidos.substr(
-      0,
-      1
-    )}&bold=true&background=0879dc28&color=0879dc`
+    const getImagePerfil = (usuario) => {
+      return usuario.foto_url == null
+        ? `https://ui-avatars.com/api/?name=${usuario.nombres.substr(0, 1)}+${usuario.apellidos.substr(0, 1)}&bold=true&background=008000&color=ffff`
+        : usuario.foto_url;
+
+    };
+
+    const imagenPerfil = getImagePerfil(store.user);
+
 
     const lorem =
       'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.'
@@ -108,6 +113,27 @@ export default defineComponent({
 
     const modales = new ComportamientoModalesIntranet()
 
+    // Computed para transformar los eventos en un formato adecuado para q-date
+const eventDates = computed(() => {
+  return events.map(event => ({
+    date: event.time.start.split(' ')[0],
+    color: event.color
+  }));
+});
+
+function getColor(date) {
+  const event = eventDates.value.find(event => event.date === date);
+  return event ? event.color : 'grey';
+}
+
+function verEvento(date) {
+  const event = events.find(event => event.time.start.split(' ')[0] === date);
+  if (event) {
+    alert(`Evento: ${event.title}\nDescripción: ${event.description}\nHora: ${event.time.start} - ${event.time.end}`);
+  }
+}
+
+
     const data = [
       '2024/07/01',
       '2024/07/05',
@@ -118,42 +144,37 @@ export default defineComponent({
 
     //funcion para obtener cumpleaños de los Empleados
 
-    const route = useRouter()
+
+
     const newsList = ref<News[]>([
       {
         image: 'https://www.jeanpazmino.com/images/services/service5.jpg',
         title: 'Nuevas capacitaciones en instalación de fibra óptica',
-        description:
-          'Descubre cómo mejorar tus habilidades en la instalación de fibra óptica con nuestros nuevos cursos especializados.',
+        description: 'Descubre cómo mejorar tus habilidades en la instalación de fibra óptica con nuestros nuevos cursos especializados.',
         link: '/NoticiaView'
       },
       {
         image: 'https://www.jeanpazmino.com/images/services/service2.jpg',
         title: 'Técnicas avanzadas para la instalación de fibra óptica',
-        description:
-          'Explora las últimas técnicas y herramientas en el campo de la instalación de fibra óptica para maximizar la eficiencia y calidad.',
+        description: 'Explora las últimas técnicas y herramientas en el campo de la instalación de fibra óptica para maximizar la eficiencia y calidad.',
         link: '/NoticiaView'
       },
       {
-        image:
-          'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSdnA9EeXIUzXL44EETgKrCwT8sGQNV4oBzyg&s',
+        image: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSdnA9EeXIUzXL44EETgKrCwT8sGQNV4oBzyg&s',
         title: 'Nuevos recursos para la capacitación en fibra óptica',
-        description:
-          'Conoce los recursos más recientes disponibles para tu capacitación en instalación de fibra óptica, diseñados para mejorar tu aprendizaje.',
+        description: 'Conoce los recursos más recientes disponibles para tu capacitación en instalación de fibra óptica, diseñados para mejorar tu aprendizaje.',
         link: '/NoticiaView'
       },
       {
-        image:
-          'https://media.licdn.com/dms/image/C4D22AQHURssxoX0FAQ/feedshare-shrink_800/0/1643980715005?e=2147483647&v=beta&t=HLwKY4gOCsBPIBzusmztCrpCckmg858lLRvzotJFOK8',
+        image: 'https://media.licdn.com/dms/image/C4D22AQHURssxoX0FAQ/feedshare-shrink_800/0/1643980715005?e=2147483647&v=beta&t=HLwKY4gOCsBPIBzusmztCrpCckmg858lLRvzotJFOK8',
         title: 'Programa de certificación en instalación de fibra óptica',
-        description:
-          'Participa en nuestro programa de certificación líder en la industria para convertirte en un experto en instalación de fibra óptica.',
+        description: 'Participa en nuestro programa de certificación líder en la industria para convertirte en un experto en instalación de fibra óptica.',
         link: '/NoticiaView'
       }
-    ])
+    ]);
 
-    function getNewsById(id: number): News | undefined {
-      return newsList[id]
+     function getNewsById(id: number): News | undefined {
+      return newsList.value[id];
     }
 
     const socialNetworks = ref([
@@ -181,7 +202,32 @@ export default defineComponent({
     const displayedCards = computed(() => {
       const start = (currentPage.value - 1) * perPage.value
       const end = start + perPage.value
-      return newsList.value.slice(start, end)
+      return (ref<News[]>([
+        {
+          image: 'https://www.jeanpazmino.com/images/services/service5.jpg',
+          title: 'Nuevas capacitaciones en instalación de fibra óptica',
+          description: 'Descubre cómo mejorar tus habilidades en la instalación de fibra óptica con nuestros nuevos cursos especializados.',
+          link: '/NoticiaView'
+        },
+        {
+          image: 'https://www.jeanpazmino.com/images/services/service2.jpg',
+          title: 'Técnicas avanzadas para la instalación de fibra óptica',
+          description: 'Explora las últimas técnicas y herramientas en el campo de la instalación de fibra óptica para maximizar la eficiencia y calidad.',
+          link: '/NoticiaView'
+        },
+        {
+          image: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSdnA9EeXIUzXL44EETgKrCwT8sGQNV4oBzyg&s',
+          title: 'Nuevos recursos para la capacitación en fibra óptica',
+          description: 'Conoce los recursos más recientes disponibles para tu capacitación en instalación de fibra óptica, diseñados para mejorar tu aprendizaje.',
+          link: '/NoticiaView'
+        },
+        {
+          image: 'https://media.licdn.com/dms/image/C4D22AQHURssxoX0FAQ/feedshare-shrink_800/0/1643980715005?e=2147483647&v=beta&t=HLwKY4gOCsBPIBzusmztCrpCckmg858lLRvzotJFOK8',
+          title: 'Programa de certificación en instalación de fibra óptica',
+          description: 'Participa en nuestro programa de certificación líder en la industria para convertirte en un experto en instalación de fibra óptica.',
+          link: '/NoticiaView'
+        }
+      ])).value.slice(start, end)
     })
 
     function obtenerModulosPermitidos() {
@@ -189,7 +235,7 @@ export default defineComponent({
         (link: MenuOption) => link.can && link.module
       )
       modulosPermitidos.value = modulosPermitidos.value.map(modulo => {
-        modulo.link = modulo.children.find(child => child.can).link
+        modulo.link = modulo.children.find(child => child.can)?.link
         return modulo
       })
       // console.log(modulosPermitidos.value);
@@ -241,6 +287,7 @@ export default defineComponent({
 
     const empleadosCumpleaneros = ref<Empleado[]>([])
 
+
     const obtenerEmpleadosCumpleaneros = async () => {
       const currentMonth = new Date().getMonth() + 1 // getMonth() returns 0-11
       try {
@@ -263,6 +310,7 @@ export default defineComponent({
       }
     }
 
+
     onMounted(() => {
       obtenerEmpleadosCumpleaneros()
     })
@@ -271,13 +319,6 @@ export default defineComponent({
      * Funcion para probar componente de fecha enviando al backend
      */
     useNotificaciones()
-
-    function verEvento(date) {
-      const result = date.filter(evento => evento === date)
-      if (result.length > 0) {
-        modales.abrirModalEntidad('VisualizarEventoPage')
-      }
-    }
 
     function enviarSolicitud() {
       // Aquí puedes implementar la lógica para enviar la solicitud
@@ -326,6 +367,7 @@ export default defineComponent({
       modulosPermitidos,
       logout,
       verEvento,
+      getColor,
       consultarEmpleadosDepartamento,
       enviarSolicitud,
       limpiarFormulario,
@@ -337,11 +379,36 @@ export default defineComponent({
       showBanner,
       search,
       maskFecha,
-      newsList,
+      newsList: ref<News[]>([
+        {
+          image: 'https://www.jeanpazmino.com/images/services/service5.jpg',
+          title: 'Nuevas capacitaciones en instalación de fibra óptica',
+          description: 'Descubre cómo mejorar tus habilidades en la instalación de fibra óptica con nuestros nuevos cursos especializados.',
+          link: '/NoticiaView'
+        },
+        {
+          image: 'https://www.jeanpazmino.com/images/services/service2.jpg',
+          title: 'Técnicas avanzadas para la instalación de fibra óptica',
+          description: 'Explora las últimas técnicas y herramientas en el campo de la instalación de fibra óptica para maximizar la eficiencia y calidad.',
+          link: '/NoticiaView'
+        },
+        {
+          image: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSdnA9EeXIUzXL44EETgKrCwT8sGQNV4oBzyg&s',
+          title: 'Nuevos recursos para la capacitación en fibra óptica',
+          description: 'Conoce los recursos más recientes disponibles para tu capacitación en instalación de fibra óptica, diseñados para mejorar tu aprendizaje.',
+          link: '/NoticiaView'
+        },
+        {
+          image: 'https://media.licdn.com/dms/image/C4D22AQHURssxoX0FAQ/feedshare-shrink_800/0/1643980715005?e=2147483647&v=beta&t=HLwKY4gOCsBPIBzusmztCrpCckmg858lLRvzotJFOK8',
+          title: 'Programa de certificación en instalación de fibra óptica',
+          description: 'Participa en nuestro programa de certificación líder en la industria para convertirte en un experto en instalación de fibra óptica.',
+          link: '/NoticiaView'
+        }
+      ]),
       readMore,
       socialNetworks,
       empleadosCumpleaneros,
-      fechaActual
+      fechaActual,
     }
   }
 })

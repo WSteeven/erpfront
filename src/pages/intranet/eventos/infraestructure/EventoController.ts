@@ -2,7 +2,7 @@ import { TransaccionSimpleController } from "shared/contenedor/modules/simple/in
 import { Evento } from "../domain/Evento";
 import { endpoints } from "config/api";
 
-export class EventoController extends TransaccionSimpleController<Evento>{
+export class EventoController extends TransaccionSimpleController<Evento> {
   constructor() {
     super(endpoints.eventos)
   }

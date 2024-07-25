@@ -865,3 +865,4 @@ export const copiarAlPortapapeles = async (texto: string) => {
     notificarError('Error al intentar copiar el texto al portapapeles');
   }
 }
+

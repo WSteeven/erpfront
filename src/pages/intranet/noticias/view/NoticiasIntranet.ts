@@ -1,5 +1,5 @@
 // Dependencias
-import { defineComponent, ref, reactive, computed } from 'vue'
+import { defineComponent, ref, computed } from 'vue'
 import { useVuelidate } from '@vuelidate/core'
 import { required } from '@vuelidate/validators'
 import TabLayoutFilterTabs2 from 'shared/contenedor/modules/simple/view/TabLayoutFilterTabs2.vue'
@@ -29,13 +29,11 @@ export default defineComponent({
     const store = useAuthenticationStore()
     const date = ref(obtenerFechaActual(maskFecha))
 
-
-
     const cat_etiq = {
       Vacante: ['Promocion Interna'],
       Capacitacion: ['Interna', 'Externa'],
       Feriados: ['Nacional', 'Local'],
-      'Nota Ludica': [],
+      'Nota Luctuosa': [],
       Seguridad: ['Normativa', 'Advertencia', 'Solicitud'],
       Médico: ['Campaña', 'Vacunación', 'Exámenes Médicos'],
       Politica: ['Interna', 'Externa'],
@@ -56,15 +54,17 @@ export default defineComponent({
       }
     }
 
-
-
+    const maxWords = (val: string) => {
+      if (!val) return true
+      const wordCount = val.trim().split(/\s+/).length
+      return wordCount <= 150 || `La descripción no puede tener más de 150 palabras. Actualmente tiene ${wordCount} palabras.`
+    }
 
     const {
       entidad: noticia,
       accion,
-      listadosAuxiliares,
     } = mixin.useReferencias()
-    const { setValidador, listar, consultar, cargarVista } =
+    const { setValidador, listar, cargarVista } =
       mixin.useComportamiento()
     const { onConsultado, onBeforeModificar } = mixin.useHooks()
 
@@ -78,6 +78,10 @@ export default defineComponent({
     })
 
     cargarVista(async () => {
+      // Establecer el autor y la fecha de creación al cargar la vista
+      noticia.autor = store.user.nombres + ' ' + store.user.apellidos
+      noticia.fecha_creacion = date.value
+
       await listar()
     })
 
@@ -86,7 +90,7 @@ export default defineComponent({
       autor: { required },
       fecha_creacion: { required },
       url_imagen: { required },
-      descripcion: { required },
+      descripcion: { required, maxWords },
     }))
 
     const v$ = useVuelidate(reglas, noticia)
@@ -101,7 +105,6 @@ export default defineComponent({
     }
 
     function resetForm() {
-      formRef.value.reset()
       // Lógica para restablecer el formulario
     }
 
@@ -127,7 +130,6 @@ export default defineComponent({
       selectedTags,
       filteredEtiquetas,
       updateEtiquetas,
-
     }
   },
 })

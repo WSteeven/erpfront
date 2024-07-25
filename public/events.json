@@ -1,0 +1,106 @@
+[
+    {
+        "title": "Capacitación en instalación de fibra óptica",
+        "with": "Juan Pérez",
+        "time": {
+            "start": "2024-07-16 09:00",
+            "end": "2024-07-16 12:00"
+        },
+        "colorScheme": "capacitaciones",
+        "isEditable": false,
+        "isCustom": false,
+        "id": "1a2b3c4d5e6f",
+        "description": "Capacitación intensiva para técnicos en técnicas avanzadas de instalación de fibra óptica."
+    },
+    {
+        "title": "Reunión de planificación de proyectos",
+        "with": "María García",
+        "time": {
+            "start": "2024-07-22 10:00",
+            "end": "2024-07-22 11:30"
+        },
+        "colorScheme": "reuniones",
+        "isEditable": true,
+        "isCustom": false,
+        "id": "2b3c4d5e6f7g",
+        "description": ""
+    },
+    {
+        "title": "Seminario sobre nuevas tecnologías en telecomunicaciones",
+        "with": "Carlos Rodríguez",
+        "time": {
+            "start": "2024-08-05 14:00",
+            "end": "2024-08-05 16:00"
+        },
+        "colorScheme": "reuniones",
+        "isEditable": true,
+        "isCustom": false,
+        "id": "3c4d5e6f7g8h",
+        "description": "Exploración de las últimas innovaciones y tecnologías emergentes en el campo de las telecomunicaciones."
+    },
+    {
+        "title": "Taller de seguridad en instalaciones",
+        "with": "Ana Martínez",
+        "time": {
+            "start": "2024-08-20 09:00",
+            "end": "2024-08-20 12:00"
+        },
+        "colorScheme": "capacitaciones",
+        "isEditable": true,
+        "isCustom": false,
+        "id": "4d5e6f7g8h9i",
+        "description": "Taller práctico sobre las mejores prácticas de seguridad en la instalación de fibra óptica."
+    },
+    {
+        "title": "Revisión de calidad de servicio",
+        "with": "Pedro Sánchez",
+        "time": {
+            "start": "2024-09-10 11:00",
+            "end": "2024-09-10 12:30"
+        },
+        "colorScheme": "capacitaciones",
+        "isEditable": true,
+        "isCustom": false,
+        "id": "5e6f7g8h9i0j",
+        "description": "Evaluación y discusión sobre los indicadores de calidad de servicio y cómo mejorarlos."
+    },
+    {
+        "title": "Presentación de resultados trimestrales",
+        "with": "Laura Gómez",
+        "time": {
+            "start": "2024-07-22 15:00",
+            "end": "2024-07-25 16:30"
+        },
+        "colorScheme": "reuniones",
+        "isEditable": true,
+        "isCustom": false,
+        "id": "6f7g8h9i0j1k",
+        "description": "Presentación y análisis de los resultados financieros y operativos del último trimestre."
+    },
+    {
+        "title": "Cena de celebración de proyecto completado",
+        "with": "Equipo de Instalación",
+        "time": {
+            "start": "2024-08-30 19:00",
+            "end": "2024-09-30 22:00"
+        },
+        "colorScheme": "reuniones",
+        "isEditable": true,
+        "isCustom": false,
+        "id": "7g8h9i0j1k2l",
+        "description": "Cena de celebración para conmemorar la finalización exitosa del proyecto de instalación de fibra óptica en la zona norte."
+    },
+    {
+        "title": "Reunión del departamento de Informática",
+        "with": "Ing. Verónica Valencia",
+        "time": {
+            "start": "2024-07-22 08:00",
+            "end": "2024-07-22 10:00"
+        },
+        "colorScheme": "general",
+        "isEditable": true,
+        "isCustom": false,
+        "id": "8i9j0k1l2m3n",
+        "description": "Reunión para discutir los avances en el proyecto de actualización de la infraestructura informática y planificar las próximas fases."
+    }
+]

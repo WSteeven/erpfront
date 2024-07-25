@@ -234,7 +234,7 @@ export default defineComponent({
       const LIMIT = 4 * 60 * 60 * 1000 // 4 horas for logout session
       setInterval(() => {
         if (authenticationStore.user) {
-          let la = new Date(JSON.parse(LocalStorage.getItem('lastActivity')!)).getTime()
+          const la = new Date(JSON.parse(LocalStorage.getItem('lastActivity')!)).getTime()
           // console.log('Resta de tiempo', new Date().getTime() - la)
           // console.log('Tiempo limite', LIMIT)
           // console.log('Resultado', new Date().getTime() - la > LIMIT, new Date().toLocaleTimeString())
