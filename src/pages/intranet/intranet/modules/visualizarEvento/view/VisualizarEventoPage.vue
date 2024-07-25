@@ -1,7 +1,7 @@
 <template>
     <div>
     <div class="bg-grey-2" v-if="eventos.length > 1">
-      <p class="text-h6 text-center text-bold">2024-06-10</p>
+      <p class="text-h6 text-center text-bold">2024-07-12</p>
       <q-list bordered class="rounded-borders">
         <q-expansion-item
           v-for="(evento, index) in eventos"

@@ -48,13 +48,15 @@
 
             <div class="col-6">
               <q-card-section class="q-py-none">
-                <q-input v-model="noticia.categoria" label="Categoría" dense outlined />
+                <q-select v-model="selectedCategory" :options="Object.keys(cat_etiq)" label="Categoría" />
               </q-card-section>
             </div>
 
             <div class="col-6">
               <q-card-section class="q-py-none">
-                <q-input v-model="noticia.etiquetas" label="Etiquetas" hint="Separadas por comas" dense outlined />
+                <q-select v-model="selectedTags" :options="cat_etiq[selectedCategory]" label="Etiquetas" multiple use-chips
+                  emit-value map-options />
+
               </q-card-section>
             </div>
 

@@ -29,12 +29,43 @@ export default defineComponent({
     const store = useAuthenticationStore()
     const date = ref(obtenerFechaActual(maskFecha))
 
+
+
+    const cat_etiq = {
+      Vacante: ['Promocion Interna'],
+      Capacitacion: ['Interna', 'Externa'],
+      Feriados: ['Nacional', 'Local'],
+      'Nota Ludica': [],
+      Seguridad: ['Normativa', 'Advertencia', 'Solicitud'],
+      Médico: ['Campaña', 'Vacunación', 'Exámenes Médicos'],
+      Politica: ['Interna', 'Externa'],
+      'Ente Regulador': ['Avisos', 'Aporte Personal'],
+    }
+
+    const categorias = Object.keys(cat_etiq)
+
+    const selectedCategory = ref<string | null>(null)
+    const selectedTags = ref<string[]>([])
+    const filteredEtiquetas = ref<string[]>([])
+
+    function updateEtiquetas() {
+      if (selectedCategory.value) {
+        filteredEtiquetas.value = cat_etiq[selectedCategory.value]
+      } else {
+        filteredEtiquetas.value = []
+      }
+    }
+
+
+
+
     const {
       entidad: noticia,
       accion,
       listadosAuxiliares,
     } = mixin.useReferencias()
-    const { setValidador, listar, consultar, cargarVista } = mixin.useComportamiento()
+    const { setValidador, listar, consultar, cargarVista } =
+      mixin.useComportamiento()
     const { onConsultado, onBeforeModificar } = mixin.useHooks()
 
     const formRef = ref(null)
@@ -55,10 +86,8 @@ export default defineComponent({
       autor: { required },
       fecha_creacion: { required },
       url_imagen: { required },
-      descripcion: { required }
+      descripcion: { required },
     }))
-
-
 
     const v$ = useVuelidate(reglas, noticia)
     setValidador(v$.value)
@@ -92,6 +121,13 @@ export default defineComponent({
       filtrarNoticia,
       esConsultado,
       accion,
+      cat_etiq,
+      categorias,
+      selectedCategory,
+      selectedTags,
+      filteredEtiquetas,
+      updateEtiquetas,
+
     }
   },
 })

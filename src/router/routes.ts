@@ -33,6 +33,12 @@ const routes: RouteRecordRaw[] = [
         meta: { requiresAuth: false },
       },
       {
+        path: '/NoticiaView',
+        name: 'noticiaView',
+        component: () => import('pages/intranet/intranet/view/NoticiaView.vue'),
+        meta: { requiresAuth: false },
+      },
+      {
         path: '/eventos',
         name: 'eventos',
         component: () => import('pages/intranet/eventos/view/EventoPage.vue'),

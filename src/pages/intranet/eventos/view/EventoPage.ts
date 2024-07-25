@@ -31,8 +31,8 @@ export default defineComponent({
       mixin.useComportamiento()
 
     const splitterModel = ref(50)
-    const date = ref('2019/02/01')
-    const events = ref(['2019/02/01', '2019/02/05', '2019/02/06'])
+    const date = ref('2024/07/01')
+    const events = ref(['2024/07/01', '2024/07/11', '2024/07/15'])
     const tiposEvento = ref(['Cumpleaños', 'Capacitaciones'])
 
     const CURRENT_DAY = new Date()

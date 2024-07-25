@@ -1,122 +1,204 @@
 <template>
   <q-page padding>
-
-    <q-banner v-if="showBanner" inline-actions class="text-white bg-orange">
-      Noticia de Emergencia o Flash Informativo
-      (Aqui iria la breve descripcion de la noticia o el suceso)
-      <template v-slot:action>
-        <q-btn flat color="white" label="VER NOTICIA" />
-      </template>
-    </q-banner>
-
-    <!-- Columns start at 33.3% wide on mobile and bump up to 50% wide on desktop -->
-
+    
     <!--Fila 01-->
     <div class="row q-col-gutter-sm q-mt-md q-mx-md q-mb-md">
       <div class="col-4 col-md-9">
         <!--Noticias-->
-        <q-carousel style="border-radius: 15px;  overflow: hidden;" animated v-model="slide" navigation
-          navigation-position="right" height="400px" autoplay autoplay-interval="3000" infinite>
+        <q-carousel
+          style="border-radius: 15px; overflow: hidden"
+          animated
+          v-model="carousel_noticias"
+          navigation
+          navigation-position="right"
+          height="400px"
+          autoplay
+          autoplay-interval="3000"
+          infinite
+        >
           <template v-slot:navigation-icon="{ active, btnProps, onClick }">
-            <q-btn v-if="active" size="lg" icon="visibility" color="primary" flat round dense @click="onClick" />
-            <q-btn v-else size="sm" :icon="btnProps.icon" color="warning" flat round dense @click="onClick" />
+            <q-btn
+              v-if="active"
+              size="lg"
+              icon="visibility"
+              color="primary"
+              flat
+              round
+              dense
+              @click="onClick"
+            />
+            <q-btn
+              v-else
+              size="sm"
+              :icon="btnProps.icon"
+              color="warning"
+              flat
+              round
+              dense
+              @click="onClick"
+            />
           </template>
 
-          <q-carousel-slide v-for="(news, index) in newsList" :key="index" :name="index" class="row q-py-md">
-            <q-img :src="news.image" :alt="news.title" class="col-md-5 rounded-borders" />
+          <q-carousel-slide
+            v-for="(news, index) in newsList"
+            :key="index"
+            :name="index"
+            class="row q-py-md"
+          >
+            <q-img
+              :src="news.image"
+              :alt="news.title"
+              class="col-md-5 rounded-borders"
+            />
             <div class="col-md-5 q-pl-md">
               <h5 class="q-mb-sm">{{ news.title }}</h5>
               <p class="q-mb-md">{{ news.description }}</p>
-              <q-btn class="bottom-right q-mb-md" color="primary" @click="readMore(news.link)">
+              <q-btn
+                class="bottom-right q-mb-md"
+                color="primary"
+                @click="readMore(news.link)"
+              >
                 Leer más
               </q-btn>
             </div>
           </q-carousel-slide>
         </q-carousel>
-        <br>
+        <br />
         <!--Mis Modulos-->
         <div class="col-4 col-md-9 items-lg-center">
-          <q-card class="my-custom-card" style="border-radius: 15px;">
+          <q-card class="my-custom-card" style="border-radius: 15px">
             <q-card-section>
-              <div class="text-h6" style="text-align-last: center; color: lightseagreen;">MIS MÓDULOS</div>
+              <div
+                class="text-h6"
+                style="text-align-last: center; color: lightseagreen"
+              >
+                MIS MÓDULOS
+              </div>
             </q-card-section>
             <q-card-section class="icon-container">
-              <a v-for="(modulo, index) in modulosPermitidos" :key="index" :href="modulo.link" target="_blank"
-                class="icon-link">
-                <q-icon :name="modulo.icon" size="100px" class="icon-content" color="blue-14">
-                  <q-tooltip anchor="top middle" self="bottom middle">{{ modulo.title }}</q-tooltip>
+              <a
+                v-for="(modulo, index) in modulosPermitidos"
+                :key="index"
+                :href="modulo.link"
+                target="_blank"
+                class="icon-link"
+              >
+                <q-icon
+                  :name="modulo.icon"
+                  size="100px"
+                  class="icon-content"
+                  color="blue-14"
+                >
+                  <q-tooltip anchor="top middle" self="bottom middle">{{
+                    modulo.title
+                  }}</q-tooltip>
                 </q-icon>
               </a>
-
             </q-card-section>
           </q-card>
-
         </div>
-        <br>
-
+        <br />
         <!--Departamentos-->
         <div class="col-4 col-md-9">
           <q-card class="department-card">
             <q-card-section>
-              <div class="text-h6" style="text-align-last: center; color: lightseagreen;">DEPARTAMENTOS</div>
+              <div
+                class="text-h6"
+                style="text-align-last: center; color: lightseagreen"
+              >
+                DEPARTAMENTOS
+              </div>
             </q-card-section>
             <q-card-section class="department-details">
               <div class="column">
-                <q-card style="max-height: 300px; overflow-y: auto;">
+                <q-card style="max-height: 300px; overflow-y: auto">
                   <q-card-section>
                     <q-list bordered class="rounded-borders">
-                      <q-expansion-item v-for="(departamento, index) in departamentos" :key="index" expand-separator
-                        :label="index + 1 + '. ' + departamento.nombre" group="evento" dense
-                        :caption="departamento.responsable" @click="consultarEmpleadosDepartamento(departamento.id)">
+                      <q-expansion-item
+                        v-for="(departamento, index) in departamentos"
+                        :key="index"
+                        expand-separator
+                        :label="index + 1 + '. ' + departamento.nombre"
+                        group="evento"
+                        dense
+                        :caption="departamento.responsable"
+                        @click="consultarEmpleadosDepartamento(departamento.id)"
+                      >
                       </q-expansion-item>
                     </q-list>
                   </q-card-section>
                 </q-card>
               </div>
-              <div class="column" style="max-height: 300px; overflow-y: auto;">
-                <q-card v-for="(empleado, index) in empleados" :key="index">
+              <div class="column" style="max-height: 300px; overflow-y: auto">
+                <q-card
+                  v-for="(empleado, index) in empleados"
+                  :key="index"
+                  class="q-my-md q-px-md"
+                >
                   <div class="row q-col-gutter-sm q-my-xs q-mx-md">
-                    <q-avatar>
-                      <img :src="empleado.foto_url == null
-                        ? `https://ui-avatars.com/api/?name=${empleado.nombres.substr(0, 1)}+${empleado.apellidos.substr(0, 1)}&bold=true&background=0879dc28&color=0879dc`
-                        : empleado.foto_url" />
+                    <q-avatar size="lg" class="q-mr-md">
+                      <img
+                        :src="
+                          empleado.foto_url == null
+                            ? `https://ui-avatars.com/api/?name=${empleado.nombres.substr(
+                                0,
+                                1
+                              )}+${empleado.apellidos.substr(
+                                0,
+                                1
+                              )}&bold=true&background=0879dc28&color=0879dc`
+                            : empleado.foto_url
+                        "
+                      />
                     </q-avatar>
-
-                    <div class="col-6 col-md-9 q-my-md margen-pequeno">
-                      <p class="margen-pequeno">
+                    <div class="col-6 col-md-9 q-my-md">
+                      <p class="text-h6 q-mb-none">
                         {{ empleado.nombres + ' ' + empleado.apellidos }}
                       </p>
-                      <small>{{ empleado.cargo }}</small>
-                      <br>
-                      <small>{{ empleado.telefono }}</small>
+                      <q-badge rounded color="blue" class="q-mt-sm"
+                        ><small>{{ empleado.cargo }}</small></q-badge
+                      >
+                      <q-badge rounded color="green" class="q-mt-sm q-ml-sm"
+                        ><small>{{ empleado.telefono }}</small></q-badge
+                      >
                     </div>
-
                   </div>
                 </q-card>
               </div>
             </q-card-section>
           </q-card>
         </div>
-
       </div>
       <!--Columna izquierda-->
       <div class="col-5 col-md-3">
         <!--Buscar-->
-        <q-input v-model="search" filled type="search" hint="" placeholder="Buscar"
-          style="border-radius: 15px;  overflow: hidden;">
+        <q-input
+          v-model="search"
+          filled
+          type="search"
+          hint=""
+          placeholder="Buscar"
+          style="border-radius: 15px; overflow: hidden"
+        >
           <template v-slot:append>
             <q-icon name="search" />
           </template>
         </q-input>
         <!--Card Empleado-->
-        <q-card class="my-card" style="border-radius: 15px; overflow: hidden;">
+        <q-card class="my-card" style="border-radius: 15px; overflow: hidden">
           <div class="row q-pa-md">
             <div class="col-auto">
               <div class="relative-position">
-                <q-img :src="imagenPerfil" width="100px" height="100px" fit="cover" class="rounded-full" />
+                <q-img
+                  :src="imagenPerfil"
+                  width="100px"
+                  height="100px"
+                  fit="cover"
+                  class="rounded-full"
+                />
               </div>
               <div>
-                <br><br>
+                <br /><br />
                 <q-badge rounded color="green">DOCUMENTOS</q-badge>
               </div>
             </div>
@@ -124,62 +206,202 @@
               <q-card-section class="text-left">
                 {{ store.nombreUsuario }}
                 <q-badge color="primary">{{ store.user?.email }}</q-badge>
-                <q-badge rounded color="orange">{{ store.user?.cargo }}</q-badge>
+                <q-badge rounded color="orange">{{
+                  store.user?.cargo
+                }}</q-badge>
               </q-card-section>
               <!--Documentos-->
               <q-card-section class="q-gutter-x-sm">
-                <a v-for="social in socialNetworks" :key="social.id" :href="social.link" target="_blank"
-                  class="social-link">
+                <a
+                  v-for="social in socialNetworks"
+                  :key="social.id"
+                  :href="social.link"
+                  target="_blank"
+                  class="social-link"
+                >
                   <q-icon :name="social.icon" size="md" class="icon-content">
-                    <q-tooltip anchor="top middle" self="bottom middle">{{ social.name }}</q-tooltip>
+                    <q-tooltip anchor="top middle" self="bottom middle">{{
+                      social.name
+                    }}</q-tooltip>
                   </q-icon>
                 </a>
               </q-card-section>
             </div>
           </div>
         </q-card>
-        <br>
+        <br />
         <!--Calendario de Eventos-->
-        <q-card style="border-radius: 15px;">
+        <q-card style="border-radius: 15px">
           <q-card-section>
-            <div class="text-h6" style="text-align-last: center; color: lightseagreen;">EVENTOS DEL MES</div>
+            <div
+              class="text-h6"
+              style="text-align-last: center; color: lightseagreen"
+            >
+              EVENTOS DEL MES
+            </div>
           </q-card-section>
+
+          <div
+            class="text-h6"
+            style="text-align-last: center; color: mediumslateblue"
+          >
+            Cumpleañeros
+          </div>
+          <q-separator />
           <q-card-section>
-            <q-date v-model="date" :mask="maskFecha" :events="eventos"
-              :event-color="(date) => (date[9] % 2 === 0 ? 'teal' : 'orange')" minimal
-              @update:model-value="verEvento(date)" style="width: max-content" />
+            <q-carousel
+              v-model="carousel_cumpleanos_mes"
+              transition-prev="slide-right"
+              transition-next="slide-left"
+              swipeable
+              animated
+              padding
+              :slides-per-page="1"
+              arrows
+              height="110px"
+              class="bg-white-3 rounded-borders"
+              autoplay
+              infinite
+            >
+              <q-carousel-slide
+                v-for="(empleado, index) in empleadosCumpleaneros"
+                :key="empleado.id"
+                :name="index"
+              >
+                <div class="row justify-start items-center q-gutter-xs">
+                  <q-avatar size="80px">
+                    <img
+                      :src="
+                        empleado.foto_url == null
+                          ? `https://ui-avatars.com/api/?name=${empleado.nombres.substr(
+                              0,
+                              1
+                            )}+${empleado.apellidos.substr(
+                              0,
+                              1
+                            )}&bold=true&background=008000&color=ffff`
+                          : empleado.foto_url
+                      "
+                    />
+                    <q-badge floating color="orange">{{
+                      new Date(empleado.fecha_nacimiento).getDate()
+                    }}</q-badge>
+                    <q-tooltip anchor="top middle" self="bottom middle"
+                      >{{ empleado.nombres }}
+                      {{ empleado.apellidos }}</q-tooltip
+                    >
+                  </q-avatar>
+                  <q-avatar size="80px" v-if="empleadosCumpleaneros[index + 1]">
+                    <img
+                      :src="
+                        empleadosCumpleaneros[index + 1].foto_url == null
+                          ? `https://ui-avatars.com/api/?name=${empleadosCumpleaneros[
+                              index + 1
+                            ].nombres.substr(0, 1)}+${empleadosCumpleaneros[
+                              index + 1
+                            ].apellidos.substr(
+                              0,
+                              1
+                            )}&bold=true&background=008000&color=ffff`
+                          : empleadosCumpleaneros[index + 1].foto_url
+                      "
+                    />
+                    <q-badge floating color="orange">{{
+                      new Date(
+                        empleadosCumpleaneros[index + 1].fecha_nacimiento
+                      ).getDate()
+                    }}</q-badge>
+                    <q-tooltip anchor="top middle" self="bottom middle"
+                      >{{ empleadosCumpleaneros[index + 1].nombres }}
+                      {{
+                        empleadosCumpleaneros[index + 1].apellidos
+                      }}</q-tooltip
+                    >
+                  </q-avatar>
+                </div>
+              </q-carousel-slide>
+            </q-carousel>
+          </q-card-section>
+          <q-separator />
+          <q-card-section>
+            <q-date
+              v-model="date"
+              :mask="maskFecha"
+              :events="eventos"
+              :event-color="date => (date[9] % 2 === 0 ? 'teal' : 'orange')"
+              minimal
+              @update:model-value="verEvento(date)"
+              style="width: max-content"
+            />
           </q-card-section>
         </q-card>
-
-        <br>
+        <br />
+        <q-separator />
         <!--Formulario de Solicitudes-->
-        <q-card style="border-radius: 15px;">
+        <q-card style="border-radius: 15px">
           <q-card-section>
-            <div class="text-h6" style="text-align-last: center; color: lightseagreen;">SOLICITUDES</div>
+            <div
+              class="text-h6"
+              style="text-align-last: center; color: lightseagreen"
+            >
+              SOLICITUDES
+            </div>
           </q-card-section>
           <q-card-section>
             <q-form @submit.prevent="enviarSolicitud">
-              <q-select v-model="solicitud.tipo_solicitud" :options="tiposSolicitudes" label="Tipo de Solicitud"
-                emit-value map-options required></q-select>
-              <q-input v-model="solicitud.descripcion" label="Descripción" type="textarea" autogrow required></q-input>
-              <q-input v-model="solicitud.fecha_inicio" label="Fecha de Inicio" mask="####-##-##" filled required>
+              <q-select
+                v-model="solicitud.tipo_solicitud"
+                :options="tiposSolicitudes"
+                label="Tipo de Solicitud"
+                emit-value
+                map-options
+                required
+              ></q-select>
+              <q-input
+                v-model="solicitud.descripcion"
+                label="Descripción"
+                type="textarea"
+                autogrow
+                required
+              ></q-input>
+              <q-input
+                v-model="solicitud.fecha_inicio"
+                label="Fecha de Inicio"
+                mask="####-##-##"
+                filled
+                required
+              >
                 <template v-slot:append>
                   <q-icon name="event" />
                 </template>
-                <q-popup-proxy ref="qDateInicio" transition-show="scale" transition-hide="scale">
+                <q-popup-proxy
+                  ref="qDateInicio"
+                  transition-show="scale"
+                  transition-hide="scale"
+                >
                   <q-date v-model="solicitud.fecha_inicio" mask="YYYY-MM-DD" />
                 </q-popup-proxy>
               </q-input>
 
-              <q-input v-model="solicitud.fecha_fin" label="Fecha de Fin" mask="####-##-##" filled required>
+              <q-input
+                v-model="solicitud.fecha_fin"
+                label="Fecha de Fin"
+                mask="####-##-##"
+                filled
+                required
+              >
                 <template v-slot:append>
                   <q-icon name="event" />
                 </template>
-                <q-popup-proxy ref="qDateFin" transition-show="scale" transition-hide="scale">
+                <q-popup-proxy
+                  ref="qDateFin"
+                  transition-show="scale"
+                  transition-hide="scale"
+                >
                   <q-date v-model="solicitud.fecha_fin" mask="YYYY-MM-DD" />
                 </q-popup-proxy>
               </q-input>
-              <br>
+              <br />
               <q-btn type="submit" color="primary" label="Enviar"></q-btn>
             </q-form>
           </q-card-section>
@@ -188,12 +410,14 @@
     </div>
 
     <!--Fila 02-->
-    <div class="row q-col-gutter-sm q-ml-sm q-pl-sm">
-    </div>
-
-
+    <div class="row q-col-gutter-sm q-ml-sm q-pl-sm"></div>
     <!-- Componente de modales -->
-    <modales-entidad :comportamiento="modales" :fullWidth="false" :maximized="false" :persistente="false" />
+    <modales-entidad
+      :comportamiento="modales"
+      :fullWidth="false"
+      :maximized="false"
+      :persistente="false"
+    />
   </q-page>
 </template>
 
@@ -307,8 +531,10 @@ h5 {
   /* Color de texto para los detalles */
 }
 
-
-/*--------estilos del formulario--------*/
+.overlapping {
+  border: 2px solid white;
+  position: absolute;
+}
 
 </style>
 
