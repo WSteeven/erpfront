@@ -571,7 +571,7 @@ export const niveles_academicos = [
   { nombre: 'ESTUDIO SECUNDARIO' },
   { nombre: 'TITULO SUPERIOR' },
 ]
-export const tipos_documentos_identificaciones = [
+export const tiposDocumentosIdentificaciones = [
   { nombre: 'Cedula', value:'CEDULA' },
   { nombre: 'R.U.C.' , value:'RUC' },
   { nombre: 'Pasaporte',value: 'PASAPORTE' },

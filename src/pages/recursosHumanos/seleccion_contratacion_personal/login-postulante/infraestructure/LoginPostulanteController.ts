@@ -4,6 +4,7 @@ import { rolesSistema } from 'config/utils'
 import { useRouter } from 'vue-router'
 import { UserLoginPostulante } from '../domain/UserLoginPostulante'
 import { useAuthenticationExternalStore } from 'stores/authenticationExternal'
+import router from 'src/router'
 
 export class LoginPostulanteController {
   store = useAuthenticationExternalStore()
@@ -13,8 +14,8 @@ export class LoginPostulanteController {
     try {
       const usuario = await this.store.login(userLogin)
       const roles = usuario.roles
-      
-      this.Router.replace({ name: 'puestos_disponibles' })
+      this.Router.push(this.Router.currentRoute.value.redirectedFrom || { name: 'puestos_disponibles' })
+      // this.Router.replace({ name: 'puestos_disponibles' })
 
       return usuario
     } catch (error: unknown) {

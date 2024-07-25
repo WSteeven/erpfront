@@ -76,12 +76,11 @@
           </div>
 
           <!-- Tipo de Identificacion -->
-
           <div class="col-12 q-mb-sm">
             <label class="q-mb-sm block">Tipo de Identificacion</label>
             <q-select
               v-model="postulante.tipo_documento_identificacion"
-              :options="tipos_documentos_identificaciones"
+              :options="tiposDocumentosIdentificaciones"
               transition-show="jump-up"
               transition-hide="jump-down"
               options-dense

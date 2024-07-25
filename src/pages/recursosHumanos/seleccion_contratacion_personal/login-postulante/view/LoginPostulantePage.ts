@@ -1,17 +1,6 @@
 // Dependencias
-import {
-  isAxiosError,
-  notificarMensajesError,
-  removeAccents,
-} from 'shared/utils'
-import {
-  computed,
-  defineComponent,
-  onMounted,
-  reactive,
-  ref,
-  watchEffect,
-} from 'vue'
+import {isAxiosError,notificarMensajesError} from 'shared/utils'
+import {computed,defineComponent,onMounted,reactive,ref,watchEffect} from 'vue'
 import { useQuasar, LocalStorage } from 'quasar'
 
 import { useRouter } from 'vue-router'
@@ -23,7 +12,6 @@ import { useConfiguracionGeneralStore } from 'stores/configuracion_general'
 import { StatusEssentialLoading } from 'components/loading/application/StatusEssentialLoading'
 import { useNotificaciones } from 'shared/notificaciones'
 import { UserLogin } from 'sistema/authentication/login/domain/UserLogin'
-import { LoginController } from 'sistema/authentication/login/infraestructure/LoginController'
 import { LoginPostulanteController } from '../infraestructure/LoginPostulanteController'
 
 export default defineComponent({
@@ -59,7 +47,7 @@ export default defineComponent({
         console.log('montar errror', error)
 
         if (isAxiosError(error)) {
-          const mensajes: string[] = error.erroresValidacion
+          // const mensajes: string[] = error.erroresValidacion
           console.log('montar errror', error.mensaje)
           //notificarMensajesError(mensajes, notificaciones)
         }

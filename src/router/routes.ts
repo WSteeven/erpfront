@@ -1382,6 +1382,15 @@ const routes: RouteRecordRaw[] = [
             'pages/recursosHumanos/SeleccionContratacionPersonal/vacantesAplicadas/view/PuestoAplicadoPage.vue'
           ),
       },
+      {
+        path: '/postulacion-vacante/:id',
+        name: 'postulacion_vacante',
+        component: () =>
+          import(
+            'pages/recursosHumanos/SeleccionContratacionPersonal/postulacionVacante/view/PostulacionVacantePage.vue'
+          ),
+          meta: {requiresAuth:true}
+      },
     ],
   },
   // {

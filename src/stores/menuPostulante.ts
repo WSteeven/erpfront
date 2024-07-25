@@ -1,9 +1,10 @@
 import { MenuOption } from 'shared/menu/MenuOption'
 import { defineStore } from 'pinia'
 import { computed, Ref } from 'vue'
+// import { useAuthenticationExternalStore } from './authenticationExternal';
 
-export const useMenuPostulanteStore = defineStore('menu', () => {
-
+export const useMenuPostulanteStore = defineStore('menuExternal', () => {
+  // const store= useAuthenticationExternalStore()
   // State
   const links: Ref<MenuOption[]> = computed(() => [
     {

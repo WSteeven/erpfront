@@ -48,6 +48,7 @@ export const useAuthenticationExternalStore = defineStore('authentication_extern
       const response: AxiosResponse = await axios.post(login, credentiales)
 
       LocalStorage.set('token', response.data.access_token)
+      LocalStorage.set('method_access', tipoAutenticacion.usuario_externo)
       setUser(response.data.modelo)
       roles.value = response.data.modelo.roles
       permisos.value = response.data.modelo.permisos

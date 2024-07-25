@@ -1,7 +1,7 @@
 // Dependencias
 import { isAxiosError, notificarMensajesError } from 'shared/utils'
 import { computed, defineComponent, reactive, ref, watchEffect } from 'vue'
-import { useQuasar, LocalStorage } from 'quasar'
+import { useQuasar,  } from 'quasar'
 
 import { useRouter } from 'vue-router'
 
@@ -15,7 +15,7 @@ import { PostulanteRegistroController } from '../infraestructure/PostulanteRegis
 import { Postulante } from '../domain/Postulante'
 import useVuelidate from '@vuelidate/core'
 import { required } from 'shared/i18n-validators'
-import { tipos_documentos_identificaciones } from 'config/utils'
+import { tiposDocumentosIdentificaciones } from 'config/utils'
 import { email } from '@vuelidate/validators'
 
 export default defineComponent({
@@ -115,7 +115,7 @@ export default defineComponent({
       recuperarPassword,
       nombreEmpresa,
       cargando,
-      tipos_documentos_identificaciones,
+      tiposDocumentosIdentificaciones,
     }
   },
 })
