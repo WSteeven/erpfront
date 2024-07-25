@@ -226,3 +226,8 @@ input[type='time']::-webkit-calendar-picker-indicator {
   border-top: 2px solid $positive;
   border-bottom: 2px solid $positive;
 }
+
+.q-field.q-field--with-bottom div .q-field__bottom {
+  text-transform: none !important;
+  margin-bottom: 6px;
+}

@@ -195,7 +195,7 @@
       </q-select>
     </div>
 
-    <div class="col-12 col-md-3">
+    <!-- <div class="col-12 col-md-3">
       <label class="q-mb-sm block">Área</label>
       <q-input
         v-model="persona.area"
@@ -212,10 +212,10 @@
           </div>
         </template>
       </q-input>
-    </div>
+    </div> -->
 
     <div class="col-12 col-md-3 q-mb-md col-sm-3">
-      <label class="q-mb-sm block">Nivel Academico</label>
+      <label class="q-mb-sm block">Máximo nivel de instrucción terminado</label>
       <q-select
         v-model="persona.nivel_academico"
         :options="niveles_academicos"
@@ -253,7 +253,7 @@
       </q-select>
     </div>
 
-    <div class="col-12 col-md-3">
+    <!-- <div class="col-12 col-md-3">
       <label class="q-mb-sm block">Antiguedad</label>
       <q-input
         v-model="persona.antiguedad"
@@ -270,7 +270,7 @@
           </div>
         </template>
       </q-input>
-    </div>
+    </div> -->
 
     <div class="col-12 col-md-3">
       <label class="q-mb-sm block">Correo</label>
@@ -379,16 +379,25 @@
 
     <div class="col-12 col-md-3 col-sm-3">
       <label class="q-mb-sm block">Género</label>
-      <q-toggle
-        :label="modelValue.persona.genero == 'M' ? 'Masculino' : 'Femenino'"
-        v-model="modelValue.persona.genero"
-        true-value="M"
-        false-value="F"
-        color="primary"
-        keep-color
-        icon="fa-solid fa-person"
-        unchecked-icon="fa-solid fa-person-dress"
-      />
+      <q-select
+        v-model="persona.genero"
+        :options="generos"
+        @update:model-value="(d) => (modelValue.persona.genero = d)"
+        transition-show="jump-up"
+        transition-hide="jump-down"
+        options-dense
+        dense
+        outlined
+        @blur="v$.persona.genero.$touch"
+        :error="!!v$.persona.genero.$errors.length"
+        emit-value
+      >
+        <template v-slot:error>
+          <div v-for="error of v$.persona.genero.$errors" :key="error.$uid">
+            <div class="error-msg">{{ error.$message }}</div>
+          </div>
+        </template>
+      </q-select>
     </div>
   </div>
 
@@ -453,8 +462,8 @@
       </q-input>
     </div>
 
-    <div class="col-12 col-md-3">
-      <label class="q-mb-sm block">Tipo afiliación seguridad social</label>
+    <!-- <div class="col-12 col-md-3">
+      <label class="q-mb-sm block">Tipo afiliación seguridad social</label> 
       <q-input
         v-model="persona.tipo_afiliacion_seguridad_social"
         placeholder="Obligatorio"
@@ -475,13 +484,14 @@
           </div>
         </template>
       </q-input>
-    </div>
+    </div> -->
 
     <div class="col-12 col-md-3">
       <label class="q-mb-sm block">Número de hijos</label>
       <q-input
         v-model="persona.numero_hijos"
         placeholder="Obligatorio"
+        hint="Coloque en números el número de hijos que tiene reconocidos y los entenados que vivan con usted."
         type="number"
         outlined
         dense
@@ -542,7 +552,7 @@
     </div>
 
     <div class="col-12 col-md-3 col-sm-3">
-      <label class="q-mb-sm block">Discapacidad</label>
+      <label class="q-mb-sm block">Tengo discapacidad</label>
       <q-toggle
         v-model="modelValue.persona.discapacidad"
         color="primary"
@@ -551,48 +561,89 @@
       />
     </div>
 
-    <div v-if="modelValue.persona.discapacidad" class="col-12 col-md-3">
-      <label class="q-mb-sm block">Porcentaje de discapacidad</label>
-      <q-input
-        v-model="persona.porcentaje_discapacidad"
-        placeholder="Obligatorio"
-        hint="Describa la discapacidad y su porcentaje"
-        autogrow
-        outlined
+    <div
+      v-if="modelValue.persona.discapacidad"
+      class="col-12 col-md-3 col-sm-3"
+    >
+      <label class="q-mb-sm block">Discapacidad</label>
+      <q-select
+        v-model="persona.discapacidades"
+        :options="discapacidades"
+        @update:model-value="establecerDiscapacidades"
+        transition-show="jump-up"
+        transition-hide="jump-down"
+        options-dense
         dense
-        @update:model-value="
-          (d) => (modelValue.persona.porcentaje_discapacidad = d)
-        "
-        @blur="v$.persona.porcentaje_discapacidad.$touch"
-        :error="!!v$.persona.porcentaje_discapacidad.$errors.length"
+        outlined
+        @blur="v$.persona.discapacidades.$touch"
+        :error="!!v$.persona.discapacidades.$errors.length"
+        emit-value
       >
-        <template #error>
+        <template v-slot:error>
           <div
-            v-for="error of v$.persona.porcentaje_discapacidad.$errors"
+            v-for="error of v$.persona.discapacidades.$errors"
             :key="error.$uid"
           >
             <div class="error-msg">{{ error.$message }}</div>
           </div>
         </template>
+      </q-select>
+    </div>
+
+    <div v-if="modelValue.persona.discapacidad" class="col-12 col-md-3">
+      <label class="q-mb-sm block">Porcentaje de discapacidad</label>
+      <q-input
+        v-model="persona.porcentaje"
+        placeholder="0"
+        type="number"
+        outlined
+        dense
+        @update:model-value="establecerPorcentajeDiscapacidad"
+        @blur="v$.persona.porcentaje.$touch"
+        :error="!!v$.persona.porcentaje.$errors.length"
+      >
+        <template #error>
+          <div v-for="error of v$.persona.porcentaje.$errors" :key="error.$uid">
+            <div class="error-msg">{{ error.$message }}</div>
+          </div>
+        </template>
+
+        <template #append>
+          <q-icon
+            name="bi-percent"
+            class="bg-grey-4 q-pa-xs rounded-card"
+          ></q-icon>
+        </template>
       </q-input>
     </div>
 
-    <div class="col-12 col-md-3">
-      <label class="q-mb-sm block">Enfermedades preexistentes</label>
-      <q-input
+    <div class="col-12 col-md-3 col-sm-3">
+      <label class="q-mb-sm block">
+        Señale la enfermedad que tenga diagnosticada
+      </label>
+      <q-select
         v-model="persona.enfermedades_preexistentes"
-        placeholder="Obligatorio"
-        autogrow
-        type="textarea"
-        outlined
-        dense
+        :options="enfermedadesPreexistentes"
         @update:model-value="
           (d) => (modelValue.persona.enfermedades_preexistentes = d)
         "
+        @filter="filtrarEnfermedades"
+        transition-show="jump-up"
+        transition-hide="jump-down"
+        options-dense
+        multiple
+        dense
+        outlined
+        :input-debounce="0"
+        use-input
         @blur="v$.persona.enfermedades_preexistentes.$touch"
         :error="!!v$.persona.enfermedades_preexistentes.$errors.length"
+        :option-value="(v) => v.nombre"
+        :option-label="(v) => v.nombre"
+        emit-value
+        map-options
       >
-        <template #error>
+        <template v-slot:error>
           <div
             v-for="error of v$.persona.enfermedades_preexistentes.$errors"
             :key="error.$uid"
@@ -600,11 +651,13 @@
             <div class="error-msg">{{ error.$message }}</div>
           </div>
         </template>
-      </q-input>
+      </q-select>
     </div>
 
     <div class="col-12 col-md-3 col-sm-3">
-      <label class="q-mb-sm block">Es trabajador sustituto</label>
+      <label class="q-mb-sm block"
+        >El trabajador sustituye a algún pariente</label
+      >
       <q-toggle
         v-model="modelValue.persona.es_trabajador_sustituto"
         color="primary"
@@ -614,7 +667,7 @@
     </div>
 
     <div class="col-12 col-md-3 col-sm-3">
-      <label class="q-mb-sm block">Ha recibido capacitación</label>
+      <label class="q-mb-sm block">Recibe charlas sobre drogas</label>
       <q-toggle
         v-model="modelValue.persona.ha_recibido_capacitacion"
         color="primary"
@@ -624,7 +677,9 @@
     </div>
 
     <div class="col-12 col-md-3 col-sm-3">
-      <label class="q-mb-sm block">Tiene examen preocupacional</label>
+      <label class="q-mb-sm block"
+        >Le realizaron exámenes al ingresar a trabajar a la empresa</label
+      >
       <q-toggle
         v-model="modelValue.persona.tiene_examen_preocupacional"
         color="primary"

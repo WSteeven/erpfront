@@ -64,6 +64,14 @@ export default defineComponent({
         const { confirmar } = useNotificaciones()
         const mensaje = ref()
         const cedulaValida = ref(true)
+        const linkExiste = ref(true)
+
+        /*************
+         * Constantes
+         *************/
+        const CUESTIONARIO_OTROS = [407, 424] // TABLA med_cuestionarios,id son preguntas con respuesta OTROS
+        const CUESTIONARIO_NO_CONSUME = [406, 385, 388, 419, 423] // TABLA med_cuestionarios,id son preguntas con respuesta OTROS
+        const ALCOHOL_DROGAS = 2
 
         /****************
          * Controladores
@@ -107,25 +115,32 @@ export default defineComponent({
                 (cuestionario: FormularioCuestionario) => {
                     const cuestionarioAux = new Cuestionario()
                     cuestionarioAux.respuesta_texto = typeof cuestionario.respuesta === 'string' ? cuestionario.respuesta : null
-                    cuestionarioAux.id_cuestionario = typeof cuestionario.respuesta === 'string' ? cuestionario.cuestionario[0].id : cuestionario.respuesta
+                    cuestionarioAux.id_cuestionario = typeof cuestionario.respuesta === 'string' || typeof cuestionario.respuesta === 'object' ? cuestionario.cuestionario[0].id : cuestionario.respuesta
                     // cuestionarioAux.id_cuestionario = typeof cuestionario.respuesta === 'number' ? cuestionario.respuesta : null
                     return cuestionarioAux
                 }
             )
         }
-        /* const mapearRespuestas = () => {
-            return cuestionarioPublico.cuestionario = cuestionarioPublico.cuestionario.map(
-                (cuestionario: Cuestionario) => {
-                    return {
-                        respuesta_texto: typeof cuestionario.respuesta === 'string' ? cuestionario.respuesta : null,
-                        id_cuestionario:
-                            typeof cuestionario.respuesta === 'string'
-                                ? cuestionario.cuestionario[0].id
-                                : cuestionario.respuesta,
-                    }
-                }
-            )
-        } */
+
+        const noConsume = ref(false)
+        const establecerNoConsume = (index: number, respuesta: number) => {
+            console.log(index, respuesta)
+            if (index === 0 && respuesta === 406) { // No consume
+                cuestionarioPublico.formulario_cuestionario[2].respuesta = 385 // No consume
+                cuestionarioPublico.formulario_cuestionario[3].respuesta = 388 // No consume
+                cuestionarioPublico.formulario_cuestionario[4].respuesta = 419 // No consume
+                cuestionarioPublico.formulario_cuestionario[6].respuesta = 423 // No consume
+                noConsume.value = true
+            } else {
+                noConsume.value = false
+            }
+        }
+
+        const desahabilitarNoConsume = (cuestionario_id: number) => {
+            const des = cuestionarioPublico.formulario_cuestionario[0].respuesta !== 406 && CUESTIONARIO_NO_CONSUME.includes(cuestionario_id)
+            console.log(des)
+            return des
+        }
 
         const guardarCuestionario = async () => {
             confirmar(
@@ -166,20 +181,22 @@ export default defineComponent({
             }, */
             formulario_cuestionario: {
                 $each: helpers.forEach({
-                    respuesta: { requiredIf: requiredIf(() => tipoCuestionarioSeleccionado.value === 1) }
+                    respuesta: {
+                        requiredIf: requiredIf(() => tipoCuestionarioSeleccionado.value === 1),
+                    }
                 }),
             },
             persona: {
-                primer_nombre: { required },
+                primer_nombre: { required }, // tr8198 / 4760 egreso
                 segundo_nombre: { required },
                 primer_apellido: { required },
                 segundo_apellido: { required },
                 identificacion: { required },
                 provincia: { required },
                 canton: { required },
-                area: { required },
+                // area: { required },
                 nivel_academico: { required },
-                antiguedad: { required },
+                // antiguedad: { required },
                 correo: { required },
                 estado_civil: { required },
                 fecha_nacimiento: { required },
@@ -187,11 +204,14 @@ export default defineComponent({
                 nombre_empresa: { requiredIf: requiredIf(() => esDrogas.value) },
                 // ruc: { requiredIf: requiredIf(() => esDrogas.value) },
                 cargo: { requiredIf: requiredIf(() => esDrogas.value) },
-                tipo_afiliacion_seguridad_social: { requiredIf: requiredIf(() => esDrogas.value) },
+                // tipo_afiliacion_seguridad_social: { requiredIf: requiredIf(() => esDrogas.value) },
                 numero_hijos: { requiredIf: requiredIf(() => esDrogas.value) },
                 autoidentificacion_etnica: { requiredIf: requiredIf(() => esDrogas.value) },
                 porcentaje_discapacidad: { requiredIf: requiredIf(() => esDrogas.value && cuestionarioPublico.persona.discapacidad) },
                 enfermedades_preexistentes: { requiredIf: requiredIf(() => esDrogas.value) },
+                // discapadidad: { requiredIf: requiredIf(() => esDrogas.value) },
+                porcentaje: { requiredIf: requiredIf(() => esDrogas.value && cuestionarioPublico.persona.discapacidad) },
+                discapacidades: { requiredIf: requiredIf(() => esDrogas.value && cuestionarioPublico.persona.discapacidad) },
                 // cedula: { cedula_no_valida: true },
             }
         }
@@ -219,16 +239,20 @@ export default defineComponent({
         const identificador = route.params.identificador
         cuestionarioPublico.persona.nombre_empresa = identificador
 
-        const consultarLiskActivo = async () => {
+        const consultarLinkActivo = async () => {
             const { result } = await new LinkCuestionarioPublicoController().listar({ link: identificador })
-            linkActivo.value = result[0].activo
+            linkActivo.value = result[0]?.activo
+            linkExiste.value = result.length > 0
         }
 
-        consultarLiskActivo()
+        consultarLinkActivo()
+
+
 
         return {
             v$,
             linkActivo,
+            linkExiste,
             refInformacionPersona,
             mixin,
             cuestionarioPublico,
@@ -241,6 +265,12 @@ export default defineComponent({
             tipoCuestionarioSeleccionado,
             accion,
             cedulaValida,
+            CUESTIONARIO_OTROS,
+            CUESTIONARIO_NO_CONSUME,
+            ALCOHOL_DROGAS,
+            establecerNoConsume,
+            noConsume,
+            desahabilitarNoConsume,
         }
     }
 })

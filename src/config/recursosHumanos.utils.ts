@@ -43,4 +43,5 @@ export const autoidentificaciones_etnicas = [
   { nombre: 'MESTIZO', value: 'MESTIZO' },
   { nombre: 'BLANCO', value: 'BLANCO' },
   { nombre: 'MONTUBIO', value: 'MONTUBIO' },
+  { nombre: 'OTRO', value: 'OTRO' },
 ]

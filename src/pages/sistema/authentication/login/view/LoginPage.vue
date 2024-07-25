@@ -126,7 +126,8 @@ h2 {
   );
 }
 
-.q-field .q-field__inner {
+/* Quita las mayusculas al campo de contraseña y usuario */
+/* .q-field .q-field__inner {
   text-transform: none !important;
-}
+} */
 </style>
