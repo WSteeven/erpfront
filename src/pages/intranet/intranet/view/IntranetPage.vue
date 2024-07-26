@@ -27,7 +27,9 @@
         <br />
         <!--Mis Modulos-->
         <div class="col-12 col-md-9 items-center q-mt-md">
-          <q-card class="my-modulos-card" style="border-radius: 15px">
+          <q-card class="my-modulos-card" style="border-radius: 15px"
+          v-touch-swipe.mouse.right="handleSwipe"
+          >
             <q-card-section>
               <div class="text-h6" style="
                 text-align-last: center;

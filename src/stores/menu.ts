@@ -19,13 +19,13 @@ export const useMenuStore = defineStore('menu', () => {
     },
     {
       title: 'Noticias',
-      icon: 'bi-house-fill',
+      icon: 'bi-newspaper',
       link: '/blog',
       can: true, //!store.can('puede.ver.trabajo_asignado'),
     },
     {
       title: 'Eventos',
-      icon: 'bi-calendar-check',
+      icon: 'bi-calendar-heart',
       link: 'eventos',
       can: store.can('puede.ver.eventos'),
     },
@@ -1431,7 +1431,7 @@ export const useMenuStore = defineStore('menu', () => {
         {
           title: 'Hilos',
           link: 'hilos',
-          icon: 'bi-app',
+          icon: 'bi-threads',
           can: store.can('puede.ver.hilos'),
         },
         {

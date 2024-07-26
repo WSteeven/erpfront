@@ -232,10 +232,10 @@ function verEvento(date) {
 
     function obtenerModulosPermitidos() {
       modulosPermitidos.value = menuStore.links.filter(
-        (link: MenuOption) => link.can && link.module
+        (link: MenuOption) => link.can
       )
       modulosPermitidos.value = modulosPermitidos.value.map(modulo => {
-        modulo.link = modulo.children.find(child => child.can)?.link
+        modulo.link 
         return modulo
       })
       // console.log(modulosPermitidos.value);
