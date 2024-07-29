@@ -12,6 +12,7 @@ import {
 import routes from './routes'
 import { LocalStorage } from 'quasar'
 import { tipoAutenticacion } from 'config/utils'
+import { permisoRequerido } from 'shared/helpers/verifyAuthenticatedUser'
 
 /*
  * If not building with SSR mode, you can
@@ -49,7 +50,9 @@ export default route(function (/* { store, ssrContext } */) {
     // Si la ruta requiere autenticacion
     if (to.matched.some((ruta) => ruta.meta.requiresAuth)) {
       if (sessionIniciada) {
-        if (authentication.can('puede.ver.' + to.name?.toString())) {
+        if (authentication.can('puede.ver.' + to.name?.toString()) && permisoRequerido(to)) {
+          next()
+        } else if (!permisoRequerido(to)) {
           next()
         } else {
           next({ name: '404' })
@@ -71,7 +74,9 @@ export default route(function (/* { store, ssrContext } */) {
     // Si la ruta requiere autenticacion
     if (to.matched.some((ruta) => ruta.meta.requiresAuth)) {
       if (sessionIniciada) {
-        if (authentication.can('puede.ver.' + to.name?.toString())) {
+        if (authentication.can('puede.ver.' + to.name?.toString()) && permisoRequerido(to)) {
+          next()
+        } else if (!permisoRequerido(to)) {
           next()
         } else {
           next({ name: '404' })

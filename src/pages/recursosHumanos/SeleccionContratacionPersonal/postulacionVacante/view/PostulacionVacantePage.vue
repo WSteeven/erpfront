@@ -1,198 +1,272 @@
 <template>
-  <basic-container>
+  <!-- <basic-container>
     <template #contenido>
-      <q-card-section>
-        <h6>Completa el formulario para continuar con la postulación</h6>
-        <simple-layout :mixin="mixin">
-          <template #formulario>
-            <q-expansion-item
-              class="overflow-hidden q-mb-md rounded bg-desenfoque-2"
-              label="Datos personales"
-              header-class="text-bold bg-desenfoque text-primary"
-              default-opened
+      <q-card-section> -->
+  <simple-layout :mixin="mixin">
+    <template #formulario>
+      <div class="text-subtitle2">
+        Completa el formulario para continuar con la postulación
+      </div>
+      <q-expansion-item
+        class="overflow-hidden q-mb-md rounded bg-desenfoque-2"
+        label="Datos personales"
+        header-class="text-bold bg-desenfoque text-primary"
+        default-opened
+      >
+        <div class="row q-col-gutter-sm q-pa-sm">
+          <!-- Nombres -->
+          <div class="col-md-4 col-sm-6 col-xs-12">
+            <label class="q-mb-sm block">Nombres </label>
+            <q-input
+              v-model="postulacion.nombres"
+              placeholder="Opcional"
+              :disable="disabled"
+              outlined
+              dense
+              autogrow
             >
-              <div class="row q-col-gutter-sm q-pa-sm">
-                <!-- Nombres -->
-                <div class="col-md-4 col-sm-6 col-xs-12">
-                  <label class="q-mb-sm block">Nombres </label>
-                  <q-input
-                    v-model="postulacion.nombres"
-                    placeholder="Opcional"
-                    :disable="disabled"
-                    outlined
-                    dense
-                    autogrow
-                  >
-                  </q-input>
+            </q-input>
+          </div>
+
+          <!-- Apellidos -->
+          <div class="col-md-4 col-sm-6 col-xs-12">
+            <label class="q-mb-sm block">Apellidos </label>
+            <q-input
+              v-model="postulacion.apellidos"
+              placeholder="Opcional"
+              :disable="disabled"
+              outlined
+              dense
+              autogrow
+            >
+            </q-input>
+          </div>
+
+          <!-- Tipo de Identificacion -->
+          <div class="col-md-4 col-sm-6 col-xs-12">
+            <label class="q-mb-sm block">Tipo de Identificacion</label>
+            <q-select
+              v-model="postulacion.tipo_identificacion"
+              :options="tiposDocumentosIdentificaciones"
+              transition-show="jump-up"
+              transition-hide="jump-down"
+              options-dense
+              dense
+              outlined
+              :input-debounce="0"
+              use-input
+              :error="!!v$.tipo_identificacion.$errors.length"
+              :option-value="(v) => v.value"
+              :option-label="(v) => v.nombre"
+              emit-value
+              map-options
+            >
+              <template v-slot:error>
+                <div
+                  v-for="error of v$.tipo_identificacion.$errors"
+                  :key="error.$uid"
+                >
+                  <div class="error-msg">{{ error.$message }}</div>
                 </div>
+              </template>
 
-                <!-- Apellidos -->
-                <div class="col-md-4 col-sm-6 col-xs-12">
-                  <label class="q-mb-sm block">Apellidos </label>
-                  <q-input
-                    v-model="postulacion.apellidos"
-                    placeholder="Opcional"
-                    :disable="disabled"
-                    outlined
-                    dense
-                    autogrow
-                  >
-                  </q-input>
+              <template v-slot:no-option>
+                <q-item>
+                  <q-item-section class="text-grey">
+                    No hay resultados
+                  </q-item-section>
+                </q-item>
+              </template>
+            </q-select>
+          </div>
+
+          <!-- Identificación -->
+          <div class="col-md-4 col-sm-6 col-xs-12">
+            <label class="q-mb-sm block">Identificación </label>
+            <q-input
+              v-model="postulacion.identificacion"
+              placeholder="Opcional"
+              :disable="disabled"
+              outlined
+              dense
+              autogrow
+            >
+            </q-input>
+          </div>
+
+          <!-- Telefono -->
+          <div class="col-12 col-md-3 col-sm-3">
+            <label class="q-mb-sm block">Celular</label>
+            <q-input
+              type="tel"
+              v-model="postulacion.telefono"
+              placeholder="Obligatorio"
+              :disable="disabled"
+              :error="!!v$.telefono.$errors.length"
+              outlined
+              dense
+            >
+              <template v-slot:error>
+                <div v-for="error of v$.telefono.$errors" :key="error.$uid">
+                  <div class="error-msg">{{ error.$message }}</div>
                 </div>
-
-                <!-- Tipo de Identificacion -->
-                <div class="col-md-4 col-sm-6 col-xs-12">
-                  <label class="q-mb-sm block">Tipo de Identificacion</label>
-                  <q-select
-                    v-model="postulacion.tipo_identificacion"
-                    :options="tiposDocumentosIdentificaciones"
-                    transition-show="jump-up"
-                    transition-hide="jump-down"
-                    options-dense
-                    dense
-                    outlined
-                    :input-debounce="0"
-                    use-input
-                    :error="!!v$.tipo_identificacion.$errors.length"
-                    :option-value="(v) => v.value"
-                    :option-label="(v) => v.nombre"
-                    emit-value
-                    map-options
-                  >
-                    <template v-slot:error>
-                      <div
-                        v-for="error of v$.tipo_identificacion.$errors"
-                        :key="error.$uid"
-                      >
-                        <div class="error-msg">{{ error.$message }}</div>
-                      </div>
-                    </template>
-
-                    <template v-slot:no-option>
-                      <q-item>
-                        <q-item-section class="text-grey">
-                          No hay resultados
-                        </q-item-section>
-                      </q-item>
-                    </template>
-                  </q-select>
+              </template>
+            </q-input>
+          </div>
+          <!-- correo -->
+          <div class="col-12 col-md-3 col-sm-3">
+            <label class="q-mb-sm block">Correo Personal</label>
+            <q-input
+              type="email"
+              v-model="postulacion.correo_personal"
+              placeholder="Obligatorio"
+              :disable="disabled"
+              :error="!!v$.correo_personal.$errors.length"
+              @blur="v$.correo_personal.$touch"
+              @update:model-value="
+                (v) => (postulacion.correo_personal = v.toLowerCase())
+              "
+              outlined
+              dense
+            >
+              <template v-slot:error>
+                <div
+                  v-for="error of v$.correo_personal.$errors"
+                  :key="error.$uid"
+                >
+                  <div class="error-msg">{{ error.$message }}</div>
                 </div>
+              </template>
+            </q-input>
+          </div>
+          <!-- Genero -->
+          <div class="col-12 col-md-3 col-sm-3">
+            <label class="q-mb-sm block">Genero</label>
+            <q-toggle
+              :label="postulacion.genero == 'M' ? 'Masculino' : 'Femenino'"
+              v-model="postulacion.genero"
+              true-value="M"
+              false-value="F"
+              color="primary"
+              keep-color
+              icon="fa-solid fa-person"
+              unchecked-icon="fa-solid fa-person-dress"
+              :disable="disabled"
+            />
+          </div>
 
-                <!-- Identificación -->
-                <div class="col-md-4 col-sm-6 col-xs-12">
-                  <label class="q-mb-sm block">Identificación </label>
-                  <q-input
-                    v-model="postulacion.identificacion"
-                    placeholder="Opcional"
-                    :disable="disabled"
-                    outlined
-                    dense
-                    autogrow
-                  >
-                  </q-input>
+          <!-- Nacionalidad -->
+          <div class="col-md-4 col-sm-6 col-xs-12">
+            <label class="q-mb-sm block">Nacionalidad</label>
+            <q-select
+              v-model="postulacion.pais"
+              :options="paises"
+              transition-show="jump-up"
+              transition-hide="jump-down"
+              options-dense
+              dense
+              outlined
+              use-input
+              :input-debounce="0"
+              @filter="filtrarPaises"
+              :error="!!v$.pais.$errors.length"
+              :option-value="(v) => v.id"
+              :option-label="(v) => v.pais + ' (' + v.abreviatura + ')'"
+              emit-value
+              map-options
+            >
+              <template v-slot:error>
+                <div
+                  v-for="error of v$.pais.$errors"
+                  :key="error.$uid"
+                >
+                  <div class="error-msg">{{ error.$message }}</div>
                 </div>
+              </template>
 
-                <!-- Telefono -->
-                <div class="col-12 col-md-3 col-sm-3">
-                  <label class="q-mb-sm block">Celular</label>
-                  <q-input
-                    type="tel"
-                    v-model="postulacion.telefono"
-                    placeholder="Obligatorio"
-                    :disable="disabled"
-                    :error="!!v$.telefono.$errors.length"
-                    outlined
-                    dense
-                  >
-                    <template v-slot:error>
-                      <div
-                        v-for="error of v$.telefono.$errors"
-                        :key="error.$uid"
-                      >
-                        <div class="error-msg">{{ error.$message }}</div>
-                      </div>
-                    </template>
-                  </q-input>
+              <template v-slot:no-option>
+                <q-item>
+                  <q-item-section class="text-grey">
+                    No hay resultados
+                  </q-item-section>
+                </q-item>
+              </template>
+            </q-select>
+          </div>
+
+
+          <!-- Pais de residencia -->
+          <div class="col-md-4 col-sm-6 col-xs-12">
+            <label class="q-mb-sm block">País de Residencia</label>
+            <q-select
+              v-model="postulacion.pais_residencia"
+              :options="paises"
+              transition-show="jump-up"
+              transition-hide="jump-down"
+              options-dense
+              dense
+              outlined
+              use-input
+              :input-debounce="0"
+              @filter="filtrarPaises"
+              :error="!!v$.pais_residencia.$errors.length"
+              :option-value="(v) => v.id"
+              :option-label="(v) => v.pais + ' (' + v.abreviatura + ')'"
+              emit-value
+              map-options
+            >
+              <template v-slot:error>
+                <div
+                  v-for="error of v$.pais_residencia.$errors"
+                  :key="error.$uid"
+                >
+                  <div class="error-msg">{{ error.$message }}</div>
                 </div>
-                <!-- correo -->
-                <div class="col-12 col-md-3 col-sm-3">
-                  <label class="q-mb-sm block">Correo Personal</label>
-                  <q-input
-                    type="email"
-                    v-model="postulacion.correo_personal"
-                    placeholder="Obligatorio"
-                    :disable="disabled"
-                    :error="!!v$.correo_personal.$errors.length"
-                    @blur="v$.correo_personal.$touch"
-                    @update:model-value="
-                      (v) => (postulacion.correo_personal = v.toLowerCase())
-                    "
-                    outlined
-                    dense
-                  >
-                    <template v-slot:error>
-                      <div
-                        v-for="error of v$.correo_personal.$errors"
-                        :key="error.$uid"
-                      >
-                        <div class="error-msg">{{ error.$message }}</div>
-                      </div>
-                    </template>
-                  </q-input>
-                </div>
-                <!-- Genero -->
-            <div class="col-12 col-md-3 col-sm-3">
-              <label class="q-mb-sm block">Genero</label>
-              <q-toggle
-                :label="empleado.genero == 'M' ? 'Masculino' : 'Femenino'"
-                v-model="empleado.genero"
-                true-value="M"
-                false-value="F"
-                color="primary"
-                keep-color
-                icon="fa-solid fa-person"
-                unchecked-icon="fa-solid fa-person-dress"
-                :disable="disabled"
-              />
-            </div>
+              </template>
+
+              <template v-slot:no-option>
+                <q-item>
+                  <q-item-section class="text-grey">
+                    No hay resultados
+                  </q-item-section>
+                </q-item>
+              </template>
+            </q-select>
+          </div>
 
 
 
-              </div>
-            </q-expansion-item>
-            <!-- <pre>
+          <!-- {{postulacion}} -->
+        </div>
+      </q-expansion-item>
+      <!-- <pre>
               {{ $q.screen }}
             </pre> -->
-            <q-expansion-item
-              class="overflow-hidden q-mb-md rounded bg-desenfoque-2"
-              label="Información adicional"
-              header-class="text-bold bg-desenfoque text-primary"
-              default-opened
+      <q-expansion-item
+        class="overflow-hidden q-mb-md rounded bg-desenfoque-2"
+        label="Información adicional"
+        header-class="text-bold bg-desenfoque text-primary"
+        default-opened
+      >
+        <div class="row q-pa-md">
+          <div class="col col-md-4">
+            <label class="q-mb-sm block">Nombres </label>
+            <q-input
+              v-model="postulacion.nombres"
+              placeholder="Opcional"
+              :disable="disabled"
+              outlined
+              dense
+              autogrow
             >
-              <div class="row q-pa-md">
-                <div class="col col-md-4">
-                  <label class="q-mb-sm block">Nombres </label>
-                  <q-input
-                    v-model="postulacion.nombres"
-                    placeholder="Opcional"
-                    :disable="disabled"
-                    outlined
-                    dense
-                    autogrow
-                  >
-                  </q-input>
-                </div>
-              </div>
-            </q-expansion-item>
-          </template>
-        </simple-layout>
-        <div>Contenido de la página de postulación</div>
-        <div>pagina de postulación</div>
-        <h2>Aqui se postula a la vacante</h2>
-        <p>{{ id }}</p>
-        <button @click="postular">Postularme</button>
-      </q-card-section>
+            </q-input>
+          </div>
+        </div>
+      </q-expansion-item>
     </template>
-  </basic-container>
+  </simple-layout>
+  <!-- </q-card-section>
+    </template>
+  </basic-container> -->
 </template>
 <script src="./PostulacionVacantePage.ts" />

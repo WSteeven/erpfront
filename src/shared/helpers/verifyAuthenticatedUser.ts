@@ -1,6 +1,7 @@
 import { useAuthenticationStore } from '../../stores/authentication';
 import { useAuthenticationExternalStore } from '../../stores/authenticationExternal';
 import { tipoAutenticacion } from '../../config/utils';
+import { RouteLocationNormalized } from 'vue-router';
 /**
  * Checks if a user is authenticated and returns their authentication status and type.
  *
@@ -17,4 +18,8 @@ export function userIsAuthenticated() {
     return { autenticado: true, tipoAutenticacion: tipoAutenticacion.usuario_externo }
   } else
     return { autenticado: false, tipoAutenticacion: null }
+}
+
+export function permisoRequerido(ruta: RouteLocationNormalized) {
+  return ruta.meta.hasOwnProperty('permissionRequired') ? ruta.meta.permissionRequired : true
 }

@@ -9,6 +9,9 @@ export class Postulacion extends EntidadAuditable {
   tipo_identificacion: string | null
   telefono: string | null
   correo_personal: string | null
+  genero: string | null
+  pais: string | null
+  pais_residencia: string | null
 
   constructor() {
     super()
@@ -20,5 +23,8 @@ export class Postulacion extends EntidadAuditable {
     this.tipo_identificacion = null
     this.telefono = null
     this.correo_personal = null
+    this.genero = null
+    this.pais = null
+    this.pais_residencia = null
   }
 }

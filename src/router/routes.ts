@@ -1389,7 +1389,7 @@ const routes: RouteRecordRaw[] = [
           import(
             'pages/recursosHumanos/SeleccionContratacionPersonal/postulacionVacante/view/PostulacionVacantePage.vue'
           ),
-          meta: {requiresAuth:true}
+          meta: {requiresAuth:true, permissionRequired:false}
       },
     ],
   },

@@ -16,13 +16,15 @@ import { useAuthenticationStore } from 'stores/authentication';
 import { useAuthenticationExternalStore } from 'stores/authenticationExternal';
 import { required } from 'shared/i18n-validators';
 import useVuelidate from '@vuelidate/core';
+import { PaisController } from '../../../../sistema/pais/infraestructure/PaisController';
+import { useFiltrosListadosSelects } from 'shared/filtrosListadosGenerales';
 
 
 export default defineComponent({
   components: { BasicContainer, SimpleLayout },
   setup() {
     const mixin = new ContenedorSimpleMixin(Postulacion, new PostulacionController())
-    const { entidad: postulacion, disabled } = mixin.useReferencias()
+    const { entidad: postulacion, disabled, listadosAuxiliares } = mixin.useReferencias()
     const { setValidador, cargarVista, obtenerListados } = mixin.useComportamiento()
 
     const { autenticado, tipoAutenticacion: tipoAuth } = userIsAuthenticated()
@@ -30,9 +32,12 @@ export default defineComponent({
     let store
     const router = useRouter()
     const id = router.currentRoute.value.params.id
+
+    const {paises, filtrarPaises} = useFiltrosListadosSelects(listadosAuxiliares)
+
     cargarVista(async () => {
       await obtenerListados({
-
+        paises: new PaisController
       })
 
       if (autenticado) {
@@ -50,12 +55,16 @@ export default defineComponent({
         }
       }
 
+      paises.value = listadosAuxiliares.paises
+
     })
 
     const reglas = {
       tipo_identificacion: { required },
       telefono: {required},
       correo_personal: {required},
+      pais: {required},
+      pais_residencia: {required},
     }
 
     const v$ = useVuelidate(reglas, postulacion)
@@ -68,6 +77,7 @@ export default defineComponent({
       postulacion.identificacion = store.user.identificacion ?? store.user.numero_documento_identificacion
       postulacion.tipo_identificacion = store.user.tipo_documento_identificacion ?? null
       postulacion.telefono = store.user.telefono ?? null
+      postulacion.genero = store.user.genero
     }
 
 
@@ -79,6 +89,7 @@ export default defineComponent({
 
       //listados
       tiposDocumentosIdentificaciones,
+      paises, filtrarPaises,
 
       // funciones
 
