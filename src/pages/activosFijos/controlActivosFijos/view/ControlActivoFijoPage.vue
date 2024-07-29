@@ -2,10 +2,12 @@
   <tab-layout :mixin="mixin" :configuracionColumnas="configuracionColumnas">
     <template #formulario>
       <q-form @submit.prevent>
+        <b>Información general</b>
         <div class="row q-col-gutter-sm q-py-md">
           <div class="col-12 col-md-3">
-            <label class="q-mb-sm block">Código</label>
-            <q-input v-model="activo.codigo" disable outlined dense> </q-input>
+            <label class="q-mb-sm block">Código de inventario</label>
+            <q-input v-model="activo.codigo_inventario" disable outlined dense>
+            </q-input>
           </div>
 
           <div class="col-12 col-md-3">
@@ -57,19 +59,7 @@
           </div>
 
           <div class="col-12 col-md-3">
-            <label class="q-mb-sm block">Entrada (Ingresos)</label>
-            <q-input v-model="activo.total_ingresos" disable outlined dense>
-            </q-input>
-          </div>
-
-          <div class="col-12 col-md-3">
             <label class="q-mb-sm block">Salidas (Egresos)</label>
-            <q-input v-model="activo.total_egresos" disable outlined dense>
-            </q-input>
-          </div>
-
-          <div class="col-12 col-md-3">
-            <label class="q-mb-sm block">Diferencia (Ingresos-Egresos)</label>
             <q-input v-model="activo.total_egresos" disable outlined dense>
             </q-input>
           </div>
@@ -84,8 +74,22 @@
               @update:model-value="(data) => (activo.fotografia = data)"
             ></selector-imagen>
           </div>
+
+          <div class="col-12 col-md-3">
+            <label class="q-mb-sm block">Fotografía detallada</label>
+            <selector-imagen
+              file_extensiones=".jpg, image/*"
+              :imagen="activo.fotografia_detallada"
+              disable
+              :alto="'200px'"
+              @update:model-value="
+                (data) => (activo.fotografia_detallada = data)
+              "
+            ></selector-imagen>
+          </div>
         </div>
 
+        <b v-if="activo.permiso_arma.id">Detalles del permiso</b>
         <formulario-permiso-arma
           v-if="activo.permiso_arma.id"
           :permiso="activo.permiso_arma"
@@ -107,18 +111,6 @@
             :class="{
               'tab-inactive':
                 tabsOpcionesConsultas !== opcionesConsultasActivosFijos.EGRESOS,
-            }"
-            no-caps
-            @click="consultar()"
-          />
-
-          <q-tab
-            :name="opcionesConsultasActivosFijos.INGRESOS"
-            :label="opcionesConsultasActivosFijos.INGRESOS"
-            :class="{
-              'tab-inactive':
-                tabsOpcionesConsultas !==
-                opcionesConsultasActivosFijos.INGRESOS,
             }"
             no-caps
             @click="consultar()"
