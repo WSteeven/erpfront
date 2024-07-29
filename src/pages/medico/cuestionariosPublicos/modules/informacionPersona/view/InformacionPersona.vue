@@ -336,7 +336,8 @@
       <label class="q-mb-sm block">Fecha nacimiento</label>
       <q-input
         v-model="persona.fecha_nacimiento"
-        placeholder="Obligatorio"
+        placeholder="YYYY-MM-DD"
+        @update:model-value="(d) => (modelValue.persona.fecha_nacimiento = d)"
         outlined
         type="datetime"
         dense
@@ -552,11 +553,10 @@
     </div>
 
     <div class="col-12 col-md-3 col-sm-3">
-      <label class="q-mb-sm block">Tengo discapacidad</label>
-      <q-toggle
+      <label class="q-mb-sm block">Marcar si tiene alguna discapacidad</label>
+      <q-checkbox
         v-model="modelValue.persona.discapacidad"
         color="primary"
-        icon="bi-person-wheelchair"
         keep-color
       />
     </div>
@@ -619,7 +619,7 @@
 
     <div class="col-12 col-md-3 col-sm-3">
       <label class="q-mb-sm block">
-        Señale la enfermedad que tenga diagnosticada
+        Señale las enfermedades que tenga diagnosticadas
       </label>
       <q-select
         v-model="persona.enfermedades_preexistentes"
@@ -643,6 +643,22 @@
         emit-value
         map-options
       >
+        <template v-slot:option="{ itemProps, opt, selected, toggleOption }">
+          <q-item v-bind="itemProps">
+            <q-item-section>
+              {{ opt.nombre }}
+              <q-item-label v-bind:inner-h-t-m-l="opt.nombre" />
+            </q-item-section>
+            <q-item-section side>
+              <q-checkbox
+                :model-value="selected"
+                dense
+                @update:model-value="toggleOption(opt)"
+              />
+            </q-item-section>
+          </q-item>
+        </template>
+
         <template v-slot:error>
           <div
             v-for="error of v$.persona.enfermedades_preexistentes.$errors"
@@ -658,21 +674,17 @@
       <label class="q-mb-sm block"
         >El trabajador sustituye a algún pariente</label
       >
-      <q-toggle
+      <q-checkbox
         v-model="modelValue.persona.es_trabajador_sustituto"
         color="primary"
-        icon="bi-person-standing"
-        keep-color
       />
     </div>
 
     <div class="col-12 col-md-3 col-sm-3">
       <label class="q-mb-sm block">Recibe charlas sobre drogas</label>
-      <q-toggle
+      <q-checkbox
         v-model="modelValue.persona.ha_recibido_capacitacion"
         color="primary"
-        icon="bi-person-raised-hand"
-        keep-color
       />
     </div>
 
@@ -680,11 +692,9 @@
       <label class="q-mb-sm block"
         >Le realizaron exámenes al ingresar a trabajar a la empresa</label
       >
-      <q-toggle
+      <q-checkbox
         v-model="modelValue.persona.tiene_examen_preocupacional"
         color="primary"
-        icon="bi-clipboard2-pulse"
-        keep-color
       />
     </div>
   </div>
