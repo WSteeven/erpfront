@@ -1,6 +1,6 @@
 <template>
   <q-page paddingd class="bg-body">
-    <div v-if="linkActivo" class="q-pa-sm">
+    <div v-if="linkActivo && linkExiste" class="q-pa-sm">
       <transition name="scale" mode="out-in">
         <q-card
           v-if="!cuestionarioPublico.formulario_cuestionario.length"
@@ -110,58 +110,109 @@
                   :key="item.id"
                   class="col-12 col-md-6 text-bold text-justify q-mb-md"
                 >
-                  <label class="q-mb-sm block">{{
-                    item.codigo + '.- ' + item.pregunta
-                  }}</label>
-                  <q-select
-                    v-if="item.cuestionario[0].respuesta"
-                    v-model="item.respuesta"
-                    :options="mapearCuestionario(item.cuestionario)"
-                    color="primary"
-                    outlined
-                    dense
-                    options-dense
-                    emit-value
-                    map-options
-                    :error="
-                      !!v$.formulario_cuestionario.$each.$response.$errors[
-                        index
-                      ].respuesta.length
-                    "
-                  >
-                    <template v-slot:error>
-                      <div
-                        v-for="error of v$.formulario_cuestionario.$each
-                          .$response.$errors[index].pregunta"
-                        :key="error.$uid"
+                  <!--  {{
+                    cuestionarioPublico.formulario_cuestionario[index].respuesta
+                  }} -->
+                  <div v-if="item.cuestionario[0].respuesta">
+                    <label class="q-mb-sm block">{{
+                      item.codigo + '- ' + item.pregunta
+                    }}</label>
+                    <q-select
+                      v-model="item.respuesta"
+                      :options="mapearCuestionario(item.cuestionario)"
+                      color="primary"
+                      @update:model-value="
+                        establecerNoConsume(index, item.respuesta)
+                      "
+                      :disable="index !== 0 && noConsume"
+                      outlined
+                      dense
+                      :multiple="
+                        index === 4 &&
+                        tipoCuestionarioSeleccionado === ALCOHOL_DROGAS
+                      "
+                      options-dense
+                      :option-disable="
+                        (it) => desahabilitarNoConsume(it.value, index)
+                      "
+                      emit-value
+                      map-options
+                      :error="
+                        !!v$.formulario_cuestionario.$each.$response.$errors[
+                          index
+                        ].respuesta.length
+                      "
+                    >
+                      <template
+                        v-if="index === 4"
+                        v-slot:option="{
+                          itemProps,
+                          opt,
+                          selected,
+                          toggleOption,
+                        }"
                       >
-                        <div class="error-msg">{{ error.$message }}</div>
-                      </div>
-                    </template>
-                  </q-select>
+                        <q-item v-bind="itemProps">
+                          <q-item-section>
+                            {{ opt.label }}
+                            <q-item-label v-bind:inner-h-t-m-l="opt.label" />
+                          </q-item-section>
+                          <q-item-section side>
+                            <q-checkbox
+                              :model-value="selected"
+                              dense
+                              @update:model-value="toggleOption(opt)"
+                            />
+                          </q-item-section>
+                        </q-item>
+                      </template>
 
-                  <q-input
-                    v-else
-                    v-model="item.respuesta"
-                    placeholder="Escriba..."
-                    outlined
-                    dense
-                    :error="
-                      !!v$.formulario_cuestionario.$each.$response.$errors[
-                        index
-                      ].respuesta.length
+                      <template v-slot:error>
+                        <div
+                          v-for="error of v$.formulario_cuestionario.$each
+                            .$response.$errors[index].pregunta"
+                          :key="error.$uid"
+                        >
+                          <div class="error-msg">{{ error.$message }}</div>
+                        </div>
+                      </template>
+                    </q-select>
+                  </div>
+
+                  <div
+                    v-show="
+                      !item.cuestionario[0].respuesta &&
+                      verificarSiEsSelectMultiple(index) &&
+                      tipoCuestionarioSeleccionado === ALCOHOL_DROGAS
                     "
                   >
-                    <template v-slot:error>
-                      <div
-                        v-for="error of v$.formulario_cuestionario.$each
-                          .$response.$errors[index].pregunta"
-                        :key="error.$uid"
-                      >
-                        <div class="error-msg">{{ error.$message }}</div>
-                      </div>
-                    </template>
-                  </q-input>
+                    <label class="q-mb-sm block">{{
+                      item.codigo + '- ' + item.pregunta
+                    }}</label>
+
+                    <q-input
+                      v-model="item.respuesta"
+                      :placeholder="'Escriba...'"
+                      outlined
+                      :disable="noConsume"
+                      dense
+                      :error="
+                        !!v$.formulario_cuestionario.$each.$response.$errors[
+                          index
+                        ].respuesta.length
+                      "
+                    >
+                      <template v-slot:error>
+                        <div
+                          v-for="error of v$.formulario_cuestionario.$each
+                            .$response.$errors[index].pregunta"
+                          :key="error.$uid"
+                        >
+                          <div class="error-msg">{{ error.$message }}</div>
+                        </div>
+                      </template>
+                    </q-input>
+                  </div>
                 </div>
               </div>
 
@@ -181,11 +232,23 @@
     </div>
 
     <div
-      v-else
+      v-if="linkExiste && !linkActivo"
       class="row items-center bg-primary justify-center text-white window-height"
     >
       <q-icon name="bi-cloud-sun" size="100px" class="q-mr-lg"></q-icon>
       <span class="text-h3"> El enlace actual ha sido inhabilitado </span>
+    </div>
+
+    <div
+      v-if="!linkExiste"
+      class="row items-center bg-indigo justify-center text-white window-height"
+    >
+      <q-icon
+        name="bi-emoji-expressionless"
+        size="100px"
+        class="q-mr-lg"
+      ></q-icon>
+      <span class="text-h3"> El enlace no es correcto</span>
     </div>
   </q-page>
 </template>

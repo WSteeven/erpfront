@@ -64,7 +64,7 @@ body {
 }
 
 .rounded-notification {
-  border-radius:  0px 24px 0 24px;
+  border-radius: 0px 24px 0 24px;
 }
 
 .rounded-toolbar {
@@ -95,7 +95,7 @@ th {
   padding: 0 4px;
 }
 
-th  {
+th {
   color: $primary;
   border-color: $grey-5;
 }
@@ -122,6 +122,10 @@ td {
 
 .label-card-table {
   text-transform: uppercase;
+}
+
+.normal-text {
+  text-transform: none !important;
 }
 
 input[type='time']::-webkit-calendar-picker-indicator {
@@ -223,3 +227,7 @@ input[type='time']::-webkit-calendar-picker-indicator {
   border-bottom: 2px solid $positive;
 }
 
+.q-field.q-field--with-bottom div .q-field__bottom {
+  text-transform: none !important;
+  margin-bottom: 6px;
+}

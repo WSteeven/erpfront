@@ -24,6 +24,8 @@ export class Persona {
     autoidentificacion_etnica: string | null
     discapacidad: boolean
     porcentaje_discapacidad: string | null
+    discapacidades: string | null
+    porcentaje: number | null
     es_trabajador_sustituto: boolean
     enfermedades_preexistentes: string | null
     ha_recibido_capacitacion: boolean
@@ -51,10 +53,12 @@ export class Persona {
         this.fecha_nacimiento = null
         this.tipo_afiliacion_seguridad_social = null
         this.estado_civil = null
-        this.genero = 'M'
+        this.genero = null
         this.numero_hijos = 0
         this.autoidentificacion_etnica = null
         this.discapacidad = false
+        this.discapacidades = null
+        this.porcentaje = null
         this.porcentaje_discapacidad = null
         this.es_trabajador_sustituto = false
         this.enfermedades_preexistentes = null

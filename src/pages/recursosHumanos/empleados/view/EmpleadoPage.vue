@@ -490,7 +490,7 @@
 
             <!-- Trabajador Sustituto -->
             <div class="col-12 col-md-3 col-sm-3">
-              <label class="q-mb-sm block">Trabajador Sustituto</label>
+              <label class="q-mb-sm block">El trabajador sustituye a algún pariente</label>
               <q-toggle
                 :label="empleado.trabajador_sustituto ? 'SI' : 'NO'"
                 v-model="empleado.trabajador_sustituto"

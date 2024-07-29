@@ -566,12 +566,14 @@ export function convertir_fecha_hora(fecha) {
   const fecha_convert = new Date(anio, mes, dia, tiempo[0], tiempo[1], 0)
   return fecha_convert
 }
-export const niveles_academicos = [
-  { nombre: 'ESTUDIO PRIMARIO' },
-  { nombre: 'ESTUDIO SECUNDARIO' },
-  { nombre: 'TITULO SUPERIOR' },
-]
 
+export const niveles_academicos = [
+  { nombre: 'NINGUNA' },
+  { nombre: 'BÁSICA' },
+  { nombre: 'BACHILLER' },
+  { nombre: 'TERCER NIVEL' },
+  { nombre: 'CUARTO NIVEL' },
+]
 
 export const tipos_sangre = [
   { nombre: 'A +' },

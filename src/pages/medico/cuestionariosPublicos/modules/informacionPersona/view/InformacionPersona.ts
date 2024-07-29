@@ -1,4 +1,5 @@
 // Dependencias
+import { discapacidades, opcionesTiposCuestionarios, enfermedades, generos } from 'config/utils/medico'
 import { useFiltrosListadosSelects } from 'shared/filtrosListadosGenerales'
 import { autoidentificaciones_etnicas } from 'config/recursosHumanos.utils'
 import { niveles_academicos, maskFecha } from 'config/utils'
@@ -11,7 +12,6 @@ import { ContenedorSimpleMixin } from 'shared/contenedor/modules/simple/applicat
 import { CantonController } from 'sistema/ciudad/infraestructure/CantonControllerontroller'
 import { ProvinciaController } from 'sistema/provincia/infraestructure/ProvinciaController'
 import { Persona } from '../domain/Persona'
-import { opcionesTiposCuestionarios } from 'config/utils/medico'
 import { ValidarCedulaController } from 'shared/validadores/infraestructure/ValidarCedulaController'
 import { ValidarCuestionarioPublicoLlenoController } from 'shared/validadores/infraestructure/ValidarCuestionarioPublicoLlenoController'
 import { useNotificaciones } from 'shared/notificaciones'
@@ -65,7 +65,7 @@ export default defineComponent({
         /************
          * Funciones
          ************/
-        const { cantones, filtrarCantones, provincias, filtrarProvincias, estadosCiviles, filtrarEstadosCiviles } = useFiltrosListadosSelects(listadosAuxiliares)
+        const { cantones, filtrarCantones, provincias, filtrarProvincias, estadosCiviles, filtrarEstadosCiviles, filtrarLista } = useFiltrosListadosSelects(listadosAuxiliares)
 
         const validarCedula = async (cedula) => {
             const validarCedulaController = new ValidarCedulaController()
@@ -86,18 +86,43 @@ export default defineComponent({
             }
         }
 
+        const establecerPorcentajeDiscapacidad = (d) => {
+            persona.porcentaje = d
+            persona.porcentaje_discapacidad = persona.discapacidades + ' ' + d + '%'
+            props.modelValue.persona.porcentaje_discapacidad = persona.discapacidades + ' ' + d + '%'
+            props.modelValue.persona.porcentaje = d
+        }
+
+        const establecerDiscapacidades = (d) => {
+            persona.discapacidades = d
+            persona.porcentaje_discapacidad = d + ' ' + persona.porcentaje + '%'
+            props.modelValue.persona.porcentaje_discapacidad = d + ' ' + persona.porcentaje + '%'
+            props.modelValue.persona.discapacidades = d
+        }
+
+        /**********
+         * Filtros
+         **********/
+        const enfermedadesPreexistentes = ref([])
+        const filtrarEnfermedades = (val, update) => filtrarLista(val, update, enfermedadesPreexistentes, 'nombre', enfermedades)
+
         return {
             v$: props.validador,
             persona,
             cantones, filtrarCantones,
             provincias, filtrarProvincias,
             estadosCiviles, filtrarEstadosCiviles,
+            enfermedadesPreexistentes, filtrarEnfermedades,
             niveles_academicos,
             maskFecha,
             autoidentificaciones_etnicas,
             mostrarConsumoDrogas: props.tipoCuestionario === opcionesTiposCuestionarios.CUESTIONARIO_DIAGNOSTICO_CONSUMO_DE_DROGAS,
             validarCedula,
             validarCuestionarioLleno,
+            discapacidades,
+            generos,
+            establecerPorcentajeDiscapacidad,
+            establecerDiscapacidades,
         }
     }
 })
