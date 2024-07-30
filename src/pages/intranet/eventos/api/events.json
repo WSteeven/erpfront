@@ -7,7 +7,7 @@
             "end": "2024-07-16 12:00"
         },
         "colorScheme": "capacitaciones",
-        "isEditable": false,
+        "isEditable": true,
         "isCustom": false,
         "id": "1a2b3c4d5e6f",
         "description": "Capacitación intensiva para técnicos en técnicas avanzadas de instalación de fibra óptica."

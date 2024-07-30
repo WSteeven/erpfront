@@ -21,13 +21,13 @@ export const useMenuStore = defineStore('menu', () => {
       title: 'Noticias',
       icon: 'bi-newspaper',
       link: '/blog',
-      can: true, //!store.can('puede.ver.trabajo_asignado'),
+      can: store.can('puede.acceder.intra_noticias'),
     },
     {
       title: 'Eventos',
       icon: 'bi-calendar-heart',
       link: 'eventos',
-      can: store.can('puede.ver.eventos'),
+      can: true, // store.can('puede.ver.eventos'),
     },
     {
       title: 'Trabajo agendado',
@@ -811,6 +811,37 @@ export const useMenuStore = defineStore('menu', () => {
           ],
         },
       ],
+    },
+
+    /*****************************************
+     * MODULO DE INTRANET
+     *****************************************/
+    {
+      title: 'Intranet',
+      icon: 'bi-wrench',
+      can: store.esAdministrador || store.can('puede.ver.modulo_intranet'),
+      module: true,
+      children: [
+
+        {
+          title: 'Categorias',
+          link: 'categorias-noticias',
+          icon: 'bi-circle',
+          can: store.can('puede.acceder.intra_categorias'),
+        },
+        {
+          title: 'Etiquetas',
+          link: 'etiquetas',
+          icon: 'bi-circle',
+          can: store.can('puede.acceder.intra_etiquetas'),
+        },
+        {
+          title: 'Tipo de Evento',
+          link: 'tipos-eventos',
+          icon: 'bi-circle',
+          can: store.can('puede.acceder.intra_tipos_eventos'),
+        },
+      ]
     },
 
     /*****************************************

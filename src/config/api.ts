@@ -189,8 +189,6 @@ export const endpoints = {
   detalle_alimentacion: new Endpoint('recursos-humanos/detalle-alimentacion'),
   finalizar_asignacion_alimentacion: new Endpoint('recursos-humanos/finalizar-asignacion-alimentacion'),
 
-  //Modulo de Intranet
-  noticia: new Endpoint('blog'),
   /********************
   * Modulo de  Seleccion y contratacion
   *********************/
@@ -432,9 +430,12 @@ export const endpoints = {
   novedades_ventas: new Endpoint('ventas-claro/novedades-ventas'),
 
   //intranet
-
-  blog: new Endpoint('intranet/blog'),
+//Modulo de Intranet
+  noticias: new Endpoint('intranet/noticias'),
   eventos: new Endpoint('intranet/eventos'),
+  etiquetas: new Endpoint('intranet/etiquetas'),
+  categorias_noticias: new Endpoint('intranet/categorias'),
+  tipos_eventos: new Endpoint('intranet/tipos-eventos'),
 
 
 

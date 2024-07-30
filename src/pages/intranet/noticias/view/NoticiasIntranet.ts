@@ -20,27 +20,47 @@ import { tabOptionsNoticias } from 'config/utils'
 import { useAuthenticationStore } from 'stores/authentication'
 import { maskFecha } from 'src/config/utils'
 import { obtenerFechaActual } from '../../../../shared/utils'
+import { CategoriaController } from 'pages/intranet/categorias/infraestructure/CategoriaController'
+import { EtiquetaController } from 'pages/intranet/etiquetas/infraestructure/EtiquetaController'
+import SelectorImagen from 'components/SelectorImagen.vue'
+import EssentialEditor from 'components/editores/EssentialEditor.vue'
 
 export default defineComponent({
-  components: { TabLayoutFilterTabs2 },
+  components: { TabLayoutFilterTabs2, EssentialEditor,  SelectorImagen },
   setup() {
     const mixin = new ContenedorSimpleMixin(Noticia, new NoticiaController())
 
+    const { entidad: noticia, disabled, accion, listadosAuxiliares } = mixin.useReferencias()
+    const {setValidador, cargarVista, obtenerListados, listar } = mixin.useComportamiento()
+    const { onConsultado, onBeforeModificar } = mixin.useHooks()
     const store = useAuthenticationStore()
     const date = ref(obtenerFechaActual(maskFecha))
 
-    const cat_etiq = {
-      Vacante: ['Promocion Interna'],
-      Capacitacion: ['Interna', 'Externa'],
-      Feriados: ['Nacional', 'Local'],
-      'Nota Luctuosa': [],
-      Seguridad: ['Normativa', 'Advertencia', 'Solicitud'],
-      Médico: ['Campaña', 'Vacunación', 'Exámenes Médicos'],
-      Politica: ['Interna', 'Externa'],
-      'Ente Regulador': ['Avisos', 'Aporte Personal'],
-    }
+    const categorias = ref([])
+    const etiquetas = ref([])
 
-    const categorias = Object.keys(cat_etiq)
+    cargarVista(async()=>{
+       await obtenerListados({
+        categorias: new CategoriaController(),
+        etiquetas: new EtiquetaController()
+      })
+
+       categorias.value = listadosAuxiliares.categorias
+ etiquetas.value = listadosAuxiliares.etiquetas
+    })
+
+    // const cat_etiq = {
+    //   Vacante: ['Promocion Interna'],
+    //   Capacitacion: ['Interna', 'Externa'],
+    //   Feriados: ['Nacional', 'Local'],
+    //   'Nota Luctuosa': [],
+    //   Seguridad: ['Normativa', 'Advertencia', 'Solicitud'],
+    //   Médico: ['Campaña', 'Vacunación', 'Exámenes Médicos'],
+    //   Politica: ['Interna', 'Externa'],
+    //   'Ente Regulador': ['Avisos', 'Aporte Personal'],
+    // }
+
+    // const categorias = Object.keys(cat_etiq)
 
     const selectedCategory = ref<string | null>(null)
     const selectedTags = ref<string[]>([])
@@ -48,7 +68,7 @@ export default defineComponent({
 
     function updateEtiquetas() {
       if (selectedCategory.value) {
-        filteredEtiquetas.value = cat_etiq[selectedCategory.value]
+        filteredEtiquetas.value = categorias.value[selectedCategory.value]
       } else {
         filteredEtiquetas.value = []
       }
@@ -60,13 +80,8 @@ export default defineComponent({
       return wordCount <= 150 || `La descripción no puede tener más de 150 palabras. Actualmente tiene ${wordCount} palabras.`
     }
 
-    const {
-      entidad: noticia,
-      accion,
-    } = mixin.useReferencias()
-    const { setValidador, listar, cargarVista } =
-      mixin.useComportamiento()
-    const { onConsultado, onBeforeModificar } = mixin.useHooks()
+
+
 
     const formRef = ref(null)
 
@@ -89,7 +104,7 @@ export default defineComponent({
       titulo: { required },
       autor: { required },
       fecha_creacion: { required },
-      url_imagen: { required },
+      imagen_noticia: { required },
       descripcion: { required, maxWords },
     }))
 
@@ -112,8 +127,12 @@ export default defineComponent({
       listar({ estado: tabSeleccionado }, false)
     }
 
+    function categoriaSeleccionada(val){
+      etiquetas.value = listadosAuxiliares.etiquetas.filter((etiqueta)=>etiqueta.categoria_id===val)
+    }
+
     return {
-      mixin,
+      mixin,disabled,
       noticia,
       configuracionColumnas: configuracionColumnasNoticias,
       tabOptionsNoticias,
@@ -122,12 +141,14 @@ export default defineComponent({
       submitForm,
       resetForm,
       filtrarNoticia,
+      categoriaSeleccionada,
       esConsultado,
       accion,
-      cat_etiq,
+      // cat_etiq,
       categorias,
       selectedCategory,
       selectedTags,
+      etiquetas,
       filteredEtiquetas,
       updateEtiquetas,
     }

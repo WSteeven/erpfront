@@ -28,9 +28,27 @@ const routes: RouteRecordRaw[] = [
       },
       {
         path: '/blog',
-        name: 'blog',
+        name: 'intra_noticias',
         component: () => import('pages/intranet/noticias/view/NoticiasIntranet.vue'),
-        meta: { requiresAuth: false },
+        meta: { requiresAuth: true },
+      },
+      {
+        path: '/categorias-noticias',
+        name: 'intra_categorias',
+        component: () => import('pages/intranet/categorias/view/CategoriaNoticiaPage.vue'),
+        meta: { requiresAuth: true },
+      },
+      {
+        path: '/etiquetas',
+        name: 'intra_etiquetas',
+        component: () => import('pages/intranet/etiquetas/view/EtiquetaPage.vue'),
+        meta: { requiresAuth: true },
+      },
+      {
+        path: '/tipos-eventos',
+        name: 'intra_tipos_eventos',
+        component: () => import('pages/intranet/tiposEventos/view/TipoEventoPage.vue'),
+        meta: { requiresAuth: true },
       },
       {
         path: '/NoticiaView',
@@ -1351,7 +1369,7 @@ const routes: RouteRecordRaw[] = [
         name: 'eventos',
         component: () =>
           import('pages/intranet/eventos/view/EventoPage.vue'),
-        meta: { requiresAuth: true },
+        meta: { requiresAuth: false },
       },
 
     ],

@@ -1,9 +1,9 @@
 import { TransaccionSimpleController } from "shared/contenedor/modules/simple/infraestructure/TransacccionSimpleController";
-import { Noticia } from "../domain/Noticia";
+import { Etiqueta } from "../domain/Etiqueta";
 import { endpoints } from "config/api";
 
-export class NoticiaController extends TransaccionSimpleController<Noticia>{
+export class EtiquetaController extends TransaccionSimpleController<Etiqueta>{
   constructor(){
-    super(endpoints.noticias)
+    super(endpoints.etiquetas)
   }
 }
