@@ -1,7 +1,7 @@
 import { useAuthenticationStore } from 'stores/authentication';
 import loginJson from 'src/assets/lottie/welcome.json';
 import { Ref, computed, defineComponent, reactive, ref, onMounted } from 'vue';
-import { QCarousel, QCarouselSlide, QCard, QImg, QCardSection } from 'quasar';
+import { QCarousel, QCarouselSlide, QCard, QImg, QCardSection, Notify } from 'quasar';
 import ModalesEntidad from 'components/modales/view/ModalEntidad.vue';
 import SolicitarFecha from 'shared/prompts/SolicitarFecha.vue';
 import { Vue3Lottie } from 'vue3-lottie';
@@ -72,11 +72,11 @@ export default defineComponent({
     const filtroTarea = ref('Recientes');
     const subtareasPorAsignar = ref([]);
     const tipoSolicitud = ref('');
-    const descripcion = ref('');
     const tiposSolicitudes = ref([
+      { label: 'Permisos', value: 'permiso' },
+      { label: 'Licencias', value: 'licencias' },
       { label: 'Vacaciones', value: 'vacaciones' },
-      { label: 'Enfermedad', value: 'enfermedad' },
-      { label: 'Licencia de trabajo', value: 'licencia' }
+      { label: 'Prestamos', value: 'prestamos' },
     ]);
     const solicitud = reactive({
       tipo_solicitud: '',
@@ -266,16 +266,35 @@ export default defineComponent({
 
     useNotificaciones();
 
-    function enviarSolicitud() {
+    const enviarSolicitud = () => {
       console.log('Solicitud enviada:', {
-        tipo: tipoSolicitud,
-        descripcion: descripcion
+        tipo: solicitud.tipo_solicitud,
       });
-    }
+
+      switch (solicitud.tipo_solicitud) {
+        case 'permiso':
+          Router.push('/permiso-nomina');
+          break;
+        case 'licencia':
+          Router.push('/licencia-empleado');
+          break;
+        case 'vacacion':
+          Router.push('/vacacion');
+          break;
+        case 'préstamo':
+          Router.push('/solicitud-prestamo-empresarial');
+          break;
+        default:
+          Notify.create({
+            message: 'Solicitud Rechazada, contacta con el Administrador.',
+            color: 'red',
+            position: 'top'
+          });
+      }
+    };
 
     function limpiarFormulario() {
       solicitud.tipo_solicitud = '';
-      solicitud.descripcion = '';
     }
 
     const lorem = 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.';
