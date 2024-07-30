@@ -4,60 +4,21 @@
     <div class="row q-col-gutter-sm q-mt-md q-mx-md q-mb-md">
       <div class="col-12 col-md-9 q-px-md">
         <!--Noticias-->
-        <q-carousel
-          class="carousel-noticias"
-          style="border-radius: 15px; overflow: hidden"
-          animated
-          v-model="carousel_noticias"
-          navigation
-          navigation-position="right"
-          height="400px"
-          autoplay
-          autoplay-interval="3000"
-          infinite
-        >
+        <q-carousel class="carousel-noticias" style="border-radius: 15px; overflow: hidden" animated
+          v-model="carousel_noticias" navigation navigation-position="right" height="400px" autoplay
+          autoplay-interval="3000" infinite>
           <template v-slot:navigation-icon="{ active, btnProps, onClick }">
-            <q-btn
-              v-if="active"
-              size="lg"
-              icon="visibility"
-              color="primary"
-              flat
-              round
-              dense
-              @click="onClick"
-            />
-            <q-btn
-              v-else
-              size="sm"
-              :icon="btnProps.icon"
-              color="warning"
-              flat
-              round
-              dense
-              @click="onClick"
-            />
+            <q-btn v-if="active" size="lg" icon="visibility" color="primary" flat round dense @click="onClick" />
+            <q-btn v-else size="sm" :icon="btnProps.icon" color="warning" flat round dense @click="onClick" />
           </template>
 
-          <q-carousel-slide
-            v-for="(news, index) in newsList"
-            :key="index"
-            :name="index"
-            class="carousel-slide-noticias row q-py-md"
-          >
-            <q-img
-              :src="news.image"
-              :alt="news.title"
-              class="col-12 col-md-5 rounded-borders noticias-image"
-            />
+          <q-carousel-slide v-for="(news, index) in newsList" :key="index" :name="index"
+            class="carousel-slide-noticias row q-py-md">
+            <q-img :src="news.image" :alt="news.title" class="col-12 col-md-5 rounded-borders noticias-image" />
             <div class="col-12 col-md-5 q-pl-md">
               <h5 class="noticias-title q-mb-sm">{{ news.title }}</h5>
               <p class="noticias-description q-mb-md">{{ news.description }}</p>
-              <q-btn
-                class="noticias-read-more bottom-right q-mb-md"
-                color="primary"
-                @click="readMore(news.link)"
-              >
+              <q-btn class="noticias-read-more bottom-right q-mb-md" color="primary" @click="readMore(news.link)">
                 Leer más
               </q-btn>
             </div>
@@ -68,49 +29,29 @@
 
         <!--Mis Modulos-->
         <div class="col-12 col-md-9">
-          <q-card
-            class="my-modulos-card"
-            style="border-radius: 15px; background-color: white"
-          >
+          <q-card class="my-modulos-card" style="border-radius: 15px; background-color: white">
             <q-card-section style="background-color: #555">
-              <div
-                class="text-h6"
-                style="
+              <div class="text-h6" style="
                   text-align: center;
                   color: white;
                   font-weight: bold;
                   padding: 10px 0;
-                "
-              >
+                ">
                 MIS MÓDULOS
               </div>
             </q-card-section>
-            <q-card-section
-              class="icon-container-modulos"
-              style="
+            <q-card-section class="icon-container-modulos" style="
                 display: flex;
                 justify-content: center;
                 flex-wrap: wrap;
                 padding: 20px;
-              "
-            >
-              <a
-                v-for="(modulo, index) in modulosPermitidos"
-                :key="index"
-                :href="modulo.link"
-                target="_blank"
-                class="icon-link-modulos"
-                style="margin: 10px"
-              >
-                <q-icon
-                  :name="modulo.icon"
-                  class="icon-content-modulos"
-                  color="blue-grey-9"
-                  size="40px"
-                >
+              ">
+              <a v-for="(modulo, index) in modulosPermitidos" :key="index" :href="modulo.link" target="_blank"
+                class="icon-link-modulos" style="margin: 10px">
+                <q-icon :name="modulo.icon" class="icon-content-modulos" color="blue-grey-9" size="40px">
                   <q-tooltip anchor="top middle" self="bottom middle">{{
                     modulo.title
-                  }}</q-tooltip>
+                    }}</q-tooltip>
                 </q-icon>
               </a>
             </q-card-section>
@@ -123,62 +64,34 @@
         <div class="col-12 col-md-9">
           <q-card class="fixed-size-card-departamentos">
             <q-card flat bordered class="departamentos-card">
-              <q-expansion-item
-                style="
+              <q-expansion-item style="
                   text-align-last: center;
                   background-color: orangered;
                   color: blanchedalmond;
                   font-size: 13px;
                   font-weight: bold;
-                "
-                icon="bi-buildings-fill"
-                label="DEPARTAMENTOS"
-                expand-separator
-                :default-opened="true"
-              >
+                " icon="bi-buildings-fill" label="DEPARTAMENTOS" expand-separator :default-opened="true">
                 <div style="background-color: midnightblue">
-                  <q-tabs
-                    v-model="activeTab"
-                    class="text-teal"
-                    active-color="teal"
-                    indicator-color="teal"
-                  >
-                    <q-tab
-                      v-for="departamento in departamentos"
-                      :key="departamento.id"
-                      :name="departamento.id"
-                      :label="departamento.nombre"
-                      @click="consultarEmpleadosDepartamento(departamento.id)"
-                    />
+                  <q-tabs v-model="activeTab" class="text-teal" active-color="teal" indicator-color="teal">
+                    <q-tab v-for="departamento in departamentos" :key="departamento.id" :name="departamento.id"
+                      :label="departamento.nombre" @click="consultarEmpleadosDepartamento(departamento.id)" />
                   </q-tabs>
                 </div>
 
                 <div style="flex: 1; overflow-y: auto; color: orangered">
                   <q-tab-panels v-model="activeTab" animated>
-                    <q-tab-panel
-                      v-for="departamento in departamentos"
-                      :key="departamento.id"
-                      :name="departamento.id"
-                    >
+                    <q-tab-panel v-for="departamento in departamentos" :key="departamento.id" :name="departamento.id">
                       <q-card-section>
                         <q-scroll-area class="full-width" style="height: 400px">
                           <div class="q-pa-md">
                             <q-list>
-                              <q-item
-                                v-for="empleado in empleados"
-                                :key="empleado.id"
-                                clickable
-                                v-ripple
-                                @click="showEmployeeDetails(empleado)"
-                              >
+                              <q-item v-for="empleado in empleados" :key="empleado.id" clickable v-ripple
+                                @click="showEmployeeDetails(empleado)">
                                 <q-item-section avatar>
                                   <q-avatar>
-                                    <img
-                                      :src="
-                                        empleado.foto_url ||
-                                        getAvatarUrl(empleado)
-                                      "
-                                    />
+                                    <img :src="empleado.foto_url ||
+                                      getAvatarUrl(empleado)
+                                      " />
                                   </q-avatar>
                                 </q-item-section>
                                 <q-item-section>
@@ -216,12 +129,9 @@
                 </q-card-section>
                 <q-card-section>
                   <q-avatar size="lg" class="q-mr-md">
-                    <img
-                      :src="
-                        selectedEmployee.foto_url ||
-                        getAvatarUrl(selectedEmployee)
-                      "
-                    />
+                    <img :src="selectedEmployee.foto_url ||
+                      getAvatarUrl(selectedEmployee)
+                      " />
                   </q-avatar>
                   <div class="q-my-md">
                     <p class="text-h6 q-mb-none">
@@ -251,27 +161,16 @@
       <!--SECCION IZQUIERDA-->
       <div class="col-12 col-md-3 q-px-md q-mt-md">
         <!-- Card Empleado -->
-        <q-card
-          class="empleado-card"
-          style="border-radius: 15px; overflow: hidden"
-        >
+        <q-card class="empleado-card" style="border-radius: 15px; overflow: hidden">
           <div class="q-pa-md text-center">
-            <q-img
-              :src="imagenPerfil"
-              width="90px"
-              height="90px"
-              style="border-radius: 50%"
-            />
+            <q-img :src="imagenPerfil" width="90px" height="90px" style="border-radius: 50%" />
             <div class="q-mt-md">
               <p><strong>BIENVENIDO!</strong></p>
-              <div
-                class="text-h6"
-                style="
+              <div class="text-h6" style="
                   font-family: Impact, sans-serif;
                   font-size: 30px;
                   color: midnightblue;
-                "
-              >
+                ">
                 {{ store.nombreUsuario }}
               </div>
 
@@ -283,222 +182,160 @@
                 <q-badge rounded color="white" label="🎓" />
                 <q-badge rounded color="orange">{{
                   store.user?.cargo
-                }}</q-badge>
+                  }}</q-badge>
               </div>
             </div>
             <div class="q-mt-md">
-              <q-badge rounded color="green" style="font-size: 16px"
-                >DOCUMENTOS</q-badge
-              >
+              <q-badge rounded color="green" style="font-size: 16px">DOCUMENTOS</q-badge>
             </div>
             <!-- Documentos -->
-            <div
-              class="q-mt-md flex justify-center rounded-lg"
-              style="
+            <div class="q-mt-md flex justify-center rounded-lg" style="
                 padding: 10px;
                 background-color: cadetblue;
                 border: 1px solid #ccc;
                 border-radius: 10px;
-              "
-            >
-              <a
-                v-for="documento in documentosIntranet"
-                :key="documento.id"
-                :href="documento.link"
-                target="_blank"
-                class="social-link-empleado"
-                :style="{ color: documento.color }"
-              >
-                <q-icon
-                  :name="documento.icon"
-                  size="md"
-                  class="icon-content-empleado"
-                >
+              ">
+              <a v-for="documento in documentosIntranet" :key="documento.id" :href="documento.link" target="_blank"
+                class="social-link-empleado" :style="{ color: documento.color }">
+                <q-icon :name="documento.icon" size="md" class="icon-content-empleado">
                   <q-tooltip anchor="top middle" self="bottom middle">{{
                     documento.name
-                  }}</q-tooltip>
+                    }}</q-tooltip>
                 </q-icon>
               </a>
             </div>
           </div>
         </q-card>
         <br />
+
         <!--Calendario de Eventos-->
-        <q-card class="eventos-card" style="border-radius: 15px">
-          <q-card-section>
-            <div
-              class="text-h6"
-              style="text-align-last: center; color: lightseagreen"
-            >
+
+        <q-card class="eventos-card" style="border-radius: 15px; background-color: white">
+          <q-card-section style="background-color: lightseagreen">
+            <div class="text-h6" style="
+                text-align: center;
+                color: white;
+                font-weight: bold;
+                padding: 10px 0;
+              ">
               EVENTOS DEL MES
             </div>
           </q-card-section>
 
-          <div
-            class="text-h6"
+          <q-card-section style="margin: 0">
+            <div class="text-h6" style="
+                text-align: center;
+                color: white;
+                background-color: midnightblue;
+                padding: 10px 0;
+                border-radius: 15px 15px 0px 0px;
+              ">
+              CUMPLEAÑEROS
+            </div>
+            <q-separator />
+
+            <q-card-section style="
+                display: flex;
+                justify-content: center;
+                height: 130px;
+                border-radius: 0 0 15px 15px;
+                background-color: white;
+              ">
+              <q-scroll-area class="bg-white-4 rounded-borders" style="height: 100px; overflow-x: auto; width: 100%">
+                <div class="row no-wrap items-center q-gutter-x-sm" style="
+                    display: flex;
+                    flex-wrap: nowrap;
+                    justify-content: center;
+                    padding-left: 30px; /* Añadir padding izquierdo */
+                    height: 100px;
+                    max-width: 900px;
+                  ">
+                  <div v-for="empleado in empleadosCumpleaneros" :key="empleado.id" class="avatar-item-container"
+                    style="margin-right: 15px; size: 5px">
+                    <q-avatar size="70px" class="avatar-item">
+                      <img :src="empleado.foto_url == null
+                          ? `https://ui-avatars.com/api/?name=${empleado.nombres.substr(
+                            0,
+                            1
+                          )}+${empleado.apellidos.substr(
+                            0,
+                            1
+                          )}&bold=true&background=008000&color=ffff`
+                          : empleado.foto_url
+                        " />
+                      <q-badge floating class="bottom-left" color="orange">
+                        {{ new Date(empleado.fecha_nacimiento).getDate() }}
+                      </q-badge>
+                      <q-tooltip anchor="bottom middle" self="bottom middle">
+                        {{ empleado.nombres }} {{ empleado.apellidos }}
+                      </q-tooltip>
+                    </q-avatar>
+                  </div>
+                </div>
+              </q-scroll-area>
+            </q-card-section>
+          </q-card-section>
+
+          <q-separator />
+          <q-card-section>
+            <q-date v-model="selectedDate" :mask="maskFecha" :events="eventDates" :event-color="getColor" minimal
+              @update:model-value="verEvento" style="width: max-content" />
+          </q-card-section>
+        </q-card>
+
+        <br />
+
+        <!--Formulario de Solicitudes-->
+        <q-card class="fixed-size-card-solicitudes">
+        <q-card flat bordered class="solicitudes-card">
+          <q-expansion-item
             style="
               text-align-last: center;
+              background-color: green;
               color: white;
-              background-color: midnightblue;
+              font-size: 13px;
+              font-weight: bold;
+              border-radius: 10px;
             "
+            icon="bi-bookmark-heart"
+            label="SOLICITUDES"
+            expand-separator
+            :default-opened="true"
           >
-            CUMPLEAÑEROS
-          </div>
-          <q-separator />
+            <div style="background-color: WHITE; padding: 20px;">
+              <q-form @submit.prevent="enviarSolicitud">
+                <q-select
+                  v-model="solicitud.tipo_solicitud"
+                  :options="tiposSolicitudes"
+                  label="Tipo de Solicitud"
+                  emit-value
+                  outlined
+                  dense
+                  style="margin-bottom: 16px; border-radius: 10px; background-color: midnightblue;"
+                ></q-select>
+                <q-btn
+                  type="submit"
+                  color="green"
 
-          <q-card-section
-            style="display: flex; justify-content: center; height: 130px"
-          >
-            <q-scroll-area
-              class="bg-white-4 rounded-borders"
-              style="height: 100px; overflow-x: auto; width: 100%"
-            >
-              <div
-                class="row no-wrap items-center q-gutter-x-sm"
-                style="
-                  display: flex;
-                  flex-wrap: nowrap;
-                  justify-content: center;
-                  padding-left: 30px; /* Añadir padding izquierdo */
-                  height: 100px;
-                  max-width: 900px;
-                "
-              >
-                <div
-                  v-for="empleado in empleadosCumpleaneros"
-                  :key="empleado.id"
-                  class="avatar-item-container"
-                  style="margin-right: 15px; size: 5px"
-                >
-                  <q-avatar size="70px" class="avatar-item">
-                    <img
-                      :src="
-                        empleado.foto_url == null
-                          ? `https://ui-avatars.com/api/?name=${empleado.nombres.substr(
-                              0,
-                              1
-                            )}+${empleado.apellidos.substr(
-                              0,
-                              1
-                            )}&bold=true&background=008000&color=ffff`
-                          : empleado.foto_url
-                      "
-                    />
-                    <q-badge floating class="bottom-left" color="orange">
-                      {{ new Date(empleado.fecha_nacimiento).getDate() }}
-                    </q-badge>
-                    <q-tooltip anchor="bottom middle" self="bottom middle">
-                      {{ empleado.nombres }} {{ empleado.apellidos }}
-                    </q-tooltip>
-                  </q-avatar>
-                </div>
-              </div>
-            </q-scroll-area>
-          </q-card-section>
-
-          <q-separator />
-          <q-card-section>
-            <q-date
-              v-model="selectedDate"
-              :mask="maskFecha"
-              :events="eventDates"
-              :event-color="getColor"
-              minimal
-              @update:model-value="verEvento"
-              style="width: max-content"
-            />
-          </q-card-section>
-        </q-card>
-        <br />
-        <q-separator />
-        <!--Formulario de Solicitudes-->
-        <q-card class="solicitudes-card" style="border-radius: 15px">
-          <q-card-section>
-            <div
-              class="text-h6"
-              style="text-align-last: center; color: lightseagreen"
-            >
-              SOLICITUDES
+                  label="REALIZAR"
+                  style="width: 100%; font-weight: bold; letter-spacing: 0.5px; border-radius: 10px; background-color: blue; color: white;"
+                  outline
+                ></q-btn>
+              </q-form>
             </div>
-          </q-card-section>
-          <q-card-section>
-            <q-form @submit.prevent="enviarSolicitud">
-              <q-select
-                v-model="solicitud.tipo_solicitud"
-                :options="tiposSolicitudes"
-                label="Tipo de Solicitud"
-                emit-value
-                map-options
-                required
-              ></q-select>
-              <q-input
-                v-model="solicitud.descripcion"
-                label="Descripción"
-                type="textarea"
-                autogrow
-                required
-              ></q-input>
-              <q-input
-                v-model="solicitud.fecha_inicio"
-                label="Fecha de Inicio"
-                mask="####-##-##"
-                filled
-                required
-              >
-                <template v-slot:append>
-                  <q-icon name="event" />
-                </template>
-                <q-popup-proxy
-                  ref="qDateInicio"
-                  transition-show="scale"
-                  transition-hide="scale"
-                >
-                  <q-date v-model="solicitud.fecha_inicio" mask="YYYY-MM-DD" />
-                </q-popup-proxy>
-              </q-input>
-
-              <q-input
-                v-model="solicitud.fecha_fin"
-                label="Fecha de Fin"
-                mask="####-##-##"
-                filled
-                required
-              >
-                <template v-slot:append>
-                  <q-icon name="event" />
-                </template>
-                <q-popup-proxy
-                  ref="qDateFin"
-                  transition-show="scale"
-                  transition-hide="scale"
-                >
-                  <q-date v-model="solicitud.fecha_fin" mask="YYYY-MM-DD" />
-                </q-popup-proxy>
-              </q-input>
-              <br />
-              <q-btn type="submit" color="primary" label="Enviar"></q-btn>
-            </q-form>
-          </q-card-section>
+          </q-expansion-item>
         </q-card>
+      </q-card>
+
+
+
       </div>
     </div>
 
     <!-- Botón flotante -->
-    <q-btn
-      icon="search"
-      color="primary"
-      round
-      fab
-      class="fixed-bottom-left"
-      @click="openSearchDialog"
-    />
+    <q-btn icon="search" color="primary" round fab class="fixed-bottom-left" @click="openSearchDialog" />
     <!-- Componente de modales -->
-    <modales-entidad
-      :comportamiento="modales"
-      :fullWidth="false"
-      :maximized="false"
-      :persistente="false"
-    />
+    <modales-entidad :comportamiento="modales" :fullWidth="false" :maximized="false" :persistente="false" />
   </q-page>
 </template>
 
@@ -693,6 +530,24 @@ h5 {
   left: auto;
   right: auto;
   top: auto;
+}
+
+.solicitudes-card {
+  transition: transform 0.2s ease-in-out;
+}
+
+.solicitudes-card:hover {
+  transform: translateY(-5px);
+}
+
+.q-expansion-item__header {
+  background-color: #f5f5f5;
+  border-radius: 15px;
+  padding: 8px 16px;
+}
+
+.q-btn {
+  font-weight: bold;
 }
 </style>
 
