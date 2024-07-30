@@ -1,46 +1,62 @@
 <template>
-  <div>
-    <h1>Detalles de la Noticia</h1>
-    <div v-if="news" class="news-item">
-      <img :src="news.image" alt="news image" />
-      <h2>{{ news.title }}</h2>
-      <p>{{ news.description }}</p>
-      <router-link :to="news.link">Leer más</router-link>
-    </div>
-    <div v-else>
-      <p>No se encontró la noticia.</p>
+  <div class="news-list">
+    <div class="news-item" v-for="news in newsList" :key="news.title">
+      <img :src="news.image" alt="News Image" class="news-image">
+      <div class="news-content">
+        <h2 class="news-title">{{ news.title }}</h2>
+        <p class="news-description">{{ news.description }}</p>
+        <a :href="news.link" class="news-link">Leer más</a>
+      </div>
     </div>
   </div>
 </template>
 
-<script lang="ts">
-import { defineComponent, ref, onMounted } from 'vue';
-import { getNewsById } from '../view/IntranetPage'; // Ajusta la ruta según la estructura de tu proyecto
+<script src="./IntranetPage.ts"></script>
 
-export default defineComponent({
-  name: 'NoticiaView',
-  setup() {
-    const news = ref<News | undefined>(undefined);
-    const id = 0; // Aquí puedes definir el ID que deseas buscar
-
-    onMounted(() => {
-      news.value = getNewsById(id);
-    });
-
-    return {
-      news
-    };
-  }
-});
-</script>
 
 <style scoped>
-.news-item {
-  margin-bottom: 20px;
+.news-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 20px;
 }
 
-.news-item img {
+.news-item {
+  background-color: #f9f9f9;
+  border: 1px solid #ddd;
+  border-radius: 5px;
+  overflow: hidden;
+  width: 300px;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+.news-image {
   width: 100%;
-  height: auto;
+  height: 150px;
+  object-fit: cover;
+}
+
+.news-content {
+  padding: 15px;
+}
+
+.news-title {
+  font-size: 18px;
+  margin: 0 0 10px;
+}
+
+.news-description {
+  font-size: 14px;
+  margin: 0 0 15px;
+}
+
+.news-link {
+  color: #007bff;
+  text-decoration: none;
+  font-weight: bold;
+}
+
+.news-link:hover {
+  text-decoration: underline;
 }
 </style>
