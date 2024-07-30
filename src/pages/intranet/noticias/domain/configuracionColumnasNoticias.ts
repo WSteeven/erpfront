@@ -10,16 +10,9 @@ export const configuracionColumnasNoticias: ColumnConfig<Noticia>[] = [
     sortable: true
   },
   {
-    name: 'descripcion',
-    field: 'descripcion',
-    label: 'Descripción',
-    align: 'left',
-    sortable: true
-  },
-  {
-    name: 'fecha_creacion',
-    field: 'fecha_creacion',
-    label: 'Fecha de Creación',
+    name: 'fecha_vencimiento',
+    field: 'fecha_vencimiento',
+    label: 'Fecha Vencimiento',
     align: 'left',
     sortable: true
   },
@@ -44,11 +37,4 @@ export const configuracionColumnasNoticias: ColumnConfig<Noticia>[] = [
     align: 'left',
     sortable: true
   },
-  {
-    name: 'url_imagen',
-    field: 'url_imagen',
-    label: 'Imagen',
-    align: 'left',
-    sortable: true
-  }
 ]

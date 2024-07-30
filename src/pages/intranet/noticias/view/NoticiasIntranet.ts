@@ -19,60 +19,42 @@ import { tabOptionsNoticias } from 'config/utils'
 
 import { useAuthenticationStore } from 'stores/authentication'
 import { maskFecha } from 'src/config/utils'
-import { obtenerFechaActual } from '../../../../shared/utils'
 import { CategoriaController } from 'pages/intranet/categorias/infraestructure/CategoriaController'
 import { EtiquetaController } from 'pages/intranet/etiquetas/infraestructure/EtiquetaController'
 import SelectorImagen from 'components/SelectorImagen.vue'
 import EssentialEditor from 'components/editores/EssentialEditor.vue'
 
 export default defineComponent({
-  components: { TabLayoutFilterTabs2, EssentialEditor,  SelectorImagen },
+  components: { TabLayoutFilterTabs2, EssentialEditor, SelectorImagen },
   setup() {
     const mixin = new ContenedorSimpleMixin(Noticia, new NoticiaController())
 
     const { entidad: noticia, disabled, accion, listadosAuxiliares } = mixin.useReferencias()
-    const {setValidador, cargarVista, obtenerListados, listar } = mixin.useComportamiento()
-    const { onConsultado, onBeforeModificar } = mixin.useHooks()
+    const { setValidador, cargarVista, obtenerListados, listar } = mixin.useComportamiento()
+    const { onReestablecer } = mixin.useHooks()
     const store = useAuthenticationStore()
-    const date = ref(obtenerFechaActual(maskFecha))
 
     const categorias = ref([])
     const etiquetas = ref([])
 
-    cargarVista(async()=>{
-       await obtenerListados({
+    cargarVista(async () => {
+      await obtenerListados({
         categorias: new CategoriaController(),
         etiquetas: new EtiquetaController()
       })
 
-       categorias.value = listadosAuxiliares.categorias
- etiquetas.value = listadosAuxiliares.etiquetas
+      categorias.value = listadosAuxiliares.categorias
+      // etiquetas.value = listadosAuxiliares.etiquetas
+      noticia.autor = store.user.nombres + ' ' + store.user.apellidos
     })
 
-    // const cat_etiq = {
-    //   Vacante: ['Promocion Interna'],
-    //   Capacitacion: ['Interna', 'Externa'],
-    //   Feriados: ['Nacional', 'Local'],
-    //   'Nota Luctuosa': [],
-    //   Seguridad: ['Normativa', 'Advertencia', 'Solicitud'],
-    //   Médico: ['Campaña', 'Vacunación', 'Exámenes Médicos'],
-    //   Politica: ['Interna', 'Externa'],
-    //   'Ente Regulador': ['Avisos', 'Aporte Personal'],
-    // }
+    /*****************************************************************************************
+     * Hooks
+     ****************************************************************************************/
+    onReestablecer(() => {
+      noticia.autor = store.user.nombres + ' ' + store.user.apellidos
+    })
 
-    // const categorias = Object.keys(cat_etiq)
-
-    const selectedCategory = ref<string | null>(null)
-    const selectedTags = ref<string[]>([])
-    const filteredEtiquetas = ref<string[]>([])
-
-    function updateEtiquetas() {
-      if (selectedCategory.value) {
-        filteredEtiquetas.value = categorias.value[selectedCategory.value]
-      } else {
-        filteredEtiquetas.value = []
-      }
-    }
 
     const maxWords = (val: string) => {
       if (!val) return true
@@ -80,30 +62,14 @@ export default defineComponent({
       return wordCount <= 150 || `La descripción no puede tener más de 150 palabras. Actualmente tiene ${wordCount} palabras.`
     }
 
-
-
-
-    const formRef = ref(null)
-
-    const esConsultado = ref(false)
-    onBeforeModificar(() => (esConsultado.value = true))
-
-    onConsultado(() => {
-      // Lógica después de consultar la noticia
-    })
-
-    cargarVista(async () => {
-      // Establecer el autor y la fecha de creación al cargar la vista
-      noticia.autor = store.user.nombres + ' ' + store.user.apellidos
-      noticia.fecha_creacion = date.value
-
-      await listar()
-    })
-
+    /*****************************************************************************************
+     * Validaciones
+     ****************************************************************************************/
     const reglas = computed(() => ({
       titulo: { required },
       autor: { required },
-      fecha_creacion: { required },
+      categoria: { required },
+      fecha_vencimiento: { required },
       imagen_noticia: { required },
       descripcion: { required, maxWords },
     }))
@@ -111,46 +77,33 @@ export default defineComponent({
     const v$ = useVuelidate(reglas, noticia)
     setValidador(v$.value)
 
-    function submitForm() {
-      if (v$.value.$invalid) {
-        v$.value.$touch()
-        return
-      }
-      // Lógica para enviar el formulario
-    }
-
-    function resetForm() {
-      // Lógica para restablecer el formulario
-    }
-
-    function filtrarNoticia(tabSeleccionado: string) {
+    /*****************************************************************************************
+     * Funciones
+     ****************************************************************************************/
+    function filtrarNoticias(tabSeleccionado: string) {
       listar({ estado: tabSeleccionado }, false)
     }
 
-    function categoriaSeleccionada(val){
-      etiquetas.value = listadosAuxiliares.etiquetas.filter((etiqueta)=>etiqueta.categoria_id===val)
+    function categoriaSeleccionada(val) {
+      etiquetas.value = listadosAuxiliares.etiquetas.filter((etiqueta) => etiqueta.categoria_id === val)
     }
 
     return {
-      mixin,disabled,
+      mixin, disabled,
       noticia,
       configuracionColumnas: configuracionColumnasNoticias,
       tabOptionsNoticias,
-      formRef,
       v$,
-      submitForm,
-      resetForm,
-      filtrarNoticia,
-      categoriaSeleccionada,
-      esConsultado,
+      maskFecha,
       accion,
-      // cat_etiq,
+
+      // funciones
+      filtrarNoticias,
+      categoriaSeleccionada,
+
+      // listados,
       categorias,
-      selectedCategory,
-      selectedTags,
       etiquetas,
-      filteredEtiquetas,
-      updateEtiquetas,
     }
   },
 })
