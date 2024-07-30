@@ -19,6 +19,7 @@
     <modal-entidad
       :comportamiento="modales"
       :persistente="false"
+      :mostrarListado="false"
       @guardado="(data) => guardado(data)"
     ></modal-entidad>
   </q-page>

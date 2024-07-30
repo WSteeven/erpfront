@@ -493,7 +493,7 @@ export const useFiltrosListadosSelects = (listadosAuxiliares, entidad?: Ref<any>
    * Filtro global optimizado
    * Actualmente filtra por un solo campo
    ***************************************/
-  function filtrarLista(val, update, lista, clave, defaultValue = []) {
+  function filtrarLista(val, update, lista, clave, defaultValue: any[] = []) {
     if (val === '') {
       update(() => lista.value = defaultValue)
     }
@@ -506,6 +506,7 @@ export const useFiltrosListadosSelects = (listadosAuxiliares, entidad?: Ref<any>
   }
 
   return {
+    filtrarLista,
     paises, filtrarPaises,
     provincias, filtrarProvincias,
     cantones, filtrarCantones, ordenarCantones,

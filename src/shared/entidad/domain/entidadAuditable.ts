@@ -4,6 +4,7 @@ export class EntidadAuditable extends Hidratable { //implements Auditable {
   id: number | null
   created_at: string | null
   updated_at: string | null
+  isComponentFilesModified: boolean
   // negocio: number | null
   // usuario_inserta: number | null
   // usuario_modifica: number | null
@@ -15,6 +16,7 @@ export class EntidadAuditable extends Hidratable { //implements Auditable {
     this.id = null
     this.created_at = null
     this.updated_at = null
+    this.isComponentFilesModified=false
     // this.negocio = null
     // this.usuario_inserta = null
     // this.usuario_modifica = null

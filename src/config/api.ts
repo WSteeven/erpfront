@@ -94,8 +94,8 @@ export const endpoints = {
   extension_covertura_salud_empleado: new Endpoint(
     'recursos-humanos/extension_covertura_salud_empleado'
   ),
-  extension_covertura_salud: new Endpoint(
-    'recursos-humanos/extension_covertura_salud'
+  extension_cobertura_salud: new Endpoint(
+    'recursos-humanos/extension_cobertura_salud'
   ),
   archivo_rol_pago_mes: new Endpoint('recursos-humanos/archivo-rol-pago-mes'),
 
@@ -135,7 +135,7 @@ export const endpoints = {
 
   descuentos_permiso: new Endpoint('recursos-humanos/descuentos_permiso'),
   prestamo_hipotecario: new Endpoint('recursos-humanos/prestamo_hipotecario'),
-  prestamo_quirorafario: new Endpoint('recursos-humanos/prestamo_quirorafario'),
+  prestamos_quirografarios: new Endpoint('recursos-humanos/prestamos_quirografarios'),
   permisos_sin_recuperar: new Endpoint(
     'recursos-humanos/permisos_sin_recuperar'
   ),

@@ -64,6 +64,15 @@ export default defineComponent({
         const { confirmar } = useNotificaciones()
         const mensaje = ref()
         const cedulaValida = ref(true)
+        const linkExiste = ref(true)
+
+        /*************
+         * Constantes
+         *************/
+        const CUESTIONARIO_OTROS = [407, 424] // TABLA med_cuestionarios,id son preguntas con respuesta OTROS
+        const CUESTIONARIO_NO_CONSUME = [406, 385, 388, 419, 423] // TABLA med_cuestionarios,id son preguntas con respuesta NO CONSUME
+        const PSICOSOCIAL = 1
+        const ALCOHOL_DROGAS = 2
 
         /****************
          * Controladores
@@ -82,7 +91,6 @@ export default defineComponent({
                     tipo_cuestionario_id: tipoCuestionario,
                 })
                 cuestionarioPublico.formulario_cuestionario = result
-                console.log(cuestionarioPublico.formulario_cuestionario)
             } catch (e) {
                 if (isAxiosError(e)) {
                     const mensajes: string[] = e.erroresValidacion
@@ -105,27 +113,90 @@ export default defineComponent({
         const mapearRespuestas = () => {
             return cuestionarioPublico.cuestionario = cuestionarioPublico.formulario_cuestionario.map(
                 (cuestionario: FormularioCuestionario) => {
+                    console.log(cuestionario)
                     const cuestionarioAux = new Cuestionario()
-                    cuestionarioAux.respuesta_texto = typeof cuestionario.respuesta === 'string' ? cuestionario.respuesta : null
-                    cuestionarioAux.id_cuestionario = typeof cuestionario.respuesta === 'string' ? cuestionario.cuestionario[0].id : cuestionario.respuesta
-                    // cuestionarioAux.id_cuestionario = typeof cuestionario.respuesta === 'number' ? cuestionario.respuesta : null
+                    // cuestionarioAux.id_cuestionario = typeof cuestionario.respuesta === 'string' || typeof cuestionario.respuesta === 'object' ? cuestionario.cuestionario[0].id : cuestionario.respuesta
+                    cuestionarioAux.respuesta_texto = getRespuestaTexto(cuestionario.respuesta) // typeof cuestionario.respuesta === 'string' ? cuestionario.respuesta : null
+                    cuestionarioAux.id_cuestionario = getIdCuestionario(cuestionario) // typeof cuestionario.respuesta === 'number' ? cuestionario.respuesta : null
                     return cuestionarioAux
                 }
             )
         }
-        /* const mapearRespuestas = () => {
-            return cuestionarioPublico.cuestionario = cuestionarioPublico.cuestionario.map(
-                (cuestionario: Cuestionario) => {
-                    return {
-                        respuesta_texto: typeof cuestionario.respuesta === 'string' ? cuestionario.respuesta : null,
-                        id_cuestionario:
-                            typeof cuestionario.respuesta === 'string'
-                                ? cuestionario.cuestionario[0].id
-                                : cuestionario.respuesta,
-                    }
+
+        const getRespuestaTexto = (respuesta) => {
+            if (typeof respuesta === 'string') {
+                return respuesta
+            } else if (typeof respuesta === 'object' && Array.isArray(respuesta)) {
+                return buscarFactoresPsicosociales(respuesta) // respuesta.join(',')
+            } else return null
+        }
+
+        const getIdCuestionario = (cuestionario) => {
+            const respuesta = cuestionario.respuesta
+            const primeraRespuestaDefecto = cuestionario.cuestionario[0].id
+
+            if (typeof respuesta === 'number') {
+                return respuesta
+            } else if (typeof respuesta === 'object' && Array.isArray(respuesta)) {
+                return respuesta[0]
+            } else if (!respuesta || typeof respuesta === 'string') {
+                return primeraRespuestaDefecto
+            }
+        }
+
+        const noConsume = ref(false)
+        const establecerNoConsume = (index: number, respuesta: number) => {
+            if (index === 0 && respuesta === 406) { // No consume
+                cuestionarioPublico.formulario_cuestionario[2].respuesta = 385 // No consume
+                cuestionarioPublico.formulario_cuestionario[3].respuesta = 388 // No consume
+                cuestionarioPublico.formulario_cuestionario[4].respuesta = [419] // No consume
+                cuestionarioPublico.formulario_cuestionario[6].respuesta = 423 // No consume
+                noConsume.value = true
+            } else if (index === 0 && respuesta !== 406) {
+                cuestionarioPublico.formulario_cuestionario[2].respuesta = null // No consume
+                cuestionarioPublico.formulario_cuestionario[3].respuesta = null // No consume
+                cuestionarioPublico.formulario_cuestionario[4].respuesta = null // No consume
+                cuestionarioPublico.formulario_cuestionario[6].respuesta = null // No consume
+                noConsume.value = false
+            } else {
+                noConsume.value = false
+            }
+        }
+
+        const buscarFactoresPsicosociales = (idsFactores: number[]) => {
+            const cuestionarios = cuestionarioPublico.formulario_cuestionario[4].cuestionario.filter((cuestionario) => cuestionario.id ? idsFactores.includes(cuestionario.id) : false)
+            const texto = cuestionarios.map((c) => c.respuesta)
+            console.log(texto)
+            return texto.join(',')
+        }
+
+        /**
+         * Deshabilitar todos los items de NO CONSUME excepto de la pregunta #1
+         * @param cuestionario_id id del cuestionario
+         * @param index indice de la pregunta
+         * @returns 
+         */
+        const desahabilitarNoConsume = (cuestionario_id: number, index: number) => {
+            if (index > 0) return cuestionarioPublico.formulario_cuestionario[0].respuesta !== 406 && CUESTIONARIO_NO_CONSUME.includes(cuestionario_id)
+            else return false
+        }
+
+        const verificarSiEsSelectMultiple = (index: number) => {
+            const valor = cuestionarioPublico.formulario_cuestionario[index - 1].respuesta // Valor pregunta anterior
+            if (typeof valor === 'object' && Array.isArray(valor)) return valor.length ? seSeleccionoItemOtro(CUESTIONARIO_OTROS, valor) : false
+            return valor ? CUESTIONARIO_OTROS.includes(valor) : false
+        }
+
+        const seSeleccionoItemOtro = (array2: number[], array1: number[]) => {
+            let res = false
+            for (const value of array2) {
+                if (array1.includes(value)) {
+                    res = true
+                    break
                 }
-            )
-        } */
+            }
+            return res
+        }
 
         const guardarCuestionario = async () => {
             confirmar(
@@ -133,21 +204,24 @@ export default defineComponent({
                 async () => {
                     try {
                         mapearRespuestas()
-                        console.log(cuestionarioPublico)
                         await guardar(cuestionarioPublico)
                         cuestionarioPublico.cuestionario = []
-                        mensaje.value = 'Gracias por completar el cuestionario.'
+                        establecerNombreEmpresa()
                     } catch (e) {
-                        console.log(e)
-
                         if (isAxiosError(e)) {
                             const mensajes: string[] = e.erroresValidacion
                             console.log(mensajes)
-                            mensaje.value = mensajes[0]
                         }
                     }
                 }
             )
+        }
+
+        const route = useRoute()
+        const identificador = route.params.identificador
+
+        const establecerNombreEmpresa = () => {
+            cuestionarioPublico.persona.nombre_empresa = identificador
         }
 
         /* const cuestionarioLleno = (respuesta: string) => {
@@ -159,9 +233,16 @@ export default defineComponent({
          *********/
         const reglas = {
             cuestionario: { required },
-            formulario_cuestionario: {
+            /* formulario_cuestionario: {
                 $each: helpers.forEach({
                     respuesta: { required },
+                }),
+            }, */
+            formulario_cuestionario: {
+                $each: helpers.forEach({
+                    respuesta: {
+                        requiredIf: requiredIf(() => tipoCuestionarioSeleccionado.value === PSICOSOCIAL),
+                    }
                 }),
             },
             persona: {
@@ -172,22 +253,19 @@ export default defineComponent({
                 identificacion: { required },
                 provincia: { required },
                 canton: { required },
-                area: { required },
                 nivel_academico: { required },
-                antiguedad: { required },
                 correo: { required },
                 estado_civil: { required },
                 fecha_nacimiento: { required },
                 genero: { required },
                 nombre_empresa: { requiredIf: requiredIf(() => esDrogas.value) },
-                ruc: { requiredIf: requiredIf(() => esDrogas.value) },
                 cargo: { requiredIf: requiredIf(() => esDrogas.value) },
-                tipo_afiliacion_seguridad_social: { requiredIf: requiredIf(() => esDrogas.value) },
                 numero_hijos: { requiredIf: requiredIf(() => esDrogas.value) },
                 autoidentificacion_etnica: { requiredIf: requiredIf(() => esDrogas.value) },
                 porcentaje_discapacidad: { requiredIf: requiredIf(() => esDrogas.value && cuestionarioPublico.persona.discapacidad) },
                 enfermedades_preexistentes: { requiredIf: requiredIf(() => esDrogas.value) },
-                // cedula: { cedula_no_valida: true },
+                porcentaje: { requiredIf: requiredIf(() => esDrogas.value && cuestionarioPublico.persona.discapacidad) },
+                discapacidades: { requiredIf: requiredIf(() => esDrogas.value && cuestionarioPublico.persona.discapacidad) },
             }
         }
 
@@ -210,20 +288,22 @@ export default defineComponent({
         const nombreEmpresa = computed(() => configuracionGeneralStore.configuracion?.nombre_empresa)
         watchEffect(() => document.title = nombreEmpresa.value ?? '')
 
-        const route = useRoute()
-        const identificador = route.params.identificador
-        cuestionarioPublico.persona.nombre_empresa = identificador
+        establecerNombreEmpresa()
 
-        const consultarLiskActivo = async () => {
+        const consultarLinkActivo = async () => {
             const { result } = await new LinkCuestionarioPublicoController().listar({ link: identificador })
-            linkActivo.value = result[0].activo
+            linkActivo.value = result[0]?.activo
+            linkExiste.value = result.length > 0
         }
 
-        consultarLiskActivo()
+        consultarLinkActivo()
+
+
 
         return {
             v$,
             linkActivo,
+            linkExiste,
             refInformacionPersona,
             mixin,
             cuestionarioPublico,
@@ -236,6 +316,13 @@ export default defineComponent({
             tipoCuestionarioSeleccionado,
             accion,
             cedulaValida,
+            CUESTIONARIO_OTROS,
+            CUESTIONARIO_NO_CONSUME,
+            ALCOHOL_DROGAS,
+            establecerNoConsume,
+            noConsume,
+            desahabilitarNoConsume,
+            verificarSiEsSelectMultiple,
         }
     }
 })

@@ -125,7 +125,7 @@ export default defineComponent({
       icono: 'bi-link-45deg',
       color: 'primary',
       visible: () => authenticationStore.can('puede.ver.reporte_cuestionarios_psicosocial'),
-      accion: ({ entidad }) => copiarAlPortapapeles(window.location.origin + '/cuestionarios-publicos/' + entidad.link)
+      accion: ({ entidad }) => copiarAlPortapapeles(window.location.origin + '/cuestionarios-publicos/' + encodeURIComponent(entidad.link))
     }
 
     const btnAbrirLink: CustomActionTable<LinkCuestionarioPublico> = {

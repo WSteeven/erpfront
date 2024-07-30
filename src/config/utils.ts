@@ -133,6 +133,7 @@ export const tabOptionsPermiso: TabOption[] = [
   { label: 'Pendiente', value: '1' },
   { label: 'Aprobados', value: '2' },
   { label: 'Cancelados', value: '3' },
+  { label: 'Recuperados', value: '4' }
 ]
 export const tabOptionsTraspasos: TabOption[] = [
   { label: 'Pendientes', value: '0' },
@@ -566,12 +567,14 @@ export function convertir_fecha_hora(fecha) {
   const fecha_convert = new Date(anio, mes, dia, tiempo[0], tiempo[1], 0)
   return fecha_convert
 }
-export const niveles_academicos = [
-  { nombre: 'ESTUDIO PRIMARIO' },
-  { nombre: 'ESTUDIO SECUNDARIO' },
-  { nombre: 'TITULO SUPERIOR' },
-]
 
+export const niveles_academicos = [
+  { nombre: 'NINGUNA' },
+  { nombre: 'BÁSICA' },
+  { nombre: 'BACHILLER' },
+  { nombre: 'TERCER NIVEL' },
+  { nombre: 'CUARTO NIVEL' },
+]
 
 export const tipos_sangre = [
   { nombre: 'A +' },

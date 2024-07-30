@@ -857,6 +857,7 @@ export const mapearOptionsSelect = (listadoOpciones: { id: number, nombre: strin
 
 export const copiarAlPortapapeles = async (texto: string) => {
   const { notificarInformacion, notificarError } = useNotificaciones()
+  console.log(texto)
   
   try {
     await navigator.clipboard.writeText(texto);

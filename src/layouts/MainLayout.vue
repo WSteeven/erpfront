@@ -414,15 +414,15 @@
       <div class="absolute-top q-pa-sm q-ma-sm rounded-card">
         <img
           :src="!$q.dark.isActive ? logoClaro : logoOscuro"
-          height="40"
-          class="q-mx-auto block"
+          height="60"
+          class="q-mx-auto block "
         />
       </div>
 
       <!-- Drawer Body -->
       <q-scroll-area
         style="
-          height: calc(94% - 100px);
+          height: calc(94% - 120px);
           margin-top: 100px;
           margin-bottom: 20px;
         "

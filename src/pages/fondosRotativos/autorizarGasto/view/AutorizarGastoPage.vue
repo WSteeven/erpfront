@@ -27,7 +27,11 @@
         tabDefecto="3"
       ></essential-table-tabs>
     </div>
-    <modal-entidad :comportamiento="modales" @guardado="guardado">
+    <modal-entidad
+      :comportamiento="modales"
+      @guardado="guardado"
+      :mostrarListado="false"
+    >
       <template>
         <div
           class="q-pa-md q-gutter-sm flex flex-center"

@@ -57,13 +57,14 @@ import { StatusEssentialLoading } from 'components/loading/application/StatusEss
 import { TareasEmpleadoController } from 'pages/gestionTrabajos/tareas/infraestructure/TareasEmpleadoController'
 import { EtapaController } from 'pages/gestionTrabajos/proyectos/modules/etapas/infraestructure/EtapaController'
 import { ComportamientoModalesTransaccionEgreso } from './application/ComportamientoModalesGestionarEgresos'
+import { Fields } from '../../../../sistema/permisos/permisos';
 
 export default defineComponent({
   name: 'Egresos',
   components: { TabLayoutFilterTabs2, EssentialTable, EssentialSelectableTable, LabelInfoEmpleado, ModalesEntidad },
   setup() {
     const mixin = new ContenedorSimpleMixin(Transaccion, new TransaccionEgresoController())
-    const { entidad: transaccion, disabled, accion, listadosAuxiliares, listado } = mixin.useReferencias()
+    const { entidad: transaccion, filtros, disabled, accion, listadosAuxiliares, listado } = mixin.useReferencias()
     const { setValidador, obtenerListados, cargarVista, listar, } = mixin.useComportamiento()
     const { onConsultado, onReestablecer, onGuardado } = mixin.useHooks()
     const { confirmar, prompt, notificarError, notificarAdvertencia } = useNotificaciones()
@@ -91,7 +92,7 @@ export default defineComponent({
       seleccionar: seleccionarProducto
     } = useOrquestadorSelectorItemsEgreso(transaccion, 'inventarios')
 
-
+    const paginate = true
     const usuarioLogueado = store.user
     const esBodeguero = store.esBodeguero
     const esCoordinador = store.esCoordinador
@@ -213,7 +214,9 @@ export default defineComponent({
 
     function filtrarTransacciones(tab: string) {
       tabDefecto.value = tab
-      listar({ estado: tab })
+      listar({ estado: tab, paginate: paginate})
+
+      filtros.fields = { estado: tab}
     }
     const botonEditarEgreso: CustomActionTable = {
       titulo: 'Editar',
@@ -649,6 +652,7 @@ export default defineComponent({
       esBodeguero,
       esBodegueroTelconet: store.esBodegueroTelconet,
       store,
+      paginate,
       esCoordinador,
 
       llenarTransaccion,

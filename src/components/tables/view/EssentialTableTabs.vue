@@ -150,10 +150,9 @@
         :separador="separador"
         :tipoSeleccion="tipoSeleccion"
         @selected="seleccionado"
-        :mixin="mixin"
       ></essential-table>
 
-      
+
     </div>
   </div>
 </template>
@@ -179,7 +178,7 @@ export default defineComponent({
   props: {
     mixin: {
       type: Object as () => ContenedorSimpleMixin<EntidadAuditable>,
-      required: true,
+      required: false,
     },
     titulo: {
       type: String,
