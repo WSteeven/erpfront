@@ -98,7 +98,7 @@
         </template>
       </q-input>
     </div>
-
+{{ entidad }}
     <!-- Foto de permiso -->
     <div class="col-12 col-md-6 col-sm-6">
       <label for="q-mb-sm block">Imagen del permiso (anverso)</label>

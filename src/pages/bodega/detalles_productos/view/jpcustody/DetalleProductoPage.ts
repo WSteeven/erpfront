@@ -9,6 +9,7 @@ import { defineComponent, ref, watch } from 'vue'
 import TabLayout from 'shared/contenedor/modules/simple/view/TabLayout.vue'
 import LabelAbrirModal from 'components/modales/modules/LabelAbrirModal.vue'
 import EssentialTable from 'components/tables/view/EssentialTable.vue'
+import SelectorImagen from 'components/SelectorImagen.vue'
 
 //Logica y controladores
 import { ContenedorSimpleMixin } from 'shared/contenedor/modules/simple/application/ContenedorSimpleMixin'
@@ -37,10 +38,10 @@ import { StatusEssentialLoading } from 'components/loading/application/StatusEss
 import { PermisoController } from 'pages/bodega/permisosArmas/infraestructure/PermisoConstroller'
 import ModalEntidad from 'components/modales/view/ModalEntidad.vue'
 import { ComportamientoModalesDetalleProducto } from '../../application/ComportamientoModalesDetallesProductos'
-import { acciones } from 'config/utils'
+import { acciones, maskFecha } from 'config/utils'
 
 export default defineComponent({
-  components: { TabLayout, EssentialTable, LabelAbrirModal, ModalEntidad },
+  components: { TabLayout, EssentialTable, LabelAbrirModal, ModalEntidad, SelectorImagen },
   setup() {
     const mixin = new ContenedorSimpleMixin(DetalleProducto, new DetalleProductoController())
     const { entidad: detalle, disabled, accion, listadosAuxiliares, listado } = mixin.useReferencias()
@@ -531,7 +532,7 @@ export default defineComponent({
       columnas: configuracionColumnasSerialesDetalles,
       addRow,
       eliminar,
-
+      maskFecha,
       botonDesactivarDetalle,
       botonActivarDetalle,
       //modales

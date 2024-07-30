@@ -12,45 +12,45 @@
 
           <div class="col-12 col-md-3">
             <label class="q-mb-sm block">Descripción</label>
-            <q-input v-model="activo.descripcion" disable outlined dense>
+            <q-input v-model="activo.detalle_producto.descripcion" disable outlined dense>
             </q-input>
           </div>
 
           <div class="col-12 col-md-3">
             <label class="q-mb-sm block">Tipo</label>
-            <q-input v-model="activo.tipo" disable outlined dense> </q-input>
+            <q-input v-model="activo.detalle_producto.tipo" disable outlined dense> </q-input>
           </div>
 
           <div class="col-12 col-md-3">
             <label class="q-mb-sm block">Marca</label>
-            <q-input v-model="activo.marca" disable outlined dense> </q-input>
+            <q-input v-model="activo.detalle_producto.nombre_marca" disable outlined dense> </q-input>
           </div>
 
           <div class="col-12 col-md-3">
             <label class="q-mb-sm block">Modelo</label>
-            <q-input v-model="activo.modelo" disable outlined dense> </q-input>
+            <q-input v-model="activo.detalle_producto.nombre_modelo" disable outlined dense> </q-input>
           </div>
 
           <div class="col-12 col-md-3">
             <label class="q-mb-sm block">Serie</label>
-            <q-input v-model="activo.serie" disable outlined dense> </q-input>
+            <q-input v-model="activo.detalle_producto.serial" disable outlined dense> </q-input>
           </div>
 
           <div class="col-12 col-md-3">
             <label class="q-mb-sm block">Calibre</label>
-            <q-input v-model="activo.calibre" disable outlined dense> </q-input>
+            <q-input v-model="activo.detalle_producto.calibre" disable outlined dense> </q-input>
           </div>
 
           <div class="col-12 col-md-3">
             <label class="q-mb-sm block">Unidad de medida</label>
-            <q-input v-model="activo.unidad_medida" disable outlined dense>
+            <q-input v-model="activo.detalle_producto.unidad_medida" disable outlined dense>
             </q-input>
           </div>
 
           <div class="col-12 col-md-3">
             <label class="q-mb-sm block">Fecha de caducidad del producto</label>
             <q-input
-              v-model="activo.fecha_caducidad_producto"
+              v-model="activo.detalle_producto.fecha_caducidad_producto"
               disable
               outlined
               dense
@@ -60,7 +60,7 @@
 
           <div class="col-12 col-md-3">
             <label class="q-mb-sm block">Salidas (Egresos)</label>
-            <q-input v-model="activo.total_egresos" disable outlined dense>
+            <q-input v-model="sumaCantidadesEntregadas" disable outlined dense>
             </q-input>
           </div>
 
@@ -89,10 +89,12 @@
           </div>
         </div>
 
-        <b v-if="activo.permiso_arma.id">Detalles del permiso</b>
+        <b v-if="activo.detalle_producto.permiso_arma.id"
+          >Detalles del permiso</b
+        >
         <formulario-permiso-arma
-          v-if="activo.permiso_arma.id"
-          :permiso="activo.permiso_arma"
+          v-if="activo.detalle_producto.permiso_arma.id"
+          :permiso="activo.detalle_producto.permiso_arma"
           disable
         />
 
@@ -106,11 +108,12 @@
           dense
         >
           <q-tab
-            :name="opcionesConsultasActivosFijos.EGRESOS"
-            :label="opcionesConsultasActivosFijos.EGRESOS"
+            :name="opcionesConsultasActivosFijos.ENTREGAS"
+            :label="opcionesConsultasActivosFijos.ENTREGAS"
             :class="{
               'tab-inactive':
-                tabsOpcionesConsultas !== opcionesConsultasActivosFijos.EGRESOS,
+                tabsOpcionesConsultas !==
+                opcionesConsultasActivosFijos.ENTREGAS,
             }"
             no-caps
             @click="consultar()"
@@ -149,17 +152,22 @@
           keep-alive
           :class="{ 'rounded-tabpanel': !$q.screen.xs }"
         >
-          <q-tab-panel :name="opcionesConsultasActivosFijos.EGRESOS">
+          <q-tab-panel :name="opcionesConsultasActivosFijos.ENTREGAS">
             <essential-table
               titulo="Egresos del activo seleccionado"
-              :configuracionColumnas="configuracionColumnasTransaccionEgreso"
-              :datos="egresos"
+              :configuracionColumnas="[
+                ...configuracionColumnasEntregasActivosFijos,
+                accionesTabla,
+              ]"
+              :datos="entregas"
               :permitirConsultar="false"
               :permitirEditar="false"
               :permitirEliminar="false"
               :permitirFiltrar="false"
               :mostrarExportar="true"
               :ajustarCeldas="true"
+              :accion1="btnSubirActaEntregaRecepcion"
+              :accion2="btnSubirJustificativoUso"
             ></essential-table>
           </q-tab-panel>
         </q-tab-panels>

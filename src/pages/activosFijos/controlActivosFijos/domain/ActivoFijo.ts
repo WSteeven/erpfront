@@ -1,11 +1,10 @@
 import { DetalleProducto } from 'pages/bodega/detalles_productos/domain/DetalleProducto'
-import { PermisoArma } from 'pages/bodega/permisosArmas/domain/PermisoArma'
 import { EntidadAuditable } from 'shared/entidad/domain/entidadAuditable'
 
 export class ActivoFijo extends EntidadAuditable {
     codigo_inventario: string | null
     etiqueta_personalizada: string | null
-    detalle_producto_id: string | null
+    // detalle_producto_id: string | null
     etiqueta: string | null
     descripcion: string | null
     tipo: string | null
@@ -19,8 +18,8 @@ export class ActivoFijo extends EntidadAuditable {
     total_egresos: number | null
     fotografia: string | null
     fotografia_detallada: string | null
-    permiso_arma: PermisoArma
     detalle_producto: DetalleProducto
+    cliente: string | number | null
 
     fecha_caducidad: string | null
     ingresos: number | null
@@ -42,7 +41,7 @@ export class ActivoFijo extends EntidadAuditable {
         super()
         this.codigo_inventario = null
         this.etiqueta_personalizada = null
-        this.detalle_producto_id = null
+        // this.detalle_producto_id = null
         this.etiqueta = null
         this.descripcion = null
         this.tipo = null
@@ -56,8 +55,8 @@ export class ActivoFijo extends EntidadAuditable {
         this.total_egresos = null
         this.fotografia = null
         this.fotografia_detallada = null
-        this.permiso_arma = new PermisoArma()
         this.detalle_producto = new DetalleProducto()
+        this.cliente = null
 
         this.fecha_caducidad = null
         this.ingresos = null

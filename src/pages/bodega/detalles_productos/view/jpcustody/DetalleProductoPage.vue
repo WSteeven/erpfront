@@ -588,7 +588,7 @@
             </q-input>
           </div>
           <!-- Punta B -->
-          <div v-if="detalle.es_fibra" class="col-12 col-md-4">
+          <div v-if="detalle.es_fibra" class="col-12 col-md-4 q-mb-md">
             <label class="q-mb-sm block">Punta Final (B)</label>
             <q-input
               type="number"
@@ -611,7 +611,7 @@
             </q-input>
           </div>
           <!-- Punta al corte -->
-          <div v-if="detalle.es_fibra" class="col-12 col-md-4">
+          <div v-if="detalle.es_fibra" class="col-12 col-md-4 q-mb-md">
             <label class="q-mb-sm block">Punta al corte</label>
             <q-input
               type="number"
@@ -625,6 +625,78 @@
               dense
             >
             </q-input>
+          </div>
+
+          <div class="col-12 col-md-4 q-mb-md">
+            <br />
+            <q-checkbox
+              v-model="detalle.tiene_fecha_caducidad"
+              label="¿Tiene fecha de caducidad?"
+              outlined
+              dense
+              :disable="disabled"
+            ></q-checkbox>
+          </div>
+
+          <div v-if="detalle.tiene_fecha_caducidad" class="col-12 col-md-4">
+            <label class="q-mb-sm block">Fecha de caducidad</label>
+            <q-input
+              v-model="detalle.fecha_caducidad"
+              placeholder="YYYY-MM-DD"
+              outlined
+              :disable="disabled"
+              type="datetime"
+              dense
+            >
+              <template v-slot:append>
+                <q-icon name="event" class="cursor-pointer">
+                  <q-popup-proxy
+                    cover
+                    transition-show="scale"
+                    transition-hide="scale"
+                  >
+                    <q-date
+                      v-model="detalle.fecha_caducidad"
+                      :mask="maskFecha"
+                      today-btn
+                    >
+                      <div class="row items-center justify-end">
+                        <q-btn
+                          v-close-popup
+                          label="Cerrar"
+                          color="primary"
+                          flat
+                        />
+                      </div>
+                    </q-date>
+                  </q-popup-proxy>
+                </q-icon>
+              </template>
+            </q-input>
+          </div>
+
+          <div class="col-12 col-md-4">
+            <label class="q-mb-sm block">Fotografía del artículo</label>
+            <selector-imagen
+              file_extensiones=".jpg, image/*"
+              :imagen="detalle.fotografia"
+              :disable="disabled"
+              :alto="'200px'"
+              @update:model-value="(data) => (detalle.fotografia = data)"
+            ></selector-imagen>
+          </div>
+
+          <div class="col-12 col-md-4">
+            <label class="q-mb-sm block">Fotografía detallada</label>
+            <selector-imagen
+              file_extensiones=".jpg, image/*"
+              :imagen="detalle.fotografia_detallada"
+              :disable="disabled"
+              :alto="'200px'"
+              @update:model-value="
+                (data) => (detalle.fotografia_detallada = data)
+              "
+            ></selector-imagen>
           </div>
 
           <!-- Varios numeros de serie -->

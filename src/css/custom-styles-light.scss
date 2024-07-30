@@ -71,8 +71,8 @@
     box-shadow: rgba(0, 0, 0, 0.12) 0px 5px 15px;
     border: 1px solid #fff;
     border-bottom: none !important;
-    color: #000; // $primary;
-    text-shadow: rgba(0,0,0, .5) 2px 2px 4px;
+    color: $grey-9; //primary;
+    // text-shadow: rgba($primary, .5) 2px 2px 4px;
   }
 
   .tab-inactive {
