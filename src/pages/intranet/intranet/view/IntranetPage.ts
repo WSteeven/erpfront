@@ -71,7 +71,6 @@ export default defineComponent({
     const filtrosTareas = ['Recientes', 'sdsd'];
     const filtroTarea = ref('Recientes');
     const subtareasPorAsignar = ref([]);
-    const tipoSolicitud = ref('');
     const tiposSolicitudes = ref([
       { label: 'Permisos', value: 'permiso' },
       { label: 'Licencias', value: 'licencias' },
