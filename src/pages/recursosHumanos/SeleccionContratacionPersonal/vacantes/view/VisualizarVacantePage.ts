@@ -56,11 +56,11 @@ export default defineComponent({
           }, tipo:'radio',
           items: [
             {
-              label: 'Empleado',
+              label: 'Soy empleado',
               value: 1,
             },
             {
-              label: 'Externo',
+              label: 'Soy nuevo o deseo registrarme',
               value: 2,
             },
           ]

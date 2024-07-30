@@ -235,6 +235,24 @@
           </div>
 
 
+          <!-- Dirección  -->
+          <div class="col-md-4 col-sm-12 col-xs-12">
+            <label class="q-mb-sm block">Dirección </label>
+            <q-input
+              v-model="postulacion.direccion"
+              placeholder="Obligatorio"
+              :disable="disabled"
+              outlined
+              dense
+              autogrow
+            >
+            </q-input>
+          </div>
+
+
+
+
+
 
           <!-- {{postulacion}} -->
         </div>
@@ -250,7 +268,7 @@
       >
         <div class="row q-pa-md">
           <div class="col col-md-4">
-            <label class="q-mb-sm block">Nombres </label>
+            <label class="q-mb-sm block">Comentanos tu experiencia en el rol al que estas postulando </label>
             <q-input
               v-model="postulacion.nombres"
               placeholder="Opcional"
