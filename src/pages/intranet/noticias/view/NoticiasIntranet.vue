@@ -3,7 +3,6 @@
     :mixin="mixin"
     :configuracionColumnas="configuracionColumnas"
     :tabOptions="tabOptionsNoticias"
-    :permitirEditar="false"
     :permitirEliminar="false"
     :mostrarButtonSubmits="true"
     :filtrar="filtrarNoticias"

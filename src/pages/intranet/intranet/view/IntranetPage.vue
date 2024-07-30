@@ -1,68 +1,93 @@
 <template>
   <q-page padding>
-    <!--Fila 01-->
     <div class="row q-col-gutter-sm q-mt-md q-mx-md q-mb-md">
+      <!-- SECCION DERECHA -->
       <div class="col-12 col-md-9 q-px-md">
-        <!--Noticias-->
-        <q-carousel
-          class="carousel-noticias"
-          style="border-radius: 15px; overflow: hidden"
-          animated
-          v-model="carousel_noticias"
-          navigation
-          navigation-position="right"
-          height="400px"
-          autoplay
-          autoplay-interval="3000"
-          infinite
-        >
-          <template v-slot:navigation-icon="{ active, btnProps, onClick }">
-            <q-btn
-              v-if="active"
-              size="lg"
-              icon="visibility"
-              color="primary"
-              flat
-              round
-              dense
-              @click="onClick"
-            />
-            <q-btn
-              v-else
-              size="sm"
-              :icon="btnProps.icon"
-              color="warning"
-              flat
-              round
-              dense
-              @click="onClick"
-            />
-          </template>
 
-          <q-carousel-slide
-            v-for="(news, index) in newsList"
-            :key="index"
-            :name="index"
-            class="carousel-slide-noticias row q-py-md"
+        <!-- Noticias -->
+        <div>
+          <q-carousel
+            v-if="noticias.length > 0"
+            class="carousel-noticias"
+            style="border-radius: 15px; overflow: hidden"
+            animated
+            v-model="carousel_noticias"
+            navigation
+            navigation-position="right"
+            height="400px"
+            autoplay
+            autoplay-interval="3000"
+            infinite
           >
-            <q-img
-              :src="news.image"
-              :alt="news.title"
-              class="col-12 col-md-5 rounded-borders noticias-image"
-            />
-            <div class="col-12 col-md-5 q-pl-md">
-              <h5 class="noticias-title q-mb-sm">{{ news.title }}</h5>
-              <p class="noticias-description q-mb-md">{{ news.description }}</p>
+            <template v-slot:navigation-icon="{ active, btnProps, onClick }">
               <q-btn
-                class="noticias-read-more bottom-right q-mb-md"
+                v-if="active"
+                size="lg"
+                icon="visibility"
                 color="primary"
-                @click="readMore(news.link)"
-              >
-                Ver todas las noticias
-              </q-btn>
-            </div>
-          </q-carousel-slide>
-        </q-carousel>
+                flat
+                round
+                dense
+                @click="onClick"
+              />
+              <q-btn
+                v-else
+                size="sm"
+                :icon="btnProps.icon"
+                color="warning"
+                flat
+                round
+                dense
+                @click="onClick"
+              />
+            </template>
+
+            <q-carousel-slide
+              v-for="(news, index) in noticias"
+              :key="index"
+              :name="index"
+              class="carousel-slide-noticias row q-py-md"
+            >
+              <q-img
+                :src="news.imagen_noticia"
+                :alt="news.titulo"
+                class="col-12 col-md-5 fixed-size-image noticias-image"
+                style="border-radius: 15px"
+              />
+              <div class="col-12 col-md-7 q-pl-md">
+                <h5 class="noticias-title q-mb-sm">{{ news.titulo }}</h5>
+                <p class="noticias-description q-mb-md">
+                  {{ news.descripcion }}
+                </p>
+                <p class="noticias-description q-mb-md">{{ news.autor }}</p>
+                <q-btn
+                  class="noticias-read-more bottom-right q-mb-md"
+                  color="primary"
+                  @click="verNoticiaCompleta(news.id)"
+                >
+                  Ver Noticia
+                </q-btn>
+              </div>
+            </q-carousel-slide>
+          </q-carousel>
+          <q-card v-else class="q-pa-md q-mt-md no-news-card" flat bordered>
+            <q-card-section class="text-center q-pa-none">
+              <q-img
+                src="https://cdn.domestika.org/c_fill,dpr_auto,f_auto,q_auto,w_820/v1561146967/content-items/003/072/424/Untitled-2-original.gif?1561146967"
+                class="no-news-gif"
+                style="border-radius: 15px"
+                contain
+              />
+              <div class="text-h5 q-mt-md">¡Bienvenid@ a la Intranet!</div>
+              <div class="text-subtitle1 q-mt-sm">
+                No hay noticias disponibles en este momento.
+              </div>
+              <div class="text-body2 q-mt-xs">
+                Por favor, vuelve a revisar más tarde.
+              </div>
+            </q-card-section>
+          </q-card>
+        </div>
 
         <br />
 
@@ -209,49 +234,12 @@
                 </div>
               </q-expansion-item>
             </q-card>
-
-            <q-dialog v-model="employeeDialog">
-              <q-card>
-                <q-card-section>
-                  <div class="text-h6">Detalles del Empleado</div>
-                </q-card-section>
-                <q-card-section>
-                  <q-avatar size="lg" class="q-mr-md">
-                    <img
-                      :src="
-                        selectedEmployee.foto_url ||
-                        getAvatarUrl(selectedEmployee)
-                      "
-                    />
-                  </q-avatar>
-                  <div class="q-my-md">
-                    <p class="text-h6 q-mb-none">
-                      {{
-                        selectedEmployee.nombres +
-                        ' ' +
-                        selectedEmployee.apellidos
-                      }}
-                    </p>
-                    <q-badge rounded color="blue" class="q-mt-sm">
-                      <small>{{ selectedEmployee.cargo }}</small>
-                    </q-badge>
-                    <q-badge rounded color="green" class="q-mt-sm q-ml-sm">
-                      <small>{{ selectedEmployee.telefono }}</small>
-                    </q-badge>
-                  </div>
-                </q-card-section>
-                <q-card-actions align="right">
-                  <q-btn flat label="Cerrar" v-close-popup />
-                </q-card-actions>
-              </q-card>
-            </q-dialog>
           </q-card>
         </div>
       </div>
 
       <!--SECCION IZQUIERDA-->
       <div class="col-12 col-md-3 q-px-md q-mt-md">
-
         <!-- Card Empleado -->
         <q-card
           class="empleado-card"
@@ -432,10 +420,9 @@
                   background-color: midnightblue;
                   padding: 10px 0;
                   border-radius: 15px 15px 0px 0px;
-
                 "
               >
-              <i class="bi bi-cake2" style="margin-right: 10px;"></i>
+                <i class="bi bi-cake2" style="margin-right: 10px"></i>
                 CUMPLEAÑEROS
               </div>
               <q-separator />
@@ -514,19 +501,12 @@
             </q-card-section>
           </q-expansion-item>
         </q-card>
-
       </div>
     </div>
 
     <!-- Botón flotante -->
-    <q-btn
-      icon="search"
-      color="primary"
-      round
-      fab
-      class="fixed-bottom-left"
-      @click="openSearchDialog"
-    />
+    <q-btn icon="search" color="primary" round fab class="fixed-bottom-left" />
+
     <!-- Componente de modales -->
     <modales-entidad
       :comportamiento="modales"
@@ -666,7 +646,8 @@ h5 {
 }
 
 .noticias-image {
-  width: 100%;
+  max-width: 125%;
+  max-height: 100%;
 }
 
 @media (max-width: 768px) {
@@ -746,6 +727,44 @@ h5 {
 
 .q-btn {
   font-weight: bold;
+}
+
+.fixed-size-image {
+  width: 100%;
+  height: 100px; /* Ajusta esta altura según tus necesidades */
+  object-fit: cover;
+}
+
+.no-news-card {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 400px; /* La misma altura que el carrusel */
+  border-radius: 15px;
+  background-color: #f5f5f5;
+  color: #555;
+}
+
+.no-news-gif {
+  width: 100%;
+  max-height: 200px;
+  object-fit: cover;
+  border-radius: 15px;
+}
+
+.text-h5 {
+  font-size: 1.25rem;
+  font-weight: 500;
+}
+
+.text-subtitle1 {
+  font-size: 1rem;
+  font-weight: 400;
+}
+
+.text-body2 {
+  font-size: 0.875rem;
+  font-weight: 400;
 }
 </style>
 
