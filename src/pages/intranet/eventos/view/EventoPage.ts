@@ -2,6 +2,15 @@ import { Qalendar } from 'qalendar';
 import { defineComponent, reactive, ref, onMounted, watch } from 'vue';
 import axios from 'axios';
 import Modal from '../components/calendarioEventos/Modal.vue';
+import { Evento } from '../domain/Evento';
+import { EventoController } from '../infraestructure/EventoController';
+import { ContenedorSimpleMixin } from 'shared/contenedor/modules/simple/application/ContenedorSimpleMixin';
+import { useAuthenticationStore } from 'stores/authentication';
+import EssentialCalendar from 'components/qalendar/EssentialCalendar.vue';
+import ButtonSubmits from 'components/buttonSubmits/buttonSubmits.vue';
+import { acciones } from '../../../../config/utils';
+import { useCargandoStore } from 'stores/cargando';
+import { TipoEventoController } from 'pages/intranet/tiposEventos/infraestructure/TipoEventoController';
 
 interface Event {
   title: string;
@@ -18,18 +27,20 @@ interface Event {
 }
 
 export default defineComponent({
-  components: {
-    Qalendar,
-    Modal,
-  },
+  components: { EssentialCalendar, ButtonSubmits },
   setup() {
-    const loggedInUser = 'Erick Antonio Cañarte Vega'; // Reemplaza con la lógica para obtener el usuario logueado
+    const mixin = new ContenedorSimpleMixin(Evento, new EventoController())
+    const { entidad: evento, disabled, accion, listado, listadosAuxiliares } = mixin.useReferencias()
+    const { setValidador, cargarVista, obtenerListados, listar, editar, guardar, eliminar, reestablecer } = mixin.useComportamiento()
+    const { onReestablecer, onConsultado } = mixin.useHooks()
+    const store = useAuthenticationStore()
 
+    const eventos = ref([])
     const events = reactive<Event[]>([]);
 
     const newEvent = reactive<Event>({
       title: '',
-      with: loggedInUser,
+      with: store.nombreUsuario,
       time: { start: '', end: '' },
       colorScheme: '',
       isEditable: true,
@@ -37,6 +48,14 @@ export default defineComponent({
       id: '',
       description: '',
     });
+
+    cargarVista(async ()=>{
+      await obtenerListados({
+        tipos: new TipoEventoController()
+      })
+
+      
+    })
 
     const showStartDatePicker = ref(false);
     const showEndDatePicker = ref(false);
@@ -113,7 +132,7 @@ export default defineComponent({
 
     function resetNewEvent() {
       newEvent.title = '';
-      newEvent.with = loggedInUser;
+      newEvent.with = store.nombreUsuario;
       newEvent.time.start = '';
       newEvent.time.end = '';
       newEvent.colorScheme = '';
@@ -181,13 +200,13 @@ export default defineComponent({
       if (!validateEvent(newEvent)) {
         return;
       }
-          // Generar un ID único para el nuevo evento
+      // Generar un ID único para el nuevo evento
       newEvent.id = new Date().getTime().toString();
-    
+
       // Convertir las fechas al formato deseado
       const formattedStartTime = formatDateString(newEvent.time.start);
       const formattedEndTime = formatDateString(newEvent.time.end);
-    
+
       // Crear un nuevo evento con las fechas formateadas
       const eventToAdd = {
         ...newEvent,
@@ -201,7 +220,7 @@ export default defineComponent({
       saveEvents();
       resetNewEvent();
     }
-    
+
     function editEvent(eventToEdit: Event) {
       const index = events.findIndex((e) => e.id === eventToEdit.id);
       if (index !== -1) {
@@ -221,6 +240,7 @@ export default defineComponent({
     onMounted(loadEvents);
 
     return {
+      evento, accion, listado,
       config,
       events,
       newEvent,
@@ -230,6 +250,7 @@ export default defineComponent({
       startTime,
       endDate,
       endTime,
+      editar, guardar, eliminar, reestablecer,
       updateStartDate,
       updateStartTime,
       updateEndDate,
@@ -241,11 +262,12 @@ export default defineComponent({
       deleteEvent,
       updateStartDateTime,
       updateEndDateTime,
-
+      acciones,
+      storeCargando: useCargandoStore(),
       formattedStartDate,
       formattedEndDate,
 
-      
+
     };
   },
 })

@@ -10,7 +10,7 @@
               </q-card-section>
               <q-card-section>
                 <q-input
-                  v-model="newEvent.title"
+                  v-model="evento.titulo"
                   label="Título del Evento"
                   outlined
                   required
@@ -18,7 +18,7 @@
                   class="q-mb-xs q-pa-xs"
                 />
                 <q-input
-                  v-model="newEvent.with"
+                  v-model="evento.anfitrion"
                   label="Anfitrión"
                   outlined
                   required
@@ -26,7 +26,7 @@
                   class="q-mb-xs q-pa-xs"
                 />
                 <q-input
-                  v-model="newEvent.time.start"
+                  v-model="evento.fecha_hora_inicio"
                   label="Fecha de Inicio"
                   type="datetime-local"
                   outlined
@@ -35,7 +35,7 @@
                   class="q-mb-xs q-pa-xs"
                 />
                 <q-input
-                  v-model="newEvent.time.end"
+                  v-model="evento.fecha_hora_fin"
                   label="Fecha de Fin"
                   type="datetime-local"
                   outlined
@@ -44,7 +44,7 @@
                   class="q-mb-xs q-pa-xs"
                 />
                 <q-select
-                  v-model="newEvent.colorScheme"
+                  v-model="evento.colorScheme"
                   :options="['Capacitaciones', 'Reunión', 'General']"
                   label="Tipo de Evento"
                   outlined
@@ -53,32 +53,39 @@
                   class="q-mb-xs q-pa-xs"
                 />
                 <q-checkbox
-                  v-model="newEvent.isEditable"
+                  v-model="evento.es_editable"
                   label="Es editable"
                   dense
                   class="q-mb-xs q-pa-xs"
                 />
                 <q-checkbox
-                  v-model="newEvent.isCustom"
+                  v-model="evento.es_personalizado"
                   label="Es personalizado"
                   dense
                   class="q-mb-xs q-pa-xs"
                 />
                 <q-input
-                  v-model="newEvent.description"
+                  v-model="evento.descripcion"
                   label="Descripción"
                   type="textarea"
                   outlined
                   dense
                   class="q-mb-xs q-pa-xs"
                 />
-                <q-btn
-                  type="submit"
-                  label="Agregar Evento"
-                  color="primary"
-                  dense
-                  class="q-mt-md q-pa-xs"
-                />
+                <div :class="{ 'q-pa-md': $q.screen.xs }">
+                  <div class="row justify-evenly q-col-gutter-x-xs">
+                    <button-submits
+                      :accion="accion"
+                      :permitirGuardar="true"
+                      :disabled="storeCargando.cargando"
+                      labelGuardar="Guardar"
+                      @cancelar="reestablecer"
+                      @editar="editar(evento, true)"
+                      @eliminar="eliminar(evento)"
+                      @guardar="guardar(evento)"
+                    />
+                  </div>
+                </div>
               </q-card-section>
             </q-card>
           </q-form>
@@ -86,13 +93,13 @@
       </q-card>
       <q-card class="calendar-container">
         <q-card-section>
-          <Qalendar
-            :selected-date="new Date()"
-            :events="events"
-            :config="config"
-            @event-was-clicked="console.log('Evento clicado');"
-            @event-was-dragged="console.log('Evento arrastrado:');"
-            @event-was-resized="console.log('Evento redimensionado:');"
+          <essential-calendar
+            :eventos="listado"
+            @clicked-event="console.log('Evento clicado')"
+            @dragged-event="console.log('Evento arrastrado:')"
+            @resized-event="console.log('Evento redimensionado:')"
+            @edit-event="console.log('Editar Evento')"
+            @delete-event="console.log('Eliminar evento')"
           />
         </q-card-section>
       </q-card>

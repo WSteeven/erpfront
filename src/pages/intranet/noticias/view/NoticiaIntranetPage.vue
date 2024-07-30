@@ -3,7 +3,6 @@
     :mixin="mixin"
     :configuracionColumnas="configuracionColumnas"
     :tabOptions="tabOptionsNoticias"
-    :permitirEditar="false"
     :permitirEliminar="false"
     :mostrarButtonSubmits="true"
     :filtrar="filtrarNoticias"
@@ -163,4 +162,4 @@
   </tab-layout-filter-tabs2>
 </template>
 
-<script src="./NoticiasIntranet.ts"></script>
+<script src="./NoticiaIntranetPage.ts"></script>

@@ -28,10 +28,9 @@ export default defineComponent({
   components: { TabLayoutFilterTabs2, EssentialEditor, SelectorImagen },
   setup() {
     const mixin = new ContenedorSimpleMixin(Noticia, new NoticiaController())
-
     const { entidad: noticia, disabled, accion, listadosAuxiliares } = mixin.useReferencias()
     const { setValidador, cargarVista, obtenerListados, listar } = mixin.useComportamiento()
-    const { onReestablecer } = mixin.useHooks()
+    const { onReestablecer, onConsultado } = mixin.useHooks()
     const store = useAuthenticationStore()
 
     const categorias = ref([])
@@ -53,6 +52,9 @@ export default defineComponent({
      ****************************************************************************************/
     onReestablecer(() => {
       noticia.autor = store.user.nombres + ' ' + store.user.apellidos
+    })
+    onConsultado(()=>{
+      etiquetas.value = listadosAuxiliares.etiquetas
     })
 
 

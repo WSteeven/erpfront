@@ -29,7 +29,7 @@ const routes: RouteRecordRaw[] = [
       {
         path: '/blog',
         name: 'intra_noticias',
-        component: () => import('pages/intranet/noticias/view/NoticiasIntranet.vue'),
+        component: () => import('pages/intranet/noticias/view/NoticiaIntranetPage.vue'),
         meta: { requiresAuth: true },
       },
       {

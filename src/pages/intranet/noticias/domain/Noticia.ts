@@ -8,7 +8,7 @@ export class Noticia extends EntidadAuditable {
   fecha_vencimiento: string | null
   autor: string | null
   categoria: string | null
-  etiquetas: string[] | null
+  etiquetas: []
   imagen_noticia: string | null
 
   constructor() {
@@ -20,7 +20,7 @@ export class Noticia extends EntidadAuditable {
     this.fecha_vencimiento = null
     this.autor = null
     this.categoria = null
-    this.etiquetas = null
+    this.etiquetas = []
     this.imagen_noticia = null
   }
 }
