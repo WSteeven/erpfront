@@ -9,5 +9,6 @@ export class FiltroMiBodegaEmpleado extends EntidadAuditable {
     super()
     this.empleado_id = useAuthenticationStore().user.id
     this.cliente_id = undefined
+    this.isComponentFilesModified = null
   }
 }
