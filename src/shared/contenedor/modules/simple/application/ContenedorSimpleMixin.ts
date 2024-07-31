@@ -110,7 +110,7 @@ export class ContenedorSimpleMixin<T extends EntidadAuditable> extends Contenedo
           }
         )
         this.entidad.hydrate(result)
-        this.entidad_copia.hydrate(this.entidad)
+        this.entidad_copia.hydrate(JSON.parse(JSON.stringify(this.entidad)))
         this.refs.tabs.value = 'formulario'
         this.hooks.onConsultado(result)
       })
