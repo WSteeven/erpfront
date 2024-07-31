@@ -31,11 +31,11 @@ import { obtenerFechaActual } from '../../../../shared/utils'
 import { MenuOption } from 'shared/menu/MenuOption'
 import { NoticiaController } from 'pages/intranet/noticias/infraestructure/NoticiaController'
 
-interface News {
-  image: string
-  title: string
-  description: string
-  link: string
+interface Noticia {
+  id: number;
+  titulo: string;
+  imagen_noticia: string;
+  descripcion: string;
 }
 
 export default defineComponent({
@@ -59,6 +59,12 @@ export default defineComponent({
     const carousel_noticias = ref(0)
     const activeTab = ref(0)
     const selectedDate = ref(0)
+    const modalNoticia = ref(false)
+
+    const noticias = ref<Noticia[]>([]);
+
+    const noticiaCompleta = ref<Noticia | null>(null);
+
 
     const carousel_cumpleanos_mes = ref(1)
     const search = ref()
@@ -69,7 +75,7 @@ export default defineComponent({
     const showBanner = ref(true)
     const showDepartamentos = ref(true)
 
-    const noticias = ref({})
+
 
     const menuStore = useMenuStore()
     const cargando = new StatusEssentialLoading()
@@ -132,6 +138,24 @@ export default defineComponent({
       }
     }
 
+    function getShortDescription(description: string): string {
+      const maxLength = 275 // Ajusta este valor según la longitud deseada
+      if (description.length > maxLength) {
+        return description.substring(0, maxLength) + '...'
+      }
+      return description
+    }
+
+    function verNoticiaCompleta(id: number, noticias: Noticia[]): Noticia | null {
+      const noticia = noticias.find(noticia => noticia.id === id);
+      if (noticia) {
+        return noticia;
+      } else {
+        console.error(`Noticia con ID: ${id} no encontrada.`);
+        return null;
+      }
+    }
+
     async function obtenerNoticias() {
       cargando.activar()
       const response = await new NoticiaController().listar()
@@ -140,57 +164,23 @@ export default defineComponent({
       cargando.desactivar()
     }
 
-    const newsList = ref<News[]>([
-      {
-        image: 'https://www.jeanpazmino.com/images/services/service5.jpg',
-        title: 'Nuevas capacitaciones en instalación de fibra óptica',
-        description:
-          'Descubre cómo mejorar tus habilidades en la instalación de fibra óptica con nuestros nuevos cursos especializados.',
-        link: '/NoticiaView'
-      },
-      {
-        image: 'https://www.jeanpazmino.com/images/services/service2.jpg',
-        title: 'Técnicas avanzadas para la instalación de fibra óptica',
-        description:
-          'Explora las últimas técnicas y herramientas en el campo de la instalación de fibra óptica para maximizar la eficiencia y calidad.',
-        link: '/NoticiaView'
-      },
-      {
-        image:
-          'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSdnA9EeXIUzXL44EETgKrCwT8sGQNV4oBzyg&s',
-        title: 'Nuevos recursos para la capacitación en fibra óptica',
-        description:
-          'Conoce los recursos más recientes disponibles para tu capacitación en instalación de fibra óptica, diseñados para mejorar tu aprendizaje.',
-        link: '/NoticiaView'
-      },
-      {
-        image:
-          'https://media.licdn.com/dms/image/C4D22AQHURssxoX0FAQ/feedshare-shrink_800/0/1643980715005?e=2147483647&v=beta&t=HLwKY4gOCsBPIBzusmztCrpCckmg858lLRvzotJFOK8',
-        title: 'Programa de certificación en instalación de fibra óptica',
-        description:
-          'Participa en nuestro programa de certificación líder en la industria para convertirte en un experto en instalación de fibra óptica.',
-        link: '/NoticiaView'
-      }
-    ])
 
-    function getNewsById(id: number): News | undefined {
-      return newsList.value[id]
-    }
+
 
     const documentosIntranet = ref([
       {
         id: 1,
         name: 'Instructivos',
-        icon: 'fab fa-readme',
+        icon: 'fa-solid fa-book-journal-whills',
         link: 'https://drive.google.com/drive/folders/1Zv3eTjramxByFRht-L5Gz_nrulgFE32V?usp=sharing_eip_m&ts=64386770',
-        color: '#ffffff'
+        color: '#FF5733'
       },
       {
         id: 2,
         name: 'Reglamentos y Normativas',
-        icon: 'fas fa-book',
+        icon: 'fa-solid fa-book-bookmark',
         link: 'https://drive.google.com/drive/folders/1Zv3eTjramxByFRht-L5Gz_nrulgFE32V?usp=sharing_eip_m&ts=64386770',
-        color: '#ffffff'
+        color: '#581845'
       }
     ])
 
@@ -200,11 +190,7 @@ export default defineComponent({
 
     const currentPage = ref(1)
     const perPage = ref(2)
-    const displayedCards = computed(() => {
-      const start = (currentPage.value - 1) * perPage.value
-      const end = start + perPage.value
-      return newsList.value.slice(start, end)
-    })
+
 
     function obtenerModulosPermitidos() {
       // Filtrar todos los enlaces permitidos
@@ -223,8 +209,6 @@ export default defineComponent({
         }
         return modulo
       })
-
-      // console.log(modulosPermitidos.value);
     }
 
     obtenerModulosPermitidos()
@@ -364,6 +348,16 @@ export default defineComponent({
 
     obtenerNoticias()
 
+
+    function verNoticiaCompletaHandler(id: number): void {
+      const noticia = verNoticiaCompleta(id, noticias.value);
+      if (noticia) {
+        noticiaCompleta.value = noticia;
+        modalNoticia.value = true;
+      }
+    }
+
+
     return {
       logoClaro: computed(
         () => configuracionGeneralStore.configuracion?.logo_claro
@@ -391,7 +385,6 @@ export default defineComponent({
       lorem,
       currentPage,
       perPage,
-      displayedCards,
       departamentoSeleccionado,
       departamentos,
       empleados,
@@ -405,13 +398,13 @@ export default defineComponent({
       limpiarFormulario,
       getIcon,
       goToModule,
-      getNewsById,
+      getShortDescription,
+      verNoticiaCompleta: verNoticiaCompletaHandler,
       width: computed(() => ($q.screen.xs ? '100%' : '450px')),
       selfCenterMiddle,
       showBanner,
       search,
       maskFecha,
-      newsList,
       readMore,
       documentosIntranet,
       empleadosCumpleaneros,
@@ -419,7 +412,10 @@ export default defineComponent({
       eventDates,
       selectedDate,
 
-      noticias
+      noticias,
+      noticiaCompleta,
+      modalNoticia
+
     }
   }
 })
