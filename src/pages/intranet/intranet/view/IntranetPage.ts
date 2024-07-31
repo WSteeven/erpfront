@@ -58,7 +58,7 @@ export default defineComponent({
     const usuarios = 20
     const carousel_noticias = ref(0)
     const activeTab = ref(0)
-    const selectedDate= ref(0)
+    const selectedDate = ref(0)
 
     const carousel_cumpleanos_mes = ref(1)
     const search = ref()
@@ -207,9 +207,24 @@ export default defineComponent({
     })
 
     function obtenerModulosPermitidos() {
+      // Filtrar todos los enlaces permitidos
       modulosPermitidos.value = menuStore.links.filter(
         (link: MenuOption) => link.can
       )
+
+      // Mapear cada enlace para ajustar los enlaces de submenús
+      modulosPermitidos.value = modulosPermitidos.value.map(modulo => {
+        if (modulo.children && Array.isArray(modulo.children)) {
+          // Encontrar el primer enlace permitido en el submenú
+          const firstPermittedChild = modulo.children.find(child => child.can)
+          if (firstPermittedChild) {
+            modulo.link = firstPermittedChild.link
+          }
+        }
+        return modulo
+      })
+
+      // console.log(modulosPermitidos.value);
     }
 
     obtenerModulosPermitidos()
@@ -291,8 +306,8 @@ export default defineComponent({
     }
 
     onMounted(() => {
-      obtenerNoticias();
-      obtenerEmpleadosCumpleaneros();
+      obtenerNoticias()
+      obtenerEmpleadosCumpleaneros()
     })
 
     useNotificaciones()
@@ -404,7 +419,7 @@ export default defineComponent({
       eventDates,
       selectedDate,
 
-      noticias,
+      noticias
     }
   }
 })
