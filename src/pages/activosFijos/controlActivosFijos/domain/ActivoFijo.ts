@@ -2,7 +2,7 @@ import { DetalleProducto } from 'pages/bodega/detalles_productos/domain/DetalleP
 import { EntidadAuditable } from 'shared/entidad/domain/entidadAuditable'
 
 export class ActivoFijo extends EntidadAuditable {
-    codigo_inventario: string | null
+    codigo: string | null
     etiqueta_personalizada: string | null
     // detalle_producto_id: string | null
     etiqueta: string | null
@@ -13,7 +13,6 @@ export class ActivoFijo extends EntidadAuditable {
     serie: string | null
     calibre: string | null
     unidad_medida: string | null
-    fecha_caducidad_producto: string | null
     total_ingresos: number | null
     total_egresos: number | null
     fotografia: string | null
@@ -39,7 +38,7 @@ export class ActivoFijo extends EntidadAuditable {
 
     constructor() {
         super()
-        this.codigo_inventario = null
+        this.codigo = null
         this.etiqueta_personalizada = null
         // this.detalle_producto_id = null
         this.etiqueta = null
@@ -50,7 +49,6 @@ export class ActivoFijo extends EntidadAuditable {
         this.serie = null
         this.calibre = null
         this.unidad_medida = null
-        this.fecha_caducidad_producto = null
         this.total_ingresos = null
         this.total_egresos = null
         this.fotografia = null

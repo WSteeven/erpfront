@@ -5,8 +5,8 @@
         <b>Información general</b>
         <div class="row q-col-gutter-sm q-py-md">
           <div class="col-12 col-md-3">
-            <label class="q-mb-sm block">Código de inventario</label>
-            <q-input v-model="activo.codigo_inventario" disable outlined dense>
+            <label class="q-mb-sm block">Código</label>
+            <q-input v-model="activo.codigo" disable outlined dense>
             </q-input>
           </div>
 
@@ -50,7 +50,7 @@
           <div class="col-12 col-md-3">
             <label class="q-mb-sm block">Fecha de caducidad del producto</label>
             <q-input
-              v-model="activo.detalle_producto.fecha_caducidad_producto"
+              v-model="activo.detalle_producto.fecha_caducidad"
               disable
               outlined
               dense

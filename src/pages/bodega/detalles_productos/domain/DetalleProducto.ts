@@ -58,12 +58,14 @@ export class DetalleProducto extends EntidadAuditable {
     tiene_precio_compra: boolean
     tiene_adicionales: boolean
     tiene_fecha_caducidad: boolean
+    fecha_caducidad: string | null
     calco: boolean
 
     varios_items: boolean
     seriales: any[]
 
     unidad_medida: string | null
+    fecha_caducidad: string | null
     permiso_arma: PermisoArma
 
     constructor() {
@@ -118,11 +120,13 @@ export class DetalleProducto extends EntidadAuditable {
         this.tiene_precio_compra = false
         this.tiene_adicionales = false
         this.tiene_fecha_caducidad = false
+        this.fecha_caducidad = null
         this.calco = false
         this.varios_items = false
         this.seriales = []
 
         this.unidad_medida = null
+        this.fecha_caducidad = null
         this.permiso_arma = new PermisoArma()
     }
 }

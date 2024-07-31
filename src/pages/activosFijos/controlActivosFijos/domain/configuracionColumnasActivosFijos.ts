@@ -3,9 +3,9 @@ import { ActivoFijo } from './ActivoFijo'
 
 export const configuracionColumnasActivosFijos: ColumnConfig<ActivoFijo>[] = [
     {
-        name: 'codigo_inventario',
-        field: 'codigo_inventario',
-        label: 'Cód. Inventario',
+        name: 'codigo',
+        field: 'codigo',
+        label: 'Código',
         align: 'left',
         sortable: true
     },
@@ -50,12 +50,5 @@ export const configuracionColumnasActivosFijos: ColumnConfig<ActivoFijo>[] = [
         label: 'Etiqueta personalizada',
         align: 'left',
         sortable: true,
-    },
-    {
-        name: 'egresos',
-        field: 'egresos',
-        label: 'Salidas(egresos)',
-        align: 'left',
-        sortable: true
     },
 ]
