@@ -12,7 +12,7 @@ export default defineComponent({
       default: configEssentialCalendar
     },
     eventos: {
-      type: Array,
+      type: Object,
       required: true
     },
   },
@@ -23,6 +23,7 @@ export default defineComponent({
       emit('close')
     }
 
+    
     const events = props.eventos.map((evento: Evento) => {
       const event: CustomEvent = {
         id: evento.id,

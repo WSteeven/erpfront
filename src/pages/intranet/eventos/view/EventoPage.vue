@@ -3,7 +3,7 @@
     <div class="container">
       <q-card class="form-container">
         <q-card-section>
-          <q-form @submit.prevent="addEvent">
+          <q-form @submit.prevent>
             <q-card class="scrollable-card">
               <q-card-section>
                 <div class="text-h6">REGISTRAR EVENTO</div>
@@ -18,6 +18,7 @@
                   class="q-mb-xs q-pa-xs"
                 />
                 <q-input
+                  v-if="false"
                   v-model="evento.anfitrion"
                   label="Anfitrión"
                   outlined
@@ -44,13 +45,20 @@
                   class="q-mb-xs q-pa-xs"
                 />
                 <q-select
-                  v-model="evento.colorScheme"
-                  :options="['Capacitaciones', 'Reunión', 'General']"
+                  v-model="evento.tipo_evento"
+                  :options="tipos"
                   label="Tipo de Evento"
+                  transition-show="jump-up"
+                  transition-hide="jump-down"
+                  options-dense
                   outlined
                   required
                   dense
                   class="q-mb-xs q-pa-xs"
+                  :option-value="v => v.id"
+                  :option-label="v => v.nombre"
+                  emit-value
+                  map-options
                 />
                 <q-checkbox
                   v-model="evento.es_editable"
@@ -91,15 +99,16 @@
           </q-form>
         </q-card-section>
       </q-card>
-      <q-card class="calendar-container">
+      <!-- {{ listado }} -->
+      <q-card class="calendar-container" v-if="componentePadreCargado">
         <q-card-section>
           <essential-calendar
             :eventos="listado"
-            @clicked-event="console.log('Evento clicado')"
+            @clicked-event="data => eventoClicked(data)"
             @dragged-event="console.log('Evento arrastrado:')"
             @resized-event="console.log('Evento redimensionado:')"
-            @edit-event="console.log('Editar Evento')"
-            @delete-event="console.log('Eliminar evento')"
+            @edit-event="consultarEvento"
+            @delete-event="eliminarEvento"
           />
         </q-card-section>
       </q-card>

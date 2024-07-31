@@ -4,7 +4,7 @@
       :selected-date="new Date()"
       :events="events"
       :config="config"
-      @event-was-clicked="$emit('clicked-event')"
+      @event-was-clicked="$emit('clicked-event', $event)"
       @event-was-dragged="$emit('dragged-event')"
       @event-was-resized="$emit('resized-event')"
       @edit-event="$emit('edit-event')"
