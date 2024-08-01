@@ -124,6 +124,9 @@ export default defineComponent({
       descripcion: ''
     })
 
+    consultarEmpleadosDepartamento(store.user.departamento)
+    activeTab.value = store.user.departamento
+
     const modales = new ComportamientoModalesIntranet()
 
     const esquemasColores = {
@@ -158,7 +161,7 @@ export default defineComponent({
         startsOn: 'monday',
         nDays: 7,
         scrollToHour: 8,
-        
+
       },
       month: {
         showTrailingAndLeadingDates: false,
@@ -216,10 +219,7 @@ export default defineComponent({
       return description
     }
 
-    function verNoticiaCompleta(
-      id: number,
-      noticias: Noticia[]
-    ): Noticia | null {
+    function verNoticiaCompleta(id: number,noticias: Noticia[]): Noticia | null {
       const noticia = noticias.find(noticia => noticia.id === id)
       if (noticia) {
         return noticia
@@ -290,6 +290,7 @@ export default defineComponent({
     }
 
     async function consultarEmpleadosDepartamento(departamento_id: number) {
+      console.log(store.user, departamento_id)
       try {
         cargando.activar()
         const idNumerico = Number(departamento_id)
@@ -456,7 +457,7 @@ export default defineComponent({
       enviarSolicitud,
       limpiarFormulario,
       getShortDescription,
-      verNoticiaCompleta: verNoticiaCompletaHandler,
+      verNoticiaCompletaHandler,
       width: computed(() => ($q.screen.xs ? '100%' : '450px')),
       selfCenterMiddle,
       showBanner,
@@ -475,7 +476,10 @@ export default defineComponent({
       noticiaCompleta,
       modalNoticia,
       eventosFormateados,
-      configuracion
+      configuracion,
+      cerrarModal(){
+        modalNoticia.value =false
+      }
     }
   }
 })

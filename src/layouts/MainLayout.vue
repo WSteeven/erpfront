@@ -54,13 +54,13 @@
             'q-gutter-x-md': !$q.screen.xs,
           }"
         >
-          <span
+          <!-- <span
             class="row"
             :class="{
               'q-gutter-x-xs': $q.screen.xs,
               'q-gutter-x-sm': !$q.screen.xs,
             }"
-          >
+          > -->
             <!-- Boton transferir tareas -->
             <q-btn
               v-if="mostrarTransferirTareas"
@@ -283,7 +283,7 @@
                 </q-list>
               </q-menu>
             </q-btn>
-          </span>
+          <!-- </span> -->
 
           <!-- Perfil -->
           <q-btn dense round flat glossy @click.self="mostrarMenu = true">

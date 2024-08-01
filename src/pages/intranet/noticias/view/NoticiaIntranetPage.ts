@@ -23,6 +23,7 @@ import { CategoriaController } from 'pages/intranet/categorias/infraestructure/C
 import { EtiquetaController } from 'pages/intranet/etiquetas/infraestructure/EtiquetaController'
 import SelectorImagen from 'components/SelectorImagen.vue'
 import EssentialEditor from 'components/editores/EssentialEditor.vue'
+import { Etiqueta } from 'pages/intranet/etiquetas/domain/Etiqueta'
 
 export default defineComponent({
   components: { TabLayoutFilterTabs2, EssentialEditor, SelectorImagen },
@@ -38,7 +39,7 @@ export default defineComponent({
 
     cargarVista(async () => {
       await obtenerListados({
-        categorias: new CategoriaController(),
+        categorias:{controller: new CategoriaController(), params:{activo:1}},
         etiquetas: new EtiquetaController()
       })
 
@@ -72,7 +73,7 @@ export default defineComponent({
       autor: { required },
       categoria: { required },
       fecha_vencimiento: { required },
-      imagen_noticia: { required },
+      // imagen_noticia: { required },
       descripcion: { required, maxWords },
     }))
 
@@ -87,7 +88,8 @@ export default defineComponent({
     }
 
     function categoriaSeleccionada(val) {
-      etiquetas.value = listadosAuxiliares.etiquetas.filter((etiqueta) => etiqueta.categoria_id === val)
+      noticia.etiquetas = []
+      etiquetas.value = listadosAuxiliares.etiquetas.filter((etiqueta:Etiqueta) => etiqueta.categoria_id === val)
     }
 
     return {

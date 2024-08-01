@@ -1,19 +1,29 @@
 <template>
   <q-page>
-
     <div class="row items-center">
-
       <!-- Left side -->
-      <div v-if="!$q.screen.xs && !$q.screen.sm"
-        class="col-4 col-md-4 justify-center q-pa-lg items-center row window-height"
-        :class="{ 'bg-white-2': !$q.dark.isActive }">
+      <div
+        v-if="!$q.screen.xs && !$q.screen.sm"
+        class="col-12 col-md-8 justify-center q-pa-lg items-center row window-height"
+        :class="{ 'bg-grey-2': !$q.dark.isActive }"
+      >
         <div class="imagen d-flex align-items-center justify-content-center">
+          <q-avatar square size="400px">
+            <img :src="!$q.dark.isActive ? logoClaro : logoOscuro" />
+          </q-avatar>
         </div>
       </div>
 
       <!-- Right side -->
-      <div class="col-12 col-md-4 column items-center bg-body-table justify-center window-height">
-        <q-avatar v-if="$q.screen.xs" square size="120px" class="q-mx-auto block q-mb-md">
+      <div
+        class="col-12 col-md-4 column items-center bg-body-table justify-center window-height"
+      >
+        <q-avatar
+          v-if="$q.screen.xs"
+          square
+          size="120px"
+          class="q-mx-auto block q-mb-md"
+        >
           <img src="~assets/logo.png" />
         </q-avatar>
 
@@ -25,7 +35,13 @@
 
           <!-- Usuario -->
           <div class="col-12 q-mb-sm">
-            <q-input v-model="loginUser.name" label="Usuario" outlined dense @keyup.enter="login()" />
+            <q-input
+              v-model="loginUser.name"
+              label="Usuario"
+              outlined
+              dense
+              @keyup.enter="login()"
+            />
           </div>
 
           <!-- Contraseña -->
@@ -41,8 +57,11 @@
               @keyup.enter="login()"
             >
               <template v-slot:append>
-                <q-icon :name="isPwd ? 'visibility_off' : 'visibility'" class="cursor-pointer"
-                  @click="isPwd = !isPwd" />
+                <q-icon
+                  :name="isPwd ? 'visibility_off' : 'visibility'"
+                  class="cursor-pointer"
+                  @click="isPwd = !isPwd"
+                />
               </template>
             </q-input>
           </div>
@@ -54,14 +73,28 @@
 
           <div class="col-12">
             <!-- Botones -->
-            <q-btn color="primary" label="Iniciar sesión" class="full-width q-mb-sm" :disabled="!enableLoginButton"
-              no-caps unelevated @click="login()">
+            <q-btn
+              color="primary"
+              label="Iniciar sesión"
+              class="full-width q-mb-sm"
+              :disabled="!enableLoginButton"
+              no-caps
+              unelevated
+              @click="login()"
+            >
             </q-btn>
           </div>
           <div class="col-12">
             <!-- Botones -->
-            <q-btn flat color="primary" label="Recuperar contraseña" class="full-width q-mb-sm" no-caps unelevated
-              @click="recuperarPassword()">
+            <q-btn
+              flat
+              color="primary"
+              label="Recuperar contraseña"
+              class="full-width q-mb-sm"
+              no-caps
+              unelevated
+              @click="recuperarPassword()"
+            >
             </q-btn>
           </div>
         </form>
@@ -86,9 +119,11 @@ h2 {
 
 .fondo {
   background: rgb(94, 88, 252);
-  background: linear-gradient(90deg,
-      rgba(94, 88, 252, 1) 0%,
-      rgba(110, 143, 255, 1) 100%);
+  background: linear-gradient(
+    90deg,
+    rgba(94, 88, 252, 1) 0%,
+    rgba(110, 143, 255, 1) 100%
+  );
 }
 
 /* Quita las mayusculas al campo de contraseña y usuario */

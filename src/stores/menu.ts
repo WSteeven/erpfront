@@ -18,18 +18,6 @@ export const useMenuStore = defineStore('menu', () => {
       can: true //!store.can('puede.ver.trabajo_asignado'),
     },
     {
-      title: 'Noticias',
-      icon: 'fa-regular fa-newspaper',
-      link: '/blog',
-      can: store.can('puede.acceder.intra_noticias')
-    },
-    {
-      title: 'Eventos',
-      icon: 'bi-calendar-event-fill',
-      link: 'eventos',
-      can: true // store.can('puede.ver.eventos'),
-    },
-    {
       title: 'Trabajo agendado',
       link: 'trabajo-agendado',
       icon: 'fa-solid fa-business-time',
@@ -149,7 +137,7 @@ export const useMenuStore = defineStore('menu', () => {
      ********************/
     {
       title: 'Tickets',
-      icon: 'bi-ticket-detailed-fill',
+      icon: 'bi-tags-fill',
       can: store.can('puede.ver.modulo_tickets'),
       module: true,
       children: [
@@ -829,6 +817,18 @@ export const useMenuStore = defineStore('menu', () => {
       can: store.esAdministrador || store.can('puede.ver.modulo_intranet'),
       module: true,
       children: [
+        {
+          title: 'Noticias',
+          icon: 'fa-regular fa-newspaper',
+          link: '/blog',
+          can: store.can('puede.acceder.intra_noticias')
+        },
+        {
+          title: 'Eventos',
+          icon: 'bi-calendar-event-fill',
+          link: 'eventos',
+          can: store.can('puede.acceder.intra_eventos'),
+        },
         {
           title: 'Categorias',
           link: 'categorias-noticias',

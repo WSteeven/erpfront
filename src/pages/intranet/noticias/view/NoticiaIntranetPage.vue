@@ -151,7 +151,6 @@
               :imagen="noticia.imagen_noticia"
               :comprimir="true"
               :disable="disabled"
-              :error="!!v$.imagen_noticia.$errors.length"
               :alto="'200px'"
               @update:model-value="data => (noticia.imagen_noticia = data)"
             ></selector-imagen>

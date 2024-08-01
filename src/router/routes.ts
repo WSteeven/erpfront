@@ -6,20 +6,27 @@ import rutasTickets from './rutasTickets'
 const routes: RouteRecordRaw[] = [
   // {
   //   path: '/intranet',
-  //  component: () => import('layouts/FullLayout.vue'),
+  //   component: () => import('layouts/FullLayout.vue'),
   //   children: [
-  //  {
-  //   path: '',
-  //  name: 'intranet',
-  //  component: () => import('pages/intranet/intranet/view/IntranetPage.vue'),
-  // meta: { requiresAuth: false },
-  //   },
-  // ],
+  //     {
+  //       path: '',
+  //       name: 'intranet',
+  //       component: () => import('pages/intranet/intranet/view/IntranetPage.vue'),
+  //       meta: { requiresAuth: false },
+  //     },
+  //   ],
   // },
   {
     path: '/',
     component: () => import('layouts/MainLayout.vue'),
     children: [
+      {
+        path: '',
+        name: 'tablero_personal',
+        component: () =>
+          import('pages/tableroPersonal/view/TableroPersonalPage.vue'),
+        meta: { requiresAuth: true },
+      },
       {
         path: '/intranet',
         name: 'intranet',
@@ -61,13 +68,6 @@ const routes: RouteRecordRaw[] = [
         name: 'eventos',
         component: () => import('pages/intranet/eventos/view/EventoPage.vue'),
         meta: { requiresAuth: false },
-      },
-      {
-        path: '/tablero',
-        name: 'tablero_personal',
-        component: () =>
-          import('pages/tableroPersonal/view/TableroPersonalPage.vue'),
-        meta: { requiresAuth: true },
       },
       {
         path: 'auditorias',

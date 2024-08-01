@@ -42,27 +42,27 @@
             </template>
 
             <q-carousel-slide
-              v-for="(news, index) in noticias"
+              v-for="(noticia, index) in noticias"
               :key="index"
               :name="index"
               class="carousel-slide-noticias row q-py-md"
             >
-              <q-img
-                :src="news.imagen_noticia"
-                :alt="news.titulo"
+              <q-img v-if="noticia.imagen_noticia"
+                :src="noticia.imagen_noticia"
+                :alt="noticia.titulo"
                 class="col-12 col-md-5 fixed-size-image noticias-image"
                 style="border-radius: 15px"
               />
               <div class="col-12 col-md-7 q-pl-md">
-                <h5 class="noticias-title q-mb-sm">{{ news.titulo }}</h5>
+                <h5 class="q-mb-sm q-pr-xl">{{ noticia.titulo }}</h5>
                 <p
                   class="noticias-description q-mb-md justify-text"
-                  v-html="getShortDescription(news.descripcion)"
+                  v-html="getShortDescription(noticia.descripcion)"
                 ></p>
                 <q-btn
                   class="noticias-read-more bottom-right q-mb-md"
                   color="primary"
-                  @click="verNoticiaCompleta(news.id)"
+                  @click="verNoticiaCompletaHandler(noticia.id)"
                 >
                   Ver Noticia
                 </q-btn>
@@ -95,14 +95,17 @@
           transition-hide="scale"
           class="noticia-modal-dialog"
         >
-          <q-btn
-            flat
-            icon="close"
-            color="white"
-            class="noticia-modal-close-btn"
-            v-close-popup
-          />
           <q-card class="noticia-modal-card">
+            <q-card-section class="row items-center q-pb-none">
+              <q-space />
+              <q-btn
+              flat
+                icon="close"
+                color="white"
+                class="noticia-modal-close-btn"
+                v-close-popup
+              />
+            </q-card-section>
             <q-card-section class="noticia-modal-content">
               <q-img
                 :src="noticiaCompleta?.imagen_noticia"
@@ -177,7 +180,6 @@
                 v-for="(modulo, index) in modulosPermitidos"
                 :key="index"
                 :href="modulo.link"
-                target="_blank"
                 class="icon-link-modulos"
                 style="margin: 10px"
               >
@@ -373,7 +375,8 @@
         <br />
 
         <!--Sección de Vacantes-->
-        <q-card v-if="false"
+        <q-card
+          v-if="false"
           flat
           bordered
           class="vacantes-card"
@@ -401,51 +404,51 @@
         <br />
 
         <!--Formulario de Solicitudes-->
-          <q-expansion-item
-            style="
-              background-color: #003f68;
-              color: white;
-              font-size: 12px;
-              font-weight: bold;
-              border-radius: 10px;
-            "
-            icon="bi-bookmark-heart"
-            dense-toogle
-            label="SOLICITUDES"
-            :default-opened="false"
-          >
-            <div style="background-color: WHITE; padding: 20px">
-              <q-form @submit.prevent="enviarSolicitud">
-                <q-select
-                  v-model="solicitud.tipo_solicitud"
-                  :options="tiposSolicitudes"
-                  label="Tipo de Solicitud"
-                  emit-value
-                  outlined
-                  dense
-                  style="
-                    margin-bottom: 16px;
-                    border-radius: 10px;
-                    background-color: midnightblue;
-                  "
-                ></q-select>
-                <q-btn
-                  type="submit"
-                  color="green"
-                  label="REALIZAR"
-                  style="
-                    width: 100%;
-                    font-weight: bold;
-                    letter-spacing: 0.5px;
-                    border-radius: 10px;
-                    background-color: blue;
-                    color: white;
-                  "
-                  outline
-                ></q-btn>
-              </q-form>
-            </div>
-          </q-expansion-item>
+        <q-expansion-item
+          style="
+            background-color: #003f68;
+            color: white;
+            font-size: 12px;
+            font-weight: bold;
+            border-radius: 10px;
+          "
+          icon="bi-bookmark-heart"
+          dense-toogle
+          label="SOLICITUDES"
+          :default-opened="false"
+        >
+          <div style="background-color: WHITE; padding: 20px">
+            <q-form @submit.prevent="enviarSolicitud">
+              <q-select
+                v-model="solicitud.tipo_solicitud"
+                :options="tiposSolicitudes"
+                label="Tipo de Solicitud"
+                emit-value
+                outlined
+                dense
+                style="
+                  margin-bottom: 16px;
+                  border-radius: 10px;
+                  background-color: midnightblue;
+                "
+              ></q-select>
+              <q-btn
+                type="submit"
+                color="green"
+                label="REALIZAR"
+                style="
+                  width: 100%;
+                  font-weight: bold;
+                  letter-spacing: 0.5px;
+                  border-radius: 10px;
+                  background-color: blue;
+                  color: white;
+                "
+                outline
+              ></q-btn>
+            </q-form>
+          </div>
+        </q-expansion-item>
 
         <br />
 
@@ -562,7 +565,7 @@
                       </div>
                       <q-badge>{{ eventoSeleccionado?.autor }}</q-badge>
                       <q-card class="event-card-description">
-                        <q-scroll-area   style="height: 100px; max-width: 300px;">
+                        <q-scroll-area style="height: 100px; max-width: 300px">
                           {{ eventoSeleccionado?.descripcion }}
                         </q-scroll-area>
                       </q-card>
@@ -586,8 +589,6 @@
                     </q-card-actions>
                   </q-card>
                 </q-dialog>
-
-
               </div>
             </q-card-section>
           </q-expansion-item>
@@ -940,16 +941,15 @@ h5 {
   background-color: rgba(255, 0, 0, 0.7);
   border-radius: 50%;
   padding: 10px;
-  position: absolute;
+  /* position: absolute; */
   /* Cambiado de 'fixed' a 'absolute' */
-  top: 10px;
+  /* top: 10px; */
   /* Ajusta la posición según sea necesario */
-  right: 450px;
+  /* right: 450px; */
   /* Ajusta según sea necesario */
-  z-index: 1000;
+  /* z-index: 1000; */
   /* Asegúrate de que esté por encima de otros elementos */
 }
-
 
 .event-modal {
   max-width: 90vw;
@@ -988,8 +988,6 @@ h5 {
   border-top: 1px solid rgba(0, 0, 0, 0.1);
   padding: 10px 20px;
 }
-
-
 </style>
 
 <script src="./IntranetPage.ts"></script>
