@@ -110,9 +110,9 @@
                   :key="item.id"
                   class="col-12 col-md-6 text-bold text-justify q-mb-md"
                 >
-                  {{
+                  <!--  {{
                     cuestionarioPublico.formulario_cuestionario[index].respuesta
-                  }}
+                  }} -->
                   <div v-if="item.cuestionario[0].respuesta">
                     <label class="q-mb-sm block">{{
                       item.codigo + '- ' + item.pregunta
@@ -127,8 +127,14 @@
                       :disable="index !== 0 && noConsume"
                       outlined
                       dense
+                      :multiple="
+                        index === 4 &&
+                        tipoCuestionarioSeleccionado === ALCOHOL_DROGAS
+                      "
                       options-dense
-                      :option-disable="(it) => desahabilitarNoConsume(it.value)"
+                      :option-disable="
+                        (it) => desahabilitarNoConsume(it.value, index)
+                      "
                       emit-value
                       map-options
                       :error="
@@ -137,6 +143,30 @@
                         ].respuesta.length
                       "
                     >
+                      <template
+                        v-if="index === 4"
+                        v-slot:option="{
+                          itemProps,
+                          opt,
+                          selected,
+                          toggleOption,
+                        }"
+                      >
+                        <q-item v-bind="itemProps">
+                          <q-item-section>
+                            {{ opt.label }}
+                            <q-item-label v-bind:inner-h-t-m-l="opt.label" />
+                          </q-item-section>
+                          <q-item-section side>
+                            <q-checkbox
+                              :model-value="selected"
+                              dense
+                              @update:model-value="toggleOption(opt)"
+                            />
+                          </q-item-section>
+                        </q-item>
+                      </template>
+
                       <template v-slot:error>
                         <div
                           v-for="error of v$.formulario_cuestionario.$each
@@ -152,10 +182,7 @@
                   <div
                     v-show="
                       !item.cuestionario[0].respuesta &&
-                      CUESTIONARIO_OTROS.includes(
-                        cuestionarioPublico.formulario_cuestionario[index - 1]
-                          .respuesta
-                      ) &&
+                      verificarSiEsSelectMultiple(index) &&
                       tipoCuestionarioSeleccionado === ALCOHOL_DROGAS
                     "
                   >

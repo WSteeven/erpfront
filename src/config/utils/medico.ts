@@ -201,5 +201,5 @@ export const discapacidades = [
 export const generos = [
   'MASCULINO',
   'FEMENINO',
-  'LGBTI',
+  'OTROS',
 ]

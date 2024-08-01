@@ -46,6 +46,7 @@ export default defineComponent({
         if (val === '') {
           update(() => {
             sucursales.value = JSON.parse(LocalStorage.getItem('sucursales')!.toString())
+            sucursales.value.unshift({ id: 0, lugar: 'TODAS LAS SUCURSALES', })
           })
           return
         }
