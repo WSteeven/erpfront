@@ -14,7 +14,7 @@ export function useNotificaciones() {
   const base = {
     html: true,
     textColor: $q.dark.isActive ? 'white' : 'black',
-    position: 'bottom-right',
+    position: 'bottom',
     multiLine: true,
     progress: true,
     classes: 'rounded-tabpanel shadow-notification bg-desenfoque border-white',
@@ -28,6 +28,9 @@ export function useNotificaciones() {
       message: '<b>Información</b>',
       caption: obtenerMensaje(mensaje),
       progressClass: 'text-light-blue-7',
+      actions: [
+        { label: 'Cerrar', color: 'light-blue-7', handler: () => { /* ... */ } }
+      ],
     })
   }
 
@@ -39,6 +42,9 @@ export function useNotificaciones() {
       message: '<b>Correcto</b>',
       caption: obtenerMensaje(mensaje),
       progressClass: 'text-positive',
+      actions: [
+        { label: 'Cerrar', color: 'positive', handler: () => { /* ... */ } }
+      ],
     })
   }
 
@@ -50,6 +56,9 @@ export function useNotificaciones() {
       message: '<b>Error</b>',
       caption: obtenerMensaje(mensaje),
       progressClass: 'text-pink-6',
+      actions: [
+        { label: 'Cerrar', color: 'pink-6', handler: () => { /* ... */ } }
+      ],
     })
   }
 
@@ -62,6 +71,9 @@ export function useNotificaciones() {
       message: '<b>Advertencia</b>',
       caption: obtenerMensaje(mensaje),
       progressClass: 'text-amber-9',
+      actions: [
+        { label: 'Cerrar', color: 'amber-9', handler: () => { /* ... */ } }
+      ],
     })
   }
 
