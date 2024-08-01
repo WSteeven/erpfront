@@ -373,7 +373,7 @@
         <br />
 
         <!--Sección de Vacantes-->
-        <q-card
+        <q-card v-if="false"
           flat
           bordered
           class="vacantes-card"
@@ -401,22 +401,16 @@
         <br />
 
         <!--Formulario de Solicitudes-->
-        <q-card
-          flat
-          bordered
-          class="solicitudes-card"
-          style="border-radius: 15px; overflow: hidden"
-        >
           <q-expansion-item
             style="
-              text-align-last: center;
               background-color: #003f68;
               color: white;
-              font-size: 13px;
+              font-size: 12px;
               font-weight: bold;
               border-radius: 10px;
             "
             icon="bi-bookmark-heart"
+            dense-toogle
             label="SOLICITUDES"
             :default-opened="false"
           >
@@ -452,7 +446,6 @@
               </q-form>
             </div>
           </q-expansion-item>
-        </q-card>
 
         <br />
 
@@ -520,7 +513,7 @@
                       class="avatar-item-container"
                       style="margin-right: 15px; size: 5px"
                     >
-                      <q-avatar size="70px" class="avatar-item">
+                      <q-avatar size="xl" class="avatar-item">
                         <img
                           :src="
                             empleado.foto_url == null
@@ -558,7 +551,6 @@
                 <!--Modal para Visualizar Evento-->
                 <q-dialog
                   v-model="dialogoVisible"
-                  :position="posicionModal"
                   transition-show="scale"
                   transition-hide="scale"
                   class="event-modal"
@@ -570,7 +562,9 @@
                       </div>
                       <q-badge>{{ eventoSeleccionado?.autor }}</q-badge>
                       <q-card class="event-card-description">
-                        {{ eventoSeleccionado?.descripcion }}
+                        <q-scroll-area   style="height: 100px; max-width: 300px;">
+                          {{ eventoSeleccionado?.descripcion }}
+                        </q-scroll-area>
                       </q-card>
                       <div class="event-card-time">
                         <q-badge color="green-6">{{

@@ -142,9 +142,9 @@ export default defineComponent({
           id: evento.id,
           title: evento.titulo,
           autor: evento.anfitrion_id,
-          description:evento.descripcion,
+          description: evento.descripcion,
           colorScheme: esquemasColores[evento.tipo_evento_id] || 'general',
-          time:{
+          time: {
             start: evento.fecha_hora_inicio,
             end: evento.fecha_hora_fin,
           },
@@ -157,7 +157,8 @@ export default defineComponent({
       week: {
         startsOn: 'monday',
         nDays: 7,
-        scrollToHour: 12,
+        scrollToHour: 8,
+        
       },
       month: {
         showTrailingAndLeadingDates: false,
@@ -187,6 +188,8 @@ export default defineComponent({
     });
 
     function verEvento(evento) {
+      console.log('evento clickado')
+      console.log('evento clickado', evento)
       eventoSeleccionado.value = evento.data;
       dialogoVisible.value = true;
     }
@@ -195,9 +198,9 @@ export default defineComponent({
       cargando.activar();
       try {
         const response = await new EventoController().listar();
-        console.log(response);
+        // console.log(response);
         eventos.value = response.result;
-        console.log(eventos);
+        // console.log(eventos);
       } catch (error) {
         console.error('Error al obtener eventos:', error);
       } finally {
@@ -229,7 +232,7 @@ export default defineComponent({
     async function obtenerNoticias() {
       cargando.activar()
       const response = await new NoticiaController().listar()
-      console.log(response)
+      // console.log(response)
       noticias.value = response.result
       cargando.desactivar()
     }
@@ -279,14 +282,6 @@ export default defineComponent({
 
     obtenerModulosPermitidos()
 
-    function getIcon(modulo: string) {
-      console.log('getIcon', modulo, Date.now().toString())
-    }
-
-    function goToModule(modulo: string) {
-      console.log('Diste click en ', modulo)
-    }
-
     async function logout() {
       cargando.activar()
       await store.logout()
@@ -308,7 +303,7 @@ export default defineComponent({
             estado: 1
           })
         ).result
-        console.log(empleados.value)
+        // console.log(empleados.value)
       } catch (err) {
         console.log(err)
       } finally {
@@ -402,12 +397,12 @@ export default defineComponent({
     const getImagePerfil = usuario => {
       return usuario.foto_url == null
         ? `https://ui-avatars.com/api/?name=${usuario.nombres.substr(
-            0,
-            1
-          )}+${usuario.apellidos.substr(
-            0,
-            1
-          )}&bold=true&background=008000&color=ffff`
+          0,
+          1
+        )}+${usuario.apellidos.substr(
+          0,
+          1
+        )}&bold=true&background=008000&color=ffff`
         : usuario.foto_url
     }
 
@@ -460,8 +455,6 @@ export default defineComponent({
       consultarEmpleadosDepartamento,
       enviarSolicitud,
       limpiarFormulario,
-      getIcon,
-      goToModule,
       getShortDescription,
       verNoticiaCompleta: verNoticiaCompletaHandler,
       width: computed(() => ($q.screen.xs ? '100%' : '450px')),
