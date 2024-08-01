@@ -7,8 +7,13 @@ import {
   QCard,
   QImg,
   QCardSection,
-  Notify
+  Notify,
+  QDialog,
+  QDate,
+  QCardActions,
+  QBtn
 } from 'quasar'
+import { Qalendar } from 'qalendar'
 import ModalesEntidad from 'components/modales/view/ModalEntidad.vue'
 import SolicitarFecha from 'shared/prompts/SolicitarFecha.vue'
 import { Vue3Lottie } from 'vue3-lottie'
@@ -28,14 +33,26 @@ import { StatusEssentialLoading } from 'components/loading/application/StatusEss
 import { useRouter } from 'vue-router'
 import { useMenuStore } from 'stores/menu'
 import { obtenerFechaActual } from '../../../../shared/utils'
+import { formatearFecha } from '../../../../shared/utils'
 import { MenuOption } from 'shared/menu/MenuOption'
 import { NoticiaController } from 'pages/intranet/noticias/infraestructure/NoticiaController'
+import { EventoController } from 'pages/intranet/eventos/infraestructure/EventoController'
 
 interface Noticia {
-  id: number;
-  titulo: string;
-  imagen_noticia: string;
-  descripcion: string;
+  id: number
+  titulo: string
+  imagen_noticia: string
+  descripcion: string
+}
+
+interface Evento {
+  id: number
+  titulo: string
+  tipo_evento_id: number
+  anfitrion_id: number
+  descripcion: string
+  fecha_hora_inicio: string
+  fecha_hora_fin: string
 }
 
 export default defineComponent({
@@ -47,7 +64,12 @@ export default defineComponent({
     QCarouselSlide,
     QCard,
     QImg,
-    QCardSection
+    QCardSection,
+    QDate,
+    QDialog,
+    QCardActions,
+    QBtn,
+    Qalendar,
   },
 
   setup() {
@@ -58,12 +80,18 @@ export default defineComponent({
     const usuarios = 20
     const carousel_noticias = ref(0)
     const activeTab = ref(0)
-    const selectedDate = ref(0)
+
     const modalNoticia = ref(false)
 
-    const noticias = ref<Noticia[]>([]);
+    const noticias = ref<Noticia[]>([])
+    const noticiaCompleta = ref<Noticia | null>(null)
 
-    const noticiaCompleta = ref<Noticia | null>(null);
+
+
+    const eventos = ref<Evento[]>([])
+    const eventoSeleccionado = ref<Evento | null>(null);
+    const fechaSeleccionada = ref(null)
+    const dialogoVisible = ref(false)
 
 
     const carousel_cumpleanos_mes = ref(1)
@@ -74,8 +102,6 @@ export default defineComponent({
     const modulosPermitidos = ref()
     const showBanner = ref(true)
     const showDepartamentos = ref(true)
-
-
 
     const menuStore = useMenuStore()
     const cargando = new StatusEssentialLoading()
@@ -100,41 +126,82 @@ export default defineComponent({
 
     const modales = new ComportamientoModalesIntranet()
 
-    const events = ref([
-      {
-        time: { start: '2024-07-29 10:00:00', end: '2024-07-29 12:00:00' },
-        color: 'red',
-        title: 'Reunión',
-        description: 'Reunión de planificación'
+    const esquemasColores = {
+      1: 'capacitaciones',
+      2: 'reunion',
+      3: 'general'
+    };
+
+    const eventosFormateados = computed(() => {
+      return eventos.value.map(evento => {
+        if (!evento.fecha_hora_inicio || !evento.fecha_hora_fin) {
+          console.warn('Evento con datos incompletos:', evento);
+          return null;
+        }
+        return {
+          id: evento.id,
+          title: evento.titulo,
+          autor: evento.anfitrion_id,
+          description:evento.descripcion,
+          colorScheme: esquemasColores[evento.tipo_evento_id] || 'general',
+          time:{
+            start: evento.fecha_hora_inicio,
+            end: evento.fecha_hora_fin,
+          },
+          data: evento  // Pasar todo el objeto evento como dato adicional
+        };
+      }).filter(evento => evento !== null);
+    });
+
+    const configuracion = ref({
+      week: {
+        startsOn: 'monday',
+        nDays: 7,
+        scrollToHour: 12,
       },
-      {
-        time: { start: '2024-07-30 11:00:00', end: '2024-07-30 13:00:00' },
+      month: {
+        showTrailingAndLeadingDates: false,
+      },
+      locale: 'es-ES',
+      style: {
+        fontFamily: 'Nunito, sans-serif',
         color: 'blue',
-        title: 'Presentación',
-        description: 'Presentación del proyecto'
-      }
-    ])
+        colorSchemes: {
+          capacitaciones: {
+            color: 'white',
+            backgroundColor: 'orange',
+          },
+          reunion: {
+            color: 'white',
+            backgroundColor: 'yellow',
+          },
+          general: {
+            color: 'white',
+            backgroundColor: 'green',
+          }
+        }
+      },
+      defaultMode: 'month',
+      isSilent: true,
+      showCurrentTime: true,
+    });
 
-    const eventDates = computed(() => {
-      return events.value.map(event => ({
-        date: event.time.start.split(' ')[0],
-        color: event.color
-      }))
-    })
-
-    function getColor(date) {
-      const event = eventDates.value.find(event => event.date === date)
-      return event ? event.color : 'grey'
+    function verEvento(evento) {
+      eventoSeleccionado.value = evento.data;
+      dialogoVisible.value = true;
     }
 
-    function verEvento(date) {
-      const event = events.value.find(
-        event => event.time.start.split(' ')[0] === date
-      )
-      if (event) {
-        alert(
-          `Evento: ${event.title}\nDescripción: ${event.description}\nHora: ${event.time.start} - ${event.time.end}`
-        )
+    async function obtenerEventos() {
+      cargando.activar();
+      try {
+        const response = await new EventoController().listar();
+        console.log(response);
+        eventos.value = response.result;
+        console.log(eventos);
+      } catch (error) {
+        console.error('Error al obtener eventos:', error);
+      } finally {
+        cargando.desactivar();
       }
     }
 
@@ -146,13 +213,16 @@ export default defineComponent({
       return description
     }
 
-    function verNoticiaCompleta(id: number, noticias: Noticia[]): Noticia | null {
-      const noticia = noticias.find(noticia => noticia.id === id);
+    function verNoticiaCompleta(
+      id: number,
+      noticias: Noticia[]
+    ): Noticia | null {
+      const noticia = noticias.find(noticia => noticia.id === id)
       if (noticia) {
-        return noticia;
+        return noticia
       } else {
-        console.error(`Noticia con ID: ${id} no encontrada.`);
-        return null;
+        console.error(`Noticia con ID: ${id} no encontrada.`)
+        return null
       }
     }
 
@@ -163,9 +233,6 @@ export default defineComponent({
       noticias.value = response.result
       cargando.desactivar()
     }
-
-
-
 
     const documentosIntranet = ref([
       {
@@ -190,7 +257,6 @@ export default defineComponent({
 
     const currentPage = ref(1)
     const perPage = ref(2)
-
 
     function obtenerModulosPermitidos() {
       // Filtrar todos los enlaces permitidos
@@ -291,6 +357,7 @@ export default defineComponent({
 
     onMounted(() => {
       obtenerNoticias()
+      obtenerEventos()
       obtenerEmpleadosCumpleaneros()
     })
 
@@ -348,15 +415,13 @@ export default defineComponent({
 
     obtenerNoticias()
 
-
     function verNoticiaCompletaHandler(id: number): void {
-      const noticia = verNoticiaCompleta(id, noticias.value);
+      const noticia = verNoticiaCompleta(id, noticias.value)
       if (noticia) {
-        noticiaCompleta.value = noticia;
-        modalNoticia.value = true;
+        noticiaCompleta.value = noticia
+        modalNoticia.value = true
       }
     }
-
 
     return {
       logoClaro: computed(
@@ -392,7 +457,6 @@ export default defineComponent({
       modulosPermitidos,
       logout,
       verEvento,
-      getColor,
       consultarEmpleadosDepartamento,
       enviarSolicitud,
       limpiarFormulario,
@@ -405,17 +469,20 @@ export default defineComponent({
       showBanner,
       search,
       maskFecha,
+      formatearFecha,
       readMore,
       documentosIntranet,
       empleadosCumpleaneros,
       fechaActual,
-      eventDates,
-      selectedDate,
-
+      fechaSeleccionada,
+      eventos,
+      dialogoVisible,
+      eventoSeleccionado,
       noticias,
       noticiaCompleta,
-      modalNoticia
-
+      modalNoticia,
+      eventosFormateados,
+      configuracion
     }
   }
 })
