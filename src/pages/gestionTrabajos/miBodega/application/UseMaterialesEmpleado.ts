@@ -5,10 +5,11 @@ import { useListadoMaterialesDevolucionStore } from 'stores/listadoMaterialesDev
 import { FiltroMiBodegaEmpleado } from '../domain/FiltroMiBodegaEmpleado'
 import { useAuthenticationStore } from 'stores/authentication'
 import { useNotificaciones } from 'shared/notificaciones'
-import { UnwrapRef } from 'vue'
+import { Ref, ref, UnwrapRef } from 'vue'
 import { useTransferenciaProductoEmpleadoStore } from 'stores/transferenciaProductoEmpleado'
+import { MaterialOcupadoFormulario } from 'pages/gestionTrabajos/formulariosTrabajos/emergencias/domain/MaterialOcupadoFormulario'
 
-export function useMaterialesEmpleado(filtro: UnwrapRef<FiltroMiBodegaEmpleado>, listadosAuxiliares: any) {
+export function useMaterialesEmpleado(filtro: UnwrapRef<FiltroMiBodegaEmpleado>, listadosAuxiliares?: any) {
   // Stores
   const listadoMaterialesDevolucionStore = useListadoMaterialesDevolucionStore()
   const transferenciaProductoEmpleadoStore = useTransferenciaProductoEmpleadoStore()
@@ -21,6 +22,7 @@ export function useMaterialesEmpleado(filtro: UnwrapRef<FiltroMiBodegaEmpleado>,
   // Variables
   const { notificarAdvertencia } = useNotificaciones()
   const cargando = new StatusEssentialLoading()
+  const todosProductosEmpleado: Ref<MaterialOcupadoFormulario[]> = ref([])
 
   async function consultarProductosEmpleado() {
     try {
@@ -49,6 +51,13 @@ export function useMaterialesEmpleado(filtro: UnwrapRef<FiltroMiBodegaEmpleado>,
     }
   }
 
+  async function consultarTodosProductosEmpleado() {
+    cargando.activar()
+    const { result } = await materialEmpleadoController.listar(filtro)
+    todosProductosEmpleado.value = result
+    cargando.desactivar()
+  }
+
   async function consultarClientesMaterialesEmpleado(params?: any) {
     try {
       cargando.activar()
@@ -64,7 +73,11 @@ export function useMaterialesEmpleado(filtro: UnwrapRef<FiltroMiBodegaEmpleado>,
   }
 
   return {
+    // Variables
+    todosProductosEmpleado,
+    // Funciones
     consultarProductosEmpleado,
+    consultarTodosProductosEmpleado,
     consultarClientesMaterialesEmpleado,
   }
 }

@@ -1,7 +1,7 @@
 // Dependencias
 import { configuracionColumnasEntregasActivosFijos } from '../domain/configuracionColumnasEntregasActivosFijos'
 import { configuracionColumnasActivosFijos } from '../domain/configuracionColumnasActivosFijos'
-import { computed, defineComponent, ref } from 'vue'
+import { computed, defineComponent, reactive, Ref, ref, UnwrapRef } from 'vue'
 
 // Componentes
 import TabLayout from 'shared/contenedor/modules/simple/view/TabLayout.vue'
@@ -19,6 +19,10 @@ import { useConsultarOpcionesActivosFijos } from '../application/ConsultarOpcion
 import { useAuthenticationStore } from 'stores/authentication'
 import { accionesTabla } from 'config/utils'
 import { CustomActionTable } from 'components/tables/domain/CustomActionTable'
+import { useMaterialesEmpleado } from 'pages/gestionTrabajos/miBodega/application/UseMaterialesEmpleado'
+import { FiltroMiBodega } from 'pages/gestionTrabajos/miBodega/domain/FiltroMiBodega'
+import { FiltroMiBodegaEmpleado } from 'pages/gestionTrabajos/miBodega/domain/FiltroMiBodegaEmpleado'
+import { configuracionColumnasStockResponsables } from '../domain/configuracionColumnasStockResponsables'
 
 export default defineComponent({
   components: { TabLayout, SelectorImagen, FormularioPermisoArma, EssentialTable },
@@ -44,15 +48,16 @@ export default defineComponent({
     const sumaCantidadesEntregadas = computed(() => entregas.value.reduce((acc, entrega: ActivoFijo) => {
       return acc + (entrega.cantidad ?? 0)
     }, 0))
-    /* const parametrosDefecto = {
-      detalle_producto_id: activo.detalle_producto.id,
-      cliente_id: 1,
-    } */
+    const filtros: UnwrapRef<any> = reactive({
+      detalle_producto_id: null,
+      cliente_id: null,
+    })
 
     /************
      * Funciones
      ************/
-    const { entregas, listarEntregas } = useConsultarOpcionesActivosFijos()
+    const { entregas, listarEntregas, asignacionesProductos, listarAsignacionesProductos } = useConsultarOpcionesActivosFijos()
+    // const { todosProductosEmpleado, consultarTodosProductosEmpleado } = useMaterialesEmpleado(filtros)
 
     /******************
      * Acciones tabla
@@ -78,20 +83,18 @@ export default defineComponent({
     /************
      * Observers
      ************/
-    const consultar = () => {
-      switch (tabsOpcionesConsultas.value) {
-        case opcionesConsultasActivosFijos.ENTREGAS: listarEntregas({
-          detalle_producto_id: activo.detalle_producto.id,
-          cliente_id: activo.cliente,
-        })
-          break
-      }
-    }
+    /* const consultarStockResponsables = () => {
+      //
+    } */
 
     /********
      * Hooks
      ********/
-    onConsultado(() => consultar())
+    onConsultado(() => {
+      filtros.cliente_id = activo.cliente_id
+      filtros.detalle_producto_id = activo.detalle_producto.id
+      listarEntregas(filtros)
+    })
 
     /*******
      * Init
@@ -102,15 +105,19 @@ export default defineComponent({
       mixin, activo, disabled, accion,
       configuracionColumnas: configuracionColumnasActivosFijos,
       configuracionColumnasEntregasActivosFijos,
+      configuracionColumnasStockResponsables,
       accionesTabla,
       sumaCantidadesEntregadas,
       opcionesConsultasActivosFijos,
       tabsOpcionesConsultas,
       entregas,
       listarEntregas,
-      consultar,
       btnSubirActaEntregaRecepcion,
       btnSubirJustificativoUso,
+      // consultarStockResponsables,
+      asignacionesProductos,
+      listarAsignacionesProductos,
+      filtros,
     }
   }
 })

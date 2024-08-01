@@ -6,44 +6,83 @@
         <div class="row q-col-gutter-sm q-py-md">
           <div class="col-12 col-md-3">
             <label class="q-mb-sm block">Código</label>
-            <q-input v-model="activo.codigo" disable outlined dense>
-            </q-input>
+            <q-input v-model="activo.codigo" disable outlined dense> </q-input>
           </div>
 
           <div class="col-12 col-md-3">
             <label class="q-mb-sm block">Descripción</label>
-            <q-input v-model="activo.detalle_producto.descripcion" disable outlined dense>
+            <q-input
+              v-model="activo.detalle_producto.descripcion"
+              disable
+              outlined
+              dense
+            >
             </q-input>
           </div>
 
           <div class="col-12 col-md-3">
             <label class="q-mb-sm block">Tipo</label>
-            <q-input v-model="activo.detalle_producto.tipo" disable outlined dense> </q-input>
+            <q-input
+              v-model="activo.detalle_producto.tipo"
+              disable
+              outlined
+              dense
+            >
+            </q-input>
           </div>
 
           <div class="col-12 col-md-3">
             <label class="q-mb-sm block">Marca</label>
-            <q-input v-model="activo.detalle_producto.nombre_marca" disable outlined dense> </q-input>
+            <q-input
+              v-model="activo.detalle_producto.nombre_marca"
+              disable
+              outlined
+              dense
+            >
+            </q-input>
           </div>
 
           <div class="col-12 col-md-3">
             <label class="q-mb-sm block">Modelo</label>
-            <q-input v-model="activo.detalle_producto.nombre_modelo" disable outlined dense> </q-input>
+            <q-input
+              v-model="activo.detalle_producto.nombre_modelo"
+              disable
+              outlined
+              dense
+            >
+            </q-input>
           </div>
 
           <div class="col-12 col-md-3">
             <label class="q-mb-sm block">Serie</label>
-            <q-input v-model="activo.detalle_producto.serial" disable outlined dense> </q-input>
+            <q-input
+              v-model="activo.detalle_producto.serial"
+              disable
+              outlined
+              dense
+            >
+            </q-input>
           </div>
 
           <div class="col-12 col-md-3">
             <label class="q-mb-sm block">Calibre</label>
-            <q-input v-model="activo.detalle_producto.calibre" disable outlined dense> </q-input>
+            <q-input
+              v-model="activo.detalle_producto.calibre"
+              disable
+              outlined
+              dense
+            >
+            </q-input>
           </div>
 
           <div class="col-12 col-md-3">
             <label class="q-mb-sm block">Unidad de medida</label>
-            <q-input v-model="activo.detalle_producto.unidad_medida" disable outlined dense>
+            <q-input
+              v-model="activo.detalle_producto.unidad_medida"
+              disable
+              outlined
+              dense
+            >
             </q-input>
           </div>
 
@@ -89,12 +128,12 @@
           </div>
         </div>
 
-        <b v-if="activo.detalle_producto.permiso_arma.id"
+        <b v-if="activo.permiso_arma?.id"
           >Detalles del permiso</b
         >
         <formulario-permiso-arma
-          v-if="activo.detalle_producto.permiso_arma.id"
-          :permiso="activo.detalle_producto.permiso_arma"
+          v-if="activo.permiso_arma?.id"
+          :permiso="activo.permiso_arma"
           disable
         />
 
@@ -116,7 +155,7 @@
                 opcionesConsultasActivosFijos.ENTREGAS,
             }"
             no-caps
-            @click="consultar()"
+            @click="listarEntregas(filtros)"
           />
 
           <q-tab
@@ -128,6 +167,7 @@
                 opcionesConsultasActivosFijos.STOCK_RESPONSABLES,
             }"
             no-caps
+            @click="listarAsignacionesProductos({ ...filtros, resumen: 1 })"
           />
 
           <q-tab
@@ -168,6 +208,20 @@
               :ajustarCeldas="true"
               :accion1="btnSubirActaEntregaRecepcion"
               :accion2="btnSubirJustificativoUso"
+            ></essential-table>
+          </q-tab-panel>
+
+          <q-tab-panel :name="opcionesConsultasActivosFijos.STOCK_RESPONSABLES">
+            <essential-table
+              titulo="Stock de los responsables"
+              :configuracionColumnas="configuracionColumnasStockResponsables"
+              :datos="asignacionesProductos"
+              :permitirConsultar="false"
+              :permitirEditar="false"
+              :permitirEliminar="false"
+              :permitirFiltrar="false"
+              :mostrarExportar="true"
+              :ajustarCeldas="true"
             ></essential-table>
           </q-tab-panel>
         </q-tab-panels>

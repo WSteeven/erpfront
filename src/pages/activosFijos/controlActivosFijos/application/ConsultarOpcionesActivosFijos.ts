@@ -13,6 +13,7 @@ export const useConsultarOpcionesActivosFijos = () => {
      * Variables
      *************/
     const entregas: Ref<ActivoFijo[]> = ref([])
+    const asignacionesProductos: Ref<ActivoFijo[]> = ref([])
     const axios = AxiosHttpRepository.getInstance()
 
     /************
@@ -24,8 +25,18 @@ export const useConsultarOpcionesActivosFijos = () => {
         entregas.value = response.data.results
     }
 
+    const listarAsignacionesProductos = async (params: ParamsType) => {
+        const ruta = axios.getEndpoint(endpoints.asignaciones_productos, params)
+        const response: AxiosResponse = await axios.get(ruta)
+        asignacionesProductos.value = response.data.results
+    }
+
     return {
+        // Variables
         entregas,
+        asignacionesProductos,
+        // Funciones
         listarEntregas,
+        listarAsignacionesProductos,
     }
 }
