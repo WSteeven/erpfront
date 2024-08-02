@@ -194,6 +194,7 @@
                     modulo.title
                   }}</q-tooltip>
                 </q-icon>
+                
               </q-btn>
             </q-card-section>
           </q-card>
