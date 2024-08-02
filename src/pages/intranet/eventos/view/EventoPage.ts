@@ -65,12 +65,8 @@ export default defineComponent({
       componentePadreCargado,
       consultarEvento, eliminarEvento, eventoClicked,
       editar, guardar, eliminar, reestablecer,
-
-
       acciones,
       storeCargando: useCargandoStore(),
-
-
     };
   },
 })

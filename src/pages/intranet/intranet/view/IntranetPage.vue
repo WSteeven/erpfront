@@ -47,10 +47,11 @@
               :name="index"
               class="carousel-slide-noticias row q-py-md"
             >
-              <q-img v-if="noticia.imagen_noticia"
+              <q-img
+                v-if="noticia.imagen_noticia"
                 :src="noticia.imagen_noticia"
                 :alt="noticia.titulo"
-                class="col-12 col-md-5 fixed-size-image noticias-image"
+                class="col-12 col-md-5 noticias-image"
                 style="border-radius: 15px"
               />
               <div class="col-12 col-md-7 q-pl-md">
@@ -90,16 +91,15 @@
         <!--Modal para ver Noticias Completas-->
         <q-dialog
           v-model="modalNoticia"
-          max-width="1000px"
           transition-show="scale"
           transition-hide="scale"
           class="noticia-modal-dialog"
         >
           <q-card class="noticia-modal-card">
-            <q-card-section class="row items-center q-pb-none">
+            <q-card-section class="row q-pb-none">
               <q-space />
               <q-btn
-              flat
+                flat
                 icon="close"
                 color="white"
                 class="noticia-modal-close-btn"
@@ -181,20 +181,40 @@
                 :key="index"
                 :to="modulo.link"
                 class="icon-link-modulos"
-                flat unelevated rounded dense
-                style="margin: 10px"
+                flat
+                unelevated
+                rounded
+                dense
+                style="
+                  padding: xs lg;
+                  margin: 10px;
+                  flex-direction: column; /* Cambiar a column para alinear verticalmente */
+                  align-items: center;
+                "
               >
-                <q-icon
-                  :name="modulo.icon"
-                  class="icon-content-modulos"
-                  color="blue-grey-9"
-                  size="40px"
+                <div
+                  style="
+                    display: flex;
+                    flex-direction: column;
+                    align-items: center;
+                  "
                 >
-                  <q-tooltip anchor="bottom middle" self="bottom middle">{{
-                    modulo.title
-                  }}</q-tooltip>
-                </q-icon>
-                
+                  <q-icon
+                    :name="modulo.icon"
+                    class="icon-content-modulos"
+                    color="blue-grey-9"
+                    size="40px"
+                  >
+                    <q-tooltip anchor="bottom middle" self="bottom middle">
+                      {{ modulo.title }}
+                    </q-tooltip>
+                  </q-icon>
+                  <div
+                    style="font-size: 9px; margin-top: 5px; color: blue-grey-9"
+                  >
+                    {{ modulo.title }}
+                  </div>
+                </div>
               </q-btn>
             </q-card-section>
           </q-card>
@@ -285,8 +305,11 @@
                                   </q-item-label>
                                 </q-item-section>
                                 <q-item-section side>
-                                  <q-badge color="primary">
-                                    {{ empleado.telefono }}
+                                  <q-badge
+                                    style="color: white"
+                                    color="orangered"
+                                  >
+                                    {{ empleado.email }}
                                   </q-badge>
                                 </q-item-section>
                               </q-item>
@@ -373,7 +396,6 @@
             </div>
           </div>
         </q-card>
-
         <br />
 
         <!--Sección de Vacantes-->
@@ -455,146 +477,137 @@
         <br />
 
         <!--Calendario de Eventos-->
-        <q-card
-          class="eventos-card"
-          style="border-radius: 25px; background-color: white"
-        >
-          <q-expansion-item
-            style="
-              text-align-last: center;
-              background-color: darkorange;
-              color: white;
-              font-size: 13px;
-              font-weight: bold;
-              border-radius: 10px;
-            "
-            icon="bi-calendar-event"
-            label="EVENTOS"
-            :default-opened="true"
-          >
-            <q-card-section style="margin: 0; background-color: white">
-              <div
-                class="text-h6"
-                style="
-                  text-align: center;
-                  color: white;
-                  background-color: midnightblue;
-                  padding: 10px 0;
-                  border-radius: 15px 15px 0px 0px;
-                "
-              >
-                <i class="bi bi-cake2" style="margin-right: 10px"></i>
-                CUMPLEAÑEROS
-              </div>
-              <q-separator />
 
-              <q-card-section
-                style="
-                  display: flex;
-                  justify-content: center;
-                  height: 130px;
-                  border-radius: 0 0 15px 15px;
-                  background-color: white;
-                "
+        <q-expansion-item
+          style="
+            background-color: orange;
+            color: white;
+            font-size: 12px;
+            font-weight: bold;
+            border-radius: 10px;
+          "
+          icon="bi-calendar-event"
+          label="EVENTOS DEL MES"
+          :default-opened="true"
+        >
+          <q-card-section
+            style="margin: 0; background-color: #ffffff; color: black"
+          >
+            <div
+              class="text-h6"
+              style="
+                text-align: center;
+                color: white;
+                background-color: midnightblue;
+                padding: 10px 0;
+                border-radius: 15px 15px 0px 0px;
+              "
+            >
+              <i class="bi bi-cake2" style="margin-right: 10px"></i>
+              CUMPLEAÑEROS
+            </div>
+            <q-separator />
+
+            <q-card-section
+              style="
+                display: flex;
+                justify-content: center;
+                height: 130px;
+                border-radius: 0 0 15px 15px;
+                background-color: white;
+              "
+            >
+              <q-scroll-area
+                class="bg-white-4 rounded-borders"
+                style="height: 100px; overflow-x: auto; width: 100%"
               >
-                <q-scroll-area
-                  class="bg-white-4 rounded-borders"
-                  style="height: 100px; overflow-x: auto; width: 100%"
+                <div
+                  class="row no-wrap items-center q-gutter-x-sm"
+                  style="
+                    display: flex;
+                    flex-wrap: nowrap;
+                    justify-content: center;
+                    padding-left: 30px; /* Añadir padding izquierdo */
+                    height: 100px;
+                    max-width: 900px;
+                  "
                 >
                   <div
-                    class="row no-wrap items-center q-gutter-x-sm"
-                    style="
-                      display: flex;
-                      flex-wrap: nowrap;
-                      justify-content: center;
-                      padding-left: 30px; /* Añadir padding izquierdo */
-                      height: 100px;
-                      max-width: 900px;
-                    "
+                    v-for="empleado in empleadosCumpleaneros"
+                    :key="empleado.id"
+                    class="avatar-item-container"
+                    style="margin-right: 15px; size: 5px"
                   >
-                    <div
-                      v-for="empleado in empleadosCumpleaneros"
-                      :key="empleado.id"
-                      class="avatar-item-container"
-                      style="margin-right: 15px; size: 5px"
-                    >
-                      <q-avatar size="xl" class="avatar-item">
-                        <img
-                          :src="
-                            empleado.foto_url == null
-                              ? `https://ui-avatars.com/api/?name=${empleado.nombres.substr(
-                                  0,
-                                  1
-                                )}+${empleado.apellidos.substr(
-                                  0,
-                                  1
-                                )}&bold=true&background=008000&color=ffff`
-                              : empleado.foto_url
-                          "
-                        />
-                        <q-badge floating class="bottom-left" color="orange">
-                          {{ new Date(empleado.fecha_nacimiento).getDate() + 1 }}
-                        </q-badge>
-                        <q-tooltip anchor="bottom middle" self="bottom middle">
-                          {{ empleado.nombres }} {{ empleado.apellidos }}
-                        </q-tooltip>
-                      </q-avatar>
-                    </div>
-                  </div>
-                </q-scroll-area>
-              </q-card-section>
-            </q-card-section>
-
-            <q-card-section style="background-color: white; color: black">
-              <div>
-                <Qalendar
-                  :events="eventosFormateados"
-                  :config="configuracion"
-                  @event-click="verEvento"
-                />
-
-                <!--Modal para Visualizar Evento-->
-                <q-dialog
-                  v-model="dialogoVisible"
-                  transition-show="scale"
-                  transition-hide="scale"
-                  class="event-modal"
-                >
-                  <q-card class="event-card">
-                    <q-card-section class="event-card-section">
-                      <div class="event-card-title">
-                        {{ eventoSeleccionado?.titulo }}
-                      </div>
-                      <q-badge>{{ eventoSeleccionado?.autor }}</q-badge>
-                      <q-card class="event-card-description">
-                        <q-scroll-area style="height: 100px; max-width: 300px">
-                          {{ eventoSeleccionado?.descripcion }}
-                        </q-scroll-area>
-                      </q-card>
-                      <div class="event-card-time">
-                        <q-badge color="green-6">{{
-                          eventoSeleccionado?.fecha_hora_inicio
-                        }}</q-badge>
-                        -
-                        <q-badge color="amber">{{
-                          eventoSeleccionado?.fecha_hora_fin
-                        }}</q-badge>
-                      </div>
-                    </q-card-section>
-                    <q-card-actions align="right" class="event-card-actions">
-                      <q-btn
-                        flat
-                        label="Cerrar"
-                        color="primary"
-                        v-close-popup
+                    <q-avatar size="xl" class="avatar-item">
+                      <img
+                        :src="
+                          empleado.foto_url == null
+                            ? `https://ui-avatars.com/api/?name=${empleado.nombres.substr(
+                                0,
+                                1
+                              )}+${empleado.apellidos.substr(
+                                0,
+                                1
+                              )}&bold=true&background=008000&color=ffff`
+                            : empleado.foto_url
+                        "
                       />
-                    </q-card-actions>
-                  </q-card>
-                </q-dialog>
-              </div>
+                      <q-badge floating class="bottom-left" color="orange">
+                        {{ new Date(empleado.fecha_nacimiento).getDate() + 1 }}
+                      </q-badge>
+                      <q-tooltip anchor="bottom middle" self="bottom middle">
+                        {{ empleado.nombres }} {{ empleado.apellidos }}
+                      </q-tooltip>
+                    </q-avatar>
+                  </div>
+                </div>
+              </q-scroll-area>
             </q-card-section>
-          </q-expansion-item>
-        </q-card>
+          </q-card-section>
+
+          <q-card-section style="background-color: #ffffff; color: #003f68">
+            <div>
+              <Qalendar
+                :events="eventosFormateados"
+                :config="configuracion"
+                @event-click="verEvento"
+              />
+              <!--Modal para Visualizar Evento-->
+              <q-dialog
+                v-model="dialogoVisible"
+                transition-show="scale"
+                transition-hide="scale"
+                class="event-modal"
+              >
+                <q-card class="event-card">
+                  <q-card-section class="event-card-section">
+                    <div class="event-card-title">
+                      {{ eventoSeleccionado?.titulo }}
+                    </div>
+                    <q-badge>{{ eventoSeleccionado?.autor }}</q-badge>
+                    <q-card class="event-card-description">
+                      <q-scroll-area style="height: 100px; max-width: 300px">
+                        {{ eventoSeleccionado?.descripcion }}
+                      </q-scroll-area>
+                    </q-card>
+                    <div class="event-card-time">
+                      <q-badge color="green-6">{{
+                        eventoSeleccionado?.fecha_hora_inicio
+                      }}</q-badge>
+                      -
+                      <q-badge color="amber">{{
+                        eventoSeleccionado?.fecha_hora_fin
+                      }}</q-badge>
+                    </div>
+                  </q-card-section>
+                  <q-card-actions align="right" class="event-card-actions">
+                    <q-btn flat label="Cerrar" color="primary" v-close-popup />
+                  </q-card-actions>
+                </q-card>
+              </q-dialog>
+            </div>
+          </q-card-section>
+        </q-expansion-item>
       </div>
     </div>
 
@@ -612,9 +625,13 @@
   </q-page>
 </template>
 
-<style scoped>
+<!--Estilos del calendario Qalendar-->
+<style>
 @import 'qalendar/dist/style.css';
+</style>
 
+<!--Estilos de Intranet Page-->
+<style scoped>
 .custom-caption {
   text-align: center;
   padding: 12px;
@@ -756,15 +773,22 @@ h5 {
   .icon-container-modulos {
     display: flex;
     flex-wrap: wrap;
-    justify-content: center;
+
+    align-content: center;
   }
 
   .icon-link-modulos {
-    margin: 5px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
   }
 
   .icon-content-modulos {
     font-size: 12px;
+  }
+
+  .badge-below-icon {
+    margin-top: 15px; /* Añade un espacio entre el icono y el badge */
   }
 
   .noticias-image {
@@ -831,13 +855,6 @@ h5 {
   font-weight: bold;
 }
 
-.fixed-size-image {
-  width: 100%;
-  height: 100px;
-  /* Ajusta esta altura según tus necesidades */
-  object-fit: cover;
-}
-
 .no-news-card {
   display: flex;
   justify-content: center;
@@ -878,14 +895,14 @@ h5 {
 }
 
 .noticia-modal-card {
-  border-radius: 50px;
-  overflow: hidden;
+  border-radius: 5px;
+  overflow: auto;
   position: relative;
   /* Añadir esta línea para posicionamiento relativo */
 }
 
 .noticia-modal-content {
-  padding: 40px;
+  padding: 0 40px;
 }
 
 .noticia-modal-image {
