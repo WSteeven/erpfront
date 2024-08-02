@@ -31,6 +31,8 @@ import { NotIdle } from 'idlejs'
 import { useMainLayoutStore } from 'stores/mainLayout'
 import { StatusEssentialLoading } from 'components/loading/application/StatusEssentialLoading'
 
+import { MenuOption } from 'shared/menu/MenuOption'
+
 export default defineComponent({
   name: 'MainLayout',
   components: {
@@ -47,6 +49,8 @@ export default defineComponent({
     const menu = useMenuStore()
 
     const menuVisible = ref(false)
+
+    const buscarModulo = ref('')
 
     /*********
      * Stores
@@ -264,6 +268,21 @@ export default defineComponent({
     const nombreEmpresa = computed(() => configuracionGeneralStore.configuracion?.nombre_empresa)
     watchEffect(() => document.title = (notificaciones.value.length ? `(${notificaciones.value.length})` : '') + ' ' + nombreEmpresa.value)
 
+
+
+    //barra de busqueda
+    const menuStore = useMenuStore()
+    const resultadosBusqueda = ref<MenuOption[]>([])
+
+    function filtrarMenu(val: string) {
+      resultadosBusqueda.value = menuStore.links.filter((link: MenuOption) => {
+        const ruta = link.link?.replace('-', ' ')
+        console.log(ruta)
+        return ruta && ruta.toLowerCase().indexOf(val.toLowerCase()) !== -1
+      })
+    }
+
+
     return {
       // logoClaro: `${process.env.API_URL}/storage/configuracion_general/logo_claro.jpeg`,
       logoClaro: computed(() => configuracionGeneralStore.configuracion?.logo_claro),
@@ -304,6 +323,10 @@ export default defineComponent({
       mostrarTransferirTareas: authenticationStore.esCoordinador || authenticationStore.esJefeTecnico,
       notificacionesAgrupadas,
       tituloPagina,
+      buscarModulo,
+      filtrarMenu,
+      resultadosBusqueda,
+      menuStore,
       // idledFor,
       // tiempoInactividad,
       // mostrarAlertaInactividad,

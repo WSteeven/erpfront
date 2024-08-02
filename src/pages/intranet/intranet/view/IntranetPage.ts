@@ -424,6 +424,10 @@ export default defineComponent({
     }
 
 
+    //ACCIONES DE BUSQUEDA DE MODULO
+
+
+
     return {
       logoClaro: computed(
         () => configuracionGeneralStore.configuracion?.logo_claro
@@ -466,7 +470,6 @@ export default defineComponent({
       width: computed(() => ($q.screen.xs ? '100%' : '450px')),
       selfCenterMiddle,
       showBanner,
-      search,
       maskFecha,
       formatearFecha,
       readMore,
