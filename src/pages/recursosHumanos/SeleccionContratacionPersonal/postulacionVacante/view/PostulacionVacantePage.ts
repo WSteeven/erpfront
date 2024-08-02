@@ -1,5 +1,5 @@
 // Dependencies
-import { defineComponent } from 'vue';
+import { defineComponent, ref } from 'vue';
 
 // Components
 import BasicContainer from 'shared/contenedor/modules/basic/view/BasicContainer.vue';
@@ -11,13 +11,14 @@ import { ContenedorSimpleMixin } from 'shared/contenedor/modules/simple/applicat
 import { Postulacion } from '../domain/Postulacion';
 import { PostulacionController } from '../infraestructure/PostulacionController';
 import { userIsAuthenticated } from 'shared/helpers/verifyAuthenticatedUser';
-import { tipoAutenticacion, tiposDocumentosIdentificaciones } from 'config/utils';
+import { convertir_fecha, maskFecha, tipoAutenticacion, tiposDocumentosIdentificaciones } from 'config/utils';
 import { useAuthenticationStore } from 'stores/authentication';
 import { useAuthenticationExternalStore } from 'stores/authenticationExternal';
 import { required } from 'shared/i18n-validators';
 import useVuelidate from '@vuelidate/core';
 import { PaisController } from '../../../../sistema/pais/infraestructure/PaisController';
 import { useFiltrosListadosSelects } from 'shared/filtrosListadosGenerales';
+import { IdentidadGeneroController } from 'pages/medico/gestionarPacientes/modules/fichaPeriodicaPreocupacional/infraestructure/IdentidadGeneroController';
 
 
 export default defineComponent({
@@ -32,11 +33,12 @@ export default defineComponent({
     let store
     const router = useRouter()
     const id = router.currentRoute.value.params.id
-
-    const {paises, filtrarPaises} = useFiltrosListadosSelects(listadosAuxiliares)
+    const identidades = ref()
+    const { paises, filtrarPaises } = useFiltrosListadosSelects(listadosAuxiliares)
 
     cargarVista(async () => {
       await obtenerListados({
+        identidades: new IdentidadGeneroController(),
         paises: new PaisController
       })
 
@@ -56,15 +58,18 @@ export default defineComponent({
       }
 
       paises.value = listadosAuxiliares.paises
+      identidades.value = listadosAuxiliares.identidades
 
     })
 
     const reglas = {
+      correo_personal: { required },
+      fecha_nacimiento: { required },
+      identidad_genero: { required },
+      pais_residencia: { required },
+      pais: { required },
+      telefono: { required },
       tipo_identificacion: { required },
-      telefono: {required},
-      correo_personal: {required},
-      pais: {required},
-      pais_residencia: {required},
     }
 
     const v$ = useVuelidate(reglas, postulacion)
@@ -80,15 +85,22 @@ export default defineComponent({
       postulacion.genero = store.user.genero
     }
 
+    function optionsFecha(date) {
+      const hoy = convertir_fecha(new Date())
+      return date <= hoy
+    }
 
     return {
       mixin, v$,
       postulacion,
       disabled,
       id,
+      optionsFecha,
+      maskFecha,
 
       //listados
       tiposDocumentosIdentificaciones,
+      identidades,
       paises, filtrarPaises,
 
       // funciones

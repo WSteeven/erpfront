@@ -6,7 +6,7 @@ import { defineComponent, ref, computed, Ref, ComputedRef,  watchEffect } from '
 import { useAuthenticationStore } from 'src/stores/authentication'
 import { LocalStorage, useQuasar } from 'quasar'
 import { useMenuStore } from 'src/stores/menu'
-import {  useRouter } from 'vue-router'
+import {  useRoute, useRouter } from 'vue-router'
 import Swal from 'sweetalert2'
 import dayjs from 'dayjs'
 import es from 'dayjs/locale/es'
@@ -84,6 +84,7 @@ export default defineComponent({
      ************/
     const cargando = new StatusEssentialLoading()
     const Router = useRouter()
+    const route = useRoute()
     const tituloPagina = computed(() => mainLayoutStore.tituloPagina)
     const grupo = authenticationStore.user?.grupo
 

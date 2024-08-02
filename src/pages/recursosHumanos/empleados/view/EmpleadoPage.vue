@@ -1625,6 +1625,7 @@
                 :disable="disabled"
                 outlined
                 dense
+                @update:model-value="filtrarMenu"
               >
               </q-input>
             </div>

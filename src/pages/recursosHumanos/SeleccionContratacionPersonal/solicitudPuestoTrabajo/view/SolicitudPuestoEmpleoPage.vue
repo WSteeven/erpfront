@@ -323,6 +323,62 @@
             </q-select>
           </div>
 
+          <!-- Modalidad -->
+          <div class="col-12 col-md-3" >
+            <label class="q-mb-sm block">Modalidad</label>
+            <q-select
+              v-model="solicitud.modalidad"
+              options-dense
+              :disable="disabled"
+              dense
+              outlined
+              use-input
+              use-chips
+              :error="!!v$.modalidad.$errors.length"
+              input-debounce="0"
+              :options="modalidades"
+              >
+              <!-- @filter="filtrarModalidades" -->
+              <template v-slot:error>
+                <div
+                  v-for="error of v$.modalidad.$errors"
+                  :key="error.$uid"
+                >
+                  <div class="error-msg">{{ error.$message }}</div>
+                </div>
+              </template>
+            </q-select>
+          </div>
+
+          <!-- Disponibilidad de viajar -->
+          <div class="col-12 col-md-3 col-sm-3">
+            <label class="q-mb-sm block">¿Disponibilidad de Viajar?</label>
+            <q-toggle
+              :label="solicitud.disponibilidad_viajar ? 'SI' : 'NO'"
+              v-model="solicitud.disponibilidad_viajar"
+              color="primary"
+              keep-color
+              icon="bi-check2-circle"
+              unchecked-icon="clear"
+              :disable="disabled"
+            />
+          </div>
+
+          <!-- Disponibilidad de viajar -->
+          <div class="col-12 col-md-3 col-sm-3">
+            <label class="q-mb-sm block">¿Debe poseer licencia de conducir?</label>
+            <q-toggle
+              :label="solicitud.requiere_licencia ? 'SI' : 'NO'"
+              v-model="solicitud.requiere_licencia"
+              color="primary"
+              keep-color
+              icon="bi-check2-circle"
+              unchecked-icon="clear"
+              :disable="disabled"
+            />
+          </div>
+
+
           <!-- Manejo de archivos -->
           <div
             class="col-12 q-mb-md"

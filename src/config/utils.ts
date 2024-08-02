@@ -567,11 +567,6 @@ export function convertir_fecha_hora(fecha) {
   const fecha_convert = new Date(anio, mes, dia, tiempo[0], tiempo[1], 0)
   return fecha_convert
 }
-export const niveles_academicos = [
-  { nombre: 'ESTUDIO PRIMARIO' },
-  { nombre: 'ESTUDIO SECUNDARIO' },
-  { nombre: 'TITULO SUPERIOR' },
-]
 export const tiposDocumentosIdentificaciones = [
   { nombre: 'Cedula', value:'CEDULA' },
   { nombre: 'R.U.C.' , value:'RUC' },

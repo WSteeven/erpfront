@@ -76,6 +76,13 @@ export default defineComponent({
     const { cargos, filtrarCargos } =
       useFiltrosListadosSelects(listadosAuxiliares)
 
+      const modalidades = [
+        'Presencial',
+        'Remoto',
+        'Híbrido',
+        // 'Tiempo completo',
+        // 'Tiempo parcial',
+      ]
 
 
     /****************************************************************************
@@ -151,6 +158,7 @@ export default defineComponent({
         required: requiredIf(() => solicitud.requiere_formacion_academica),
       },
       cargo: { required },
+      modalidad: { required },
     }
 
     const v$ = useVuelidate(reglas, solicitud)
@@ -342,6 +350,7 @@ export default defineComponent({
       idRegistro,
 
       // listados
+      modalidades,
       cargos,
       filtrarCargos,
       anios_experiencia,
