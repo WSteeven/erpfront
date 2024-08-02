@@ -176,11 +176,12 @@
                 padding: 20px;
               "
             >
-              <a
+              <q-btn
                 v-for="(modulo, index) in modulosPermitidos"
                 :key="index"
-                :href="modulo.link"
+                :to="modulo.link"
                 class="icon-link-modulos"
+                flat unelevated rounded dense
                 style="margin: 10px"
               >
                 <q-icon
@@ -193,7 +194,7 @@
                     modulo.title
                   }}</q-tooltip>
                 </q-icon>
-              </a>
+              </q-btn>
             </q-card-section>
           </q-card>
         </div>
@@ -610,7 +611,7 @@
   </q-page>
 </template>
 
-<style>
+<style scoped>
 @import 'qalendar/dist/style.css';
 
 .custom-caption {

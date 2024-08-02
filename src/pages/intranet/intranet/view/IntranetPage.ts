@@ -56,6 +56,7 @@ interface Evento {
 }
 
 export default defineComponent({
+  name:'intranet',
   components: {
     ModalesEntidad,
     LottiePlayer: Vue3Lottie,
@@ -191,8 +192,8 @@ export default defineComponent({
     });
 
     function verEvento(evento) {
-      console.log('evento clickado')
-      console.log('evento clickado', evento)
+      // console.log('evento clickado')
+      // console.log('evento clickado', evento)
       eventoSeleccionado.value = evento.data;
       dialogoVisible.value = true;
     }
@@ -219,7 +220,7 @@ export default defineComponent({
       return description
     }
 
-    function verNoticiaCompleta(id: number,noticias: Noticia[]): Noticia | null {
+    function verNoticiaCompleta(id: number, noticias: Noticia[]): Noticia | null {
       const noticia = noticias.find(noticia => noticia.id === id)
       if (noticia) {
         return noticia
@@ -266,7 +267,6 @@ export default defineComponent({
       modulosPermitidos.value = menuStore.links.filter(
         (link: MenuOption) => link.can
       )
-
       // Mapear cada enlace para ajustar los enlaces de submenús
       modulosPermitidos.value = modulosPermitidos.value.map(modulo => {
         if (modulo.children && Array.isArray(modulo.children)) {
@@ -290,7 +290,7 @@ export default defineComponent({
     }
 
     async function consultarEmpleadosDepartamento(departamento_id: number) {
-      console.log(store.user, departamento_id)
+      // console.log(store.user, departamento_id)
       try {
         cargando.activar()
         const idNumerico = Number(departamento_id)
@@ -419,6 +419,7 @@ export default defineComponent({
       }
     }
 
+
     return {
       logoClaro: computed(
         () => configuracionGeneralStore.configuracion?.logo_claro
@@ -477,8 +478,8 @@ export default defineComponent({
       modalNoticia,
       eventosFormateados,
       configuracion,
-      cerrarModal(){
-        modalNoticia.value =false
+      cerrarModal() {
+        modalNoticia.value = false
       }
     }
   }

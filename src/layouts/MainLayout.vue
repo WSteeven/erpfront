@@ -475,6 +475,7 @@
         <!-- Aplica keep-alive aquí -->
         <keep-alive
           :exclude="[
+            'intranet',
             'transacciones_ingresos',
             'Egresos',
             'OrdenCompraPage',
