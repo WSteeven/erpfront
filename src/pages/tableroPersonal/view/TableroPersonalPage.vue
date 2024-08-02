@@ -1,7 +1,7 @@
 <template>
   <q-page padding>
     <div class="text-center text-shadow q-py-md">
-      <div class="text-subtitle2 q-mb-md">{{ fecha }}</div>
+      <!-- <div class="text-subtitle2 q-mb-md">{{ fecha }}</div> -->
       <div class="text-subtitle1 q-mb-md">
         Bienvenido, {{ store.nombreUsuario }}.
       </div>

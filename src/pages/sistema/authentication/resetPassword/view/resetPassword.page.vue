@@ -44,9 +44,9 @@
             >
               <template v-slot:append>
                 <q-icon
-                  :name="isPwd ? 'visibility_off' : 'visibility'"
+                  :name="isPwdold ? 'visibility_off' : 'visibility'"
                   class="cursor-pointer"
-                  @click="isPwd = !isPwdold"
+                  @click="isPwdold = !isPwdold"
                 />
               </template>
             </q-input>
@@ -83,9 +83,9 @@
             >
               <template v-slot:append>
                 <q-icon
-                  :name="isPwd ? 'visibility_off' : 'visibility'"
+                  :name="isPwdConfirm ? 'visibility_off' : 'visibility'"
                   class="cursor-pointer"
-                  @click="isPwd = !isPwdConfirm"
+                  @click="isPwdConfirm = !isPwdConfirm"
                 />
               </template>
             </q-input>

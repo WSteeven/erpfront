@@ -40,6 +40,7 @@ import { CustomActionTable } from 'components/tables/domain/CustomActionTable'
 import { filtarJefeImediato, filtrarEmpleadosPorRoles } from 'shared/utils'
 import { format } from '@formkit/tempo'
 import { CantonController } from 'sistema/ciudad/infraestructure/CantonControllerontroller'
+import { empresas } from 'config/utils/sistema'
 export default defineComponent({
   components: { TabLayoutFilterTabs2, ImagenComprimidaComponent },
   setup() {
@@ -96,9 +97,9 @@ export default defineComponent({
       if (parseInt(gasto.detalle !== null ? gasto.detalle : '') === 6) {
         return (
           gasto.sub_detalle!.findIndex((subdetalle) => subdetalle === 96) >
-            -1 ||
+          -1 ||
           gasto.sub_detalle!.findIndex((subdetalle) => subdetalle === 97) >
-            -1 ||
+          -1 ||
           gasto.sub_detalle!.findIndex((subdetalle) => subdetalle === 24) > -1
         )
       } else {
@@ -120,20 +121,26 @@ export default defineComponent({
     const mascara_placa = 'AAA-####'
 
     const cantidadPermitidaFactura = computed(() => {
-      let cantidad = 17
+      switch (process.env.VUE_APP_ID) {
+        case empresas.PERU:
+          return 13
+        default:
+          let cantidad = 17
 
-      if (esFactura.value === false) {
-        cantidad = 0
+          if (esFactura.value === false) {
+            cantidad = 0
+          }
+          const index = numFacturaObjeto
+            .map((object) => object.detalle)
+            .indexOf(parseInt(gasto.detalle !== null ? gasto.detalle : ''))
+          cantidad =
+            numFacturaObjeto[index] !== undefined
+              ? numFacturaObjeto[index].cantidad
+              : 15
+          return cantidad
       }
-      const index = numFacturaObjeto
-        .map((object) => object.detalle)
-        .indexOf(parseInt(gasto.detalle !== null ? gasto.detalle : ''))
-      cantidad =
-        numFacturaObjeto[index] !== undefined
-          ? numFacturaObjeto[index].cantidad
-          : 15
-      return cantidad
     })
+
     const mostarPlaca = computed(() => {
       return parseInt(gasto.detalle !== null ? gasto.detalle : '') == 16 ||
         parseInt(gasto.detalle !== null ? gasto.detalle : '') == 24
@@ -141,15 +148,20 @@ export default defineComponent({
         : false
     })
     const mascaraFactura = computed(() => {
-      let mascara = '###-###-#############'
-      const index = numFacturaObjeto
-        .map((object) => object.detalle)
-        .indexOf(parseInt(gasto.detalle !== null ? gasto.detalle : ''))
-      mascara =
-        numFacturaObjeto[index] !== undefined
-          ? numFacturaObjeto[index].mascara
-          : '###-###-#########'
-      return mascara
+      switch (process.env.VUE_APP_ID) {
+        case empresas.PERU:
+          return 'NNNN-########'
+        default:
+          let mascara = '###-###-#############'
+          const index = numFacturaObjeto
+            .map((object) => object.detalle)
+            .indexOf(parseInt(gasto.detalle !== null ? gasto.detalle : ''))
+          mascara =
+            numFacturaObjeto[index] !== undefined
+              ? numFacturaObjeto[index].mascara
+              : '###-###-#########'
+          return mascara
+      }
     })
 
     /*************
@@ -169,7 +181,7 @@ export default defineComponent({
         required,
       },
       ruc: {
-        minLength: minLength(13),
+        minLength: minLength(11),
         maxLength: maxLength(13),
         required: requiredIf(() => esFactura.value),
       },
@@ -271,15 +283,9 @@ export default defineComponent({
           },
         },
       })
-      autorizaciones_especiales.value = await filtrarEmpleadosPorRoles(
-        listadosAuxiliares.empleados,
-        [rolesSistema.autorizador]
-      )
-      autorizaciones_especiales.value.unshift(
-        await filtarJefeImediato(listadosAuxiliares.empleados)
-      )
-      listadosAuxiliares.autorizaciones_especiales =
-        autorizaciones_especiales.value
+      autorizaciones_especiales.value = await filtrarEmpleadosPorRoles(listadosAuxiliares.empleados,[rolesSistema.autorizador])
+      autorizaciones_especiales.value.unshift(await filtarJefeImediato(listadosAuxiliares.empleados))
+      listadosAuxiliares.autorizaciones_especiales =autorizaciones_especiales.value
       beneficiarios.value = listadosAuxiliares.empleados
       listadosAuxiliares.beneficiarios = beneficiarios.value
       listadosAuxiliares.proyectos.unshift({ id: 0, nombre: 'Sin Proyecto' })
@@ -423,7 +429,7 @@ export default defineComponent({
       }
       update(() => {
         const needle = val.toLowerCase()
-        sub_detalles.value = listadoSubdetalles.value.filter((v) =>v.descripcion.toLowerCase().indexOf(needle) > -1)
+        sub_detalles.value = listadoSubdetalles.value.filter((v) => v.descripcion.toLowerCase().indexOf(needle) > -1)
       })
     }
     /**Filtro de proyectos */
@@ -560,46 +566,46 @@ export default defineComponent({
 
           break
         case 'sub_detalle':
-            const sub_detalles = (
-              await new SubDetalleFondoController().listar({
-                campos: 'id,descripcion',
-              })
-            ).result
-            LocalStorage.set('sub_detalles', JSON.stringify(sub_detalles))
-            setTimeout(
-              () =>
-                setInterval(() => {
-                  sub_detalles.value =
-                    LocalStorage.getItem('sub_detalles') == null
-                      ? []
-                      : JSON.parse(
-                          LocalStorage.getItem('sub_detalles')!.toString()
-                        )
-                  listadosAuxiliares.sub_detalles = sub_detalles.value
-                }, 100),
-              250
-            )
+          const sub_detalles = (
+            await new SubDetalleFondoController().listar({
+              campos: 'id,descripcion',
+            })
+          ).result
+          LocalStorage.set('sub_detalles', JSON.stringify(sub_detalles))
+          setTimeout(
+            () =>
+              setInterval(() => {
+                sub_detalles.value =
+                  LocalStorage.getItem('sub_detalles') == null
+                    ? []
+                    : JSON.parse(
+                      LocalStorage.getItem('sub_detalles')!.toString()
+                    )
+                listadosAuxiliares.sub_detalles = sub_detalles.value
+              }, 100),
+            250
+          )
 
-            break
-            case 'canton':
-              const cantones = (
-                await new CantonController().listar({
-                  campos: 'id,canton',
-                })
-              ).result
-              LocalStorage.set('cantones', JSON.stringify(cantones))
-              setTimeout(
-                () =>
-                  setInterval(() => {
-                    cantones.value =
-                      LocalStorage.getItem('cantones') == null
-                        ? []
-                        : JSON.parse(LocalStorage.getItem('cantones')!.toString())
-                    listadosAuxiliares.cantones = cantones.value
-                  }, 100),
-                250
-              )
-              break
+          break
+        case 'canton':
+          const cantones = (
+            await new CantonController().listar({
+              campos: 'id,canton',
+            })
+          ).result
+          LocalStorage.set('cantones', JSON.stringify(cantones))
+          setTimeout(
+            () =>
+              setInterval(() => {
+                cantones.value =
+                  LocalStorage.getItem('cantones') == null
+                    ? []
+                    : JSON.parse(LocalStorage.getItem('cantones')!.toString())
+                listadosAuxiliares.cantones = cantones.value
+              }, 100),
+            250
+          )
+          break
       }
     }
 

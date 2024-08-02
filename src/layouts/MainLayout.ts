@@ -1,7 +1,6 @@
 
 // Dependencias
 import { Notificacion } from 'pages/administracion/notificaciones/domain/Notificacion'
-import EssentialLoading from 'components/loading/view/EssentialLoading.vue'
 import { useNotificationRealtimeStore } from 'stores/notificationRealtime'
 import { defineComponent, ref, computed, Ref, ComputedRef,  watchEffect } from 'vue'
 import { useAuthenticationStore } from 'src/stores/authentication'
@@ -15,6 +14,7 @@ import relativeTime from 'dayjs/plugin/relativeTime'
 
 // Componentes
 import ScrollToTopButton from 'components/buttonSubmits/ScrollToTopButton.vue'
+import EssentialLoading from 'components/loading/view/EssentialLoading.vue'
 import ModalesEntidad from 'components/modales/view/ModalEntidad.vue'
 import FooterComponent from 'components/FooterComponent.vue'
 import EssentialLink from 'components/EssentialLink.vue'
@@ -36,9 +36,10 @@ export default defineComponent({
   components: {
     EssentialLink,
     EssentialLoading,
-    FooterComponent,
+
     ModalesEntidad,
     ScrollToTopButton,
+    FooterComponent,
   },
 
   setup() {
@@ -170,7 +171,8 @@ export default defineComponent({
 
     type tipo = 'center middle' | 'top start'
     const selfCenterMiddle: ComputedRef<tipo> = computed(() =>
-      $q.screen.xs ? 'center middle' : 'top start'
+      'center middle'
+      // $q.screen.xs ? 'center middle' : 'top start'
     )
 
     /**********
@@ -268,6 +270,7 @@ export default defineComponent({
       enCamino,
       motivo,
       modales,
+      route,
       abrirMovilizacionSubtarea,
       abrirTransferirTareas,
       links: menu.links,

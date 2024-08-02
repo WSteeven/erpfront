@@ -14,10 +14,13 @@ export function useNotificaciones() {
   const base = {
     html: true,
     textColor: $q.dark.isActive ? 'white' : 'black',
-    position: 'bottom-right',
-    multiLine: true,
-    progress: true,
-    classes: 'rounded-tabpanel shadow-notification bg-desenfoque border-white',
+    position: 'bottom',
+    // multiLine: true,
+    // progress: true,
+    classes: 'rounded-tabpanel q-py-sm shadow-notification bg-desenfoque border-white',
+    actions: [
+      { icon: 'close', color: 'negative', round: true, handler: () => { /* ... */ } }
+    ]
   }
 
   function notificarInformacion(mensaje: string | string[]) {
@@ -28,6 +31,9 @@ export function useNotificaciones() {
       message: '<b>Información</b>',
       caption: obtenerMensaje(mensaje),
       progressClass: 'text-light-blue-7',
+      actions: [
+        { label: 'Cerrar', color: 'light-blue-7', handler: () => { /* ... */ } }
+      ],
     })
   }
 

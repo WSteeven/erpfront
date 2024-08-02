@@ -128,6 +128,7 @@ export const tabOptionsVacaciones: TabOption[] = [
   { label: 'Aprobados', value: '2' },
   { label: 'Cancelados', value: '3' },
 ]
+
 export const tabOptionsPermiso: TabOption[] = [
   { label: 'Pendiente', value: '1' },
   { label: 'Aprobados', value: '2' },
@@ -577,6 +578,13 @@ export const tiposDocumentosIdentificaciones = [
   { nombre: 'Pasaporte',value: 'PASAPORTE' },
 ]
 
+export const niveles_academicos = [
+  { nombre: 'NINGUNA' },
+  { nombre: 'BÁSICA' },
+  { nombre: 'BACHILLER' },
+  { nombre: 'TERCER NIVEL' },
+  { nombre: 'CUARTO NIVEL' },
+]
 
 export const tipos_sangre = [
   { nombre: 'A +' },
@@ -662,6 +670,12 @@ export const tabOptionsValoresAcreditar: TabOption[] = [
   { label: 'Inactivas', value: '0' },
 ]
 
+// INTRANET
+
+//Noticias
+export const tabOptionsNoticias: TabOption[] = [
+  { label: 'Noticias Registradas', value: '1' },
+]
 export const selectOptionsSiNo: SelectOption[] = [
   { label: 'Sí', value: true },
   { label: 'No', value: false },

@@ -268,7 +268,7 @@ export function obtenerFechaActual(formato = 'DD-MM-YYYY') {
  * especificado de años, meses y días a la fecha de entrada.
  */
 export function sumarFechas(fechaString: string, anios: number, meses: number, dias: number, formato = 'DD-MM-YYYY') {
-  // Paso 1: Se divide el string de fecha en dia, mes, año y se construye la fecha en formato valido de fecha 
+  // Paso 1: Se divide el string de fecha en dia, mes, año y se construye la fecha en formato valido de fecha
   const partesFecha = fechaString.split('-')
   const fecha = new Date(Number(partesFecha[2]), Number(partesFecha[1]) - 1, Number(partesFecha[0]))
 
@@ -810,6 +810,7 @@ export function filtrarEmpleadosPorRoles(empleados, roles) {
   })
   return filtrados
 }
+
 export function filtarVisualizacionEmpleadosSaldos(empleados) {
   if (authenticationStore.can('puede.buscar.tecnicos')) {
     const filtrados_busqueda =
@@ -857,7 +858,8 @@ export const mapearOptionsSelect = (listadoOpciones: { id: number, nombre: strin
 
 export const copiarAlPortapapeles = async (texto: string) => {
   const { notificarInformacion, notificarError } = useNotificaciones()
-  
+  console.log(texto)
+
   try {
     await navigator.clipboard.writeText(texto);
     notificarInformacion('Texto copiado al portapapeles');
@@ -865,3 +867,4 @@ export const copiarAlPortapapeles = async (texto: string) => {
     notificarError('Error al intentar copiar el texto al portapapeles');
   }
 }
+

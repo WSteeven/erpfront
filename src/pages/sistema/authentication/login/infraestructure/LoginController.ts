@@ -21,11 +21,12 @@ export class LoginController {
       // console.log(existeYEsArreglo)
 
       // if (typeof usuario.cargo === 'string' && [cargosSistema.tecnico_lider, cargosSistema.tecnico_secretario].includes(usuario.cargo)) {
-      if (roles?.includes(rolesSistema.tecnico_lider)) {
-        this.Router.replace({ name: 'trabajo_agendado' })
-      } else {
-        this.Router.replace('/')
-      }
+        this.Router.replace('/intranet')
+      // if (roles?.includes(rolesSistema.tecnico_lider)) {
+      //   this.Router.replace({ name: 'trabajo_agendado' })
+      // } else {
+      //   this.Router.replace('/')
+      // }
 
       return usuario
     } catch (error: unknown) {

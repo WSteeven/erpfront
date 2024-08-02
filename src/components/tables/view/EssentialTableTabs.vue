@@ -178,7 +178,7 @@ export default defineComponent({
   props: {
     mixin: {
       type: Object as () => ContenedorSimpleMixin<EntidadAuditable>,
-      required: true,
+      required: false,
     },
     titulo: {
       type: String,

@@ -24,8 +24,8 @@ export class ComportamientoModales<T extends ModalesEntidad<T>> {
     const componente = computed(() => this.componenteActual.value?.component)
     const titulo = computed(() => this.componenteActual.value?.titulo)
     const abierto = computed({
-      set: (valor) => (this.abierto.value = valor),
-      get: () => this.abierto.value,
+      set: valor => (this.abierto.value = valor),
+      get: () => this.abierto.value
     })
     const datos = computed(() => this.componenteActual.value?.datos)
 

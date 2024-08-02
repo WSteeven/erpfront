@@ -64,6 +64,7 @@ export default defineComponent({
         } = useFiltrosListadosSelects(listadosAuxiliares)
         const usuarioDefault = ref()
         const bitacoraDefault = ref()
+        const puedeEditar = ref(false)
         const bloquear_km_tanque = ref(false)
         const tabDefecto = ref('0')
         const axios = AxiosHttpRepository.getInstance()
@@ -159,6 +160,8 @@ export default defineComponent({
         function filtrarBitacoras(tab: string) {
             tabDefecto.value = tab
             listar({ firmada: tab, chofer_id: store.user.id })
+
+            puedeEditar.value = tabDefecto.value !== '1' || store.esAdministradorVehiculos
         }
         /**
          * La función obtiene el vehículo asignado para el usuario actual con un estado específico.
@@ -354,6 +357,7 @@ export default defineComponent({
             tabDefecto,
             tabOptionsBitacoras,
             bloquear_km_tanque,
+            puedeEditar,
 
             //listados
             vehiculos, filtrarVehiculos,

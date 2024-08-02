@@ -51,6 +51,7 @@ export default defineComponent({
       confirmar,
       prompt,
       notificarCorrecto,
+      notificarAdvertencia,
       notificarError,
     } = useNotificaciones()
     const key_enter = ref(0)
@@ -119,6 +120,7 @@ export default defineComponent({
       if (valor_pago <= 200) {
         for (let index = 1; index <= prestamo.plazo; index++) {
           const plazo = {
+            id:index-1,
             num_cuota: index,
             fecha_vencimiento: calcular_fechas(index, 'meses'),
             valor_couta: (valor_cuota / plazo_prestamo).toFixed(2),
@@ -236,16 +238,17 @@ export default defineComponent({
       }
     }
 
-    const botonmodificar_couta: CustomActionTable = {
+    const btnModificarCouta: CustomActionTable = {
       titulo: 'editar',
       icono: 'bi-pencil-square',
       color: 'secondary',
       accion: ({ posicion }) => {
-        modificar_couta(posicion)
+        console.log(posicion)
+        modificarCouta(posicion)
       },
       visible: () => (accion.value == 'NUEVO' ? true : false),
     }
-    const botonpagar_couta: CustomActionTable = {
+    const btnPagarCouta: CustomActionTable = {
       titulo: 'pagar',
       icono: 'bi-cash',
       color: 'primary',
@@ -254,7 +257,7 @@ export default defineComponent({
       },
       visible: () => (accion.value == 'EDITAR' ? true : false),
     }
-    const botonaplazar_couta: CustomActionTable = {
+    const btnAplazarCouta: CustomActionTable = {
       titulo: 'Aplazar',
       icono: 'bi-cash-stack',
       color: 'warning',
@@ -263,7 +266,7 @@ export default defineComponent({
       },
       visible: () => (accion.value == 'EDITAR' ? true : false),
     }
-    const botoneditar_total_couta: CustomActionTable = {
+    const btnEditarTotalCouta: CustomActionTable = {
       titulo: 'Editar Valor a Pagar',
       icono: 'bi-pencil-square',
       color: 'warning',
@@ -289,16 +292,17 @@ export default defineComponent({
         .padStart(2, '0')}`
       prestamo.plazos![indice_couta].fecha_vencimiento = nuevaFechaStr
     }
-    function modificar_couta(indice_couta) {
-      confirmar('¿Está seguro de modificar la couta?', () => {
+    function modificarCouta(indice_couta) {
+      confirmar('¿Está seguro de modificar la couta N'+(indice_couta+1)+'?', () => {
         const data: CustomActionPrompt = {
           titulo: 'Modificar couta',
           mensaje: 'Ingrese nuevo valor de la couta',
           accion: async (data) => {
             try {
-              const valor_prestamo = prestamo.monto == null ? 0 : prestamo.monto
+              const valor_prestamo = prestamo.monto ?? 0 // == null ? 0 : prestamo.monto
               if (data > valor_prestamo) {
                 esMayorPrestamo.value = true
+                notificarAdvertencia('La suma de todas las coutas no debe superar al valor del prestamo')
               }
               prestamo.plazos![indice_couta].valor_couta = data
               calcular_valores_prestamo_indice(indice_couta, valor_prestamo)
@@ -503,10 +507,10 @@ export default defineComponent({
           parseInt(sueldo_basico.value) * 2 +
           ')',
       ],
-      botonmodificar_couta,
-      botonpagar_couta,
-      botoneditar_total_couta,
-      botonaplazar_couta,
+      btnModificarCouta,
+      btnPagarCouta,
+      btnEditarTotalCouta,
+      btnAplazarCouta,
       btnEliminarPrestamoEmpresarial,
       esNuevo,
       configuracionColumnasPlazoPrestamo,
