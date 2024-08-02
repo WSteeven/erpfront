@@ -190,7 +190,7 @@
                   color="blue-grey-9"
                   size="40px"
                 >
-                  <q-tooltip anchor="top middle" self="bottom middle">{{
+                  <q-tooltip anchor="bottom middle" self="bottom middle">{{
                     modulo.title
                   }}</q-tooltip>
                 </q-icon>
@@ -532,7 +532,7 @@
                           "
                         />
                         <q-badge floating class="bottom-left" color="orange">
-                          {{ new Date(empleado.fecha_nacimiento).getDate() }}
+                          {{ new Date(empleado.fecha_nacimiento).getDate() + 1 }}
                         </q-badge>
                         <q-tooltip anchor="bottom middle" self="bottom middle">
                           {{ empleado.nombres }} {{ empleado.apellidos }}
@@ -661,7 +661,7 @@ h5 {
 
 .icon-content-modulos {
   cursor: pointer;
-  margin: 0 10px;
+  justify-content: center;
   font-size: 100px;
 }
 
@@ -763,7 +763,7 @@ h5 {
   }
 
   .icon-content-modulos {
-    font-size: 80px;
+    font-size: 12px;
   }
 
   .noticias-image {

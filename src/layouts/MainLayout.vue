@@ -4,7 +4,7 @@
     <q-header class="bg-desenfoque">
       <q-toolbar class="row justify-between q-py-sm border-bottom">
         <q-btn
-        v-if="route.name!=='intranet'"
+          v-if="route.name !== 'intranet'"
           dense
           aria-label="Menu"
           @click="toggleLeftDrawer"
@@ -42,16 +42,16 @@
           </svg>
         </q-btn>
         <img
-        v-if="route.name==='intranet'"
+          v-if="route.name === 'intranet'"
           :src="!$q.dark.isActive ? logoClaro : logoOscuro"
           height="30"
-          class="custom-shadow "
+          class="custom-shadow"
         />
         <span
           class="row"
           :class="{
             'q-gutter-x-sm': $q.screen.xs,
-            'q-gutter-x-md': !$q.screen.xs,
+            'q-gutter-x-md': !$q.screen.xs
           }"
         >
           <!-- <span
@@ -61,177 +61,173 @@
               'q-gutter-x-sm': !$q.screen.xs,
             }"
           > -->
-            <!-- Boton transferir tareas -->
-            <q-btn
-              v-if="mostrarTransferirTareas"
-              dense
-              unelevated
-              no-caps
-              class="q-px-sm bg-grey-4d"
-              @click="abrirTransferirTareas()"
+          <!-- Boton transferir tareas -->
+          <q-btn
+            v-if="mostrarTransferirTareas"
+            dense
+            unelevated
+            no-caps
+            class="q-px-sm bg-grey-4d"
+            @click="abrirTransferirTareas()"
+          >
+            <q-icon
+              name="bi-arrow-left-right"
+              :class="{ 'q-mx-sm': !$q.screen.xs }"
+              class="bg-icon color-icon-navbar q-pa-xs rounded-field"
+              size="xs"
+            ></q-icon>
+            <span v-if="!$q.screen.xs" class="text-color"
+              >Transferir tareas activas</span
             >
-              <q-icon
-                name="bi-arrow-left-right"
-                :class="{ 'q-mx-sm': !$q.screen.xs }"
-                class="bg-icon color-icon-navbar q-pa-xs rounded-field"
-                size="xs"
-              ></q-icon>
-              <span v-if="!$q.screen.xs" class="text-color"
-                >Transferir tareas activas</span
+            <q-tooltip class="bg-dark">Transferir tareas activas</q-tooltip>
+          </q-btn>
+
+          <!-- Boton movilizacion -->
+          <q-btn
+            dense
+            unelevated
+            no-caps
+            class="q-px-sm"
+            @click="abrirMovilizacionSubtarea()"
+          >
+            <q-icon
+              name="bi-car-front"
+              :class="{ 'q-mr-sm': !$q.screen.xs }"
+              class="bg-icon color-icon-navbar q-pa-xs rounded-field"
+              size="xs"
+            ></q-icon>
+            <span v-if="!$q.screen.xs" class="text-color">Movilización</span>
+            <q-tooltip class="bg-dark">Movilización</q-tooltip>
+          </q-btn>
+
+          <!-- Boton Mi bodega -->
+          <q-btn
+            dense
+            unelevated
+            no-caps
+            class="q-px-sm"
+            :to="{ name: 'mi_bodega' }"
+          >
+            <q-icon
+              name="bi-box-seam"
+              :class="{ 'q-mr-sm': !$q.screen.xs }"
+              class="bg-icon color-icon-navbar q-pa-xs rounded-field"
+              size="xs"
+            ></q-icon>
+            <span v-if="!$q.screen.xs" class="text-color">Mi bodega</span>
+            <q-tooltip class="bg-dark">Mi bodega</q-tooltip>
+          </q-btn>
+
+          <!-- <q-separator vertical inset></q-separator> -->
+
+          <!-- Boton notificaciones -->
+          <q-btn
+            dense
+            unelevated
+            no-caps
+            class="q-pl-sm"
+            @click.self="mostrarNotificaciones = true"
+          >
+            <q-icon
+              name="bi-bell"
+              :class="{ 'q-mr-sm': !$q.screen.xs }"
+              class="bg-icon color-icon-navbar q-pa-xs rounded-field"
+              size="xs"
+            ></q-icon>
+
+            <!-- <span v-if="!$q.screen.xs">Notificaciones</span> -->
+            <q-tooltip class="bg-dark">Notificaciones</q-tooltip>
+
+            <q-badge v-if="notificaciones.length > 0" color="positive" floating
+              ><span>{{ notificaciones.length }}</span>
+            </q-badge>
+
+            <q-menu
+              v-model="mostrarNotificaciones"
+              :self="selfCenterMiddle"
+              transition-show="slide-left"
+              transition-hide="slide-right"
+              :style="{ width: width }"
+              class="window-height bg-desenfoque-2 custom-shadow"
+              max-height="100vh"
+              anchor="center middle"
+            >
+              <div class="full-width text-right q-pr-md q-mb-md">
+                <q-btn
+                  icon="bi-chevron-right"
+                  round
+                  dense
+                  unelevated
+                  color="primary"
+                  class="q-mt-sm"
+                  @click="mostrarNotificaciones = false"
+                ></q-btn>
+              </div>
+
+              <q-list
+                style="min-width: 140px; max-width: 450px"
+                class="q-px-xs"
               >
-              <q-tooltip class="bg-dark">Transferir tareas activas</q-tooltip>
-            </q-btn>
+                <q-item
+                  class="q-mb-md text-grey-7"
+                  v-if="notificaciones.length === 0"
+                >
+                  <q-avatar>
+                    <q-icon name="bi-bell-slash"></q-icon>
+                  </q-avatar>
+                  <q-item-section>
+                    <q-item-label>No tienes notificaciones nuevas</q-item-label>
+                  </q-item-section></q-item
+                >
 
-            <!-- Boton movilizacion -->
-            <q-btn
-              dense
-              unelevated
-              no-caps
-              class="q-px-sm"
-              @click="abrirMovilizacionSubtarea()"
-            >
-              <q-icon
-                name="bi-car-front"
-                :class="{ 'q-mr-sm': !$q.screen.xs }"
-                class="bg-icon color-icon-navbar q-pa-xs rounded-field"
-                size="xs"
-              ></q-icon>
-              <span v-if="!$q.screen.xs" class="text-color">Movilización</span>
-              <q-tooltip class="bg-dark">Movilización</q-tooltip>
-            </q-btn>
-
-            <!-- Boton Mi bodega -->
-            <q-btn
-              dense
-              unelevated
-              no-caps
-              class="q-px-sm"
-              :to="{ name: 'mi_bodega' }"
-            >
-              <q-icon
-                name="bi-box-seam"
-                :class="{ 'q-mr-sm': !$q.screen.xs }"
-                class="bg-icon color-icon-navbar q-pa-xs rounded-field"
-                size="xs"
-              ></q-icon>
-              <span v-if="!$q.screen.xs" class="text-color">Mi bodega</span>
-              <q-tooltip class="bg-dark">Mi bodega</q-tooltip>
-            </q-btn>
-
-            <!-- <q-separator vertical inset></q-separator> -->
-
-            <!-- Boton notificaciones -->
-            <q-btn
-              dense
-              unelevated
-              no-caps
-              class="q-pl-sm"
-              @click.self="mostrarNotificaciones = true"
-            >
-              <q-icon
-                name="bi-bell"
-                :class="{ 'q-mr-sm': !$q.screen.xs }"
-                class="bg-icon color-icon-navbar q-pa-xs rounded-field"
-                size="xs"
-              ></q-icon>
-
-              <!-- <span v-if="!$q.screen.xs">Notificaciones</span> -->
-              <q-tooltip class="bg-dark">Notificaciones</q-tooltip>
-
-              <q-badge
-                v-if="notificaciones.length > 0"
-                color="positive"
-                floating
-                ><span>{{ notificaciones.length }}</span>
-              </q-badge>
-
-              <q-menu
-                v-model="mostrarNotificaciones"
-                :self="selfCenterMiddle"
-                transition-show="jump-down"
-                transition-hide="jump-out"
-                :style="{ 'min-width': width }"
-                class="window-height bg-desenfoque custom-shadow"
-                max-height="100vh"
-              >
-                <!-- anchor="center middle" -->
-                <div class="full-width text-right q-pr-md q-mb-md">
-                  <q-btn
-                    icon="bi-x"
-                    round
-                    dense
-                    unelevated
-                    outline
-                    color="grey-8"
-                    @click="mostrarNotificaciones = false"
-                  ></q-btn>
-                </div>
-                <q-list
-                  style="min-width: 140px; max-width: 450px"
-                  class="q-px-xs"
+                <q-expansion-item
+                  v-for="titulo in Object.keys(notificacionesAgrupadas)"
+                  :key="titulo"
+                  class="overflow-hidden q-mb-sm expansion"
+                  :label="`${titulo} (${notificacionesAgrupadas[titulo].length})`"
+                  header-class="text-bold bg-header-collapse text-primary full-width"
+                  icon="bi-dot"
                 >
                   <q-item
-                    class="q-mb-md text-grey-7"
-                    v-if="notificaciones.length === 0"
+                    v-for="notificacion in notificacionesAgrupadas[titulo]"
+                    :key="notificacion.id"
+                    :to="notificacion.link"
                   >
-                    <q-avatar>
-                      <q-icon name="bi-bell-slash"></q-icon>
-                    </q-avatar>
-                    <q-item-section>
-                      <q-item-label
-                        >No tienes notificaciones nuevas</q-item-label
-                      >
-                    </q-item-section></q-item
-                  >
+                    <q-item-section avatar>
+                      <q-icon
+                        color="grey-8"
+                        :name="
+                          obtenerIcono.obtener(notificacion.tipo_notificacion)
+                        "
+                      />
+                    </q-item-section>
 
-                  <q-expansion-item
-                    v-for="titulo in Object.keys(notificacionesAgrupadas)"
-                    :key="titulo"
-                    class="overflow-hidden q-mb-sm expansion"
-                    :label="`${titulo} (${notificacionesAgrupadas[titulo].length})`"
-                    header-class="text-bold bg-header-collapse text-primary full-width"
-                    icon="bi-dot"
-                  >
-                    <q-item
-                      v-for="notificacion in notificacionesAgrupadas[titulo]"
-                      :key="notificacion.id"
-                      :to="notificacion.link"
-                    >
-                      <q-item-section avatar>
-                        <q-icon
-                          color="grey-8"
-                          :name="
-                            obtenerIcono.obtener(notificacion.tipo_notificacion)
-                          "
-                        />
-                      </q-item-section>
+                    <q-item-section class="full-width">
+                      {{ notificacion.mensaje }}
+                      <span class="block text-grey-8 text-weight-regular">
+                        {{ dayjs(notificacion.created_at).fromNow() }}
+                      </span>
 
-                      <q-item-section class="full-width">
-                        {{ notificacion.mensaje }}
-                        <span class="block text-grey-8 text-weight-regular">
-                          {{ dayjs(notificacion.created_at).fromNow() }}
-                        </span>
+                      <q-item-label class="row justify-end q-pt-sm">
+                        <q-btn
+                          icon="bi-check"
+                          label="Marcar como leído"
+                          dense
+                          color="positive"
+                          size="sm"
+                          outline
+                          no-caps
+                          rounded
+                          unelevated
+                          @click="marcarLeida(notificacion.id)"
+                        >
+                        </q-btn
+                      ></q-item-label>
+                    </q-item-section>
+                  </q-item>
+                </q-expansion-item>
 
-                        <q-item-label class="row justify-end q-pt-sm">
-                          <q-btn
-                            icon="bi-check"
-                            label="Marcar como leído"
-                            dense
-                            color="positive"
-                            size="sm"
-                            outline
-                            no-caps
-                            rounded
-                            unelevated
-                            @click="marcarLeida(notificacion.id)"
-                          >
-                          </q-btn
-                        ></q-item-label>
-                      </q-item-section>
-                    </q-item>
-                  </q-expansion-item>
-
-                  <!--<q-item
+                <!--<q-item
                     v-for="notificacion in notificaciones"
                     :key="notificacion.id"
                     :to="notificacion.link"
@@ -270,33 +266,37 @@
                   </q-item>
                 -->
 
-                  <q-separator />
+                <q-separator />
 
-                  <q-item clickable to="notificaciones">
-                    <q-avatar>
-                      <q-icon name="bi-bell" />
-                    </q-avatar>
-                    <q-item-section
-                      >Ver todas las notificaciones</q-item-section
-                    >
-                  </q-item>
-                </q-list>
-              </q-menu>
-            </q-btn>
+                <q-item clickable to="notificaciones">
+                  <q-avatar>
+                    <q-icon name="bi-bell" />
+                  </q-avatar>
+                  <q-item-section>Ver todas las notificaciones</q-item-section>
+                </q-item>
+              </q-list>
+            </q-menu>
+          </q-btn>
           <!-- </span> -->
 
           <!-- Perfil -->
           <q-btn dense round flat glossy @click.self="mostrarMenu = true">
             <!-- <q-avatar size="32px" > -->
-              <q-badge color="positive" rounded floating> </q-badge>
-              <img :src="imagenPerfil" fit="cover" height="34px" width="34px" class="rounded border-white" />
+            <q-badge color="positive" rounded floating> </q-badge>
+            <img
+              :src="imagenPerfil"
+              fit="cover"
+              height="34px"
+              width="34px"
+              class="rounded border-white"
+            />
             <!-- </q-avatar> -->
 
             <q-menu
               v-model="mostrarMenu"
               :self="selfCenterMiddle"
-              transition-show="jump-down"
-              transition-hide="jump-out"
+              transition-show="slide-left"
+              transition-hide="slide-right"
               :style="{ width: width }"
               class="bg-desenfoque"
               max-height="100vh"
@@ -304,18 +304,23 @@
               <div class="column items-center q-py-sm window-height">
                 <div class="full-width text-right q-pr-md">
                   <q-btn
-                    icon="bi-x"
+                    icon="bi-chevron-right"
                     round
                     dense
                     unelevated
-                    outline
-                    color="grey-8"
+                    color="primary"
                     @click="mostrarMenu = false"
                   ></q-btn>
                 </div>
 
                 <!-- <q-avatar size="72px" class="double-border q-mb-md"> -->
-                  <img :src="imagenPerfil" fit="contain" height="72px" width="72px" class="rounded border-white  q-mb-md" />
+                <img
+                  :src="imagenPerfil"
+                  fit="contain"
+                  height="72px"
+                  width="72px"
+                  class="rounded border-white q-mb-md"
+                />
                 <!-- </q-avatar> -->
 
                 <div class="text-subtitle1 text-center">
@@ -408,14 +413,14 @@
       v-model="leftDrawerOpen"
       class="bg-drawer border-right q-px-sm q-py-sm"
       show-if-above
-      v-if="route.name!=='intranet'"
+      v-if="route.name !== 'intranet'"
     >
       <!-- Drawer Header -->
       <div class="absolute-top q-pa-sm q-ma-sm rounded-card">
         <img
           :src="!$q.dark.isActive ? logoClaro : logoOscuro"
           height="60"
-          class="q-mx-auto block "
+          class="q-mx-auto block"
         />
       </div>
 
@@ -464,7 +469,7 @@
 
     <ScrollToTopButton></ScrollToTopButton>
 
-    <q-page-container :class="{ 'bg-body': true }" class="window-height">
+    <q-page-container :class="{ 'bg-body': true }" >
       <router-view v-slot="{ Component }">
         <transition name="scale" mode="out-in">
           <essential-loading></essential-loading>

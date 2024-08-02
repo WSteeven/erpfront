@@ -1,6 +1,6 @@
 // src-pwa/register-service-worker.js file
 
-import {register}  from 'src/service-worker'
+import { register } from 'src/service-worker'
 
 register(process.env.SERVICE_WORKER_FILE, {
   registrationOptions: { scope: './' },
@@ -30,5 +30,5 @@ register(process.env.SERVICE_WORKER_FILE, {
 
   error(error) {
     console.error('Error during service worker registration:', error)
-  },
+  }
 })
