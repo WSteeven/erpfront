@@ -14,7 +14,7 @@ export const useMenuStore = defineStore('menu', () => {
     {
       title: 'Inicio',
       icon: 'bi-house-door-fill',
-      link: '/intranet',
+      link: 'intranet',
       can: true //!store.can('puede.ver.trabajo_asignado'),
     },
     {
@@ -250,7 +250,7 @@ export const useMenuStore = defineStore('menu', () => {
         {
           title: 'Laboratorios clínicos',
           link: 'laboratorios-clinicos',
-          icon: 'bi-flask-fill',
+          icon: 'bi-app',
           can: store.can('puede.acceder.laboratorios_clinicos')
         }
       ]
@@ -353,7 +353,7 @@ export const useMenuStore = defineStore('menu', () => {
           title: 'Preingresos de Materiales',
           link: 'preingresos-materiales',
           can: store.can('puede.acceder.preingresos_materiales') || true,
-          icon: 'bi-box-arrow-in-down-fill'
+          icon: 'bi-app',
         },
 
         {
@@ -460,16 +460,10 @@ export const useMenuStore = defineStore('menu', () => {
       icon: 'fa-solid fa-sack-dollar', // Cambiado de 'bi-cash-stack' a Font Awesome
       can: store.can('puede.ver.fondo'),
       children: [
-        {
-          title: 'Ajuste de Saldos Fondos Rotativos',
-          link: 'ajustes-saldos',
-          icon: 'fa-solid fa-money-check-alt', // Cambiado de 'bi-cash' a Font Awesome
-          can: store.can('puede.acceder.ajustes_saldos') || true
-        },
-        {
-          title: 'Gastos',
-          icon: 'fa-solid fa-receipt', // Cambiado de 'bi-receipt' a Font Awesome
-          children: [
+        // {
+        //   title: 'Gastos',
+        //   icon: 'fa-solid fa-receipt', // Cambiado de 'bi-receipt' a Font Awesome
+        //   children: [
             {
               title: 'Registrar Gastos',
               link: 'gasto',
@@ -493,8 +487,8 @@ export const useMenuStore = defineStore('menu', () => {
               link: 'anular-gasto',
               icon: 'fa-solid fa-times-circle', // Cambiado de 'bi-x-circle-fill' a Font Awesome
               can: store.can('puede.ver.anular_gasto')
-            }
-          ]
+            // }
+          // ]
         },
 
         {
@@ -621,7 +615,13 @@ export const useMenuStore = defineStore('menu', () => {
               can: store.can('puede.ver.reporte_contabilidad')
             }
           ]
-        }
+        },
+        {
+          title: 'Ajuste de Saldos Fondos Rotativos',
+          link: 'ajustes-saldos',
+          icon: 'fa-solid fa-money-check-alt', // Cambiado de 'bi-cash' a Font Awesome
+          can: store.can('puede.acceder.ajustes_saldos')
+        },
       ]
     },
 
@@ -676,6 +676,12 @@ export const useMenuStore = defineStore('menu', () => {
           ]
         },
         {
+          title: 'Permiso',
+          link: 'permiso-nomina',
+          icon: 'bi-calendar2-plus-fill',
+          can: store.can('puede.acceder.permiso_nomina')
+        },
+        {
           title: 'Nominas y prestamos',
           icon: 'bi-people-fill',
           can: true,
@@ -685,12 +691,6 @@ export const useMenuStore = defineStore('menu', () => {
               link: 'multas-conductores',
               icon: 'bi-exclamation-octagon-fill',
               can: store.can('puede.acceder.multas_conductores')
-            },
-            {
-              title: 'Permiso',
-              link: 'permiso-nomina',
-              icon: 'bi-calendar2-plus-fill',
-              can: store.can('puede.acceder.permiso_nomina')
             },
             {
               title: 'Rol de Pagos',
