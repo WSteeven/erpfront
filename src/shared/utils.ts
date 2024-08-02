@@ -805,13 +805,12 @@ export function obtenerUltimoDigito(texto: string) {
  */
 export function filtrarEmpleadosPorRoles(empleados, roles) {
   const filtrados = empleados.filter((empleado) => {
-    if (Array.isArray(empleado.roles) && empleado.roles.length > 0) {
-      const rolesEmpleado = empleado.roles.split(', ')
-      return roles.some((rol) => rolesEmpleado.includes(rol))
-    }
+    const rolesEmpleado = empleado.roles.split(', ')
+    return roles.some((rol) => rolesEmpleado.includes(rol))
   })
   return filtrados
 }
+
 export function filtarVisualizacionEmpleadosSaldos(empleados) {
   if (authenticationStore.can('puede.buscar.tecnicos')) {
     const filtrados_busqueda =
