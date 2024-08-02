@@ -172,7 +172,8 @@ export default defineComponent({
 
     type tipo = 'center middle' | 'top start'
     const selfCenterMiddle: ComputedRef<tipo> = computed(() =>
-      $q.screen.xs ? 'center middle' : 'top start'
+      'center middle'
+      // $q.screen.xs ? 'center middle' : 'top start'
     )
 
     /**********

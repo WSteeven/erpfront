@@ -283,15 +283,9 @@ export default defineComponent({
           },
         },
       })
-      autorizaciones_especiales.value = await filtrarEmpleadosPorRoles(
-        listadosAuxiliares.empleados,
-        [rolesSistema.autorizador]
-      )
-      autorizaciones_especiales.value.unshift(
-        await filtarJefeImediato(listadosAuxiliares.empleados)
-      )
-      listadosAuxiliares.autorizaciones_especiales =
-        autorizaciones_especiales.value
+      autorizaciones_especiales.value = await filtrarEmpleadosPorRoles(listadosAuxiliares.empleados,[rolesSistema.autorizador])
+      autorizaciones_especiales.value.unshift(await filtarJefeImediato(listadosAuxiliares.empleados))
+      listadosAuxiliares.autorizaciones_especiales =autorizaciones_especiales.value
       beneficiarios.value = listadosAuxiliares.empleados
       listadosAuxiliares.beneficiarios = beneficiarios.value
       listadosAuxiliares.proyectos.unshift({ id: 0, nombre: 'Sin Proyecto' })

@@ -34,7 +34,7 @@ const routes: RouteRecordRaw[] = [
         meta: { requiresAuth: true },
       },
       {
-        path: '/intranet',
+        path: 'intranet',
         name: 'intranet',
         component: () => import('pages/intranet/intranet/view/IntranetPage.vue'),
         meta: { requiresAuth: false },

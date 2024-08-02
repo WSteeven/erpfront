@@ -7,7 +7,6 @@ import {
   QCard,
   QImg,
   QCardSection,
-  Notify,
   QDialog,
   QDate,
   QCardActions,
@@ -56,6 +55,7 @@ interface Evento {
 }
 
 export default defineComponent({
+  name:'intranet',
   components: {
     ModalesEntidad,
     LottiePlayer: Vue3Lottie,
@@ -87,6 +87,18 @@ export default defineComponent({
     const noticiaCompleta = ref<Noticia | null>(null)
 
 
+    //solicitudes
+    const {notificarError}= useNotificaciones()
+    const tiposSolicitudes = ref([
+      { label: 'Permisos', value: 'permiso' },
+      { label: 'Licencias', value: 'licencias' },
+      { label: 'Vacaciones', value: 'vacaciones' },
+      { label: 'Prestamos', value: 'prestamos' }
+    ])
+    const solicitud = reactive({
+      tipo_solicitud: '',
+      descripcion: ''
+    })
 
     const eventos = ref<Evento[]>([])
     const eventoSeleccionado = ref<Evento | null>(null);
@@ -113,16 +125,7 @@ export default defineComponent({
     const filtrosTareas = ['Recientes', 'sdsd']
     const filtroTarea = ref('Recientes')
     const subtareasPorAsignar = ref([])
-    const tiposSolicitudes = ref([
-      { label: 'Permisos', value: 'permiso' },
-      { label: 'Licencias', value: 'licencias' },
-      { label: 'Vacaciones', value: 'vacaciones' },
-      { label: 'Prestamos', value: 'prestamos' }
-    ])
-    const solicitud = reactive({
-      tipo_solicitud: '',
-      descripcion: ''
-    })
+
 
     consultarEmpleadosDepartamento(store.user.departamento)
     activeTab.value = store.user.departamento
@@ -191,8 +194,8 @@ export default defineComponent({
     });
 
     function verEvento(evento) {
-      console.log('evento clickado')
-      console.log('evento clickado', evento)
+      // console.log('evento clickado')
+      // console.log('evento clickado', evento)
       eventoSeleccionado.value = evento.data;
       dialogoVisible.value = true;
     }
@@ -219,7 +222,7 @@ export default defineComponent({
       return description
     }
 
-    function verNoticiaCompleta(id: number,noticias: Noticia[]): Noticia | null {
+    function verNoticiaCompleta(id: number, noticias: Noticia[]): Noticia | null {
       const noticia = noticias.find(noticia => noticia.id === id)
       if (noticia) {
         return noticia
@@ -266,7 +269,6 @@ export default defineComponent({
       modulosPermitidos.value = menuStore.links.filter(
         (link: MenuOption) => link.can
       )
-
       // Mapear cada enlace para ajustar los enlaces de submenús
       modulosPermitidos.value = modulosPermitidos.value.map(modulo => {
         if (modulo.children && Array.isArray(modulo.children)) {
@@ -290,7 +292,7 @@ export default defineComponent({
     }
 
     async function consultarEmpleadosDepartamento(departamento_id: number) {
-      console.log(store.user, departamento_id)
+      // console.log(store.user, departamento_id)
       try {
         cargando.activar()
         const idNumerico = Number(departamento_id)
@@ -324,32 +326,38 @@ export default defineComponent({
     const empleadosCumpleaneros = ref<Empleado[]>([])
 
     const obtenerEmpleadosCumpleaneros = async () => {
-      const currentMonth = new Date().getMonth() + 1
+      // Obtener el mes actual
+      const currentMonth = new Date().getMonth() + 1;
+
       try {
-        const empleadoController = new EmpleadoController()
+        const empleadoController = new EmpleadoController();
         const empleados = (
           await empleadoController.listar({
             estado: 1
           })
-        ).result
+        ).result;
 
         empleadosCumpleaneros.value = empleados
           .filter(empleado => {
             if (empleado.fecha_nacimiento) {
-              const month = new Date(empleado.fecha_nacimiento).getMonth() + 1
-              return month === currentMonth
+              // Obtener el mes de la fecha de nacimiento
+              const birthMonth = new Date(empleado.fecha_nacimiento).getMonth() + 1;
+              return birthMonth === currentMonth;
             }
-            return false
+            return false;
           })
           .sort((a, b) => {
-            const dayA = new Date(a.fecha_nacimiento).getDate()
-            const dayB = new Date(b.fecha_nacimiento).getDate()
-            return dayA - dayB
-          })
+            // Ordenar por día del mes de nacimiento
+            const dayA = new Date(a.fecha_nacimiento).getDate();
+            const dayB = new Date(b.fecha_nacimiento).getDate();
+            return dayA - dayB;
+          });
       } catch (err) {
-        console.log('Error al obtener empleados cumpleañeros:', err)
+        console.log('Error al obtener empleados cumpleañeros:', err);
       }
-    }
+    };
+
+
 
     onMounted(() => {
       obtenerNoticias()
@@ -368,21 +376,17 @@ export default defineComponent({
         case 'permiso':
           Router.push('/permiso-nomina')
           break
-        case 'licencia':
+        case 'licencias':
           Router.push('/licencia-empleado')
           break
-        case 'vacacion':
+        case 'vacaciones':
           Router.push('/vacacion')
           break
-        case 'préstamo':
+        case 'prestamos':
           Router.push('/solicitud-prestamo-empresarial')
           break
         default:
-          Notify.create({
-            message: 'Solicitud Rechazada, contacta con el Administrador.',
-            color: 'red',
-            position: 'top'
-          })
+          notificarError('Solicitud Rechazada, contacta con el Administrador.')
       }
     }
 
@@ -418,6 +422,7 @@ export default defineComponent({
         modalNoticia.value = true
       }
     }
+
 
     return {
       logoClaro: computed(
@@ -477,8 +482,8 @@ export default defineComponent({
       modalNoticia,
       eventosFormateados,
       configuracion,
-      cerrarModal(){
-        modalNoticia.value =false
+      cerrarModal() {
+        modalNoticia.value = false
       }
     }
   }
