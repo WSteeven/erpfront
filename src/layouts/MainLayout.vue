@@ -4,6 +4,7 @@
     <q-header class="bg-desenfoque">
       <q-toolbar class="row justify-between q-py-sm border-bottom">
         <q-btn
+        v-if="route.name!=='intranet'"
           dense
           aria-label="Menu"
           @click="toggleLeftDrawer"
@@ -40,7 +41,12 @@
             />
           </svg>
         </q-btn>
-
+        <img
+        v-if="route.name==='intranet'"
+          :src="!$q.dark.isActive ? logoClaro : logoOscuro"
+          height="30"
+          class="custom-shadow "
+        />
         <span
           class="row"
           :class="{
@@ -48,13 +54,13 @@
             'q-gutter-x-md': !$q.screen.xs,
           }"
         >
-          <span
+          <!-- <span
             class="row"
             :class="{
               'q-gutter-x-xs': $q.screen.xs,
               'q-gutter-x-sm': !$q.screen.xs,
             }"
-          >
+          > -->
             <!-- Boton transferir tareas -->
             <q-btn
               v-if="mostrarTransferirTareas"
@@ -277,7 +283,7 @@
                 </q-list>
               </q-menu>
             </q-btn>
-          </span>
+          <!-- </span> -->
 
           <!-- Perfil -->
           <q-btn dense round flat glossy @click.self="mostrarMenu = true">
@@ -402,6 +408,7 @@
       v-model="leftDrawerOpen"
       class="bg-drawer border-right q-px-sm q-py-sm"
       show-if-above
+      v-if="route.name!=='intranet'"
     >
       <!-- Drawer Header -->
       <div class="absolute-top q-pa-sm q-ma-sm rounded-card">
@@ -456,25 +463,8 @@
     <modales-entidad :comportamiento="modales" />
 
     <ScrollToTopButton></ScrollToTopButton>
-    <div class="area">
-      <ul class="circles">
-        <li></li>
-        <li></li>
-        <li></li>
-        <li></li>
-        <li></li>
-        <li></li>
-        <li></li>
-        <li></li>
-        <li></li>
-        <li></li>
-      </ul>
-    </div>
 
-    <div class="backdrop"></div>
-
-    <q-page-container class="bg-body-background">
-      <!-- class="window-height" -->
+    <q-page-container :class="{ 'bg-body': true }" class="window-height">
       <router-view v-slot="{ Component }">
         <transition name="scale" mode="out-in">
           <essential-loading></essential-loading>

@@ -257,5 +257,6 @@ export const useAuthenticationStore = defineStore('authentication', () => {
     consultar_saldo_actual,
     extraerRol,
     listadoUsuarios,
+
   }
 })

@@ -16,6 +16,8 @@
 
   <div v-if="quiero_subir_archivos" class="col-12 q-mb-sm">
     <q-uploader
+      :accept="formato"
+      :max-files="maxFiles"
       ref="refGestor"
       :label="'Selecciona o arrastra tus archivos aquí (Máximo '+(bytesToMB(maxTamanioBytes))+')'"
       multiple

@@ -196,8 +196,8 @@ export abstract class Contenedor<
    * @param entidad entidad a comparar con la copia de un objeto nuevo
    * @returns true, cuando se haya cambiado algun parametro de la entidad.
    */
-  protected seCambioEntidad(entidad_vacia: UnwrapRef<T>): boolean {
-    return compararObjetos(entidad_vacia, this.entidad)
+  protected seCambioEntidad(entidad: UnwrapRef<T>): boolean {
+    return compararObjetos(entidad, this.entidad)
   }
 
   /**

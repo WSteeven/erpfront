@@ -1,7 +1,6 @@
 
 // Dependencias
 import { Notificacion } from 'pages/administracion/notificaciones/domain/Notificacion'
-import EssentialLoading from 'components/loading/view/EssentialLoading.vue'
 import { useNotificationRealtimeStore } from 'stores/notificationRealtime'
 import { defineComponent, ref, computed, Ref, ComputedRef, watch, watchEffect, createApp } from 'vue'
 import { useAuthenticationStore } from 'src/stores/authentication'
@@ -15,6 +14,7 @@ import relativeTime from 'dayjs/plugin/relativeTime'
 
 // Componentes
 import ScrollToTopButton from 'components/buttonSubmits/ScrollToTopButton.vue'
+import EssentialLoading from 'components/loading/view/EssentialLoading.vue'
 import ModalesEntidad from 'components/modales/view/ModalEntidad.vue'
 import FooterComponent from 'components/FooterComponent.vue'
 import EssentialLink from 'components/EssentialLink.vue'
@@ -36,9 +36,10 @@ export default defineComponent({
   components: {
     EssentialLink,
     EssentialLoading,
-    FooterComponent,
+
     ModalesEntidad,
     ScrollToTopButton,
+    FooterComponent,
   },
 
   setup() {
@@ -233,7 +234,7 @@ export default defineComponent({
       const LIMIT = 4 * 60 * 60 * 1000 // 4 horas for logout session
       setInterval(() => {
         if (authenticationStore.user) {
-          let la = new Date(JSON.parse(LocalStorage.getItem('lastActivity')!)).getTime()
+          const la = new Date(JSON.parse(LocalStorage.getItem('lastActivity')!)).getTime()
           // console.log('Resta de tiempo', new Date().getTime() - la)
           // console.log('Tiempo limite', LIMIT)
           // console.log('Resultado', new Date().getTime() - la > LIMIT, new Date().toLocaleTimeString())
@@ -269,6 +270,7 @@ export default defineComponent({
       enCamino,
       motivo,
       modales,
+      route,
       abrirMovilizacionSubtarea,
       abrirTransferirTareas,
       links: menu.links,

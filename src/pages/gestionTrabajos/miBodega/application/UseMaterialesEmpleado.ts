@@ -27,6 +27,7 @@ export function useMaterialesEmpleado(filtro: UnwrapRef<FiltroMiBodegaEmpleado>,
   async function consultarProductosEmpleado() {
     try {
       cargando.activar()
+      console.log(filtro)
       const { result } = await materialEmpleadoController.listar(filtro)
 
       listadosAuxiliares.productosStock = result
