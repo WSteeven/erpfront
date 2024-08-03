@@ -107,7 +107,6 @@ export default defineComponent({
 
 
     const carousel_cumpleanos_mes = ref(1)
-    const search = ref()
     const autoplay = ref(true)
     const fechaActual = ref(obtenerFechaActual(maskFecha))
     const $q = useQuasar()
