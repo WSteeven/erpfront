@@ -36,6 +36,7 @@ import { useRouter } from 'vue-router'
 import { useSeleccionContratacionStore } from 'stores/recursosHumanos/seleccionContratacion/seleccionContratacion'
 import { TipoPuestoController } from '../../tiposPuestos/infraestructure/TipoPuestoController'
 import { ValidarFormacionesAcademicas } from '../application/validation/ValidarFormacionesAcademicas'
+import { ModalidadController } from '../../modalidades/infraestructure/ModalidadController'
 
 export default defineComponent({
   components: {
@@ -69,6 +70,7 @@ export default defineComponent({
     const tiposPuestos = ref([])
     const anios_experiencia = ref(aniosExperiencia)
     const autorizaciones = ref([])
+    const modalidades =ref([])
     const areasConocimiento = ref()
     const tabActual = ref('1')
     const idRegistro = ref()
@@ -76,13 +78,6 @@ export default defineComponent({
     const { cargos, filtrarCargos } =
       useFiltrosListadosSelects(listadosAuxiliares)
 
-      const modalidades = [
-        'Presencial',
-        'Remoto',
-        'Híbrido',
-        // 'Tiempo completo',
-        // 'Tiempo parcial',
-      ]
 
 
     /****************************************************************************
@@ -133,10 +128,15 @@ export default defineComponent({
           controller: new CargoController(),
           params: { estado: 1 },
         },
+        modalidades: {
+          controller: new ModalidadController(),
+          params: { activo: 1 }
+        }
       })
       tiposPuestos.value = listadosAuxiliares.tiposPuestos
       autorizaciones.value = listadosAuxiliares.autorizaciones
       cargos.value = listadosAuxiliares.cargos
+      modalidades.value = listadosAuxiliares.modalidades
     })
 
     /****************************************************************************

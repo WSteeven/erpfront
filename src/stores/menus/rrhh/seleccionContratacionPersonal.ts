@@ -33,6 +33,12 @@ const seleccionContratacionPersonal: Ref<MenuOption[]> = computed(() => {
                             can: store.can('puede.acceder.rrhh_areas_conocimientos'),
                         },
                         {
+                            title: 'Modalidades de Trabajo',
+                            link: 'modalidades-trabajo',
+                            icon: 'bi-circle',
+                            can: store.can('puede.acceder.rrhh_modalidades_trabajo'),
+                        },
+                        {
                             title: 'Tipos de Puestos de Trabajo',
                             link: 'tipos-puestos',
                             icon: 'bi-circle',

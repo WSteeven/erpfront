@@ -359,6 +359,65 @@
               </template>
             </q-select>
           </div>
+
+          <!-- Modalidad -->
+          <div class="col-12 col-md-3">
+            <label class="q-mb-sm block">Modalidad</label>
+            <q-select
+              v-model="vacante.modalidad"
+              :options="modalidades"
+              options-dense
+              dense
+              outlined
+              use-chips
+              :disable="disabled"
+              :error="!!v$.modalidad.$errors.length"
+              :option-value="v => v.id"
+              :option-label="v => v.nombre"
+              emit-value
+              map-options
+            >
+              <!-- @filter="filtrarModalidades" -->
+              <template v-slot:error>
+                <div v-for="error of v$.modalidad.$errors" :key="error.$uid">
+                  <div class="error-msg">{{ error.$message }}</div>
+                </div>
+              </template>
+            </q-select>
+          </div>
+
+          <!-- Disponibilidad de viajar -->
+          <div class="col-12 col-md-3 col-sm-3">
+            <label class="q-mb-sm block">¿Disponibilidad de Viajar?</label>
+            <q-toggle
+              :label="vacante.disponibilidad_viajar ? 'SI' : 'NO'"
+              v-model="vacante.disponibilidad_viajar"
+              color="primary"
+              keep-color
+              icon="bi-check2-circle"
+              unchecked-icon="clear"
+              :disable="disabled"
+            />
+          </div>
+
+          <!-- Posee licencia -->
+          <div class="col-12 col-md-3 col-sm-3">
+            <label class="q-mb-sm block"
+              >¿Debe poseer licencia de conducir?</label
+            >
+            <q-toggle
+              :label="vacante.requiere_licencia ? 'SI' : 'NO'"
+              v-model="vacante.requiere_licencia"
+              color="primary"
+              keep-color
+              icon="bi-check2-circle"
+              unchecked-icon="clear"
+              :disable="disabled"
+            />
+          </div>
+
+          {{v$.$errors}}
+
         </div>
       </q-form>
     </template>

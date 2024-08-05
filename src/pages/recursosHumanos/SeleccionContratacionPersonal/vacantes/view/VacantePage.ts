@@ -28,6 +28,7 @@ import { aniosExperiencia, opcionesTablaVacantes, tabOptionsVacantes } from 'con
 import { TipoPuestoController } from '../../tiposPuestos/infraestructure/TipoPuestoController'
 import { required, requiredIf } from 'shared/i18n-validators'
 import { tipo_puesto } from 'config/recursosHumanos.utils'
+import { ModalidadController } from '../../modalidades/infraestructure/ModalidadController'
 
 export default defineComponent({
   name: 'VacantePage',
@@ -55,7 +56,7 @@ export default defineComponent({
 
     const { areasConocimiento, filtrarAreasConocimiento } = useFiltrosListadosSelects(listadosAuxiliares)
 
-
+    const modalidades = ref([])
     const tiposPuestos = ref([])
     const autorizaciones = ref([])
 
@@ -90,12 +91,16 @@ export default defineComponent({
             campos: 'id,nombre',
           },
         },
-        areasConocimiento: new AreaConocimientoController()
+        areasConocimiento: new AreaConocimientoController(),
+        modalidades: {
+          controller: new ModalidadController(),
+          params: { activo: 1 }
+        }
       })
       areasConocimiento.value = listadosAuxiliares.areasConocimiento
       tiposPuestos.value = listadosAuxiliares.tiposPuestos
       autorizaciones.value = listadosAuxiliares.autorizaciones
-
+      modalidades.value = listadosAuxiliares.modalidades
 
     })
 
@@ -110,7 +115,8 @@ export default defineComponent({
       imagen_publicidad: { required },
       fecha_caducidad: { required },
       descripcion: { required },
-      anios_experiencia: { required },
+      modalidad: { required },
+      anios_experiencia: { required: requiredIf(() => vacante.requiere_experiencia) },
       areas_conocimiento: {
         required: requiredIf(() => vacante.tipo_puesto !== tipo_puesto.pasante),
       },
@@ -166,13 +172,15 @@ export default defineComponent({
       vacante.solicitud = solicitudStore.solicitudPersonal.id
       vacante.anios_experiencia = solicitudStore.solicitudPersonal.anios_experiencia
       vacante.areas_conocimiento = solicitudStore.solicitudPersonal.areas_conocimiento
-      vacante.requiere_experiencia = solicitudStore.solicitudPersonal.requiere_experiencia
       vacante.descripcion = solicitudStore.solicitudPersonal.descripcion ?? ''
       vacante.requiere_formacion_academica = solicitudStore.solicitudPersonal.requiere_formacion_academica
       vacante.formaciones_academicas = solicitudStore.solicitudPersonal.formaciones_academicas
       vacante.nombre = solicitudStore.solicitudPersonal.nombre
       vacante.requiere_experiencia = solicitudStore.solicitudPersonal.requiere_experiencia
       vacante.tipo_puesto = solicitudStore.solicitudPersonal.tipo_puesto
+      vacante.modalidad = solicitudStore.solicitudPersonal.modalidad
+      vacante.disponibilidad_viajar = solicitudStore.solicitudPersonal.disponibilidad_viajar
+      vacante.requiere_licencia = solicitudStore.solicitudPersonal.requiere_licencia
     }
 
     function btnEliminarConocimiento() {
@@ -247,6 +255,7 @@ export default defineComponent({
       //listados
       areasConocimiento, filtrarAreasConocimiento,
       anios_experiencia,
+      modalidades,
 
       //funciones
       filtrarVacantes,

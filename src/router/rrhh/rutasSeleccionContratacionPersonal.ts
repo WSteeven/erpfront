@@ -9,11 +9,17 @@ const rutasSeleccionContratacionPersonal: RouteRecordRaw[] = [
    * Aquí se lista todo lo referente a este modulo y la parte del login del postulantes para el personal externo.
    *
    ***********************************************************************************************/
-  
+
   {
     path: 'solicitudes-puestos',
     name: 'rrhh_solicitudes_nuevas_vacantes',
     component: () => import('seleccionContratacion/solicitudPuestoTrabajo/view/SolicitudPuestoEmpleoPage.vue'),
+    meta: { requiresAuth: true }
+  },
+  {
+    path: 'modalidades-trabajo',
+    name: 'rrhh_modalidades_trabajo',
+    component: () => import('seleccionContratacion/modalidades/view/ModalidadPage.vue'),
     meta: { requiresAuth: true }
   },
   {

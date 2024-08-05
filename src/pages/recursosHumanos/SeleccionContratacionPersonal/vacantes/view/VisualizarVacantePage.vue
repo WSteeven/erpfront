@@ -21,7 +21,7 @@
           <div class="col col-md-4 col-sm-4 col-xs-6">
             <q-badge outline color="primary">
               <q-icon class="bi-suitcase-lg-fill" />
-              &nbsp; {{ vacante.tipo_empleo }}
+              &nbsp; {{ vacante.modalidad }}
             </q-badge>
           </div>
           <div class="col col-md-4 col-sm-4 col-xs-6">

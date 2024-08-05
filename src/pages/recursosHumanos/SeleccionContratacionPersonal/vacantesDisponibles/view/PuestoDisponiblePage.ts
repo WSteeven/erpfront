@@ -15,6 +15,7 @@ import { VacanteController } from '../../vacantes/infraestructure/VacanteControl
 import { useNotificaciones } from 'shared/notificaciones'
 import { ComportamientoModalesVacanteDisponible } from '../application/ComportamientoModalesVacanteDisponible'
 import { useVacanteStore } from 'stores/recursosHumanos/seleccionContratacion/vacante';
+import { useQuasar } from 'quasar';
 
 
 export default defineComponent({
@@ -27,6 +28,7 @@ export default defineComponent({
     const modales = new ComportamientoModalesVacanteDisponible()
     const vacanteStore = useVacanteStore()
 
+    const $q = useQuasar()
     dayjs.extend(relativeTime)
     dayjs.locale(es)
 
@@ -118,6 +120,14 @@ export default defineComponent({
       const plainText = html.replace(regex, '\n').trim();
       return plainText;
     }
+    function getShortDescription(description: string): string {
+      const maxLength = $q.screen.lg ? 300 : 100 // Ajusta este valor según la longitud deseada
+      const descripcion_plain_text = removeHTMLTags(description)
+      if (descripcion_plain_text.length > maxLength) {
+        return descripcion_plain_text.substring(0, maxLength) + '...'
+      }
+      return descripcion_plain_text
+    }
 
     async function visualizarVacante(id: number) {
       console.log('Diste clic en Visualizar Vacante: ' + id)
@@ -138,6 +148,7 @@ export default defineComponent({
       guardado,
       visualizarVacante,
       removeHTMLTags,
+      getShortDescription,
 
 
     }

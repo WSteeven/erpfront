@@ -7,14 +7,17 @@ export class Vacante extends EntidadAuditable {
   solicitud: number | null
   imagen_referencia: string | null
   imagen_publicidad: string | null
-  fecha_caducidad: Date | null
+  fecha_caducidad: string | null
+  modalidad: string | null
   descripcion: string
-  tipo_empleo:string|null
+  tipo_empleo: string | null
   anios_experiencia: number | null
   formaciones_academicas: any[] | null
   numero_postulantes: number
   areas_conocimiento: any[]
   activo: boolean
+  disponibilidad_viajar: boolean
+  requiere_licencia: boolean
   //Variables auxiliares
   requiere_formacion_academica: boolean
   requiere_experiencia: boolean
@@ -25,6 +28,7 @@ export class Vacante extends EntidadAuditable {
     this.tipo_puesto = null
     this.publicante = null
     this.solicitud = null
+    this.modalidad = null
     this.imagen_referencia = null
     this.imagen_publicidad = null
     this.fecha_caducidad = null
@@ -34,6 +38,8 @@ export class Vacante extends EntidadAuditable {
     this.areas_conocimiento = []
     this.formaciones_academicas = []
     this.numero_postulantes = 0
+    this.disponibilidad_viajar = false
+    this.requiere_licencia = false
     this.requiere_formacion_academica = false
     this.requiere_experiencia = false
     this.activo = true

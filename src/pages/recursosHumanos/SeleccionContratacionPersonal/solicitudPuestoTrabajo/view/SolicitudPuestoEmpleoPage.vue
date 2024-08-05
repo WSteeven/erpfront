@@ -5,7 +5,7 @@
     titulo-pagina="Solicitud de Personal"
     :tab-options="tabOptionsSolicitudesPersonal"
     :filtrar="filtrarSolicitudes"
-    :permitirEditar="tabActual =='1'"
+    :permitirEditar="tabActual == '1'"
     :tabDefecto="tabActual"
     ajustarCeldas
     :accion1="btnPublicar"
@@ -30,8 +30,8 @@
               @blur="v$.tipo_puesto.$touch"
               @update:model-value="cambiarTipoPuesto()"
               :error="!!v$.tipo_puesto.$errors.length"
-              :option-value="(v) => v.id"
-              :option-label="(v) => v.nombre"
+              :option-value="v => v.id"
+              :option-label="v => v.nombre"
               emit-value
               map-options
             >
@@ -57,7 +57,7 @@
             <q-input
               v-model="solicitud.nombre"
               @blur="v$.nombre.$touch"
-              @update:model-value="(v) => (solicitud.nombre = removeAccents(v))"
+              @update:model-value="v => (solicitud.nombre = removeAccents(v))"
               placeholder="Obligatorio"
               :disable="disabled"
               :error="!!v$.nombre.$errors.length"
@@ -95,8 +95,8 @@
               @filter="filtrarCargos"
               @update:model-value="consultarConocimientos"
               :error="!!v$.cargo.$errors.length"
-              :option-value="(v) => v.id"
-              :option-label="(v) => v.nombre"
+              :option-value="v => v.id"
+              :option-label="v => v.nombre"
               emit-value
               map-options
             >
@@ -138,8 +138,8 @@
               use-input
               @blur="v$.autorizacion.$touch"
               :error="!!v$.autorizacion.$errors.length"
-              :option-value="(v) => v.id"
-              :option-label="(v) => v.nombre"
+              :option-value="v => v.id"
+              :option-label="v => v.nombre"
               emit-value
               map-options
             >
@@ -195,8 +195,8 @@
               :options="areasConocimiento"
               @filter="filtrarAreasConocimiento"
               :error="!!v$.areas_conocimiento.$errors.length"
-              :option-label="(item) => item?.nombre"
-              :option-value="(item) => item?.id"
+              :option-label="item => item?.nombre"
+              :option-value="item => item?.id"
               emit-value
               map-options
             >
@@ -271,7 +271,7 @@
             <essential-table
               :configuracionColumnas="[
                 ...configuracionColumnasFormacionAcademicaReactive,
-                accionesTabla,
+                accionesTabla
               ]"
               :datos="solicitud.formaciones_academicas"
               :permitirConsultar="false"
@@ -298,7 +298,9 @@
 
           <!-- años de experiencia -->
           <div class="col-12 col-md-3" v-if="solicitud.requiere_experiencia">
-            <label class="q-mb-sm block">Tiempo de experiencia en el mismo cargo</label>
+            <label class="q-mb-sm block"
+              >Tiempo de experiencia en el mismo cargo</label
+            >
             <q-select
               v-model="solicitud.anios_experiencia"
               options-dense
@@ -324,26 +326,25 @@
           </div>
 
           <!-- Modalidad -->
-          <div class="col-12 col-md-3" >
+          <div class="col-12 col-md-3">
             <label class="q-mb-sm block">Modalidad</label>
             <q-select
               v-model="solicitud.modalidad"
+              :options="modalidades"
               options-dense
-              :disable="disabled"
               dense
               outlined
-              use-input
               use-chips
+              :disable="disabled"
               :error="!!v$.modalidad.$errors.length"
-              input-debounce="0"
-              :options="modalidades"
-              >
+              :option-value="v => v.id"
+              :option-label="v => v.nombre"
+              emit-value
+              map-options
+            >
               <!-- @filter="filtrarModalidades" -->
               <template v-slot:error>
-                <div
-                  v-for="error of v$.modalidad.$errors"
-                  :key="error.$uid"
-                >
+                <div v-for="error of v$.modalidad.$errors" :key="error.$uid">
                   <div class="error-msg">{{ error.$message }}</div>
                 </div>
               </template>
@@ -366,7 +367,9 @@
 
           <!-- Disponibilidad de viajar -->
           <div class="col-12 col-md-3 col-sm-3">
-            <label class="q-mb-sm block">¿Debe poseer licencia de conducir?</label>
+            <label class="q-mb-sm block"
+              >¿Debe poseer licencia de conducir?</label
+            >
             <q-toggle
               :label="solicitud.requiere_licencia ? 'SI' : 'NO'"
               v-model="solicitud.requiere_licencia"
@@ -377,7 +380,6 @@
               :disable="disabled"
             />
           </div>
-
 
           <!-- Manejo de archivos -->
           <div
@@ -421,7 +423,7 @@
   <modal-entidad
     :comportamiento="modales"
     :persistente="false"
-    @guardado="(data) => guardado(data)"
+    @guardado="data => guardado(data)"
   ></modal-entidad>
 </template>
 
