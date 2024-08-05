@@ -882,7 +882,7 @@ export const useMenuStore = defineStore('menu', () => {
      *****************************************/
     {
       title: 'Vehículos',
-      icon: 'fa-solid fa-car-burst',
+      icon: 'fa-solid fa-car',
       can: store.esAdministrador || store.can('puede.ver.modulo_vehiculos'),
       module: true,
       children: [

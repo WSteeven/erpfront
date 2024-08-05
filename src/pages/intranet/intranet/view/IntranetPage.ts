@@ -107,7 +107,6 @@ export default defineComponent({
 
 
     const carousel_cumpleanos_mes = ref(1)
-    const search = ref()
     const autoplay = ref(true)
     const fechaActual = ref(obtenerFechaActual(maskFecha))
     const $q = useQuasar()
@@ -424,6 +423,10 @@ export default defineComponent({
     }
 
 
+    //ACCIONES DE BUSQUEDA DE MODULO
+
+
+
     return {
       logoClaro: computed(
         () => configuracionGeneralStore.configuracion?.logo_claro
@@ -466,7 +469,6 @@ export default defineComponent({
       width: computed(() => ($q.screen.xs ? '100%' : '450px')),
       selfCenterMiddle,
       showBanner,
-      search,
       maskFecha,
       formatearFecha,
       readMore,

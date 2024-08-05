@@ -6,7 +6,7 @@
     ajustarCeldas
     :tab-options="tabOptionsBitacoras"
     :tabDefecto="tabDefecto"
-    :permitirEditar="tabDefecto !== '1'"
+    :permitirEditar="puedeEditar"
     :filtrar="filtrarBitacoras"
     :accion1="btnMarcarFinalizada"
     :accion2="btnImprimir"
