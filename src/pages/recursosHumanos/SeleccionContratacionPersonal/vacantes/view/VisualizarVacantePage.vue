@@ -56,7 +56,7 @@
             @click="btnPostular(vacante.id)"
             color="primary">Postularme</q-btn>
             <q-btn
-              icon="bi-heart"
+              :icon="vacante.es_favorita?'bi-heart-fill': 'bi-heart'"
               color="red"
               round
               flat

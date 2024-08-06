@@ -21,6 +21,7 @@ export class Vacante extends EntidadAuditable {
   //Variables auxiliares
   requiere_formacion_academica: boolean
   requiere_experiencia: boolean
+  es_favorita:boolean
 
   constructor() {
     super()
@@ -43,5 +44,6 @@ export class Vacante extends EntidadAuditable {
     this.requiere_formacion_academica = false
     this.requiere_experiencia = false
     this.activo = true
+    this.es_favorita=false
   }
 }

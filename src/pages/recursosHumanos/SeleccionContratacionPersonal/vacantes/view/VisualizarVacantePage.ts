@@ -93,11 +93,37 @@ export default defineComponent({
 
     function btnAgregarAFavoritos(id: number) {
       console.log('Diste clic en agregar a favoritos', id)
+      if (!autenticado) {
+        // Aquí se le pregunta si necesita loguearse como empleado o como externo para redirigirlo
+        const config: CustomActionPrompt = reactive({
+          mensaje: 'Es requerido iniciar sesión para continuar',
+          accion: async (opcion) => {
+            if (opcion === 1) {
+              // se dirige a la pagina de login de empleados
+              router.push('login')
+            } else {
+              // se dirige a la pagina de login de externos
+              router.push('login-postulante')
+            }
 
+          }, tipo: 'radio',
+          items: [
+            {
+              label: 'Soy empleado',
+              value: 1,
+            },
+            {
+              label: 'Soy nuevo o deseo registrarme',
+              value: 2,
+            },
+          ]
+        })
+        promptItems(config)
+      } else {
       // En esta parte debo hacer el calculo para ver si la persona la agregó a sus favoritos,
       // debe registrarse en la BD agregada a favoritos del usuario para mostrar diferente color segun sea el caso
       almacenarVacanteFavorita(id)
-
+      }
     }
     return {
       vacante: vacanteStore.vacante,
