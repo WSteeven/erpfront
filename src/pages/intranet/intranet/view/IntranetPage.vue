@@ -27,6 +27,7 @@
                 </q-btn>
               </div>
             </q-carousel-slide>
+            
           </q-carousel>
           <q-card v-else class="q-pa-md q-mt-md no-news-card" flat bordered>
             <q-card-section class="text-center q-pa-none">
@@ -404,7 +405,7 @@
         <q-item-section>{{ link.label }}</q-item-section>
       </q-item>
     </q-list>
-    
+
     búsqueda -->
 
 
