@@ -275,15 +275,36 @@ export default defineComponent({
     const resultadosBusqueda = ref<MenuOption[]>([])
 
     function filtrarMenu(val: string) {
-      resultadosBusqueda.value = menuStore.links.filter((link: MenuOption) => {
-        const ruta = link.link?.replace('-', ' ')
-        console.log(ruta)
-        return ruta && ruta.toLowerCase().indexOf(val.toLowerCase()) !== -1
-      })
+      console.log('Esta llamando a esta función filtrarMenu');
+      const resultado = filterItems(menuStore.links, val);
+      resultadosBusqueda.value = resultado;
+      
     }
 
+    function filterItems(items: MenuOption[], searchTerm: string): MenuOption[] {
+      const searchTerms = searchTerm.toLowerCase().split(' ');
+
+      function matches(item: MenuOption): boolean {
+        // Comprueba coincidencias en el enlace del elemento actual
+        return searchTerms.every(term => new RegExp(term, 'i').test(item.link ?? ''));
+      }
+
+      function filterRecursive(items: MenuOption[]): MenuOption[] {
+        return items.map(item => {
+          const childrenMatches = item.children ? filterRecursive(item.children) : [];
+
+          if (matches(item) || childrenMatches.length > 0) {
+            return { ...item, children: childrenMatches.length > 0 ? childrenMatches : undefined };
+          }
+          return null;
+        }).filter(item => item !== null) as MenuOption[];
+      }
+
+      return filterRecursive(items);
+    }
 
     return {
+
       // logoClaro: `${process.env.API_URL}/storage/configuracion_general/logo_claro.jpeg`,
       logoClaro: computed(() => configuracionGeneralStore.configuracion?.logo_claro),
       logoOscuro: computed(() => configuracionGeneralStore.configuracion?.logo_oscuro),

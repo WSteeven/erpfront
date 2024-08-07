@@ -29,6 +29,23 @@
               'q-gutter-x-sm': !$q.screen.xs,
             }"
           > -->
+
+          <!-- Barra de Busqueda -->
+          <div class="contenedor-busqueda-modulo" style="align-items: start; width: 200px; margin: 0 auto">
+            <q-input v-model="buscarModulo" label="BUSCAR MÓDULO ..." @update:model-value="filtrarMenu(buscarModulo)"
+              dense outlined class="entrada-busqueda" style="margin-bottom: auto" />
+            <q-list v-if="buscarModulo" dense bordered class="lista-busqueda"
+              style="align-items: start; width: 200px; margin: 0 auto">
+              <div v-for="link in resultadosBusqueda" :key="link.link">
+                <q-item-label v-if="link.hasOwnProperty('header')" header class="text-bold text-primary">
+                  {{ link.header }}
+                </q-item-label>
+                <EssentialLink v-else :title="link.title ?? ''" :link="link.link" :icon="link.icon"
+                  :children="link.children" :can="link.can"></EssentialLink>
+              </div>
+            </q-list>
+          </div>
+
           <!-- Boton transferir tareas -->
           <q-btn v-if="mostrarTransferirTareas" dense unelevated no-caps class="q-px-sm bg-grey-4d"
             @click="abrirTransferirTareas()">
@@ -262,16 +279,6 @@
           margin-top: 100px;
           margin-bottom: 20px;
         ">
-        <!--Barra de
-                <q-input v-model="buscarModulo" label="Buscar algo" @input="filtrarMenu(buscarModulo)" />
-        <q-list>
-          <q-item v-for="link in resultadosBusqueda" :key="link.link">
-            <q-item-section>{{ link.link }}</q-item-section>
-          </q-item>
-        </q-list>
-        Busqueda-->
-
-
         <q-list>
           <div v-for="item in links" :key="item.title">
             <q-item-label v-if="item.hasOwnProperty('header')" header class="text-bold text-primary">{{ item.header
@@ -320,3 +327,11 @@
   </q-layout>
 </template>
 <script src="./MainLayout.ts"></script>
+<style lang="scss" scoped>
+.lista-busqueda {
+  position: fixed;
+  top: 50px;
+  background-color: rgb(255, 255, 255);
+  color: rgb(30, 0, 163);
+}
+</style>
