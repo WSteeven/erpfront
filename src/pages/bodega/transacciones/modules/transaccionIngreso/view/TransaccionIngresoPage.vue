@@ -8,7 +8,7 @@
     :accion1="botonImprimir"
     :accion2="botonAnular"
     :accion1Header="botonActualizar"
-    paginate
+    
   >
     <template #formulario>
       <q-form @submit.prevent>
