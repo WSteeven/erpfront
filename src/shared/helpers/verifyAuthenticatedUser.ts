@@ -9,7 +9,7 @@ import { RouteLocationNormalized } from 'vue-router';
  * - A boolean indicating whether the user is authenticated.
  * - A string representing the type of authentication (e.g., 'empleado', 'usuario_externo') or null if the user is not authenticated.
  */
-export function userIsAuthenticated() {
+export function  userIsAuthenticated() {
   const store = useAuthenticationStore()
   const storeExternal = useAuthenticationExternalStore()
   if (store.user) {

@@ -12,7 +12,7 @@ export const seleccionContratacionPersonal = {
     modalidades: new Endpoint('seleccion-contratacion/modalidades'),
     postulantes: new Endpoint('seleccion-contratacion/postulantes'),
     registro: new Endpoint('recursos-humanos/registro'),
-    postulacion_vacante: new Endpoint('recursos-humanos/postulacion-vacante'),
+    postulacion_vacante: new Endpoint('seleccion-contratacion/postulaciones-vacantes'),
     vacante_favorita: new Endpoint('seleccion-contratacion/vacante-favorita'),
 
 

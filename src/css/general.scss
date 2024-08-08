@@ -146,6 +146,14 @@ input[type='time']::-webkit-calendar-picker-indicator {
   border: 1px solid $grey-4 !important;
 }
 
+.rounded-4 {
+border-radius: 4px;
+}
+.rounded-8 {
+border-radius: 8px;
+}
+
+
 .border-blue-grey-dashed {
   border: 1px dashed $blue-grey !important;
 }

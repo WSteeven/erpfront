@@ -1,7 +1,7 @@
 // Dependencias
 import { required, requiredIf } from 'shared/i18n-validators'
 import { useVuelidate } from '@vuelidate/core'
-import { defineComponent, ref } from 'vue'
+import { defineComponent, ref} from 'vue'
 
 // Componentes
 import TabLayoutFilterTabs2 from 'shared/contenedor/modules/simple/view/TabLayoutFilterTabs2.vue'
@@ -13,7 +13,7 @@ import ModalEntidad from 'components/modales/view/ModalEntidad.vue'
 
 //Logica y controladores
 import { ContenedorSimpleMixin } from 'shared/contenedor/modules/simple/application/ContenedorSimpleMixin'
-import { encontrarUltimoIdListado, removeAccents } from 'shared/utils'
+import { encontrarUltimoIdListado, ordenarLista, removeAccents } from 'shared/utils'
 import { acciones, accionesTabla } from 'config/utils'
 import { useFiltrosListadosSelects } from 'shared/filtrosListadosGenerales'
 import { AutorizacionController } from 'pages/administracion/autorizaciones/infraestructure/AutorizacionController'
@@ -87,12 +87,12 @@ export default defineComponent({
       idPuestoEmpleo.value = id
       setTimeout(() => {
         subirArchivos()
-      }, 1)
+      }, 300)
     })
     onConsultado(async () => {
       setTimeout(() => {
-        refArchivo.value.listarArchivosAlmacenados(solicitud.id)
-      }, 1)
+        refArchivo.value?.listarArchivosAlmacenados(solicitud.id)
+      }, 300)
       await consultarConocimientos(solicitud.cargo, false)
     })
     onBeforeModificar(() => {
@@ -189,7 +189,7 @@ export default defineComponent({
      * FUNCIONES
     ***************************************************************************/
     async function subirArchivos() {
-      await refArchivo.value.subir()
+      await refArchivo.value?.subir()
     }
 
     async function filtrarSolicitudes(tab: string) {
@@ -372,6 +372,7 @@ export default defineComponent({
       crearAreaConocimiento,
       checkRequiereFormacionAcademica,
       checkRequiereExperiencia,
+      ordenarLista,
 
       //botones de tabla
       btnEliminarFormacionAcademica,

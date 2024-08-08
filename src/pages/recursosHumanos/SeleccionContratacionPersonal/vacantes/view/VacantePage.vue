@@ -326,7 +326,7 @@
               :permitir-editar-celdas="true"
               :mostrar-header="false"
               :grid="false"
-              @eliminar="btnEliminarFormacionAcademica"
+              :accion1="btnEliminarFormacionAcademica"
               :alto-fijo="false"
               :ajustarCeldas="true"
             >
@@ -416,7 +416,7 @@
             />
           </div>
 
-          {{v$.$errors}}
+          <!-- {{v$.$errors}} -->
 
         </div>
       </q-form>

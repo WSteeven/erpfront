@@ -33,7 +33,7 @@
           :key="vacante.id"
         >
           <div class="my-custom-card">
-            <div class="row" style="height: 76%;">
+            <div class="row" style="min-height: 72%; max-height: 72%;">
               <div class="col-6 h-100">
                 <q-img
                   class="rounded-borders"
@@ -62,7 +62,7 @@
               </div>
             </div>
             <q-separator ></q-separator>
-            <div class="row q-pa-sm" style="height: 10%;">
+            <div class="row q-pa-sm" style="min-height: 10%; max-height: 15%;">
               <div class="col-6">
                 <q-icon class="bi-clock-fill" />
                 <strong class="q-px-sm">
@@ -81,7 +81,7 @@
               </div>
             </div>
             <q-separator ></q-separator>
-            <div class="q-py-sm" style="height: 10%;">
+            <div class="q-py-sm" style="min-height: 10%; max-height: 15%">
               <q-btn
                 unelevated
                 glossy

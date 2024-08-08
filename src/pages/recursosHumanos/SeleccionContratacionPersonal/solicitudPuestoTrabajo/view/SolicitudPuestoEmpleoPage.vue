@@ -93,6 +93,7 @@
               use-input
               @blur="v$.cargo.$touch"
               @filter="filtrarCargos"
+              @popup-show="ordenarLista(cargos, 'nombre')"
               @update:model-value="consultarConocimientos"
               :error="!!v$.cargo.$errors.length"
               :option-value="v => v.id"

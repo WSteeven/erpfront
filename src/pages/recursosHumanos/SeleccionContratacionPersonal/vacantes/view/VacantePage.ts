@@ -29,6 +29,9 @@ import { TipoPuestoController } from '../../tiposPuestos/infraestructure/TipoPue
 import { required, requiredIf } from 'shared/i18n-validators'
 import { tipo_puesto } from 'config/recursosHumanos.utils'
 import { ModalidadController } from '../../modalidades/infraestructure/ModalidadController'
+import { CustomActionTable } from 'components/tables/domain/CustomActionTable'
+import { FormacionAcademica } from '../../solicitudPuestoTrabajo/domain/FormacionAcademica'
+import { useNotificaciones } from 'shared/notificaciones'
 
 export default defineComponent({
   name: 'VacantePage',
@@ -38,6 +41,8 @@ export default defineComponent({
     const { entidad: vacante, accion, disabled, listadosAuxiliares, } = mixin.useReferencias()
     const { setValidador, obtenerListados, cargarVista, listar } = mixin.useComportamiento()
     const { onGuardado } = mixin.useHooks()
+
+    const { confirmar } = useNotificaciones()
 
     /***************************************************************************
      * stores
@@ -61,7 +66,7 @@ export default defineComponent({
     const autorizaciones = ref([])
 
     async function subirArchivos() {
-      await refArchivo.value.subir()
+      await refArchivo.value?.subir()
     }
 
     onGuardado((id: number) => {
@@ -186,8 +191,16 @@ export default defineComponent({
     function btnEliminarConocimiento() {
       console.log('eliminar')
     }
-    function btnEliminarFormacionAcademica() {
-      console.log('eliminar')
+    const btnEliminarFormacionAcademica: CustomActionTable<FormacionAcademica> =
+    {
+      titulo: '',
+      icono: 'bi-x',
+      color: 'negative',
+      accion: ({ posicion }) =>
+        confirmar('¿Está seguro de continuar?', () =>
+          vacante.formaciones_academicas?.splice(posicion, 1)
+        ),
+      visible: () => accion.value == acciones.nuevo || accion.value == acciones.editar
     }
     function agregarConocimiento() {
       console.log('agregar')

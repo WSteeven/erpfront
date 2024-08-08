@@ -16,6 +16,7 @@ import { useRouter } from 'vue-router';
 import { StatusEssentialLoading } from 'components/loading/application/StatusEssentialLoading';
 import { AxiosHttpRepository } from 'shared/http/infraestructure/AxiosHttpRepository';
 import { endpoints } from 'config/api';
+import { AxiosResponse } from 'axios';
 
 // Logic & controllers
 
@@ -28,7 +29,7 @@ export default defineComponent({
     dayjs.extend(relativeTime)
     dayjs.locale(es)
 
-    const { promptItems } = useNotificaciones()
+    const { promptItems, notificarAdvertencia, notificarCorrecto, notificarError } = useNotificaciones()
 
     const vacanteStore = useVacanteStore()
     const { autenticado, tipoAutenticacion } = userIsAuthenticated()
@@ -73,7 +74,8 @@ export default defineComponent({
       } else {
         // se continua con el proceso normal
         // se dirige a la pagina de cargar los datos y completar el proceso de postulacion
-        router.replace({ name: 'postulacion_vacante', params: { id } })
+        // router.replace({ name: 'postulacion_vacante', params: { id } })
+        router.push({ name: 'postulacion_vacante', params: { id } })
       }
     }
 
@@ -82,8 +84,11 @@ export default defineComponent({
         cargando.activar()
         const axios = AxiosHttpRepository.getInstance()
         const ruta = axios.getEndpoint(endpoints.vacante_favorita)+'/'+id
-        const response = await axios.post(ruta)
-        console.log('Response: ' + response)
+        const response:AxiosResponse = await axios.post(ruta)
+        if(response.status === 200) {
+          notificarCorrecto(response.data.mensaje)
+          vacanteStore.vacante.hydrate(response.data.modelo)
+        }
       } catch (err) {
         console.log('Error: ', err)
       } finally {

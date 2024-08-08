@@ -25,6 +25,11 @@
             </q-badge>
           </div>
           <div class="col col-md-4 col-sm-4 col-xs-6">
+            <!-- <q-badge outline color="primary">
+              <q-icon class="bi-people-fill" />
+              &nbsp; Postulantes
+              <strong class="q-px-sm">{{ vacante.numero_postulantes }}</strong>
+            </q-badge> -->
             <q-badge outline color="primary">
               <q-icon class="bi-people-fill" />
               &nbsp; Postulantes
@@ -38,17 +43,27 @@
           <strong>Experiencia requerida en el cargo:</strong> Mínimo
           {{ vacante.anios_experiencia?.toLowerCase() }}
         </div>
-        <div class="text-h6 q-pt-sm">Conocimientos requeridos</div>
+        <div v-if="vacante.requiere_licencia">
+          <strong>Licencia de conducir requerida:</strong> SI
+        </div>
+        <div v-if="vacante.disponibilidad_viajar">
+          <strong>Debe tener disponibilidad de viajar:</strong> SI
+        </div>
+        <div class="text-subtitle1 text-bold q-pt-sm">Conocimientos requeridos</div>
         <div>
           <ul>
             <li
-              v-for="conocimiento of vacante.areas_conocimiento"
-              :key="conocimiento"
+            v-for="conocimiento of vacante.areas_conocimiento"
+            :key="conocimiento"
             >
-              {{ conocimiento }}
-            </li>
-          </ul>
-        </div>
+            {{ conocimiento }}
+          </li>
+        </ul>
+      </div>
+      <div class="text-subtitle1 text-bold q-pt-sm" v-if="vacante.requiere_formacion_academica">Formación académica requerida</div>
+      <div v-for="formacion of vacante.formaciones_academicas" :key="formacion.id">
+       <div> {{ formacion.nivel }} - {{ formacion.nombre }} O EQUIVALENTE</div>
+      </div>
         <!-- <div>Creada {{ dayjs(vacante.created_at).fromNow() }}</div> -->
         <div class="column items-center">
           <div class="row">
