@@ -840,7 +840,7 @@ export const useMenuStore = defineStore('menu', () => {
      *****************************************/
     {
       title: 'Intranet',
-      icon: 'fa-solid fa-explosion',
+      icon: 'fa-solid fa-info',
       can: store.esAdministrador || store.can('puede.ver.modulo_intranet'),
       module: true,
       children: [

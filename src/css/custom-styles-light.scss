@@ -53,6 +53,10 @@
     backdrop-filter: blur(10px) !important;
   }
 
+  .bg-solid{
+    background-color: $grey-2;
+  }
+
   .bg-border {
     background-color: #fff;
   }

@@ -29,6 +29,27 @@
               'q-gutter-x-sm': !$q.screen.xs,
             }"
           > -->
+
+          <!-- Barra de Busqueda -->
+          <div class="contenedor-busqueda-modulo" style="align-items: start; width: 200px; margin: 15 auto">
+            <q-input v-model="buscarModulo" label="BUSCAR MÓDULO ..." @update:model-value="filtrarMenu" dense outlined
+              class="entrada-busqueda" style="margin-bottom: auto" clearable />
+            <q-list v-if="buscarModulo" dense bordered class="lista-busqueda bg-solid text-color"
+              style="align-items: start; width: 200px; margin: 0 auto">
+              <div v-for="link, index in resultadosBusqueda" :key="index">
+                <q-item clickable v-if="link.link" :to="link.link">
+                  <q-item-section avatar>
+                    <q-icon :name="link.icon" />
+                  </q-item-section>
+                  <q-item-section>
+                    <q-item-label>{{ link.title }}</q-item-label>
+                    <q-item-label caption v-if="link.parentTitle">{{ link.parentTitle }}</q-item-label>
+                  </q-item-section>
+                </q-item>
+              </div>
+            </q-list>
+          </div>
+
           <!-- Boton transferir tareas -->
           <q-btn v-if="mostrarTransferirTareas" dense unelevated no-caps class="q-px-sm bg-grey-4d"
             @click="abrirTransferirTareas()">
@@ -262,16 +283,6 @@
           margin-top: 100px;
           margin-bottom: 20px;
         ">
-        <!--Barra de
-                <q-input v-model="buscarModulo" label="Buscar algo" @input="filtrarMenu(buscarModulo)" />
-        <q-list>
-          <q-item v-for="link in resultadosBusqueda" :key="link.link">
-            <q-item-section>{{ link.link }}</q-item-section>
-          </q-item>
-        </q-list>
-        Busqueda-->
-
-
         <q-list>
           <div v-for="item in links" :key="item.title">
             <q-item-label v-if="item.hasOwnProperty('header')" header class="text-bold text-primary">{{ item.header
@@ -301,7 +312,7 @@
         </div>
         <!-- Aplica keep-alive aquí -->
         <keep-alive :exclude="[
-          'intranet',
+          'intranet_page',
           'transacciones_ingresos',
           'Egresos',
           'OrdenCompraPage',
@@ -320,3 +331,9 @@
   </q-layout>
 </template>
 <script src="./MainLayout.ts"></script>
+<style lang="scss" scoped>
+.lista-busqueda {
+  position: fixed;
+  top: 50px;
+}
+</style>
