@@ -31,17 +31,21 @@
           > -->
 
           <!-- Barra de Busqueda -->
-          <div class="contenedor-busqueda-modulo" style="align-items: start; width: 200px; margin: 0 auto">
-            <q-input v-model="buscarModulo" label="BUSCAR MÓDULO ..." @update:model-value="filtrarMenu(buscarModulo)"
-              dense outlined class="entrada-busqueda" style="margin-bottom: auto" />
-            <q-list v-if="buscarModulo" dense bordered class="lista-busqueda"
+          <div class="contenedor-busqueda-modulo" style="align-items: start; width: 200px; margin: 15 auto">
+            <q-input v-model="buscarModulo" label="BUSCAR MÓDULO ..." @update:model-value="filtrarMenu" dense outlined
+              class="entrada-busqueda" style="margin-bottom: auto" clearable />
+            <q-list v-if="buscarModulo" dense bordered class="lista-busqueda bg-solid text-color"
               style="align-items: start; width: 200px; margin: 0 auto">
-              <div v-for="link in resultadosBusqueda" :key="link.link">
-                <q-item-label v-if="link.hasOwnProperty('header')" header class="text-bold text-primary">
-                  {{ link.header }}
-                </q-item-label>
-                <EssentialLink v-else :title="link.title ?? ''" :link="link.link" :icon="link.icon"
-                  :children="link.children" :can="link.can"></EssentialLink>
+              <div v-for="link, index in resultadosBusqueda" :key="index">
+                <q-item clickable v-if="link.link" :to="link.link">
+                  <q-item-section avatar>
+                    <q-icon :name="link.icon" />
+                  </q-item-section>
+                  <q-item-section>
+                    <q-item-label>{{ link.title }}</q-item-label>
+                    <q-item-label caption v-if="link.parentTitle">{{ link.parentTitle }}</q-item-label>
+                  </q-item-section>
+                </q-item>
               </div>
             </q-list>
           </div>
@@ -331,7 +335,5 @@
 .lista-busqueda {
   position: fixed;
   top: 50px;
-  background-color: rgb(255, 255, 255);
-  color: rgb(30, 0, 163);
 }
 </style>

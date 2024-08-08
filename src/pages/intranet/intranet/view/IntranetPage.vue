@@ -27,7 +27,7 @@
                 </q-btn>
               </div>
             </q-carousel-slide>
-            
+
           </q-carousel>
           <q-card v-else class="q-pa-md q-mt-md no-news-card" flat bordered>
             <q-card-section class="text-center q-pa-none">
@@ -83,7 +83,7 @@
 
         <!--Mis Modulos-->
         <div class="col-12 col-md-9">
-          <q-card class="my-modulos-card" style="border-radius: 15px; background-color: white">
+          <q-card class="my-modulos-card rounded ">
             <q-card-section style="background-color: #006831">
               <div class="text-h6" style="
                   text-align: center;
@@ -95,14 +95,14 @@
                 MIS MÓDULOS
               </div>
             </q-card-section>
-            <q-card-section class="icon-container-modulos" style="
+            <q-card-section class="icon-container-modulos " style="
                 display: flex;
                 justify-content: center;
                 flex-wrap: wrap;
                 padding: 20px;
               ">
               <q-btn v-for="(modulo, index) in modulosPermitidos" :key="index" :to="modulo.link"
-                class="icon-link-modulos" flat unelevated rounded dense style="
+                class="icon-link-modulos " flat unelevated rounded dense style="
                   padding: xs lg;
                   margin: 10px;
                   flex-direction: column; /* Cambiar a column para alinear verticalmente */
@@ -113,12 +113,12 @@
                     flex-direction: column;
                     align-items: center;
                   ">
-                  <q-icon :name="modulo.icon" class="icon-content-modulos" color="blue-grey-9" size="40px">
+                  <q-icon :name="modulo.icon" class="icon-content-modulos text-color" size="40px">
                     <q-tooltip anchor="bottom middle" self="bottom middle">
                       {{ modulo.title }}
                     </q-tooltip>
                   </q-icon>
-                  <div style="font-size: 9px; margin-top: 5px; color: blue-grey-9">
+                  <div style="font-size: 9px; margin-top: 5px;" class="text-color">
                     {{ modulo.title }}
                   </div>
                 </div>
