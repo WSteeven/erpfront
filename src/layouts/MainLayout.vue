@@ -312,7 +312,7 @@
         </div>
         <!-- Aplica keep-alive aquí -->
         <keep-alive :exclude="[
-          'intranet',
+          'intranet_page',
           'transacciones_ingresos',
           'Egresos',
           'OrdenCompraPage',

@@ -55,7 +55,7 @@ interface Evento {
 }
 
 export default defineComponent({
-  name: 'intranet',
+  name: 'intranet_page',
   components: {
     ModalesEntidad,
     LottiePlayer: Vue3Lottie,
