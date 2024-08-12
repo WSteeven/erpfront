@@ -18,7 +18,7 @@
         no-caps
       />
 
-      <q-tab
+     <!--  <q-tab
         :name="opcionesSeguimientoConsumo.HISTORIAL_SEGUIMIENTO"
         :label="opcionesSeguimientoConsumo.HISTORIAL_SEGUIMIENTO"
         :class="{
@@ -26,7 +26,7 @@
             tab !== opcionesSeguimientoConsumo.HISTORIAL_SEGUIMIENTO
         }"
         no-caps
-      />
+      /> -->
     </q-tabs>
 
     <!-- Tab content -->
@@ -59,9 +59,9 @@
         ></essential-table>
       </q-tab-panel>
 
-      <q-tab-panel :name="opcionesSeguimientoConsumo.HISTORIAL_SEGUIMIENTO">
+      <!-- <q-tab-panel :name="opcionesSeguimientoConsumo.HISTORIAL_SEGUIMIENTO">
         Historial de Seguimiento
-      </q-tab-panel>
+      </q-tab-panel> -->
     </q-tab-panels>
   </q-page>
 

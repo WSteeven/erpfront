@@ -23,6 +23,14 @@
             emit-value
             map-options
           >
+            <template v-slot:no-option>
+              <q-item>
+                <q-item-section class="text-grey">
+                  No hay activos fijos asignados o el stock de los activos está
+                  en cero
+                </q-item-section>
+              </q-item>
+            </template>
           </q-select>
         </div>
 
@@ -37,7 +45,9 @@
             options-dense
             dense
             outlined
-            :option-label="item => item.detalle_producto + ' | ' + item.serial ?? ''"
+            :option-label="
+              item => item.detalle_producto + ' | ' + item.serial ?? ''
+            "
             :option-value="item => item.detalle_producto_id"
             @update:model-value="
               seleccionarActivoFijo(seguimiento.detalle_producto)
@@ -48,7 +58,8 @@
             <template v-slot:no-option>
               <q-item>
                 <q-item-section class="text-grey">
-                  No hay activos fijos asignados o el stock está en cero
+                  No hay activos fijos asignados o el stock de los activos está
+                  en cero
                 </q-item-section>
               </q-item>
             </template>

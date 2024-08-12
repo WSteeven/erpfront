@@ -150,7 +150,7 @@ export class ContenedorSimpleMixin<T extends EntidadAuditable> extends Contenedo
     this.statusEssentialLoading.activar()
     try {
       const { result, meta } = await this.controller.listar(params)
-      if (result.length == 0) this.notificaciones.notificarCorrecto('Aún no se han agregado elementos')
+      if (result.length == 0) this.notificaciones.notificarInformacion('Aún no se han agregado elementos')
 
       if (append) this.refs.listado.value.push(...result)
       else this.refs.listado.value = result
@@ -289,7 +289,7 @@ export class ContenedorSimpleMixin<T extends EntidadAuditable> extends Contenedo
     this.statusEssentialLoading.activar()
     try {
       const { result } = await this.controller.listarFiles(id, params)
-      if (result.length == 0) this.notificaciones.notificarCorrecto('Aún no se han agregado elementos')
+      if (result.length == 0) this.notificaciones.notificarInformacion('Aún no se han agregado elementos')
 
       // if (append) this.refs.listadoArchivos.value.push(...result)
       this.refs.listadoArchivos.value = result
@@ -303,7 +303,7 @@ export class ContenedorSimpleMixin<T extends EntidadAuditable> extends Contenedo
     try {
       // const { result } = await this.controller.listarActividades(id, params)
       const result = []
-      if (result.length == 0) this.notificaciones.notificarCorrecto('Aún no se han agregado elementos')
+      if (result.length == 0) this.notificaciones.notificarInformacion('Aún no se han agregado elementos')
 
       if (append) this.refs.listadoActividades.value.push(...result)
       else this.refs.listadoActividades.value = result

@@ -600,13 +600,13 @@ const routes: RouteRecordRaw[] = [
 
 
       //Routes for Activos Fijos
-      {
+      /* {
         path: '/activos-fijos',
         name: 'activos_fijos',
         component: () =>
           import('pages/activosFijos/controlActivos/view/ActivoFijoPage.vue'),
         meta: { requiresAuth: true },
-      },
+      }, */
 
       /*********************************************
        * COMPRAS Y PROVEEDORES
