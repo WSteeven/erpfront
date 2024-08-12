@@ -65,7 +65,8 @@ export class DetalleProducto extends EntidadAuditable {
     seriales: any[]
 
     unidad_medida: string | null
-    fecha_caducidad: string | null
+    fotografia: string | null
+    fotografia_detallada: string | null
     permiso_arma: PermisoArma
 
     constructor() {
@@ -128,5 +129,8 @@ export class DetalleProducto extends EntidadAuditable {
         this.unidad_medida = null
         this.fecha_caducidad = null
         this.permiso_arma = new PermisoArma()
+
+        this.fotografia = null
+        this.fotografia_detallada = null
     }
 }

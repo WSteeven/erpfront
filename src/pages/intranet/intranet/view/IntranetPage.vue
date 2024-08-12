@@ -118,7 +118,7 @@
                       {{ modulo.title }}
                     </q-tooltip>
                   </q-icon>
-                  <div style="font-size: 9px; margin-top: 5px;" class="text-color">
+                  <div style="font-size: 9px; margin-top: 5px;" class="text-blue-grey-9">
                     {{ modulo.title }}
                   </div>
                 </div>

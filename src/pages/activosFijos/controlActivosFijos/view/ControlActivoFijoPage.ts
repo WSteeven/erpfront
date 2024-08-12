@@ -1,45 +1,52 @@
 // Dependencias
 import { configuracionColumnasEntregasActivosFijos } from '../domain/configuracionColumnasEntregasActivosFijos'
+import { configuracionColumnasSeguimientoConsumo } from '../domain/configuracionColumnasSeguimientoConsumo'
+import { configuracionColumnasStockResponsables } from '../domain/configuracionColumnasStockResponsables'
 import { configuracionColumnasActivosFijos } from '../domain/configuracionColumnasActivosFijos'
-import { computed, defineComponent, reactive, Ref, ref, UnwrapRef } from 'vue'
+import { CustomActionTable } from 'components/tables/domain/CustomActionTable'
+import { opcionesConsultasActivosFijos } from 'config/utils/activos_fijos'
+import { computed, defineComponent, reactive, ref, UnwrapRef } from 'vue'
+import { useAuthenticationStore } from 'stores/authentication'
+import { useActivoFijoStore } from 'stores/activo_fijo'
+import { accionesTabla } from 'config/utils'
 
 // Componentes
 import TabLayout from 'shared/contenedor/modules/simple/view/TabLayout.vue'
 import SelectorImagen from 'components/SelectorImagen.vue'
 import FormularioPermisoArma from 'src/pages/bodega/permisosArmas/view/FormularioPermisoArma.vue'
 import EssentialTable from 'components/tables/view/EssentialTable.vue'
+import SolicitarArchivo from 'shared/prompts/SolicitarArchivo.vue'
 
 // Logica y controladores
 import { ContenedorSimpleMixin } from 'shared/contenedor/modules/simple/application/ContenedorSimpleMixin'
-import { ActivoFijo } from '../domain/ActivoFijo'
-import { ActivoFijoController } from '../infraestructure/ActivoFijoController'
-import { useActivoFijoStore } from 'stores/activo_fijo'
-import { opcionesConsultasActivosFijos } from 'config/utils/activos_fijos'
 import { useConsultarOpcionesActivosFijos } from '../application/ConsultarOpcionesActivosFijos'
-import { useAuthenticationStore } from 'stores/authentication'
-import { accionesTabla } from 'config/utils'
-import { CustomActionTable } from 'components/tables/domain/CustomActionTable'
-import { useMaterialesEmpleado } from 'pages/gestionTrabajos/miBodega/application/UseMaterialesEmpleado'
-import { FiltroMiBodega } from 'pages/gestionTrabajos/miBodega/domain/FiltroMiBodega'
-import { FiltroMiBodegaEmpleado } from 'pages/gestionTrabajos/miBodega/domain/FiltroMiBodegaEmpleado'
-import { configuracionColumnasStockResponsables } from '../domain/configuracionColumnasStockResponsables'
+import { ActivoFijoController } from '../infraestructure/ActivoFijoController'
+import { ActivoFijo } from '../domain/ActivoFijo'
+import { useNotificacionStore } from 'stores/notificacion'
+import { useQuasar } from 'quasar'
+import { Transaccion } from 'pages/bodega/transacciones/domain/Transaccion'
+import { TransaccionController } from 'pages/bodega/transacciones/infraestructure/TransaccionController'
+import { ArchivoController } from 'pages/gestionTrabajos/subtareas/modules/gestorArchivosTrabajos/infraestructure/ArchivoController'
 
 export default defineComponent({
-  components: { TabLayout, SelectorImagen, FormularioPermisoArma, EssentialTable },
+  components: { TabLayout, SelectorImagen, FormularioPermisoArma, EssentialTable, SolicitarArchivo },
   setup() {
     /*********
      * Stores
      *********/
     const activoFijoStore = useActivoFijoStore()
     const authenticationStore = useAuthenticationStore()
+    useNotificacionStore().setQuasar(useQuasar())
 
     /********
      * Mixin
      ********/
     const mixin = new ContenedorSimpleMixin(ActivoFijo, new ActivoFijoController())
-    const { entidad: activo, disabled, accion, listadosAuxiliares } = mixin.useReferencias()
-    const { setValidador, cargarVista, obtenerListados } = mixin.useComportamiento()
+    const { entidad: activo, disabled, accion } = mixin.useReferencias()
     const { onConsultado } = mixin.useHooks()
+
+    const mixinTransaccion = new ContenedorSimpleMixin(Transaccion, new TransaccionController(), new ArchivoController())
+    const { entidad: transaccion } = mixinTransaccion.useReferencias()
 
     /************
      * Variables
@@ -52,12 +59,18 @@ export default defineComponent({
       detalle_producto_id: null,
       cliente_id: null,
     })
+    // const mostrarSolicitarArchivoJustificativoUso = ref(false)
+    const mostrarSolicitarArchivoActaEntregaRecepcion = ref(false)
+    const tiposArchivos = {
+      ACTA_ENTREGA_RECEPCION: 'ACTA ENTREGA RECEPCION',
+      JUSTIFICATIVO_USO: 'JUSTIFICATIVO USO',
+    }
+    const tipoArchivo = ref()
 
     /************
      * Funciones
      ************/
-    const { entregas, listarEntregas, asignacionesProductos, listarAsignacionesProductos } = useConsultarOpcionesActivosFijos()
-    // const { todosProductosEmpleado, consultarTodosProductosEmpleado } = useMaterialesEmpleado(filtros)
+    const { entregas, listarEntregas, asignacionesProductos, listarStockResponsablesAF, seguimientosConsumosActivosFijos, listarSeguimientoConsumoActivosFijos } = useConsultarOpcionesActivosFijos()
 
     /******************
      * Acciones tabla
@@ -66,8 +79,10 @@ export default defineComponent({
       titulo: 'Subir acta de entrega recepción',
       icono: 'bi-upload',
       color: 'primary',
-      accion: ({ entidad, posicion }) => {
-        //
+      accion: ({ entidad }) => {
+        transaccion.hydrate(entidad)
+        tipoArchivo.value = tiposArchivos.ACTA_ENTREGA_RECEPCION
+        mostrarSolicitarArchivoActaEntregaRecepcion.value = true
       }
     }
 
@@ -75,8 +90,10 @@ export default defineComponent({
       titulo: 'Justificativo de uso',
       icono: 'bi-upload',
       color: 'positive',
-      accion: ({ entidad, posicion }) => {
-        //
+      accion: ({ entidad }) => {
+        transaccion.hydrate(entidad)
+        tipoArchivo.value = tiposArchivos.JUSTIFICATIVO_USO
+        mostrarSolicitarArchivoActaEntregaRecepcion.value = true
       }
     }
 
@@ -93,6 +110,7 @@ export default defineComponent({
     onConsultado(() => {
       filtros.cliente_id = activo.cliente_id
       filtros.detalle_producto_id = activo.detalle_producto.id
+      tabsOpcionesConsultas.value = opcionesConsultasActivosFijos.ENTREGAS
       listarEntregas(filtros)
     })
 
@@ -103,21 +121,27 @@ export default defineComponent({
 
     return {
       mixin, activo, disabled, accion,
+      mixinTransaccion,
       configuracionColumnas: configuracionColumnasActivosFijos,
       configuracionColumnasEntregasActivosFijos,
       configuracionColumnasStockResponsables,
+      configuracionColumnasSeguimientoConsumo,
       accionesTabla,
       sumaCantidadesEntregadas,
       opcionesConsultasActivosFijos,
       tabsOpcionesConsultas,
       entregas,
+      seguimientosConsumosActivosFijos,
+      listarSeguimientoConsumoActivosFijos,
       listarEntregas,
       btnSubirActaEntregaRecepcion,
       btnSubirJustificativoUso,
       // consultarStockResponsables,
       asignacionesProductos,
-      listarAsignacionesProductos,
+      listarStockResponsablesAF,
       filtros,
+      mostrarSolicitarArchivoActaEntregaRecepcion,
+      tipoArchivo,
     }
   }
 })

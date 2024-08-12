@@ -461,7 +461,6 @@ export const useMenuStore = defineStore('menu', () => {
         }
       ]
     },
-<<<<<<< HEAD
     /*****************
      * Activos fijos
      *****************/
@@ -471,17 +470,20 @@ export const useMenuStore = defineStore('menu', () => {
       can: store.can('puede.acceder.modulo_activos_fijos'),
       children: [
         {
-          title: 'Control',
+          title: 'Control de AF',
           link: 'control-activos-fijos',
           can: store.can('puede.acceder.control_activos_fijos'),
           icon: 'bi-app',
         },
+        {
+          title: 'Seguimiento consumo AF',
+          link: 'seguimiento-consumo-activos-fijos',
+          can: store.can('puede.acceder.seguimiento_consumo_activos_fijos'),
+          icon: 'bi-app',
+        },
       ],
     },
-    //Modulo Fondos Rotativos
-=======
     // Modulo Fondos Rotativos
->>>>>>> 2ee7f4a5f3738c6367b7e257f14039968ba5a6a0
     {
       title: 'Fondos Rotativos',
       icon: 'fa-solid fa-sack-dollar', // Cambiado de 'bi-cash-stack' a Font Awesome

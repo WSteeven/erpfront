@@ -7,6 +7,12 @@ const rutasActivosFijos: RouteRecordRaw[] = [
     component: () => import('controlActivosFijos/view/ControlActivoFijoPage.vue'),
     meta: { requiresAuth: true },
   },
+  {
+    path: '/seguimiento-consumo-activos-fijos',
+    name: 'seguimiento_consumo_activos_fijos',
+    component: () => import('activosFijos/seguimientoConsumoActivoFijo/view/SeguimientoConsumoActivoFijoPage.vue'),
+    meta: { requiresAuth: true },
+  },
 ]
 
 export default rutasActivosFijos

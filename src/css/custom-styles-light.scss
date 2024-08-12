@@ -1,6 +1,7 @@
 /*body {
   background-color: $grey-4 !important;
 }*/
+$border-color: #fff;
 
 .body--light {
   .bg-toolbar {
@@ -73,7 +74,7 @@
     background-color: rgba($grey-2, 0.6);
     border-radius: 16px 16px 0 0;
     box-shadow: rgba(0, 0, 0, 0.12) 0px 5px 15px;
-    border: 1px solid #fff;
+    border: 1px solid $border-color;
     border-bottom: none !important;
     color: $grey-9; //primary;
     // text-shadow: rgba($primary, .5) 2px 2px 4px;
@@ -82,7 +83,7 @@
   .tab-inactive {
     background-color: $grey-5;
     border-radius: 16px 16px 0 0;
-    border: 1px solid rgba(#fff, 0.4) !important;
+    border: 1px solid rgba($border-color, 0.4) !important;
     box-shadow: rgba(0, 0, 0, 0.12) 0px 5px 15px;
   }
 
@@ -166,7 +167,7 @@
   }
 
   .border-white {
-    border: 1px solid #fff !important;
+    border: 1px solid $border-color !important;
   }
 
   .double-border {
@@ -213,10 +214,10 @@
   }
 
   .borde-header-tabla {
-    border-top: 1px solid #ddd;
-    border-left: 1px solid #ddd;
-    border-right: 1px solid #ddd;
-    border-radius: 8px 8px 0 0;
+    border-top: 1px solid #ddd !important;
+    border-left: 1px solid #ddd !important;
+    border-right: 1px solid #ddd !important;
+    border-radius: 16px 16px 0 0 !important;
   }
 
   .bg-btn-table {
@@ -340,11 +341,11 @@
 
   // Drawer
   .border-right {
-    border-right: 1px solid white;
+    border-right: 1px solid $border-color;
   }
 
   .border-bottom {
-    border-bottom: 1px solid white !important;
+    border-bottom: 1px solid $border-color !important;
   }
 }
 

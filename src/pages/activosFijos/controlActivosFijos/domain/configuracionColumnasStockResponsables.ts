@@ -9,16 +9,16 @@ export const configuracionColumnasStockResponsables: ColumnConfig<any>[] = [
         sortable: true
     },
     {
-        name: 'stock_actual',
-        field: 'stock_actual',
-        label: 'Cantidad en stock',
+        name: 'total_cantidad_utilizada',
+        field: 'total_cantidad_utilizada',
+        label: 'Total cantidad utilizada',
         align: 'left',
         sortable: true
     },
     {
-        name: 'total_cantidad_utilizada',
-        field: 'total_cantidad_utilizada',
-        label: 'Cantidad utilizada',
+        name: 'stock_actual',
+        field: 'stock_actual',
+        label: 'Cantidad en stock',
         align: 'left',
         sortable: true
     },

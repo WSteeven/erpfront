@@ -8,6 +8,7 @@ import { useNotificaciones } from 'shared/notificaciones'
 import { Ref, ref, UnwrapRef } from 'vue'
 import { useTransferenciaProductoEmpleadoStore } from 'stores/transferenciaProductoEmpleado'
 import { MaterialOcupadoFormulario } from 'pages/gestionTrabajos/formulariosTrabajos/emergencias/domain/MaterialOcupadoFormulario'
+import { ActivoFijoAsignadoController } from 'pages/activosFijos/controlActivosFijos/infraestructure/ActivoFijoAsignadoController'
 
 export function useMaterialesEmpleado(filtro: UnwrapRef<FiltroMiBodegaEmpleado>, listadosAuxiliares?: any) {
   // Stores
@@ -18,12 +19,19 @@ export function useMaterialesEmpleado(filtro: UnwrapRef<FiltroMiBodegaEmpleado>,
   // Controllers
   const clienteMaterialEmpleadoController = new ClienteMaterialEmpleadoController()
   const materialEmpleadoController = new MaterialEmpleadoController()
+  const activoFijoAsignadoController = new ActivoFijoAsignadoController()
 
   // Variables
   const { notificarAdvertencia } = useNotificaciones()
   const cargando = new StatusEssentialLoading()
   const todosProductosEmpleado: Ref<MaterialOcupadoFormulario[]> = ref([])
+  const activosFijosAsignados: Ref<MaterialOcupadoFormulario[]> = ref([])
+  const clientesMaterialesStock = ref()
 
+  /**
+   * Esta función se utiliza únicamente en Mi Bodega e interactúa con las
+   * tiendas de devolucion y de transferencias.
+   */
   async function consultarProductosEmpleado() {
     try {
       cargando.activar()
@@ -52,6 +60,9 @@ export function useMaterialesEmpleado(filtro: UnwrapRef<FiltroMiBodegaEmpleado>,
     }
   }
 
+  /**
+   * Esta es una funcion directa para consultar los productos del stock del empleado
+   */
   async function consultarTodosProductosEmpleado() {
     cargando.activar()
     const { result } = await materialEmpleadoController.listar(filtro)
@@ -73,12 +84,38 @@ export function useMaterialesEmpleado(filtro: UnwrapRef<FiltroMiBodegaEmpleado>,
     }
   }
 
+  /**
+   * Esta funcion maneja directamente la consulta a partir de filtro y no recibe nada por param
+   */
+  async function consultarClientesMaterialesStock() {
+    try {
+      cargando.activar()
+      const { result } = await clienteMaterialEmpleadoController.listar(filtro)
+      clientesMaterialesStock.value = result
+    } catch (e) {
+      console.log(e)
+    } finally {
+      cargando.desactivar()
+    }
+  }
+
+  async function consultarActivosFijosAsignados() {
+    cargando.activar()
+    const { result } = await activoFijoAsignadoController.listar(filtro)
+    activosFijosAsignados.value = result
+    cargando.desactivar()
+  }
+
   return {
     // Variables
     todosProductosEmpleado,
+    clientesMaterialesStock,
+    activosFijosAsignados,
     // Funciones
     consultarProductosEmpleado,
     consultarTodosProductosEmpleado,
     consultarClientesMaterialesEmpleado,
+    consultarClientesMaterialesStock,
+    consultarActivosFijosAsignados,
   }
 }

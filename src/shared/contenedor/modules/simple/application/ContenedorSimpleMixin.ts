@@ -175,8 +175,8 @@ export class ContenedorSimpleMixin<T extends EntidadAuditable> extends Contenedo
 
         this.refs.listado.value = result
         this.notificaciones.notificarInformacion('Resultados encontrados.')
-      } catch (error) {
-        this.notificaciones.notificarError('Error al obtener el listado.')
+      } catch (error: any) {
+        this.notificaciones.notificarError(error)//'Error al obtener el listado.')
       }
     })
   }
@@ -264,7 +264,10 @@ export class ContenedorSimpleMixin<T extends EntidadAuditable> extends Contenedo
       if (data.id === null) {
         return this.notificaciones.notificarAdvertencia('No se puede eliminar el recurso con id null')
       }
-      this.controllerFiles?.eliminarFile(data.id).then(({ response }) => {
+
+      if (!this.controllerFiles) return this.notificaciones.notificarError('El mixin requiere de una instancia de ArchivoController()')
+
+      this.controllerFiles.eliminarFile(data.id).then(({ response }) => {
         this.notificaciones.notificarCorrecto(response.data.mensaje)
         this.eliminarElementoListaArchivosActual(data)
         // this.reestablecer()
@@ -282,16 +285,16 @@ export class ContenedorSimpleMixin<T extends EntidadAuditable> extends Contenedo
   /**
    * Funcion para listar todos los archivos relacionados a un modelo
    */
-  private async listarArchivos(id: number, params?: ParamsType, append = false) {
+  private async listarArchivos(id: number, params?: string) {//ParamsType, append = false) {
     this.statusEssentialLoading.activar()
     try {
       const { result } = await this.controller.listarFiles(id, params)
       if (result.length == 0) this.notificaciones.notificarCorrecto('Aún no se han agregado elementos')
 
-      if (append) this.refs.listadoArchivos.value.push(...result)
-      else this.refs.listadoArchivos.value = result
-    } catch (error) {
-      this.notificaciones.notificarError('Error al obtener el listado de archivos.')
+      // if (append) this.refs.listadoArchivos.value.push(...result)
+      this.refs.listadoArchivos.value = result
+    } catch (error: any) {
+      this.notificaciones.notificarError(error) //'Error al obtener el listado de archivos.')
     }
     this.statusEssentialLoading.desactivar()
   }

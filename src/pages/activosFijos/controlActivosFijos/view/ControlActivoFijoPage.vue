@@ -1,9 +1,17 @@
 <template>
-  <tab-layout :mixin="mixin" :configuracionColumnas="configuracionColumnas">
+  <tab-layout
+    :mixin="mixin"
+    :configuracionColumnas="configuracionColumnas"
+    :mostrar-button-submits="false"
+  >
     <template #formulario>
       <q-form @submit.prevent>
-        <b>Información general</b>
-        <div class="row q-col-gutter-sm q-py-md">
+        <div v-if="!activo.codigo">
+          Vaya a la pestaña de Listado y seleccione un activo fijo para observar
+          más detalles.
+        </div>
+        <div v-if="activo.codigo" class="row q-col-gutter-sm q-py-md">
+          <div class="col-12 text-bold q-mb-sm">Información general</div>
           <div class="col-12 col-md-3">
             <label class="q-mb-sm block">Código</label>
             <q-input v-model="activo.codigo" disable outlined dense> </q-input>
@@ -110,7 +118,7 @@
               :imagen="activo.fotografia"
               disable
               :alto="'200px'"
-              @update:model-value="(data) => (activo.fotografia = data)"
+              @update:model-value="data => (activo.fotografia = data)"
             ></selector-imagen>
           </div>
 
@@ -121,16 +129,12 @@
               :imagen="activo.fotografia_detallada"
               disable
               :alto="'200px'"
-              @update:model-value="
-                (data) => (activo.fotografia_detallada = data)
-              "
+              @update:model-value="data => (activo.fotografia_detallada = data)"
             ></selector-imagen>
           </div>
         </div>
 
-        <b v-if="activo.permiso_arma?.id"
-          >Detalles del permiso</b
-        >
+        <b v-if="activo.permiso_arma?.id">Detalles del permiso</b>
         <formulario-permiso-arma
           v-if="activo.permiso_arma?.id"
           :permiso="activo.permiso_arma"
@@ -139,6 +143,7 @@
 
         <!-- Tabs -->
         <q-tabs
+          v-if="activo.codigo"
           v-model="tabsOpcionesConsultas"
           align="left"
           switch-indicator
@@ -151,8 +156,7 @@
             :label="opcionesConsultasActivosFijos.ENTREGAS"
             :class="{
               'tab-inactive':
-                tabsOpcionesConsultas !==
-                opcionesConsultasActivosFijos.ENTREGAS,
+                tabsOpcionesConsultas !== opcionesConsultasActivosFijos.ENTREGAS
             }"
             no-caps
             @click="listarEntregas(filtros)"
@@ -164,10 +168,12 @@
             :class="{
               'tab-inactive':
                 tabsOpcionesConsultas !==
-                opcionesConsultasActivosFijos.STOCK_RESPONSABLES,
+                opcionesConsultasActivosFijos.STOCK_RESPONSABLES
             }"
             no-caps
-            @click="listarAsignacionesProductos({ ...filtros, resumen: 1 })"
+            @click="
+              listarStockResponsablesAF({ ...filtros, resumen_seguimiento: 1 })
+            "
           />
 
           <q-tab
@@ -176,14 +182,16 @@
             :class="{
               'tab-inactive':
                 tabsOpcionesConsultas !==
-                opcionesConsultasActivosFijos.SEGUIMIENTO_CONSUMO,
+                opcionesConsultasActivosFijos.SEGUIMIENTO_CONSUMO
             }"
             no-caps
+            @click="listarSeguimientoConsumoActivosFijos({ ...filtros })"
           />
         </q-tabs>
 
         <!-- Tab content -->
         <q-tab-panels
+          v-if="activo.codigo"
           v-model="tabsOpcionesConsultas"
           animated
           transition-prev="scale"
@@ -197,7 +205,7 @@
               titulo="Egresos del activo seleccionado"
               :configuracionColumnas="[
                 ...configuracionColumnasEntregasActivosFijos,
-                accionesTabla,
+                accionesTabla
               ]"
               :datos="entregas"
               :permitirConsultar="false"
@@ -224,7 +232,31 @@
               :ajustarCeldas="true"
             ></essential-table>
           </q-tab-panel>
+
+          <q-tab-panel
+            :name="opcionesConsultasActivosFijos.SEGUIMIENTO_CONSUMO"
+          >
+            <essential-table
+              titulo="Seguimiento de consumo del activo fijo"
+              :configuracionColumnas="configuracionColumnasSeguimientoConsumo"
+              :datos="seguimientosConsumosActivosFijos"
+              :permitirConsultar="false"
+              :permitirEditar="false"
+              :permitirEliminar="false"
+              :permitirFiltrar="false"
+              :mostrarExportar="true"
+              :ajustarCeldas="true"
+            ></essential-table>
+          </q-tab-panel>
         </q-tab-panels>
+
+        <solicitar-archivo
+          v-if="mostrarSolicitarArchivoActaEntregaRecepcion"
+          :mostrar="mostrarSolicitarArchivoActaEntregaRecepcion"
+          @cerrar="mostrarSolicitarArchivoActaEntregaRecepcion = false"
+          :mixin="mixinTransaccion"
+          :tipo-archivo="tipoArchivo"
+        ></solicitar-archivo>
       </q-form>
     </template>
   </tab-layout>
