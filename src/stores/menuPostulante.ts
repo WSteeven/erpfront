@@ -19,6 +19,12 @@ export const useMenuPostulanteStore = defineStore('menuExternal', () => {
       link: 'puestos-aplicados',
       can: true,
     },
+    {
+      title: 'Favoritas',
+      icon: 'bi-heart-fill',
+      link: 'favoritas',
+      can:true
+    },
 
   ])
 

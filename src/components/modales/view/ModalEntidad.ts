@@ -33,11 +33,11 @@ export default defineComponent({
       type: Boolean,
       default: true,
     },
-    fullHeight:{
+    fullHeight: {
       type: Boolean,
       default: true,
     },
-    maximized:{
+    maximized: {
       type: Boolean,
       default: true,
     },
@@ -59,9 +59,13 @@ export default defineComponent({
     const { confirmar } = useNotificaciones()
     function cerrarModalEntidad(confirmarCerrar = true && props.confirmarCerrar) {
       if (confirmarCerrar) {
-        confirmar('¿Está seguro de que desea cerrar?', () => abierto.value = false)
+        confirmar('¿Está seguro de que desea cerrar?', () => {
+          abierto.value = false
+          emit('cerrado')
+        })
       } else {
         abierto.value = false
+        emit('cerrado')
       }
     }
 

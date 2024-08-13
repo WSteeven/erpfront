@@ -28,7 +28,7 @@
               </q-card-section>
               <q-card-section class="q-pt-xs">
                 <div class="text-caption text-grey text-justify">
-                  {{ puesto_trabajo.descripcion_vacante }}
+                  {{ getShortDescription(puesto_trabajo.vacante.descripcion) }}
                 </div>
               </q-card-section>
             </q-card-section>
@@ -39,6 +39,7 @@
               </q-btn>
             </q-card-actions>
           </q-card>
+          <!-- {{ puestos_trabajos }} -->
         </div>
       </q-page>
     </template>

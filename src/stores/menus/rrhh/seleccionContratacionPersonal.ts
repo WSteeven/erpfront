@@ -23,6 +23,12 @@ const seleccionContratacionPersonal: Ref<MenuOption[]> = computed(() => {
                     can: store.can('puede.acceder.rrhh_vacantes'),
                 },
                 {
+                    title: 'Postulaciones',
+                    link: 'postulaciones',
+                    icon: 'bi-app',
+                    can: store.can('puede.acceder.rrhh_vacantes'),
+                },
+                {
                     title: 'Configuracion',
                     icon: 'bi-gear-fill',
                     children: [

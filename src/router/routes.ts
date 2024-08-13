@@ -1451,7 +1451,13 @@ const routes: RouteRecordRaw[] = [
     component: () => import('layouts/PostulanteLayout.vue'),
     children: [
       {
-        path: 'postulacion-vacante/:id',
+        path: '/favoritas',
+        name: 'favoritas',
+        component: () => import('seleccionContratacion/vacantesFavoritas/view/VacanteFavoritaPage.vue'),
+        meta: { requiresAuth: true, permissionRequired: false }
+      },
+      {
+        path: '/postulacion-vacante/:id',
         name: 'postulacion_vacante',
         component: () =>
           import(

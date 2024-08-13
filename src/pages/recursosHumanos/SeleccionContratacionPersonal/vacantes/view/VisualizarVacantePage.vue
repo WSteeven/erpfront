@@ -49,29 +49,49 @@
         <div v-if="vacante.disponibilidad_viajar">
           <strong>Debe tener disponibilidad de viajar:</strong> SI
         </div>
-        <div class="text-subtitle1 text-bold q-pt-sm">Conocimientos requeridos</div>
+        <div class="text-subtitle1 text-bold q-pt-sm">
+          Conocimientos requeridos
+        </div>
         <div>
           <ul>
             <li
-            v-for="conocimiento of vacante.areas_conocimiento"
-            :key="conocimiento"
+              v-for="conocimiento of vacante.areas_conocimiento"
+              :key="conocimiento"
             >
-            {{ conocimiento }}
-          </li>
-        </ul>
-      </div>
-      <div class="text-subtitle1 text-bold q-pt-sm" v-if="vacante.requiere_formacion_academica">Formación académica requerida</div>
-      <div v-for="formacion of vacante.formaciones_academicas" :key="formacion.id">
-       <div> {{ formacion.nivel }} - {{ formacion.nombre }} O EQUIVALENTE</div>
-      </div>
+              {{ conocimiento }}
+            </li>
+          </ul>
+        </div>
+        <div
+          class="text-subtitle1 text-bold q-pt-sm"
+          v-if="vacante.requiere_formacion_academica"
+        >
+          Formación académica requerida
+        </div>
+        <div
+          v-for="formacion of vacante.formaciones_academicas"
+          :key="formacion.id"
+        >
+          <div>
+            {{ formacion.nivel }} - {{ formacion.nombre }} O EQUIVALENTE
+          </div>
+        </div>
         <!-- <div>Creada {{ dayjs(vacante.created_at).fromNow() }}</div> -->
         <div class="column items-center">
           <div class="row">
-            <q-btn glossy rounded
-            @click="btnPostular(vacante.id)"
-            color="primary">Postularme</q-btn>
             <q-btn
-              :icon="vacante.es_favorita?'bi-heart-fill': 'bi-heart'"
+              v-if="!vacante.ya_postulada"
+              glossy
+              rounded
+              @click="btnPostular(vacante.id)"
+              color="primary"
+              >Postularme</q-btn
+            >
+            <q-chip v-else color="primary" text-color="white" icon="bi-check"
+              >Ya has postulado a esta vacante</q-chip
+            >
+            <q-btn
+              :icon="vacante.es_favorita ? 'bi-heart-fill' : 'bi-heart'"
               color="red"
               round
               flat
