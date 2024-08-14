@@ -1092,6 +1092,15 @@ const routes: RouteRecordRaw[] = [
         meta: { requiresAuth: true },
       },
       {
+        path: '/tipos-licencias',
+        name: 'tipos_licencias',
+        component: () =>
+          import(
+            'pages/recursosHumanos/tipo-licencia/view/TipoLicenciaPage.vue'
+          ),
+        meta: { requiresAuth: true },
+      },
+      {
         path: '/vacacion',
         name: 'vacacion',
         component: () =>
