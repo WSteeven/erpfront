@@ -1,29 +1,31 @@
 // Dependencias
 import { configuracionColumnasTipoPuestoTrabajo } from '../domain/configuracionColumnasTipoPuestoTrabajo'
+import relativeTime from 'dayjs/plugin/relativeTime';
 import { required } from '@vuelidate/validators'
 import { useVuelidate } from '@vuelidate/core'
 import { defineComponent, ref } from 'vue'
+import es from 'dayjs/locale/es';
 
 // Componentes
-import TabLayout from 'shared/contenedor/modules/simple/view/TabLayout.vue'
+import BasicContainer from 'shared/contenedor/modules/basic/view/BasicContainer.vue'
 
 //Logica y controladores
 import { ContenedorSimpleMixin } from 'shared/contenedor/modules/simple/application/ContenedorSimpleMixin'
 import { TipoPuestoTrabajoController } from '../infraestructure/TipoPuestoTrabajoController'
 import { TipoPuestoTrabajo } from '../domain/TipoPuestoTrabajo'
 import { removeAccents } from 'shared/utils'
-import BasicContainer from 'shared/contenedor/modules/basic/view/BasicContainer.vue'
 import { PostulacionController } from '../../postulacionVacante/infraestructure/PostulacionController'
 import { userIsAuthenticated } from 'shared/helpers/verifyAuthenticatedUser'
 import { tipoAutenticacion } from 'config/utils'
 import { useAuthenticationStore } from 'stores/authentication'
 import { useAuthenticationExternalStore } from 'stores/authenticationExternal'
 import { useQuasar } from 'quasar'
+import dayjs from 'dayjs'
 
 export default defineComponent({
   components: { BasicContainer },
   setup() {
-    const mixin = new ContenedorSimpleMixin(TipoPuestoTrabajo,new TipoPuestoTrabajoController())
+    const mixin = new ContenedorSimpleMixin(TipoPuestoTrabajo, new TipoPuestoTrabajoController())
     const { entidad: tipo_puesto_trabajo, disabled, listadosAuxiliares } = mixin.useReferencias()
     const { setValidador, cargarVista, obtenerListados } = mixin.useComportamiento()
 
@@ -31,9 +33,11 @@ export default defineComponent({
     let store
     const postulaciones = ref()
     const $q = useQuasar()
+    dayjs.extend(relativeTime)
+    dayjs.locale(es)
 
 
-    cargarVista(async()=>{
+    cargarVista(async () => {
       if (autenticado) {
         switch (tipoAuth) {
           case tipoAutenticacion.empleado:
@@ -48,7 +52,7 @@ export default defineComponent({
       }
 
       await obtenerListados({
-        postulaciones: {controller: new PostulacionController(), params:{user_id:store.user.id}}
+        postulaciones: { controller: new PostulacionController(), params: { user_id: store.user.id } }
       })
 
       postulaciones.value = listadosAuxiliares.postulaciones
@@ -56,37 +60,6 @@ export default defineComponent({
 
 
 
-    const puestos_trabajos = [
-      {
-        id:1,
-        nombre: 'Puesto 1',
-        descripcion_vacante:
-          'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.',
-        numero_postulantes: 10,
-        tiempo_caducidad: 'hace 1 día',
-        tipo_empleo: 'Tiempo Completo',
-        imagen_referencia:'https://cdn.quasar.dev/img/parallax2.jpg'
-      },
-      {
-        id:2,
-        nombre: 'Puesto 2',
-        descripcion_vacante:
-          'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.',
-        numero_postulantes: 8,
-        tiempo_caducidad: 'hace 3 día',
-        tipo_empleo: 'Tiempo Completo',
-        imagen_referencia:'https://cdn.quasar.dev/img/parallax2.jpg'
-      },{
-        id:3,
-        nombre: 'Puesto 3',
-        descripcion_vacante:
-          'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.',
-        numero_postulantes: 11,
-        tiempo_caducidad: 'hace 8 día',
-        tipo_empleo: 'Tiempo Completo',
-        imagen_referencia:'https://cdn.quasar.dev/img/parallax2.jpg'
-      },
-    ]
     //Reglas de validacion
     const reglas = {
       nombre: { required },
@@ -118,14 +91,15 @@ export default defineComponent({
       removeAccents,
       mixin,
       tipo_puesto_trabajo,
-      puestos_trabajos: postulaciones,
+      vacantesPostuladas: postulaciones,
       v$,
       disabled,
       configuracionColumnas: configuracionColumnasTipoPuestoTrabajo,
+      dayjs,
 
       //funciones
       getShortDescription,
-      
+
     }
   },
 })

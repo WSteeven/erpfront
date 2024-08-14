@@ -1426,7 +1426,7 @@ const routes: RouteRecordRaw[] = [
   },
   {
     path: '/puestos-disponibles',
-    component: () => import('layouts/PostulanteLayout.vue'),
+    component: () => true ? import('layouts/PostulanteLayout.vue') : import('layouts/PostulanteLayout.vue'),
     children: [
       {
         path: '',
@@ -1435,6 +1435,7 @@ const routes: RouteRecordRaw[] = [
           import(
             'pages/recursosHumanos/SeleccionContratacionPersonal/vacantesDisponibles/view/PuestoDisponiblePage.vue'
           ),
+        meta: { requiresAuth: false, permissionRequired: false }
       },
       {
         path: '/puestos-aplicados',

@@ -43,7 +43,7 @@ export default defineComponent({
     }
 
     function btnPostular(id) {
-      console.log('btnPostular', id, tipoAutenticacion, autenticado)
+      // console.log('btnPostular', id, tipoAutenticacion, autenticado)
       // Primero verificamos si el usuario esta logueado, sino le pedimos lo haga
       if (!autenticado) {
         // Aquí se le pregunta si necesita loguearse como empleado o como externo para redirigirlo
@@ -86,7 +86,7 @@ export default defineComponent({
         const ruta = axios.getEndpoint(endpoints.vacante_favorita)+'/'+id
         const response:AxiosResponse = await axios.post(ruta)
         if(response.status === 200) {
-          notificarCorrecto(response.data.mensaje)
+          // notificarCorrecto(response.data.mensaje)
           vacanteStore.vacante.hydrate(response.data.modelo)
         }
       } catch (err) {

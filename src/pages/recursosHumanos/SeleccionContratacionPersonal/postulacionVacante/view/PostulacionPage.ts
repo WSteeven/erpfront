@@ -10,7 +10,7 @@ import TabLayout from 'shared/contenedor/modules/simple/view/TabLayout.vue';
 import GestorArchivos from 'components/gestorArchivos/GestorArchivos.vue';
 
 // Logica y controladores
-import { useRouter } from 'vue-router';
+import { onBeforeRouteUpdate, useRouter } from 'vue-router';
 import { ContenedorSimpleMixin } from 'shared/contenedor/modules/simple/application/ContenedorSimpleMixin';
 import { Postulacion } from '../domain/Postulacion';
 import { PostulacionController } from '../infraestructure/PostulacionController';
@@ -128,7 +128,7 @@ export default defineComponent({
     }
 
     function cargarDatosUsuarioAutenticado() {
-      console.log(store)
+      // console.log(store)
       postulacion.postulante = store.user.id
       postulacion.vacante = vacanteStore.vacante.id ?? vacanteStore.idVacante
       postulacion.nombres = store.user.nombres
@@ -139,7 +139,7 @@ export default defineComponent({
       postulacion.telefono = store.user.telefono ?? null
       postulacion.genero = store.user?.genero ?? 'M'
 
-      console.log(vacanteStore.idVacante, vacanteStore.vacante)
+      // console.log(vacanteStore.idVacante, vacanteStore.vacante)
     }
 
     function optionsFecha(date) {

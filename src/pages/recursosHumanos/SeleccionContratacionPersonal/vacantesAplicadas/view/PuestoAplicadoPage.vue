@@ -1,47 +1,78 @@
 <template>
   <basic-container>
     <template #contenido>
-      <q-page>
-        <div class="row q-col-gutter-sm q-my-sm flex flex-center">
-          <q-card
-            class="col-12 col-md-4 q-my-md q-mx-md"
-            v-for="puesto_trabajo of puestos_trabajos"
-            :key="puesto_trabajo.id"
-            :class="{
-              'puesto-card': $q.screen.md || $q.screen.lg || $q.screen.xl,
-            }"
-            flat
-            bordered
-          >
-            <q-card-section>
-              <div class="text-h5 q-mt-sm q-mb-xs text-center text-bold">
-                {{ puesto_trabajo.nombre }}
-              </div>
-            </q-card-section>
-            <q-card-section horizontal>
-              <q-card-section class="col-5 flex flex-center">
-                <q-img
-                  class="rounded-borders"
-                  loading="lazy"
-                  :src="puesto_trabajo.imagen_referencia"
-                />
-              </q-card-section>
-              <q-card-section class="q-pt-xs">
-                <div class="text-caption text-grey text-justify">
-                  {{ getShortDescription(puesto_trabajo.vacante.descripcion) }}
+          <div class="row q-col-gutter-sm q-py-md q-mx-sm">
+            <div
+              class="col-12 col-md-4 col-sm-6"
+              v-for="vacante of vacantesPostuladas"
+              :key="vacante.id"
+            >
+              <div class="my-custom-card">
+                <div class="row" style="min-height: 72%; max-height: 72%">
+                  <div class="col-6 h-100">
+                    <q-img
+                      class="rounded-borders"
+                      loading="lazy"
+                      :src="vacante.imagen_referencia"
+                      fit="contain"
+                    />
+                  </div>
+                  <div class="col-6">
+                    <div class="column">
+                      <div
+                        class="col-3 block text-h6 screen--subtitle2 text-center text-bold overflow-hidden"
+                        :class="$q.screen.lg ? 'text-h6' : 'text-subtitle2'"
+                        style="overflow: hidden; text-overflow: ellipsis"
+                      >
+                        <!-- <q-responsive :ratio="1.77"> -->
+                        {{ vacante.nombre }}
+                        <!-- </q-responsive> -->
+                      </div>
+                      <div
+                        class="col-9 block q-px-xs text-caption text-grey text-justify"
+                      >
+                        <p>{{ getShortDescription(vacante.vacante.descripcion) }}</p>
+                      </div>
+                    </div>
+                  </div>
                 </div>
-              </q-card-section>
-            </q-card-section>
-            <q-separator />
-            <q-card-actions>
-              <q-btn flat icon="bi-clock">
-                <p class="q-mx-sm q-my-sm">Revision</p>
-              </q-btn>
-            </q-card-actions>
-          </q-card>
-          <!-- {{ puestos_trabajos }} -->
+                <q-separator></q-separator>
+                <div
+                  class="row q-pa-sm"
+                  style="min-height: 10%; max-height: 15%"
+                >
+                  <div class="col-6">
+                    <q-icon class="bi-clock-fill" />
+                    <strong class="q-px-sm">
+                      {{
+                        dayjs() > dayjs(vacante.fecha_caducidad)
+                          ? 'Finalizado'
+                          : 'Finaliza ' + dayjs().to(vacante.fecha_caducidad)
+                      }}
+                    </strong>
+                  </div>
+                  <div class="col-6">
+                    <q-icon class="bi-suitcase-lg-fill" />
+                    <strong class="q-px-sm">
+                      {{ vacante.modalidad }}
+                    </strong>
+                  </div>
+                </div>
+                <q-separator></q-separator>
+                <div class="q-py-sm" style="min-height: 10%; max-height: 15%">
+                  <q-btn
+                    unelevated
+                    glossy
+                    rounded
+                    color="primary"
+                    @click="visualizarVacante(vacante.id)"
+                    class="flex block full-width"
+                    >Visualizar</q-btn
+                  >
+                </div>
+              </div>
+          </div>
         </div>
-      </q-page>
     </template>
   </basic-container>
 </template>
@@ -50,7 +81,22 @@
 <script src="./PuestoAplicadoPage.ts"></script>
 
 <style scoped>
-.puesto-card {
-  width: 30%;
+.my-custom-card {
+  height: 100%; /* Ajusta el contenedor para ocupar todo el alto disponible */
+  width: 100%; /* Ajusta el contenedor para ocupar todo el ancho disponible */
+  border: 1px solid gray; /* Borde fino de 2px, color rojo */
+  border-radius: 8px; /* Bordes redondeados con un radio de 8px, ajusta según tus necesidades */
+  padding: 4px; /* Padding interno para separar el contenido del borde */
+  padding-bottom: 0px;
+  overflow: hidden; /* Oculta cualquier contenido que se desborde */
+}
+
+.multiline-ellipsis {
+  display: -webkit-box;
+  -webkit-line-clamp: 14;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  line-height: 1.2em; /* Ajusta la altura de la línea */
 }
 </style>

@@ -9,7 +9,7 @@ import SimpleLayout from 'shared/contenedor/modules/simple/view/SimpleLayout.vue
 import GestorArchivos from 'components/gestorArchivos/GestorArchivos.vue';
 
 // Logica y controladores
-import { useRouter } from 'vue-router';
+import { onBeforeRouteUpdate, useRouter } from 'vue-router';
 import { ContenedorSimpleMixin } from 'shared/contenedor/modules/simple/application/ContenedorSimpleMixin';
 import { Postulacion } from '../domain/Postulacion';
 import { PostulacionController } from '../infraestructure/PostulacionController';
@@ -22,6 +22,7 @@ import { useFiltrosListadosSelects } from 'shared/filtrosListadosGenerales';
 import { IdentidadGeneroController } from 'pages/medico/gestionarPacientes/modules/fichaPeriodicaPreocupacional/infraestructure/IdentidadGeneroController';
 import { useVacanteStore } from 'stores/recursosHumanos/seleccionContratacion/vacante';
 import { tiposLicencias } from 'config/vehiculos.utils';
+import { checkValueIsNumber } from 'shared/utils';
 
 
 export default defineComponent({
@@ -114,7 +115,7 @@ export default defineComponent({
       telefono: { required },
       tipo_identificacion: { required },
 
-      mi_experiencia:{required},
+      mi_experiencia: { required },
       tipo_licencia: { required: requiredIf(() => postulacion.tengo_licencia_conducir) }
     }
 
@@ -129,7 +130,7 @@ export default defineComponent({
     }
 
     function cargarDatosUsuarioAutenticado() {
-      console.log(store)
+      // console.log(store)
       postulacion.postulante = store.user.id
       postulacion.vacante = vacanteStore.vacante.id ?? vacanteStore.idVacante
       postulacion.nombres = store.user.nombres
@@ -140,8 +141,13 @@ export default defineComponent({
       postulacion.telefono = store.user.telefono ?? null
       postulacion.genero = store.user?.genero ?? 'M'
 
-      console.log(vacanteStore.idVacante, vacanteStore.vacante)
+      // console.log(vacanteStore.idVacante, vacanteStore.vacante)
     }
+    onBeforeRouteUpdate(async (to, from, next) => {
+      if (!checkValueIsNumber(to.params.id))
+        next({ path: '/' + to.params.id.toString() })
+      else next()
+    })
 
     function optionsFecha(date) {
       const hoy = convertir_fecha(new Date())

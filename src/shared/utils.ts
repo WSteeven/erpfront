@@ -174,6 +174,9 @@ export function generarFilters<T>(
 export function partirNumeroDocumento(numeroDocumento: string): string[] {
   return numeroDocumento.split('-')
 }
+export function checkValueIsNumber(val): boolean {
+  return !isNaN(val) && !isNaN(parseFloat(val));
+}
 
 export function construirNumeroDocumento(
   establecimiento: string,
