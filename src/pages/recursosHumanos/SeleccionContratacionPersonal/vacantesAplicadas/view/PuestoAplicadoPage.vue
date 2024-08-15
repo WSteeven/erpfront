@@ -31,7 +31,7 @@
                       <div
                         class="col-9 block q-px-xs text-caption text-grey text-justify"
                       >
-                        <p>{{ getShortDescription(vacante.vacante.descripcion) }}</p>
+                        <p>{{ getShortDescription($q, vacante.vacante.descripcion) }}</p>
                       </div>
                     </div>
                   </div>
@@ -47,14 +47,14 @@
                       {{
                         dayjs() > dayjs(vacante.fecha_caducidad)
                           ? 'Finalizado'
-                          : 'Finaliza ' + dayjs().to(vacante.fecha_caducidad)
+                          : 'Finaliza ' + dayjs().to(vacante.vacante.fecha_caducidad)
                       }}
                     </strong>
                   </div>
                   <div class="col-6">
                     <q-icon class="bi-suitcase-lg-fill" />
                     <strong class="q-px-sm">
-                      {{ vacante.modalidad }}
+                      {{ vacante.vacante.modalidad }}
                     </strong>
                   </div>
                 </div>
@@ -65,7 +65,7 @@
                     glossy
                     rounded
                     color="primary"
-                    @click="visualizarVacante(vacante.id)"
+                    @click="visualizarVacante(vacante.vacante.id)"
                     class="flex block full-width"
                     >Visualizar</q-btn
                   >
@@ -75,6 +75,10 @@
         </div>
     </template>
   </basic-container>
+  <modal-entidad
+    :comportamiento="modales"
+    :persistente="false"
+  ></modal-entidad>
 </template>
 <!-- :error="v$.nombre.$errors"  -->
 

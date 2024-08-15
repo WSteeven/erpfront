@@ -172,8 +172,6 @@
           </div>
         </q-list>
       </q-scroll-area>
-      <p v-if="autenticado">Hola, estás autenticado</p>
-      <p v-else>Hola, no estás autenticado</p>
       <q-btn
         color="primary"
         no-caps

@@ -8,31 +8,34 @@ import es from 'dayjs/locale/es';
 
 // Componentes
 import BasicContainer from 'shared/contenedor/modules/basic/view/BasicContainer.vue'
+import ModalEntidad from 'components/modales/view/ModalEntidad.vue';
 
 //Logica y controladores
 import { ContenedorSimpleMixin } from 'shared/contenedor/modules/simple/application/ContenedorSimpleMixin'
 import { TipoPuestoTrabajoController } from '../infraestructure/TipoPuestoTrabajoController'
 import { TipoPuestoTrabajo } from '../domain/TipoPuestoTrabajo'
-import { removeAccents } from 'shared/utils'
+import { getShortDescription, removeAccents } from 'shared/utils'
 import { PostulacionController } from '../../postulacionVacante/infraestructure/PostulacionController'
 import { userIsAuthenticated } from 'shared/helpers/verifyAuthenticatedUser'
 import { tipoAutenticacion } from 'config/utils'
 import { useAuthenticationStore } from 'stores/authentication'
 import { useAuthenticationExternalStore } from 'stores/authenticationExternal'
-import { useQuasar } from 'quasar'
 import dayjs from 'dayjs'
+import { useVacanteStore } from 'stores/recursosHumanos/seleccionContratacion/vacante';
+import { ComportamientoModalesVacanteDisponible } from '../../vacantesDisponibles/application/ComportamientoModalesVacanteDisponible';
 
 export default defineComponent({
-  components: { BasicContainer },
+  components: { BasicContainer, ModalEntidad },
   setup() {
     const mixin = new ContenedorSimpleMixin(TipoPuestoTrabajo, new TipoPuestoTrabajoController())
     const { entidad: tipo_puesto_trabajo, disabled, listadosAuxiliares } = mixin.useReferencias()
     const { setValidador, cargarVista, obtenerListados } = mixin.useComportamiento()
 
     const { autenticado, tipoAutenticacion: tipoAuth } = userIsAuthenticated()
+    const vacanteStore = useVacanteStore()
+    const modales = new ComportamientoModalesVacanteDisponible()
     let store
     const postulaciones = ref()
-    const $q = useQuasar()
     dayjs.extend(relativeTime)
     dayjs.locale(es)
 
@@ -69,21 +72,9 @@ export default defineComponent({
     setValidador(v$.value)
 
 
-    // Función para eliminar etiquetas HTML
-    function removeHTMLTags(html) {
-      // Expresión regular para eliminar etiquetas HTML y reemplazar &nbsp;
-      const regex = /<[^>]*>|&nbsp;/g;
-      // Reemplazar las etiquetas HTML y &nbsp; por una cadena vacía
-      const plainText = html.replace(regex, '\n').trim();
-      return plainText;
-    }
-    function getShortDescription(description: string): string {
-      const maxLength = $q.screen.lg ? 300 : 100 // Ajusta este valor según la longitud deseada
-      const descripcion_plain_text = removeHTMLTags(description)
-      if (descripcion_plain_text.length > maxLength) {
-        return descripcion_plain_text.substring(0, maxLength) + '...'
-      }
-      return descripcion_plain_text
+    async function visualizarVacante(id: number) {
+      vacanteStore.idVacante = id
+      modales.abrirModalEntidad('VisualizarVacantePage')
     }
 
 
@@ -96,9 +87,11 @@ export default defineComponent({
       disabled,
       configuracionColumnas: configuracionColumnasTipoPuestoTrabajo,
       dayjs,
+      modales,
 
       //funciones
       getShortDescription,
+      visualizarVacante,
 
     }
   },

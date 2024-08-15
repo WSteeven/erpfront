@@ -15,7 +15,7 @@ import { VacanteController } from '../../vacantes/infraestructure/VacanteControl
 import { useNotificaciones } from 'shared/notificaciones'
 import { ComportamientoModalesVacanteDisponible } from '../application/ComportamientoModalesVacanteDisponible'
 import { useVacanteStore } from 'stores/recursosHumanos/seleccionContratacion/vacante';
-import { useQuasar } from 'quasar';
+import { getShortDescription } from 'shared/utils';
 
 
 export default defineComponent({
@@ -28,17 +28,12 @@ export default defineComponent({
     const modales = new ComportamientoModalesVacanteDisponible()
     const vacanteStore = useVacanteStore()
 
-    const $q = useQuasar()
+
     dayjs.extend(relativeTime)
     dayjs.locale(es)
 
     cargando.cargarConsulta(async () => await obtenerVacantes())
 
-
-    async function guardado(data) {
-      console.log('Guardado con éxito', data)
-
-    }
 
     async function obtenerVacantes() {
       try {
@@ -49,25 +44,8 @@ export default defineComponent({
       }
     }
 
-    // Función para eliminar etiquetas HTML
-    function removeHTMLTags(html) {
-      // Expresión regular para eliminar etiquetas HTML y reemplazar &nbsp;
-      const regex = /<[^>]*>|&nbsp;/g;
-      // Reemplazar las etiquetas HTML y &nbsp; por una cadena vacía
-      const plainText = html.replace(regex, '\n').trim();
-      return plainText;
-    }
-    function getShortDescription(description: string): string {
-      const maxLength = $q.screen.lg ? 300 : 100 // Ajusta este valor según la longitud deseada
-      const descripcion_plain_text = removeHTMLTags(description)
-      if (descripcion_plain_text.length > maxLength) {
-        return descripcion_plain_text.substring(0, maxLength) + '...'
-      }
-      return descripcion_plain_text
-    }
 
     async function visualizarVacante(id: number) {
-      console.log('Diste clic en Visualizar Vacante: ' + id)
       vacanteStore.idVacante = id
       modales.abrirModalEntidad('VisualizarVacantePage')
     }
@@ -81,9 +59,7 @@ export default defineComponent({
       modales,
 
       // funciones
-      guardado,
       visualizarVacante,
-      removeHTMLTags,
       getShortDescription,
 
 

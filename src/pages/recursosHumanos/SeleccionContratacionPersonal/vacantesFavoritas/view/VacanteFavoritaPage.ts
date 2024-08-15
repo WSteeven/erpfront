@@ -11,12 +11,11 @@ import ModalEntidad from 'components/modales/view/ModalEntidad.vue';
 
 //Logica y controladores
 import { StatusEssentialLoading } from 'components/loading/application/StatusEssentialLoading'
-import { VacanteController } from '../../vacantes/infraestructure/VacanteController'
 import { useNotificaciones } from 'shared/notificaciones'
 import { ComportamientoModalesVacanteDisponible } from '../../vacantesDisponibles/application/ComportamientoModalesVacanteDisponible';
 import { useVacanteStore } from 'stores/recursosHumanos/seleccionContratacion/vacante';
-import { useQuasar } from 'quasar';
 import { VacanteFavoritaController } from '../infraestructure/VacanteFavoritaController';
+import {  getShortDescription } from 'shared/utils';
 
 
 export default defineComponent({
@@ -30,7 +29,6 @@ export default defineComponent({
     const modales = new ComportamientoModalesVacanteDisponible()
     const vacanteStore = useVacanteStore()
 
-    const $q = useQuasar()
     dayjs.extend(relativeTime)
     dayjs.locale(es)
 
@@ -38,14 +36,7 @@ export default defineComponent({
 
 
     function cerrarModal() {
-      console.log('cerrar modal emitido')
       obtenerVacantes()
-      // Aquí hay que hacer el comportamiento para eliminar una vacante marcada como favorita
-    }
-
-    async function guardado(data) {
-      console.log('Guardado con éxito', data)
-
     }
 
     async function obtenerVacantes() {
@@ -57,22 +48,7 @@ export default defineComponent({
       }
     }
 
-    // Función para eliminar etiquetas HTML
-    function removeHTMLTags(html) {
-      // Expresión regular para eliminar etiquetas HTML y reemplazar &nbsp;
-      const regex = /<[^>]*>|&nbsp;/g;
-      // Reemplazar las etiquetas HTML y &nbsp; por una cadena vacía
-      const plainText = html.replace(regex, '\n').trim();
-      return plainText;
-    }
-    function getShortDescription(description: string): string {
-      const maxLength = $q.screen.lg ? 300 : 100 // Ajusta este valor según la longitud deseada
-      const descripcion_plain_text = removeHTMLTags(description)
-      if (descripcion_plain_text.length > maxLength) {
-        return descripcion_plain_text.substring(0, maxLength) + '...'
-      }
-      return descripcion_plain_text
-    }
+
 
     async function visualizarVacante(id: number) {
       vacanteStore.idVacante = id
@@ -88,9 +64,8 @@ export default defineComponent({
       modales,
 
       // funciones
-      guardado, cerrarModal,
+      cerrarModal,
       visualizarVacante,
-      removeHTMLTags,
       getShortDescription,
 
 

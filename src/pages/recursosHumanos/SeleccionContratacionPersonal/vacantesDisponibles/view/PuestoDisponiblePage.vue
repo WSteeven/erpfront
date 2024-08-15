@@ -33,7 +33,7 @@
           :key="vacante.id"
         >
           <div class="my-custom-card">
-            <div class="row" style="min-height: 72%; max-height: 72%;">
+            <div class="row" style="min-height: 72%; max-height: 72%">
               <div class="col-6 h-100">
                 <q-img
                   class="rounded-borders"
@@ -44,25 +44,25 @@
               </div>
               <div class="col-6">
                 <div class="column">
-                    <div
-                      class="col-3 block text-h6 screen--subtitle2 text-center text-bold overflow-hidden"
-                      :class="$q.screen.lg ? 'text-h6' : 'text-subtitle2'"
-                      style="overflow: hidden; text-overflow: ellipsis"
-                    >
-                      <!-- <q-responsive :ratio="1.77"> -->
-                      {{ vacante.nombre }}
-                      <!-- </q-responsive> -->
-                    </div>
-                    <div
-                      class="col-9 block q-px-xs text-caption text-grey text-justify"
-                    >
-                      <p>{{ getShortDescription(vacante.descripcion) }}</p>
-                    </div>
+                  <div
+                    class="col-3 block text-h6 screen--subtitle2 text-center text-bold overflow-hidden"
+                    :class="$q.screen.lg ? 'text-h6' : 'text-subtitle2'"
+                    style="overflow: hidden; text-overflow: ellipsis"
+                  >
+                    <!-- <q-responsive :ratio="1.77"> -->
+                    {{ vacante.nombre }}
+                    <!-- </q-responsive> -->
+                  </div>
+                  <div
+                    class="col-9 block q-px-xs text-caption text-grey text-justify"
+                  >
+                    <p>{{ getShortDescription($q, vacante.descripcion) }}</p>
+                  </div>
                 </div>
               </div>
             </div>
-            <q-separator ></q-separator>
-            <div class="row q-pa-sm" style="min-height: 10%; max-height: 15%;">
+            <q-separator></q-separator>
+            <div class="row q-pa-sm" style="min-height: 10%; max-height: 15%">
               <div class="col-6">
                 <q-icon class="bi-clock-fill" />
                 <strong class="q-px-sm">
@@ -80,7 +80,7 @@
                 </strong>
               </div>
             </div>
-            <q-separator ></q-separator>
+            <q-separator></q-separator>
             <div class="q-py-sm" style="min-height: 10%; max-height: 15%">
               <q-btn
                 unelevated
@@ -93,67 +93,6 @@
               >
             </div>
           </div>
-          <!-- <q-card class="my-card q-pa-xs h-100" flat bordered tag="div">
-            <q-card-section class="q-pa-none bg-red" style="height: 60%">
-              <div class="row">
-                <div class="col-6 col-md-6 col-sm-12 block">
-                  <q-img
-                    class="rounded-borders"
-                    loading="lazy"
-                    :src="vacante.imagen_referencia"
-                  />
-                </div>
-                <div class="col-6 col-md-6 col-sm-12 flex">
-                  <div class="column">
-                    <div
-                      class="col-3 block text-h6 screen--subtitle2 text-center bg-blue text-bold overflow-hidden"
-                      :class="$q.screen.lg ? 'text-h6' : 'text-subtitle2'"
-                      style="overflow: hidden; text-overflow: ellipsis"
-                    >
-                      {{ vacante.nombre }}
-                    </div>
-                    <div
-                      class="col-8 block q-px-xs text-caption text-grey text-justify"
-                    >
-                      <p>{{ getShortDescription(vacante.descripcion) }}</p>
-                    </div>
-                    <div class="col-1"></div>
-                  </div>
-                </div>
-              </div>
-            </q-card-section>
-            <q-separator />
-            <q-card-section class="row flex" style="height: 24%">
-              <div class="col-auto">
-                <q-icon class="bi-clock-fill" />
-                <strong class="q-px-sm">
-                  {{
-                    dayjs() > dayjs(vacante.fecha_caducidad)
-                      ? 'Finalizado'
-                      : 'Finaliza ' + dayjs().to(vacante.fecha_caducidad)
-                  }}
-                </strong>
-              </div>
-              <div class="col-auto">
-                <q-icon class="bi-suitcase-lg-fill" />
-                <strong class="q-px-sm">
-                  {{ vacante.modalidad }}
-                </strong>
-              </div>
-            </q-card-section>
-            <q-separator />
-            <q-card-actions>
-              <q-btn
-                unelevated
-                glossy
-                rounded
-                color="primary"
-                @click="visualizarVacante(vacante.id)"
-                class="flex block full-width"
-                >Visualizar</q-btn
-              >
-            </q-card-actions>
-          </q-card> -->
         </div>
       </div>
     </template>
@@ -161,7 +100,6 @@
   <modal-entidad
     :comportamiento="modales"
     :persistente="false"
-    @guardado="data => guardado(data)"
   ></modal-entidad>
 </template>
 
