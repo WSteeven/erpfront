@@ -6,28 +6,26 @@ import { configuracionColumnasActivosFijos } from '../domain/configuracionColumn
 import { CustomActionTable } from 'components/tables/domain/CustomActionTable'
 import { opcionesConsultasActivosFijos } from 'config/utils/activos_fijos'
 import { computed, defineComponent, reactive, ref, UnwrapRef } from 'vue'
-import { useAuthenticationStore } from 'stores/authentication'
-import { useActivoFijoStore } from 'stores/activo_fijo'
+import { useNotificacionStore } from 'stores/notificacion'
 import { accionesTabla } from 'config/utils'
+import { useQuasar } from 'quasar'
 
 // Componentes
-import TabLayout from 'shared/contenedor/modules/simple/view/TabLayout.vue'
-import SelectorImagen from 'components/SelectorImagen.vue'
 import FormularioPermisoArma from 'src/pages/bodega/permisosArmas/view/FormularioPermisoArma.vue'
-import EssentialTable from 'components/tables/view/EssentialTable.vue'
 import EssentialTablePagination from 'components/tables/view/EssentialTablePagination.vue'
+import TabLayout from 'shared/contenedor/modules/simple/view/TabLayout.vue'
+import EssentialTable from 'components/tables/view/EssentialTable.vue'
 import SolicitarArchivo from 'shared/prompts/SolicitarArchivo.vue'
+import SelectorImagen from 'components/SelectorImagen.vue'
 
 // Logica y controladores
 import { ContenedorSimpleMixin } from 'shared/contenedor/modules/simple/application/ContenedorSimpleMixin'
 import { useConsultarOpcionesActivosFijos } from '../application/ConsultarOpcionesActivosFijos'
-import { ActivoFijoController } from '../infraestructure/ActivoFijoController'
-import { ActivoFijo } from '../domain/ActivoFijo'
-import { useNotificacionStore } from 'stores/notificacion'
-import { useQuasar } from 'quasar'
-import { Transaccion } from 'pages/bodega/transacciones/domain/Transaccion'
-import { TransaccionController } from 'pages/bodega/transacciones/infraestructure/TransaccionController'
 import { ArchivoController } from 'pages/gestionTrabajos/subtareas/modules/gestorArchivosTrabajos/infraestructure/ArchivoController'
+import { TransaccionController } from 'pages/bodega/transacciones/infraestructure/TransaccionController'
+import { ActivoFijoController } from '../infraestructure/ActivoFijoController'
+import { Transaccion } from 'pages/bodega/transacciones/domain/Transaccion'
+import { ActivoFijo } from '../domain/ActivoFijo'
 
 export default defineComponent({
   components: { TabLayout, SelectorImagen, FormularioPermisoArma, EssentialTable, EssentialTablePagination, SolicitarArchivo },
@@ -35,8 +33,6 @@ export default defineComponent({
     /*********
      * Stores
      *********/
-    const activoFijoStore = useActivoFijoStore()
-    const authenticationStore = useAuthenticationStore()
     useNotificacionStore().setQuasar(useQuasar())
 
     /********
@@ -67,6 +63,7 @@ export default defineComponent({
       JUSTIFICATIVO_USO: 'JUSTIFICATIVO USO',
     }
     const tipoArchivo = ref()
+    // const mostrarArchivoSeguimiento = ref(false)
 
     /************
      * Funciones
@@ -97,6 +94,16 @@ export default defineComponent({
         mostrarSolicitarArchivoActaEntregaRecepcion.value = true
       }
     }
+
+    const btnJustificativoUso: CustomActionTable = {
+      titulo: 'Justificativo uso',
+      icono: 'bi-upload',
+      color: 'blue-grey',
+      accion: async ({ entidad }) => {
+          // seguimiento.hydrate(entidad)
+          // mostrarSolicitarArchivo.value = true
+      }
+  }
 
     /************
      * Observers
@@ -137,6 +144,7 @@ export default defineComponent({
       listarEntregas,
       btnSubirActaEntregaRecepcion,
       btnSubirJustificativoUso,
+      btnJustificativoUso,
       // consultarStockResponsables,
       asignacionesProductos,
       listarStockResponsablesAF,

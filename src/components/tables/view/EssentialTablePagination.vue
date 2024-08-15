@@ -943,9 +943,10 @@
           dense
           no-caps
           unelevated
+          no-wrap
           class="q-px-sm text-primary border-primary"
           @click="
-            verVisorArchivos({ entidad: props.row, posicion: props.rowIndex })
+            verVisorArchivos({ entidad: props.row })
           "
         >
           <q-icon name="bi-archive" size="xs" class="q-mr-sm"></q-icon>

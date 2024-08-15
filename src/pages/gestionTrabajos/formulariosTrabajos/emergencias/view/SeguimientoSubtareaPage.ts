@@ -207,8 +207,9 @@ export default defineComponent({
             entidad.cantidad_anterior = entidad.cantidad_utilizada ?? 0
             entidad.cantidad_utilizada = valor
             const modelo = await actualizarCantidadUtilizadaTarea(entidad)
-            modelo.id = entidad.id
-            materialesTarea.value[posicion] = modelo
+            // modelo.id = entidad.id
+            materialesTarea.value[posicion].total_cantidad_utilizada = modelo.total_cantidad_utilizada
+            materialesTarea.value[posicion].stock_actual = modelo.stock_actual
           }
         }
         prompt(config)
@@ -231,8 +232,10 @@ export default defineComponent({
             entidad.cantidad_anterior = entidad.cantidad_utilizada ?? 0
             entidad.cantidad_utilizada = valor
             const modelo = await actualizarCantidadUtilizadaStock(entidad)
-            modelo.id = entidad.id
-            materialesStock.value[posicion] = modelo
+            // modelo.id = entidad.id
+            // materialesStock.value[posicion] = modelo
+            materialesStock.value[posicion].total_cantidad_utilizada = modelo.total_cantidad_utilizada
+            materialesStock.value[posicion].stock_actual = modelo.stock_actual
           }
         }
         prompt(config)

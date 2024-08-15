@@ -11,10 +11,10 @@
     :accion2="btnVerImagenInforme"
     :filtrar="filtrarTarea"
     tabDefecto="0"
-    :forzarListar="true"
     paginate
     :permitirFiltrar="true"
-  >
+    >
+    <!-- :forzarListar="true" -->
     <!-- :labelGuardar="tarea.tiene_subtareas ? 'Guardar' : 'Guardar y agendar'" -->
     <template #formulario>
       <q-tabs

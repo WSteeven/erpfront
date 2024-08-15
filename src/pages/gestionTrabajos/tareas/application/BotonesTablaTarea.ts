@@ -42,7 +42,6 @@ export const useBotonesTablaTarea = (mixin: ContenedorSimpleMixin<Tarea>) => {
       entidadTarea.value = entidad
 
       if (!entidad.codigo_tarea_cliente) {
-        console.log('dentro del if')
         const data: CustomActionPrompt = {
           titulo: 'Finalizar tarea',
           mensaje: 'Para finalizar la tarea ingrese el código de tarea que le otorgó el cliente corporativo.',
@@ -70,8 +69,6 @@ export const useBotonesTablaTarea = (mixin: ContenedorSimpleMixin<Tarea>) => {
         prompt(data)
 
       } else {
-        console.log('dentro del else')
-
         const data: CustomActionPrompt = {
           titulo: 'Novedad',
           mensaje: 'Ingrese alguna novedad en caso de presentarse.',
@@ -116,17 +113,9 @@ export const useBotonesTablaTarea = (mixin: ContenedorSimpleMixin<Tarea>) => {
     return response.data.estan_finalizadas
   }
 
-  // async function verificarMaterialTareaDevuelto(idTarea: number, idEmpleado: number) {
-  //   const axios = AxiosHttpRepository.getInstance()
-  //   const ruta = axios.getEndpoint(endpoints.verificar_material_tarea_devuelto, { tarea_id: idTarea, empleado_id: idEmpleado })
-  //   const response: AxiosResponse = await axios.get(ruta)
-  //   return response.data.materiales_devueltos
-  // }
-
   // Funcion que finaliza la tarea ya sea directamente o luego de subir la imagen solicitada
   function imagenSubida(imagen?) {
 
-    console.log('imagen a subir')
     const mensaje = entidadTarea.value.cliente_id === clientes.NEDETEL ? 'Los materiales serán transferidos automáticamente al stock personal de cada empleado responsable. ¿Desea finalizar?' : '¿Desea finalizar?'
     confirmar(mensaje, async () => {
       const posicion = filaFinalizar.posicion
@@ -138,8 +127,8 @@ export const useBotonesTablaTarea = (mixin: ContenedorSimpleMixin<Tarea>) => {
       delete (filaFinalizar as any).id
       delete (filaFinalizar as any).posicion
 
-      if (id) await editarParcial(id, filaFinalizar)
-      eliminarElemento(posicion)
+
+      if (id) editarParcial(id, filaFinalizar).then(() => eliminarElemento(posicion))
     })
   }
 
