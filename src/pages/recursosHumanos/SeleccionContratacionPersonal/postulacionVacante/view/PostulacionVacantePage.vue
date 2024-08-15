@@ -1,8 +1,5 @@
 <template>
-  <!-- <basic-container>
-    <template #contenido>
-      <q-card-section> -->
-  <simple-layout :mixin="mixin">
+  <simple-layout forzarGuardar :mixin="mixin">
     <template #formulario>
       <div class="text-subtitle2">
         Completa el formulario para continuar con la postulación
@@ -350,7 +347,7 @@
               :error="!!v$.direccion.$errors.length"
               @blur="v$.direccion.$touch"
             >
-            <template v-slot:error>
+              <template v-slot:error>
                 <div
                   style="clear: inherit"
                   v-for="error of v$.direccion.$errors"
@@ -419,7 +416,7 @@
               :error="!!v$.mi_experiencia.$errors.length"
               @blur="v$.mi_experiencia.$touch"
             >
-            <template v-slot:error>
+              <template v-slot:error>
                 <div
                   style="clear: inherit"
                   v-for="error of v$.mi_experiencia.$errors"
@@ -538,7 +535,9 @@
             </div>
           </div>
 
-          <div class="row col-12 q-col-gutter-sm q-pa-xs q-my-xs border-grey rounded-4">
+          <div
+            class="row col-12 q-col-gutter-sm q-pa-xs q-my-xs border-grey rounded-4"
+          >
             <div class="col-md-6 col-xs-12">
               El cargo requiere tener conocimientos en:
               <q-chip
@@ -560,7 +559,8 @@
               />
             </div>
           </div>
-          <div class="row col-12 q-col-gutter-sm q-pa-xs q-my-xs border-grey rounded-4"
+          <div
+            class="row col-12 q-col-gutter-sm q-pa-xs q-my-xs border-grey rounded-4"
             v-if="vacante.requiere_formacion_academica"
           >
             <div class="col-md-6 col-sm-12 col-xs-12">
@@ -571,11 +571,23 @@
               >
                 <q-chip
                   :class="{ 'truncate-chip-labels': truncateChips }"
-                  :label="formacion.nivel + ' - ' + formacion.nombre + ' O EQUIVALENTE'"
-                  :title="formacion.nivel + ' - ' + formacion.nombre + ' O EQUIVALENTE'"
+                  :label="
+                    formacion.nivel +
+                    ' - ' +
+                    formacion.nombre +
+                    ' O EQUIVALENTE'
+                  "
+                  :title="
+                    formacion.nivel +
+                    ' - ' +
+                    formacion.nombre +
+                    ' O EQUIVALENTE'
+                  "
                 >
-                <q-tooltip> {{formacion.nivel}} - {{formacion.nombre}}  O EQUIVALENTE </q-tooltip>
-              </q-chip>
+                  <q-tooltip>
+                    {{ formacion.nivel }} - {{ formacion.nombre }} O EQUIVALENTE
+                  </q-tooltip>
+                </q-chip>
               </div>
             </div>
             <div class="col-md-6 col-sm-12 col-xs-12">

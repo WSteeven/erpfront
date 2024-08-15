@@ -142,6 +142,7 @@ export default defineComponent({
       postulacion.genero = store.user?.genero ?? 'M'
 
       // console.log(vacanteStore.idVacante, vacanteStore.vacante)
+      console.log(store)
     }
     onBeforeRouteUpdate(async (to, from, next) => {
       if (!checkValueIsNumber(to.params.id))
@@ -169,7 +170,7 @@ export default defineComponent({
       vacante: vacanteStore.vacante,
       refArchivo, idRegistro,
       truncateChips: ref(true),
-
+store,
 
       //listados
       tiposDocumentosIdentificaciones,
