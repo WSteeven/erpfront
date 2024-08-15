@@ -3,6 +3,7 @@
     :mixin="mixin"
     :configuracionColumnas="configuracionColumnas"
     titulo-pagina="Tipos de Licencia"
+    ajustarCeldas
   >
     <template #formulario>
       <q-form @submit.prevent>
@@ -15,6 +16,7 @@
               placeholder="Obligatorio"
               :disable="disabled"
               :error="!!v$.nombre.$errors.length"
+              autogrow
               outlined
               dense
             >
