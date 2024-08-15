@@ -12,6 +12,7 @@ export class SeguimientoConsumoActivoFijo extends EntidadAuditable {
     observacion: string | null
     cliente: number | null | undefined
     empleado: number | null
+    se_reporto_sicosep: boolean
 
     constructor() {
         super()
@@ -26,5 +27,6 @@ export class SeguimientoConsumoActivoFijo extends EntidadAuditable {
         this.observacion = null
         this.cliente = null
         this.empleado = null
+        this.se_reporto_sicosep = false
     }
 }

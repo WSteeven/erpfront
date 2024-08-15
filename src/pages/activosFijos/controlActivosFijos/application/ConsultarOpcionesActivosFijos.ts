@@ -9,6 +9,9 @@ import { AxiosResponse } from 'axios'
 import { ActivoFijo } from '../domain/ActivoFijo'
 import { useNotificaciones } from 'shared/notificaciones'
 import { StatusEssentialLoading } from 'components/loading/application/StatusEssentialLoading'
+import { ContenedorSimpleMixin } from 'shared/contenedor/modules/simple/application/ContenedorSimpleMixin'
+import { SeguimientoConsumoActivoFijo } from 'pages/activosFijos/seguimientoConsumoActivoFijo/domain/SeguimientoConsumoActivoFijo'
+import { SeguimientoConsumoActivoFijoController } from 'pages/activosFijos/seguimientoConsumoActivoFijo/infraestructure/SeguimientoConsumoActivoFijoController'
 
 export const useConsultarOpcionesActivosFijos = () => {
     /*************
@@ -16,10 +19,17 @@ export const useConsultarOpcionesActivosFijos = () => {
      *************/
     const entregas: Ref<ActivoFijo[]> = ref([])
     const asignacionesProductos: Ref<ActivoFijo[]> = ref([])
-    const seguimientosConsumosActivosFijos: Ref<any[]> = ref([])
+    // const seguimientosConsumosActivosFijos: Ref<SeguimientoConsumoActivoFijo[]> = ref([])
     const axios = AxiosHttpRepository.getInstance()
     const { notificarInformacion, notificarError } = useNotificaciones()
     const cargando = new StatusEssentialLoading()
+
+    /********
+     * Mixin
+     ********/
+    const mixinSeguimientosConsumosActivosFijos = new ContenedorSimpleMixin(SeguimientoConsumoActivoFijo, new SeguimientoConsumoActivoFijoController())
+    const { listado: seguimientosConsumosActivosFijos, filtros: filtrosSeguimientoConsumoActivosFijos } = mixinSeguimientosConsumosActivosFijos.useReferencias()
+    const { listar: mixinListarSeguimientosConsumosActivosFijos } = mixinSeguimientosConsumosActivosFijos.useComportamiento()
 
     /************
      * Funciones
@@ -51,9 +61,13 @@ export const useConsultarOpcionesActivosFijos = () => {
 
     const listarSeguimientoConsumoActivosFijos = async (params: ParamsType) => {
         try {
-            const ruta = axios.getEndpoint(endpoints.seguimiento_consumo_activos_fijos, params)
-            const response: AxiosResponse = await axios.get(ruta)
-            seguimientosConsumosActivosFijos.value = response.data.results
+            // const ruta = axios.getEndpoint(endpoints.seguimiento_consumo_activos_fijos, params)
+            // const response: AxiosResponse = await axios.get(ruta)
+            await mixinListarSeguimientosConsumosActivosFijos(params)
+            // await listar({ finalizado: tabSeleccionado, paginate: true }, false)
+
+            filtrosSeguimientoConsumoActivosFijos.fields = params
+            // seguimientosConsumosActivosFijos.value = results
             if (!seguimientosConsumosActivosFijos.value.length) notificarInformacion('Aún no se han registrado seguimientos.')
         } catch (e: any) {
             notificarError(e)
@@ -63,6 +77,8 @@ export const useConsultarOpcionesActivosFijos = () => {
     }
 
     return {
+        // Mixin
+        mixinSeguimientosConsumosActivosFijos,
         // Variables
         entregas,
         asignacionesProductos,

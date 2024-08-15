@@ -28,7 +28,7 @@
             </q-input>
           </div>
 
-          <div class="col-12 col-md-3">
+          <!-- <div class="col-12 col-md-3">
             <label class="q-mb-sm block">Tipo</label>
             <q-input
               v-model="activo.detalle_producto.tipo"
@@ -37,7 +37,7 @@
               dense
             >
             </q-input>
-          </div>
+          </div> -->
 
           <div class="col-12 col-md-3">
             <label class="q-mb-sm block">Marca</label>
@@ -185,7 +185,7 @@
                 opcionesConsultasActivosFijos.SEGUIMIENTO_CONSUMO
             }"
             no-caps
-            @click="listarSeguimientoConsumoActivosFijos({ ...filtros })"
+            @click="listarSeguimientoConsumoActivosFijos({ ...filtros, paginate: true })"
           />
         </q-tabs>
 
@@ -236,7 +236,7 @@
           <q-tab-panel
             :name="opcionesConsultasActivosFijos.SEGUIMIENTO_CONSUMO"
           >
-            <essential-table
+            <essential-table-pagination
               titulo="Seguimiento de consumo del activo fijo"
               :configuracionColumnas="configuracionColumnasSeguimientoConsumo"
               :datos="seguimientosConsumosActivosFijos"
@@ -246,7 +246,8 @@
               :permitirFiltrar="false"
               :mostrarExportar="true"
               :ajustarCeldas="true"
-            ></essential-table>
+              :mixin="mixinSeguimientosConsumosActivosFijos"
+            ></essential-table-pagination>
           </q-tab-panel>
         </q-tab-panels>
 

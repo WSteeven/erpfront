@@ -288,7 +288,7 @@
 
           <!-- Es un Activo -->
           <div class="col-12 col-md-3 col-sm-3">
-            <label class="q-mb-sm block">¿Es un Activo?</label>
+            <label class="q-mb-sm block">¿Es un Activo Fijo?</label>
             <q-toggle
               :label="detalle.esActivo ? 'SI' : 'NO'"
               v-model="detalle.esActivo"

@@ -54,7 +54,7 @@ $border-color: #fff;
     backdrop-filter: blur(10px) !important;
   }
 
-  .bg-solid{
+  .bg-solid {
     background-color: $grey-2;
   }
 
@@ -244,6 +244,10 @@ $border-color: #fff;
   .q-field .q-field__inner {
     text-transform: uppercase;
     background-color: $grey-1;
+  }
+
+  .q-field__inner .q-field-control {
+    background-color: red;
   }
 
   .q-field--disabled .q-field__inner {

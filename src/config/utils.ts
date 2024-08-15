@@ -420,6 +420,7 @@ export const rolesSistema = {
   supervisor_ventas: 'SUPERVISOR_VENTAS',
   vendedor: 'VENDEDOR',
   financiero: 'FINANCIERO',
+  esSupervisorTecnico: 'SUPERVISOR_TECNICO',
 }
 
 export const cargosSistema = {

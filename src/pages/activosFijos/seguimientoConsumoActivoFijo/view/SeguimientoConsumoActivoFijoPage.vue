@@ -40,7 +40,7 @@
       :class="{ 'rounded-tabpanel': !$q.screen.xs }"
     >
       <q-tab-panel :name="opcionesSeguimientoConsumo.SEGUIMIENTO_CONSUMO">
-        <essential-table
+        <essential-table-pagination
           :titulo="opcionesSeguimientoConsumo.SEGUIMIENTO_CONSUMO"
           :configuracionColumnas="[
             ...configuracionColumnasSeguimientoConsumoActivoFijo,
@@ -53,10 +53,12 @@
           :permitirFiltrar="false"
           :mostrarExportar="true"
           :ajustarCeldas="true"
+          :mixin="mixin"
           :accion1Header="btnAgregar"
           :accion1="btnEditar"
           :accion2="btnJustificativoUso"
-        ></essential-table>
+          :accion3="btnSeReportoSicosep"
+        ></essential-table-pagination>
       </q-tab-panel>
 
       <!-- <q-tab-panel :name="opcionesSeguimientoConsumo.HISTORIAL_SEGUIMIENTO">

@@ -470,7 +470,7 @@ export const useMenuStore = defineStore('menu', () => {
       can: store.can('puede.acceder.modulo_activos_fijos'),
       children: [
         {
-          title: 'Control de AF',
+          title: 'Control de Activos fijos',
           link: 'control-activos-fijos',
           can: store.can('puede.acceder.control_activos_fijos'),
           icon: 'bi-app',

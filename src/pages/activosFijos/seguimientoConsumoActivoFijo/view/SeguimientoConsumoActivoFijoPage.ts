@@ -8,7 +8,7 @@ import { accionesTabla } from 'config/utils'
 import { defineComponent, ref } from 'vue'
 
 // Componentes
-import EssentialTable from 'components/tables/view/EssentialTable.vue'
+import EssentialTablePagination from 'components/tables/view/EssentialTablePagination.vue'
 import ModalEntidad from 'components/modales/view/ModalEntidad.vue'
 import SolicitarArchivo from 'shared/prompts/SolicitarArchivo.vue'
 
@@ -21,7 +21,7 @@ import { SeguimientoConsumoActivoFijo } from '../domain/SeguimientoConsumoActivo
 import { obtenerFechaActual } from 'shared/utils'
 
 export default defineComponent({
-    components: { EssentialTable, ModalEntidad, SolicitarArchivo },
+    components: { EssentialTablePagination, ModalEntidad, SolicitarArchivo },
     setup() {
         /**********
          * Stores
@@ -45,7 +45,7 @@ export default defineComponent({
         *********/
         const mixin = new ContenedorSimpleMixin(SeguimientoConsumoActivoFijo, new SeguimientoConsumoActivoFijoController(), new ArchivoController())
         const { entidad: seguimiento, listado } = mixin.useReferencias()
-        const { listar, editarParcial, cargarVista, obtenerListados } = mixin.useComportamiento()
+        const { listar, editarParcial } = mixin.useComportamiento()
 
         /************
          * Funciones
@@ -77,7 +77,6 @@ export default defineComponent({
                             cantidad_utilizada: cantidad,
                         })
                         listado.value[posicion].cantidad_utilizada = cantidad
-
                     }
                 }
                 prompt(data)
@@ -87,11 +86,18 @@ export default defineComponent({
         const btnJustificativoUso: CustomActionTable = {
             titulo: 'Justificativo uso',
             icono: 'bi-upload',
-            color: 'positive',
+            color: 'blue-grey',
             accion: async ({ entidad }) => {
                 seguimiento.hydrate(entidad)
                 mostrarSolicitarArchivo.value = true
             }
+        }
+
+        const btnSeReportoSicosep: CustomActionTable<SeguimientoConsumoActivoFijo> = {
+            titulo: ({ entidad }) => entidad.se_reporto_sicosep ? 'No se reportó Sicosep' : 'Se reportó Sicosep',
+            icono: ({ entidad }) => entidad.se_reporto_sicosep ? 'bi-toggle2-on' : 'bi-toggle2-off',
+            color: ({ entidad }) => entidad.se_reporto_sicosep ? 'negative' : 'positive',
+            accion: ({ entidad }) => editarParcial(entidad.id, { se_reporto_sicosep: !entidad.se_reporto_sicosep })
         }
 
         /********
@@ -109,6 +115,7 @@ export default defineComponent({
             btnAgregar,
             btnEditar,
             btnJustificativoUso,
+            btnSeReportoSicosep,
             modales,
             mostrarSolicitarArchivo,
             seguimiento,

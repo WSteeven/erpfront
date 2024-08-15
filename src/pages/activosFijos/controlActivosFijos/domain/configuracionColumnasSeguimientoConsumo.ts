@@ -45,6 +45,13 @@ export const configuracionColumnasSeguimientoConsumo: ColumnConfig<SeguimientoCo
         sortable: true
     },
     {
+        name: 'se_reporto_sicosep',
+        field: 'se_reporto_sicosep',
+        label: 'Se reportó sicosep',
+        align: 'left',
+        sortable: true
+    },
+    {
         name: 'observacion',
         field: 'observacion',
         label: 'Observación',

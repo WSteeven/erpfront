@@ -4,9 +4,10 @@
       <div class="row q-col-gutter-sm q-pa-md">
         <div class="col-12 col-md-3">
           <!-- {{ seguimiento }} -->
-          <label class="q-mb-sm block">Seleccione un cliente</label>
+          <label class="q-mb-sm block">{{ labelCliente }}</label>
           <!-- @filter="filtrarClientes" -->
           <!-- {{ clientesMaterialesStock }} -->
+            
           <q-select
             v-model="seguimiento.cliente"
             :options="clientesMaterialesStock"
@@ -15,6 +16,7 @@
             options-dense
             dense
             outlined
+            :disable="deshabilitadoCliente"
             :option-label="item => item.razon_social"
             :option-value="item => item.cliente_id"
             @update:model-value="

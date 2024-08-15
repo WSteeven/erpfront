@@ -15,6 +15,7 @@ import TabLayout from 'shared/contenedor/modules/simple/view/TabLayout.vue'
 import SelectorImagen from 'components/SelectorImagen.vue'
 import FormularioPermisoArma from 'src/pages/bodega/permisosArmas/view/FormularioPermisoArma.vue'
 import EssentialTable from 'components/tables/view/EssentialTable.vue'
+import EssentialTablePagination from 'components/tables/view/EssentialTablePagination.vue'
 import SolicitarArchivo from 'shared/prompts/SolicitarArchivo.vue'
 
 // Logica y controladores
@@ -29,7 +30,7 @@ import { TransaccionController } from 'pages/bodega/transacciones/infraestructur
 import { ArchivoController } from 'pages/gestionTrabajos/subtareas/modules/gestorArchivosTrabajos/infraestructure/ArchivoController'
 
 export default defineComponent({
-  components: { TabLayout, SelectorImagen, FormularioPermisoArma, EssentialTable, SolicitarArchivo },
+  components: { TabLayout, SelectorImagen, FormularioPermisoArma, EssentialTable, EssentialTablePagination, SolicitarArchivo },
   setup() {
     /*********
      * Stores
@@ -70,7 +71,7 @@ export default defineComponent({
     /************
      * Funciones
      ************/
-    const { entregas, listarEntregas, asignacionesProductos, listarStockResponsablesAF, seguimientosConsumosActivosFijos, listarSeguimientoConsumoActivosFijos } = useConsultarOpcionesActivosFijos()
+    const { entregas, listarEntregas, asignacionesProductos, listarStockResponsablesAF, seguimientosConsumosActivosFijos, listarSeguimientoConsumoActivosFijos, mixinSeguimientosConsumosActivosFijos } = useConsultarOpcionesActivosFijos()
 
     /******************
      * Acciones tabla
@@ -89,7 +90,7 @@ export default defineComponent({
     const btnSubirJustificativoUso: CustomActionTable = {
       titulo: 'Justificativo de uso',
       icono: 'bi-upload',
-      color: 'positive',
+      color: 'blue-grey',
       accion: ({ entidad }) => {
         transaccion.hydrate(entidad)
         tipoArchivo.value = tiposArchivos.JUSTIFICATIVO_USO
@@ -142,6 +143,7 @@ export default defineComponent({
       filtros,
       mostrarSolicitarArchivoActaEntregaRecepcion,
       tipoArchivo,
+      mixinSeguimientosConsumosActivosFijos,
     }
   }
 })
