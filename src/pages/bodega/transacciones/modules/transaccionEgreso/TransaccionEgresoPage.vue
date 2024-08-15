@@ -11,7 +11,6 @@
     :ajustarCeldas="true"
     :tabDefecto="tabDefecto"
     :filtrar="filtrarTransacciones"
-    paginate="paginate"
   >
     <template #formulario>
       <div
