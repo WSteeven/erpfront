@@ -10,16 +10,30 @@ export const configuracionColumnasPostulaciones: ColumnConfig<Postulacion>[]=[
     sortable: true
   },
   {
-    name: "nombres",
-    field: "nombres",
-    label: "Nombre",
+    name: "nombres_apellidos",
+    field: "nombres_apellidos",
+    label: "Nombres y Apellidos",
     align: "left",
     sortable: true
   },
   {
-    name: "apellidos",
-    field: "apellidos",
-    label: "Apellido",
+    name: "tengo_conocimientos_requeridos",
+    field: "tengo_conocimientos_requeridos",
+    label: "Conocimientos",
+    align: "left",
+    sortable: true
+  },
+  {
+    name: "tengo_experiencia_requerida",
+    field: "tengo_experiencia_requerida",
+    label: "Experiencia",
+    align: "left",
+    sortable: true
+  },
+  {
+    name: "tengo_licencia_conducir",
+    field: "tengo_licencia_conducir",
+    label: "Licencia Conducir",
     align: "left",
     sortable: true
   },

@@ -104,6 +104,7 @@
               <div class="col-md-3 col-sm-6 col-xs-12">
                 <label class="q-mb-sm block">Correo Personal</label>
                 <q-input
+                autogrow
                   type="email"
                   v-model="postulacion.correo_personal"
                   placeholder="Obligatorio"

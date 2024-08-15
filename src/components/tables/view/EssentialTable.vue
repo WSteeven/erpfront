@@ -1613,6 +1613,21 @@
         <campo-descontable :propsTable="props" />
       </q-td>
     </template>
+    <template #body-cell-tengo_conocimientos_requeridos="props">
+      <q-td :props="props">
+        <campo-boleano :propsTable="props" />
+      </q-td>
+    </template>
+    <template #body-cell-tengo_experiencia_requerida="props">
+      <q-td :props="props">
+        <campo-boleano :propsTable="props" />
+      </q-td>
+    </template>
+    <template #body-cell-tengo_licencia_conducir="props">
+      <q-td :props="props">
+        <campo-boleano :propsTable="props" />
+      </q-td>
+    </template>
     <template #body-cell-aprobado_rrhh="props">
       <q-td :props="props">
         <campo-aprobado-r-r-h-h :propsTable="props" />

@@ -10,7 +10,7 @@ import TabLayout from 'shared/contenedor/modules/simple/view/TabLayout.vue';
 import GestorArchivos from 'components/gestorArchivos/GestorArchivos.vue';
 
 // Logica y controladores
-import { onBeforeRouteUpdate, useRouter } from 'vue-router';
+import {  useRouter } from 'vue-router';
 import { ContenedorSimpleMixin } from 'shared/contenedor/modules/simple/application/ContenedorSimpleMixin';
 import { Postulacion } from '../domain/Postulacion';
 import { PostulacionController } from '../infraestructure/PostulacionController';

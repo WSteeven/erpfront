@@ -6,6 +6,7 @@ export class Postulacion extends EntidadAuditable {
   tipo_postulante: string | null
   nombre: string | null //
   nombres: string | null //
+  nombres_apellidos: string | null //
   apellidos: string | null //
   identificacion: string | null //
   genero: string | null //
@@ -36,6 +37,7 @@ export class Postulacion extends EntidadAuditable {
     this.tipo_postulante = null
     this.nombre = null
     this.nombres = null
+    this.nombres_apellidos = null
     this.apellidos = null
     this.identificacion = null
     this.tipo_identificacion = null
