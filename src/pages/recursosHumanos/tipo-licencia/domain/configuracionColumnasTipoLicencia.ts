@@ -9,4 +9,18 @@ export const configuracionColumnasTipoLicencia: ColumnConfig<TipoLicencia>[] = [
         align: 'left',
         sortable: true
     },
+    {
+      name: 'num_dias',
+      field: 'num_dias',
+      label: 'Días Licencia',
+      align: 'left',
+      sortable: true
+  },
+  {
+    name: 'estado',
+    field: 'estado',
+    label: 'Estado',
+    align: 'left',
+    sortable: true
+},
 ]

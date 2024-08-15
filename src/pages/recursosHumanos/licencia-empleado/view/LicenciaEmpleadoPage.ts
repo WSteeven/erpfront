@@ -10,7 +10,7 @@ import SelectorImagen from 'components/SelectorImagen.vue'
 import { ContenedorSimpleMixin } from 'shared/contenedor/modules/simple/application/ContenedorSimpleMixin'
 import { PermisoEmpleadoController } from '../infraestructure/PermisoEmpleadoController'
 import { LicenciaEmpleado } from '../domain/LicenciaEmpleado'
-import { removeAccents } from 'shared/utils'
+import { obtenerFechaActual, obtenerFechaActualTexto, removeAccents, sumarFechas } from 'shared/utils'
 import { maskFecha, tabOptionsLicencias } from 'config/utils'
 import {
   requiredIf,
@@ -221,12 +221,13 @@ export default defineComponent({
       }
     })
     function optionsFechaInicio(date) {
-      const currentDate = new Date() // Obtener la fecha actual
-      const year = currentDate.getFullYear() // Obtener el año
-      const month = String(currentDate.getMonth() + 1).padStart(2, '0') // Obtener el mes y asegurarse de que tenga dos dígitos
-      const day = String(currentDate.getDate()).padStart(2, '0') // Obtener el día y asegurarse de que tenga dos dígitos
-      const currentDateString = `${year}/${month}/${day}` // Formatear la fecha actual
-      return date >= currentDateString
+      // const currentDate = new Date() // Obtener la fecha actual
+      const currentDate = sumarFechas(obtenerFechaActual(),0,0,-15, 'YYYY/MM/DD')
+      // const year = currentDate.getFullYear() // Obtener el año
+      // const month = String(currentDate.getMonth() + 1).padStart(2, '0') // Obtener el mes y asegurarse de que tenga dos dígitos
+      // const day = String(currentDate.getDate()).padStart(2, '0') // Obtener el día y asegurarse de que tenga dos dígitos
+      // const currentDateString = `${year}/${month}/${day}` // Formatear la fecha actual
+      return date >= currentDate
     }
 
     return {

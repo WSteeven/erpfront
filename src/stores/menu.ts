@@ -831,6 +831,12 @@ export const useMenuStore = defineStore('menu', () => {
               link: 'rubro',
               icon: 'bi-box-fill',
               can: store.can('puede.acceder.rubro')
+            },
+            {
+              title: 'Tipos de licencias',
+              link: 'tipos-licencias',
+              icon: 'bi-box-fill',
+              can: store.can('puede.acceder.tipos_licencias')
             }
           ]
         }
