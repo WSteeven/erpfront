@@ -24,22 +24,26 @@ import { IdentidadGeneroController } from 'pages/medico/gestionarPacientes/modul
 import { useVacanteStore } from 'stores/recursosHumanos/seleccionContratacion/vacante';
 import { optionsDefault, tiposLicencias } from 'config/vehiculos.utils';
 import { checkValueIsNumber } from 'shared/utils';
+import SolicitarArchivo from 'shared/prompts/SolicitarArchivo.vue';
+import { UsuarioController } from 'pages/fondosRotativos/usuario/infrestructure/UsuarioController';
 
 
 export default defineComponent({
-  components: { BasicContainer, SimpleLayout, GestorArchivos , OptionGroupComponent},
+  components: { BasicContainer, SimpleLayout, GestorArchivos, OptionGroupComponent, SolicitarArchivo },
   setup() {
     const mixin = new ContenedorSimpleMixin(Postulacion, new PostulacionController())
+    // let mixinUsuario
     const { entidad: postulacion, disabled, listadosAuxiliares, accion } = mixin.useReferencias()
     const { setValidador, cargarVista, obtenerListados } = mixin.useComportamiento()
     const { onConsultado, onGuardado, onBeforeModificar, onReestablecer } = mixin.useHooks()
 
     const { autenticado, tipoAutenticacion: tipoAuth } = userIsAuthenticated()
-
+    const mostrarSolicitarArchivo = ref()
     let store
     const vacanteStore = useVacanteStore()
     const router = useRouter()
     const id = router.currentRoute.value.params.id
+    const CURRICULUM = 'CURRICULUM'
 
     const identidades = ref()
     const { paises, filtrarPaises } = useFiltrosListadosSelects(listadosAuxiliares)
@@ -58,7 +62,7 @@ export default defineComponent({
     })
     onConsultado(async () => {
       setTimeout(() => {
-        refArchivo.value?.listarArchivosAlmacenados(postulacion.id)
+        refArchivo.value?.listarArchivosAlmacenados(postulacion.id, { tipo: CURRICULUM })
       }, 300)
     })
     onBeforeModificar(() => {
@@ -90,6 +94,7 @@ export default defineComponent({
         switch (tipoAuth) {
           case tipoAutenticacion.empleado:
             store = useAuthenticationStore()
+            // mixinUsuario = new ContenedorSimpleMixin(Empleado, new UsuarioController())
             cargarDatosUsuarioAutenticado()
             break
           case tipoAutenticacion.usuario_externo:
@@ -127,7 +132,7 @@ export default defineComponent({
      * FUNCIONES
     ***************************************************************************/
     async function subirArchivos() {
-      await refArchivo.value?.subir()
+      await refArchivo.value?.subir({ tipo: CURRICULUM })
     }
 
     function cargarDatosUsuarioAutenticado() {
@@ -141,9 +146,16 @@ export default defineComponent({
       postulacion.tipo_identificacion = store.user.tipo_documento_identificacion ?? null
       postulacion.telefono = store.user.telefono ?? null
       postulacion.genero = store.user?.genero ?? 'M'
+      postulacion.fecha_nacimiento = store.user?.fecha_nacimiento ?? null
+      postulacion.tipo_identificacion = store.user?.identidad_genero ?? null
+      postulacion.identidad_genero = store.user?.identidad_genero ?? null
+      postulacion.pais = store.user.pais ?? ''
+      postulacion.pais_residencia = store.user.pais ?? ''
+      postulacion.direccion = store.user.direccion ?? ''
+      postulacion.tipo_identificacion = 'CEDULA'
 
       // console.log(vacanteStore.idVacante, vacanteStore.vacante)
-      console.log(store)
+      // console.log(store)
     }
     onBeforeRouteUpdate(async (to, from, next) => {
       if (!checkValueIsNumber(to.params.id))
@@ -171,8 +183,8 @@ export default defineComponent({
       vacante: vacanteStore.vacante,
       refArchivo, idRegistro,
       truncateChips: ref(true),
-store, optionsDefault,
-
+      store,
+      mostrarSolicitarArchivo,
       //listados
       tiposDocumentosIdentificaciones,
       tiposLicencias,

@@ -138,7 +138,6 @@
             </q-input>
           </div>
 
-          <!-- {{ postulacion }} -->
           <!-- Genero -->
           <div class="col-12 col-md-3 col-sm-3">
             <label class="q-mb-sm block">Sexo asignado al nacer</label>
@@ -360,7 +359,7 @@
           </div>
         </div>
       </q-expansion-item>
-      {{ postulacion }}
+
       <q-expansion-item
         class="overflow-hidden q-mb-md rounded bg-desenfoque-2"
         label="Información adicional"
@@ -400,11 +399,23 @@
             </gestor-archivos>
           </div>
 
+          <!-- <div class="col-12">
+            <q-btn @click="()=>mostrarSolicitarArchivo=true">Subir Hoja de Vida</q-btn>
+            <solicitar-archivo
+            v-if="mostrarSolicitarArchivo"
+            :mostrar="mostrarSolicitarArchivo"
+            @cerrar="mostrarSolicitarArchivo=false"
+            :mixin="mixin"
+            tipo-archivo="CURRICULUM"
+            />
+          </div> -->
           <div class="col-12">
             <label class="q-mb-sm block"
-              >Comentanos brevemente tu experiencia en el rol al que estas
-              postulando
-            </label>
+                  >Comentanos brevemente tu experiencia en el rol (<strong>{{
+                    vacante.nombre
+                  }}</strong
+                  >) al que estas postulando
+                </label>
             <q-input
               type="textarea"
               v-model="postulacion.mi_experiencia"
