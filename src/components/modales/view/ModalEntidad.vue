@@ -2,10 +2,10 @@
   <!-- :maximized="$q.screen.xs" -->
   <q-dialog
     v-model="abierto"
-    :full-width="true"
-    :full-height="true"
+    :full-width="fullWidth"
+    :full-height="fullHeight"
     :persistent="persistente"
-    maximized
+    :maximized="maximized"
   >
     <q-card class="bg-transparent no-border" flat>
       <!-- <q-linear-progress :value="1" color="grey-4" /> -->

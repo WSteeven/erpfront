@@ -50,14 +50,15 @@ export const useAuthenticationStore = defineStore('authentication', () => {
   const esCompras = computed(() => user.value ? extraerRol(user.value.roles, rolesSistema.compras) : false)
   const esAdministrador = computed(() => user.value ? extraerRol(user.value.roles, rolesSistema.administrador) : false)
   const esAdministradorVehiculos = computed(() => user.value ? extraerRol(user.value.roles, rolesSistema.administradorVehiculos) : false)
+  const esSupervisorTecnico = computed(() => user.value ? extraerRol(user.value.roles, rolesSistema.esSupervisorTecnico) : false)
   //ventas
   const esJefeVentasClaro = computed(() => user.value ? extraerRol(user.value.roles, rolesSistema.jefe_ventas) : false)
   const esSupervisorVentasClaro = computed(() => user.value ? extraerRol(user.value.roles, rolesSistema.supervisor_ventas) : false)
   const esVendedor = computed(() => user.value ? extraerRol(user.value.roles, rolesSistema.vendedor) : false)
-  
+
   const esMedico = computed(() => user.value ? extraerRol(user.value.roles, rolesSistema.medico) : false)
   const esMecanicoGeneral = computed(() => user.value ? extraerRol(user.value.roles, rolesSistema.mecanicoGeneral) : false)
-  
+
   function extraerRol(roles: string[], rolConsultar: string) {
     return roles.some((rol: string) => rol === rolConsultar)
   }
@@ -88,8 +89,8 @@ export const useAuthenticationStore = defineStore('authentication', () => {
     }
   }
 
-   // Actions
-   const loginPostulante = async (credentiales: UserLoginPostulante): Promise<Empleado> => {
+  // Actions
+  const loginPostulante = async (credentiales: UserLoginPostulante): Promise<Empleado> => {
     try {
       /*const csrf_cookie = axios.getEndpoint(endpoints.csrf_cookie)
       console.log('authentication...')
@@ -249,7 +250,7 @@ export const useAuthenticationStore = defineStore('authentication', () => {
     esActivosFijos,
     esRecursosHumanos,
     esGerente,
-    esCompras, esContabilidad, esAdministrador, esAdministradorVehiculos,esMecanicoGeneral,
+    esCompras, esContabilidad, esAdministrador, esAdministradorVehiculos, esMecanicoGeneral, esSupervisorTecnico,
     esJefeVentasClaro, esSupervisorVentasClaro, esVendedor,
     esFiscalizador,
     esSupervisorCampo,
@@ -257,5 +258,6 @@ export const useAuthenticationStore = defineStore('authentication', () => {
     consultar_saldo_actual,
     extraerRol,
     listadoUsuarios,
+
   }
 })

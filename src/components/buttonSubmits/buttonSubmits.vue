@@ -8,7 +8,8 @@
       color="primary"
       type="submit"
       no-caps
-      push
+      square
+      unelevated
       :disable="disabled"
       @click="emitir('guardar')"
     >
@@ -23,7 +24,8 @@
       color="primary"
       type="submit"
       no-caps
-      push
+      square
+      unelevated
       @click="emitir('editar')"
     >
       <q-icon name="bi-save" size="xs" class="q-pr-sm"></q-icon>
@@ -49,7 +51,8 @@
       v-if="permitirCancelar"
       color="negative"
       no-caps
-      push
+      square
+      unelevated
       @click="
         () => {
           emitir('cancelar', true)

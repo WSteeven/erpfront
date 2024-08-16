@@ -80,7 +80,7 @@ export default defineComponent({
 
     const { notificarError, notificarAdvertencia, notificarInformacion, confirmar } = useNotificaciones()
 
-    function listarArchivosAlmacenados(id: number, params: ParamsType) {
+    function listarArchivosAlmacenados(id: number, params: string) {//ParamsType) {
       listarArchivos(id, params)
     }
 

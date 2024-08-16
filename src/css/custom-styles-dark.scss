@@ -42,6 +42,10 @@ $border-color: #464646;
     backdrop-filter: blur(10px) !important;
   }
 
+  .bg-solid{
+    background-color: $bg-body;
+  }
+
   .bg-header-collapse {
     background-color: $bg-body;
   }
@@ -83,7 +87,7 @@ $border-color: #464646;
     border: 1px solid rgba($text-color-transparency, .4);
     box-shadow: rgba(0, 0, 0, 0.12) 0px 5px 15px;
   }
-  
+
   .tab-inactive {
     background-color: rgba($dark-color, 0.6);
     color: $text-color-transparency;
@@ -226,6 +230,13 @@ $border-color: #464646;
 
   .border-white {
     border: 1px solid $grey-8 !important;
+  }
+
+  .borde-header-tabla {
+    border-top: 1px solid $grey-8 !important;
+    border-left: 1px solid $grey-8 !important;
+    border-right: 1px solid $grey-8 !important;
+    border-radius: 16px 16px 0 0 !important;
   }
 
   // background

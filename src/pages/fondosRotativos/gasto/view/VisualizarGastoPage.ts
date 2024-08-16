@@ -110,9 +110,9 @@ export default defineComponent({
       if (parseInt(gasto.detalle !== null ? gasto.detalle : '') === 6) {
         return (
           gasto.sub_detalle!.findIndex((subdetalle) => subdetalle === 96) >
-            -1 ||
+          -1 ||
           gasto.sub_detalle!.findIndex((subdetalle) => subdetalle === 97) >
-            -1 ||
+          -1 ||
           gasto.sub_detalle!.findIndex((subdetalle) => subdetalle === 24) > -1
         )
       } else {
@@ -168,14 +168,14 @@ export default defineComponent({
     })
     //Obtener el listado de las cantones
     cargarVista(async () => {
-        beneficiarios.value = fondoRotativoStore.empleados
+      beneficiarios.value = fondoRotativoStore.empleados
       listadosAuxiliares.beneficiarios = beneficiarios.value
-       proyectos.value = fondoRotativoStore.proyectos
+      proyectos.value = fondoRotativoStore.proyectos
       listadosAuxiliares.proyectos = proyectos.value
       listadosAuxiliares.proyectos.unshift({ id: 0, nombre: 'Sin Proyecto' })
       tareas.value = fondoRotativoStore.tareas
       listadosAuxiliares.tareas = tareas.value
-      listadosAuxiliares.tareas.unshift({
+      if (listadosAuxiliares.tareas !== undefined) listadosAuxiliares.tareas.unshift({
         id: 0,
         titulo: 'Sin Tarea',
         codigo_tarea: ' ',
@@ -286,7 +286,7 @@ export default defineComponent({
       detalle_estado: {
         required,
       },
-      observacion_anulacion:{
+      observacion_anulacion: {
         required: requiredIf(() => gasto.estado === estadosGastos.APROBADO),
       }
     }
@@ -548,8 +548,8 @@ export default defineComponent({
                   LocalStorage.getItem('sub_detalles') == null
                     ? []
                     : JSON.parse(
-                        LocalStorage.getItem('sub_detalles')!.toString()
-                      )
+                      LocalStorage.getItem('sub_detalles')!.toString()
+                    )
                 listadosAuxiliares.sub_detalles = sub_detalles.value
               }, 100),
             250

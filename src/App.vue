@@ -27,11 +27,11 @@ export default defineComponent({
 
     if ('serviceWorker' in navigator) {
       navigator.serviceWorker
-        .register(process.env.SERVICE_WORKER_FILE)
-        .then((registration) =>
+        .register(import.meta.env.VITE_SERVICE_WORKER_FILE)
+        .then(registration =>
           console.log('Service Worker registrado con éxito:', registration)
         )
-        .catch((error) =>
+        .catch(error =>
           console.log('Error al registrar el Service Worker:', error)
         )
     }
@@ -39,7 +39,7 @@ export default defineComponent({
     return {
       //
     }
-  },
+  }
   // mounted (){
   //   window.Echo = new Echo({
   //     broadcaster: 'pusher',

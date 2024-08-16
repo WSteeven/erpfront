@@ -83,6 +83,7 @@
           :permitirConsultar="puedeVer"
           :permitirEditar="puedeEditar"
           :permitirEliminar="puedeEliminar"
+          :paginate="paginate"
           :accion1="accion1"
           :accion2="accion2"
           :accion3="accion3"

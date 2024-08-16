@@ -73,6 +73,9 @@ export const useFiltrosListadosSelects = (listadosAuxiliares, entidad?: Ref<any>
   const combustibles = ref(listadosAuxiliares.combustibles)
   const tiposVehiculos = ref(listadosAuxiliares.tipos_vehiculos)
 
+  // Activos fijos
+  const categoriasMotivosConsumoActivosFijos = ref(listadosAuxiliares.categoriasMotivosConsumoActivosFijos)
+  const motivosConsumoActivosFijos = ref(listadosAuxiliares.motivosConsumoActivosFijos)
 
   /**************************************************************
    * Funciones
@@ -489,6 +492,12 @@ export const useFiltrosListadosSelects = (listadosAuxiliares, entidad?: Ref<any>
   // const filtrarTiposEvaluacionesMedicasRetiros = (val, update) => filtrarLista(val, update, tiposEvaluacionesMedicasRetiros, 'nombre', listadosAuxiliares.tiposEvaluacionesMedicasRetiros)
   // const filtrarTiposAptitudesMedicasLaborales = (val, update) => filtrarLista(val, update, tiposAptitudesMedicasLaborales, 'nombre', listadosAuxiliares.tiposAptitudesMedicasLaborales)
 
+  /****************
+   * Activos fijos
+   ****************/
+  const filtrarCategoriasMotivosConsumoActivosFijos = (val, update) => filtrarLista(val, update, categoriasMotivosConsumoActivosFijos, 'nombre', listadosAuxiliares.categoriasMotivosConsumoActivosFijos)
+  const filtrarMotivosConsumoActivosFijos = (val, update) => filtrarLista(val, update, motivosConsumoActivosFijos, 'nombre', listadosAuxiliares.motivosConsumoActivosFijos)
+
   /***************************************
    * Filtro global optimizado
    * Actualmente filtra por un solo campo
@@ -556,5 +565,8 @@ export const useFiltrosListadosSelects = (listadosAuxiliares, entidad?: Ref<any>
     laboratoriosClinicos, filtrarLaboratoriosClinicos,
     // tiposEvaluacionesMedicasRetiros, filtrarTiposEvaluacionesMedicasRetiros,
     // tiposAptitudesMedicasLaborales, filtrarTiposAptitudesMedicasLaborales,
+    // Modulo activos fijos
+    categoriasMotivosConsumoActivosFijos, filtrarCategoriasMotivosConsumoActivosFijos,
+    motivosConsumoActivosFijos, filtrarMotivosConsumoActivosFijos,
   }
 }

@@ -30,18 +30,9 @@ import { AutorizacionController } from 'pages/administracion/autorizaciones/infr
 export default defineComponent({
   components: { TabLayoutFilterTabs2, SelectorImagen },
   setup() {
-    const mixin = new ContenedorSimpleMixin(
-      SolicitudPrestamo,
-      new SolicitudPrestamoController()
-    )
-    const {
-      entidad: solicitudPrestamo,
-      disabled,
-      accion,
-      listadosAuxiliares,
-    } = mixin.useReferencias()
-    const { setValidador, cargarVista, obtenerListados, listar } =
-      mixin.useComportamiento()
+    const mixin = new ContenedorSimpleMixin(SolicitudPrestamo,new SolicitudPrestamoController())
+    const {entidad: solicitudPrestamo,disabled,accion,listadosAuxiliares,} = mixin.useReferencias()
+    const { setValidador, cargarVista, obtenerListados, listar } =mixin.useComportamiento()
     const { onConsultado } = mixin.useHooks()
     const maximoAPrestar = ref()
     const esMayorsolicitudPrestamo = ref(false)

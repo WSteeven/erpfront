@@ -2,8 +2,26 @@ import { RouteRecordRaw } from 'vue-router'
 import rutasMedico from './rutasMedico'
 import rutasTareas from './rutasTareas'
 import rutasTickets from './rutasTickets'
+import rutasActivosFijos from './rutasActivosFijos'
+import { empresas } from 'config/utils/sistema'
 
+const JPCONSTRUCRED = process.env.VUE_APP_ID == empresas.JPCONSTRUCRED
+const JPCUSTODY = process.env.VUE_APP_ID == empresas.JPCUSTODY
+const CCLEDARE = process.env.VUE_APP_ID == empresas.CCLEDARE
+console.log(process.env.VUE_APP_ID)
 const routes: RouteRecordRaw[] = [
+  // {
+  //   path: '/intranet',
+  //   component: () => import('layouts/FullLayout.vue'),
+  //   children: [
+  //     {
+  //       path: '',
+  //       name: 'intranet',
+  //       component: () => import('pages/intranet/intranet/view/IntranetPage.vue'),
+  //       meta: { requiresAuth: false },
+  //     },
+  //   ],
+  // },
   {
     path: '/',
     component: () => import('layouts/MainLayout.vue'),
@@ -14,6 +32,42 @@ const routes: RouteRecordRaw[] = [
         component: () =>
           import('pages/tableroPersonal/view/TableroPersonalPage.vue'),
         meta: { requiresAuth: true },
+      },
+      {
+        path: 'intranet',
+        name: 'intranet',
+        component: () => import('pages/intranet/intranet/view/IntranetPage.vue'),
+        meta: { requiresAuth: false },
+      },
+      {
+        path: '/blog',
+        name: 'intra_noticias',
+        component: () => import('pages/intranet/noticias/view/NoticiaIntranetPage.vue'),
+        meta: { requiresAuth: true },
+      },
+      {
+        path: '/categorias-noticias',
+        name: 'intra_categorias',
+        component: () => import('pages/intranet/categorias/view/CategoriaNoticiaPage.vue'),
+        meta: { requiresAuth: true },
+      },
+      {
+        path: '/etiquetas',
+        name: 'intra_etiquetas',
+        component: () => import('pages/intranet/etiquetas/view/EtiquetaPage.vue'),
+        meta: { requiresAuth: true },
+      },
+      {
+        path: '/tipos-eventos',
+        name: 'intra_tipos_eventos',
+        component: () => import('pages/intranet/tiposEventos/view/TipoEventoPage.vue'),
+        meta: { requiresAuth: true },
+      },
+      {
+        path: '/eventos',
+        name: 'eventos',
+        component: () => import('pages/intranet/eventos/view/EventoPage.vue'),
+        meta: { requiresAuth: false },
       },
       {
         path: 'auditorias',
@@ -49,6 +103,11 @@ const routes: RouteRecordRaw[] = [
        * Modulo de tickets
        ********************/
       ...rutasTickets,
+
+      /**************************
+       * Modulo de activos fijos
+       **************************/
+      ...rutasActivosFijos,
 
       /********
        * Otros
@@ -160,6 +219,13 @@ const routes: RouteRecordRaw[] = [
         meta: { requiresAuth: true },
       },
       {
+        path: '/permisos-armas',
+        name: 'permisos_armas',
+        component: () =>
+          import('pages/bodega/permisosArmas/view/PermisoArmaPage.vue'),
+        meta: { requiresAuth: true },
+      },
+      {
         path: '/control-stock',
         name: 'control_stock',
         component: () =>
@@ -187,10 +253,16 @@ const routes: RouteRecordRaw[] = [
       {
         path: '/detalles',
         name: 'detalles',
-        component: () =>
-          import(
-            'pages/bodega/detalles_productos/view/DetalleProductoPage.vue'
-          ),
+        component: () => {
+          switch (process.env.VUE_APP_ID) {
+            case empresas.JPCONSTRUCRED: return import(
+              'pages/bodega/detalles_productos/view/jpconstrucred/DetalleProductoPage.vue'
+            )
+            case empresas.JPCUSTODY: return import(
+              'pages/bodega/detalles_productos/view/jpcustody/DetalleProductoPage.vue'
+            )
+          }
+        },
         meta: { requiresAuth: true },
       },
       {
@@ -528,13 +600,13 @@ const routes: RouteRecordRaw[] = [
 
 
       //Routes for Activos Fijos
-      {
+      /* {
         path: '/activos-fijos',
         name: 'activos_fijos',
         component: () =>
           import('pages/activosFijos/controlActivos/view/ActivoFijoPage.vue'),
         meta: { requiresAuth: true },
-      },
+      }, */
 
       /*********************************************
        * COMPRAS Y PROVEEDORES
@@ -1020,6 +1092,15 @@ const routes: RouteRecordRaw[] = [
         meta: { requiresAuth: true },
       },
       {
+        path: '/tipos-licencias',
+        name: 'tipos_licencias',
+        component: () =>
+          import(
+            'pages/recursosHumanos/tipo-licencia/view/TipoLicenciaPage.vue'
+          ),
+        meta: { requiresAuth: true },
+      },
+      {
         path: '/vacacion',
         name: 'vacacion',
         component: () =>
@@ -1308,6 +1389,14 @@ const routes: RouteRecordRaw[] = [
         component: () =>
           import('pages/recursosHumanos/seleccion_contratacion_personal/publicacion_puesto_trabajo/view/PublicacionPuestoTrabajoPage.vue'),
         meta: { requiresAuth: true },
+      },
+
+      {
+        path: '/eventos',
+        name: 'eventos',
+        component: () =>
+          import('pages/intranet/eventos/view/EventoPage.vue'),
+        meta: { requiresAuth: false },
       },
 
     ],

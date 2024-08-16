@@ -2,6 +2,7 @@ import { Endpoint } from 'shared/http/domain/Endpoint'
 import { medico } from './endpoints/medico'
 import { tareas } from './endpoints/tareas'
 import { tickets } from './endpoints/tickets'
+import { activosFijos } from './endpoints/activosFijos'
 
 export const apiConfig = {
   // URL_BASE: 'http://localhost:8000',
@@ -77,7 +78,6 @@ export const endpoints = {
   rol_pago_mes: new Endpoint('recursos-humanos/rol_pago_mes'),
   banco: new Endpoint('recursos-humanos/banco'),
   datos_empleado: new Endpoint('recursos-humanos/datos_empleado/'),
-  activos_fijos: new Endpoint('activos-fijos'),
   empleados: new Endpoint('empleados'),
   departamentos: new Endpoint('recursos-humanos/departamentos'),
   allroles: new Endpoint('roles'),
@@ -115,6 +115,7 @@ export const endpoints = {
     'recursos-humanos/rechazar_prestamo_empresarial'
   ),
   vacacion: new Endpoint('recursos-humanos/vacacion'),
+
   archivo_permiso_empleado: new Endpoint(
     'recursos-humanos/archivo_permiso_empleado'
   ),
@@ -265,6 +266,7 @@ export const endpoints = {
   codigos_clientes: new Endpoint('codigos-clientes'),
   detalles_materiales: new Endpoint('detalles-materiales'),
   detalles: new Endpoint('detalles'),
+  permisos_armas: new Endpoint('permisos-armas'),
   devoluciones: new Endpoint('devoluciones'),
   detalle_producto_transaccion: new Endpoint(
     'detalles-productos-transacciones'
@@ -323,6 +325,11 @@ export const endpoints = {
   * Modulo de tickets
   *********************/
   ...tickets,
+
+  /**************************
+  * Modulo de activos fijos
+  ***************************/
+  ...activosFijos,
 
   // Modulo Fondos Rotativos
   empleados_saldos_fr: new Endpoint('fondos-rotativos/empleados-saldos-fr'),
@@ -427,6 +434,14 @@ export const endpoints = {
   clientes_claro: new Endpoint('ventas-claro/clientes-claro'),
   escenario_venta_jp: new Endpoint('ventas-claro/escenario-venta-jp'),
   novedades_ventas: new Endpoint('ventas-claro/novedades-ventas'),
+
+  //intranet
+//Modulo de Intranet
+  noticias: new Endpoint('intranet/noticias'),
+  eventos: new Endpoint('intranet/eventos'),
+  etiquetas: new Endpoint('intranet/etiquetas'),
+  categorias_noticias: new Endpoint('intranet/categorias'),
+  tipos_eventos: new Endpoint('intranet/tipos-eventos'),
 
 
 

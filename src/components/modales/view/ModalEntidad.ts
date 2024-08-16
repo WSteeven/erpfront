@@ -16,7 +16,6 @@ export default defineComponent({
     accion: {
       type: Function,
       required: false,
-      default: () => { },
     },
     confirmarCerrar: {
       type: Boolean,
@@ -30,10 +29,23 @@ export default defineComponent({
       type: Boolean,
       default: true,
     },
+    fullWidth: {
+      type: Boolean,
+      default: true,
+    },
+    fullHeight:{
+      type: Boolean,
+      default: true,
+    },
+    maximized:{
+      type: Boolean,
+      default: true,
+    },
     mostrarListado: {
       type: Boolean,
       default: true,
     }
+
   },
   // emits: ['seleccionar', 'accion1'],
   emits: ['guardado', 'modificado', 'cerrado'],
@@ -45,7 +57,6 @@ export default defineComponent({
 
     const { componente, titulo, abierto, datos } = props.comportamiento.useModal()
     const { confirmar } = useNotificaciones()
-
     function cerrarModalEntidad(confirmarCerrar = true && props.confirmarCerrar) {
       if (confirmarCerrar) {
         confirmar('¿Está seguro de que desea cerrar?', () => abierto.value = false)

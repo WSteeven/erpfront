@@ -29,6 +29,7 @@
           :disable="disabled"
         />
       </div>
+      
       <!-- Nombre -->
       <div class="col-12 col-md-2 q-mb-md">
         <label class="q-mb-sm block">Nombre</label>
