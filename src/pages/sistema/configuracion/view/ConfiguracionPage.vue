@@ -7,7 +7,7 @@
       <small class="text-grey-9 text-bold">{{ 'SISTEMA' }}</small>
     </div>
 
-    <q-card class="rounded custom-shadow no-border">
+    <q-card class="rounded custom-shadow bg-desenfoque no-border">
       <div class="row text-bold text-primary q-pa-md items-center">
         <q-icon name="bi-house-gear-fill" class="q-mr-sm"></q-icon>
         Configuración general

@@ -30,7 +30,7 @@
   <!-- <div v-if="fileSize !== null && !isNaN(fileSize)">
     Tamaño de la imagen: {{ (fileSize / 1024).toFixed(2) }} KB
   </div> -->
-  <div class="bg-grey-10">
+  <div class="bg-desenfoque">
     <q-img
       v-show="imagenCodificada"
       :src="imagenCodificada"

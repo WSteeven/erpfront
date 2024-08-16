@@ -79,8 +79,12 @@ export default defineComponent({
     const inventarioStore = useInventarioStore()
     const empleadoStore = useEmpleadoStore()
 
+    /*************
+     * Variables
+     *************/
     const modalesEmpleado = new ComportamientoModalesEmpleado()
     const modales = new ComportamientoModalesTransaccionEgreso()
+    const existeItemArmaFuego = ref(false)
 
     //orquestador
     const {
@@ -203,6 +207,7 @@ export default defineComponent({
       observacion_est: {
         requiredIfObsEstado: requiredIf(false)
       },
+      // codigo_permiso_sincoar: { requiredIf: requiredIf(()) }
     }
     const v$ = useVuelidate(reglas, transaccion)
     setValidador(v$.value)

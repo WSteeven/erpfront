@@ -16,9 +16,10 @@ export class ListableFileRepository<T> {
     let ruta
     try {
       if (params) {
-        ruta = this.httpRepository.getEndpoint(this.endpoint) + '/files/' +id+'/'+ params //this.httpRepository.mapearArgumentos(params)
+        // ruta = this.httpRepository.getEndpoint(this.endpoint) + '/files/' + id + '?tipo=justificativo'
+        ruta = this.httpRepository.getEndpoint(this.endpoint) + '/files/' + id + this.httpRepository.mapearArgumentos(params)
       } else {
-        ruta = this.httpRepository.getEndpoint(this.endpoint) + '/files/'+id
+        ruta = this.httpRepository.getEndpoint(this.endpoint) + '/files/' + id
       }
       const response: AxiosResponse = await this.httpRepository.get(ruta)
 
