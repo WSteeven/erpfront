@@ -87,8 +87,7 @@ export default defineComponent({
      *********/
     const mixin = new ContenedorSimpleMixin(Ticket, new TicketController())
     const { entidad: ticket, listadosAuxiliares, accion, disabled } = mixin.useReferencias()
-    const { guardar, editar, eliminar, reestablecer, setValidador, obtenerListados, cargarVista, listar } =
-      mixin.useComportamiento()
+    const { guardar, editar, eliminar, reestablecer, setValidador, obtenerListados, cargarVista, listar } = mixin.useComportamiento()
     const { onBeforeGuardar, onGuardado, onModificado, onConsultado, onReestablecer } = mixin.useHooks()
 
     const mixinArchivoTicket = new ContenedorSimpleMixin(Archivo, new ArchivoTicketController())

@@ -6,14 +6,13 @@
         <div v-if="mostrarBuscar" class="q-pa-xs">
           <q-input
             v-model="buscarModulo"
-            placeholder="BUSCAR MÓDULO..."
+            placeholder="PRESIONE ESC PARA CERRAR"
             @update:model-value="filtrarMenu"
             bg-color="grey-1"
             input-class="text-black"
             @keyup.esc="resetearBuscador()"
             autofocus
             dense
-            input-style="width: 250px;"
             outlined
             clearable
           >

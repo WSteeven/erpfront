@@ -65,24 +65,6 @@ export const useMenuStore = defineStore('menu', () => {
           can: store.can('puede.ver.tareas')
         },
         {
-          title: 'Productos de empleados',
-          link: 'materiales-empleados',
-          icon: 'bi-box-seam',
-          can: store.can('puede.ver.materiales_empleados')
-        },
-        /*{
-          title: 'Trabajo agendado',
-          link: 'trabajo-agendado',
-          icon: 'bi-ui-checks-grid',
-          can: true,//store.esTecnicoLider,// store.can('puede.ver.trabajo_asignado'),
-        },*/
-        {
-          title: 'Transferencia de productos',
-          link: 'transferencia-producto-empleado',
-          icon: 'bi-arrow-left-right',
-          can: store.can('puede.ver.transferencia_producto_empleado')
-        },
-        {
           title: 'Movilización entre trabajos',
           link: 'reporte-movilizacion-subtarea',
           icon: 'bi-truck',
@@ -279,6 +261,18 @@ export const useMenuStore = defineStore('menu', () => {
           icon: 'bi-bar-chart-fill'
         },
         {
+          title: 'Productos de empleados',
+          link: 'productos-empleados',
+          icon: 'bi-box-seam',
+          can: store.can('puede.ver.materiales_empleados')
+        },
+        {
+          title: 'Transferencia de productos',
+          link: 'transferencia-producto-empleado',
+          icon: 'bi-arrow-left-right',
+          can: store.can('puede.ver.transferencia_producto_empleado')
+        },
+        {
           title: 'Categorías',
           link: 'categorias',
           can: store.esActivosFijos, //store.esBodeguero,//can('puede.ver.categorias'),
@@ -472,15 +466,21 @@ export const useMenuStore = defineStore('menu', () => {
       can: store.can('puede.acceder.modulo_activos_fijos'),
       children: [
         {
-          title: 'Control de Activos fijos',
+          title: 'Control de activos fijos',
           link: 'control-activos-fijos',
           can: store.can('puede.acceder.control_activos_fijos'),
           icon: 'bi-app',
         },
         {
-          title: 'Seguimiento consumo AF',
+          title: 'Seguimiento consumo de activos fijos',
           link: 'seguimiento-consumo-activos-fijos',
           can: store.can('puede.acceder.seguimiento_consumo_activos_fijos'),
+          icon: 'bi-app',
+        },
+        {
+          title: 'Transferencia de activos fijos',
+          link: 'transferencia-activos-fijos',
+          can: store.can('puede.acceder.transferencia_activos_fijos'),
           icon: 'bi-app',
         },
       ],
@@ -495,30 +495,30 @@ export const useMenuStore = defineStore('menu', () => {
         //   title: 'Gastos',
         //   icon: 'fa-solid fa-receipt', // Cambiado de 'bi-receipt' a Font Awesome
         //   children: [
-            {
-              title: 'Registrar Gastos',
-              link: 'gasto',
-              icon: 'fa-solid fa-plus-circle', // Cambiado de 'bi-plus-circle-fill' a Font Awesome
-              can: store.can('puede.ver.gasto')
-            },
-            {
-              title: 'Solicitar Fondos',
-              link: 'gasto-coordinador',
-              icon: 'fa-solid fa-hand-holding-usd', // Cambiado de 'bi-handbag-fill' a Font Awesome
-              can: store.can('puede.ver.gasto_coordinador')
-            },
-            {
-              title: 'Autorizar Gasto',
-              link: 'autorizar-gasto',
-              icon: 'fa-solid fa-check-circle', // Cambiado de 'bi-check-circle-fill' a Font Awesome
-              can: true //store.can('puede.ver.autorizar_gasto'),
-            },
-            {
-              title: 'Anular Gasto',
-              link: 'anular-gasto',
-              icon: 'fa-solid fa-times-circle', // Cambiado de 'bi-x-circle-fill' a Font Awesome
-              can: store.can('puede.ver.anular_gasto')
-            // }
+        {
+          title: 'Registrar Gastos',
+          link: 'gasto',
+          icon: 'fa-solid fa-plus-circle', // Cambiado de 'bi-plus-circle-fill' a Font Awesome
+          can: store.can('puede.ver.gasto')
+        },
+        {
+          title: 'Solicitar Fondos',
+          link: 'gasto-coordinador',
+          icon: 'fa-solid fa-hand-holding-usd', // Cambiado de 'bi-handbag-fill' a Font Awesome
+          can: store.can('puede.ver.gasto_coordinador')
+        },
+        {
+          title: 'Autorizar Gasto',
+          link: 'autorizar-gasto',
+          icon: 'fa-solid fa-check-circle', // Cambiado de 'bi-check-circle-fill' a Font Awesome
+          can: true //store.can('puede.ver.autorizar_gasto'),
+        },
+        {
+          title: 'Anular Gasto',
+          link: 'anular-gasto',
+          icon: 'fa-solid fa-times-circle', // Cambiado de 'bi-x-circle-fill' a Font Awesome
+          can: store.can('puede.ver.anular_gasto')
+          // }
           // ]
         },
 

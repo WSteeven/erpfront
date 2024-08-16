@@ -146,7 +146,7 @@ export default defineComponent({
     /************
      * Variables
      ************/
-    const { notificarAdvertencia, prompt, confirmar } = useNotificaciones()
+    const { notificarAdvertencia } = useNotificaciones()
     const paraProyecto = computed(() => tarea.para_cliente_proyecto === destinosTareas.paraProyecto)
     const paraClienteFinal = computed(() => tarea.para_cliente_proyecto === destinosTareas.paraClienteFinal)
     const tab = ref('tarea')
@@ -159,10 +159,6 @@ export default defineComponent({
     setFiltrarTrabajoAsignado(filtrarSubtareas)
 
     const proyectoController = new ProyectoController()
-    /********
-     * Init
-     *******/
-    // tarea.coordinador = 5
 
     /*************
     * Validaciones
@@ -217,7 +213,7 @@ export default defineComponent({
 
     async function filtrarTarea(tabSeleccionado: string) {
       await listar({ finalizado: tabSeleccionado, paginate: true }, false)
-      
+
       filtros.fields = { finalizado: tabSeleccionado }
       tabActualTarea = tabSeleccionado
     }

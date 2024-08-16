@@ -58,4 +58,11 @@ export const configuracionColumnasSeguimientoConsumo: ColumnConfig<SeguimientoCo
         align: 'left',
         sortable: true
     },
+    {
+        name: 'archivos',
+        field: 'archivos',
+        label: 'Justificativo de uso',
+        align: 'left',
+        sortable: true
+    },
 ]

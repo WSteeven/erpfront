@@ -424,7 +424,7 @@ export class ContenedorSimpleMixin<T extends EntidadAuditable> extends Contenedo
 
     this.hooks.onBeforeModificar()
 
-    this.cargarVista(async () => {
+    return this.cargarVista(async () => {
       try {
         const { response, result: modelo } = await this.controller.editarParcial(
           id,
@@ -450,6 +450,7 @@ export class ContenedorSimpleMixin<T extends EntidadAuditable> extends Contenedo
         } else {
           this.notificaciones.notificarError(error.message)
         }
+        throw error
       }
     })
 

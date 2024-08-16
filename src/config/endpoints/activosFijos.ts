@@ -9,4 +9,5 @@ export const activosFijos = {
   activos_fijos_asignados: new Endpoint('activos-fijos/activos-fijos-asignados'),
   categorias_motivos_consumo_activos_fijos: new Endpoint('activos-fijos/categorias-motivos-consumo-activos-fijos'),
   motivos_consumo_activos_fijos: new Endpoint('activos-fijos/motivos-consumo-activos-fijos'),
+  transferencias_activos_fijos: new Endpoint('activos-fijos/transferencias-activos-fijos'),
 }

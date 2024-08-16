@@ -315,7 +315,9 @@ export default defineComponent({
     /************
      * Funciones
      ************/
-    const verVisorArchivos = ({ posicion }) => {
+    const verVisorArchivos = ({ entidad }) => {
+      const posicion = listado.value.indexOf(entidad)
+      console.log(posicion)
       archivos.value = listado.value[posicion].archivos
       visibleModalVisorArchivos.abrir()
     }

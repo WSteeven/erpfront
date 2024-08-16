@@ -68,8 +68,8 @@
               :disable="disabled || (soloLectura && !esBodeguero)"
               :error="!!v$.motivo.$errors.length"
               error-message="Debes seleccionar un motivo"
-              :option-value="(v) => v.id"
-              :option-label="(v) => v.nombre"
+              :option-value="v => v.id"
+              :option-label="v => v.nombre"
               emit-value
               map-options
             >
@@ -100,8 +100,8 @@
               :readonly="disabled || (soloLectura && !esCoordinador)"
               :error="!!v$.autorizacion.$errors.length"
               error-message="Debes seleccionar una autorizacion"
-              :option-value="(v) => v.id"
-              :option-label="(v) => v.nombre"
+              :option-value="v => v.id"
+              :option-label="v => v.nombre"
               emit-value
               map-options
             >
@@ -236,8 +236,8 @@
               input-debounce="0"
               @filter="filtrarSucursales"
               @popup-show="ordenarSucursales"
-              :option-value="(v) => v.id"
-              :option-label="(v) => v.lugar"
+              :option-value="v => v.id"
+              :option-label="v => v.lugar"
               emit-value
               map-options
             >
@@ -305,8 +305,8 @@
               outlined
               :disable="disabled || soloLectura"
               :readonly="disabled || soloLectura"
-              :option-label="(v) => v.nombres + ' ' + v.apellidos"
-              :option-value="(v) => v.id"
+              :option-label="v => v.nombres + ' ' + v.apellidos"
+              :option-value="v => v.id"
               emit-value
               map-options
             >
@@ -343,8 +343,8 @@
               :error="!!v$.responsable.$errors.length"
               :disable="disabled || soloLectura"
               :readonly="disabled || soloLectura"
-              :option-label="(v) => v.apellidos + ' ' + v.nombres"
-              :option-value="(v) => v.id"
+              :option-label="v => v.apellidos + ' ' + v.nombres"
+              :option-value="v => v.id"
               emit-value
               map-options
             >
@@ -402,8 +402,8 @@
               @popup-show="ordenarLista(empleados, 'apellidos')"
               :disable="disabled || soloLectura"
               :readonly="disabled || soloLectura"
-              :option-label="(v) => v.apellidos + ' ' + v.nombres"
-              :option-value="(v) => v.id"
+              :option-label="v => v.apellidos + ' ' + v.nombres"
+              :option-value="v => v.id"
               emit-value
               map-options
             >
@@ -457,8 +457,8 @@
               dense
               outlined
               clearable
-              :option-label="(item) => item.nombre"
-              :option-value="(item) => item.id"
+              :option-label="item => item.nombre"
+              :option-value="item => item.id"
               use-input
               input-debounce="0"
               emit-value
@@ -502,8 +502,8 @@
               dense
               clearable
               outlined
-              :option-label="(item) => item.nombre"
-              :option-value="(item) => item.id"
+              :option-label="item => item.nombre"
+              :option-value="item => item.id"
               use-input
               input-debounce="0"
               emit-value
@@ -561,8 +561,8 @@
               input-debounce="0"
               @filter="filtrarTareas"
               @update:model-value="obtenerDatosTareaSeleccionada"
-              :option-label="(item) => item.codigo_tarea + ' - ' + item.titulo"
-              :option-value="(item) => item.id"
+              :option-label="item => item.codigo_tarea + ' - ' + item.titulo"
+              :option-value="item => item.id"
               emit-value
               map-options
               ><template v-slot:option="scope">
@@ -608,8 +608,8 @@
               @filter="filtrarClientes"
               @popup-show="ordenarClientes"
               @update:model-value="buscarListadoPedidoEnInventario"
-              :option-value="(item) => item.id"
-              :option-label="(item) => item.razon_social"
+              :option-value="item => item.id"
+              :option-label="item => item.razon_social"
               emit-value
               map-options
             >
@@ -626,6 +626,33 @@
                 </q-item>
               </template>
             </q-select>
+          </div>
+
+          <!-- Justificacion -->
+          <div class="col-12 col-md-3">
+            <label class="q-mb-sm block">Código permiso SINCOAR</label>
+            <q-input
+              type="textarea"
+              autogrow
+              v-model="transaccion.justificacion"
+              placeholder="Obligatorio"
+              hint="*Requerido para traslados de armamento"
+              :disable="disabled || soloLectura"
+              :readonly="disabled || soloLectura"
+              :error="!!v$.justificacion.$errors.length"
+              lazy-rules
+              outlined
+              dense
+            >
+              <template v-slot:error>
+                <div
+                  v-for="error of v$.justificacion.$errors"
+                  :key="error.$uid"
+                >
+                  <div class="error-msg">{{ error.$message }}</div>
+                </div>
+              </template>
+            </q-input>
           </div>
 
           <!-- observacion estado -->
@@ -686,7 +713,7 @@
                     listarProductos({
                       sucursal_id: transaccion.sucursal,
                       cliente_id: transaccion.cliente,
-                      search: criterioBusquedaProducto,
+                      search: criterioBusquedaProducto
                     })
                   "
                   @blur="
@@ -704,7 +731,7 @@
                       sucursal_id: transaccion.sucursal,
                       cliente_id: transaccion.cliente,
                       search: criterioBusquedaProducto,
-                      zeros: false,
+                      zeros: false
                     })
                   "
                   icon="search"
@@ -729,7 +756,7 @@
                   ? configuracionColumnasProductosSeleccionadosDespachados
                   : [
                       ...configuracionColumnasProductosSeleccionados,
-                      accionesTabla,
+                      accionesTabla
                     ]
               "
               :datos="transaccion.listadoProductosTransaccion"

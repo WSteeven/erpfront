@@ -185,7 +185,12 @@
                 opcionesConsultasActivosFijos.SEGUIMIENTO_CONSUMO
             }"
             no-caps
-            @click="listarSeguimientoConsumoActivosFijos({ ...filtros, paginate: true })"
+            @click="
+              listarSeguimientoConsumoActivosFijos({
+                ...filtros,
+                paginate: true
+              })
+            "
           />
         </q-tabs>
 
@@ -247,6 +252,7 @@
               :mostrarExportar="true"
               :ajustarCeldas="true"
               :mixin="mixinSeguimientosConsumosActivosFijos"
+              :accion1="btnJustificativoUso"
             ></essential-table-pagination>
           </q-tab-panel>
         </q-tab-panels>

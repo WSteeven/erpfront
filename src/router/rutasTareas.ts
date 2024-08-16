@@ -112,7 +112,7 @@ const rutasTareas: RouteRecordRaw[] = [
     meta: { requiresAuth: true },
   },
   {
-    path: '/materiales-empleados',
+    path: '/productos-empleados',
     name: 'materiales_empleados',
     component: () =>
       import(
