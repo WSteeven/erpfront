@@ -256,6 +256,13 @@ export function obtenerFechaActual(formato = 'DD-MM-YYYY') {
   return formattedString
 }
 
+/* export function convertirFormatoFechaHora(fechaHoraOrigen, formatoDestino = 'YYYY-MM-DD') {
+  const fechaHora = fechaHoraOrigen.split(' ')
+  const partesFecha = fechaHora[0].split('-')
+  const fecha = new Date(Number(partesFecha[0]), Number(partesFecha[1]) - 1, Number(partesFecha[2]))
+  return date.formatDate(fecha, formatoDestino)
+} */
+
 /**
  * La función `sumarFechas` toma una cadena de fecha y le agrega un número específico de años, meses y
  * días, devolviendo la fecha resultante en el formato 'DD-MM-AAAA'.

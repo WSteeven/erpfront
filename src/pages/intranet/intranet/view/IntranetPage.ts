@@ -55,7 +55,7 @@ interface Evento {
 }
 
 export default defineComponent({
-  name:'intranet',
+  name: 'intranet_page',
   components: {
     ModalesEntidad,
     LottiePlayer: Vue3Lottie,
@@ -69,7 +69,7 @@ export default defineComponent({
     QDialog,
     QCardActions,
     QBtn,
-    Qalendar,
+    Qalendar
   },
 
   setup() {
@@ -86,9 +86,8 @@ export default defineComponent({
     const noticias = ref<Noticia[]>([])
     const noticiaCompleta = ref<Noticia | null>(null)
 
-
     //solicitudes
-    const {notificarError}= useNotificaciones()
+    const { notificarError } = useNotificaciones()
     const tiposSolicitudes = ref([
       { label: 'Permisos', value: 'permiso' },
       { label: 'Licencias', value: 'licencias' },
@@ -101,13 +100,11 @@ export default defineComponent({
     })
 
     const eventos = ref<Evento[]>([])
-    const eventoSeleccionado = ref<Evento | null>(null);
+    const eventoSeleccionado = ref<Evento | null>(null)
     const fechaSeleccionada = ref(null)
     const dialogoVisible = ref(false)
 
-
     const carousel_cumpleanos_mes = ref(1)
-    const search = ref()
     const autoplay = ref(true)
     const fechaActual = ref(obtenerFechaActual(maskFecha))
     const $q = useQuasar()
@@ -126,7 +123,6 @@ export default defineComponent({
     const filtroTarea = ref('Recientes')
     const subtareasPorAsignar = ref([])
 
-
     consultarEmpleadosDepartamento(store.user.departamento)
     activeTab.value = store.user.departamento
 
@@ -136,38 +132,39 @@ export default defineComponent({
       1: 'capacitaciones',
       2: 'reunion',
       3: 'general'
-    };
+    }
 
     const eventosFormateados = computed(() => {
-      return eventos.value.map(evento => {
-        if (!evento.fecha_hora_inicio || !evento.fecha_hora_fin) {
-          console.warn('Evento con datos incompletos:', evento);
-          return null;
-        }
-        return {
-          id: evento.id,
-          title: evento.titulo,
-          autor: evento.anfitrion_id,
-          description: evento.descripcion,
-          colorScheme: esquemasColores[evento.tipo_evento_id] || 'general',
-          time: {
-            start: evento.fecha_hora_inicio,
-            end: evento.fecha_hora_fin,
-          },
-          data: evento  // Pasar todo el objeto evento como dato adicional
-        };
-      }).filter(evento => evento !== null);
-    });
+      return eventos.value
+        .map(evento => {
+          if (!evento.fecha_hora_inicio || !evento.fecha_hora_fin) {
+            console.warn('Evento con datos incompletos:', evento)
+            return null
+          }
+          return {
+            id: evento.id,
+            title: evento.titulo,
+            autor: evento.anfitrion_id,
+            description: evento.descripcion,
+            colorScheme: esquemasColores[evento.tipo_evento_id] || 'general',
+            time: {
+              start: evento.fecha_hora_inicio,
+              end: evento.fecha_hora_fin
+            },
+            data: evento // Pasar todo el objeto evento como dato adicional
+          }
+        })
+        .filter(evento => evento !== null)
+    })
 
     const configuracion = ref({
       week: {
         startsOn: 'monday',
         nDays: 7,
-        scrollToHour: 8,
-
+        scrollToHour: 8
       },
       month: {
-        showTrailingAndLeadingDates: false,
+        showTrailingAndLeadingDates: false
       },
       locale: 'es-ES',
       style: {
@@ -176,41 +173,41 @@ export default defineComponent({
         colorSchemes: {
           capacitaciones: {
             color: 'white',
-            backgroundColor: 'orange',
+            backgroundColor: 'orange'
           },
           reunion: {
             color: 'white',
-            backgroundColor: 'yellow',
+            backgroundColor: 'yellow'
           },
           general: {
             color: 'white',
-            backgroundColor: 'green',
+            backgroundColor: 'green'
           }
         }
       },
       defaultMode: 'month',
       isSilent: true,
-      showCurrentTime: true,
-    });
+      showCurrentTime: true
+    })
 
     function verEvento(evento) {
       // console.log('evento clickado')
       // console.log('evento clickado', evento)
-      eventoSeleccionado.value = evento.data;
-      dialogoVisible.value = true;
+      eventoSeleccionado.value = evento.data
+      dialogoVisible.value = true
     }
 
     async function obtenerEventos() {
-      cargando.activar();
+      cargando.activar()
       try {
-        const response = await new EventoController().listar();
+        const response = await new EventoController().listar()
         // console.log(response);
-        eventos.value = response.result;
+        eventos.value = response.result
         // console.log(eventos);
       } catch (error) {
-        console.error('Error al obtener eventos:', error);
+        console.error('Error al obtener eventos:', error)
       } finally {
-        cargando.desactivar();
+        cargando.desactivar()
       }
     }
 
@@ -222,7 +219,10 @@ export default defineComponent({
       return description
     }
 
-    function verNoticiaCompleta(id: number, noticias: Noticia[]): Noticia | null {
+    function verNoticiaCompleta(
+      id: number,
+      noticias: Noticia[]
+    ): Noticia | null {
       const noticia = noticias.find(noticia => noticia.id === id)
       if (noticia) {
         return noticia
@@ -234,7 +234,10 @@ export default defineComponent({
 
     async function obtenerNoticias() {
       cargando.activar()
-      const response = await new NoticiaController().listar()
+      const response = await new NoticiaController().listar({
+        'fecha_vencimiento[operator]': '>',
+        'fecha_vencimiento[value]': obtenerFechaActual(maskFecha)
+      })
       // console.log(response)
       noticias.value = response.result
       cargando.desactivar()
@@ -327,40 +330,38 @@ export default defineComponent({
 
     const obtenerEmpleadosCumpleaneros = async () => {
       // Obtener el mes actual
-      const currentMonth = new Date().getMonth() + 1;
+      const currentMonth = new Date().getMonth() + 1
 
       try {
-        const empleadoController = new EmpleadoController();
+        const empleadoController = new EmpleadoController()
         const empleados = (
           await empleadoController.listar({
             estado: 1
           })
-        ).result;
+        ).result
 
         empleadosCumpleaneros.value = empleados
           .filter(empleado => {
             if (empleado.fecha_nacimiento) {
               // Obtener el mes de la fecha de nacimiento
-              const birthMonth = new Date(empleado.fecha_nacimiento).getMonth() + 1;
-              return birthMonth === currentMonth;
+              const birthMonth =
+                new Date(empleado.fecha_nacimiento).getMonth() + 1
+              return birthMonth === currentMonth
             }
-            return false;
+            return false
           })
           .sort((a, b) => {
             // Ordenar por día del mes de nacimiento
-            const dayA = new Date(a.fecha_nacimiento).getDate();
-            const dayB = new Date(b.fecha_nacimiento).getDate();
-            return dayA - dayB;
-          });
+            const dayA = new Date(a.fecha_nacimiento).getDate()
+            const dayB = new Date(b.fecha_nacimiento).getDate()
+            return dayA - dayB
+          })
       } catch (err) {
-        console.log('Error al obtener empleados cumpleañeros:', err);
+        console.log('Error al obtener empleados cumpleañeros:', err)
       }
-    };
-
-
+    }
 
     onMounted(() => {
-      obtenerNoticias()
       obtenerEventos()
       obtenerEmpleadosCumpleaneros()
     })
@@ -402,12 +403,12 @@ export default defineComponent({
     const getImagePerfil = usuario => {
       return usuario.foto_url == null
         ? `https://ui-avatars.com/api/?name=${usuario.nombres.substr(
-          0,
-          1
-        )}+${usuario.apellidos.substr(
-          0,
-          1
-        )}&bold=true&background=008000&color=ffff`
+            0,
+            1
+          )}+${usuario.apellidos.substr(
+            0,
+            1
+          )}&bold=true&background=008000&color=ffff`
         : usuario.foto_url
     }
 
@@ -423,6 +424,7 @@ export default defineComponent({
       }
     }
 
+    //ACCIONES DE BUSQUEDA DE MODULO
 
     return {
       logoClaro: computed(
@@ -466,7 +468,6 @@ export default defineComponent({
       width: computed(() => ($q.screen.xs ? '100%' : '450px')),
       selfCenterMiddle,
       showBanner,
-      search,
       maskFecha,
       formatearFecha,
       readMore,

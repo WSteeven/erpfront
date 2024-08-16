@@ -12,11 +12,11 @@ export class ListableFileRepository<T> {
     this.endpoint = endpoint
   }
 
-  async listarArchivos<C = T>(id: number, params?: Record<string, any>) {
+  async listarArchivos<C = T>(id: number, params?: any) {//Record<string, any>) {
     let ruta
     try {
       if (params) {
-        ruta = this.httpRepository.getEndpoint(this.endpoint) + '/files/' +id+'/'+ this.httpRepository.mapearArgumentos(params)
+        ruta = this.httpRepository.getEndpoint(this.endpoint) + '/files/' +id+'/'+ params //this.httpRepository.mapearArgumentos(params)
       } else {
         ruta = this.httpRepository.getEndpoint(this.endpoint) + '/files/'+id
       }

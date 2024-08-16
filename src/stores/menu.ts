@@ -322,6 +322,13 @@ export const useMenuStore = defineStore('menu', () => {
           can: store.can('puede.acceder.detalles')
         },
         {
+          title: 'Permisos de Armas',
+          link: 'permisos-armas',
+          icon: 'bi-app',
+          // can: store.esBodeguero,// can('puede.ver.detalles'),
+          can: store.can('puede.acceder.permisos_armas'),
+        },
+        {
           title: 'Inventario',
           link: 'inventarios',
           icon: 'bi-journal-check',
@@ -455,6 +462,28 @@ export const useMenuStore = defineStore('menu', () => {
           ]
         }
       ]
+    },
+    /*****************
+     * Activos fijos
+     *****************/
+    {
+      title: 'Activos fijos',
+      icon: 'home_work',
+      can: store.can('puede.acceder.modulo_activos_fijos'),
+      children: [
+        {
+          title: 'Control de Activos fijos',
+          link: 'control-activos-fijos',
+          can: store.can('puede.acceder.control_activos_fijos'),
+          icon: 'bi-app',
+        },
+        {
+          title: 'Seguimiento consumo AF',
+          link: 'seguimiento-consumo-activos-fijos',
+          can: store.can('puede.acceder.seguimiento_consumo_activos_fijos'),
+          icon: 'bi-app',
+        },
+      ],
     },
     // Modulo Fondos Rotativos
     {
@@ -786,6 +815,12 @@ export const useMenuStore = defineStore('menu', () => {
               link: 'rubro',
               icon: 'bi-box-fill',
               can: store.can('puede.acceder.rubro')
+            },
+            {
+              title: 'Tipos de licencias',
+              link: 'tipos-licencias',
+              icon: 'bi-box-fill',
+              can: store.can('puede.acceder.tipos_licencias')
             }
           ]
         }
@@ -797,7 +832,7 @@ export const useMenuStore = defineStore('menu', () => {
      *****************************************/
     {
       title: 'Intranet',
-      icon: 'fa-solid fa-explosion',
+      icon: 'fa-solid fa-info',
       can: store.esAdministrador || store.can('puede.ver.modulo_intranet'),
       module: true,
       children: [
@@ -839,7 +874,7 @@ export const useMenuStore = defineStore('menu', () => {
      *****************************************/
     {
       title: 'Vehículos',
-      icon: 'fa-solid fa-car-burst',
+      icon: 'fa-solid fa-car',
       can: store.esAdministrador || store.can('puede.ver.modulo_vehiculos'),
       module: true,
       children: [

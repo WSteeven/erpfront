@@ -235,7 +235,7 @@ export default defineComponent({
         listadosAuxiliares.sucursales = JSON.parse(LocalStorage.getItem('sucursales')!.toString()).filter((v) => v.cliente_id == value)
 
     }
-    
+
     async function subirArchivos() {
       await refArchivo.value.subir()
     }

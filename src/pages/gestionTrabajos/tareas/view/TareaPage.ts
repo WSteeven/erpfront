@@ -481,6 +481,8 @@ export default defineComponent({
       filtrarTarea,
       esCoordinadorBackup,
       esJefeTecnico: authenticationStore.esJefeTecnico,
+      esAdministrador: authenticationStore.esAdministrador,
+      esSupervisorTecnico: authenticationStore.esSupervisorTecnico,
       // Botones tareas
       btnFinalizarTarea,
       mostrarSolicitarImagen,

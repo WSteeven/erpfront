@@ -73,6 +73,9 @@ export const useFiltrosListadosSelects = (listadosAuxiliares, entidad?: Ref<any>
   const combustibles = ref(listadosAuxiliares.combustibles)
   const tiposVehiculos = ref(listadosAuxiliares.tipos_vehiculos)
 
+  // Activos fijos
+  const categoriasMotivosConsumoActivosFijos = ref(listadosAuxiliares.categoriasMotivosConsumoActivosFijos)
+  const motivosConsumoActivosFijos = ref(listadosAuxiliares.motivosConsumoActivosFijos)
 
   //////////////////////////////////////////
   //modulo seleccion y contratacion
@@ -497,10 +500,14 @@ export const useFiltrosListadosSelects = (listadosAuxiliares, entidad?: Ref<any>
   // const filtrarTiposAptitudesMedicasLaborales = (val, update) => filtrarLista(val, update, tiposAptitudesMedicasLaborales, 'nombre', listadosAuxiliares.tiposAptitudesMedicasLaborales)
 
   /****************
-   * Modulo seleccion y contratacion de personal 
+   * Modulo seleccion y contratacion de personal
    ****************/
   const filtrarAreasConocimiento = (val, update) => filtrarLista(val, update, areasConocimiento, 'nombre', listadosAuxiliares.areasConocimiento)
-
+  /****************
+   * Activos fijos
+   ****************/
+  const filtrarCategoriasMotivosConsumoActivosFijos = (val, update) => filtrarLista(val, update, categoriasMotivosConsumoActivosFijos, 'nombre', listadosAuxiliares.categoriasMotivosConsumoActivosFijos)
+  const filtrarMotivosConsumoActivosFijos = (val, update) => filtrarLista(val, update, motivosConsumoActivosFijos, 'nombre', listadosAuxiliares.motivosConsumoActivosFijos)
 
   /***************************************
    * Filtro global optimizado
@@ -572,5 +579,8 @@ export const useFiltrosListadosSelects = (listadosAuxiliares, entidad?: Ref<any>
 
     //modulo seleccion y contratacion de personal
     areasConocimiento, filtrarAreasConocimiento,
+    // Modulo activos fijos
+    categoriasMotivosConsumoActivosFijos, filtrarCategoriasMotivosConsumoActivosFijos,
+    motivosConsumoActivosFijos, filtrarMotivosConsumoActivosFijos,
   }
 }

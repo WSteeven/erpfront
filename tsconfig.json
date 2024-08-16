@@ -39,8 +39,10 @@
       "motivosCanceladosTickets/*": ["gestionTickets/motivosCanceladosTickets"],
       // Modulo medico
       "medico/*": ["src/pages/medico/*"],
-      "seleccionContratacion/*": ["src/pages/recursosHumanos/SeleccionContratacionPersonal/*"]
+      "seleccionContratacion/*": ["src/pages/recursosHumanos/SeleccionContratacionPersonal/*"],
 
+      "activosFijos/*": ["src/pages/activosFijos/*"],
+      "controlActivosFijos/*": ["src/pages/activosFijos/controlActivosFijos/*"]
     }
   }
 }

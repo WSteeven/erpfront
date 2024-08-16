@@ -7,46 +7,6 @@
     @guardar="guardarFila"
     :modalMaximized="modalMaximized"
   ></EditarTablaModal>
-  <!-- {{ pagination }} -->
-  <!-- :hide-header="grid" -->
-  <!-- :rows="listado" -->
-  <!-- {{ rows }} -->
-  <!-- :columns="configuracionColumnas" -->
-  <!-- <q-table
-    ref="refTable"
-    :grid="grid && $q.screen.xs"
-    :columns="columns"
-    :rows="rows"
-    :filter="filter"
-    @filter="handleFilter()"
-    row-key="id"
-    :visible-columns="visibleColumns"
-    :separator="$q.screen.xs ? 'horizontal' : separador"
-    :hide-bottom="!mostrarFooter"
-    flat
-    bordered
-    square
-    :selection="tipoSeleccion"
-    v-model:selected="selected"
-    :style="estilos"
-    class="bg-body-table my-sticky-column-table my-sticky-header-column-table borde rounded"
-    :class="{
-      'alto-fijo-desktop': !inFullscreen && altoFijo && !$q.screen.xs,
-      'alto-fijo-mobile': !inFullscreen && altoFijo && $q.screen.xs,
-      'my-sticky-dynamic2': !inFullscreen && altoFijo,
-      'bg-body-table-dark-color': $q.screen.xs && $q.dark.isActive,
-      'my-sticky-column-table-dark': $q.dark.isActive,
-      'my-sticky-column-table-light': !$q.dark.isActive,
-      'my-sticky-column-first-table': primeraColumnaFija,
-      'rounded-header': $q.screen.xs,
-      'bg-header-table': mostrarFiltros,
-    }"
-    :pagination="pagination"
-    no-data-label="Aún no se han agregado elementos"
-    :wrap-cells="ajustarCeldas"
-    @request="onRequest"
-    binary-state-sort
-  > -->
 
   <q-table
     flat
@@ -80,7 +40,7 @@
       'my-sticky-column-table-light': !$q.dark.isActive,
       'my-sticky-column-first-table': primeraColumnaFija,
       'rounded-header': $q.screen.xs,
-      'bg-header-table': mostrarFiltros,
+      'bg-header-table': mostrarFiltros
     }"
     @request="toSearch"
   >
@@ -118,7 +78,7 @@
         :props="props"
         :class="{
           'text-bold': props.col.editable,
-          'bg-body': $q.dark.isActive,
+          'bg-body': $q.dark.isActive
         }"
       >
         <!-- <q-popup-edit
@@ -150,8 +110,8 @@
           v-if="props.col.type === 'select'"
           v-model="props.row[props.col.name]"
           :options="props.col.options"
-          :options-label="(v) => v.label"
-          :options-value="(v) => v.value"
+          :options-label="v => v.label"
+          :options-value="v => v.value"
           options-dense
           outlined
           dense
@@ -164,8 +124,8 @@
           v-if="props.col.type === 'select_multiple'"
           v-model="props.row[props.col.name]"
           :options="props.col.options"
-          :options-label="(v) => v.label"
-          :options-value="(v) => v.value"
+          :options-label="v => v.label"
+          :options-value="v => v.value"
           use-chips
           multiple
           options-dense
@@ -204,7 +164,7 @@
           v-if="!['select', 'boolean'].includes(props.col.type)"
           :class="{
             'text-white': $q.dark.isActive,
-            'text-dark': !$q.dark.isActive,
+            'text-dark': !$q.dark.isActive
           }"
           >{{ props.row[props.col.name] }}</span
         >
@@ -232,7 +192,7 @@
           :class="{
             'titulo-tabla2': !$q.screen.xs,
             'justify-center': $q.screen.xs,
-            'bg-grey-9': $q.dark.isActive,
+            'bg-grey-9': $q.dark.isActive
           }"
         >
           <span>
@@ -811,6 +771,16 @@
                   ></q-icon>
                 </span>
 
+                <span v-if="col.name === 'se_reporto_sicosep'">
+                  <q-icon
+                    :name="
+                      col.value ? 'bi-check-circle-fill' : 'bi-x-circle-fill'
+                    "
+                    :color="col.value ? 'positive' : 'negative'"
+                    size="sm"
+                  ></q-icon>
+                </span>
+
                 <div :class="{ 'q-mb-xs': $q.screen.xs }">
                   <estados-subtareas
                     v-if="col.name === 'estado'"
@@ -955,6 +925,7 @@
                       'observacion',
                       'dado_alta',
                       'es_dosis_unica',
+                      'se_reporto_sicosep'
                     ].includes(col.name)
                   "
                   >{{ col.value }}</span
@@ -989,7 +960,7 @@
         :props="props"
         :class="{
           'bg-lime-2': !$q.dark.isActive,
-          'bg-green-10': $q.dark.isActive,
+          'bg-green-10': $q.dark.isActive
         }"
       >
         <q-badge color="positive">
@@ -1004,7 +975,7 @@
         class="text-bold"
         :class="{
           'bg-grey-2': !$q.dark.isActive,
-          'bg-grey-10': $q.dark.isActive,
+          'bg-grey-10': $q.dark.isActive
         }"
       >
         <!-- <q-badge color="blue-grey-6"> -->
@@ -1018,7 +989,7 @@
         :props="props"
         :class="{
           'bg-indigo-1': !$q.dark.isActive,
-          'bg-indigo-10': $q.dark.isActive,
+          'bg-indigo-10': $q.dark.isActive
         }"
       >
         <q-badge color="indigo">
@@ -1032,7 +1003,7 @@
         :props="props"
         :class="{
           'bg-lime-2': !$q.dark.isActive,
-          'bg-green-10': $q.dark.isActive,
+          'bg-green-10': $q.dark.isActive
         }"
       >
         <q-badge color="positive">
@@ -1110,6 +1081,7 @@
         ></q-icon>
       </q-td>
     </template>
+
     <template #body-cell-tiene_factura="props">
       <q-td :props="props">
         <q-chip v-if="props.value" class="bg-yellow-1">
@@ -1194,6 +1166,25 @@
             class="q-mr-xs"
           ></q-icon
           >Ocupado
+        </q-chip>
+      </q-td>
+    </template>
+
+    <template #body-cell-se_reporto_sicosep="props">
+      <q-td :props="props" class="">
+        <q-chip v-if="props.value" class="bg-green-1">
+          <q-icon
+            name="bi-check-circle-fill"
+            color="positive"
+            class="q-mr-xs"
+          ></q-icon>
+        </q-chip>
+        <q-chip v-else class="bg-pink-1">
+          <q-icon
+            name="bi-x-circle-fill"
+            color="negative"
+            class="q-mr-xs"
+          ></q-icon>
         </q-chip>
       </q-td>
     </template>
@@ -1584,6 +1575,7 @@
           ></q-icon
           >SIN STOCK
         </q-chip>
+
         <q-chip
           v-if="props.value === estadosInventarios.transito"
           class="bg-yellow-1"
@@ -1591,6 +1583,7 @@
           <q-icon name="bi-circle-fill" color="warning" class="q-mr-xs"></q-icon
           >TRANSITO
         </q-chip>
+
         <q-chip
           v-if="props.value === estadosInventarios.inventario"
           class="bg-green-1"
@@ -1602,6 +1595,7 @@
           ></q-icon
           >INVENTARIO
         </q-chip>
+
         <!-- Estados de la tabla control de stock -->
         <q-chip
           v-if="props.value === estadosControlStock.minimo"
@@ -1659,6 +1653,18 @@
           >{{ 'RUTA COMPLETADA' }}
         </q-chip>
 
+        <q-chip
+          v-if="props.value === 'RUTA COMPLETADA'"
+          class="bg-green-1 text-positive"
+        >
+          <q-icon
+            name="bi-check-circle-fill"
+            color="positive"
+            class="q-mr-xs"
+          ></q-icon
+          >{{ 'RUTA COMPLETADA' }}
+        </q-chip>
+
         <estados-subtareas :propsTable="props" />
 
         <!-- estados de la tabla prestamos temporales -->
@@ -1672,6 +1678,7 @@
         </q-chip>
       </q-td>
     </template>
+
     <template #body-cell-descontable="props">
       <q-td :props="props">
         <campo-descontable :propsTable="props" />
@@ -1752,7 +1759,7 @@
               'TICKET REASIGNADO',
               'TICKET PAUSADO',
               'TICKET EJECUTADO',
-              'TICKET FINALIZADO',
+              'TICKET FINALIZADO'
             ].includes(props.value)
           "
           >{{ props.value }}</span

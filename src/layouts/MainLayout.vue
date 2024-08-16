@@ -2,51 +2,119 @@
   <q-layout view="lHh Lpr lFf">
     <!-- Navbar -->
     <q-header class="bg-desenfoque">
-      <q-toolbar class="row justify-between q-py-sm border-bottom">
-        <q-btn
-          v-if="route.name !== 'intranet'"
-          dense
-          aria-label="Menu"
-          @click="toggleLeftDrawer"
-          class="custom-shadow bg-primary"
-          unelevated
-        >
-          <svg
-            width="24"
-            height="24"
-            viewBox="0 0 24 24"
-            fill="none"
-            xmlns="http://www.w3.org/2000/svg"
+      <transition name="slide-fade" mode="out-in">
+        <div v-if="mostrarBuscar" class="q-pa-xs">
+          <q-input
+            v-model="buscarModulo"
+            placeholder="BUSCAR MÓDULO..."
+            @update:model-value="filtrarMenu"
+            bg-color="grey-1"
+            input-class="text-black"
+            @keyup.esc="resetearBuscador()"
+            autofocus
+            dense
+            input-style="width: 250px;"
+            outlined
+            clearable
           >
-            <path
-              fill-rule="evenodd"
-              clip-rule="evenodd"
-              d="m 4.9152545,6.3008475 c 0,-0.607508 0.44772,-1.1 1,-1.1 H 17.915255 c 0.5523,0 1,0.492492 1,1.1 0,0.607508 -0.4477,1.1 -1,1.1 H 5.9152545 c -0.55228,0 -1,-0.492492 -1,-1.1 z"
-              fill="#575b6e"
-              id="path2"
-              style="fill: #fff; stroke-width: 1.04881"
-            />
-            <path
-              fill-rule="evenodd"
-              clip-rule="evenodd"
-              d="m 1.7118644,12.182204 c 0,-0.607508 0.6526088,-1.1 1.457627,-1.1 H 20.661018 c 0.805046,0 1.457627,0.492492 1.457627,1.1 0,0.60753 -0.652581,1.1 -1.457627,1.1 H 3.1694914 c -0.8050182,0 -1.457627,-0.49247 -1.457627,-1.1 z"
-              fill="#575b6e"
-              id="path4"
-              style="fill: #fff; stroke-width: 1.26625"
-            />
-            <path
-              id="path6"
-              style="fill: #fff; stroke-width: 1.04881"
-              d="M 8.9160156 16.658203 C 8.3637368 16.658203 7.9160156 17.150284 7.9160156 17.757812 C 7.9160156 18.365342 8.3637368 18.859375 8.9160156 18.859375 L 14.916016 18.859375 C 15.468314 18.859375 15.916016 18.365342 15.916016 17.757812 C 15.916016 17.150284 15.468314 16.658203 14.916016 16.658203 L 8.9160156 16.658203 z "
-            />
-          </svg>
-        </q-btn>
-        <img
-          v-if="route.name === 'intranet'"
-          :src="!$q.dark.isActive ? logoClaro : logoOscuro"
-          height="30"
-          class="custom-shadow"
-        />
+            <template #prepend>
+              <q-icon name="search" size="xs"></q-icon>
+            </template>
+          </q-input>
+        </div>
+      </transition>
+
+      <transition name="scale" mode="out-in">
+        <div v-if="buscarModulo" class="row justify-center">
+          <q-list
+            dense
+            bordered
+            class="lista-busqueda bg-solid custom-shadow text-color"
+            style="width: 90%; margin: 0 auto"
+          >
+            <div v-for="(link, index) in resultadosBusqueda" :key="index">
+              <q-item
+                clickable
+                v-if="link.link"
+                :to="link.link"
+                @click="resetearBuscador()"
+              >
+                <q-item-section avatar>
+                  <q-icon :name="link.icon" />
+                </q-item-section>
+                <q-item-section>
+                  <q-item-label>{{ link.title }}</q-item-label>
+                  <q-item-label caption v-if="link.parentTitle">{{
+                    link.parentTitle
+                  }}</q-item-label>
+                </q-item-section>
+              </q-item>
+            </div>
+          </q-list>
+        </div>
+      </transition>
+
+      <q-toolbar class="row justify-between q-py-sm border-bottom">
+        <span class="row q-gutter-x-sm">
+          <q-btn
+            v-if="route.name !== 'intranet'"
+            dense
+            aria-label="Menu"
+            @click="toggleLeftDrawer"
+            class="custom-shadow bg-primary"
+            unelevated
+          >
+            <svg
+              width="24"
+              height="24"
+              viewBox="0 0 24 24"
+              fill="none"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <path
+                fill-rule="evenodd"
+                clip-rule="evenodd"
+                d="m 4.9152545,6.3008475 c 0,-0.607508 0.44772,-1.1 1,-1.1 H 17.915255 c 0.5523,0 1,0.492492 1,1.1 0,0.607508 -0.4477,1.1 -1,1.1 H 5.9152545 c -0.55228,0 -1,-0.492492 -1,-1.1 z"
+                fill="#575b6e"
+                id="path2"
+                style="fill: #fff; stroke-width: 1.04881"
+              />
+              <path
+                fill-rule="evenodd"
+                clip-rule="evenodd"
+                d="m 1.7118644,12.182204 c 0,-0.607508 0.6526088,-1.1 1.457627,-1.1 H 20.661018 c 0.805046,0 1.457627,0.492492 1.457627,1.1 0,0.60753 -0.652581,1.1 -1.457627,1.1 H 3.1694914 c -0.8050182,0 -1.457627,-0.49247 -1.457627,-1.1 z"
+                fill="#575b6e"
+                id="path4"
+                style="fill: #fff; stroke-width: 1.26625"
+              />
+              <path
+                id="path6"
+                style="fill: #fff; stroke-width: 1.04881"
+                d="M 8.9160156 16.658203 C 8.3637368 16.658203 7.9160156 17.150284 7.9160156 17.757812 C 7.9160156 18.365342 8.3637368 18.859375 8.9160156 18.859375 L 14.916016 18.859375 C 15.468314 18.859375 15.916016 18.365342 15.916016 17.757812 C 15.916016 17.150284 15.468314 16.658203 14.916016 16.658203 L 8.9160156 16.658203 z "
+              />
+            </svg>
+          </q-btn>
+
+          <img
+            v-if="route.name === 'intranet'"
+            :src="!$q.dark.isActive ? logoClaro : logoOscuro"
+            height="30"
+            class="custom-shadow"
+          />
+
+          <!-- Barra de Busqueda -->
+          <div class="row q-col-gutter-x-xs">
+            <q-btn @click="mostrarBuscar = !mostrarBuscar" unelevated no-caps>
+              <q-icon
+                name="bi-search"
+                size="xs"
+                class="bg-icon color-icon-navbar q-pa-xs rounded-field q-mr-xs"
+              ></q-icon>
+              <span v-if="!$q.screen.xs" class="text-color">Buscar</span>
+            </q-btn>
+          </div>
+        </span>
+
         <span
           class="row"
           :class="{
@@ -54,13 +122,6 @@
             'q-gutter-x-md': !$q.screen.xs
           }"
         >
-          <!-- <span
-            class="row"
-            :class="{
-              'q-gutter-x-xs': $q.screen.xs,
-              'q-gutter-x-sm': !$q.screen.xs,
-            }"
-          > -->
           <!-- Boton transferir tareas -->
           <q-btn
             v-if="mostrarTransferirTareas"
@@ -469,7 +530,7 @@
 
     <ScrollToTopButton></ScrollToTopButton>
 
-    <q-page-container :class="{ 'bg-body': true }" >
+    <q-page-container :class="{ 'bg-body': true }">
       <router-view v-slot="{ Component }">
         <transition name="scale" mode="out-in">
           <essential-loading></essential-loading>
@@ -480,7 +541,7 @@
         <!-- Aplica keep-alive aquí -->
         <keep-alive
           :exclude="[
-            'intranet',
+            'intranet_page',
             'transacciones_ingresos',
             'Egresos',
             'OrdenCompraPage',
@@ -500,4 +561,13 @@
     </q-page-container>
   </q-layout>
 </template>
+
 <script src="./MainLayout.ts"></script>
+
+<style lang="scss" scoped>
+.lista-busqueda {
+  position: fixed;
+  top: 50px;
+  z-index: 10;
+}
+</style>
