@@ -7,6 +7,7 @@ import { required, requiredIf } from 'shared/i18n-validators';
 import BasicContainer from 'shared/contenedor/modules/basic/view/BasicContainer.vue';
 import SimpleLayout from 'shared/contenedor/modules/simple/view/SimpleLayout.vue';
 import GestorArchivos from 'components/gestorArchivos/GestorArchivos.vue';
+import OptionGroupComponent from 'components/optionGroup/view/OptionGroupComponent.vue';
 
 // Logica y controladores
 import { onBeforeRouteUpdate, useRouter } from 'vue-router';
@@ -21,12 +22,12 @@ import { PaisController } from '../../../../sistema/pais/infraestructure/PaisCon
 import { useFiltrosListadosSelects } from 'shared/filtrosListadosGenerales';
 import { IdentidadGeneroController } from 'pages/medico/gestionarPacientes/modules/fichaPeriodicaPreocupacional/infraestructure/IdentidadGeneroController';
 import { useVacanteStore } from 'stores/recursosHumanos/seleccionContratacion/vacante';
-import { tiposLicencias } from 'config/vehiculos.utils';
+import { optionsDefault, tiposLicencias } from 'config/vehiculos.utils';
 import { checkValueIsNumber } from 'shared/utils';
 
 
 export default defineComponent({
-  components: { BasicContainer, SimpleLayout, GestorArchivos },
+  components: { BasicContainer, SimpleLayout, GestorArchivos , OptionGroupComponent},
   setup() {
     const mixin = new ContenedorSimpleMixin(Postulacion, new PostulacionController())
     const { entidad: postulacion, disabled, listadosAuxiliares, accion } = mixin.useReferencias()
@@ -170,7 +171,7 @@ export default defineComponent({
       vacante: vacanteStore.vacante,
       refArchivo, idRegistro,
       truncateChips: ref(true),
-store,
+store, optionsDefault,
 
       //listados
       tiposDocumentosIdentificaciones,

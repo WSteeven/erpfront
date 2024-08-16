@@ -73,7 +73,7 @@ export default defineComponent({
         if (permission === 'granted') {
           // console.log('Permiso de notificación concedido.');
         } else {
-          console.log('Permiso de notificación denegado.')
+          // console.log('Permiso de notificación denegado.')
         }
       })
     }

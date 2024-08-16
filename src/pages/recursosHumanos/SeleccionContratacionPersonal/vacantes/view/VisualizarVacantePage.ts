@@ -72,6 +72,7 @@ export default defineComponent({
         })
         promptItems(config)
       } else {
+        console.log('else')
         // se continua con el proceso normal
         // se dirige a la pagina de cargar los datos y completar el proceso de postulacion
         // router.replace({ name: 'postulacion_vacante', params: { id } })

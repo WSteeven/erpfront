@@ -360,7 +360,7 @@
           </div>
         </div>
       </q-expansion-item>
-
+      {{ postulacion }}
       <q-expansion-item
         class="overflow-hidden q-mb-md rounded bg-desenfoque-2"
         label="Información adicional"
@@ -432,29 +432,34 @@
             siguientes requisitos:
           </div>
           <!-- Tengo Experiencia -->
-          <div class="col-12" v-if="vacante.anios_experiencia !== null">
+          <div class="row col-12" v-if="vacante.anios_experiencia !== null">
             <!-- <strong
               >Tengo mínimo {{ vacante.anios_experiencia?.toLowerCase() }} de
               experiencia
             </strong> -->
-            Tengo mínimo {{ vacante.anios_experiencia?.toLowerCase() }} de
-            experiencia en un cargo similar?
-            <q-checkbox
-              v-model="postulacion.tengo_experiencia_requerida"
-              :label="postulacion.tengo_experiencia_requerida ? 'SI' : 'NO'"
-              :disable="disabled"
-            />
+            <div class="col-md-6 col-xs-12">
+              Tengo mínimo {{ vacante.anios_experiencia?.toLowerCase() }} de
+              experiencia en un cargo similar?
+            </div>
+            <div class="col-md-6 col-xs-12">
+              <option-group-component
+                v-model="postulacion.tengo_experiencia_requerida"
+                :disable="disabled"
+              />
+            </div>
           </div>
           <!-- Tengo Disponibilidad de viajar -->
-          <div class="col-12" v-if="vacante.disponibilidad_viajar">
-            <!-- <strong>Tengo disponibilidad de viajar </strong> -->
-            Tengo disponibilidad de viajar fuera de la provincia cuando sea
-            requerido?
-            <q-checkbox
-              v-model="postulacion.tengo_disponibilidad_viajar"
-              :label="postulacion.tengo_disponibilidad_viajar ? 'SI' : 'NO'"
-              :disable="disabled"
-            />
+          <div class="row col-12" v-if="vacante.disponibilidad_viajar">
+            <div class="col-md-6 col-xs-12">
+              Tengo disponibilidad de viajar fuera de la provincia cuando sea
+              requerido?
+            </div>
+            <div class="col-md-6 col-xs-12">
+              <option-group-component
+                v-model="postulacion.tengo_disponibilidad_viajar"
+                :disable="disabled"
+              />
+            </div>
           </div>
           <!-- Tengo Licencia de conducir -->
           <div
@@ -464,11 +469,9 @@
             <div class="col col-md-6 col-xs-12">
               <!-- <strong>Poseo licencia de conducir vigente?:</strong> -->
               Poseo licencia de conducir vigente?
-              <q-checkbox
+              <option-group-component
                 v-model="postulacion.tengo_licencia_conducir"
-                :label="postulacion.tengo_licencia_conducir ? 'SI' : 'NO'"
                 :disable="disabled"
-                @update:model-value="checkPoseoLicencia"
               />
             </div>
             <!--Tipo de Licencia -->
@@ -550,11 +553,8 @@
             <div class="col-md-6 col-xs-12">
               <!-- <strong>Tengo los conocimientos requeridos?</strong> -->
               Tengo los conocimientos requeridos?
-              <q-checkbox
+              <option-group-component
                 v-model="postulacion.tengo_conocimientos_requeridos"
-                :label="
-                  postulacion.tengo_conocimientos_requeridos ? 'SI' : 'NO'
-                "
                 :disable="disabled"
               />
             </div>
@@ -593,11 +593,8 @@
             <div class="col-md-6 col-sm-12 col-xs-12">
               <!-- <strong>Tengo la formación académica requerida?</strong> -->
               Tengo la formación académica requerida?
-              <q-checkbox
+              <option-group-component
                 v-model="postulacion.tengo_formacion_academica_requerida"
-                :label="
-                  postulacion.tengo_formacion_academica_requerida ? 'SI' : 'NO'
-                "
                 :disable="disabled"
               />
             </div>

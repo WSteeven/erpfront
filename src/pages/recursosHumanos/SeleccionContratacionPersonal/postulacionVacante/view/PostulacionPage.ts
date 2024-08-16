@@ -25,10 +25,11 @@ import { useVacanteStore } from 'stores/recursosHumanos/seleccionContratacion/va
 import { tiposLicencias } from 'config/vehiculos.utils';
 import { configuracionColumnasPostulaciones } from '../domain/configuracionColumnasPostulaciones';
 import { CustomActionTable } from 'components/tables/domain/CustomActionTable';
+import OptionGroupComponent from 'components/optionGroup/view/OptionGroupComponent.vue';
 
 
 export default defineComponent({
-  components: { TabLayout, BasicContainer, SimpleLayout, GestorArchivos },
+  components: { TabLayout, BasicContainer, SimpleLayout, GestorArchivos, OptionGroupComponent },
   setup() {
     const mixin = new ContenedorSimpleMixin(Postulacion, new PostulacionController())
     const { entidad: postulacion, disabled, listadosAuxiliares, accion } = mixin.useReferencias()
@@ -58,9 +59,15 @@ export default defineComponent({
       }, 300)
     })
     onConsultado(async () => {
+      console.log(postulacion.tengo_conocimientos_requeridos)
       setTimeout(() => {
         refArchivo.value?.listarArchivosAlmacenados(postulacion.id)
       }, 300)
+
+      if (postulacion.vacante) {
+        vacanteStore.idVacante = postulacion.vacante
+        vacanteStore.showPreview()
+      }
     })
     onBeforeModificar(() => {
       idRegistro.value = postulacion.id

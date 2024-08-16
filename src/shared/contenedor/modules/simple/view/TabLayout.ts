@@ -167,7 +167,7 @@ export default defineComponent({
       }]
     }
 
-    console.log(props.mostrarListado)
+    // console.log(props.mostrarListado)
     if (props.mostrarListado) {
       if(props.paginate) {
         listar({paginate:1})

@@ -13,6 +13,80 @@
     <template #formulario>
       <q-form @submit.prevent>
         <div class="row q-col-gutter-sm q-py-md">
+          <!-- Grupo de botones -->
+          <div
+            class="col-12 col-md-12 q-py-md"
+            v-if="accion == acciones.consultar"
+          >
+            <div class="text-center">
+              <q-btn-group push>
+                <!-- Boton Banco de postulantes -->
+                <q-btn
+                  :color="btnBancoPostulantes.color"
+                  class="full-width"
+                  no-caps
+                  no-wrap
+                  push
+                  glossy
+                  @click="btnBancoPostulantes.accion"
+                >
+                  <q-icon
+                    :name="btnBancoPostulantes.icono"
+                    size="xs"
+                    class="q-pr-sm"
+                  ></q-icon>
+                  <span>{{ btnBancoPostulantes.titulo }}</span>
+                </q-btn>
+                <!-- Boton Entrevistar -->
+                <q-btn
+                  :color="btnEntrevistar.color"
+                  class="full-width"
+                  no-caps
+                  no-wrap
+                  push
+                  glossy
+                  @click="btnEntrevistar.accion"
+                >
+                  <q-icon
+                    :name="btnEntrevistar.icono"
+                    size="xs"
+                    class="q-mr-sm"
+                  ></q-icon
+                  ><span>{{btnEntrevistar.titulo}}</span></q-btn
+                >
+                <!-- Boton consultar -->
+                <q-btn
+                  :color="btnCalificar.color"
+                  class="full-width"
+                  no-caps
+                  no-wrap
+                  push
+                  glossy
+                  @click="btnCalificar.accion"
+                >
+                  <q-icon :name="btnCalificar.icono" size="xs" class="q-pr-sm"></q-icon>
+                  <span>{{btnCalificar.titulo}}</span>
+                </q-btn>
+                <!-- Boton Imprimir -->
+                <q-btn
+                  :color="btnImprimir.color"
+                  class="full-width"
+                  no-caps
+                  no-wrap
+                  push
+                  glossy
+                  @click="btnImprimir.accion"
+                >
+                  <q-icon
+                    :name="btnImprimir.icono"
+                    size="xs"
+                    class="q-mr-sm"
+                  ></q-icon>
+                  <span>{{btnImprimir.titulo}}</span>
+                </q-btn>
+              </q-btn-group>
+            </div>
+          </div>
           <q-expansion-item
             class="overflow-hidden q-mb-md rounded bg-desenfoque-2"
             label="Datos personales"
@@ -58,6 +132,7 @@
                   transition-hide="jump-down"
                   options-dense
                   dense
+                  :disable="disabled"
                   outlined
                   :input-debounce="0"
                   use-input
@@ -104,7 +179,7 @@
               <div class="col-md-3 col-sm-6 col-xs-12">
                 <label class="q-mb-sm block">Correo Personal</label>
                 <q-input
-                autogrow
+                  autogrow
                   type="email"
                   v-model="postulacion.correo_personal"
                   placeholder="Obligatorio"
@@ -148,7 +223,6 @@
                 </q-input>
               </div>
 
-              <!-- {{ postulacion }} -->
               <!-- Genero -->
               <div class="col-12 col-md-3 col-sm-3">
                 <label class="q-mb-sm block">Sexo asignado al nacer</label>
@@ -177,6 +251,7 @@
                   options-dense
                   dense
                   outlined
+                  :disable="disabled"
                   :input-debounce="0"
                   use-input
                   :error="!!v$.identidad_genero.$errors.length"
@@ -218,6 +293,7 @@
                   use-input
                   :input-debounce="0"
                   @filter="filtrarPaises"
+                  :disable="disabled"
                   :error="!!v$.pais.$errors.length"
                   :option-value="v => v.id"
                   :option-label="v => v.pais + ' (' + v.abreviatura + ')'"
@@ -254,6 +330,7 @@
                   use-input
                   :input-debounce="0"
                   @filter="filtrarPaises"
+                  :disable="disabled"
                   :error="!!v$.pais_residencia.$errors.length"
                   :option-value="v => v.id"
                   :option-label="v => v.pais + ' (' + v.abreviatura + ')'"
@@ -345,7 +422,7 @@
               </div>
 
               <!-- Dirección  -->
-              <div class="col-md-4 col-sm-12 col-xs-12">
+              <div class="col-md-12 col-sm-12 col-xs-12">
                 <label class="q-mb-sm block">Dirección </label>
                 <q-input
                   v-model="postulacion.direccion"
@@ -385,7 +462,6 @@
                   label="Adjuntar Currículum Vitae u Hoja de Vida"
                   :mixin="mixin"
                   :disable="disabled"
-                  :quieroSubirArchivos="accion == acciones.nuevo"
                   formato=".pdf"
                   :maxFiles="1"
                   :listarAlGuardar="false"
@@ -416,8 +492,10 @@
 
               <div class="col-12">
                 <label class="q-mb-sm block"
-                  >Comentanos brevemente tu experiencia en el rol al que estas
-                  postulando
+                  >Comentanos brevemente tu experiencia en el rol (<strong>{{
+                    vacante.nombre
+                  }}</strong
+                  >) al que estas postulando
                 </label>
                 <q-input
                   type="textarea"
@@ -432,7 +510,6 @@
                 >
                   <template v-slot:error>
                     <div
-                      style="clear: inherit"
                       v-for="error of v$.mi_experiencia.$errors"
                       :key="error.$uid"
                     >
@@ -446,43 +523,47 @@
                 siguientes requisitos:
               </div>
               <!-- Tengo Experiencia -->
-              <div class="col-12" v-if="vacante.anios_experiencia !== null">
-                <!-- <strong
-              >Tengo mínimo {{ vacante.anios_experiencia?.toLowerCase() }} de
-              experiencia
-            </strong> -->
-                Tengo mínimo {{ vacante.anios_experiencia?.toLowerCase() }} de
-                experiencia en un cargo similar?
-                <q-checkbox
-                  v-model="postulacion.tengo_experiencia_requerida"
-                  :label="postulacion.tengo_experiencia_requerida ? 'SI' : 'NO'"
-                  :disable="disabled"
-                />
+              <div
+                class="row col-12"
+                v-if="vacante.anios_experiencia !== null || true"
+              >
+                <div class="col-md-6 col-xs-12">
+                  Tengo mínimo {{ vacante.anios_experiencia?.toLowerCase() }} de
+                  experiencia en un cargo similar?
+                </div>
+                <div class="col-md-6 col-xs-12">
+                  <option-group-component
+                    v-model="postulacion.tengo_experiencia_requerida"
+                    :disable="disabled"
+                  />
+                </div>
               </div>
               <!-- Tengo Disponibilidad de viajar -->
-              <div class="col-12" v-if="vacante.disponibilidad_viajar">
-                <!-- <strong>Tengo disponibilidad de viajar </strong> -->
-                Tengo disponibilidad de viajar fuera de la provincia cuando sea
-                requerido?
-                <q-checkbox
-                  v-model="postulacion.tengo_disponibilidad_viajar"
-                  :label="postulacion.tengo_disponibilidad_viajar ? 'SI' : 'NO'"
-                  :disable="disabled"
-                />
+              <div
+                class="row col-12"
+                v-if="vacante.disponibilidad_viajar || true"
+              >
+                <div class="col-md-6 col-xs-12">
+                  Tengo disponibilidad de viajar fuera de la provincia cuando
+                  sea requerido?
+                </div>
+                <div class="col-md-6 col-xs-12">
+                  <option-group-component
+                    v-model="postulacion.tengo_disponibilidad_viajar"
+                    :disable="disabled"
+                  />
+                </div>
               </div>
               <!-- Tengo Licencia de conducir -->
               <div
                 class="row col-12 q-col-gutter-sm q-pa-xs q-my-xs border-grey rounded-4"
-                v-if="vacante.requiere_licencia"
+                v-if="vacante.requiere_licencia || true"
               >
                 <div class="col col-md-6 col-xs-12">
-                  <!-- <strong>Poseo licencia de conducir vigente?:</strong> -->
                   Poseo licencia de conducir vigente?
-                  <q-checkbox
+                  <option-group-component
                     v-model="postulacion.tengo_licencia_conducir"
-                    :label="postulacion.tengo_licencia_conducir ? 'SI' : 'NO'"
                     :disable="disabled"
-                    @update:model-value="checkPoseoLicencia"
                   />
                 </div>
                 <!--Tipo de Licencia -->
@@ -562,20 +643,16 @@
                   </q-chip>
                 </div>
                 <div class="col-md-6 col-xs-12">
-                  <!-- <strong>Tengo los conocimientos requeridos?</strong> -->
                   Tengo los conocimientos requeridos?
-                  <q-checkbox
+                  <option-group-component
                     v-model="postulacion.tengo_conocimientos_requeridos"
-                    :label="
-                      postulacion.tengo_conocimientos_requeridos ? 'SI' : 'NO'
-                    "
                     :disable="disabled"
                   />
                 </div>
               </div>
               <div
                 class="row col-12 q-col-gutter-sm q-pa-xs q-my-xs border-grey rounded-4"
-                v-if="vacante.requiere_formacion_academica"
+                v-if="vacante.requiere_formacion_academica || true"
               >
                 <div class="col-md-6 col-sm-12 col-xs-12">
                   El cargo require tener cierta formación académica:
@@ -606,15 +683,9 @@
                   </div>
                 </div>
                 <div class="col-md-6 col-sm-12 col-xs-12">
-                  <!-- <strong>Tengo la formación académica requerida?</strong> -->
                   Tengo la formación académica requerida?
-                  <q-checkbox
+                  <option-group-component
                     v-model="postulacion.tengo_formacion_academica_requerida"
-                    :label="
-                      postulacion.tengo_formacion_academica_requerida
-                        ? 'SI'
-                        : 'NO'
-                    "
                     :disable="disabled"
                   />
                 </div>
