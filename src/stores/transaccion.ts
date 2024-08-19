@@ -54,6 +54,12 @@ export const useTransaccionStore = defineStore('transaccion', () => {
         imprimirArchivo(url, 'GET', 'blob', 'pdf', filename)
         console.log('Egreso impreso con éxito.')
     }
+    async function imprimirActaEntregaRecepcion() {
+        const axios = AxiosHttpRepository.getInstance()
+        const url = apiConfig.URL_BASE + '/' + axios.getEndpoint(endpoints.transacciones_egresos) + '/imprimir-entrega-recepcion/' + idTransaccion.value
+        const filename = 'acta_entrega_recepcion_' + idTransaccion.value + '_' + Date.now()
+        imprimirArchivo(url, 'GET', 'blob', 'pdf', filename)
+    }
     async function showPreview() {
         statusLoading.activar()
         const axios = AxiosHttpRepository.getInstance()
@@ -168,7 +174,6 @@ export const useTransaccionStore = defineStore('transaccion', () => {
         firmarComprobante,
         anularIngreso,
         anularEgreso,
-
-
+        imprimirActaEntregaRecepcion,
     }
 })

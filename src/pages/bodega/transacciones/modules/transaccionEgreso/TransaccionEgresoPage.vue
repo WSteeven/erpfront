@@ -6,7 +6,8 @@
     :permitirEditar="false"
     :accion1="botonEditarEgreso"
     :accion2="botonImprimir"
-    :accion3="botonAnular"
+    :accion3="botonImprimirActaEntregaRecepcion"
+    :accion4="botonAnular"
     :tab-options="tabOptionsTransaccionesEgresos"
     :ajustarCeldas="true"
     :tabDefecto="tabDefecto"
@@ -628,25 +629,25 @@
             </q-select>
           </div>
 
-          <!-- Justificacion -->
-          <div class="col-12 col-md-3">
+          <!-- Codigo permiso -->
+          <div v-if="transaccion.se_traslada_arma && existeItemArmaFuego" class="col-12 col-md-3">
             <label class="q-mb-sm block">Código permiso SINCOAR</label>
             <q-input
               type="textarea"
               autogrow
-              v-model="transaccion.justificacion"
+              v-model="transaccion.codigo_permiso_traslado"
               placeholder="Obligatorio"
               hint="*Requerido para traslados de armamento"
               :disable="disabled || soloLectura"
               :readonly="disabled || soloLectura"
-              :error="!!v$.justificacion.$errors.length"
+              :error="!!v$.codigo_permiso_traslado.$errors.length"
               lazy-rules
               outlined
               dense
             >
               <template v-slot:error>
                 <div
-                  v-for="error of v$.justificacion.$errors"
+                  v-for="error of v$.codigo_permiso_traslado.$errors"
                   :key="error.$uid"
                 >
                   <div class="error-msg">{{ error.$message }}</div>
@@ -675,6 +676,25 @@
               </template>
             </q-input>
           </div>
+
+          <div
+            v-if="existeItemArmaFuego"
+            class="col-12 bg-amber-2 border-warning q-pb-sm q-my-md"
+          >
+          <div class="q-mb-md">
+            <q-icon name="bi-exclamation-circle-fill" color="amber"></q-icon>
+              Tiene armas de fuego en el listado de productos seleccionados.
+            </div>
+            
+
+            <q-checkbox
+              v-model="transaccion.se_traslada_arma"
+              label="¿Se van a trasladar el/las arma(s)?"
+              :disable="disabled || soloLectura"
+              dense
+            ></q-checkbox>
+          </div>
+
           <!-- Listado del pedido -->
           <div
             v-if="listadoPedido !== undefined && listadoPedido.length > 0"
@@ -747,6 +767,7 @@
               </div>
             </div>
           </div>
+
           <!-- Tabla -->
           <div class="col-12">
             <essential-table
