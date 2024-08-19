@@ -31,6 +31,29 @@ export const opcionesTablaVacantes = {
 export const tabOptionsVacantes: TabOption[] = [
   { value: opcionesTablaVacantes.publicadas, label: opcionesTablaVacantes.publicadas },
   { value: opcionesTablaVacantes.inactivas, label: opcionesTablaVacantes.inactivas },
-  { value: opcionesTablaVacantes.vigentes, label:  opcionesTablaVacantes.vigentes },
+  { value: opcionesTablaVacantes.vigentes, label: opcionesTablaVacantes.vigentes },
   { value: opcionesTablaVacantes.expiradas, label: opcionesTablaVacantes.expiradas },
 ]
+
+
+export const estadosPostulacion = {
+  POSTULADO: 'POSTULADO', // cuando el postulante registra su postulación
+  REVISION_CV: 'REVISION CV', // cuando RRHH abre la postulación, esta opción se marca automaticamente y se notifica al postulante
+  ENTREVISTA: 'EN ENTREVISTA',
+  /**
+   * Luego de la entrevista hay 3 posibles pasos
+   * DESCARTADO -> cuando no se cumple las expectativas del puesto o del postulante
+   * SELECCIONADO -> cuando se cumple las expectativas del puesto o del postulante y luego pasa a la fase de examenes medicos
+   * EXAMENES MEDICOS -> cuando el postulante debe hacerse los examenes medicos para verificar si es contratable en tema de SALUD.
+   * CONTRATADO -> cuando ha avanzado en todas las fases y automaticamente pasa a ser empleado de la empresa.
+   * BANCO DE CANDIDATOS -> cuando no es apto para el puesto o si lo es pero no se continua el proceso ya que hay mejores prospectos o se cierra inesperadamente el proceso.
+   * queda en banco de candidatos para ser llamado en un futuro proceso.
+   *
+   */
+  DESCARTADO: 'DESCARTADO',
+  SELECCIONADO: 'SELECCIONADO',
+  EXAMENES_MEDICOS: 'EXAMENES MEDICOS',
+  CONTRATADO: 'CONTRATADO',
+  BANCO_DE_CANDIDATOS: 'BANCO DE CANDIDATOS',
+  RECHAZADO: 'RECHAZADO', // cuando el perfil del postulante no aplica para el cargo ni para banco de candidatos
+}

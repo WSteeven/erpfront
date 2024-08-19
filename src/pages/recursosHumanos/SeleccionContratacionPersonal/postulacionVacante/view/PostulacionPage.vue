@@ -3,12 +3,14 @@
     :mixin="mixin"
     :configuracionColumnas="configuracionColumnas"
     titulo-pagina="Postulaciones"
+    :permitirConsultar="false"
     :permitirGuardar="false"
     :permitirEditar="false"
-    :accion1="btnBancoPostulantes"
-    :accion2="btnEntrevistar"
-    :accion3="btnCalificar"
-    :accion4="btnImprimir"
+    :accion1="btnConsultar"
+    :accion2="btnBancoPostulantes"
+    :accion3="btnEntrevistar"
+    :accion4="btnCalificar"
+    :accion5="btnImprimir"
   >
     <template #formulario>
       <q-form @submit.prevent>

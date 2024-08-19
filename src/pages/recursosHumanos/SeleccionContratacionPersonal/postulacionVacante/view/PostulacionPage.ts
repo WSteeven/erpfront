@@ -10,7 +10,7 @@ import TabLayout from 'shared/contenedor/modules/simple/view/TabLayout.vue';
 import GestorArchivos from 'components/gestorArchivos/GestorArchivos.vue';
 
 // Logica y controladores
-import {  useRouter } from 'vue-router';
+import { useRouter } from 'vue-router';
 import { ContenedorSimpleMixin } from 'shared/contenedor/modules/simple/application/ContenedorSimpleMixin';
 import { Postulacion } from '../domain/Postulacion';
 import { PostulacionController } from '../infraestructure/PostulacionController';
@@ -32,8 +32,8 @@ export default defineComponent({
   components: { TabLayout, BasicContainer, SimpleLayout, GestorArchivos, OptionGroupComponent },
   setup() {
     const mixin = new ContenedorSimpleMixin(Postulacion, new PostulacionController())
-    const { entidad: postulacion, disabled, listadosAuxiliares, accion } = mixin.useReferencias()
-    const { setValidador, cargarVista, obtenerListados } = mixin.useComportamiento()
+    const { entidad: postulacion, disabled, listadosAuxiliares, tabs, accion } = mixin.useReferencias()
+    const { setValidador, cargarVista, obtenerListados, consultar } = mixin.useComportamiento()
     const { onConsultado, onGuardado, onBeforeModificar, onReestablecer } = mixin.useHooks()
 
     const { autenticado, tipoAutenticacion: tipoAuth } = userIsAuthenticated()
@@ -48,6 +48,7 @@ export default defineComponent({
 
     const refArchivo = ref()
     const idRegistro = ref() //el id del usuario que se adjuntará el archivo de CV
+    const CURRICULUM = 'CURRICULUM'
 
     /****************************************************************************
      * HOOKS
@@ -61,7 +62,7 @@ export default defineComponent({
     onConsultado(async () => {
       console.log(postulacion.tengo_conocimientos_requeridos)
       setTimeout(() => {
-        refArchivo.value?.listarArchivosAlmacenados(postulacion.id)
+        refArchivo.value?.listarArchivosAlmacenados(postulacion.id, { tipo: CURRICULUM })
       }, 300)
 
       if (postulacion.vacante) {
@@ -94,15 +95,14 @@ export default defineComponent({
         switch (tipoAuth) {
           case tipoAutenticacion.empleado:
             store = useAuthenticationStore()
-            cargarDatosUsuarioAutenticado()
             break
           case tipoAutenticacion.usuario_externo:
             store = useAuthenticationExternalStore()
-            cargarDatosUsuarioAutenticado()
             break
           default:
             console.log('El usuario no está autenticado')
         }
+        cargarDatosUsuarioAutenticado()
       }
 
       paises.value = listadosAuxiliares.paises
@@ -137,14 +137,18 @@ export default defineComponent({
     function cargarDatosUsuarioAutenticado() {
       // console.log(store)
       postulacion.postulante = store.user.id
-      postulacion.vacante = vacanteStore.vacante.id ?? vacanteStore.idVacante
       postulacion.nombres = store.user.nombres
       postulacion.apellidos = store.user.apellidos
       postulacion.correo_personal = store.user.email
-      postulacion.identificacion = store.user.identificacion ?? store.user.numero_documento_identificacion
-      postulacion.tipo_identificacion = store.user.tipo_documento_identificacion ?? null
+      postulacion.identificacion = store.user.identificacion
+      postulacion.tipo_identificacion = store.user.tipo_documento_identificacion ?? 'CEDULA'
       postulacion.telefono = store.user.telefono ?? null
       postulacion.genero = store.user?.genero ?? 'M'
+      postulacion.fecha_nacimiento = store.user.fecha_nacimiento
+      postulacion.identidad_genero = store.user.identidad_genero
+      postulacion.pais = store.user.pais
+      postulacion.pais_residencia = store.user.pais
+      postulacion.direccion = store.user.direccion ?? ''
 
       // console.log(vacanteStore.idVacante, vacanteStore.vacante)
     }
@@ -163,6 +167,21 @@ export default defineComponent({
     /***************************************************************************
      * BOTONES DE TABLA
     ***************************************************************************/
+    const btnConsultar: CustomActionTable = {
+      titulo: '',
+      icono: 'bi-eye',
+      color: 'primary',
+      tooltip: 'Visualizar Postulación',
+      accion: ({ entidad }) => {
+        console.log('diste clic en visualizar')
+        accion.value = acciones.editar
+        consultar(entidad, { leido: true })
+        tabs.value = 'formulario'
+
+      }, visible: ({ entidad, posicion }) => {
+        return true
+      }
+    }
     const btnCalificar: CustomActionTable = {
       titulo: 'Calificar candidato',
       color: 'primary',
@@ -225,6 +244,7 @@ export default defineComponent({
       optionsFecha,
 
       // botones de tablas
+      btnConsultar,
       btnBancoPostulantes,
       btnEntrevistar,
       btnCalificar,

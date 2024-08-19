@@ -368,6 +368,49 @@
       >
         <div class="row q-pa-md">
           <div class="col-12">
+            Puedes seleccionar un CV de los que ya tienes registrados o subir uno nuevo
+                  <q-btn-toggle
+                    v-model="quieroSubirCV"
+                    class="toggle-button-primary"
+                    :disable="disabled"
+                    spread
+                    no-caps
+                    rounded
+                    toggle-color="primary"
+                    unelevated
+                    :options="[
+                      {
+                        label: 'Utilizar un Currículum Vitae ya subido',
+                        value: false
+                      },
+                      {
+                        label: 'Quiero subir mi Currículum Vitae',
+                        value: true
+                      }
+                    ]"
+                  />
+                </div>
+          <div class="col-12" v-if="!quieroSubirCV">
+
+            <essential-table
+              :titulo="`Tienes ${listadoCurriculumnsUsuario.length} curriculums registrados`"
+              ref="refArchivoUsuario"
+              @selected="seleccionarArchivo"
+              tipo-seleccion="single"
+              :configuracionColumnas="columnas"
+              :datos="listadoCurriculumnsUsuario"
+              ajustarCeldas
+              :alto-fijo="false"
+              :permitirConsultar="false"
+              :permitirEditar="false"
+              :permitirEliminar="false"
+              :mostrar-botones="false"
+              :permitir-buscar="false"
+              :accion1="btnDescargarCurriculumUsuario"
+              :accion2="btnEliminarCurriculumUsuario"
+            ></essential-table>
+          </div>
+          <div class="col-12" v-if="quieroSubirCV">
             <!-- Solo se admiten pdfs -->
             <gestor-archivos
               ref="refArchivo"
@@ -399,23 +442,13 @@
             </gestor-archivos>
           </div>
 
-          <!-- <div class="col-12">
-            <q-btn @click="()=>mostrarSolicitarArchivo=true">Subir Hoja de Vida</q-btn>
-            <solicitar-archivo
-            v-if="mostrarSolicitarArchivo"
-            :mostrar="mostrarSolicitarArchivo"
-            @cerrar="mostrarSolicitarArchivo=false"
-            :mixin="mixin"
-            tipo-archivo="CURRICULUM"
-            />
-          </div> -->
           <div class="col-12">
             <label class="q-mb-sm block"
-                  >Comentanos brevemente tu experiencia en el rol (<strong>{{
-                    vacante.nombre
-                  }}</strong
-                  >) al que estas postulando
-                </label>
+              >Comentanos brevemente tu experiencia en el rol (<strong>{{
+                vacante.nombre
+              }}</strong
+              >) al que estas postulando
+            </label>
             <q-input
               type="textarea"
               v-model="postulacion.mi_experiencia"

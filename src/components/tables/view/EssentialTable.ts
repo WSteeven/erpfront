@@ -25,6 +25,7 @@ import CampoAprobadoRRHH from './partials/CampoAprobadoRRHH.vue'
 import CampoDescontable from './partials/CampoDescontable.vue'
 import { VisibleModal } from '../application/VisibleModal'
 import CampoBoleano from './partials/CampoBoleano.vue'
+import EstadosPostulaciones from './EstadosPostulaciones.vue'
 
 export default defineComponent({
   components: {
@@ -34,6 +35,7 @@ export default defineComponent({
     CampoDescontable,
     CampoBoleano,
     CampoAprobadoRRHH,
+    EstadosPostulaciones,
     EstadosSubtareas,
     BotonesPaginacion,
     TableFilters,

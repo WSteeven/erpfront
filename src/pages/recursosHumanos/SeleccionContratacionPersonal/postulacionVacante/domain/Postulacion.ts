@@ -19,6 +19,8 @@ export class Postulacion extends EntidadAuditable {
   fecha_nacimiento: string | null //
   direccion: string | null //
   mi_experiencia: string | null //
+  ruta_cv: string | null //
+  estado: string | null //
 
   tengo_documentos_regla: boolean //
 
@@ -50,7 +52,9 @@ export class Postulacion extends EntidadAuditable {
     this.mi_experiencia= null
     this.pais_residencia = null
     this.fecha_nacimiento = null
+    this.ruta_cv = null
     this.tengo_documentos_regla = false
+    this.estado = false
 
     this.tengo_formacion_academica_requerida = false
     this.tengo_conocimientos_requeridos = false

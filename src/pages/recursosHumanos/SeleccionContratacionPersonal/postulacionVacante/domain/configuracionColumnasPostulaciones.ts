@@ -3,6 +3,13 @@ import { Postulacion } from "./Postulacion";
 
 export const configuracionColumnasPostulaciones: ColumnConfig<Postulacion>[]=[
   {
+    name: "created_at",
+    field: "created_at",
+    label: "F. Postulación",
+    align: "left",
+    sortable: true
+  },
+  {
     name: "nombre",
     field: "nombre",
     label: "Vacante",
@@ -34,6 +41,13 @@ export const configuracionColumnasPostulaciones: ColumnConfig<Postulacion>[]=[
     name: "tengo_licencia_conducir",
     field: "tengo_licencia_conducir",
     label: "Licencia Conducir",
+    align: "left",
+    sortable: true
+  },
+  {
+    name: "estado",
+    field: "estado",
+    label: "Estado",
     align: "left",
     sortable: true
   },

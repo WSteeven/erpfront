@@ -1596,6 +1596,7 @@
         </q-chip>
 
         <estados-subtareas :propsTable="props" />
+        <estados-postulaciones :propsTable="props" />
 
         <!-- estados de la tabla prestamos temporales -->
         <q-chip v-if="props.value === 'DEVUELTO'" class="bg-green-1">
