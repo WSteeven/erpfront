@@ -79,6 +79,43 @@ export default defineComponent({
       seleccionar: seleccionarProducto,
     } = useOrquestadorSelectorDetalles(transferencia, 'materiales_empleado_consolidado')
 
+    const consultarProductos = async () => {
+      if (!transferencia.tarea_origen) { // Stock
+        return await listarProductos({
+          empleado_id: transferencia.empleado_origen,
+          cliente_id: transferencia.cliente,
+        })
+      } else {
+        if (!transferencia.proyecto_origen && !transferencia.etapa_origen) {
+          /* filtroTarea.cliente_id = transferencia.cliente
+          filtroTarea.empleado_id = transferencia.empleado_origen
+          filtroTarea.tarea_id = transferencia.tarea_origen */
+
+          return listarProductos({
+            empleado_id: transferencia.empleado_origen,
+            cliente_id: transferencia.cliente,
+            tarea_id: transferencia.tarea_origen,
+          })
+          // await consultarProductosTarea()
+          // transferencia.listado_productos = mapearProductos(listadosAuxiliares.productos)
+        } else {
+          /* filtroProyecto.empleado_id = transferencia.empleado_origen
+          filtroProyecto.proyecto_id = transferencia.proyecto_origen
+          filtroProyecto.etapa_id = transferencia.etapa_origen */
+
+          return listarProductos({
+            empleado_id: transferencia.empleado_origen,
+            cliente_id: transferencia.cliente,
+            proyecto_id: transferencia.proyecto_origen,
+            etapa_id: transferencia.etapa_origen,
+          })
+
+          // await consultarProductosProyecto()
+          // transferencia.listado_productos = mapearProductos(listadosAuxiliares.productos)
+        }
+      }
+    }
+
     /************
      * Variables
      ************/
@@ -170,9 +207,12 @@ export default defineComponent({
     const v$ = useVuelidate(reglas, transferencia)
     setValidador(v$.value)
 
-    const validarExisteArchivo = new ValidarExisteArchivo(transferencia, refArchivo)
-    mixin.agregarValidaciones(validarExisteArchivo)
+    // const validarExisteArchivo = new ValidarExisteArchivo(transferencia, refArchivo)
+    // mixin.agregarValidaciones(validarExisteArchivo)
 
+    /************
+     * Funciones
+     ************/
     const resetearFormulario = () => {
       transferencia.proyecto_origen = null
       transferencia.proyecto_destino = null
@@ -311,38 +351,25 @@ export default defineComponent({
         await consultarClientesProyectoEtapa()
 
         // Consultar productos
-        if (accion.value === acciones.nuevo) {
-          console.log(transferenciaProductoEmpleadoStore.listadoMateriales)
-          console.log(transferenciaProductoEmpleadoStore.listadoMateriales.length)
-          /*if (transferenciaProductoEmpleadoStore.listadoMateriales.length) {
-            console.log('IF...')
-            transferencia.listado_productos = mapearProductos(transferenciaProductoEmpleadoStore.listadoMateriales)
-            transferenciaProductoEmpleadoStore.listadoMateriales = []
-            console.log(transferenciaProductoEmpleadoStore.listadoMateriales)
-          } else {*/
-            console.log('ELSE...')
-            // es de tarea
-            if (!transferencia.proyecto_origen && !transferencia.etapa_origen) {
-              console.log('DENTRO DE ES DE TAREA')
-              filtroTarea.cliente_id = transferencia.cliente
-              filtroTarea.empleado_id = transferencia.empleado_origen
-              filtroTarea.tarea_id = transferencia.tarea_origen
+        /* if (accion.value === acciones.nuevo) {        
+          // es de tarea
+          if (!transferencia.proyecto_origen && !transferencia.etapa_origen) {
+            filtroTarea.cliente_id = transferencia.cliente
+            filtroTarea.empleado_id = transferencia.empleado_origen
+            filtroTarea.tarea_id = transferencia.tarea_origen
 
-              await consultarProductosTarea()
-              transferencia.listado_productos = mapearProductos(listadosAuxiliares.productos)
-            } else {
-              // console.log('ELSE...###')
-              // filtroProyecto.cliente_id = transferencia.cliente
-              filtroProyecto.empleado_id = transferencia.empleado_origen
-              filtroProyecto.proyecto_id = transferencia.proyecto_origen
-              filtroProyecto.etapa_id = transferencia.etapa_origen
-              await consultarProductosProyecto()
-              transferencia.listado_productos = mapearProductos(listadosAuxiliares.productos)
-            }
+            await consultarProductosTarea()
+            transferencia.listado_productos = mapearProductos(listadosAuxiliares.productos)
+          } else {
+            filtroProyecto.empleado_id = transferencia.empleado_origen
+            filtroProyecto.proyecto_id = transferencia.proyecto_origen
+            filtroProyecto.etapa_id = transferencia.etapa_origen
+            await consultarProductosProyecto()
+            transferencia.listado_productos = mapearProductos(listadosAuxiliares.productos)
+          }
 
-            transferenciaProductoEmpleadoStore.listadoMateriales = []
-          // }
-        }
+          transferenciaProductoEmpleadoStore.listadoMateriales = []
+        } */
 
         establecerAutorizador()
       }
@@ -676,25 +703,25 @@ export default defineComponent({
     /********
      * Hooks
      ********/
-    onGuardado((id: number) => {
+   /*  onGuardado((id: number) => {
       idTransferencia.value = id
       setTimeout(() => {
         subirArchivos()
       }, 1)
-    })
+    }) */
 
     onModificado((id: number) => {
       filtrarTransferenciasProductoEmpleado(tabSeleccionado.value)
-      idTransferencia.value = id
+      /* idTransferencia.value = id
       setTimeout(() => {
         subirArchivos()
-      }, 1)
+      }, 1) */
     })
 
     onConsultado(async () => {
-      setTimeout(() => {
+      /* setTimeout(() => {
         refArchivo.value.listarArchivosAlmacenados(transferencia.id)
-      }, 1);
+      }, 1); */
       transferenciaProductoEmpleadoStore.origenProductos = (transferencia.tarea_origen ? destinosTareas.paraClienteFinal : destinosTareas.paraProyecto)
       esParaStock.value = !transferencia.proyecto_origen && !transferencia.etapa_origen && !transferencia.tarea_origen
       console.log('ON CONSULTADO...')
@@ -707,7 +734,7 @@ export default defineComponent({
 
     onReestablecer(() => {
       transferencia.empleado_origen = authenticationStore.user.id
-      refArchivo.value.limpiarListado()
+      // refArchivo.value.limpiarListado()
       seleccionarEmpleadoOrigen()
     })
 
@@ -845,7 +872,7 @@ export default defineComponent({
       refrescarListadosEmpleado,
       refrescarListadosProyectos,
       esParaStock,
-      esDestinoStock: ref(false),
+      esDestinoStock: ref(true),
       seleccionarEsDestinoStock,
       seleccionarClienteStock,
       seleccionarEsStock,
@@ -860,6 +887,7 @@ export default defineComponent({
       seleccionarEmpleadoDestino,
       seleccionarEtapaDestino,
       seleccionarTareaDestino,
+      consultarProductos,
     }
   }
 })
