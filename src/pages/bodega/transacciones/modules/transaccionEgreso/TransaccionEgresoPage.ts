@@ -222,7 +222,7 @@ export default defineComponent({
 
     function filtrarTransacciones(tab: string) {
       tabDefecto.value = tab
-      listar({ estado: tab, paginate: paginate })
+      listar({ estado: tab }) //, paginate: paginate })
 
       filtros.fields = { estado: tab }
     }

@@ -1049,21 +1049,6 @@ export const useMenuStore = defineStore('menu', () => {
         }
       ]
     },
-
-    //Modulo Activos Fijos
-    {
-      title: 'Activos fijos',
-      icon: 'bi-safe-fill',
-      can: store.can('puede.ver.modulo_activos_fijos'),
-      children: [
-        {
-          title: 'Control de activos',
-          link: 'activos-fijos',
-          icon: 'bi-clipboard-check-fill',
-          can: store.can('puede.ver.activos_fijos')
-        }
-      ]
-    },
     /*********************************************************
      * Modulo de compras y proveedores
      *********************************************************/

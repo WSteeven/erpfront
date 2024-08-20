@@ -71,8 +71,8 @@ export default defineComponent({
                     accion: async (cantidad: number) => {
                         seguimiento.hydrate(entidad)
                         await editarParcial(entidad.id, {
-                            detalle_producto: entidad.detalle_producto_id,
-                            cliente: entidad.cliente_id,
+                            detalle_producto_id: entidad.detalle_producto_id,
+                            cliente_id: entidad.cliente_id,
                             cantidad_anterior: entidad.cantidad_utilizada ?? 0,
                             cantidad_utilizada: cantidad,
                         })
