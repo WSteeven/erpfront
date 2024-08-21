@@ -45,6 +45,7 @@ import { Proyecto } from 'pages/gestionTrabajos/proyectos/domain/Proyecto'
 import { TareaController } from 'tareas/infraestructure/TareaController'
 import { Empleado } from 'recursosHumanos/empleados/domain/Empleado'
 import { Tarea } from 'tareas/domain/Tarea'
+import { useNotificaciones } from 'shared/notificaciones'
 
 export default defineComponent({
   name: 'TransferenciaProductoEmpleado',
@@ -79,6 +80,44 @@ export default defineComponent({
       seleccionar: seleccionarProducto,
     } = useOrquestadorSelectorDetalles(transferencia, 'materiales_empleado_consolidado')
 
+    const consultarProductos = async () => {
+      if (!transferencia.cliente) return notificarAdvertencia('Debe seleccionar un cliente para filtrar los productos de origen')
+      if (!transferencia.tarea_origen) { // Stock
+        return await listarProductos({
+          empleado_id: transferencia.empleado_origen,
+          cliente_id: transferencia.cliente,
+        })
+      } else {
+        if (!transferencia.proyecto_origen && !transferencia.etapa_origen) {
+          /* filtroTarea.cliente_id = transferencia.cliente
+          filtroTarea.empleado_id = transferencia.empleado_origen
+          filtroTarea.tarea_id = transferencia.tarea_origen */
+
+          return listarProductos({
+            empleado_id: transferencia.empleado_origen,
+            cliente_id: transferencia.cliente,
+            tarea_id: transferencia.tarea_origen,
+          })
+          // await consultarProductosTarea()
+          // transferencia.listado_productos = mapearProductos(listadosAuxiliares.productos)
+        } else {
+          /* filtroProyecto.empleado_id = transferencia.empleado_origen
+          filtroProyecto.proyecto_id = transferencia.proyecto_origen
+          filtroProyecto.etapa_id = transferencia.etapa_origen */
+
+          return listarProductos({
+            empleado_id: transferencia.empleado_origen,
+            cliente_id: transferencia.cliente,
+            proyecto_id: transferencia.proyecto_origen,
+            etapa_id: transferencia.etapa_origen,
+          })
+
+          // await consultarProductosProyecto()
+          // transferencia.listado_productos = mapearProductos(listadosAuxiliares.productos)
+        }
+      }
+    }
+
     /************
      * Variables
      ************/
@@ -87,6 +126,8 @@ export default defineComponent({
     const refArchivo = ref()
     const idTransferencia = ref()
     const esParaStock = ref(false)
+    const esDestinoStock = ref(false)
+    const { notificarAdvertencia } = useNotificaciones()
 
     const { empleados, filtrarEmpleados, ordenarEmpleados, empleadosOrigen, filtrarEmpleadosOrigen, ordenarEmpleadosOrigen, tareas, filtrarTareas, tareasDestino, filtrarTareasDestino } = useFiltrosListadosSelects(listadosAuxiliares)
 
@@ -148,7 +189,7 @@ export default defineComponent({
       } else {
       }
 
-      // if (accion.value === acciones.nuevo)
+      if (accion.value === acciones.nuevo) esDestinoStock.value = true
       establecerAutorizador()
     })
 
@@ -165,6 +206,7 @@ export default defineComponent({
       tarea_origen: { requiredIf: requiredIf(() => !esParaStock.value) }, //transferenciaProductoEmpleadoStore.origenProductos === destinosTareas.paraClienteFinal) },
       // tarea_destino: { requiredIf: requiredIf(() => !esParaStock.value) }, //transferenciaProductoEmpleadoStore.origenProductos === destinosTareas.paraClienteFinal) },
       solicitante: { required },
+      cliente: { required },
     }
 
     const v$ = useVuelidate(reglas, transferencia)
@@ -173,6 +215,9 @@ export default defineComponent({
     const validarExisteArchivo = new ValidarExisteArchivo(transferencia, refArchivo)
     mixin.agregarValidaciones(validarExisteArchivo)
 
+    /************
+     * Funciones
+     ************/
     const resetearFormulario = () => {
       transferencia.proyecto_origen = null
       transferencia.proyecto_destino = null
@@ -207,14 +252,14 @@ export default defineComponent({
       listadosAuxiliares.proyectosDestino = []
     }
 
-    async function seleccionarClienteStock(idCliente: number) {
+    /* async function seleccionarClienteStock(idCliente: number) {
       console.log(idCliente)
       filtroEmpleado.empleado_id = transferencia.empleado_origen
       filtroEmpleado.cliente_id = transferencia.cliente
       await consultarProductosEmpleado()
       transferencia.listado_productos = mapearProductos(listadosAuxiliares.productos)
       establecerAutorizador()
-    }
+    } */
 
     /**Mejora de observers */
     // ######################
@@ -311,38 +356,25 @@ export default defineComponent({
         await consultarClientesProyectoEtapa()
 
         // Consultar productos
-        if (accion.value === acciones.nuevo) {
-          console.log(transferenciaProductoEmpleadoStore.listadoMateriales)
-          console.log(transferenciaProductoEmpleadoStore.listadoMateriales.length)
-          /*if (transferenciaProductoEmpleadoStore.listadoMateriales.length) {
-            console.log('IF...')
-            transferencia.listado_productos = mapearProductos(transferenciaProductoEmpleadoStore.listadoMateriales)
-            transferenciaProductoEmpleadoStore.listadoMateriales = []
-            console.log(transferenciaProductoEmpleadoStore.listadoMateriales)
-          } else {*/
-            console.log('ELSE...')
-            // es de tarea
-            if (!transferencia.proyecto_origen && !transferencia.etapa_origen) {
-              console.log('DENTRO DE ES DE TAREA')
-              filtroTarea.cliente_id = transferencia.cliente
-              filtroTarea.empleado_id = transferencia.empleado_origen
-              filtroTarea.tarea_id = transferencia.tarea_origen
+        /* if (accion.value === acciones.nuevo) {        
+          // es de tarea
+          if (!transferencia.proyecto_origen && !transferencia.etapa_origen) {
+            filtroTarea.cliente_id = transferencia.cliente
+            filtroTarea.empleado_id = transferencia.empleado_origen
+            filtroTarea.tarea_id = transferencia.tarea_origen
 
-              await consultarProductosTarea()
-              transferencia.listado_productos = mapearProductos(listadosAuxiliares.productos)
-            } else {
-              // console.log('ELSE...###')
-              // filtroProyecto.cliente_id = transferencia.cliente
-              filtroProyecto.empleado_id = transferencia.empleado_origen
-              filtroProyecto.proyecto_id = transferencia.proyecto_origen
-              filtroProyecto.etapa_id = transferencia.etapa_origen
-              await consultarProductosProyecto()
-              transferencia.listado_productos = mapearProductos(listadosAuxiliares.productos)
-            }
+            await consultarProductosTarea()
+            transferencia.listado_productos = mapearProductos(listadosAuxiliares.productos)
+          } else {
+            filtroProyecto.empleado_id = transferencia.empleado_origen
+            filtroProyecto.proyecto_id = transferencia.proyecto_origen
+            filtroProyecto.etapa_id = transferencia.etapa_origen
+            await consultarProductosProyecto()
+            transferencia.listado_productos = mapearProductos(listadosAuxiliares.productos)
+          }
 
-            transferenciaProductoEmpleadoStore.listadoMateriales = []
-          // }
-        }
+          transferenciaProductoEmpleadoStore.listadoMateriales = []
+        } */
 
         establecerAutorizador()
       }
@@ -411,124 +443,6 @@ export default defineComponent({
       }
       establecerAutorizador()
     }
-
-    /************
-     * Observers
-     ************/
-    /*watch(computed(() => transferencia.empleado_origen), async (id) => {
-      if (accion.value === acciones.nuevo) transferencia.cliente = undefined
-      if (id) {
-        if (accion.value === acciones.nuevo) resetearFormulario()
-        await consultarTareasEmpleadoOrigen()
-        await consultarProyectosEmpleadoOrigen()
-        const tarea = listadosAuxiliares.tareas.find((t: Tarea) => t.id === transferencia.tarea_origen)
-        transferencia.proyecto_origen = tarea?.proyecto_id
-        transferencia.etapa_origen = tarea?.etapa_id
-
-        if (esParaStock.value) consultarClientesMaterialesEmpleado({ empleado_id: transferencia.empleado_origen })
-      }
-    })*/
-
-    /* watchEffect(() => {
-      if (transferencia.empleado_destino) {
-        if (transferencia.proyecto_origen) {
-          consultarProyectosEmpleadoDestino()
-          consultarTareasEmpleadoDestino({ para_cliente_proyecto: destinosTareas.paraProyecto }, !!transferencia.etapa_origen)
-        } else consultarTareasEmpleadoDestino({ para_cliente_proyecto: destinosTareas.paraClienteFinal })
-      }
-    }) */
-
-    /* watch(computed(() => transferencia.proyecto_destino), async (id) => {
-      if (id) {
-        await consultarEtapasEmpleadoDestino(id)
-        consultarTareasEmpleadoDestino({ proyecto_id: id }) // revisar q no se consulte si ya se consultaron las tareas por etapa
-      } else {
-        consultarTareasEmpleadoDestino({}, !!transferencia.etapa_origen)
-      }
-    }) */
-
-    /* watch(computed(() => transferencia.etapa_destino), (id) => {
-      if (id) consultarTareasEmpleadoDestino({ etapa_id: id }, true)
-    }) */
-
-    // Origen
-    /* watch(computed(() => transferencia.proyecto_origen), async (id) => {
-      // transferencia
-      if (id) {
-        await consultarEtapasEmpleadoOrigen(id)
-        consultarTareasEmpleadoOrigen({ proyecto_id: id })
-      } else {
-        if (accion.value === acciones.nuevo) resetearFormularioExceptoProyectoOrigen()
-        consultarTareasEmpleadoOrigen()
-      }
-    }) */
-
-    /* watch(computed(() => transferencia.etapa_origen), (id) => {
-      if (id) consultarTareasEmpleadoOrigen({ etapa_id: id })
-    }) */
-
-    /* watch(computed(() => transferencia.tarea_origen), async (id) => {
-      if (id) {
-        // Buscar la tarea origen y extraer proyecto, etapa y cliente y colocarlo en transferencia
-        if (listadosAuxiliares.tareas.length) {
-          const tarea = listadosAuxiliares.tareas.find((t: Tarea) => t.id === id)
-          console.log(listadosAuxiliares.tareas)
-          console.log(tarea)
-          transferencia.proyecto_origen = tarea?.proyecto_id
-          transferencia.etapa_origen = tarea?.etapa_id
-          if (accion.value === acciones.nuevo) transferencia.cliente = tarea?.cliente_id
-          console.log('Tarea origen - cliente: ')
-          console.log(transferencia.cliente)
-        }
-
-        // si es de proyecto establecemos valores para filtro de proyecto
-        if (transferencia.proyecto_origen) {
-          filtroProyecto.empleado_id = transferencia.empleado_origen
-          filtroProyecto.etapa_id = transferencia.etapa_origen
-          filtroProyecto.proyecto_id = transferencia.proyecto_origen
-          filtroProyecto.cliente_id = transferencia.cliente
-        } else {
-          // caso contrario establecemos valores para filtro de tarea
-          filtroTarea.empleado_id = transferencia.empleado_origen
-          filtroTarea.tarea_id = transferencia.tarea_origen
-          filtroTarea.cliente_id = transferencia.cliente
-        }
-
-        console.log('tarea ha cambiado !!!!')
-
-        // if (accion.value === acciones.nuevo)
-        // await consultarClientesProyectoEtapa()
-
-        // Consultar productos
-        if (accion.value === acciones.nuevo) {
-          if (transferenciaProductoEmpleadoStore.listadoMateriales.length) {
-            console.log('IF...')
-            transferencia.listado_productos = mapearProductos(transferenciaProductoEmpleadoStore.listadoMateriales)
-          } else {
-            console.log('ELSE...')
-            if (!transferencia.proyecto_origen && !transferencia.etapa_origen) {
-              console.log('IF...###')
-              filtroTarea.cliente_id = transferencia.cliente
-              filtroTarea.empleado_id = transferencia.empleado_origen
-              filtroTarea.tarea_id = transferencia.tarea_origen
-
-              await consultarProductosTarea()
-              transferencia.listado_productos = mapearProductos(listadosAuxiliares.productos)
-            } else {
-              console.log('ELSE...###')
-              // filtroProyecto.cliente_id = transferencia.cliente
-              filtroProyecto.empleado_id = transferencia.empleado_origen
-              filtroProyecto.proyecto_id = transferencia.proyecto_origen
-              filtroProyecto.etapa_id = transferencia.etapa_origen
-              await consultarProductosProyecto()
-              transferencia.listado_productos = mapearProductos(listadosAuxiliares.productos)
-            }
-
-            transferenciaProductoEmpleadoStore.listadoMateriales = []
-          }
-        }
-      }
-    }) */
 
     // Destino
     watch(computed(() => transferencia.proyecto_destino), (id) => {
@@ -695,8 +609,11 @@ export default defineComponent({
       setTimeout(() => {
         refArchivo.value.listarArchivosAlmacenados(transferencia.id)
       }, 1);
+      empleadosOrigen.value = listadosAuxiliares.empleados
+      empleados.value = listadosAuxiliares.empleados
       transferenciaProductoEmpleadoStore.origenProductos = (transferencia.tarea_origen ? destinosTareas.paraClienteFinal : destinosTareas.paraProyecto)
       esParaStock.value = !transferencia.proyecto_origen && !transferencia.etapa_origen && !transferencia.tarea_origen
+      esDestinoStock.value = !transferencia.proyecto_destino && !transferencia.etapa_destino && !transferencia.tarea_destino
       console.log('ON CONSULTADO...')
       await seleccionarEmpleadoOrigen()
       await seleccionarProyectoOrigen(false)
@@ -707,6 +624,7 @@ export default defineComponent({
 
     onReestablecer(() => {
       transferencia.empleado_origen = authenticationStore.user.id
+      esDestinoStock.value = true
       refArchivo.value.limpiarListado()
       seleccionarEmpleadoOrigen()
     })
@@ -845,9 +763,9 @@ export default defineComponent({
       refrescarListadosEmpleado,
       refrescarListadosProyectos,
       esParaStock,
-      esDestinoStock: ref(false),
+      esDestinoStock,
       seleccionarEsDestinoStock,
-      seleccionarClienteStock,
+      // seleccionarClienteStock,
       seleccionarEsStock,
       existenProductos: computed(() => transferencia.listado_productos.length),
       filtroTarea,
@@ -860,6 +778,7 @@ export default defineComponent({
       seleccionarEmpleadoDestino,
       seleccionarEtapaDestino,
       seleccionarTareaDestino,
+      consultarProductos,
     }
   }
 })
