@@ -22,6 +22,11 @@
             </div>
           </div>
 
+          <div class="col-12 q-mb-md">
+            <small class="text-bold">Origen de los productos</small>
+            <q-separator></q-separator>
+          </div>
+
           <!-- N° transferencia -->
           <div v-if="transferencia.id" class="col-12 col-md-3">
             <label class="q-mb-sm block">Transferencia N°</label>
@@ -141,6 +146,8 @@
               :option-value="item => item.cliente_id"
               emit-value
               map-options
+              :error="!!v$.cliente.$errors.length"
+              @blur="v$.cliente.$touch"
             >
               <template v-slot:after>
                 <q-btn
@@ -152,6 +159,15 @@
                   <q-icon size="xs" name="bi-arrow-clockwise" />
                   <q-tooltip>Recargar clientes</q-tooltip>
                 </q-btn>
+              </template>
+
+              <template v-slot:error>
+                <div
+                  v-for="error of v$.cliente.$errors"
+                  :key="error.$uid"
+                >
+                  <div class="error-msg">{{ error.$message }}</div>
+                </div>
               </template>
             </q-select>
           </div>
@@ -244,7 +260,7 @@
               transition-hide="scale"
               :disable="!(accion === acciones.nuevo)"
               options-dense
-              hint="Seleccionar para buscar productos..."
+              hint="Debe tener al menos una subtarea activa"
               @update:model-value="seleccionarTareaOrigen()"
               dense
               outlined
@@ -294,6 +310,11 @@
             >
               <!-- disable -->
             </q-select>
+          </div>
+
+          <div class="col-12 q-mb-md">
+            <small class="text-bold">Destino de los productos</small>
+            <q-separator color=""></q-separator>
           </div>
 
           <!-- v-if="existenProductos" -->
@@ -444,7 +465,7 @@
               transition-show="scale"
               transition-hide="scale"
               options-dense
-              hint="Tarea #"
+              hint="Debe tener al menos una subtarea activa"
               @filter="filtrarTareasDestino"
               clearable
               dense
@@ -590,7 +611,7 @@
           </div>
 
           <!-- Manejo de archivos -->
-          <!-- <div class="col-12 q-mb-md">
+          <div class="col-12 q-mb-md">
             <gestor-archivos
               ref="refArchivo"
               label="Adjuntar archivos"
@@ -616,10 +637,10 @@
                 >
               </template>
             </gestor-archivos>
-          </div> -->
+          </div>
 
           <div class="col-12 col-md-12 q-mt-md">
-            <label class="q-mb-sm block">Agregar productos</label>
+            <label class="q-mb-sm block">Agregar productos<b><i> *Primero seleccione el origen de los productos</i></b></label>
             <div class="row q-col-gutter-x-xs">
               <div class="col-12 col-md-10 q-mb-md">
                 <q-input

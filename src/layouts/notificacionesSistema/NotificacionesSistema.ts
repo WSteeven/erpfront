@@ -28,6 +28,8 @@ import { BitacoraVehicularPusherEvent } from 'src/pusherEvents/vehiculos/Bitacor
 import { MantenimientoVehiculoPusherEvent } from 'src/pusherEvents/vehiculos/MantenimientVehiculoPusherEvent'
 import { SolicitudExamenPusherEvent } from 'src/pusherEvents/medico/SolicitudExamenPusherEvent'
 import { DiasDescansoPusherEvent } from 'src/pusherEvents/medico/DiasDescansoPusherEvent'
+import { TransferenciaProductoRealizadaPusherEvent } from 'src/pusherEvents/tareas/TransferenciaProductosRealizadaPusherEvent'
+import { TransferenciaProductoSolicitadaPusherEvent } from 'src/pusherEvents/tareas/TransferenciaProductosSolicitadaPusherEvent'
 
 
 export class NotificacionesSistema {
@@ -71,9 +73,18 @@ export class NotificacionesSistema {
     const solicitudFondosPusherEvent = new GastoCoordinadorPusherEvent()
     solicitudFondosPusherEvent.start()
 
+    /****************
+     * Modulo tareas
+     ****************/
     // Subtareas
     const subtareaPusherEvent = new SubtareaPusherEvent()
     subtareaPusherEvent.start()
+
+    const transferenciaProductoRealizadaPusherEvent = new TransferenciaProductoRealizadaPusherEvent()
+    transferenciaProductoRealizadaPusherEvent.start()
+
+    const transferenciaProductoSolicitadaPusherEvent = new TransferenciaProductoSolicitadaPusherEvent()
+    transferenciaProductoSolicitadaPusherEvent.start()
 
     // Tickets
     const ticketPusherEvent = new TicketPusherEvent()
@@ -134,7 +145,7 @@ export class NotificacionesSistema {
 
     const asignacionVehiculoEvent = new AsignarVehiculoPusherEvent()
     asignacionVehiculoEvent.start()
-    
+
     const transferenciaVehiculoEvent = new AsignarVehiculoPusherEvent()
     transferenciaVehiculoEvent.start()
 
