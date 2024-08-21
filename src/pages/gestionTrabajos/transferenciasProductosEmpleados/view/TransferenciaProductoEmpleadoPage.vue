@@ -137,6 +137,7 @@
               transition-show="scale"
               transition-hide="scale"
               :disable="!(accion === acciones.nuevo)"
+              @update:model-value="transferencia.listado_productos = []"
               use-input
               input-debounce="0"
               options-dense
@@ -162,10 +163,7 @@
               </template>
 
               <template v-slot:error>
-                <div
-                  v-for="error of v$.cliente.$errors"
-                  :key="error.$uid"
-                >
+                <div v-for="error of v$.cliente.$errors" :key="error.$uid">
                   <div class="error-msg">{{ error.$message }}</div>
                 </div>
               </template>
@@ -297,6 +295,7 @@
               :options="listadosAuxiliares.clientesMaterialesTarea"
               transition-show="scale"
               transition-hide="scale"
+              @update:model-value="transferencia.listado_productos = []"
               use-input
               input-debounce="0"
               :disable="!(accion === acciones.nuevo)"
@@ -640,7 +639,11 @@
           </div>
 
           <div class="col-12 col-md-12 q-mt-md">
-            <label class="q-mb-sm block">Agregar productos<b><i> *Primero seleccione el origen de los productos</i></b></label>
+            <label class="q-mb-sm block"
+              >Agregar productos<b
+                ><i> *Primero seleccione el origen de los productos</i></b
+              ></label
+            >
             <div class="row q-col-gutter-x-xs">
               <div class="col-12 col-md-10 q-mb-md">
                 <q-input
