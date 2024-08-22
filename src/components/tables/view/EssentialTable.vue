@@ -36,7 +36,7 @@
       'my-sticky-column-table-light': !$q.dark.isActive,
       'my-sticky-column-first-table': primeraColumnaFija,
       'rounded-header': $q.screen.xs,
-      'bg-header-table': mostrarFiltros,
+      'bg-header-table': mostrarFiltros
     }"
     virtual-scroll
     :virtual-scroll-item-size="offset"
@@ -65,7 +65,7 @@
         :props="props"
         :class="{
           'text-bold': props.col.editable,
-          'bg-body': $q.dark.isActive,
+          'bg-body': $q.dark.isActive
         }"
       >
         <!-- <q-popup-edit
@@ -97,8 +97,8 @@
           v-if="props.col.type === 'select'"
           v-model="props.row[props.col.name]"
           :options="props.col.options"
-          :options-label="(v) => v.label"
-          :options-value="(v) => v.value"
+          :options-label="v => v.label"
+          :options-value="v => v.value"
           options-dense
           outlined
           dense
@@ -111,8 +111,8 @@
           v-if="props.col.type === 'select_multiple'"
           v-model="props.row[props.col.name]"
           :options="props.col.options"
-          :options-label="(v) => v.label"
-          :options-value="(v) => v.value"
+          :options-label="v => v.label"
+          :options-value="v => v.value"
           use-chips
           multiple
           options-dense
@@ -151,7 +151,7 @@
           v-if="!['select', 'boolean'].includes(props.col.type)"
           :class="{
             'text-white': $q.dark.isActive,
-            'text-dark': !$q.dark.isActive,
+            'text-dark': !$q.dark.isActive
           }"
           >{{ props.row[props.col.name] }}</span
         >
@@ -176,7 +176,7 @@
         :class="{
           'titulo-tabla2': !$q.screen.xs,
           'justify-center': $q.screen.xs,
-          'bg-grey-9': $q.dark.isActive,
+          'bg-grey-9': $q.dark.isActive
         }"
       >
         <span>
@@ -887,7 +887,7 @@
                       'tiene_subtareas',
                       'observacion',
                       'dado_alta',
-                      'es_dosis_unica',
+                      'es_dosis_unica'
                     ].includes(col.name)
                   "
                   >{{ col.value }}</span
@@ -922,7 +922,7 @@
         :props="props"
         :class="{
           'bg-lime-2': !$q.dark.isActive,
-          'bg-green-10': $q.dark.isActive,
+          'bg-green-10': $q.dark.isActive
         }"
       >
         <q-badge color="positive">
@@ -937,7 +937,7 @@
         class="text-bold"
         :class="{
           'bg-grey-2': !$q.dark.isActive,
-          'bg-grey-10': $q.dark.isActive,
+          'bg-grey-10': $q.dark.isActive
         }"
       >
         <!-- <q-badge color="blue-grey-6"> -->
@@ -951,7 +951,7 @@
         :props="props"
         :class="{
           'bg-indigo-1': !$q.dark.isActive,
-          'bg-indigo-10': $q.dark.isActive,
+          'bg-indigo-10': $q.dark.isActive
         }"
       >
         <q-badge color="indigo">
@@ -965,7 +965,7 @@
         :props="props"
         :class="{
           'bg-lime-2': !$q.dark.isActive,
-          'bg-green-10': $q.dark.isActive,
+          'bg-green-10': $q.dark.isActive
         }"
       >
         <q-badge color="positive">
@@ -1685,7 +1685,7 @@
               'TICKET REASIGNADO',
               'TICKET PAUSADO',
               'TICKET EJECUTADO',
-              'TICKET FINALIZADO',
+              'TICKET FINALIZADO'
             ].includes(props.value)
           "
           >{{ props.value }}</span

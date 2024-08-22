@@ -464,15 +464,21 @@ export const useMenuStore = defineStore('menu', () => {
       can: store.can('puede.acceder.modulo_activos_fijos'),
       children: [
         {
-          title: 'Control de Activos fijos',
+          title: 'Control de activos fijos',
           link: 'control-activos-fijos',
           can: store.can('puede.acceder.control_activos_fijos'),
           icon: 'bi-app',
         },
         {
-          title: 'Seguimiento consumo de Activos fijos',
+          title: 'Seguimiento consumo de activos fijos',
           link: 'seguimiento-consumo-activos-fijos',
           can: store.can('puede.acceder.seguimiento_consumo_activos_fijos'),
+          icon: 'bi-app',
+        },
+        {
+          title: 'Transferencia de activos fijos',
+          link: 'transferencia-activos-fijos',
+          can: store.can('puede.acceder.transferencia_activos_fijos'),
           icon: 'bi-app',
         },
       ],
@@ -1040,21 +1046,6 @@ export const useMenuStore = defineStore('menu', () => {
               can: true
             }
           ]
-        }
-      ]
-    },
-
-    //Modulo Activos Fijos
-    {
-      title: 'Activos fijos',
-      icon: 'bi-safe-fill',
-      can: store.can('puede.ver.modulo_activos_fijos'),
-      children: [
-        {
-          title: 'Control de activos',
-          link: 'activos-fijos',
-          icon: 'bi-clipboard-check-fill',
-          can: store.can('puede.ver.activos_fijos')
         }
       ]
     },

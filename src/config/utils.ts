@@ -501,6 +501,7 @@ export const opcionesReportesEgresos = [
   { value: 8, label: 'POR CLIENTE' },
   { value: 9, label: 'POR TAREA' },
   { value: 10, label: 'POR TRANSFERENCIA' },
+  { value: 11, label: 'POR CATEGORIAS DE MATERIALES' },
 ]
 
 export const tiposReportesEgresos = {
@@ -515,6 +516,7 @@ export const tiposReportesEgresos = {
   cliente: 8,
   tarea: 9,
   transferencia: 10,
+  categorias: 11,
 }
 
 export const opcionesDepartamentos = {

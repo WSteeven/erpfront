@@ -60,6 +60,12 @@ export const configuracionColumnasSubtarea: ColumnConfig<Subtarea>[] = [
     align: 'left',
   },
   {
+    name: 'valor_alimentacion',
+    field: 'valor_alimentacion',
+    label: 'Valor alimentación',
+    align: 'left',
+  },
+  {
     name: 'fecha_solicitud',
     field: 'fecha_solicitud',
     label: 'Fecha solicitud',

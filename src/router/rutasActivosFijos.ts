@@ -13,6 +13,12 @@ const rutasActivosFijos: RouteRecordRaw[] = [
     component: () => import('activosFijos/seguimientoConsumoActivoFijo/view/SeguimientoConsumoActivoFijoPage.vue'),
     meta: { requiresAuth: true },
   },
+  {
+    path: '/transferencia-activos-fijos',
+    name: 'transferencia_activos_fijos',
+    component: () => import('activosFijos/transferenciaActivosFijos/view/TransferenciaActivoFijoPage.vue'),
+    meta: { requiresAuth: true },
+  },
 ]
 
 export default rutasActivosFijos

@@ -36,4 +36,11 @@ export const configuracionColumnasEntregasActivosFijos: ColumnConfig<any>[] = [
         align: 'left',
         sortable: true,
     },
+    {
+        name: 'codigo_permiso_traslado',
+        field: 'codigo_permiso_traslado',
+        label: 'Código de permiso para traslado (SINCOAR)',
+        align: 'left',
+        sortable: true,
+    },
 ]

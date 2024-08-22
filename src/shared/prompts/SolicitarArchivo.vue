@@ -131,7 +131,10 @@ export default defineComponent({
     onMounted(() => {
       idEntidad.value = entidad.id
       setTimeout(
-        () => refArchivo.value.listarArchivosAlmacenados(entidad.id, props.tipoArchivo),
+        () =>
+          refArchivo.value.listarArchivosAlmacenados(entidad.id, {
+            tipo: props.tipoArchivo
+          }),
         1
       )
     })
