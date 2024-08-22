@@ -1,39 +1,38 @@
 // Dependencies
-import { defineComponent, ref } from 'vue';
+import { configuracionColumnasPostulaciones } from '../domain/configuracionColumnasPostulaciones';
+import { userIsAuthenticated } from 'shared/helpers/verifyAuthenticatedUser';
+import { computed, defineComponent, ref } from 'vue';
 import useVuelidate from '@vuelidate/core';
 import { required, requiredIf } from 'shared/i18n-validators';
+import { useRouter } from 'vue-router';
 
 // Components
-import BasicContainer from 'shared/contenedor/modules/basic/view/BasicContainer.vue';
-import SimpleLayout from 'shared/contenedor/modules/simple/view/SimpleLayout.vue';
-import TabLayout from 'shared/contenedor/modules/simple/view/TabLayout.vue';
+import TabLayoutFilterTabs2 from 'shared/contenedor/modules/simple/view/TabLayoutFilterTabs2.vue';
 import GestorArchivos from 'components/gestorArchivos/GestorArchivos.vue';
 
 // Logica y controladores
-import { useRouter } from 'vue-router';
+import { IdentidadGeneroController } from 'pages/medico/gestionarPacientes/modules/fichaPeriodicaPreocupacional/infraestructure/IdentidadGeneroController';
 import { ContenedorSimpleMixin } from 'shared/contenedor/modules/simple/application/ContenedorSimpleMixin';
 import { Postulacion } from '../domain/Postulacion';
 import { PostulacionController } from '../infraestructure/PostulacionController';
-import { userIsAuthenticated } from 'shared/helpers/verifyAuthenticatedUser';
 import { acciones, convertir_fecha, maskFecha, tipoAutenticacion, tiposDocumentosIdentificaciones } from 'config/utils';
 import { useAuthenticationStore } from 'stores/authentication';
 import { useAuthenticationExternalStore } from 'stores/authenticationExternal';
 import { PaisController } from '../../../../sistema/pais/infraestructure/PaisController';
 import { useFiltrosListadosSelects } from 'shared/filtrosListadosGenerales';
-import { IdentidadGeneroController } from 'pages/medico/gestionarPacientes/modules/fichaPeriodicaPreocupacional/infraestructure/IdentidadGeneroController';
 import { useVacanteStore } from 'stores/recursosHumanos/seleccionContratacion/vacante';
 import { tiposLicencias } from 'config/vehiculos.utils';
-import { configuracionColumnasPostulaciones } from '../domain/configuracionColumnasPostulaciones';
 import { CustomActionTable } from 'components/tables/domain/CustomActionTable';
 import OptionGroupComponent from 'components/optionGroup/view/OptionGroupComponent.vue';
+import { estadosPostulacion, opcionesEstadosPostulaciones, tabOptionsEstadosPostulaciones } from 'config/seleccionContratacionPersonal.utils';
 
 
 export default defineComponent({
-  components: { TabLayout, BasicContainer, SimpleLayout, GestorArchivos, OptionGroupComponent },
+  components: { TabLayoutFilterTabs2, GestorArchivos, OptionGroupComponent },
   setup() {
     const mixin = new ContenedorSimpleMixin(Postulacion, new PostulacionController())
     const { entidad: postulacion, disabled, listadosAuxiliares, tabs, accion } = mixin.useReferencias()
-    const { setValidador, cargarVista, obtenerListados, consultar } = mixin.useComportamiento()
+    const { setValidador, cargarVista, obtenerListados, consultar, listar } = mixin.useComportamiento()
     const { onConsultado, onGuardado, onBeforeModificar, onReestablecer } = mixin.useHooks()
 
     const { autenticado, tipoAutenticacion: tipoAuth } = userIsAuthenticated()
@@ -42,7 +41,8 @@ export default defineComponent({
     const vacanteStore = useVacanteStore()
     const router = useRouter()
     const id = router.currentRoute.value.params.id
-
+    const tabActual = ref(estadosPostulacion.POSTULADO)
+    const desactivarCampos = computed(()=>{return [acciones.editar].includes(accion.value)})
     const identidades = ref()
     const { paises, filtrarPaises } = useFiltrosListadosSelects(listadosAuxiliares)
 
@@ -130,6 +130,10 @@ export default defineComponent({
     /***************************************************************************
      * FUNCIONES
     ***************************************************************************/
+    async function filtrarPostulaciones(tab: string) {
+      tabActual.value = tab
+      listar({ estado: tabActual.value })
+    }
     async function subirArchivos() {
       await refArchivo.value?.subir()
     }
@@ -168,8 +172,9 @@ export default defineComponent({
      * BOTONES DE TABLA
     ***************************************************************************/
     const btnConsultar: CustomActionTable = {
-      titulo: '',
-      icono: 'bi-eye',
+      titulo: 'Editar',
+      icono: 'bi-pencil-square',
+      // icono: 'bi-eye',
       color: 'primary',
       tooltip: 'Visualizar Postulación',
       accion: ({ entidad }) => {
@@ -177,7 +182,6 @@ export default defineComponent({
         accion.value = acciones.editar
         consultar(entidad, { leido: true })
         tabs.value = 'formulario'
-
       }, visible: ({ entidad, posicion }) => {
         return true
       }
@@ -231,15 +235,21 @@ export default defineComponent({
       vacante: vacanteStore.vacante,
       refArchivo, idRegistro,
       truncateChips: ref(true),
+      tabActual,
+      desactivarCampos,
 
 
       //listados
+      tabOptions: tabOptionsEstadosPostulaciones,
       tiposDocumentosIdentificaciones,
+      estadosPostulacion,
+      estados: opcionesEstadosPostulaciones,
       tiposLicencias,
       identidades,
       paises, filtrarPaises,
 
       // funciones
+      filtrarPostulaciones,
       checkPoseoLicencia,
       optionsFecha,
 

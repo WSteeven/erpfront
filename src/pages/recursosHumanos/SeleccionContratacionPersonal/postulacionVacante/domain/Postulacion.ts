@@ -1,3 +1,4 @@
+import { estadosPostulacion } from 'config/seleccionContratacionPersonal.utils';
 import { EntidadAuditable } from 'shared/entidad/domain/entidadAuditable';
 
 export class Postulacion extends EntidadAuditable {
@@ -27,7 +28,7 @@ export class Postulacion extends EntidadAuditable {
   tengo_formacion_academica_requerida: boolean //
   tengo_conocimientos_requeridos: boolean //
   tengo_experiencia_requerida: boolean //
-  tengo_disponibilidad_viajar:boolean //
+  tengo_disponibilidad_viajar: boolean //
   tengo_licencia_conducir: boolean //
   tipo_licencia: string | null //
 
@@ -48,13 +49,13 @@ export class Postulacion extends EntidadAuditable {
     this.genero = 'M'
     this.identidad_genero = null
     this.pais = null
-    this.direccion= null
-    this.mi_experiencia= null
+    this.direccion = null
+    this.mi_experiencia = null
     this.pais_residencia = null
     this.fecha_nacimiento = null
     this.ruta_cv = null
     this.tengo_documentos_regla = false
-    this.estado = false
+    this.estado = estadosPostulacion.POSTULADO
 
     this.tengo_formacion_academica_requerida = false
     this.tengo_conocimientos_requeridos = false

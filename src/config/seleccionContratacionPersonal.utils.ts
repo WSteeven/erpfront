@@ -57,3 +57,27 @@ export const estadosPostulacion = {
   BANCO_DE_CANDIDATOS: 'BANCO DE CANDIDATOS',
   RECHAZADO: 'RECHAZADO', // cuando el perfil del postulante no aplica para el cargo ni para banco de candidatos
 }
+
+export const opcionesEstadosPostulaciones = [
+  estadosPostulacion.POSTULADO,
+  estadosPostulacion.REVISION_CV,
+  estadosPostulacion.ENTREVISTA,
+  estadosPostulacion.DESCARTADO,
+  estadosPostulacion.SELECCIONADO,
+  estadosPostulacion.EXAMENES_MEDICOS,
+  estadosPostulacion.CONTRATADO,
+  estadosPostulacion.BANCO_DE_CANDIDATOS,
+  estadosPostulacion.RECHAZADO
+]
+
+export const tabOptionsEstadosPostulaciones: TabOption[] = [
+  { value: estadosPostulacion.POSTULADO, label: estadosPostulacion.POSTULADO },
+  { value: estadosPostulacion.REVISION_CV, label: estadosPostulacion.REVISION_CV },
+  { value: estadosPostulacion.ENTREVISTA, label: estadosPostulacion.ENTREVISTA },
+  { value: estadosPostulacion.DESCARTADO, label: estadosPostulacion.DESCARTADO },
+  { value: estadosPostulacion.SELECCIONADO, label: estadosPostulacion.SELECCIONADO },
+  { value: estadosPostulacion.EXAMENES_MEDICOS, label: estadosPostulacion.EXAMENES_MEDICOS },
+  { value: estadosPostulacion.CONTRATADO, label: estadosPostulacion.CONTRATADO },
+  { value: estadosPostulacion.BANCO_DE_CANDIDATOS, label: estadosPostulacion.BANCO_DE_CANDIDATOS },
+  { value: estadosPostulacion.RECHAZADO, label: estadosPostulacion.RECHAZADO },
+]

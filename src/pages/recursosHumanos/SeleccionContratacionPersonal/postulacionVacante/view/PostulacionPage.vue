@@ -1,7 +1,11 @@
 <template>
-  <tab-layout
+  <tab-layout-filter-tabs2
     :mixin="mixin"
     :configuracionColumnas="configuracionColumnas"
+    ajustarCeldas
+    :tabOptions="tabOptions"
+    :tabDefecto="tabActual"
+    :filtrar="filtrarPostulaciones"
     titulo-pagina="Postulaciones"
     :permitirConsultar="false"
     :permitirGuardar="false"
@@ -18,7 +22,7 @@
           <!-- Grupo de botones -->
           <div
             class="col-12 col-md-12 q-py-md"
-            v-if="accion == acciones.consultar"
+            v-if="accion == acciones.consultar || accion == acciones.editar"
           >
             <div class="text-center">
               <q-btn-group push>
@@ -54,7 +58,7 @@
                     size="xs"
                     class="q-mr-sm"
                   ></q-icon
-                  ><span>{{btnEntrevistar.titulo}}</span></q-btn
+                  ><span>{{ btnEntrevistar.titulo }}</span></q-btn
                 >
                 <!-- Boton consultar -->
                 <q-btn
@@ -66,8 +70,12 @@
                   glossy
                   @click="btnCalificar.accion"
                 >
-                  <q-icon :name="btnCalificar.icono" size="xs" class="q-pr-sm"></q-icon>
-                  <span>{{btnCalificar.titulo}}</span>
+                  <q-icon
+                    :name="btnCalificar.icono"
+                    size="xs"
+                    class="q-pr-sm"
+                  ></q-icon>
+                  <span>{{ btnCalificar.titulo }}</span>
                 </q-btn>
                 <!-- Boton Imprimir -->
                 <q-btn
@@ -84,7 +92,7 @@
                     size="xs"
                     class="q-mr-sm"
                   ></q-icon>
-                  <span>{{btnImprimir.titulo}}</span>
+                  <span>{{ btnImprimir.titulo }}</span>
                 </q-btn>
               </q-btn-group>
             </div>
@@ -102,7 +110,7 @@
                 <q-input
                   v-model="postulacion.nombres"
                   placeholder="Opcional"
-                  :disable="disabled"
+                  :disable="disabled || desactivarCampos"
                   outlined
                   dense
                   autogrow
@@ -116,7 +124,7 @@
                 <q-input
                   v-model="postulacion.apellidos"
                   placeholder="Opcional"
-                  :disable="disabled"
+                  :disable="disabled || desactivarCampos"
                   outlined
                   dense
                   autogrow
@@ -134,7 +142,7 @@
                   transition-hide="jump-down"
                   options-dense
                   dense
-                  :disable="disabled"
+                  :disable="disabled || desactivarCampos"
                   outlined
                   :input-debounce="0"
                   use-input
@@ -169,7 +177,7 @@
                 <q-input
                   v-model="postulacion.identificacion"
                   placeholder="Opcional"
-                  :disable="disabled"
+                  :disable="disabled || desactivarCampos"
                   outlined
                   dense
                   autogrow
@@ -185,7 +193,7 @@
                   type="email"
                   v-model="postulacion.correo_personal"
                   placeholder="Obligatorio"
-                  :disable="disabled"
+                  :disable="disabled || desactivarCampos"
                   :error="!!v$.correo_personal.$errors.length"
                   @blur="v$.correo_personal.$touch"
                   @update:model-value="
@@ -212,7 +220,7 @@
                   type="tel"
                   v-model="postulacion.telefono"
                   placeholder="Obligatorio"
-                  :disable="disabled"
+                  :disable="disabled || desactivarCampos"
                   :error="!!v$.telefono.$errors.length"
                   outlined
                   dense
@@ -238,7 +246,7 @@
                   indeterminate-icon="fa fa-user"
                   checked-icon="fa fa-male"
                   unchecked-icon="fa fa-female"
-                  :disable="disabled"
+                  :disable="disabled || desactivarCampos"
                 />
               </div>
 
@@ -253,7 +261,7 @@
                   options-dense
                   dense
                   outlined
-                  :disable="disabled"
+                  :disable="disabled || desactivarCampos"
                   :input-debounce="0"
                   use-input
                   :error="!!v$.identidad_genero.$errors.length"
@@ -295,7 +303,7 @@
                   use-input
                   :input-debounce="0"
                   @filter="filtrarPaises"
-                  :disable="disabled"
+                  :disable="disabled || desactivarCampos"
                   :error="!!v$.pais.$errors.length"
                   :option-value="v => v.id"
                   :option-label="v => v.pais + ' (' + v.abreviatura + ')'"
@@ -332,7 +340,7 @@
                   use-input
                   :input-debounce="0"
                   @filter="filtrarPaises"
-                  :disable="disabled"
+                  :disable="disabled || desactivarCampos"
                   :error="!!v$.pais_residencia.$errors.length"
                   :option-value="v => v.id"
                   :option-label="v => v.pais + ' (' + v.abreviatura + ')'"
@@ -380,7 +388,7 @@
                   placeholder="Obligatorio"
                   :error="!!v$.fecha_nacimiento.$errors.length"
                   @blur="v$.fecha_nacimiento.$touch"
-                  :disable="disabled"
+                  :disable="disabled || desactivarCampos"
                   readonly
                   outlined
                   dense
@@ -423,13 +431,42 @@
                 </q-input>
               </div>
 
+              <!-- Estado de postulación -->
+              <div
+                class="col-md-3 col-sm-6 col-xs-12"
+                v-if="accion !== acciones.nuevo"
+              >
+                <label
+                  color="light-green-2"
+                  class="text-positive text-bold q-mb-sm inline-block bg-light-green-2 rounded q-px-md"
+                  >Estado
+                </label>
+                <q-select
+                  v-model="postulacion.estado"
+                  :options="estados"
+                  transition-show="jump-up"
+                  transition-hide="jump-down"
+                  options-dense
+                  dense
+                  use-chips
+                  outlined
+                  :disable="disabled"
+                  :option-disable="
+                    opt =>
+                      opt == estadosPostulacion.POSTULADO ||
+                      opt == estadosPostulacion.REVISION_CV
+                  "
+                >
+                </q-select>
+              </div>
+
               <!-- Dirección  -->
               <div class="col-md-12 col-sm-12 col-xs-12">
                 <label class="q-mb-sm block">Dirección </label>
                 <q-input
                   v-model="postulacion.direccion"
                   placeholder="Obligatorio"
-                  :disable="disabled"
+                  :disable="disabled || desactivarCampos"
                   outlined
                   dense
                   autogrow
@@ -464,12 +501,11 @@
                   label="Adjuntar Currículum Vitae u Hoja de Vida"
                   :mixin="mixin"
                   :disable="disabled"
+                  :permitir-subir="false"
                   formato=".pdf"
                   :maxFiles="1"
                   :listarAlGuardar="false"
-                  :permitir-eliminar="
-                    accion == acciones.nuevo || accion == acciones.editar
-                  "
+                  :permitir-eliminar="false"
                   :idModelo="idRegistro"
                 >
                   <template #boton-subir>
@@ -503,7 +539,7 @@
                   type="textarea"
                   v-model="postulacion.mi_experiencia"
                   placeholder="Obligatorio"
-                  :disable="disabled"
+             :disable="disabled || desactivarCampos"
                   outlined
                   dense
                   autogrow
@@ -536,7 +572,7 @@
                 <div class="col-md-6 col-xs-12">
                   <option-group-component
                     v-model="postulacion.tengo_experiencia_requerida"
-                    :disable="disabled"
+                    :disable="disabled || desactivarCampos"
                   />
                 </div>
               </div>
@@ -552,7 +588,7 @@
                 <div class="col-md-6 col-xs-12">
                   <option-group-component
                     v-model="postulacion.tengo_disponibilidad_viajar"
-                    :disable="disabled"
+                    :disable="disabled || desactivarCampos"
                   />
                 </div>
               </div>
@@ -565,7 +601,7 @@
                   Poseo licencia de conducir vigente?
                   <option-group-component
                     v-model="postulacion.tengo_licencia_conducir"
-                    :disable="disabled"
+                    :disable="disabled || desactivarCampos"
                   />
                 </div>
                 <!--Tipo de Licencia -->
@@ -582,7 +618,7 @@
                     transition-show="jump-up"
                     transition-hide="jump-down"
                     hint="Obligatorio"
-                    :disable="disabled"
+                   :disable="disabled || desactivarCampos"
                     options-dense
                     dense
                     outlined
@@ -648,7 +684,7 @@
                   Tengo los conocimientos requeridos?
                   <option-group-component
                     v-model="postulacion.tengo_conocimientos_requeridos"
-                    :disable="disabled"
+                    :disable="disabled || desactivarCampos"
                   />
                 </div>
               </div>
@@ -688,7 +724,7 @@
                   Tengo la formación académica requerida?
                   <option-group-component
                     v-model="postulacion.tengo_formacion_academica_requerida"
-                    :disable="disabled"
+                    :disable="disabled || desactivarCampos"
                   />
                 </div>
               </div>
@@ -697,7 +733,7 @@
         </div>
       </q-form>
     </template>
-  </tab-layout>
+  </tab-layout-filter-tabs2>
 </template>
 
 <script src="./PostulacionPage.ts"></script>
