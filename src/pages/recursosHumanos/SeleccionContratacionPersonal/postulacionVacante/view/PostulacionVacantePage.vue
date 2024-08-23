@@ -368,30 +368,30 @@
       >
         <div class="row q-pa-md">
           <div class="col-12">
-            Puedes seleccionar un CV de los que ya tienes registrados o subir uno nuevo
-                  <q-btn-toggle
-                    v-model="quieroSubirCV"
-                    class="toggle-button-primary"
-                    :disable="disabled"
-                    spread
-                    no-caps
-                    rounded
-                    toggle-color="primary"
-                    unelevated
-                    :options="[
-                      {
-                        label: 'Utilizar un Currículum Vitae ya subido',
-                        value: false
-                      },
-                      {
-                        label: 'Quiero subir mi Currículum Vitae',
-                        value: true
-                      }
-                    ]"
-                  />
-                </div>
+            Puedes seleccionar un CV de los que ya tienes registrados o subir
+            uno nuevo
+            <q-btn-toggle
+              v-model="quieroSubirCV"
+              class="toggle-button-primary"
+              :disable="disabled"
+              spread
+              no-caps
+              rounded
+              toggle-color="primary"
+              unelevated
+              :options="[
+                {
+                  label: 'Utilizar un Currículum Vitae ya subido',
+                  value: false
+                },
+                {
+                  label: 'Quiero subir mi Currículum Vitae',
+                  value: true
+                }
+              ]"
+            />
+          </div>
           <div class="col-12" v-if="!quieroSubirCV">
-
             <essential-table
               :titulo="`Tienes ${listadoCurriculumnsUsuario.length} curriculums registrados`"
               ref="refArchivoUsuario"
@@ -608,7 +608,7 @@
             v-if="vacante.requiere_formacion_academica"
           >
             <div class="col-md-6 col-sm-12 col-xs-12">
-              El cargo require tener cierta formación académica:
+              El cargo requiere tener cierta formación académica:
               <div
                 v-for="formacion of vacante.formaciones_academicas"
                 :key="formacion.id"
@@ -643,6 +643,16 @@
               />
             </div>
           </div>
+        </div>
+      </q-expansion-item>
+      <q-expansion-item
+        class="overflow-hidden q-mb-md rounded bg-desenfoque-2"
+        label="Referencias Personales"
+        header-class="text-bold bg-desenfoque text-primary"
+        default-opened
+      >
+      <div class="row q-col-gutter-sm q-pa-sm">
+        
         </div>
       </q-expansion-item>
     </template>

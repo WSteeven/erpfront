@@ -70,6 +70,19 @@ export const opcionesEstadosPostulaciones = [
   estadosPostulacion.RECHAZADO
 ]
 
+export const likertCalificacionPostulante = [
+  'EXCELENTE',
+  'BUENO',
+  'REGULAR'
+]
+export const likertCalificacionPostulacion = [
+  'EXCELENTE',
+  'BUENO',
+  'REGULAR',
+  'DEFICIENTE',
+  'MUY DEFICIENTE',
+]
+
 export const tabOptionsEstadosPostulaciones: TabOption[] = [
   { value: estadosPostulacion.POSTULADO, label: estadosPostulacion.POSTULADO },
   { value: estadosPostulacion.REVISION_CV, label: estadosPostulacion.REVISION_CV },

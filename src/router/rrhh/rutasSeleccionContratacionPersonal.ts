@@ -23,6 +23,12 @@ const rutasSeleccionContratacionPersonal: RouteRecordRaw[] = [
     meta: { requiresAuth: true }
   },
   {
+    path: 'bancos-postulantes',
+    name: 'rrhh_bancos_postulantes',
+    component: () => import('seleccionContratacion/bancoPostulante/view/BancoPostulantePage.vue'),
+    meta: { requiresAuth: true }
+  },
+  {
     path: 'postulaciones',
     name: 'rrhh_postulaciones',
     component: () => import('seleccionContratacion/postulacionVacante/view/PostulacionPage.vue'),

@@ -16,6 +16,7 @@ export const seleccionContratacionPersonal = {
     user_curriculums: new Endpoint('seleccion-contratacion/curriculums-usuario'),
     vacante_favorita: new Endpoint('seleccion-contratacion/vacante-favorita'), //para marcar una vacante como favorita
     vacantes_favoritas: new Endpoint('seleccion-contratacion/vacantes-favoritas'),
+    bancos_postulantes: new Endpoint('seleccion-contratacion/bancos-postulantes'),
 
 
 

@@ -25,10 +25,13 @@ import { tiposLicencias } from 'config/vehiculos.utils';
 import { CustomActionTable } from 'components/tables/domain/CustomActionTable';
 import OptionGroupComponent from 'components/optionGroup/view/OptionGroupComponent.vue';
 import { estadosPostulacion, opcionesEstadosPostulaciones, tabOptionsEstadosPostulaciones } from 'config/seleccionContratacionPersonal.utils';
+import { ComportamientoModalesPostulacion } from '../application/ComportamientoModalesPostulacion';
+import ModalEntidad from 'components/modales/view/ModalEntidad.vue';
+import { usePostulacionStore } from 'stores/recursosHumanos/seleccionContratacion/postulacion';
 
 
 export default defineComponent({
-  components: { TabLayoutFilterTabs2, GestorArchivos, OptionGroupComponent },
+  components: { TabLayoutFilterTabs2, GestorArchivos, OptionGroupComponent, ModalEntidad },
   setup() {
     const mixin = new ContenedorSimpleMixin(Postulacion, new PostulacionController())
     const { entidad: postulacion, disabled, listadosAuxiliares, tabs, accion } = mixin.useReferencias()
@@ -36,13 +39,14 @@ export default defineComponent({
     const { onConsultado, onGuardado, onBeforeModificar, onReestablecer } = mixin.useHooks()
 
     const { autenticado, tipoAutenticacion: tipoAuth } = userIsAuthenticated()
-
+    const modales = new ComportamientoModalesPostulacion()
     let store
     const vacanteStore = useVacanteStore()
     const router = useRouter()
     const id = router.currentRoute.value.params.id
     const tabActual = ref(estadosPostulacion.POSTULADO)
-    const desactivarCampos = computed(()=>{return [acciones.editar].includes(accion.value)})
+    const desactivarCampos = computed(() => { return [acciones.editar].includes(accion.value) })
+    const postulacionStore = usePostulacionStore()
     const identidades = ref()
     const { paises, filtrarPaises } = useFiltrosListadosSelects(listadosAuxiliares)
 
@@ -60,7 +64,7 @@ export default defineComponent({
       }, 300)
     })
     onConsultado(async () => {
-      console.log(postulacion.tengo_conocimientos_requeridos)
+      // console.log(postulacion.tengo_conocimientos_requeridos)
       setTimeout(() => {
         refArchivo.value?.listarArchivosAlmacenados(postulacion.id, { tipo: CURRICULUM })
       }, 300)
@@ -157,6 +161,10 @@ export default defineComponent({
       // console.log(vacanteStore.idVacante, vacanteStore.vacante)
     }
 
+    function guardado(data) {
+      console.log(data)
+    }
+
     function optionsFecha(date) {
       const hoy = convertir_fecha(new Date())
       return date <= hoy
@@ -191,7 +199,7 @@ export default defineComponent({
       color: 'primary',
       icono: 'bi-inboxes',
       accion: async ({ entidad }) => {
-        console.log('diste clic en banco de postulantes')
+        console.log('diste clic en calificar')
       },
       visible: () => true
     }
@@ -202,6 +210,8 @@ export default defineComponent({
       icono: 'bi-inboxes',
       accion: async ({ entidad }) => {
         console.log('diste clic en banco de postulantes')
+        postulacionStore.idPostulacion = entidad.id ?? postulacion.id
+        modales.abrirModalEntidad('BancoPostulantePage')
       },
       visible: () => true
     }
@@ -237,6 +247,7 @@ export default defineComponent({
       truncateChips: ref(true),
       tabActual,
       desactivarCampos,
+      guardado, modales,
 
 
       //listados

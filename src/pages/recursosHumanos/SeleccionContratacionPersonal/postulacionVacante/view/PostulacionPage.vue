@@ -693,7 +693,7 @@
                 v-if="vacante.requiere_formacion_academica || true"
               >
                 <div class="col-md-6 col-sm-12 col-xs-12">
-                  El cargo require tener cierta formación académica:
+                  El cargo requiere tener cierta formación académica:
                   <div
                     v-for="formacion of vacante.formaciones_academicas"
                     :key="formacion.id"
@@ -734,6 +734,13 @@
       </q-form>
     </template>
   </tab-layout-filter-tabs2>
+  <modal-entidad
+      :comportamiento="modales"
+      :mixin-modal="mixin"
+      @guardado="guardado"
+      :confirmar-cerrar="false"
+      :persistente="false"
+    />
 </template>
 
 <script src="./PostulacionPage.ts"></script>
