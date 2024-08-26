@@ -76,11 +76,9 @@ export const likertCalificacionPostulante = [
   'REGULAR'
 ]
 export const likertCalificacionPostulacion = [
-  'EXCELENTE',
-  'BUENO',
-  'REGULAR',
-  'DEFICIENTE',
-  'MUY DEFICIENTE',
+  'ALTA PRIORIDAD',
+  'BAJA PRIORIDAD',
+  'NO CONSIDERAR',
 ]
 
 export const tabOptionsEstadosPostulaciones: TabOption[] = [
@@ -91,6 +89,11 @@ export const tabOptionsEstadosPostulaciones: TabOption[] = [
   { value: estadosPostulacion.SELECCIONADO, label: estadosPostulacion.SELECCIONADO },
   { value: estadosPostulacion.EXAMENES_MEDICOS, label: estadosPostulacion.EXAMENES_MEDICOS },
   { value: estadosPostulacion.CONTRATADO, label: estadosPostulacion.CONTRATADO },
-  { value: estadosPostulacion.BANCO_DE_CANDIDATOS, label: estadosPostulacion.BANCO_DE_CANDIDATOS },
+  // { value: estadosPostulacion.BANCO_DE_CANDIDATOS, label: estadosPostulacion.BANCO_DE_CANDIDATOS },
   { value: estadosPostulacion.RECHAZADO, label: estadosPostulacion.RECHAZADO },
+]
+
+export const tabOptionsBancoPostulante: TabOption[] = [
+  { value: 0, label: 'ACTIVO' },
+  { value: 1, label: 'DESCARTADO' },
 ]

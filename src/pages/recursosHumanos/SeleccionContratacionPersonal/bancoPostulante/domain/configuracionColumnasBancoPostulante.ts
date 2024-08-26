@@ -10,6 +10,13 @@ export const configuracionColumnasBancoPostulante: ColumnConfig<BancoPostulante>
     sortable: true
   },
   {
+    name: "nombres_apellidos",
+    field: "nombres_apellidos",
+    label: "Candidato",
+    align: "left",
+    sortable: true
+  },
+  {
     name: "cargo",
     field: "cargo",
     label: "Cargo",
@@ -30,12 +37,12 @@ export const configuracionColumnasBancoPostulante: ColumnConfig<BancoPostulante>
     align: "center",
     sortable: true
   },
-  {
-    name: "descartado",
-    field: "descartado",
-    label: "Descartado",
-    align: "center",
-    sortable: true
-  },
+  // {
+  //   name: "descartado",
+  //   field: "descartado",
+  //   label: "Descartado",
+  //   align: "center",
+  //   sortable: true
+  // },
 
 ]

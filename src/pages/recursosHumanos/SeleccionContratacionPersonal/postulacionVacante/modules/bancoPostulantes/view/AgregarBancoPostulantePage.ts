@@ -25,7 +25,7 @@ export default defineComponent({
   },
   emits: ['cerrar-modal', 'guardado'],
   setup(props, { emit }) {
-    const { listadosAuxiliares, disabled } = props.mixinModal.useReferencias()
+    const { listadosAuxiliares } = props.mixinModal.useReferencias()
     const { cargarVista, obtenerListados } = props.mixinModal.useComportamiento()
     const { confirmar, notificarCorrecto, notificarAdvertencia } = useNotificaciones()
     const banco = reactive(new BancoPostulante())
@@ -60,8 +60,9 @@ export default defineComponent({
             const axios = AxiosHttpRepository.getInstance()
             const ruta = axios.getEndpoint(endpoints.bancos_postulantes)
             const response: AxiosResponse = await axios.post(ruta, banco)
-
-
+            notificarCorrecto(response.data.mensaje)
+            cargando.desactivar()
+            emit('cerrar-modal', false)
           })
 
         } catch (error: any) {
@@ -80,7 +81,6 @@ export default defineComponent({
 
     return {
       banco, v$,
-      disabled,
       //listados
       cargos, filtrarCargos,
       likertCalificacionPostulante,

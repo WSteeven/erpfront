@@ -10,7 +10,6 @@
             :options="cargos"
             transition-show="jump-up"
             transition-hide="jump-down"
-            :disable="disabled"
             options-dense
             dense
             outlined
@@ -53,7 +52,6 @@
             dense
             use-chips
             outlined
-            :disable="disabled"
           >
           </q-select>
         </div>
@@ -64,7 +62,6 @@
           <q-input
             v-model="banco.observacion"
             placeholder="Opcional"
-            :disable="disabled"
             outlined
             dense
             autogrow

@@ -1,6 +1,6 @@
 import { SelectOption } from "./SelectOption"
 
-type tipos = 'text' | 'number' | 'textarea' | 'select' | 'boolean' | 'date' | 'search' | 'imagen' | 'datetime' | 'toggle' | 'select_multiple'
+type tipos = 'text' | 'number' | 'textarea' | 'select' | 'boolean' | 'date' | 'search' | 'imagen' | 'datetime' | 'toggle' | 'select_multiple' // | 'file'
 type align = 'left' | 'center' | 'right'
 
 export interface ColumnConfig<T> {
@@ -21,5 +21,6 @@ export interface ColumnConfig<T> {
   filtrar?: boolean
   default?: boolean
   placeholder?: string
+  // accept?: string
   filtro?: (val, update) => void
 }

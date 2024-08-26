@@ -651,8 +651,30 @@
         header-class="text-bold bg-desenfoque text-primary"
         default-opened
       >
-      <div class="row q-col-gutter-sm q-pa-sm">
-        
+        <div class="row q-col-gutter-sm q-pa-sm">
+          <div class="col-12">
+            <label class="q-mb-sm block">
+              <strong style="color: red">*</strong> Es recomendable que
+              registres <strong>3 referencias </strong> personales o laborales
+            </label>
+            <!-- <label>
+              También puedes subir tus referencias en
+              <strong>formato PDF</strong></label
+            > -->
+            <essential-table
+              :configuracionColumnas="configuracionColumnasReferencias"
+              :datos="postulacion.referencias"
+              ajustarCeldas
+              :permitirConsultar="false"
+              :permitirEditarCeldas="true"
+              :permitirEditar="false"
+              :permitirEliminar="false"
+              :altoFijo="false"
+              :accion1Header="btnAgregarReferencia"
+              :accion1="btnEliminar"
+              :mostrarFooter="false"
+            ></essential-table>
+          </div>
         </div>
       </q-expansion-item>
     </template>

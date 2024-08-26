@@ -23,7 +23,7 @@ import { useFiltrosListadosSelects } from 'shared/filtrosListadosGenerales';
 import { IdentidadGeneroController } from 'pages/medico/gestionarPacientes/modules/fichaPeriodicaPreocupacional/infraestructure/IdentidadGeneroController';
 import { useVacanteStore } from 'stores/recursosHumanos/seleccionContratacion/vacante';
 import { optionsDefault, tiposLicencias } from 'config/vehiculos.utils';
-import { checkValueIsNumber, descargarArchivoUrl } from 'shared/utils';
+import { checkValueIsNumber, descargarArchivoUrl, encontrarUltimoIdListado } from 'shared/utils';
 import SolicitarArchivo from 'shared/prompts/SolicitarArchivo.vue';
 import { UsuarioController } from 'pages/fondosRotativos/usuario/infrestructure/UsuarioController';
 import { StatusEssentialLoading } from 'components/loading/application/StatusEssentialLoading';
@@ -35,6 +35,9 @@ import EssentialTable from 'components/tables/view/EssentialTable.vue';
 import EssentialSelectableTable from 'components/tables/view/EssentialSelectableTable.vue';
 import { ValidarCurriculum } from '../application/ValidarCurriculum';
 import { ArchivoController } from 'pages/gestionTrabajos/subtareas/modules/gestorArchivosTrabajos/infraestructure/ArchivoController';
+import { configuracionColumnasReferencias } from '../domain/configuracionColumnasReferencias';
+import { ReferenciaPersonal } from '../domain/ReferenciaPersonal';
+import { UserReferenciasController } from '../infraestructure/UserReferenciasController';
 
 
 export default defineComponent({
@@ -91,6 +94,7 @@ export default defineComponent({
         }
       }, 300)
       cargando.cargarConsulta(async () => await obtenerCurriculumsUsuario())
+      cargando.cargarConsulta(async () => await obtenerReferenciasUsuario())
     })
 
     cargarVista(async () => {
@@ -123,6 +127,7 @@ export default defineComponent({
 
       //Vamos a listar los archivos del usuario que sean CV
       cargando.cargarConsulta(async () => await obtenerCurriculumsUsuario())
+      cargando.cargarConsulta(async () => await obtenerReferenciasUsuario())
     })
 
     const reglas = {
@@ -159,6 +164,15 @@ export default defineComponent({
         listadoCurriculumnsUsuario.value = results
       } catch (error: any) {
         notificarError('Error al obtener los CV del usuario')
+      }
+    }
+
+    async function obtenerReferenciasUsuario(){
+      try {
+        const results = await (await new UserReferenciasController().listar()).result
+        postulacion.referencias = results
+      } catch (error: any) {
+        notificarError('Error al obtener las referencias del usuario')
       }
     }
 
@@ -205,6 +219,9 @@ export default defineComponent({
         postulacion.ruta_cv = archivos[0].ruta
       }
     }
+    function eliminar({ posicion }) {
+      confirmar('¿Está seguro de continuar?', () => postulacion.referencias.splice(posicion, 1))
+    }
 
     /***************************************************************************
      * BOTONES DE TABLA
@@ -233,6 +250,27 @@ export default defineComponent({
       }
     }
 
+    const btnAgregarReferencia: CustomActionTable = {
+      titulo: 'Agregar Referencia',
+      icono: 'bi-arrow-bar-down',
+      color: 'positive',
+      tooltip: 'Agregar referencia personal o laboral',
+      accion: () => {
+        const fila = new ReferenciaPersonal()
+        fila.id = postulacion.referencias.length ? encontrarUltimoIdListado(postulacion.referencias) + 1 : 1
+        postulacion.referencias.unshift(fila)
+      },
+      visible: () => accion.value == acciones.nuevo
+    }
+    const btnEliminar: CustomActionTable = {
+      titulo: 'Eliminar',
+      icono: 'bi-trash',
+      color: 'negative',
+      accion: ({ posicion }) => {
+        eliminar({ posicion })
+      },
+      visible: () => true
+    }
 
     return {
       mixin, v$, accion, acciones,
@@ -243,6 +281,7 @@ export default defineComponent({
       vacante: vacanteStore.vacante,
       refArchivo, refArchivoUsuario, idRegistro, listadoCurriculumnsUsuario,
       columnas: [...configuracionColumnasArchivoSubtarea, accionesTabla],
+      configuracionColumnasReferencias: [...configuracionColumnasReferencias, accionesTabla],
       truncateChips: ref(true),
       quieroSubirCV,
       store,
@@ -261,6 +300,8 @@ export default defineComponent({
       // botones
       btnDescargarCurriculumUsuario,
       btnEliminarCurriculumUsuario,
+      btnAgregarReferencia,
+      btnEliminar,
 
     }
   },

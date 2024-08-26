@@ -22,6 +22,8 @@ export class Postulacion extends EntidadAuditable {
   mi_experiencia: string | null //
   ruta_cv: string | null //
   estado: string | null //
+  referencias: any //
+  calificacion: string | null //
 
   tengo_documentos_regla: boolean //
 
@@ -56,6 +58,8 @@ export class Postulacion extends EntidadAuditable {
     this.ruta_cv = null
     this.tengo_documentos_regla = false
     this.estado = estadosPostulacion.POSTULADO
+    this.referencias = []
+    this.calificacion = null
 
     this.tengo_formacion_academica_requerida = false
     this.tengo_conocimientos_requeridos = false

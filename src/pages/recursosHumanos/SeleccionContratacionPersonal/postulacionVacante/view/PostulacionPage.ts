@@ -8,7 +8,10 @@ import { useRouter } from 'vue-router';
 
 // Components
 import TabLayoutFilterTabs2 from 'shared/contenedor/modules/simple/view/TabLayoutFilterTabs2.vue';
+import OptionGroupComponent from 'components/optionGroup/view/OptionGroupComponent.vue';
 import GestorArchivos from 'components/gestorArchivos/GestorArchivos.vue';
+import EssentialTable from 'components/tables/view/EssentialTable.vue';
+import ModalEntidad from 'components/modales/view/ModalEntidad.vue';
 
 // Logica y controladores
 import { IdentidadGeneroController } from 'pages/medico/gestionarPacientes/modules/fichaPeriodicaPreocupacional/infraestructure/IdentidadGeneroController';
@@ -23,19 +26,18 @@ import { useFiltrosListadosSelects } from 'shared/filtrosListadosGenerales';
 import { useVacanteStore } from 'stores/recursosHumanos/seleccionContratacion/vacante';
 import { tiposLicencias } from 'config/vehiculos.utils';
 import { CustomActionTable } from 'components/tables/domain/CustomActionTable';
-import OptionGroupComponent from 'components/optionGroup/view/OptionGroupComponent.vue';
 import { estadosPostulacion, opcionesEstadosPostulaciones, tabOptionsEstadosPostulaciones } from 'config/seleccionContratacionPersonal.utils';
 import { ComportamientoModalesPostulacion } from '../application/ComportamientoModalesPostulacion';
-import ModalEntidad from 'components/modales/view/ModalEntidad.vue';
 import { usePostulacionStore } from 'stores/recursosHumanos/seleccionContratacion/postulacion';
+import { configuracionColumnasReferencias } from '../domain/configuracionColumnasReferencias';
 
 
 export default defineComponent({
-  components: { TabLayoutFilterTabs2, GestorArchivos, OptionGroupComponent, ModalEntidad },
+  components: { TabLayoutFilterTabs2, EssentialTable, GestorArchivos, OptionGroupComponent, ModalEntidad },
   setup() {
     const mixin = new ContenedorSimpleMixin(Postulacion, new PostulacionController())
     const { entidad: postulacion, disabled, listadosAuxiliares, tabs, accion } = mixin.useReferencias()
-    const { setValidador, cargarVista, obtenerListados, consultar, listar } = mixin.useComportamiento()
+    const { setValidador, cargarVista, obtenerListados, reestablecer, consultar, listar } = mixin.useComportamiento()
     const { onConsultado, onGuardado, onBeforeModificar, onReestablecer } = mixin.useHooks()
 
     const { autenticado, tipoAutenticacion: tipoAuth } = userIsAuthenticated()
@@ -45,7 +47,7 @@ export default defineComponent({
     const router = useRouter()
     const id = router.currentRoute.value.params.id
     const tabActual = ref(estadosPostulacion.POSTULADO)
-    const desactivarCampos = computed(() => { return [acciones.editar].includes(accion.value) })
+    const desactivarCampos = computed(() => { return acciones.editar === accion.value })
     const postulacionStore = usePostulacionStore()
     const identidades = ref()
     const { paises, filtrarPaises } = useFiltrosListadosSelects(listadosAuxiliares)
@@ -73,6 +75,7 @@ export default defineComponent({
         vacanteStore.idVacante = postulacion.vacante
         vacanteStore.showPreview()
       }
+      console.log(postulacion)
     })
     onBeforeModificar(() => {
       idRegistro.value = postulacion.id
@@ -163,6 +166,8 @@ export default defineComponent({
 
     function guardado(data) {
       console.log(data)
+      if (data.formulario = 'CalificarCandidatoPage')
+        reestablecer()
     }
 
     function optionsFecha(date) {
@@ -180,14 +185,14 @@ export default defineComponent({
      * BOTONES DE TABLA
     ***************************************************************************/
     const btnConsultar: CustomActionTable = {
-      titulo: 'Editar',
-      icono: 'bi-pencil-square',
+      titulo: 'Revisar',
+      icono: 'bi-patch-check',
       // icono: 'bi-eye',
       color: 'primary',
       tooltip: 'Visualizar Postulación',
       accion: ({ entidad }) => {
         console.log('diste clic en visualizar')
-        accion.value = acciones.editar
+        accion.value = acciones.consultar
         consultar(entidad, { leido: true })
         tabs.value = 'formulario'
       }, visible: ({ entidad, posicion }) => {
@@ -195,11 +200,12 @@ export default defineComponent({
       }
     }
     const btnCalificar: CustomActionTable = {
-      titulo: 'Calificar candidato',
+      titulo: 'Preseleccionar candidato',
       color: 'primary',
       icono: 'bi-inboxes',
       accion: async ({ entidad }) => {
-        console.log('diste clic en calificar')
+        console.log('diste clic en Preseleccionar ')
+        modales.abrirModalEntidad('CalificarCandidatoPage')
       },
       visible: () => true
     }
@@ -209,8 +215,8 @@ export default defineComponent({
       color: 'primary',
       icono: 'bi-inboxes',
       accion: async ({ entidad }) => {
-        console.log('diste clic en banco de postulantes')
-        postulacionStore.idPostulacion = entidad.id ?? postulacion.id
+        console.log('diste clic en banco de postulantes', entidad, postulacion)
+        postulacionStore.idPostulacion = entidad?.id ?? postulacion.id
         modales.abrirModalEntidad('BancoPostulantePage')
       },
       visible: () => true
@@ -248,7 +254,7 @@ export default defineComponent({
       tabActual,
       desactivarCampos,
       guardado, modales,
-
+      configuracionColumnasReferencias,
 
       //listados
       tabOptions: tabOptionsEstadosPostulaciones,

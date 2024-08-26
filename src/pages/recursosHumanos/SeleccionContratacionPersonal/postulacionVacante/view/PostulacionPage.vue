@@ -18,7 +18,7 @@
   >
     <template #formulario>
       <q-form @submit.prevent>
-        <div class="row q-col-gutter-sm q-py-md">
+        <!-- <div class="row q-col-gutter-sm q-py-md"> -->
           <!-- Grupo de botones -->
           <div
             class="col-12 col-md-12 q-py-md"
@@ -539,7 +539,7 @@
                   type="textarea"
                   v-model="postulacion.mi_experiencia"
                   placeholder="Obligatorio"
-             :disable="disabled || desactivarCampos"
+                  :disable="disabled || desactivarCampos"
                   outlined
                   dense
                   autogrow
@@ -618,7 +618,7 @@
                     transition-show="jump-up"
                     transition-hide="jump-down"
                     hint="Obligatorio"
-                   :disable="disabled || desactivarCampos"
+                    :disable="disabled || desactivarCampos"
                     options-dense
                     dense
                     outlined
@@ -730,17 +730,40 @@
               </div>
             </div>
           </q-expansion-item>
-        </div>
+
+          <q-expansion-item
+            class="overflow-hidden q-mb-md rounded bg-desenfoque-2"
+            label="Referencias Personales"
+            header-class="text-bold bg-desenfoque text-primary"
+            default-opened
+          >
+            <div class="row q-pa-md">
+              <div class="col-12">
+                <essential-table
+                  :configuracionColumnas="configuracionColumnasReferencias"
+                  :datos="postulacion.referencias"
+                  ajustarCeldas
+                  :permitirConsultar="false"
+                  :permitirEditarCeldas="false"
+                  :permitirEditar="false"
+                  :permitirEliminar="false"
+                  :altoFijo="false"
+                  :mostrarFooter="false"
+                ></essential-table>
+              </div>
+            </div>
+          </q-expansion-item>
+        <!-- </div> -->
       </q-form>
     </template>
   </tab-layout-filter-tabs2>
   <modal-entidad
-      :comportamiento="modales"
-      :mixin-modal="mixin"
-      @guardado="guardado"
-      :confirmar-cerrar="false"
-      :persistente="false"
-    />
+    :comportamiento="modales"
+    :mixin-modal="mixin"
+    @guardado="guardado"
+    :confirmar-cerrar="false"
+    :persistente="false"
+  />
 </template>
 
 <script src="./PostulacionPage.ts"></script>
