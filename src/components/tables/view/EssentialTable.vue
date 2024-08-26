@@ -164,7 +164,7 @@
         v-if="mostrarFiltros"
         class="text-bold text-center full-width rounded q-mb-md"
       >
-        <q-chip class="bg-white text-positive">
+        <q-chip class="bg-solid text-positive">
           <q-icon name="bi-funnel" class="q-mr-sm"></q-icon>
           Modo filtro activado
         </q-chip>
@@ -744,6 +744,38 @@
                   ></q-icon>
                 </span>
 
+                <span v-if="col.name === 'se_reporto_sicosep'">
+                  <q-icon
+                    :name="
+                      col.value ? 'bi-check-circle-fill' : 'bi-x-circle-fill'
+                    "
+                    :color="col.value ? 'positive' : 'negative'"
+                    size="sm"
+                  ></q-icon>
+                </span>
+
+                <span v-if="col.name === 'archivos'">
+                  <q-btn
+                    dense
+                    no-caps
+                    unelevated
+                    class="q-px-sm text-primary border-primary"
+                    @click="
+                      verVisorArchivos({
+                        entidad: props.row,
+                        posicion: props.rowIndex
+                      })
+                    "
+                  >
+                    <q-icon
+                      name="bi-archive"
+                      size="xs"
+                      class="q-mr-sm"
+                    ></q-icon>
+                    {{ col.value.length + ' archivos' }}
+                  </q-btn>
+                </span>
+
                 <div :class="{ 'q-mb-xs': $q.screen.xs }">
                   <estados-subtareas
                     v-if="col.name === 'estado'"
@@ -887,7 +919,9 @@
                       'tiene_subtareas',
                       'observacion',
                       'dado_alta',
-                      'es_dosis_unica'
+                      'es_dosis_unica',
+                      'se_reporto_sicosep',
+                      'archivos'
                     ].includes(col.name)
                   "
                   >{{ col.value }}</span
@@ -1127,6 +1161,25 @@
             class="q-mr-xs"
           ></q-icon
           >Ocupado
+        </q-chip>
+      </q-td>
+    </template>
+
+    <template #body-cell-se_reporto_sicosep="props">
+      <q-td :props="props" class="">
+        <q-chip v-if="props.value" class="bg-green-1">
+          <q-icon
+            name="bi-check-circle-fill"
+            color="positive"
+            class="q-mr-xs"
+          ></q-icon>
+        </q-chip>
+        <q-chip v-else class="bg-pink-1">
+          <q-icon
+            name="bi-x-circle-fill"
+            color="negative"
+            class="q-mr-xs"
+          ></q-icon>
         </q-chip>
       </q-td>
     </template>

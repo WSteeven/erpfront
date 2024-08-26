@@ -30,6 +30,7 @@ import { SolicitudExamenPusherEvent } from 'src/pusherEvents/medico/SolicitudExa
 import { DiasDescansoPusherEvent } from 'src/pusherEvents/medico/DiasDescansoPusherEvent'
 import { TransferenciaProductoRealizadaPusherEvent } from 'src/pusherEvents/tareas/TransferenciaProductosRealizadaPusherEvent'
 import { TransferenciaProductoSolicitadaPusherEvent } from 'src/pusherEvents/tareas/TransferenciaProductosSolicitadaPusherEvent'
+import { NotificarEntregaActivoFijoPusherEvent } from 'src/pusherEvents/activosFijos/NotificarEntregaActivoFijoPusherEvent'
 
 
 export class NotificacionesSistema {
@@ -86,7 +87,9 @@ export class NotificacionesSistema {
     const transferenciaProductoSolicitadaPusherEvent = new TransferenciaProductoSolicitadaPusherEvent()
     transferenciaProductoSolicitadaPusherEvent.start()
 
-    // Tickets
+    /**********
+     * Tickets
+     **********/
     const ticketPusherEvent = new TicketPusherEvent()
     ticketPusherEvent.start()
 
@@ -165,5 +168,11 @@ export class NotificacionesSistema {
 
     const diasDescansoPusherEvent = new DiasDescansoPusherEvent()
     diasDescansoPusherEvent.start()
+
+    /**********************
+     * Modulo cctvos fijos
+     **********************/
+    const notificarEntregaActivoFijoPusherEvent = new NotificarEntregaActivoFijoPusherEvent()
+    notificarEntregaActivoFijoPusherEvent.start()
   }
 }

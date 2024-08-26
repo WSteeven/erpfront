@@ -55,7 +55,7 @@ $border-color: #fff;
   }
 
   .bg-solid {
-    background-color: $grey-2;
+    background-color: #fff;
   }
 
   .bg-border {
@@ -179,7 +179,7 @@ $border-color: #fff;
   }
 
   .text-color {
-    color: #000;
+    color: #000 !important;
   }
 
   // Toggle
@@ -208,9 +208,12 @@ $border-color: #fff;
   // Tabla
   .q-table__top,
   thead tr:first-child th {
-    background-color: $grey-2;
-    margin-bottom: 0 !important;
-    border-bottom: 1px solid #ddd;
+    background-color: $grey-3;
+  }
+
+  .q-table__bottom,
+  thead tr:first-child th {
+    background-color: $grey-3;
   }
 
   .borde-header-tabla {

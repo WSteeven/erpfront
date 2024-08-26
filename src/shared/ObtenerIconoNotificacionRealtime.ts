@@ -66,6 +66,11 @@ export class ObtenerIconoNotificacionRealtime {
       case iconos.mantenimientos_vehiculos.label:
         return iconos.mantenimientos_vehiculos.icono
 
+      /***************************
+       * MODULO DE ACTIVOS FIJOS
+       ***************************/
+      case iconos.entrega_activo_fijo.label:
+        return iconos.entrega_activo_fijo.icono
     }
   }
 }

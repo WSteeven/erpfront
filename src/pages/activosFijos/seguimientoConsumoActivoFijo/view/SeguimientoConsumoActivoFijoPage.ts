@@ -8,7 +8,7 @@ import { accionesTabla } from 'config/utils'
 import { defineComponent, ref } from 'vue'
 
 // Componentes
-import EssentialTablePagination from 'components/tables/view/EssentialTablePagination.vue'
+import EssentialTable from 'components/tables/view/EssentialTable.vue'
 import ModalEntidad from 'components/modales/view/ModalEntidad.vue'
 import SolicitarArchivo from 'shared/prompts/SolicitarArchivo.vue'
 
@@ -21,7 +21,7 @@ import { SeguimientoConsumoActivoFijo } from '../domain/SeguimientoConsumoActivo
 import { obtenerFechaActual } from 'shared/utils'
 
 export default defineComponent({
-    components: { EssentialTablePagination, ModalEntidad, SolicitarArchivo },
+    components: { EssentialTable, ModalEntidad, SolicitarArchivo },
     setup() {
         /**********
          * Stores
