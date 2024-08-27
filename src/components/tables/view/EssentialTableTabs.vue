@@ -12,16 +12,17 @@
       :active-bg-color="activeBgColor"
       :indicator-color="indicatorColor"
       align="justify"
-      @click="$emit('tab-seleccionado', tabSeleccionado)"
       >
       <q-tab
-        v-for="opcion in tabOptions"
-        :key="opcion.label"
-        :name="opcion.value + ''"
-        :class="{
-          'rounded shadow-chip q-mx-xs q-my-md': $q.screen.xs,
-          'tab-inactive': tabSeleccionado !== opcion.label && !$q.screen.xs
-        }"
+      v-for="opcion in tabOptions"
+      :key="opcion.label"
+      :name="opcion.value + ''"
+      :disable="opcion.disable"
+      :class="{
+        'rounded shadow-chip q-mx-xs q-my-md': $q.screen.xs,
+        'tab-inactive': tabSeleccionado !== opcion.label && !$q.screen.xs
+      }"
+      @click="$emit('tab-seleccionado', tabSeleccionado)"
       >
         <q-icon
           v-if="opcion.icono && !opcion.icono_derecha"

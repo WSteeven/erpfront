@@ -116,7 +116,7 @@
             <label class="block">&nbsp;</label>
             <q-checkbox
               v-model="esParaStock"
-              label="Es stock"
+              label="Es de stock"
               @update:model-value="seleccionarEsStock()"
               :disable="!(accion === acciones.nuevo)"
               outlined
@@ -212,7 +212,7 @@
             </q-select>
           </div>
 
-          <div v-if="consultado" class="col-12 col-md-3">
+          <div v-if="consultado && !esParaStock" class="col-12 col-md-3">
             <label class="q-mb-sm block">Proyecto de origen</label>
             <q-input
               v-model="transferencia.nombre_proyecto_origen"
@@ -259,7 +259,7 @@
             </q-select>
           </div>
 
-          <div v-if="consultado" class="col-12 col-md-3">
+          <div v-if="consultado && !esParaStock" class="col-12 col-md-3">
             <label class="q-mb-sm block">Etapa de origen</label>
             <q-input
               v-model="transferencia.nombre_etapa_origen"
@@ -318,7 +318,7 @@
             </q-select>
           </div>
 
-          <div v-if="consultado" class="col-12 col-md-3">
+          <div v-if="consultado && !esParaStock" class="col-12 col-md-3">
             <label class="q-mb-sm block">Tarea de origen</label>
             <q-input
               v-model="transferencia.nombre_tarea_origen"
@@ -481,7 +481,7 @@
             </q-select>
           </div>
 
-          <div v-if="consultado" class="col-12 col-md-3">
+          <div v-if="consultado && !esDestinoStock" class="col-12 col-md-3">
             <label class="q-mb-sm block">Proyecto de destino</label>
             <q-input
               v-model="transferencia.nombre_proyecto_destino"
@@ -532,7 +532,7 @@
             </q-select>
           </div>
 
-          <div v-if="consultado" class="col-12 col-md-3">
+          <div v-if="consultado && !esDestinoStock" class="col-12 col-md-3">
             <label class="q-mb-sm block">Etapa de destino</label>
             <q-input
               v-model="transferencia.nombre_etapa_destino"
@@ -584,7 +584,7 @@
             </q-select>
           </div>
 
-          <div v-if="consultado" class="col-12 col-md-3">
+          <div v-if="consultado && !esDestinoStock" class="col-12 col-md-3">
             <label class="q-mb-sm block">Tarea de destino</label>
             <q-input
               v-model="transferencia.nombre_tarea_destino"

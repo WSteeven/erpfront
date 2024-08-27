@@ -1,10 +1,61 @@
 <template>
   <div class="column q-col-gutter-xs q-mb-xl full-width">
-    <small class="bg-solid text-info rounded q-mb-sm q-pb-xs q-px-md">
-      <q-icon name="bi-info-circle-fill"></q-icon>
-      Para filtrar entre rangos de fecha use el operador <b>start</b> para la
-      fecha de inicio y <b>end</b> para la fecha de fin.
+    <small
+      class="bg-solid text-info rounded justify-between row items-center q-mb-sm q-pb-xs q-px-md"
+    >
+      <span
+        ><q-icon name="bi-info-circle-fill"></q-icon> Para filtrar entre rangos
+        de fecha use el operador <b>start</b> para la fecha de inicio y
+        <b>end</b> para la fecha de fin.</span
+      >
+      <q-btn
+        rounded
+        flat
+        no-caps
+        dense
+        @click="() => (verEjemploFiltrosAvanzados = true)"
+        >
+        <q-icon name="bi-eye" class="q-mr-sm"></q-icon>
+        Ver ejemplo</q-btn
+      >
     </small>
+
+    <q-dialog v-model="verEjemploFiltrosAvanzados" full-width>
+      <q-card class="bg-transparent no-border" flat>
+        <q-toolbar class="bg-body" rounded>
+          <q-toolbar-title class="text-primary text-subtitle1"
+            ><span>{{
+              'Ejemplo de filtro por rango de fecha'
+            }}</span></q-toolbar-title
+          >
+
+          <div class="row q-gutter-x-sm">
+            <q-btn
+              round
+              dense
+              unelevated
+              color="red"
+              size="sm"
+              @click="verEjemploFiltrosAvanzados = false"
+            >
+              <q-icon name="bi-x-lg" size="14px"></q-icon>
+              <q-tooltip class="bg-dark">Cerrar</q-tooltip>
+            </q-btn>
+          </div>
+        </q-toolbar>
+
+        <q-card-section class="bg-body rounded-footer">
+          <p>
+            Debe seleccionar el mismo campo dos veces. En el primer campo use
+            START para indicar la <b>fecha de inicio</b> de la búsqueda mientras
+            que en el segundo campo deberá usar END para indicar la
+            <b>fecha de fin</b>.
+          </p>
+          <q-img src="~assets/img/intervalo_fecha.png"></q-img>
+        </q-card-section>
+      </q-card>
+    </q-dialog>
+
     <div
       v-for="(filtro, index) in columnas"
       :key="index"
@@ -238,7 +289,8 @@ export default defineComponent({
       agregarFiltro,
       establecerInputType,
       quitarFiltro,
-      configuracionColumnasFilter
+      configuracionColumnasFilter,
+      verEjemploFiltrosAvanzados: ref(false)
     }
   }
 })

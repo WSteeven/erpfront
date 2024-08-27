@@ -178,7 +178,48 @@
             <q-tooltip class="bg-dark">Mi bodega</q-tooltip>
           </q-btn>
 
-          <!-- <q-separator vertical inset></q-separator> -->
+          <!-- Tickets -->
+          <q-btn
+            dense
+            unelevated
+            no-caps
+            class="q-pl-sm"
+            @click.self="mostrarCrearTicket = true"
+          >
+            <q-icon
+              name="bi-tags"
+              :class="{ 'q-mr-sm': !$q.screen.xs }"
+              class="bg-icon color-icon-navbar q-pa-xs rounded-field"
+              size="xs"
+            ></q-icon>
+
+            <q-tooltip class="bg-dark">Crear ticket</q-tooltip>
+
+            <q-menu
+              v-model="mostrarCrearTicket"
+              :self="selfCenterMiddle"
+              transition-show="slide-left"
+              transition-hide="slide-right"
+              :style="{ width: width }"
+              class="window-height bg-desenfoque-2 custom-shadow"
+              max-height="100vh"
+              anchor="center middle"
+            >
+              <div class="full-width text-right q-pr-md q-mb-md">
+                <q-btn
+                  icon="bi-chevron-right"
+                  round
+                  dense
+                  unelevated
+                  color="primary"
+                  class="q-mt-sm"
+                  @click="mostrarCrearTicket = false"
+                ></q-btn>
+              </div>
+
+              <crear-ticket></crear-ticket>
+            </q-menu>
+          </q-btn>
 
           <!-- Boton notificaciones -->
           <q-btn
@@ -287,45 +328,6 @@
                   </q-item>
                 </q-expansion-item>
 
-                <!--<q-item
-                    v-for="notificacion in notificaciones"
-                    :key="notificacion.id"
-                    :to="notificacion.link"
-                  >
-                    <q-item-section avatar>
-                      <q-icon
-                        color="primary"
-                        :name="
-                          obtenerIcono.obtener(notificacion.tipo_notificacion)
-                        "
-                      />
-                    </q-item-section>
-
-                    <q-item-section class="full-width">
-                      {{ notificacion.mensaje }}
-                      <span class="block text-grey-8 text-weight-regular">
-                        {{ dayjs(notificacion.created_at).fromNow() }}
-                      </span>
-
-                      <q-item-label class="row justify-end q-pt-sm">
-                        <q-btn
-                          icon="bi-check"
-                          label="Marcar como leído"
-                          dense
-                          color="positive"
-                          size="sm"
-                          no-caps
-                          rounded
-                          push
-                          unelevated
-                          @click="marcarLeida(notificacion.id)"
-                        >
-                        </q-btn
-                      ></q-item-label>
-                    </q-item-section>
-                  </q-item>
-                -->
-
                 <q-separator />
 
                 <q-item clickable to="notificaciones">
@@ -337,11 +339,9 @@
               </q-list>
             </q-menu>
           </q-btn>
-          <!-- </span> -->
 
           <!-- Perfil -->
           <q-btn dense round flat glossy @click.self="mostrarMenu = true">
-            <!-- <q-avatar size="32px" > -->
             <q-badge color="positive" rounded floating> </q-badge>
             <img
               :src="imagenPerfil"
@@ -350,7 +350,6 @@
               width="34px"
               class="rounded border-white"
             />
-            <!-- </q-avatar> -->
 
             <q-menu
               v-model="mostrarMenu"

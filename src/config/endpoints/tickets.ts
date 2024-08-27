@@ -22,4 +22,5 @@ export const tickets = {
   pausas_tickets: new Endpoint('tickets/tickets/obtener-pausas'),
   rechazos_tickets: new Endpoint('tickets/tickets/obtener-rechazados'),
   linea_tiempo_tickets: new Endpoint('tickets/linea-tiempo'),
+  comentarios_tickets: new Endpoint('tickets/comentarios-tickets'),
 }

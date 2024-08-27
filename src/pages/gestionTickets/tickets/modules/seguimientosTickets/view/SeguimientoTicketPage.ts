@@ -27,6 +27,8 @@ import { useTicketStore } from 'stores/ticket'
 import { estadosTickets } from 'config/tickets.utils'
 import { AxiosHttpRepository } from 'shared/http/infraestructure/AxiosHttpRepository'
 import { AxiosResponse } from 'axios'
+import { ComentarioTicket } from '../../comentariosTickets/domain/ComentarioTicket'
+import { ComentarioTicketController } from '../../comentariosTickets/infraestructure/ComentarioTicketController'
 
 export default defineComponent({
   components: {
@@ -57,6 +59,11 @@ export default defineComponent({
     const mixinArchivoSeguimiento = new ContenedorSimpleMixin(Archivo, new ArchivoSeguimientoTicketController())
     const { listar: listarArchivosTickets } = mixinArchivoSeguimiento.useComportamiento()
 
+    const mixinComentarioTicket = new ContenedorSimpleMixin(ComentarioTicket, new ComentarioTicketController())
+    const { entidad: comentarioTicket, listado: comentarios } = mixinComentarioTicket.useReferencias()
+    const { guardar: guardarComentario, listar: listarComentariosTickets } = mixinComentarioTicket.useComportamiento()
+    const { onReestablecer: onReestablecerComentario } = mixinComentarioTicket.useHooks()
+
     /************
      * Variables
      ************/
@@ -69,6 +76,7 @@ export default defineComponent({
     const permitirSubir = authenticationStore.user.id == ticketStore.filaTicket.responsable_id && ticket.estado === estadosTickets.EJECUTANDO
     const position = ref(0)
     const scrollAreaRef = ref()
+    const comentario = ref()
 
     /************
      * Init
@@ -161,7 +169,26 @@ export default defineComponent({
       }
     })
 
+    /********
+     * Hooks
+     ********/
+    onReestablecerComentario(() => {
+      comentarioTicket.empleado = authenticationStore.user.id
+      comentarioTicket.ticket = ticket.id
+    })
+
+    /********
+     * Init
+     ********/
+    comentarioTicket.empleado = authenticationStore.user.id
+    comentarioTicket.ticket = ticket.id
+
+    listarComentariosTickets({
+      ticket_id: ticket.id,
+    })
+
     return {
+      comentarios,
       v$,
       refEditarModal,
       refTrabajos,
@@ -197,6 +224,9 @@ export default defineComponent({
       filtrado,
       indice,
       mensajeFiltro,
+      comentario,
+      guardarComentario,
+      comentarioTicket,
     }
   }
 })
