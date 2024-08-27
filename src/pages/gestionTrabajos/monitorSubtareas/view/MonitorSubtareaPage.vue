@@ -11,13 +11,15 @@
         :to="{ name: 'tareas' }"
         no-caps
         dense
-        glossy
-        push
-        >Ir a Control de tareas</q-btn
-      > 
+        square
+        unelevated
+        >Ir a Control de tareas
+        <q-icon name="bi-box-arrow-in-right" class="q-ml-sm"></q-icon>
+      </q-btn>
     </div>
 
     <essential-table-tabs
+      ref="refTabla"
       :titulo="
         'Existen ' +
         listado.length +
@@ -43,7 +45,7 @@
       :permitirEditar="false"
       :permitirEliminar="false"
       :mostrar-botones="false"
-      :mostrarFooter="true"
+      mostrar-footer
       :permitirFiltrar="true"
       @tab-seleccionado="filtrarSubtareas"
       :tabDefecto="tabActual"
@@ -51,7 +53,9 @@
       @filtrar="aplicarFiltro"
       @limpiarListado="() => (listado = [])"
       :mostrarExportar="true"
-      :ajustar-celdas="true"
+      ajustar-celdas
+      paginate
+      :mixin="mixin"
     ></essential-table-tabs>
 
     <modales-entidad

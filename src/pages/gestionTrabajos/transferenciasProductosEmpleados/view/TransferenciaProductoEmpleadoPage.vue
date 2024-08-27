@@ -170,10 +170,8 @@
             </q-select>
           </div>
 
-          <!-- v-if="transferencia.proyecto_origen" -->
-          <div v-if="!esParaStock" class="col-12 col-md-3">
+          <div v-if="!esParaStock && !consultado" class="col-12 col-md-3">
             <label class="q-mb-sm block">Proyecto origen</label>
-            <!-- :disable="!puedeAutorizar" -->
             <q-select
               v-model="transferencia.proyecto_origen"
               :options="proyectos"
@@ -214,6 +212,18 @@
             </q-select>
           </div>
 
+          <div v-if="consultado" class="col-12 col-md-3">
+            <label class="q-mb-sm block">Proyecto de origen</label>
+            <q-input
+              v-model="transferencia.nombre_proyecto_origen"
+              disable
+              autogrow
+              outlined
+              dense
+            >
+            </q-input>
+          </div>
+
           <div
             v-show="
               transferencia.proyecto_origen && etapas.length && !esParaStock
@@ -249,7 +259,19 @@
             </q-select>
           </div>
 
-          <div v-if="!esParaStock" class="col-12 col-md-3">
+          <div v-if="consultado" class="col-12 col-md-3">
+            <label class="q-mb-sm block">Etapa de origen</label>
+            <q-input
+              v-model="transferencia.nombre_etapa_origen"
+              disable
+              autogrow
+              outlined
+              dense
+            >
+            </q-input>
+          </div>
+
+          <div v-if="!esParaStock && !consultado" class="col-12 col-md-3">
             <label class="q-mb-sm block">Tarea origen</label>
             <q-select
               v-model="transferencia.tarea_origen"
@@ -268,7 +290,10 @@
               input-debounce="0"
               emit-value
               map-options
-              ><template v-slot:option="scope">
+              :error="!!v$.tarea_origen.$errors.length"
+              @blur="v$.tarea_origen.$touch"
+            >
+              <template v-slot:option="scope">
                 <q-item v-bind="scope.itemProps">
                   <q-item-section>
                     <q-item-label>{{ scope.opt.codigo_tarea }}</q-item-label>
@@ -276,6 +301,7 @@
                   </q-item-section>
                 </q-item>
               </template>
+
               <template v-slot:no-option>
                 <q-item>
                   <q-item-section class="text-grey">
@@ -283,10 +309,28 @@
                   </q-item-section>
                 </q-item>
               </template>
+
+              <template v-slot:error>
+                <div v-for="error of v$.tarea_origen.$errors" :key="error.$uid">
+                  <div class="error-msg">{{ error.$message }}</div>
+                </div>
+              </template>
             </q-select>
           </div>
 
-          <div v-if="!esParaStock" class="col-12 col-md-3">
+          <div v-if="consultado" class="col-12 col-md-3">
+            <label class="q-mb-sm block">Tarea de origen</label>
+            <q-input
+              v-model="transferencia.nombre_tarea_origen"
+              disable
+              autogrow
+              outlined
+              dense
+            >
+            </q-input>
+          </div>
+
+          <div v-if="!esParaStock && !consultado" class="col-12 col-md-3">
             <label class="q-mb-sm block"
               >Cliente propietario del material de proyecto/etapa</label
             >
@@ -306,9 +350,29 @@
               :option-value="item => item.cliente_id"
               emit-value
               map-options
+              :error="!!v$.cliente.$errors.length"
+              @blur="v$.cliente.$touch"
             >
-              <!-- disable -->
+              <template v-slot:error>
+                <div v-for="error of v$.cliente.$errors" :key="error.$uid">
+                  <div class="error-msg">{{ error.$message }}</div>
+                </div>
+              </template>
             </q-select>
+          </div>
+
+          <div v-if="consultado" class="col-12 col-md-3">
+            <label class="q-mb-sm block"
+              >Cliente propietario del material de proyecto/etapa</label
+            >
+            <q-input
+              v-model="transferencia.nombre_cliente"
+              disable
+              autogrow
+              outlined
+              dense
+            >
+            </q-input>
           </div>
 
           <div class="col-12 q-mb-md">
@@ -375,7 +439,7 @@
           </div>
 
           <!-- !esParaStock -->
-          <div v-if="!esDestinoStock" class="col-12 col-md-3">
+          <div v-if="!esDestinoStock && !consultado" class="col-12 col-md-3">
             <label class="q-mb-sm block">Proyecto destino</label>
             <q-select
               v-model="transferencia.proyecto_destino"
@@ -417,9 +481,22 @@
             </q-select>
           </div>
 
+          <div v-if="consultado" class="col-12 col-md-3">
+            <label class="q-mb-sm block">Proyecto de destino</label>
+            <q-input
+              v-model="transferencia.nombre_proyecto_destino"
+              disable
+              autogrow
+              outlined
+              dense
+            >
+            </q-input>
+          </div>
+
           <!-- paraProyecto -->
           <div
             v-show="
+              !consultado &&
               transferencia.proyecto_destino &&
               etapasDestino.length &&
               (!esParaStock || !esDestinoStock)
@@ -455,8 +532,20 @@
             </q-select>
           </div>
 
+          <div v-if="consultado" class="col-12 col-md-3">
+            <label class="q-mb-sm block">Etapa de destino</label>
+            <q-input
+              v-model="transferencia.nombre_etapa_destino"
+              disable
+              autogrow
+              outlined
+              dense
+            >
+            </q-input>
+          </div>
+
           <!-- !esParaStock -->
-          <div v-if="!esDestinoStock" class="col-12 col-md-3">
+          <div v-if="!esDestinoStock && !consultado" class="col-12 col-md-3">
             <label class="q-mb-sm block">Tarea destino</label>
             <q-select
               v-model="transferencia.tarea_destino"
@@ -493,6 +582,18 @@
                 </q-item>
               </template>
             </q-select>
+          </div>
+
+          <div v-if="consultado" class="col-12 col-md-3">
+            <label class="q-mb-sm block">Tarea de destino</label>
+            <q-input
+              v-model="transferencia.nombre_tarea_destino"
+              disable
+              autogrow
+              outlined
+              dense
+            >
+            </q-input>
           </div>
 
           <!-- Justificacion -->

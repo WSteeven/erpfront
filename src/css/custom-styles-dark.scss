@@ -120,6 +120,11 @@ $border-color: #464646;
     background-color: $dark-color;
   }
 
+  .q-table__bottom,
+  thead tr:first-child th {
+    background-color: $dark-color;
+  }
+
   .borde-header-tabla {
     border-top: 1px solid $border-color;
     border-left: 1px solid $border-color;
