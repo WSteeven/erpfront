@@ -2,26 +2,23 @@ import { pushEventMesaggeServiceWorker } from 'shared/utils'
 import { useAuthenticationStore } from 'stores/authentication'
 import { useNotificationRealtimeStore } from 'stores/notificationRealtime'
 
-export class SolicitudPrestamoEmpresarialPusherEvent {
+export class SolicitudPrestamoGerenciaPusherEvent {
   store = useAuthenticationStore()
   notificacionesPusherStore = useNotificationRealtimeStore()
 
   /**
-   * It subscribes to a channel and listens for events.
+   * It subscribes to the management channel and listens for events.
    */
   start() {
     const notificacionStore = this.notificacionesPusherStore
     const pusher = notificacionStore.pusher
 
-    // Suscripcion al canal del pedido creado
-    // console.log('solicitud-prestamo-empresarial-' + this.store.user.id);
-
-    pusher.subscribe('solicitud-prestamo-empresarial-' + this.store.user.id)
-    pusher.bind('solicitud-prestamo-empresarial-event', function (e) {
+    pusher.subscribe('solicitud-prestamo-empresarial-gerencia-' + this.store.user.id)
+    pusher.bind('solicitud-prestamo-empresarial-gerencia-event', function (e) {
       notificacionStore.agregar(e.notificacion)
       notificacionStore.actualizar()
       pushEventMesaggeServiceWorker({
-        titulo: 'Solicitud de Prestamo Empresarial',
+        titulo: 'Solicitud de Prestamo Empresarial (Gerencia)',
         mensaje: e.notificacion.mensaje,
         link: e.notificacion.link
       })

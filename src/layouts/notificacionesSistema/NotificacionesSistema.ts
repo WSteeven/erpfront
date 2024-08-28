@@ -10,6 +10,7 @@ import { DevolucionPusherEvent } from 'pages/bodega/devoluciones/application/Dev
 import { PermisoEmpleadoPusherEvent } from 'src/pusherEvents/recursosHumanos/nominasPermisos/PermisosEmpleadoPusherEvent'
 import { LicenciaPusherEvent } from 'src/pusherEvents/recursosHumanos/nominasPermisos/LicenciaEmpleadoPusherEvent'
 import { SolicitudPrestamoEmpresarialPusherEvent } from 'src/pusherEvents/recursosHumanos/nominasPermisos/SolicitudPrestamoEmpresarialPusherEvent'
+import { SolicitudPrestamoGerenciaPusherEvent } from 'src/pusherEvents/recursosHumanos/nominasPermisos/SolicitudPrestamoGerenciaPusherEvent'
 import { VacacionPusherEvent } from 'src/pusherEvents/recursosHumanos/nominasPermisos/VacacionPusherEvent'
 import { PreordenCompraEvent } from 'pages/comprasProveedores/preordenCompra/application/PreordenCompraEvent'
 import { OrdenCompraEvent } from 'pages/comprasProveedores/ordenCompra/application/OrdenCompraEvent'
@@ -29,6 +30,7 @@ import { MantenimientoVehiculoPusherEvent } from 'src/pusherEvents/vehiculos/Man
 import { SolicitudExamenPusherEvent } from 'src/pusherEvents/medico/SolicitudExamenPusherEvent'
 import { DiasDescansoPusherEvent } from 'src/pusherEvents/medico/DiasDescansoPusherEvent'
 import { SolicitudEmpleadoPusherEvent } from 'src/pusherEvents/recursosHumanos/seleccionContratacionPersonal/SolicitudEmpleadoPusherEvent'
+
 
 
 export class NotificacionesSistema {
@@ -98,6 +100,11 @@ export class NotificacionesSistema {
     // Solicitud prestamo empresarial
     const solicitudPrestamoEmpresarialPusherEvent = new SolicitudPrestamoEmpresarialPusherEvent()
     solicitudPrestamoEmpresarialPusherEvent.start()
+
+    //Solicitud prestamo empresarial para gerencia
+    const solicitudPrestamoGerenciaPusherEvent= new SolicitudPrestamoGerenciaPusherEvent()
+    solicitudPrestamoGerenciaPusherEvent.start()
+
 
     //Vacacion
     const vacacionPusherEvent = new VacacionPusherEvent()
