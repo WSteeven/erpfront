@@ -222,7 +222,7 @@ export class ContenedorSimpleMixin<T extends EntidadAuditable> extends Contenedo
       )
 
       this.notificaciones.notificarCorrecto(response.data.mensaje)
-      if (agregarAlListado) this.agregarElementoListadoActual(response.data.modelo)
+      this.agregarElementoListadoActual(response.data.modelo, agregarAlListado)
       this.entidad.hydrate(response.data.modelo)
 
 

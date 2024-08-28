@@ -150,11 +150,18 @@ export default defineComponent({
           }
         },
         autorizadores: {
+          controller: new EmpleadoController(),
+          params: {
+            campos: 'id,nombres,apellidos',
+            estado: 1,
+          }
+        },
+        /* autorizadores: {
           controller: new EmpleadoRoleController(),
           params: {
             roles: [rolesSistema.jefe_tecnico, rolesSistema.coordinador, rolesSistema.coordinadorBackup, rolesSistema.gerente],
           }
-        },
+        }, */
         empleadosOrigen: [],
         productos: [],
         etapas: [],
@@ -507,7 +514,7 @@ export default defineComponent({
     const puedeEditar = ref()
     function filtrarTransferenciasProductoEmpleado(tab: string) {
       tabSeleccionado.value = tab
-      puedeEditar.value = authenticationStore.can('puede.autorizar.devoluciones') && tabSeleccionado.value === estadosTransacciones.pendiente ? true : false
+      puedeEditar.value = tabSeleccionado.value === estadosTransacciones.pendiente ? true : false // authenticationStore.can('puede.autorizar.devoluciones')
       puedeEditar.value = tab == 'PENDIENTE'
       listar({ estado: tab })
     }

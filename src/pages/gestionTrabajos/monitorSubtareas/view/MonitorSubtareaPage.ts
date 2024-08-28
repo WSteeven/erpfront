@@ -21,6 +21,7 @@ import { ComportamientoModalesSubtarea } from 'pages/gestionTrabajos/subtareas/a
 import { MotivoPausaController } from 'pages/gestionTrabajos/motivosPausas/infraestructure/MotivoPausaController'
 import { ContenedorSimpleMixin } from 'shared/contenedor/modules/simple/application/ContenedorSimpleMixin'
 import { SubtareaController } from 'pages/gestionTrabajos/subtareas/infraestructure/SubtareaController'
+import { useAuthenticationStore } from 'stores/authentication'
 
 export default defineComponent({
   components: {
@@ -33,6 +34,7 @@ export default defineComponent({
     *********/
     const subtareaStore = useSubtareaStore()
     useCargandoStore().setQuasar(useQuasar())
+    const authenticationStore = useAuthenticationStore()
 
     /********
      * Mixin
@@ -62,6 +64,7 @@ export default defineComponent({
     const tabActual = ref()
     const refTabla = ref()
     const altoFijo = computed(() => !listado.value.length)
+    const mostrarTabs = !authenticationStore.esContabilidad
 
     /****************
      * Botones tabla
@@ -89,7 +92,10 @@ export default defineComponent({
       else listar({ estado: estado, campos, paginate: true })
     }
 
-    onMounted(() => filtrarSubtareas(estadosTrabajos.AGENDADO))
+    /*******
+     * Init
+     *******/
+    onMounted(() => filtrarSubtareas(authenticationStore.esContabilidad ? estadosTrabajos.FINALIZADO : estadosTrabajos.AGENDADO))
 
     function aplicarFiltro(uri) {
       filtrar(uri)
@@ -117,6 +123,7 @@ export default defineComponent({
       filtrar,
       aplicarFiltro,
       altoFijo,
+      mostrarTabs,
     }
   }
 })

@@ -26,6 +26,7 @@ import EssentialLoading from 'components/loading/view/EssentialLoading.vue'
 import ModalesEntidad from 'components/modales/view/ModalEntidad.vue'
 import FooterComponent from 'components/FooterComponent.vue'
 import EssentialLink from 'components/EssentialLink.vue'
+import CrearTicket from 'src/pages/gestionTickets/tickets/view/CrearTicket.vue'
 
 // Logica y controladores
 import { ComportamientoModalesMainLayout } from './modales/application/ComportamientoModalesMainLayout'
@@ -46,10 +47,10 @@ export default defineComponent({
   components: {
     EssentialLink,
     EssentialLoading,
-
     ModalesEntidad,
     ScrollToTopButton,
-    FooterComponent
+    FooterComponent,
+    CrearTicket,
   },
 
   setup() {
@@ -383,6 +384,7 @@ export default defineComponent({
       width: computed(() => ($q.screen.xs ? '100%' : '450px')),
       mostrarMenu: ref(false),
       mostrarNotificaciones: ref(false),
+      mostrarCrearTicket: ref(false),
       mostrarOpciones: ref(false),
       notificaciones,
       marcarLeida,

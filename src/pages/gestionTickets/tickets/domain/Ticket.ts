@@ -33,6 +33,7 @@ export class Ticket extends EntidadAuditable {
   subtarea_id: number | null
   fotografia?: string | null
   para_sso?: boolean
+  cc: number[]
 
   constructor() {
     super()
@@ -67,5 +68,6 @@ export class Ticket extends EntidadAuditable {
     this.subtarea_id = null
     this.fotografia = null
     this.para_sso = false
+    this.cc = []
   }
 }
