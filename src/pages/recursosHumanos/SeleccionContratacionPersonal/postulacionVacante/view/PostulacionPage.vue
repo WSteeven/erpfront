@@ -7,14 +7,15 @@
     :tabDefecto="tabActual"
     :filtrar="filtrarPostulaciones"
     titulo-pagina="Postulaciones"
-    :permitirConsultar="false"
+    :permitirConsultar="puedeConsultar"
     :permitirGuardar="false"
     :permitirEditar="false"
     :accion1="btnConsultar"
     :accion2="btnBancoPostulantes"
     :accion3="btnEntrevistar"
     :accion4="btnCalificar"
-    :accion5="btnImprimir"
+    :accion5="btnSeleccionar"
+    :accion6="btnDescartar"
   >
     <template #formulario>
       <q-form @submit.prevent>
@@ -44,7 +45,7 @@
                   <span>{{ btnBancoPostulantes.titulo }}</span>
                 </q-btn>
                 <!-- Boton Entrevistar -->
-                <q-btn
+                <q-btn v-if="false"
                   :color="btnEntrevistar.color"
                   class="full-width"
                   no-caps
@@ -61,7 +62,7 @@
                   ><span>{{ btnEntrevistar.titulo }}</span></q-btn
                 >
                 <!-- Boton consultar -->
-                <q-btn
+                <q-btn v-if="btnCalificar.visible()"
                   :color="btnCalificar.color"
                   class="full-width"
                   no-caps
@@ -78,7 +79,7 @@
                   <span>{{ btnCalificar.titulo }}</span>
                 </q-btn>
                 <!-- Boton Imprimir -->
-                <q-btn
+                <q-btn v-if="btnImprimir.visible()"
                   :color="btnImprimir.color"
                   class="full-width"
                   no-caps

@@ -39,21 +39,20 @@ export default defineComponent({
       const ruta = axios.getEndpoint(endpoints.postulacion_vacante) + '/calificar/' + postulacion.id
       const response: AxiosResponse = await axios.post(ruta, postulacion)
       notificarCorrecto(response.data.mensaje)
-      cargando.desactivar()
       emit('cerrar-modal', false)
       emit('guardado', { formulario: 'CalificarCandidatoPage' })
     }
     async function calificar() {
       if (await v$.value.$validate()) {
         try {
-          console.log('Diste clic en calificar candidato....', postulacion.calificacion)
-          if (postulacion.calificacion === NO_APTO) {
+          cargando.activar()
+          // console.log('Diste clic en calificar candidato....', postulacion.calificacion)
+          if (postulacion.calificacion === NO_APTO)
             confirmar('Al marcar como NO CONSIDERAR el sistema finalizará el proceso y no podrá cambiar la calificación para este registro ¿Está seguro de continuar?', async () => {
               enviarCalificacion()
             })
-          } else {
+          else
             enviarCalificacion()
-          }
         } catch (error: any) {
           notificarAdvertencia(error);
         }

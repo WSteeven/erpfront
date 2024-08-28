@@ -30,6 +30,12 @@ import { estadosPostulacion, opcionesEstadosPostulaciones, tabOptionsEstadosPost
 import { ComportamientoModalesPostulacion } from '../application/ComportamientoModalesPostulacion';
 import { usePostulacionStore } from 'stores/recursosHumanos/seleccionContratacion/postulacion';
 import { configuracionColumnasReferencias } from '../domain/configuracionColumnasReferencias';
+import { useNotificaciones } from 'shared/notificaciones';
+import { AxiosHttpRepository } from 'shared/http/infraestructure/AxiosHttpRepository';
+import { endpoints } from 'config/api';
+import { AxiosResponse } from 'axios';
+import { useCargandoStore } from 'stores/cargando';
+import { StatusEssentialLoading } from 'components/loading/application/StatusEssentialLoading';
 
 
 export default defineComponent({
@@ -39,7 +45,9 @@ export default defineComponent({
     const { entidad: postulacion, disabled, listadosAuxiliares, tabs, accion } = mixin.useReferencias()
     const { setValidador, cargarVista, obtenerListados, reestablecer, consultar, listar } = mixin.useComportamiento()
     const { onConsultado, onGuardado, onBeforeModificar, onReestablecer } = mixin.useHooks()
+    const { confirmar, notificarCorrecto, notificarAdvertencia } = useNotificaciones()
 
+    const cargando = new StatusEssentialLoading()
     const { autenticado, tipoAutenticacion: tipoAuth } = userIsAuthenticated()
     const modales = new ComportamientoModalesPostulacion()
     let store
@@ -166,8 +174,11 @@ export default defineComponent({
 
     function guardado(data) {
       console.log(data)
-      if (data.formulario = 'CalificarCandidatoPage')
+      if (data.formulario = 'CalificarCandidatoPage') {
         reestablecer()
+        filtrarPostulaciones(tabActual.value)
+      }
+
     }
 
     function optionsFecha(date) {
@@ -196,7 +207,7 @@ export default defineComponent({
         consultar(entidad, { leido: true })
         tabs.value = 'formulario'
       }, visible: ({ entidad, posicion }) => {
-        return true
+        return tabActual.value !== estadosPostulacion.DESCARTADO
       }
     }
     const btnCalificar: CustomActionTable = {
@@ -207,7 +218,7 @@ export default defineComponent({
         console.log('diste clic en Preseleccionar ')
         modales.abrirModalEntidad('CalificarCandidatoPage')
       },
-      visible: () => true
+      visible: () => false
     }
 
     const btnBancoPostulantes: CustomActionTable = {
@@ -219,7 +230,8 @@ export default defineComponent({
         postulacionStore.idPostulacion = entidad?.id ?? postulacion.id
         modales.abrirModalEntidad('BancoPostulantePage')
       },
-      visible: () => true
+      // visible: () => [estadosPostulacion.POSTULADO, estadosPostulacion.REVISION_CV].includes(tabActual.value)
+      visible: () => false
     }
     const btnEntrevistar: CustomActionTable = {
       titulo: 'Entrevistar',
@@ -227,8 +239,57 @@ export default defineComponent({
       icono: 'bi-check-circle-fill',
       accion: async ({ entidad }) => {
         console.log('diste clic en entrevistar')
+        postulacionStore.idPostulacion = entidad?.id ?? postulacion.id
+        modales.abrirModalEntidad('EntrevistarPage')
       },
-      visible: () => true
+      visible: () => tabActual.value === estadosPostulacion.PRESELECCIONADO
+    }
+    const btnSeleccionar: CustomActionTable = {
+      titulo: 'Seleccionar',
+      color: 'positive',
+      icono: 'bi-check-circle-fill',
+      accion: async ({ entidad }) => {
+        console.log('diste clic en seleccionar')
+        confirmar('Se notificará al candidato que ha sido seleccionado para el puesto y deberá hacerse los exámenes médicos como último paso. ¿Está seguro de continuar?', async () => {
+          try {
+            cargando.activar()
+            const axios = AxiosHttpRepository.getInstance()
+            const ruta = axios.getEndpoint(endpoints.postulacion_vacante) + '/seleccionar/' + entidad?.id ?? postulacion.id
+            const response: AxiosResponse = await axios.post(ruta)
+            notificarCorrecto(response.data.mensaje)
+            filtrarPostulaciones(estadosPostulacion.SELECCIONADO)
+          } catch (err: any) {
+            notificarAdvertencia(err)
+          } finally {
+            cargando.desactivar()
+          }
+        })
+      },
+      visible: () => tabActual.value === estadosPostulacion.ENTREVISTA
+    }
+
+    const btnDescartar: CustomActionTable = {
+      titulo: 'Descartar',
+      color: 'negative',
+      icono: 'bi-x-circle-fill',
+      accion: async ({ entidad }) => {
+        console.log('diste clic en descartar')
+        confirmar('Se finalizará el proceso para este candidato.\nEsta acción es irreversible ¿Está seguro de continuar?', async () => {
+          try {
+            cargando.activar()
+            const axios = AxiosHttpRepository.getInstance()
+            const ruta = axios.getEndpoint(endpoints.postulacion_vacante) + '/descartar/' + entidad?.id ?? postulacion.id
+            const response: AxiosResponse = await axios.post(ruta)
+            notificarCorrecto(response.data.mensaje)
+            filtrarPostulaciones(estadosPostulacion.DESCARTADO)
+          } catch (err: any) {
+            notificarAdvertencia(err)
+          } finally {
+            cargando.desactivar()
+          }
+        })
+      },
+      visible: () => [estadosPostulacion.PRESELECCIONADO, estadosPostulacion.ENTREVISTA].includes(tabActual.value)
     }
     const btnImprimir: CustomActionTable = {
       titulo: 'Imprimir',
@@ -237,7 +298,7 @@ export default defineComponent({
       accion: async ({ entidad }) => {
         console.log('diste clic en imprimir')
       },
-      visible: () => true
+      visible: () => false
     }
 
 
@@ -274,9 +335,11 @@ export default defineComponent({
       btnConsultar,
       btnBancoPostulantes,
       btnEntrevistar,
+      btnSeleccionar,
+      btnDescartar,
       btnCalificar,
       btnImprimir,
-
+      puedeConsultar: computed(() => tabActual.value === estadosPostulacion.DESCARTADO)
 
     }
   },

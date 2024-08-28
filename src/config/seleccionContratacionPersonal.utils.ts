@@ -51,6 +51,7 @@ export const estadosPostulacion = {
    *
    */
   DESCARTADO: 'DESCARTADO',
+  PRESELECCIONADO: 'PRESELECCIONADO',
   SELECCIONADO: 'SELECCIONADO',
   EXAMENES_MEDICOS: 'EXAMENES MEDICOS',
   CONTRATADO: 'CONTRATADO',
@@ -84,13 +85,14 @@ export const likertCalificacionPostulacion = [
 export const tabOptionsEstadosPostulaciones: TabOption[] = [
   { value: estadosPostulacion.POSTULADO, label: estadosPostulacion.POSTULADO },
   { value: estadosPostulacion.REVISION_CV, label: estadosPostulacion.REVISION_CV },
+  { value: estadosPostulacion.PRESELECCIONADO, label: estadosPostulacion.PRESELECCIONADO },
   { value: estadosPostulacion.ENTREVISTA, label: estadosPostulacion.ENTREVISTA },
   { value: estadosPostulacion.DESCARTADO, label: estadosPostulacion.DESCARTADO },
   { value: estadosPostulacion.SELECCIONADO, label: estadosPostulacion.SELECCIONADO },
   { value: estadosPostulacion.EXAMENES_MEDICOS, label: estadosPostulacion.EXAMENES_MEDICOS },
   { value: estadosPostulacion.CONTRATADO, label: estadosPostulacion.CONTRATADO },
   // { value: estadosPostulacion.BANCO_DE_CANDIDATOS, label: estadosPostulacion.BANCO_DE_CANDIDATOS },
-  { value: estadosPostulacion.RECHAZADO, label: estadosPostulacion.RECHAZADO },
+  // { value: estadosPostulacion.RECHAZADO, label: estadosPostulacion.RECHAZADO },
 ]
 
 export const tabOptionsBancoPostulante: TabOption[] = [

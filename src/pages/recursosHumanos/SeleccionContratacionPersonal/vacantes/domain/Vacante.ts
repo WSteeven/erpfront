@@ -18,11 +18,12 @@ export class Vacante extends EntidadAuditable {
   activo: boolean
   disponibilidad_viajar: boolean
   requiere_licencia: boolean
+  postulantes_preseleccionados: number | null
   //Variables auxiliares
   requiere_formacion_academica: boolean
   requiere_experiencia: boolean
-  es_favorita:boolean
-  ya_postulada:boolean
+  es_favorita: boolean
+  ya_postulada: boolean
 
 
   constructor() {
@@ -45,8 +46,9 @@ export class Vacante extends EntidadAuditable {
     this.requiere_licencia = false
     this.requiere_formacion_academica = false
     this.requiere_experiencia = false
+    this.postulantes_preseleccionados = null
     this.activo = true
-    this.es_favorita=false
-    this.ya_postulada=false
+    this.es_favorita = false
+    this.ya_postulada = false
   }
 }
