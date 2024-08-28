@@ -48,6 +48,7 @@ export default defineComponent({
 
     onMounted(() => {
       entrevista.postulacion_id = postulacionStore.idPostulacion
+      entrevista.duracion = 30
     })
 
     /***************************************************************************

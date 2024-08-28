@@ -3,7 +3,7 @@ import { EntidadAuditable } from "shared/entidad/domain/entidadAuditable";
 export class Entrevista extends EntidadAuditable {
   postulacion_id: number | null
   fecha_hora: string | null
-  duracion: string | null
+  duracion: number | null
   reagendada: boolean
   observacion: string | null
   nueva_fecha_hora: string | null
