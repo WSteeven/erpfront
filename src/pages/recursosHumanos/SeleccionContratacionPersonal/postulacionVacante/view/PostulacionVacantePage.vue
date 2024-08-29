@@ -444,10 +444,10 @@
 
           <div class="col-12">
             <label class="q-mb-sm block"
-              >Comentanos brevemente tu experiencia en el rol (<strong>{{
+              >Coméntanos brevemente tu experiencia en el rol (<strong>{{
                 vacante.nombre
               }}</strong
-              >) al que estas postulando
+              >) al que estás postulando
             </label>
             <q-input
               type="textarea"

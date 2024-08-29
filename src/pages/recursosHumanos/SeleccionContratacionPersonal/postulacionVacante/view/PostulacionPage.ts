@@ -34,15 +34,15 @@ import { useNotificaciones } from 'shared/notificaciones';
 import { AxiosHttpRepository } from 'shared/http/infraestructure/AxiosHttpRepository';
 import { endpoints } from 'config/api';
 import { AxiosResponse } from 'axios';
-import { useCargandoStore } from 'stores/cargando';
 import { StatusEssentialLoading } from 'components/loading/application/StatusEssentialLoading';
+import { usePostulanteStore } from 'stores/recursosHumanos/seleccionContratacion/postulante';
 
 
 export default defineComponent({
   components: { TabLayoutFilterTabs2, EssentialTable, GestorArchivos, OptionGroupComponent, ModalEntidad },
   setup() {
     const mixin = new ContenedorSimpleMixin(Postulacion, new PostulacionController())
-    const { entidad: postulacion, disabled, listadosAuxiliares, tabs, accion } = mixin.useReferencias()
+    const { entidad: postulacion, disabled, listado, listadosAuxiliares, tabs, accion } = mixin.useReferencias()
     const { setValidador, cargarVista, obtenerListados, reestablecer, consultar, listar } = mixin.useComportamiento()
     const { onConsultado, onGuardado, onBeforeModificar, onReestablecer } = mixin.useHooks()
     const { confirmar, notificarCorrecto, notificarAdvertencia } = useNotificaciones()
@@ -57,6 +57,7 @@ export default defineComponent({
     const tabActual = ref(estadosPostulacion.POSTULADO)
     const desactivarCampos = computed(() => { return acciones.editar === accion.value })
     const postulacionStore = usePostulacionStore()
+    const postulanteStore = usePostulanteStore()
     const identidades = ref()
     const { paises, filtrarPaises } = useFiltrosListadosSelects(listadosAuxiliares)
 
@@ -83,7 +84,7 @@ export default defineComponent({
         vacanteStore.idVacante = postulacion.vacante
         vacanteStore.showPreview()
       }
-      console.log(postulacion)
+      // console.log(postulacion)
     })
     onBeforeModificar(() => {
       idRegistro.value = postulacion.id
@@ -174,9 +175,16 @@ export default defineComponent({
 
     function guardado(data) {
       console.log(data)
-      if (data.formulario = 'CalificarCandidatoPage') {
-        reestablecer()
-        filtrarPostulaciones(tabActual.value)
+      reestablecer()
+      switch (data.formulario) {
+        case 'CalificarCandidatoPage':
+          filtrarPostulaciones(tabActual.value)
+          break
+        case 'AgendarCitaMedicaPage':
+          filtrarPostulaciones(estadosPostulacion.EXAMENES_MEDICOS)
+          break
+
+        default: filtrarPostulaciones(tabActual.value)
       }
 
     }
@@ -192,6 +200,28 @@ export default defineComponent({
       }
     }
 
+    async function darAltaEmpleado(postulacion_id: number, posicion: number) {
+      try {
+        cargando.activar()
+        const axios = AxiosHttpRepository.getInstance()
+        const ruta = axios.getEndpoint(endpoints.postulacion_vacante) + '/dar-alta/' + postulacion_id
+        const response: AxiosResponse = await axios.post(ruta)
+        notificarCorrecto(response.data.mensaje)
+        if (response.data.es_empleado) {
+          notificarAdvertencia("El postulante ya es un empleado existente!")
+          listado.value.splice(posicion, 1, response.data.modelo)
+        }
+        else {
+          postulanteStore.idUser = response.data.modelo.user_id
+          router.push('empleados')
+        }
+      } catch (error: any) {
+        notificarAdvertencia(error)
+      } finally {
+        cargando.desactivar()
+      }
+    }
+
     /***************************************************************************
      * BOTONES DE TABLA
     ***************************************************************************/
@@ -202,7 +232,6 @@ export default defineComponent({
       color: 'primary',
       tooltip: 'Visualizar Postulación',
       accion: ({ entidad }) => {
-        console.log('diste clic en visualizar')
         accion.value = acciones.consultar
         consultar(entidad, { leido: true })
         tabs.value = 'formulario'
@@ -215,7 +244,6 @@ export default defineComponent({
       color: 'primary',
       icono: 'bi-inboxes',
       accion: async ({ entidad }) => {
-        console.log('diste clic en Preseleccionar ')
         modales.abrirModalEntidad('CalificarCandidatoPage')
       },
       visible: () => false
@@ -226,19 +254,17 @@ export default defineComponent({
       color: 'primary',
       icono: 'bi-inboxes',
       accion: async ({ entidad }) => {
-        console.log('diste clic en banco de postulantes', entidad, postulacion)
         postulacionStore.idPostulacion = entidad?.id ?? postulacion.id
         modales.abrirModalEntidad('BancoPostulantePage')
       },
-      // visible: () => [estadosPostulacion.POSTULADO, estadosPostulacion.REVISION_CV].includes(tabActual.value)
-      visible: () => false
+      // visible: () => [estadosPostulacion.POSTULADO, estadosPostulacion.REVISION_CV].includes(tabActual.value) && store.esRecursosHumanos
+      visible: () => store.esRecursosHumanos
     }
     const btnEntrevistar: CustomActionTable = {
       titulo: 'Entrevistar',
       color: 'positive',
       icono: 'bi-check-circle-fill',
       accion: async ({ entidad }) => {
-        console.log('diste clic en entrevistar')
         postulacionStore.idPostulacion = entidad?.id ?? postulacion.id
         modales.abrirModalEntidad('EntrevistarPage')
       },
@@ -249,7 +275,6 @@ export default defineComponent({
       color: 'positive',
       icono: 'bi-check-circle-fill',
       accion: async ({ entidad }) => {
-        console.log('diste clic en seleccionar')
         confirmar('Se notificará al candidato que ha sido seleccionado para el puesto y deberá hacerse los exámenes médicos como último paso. ¿Está seguro de continuar?', async () => {
           try {
             cargando.activar()
@@ -267,13 +292,44 @@ export default defineComponent({
       },
       visible: () => tabActual.value === estadosPostulacion.ENTREVISTA
     }
+    const btnCitaMedica: CustomActionTable = {
+      titulo: 'Agendar Cita Médica',
+      color: 'warning',
+      icono: 'bi-calendar-check',
+      accion: async ({ entidad }) => {
+        postulacionStore.idPostulacion = entidad?.id ?? postulacion.id
+        modales.abrirModalEntidad('AgendarCitaMedicaPage')
+      },
+      visible: () => tabActual.value === estadosPostulacion.SELECCIONADO && store.can('puede.crear.rrhh_examenes_postulantes')
+    }
+
+    const btnActualizarResultadosExamenes: CustomActionTable = {
+      titulo: 'Actualizar Resultados Exámenes',
+      color: 'warning',
+      icono: 'bi-calendar-check',
+      accion: async ({ entidad }) => {
+        postulacionStore.idPostulacion = entidad?.id ?? postulacion.id
+        console.log(postulacionStore.idPostulacion)
+        modales.abrirModalEntidad('ActualizarResultadosCitaMedicaPage')
+      },
+      visible: () => tabActual.value === estadosPostulacion.EXAMENES_MEDICOS && store.can('puede.editar.rrhh_examenes_postulantes')
+    }
+    const btnDarAltaEmpleado: CustomActionTable = {
+      titulo: 'Dar de alta',
+      color: 'positive',
+      icono: 'bi-person-fill-up',
+      accion: ({ entidad, posicion }) => {
+        console.log('diste clic en dar de alta')
+        darAltaEmpleado(entidad?.id ?? postulacion.id, posicion)
+      },
+      visible: ({ entidad }) => tabActual.value === estadosPostulacion.CONTRATADO && !entidad.dado_alta && store.esRecursosHumanos
+    }
 
     const btnDescartar: CustomActionTable = {
       titulo: 'Descartar',
       color: 'negative',
       icono: 'bi-x-circle-fill',
       accion: async ({ entidad }) => {
-        console.log('diste clic en descartar')
         confirmar('Se finalizará el proceso para este candidato.\nEsta acción es irreversible ¿Está seguro de continuar?', async () => {
           try {
             cargando.activar()
@@ -336,6 +392,9 @@ export default defineComponent({
       btnBancoPostulantes,
       btnEntrevistar,
       btnSeleccionar,
+      btnCitaMedica,
+      btnDarAltaEmpleado,
+      btnActualizarResultadosExamenes,
       btnDescartar,
       btnCalificar,
       btnImprimir,

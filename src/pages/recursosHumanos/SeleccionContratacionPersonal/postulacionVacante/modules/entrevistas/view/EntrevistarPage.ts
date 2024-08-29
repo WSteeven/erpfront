@@ -1,9 +1,9 @@
 import { ContenedorSimpleMixin } from "shared/contenedor/modules/simple/application/ContenedorSimpleMixin";
 import { defineComponent, onMounted, ref } from "vue";
 import { Entrevista } from "../domain/Entrevista";
-import { required } from "shared/i18n-validators";
+import { required, requiredIf } from "shared/i18n-validators";
 import useVuelidate from "@vuelidate/core";
-import { maskFechaHora, numDiaSemana } from "config/utils";
+import { numDiaSemana } from "config/utils";
 import { format } from "@formkit/tempo";
 import { EntrevistaController } from "../infraestructure/EntrevistaController";
 import { AxiosHttpRepository } from "shared/http/infraestructure/AxiosHttpRepository";
@@ -12,9 +12,12 @@ import { AxiosResponse } from "axios";
 import { useNotificaciones } from "shared/notificaciones";
 import { StatusEssentialLoading } from "components/loading/application/StatusEssentialLoading";
 import { usePostulacionStore } from "stores/recursosHumanos/seleccionContratacion/postulacion";
+import { CantonController } from "sistema/ciudad/infraestructure/CantonControllerontroller";
+import { useFiltrosListadosSelects } from "shared/filtrosListadosGenerales";
+import OptionGroupComponent from "components/optionGroup/view/OptionGroupComponent.vue";
 
 export default defineComponent({
-  components: {},
+  components: { OptionGroupComponent },
   props: {
     mixinModal: {
       type: Object as () => ContenedorSimpleMixin<Entrevista>,
@@ -24,16 +27,29 @@ export default defineComponent({
   emits: ['cerrar-modal', 'guardado'],
   setup(props, { emit }) {
     const mixin = new ContenedorSimpleMixin(Entrevista, new EntrevistaController())
-    const { entidad: entrevista, disabled } = mixin.useReferencias()
+    const { entidad: entrevista, disabled, listadosAuxiliares } = mixin.useReferencias()
+    const { cargarVista, obtenerListados, } = mixin.useComportamiento()
     const { confirmar, notificarCorrecto, notificarAdvertencia } = useNotificaciones()
 
     const postulacionStore = usePostulacionStore()
 
     const cargando = new StatusEssentialLoading()
 
+    const direccionDefault = 'Machala - El Oro - Ecuador. Napoleón Mera y 8.ª Norte, portón plomo (a la vuelta de mueblería/carpintería Daquilema).'
+
+    const { cantones, filtrarCantones } = useFiltrosListadosSelects(listadosAuxiliares)
+    cargarVista(async () => {
+      await obtenerListados({
+        cantones: new CantonController()
+      })
+
+      cantones.value = listadosAuxiliares.cantones
+    })
     const reglas = {
       fecha_hora: { required },
       duracion: { required },
+      link: { required: requiredIf(() => !entrevista.presencial) },
+      direccion: { required: requiredIf(() => entrevista.presencial) },
     }
     const v$ = useVuelidate(reglas, entrevista)
 
@@ -49,6 +65,8 @@ export default defineComponent({
     onMounted(() => {
       entrevista.postulacion_id = postulacionStore.idPostulacion
       entrevista.duracion = 30
+      entrevista.canton = 53//canton machala por defecto
+      entrevista.direccion = direccionDefault
     })
 
     /***************************************************************************
@@ -71,6 +89,7 @@ export default defineComponent({
           notificarAdvertencia(error)
         } finally {
           cargando.desactivar()
+          v$.value.$reset()
         }
       }
     }
@@ -85,7 +104,18 @@ export default defineComponent({
       optionsFecha,
       hourOptions: [8, 9, 10, 11, 12, 13, 14, 15, 16, 17],
       minuteOptions: [0, 5, 10, 15, 20, 25, 30, 35, 40, 45, 50, 55],
-
+      options: [
+        {
+          label: 'Presencial',
+          value: true
+        },
+        {
+          label: 'Virtual',
+          value: false
+        }
+      ],
+      //listados
+      cantones, filtrarCantones,
       // functions
       agendar, cancelar,
     }

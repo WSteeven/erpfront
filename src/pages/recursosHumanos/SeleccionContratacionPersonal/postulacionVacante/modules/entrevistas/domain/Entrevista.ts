@@ -8,6 +8,10 @@ export class Entrevista extends EntidadAuditable {
   observacion: string | null
   nueva_fecha_hora: string | null
   asistio: boolean
+  presencial: boolean
+  link: string| null
+  canton: number| null
+  direccion: string| null
 
   constructor() {
     super()
@@ -19,5 +23,9 @@ export class Entrevista extends EntidadAuditable {
     this.observacion = null
     this.nueva_fecha_hora = null
     this.asistio = false
+    this.presencial = true
+    this.link = null
+    this.canton = null
+    this.direccion = null
   }
 }

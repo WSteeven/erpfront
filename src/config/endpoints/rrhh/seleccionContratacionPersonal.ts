@@ -13,6 +13,7 @@ export const seleccionContratacionPersonal = {
     postulantes: new Endpoint('seleccion-contratacion/postulantes'),
     registro: new Endpoint('recursos-humanos/registro'),
     entrevistas: new Endpoint('seleccion-contratacion/entrevistas'),
+    examenes_postulantes: new Endpoint('seleccion-contratacion/examenes-postulantes'),
     postulacion_vacante: new Endpoint('seleccion-contratacion/postulaciones-vacantes'),
     user_curriculums: new Endpoint('seleccion-contratacion/curriculums-usuario'),
     user_referencias: new Endpoint('seleccion-contratacion/referencias-usuario'),

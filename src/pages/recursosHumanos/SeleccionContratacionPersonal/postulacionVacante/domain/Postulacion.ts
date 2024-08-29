@@ -33,6 +33,7 @@ export class Postulacion extends EntidadAuditable {
   tengo_disponibilidad_viajar: boolean //
   tengo_licencia_conducir: boolean //
   tipo_licencia: string | null //
+  dado_alta: boolean
 
 
   constructor() {
@@ -67,6 +68,7 @@ export class Postulacion extends EntidadAuditable {
     this.tengo_disponibilidad_viajar = false
     this.tengo_licencia_conducir = false
     this.tipo_licencia = null
+    this.dado_alta = false
 
   }
 }

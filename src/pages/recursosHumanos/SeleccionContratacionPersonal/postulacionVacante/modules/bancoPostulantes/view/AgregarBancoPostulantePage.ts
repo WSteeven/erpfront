@@ -70,9 +70,9 @@ export default defineComponent({
         }
         finally {
           cargando.desactivar()
+          v$.value.$reset()
         }
       }
-      v$.value.$reset()
     }
 
     function cancelar() {

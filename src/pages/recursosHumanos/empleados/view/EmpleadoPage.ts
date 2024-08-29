@@ -54,6 +54,7 @@ import { autoidentificaciones_etnicas, parentezcos } from 'config/recursosHumano
 import { helpers } from '@vuelidate/validators'
 import { onMounted } from 'vue'
 import { onUnmounted } from 'vue'
+import { usePostulanteStore } from 'stores/recursosHumanos/seleccionContratacion/postulante'
 
 export default defineComponent({
   components: { TabLayout, SelectorImagen, ModalesEntidad, EssentialTable, GestorArchivos, InformacionLicencia, },
@@ -61,6 +62,7 @@ export default defineComponent({
     /*********
      * Stores
      *********/
+    const postulanteStore = usePostulanteStore()
     useNotificacionStore().setQuasar(useQuasar())
     useCargandoStore().setQuasar(useQuasar())
     const { notificarCorrecto, confirmar } = useNotificaciones()
@@ -119,6 +121,7 @@ export default defineComponent({
     const idsParentescos: Ref<number[]> = ref([])
     const construccionConfiguracionColumnas = ref(false)
     cargarVista(async () => {
+      if(postulanteStore.idUser) cargarDatosPostulante()
       await obtenerListados({
         areas: new AreasController(),
         bancos: new BancoController(),
@@ -545,6 +548,11 @@ export default defineComponent({
             (v) => v.nombre.toLowerCase().indexOf(needle) > -1
           )
       })
+    }
+
+    async function cargarDatosPostulante(){
+      console.log('entramos en cargarDatosPostulante', postulanteStore.idUser)
+      //Aqui hay que hacer la carga de los datos del nuevo empleado
     }
 
     /**

@@ -6,10 +6,9 @@
         <div class="col-12 col-md-3">
           <label class="q-mb-sm block">Fecha Entrevista</label>
           <q-input
-            v-model="entrevista.fecha_hora"
+            v-model="examen.fecha_hora"
             placeholder="Obligatorio"
             :error="!!v$.fecha_hora.$errors.length"
-            :disable="disabled"
             @blur="v$.fecha_hora.$touch"
             readonly
             outlined
@@ -24,7 +23,7 @@
                 >
                   <div class="q-gutter-md row items-start">
                     <q-date
-                      v-model="entrevista.fecha_hora"
+                      v-model="examen.fecha_hora"
                       :mask="mask"
                       :options="optionsFecha"
                       today-btn
@@ -39,10 +38,8 @@
                       </div>
                     </q-date>
                     <q-time
-                      v-model="entrevista.fecha_hora"
+                      v-model="examen.fecha_hora"
                       :mask="mask"
-                      :hourOptions="hourOptions"
-                      :minuteOptions="minuteOptions"
                       color="primary"
                     />
                   </div>
@@ -58,37 +55,14 @@
           </q-input>
         </div>
 
-        <!-- Fecha de inicio -->
-        <div class="col-12 col-md-3">
-          <label class="q-mb-sm block">Duración (minutos)</label>
-          <q-input
-            v-model="entrevista.duracion"
-            type="number"
-            step="5"
-            placeholder="Duración de la entrevista (minutos)"
-            :error="!!v$.duracion.$errors.length"
-            :disable="disabled"
-            @blur="v$.duracion.$touch"
-            outlined
-            dense
-          >
-            <template v-slot:error>
-              <div v-for="error of v$.duracion.$errors" :key="error.$uid">
-                <div class="error-msg">{{ error.$message }}</div>
-              </div>
-            </template>
-          </q-input>
-        </div>
-
         <!--Canton -->
         <div class="col-12 col-md-3">
           <label class="q-mb-sm block">Ciudad</label>
           <q-select
-            v-model="entrevista.canton"
+            v-model="examen.canton"
             :options="cantones"
             transition-show="jump-up"
             transition-hide="jump-down"
-            :disable="disabled"
             options-dense
             dense
             outlined
@@ -97,6 +71,7 @@
             @filter="filtrarCantones"
             :option-value="v => v.id"
             :option-label="v => v.canton"
+            :error="!!v$.canton.$errors.length"
             emit-value
             map-options
             ><template v-slot:no-option>
@@ -116,32 +91,44 @@
                 </q-item-section>
               </q-item>
             </template>
+            <template v-slot:error>
+              <div v-for="error of v$.canton.$errors" :key="error.$uid">
+                <div class="error-msg">{{ error.$message }}</div>
+              </div>
+            </template>
           </q-select>
         </div>
-        <!-- {{ entrevista }} -->
-        <div class="col-12 col-md-3">
-          Tipo de entrevista
-          <option-group-component
-            class="q-pt-sm"
-            v-model="entrevista.presencial"
-            :options="options"
-          />
-        </div>
-        <!-- update:model-value="actualizada" -->
 
-        <div class="col-12 col-md-6" v-if="entrevista.presencial">
-          <label class="q-mb-sm block"
-            >Dirección del lugar de la entrevista</label
-          >
+        <!-- laboratorio -->
+        <div class="col-12 col-md-3">
+          <label class="q-mb-sm block">Laboratorio</label>
           <q-input
-            type="textarea"
-            v-model="entrevista.direccion"
-            placeholder="Obligatorio"
+            v-model="examen.laboratorio"
+            placeholder="Nombre del laboratorio"
+            :error="!!v$.laboratorio.$errors.length"
+            @blur="v$.laboratorio.$touch"
             outlined
             dense
+          >
+            <template v-slot:error>
+              <div v-for="error of v$.laboratorio.$errors" :key="error.$uid">
+                <div class="error-msg">{{ error.$message }}</div>
+              </div>
+            </template>
+          </q-input>
+        </div>
+
+        <!-- direccion -->
+        <div class="col-12 col-md-3">
+          <label class="q-mb-sm block">Dirección</label>
+          <q-input
+            v-model="examen.direccion"
             autogrow
+            placeholder="Dirección del laboratorio"
             :error="!!v$.direccion.$errors.length"
             @blur="v$.direccion.$touch"
+            outlined
+            dense
           >
             <template v-slot:error>
               <div v-for="error of v$.direccion.$errors" :key="error.$uid">
@@ -150,20 +137,21 @@
             </template>
           </q-input>
         </div>
-        <div class="col-12 col-md-6" v-if="!entrevista.presencial">
-          <label class="q-mb-sm block">Link de la reunión</label>
+
+        <!-- indicaciones -->
+        <div class="col-12 col-md-3">
+          <label class="q-mb-sm block">Indicaciones</label>
           <q-input
-            type="url"
-            v-model="entrevista.link"
-            placeholder="Obligatorio"
+            v-model="examen.indicaciones"
+            autogrow
+            placeholder="Indicaciones para los exámenes"
+            :error="!!v$.indicaciones.$errors.length"
+            @blur="v$.indicaciones.$touch"
             outlined
             dense
-            autogrow
-            :error="!!v$.link.$errors.length"
-            @blur="v$.link.$touch"
           >
             <template v-slot:error>
-              <div v-for="error of v$.link.$errors" :key="error.$uid">
+              <div v-for="error of v$.indicaciones.$errors" :key="error.$uid">
                 <div class="error-msg">{{ error.$message }}</div>
               </div>
             </template>
@@ -172,7 +160,7 @@
       </div>
       <div class="row q-gutter-sm justify-end">
         <!-- Boton guardar -->
-        <q-btn color="primary" no-caps push @click="agendar()">
+        <q-btn color="primary" no-caps push @click="guardar()">
           <q-icon name="bi-save" size="xs" class="q-pr-sm" />
           <span>Guardar</span>
         </q-btn>
@@ -186,4 +174,4 @@
   </q-card>
 </template>
 
-<script src="./EntrevistarPage.ts" />
+<script src="./AgendarCitaMedicaPage.ts" />
