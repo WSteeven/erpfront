@@ -225,7 +225,9 @@
                   }}</q-badge>
               </div>
             </div>
-            <div class="q-mt-md"></div>
+            <div class="q-mt-md">
+              <q-btn href="https://jpconstrucred.com:2096/" color="secondary" icon-right="mail" label="Ir a mi correo" target="_blank"/>
+            </div>
             <!-- Documentos -->
             <div class="q-mt-md flex justify-center rounded-lg" style="
                 padding: 10px;
@@ -393,6 +395,7 @@
               </q-dialog>
             </div>
           </q-card-section>
+
         </q-expansion-item>
       </div>
     </div>
@@ -418,6 +421,13 @@
 <!--Estilos del calendario Qalendar-->
 <style>
 @import 'qalendar/dist/style.css';
+/* Estilo para pintar todo el cuadro del día con evento */
+.qalendar-day.has-event {
+  background-color: #e0f7fa !important; /* Color de fondo personalizado */
+  border-radius: 4px !important; /* Ajuste del radio de borde */
+  color: white !important; /* Color del texto */
+  font-weight: bold; /* Hace que el texto sea negrita para destacar */
+}
 </style>
 
 <!--Estilos de Intranet Page-->
