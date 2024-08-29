@@ -491,7 +491,6 @@
     </div>
 
     <q-btn color="primary" class="full-width" square @click="guardar(ticket)">Guardar</q-btn>
-    <q-btn color="primary" class="full-width" square @click="guardar(ticket)">Cerrar</q-btn>
   </div>
 
   <modales-entidad
