@@ -23,9 +23,23 @@ export const configuracionColumnasEntregasActivosFijos: ColumnConfig<any>[] = [
         sortable: true
     },
     {
-        name: 'ciudad',
-        field: 'ciudad',
-        label: 'Ciudad',
+        name: 'sucursal',
+        field: 'sucursal',
+        label: 'Sucursal',
+        align: 'left',
+        sortable: true
+    },
+    {
+        name: 'num_transaccion',
+        field: 'num_transaccion',
+        label: 'Transacción',
+        align: 'left',
+        sortable: true
+    },
+    {
+        name: 'estado_comprobante',
+        field: 'estado_comprobante',
+        label: 'Estado comprobante',
         align: 'left',
         sortable: true
     },
@@ -33,6 +47,13 @@ export const configuracionColumnasEntregasActivosFijos: ColumnConfig<any>[] = [
         name: 'responsable',
         field: 'responsable',
         label: 'Responsable',
+        align: 'left',
+        sortable: true,
+    },
+    {
+        name: 'codigo_permiso_traslado',
+        field: 'codigo_permiso_traslado',
+        label: 'Código de permiso para traslado (SINCOAR)',
         align: 'left',
         sortable: true,
     },

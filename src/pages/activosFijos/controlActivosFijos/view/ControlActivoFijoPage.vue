@@ -149,11 +149,13 @@
           switch-indicator
           active-class="tab-active"
           indicator-color="transparent"
+          inline-label
           dense
         >
           <q-tab
             :name="opcionesConsultasActivosFijos.ENTREGAS"
             :label="opcionesConsultasActivosFijos.ENTREGAS"
+            icon="bi-arrow-clockwise"
             :class="{
               'tab-inactive':
                 tabsOpcionesConsultas !== opcionesConsultasActivosFijos.ENTREGAS
@@ -165,6 +167,7 @@
           <q-tab
             :name="opcionesConsultasActivosFijos.STOCK_RESPONSABLES"
             :label="opcionesConsultasActivosFijos.STOCK_RESPONSABLES"
+            icon="bi-arrow-clockwise"
             :class="{
               'tab-inactive':
                 tabsOpcionesConsultas !==
@@ -179,6 +182,7 @@
           <q-tab
             :name="opcionesConsultasActivosFijos.SEGUIMIENTO_CONSUMO"
             :label="opcionesConsultasActivosFijos.SEGUIMIENTO_CONSUMO"
+            icon="bi-arrow-clockwise"
             :class="{
               'tab-inactive':
                 tabsOpcionesConsultas !==
@@ -241,7 +245,7 @@
           <q-tab-panel
             :name="opcionesConsultasActivosFijos.SEGUIMIENTO_CONSUMO"
           >
-            <essential-table-pagination
+            <essential-table
               titulo="Seguimiento de consumo del activo fijo"
               :configuracionColumnas="configuracionColumnasSeguimientoConsumo"
               :datos="seguimientosConsumosActivosFijos"
@@ -251,9 +255,9 @@
               :permitirFiltrar="false"
               :mostrarExportar="true"
               :ajustarCeldas="true"
-              :mixin="mixinSeguimientosConsumosActivosFijos"
               :accion1="btnJustificativoUso"
-            ></essential-table-pagination>
+            ></essential-table>
+            <!-- :mixin="mixinSeguimientosConsumosActivosFijos" -->
           </q-tab-panel>
         </q-tab-panels>
 

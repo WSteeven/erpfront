@@ -2,7 +2,7 @@
   <tab-layout-filter-tabs2
     :mixin="mixin"
     :configuracionColumnas="configuracionColumnasTarea"
-    :full="true"
+    full
     :permitirEditar="false"
     :permitirEliminar="false"
     :mostrarButtonSubmits="tab === 'tarea'"
@@ -12,7 +12,7 @@
     :filtrar="filtrarTarea"
     tabDefecto="0"
     paginate
-    :permitirFiltrar="true"
+    permitir-filtrar
     >
     <!-- :forzarListar="true" -->
     <!-- :labelGuardar="tarea.tiene_subtareas ? 'Guardar' : 'Guardar y agendar'" -->
@@ -773,7 +773,7 @@
             :permitirEditar="false"
             :permitirEliminar="false"
             :mostrar-botones="false"
-            :mostrarFooter="true"
+            mostrar-footer
             :permitirFiltrar="false"
             @tab-seleccionado="filtrarSubtareas"
             :tabDefecto="tabActual"

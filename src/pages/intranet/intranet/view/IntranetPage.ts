@@ -159,6 +159,7 @@ export default defineComponent({
       style: {
         fontFamily: 'Nunito, sans-serif',
         color: 'blue',
+
         colorSchemes: {
           capacitaciones: {
             color: 'white',
@@ -170,7 +171,7 @@ export default defineComponent({
           },
           general: {
             color: 'white',
-            backgroundColor: 'green'
+            backgroundColor: 'orange'
           }
         }
       },

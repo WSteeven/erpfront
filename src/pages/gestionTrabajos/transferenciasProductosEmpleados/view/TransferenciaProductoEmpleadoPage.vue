@@ -22,6 +22,11 @@
             </div>
           </div>
 
+          <div class="col-12 q-mb-md">
+            <small class="text-bold">Origen de los productos</small>
+            <q-separator></q-separator>
+          </div>
+
           <!-- N° transferencia -->
           <div v-if="transferencia.id" class="col-12 col-md-3">
             <label class="q-mb-sm block">Transferencia N°</label>
@@ -60,8 +65,8 @@
               dense
               outlined
               disable
-              :option-label="(v) => v.nombres + ' ' + v.apellidos"
-              :option-value="(v) => v.id"
+              :option-label="v => v.nombres + ' ' + v.apellidos"
+              :option-value="v => v.id"
               emit-value
               map-options
             >
@@ -92,8 +97,8 @@
               options-dense
               dense
               outlined
-              :option-label="(v) => v.nombres + ' ' + v.apellidos"
-              :option-value="(v) => v.id"
+              :option-label="v => v.apellidos + ' ' + v.nombres"
+              :option-value="v => v.id"
               emit-value
               map-options
             >
@@ -111,7 +116,7 @@
             <label class="block">&nbsp;</label>
             <q-checkbox
               v-model="esParaStock"
-              label="Es stock"
+              label="Es de stock"
               @update:model-value="seleccionarEsStock()"
               :disable="!(accion === acciones.nuevo)"
               outlined
@@ -123,24 +128,27 @@
             <label class="q-mb-sm block"
               >Seleccione un cliente para filtrar el material de stock</label
             >
+            <!-- @update:model-value="
+                seleccionarClienteStock(transferencia.cliente)
+              " -->
             <q-select
               v-model="transferencia.cliente"
               :options="listadosAuxiliares.clientesMaterialesEmpleado"
               transition-show="scale"
               transition-hide="scale"
-              @update:model-value="
-                seleccionarClienteStock(transferencia.cliente)
-              "
               :disable="!(accion === acciones.nuevo)"
+              @update:model-value="transferencia.listado_productos = []"
               use-input
               input-debounce="0"
               options-dense
               dense
               outlined
-              :option-label="(item) => item.razon_social"
-              :option-value="(item) => item.cliente_id"
+              :option-label="item => item.razon_social"
+              :option-value="item => item.cliente_id"
               emit-value
               map-options
+              :error="!!v$.cliente.$errors.length"
+              @blur="v$.cliente.$touch"
             >
               <template v-slot:after>
                 <q-btn
@@ -153,13 +161,17 @@
                   <q-tooltip>Recargar clientes</q-tooltip>
                 </q-btn>
               </template>
+
+              <template v-slot:error>
+                <div v-for="error of v$.cliente.$errors" :key="error.$uid">
+                  <div class="error-msg">{{ error.$message }}</div>
+                </div>
+              </template>
             </q-select>
           </div>
 
-          <!-- v-if="transferencia.proyecto_origen" -->
-          <div v-if="!esParaStock" class="col-12 col-md-3">
+          <div v-if="!esParaStock && !consultado" class="col-12 col-md-3">
             <label class="q-mb-sm block">Proyecto origen</label>
-            <!-- :disable="!puedeAutorizar" -->
             <q-select
               v-model="transferencia.proyecto_origen"
               :options="proyectos"
@@ -171,8 +183,8 @@
               options-dense
               dense
               outlined
-              :option-label="(item) => item.nombre"
-              :option-value="(item) => item.id"
+              :option-label="item => item.nombre"
+              :option-value="item => item.id"
               use-input
               input-debounce="0"
               emit-value
@@ -200,6 +212,18 @@
             </q-select>
           </div>
 
+          <div v-if="consultado && !esParaStock" class="col-12 col-md-3">
+            <label class="q-mb-sm block">Proyecto de origen</label>
+            <q-input
+              v-model="transferencia.nombre_proyecto_origen"
+              disable
+              autogrow
+              outlined
+              dense
+            >
+            </q-input>
+          </div>
+
           <div
             v-show="
               transferencia.proyecto_origen && etapas.length && !esParaStock
@@ -218,8 +242,8 @@
               dense
               outlined
               @update:model-value="seleccionarEtapaOrigen()"
-              :option-label="(item) => item.nombre"
-              :option-value="(item) => item.id"
+              :option-label="item => item.nombre"
+              :option-value="item => item.id"
               use-input
               input-debounce="0"
               emit-value
@@ -235,7 +259,19 @@
             </q-select>
           </div>
 
-          <div v-if="!esParaStock" class="col-12 col-md-3">
+          <div v-if="consultado && !esParaStock" class="col-12 col-md-3">
+            <label class="q-mb-sm block">Etapa de origen</label>
+            <q-input
+              v-model="transferencia.nombre_etapa_origen"
+              disable
+              autogrow
+              outlined
+              dense
+            >
+            </q-input>
+          </div>
+
+          <div v-if="!esParaStock && !consultado" class="col-12 col-md-3">
             <label class="q-mb-sm block">Tarea origen</label>
             <q-select
               v-model="transferencia.tarea_origen"
@@ -244,17 +280,20 @@
               transition-hide="scale"
               :disable="!(accion === acciones.nuevo)"
               options-dense
-              hint="Seleccionar para buscar productos..."
+              hint="Debe tener al menos una subtarea activa"
               @update:model-value="seleccionarTareaOrigen()"
               dense
               outlined
-              :option-label="(item) => item.codigo_tarea + ' - ' + item.titulo"
-              :option-value="(item) => item.id"
+              :option-label="item => item.codigo_tarea + ' - ' + item.titulo"
+              :option-value="item => item.id"
               use-input
               input-debounce="0"
               emit-value
               map-options
-              ><template v-slot:option="scope">
+              :error="!!v$.tarea_origen.$errors.length"
+              @blur="v$.tarea_origen.$touch"
+            >
+              <template v-slot:option="scope">
                 <q-item v-bind="scope.itemProps">
                   <q-item-section>
                     <q-item-label>{{ scope.opt.codigo_tarea }}</q-item-label>
@@ -262,6 +301,7 @@
                   </q-item-section>
                 </q-item>
               </template>
+
               <template v-slot:no-option>
                 <q-item>
                   <q-item-section class="text-grey">
@@ -269,10 +309,28 @@
                   </q-item-section>
                 </q-item>
               </template>
+
+              <template v-slot:error>
+                <div v-for="error of v$.tarea_origen.$errors" :key="error.$uid">
+                  <div class="error-msg">{{ error.$message }}</div>
+                </div>
+              </template>
             </q-select>
           </div>
 
-          <div v-if="!esParaStock" class="col-12 col-md-3">
+          <div v-if="consultado && !esParaStock" class="col-12 col-md-3">
+            <label class="q-mb-sm block">Tarea de origen</label>
+            <q-input
+              v-model="transferencia.nombre_tarea_origen"
+              disable
+              autogrow
+              outlined
+              dense
+            >
+            </q-input>
+          </div>
+
+          <div v-if="!esParaStock && !consultado" class="col-12 col-md-3">
             <label class="q-mb-sm block"
               >Cliente propietario del material de proyecto/etapa</label
             >
@@ -281,21 +339,49 @@
               :options="listadosAuxiliares.clientesMaterialesTarea"
               transition-show="scale"
               transition-hide="scale"
+              @update:model-value="transferencia.listado_productos = []"
               use-input
               input-debounce="0"
-              disable
+              :disable="!(accion === acciones.nuevo)"
               options-dense
               dense
               outlined
-              :option-label="(item) => item.razon_social"
-              :option-value="(item) => item.cliente_id"
+              :option-label="item => item.razon_social"
+              :option-value="item => item.cliente_id"
               emit-value
               map-options
+              :error="!!v$.cliente.$errors.length"
+              @blur="v$.cliente.$touch"
             >
+              <template v-slot:error>
+                <div v-for="error of v$.cliente.$errors" :key="error.$uid">
+                  <div class="error-msg">{{ error.$message }}</div>
+                </div>
+              </template>
             </q-select>
           </div>
 
-          <div v-if="existenProductos" class="col-12 col-md-3">
+          <div v-if="consultado" class="col-12 col-md-3">
+            <label class="q-mb-sm block"
+              >Cliente propietario del material de proyecto/etapa</label
+            >
+            <q-input
+              v-model="transferencia.nombre_cliente"
+              disable
+              autogrow
+              outlined
+              dense
+            >
+            </q-input>
+          </div>
+
+          <div class="col-12 q-mb-md">
+            <small class="text-bold">Destino de los productos</small>
+            <q-separator color=""></q-separator>
+          </div>
+
+          <!-- v-if="existenProductos" -->
+          <div class="col-12 col-md-3">
             <label class="q-mb-sm block"
               >Seleccione el empleado a transferir</label
             >
@@ -315,8 +401,8 @@
               @blur="v$.empleado_destino.$touch"
               @filter="filtrarEmpleados"
               @popup-show="ordenarEmpleados(empleados)"
-              :option-label="(v) => v.apellidos + ' ' + v.nombres"
-              :option-value="(v) => v.id"
+              :option-label="v => v.apellidos + ' ' + v.nombres"
+              :option-value="v => v.id"
               emit-value
               map-options
             >
@@ -339,7 +425,8 @@
             </q-select>
           </div>
 
-          <div v-if="existenProductos" class="col-12 col-md-3">
+          <!-- v-if="existenProductos" -->
+          <div class="col-12 col-md-3">
             <label class="block">&nbsp;</label>
             <q-checkbox
               v-model="esDestinoStock"
@@ -352,7 +439,7 @@
           </div>
 
           <!-- !esParaStock -->
-          <div v-if="existenProductos && !esDestinoStock" class="col-12 col-md-3">
+          <div v-if="!esDestinoStock && !consultado" class="col-12 col-md-3">
             <label class="q-mb-sm block">Proyecto destino</label>
             <q-select
               v-model="transferencia.proyecto_destino"
@@ -366,8 +453,8 @@
               options-dense
               dense
               outlined
-              :option-label="(item) => item.nombre"
-              :option-value="(item) => item.id"
+              :option-label="item => item.nombre"
+              :option-value="item => item.id"
               use-input
               input-debounce="0"
               emit-value
@@ -394,12 +481,24 @@
             </q-select>
           </div>
 
+          <div v-if="consultado && !esDestinoStock" class="col-12 col-md-3">
+            <label class="q-mb-sm block">Proyecto de destino</label>
+            <q-input
+              v-model="transferencia.nombre_proyecto_destino"
+              disable
+              autogrow
+              outlined
+              dense
+            >
+            </q-input>
+          </div>
+
           <!-- paraProyecto -->
           <div
             v-show="
+              !consultado &&
               transferencia.proyecto_destino &&
               etapasDestino.length &&
-              existenProductos &&
               (!esParaStock || !esDestinoStock)
             "
             class="col-12 col-md-3"
@@ -416,8 +515,8 @@
               options-dense
               dense
               outlined
-              :option-label="(item) => item.nombre"
-              :option-value="(item) => item.id"
+              :option-label="item => item.nombre"
+              :option-value="item => item.id"
               use-input
               input-debounce="0"
               emit-value
@@ -433,8 +532,20 @@
             </q-select>
           </div>
 
+          <div v-if="consultado && !esDestinoStock" class="col-12 col-md-3">
+            <label class="q-mb-sm block">Etapa de destino</label>
+            <q-input
+              v-model="transferencia.nombre_etapa_destino"
+              disable
+              autogrow
+              outlined
+              dense
+            >
+            </q-input>
+          </div>
+
           <!-- !esParaStock -->
-          <div v-if="existenProductos && !esDestinoStock" class="col-12 col-md-3">
+          <div v-if="!esDestinoStock && !consultado" class="col-12 col-md-3">
             <label class="q-mb-sm block">Tarea destino</label>
             <q-select
               v-model="transferencia.tarea_destino"
@@ -442,14 +553,14 @@
               transition-show="scale"
               transition-hide="scale"
               options-dense
-              hint="Tarea #"
+              hint="Debe tener al menos una subtarea activa"
               @filter="filtrarTareasDestino"
               clearable
               dense
               outlined
               :disable="!(accion === acciones.nuevo)"
-              :option-label="(item) => item.codigo_tarea + ' - ' + item.titulo"
-              :option-value="(item) => item.id"
+              :option-label="item => item.codigo_tarea + ' - ' + item.titulo"
+              :option-value="item => item.id"
               @update:model-value="seleccionarTareaDestino()"
               use-input
               input-debounce="0"
@@ -471,6 +582,18 @@
                 </q-item>
               </template>
             </q-select>
+          </div>
+
+          <div v-if="consultado && !esDestinoStock" class="col-12 col-md-3">
+            <label class="q-mb-sm block">Tarea de destino</label>
+            <q-input
+              v-model="transferencia.nombre_tarea_destino"
+              disable
+              autogrow
+              outlined
+              dense
+            >
+            </q-input>
           </div>
 
           <!-- Justificacion -->
@@ -510,8 +633,8 @@
               dense
               outlined
               disable
-              :option-label="(v) => v.nombres + ' ' + v.apellidos"
-              :option-value="(v) => v.id"
+              :option-label="v => v.nombres + ' ' + v.apellidos"
+              :option-value="v => v.id"
               emit-value
               map-options
             />
@@ -539,8 +662,8 @@
                 disabled ||
                 !(authenticationStore.user.id == transferencia.autorizador)
               "
-              :option-value="(v) => v.id"
-              :option-label="(v) => v.nombre"
+              :option-value="v => v.id"
+              :option-label="v => v.nombre"
               emit-value
               map-options
             >
@@ -614,6 +737,42 @@
                 >
               </template>
             </gestor-archivos>
+          </div>
+
+          <div class="col-12 col-md-12 q-mt-md">
+            <label class="q-mb-sm block"
+              >Agregar productos<b
+                ><i> *Primero seleccione el origen de los productos</i></b
+              ></label
+            >
+            <div class="row q-col-gutter-x-xs">
+              <div class="col-12 col-md-10 q-mb-md">
+                <q-input
+                  v-model="criterioBusquedaProducto"
+                  placeholder="Nombre de producto"
+                  hint="Presiona Enter para seleccionar un producto"
+                  @keydown.enter="consultarProductos"
+                  @blur="
+                    criterioBusquedaProducto === '' ? limpiarProducto() : null
+                  "
+                  outlined
+                  dense
+                >
+                </q-input>
+              </div>
+              <div class="col-12 col-md-2">
+                <q-btn
+                  @click="consultarProductos()"
+                  icon="search"
+                  unelevated
+                  color="primary"
+                  class="full-width"
+                  square
+                  no-caps
+                  >Buscar</q-btn
+                >
+              </div>
+            </div>
           </div>
 
           <!-- Tabla -->

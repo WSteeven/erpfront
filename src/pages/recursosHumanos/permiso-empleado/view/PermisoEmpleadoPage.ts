@@ -13,7 +13,7 @@ import SelectorImagen from 'components/SelectorImagen.vue'
 import { ContenedorSimpleMixin } from 'shared/contenedor/modules/simple/application/ContenedorSimpleMixin'
 import { PermisoEmpleadoController } from '../infraestructure/PermisoEmpleadoController'
 import { PermisoEmpleado } from '../domain/PermisoEmpleado'
-import { removeAccents } from 'shared/utils'
+import { obtenerFechaActual, removeAccents, sumarFechas } from 'shared/utils'
 import { autorizacionesId, convertir_fecha_guion, convertir_fecha_hora, maskFecha, numDiaSemana, tabOptionsPermiso, } from 'config/utils'
 import { requiredIf, required } from 'shared/i18n-validators'
 import { MotivoPermisoEmpleadoController } from 'pages/recursosHumanos/motivo/infraestructure/MotivoPermisoEmpleadoController'
@@ -212,7 +212,7 @@ export default defineComponent({
       )
     })
     function optionsFechaInicio(date) {
-      const currentDateString = format(new Date(), 'YYYY/MM/DD')
+      const currentDateString = sumarFechas(obtenerFechaActual(),0,0,-15, 'YYYY/MM/DD')
       return (
         date >= currentDateString &&
         new Date(date).getDay() < numDiaSemana.sabado &&

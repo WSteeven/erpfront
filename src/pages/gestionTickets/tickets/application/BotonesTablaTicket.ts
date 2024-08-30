@@ -9,8 +9,8 @@ import { useAuthenticationStore } from 'stores/authentication'
 import { CambiarEstadoTicket } from './CambiarEstadoTicket'
 import { useNotificaciones } from 'shared/notificaciones'
 import { estadosTickets } from 'config/tickets.utils'
-import { Ticket } from '../domain/Ticket'
 import { useTicketStore } from 'stores/ticket'
+import { Ticket } from '../domain/Ticket'
 import { reactive } from 'vue'
 
 export const useBotonesTablaTicket = (mixin: ContenedorSimpleMixin<Ticket | any>, modales: ComportamientoModalesTicket | any) => {
@@ -101,7 +101,7 @@ export const useBotonesTablaTicket = (mixin: ContenedorSimpleMixin<Ticket | any>
     titulo: 'Reanudar',
     icono: 'bi-play-circle',
     color: 'positive',
-    visible: ({ entidad }) => entidad.estado === estadosTickets.PAUSADO && entidad.puede_ejecutar,
+    visible: ({ entidad }) => [estadosTickets.PAUSADO, estadosTickets.FINALIZADO_SOLUCIONADO].includes(entidad.estado) && entidad.puede_ejecutar,
     accion: async ({ entidad }) => {
       confirmar('¿Está seguro de reanudar el trabajo?', async () => {
         await cambiarEstadoTicket.reanudar(entidad.id)

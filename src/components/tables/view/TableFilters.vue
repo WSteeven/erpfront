@@ -1,5 +1,61 @@
 <template>
   <div class="column q-col-gutter-xs q-mb-xl full-width">
+    <small
+      class="bg-solid text-info rounded justify-between row items-center q-mb-sm q-pb-xs q-px-md"
+    >
+      <span
+        ><q-icon name="bi-info-circle-fill"></q-icon> Para filtrar entre rangos
+        de fecha use el operador <b>start</b> para la fecha de inicio y
+        <b>end</b> para la fecha de fin.</span
+      >
+      <q-btn
+        rounded
+        flat
+        no-caps
+        dense
+        @click="() => (verEjemploFiltrosAvanzados = true)"
+        >
+        <q-icon name="bi-eye" class="q-mr-sm"></q-icon>
+        Ver ejemplo</q-btn
+      >
+    </small>
+
+    <q-dialog v-model="verEjemploFiltrosAvanzados" full-width>
+      <q-card class="bg-transparent no-border" flat>
+        <q-toolbar class="bg-body" rounded>
+          <q-toolbar-title class="text-primary text-subtitle1"
+            ><span>{{
+              'Ejemplo de filtro por rango de fecha'
+            }}</span></q-toolbar-title
+          >
+
+          <div class="row q-gutter-x-sm">
+            <q-btn
+              round
+              dense
+              unelevated
+              color="red"
+              size="sm"
+              @click="verEjemploFiltrosAvanzados = false"
+            >
+              <q-icon name="bi-x-lg" size="14px"></q-icon>
+              <q-tooltip class="bg-dark">Cerrar</q-tooltip>
+            </q-btn>
+          </div>
+        </q-toolbar>
+
+        <q-card-section class="bg-body rounded-footer">
+          <p>
+            Debe seleccionar el mismo campo dos veces. En el primer campo use
+            START para indicar la <b>fecha de inicio</b> de la búsqueda mientras
+            que en el segundo campo deberá usar END para indicar la
+            <b>fecha de fin</b>.
+          </p>
+          <q-img src="~assets/img/intervalo_fecha.png"></q-img>
+        </q-card-section>
+      </q-card>
+    </q-dialog>
+
     <div
       v-for="(filtro, index) in columnas"
       :key="index"
@@ -14,8 +70,8 @@
           v-model="filtro.field"
           :options="configuracionColumnasFilter"
           hint="Campo"
-          :option-label="(item) => item.label"
-          :option-value="(item) => item.field"
+          :option-label="item => item.label"
+          :option-value="item => item.field"
           @update:model-value="establecerInputType(index, filtro)"
           class="col-md-10"
           dense
@@ -73,7 +129,7 @@
           clearable
           :class="{
             'col-md-6': filtro.type === 'datetime',
-            'col-md-10': filtro.type !== 'datetime',
+            'col-md-10': filtro.type !== 'datetime'
           }"
         >
           <template
@@ -138,12 +194,12 @@ export default defineComponent({
   props: {
     configuracionColumnas: {
       type: Object as () => ColumnConfig<EntidadAuditable>[],
-      required: true,
-    },
+      required: true
+    }
   },
   emits: ['filtrar'],
   setup(props, { emit }) {
-    const operadoresNumeradores = ['<', '<=', '>', '>=']
+    const operadoresNumeradores = ['<', '<=', '>', '>=', 'start', 'end']
     const operadores = [...operadoresNumeradores, '!=', 'like']
     const columnas: Ref<any[]> = ref([])
 
@@ -176,13 +232,18 @@ export default defineComponent({
       else*/
       let valor = ''
 
-      if (filtro.type === 'date') valor = formatearFecha(filtro.value)
-      else if (filtro.type === 'datetime')
+      if (filtro.type === 'datetime')
         valor = formatearFechaHora(filtro.value, filtro.value2)
       else valor = filtro.value
 
       if (operadoresNumeradores.includes(filtro.operador)) {
-        return `${filtro.field}[operator]=${filtro.operador}&${filtro.field}[value]=${valor}`
+        if (
+          filtro.type === 'date' &&
+          ['start', 'end'].includes(filtro.operador)
+        )
+          return `${filtro.field}[${filtro.operador}]=${valor}`
+        else
+          return `${filtro.field}[operator]=${filtro.operador}&${filtro.field}[value]=${valor}`
       } else {
         console.log(`${filtro.field}=${valor}`)
         return filtro.operador === 'like'
@@ -208,10 +269,10 @@ export default defineComponent({
 
     function filtrar() {
       columnas.value = columnas.value.filter(
-        (filtro) => filtro.field || filtro.value
+        filtro => filtro.field || filtro.value
       )
 
-      const uri = columnas.value.map((filtro) => obtenerUri(filtro)).join('&')
+      const uri = columnas.value.map(filtro => obtenerUri(filtro)).join('&')
       emit('filtrar', uri)
     }
 
@@ -229,7 +290,8 @@ export default defineComponent({
       establecerInputType,
       quitarFiltro,
       configuracionColumnasFilter,
+      verEjemploFiltrosAvanzados: ref(false)
     }
-  },
+  }
 })
 </script>

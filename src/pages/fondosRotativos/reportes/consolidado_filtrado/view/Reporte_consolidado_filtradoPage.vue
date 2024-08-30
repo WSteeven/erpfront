@@ -510,7 +510,7 @@
             consolidadofiltrado.tipo_saldo == tipo_saldo.GASTOS_FOTOGRAFIA)
           "
         >
-          <label class="q-mb-sm block">Autorizaciòn Especial</label>
+          <label class="q-mb-sm block">Autorización Especial</label>
           <q-select
             v-model="consolidadofiltrado.autorizador"
             :options="autorizacionesEspeciales"

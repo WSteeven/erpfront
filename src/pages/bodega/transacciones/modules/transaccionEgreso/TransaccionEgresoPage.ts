@@ -1,8 +1,8 @@
 //Dependencias
 import { configuracionColumnasTransaccionEgreso } from '../../domain/configuracionColumnasTransaccionEgreso'
-import { required, requiredIf } from '@vuelidate/validators'
+import { required, requiredIf } from 'shared/i18n-validators'
 import { useVuelidate } from '@vuelidate/core'
-import { Ref, defineComponent, ref } from 'vue'
+import { Ref, defineComponent, ref, watchEffect } from 'vue'
 import { configuracionColumnasInventarios } from 'pages/bodega/inventario/domain/configuracionColumnasInventarios'
 import { configuracionColumnasItemsSeleccionados } from 'pages/bodega/traspasos/domain/configuracionColumnasItemsSeleccionados'
 import { configuracionColumnasListadoProductosSeleccionados } from '../transaccionContent/domain/configuracionColumnasListadoProductosSeleccionados'
@@ -57,7 +57,8 @@ import { StatusEssentialLoading } from 'components/loading/application/StatusEss
 import { TareasEmpleadoController } from 'pages/gestionTrabajos/tareas/infraestructure/TareasEmpleadoController'
 import { EtapaController } from 'pages/gestionTrabajos/proyectos/modules/etapas/infraestructure/EtapaController'
 import { ComportamientoModalesTransaccionEgreso } from './application/ComportamientoModalesGestionarEgresos'
-import { Fields } from '../../../../sistema/permisos/permisos';
+import { Fields } from '../../../../sistema/permisos/permisos'
+import { empresas } from 'config/utils/sistema'
 
 export default defineComponent({
   name: 'Egresos',
@@ -178,6 +179,8 @@ export default defineComponent({
         puedeEditarCantidad.value = false
         puedeDespacharMaterial.value = false
       }
+
+      transaccion.se_traslada_arma = !!transaccion.codigo_permiso_traslado
     })
     onGuardado(() => {
       pedidoStore.resetearPedido()
@@ -207,7 +210,7 @@ export default defineComponent({
       observacion_est: {
         requiredIfObsEstado: requiredIf(false)
       },
-      // codigo_permiso_sincoar: { requiredIf: requiredIf(()) }
+      codigo_permiso_traslado: { requiredIf: requiredIf(() => existeItemArmaFuego.value && transaccion.se_traslada_arma) }
     }
     const v$ = useVuelidate(reglas, transaccion)
     setValidador(v$.value)
@@ -219,9 +222,9 @@ export default defineComponent({
 
     function filtrarTransacciones(tab: string) {
       tabDefecto.value = tab
-      listar({ estado: tab, paginate: paginate})
+      listar({ estado: tab }) //, paginate: paginate })
 
-      filtros.fields = { estado: tab}
+      filtros.fields = { estado: tab }
     }
     const botonEditarEgreso: CustomActionTable = {
       titulo: 'Editar',
@@ -262,6 +265,16 @@ export default defineComponent({
       accion: async ({ entidad }) => {
         transaccionStore.idTransaccion = entidad.id
         await transaccionStore.imprimirEgreso()
+      },
+    }
+    const botonImprimirActaEntregaRecepcion: CustomActionTable = {
+      titulo: 'Acta entrega-recepción',
+      color: 'primary',
+      icono: 'bi-printer',
+      visible: () => process.env.VUE_APP_ID === empresas.JPCUSTODY,
+      accion: async ({ entidad }) => {
+        transaccionStore.idTransaccion = entidad.id
+        await transaccionStore.imprimirActaEntregaRecepcion()
       },
     }
     const botonEliminar: CustomActionTable = {
@@ -548,6 +561,12 @@ export default defineComponent({
       align: 'left'
     }
     ]
+
+    /************
+     * Observers
+     ************/
+    watchEffect(() => existeItemArmaFuego.value = transaccion.listadoProductosTransaccion.some((item) => item.categoria === 'ARMAS DE FUEGO'))
+
     return {
       mixin, transaccion, disabled, accion, v$, soloLectura,
       configuracionColumnas: configuracionColumnasTransaccionEgreso,
@@ -682,6 +701,8 @@ export default defineComponent({
         } else sucursales.value.sort((a: Sucursal, b: Sucursal) => ordernarListaString(a.lugar!, b.lugar!))
       },
       ordenarLista,
+      existeItemArmaFuego,
+      botonImprimirActaEntregaRecepcion,
     }
   }
 })

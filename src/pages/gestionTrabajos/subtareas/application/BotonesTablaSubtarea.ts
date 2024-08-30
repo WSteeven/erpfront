@@ -13,7 +13,7 @@ import { useNotificaciones } from 'shared/notificaciones'
 import { useSubtareaStore } from 'stores/subtarea'
 import { estadosTrabajos } from 'config/utils'
 import { Subtarea } from '../domain/Subtarea'
-import { Ref, reactive } from 'vue'
+import { Ref, UnwrapRef, reactive } from 'vue'
 import { clientes } from 'config/clientes'
 
 export const useBotonesTablaSubtarea = (listado: Ref<Subtarea[]>, modales: any, listadosAuxiliares?: any) => {
@@ -28,7 +28,7 @@ export const useBotonesTablaSubtarea = (listado: Ref<Subtarea[]>, modales: any, 
   /************
    * Variables
    ************/
-  const { notificarAdvertencia, confirmar, notificarCorrecto,  promptItems } = useNotificaciones()
+  const { notificarAdvertencia, confirmar, notificarCorrecto, promptItems, prompt } = useNotificaciones()
   const notificaciones = useNotificaciones()
   const cambiarEstadoTrabajo = new CambiarEstadoSubtarea()
   let filtrarTrabajoAsignado: (estado: string) => void
@@ -229,10 +229,10 @@ export const useBotonesTablaSubtarea = (listado: Ref<Subtarea[]>, modales: any, 
     icono: 'bi-check',
     visible: ({ entidad }) => entidad.estado === estadosTrabajos.REALIZADO,
     accion: async ({ entidad, posicion }) => {
-      const config: CustomActionPrompt = reactive({
+      const config: CustomActionPrompt = reactive({ // Nedetel
         mensaje: 'Confirme la causa de intervención',
         accion: (causa_intervencion_id) => {
-          confirmarFinalizar({ entidad, causa_intervencion_id })
+          confirmarFinalizarConAlimentacion({ entidad, causa_intervencion_id, posicion })
         },
         requerido: false,
         defecto: entidad.causa_intervencion_id,
@@ -246,14 +246,42 @@ export const useBotonesTablaSubtarea = (listado: Ref<Subtarea[]>, modales: any, 
       })
 
       if (entidad.cliente_id === clientes.NEDETEL) {
-        promptItems(config)
+        promptItems(config) // Solicitar causa de intervencion
       } else {
         confirmarFinalizar({ entidad, posicion })
       }
     }
   }
 
-  async function confirmarFinalizar(data: any) {
+  async function confirmarFinalizarConAlimentacion(data: UnwrapRef<any>) {
+    const { entidad, causa_intervencion_id, posicion } = data
+
+    console.log(posicion)
+
+    const solicitarValorAlimentacion: CustomActionPrompt<Subtarea> = {
+      titulo: '¿Asignó alimentación para subtarea?',
+      mensaje: 'Ingrese el valor en caso de existir, caso contrario deje en blanco o coloque cero',
+      tipo: 'number',
+      accion: async (valor: number) => {
+        confirmar('¿Está seguro de marcar como finalizada la subtarea?', async () => {
+          try {
+            const { result } = await cambiarEstadoTrabajo.finalizar(entidad.id, { causa_intervencion_id: causa_intervencion_id, valor_alimentacion: valor })
+            actualizarElemento(posicion, result)
+
+            notificarCorrecto('Trabajo finalizada exitosamente!')
+          } catch (error: unknown) {
+            if (isAxiosError(error)) {
+              const mensajes: string[] = error.erroresValidacion
+              notificarMensajesError(mensajes, notificaciones)
+            }
+          }
+        })
+      }
+    }
+    prompt(solicitarValorAlimentacion)
+  }
+
+  async function confirmarFinalizar(data: UnwrapRef<any>) {
     const { entidad, causa_intervencion_id, posicion } = data
 
     confirmar('¿Está seguro de marcar como finalizada la subtarea?', async () => {
@@ -376,6 +404,8 @@ export const useBotonesTablaSubtarea = (listado: Ref<Subtarea[]>, modales: any, 
   const setFiltrarTrabajoAsignado = (funcion: (estado: string) => void) => filtrarTrabajoAsignado = funcion
 
   function actualizarElemento(posicion: number, nuevaEntidad: Subtarea): void {
+    console.log(posicion)
+    console.log(nuevaEntidad)
     if (posicion >= 0) {
       listado.value.splice(posicion, 1, nuevaEntidad)
       listado.value = [...listado.value]

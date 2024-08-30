@@ -57,14 +57,24 @@
 
     <template #bottom>
       <!-- <botones-paginacion :scope="scope"> </botones-paginacion> -->
-      <div
-        class="row full-width justify-start bg-desenfoque q-py-xs text-center"
+      <!-- <div
+        class="row full-width justify-center bg-desenfoque q-py-xs text-center"
       >
         <q-pagination
           v-if="pagination.page"
           v-model="pagination.page"
           :max="pagination.last_page"
           @update:model-value="onRequest"
+          input
+        />
+      </div> -->
+      <div class="row full-width justify-center q-py-xs text-center">
+        <q-pagination
+          v-if="pagination.page && !mostrarFiltros"
+          v-model="pagination.page"
+          :max="pagination.last_page"
+          @update:model-value="onRequest"
+          class="border-white q-pa-xs rounded bg-solid"
           input
         />
       </div>
@@ -178,7 +188,7 @@
           v-if="mostrarFiltros"
           class="text-bold text-center full-width rounded q-mb-md"
         >
-          <q-chip class="bg-white text-positive">
+          <q-chip class="bg-solid text-positive">
             <q-icon name="bi-funnel" class="q-mr-sm"></q-icon>
             Modo filtro activado: {{ titulo }}
           </q-chip>
@@ -191,15 +201,14 @@
           class="row text-primary text-subtitle2 q-mb-lg items-center justify-between col-12"
           :class="{
             'titulo-tabla2': !$q.screen.xs,
-            'justify-center': $q.screen.xs,
-            'bg-grey-9': $q.dark.isActive
+            'justify-center': $q.screen.xs
           }"
         >
           <span>
             <q-icon
               v-if="!$q.screen.xs"
               name="bi-grip-vertical"
-              color="info"
+              color="primary"
               class="q-mr-sm"
             ></q-icon>
             <span>{{ titulo }}</span>
@@ -373,14 +382,13 @@
           >
         </div>
 
-        <div
-          class="row full-width justify-end bg-desenfoque q-py-xs text-center"
-        >
+        <div class="row full-width justify-center q-py-xs text-center">
           <q-pagination
-            v-if="pagination.page"
+            v-if="pagination.page && !mostrarFiltros"
             v-model="pagination.page"
             :max="pagination.last_page"
             @update:model-value="onRequest"
+            class="border-white q-pa-xs rounded bg-solid"
             input
           />
         </div>
@@ -945,9 +953,7 @@
           unelevated
           no-wrap
           class="q-px-sm text-primary border-primary"
-          @click="
-            verVisorArchivos({ entidad: props.row })
-          "
+          @click="verVisorArchivos({ entidad: props.row })"
         >
           <q-icon name="bi-archive" size="xs" class="q-mr-sm"></q-icon>
           {{ props.value.length + ' archivos' }}

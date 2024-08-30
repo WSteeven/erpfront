@@ -7,10 +7,10 @@ import { tabOptionsEstadosTickets, tiposPrioridades, estadosTickets } from 'conf
 import { StatusEssentialLoading } from 'components/loading/application/StatusEssentialLoading'
 import { AxiosHttpRepository } from 'shared/http/infraestructure/AxiosHttpRepository'
 import { configuracionColumnasTicket } from '../domain/configuracionColumnasTicket'
-import { accionesTabla, maskFecha } from 'config/utils'
-import { computed, defineComponent, ref, watch } from 'vue'
-import { useCargandoStore } from 'stores/cargando'
 import { required, minLength } from 'shared/i18n-validators'
+import { accionesTabla, maskFecha } from 'config/utils'
+import { computed, defineComponent, ref } from 'vue'
+import { useCargandoStore } from 'stores/cargando'
 import { useTareaStore } from 'stores/tarea'
 import useVuelidate from '@vuelidate/core'
 import { endpoints } from 'config/api'
@@ -44,16 +44,17 @@ import { ContenedorSimpleMixin } from 'shared/contenedor/modules/simple/applicat
 import { Archivo } from 'pages/gestionTrabajos/subtareas/modules/gestorArchivosTrabajos/domain/Archivo'
 import { EmpleadoController } from 'recursosHumanos/empleados/infraestructure/EmpleadoController'
 import { ComportamientoModalesTicket } from '../application/ComportamientoModalesTicket'
+import { useDestinatariosTickets } from '../application/CategoriaTipoTicket.application'
 import { ArchivoTicketController } from '../infraestructure/ArchivoTicketController '
 import { useFiltrosListadosTickets } from '../application/FiltrosListadosTicket'
 import { TipoTicket } from 'pages/gestionTickets/tiposTickets/domain/TipoTicket'
 import { useBotonesTablaTicket } from '../application/BotonesTablaTicket'
-import { formatearFechaHora, obtenerFechaHoraActual } from 'shared/utils'
 import { TicketController } from '../infraestructure/TicketController'
 import { useAuthenticationStore } from 'stores/authentication'
 import { TicketModales } from '../domain/TicketModales'
+import { obtenerFechaHoraActual } from 'shared/utils'
 import { Ticket } from '../domain/Ticket'
-import { useDestinatariosTickets } from '../application/CategoriaTipoTicket.application'
+import { useFiltrosListadosSelects } from 'shared/filtrosListadosGenerales'
 
 export default defineComponent({
   components: {
@@ -88,7 +89,7 @@ export default defineComponent({
     const mixin = new ContenedorSimpleMixin(Ticket, new TicketController())
     const { entidad: ticket, listadosAuxiliares, accion, disabled } = mixin.useReferencias()
     const { guardar, editar, eliminar, reestablecer, setValidador, obtenerListados, cargarVista, listar } = mixin.useComportamiento()
-    const { onBeforeGuardar, onGuardado, onModificado, onConsultado, onReestablecer } = mixin.useHooks()
+    const { onBeforeGuardar, onGuardado, onConsultado, onReestablecer } = mixin.useHooks()
 
     const mixinArchivoTicket = new ContenedorSimpleMixin(Archivo, new ArchivoTicketController())
 
@@ -106,6 +107,11 @@ export default defineComponent({
         motivosCancelados: {
           controller: new MotivoCanceladoTicketController(),
           params: { activo: 1 },
+        },
+        empleados: [],
+        empleadosOrigen: {
+          controller: new EmpleadoController(),
+          params: { campos: 'id,nombres,apellidos', estado: 1 },
         },
       })
 
@@ -183,6 +189,8 @@ export default defineComponent({
       departamentos,
       empleados,
     } = useFiltrosListadosTickets(listadosAuxiliares)
+
+    const { empleadosOrigen, filtrarEmpleadosOrigen } = useFiltrosListadosSelects(listadosAuxiliares)
 
     /************
     * Funciones
@@ -427,6 +435,7 @@ export default defineComponent({
       obtenerTiposTickets,
       agregarDepartamento,
       quitarDepartamento,
+      empleadosOrigen, filtrarEmpleadosOrigen,
     }
   },
 })

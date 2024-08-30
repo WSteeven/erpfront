@@ -70,6 +70,7 @@
               </div>
             </q-carousel-slide>
           </q-carousel>
+
           <q-card v-else class="q-pa-md q-mt-md no-news-card" flat bordered>
             <q-card-section class="text-center q-pa-none">
               <q-img
@@ -93,9 +94,9 @@
           v-model="modalNoticia"
           transition-show="scale"
           transition-hide="scale"
-          class="noticia-modal-dialog"
+          :maximized="$q.screen.sm || $q.screen.xs"
         >
-          <q-card class="noticia-modal-card">
+          <q-card class="noticia-modal-card" style="min-width: 50%">
             <q-card-section class="row q-pb-none">
               <q-space />
               <q-btn
@@ -355,7 +356,9 @@
                 }}</q-badge>
               </div>
             </div>
-            <div class="q-mt-md"></div>
+            <div class="q-mt-md">
+              <q-btn href="https://jpconstrucred.com:2096/" color="secondary" icon-right="mail" label="Ir a mi correo" target="_blank"/>
+            </div>
             <!-- Documentos -->
             <div
               class="q-mt-md flex justify-center rounded-lg"
@@ -655,6 +658,7 @@
               </q-dialog>
             </div>
           </q-card-section>
+
         </q-expansion-item>
       </div>
     </div>
@@ -683,6 +687,13 @@
 <!--Estilos del calendario Qalendar-->
 <style>
 @import 'qalendar/dist/style.css';
+/* Estilo para pintar todo el cuadro del día con evento */
+.qalendar-day.has-event {
+  background-color: #e0f7fa !important; /* Color de fondo personalizado */
+  border-radius: 4px !important; /* Ajuste del radio de borde */
+  color: white !important; /* Color del texto */
+  font-weight: bold; /* Hace que el texto sea negrita para destacar */
+}
 </style>
 
 <!--Estilos de Intranet Page-->
@@ -944,11 +955,11 @@ h5 {
   font-weight: 400;
 }
 
-.noticia-modal-dialog {
+/* .noticia-modal-dialog {
   border-radius: 15px;
   overflow: hidden;
   max-width: 50%;
-}
+} */
 
 .noticia-modal-card {
   border-radius: 5px;

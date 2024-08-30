@@ -29,6 +29,9 @@ import { MantenimientoVehiculoPusherEvent } from 'src/pusherEvents/vehiculos/Man
 import { SolicitudExamenPusherEvent } from 'src/pusherEvents/medico/SolicitudExamenPusherEvent'
 import { DiasDescansoPusherEvent } from 'src/pusherEvents/medico/DiasDescansoPusherEvent'
 import { SolicitudEmpleadoPusherEvent } from 'src/pusherEvents/recursosHumanos/seleccionContratacionPersonal/SolicitudEmpleadoPusherEvent'
+import { TransferenciaProductoRealizadaPusherEvent } from 'src/pusherEvents/tareas/TransferenciaProductosRealizadaPusherEvent'
+import { TransferenciaProductoSolicitadaPusherEvent } from 'src/pusherEvents/tareas/TransferenciaProductosSolicitadaPusherEvent'
+import { NotificarEntregaActivoFijoPusherEvent } from 'src/pusherEvents/activosFijos/NotificarEntregaActivoFijoPusherEvent'
 
 
 export class NotificacionesSistema {
@@ -72,11 +75,22 @@ export class NotificacionesSistema {
     const solicitudFondosPusherEvent = new GastoCoordinadorPusherEvent()
     solicitudFondosPusherEvent.start()
 
+    /****************
+     * Modulo tareas
+     ****************/
     // Subtareas
     const subtareaPusherEvent = new SubtareaPusherEvent()
     subtareaPusherEvent.start()
 
-    // Tickets
+    const transferenciaProductoRealizadaPusherEvent = new TransferenciaProductoRealizadaPusherEvent()
+    transferenciaProductoRealizadaPusherEvent.start()
+
+    const transferenciaProductoSolicitadaPusherEvent = new TransferenciaProductoSolicitadaPusherEvent()
+    transferenciaProductoSolicitadaPusherEvent.start()
+
+    /**********
+     * Tickets
+     **********/
     const ticketPusherEvent = new TicketPusherEvent()
     ticketPusherEvent.start()
 
@@ -156,6 +170,7 @@ export class NotificacionesSistema {
     const diasDescansoPusherEvent = new DiasDescansoPusherEvent()
     diasDescansoPusherEvent.start()
 
+<<<<<<< HEAD
     /*******************
     * MODULO SELECCION Y CONTRATACION DE PERSONAL
     ********************/
@@ -164,5 +179,12 @@ export class NotificacionesSistema {
 
 
 
+=======
+    /**********************
+     * Modulo cctvos fijos
+     **********************/
+    const notificarEntregaActivoFijoPusherEvent = new NotificarEntregaActivoFijoPusherEvent()
+    notificarEntregaActivoFijoPusherEvent.start()
+>>>>>>> origin/desarrollo
   }
 }

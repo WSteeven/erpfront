@@ -108,4 +108,8 @@ export const iconos = {
     label: 'MANTENIMIENTO DE VEHICULOS',
     icono: 'bi-exclamation-triangle-fill',
   },
+  entrega_activo_fijo: {
+    label: 'ENTREGA ACTIVO FIJO',
+    icono: 'home_work',
+  },
 }
