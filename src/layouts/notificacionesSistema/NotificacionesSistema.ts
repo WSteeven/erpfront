@@ -170,7 +170,6 @@ export class NotificacionesSistema {
     const diasDescansoPusherEvent = new DiasDescansoPusherEvent()
     diasDescansoPusherEvent.start()
 
-<<<<<<< HEAD
     /*******************
     * MODULO SELECCION Y CONTRATACION DE PERSONAL
     ********************/
@@ -179,12 +178,10 @@ export class NotificacionesSistema {
 
 
 
-=======
     /**********************
      * Modulo cctvos fijos
      **********************/
     const notificarEntregaActivoFijoPusherEvent = new NotificarEntregaActivoFijoPusherEvent()
     notificarEntregaActivoFijoPusherEvent.start()
->>>>>>> origin/desarrollo
   }
 }
