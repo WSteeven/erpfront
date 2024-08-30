@@ -32,6 +32,7 @@ import { ModalidadController } from '../../modalidades/infraestructure/Modalidad
 import { CustomActionTable } from 'components/tables/domain/CustomActionTable'
 import { FormacionAcademica } from '../../solicitudPuestoTrabajo/domain/FormacionAcademica'
 import { useNotificaciones } from 'shared/notificaciones'
+import { CantonController } from 'sistema/ciudad/infraestructure/CantonControllerontroller'
 
 export default defineComponent({
   name: 'VacantePage',
@@ -59,7 +60,9 @@ export default defineComponent({
     const idPuestoEmpleo = ref()
     const tabActual = ref(opcionesTablaVacantes.publicadas)
 
-    const { areasConocimiento, filtrarAreasConocimiento } = useFiltrosListadosSelects(listadosAuxiliares)
+    const { areasConocimiento, filtrarAreasConocimiento,
+      cantones, filtrarCantones
+     } = useFiltrosListadosSelects(listadosAuxiliares)
 
     const modalidades = ref([])
     const tiposPuestos = ref([])
@@ -100,12 +103,14 @@ export default defineComponent({
         modalidades: {
           controller: new ModalidadController(),
           params: { activo: 1 }
-        }
+        },
+        cantones: new CantonController()
       })
       areasConocimiento.value = listadosAuxiliares.areasConocimiento
-      tiposPuestos.value = listadosAuxiliares.tiposPuestos
       autorizaciones.value = listadosAuxiliares.autorizaciones
+      tiposPuestos.value = listadosAuxiliares.tiposPuestos
       modalidades.value = listadosAuxiliares.modalidades
+      cantones.value = listadosAuxiliares.cantones
 
     })
 
@@ -128,6 +133,8 @@ export default defineComponent({
       formaciones_academicas: {
         required: requiredIf(() => vacante.requiere_formacion_academica),
       },
+      canton: { required },
+      num_plazas: { required },
     }
 
     const v$ = useVuelidate(reglas, vacante)
@@ -186,6 +193,8 @@ export default defineComponent({
       vacante.modalidad = solicitudStore.solicitudPersonal.modalidad
       vacante.disponibilidad_viajar = solicitudStore.solicitudPersonal.disponibilidad_viajar
       vacante.requiere_licencia = solicitudStore.solicitudPersonal.requiere_licencia
+      vacante.canton = solicitudStore.solicitudPersonal.canton
+      vacante.num_plazas = solicitudStore.solicitudPersonal.num_plazas
     }
 
     function btnEliminarConocimiento() {
@@ -266,6 +275,7 @@ export default defineComponent({
       autorizaciones,
 
       //listados
+      cantones, filtrarCantones,
       areasConocimiento, filtrarAreasConocimiento,
       anios_experiencia,
       modalidades,

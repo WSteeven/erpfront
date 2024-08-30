@@ -42,11 +42,10 @@ export default route(function (/* { store, ssrContext } */) {
 
   const authentication = useAuthenticationStore()
   const authenticationExternal = useAuthenticationExternalStore()
-  const method_access = LocalStorage.getItem('method_access') // esto indica si el usuario accede como empleado (private) o como usuario externo (external)
+  let method_access = LocalStorage.getItem('method_access') // esto indica si el usuario accede como empleado (private) o como usuario externo (external)
 
   async function routerInternal(to, _, next) {
     const sessionIniciada = await authentication.isUserLoggedIn()
-
     // Si la ruta requiere autenticacion
     if (to.matched.some((ruta) => ruta.meta.requiresAuth)) {
       if (sessionIniciada) {
@@ -71,6 +70,7 @@ export default route(function (/* { store, ssrContext } */) {
   }
   async function routerExternal(to, _, next) {
     const sessionIniciada = await authenticationExternal.isUserLoggedIn()
+
     // Si la ruta requiere autenticacion
     if (to.matched.some((ruta) => ruta.meta.requiresAuth)) {
       if (sessionIniciada) {
@@ -82,18 +82,16 @@ export default route(function (/* { store, ssrContext } */) {
           next({ name: '404' })
         }
       } else {
-        next({ name: 'Login' })
+        next({ name: 'LoginPostulante' })
       }
-    } else if (
-      sessionIniciada &&
-      ['Login', 'ResetPassword', 'Register'].includes(to.name?.toString() ?? '')
-    ) {
-      next({ name: 'tablero_personal' })
+    } else if (sessionIniciada && ['LoginPostulante', 'RegistroPostulante'].includes(to.name?.toString() ?? '')) {
+      next({ name: 'puestos_disponibles' })
     } else {
       next()
     }
   }
   Router.beforeEach(async (to, _, next) => {
+    method_access = LocalStorage.getItem('method_access')
     switch (method_access) {
       case tipoAutenticacion.usuario_externo:
         await routerExternal(to, _, next)

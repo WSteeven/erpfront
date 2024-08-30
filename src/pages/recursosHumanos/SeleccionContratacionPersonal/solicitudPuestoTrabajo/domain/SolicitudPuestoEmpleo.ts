@@ -16,6 +16,8 @@ export class SolicitudPuestoEmpleo extends EntidadAuditable {
   requiere_licencia: boolean
   anios_experiencia: number | null
   areas_conocimiento: any[]
+  canton: number | null
+  num_plazas: number | null
 
   constructor() {
     super()
@@ -34,5 +36,7 @@ export class SolicitudPuestoEmpleo extends EntidadAuditable {
     this.disponibilidad_viajar = false
     this.requiere_licencia = false
     this.areas_conocimiento = []
+    this.canton = null
+    this.num_plazas = 1
   }
 }

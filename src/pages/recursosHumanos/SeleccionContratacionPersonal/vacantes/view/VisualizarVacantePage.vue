@@ -8,23 +8,30 @@
           </h5>
         </div>
         <div class="row flex">
-          <div class="col col-md-4 col-sm-4 col-xs-6">
+          <div class="col col-md-3 col-sm-4 col-xs-6">
             <q-badge outline color="primary">
               <q-icon class="bi-clock-fill" />
               {{
                 dayjs() > dayjs(vacante.fecha_caducidad)
-                  ? 'Finalizado'
-                  : '&nbsp; Finaliza ' + dayjs().to(vacante.fecha_caducidad)
+                  ? 'FINALIZADO'
+                  : '&nbsp; FINALIZA ' + dayjs().to(vacante.fecha_caducidad).toUpperCase()
               }}
             </q-badge>
           </div>
-          <div class="col col-md-4 col-sm-4 col-xs-6">
+          <div class="col col-md-3 col-sm-4 col-xs-6">
             <q-badge outline color="primary">
               <q-icon class="bi-suitcase-lg-fill" />
               &nbsp; {{ vacante.modalidad }}
             </q-badge>
           </div>
-          <div class="col col-md-4 col-sm-4 col-xs-6">
+          <!-- ciudad -->
+          <div class="col col-md-3 col-sm-4 col-xs-6">
+            <q-badge outline color="primary">
+              <q-icon class="bi-geo-alt-fill" />
+              &nbsp; {{ vacante.canton }}
+            </q-badge>
+          </div>
+          <div class="col col-md-3 col-sm-4 col-xs-6">
             <!-- <q-badge outline color="primary">
               <q-icon class="bi-people-fill" />
               &nbsp; Postulantes
@@ -32,10 +39,17 @@
             </q-badge> -->
             <q-badge outline color="primary">
               <q-icon class="bi-people-fill" />
-              &nbsp; Postulantes
+              &nbsp; POSTULANTES
               <strong class="q-px-sm">{{ vacante.numero_postulantes }}</strong>
             </q-badge>
           </div>
+          <div class="col col-md-3 col-sm-4 col-xs-6 q-py-md" v-if="vacante.num_plazas>1">
+            <q-badge outline color="primary">
+              <q-icon class="bi-people-fill" />
+              &nbsp; PLAZAS DISPONIBLES
+              <strong class="q-px-sm">{{ vacante.num_plazas }}</strong>
+            </q-badge>
+            </div>
         </div>
         <div class="text-h6 q-pt-md">Descripción de la oferta</div>
         <div v-html="vacante.descripcion" />

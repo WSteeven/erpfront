@@ -74,7 +74,7 @@ export const useAuthenticationStore = defineStore('authentication', () => {
 
       const login = axios.getEndpoint(endpoints.login)
       const response: AxiosResponse = await axios.post(login, credentiales)
-      console.log(response)
+      // console.log(response)
       LocalStorage.set('token', response.data.access_token)
       LocalStorage.set('method_access', tipoAutenticacion.empleado)
       setUser(response.data.modelo)

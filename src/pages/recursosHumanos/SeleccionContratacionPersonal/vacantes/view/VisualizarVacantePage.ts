@@ -43,7 +43,6 @@ export default defineComponent({
     }
 
     function btnPostular(id) {
-      // console.log('btnPostular', id, tipoAutenticacion, autenticado)
       // Primero verificamos si el usuario esta logueado, sino le pedimos lo haga
       if (!autenticado) {
         // Aquí se le pregunta si necesita loguearse como empleado o como externo para redirigirlo
@@ -72,7 +71,6 @@ export default defineComponent({
         })
         promptItems(config)
       } else {
-        console.log('else')
         // se continua con el proceso normal
         // se dirige a la pagina de cargar los datos y completar el proceso de postulacion
         // router.replace({ name: 'postulacion_vacante', params: { id } })

@@ -8,9 +8,9 @@ export class PostulanteRegistroController {
   Router = useRouter()
   async registro(postulante: Postulante) {
     try {
-      const usuario = await this.store.registro(postulante)
+      const response = await this.store.registro(postulante)
       this.Router.replace({ name: 'puestos_disponibles' })
-      return usuario
+      return response
     } catch (error: unknown) {
       if (error instanceof ApiError) {
         switch (error.status) {

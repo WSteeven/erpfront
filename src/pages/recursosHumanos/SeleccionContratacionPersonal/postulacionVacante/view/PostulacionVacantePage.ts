@@ -1,47 +1,43 @@
 // Dependencies
-import { defineComponent, ref, onMounted } from 'vue';
-import useVuelidate from '@vuelidate/core';
+import { acciones, accionesTabla, convertir_fecha, maskFecha, tipoAutenticacion, tiposDocumentosIdentificaciones } from 'config/utils';
+import { configuracionColumnasReferencias } from '../domain/configuracionColumnasReferencias';
+import { configuracionColumnasArchivoSubtarea } from 'pages/gestionTrabajos/subtareas/modules/gestorArchivosTrabajos/domain/configuracionColumnasArchivoSubtarea';
 import { required, requiredIf } from 'shared/i18n-validators';
+import { onBeforeRouteUpdate, useRouter } from 'vue-router';
+import { defineComponent, ref } from 'vue';
+import useVuelidate from '@vuelidate/core';
 
 // Components
-import BasicContainer from 'shared/contenedor/modules/basic/view/BasicContainer.vue';
+import OptionGroupComponent from 'components/optionGroup/view/OptionGroupComponent.vue';
 import SimpleLayout from 'shared/contenedor/modules/simple/view/SimpleLayout.vue';
 import GestorArchivos from 'components/gestorArchivos/GestorArchivos.vue';
-import OptionGroupComponent from 'components/optionGroup/view/OptionGroupComponent.vue';
+import EssentialTable from 'components/tables/view/EssentialTable.vue';
 
 // Logica y controladores
-import { onBeforeRouteUpdate, useRouter } from 'vue-router';
 import { ContenedorSimpleMixin } from 'shared/contenedor/modules/simple/application/ContenedorSimpleMixin';
 import { Postulacion } from '../domain/Postulacion';
 import { PostulacionController } from '../infraestructure/PostulacionController';
 import { userIsAuthenticated } from 'shared/helpers/verifyAuthenticatedUser';
-import { acciones, accionesTabla, convertir_fecha, maskFecha, tipoAutenticacion, tiposDocumentosIdentificaciones } from 'config/utils';
 import { useAuthenticationStore } from 'stores/authentication';
 import { useAuthenticationExternalStore } from 'stores/authenticationExternal';
 import { PaisController } from '../../../../sistema/pais/infraestructure/PaisController';
 import { useFiltrosListadosSelects } from 'shared/filtrosListadosGenerales';
 import { IdentidadGeneroController } from 'pages/medico/gestionarPacientes/modules/fichaPeriodicaPreocupacional/infraestructure/IdentidadGeneroController';
 import { useVacanteStore } from 'stores/recursosHumanos/seleccionContratacion/vacante';
-import { optionsDefault, tiposLicencias } from 'config/vehiculos.utils';
+import { tiposLicencias } from 'config/vehiculos.utils';
 import { checkValueIsNumber, descargarArchivoUrl, encontrarUltimoIdListado } from 'shared/utils';
-import SolicitarArchivo from 'shared/prompts/SolicitarArchivo.vue';
-import { UsuarioController } from 'pages/fondosRotativos/usuario/infrestructure/UsuarioController';
 import { StatusEssentialLoading } from 'components/loading/application/StatusEssentialLoading';
 import { useNotificaciones } from 'shared/notificaciones';
 import { UserCurriculumsController } from '../infraestructure/UserCurriculumsController';
-import { configuracionColumnasArchivoSubtarea } from 'pages/gestionTrabajos/subtareas/modules/gestorArchivosTrabajos/domain/configuracionColumnasArchivoSubtarea';
 import { CustomActionTable } from 'components/tables/domain/CustomActionTable';
-import EssentialTable from 'components/tables/view/EssentialTable.vue';
-import EssentialSelectableTable from 'components/tables/view/EssentialSelectableTable.vue';
 import { ValidarCurriculum } from '../application/ValidarCurriculum';
 import { ArchivoController } from 'pages/gestionTrabajos/subtareas/modules/gestorArchivosTrabajos/infraestructure/ArchivoController';
-import { configuracionColumnasReferencias } from '../domain/configuracionColumnasReferencias';
 import { ReferenciaPersonal } from '../domain/ReferenciaPersonal';
 import { UserReferenciasController } from '../infraestructure/UserReferenciasController';
 
 
 export default defineComponent({
-  components: { EssentialSelectableTable, EssentialTable, BasicContainer, SimpleLayout, GestorArchivos, OptionGroupComponent, SolicitarArchivo },
+  components: { EssentialTable, SimpleLayout, GestorArchivos, OptionGroupComponent },
   setup() {
     const mixin = new ContenedorSimpleMixin(Postulacion, new PostulacionController(), new ArchivoController())
     // let mixinUsuario
@@ -167,7 +163,7 @@ export default defineComponent({
       }
     }
 
-    async function obtenerReferenciasUsuario(){
+    async function obtenerReferenciasUsuario() {
       try {
         const results = await (await new UserReferenciasController().listar()).result
         postulacion.referencias = results
@@ -189,9 +185,9 @@ export default defineComponent({
       postulacion.fecha_nacimiento = store.user?.fecha_nacimiento ?? null
       postulacion.tipo_identificacion = store.user?.identidad_genero ?? null
       postulacion.identidad_genero = store.user?.identidad_genero ?? null
-      postulacion.pais = store.user.pais ?? ''
-      postulacion.pais_residencia = store.user.pais ?? ''
-      postulacion.direccion = store.user.direccion ?? ''
+      postulacion.pais = store.user.pais
+      postulacion.pais_residencia = store.user.pais
+      postulacion.direccion = store.user.direccion
       postulacion.tipo_identificacion = 'CEDULA'
 
       // console.log(vacanteStore.idVacante, vacanteStore.vacante)

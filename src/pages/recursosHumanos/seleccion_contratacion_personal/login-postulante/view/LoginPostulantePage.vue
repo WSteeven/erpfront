@@ -143,7 +143,7 @@
               <q-btn
                 flat
                 color="primary"
-                label="Registrate"
+                label="Regístrate"
                 class="full-width q-mb-sm"
                 no-caps
                 unelevated

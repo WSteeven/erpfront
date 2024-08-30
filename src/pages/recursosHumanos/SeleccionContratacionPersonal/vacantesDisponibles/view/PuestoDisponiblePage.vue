@@ -68,15 +68,21 @@
                 <strong class="q-px-sm">
                   {{
                     dayjs() > dayjs(vacante.fecha_caducidad)
-                      ? 'Finalizado'
-                      : 'Finaliza ' + dayjs().to(vacante.fecha_caducidad)
+                      ? 'FINALIZADO'
+                      : 'FINALIZA ' + dayjs().to(vacante.fecha_caducidad).toUpperCase()
                   }}
                 </strong>
               </div>
-              <div class="col-6">
+              <!-- <div class="col-4">
                 <q-icon class="bi-suitcase-lg-fill" />
                 <strong class="q-px-sm">
                   {{ vacante.modalidad }}
+                </strong>
+              </div> -->
+              <div class="col-6">
+                <q-icon class="bi-geo-alt-fill" />
+                <strong class="q-px-sm">
+                  {{ vacante.canton }}
                 </strong>
               </div>
             </div>

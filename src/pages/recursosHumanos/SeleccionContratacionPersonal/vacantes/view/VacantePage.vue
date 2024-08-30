@@ -100,8 +100,73 @@
             />
           </div>
 
+          <!--Canton -->
+          <div class="col-12 col-md-4">
+            <label class="q-mb-sm block">Ciudad</label>
+            <q-select
+              v-model="vacante.canton"
+              :options="cantones"
+              transition-show="jump-up"
+              transition-hide="jump-down"
+              options-dense
+              dense
+              outlined
+              use-input
+              input-debounce="0"
+              @filter="filtrarCantones"
+              :option-value="v => v.id"
+              :option-label="v => v.canton"
+              :error="!!v$.canton.$errors.length"
+              emit-value
+              map-options
+              ><template v-slot:no-option>
+                <q-item>
+                  <q-item-section class="text-grey">
+                    No hay resultados
+                  </q-item-section>
+                </q-item>
+              </template>
+              <template v-slot:option="scope">
+                <q-item v-bind="scope.itemProps">
+                  <q-item-section>
+                    <q-item-label>{{ scope.opt.canton }}</q-item-label>
+                    <q-item-label caption
+                      >Provincia {{ scope.opt.provincia }}</q-item-label
+                    >
+                  </q-item-section>
+                </q-item>
+              </template>
+              <template v-slot:error>
+                <div v-for="error of v$.canton.$errors" :key="error.$uid">
+                  <div class="error-msg">{{ error.$message }}</div>
+                </div>
+              </template>
+            </q-select>
+          </div>
+
+          <!-- num_plazas -->
+          <div class="col-12 col-md-4">
+            <label class="q-mb-sm block">Cant. Plazas</label>
+            <q-input
+              v-model="vacante.num_plazas"
+              type="number"
+              @blur="v$.num_plazas.$touch"
+              placeholder="Obligatorio"
+              :disable="disabled"
+              :error="!!v$.num_plazas.$errors.length"
+              outlined
+              dense
+            >
+              <template v-slot:error>
+                <div v-for="error of v$.num_plazas.$errors" :key="error.$uid">
+                  <div class="error-msg">{{ error.$message }}</div>
+                </div>
+              </template>
+            </q-input>
+          </div>
+
           <!-- Numero de Postulantes -->
-          <div class="col-12 col-md-3">
+          <div class="col-12 col-md-3" v-if="accion!==acciones.nuevo">
             <label class="q-mb-sm block">Número de Postulantes</label>
             <q-input
               v-model="vacante.numero_postulantes"

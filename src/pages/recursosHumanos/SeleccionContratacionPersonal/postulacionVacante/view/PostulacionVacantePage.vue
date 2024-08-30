@@ -359,7 +359,7 @@
           </div>
         </div>
       </q-expansion-item>
-
+      <!-- {{ postulacion }} -->
       <q-expansion-item
         class="overflow-hidden q-mb-md rounded bg-desenfoque-2"
         label="Información adicional"
@@ -679,9 +679,6 @@
       </q-expansion-item>
     </template>
   </simple-layout>
-  <!-- </q-card-section>
-    </template>
-  </basic-container> -->
 </template>
 <script src="./PostulacionVacantePage.ts" />
 

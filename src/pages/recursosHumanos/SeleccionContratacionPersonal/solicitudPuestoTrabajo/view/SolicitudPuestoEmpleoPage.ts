@@ -37,6 +37,7 @@ import { useSeleccionContratacionStore } from 'stores/recursosHumanos/seleccionC
 import { TipoPuestoController } from '../../tiposPuestos/infraestructure/TipoPuestoController'
 import { ValidarFormacionesAcademicas } from '../application/validation/ValidarFormacionesAcademicas'
 import { ModalidadController } from '../../modalidades/infraestructure/ModalidadController'
+import { CantonController } from 'sistema/ciudad/infraestructure/CantonControllerontroller'
 
 export default defineComponent({
   components: {
@@ -75,7 +76,9 @@ export default defineComponent({
     const tabActual = ref('1')
     const idRegistro = ref()
 
-    const { cargos, filtrarCargos } =
+    const { cargos, filtrarCargos,
+      cantones, filtrarCantones
+     } =
       useFiltrosListadosSelects(listadosAuxiliares)
 
 
@@ -131,11 +134,13 @@ export default defineComponent({
         modalidades: {
           controller: new ModalidadController(),
           params: { activo: 1 }
-        }
+        },
+        cantones: new CantonController()
       })
       tiposPuestos.value = listadosAuxiliares.tiposPuestos
       autorizaciones.value = listadosAuxiliares.autorizaciones
       cargos.value = listadosAuxiliares.cargos
+      cantones.value = listadosAuxiliares.cantones
       modalidades.value = listadosAuxiliares.modalidades
     })
 
@@ -159,6 +164,8 @@ export default defineComponent({
       },
       cargo: { required },
       modalidad: { required },
+      canton: { required },
+      num_plazas: { required },
     }
 
     const v$ = useVuelidate(reglas, solicitud)
@@ -351,8 +358,8 @@ export default defineComponent({
 
       // listados
       modalidades,
-      cargos,
-      filtrarCargos,
+      cargos,filtrarCargos,
+      cantones, filtrarCantones,
       anios_experiencia,
       filtrarAniosExperiencia,
       areasConocimiento,

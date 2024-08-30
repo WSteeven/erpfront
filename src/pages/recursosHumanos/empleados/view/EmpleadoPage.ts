@@ -55,6 +55,7 @@ import { helpers } from '@vuelidate/validators'
 import { onMounted } from 'vue'
 import { onUnmounted } from 'vue'
 import { usePostulanteStore } from 'stores/recursosHumanos/seleccionContratacion/postulante'
+import { StatusEssentialLoading } from 'components/loading/application/StatusEssentialLoading'
 
 export default defineComponent({
   components: { TabLayout, SelectorImagen, ModalesEntidad, EssentialTable, GestorArchivos, InformacionLicencia, },
@@ -66,6 +67,7 @@ export default defineComponent({
     useNotificacionStore().setQuasar(useQuasar())
     useCargandoStore().setQuasar(useQuasar())
     const { notificarCorrecto, confirmar } = useNotificaciones()
+    const cargando = new StatusEssentialLoading()
 
     /***********
      * Mixin
@@ -110,6 +112,7 @@ export default defineComponent({
     const authenticationStore = useAuthenticationStore()
     const nombre_usuario = ref()
     const email_usuario = ref()
+    const refApellidos = ref()
 
     // const mostrarBotonSubirArchivos = ref(false) //computed(()=>{
     const mostrarComponenteInformacionLicencia = ref(false)
@@ -551,8 +554,29 @@ export default defineComponent({
     }
 
     async function cargarDatosPostulante(){
-      console.log('entramos en cargarDatosPostulante', postulanteStore.idUser)
       //Aqui hay que hacer la carga de los datos del nuevo empleado
+      const postulante = await obtenerUsuarioExterno()
+
+      //rellenamos los datos comunes
+      empleado.apellidos = postulante.apellidos
+      empleado.correo_personal = postulante.correo_personal
+      empleado.direccion = postulante.direccion
+      empleado.fecha_nacimiento = postulante.fecha_nacimiento
+      empleado.genero = postulante.genero
+      empleado.identidad_genero = postulante.identidad_genero
+      empleado.nombres = postulante.nombres
+      empleado.identificacion = postulante.numero_documento_identificacion
+      empleado.telefono = postulante.telefono
+      refApellidos.value.focus()
+    }
+
+    async function obtenerUsuarioExterno(){
+      cargando.activar()
+      const axios = AxiosHttpRepository.getInstance()
+      const ruta = axios.getEndpoint(endpoints.usuarios_externos)+'/'+postulanteStore.idUser
+      const response: AxiosResponse = await axios.get(ruta)
+      cargando.desactivar()
+      return response.data.modelo
     }
 
     /**
@@ -583,6 +607,7 @@ export default defineComponent({
       idEmpleado,
       isPwd: ref(true),
       mostrarComponenteInformacionLicencia,
+      refApellidos,
       //listados y filtros
       areas,
       bancos, filtrarBancos,
