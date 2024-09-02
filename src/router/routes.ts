@@ -1372,8 +1372,16 @@ const routes: RouteRecordRaw[] = [
         meta: { requiresAuth: false },
       },
 
+      {
+        path: '/organigrama',
+        name: 'intra_organigrama',
+        component: () =>
+          import('src/pages/intranet/organigrama/view/OrganigramaPage.vue'),
+        meta: { requiresAuth: true },
+      },
     ],
   },
+  
   {
     path: '/login',
     component: () => import('layouts/FullLayout.vue'),

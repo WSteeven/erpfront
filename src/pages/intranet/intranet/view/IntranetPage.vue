@@ -197,6 +197,30 @@
             </q-card>
           </q-card>
         </div>
+
+        <br>
+
+        <!-- Organigrama -->
+        <div class="col-12 col-md-9">
+          <q-card class="fixed-size-card-organigrama">
+            <q-card flat bordered class="organigrama-card">
+              <q-expansion-item style="
+            text-align-last: center;
+            background-color: gray;
+            color: white;
+            font-size: 20px;
+            font-weight: bold;
+          " icon="bi-diagram-3-fill" label="ORGANIGRAMA" expand-separator :default-opened="true">
+                <!-- Contenedor del organigrama -->
+                <div style="background-color: white">
+                  <!-- Aquí se renderiza el organigrama -->
+                  <div id="orgchart" style="width: 100%; height: 600px;"></div>
+                </div>
+              </q-expansion-item>
+            </q-card>
+          </q-card>
+        </div>
+
       </div>
 
       <!--SECCION IZQUIERDA-->
@@ -222,7 +246,7 @@
                 <q-badge rounded color="white" label="🎓" />
                 <q-badge rounded color="orange">{{
                   store.user?.cargo
-                  }}</q-badge>
+                }}</q-badge>
               </div>
             </div>
             <div class="q-mt-md"></div>
@@ -240,7 +264,7 @@
                 <q-icon :name="documento.icon" size="md" class="icon-content-empleado">
                   <q-tooltip anchor="top middle" self="bottom middle">{{
                     documento.name
-                    }}</q-tooltip>
+                  }}</q-tooltip>
                 </q-icon>
               </a>
             </div>
@@ -338,14 +362,14 @@
                     style="margin-right: 15px; size: 5px">
                     <q-avatar size="xl" class="avatar-item">
                       <img :src="empleado.foto_url == null
-                          ? `https://ui-avatars.com/api/?name=${empleado.nombres.substr(
-                            0,
-                            1
-                          )}+${empleado.apellidos.substr(
-                            0,
-                            1
-                          )}&bold=true&background=008000&color=ffff`
-                          : empleado.foto_url
+                        ? `https://ui-avatars.com/api/?name=${empleado.nombres.substr(
+                          0,
+                          1
+                        )}+${empleado.apellidos.substr(
+                          0,
+                          1
+                        )}&bold=true&background=008000&color=ffff`
+                        : empleado.foto_url
                         " />
                       <q-badge floating class="bottom-left" color="orange">
                         {{ new Date(empleado.fecha_nacimiento).getDate() + 1 }}
@@ -379,11 +403,11 @@
                     <div class="event-card-time">
                       <q-badge color="green-6">{{
                         eventoSeleccionado?.fecha_hora_inicio
-                        }}</q-badge>
+                      }}</q-badge>
                       -
                       <q-badge color="amber">{{
                         eventoSeleccionado?.fecha_hora_fin
-                        }}</q-badge>
+                      }}</q-badge>
                     </div>
                   </q-card-section>
                   <q-card-actions align="right" class="event-card-actions">

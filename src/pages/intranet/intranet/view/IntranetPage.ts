@@ -36,6 +36,8 @@ import { formatearFecha } from '../../../../shared/utils'
 import { MenuOption } from 'shared/menu/MenuOption'
 import { NoticiaController } from 'pages/intranet/noticias/infraestructure/NoticiaController'
 import { EventoController } from 'pages/intranet/eventos/infraestructure/EventoController'
+import { Organigrama } from 'pages/intranet/organigrama/domain/Organigrama'
+import { OrganigramaController } from 'pages/intranet/organigrama/infraestructure/OrganigramaController'
 
 interface Noticia {
   id: number
@@ -100,6 +102,7 @@ export default defineComponent({
     })
 
     const eventos = ref<Evento[]>([])
+    const organigrama = ref<Organigrama[]>([])
     const eventoSeleccionado = ref<Evento | null>(null)
     const fechaSeleccionada = ref(null)
     const dialogoVisible = ref(false)
@@ -267,6 +270,47 @@ export default defineComponent({
     const currentPage = ref(1)
     const perPage = ref(2)
 
+
+
+    async function consultarOrganigrama() {
+      try {
+        cargando.activar();
+
+        const organigramaController = new OrganigramaController();
+
+        // Obtener los datos directamente desde la tabla intra_organigrama
+        const organigramaData = (await organigramaController.listar()).result;
+
+        // Mapea los empleados por su ID
+        const empleadosMap = new Map();
+
+        // Añadir los empleados al mapa
+        organigramaData.forEach((registro: any) => {
+          empleadosMap.set(registro.empleado_id, {
+            ...registro,
+            subordinados: [],
+          });
+        });
+
+        // Asignar subordinados a sus jefes correspondientes
+        organigramaData.forEach((registro: any) => {
+          if (registro.jefe_id && empleadosMap.has(registro.jefe_id)) {
+            empleadosMap.get(registro.jefe_id).subordinados.push(empleadosMap.get(registro.empleado_id));
+          }
+        });
+
+        // Filtrar los empleados de nivel superior (sin jefe_id) para mostrarlos como raíz del organigrama
+        organigrama.value = Array.from(empleadosMap.values()).filter((empleado: any) => !empleado.jefe_id);
+
+      } catch (err) {
+        console.log(err);
+      } finally {
+        cargando.desactivar();
+      }
+    }
+
+
+
     function obtenerModulosPermitidos() {
       // Filtrar todos los enlaces permitidos
       modulosPermitidos.value = menuStore.links.filter(
@@ -364,6 +408,7 @@ export default defineComponent({
     onMounted(() => {
       obtenerEventos()
       obtenerEmpleadosCumpleaneros()
+
     })
 
     useNotificaciones()
@@ -465,12 +510,16 @@ export default defineComponent({
       limpiarFormulario,
       getShortDescription,
       verNoticiaCompletaHandler,
+
+      consultarOrganigrama,
+
       width: computed(() => ($q.screen.xs ? '100%' : '450px')),
       selfCenterMiddle,
       showBanner,
       maskFecha,
       formatearFecha,
       readMore,
+      organigrama,
       documentosIntranet,
       empleadosCumpleaneros,
       fechaActual,
