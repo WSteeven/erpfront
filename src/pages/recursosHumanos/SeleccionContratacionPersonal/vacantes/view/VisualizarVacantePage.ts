@@ -82,21 +82,22 @@ export default defineComponent({
       try {
         cargando.activar()
         const axios = AxiosHttpRepository.getInstance()
-        const ruta = axios.getEndpoint(endpoints.vacante_favorita)+'/'+id
-        const response:AxiosResponse = await axios.post(ruta)
-        if(response.status === 200) {
+        const ruta = axios.getEndpoint(endpoints.vacante_favorita) + '/' + id
+        const response: AxiosResponse = await axios.post(ruta)
+        if (response.status === 200) {
           // notificarCorrecto(response.data.mensaje)
           vacanteStore.vacante.hydrate(response.data.modelo)
         }
-      } catch (err) {
+      } catch (err: any) {
         console.log('Error: ', err)
+        notificarError(err)
       } finally {
         cargando.desactivar()
       }
     }
 
     function btnAgregarAFavoritos(id: number) {
-      console.log('Diste clic en agregar a favoritos', id)
+      // console.log('Diste clic en agregar a favoritos', id)
       if (!autenticado) {
         // Aquí se le pregunta si necesita loguearse como empleado o como externo para redirigirlo
         const config: CustomActionPrompt = reactive({
@@ -124,9 +125,9 @@ export default defineComponent({
         })
         promptItems(config)
       } else {
-      // En esta parte debo hacer el calculo para ver si la persona la agregó a sus favoritos,
-      // debe registrarse en la BD agregada a favoritos del usuario para mostrar diferente color segun sea el caso
-      almacenarVacanteFavorita(id)
+        // En esta parte debo hacer el calculo para ver si la persona la agregó a sus favoritos,
+        // debe registrarse en la BD agregada a favoritos del usuario para mostrar diferente color segun sea el caso
+        almacenarVacanteFavorita(id)
       }
     }
     return {
