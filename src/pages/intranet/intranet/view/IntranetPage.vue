@@ -458,9 +458,9 @@
                       </strong>
                     </div>
                     <div class="col-6">
-                      <q-icon class="bi-suitcase-lg-fill" />
+                      <q-icon class="bi-geo-alt-fill" />
                       <strong class="q-px-sm">
-                        {{ vacante.modalidad }}
+                        {{ vacante.canton }}
                       </strong>
                     </div>
                   </div>

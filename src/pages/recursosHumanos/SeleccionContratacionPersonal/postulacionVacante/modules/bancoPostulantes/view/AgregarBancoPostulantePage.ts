@@ -63,6 +63,7 @@ export default defineComponent({
             notificarCorrecto(response.data.mensaje)
             cargando.desactivar()
             emit('cerrar-modal', false)
+            emit('guardado', { formulario: 'AgregarBancoPostulantePage' })
           })
 
         } catch (error: any) {

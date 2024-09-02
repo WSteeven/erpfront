@@ -6,6 +6,7 @@ export class
   puntuacion: string | null
   nombres_apellidos: string | null
   observacion: string | null
+  postulacion: number | null
   postulacion_id: number | null
   descartado: boolean
   fue_contactado: number | null
@@ -30,6 +31,7 @@ export class
     this.puntuacion = null
     this.observacion = null
     this.nombres_apellidos = null
+    this.postulacion = null
     this.postulacion_id = null
     this.descartado = false
     this.fue_contactado = 0

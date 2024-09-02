@@ -31,6 +31,10 @@
           <div class="text-center">
             <q-btn-group push>
               <!-- Boton Banco de postulantes -->
+              <q-btn color="positive" class="full-width" no-caps no-wrap push glossy @click="visualizarVacante(postulacion.vacante)">
+                <q-icon name="bi-eye" size="xs" class="q-pr-sm" />
+                <span>Ver Vacante</span>
+              </q-btn>
               <q-btn
                 v-if="btnBancoPostulantes.visible()"
                 :color="btnBancoPostulantes.color"
@@ -765,6 +769,11 @@
     :comportamiento="modales"
     :mixin-modal="mixin"
     @guardado="guardado"
+    :confirmar-cerrar="false"
+    :persistente="false"
+  />
+  <modal-entidad
+    :comportamiento="modalesVacante"
     :confirmar-cerrar="false"
     :persistente="false"
   />

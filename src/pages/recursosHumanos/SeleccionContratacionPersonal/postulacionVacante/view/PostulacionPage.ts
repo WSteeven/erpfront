@@ -36,6 +36,7 @@ import { endpoints } from 'config/api';
 import { AxiosResponse } from 'axios';
 import { StatusEssentialLoading } from 'components/loading/application/StatusEssentialLoading';
 import { usePostulanteStore } from 'stores/recursosHumanos/seleccionContratacion/postulante';
+import { ComportamientoModalesVacanteDisponible } from '../../vacantesDisponibles/application/ComportamientoModalesVacanteDisponible';
 
 
 export default defineComponent({
@@ -50,6 +51,7 @@ export default defineComponent({
     const cargando = new StatusEssentialLoading()
     const { autenticado, tipoAutenticacion: tipoAuth } = userIsAuthenticated()
     const modales = new ComportamientoModalesPostulacion()
+    const modalesVacante = new ComportamientoModalesVacanteDisponible()
     let store
     const vacanteStore = useVacanteStore()
     const router = useRouter()
@@ -180,6 +182,11 @@ export default defineComponent({
         case 'CalificarCandidatoPage':
           filtrarPostulaciones(tabActual.value)
           break
+        case 'AgregarBancoPostulantePage':
+          reestablecer()
+          filtrarPostulaciones(tabActual.value)
+          // accion.value = acciones.nuevo
+          break
         case 'AgendarCitaMedicaPage':
           filtrarPostulaciones(estadosPostulacion.EXAMENES_MEDICOS)
           break
@@ -221,6 +228,10 @@ export default defineComponent({
         cargando.desactivar()
       }
     }
+    async function visualizarVacante(id:number){
+      vacanteStore.idVacante = id
+      modalesVacante.abrirModalEntidad('VisualizarVacantePage')
+    }
 
     /***************************************************************************
      * BOTONES DE TABLA
@@ -244,18 +255,19 @@ export default defineComponent({
       color: 'primary',
       icono: 'bi-inboxes',
       accion: async ({ entidad }) => {
+        postulacion.id = postulacion.id ?? entidad.id
         modales.abrirModalEntidad('CalificarCandidatoPage')
       },
-      visible: () => false
+      visible: () => [estadosPostulacion.POSTULADO, estadosPostulacion.REVISION_CV].includes(tabActual.value)
     }
 
     const btnBancoPostulantes: CustomActionTable = {
       titulo: 'Banco de Candidatos',
       color: 'primary',
-      icono: 'bi-inboxes',
+      icono: 'bi-person-plus',
       accion: async ({ entidad }) => {
         postulacionStore.idPostulacion = entidad?.id ?? postulacion.id
-        modales.abrirModalEntidad('BancoPostulantePage')
+        modales.abrirModalEntidad('AgregarBancoPostulantePage')
       },
       // visible: () => [estadosPostulacion.POSTULADO, estadosPostulacion.REVISION_CV].includes(tabActual.value) && store.esRecursosHumanos
       visible: () => store.esRecursosHumanos
@@ -370,7 +382,7 @@ export default defineComponent({
       truncateChips: ref(true),
       tabActual,
       desactivarCampos,
-      guardado, modales,
+      guardado, modales,modalesVacante,
       configuracionColumnasReferencias,
 
       //listados
@@ -385,6 +397,7 @@ export default defineComponent({
       // funciones
       filtrarPostulaciones,
       checkPoseoLicencia,
+      visualizarVacante,
       optionsFecha,
 
       // botones de tablas

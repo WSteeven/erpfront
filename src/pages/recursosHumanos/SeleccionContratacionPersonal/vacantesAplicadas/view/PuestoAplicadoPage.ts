@@ -35,7 +35,7 @@ export default defineComponent({
     const vacanteStore = useVacanteStore()
     const modales = new ComportamientoModalesVacanteDisponible()
     let store
-    const postulaciones = ref()
+    const postulaciones = ref([])
     dayjs.extend(relativeTime)
     dayjs.locale(es)
 

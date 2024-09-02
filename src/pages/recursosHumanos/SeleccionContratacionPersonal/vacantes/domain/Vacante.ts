@@ -21,6 +21,7 @@ export class Vacante extends EntidadAuditable {
   postulantes_preseleccionados: number | null
   canton: number | null
   num_plazas: number | null
+  estado_mi_postulacion: string | null
 
   //Variables auxiliares
   requiere_formacion_academica: boolean
@@ -50,6 +51,7 @@ export class Vacante extends EntidadAuditable {
     this.requiere_formacion_academica = false
     this.requiere_experiencia = false
     this.postulantes_preseleccionados = null
+    this.estado_mi_postulacion = null
     this.canton = null
     this.num_plazas = 1
     this.activo = true

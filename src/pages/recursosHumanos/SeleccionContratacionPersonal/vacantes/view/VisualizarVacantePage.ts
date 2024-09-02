@@ -12,7 +12,7 @@ import BasicContainer from 'shared/contenedor/modules/basic/view/BasicContainer.
 import { userIsAuthenticated } from '../../../../../shared/helpers/verifyAuthenticatedUser';
 import { useNotificaciones } from 'shared/notificaciones';
 import { CustomActionPrompt } from 'components/tables/domain/CustomActionPrompt';
-import { useRouter } from 'vue-router';
+import { useRoute, useRouter } from 'vue-router';
 import { StatusEssentialLoading } from 'components/loading/application/StatusEssentialLoading';
 import { AxiosHttpRepository } from 'shared/http/infraestructure/AxiosHttpRepository';
 import { endpoints } from 'config/api';
@@ -34,6 +34,7 @@ export default defineComponent({
     const vacanteStore = useVacanteStore()
     const { autenticado, tipoAutenticacion } = userIsAuthenticated()
     const router = useRouter()
+    const route = useRoute()
     const cargando = new StatusEssentialLoading()
 
     if (vacanteStore.idVacante !== null || vacanteStore.idVacante !== undefined) {
@@ -133,6 +134,9 @@ export default defineComponent({
     return {
       vacante: vacanteStore.vacante,
       dayjs,
+
+
+      route,
 
       //funciones
       btnPostular,

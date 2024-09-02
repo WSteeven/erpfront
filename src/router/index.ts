@@ -2,12 +2,7 @@ import { route } from 'quasar/wrappers'
 import { useAuthenticationStore } from 'src/stores/authentication'
 import { useAuthenticationExternalStore } from 'src/stores/authenticationExternal'
 
-import {
-  createMemoryHistory,
-  createRouter,
-  createWebHashHistory,
-  createWebHistory,
-} from 'vue-router'
+import { createMemoryHistory, createRouter, createWebHashHistory, createWebHistory, RouteLocationNormalized, } from 'vue-router'
 
 import routes from './routes'
 import { LocalStorage } from 'quasar'
@@ -44,7 +39,7 @@ export default route(function (/* { store, ssrContext } */) {
   const authenticationExternal = useAuthenticationExternalStore()
   let method_access = LocalStorage.getItem('method_access') // esto indica si el usuario accede como empleado (private) o como usuario externo (external)
 
-  async function routerInternal(to, _, next) {
+  async function routerInternal(to: RouteLocationNormalized, _, next) {
     const sessionIniciada = await authentication.isUserLoggedIn()
     // Si la ruta requiere autenticacion
     if (to.matched.some((ruta) => ruta.meta.requiresAuth)) {
@@ -57,7 +52,8 @@ export default route(function (/* { store, ssrContext } */) {
           next({ name: '404' })
         }
       } else {
-        next({ name: 'Login' })
+        if (to.query.q == 'external') next({ name: 'LoginPostulante' }) //esto ayuda a decidir a qué login redirigir al usuario
+        else next({ name: 'Login' })
       }
     } else if (
       sessionIniciada &&
