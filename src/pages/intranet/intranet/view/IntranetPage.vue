@@ -130,7 +130,7 @@
         <br />
 
         <!-- Departamentos -->
-        <div class="col-12 col-md-9">
+        <!-- <div class="col-12 col-md-9">
           <q-card class="fixed-size-card-departamentos">
             <q-card flat bordered class="departamentos-card">
               <q-expansion-item style="
@@ -196,29 +196,13 @@
               </q-expansion-item>
             </q-card>
           </q-card>
-        </div>
+        </div> -->
 
         <br>
 
         <!-- Organigrama -->
-        <div class="col-12 col-md-9">
-          <q-card class="fixed-size-card-organigrama">
-            <q-card flat bordered class="organigrama-card">
-              <q-expansion-item style="
-            text-align-last: center;
-            background-color: gray;
-            color: white;
-            font-size: 20px;
-            font-weight: bold;
-          " icon="bi-diagram-3-fill" label="ORGANIGRAMA" expand-separator :default-opened="true">
-                <!-- Contenedor del organigrama -->
-                <div style="background-color: white">
-                  <!-- Aquí se renderiza el organigrama -->
-                  <div id="orgchart" style="width: 100%; height: 600px;"></div>
-                </div>
-              </q-expansion-item>
-            </q-card>
-          </q-card>
+        <div class="col-12">
+          <mi-organigrama-page/>
         </div>
 
       </div>

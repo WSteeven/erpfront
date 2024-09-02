@@ -38,6 +38,7 @@ import { NoticiaController } from 'pages/intranet/noticias/infraestructure/Notic
 import { EventoController } from 'pages/intranet/eventos/infraestructure/EventoController'
 import { Organigrama } from 'pages/intranet/organigrama/domain/Organigrama'
 import { OrganigramaController } from 'pages/intranet/organigrama/infraestructure/OrganigramaController'
+import MiOrganigramaPage from 'pages/intranet/organigrama/view/MiOrganigramaPage.vue'
 
 interface Noticia {
   id: number
@@ -59,6 +60,7 @@ interface Evento {
 export default defineComponent({
   name: 'intranet',
   components: {
+    MiOrganigramaPage,
     ModalesEntidad,
     LottiePlayer: Vue3Lottie,
     SolicitarFecha,

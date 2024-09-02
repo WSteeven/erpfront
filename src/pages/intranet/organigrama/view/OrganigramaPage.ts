@@ -1,6 +1,5 @@
 import { defineComponent, ref, computed, watch } from 'vue';
 import { useVuelidate } from '@vuelidate/core';
-import { required } from '@vuelidate/validators';
 import TabLayoutFilterTabs2 from 'shared/contenedor/modules/simple/view/TabLayoutFilterTabs2.vue';
 
 import { ContenedorSimpleMixin } from 'shared/contenedor/modules/simple/application/ContenedorSimpleMixin';
@@ -10,9 +9,15 @@ import { OrganigramaController } from '../infraestructure/OrganigramaController'
 import { Organigrama } from '../domain/Organigrama';
 import { EmpleadoController } from 'pages/recursosHumanos/empleados/infraestructure/EmpleadoController';
 import { tabOptionsOrganigrama } from 'config/utils';
+import { useFiltrosListadosSelects } from 'shared/filtrosListadosGenerales';
+import { ordenarLista } from 'shared/utils';
+import { required } from 'shared/i18n-validators';
+import OrgChart from '@balkangraph/orgchart.js';
+import MiOrganigramaPage from './MiOrganigramaPage.vue';
+
 
 export default defineComponent({
-  components: { TabLayoutFilterTabs2 },
+  components: { TabLayoutFilterTabs2, MiOrganigramaPage },
   setup() {
     const mixin = new ContenedorSimpleMixin(
       Organigrama,
@@ -28,22 +33,22 @@ export default defineComponent({
       mixin.useComportamiento();
     const { onReestablecer } = mixin.useHooks();
 
-    const empleados = ref<{ id: number; nombre: string; nombre_cargo: string }[]>([]);
     const tipos = ref<string[]>(['interno', 'externo']);
     const departamentos = ref<string>('');
+
+    const { empleados, filtrarEmpleados} = useFiltrosListadosSelects(listadosAuxiliares)
 
     cargarVista(async () => {
       await obtenerListados({
         empleados: {
           controller: new EmpleadoController(),
           params: {
-            //activo: 1
+            estado: 1
           }
         }
       });
       empleados.value = listadosAuxiliares.empleados;
 
-      console.log('Empleados cargados:', empleados.value);
     });
 
     onReestablecer(() => {
@@ -51,23 +56,7 @@ export default defineComponent({
       organigrama.cargo = '';
     });
 
-    watch(
-      () => organigrama.empleado_id,
-      nuevoEmpleadoId => {
-        const empleadoSeleccionado = empleados.value.find(
-          emp => emp.id === nuevoEmpleadoId
-        );
-
-        console.log('Empleado seleccionado:', empleadoSeleccionado);
-
-        if (empleadoSeleccionado) {
-          organigrama.cargo = empleadoSeleccionado.nombre_cargo || ''; // Asignar el nombre_cargo directamente
-          console.log('Cargo asignado:', organigrama.cargo);
-        } else {
-          organigrama.cargo = ''; // Reiniciar el campo cargo si no hay empleado seleccionado
-        }
-      }
-    );
+    const elemento = document.getElementById('tree')??''
 
     const reglas = computed(() => ({
       empleado_id: { required },
@@ -85,6 +74,19 @@ export default defineComponent({
       listar({ estado: tabSeleccionado }, false);
     }
 
+    function obtenerCargo(){
+      const empleadoSeleccionado = empleados.value.find(
+        emp => emp.id === organigrama.empleado_id
+      );
+
+      if (empleadoSeleccionado) {
+        organigrama.cargo = empleadoSeleccionado.cargo || '';
+      } else {
+        organigrama.cargo = '';
+      }
+      console.log('Cargo actualizado:', organigrama.cargo);
+    }
+
     return {
       mixin,
       disabled,
@@ -94,9 +96,12 @@ export default defineComponent({
       v$,
       accion,
       filtrarOrganigrama,
-      empleados,
+      empleados, filtrarEmpleados,
+      ordenarLista,
+      obtenerCargo,
+
       tipos,
-      departamentos
+      departamentos,
     };
   }
 });

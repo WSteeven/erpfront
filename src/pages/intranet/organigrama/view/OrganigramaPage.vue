@@ -18,17 +18,38 @@
             <label class="q-mb-sm block">Empleado</label>
             <q-select
               v-model="organigrama.empleado_id"
-              :options="empleados.map(emp => ({ label: emp.nombres +' '+ emp.apellidos, value: emp.id }))"
-              :error="v$.empleado_id.$error && v$.empleado_id.$dirty"
+              :options="empleados"
+              transition-show="jump-up"
+              transition-hide="jump-down"
+              :disable="disabled"
+              options-dense
               dense
               outlined
+              :error="!!v$.empleado_id.$errors.length"
+              @blur="v$.empleado_id.$touch"
+              error-message="Debes seleccionar un empleado"
+              use-input
+              input-debounce="0"
+              @filter="filtrarEmpleados"
+              @popup-show="ordenarLista(empleados, 'nombres')"
+              @update:model-value="obtenerCargo"
+              :option-value="v => v.id"
+              :option-label="v => v.nombres + ' ' + v.apellidos"
               emit-value
               map-options
             >
               <template v-slot:error>
-                <div v-for="error in v$.empleado_id.$errors" :key="error.$uid">
+                <div v-for="error of v$.empleado_id.$errors" :key="error.$uid">
                   <div class="error-msg">{{ error.$message }}</div>
                 </div>
+              </template>
+
+              <template v-slot:no-option>
+                <q-item>
+                  <q-item-section class="text-grey">
+                    No hay resultados
+                  </q-item-section>
+                </q-item>
               </template>
             </q-select>
           </div>
@@ -38,7 +59,7 @@
             <label class="q-mb-sm block">Cargo</label>
             <q-input
               v-model="organigrama.cargo"
-              :error="v$.cargo.$error && v$.cargo.$dirty"
+              :error="!!v$.cargo.$errors.length"
               dense
               outlined
               readonly
@@ -57,7 +78,7 @@
             <q-select
               v-model="organigrama.tipo"
               :options="tipos.map(tipo => ({ label: tipo, value: tipo }))"
-              :error=" v$.tipo.$error && v$.tipo.$dirty"
+              :error="!!v$.tipo.$errors.length"
               dense
               outlined
               emit-value
@@ -76,7 +97,7 @@
             <label class="q-mb-sm block">Departamento</label>
             <q-input
               v-model="organigrama.departamento"
-              :error="v$.departamento.$dirty"
+              :error="!!v$.departamento.$errors.length"
               dense
               outlined
             >
@@ -94,7 +115,7 @@
             <q-input
               v-model="organigrama.nivel"
               type="number"
-              :error="v$.nivel.$dirty"
+              :error="!!v$.departamento.$errors.length"
               dense
               outlined
             >
@@ -110,24 +131,50 @@
             <label class="q-mb-sm block">Jefe Inmediato</label>
             <q-select
               v-model="organigrama.jefe_id"
-              :options="empleados.map(emp => ({ label: emp.nombres +' '+ emp.apellidos, value: emp.id }))"
-              :error="v$.jefe_id.$invalid"
+              :options="empleados"
+              transition-show="jump-up"
+              transition-hide="jump-down"
+              :disable="disabled"
+              options-dense
               dense
               outlined
+              :error="!!v$.jefe_id.$errors.length"
+              @blur="v$.jefe_id.$touch"
+              error-message="Debes seleccionar un jefe"
+              use-input
+              input-debounce="0"
+              @filter="filtrarEmpleados"
+              @popup-show="ordenarLista(empleados, 'nombres')"
+              :option-value="v => v.id"
+              :option-label="v => v.nombres + ' ' + v.apellidos"
               emit-value
               map-options
             >
               <template v-slot:error>
-                <div v-for="error in v$.jefe_id.$errors" :key="error.$uid">
+                <div v-for="error of v$.jefe_id.$errors" :key="error.$uid">
                   <div class="error-msg">{{ error.$message }}</div>
                 </div>
               </template>
+
+              <template v-slot:no-option>
+                <q-item>
+                  <q-item-section class="text-grey">
+                    No hay resultados
+                  </q-item-section>
+                </q-item>
+              </template>
             </q-select>
           </div>
+          <!-- grafico -->
+           <div class="col-12">
+             <mi-organigrama-page/>
+           </div>
+
         </div>
       </q-form>
     </template>
   </tab-layout-filter-tabs2>
 </template>
+
 
 <script src="./OrganigramaPage.ts"></script>
