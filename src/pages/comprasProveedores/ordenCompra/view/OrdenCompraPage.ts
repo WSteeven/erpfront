@@ -169,14 +169,16 @@ export default defineComponent({
     })
     onConsultado(() => {
       // console.log(accion.value)
-      obtenerTareas(true)
-      if (accion.value === acciones.editar && (store.user.id === orden.autorizador || store.esCompras || store.user.id === orden.solicitante))
+      if (accion.value === acciones.editar && (store.user.id === orden.autorizador || store.esCompras || store.user.id === orden.solicitante)) {
         soloLectura.value = false
-      else
+        obtenerTareas(false)
+      } else {
+        obtenerTareas(true)
         soloLectura.value = true
-      setTimeout(() => {
-        if (orden.id) refArchivo.value.listarArchivosAlmacenados(orden.id)
-      }, 1);
+        setTimeout(() => {
+          if (orden.id) refArchivo.value.listarArchivosAlmacenados(orden.id)
+        }, 1);
+      }
     })
     onModificado((id: number) => {
       idOrden.value = id
@@ -246,7 +248,7 @@ export default defineComponent({
     async function obtenerTareas(soloUna = false) {
       let response
       if (soloUna)
-        response = await new TareaController().listar({ campos: 'id,codigo_tarea,titulo', id: orden.tarea, })
+        response = await new TareaController().listar({ id: orden.tarea, todas: 1 })
       else
         response = await new TareaController().listar({
           campos: 'id,codigo_tarea,titulo,cliente_id',

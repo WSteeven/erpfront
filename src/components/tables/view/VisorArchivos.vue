@@ -32,7 +32,7 @@
             <div class="col-12">
               <q-btn
                 class="bg-white text-primary q-mb-xs full-width"
-                :href="archivo.ruta"
+                :href="archivo.ruta ?? '#'"
                 target="_blank"
                 unelevated
               >

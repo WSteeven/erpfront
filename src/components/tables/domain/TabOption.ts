@@ -5,4 +5,5 @@ export interface TabOption {
   color_icono?: string
   bg_color?: string
   icono_derecha?: boolean
+  disable?: boolean
 }

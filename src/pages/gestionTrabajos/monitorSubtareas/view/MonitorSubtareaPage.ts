@@ -5,7 +5,7 @@ import { CustomActionTable } from 'components/tables/domain/CustomActionTable'
 import { Subtarea } from 'pages/gestionTrabajos/subtareas/domain/Subtarea'
 import { tabOptionsEstadosSubtareasMonitor } from 'config/tareas.utils'
 import { acciones, accionesTabla, estadosTrabajos } from 'config/utils'
-import { computed, defineComponent, ref } from 'vue'
+import { computed, defineComponent, onMounted, ref } from 'vue'
 import { useSubtareaStore } from 'stores/subtarea'
 import { useCargandoStore } from 'stores/cargando'
 import { useQuasar } from 'quasar'
@@ -21,6 +21,7 @@ import { ComportamientoModalesSubtarea } from 'pages/gestionTrabajos/subtareas/a
 import { MotivoPausaController } from 'pages/gestionTrabajos/motivosPausas/infraestructure/MotivoPausaController'
 import { ContenedorSimpleMixin } from 'shared/contenedor/modules/simple/application/ContenedorSimpleMixin'
 import { SubtareaController } from 'pages/gestionTrabajos/subtareas/infraestructure/SubtareaController'
+import { useAuthenticationStore } from 'stores/authentication'
 
 export default defineComponent({
   components: {
@@ -33,12 +34,13 @@ export default defineComponent({
     *********/
     const subtareaStore = useSubtareaStore()
     useCargandoStore().setQuasar(useQuasar())
+    const authenticationStore = useAuthenticationStore()
 
     /********
      * Mixin
      ********/
     const mixin = new ContenedorSimpleMixin(Subtarea, new SubtareaController())
-    const { listado, listadosAuxiliares } = mixin.useReferencias()
+    const { listado, listadosAuxiliares, filtros } = mixin.useReferencias()
     const { filtrar, listar, cargarVista, obtenerListados } = mixin.useComportamiento()
 
     cargarVista(async () => {
@@ -60,7 +62,9 @@ export default defineComponent({
      * Variables
      ************/
     const tabActual = ref()
+    const refTabla = ref()
     const altoFijo = computed(() => !listado.value.length)
+    const mostrarTabs = !authenticationStore.esContabilidad
 
     /****************
      * Botones tabla
@@ -79,17 +83,26 @@ export default defineComponent({
 
     function filtrarSubtareas(estado: string) {
       const campos = 'id,codigo_tarea,codigo_subtarea,titulo,estado,grupo,empleado_responsable,empleado_responsable_id,coordinador,tipo_trabajo,cantidad_adjuntos,fecha_solicitud,es_ventana,fecha_hora_creacion,fecha_inicio_trabajo,hora_inicio_trabajo,hora_fin_trabajo,fecha_hora_asignacion,fecha_hora_agendado,fecha_hora_ejecucion,fecha_hora_realizado,fecha_hora_finalizacion,dias_ocupados,fecha_hora_suspendido,motivo_suspendido,fecha_hora_cancelado,motivo_cancelado,subtarea_dependiente,canton,cliente,cliente_id,proyecto,proyecto_id,puede_ejecutar,puede_suspender,es_responsable,tarea_id'
-      listar({ estado: estado, campos })
+      filtros.fields = { estado: estado, campos }
       tabActual.value = estado
+
+      const searchConValor = refTabla.value.getSearchValue()
+
+      if (searchConValor) refTabla.value.toSearch()
+      else listar({ estado: estado, campos, paginate: true })
     }
 
-    filtrarSubtareas(estadosTrabajos.AGENDADO)
+    /*******
+     * Init
+     *******/
+    onMounted(() => filtrarSubtareas(authenticationStore.esContabilidad ? estadosTrabajos.FINALIZADO : estadosTrabajos.AGENDADO))
 
     function aplicarFiltro(uri) {
       filtrar(uri)
     }
 
     return {
+      refTabla,
       mixin,
       tabActual,
       columnasSubtareas: [...configuracionColumnasSubtarea, accionesTabla],
@@ -110,6 +123,7 @@ export default defineComponent({
       filtrar,
       aplicarFiltro,
       altoFijo,
+      mostrarTabs,
     }
   }
 })

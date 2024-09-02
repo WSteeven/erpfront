@@ -1,4 +1,5 @@
 import { TabOption } from 'components/tables/domain/TabOption'
+import { useAuthenticationStore } from 'stores/authentication'
 
 export const tiposReportes = {
   TRABAJOS_REALIZADOS: 'TRABAJOS REALIZADOS',
@@ -54,14 +55,14 @@ export const tabOptionsEstadosSubtareas: TabOption[] = [
   { label: 'Finalizado', value: 'FINALIZADO' },
 ]
 
+const authenticationStore = useAuthenticationStore()
 export const tabOptionsEstadosSubtareasMonitor: TabOption[] = [
-  //{ label: 'Todo', value: '' },
-  { label: 'Agendado', value: 'AGENDADO' },
-  { label: 'Ejecutando', value: 'EJECUTANDO' },
-  { label: 'Pausado', value: 'PAUSADO' },
-  { label: 'Suspendido', value: 'SUSPENDIDO' },
-  { label: 'Cancelado', value: 'CANCELADO' },
-  { label: 'Realizado', value: 'REALIZADO' },
+  { label: 'Agendado', value: 'AGENDADO', disable: authenticationStore.esContabilidad },
+  { label: 'Ejecutando', value: 'EJECUTANDO', disable: authenticationStore.esContabilidad },
+  { label: 'Pausado', value: 'PAUSADO', disable: authenticationStore.esContabilidad },
+  { label: 'Suspendido', value: 'SUSPENDIDO', disable: authenticationStore.esContabilidad },
+  { label: 'Cancelado', value: 'CANCELADO', disable: authenticationStore.esContabilidad },
+  { label: 'Realizado', value: 'REALIZADO', disable: authenticationStore.esContabilidad },
   { label: 'Finalizado', value: 'FINALIZADO' },
 ]
 

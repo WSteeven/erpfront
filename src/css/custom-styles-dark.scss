@@ -120,6 +120,11 @@ $border-color: #464646;
     background-color: $dark-color;
   }
 
+  .q-table__bottom,
+  thead tr:first-child th {
+    background-color: $dark-color;
+  }
+
   .borde-header-tabla {
     border-top: 1px solid $border-color;
     border-left: 1px solid $border-color;
@@ -230,6 +235,13 @@ $border-color: #464646;
 
   .border-white {
     border: 1px solid $grey-8 !important;
+  }
+
+  .borde-header-tabla {
+    border-top: 1px solid $grey-8 !important;
+    border-left: 1px solid $grey-8 !important;
+    border-right: 1px solid $grey-8 !important;
+    border-radius: 16px 16px 0 0 !important;
   }
 
   // background

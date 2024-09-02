@@ -23,6 +23,7 @@
     "chartjs-plugin-datalabels": "^2.2.0",
     "dayjs": "^1.11.10",
     "dotenv": "^16.0.3",
+    "dotenv-expand": "^11.0.6",
     "echarts": "^5.4.0",
     "html2pdf.js": "^0.10.1",
     "idlejs": "^3.0.0",

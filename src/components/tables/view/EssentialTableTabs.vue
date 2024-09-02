@@ -12,16 +12,17 @@
       :active-bg-color="activeBgColor"
       :indicator-color="indicatorColor"
       align="justify"
-      @click="$emit('tab-seleccionado', tabSeleccionado)"
-    >
+      >
       <q-tab
-        v-for="opcion in tabOptions"
-        :key="opcion.label"
-        :name="opcion.value + ''"
-        :class="{
-          'rounded shadow-chip q-mx-xs q-my-md': $q.screen.xs,
-          'tab-inactive': tabSeleccionado !== opcion.label && !$q.screen.xs,
-        }"
+      v-for="opcion in tabOptions"
+      :key="opcion.label"
+      :name="opcion.value + ''"
+      :disable="opcion.disable"
+      :class="{
+        'rounded shadow-chip q-mx-xs q-my-md': $q.screen.xs,
+        'tab-inactive': tabSeleccionado !== opcion.label && !$q.screen.xs
+      }"
+      @click="$emit('tab-seleccionado', tabSeleccionado)"
       >
         <q-icon
           v-if="opcion.icono && !opcion.icono_derecha"
@@ -47,7 +48,8 @@
     </q-tabs>
 
     <div :class="{ 'q-mx-sm': $q.screen.xs }">
-      <essential-table-pagination v-if="paginate"
+      <essential-table-pagination
+        v-if="paginate"
         ref="refTabla"
         :titulo="titulo"
         :configuracionColumnas="configuracionColumnas"
@@ -100,7 +102,8 @@
         :mixin="mixin"
       ></essential-table-pagination>
 
-      <essential-table v-else
+      <essential-table
+        v-else
         ref="refTabla"
         :titulo="titulo"
         :configuracionColumnas="configuracionColumnas"
@@ -151,8 +154,6 @@
         :tipoSeleccion="tipoSeleccion"
         @selected="seleccionado"
       ></essential-table>
-
-
     </div>
   </div>
 </template>
@@ -173,160 +174,160 @@ import EssentialTable from './EssentialTable.vue'
 export default defineComponent({
   components: {
     EssentialTable,
-    EssentialTablePagination,
+    EssentialTablePagination
   },
   props: {
     mixin: {
       type: Object as () => ContenedorSimpleMixin<EntidadAuditable>,
-      required: false,
+      required: false
     },
     titulo: {
       type: String,
-      default: 'Listado',
+      default: 'Listado'
     },
     separador: {
       type: String,
-      default: 'horizontal',
+      default: 'horizontal'
     },
     configuracionColumnas: {
       type: Object as () => ColumnConfig<EntidadAuditable>[],
-      required: true,
+      required: true
     },
     datos: {
       type: Array,
-      required: true,
+      required: true
     },
     permitirEditarCeldas: {
       type: Boolean,
-      default: false,
+      default: false
     },
     permitirConsultar: {
       type: Boolean,
-      default: true,
+      default: true
     },
     permitirEditar: {
       type: Boolean,
-      default: true,
+      default: true
     },
     permitirEliminar: {
       type: Boolean,
-      default: true,
+      default: true
     },
     tipoSeleccion: {
       type: String as () => TipoSeleccion,
-      default: 'none',
+      default: 'none'
     },
     accion1: {
       type: Object as () => CustomActionTable,
-      required: false,
+      required: false
     },
 
     accion2: {
       type: Object as () => CustomActionTable,
-      required: false,
+      required: false
     },
     accion3: {
       type: Object as () => CustomActionTable,
-      required: false,
+      required: false
     },
     accion4: {
       type: Object as () => CustomActionTable,
-      required: false,
+      required: false
     },
     accion5: {
       type: Object as () => CustomActionTable,
-      required: false,
+      required: false
     },
     accion6: {
       type: Object as () => CustomActionTable,
-      required: false,
+      required: false
     },
     accion7: {
       type: Object as () => CustomActionTable,
-      required: false,
+      required: false
     },
     accion8: {
       type: Object as () => CustomActionTable,
-      required: false,
+      required: false
     },
     accion9: {
       type: Object as () => CustomActionTable,
-      required: false,
+      required: false
     },
     accion10: {
       type: Object as () => CustomActionTable,
-      required: false,
+      required: false
     },
     accion1Header: {
       type: Object as () => CustomActionTable,
-      required: false,
+      required: false
     },
     accion2Header: {
       type: Object as () => CustomActionTable,
-      required: false,
+      required: false
     },
     accion3Header: {
       type: Object as () => CustomActionTable,
-      required: false,
+      required: false
     },
     accion4Header: {
       type: Object as () => CustomActionTable,
-      required: false,
+      required: false
     },
     accion5Header: {
       type: Object as () => CustomActionTable,
-      required: false,
+      required: false
     },
     accion6Header: {
       type: Object as () => CustomActionTable,
-      required: false,
+      required: false
     },
     mostrarBotones: {
       type: Boolean,
-      default: true,
+      default: true
     },
     altoFijo: {
       type: Boolean,
-      default: true,
+      default: true
     },
     mostrarHeader: {
       type: Boolean,
-      default: true,
+      default: true
     },
     mostrarFooter: {
       type: Boolean,
-      default: true,
+      default: true
     },
     tabOptions: {
       type: Array as () => TabOption[],
-      required: true,
+      required: true
     },
     tabDefecto: String,
     permitirFiltrar: {
       type: Boolean,
-      default: false,
+      default: false
     },
     permitirBuscar: {
       type: Boolean,
-      default: true,
+      default: true
     },
     primeraColumnaFija: {
       type: Boolean,
-      default: false,
+      default: false
     },
     mostrarExportar: {
       type: Boolean,
-      default: false,
+      default: false
     },
     ajustarCeldas: {
       //valor que se envia para que el contenido de la celda se autoaujuste al tamaño de la celda en lugar de aumentar su tamaño
       type: Boolean,
-      default: false,
+      default: false
     },
     paginate: {
       type: Boolean,
-      default: false,
-    },
+      default: false
+    }
   },
 
   emits: [
@@ -347,7 +348,7 @@ export default defineComponent({
     'filtrar',
     'limpiar-listado',
     'selected',
-    'update:selected',
+    'update:selected'
   ],
   setup(props, { emit }) {
     const refTabla = ref()
@@ -384,19 +385,19 @@ export default defineComponent({
       else emit('limpiar-listado')
     }
 
-    const consultar = (data) => emit('consultar', data)
-    const editar = (data) => emit('editar', data)
-    const eliminar = (data) => emit('eliminar', data)
-    const emitAccion1 = (data) => emit('accion1', data)
-    const emitAccion2 = (data) => emit('accion2', data)
-    const emitAccion3 = (data) => emit('accion3', data)
-    const emitAccion4 = (data) => emit('accion4', data)
-    const emitAccion5 = (data) => emit('accion5', data)
-    const emitAccion6 = (data) => emit('accion6', data)
-    const emitAccion7 = (data) => emit('accion7', data)
-    const emitAccion8 = (data) => emit('accion8', data)
-    const emitAccion9 = (data) => emit('accion9', data)
-    const emitAccion10 = (data) => emit('accion10', data)
+    const consultar = data => emit('consultar', data)
+    const editar = data => emit('editar', data)
+    const eliminar = data => emit('eliminar', data)
+    const emitAccion1 = data => emit('accion1', data)
+    const emitAccion2 = data => emit('accion2', data)
+    const emitAccion3 = data => emit('accion3', data)
+    const emitAccion4 = data => emit('accion4', data)
+    const emitAccion5 = data => emit('accion5', data)
+    const emitAccion6 = data => emit('accion6', data)
+    const emitAccion7 = data => emit('accion7', data)
+    const emitAccion8 = data => emit('accion8', data)
+    const emitAccion9 = data => emit('accion9', data)
+    const emitAccion10 = data => emit('accion10', data)
 
     function consultarTodos(uri) {
       emit('filtrar', uri)
@@ -412,6 +413,16 @@ export default defineComponent({
       console.log(seleccionado)
       emit('selected', seleccionado)
     }
+
+    /* function seleccionarTab() {
+      console.log(refTabla.value.filter)
+      const searchConValor = refTabla.value.filter
+      if (searchConValor) refTabla.value.toSearch()
+      else emit('tab-seleccionado', tabSeleccionado.value)
+    } */
+
+    const getSearchValue = () => refTabla.value.filter
+    const toSearch = () => refTabla.value.toSearch()
 
     return {
       refTabla,
@@ -436,7 +447,10 @@ export default defineComponent({
       consultarTodos,
       toggleFiltros,
       seleccionado,
+      // seleccionarTab,
+      getSearchValue,
+      toSearch,
     }
-  },
+  }
 })
 </script>

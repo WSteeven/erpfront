@@ -26,6 +26,7 @@ import EssentialLoading from 'components/loading/view/EssentialLoading.vue'
 import ModalesEntidad from 'components/modales/view/ModalEntidad.vue'
 import FooterComponent from 'components/FooterComponent.vue'
 import EssentialLink from 'components/EssentialLink.vue'
+import CrearTicket from 'src/pages/gestionTickets/tickets/view/CrearTicket.vue'
 
 // Logica y controladores
 import { ComportamientoModalesMainLayout } from './modales/application/ComportamientoModalesMainLayout'
@@ -46,10 +47,10 @@ export default defineComponent({
   components: {
     EssentialLink,
     EssentialLoading,
-
     ModalesEntidad,
     ScrollToTopButton,
-    FooterComponent
+    FooterComponent,
+    CrearTicket,
   },
 
   setup() {
@@ -58,7 +59,7 @@ export default defineComponent({
 
     const menuVisible = ref(false)
 
-    const buscarModulo = ref('')
+    const buscarModulo = ref()
 
     /*********
      * Stores
@@ -98,6 +99,7 @@ export default defineComponent({
     const route = useRoute()
     const tituloPagina = computed(() => mainLayoutStore.tituloPagina)
     const grupo = authenticationStore.user.grupo
+    const mostrarBuscar = ref(false)
 
     const saldo = computed(() => {
       authenticationStore.consultar_saldo_actual()
@@ -259,8 +261,8 @@ export default defineComponent({
             LocalStorage.set(
               'ultima_conexion',
               formatearFechaTexto(lastActive.value) +
-                ' ' +
-                new Date(lastActive.value).toLocaleTimeString('en-US')
+              ' ' +
+              new Date(lastActive.value).toLocaleTimeString('en-US')
             )
             Swal.fire({
               icon: 'error',
@@ -286,12 +288,12 @@ export default defineComponent({
     )
     watchEffect(
       () =>
-        (document.title =
-          (notificaciones.value.length
-            ? `(${notificaciones.value.length})`
-            : '') +
-          ' ' +
-          nombreEmpresa.value)
+      (document.title =
+        (notificaciones.value.length
+          ? `(${notificaciones.value.length})`
+          : '') +
+        ' ' +
+        nombreEmpresa.value)
     )
 
     // función para obtener los módulos permitidos
@@ -322,10 +324,10 @@ export default defineComponent({
     }
 
     function filterItems(items, searchTerm) {
-      const searchTerms = searchTerm.toLowerCase().split(' ')
+      const searchTerms = searchTerm?.toLowerCase().split(' ')
 
       function matches(item) {
-        return searchTerms.every(term =>
+        return searchTerms?.every(term =>
           new RegExp(term, 'i').test(item.title ?? '')
         )
       }
@@ -347,6 +349,11 @@ export default defineComponent({
       }
 
       return filterRecursive(items)
+    }
+
+    const resetearBuscador = () => {
+      buscarModulo.value = null
+      mostrarBuscar.value = false
     }
 
     return {
@@ -377,6 +384,7 @@ export default defineComponent({
       width: computed(() => ($q.screen.xs ? '100%' : '450px')),
       mostrarMenu: ref(false),
       mostrarNotificaciones: ref(false),
+      mostrarCrearTicket: ref(false),
       mostrarOpciones: ref(false),
       notificaciones,
       marcarLeida,
@@ -397,7 +405,9 @@ export default defineComponent({
       buscarModulo,
       filtrarMenu,
       resultadosBusqueda,
-      menuStore
+      menuStore,
+      mostrarBuscar,
+      resetearBuscador,
       // idledFor,
       // tiempoInactividad,
       // mostrarAlertaInactividad,
