@@ -32,6 +32,7 @@ import { SolicitudEmpleadoPusherEvent } from 'src/pusherEvents/recursosHumanos/s
 import { TransferenciaProductoRealizadaPusherEvent } from 'src/pusherEvents/tareas/TransferenciaProductosRealizadaPusherEvent'
 import { TransferenciaProductoSolicitadaPusherEvent } from 'src/pusherEvents/tareas/TransferenciaProductosSolicitadaPusherEvent'
 import { NotificarEntregaActivoFijoPusherEvent } from 'src/pusherEvents/activosFijos/NotificarEntregaActivoFijoPusherEvent'
+import { PostulacionPusherEvent } from 'src/pusherEvents/recursosHumanos/seleccionContratacionPersonal/PostulacionPusherEvent'
 
 
 export class NotificacionesSistema {
@@ -176,6 +177,8 @@ export class NotificacionesSistema {
     const solicitudEmpleadoPusherEvent = new SolicitudEmpleadoPusherEvent()
     solicitudEmpleadoPusherEvent.start()
 
+    const postulacionPusherEvent = new PostulacionPusherEvent()
+    postulacionPusherEvent.start()
 
 
     /**********************
