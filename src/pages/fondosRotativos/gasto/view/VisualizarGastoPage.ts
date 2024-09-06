@@ -202,8 +202,7 @@ export default defineComponent({
         mostrarListado.value = false
         mostrarAprobacion.value = true
         esFactura.value = !!gasto.factura
-        permitirAnular.value =
-          fondoRotativoStore.habilitar_observacion_autorizador
+        permitirAnular.value = fondoRotativoStore.habilitar_observacion_autorizador
         accion.value = fondoRotativoStore.accion_form
         isConsultar.value = fondoRotativoStore.accion_form === acciones.consultar
       }

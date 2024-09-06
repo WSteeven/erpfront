@@ -436,6 +436,12 @@ export const useMenuStore = defineStore('menu', () => {
               can: true
             },
             {
+              title: 'Reporte de Uniformes y EPPs',
+              link: 'reporte-epps',
+              icon: 'bi-journal-arrow-down',
+              can: true
+            },
+            {
               title: 'Reporte de pedidos',
               link: 'reporte-pedidos',
               icon: 'bi-journal-check',
