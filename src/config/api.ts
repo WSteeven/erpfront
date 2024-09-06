@@ -443,4 +443,5 @@ export const endpoints = {
   categorias_noticias: new Endpoint('intranet/categorias'),
   tipos_eventos: new Endpoint('intranet/tipos-eventos'),
   organigrama: new Endpoint('intranet/organigrama'),
+  organigrama_datos: new Endpoint('intranet/organigrama/datos'),
 }
