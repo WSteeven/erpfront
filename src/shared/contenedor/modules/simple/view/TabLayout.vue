@@ -74,6 +74,7 @@
 
       <!-- Listado -->
       <q-tab-panel name="listado">
+        <!-- :paginate="paginate" -->
         <essential-table-pagination
           v-if="paginate"
           ref="refTabla"
@@ -83,7 +84,6 @@
           :permitirConsultar="puedeVer"
           :permitirEditar="puedeEditar"
           :permitirEliminar="puedeEliminar"
-          :paginate="paginate"
           :accion1="accion1"
           :accion2="accion2"
           :accion3="accion3"

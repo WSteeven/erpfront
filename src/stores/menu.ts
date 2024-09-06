@@ -63,6 +63,12 @@ export const useMenuStore = defineStore('menu', () => {
           can: store.can('puede.ver.tareas')
         },
         {
+          title: 'Alimentación grupos',
+          link: 'alimentacion-grupo',
+          icon: 'bi-check2-circle',
+          can: store.can('puede.ver.alimentacion_grupo')
+        },
+        {
           title: 'Movilización entre trabajos',
           link: 'reporte-movilizacion-subtarea',
           icon: 'bi-truck',

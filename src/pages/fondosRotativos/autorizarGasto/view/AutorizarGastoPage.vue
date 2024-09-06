@@ -13,7 +13,7 @@
       <essential-table-tabs
         :configuracionColumnas="[
           ...configuracionColumnasAutorizarGasto,
-          accionesTabla,
+          accionesTabla
         ]"
         :datos="listado"
         :accion1="botonVerModalGasto"

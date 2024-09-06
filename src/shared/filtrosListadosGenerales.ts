@@ -35,6 +35,7 @@ export const useFiltrosListadosSelects = (listadosAuxiliares, entidad?: Ref<any>
   const grupos = ref(listadosAuxiliares.grupos)
   const departamentos = ref(listadosAuxiliares.departamentos)
   const tickets = ref(listadosAuxiliares.tickets)
+  const subdetalles = ref(listadosAuxiliares.subdetalles)
 
   //bodega
   const sucursales = ref(listadosAuxiliares.sucursales)
@@ -482,6 +483,7 @@ export const useFiltrosListadosSelects = (listadosAuxiliares, entidad?: Ref<any>
 
 
   const filtrarEstadosCiviles = (val, update) => filtrarLista(val, update, estadosCiviles, 'nombre', listadosAuxiliares.estados_civiles)
+  const filtrarSubdetalles = (val, update) => filtrarLista(val, update, subdetalles, 'descripcion', listadosAuxiliares.subdetalles)
 
   /****************
    * Modulo medico
@@ -539,7 +541,7 @@ export const useFiltrosListadosSelects = (listadosAuxiliares, entidad?: Ref<any>
     grupos, filtrarGrupos,
     areas, filtrarAreas,
     tiposContratos,
-
+    subdetalles, filtrarSubdetalles,
     tickets, filtrarTickets,
     tareas, filtrarTareas,
     proyectos, filtrarProyectos,
