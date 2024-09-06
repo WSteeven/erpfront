@@ -1090,6 +1090,5 @@
     </template>
   </tab-layout-filter-tabs2>
 </template>
-<!-- :error="v$.nombre.$errors"  -->
 
 <script src="./BitacoraVehicularPage.ts"></script>
