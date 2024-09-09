@@ -444,6 +444,11 @@ export const useFiltrosListadosSelects = (listadosAuxiliares, entidad?: Ref<any>
     return filtrarLista(val, update, etapasDestino, 'nombre', listadosAuxiliares.etapasDestino)
   }
 
+  function filtrarTareasTitulo(val, update) {
+    if (val === '') return update(() => tareas.value = listadosAuxiliares.tareas)
+    update(() => tareas.value = listadosAuxiliares.tareas.filter((v) => v.codigo_tarea.toLowerCase().indexOf(val.toLowerCase()) > -1 || v.titulo.toLowerCase().indexOf(val.toLowerCase()) > -1))
+  }
+
   function filtrarTareas(val, update) {
     return filtrarLista(val, update, tareas, 'codigo_tarea', listadosAuxiliares.tareas)
   }
@@ -570,5 +575,6 @@ export const useFiltrosListadosSelects = (listadosAuxiliares, entidad?: Ref<any>
     // Modulo activos fijos
     categoriasMotivosConsumoActivosFijos, filtrarCategoriasMotivosConsumoActivosFijos,
     motivosConsumoActivosFijos, filtrarMotivosConsumoActivosFijos,
+    filtrarTareasTitulo,
   }
 }

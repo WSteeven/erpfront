@@ -5,6 +5,7 @@
     :paginate="true"
     puede-filtrar
     puede-exportar
+    ajustar-celdas
   >
     <template #formulario>
       <q-form @submit.prevent>
@@ -76,7 +77,6 @@
           class="row q-col-gutter-sm q-py-md q-mb-md"
           :class="{ 'bg-desenfoque rounded': index % 2 === 0 }"
         >
-          <!-- {{ alimentacionGrupo.grupo_id }} -->
           <div class="col-12 col-md-3">
             <label class="q-mb-sm block">Grupo</label>
             <q-select
@@ -95,6 +95,7 @@
               input-debounce="0"
               emit-value
               map-options
+              error-message="Seleccione un grupo"
               :disable="disabled || noSePuedeEditar"
               :error="
                 !!v$.alimentacion_grupos.$each.$response.$errors[index].grupo_id
@@ -120,8 +121,8 @@
               </template>
             </q-select>
           </div>
-          <!-- {{ grupos }} -->
-          <div class="col-12 col-md-3">
+
+          <div v-if="!consultado" class="col-12 col-md-3">
             <label class="q-mb-sm block">Tarea</label>
             <q-select
               v-model="alimentacionGrupo.tarea_id"
@@ -132,7 +133,7 @@
               dense
               outlined
               :disable="disabled || noSePuedeEditar"
-              @filter="filtrarTareas"
+              @filter="filtrarTareasTitulo"
               :error="
                 !!v$.alimentacion_grupos.$each.$response.$errors[index].tarea_id
                   .length
@@ -141,7 +142,7 @@
               use-input
               input-debounce="0"
               :option-value="v => v.id"
-              :option-label="v => v.titulo"
+              :option-label="v => v.codigo_tarea + ' | ' + v.titulo"
               emit-value
               map-options
             >
@@ -161,7 +162,7 @@
                     <q-item-label class="text-bold text-primary">{{
                       scope.opt.codigo_tarea
                     }}</q-item-label>
-                    <q-item-label caption>{{ scope.opt.titulo }} </q-item-label>
+                    <q-item-label caption>{{ scope.opt.titulo }}</q-item-label>
                   </q-item-section>
                 </q-item>
               </template>
@@ -176,6 +177,17 @@
             </q-select>
           </div>
 
+          <div v-if="consultado" class="col-12 col-md-3">
+            <label class="q-mb-sm block">Tarea</label>
+            <q-input
+              v-model="alimentacionGrupo.tarea"
+              disable
+              outlined
+              dense
+              autogrow
+            />
+          </div>
+
           <div class="col-12 col-md-2">
             <label class="q-mb-sm block">Cantidad personas</label>
             <q-input
@@ -186,6 +198,7 @@
               autofocus
               outlined
               dense
+              error-message="Escriba la cantidad de personas"
               :error="
                 !!v$.alimentacion_grupos.$each.$response.$errors[index]
                   .cantidad_personas.length
@@ -232,10 +245,10 @@
               use-input
               input-debounce="0"
               @filter="filtrarSubdetalles"
-              error-message="Debes seleccionar uno"
+              error-message="Seleccionar un tipo de alimentación"
               :error="
                 !!v$.alimentacion_grupos.$each.$response.$errors[index]
-                  .tipo_alimentacion.length
+                  .tipo_alimentacion_id.length
               "
               :option-value="v => v.id"
               :option-label="v => v.descripcion"

@@ -1,28 +1,21 @@
 // Dependencias
-import { computed, defineComponent, Ref, ref } from 'vue'
 import { configuracionColumnasAlimentacionGrupo } from '../domain/configuracionColumnasAlimentacionGrupo'
+import { minValue, required, helpers } from 'shared/i18n-validators'
 import { acciones, maskFecha } from 'config/utils'
+import { computed, defineComponent } from 'vue'
 import { format } from '@formkit/tempo'
-import {
-    requiredIf,
-    maxLength,
-    minLength,
-    maxValue,
-    required,
-    helpers,
-} from 'shared/i18n-validators'
 
 // Componentes
-import TabLayout from 'shared/contenedor/modules/simple/view/TabLayout.vue'
 import { ContenedorSimpleMixin } from 'shared/contenedor/modules/simple/application/ContenedorSimpleMixin'
-import { AlimentacionGrupo } from '../domain/AlimentacionGrupo'
-import { AlimentacionGrupoController } from '../infraestructure/AlimentacionGrupoController'
-import useVuelidate from '@vuelidate/core'
 import { GrupoController } from 'pages/recursosHumanos/grupos/infraestructure/GrupoController'
 import { TareaController } from 'pages/gestionTrabajos/tareas/infraestructure/TareaController'
 import { SubDetalleFondo } from 'pages/fondosRotativos/subDetalleFondo/domain/SubDetalleFondo'
-import { useAuthenticationStore } from 'stores/authentication'
+import { AlimentacionGrupoController } from '../infraestructure/AlimentacionGrupoController'
+import TabLayout from 'shared/contenedor/modules/simple/view/TabLayout.vue'
 import { useFiltrosListadosSelects } from 'shared/filtrosListadosGenerales'
+import { AlimentacionGrupo } from '../domain/AlimentacionGrupo'
+import { useAuthenticationStore } from 'stores/authentication'
+import useVuelidate from '@vuelidate/core'
 import { LocalStorage } from 'quasar'
 
 export default defineComponent({
@@ -41,8 +34,8 @@ export default defineComponent({
          ********/
         const mixin = new ContenedorSimpleMixin(AlimentacionGrupo, new AlimentacionGrupoController())
         const { entidad: alimentacion, disabled, listadosAuxiliares, accion } = mixin.useReferencias()
-        const { setValidador, obtenerListados, cargarVista, reestablecer } = mixin.useComportamiento()
-        const { onBeforeGuardar, onGuardado, onConsultado, onBeforeModificar } = mixin.useHooks()
+        const { setValidador, obtenerListados, cargarVista } = mixin.useComportamiento()
+        const { onBeforeGuardar, onConsultado, onBeforeModificar } = mixin.useHooks()
 
         cargarVista(async () => {
             await obtenerListados({
@@ -73,7 +66,7 @@ export default defineComponent({
             alimentacion_grupos: {
                 $each: helpers.forEach({
                     grupo_id: { required },
-                    cantidad_personas: { required },
+                    cantidad_personas: { required, minValue: minValue(1) },
                     tarea_id: { required },
                     tipo_alimentacion_id: { required },
                 }),
@@ -86,7 +79,7 @@ export default defineComponent({
         /************
          * Funciones
          ************/
-        const { grupos, filtrarGrupos, tareas, filtrarTareas, subdetalles, filtrarSubdetalles } = useFiltrosListadosSelects(listadosAuxiliares)
+        const { grupos, filtrarGrupos, tareas, filtrarTareasTitulo, subdetalles, filtrarSubdetalles } = useFiltrosListadosSelects(listadosAuxiliares)
 
         function optionsFecha(date) {
             const today = new Date()
@@ -152,21 +145,10 @@ export default defineComponent({
             alimentacion.alimentacion_grupos = []
         })
 
-        onGuardado(() => {
-            console.log('s aasasdas das')
-            reestablecer()
-        })
-
         onConsultado(() => {
             const copiaEntidad = JSON.parse(JSON.stringify(alimentacion))
-
             copiaEntidad.alimentacion_grupos = []
-            // copiaEntidad.alimentacion_grupos.splice(0, copiaEntidad.alimentacion_grupos.length)
-            console.log(copiaEntidad)
-
-            // alimentacion.alimentacion_grupos.splice(0, alimentacion.alimentacion_grupos.length)
             alimentacion.alimentacion_grupos = [copiaEntidad]
-            // console.log(alimentacion)
         })
 
         return {
@@ -179,13 +161,14 @@ export default defineComponent({
             configuracionColumnasAlimentacionGrupo,
             agregarGrupo,
             tareas,
-            filtrarTareas,
+            filtrarTareasTitulo,
             grupos,
             filtrarGrupos,
             subdetalles,
             filtrarSubdetalles,
             PRECIO_ALIMENTACION,
             noSePuedeEditar: computed(() => accion.value === acciones.editar),
+            consultado: computed(() => accion.value === acciones.editar || accion.value === acciones.consultar)
         }
     }
 })

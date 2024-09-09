@@ -254,7 +254,7 @@ export default defineComponent({
       } else {
         console.log(`${filtro.field}=${valor}`)
         return filtro.operador === 'like'
-          ? `${filtro.field}[${filtro.operador}]=%${valor}%`
+          ? `${filtro.field}[${filtro.operador}]=${valor}` // Se recomiendo no enviar el valor %7887% con porcentajes xq se llega asi �78% al backend
           : `${filtro.field}=${valor}`
       }
     }
