@@ -227,6 +227,7 @@
               v-model="devolucion.es_tarea"
               label="¿Es material de tarea?"
               :disable="disabled || soloLectura"
+              @update:model-value="checkEsTarea"
               outlined
               dense
             ></q-checkbox>
@@ -290,7 +291,7 @@
                 soloLectura ||
                 (accion == acciones.editar && devolucion.misma_condicion)
               "
-              
+
               dense
             ></q-checkbox>
           </div>

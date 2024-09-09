@@ -131,7 +131,13 @@ export default defineComponent({
         },
         tareas: {
           controller: new TareaController(),
-          params: { campos: 'id,codigo_tarea,titulo,cliente_id' }
+          params: {
+            campos: 'id,codigo_tarea,titulo,cliente_id',
+            'f_params[orderBy][field]': 'id',
+            'f_params[orderBy][type]': 'DESC',
+            'f_params[limit]': 50
+          }
+          // f_params[orderBy][field]=id&f_params[orderBy][type]=DESC&f_params[limit]=50
         },
       })
       //Configurar los listados
@@ -168,6 +174,8 @@ export default defineComponent({
       }
       listadosAuxiliares.sucursales = JSON.parse(LocalStorage.getItem('sucursales')!.toString())
       sucursales.value = listadosAuxiliares.sucursales
+      // se carga los materiales de clientes
+      obtenerClientesMaterialesEmpleado()
     })
 
     //reglas de validacion
@@ -189,10 +197,10 @@ export default defineComponent({
     /************
      * Observers
      ************/
-    watchEffect(() => {
-      if (devolucion.es_tarea) obtenerClientesMaterialesTarea()
+    function checkEsTarea(val) {
+      if (val) obtenerClientesMaterialesTarea()
       else obtenerClientesMaterialesEmpleado()
-    })
+    }
 
     /*******************************************************************************************
      * Funciones
@@ -285,7 +293,7 @@ export default defineComponent({
     async function obtenerDatosEmpleadoSeleccionado() {
       //obtener los clientes
 
-      // obtener los materiales 
+      // obtener los materiales
     }
 
 
@@ -464,6 +472,7 @@ export default defineComponent({
 
 
       //funciones
+      checkEsTarea,
       filtrarDevoluciones,
       filtrarCliente,
       checkMismaCondicion(val, evt) {
