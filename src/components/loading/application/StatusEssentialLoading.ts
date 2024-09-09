@@ -21,7 +21,7 @@ export class StatusEssentialLoading {
       message: '<span class="text-white">La operación está en progreso.<br/><br/><small class="text-grey-8 text-bold q-py-xs q-px-sm ' + this.waitBackground + ' rounded-card">Espere por favor...</small></span>',
       html: true,
     })
-    console.log(this.store.cargando)
+    // console.log(this.store.cargando)
     this.store.cargando = true
   }
 
