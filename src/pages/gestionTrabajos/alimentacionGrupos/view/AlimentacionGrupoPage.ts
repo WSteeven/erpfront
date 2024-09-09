@@ -50,11 +50,18 @@ export default defineComponent({
                     controller: new GrupoController(),
                     params: { campos: 'id,nombre', activo: 1, coordinador_id: mostrarTodosGrupos ? null : authenticationStore.user.id }
                 },
-                tareas: [],
+                tareas: {
+                  controller: new TareaController(),
+                  params: { campos: 'id,codigo_tarea,titulo,cliente_id',
+                    'f_params[orderBy][field]': 'id',
+                    'f_params[orderBy][type]': 'DESC',
+                    'f_params[limit]':50
+                   }
+                },
                 subdetalles: []
             })
 
-            listadosAuxiliares.tareas = await (await new TareaController().filtrar('f_params[orderBy][field]=id&f_params[orderBy][type]=DESC&f_params[limit]=50')).result
+            //EJEMPLO DE LO QUE NO SE DEBE HACER ->  listadosAuxiliares.tareas = await (await new TareaController().filtrar('f_params[orderBy][field]=id&f_params[orderBy][type]=DESC&f_params[limit]=50')).result
             listadosAuxiliares.subdetalles = obtenerSubdetallesAlimentacion()
             subdetalles.value = listadosAuxiliares.subdetalles
             tareas.value = listadosAuxiliares.tareas
@@ -127,7 +134,7 @@ export default defineComponent({
         }
 
         const agregarGrupo = () => {
-            alimentacion.alimentacion_grupos.push(new AlimentacionGrupo()) // nilson moca macas - juan vargas 
+            alimentacion.alimentacion_grupos.push(new AlimentacionGrupo()) // nilson moca macas - juan vargas
         }
 
         const obtenerSubdetallesAlimentacion = () => {
