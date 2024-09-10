@@ -42,7 +42,6 @@ import { StatusEssentialLoading } from 'components/loading/application/StatusEss
 import { endpoints } from 'config/api'
 import { AxiosResponse } from 'axios'
 import { AxiosHttpRepository } from 'shared/http/infraestructure/AxiosHttpRepository'
-import { CondicionController } from 'pages/administracion/condiciones/infraestructure/CondicionController'
 import { Condicion } from 'pages/administracion/condiciones/domain/Condicion'
 import { useFiltrosListadosSelects } from 'shared/filtrosListadosGenerales'
 import { ComportamientoModalesDevolucion } from '../application/ComportamientoModalesDevolucion'
@@ -63,6 +62,7 @@ export default defineComponent({
     useNotificacionStore().setQuasar(useQuasar())
     useCargandoStore().setQuasar(useQuasar())
 
+    const mostrarInactivos = ref(false)
     const modales = new ComportamientoModalesDevolucion()
     const devolucionStore = useDevolucionStore()
     const store = useAuthenticationStore()
@@ -137,7 +137,6 @@ export default defineComponent({
             'f_params[orderBy][type]': 'DESC',
             'f_params[limit]': 50
           }
-          // f_params[orderBy][field]=id&f_params[orderBy][type]=DESC&f_params[limit]=50
         },
       })
       //Configurar los listados
@@ -153,6 +152,9 @@ export default defineComponent({
 
       //logica para autocompletar el formulario de devolucion
       if (listadoMaterialesDevolucion.listadoMateriales.length) {
+        cargando.activar()
+        mostrarInactivos.value = listadoMaterialesDevolucion.inactivo
+        checkMostrarInactivos(listadoMaterialesDevolucion.inactivo)
         devolucion.devolver_materiales_tecnicos = listadoMaterialesDevolucion.empleado_id !== store.user.id
         devolucion.tarea = listadoMaterialesDevolucion.tareaId ? listadoMaterialesDevolucion.tareaId : null
         devolucion.solicitante = listadoMaterialesDevolucion.empleado_id
@@ -171,6 +173,7 @@ export default defineComponent({
             serial: material.serial,
           }
         })
+        cargando.desactivar()
       }
       listadosAuxiliares.sucursales = JSON.parse(LocalStorage.getItem('sucursales')!.toString())
       sucursales.value = listadosAuxiliares.sucursales
@@ -290,10 +293,13 @@ export default defineComponent({
       }
     }
 
-    async function obtenerDatosEmpleadoSeleccionado() {
-      //obtener los clientes
-
-      // obtener los materiales
+    async function checkMostrarInactivos(val) {
+      //aqui va a mostrar los empleados inactivos
+      const empleadosConsultados = ref()
+      if (val) empleadosConsultados.value = await cargando.cargarConsulta(async () => (await new EmpleadoController().listar({ estado: 0 })).result)
+      else empleadosConsultados.value = await cargando.cargarConsulta(async () => (await new EmpleadoController().listar({ estado: 1 })).result)
+      listadosAuxiliares.empleados = empleadosConsultados.value
+      empleados.value = listadosAuxiliares.empleados
     }
 
 
@@ -438,6 +444,7 @@ export default defineComponent({
       refArchivo,
       idDevolucion,
       modales,
+      mostrarInactivos,
 
       //selector
       refListado,
@@ -472,6 +479,7 @@ export default defineComponent({
 
 
       //funciones
+      checkMostrarInactivos,
       checkEsTarea,
       filtrarDevoluciones,
       filtrarCliente,
@@ -483,7 +491,6 @@ export default defineComponent({
       ordenarLista,
       comunicarComportamiento,
       checkSolicitantes,
-      obtenerDatosEmpleadoSeleccionado,
     }
   }
 })
