@@ -186,7 +186,8 @@ export default defineComponent({
     async function vehiculoSeleccionado() {
       const vehiculo = vehiculos.value.filter((v: Vehiculo) => v.id === bitacora.vehiculo)[0]
       bitacora.vehiculo_id = vehiculo.id
-      bitacora.chofer = vehiculo.custodio
+      bitacora.chofer = vehiculo.custodio.length<2? 'NO TIENE CUSTODIO ASIGNADO': vehiculo.custodio
+      bitacora.chofer_id = vehiculo.custodio_id
 
       bitacoraDefault.value = await obtenerUltimaBitacora()
       cargarDatosBitacoraDefecto()

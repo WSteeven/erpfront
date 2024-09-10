@@ -553,7 +553,7 @@
                         "
                       />
                       <q-badge floating class="bottom-left" color="orange">
-                        {{ new Date(empleado.fecha_nacimiento).getDate() + 1 }}
+                        {{ new Date(empleado.fecha_nacimiento).getUTCDate() }}
                       </q-badge>
                       <q-tooltip anchor="bottom middle" self="bottom middle">
                         {{ empleado.nombres }} {{ empleado.apellidos }}
