@@ -144,7 +144,7 @@ export default defineComponent({
     const movilizacionController = new MovilizacionSubtareaController()
 
     async function obtenerMovilizaciones() {
-      const { result } = await movilizacionController.listar({ subtarea_id: subtarea.id })
+      const { result } = await movilizacionController.listar({ subtarea_id: subtareaStore.idSubtareaSeleccionada })
       movilizacionesSubtarea.value = result
     }
 

@@ -150,7 +150,7 @@ export class ContenedorSimpleMixin<T extends EntidadAuditable> extends Contenedo
     this.statusEssentialLoading.activar()
     try {
       const { result, meta } = await this.controller.listar(params)
-      if (result.length == 0) this.notificaciones.notificarInformacion('Aún no se han agregado elementos')
+      if (result.length == 0) this.notificaciones.notificarInformacion('Aún no se han agregado elementos.')
 
       if (append) this.refs.listado.value.push(...result)
       else this.refs.listado.value = result

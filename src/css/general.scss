@@ -180,6 +180,16 @@ input[type='time']::-webkit-calendar-picker-indicator {
   border-left: 3px solid $primary;
 }
 
+.border-callout-positive {
+  border-right: 3px solid $positive;
+  border-left: 3px solid $positive;
+}
+
+.border-left-blue-grey {
+  border-bottom: 3px solid $blue-grey-4;
+  border-left: 3px solid $blue-grey;
+}
+
 .border-right-grey-5 {
   border-right: 1px solid $grey-5;
 }

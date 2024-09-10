@@ -1,9 +1,14 @@
 // Dependencias
 import { configuracionColumnasAlimentacionGrupo } from '../domain/configuracionColumnasAlimentacionGrupo'
+import { useFiltrosListadosSelects } from 'shared/filtrosListadosGenerales'
 import { minValue, required, helpers } from 'shared/i18n-validators'
+import { AlimentacionGrupoPropsData } from '../domain/AlimentacionGrupoPropsData'
+import { AlimentacionGrupo } from '../domain/AlimentacionGrupo'
+import { useAuthenticationStore } from 'stores/authentication'
 import { acciones, maskFecha } from 'config/utils'
 import { computed, defineComponent } from 'vue'
-import { format } from '@formkit/tempo'
+import useVuelidate from '@vuelidate/core'
+import { LocalStorage } from 'quasar'
 
 // Componentes
 import { ContenedorSimpleMixin } from 'shared/contenedor/modules/simple/application/ContenedorSimpleMixin'
@@ -12,16 +17,20 @@ import { TareaController } from 'pages/gestionTrabajos/tareas/infraestructure/Ta
 import { SubDetalleFondo } from 'pages/fondosRotativos/subDetalleFondo/domain/SubDetalleFondo'
 import { AlimentacionGrupoController } from '../infraestructure/AlimentacionGrupoController'
 import TabLayout from 'shared/contenedor/modules/simple/view/TabLayout.vue'
-import { useFiltrosListadosSelects } from 'shared/filtrosListadosGenerales'
-import { AlimentacionGrupo } from '../domain/AlimentacionGrupo'
-import { useAuthenticationStore } from 'stores/authentication'
-import useVuelidate from '@vuelidate/core'
-import { LocalStorage } from 'quasar'
+import { obtenerFechaHoraActual, optionsFecha } from 'shared/utils'
 
 export default defineComponent({
+    props: {
+        datos: Object as () => AlimentacionGrupoPropsData,
+    },
     components: { TabLayout },
-    setup() {
+    emits: ['guardado', 'cerrar-modal'],
+    setup(props, { emit }) {
+        /**********
+         * Stores
+         **********/
         const authenticationStore = useAuthenticationStore()
+        console.log(props.datos)
 
         /*************
          * Variables
@@ -35,7 +44,7 @@ export default defineComponent({
         const mixin = new ContenedorSimpleMixin(AlimentacionGrupo, new AlimentacionGrupoController())
         const { entidad: alimentacion, disabled, listadosAuxiliares, accion } = mixin.useReferencias()
         const { setValidador, obtenerListados, cargarVista } = mixin.useComportamiento()
-        const { onBeforeGuardar, onConsultado, onBeforeModificar } = mixin.useHooks()
+        const { onBeforeGuardar, onConsultado, onBeforeModificar, onReestablecer, onGuardado } = mixin.useHooks()
 
         cargarVista(async () => {
             await obtenerListados({
@@ -44,26 +53,21 @@ export default defineComponent({
                     params: { campos: 'id,nombre', activo: 1, coordinador_id: mostrarTodosGrupos ? null : authenticationStore.user.id }
                 },
                 tareas: {
-                  controller: new TareaController(),
-                  params: { campos: 'id,codigo_tarea,titulo,cliente_id',
-                    'f_params[orderBy][field]': 'id',
-                    'f_params[orderBy][type]': 'DESC',
-                    'f_params[limit]':50
-                   }
+                    controller: new TareaController(),
+                    params: {
+                        campos: 'id,codigo_tarea,titulo,cliente_id',
+                        'f_params[orderBy][field]': 'id',
+                        'f_params[orderBy][type]': 'DESC',
+                        'f_params[limit]': 50
+                    }
                 },
                 subdetalles: []
             })
 
-            //EJEMPLO DE LO QUE NO SE DEBE HACER ->  listadosAuxiliares.tareas = await (await new TareaController().filtrar('f_params[orderBy][field]=id&f_params[orderBy][type]=DESC&f_params[limit]=50')).result
             listadosAuxiliares.subdetalles = obtenerSubdetallesAlimentacion()
             subdetalles.value = listadosAuxiliares.subdetalles
             tareas.value = listadosAuxiliares.tareas
         })
-
-        /***********
-         * Computed
-         ***********/
-        // const noSePuedeEditar = accion.value === acciones.editar
 
         /*********
          * Reglas
@@ -88,46 +92,11 @@ export default defineComponent({
          ************/
         const { grupos, filtrarGrupos, tareas, filtrarTareasTitulo, subdetalles, filtrarSubdetalles } = useFiltrosListadosSelects(listadosAuxiliares)
 
-        function optionsFecha(date) {
-            const today = new Date()
-
-            const diaSemana = today.getDay()
-            // Verificar si el día actual es sábado
-            let sabadoAnterior = ''
-            if (diaSemana === 6) {
-                sabadoAnterior = format(
-                    new Date(today.setDate(today.getDate() - ((today.getDay() + 2) % 7))),
-                    'YYYY/MM/DD'
-                )
-            } else {
-                sabadoAnterior = format(
-                    new Date(today.setDate(today.getDate() - (today.getDay() % 7))),
-                    'YYYY/MM/DD'
-                )
-            }
-            const sabadoSiguiente = format(new Date(siguienteSabado()), 'YYYY/MM/DD')
-            const fecha_actual = format(new Date(), 'YYYY/MM/DD')
-
-            return (
-                date >= sabadoAnterior &&
-                date <= sabadoSiguiente &&
-                date <= fecha_actual
-            )
-        }// titulo - una opcion en tipo alimentacion
-
-        function siguienteSabado() {
-            const fecha = new Date() // Obtenemos la fecha actual
-            const diaSemana = fecha.getDay() // Obtenemos el día de la semana (0-6, siendo 0 domingo)
-            // Calculamos los días que faltan hasta el próximo sábado
-            const diasFaltantes = 6 - diaSemana
-            // Sumamos los días faltantes a la fecha actual para obtener el próximo sábado
-            fecha.setDate(fecha.getDate() + diasFaltantes)
-            // Retornamos la fecha formateada como una cadena de texto
-            return fecha
-        }
-
         const agregarGrupo = () => {
-            alimentacion.alimentacion_grupos.push(new AlimentacionGrupo()) // nilson moca macas - juan vargas
+            const alimentacionGrupo = new AlimentacionGrupo()
+            alimentacionGrupo.grupo_id = props.datos?.idGrupo
+            alimentacionGrupo.tarea_id = props.datos?.idTarea
+            alimentacion.alimentacion_grupos.push(alimentacionGrupo)
         }
 
         const obtenerSubdetallesAlimentacion = () => {
@@ -142,6 +111,8 @@ export default defineComponent({
             alimentacion.alimentacion_grupos = alimentacion.alimentacion_grupos.map((alimentacionoItem: AlimentacionGrupo) => {
                 alimentacionoItem.precio = PRECIO_ALIMENTACION
                 alimentacionoItem.fecha = alimentacion.fecha
+                alimentacionoItem.subtarea_id = props.datos?.idSubtarea
+                alimentacionoItem.tarea_id = props.datos?.idTarea
                 return alimentacionoItem
             })
         })
@@ -157,6 +128,18 @@ export default defineComponent({
             copiaEntidad.alimentacion_grupos = []
             alimentacion.alimentacion_grupos = [copiaEntidad]
         })
+
+        onGuardado(() => emit('guardado', 'AlimentacionGrupoPage'))
+
+        onReestablecer(() => {
+            alimentacion.hydrate(new AlimentacionGrupo())
+            emit('cerrar-modal', false)
+        })
+
+        /*******
+         * Init
+         *******/
+        alimentacion.fecha = obtenerFechaHoraActual('YYYY-MM-DD')
 
         return {
             v$,
@@ -175,7 +158,8 @@ export default defineComponent({
             filtrarSubdetalles,
             PRECIO_ALIMENTACION,
             noSePuedeEditar: computed(() => accion.value === acciones.editar),
-            consultado: computed(() => accion.value === acciones.editar || accion.value === acciones.consultar)
+            consultado: computed(() => accion.value === acciones.editar || accion.value === acciones.consultar),
+            existeSubtarea: !!props.datos?.idSubtarea, // Seguimiento de subtarea
         }
     }
 })

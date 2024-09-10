@@ -38,7 +38,7 @@ export class ComportamientoModales<T extends ModalesEntidad<T>> {
     }
   }
 
-  abrirModalEntidad(id: keyof T, datos?: any): void {
+  abrirModalEntidad<N>(id: keyof T, datos?: Record<keyof N, any>): void {
     const componente = this.obtenerModal(id)
     componente.datos = datos
 

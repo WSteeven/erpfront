@@ -9,7 +9,7 @@
   >
     <template #formulario>
       <q-form @submit.prevent>
-        <div class="row q-col-gutter-sm q-pa-md border-white rounded q-mb-md">
+        <div class="row q-col-gutter-sm q-pa-md border-white rounded q-mb-xl">
           <!-- Fecha -->
           <div class="col-12 col-md-3">
             <label class="q-mb-sm block">Fecha</label>
@@ -62,7 +62,7 @@
             <q-btn
               color="positive"
               icon="bi-plus"
-              label="Agregar grupo"
+              label="Agregar registro"
               unelevated
               square
               no-caps
@@ -74,9 +74,21 @@
         <div
           v-for="(alimentacionGrupo, index) in alimentacion.alimentacion_grupos"
           :key="index"
-          class="row q-col-gutter-sm q-py-md q-mb-md"
-          :class="{ 'bg-desenfoque rounded': index % 2 === 0 }"
+          class="row q-col-gutter-sm q-py-md q-mb-xl bg-desenfoque border-white rounded"
         >
+          <!-- :class="{ 'border-callout-info': index % 2 === 0 }" -->
+
+          <q-btn
+            class="btn-quitar-item"
+            color="negative"
+            label="Quitar"
+            icon="bi-x"
+            no-caps
+            rounded
+            no-wrap
+            @click="alimentacion.alimentacion_grupos.splice(index, 1)"
+          />
+
           <div class="col-12 col-md-3">
             <label class="q-mb-sm block">Grupo</label>
             <q-select
@@ -96,7 +108,7 @@
               emit-value
               map-options
               error-message="Seleccione un grupo"
-              :disable="disabled || noSePuedeEditar"
+              :disable="disabled || noSePuedeEditar || existeSubtarea"
               :error="
                 !!v$.alimentacion_grupos.$each.$response.$errors[index].grupo_id
                   .length
@@ -122,7 +134,7 @@
             </q-select>
           </div>
 
-          <div v-if="!consultado" class="col-12 col-md-3">
+          <div v-if="!consultado" class="col-12 col-md-4">
             <label class="q-mb-sm block">Tarea</label>
             <q-select
               v-model="alimentacionGrupo.tarea_id"
@@ -132,7 +144,7 @@
               options-dense
               dense
               outlined
-              :disable="disabled || noSePuedeEditar"
+              :disable="disabled || noSePuedeEditar || existeSubtarea"
               @filter="filtrarTareasTitulo"
               :error="
                 !!v$.alimentacion_grupos.$each.$response.$errors[index].tarea_id
@@ -177,7 +189,7 @@
             </q-select>
           </div>
 
-          <div v-if="consultado" class="col-12 col-md-3">
+          <div v-if="consultado" class="col-12 col-md-4">
             <label class="q-mb-sm block">Tarea</label>
             <q-input
               v-model="alimentacionGrupo.tarea"
@@ -195,7 +207,6 @@
               placeholder="Obligatorio"
               :disable="disabled"
               type="number"
-              autofocus
               outlined
               dense
               error-message="Escriba la cantidad de personas"
@@ -223,7 +234,6 @@
                 PRECIO_ALIMENTACION * alimentacionGrupo.cantidad_personas
               "
               disable
-              autofocus
               outlined
               dense
             >
@@ -284,18 +294,22 @@
             </q-select>
           </div>
 
-          <div class="col-12 col-md-8">
+          <div class="col-12 col-md-9">
             <label class="q-mb-sm block">Observación</label>
             <q-input
               v-model="alimentacionGrupo.observacion"
               placeholder="Opcional"
               :disable="disabled"
-              autofocus
               outlined
               dense
             >
             </q-input>
           </div>
+
+          <!-- <div class="col-12 col-md-2">
+            <label class="block q-mb-sm">&nbsp;</label>
+            <q-btn color="pink-10" label="Quitar item" icon="bi-x" no-caps unelevated rounded no-wrap/>
+          </div> -->
         </div>
       </q-form>
     </template>
@@ -303,3 +317,11 @@
 </template>
 
 <script src="./AlimentacionGrupoPage.ts"></script>
+
+<style lang="scss">
+.btn-quitar-item {
+  position: absolute;
+  top: -18px;
+  right: 0;
+}
+</style>
