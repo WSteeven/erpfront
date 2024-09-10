@@ -88,10 +88,7 @@ export default defineComponent({
 
     cargarVista(async () => {
       await obtenerListados({
-        empleados: {
-          controller: new EmpleadoRoleController(),
-          params: { roles: ['CHOFER', 'TECNICO'] }
-        },
+        empleados:  new ConductorController(),
         vehiculos: new VehiculoController(),
         garajes: {
           controller: new GarajeController(),
