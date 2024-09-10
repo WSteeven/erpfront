@@ -708,7 +708,7 @@ const routes: RouteRecordRaw[] = [
         meta: { requiresAuth: true },
       },
       {
-        path: '/ventas/dashboard-ventas',
+        path: '/dashboard-ventas',
         name: 'dashboard_ventas_empresa',
         component: () =>
           import('pages/comprasProveedores/dashboard/view/DashboardVentas.vue'),
@@ -1275,7 +1275,7 @@ const routes: RouteRecordRaw[] = [
         meta: { requiresAuth: true },
       },
       {
-        path: '/dashboard-ventas',
+        path: 'dashboard-ventas-claro',
         name: 'dashboard_ventas',
         component: () =>
           import(

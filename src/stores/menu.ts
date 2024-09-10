@@ -1193,7 +1193,7 @@ export const useMenuStore = defineStore('menu', () => {
       children: [
         {
           title: 'Dashboard',
-          link: 'ventas/dashboard-ventas',
+          link: 'dashboard-ventas',
           icon: 'bi-bar-chart-fill',
           can:
             store.can('puede.ver.dashboard_ventas_empresa') ||
@@ -1240,7 +1240,7 @@ export const useMenuStore = defineStore('menu', () => {
       children: [
         {
           title: 'Dashboard',
-          link: 'dashboard-ventas',
+          link: 'dashboard-ventas-claro',
           icon: 'bi-bar-chart-fill',
           can: store.can('puede.ver.dashboard_ventas')
         },
