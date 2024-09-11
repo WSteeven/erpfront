@@ -363,7 +363,7 @@
 
                   <!-- Nombre completo -->
                   <div class="custom-name text-h6 q-mb-xs">
-                    <p class="custom-antiguedad text-caption q-mb-md">FELICITACIONES!! 🎉🎉</p>
+                    <p class="custom-antiguedad text-caption q-mb-md">🎉 ¡¡ FELICITACIONES !! 🎉</p>
                     {{ selectedEmpleado.nombres }}
                     {{ selectedEmpleado.apellidos }}
                   </div>
@@ -393,7 +393,8 @@
 
                   <!-- Edad que cumple -->
                   <div class="custom-age text-h3 q-mt-lg">
-                    {{ calcularAntiguedad(selectedEmpleado.fecha_nacimiento) }}
+                    {{ calcularEdadEsteAno(selectedEmpleado.fecha_nacimiento) }}
+                    <strong>AÑOS</strong>
                   </div>
 
                 </q-card-section>
@@ -408,7 +409,7 @@
 
                 <!-- Botón cerrar -->
                 <q-card-actions align="center">
-                  <q-btn flat label="Cerrar" @click="isCumpleanerosModalOpen = false" />
+                  <q-btn class="glossy" round color="secondary" icon="card_giftcard" @click="isCumpleanerosModalOpen = false" />
                 </q-card-actions>
               </q-card>
             </q-dialog>
@@ -920,7 +921,8 @@ h5 {
 /* Estilo de la edad */
 .custom-age {
   font-weight: bold;
-  font-size: 48px;
+  font-size: 30px;
+  color: #0066ff;
 }
 
 /* Etiqueta para los años */
