@@ -1275,7 +1275,7 @@ const routes: RouteRecordRaw[] = [
         meta: { requiresAuth: true },
       },
       {
-        path: 'dashboard-ventas-claro',
+        path: '/dashboard-ventas-claro',
         name: 'dashboard_ventas',
         component: () =>
           import(
