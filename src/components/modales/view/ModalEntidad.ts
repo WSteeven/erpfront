@@ -6,6 +6,7 @@ import { computed, defineComponent, ref } from 'vue'
 // Componentes
 import { ComportamientoModales } from '../application/ComportamientoModales'
 import { useConfiguracionGeneralStore } from 'stores/configuracion_general'
+import { watch } from 'vue'
 
 export default defineComponent({
   props: {
@@ -33,11 +34,11 @@ export default defineComponent({
       type: Boolean,
       default: true,
     },
-    fullHeight:{
+    fullHeight: {
       type: Boolean,
       default: true,
     },
-    maximized:{
+    maximized: {
       type: Boolean,
       default: true,
     },
@@ -55,7 +56,7 @@ export default defineComponent({
      **********/
     const configuracionGeneralStore = useConfiguracionGeneralStore()
 
-    const { componente, titulo, abierto, datos } = props.comportamiento.useModal()
+    const { componente, titulo, abierto, propsData } = props.comportamiento.useModal()
     const { confirmar } = useNotificaciones()
     function cerrarModalEntidad(confirmarCerrar = true && props.confirmarCerrar) {
       if (confirmarCerrar) {
@@ -71,7 +72,6 @@ export default defineComponent({
       () => setInterval(() => (duracion.value = duracion.value + 0.1), 200),
       250
     )
-    // }
 
     return {
       logoClaro: computed(() => configuracionGeneralStore.configuracion?.logo_claro),
@@ -81,7 +81,7 @@ export default defineComponent({
       cerrarModalEntidad,
       duracion,
       abierto,
-      datos,
+      propsData,
       emit,
     }
   },

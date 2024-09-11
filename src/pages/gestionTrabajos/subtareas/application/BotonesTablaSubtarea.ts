@@ -231,7 +231,7 @@ export const useBotonesTablaSubtarea = (listado: Ref<Subtarea[]>, modales: Compo
     titulo: 'Finalizar',
     color: 'positive',
     icono: 'bi-check',
-    visible: ({ entidad }) => entidad.estado === estadosTrabajos.REALIZADO,
+    visible: ({ entidad }) => entidad.estado === estadosTrabajos.REALIZADO, // 8459 - 8561
     accion: async ({ entidad, posicion }) => {
       const config: CustomActionPrompt = reactive({ // Nedetel
         mensaje: 'Confirme la causa de intervención',
@@ -261,6 +261,7 @@ export const useBotonesTablaSubtarea = (listado: Ref<Subtarea[]>, modales: Compo
   async function confirmarFinalizarConAlimentacion(data: UnwrapRef<any>) {
     const { entidad } = data
     dataGuardar.value = data
+    console.log(entidad)
     modales.abrirModalEntidad<AlimentacionGrupoPropsData>('AlimentacionGrupoPage', { idGrupo: entidad.grupo_id, idSubtarea: entidad.id, idTarea: entidad.tarea_id })
   }
 

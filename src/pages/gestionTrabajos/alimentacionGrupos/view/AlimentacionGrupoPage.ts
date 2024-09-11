@@ -6,7 +6,7 @@ import { AlimentacionGrupoPropsData } from '../domain/AlimentacionGrupoPropsData
 import { AlimentacionGrupo } from '../domain/AlimentacionGrupo'
 import { useAuthenticationStore } from 'stores/authentication'
 import { acciones, maskFecha } from 'config/utils'
-import { computed, defineComponent } from 'vue'
+import { computed, defineComponent, UnwrapRef } from 'vue'
 import useVuelidate from '@vuelidate/core'
 import { LocalStorage } from 'quasar'
 
@@ -21,7 +21,7 @@ import { obtenerFechaHoraActual, optionsFecha } from 'shared/utils'
 
 export default defineComponent({
     props: {
-        datos: Object as () => AlimentacionGrupoPropsData,
+        datos: Object as () => UnwrapRef<AlimentacionGrupoPropsData>,
     },
     components: { TabLayout },
     emits: ['guardado', 'cerrar-modal'],
@@ -30,7 +30,8 @@ export default defineComponent({
          * Stores
          **********/
         const authenticationStore = useAuthenticationStore()
-        console.log(props.datos)
+        const data = computed(() => props.datos)
+        console.log(data.value)
 
         /*************
          * Variables
@@ -58,7 +59,7 @@ export default defineComponent({
                         campos: 'id,codigo_tarea,titulo,cliente_id',
                         'f_params[orderBy][field]': 'id',
                         'f_params[orderBy][type]': 'DESC',
-                        'f_params[limit]': 50
+                        'f_params[limit]': 100
                     }
                 },
                 subdetalles: []
@@ -93,6 +94,7 @@ export default defineComponent({
         const { grupos, filtrarGrupos, tareas, filtrarTareasTitulo, subdetalles, filtrarSubdetalles } = useFiltrosListadosSelects(listadosAuxiliares)
 
         const agregarGrupo = () => {
+            console.log(data.value)
             const alimentacionGrupo = new AlimentacionGrupo()
             alimentacionGrupo.grupo_id = props.datos?.idGrupo
             alimentacionGrupo.tarea_id = props.datos?.idTarea
