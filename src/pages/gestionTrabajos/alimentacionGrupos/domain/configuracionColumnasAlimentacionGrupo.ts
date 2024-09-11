@@ -7,12 +7,14 @@ export const configuracionColumnasAlimentacionGrupo: ColumnConfig<AlimentacionGr
         field: 'tarea',
         label: 'Tarea',
         align: 'left',
+        operador: 'like',
     },
     {
         name: 'coordinador',
         field: 'coordinador',
         label: 'Coordinador',
         align: 'left',
+        operador: 'like',
     },
     {
         name: 'observacion',
@@ -34,6 +36,7 @@ export const configuracionColumnasAlimentacionGrupo: ColumnConfig<AlimentacionGr
         label: 'Cantidad personas',
         align: 'left',
         type: 'number',
+        operador: '=',
     },
     {
         name: 'precio',
@@ -48,6 +51,7 @@ export const configuracionColumnasAlimentacionGrupo: ColumnConfig<AlimentacionGr
         label: 'Total',
         align: 'left',
         type: 'number',
+        operador: '=',
     },
     {
         name: 'fecha',
@@ -55,11 +59,13 @@ export const configuracionColumnasAlimentacionGrupo: ColumnConfig<AlimentacionGr
         label: 'Fecha',
         align: 'left',
         type: 'date',
+        operador: '=',
     },
     {
         name: 'tipo_alimentacion',
         field: 'tipo_alimentacion',
         label: 'Tipo alimentación',
         align: 'left',
+        operador: 'like',
     }
 ]

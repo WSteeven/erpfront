@@ -150,7 +150,7 @@ export class ContenedorSimpleMixin<T extends EntidadAuditable> extends Contenedo
     this.statusEssentialLoading.activar()
     try {
       const { result, meta } = await this.controller.listar(params)
-      if (result.length == 0) this.notificaciones.notificarInformacion('Aún no se han agregado elementos')
+      if (result.length == 0) this.notificaciones.notificarInformacion('Aún no se han agregado elementos.')
 
       if (append) this.refs.listado.value.push(...result)
       else this.refs.listado.value = result
@@ -222,8 +222,12 @@ export class ContenedorSimpleMixin<T extends EntidadAuditable> extends Contenedo
       this.notificaciones.notificarCorrecto(response.data.mensaje)
 
       if (response.data.modelo) {
-        this.agregarElementoListadoActual(response.data.modelo, agregarAlListado)
-        this.entidad.hydrate(response.data.modelo)
+        if (Array.isArray(response.data.modelo)) {
+          this.agregarElementosListadoActual(response.data.modelo, agregarAlListado)
+        } else {
+          this.agregarElementoListadoActual(response.data.modelo, agregarAlListado)
+          this.entidad.hydrate(response.data.modelo)
+        }
       }
 
       const copiaEntidad = JSON.parse(JSON.stringify(this.entidad))

@@ -5,10 +5,11 @@
     :paginate="true"
     puede-filtrar
     puede-exportar
+    ajustar-celdas
   >
     <template #formulario>
       <q-form @submit.prevent>
-        <div class="row q-col-gutter-sm q-pa-md border-white rounded q-mb-md">
+        <div class="row q-col-gutter-sm q-pa-md border-white rounded q-mb-xl">
           <!-- Fecha -->
           <div class="col-12 col-md-3">
             <label class="q-mb-sm block">Fecha</label>
@@ -61,7 +62,7 @@
             <q-btn
               color="positive"
               icon="bi-plus"
-              label="Agregar grupo"
+              label="Agregar registro"
               unelevated
               square
               no-caps
@@ -73,10 +74,21 @@
         <div
           v-for="(alimentacionGrupo, index) in alimentacion.alimentacion_grupos"
           :key="index"
-          class="row q-col-gutter-sm q-py-md q-mb-md"
-          :class="{ 'bg-desenfoque rounded': index % 2 === 0 }"
+          class="row q-col-gutter-sm q-py-md q-mb-xl bg-desenfoque border-white rounded"
         >
-          <!-- {{ alimentacionGrupo.grupo_id }} -->
+          <!-- :class="{ 'border-callout-info': index % 2 === 0 }" -->
+
+          <q-btn
+            class="btn-quitar-item"
+            color="negative"
+            label="Quitar"
+            icon="bi-x"
+            no-caps
+            rounded
+            no-wrap
+            @click="alimentacion.alimentacion_grupos.splice(index, 1)"
+          />
+
           <div class="col-12 col-md-3">
             <label class="q-mb-sm block">Grupo</label>
             <q-select
@@ -95,7 +107,8 @@
               input-debounce="0"
               emit-value
               map-options
-              :disable="disabled || noSePuedeEditar"
+              error-message="Seleccione un grupo"
+              :disable="disabled || noSePuedeEditar || existeSubtarea"
               :error="
                 !!v$.alimentacion_grupos.$each.$response.$errors[index].grupo_id
                   .length
@@ -120,8 +133,8 @@
               </template>
             </q-select>
           </div>
-          <!-- {{ grupos }} -->
-          <div class="col-12 col-md-3">
+
+          <div v-if="!consultado" class="col-12 col-md-4">
             <label class="q-mb-sm block">Tarea</label>
             <q-select
               v-model="alimentacionGrupo.tarea_id"
@@ -131,8 +144,8 @@
               options-dense
               dense
               outlined
-              :disable="disabled || noSePuedeEditar"
-              @filter="filtrarTareas"
+              :disable="disabled || noSePuedeEditar || existeSubtarea"
+              @filter="filtrarTareasTitulo"
               :error="
                 !!v$.alimentacion_grupos.$each.$response.$errors[index].tarea_id
                   .length
@@ -141,7 +154,7 @@
               use-input
               input-debounce="0"
               :option-value="v => v.id"
-              :option-label="v => v.titulo"
+              :option-label="v => v.codigo_tarea + ' | ' + v.titulo"
               emit-value
               map-options
             >
@@ -161,7 +174,7 @@
                     <q-item-label class="text-bold text-primary">{{
                       scope.opt.codigo_tarea
                     }}</q-item-label>
-                    <q-item-label caption>{{ scope.opt.titulo }} </q-item-label>
+                    <q-item-label caption>{{ scope.opt.titulo }}</q-item-label>
                   </q-item-section>
                 </q-item>
               </template>
@@ -176,6 +189,17 @@
             </q-select>
           </div>
 
+          <div v-if="consultado" class="col-12 col-md-4">
+            <label class="q-mb-sm block">Tarea</label>
+            <q-input
+              v-model="alimentacionGrupo.tarea"
+              disable
+              outlined
+              dense
+              autogrow
+            />
+          </div>
+
           <div class="col-12 col-md-2">
             <label class="q-mb-sm block">Cantidad personas</label>
             <q-input
@@ -183,9 +207,9 @@
               placeholder="Obligatorio"
               :disable="disabled"
               type="number"
-              autofocus
               outlined
               dense
+              error-message="Escriba la cantidad de personas"
               :error="
                 !!v$.alimentacion_grupos.$each.$response.$errors[index]
                   .cantidad_personas.length
@@ -210,7 +234,6 @@
                 PRECIO_ALIMENTACION * alimentacionGrupo.cantidad_personas
               "
               disable
-              autofocus
               outlined
               dense
             >
@@ -232,10 +255,10 @@
               use-input
               input-debounce="0"
               @filter="filtrarSubdetalles"
-              error-message="Debes seleccionar uno"
+              error-message="Seleccionar un tipo de alimentación"
               :error="
                 !!v$.alimentacion_grupos.$each.$response.$errors[index]
-                  .tipo_alimentacion.length
+                  .tipo_alimentacion_id.length
               "
               :option-value="v => v.id"
               :option-label="v => v.descripcion"
@@ -271,18 +294,22 @@
             </q-select>
           </div>
 
-          <div class="col-12 col-md-8">
+          <div class="col-12 col-md-9">
             <label class="q-mb-sm block">Observación</label>
             <q-input
               v-model="alimentacionGrupo.observacion"
               placeholder="Opcional"
               :disable="disabled"
-              autofocus
               outlined
               dense
             >
             </q-input>
           </div>
+
+          <!-- <div class="col-12 col-md-2">
+            <label class="block q-mb-sm">&nbsp;</label>
+            <q-btn color="pink-10" label="Quitar item" icon="bi-x" no-caps unelevated rounded no-wrap/>
+          </div> -->
         </div>
       </q-form>
     </template>
@@ -290,3 +317,11 @@
 </template>
 
 <script src="./AlimentacionGrupoPage.ts"></script>
+
+<style lang="scss">
+.btn-quitar-item {
+  position: absolute;
+  top: -18px;
+  right: 0;
+}
+</style>

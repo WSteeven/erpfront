@@ -82,6 +82,7 @@ export default defineComponent({
     const activeTab = ref(0)
 
     const modalNoticia = ref(false)
+    const isCumpleanerosModalOpen = ref<boolean>(false)
 
     const noticias = ref<Noticia[]>([])
     const noticiaCompleta = ref<Noticia | null>(null)
@@ -364,6 +365,47 @@ export default defineComponent({
       }
     }
 
+    // Función para calcular el tiempo de trabajo del empleado
+    const calcularAntiguedad = (fechaVinculacion: string): string => {
+      const hoy = new Date()
+      const vinculacion = new Date(fechaVinculacion)
+      const diffAnios = hoy.getFullYear() - vinculacion.getFullYear()
+      const diffMeses = hoy.getMonth() - vinculacion.getMonth()
+
+      // Ajustar los meses si son negativos
+      const anios = diffMeses < 0 ? diffAnios - 1 : diffAnios
+      const meses = (diffMeses + 12) % 12
+
+      // Condicionar la inclusión de "años" y "meses"
+      const partes: string[] = []
+
+      if (anios > 0) {
+        partes.push(`${anios} ${anios === 1 ? 'año' : 'años'}`)
+      }
+
+      if (meses > 0) {
+        partes.push(`${meses} ${meses === 1 ? 'mes' : 'meses'}`)
+      }
+
+      // Si no hay años ni meses, devolvemos "menos de un mes"
+      return partes.length > 0 ? partes.join(' y ') : 'menos de un mes'
+    }
+
+    // Función para calcular la edad que el empleado cumplirá este año
+    const calcularEdadEsteAno = (fechaNacimiento: string): number => {
+      const hoy = new Date()
+      const nacimiento = new Date(fechaNacimiento)
+      // Restar el año actual del año de nacimiento
+      return hoy.getFullYear() - nacimiento.getFullYear()
+    }
+
+    const selectedEmpleado = ref<Empleado | null>(null)
+
+    async function openCumpleanerosModal(empleado: Empleado) {
+      selectedEmpleado.value = empleado
+      isCumpleanerosModalOpen.value = true
+    }
+
     onMounted(() => {
       obtenerEventos()
       obtenerEmpleadosCumpleaneros()
@@ -484,6 +526,13 @@ export default defineComponent({
       noticias,
       noticiaCompleta,
       modalNoticia,
+      isCumpleanerosModalOpen,
+      openCumpleanerosModal,
+      selectedEmpleado,
+
+      calcularAntiguedad,
+      calcularEdadEsteAno,
+
       eventosFormateados,
       configuracion,
       cerrarModal() {

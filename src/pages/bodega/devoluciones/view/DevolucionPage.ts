@@ -2,7 +2,7 @@
 import { configuracionColumnasDevoluciones } from '../domain/configuracionColumnasDevoluciones'
 import { required, requiredIf } from '@vuelidate/validators'
 import { useVuelidate } from '@vuelidate/core'
-import { computed, defineComponent, ref, watchEffect } from 'vue'
+import { computed, defineComponent, ref } from 'vue'
 import { useOrquestadorSelectorDetalles } from '../application/OrquestadorSelectorDetalles'
 
 //Componentes

@@ -2,15 +2,16 @@ import { EntidadAuditable } from 'shared/entidad/domain/entidadAuditable'
 
 export class AlimentacionGrupo extends EntidadAuditable {
     tarea: number | null
-    tarea_id: number | null
+    tarea_id?: number | null
+    subtarea_id?: number | null
     coordinador: string | null
     observacion: string | null
-    grupo_id: number | null
+    grupo_id?: number | null
     grupo: number | null
     cantidad_personas: number | null
     precio: number | null
     total: number | null
-    fecha: number | null
+    fecha: string | null
     // tipos_alimentacion: number[]
     tipo_alimentacion: number | null
     tipo_alimentacion_id: number | null

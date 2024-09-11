@@ -4,7 +4,7 @@ import { configuracionColumnasSubtarea } from 'gestionTrabajos/subtareas/domain/
 import { configuracionColumnasClientes } from 'sistema/clientes/domain/configuracionColumnasClientes'
 import { computed, defineComponent, reactive, ref, watch, watchEffect } from 'vue'
 import { configuracionColumnasTarea } from '../domain/configuracionColumnasTarea'
-import { acciones, accionesTabla, maskFecha, rolesSistema } from 'config/utils'
+import { Accion, acciones, accionesTabla, maskFecha, rolesSistema } from 'config/utils'
 import { CustomActionTable } from 'components/tables/domain/CustomActionTable'
 import { required, requiredIf } from 'shared/i18n-validators'
 import { useNotificaciones } from 'shared/notificaciones'
@@ -155,7 +155,7 @@ export default defineComponent({
     const clienteFinal = reactive(new ClienteFinal())
 
     const { btnFinalizarTarea, mostrarSolicitarImagen, imagenSubida, btnVerImagenInforme, refVisorImagen } = useBotonesTablaTarea(mixin)
-    const { btnIniciar, btnPausar, btnReanudar, btnRealizar, btnReagendar, btnCancelar, btnFinalizar, btnSeguimiento, btnSuspender, setFiltrarTrabajoAsignado } = useBotonesTablaSubtarea(subtareas, modalesSubtarea, listadosAuxiliares)
+    const { btnIniciar, btnPausar, btnReanudar, btnRealizar, btnReagendar, btnCancelar, btnFinalizar, btnSeguimiento, btnSuspender, setFiltrarTrabajoAsignado, guardadoModalesSubtarea } = useBotonesTablaSubtarea(subtareas, modalesSubtarea, listadosAuxiliares)
     setFiltrarTrabajoAsignado(filtrarSubtareas)
 
     const proyectoController = new ProyectoController()
@@ -346,7 +346,7 @@ export default defineComponent({
       etapas.value = etapasResponsable
     }
 
-    const mostrarLabelModal = computed(() => [acciones.nuevo, acciones.editar].includes(accion.value))
+    const mostrarLabelModal = computed(() => ([acciones.nuevo, acciones.editar] as Accion[]).includes(accion.value))
 
     /*********
      * Hooks
@@ -488,6 +488,7 @@ export default defineComponent({
       acciones,
       centros_costos, filtrarCentrosCostos,
       checkCentroCosto,
+      guardadoModalesSubtarea,
     }
   },
 })

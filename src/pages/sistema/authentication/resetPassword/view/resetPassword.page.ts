@@ -28,6 +28,12 @@ export default defineComponent({
     }
 
 
+        // Función para resetear el formulario
+        function resetFormulario() {
+          resetPassword.password = '';
+          resetPassword.password_confirmation = '';
+        }
+
     async function resetearPassword() {
       enviando.value = true;
       try {
@@ -49,12 +55,14 @@ export default defineComponent({
           notificaciones.notificarError(
             'La nueva contraseña debe tener al menos 8 caracteres, 1 número, 1 letra (mayúscula o minúscula) y 1 carácter especial (@.-/*).'
           );
+          resetFormulario();
           return;
         }
 
         // Verificar si la nueva contraseña es igual a la anterior
         if (nuevaContrasena === contrasenaAnterior) {
           notificaciones.notificarError('La nueva contraseña no puede ser igual a la anterior.');
+          resetFormulario();
           return;
         }
 
@@ -92,6 +100,7 @@ export default defineComponent({
       enableLoginButton,
       // functions
       resetearPassword,
+      resetFormulario,
     }
   },
 })
