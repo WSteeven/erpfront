@@ -28,6 +28,7 @@ import { useConfiguracionGeneralStore } from 'stores/configuracion_general'
 import { useMovilizacionSubtareaStore } from 'stores/movilizacionSubtarea'
 import { ComputedRef } from 'vue'
 import { useQuasar } from 'quasar'
+import confetti from 'canvas-confetti'
 import { StatusEssentialLoading } from 'components/loading/application/StatusEssentialLoading'
 import { useRouter } from 'vue-router'
 import { useMenuStore } from 'stores/menu'
@@ -402,6 +403,15 @@ export default defineComponent({
     async function openCumpleanerosModal(empleado: Empleado) {
       selectedEmpleado.value = empleado
       isCumpleanerosModalOpen.value = true
+      // Llama a confetti para disparar el confeti
+      confetti({
+        // Configuración para asegurarse de que el confeti se muestre sobre el modal
+        zIndex: 9999, // Asegúrate de que este z-index sea mayor que el del modal
+        particleCount: 100,
+        spread: 70,
+        startVelocity: 30
+      })
+
     }
 
     onMounted(() => {
