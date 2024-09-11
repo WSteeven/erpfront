@@ -223,7 +223,7 @@
                 <q-badge rounded color="white" label="🎓" />
                 <q-badge rounded color="orange">{{
                   store.user?.cargo
-                  }}</q-badge>
+                }}</q-badge>
               </div>
             </div>
             <div class="q-mt-md">
@@ -244,7 +244,7 @@
                 <q-icon :name="documento.icon" size="md" class="icon-content-empleado">
                   <q-tooltip anchor="top middle" self="bottom middle">{{
                     documento.name
-                    }}</q-tooltip>
+                  }}</q-tooltip>
                 </q-icon>
               </a>
             </div>
@@ -337,7 +337,7 @@
                         : empleado.foto_url
                         " />
                       <q-badge floating class="bottom-left" color="orange">
-                        {{ new Date(empleado.fecha_nacimiento).getDate() + 1 }}
+                        {{ new Date(empleado.fecha_nacimiento).getUTCDate() }}
                       </q-badge>
                       <q-tooltip anchor="bottom middle" self="bottom middle">
                         {{ empleado.nombres }} {{ empleado.apellidos }}
@@ -349,7 +349,7 @@
             </q-card-section>
 
             <!-- Modal para ver información de los Cumpleañeros -->
-            <q-dialog v-model="isCumpleanerosModalOpen" persistent>
+            <q-dialog v-model="isCumpleanerosModalOpen">
               <q-card class="custom-cumpleaneros-modal">
                 <q-card-section class="custom-modal-section q-pa-lg">
                   <!-- Imagen del empleado -->
@@ -363,7 +363,7 @@
 
                   <!-- Nombre completo -->
                   <div class="custom-name text-h6 q-mb-xs">
-                    <p class="custom-antiguedad text-caption q-mb-md">FELICITACIONES!! 🎉🎉</p>
+                    <p class="custom-antiguedad text-caption q-mb-md">🎉 ¡¡ FELICITACIONES !! 🎉</p>
                     {{ selectedEmpleado.nombres }}
                     {{ selectedEmpleado.apellidos }}
                   </div>
@@ -393,7 +393,8 @@
 
                   <!-- Edad que cumple -->
                   <div class="custom-age text-h3 q-mt-lg">
-                    {{ calcularAntiguedad(selectedEmpleado.fecha_nacimiento) }}
+                    {{ calcularEdadEsteAno(selectedEmpleado.fecha_nacimiento) }}
+                    <strong>AÑOS</strong>
                   </div>
 
                 </q-card-section>
@@ -407,9 +408,9 @@
                 </div>
 
                 <!-- Botón cerrar -->
-                <q-card-actions align="center">
-                  <q-btn flat label="Cerrar" @click="isCumpleanerosModalOpen = false" />
-                </q-card-actions>
+                <div class="close-button-container">
+                  <q-btn class="glossy" round color="red" icon="close" @click="isCumpleanerosModalOpen = false" />
+                </div>
               </q-card>
             </q-dialog>
           </q-card-section>
@@ -433,11 +434,11 @@
                     <div class="event-card-time">
                       <q-badge color="green-6">{{
                         eventoSeleccionado?.fecha_hora_inicio
-                        }}</q-badge>
+                      }}</q-badge>
                       -
                       <q-badge color="amber">{{
                         eventoSeleccionado?.fecha_hora_fin
-                        }}</q-badge>
+                      }}</q-badge>
                     </div>
                   </q-card-section>
                   <q-card-actions align="right" class="event-card-actions">
@@ -920,7 +921,8 @@ h5 {
 /* Estilo de la edad */
 .custom-age {
   font-weight: bold;
-  font-size: 48px;
+  font-size: 30px;
+  color: #0066ff;
 }
 
 /* Etiqueta para los años */
@@ -953,7 +955,7 @@ h5 {
 }
 
 .left-balloon {
-  top: 50%;
+  top: 60%;
   /* Ajusta según el diseño */
   left: 25px;
   /* Ajusta según el diseño */
@@ -961,11 +963,17 @@ h5 {
 }
 
 .right-balloon {
-  top: 50%;
+  top: 60%;
   /* Ajusta según el diseño */
   right: 75px;
   /* Ajusta según el diseño */
   transform: translateY(-50%);
+}
+
+.close-button-container {
+  position: absolute;
+  top: 10px; /* Ajusta el valor según necesites */
+  right: 10px; /* Ajusta el valor según necesites */
 }
 </style>
 

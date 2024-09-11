@@ -289,12 +289,7 @@ import { Conductor } from '../domain/Conductor'
 import { acciones, accionesTabla, maskFecha } from 'config/utils'
 import { configuracionColumnasMultasConductores } from '../domain/configuracionColumnasMultasConductores'
 import { tiposLicencias } from 'config/vehiculos.utils'
-import {
-  maxValue,
-  minValue,
-  required,
-  requiredIf,
-} from 'shared/i18n-validators'
+import {maxValue,minValue,requiredIf,} from 'shared/i18n-validators'
 import useVuelidate from '@vuelidate/core'
 import { CustomActionTable } from 'components/tables/domain/CustomActionTable'
 import { ComportamientoModalesConductores } from '../application/ComportamientoModalesConductores'

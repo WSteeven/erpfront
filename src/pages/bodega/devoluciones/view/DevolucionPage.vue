@@ -56,8 +56,8 @@
               dense
             ></q-toggle>
           </div>
+          <!-- {{devolucion}} -->
           <!-- Solicitante -->
-
           <div
             v-if="
               (accion == acciones.nuevo &&
@@ -97,6 +97,17 @@
               </template>
             </q-select>
           </div>
+          <div class="col-md-3 q-mt-md q-pt-sm">
+          <q-checkbox
+            class="q-mt-sm q-pt-sm"
+            v-model="mostrarInactivos"
+            label="Inactivos"
+            :disable="disabled"
+            outlined
+            @update:model-value="checkMostrarInactivos"
+            dense
+          ></q-checkbox>
+        </div>
 
           <div
             class="col-12 col-md-3"

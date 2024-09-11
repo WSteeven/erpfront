@@ -28,6 +28,7 @@ import { useConfiguracionGeneralStore } from 'stores/configuracion_general'
 import { useMovilizacionSubtareaStore } from 'stores/movilizacionSubtarea'
 import { ComputedRef } from 'vue'
 import { useQuasar } from 'quasar'
+import confetti from 'canvas-confetti'
 import { StatusEssentialLoading } from 'components/loading/application/StatusEssentialLoading'
 import { useRouter } from 'vue-router'
 import { useMenuStore } from 'stores/menu'
@@ -332,7 +333,8 @@ export default defineComponent({
 
     const obtenerEmpleadosCumpleaneros = async () => {
       // Obtener el mes actual
-      const currentMonth = new Date().getMonth() + 1
+      const currentMonth = new Date().getUTCMonth()
+      console.log(currentMonth)
 
       try {
         const empleadoController = new EmpleadoController()
@@ -342,12 +344,11 @@ export default defineComponent({
           })
         ).result
 
-        empleadosCumpleaneros.value = empleados
-          .filter(empleado => {
+        empleadosCumpleaneros.value = empleados.filter((empleado:Empleado) => {
             if (empleado.fecha_nacimiento) {
               // Obtener el mes de la fecha de nacimiento
               const birthMonth =
-                new Date(empleado.fecha_nacimiento).getMonth() + 1
+                new Date(empleado.fecha_nacimiento).getUTCMonth()
               return birthMonth === currentMonth
             }
             return false
@@ -358,6 +359,8 @@ export default defineComponent({
             const dayB = new Date(b.fecha_nacimiento).getDate()
             return dayA - dayB
           })
+
+          console.log(empleadosCumpleaneros.value)
       } catch (err) {
         console.log('Error al obtener empleados cumpleañeros:', err)
       }
@@ -402,6 +405,15 @@ export default defineComponent({
     async function openCumpleanerosModal(empleado: Empleado) {
       selectedEmpleado.value = empleado
       isCumpleanerosModalOpen.value = true
+      // Llama a confetti para disparar el confeti
+      confetti({
+        // Configuración para asegurarse de que el confeti se muestre sobre el modal
+        zIndex: 9999, // Asegúrate de que este z-index sea mayor que el del modal
+        particleCount: 100,
+        spread: 70,
+        startVelocity: 30
+      })
+
     }
 
     onMounted(() => {

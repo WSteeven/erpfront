@@ -10,7 +10,7 @@ import { useTransferenciaProductoEmpleadoStore } from 'stores/transferenciaProdu
 import { MaterialOcupadoFormulario } from 'pages/gestionTrabajos/formulariosTrabajos/emergencias/domain/MaterialOcupadoFormulario'
 import { ActivoFijoAsignadoController } from 'pages/activosFijos/controlActivosFijos/infraestructure/ActivoFijoAsignadoController'
 
-export function useMaterialesEmpleado(filtro: UnwrapRef<FiltroMiBodegaEmpleado>, listadosAuxiliares?: any) {
+export function useMaterialesEmpleado(filtro: UnwrapRef<FiltroMiBodegaEmpleado>, listadosAuxiliares?: any, inactivo:Ref<boolean>=ref(false)) {
   // Stores
   const listadoMaterialesDevolucionStore = useListadoMaterialesDevolucionStore()
   const transferenciaProductoEmpleadoStore = useTransferenciaProductoEmpleadoStore()
@@ -35,13 +35,14 @@ export function useMaterialesEmpleado(filtro: UnwrapRef<FiltroMiBodegaEmpleado>,
   async function consultarProductosEmpleado() {
     try {
       cargando.activar()
-      console.log(filtro)
+      console.log(filtro, inactivo.value)
       const { result } = await materialEmpleadoController.listar(filtro)
 
       listadosAuxiliares.productosStock = result
       listadosAuxiliares.productos = result
 
       listadoMaterialesDevolucionStore.listadoMateriales = result
+      listadoMaterialesDevolucionStore.inactivo= inactivo.value
       // listadoMaterialesDevolucionStore.origenProductos = 'personal'
       listadoMaterialesDevolucionStore.tareaId = null
       listadoMaterialesDevolucionStore.cliente_id = filtro.cliente_id
