@@ -4,7 +4,7 @@
       <div class="row q-col-gutter-xs">
         <!-- Fecha de entrevista -->
         <div class="col-12 col-md-3">
-          <label class="q-mb-sm block">Fecha Entrevista</label>
+          <label class="q-mb-sm block">Fecha </label>
           <q-input
             v-model="examen.fecha_hora"
             placeholder="Obligatorio"
