@@ -2,6 +2,7 @@ import { SelectOption } from "./SelectOption"
 
 type tipos = 'text' | 'number' | 'textarea' | 'select' | 'boolean' | 'date' | 'search' | 'imagen' | 'datetime' | 'toggle' | 'select_multiple'
 type align = 'left' | 'center' | 'right'
+type operadores = '<' | '<=' | '>' | '>=' | 'start' | 'end' | 'like' | '!=' | '='
 
 export interface ColumnConfig<T> {
   id?: number
@@ -22,4 +23,5 @@ export interface ColumnConfig<T> {
   default?: boolean
   placeholder?: string
   filtro?: (val, update) => void
+  operador?: operadores
 }

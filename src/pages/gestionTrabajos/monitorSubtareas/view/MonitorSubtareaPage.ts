@@ -82,7 +82,7 @@ export default defineComponent({
 
 
     function filtrarSubtareas(estado: string) {
-      const campos = 'id,codigo_tarea,codigo_subtarea,titulo,estado,grupo,empleado_responsable,empleado_responsable_id,coordinador,tipo_trabajo,cantidad_adjuntos,fecha_solicitud,es_ventana,fecha_hora_creacion,fecha_inicio_trabajo,hora_inicio_trabajo,hora_fin_trabajo,fecha_hora_asignacion,fecha_hora_agendado,fecha_hora_ejecucion,fecha_hora_realizado,fecha_hora_finalizacion,dias_ocupados,fecha_hora_suspendido,motivo_suspendido,fecha_hora_cancelado,motivo_cancelado,subtarea_dependiente,canton,cliente,cliente_id,proyecto,proyecto_id,puede_ejecutar,puede_suspender,es_responsable,tarea_id'
+      const campos = 'id,codigo_tarea,codigo_subtarea,titulo,estado,grupo,grupo_id,empleado_responsable,empleado_responsable_id,coordinador,tipo_trabajo,cantidad_adjuntos,fecha_solicitud,es_ventana,fecha_hora_creacion,fecha_inicio_trabajo,hora_inicio_trabajo,hora_fin_trabajo,fecha_hora_asignacion,fecha_hora_agendado,fecha_hora_ejecucion,fecha_hora_realizado,fecha_hora_finalizacion,dias_ocupados,fecha_hora_suspendido,motivo_suspendido,fecha_hora_cancelado,motivo_cancelado,subtarea_dependiente,canton,cliente,cliente_id,proyecto,proyecto_id,puede_ejecutar,puede_suspender,es_responsable,tarea_id'
       filtros.fields = { estado: estado, campos }
       tabActual.value = estado
 

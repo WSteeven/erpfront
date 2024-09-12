@@ -8,12 +8,12 @@ import { defineComponent } from 'vue'
 // Logica y controladores
 import { ContenedorSimpleMixin } from 'shared/contenedor/modules/simple/application/ContenedorSimpleMixin'
 import { ReporteMaterialUtilizadoController } from '../infraestructure/ReporteMaterialUtilizadoController'
-import { ReporteMaterialUtilizado } from '../domain/ReporteMaterialUtilizado'
-import { TareaController } from 'pages/gestionTrabajos/tareas/infraestructure/TareaController'
 import { ProyectoController } from 'pages/gestionTrabajos/proyectos/infraestructure/ProyectoController'
-import { apiConfig } from 'config/api'
+import { TareaController } from 'pages/gestionTrabajos/tareas/infraestructure/TareaController'
 import { AxiosHttpRepository } from 'shared/http/infraestructure/AxiosHttpRepository'
+import { ReporteMaterialUtilizado } from '../domain/ReporteMaterialUtilizado'
 import { imprimirArchivo } from 'shared/utils'
+import { apiConfig } from 'config/api'
 
 export default defineComponent({
     setup() {

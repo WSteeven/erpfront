@@ -26,24 +26,60 @@ export default defineComponent({
     if (resetPassword.nombreUsuario === undefined) {
       Router.replace('/login')
     }
+
+
+        // Función para resetear el formulario
+        function resetFormulario() {
+          resetPassword.password = '';
+          resetPassword.password_confirmation = '';
+        }
+
     async function resetearPassword() {
-      enviando.value = true
+      enviando.value = true;
       try {
+        cargando.activar();
 
-        cargando.activar()
-        await resetPasswordController.actualizarContrasena(resetPassword)
-        notificaciones.notificarCorrecto('Contraseña actualizada correctamente')
 
+        const nuevaContrasena = resetPassword.password;
+        const contrasenaAnterior = resetPassword.password_old;
+
+
+        if (!contrasenaAnterior || !nuevaContrasena) {
+          notificaciones.notificarError('Debe llenar todos los campos de contraseña.');
+          return;
+        }
+
+        // Reglas
+        const regex = /^(?=.*[a-zA-Z])(?=.*\d)(?=.*[@.\-/*]).{8,}$/;
+        if (!regex.test(nuevaContrasena)) {
+          notificaciones.notificarError(
+            'La nueva contraseña debe tener al menos 8 caracteres, 1 número, 1 letra (mayúscula o minúscula) y 1 carácter especial (@.-/*).'
+          );
+          resetFormulario();
+          return;
+        }
+
+        // Verificar si la nueva contraseña es igual a la anterior
+        if (nuevaContrasena === contrasenaAnterior) {
+          notificaciones.notificarError('La nueva contraseña no puede ser igual a la anterior.');
+          resetFormulario();
+          return;
+        }
+
+        // Llamar al controlador para actualizar la contraseña
+        await resetPasswordController.actualizarContrasena(resetPassword);
+        notificaciones.notificarCorrecto('Contraseña actualizada correctamente');
       } catch (error: any) {
         if (isAxiosError(error)) {
-          const mensajes: string[] = error.erroresValidacion
-          notificarMensajesError(mensajes, notificaciones)
+          const mensajes: string[] = error.erroresValidacion;
+          notificarMensajesError(mensajes, notificaciones);
         }
       } finally {
-        cargando.desactivar()
-        enviando.value = true
+        cargando.desactivar();
+        enviando.value = false;
       }
     }
+
 
     const enableLoginButton = computed(
       () =>
@@ -64,6 +100,7 @@ export default defineComponent({
       enableLoginButton,
       // functions
       resetearPassword,
+      resetFormulario,
     }
   },
 })

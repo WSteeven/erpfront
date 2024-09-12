@@ -27,8 +27,8 @@
                 </q-btn>
               </div>
             </q-carousel-slide>
-
           </q-carousel>
+
           <q-card v-else class="q-pa-md q-mt-md no-news-card" flat bordered>
             <q-card-section class="text-center q-pa-none">
               <q-img
@@ -45,8 +45,9 @@
           </q-card>
         </div>
         <!--Modal para ver Noticias Completas-->
-        <q-dialog v-model="modalNoticia" transition-show="scale" transition-hide="scale" class="noticia-modal-dialog">
-          <q-card class="noticia-modal-card">
+        <q-dialog v-model="modalNoticia" transition-show="scale" transition-hide="scale"
+          :maximized="$q.screen.sm || $q.screen.xs">
+          <q-card class="noticia-modal-card" style="min-width: 50%">
             <q-card-section class="row q-pb-none">
               <q-space />
               <q-btn flat icon="close" color="white" class="noticia-modal-close-btn" v-close-popup />
@@ -83,7 +84,7 @@
 
         <!--Mis Modulos-->
         <div class="col-12 col-md-9">
-          <q-card class="my-modulos-card rounded ">
+          <q-card class="my-modulos-card rounded">
             <q-card-section style="background-color: #006831">
               <div class="text-h6" style="
                   text-align: center;
@@ -95,14 +96,14 @@
                 MIS MÓDULOS
               </div>
             </q-card-section>
-            <q-card-section class="icon-container-modulos " style="
+            <q-card-section class="icon-container-modulos" style="
                 display: flex;
                 justify-content: center;
                 flex-wrap: wrap;
                 padding: 20px;
               ">
               <q-btn v-for="(modulo, index) in modulosPermitidos" :key="index" :to="modulo.link"
-                class="icon-link-modulos " flat unelevated rounded dense style="
+                class="icon-link-modulos" flat unelevated rounded dense style="
                   padding: xs lg;
                   margin: 10px;
                   flex-direction: column; /* Cambiar a column para alinear verticalmente */
@@ -118,7 +119,7 @@
                       {{ modulo.title }}
                     </q-tooltip>
                   </q-icon>
-                  <div style="font-size: 9px; margin-top: 5px;" class="text-blue-grey-9">
+                  <div style="font-size: 9px; margin-top: 5px" class="text-blue-grey-9">
                     {{ modulo.title }}
                   </div>
                 </div>
@@ -222,10 +223,13 @@
                 <q-badge rounded color="white" label="🎓" />
                 <q-badge rounded color="orange">{{
                   store.user?.cargo
-                  }}</q-badge>
+                }}</q-badge>
               </div>
             </div>
-            <div class="q-mt-md"></div>
+            <div class="q-mt-md">
+              <q-btn href="https://jpconstrucred.com:2096/" color="secondary" icon-right="mail" label="Ir a mi correo"
+                target="_blank" />
+            </div>
             <!-- Documentos -->
             <div class="q-mt-md flex justify-center rounded-lg" style="
                 padding: 10px;
@@ -240,7 +244,7 @@
                 <q-icon :name="documento.icon" size="md" class="icon-content-empleado">
                   <q-tooltip anchor="top middle" self="bottom middle">{{
                     documento.name
-                    }}</q-tooltip>
+                  }}</q-tooltip>
                 </q-icon>
               </a>
             </div>
@@ -306,49 +310,34 @@
             border-radius: 10px;
           " icon="bi-calendar-event" label="EVENTOS DEL MES" :default-opened="true">
           <q-card-section style="margin: 0; background-color: #ffffff; color: black">
-            <div class="text-h6" style="
-                text-align: center;
-                color: white;
-                background-color: midnightblue;
-                padding: 10px 0;
-                border-radius: 15px 15px 0px 0px;
-              ">
+            <div class="text-h6"
+              style="text-align: center; color: white; background-color: midnightblue; padding: 10px 0; border-radius: 15px 15px 0px 0px;">
               <i class="bi bi-cake2" style="margin-right: 10px"></i>
               CUMPLEAÑEROS
             </div>
             <q-separator />
 
-            <q-card-section style="
-                display: flex;
-                justify-content: center;
-                height: 130px;
-                border-radius: 0 0 15px 15px;
-                background-color: white;
-              ">
+            <q-card-section
+              style="display: flex; justify-content: center; height: 130px; border-radius: 0 0 15px 15px; background-color: white;">
               <q-scroll-area class="bg-white-4 rounded-borders" style="height: 100px; overflow-x: auto; width: 100%">
-                <div class="row no-wrap items-center q-gutter-x-sm" style="
-                    display: flex;
-                    flex-wrap: nowrap;
-                    justify-content: center;
-                    padding-left: 30px; /* Añadir padding izquierdo */
-                    height: 100px;
-                    max-width: 900px;
-                  ">
+                <div class="row no-wrap items-center q-gutter-x-sm"
+                  style="display: flex; flex-wrap: nowrap; justify-content: center; padding-left: 30px; height: 100px; max-width: 900px;">
                   <div v-for="empleado in empleadosCumpleaneros" :key="empleado.id" class="avatar-item-container"
-                    style="margin-right: 15px; size: 5px">
-                    <q-avatar size="xl" class="avatar-item">
+                    style="margin-right: 15px;">
+                    <q-avatar size="xl" class="avatar-item" @click="openCumpleanerosModal(empleado)"
+                      style="cursor: pointer;">
                       <img :src="empleado.foto_url == null
-                          ? `https://ui-avatars.com/api/?name=${empleado.nombres.substr(
-                            0,
-                            1
-                          )}+${empleado.apellidos.substr(
-                            0,
-                            1
-                          )}&bold=true&background=008000&color=ffff`
-                          : empleado.foto_url
+                        ? `https://ui-avatars.com/api/?name=${empleado.nombres.substr(
+                          0,
+                          1
+                        )}+${empleado.apellidos.substr(
+                          0,
+                          1
+                        )}&bold=true&background=008000&color=ffff`
+                        : empleado.foto_url
                         " />
                       <q-badge floating class="bottom-left" color="orange">
-                        {{ new Date(empleado.fecha_nacimiento).getDate() + 1 }}
+                        {{ new Date(empleado.fecha_nacimiento).getUTCDate() }}
                       </q-badge>
                       <q-tooltip anchor="bottom middle" self="bottom middle">
                         {{ empleado.nombres }} {{ empleado.apellidos }}
@@ -358,6 +347,72 @@
                 </div>
               </q-scroll-area>
             </q-card-section>
+
+            <!-- Modal para ver información de los Cumpleañeros -->
+            <q-dialog v-model="isCumpleanerosModalOpen">
+              <q-card class="custom-cumpleaneros-modal">
+                <q-card-section class="custom-modal-section q-pa-lg">
+                  <!-- Imagen del empleado -->
+                  <q-avatar size="150px" class="custom-avatar q-mb-md">
+                    <img
+                      :src="selectedEmpleado.foto_url || `https://ui-avatars.com/api/?name=${selectedEmpleado.nombres.substr(0, 1)}+${selectedEmpleado.apellidos.substr(0, 1)}&bold=true&background=008000&color=ffff`" />
+                  </q-avatar>
+
+                  <!-- Gorro de cumpleaños -->
+                  <img src="../../../../assets/hat-birthday.png" alt="Gorro de Cumpleaños" class="birthday-hat" />
+
+                  <!-- Nombre completo -->
+                  <div class="custom-name text-h6 q-mb-xs">
+                    <p class="custom-antiguedad text-caption q-mb-md">🎉 ¡¡ FELICITACIONES !! 🎉</p>
+                    {{ selectedEmpleado.nombres }}
+                    {{ selectedEmpleado.apellidos }}
+                  </div>
+
+                  <!-- Cargo -->
+                  <div class="custom-cargo text-subtitle2 q-mb-sm">
+                    {{ selectedEmpleado.cargo }}
+                  </div>
+
+                  <!-- Correo electrónico -->
+                  <div class="custom-email text-subtitle2 q-mb-xs">
+                    <q-badge color="primary">{{ selectedEmpleado.email }}</q-badge>
+
+                  </div>
+
+                  <!-- Teléfono -->
+                  <div class="custom-phone text-subtitle2 q-mb-sm">
+                    <q-badge color="orange">
+                      {{ selectedEmpleado.telefono }}
+                    </q-badge>
+                  </div>
+
+                  <!-- Antigüedad -->
+                  <div class="custom-antiguedad text-caption q-mb-md">
+                    <strong>Antigüedad: </strong>{{ calcularAntiguedad(selectedEmpleado.fecha_vinculacion) }}
+                  </div>
+
+                  <!-- Edad que cumple -->
+                  <div class="custom-age text-h3 q-mt-lg">
+                    {{ calcularEdadEsteAno(selectedEmpleado.fecha_nacimiento) }}
+                    <strong>AÑOS</strong>
+                  </div>
+
+                </q-card-section>
+
+                <!-- Globos en los costados del modal -->
+                <div class="balloon left-balloon">
+                  <img src="../../../../assets/globos.png" alt="Globo Izquierda" />
+                </div>
+                <div class="balloon right-balloon">
+                  <img src="../../../../assets/globos.png" alt="Globo Derecha" />
+                </div>
+
+                <!-- Botón cerrar -->
+                <div class="close-button-container">
+                  <q-btn class="glossy" round color="red" icon="close" @click="isCumpleanerosModalOpen = false" />
+                </div>
+              </q-card>
+            </q-dialog>
           </q-card-section>
 
           <q-card-section style="background-color: #ffffff; color: #003f68">
@@ -379,11 +434,11 @@
                     <div class="event-card-time">
                       <q-badge color="green-6">{{
                         eventoSeleccionado?.fecha_hora_inicio
-                        }}</q-badge>
+                      }}</q-badge>
                       -
                       <q-badge color="amber">{{
                         eventoSeleccionado?.fecha_hora_fin
-                        }}</q-badge>
+                      }}</q-badge>
                     </div>
                   </q-card-section>
                   <q-card-actions align="right" class="event-card-actions">
@@ -393,6 +448,7 @@
               </q-dialog>
             </div>
           </q-card-section>
+
         </q-expansion-item>
       </div>
     </div>
@@ -408,8 +464,6 @@
 
     búsqueda -->
 
-
-
     <!-- Componente de modales -->
     <modales-entidad :comportamiento="modales" :fullWidth="false" :maximized="false" :persistente="false" />
   </q-page>
@@ -418,6 +472,18 @@
 <!--Estilos del calendario Qalendar-->
 <style>
 @import 'qalendar/dist/style.css';
+
+/* Estilo para pintar todo el cuadro del día con evento */
+.qalendar-day.has-event {
+  background-color: #e0f7fa !important;
+  /* Color de fondo personalizado */
+  border-radius: 4px !important;
+  /* Ajuste del radio de borde */
+  color: white !important;
+  /* Color del texto */
+  font-weight: bold;
+  /* Hace que el texto sea negrita para destacar */
+}
 </style>
 
 <!--Estilos de Intranet Page-->
@@ -679,11 +745,11 @@ h5 {
   font-weight: 400;
 }
 
-.noticia-modal-dialog {
+/* .noticia-modal-dialog {
   border-radius: 15px;
   overflow: hidden;
   max-width: 50%;
-}
+} */
 
 .noticia-modal-card {
   border-radius: 5px;
@@ -797,6 +863,117 @@ h5 {
 .event-card-actions {
   border-top: 1px solid rgba(0, 0, 0, 0.1);
   padding: 10px 20px;
+}
+
+
+/**Estilos para el Modal de los Cumpleañeros */
+
+
+/* Contenedor principal del modal */
+.custom-cumpleaneros-modal {
+  width: 400px;
+  height: 600px;
+  border-radius: 15px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  position: relative;
+}
+
+/* Estilos de la sección del modal */
+.custom-modal-section {
+  text-align: center;
+}
+
+/* Avatar personalizado */
+.custom-avatar {
+  border: 2px solid #ccc;
+}
+
+/* Estilo del nombre completo */
+.custom-name {
+  font-weight: bold;
+}
+
+/* Estilo del cargo */
+.custom-cargo {
+  color: #666;
+}
+
+/* Estilo del correo electrónico */
+.custom-email {
+  font-size: 9x;
+  color: #333;
+}
+
+/* Estilo del teléfono */
+.custom-phone {
+  color: #333;
+}
+
+/* Estilo de la antigüedad */
+.custom-antiguedad {
+  font-size: 14px;
+  color: grey;
+}
+
+/* Estilo de la edad */
+.custom-age {
+  font-weight: bold;
+  font-size: 30px;
+  color: #0066ff;
+}
+
+/* Etiqueta para los años */
+.custom-age-label {
+  font-size: 14px;
+  color: grey;
+}
+
+
+.birthday-hat {
+  position: absolute;
+  top: -10px;
+  /* Ajusta según el diseño */
+  right: 115px;
+  /* Ajusta según el diseño */
+  width: 50px;
+  /* Ajusta el tamaño del gorro */
+  height: auto;
+  z-index: 1;
+}
+
+/* Estilo para los globos */
+.balloon {
+  position: absolute;
+  width: 10px;
+  /* Tamaño más pequeño para los globos */
+  height: 10px;
+  /* Tamaño más pequeño para los globos */
+  z-index: 1;
+}
+
+.left-balloon {
+  top: 60%;
+  /* Ajusta según el diseño */
+  left: 25px;
+  /* Ajusta según el diseño */
+  transform: translateY(-50%);
+}
+
+.right-balloon {
+  top: 60%;
+  /* Ajusta según el diseño */
+  right: 75px;
+  /* Ajusta según el diseño */
+  transform: translateY(-50%);
+}
+
+.close-button-container {
+  position: absolute;
+  top: 10px; /* Ajusta el valor según necesites */
+  right: 10px; /* Ajusta el valor según necesites */
 }
 </style>
 

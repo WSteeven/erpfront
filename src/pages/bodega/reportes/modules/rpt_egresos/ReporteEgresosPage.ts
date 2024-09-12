@@ -103,17 +103,15 @@ export default defineComponent({
       try {
         cargando.activar()
         const axios = AxiosHttpRepository.getInstance()
-        let url = axios.getEndpoint(endpoints.transacciones_egresos) + '/reportes'
+        let url = apiConfig.URL_BASE + '/' + axios.getEndpoint(endpoints.transacciones_egresos) + '/reportes'
         const filename = 'reporte_egresos_bodega'
         switch (accion) {
           case 'excel':
-            url = apiConfig.URL_BASE + '/' + axios.getEndpoint(endpoints.transacciones_egresos) + '/reportes'
             reporte.accion = 'excel'
             imprimirArchivo(url, 'POST', 'blob', 'xlsx', filename, reporte)
 
             break
           case 'pdf':
-            url = apiConfig.URL_BASE + '/' + axios.getEndpoint(endpoints.transacciones_egresos) + '/reportes'
             reporte.accion = 'pdf'
             imprimirArchivo(url, 'POST', 'blob', 'pdf', filename, reporte)
             break

@@ -48,7 +48,7 @@ export default defineComponent({
       await obtenerListados({
         grupos: {
           controller: new GrupoController(),
-          params: { campos: 'id,nombre' }
+          params: { campos: 'id,nombre', activo: 1 }
         },
         empleados: {
           controller: new EmpleadoController(),

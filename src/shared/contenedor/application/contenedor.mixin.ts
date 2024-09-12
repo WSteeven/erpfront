@@ -97,6 +97,12 @@ export abstract class Contenedor<
     if (alPrincipio) this.refs.listado.value = [modelo, ...this.refs.listado.value]
     else this.refs.listado.value = [...this.refs.listado.value, modelo]
   }
+
+  protected agregarElementosListadoActual(elementos: T[], alPrincipio = true): void {
+    if (alPrincipio) this.refs.listado.value = [...elementos, ...this.refs.listado.value]
+    else this.refs.listado.value = [...this.refs.listado.value, ...elementos]
+  }
+
   protected agregarElementoListadoArchivosActual(modelo: T): void {
     this.refs.listadoArchivos.value = [modelo, ...this.refs.listadoArchivos.value]
   }

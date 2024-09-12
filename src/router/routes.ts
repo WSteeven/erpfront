@@ -363,6 +363,15 @@ const routes: RouteRecordRaw[] = [
         meta: { requiresAuth: false },
       },
       {
+        path: '/reporte-epps',
+        name: 'reporte_epps',
+        component: () =>
+          import(
+            'pages/bodega/reportes/modules/rpt_epps/ReporteEppsPage.vue'
+          ),
+        meta: { requiresAuth: false },
+      },
+      {
         path: '/reporte-pedidos',
         name: 'reporte_pedidos',
         component: () =>
@@ -699,7 +708,7 @@ const routes: RouteRecordRaw[] = [
         meta: { requiresAuth: true },
       },
       {
-        path: '/ventas/dashboard-ventas',
+        path: '/dashboard-ventas',
         name: 'dashboard_ventas_empresa',
         component: () =>
           import('pages/comprasProveedores/dashboard/view/DashboardVentas.vue'),
@@ -1266,7 +1275,7 @@ const routes: RouteRecordRaw[] = [
         meta: { requiresAuth: true },
       },
       {
-        path: '/dashboard-ventas',
+        path: '/dashboard-ventas-claro',
         name: 'dashboard_ventas',
         component: () =>
           import(

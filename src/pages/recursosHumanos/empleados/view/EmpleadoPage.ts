@@ -51,7 +51,6 @@ import { TipoDiscapacidadPorcentaje } from '../domain/TipoDiscapacidadPorcentaje
 import { TipoDiscapacidad } from 'pages/recursosHumanos/tipo-discapacidad/domain/TipoDiscapacidad'
 import { reactive } from 'vue'
 import { autoidentificaciones_etnicas, parentezcos } from 'config/recursosHumanos.utils'
-import { helpers } from '@vuelidate/validators'
 import { onMounted } from 'vue'
 import { onUnmounted } from 'vue'
 
@@ -234,23 +233,6 @@ export default defineComponent({
       talla_camisa: { required },
       talla_pantalon: { required: requiredIf(() => empleado.tiene_grupo) },
       talla_guantes: { required: requiredIf(() => empleado.tiene_grupo) },
-      // tipo_licencia: { required: requiredIf(() => mostrarComponenteInformacionLicencia.value) },
-      // puntos: { required: requiredIf(() => mostrarComponenteInformacionLicencia.value) },
-      // conductor: {
-      //   tipo_licencia: { required: requiredIf(() => mostrarComponenteInformacionLicencia.value) },
-      //   puntos: {
-      //     required: requiredIf(() => mostrarComponenteInformacionLicencia.value),
-      //     maximo: maxValue(30),
-      //     minimo: minValue(0),
-      //   },
-      //   licencias: {
-      //     $each: helpers.forEach({
-      //       tipo_licencia: { required: requiredIf(() => mostrarComponenteInformacionLicencia.value) },
-      //       inicio_vigencia: { required: requiredIf(() => mostrarComponenteInformacionLicencia.value) },
-      //       fin_vigencia: { required: requiredIf(() => mostrarComponenteInformacionLicencia.value) },
-      //     }),
-      //   }
-      // }
     }
 
     const v$ = useVuelidate(reglas, empleado)

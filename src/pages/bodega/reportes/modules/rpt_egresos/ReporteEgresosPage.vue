@@ -196,8 +196,6 @@
                   options-dense
                   dense
                   outlined
-                  :readonly="disabled"
-                  :disable="disabled || soloLectura"
                   :option-value="v => v.id"
                   :option-label="v => v.nombre"
                   emit-value

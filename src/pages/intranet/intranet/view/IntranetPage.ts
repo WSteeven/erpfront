@@ -28,6 +28,7 @@ import { useConfiguracionGeneralStore } from 'stores/configuracion_general'
 import { useMovilizacionSubtareaStore } from 'stores/movilizacionSubtarea'
 import { ComputedRef } from 'vue'
 import { useQuasar } from 'quasar'
+import confetti from 'canvas-confetti'
 import { StatusEssentialLoading } from 'components/loading/application/StatusEssentialLoading'
 import { useRouter } from 'vue-router'
 import { useMenuStore } from 'stores/menu'
@@ -82,6 +83,7 @@ export default defineComponent({
     const activeTab = ref(0)
 
     const modalNoticia = ref(false)
+    const isCumpleanerosModalOpen = ref<boolean>(false)
 
     const noticias = ref<Noticia[]>([])
     const noticiaCompleta = ref<Noticia | null>(null)
@@ -170,6 +172,7 @@ export default defineComponent({
       style: {
         fontFamily: 'Nunito, sans-serif',
         color: 'blue',
+
         colorSchemes: {
           capacitaciones: {
             color: 'white',
@@ -181,7 +184,7 @@ export default defineComponent({
           },
           general: {
             color: 'white',
-            backgroundColor: 'green'
+            backgroundColor: 'orange'
           }
         }
       },
@@ -330,7 +333,8 @@ export default defineComponent({
 
     const obtenerEmpleadosCumpleaneros = async () => {
       // Obtener el mes actual
-      const currentMonth = new Date().getMonth() + 1
+      const currentMonth = new Date().getUTCMonth()
+      console.log(currentMonth)
 
       try {
         const empleadoController = new EmpleadoController()
@@ -340,12 +344,11 @@ export default defineComponent({
           })
         ).result
 
-        empleadosCumpleaneros.value = empleados
-          .filter(empleado => {
+        empleadosCumpleaneros.value = empleados.filter((empleado:Empleado) => {
             if (empleado.fecha_nacimiento) {
               // Obtener el mes de la fecha de nacimiento
               const birthMonth =
-                new Date(empleado.fecha_nacimiento).getMonth() + 1
+                new Date(empleado.fecha_nacimiento).getUTCMonth()
               return birthMonth === currentMonth
             }
             return false
@@ -356,9 +359,61 @@ export default defineComponent({
             const dayB = new Date(b.fecha_nacimiento).getDate()
             return dayA - dayB
           })
+
+          console.log(empleadosCumpleaneros.value)
       } catch (err) {
         console.log('Error al obtener empleados cumpleañeros:', err)
       }
+    }
+
+    // Función para calcular el tiempo de trabajo del empleado
+    const calcularAntiguedad = (fechaVinculacion: string): string => {
+      const hoy = new Date()
+      const vinculacion = new Date(fechaVinculacion)
+      const diffAnios = hoy.getFullYear() - vinculacion.getFullYear()
+      const diffMeses = hoy.getMonth() - vinculacion.getMonth()
+
+      // Ajustar los meses si son negativos
+      const anios = diffMeses < 0 ? diffAnios - 1 : diffAnios
+      const meses = (diffMeses + 12) % 12
+
+      // Condicionar la inclusión de "años" y "meses"
+      const partes: string[] = []
+
+      if (anios > 0) {
+        partes.push(`${anios} ${anios === 1 ? 'año' : 'años'}`)
+      }
+
+      if (meses > 0) {
+        partes.push(`${meses} ${meses === 1 ? 'mes' : 'meses'}`)
+      }
+
+      // Si no hay años ni meses, devolvemos "menos de un mes"
+      return partes.length > 0 ? partes.join(' y ') : 'menos de un mes'
+    }
+
+    // Función para calcular la edad que el empleado cumplirá este año
+    const calcularEdadEsteAno = (fechaNacimiento: string): number => {
+      const hoy = new Date()
+      const nacimiento = new Date(fechaNacimiento)
+      // Restar el año actual del año de nacimiento
+      return hoy.getFullYear() - nacimiento.getFullYear()
+    }
+
+    const selectedEmpleado = ref<Empleado | null>(null)
+
+    async function openCumpleanerosModal(empleado: Empleado) {
+      selectedEmpleado.value = empleado
+      isCumpleanerosModalOpen.value = true
+      // Llama a confetti para disparar el confeti
+      confetti({
+        // Configuración para asegurarse de que el confeti se muestre sobre el modal
+        zIndex: 9999, // Asegúrate de que este z-index sea mayor que el del modal
+        particleCount: 100,
+        spread: 70,
+        startVelocity: 30
+      })
+
     }
 
     onMounted(() => {
@@ -481,6 +536,13 @@ export default defineComponent({
       noticias,
       noticiaCompleta,
       modalNoticia,
+      isCumpleanerosModalOpen,
+      openCumpleanerosModal,
+      selectedEmpleado,
+
+      calcularAntiguedad,
+      calcularEdadEsteAno,
+
       eventosFormateados,
       configuracion,
       cerrarModal() {

@@ -13,10 +13,13 @@ import { useNotificaciones } from 'shared/notificaciones'
 import { useSubtareaStore } from 'stores/subtarea'
 import { estadosTrabajos } from 'config/utils'
 import { Subtarea } from '../domain/Subtarea'
-import { Ref, UnwrapRef, reactive } from 'vue'
+import { Ref, UnwrapRef, reactive, ref } from 'vue'
 import { clientes } from 'config/clientes'
+import { ComportamientoModalesSubtarea } from './ComportamientoModalesSubtarea'
+import { AlimentacionGrupoPropsData } from 'pages/gestionTrabajos/alimentacionGrupos/domain/AlimentacionGrupoPropsData'
+import { SubtareaModales } from '../domain/SubtareaModales'
 
-export const useBotonesTablaSubtarea = (listado: Ref<Subtarea[]>, modales: any, listadosAuxiliares?: any) => {
+export const useBotonesTablaSubtarea = (listado: Ref<Subtarea[]>, modales: ComportamientoModalesSubtarea, listadosAuxiliares?: any) => {
   /***********
   * Stores
   ***********/
@@ -32,6 +35,7 @@ export const useBotonesTablaSubtarea = (listado: Ref<Subtarea[]>, modales: any, 
   const notificaciones = useNotificaciones()
   const cambiarEstadoTrabajo = new CambiarEstadoSubtarea()
   let filtrarTrabajoAsignado: (estado: string) => void
+  const dataGuardar = ref()
 
   const movilizacion = reactive({
     latitud_llegada: null,
@@ -227,12 +231,13 @@ export const useBotonesTablaSubtarea = (listado: Ref<Subtarea[]>, modales: any, 
     titulo: 'Finalizar',
     color: 'positive',
     icono: 'bi-check',
-    visible: ({ entidad }) => entidad.estado === estadosTrabajos.REALIZADO,
+    visible: ({ entidad }) => entidad.estado === estadosTrabajos.REALIZADO, // 8459 - 8561
     accion: async ({ entidad, posicion }) => {
-      const config: CustomActionPrompt = reactive({
+      const config: CustomActionPrompt = reactive({ // Nedetel
         mensaje: 'Confirme la causa de intervención',
         accion: (causa_intervencion_id) => {
-          confirmarFinalizar({ entidad, causa_intervencion_id, posicion })
+          if (entidad.tipo_trabajo === 'STANDBY') confirmarFinalizar({ entidad, posicion })
+          else confirmarFinalizarConAlimentacion({ entidad, causa_intervencion_id, posicion })
         },
         requerido: false,
         defecto: entidad.causa_intervencion_id,
@@ -253,7 +258,14 @@ export const useBotonesTablaSubtarea = (listado: Ref<Subtarea[]>, modales: any, 
     }
   }
 
-  async function confirmarFinalizar(data: UnwrapRef<any>) {
+  async function confirmarFinalizarConAlimentacion(data: UnwrapRef<any>) {
+    const { entidad } = data
+    dataGuardar.value = data
+    console.log(entidad)
+    modales.abrirModalEntidad<AlimentacionGrupoPropsData>('AlimentacionGrupoPage', { idGrupo: entidad.grupo_id, idSubtarea: entidad.id, idTarea: entidad.tarea_id })
+  }
+
+  /* async function confirmarFinalizarConAlimentacionOld(data: UnwrapRef<any>) {
     const { entidad, causa_intervencion_id, posicion } = data
 
     console.log(posicion)
@@ -262,7 +274,6 @@ export const useBotonesTablaSubtarea = (listado: Ref<Subtarea[]>, modales: any, 
       titulo: '¿Asignó alimentación para subtarea?',
       mensaje: 'Ingrese el valor en caso de existir, caso contrario deje en blanco o coloque cero',
       tipo: 'number',
-      // defecto: listado.value[posicion].valor_alimentacion ?? 0,
       accion: async (valor: number) => {
         confirmar('¿Está seguro de marcar como finalizada la subtarea?', async () => {
           try {
@@ -277,11 +288,35 @@ export const useBotonesTablaSubtarea = (listado: Ref<Subtarea[]>, modales: any, 
             }
           }
         })
-
-        // entidad.valor_alimentacion = cantidad
       }
     }
     prompt(solicitarValorAlimentacion)
+  } */
+
+  async function guardadoModalesSubtarea(paginaModal: keyof SubtareaModales) {
+    switch (paginaModal) {
+      case 'AlimentacionGrupoPage':
+        confirmarFinalizar(dataGuardar.value)
+        break
+    }
+  }
+
+  async function confirmarFinalizar(data: UnwrapRef<any>) {
+    const { entidad, causa_intervencion_id, posicion } = data
+
+    // confirmar('¿Está seguro de marcar como finalizada la subtarea?', async () => {
+    try {
+      const { result } = await cambiarEstadoTrabajo.finalizar(entidad.id, { causa_intervencion_id: causa_intervencion_id })
+      actualizarElemento(posicion, result)
+
+      notificarCorrecto('Trabajo finalizada exitosamente!')
+    } catch (error: unknown) {
+      if (isAxiosError(error)) {
+        const mensajes: string[] = error.erroresValidacion
+        notificarMensajesError(mensajes, notificaciones)
+      }
+    }
+    // })
   }
 
   const btnSuspender: CustomActionTable = {
@@ -416,5 +451,6 @@ export const useBotonesTablaSubtarea = (listado: Ref<Subtarea[]>, modales: any, 
     btnSuspender,
     btnFinalizar,
     setFiltrarTrabajoAsignado,
+    guardadoModalesSubtarea,
   }
 }

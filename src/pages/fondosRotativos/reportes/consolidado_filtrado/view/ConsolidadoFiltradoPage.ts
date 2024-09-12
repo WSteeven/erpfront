@@ -66,8 +66,8 @@ export default defineComponent({
         requiredIfTipoFiltro: requiredIf(function () {
           return consolidadofiltrado.tipo_saldo != null
             ? consolidadofiltrado.tipo_saldo == tipo_saldo.GASTO ||
-                consolidadofiltrado.tipo_saldo ==
-                  tipo_saldo.GASTOS_FOTOGRAFIA
+            consolidadofiltrado.tipo_saldo ==
+            tipo_saldo.GASTOS_FOTOGRAFIA
             : false
         }),
       },
@@ -81,34 +81,34 @@ export default defineComponent({
         requiredIfEmpleado: requiredIf(function () {
           return consolidadofiltrado.tipo_saldo != null
             ? consolidadofiltrado.tipo_saldo ==
-                tipo_saldo.CONSOLIDADO ||
-                consolidadofiltrado.tipo_saldo ==
-                  tipo_saldo.ESTADO_CUENTA ||
-                consolidadofiltrado.tipo_saldo ==
-                  tipo_saldo.TRANSFERENCIA_SALDOS
+            tipo_saldo.CONSOLIDADO ||
+            consolidadofiltrado.tipo_saldo ==
+            tipo_saldo.ESTADO_CUENTA ||
+            consolidadofiltrado.tipo_saldo ==
+            tipo_saldo.TRANSFERENCIA_SALDOS
             : false
         }),
       },
-      detalle:{
-        requiredIfDetalle: requiredIf(function () { return consolidadofiltrado.tipo_filtro != null? consolidadofiltrado.tipo_filtro== tipo_filtro.DETALLE :false}),
+      detalle: {
+        requiredIfDetalle: requiredIf(function () { return consolidadofiltrado.tipo_filtro != null ? consolidadofiltrado.tipo_filtro == tipo_filtro.DETALLE : false }),
       },
-      subdetalle:{
-        requiredIfSubdetalle: requiredIf(function () { return consolidadofiltrado.tipo_filtro != null? consolidadofiltrado.tipo_filtro== tipo_filtro.SUBDETALLE :false}),
+      subdetalle: {
+        requiredIfSubdetalle: requiredIf(function () { return consolidadofiltrado.tipo_filtro != null ? consolidadofiltrado.tipo_filtro == tipo_filtro.SUBDETALLE : false }),
       },
-      proyecto:{
-        requiredIfProyecto: requiredIf(function () { return consolidadofiltrado.tipo_filtro != null? consolidadofiltrado.tipo_filtro== tipo_filtro.PROYECTO :false}),
+      proyecto: {
+        requiredIfProyecto: requiredIf(function () { return consolidadofiltrado.tipo_filtro != null ? consolidadofiltrado.tipo_filtro == tipo_filtro.PROYECTO : false }),
       },
-      tarea:{
-        requiredIfTarea: requiredIf(function () { return consolidadofiltrado.tipo_filtro != null? consolidadofiltrado.tipo_filtro== tipo_filtro.TAREA :false}),
+      tarea: {
+        requiredIfTarea: requiredIf(function () { return consolidadofiltrado.tipo_filtro != null ? consolidadofiltrado.tipo_filtro == tipo_filtro.TAREA : false }),
       },
-      autorizador:{
-        requiredIfAutorizador: requiredIf(function () { return consolidadofiltrado.tipo_filtro != null? consolidadofiltrado.tipo_filtro== tipo_filtro.AUTORIZACIONES :false}),
+      autorizador: {
+        requiredIfAutorizador: requiredIf(function () { return consolidadofiltrado.tipo_filtro != null ? consolidadofiltrado.tipo_filtro == tipo_filtro.AUTORIZACIONES : false }),
       },
       ruc: {
         minLength: 13,
       },
-      ciudad:{
-        requiredIfCiudad: requiredIf(function () { return consolidadofiltrado.tipo_filtro != null? consolidadofiltrado.tipo_filtro== tipo_filtro.CIUDAD :false}),
+      ciudad: {
+        requiredIfCiudad: requiredIf(function () { return consolidadofiltrado.tipo_filtro != null ? consolidadofiltrado.tipo_filtro == tipo_filtro.CIUDAD : false }),
       }
     }
     const tipos_saldos_consolidado_filtro = ref()
@@ -213,8 +213,7 @@ export default defineComponent({
     function filtrarAutorizacionesEspeciales(val, update) {
       if (val === '') {
         update(() => {
-          autorizacionesEspeciales.value =
-            listadosAuxiliares.autorizacionesEspeciales
+          autorizacionesEspeciales.value = listadosAuxiliares.autorizacionesEspeciales
         })
         return
       }
@@ -222,7 +221,7 @@ export default defineComponent({
         const needle = val.toLowerCase()
         autorizacionesEspeciales.value =
           listadosAuxiliares.autorizacionesEspeciales.filter(
-            (v) => v.usuario.toLowerCase().indexOf(needle) > -1
+            (v) => v.nombres.toLowerCase().indexOf(needle) > -1 || v.apellidos.toLowerCase().indexOf(needle) > -1
           )
       })
     }
@@ -372,10 +371,8 @@ export default defineComponent({
       })
     }
 
-    async function generar_reporte(
-      valor: ConsolidadoFiltrado,
-      tipo: string
-    ): Promise<void> {
+    async function generar_reporte(valor: ConsolidadoFiltrado, tipo: string): Promise<void> {
+      valor.isComponentFilesModified = null
       if (await v$.value.$validate()) {
         const axios = AxiosHttpRepository.getInstance()
         const filename =
@@ -428,9 +425,9 @@ export default defineComponent({
       consolidadofiltrado.autorizador = null
       consolidadofiltrado.ruc = null
     }
-    function limpiarTipoSaldo(){
-      consolidadofiltrado.tipo_filtro=null
-limpiar();
+    function limpiarTipoSaldo() {
+      consolidadofiltrado.tipo_filtro = null
+      limpiar();
     }
     function optionsFechaInicio(date) {
       const fecha_actual = format(new Date(), 'YYYY/MM/DD')
