@@ -57,6 +57,10 @@
         <slot name="formulario" />
         <div :class="{ 'q-pa-md': full }">
           <div class="row justify-end q-col-gutter-x-xs">
+            <span>
+              <slot name="custom-buttons"></slot>
+            </span>
+
             <button-submits
               v-if="mostrarButtonSubmits"
               :accion="accion"

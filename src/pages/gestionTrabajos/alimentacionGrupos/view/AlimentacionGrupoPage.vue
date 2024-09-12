@@ -34,7 +34,7 @@
                       v-model="alimentacion.fecha"
                       :mask="maskFecha"
                       today-btn
-                      >
+                    >
                       <!-- :options="optionsFecha" -->
                       <div class="row items-center justify-end">
                         <q-btn
@@ -68,6 +68,20 @@
               no-caps
               @click="agregarGrupo()"
             ></q-btn>
+          </div>
+
+          <div
+            v-if="!datos.idGrupo"
+            class="col-12 border-callout-warning bg-solid q-pb-sm"
+          >
+            <q-icon
+              name="bi-cone-striped"
+              color="warning"
+              class="q-mr-sm"
+            ></q-icon
+            >{{
+              'El empleado responsable no pertenece a ningún grupo. Comuníquese con RRHH para asignarle un grupo en el sistema en caso de que sea necesario.'
+            }}
           </div>
         </div>
 
@@ -312,6 +326,19 @@
           </div> -->
         </div>
       </q-form>
+    </template>
+
+    <template #custom-buttons>
+      <q-btn
+        v-if="!datos.idGrupo"
+        icon="bi-cone-striped"
+        label="Finalizar sin registrar alimentación"
+        no-caps
+        unelevated
+        square
+        color="warning"
+        class="q-mr-xs"
+      />
     </template>
   </tab-layout>
 </template>
