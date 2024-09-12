@@ -33,9 +33,9 @@
                     <q-date
                       v-model="alimentacion.fecha"
                       :mask="maskFecha"
-                      :options="optionsFecha"
                       today-btn
-                    >
+                      >
+                      <!-- :options="optionsFecha" -->
                       <div class="row items-center justify-end">
                         <q-btn
                           v-close-popup

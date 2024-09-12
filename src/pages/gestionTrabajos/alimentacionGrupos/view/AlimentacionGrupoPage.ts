@@ -1,12 +1,12 @@
 // Dependencias
 import { configuracionColumnasAlimentacionGrupo } from '../domain/configuracionColumnasAlimentacionGrupo'
+import { AlimentacionGrupoPropsData } from '../domain/AlimentacionGrupoPropsData'
 import { useFiltrosListadosSelects } from 'shared/filtrosListadosGenerales'
 import { minValue, required, helpers } from 'shared/i18n-validators'
-import { AlimentacionGrupoPropsData } from '../domain/AlimentacionGrupoPropsData'
 import { AlimentacionGrupo } from '../domain/AlimentacionGrupo'
 import { useAuthenticationStore } from 'stores/authentication'
-import { acciones, maskFecha } from 'config/utils'
 import { computed, defineComponent, UnwrapRef } from 'vue'
+import { acciones, maskFecha } from 'config/utils'
 import useVuelidate from '@vuelidate/core'
 import { LocalStorage } from 'quasar'
 
@@ -30,8 +30,6 @@ export default defineComponent({
          * Stores
          **********/
         const authenticationStore = useAuthenticationStore()
-        const data = computed(() => props.datos)
-        console.log(data.value)
 
         /*************
          * Variables
@@ -94,7 +92,6 @@ export default defineComponent({
         const { grupos, filtrarGrupos, tareas, filtrarTareasTitulo, subdetalles, filtrarSubdetalles } = useFiltrosListadosSelects(listadosAuxiliares)
 
         const agregarGrupo = () => {
-            console.log(data.value)
             const alimentacionGrupo = new AlimentacionGrupo()
             alimentacionGrupo.grupo_id = props.datos?.idGrupo
             alimentacionGrupo.tarea_id = props.datos?.idTarea
