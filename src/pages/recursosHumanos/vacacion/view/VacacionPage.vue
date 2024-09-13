@@ -9,7 +9,7 @@
     :permitirEliminar="false"
     :mostrarButtonSubmits="true"
     :filtrar="filtrarVacacion"
-    tabDefecto="1"
+    :tabDefecto="tabVacacion"
     :forzarListar="true"
   >
     <template #formulario>
@@ -34,8 +34,8 @@
               @blur="v$.numero_dias.$touch"
               input-debounce="0"
               @filter="filtrarPeriodo"
-              :option-value="(v) => v.id"
-              :option-label="(v) => v.nombre"
+              :option-value="v => v.id"
+              :option-label="v => v.nombre"
               emit-value
               map-options
             >
@@ -46,13 +46,18 @@
               </template>
               <template v-slot:no-option>
                 <q-item>
-                  <q-item-section class="text-grey"> No hay resultados </q-item-section>
+                  <q-item-section class="text-grey">
+                    No hay resultados
+                  </q-item-section>
                 </q-item>
               </template>
             </q-select>
           </div>
           <!-- Derecho a vacaciones -->
-          <div class="col-12 col-md-3" v-if="accion == 'EDITAR' && esAutorizador">
+          <div
+            class="col-12 col-md-3"
+            v-if="accion == 'EDITAR' && esAutorizador"
+          >
             <label class="q-mb-sm block">Derecho a vacaciones</label>
             <q-input
               v-model="vacacion.derecho_vacaciones"
@@ -65,7 +70,10 @@
               dense
             >
               <template v-slot:error>
-                <div v-for="error of v$.derecho_vacaciones.$errors" :key="error.$uid">
+                <div
+                  v-for="error of v$.derecho_vacaciones.$errors"
+                  :key="error.$uid"
+                >
                   <div class="error-msg">{{ error.$message }}</div>
                 </div>
               </template>
@@ -84,7 +92,10 @@
               dense
             >
               <template v-slot:error>
-                <div v-for="error of v$.numero_rangos.$errors" :key="error.$uid">
+                <div
+                  v-for="error of v$.numero_rangos.$errors"
+                  :key="error.$uid"
+                >
                   <div class="error-msg">{{ error.$message }}</div>
                 </div>
               </template>
@@ -104,7 +115,11 @@
             >
               <template v-slot:append>
                 <q-icon name="event" class="cursor-pointer">
-                  <q-popup-proxy cover transition-show="scale" transition-hide="scale">
+                  <q-popup-proxy
+                    cover
+                    transition-show="scale"
+                    transition-hide="scale"
+                  >
                     <q-date
                       v-model="vacacion.fecha_inicio"
                       :mask="maskFecha"
@@ -112,7 +127,12 @@
                       today-btn
                     >
                       <div class="row items-center justify-end">
-                        <q-btn v-close-popup label="Cerrar" color="primary" flat />
+                        <q-btn
+                          v-close-popup
+                          label="Cerrar"
+                          color="primary"
+                          flat
+                        />
                       </div>
                     </q-date>
                   </q-popup-proxy>
@@ -139,10 +159,23 @@
             >
               <template v-slot:append>
                 <q-icon name="event" class="cursor-pointer">
-                  <q-popup-proxy cover transition-show="scale" transition-hide="scale">
-                    <q-date v-model="vacacion.fecha_fin" :mask="maskFecha" today-btn>
+                  <q-popup-proxy
+                    cover
+                    transition-show="scale"
+                    transition-hide="scale"
+                  >
+                    <q-date
+                      v-model="vacacion.fecha_fin"
+                      :mask="maskFecha"
+                      today-btn
+                    >
                       <div class="row items-center justify-end">
-                        <q-btn v-close-popup label="Cerrar" color="primary" flat />
+                        <q-btn
+                          v-close-popup
+                          label="Cerrar"
+                          color="primary"
+                          flat
+                        />
                       </div>
                     </q-date>
                   </q-popup-proxy>
@@ -188,16 +221,24 @@
             >
               <template v-slot:append>
                 <q-icon name="event" class="cursor-pointer">
-                  <q-popup-proxy cover transition-show="scale" transition-hide="scale">
+                  <q-popup-proxy
+                    cover
+                    transition-show="scale"
+                    transition-hide="scale"
+                  >
                     <q-date
                       v-model="vacacion.fecha_inicio_rango1_vacaciones"
                       :mask="maskFecha"
                       today-btn
-                                    :options="optionsFechaInicio"
-
+                      :options="optionsFechaInicio"
                     >
                       <div class="row items-center justify-end">
-                        <q-btn v-close-popup label="Cerrar" color="primary" flat />
+                        <q-btn
+                          v-close-popup
+                          label="Cerrar"
+                          color="primary"
+                          flat
+                        />
                       </div>
                     </q-date>
                   </q-popup-proxy>
@@ -207,7 +248,9 @@
           </div>
           <!-- Fecha Fin Rango 1 -->
           <div class="col-12 col-md-3" v-if="vacacion.numero_rangos == 2">
-            <label class="q-mb-sm block">Fecha finalización Rango 1 de Vacaciones</label>
+            <label class="q-mb-sm block"
+              >Fecha finalización Rango 1 de Vacaciones</label
+            >
             <q-input
               v-model="vacacion.fecha_fin_rango1_vacaciones"
               placeholder="Opcional"
@@ -217,14 +260,23 @@
             >
               <template v-slot:append>
                 <q-icon name="event" class="cursor-pointer">
-                  <q-popup-proxy cover transition-show="scale" transition-hide="scale">
+                  <q-popup-proxy
+                    cover
+                    transition-show="scale"
+                    transition-hide="scale"
+                  >
                     <q-date
                       v-model="vacacion.fecha_fin_rango1_vacaciones"
                       :mask="maskFecha"
                       today-btn
                     >
                       <div class="row items-center justify-end">
-                        <q-btn v-close-popup label="Cerrar" color="primary" flat />
+                        <q-btn
+                          v-close-popup
+                          label="Cerrar"
+                          color="primary"
+                          flat
+                        />
                       </div>
                     </q-date>
                   </q-popup-proxy>
@@ -248,7 +300,8 @@
           <!-- Numero de días adicianales-->
           <div class="col-12 col-md-3">
             <label class="q-mb-sm block">Dias adicionales</label>
-            <q-input v-model="dias_adicionales" disable outlined dense> </q-input>
+            <q-input v-model="dias_adicionales" disable outlined dense>
+            </q-input>
           </div>
           <!-- Fecha Inicio Rango 2 -->
           <div class="col-12 col-md-3" v-if="vacacion.numero_rangos == 2">
@@ -262,16 +315,24 @@
             >
               <template v-slot:append>
                 <q-icon name="event" class="cursor-pointer">
-                  <q-popup-proxy cover transition-show="scale" transition-hide="scale">
+                  <q-popup-proxy
+                    cover
+                    transition-show="scale"
+                    transition-hide="scale"
+                  >
                     <q-date
                       v-model="vacacion.fecha_inicio_rango2_vacaciones"
                       :mask="maskFecha"
                       today-btn
-                                                          :options="optionFechaInicioRango2"
-
+                      :options="optionFechaInicioRango2"
                     >
                       <div class="row items-center justify-end">
-                        <q-btn v-close-popup label="Cerrar" color="primary" flat />
+                        <q-btn
+                          v-close-popup
+                          label="Cerrar"
+                          color="primary"
+                          flat
+                        />
                       </div>
                     </q-date>
                   </q-popup-proxy>
@@ -281,7 +342,9 @@
           </div>
           <!-- Fecha Fin Rango 2 -->
           <div class="col-12 col-md-3" v-if="vacacion.numero_rangos == 2">
-            <label class="q-mb-sm block">Fecha finalización Rango 2 de Vacaciones</label>
+            <label class="q-mb-sm block"
+              >Fecha finalización Rango 2 de Vacaciones</label
+            >
             <q-input
               v-model="vacacion.fecha_fin_rango2_vacaciones"
               placeholder="Opcional"
@@ -291,14 +354,23 @@
             >
               <template v-slot:append>
                 <q-icon name="event" class="cursor-pointer">
-                  <q-popup-proxy cover transition-show="scale" transition-hide="scale">
+                  <q-popup-proxy
+                    cover
+                    transition-show="scale"
+                    transition-hide="scale"
+                  >
                     <q-date
                       v-model="vacacion.fecha_fin_rango2_vacaciones"
                       :mask="maskFecha"
                       today-btn
                     >
                       <div class="row items-center justify-end">
-                        <q-btn v-close-popup label="Cerrar" color="primary" flat />
+                        <q-btn
+                          v-close-popup
+                          label="Cerrar"
+                          color="primary"
+                          flat
+                        />
                       </div>
                     </q-date>
                   </q-popup-proxy>
@@ -322,13 +394,16 @@
           <!-- Numero de días con cargo a vacaciones-->
           <div class="col-12 col-md-3">
             <label class="q-mb-sm block"
-              >Descuento de dias por permiso con cargo a Vacaciones</label
+              >Días descuento con cargo a Vacaciones</label
             >
             <q-input v-model="dias_descuento_vacaciones" disable outlined dense>
             </q-input>
           </div>
           <!-- Autorizacion -->
-          <div class="col-12 col-md-3" v-if="accion == 'EDITAR' && esAutorizador">
+          <div
+            class="col-12 col-md-3"
+            v-if="accion == 'EDITAR' && esAutorizador"
+          >
             <label class="q-mb-sm block">Autorizacion</label>
             <q-select
               v-model="vacacion.estado"
@@ -342,17 +417,73 @@
               :readonly="disabled"
               use-input
               input-debounce="0"
-              :option-value="(v) => v.id"
-              :option-label="(v) => v.nombre"
+              :option-value="v => v.id"
+              :option-label="v => v.nombre"
               emit-value
               map-options
             >
               <template v-slot:no-option>
                 <q-item>
-                  <q-item-section class="text-grey"> No hay resultados </q-item-section>
+                  <q-item-section class="text-grey">
+                    No hay resultados
+                  </q-item-section>
                 </q-item>
               </template>
             </q-select>
+          </div>
+          <!-- Reemplazo -->
+          <div class="col-12 col-md-3 q-mb-md">
+            <label class="q-mb-sm block">Reemplazo <i class="bi bi-info-circle" /><q-tooltip class="bg-dark">La persona que cubrira su puesto durante sus vacaciones</q-tooltip></label>
+            <q-select
+              v-model="vacacion.reemplazo"
+              :options="empleados"
+              options-dense
+              clearable
+              dense
+              outlined
+              :disable="disabled"
+              use-input
+              input-debounce="0"
+              @popup-show="ordenarLista(empleados, 'apellidos')"
+              @filter="filtrarEmpleados"
+              :option-label="item => item.apellidos + ' ' + item.nombres"
+              :option-value="item => item.id"
+              :error="!!v$.reemplazo.$errors.length"
+              emit-value
+              map-options
+            >
+              <template v-slot:error>
+                <div v-for="error of v$.reemplazo.$errors" :key="error.$uid">
+                  <div class="error-msg">{{ error.$message }}</div>
+                </div>
+              </template>
+              <template v-slot:no-option>
+                <q-item>
+                  <q-item-section class="text-grey">
+                    No hay resultados
+                  </q-item-section>
+                </q-item>
+              </template>
+            </q-select>
+          </div>
+          <!-- funciones -->
+          <div class="col-12 col-md-6">
+            <label class="q-mb-sm block">Funciones (reemplazo)</label>
+            <q-input
+              v-model="vacacion.funciones"
+              placeholder="Obligatorio"
+              autogrow
+              :disable="disabled"
+              :error="!!v$.funciones.$errors.length"
+              outlined
+              dense
+            >
+              <template v-slot:error>
+                <div v-for="error of v$.funciones.$errors" :key="error.$uid">
+                  <div class="error-msg">{{ error.$message }}</div>
+                </div>
+              </template></q-input
+            >
           </div>
         </div>
       </q-form>
