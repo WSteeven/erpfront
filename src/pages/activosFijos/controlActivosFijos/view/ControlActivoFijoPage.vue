@@ -21,6 +21,7 @@
             <label class="q-mb-sm block">Descripción</label>
             <q-input
               v-model="activo.detalle_producto.descripcion"
+              autogrow
               disable
               outlined
               dense
