@@ -1,6 +1,6 @@
 import { TransaccionSimpleController } from 'shared/contenedor/modules/simple/infraestructure/TransacccionSimpleController'
 import { EntidadAuditable } from 'shared/entidad/domain/entidadAuditable'
-import { isAxiosError, notificarMensajesError } from 'shared/utils'
+import { downloadFile, isAxiosError, notificarMensajesError } from 'shared/utils'
 import { Contenedor } from '../../../application/contenedor.mixin'
 import { Instanciable } from 'shared/entidad/domain/instanciable'
 import { HooksSimples } from '../domain/hooksSimples'
@@ -149,8 +149,11 @@ export class ContenedorSimpleMixin<T extends EntidadAuditable> extends Contenedo
   private async listar(params?: ParamsType, append = false) {
     this.statusEssentialLoading.activar()
     try {
-      const { result, meta } = await this.controller.listar(params)
-      if (result.length == 0) this.notificaciones.notificarInformacion('Aún no se han agregado elementos.')
+      const { result, meta, response } = await this.controller.listar(params)
+      console.log(response.data)
+
+      if (params?.hasOwnProperty('export')) downloadFile(response.data, params.titulo, params.export)
+      else if (result.length == 0) this.notificaciones.notificarInformacion('Aún no se han agregado elementos.')
 
       if (append) this.refs.listado.value.push(...result)
       else this.refs.listado.value = result
@@ -159,6 +162,11 @@ export class ContenedorSimpleMixin<T extends EntidadAuditable> extends Contenedo
       this.refs.pagination.value.page = meta?.current_page
       this.refs.pagination.value.total = meta?.total
     } catch (error) {
+      if (isAxiosError(error)) {
+        const mensajes: string[] = error.erroresValidacion
+        console.log(mensajes)
+        await notificarMensajesError(mensajes, this.notificaciones)
+      }
       this.notificaciones.notificarError(error + '')
     } finally {
       this.statusEssentialLoading.desactivar()

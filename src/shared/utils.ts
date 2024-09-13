@@ -457,6 +457,19 @@ export async function imprimirArchivo(
     .finally(() => statusLoading.desactivar())
 }
 
+export async function downloadFile(data, titulo, formato) {
+  const fileURL = URL.createObjectURL(
+    new Blob([data], { type: `appication/${formato}` })
+  )
+  const link = document.createElement('a')
+  link.href = fileURL
+  link.target = '_blank'
+  link.setAttribute('download', `${titulo}.${formato}`)
+  document.body.appendChild(link)
+  link.click()
+  link.remove()
+}
+
 export function filtrarLista(val, update, lista, clave, defaultValue = []) {
   if (val === '') {
     update(() => (lista.value = defaultValue))

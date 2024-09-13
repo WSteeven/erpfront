@@ -69,9 +69,8 @@
               @click="agregarGrupo()"
             ></q-btn>
           </div>
-
           <div
-            v-if="!datos.idGrupo"
+            v-if="!!datos && !datos.idGrupo"
             class="col-12 border-callout-warning bg-solid q-pb-sm"
           >
             <q-icon
@@ -331,8 +330,8 @@
     </template>
 
     <template #custom-buttons>
+      <!-- v-if="!!datos && !datos.idGrupo" -->
       <q-btn
-        v-if="!datos.idGrupo"
         icon="bi-cone-striped"
         label="Finalizar sin registrar alimentación"
         no-caps

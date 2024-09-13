@@ -111,7 +111,7 @@ export default defineComponent({
                 alimentacionoItem.precio = PRECIO_ALIMENTACION
                 alimentacionoItem.fecha = alimentacion.fecha
                 alimentacionoItem.subtarea_id = props.datos?.idSubtarea
-                alimentacionoItem.tarea_id = props.datos?.idTarea
+                alimentacionoItem.tarea_id = !!props.datos ? props.datos?.idTarea : alimentacionoItem.tarea_id
                 return alimentacionoItem
             })
         })
