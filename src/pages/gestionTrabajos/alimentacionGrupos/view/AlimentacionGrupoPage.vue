@@ -78,10 +78,12 @@
               name="bi-cone-striped"
               color="warning"
               class="q-mr-sm"
-            ></q-icon
-            >{{
-              'El empleado responsable no pertenece a ningún grupo. Comuníquese con RRHH para asignarle un grupo en el sistema en caso de que sea necesario.'
-            }}
+            ></q-icon>
+            <span
+              v-html="
+                'El empleado responsable no pertenece a ningún grupo. Comuníquese con RRHH para asignarle un grupo en el sistema en caso de que sea necesario.<br>Sino pertenece a ningún grupo <b>Finalice sin registrar alimentación</b>.'
+              "
+            ></span>
           </div>
         </div>
 
@@ -338,6 +340,12 @@
         square
         color="warning"
         class="q-mr-xs"
+        @click="
+          () => {
+            $emit('guardado', 'AlimentacionGrupoPage')
+            $emit('cerrar-modal', false)
+          }
+        "
       />
     </template>
   </tab-layout>
