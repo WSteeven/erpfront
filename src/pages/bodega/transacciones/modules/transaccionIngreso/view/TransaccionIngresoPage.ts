@@ -140,7 +140,7 @@ export default defineComponent({
           controller: new EmpleadoController(),
           params: {
             campos: 'id,nombres,apellidos',
-            estado: 1
+            // estado: 1
           }
         },
       })

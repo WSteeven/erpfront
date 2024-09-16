@@ -170,6 +170,12 @@ const rutasTareas: RouteRecordRaw[] = [
       import('gestionTrabajos/transferenciasProductosEmpleados/view/TransferenciaProductoEmpleadoPage.vue'),
     meta: { requiresAuth: true },
   },
+  {
+    path: '/alimentacion-grupo',
+    name: 'alimentacion_grupo',
+    component: () => import('gestionTrabajos/alimentacionGrupos/view/AlimentacionGrupoPage.vue'),
+    meta: { requiresAuth: true },
+  },
   /*{
     path: '/reporte-trabajos-realizados',
     name: 'reporte_trabajos_realizados',

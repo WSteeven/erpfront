@@ -5,7 +5,9 @@ export const maskFecha = 'YYYY-MM-DD'
 export const maskFechaHora = 'YYYY-MM-DD HH:mm:ss'
 // export const maskFecha = 'DD-MM-YYYY'
 //export const maskFecha = 'YYYY/MM/DD'
+
 // Tipos
+export type Accion = 'NUEVO' | 'ELIMINAR' | 'CONSULTAR' | 'EDITAR'
 export type TipoSeleccion = 'none' | 'single' | 'multiple'
 
 export type TipoSeparador =

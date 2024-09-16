@@ -17,7 +17,8 @@
     "@vuelidate/core": "^2.0.0-alpha.44",
     "@vuelidate/validators": "^2.0.0-alpha.31",
     "@vueuse/core": "^10.2.1",
-    "axios": "^0.21.4",
+    "axios": "^1.7.7",
+    "canvas-confetti": "^1.9.3",
     "chart.js": "^4.3.0",
     "chartjs-plugin-datalabels": "^2.2.0",
     "dayjs": "^1.11.10",
@@ -35,6 +36,7 @@
     "vue": "^3.0.0",
     "vue-chartjs": "^5.2.0",
     "vue-chartkick": "^1.1.0",
+    "vue-feliciter": "^0.0.1",
     "vue-i18n": "^9.3.0-beta.16",
     "vue-router": "^4.0.0",
     "vue3-lottie": "^2.3.0"

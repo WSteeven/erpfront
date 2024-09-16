@@ -35,6 +35,7 @@ export const useFiltrosListadosSelects = (listadosAuxiliares, entidad?: Ref<any>
   const grupos = ref(listadosAuxiliares.grupos)
   const departamentos = ref(listadosAuxiliares.departamentos)
   const tickets = ref(listadosAuxiliares.tickets)
+  const subdetalles = ref(listadosAuxiliares.subdetalles)
 
   //bodega
   const sucursales = ref(listadosAuxiliares.sucursales)
@@ -450,6 +451,11 @@ export const useFiltrosListadosSelects = (listadosAuxiliares, entidad?: Ref<any>
     return filtrarLista(val, update, etapasDestino, 'nombre', listadosAuxiliares.etapasDestino)
   }
 
+  function filtrarTareasTitulo(val, update) {
+    if (val === '') return update(() => tareas.value = listadosAuxiliares.tareas)
+    update(() => tareas.value = listadosAuxiliares.tareas.filter((v) => v.codigo_tarea.toLowerCase().indexOf(val.toLowerCase()) > -1 || v.titulo.toLowerCase().indexOf(val.toLowerCase()) > -1))
+  }
+
   function filtrarTareas(val, update) {
     return filtrarLista(val, update, tareas, 'codigo_tarea', listadosAuxiliares.tareas)
   }
@@ -489,6 +495,7 @@ export const useFiltrosListadosSelects = (listadosAuxiliares, entidad?: Ref<any>
 
 
   const filtrarEstadosCiviles = (val, update) => filtrarLista(val, update, estadosCiviles, 'nombre', listadosAuxiliares.estados_civiles)
+  const filtrarSubdetalles = (val, update) => filtrarLista(val, update, subdetalles, 'descripcion', listadosAuxiliares.subdetalles)
 
   /****************
    * Modulo medico
@@ -550,7 +557,7 @@ export const useFiltrosListadosSelects = (listadosAuxiliares, entidad?: Ref<any>
     grupos, filtrarGrupos,
     areas, filtrarAreas,
     tiposContratos,
-
+    subdetalles, filtrarSubdetalles,
     tickets, filtrarTickets,
     tareas, filtrarTareas,
     proyectos, filtrarProyectos,
@@ -582,5 +589,6 @@ export const useFiltrosListadosSelects = (listadosAuxiliares, entidad?: Ref<any>
     // Modulo activos fijos
     categoriasMotivosConsumoActivosFijos, filtrarCategoriasMotivosConsumoActivosFijos,
     motivosConsumoActivosFijos, filtrarMotivosConsumoActivosFijos,
+    filtrarTareasTitulo,
   }
 }

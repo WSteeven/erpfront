@@ -16,10 +16,12 @@ export class Vacacion extends EntidadAuditable {
   fecha_inicio_rango2_vacaciones: string | null
   fecha_fin_rango2_vacaciones: string | null
   estado: string | null
-  numero_rangos:number|string | null
+  numero_rangos: number | string | null
   numero_dias: number | null
   numero_dias_rango1: number | null
   numero_dias_rango2: number | null
+  reemplazo: number | null
+  funciones: string | null
 
   constructor() {
     super()
@@ -42,5 +44,7 @@ export class Vacacion extends EntidadAuditable {
     this.numero_dias = null
     this.numero_dias_rango1 = null
     this.numero_dias_rango2 = null
+    this.reemplazo = null
+    this.funciones = null
   }
 }

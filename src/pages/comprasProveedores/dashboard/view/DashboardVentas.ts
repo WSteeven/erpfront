@@ -40,7 +40,7 @@ export default defineComponent({
         /***********
          * Variables
          ***********/
-        // const CREADAS = 'CREADAS'
+        const PROVEEDOR = 'PROVEEDOR'
         // const ANULADAS = 'ANULADAS'
         const cantPrefacturasCreadas = ref()
         const cantPrefacturasAnuladas = ref()
@@ -117,7 +117,7 @@ export default defineComponent({
             optionsPie,
             modoUnaColumna,
             tabs, opcionesGrafico, mostrarTitulosSeccion,
-
+            PROVEEDOR,
             //listados
             clientes, filtrarClientes,
 

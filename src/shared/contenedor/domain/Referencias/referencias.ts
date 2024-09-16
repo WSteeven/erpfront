@@ -1,5 +1,5 @@
 import { computed, ComputedRef, reactive, Ref, ref, UnwrapRef } from 'vue'
-import { acciones } from 'config/utils'
+import { Accion, acciones } from 'config/utils'
 import { MetaPagination } from './MetaPagination'
 
 

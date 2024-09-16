@@ -124,7 +124,7 @@
             ></q-checkbox>
           </div>
 
-          <div v-if="esParaStock" class="col-12 col-md-3">
+          <div v-if="esParaStock && !consultado" class="col-12 col-md-3">
             <label class="q-mb-sm block"
               >Seleccione un cliente para filtrar el material de stock</label
             >

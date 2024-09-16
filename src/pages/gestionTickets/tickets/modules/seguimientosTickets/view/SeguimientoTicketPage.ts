@@ -3,6 +3,9 @@ import { Ref, computed, defineComponent, onMounted, ref, watch, watchEffect } fr
 import { regiones, atenciones } from 'config/utils'
 import useVuelidate from '@vuelidate/core'
 import { endpoints } from 'config/api'
+import relativeTime from 'dayjs/plugin/relativeTime'
+import dayjs from 'dayjs'
+import es from 'dayjs/locale/es'
 
 // Componentes
 import ArchivoSeguimiento from 'gestionTrabajos/subtareas/modules/gestorArchivosTrabajos/view/ArchivoSeguimiento.vue'
@@ -83,6 +86,9 @@ export default defineComponent({
      ************/
     listarActividades({ ticket_id: ticketStore.filaTicket.id })
     listarArchivosTickets({ ticket_id: ticketStore.filaTicket.id })
+
+    dayjs.extend(relativeTime)
+    dayjs.locale(es)
 
     /****************
      * Botones tabla
@@ -227,6 +233,7 @@ export default defineComponent({
       comentario,
       guardarComentario,
       comentarioTicket,
+      dayjs,
     }
   }
 })

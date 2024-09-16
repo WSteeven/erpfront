@@ -47,7 +47,7 @@
           :mixin-modal="mixinModal"
           :accion="accion"
           :mostrarListado="mostrarListado"
-          :datos="datos"
+          :datos="propsData"
           @cerrar-modal="
             (confirmarCerrar) => cerrarModalEntidad(confirmarCerrar)
             "
@@ -61,7 +61,7 @@
           :is="componente"
           :accion="accion"
           :mostrarListado="mostrarListado"
-          :datos="datos"
+          :datos="propsData"
           @cerrar-modal="
             (confirmarCerrar) => cerrarModalEntidad(confirmarCerrar)
             "

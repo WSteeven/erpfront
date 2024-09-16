@@ -201,6 +201,7 @@ export const useAuthenticationStore = defineStore('authentication', () => {
   }
 
   async function isUserLoggedIn(): Promise<boolean> {
+    console.log('auth...')
     if (!usuarioFueConsultado) {
       await getUser()
       usuarioFueConsultado = true

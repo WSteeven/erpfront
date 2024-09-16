@@ -12,6 +12,7 @@ import { ItemProforma } from 'pages/comprasProveedores/proforma/domain/ItemProfo
 import { useAuthenticationStore } from 'stores/authentication'
 import { rolesSistema } from 'config/utils'
 import { SelectOption } from 'components/tables/domain/SelectOption'
+import { format } from '@formkit/tempo'
 
 const authenticationStore = useAuthenticationStore()
 const usuario = authenticationStore.user
@@ -457,6 +458,19 @@ export async function imprimirArchivo(
       notificarError(error)
     })
     .finally(() => statusLoading.desactivar())
+}
+
+export async function downloadFile(data, titulo, formato) {
+  const fileURL = URL.createObjectURL(
+    new Blob([data], { type: `appication/${formato}` })
+  )
+  const link = document.createElement('a')
+  link.href = fileURL
+  link.target = '_blank'
+  link.setAttribute('download', `${titulo}.${formato}`)
+  document.body.appendChild(link)
+  link.click()
+  link.remove()
 }
 
 export function filtrarLista(val, update, lista, clave, defaultValue = []) {
@@ -911,4 +925,41 @@ export function getShortDescription($q, description: string): string {
     return descripcion_plain_text.substring(0, maxLength) + '...'
   }
   return descripcion_plain_text
+}
+export function optionsFecha(date) {
+  const today = new Date()
+
+  const diaSemana = today.getDay()
+  // Verificar si el día actual es sábado
+  let sabadoAnterior = ''
+  if (diaSemana === 6) {
+    sabadoAnterior = format(
+      new Date(today.setDate(today.getDate() - ((today.getDay() + 2) % 7))),
+      'YYYY/MM/DD'
+    )
+  } else {
+    sabadoAnterior = format(
+      new Date(today.setDate(today.getDate() - (today.getDay() % 7))),
+      'YYYY/MM/DD'
+    )
+  }
+  const sabadoSiguiente = format(new Date(siguienteSabado()), 'YYYY/MM/DD')
+  const fecha_actual = format(new Date(), 'YYYY/MM/DD')
+
+  return (
+    date >= sabadoAnterior &&
+    date <= sabadoSiguiente &&
+    date <= fecha_actual
+  )
+}
+
+function siguienteSabado() {
+  const fecha = new Date() // Obtenemos la fecha actual
+  const diaSemana = fecha.getDay() // Obtenemos el día de la semana (0-6, siendo 0 domingo)
+  // Calculamos los días que faltan hasta el próximo sábado
+  const diasFaltantes = 6 - diaSemana
+  // Sumamos los días faltantes a la fecha actual para obtener el próximo sábado
+  fecha.setDate(fecha.getDate() + diasFaltantes)
+  // Retornamos la fecha formateada como una cadena de texto
+  return fecha
 }

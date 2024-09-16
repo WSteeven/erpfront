@@ -530,9 +530,9 @@
 
     <q-page-container :class="{ 'bg-body': true }">
       <router-view v-slot="{ Component }">
-        <transition name="scale" mode="out-in">
+        <!-- <transition name="scale" mode="out-in">
           <essential-loading></essential-loading>
-        </transition>
+        </transition> -->
         <div class="text-right absolute-bottom">
           <footer-component></footer-component>
         </div>

@@ -803,6 +803,8 @@
     :comportamiento="modalesSubtarea"
     :mixin-modal="mixinSubtarea"
     :persistent="false"
+    :mostrar-listado="false"
+    @guardado="guardadoModalesSubtarea"
   />
 </template>
 

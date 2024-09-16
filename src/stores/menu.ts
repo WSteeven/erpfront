@@ -65,6 +65,12 @@ export const useMenuStore = defineStore('menu', () => {
           can: store.can('puede.ver.tareas')
         },
         {
+          title: 'Alimentación grupos',
+          link: 'alimentacion-grupo',
+          icon: 'bi-check2-circle',
+          can: store.can('puede.ver.alimentacion_grupo')
+        },
+        {
           title: 'Movilización entre trabajos',
           link: 'reporte-movilizacion-subtarea',
           icon: 'bi-truck',
@@ -428,6 +434,12 @@ export const useMenuStore = defineStore('menu', () => {
             {
               title: 'Reporte de egresos',
               link: 'reporte-egresos',
+              icon: 'bi-journal-arrow-down',
+              can: true
+            },
+            {
+              title: 'Reporte de Uniformes y EPPs',
+              link: 'reporte-epps',
               icon: 'bi-journal-arrow-down',
               can: true
             },
@@ -1165,7 +1177,7 @@ export const useMenuStore = defineStore('menu', () => {
       children: [
         {
           title: 'Dashboard',
-          link: 'ventas/dashboard-ventas',
+          link: 'dashboard-ventas',
           icon: 'bi-bar-chart-fill',
           can:
             store.can('puede.ver.dashboard_ventas_empresa') ||
@@ -1212,7 +1224,7 @@ export const useMenuStore = defineStore('menu', () => {
       children: [
         {
           title: 'Dashboard',
-          link: 'dashboard-ventas',
+          link: 'dashboard-ventas-claro',
           icon: 'bi-bar-chart-fill',
           can: store.can('puede.ver.dashboard_ventas')
         },

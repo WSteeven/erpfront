@@ -2,7 +2,7 @@
 import { configuracionColumnasAnticipo } from '../domain/configuracionColumnasAnticipo'
 import { required } from '@vuelidate/validators'
 import { useVuelidate } from '@vuelidate/core'
-import { defineComponent, ref, computed, watchEffect } from 'vue'
+import { defineComponent, ref } from 'vue'
 
 // Componentes
 import TabLayout from 'shared/contenedor/modules/simple/view/TabLayout.vue'

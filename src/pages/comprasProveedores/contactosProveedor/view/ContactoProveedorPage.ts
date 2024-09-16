@@ -8,7 +8,7 @@ import TabLayout from 'shared/contenedor/modules/simple/view/TabLayout.vue';
 import ModalEntidad from 'components/modales/view/ModalEntidad.vue';
 
 //Logica y controladores
-import { defineComponent, onBeforeUnmount, onUnmounted, reactive, ref, watchEffect } from 'vue';
+import { defineComponent, onBeforeUnmount, reactive, ref } from 'vue';
 import { ContenedorSimpleMixin } from 'shared/contenedor/modules/simple/application/ContenedorSimpleMixin';
 import { ContactoProveedor } from '../domain/ContactoProveedor';
 import { ContactoProveedorController } from '../infraestructure/ContactoProveedorController';

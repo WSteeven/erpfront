@@ -23,6 +23,7 @@
       v-if="accion === editar && permitirModificar"
       color="primary"
       type="submit"
+      :disable="disabled"
       no-caps
       square
       unelevated
@@ -75,31 +76,31 @@ export default defineComponent({
   props: {
     accion: {
       type: String,
-      required: true,
+      required: true
     },
     permitirGuardar: {
       type: Boolean,
       required: false,
-      default: true,
+      default: true
     },
     permitirModificar: {
       type: Boolean,
       required: false,
-      default: true,
+      default: true
     },
     permitirCancelar: {
       type: Boolean,
       required: false,
-      default: true,
+      default: true
     },
     labelGuardar: {
       type: String,
-      default: 'Guardar',
+      default: 'Guardar'
     },
     disabled: {
       type: Boolean,
-      default: false,
-    },
+      default: false
+    }
   },
   emits: ['guardar', 'editar', 'cancelar', 'eliminar', 'cerrar-modal'],
   setup(props, { emit }) {
@@ -113,8 +114,8 @@ export default defineComponent({
       editar,
       eliminar,
       // callbacks
-      emitir,
+      emitir
     }
-  },
+  }
 })
 </script>
