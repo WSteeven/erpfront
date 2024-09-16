@@ -17,6 +17,8 @@ import { StatusEssentialLoading } from 'components/loading/application/StatusEss
 import { AxiosHttpRepository } from 'shared/http/infraestructure/AxiosHttpRepository';
 import { endpoints } from 'config/api';
 import { AxiosResponse } from 'axios';
+import { useMeta, useQuasar } from 'quasar';
+import { getShortDescription } from 'shared/utils';
 
 // Logic & controllers
 
@@ -131,6 +133,24 @@ export default defineComponent({
         almacenarVacanteFavorita(id)
       }
     }
+    const baseUrl = window.location.origin
+    const $q = useQuasar()
+    useMeta({
+      title: vacanteStore.vacante.nombre ?? 'Trabaja con nosotros',
+      meta: [
+        { name: 'og:title', content: vacanteStore.vacante.nombre },
+        { name: 'og:description', content: getShortDescription($q, vacanteStore.vacante.descripcion) },
+        { name: 'og:image', content: vacanteStore.vacante.imagen_publicidad },
+        { property: 'og:url', content: `${baseUrl}/puestos-disponibles/${vacanteStore.vacante.id}` },
+        { property: 'og:type', content: 'website' },
+        { name: 'twitter:card', content: 'summary_large_image' },
+        { name: 'twitter:title', content: vacanteStore.vacante.nombre},
+        { name: 'twitter:description', content:getShortDescription($q, vacanteStore.vacante.descripcion) },
+        { name: 'twitter:image', content: vacanteStore.vacante.imagen_publicidad }
+      ]
+    })
+
+
     return {
       vacante: vacanteStore.vacante,
       dayjs,

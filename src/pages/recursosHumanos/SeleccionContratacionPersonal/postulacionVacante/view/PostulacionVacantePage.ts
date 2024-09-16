@@ -43,7 +43,7 @@ export default defineComponent({
     // let mixinUsuario
     const { entidad: postulacion, disabled, listadosAuxiliares, accion } = mixin.useReferencias()
     const { setValidador, cargarVista, obtenerListados, eliminarArchivo } = mixin.useComportamiento()
-    const { onConsultado, onBeforeGuardar, onGuardado, onBeforeModificar, onReestablecer } = mixin.useHooks()
+    const {  onBeforeGuardar, onGuardado, onBeforeModificar, onReestablecer } = mixin.useHooks()
     const { notificarError, confirmar } = useNotificaciones()
 
 
@@ -135,7 +135,6 @@ export default defineComponent({
       pais: { required },
       telefono: { required },
       tipo_identificacion: { required },
-
       mi_experiencia: { required },
       tipo_licencia: { required: requiredIf(() => postulacion.tengo_licencia_conducir) }
     }
@@ -189,9 +188,6 @@ export default defineComponent({
       postulacion.pais_residencia = store.user.pais
       postulacion.direccion = store.user.direccion
       postulacion.tipo_identificacion = 'CEDULA'
-
-      // console.log(vacanteStore.idVacante, vacanteStore.vacante)
-      // console.log(store)
     }
     onBeforeRouteUpdate(async (to, from, next) => {
       if (!checkValueIsNumber(to.params.id))

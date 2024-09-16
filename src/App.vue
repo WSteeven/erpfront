@@ -7,7 +7,6 @@
 <script>
 import { useQuasar } from 'quasar'
 import { computed, defineComponent } from 'vue'
-import { useRoute } from 'vue-router';
 import { userIsAuthenticated } from 'shared/helpers/verifyAuthenticatedUser';
 
 // import Echo from 'laravel-echo'
@@ -26,7 +25,6 @@ export default defineComponent({
     }) */
 
     const $q = useQuasar()
-    const route = useRoute()
 
     // Determina el layout basado en el estado de autenticación
     const { autenticado } = userIsAuthenticated()

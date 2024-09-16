@@ -14,7 +14,7 @@ import SelectorImagen from 'components/SelectorImagen.vue'
 
 //Logica y controladores
 import { ContenedorSimpleMixin } from 'shared/contenedor/modules/simple/application/ContenedorSimpleMixin'
-import { removeAccents } from 'shared/utils'
+import { encontrarUltimoIdListado, obtenerFechaActual, removeAccents } from 'shared/utils'
 import { acciones, accionesTabla, maskFecha, } from 'config/utils'
 import { AutorizacionController } from 'pages/administracion/autorizaciones/infraestructure/AutorizacionController'
 import { AreaConocimientoController } from '../../areasConocimiento/infraestructure/AreaConocimientoController'
@@ -43,7 +43,8 @@ export default defineComponent({
     const { setValidador, obtenerListados, cargarVista, listar } = mixin.useComportamiento()
     const { onGuardado } = mixin.useHooks()
 
-    const { confirmar } = useNotificaciones()
+    const { confirmar, notificarCorrecto, notificarInformacion, notificarError } = useNotificaciones()
+
 
     /***************************************************************************
      * stores
@@ -62,7 +63,7 @@ export default defineComponent({
 
     const { areasConocimiento, filtrarAreasConocimiento,
       cantones, filtrarCantones
-     } = useFiltrosListadosSelects(listadosAuxiliares)
+    } = useFiltrosListadosSelects(listadosAuxiliares)
 
     const modalidades = ref([])
     const tiposPuestos = ref([])
@@ -156,11 +157,18 @@ export default defineComponent({
 
           break;
         case opcionesTablaVacantes.vigentes:
-          listar()
+          listar({
+            'fecha_caducidad[operator]': '>=',
+            'fecha_caducidad[value]': obtenerFechaActual(maskFecha),
+
+          })
 
           break;
         case opcionesTablaVacantes.expiradas:
-          listar()
+          listar({
+            'fecha_caducidad[operator]': '<',
+            'fecha_caducidad[value]': obtenerFechaActual(maskFecha),
+          })
 
 
 
@@ -197,25 +205,12 @@ export default defineComponent({
       vacante.num_plazas = solicitudStore.solicitudPersonal.num_plazas
     }
 
-    function btnEliminarConocimiento() {
-      console.log('eliminar')
-    }
-    const btnEliminarFormacionAcademica: CustomActionTable<FormacionAcademica> =
-    {
-      titulo: '',
-      icono: 'bi-x',
-      color: 'negative',
-      accion: ({ posicion }) =>
-        confirmar('¿Está seguro de continuar?', () =>
-          vacante.formaciones_academicas?.splice(posicion, 1)
-        ),
-      visible: () => accion.value == acciones.nuevo || accion.value == acciones.editar
-    }
-    function agregarConocimiento() {
-      console.log('agregar')
-    }
     function agregarFormacionAcademica() {
-      console.log('agregar')
+      const fila = new FormacionAcademica()
+      fila.id = vacante.formaciones_academicas?.length
+        ? encontrarUltimoIdListado(vacante.formaciones_academicas) + 1
+        : 1
+      vacante.formaciones_academicas?.push(fila)
     }
     function optionsFechaCaducidad(date) {
 
@@ -247,15 +242,39 @@ export default defineComponent({
 
     /****************************************************************************
      * BOTONES DE TABLA
-     ****************************************************************************/
+    ****************************************************************************/
+    const btnEliminarFormacionAcademica: CustomActionTable<FormacionAcademica> =
+    {
+      titulo: '',
+      icono: 'bi-x',
+      color: 'negative',
+      accion: ({ posicion }) =>
+        confirmar('¿Está seguro de continuar?', () =>
+          vacante.formaciones_academicas?.splice(posicion, 1)
+        ),
+      visible: () => accion.value == acciones.nuevo || accion.value == acciones.editar
+    }
 
+    const btnCompartirVacante: CustomActionTable = {
+      titulo: '',
+      icono: 'bi-share',
+      accion: ({ entidad }) => {
+        const baseUrl = window.location.origin;
+        const url = `${baseUrl}/puestos-disponibles?id=${entidad.id}&showModal=1`;
+        // Copiar el enlace al portapapeles
+        navigator.clipboard.writeText(url).then(() => {
+          notificarCorrecto("¡El enlace ha sido copiado al portapapeles!")
+        }).catch(err => {
+          console.log(err)
+          notificarError("Error al copiar el enlace")
+        });
+      },
+      visible: ({ entidad }) => entidad.activo
+    }
 
 
     return {
       removeAccents,
-      btnEliminarConocimiento,
-      btnEliminarFormacionAcademica,
-      agregarConocimiento,
       agregarFormacionAcademica,
       optionsFechaCaducidad,
       vacante,
@@ -287,7 +306,8 @@ export default defineComponent({
       checkRequiereExperiencia,
 
       //botones de tabla
-
+      btnEliminarFormacionAcademica,
+      btnCompartirVacante,
     }
   },
 })

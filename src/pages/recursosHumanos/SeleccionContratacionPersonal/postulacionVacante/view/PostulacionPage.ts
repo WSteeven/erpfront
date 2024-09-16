@@ -270,7 +270,7 @@ export default defineComponent({
         modales.abrirModalEntidad('AgregarBancoPostulantePage')
       },
       // visible: () => [estadosPostulacion.POSTULADO, estadosPostulacion.REVISION_CV].includes(tabActual.value) && store.esRecursosHumanos
-      visible: () => store.esRecursosHumanos
+      visible: () => store.esRecursosHumanos && tabActual.value !== estadosPostulacion.CONTRATADO
     }
     const btnEntrevistar: CustomActionTable = {
       titulo: 'Entrevistar',

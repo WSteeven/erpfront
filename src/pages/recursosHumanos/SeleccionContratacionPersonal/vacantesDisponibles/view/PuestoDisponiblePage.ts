@@ -1,6 +1,6 @@
 // Dependencias
 import relativeTime from 'dayjs/plugin/relativeTime';
-import { defineComponent } from 'vue'
+import { defineComponent, onMounted } from 'vue'
 import es from 'dayjs/locale/es';
 import dayjs from 'dayjs'
 import { ref } from 'vue'
@@ -16,6 +16,7 @@ import { useNotificaciones } from 'shared/notificaciones'
 import { ComportamientoModalesVacanteDisponible } from '../application/ComportamientoModalesVacanteDisponible'
 import { useVacanteStore } from 'stores/recursosHumanos/seleccionContratacion/vacante';
 import { getShortDescription } from 'shared/utils';
+import { useRouter } from 'vue-router';
 
 
 export default defineComponent({
@@ -27,7 +28,14 @@ export default defineComponent({
     const vacantesDisponibles = ref()
     const modales = new ComportamientoModalesVacanteDisponible()
     const vacanteStore = useVacanteStore()
+    const router = useRouter()
 
+
+    onMounted(() => {
+      const id = router.currentRoute.value.query.id
+      if (id) vacanteStore.idVacante = id
+      if (router.currentRoute.value.query.showModal == '1') modales.abrirModalEntidad('VisualizarVacantePage')
+    })
 
     dayjs.extend(relativeTime)
     dayjs.locale(es)
@@ -43,7 +51,6 @@ export default defineComponent({
         notificarError('Error al obtener las vacantes disponibles')
       }
     }
-
 
     async function visualizarVacante(id: number) {
       vacanteStore.idVacante = id
