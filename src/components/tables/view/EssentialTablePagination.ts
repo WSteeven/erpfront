@@ -2,7 +2,7 @@
 import { accionesActivos, autorizacionesTransacciones, estadosTransacciones, estadosInventarios, estadosControlStock, estadosCondicionesId, estadosCondicionesValue } from 'config/utils'
 import { estadosCalificacionProveedor } from 'config/utils_compras_proveedores'
 // import { VisibleModal } from '../application/VisibleModal'
-import { computed, defineComponent, ref, watchEffect, nextTick, Ref, watch } from 'vue'
+import { computed, defineComponent, ref, Ref, watch } from 'vue'
 import { EntidadAuditable } from 'shared/entidad/domain/entidadAuditable'
 import { Instanciable } from 'shared/entidad/domain/instanciable'
 import { CustomActionTable } from '../domain/CustomActionTable'
@@ -287,7 +287,7 @@ export default defineComponent({
     /************
      * Variables
      ************/
-    const filter = ref()
+    const filter = ref() // Para filtrar en el input search de la tabla
     const selected = ref([])
     const visibleColumns = ref(getVisibleColumns(props.configuracionColumnas))
     const refTable = ref()
@@ -315,7 +315,9 @@ export default defineComponent({
     /************
      * Funciones
      ************/
-    const verVisorArchivos = ({ posicion }) => {
+    const verVisorArchivos = ({ entidad }) => {
+      const posicion = listado.value.indexOf(entidad)
+      console.log(posicion)
       archivos.value = listado.value[posicion].archivos
       visibleModalVisorArchivos.abrir()
     }
@@ -406,11 +408,17 @@ export default defineComponent({
       await filtrar(uri)
     } */
 
+    /**
+     * Cuadro de texto que trae el componente q-table por defecto
+     * @param request valor a buscar
+     */
     const toSearch = async (request) => {
       console.log(request)
-      if (request.filter) {
+      console.log(filter)
+
+      if (filter.value) {
         await listar({
-          search: request.filter,
+          search: filter.value,
           ...filtros.fields,
         })
       } else {
@@ -441,7 +449,7 @@ export default defineComponent({
 
     const mostrarFiltros = ref(false)
     const tituloBotonFiltros = computed(() =>
-      mostrarFiltros.value ? 'Ocultar filtros' : 'Mostrar filtros'
+      mostrarFiltros.value ? 'Ocultar filtros avanzados' : 'Mostrar filtros avanzados'
     )
 
     const refTableFilters = ref()

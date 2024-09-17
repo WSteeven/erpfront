@@ -3,7 +3,7 @@
     :mixin="mixin"
     :configuracionColumnas="configuracionColumnas"
     titulo-pagina="Transacciones - Egresos"
-    :mostrarListado="false"
+    :mostrar-listado="false"
     :mostrarButtonSubmits="false"
   >
     <template #formulario>

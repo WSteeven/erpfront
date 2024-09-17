@@ -8,7 +8,7 @@ import { ContenedorSimpleMixin } from 'shared/contenedor/modules/simple/applicat
 import { TipoFondoController } from 'pages/fondosRotativos/tipoFondo/infrestructure/TipoFonfoController'
 import { AxiosHttpRepository } from 'shared/http/infraestructure/AxiosHttpRepository'
 import { apiConfig, endpoints } from 'config/api'
-import { imprimirArchivo } from 'shared/utils'
+import { imprimirArchivo, ordenarLista } from 'shared/utils'
 import { Consolidado } from '../domain/Consolidado'
 import { ConsolidadoController } from '../infrestructure/ConsolidadoController'
 import { maskFecha, tipoReportes, tipo_saldo, tipos_saldos } from 'config/utils'
@@ -83,7 +83,7 @@ export default defineComponent({
       tiposFondos.value = listadosAuxiliares.tiposFondos
       tiposFondoRotativoFechas.value =
         listadosAuxiliares.tiposFondoRotativoFechas
- 
+
 
         const primerDiaMes = monthStart(new Date())
         const ultimoDiaMesAnterior = addDay(primerDiaMes, -1)
@@ -166,6 +166,7 @@ export default defineComponent({
     function filtarTiposSaldos(val, update) {
       if (val === '') {
         update(() => {
+          listadosAuxiliares.tipos_saldos = tipos_saldos
           tipos_saldos_consolidado.value = listadosAuxiliares.tipos_saldos
         })
         return
@@ -210,6 +211,7 @@ export default defineComponent({
     }
     function mostrarEmpleados() {
       consolidado.empleado = null
+      console.log(is_all_empleados.value)
     }
     async function recargarEmpleadosInactivos() {
       usuariosInactivos.value = (
@@ -253,6 +255,9 @@ export default defineComponent({
       tipo_saldo,
       is_all_empleados,
       is_inactivo,
+
+      //funciones
+      ordenarLista,
       generar_reporte,
       filtrarUsuarios,
       filtrarUsuariosInactivos,

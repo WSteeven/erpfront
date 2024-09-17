@@ -21,7 +21,7 @@ export class TicketPusherEvent {
     const notificacionStore = this.notificacionesPusherStore
     const pusher = notificacionStore.pusher
     const accion = this.accion
-    console.log(accion)
+    // console.log(accion)
     // console.log(accion)
     // const tabActual = computed(() => this.tabActual.value)
 

@@ -112,7 +112,7 @@ const rutasTareas: RouteRecordRaw[] = [
     meta: { requiresAuth: true },
   },
   {
-    path: '/materiales-empleados',
+    path: '/productos-empleados',
     name: 'materiales_empleados',
     component: () =>
       import(
@@ -168,6 +168,12 @@ const rutasTareas: RouteRecordRaw[] = [
     name: 'transferencia_producto_empleado',
     component: () =>
       import('gestionTrabajos/transferenciasProductosEmpleados/view/TransferenciaProductoEmpleadoPage.vue'),
+    meta: { requiresAuth: true },
+  },
+  {
+    path: '/alimentacion-grupo',
+    name: 'alimentacion_grupo',
+    component: () => import('gestionTrabajos/alimentacionGrupos/view/AlimentacionGrupoPage.vue'),
     meta: { requiresAuth: true },
   },
   /*{

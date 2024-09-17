@@ -10,6 +10,44 @@
       </q-card-section>
 
       <q-card-section>
+        <!-- Tipos reportes -->
+        <div class="col-12 col-md-3">
+          <label class="q-mb-sm block">Tipo de Reporte</label>
+          <q-select
+            v-model="consolidado.tipo_saldo"
+            :options="tipos_saldos_consolidado"
+            transition-show="jump-up"
+            transition-hide="jump-down"
+            options-dense
+            dense
+            outlined
+            :disable="disabled"
+            :readonly="disabled"
+            :error="!!v$.tipo_saldo.$errors.length"
+            error-message="Debes seleccionar un tipo de saldo"
+            use-input
+            input-debounce="0"
+            @popup-show="ordenarLista(tipos_saldos_consolidado, 'label')"
+            @blur="v$.tipo_saldo.$touch"
+            @update:model-value="limpiar()"
+            @filter="filtarTiposSaldos"
+            :option-value="(v) => v.value"
+            :option-label="(v) => v.label"
+            emit-value
+            map-options
+          >
+            <template v-slot:error>
+              <div v-for="error of v$.tipo_saldo.$errors" :key="error.$uid">
+                <div class="error-msg">{{ error.$message }}</div>
+              </div>
+            </template>
+            <template v-slot:no-option>
+              <q-item>
+                <q-item-section class="text-grey"> No hay resultados </q-item-section>
+              </q-item>
+            </template>
+          </q-select>
+        </div>
         <!-- Empleados -->
         <div
           class="col-12 col-md-3"
@@ -162,43 +200,7 @@
             </template>
           </q-input>
         </div>
-        <!-- Tipos reportes -->
-        <div class="col-12 col-md-3">
-          <label class="q-mb-sm block">Tipo Saldo</label>
-          <q-select
-            v-model="consolidado.tipo_saldo"
-            :options="tipos_saldos_consolidado"
-            transition-show="jump-up"
-            transition-hide="jump-down"
-            options-dense
-            dense
-            outlined
-            :disable="disabled"
-            :readonly="disabled"
-            :error="!!v$.tipo_saldo.$errors.length"
-            error-message="Debes seleccionar un tipo de saldo"
-            use-input
-            input-debounce="0"
-            @blur="v$.tipo_saldo.$touch"
-            @update:model-value="limpiar()"
-            @filter="filtarTiposSaldos"
-            :option-value="(v) => v.value"
-            :option-label="(v) => v.label"
-            emit-value
-            map-options
-          >
-            <template v-slot:error>
-              <div v-for="error of v$.tipo_saldo.$errors" :key="error.$uid">
-                <div class="error-msg">{{ error.$message }}</div>
-              </div>
-            </template>
-            <template v-slot:no-option>
-              <q-item>
-                <q-item-section class="text-grey"> No hay resultados </q-item-section>
-              </q-item>
-            </template>
-          </q-select>
-        </div>
+
         <div
           class="col-12 col-md-3"
           v-if="
@@ -211,8 +213,8 @@
             v-model="is_all_empleados"
             color="secondary"
             label="Todos los empleados"
-            true-value="true"
-            false-value="false"
+            :true-value="true"
+            :false-value="false"
             @update:model-value="mostrarEmpleados()"
           ></q-checkbox>
         </div>
@@ -221,7 +223,7 @@
             v-model="is_inactivo"
             color="secondary"
             label="Inactivo"
-            
+
           ></q-checkbox>
         </div>
       </q-card-section>

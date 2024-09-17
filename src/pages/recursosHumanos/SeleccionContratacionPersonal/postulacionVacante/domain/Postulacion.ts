@@ -1,3 +1,4 @@
+import { estadosPostulacion } from 'config/seleccionContratacionPersonal.utils';
 import { EntidadAuditable } from 'shared/entidad/domain/entidadAuditable';
 
 export class Postulacion extends EntidadAuditable {
@@ -6,6 +7,7 @@ export class Postulacion extends EntidadAuditable {
   tipo_postulante: string | null
   nombre: string | null //
   nombres: string | null //
+  nombres_apellidos: string | null //
   apellidos: string | null //
   identificacion: string | null //
   genero: string | null //
@@ -18,15 +20,20 @@ export class Postulacion extends EntidadAuditable {
   fecha_nacimiento: string | null //
   direccion: string | null //
   mi_experiencia: string | null //
+  ruta_cv: string | null //
+  estado: string | null //
+  referencias: any //
+  calificacion: string | null //
 
   tengo_documentos_regla: boolean //
 
   tengo_formacion_academica_requerida: boolean //
   tengo_conocimientos_requeridos: boolean //
   tengo_experiencia_requerida: boolean //
-  tengo_disponibilidad_viajar:boolean //
+  tengo_disponibilidad_viajar: boolean //
   tengo_licencia_conducir: boolean //
   tipo_licencia: string | null //
+  dado_alta: boolean
 
 
   constructor() {
@@ -36,6 +43,7 @@ export class Postulacion extends EntidadAuditable {
     this.tipo_postulante = null
     this.nombre = null
     this.nombres = null
+    this.nombres_apellidos = null
     this.apellidos = null
     this.identificacion = null
     this.tipo_identificacion = null
@@ -44,11 +52,15 @@ export class Postulacion extends EntidadAuditable {
     this.genero = 'M'
     this.identidad_genero = null
     this.pais = null
-    this.direccion= null
-    this.mi_experiencia= null
+    this.direccion = null
+    this.mi_experiencia = null
     this.pais_residencia = null
     this.fecha_nacimiento = null
+    this.ruta_cv = null
     this.tengo_documentos_regla = false
+    this.estado = estadosPostulacion.POSTULADO
+    this.referencias = []
+    this.calificacion = null
 
     this.tengo_formacion_academica_requerida = false
     this.tengo_conocimientos_requeridos = false
@@ -56,6 +68,7 @@ export class Postulacion extends EntidadAuditable {
     this.tengo_disponibilidad_viajar = false
     this.tengo_licencia_conducir = false
     this.tipo_licencia = null
+    this.dado_alta = false
 
   }
 }

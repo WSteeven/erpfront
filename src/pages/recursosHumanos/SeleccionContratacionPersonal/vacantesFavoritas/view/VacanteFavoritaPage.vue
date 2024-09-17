@@ -3,29 +3,10 @@
     <template #contenido>
       <q-card-section>
         <div class="text-h5 q-mt-sm q-mb-xs text-center text-bold">
-          Nuestros Puestos de Trabajo
-        </div>
-        <div class="row q-col-gutter-sm q-pa-md flex flex-center">
-          <div class="col-12 col-md-6 col-sm-12">
-            <q-input
-              v-model="val"
-              autogrow
-              placeholder="Ingresa algo para filtrar"
-              outlined
-              dense
-            >
-              <template #append>
-                <q-btn unelevated>
-                  <q-icon class="bi-search"></q-icon>
-                </q-btn>
-              </template>
-            </q-input>
-          </div>
+          Mis Vacantes Favoritas
         </div>
       </q-card-section>
-      <!-- <pre>
-          {{ $q.screen }}
-      </pre> -->
+
       <div class="row q-col-gutter-sm q-py-md q-mx-sm">
         <div
           class="col-12 col-md-4 col-sm-6"
@@ -56,7 +37,7 @@
                   <div
                     class="col-9 block q-px-xs text-caption text-grey text-justify"
                   >
-                    <p>{{ getShortDescription(vacante.descripcion) }}</p>
+                    <p>{{ getShortDescription($q, vacante.descripcion) }}</p>
                   </div>
                 </div>
               </div>
@@ -100,7 +81,6 @@
   <modal-entidad
     :comportamiento="modales"
     :persistente="false"
-    @guardado="data => guardado(data)"
     @cerrado="cerrarModal"
   ></modal-entidad>
 </template>

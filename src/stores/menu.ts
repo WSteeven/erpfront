@@ -65,22 +65,10 @@ export const useMenuStore = defineStore('menu', () => {
           can: store.can('puede.ver.tareas')
         },
         {
-          title: 'Productos de empleados',
-          link: 'materiales-empleados',
-          icon: 'bi-box-seam',
-          can: store.can('puede.ver.materiales_empleados')
-        },
-        /*{
-          title: 'Trabajo agendado',
-          link: 'trabajo-agendado',
-          icon: 'bi-ui-checks-grid',
-          can: true,//store.esTecnicoLider,// store.can('puede.ver.trabajo_asignado'),
-        },*/
-        {
-          title: 'Transferencia de productos',
-          link: 'transferencia-producto-empleado',
-          icon: 'bi-arrow-left-right',
-          can: store.can('puede.ver.transferencia_producto_empleado')
+          title: 'Alimentación grupos',
+          link: 'alimentacion-grupo',
+          icon: 'bi-check2-circle',
+          can: store.can('puede.ver.alimentacion_grupo')
         },
         {
           title: 'Movilización entre trabajos',
@@ -279,6 +267,18 @@ export const useMenuStore = defineStore('menu', () => {
           icon: 'bi-bar-chart-fill'
         },
         {
+          title: 'Productos de empleados',
+          link: 'productos-empleados',
+          icon: 'bi-box-seam',
+          can: store.can('puede.ver.materiales_empleados')
+        },
+        {
+          title: 'Transferencia de productos',
+          link: 'transferencia-producto-empleado',
+          icon: 'bi-arrow-left-right',
+          can: store.can('puede.ver.transferencia_producto_empleado')
+        },
+        {
           title: 'Categorías',
           link: 'categorias',
           can: store.esActivosFijos, //store.esBodeguero,//can('puede.ver.categorias'),
@@ -320,6 +320,13 @@ export const useMenuStore = defineStore('menu', () => {
           icon: 'bi-info-circle-fill',
           // can: store.esBodeguero,// can('puede.ver.detalles'),
           can: store.can('puede.acceder.detalles')
+        },
+        {
+          title: 'Permisos de Armas',
+          link: 'permisos-armas',
+          icon: 'bi-app',
+          // can: store.esBodeguero,// can('puede.ver.detalles'),
+          can: store.can('puede.acceder.permisos_armas'),
         },
         {
           title: 'Inventario',
@@ -431,6 +438,12 @@ export const useMenuStore = defineStore('menu', () => {
               can: true
             },
             {
+              title: 'Reporte de Uniformes y EPPs',
+              link: 'reporte-epps',
+              icon: 'bi-journal-arrow-down',
+              can: true
+            },
+            {
               title: 'Reporte de pedidos',
               link: 'reporte-pedidos',
               icon: 'bi-journal-check',
@@ -456,6 +469,34 @@ export const useMenuStore = defineStore('menu', () => {
         }
       ]
     },
+    /*****************
+     * Activos fijos
+     *****************/
+    {
+      title: 'Activos fijos',
+      icon: 'home_work',
+      can: store.can('puede.acceder.modulo_activos_fijos'),
+      children: [
+        {
+          title: 'Control de activos fijos',
+          link: 'control-activos-fijos',
+          can: store.can('puede.acceder.control_activos_fijos'),
+          icon: 'bi-app',
+        },
+        {
+          title: 'Seguimiento consumo de activos fijos',
+          link: 'seguimiento-consumo-activos-fijos',
+          can: store.can('puede.acceder.seguimiento_consumo_activos_fijos'),
+          icon: 'bi-app',
+        },
+        {
+          title: 'Transferencia de activos fijos',
+          link: 'transferencia-activos-fijos',
+          can: store.can('puede.acceder.transferencia_activos_fijos'),
+          icon: 'bi-app',
+        },
+      ],
+    },
     // Modulo Fondos Rotativos
     {
       title: 'Fondos Rotativos',
@@ -466,30 +507,30 @@ export const useMenuStore = defineStore('menu', () => {
         //   title: 'Gastos',
         //   icon: 'fa-solid fa-receipt', // Cambiado de 'bi-receipt' a Font Awesome
         //   children: [
-            {
-              title: 'Registrar Gastos',
-              link: 'gasto',
-              icon: 'fa-solid fa-plus-circle', // Cambiado de 'bi-plus-circle-fill' a Font Awesome
-              can: store.can('puede.ver.gasto')
-            },
-            {
-              title: 'Solicitar Fondos',
-              link: 'gasto-coordinador',
-              icon: 'fa-solid fa-hand-holding-usd', // Cambiado de 'bi-handbag-fill' a Font Awesome
-              can: store.can('puede.ver.gasto_coordinador')
-            },
-            {
-              title: 'Autorizar Gasto',
-              link: 'autorizar-gasto',
-              icon: 'fa-solid fa-check-circle', // Cambiado de 'bi-check-circle-fill' a Font Awesome
-              can: true //store.can('puede.ver.autorizar_gasto'),
-            },
-            {
-              title: 'Anular Gasto',
-              link: 'anular-gasto',
-              icon: 'fa-solid fa-times-circle', // Cambiado de 'bi-x-circle-fill' a Font Awesome
-              can: store.can('puede.ver.anular_gasto')
-            // }
+        {
+          title: 'Registrar Gastos',
+          link: 'gasto',
+          icon: 'fa-solid fa-plus-circle', // Cambiado de 'bi-plus-circle-fill' a Font Awesome
+          can: store.can('puede.ver.gasto')
+        },
+        {
+          title: 'Solicitar Fondos',
+          link: 'gasto-coordinador',
+          icon: 'fa-solid fa-hand-holding-usd', // Cambiado de 'bi-handbag-fill' a Font Awesome
+          can: store.can('puede.ver.gasto_coordinador')
+        },
+        {
+          title: 'Autorizar Gasto',
+          link: 'autorizar-gasto',
+          icon: 'fa-solid fa-check-circle', // Cambiado de 'bi-check-circle-fill' a Font Awesome
+          can: true //store.can('puede.ver.autorizar_gasto'),
+        },
+        {
+          title: 'Anular Gasto',
+          link: 'anular-gasto',
+          icon: 'fa-solid fa-times-circle', // Cambiado de 'bi-x-circle-fill' a Font Awesome
+          can: store.can('puede.ver.anular_gasto')
+          // }
           // ]
         },
 
@@ -786,6 +827,12 @@ export const useMenuStore = defineStore('menu', () => {
               link: 'rubro',
               icon: 'bi-box-fill',
               can: store.can('puede.acceder.rubro')
+            },
+            {
+              title: 'Tipos de licencias',
+              link: 'tipos-licencias',
+              icon: 'bi-box-fill',
+              can: store.can('puede.acceder.tipos_licencias')
             }
           ]
         }
@@ -797,7 +844,7 @@ export const useMenuStore = defineStore('menu', () => {
      *****************************************/
     {
       title: 'Intranet',
-      icon: 'fa-solid fa-explosion',
+      icon: 'fa-solid fa-info',
       can: store.esAdministrador || store.can('puede.ver.modulo_intranet'),
       module: true,
       children: [
@@ -839,7 +886,7 @@ export const useMenuStore = defineStore('menu', () => {
      *****************************************/
     {
       title: 'Vehículos',
-      icon: 'fa-solid fa-car-burst',
+      icon: 'fa-solid fa-car',
       can: store.esAdministrador || store.can('puede.ver.modulo_vehiculos'),
       module: true,
       children: [
@@ -998,21 +1045,6 @@ export const useMenuStore = defineStore('menu', () => {
         }
       ]
     },
-
-    //Modulo Activos Fijos
-    {
-      title: 'Activos fijos',
-      icon: 'bi-safe-fill',
-      can: store.can('puede.ver.modulo_activos_fijos'),
-      children: [
-        {
-          title: 'Control de activos',
-          link: 'activos-fijos',
-          icon: 'bi-clipboard-check-fill',
-          can: store.can('puede.ver.activos_fijos')
-        }
-      ]
-    },
     /*********************************************************
      * Modulo de compras y proveedores
      *********************************************************/
@@ -1145,7 +1177,7 @@ export const useMenuStore = defineStore('menu', () => {
       children: [
         {
           title: 'Dashboard',
-          link: 'ventas/dashboard-ventas',
+          link: 'dashboard-ventas',
           icon: 'bi-bar-chart-fill',
           can:
             store.can('puede.ver.dashboard_ventas_empresa') ||
@@ -1192,7 +1224,7 @@ export const useMenuStore = defineStore('menu', () => {
       children: [
         {
           title: 'Dashboard',
-          link: 'dashboard-ventas',
+          link: 'dashboard-ventas-claro',
           icon: 'bi-bar-chart-fill',
           can: store.can('puede.ver.dashboard_ventas')
         },

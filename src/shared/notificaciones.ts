@@ -18,9 +18,6 @@ export function useNotificaciones() {
     // multiLine: true,
     // progress: true,
     classes: 'rounded-tabpanel q-py-sm shadow-notification bg-desenfoque border-white',
-    actions: [
-      { icon: 'close', color: 'negative', round: true, handler: () => { /* ... */ } }
-    ]
   }
 
   function notificarInformacion(mensaje: string | string[]) {
@@ -45,6 +42,9 @@ export function useNotificaciones() {
       message: '<b>Correcto</b>',
       caption: obtenerMensaje(mensaje),
       progressClass: 'text-positive',
+      actions: [
+        { label: 'Cerrar', color: 'positive', handler: () => { /* ... */ } }
+      ],
     })
   }
 
@@ -56,6 +56,9 @@ export function useNotificaciones() {
       message: '<b>Error</b>',
       caption: obtenerMensaje(mensaje),
       progressClass: 'text-pink-6',
+      actions: [
+        { label: 'Cerrar', color: 'pink-6', handler: () => { /* ... */ } }
+      ],
     })
   }
 
@@ -68,6 +71,9 @@ export function useNotificaciones() {
       message: '<b>Advertencia</b>',
       caption: obtenerMensaje(mensaje),
       progressClass: 'text-amber-9',
+      actions: [
+        { label: 'Cerrar', color: 'amber-9', handler: () => { /* ... */ } }
+      ],
     })
   }
 

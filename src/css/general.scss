@@ -142,6 +142,10 @@ input[type='time']::-webkit-calendar-picker-indicator {
   border: 1px solid $primary !important;
 }
 
+.border-warning {
+  border: 1px solid $warning !important;
+}
+
 .border-grey {
   border: 1px solid $grey-4 !important;
 }
@@ -180,6 +184,26 @@ border-radius: 8px;
 
 .border-bottom-black-2px {
   border-bottom: 2px solid #000;
+}
+
+.border-callout-info {
+  border-right: 3px solid $primary;
+  border-left: 3px solid $primary;
+}
+
+.border-callout-warning {
+  border-right: 3px solid $warning;
+  border-left: 3px solid $warning;
+}
+
+.border-callout-positive {
+  border-right: 3px solid $positive;
+  border-left: 3px solid $positive;
+}
+
+.border-left-blue-grey {
+  border-bottom: 3px solid $blue-grey-4;
+  border-left: 3px solid $blue-grey;
 }
 
 .border-right-grey-5 {

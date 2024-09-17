@@ -8,16 +8,56 @@
     :filtrar="filtrarAcreditacion"
     tabDefecto="1"
     :forzarListar="true"
+    ajustarCeldas
   >
     <template #formulario>
       <q-form @submit.prevent>
         <div class="row q-col-gutter-sm q-mb-md">
-          <!-- Usuarios -->
-          <div class="col-12 col-md-4 q-mb-md">
+          <!-- fecha de acreditacion -->
+          <div class="col-12 col-md-3">
+            <label class="q-mb-sm block">Fecha</label>
+            <q-input
+              v-model="acreditacion.fecha"
+              placeholder="Opcional"
+              :disable="disabled"
+              outlined
+              dense
+            >
+              <template v-slot:append>
+                <q-icon name="event" class="cursor-pointer">
+                  <q-popup-proxy
+                    cover
+                    transition-show="scale"
+                    transition-hide="scale"
+                  >
+                    <q-date
+                      v-model="acreditacion.fecha"
+                      :mask="maskFecha"
+                      :options="optionsFecha"
+                      today-btn
+                    >
+                      <div class="row items-center justify-end">
+                        <q-btn
+                          v-close-popup
+                          label="Cerrar"
+                          color="primary"
+                          flat
+                        />
+                      </div>
+                    </q-date>
+                  </q-popup-proxy>
+                </q-icon>
+              </template>
+            </q-input>
+          </div>
+
+          <!-- Empleado -->
+          <div class="col-12 col-md-3 q-mb-md">
             <label class="q-mb-sm block">Empleado</label>
             <q-select
+              autogrow
               v-model="acreditacion.usuario"
-              :options="usuarios"
+              :options="empleados"
               transition-show="jump-up"
               transition-hide="jump-down"
               options-dense
@@ -30,10 +70,11 @@
               error-message="Debes seleccionar un empleado"
               use-input
               input-debounce="0"
-              @filter="filtrarUsuarios"
+              @popup-show="ordenarLista(empleados, 'apellidos')"
+              @filter="filtrarEmpleados"
               @update:model-value="saldo_anterior()"
-              :option-value="(v) => v.id"
-              :option-label="(v) => v.nombres + ' ' + v.apellidos"
+              :option-value="v => v.id"
+              :option-label="v => v.apellidos + ' ' + v.nombres"
               emit-value
               map-options
             >
@@ -44,13 +85,15 @@
               </template>
               <template v-slot:no-option>
                 <q-item>
-                  <q-item-section class="text-grey"> No hay resultados </q-item-section>
+                  <q-item-section class="text-grey">
+                    No hay resultados
+                  </q-item-section>
                 </q-item>
               </template>
             </q-select>
           </div>
           <!-- Tipo Fondo -->
-          <div class="col-12 col-md-4 q-mb-md">
+          <div class="col-12 col-md-3 q-mb-md">
             <label class="q-mb-sm block">Tipo Fondo</label>
             <q-select
               v-model="acreditacion.tipo_fondo"
@@ -67,9 +110,9 @@
               use-input
               input-debounce="0"
               @filter="filtrarTiposFondos"
-              :option-value="(v) => v.id"
+              :option-value="v => v.id"
               @blur="v$.tipo_fondo.$touch"
-              :option-label="(v) => v.descripcion"
+              :option-label="v => v.descripcion"
               emit-value
               map-options
             >
@@ -80,13 +123,15 @@
               </template>
               <template v-slot:no-option>
                 <q-item>
-                  <q-item-section class="text-grey"> No hay resultados </q-item-section>
+                  <q-item-section class="text-grey">
+                    No hay resultados
+                  </q-item-section>
                 </q-item>
               </template>
             </q-select>
           </div>
           <!-- Tipo Saldo -->
-          <div class="col-12 col-md-4 q-mb-md">
+          <div class="col-12 col-md-3 q-mb-md">
             <label class="q-mb-sm block">Tipo Saldo</label>
             <q-select
               v-model="acreditacion.tipo_saldo"
@@ -104,8 +149,8 @@
               @blur="v$.tipo_saldo.$touch"
               input-debounce="0"
               @filter="filtrarTiposSaldos"
-              :option-value="(v) => v.id"
-              :option-label="(v) => v.descripcion"
+              :option-value="v => v.id"
+              :option-label="v => v.descripcion"
               emit-value
               map-options
             >
@@ -116,7 +161,9 @@
               </template>
               <template v-slot:no-option>
                 <q-item>
-                  <q-item-section class="text-grey"> No hay resultados </q-item-section>
+                  <q-item-section class="text-grey">
+                    No hay resultados
+                  </q-item-section>
                 </q-item>
               </template>
             </q-select>
@@ -125,6 +172,7 @@
           <div class="col-12 col-md-3">
             <label class="q-mb-sm block">Referencia:</label>
             <q-input
+            autogrow
               v-model="acreditacion.id_saldo"
               placeholder="Obligatorio"
               :disable="disabled"
@@ -211,10 +259,13 @@
       </q-form>
       <div
         class="q-pa-md q-gutter-sm flex flex-center"
-        v-if="accion === acciones.consultar && acreditacion.estado == 'REALIZADO'"
+        v-if="
+          accion === acciones.consultar && acreditacion.estado == 'REALIZADO'
+        "
       >
         <q-btn color="negative" @click="anularAcreditacion(acreditacion)">
-          <q-icon class="q-pr-sm" name="bi-x-circle" size="xs"></q-icon>Anular</q-btn
+          <q-icon class="q-pr-sm" name="bi-x-circle" size="xs"></q-icon
+          >Anular</q-btn
         >
       </div>
     </template>

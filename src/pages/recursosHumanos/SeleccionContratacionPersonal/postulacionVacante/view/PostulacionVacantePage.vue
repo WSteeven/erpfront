@@ -1,8 +1,5 @@
 <template>
-  <!-- <basic-container>
-    <template #contenido>
-      <q-card-section> -->
-  <simple-layout :mixin="mixin">
+  <simple-layout forzarGuardar :mixin="mixin">
     <template #formulario>
       <div class="text-subtitle2">
         Completa el formulario para continuar con la postulación
@@ -141,7 +138,6 @@
             </q-input>
           </div>
 
-          <!-- {{ postulacion }} -->
           <!-- Genero -->
           <div class="col-12 col-md-3 col-sm-3">
             <label class="q-mb-sm block">Sexo asignado al nacer</label>
@@ -350,7 +346,7 @@
               :error="!!v$.direccion.$errors.length"
               @blur="v$.direccion.$touch"
             >
-            <template v-slot:error>
+              <template v-slot:error>
                 <div
                   style="clear: inherit"
                   v-for="error of v$.direccion.$errors"
@@ -363,7 +359,7 @@
           </div>
         </div>
       </q-expansion-item>
-
+      <!-- {{ postulacion }} -->
       <q-expansion-item
         class="overflow-hidden q-mb-md rounded bg-desenfoque-2"
         label="Información adicional"
@@ -372,6 +368,49 @@
       >
         <div class="row q-pa-md">
           <div class="col-12">
+            Puedes seleccionar un CV de los que ya tienes registrados o subir
+            uno nuevo
+            <q-btn-toggle
+              v-model="quieroSubirCV"
+              class="toggle-button-primary"
+              :disable="disabled"
+              spread
+              no-caps
+              rounded
+              toggle-color="primary"
+              unelevated
+              :options="[
+                {
+                  label: 'Utilizar un Currículum Vitae ya subido',
+                  value: false
+                },
+                {
+                  label: 'Quiero subir mi Currículum Vitae',
+                  value: true
+                }
+              ]"
+            />
+          </div>
+          <div class="col-12" v-if="!quieroSubirCV">
+            <essential-table
+              :titulo="`Tienes ${listadoCurriculumnsUsuario.length} curriculums registrados`"
+              ref="refArchivoUsuario"
+              @selected="seleccionarArchivo"
+              tipo-seleccion="single"
+              :configuracionColumnas="columnas"
+              :datos="listadoCurriculumnsUsuario"
+              ajustarCeldas
+              :alto-fijo="false"
+              :permitirConsultar="false"
+              :permitirEditar="false"
+              :permitirEliminar="false"
+              :mostrar-botones="false"
+              :permitir-buscar="false"
+              :accion1="btnDescargarCurriculumUsuario"
+              :accion2="btnEliminarCurriculumUsuario"
+            ></essential-table>
+          </div>
+          <div class="col-12" v-if="quieroSubirCV">
             <!-- Solo se admiten pdfs -->
             <gestor-archivos
               ref="refArchivo"
@@ -405,8 +444,10 @@
 
           <div class="col-12">
             <label class="q-mb-sm block"
-              >Comentanos brevemente tu experiencia en el rol al que estas
-              postulando
+              >Coméntanos brevemente tu experiencia en el rol (<strong>{{
+                vacante.nombre
+              }}</strong
+              >) al que estás postulando
             </label>
             <q-input
               type="textarea"
@@ -419,7 +460,7 @@
               :error="!!v$.mi_experiencia.$errors.length"
               @blur="v$.mi_experiencia.$touch"
             >
-            <template v-slot:error>
+              <template v-slot:error>
                 <div
                   style="clear: inherit"
                   v-for="error of v$.mi_experiencia.$errors"
@@ -435,29 +476,34 @@
             siguientes requisitos:
           </div>
           <!-- Tengo Experiencia -->
-          <div class="col-12" v-if="vacante.anios_experiencia !== null">
+          <div class="row col-12" v-if="vacante.anios_experiencia !== null">
             <!-- <strong
               >Tengo mínimo {{ vacante.anios_experiencia?.toLowerCase() }} de
               experiencia
             </strong> -->
-            Tengo mínimo {{ vacante.anios_experiencia?.toLowerCase() }} de
-            experiencia en un cargo similar?
-            <q-checkbox
-              v-model="postulacion.tengo_experiencia_requerida"
-              :label="postulacion.tengo_experiencia_requerida ? 'SI' : 'NO'"
-              :disable="disabled"
-            />
+            <div class="col-md-6 col-xs-12">
+              Tengo mínimo {{ vacante.anios_experiencia?.toLowerCase() }} de
+              experiencia en un cargo similar?
+            </div>
+            <div class="col-md-6 col-xs-12">
+              <option-group-component
+                v-model="postulacion.tengo_experiencia_requerida"
+                :disable="disabled"
+              />
+            </div>
           </div>
           <!-- Tengo Disponibilidad de viajar -->
-          <div class="col-12" v-if="vacante.disponibilidad_viajar">
-            <!-- <strong>Tengo disponibilidad de viajar </strong> -->
-            Tengo disponibilidad de viajar fuera de la provincia cuando sea
-            requerido?
-            <q-checkbox
-              v-model="postulacion.tengo_disponibilidad_viajar"
-              :label="postulacion.tengo_disponibilidad_viajar ? 'SI' : 'NO'"
-              :disable="disabled"
-            />
+          <div class="row col-12" v-if="vacante.disponibilidad_viajar">
+            <div class="col-md-6 col-xs-12">
+              Tengo disponibilidad de viajar fuera de la provincia cuando sea
+              requerido?
+            </div>
+            <div class="col-md-6 col-xs-12">
+              <option-group-component
+                v-model="postulacion.tengo_disponibilidad_viajar"
+                :disable="disabled"
+              />
+            </div>
           </div>
           <!-- Tengo Licencia de conducir -->
           <div
@@ -467,11 +513,9 @@
             <div class="col col-md-6 col-xs-12">
               <!-- <strong>Poseo licencia de conducir vigente?:</strong> -->
               Poseo licencia de conducir vigente?
-              <q-checkbox
+              <option-group-component
                 v-model="postulacion.tengo_licencia_conducir"
-                :label="postulacion.tengo_licencia_conducir ? 'SI' : 'NO'"
                 :disable="disabled"
-                @update:model-value="checkPoseoLicencia"
               />
             </div>
             <!--Tipo de Licencia -->
@@ -538,7 +582,9 @@
             </div>
           </div>
 
-          <div class="row col-12 q-col-gutter-sm q-pa-xs q-my-xs border-grey rounded-4">
+          <div
+            class="row col-12 q-col-gutter-sm q-pa-xs q-my-xs border-grey rounded-4"
+          >
             <div class="col-md-6 col-xs-12">
               El cargo requiere tener conocimientos en:
               <q-chip
@@ -551,52 +597,88 @@
             <div class="col-md-6 col-xs-12">
               <!-- <strong>Tengo los conocimientos requeridos?</strong> -->
               Tengo los conocimientos requeridos?
-              <q-checkbox
+              <option-group-component
                 v-model="postulacion.tengo_conocimientos_requeridos"
-                :label="
-                  postulacion.tengo_conocimientos_requeridos ? 'SI' : 'NO'
-                "
                 :disable="disabled"
               />
             </div>
           </div>
-          <div class="row col-12 q-col-gutter-sm q-pa-xs q-my-xs border-grey rounded-4"
+          <div
+            class="row col-12 q-col-gutter-sm q-pa-xs q-my-xs border-grey rounded-4"
             v-if="vacante.requiere_formacion_academica"
           >
             <div class="col-md-6 col-sm-12 col-xs-12">
-              El cargo require tener cierta formación académica:
+              El cargo requiere tener cierta formación académica:
               <div
                 v-for="formacion of vacante.formaciones_academicas"
                 :key="formacion.id"
               >
                 <q-chip
                   :class="{ 'truncate-chip-labels': truncateChips }"
-                  :label="formacion.nivel + ' - ' + formacion.nombre + ' O EQUIVALENTE'"
-                  :title="formacion.nivel + ' - ' + formacion.nombre + ' O EQUIVALENTE'"
+                  :label="
+                    formacion.nivel +
+                    ' - ' +
+                    formacion.nombre +
+                    ' O EQUIVALENTE'
+                  "
+                  :title="
+                    formacion.nivel +
+                    ' - ' +
+                    formacion.nombre +
+                    ' O EQUIVALENTE'
+                  "
                 >
-                <q-tooltip> {{formacion.nivel}} - {{formacion.nombre}}  O EQUIVALENTE </q-tooltip>
-              </q-chip>
+                  <q-tooltip>
+                    {{ formacion.nivel }} - {{ formacion.nombre }} O EQUIVALENTE
+                  </q-tooltip>
+                </q-chip>
               </div>
             </div>
             <div class="col-md-6 col-sm-12 col-xs-12">
               <!-- <strong>Tengo la formación académica requerida?</strong> -->
               Tengo la formación académica requerida?
-              <q-checkbox
+              <option-group-component
                 v-model="postulacion.tengo_formacion_academica_requerida"
-                :label="
-                  postulacion.tengo_formacion_academica_requerida ? 'SI' : 'NO'
-                "
                 :disable="disabled"
               />
             </div>
           </div>
         </div>
       </q-expansion-item>
+      <q-expansion-item
+        class="overflow-hidden q-mb-md rounded bg-desenfoque-2"
+        label="Referencias Personales"
+        header-class="text-bold bg-desenfoque text-primary"
+        default-opened
+      >
+        <div class="row q-col-gutter-sm q-pa-sm">
+          <div class="col-12">
+            <label class="q-mb-sm block">
+              <strong style="color: red">*</strong> Es recomendable que
+              registres <strong>3 referencias </strong> personales o laborales
+            </label>
+            <!-- <label>
+              También puedes subir tus referencias en
+              <strong>formato PDF</strong></label
+            > -->
+            <essential-table
+              :configuracionColumnas="configuracionColumnasReferencias"
+              :datos="postulacion.referencias"
+              ajustarCeldas
+              :permitirConsultar="false"
+              :permitirEditarCeldas="true"
+              :permitirEditar="false"
+              :permitirEliminar="false"
+              :altoFijo="false"
+              :accion1Header="btnAgregarReferencia"
+              :accion1="btnEliminar"
+              :mostrarFooter="false"
+            ></essential-table>
+          </div>
+        </div>
+      </q-expansion-item>
     </template>
   </simple-layout>
-  <!-- </q-card-section>
-    </template>
-  </basic-container> -->
 </template>
 <script src="./PostulacionVacantePage.ts" />
 

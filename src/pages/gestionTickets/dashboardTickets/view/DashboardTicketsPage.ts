@@ -7,7 +7,7 @@ import { CustomActionPrompt } from 'components/tables/domain/CustomActionPrompt'
 import { computed, defineComponent, reactive, ref, watchEffect } from 'vue'
 import { optionsPie, optionsLine } from 'config/graficoGenerico'
 import { required, requiredIf } from 'shared/i18n-validators'
-import { accionesTabla, tiposJornadas } from 'config/utils'
+import { accionesTabla, maskFecha, tiposJornadas } from 'config/utils'
 import { useNotificaciones } from 'shared/notificaciones'
 import { estadosTickets } from 'config/tickets.utils'
 import { useTicketStore } from 'stores/ticket'
@@ -210,7 +210,7 @@ export default defineComponent({
       filtrarDepartamentos,
     } = useFiltrosListadosTickets(listadosAuxiliares)
 
-    filtro.fecha_fin = obtenerFechaActual()
+    filtro.fecha_fin = obtenerFechaActual(maskFecha)
 
     /****************
      * Observadores
@@ -225,6 +225,22 @@ export default defineComponent({
           break
       }
     })
+
+    /*************
+     * Funciones
+     *************/
+    const reporteExcel = async () => {
+      listar({
+        export: 'xlsx',
+        titulo: 'archivo',
+        'created_at[start]': filtro.fecha_inicio,
+        'created_at[end]': filtro.fecha_fin,
+        'responsable_id': filtro.empleado,
+        'departamento_id': filtro.departamento,
+        'f_params[orderBy][field]': 'id',
+        'f_params[orderBy][type]': 'DESC',
+      })
+    }
 
     async function consultar() {
 
@@ -660,6 +676,8 @@ export default defineComponent({
       consultarDesdeFechas,
       mostrarSeccionDepartamento,
       mostrarSeccionEmpleado,
+      reporteExcel,
+      maskFecha,
     }
   }
 })

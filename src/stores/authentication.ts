@@ -50,6 +50,7 @@ export const useAuthenticationStore = defineStore('authentication', () => {
   const esCompras = computed(() => user.value ? extraerRol(user.value.roles, rolesSistema.compras) : false)
   const esAdministrador = computed(() => user.value ? extraerRol(user.value.roles, rolesSistema.administrador) : false)
   const esAdministradorVehiculos = computed(() => user.value ? extraerRol(user.value.roles, rolesSistema.administradorVehiculos) : false)
+  const esSupervisorTecnico = computed(() => user.value ? extraerRol(user.value.roles, rolesSistema.esSupervisorTecnico) : false)
   //ventas
   const esJefeVentasClaro = computed(() => user.value ? extraerRol(user.value.roles, rolesSistema.jefe_ventas) : false)
   const esSupervisorVentasClaro = computed(() => user.value ? extraerRol(user.value.roles, rolesSistema.supervisor_ventas) : false)
@@ -73,7 +74,7 @@ export const useAuthenticationStore = defineStore('authentication', () => {
 
       const login = axios.getEndpoint(endpoints.login)
       const response: AxiosResponse = await axios.post(login, credentiales)
-      console.log(response)
+      // console.log(response)
       LocalStorage.set('token', response.data.access_token)
       LocalStorage.set('method_access', tipoAutenticacion.empleado)
       setUser(response.data.modelo)
@@ -200,6 +201,7 @@ export const useAuthenticationStore = defineStore('authentication', () => {
   }
 
   async function isUserLoggedIn(): Promise<boolean> {
+    console.log('auth...')
     if (!usuarioFueConsultado) {
       await getUser()
       usuarioFueConsultado = true
@@ -252,7 +254,7 @@ export const useAuthenticationStore = defineStore('authentication', () => {
     esActivosFijos,
     esRecursosHumanos,
     esGerente,
-    esCompras, esContabilidad, esAdministrador, esAdministradorVehiculos,esMecanicoGeneral,
+    esCompras, esContabilidad, esAdministrador, esAdministradorVehiculos, esMecanicoGeneral, esSupervisorTecnico,
     esJefeVentasClaro, esSupervisorVentasClaro, esVendedor,
     esFiscalizador,
     esSupervisorCampo,

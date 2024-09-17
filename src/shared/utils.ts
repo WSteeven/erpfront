@@ -1,7 +1,7 @@
 import axios, { AxiosError, AxiosResponse, Method, ResponseType } from 'axios'
 import { StatusEssentialLoading } from 'components/loading/application/StatusEssentialLoading'
 import { apiConfig, endpoints } from 'config/api'
-import { date } from 'quasar'
+import { date, useQuasar } from 'quasar'
 import { ColumnConfig } from 'src/components/tables/domain/ColumnConfig'
 import { EntidadAuditable } from './entidad/domain/entidadAuditable'
 import { ApiError } from './error/domain/ApiError'
@@ -12,6 +12,7 @@ import { ItemProforma } from 'pages/comprasProveedores/proforma/domain/ItemProfo
 import { useAuthenticationStore } from 'stores/authentication'
 import { rolesSistema } from 'config/utils'
 import { SelectOption } from 'components/tables/domain/SelectOption'
+import { format } from '@formkit/tempo'
 
 const authenticationStore = useAuthenticationStore()
 const usuario = authenticationStore.user
@@ -174,6 +175,9 @@ export function generarFilters<T>(
 export function partirNumeroDocumento(numeroDocumento: string): string[] {
   return numeroDocumento.split('-')
 }
+export function checkValueIsNumber(val): boolean {
+  return !isNaN(val) && !isNaN(parseFloat(val));
+}
 
 export function construirNumeroDocumento(
   establecimiento: string,
@@ -252,6 +256,13 @@ export function obtenerFechaActual(formato = 'DD-MM-YYYY') {
   const formattedString = date.formatDate(timeStamp, formato)
   return formattedString
 }
+
+/* export function convertirFormatoFechaHora(fechaHoraOrigen, formatoDestino = 'YYYY-MM-DD') {
+  const fechaHora = fechaHoraOrigen.split(' ')
+  const partesFecha = fechaHora[0].split('-')
+  const fecha = new Date(Number(partesFecha[0]), Number(partesFecha[1]) - 1, Number(partesFecha[2]))
+  return date.formatDate(fecha, formatoDestino)
+} */
 
 /**
  * La función `sumarFechas` toma una cadena de fecha y le agrega un número específico de años, meses y
@@ -447,6 +458,19 @@ export async function imprimirArchivo(
       notificarError(error)
     })
     .finally(() => statusLoading.desactivar())
+}
+
+export async function downloadFile(data, titulo, formato) {
+  const fileURL = URL.createObjectURL(
+    new Blob([data], { type: `appication/${formato}` })
+  )
+  const link = document.createElement('a')
+  link.href = fileURL
+  link.target = '_blank'
+  link.setAttribute('download', `${titulo}.${formato}`)
+  document.body.appendChild(link)
+  link.click()
+  link.remove()
 }
 
 export function filtrarLista(val, update, lista, clave, defaultValue = []) {
@@ -868,3 +892,74 @@ export const copiarAlPortapapeles = async (texto: string) => {
   }
 }
 
+/**
+ * Función para eliminar etiquetas HTML.
+ * Esta función elimina las etiquetas HTML de una cadena dada y reemplaza cualquier
+ * instancia de `&nbsp;` por un salto de línea.
+ *
+ * @param {string} html - La cadena de entrada que contiene etiquetas HTML y entidades `&nbsp;`.
+ * @returns {string} - La cadena de salida con las etiquetas HTML eliminadas y `&nbsp;` reemplazadas
+ * por saltos de línea.
+ */
+export function removeHTMLTags(html: string): string {
+  // Expresión regular para eliminar etiquetas HTML y reemplazar &nbsp;
+  const regex = /<[^>]*>|&nbsp;/g;
+  // Reemplazar las etiquetas HTML y &nbsp; por una cadena vacía
+  const plainText = html.replace(regex, '\n').trim();
+  return plainText;
+}
+
+
+/**
+ * Esta función genera una versión resumida de una descripción dada.
+ * Quita las etiquetas HTML de la descripción y la trunca a una longitud máxima.
+ * Si la descripción es más larga que la longitud máxima, se agrega un puntos suspensivos (...).
+ *
+ * @param {string} description - La descripción original que se va a resumir.
+ * @returns {string} - La versión resumida de la descripción.
+ */
+export function getShortDescription($q, description: string): string {
+  const maxLength = $q.screen.lg || $q.screen.md ? 300 : 200 // Ajusta este valor según la longitud deseada
+  const descripcion_plain_text = removeHTMLTags(description)
+  if (descripcion_plain_text.length > maxLength) {
+    return descripcion_plain_text.substring(0, maxLength) + '...'
+  }
+  return descripcion_plain_text
+}
+export function optionsFecha(date) {
+  const today = new Date()
+
+  const diaSemana = today.getDay()
+  // Verificar si el día actual es sábado
+  let sabadoAnterior = ''
+  if (diaSemana === 6) {
+    sabadoAnterior = format(
+      new Date(today.setDate(today.getDate() - ((today.getDay() + 2) % 7))),
+      'YYYY/MM/DD'
+    )
+  } else {
+    sabadoAnterior = format(
+      new Date(today.setDate(today.getDate() - (today.getDay() % 7))),
+      'YYYY/MM/DD'
+    )
+  }
+  const sabadoSiguiente = format(new Date(siguienteSabado()), 'YYYY/MM/DD')
+  const fecha_actual = format(new Date(), 'YYYY/MM/DD')
+
+  return (
+    date >= sabadoAnterior &&
+    date <= sabadoSiguiente &&
+    date <= fecha_actual
+  )
+}
+
+function siguienteSabado() {
+  const fecha = new Date() // Obtenemos la fecha actual
+  const diaSemana = fecha.getDay() // Obtenemos el día de la semana (0-6, siendo 0 domingo)
+  // Calculamos los días que faltan hasta el próximo sábado
+  const diasFaltantes = 6 - diaSemana
+  // Sumamos los días faltantes a la fecha actual para obtener el próximo sábado
+  fecha.setDate(fecha.getDate() + diasFaltantes)
+  // Retornamos la fecha formateada como una cadena de texto
+  return fecha
+}

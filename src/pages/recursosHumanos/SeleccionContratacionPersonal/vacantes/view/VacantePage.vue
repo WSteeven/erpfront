@@ -7,6 +7,7 @@
     :filtrar="filtrarVacantes"
     :tabDefecto="tabActual"
     ajustarCeldas
+    :accion1="btnCompartirVacante"
   >
     <template #formulario>
       <q-form @submit.prevent>
@@ -16,7 +17,7 @@
             <label class="q-mb-sm block">Nombre del Puesto</label>
             <q-input
               v-model="vacante.nombre"
-              @update:model-value="(v) => (vacante.nombre = removeAccents(v))"
+              @update:model-value="v => (vacante.nombre = removeAccents(v))"
               placeholder="Obligatorio"
               :disable="disabled"
               :error="!!v$.nombre.$errors.length"
@@ -46,8 +47,8 @@
               use-input
               @blur="v$.tipo_puesto.$touch"
               :error="!!v$.tipo_puesto.$errors.length"
-              :option-value="(v) => v.id"
-              :option-label="(v) => v.nombre"
+              :option-value="v => v.id"
+              :option-label="v => v.nombre"
               emit-value
               map-options
             >
@@ -75,7 +76,7 @@
               :imagen="vacante.imagen_referencia"
               :error="!!v$.imagen_referencia.$errors.length"
               alto="200px"
-              @update:modelValue="(data) => (vacante.imagen_referencia = data)"
+              @update:modelValue="data => (vacante.imagen_referencia = data)"
             >
               <template v-slot:error>
                 <div
@@ -96,12 +97,77 @@
               :imagen="vacante.imagen_publicidad"
               :error="!!v$.imagen_publicidad.$errors.length"
               alto="200px"
-              @update:modelValue="(data) => (vacante.imagen_publicidad = data)"
+              @update:modelValue="data => (vacante.imagen_publicidad = data)"
             />
           </div>
 
+          <!--Canton -->
+          <div class="col-12 col-md-4">
+            <label class="q-mb-sm block">Ciudad</label>
+            <q-select
+              v-model="vacante.canton"
+              :options="cantones"
+              transition-show="jump-up"
+              transition-hide="jump-down"
+              options-dense
+              dense
+              outlined
+              use-input
+              input-debounce="0"
+              @filter="filtrarCantones"
+              :option-value="v => v.id"
+              :option-label="v => v.canton"
+              :error="!!v$.canton.$errors.length"
+              emit-value
+              map-options
+              ><template v-slot:no-option>
+                <q-item>
+                  <q-item-section class="text-grey">
+                    No hay resultados
+                  </q-item-section>
+                </q-item>
+              </template>
+              <template v-slot:option="scope">
+                <q-item v-bind="scope.itemProps">
+                  <q-item-section>
+                    <q-item-label>{{ scope.opt.canton }}</q-item-label>
+                    <q-item-label caption
+                      >Provincia {{ scope.opt.provincia }}</q-item-label
+                    >
+                  </q-item-section>
+                </q-item>
+              </template>
+              <template v-slot:error>
+                <div v-for="error of v$.canton.$errors" :key="error.$uid">
+                  <div class="error-msg">{{ error.$message }}</div>
+                </div>
+              </template>
+            </q-select>
+          </div>
+
+          <!-- num_plazas -->
+          <div class="col-12 col-md-4">
+            <label class="q-mb-sm block">Cant. Plazas</label>
+            <q-input
+              v-model="vacante.num_plazas"
+              type="number"
+              @blur="v$.num_plazas.$touch"
+              placeholder="Obligatorio"
+              :disable="disabled"
+              :error="!!v$.num_plazas.$errors.length"
+              outlined
+              dense
+            >
+              <template v-slot:error>
+                <div v-for="error of v$.num_plazas.$errors" :key="error.$uid">
+                  <div class="error-msg">{{ error.$message }}</div>
+                </div>
+              </template>
+            </q-input>
+          </div>
+
           <!-- Numero de Postulantes -->
-          <div class="col-12 col-md-3">
+          <div class="col-12 col-md-3" v-if="accion !== acciones.nuevo">
             <label class="q-mb-sm block">Número de Postulantes</label>
             <q-input
               v-model="vacante.numero_postulantes"
@@ -243,8 +309,8 @@
               :options="areasConocimiento"
               @filter="filtrarAreasConocimiento"
               :error="!!v$.areas_conocimiento.$errors.length"
-              :option-label="(item) => item?.nombre"
-              :option-value="(item) => item?.id"
+              :option-label="item => item?.nombre"
+              :option-value="item => item?.id"
               emit-value
               map-options
             >
@@ -302,8 +368,10 @@
             />
           </div>
 
-
-          <div class="col-12 col-md-6 col-sm-12" v-if="vacante.requiere_formacion_academica">
+          <div
+            class="col-12 col-md-6 col-sm-12"
+            v-if="vacante.requiere_formacion_academica"
+          >
             <q-btn
               color="positive"
               @click="agregarFormacionAcademica()"
@@ -316,7 +384,7 @@
             <essential-table
               :configuracionColumnas="[
                 ...configuracionColumnasFormacionAcademicaReactive,
-                accionesTabla,
+                accionesTabla
               ]"
               :datos="vacante.formaciones_academicas"
               :permitirConsultar="false"
@@ -417,7 +485,6 @@
           </div>
 
           <!-- {{v$.$errors}} -->
-
         </div>
       </q-form>
     </template>

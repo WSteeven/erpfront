@@ -2,10 +2,9 @@
   <tab-layout-filter-tabs2
     :mixin="mixin"
     :configuracionColumnas="configuracionColumnas"
-    :mostrarListado="mostrarListado"
     :tabOptions="tabOptionsSolicitudPedido"
     :full="true"
-    :permitirEditar="(esValidador || esAutorizador)& ver_boton_editar"
+    :permitirEditar="(esValidador || esAutorizador)&& ver_boton_editar"
     :permitirEliminar="false"
     :mostrarButtonSubmits="true"
     :filtrar="filtrarSolicitudPrestamo"

@@ -22,6 +22,7 @@ import { isAxiosError } from 'shared/utils'
 import { StatusEssentialLoading } from 'components/loading/application/StatusEssentialLoading'
 import { useMenuPostulanteStore } from 'stores/menuPostulante'
 import { LoginPostulanteController } from 'src/pages/recursosHumanos/seleccion_contratacion_personal/login-postulante/infraestructure/LoginPostulanteController'
+import { userIsAuthenticated } from 'shared/helpers/verifyAuthenticatedUser'
 
 export default defineComponent({
   name: 'PostulanteLayout',
@@ -43,6 +44,7 @@ export default defineComponent({
      *********/
     const authenticationStore = useAuthenticationExternalStore()
     const configuracionGeneralStore = useConfiguracionGeneralStore()
+    const {autenticado} = userIsAuthenticated()
 
     /*******
      * Init
@@ -155,6 +157,8 @@ export default defineComponent({
       dayjs,
       imagenPerfil,
       selfCenterMiddle,
+
+      autenticado,
     }
   },
 })

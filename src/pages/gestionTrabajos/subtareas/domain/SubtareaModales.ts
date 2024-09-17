@@ -11,6 +11,7 @@ import SeguimientoSubtareaPage from 'formulariosTrabajos/emergencias/view/Seguim
 import ClienteFinalPage from 'clientesFinales/view/ClienteFinalPage.vue'
 import ReagendarPage from 'gestionTrabajos/subtareas/modules/reagendar/view/ReagendarPage.vue'
 import ControlTendidoPage from 'formulariosTrabajos/tendidos/controlTendidos/view/ControlTendidoPage.vue'
+import AlimentacionGrupoPage from 'gestionTrabajos/alimentacionGrupos/view/AlimentacionGrupoPage.vue'
 
 export class SubtareaModales {
   SubtareaPage: ComponenteModal
@@ -20,6 +21,7 @@ export class SubtareaModales {
   ClienteFinalPage: ComponenteModal
   ReagendarPage: ComponenteModal
   ControlTendido: ComponenteModal
+  AlimentacionGrupoPage: ComponenteModal
 
   constructor() {
     this.SubtareaPage = markRaw(
@@ -45,6 +47,9 @@ export class SubtareaModales {
 
     this.ControlTendido = markRaw(
       new ComponenteModal('Construcción', ControlTendidoPage)
+    )
+    this.AlimentacionGrupoPage = markRaw(
+      new ComponenteModal('Alimentación del grupo', AlimentacionGrupoPage)
     )
   }
 }

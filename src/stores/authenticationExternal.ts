@@ -62,15 +62,10 @@ export const useAuthenticationExternalStore = defineStore('authentication_extern
     }
   }
 
-  const registro = async (
-    credentiales: Postulante
-  ): Promise<UserLoginPostulante> => {
+  const registro = async (credentiales: Postulante): Promise<UserLoginPostulante> => {
     try {
       const registrar = axios.getEndpoint(endpoints.registro)
-      const response: AxiosResponse = await axios.post(
-        registrar,
-        credentiales
-      )
+      const response: AxiosResponse = await axios.post(registrar,credentiales)
       LocalStorage.set('token', response.data.access_token)
       LocalStorage.set('method_access', tipoAutenticacion.usuario_externo)
       setUser(response.data.modelo)
@@ -196,6 +191,7 @@ export const useAuthenticationExternalStore = defineStore('authentication_extern
   }
 
   async function isUserLoggedIn(): Promise<boolean> {
+    // console.log('isUserLoggedIn')
     if (!usuarioFueConsultado) {
       await getUser()
       usuarioFueConsultado = true

@@ -17,14 +17,41 @@
           <!-- Vehiculo -->
           <div class="col-12 col-md-3 q-mb-md">
             <label class="q-mb-sm block">Vehículo</label>
-            <q-input
+            <q-select
               v-model="bitacora.vehiculo"
-              placeholder="Obligatorio"
+              :options="vehiculos"
               :error="!!v$.vehiculo.$errors.length"
-              disable
+              :disable="disabled"
+              options-dense
               outlined
               dense
-            ></q-input>
+              @filter="filtrarVehiculos"
+              @update:model-value="vehiculoSeleccionado"
+              use-input
+              input-debounce="0"
+              :option-value="(v) => v.id"
+              :option-label="(v) => v.placa"
+              emit-value
+              map-options
+            >
+            <template v-slot:option="scope">
+                <q-item v-bind="scope.itemProps">
+                  <q-item-section>
+                    <q-item-label>{{ scope.opt.placa }}</q-item-label>
+                    <q-item-label caption
+                      >{{ scope.opt.marca }}:
+                      {{ scope.opt.modelo }}</q-item-label
+                    >
+                  </q-item-section>
+                </q-item>
+              </template>
+              <template v-slot:no-option>
+                <q-item>
+                  <q-item-section class="text-grey">
+                    No hay resultados
+                  </q-item-section>
+                </q-item>
+              </template></q-select>
           </div>
           <!-- Chofer -->
           <div
@@ -1090,6 +1117,5 @@
     </template>
   </tab-layout-filter-tabs2>
 </template>
-<!-- :error="v$.nombre.$errors"  -->
 
 <script src="./BitacoraVehicularPage.ts"></script>

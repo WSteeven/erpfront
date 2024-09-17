@@ -36,7 +36,7 @@
       'my-sticky-column-table-light': !$q.dark.isActive,
       'my-sticky-column-first-table': primeraColumnaFija,
       'rounded-header': $q.screen.xs,
-      'bg-header-table': mostrarFiltros,
+      'bg-header-table': mostrarFiltros
     }"
     virtual-scroll
     :virtual-scroll-item-size="offset"
@@ -65,7 +65,7 @@
         :props="props"
         :class="{
           'text-bold': props.col.editable,
-          'bg-body': $q.dark.isActive,
+          'bg-body': $q.dark.isActive
         }"
       >
         <!-- <q-popup-edit
@@ -98,8 +98,8 @@
           v-if="props.col.type === 'select'"
           v-model="props.row[props.col.name]"
           :options="props.col.options"
-          :options-label="(v) => v.label"
-          :options-value="(v) => v.value"
+          :options-label="v => v.label"
+          :options-value="v => v.value"
           options-dense
           outlined
           autogrow
@@ -109,12 +109,30 @@
           :disable="disable"
         />
 
+        <!-- Aún no está completado, porque falta controlar la manera de subir el archivo -->
+        <!-- <q-file
+          v-if="props.col.type === 'file'"
+          v-model="props.row[props.col.name]"
+          outlined
+          autogrow
+          dense
+          use-chips
+          :label="props.col.placeholder"
+          :disable="disable"
+          :placeholder="props.col.placeholder"
+          :style="props.col.style"
+          :bg-color="$q.dark.isActive ? 'grey-10' : 'grey-3'"
+          :accept="props.col.accept ?? '*'"
+        >
+          <template v-slot:prepend> <q-icon name="attach_file" /> </template
+        ></q-file> -->
+
         <q-select
           v-if="props.col.type === 'select_multiple'"
           v-model="props.row[props.col.name]"
           :options="props.col.options"
-          :options-label="(v) => v.label"
-          :options-value="(v) => v.value"
+          :options-label="v => v.label"
+          :options-value="v => v.value"
           use-chips
           multiple
           autogrow
@@ -154,7 +172,7 @@
           v-if="!['select', 'boolean'].includes(props.col.type)"
           :class="{
             'text-white': $q.dark.isActive,
-            'text-dark': !$q.dark.isActive,
+            'text-dark': !$q.dark.isActive
           }"
           >{{ props.row[props.col.name] }}</span
         >
@@ -167,7 +185,7 @@
         v-if="mostrarFiltros"
         class="text-bold text-center full-width rounded q-mb-md"
       >
-        <q-chip class="bg-white text-positive">
+        <q-chip class="bg-solid text-positive">
           <q-icon name="bi-funnel" class="q-mr-sm"></q-icon>
           Modo filtro activado
         </q-chip>
@@ -179,7 +197,7 @@
         :class="{
           'titulo-tabla2': !$q.screen.xs,
           'justify-center': $q.screen.xs,
-          'bg-grey-9': $q.dark.isActive,
+          'bg-grey-9': $q.dark.isActive
         }"
       >
         <span>
@@ -747,6 +765,38 @@
                   ></q-icon>
                 </span>
 
+                <span v-if="col.name === 'se_reporto_sicosep'">
+                  <q-icon
+                    :name="
+                      col.value ? 'bi-check-circle-fill' : 'bi-x-circle-fill'
+                    "
+                    :color="col.value ? 'positive' : 'negative'"
+                    size="sm"
+                  ></q-icon>
+                </span>
+
+                <span v-if="col.name === 'archivos'">
+                  <q-btn
+                    dense
+                    no-caps
+                    unelevated
+                    class="q-px-sm text-primary border-primary"
+                    @click="
+                      verVisorArchivos({
+                        entidad: props.row,
+                        posicion: props.rowIndex
+                      })
+                    "
+                  >
+                    <q-icon
+                      name="bi-archive"
+                      size="xs"
+                      class="q-mr-sm"
+                    ></q-icon>
+                    {{ col.value.length + ' archivos' }}
+                  </q-btn>
+                </span>
+
                 <div :class="{ 'q-mb-xs': $q.screen.xs }">
                   <estados-subtareas
                     v-if="col.name === 'estado'"
@@ -891,6 +941,8 @@
                       'observacion',
                       'dado_alta',
                       'es_dosis_unica',
+                      'se_reporto_sicosep',
+                      'archivos'
                     ].includes(col.name)
                   "
                   >{{ col.value }}</span
@@ -925,7 +977,7 @@
         :props="props"
         :class="{
           'bg-lime-2': !$q.dark.isActive,
-          'bg-green-10': $q.dark.isActive,
+          'bg-green-10': $q.dark.isActive
         }"
       >
         <q-badge color="positive">
@@ -940,7 +992,7 @@
         class="text-bold"
         :class="{
           'bg-grey-2': !$q.dark.isActive,
-          'bg-grey-10': $q.dark.isActive,
+          'bg-grey-10': $q.dark.isActive
         }"
       >
         <!-- <q-badge color="blue-grey-6"> -->
@@ -954,7 +1006,7 @@
         :props="props"
         :class="{
           'bg-indigo-1': !$q.dark.isActive,
-          'bg-indigo-10': $q.dark.isActive,
+          'bg-indigo-10': $q.dark.isActive
         }"
       >
         <q-badge color="indigo">
@@ -968,7 +1020,7 @@
         :props="props"
         :class="{
           'bg-lime-2': !$q.dark.isActive,
-          'bg-green-10': $q.dark.isActive,
+          'bg-green-10': $q.dark.isActive
         }"
       >
         <q-badge color="positive">
@@ -1130,6 +1182,25 @@
             class="q-mr-xs"
           ></q-icon
           >Ocupado
+        </q-chip>
+      </q-td>
+    </template>
+
+    <template #body-cell-se_reporto_sicosep="props">
+      <q-td :props="props" class="">
+        <q-chip v-if="props.value" class="bg-green-1">
+          <q-icon
+            name="bi-check-circle-fill"
+            color="positive"
+            class="q-mr-xs"
+          ></q-icon>
+        </q-chip>
+        <q-chip v-else class="bg-pink-1">
+          <q-icon
+            name="bi-x-circle-fill"
+            color="negative"
+            class="q-mr-xs"
+          ></q-icon>
         </q-chip>
       </q-td>
     </template>
@@ -1596,6 +1667,7 @@
         </q-chip>
 
         <estados-subtareas :propsTable="props" />
+        <estados-postulaciones :propsTable="props" />
 
         <!-- estados de la tabla prestamos temporales -->
         <q-chip v-if="props.value === 'DEVUELTO'" class="bg-green-1">
@@ -1611,6 +1683,26 @@
     <template #body-cell-descontable="props">
       <q-td :props="props">
         <campo-descontable :propsTable="props" />
+      </q-td>
+    </template>
+    <!-- <template #body-cell-descartado="props">
+      <q-td :props="props">
+        <campo-boleano :propsTable="props" />
+      </q-td>
+    </template> -->
+    <template #body-cell-tengo_conocimientos_requeridos="props">
+      <q-td :props="props">
+        <campo-boleano :propsTable="props" />
+      </q-td>
+    </template>
+    <template #body-cell-tengo_experiencia_requerida="props">
+      <q-td :props="props">
+        <campo-boleano :propsTable="props" />
+      </q-td>
+    </template>
+    <template #body-cell-tengo_licencia_conducir="props">
+      <q-td :props="props">
+        <campo-boleano :propsTable="props" />
       </q-td>
     </template>
     <template #body-cell-aprobado_rrhh="props">
@@ -1693,7 +1785,7 @@
               'TICKET REASIGNADO',
               'TICKET PAUSADO',
               'TICKET EJECUTADO',
-              'TICKET FINALIZADO',
+              'TICKET FINALIZADO'
             ].includes(props.value)
           "
           >{{ props.value }}</span

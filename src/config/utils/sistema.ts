@@ -1,4 +1,6 @@
 export const empresas = {
-  PERU :'PERU', // para la sucursal de perú
-
+  JPCONSTRUCRED: 'JPCONSTRUCRED',
+  JPCUSTODY: 'JPCUSTODY',
+  CCLEDARE: 'CCLEDARE',
+  PERU: 'PERU', // para la sucursal de perú
 }

@@ -3,6 +3,7 @@ import { medico } from './endpoints/medico'
 import { tareas } from './endpoints/tareas'
 import { tickets } from './endpoints/tickets'
 import { recursosHumanos } from './endpoints/rrhh/recursosHumanos'
+import { activosFijos } from './endpoints/activosFijos'
 
 export const apiConfig = {
   // URL_BASE: 'http://localhost:8000',
@@ -84,8 +85,8 @@ export const endpoints = {
   rol_pago_mes: new Endpoint('recursos-humanos/rol_pago_mes'),
   banco: new Endpoint('recursos-humanos/banco'),
   datos_empleado: new Endpoint('recursos-humanos/datos_empleado/'),
-  activos_fijos: new Endpoint('activos-fijos'),
 
+  empleados: new Endpoint('empleados'),
   departamentos: new Endpoint('recursos-humanos/departamentos'),
   allroles: new Endpoint('roles'),
   concepto_ingreso: new Endpoint('recursos-humanos/concepto_ingreso'),
@@ -195,7 +196,7 @@ export const endpoints = {
   alimentacion: new Endpoint('recursos-humanos/alimentacion'),
   detalle_alimentacion: new Endpoint('recursos-humanos/detalle-alimentacion'),
   finalizar_asignacion_alimentacion: new Endpoint('recursos-humanos/finalizar-asignacion-alimentacion'),
-  
+
 
 
 
@@ -269,6 +270,7 @@ export const endpoints = {
   codigos_clientes: new Endpoint('codigos-clientes'),
   detalles_materiales: new Endpoint('detalles-materiales'),
   detalles: new Endpoint('detalles'),
+  permisos_armas: new Endpoint('permisos-armas'),
   devoluciones: new Endpoint('devoluciones'),
   detalle_producto_transaccion: new Endpoint(
     'detalles-productos-transacciones'
@@ -327,6 +329,11 @@ export const endpoints = {
   * Modulo de tickets
   *********************/
   ...tickets,
+
+  /**************************
+  * Modulo de activos fijos
+  ***************************/
+  ...activosFijos,
 
   // Modulo Fondos Rotativos
   empleados_saldos_fr: new Endpoint('fondos-rotativos/empleados-saldos-fr'),

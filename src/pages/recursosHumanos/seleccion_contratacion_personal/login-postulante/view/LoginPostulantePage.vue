@@ -143,7 +143,7 @@
               <q-btn
                 flat
                 color="primary"
-                label="Registrate"
+                label="Regístrate"
                 class="full-width q-mb-sm"
                 no-caps
                 unelevated
@@ -152,6 +152,18 @@
               >
               </q-btn>
             </div>
+          </div>
+          <div class="col-12 q-pt-xl">
+            <q-btn
+              color="primary"
+              label="¿Entrar como empleado?"
+              class="full-width q-mb-sm"
+              no-caps
+              unelevated
+
+              outline
+              to="/login"
+            />
           </div>
         </form>
       </div>

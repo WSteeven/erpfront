@@ -10,6 +10,7 @@
     <q-btn-group
       v-if="totalAcciones <= desplegarDesde"
       dense
+      unelevated
       :rounded="$q.screen.sm || $q.screen.md || $q.screen.lg || $q.screen.xl"
       :square="$q.screen.xs"
       :class="{ 'column q-gutter-y-xs': $q.screen.xs }"
@@ -21,7 +22,6 @@
         rounded
         no-caps
         no-wrap
-        unelevated
         class="q-px-sm"
         @click="ejecutarAccion(accion1)"
       >

@@ -8,23 +8,31 @@
           </h5>
         </div>
         <div class="row flex">
-          <div class="col col-md-4 col-sm-4 col-xs-6">
+          <div class="col col-md-3 col-sm-4 col-xs-6">
             <q-badge outline color="primary">
               <q-icon class="bi-clock-fill" />
               {{
                 dayjs() > dayjs(vacante.fecha_caducidad)
-                  ? 'Finalizado'
-                  : '&nbsp; Finaliza ' + dayjs().to(vacante.fecha_caducidad)
+                  ? 'FINALIZADO'
+                  : '&nbsp; FINALIZA ' +
+                    dayjs().to(vacante.fecha_caducidad).toUpperCase()
               }}
             </q-badge>
           </div>
-          <div class="col col-md-4 col-sm-4 col-xs-6">
+          <div class="col col-md-3 col-sm-4 col-xs-6">
             <q-badge outline color="primary">
               <q-icon class="bi-suitcase-lg-fill" />
               &nbsp; {{ vacante.modalidad }}
             </q-badge>
           </div>
-          <div class="col col-md-4 col-sm-4 col-xs-6">
+          <!-- ciudad -->
+          <div class="col col-md-3 col-sm-4 col-xs-6">
+            <q-badge outline color="primary">
+              <q-icon class="bi-geo-alt-fill" />
+              &nbsp; {{ vacante.canton }}
+            </q-badge>
+          </div>
+          <div class="col col-md-3 col-sm-4 col-xs-6">
             <!-- <q-badge outline color="primary">
               <q-icon class="bi-people-fill" />
               &nbsp; Postulantes
@@ -32,8 +40,18 @@
             </q-badge> -->
             <q-badge outline color="primary">
               <q-icon class="bi-people-fill" />
-              &nbsp; Postulantes
+              &nbsp; POSTULANTES
               <strong class="q-px-sm">{{ vacante.numero_postulantes }}</strong>
+            </q-badge>
+          </div>
+          <div
+            class="col col-md-3 col-sm-4 col-xs-6 q-py-md"
+            v-if="vacante.num_plazas > 1"
+          >
+            <q-badge outline color="primary">
+              <q-icon class="bi-people-fill" />
+              &nbsp; PLAZAS DISPONIBLES
+              <strong class="q-px-sm">{{ vacante.num_plazas }}</strong>
             </q-badge>
           </div>
         </div>
@@ -76,8 +94,13 @@
             {{ formacion.nivel }} - {{ formacion.nombre }} O EQUIVALENTE
           </div>
         </div>
-        <!-- <div>Creada {{ dayjs(vacante.created_at).fromNow() }}</div> -->
-        <div class="column items-center">
+        <div class="column items-center" v-if="vacante.estado_mi_postulacion">
+          <div class="row rounded-4">
+           <p> Estado de mi postulación:
+            <strong> &nbsp; <q-chip> {{ vacante.estado_mi_postulacion }} </q-chip></strong></p>
+          </div>
+        </div>
+        <div class="column items-center" v-if="route.name !== 'rrhh_postulaciones'">
           <div class="row">
             <q-btn
               v-if="!vacante.ya_postulada"

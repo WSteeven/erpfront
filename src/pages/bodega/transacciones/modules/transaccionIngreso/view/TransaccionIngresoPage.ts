@@ -48,7 +48,7 @@ import { ComportamientoModalesTransaccionIngreso } from '../application/Comporta
 import { SucursalController } from 'pages/administracion/sucursales/infraestructure/SucursalController'
 import { Empleado } from 'pages/recursosHumanos/empleados/domain/Empleado'
 import { ValidarListadoProductosIngreso } from '../application/validations/ValidarListadoProductosIngreso'
-import { useFiltrosListadosSelects } from 'shared/filtrosListadosGenerales';
+import { useFiltrosListadosSelects } from 'shared/filtrosListadosGenerales'
 
 export default defineComponent({
   name: 'transacciones_ingresos',
@@ -140,7 +140,7 @@ export default defineComponent({
           controller: new EmpleadoController(),
           params: {
             campos: 'id,nombres,apellidos',
-            estado: 1
+            // estado: 1
           }
         },
       })
@@ -270,7 +270,7 @@ export default defineComponent({
       accion: () => {
         listar()
       },
-      visible:()=> false
+      visible: () => false
     }
     const botonEditarCantidad: CustomActionTable = {
       titulo: 'Editar cantidad',

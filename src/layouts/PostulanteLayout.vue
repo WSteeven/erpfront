@@ -1,5 +1,5 @@
 <template>
-  <q-layout view="lHh Lpr lFf">
+  <q-layout v-if="autenticado" view="lHh Lpr lFf">
     <!-- Navbar -->
     <q-header class="bg-desenfoque">
       <q-toolbar class="row justify-between q-py-sm border-bottom">
@@ -172,7 +172,6 @@
           </div>
         </q-list>
       </q-scroll-area>
-
       <q-btn
         color="primary"
         no-caps
@@ -199,6 +198,7 @@
         <!-- Aplica keep-alive aquí -->
         <keep-alive
           :exclude="[
+            'VacanteFavoritaPage',
             'Ingresos',
             'Egresos',
             'OrdenCompraPage',
@@ -212,6 +212,12 @@
           <component :is="Component" />
         </keep-alive>
       </router-view>
+    </q-page-container>
+  </q-layout>
+  <q-layout v-else view="lHh lpR fFf">
+    <q-page-container>
+      <essential-loading></essential-loading>
+      <router-view />
     </q-page-container>
   </q-layout>
 </template>

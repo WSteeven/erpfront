@@ -2,13 +2,11 @@ import { useAuthenticationStore } from '../../../stores/authentication';
 import { useNotificationRealtimeStore } from '../../../stores/notificationRealtime';
 import { useNotificaciones } from '../../../shared/notificaciones';
 import { pushEventMesaggeServiceWorker } from '../../../shared/utils';
-export class
-SolicitudEmpleadoPusherEvent
-{
+export class SolicitudEmpleadoPusherEvent {
   store = useAuthenticationStore()
   notificaciones = useNotificationRealtimeStore()
 
-  start(){
+  start() {
     const { notificarInformacion } = useNotificaciones()
     const notificacionStore = this.notificaciones
     const pusher = notificacionStore.pusher
@@ -27,7 +25,7 @@ SolicitudEmpleadoPusherEvent
     })
 
     //suscripcion al canal para RRHH
-    const solicitudAprobada = pusher.subscribe('solicitud-personal-aprobada-'+this.store.user.id)
+    const solicitudAprobada = pusher.subscribe('solicitud-personal-aprobada-' + this.store.user.id)
     solicitudAprobada.bind('solicitud-personal-event', function (e) {
       notificacionStore.agregar(e.notificacion)
       notificarInformacion('Se ha aprobado una solicitud de contratación de empleado')

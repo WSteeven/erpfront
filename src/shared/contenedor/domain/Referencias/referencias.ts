@@ -1,7 +1,10 @@
 import { computed, ComputedRef, reactive, Ref, ref, UnwrapRef } from 'vue'
-import { acciones } from 'config/utils'
+import { Accion, acciones } from 'config/utils'
 import { MetaPagination } from './MetaPagination'
 
+
+// Define el tipo de valores de `acciones`
+type AccionType = typeof acciones[keyof typeof acciones];
 export class Referencias<T> {
   tabs: Ref
   validador: Ref
@@ -12,7 +15,7 @@ export class Referencias<T> {
   currentPageListado: Ref<number>
   nextPageUrl: Ref<string | undefined | null>
   // fields!: Ref<ColumnConfig<T>[]>
-  accion: Ref<string>
+  accion: Ref<AccionType>
   disabled: ComputedRef<boolean>
   listadosAuxiliares: UnwrapRef<any>
   errors: Ref
@@ -55,7 +58,8 @@ export class Referencias<T> {
 
     // Boolean para desactivar la edicion en formularios
     this.disabled = computed(() => {
-      return [acciones.eliminar, acciones.consultar].includes(this.accion.value)
+      const accionesEsperadas = [acciones.eliminar, acciones.consultar] as AccionType[];
+      return accionesEsperadas.includes(this.accion.value)
     })
   }
 }

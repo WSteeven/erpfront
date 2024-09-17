@@ -1,4 +1,3 @@
-
 // Dependencias
 import { Notificacion } from 'pages/administracion/notificaciones/domain/Notificacion'
 import { useNotificationRealtimeStore } from 'stores/notificationRealtime'
@@ -18,6 +17,7 @@ import EssentialLoading from 'components/loading/view/EssentialLoading.vue'
 import ModalesEntidad from 'components/modales/view/ModalEntidad.vue'
 import FooterComponent from 'components/FooterComponent.vue'
 import EssentialLink from 'components/EssentialLink.vue'
+import CrearTicket from 'src/pages/gestionTickets/tickets/view/CrearTicket.vue'
 
 // Logica y controladores
 import { ComportamientoModalesMainLayout } from './modales/application/ComportamientoModalesMainLayout'
@@ -25,21 +25,23 @@ import { ObtenerIconoNotificacionRealtime } from 'shared/ObtenerIconoNotificacio
 import { NotificacionesSistema } from './notificacionesSistema/NotificacionesSistema'
 import { useConfiguracionGeneralStore } from 'stores/configuracion_general'
 import { useMovilizacionSubtareaStore } from 'stores/movilizacionSubtarea'
-import { useIdle, } from '@vueuse/core'
+import { useIdle } from '@vueuse/core'
 import { formatearFechaTexto } from 'shared/utils'
 import { NotIdle } from 'idlejs'
 import { useMainLayoutStore } from 'stores/mainLayout'
 import { StatusEssentialLoading } from 'components/loading/application/StatusEssentialLoading'
+
+import { MenuOption } from 'shared/menu/MenuOption'
 
 export default defineComponent({
   name: 'MainLayout',
   components: {
     EssentialLink,
     EssentialLoading,
-
     ModalesEntidad,
     ScrollToTopButton,
     FooterComponent,
+    CrearTicket,
   },
 
   setup() {
@@ -47,6 +49,8 @@ export default defineComponent({
     const menu = useMenuStore()
 
     const menuVisible = ref(false)
+
+    const buscarModulo = ref()
 
     /*********
      * Stores
@@ -59,7 +63,8 @@ export default defineComponent({
     /*******
      * Init
      *******/
-    if (authenticationStore.esTecnico) movilizacionSubtareaStore.getSubtareaDestino(authenticationStore.user.id)
+    if (authenticationStore.esTecnico)
+      movilizacionSubtareaStore.getSubtareaDestino(authenticationStore.user.id)
 
     /***************************
      * Permitir Notificaciones push
@@ -69,15 +74,13 @@ export default defineComponent({
         if (permission === 'granted') {
           // console.log('Permiso de notificación concedido.');
         } else {
-          console.log('Permiso de notificación denegado.');
+          // console.log('Permiso de notificación denegado.')
         }
-      });
+      })
     }
 
     dayjs.extend(relativeTime)
     dayjs.locale(es)
-
-
 
     /************
      * Variables
@@ -87,6 +90,7 @@ export default defineComponent({
     const route = useRoute()
     const tituloPagina = computed(() => mainLayoutStore.tituloPagina)
     const grupo = authenticationStore.user?.grupo
+    const mostrarBuscar = ref(false)
 
     const saldo = computed(() => {
       authenticationStore.consultar_saldo_actual()
@@ -139,14 +143,16 @@ export default defineComponent({
       () => notificacionesPusherStore.listadoNotificaciones
     )
 
-    const notificacionesAgrupadas: any = computed(
-      () => agruparYOrdenarNotificacionesPorTipo(notificacionesPusherStore.listadoNotificaciones)
+    const notificacionesAgrupadas: any = computed(() =>
+      agruparYOrdenarNotificacionesPorTipo(
+        notificacionesPusherStore.listadoNotificaciones
+      )
     )
 
     function agruparYOrdenarNotificacionesPorTipo(notificaciones) {
       const grupos = {}
 
-      notificaciones.forEach((notificacion) => {
+      notificaciones.forEach(notificacion => {
         const tipo = notificacion.tipo_notificacion
         if (!grupos[tipo]) {
           grupos[tipo] = []
@@ -158,7 +164,7 @@ export default defineComponent({
       const tiposOrdenados = Object.keys(grupos).sort()
 
       const notificacionesAgrupadasYOrdenadas = {}
-      tiposOrdenados.forEach((tipo) => {
+      tiposOrdenados.forEach(tipo => {
         notificacionesAgrupadasYOrdenadas[tipo] = grupos[tipo]
       })
 
@@ -171,14 +177,14 @@ export default defineComponent({
     }
 
     type tipo = 'center middle' | 'top start'
-    const selfCenterMiddle: ComputedRef<tipo> = computed(() =>
-      'center middle'
+    const selfCenterMiddle: ComputedRef<tipo> = computed(
+      () => 'center middle'
       // $q.screen.xs ? 'center middle' : 'top start'
     )
 
     /**********
-    * Modales
-    **********/
+     * Modales
+     **********/
     const modales = new ComportamientoModalesMainLayout()
 
     function abrirMovilizacionSubtarea() {
@@ -191,7 +197,6 @@ export default defineComponent({
 
     const enCamino = computed(() => movilizacionSubtareaStore.subtareaDestino)
     const motivo = computed(() => movilizacionSubtareaStore.motivo)
-
 
     /**
      * Este código es responsable de manejar la inactividad del usuario y cerrar sesión después de un
@@ -235,19 +240,26 @@ export default defineComponent({
       const LIMIT = 4 * 60 * 60 * 1000 // 4 horas for logout session
       setInterval(() => {
         if (authenticationStore.user) {
-          const la = new Date(JSON.parse(LocalStorage.getItem('lastActivity')!)).getTime()
+          const la = new Date(
+            JSON.parse(LocalStorage.getItem('lastActivity')!)
+          ).getTime()
           // console.log('Resta de tiempo', new Date().getTime() - la)
           // console.log('Tiempo limite', LIMIT)
           // console.log('Resultado', new Date().getTime() - la > LIMIT, new Date().toLocaleTimeString())
           if (new Date().getTime() - la > LIMIT) {
             logout()
             LocalStorage.remove('lastActivity')
-            LocalStorage.set('ultima_conexion', formatearFechaTexto(lastActive.value) + ' ' + new Date(lastActive.value).toLocaleTimeString('en-US'))
+            LocalStorage.set(
+              'ultima_conexion',
+              formatearFechaTexto(lastActive.value) +
+              ' ' +
+              new Date(lastActive.value).toLocaleTimeString('en-US')
+            )
             Swal.fire({
               icon: 'error',
               title: 'Has excedido el tiempo de inactividad',
               text: 'Se ha cerrado la sesión por exceder tiempo de inactividad, por favor vuelve a iniciar sesión.',
-              confirmButtonColor: '#0879dc',
+              confirmButtonColor: '#0879dc'
             })
           }
         }
@@ -257,17 +269,92 @@ export default defineComponent({
     }
 
     // Establecer favicon
-    configuracionGeneralStore.consultarConfiguracion().then(() =>
-      configuracionGeneralStore.cambiarFavicon())
+    configuracionGeneralStore
+      .consultarConfiguracion()
+      .then(() => configuracionGeneralStore.cambiarFavicon())
 
     // Titulo pagina
-    const nombreEmpresa = computed(() => configuracionGeneralStore.configuracion?.nombre_empresa)
-    watchEffect(() => document.title = (notificaciones.value.length ? `(${notificaciones.value.length})` : '') + ' ' + nombreEmpresa.value)
+    const nombreEmpresa = computed(
+      () => configuracionGeneralStore.configuracion?.nombre_empresa
+    )
+    watchEffect(
+      () =>
+      (document.title =
+        (notificaciones.value.length
+          ? `(${notificaciones.value.length})`
+          : '') +
+        ' ' +
+        nombreEmpresa.value)
+    )
+
+    // función para obtener los módulos permitidos
+    function obtenerModulosPermitidos() {
+      const modulosPermitidos = menuStore.links.filter(
+        (link: MenuOption) => link.can
+      )
+
+      return modulosPermitidos.map(modulo => {
+        if (modulo.children && Array.isArray(modulo.children)) {
+          const firstPermittedChild = modulo.children.find(child => child.can)
+          if (firstPermittedChild) {
+            modulo.link = firstPermittedChild.link
+          }
+        }
+        return modulo
+      })
+    }
+
+    // barra de búsqueda
+    const menuStore = useMenuStore()
+    const resultadosBusqueda = ref<MenuOption[]>([])
+
+    function filtrarMenu(val) {
+      const modulosPermitidos = obtenerModulosPermitidos()
+      const resultado = filterItems(modulosPermitidos, val)
+      resultadosBusqueda.value = resultado
+    }
+
+    function filterItems(items, searchTerm) {
+      const searchTerms = searchTerm?.toLowerCase().split(' ')
+
+      function matches(item) {
+        return searchTerms?.every(term =>
+          new RegExp(term, 'i').test(item.title ?? '')
+        )
+      }
+
+      function filterRecursive(items, parentTitle = '') {
+        return items.reduce((acc, item) => {
+          const childrenMatches = item.children
+            ? filterRecursive(item.children, item.title)
+            : []
+
+          if (matches(item) && (!item.children || item.children.length === 0)) {
+            acc.push({ ...item, parentTitle })
+          } else if (childrenMatches.length > 0) {
+            acc.push(...childrenMatches)
+          }
+
+          return acc
+        }, [])
+      }
+
+      return filterRecursive(items)
+    }
+
+    const resetearBuscador = () => {
+      buscarModulo.value = null
+      mostrarBuscar.value = false
+    }
 
     return {
       // logoClaro: `${process.env.API_URL}/storage/configuracion_general/logo_claro.jpeg`,
-      logoClaro: computed(() => configuracionGeneralStore.configuracion?.logo_claro),
-      logoOscuro: computed(() => configuracionGeneralStore.configuracion?.logo_oscuro),
+      logoClaro: computed(
+        () => configuracionGeneralStore.configuracion?.logo_claro
+      ),
+      logoOscuro: computed(
+        () => configuracionGeneralStore.configuracion?.logo_oscuro
+      ),
       enCamino,
       motivo,
       modales,
@@ -288,6 +375,7 @@ export default defineComponent({
       width: computed(() => ($q.screen.xs ? '100%' : '450px')),
       mostrarMenu: ref(false),
       mostrarNotificaciones: ref(false),
+      mostrarCrearTicket: ref(false),
       mostrarOpciones: ref(false),
       notificaciones,
       marcarLeida,
@@ -301,13 +389,20 @@ export default defineComponent({
       imagenPerfil,
       selfCenterMiddle,
       grupo,
-      mostrarTransferirTareas: authenticationStore.esCoordinador || authenticationStore.esJefeTecnico,
+      mostrarTransferirTareas:
+        authenticationStore.esCoordinador || authenticationStore.esJefeTecnico,
       notificacionesAgrupadas,
       tituloPagina,
+      buscarModulo,
+      filtrarMenu,
+      resultadosBusqueda,
+      menuStore,
+      mostrarBuscar,
+      resetearBuscador,
       // idledFor,
       // tiempoInactividad,
       // mostrarAlertaInactividad,
       // ultimaConexion,
     }
-  },
+  }
 })

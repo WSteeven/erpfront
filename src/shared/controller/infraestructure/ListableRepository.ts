@@ -17,9 +17,10 @@ export class ListableRepository<T> {
   }
 
   async listar<C = T>(args?: ParamsType) {
+    console.log(args?.export)
     return this.httpRepository
       .get<HttpResponseGet<HttpResponseList<C>>>(
-        this.httpRepository.getEndpoint(this.endpoint, args)
+        this.httpRepository.getEndpoint(this.endpoint, args), { responseType: args?.export ? 'blob' : 'json' }
       )
       .then((response: HttpResponseGet) => {
         return {
@@ -29,6 +30,7 @@ export class ListableRepository<T> {
         }
       })
       .catch((error) => {
+        console.log(error)
         throw new ApiError(error)
       })
   }
