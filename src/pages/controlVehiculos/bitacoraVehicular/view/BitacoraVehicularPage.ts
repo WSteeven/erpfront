@@ -186,7 +186,7 @@ export default defineComponent({
     async function vehiculoSeleccionado() {
       const vehiculo = vehiculos.value.filter((v: Vehiculo) => v.id === bitacora.vehiculo)[0]
       bitacora.vehiculo_id = vehiculo.id
-      bitacora.chofer = vehiculo.custodio.length<2? 'NO TIENE CUSTODIO ASIGNADO': vehiculo.custodio
+      bitacora.chofer = vehiculo.custodio.length < 2 ? 'NO TIENE CUSTODIO ASIGNADO' : vehiculo.custodio
       bitacora.chofer_id = vehiculo.custodio_id
 
       bitacoraDefault.value = await obtenerUltimaBitacora()
@@ -230,8 +230,8 @@ export default defineComponent({
         // bitacora.km_inicial = bitacoraDefault.value.km_final
         // bitacora.tanque_inicio = bitacoraDefault.value.tanque_final
         // bitacora.tanque_final = bitacoraDefault.value.tanque_final
-        bitacora.checklistAccesoriosVehiculo = bitacoraDefault.value.checklistAccesoriosVehiculo
-        bitacora.checklistVehiculo = bitacoraDefault.value.checklistVehiculo
+        bitacora.checklistAccesoriosVehiculo = new ChecklistAccesoriosVehiculo() // bitacoraDefault.value.checklistAccesoriosVehiculo
+        bitacora.checklistVehiculo = new ChecklistVehiculo() // bitacoraDefault.value.checklistVehiculo
         bitacora.checklistImagenVehiculo.observacion = ' '
 
         bloquear_km_tanque.value = false
