@@ -17,7 +17,6 @@ export class ListableRepository<T> {
   }
 
   async listar<C = T>(args?: ParamsType) {
-    console.log(args?.export)
     return this.httpRepository
       .get<HttpResponseGet<HttpResponseList<C>>>(
         this.httpRepository.getEndpoint(this.endpoint, args), { responseType: args?.export ? 'blob' : 'json' }

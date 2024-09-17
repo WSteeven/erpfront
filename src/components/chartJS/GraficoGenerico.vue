@@ -1,8 +1,9 @@
 <template>
   <!-- <div class="bg-yellow full-width"> -->
+    <div v-if="data?.titulo" class="text-center q-py-xs bg-primary text-white rounded q-pb-sm ajustar-header q-px-sm">{{ data.titulo }}</div>
   <div
     style="width: 100%; margin: 0 auto; height: 300px"
-    class="bg-body rounded border-grey"
+    class="bg-desenfoque rounded border-white q-px-md"
   >
     <canvas ref="chartRef" id="myChart"></canvas>
   </div>
@@ -20,8 +21,8 @@ export default defineComponent({
     options: Object,
     tipo: {
       type: String, // as () => ChartTypeRegistry,
-      default: 'pie',
-    },
+      default: 'pie'
+    }
   },
   emits: ['click'],
   setup(props, { emit }) {
@@ -29,7 +30,7 @@ export default defineComponent({
     ChartJS.register(datalabels)
     ChartJS.defaults.plugins.datalabels = {
       display: true,
-      align: 'center',
+      align: 'center'
     }
 
     const chartRef = ref()
@@ -43,11 +44,11 @@ export default defineComponent({
       myChart = new Chart(ctx, {
         type: props.tipo,
         data: props.data,
-        options: combinedOptions,
+        options: combinedOptions
       })
 
       // Agregar un evento de clic al gráfico
-      myChart.canvas.addEventListener('click', (event) => {
+      myChart.canvas.addEventListener('click', event => {
         const activePoints = myChart.getElementsAtEventForMode(
           event,
           'nearest',
@@ -87,14 +88,20 @@ export default defineComponent({
     )
 
     return {
-      chartRef,
+      chartRef
     }
-  },
+  }
 })
 </script>
 
-<style>
+<style lang="scss" scope>
 #myChart {
   cursor: pointer;
+}
+
+.ajustar-header {
+  position: relative;
+  bottom: -6px;
+  z-index: -999999;
 }
 </style>

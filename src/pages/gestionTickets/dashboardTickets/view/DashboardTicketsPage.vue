@@ -232,6 +232,9 @@
         <div class="row q-col-gutter-sm q-mb-lg">
           <div class="col-12 col-md-6 q-mb-lg">
             <div class="row q-col-gutter-xs">
+              <div class="col-12 text-bold">
+                Tickets creados por el empleado
+              </div>
               <div v-if="cantTicketsCreados >= 0" class="col-12">
                 <q-card
                   class="rounded-card text-primary q-pa-md text-center bg-grey-2"
@@ -309,6 +312,7 @@
           <!-- Segunda columna -->
           <div v-if="cantTicketsRecibidos >= 0" class="col-12 col-md-6 column">
             <div class="row q-col-gutter-xs">
+              <div class="col-12 text-bold">Tickets asignados al empleado</div>
               <div class="col-12">
                 <q-card
                   class="rounded-card text-white no-border q-pa-md text-center full-height bg-secondary"
@@ -337,6 +341,17 @@
                     {{ cantTicketsCancelados }}
                   </div>
                   <div>Cantidad de tickets que le cancelaron</div>
+                </q-card>
+              </div>
+
+              <div v-if="cantTicketsRechazados >= 0" class="col-6 col-md-3">
+                <q-card
+                  class="rounded-card text-white q-pa-md text-center full-height bg-pink-8"
+                >
+                  <div class="text-h3 q-mb-md">
+                    {{ cantTicketsRechazados }}
+                  </div>
+                  <div>Cantidad de tickets que rechazó</div>
                 </q-card>
               </div>
 
@@ -393,7 +408,7 @@
 
               <div
                 v-if="cantTicketsCalificadosResponsable >= 0"
-                class="col-6 col-md-3"
+                class="col-6 col-md-6"
               >
                 <q-card class="rounded-card q-pa-md text-center full-height">
                   <div class="text-h3 text-positive q-mb-md">
@@ -410,7 +425,7 @@
                   cantTicketsFinalizadosSolucionados >= 0 ||
                   cantTicketsFinalizadosSinSolucion >= 0
                 "
-                class="col-12"
+                class="col-12 col-md-6"
               >
                 <q-card
                   class="rounded-card text-white q-pa-md text-center bg-positive full-height"
@@ -685,6 +700,28 @@
                       clickGraficoTicketsDepartamento(
                         data,
                         estadosTickets.ASIGNADO
+                      )
+                  "
+                />
+              </div>
+            </div>
+
+            <!-- Rechazados -->
+            <div
+              v-if="ticketsPorDepartamentoEstadoRechazado.length"
+              class="col-12 col-md-6 text-center"
+            >
+              <div class="text-subtitle2 q-mb-lg">Rechazados</div>
+              <div>
+                <grafico-generico
+                  :data="ticketsPorDepartamentoEstadoRechazadoBar"
+                  :options="optionsPie"
+                  v-if="ticketsPorDepartamentoEstadoRechazado.length"
+                  @click="
+                    data =>
+                      clickGraficoTicketsDepartamento(
+                        data,
+                        estadosTickets.RECHAZADO
                       )
                   "
                 />
