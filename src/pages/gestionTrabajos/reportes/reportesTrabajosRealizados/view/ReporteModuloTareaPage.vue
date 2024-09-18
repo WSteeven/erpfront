@@ -130,7 +130,7 @@
         <!-- Tipos de trabajos realizados -->
         <div class="text-bold">
           <q-icon name="bi-bar-chart-line-fill" class="q-mr-sm" />
-          Tipos de trabajos realizados
+          Suma total de tipos de trabajos realizados
         </div>
 
         <div class="row q-col-gutter-sm q-pa-md q-mb-xl">
@@ -168,13 +168,7 @@
               :elementos="trabajoRealizadoPorRegion"
             ></table-view>
           </div> -->
-
           <div class="col-12 col-md-6">
-            <!--  <Bar
-              v-if="trabajoRealizadoPorRegionBar"
-              :data="trabajoRealizadoPorRegionBar"
-              :options="optionsVertical"
-            /> -->
             <grafico-generico
               :data="trabajoRealizadoPorRegionBar"
               :options="options"
@@ -202,11 +196,6 @@
           </div> -->
 
           <div class="col-12 col-md-6">
-            <!--  <Bar
-              v-if="trabajoRealizadoPorRegionTipoTrabajoBar"
-              :data="trabajoRealizadoPorRegionTipoTrabajoBar"
-              :options="optionsVertical"
-            /> -->
             <grafico-generico
               :data="trabajoRealizadoPorRegionTipoTrabajoBar"
               :options="options"
@@ -234,11 +223,6 @@
           </div> -->
 
           <div class="col-12 col-md-6">
-            <!-- <Bar
-              v-if="trabajoRealizadoPorGrupoTipoTrabajoBar"
-              :data="trabajoRealizadoPorGrupoTipoTrabajoBar"
-              :options="options"
-            /> -->
             <grafico-generico
               :data="trabajoRealizadoPorGrupoTipoTrabajoBar"
               :options="options"
@@ -265,6 +249,15 @@
           </div>
 
           <div class="col-12 col-md-6">
+            <!-- v-if="trabajosRealizadosBar" -->
+            <grafico-generico
+              :data="trabajosRealizadosBar"
+              :options="options"
+              tipo="bar"
+            />
+          </div>
+
+          <div class="col-12">
             <Bar
               v-if="trabajoRealizadoPorGrupoTiposTrabajosEmergenciaBar"
               :data="trabajoRealizadoPorGrupoTiposTrabajosEmergenciaBar"
