@@ -25,7 +25,7 @@ export class PostulacionPusherEvent {
       })
     })
 
-    postulanteSeleccionado.bind('postulante-examenes-agendados-event', function(e){
+    postulanteSeleccionado.bind('postulante-examenes-agendados-event', function (e) {
       notificacionStore.agregar(e.notificacion)
       notificarInformacion('Se han agendado exámenes médicos para un postulante')
 
@@ -36,7 +36,7 @@ export class PostulacionPusherEvent {
       })
     })
 
-    postulanteSeleccionado.bind('resultados-examenes-postulante-event', function(e){
+    postulanteSeleccionado.bind('resultados-examenes-postulante-event', function (e) {
       notificacionStore.agregar(e.notificacion)
       notificarInformacion('Se han actualizado los exámenes médicos de un postulante')
 
@@ -46,5 +46,22 @@ export class PostulacionPusherEvent {
         link: e.notificacion.link,
       })
     })
+
+    //postulacion realizada por primera vez, aqui se notifica a RRHH
+    const postulacionRealizada = pusher.subscribe('postulacion-realizada-' + this.store.user.id)
+    postulacionRealizada.bind('postulacion-realizada-event', function (e) {
+      notificacionStore.agregar(e.notificacion)
+      notificarInformacion('Hay una nueva postulacion')
+
+      pushEventMesaggeServiceWorker({
+        titulo: "Nueva postulacion",
+        mensaje: e.notificacion.mensaje,
+        link: e.notificacion.link,
+      })
+    })
+
+
+
+
   }
 }

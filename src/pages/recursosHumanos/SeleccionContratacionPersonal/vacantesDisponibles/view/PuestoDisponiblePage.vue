@@ -8,24 +8,21 @@
         <div class="row q-col-gutter-sm q-pa-md flex flex-center">
           <div class="col-12 col-md-6 col-sm-12">
             <q-input
-              v-model="val"
-              autogrow
-              placeholder="Ingresa algo para filtrar"
+              v-model="search"
+              placeholder="Buscar por puesto o palabra clave..."
               outlined
               dense
+              @update:model-value="filtrarVacantes"
             >
-              <template #append>
-                <q-btn unelevated>
+              <!-- <template #append>
+                <q-btn unelevated @click="filtrarVacantes">
                   <q-icon class="bi-search"></q-icon>
                 </q-btn>
-              </template>
+              </template> -->
             </q-input>
           </div>
         </div>
       </q-card-section>
-      <!-- <pre>
-          {{ $q.screen }}
-      </pre> -->
       <div class="row q-col-gutter-sm q-py-md q-mx-sm">
         <div
           class="col-12 col-md-4 col-sm-6"
@@ -33,12 +30,13 @@
           :key="vacante.id"
         >
           <div class="my-custom-card">
-            <div class="row" style="min-height: 72%; max-height: 72%">
+            <div class="row" style="min-height: 70%; max-height: 72%">
               <div class="col-6 h-100">
                 <q-img
                   class="rounded-borders"
                   loading="lazy"
                   :src="vacante.imagen_referencia"
+                  height="25vh"
                   fit="contain"
                 />
               </div>

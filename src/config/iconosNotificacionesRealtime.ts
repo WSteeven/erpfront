@@ -120,5 +120,9 @@ export const iconos = {
     label : 'CANDIDATO SELECCIONADO',
     icono: 'bi-person-check-fill'
   },
+  postulacion: {
+    label : 'POSTULACION',
+    icono: 'bi-person-raised-hand'
+  },
 
 }

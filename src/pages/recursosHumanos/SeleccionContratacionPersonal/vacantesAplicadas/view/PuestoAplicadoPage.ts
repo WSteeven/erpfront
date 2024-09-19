@@ -23,8 +23,10 @@ import { useAuthenticationExternalStore } from 'stores/authenticationExternal'
 import dayjs from 'dayjs'
 import { useVacanteStore } from 'stores/recursosHumanos/seleccionContratacion/vacante';
 import { ComportamientoModalesVacanteDisponible } from '../../vacantesDisponibles/application/ComportamientoModalesVacanteDisponible';
+import { estadosPostulacion } from 'config/seleccionContratacionPersonal.utils';
 
 export default defineComponent({
+  name:'PuestoAplicadoPage',
   components: { BasicContainer, ModalEntidad },
   setup() {
     const mixin = new ContenedorSimpleMixin(TipoPuestoTrabajo, new TipoPuestoTrabajoController())
@@ -88,7 +90,8 @@ export default defineComponent({
       configuracionColumnas: configuracionColumnasTipoPuestoTrabajo,
       dayjs,
       modales,
-
+      accepted: ref('1'),
+      estadosPostulacion,
       //funciones
       getShortDescription,
       visualizarVacante,

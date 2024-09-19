@@ -1,6 +1,6 @@
 // Dependencias
-import {isAxiosError,notificarMensajesError} from 'shared/utils'
-import {computed,defineComponent,onMounted,reactive,ref,watchEffect} from 'vue'
+import { isAxiosError, notificarMensajesError } from 'shared/utils'
+import { computed, defineComponent, onMounted, reactive, ref, watchEffect } from 'vue'
 import { useQuasar, LocalStorage } from 'quasar'
 
 import { useRouter } from 'vue-router'
@@ -13,6 +13,7 @@ import { StatusEssentialLoading } from 'components/loading/application/StatusEss
 import { useNotificaciones } from 'shared/notificaciones'
 import { UserLogin } from 'sistema/authentication/login/domain/UserLogin'
 import { LoginPostulanteController } from '../infraestructure/LoginPostulanteController'
+import { apiConfig } from 'config/api'
 
 export default defineComponent({
   name: 'LoginPostulante',
@@ -78,7 +79,7 @@ export default defineComponent({
       Router.replace('/recuperar-contrasena')
     }
 
-    const registro=() => {
+    const registro = () => {
       Router.replace('/registro-postulante')
     }
 
@@ -104,6 +105,14 @@ export default defineComponent({
     const enableLoginButton = computed(
       () => loginUser.name !== '' && loginUser.password !== ''
     )
+    const url = `${apiConfig.URL_BASE}/api/auth/facebook`
+    console.log(url)
+    function loginWithProvider(provider: string) {
+      const apiUrl = `${apiConfig.URL_BASE}/api/auth/${provider}`
+      console.log(apiUrl)
+      window.location.href = apiUrl;
+    }
+
 
     return {
       isPwd: ref(true),
@@ -121,6 +130,9 @@ export default defineComponent({
       recuperarPassword,
       nombreEmpresa,
       cargando,
+
+      // funciones
+      loginWithProvider,
     }
   },
 })

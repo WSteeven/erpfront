@@ -27,14 +27,13 @@ export default defineComponent({
   components: { BasicContainer, VisorImagen },
   setup() {
 
-    // const cargando = new StatusEssentialLoading()
     dayjs.extend(relativeTime)
     dayjs.locale(es)
 
-    const { promptItems, notificarAdvertencia, notificarCorrecto, notificarError } = useNotificaciones()
+    const { promptItems, notificarError } = useNotificaciones()
 
     const vacanteStore = useVacanteStore()
-    const { autenticado, tipoAutenticacion } = userIsAuthenticated()
+    const { autenticado } = userIsAuthenticated()
     const router = useRouter()
     const route = useRoute()
     const cargando = new StatusEssentialLoading()
@@ -88,7 +87,6 @@ export default defineComponent({
         const ruta = axios.getEndpoint(endpoints.vacante_favorita) + '/' + id
         const response: AxiosResponse = await axios.post(ruta)
         if (response.status === 200) {
-          // notificarCorrecto(response.data.mensaje)
           vacanteStore.vacante.hydrate(response.data.modelo)
         }
       } catch (err: any) {
@@ -106,11 +104,9 @@ export default defineComponent({
         const config: CustomActionPrompt = reactive({
           mensaje: 'Es requerido iniciar sesión para continuar',
           accion: async (opcion) => {
-            if (opcion === 1) {
-              // se dirige a la pagina de login de empleados
+            if (opcion === 1) { // se dirige a la pagina de login de empleados
               router.push('login')
-            } else {
-              // se dirige a la pagina de login de externos
+            } else { // se dirige a la pagina de login de externos
               router.push('login-postulante')
             }
 
@@ -135,6 +131,7 @@ export default defineComponent({
     }
     const baseUrl = window.location.origin
     const $q = useQuasar()
+    // Configuracion de metadatos para la vacante para que se muestre las miniaturas cuando se compartan 
     useMeta({
       title: vacanteStore.vacante.nombre ?? 'Trabaja con nosotros',
       meta: [

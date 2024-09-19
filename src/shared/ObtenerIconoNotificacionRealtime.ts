@@ -79,6 +79,8 @@ export class ObtenerIconoNotificacionRealtime {
         return iconos.solicitud_nuevo_personal.icono
       case iconos.candidato_seleccionado.label:
         return iconos.candidato_seleccionado.icono
+      case iconos.postulacion.label:
+        return iconos.postulacion.icono
     }
   }
 }

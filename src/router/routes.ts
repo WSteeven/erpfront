@@ -124,6 +124,7 @@ const routes: RouteRecordRaw[] = [
         component: () => import('pages/perfil/view/PerfilPage.vue'),
         meta: { requiresAuth: true },
       },
+
       /**
        * RUTAS PARA GEOGRAFIA (PROVINCIAS, CANTONES, PARROQUIAS)
        */
@@ -1431,6 +1432,30 @@ const routes: RouteRecordRaw[] = [
       },
     ],
   },
+  {
+    path: '/login-success',
+    component: () => import('layouts/FullLayout.vue'),
+    children: [
+      {
+        path: '',
+        name: 'login_success',
+        component: () =>
+          import('pages/sistema/authentication/login/view/LoginSuccessPage.vue'),
+      },
+    ],
+  },
+  {
+    path: '/error-login',
+    component: () => import('layouts/FullLayout.vue'),
+    children: [
+      {
+        path: '',
+        name: 'error_login',
+        component: () =>
+          import('pages/sistema/authentication/login/view/ErrorLoginPage.vue'),
+      },
+    ],
+  },
   /************************************************************************************************
    * MODULO DE SELECCION Y CONTRATACION PERSONAL
    * Aquí se lista todo lo referente a este modulo y la parte del login del postulantes para el personal externo.
@@ -1462,7 +1487,7 @@ const routes: RouteRecordRaw[] = [
   },
   {
     path: '/puestos-disponibles',
-    component: () => true ? import('layouts/PostulanteLayout.vue') : import('layouts/PostulanteLayout.vue'),
+    component: () =>  import('layouts/PostulanteLayout.vue'),
     children: [
       {
         path: '',
@@ -1481,6 +1506,12 @@ const routes: RouteRecordRaw[] = [
             'pages/recursosHumanos/SeleccionContratacionPersonal/vacantesAplicadas/view/PuestoAplicadoPage.vue'
           ),
         meta: { requiresAuth: true, permissionRequired: false }
+      },
+      {
+        path: '/perfil-usuario-externo',
+        name: 'perfil_usuario_externo',
+        component: () => import('pages/perfil/view/PerfilExternoPage.vue'),
+        meta: { requiresAuth: true },
       },
     ],
   },
@@ -1504,20 +1535,6 @@ const routes: RouteRecordRaw[] = [
         meta: { requiresAuth: true, permissionRequired: false }
       },]
   },
-  // {
-  //   path: '/puestos-aplicados',
-  //   component: () => import('layouts/PostulanteLayout.vue'),
-  //   children: [
-  //     {
-  //       path: '',
-  //       name: 'puestos_aplicados',
-  //       component: () =>
-  //         import(
-  //           'pages/recursosHumanos/seleccion_contratacion_personal/puesto-aplicado/view/PuestoAplicadoPage.vue'
-  //         ),
-  //     },
-  //   ],
-  // },
   {
     path: '/recuperar-contrasena',
     component: () => import('layouts/FullLayout.vue'),

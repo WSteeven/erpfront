@@ -101,7 +101,7 @@
           </div>
         </div>
         <div class="column items-center" v-if="route.name !== 'rrhh_postulaciones'">
-          <div class="row">
+          <div class="row" v-if="!vacante.es_completada">
             <q-btn
               v-if="!vacante.ya_postulada"
               glossy
@@ -121,6 +121,9 @@
               unelevated
               @click="btnAgregarAFavoritos(vacante.id)"
             ></q-btn>
+          </div>
+          <div class="row" v-else>
+            <q-chip>Esta vacante ya ha sido completada</q-chip>
           </div>
         </div>
       </q-card-section>

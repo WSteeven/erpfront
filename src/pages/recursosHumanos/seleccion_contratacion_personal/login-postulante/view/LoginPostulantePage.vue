@@ -1,4 +1,5 @@
 <template>
+  <div id="fb-root"></div>
   <q-page>
     <div class="row items-center">
       <!-- Left side -->
@@ -36,7 +37,7 @@
               no-caps
               unelevated
               icon="bi-linkedin"
-              @click="loginTerceros('linkedin')"
+              @click="loginWithProvider('linkedin')"
             >
             </q-btn>
           </div>
@@ -49,7 +50,7 @@
               no-caps
               unelevated
               icon="bi-google"
-              @click="loginTerceros('google')"
+              @click="loginWithProvider('google')"
             >
             </q-btn>
           </div>
@@ -62,9 +63,12 @@
               no-caps
               unelevated
               icon="bi-facebook"
-              @click="loginTerceros('facebook')"
+              @click="loginWithProvider('facebook')"
             >
             </q-btn>
+          </div>
+          <div class="col-12">
+            <div class="fb-login-button" data-width="" data-size="" data-button-type="" data-layout="" data-auto-logout-link="false" data-use-continue-as="true"></div>
           </div>
           <div class="container q-my-md">
             <q-separator class="separator"></q-separator>
@@ -75,7 +79,8 @@
           <div class="col-12 q-mb-sm">
             <q-input
               v-model="loginUser.name"
-              label="Usuario"
+              label="Correo"
+              type="email"
               outlined
               dense
               @keyup.enter="login()"

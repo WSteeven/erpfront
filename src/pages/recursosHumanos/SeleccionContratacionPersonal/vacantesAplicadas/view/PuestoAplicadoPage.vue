@@ -1,6 +1,11 @@
 <template>
   <basic-container>
     <template #contenido>
+      <q-card-section>
+        <div class="text-h5 q-mt-sm q-mb-xs text-center text-bold">
+          Mis Postulaciones
+        </div>
+      </q-card-section>
       <div class="row q-col-gutter-sm q-py-md q-mx-sm" v-if="vacantesPostuladas.length">
         <div
           class="col-12 col-md-4 col-sm-6"
@@ -52,9 +57,15 @@
                 </strong>
               </div>
               <div class="col-6">
-                <q-icon class="bi-suitcase-lg-fill" />
+                <q-icon class="bi-circle-fill" :color="[
+                  estadosPostulacion.POSTULADO,
+                  estadosPostulacion.REVISION_CV,
+                  estadosPostulacion.PRESELECCIONADO,
+                  estadosPostulacion.ENTREVISTA,
+                  estadosPostulacion.EXAMENES_MEDICOS,
+                  estadosPostulacion.CONTRATADO].includes(vacante.estado)?'green': 'red'" />
                 <strong class="q-px-sm">
-                  {{ vacante.vacante.modalidad }}
+                  {{ vacante.estado }}
                 </strong>
               </div>
             </div>
@@ -90,6 +101,7 @@
 .my-custom-card {
   height: 100%; /* Ajusta el contenedor para ocupar todo el alto disponible */
   width: 100%; /* Ajusta el contenedor para ocupar todo el ancho disponible */
+  /* box-shadow: 1px 1px 10px green; */
   border: 1px solid gray; /* Borde fino de 2px, color rojo */
   border-radius: 8px; /* Bordes redondeados con un radio de 8px, ajusta según tus necesidades */
   padding: 4px; /* Padding interno para separar el contenido del borde */

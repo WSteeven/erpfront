@@ -57,7 +57,7 @@
           </span>
 
           <!-- Perfil -->
-          <q-btn dense round flat glossy @click.self="mostrarMenu = true">
+          <q-btn v-if="true" dense round flat glossy @click.self="mostrarMenu = true">
             <q-avatar size="38px">
               <img  v-bind:src="imagenPerfil" />
             </q-avatar>
@@ -97,7 +97,7 @@
                   <br><strong>{{ ultimaConexion }}</strong>
                 </div> -->
 
-                <q-item clickable :to="{ name: 'perfil' }" class="full-width">
+                <q-item clickable :to="{ name: 'perfil_usuario_externo' }" class="full-width">
                   <q-avatar>
                     <q-icon name="bi-person"></q-icon>
                   </q-avatar>
@@ -198,6 +198,9 @@
         <!-- Aplica keep-alive aquí -->
         <keep-alive
           :exclude="[
+            'PostulacionVacantePage',
+            'PuestoDisponiblePage',
+            'PuestoAplicadoPage',
             'VacanteFavoritaPage',
             'Ingresos',
             'Egresos',
@@ -216,7 +219,6 @@
   </q-layout>
   <q-layout v-else view="lHh lpR fFf">
     <q-page-container>
-      <essential-loading></essential-loading>
       <router-view />
     </q-page-container>
   </q-layout>

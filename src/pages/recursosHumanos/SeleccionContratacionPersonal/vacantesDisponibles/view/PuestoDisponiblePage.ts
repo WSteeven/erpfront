@@ -17,14 +17,17 @@ import { ComportamientoModalesVacanteDisponible } from '../application/Comportam
 import { useVacanteStore } from 'stores/recursosHumanos/seleccionContratacion/vacante';
 import { getShortDescription } from 'shared/utils';
 import { useRouter } from 'vue-router';
+import { Vacante } from '../../vacantes/domain/Vacante';
 
 
 export default defineComponent({
+  name: 'PuestoDisponiblePage',
   components: { BasicContainer, ModalEntidad },
   setup() {
     const cargando = new StatusEssentialLoading()
     const { notificarError } = useNotificaciones()
-
+    const search = ref()
+    const vacantes = ref([])
     const vacantesDisponibles = ref()
     const modales = new ComportamientoModalesVacanteDisponible()
     const vacanteStore = useVacanteStore()
@@ -45,7 +48,8 @@ export default defineComponent({
 
     async function obtenerVacantes() {
       try {
-        const results = (await new VacanteController().listar({ 'activo': 1 })).result
+        const results = (await new VacanteController().listar({ 'activo': 1, 'es_completada':0 })).result
+        vacantes.value = results
         vacantesDisponibles.value = results
       } catch (error: any) {
         notificarError('Error al obtener las vacantes disponibles')
@@ -57,9 +61,18 @@ export default defineComponent({
       modales.abrirModalEntidad('VisualizarVacantePage')
     }
 
+    function filtrarVacantes() {
+      if (search.value === '') {
+        vacantesDisponibles.value = vacantes.value
+        return
+      }
+      const needle = search.value.toLowerCase()
+      const results = vacantes.value.filter((vacante: Vacante) => vacante.nombre!.toLowerCase().indexOf(needle) > -1)
+      vacantesDisponibles.value = results
+    }
 
     return {
-      val: ref(),
+      search,
       vacantesDisponibles,
       dayjs,
       expanded: ref(false),
@@ -68,6 +81,7 @@ export default defineComponent({
       // funciones
       visualizarVacante,
       getShortDescription,
+      filtrarVacantes,
 
 
     }

@@ -239,6 +239,7 @@ export const useAuthenticationExternalStore = defineStore('authentication_extern
     extraerRol,
     listadoUsuarios,
     registro,
+    setUser,
   }
 }
 )

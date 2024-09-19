@@ -37,6 +37,7 @@ import { UserReferenciasController } from '../infraestructure/UserReferenciasCon
 
 
 export default defineComponent({
+  name:'PostulacionVacantePage',
   components: { EssentialTable, SimpleLayout, GestorArchivos, OptionGroupComponent },
   setup() {
     const mixin = new ContenedorSimpleMixin(Postulacion, new PostulacionController(), new ArchivoController())
@@ -73,6 +74,8 @@ export default defineComponent({
       setTimeout(() => {
         subirArchivos()
       }, 300)
+      router.push({name: 'puestos_aplicados'})
+      store.getUser()
     })
     onBeforeGuardar(() => {
       refArchivoUsuario.value?.seleccionar()

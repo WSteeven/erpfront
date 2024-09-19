@@ -28,6 +28,7 @@ export class Vacante extends EntidadAuditable {
   requiere_experiencia: boolean
   es_favorita: boolean
   ya_postulada: boolean
+  es_completada: boolean
 
 
   constructor() {
@@ -57,5 +58,6 @@ export class Vacante extends EntidadAuditable {
     this.activo = true
     this.es_favorita = false
     this.ya_postulada = false
+    this.es_completada = false
   }
 }
