@@ -6,6 +6,7 @@
     :full-height="fullHeight"
     :persistent="persistente"
     :maximized="maximized"
+    @hide="emit('cerrado')"
   >
     <q-card class="bg-transparent no-border" flat>
       <!-- <q-linear-progress :value="1" color="grey-4" /> -->
@@ -54,7 +55,7 @@
           @modificado="(data) => emit('modificado', data)"
           ></component>
           <!--  @seleccionar="emit('seleccionar')" -->
-        
+
         <component
           v-else
           :is="componente"

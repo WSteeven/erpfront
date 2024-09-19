@@ -31,6 +31,12 @@ export const estadosAlimentacion = {
   activa: '0',
   finalizado: '1',
 }
+
+export const tipo_puesto ={
+  nuevo:1,
+  vacante:2,
+  pasante:3
+}
 export const parentezcos = [
   { nombre: 'CÓNYUGE', value: 'CÓNYUGE' },
   { nombre: 'HIJO', value: 'HIJO' },

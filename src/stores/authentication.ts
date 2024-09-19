@@ -1,7 +1,6 @@
 import { AxiosHttpRepository } from 'shared/http/infraestructure/AxiosHttpRepository'
-import { UserLogin } from 'src/pages/sistema/authentication/login/domain/UserLogin'
 import { ApiError } from 'shared/error/domain/ApiError'
-import { rolesSistema } from 'config/utils'
+import { rolesSistema, tipoAutenticacion } from 'config/utils'
 import { endpoints } from 'src/config/api'
 import { defineStore } from 'pinia'
 import { computed, ref } from 'vue'
@@ -11,8 +10,9 @@ import { Empleado } from 'pages/recursosHumanos/empleados/domain/Empleado'
 import { ForgotPassword } from 'sistema/authentication/forgotPassword/domain/ForgotPassword'
 import { ResetPassword } from 'sistema/authentication/resetPassword/domain/ResetPassword'
 import { UltimoSaldoController } from 'pages/fondosRotativos/reportes/reporteSaldoActual/infrestucture/UltimoSaldoController'
+import { UserLogin } from 'sistema/authentication/login/domain/UserLogin'
 import { useListadosSistemaStore } from './listadosSistema'
-import { UserLoginPostulante } from 'pages/recursosHumanos/seleccion_contratacion_personal/login-postulante/domain/UserLoginPostulante'
+// import { UserLoginPostulante } from 'pages/recursosHumanos/seleccion_contratacion_personal/login-postulante/domain/UserLoginPostulante'
 
 export const useAuthenticationStore = defineStore('authentication', () => {
   // Variables locales
@@ -64,7 +64,9 @@ export const useAuthenticationStore = defineStore('authentication', () => {
   }
 
   // Actions
-  const login = async (credentiales: UserLogin): Promise<Empleado> => {
+  const login = async (
+    credentiales: UserLogin
+  ): Promise<Empleado> => {
     try {
       /*const csrf_cookie = axios.getEndpoint(endpoints.csrf_cookie)
       console.log('authentication...')
@@ -72,8 +74,9 @@ export const useAuthenticationStore = defineStore('authentication', () => {
 
       const login = axios.getEndpoint(endpoints.login)
       const response: AxiosResponse = await axios.post(login, credentiales)
-
+      // console.log(response)
       LocalStorage.set('token', response.data.access_token)
+      LocalStorage.set('method_access', tipoAutenticacion.empleado)
       setUser(response.data.modelo)
       roles.value = response.data.modelo.roles
       permisos.value = response.data.modelo.permisos
@@ -89,31 +92,31 @@ export const useAuthenticationStore = defineStore('authentication', () => {
     }
   }
 
-  // Actions
-  const loginPostulante = async (credentiales: UserLoginPostulante): Promise<Empleado> => {
-    try {
+   // Actions
+  //  const loginPostulante = async (credentiales: UserLoginPostulante): Promise<Empleado> => {
+  //   try {
       /*const csrf_cookie = axios.getEndpoint(endpoints.csrf_cookie)
       console.log('authentication...')
       await axios.get(csrf_cookie) */
 
-      const login = axios.getEndpoint(endpoints.login)
-      const response: AxiosResponse = await axios.post(login, credentiales)
+  //     const login = axios.getEndpoint(endpoints.login)
+  //     const response: AxiosResponse = await axios.post(login, credentiales)
 
-      LocalStorage.set('token', response.data.access_token)
-      setUser(response.data.modelo)
-      roles.value = response.data.modelo.roles
-      permisos.value = response.data.modelo.permisos
+  //     LocalStorage.set('token', response.data.access_token)
+  //     setUser(response.data.modelo)
+  //     roles.value = response.data.modelo.roles
+  //     permisos.value = response.data.modelo.permisos
 
-      listadosSistemaStore.cargarDatosLS()
+  //     listadosSistemaStore.cargarDatosLS()
 
-      return response.data.modelo
-    } catch (error: unknown) {
-      console.log(error)
+  //     return response.data.modelo
+  //   } catch (error: unknown) {
+  //     console.log(error)
 
-      const axiosError = error as AxiosError
-      throw new ApiError(axiosError)
-    }
-  }
+  //     const axiosError = error as AxiosError
+  //     throw new ApiError(axiosError)
+  //   }
+  // }
   const enviarCorreoRecuperacion = async (userLogin: ForgotPassword) => {
     try {
       await axios.post(
@@ -153,6 +156,7 @@ export const useAuthenticationStore = defineStore('authentication', () => {
   async function logout() {
     await axios.post(axios.getEndpoint(endpoints.logout))
     LocalStorage.remove('token')
+    LocalStorage.remove('method_access')
     listadosSistemaStore.limpiarLS()
     await getUser()
     document.title = 'JPCONSTRUCRED'
@@ -227,7 +231,6 @@ export const useAuthenticationStore = defineStore('authentication', () => {
     nombre_usuario,
     saldo_actual,
     login,
-    loginPostulante,
     enviarCorreoRecuperacion,
     recuperacionCuenta,
     nombreUsuario,

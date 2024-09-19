@@ -157,7 +157,7 @@ export default defineComponent({
     **************/
     const reglas = {
       asunto: { required },
-      descripcion: { required, minLength: minLength(ticket.descripcion.length) },
+      descripcion: { required },
       prioridad: { required },
       responsable: { required },
       departamento_responsable: { required },

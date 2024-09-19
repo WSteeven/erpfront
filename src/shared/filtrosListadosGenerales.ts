@@ -78,6 +78,13 @@ export const useFiltrosListadosSelects = (listadosAuxiliares, entidad?: Ref<any>
   const categoriasMotivosConsumoActivosFijos = ref(listadosAuxiliares.categoriasMotivosConsumoActivosFijos)
   const motivosConsumoActivosFijos = ref(listadosAuxiliares.motivosConsumoActivosFijos)
 
+  //////////////////////////////////////////
+  //modulo seleccion y contratacion
+  //////////////////////////////////////////
+  const areasConocimiento = ref(listadosAuxiliares.areasConocimiento)
+
+
+
   /**************************************************************
    * Funciones
    **************************************************************/
@@ -500,6 +507,10 @@ export const useFiltrosListadosSelects = (listadosAuxiliares, entidad?: Ref<any>
   // const filtrarTiposAptitudesMedicasLaborales = (val, update) => filtrarLista(val, update, tiposAptitudesMedicasLaborales, 'nombre', listadosAuxiliares.tiposAptitudesMedicasLaborales)
 
   /****************
+   * Modulo seleccion y contratacion de personal
+   ****************/
+  const filtrarAreasConocimiento = (val, update) => filtrarLista(val, update, areasConocimiento, 'nombre', listadosAuxiliares.areasConocimiento)
+  /****************
    * Activos fijos
    ****************/
   const filtrarCategoriasMotivosConsumoActivosFijos = (val, update) => filtrarLista(val, update, categoriasMotivosConsumoActivosFijos, 'nombre', listadosAuxiliares.categoriasMotivosConsumoActivosFijos)
@@ -572,6 +583,9 @@ export const useFiltrosListadosSelects = (listadosAuxiliares, entidad?: Ref<any>
     laboratoriosClinicos, filtrarLaboratoriosClinicos,
     // tiposEvaluacionesMedicasRetiros, filtrarTiposEvaluacionesMedicasRetiros,
     // tiposAptitudesMedicasLaborales, filtrarTiposAptitudesMedicasLaborales,
+
+    //modulo seleccion y contratacion de personal
+    areasConocimiento, filtrarAreasConocimiento,
     // Modulo activos fijos
     categoriasMotivosConsumoActivosFijos, filtrarCategoriasMotivosConsumoActivosFijos,
     motivosConsumoActivosFijos, filtrarMotivosConsumoActivosFijos,

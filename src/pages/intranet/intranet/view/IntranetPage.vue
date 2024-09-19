@@ -253,16 +253,78 @@
         <br />
 
         <!--Sección de Vacantes-->
-        <q-card v-if="false" flat bordered class="vacantes-card" style="border-radius: 15px; overflow: hidden">
-          <q-expansion-item style="
+        <q-card
+          v-if="vacantesDisponibles"
+          flat
+          bordered
+          class="vacantes-card"
+          style="border-radius: 15px; overflow: hidden"
+        >
+          <q-expansion-item
+            style="
               text-align-last: center;
               background-color: rebeccapurple;
               color: white;
               font-size: 13px;
               font-weight: bold;
               border-radius: 10px;
-            " icon="bi-megaphone-fill" label="VACANTES" :default-opened="false">
-            <div style="background-color: WHITE; color: #555; padding: 20px">
+            "
+            icon="bi-megaphone-fill"
+            label="VACANTES"
+            :default-opened="true"
+          >
+            <q-carousel
+              v-if="vacantesDisponibles.length > 0"
+              v-model="carousel_vacantes"
+              swipeable
+              animated
+              :arrows="vacantesDisponibles.length>1"
+              height="260px"
+              control-text-color="teal"
+              autoplay
+              autoplay-interval="3000"
+              infinite
+            >
+              <q-carousel-slide
+                v-for="(vacante, index) in vacantesDisponibles"
+                :key="index"
+                :name="index"
+              >
+                <div class="border-grey rounded-8">
+                  <p class="text-black">{{ vacante.nombre }}</p>
+                  <div
+                    class="block q-px-xs text-caption text-grey text-justify"
+                    @click="visualizarVacante(vacante)"
+                  >
+                    <p>{{ acortarDescripcion($q, vacante.descripcion) }}</p>
+                  </div>
+                  <q-separator />
+                  <div class="row q-pa-sm text-black" style="font-size: 11px">
+                    <div class="col-6">
+                      <q-icon class="bi-clock-fill" />
+                      <strong class="q-px-sm">
+                        {{
+                          dayjs() > dayjs(vacante.fecha_caducidad)
+                            ? 'FINALIZADO'
+                            : 'FINALIZA ' +
+                              dayjs().to(vacante.fecha_caducidad).toUpperCase()
+                        }}
+                      </strong>
+                    </div>
+                    <div class="col-6">
+                      <q-icon class="bi-geo-alt-fill" />
+                      <strong class="q-px-sm">
+                        {{ vacante.canton }}
+                      </strong>
+                    </div>
+                  </div>
+                </div>
+              </q-carousel-slide>
+            </q-carousel>
+            <div
+              v-else
+              style="background-color: WHITE; color: #555; padding: 20px"
+            >
               No hay vacantes disponibles
             </div>
           </q-expansion-item>

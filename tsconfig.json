@@ -6,7 +6,7 @@
     "strictFunctionTypes": false,
     "module": "esnext",
     "target": "esnext",
-    "types": ["jest"],
+    "types": ["node"],
     "paths": {
       "config/*": ["src/config/*"],
       "shared/*": ["src/shared/*"],
@@ -39,6 +39,8 @@
       "motivosCanceladosTickets/*": ["gestionTickets/motivosCanceladosTickets"],
       // Modulo medico
       "medico/*": ["src/pages/medico/*"],
+      "seleccionContratacion/*": ["src/pages/recursosHumanos/SeleccionContratacionPersonal/*"],
+
       "activosFijos/*": ["src/pages/activosFijos/*"],
       "controlActivosFijos/*": ["src/pages/activosFijos/controlActivosFijos/*"]
     }
