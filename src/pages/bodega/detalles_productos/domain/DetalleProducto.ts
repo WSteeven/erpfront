@@ -45,7 +45,6 @@ export class DetalleProducto extends EntidadAuditable {
     permiso_id: number | null
     caducidad: string | null
 
-
     tipo: string | null
     activo: boolean
 
@@ -68,6 +67,7 @@ export class DetalleProducto extends EntidadAuditable {
     fotografia: string | null
     fotografia_detallada: string | null
     permiso_arma: PermisoArma
+    codigo_activo_fijo: string | null
 
     constructor() {
         super()
@@ -132,5 +132,6 @@ export class DetalleProducto extends EntidadAuditable {
 
         this.fotografia = null
         this.fotografia_detallada = null
+        this.codigo_activo_fijo = null
     }
 }

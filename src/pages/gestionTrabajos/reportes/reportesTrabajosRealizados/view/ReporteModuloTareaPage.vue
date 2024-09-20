@@ -285,6 +285,7 @@
                   :data="grafico"
                   :options="options"
                   tipo="bar"
+                  @click="mostrarTablaSubtareas"
                 />
               </div>
             </div>
@@ -292,6 +293,24 @@
         </div>
       </q-card-section>
     </q-card>
+
+    <q-dialog v-model="modalAbierto" class="row">
+      <div class="col-12">
+        <essential-table
+          titulo="Subtareas"
+          :configuracionColumnas="columnasSubtareas"
+          :datos="subtareas"
+          :permitirConsultar="false"
+          :permitirEditar="false"
+          :permitirEliminar="false"
+          :mostrarBotones="false"
+          :alto-fijo="false"
+          :accion1="botonVer"
+          :accion2="btnSeguimiento"
+          :mostrar-exportar="true"
+        ></essential-table>
+      </div>
+    </q-dialog>
   </q-page>
 </template>
 

@@ -152,7 +152,7 @@ export class ContenedorSimpleMixin<T extends EntidadAuditable> extends Contenedo
       const { result, meta, response } = await this.controller.listar(params)
       console.log(response.data)
 
-      if (params?.hasOwnProperty('export')) downloadFile(response.data, params.titulo, params.export)
+      if (params?.hasOwnProperty('export')) return downloadFile(response.data, params.titulo, params.export)
       else if (result.length == 0) this.notificaciones.notificarInformacion('Aún no se han agregado elementos.')
 
       if (append) this.refs.listado.value.push(...result)

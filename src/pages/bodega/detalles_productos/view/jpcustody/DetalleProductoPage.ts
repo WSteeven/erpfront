@@ -47,7 +47,7 @@ export default defineComponent({
     const { entidad: detalle, disabled, accion, listadosAuxiliares, listado } = mixin.useReferencias()
     const { setValidador, obtenerListados, cargarVista } = mixin.useComportamiento()
     const { onGuardado, onReestablecer, onConsultado } = mixin.useHooks()
-    const { confirmar, notificarCorrecto, notificarAdvertencia, notificarError } = useNotificaciones()
+    const { confirmar, notificarCorrecto, notificarError } = useNotificaciones()
 
     //stores
     const detalleStore = useDetalleStore()

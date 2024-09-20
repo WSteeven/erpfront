@@ -56,7 +56,7 @@ export default defineComponent({
           true
         )
 
-        let label, value
+        let label, value, metadata
 
         if (activePoints.length > 0) {
           const firstPoint = activePoints[0]
@@ -66,9 +66,10 @@ export default defineComponent({
           const chartData = myChart.data
           label = chartData.labels ? chartData.labels[dataIndex] : ''
           value = chartData.datasets[datasetIndex].data[dataIndex]
+          metadata = chartData.metadata
         }
 
-        emit('click', { label, value })
+        emit('click', { label, value, metadata })
       })
     })
 
