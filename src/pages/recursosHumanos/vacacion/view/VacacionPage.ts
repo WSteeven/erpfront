@@ -13,7 +13,7 @@ import SelectorImagen from 'components/SelectorImagen.vue'
 import { ContenedorSimpleMixin } from 'shared/contenedor/modules/simple/application/ContenedorSimpleMixin'
 import { VacacionController } from '../infraestructure/VacacionController'
 import { Vacacion } from '../domain/Vacacion'
-import { ordenarLista, removeAccents } from 'shared/utils'
+import { imprimirArchivo, ordenarLista, removeAccents } from 'shared/utils'
 import { accionesTabla, maskFecha, tabOptionsVacaciones } from 'config/utils'
 import { AxiosHttpRepository } from 'shared/http/infraestructure/AxiosHttpRepository'
 import { apiConfig, endpoints } from 'config/api'
@@ -21,7 +21,7 @@ import EssentialTable from 'components/tables/view/EssentialTable.vue'
 import { useRecursosHumanosStore } from 'stores/recursosHumanos'
 import { PeriodoController } from 'pages/recursosHumanos/periodo/infraestructure/PeriodoController'
 import { useAuthenticationStore } from 'stores/authentication'
-import axios, { AxiosResponse } from 'axios'
+import axios, { Axios, AxiosResponse } from 'axios'
 import { EmpleadoController } from 'pages/recursosHumanos/empleados/infraestructure/EmpleadoController'
 import { Empleado } from 'pages/recursosHumanos/empleados/domain/Empleado'
 import { CustomActionTable } from 'components/tables/domain/CustomActionTable'
@@ -30,6 +30,10 @@ import { AutorizacionController } from 'pages/administracion/autorizaciones/infr
 import { format } from '@formkit/tempo'
 import { useFiltrosListadosSelects } from 'shared/filtrosListadosGenerales'
 import { StatusEssentialLoading } from 'components/loading/application/StatusEssentialLoading'
+import { useNotificaciones } from 'shared/notificaciones'
+import { useQuasar } from 'quasar'
+import { useNotificacionStore } from 'stores/notificacion'
+import { useCargandoStore } from 'stores/cargando'
 
 export default defineComponent({
   components: { TabLayoutFilterTabs2, SelectorImagen, EssentialTable },
@@ -38,9 +42,14 @@ export default defineComponent({
     const { entidad: vacacion, disabled, accion, listadosAuxiliares, } = mixin.useReferencias()
     const { setValidador, obtenerListados, consultar, cargarVista, listar } = mixin.useComportamiento()
     const { onConsultado, onBeforeModificar } = mixin.useHooks()
+
+    const { notificarAdvertencia, notificarError } = useNotificaciones()
+
     /**
      * Stores
      */
+    useNotificacionStore().setQuasar(useQuasar())
+    useCargandoStore().setQuasar(useQuasar())
     const recursosHumanosStore = useRecursosHumanosStore()
     const store = useAuthenticationStore()
     const cargando = new StatusEssentialLoading()
@@ -60,7 +69,7 @@ export default defineComponent({
     const dias_rango2 = ref()
     let tabVacacion = '1'
 
-    const dias_descuento_vacaciones = computed(() =>  data_dias_descuento_vacaciones.value)
+    const dias_descuento_vacaciones = computed(() => data_dias_descuento_vacaciones.value)
 
     const { empleados, filtrarEmpleados } = useFiltrosListadosSelects(listadosAuxiliares)
     cargarVista(async () => {
@@ -346,6 +355,16 @@ export default defineComponent({
       return date >= currentDateString
 
     }
+    async function imprimir(id, filename) {
+      try {
+        cargando.activar()
+        const axios = AxiosHttpRepository.getInstance()
+        const url = apiConfig.URL_BASE + '/' + axios.getEndpoint(endpoints.vacacion) + '/imprimir/' + id
+        imprimirArchivo(url, 'GET', 'blob', 'pdf', filename)
+      } catch (e) {
+        notificarAdvertencia('Error al imprimir el documento. ' + e)
+      } finally { cargando.desactivar() }
+    }
 
     /**************************
      * BOTONES DE TABLAS
@@ -359,6 +378,17 @@ export default defineComponent({
         accion.value = 'EDITAR'
         consultar(entidad)
       },
+    }
+
+    const btnImprimir: CustomActionTable = {
+      titulo: 'Imprimir',
+      color: 'secondary',
+      icono: 'bi-printer',
+      accion: async ({ entidad }) => {
+        console.log('Presionaste imprimir', entidad);
+        imprimir(entidad.id, `Solicitud vacaciones ${entidad.periodo} ${entidad.empleado_info}`)
+      },
+      visible: () =>['1','2'].includes(tabVacacion)
     }
 
 
@@ -402,6 +432,7 @@ export default defineComponent({
 
       // botones de tabla
       editarVacacion,
+      btnImprimir,
     }
   },
 })
