@@ -1,7 +1,9 @@
 import { useAuthenticationStore } from './authentication'
-import { MenuOption } from 'shared/menu/MenuOption'
+import { MenuOption } from 'src/shared/menu/MenuOption'
 import { defineStore } from 'pinia'
 import { computed, Ref } from 'vue'
+import seleccionContratacionPersonal from './menus/rrhh/seleccionContratacionPersonal'
+
 
 export const useMenuStore = defineStore('menu', () => {
   const store = useAuthenticationStore()
@@ -698,25 +700,6 @@ export const useMenuStore = defineStore('menu', () => {
           can: store.can('puede.acceder.grupos')
         },
         {
-          title: 'Seleccion y Contratacion',
-          icon: 'bi-person-plus-fill',
-          can: store.can('puede.ver.modulo.seleccion_contratacion'),
-          children: [
-            {
-              title: 'Solicitud de Puesto de Empleo',
-              link: 'solicitud-puesto-empleo',
-              icon: 'bi-file-earmark-person-fill',
-              can: store.can('puede.acceder.solicitud_puesto_empleo')
-            },
-            {
-              title: 'Publicacion de Puesto de Empleo',
-              link: 'publicacion-puesto-empleo',
-              icon: 'bi-file-earmark-person',
-              can: store.can('puede.acceder.publicacion_puesto_empleo')
-            }
-          ]
-        },
-        {
           title: 'Permiso',
           link: 'permiso-nomina',
           icon: 'bi-calendar2-plus-fill',
@@ -815,6 +798,7 @@ export const useMenuStore = defineStore('menu', () => {
             }
           ]
         },
+        ...seleccionContratacionPersonal.value,
         {
           title: 'Configuracion',
           icon: 'bi-gear-fill',

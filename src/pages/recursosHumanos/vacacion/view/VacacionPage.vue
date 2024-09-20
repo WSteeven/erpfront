@@ -4,13 +4,14 @@
     :configuracionColumnas="configuracionColumnas"
     :tabOptions="tabOptionsVacaciones"
     :full="true"
-    :accion1="editarVacacion"
     :permitirEditar="false"
     :permitirEliminar="false"
     :mostrarButtonSubmits="true"
     :filtrar="filtrarVacacion"
     :tabDefecto="tabVacacion"
     :forzarListar="true"
+    :accion1="editarVacacion"
+    :accion2="btnImprimir"
   >
     <template #formulario>
       <q-form @submit.prevent>

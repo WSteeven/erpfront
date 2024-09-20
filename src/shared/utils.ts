@@ -1,7 +1,7 @@
 import axios, { AxiosError, AxiosResponse, Method, ResponseType } from 'axios'
 import { StatusEssentialLoading } from 'components/loading/application/StatusEssentialLoading'
 import { apiConfig, endpoints } from 'config/api'
-import { date } from 'quasar'
+import { date, useQuasar } from 'quasar'
 import { ColumnConfig } from 'src/components/tables/domain/ColumnConfig'
 import { EntidadAuditable } from './entidad/domain/entidadAuditable'
 import { ApiError } from './error/domain/ApiError'
@@ -10,8 +10,8 @@ import { useNotificaciones } from './notificaciones'
 import { ServiceWorkerClass } from './notificacionesServiceWorker/ServiceWorkerClass'
 import { ItemProforma } from 'pages/comprasProveedores/proforma/domain/ItemProforma'
 import { useAuthenticationStore } from 'stores/authentication'
-import { SelectOption } from 'components/tables/domain/SelectOption'
 import { rolesSistema } from 'config/utils'
+import { SelectOption } from 'components/tables/domain/SelectOption'
 import { format } from '@formkit/tempo'
 
 const authenticationStore = useAuthenticationStore()
@@ -174,6 +174,9 @@ export function generarFilters<T>(
 
 export function partirNumeroDocumento(numeroDocumento: string): string[] {
   return numeroDocumento.split('-')
+}
+export function checkValueIsNumber(val): boolean {
+  return !isNaN(val) && !isNaN(parseFloat(val));
 }
 
 export function construirNumeroDocumento(
@@ -889,6 +892,40 @@ export const copiarAlPortapapeles = async (texto: string) => {
   }
 }
 
+/**
+ * Función para eliminar etiquetas HTML.
+ * Esta función elimina las etiquetas HTML de una cadena dada y reemplaza cualquier
+ * instancia de `&nbsp;` por un salto de línea.
+ *
+ * @param {string} html - La cadena de entrada que contiene etiquetas HTML y entidades `&nbsp;`.
+ * @returns {string} - La cadena de salida con las etiquetas HTML eliminadas y `&nbsp;` reemplazadas
+ * por saltos de línea.
+ */
+export function removeHTMLTags(html: string): string {
+  // Expresión regular para eliminar etiquetas HTML y reemplazar &nbsp;
+  const regex = /<[^>]*>|&nbsp;/g;
+  // Reemplazar las etiquetas HTML y &nbsp; por una cadena vacía
+  const plainText = html.replace(regex, '\n').trim();
+  return plainText;
+}
+
+
+/**
+ * Esta función genera una versión resumida de una descripción dada.
+ * Quita las etiquetas HTML de la descripción y la trunca a una longitud máxima.
+ * Si la descripción es más larga que la longitud máxima, se agrega un puntos suspensivos (...).
+ *
+ * @param {string} description - La descripción original que se va a resumir.
+ * @returns {string} - La versión resumida de la descripción.
+ */
+export function getShortDescription($q, description: string): string {
+  const maxLength = $q.screen.lg || $q.screen.md ? 300 : 200 // Ajusta este valor según la longitud deseada
+  const descripcion_plain_text = removeHTMLTags(description)
+  if (descripcion_plain_text.length > maxLength) {
+    return descripcion_plain_text.substring(0, maxLength) + '...'
+  }
+  return descripcion_plain_text
+}
 export function optionsFecha(date) {
   const today = new Date()
 

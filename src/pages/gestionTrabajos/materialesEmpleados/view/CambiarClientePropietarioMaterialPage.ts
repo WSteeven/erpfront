@@ -26,7 +26,7 @@ export default defineComponent({
         const clientes = ref()
         const transferenciaProductoEmpleadoStore = useTransferenciaProductoEmpleadoStore()
         const cargando = new StatusEssentialLoading()
-        const { confirmar, prompt, notificarCorrecto, notificarAdvertencia, notificarError } = useNotificaciones()
+        const { notificarCorrecto, notificarAdvertencia, notificarError } = useNotificaciones()
 
         //validaciones
         const reglas = {

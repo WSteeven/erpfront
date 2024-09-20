@@ -27,6 +27,10 @@ export default defineComponent({
       type: Boolean,
       default: true,
     },
+    forzarGuardar: {
+      type: Boolean,
+      default: false,
+    },
     permitirEditar: {
       type: Boolean,
       default: true,

@@ -549,7 +549,8 @@
             'AcreditacionSemana',
             'TransferenciaProductoEmpleado',
             'AsignacionVehiculo',
-            'TransferenciaVehiculo'
+            'TransferenciaVehiculo',
+            'VacantePage',
           ]"
         >
           <component :is="Component" />

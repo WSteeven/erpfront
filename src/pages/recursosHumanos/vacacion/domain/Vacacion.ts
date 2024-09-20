@@ -3,6 +3,7 @@ import { EntidadAuditable } from 'shared/entidad/domain/entidadAuditable'
 export class Vacacion extends EntidadAuditable {
   id: number | null
   empleado: number | null
+  autorizador: number | null
   empleado_info: string | null
   periodo: string | null
   periodo_info: string | null
@@ -27,6 +28,7 @@ export class Vacacion extends EntidadAuditable {
     super()
     this.id = null
     this.empleado = null
+    this.autorizador = null
     this.empleado_info = null
     this.periodo = null
     this.periodo_info = null

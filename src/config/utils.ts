@@ -572,6 +572,11 @@ export function convertir_fecha_hora(fecha) {
   const fecha_convert = new Date(anio, mes, dia, tiempo[0], tiempo[1], 0)
   return fecha_convert
 }
+export const tiposDocumentosIdentificaciones = [
+  { nombre: 'Cedula', value:'CEDULA' },
+  { nombre: 'R.U.C.' , value:'RUC' },
+  { nombre: 'Pasaporte',value: 'PASAPORTE' },
+]
 
 export const niveles_academicos = [
   { nombre: 'NINGUNA' },
@@ -679,4 +684,9 @@ export const selectOptionsSiNo: SelectOption[] = [
 export const opcionesGrafico = {
   grafico: 'grafico',
   listado: 'listado'
+}
+
+export const tipoAutenticacion = {
+  empleado: 'private',
+  usuario_externo: 'external'
 }

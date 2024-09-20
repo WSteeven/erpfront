@@ -1,17 +1,11 @@
+//Dependencies
+import relativeTime from 'dayjs/plugin/relativeTime';
+import es from 'dayjs/locale/es';
+import dayjs from 'dayjs'
+
 import { useAuthenticationStore } from 'stores/authentication'
 import loginJson from 'src/assets/lottie/welcome.json'
 import { Ref, computed, defineComponent, reactive, ref, onMounted } from 'vue'
-import {
-  QCarousel,
-  QCarouselSlide,
-  QCard,
-  QImg,
-  QCardSection,
-  QDialog,
-  QDate,
-  QCardActions,
-  QBtn
-} from 'quasar'
 import { Qalendar } from 'qalendar'
 import ModalesEntidad from 'components/modales/view/ModalEntidad.vue'
 import SolicitarFecha from 'shared/prompts/SolicitarFecha.vue'
@@ -37,6 +31,8 @@ import { formatearFecha } from '../../../../shared/utils'
 import { MenuOption } from 'shared/menu/MenuOption'
 import { NoticiaController } from 'pages/intranet/noticias/infraestructure/NoticiaController'
 import { EventoController } from 'pages/intranet/eventos/infraestructure/EventoController'
+import { VacanteController } from 'pages/recursosHumanos/SeleccionContratacionPersonal/vacantes/infraestructure/VacanteController'
+import { getShortDescription as acortarDescripcion } from 'shared/utils';
 
 interface Noticia {
   id: number
@@ -61,15 +57,6 @@ export default defineComponent({
     ModalesEntidad,
     LottiePlayer: Vue3Lottie,
     SolicitarFecha,
-    QCarousel,
-    QCarouselSlide,
-    QCard,
-    QImg,
-    QCardSection,
-    QDate,
-    QDialog,
-    QCardActions,
-    QBtn,
     Qalendar
   },
 
@@ -80,6 +67,7 @@ export default defineComponent({
 
     const usuarios = 20
     const carousel_noticias = ref(0)
+    const carousel_vacantes = ref(0)
     const activeTab = ref(0)
 
     const modalNoticia = ref(false)
@@ -101,6 +89,7 @@ export default defineComponent({
       descripcion: ''
     })
 
+    const vacantesDisponibles = ref()
     const eventos = ref<Evento[]>([])
     const eventoSeleccionado = ref<Evento | null>(null)
     const fechaSeleccionada = ref(null)
@@ -193,6 +182,11 @@ export default defineComponent({
       showCurrentTime: true
     })
 
+const router = useRouter()
+    //dayjs en español
+    dayjs.extend(relativeTime)
+    dayjs.locale(es)
+
     function verEvento(evento) {
       // console.log('evento clickado')
       // console.log('evento clickado', evento)
@@ -213,7 +207,22 @@ export default defineComponent({
         cargando.desactivar()
       }
     }
-
+    async function obtenerVacantes() {
+      try {
+        const results = (await new VacanteController().listar({
+          'activo': 1,
+          'fecha_caducidad[operator]': '>=',
+          'fecha_caducidad[value]': obtenerFechaActual(maskFecha),
+        })).result
+        vacantesDisponibles.value = results
+      } catch (error: any) {
+        notificarError('Error al obtener las vacantes disponibles')
+      }
+    }
+    async function visualizarVacante(vacante) {
+      // console.log("Diste clic en visualizar vacante", vacante)
+      router.push('puestos-disponibles')
+    }
     function getShortDescription(description: string): string {
       const maxLength = 275 // Ajusta este valor según la longitud deseada
       if (description.length > maxLength) {
@@ -418,6 +427,7 @@ export default defineComponent({
 
     onMounted(() => {
       obtenerEventos()
+      obtenerVacantes()
       obtenerEmpleadosCumpleaneros()
     })
 
@@ -458,12 +468,12 @@ export default defineComponent({
     const getImagePerfil = usuario => {
       return usuario.foto_url == null
         ? `https://ui-avatars.com/api/?name=${usuario.nombres.substr(
-            0,
-            1
-          )}+${usuario.apellidos.substr(
-            0,
-            1
-          )}&bold=true&background=008000&color=ffff`
+          0,
+          1
+        )}+${usuario.apellidos.substr(
+          0,
+          1
+        )}&bold=true&background=008000&color=ffff`
         : usuario.foto_url
     }
 
@@ -499,6 +509,7 @@ export default defineComponent({
       modales,
       subtareasPorAsignar,
       carousel_noticias,
+      carousel_vacantes,
       activeTab,
       carousel_cumpleanos_mes,
       autoplay,
@@ -513,6 +524,8 @@ export default defineComponent({
       empleados,
       showDepartamentos,
       modulosPermitidos,
+      vacantesDisponibles,
+      acortarDescripcion,
       logout,
       verEvento,
       consultarEmpleadosDepartamento,
@@ -524,6 +537,8 @@ export default defineComponent({
       selfCenterMiddle,
       showBanner,
       maskFecha,
+      dayjs,
+      visualizarVacante,
       formatearFecha,
       readMore,
       documentosIntranet,

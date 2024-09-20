@@ -1,20 +1,11 @@
 // Dependencias
 import { Notificacion } from 'pages/administracion/notificaciones/domain/Notificacion'
 import { useNotificationRealtimeStore } from 'stores/notificationRealtime'
-import {
-  defineComponent,
-  ref,
-  computed,
-  Ref,
-  ComputedRef,
-  watch,
-  watchEffect,
-  createApp
-} from 'vue'
+import { defineComponent, ref, computed, Ref, ComputedRef,  watchEffect } from 'vue'
 import { useAuthenticationStore } from 'src/stores/authentication'
 import { LocalStorage, useQuasar } from 'quasar'
 import { useMenuStore } from 'src/stores/menu'
-import { useRoute, useRouter } from 'vue-router'
+import {  useRoute, useRouter } from 'vue-router'
 import Swal from 'sweetalert2'
 import dayjs from 'dayjs'
 import es from 'dayjs/locale/es'
@@ -83,7 +74,7 @@ export default defineComponent({
         if (permission === 'granted') {
           // console.log('Permiso de notificación concedido.');
         } else {
-          console.log('Permiso de notificación denegado.')
+          // console.log('Permiso de notificación denegado.')
         }
       })
     }
@@ -98,7 +89,7 @@ export default defineComponent({
     const Router = useRouter()
     const route = useRoute()
     const tituloPagina = computed(() => mainLayoutStore.tituloPagina)
-    const grupo = authenticationStore.user.grupo
+    const grupo = authenticationStore.user?.grupo
     const mostrarBuscar = ref(false)
 
     const saldo = computed(() => {
@@ -216,7 +207,7 @@ export default defineComponent({
     // const mostrarAlertaInactividad = computed(() => {
     //   return (tiempoInactividad / 1000) - idledFor.value < 10 //true cuando sean 10 segundos restantes
     // })
-    const { idle, lastActive } = useIdle(tiempoInactividad) //5 minutos de inactividad
+    const { lastActive } = useIdle(tiempoInactividad) //5 minutos de inactividad
     // const now = useTimestamp({ interval: 1000 })
     // const idledFor = computed(() => Math.floor((now.value - lastActive.value) / 1000),) //Tiempo de inactividad transcurrido en segundos 1,2,3...,n
     // const ultimaConexion = LocalStorage.getItem('ultima_conexion')
@@ -237,7 +228,7 @@ export default defineComponent({
     })
     */
     if (authenticationStore.user) {
-      const notIdle = new NotIdle()
+      new NotIdle()
         .whenInteractive()
         .within(60, 1000) // un minuto
         .do(() => {
