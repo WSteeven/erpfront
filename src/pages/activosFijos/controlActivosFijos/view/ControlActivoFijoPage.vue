@@ -3,6 +3,7 @@
     :mixin="mixin"
     :configuracionColumnas="configuracionColumnas"
     :mostrar-button-submits="false"
+    :accion1Header="btnDescargarReporte"
   >
     <template #formulario>
       <q-form @submit.prevent>

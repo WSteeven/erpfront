@@ -18,7 +18,7 @@
               <q-img v-if="noticia.imagen_noticia" :src="noticia.imagen_noticia" :alt="noticia.titulo"
                 class="col-12 col-md-5 noticias-image" style="border-radius: 15px" />
               <div class="col-12 col-md-7 q-pl-md">
-                <h5 class="q-mb-sm q-pr-xl">{{ noticia.titulo }}</h5>
+                <h5 class="q-mb-sm q-pr-xl" style="text-transform: uppercase;">{{ noticia.titulo }}</h5>
                 <p class="noticias-description q-mb-md justify-text" v-html="getShortDescription(noticia.descripcion)">
                 </p>
                 <q-btn class="noticias-read-more bottom-right q-mb-md" color="primary"

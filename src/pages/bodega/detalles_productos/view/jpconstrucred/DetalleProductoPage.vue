@@ -287,7 +287,7 @@
           </div>
 
           <!-- Es un Activo -->
-          <div class="col-12 col-md-3 col-sm-3">
+          <div class="col-12 col-md-4">
             <label class="q-mb-sm block">¿Es un Activo Fijo?</label>
             <q-toggle
               :label="detalle.esActivo ? 'SI' : 'NO'"
@@ -298,6 +298,19 @@
               unchecked-icon="clear"
               :disable="disabled"
             />
+          </div>
+
+          <!-- Código activo fijo -->
+          <div v-if="detalle.esActivo" class="col-12 col-md-4">
+            <label class="q-mb-sm block">Código activo fijo</label>
+            <q-input
+              v-model="detalle.codigo_activo_fijo"
+              placeholder="Obligatorio"
+              :disable="disabled"
+              outlined
+              dense
+            >
+            </q-input>
           </div>
 
           <!-- Precio compra -->
@@ -316,6 +329,7 @@
             >
             </q-input>
           </div>
+
           <!-- Tiene serial -->
           <div class="col-12 col-md-4">
             <br />
