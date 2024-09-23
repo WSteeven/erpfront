@@ -3,6 +3,7 @@
     :mixin="mixin"
     :configuracionColumnas="configuracionColumnas"
     :accion1="editarGasto"
+    ajustarCeldas
   >
     <template #formulario>
       <q-form @submit.prevent>
