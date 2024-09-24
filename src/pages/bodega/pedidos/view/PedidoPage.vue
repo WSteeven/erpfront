@@ -703,7 +703,7 @@
           </div>
           <!-- Tabla -->
           <div class="col-12">
-            <essential-table
+            <essential-table v-if="tablaRefrescada"
               titulo="Productos Seleccionados"
               :configuracionColumnas="
                 accion === acciones.nuevo || accion === acciones.editar

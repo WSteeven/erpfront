@@ -53,7 +53,7 @@ export default defineComponent({
     const mixin = new ContenedorSimpleMixin(Pedido, new PedidoController())
     const { entidad: pedido, disabled, accion, listadosAuxiliares, listado } = mixin.useReferencias()
     const { setValidador, obtenerListados, cargarVista, listar } = mixin.useComportamiento()
-    const { onReestablecer, onConsultado } = mixin.useHooks()
+    const { onReestablecer, onBeforeConsultar, onConsultado } = mixin.useHooks()
     const { confirmar, prompt, notificarCorrecto, notificarError, notificarAdvertencia } = useNotificaciones()
 
     // modales
@@ -81,6 +81,7 @@ export default defineComponent({
     let tabSeleccionado = ref('PENDIENTE')
     let soloLectura = ref(false)
     let puedeEditar = ref(false)
+    const tablaRefrescada = ref(true)
 
     const esCoordinador = store.esCoordinador
     const esBodeguero = store.esBodeguero
@@ -93,7 +94,9 @@ export default defineComponent({
       soloLectura.value = false
       cargarDatosDefecto()
     })
+    onBeforeConsultar(() =>tablaRefrescada.value = false)
     onConsultado(() => {
+      tablaRefrescada.value=true
       empleados.value = listadosAuxiliares.empleados
       if (accion.value === acciones.editar && (esCoordinador || esActivosFijos || store.user.id === pedido.per_autoriza_id)) {
         soloLectura.value = true
@@ -437,6 +440,7 @@ export default defineComponent({
     return {
       mixin, pedido, disabled, accion, v$, acciones,
       configuracionColumnas: configuracionColumnasPedidos,
+      tablaRefrescada,
 
       //listados y filtros
       clientes, filtrarClientes,
