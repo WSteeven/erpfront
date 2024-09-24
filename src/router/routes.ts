@@ -661,6 +661,13 @@ const routes: RouteRecordRaw[] = [
         meta: { requiresAuth: true },
       },
       {
+        path: '/proveedores-internacionales',
+        name: 'proveedores_internacionales',
+        component: () =>
+          import('pages/comprasProveedores/proveedorInternacional/view/ProveedorInternacionalPage.vue'),
+        meta: { requiresAuth: false },
+      },
+      {
         path: '/categorias-ofertas',
         name: 'categorias_ofertas',
         component: () =>

@@ -69,6 +69,10 @@ export const tabOptionsPrefactura: TabOption[] = [
   { label: 'Creadas', value: '2' }, //estado CREADO
   { label: 'Anuladas', value: '4' }, //estado ANULADO
 ]
+export const tabOptionsProveedoresInternacionales: TabOption[] = [
+  { label: 'ACTIVOS', value: '1' },
+  { label: 'INACTIVOS', value: '0' },
+]
 export const tabOptionsOrdenCompra: TabOption[] = [
   { label: 'Pendientes', value: '1' }, //autorizacion PENDIENTE
   { label: 'Autorizadas', value: '2' }, //autorizacion APROBADO
