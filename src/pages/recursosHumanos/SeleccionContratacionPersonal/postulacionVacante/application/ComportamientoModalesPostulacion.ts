@@ -1,5 +1,5 @@
-import { ComportamientoModales } from "components/modales/application/ComportamientoModales";
-import { PostulacionModales } from "../domain/PostulacionModales";
+import { ComportamientoModales } from 'components/modales/application/ComportamientoModales';
+import { PostulacionModales } from '../domain/PostulacionModales';
 
 export class ComportamientoModalesPostulacion extends ComportamientoModales<PostulacionModales>{
   constructor(){

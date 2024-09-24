@@ -1,21 +1,21 @@
-import { ContenedorSimpleMixin } from "shared/contenedor/modules/simple/application/ContenedorSimpleMixin";
-import TabLayoutFilterTabs2 from "shared/contenedor/modules/simple/view/TabLayoutFilterTabs2.vue";
-import { defineComponent, ref } from "vue";
-import { BancoPostulante } from "../domain/BancoPostulante";
-import { BancoPostulanteController } from "../infraestructure/BancoPostulanteController";
-import useVuelidate from "@vuelidate/core";
-import { acciones, maskFecha, tiposDocumentosIdentificaciones } from "config/utils";
-import { required } from "shared/i18n-validators";
-import { configuracionColumnasBancoPostulante } from "../domain/configuracionColumnasBancoPostulante";
-import { tabOptionsBancoPostulante } from "config/seleccionContratacionPersonal.utils";
-import { IdentidadGeneroController } from "pages/medico/gestionarPacientes/modules/fichaPeriodicaPreocupacional/infraestructure/IdentidadGeneroController";
-import { PaisController } from "sistema/pais/infraestructure/PaisController";
-import { useFiltrosListadosSelects } from "shared/filtrosListadosGenerales";
-import GestorArchivos from "components/gestorArchivos/GestorArchivos.vue";
-import { Postulacion } from "../../postulacionVacante/domain/Postulacion";
-import { PostulacionController } from "../../postulacionVacante/infraestructure/PostulacionController";
-import { CargoController } from "pages/recursosHumanos/cargos/infraestructure/CargoController";
-import OptionGroupComponent from "components/optionGroup/view/OptionGroupComponent.vue";
+import { ContenedorSimpleMixin } from 'shared/contenedor/modules/simple/application/ContenedorSimpleMixin';
+import TabLayoutFilterTabs2 from 'shared/contenedor/modules/simple/view/TabLayoutFilterTabs2.vue';
+import { defineComponent, ref } from 'vue';
+import { BancoPostulante } from '../domain/BancoPostulante';
+import { BancoPostulanteController } from '../infraestructure/BancoPostulanteController';
+import useVuelidate from '@vuelidate/core';
+import { acciones, maskFecha, tiposDocumentosIdentificaciones } from 'config/utils';
+import { required } from 'shared/i18n-validators';
+import { configuracionColumnasBancoPostulante } from '../domain/configuracionColumnasBancoPostulante';
+import { tabOptionsBancoPostulante } from 'config/seleccionContratacionPersonal.utils';
+import { IdentidadGeneroController } from 'pages/medico/gestionarPacientes/modules/fichaPeriodicaPreocupacional/infraestructure/IdentidadGeneroController';
+import { PaisController } from 'sistema/pais/infraestructure/PaisController';
+import { useFiltrosListadosSelects } from 'shared/filtrosListadosGenerales';
+import GestorArchivos from 'components/gestorArchivos/GestorArchivos.vue';
+import { Postulacion } from '../../postulacionVacante/domain/Postulacion';
+import { PostulacionController } from '../../postulacionVacante/infraestructure/PostulacionController';
+import { CargoController } from 'pages/recursosHumanos/cargos/infraestructure/CargoController';
+import OptionGroupComponent from 'components/optionGroup/view/OptionGroupComponent.vue';
 
 export default defineComponent({
   components: { TabLayoutFilterTabs2, GestorArchivos, OptionGroupComponent },

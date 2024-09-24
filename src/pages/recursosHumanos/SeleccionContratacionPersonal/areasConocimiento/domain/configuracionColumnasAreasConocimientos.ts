@@ -1,5 +1,5 @@
-import { ColumnConfig } from "components/tables/domain/ColumnConfig";
-import { AreaConocimiento } from "./AreaConocimiento";
+import { ColumnConfig } from 'components/tables/domain/ColumnConfig';
+import { AreaConocimiento } from './AreaConocimiento';
 
 export const configuracionColumnasAreasConocimientos: ColumnConfig<AreaConocimiento>[] = [
     {

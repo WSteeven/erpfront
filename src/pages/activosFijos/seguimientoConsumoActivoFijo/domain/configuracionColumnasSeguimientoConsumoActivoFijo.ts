@@ -1,5 +1,5 @@
-import { ColumnConfig } from "components/tables/domain/ColumnConfig";
-import { SeguimientoConsumoActivoFijo } from "./SeguimientoConsumoActivoFijo";
+import { ColumnConfig } from 'components/tables/domain/ColumnConfig';
+import { SeguimientoConsumoActivoFijo } from './SeguimientoConsumoActivoFijo';
 
 // En seguimiento
 export const configuracionColumnasSeguimientoConsumoActivoFijo: ColumnConfig<SeguimientoConsumoActivoFijo>[] = [

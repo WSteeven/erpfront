@@ -1,4 +1,4 @@
-import { estadosPostulacion } from 'config/seleccionContratacionPersonal.utils';
+import { estadosPostulacion } from 'config/seleccionContratacionPersonal.utils'
 import { EntidadAuditable } from 'shared/entidad/domain/entidadAuditable';
 
 export class Postulacion extends EntidadAuditable {

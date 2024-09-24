@@ -1,4 +1,4 @@
-import { Validador } from "shared/validadores/domain/Validador";
+import { Validador } from 'shared/validadores/domain/Validador';
 
 export class ValidarCurriculum implements Validador {
   private refArchivo

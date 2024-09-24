@@ -1,13 +1,13 @@
 // Dependencies
-import { ComponenteModal } from "components/modales/domain/ComponenteModal.domain";
-import { markRaw } from "vue";
+import { ComponenteModal } from 'components/modales/domain/ComponenteModal.domain';
+import { markRaw } from 'vue';
 
 // Paginas
-import AgregarBancoPostulantePage from "../modules/bancoPostulantes/view/AgregarBancoPostulantePage.vue";
-import CalificarCandidatoPage from "../modules/calificarCandidatos/view/CalificarCandidatoPage.vue";
-import EntrevistarPage from "../modules/entrevistas/view/EntrevistarPage.vue";
-import AgendarCitaMedicaPage from "../modules/citasMedicas/view/AgendarCitaMedicaPage.vue";
-import ActualizarResultadosCitaMedicaPage from "../modules/citasMedicas/view/ActualizarResultadosCitaMedicaPage.vue";
+import AgregarBancoPostulantePage from '../modules/bancoPostulantes/view/AgregarBancoPostulantePage.vue';
+import CalificarCandidatoPage from '../modules/calificarCandidatos/view/CalificarCandidatoPage.vue';
+import EntrevistarPage from '../modules/entrevistas/view/EntrevistarPage.vue';
+import AgendarCitaMedicaPage from '../modules/citasMedicas/view/AgendarCitaMedicaPage.vue';
+import ActualizarResultadosCitaMedicaPage from '../modules/citasMedicas/view/ActualizarResultadosCitaMedicaPage.vue';
 
 
 export class PostulacionModales {

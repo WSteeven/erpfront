@@ -11,7 +11,7 @@
   />
 </template>
 <script lang="ts">
-import { PropType, ref, defineComponent, reactive } from 'vue'
+import { PropType, ref, defineComponent } from 'vue'
 import { OptionGroup } from '../domain/OptionGroup'
 import { watch } from 'vue'
 

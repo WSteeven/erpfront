@@ -215,7 +215,7 @@ export default defineComponent({
         const response: AxiosResponse = await axios.post(ruta)
         notificarCorrecto(response.data.mensaje)
         if (response.data.es_empleado) {
-          notificarAdvertencia("El postulante ya es un empleado existente!")
+          notificarAdvertencia('El postulante ya es un empleado existente!')
           listado.value.splice(posicion, 1, response.data.modelo)
         }
         else {

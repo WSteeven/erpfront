@@ -1,14 +1,14 @@
-import { likertCalificacionPostulacion } from "config/seleccionContratacionPersonal.utils";
-import { ContenedorSimpleMixin } from "shared/contenedor/modules/simple/application/ContenedorSimpleMixin";
-import { defineComponent } from "vue";
-import { Postulacion } from "../../../domain/Postulacion";
-import { required } from "shared/i18n-validators";
-import useVuelidate from "@vuelidate/core";
-import { StatusEssentialLoading } from "components/loading/application/StatusEssentialLoading";
-import { useNotificaciones } from "shared/notificaciones";
-import { AxiosHttpRepository } from "shared/http/infraestructure/AxiosHttpRepository";
-import { endpoints } from "config/api";
-import { AxiosResponse } from "axios";
+import { likertCalificacionPostulacion } from 'config/seleccionContratacionPersonal.utils';
+import { ContenedorSimpleMixin } from 'shared/contenedor/modules/simple/application/ContenedorSimpleMixin';
+import { defineComponent } from 'vue';
+import { Postulacion } from '../../../domain/Postulacion';
+import { required } from 'shared/i18n-validators';
+import useVuelidate from '@vuelidate/core';
+import { StatusEssentialLoading } from 'components/loading/application/StatusEssentialLoading';
+import { useNotificaciones } from 'shared/notificaciones';
+import { AxiosHttpRepository } from 'shared/http/infraestructure/AxiosHttpRepository';
+import { endpoints } from 'config/api';
+import { AxiosResponse } from 'axios';
 
 export default defineComponent({
   components: {},

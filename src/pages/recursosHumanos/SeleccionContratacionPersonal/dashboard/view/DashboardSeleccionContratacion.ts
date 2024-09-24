@@ -1,15 +1,15 @@
-import GraficoGenerico from "components/chartJS/GraficoGenerico.vue";
-import { StatusEssentialLoading } from "components/loading/application/StatusEssentialLoading";
-import EssentialTable from "components/tables/view/EssentialTable.vue";
-import { ContenedorSimpleMixin } from "shared/contenedor/modules/simple/application/ContenedorSimpleMixin";
-import TabLayout from "shared/contenedor/modules/simple/view/TabLayout.vue";
-import { defineComponent, reactive } from "vue";
-import { Vacante } from "../../vacantes/domain/Vacante";
-import { VacanteController } from "../../vacantes/infraestructure/VacanteController";
-import { useFiltrosListadosSelects } from "shared/filtrosListadosGenerales";
-import { ref } from "vue";
-import { required } from "shared/i18n-validators";
-import useVuelidate from "@vuelidate/core";
+import GraficoGenerico from 'components/chartJS/GraficoGenerico.vue';
+import { StatusEssentialLoading } from 'components/loading/application/StatusEssentialLoading';
+import EssentialTable from 'components/tables/view/EssentialTable.vue';
+import { ContenedorSimpleMixin } from 'shared/contenedor/modules/simple/application/ContenedorSimpleMixin';
+import TabLayout from 'shared/contenedor/modules/simple/view/TabLayout.vue';
+import { defineComponent, reactive } from 'vue';
+import { Vacante } from '../../vacantes/domain/Vacante';
+import { VacanteController } from '../../vacantes/infraestructure/VacanteController';
+import { useFiltrosListadosSelects } from 'shared/filtrosListadosGenerales';
+import { ref } from 'vue';
+import { required } from 'shared/i18n-validators';
+import useVuelidate from '@vuelidate/core';
 
 export default defineComponent({
   components: { TabLayout, EssentialTable, GraficoGenerico },

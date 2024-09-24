@@ -1,20 +1,20 @@
-import { ContenedorSimpleMixin } from "shared/contenedor/modules/simple/application/ContenedorSimpleMixin";
-import { defineComponent, onMounted, ref } from "vue";
-import { Entrevista } from "../domain/Entrevista";
-import { required, requiredIf } from "shared/i18n-validators";
-import useVuelidate from "@vuelidate/core";
-import { numDiaSemana } from "config/utils";
-import { format } from "@formkit/tempo";
-import { EntrevistaController } from "../infraestructure/EntrevistaController";
-import { AxiosHttpRepository } from "shared/http/infraestructure/AxiosHttpRepository";
-import { endpoints } from "config/api";
-import { AxiosResponse } from "axios";
-import { useNotificaciones } from "shared/notificaciones";
-import { StatusEssentialLoading } from "components/loading/application/StatusEssentialLoading";
-import { usePostulacionStore } from "stores/recursosHumanos/seleccionContratacion/postulacion";
-import { CantonController } from "sistema/ciudad/infraestructure/CantonControllerontroller";
-import { useFiltrosListadosSelects } from "shared/filtrosListadosGenerales";
-import OptionGroupComponent from "components/optionGroup/view/OptionGroupComponent.vue";
+import { ContenedorSimpleMixin } from 'shared/contenedor/modules/simple/application/ContenedorSimpleMixin';
+import { defineComponent, onMounted } from 'vue';
+import { Entrevista } from '../domain/Entrevista';
+import { required, requiredIf } from 'shared/i18n-validators';
+import useVuelidate from '@vuelidate/core';
+import { numDiaSemana } from 'config/utils';
+import { format } from '@formkit/tempo';
+import { EntrevistaController } from '../infraestructure/EntrevistaController';
+import { AxiosHttpRepository } from 'shared/http/infraestructure/AxiosHttpRepository';
+import { endpoints } from 'config/api';
+import { AxiosResponse } from 'axios';
+import { useNotificaciones } from 'shared/notificaciones';
+import { StatusEssentialLoading } from 'components/loading/application/StatusEssentialLoading';
+import { usePostulacionStore } from 'stores/recursosHumanos/seleccionContratacion/postulacion';
+import { CantonController } from 'sistema/ciudad/infraestructure/CantonControllerontroller';
+import { useFiltrosListadosSelects } from 'shared/filtrosListadosGenerales';
+import OptionGroupComponent from 'components/optionGroup/view/OptionGroupComponent.vue';
 
 export default defineComponent({
   components: { OptionGroupComponent },
@@ -99,7 +99,7 @@ export default defineComponent({
     return {
       v$,
       entrevista, disabled,
-      mask: "YYYY-MM-DD HH:mm",
+      mask: 'YYYY-MM-DD HH:mm',
 
       optionsFecha,
       hourOptions: [8, 9, 10, 11, 12, 13, 14, 15, 16, 17],

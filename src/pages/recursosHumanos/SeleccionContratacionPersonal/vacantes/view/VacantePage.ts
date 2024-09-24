@@ -263,10 +263,10 @@ export default defineComponent({
         const url = `${baseUrl}/puestos-disponibles?id=${entidad.id}&showModal=1`;
         // Copiar el enlace al portapapeles
         navigator.clipboard.writeText(url).then(() => {
-          notificarCorrecto("¡El enlace ha sido copiado al portapapeles!")
+          notificarCorrecto('¡El enlace ha sido copiado al portapapeles!')
         }).catch(err => {
           console.log(err)
-          notificarError("Error al copiar el enlace")
+          notificarError('Error al copiar el enlace')
         });
       },
       visible: ({ entidad }) => entidad.activo

@@ -1,19 +1,18 @@
-import { ContenedorSimpleMixin } from "shared/contenedor/modules/simple/application/ContenedorSimpleMixin";
-import { defineComponent, onMounted } from "vue";
-import { Examen } from "../domain/Examen";
-import { ExamenController } from "../infraestructure/ExamenController";
-import { useNotificaciones } from "shared/notificaciones";
-import { usePostulacionStore } from "stores/recursosHumanos/seleccionContratacion/postulacion";
-import { StatusEssentialLoading } from "components/loading/application/StatusEssentialLoading";
-import { useFiltrosListadosSelects } from "shared/filtrosListadosGenerales";
-import { CantonController } from "sistema/ciudad/infraestructure/CantonControllerontroller";
-import { required, requiredIf } from "shared/i18n-validators";
-import useVuelidate from "@vuelidate/core";
-import { format } from "@formkit/tempo";
-import { numDiaSemana } from "config/utils";
-import { AxiosHttpRepository } from "shared/http/infraestructure/AxiosHttpRepository";
-import { endpoints } from "config/api";
-import { AxiosResponse } from "axios";
+import { ContenedorSimpleMixin } from 'shared/contenedor/modules/simple/application/ContenedorSimpleMixin';
+import { defineComponent, onMounted } from 'vue';
+import { Examen } from '../domain/Examen';
+import { ExamenController } from '../infraestructure/ExamenController';
+import { useNotificaciones } from 'shared/notificaciones';
+import { usePostulacionStore } from 'stores/recursosHumanos/seleccionContratacion/postulacion';
+import { StatusEssentialLoading } from 'components/loading/application/StatusEssentialLoading';
+import { useFiltrosListadosSelects } from 'shared/filtrosListadosGenerales';
+import { CantonController } from 'sistema/ciudad/infraestructure/CantonControllerontroller';
+import { required } from 'shared/i18n-validators';
+import useVuelidate from '@vuelidate/core';
+import { format } from '@formkit/tempo';
+import { AxiosHttpRepository } from 'shared/http/infraestructure/AxiosHttpRepository';
+import { endpoints } from 'config/api';
+import { AxiosResponse } from 'axios';
 
 export default defineComponent({
   components: {},
@@ -21,7 +20,7 @@ export default defineComponent({
   emits: ['cerrar-modal', 'guardado'],
   setup(props, { emit }) {
     const mixin = new ContenedorSimpleMixin(Examen, new ExamenController())
-    const { entidad: examen, disabled, listadosAuxiliares } = mixin.useReferencias()
+    const { entidad: examen, listadosAuxiliares } = mixin.useReferencias()
     const { cargarVista, obtenerListados, } = mixin.useComportamiento()
     const { confirmar, notificarCorrecto, notificarAdvertencia } = useNotificaciones()
 
@@ -84,7 +83,7 @@ export default defineComponent({
     }
     return {
       examen, v$,
-      mask: "YYYY-MM-DD HH:mm",
+      mask: 'YYYY-MM-DD HH:mm',
 
       // listados
       cantones, filtrarCantones,

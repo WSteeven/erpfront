@@ -1,19 +1,19 @@
-import { ContenedorSimpleMixin } from "shared/contenedor/modules/simple/application/ContenedorSimpleMixin";
-import { defineComponent, reactive } from "vue";
-import { Postulacion } from "../../../domain/Postulacion";
-import { CargoController } from "pages/recursosHumanos/cargos/infraestructure/CargoController";
-import { useFiltrosListadosSelects } from "shared/filtrosListadosGenerales";
-import { ordenarLista } from "shared/utils";
-import { required } from "shared/i18n-validators";
-import useVuelidate from "@vuelidate/core";
-import { useNotificaciones } from "shared/notificaciones";
-import { StatusEssentialLoading } from "components/loading/application/StatusEssentialLoading";
-import { AxiosHttpRepository } from "shared/http/infraestructure/AxiosHttpRepository";
-import { endpoints } from "config/api";
-import { BancoPostulante } from "../../../../bancoPostulante/domain/BancoPostulante";
-import { AxiosResponse } from "axios";
-import { usePostulacionStore } from "stores/recursosHumanos/seleccionContratacion/postulacion";
-import { likertCalificacionPostulante } from "config/seleccionContratacionPersonal.utils";
+import { ContenedorSimpleMixin } from 'shared/contenedor/modules/simple/application/ContenedorSimpleMixin';
+import { defineComponent, reactive } from 'vue';
+import { Postulacion } from '../../../domain/Postulacion';
+import { CargoController } from 'pages/recursosHumanos/cargos/infraestructure/CargoController';
+import { useFiltrosListadosSelects } from 'shared/filtrosListadosGenerales';
+import { ordenarLista } from 'shared/utils';
+import { required } from 'shared/i18n-validators';
+import useVuelidate from '@vuelidate/core';
+import { useNotificaciones } from 'shared/notificaciones';
+import { StatusEssentialLoading } from 'components/loading/application/StatusEssentialLoading';
+import { AxiosHttpRepository } from 'shared/http/infraestructure/AxiosHttpRepository';
+import { endpoints } from 'config/api';
+import { BancoPostulante } from '../../../../bancoPostulante/domain/BancoPostulante';
+import { AxiosResponse } from 'axios';
+import { usePostulacionStore } from 'stores/recursosHumanos/seleccionContratacion/postulacion';
+import { likertCalificacionPostulante } from 'config/seleccionContratacionPersonal.utils';
 
 export default defineComponent({
   components: {},
