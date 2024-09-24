@@ -211,6 +211,7 @@
                   font-family: Impact, sans-serif;
                   font-size: 30px;
                   color: midnightblue;
+                  text-transform: uppercase;
                 ">
                 {{ store.nombreUsuario }}
               </div>
