@@ -57,8 +57,21 @@ const seleccionContratacionPersonal: Ref<MenuOption[]> = computed(() => {
               can: store.can('puede.acceder.rrhh_tipos_puestos'),
             },
           ]
+        },
+        {
+          title: 'Reportes',
+          icon: 'bi-graph-up-arrow',
+          can:
+            store.can('puede.ver.reportes_rrhh'),
+          children: [
+            {
+              title: 'Dashboard',
+              link: 'dashboard-seleccion-contratacion',
+              icon: 'bi-journal-arrow-up',
+              can: true
+            },
+          ]
         }
-
       ]
     },
   ]

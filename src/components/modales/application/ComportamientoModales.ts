@@ -1,5 +1,5 @@
 // Dependencias
-import { computed, reactive, ref } from 'vue'
+import { computed, ref } from 'vue'
 
 // Logica y controladores
 import { ComponenteModal } from '../domain/ComponenteModal.domain'

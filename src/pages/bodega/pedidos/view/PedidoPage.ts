@@ -6,9 +6,9 @@ import { defineComponent, ref } from 'vue'
 import { useOrquestadorSelectorDetalles } from 'pages/bodega/pedidos/application/OrquestadorSelectorDetalles'
 
 //Componentes
-import TabLayoutFilterTabs from 'shared/contenedor/modules/simple/view/TabLayoutFilterTabs.vue'
-import EssentialTable from 'components/tables/view/EssentialTable.vue'
+import TabLayoutFilterTabs2 from 'shared/contenedor/modules/simple/view/TabLayoutFilterTabs2.vue'
 import EssentialSelectableTable from 'components/tables/view/EssentialSelectableTable.vue'
+import EssentialTable from 'components/tables/view/EssentialTable.vue'
 import ModalesEntidad from 'components/modales/view/ModalEntidad.vue'
 import SelectorImagen from 'components/SelectorImagen.vue'
 
@@ -36,24 +36,23 @@ import { ClienteController } from 'sistema/clientes/infraestructure/ClienteContr
 import { CambiarEstadoPedido } from '../application/CambiarEstadoPedido'
 import { useNotificacionStore } from 'stores/notificacion'
 import { useCargandoStore } from 'stores/cargando'
-import { ordenarLista, ordernarListaString } from 'shared/utils'
+import { ordenarLista } from 'shared/utils'
 import { SucursalController } from 'pages/administracion/sucursales/infraestructure/SucursalController'
 import { ComportamientoModalesPedido } from '../application/ComportamientoModalesPedido'
 import { useFiltrosListadosSelects } from 'shared/filtrosListadosGenerales'
 import { ProyectoController } from 'pages/gestionTrabajos/proyectos/infraestructure/ProyectoController'
 import { StatusEssentialLoading } from 'components/loading/application/StatusEssentialLoading'
 import { TareaController } from 'pages/gestionTrabajos/tareas/infraestructure/TareaController'
-import { TareasEmpleadoController } from 'pages/gestionTrabajos/tareas/infraestructure/TareasEmpleadoController'
 import { EtapaController } from 'pages/gestionTrabajos/proyectos/modules/etapas/infraestructure/EtapaController'
 import { Tarea } from 'pages/gestionTrabajos/tareas/domain/Tarea'
 
 
 export default defineComponent({
-  components: { TabLayoutFilterTabs, EssentialTable, EssentialSelectableTable, ModalesEntidad, SelectorImagen },
+  components: { TabLayoutFilterTabs2, EssentialTable, EssentialSelectableTable, ModalesEntidad, SelectorImagen },
   setup() {
     const mixin = new ContenedorSimpleMixin(Pedido, new PedidoController())
     const { entidad: pedido, disabled, accion, listadosAuxiliares, listado } = mixin.useReferencias()
-    const { setValidador, obtenerListados, cargarVista } = mixin.useComportamiento()
+    const { setValidador, obtenerListados, cargarVista, listar } = mixin.useComportamiento()
     const { onReestablecer, onConsultado } = mixin.useHooks()
     const { confirmar, prompt, notificarCorrecto, notificarError, notificarAdvertencia } = useNotificaciones()
 
@@ -79,7 +78,7 @@ export default defineComponent({
     } = useOrquestadorSelectorDetalles(pedido, 'detalles')
 
     // Flags
-    let tabSeleccionado = ref()
+    let tabSeleccionado = ref('PENDIENTE')
     let soloLectura = ref(false)
     let puedeEditar = ref(false)
 
@@ -167,7 +166,6 @@ export default defineComponent({
      ****************************************************************************************/
     const reglas = {
       justificacion: { required },
-      // autorizacion: { requiredIfCoordinador: requiredIf(() => esCoordinador) },
       observacion_aut: { requiredIfCoordinador: requiredIf(() => pedido.tiene_observacion_aut!) },
       sucursal: { required },
       per_retira: { requiredIfCheck: requiredIf(() => pedido.retira_tercero) },
@@ -176,10 +174,6 @@ export default defineComponent({
       },
       etapa: { requiredIf: requiredIf(() => { if (etapas.value) return etapas.value.length && pedido.proyecto }) },
       tarea: { requiredIfTarea: requiredIf(() => pedido.es_tarea!) },
-      // fecha_limite: {
-      //   required: requiredIf(() => pedido.tiene_fecha_limite!),
-      //   fechaMenor: helpers.withMessage('La fecha límite debe ser mayor a la fecha actual', (fechaMayorActual))
-      // },
       fecha_limite: {
         required: requiredIf(() => accion.value === acciones.nuevo),
         fechaMenor: helpers.withMessage('La fecha límite debe ser mayor a la fecha actual', (fechaMayorActual)) && accion.value === acciones.nuevo
@@ -197,6 +191,13 @@ export default defineComponent({
      * Funciones
      *****************************************************************************************
      */
+     async function filtrarPedidos(tab:string){
+      tabSeleccionado.value = tab
+      listar({estado:tab})
+      puedeEditar.value = (esCoordinador || esActivosFijos || store.esJefeTecnico || esGerente || store.esCompras || store.can('puede.autorizar.pedidos')) && tabSeleccionado.value === estadosTransacciones.pendiente
+        ? true : false
+     }
+
     function cargarDatosDefecto() {
       pedido.solicitante = store.user.id
       pedido.responsable = store.user.id
@@ -297,22 +298,22 @@ export default defineComponent({
      * La función 'obtenerTareasTecnico' recupera una lista de tareas para un empleado, proyecto y
      * etapa específicos, y actualiza la variable 'tareas' con el resultado.
      */
-    async function obtenerTareasTecnico() {
-      cargando.activar()
-      if (pedido.responsable) {
-        const response = await new TareaController().listar({ activas_empleado: 1, empleado_id: pedido.responsable, finalizado: 0, proyecto_id: pedido.proyecto, etapa_id: pedido.etapa })
-        listadosAuxiliares.tareas = response.result
-        tareas.value = response.result
-      }
-      cargando.desactivar()
-    }
+    // async function obtenerTareasTecnico() {
+    //   cargando.activar()
+    //   if (pedido.responsable) {
+    //     const response = await new TareaController().listar({ activas_empleado: 1, empleado_id: pedido.responsable, finalizado: 0, proyecto_id: pedido.proyecto, etapa_id: pedido.etapa })
+    //     listadosAuxiliares.tareas = response.result
+    //     tareas.value = response.result
+    //   }
+    //   cargando.desactivar()
+    // }
 
 
     async function recargarSucursales() {
       const sucursales = (await new SucursalController().listar({ campos: 'id,lugar' })).result
       LocalStorage.set('sucursales', JSON.stringify(sucursales))
     }
-    function eliminar({ entidad, posicion }) {
+    function eliminar({ posicion }) {
       confirmar('¿Está seguro de continuar?', () => pedido.listadoProductos.splice(posicion, 1))
     }
 
@@ -323,7 +324,7 @@ export default defineComponent({
       titulo: 'Quitar',
       color: 'negative',
       icono: 'bi-x',
-      accion: ({ entidad, posicion }) => eliminar({ entidad, posicion }),
+      accion: ({ posicion }) => eliminar({ posicion }),
       visible: () => accion.value == acciones.consultar ? false : true
     }
     const botonAnularAutorizacion: CustomActionTable = {
@@ -350,8 +351,7 @@ export default defineComponent({
           prompt(data)
         })
       },
-      visible: ({ entidad, posicion }) => {
-        // console.log(posicion, entidad)
+      visible: ({ entidad }) => {
         return (tabSeleccionado.value === autorizacionesTransacciones.aprobado || tabSeleccionado.value === estadosTransacciones.parcial) && ((entidad.per_autoriza_id === store.user.id || entidad.solicitante_id === store.user.id) && entidad.estado === estadosTransacciones.pendiente || store.esActivosFijos) || store.esAdministrador
       }
     }
@@ -380,7 +380,7 @@ export default defineComponent({
           prompt(data)
         })
       },
-      visible: ({ entidad, posicion }) => {
+      visible: () => {
         return tabSeleccionado.value === estadosTransacciones.parcial && store.esBodeguero && store.esCoordinadorBodega
       }
     }
@@ -405,7 +405,7 @@ export default defineComponent({
       titulo: 'Despachar',
       color: 'primary',
       icono: 'bi-pencil-square',
-      accion: ({ entidad, posicion }) => {
+      accion: ({ entidad }) => {
         pedidoStore.pedido = entidad
         router.push('transacciones-egresos')
       },
@@ -415,7 +415,7 @@ export default defineComponent({
       titulo: 'Corregir pedido',
       color: 'amber-3',
       icono: 'bi-gear',
-      accion: ({ entidad, posicion }) => {
+      accion: ({ entidad }) => {
         pedidoStore.pedido = entidad
         modales.abrirModalEntidad('CorregirPedidoPage')
       },
@@ -431,13 +431,6 @@ export default defineComponent({
       },
       visible: () => tabSeleccionado.value == 'APROBADO' || tabSeleccionado.value == 'PARCIAL' || tabSeleccionado.value == 'COMPLETA' ? true : false
     }
-    // function actualizarElemento(posicion: number, entidad: any): void {
-    //   if (posicion >= 0) {
-    //     listado.value.splice(posicion, 1, entidad)
-    //     listado.value = [...listado.value]
-    //   }
-    // }
-
 
 
 
@@ -522,11 +515,6 @@ export default defineComponent({
           pedido.tarea = null
         }
       },
-      tabEs(val) {
-        tabSeleccionado.value = val
-        puedeEditar.value = (esCoordinador || esActivosFijos || store.esJefeTecnico || esGerente || store.esCompras || store.can('puede.autorizar.pedidos')) && tabSeleccionado.value === estadosTransacciones.pendiente
-          ? true : false
-      },
 
       //Filtros
       ordenarLista,
@@ -534,6 +522,7 @@ export default defineComponent({
       onRowClick: (row) => alert(`${row.name} clicked`),
       obtenerDatosTareaSeleccionada,
 
+      filtrarPedidos,
       recargarSucursales,
 
     }

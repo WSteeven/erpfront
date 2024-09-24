@@ -16,6 +16,7 @@ import { EmpleadoController } from 'pages/recursosHumanos/empleados/infraestruct
 import { useCargandoStore } from 'stores/cargando'
 import { required } from 'shared/i18n-validators'
 import  {addDay, format, monthStart } from '@formkit/tempo'
+import { Empleado } from 'pages/recursosHumanos/empleados/domain/Empleado'
 
 export default defineComponent({
   components: { TabLayout },
@@ -178,6 +179,10 @@ export default defineComponent({
         )
       })
     }
+    function obtenerNombresEmpleadoSeleccionado(){
+      const empleadoEncontrado: Empleado = usuarios.value.filter((v:Empleado)=>v.id===consolidado.empleado)[0]
+      return empleadoEncontrado?.nombres+' '+empleadoEncontrado?.apellidos
+    }
     async function generar_reporte(
       valor: Consolidado,
       tipo: string
@@ -185,9 +190,9 @@ export default defineComponent({
       if (await v$.value.$validate()) {
         const axios = AxiosHttpRepository.getInstance()
         const filename =
-          'reporte_semanal_consolidado_del_' +
+          'Reporte consolidado de '+obtenerNombresEmpleadoSeleccionado()+' del ' +
           valor.fecha_inicio +
-          '_al_' +
+          ' al ' +
           valor.fecha_fin
         switch (tipo) {
           case tipoReportes.EXCEL:

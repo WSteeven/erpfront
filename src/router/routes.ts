@@ -1395,20 +1395,6 @@ const routes: RouteRecordRaw[] = [
           import('pages/recursosHumanos/alimentacion/alimentacion/views/AlimentacionPage.vue'),
         meta: { requiresAuth: true },
       },
-      // {
-      //   path: '/solicitud-puesto-empleo',
-      //   name: 'solicitud_puesto_empleo',
-      //   component: () =>
-      //     import('pages/recursosHumanos/seleccion_contratacion_personal/solicitud_puesto_trabajo/view/SolicitudPuestoEmpleoPage.vue'),
-      //   meta: { requiresAuth: true },
-      // },
-      // {
-      //   path: '/publicacion-puesto-empleo',
-      //   name: 'publicacion_puesto_empleo',
-      //   component: () =>
-      //     import('pages/recursosHumanos/seleccion_contratacion_personal/publicacion_puesto_trabajo/view/PublicacionPuestoTrabajoPage.vue'),
-      //   meta: { requiresAuth: true },
-      // },
       {
         path: '/eventos',
         name: 'eventos',

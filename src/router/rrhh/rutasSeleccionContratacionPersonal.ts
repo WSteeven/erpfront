@@ -11,6 +11,12 @@ const rutasSeleccionContratacionPersonal: RouteRecordRaw[] = [
    ***********************************************************************************************/
 
   {
+    path: 'dashboard-seleccion-contratacion',
+    name: 'dashboard_seleccion_contratacion',
+    component: () => import('seleccionContratacion/dashboard/view/DashboardSeleccionContratacion.vue'),
+    meta: { requiresAuth: false }
+  },
+  {
     path: 'solicitudes-puestos',
     name: 'rrhh_solicitudes_nuevas_vacantes',
     component: () => import('seleccionContratacion/solicitudPuestoTrabajo/view/SolicitudPuestoEmpleoPage.vue'),

@@ -150,7 +150,7 @@ export class ContenedorSimpleMixin<T extends EntidadAuditable> extends Contenedo
     this.statusEssentialLoading.activar()
     try {
       const { result, meta, response } = await this.controller.listar(params)
-      console.log(response.data)
+      // console.log(response.data)
 
       if (params?.hasOwnProperty('export')) return downloadFile(response.data, params.titulo, params.export)
       else if (result.length == 0) this.notificaciones.notificarInformacion('Aún no se han agregado elementos.')
@@ -364,12 +364,14 @@ export class ContenedorSimpleMixin<T extends EntidadAuditable> extends Contenedo
     this.statusEssentialLoading.activar()
 
     if (this.entidad.id === null) {
+      this.statusEssentialLoading.desactivar()
       return this.notificaciones.notificarAdvertencia(
         'No se puede editar el recurso con id null'
       )
     }
 
     if (!this.seCambioEntidad(this.entidad_copia)) {
+      this.statusEssentialLoading.desactivar()
       return this.notificaciones.notificarAdvertencia(
         'No se ha efectuado ningun cambio'
       )
