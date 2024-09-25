@@ -2,7 +2,7 @@ import { EntidadAuditable } from "shared/entidad/domain/entidadAuditable";
 
 export class ProveedorInternacional extends EntidadAuditable {
   nombre: string | null
-  tipo: string | null
+  tipo: number | null
   ruc: string | null
   pais: number | null
   direccion: string | null
