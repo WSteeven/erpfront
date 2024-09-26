@@ -835,6 +835,20 @@ export const useMenuStore = defineStore('menu', () => {
               can: store.can('puede.acceder.tipos_licencias')
             }
           ]
+        },
+        // Reportes del modulo empleados
+        {
+          title: 'Reportes',
+          icon: 'bi-graph-up-arrow',
+          can: store.can('puede.ver.reportes_rrhh'),
+          children: [
+            {
+              title: 'Reporte de Vacaciones de Empleados',
+              link: 'reporte-vacaciones',
+              icon: 'bi-sunglasses',
+              can: store.can('puede.ver.reportes_rrhh')||true
+            },
+          ]
         }
       ]
     },

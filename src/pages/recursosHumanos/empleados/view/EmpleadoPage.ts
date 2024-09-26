@@ -1,13 +1,13 @@
 //Dependencias
 import { configuracionColumnasTipoDiscapacidadPorcentaje } from '../domain/configuracionColumnasTipoDiscapacidadPorcentaje'
 import { configuracionColumnasEmpleados } from '../domain/configuracionColumnasEmpleados'
-import { maxLength, maxValue, minLength, minValue, numeric, required, requiredIf, } from 'shared/i18n-validators'
+import { maxLength, minLength, numeric, required, requiredIf, } from 'shared/i18n-validators'
 import { useVuelidate } from '@vuelidate/core'
 import { acciones, accionesTabla, convertir_fecha, maskFecha, niveles_academicos, rolesSistema, talla_letras, tipos_sangre, } from 'config/utils'
 import { defineComponent, ref, watchEffect, computed, Ref } from 'vue'
 
 // Componentes
-import TabLayout from 'shared/contenedor/modules/simple/view/TabLayout.vue'
+import TabLayoutFilterTabs2 from 'shared/contenedor/modules/simple/view/TabLayoutFilterTabs2.vue'
 import SelectorImagen from 'components/SelectorImagen.vue'
 import GestorArchivos from 'components/gestorArchivos/GestorArchivos.vue'
 import InformacionLicencia from 'vehiculos/conductores/view/InformacionLicencia.vue'
@@ -55,9 +55,10 @@ import { onMounted } from 'vue'
 import { onUnmounted } from 'vue'
 import { usePostulanteStore } from 'stores/recursosHumanos/seleccionContratacion/postulante'
 import { StatusEssentialLoading } from 'components/loading/application/StatusEssentialLoading'
+import { tabOptionsProveedoresInternacionales } from '../../../../config/utils_compras_proveedores'
 
 export default defineComponent({
-  components: { TabLayout, SelectorImagen, ModalesEntidad, EssentialTable, GestorArchivos, InformacionLicencia, },
+  components: { TabLayoutFilterTabs2, SelectorImagen, ModalesEntidad, EssentialTable, GestorArchivos, InformacionLicencia, },
   setup() {
     /*********
      * Stores
@@ -72,11 +73,10 @@ export default defineComponent({
      * Mixin
      ************/
     const mixin = new ContenedorSimpleMixin(Empleado, new EmpleadoController(), new ArchivoController())
-    const { entidad: empleado, disabled, accion, listadosAuxiliares, } = mixin.useReferencias()
-    const { setValidador, cargarVista, obtenerListados } = mixin.useComportamiento()
-    const { onBeforeGuardar, onBeforeModificar, onConsultado, onModificado, onGuardado, onReestablecer } = mixin.useHooks()
+    const { entidad: empleado, disabled, accion, listadosAuxiliares, listado } = mixin.useReferencias()
+    const { setValidador, cargarVista, obtenerListados, listar } = mixin.useComportamiento()
+    const { onBeforeGuardar, onBeforeModificar, onConsultado, onGuardado, onReestablecer } = mixin.useHooks()
     const mixinFamiliares = new ContenedorSimpleMixin(Familiares, new FamiliaresController())
-    const { eliminar } = mixinFamiliares.useComportamiento()
 
     const conductor = reactive(new Conductor())
     /********************************
@@ -97,6 +97,7 @@ export default defineComponent({
     /************
      * Variables
      ************/
+    const tabDefecto = ref('1')
     const configuracionColumnasTipoDiscapacidadPorcentajeReactive = reactive(configuracionColumnasTipoDiscapacidadPorcentaje)
     const estado_civiles = ref([])
     const tipos_contrato = ref([])
@@ -123,7 +124,7 @@ export default defineComponent({
     const idsParentescos: Ref<number[]> = ref([])
     const construccionConfiguracionColumnas = ref(false)
     cargarVista(async () => {
-      if(postulanteStore.idUser) cargarDatosPostulante()
+      if (postulanteStore.idUser) cargarDatosPostulante()
       await obtenerListados({
         areas: new AreasController(),
         bancos: new BancoController(),
@@ -143,7 +144,7 @@ export default defineComponent({
         empleados: {
           controller: new EmpleadoController(),
           params: {
-            campos: 'id,nombres,apellidos',
+            // campos: 'id,nombres,apellidos',
             estado: 1,
           },
         },
@@ -169,6 +170,7 @@ export default defineComponent({
       cargos.value = listadosAuxiliares.cargos
       departamentos.value = listadosAuxiliares.departamentos
       empleados.value = listadosAuxiliares.empleados
+      listado.value= listadosAuxiliares.empleados
       estadosCiviles.value = listadosAuxiliares.estados_civiles
       grupos.value = listadosAuxiliares.grupos
       roles.value = listadosAuxiliares.roles
@@ -417,9 +419,9 @@ export default defineComponent({
       tooltip: 'Habilitar',
       visible: ({ entidad }) =>
         !entidad.estado && authenticationStore.can('puede.activar.empleados'),
-      accion: ({ entidad }) => {
+      accion: ({ entidad, posicion }) => {
         HabilitarEmpleado(entidad.id, true)
-        entidad.estado = true
+        listado.value.splice(posicion, 1)
       },
     }
     const btnDesHabilitarEmpleado: CustomActionTable = {
@@ -429,9 +431,10 @@ export default defineComponent({
       tooltip: 'DesHabilitar',
       visible: ({ entidad }) =>
         entidad.estado && authenticationStore.can('puede.desactivar.empleados'),
-      accion: ({ entidad }) => {
+      accion: ({ entidad, posicion }) => {
         HabilitarEmpleado(entidad.id, false)
         entidad.estado = false
+        listado.value.splice(posicion, 1)
       },
     }
 
@@ -505,10 +508,15 @@ export default defineComponent({
         id: id,
         estado: estado,
       })
-      const response: AxiosResponse = await axios.get(ruta)
+       await axios.get(ruta)
       notificarCorrecto(
         estado ? 'Ha Habilitado empleado' : 'Ha deshabilitado empleado'
       )
+    }
+
+    async function filtrarListadoEmpleados(tab: string) {
+      tabDefecto.value = tab
+      if(listado.value.length>0) listar({ estado: tab })
     }
 
     function verificarRolesSeleccionados() {
@@ -535,7 +543,7 @@ export default defineComponent({
       })
     }
 
-    async function cargarDatosPostulante(){
+    async function cargarDatosPostulante() {
       //Aqui hay que hacer la carga de los datos del nuevo empleado
       const postulante = await obtenerUsuarioExterno()
 
@@ -552,10 +560,10 @@ export default defineComponent({
       refApellidos.value.focus()
     }
 
-    async function obtenerUsuarioExterno(){
+    async function obtenerUsuarioExterno() {
       cargando.activar()
       const axios = AxiosHttpRepository.getInstance()
-      const ruta = axios.getEndpoint(endpoints.usuarios_externos)+'/'+postulanteStore.idUser
+      const ruta = axios.getEndpoint(endpoints.usuarios_externos) + '/' + postulanteStore.idUser
       const response: AxiosResponse = await axios.get(ruta)
       cargando.desactivar()
       return response.data.modelo
@@ -591,6 +599,8 @@ export default defineComponent({
       mostrarComponenteInformacionLicencia,
       refApellidos,
       //listados y filtros
+      tabDefecto,
+      tabOptions: tabOptionsProveedoresInternacionales,
       areas,
       bancos, filtrarBancos,
       cantones, filtrarCantones,
@@ -629,7 +639,7 @@ export default defineComponent({
       ordenarLista,
       verificarRolesSeleccionados,
       mostrarBotonSubirArchivos,
-
+      filtrarListadoEmpleados,
       conductor,
       filtrarTipoDiscapacidad,
       configuracionColumnasTipoDiscapacidadPorcentajeReactive,

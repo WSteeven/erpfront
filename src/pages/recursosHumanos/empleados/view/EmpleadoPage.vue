@@ -1,14 +1,18 @@
 <template>
-  <tab-layout
+  <tab-layout-filter-tabs2
     :mixin="mixin"
     :configuracionColumnas="configuracionColumnas"
+    titulo-pagina="Empleados"
+    :tab-options="tabOptions"
+    :tabDefecto="tabDefecto"
+    :filtrar="filtrarListadoEmpleados"
     :accion1Header="btnImprimirEmpleados"
     :accion1="btnHabilitarEmpleado"
     :accion2="btnDesHabilitarEmpleado"
-    titulo-pagina="Empleados"
     :puedeFiltrar="false"
     :puedeExportar="true"
-    :ajustarCeldas="true"
+    :forzarListar="false"
+    ajustarCeldas
   >
     <template #formulario>
       <q-form @submit.prevent>
@@ -1705,7 +1709,7 @@
       @guardado="data => guardado(data)"
       :mixin-modal="mixinFamiliares"
     ></modales-entidad>
-  </tab-layout>
+  </tab-layout-filter-tabs2>
 </template>
 
 <script src="./EmpleadoPage.ts" />
