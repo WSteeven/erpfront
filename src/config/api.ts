@@ -4,6 +4,7 @@ import { tareas } from './endpoints/tareas'
 import { tickets } from './endpoints/tickets'
 import { recursosHumanos } from './endpoints/rrhh/recursosHumanos'
 import { activosFijos } from './endpoints/activosFijos'
+import { comprasProveedores } from './endpoints/comprasProveedores'
 
 export const apiConfig = {
   // URL_BASE: 'http://localhost:8000',
@@ -228,6 +229,7 @@ export const endpoints = {
   reporte_seguros_vehiculos: new Endpoint('vehiculos/reporte-seguros-vehiculos'),
 
   //Modulo de compras y proveedores
+  ...comprasProveedores,
   dashboard_compras: new Endpoint('compras/dashboard'),
   empleados_ordenes: new Endpoint('compras/empleados-ordenes'),
   proveedores_ordenes: new Endpoint('compras/proveedores-ordenes'),
