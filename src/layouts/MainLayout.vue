@@ -11,6 +11,9 @@
             bg-color="grey-1"
             input-class="text-black"
             @keyup.esc="resetearBuscador()"
+            @keyup.arrow-up="onKeyUp"
+            @keyup.arrow-down="onKeyDown"
+            @keyup.enter="onKeyEnter"
             autofocus
             dense
             outlined
@@ -31,8 +34,9 @@
             class="lista-busqueda bg-solid custom-shadow text-color"
             style="width: 90%; margin: 0 auto"
           >
-            <div v-for="(link, index) in resultadosBusqueda" :key="index">
+            <div ref="refListadoBusqueda" v-for="(link, index) in resultadosBusqueda" :key="index">
               <q-item
+              :focused="posicionResultados==index"
                 clickable
                 v-if="link.link"
                 :to="link.link"

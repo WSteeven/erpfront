@@ -1,11 +1,11 @@
 // Dependencias
 import { Notificacion } from 'pages/administracion/notificaciones/domain/Notificacion'
 import { useNotificationRealtimeStore } from 'stores/notificationRealtime'
-import { defineComponent, ref, computed, Ref, ComputedRef,  watchEffect } from 'vue'
+import { defineComponent, ref, computed, Ref, ComputedRef, watchEffect } from 'vue'
 import { useAuthenticationStore } from 'src/stores/authentication'
 import { LocalStorage, useQuasar } from 'quasar'
 import { useMenuStore } from 'src/stores/menu'
-import {  useRoute, useRouter } from 'vue-router'
+import { useRoute, useRouter } from 'vue-router'
 import Swal from 'sweetalert2'
 import dayjs from 'dayjs'
 import es from 'dayjs/locale/es'
@@ -51,6 +51,8 @@ export default defineComponent({
     const menuVisible = ref(false)
 
     const buscarModulo = ref()
+    const refListadoBusqueda = ref()
+    const posicionResultados = ref(-1)
 
     /*********
      * Stores
@@ -312,6 +314,7 @@ export default defineComponent({
       const modulosPermitidos = obtenerModulosPermitidos()
       const resultado = filterItems(modulosPermitidos, val)
       resultadosBusqueda.value = resultado
+      posicionResultados.value = -1
     }
 
     function filterItems(items, searchTerm) {
@@ -343,9 +346,23 @@ export default defineComponent({
     }
 
     const resetearBuscador = () => {
+      posicionResultados.value = -1
       buscarModulo.value = null
       mostrarBuscar.value = false
     }
+    function onKeyEnter() {
+      const rutaDestino = resultadosBusqueda.value[posicionResultados.value].link
+      if (rutaDestino) Router.push(rutaDestino)
+      resetearBuscador()
+    }
+    function onKeyUp() {
+      posicionResultados.value = posicionResultados.value > 0 ? posicionResultados.value - 1 : 0
+    }
+    function onKeyDown() {
+      if (posicionResultados.value < refListadoBusqueda.value.length - 1)
+        posicionResultados.value++
+    }
+
 
     return {
       // logoClaro: `${process.env.API_URL}/storage/configuracion_general/logo_claro.jpeg`,
@@ -398,7 +415,12 @@ export default defineComponent({
       resultadosBusqueda,
       menuStore,
       mostrarBuscar,
+      onKeyUp,
+      onKeyDown,
+      onKeyEnter,
+      refListadoBusqueda,
       resetearBuscador,
+      posicionResultados,
       // idledFor,
       // tiempoInactividad,
       // mostrarAlertaInactividad,
