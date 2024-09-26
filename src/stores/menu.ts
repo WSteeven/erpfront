@@ -1079,6 +1079,12 @@ export const useMenuStore = defineStore('menu', () => {
           can: store.can('puede.ver.proveedores') || store.esAdministrador
         },
         {
+          title: 'Proveedores Internacionales',
+          link: 'proveedores-internacionales',
+          icon: 'bi-people-fill',
+          can: store.can('puede.acceder.proveedores_internacionales') || store.esAdministrador
+        },
+        {
           title: 'Datos Bancarios de Proveedores',
           link: 'datos-bancarios-proveedores',
           icon: 'bi-bank2',

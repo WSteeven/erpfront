@@ -29,7 +29,7 @@ import { ProveedorController } from 'sistema/proveedores/infraestructure/Proveed
 import { acciones, accionesTabla, autorizaciones, autorizacionesTransacciones, estados } from 'config/utils';
 import { tabOptionsOrdenCompra, opcionesForma, opcionesTiempo, } from 'config/utils_compras_proveedores';
 import { useAuthenticationStore } from 'stores/authentication';
-import { calcularSubtotalConImpuestosLista, calcularSubtotalSinImpuestosLista, formatearFecha, } from 'shared/utils';
+import { calcularSubtotalConImpuestosLista, calcularSubtotalSinImpuestosLista, filtrarLista, formatearFecha, } from 'shared/utils';
 import { CustomActionTable } from 'components/tables/domain/CustomActionTable';
 import { useFiltrosListadosSelects } from 'shared/filtrosListadosGenerales';
 import { usePreordenStore } from 'stores/comprasProveedores/preorden';
@@ -45,7 +45,7 @@ import { UnidadMedidaController } from 'pages/bodega/unidades_medidas/infraestru
 import { UnidadMedida } from 'pages/bodega/unidades_medidas/domain/UnidadMedida';
 import { PreordenCompra } from 'pages/comprasProveedores/preordenCompra/domain/PreordenCompra';
 import { ArchivoController } from 'pages/gestionTrabajos/subtareas/modules/gestorArchivosTrabajos/infraestructure/ArchivoController';
-import { Transferencia } from 'pages/bodega/transferencia/domain/Transferencia';
+import { ProveedorInternacionalController } from 'pages/comprasProveedores/proveedorInternacional/infraestructure/ProveedorInternacionalController';
 
 
 export default defineComponent({
@@ -83,7 +83,7 @@ export default defineComponent({
     // Flags
     const refArchivo = ref()
     const idOrden = ref()
-    const tabDefecto = ref()
+    const tabDefecto = ref('1')
     let tabSeleccionado = ref()
     let soloLectura = ref(false)
     let puedeEditar = ref(false)
@@ -100,7 +100,7 @@ export default defineComponent({
     } = useOrquestadorSelectorProductos(orden, 'productos')
     //Filtros y listados
     const { proveedores, filtrarProveedores } = useFiltrosListadosSelects(listadosAuxiliares)
-
+    const proveedores_internacionales=ref([])
     //Obtener listados
     const empleados = ref([])
     // const categorias = ref([])
@@ -195,7 +195,8 @@ export default defineComponent({
      * Validaciones
      ****************************************************************************************/
     const reglas = {
-      proveedor: { requiredIf: requiredIf(() => store.esCompras) },
+      proveedor: { requiredIf: requiredIf(() => store.esCompras && !orden.es_proveedor_internacional) },
+      proveedor_internacional: { requiredIf: requiredIf(() => store.esCompras && orden.es_proveedor_internacional) },
       autorizador: { required },
       descripcion: { required },
       forma: { requiredIf: requiredIf(() => store.esCompras) },
@@ -245,6 +246,7 @@ export default defineComponent({
           listar({ autorizacion_id: tab, estado_id: 1, solicitante_id: store.user.id })
       }
     }
+
     async function obtenerTareas(soloUna = false) {
       let response
       if (soloUna)
@@ -258,6 +260,11 @@ export default defineComponent({
       listadosAuxiliares.tareas = response.result
       tareas.value = listadosAuxiliares.tareas
     }
+    async function obtenerProveedoresInternacionales(){
+      const response = await new ProveedorInternacionalController().listar({activo:1})
+      listadosAuxiliares.proveedores_internacionales = response.result
+      proveedores_internacionales.value = listadosAuxiliares.proveedores_internacionales
+    }
     function eliminar({ posicion }) {
       confirmar('¿Está seguro de continuar?', () => orden.listadoProductos.splice(posicion, 1))
     }
@@ -269,7 +276,17 @@ export default defineComponent({
       console.log(fila)
       calcularValores(fila)
     }
-
+    function checkEsProveedorInternacional(val){
+      if(val){
+        orden.proveedor=null
+        if(proveedores_internacionales.value.length===0){
+          obtenerProveedoresInternacionales()
+        }
+      }else orden.proveedor_internacional=null
+    }
+    function filtrarProveedoresInternacionales(val, update){
+      return filtrarLista(val, update, proveedores_internacionales, 'nombre', listadosAuxiliares.proveedores_internacionales)
+    }
     /**
      * La función calcula los valores de iva, subtotal y total en función de los datos
      * proporcionados en la tabla de productos seleccionados.
@@ -519,6 +536,7 @@ export default defineComponent({
       //listados
       empleados,
       proveedores,
+      proveedores_internacionales,
       autorizaciones,
       tareas,
       estados,
@@ -561,6 +579,8 @@ export default defineComponent({
 
 
       //funciones
+      checkEsProveedorInternacional,
+      filtrarProveedoresInternacionales,
       filtrarOrdenes,
       calcularValores,
       // estructuraConsultaCategoria,

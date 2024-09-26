@@ -10,6 +10,7 @@
     "maxValue": "No puede ingresar un valor superior al máximo",
     "numeric": "Debe ser un número mayor a cero",
     "integer": "Ingresa solo números sin decimales",
+    "email": "Ingrese un correo eléctronico válido",
     "forEach": "Error en uno de los elementos de la colección."
   }
 }

@@ -24,6 +24,7 @@ export const numeric = withI18nMessage(validators.numeric)
 export const integer = withI18nMessage(validators.integer)
 export const minValue = withI18nMessage(validators.minValue, { withArguments: true })
 export const maxValue = withI18nMessage(validators.maxValue, { withArguments: true })
+export const email = withI18nMessage(validators.email)
 
 // export const helpers = withI18nMessage(validators.helpers, { withArguments: true })
 export const helpers = validators.helpers
