@@ -92,6 +92,7 @@
                 @filter="filtrarPaises"
                 :option-value="v => v.id"
                 :option-label="v => v.pais + ' (' + v.abreviatura + ')'"
+                :error="!!v$.pais.$errors.length"
                 emit-value
                 map-options
                 ><template v-slot:option="scope">
@@ -103,6 +104,11 @@
                       }}</q-item-label>
                     </q-item-section>
                   </q-item>
+                </template>
+                <template v-slot:error>
+                  <div v-for="error of v$.pais.$errors" :key="error.$uid">
+                    <div class="error-msg">{{ error.$message }}</div>
+                  </div>
                 </template>
                 <template v-slot:no-option>
                   <q-item>
@@ -121,9 +127,16 @@
                 v-model="proveedor.direccion"
                 placeholder="Obligatorio"
                 :disable="disabled"
+                 :error="!!v$.direccion.$errors.length"
                 dense
                 outlined
-              ></q-input>
+              >
+              <template v-slot:error>
+                  <div v-for="error of v$.direccion.$errors" :key="error.$uid">
+                    <div class="error-msg">{{ error.$message }}</div>
+                  </div>
+                </template>
+            </q-input>
             </div>
 
             <!-- telefono -->
@@ -149,9 +162,15 @@
                 v-model="proveedor.correo"
                 placeholder="Obligatorio"
                 :disable="disabled"
+                :error="!!v$.correo.$errors.length"
                 dense
                 outlined
-              ></q-input>
+              >
+              <template v-slot:error>
+                  <div v-for="error of v$.correo.$errors" :key="error.$uid">
+                    <div class="error-msg">{{ error.$message }}</div>
+                  </div>
+                </template></q-input>
             </div>
 
             <!-- Sitio web -->

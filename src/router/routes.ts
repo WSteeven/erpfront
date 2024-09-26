@@ -665,7 +665,7 @@ const routes: RouteRecordRaw[] = [
         name: 'proveedores_internacionales',
         component: () =>
           import('pages/comprasProveedores/proveedorInternacional/view/ProveedorInternacionalPage.vue'),
-        meta: { requiresAuth: false },
+        meta: { requiresAuth: true },
       },
       {
         path: '/categorias-ofertas',

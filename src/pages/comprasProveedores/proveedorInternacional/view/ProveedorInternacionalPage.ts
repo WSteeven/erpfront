@@ -12,7 +12,8 @@ import { ref } from "vue";
 import { opcionesTipoContribuyente, tabOptionsProveedoresInternacionales } from "config/utils_compras_proveedores";
 import { configuracionColumnasProveedoresInternacionales } from "../domain/configuracionColumnasProveedoresInternacionales";
 import useVuelidate from "@vuelidate/core";
-import { required } from "shared/i18n-validators";
+import { email, required } from "shared/i18n-validators";
+
 
 export default defineComponent({
   components: { TabLayoutFilterTabs2, GestorArchivos },
@@ -41,7 +42,8 @@ export default defineComponent({
       nombre: { required },
       tipo: { required },
       pais: { required },
-      direccion: { required }
+      direccion: { required },
+      correo: {required, email}
     }
 
     const v$ = useVuelidate(reglas, proveedor)
@@ -58,7 +60,7 @@ export default defineComponent({
         proveedor.moneda2 = null
       }
     })
-    
+
     /*******************************************************************************************
      * Funciones
      ******************************************************************************************/
