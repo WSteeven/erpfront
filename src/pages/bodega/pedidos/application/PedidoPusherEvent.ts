@@ -2,7 +2,6 @@ import { useNotificaciones } from 'shared/notificaciones';
 import { useAuthenticationStore } from 'stores/authentication';
 import { useNotificationRealtimeStore } from 'stores/notificationRealtime';
 import { rolesSistema } from 'config/utils';
-import EventEmitter from 'events';
 import { pushEventMesaggeServiceWorker } from 'shared/utils';
 
 export class PedidoPusherEvent {
@@ -51,7 +50,7 @@ export class PedidoPusherEvent {
     }
     if (this.store.esBodegueroTelconet) {
       const pedidoAutorizado = pusher.subscribe('pedidos-aprobados-BODEGA_TELCONET')
-      pedidoAutorizado.bind('pedido-event', function (e) {
+      pedidoAutorizado.bind('pedido-event', function () {
         notificacionStore.actualizar()
         notificarCorrecto('Tienes un pedido esperando ser despachado')
       })

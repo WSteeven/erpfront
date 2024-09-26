@@ -3,6 +3,7 @@
     :mixin="mixin"
     :configuracionColumnas="configuracionColumnas"
     :accion1="editarGasto"
+    ajustarCeldas
   >
     <template #formulario>
       <q-form @submit.prevent>
@@ -26,8 +27,8 @@
               input-debounce="0"
               @filter="filtrarCantones"
               @blur="v$.lugar.$touch"
-              :option-value="(v) => v.id"
-              :option-label="(v) => v.canton"
+              :option-value="v => v.id"
+              :option-label="v => v.canton"
               emit-value
               map-options
             >
@@ -45,7 +46,6 @@
               </template>
             </q-select>
           </div>
-
 
           <!-- Monto -->
           <div class="col-12 col-md-3">
@@ -87,8 +87,8 @@
               input-debounce="0"
               @filter="filtrarGrupos"
               @blur="v$.grupo.$touch"
-              :option-value="(v) => v.id"
-              :option-label="(v) => v.nombre"
+              :option-value="v => v.id"
+              :option-label="v => v.nombre"
               emit-value
               map-options
             >
@@ -109,19 +109,38 @@
           <!-- Motivo -->
           <div class="col-12 col-md-3">
             <label class="q-mb-sm block">Motivo</label>
-            <q-select v-model="gasto.motivo" :options="motivos" transition-show="jump-up"
-              transition-hide="jump-down" :disable="disabled" options-dense multiple dense use-chips outlined
-              @blur="v$.motivo.$touch" :error="!!v$.motivo.$errors.length"
-              error-message="Debes seleccionar uno o varios sub_detalle" :option-value="(v) => v.id"
-              :option-label="(v) => v.nombre" emit-value map-options>
-              <template v-slot:option="{ itemProps, opt, selected, toggleOption }">
+            <q-select
+              v-model="gasto.motivo"
+              :options="motivos"
+              transition-show="jump-up"
+              transition-hide="jump-down"
+              :disable="disabled"
+              options-dense
+              multiple
+              dense
+              use-chips
+              outlined
+              @blur="v$.motivo.$touch"
+              :error="!!v$.motivo.$errors.length"
+              error-message="Debes seleccionar uno o varios sub_detalle"
+              :option-value="v => v.id"
+              :option-label="v => v.nombre"
+              emit-value
+              map-options
+            >
+              <template
+                v-slot:option="{ itemProps, opt, selected, toggleOption }"
+              >
                 <q-item v-bind="itemProps">
                   <q-item-section>
                     {{ opt.nombre }}
                     <q-item-label v-bind:inner-h-t-m-l="opt.nombre" />
                   </q-item-section>
                   <q-item-section side>
-                    <q-toggle :model-value="selected" @update:model-value="toggleOption(opt)" />
+                    <q-toggle
+                      :model-value="selected"
+                      @update:model-value="toggleOption(opt)"
+                    />
                   </q-item-section>
                 </q-item>
               </template>
@@ -139,8 +158,6 @@
               </template>
             </q-select>
           </div>
-
-
 
           <!-- Observacion -->
           <div class="col-12 col-md-3">

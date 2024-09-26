@@ -1,28 +1,30 @@
 // Dependencias
 import { StatusEssentialLoading } from 'components/loading/application/StatusEssentialLoading'
 import { configuracionColumnasCampos } from '../domain/configuracionColumnasCampos'
-import { Ref, defineComponent, ref, watchEffect } from 'vue'
+import { Ref, computed, defineComponent, ref, watchEffect } from 'vue'
+import { useNotificaciones } from 'shared/notificaciones'
 import { useMedicoStore } from 'stores/medico'
 import { acciones } from 'config/utils'
 
 // Componentes
-import TabLayout from 'shared/contenedor/modules/simple/view/TabLayout.vue'
-import GestorArchivos from 'components/gestorArchivos/GestorArchivos.vue'
+import SimpleLayout from 'shared/contenedor/modules/simple/view/SimpleLayout.vue'
 import EssentialTable from 'components/tables/view/EssentialTable.vue'
 
 // Logica y controladores
-import { ArchivoController } from 'gestionTrabajos/subtareas/modules/gestorArchivosTrabajos/infraestructure/ArchivoController'
-import { ConfiguracionExamenCategoriaController } from '../infraestructure/ConfiguracionExamenCategoriaController'
 import { ContenedorSimpleMixin } from 'shared/contenedor/modules/simple/application/ContenedorSimpleMixin'
-import { DetalleResultadoExamenController } from '../infraestructure/DetalleResultadoExamenController'
+import { ArchivoController } from 'gestionTrabajos/subtareas/modules/gestorArchivosTrabajos/infraestructure/ArchivoController'
+import { SolicitudExamenController } from 'pages/medico/solicitudesExamenes/infraestructure/SolicitudExamenController'
+import { ConfiguracionExamenCategoriaController } from '../infraestructure/ConfiguracionExamenCategoriaController'
+import { ResultadoExamenController } from '../infraestructure/ResultadoExamenController'
+import { SolicitudExamen } from 'pages/medico/solicitudesExamenes/domain/SolicitudExamen'
 import { ConfiguracionExamenCampo } from '../domain/ConfiguracionExamenCampo'
-import { DetalleResultadoExamen } from '../domain/DetalleResultadoExamen'
+import { ItemExamenCategorias } from '../domain/ItemExamenCategorias'
 import { ResultadoExamen } from '../domain/ResultadoExamen'
 import { ItemExamen } from '../domain/ItemExamen'
 
 export default defineComponent({
   name: 'resultados_examenes',
-  components: { TabLayout, EssentialTable, GestorArchivos },
+  components: { SimpleLayout, EssentialTable },
   emits: ['cerrar-modal', 'guardado'],
   setup(props, { emit }) {
     /*********
@@ -33,24 +35,48 @@ export default defineComponent({
     /************
      * Variables
      ************/
-    const configuracionExamenCategoriaController = new ConfiguracionExamenCategoriaController()
     const cargando = new StatusEssentialLoading()
-
-    const mixin = new ContenedorSimpleMixin(DetalleResultadoExamen, new DetalleResultadoExamenController(), new ArchivoController())
-    const { onGuardado, onModificado, onBeforeGuardar, onBeforeModificar } = mixin.useHooks()
-    const { entidad: resultadoExamen, accion } = mixin.useReferencias()
-    const { consultar } = mixin.useComportamiento()
-
-    const resultadosExamenes: Ref<ItemExamen[]> = ref([])
+    const itemsExamenes: Ref<ItemExamen[]> = ref([])
+    const resultadosExamenes: Ref<ResultadoExamen[]> = ref([])
     const observacion = ref()
-
     const refArchivo = ref()
     const idTransferencia = ref()
+    const { notificarCorrecto } = useNotificaciones()
 
+    /*************
+     * Controller
+    *************/
+    const configuracionExamenCategoriaController = new ConfiguracionExamenCategoriaController()
+    const resultadoExamenController = new ResultadoExamenController()
+
+    /********
+     * Mixin
+     ********/
+    const mixin = new ContenedorSimpleMixin(SolicitudExamen, new SolicitudExamenController(), new ArchivoController())
+    const { onGuardado, onModificado, onBeforeGuardar, onBeforeModificar, onReestablecer } = mixin.useHooks()
+    const { entidad: solicitudExamen, accion } = mixin.useReferencias()
+    const { consultar } = mixin.useComportamiento()
+
+    /************
+     * Funciones
+     ************/
     const consultarCategoriasCampos = async () => {
       try {
         cargando.activar()
-        const { result } = await configuracionExamenCategoriaController.listar({ examen_id: medicoStore.examenSolicitado?.examen_id })
+        const { result } = await configuracionExamenCategoriaController.listar({ registro_empleado_examen_id: medicoStore.idRegistroEmpleadoExamen })
+        itemsExamenes.value = result
+        console.log(itemsExamenes.value)
+      } catch (e) {
+        console.log(e)
+      } finally {
+        cargando.desactivar()
+      }
+    }
+
+    const consultarResultadosExamenes = async () => {
+      try {
+        cargando.activar()
+        const { result } = await resultadoExamenController.listar({ registro_empleado_examen_id: medicoStore.idRegistroEmpleadoExamen })
         resultadosExamenes.value = result
         console.log(resultadosExamenes.value)
       } catch (e) {
@@ -61,118 +87,128 @@ export default defineComponent({
     }
 
     const completarCamposLlenos = async () => {
-      console.log('lleno en funcion... observer consultado')
-      console.log('completarCamposLlenos....')
-      console.log(resultadosExamenes.value)
-      resultadosExamenes.value.map((item: any) => {
-        console.log(item.campos)
-        return item.campos.map((campo: ConfiguracionExamenCampo) => {
-          console.log(resultadoExamen.resultados_examenes)
-          console.log(campo)
-          const campoEncontrado = resultadoExamen.resultados_examenes.find((re: ResultadoExamen) => re.configuracion_examen_campo === campo.id)
-          console.log(campoEncontrado)
-          if (campoEncontrado) {
-            campo.resultado_examen = campoEncontrado.id
-            campo.resultado = campoEncontrado.resultado
+      itemsExamenes.value.map((itemExamen: ItemExamen) => {
+        console.log(itemExamen)
+
+        return itemExamen.categorias.map((itemExamenCategoria: ItemExamenCategorias) => {
+          return itemExamenCategoria.campos.map((campo: ConfiguracionExamenCampo) => {
+            const resultadoExamen = resultadosExamenes.value.find((res: ResultadoExamen) => res.examen_solicitado === itemExamen.examen_solicitado && res.configuracion_examen_campo === campo.id)
+            campo.resultado_examen = resultadoExamen?.id ?? null
+            campo.resultado = resultadoExamen?.resultado ?? null
+            campo.observaciones = resultadoExamen?.observaciones ?? null
+            console.log(resultadosExamenes.value)
             console.log(campo)
             return campo
-          }
+          })
         })
       })
 
       accion.value = acciones.editar
     }
 
-    async function subirArchivos() {
-      await refArchivo.value.subir()
+
+
+    /********
+     * Hooks
+     ********/
+    const stop = watchEffect(() => {
+      if (itemsExamenes.value.length) {
+        completarCamposLlenos()
+        /*setTimeout(() => {
+          refArchivo.value.listarArchivosAlmacenados(solicitudExamen.id)
+        }, 1)*/
+        stop()
+      }
+    })
+
+    const guardarResultadosExamenes = async () => {
+      resultadosExamenes.value = []
+
+      itemsExamenes.value.forEach((item: ItemExamen) => {
+        item.categorias.forEach((itemExamenCategoria: ItemExamenCategorias) => {
+          itemExamenCategoria.campos.forEach((campo: ConfiguracionExamenCampo) => {
+            console.log(campo)
+
+            if (campo.resultado) {
+              const resultado = new ResultadoExamen()
+              resultado.resultado = campo.resultado
+              resultado.configuracion_examen_campo = campo.id
+              resultado.observaciones = campo.observaciones
+              resultado.examen_solicitado = item.examen_solicitado
+              resultadosExamenes.value.push(resultado)
+            }
+          })
+        })
+      })
+
+      try {
+        const { response } = await resultadoExamenController.guardarListado(resultadosExamenes.value)
+        notificarCorrecto(response.data.mensaje)
+      } catch (e) {
+        console.log(e)
+      }
+
+      emit('cerrar-modal')
+    }
+
+    const editarResultadosExamenes = async () => {
+      resultadosExamenes.value = []
+
+      console.log(itemsExamenes.value)
+
+      itemsExamenes.value.forEach((item: ItemExamen) => {
+        item.categorias.forEach((itemExamenCategoria: ItemExamenCategorias) => {
+          itemExamenCategoria.campos.forEach((campo: ConfiguracionExamenCampo) => {
+            console.log(campo)
+
+            if (campo.resultado) {
+              const resultado = new ResultadoExamen()
+              resultado.id = campo.resultado_examen
+              resultado.resultado = campo.resultado
+              resultado.configuracion_examen_campo = campo.id
+              resultado.observaciones = campo.observaciones
+              resultado.examen_solicitado = item.examen_solicitado
+              resultadosExamenes.value.push(resultado)
+            }
+          })
+        })
+      })
+
+      try {
+        const { response } = await resultadoExamenController.editarListado(resultadosExamenes.value)
+        notificarCorrecto(response.data.mensaje)
+      } catch (e) {
+        console.log(e)
+      }
+
       emit('cerrar-modal')
     }
 
     /********
      * Hooks
      ********/
-    const stop = watchEffect(() => {
-      if (resultadoExamen.resultados_examenes.length && resultadosExamenes.value.length) {
-        completarCamposLlenos()
-        setTimeout(() => {
-          refArchivo.value.listarArchivosAlmacenados(resultadoExamen.id)
-        }, 1);
-        stop()
-      }
-    })
-
-    onBeforeGuardar(() => {
-      console.log(resultadosExamenes.value)
-      resultadosExamenes.value.forEach((item: any) => {
-        item.campos.forEach((campo: any) => {
-          console.log(campo)
-
-          if (campo.resultado) {
-
-            const resultado = new ResultadoExamen()
-            resultado.resultado = campo.resultado
-            resultado.configuracion_examen_campo = campo.id
-            resultadoExamen.resultados_examenes.push(resultado)
-          }
-        })
-      })
-    })
-
-    onGuardado((id: number, responseData) => {
-      idTransferencia.value = id
-      const modelo: DetalleResultadoExamen = responseData.modelo
-      emit('guardado', modelo.id)
-      emit('cerrar-modal')
-      setTimeout(() => {
-        subirArchivos()
-      }, 1)
-    })
-
-    onModificado((id: number) => {
-      idTransferencia.value = id
-      console.log('subiendo archivo actuaizado')
-      setTimeout(async () => {
-        await subirArchivos()
-      }, 1)
-    })
-
-    onBeforeModificar(() => {
-      resultadoExamen.resultados_examenes = []
-      console.log(resultadosExamenes.value)
-      resultadosExamenes.value.forEach((item: any) => {
-        item.campos.forEach((campo: ConfiguracionExamenCampo) => {
-          console.log(campo)
-
-          if (campo.resultado) {
-
-            const resultado = new ResultadoExamen()
-            resultado.id = campo.resultado_examen
-            resultado.resultado = campo.resultado
-            resultado.configuracion_examen_campo = campo.id
-            resultadoExamen.resultados_examenes.push(resultado)
-          }
-        })
-      })
-    })
+    onReestablecer(() => emit('cerrar-modal'))
 
     /*******
      * Init
      *******/
     consultarCategoriasCampos()
-    if (medicoStore.examenSolicitado && medicoStore.examenSolicitado.detalle_resultado_examen) consultar({ id: medicoStore.examenSolicitado.detalle_resultado_examen })
-    if (medicoStore.examenSolicitado) resultadoExamen.estado_solicitud_examen = medicoStore.examenSolicitado.id
+    consultarResultadosExamenes()
 
     return {
       mixin,
-      resultadoExamen,
+      // resultadoExamen,
+      itemsExamenes,
       refArchivo,
       idTransferencia,
       resultadosExamenes,
       configuracionColumnasCampos,
       observacion,
       accion,
-      // categoriaExamen: medicoStore.examenSolicitado?.categoria,
-      // examen: medicoStore.examenSolicitado?.examen,
+      guardarResultadosExamenes,
+      editarResultadosExamenes,
+      mostrarGuardar: computed(() => accion.value === acciones.nuevo),
+      mostrarEditar: computed(() => accion.value === acciones.editar),
     }
   }
 })

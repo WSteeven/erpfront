@@ -48,7 +48,8 @@
       animated
       transition-prev="scale"
       transition-next="scale"
-      helpalive
+      class="bg-desenfoque border-white"
+      keep-alive
       :class="{ 'rounded-tabpanel': !$q.screen.xs }"
     >
       <!-- Formulario -->
@@ -56,7 +57,10 @@
         <slot name="formulario" />
         <div :class="{ 'q-pa-md': full }">
           <div class="row justify-end q-col-gutter-x-xs">
-            
+            <span>
+              <slot name="custom-buttons"></slot>
+            </span>
+
             <button-submits
               v-if="mostrarButtonSubmits"
               :accion="accion"
@@ -74,7 +78,42 @@
 
       <!-- Listado -->
       <q-tab-panel name="listado">
+        <!-- :paginate="paginate" -->
+        <essential-table-pagination
+          v-if="paginate"
+          ref="refTabla"
+          :titulo="tituloTabla"
+          :configuracionColumnas="columnas"
+          :datos="listado"
+          :permitirConsultar="puedeVer"
+          :permitirEditar="puedeEditar"
+          :permitirEliminar="puedeEliminar"
+          :accion1="accion1"
+          :accion2="accion2"
+          :accion3="accion3"
+          :accion4="accion4"
+          :accion5="accion5"
+          :accion6="accion6"
+          :accion7="accion7"
+          :accion8="accion8"
+          :accion9="accion9"
+          :accion10="accion10"
+          :accion1Header="accion1Header"
+          :accion2Header="accion2Header"
+          :accion3Header="accion3Header"
+          :accion4Header="accion4Header"
+          :permitirFiltrar="puedeFiltrar"
+          :mostrarExportar="puedeExportar"
+          :ajustarCeldas="ajustarCeldas"
+          @consultar="accionTabla.consultar"
+          @editar="accionTabla.editar"
+          @eliminar="accionTabla.eliminar"
+          @filtrar="filtrarTodos"
+          :mixin="mixin"
+        ></essential-table-pagination>
+
         <essential-table
+          v-else
           :titulo="tituloTabla"
           :configuracionColumnas="columnas"
           :datos="listado"

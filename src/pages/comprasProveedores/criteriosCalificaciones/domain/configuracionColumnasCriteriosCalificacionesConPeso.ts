@@ -1,6 +1,5 @@
-import { ColumnConfig } from "components/tables/domain/ColumnConfig";
-import { CriterioCalificacion } from "./CriterioCalificacion";
-import { opcionesOfertas } from "config/utils_compras_proveedores";
+import { ColumnConfig } from 'components/tables/domain/ColumnConfig';
+import { opcionesOfertas } from 'config/utils_compras_proveedores';
 
 export const configuracionColumnasCriteriosCalificacionesConPeso: ColumnConfig<any>[] = [
     {

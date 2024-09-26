@@ -1,5 +1,5 @@
-import { Validador } from "shared/validadores/domain/Validador";
-import { Prefactura } from "../../domain/Prefactura";
+import { Validador } from 'shared/validadores/domain/Validador';
+import { Prefactura } from '../../domain/Prefactura';
 
 export class ValidarListadoProductos implements Validador {
   private prefactura: Prefactura

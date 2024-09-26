@@ -10,7 +10,7 @@ import SelectorImagen from 'components/SelectorImagen.vue'
 import { ContenedorSimpleMixin } from 'shared/contenedor/modules/simple/application/ContenedorSimpleMixin'
 import { PermisoEmpleadoController } from '../infraestructure/PermisoEmpleadoController'
 import { LicenciaEmpleado } from '../domain/LicenciaEmpleado'
-import { removeAccents } from 'shared/utils'
+import { obtenerFechaActual, obtenerFechaActualTexto, removeAccents, sumarFechas } from 'shared/utils'
 import { maskFecha, tabOptionsLicencias } from 'config/utils'
 import {
   requiredIf,
@@ -136,8 +136,8 @@ export default defineComponent({
     }
     onConsultado(() => {
       es_jefe_inmediato.value =
-      store.user.id == licencia.id_jefe_inmediato ? true : false
-        setTimeout(() => {
+        store.user.id == licencia.id_jefe_inmediato ? true : false
+      setTimeout(() => {
         refArchivoPrestamoEmpresarial.value.listarArchivos({
           licencia_id: licencia.id,
         })
@@ -162,7 +162,7 @@ export default defineComponent({
           controller: new AutorizacionController(),
           params: {
             campos: 'id,nombre',
-            es_modulo_rhh:true,
+            es_modulo_rhh: true,
             es_jefe_inmediato:
               store.user.id == licencia.id_jefe_inmediato ? true : false,
           },
@@ -170,7 +170,7 @@ export default defineComponent({
       })
       empleados.value = listadosAuxiliares.empleados
       tipos_licencias.value = listadosAuxiliares.tipos_licencias
-      autorizaciones.value =listadosAuxiliares.autorizaciones
+      autorizaciones.value = listadosAuxiliares.autorizaciones
     })
     function filtrarEmpleados(val, update) {
       if (val === '')
@@ -210,10 +210,10 @@ export default defineComponent({
         const fechaFinal = fechaInicio
         fechaFinal.setDate(
           fechaInicio.getDate() +
-            parseInt(licencia.dias_licencia.toString()) -
-            1
+          parseInt(licencia.dias_licencia.toString()) -
+          1
         )
-        // Formatear la fecha a "año-mes-día"
+        // Formatear la fecha a 'año-mes-día'
         const anio = fechaFinal.getFullYear()
         const mes = ('0' + (fechaFinal.getMonth() + 1)).slice(-2)
         const dia = ('0' + fechaFinal.getDate()).slice(-2)
@@ -221,12 +221,13 @@ export default defineComponent({
       }
     })
     function optionsFechaInicio(date) {
-      const currentDate = new Date() // Obtener la fecha actual
-      const year = currentDate.getFullYear() // Obtener el año
-      const month = String(currentDate.getMonth() + 1).padStart(2, '0') // Obtener el mes y asegurarse de que tenga dos dígitos
-      const day = String(currentDate.getDate()).padStart(2, '0') // Obtener el día y asegurarse de que tenga dos dígitos
-      const currentDateString = `${year}/${month}/${day}` // Formatear la fecha actual
-      return date >= currentDateString
+      // const currentDate = new Date() // Obtener la fecha actual
+      const currentDate = sumarFechas(obtenerFechaActual(),0,0,-15, 'YYYY/MM/DD')
+      // const year = currentDate.getFullYear() // Obtener el año
+      // const month = String(currentDate.getMonth() + 1).padStart(2, '0') // Obtener el mes y asegurarse de que tenga dos dígitos
+      // const day = String(currentDate.getDate()).padStart(2, '0') // Obtener el día y asegurarse de que tenga dos dígitos
+      // const currentDateString = `${year}/${month}/${day}` // Formatear la fecha actual
+      return date >= currentDate
     }
 
     return {

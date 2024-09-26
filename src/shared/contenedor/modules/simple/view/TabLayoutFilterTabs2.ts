@@ -43,6 +43,10 @@ export default defineComponent({
       type: Boolean,
       default: true,
     },
+    permitirFiltrar: {
+      type: Boolean,
+      default: false,
+    },
     permitirConsultar: {
       type: Boolean,
       default: true,
@@ -139,6 +143,10 @@ export default defineComponent({
     customPanel2: {
       type: Object,
       required: false,
+    },
+    paginate: {
+      type: Boolean,
+      default: false,
     },
   },
   emits: ['tab-seleccionado'],
@@ -260,6 +268,7 @@ export default defineComponent({
       consultar,
       editar,
       eliminar,
+      forzarListar,
       puedeVer,
       puedeCrear,
       puedeEditar,
@@ -268,10 +277,8 @@ export default defineComponent({
       accionPersonalizada,
       esBodeguero,
       esCoordinador,
-      forzarListar,
       // Valor del essentialLoading
       storeCargando: useCargandoStore(),
-      puedeExportar: props.puedeExportar,
       // custom tab panel
       ejecutarUnaVezCustomPanel1,
       ejecutarUnaVezCustomPanel2,

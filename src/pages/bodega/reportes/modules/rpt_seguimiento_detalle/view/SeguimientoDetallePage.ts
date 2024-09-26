@@ -1,7 +1,7 @@
 import { DetalleProducto } from './../../../../detalles_productos/domain/DetalleProducto';
 import EssentialTable from 'components/tables/view/EssentialTable.vue';
-import { DetalleProductoController } from "pages/bodega/detalles_productos/infraestructure/DetalleProductoController"
-import { defineComponent, onMounted, reactive, ref } from "vue"
+import { DetalleProductoController } from 'pages/bodega/detalles_productos/infraestructure/DetalleProductoController'
+import { defineComponent, onMounted, reactive, ref } from 'vue'
 import { configuracionColumnasSeguimientoDetalle } from '../../rpt_inventario/domain/configuracionColumnasSeguimientoDetalle';
 import { StatusEssentialLoading } from 'components/loading/application/StatusEssentialLoading';
 import { useNotificaciones } from 'shared/notificaciones';
@@ -14,10 +14,10 @@ import { imprimirArchivo } from 'shared/utils';
 import { useNotificacionStore } from 'stores/notificacion';
 import { useCargandoStore } from 'stores/cargando';
 import { useQuasar } from 'quasar';
-import { SucursalesDetalleController } from './infraestructure/SucursalesDetalleController';
+import { SucursalesDetalleController } from '../infraestructure/SucursalesDetalleController';
 import { configuracionColumnasItemPreingreso } from 'pages/bodega/preingresoMateriales/domain/configuracionColumnasItemsPreingreso';
-import { ColumnConfig } from 'components/tables/domain/ColumnConfig';
-import { ItemPreingresoMaterial } from 'pages/bodega/preingresoMateriales/domain/ItemPreingresoMaterial';
+import { columnasTransferencias } from '../domain/columnasTransferencias';
+import { maskFecha } from 'config/utils';
 
 export default defineComponent({
   components: { EssentialTable },
@@ -40,6 +40,7 @@ export default defineComponent({
     const results = ref([])
     const listado = ref([])
     const listadoPreingreso = ref([])
+    const listadoTransferencias = ref([])
     const { notificarError } = useNotificaciones()
     async function cargarDetalles() {
       cargando.activar()
@@ -66,8 +67,10 @@ export default defineComponent({
         // console.log(response)
         if (response.data.results) {
           listado.value = response.data.results
-          listadoPreingreso.value = response.data.results2
+          listadoPreingreso.value = response.data.preingresos
+          listadoTransferencias.value = response.data.transferencias
         }
+
         cargando.desactivar()
       }
       catch (e) {
@@ -118,21 +121,24 @@ export default defineComponent({
       align: 'left',
       sortable: true,
     },
-    {
-      name: 'created_at',
-      field: 'created_at',
-      label: 'Fecha',
-      align: 'left',
-      sortable: true,
-    },)
+      {
+        name: 'created_at',
+        field: 'created_at',
+        label: 'Fecha',
+        align: 'left',
+        sortable: true,
+      },)
 
     return {
       kardex, v$,
       detalles,
       listado,
       listadoPreingreso,
+      listadoTransferencias,
       configuracionColumnasSeguimientoDetalle,
       columnasPreingresos: configuracionColumnasItemPreingreso,
+      columnasTransferencias,
+      maskFecha,
       sucursales,
       imprimirReporte,
       obtenerSucursales,

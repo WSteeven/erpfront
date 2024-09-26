@@ -1,16 +1,16 @@
 //Dependencias
-import { configuracionColumnasCombustibles } from "../domain/configuracionColumnasCombustibles";
-import { required } from "shared/i18n-validators";
+import { configuracionColumnasCombustibles } from '../domain/configuracionColumnasCombustibles';
+import { required } from 'shared/i18n-validators';
 import { useVuelidate } from '@vuelidate/core'
-import { defineComponent, ref } from "vue";
+import { defineComponent, ref } from 'vue';
 
 //Componentes
-import TabLayout from "shared/contenedor/modules/simple/view/TabLayout.vue";
+import TabLayout from 'shared/contenedor/modules/simple/view/TabLayout.vue';
 
 //Logica y controladores
-import { ContenedorSimpleMixin } from "shared/contenedor/modules/simple/application/ContenedorSimpleMixin";
-import { CombustibleController } from "../infraestructure/CombustibleController";
-import { Combustible } from "../domain/Combustible";
+import { ContenedorSimpleMixin } from 'shared/contenedor/modules/simple/application/ContenedorSimpleMixin';
+import { CombustibleController } from '../infraestructure/CombustibleController';
+import { Combustible } from '../domain/Combustible';
 
 
 export default defineComponent({

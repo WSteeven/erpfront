@@ -1,5 +1,5 @@
-import { ColumnConfig } from "components/tables/domain/ColumnConfig";
-import { AcreditacionSemana } from "./AcreditacionSemana";
+import { ColumnConfig } from 'components/tables/domain/ColumnConfig';
+import { AcreditacionSemana } from './AcreditacionSemana';
 
 export const ConfiguracionColumnasAcreditacionSemana: ColumnConfig<AcreditacionSemana>[] = [
   {

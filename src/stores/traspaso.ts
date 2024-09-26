@@ -1,12 +1,11 @@
-import { UserLogin } from 'src/pages/sistema/authentication/login/domain/UserLogin';
-import { AxiosResponse } from "axios";
-import { StatusEssentialLoading } from "components/loading/application/StatusEssentialLoading";
-import { apiConfig, endpoints } from "config/api";
-import { acciones } from "config/utils";
-import { Traspaso } from "pages/bodega/traspasos/domain/Traspaso";
-import { defineStore } from "pinia";
-import { AxiosHttpRepository } from "shared/http/infraestructure/AxiosHttpRepository";
-import { reactive, ref } from "vue";
+import { AxiosResponse } from 'axios';
+import { StatusEssentialLoading } from 'components/loading/application/StatusEssentialLoading';
+import { apiConfig, endpoints } from 'config/api';
+import { acciones } from 'config/utils';
+import { Traspaso } from 'pages/bodega/traspasos/domain/Traspaso';
+import { defineStore } from 'pinia';
+import { AxiosHttpRepository } from 'shared/http/infraestructure/AxiosHttpRepository';
+import { reactive, ref } from 'vue';
 import { imprimirArchivo } from 'shared/utils';
 
 export const useTraspasoStore = defineStore('traspaso', () => {

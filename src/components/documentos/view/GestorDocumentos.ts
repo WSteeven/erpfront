@@ -74,7 +74,7 @@ export default defineComponent({
       notificarAdvertencia,
       confirmar,
     } = useNotificaciones()
-
+    const notificaciones = useNotificaciones()
     function listarArchivos(params: ParamsType) {
       listar(params)
     }
@@ -113,7 +113,7 @@ export default defineComponent({
     /************
      * Funciones
      *************/
-    const quiero_subir_archivos = ref(false)
+    const quiero_subir_archivos = ref(props.esObligatorio)
     const esConsultado = ref(false)
     async function factoryFn(files) {
       const fd = new FormData()
@@ -130,21 +130,24 @@ export default defineComponent({
         notificarCorrecto(response.data.mensaje)
 
         // Restablecer el componente q-uploader para mostrar el botón de "añadir archivos" nuevamente
-        refGestor.value.reset()
-
+        await refGestor.value.reset()
+        quiero_subir_archivos.value = false
+        if (props.esObligatorio) quiero_subir_archivos.value = true
       } catch (error: unknown) {
         const axiosError = error as AxiosError
-        notificarError(axiosError.response?.data.mensaje)
+        notificarError(axiosError.response?.data.message)
       }
     }
-    function subir(params: ParamsType) {
-      paramsForm = params
-      if (refGestor.value) {
-        refGestor.value.upload()
-        refGestor.value.reset()
-        refGestor.value.removeUploadedFiles()
-        refGestor.value.removeQueuedFiles()
-      }
+    async function subir(params: ParamsType) {
+      try {
+        paramsForm = params
+        if (refGestor.value) {
+          await refGestor.value.upload()
+          await refGestor.value.reset()
+          await refGestor.value.removeUploadedFiles()
+          await refGestor.value.removeQueuedFiles()
+        }
+      } catch (error) {}
     }
 
     function onRejected(rejectedEntries) {
@@ -165,7 +168,7 @@ export default defineComponent({
     function limpiarListado() {
       listado.value = []
     }
-    watchEffect(() => (quiero_subir_archivos.value = props.esObligatorio))
+    // watchEffect(() => (quiero_subir_archivos.value = props.esObligatorio))
     return {
       listado,
       refGestor,

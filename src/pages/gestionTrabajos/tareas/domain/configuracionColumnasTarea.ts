@@ -20,8 +20,10 @@ export const configuracionColumnasTarea: ColumnConfig<Tarea>[] = [
     name: 'finalizado',
     field: 'finalizado',
     label: 'Finalizado',
+    type: 'boolean',
     align: 'left',
     sortable: true,
+    default: false,
   },
   {
     name: 'titulo',

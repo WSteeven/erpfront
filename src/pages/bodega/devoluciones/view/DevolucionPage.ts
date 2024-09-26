@@ -2,7 +2,7 @@
 import { configuracionColumnasDevoluciones } from '../domain/configuracionColumnasDevoluciones'
 import { required, requiredIf } from '@vuelidate/validators'
 import { useVuelidate } from '@vuelidate/core'
-import { computed, defineComponent, ref, watchEffect } from 'vue'
+import { computed, defineComponent, ref } from 'vue'
 import { useOrquestadorSelectorDetalles } from '../application/OrquestadorSelectorDetalles'
 
 //Componentes
@@ -42,7 +42,6 @@ import { StatusEssentialLoading } from 'components/loading/application/StatusEss
 import { endpoints } from 'config/api'
 import { AxiosResponse } from 'axios'
 import { AxiosHttpRepository } from 'shared/http/infraestructure/AxiosHttpRepository'
-import { CondicionController } from 'pages/administracion/condiciones/infraestructure/CondicionController'
 import { Condicion } from 'pages/administracion/condiciones/domain/Condicion'
 import { useFiltrosListadosSelects } from 'shared/filtrosListadosGenerales'
 import { ComportamientoModalesDevolucion } from '../application/ComportamientoModalesDevolucion'
@@ -63,6 +62,7 @@ export default defineComponent({
     useNotificacionStore().setQuasar(useQuasar())
     useCargandoStore().setQuasar(useQuasar())
 
+    const mostrarInactivos = ref(false)
     const modales = new ComportamientoModalesDevolucion()
     const devolucionStore = useDevolucionStore()
     const store = useAuthenticationStore()
@@ -118,8 +118,7 @@ export default defineComponent({
       sucursales, filtrarSucursales } = useFiltrosListadosSelects(listadosAuxiliares)
 
     const condiciones = ref([])
-    // const tareas = ref([])
-    const opciones_autorizaciones = ref([])
+    const autorizaciones = ref([])
     //Obtener los listados
     cargarVista(async () => {
       await obtenerListados({
@@ -132,21 +131,33 @@ export default defineComponent({
         },
         tareas: {
           controller: new TareaController(),
-          params: { campos: 'id,codigo_tarea,titulo,cliente_id' }
+          params: {
+            campos: 'id,codigo_tarea,titulo,cliente_id',
+            'f_params[orderBy][field]': 'id',
+            'f_params[orderBy][type]': 'DESC',
+            'f_params[limit]': 50
+          }
         },
-        // condiciones: new CondicionController()
       })
       //Configurar los listados
       empleados.value = listadosAuxiliares.empleados
-      opciones_autorizaciones.value = JSON.parse(LocalStorage.getItem('autorizaciones')!.toString())
+      autorizaciones.value = JSON.parse(LocalStorage.getItem('autorizaciones')!.toString())
       sucursales.value = listadosAuxiliares.sucursales
       tareas.value = listadosAuxiliares.tareas
       listadosAuxiliares.condiciones = JSON.parse(LocalStorage.getItem('condiciones')!.toString())
       condiciones.value = listadosAuxiliares.condiciones
 
+      // en la carga inicial se coloca el solicitante
+      devolucion.solicitante = store.user.id
+
       //logica para autocompletar el formulario de devolucion
       if (listadoMaterialesDevolucion.listadoMateriales.length) {
+        cargando.activar()
+        mostrarInactivos.value = listadoMaterialesDevolucion.inactivo
+        checkMostrarInactivos(listadoMaterialesDevolucion.inactivo)
+        devolucion.devolver_materiales_tecnicos = listadoMaterialesDevolucion.empleado_id !== store.user.id
         devolucion.tarea = listadoMaterialesDevolucion.tareaId ? listadoMaterialesDevolucion.tareaId : null
+        devolucion.solicitante = listadoMaterialesDevolucion.empleado_id
         devolucion.cliente = listadoMaterialesDevolucion.cliente_id
         filtrarCliente(devolucion.cliente)
         devolucion.es_tarea = !!devolucion.tarea
@@ -162,11 +173,12 @@ export default defineComponent({
             serial: material.serial,
           }
         })
+        cargando.desactivar()
       }
       listadosAuxiliares.sucursales = JSON.parse(LocalStorage.getItem('sucursales')!.toString())
       sucursales.value = listadosAuxiliares.sucursales
-      // en la carga inicial se coloca el solicitante
-      devolucion.solicitante = store.user.id
+      // se carga los materiales de clientes
+      obtenerClientesMaterialesEmpleado()
     })
 
     //reglas de validacion
@@ -188,10 +200,10 @@ export default defineComponent({
     /************
      * Observers
      ************/
-    watchEffect(() => {
-      if (devolucion.es_tarea) obtenerClientesMaterialesTarea()
+    function checkEsTarea(val) {
+      if (val) obtenerClientesMaterialesTarea()
       else obtenerClientesMaterialesEmpleado()
-    })
+    }
 
     /*******************************************************************************************
      * Funciones
@@ -234,6 +246,7 @@ export default defineComponent({
         listadosAuxiliares.sucursales = JSON.parse(LocalStorage.getItem('sucursales')!.toString()).filter((v) => v.cliente_id == value)
 
     }
+
     async function subirArchivos() {
       await refArchivo.value.subir()
     }
@@ -280,10 +293,13 @@ export default defineComponent({
       }
     }
 
-    async function obtenerDatosEmpleadoSeleccionado() {
-      //obtener los clientes
-
-      // obtener los materiales 
+    async function checkMostrarInactivos(val) {
+      //aqui va a mostrar los empleados inactivos
+      const empleadosConsultados = ref()
+      if (val) empleadosConsultados.value = await cargando.cargarConsulta(async () => (await new EmpleadoController().listar({ estado: 0 })).result)
+      else empleadosConsultados.value = await cargando.cargarConsulta(async () => (await new EmpleadoController().listar({ estado: 1 })).result)
+      listadosAuxiliares.empleados = empleadosConsultados.value
+      empleados.value = listadosAuxiliares.empleados
     }
 
 
@@ -421,13 +437,14 @@ export default defineComponent({
       clientes,
       tareas,
       filtrarTareas,
-      opciones_autorizaciones,
+      autorizaciones,
       sucursales, filtrarSucursales,
       condiciones,
       store,
       refArchivo,
       idDevolucion,
       modales,
+      mostrarInactivos,
 
       //selector
       refListado,
@@ -462,6 +479,8 @@ export default defineComponent({
 
 
       //funciones
+      checkMostrarInactivos,
+      checkEsTarea,
       filtrarDevoluciones,
       filtrarCliente,
       checkMismaCondicion(val, evt) {
@@ -472,7 +491,6 @@ export default defineComponent({
       ordenarLista,
       comunicarComportamiento,
       checkSolicitantes,
-      obtenerDatosEmpleadoSeleccionado,
     }
   }
 })

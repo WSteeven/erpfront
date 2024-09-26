@@ -1,168 +1,72 @@
-import { ContenedorSimpleMixin } from "shared/contenedor/modules/simple/application/ContenedorSimpleMixin"
-import { defineComponent, ref } from "vue"
-import { EventoController } from "../infraestructure/EventoController"
-import { Evento } from "../domain/Evento"
-import CalendarioEventos from 'components/calendarioEventos/CalendarioEventos.vue'
-import {
-  parseDate,
-} from '@quasar/quasar-ui-qcalendar/src/index.js'
+import { defineComponent, ref } from 'vue';
+import { Evento } from '../domain/Evento';
+import { EventoController } from '../infraestructure/EventoController';
+import { ContenedorSimpleMixin } from 'shared/contenedor/modules/simple/application/ContenedorSimpleMixin';
+import EssentialCalendar from 'components/qalendar/EssentialCalendar.vue';
+import ButtonSubmits from 'components/buttonSubmits/buttonSubmits.vue';
+import { acciones } from '../../../../config/utils';
+import { useCargandoStore } from 'stores/cargando';
+import { TipoEventoController } from 'pages/intranet/tiposEventos/infraestructure/TipoEventoController';
 
 
 export default defineComponent({
-  components: {
-    CalendarioEventos
-  },
+  components: { EssentialCalendar, ButtonSubmits },
   setup() {
+    const mixin = new ContenedorSimpleMixin(Evento, new EventoController())
+    const { entidad: evento, accion, listado, listadosAuxiliares } = mixin.useReferencias()
+    const {  cargarVista, obtenerListados, listar, consultar, editar, guardar, eliminar, reestablecer } = mixin.useComportamiento()
+    const { onReestablecer, onBeforeGuardar, onGuardado, onBeforeModificar, onModificado } = mixin.useHooks()
+    const clickedEvent = ref()
+    const tipos = ref([])
+    const componentePadreCargado = ref(false)
 
-    /***********
-     * Mixin
-     ************/
-    const mixin = new ContenedorSimpleMixin(
-      Evento, new EventoController(),
-    )
+    cargarVista(async () => {
+      await listar()
+      await obtenerListados({
+        tipos: new TipoEventoController()
+      })
+
+      tipos.value = listadosAuxiliares.tipos
+
+      componentePadreCargado.value = true
+    })
+
+    onBeforeGuardar(() => componentePadreCargado.value = false)
+    onGuardado(() => componentePadreCargado.value = true)
+    onBeforeModificar(() => componentePadreCargado.value = false)
+    onModificado(() => componentePadreCargado.value = true)
+    onReestablecer(() => {
+      componentePadreCargado.value = false
+      setTimeout(() => componentePadreCargado.value = true, 100)
+      // componentePadreCargado.value = true
+    })
 
 
-
-    const {
-      entidad: evento,
-      disabled,
-      accion,
-      listadosAuxiliares,
-    } = mixin.useReferencias()
-    const { setValidador, obtenerListados, cargarVista } =
-      mixin.useComportamiento()
-
-    const splitterModel = ref(50)
-    const date = ref('2019/02/01')
-    const events = ref(['2019/02/01', '2019/02/05', '2019/02/06'])
-    const tiposEvento = ref(['Cumpleaños', 'Capacitaciones'])
-
-    const CURRENT_DAY = new Date()
-    function getCurrentDay(day) {
-      const newDay = new Date(CURRENT_DAY)
-      newDay.setDate(day)
-      const tm = parseDate(newDay)
-      return tm.date
+    async function consultarEvento() {
+      // console.log("data?", clickedEvent.value)
+      evento.id = clickedEvent.value
+      accion.value = acciones.editar
+      await consultar(evento)
     }
-    const eventos = ref([
-      {
-        id: 1,
-        title: '1st of the Month',
-        details: 'Everything is funny as long as it is happening to someone else',
-        start: getCurrentDay(1),
-        end: getCurrentDay(1),
-        bgcolor: 'orange'
-      },
-      {
-        id: 2,
-        title: 'Sisters Birthday',
-        details: 'Buy a nice present',
-        start: getCurrentDay(4),
-        end: getCurrentDay(4),
-        bgcolor: 'green',
-        icon: 'fas fa-birthday-cake'
-      },
-      {
-        id: 3,
-        title: 'Meeting',
-        details: 'Time to pitch my idea to the company',
-        start: getCurrentDay(10),
-        end: getCurrentDay(10),
-        time: '10:00',
-        duration: 120,
-        bgcolor: 'red',
-        icon: 'fas fa-handshake'
-      },
-      {
-        id: 4,
-        title: 'Lunch',
-        details: 'Company is paying!',
-        start: getCurrentDay(10),
-        end: getCurrentDay(10),
-        time: '11:30',
-        duration: 90,
-        bgcolor: 'teal',
-        icon: 'fas fa-hamburger'
-      },
-      {
-        id: 5,
-        title: 'Visit mom',
-        details: 'Always a nice chat with mom',
-        start: getCurrentDay(20),
-        end: getCurrentDay(20),
-        time: '17:00',
-        duration: 90,
-        bgcolor: 'grey',
-        icon: 'fas fa-car'
-      },
-      {
-        id: 6,
-        title: 'Conference',
-        details: 'Teaching Javascript 101',
-        start: getCurrentDay(22),
-        end: getCurrentDay(22),
-        time: '08:00',
-        duration: 540,
-        bgcolor: 'blue',
-        icon: 'fas fa-chalkboard-teacher'
-      },
-      {
-        id: 7,
-        title: 'Girlfriend',
-        details: 'Meet GF for dinner at Swanky Restaurant',
-        start: getCurrentDay(22),
-        end: getCurrentDay(22),
-        time: '19:00',
-        duration: 180,
-        bgcolor: 'teal',
-        icon: 'fas fa-utensils'
-      },
-      {
-        id: 8,
-        title: 'Rowing',
-        details: 'Stay in shape!',
-        start: getCurrentDay(27),
-        end: getCurrentDay(28),
-        bgcolor: 'purple',
-        icon: 'rowing'
-      },
-      {
-        id: 9,
-        title: 'Fishing',
-        details: 'Time for some weekend R&R',
-        start: getCurrentDay(22),
-        end: getCurrentDay(29),
-        bgcolor: 'purple',
-        icon: 'fas fa-fish'
-      },
-      {
-        id: 10,
-        title: 'Vacation',
-        details: 'Trails and hikes, going camping! Don\'t forget to bring bear spray!',
-        start: getCurrentDay(22),
-        end: getCurrentDay(29),
-        bgcolor: 'purple',
-        icon: 'fas fa-plane'
-      }
-    ])
+    async function eventoClicked(data) {
+      // console.log("eventoClicked", data.clickedEvent)
+      clickedEvent.value = data.clickedEvent.id
+      evento.id = data.clickedEvent.id
+    }
 
-
-    function agregarEvento() {
-      // Validación de datos del evento
-
-    };
-
+    async function eliminarEvento() {
+      accion.value = acciones.eliminar
+      await consultar(evento)
+    }
 
     return {
-      mixin,
-      evento,
-      splitterModel,
-      date,
-      events,
-      tiposEvento,
-      agregarEvento,
-      eventos,
-    }
+      evento, accion, listado,
+      tipos,
+      componentePadreCargado,
+      consultarEvento, eliminarEvento, eventoClicked,
+      editar, guardar, eliminar, reestablecer,
+      acciones,
+      storeCargando: useCargandoStore(),
+    };
   },
-
 })

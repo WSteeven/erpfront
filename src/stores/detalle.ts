@@ -19,7 +19,7 @@ export const useDetalleStore = defineStore('detalle', () => {
     const detalleReset = new DetalleProducto()
 
     const statusLoading = new StatusEssentialLoading()
-    const { notificarError, notificarAdvertencia } = useNotificaciones()
+    const { notificarError } = useNotificaciones()
 
     async function consultarDetalle(id: number) {
         statusLoading.activar()

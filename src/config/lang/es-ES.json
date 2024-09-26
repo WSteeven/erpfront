@@ -6,8 +6,11 @@
     "requiredIf": "Campo requerido",
     "maxLength": "ha exedido el número máximo de caracteres",
     "minLength": "número mínimo de caracteres insuficiente",
-    "minValue": "no puede ingresar un valor inferior al mínimo",
-    "maxValue": "no puede ingresar un valor superior al maximo",
-    "numeric": "Debe ser un número mayor a cero"
+    "minValue": "No puede ingresar un valor inferior al mínimo",
+    "maxValue": "No puede ingresar un valor superior al máximo",
+    "numeric": "Debe ser un número mayor a cero",
+    "integer": "Ingresa solo números sin decimales",
+    "email": "Ingrese un correo eléctronico válido",
+    "forEach": "Error en uno de los elementos de la colección."
   }
 }

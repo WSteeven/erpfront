@@ -7,8 +7,8 @@
     </div>
 
     <q-card class="rounded q-mb-md">
-      <q-card-section class="row">
-        <div class="col-12 q-mb-md">
+      <q-card-section class="row q-col-gutter-x-sm">
+        <div class="col-10 q-mb-md">
           <label class="q-mb-sm block"
             ><b>Paso 1: </b>Seleccione un empleado</label
           >
@@ -23,10 +23,10 @@
             use-input
             input-debounce="0"
             @filter="filtrarEmpleados"
-            @popup-show="ordenarEmpleados"
+            @popup-show="ordenarLista(empleados, 'apellidos')"
             @update:model-value="resetearFiltros()"
-            :option-label="(v) => v.apellidos + ' ' + v.nombres"
-            :option-value="(v) => v.id"
+            :option-label="v => v.apellidos + ' ' + v.nombres"
+            :option-value="v => v.id"
             emit-value
             map-options
           >
@@ -38,6 +38,125 @@
               </q-item>
             </template>
           </q-select>
+        </div>
+        <div class="col-2 q-mt-md q-pt-sm">
+          <q-checkbox
+            class="q-mt-sm q-pt-sm"
+            v-model="mostrarInactivos"
+            label="Inactivos"
+            outlined
+            @update:model-value="checkMostrarInactivos"
+            dense
+          ></q-checkbox>
+        </div>
+
+        <div v-if="empleadoSeleccionado" class="col-12 col-md-3">
+          <br />
+          <q-toggle
+            v-model="mostrarImprimirReporteMateriales"
+            label="Mostrar imprimir reporte materiales"
+            checked-icon="bi-bag-check"
+            icon="bi-bag"
+            color="positive"
+            dense
+          ></q-toggle>
+        </div>
+
+        <div v-if="mostrarImprimirReporteMateriales" class="col-12 col-md-3">
+          <label class="q-mb-sm block">Fecha de inicio</label>
+          <q-input
+            v-model="filtroReporteMateriales.fecha_inicio"
+            :error="!!v$.fecha_inicio.$errors.length"
+            @blur="v$.fecha_inicio.$touch"
+            outlined
+            dense
+          >
+            <template v-slot:append>
+              <q-icon name="event" class="cursor-pointer">
+                <q-popup-proxy
+                  cover
+                  transition-show="scale"
+                  transition-hide="scale"
+                >
+                  <q-date
+                    v-model="filtroReporteMateriales.fecha_inicio"
+                    :mask="maskFecha"
+                    today-btn
+                  >
+                    <div class="row items-center justify-end">
+                      <q-btn
+                        v-close-popup
+                        label="Cerrar"
+                        color="primary"
+                        flat
+                      />
+                    </div>
+                  </q-date>
+                </q-popup-proxy>
+              </q-icon>
+            </template>
+
+            <template v-slot:error>
+              <div v-for="error of v$.fecha_inicio.$errors" :key="error.$uid">
+                <div class="error-msg">{{ error.$message }}</div>
+              </div>
+            </template>
+          </q-input>
+        </div>
+
+        <div v-if="mostrarImprimirReporteMateriales" class="col-12 col-md-3">
+          <label class="q-mb-sm block">Fecha de fin</label>
+          <q-input
+            v-model="filtroReporteMateriales.fecha_fin"
+            :error="!!v$.fecha_fin.$errors.length"
+            @blur="v$.fecha_fin.$touch"
+            outlined
+            dense
+          >
+            <template v-slot:append>
+              <q-icon name="event" class="cursor-pointer">
+                <q-popup-proxy
+                  cover
+                  transition-show="scale"
+                  transition-hide="scale"
+                >
+                  <q-date
+                    v-model="filtroReporteMateriales.fecha_fin"
+                    :mask="maskFecha"
+                    today-btn
+                  >
+                    <div class="row items-center justify-end">
+                      <q-btn
+                        v-close-popup
+                        label="Cerrar"
+                        color="primary"
+                        flat
+                      />
+                    </div>
+                  </q-date>
+                </q-popup-proxy>
+              </q-icon>
+            </template>
+
+            <template v-slot:error>
+              <div v-for="error of v$.fecha_fin.$errors" :key="error.$uid">
+                <div class="error-msg">{{ error.$message }}</div>
+              </div>
+            </template>
+          </q-input>
+        </div>
+
+        <div v-if="mostrarImprimirReporteMateriales" class="col-12 col-md-3">
+          <label class="block q-mb-sm">&nbsp;</label>
+          <q-btn
+            color="primary"
+            no-caps
+            no-wrap
+            @click="descargarReporteMateriales()"
+          >
+            <q-icon name="bi-download" size="xs" class="q-mr-sm"></q-icon>
+            Imprimir reporte de materiales de stock
+          </q-btn>
         </div>
       </q-card-section>
     </q-card>
@@ -62,7 +181,12 @@
           label="Material para proyectos"
           icon="bi-diagram-2"
         />
-        <q-tab name="personal" label="Stock personal" icon="bi-person"> </q-tab>
+        <q-tab
+          :name="destinosTareas.personal"
+          label="Stock personal"
+          icon="bi-person"
+        >
+        </q-tab>
       </q-tabs>
 
       <q-tab-panels v-model="tab" animated>
@@ -83,10 +207,8 @@
                 options-dense
                 dense
                 outlined
-                :option-label="
-                  (item) => item.codigo_tarea + ' - ' + item.titulo
-                "
-                :option-value="(item) => item.id"
+                :option-label="item => item.codigo_tarea + ' - ' + item.titulo"
+                :option-value="item => item.id"
                 @update:model-value="seleccionarTarea()"
                 emit-value
                 map-options
@@ -128,8 +250,8 @@
                 options-dense
                 dense
                 outlined
-                :option-label="(item) => item.razon_social"
-                :option-value="(item) => item.cliente_id"
+                :option-label="item => item.razon_social"
+                :option-value="item => item.cliente_id"
                 emit-value
                 map-options
               >
@@ -177,8 +299,8 @@
                 options-dense
                 dense
                 outlined
-                :option-label="(item) => item.nombre"
-                :option-value="(item) => item.id"
+                :option-label="item => item.nombre"
+                :option-value="item => item.id"
                 @update:model-value="seleccionarProyecto()"
                 use-input
                 input-debounce="0"
@@ -235,8 +357,8 @@
                 options-dense
                 dense
                 outlined
-                :option-label="(item) => item.nombre"
-                :option-value="(item) => item.id"
+                :option-label="item => item.nombre"
+                :option-value="item => item.id"
                 use-input
                 input-debounce="0"
                 emit-value
@@ -266,8 +388,8 @@
                 options-dense
                 dense
                 outlined
-                :option-label="(item) => item.razon_social"
-                :option-value="(item) => item.cliente_id"
+                :option-label="item => item.razon_social"
+                :option-value="item => item.cliente_id"
                 emit-value
                 map-options
               >
@@ -314,7 +436,7 @@
           </div>
         </q-tab-panel>
 
-        <q-tab-panel name="personal">
+        <q-tab-panel :name="destinosTareas.personal">
           <div class="row justify-center q-gutter-sm q-mb-md">
             <div class="col-12">
               <label class="q-mb-sm block"
@@ -330,8 +452,8 @@
                 options-dense
                 dense
                 outlined
-                :option-label="(item) => item.razon_social"
-                :option-value="(item) => item.cliente_id"
+                :option-label="item => item.razon_social"
+                :option-value="item => item.cliente_id"
                 emit-value
                 map-options
               >
@@ -383,8 +505,9 @@
             <span>Devolver a bodega matriz</span>
           </q-btn>
 
+          <!-- se comentó el boton ya que nadie usa esta funcionalidad, el material de tarea de pasa al stock del tecnico al finalizar la tarea -->
           <!-- Boton transferir a stock personal -->
-          <q-btn
+          <!-- <q-btn
             v-if="mostrarBtnTransferirStockPersonal"
             class="bg-grey-4 text-primary"
             @click="
@@ -394,10 +517,10 @@
             unelevated
             rounded
             :to="{ name: 'devoluciones' }"
-          >
+            >
             <q-icon name="bi-box-seam" size="xs" class="q-pr-sm"></q-icon>
             <span>Transferir a stock personal</span>
-          </q-btn>
+          </q-btn> -->
 
           <!-- Boton transferir a otro técnico -->
           <!-- color="grey-4" -->
@@ -420,7 +543,11 @@
         <div class="col-12 q-px-md">
           <essential-table
             titulo="Listado de materiales para tarea"
-            :configuracionColumnas="configuracionColumnasMaterialEmpleadoTarea"
+            :configuracionColumnas="
+              store.can('puede.modificar_stock.materiales_empleados')
+                ? [...configuracionColumnasMaterialEmpleadoTarea, accionesTabla]
+                : configuracionColumnasMaterialEmpleadoTarea
+            "
             :datos="listadosAuxiliares.productos"
             :permitirConsultar="false"
             :permitirEliminar="false"
@@ -429,10 +556,17 @@
             :alto-fijo="false"
             :ajustar-celdas="true"
             :mostrar-exportar="true"
+            :accion1="btnCambiarClientePropietario"
+            :accion2="btnModificarStock"
           ></essential-table>
         </div>
       </div>
     </q-card>
+    <modal-entidad
+      :comportamiento="modales"
+      @guardado="data => guardado(data)"
+      :persistente="false"
+    ></modal-entidad>
   </q-page>
 </template>
 

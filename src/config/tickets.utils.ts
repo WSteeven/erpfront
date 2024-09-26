@@ -18,7 +18,7 @@ export const estadosTickets = {
   FINALIZADO_SIN_SOLUCION: 'FINALIZADO SIN SOLUCIÓN',
   FINALIZADO: 'FINALIZADO',
   FINALIZADO_SOLUCIONADO: 'FINALIZADO SOLUCIONADO',
-  // CALIFICADO: 'CALIFICADO',
+  ETIQUETADOS_A_MI: 'ETIQUETADOS_A_MI',
 }
 
 export const tabOptionsEstadosTickets: TabOption[] = [
@@ -40,5 +40,6 @@ export const tabOptionsEstadosTicketsAsignados: TabOption[] = [
   { label: 'Finalizado solucionado', value: estadosTickets.FINALIZADO_SOLUCIONADO },
   { label: 'Finalizado sin solución', value: estadosTickets.FINALIZADO_SIN_SOLUCION },
   { label: 'Rechazado', value: estadosTickets.RECHAZADO },
+  { label: 'Etiquetados a mi', value: estadosTickets.ETIQUETADOS_A_MI, icono: 'people' },
   // { label: 'Calificado', value: estadosTickets.CALIFICADO },
 ]

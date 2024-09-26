@@ -42,8 +42,16 @@ $border-color: #464646;
     backdrop-filter: blur(10px) !important;
   }
 
+  .bg-solid{
+    background-color: $bg-body;
+  }
+
   .bg-header-collapse {
     background-color: $bg-body;
+  }
+
+  .bg-border {
+    background-color: $text-color-transparency;
   }
 
   .tab-inactive {
@@ -75,14 +83,16 @@ $border-color: #464646;
   .tab-active {
     background-color: $dark-color;
     color: $text-color;
-    border-radius: 16px 4px 0 0;
+    border-radius: 16px 16px 0 0;
+    border: 1px solid rgba($text-color-transparency, .4);
     box-shadow: rgba(0, 0, 0, 0.12) 0px 5px 15px;
   }
 
   .tab-inactive {
     background-color: rgba($dark-color, 0.6);
     color: $text-color-transparency;
-    border-radius: 16px 4px 0 0;
+    border-radius: 16px 16px 0 0;
+    border: 1px solid rgba($text-color-transparency, .1);
     box-shadow: rgba(0, 0, 0, 0.12) 0px 5px 15px;
   }
 
@@ -97,8 +107,20 @@ $border-color: #464646;
     background-color: #000;
   }
 
+  .toggle-button-positive {
+    border: 1px solid $positive;
+    background-color: transparent;
+    background-color: rgba($dark-color, 0.8);
+    backdrop-filter: blur(10px);
+  }
+
   // Tabla
   .q-table__top,
+  thead tr:first-child th {
+    background-color: $dark-color;
+  }
+
+  .q-table__bottom,
   thead tr:first-child th {
     background-color: $dark-color;
   }
@@ -169,10 +191,10 @@ $border-color: #464646;
   .link-active {
     background: $primary; //rgba($bg-body, 1);
     // border-right: 3px solid $primary;
-    border-radius: 16px;
+    border-radius: 8px;
 
     i {
-      color: $primary;
+      color: white;
     }
 
     /* .q-item__label {
@@ -209,6 +231,17 @@ $border-color: #464646;
 
   .border-bottom {
     border-bottom: 1px solid $grey-8;
+  }
+
+  .border-white {
+    border: 1px solid $grey-8 !important;
+  }
+
+  .borde-header-tabla {
+    border-top: 1px solid $grey-8 !important;
+    border-left: 1px solid $grey-8 !important;
+    border-right: 1px solid $grey-8 !important;
+    border-radius: 16px 16px 0 0 !important;
   }
 
   // background

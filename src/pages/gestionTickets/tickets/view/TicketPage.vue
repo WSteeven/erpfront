@@ -15,6 +15,7 @@
     :accion4="btnCancelar"
     :accion5="btnCalificarSolicitante"
     subtitulo-pagina="Módulo de Tickets"
+    ajustar-celdas
   >
     <template #formulario>
       <div class="q-pa-md">
@@ -24,11 +25,12 @@
           header-class="text-bold bg-header-collapse"
           default-opened
         >
-          <q-separator></q-separator>
-          <div class="col-12 text-primary bg-background-header-grey q-px-md q-py-sm q-mb-md">
-            <q-icon name="bi-ticket-detailed"></q-icon>
+          <q-separator color="primary"></q-separator>
+          <div class="col-12 bg-blue-1 text-primary text-bold q-px-md q-py-sm">
+            <q-icon name="bi-ticket-detailed" class="q-mr-sm"></q-icon>
             Detalles
           </div>
+          <q-separator color="primary"></q-separator>
           <div class="row q-col-gutter-sm q-pa-md">
             <!-- Asunto -->
             <div class="col-12">
@@ -110,8 +112,8 @@
                 dense
                 outlined
                 :disable="disabled || departamentoDeshabilitado"
-                :option-label="(item) => item.nombre"
-                :option-value="(item) => item.id"
+                :option-label="item => item.nombre"
+                :option-value="item => item.id"
                 use-input
                 input-debounce="0"
                 emit-value
@@ -182,8 +184,8 @@
                 dense
                 outlined
                 :disable="disabled || responsableDeshabilitado"
-                :option-label="(item) => `${item.nombres} ${item.apellidos}`"
-                :option-value="(item) => item.id"
+                :option-label="item => `${item.nombres} ${item.apellidos}`"
+                :option-value="item => item.id"
                 use-input
                 input-debounce="0"
                 emit-value
@@ -285,8 +287,8 @@
                 dense
                 outlined
                 :disable="disabled"
-                :option-label="(item) => item.label"
-                :option-value="(item) => item.label"
+                :option-label="item => item.label"
+                :option-value="item => item.label"
                 use-input
                 input-debounce="0"
                 emit-value
@@ -414,8 +416,8 @@
                 dense
                 outlined
                 :disable="disabled"
-                :option-label="(item) => item.nombre"
-                :option-value="(item) => item.id"
+                :option-label="item => item.nombre"
+                :option-value="item => item.id"
                 use-input
                 input-debounce="0"
                 emit-value
@@ -464,8 +466,8 @@
                 dense
                 outlined
                 :disable="disabled"
-                :option-label="(item) => item.nombre"
-                :option-value="(item) => item.id"
+                :option-label="item => item.nombre"
+                :option-value="item => item.id"
                 use-input
                 input-debounce="0"
                 emit-value
@@ -493,11 +495,48 @@
             </div>
           </div>
 
-          <q-separator></q-separator>
-          <div class="col-12 text-primary bg-background-header-grey q-px-md q-py-sm q-mb-md">
-            <q-icon name="bi-archive"></q-icon>
+          <q-separator color="primary"></q-separator>
+          <div class="col-12 text-primary bg-blue-1 q-px-md q-py-sm text-bold">
+            <q-icon name="bi-people" class="q-mr-sm"></q-icon>
+            Añadir CC - Las personas especificadas aqui podrán agregar
+            comentarios al ticket
+          </div>
+          <q-separator color="primary"></q-separator>
+
+          <div class="row q-pa-md q-col-gutter-sm">
+            <div class="col-12">
+              <label class="q-mb-sm block">Cc</label>
+              <q-select
+                v-model="ticket.cc"
+                :options="empleadosOrigen"
+                @filter="filtrarEmpleadosOrigen"
+                transition-show="scale"
+                transition-hide="scale"
+                hint="Opcional"
+                options-dense
+                dense
+                outlined
+                :disable="disabled"
+                :option-label="item => `${item.nombres} ${item.apellidos}`"
+                :option-value="item => item.id"
+                use-input
+                input-debounce="0"
+                emit-value
+                map-options
+                use-chips
+                multiple
+              >
+              </q-select>
+            </div>
+          </div>
+
+          <q-separator color="primary"></q-separator>
+          <div class="col-12 text-primary bg-blue-1 q-px-md q-py-sm text-bold">
+            <q-icon name="bi-archive" class="q-mr-sm"></q-icon>
             Archivos
           </div>
+          <q-separator color="primary"></q-separator>
+
           <div class="row q-px-md q-col-gutter-sm">
             <div class="col-12 q-mb-md">
               <archivo-seguimiento
@@ -587,6 +626,7 @@
       </div>
     </template>
   </tab-layout-filter-tabs2>
+  
   <modales-entidad
     :comportamiento="modalesTicket"
     :mixin-modal="mixin"

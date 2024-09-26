@@ -23,7 +23,7 @@ export class Transferencia extends EntidadAuditable {
     this.usuario_envia=null
     this.usuario_recibe=null
     this.monto=null
-    this.motivo='DEVOLUCION'
+    this.motivo='TRANSFERENCIA ENTRE USUARIOS'
     this.observacion=null
     this.cuenta=null
     this.tarea=null

@@ -1,5 +1,10 @@
 import { Endpoint } from 'shared/http/domain/Endpoint'
 import { medico } from './endpoints/medico'
+import { tareas } from './endpoints/tareas'
+import { tickets } from './endpoints/tickets'
+import { recursosHumanos } from './endpoints/rrhh/recursosHumanos'
+import { activosFijos } from './endpoints/activosFijos'
+import { comprasProveedores } from './endpoints/comprasProveedores'
 
 export const apiConfig = {
   // URL_BASE: 'http://localhost:8000',
@@ -7,17 +12,23 @@ export const apiConfig = {
 }
 
 export const endpoints = {
+  validar_cedula: new Endpoint('validar-cedula'),
   // Autenticacion
   csrf_cookie: new Endpoint('api/csrf-cookie', false),
   usuarios: new Endpoint('usuarios'),
   configuracion: new Endpoint('configuracion'),
   auditorias: new Endpoint('auditorias'),
   login: new Endpoint('usuarios/login'),
+  login_externos: new Endpoint('usuarios-externos/login'),
+  // login_terceros: new Endpoint('login-social-network/'),
+  sesion_terceros: new Endpoint('auth-social'),
   logout: new Endpoint('usuarios/logout'),
+  logout_postulante: new Endpoint('usuarios/logout-postulante'),
   cambiarContrasena: new Endpoint('usuarios/cambiar-contrasena'),
   enviar_correo_recuperacion: new Endpoint('usuarios/recuperar-password'),
   recuperacion_cuenta: new Endpoint('usuarios/validar-token'),
   api_user: new Endpoint('user'),
+  api_user_postulante: new Endpoint('user-postulante'),
   reset_password: new Endpoint('usuarios/reset-password'),
   perfil_usuario: new Endpoint('user/profile-information', false),
   cambiar_contrasena: new Endpoint('user/password', false),
@@ -34,6 +45,7 @@ export const endpoints = {
   asignar_permisos_individual: new Endpoint('asignar-permisos-usuario'),
   crear_permiso: new Endpoint('crear-permiso'),
   //Archivos
+  actividades: new Endpoint('actividades'),
   archivos: new Endpoint('archivos'),
   // Ubicacion
   paises: new Endpoint('paises'),
@@ -41,7 +53,11 @@ export const endpoints = {
   cantones: new Endpoint('cantones'),
   parroquias: new Endpoint('parroquias'),
 
-  // Modulo de RR HH
+
+  /********************
+  * Modulo de  RR HH
+  *********************/
+  ...recursosHumanos,
   cargos: new Endpoint('cargos'),
 
   motivo_permiso_empleado: new Endpoint(
@@ -70,7 +86,7 @@ export const endpoints = {
   rol_pago_mes: new Endpoint('recursos-humanos/rol_pago_mes'),
   banco: new Endpoint('recursos-humanos/banco'),
   datos_empleado: new Endpoint('recursos-humanos/datos_empleado/'),
-  activos_fijos: new Endpoint('activos-fijos'),
+
   empleados: new Endpoint('empleados'),
   departamentos: new Endpoint('recursos-humanos/departamentos'),
   allroles: new Endpoint('roles'),
@@ -87,9 +103,11 @@ export const endpoints = {
   extension_covertura_salud_empleado: new Endpoint(
     'recursos-humanos/extension_covertura_salud_empleado'
   ),
-  extension_covertura_salud: new Endpoint(
-    'recursos-humanos/extension_covertura_salud'
+  extension_cobertura_salud: new Endpoint(
+    'recursos-humanos/extension_cobertura_salud'
   ),
+  archivo_rol_pago_mes: new Endpoint('recursos-humanos/archivo-rol-pago-mes'),
+
 
   porcentaje_iess: new Endpoint('recursos-humanos/porcentaje_iess'),
   porcentaje_anticipo: new Endpoint('recursos-humanos/porcentaje_anticipo'),
@@ -106,6 +124,7 @@ export const endpoints = {
     'recursos-humanos/rechazar_prestamo_empresarial'
   ),
   vacacion: new Endpoint('recursos-humanos/vacacion'),
+
   archivo_permiso_empleado: new Endpoint(
     'recursos-humanos/archivo_permiso_empleado'
   ),
@@ -125,7 +144,7 @@ export const endpoints = {
 
   descuentos_permiso: new Endpoint('recursos-humanos/descuentos_permiso'),
   prestamo_hipotecario: new Endpoint('recursos-humanos/prestamo_hipotecario'),
-  prestamo_quirorafario: new Endpoint('recursos-humanos/prestamo_quirorafario'),
+  prestamos_quirografarios: new Endpoint('recursos-humanos/prestamos_quirografarios'),
   permisos_sin_recuperar: new Endpoint(
     'recursos-humanos/permisos_sin_recuperar'
   ),
@@ -180,16 +199,42 @@ export const endpoints = {
   finalizar_asignacion_alimentacion: new Endpoint('recursos-humanos/finalizar-asignacion-alimentacion'),
 
 
-  //Modulo de Vehiculos
+
+
+  /******************************
+   * Modulo de Vehiculos
+   ******************************/
   combustibles: new Endpoint('vehiculos/combustibles'),
+  garajes: new Endpoint('vehiculos/garajes'),
   vehiculos: new Endpoint('vehiculos/vehiculos'),
+  tipos_vehiculos: new Endpoint('vehiculos/tipos-vehiculos'),
   bitacoras_vehiculos: new Endpoint('vehiculos/bitacoras-vehiculos'),
+  ultima_bitacora: new Endpoint('vehiculos/ultima-bitacora'),
+  registros_incidentes: new Endpoint('vehiculos/registros-incidentes'),
+  historial_vehiculos: new Endpoint('vehiculos/historial'),
   empleados_choferes: new Endpoint('vehiculos/empleados-choferes'),
+  conductores: new Endpoint('vehiculos/conductores'),
+  matriculas: new Endpoint('vehiculos/matriculas'),
+  ordenes_reparaciones: new Endpoint('vehiculos/ordenes-reparaciones'),
+  asignaciones_vehiculos: new Endpoint('vehiculos/asignaciones-vehiculos'),
+  transferencias_vehiculos: new Endpoint('vehiculos/transferencias-vehiculos'),
+  multas_conductores: new Endpoint('vehiculos/multas'),
+  seguros: new Endpoint('vehiculos/seguros'),
+  servicios: new Endpoint('vehiculos/servicios'),
+  tanqueos: new Endpoint('vehiculos/tanqueos'),
+  planes_mantenimientos: new Endpoint('vehiculos/planes-mantenimientos'),
+  mantenimientos_vehiculos: new Endpoint('vehiculos/mantenimientos-vehiculos'),
+  reporte_conductor_licencia: new Endpoint('vehiculos/reporte-conductor-licencia'),
+  reporte_combustibles: new Endpoint('vehiculos/reporte-combustibles'),
+  reporte_seguros_vehiculos: new Endpoint('vehiculos/reporte-seguros-vehiculos'),
 
   //Modulo de compras y proveedores
+  ...comprasProveedores,
   dashboard_compras: new Endpoint('compras/dashboard'),
   empleados_ordenes: new Endpoint('compras/empleados-ordenes'),
   proveedores_ordenes: new Endpoint('compras/proveedores-ordenes'),
+  clientes_prefacturas: new Endpoint('compras/clientes-prefacturas'),
+  dashboard_ventas_empresa: new Endpoint('compras/dashboard-ventas'),
   calificacion_proveedor: new Endpoint('compras/calificaciones-proveedores'),
   categorias_ofertas: new Endpoint('compras/categorias-ofertas'),
   contactos_proveedores: new Endpoint('compras/contactos-proveedores'),
@@ -227,6 +272,7 @@ export const endpoints = {
   codigos_clientes: new Endpoint('codigos-clientes'),
   detalles_materiales: new Endpoint('detalles-materiales'),
   detalles: new Endpoint('detalles'),
+  permisos_armas: new Endpoint('permisos-armas'),
   devoluciones: new Endpoint('devoluciones'),
   detalle_producto_transaccion: new Endpoint(
     'detalles-productos-transacciones'
@@ -256,6 +302,7 @@ export const endpoints = {
   transacciones: new Endpoint('transacciones'),
   transacciones_egresos: new Endpoint('transacciones-egresos'),
   transacciones_ingresos: new Endpoint('transacciones-ingresos'),
+  modificar_item_egreso: new Endpoint('modificar-item-egreso'),
   gestionar_egresos: new Endpoint('gestionar-egresos'),
   transferencias: new Endpoint('transferencias'),
   traspasos: new Endpoint('traspasos'),
@@ -272,69 +319,23 @@ export const endpoints = {
 
   /********************
    * Modulo de tareas
-   *********************/
-  dashboard_tareas: new Endpoint('tareas/dashboard'),
-  etapas: new Endpoint('tareas/etapas'),
-  proyectos: new Endpoint('tareas/proyectos'),
-  tareas: new Endpoint('tareas/tareas'),
-  subtareas: new Endpoint('tareas/subtareas'),
-  actualizar_fechas_reagendar: new Endpoint(
-    'tareas/subtareas/actualizar-fechas-reagendar'
-  ),
-  actualizar_fechas_reagendar_tarea: new Endpoint(
-    'tareas/tareas/actualizar-fechas-reagendar'
-  ),
-  centros_costos: new Endpoint('tareas/centros-costos'),
-  subcentros_costos: new Endpoint('tareas/subcentros-costos'),
-  trabajo_asignado: new Endpoint('tareas/trabajo-asignado'),
-  pausas_subtareas: new Endpoint('tareas/subtareas/obtener-pausas'),
-  suspendidos_subtareas: new Endpoint('tareas/subtareas/obtener-suspendidos'),
-  tipos_trabajos: new Endpoint('tareas/tipos-trabajos'),
-  causas_intervenciones: new Endpoint('tareas/causas-intervenciones'),
-  rutas_tareas: new Endpoint('tareas/rutas-tareas'),
-  motivos_pausas: new Endpoint('tareas/motivos-pausas'),
-  motivos_pendientes: new Endpoint('tareas/motivos-pendientes'),
-  motivos_suspendidos: new Endpoint('tareas/motivos-suspendidos'),
-  control_asistencias: new Endpoint('tareas/control-asistencias'),
-  control_cambios: new Endpoint('tareas/control-cambios'),
-  tareas_empleado: new Endpoint('tareas/tareas-empleado'),
-  tipos_elementos: new Endpoint('tareas/tipos-elementos'),
-  clientes_finales: new Endpoint('tareas/clientes-finales'),
-  tendidos: new Endpoint('tareas/tendidos'),
-  designar_lider_grupo: new Endpoint('tareas/designar-lider-grupo'),
-  designar_secretario_grupo: new Endpoint('tareas/designar-secretario-grupo'),
-  archivos_subtareas: new Endpoint('tareas/archivos-subtareas'),
-  archivos_seguimientos: new Endpoint('tareas/archivos-seguimientos'),
-  materiales_empleado_tarea: new Endpoint('tareas/materiales-empleado-tarea'),
-  materiales_empleado: new Endpoint('tareas/materiales-empleado'),
-  materiales_empleado_consolidado: new Endpoint('tareas/materiales-empleado-consolidado'),
-  registros_tendidos: new Endpoint('tareas/registros-tendidos'),
-  reportes_modulo_tareas: new Endpoint('tareas/reportes'),
-  resumen_tendidos: new Endpoint('tareas/resumen-tendidos'),
-  seguimientos: new Endpoint('tareas/seguimientos'),
-  movilizacion_subtarea: new Endpoint('tareas/movilizacion-subtarea'),
-  movilizacion_subtarea_destino_actual: new Endpoint(
-    'tareas/movilizacion-subtarea-destino-actual'
-  ),
-  clientes: new Endpoint('clientes'),
-  grupos: new Endpoint('grupos'),
-  exportExcelSeguimiento: new Endpoint('tareas/export-seguimiento'),
-  verificar_todas_subtareas_finalizadas: new Endpoint('tareas/verificar-todas-subtareas-finalizadas'),
-  verificar_material_tarea_devuelto: new Endpoint('tareas/verificar-material-tarea-devuelto'),
-  transferir_mis_tareas_activas: new Endpoint('tareas/transferir-mis-tareas-activas'),
-  obtener_suma_material_tarea_usado: new Endpoint('tareas/obtener-suma-material-tarea-usado'),
-  obtener_historial_material_tarea_usado_por_fecha: new Endpoint('tareas/obtener-historial-material-tarea-usado-por-fecha'),
-  obtener_historial_material_stock_usado_por_fecha: new Endpoint('tareas/obtener-historial-material-stock-usado-por-fecha'),
-  actualizar_cantidad_utilizada_historial: new Endpoint('tareas/actualizar-cantidad-utilizada-historial'),
-  actualizar_cantidad_utilizada_historial_stock: new Endpoint('tareas/actualizar-cantidad-utilizada-historial-stock'),
-  actualizar_cantidad_utilizada_tarea: new Endpoint('tareas/actualizar-cantidad-utilizada-tarea'),
-  actualizar_cantidad_utilizada_stock: new Endpoint('tareas/actualizar-cantidad-utilizada-stock'),
-  actividades_realizadas_seguimientos_subtareas: new Endpoint('tareas/actividades-realizadas-seguimientos-subtareas'),
-  fechas_historial_materiales_usados: new Endpoint('tareas/obtener-fechas-historial-materiales-usados'),
-  fechas_historial_materiales_stock_usados: new Endpoint('tareas/obtener-fechas-historial-materiales-stock-usados'),
-  obtener_clientes_materiales_empleado: new Endpoint('tareas/obtener-clientes-materiales-empleado'),
-  obtener_clientes_materiales_tarea: new Endpoint('tareas/obtener-clientes-materiales-tarea'),
-  transferencias_productos_empleados: new Endpoint('tareas/transferencias-productos-empleados'),
+   ********************/
+  ...tareas,
+
+  /***************
+  * Modulo medico
+  ****************/
+  ...medico,
+
+  /********************
+  * Modulo de tickets
+  *********************/
+  ...tickets,
+
+  /**************************
+  * Modulo de activos fijos
+  ***************************/
+  ...activosFijos,
 
   // Modulo Fondos Rotativos
   empleados_saldos_fr: new Endpoint('fondos-rotativos/empleados-saldos-fr'),
@@ -410,37 +411,6 @@ export const endpoints = {
   acreditacion_saldo_semana: new Endpoint('fondos-rotativos/acreditacion-saldo-semana/'),
   reporte_acreditacion_semanal: new Endpoint('fondos-rotativos/reporte-acreditacion-semanal/'),
 
-
-
-  /********************
-   * Modulo de tickets
-   *********************/
-  dashboard_tickets: new Endpoint('tickets/dashboard'),
-  tickets: new Endpoint('tickets/tickets'),
-  tipos_tickets: new Endpoint('tickets/tipos-tickets'),
-  categorias_tipos_tickets: new Endpoint('tickets/categorias-tipos-tickets'),
-  archivos_tickets: new Endpoint('tickets/archivos-tickets'),
-  archivos_seguimientos_tickets: new Endpoint(
-    'tickets/archivos-seguimientos-tickets'
-  ),
-  motivos_pausas_tickets: new Endpoint('tickets/motivos-pausas-tickets'),
-  motivos_cancelados_tickets: new Endpoint(
-    'tickets/motivos-cancelados-tickets'
-  ),
-  cambiar_responsable_ticket: new Endpoint(
-    'tickets/tickets/cambiar-responsable'
-  ),
-  actividades_realizadas_seguimientos_tickets: new Endpoint(
-    'tickets/actividades-realizadas-seguimientos-tickets'
-  ),
-  pausas_tickets: new Endpoint('tickets/tickets/obtener-pausas'),
-  rechazos_tickets: new Endpoint('tickets/tickets/obtener-rechazados'),
-  linea_tiempo_tickets: new Endpoint('tickets/linea-tiempo'),
-
-  /****************
-   * Modulo medico
-   ****************/
-  ...medico,
   /********************
    * Modulo de Ventas de Claro
    *********************/
@@ -472,7 +442,12 @@ export const endpoints = {
   novedades_ventas: new Endpoint('ventas-claro/novedades-ventas'),
 
   //intranet
+//Modulo de Intranet
+  noticias: new Endpoint('intranet/noticias'),
   eventos: new Endpoint('intranet/eventos'),
+  etiquetas: new Endpoint('intranet/etiquetas'),
+  categorias_noticias: new Endpoint('intranet/categorias'),
+  tipos_eventos: new Endpoint('intranet/tipos-eventos'),
 
 
 

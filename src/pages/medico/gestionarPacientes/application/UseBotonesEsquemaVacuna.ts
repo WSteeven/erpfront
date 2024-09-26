@@ -1,9 +1,7 @@
 // Dependencias
 import { CustomActionTable } from 'components/tables/domain/CustomActionTable'
-import { useNotificaciones } from 'shared/notificaciones'
 import { useMedicoStore } from 'stores/medico'
 import { acciones } from 'config/utils'
-import { Ref, ref } from 'vue'
 
 // Logica y controladores
 import { ComportamientoModalesGestionPaciente } from './ComportamientoModalesGestionPaciente'
@@ -18,16 +16,16 @@ export function useBotonesEsquemaVacuna(modales: ComportamientoModalesGestionPac
   /**************
    * Referencias
    **************/
-  const vacunasRealizadas: Ref<EsquemaVacuna[]> = ref([])
-  const { notificarAdvertencia } = useNotificaciones()
+  // const vacunasRealizadas: Ref<EsquemaVacuna[]> = ref([])
+  // const { notificarAdvertencia } = useNotificaciones()
 
   /*********
    * Header
    *********/
   const btnAgregarVacunaAplicada: CustomActionTable<EsquemaVacuna> = {
     titulo: 'Agregar vacuna aplicada',
-    icono: 'bi-plus',
-    color: 'blue-grey',
+    icono: 'bi-plus-circle',
+    color: 'positive',
     accion: async () => {
       medicoStore.accion = acciones.nuevo
       medicoStore.esquemaVacuna = undefined
@@ -40,12 +38,13 @@ export function useBotonesEsquemaVacuna(modales: ComportamientoModalesGestionPac
    * Body
    *******/
   const btnEditarVacunaAplicada: CustomActionTable<EsquemaVacuna> = {
-    titulo: 'Editar vacuna aplicada',
-    icono: 'bi-pencil-square',
-    color: 'blue-grey',
+    titulo: 'Consultar dosis aplicadas',
+    icono: 'bi-table',
+    color: 'primary',
     accion: ({ entidad }) => {
-      medicoStore.accion = acciones.editar
-      medicoStore.esquemaVacuna = entidad
+      medicoStore.accion = acciones.consultar
+      // medicoStore.esquemaVacuna = entidad
+      medicoStore.idTipoVacuna = entidad.tipo_vacuna_id
       modales.abrirModalEntidad('EsquemaVacunacionPage')
     }
   }

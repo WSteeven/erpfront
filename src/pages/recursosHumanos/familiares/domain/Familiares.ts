@@ -1,9 +1,9 @@
-import { EntidadAuditable } from "shared/entidad/domain/entidadAuditable";
+import { EntidadAuditable } from 'shared/entidad/domain/entidadAuditable';
 
 export class Familiares extends EntidadAuditable {
   id: number | null
-  empleado:number | null
-  empleado_info: string |null
+  empleado: number | null
+  empleado_info: string | null
   identificacion: string | null
   parentezco: string | null
   nombres: string | null

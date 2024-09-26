@@ -1,5 +1,9 @@
 <template>
-  <tab-layout :mixin="mixin" :configuracionColumnas="configuracionColumnas">
+  <tab-layout
+    :mixin="mixin"
+    :configuracionColumnas="configuracionColumnas"
+    ajustarCeldas
+  >
     <template #formulario>
       <q-form @submit.prevent>
         <div class="row q-col-gutter-sm q-mb-md">
@@ -31,13 +35,18 @@
               map-options
             >
               <template v-slot:error>
-                <div v-for="error of v$.usuario_recibe.$errors" :key="error.$uid">
+                <div
+                  v-for="error of v$.usuario_recibe.$errors"
+                  :key="error.$uid"
+                >
                   <div class="error-msg">{{ error.$message }}</div>
                 </div>
               </template>
               <template v-slot:no-option>
                 <q-item>
-                  <q-item-section class="text-grey"> No hay resultados </q-item-section>
+                  <q-item-section class="text-grey">
+                    No hay resultados
+                  </q-item-section>
                 </q-item>
               </template>
             </q-select>
@@ -122,7 +131,9 @@
               </template>
               <template v-slot:no-option>
                 <q-item>
-                  <q-item-section class="text-grey"> No hay resultados </q-item-section>
+                  <q-item-section class="text-grey">
+                    No hay resultados
+                  </q-item-section>
                 </q-item>
               </template>
             </q-select>
@@ -132,10 +143,16 @@
             <label class="q-mb-sm block">Comprobante </label>
             <selector-imagen
               :imagen="transferencia.comprobante"
-              @blur="v$.comprobante.$touch"
+              :error="!!v$.comprobante.$errors.length"
               @update:modelValue="(data) => (transferencia.comprobante = data)"
             >
+              <template #error>
+                <div v-for="error of v$.comprobante.$errors" :key="error.$uid">
+                  <div class="error-msg">{{ error.$message }}</div>
+                </div>
+              </template>
             </selector-imagen>
+
           </div>
           <!--Es devolucion-->
           <div class="col-12 col-md-3 q-mb-xl">

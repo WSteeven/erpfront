@@ -6,12 +6,13 @@
     :full-height="fullHeight"
     :persistent="persistente"
     :maximized="maximized"
+    @hide="emit('cerrado')"
   >
     <q-card class="bg-transparent no-border" flat>
       <!-- <q-linear-progress :value="1" color="grey-4" /> -->
       <q-toolbar class="bg-body border-bottoffm superior-fixed" rounded>
         <q-avatar square>
-          <img src="~assets/logo.png" />
+          <img :src="!$q.dark.isActive ? logoClaro : logoOscuro" />
         </q-avatar>
 
         <q-toolbar-title class="text-primary text-subtitle1"
@@ -45,21 +46,25 @@
           :is="componente"
           :mixin-modal="mixinModal"
           :accion="accion"
+          :mostrarListado="mostrarListado"
+          :datos="propsData"
           @cerrar-modal="
             (confirmarCerrar) => cerrarModalEntidad(confirmarCerrar)
-          "
+            "
           @guardado="(data) => emit('guardado', data)"
           @modificado="(data) => emit('modificado', data)"
-        ></component>
-        <!--  @seleccionar="emit('seleccionar')" -->
+          ></component>
+          <!--  @seleccionar="emit('seleccionar')" -->
 
         <component
           v-else
           :is="componente"
           :accion="accion"
+          :mostrarListado="mostrarListado"
+          :datos="propsData"
           @cerrar-modal="
             (confirmarCerrar) => cerrarModalEntidad(confirmarCerrar)
-          "
+            "
           @guardado="(data) => emit('guardado', data)"
           @modificado="(data) => emit('modificado', data)"
         ></component>

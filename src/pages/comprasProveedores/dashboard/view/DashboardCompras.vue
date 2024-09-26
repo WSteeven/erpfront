@@ -42,7 +42,7 @@
             </q-select>
           </div>
 
-          <div class="col-12 col-md-3">
+          <div class="col-12 col-md-3" v-if="!(dashboard.todos||dashboard.tipo==VALORES)">
             <label class="q-mb-sm block">Seleccione un empleado</label>
             <q-select
               v-model="dashboard.empleado"
@@ -80,6 +80,20 @@
             </q-select>
           </div>
 
+          <!-- Es para el cliente -->
+          <div class="col-12 col-md-3 q-mb-xl" v-if="dashboard.tipo!==VALORES">
+            <q-checkbox
+              class="q-mt-lg q-pt-md"
+              v-model="dashboard.todos"
+              label="Todos los empleados"
+              @update:model-value="
+                (val) => (val ? (dashboard.empleado = null) : '')
+              "
+              outlined
+              dense
+            ></q-checkbox>
+          </div>
+
           <!-- Tiempos -->
           <div class="col-12 col-md-3">
             <label class="q-mb-sm block">Fecha de inicio</label>
@@ -99,7 +113,7 @@
                   >
                     <q-date
                       v-model="dashboard.fecha_inicio"
-                      mask="DD-MM-YYYY"
+                      :mask="maskFecha"
                       @update:model-value="consultar()"
                       today-btn
                     >
@@ -142,7 +156,7 @@
                   >
                     <q-date
                       v-model="dashboard.fecha_fin"
-                      mask="DD-MM-YYYY"
+                      :mask="maskFecha"
                       today-btn
                       @update:model-value="consultar()"
                     >
@@ -190,6 +204,19 @@
               emit-value
               map-options
             >
+              <template v-slot:option="scope">
+                <q-item v-bind="scope.itemProps">
+                  <q-item-section>
+                    <q-item-label>{{ scope.opt.razon_social }}</q-item-label>
+                    <q-item-label caption
+                      >{{ scope.opt.nombre_comercial }} - Sucursal:
+                      {{
+                        scope.opt.sucursal || scope.opt.direccion
+                      }}</q-item-label
+                    >
+                  </q-item-section>
+                </q-item>
+              </template>
               <template v-slot:no-option>
                 <q-item>
                   <q-item-section class="text-grey">
@@ -205,6 +232,7 @@
               </template>
             </q-select>
           </div>
+
         </div>
       </q-card-section>
     </q-card>
@@ -506,6 +534,164 @@
     <q-card
       class="q-mb-md rounded no-border custom-shadow"
       v-if="dashboard.tipo == 'PROVEEDOR'"
+    >
+      <div
+        class="row text-bold text-primary q-pa-md rounded items-center q-mb-md"
+      >
+        Gráficos estadísticos de Órdenes de Compras por Proveedor
+      </div>
+      <q-tab-panels
+        v-model="tabs"
+        animated
+        transition-prev="scale"
+        transition-next="scale"
+        keep-alive
+        ><!-- Graficos -->
+        <q-tab-panel :name="opcionesGrafico.grafico">
+          <!-- Ver una columna o dos columnas -->
+          <div class="q-mb-xl q-gutter-y-md column items-center">
+            <q-btn-group push>
+              <q-btn
+                push
+                label="Una columna"
+                icon="bi-list"
+                no-caps
+                @click="() => (modoUnaColumna = true)"
+              />
+              <q-btn
+                push
+                label="Dos columnas"
+                icon="bi-grid"
+                no-caps
+                @click="() => (modoUnaColumna = false)"
+              />
+            </q-btn-group>
+          </div>
+          <!-- Graficos generados automaticamente -->
+          <div
+            v-if="mostrarTitulosSeccion"
+            class="q-col-gutter-y-xl q-col-gutter-x-xs q-mb-xl"
+            :class="{ row: !modoUnaColumna, column: modoUnaColumna }"
+          >
+            <div
+              class="col-12 col-md-6 text-center"
+              v-for="grafico in graficos"
+              :key="grafico.id"
+            >
+              <div class="text-subtitle2 q-mb-lg">
+                {{ grafico.encabezado }}
+              </div>
+              <div>
+                <grafico-generico
+                  v-if="grafico"
+                  :data="grafico"
+                  :options="optionsPie"
+                  @click="(data) => clickGrafico(data, grafico.identificador)"
+                />
+              </div>
+            </div>
+          </div>
+        </q-tab-panel>
+        <!-- Tabla con los registros -->
+        <q-tab-panel :name="opcionesGrafico.listado">
+          <q-btn
+            color="primary"
+            @click="tabs = opcionesGrafico.grafico"
+            glossy
+            no-caps
+            rounded
+            unelevated
+            class="q-mx-auto block"
+          >
+            <q-icon name="bi-arrow-left"></q-icon>
+            Regresar al gráfico</q-btn
+          >
+
+          <div class="row q-col-gutter-sm q-py-md q-mb-lg">
+            <div class="col-12">
+              <essential-table
+                v-if="ordenesPorEstado.length"
+                :titulo="'Ordenes de Compra ' + labelTabla"
+                :configuracionColumnas="[
+                  ...configuracionColumnas,
+                  accionesTabla,
+                ]"
+                :datos="ordenesPorEstado"
+                :permitirConsultar="false"
+                :permitirEliminar="false"
+                :permitirEditar="false"
+                :mostrarBotones="false"
+                :alto-fijo="false"
+                :ajustarCeldas="true"
+                :accion1="btnVer"
+                :accion2="btnVerNovedades"
+              ></essential-table>
+            </div>
+          </div> </q-tab-panel
+      ></q-tab-panels>
+    </q-card>
+    <!-- VALORES -->
+    <q-card
+      class="q-mb-md rounded no-border custom-shadow"
+      v-if="dashboard.tipo == VALORES"
+    >
+      <div
+        class="row text-bold text-primary q-pa-md rounded items-center q-mb-md"
+      >
+        Información de valores de ordenes de compras por Proveedor
+        
+      </div>
+      <q-card-section>
+        <div class="row q-col-gutter-sm q-mb-lg">
+          <div class="col-12 col-md-12 q-mb-lg">
+            <div class="row q-col-gutter-xs">
+              <div
+                v-if="ordenes?.length >= 0"
+                :class="ordenes?.length > 0 ? 'col-12' : 'col-12'"
+              >
+                <q-card
+                  class="rounded-card text-white no-border q-pa-md text-center full-height cursor-pointer bg-primary"
+                >
+                  <div class="text-h3 q-mb-md">
+                    {{ ordenes?.length }}
+                  </div>
+                  <div class="text-bold">
+                    Cantidad de ordenes de compras
+                  </div>
+                </q-card>
+              </div>
+              <div v-if="cantOrdenesRevisadas >= 0" class="col-6 col-md-4">
+                <q-card class="rounded-card q-pa-md text-center full-height">
+                  <div class="text-h3 text-primary q-mb-md">
+                    {{ cantOrdenesRevisadas }}
+                  </div>
+                  <div>Cantidad de ordenes revisadas</div>
+                </q-card>
+              </div>
+              <div v-if="cantOrdenesRealizadas >= 0" class="col-6 col-md-4">
+                <q-card class="rounded-card q-pa-md text-center full-height">
+                  <div class="text-h3 text-primary q-mb-md">
+                    {{ cantOrdenesRealizadas }}
+                  </div>
+                  <div>Cantidad de ordenes realizadas</div>
+                </q-card>
+              </div>
+              <div v-if="cantOrdenesPagadas >= 0" class="col-6 col-md-4">
+                <q-card class="rounded-card q-pa-md text-center full-height">
+                  <div class="text-h3 text-primary q-mb-md">
+                    {{ cantOrdenesPagadas }}
+                  </div>
+                  <div>Cantidad de ordenes pagadas</div>
+                </q-card>
+              </div>
+            </div>
+          </div>
+        </div>
+      </q-card-section>
+    </q-card>
+    <q-card
+      class="q-mb-md rounded no-border custom-shadow"
+      v-if="dashboard.tipo == VALORES"
     >
       <div
         class="row text-bold text-primary q-pa-md rounded items-center q-mb-md"

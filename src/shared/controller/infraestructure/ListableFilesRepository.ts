@@ -1,10 +1,5 @@
-import { ParamsType } from 'config/types'
 import { Endpoint } from 'shared/http/domain/Endpoint'
 import { ApiError } from '../../error/domain/ApiError'
-import {
-  HttpResponseGet,
-  HttpResponseList,
-} from 'shared/http/domain/HttpResponse'
 
 import { AxiosHttpRepository } from '../../http/infraestructure/AxiosHttpRepository'
 import { AxiosError, AxiosResponse } from 'axios'
@@ -17,13 +12,14 @@ export class ListableFileRepository<T> {
     this.endpoint = endpoint
   }
 
-  async listarArchivos<C = T>(id: number, params?: Record<string, any>) {
+  async listarArchivos<C = T>(id: number, params?: any) {//Record<string, any>) {
     let ruta
     try {
       if (params) {
-        ruta = this.httpRepository.getEndpoint(this.endpoint) + '/files/' +id+'/'+ this.httpRepository.mapearArgumentos(params)
+        // ruta = this.httpRepository.getEndpoint(this.endpoint) + '/files/' + id + '?tipo=justificativo'
+        ruta = this.httpRepository.getEndpoint(this.endpoint) + '/files/' + id + this.httpRepository.mapearArgumentos(params)
       } else {
-        ruta = this.httpRepository.getEndpoint(this.endpoint) + '/files/'+id
+        ruta = this.httpRepository.getEndpoint(this.endpoint) + '/files/' + id
       }
       const response: AxiosResponse = await this.httpRepository.get(ruta)
 

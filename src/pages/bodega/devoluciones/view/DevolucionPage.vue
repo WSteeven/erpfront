@@ -56,6 +56,7 @@
               dense
             ></q-toggle>
           </div>
+          <!-- {{devolucion}} -->
           <!-- Solicitante -->
           <div
             v-if="
@@ -96,6 +97,17 @@
               </template>
             </q-select>
           </div>
+          <div class="col-md-3 q-mt-md q-pt-sm">
+          <q-checkbox
+            class="q-mt-sm q-pt-sm"
+            v-model="mostrarInactivos"
+            label="Inactivos"
+            :disable="disabled"
+            outlined
+            @update:model-value="checkMostrarInactivos"
+            dense
+          ></q-checkbox>
+        </div>
 
           <div
             class="col-12 col-md-3"
@@ -226,6 +238,7 @@
               v-model="devolucion.es_tarea"
               label="¿Es material de tarea?"
               :disable="disabled || soloLectura"
+              @update:model-value="checkEsTarea"
               outlined
               dense
             ></q-checkbox>
@@ -289,7 +302,7 @@
                 soloLectura ||
                 (accion == acciones.editar && devolucion.misma_condicion)
               "
-              
+
               dense
             ></q-checkbox>
           </div>
@@ -351,7 +364,7 @@
             <label class="q-mb-sm block">Autorizacion</label>
             <q-select
               v-model="devolucion.autorizacion"
-              :options="opciones_autorizaciones"
+              :options="autorizaciones"
               transition-show="jum-up"
               transition-hide="jump-down"
               options-dense
@@ -414,7 +427,26 @@
               </template>
             </q-input>
           </div>
-
+          <div v-if="devolucion.estado_bodega" class="col-12 col-md-3 q-mb-md">
+            <label class="q-mb-sm block">Estado</label>
+            <q-input
+              autogrow
+              v-model="devolucion.estado_bodega"
+              disable
+              outlined
+              dense
+            />
+          </div>
+          <div v-if="devolucion.causa_anulacion" class="col-12 col-md-3 q-mb-md">
+            <label class="q-mb-sm block">Causa anulación</label>
+            <q-input
+              autogrow
+              v-model="devolucion.causa_anulacion"
+              disable
+              outlined
+              dense
+            />
+          </div>
           <!-- Manejo de archivos -->
           <div class="col-12 q-mb-md">
             <gestor-archivos

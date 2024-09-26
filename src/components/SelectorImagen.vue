@@ -9,6 +9,7 @@
     @clear="limpiar()"
     :disable="disable"
     accept=".png, .jpg, .jpeg"
+    :label="placeholder"
     :error="error"
     :hint="hint"
   >
@@ -17,29 +18,48 @@
     </template>
 
     <template v-slot:error>
-      <slot name="error"></slot>
+      <slot name="error" v-if="slotUsado"></slot>
+      <slot name="error" v-else>
+        <div>
+          <div class="error-msg">Imagen requerida</div>
+        </div></slot
+      >
     </template>
   </q-file>
   <!-- datos de la imagen  -->
   <!-- <div v-if="fileSize !== null && !isNaN(fileSize)">
     Tamaño de la imagen: {{ (fileSize / 1024).toFixed(2) }} KB
   </div> -->
-  <q-img
-    v-show="imagenCodificada"
-    :src="imagenCodificada"
-    width="100%"
-    :height="alto"
-    fit="contain"
-  >
-  </q-img>
+  <div class="bg-desenfoque">
+    <q-img
+      v-show="imagenCodificada"
+      :src="imagenCodificada"
+      width="100%"
+      :height="alto"
+      fit="contain"
+      class="border-white"
+    >
+    </q-img>
+
+    <small v-if="imagenCodificada" class="block text-center">
+      <q-btn
+        @click="opened = true"
+        label="Ver en pantalla completa"
+        icon="bi-eye"
+        class="text-grey-8 full-width bg-white border-white"
+        no-caps
+        no-wrap
+        square
+        unelevated
+      />
+    </small>
+  </div>
 
   <q-dialog v-model="opened" maximized>
     <q-card class="bg-black rounded-card no-border" flat>
       <q-btn
         round
-        push
         color="negative"
-        glossy
         icon="bi-x"
         @click="() => (opened = false)"
         class="closeButton"
@@ -66,41 +86,38 @@
       </q-card-section>
     </q-card>
   </q-dialog>
-
-  <small v-if="imagenCodificada" class="block text-center q-py-sm">
-    <q-btn
-      outline
-      glossy
-      color="primary"
-      @click="opened = true"
-      label="Ver en pantalla completa"
-      no-caps
-    />
-  </small>
 </template>
 
 <script lang="ts" setup>
-import { computed, ref, watch } from 'vue'
+import { computed, getCurrentInstance, onMounted, ref, watch } from 'vue'
 
 const props = defineProps({
   modelValue: String,
-  imagen: String,
+  imagen: String as () => string | null | undefined,
   disable: Boolean,
   file_extensiones: String,
   error: Boolean,
   alto: String,
   hint: String,
+  placeholder: { type: String, default: 'Opcional' },
   texto1: String,
   texto2: String,
   texto3: String,
   texto4: String,
   comprimir: {
     type: Boolean,
-    default: true,
-  },
+    default: true
+  }
 })
 const emit = defineEmits(['update:modelValue'])
+const instance = getCurrentInstance()
+const slots = instance?.slots
 
+onMounted(() => {
+  slotUsado.value = !!slots?.error
+})
+
+const slotUsado = ref(false)
 const fileSize = ref()
 const img = ref()
 const imagenCodificada = computed(() => props.imagen)
@@ -126,10 +143,10 @@ const setBase64 = async (file: File) => {
 }
 
 async function compressImage(file) {
-  return new Promise<File>((resolve) => {
+  return new Promise<File>(resolve => {
     const reader = new FileReader()
 
-    reader.onload = (event) => {
+    reader.onload = event => {
       // console.log(event)
       const img = new Image()
       img.src = event.target?.result?.toString() || ''
@@ -154,11 +171,11 @@ async function compressImage(file) {
         ctx?.drawImage(img, 0, 0, newWidth, newHeight)
 
         canvas.toBlob(
-          (blob) => {
+          blob => {
             if (blob) {
               const compressedFile: File = new File([blob], file.name, {
                 type: 'image/jpeg', // Ajusta el tipo de archivo según tus necesidades
-                lastModified: Date.now(),
+                lastModified: Date.now()
               })
               resolve(compressedFile)
             }

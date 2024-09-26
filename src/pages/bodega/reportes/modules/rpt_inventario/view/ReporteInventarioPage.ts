@@ -1,10 +1,10 @@
-import { apiConfig, endpoints } from "config/api";
-import { LocalStorage, useQuasar } from "quasar";
-import { AxiosHttpRepository } from "shared/http/infraestructure/AxiosHttpRepository";
-import { imprimirArchivo } from "shared/utils";
-import { useCargandoStore } from "stores/cargando";
-import { useNotificacionStore } from "stores/notificacion";
-import { Ref, defineComponent, ref } from "vue";
+import { apiConfig, endpoints } from 'config/api';
+import { LocalStorage, useQuasar } from 'quasar';
+import { AxiosHttpRepository } from 'shared/http/infraestructure/AxiosHttpRepository';
+import { imprimirArchivo } from 'shared/utils';
+import { useCargandoStore } from 'stores/cargando';
+import { useNotificacionStore } from 'stores/notificacion';
+import { Ref, defineComponent, ref } from 'vue';
 
 export default defineComponent({
   components: {},
@@ -13,7 +13,7 @@ export default defineComponent({
     //stores
     useNotificacionStore().setQuasar(useQuasar())
     useCargandoStore().setQuasar(useQuasar())
-    let sucursal=ref()
+    let sucursal = ref()
     const sucursales: Ref<any[]> = ref([])
 
 
@@ -42,6 +42,19 @@ export default defineComponent({
       sucursales,
       sucursal,
       generarReporte,
+      filtroSucursales(val, update) {
+        if (val === '') {
+          update(() => {
+            sucursales.value = JSON.parse(LocalStorage.getItem('sucursales')!.toString())
+            sucursales.value.unshift({ id: 0, lugar: 'TODAS LAS SUCURSALES', })
+          })
+          return
+        }
+        update(() => {
+          const needle = val.toLowerCase()
+          sucursales.value = JSON.parse(LocalStorage.getItem('sucursales')!.toString()).filter((v) => v.lugar.toLowerCase().indexOf(needle) > -1)
+        })
+      },
     }
   }
 })

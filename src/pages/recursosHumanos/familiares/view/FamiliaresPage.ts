@@ -19,6 +19,7 @@ import { FamiliaresController } from '../infraestructure/FamiliaresController'
 import { configuracionColumnasFamiliares } from '../domain/configuracionColumnasFamiliares'
 import { useRecursosHumanosStore } from 'stores/recursosHumanos'
 import { useFamiliarStore } from 'stores/familiar'
+import { parentezcos } from 'config/recursosHumanos.utils'
 
 export default defineComponent({
   components: { TabLayout, SelectorImagen, GestorDocumentos },
@@ -56,11 +57,7 @@ export default defineComponent({
     } = useNotificaciones()
 
     const empleados = ref([])
-    const parentezcos = [
-      { nombre: 'CÓNYUGE' },
-      { nombre: 'HIJO' },
-      { nombre: 'HIJA' },
-    ]
+
     const esRecursosHumanos = store.esRecursosHumanos
 
     const esAutorizador = ref(false)

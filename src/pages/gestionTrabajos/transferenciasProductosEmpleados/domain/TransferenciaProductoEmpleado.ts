@@ -23,6 +23,13 @@ export class TransferenciaProductoEmpleado extends EntidadAuditable {
   etapa_destino: number | null
   proyecto_origen: number | null
   proyecto_destino: number | null
+  nombre_proyecto_origen: string | null
+  nombre_proyecto_destino: string | null
+  nombre_tarea_origen: string | null
+  nombre_tarea_destino: string | null
+  nombre_etapa_origen: string | null
+  nombre_etapa_destino: string | null
+  nombre_cliente: string | null
 
   listado_productos: any[]
 
@@ -53,6 +60,13 @@ export class TransferenciaProductoEmpleado extends EntidadAuditable {
     this.etapa_destino = null
     this.proyecto_origen = null
     this.proyecto_destino = null
+    this.nombre_proyecto_origen = null
+    this.nombre_proyecto_destino = null
+    this.nombre_tarea_origen = null
+    this.nombre_tarea_destino = null
+    this.nombre_etapa_origen = null
+    this.nombre_etapa_destino = null
+    this.nombre_cliente = null
 
     // variables auxiliares
     // this.es_tarea = false

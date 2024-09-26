@@ -58,6 +58,8 @@ export function useMaterialesTarea(filtro: UnwrapRef<FiltroMiBodega>, listadosAu
       transferenciaProductoEmpleadoStore.cliente_id = filtro.cliente_id
       transferenciaProductoEmpleadoStore.origenProductos = destinosTareas.paraClienteFinal
       transferenciaProductoEmpleadoStore.tareaId = filtro.tarea_id
+      transferenciaProductoEmpleadoStore.idEtapa = null
+      transferenciaProductoEmpleadoStore.idProyecto = null
       transferenciaProductoEmpleadoStore.idEmpleado = filtro.empleado_id
 
       if (!result.length) notificarAdvertencia('No tienes material asignado.')

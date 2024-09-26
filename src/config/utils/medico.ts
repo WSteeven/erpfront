@@ -37,7 +37,7 @@ export const estadosSolicitudesExamenes = {
     icono: 'bi-cart-check',
   },
   APROBADO_POR_COMPRAS: {
-    value: 'APROBADO_POR_COMPRAS',
+    value: 'RESULTADOS DE EXAMENES',
     label: 'Aprobado por compras',
     icono: 'bi-cash-coin',
   },
@@ -128,6 +128,11 @@ export const selectTipoCitaMedica = [
   { label: 'Accidente de trabajo', value: tiposCitaMedica.ACCIDENTE_DE_TRABAJO.value },
 ]
 
+export const selectTipoCambioCargo = [
+  { label: 'Temporal', value: 'TEMPORAL' },
+  { label: 'Permanente', value: 'PERMANENTE' },
+]
+
 export const tiposFichasMedicas = {
   APTITUD: 'APTITUD',
   OCUPACIONAL: 'OCUPACIONAL',
@@ -136,4 +141,65 @@ export const tiposFichasMedicas = {
 export const tabOptionsTiposFichasMedicas: TabOption[] = [
   { label: 'Aptitud', value: tiposFichasMedicas.APTITUD, color_icono: 'pink', bg_color: 'pink-1' },
   { label: 'Períodico ocupacional', value: tiposFichasMedicas.OCUPACIONAL, color_icono: 'primary', bg_color: 'blue-2' },
+]
+
+export const opcionesTiposCuestionarios = {
+  CUESTIONARIO_PSICOSOCIAL: 1,
+  CUESTIONARIO_DIAGNOSTICO_CONSUMO_DE_DROGAS: 2,
+}
+
+export const opcionesPrivacidadCuestionarios = {
+  INTERNO: 'INTERNO',
+  PUBLICO: 'PUBLICO',
+}
+
+export const categoriasEnfermedades = {
+  CATASTROFICAS: 'CATASTROFICAS',
+  CRONICAS_NO_TRANSMISIBLES: 'CRONICAS NO TRANSMISIBLES',
+  CRONICAS: 'CRONICAS',
+  AGUDAS: 'AGUDAS',
+}
+
+export const enfermedades = [
+  { nombre: 'TUMOR CEREBRAL', categoria: categoriasEnfermedades.CATASTROFICAS },
+  { nombre: 'MALFORMACIONES', categoria: categoriasEnfermedades.CATASTROFICAS },
+  { nombre: 'INSUFICIENCIA RENAL', categoria: categoriasEnfermedades.CATASTROFICAS },
+  { nombre: 'TRANSPLANTES', categoria: categoriasEnfermedades.CATASTROFICAS },
+  { nombre: 'INMUNOLOGIAS (LUPUS)', categoria: categoriasEnfermedades.CATASTROFICAS },
+  { nombre: 'EZQUIZOFRENIA', categoria: categoriasEnfermedades.CATASTROFICAS },
+  { nombre: 'CIRROSIS', categoria: categoriasEnfermedades.CATASTROFICAS },
+  { nombre: 'SECUELAS DE QUEMADURAS GRAVES', categoria: categoriasEnfermedades.CATASTROFICAS },
+  { nombre: 'DIABETES', categoria: categoriasEnfermedades.CRONICAS_NO_TRANSMISIBLES },
+  { nombre: 'HIPERTENSION ARTERIAL', categoria: categoriasEnfermedades.CRONICAS_NO_TRANSMISIBLES },
+  { nombre: 'OBESIDAD', categoria: categoriasEnfermedades.CRONICAS_NO_TRANSMISIBLES },
+  { nombre: 'INFARTOS', categoria: categoriasEnfermedades.CRONICAS_NO_TRANSMISIBLES },
+  { nombre: 'ECV (DERRAME CEREBRAL)', categoria: categoriasEnfermedades.CRONICAS_NO_TRANSMISIBLES },
+  { nombre: 'ASMA', categoria: categoriasEnfermedades.CRONICAS_NO_TRANSMISIBLES },
+  { nombre: 'CANCER', categoria: categoriasEnfermedades.CRONICAS_NO_TRANSMISIBLES },
+  { nombre: 'VIH', categoria: categoriasEnfermedades.CRONICAS },
+  { nombre: 'HEPATITIS B O C', categoria: categoriasEnfermedades.CRONICAS },
+  { nombre: 'CONVULSIONES/EPILEPSIA', categoria: categoriasEnfermedades.CRONICAS },
+  { nombre: 'VARICES', categoria: categoriasEnfermedades.CRONICAS },
+  { nombre: 'GASTRITIS', categoria: categoriasEnfermedades.CRONICAS },
+  { nombre: 'ULCERAS ESTOMACALES', categoria: categoriasEnfermedades.AGUDAS },
+  { nombre: 'COLESTEROL/TRIGLICERIDOS', categoria: categoriasEnfermedades.AGUDAS },
+  { nombre: 'ANSIEDAD', categoria: categoriasEnfermedades.AGUDAS },
+  { nombre: 'NEUMONIAS FRECUENTES', categoria: categoriasEnfermedades.AGUDAS },
+  { nombre: 'NINGUNA', categoria: null },
+]
+
+export const discapacidades = [
+  'LENGUAJE',
+  'PSICOSOCIAL',
+  'VISUAL',
+  'AUDITIVA',
+  'FISICA',
+  'INTELECTUAL',
+  // 'NO APLICA',
+]
+
+export const generos = [
+  'MASCULINO',
+  'FEMENINO',
+  'OTROS',
 ]

@@ -1,5 +1,5 @@
-import { ColumnConfig } from "components/tables/domain/ColumnConfig";
-import { TipoFondo } from "./TipoFondo";
+import { ColumnConfig } from 'components/tables/domain/ColumnConfig';
+import { TipoFondo } from './TipoFondo';
 
 export const configuracionColumnasTipoFondo: ColumnConfig<TipoFondo>[] = [
   {

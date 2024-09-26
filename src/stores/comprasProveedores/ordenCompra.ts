@@ -124,6 +124,41 @@ export const useOrdenCompraStore = defineStore('ordenCompra', () => {
     orden.hydrate(ordenReset)
   }
 
+  async function buscarReporte(accion: string, data, listado) {
+    try {
+      statusLoading.activar()
+      const axios = AxiosHttpRepository.getInstance()
+      // let url = axios.getEndpoint(endpoints.proveedores) + '/reportes'
+      const url = apiConfig.URL_BASE + '/' + axios.getEndpoint(endpoints.ordenes_compras) + '/reportes'
+      const filename = 'reporte_ordenes_compras'
+      switch (accion) {
+        case 'excel':
+          data.accion = 'excel'
+          imprimirArchivo(url, 'POST', 'blob', 'xlsx', filename, data)
+          return listado
+          break
+        case 'pdf':
+          data.accion = 'pdf'
+          imprimirArchivo(url, 'POST', 'blob', 'pdf', filename, data)
+          return listado
+          break
+        default:
+          data.accion = ''
+          const response: AxiosResponse = await axios.post(url, data)
+          // console.log(response)
+          if (response.data.results) {
+            if (response.data.results.length < 1) notificarAdvertencia('No se obtuvieron resultados')
+            return response.data.results
+          } else return listado
+      }
+    } catch (error) {
+      console.log(error)
+      notificarError('Error al obtener el reporte')
+    } finally {
+      statusLoading.desactivar()
+    }
+  }
+
   return {
     orden,
     accionOrden,
@@ -137,5 +172,6 @@ export const useOrdenCompraStore = defineStore('ordenCompra', () => {
     marcarRealizada,
     marcarPagada,
     consultarDashboard,
+    buscarReporte,
   }
 })

@@ -1,11 +1,12 @@
 // Dependencias
 import { ContenedorSimpleMixin } from 'shared/contenedor/modules/simple/application/ContenedorSimpleMixin'
 import { useNotificaciones } from 'shared/notificaciones'
-import { defineComponent, ref } from 'vue'
+import { computed, defineComponent, ref } from 'vue'
 
 // Componentes
 import { ComportamientoModales } from '../application/ComportamientoModales'
-
+import { useConfiguracionGeneralStore } from 'stores/configuracion_general'
+import { watch } from 'vue'
 
 export default defineComponent({
   props: {
@@ -16,7 +17,6 @@ export default defineComponent({
     accion: {
       type: Function,
       required: false,
-      default: () =>{},
     },
     confirmarCerrar: {
       type: Boolean,
@@ -34,25 +34,39 @@ export default defineComponent({
       type: Boolean,
       default: true,
     },
-    fullHeight:{
+    fullHeight: {
       type: Boolean,
       default: true,
     },
-    maximized:{
+    maximized: {
+      type: Boolean,
+      default: true,
+    },
+    mostrarListado: {
       type: Boolean,
       default: true,
     }
+
   },
   // emits: ['seleccionar', 'accion1'],
   emits: ['guardado', 'modificado', 'cerrado'],
   setup(props, { emit }) {
-    const { componente, titulo, abierto } = props.comportamiento.useModal()
+    /**********
+     * Stores
+     **********/
+    const configuracionGeneralStore = useConfiguracionGeneralStore()
+
+    const { componente, titulo, abierto, propsData } = props.comportamiento.useModal()
     const { confirmar } = useNotificaciones()
     function cerrarModalEntidad(confirmarCerrar = true && props.confirmarCerrar) {
       if (confirmarCerrar) {
-        confirmar('¿Está seguro de que desea cerrar?', () => abierto.value = false)
+        confirmar('¿Está seguro de que desea cerrar?', () => {
+          abierto.value = false
+          emit('cerrado')
+        })
       } else {
         abierto.value = false
+        emit('cerrado')
       }
     }
 
@@ -62,14 +76,16 @@ export default defineComponent({
       () => setInterval(() => (duracion.value = duracion.value + 0.1), 200),
       250
     )
-    // }
 
     return {
+      logoClaro: computed(() => configuracionGeneralStore.configuracion?.logo_claro),
+      logoOscuro: computed(() => configuracionGeneralStore.configuracion?.logo_oscuro),
       componente,
       titulo,
       cerrarModalEntidad,
       duracion,
       abierto,
+      propsData,
       emit,
     }
   },

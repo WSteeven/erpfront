@@ -24,7 +24,7 @@
           size="120px"
           class="q-mx-auto block q-mb-md"
         >
-          <img src="~assets/logo.png" />
+          <img :src="!$q.dark.isActive ? logoClaro : logoOscuro" />
         </q-avatar>
 
         <form @submit.prevent="login" class="full-width q-px-lg">
@@ -52,8 +52,10 @@
               outlined
               dense
               :type="isPwd ? 'password' : 'text'"
+              class="normal-text"
               hint="No comparta su contraseña con nadie"
               @keyup.enter="login()"
+              style="text-transform: none;"
             >
               <template v-slot:append>
                 <q-icon
@@ -96,6 +98,19 @@
             >
             </q-btn>
           </div>
+
+          <div class="col-12 q-pt-xl q-mt-xl">
+            <q-btn
+              color="primary"
+              label="¿Entrar como externo?"
+              class="full-width q-mb-sm"
+              no-caps
+              unelevated
+
+              outline
+              :to="{name:'LoginPostulante'}"
+            />
+          </div>
         </form>
       </div>
     </div>
@@ -104,7 +119,7 @@
 
 <script src="./LoginPage.ts"></script>
 
-<style>
+<style scope>
 h2 {
   line-height: 1.2;
   font-size: 1.714rem;
@@ -124,4 +139,9 @@ h2 {
     rgba(110, 143, 255, 1) 100%
   );
 }
+
+/* Quita las mayusculas al campo de contraseña y usuario */
+/* .q-field .q-field__inner {
+  text-transform: none !important;
+} */
 </style>

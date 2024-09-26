@@ -1,4 +1,4 @@
-type funcion<T> = (param?: { entidad: Record<keyof T, any>, posicion: number }) => void
+type funcion<T> = (param: { entidad: Record<keyof T, any>, posicion: number }) => void
 type funcionBoolean<T> = (param: { entidad: Record<keyof T, any>, posicion: number }) => boolean
 export interface CustomActionTable<T = any> {
   titulo: string | funcion<T>

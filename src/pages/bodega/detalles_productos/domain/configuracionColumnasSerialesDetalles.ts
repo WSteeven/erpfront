@@ -1,4 +1,4 @@
-import { ColumnConfig } from "components/tables/domain/ColumnConfig";
+import { ColumnConfig } from 'components/tables/domain/ColumnConfig';
 
 export const configuracionColumnasSerialesDetalles: ColumnConfig<any>[] = [
     {
@@ -13,7 +13,7 @@ export const configuracionColumnasSerialesDetalles: ColumnConfig<any>[] = [
         name: 'serial',
         field: 'serial',
         label: 'Serial',
-        sortable:false,
+        sortable: false,
         align: 'left',
     },
     {
@@ -22,5 +22,5 @@ export const configuracionColumnasSerialesDetalles: ColumnConfig<any>[] = [
         label: 'Acciones',
         style: 'max-width: 50px; overflow: auto;',
         align: 'center',
-      }
+    }
 ]

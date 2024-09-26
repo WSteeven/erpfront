@@ -23,6 +23,14 @@ export default defineComponent({
       type: Boolean,
       default: true,
     },
+    permitirGuardar: {
+      type: Boolean,
+      default: true,
+    },
+    forzarGuardar: {
+      type: Boolean,
+      default: false,
+    },
     permitirEditar: {
       type: Boolean,
       default: true,
@@ -61,7 +69,7 @@ export default defineComponent({
       store.can(`puede.ver.${router.name?.toString()}`) && props.permitirConsultar
     )
     const puedeCrear = computed(() =>
-      store.can(`puede.crear.${componentName ?? router.name?.toString()}`)
+      store.can(`puede.crear.${componentName ?? router.name?.toString()}`) && props.permitirGuardar
     )
     const puedeEditar = computed(() =>
       store.can(`puede.editar.${componentName ?? router.name?.toString()}`) && props.permitirEditar

@@ -1,8 +1,28 @@
-import { truncate } from 'fs'
 import { RouteRecordRaw } from 'vue-router'
 import rutasMedico from './rutasMedico'
+import rutasTareas from './rutasTareas'
+import rutasTickets from './rutasTickets'
+import rutasSeleccionContratacionPersonal from './rrhh/rutasSeleccionContratacionPersonal'
+import rutasActivosFijos from './rutasActivosFijos'
+import { empresas } from 'config/utils/sistema'
 
+const JPCONSTRUCRED = process.env.VUE_APP_ID == empresas.JPCONSTRUCRED
+const JPCUSTODY = process.env.VUE_APP_ID == empresas.JPCUSTODY
+const CCLEDARE = process.env.VUE_APP_ID == empresas.CCLEDARE
+console.log(process.env.VUE_APP_ID)
 const routes: RouteRecordRaw[] = [
+  // {
+  //   path: '/intranet',
+  //   component: () => import('layouts/FullLayout.vue'),
+  //   children: [
+  //     {
+  //       path: '',
+  //       name: 'intranet',
+  //       component: () => import('pages/intranet/intranet/view/IntranetPage.vue'),
+  //       meta: { requiresAuth: false },
+  //     },
+  //   ],
+  // },
   {
     path: '/',
     component: () => import('layouts/MainLayout.vue'),
@@ -13,6 +33,42 @@ const routes: RouteRecordRaw[] = [
         component: () =>
           import('pages/tableroPersonal/view/TableroPersonalPage.vue'),
         meta: { requiresAuth: true },
+      },
+      {
+        path: 'intranet',
+        name: 'intranet',
+        component: () => import('pages/intranet/intranet/view/IntranetPage.vue'),
+        meta: { requiresAuth: false },
+      },
+      {
+        path: '/blog',
+        name: 'intra_noticias',
+        component: () => import('pages/intranet/noticias/view/NoticiaIntranetPage.vue'),
+        meta: { requiresAuth: true },
+      },
+      {
+        path: '/categorias-noticias',
+        name: 'intra_categorias',
+        component: () => import('pages/intranet/categorias/view/CategoriaNoticiaPage.vue'),
+        meta: { requiresAuth: true },
+      },
+      {
+        path: '/etiquetas',
+        name: 'intra_etiquetas',
+        component: () => import('pages/intranet/etiquetas/view/EtiquetaPage.vue'),
+        meta: { requiresAuth: true },
+      },
+      {
+        path: '/tipos-eventos',
+        name: 'intra_tipos_eventos',
+        component: () => import('pages/intranet/tiposEventos/view/TipoEventoPage.vue'),
+        meta: { requiresAuth: true },
+      },
+      {
+        path: '/eventos',
+        name: 'eventos',
+        component: () => import('pages/intranet/eventos/view/EventoPage.vue'),
+        meta: { requiresAuth: false },
       },
       {
         path: 'auditorias',
@@ -35,243 +91,40 @@ const routes: RouteRecordRaw[] = [
         meta: { requiresAuth: false },
       },
       /*******************
+       * Módulo de RRHH
+       *******************/
+      ...rutasSeleccionContratacionPersonal,
+
+      /*******************
        * Módulo de tareas
        *******************/
-      {
-        path: '/dashboard-tareas',
-        name: 'dashboard_tareas',
-        component: () =>
-          import(
-            'gestionTrabajos/dashboardTareas/view/DashboardTareasPage.vue'
-          ),
-        meta: { requiresAuth: true },
-      },
-      {
-        path: '/proyectos',
-        name: 'proyectos',
-        component: () =>
-          import('pages/gestionTrabajos/proyectos/view/ProyectoPage.vue'),
-        meta: { requiresAuth: true },
-      },
-      {
-        path: '/monitor-subtareas',
-        name: 'monitor_subtareas',
-        component: () =>
-          import(
-            'gestionTrabajos/monitorSubtareas/view/MonitorSubtareaPage.vue'
-          ),
-        meta: { requiresAuth: true },
-      },
-      {
-        path: '/centros-costos',
-        name: 'centros_costos',
-        component: () => import('gestionTrabajos/centroCostos/view/CentroCostoPage.vue'),
-        meta: { requiresAuth: true },
-      },
-      {
-        path: '/subcentros-costos',
-        name: 'subcentros_costos',
-        component: () => import('gestionTrabajos/subcentrosCostos/view/SubcentroCostoPage.vue'),
-        meta: { requiresAuth: true },
-      },
-      {
-        path: '/tareas',
-        name: 'tareas',
-        component: () => import('tareas/view/TareaPage.vue'),
-        meta: { requiresAuth: true },
-      },
-      {
-        path: '/tipos-trabajos',
-        name: 'tipos_trabajos',
-        component: () =>
-          import('gestionTrabajos/tiposTareas/view/TipoTrabajoPage.vue'),
-        meta: { requiresAuth: true },
-      },
-      {
-        path: '/causas-intervenciones',
-        name: 'causas_intervenciones',
-        component: () =>
-          import(
-            'gestionTrabajos/causasIntervenciones/view/CausaIntervencionPage.vue'
-          ),
-        meta: { requiresAuth: true },
-      },
-      {
-        path: '/motivos-pausas',
-        name: 'motivos_pausas',
-        component: () =>
-          import('gestionTrabajos/motivosPausas/view/MotivoPausaPage.vue'),
-        meta: { requiresAuth: true },
-      },
-      {
-        path: '/motivos-suspendidos',
-        name: 'motivos_suspendidos',
-        component: () =>
-          import(
-            'gestionTrabajos/motivosSuspendidos/view/MotivoSuspendidoPage.vue'
-          ),
-        meta: { requiresAuth: true },
-      },
-      {
-        path: '/rutas-tareas',
-        name: 'rutas_tareas',
-        component: () => import('gestionTrabajos/rutas/view/RutaTareaPage.vue'),
-        meta: { requiresAuth: true },
-      },
-      {
-        path: '/reportes-modulo-tareas',
-        name: 'reportes_modulo_tareas',
-        component: () =>
-          import(
-            'src/pages/gestionTrabajos/reportes/reportesTrabajosRealizados/view/ReporteModuloTareaPage.vue'
-          ),
-        meta: { requiresAuth: true },
-      },
-      {
-        path: '/control-cambios',
-        name: 'control_cambios',
-        component: () =>
-          import('gestionTrabajos/controlCambios/view/ControlCambioPage.vue'),
-        meta: { requiresAuth: true },
-      },
-      {
-        path: '/clientes-finales',
-        name: 'clientes_finales',
-        component: () =>
-          import('gestionTrabajos/clientesFinales/view/ClienteFinalPage.vue'),
-        meta: { requiresAuth: true },
-      },
-      {
-        path: '/materiales-empleados',
-        name: 'materiales_empleados',
-        component: () =>
-          import(
-            'gestionTrabajos/materialesEmpleados/view/MaterialEmpleadoPage.vue'
-          ),
-        meta: { requiresAuth: true },
-      },
-      {
-        path: '/trabajo-agendado',
-        name: 'trabajo_agendado',
-        component: () =>
-          import(
-            'gestionTrabajos/trabajoAsignado/view/TrabajoAsignadoPage.vue'
-          ),
-        meta: { requiresAuth: true },
-      },
-      {
-        path: '/reportes-control-materiales',
-        name: 'reportes_control_materiales',
-        component: () =>
-          import(
-            'gestionTrabajos/reportesControlMateriales/view/ReporteControlMaterialPage.vue'
-          ),
-        meta: { requiresAuth: true },
-      },
-      {
-        path: '/reporte-movilizacion-subtarea',
-        name: 'reporte_movilizacion_subtarea',
-        component: () =>
-          import(
-            'gestionTrabajos/reporteMovilizacionSubtareas/view/ReporteMovilizacionSubtareaPage.vue'
-          ),
-        meta: { requiresAuth: true },
-      },
-      {
-        path: '/reportes-control-tendidos',
-        name: 'reportes_control_tendidos',
-        component: () =>
-          import(
-            'gestionTrabajos/reporteResumenTendidos/view/ReporteResumenTendidoPage.vue'
-          ),
-        meta: { requiresAuth: true },
-      },
-      {
-        path: '/mi-bodega',
-        name: 'mi_bodega',
-        component: () =>
-          import('gestionTrabajos/miBodega/view/MiBodegaPage.vue'),
-        meta: { requiresAuth: true },
-      },
-      {
-        path: '/transferencia-producto-empleado',
-        name: 'transferencia_producto_empleado',
-        component: () =>
-          import('gestionTrabajos/transferenciasProductosEmpleados/view/TransferenciaProductoEmpleadoPage.vue'),
-        meta: { requiresAuth: true },
-      },
-      /*{
-        path: '/reporte-trabajos-realizados',
-        name: 'reporte_trabajos_realizados',
-        component: () =>
-          import(
-            'gestionTrabajos/reportes/reportesTrabajosRealizados/view/ReporteTrabajoRealizadoPage.vue'
-          ),
-        meta: { requiresAuth: true },
-      },*/
+      ...rutasTareas,
+
+      /****************
+       * Modulo medico
+       ****************/
       ...rutasMedico,
+
       /********************
        * Modulo de tickets
        ********************/
-      {
-        path: '/departamentos',
-        name: 'departamentos',
-        component: () =>
-          import('recursosHumanos/departamentos/view/DepartamentoPage.vue'),
-        meta: { requiresAuth: true },
-      },
-      {
-        path: '/dashboard-tickets',
-        name: 'dashboard_tickets',
-        component: () =>
-          import('dashboardTickets/view/DashboardTicketsPage.vue'),
-        meta: { requiresAuth: true },
-      },
-      {
-        path: '/tickets',
-        name: 'tickets',
-        component: () => import('tickets/view/TicketPage.vue'),
-        meta: { requiresAuth: true },
-      },
-      {
-        path: '/tickets-asignados',
-        name: 'tickets_asignados',
-        component: () => import('ticketsAsignados/view/TicketAsignadoPage.vue'),
-        meta: { requiresAuth: true },
-      },
-      {
-        path: '/categorias-tipos-tickets',
-        name: 'categorias_tipos_tickets',
-        component: () =>
-          import('categoriasTiposTickets/view/CategoriaTipoTicketPage.vue'),
-        meta: { requiresAuth: true },
-      },
-      {
-        path: '/tipos-tickets',
-        name: 'tipos_tickets',
-        component: () => import('tiposTickets/view/TipoTicketPage.vue'),
-        meta: { requiresAuth: true },
-      },
-      {
-        path: '/motivos-pausas-tickets',
-        name: 'motivos_pausas_tickets',
-        component: () =>
-          import('motivosPausasTickets/view/MotivoPausaTicketPage.vue'),
-        meta: { requiresAuth: true },
-      },
-      {
-        path: '/motivos-cancelados-tickets',
-        name: 'motivos_cancelados_tickets',
-        component: () =>
-          import('motivosCanceladosTickets/view/MotivoCanceladoTicketPage.vue'),
-        meta: { requiresAuth: true },
-      },
+      ...rutasTickets,
+
+      /**************************
+       * Modulo de activos fijos
+       **************************/
+      ...rutasActivosFijos,
+
+      /********
+       * Otros
+       ********/
       {
         path: '/perfil',
         name: 'perfil',
         component: () => import('pages/perfil/view/PerfilPage.vue'),
         meta: { requiresAuth: true },
       },
+
       /**
        * RUTAS PARA GEOGRAFIA (PROVINCIAS, CANTONES, PARROQUIAS)
        */
@@ -373,6 +226,13 @@ const routes: RouteRecordRaw[] = [
         meta: { requiresAuth: true },
       },
       {
+        path: '/permisos-armas',
+        name: 'permisos_armas',
+        component: () =>
+          import('pages/bodega/permisosArmas/view/PermisoArmaPage.vue'),
+        meta: { requiresAuth: true },
+      },
+      {
         path: '/control-stock',
         name: 'control_stock',
         component: () =>
@@ -400,10 +260,16 @@ const routes: RouteRecordRaw[] = [
       {
         path: '/detalles',
         name: 'detalles',
-        component: () =>
-          import(
-            'pages/bodega/detalles_productos/view/DetalleProductoPage.vue'
-          ),
+        component: () => {
+          switch (process.env.VUE_APP_ID) {
+            case empresas.JPCONSTRUCRED: return import(
+              'pages/bodega/detalles_productos/view/jpconstrucred/DetalleProductoPage.vue'
+            )
+            case empresas.JPCUSTODY: return import(
+              'pages/bodega/detalles_productos/view/jpcustody/DetalleProductoPage.vue'
+            )
+          }
+        },
         meta: { requiresAuth: true },
       },
       {
@@ -504,6 +370,15 @@ const routes: RouteRecordRaw[] = [
         meta: { requiresAuth: false },
       },
       {
+        path: '/reporte-epps',
+        name: 'reporte_epps',
+        component: () =>
+          import(
+            'pages/bodega/reportes/modules/rpt_epps/ReporteEppsPage.vue'
+          ),
+        meta: { requiresAuth: false },
+      },
+      {
         path: '/reporte-pedidos',
         name: 'reporte_pedidos',
         component: () =>
@@ -531,7 +406,10 @@ const routes: RouteRecordRaw[] = [
         meta: { requiresAuth: false },
       },
 
-      //Routes for Recursos Humanos
+      /************************************************************************************
+       * Routes for Recursos Humanos module
+       ************************************************************************************/
+      // aqui va las rutasSeleccionContratacionPersonal
       {
         path: '/cargos',
         name: 'cargos',
@@ -553,13 +431,96 @@ const routes: RouteRecordRaw[] = [
           import('pages/recursosHumanos/grupos/view/GrupoPage.vue'),
         meta: { requiresAuth: true },
       },
-      //Routes for Vehiculos
+      /*****************************************
+       * MODULO DE VEHICULOS
+       *****************************************/
+      {
+        path: '/seguros',
+        name: 'seguros_vehiculares',
+        component: () =>
+          import(
+            'pages/controlVehiculos/seguros/view/SeguroVehicularPage.vue'
+          ),
+        meta: { requiresAuth: true },
+      },
+      {
+        path: '/servicios',
+        name: 'servicios_mantenimientos',
+        component: () =>
+          import(
+            'pages/controlVehiculos/servicios/view/ServicioPage.vue'
+          ),
+        meta: { requiresAuth: true },
+      },
+      {
+        path: '/multas-conductores',
+        name: 'multas_conductores',
+        component: () =>
+          import(
+            'pages/controlVehiculos/conductores/modules/multas/view/MultaConductorPage.vue'
+          ),
+        meta: { requiresAuth: false },
+      },
+      {
+        path: 'transferencias-vehiculos',
+        name: 'transferencias_vehiculos',
+        component: () =>
+          import(
+            'pages/controlVehiculos/transferenciaVehiculos/view/TransferenciaVehiculoPage.vue'
+          ),
+        meta: { requiresAuth: true },
+      },
+      {
+        path: '/asignaciones-vehiculos',
+        name: 'asignaciones_vehiculos',
+        component: () =>
+          import(
+            'pages/controlVehiculos/asignarVehiculos/view/AsignacionVehiculoPage.vue'
+          ),
+        meta: { requiresAuth: true },
+      },
+      {
+        path: '/historial-vehiculos',
+        name: 'historial_vehiculos',
+        component: () =>
+          import(
+            'pages/controlVehiculos/historialVehiculos/view/HistorialVehiculoPage.vue'
+          ),
+        meta: { requiresAuth: true },
+      },
+      {
+        path: '/conductores',
+        name: 'conductores',
+        component: () =>
+          import(
+            'pages/controlVehiculos/conductores/view/ConductorPage.vue'
+          ),
+        meta: { requiresAuth: true },
+      },
       {
         path: '/control-vehiculos',
         name: 'bitacoras_vehiculos',
         component: () =>
           import(
             'pages/controlVehiculos/bitacoraVehicular/view/BitacoraVehicularPage.vue'
+          ),
+        meta: { requiresAuth: true },
+      },
+      {
+        path: '/registros-incidentes',
+        name: 'registros_incidentes',
+        component: () =>
+          import(
+            'pages/controlVehiculos/registroIncidentes/view/RegistroIncidentePage.vue'
+          ),
+        meta: { requiresAuth: true },
+      },
+      {
+        path: '/ordenes-reparaciones',
+        name: 'ordenes_reparaciones',
+        component: () =>
+          import(
+            'pages/controlVehiculos/ordenesReparacion/view/OrdenReparacionPage.vue'
           ),
         meta: { requiresAuth: true },
       },
@@ -571,21 +532,100 @@ const routes: RouteRecordRaw[] = [
         meta: { requiresAuth: true },
       },
       {
+        path: '/tanqueos-vehiculos',
+        name: 'tanqueos_vehiculos',
+        component: () =>
+          import('pages/controlVehiculos/tanqueoCombustible/view/TanqueoPage.vue'),
+        meta: { requiresAuth: true },
+      },
+      {
+        path: '/garajes',
+        name: 'garajes',
+        component: () =>
+          import('pages/controlVehiculos/garajes/view/GarajePage.vue'),
+        meta: { requiresAuth: true },
+      },
+      {
         path: '/vehiculos',
         name: 'vehiculos',
         component: () =>
           import('pages/controlVehiculos/vehiculos/view/VehiculoPage.vue'),
         meta: { requiresAuth: true },
       },
+      {
+        path: '/tipos-vehiculos',
+        name: 'tipos_vehiculos',
+        component: () =>
+          import('pages/controlVehiculos/tiposVehiculos/view/TipoVehiculoPage.vue'),
+        meta: { requiresAuth: true },
+      },
+      {
+        path: '/matriculas',
+        name: 'matriculas_vehiculos',
+        component: () =>
+          import('pages/controlVehiculos/matriculacion/view/MatriculaPage.vue'),
+        meta: { requiresAuth: true },
+      },
+      {
+        path: '/planes-mantenimientos',
+        name: 'planes_mantenimientos',
+        component: () =>
+          import('pages/controlVehiculos/planMantenimiento/view/PlanMantenimientoPage.vue'),
+        meta: { requiresAuth: true },
+      },
+      {
+        path: '/mantenimientos-vehiculos',
+        name: 'mantenimientos_vehiculos',
+        component: () =>
+          import('pages/controlVehiculos/mantenimientos/view/MantenimientoVehiculoPage.vue'),
+        meta: { requiresAuth: true },
+      },
+      //reportes de vehiculos
+      {
+        path: 'reporte-conductores',
+        name: 'reporte_conductores',
+        component: () =>
+          import('pages/controlVehiculos/reportes/modules/rpt_conductores_licencias/view/ReporteConductorLicenciaPage.vue'),
+        meta: { requiresAuth: false },
+      },
+      {
+        path: '/reporte-combustibles',
+        name: 'reporte_combustibles',
+        component: () =>
+          import('pages/controlVehiculos/reportes/modules/rpt_combustibles/view/ReporteCombustiblePage.vue'),
+        meta: { requiresAuth: false },
+      },
+      {
+        path: 'reporte-seguros',
+        name: 'reporte_seguros',
+        component: () =>
+          import('pages/controlVehiculos/reportes/modules/rpt_seguros/view/ReporteSeguroPage.vue'),
+        meta: { requiresAuth: false },
+      },
+      {
+        path: 'reporte-tiempos-vehiculos',
+        name: 'reporte_tiempos_vehiculos',
+        component: () =>
+          import('pages/controlVehiculos/reportes/modules/rpt_vehiculos/view/ReporteVehiculoPage.vue'),
+        meta: { requiresAuth: false },
+      },
+      {
+        path: '/reporte-matriculas',
+        name: 'reporte_matriculas',
+        component: () =>
+          import('pages/controlVehiculos/reportes/modules/rpt_matriculas/view/ReporteMatriculaPage.vue'),
+        meta: { requiresAuth: false },
+      },
+
 
       //Routes for Activos Fijos
-      {
+      /* {
         path: '/activos-fijos',
         name: 'activos_fijos',
         component: () =>
           import('pages/activosFijos/controlActivos/view/ActivoFijoPage.vue'),
         meta: { requiresAuth: true },
-      },
+      }, */
 
       /*********************************************
        * COMPRAS Y PROVEEDORES
@@ -618,6 +658,13 @@ const routes: RouteRecordRaw[] = [
         name: 'proveedores',
         component: () =>
           import('pages/sistema/proveedores/view/ProveedorPage.vue'),
+        meta: { requiresAuth: true },
+      },
+      {
+        path: '/proveedores-internacionales',
+        name: 'proveedores_internacionales',
+        component: () =>
+          import('pages/comprasProveedores/proveedorInternacional/view/ProveedorInternacionalPage.vue'),
         meta: { requiresAuth: true },
       },
       {
@@ -664,10 +711,24 @@ const routes: RouteRecordRaw[] = [
         meta: { requiresAuth: true },
       },
       {
+        path: '/reporte-prefacturas',
+        name: 'reporte_prefacturas',
+        component: () =>
+          import('pages/comprasProveedores/reportes/modules/rpt_prefacturas/view/ReportePrefactura.vue'),
+        meta: { requiresAuth: false },
+      },
+      {
         path: '/proformas',
         name: 'proformas',
         component: () =>
           import('pages/comprasProveedores/proforma/view/ProformaPage.vue'),
+        meta: { requiresAuth: true },
+      },
+      {
+        path: '/dashboard-ventas',
+        name: 'dashboard_ventas_empresa',
+        component: () =>
+          import('pages/comprasProveedores/dashboard/view/DashboardVentas.vue'),
         meta: { requiresAuth: true },
       },
       {
@@ -713,6 +774,15 @@ const routes: RouteRecordRaw[] = [
         component: () =>
           import(
             'pages/comprasProveedores/reportes/modules/rpt_proveedores/view/ReporteProveedores.vue'
+          ),
+        meta: { requiresAuth: false },
+      },
+      {
+        path: 'reporte-ordenes-compras',
+        name: 'reporte_ordenes_compras',
+        component: () =>
+          import(
+            'pages/comprasProveedores/reportes/modules/rpt_ordenes_compras/view/ReporteOrdenesCompras.vue'
           ),
         meta: { requiresAuth: false },
       },
@@ -1048,6 +1118,15 @@ const routes: RouteRecordRaw[] = [
         meta: { requiresAuth: true },
       },
       {
+        path: '/tipos-licencias',
+        name: 'tipos_licencias',
+        component: () =>
+          import(
+            'pages/recursosHumanos/tipo-licencia/view/TipoLicenciaPage.vue'
+          ),
+        meta: { requiresAuth: true },
+      },
+      {
         path: '/vacacion',
         name: 'vacacion',
         component: () =>
@@ -1080,8 +1159,8 @@ const routes: RouteRecordRaw[] = [
         meta: { requiresAuth: true },
       },
       {
-        path: '/prestamo-quirorafario',
-        name: 'prestamo_quirorafario',
+        path: 'prestamos-quirografarios',
+        name: 'prestamos_quirografarios',
         component: () =>
           import(
             'pages/recursosHumanos/prestamo-quirorafarios/view/PrestamoQuirorafarioPage.vue'
@@ -1213,7 +1292,7 @@ const routes: RouteRecordRaw[] = [
         meta: { requiresAuth: true },
       },
       {
-        path: '/dashboard-ventas',
+        path: '/dashboard-ventas-claro',
         name: 'dashboard_ventas',
         component: () =>
           import(
@@ -1323,13 +1402,12 @@ const routes: RouteRecordRaw[] = [
           import('pages/recursosHumanos/alimentacion/alimentacion/views/AlimentacionPage.vue'),
         meta: { requiresAuth: true },
       },
-
       {
         path: '/eventos',
         name: 'eventos',
         component: () =>
           import('pages/intranet/eventos/view/EventoPage.vue'),
-        meta: { requiresAuth: true },
+        meta: { requiresAuth: false },
       },
 
     ],
@@ -1345,6 +1423,109 @@ const routes: RouteRecordRaw[] = [
           import('pages/sistema/authentication/login/view/LoginPage.vue'),
       },
     ],
+  },
+  {
+    path: '/login-success',
+    component: () => import('layouts/FullLayout.vue'),
+    children: [
+      {
+        path: '',
+        name: 'login_success',
+        component: () =>
+          import('pages/sistema/authentication/login/view/LoginSuccessPage.vue'),
+      },
+    ],
+  },
+  {
+    path: '/error-login',
+    component: () => import('layouts/FullLayout.vue'),
+    children: [
+      {
+        path: '',
+        name: 'error_login',
+        component: () =>
+          import('pages/sistema/authentication/login/view/ErrorLoginPage.vue'),
+      },
+    ],
+  },
+  /************************************************************************************************
+   * MODULO DE SELECCION Y CONTRATACION PERSONAL
+   * Aquí se lista todo lo referente a este modulo y la parte del login del postulantes para el personal externo.
+   *
+   ***********************************************************************************************/
+  {
+    path: '/login-postulante',
+    component: () => import('layouts/FullLayout.vue'),
+    children: [
+      {
+        path: '',
+        name: 'LoginPostulante',
+        component: () =>
+          import('pages/recursosHumanos/seleccion_contratacion_personal/login-postulante/view/LoginPostulantePage.vue'),
+      },
+    ],
+  },
+  {
+    path: '/registro-postulante',
+    component: () => import('layouts/FullLayout.vue'),
+    children: [
+      {
+        path: '',
+        name: 'RegistroPostulante',
+        component: () =>
+          import('pages/recursosHumanos/seleccion_contratacion_personal/postulante/view/PostulanteRegistroPage.vue'),
+      },
+    ],
+  },
+  {
+    path: '/puestos-disponibles',
+    component: () =>  import('layouts/PostulanteLayout.vue'),
+    children: [
+      {
+        path: '',
+        name: 'puestos_disponibles',
+        component: () =>
+          import(
+            'pages/recursosHumanos/SeleccionContratacionPersonal/vacantesDisponibles/view/PuestoDisponiblePage.vue'
+          ),
+        meta: { requiresAuth: false, permissionRequired: false }
+      },
+      {
+        path: '/puestos-aplicados',
+        name: 'puestos_aplicados',
+        component: () =>
+          import(
+            'pages/recursosHumanos/SeleccionContratacionPersonal/vacantesAplicadas/view/PuestoAplicadoPage.vue'
+          ),
+        meta: { requiresAuth: true, permissionRequired: false }
+      },
+      {
+        path: '/perfil-usuario-externo',
+        name: 'perfil_usuario_externo',
+        component: () => import('pages/perfil/view/PerfilExternoPage.vue'),
+        meta: { requiresAuth: true },
+      },
+    ],
+  },
+  {
+    path: '/vacantes',
+    component: () => import('layouts/PostulanteLayout.vue'),
+    children: [
+      {
+        path: '/favoritas',
+        name: 'favoritas',
+        component: () => import('seleccionContratacion/vacantesFavoritas/view/VacanteFavoritaPage.vue'),
+        meta: { requiresAuth: true, permissionRequired: false }
+      },
+      {
+        path: '/postulacion-vacante/:id',
+        name: 'postulacion_vacante',
+        component: () =>
+          import(
+            'pages/recursosHumanos/SeleccionContratacionPersonal/postulacionVacante/view/PostulacionVacantePage.vue'
+          ),
+        meta: { requiresAuth: true, permissionRequired: false }
+      },]
   },
   {
     path: '/recuperar-contrasena',
@@ -1371,6 +1552,18 @@ const routes: RouteRecordRaw[] = [
           import(
             'pages/sistema/authentication/resetPassword/view/resetPassword.page.vue'
           ),
+      },
+    ],
+  },
+  {
+    path: '/cuestionarios-publicos/:identificador',
+    component: () => import('layouts/FullLayout.vue'),
+    children: [
+      {
+        path: '',
+        name: 'cuestionarios_publicos',
+        component: () =>
+          import('medico/cuestionariosPublicos/view/CuestionarioPublicoPage.vue'),
       },
     ],
   },

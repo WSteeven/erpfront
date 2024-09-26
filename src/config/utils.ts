@@ -1,9 +1,13 @@
+import { SelectOption } from 'components/tables/domain/SelectOption'
 import { TabOption } from 'components/tables/domain/TabOption'
 
 export const maskFecha = 'YYYY-MM-DD'
+export const maskFechaHora = 'YYYY-MM-DD HH:mm:ss'
 // export const maskFecha = 'DD-MM-YYYY'
 //export const maskFecha = 'YYYY/MM/DD'
+
 // Tipos
+export type Accion = 'NUEVO' | 'ELIMINAR' | 'CONSULTAR' | 'EDITAR'
 export type TipoSeleccion = 'none' | 'single' | 'multiple'
 
 export type TipoSeparador =
@@ -126,10 +130,12 @@ export const tabOptionsVacaciones: TabOption[] = [
   { label: 'Aprobados', value: '2' },
   { label: 'Cancelados', value: '3' },
 ]
+
 export const tabOptionsPermiso: TabOption[] = [
   { label: 'Pendiente', value: '1' },
   { label: 'Aprobados', value: '2' },
   { label: 'Cancelados', value: '3' },
+  { label: 'Recuperados', value: '4' }
 ]
 export const tabOptionsTraspasos: TabOption[] = [
   { label: 'Pendientes', value: '0' },
@@ -173,7 +179,7 @@ export const accionesTabla = {
   field: 'acciones',
   label: 'Acciones',
   align: 'center',
-  //style: 'width: 1000px'
+  // style: 'width: 1000px'
 }
 
 export const tiposTrabajosEstaticos = {
@@ -350,16 +356,16 @@ export const tipos_filtros = [
   { value: '9', name: 'CIUDAD' },
 ]
 export const tipo_filtro = {
-  TODOS:'0',
-  PROYECTO:'1',
+  TODOS: '0',
+  PROYECTO: '1',
   TAREA: '2',
   DETALLE: '3',
   SUBDETALLE: '4',
-  AUTORIZACIONES : '5',
-  EMPLEADO : '6',
-  RUC : '7',
+  AUTORIZACIONES: '5',
+  EMPLEADO: '6',
+  RUC: '7',
   SIN_FACTURA: '8',
-  CIUDAD : '9',
+  CIUDAD: '9',
 }
 export const tipo_saldo = {
   ACREDITACIONES: '1',
@@ -390,10 +396,13 @@ export const estadosTrabajoArray = [
 export const rolesSistema = {
   activos_fijos: 'ACTIVOS FIJOS',
   administrador: 'ADMINISTRADOR',
+  administradorVehiculos: 'ADMINISTRADOR_VEHICULOS',
+  mecanicoGeneral: 'MECANICO_GENERAL',
   bodega: 'BODEGA',
   bodegaTelconet: 'BODEGA TELCONET',
   compras: 'COMPRAS',
   contabilidad: 'CONTABILIDAD',
+  chofer: 'CHOFER',
   supervisor: 'SUPERVISOR_CAMPO',
   coordinador: 'COORDINADOR',
   coordinadorBodega: 'COORDINADOR DE BODEGA',
@@ -413,6 +422,7 @@ export const rolesSistema = {
   supervisor_ventas: 'SUPERVISOR_VENTAS',
   vendedor: 'VENDEDOR',
   financiero: 'FINANCIERO',
+  esSupervisorTecnico: 'SUPERVISOR_TECNICO',
 }
 
 export const cargosSistema = {
@@ -471,6 +481,15 @@ export const tiposReportesIngresos = {
   tarea: 5,
   transferencia: 6,
 }
+export const numDiaSemana = {
+  domingo: 0,
+  lunes: 1,
+  martes: 2,
+  miercoles: 3,
+  jueves: 4,
+  viernes: 5,
+  sabado: 6
+}
 
 export const opcionesReportesEgresos = [
   { value: 0, label: 'POR SOLICITANTE' },
@@ -484,6 +503,7 @@ export const opcionesReportesEgresos = [
   { value: 8, label: 'POR CLIENTE' },
   { value: 9, label: 'POR TAREA' },
   { value: 10, label: 'POR TRANSFERENCIA' },
+  { value: 11, label: 'POR CATEGORIAS DE MATERIALES' },
 ]
 
 export const tiposReportesEgresos = {
@@ -498,6 +518,7 @@ export const tiposReportesEgresos = {
   cliente: 8,
   tarea: 9,
   transferencia: 10,
+  categorias: 11,
 }
 
 export const opcionesDepartamentos = {
@@ -551,10 +572,18 @@ export function convertir_fecha_hora(fecha) {
   const fecha_convert = new Date(anio, mes, dia, tiempo[0], tiempo[1], 0)
   return fecha_convert
 }
+export const tiposDocumentosIdentificaciones = [
+  { nombre: 'Cedula', value:'CEDULA' },
+  { nombre: 'R.U.C.' , value:'RUC' },
+  { nombre: 'Pasaporte',value: 'PASAPORTE' },
+]
+
 export const niveles_academicos = [
-  { nombre: 'ESTUDIO PRIMARIO' },
-  { nombre: 'ESTUDIO SECUNDARIO' },
-  { nombre: 'TITULO SUPERIOR' },
+  { nombre: 'NINGUNA' },
+  { nombre: 'BÁSICA' },
+  { nombre: 'BACHILLER' },
+  { nombre: 'TERCER NIVEL' },
+  { nombre: 'CUARTO NIVEL' },
 ]
 
 export const tipos_sangre = [
@@ -605,6 +634,12 @@ export const estadosVentas = {
   RECHAZADO: 'RECHAZADO',
   PENDIENTE: 'PENDIENTE', // Se usa en vez de ASIGNADO en el dashboard
 }
+export const autorizacionesId = {
+  PENDIENTE: 1,
+  APROBADO: 2,
+  CANCELADO: 3,
+  VALIDADO: 4
+}
 export const autorizaciones = [
   { nombre: 'Pendiente', id: 1 }, //autorizacion PENDIENTE
   { nombre: 'Aprobado', id: 2 }, //autorizacion APROBADO
@@ -633,4 +668,25 @@ export const tabOptionsValoresAcreditar: TabOption[] = [
   // { label: 'Todo', value: '' },
   { label: 'Activas', value: '1' },
   { label: 'Inactivas', value: '0' },
-];
+]
+
+// INTRANET
+
+//Noticias
+export const tabOptionsNoticias: TabOption[] = [
+  { label: 'Noticias Registradas', value: '1' },
+]
+export const selectOptionsSiNo: SelectOption[] = [
+  { label: 'Sí', value: true },
+  { label: 'No', value: false },
+]
+
+export const opcionesGrafico = {
+  grafico: 'grafico',
+  listado: 'listado'
+}
+
+export const tipoAutenticacion = {
+  empleado: 'private',
+  usuario_externo: 'external'
+}

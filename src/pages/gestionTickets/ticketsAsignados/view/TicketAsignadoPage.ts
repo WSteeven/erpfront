@@ -1,10 +1,10 @@
 // Dependencias
 import { configuracionColumnasTicketAsignado } from '../domain/configuracionColumnasTicketAsignado'
+import { tabOptionsEstadosTicketsAsignados, estadosTickets } from 'config/tickets.utils'
 import { useAuthenticationStore } from 'stores/authentication'
 import { accionesTabla, estadosTrabajos } from 'config/utils'
-import { tabOptionsEstadosTicketsAsignados, estadosTickets } from 'config/tickets.utils'
-import { computed, defineComponent, ref } from 'vue'
 import { useTicketStore } from 'stores/ticket'
+import { defineComponent, ref } from 'vue'
 import { date } from 'quasar'
 
 // Componentes
@@ -17,7 +17,6 @@ import ModalesEntidad from 'components/modales/view/ModalEntidad.vue'
 import { ComportamientoModalesTicketAsignado } from '../application/ComportamientoModalesTicketAsignado'
 import { ContenedorSimpleMixin } from 'shared/contenedor/modules/simple/application/ContenedorSimpleMixin'
 import { CustomActionTable } from 'components/tables/domain/CustomActionTable'
-// import { SubtareaListadoPusherEvent } from '../application/SubtareaPusherEventBORRAR'
 import { TicketController } from 'pages/gestionTickets/tickets/infraestructure/TicketController'
 import { Ticket } from 'pages/gestionTickets/tickets/domain/Ticket'
 import { useBotonesTablaTicket } from 'pages/gestionTickets/tickets/application/BotonesTablaTicket'

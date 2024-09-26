@@ -1,87 +1,42 @@
 // Dependencias
 import { configuracionColumnasPermisoEmpleado } from '../domain/configuracionColumnasPermisoEmpleado'
 import { useVuelidate } from '@vuelidate/core'
-import { computed, defineComponent, reactive, ref, watchEffect } from 'vue'
+import { computed, defineComponent, ref, watchEffect } from 'vue'
 
 // Componentes
-import TabLayout from 'shared/contenedor/modules/simple/view/TabLayout.vue'
+import ArchivoSeguimiento from 'pages/gestionTrabajos/subtareas/modules/gestorArchivosTrabajos/view/ArchivoSeguimiento.vue'
+import TabLayoutFilterTabs2 from 'shared/contenedor/modules/simple/view/TabLayoutFilterTabs2.vue'
+import GestorDocumentos from 'components/documentos/view/GestorDocumentos.vue'
 import SelectorImagen from 'components/SelectorImagen.vue'
 
 //Logica y controladores
 import { ContenedorSimpleMixin } from 'shared/contenedor/modules/simple/application/ContenedorSimpleMixin'
 import { PermisoEmpleadoController } from '../infraestructure/PermisoEmpleadoController'
 import { PermisoEmpleado } from '../domain/PermisoEmpleado'
-import { removeAccents } from 'shared/utils'
-import {
-  convertir_fecha,
-  convertir_fecha_guion,
-  convertir_fecha_hora,
-  maskFecha,
-  tabOptionsPermiso,
-} from 'config/utils'
-import {
-  requiredIf,
-  maxLength,
-  minLength,
-  required,
-} from 'shared/i18n-validators'
+import { obtenerFechaActual, removeAccents, sumarFechas } from 'shared/utils'
+import { autorizacionesId, convertir_fecha_guion, convertir_fecha_hora, maskFecha, numDiaSemana, tabOptionsPermiso, } from 'config/utils'
+import { requiredIf, required } from 'shared/i18n-validators'
 import { MotivoPermisoEmpleadoController } from 'pages/recursosHumanos/motivo/infraestructure/MotivoPermisoEmpleadoController'
 import { EmpleadoController } from 'pages/recursosHumanos/empleados/infraestructure/EmpleadoController'
 import { endpoints } from 'config/api'
 import { Archivo } from 'pages/gestionTrabajos/subtareas/modules/gestorArchivosTrabajos/domain/Archivo'
 import { ArchivoPermisoEmpleadoController } from '../infraestructure/ArchivoPermisoEmpleadoController'
 import { useAuthenticationStore } from 'stores/authentication'
-import { LocalStorage } from 'quasar'
-import GestorDocumentos from 'components/documentos/view/GestorDocumentos.vue'
-import { useNotificaciones } from 'shared/notificaciones'
-import TabLayoutFilterTabs2 from 'shared/contenedor/modules/simple/view/TabLayoutFilterTabs2.vue'
 import { CustomActionTable } from 'components/tables/domain/CustomActionTable'
-import ArchivoSeguimiento from 'pages/gestionTrabajos/subtareas/modules/gestorArchivosTrabajos/view/ArchivoSeguimiento.vue'
 import { AutorizacionController } from 'pages/administracion/autorizaciones/infraestructure/AutorizacionController'
+import { addDay, format, parse } from '@formkit/tempo'
 
 export default defineComponent({
-  components: {
-    TabLayoutFilterTabs2,
-    SelectorImagen,
-    GestorDocumentos,
-    ArchivoSeguimiento,
-  },
+  components: { TabLayoutFilterTabs2, SelectorImagen, GestorDocumentos, ArchivoSeguimiento, },
   emits: ['cerrar-modal'],
   setup(props, { emit }) {
-    const mixin = new ContenedorSimpleMixin(
-      PermisoEmpleado,
-      new PermisoEmpleadoController()
-    )
-    const mixinArchivoPrestamoEmpleado = new ContenedorSimpleMixin(
-      Archivo,
-      new ArchivoPermisoEmpleadoController()
-    )
+    const mixin = new ContenedorSimpleMixin(PermisoEmpleado, new PermisoEmpleadoController())
+    const mixinArchivoPrestamoEmpleado = new ContenedorSimpleMixin(Archivo, new ArchivoPermisoEmpleadoController())
 
-    const {
-      entidad: permiso,
-      disabled,
-      accion,
-      listado,
-      listadosAuxiliares,
-    } = mixin.useReferencias()
-    const { setValidador, consultar, cargarVista, obtenerListados, listar } =
-      mixin.useComportamiento()
-    const {
-      onBeforeGuardar,
-      onGuardado,
-      onBeforeModificar,
-      onModificado,
-      onConsultado,
-      onReestablecer,
-    } = mixin.useHooks()
+    const { entidad: permiso, disabled, accion, listadosAuxiliares, } = mixin.useReferencias()
+    const { setValidador, consultar, cargarVista, obtenerListados, listar } = mixin.useComportamiento()
+    const { onBeforeGuardar, onGuardado, onBeforeModificar, onConsultado, onReestablecer, } = mixin.useHooks()
     const store = useAuthenticationStore()
-    const {
-      confirmar,
-      prompt,
-      notificarCorrecto,
-      notificarAdvertencia,
-      notificarError,
-    } = useNotificaciones()
 
     const tipos_permisos = ref([])
     const empleados = ref([])
@@ -91,31 +46,97 @@ export default defineComponent({
     const autorizaciones = ref()
     const esRecursosHumanos = store.esRecursosHumanos
     const esAutorizador = ref(false)
+    //Definimos variables de hora de inicio y fin para la jornada laboral
+    const horaInicioLaboral = 8
+    const horaFinLaboral = 17
+    const milisegundosPorHora = 1000 * 60 * 60;
+    const minuteOptions = [0, 15, 30, 45]
+    const mask = "YYYY-MM-DD HH:mm"
+
     const verEmpleado = computed(() => store.can('puede.ver.campo.empleado'))
     const esNuevo = computed(() => {
       return accion.value === 'NUEVO'
     })
     const dias_permiso = computed(() => {
       if (permiso.fecha_hora_inicio != null && permiso.fecha_hora_fin != null) {
-        const fechaInicio = convertir_fecha_hora(permiso.fecha_hora_inicio)
-        const fechaFin = convertir_fecha_hora(permiso.fecha_hora_fin)
-        // Calcula la diferencia en dias
-        const diferenciaDias = fechaFin.getDate() - fechaInicio.getDate()
-        return diferenciaDias
+        const fechaInicio = parse(permiso.fecha_hora_inicio != null ? permiso.fecha_hora_inicio : new Date().toString(), mask)
+        const fechaFin = parse(permiso.fecha_hora_fin != null ? permiso.fecha_hora_fin : new Date().toString(), mask)
+        let horasLaborales = 0
+        let fechaActual = fechaInicio
+        let diferenciaDias = 0
+
+        while (fechaActual < fechaFin) {
+          if (fechaActual.getHours() >= horaInicioLaboral && fechaActual.getHours() < horaFinLaboral)
+            horasLaborales++
+
+          //Avanzamos a la siguiente hora
+          fechaActual.setTime(fechaActual.getTime() + milisegundosPorHora);
+        }
+        // console.log(horasLaborales)
+        if (horasLaborales > 8) {
+          // console.log(horasLaborales / 9 * 8)
+          diferenciaDias = horasLaborales / 9
+        } else
+          diferenciaDias = horasLaborales < 8 ? 0 : horasLaborales / 8
+
+        return Math.round(diferenciaDias)
       } else {
         return 0
       }
     })
     const horas_permisos = computed(() => {
       if (permiso.fecha_hora_inicio != null && permiso.fecha_hora_fin != null) {
-        const fechaInicio = convertir_fecha_hora(permiso.fecha_hora_inicio)
-        const fechaFin = convertir_fecha_hora(permiso.fecha_hora_fin)
-        // Calcula la diferencia en milisegundos
-        const diferenciaMilisegundos =
-          fechaFin.getTime() - fechaInicio.getTime()
-        // Calcula la diferencia en horas
-        const diferenciaHoras = diferenciaMilisegundos / (1000 * 60 * 60)
-        return diferenciaHoras
+        const fechaInicio = parse(permiso.fecha_hora_inicio != null ? permiso.fecha_hora_inicio : new Date().toString(), mask)
+        const fechaFin = parse(permiso.fecha_hora_fin != null ? permiso.fecha_hora_fin : new Date().toString(), mask)
+        // Verificar que la fecha de inicio sea anterior a la fecha de fin
+        if (fechaInicio >= fechaFin) {
+          return "La fecha de inicio debe ser anterior a la fecha de fin.";
+        }
+        let tiempoLaboralMilisegundos = 0;
+        let fechaActual = new Date(fechaInicio);
+
+        // Iterar sobre cada día entre la fecha de inicio y la fecha de fin
+        while (fechaActual < fechaFin) {
+          // Si la fecha actual es antes del horario laboral, avanzar al próximo día laboral
+          if (fechaActual.getHours() < horaInicioLaboral || (fechaActual.getHours() === horaInicioLaboral && fechaActual.getMinutes() < 0)) {
+            fechaActual.setHours(horaInicioLaboral);
+            fechaActual.setMinutes(0);
+          }
+
+          // Si la fecha actual es después del horario laboral, avanzar al próximo día laboral
+          if (fechaActual.getHours() >= horaFinLaboral || (fechaActual.getHours() === horaFinLaboral && fechaActual.getMinutes() >= 0)) {
+            fechaActual.setDate(fechaActual.getDate() + 1);
+            fechaActual.setHours(horaInicioLaboral);
+            fechaActual.setMinutes(0);
+            continue;
+          }
+
+          // Calcular la fecha de fin del día laboral actual
+          let finDiaLaboral = new Date(fechaActual);
+          finDiaLaboral.setHours(horaFinLaboral);
+          finDiaLaboral.setMinutes(0);
+
+          // Si la fecha de fin es después de la fecha de fin real, ajustarla
+          if (finDiaLaboral > fechaFin) {
+            finDiaLaboral = new Date(fechaFin);
+          }
+
+          // Calcular la diferencia en milisegundos para este día laboral
+          let diferenciaMilisegundos = finDiaLaboral.getTime() - fechaActual.getTime();
+          tiempoLaboralMilisegundos += diferenciaMilisegundos;
+
+          // Avanzar al próximo día laboral
+          fechaActual.setDate(fechaActual.getDate() + 1);
+          fechaActual.setHours(horaInicioLaboral);
+          fechaActual.setMinutes(0);
+        }
+
+        // Convertir el tiempo laboral total en horas y minutos
+        let horas = Math.floor(tiempoLaboralMilisegundos / milisegundosPorHora) > 8 ? Math.floor(tiempoLaboralMilisegundos / milisegundosPorHora / 9 * 8) : Math.floor(tiempoLaboralMilisegundos / milisegundosPorHora);
+        let minutos = Math.floor((tiempoLaboralMilisegundos % milisegundosPorHora) / (1000 * 60));
+
+        // Formatear el resultado como "horas minutos"
+        return `${horas} horas ${minutos} minutos`;
       } else {
         return 0
       }
@@ -124,9 +145,9 @@ export default defineComponent({
     onBeforeGuardar(() => {
       permiso.tieneDocumento =
         refArchivoPrestamoEmpresarial.value.tamanioListado > 0 ? true : false
-      if (!permiso.tieneDocumento) {
-        notificarAdvertencia('Debe seleccionar al menos un archivo.')
-      }
+      // if (!permiso.tieneDocumento) {
+      //   notificarAdvertencia('Debe seleccionar al menos un archivo.')
+      // }
     })
     onBeforeModificar(() => {
       permiso.tieneDocumento = true
@@ -176,54 +197,66 @@ export default defineComponent({
         },
         autorizaciones: {
           controller: new AutorizacionController(),
-          params: { campos: 'id,nombre', es_validado: false , es_modulo_rhh:true},
+          params: {
+            campos: 'id,nombre',
+            es_validado: false,
+            es_modulo_rhh: true,
+          },
         },
       })
 
       empleados.value = listadosAuxiliares.empleados
       tipos_permisos.value = listadosAuxiliares.tipos_permisos
-      autorizaciones.value = listadosAuxiliares.autorizaciones
+      autorizaciones.value = listadosAuxiliares.autorizaciones.filter(
+        (v) => v.id !== autorizacionesId.VALIDADO
+      )
     })
     function optionsFechaInicio(date) {
-      const currentDate =
-        permiso.fecha_hora_inicio != null
-          ? convertir_fecha_hora(permiso.fecha_hora_inicio)
-          : new Date() // Obtener la fecha actual
-      const year = currentDate.getFullYear() // Obtener el año
-      const month = String(currentDate.getMonth() + 1).padStart(2, '0') // Obtener el mes y asegurarse de que tenga dos dígitos
-      const day = String(currentDate.getDate()).padStart(2, '0') // Obtener el día y asegurarse de que tenga dos dígitos
-      const currentDateString = `${year}/${month}/${day}` // Formatear la fecha actual
-      return date >= currentDateString
+      const currentDateString = sumarFechas(obtenerFechaActual(),0,0,-15, 'YYYY/MM/DD')
+      return (
+        date >= currentDateString &&
+        new Date(date).getDay() < numDiaSemana.sabado &&
+        new Date(date).getDay() > numDiaSemana.domingo
+      )
     }
     function optionsFecha(date) {
-      const fechaActual = convertir_fecha_hora(permiso.fecha_hora_inicio)
-      const fechaIngresada = new Date(date)
-      const diferenciaMilisegundos =
-        fechaIngresada.getTime() - fechaActual.getTime()
-      const diferenciaDias = Math.floor(
-        diferenciaMilisegundos / (1000 * 60 * 60 * 24)
-      ) // Diferencia en días
+      const fecha_hora_inicio = format(
+        new Date(convertir_fecha_hora(permiso.fecha_hora_inicio)),
+        'YYYY/MM/DD'
+      )
       return (
-        diferenciaDias === -1 ||
-        diferenciaDias === 0 ||
-        diferenciaDias === 1 ||
-        diferenciaDias === 2
+        date >= fecha_hora_inicio &&
+        new Date(date).getDay() < numDiaSemana.sabado &&
+        new Date(date).getDay() > numDiaSemana.domingo
       )
     }
 
+    /**
+     * La función `opcionesFechaRecuperacion` verifica si una fecha determinada está dentro de ciertas
+     * restricciones en función de los parámetros de entrada.
+     * @param date - La función `opcionesFechaRecuperacion` toma un parámetro `fecha` y verifica si
+     * se suguiere fecha obtine la fecha sugerida caso contrario obtine la fecha de finalizacion. La función parece estar verificando si la 'fecha' proporcionada cumple con
+     * ciertas condiciones basadas en los valores de las variables 'permiso', 'dias_permiso' y
+     * 'numDiaSemana'.
+     * @returns La función `opcionesFechaRecuperacion` devuelve un valor booleano basado en las condiciones
+     * proporcionadas. La declaración de retorno verifica si la entrada `fecha` es mayor que una fecha
+     * formateada calculada en base a ciertas condiciones que involucran las variables `fecha_hora_fin`,
+     * `dias_permiso.value` y `numDiaSemana`. Si se cumplen todas las condiciones, la función devuelve
+     * 'verdadero', de lo contrario devuelve falso
+     */
     function optionsFechaRecuperacion(date) {
-      const fechaFin = convertir_fecha_guion(
-        permiso.fecha_hora_fin !== null
-          ? permiso.fecha_hora_fin
-          : ' '
+      const fecha_hora_fin = permiso.suguiere_fecha
+        ? new Date(permiso.fecha_hora_reagendamiento || Date.now())
+        : new Date(permiso.fecha_hora_fin ? convertir_fecha_hora(permiso.fecha_hora_fin) : Date.now());
+      return (
+        date > format(addDay(fecha_hora_fin, (dias_permiso.value > 0 ? dias_permiso.value - 1 : 0)), 'YYYY/MM/DD') &&
+        new Date(date).getDay() < numDiaSemana.sabado &&
+        new Date(date).getDay() > numDiaSemana.domingo
       )
-      return date > fechaFin
     }
     function optionsFechaSugerida(date) {
       const fechaFin = convertir_fecha_guion(
-        permiso.fecha_hora_fin !== null
-          ? permiso.fecha_hora_fin
-          : ' '
+        permiso.fecha_hora_fin !== null ? permiso.fecha_hora_fin : ' '
       )
       return date > fechaFin
     }
@@ -246,10 +279,10 @@ export default defineComponent({
       fecha_hora_inicio: { required },
       fecha_hora_fin: { required },
       fecha_recuperacion: {
-        required: requiredIf(() => permiso.recuperables == true),
+        required: requiredIf(() => permiso.recupero == true),
       },
       hora_recuperacion: {
-        required: requiredIf(() => permiso.recuperables == true),
+        required: requiredIf(() => permiso.recupero == true),
       },
       justificacion: { required },
       observacion: { required: requiredIf(() => esAutorizador.value) },
@@ -259,7 +292,19 @@ export default defineComponent({
     setValidador(v$.value)
     let tabPermisoEmpleado = '1'
     function filtrarPermisoEmpleado(tabSeleccionado: string) {
-      listar({ estado_permiso_id: tabSeleccionado }, false)
+      switch (tabSeleccionado) {
+        case '1': // pendientes
+          listar({ estado_permiso_id: tabSeleccionado })
+          break
+        case '2': //aprobados
+          listar({ estado_permiso_id: tabSeleccionado, recupero: 0 })
+          break
+        case '3': //cancelados o anulados
+          listar({ estado_permiso_id: tabSeleccionado, recupero: 0 })
+          break
+        default: // recuperados
+          listar({ recupero: 1 })
+      }
       tabPermisoEmpleado = tabSeleccionado
     }
 
@@ -297,7 +342,7 @@ export default defineComponent({
       removeAccents,
       mixin,
       permiso,
-      optionsFecha,
+      optionsFecha, minuteOptions,
       filtrarEmpleados,
       filtrarPermisoEmpleado,
       watchEffect,
@@ -325,6 +370,7 @@ export default defineComponent({
       disabled,
       tabOptionsPermiso,
       configuracionColumnas: configuracionColumnasPermisoEmpleado,
+      mask,
     }
   },
 })

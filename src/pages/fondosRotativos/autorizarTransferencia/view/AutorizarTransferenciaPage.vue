@@ -26,9 +26,11 @@
       tab-defecto="3"
     ></essential-table-tabs>
     <modal-entidad
-    :comportamiento="modales"
-    @guardado="guardado"
-    >  </modal-entidad>
+      :comportamiento="modales"
+      :persistente="false"
+      @guardado="guardado"
+    >
+    </modal-entidad>
   </q-page>
 </template>
 

@@ -1,40 +1,58 @@
 // Dependencias
-import { configuracionColumnasSubtareasRealizadas } from '../domain/configuracionColumnasSubtareasRealizadas'
+import { configuracionColumnasSubtareasRealizadasPorGrupoTiposTrabajosEmergencia } from '../domain/configuracionColumnasSubtareasRealizadasPorGrupoTiposTrabajosEmergencia'
 import { configuracionColumnasSubtareasRealizadasPorRegion } from '../domain/configuracionColumnasSubtareasRealizadasPorRegion'
 import { configuracionColumnasSubtareasRealizadasPorGrupo } from '../domain/configuracionColumnasSubtareasRealizadasPorGrupo'
-import { configuracionColumnasSubtareasRealizadasPorGrupoTiposTrabajosEmergencia } from '../domain/configuracionColumnasSubtareasRealizadasPorGrupoTiposTrabajosEmergencia'
-import { required } from '@vuelidate/validators'
+import { configuracionColumnasSubtarea } from 'pages/gestionTrabajos/subtareas/domain/configuracionColumnasSubtarea'
+import { optionsBarHorizontal as options, optionsBarVertical as optionsVertical } from 'config/graficoGenerico'
+import { configuracionColumnasSubtareasRealizadas } from '../domain/configuracionColumnasSubtareasRealizadas'
+import { StatusEssentialLoading } from 'components/loading/application/StatusEssentialLoading'
 import { defineComponent, reactive, ref } from 'vue'
+import { obtenerFechaActual } from 'shared/utils'
+import { required } from '@vuelidate/validators'
 import { useVuelidate } from '@vuelidate/core'
-import { tiposJornadas } from 'config/utils'
+import { acciones, accionesTabla, tiposJornadas } from 'config/utils'
+
+import { Chart as ChartJS, Title, Tooltip, Legend, BarElement, CategoryScale, LinearScale } from 'chart.js'
+import { Bar } from 'vue-chartjs'
 
 // Componentes
 import TabLayout from 'shared/contenedor/modules/simple/view/TabLayout.vue'
 import EssentialTable from 'components/tables/view/EssentialTable.vue'
-import SelectorImagen from 'components/SelectorImagen.vue'
+import GraficoGenerico from 'components/chartJS/GraficoGenerico.vue'
 import TableView from 'components/tables/view/TableView.vue'
-import { Chart as ChartJS, Title, Tooltip, Legend, BarElement, CategoryScale, LinearScale } from 'chart.js'
-import { Bar } from 'vue-chartjs'
+import SelectorImagen from 'components/SelectorImagen.vue'
 
 // Logica y controladores
+import { CausaIntervencionController } from 'pages/gestionTrabajos/causasIntervenciones/infraestructure/CausaIntervencionController'
+import { TipoTrabajoController } from 'pages/gestionTrabajos/tiposTareas/infraestructure/TipoTrabajoController'
 import { ContenedorSimpleMixin } from 'shared/contenedor/modules/simple/application/ContenedorSimpleMixin'
+import { useFiltrosListadosTarea } from 'pages/gestionTrabajos/tareas/application/FiltrosListadosTarea'
 import { ReporteModuloTareaController } from '../infraestructure/ReporteModuloTareaController'
 import { GrupoController } from 'pages/recursosHumanos/grupos/infraestructure/GrupoController'
+import { ClienteController } from 'sistema/clientes/infraestructure/ClienteController'
 import { ReporteSubtareasRealizadas } from '../domain/ReporteSubtareasRealizadas'
 import { FiltroReporteMaterial } from '../domain/FiltroReporteMaterial'
-import { ClienteController } from 'sistema/clientes/infraestructure/ClienteController'
-import { useFiltrosListadosTarea } from 'pages/gestionTrabajos/tareas/application/FiltrosListadosTarea'
 import { tiposReportes } from 'config/tareas.utils'
-import { TipoTrabajoController } from 'pages/gestionTrabajos/tiposTareas/infraestructure/TipoTrabajoController'
-import { CausaIntervencionController } from 'pages/gestionTrabajos/causasIntervenciones/infraestructure/CausaIntervencionController'
-import { obtenerFechaActual } from 'shared/utils'
-import { StatusEssentialLoading } from 'components/loading/application/StatusEssentialLoading'
+import { useBotonesTablaSubtarea } from 'pages/gestionTrabajos/subtareas/application/BotonesTablaSubtarea'
+import { Subtarea } from 'pages/gestionTrabajos/subtareas/domain/Subtarea'
+import { SubtareaController } from 'pages/gestionTrabajos/subtareas/infraestructure/SubtareaController'
+import { ComportamientoModalesSubtarea } from 'pages/gestionTrabajos/subtareas/application/ComportamientoModalesSubtarea'
+import { CustomActionTable } from 'components/tables/domain/CustomActionTable'
+import { useSubtareaStore } from 'stores/subtarea'
 
 export default defineComponent({
-  components: { TabLayout, EssentialTable, SelectorImagen, TableView, Bar },
+  components: { TabLayout, EssentialTable, SelectorImagen, TableView, GraficoGenerico, Bar },
   setup() {
     ChartJS.register(Title, Tooltip, Legend, BarElement, CategoryScale, LinearScale)
 
+    /*********
+     * Stores
+     *********/
+    const subtareaStore = useSubtareaStore()
+
+    /*********
+     * Mixin
+     *********/
     const mixin = new ContenedorSimpleMixin(
       ReporteSubtareasRealizadas,
       new ReporteModuloTareaController()
@@ -42,6 +60,10 @@ export default defineComponent({
 
     const { listadosAuxiliares, listado } = mixin.useReferencias()
     const { cargarVista, obtenerListados, listar } = mixin.useComportamiento()
+
+    const mixinSubtarea = new ContenedorSimpleMixin(Subtarea, new SubtareaController())
+    const { listado: subtareas } = mixinSubtarea.useReferencias()
+    const { listar: listarSubtareas } = mixinSubtarea.useComportamiento()
 
     cargarVista(async () => {
       await obtenerListados({
@@ -62,6 +84,9 @@ export default defineComponent({
       causasIntervenciones.value = listadosAuxiliares.causasIntervenciones
     })
 
+    /*************
+     * Variables
+     *************/
     const filtro = reactive(new FiltroReporteMaterial())
     const is_month = ref(false)
     const reporteModuloTareaController = new ReporteModuloTareaController()
@@ -80,25 +105,12 @@ export default defineComponent({
     const trabajoRealizadoPorGrupoTipoTrabajoBar = ref()
     const trabajoRealizadoPorGrupoTiposTrabajosEmergenciaBar = ref()
     const trabajoRealizadoPorGrupoCausaIntervencionBar = ref()
+    const graficosCausaIntervencion = ref([])
+    const modalAbierto = ref(false)
 
-    const options = {
-      responsive: true,
-      indexAxis: 'y',
-      scales: {
-        x: {
-          beginAtZero: true
-        },
-        y: {
-          beginAtZero: true
-        }
-      }
-    }
-
-    const optionsVertical = {
-      responsive: true,
-    }
-
-    // Reglas de validacion
+    /**********
+     * Reglas
+     **********/
     const reglas = {
       mes_anio: { required },
       grupo: { required },
@@ -107,9 +119,9 @@ export default defineComponent({
 
     const v$ = useVuelidate(reglas, filtro)
 
-    /*********
-   * Filtros
-   **********/
+    /**********
+     * Filtros
+     **********/
     const {
       clientes,
       filtrarClientes,
@@ -120,7 +132,25 @@ export default defineComponent({
     } = useFiltrosListadosTarea(listadosAuxiliares, filtro)
 
     filtro.mes_anio = obtenerFechaActual().substring(3)
-    consultarTodo()
+
+    /**********
+    * Modales
+    **********/
+    const modalesSubtarea = new ComportamientoModalesSubtarea()
+
+    /*************
+     * Funciones
+     *************/
+    const { btnSeguimiento } = useBotonesTablaSubtarea(subtareas, modalesSubtarea)
+    const botonVer: CustomActionTable<Subtarea> = {
+      titulo: 'Más detalles',
+      icono: 'bi-eye',
+      accion: async ({ entidad }) => {
+        subtareaStore.idSubtareaSeleccionada = entidad.id
+        subtareaStore.accion = acciones.consultar
+        modalesSubtarea.abrirModalEntidad('SubtareaPage')
+      },
+    }
 
     async function consultarReporte() {
       if (await v$.value.$validate())
@@ -129,52 +159,40 @@ export default defineComponent({
 
     function checkValue(val, reason, details) {
       is_month.value = reason === 'month' ? false : true
-      consultarTodo()
+      resetearGraficosCliente()
     }
 
-    async function consultar() {
+    async function consultarTiposTrabajosRealizados() {
       cargando.activar()
       const { result } = await reporteModuloTareaController.listar({ mes_anio: filtro.mes_anio, cliente_id: filtro.cliente, tipo_reporte: tiposReportes.TRABAJOS_REALIZADOS })
-      trabajosRealizados.value = result
-      const labels = result.map((item) => item.tipo_trabajo)
-      const valores = result.map((item) => item.suma_trabajo)
-      trabajosRealizadosBar.value = mapearDatos(labels, valores)
+      trabajosRealizadosBar.value = result
       cargando.desactivar()
     }
 
     async function consultarTrabajoRealizadoPorRegion() {
       cargando.activar()
-      const { result } = await reporteModuloTareaController.listar({ mes_anio: filtro.mes_anio, tipo_reporte: tiposReportes.TRABAJO_REALIZADO_POR_REGION })
-      trabajoRealizadoPorRegion.value = result
-      const labels = result.map((item) => item.region)
-      const valores = result.map((item) => item.suma_trabajo)
-      trabajoRealizadoPorRegionBar.value = mapearDatos(labels, valores)
+      const { result } = await reporteModuloTareaController.listar({ mes_anio: filtro.mes_anio, cliente_id: filtro.cliente, tipo_reporte: tiposReportes.TRABAJO_REALIZADO_POR_REGION })
+      trabajoRealizadoPorRegionBar.value = result
       cargando.desactivar()
     }
 
     async function consultarTrabajoRealizadoPorRegionTipoTrabajo() {
       cargando.activar()
-      const { result } = await reporteModuloTareaController.listar({ mes_anio: filtro.mes_anio, tipo_trabajo_id: filtro.tipo_trabajo, tipo_reporte: tiposReportes.TRABAJO_REALIZADO_POR_REGION_TIPO_TRABAJO })
-      trabajoRealizadoPorRegionTipoTrabajo.value = result
-      const labels = result.map((item) => item.region)
-      const valores = result.map((item) => item.suma_trabajo)
-      trabajoRealizadoPorRegionTipoTrabajoBar.value = mapearDatos(labels, valores)
+      const { result } = await reporteModuloTareaController.listar({ mes_anio: filtro.mes_anio, cliente_id: filtro.cliente, tipo_trabajo_id: filtro.tipo_trabajo, tipo_reporte: tiposReportes.TRABAJO_REALIZADO_POR_REGION_TIPO_TRABAJO })
+      trabajoRealizadoPorRegionTipoTrabajoBar.value = result
       cargando.desactivar()
     }
 
     async function consultarTrabajoRealizadoPorGrupoTipoTrabajo() {
       cargando.activar()
       const { result } = await reporteModuloTareaController.listar({ mes_anio: filtro.mes_anio, tipo_trabajo_id: filtro.tipo_trabajo, tipo_reporte: tiposReportes.TRABAJO_REALIZADO_POR_GRUPO_TIPO_TRABAJO })
-      trabajoRealizadoPorGrupoTipoTrabajo.value = result
-      const labels = result.map((item) => item.grupo)
-      const valores = result.map((item) => item.suma_trabajo)
-      trabajoRealizadoPorGrupoTipoTrabajoBar.value = mapearDatos(labels, valores)
+      trabajoRealizadoPorGrupoTipoTrabajoBar.value = result
       cargando.desactivar()
     }
 
     async function consultarTrabajoRealizadoPorGrupoTiposTrabajosEmergencia() {
       cargando.activar()
-      const { result } = await reporteModuloTareaController.listar({ mes_anio: filtro.mes_anio, tipo_reporte: tiposReportes.TRABAJO_REALIZADO_POR_GRUPO_TIPOS_TRABAJOS_EMERGENCIA })
+      const { result } = await reporteModuloTareaController.listar({ mes_anio: filtro.mes_anio, cliente_id: filtro.cliente, tipo_reporte: tiposReportes.TRABAJO_REALIZADO_POR_GRUPO_TIPOS_TRABAJOS_EMERGENCIA })
       trabajoRealizadoPorGrupoTiposTrabajosEmergencia.value = result
 
       const data = trabajoRealizadoPorGrupoTiposTrabajosEmergencia.value.map((fila: any) => {
@@ -185,13 +203,14 @@ export default defineComponent({
         return fila.grupo
       })
 
-      const labelsColumns = [{ label: 'CORTE FIBRA', color: '#5086c1' }, { label: 'MANTENIMIENTO', color: '#8f7193' }, { label: 'SOPORTE', color: '#bc98f3' }, { label: 'TAREA PROGRAMADA', color: '#b2dafa' }]
+      const labelsColumns = [{ label: 'CORTE FIBRA', color: '#999eb0' }, { label: 'MANTENIMIENTO', color: '#91bf67' }, { label: 'SOPORTE', color: '#94a5d9' }, { label: 'TAREA PROGRAMADA', color: '#818a5f' }]
 
       // Transponer la matriz
-      const transposed = transposeMatrix(data)
-
-      trabajoRealizadoPorGrupoTiposTrabajosEmergenciaBar.value = mapearDatosMultiple(labels, labelsColumns, transposed)
-      // console.log(trabajoRealizadoPorGrupoTiposTrabajosEmergenciaBar.value)
+      trabajoRealizadoPorGrupoTiposTrabajosEmergenciaBar.value = null
+      if (data.length) {
+        const transposed = transposeMatrix(data)
+        trabajoRealizadoPorGrupoTiposTrabajosEmergenciaBar.value = mapearDatosMultiple(labels, labelsColumns, transposed)
+      }
 
       cargando.desactivar()
     }
@@ -201,26 +220,11 @@ export default defineComponent({
     }
 
     async function consultarTrabajoRealizadoPorGrupoCausaIntervencion() {
-      cargando.activar()
-      const { result } = await reporteModuloTareaController.listar({ mes_anio: filtro.mes_anio, causa_intervencion: filtro.causa_intervencion, tipo_reporte: tiposReportes.TRABAJO_REALIZADO_POR_GRUPO_CAUSA_INTERVENCION })
-      trabajoRealizadoPorGrupoCausaIntervencion.value = result
-      const labels = result.map((item) => item.grupo)
-      const valores = result.map((item) => item.suma_trabajo)
-      trabajoRealizadoPorGrupoCausaIntervencionBar.value = mapearDatos(labels, valores)
-      cargando.desactivar()
-    }
+      cargarVista(async () => {
 
-    function mapearDatos(labels: [], valores: []) {
-      return {
-        labels: labels,
-        datasets: [
-          {
-            backgroundColor: '#0879dc',
-            label: 'Tipos de trabajos realizados',
-            data: valores,
-          }
-        ]
-      }
+        const { result } = await reporteModuloTareaController.listar({ mes_anio: filtro.mes_anio, tipo_trabajo_id: filtro.tipo_trabajo, tipo_reporte: tiposReportes.TRABAJO_REALIZADO_POR_GRUPO_CAUSA_INTERVENCION })
+        graficosCausaIntervencion.value = result
+      })
     }
 
     function mapearDatosMultiple(labels: string[], labelsColumns: any, valores: any[][]) {
@@ -238,10 +242,42 @@ export default defineComponent({
       }
     }
 
-    function consultarTodo() {
-      consultar()
-      consultarTrabajoRealizadoPorGrupoTiposTrabajosEmergencia()
+    const consultarCliente = () => {
+      consultarTiposTrabajosRealizados()
       consultarTrabajoRealizadoPorRegion()
+      consultarTrabajoRealizadoPorGrupoTiposTrabajosEmergencia()
+
+      resetearGraficosTipoTrabajo()
+    }
+
+    const consultarTipoTrabajo = () => {
+      consultarTrabajoRealizadoPorGrupoCausaIntervencion()
+      consultarTrabajoRealizadoPorRegionTipoTrabajo()
+      consultarTrabajoRealizadoPorGrupoTipoTrabajo()
+    }
+
+    const resetearGraficosCliente = () => {
+      filtro.cliente = null
+
+      trabajosRealizadosBar.value = []
+      trabajoRealizadoPorRegionBar.value = null
+      trabajoRealizadoPorGrupoTiposTrabajosEmergenciaBar.value = null
+
+      resetearGraficosTipoTrabajo()
+    }
+
+    const resetearGraficosTipoTrabajo = () => {
+      filtro.tipo_trabajo = null
+
+      graficosCausaIntervencion.value = []
+      trabajoRealizadoPorRegionTipoTrabajoBar.value = null
+      trabajoRealizadoPorGrupoTipoTrabajoBar.value = null
+    }
+
+    const mostrarTablaSubtareas = (data) => {
+      console.log(data)
+      // listarSubtareas({})
+      modalAbierto.value = true
     }
 
     return {
@@ -269,8 +305,7 @@ export default defineComponent({
       configuracionColumnasSubtareasRealizadasPorGrupo,
       configuracionColumnasSubtareasRealizadasPorGrupoTiposTrabajosEmergencia,
       // Consultar
-      consultarTodo,
-      consultar,
+      consultarTiposTrabajosRealizados,
       consultarTrabajoRealizadoPorRegion,
       consultarTrabajoRealizadoPorRegionTipoTrabajo,
       consultarTrabajoRealizadoPorGrupoTipoTrabajo,
@@ -290,6 +325,15 @@ export default defineComponent({
       trabajoRealizadoPorGrupoTipoTrabajoBar,
       trabajoRealizadoPorGrupoTiposTrabajosEmergenciaBar,
       trabajoRealizadoPorGrupoCausaIntervencionBar,
+      graficosCausaIntervencion,
+      consultarCliente,
+      consultarTipoTrabajo,
+      modalAbierto,
+      columnasSubtareas: [...configuracionColumnasSubtarea, accionesTabla],
+      mostrarTablaSubtareas,
+      subtareas,
+      btnSeguimiento,
+      botonVer,
     }
   },
 })

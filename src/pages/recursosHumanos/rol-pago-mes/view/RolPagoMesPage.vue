@@ -5,7 +5,7 @@
     :full="true"
     :permitirEditar="false"
     :permitirEliminar="false"
-    :mostrarButtonSubmits="tab === 'rol_pago'"
+    :mostrarButtonSubmits="tab === 'rol_pago' && !enviar_masivo"
     :tabOptions="tabOptionsEstadosRolPago"
     :accion1="btnFinalizarRolPago"
     :accion2="btnImprimirRolPago"
@@ -100,7 +100,7 @@
                 >
                 </q-input>
               </div>
-              <!-- Aceptar Sugerencias -->
+              <!-- Es quincena -->
               <div class="col-12 col-md-3">
                 <q-checkbox
                   class="q-mt-lg q-pt-md"
@@ -140,7 +140,7 @@
             :permitirEliminar="false"
             :mostrar-botones="false"
             :mostrarFooter="true"
-            :permitirFiltrar="true"
+            :permitirFiltrar="false"
             @tab-seleccionado="filtrarRolPagoEmpleado"
             :tabDefecto="tabActual"
             :alto-fijo="true"

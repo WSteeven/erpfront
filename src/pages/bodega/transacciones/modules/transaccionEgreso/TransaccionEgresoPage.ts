@@ -1,8 +1,8 @@
 //Dependencias
 import { configuracionColumnasTransaccionEgreso } from '../../domain/configuracionColumnasTransaccionEgreso'
-import { required, requiredIf } from '@vuelidate/validators'
+import { required, requiredIf } from 'shared/i18n-validators'
 import { useVuelidate } from '@vuelidate/core'
-import { Ref, defineComponent, ref } from 'vue'
+import { Ref, defineComponent, ref, watchEffect } from 'vue'
 import { configuracionColumnasInventarios } from 'pages/bodega/inventario/domain/configuracionColumnasInventarios'
 import { configuracionColumnasItemsSeleccionados } from 'pages/bodega/traspasos/domain/configuracionColumnasItemsSeleccionados'
 import { configuracionColumnasListadoProductosSeleccionados } from '../transaccionContent/domain/configuracionColumnasListadoProductosSeleccionados'
@@ -13,7 +13,7 @@ import { configuracionColumnasDetallesProductos } from 'pages/bodega/detalles_pr
 import { acciones, estadosTransacciones, motivosTransaccionesBodega, tabOptionsTransaccionesEgresos, accionesTabla } from 'config/utils'
 
 // Componentes
-import TabLayoutFilterTabs2 from "shared/contenedor/modules/simple/view/TabLayoutFilterTabs2.vue";
+import TabLayoutFilterTabs2 from 'shared/contenedor/modules/simple/view/TabLayoutFilterTabs2.vue';
 import EssentialTable from 'components/tables/view/EssentialTable.vue'
 import EssentialSelectableTable from 'components/tables/view/EssentialSelectableTable.vue'
 import LabelInfoEmpleado from 'components/modales/modules/LabelInfoEmpleado.vue'
@@ -56,13 +56,16 @@ import { ProyectoController } from 'pages/gestionTrabajos/proyectos/infraestruct
 import { StatusEssentialLoading } from 'components/loading/application/StatusEssentialLoading'
 import { TareasEmpleadoController } from 'pages/gestionTrabajos/tareas/infraestructure/TareasEmpleadoController'
 import { EtapaController } from 'pages/gestionTrabajos/proyectos/modules/etapas/infraestructure/EtapaController'
+import { ComportamientoModalesTransaccionEgreso } from './application/ComportamientoModalesGestionarEgresos'
+import { Fields } from '../../../../sistema/permisos/permisos'
+import { empresas } from 'config/utils/sistema'
 
 export default defineComponent({
   name: 'Egresos',
   components: { TabLayoutFilterTabs2, EssentialTable, EssentialSelectableTable, LabelInfoEmpleado, ModalesEntidad },
   setup() {
     const mixin = new ContenedorSimpleMixin(Transaccion, new TransaccionEgresoController())
-    const { entidad: transaccion, disabled, accion, listadosAuxiliares, listado } = mixin.useReferencias()
+    const { entidad: transaccion, filtros, disabled, accion, listadosAuxiliares, listado } = mixin.useReferencias()
     const { setValidador, obtenerListados, cargarVista, listar, } = mixin.useComportamiento()
     const { onConsultado, onReestablecer, onGuardado } = mixin.useHooks()
     const { confirmar, prompt, notificarError, notificarAdvertencia } = useNotificaciones()
@@ -77,7 +80,12 @@ export default defineComponent({
     const inventarioStore = useInventarioStore()
     const empleadoStore = useEmpleadoStore()
 
+    /*************
+     * Variables
+     *************/
     const modalesEmpleado = new ComportamientoModalesEmpleado()
+    const modales = new ComportamientoModalesTransaccionEgreso()
+    const existeItemArmaFuego = ref(false)
 
     //orquestador
     const {
@@ -89,7 +97,7 @@ export default defineComponent({
       seleccionar: seleccionarProducto
     } = useOrquestadorSelectorItemsEgreso(transaccion, 'inventarios')
 
-
+    const paginate = true
     const usuarioLogueado = store.user
     const esBodeguero = store.esBodeguero
     const esCoordinador = store.esCoordinador
@@ -104,7 +112,7 @@ export default defineComponent({
     let listadoPedido: Ref<any[]> = ref([])
     let coincidencias = ref()
     let listadoCoincidencias = ref()
-    const tabDefecto = ref('PENDIENTE')
+    const tabDefecto = ref(estadosTransacciones.pendiente)
 
 
 
@@ -171,6 +179,8 @@ export default defineComponent({
         puedeEditarCantidad.value = false
         puedeDespacharMaterial.value = false
       }
+
+      transaccion.se_traslada_arma = !!transaccion.codigo_permiso_traslado
     })
     onGuardado(() => {
       pedidoStore.resetearPedido()
@@ -200,6 +210,7 @@ export default defineComponent({
       observacion_est: {
         requiredIfObsEstado: requiredIf(false)
       },
+      codigo_permiso_traslado: { requiredIf: requiredIf(() => existeItemArmaFuego.value && transaccion.se_traslada_arma) }
     }
     const v$ = useVuelidate(reglas, transaccion)
     setValidador(v$.value)
@@ -211,7 +222,22 @@ export default defineComponent({
 
     function filtrarTransacciones(tab: string) {
       tabDefecto.value = tab
-      listar({ estado: tab })
+      listar({ estado: tab }) //, paginate: paginate })
+
+      filtros.fields = { estado: tab }
+    }
+    const botonEditarEgreso: CustomActionTable = {
+      titulo: 'Editar',
+      icono: 'bi-pencil-square',
+      color: 'secondary',
+      accion: async ({ entidad }) => {
+        console.log('diste clic en botonEditarEgreso', tabDefecto.value)
+        transaccionStore.tab = tabDefecto.value
+        transaccionStore.idTransaccion = entidad.id
+        await transaccionStore.showPreviewEgreso()
+        modales.abrirModalEntidad('ModificarEgresoPage')
+      },
+      visible: ({ entidad }) => (entidad.estado_comprobante === estadosTransacciones.pendiente || entidad.estado_comprobante == estadosTransacciones.parcial) && store.can('puede.editar.transacciones_egresos')
     }
 
     const botonEditarCantidad: CustomActionTable = {
@@ -241,6 +267,16 @@ export default defineComponent({
         await transaccionStore.imprimirEgreso()
       },
     }
+    const botonImprimirActaEntregaRecepcion: CustomActionTable = {
+      titulo: 'Acta entrega-recepción',
+      color: 'primary',
+      icono: 'bi-printer',
+      visible: () => process.env.VUE_APP_ID === empresas.JPCUSTODY,
+      accion: async ({ entidad }) => {
+        transaccionStore.idTransaccion = entidad.id
+        await transaccionStore.imprimirActaEntregaRecepcion()
+      },
+    }
     const botonEliminar: CustomActionTable = {
       titulo: 'Quitar',
       color: 'negative',
@@ -267,7 +303,7 @@ export default defineComponent({
         })
       },
       visible: ({ entidad, posicion }) => {
-        return (store.esAdministrador || store.can('puede.anular.egresos')) && entidad.estado === estadosTransacciones.completa && entidad.estado_comprobante == 'PENDIENTE'
+        return (store.esAdministrador || store.can('puede.anular.egresos')) && entidad.estado === estadosTransacciones.completa && entidad.estado_comprobante == estadosTransacciones.pendiente
       }
 
     }
@@ -281,9 +317,9 @@ export default defineComponent({
     }
 
     /**
-     * La función "llenarTransaccion" llena una transacción con datos de un pedido específico, y si hay
+     * La función 'llenarTransaccion' llena una transacción con datos de un pedido específico, y si hay
      * un error, borra la transacción y los campos relacionados.
-     * @param {number} id - El parámetro "id" es un número que representa el ID de un pedido.
+     * @param {number} id - El parámetro 'id' es un número que representa el ID de un pedido.
      */
     async function llenarTransaccion(id: number) {
       limpiarTransaccion()
@@ -525,6 +561,12 @@ export default defineComponent({
       align: 'left'
     }
     ]
+
+    /************
+     * Observers
+     ************/
+    watchEffect(() => existeItemArmaFuego.value = transaccion.listadoProductosTransaccion.some((item) => item.categoria === 'ARMAS DE FUEGO'))
+
     return {
       mixin, transaccion, disabled, accion, v$, soloLectura,
       configuracionColumnas: configuracionColumnasTransaccionEgreso,
@@ -556,6 +598,7 @@ export default defineComponent({
 
       //modales
       modalesEmpleado,
+      modales,
 
       //funciones
       filtrarTransacciones,
@@ -614,6 +657,7 @@ export default defineComponent({
       botonEliminar,
       botonImprimir,
       botonAnular,
+      botonEditarEgreso,
       eliminar,
 
       //selector
@@ -632,6 +676,7 @@ export default defineComponent({
       esBodeguero,
       esBodegueroTelconet: store.esBodegueroTelconet,
       store,
+      paginate,
       esCoordinador,
 
       llenarTransaccion,
@@ -656,6 +701,8 @@ export default defineComponent({
         } else sucursales.value.sort((a: Sucursal, b: Sucursal) => ordernarListaString(a.lugar!, b.lugar!))
       },
       ordenarLista,
+      existeItemArmaFuego,
+      botonImprimirActaEntregaRecepcion,
     }
   }
 })

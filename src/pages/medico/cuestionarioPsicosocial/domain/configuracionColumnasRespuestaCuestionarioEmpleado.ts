@@ -1,5 +1,5 @@
-import { ColumnConfig } from "components/tables/domain/ColumnConfig";
-import { RespuestaCuestionarioEmpleado } from "./RespuestaCuestionarioEmpleado";
+import { ColumnConfig } from 'components/tables/domain/ColumnConfig';
+import { RespuestaCuestionarioEmpleado } from './RespuestaCuestionarioEmpleado';
 
 export const configuracionColumnasRespuestaCuestionarioEmpleado: ColumnConfig<RespuestaCuestionarioEmpleado>[] = [
   {

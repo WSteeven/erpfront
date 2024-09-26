@@ -4,7 +4,7 @@ import { endpoints } from 'config/api';
 
 export class PrestamoQuirorafarioController extends TransaccionSimpleController<PrestamoQuirorafario>{
   constructor(){
-    super(endpoints.prestamo_quirorafario)
+    super(endpoints.prestamos_quirografarios)
   }
 }
 

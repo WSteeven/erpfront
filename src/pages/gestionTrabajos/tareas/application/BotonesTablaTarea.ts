@@ -2,7 +2,6 @@ import { ContenedorSimpleMixin } from 'shared/contenedor/modules/simple/applicat
 import { AxiosHttpRepository } from 'shared/http/infraestructure/AxiosHttpRepository'
 import { CustomActionPrompt } from 'components/tables/domain/CustomActionPrompt'
 import { CustomActionTable } from 'components/tables/domain/CustomActionTable'
-import { useAuthenticationStore } from 'stores/authentication'
 import { useNotificaciones } from 'shared/notificaciones'
 import { Tarea } from '../domain/Tarea'
 import { endpoints } from 'config/api'
@@ -14,7 +13,6 @@ export const useBotonesTablaTarea = (mixin: ContenedorSimpleMixin<Tarea>) => {
   const { confirmar, prompt, notificarAdvertencia } = useNotificaciones()
   const { listado } = mixin.useReferencias()
   const { editarParcial } = mixin.useComportamiento()
-  const authenticationStore = useAuthenticationStore()
   const mostrarSolicitarImagen = ref(false)
   const filaFinalizar = {
     id: null,
@@ -25,6 +23,7 @@ export const useBotonesTablaTarea = (mixin: ContenedorSimpleMixin<Tarea>) => {
     imagen_informe: null,
   }
   const refVisorImagen = ref()
+  const entidadTarea = ref()
 
   const btnFinalizarTarea: CustomActionTable = {
     titulo: 'Finalizar tarea',
@@ -40,6 +39,7 @@ export const useBotonesTablaTarea = (mixin: ContenedorSimpleMixin<Tarea>) => {
 
       filaFinalizar.id = entidad.id
       filaFinalizar.posicion = posicion
+      entidadTarea.value = entidad
 
       if (!entidad.codigo_tarea_cliente) {
         const data: CustomActionPrompt = {
@@ -69,7 +69,6 @@ export const useBotonesTablaTarea = (mixin: ContenedorSimpleMixin<Tarea>) => {
         prompt(data)
 
       } else {
-
         const data: CustomActionPrompt = {
           titulo: 'Novedad',
           mensaje: 'Ingrese alguna novedad en caso de presentarse.',
@@ -86,6 +85,12 @@ export const useBotonesTablaTarea = (mixin: ContenedorSimpleMixin<Tarea>) => {
       }
     }
   }
+
+  // function notificarTransferenciaMaterialTareaAStock(accion: () => void) {
+  //   confirmar('Los materiales serán transferidos automáticamente al stock personal de cada empleado responsable. ¿Desea continuar?', async () => {
+  //     // accion()
+  //   })
+  // }
 
   const btnVerImagenInforme: CustomActionTable = {
     titulo: 'Ver imagen informe',
@@ -108,16 +113,11 @@ export const useBotonesTablaTarea = (mixin: ContenedorSimpleMixin<Tarea>) => {
     return response.data.estan_finalizadas
   }
 
-  async function verificarMaterialTareaDevuelto(idTarea: number, idEmpleado: number) {
-    const axios = AxiosHttpRepository.getInstance()
-    const ruta = axios.getEndpoint(endpoints.verificar_material_tarea_devuelto, { tarea_id: idTarea, empleado_id: idEmpleado })
-    const response: AxiosResponse = await axios.get(ruta)
-    return response.data.materiales_devueltos
-  }
-
   // Funcion que finaliza la tarea ya sea directamente o luego de subir la imagen solicitada
   function imagenSubida(imagen?) {
-    confirmar('¿Está seguro de finalizar la tarea?', async () => {
+
+    const mensaje = entidadTarea.value.cliente_id === clientes.NEDETEL ? 'Los materiales serán transferidos automáticamente al stock personal de cada empleado responsable. ¿Desea finalizar?' : '¿Desea finalizar?'
+    confirmar(mensaje, async () => {
       const posicion = filaFinalizar.posicion
       const id = filaFinalizar.id
 
@@ -127,8 +127,8 @@ export const useBotonesTablaTarea = (mixin: ContenedorSimpleMixin<Tarea>) => {
       delete (filaFinalizar as any).id
       delete (filaFinalizar as any).posicion
 
-      if (id) await editarParcial(id, filaFinalizar)
-      eliminarElemento(posicion)
+
+      if (id) editarParcial(id, filaFinalizar).then(() => eliminarElemento(posicion))
     })
   }
 

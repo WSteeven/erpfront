@@ -6,15 +6,18 @@ import { markRaw } from 'vue';
 import ProductoPage from 'pages/bodega/productos/view/ProductoPage.vue'
 import MarcaPage from 'pages/bodega/marcas/view/MarcaPage.vue'
 import ModeloPage from 'pages/bodega/modelos/view/ModeloPage.vue'
+import PermisoPage from 'pages/bodega/permisosArmas/view/PermisoArmaPage.vue'
 
-export class DetalleProductoModales{
+export class DetalleProductoModales {
     ProductoPage: ComponenteModal
     MarcaPage: ComponenteModal
     ModeloPage: ComponenteModal
+    PermisoPage: ComponenteModal
 
-    constructor(){
+    constructor() {
         this.ProductoPage = markRaw(new ComponenteModal('Producto', ProductoPage))
         this.MarcaPage = markRaw(new ComponenteModal('Producto', MarcaPage))
         this.ModeloPage = markRaw(new ComponenteModal('Producto', ModeloPage))
+        this.PermisoPage = markRaw(new ComponenteModal('Permisos de Armas', PermisoPage))
     }
 }

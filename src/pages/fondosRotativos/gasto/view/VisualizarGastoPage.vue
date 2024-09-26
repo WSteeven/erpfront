@@ -718,7 +718,6 @@
               :texto4="'# FACTURA: '+gasto.factura"
               :texto5="'TOTAL: $ '+gasto.total"
               file_extensiones=".jpg, image/*"
-              @blur="v$.comprobante2.$touch"
               @update:modelValue="(data) => (gasto.comprobante2 = data)"
             >
               <template v-slot:error>

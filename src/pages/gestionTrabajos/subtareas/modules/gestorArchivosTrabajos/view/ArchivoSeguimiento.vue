@@ -1,6 +1,6 @@
 <template>
   <!-- Ya no usar -->
-  <!-- En su lugar implementar GestorArchivo.vue -->
+  <!-- En su lugar implementar GestorArchivo.vue porque es polimorfico -->
   <div class="col-12 col-md-3 q-mb-lg">
     <br />
     <q-toggle

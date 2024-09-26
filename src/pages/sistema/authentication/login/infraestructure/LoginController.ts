@@ -15,18 +15,18 @@ export class LoginController {
       const usuario = await this.store.login(userLogin)
       const roles = usuario.roles
 
-      const existeYEsArreglo = typeof (roles) === 'object' && roles
 
       //if (existeYEsArreglo && (this.store.extraerRol(roles, rolesSistema.tecnico_lider) || this.store.extraerRol(roles, rolesSistema.tecnico_secretario))) {
       // console.log(roles)
       // console.log(existeYEsArreglo)
 
       // if (typeof usuario.cargo === 'string' && [cargosSistema.tecnico_lider, cargosSistema.tecnico_secretario].includes(usuario.cargo)) {
-      if (roles?.includes(rolesSistema.tecnico_lider)) {
-        this.Router.replace({ name: 'trabajo_agendado' })
-      } else {
-        this.Router.replace('/')
-      }
+        this.Router.replace('/intranet')
+      // if (roles?.includes(rolesSistema.tecnico_lider)) {
+      //   this.Router.replace({ name: 'trabajo_agendado' })
+      // } else {
+      //   this.Router.replace('/')
+      // }
 
       return usuario
     } catch (error: unknown) {

@@ -39,7 +39,7 @@ export default defineComponent({
           cargando.activar()
           await loginController.login(loginUser)
 
-          notificaciones.notificarCorrecto('Bienvenido a ' + nombreEmpresa.value)
+          notificaciones.notificarInformacion('Bienvenido a ' + nombreEmpresa.value)
 
         } catch (error: any) {
           if (isAxiosError(error)) {

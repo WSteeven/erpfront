@@ -1,7 +1,7 @@
-import { useNotificaciones } from "shared/notificaciones";
-import { pushEventMesaggeServiceWorker } from "shared/utils";
-import { useAuthenticationStore } from "stores/authentication";
-import { useNotificationRealtimeStore } from "stores/notificationRealtime";
+import { useNotificaciones } from 'shared/notificaciones';
+import { pushEventMesaggeServiceWorker } from 'shared/utils';
+import { useAuthenticationStore } from 'stores/authentication';
+import { useNotificationRealtimeStore } from 'stores/notificationRealtime';
 
 export class ProveedorEvent {
     store = useAuthenticationStore()

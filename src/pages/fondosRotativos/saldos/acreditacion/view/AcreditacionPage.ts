@@ -11,7 +11,7 @@ import { AcreditacionController } from '../infrestructure/AcreditacionController
 import { configuracionColumnasAcreditacion } from '../domain/configuracionColumnasAcreditacion'
 import { TipoFondoController } from 'pages/fondosRotativos/tipoFondo/infrestructure/TipoFonfoController'
 import { TipoSaldoController } from 'pages/fondosRotativos/tipo_saldo/infrestructure/TipoSaldoController'
-import { acciones, tabAcreditacion } from 'config/utils'
+import { acciones, maskFecha, tabAcreditacion } from 'config/utils'
 import { EmpleadoController } from 'pages/recursosHumanos/empleados/infraestructure/EmpleadoController'
 import { useNotificaciones } from 'shared/notificaciones'
 import { CustomActionPrompt } from 'components/tables/domain/CustomActionPrompt'
@@ -20,6 +20,8 @@ import { CustomActionTable } from 'components/tables/domain/CustomActionTable'
 import { useAuthenticationStore } from 'stores/authentication'
 import { StatusEssentialLoading } from 'components/loading/application/StatusEssentialLoading'
 import { UltimoSaldoController } from 'pages/fondosRotativos/reportes/reporteSaldoActual/infrestucture/UltimoSaldoController'
+import { obtenerFechaActual, ordenarLista, sumarFechas } from 'shared/utils'
+import { useFiltrosListadosSelects } from 'shared/filtrosListadosGenerales'
 
 export default defineComponent({
   components: { TabLayoutFilterTabs2 },
@@ -32,64 +34,35 @@ export default defineComponent({
     /***********
      * Mixin
      ************/
-    const mixin = new ContenedorSimpleMixin(
-      Acreditacion,
-      new AcreditacionController()
-    )
-    const {
-      entidad: acreditacion,
-      disabled,
-      accion,
-      listadosAuxiliares,
-      listado,
-    } = mixin.useReferencias()
-    const { setValidador, obtenerListados, cargarVista, listar } =
-      mixin.useComportamiento()
-    const {
-      confirmar,
-      prompt,
-      notificarCorrecto,
-      notificarAdvertencia,
-      notificarError,
-    } = useNotificaciones()
+    const mixin = new ContenedorSimpleMixin(Acreditacion, new AcreditacionController())
+    const { entidad: acreditacion, disabled, accion, listadosAuxiliares, listado, } = mixin.useReferencias()
+    const { setValidador, obtenerListados, cargarVista, listar } = mixin.useComportamiento()
+    const { confirmar, prompt, notificarCorrecto, notificarAdvertencia, notificarError, } = useNotificaciones()
 
     /*************
      * Validaciones
      **************/
     const reglas = {
-      usuario: {
-        required,
-      },
-      tipo_fondo: {
-        required,
-      },
-      tipo_saldo: {
-        required,
-      },
-      id_saldo: {
-        required,
-      },
-      descripcion_acreditacion: {
-        required,
-      },
-      monto: {
-        maxValue: maxValue(9999),
-        required,
-      },
+      usuario: { required },
+      tipo_fondo: { required },
+      tipo_saldo: { required },
+      id_saldo: { required },
+      descripcion_acreditacion: { required },
+      monto: { maxValue: maxValue(9999), required },
     }
     const v$ = useVuelidate(reglas, acreditacion)
     setValidador(v$.value)
-    const usuarios = ref([])
+
+    const { empleados, filtrarEmpleados } = useFiltrosListadosSelects(listadosAuxiliares)
     const tiposFondos = ref([])
     const tiposSaldos = ref([])
     const authenticationStore = useAuthenticationStore()
-    usuarios.value = listadosAuxiliares.usuarios
     const acreditacionCancelacionController =
       new AcreditacionCancelacionController()
 
     cargarVista(async () => {
       await obtenerListados({
-        usuarios: {
+        empleados: {
           controller: new EmpleadoController(),
           params: { campos: 'id,nombres,apellidos', estado: 1 },
         },
@@ -103,31 +76,13 @@ export default defineComponent({
         },
       })
 
-      usuarios.value = listadosAuxiliares.usuarios
+      empleados.value = listadosAuxiliares.empleados
       tiposFondos.value = listadosAuxiliares.tiposFondos
       tiposSaldos.value = listadosAuxiliares.tiposSaldos
     })
     /*********
      * Filtros
      **********/
-    // - Filtro AUTORIZACIONES ESPECIALES
-
-    function filtrarUsuarios(val, update) {
-      if (val === '') {
-        update(() => {
-          usuarios.value = listadosAuxiliares.usuarios
-        })
-        return
-      }
-      update(() => {
-        const needle = val.toLowerCase()
-        usuarios.value = listadosAuxiliares.usuarios.filter(
-          (v) =>
-            v.nombres.toLowerCase().indexOf(needle) > -1 ||
-            v.apellidos.toLowerCase().indexOf(needle) > -1
-        )
-      })
-    }
     // - Filtro TIPOS FONDOS
     function filtrarTiposFondos(val, update) {
       if (val === '') {
@@ -195,6 +150,11 @@ export default defineComponent({
       })
     }
 
+    function optionsFecha(date) {
+      const currentDate = sumarFechas(obtenerFechaActual(),0,0,-15, 'YYYY/MM/DD')
+      return date >= currentDate && date <= obtenerFechaActual('YYYY/MM/DD')  
+    }
+
     const btnEliminarAcreditacion: CustomActionTable = {
       titulo: '',
       icono: 'bi-trash',
@@ -235,15 +195,15 @@ export default defineComponent({
 
     watchEffect(
       () =>
-        (acreditacion.saldo_actual =
-          parseFloat(
-            acreditacion.saldo_anterior !== null
-              ? acreditacion.saldo_anterior.toString()
-              : '0'
-          ) +
-          parseFloat(
-            acreditacion.monto !== null ? acreditacion.monto.toString() : '0'
-          ))
+      (acreditacion.saldo_actual =
+        parseFloat(
+          acreditacion.saldo_anterior !== null
+            ? acreditacion.saldo_anterior.toString()
+            : '0'
+        ) +
+        parseFloat(
+          acreditacion.monto !== null ? acreditacion.monto.toString() : '0'
+        ))
     )
     return {
       mixin,
@@ -252,11 +212,13 @@ export default defineComponent({
       accion,
       acciones,
       v$,
-      usuarios,
       tiposFondos,
       tiposSaldos,
+      maskFecha,
+      ordenarLista,
+      optionsFecha,
       saldo_anterior,
-      filtrarUsuarios,
+      empleados, filtrarEmpleados,
       filtrarTiposFondos,
       filtrarTiposSaldos,
       filtrarAcreditacion,

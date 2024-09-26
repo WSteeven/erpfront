@@ -4,14 +4,15 @@
     :configuracionColumnas="configuracionColumnas"
     :tabOptions="tabOptionsPermiso"
     :full="true"
+    ajustarCeldas
     :accion1="editarPermiso"
     :permitirEditar="false"
     :permitirEliminar="false"
     :mostrarButtonSubmits="true"
     :filtrar="filtrarPermisoEmpleado"
     tabDefecto="1"
-    :forzarListar="true"
-  >
+    >
+    <!-- :forzarListar="true" -->
     <template #formulario>
       <q-form @submit.prevent>
         <div class="row q-col-gutter-sm q-mb-md q-mt-md q-mx-md q-py-sm">
@@ -41,7 +42,9 @@
               </template>
               <template v-slot:no-option>
                 <q-item>
-                  <q-item-section class="text-grey"> No hay resultados </q-item-section>
+                  <q-item-section class="text-grey">
+                    No hay resultados
+                  </q-item-section>
                 </q-item>
               </template>
             </q-select>
@@ -64,21 +67,31 @@
             >
               <template v-slot:append>
                 <q-icon name="event" class="cursor-pointer">
-                  <q-popup-proxy cover transition-show="scale" transition-hide="scale">
+                  <q-popup-proxy
+                    cover
+                    transition-show="scale"
+                    transition-hide="scale"
+                  >
                     <div class="q-gutter-md row items-start">
                       <q-date
                         v-model="permiso.fecha_hora_inicio"
-                        mask="DD-MM-YYYY HH:mm"
+                        :mask="mask"
                         :options="optionsFechaInicio"
                         today-btn
                       >
                         <div class="row items-center justify-end">
-                          <q-btn v-close-popup label="Cerrar" color="primary" flat />
+                          <q-btn
+                            v-close-popup
+                            label="Cerrar"
+                            color="primary"
+                            flat
+                          />
                         </div>
                       </q-date>
                       <q-time
                         v-model="permiso.fecha_hora_inicio"
-                        mask="DD-MM-YYYY HH:mm"
+                        :minute-options="minuteOptions"
+                       :mask="mask"
                         color="primary"
                       />
                     </div>
@@ -87,7 +100,10 @@
               </template>
 
               <template v-slot:error>
-                <div v-for="error of v$.fecha_hora_inicio.$errors" :key="error.$uid">
+                <div
+                  v-for="error of v$.fecha_hora_inicio.$errors"
+                  :key="error.$uid"
+                >
                   <div class="error-msg">{{ error.$message }}</div>
                 </div>
               </template>
@@ -111,29 +127,42 @@
             >
               <template v-slot:append>
                 <q-icon name="event" class="cursor-pointer">
-                  <q-popup-proxy cover transition-show="scale" transition-hide="scale">
+                  <q-popup-proxy
+                    cover
+                    transition-show="scale"
+                    transition-hide="scale"
+                  >
                     <div class="q-gutter-md row items-start">
                       <q-date
                         v-model="permiso.fecha_hora_fin"
-                        mask="DD-MM-YYYY HH:mm"
+                        :mask="mask"
                         :options="optionsFecha"
                         today-btn
                       >
                         <div class="row items-center justify-end">
-                          <q-btn v-close-popup label="Cerrar" color="primary" flat />
+                          <q-btn
+                            v-close-popup
+                            label="Cerrar"
+                            color="primary"
+                            flat
+                          />
                         </div>
                       </q-date>
                       <q-time
                         v-model="permiso.fecha_hora_fin"
-                        mask="DD-MM-YYYY HH:mm"
+                        :mask="mask"
                         color="primary"
+                        :minute-options="minuteOptions"
                       />
                     </div>
                   </q-popup-proxy>
                 </q-icon>
               </template>
               <template v-slot:error>
-                <div v-for="error of v$.fecha_hora_fin.$errors" :key="error.$uid">
+                <div
+                  v-for="error of v$.fecha_hora_fin.$errors"
+                  :key="error.$uid"
+                >
                   <div class="error-msg">{{ error.$message }}</div>
                 </div>
               </template>
@@ -153,7 +182,8 @@
               v-model="permiso.suguiere_fecha"
               label="Sugerir Fecha"
               :disable="
-                (permiso.id_jefe_inmediato == null && permiso.estado !== 1) || disabled
+                (permiso.id_jefe_inmediato == null && permiso.estado !== 1) ||
+                disabled
               "
               outlined
               dense
@@ -190,21 +220,30 @@
             >
               <template v-slot:append>
                 <q-icon name="event" class="cursor-pointer">
-                  <q-popup-proxy cover transition-show="scale" transition-hide="scale">
+                  <q-popup-proxy
+                    cover
+                    transition-show="scale"
+                    transition-hide="scale"
+                  >
                     <div class="q-gutter-md row items-start">
                       <q-date
                         v-model="permiso.fecha_hora_reagendamiento"
-                        mask="DD-MM-YYYY HH:mm"
-                              :options="optionsFechaSugerida"
+                        :mask="mask"
+                        :options="optionsFechaSugerida"
                         today-btn
                       >
                         <div class="row items-center justify-end">
-                          <q-btn v-close-popup label="Cerrar" color="primary" flat />
+                          <q-btn
+                            v-close-popup
+                            label="Cerrar"
+                            color="primary"
+                            flat
+                          />
                         </div>
                       </q-date>
                       <q-time
                         v-model="permiso.fecha_hora_reagendamiento"
-                        mask="DD-MM-YYYY HH:mm"
+                        :mask="mask"
                         color="primary"
                       />
                     </div>
@@ -218,8 +257,11 @@
           <div class="col-12 col-md-3">
             <label class="q-mb-sm block">Justificativo</label>
             <q-input
+            autogrow
               v-model="permiso.justificacion"
-              @update:model-value="(v) => (permiso.justificacion = removeAccents(v))"
+              @update:model-value="
+                (v) => (permiso.justificacion = removeAccents(v))
+              "
               placeholder="Obligatorio"
               :disable="!esNuevo"
               :error="!!v$.justificacion.$errors.length"
@@ -227,7 +269,10 @@
               dense
             >
               <template v-slot:error>
-                <div v-for="error of v$.justificacion.$errors" :key="error.$uid">
+                <div
+                  v-for="error of v$.justificacion.$errors"
+                  :key="error.$uid"
+                >
                   <div class="error-msg">{{ error.$message }}</div>
                 </div>
               </template>
@@ -235,12 +280,23 @@
           </div>
           <div class="col-12 col-md-3" v-if="!esNuevo">
             <label class="q-mb-sm block">Empleado</label>
-            <q-input v-model="permiso.empleado_info" :disable="!esNuevo" outlined dense>
+            <q-input
+              v-model="permiso.empleado_info"
+              :disable="!esNuevo"
+              outlined
+              autogrow
+              dense
+            >
             </q-input>
           </div>
           <div class="col-12 col-md-3" v-if="!esNuevo">
             <label class="q-mb-sm block">Departamento</label>
-            <q-input v-model="permiso.departamento" :disable="!esNuevo" outlined dense>
+            <q-input
+              v-model="permiso.departamento"
+              :disable="!esNuevo"
+              outlined
+              dense
+            >
             </q-input>
           </div>
           <div class="col-12 col-md-3" v-if="!esNuevo">
@@ -256,7 +312,13 @@
           </div>
           <div class="col-12 col-md-3" v-if="!esNuevo">
             <label class="q-mb-sm block">Jefe Inmediato</label>
-            <q-input v-model="permiso.jefe_inmediato" :disable="!esNuevo" outlined dense>
+            <q-input
+              v-model="permiso.jefe_inmediato"
+              :disable="!esNuevo"
+              outlined
+              autogrow
+              dense
+            >
             </q-input>
           </div>
           <!-- observacion -->
@@ -292,8 +354,8 @@
             >
             </gestor-documentos>
           </div>
-       <!-- Recuperable -->
-       <div
+          <!-- Recuperable -->
+          <!-- <div
             class="col-12 col-md-3"
             v-if="
               permiso.id_jefe_inmediato != null &&
@@ -306,77 +368,15 @@
               v-model="permiso.recuperables"
               label="Recuperables"
               :disable="
-                (permiso.id_jefe_inmediato == null && permiso.estado !== 1) || disabled
+                (permiso.id_jefe_inmediato == null && permiso.estado !== 1) ||
+                disabled
               "
               outlined
               dense
             ></q-checkbox>
-          </div>
-          <!-- Fecha Recuperacion -->
-          <div class="col-12 col-md-3" v-if="permiso.recuperables">
-            <label class="q-mb-sm block">Fecha de Recuperacion</label>
-            <q-input
-              v-model="permiso.fecha_recuperacion"
-              placeholder="Obligatorio"
-              :error="!!v$.fecha_recuperacion.$errors.length"
-              readonly
-              :disable="
-                (permiso.id_jefe_inmediato == null && permiso.estado !== 1) || disabled
-              "
-              @blur="v$.fecha_recuperacion.$touch"
-              outlined
-              dense
-            >
-              <template v-slot:append>
-                <q-icon name="event" class="cursor-pointer">
-                  <q-popup-proxy cover transition-show="scale" transition-hide="scale">
-                    <q-date
-                      v-model="permiso.fecha_recuperacion"
-                      :mask="maskFecha"
-                      :options="optionsFechaRecuperacion"
-                      today-btn
-                    >
-                      <div class="row items-center justify-end">
-                        <q-btn v-close-popup label="Cerrar" color="primary" flat />
-                      </div>
-                    </q-date>
-                  </q-popup-proxy>
-                </q-icon>
-              </template>
+          </div> -->
 
-              <template v-slot:error>
-                <div v-for="error of v$.fecha_recuperacion.$errors" :key="error.$uid">
-                  <div class="error-msg">{{ error.$message }}</div>
-                </div>
-              </template>
-            </q-input>
-          </div>
-          <!-- Hora de recuperacion -->
-          <div class="col-12 col-md-3" v-if="permiso.recuperables">
-            <label class="q-mb-sm block">Hora de Recuperacion (24 horas)</label>
-            <q-input
-              v-model="permiso.hora_recuperacion"
-              :error="!!v$.hora_recuperacion.$errors.length"
-              type="time"
-              :disable="
-                (permiso.id_jefe_inmediato == null && permiso.estado !== 1) || disabled
-              "
-              hint="Obligatorio"
-              stack-label
-              outlined
-              clearable
-              dense
-            >
-              <template v-slot:error>
-                <div v-for="error of v$.hora_recuperacion.$errors" :key="error.$uid">
-                  <div class="error-msg">{{ error.$message }}</div>
-                </div>
-              </template>
-            </q-input>
-          </div>
-
-
-          <!-- Recuperto -->
+          <!-- Recupero -->
           <div
             class="col-12 col-md-3"
             v-if="permiso.id_jefe_inmediato != null && permiso.estado == 2"
@@ -390,6 +390,88 @@
               dense
             ></q-checkbox>
           </div>
+
+          <!-- Fecha Recuperacion -->
+          <div class="col-12 col-md-3" v-if="permiso.recupero">
+            <label class="q-mb-sm block">Fecha de Recuperacion</label>
+            <q-input
+              v-model="permiso.fecha_recuperacion"
+              placeholder="Obligatorio"
+              :error="!!v$.fecha_recuperacion.$errors.length"
+              readonly
+              :disable="
+                (permiso.id_jefe_inmediato == null && permiso.estado !== 1) ||
+                disabled
+              "
+              @blur="v$.fecha_recuperacion.$touch"
+              outlined
+              dense
+            >
+              <template v-slot:append>
+                <q-icon name="event" class="cursor-pointer">
+                  <q-popup-proxy
+                    cover
+                    transition-show="scale"
+                    transition-hide="scale"
+                  >
+                    <q-date
+                      v-model="permiso.fecha_recuperacion"
+                      :mask="maskFecha"
+                      :options="optionsFechaRecuperacion"
+                      today-btn
+                    >
+                      <div class="row items-center justify-end">
+                        <q-btn
+                          v-close-popup
+                          label="Cerrar"
+                          color="primary"
+                          flat
+                        />
+                      </div>
+                    </q-date>
+                  </q-popup-proxy>
+                </q-icon>
+              </template>
+
+              <template v-slot:error>
+                <div
+                  v-for="error of v$.fecha_recuperacion.$errors"
+                  :key="error.$uid"
+                >
+                  <div class="error-msg">{{ error.$message }}</div>
+                </div>
+              </template>
+            </q-input>
+          </div>
+          <!-- Hora de recuperacion -->
+          <div class="col-12 col-md-3" v-if="permiso.recupero">
+            <label class="q-mb-sm block">Hora de Recuperacion (24 horas)</label>
+            <q-input
+              v-model="permiso.hora_recuperacion"
+              :error="!!v$.hora_recuperacion.$errors.length"
+              type="time"
+              :disable="
+                (permiso.id_jefe_inmediato == null && permiso.estado !== 1) ||
+                disabled
+              "
+              hint="Obligatorio"
+              stack-label
+              outlined
+              clearable
+              dense
+            >
+              <template v-slot:error>
+                <div
+                  v-for="error of v$.hora_recuperacion.$errors"
+                  :key="error.$uid"
+                >
+                  <div class="error-msg">{{ error.$message }}</div>
+                </div>
+              </template>
+            </q-input>
+          </div>
+
+
           <!-- Cargo a Vacaciones -->
           <div class="col-12 col-md-3" v-if="horas_permisos >= 8">
             <q-checkbox
@@ -416,6 +498,7 @@
             <label class="q-mb-sm block">Horas de permiso</label>
             <q-input
               v-model="horas_permisos"
+              autogrow
               placeholder="Obligatorio"
               disable
               outlined
@@ -424,7 +507,10 @@
             </q-input>
           </div>
           <!-- Autorizacion -->
-          <div class="col-12 col-md-3" v-if="accion == 'EDITAR' && esAutorizador">
+          <div
+            class="col-12 col-md-3"
+            v-if="accion == 'EDITAR' && esAutorizador"
+          >
             <label class="q-mb-sm block">Autorizacion</label>
             <q-select
               v-model="permiso.estado"
@@ -445,7 +531,9 @@
             >
               <template v-slot:no-option>
                 <q-item>
-                  <q-item-section class="text-grey"> No hay resultados </q-item-section>
+                  <q-item-section class="text-grey">
+                    No hay resultados
+                  </q-item-section>
                 </q-item>
               </template>
             </q-select>

@@ -131,6 +131,13 @@
 </template>
 
 <script lang="ts" setup>
+/**
+ * @author Henry Simbaña
+ * @description Este componente creado por Henry solo se utiliza para gastos en fondos rotativos.
+ * [Actualmente deprecated], No utilizar.
+ * Por favor utilizar SelectorImagen en su lugar.
+ *
+ */
 import { computed, ref, watch } from 'vue'
 
 const props = defineProps([
