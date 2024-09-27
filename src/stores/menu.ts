@@ -729,10 +729,10 @@ export const useMenuStore = defineStore('menu', () => {
               can: store.can('puede.acceder.licencia_empleado')
             },
             {
-              title: 'Vacaciones',
-              link: 'vacacion',
+              title: 'Solicitud de Vacaciones',
+              link: 'solicitud-vacaciones',
               icon: 'bi-umbrella-fill',
-              can: store.can('puede.acceder.vacacion')
+              can: store.can('puede.acceder.solicitud_vacaciones')
             },
             {
               title: 'Familiares',

@@ -10,6 +10,13 @@ const rutasRecursosHumanos: RouteRecordRaw[]=[
       ),
     meta: { requiresAuth: false },
   },
+  {
+    path: '/solicitud-vacaciones',
+    name: 'solicitud_vacaciones',
+    component: () =>
+      import('pages/recursosHumanos/vacacion/view/VacacionPage.vue'),
+    meta: { requiresAuth: true },
+  },
 ]
 
 export default rutasRecursosHumanos
