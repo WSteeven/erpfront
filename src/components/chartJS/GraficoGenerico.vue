@@ -1,6 +1,11 @@
 <template>
   <!-- <div class="bg-yellow full-width"> -->
-    <div v-if="data?.titulo" class="text-center q-py-xs bg-primary text-white rounded q-pb-sm ajustar-header q-px-sm">{{ data.titulo }}</div>
+  <div
+    v-if="data?.titulo"
+    class="text-center q-py-xs bg-primary text-white rounded q-pb-sm ajustar-header q-px-sm"
+  >
+    {{ data.titulo }}
+  </div>
   <div
     style="width: 100%; margin: 0 auto; height: 300px"
     class="bg-desenfoque rounded border-white q-px-md"
@@ -10,7 +15,7 @@
 </template>
 
 <script lang="ts">
-import { Chart as ChartJS } from 'chart.js'
+import { ChartData, Chart as ChartJS } from 'chart.js'
 import datalabels from 'chartjs-plugin-datalabels'
 import { onMounted, ref, defineComponent, watch } from 'vue'
 import Chart, { ChartTypeRegistry } from 'chart.js/auto'
@@ -42,8 +47,8 @@ export default defineComponent({
       const combinedOptions = Object.assign({}, props.options)
       // Crear el gráfico
       myChart = new Chart(ctx, {
-        type: props.tipo,
-        data: props.data,
+        type: props.tipo as keyof ChartTypeRegistry,
+        data: props.data as ChartData,
         options: combinedOptions
       })
 

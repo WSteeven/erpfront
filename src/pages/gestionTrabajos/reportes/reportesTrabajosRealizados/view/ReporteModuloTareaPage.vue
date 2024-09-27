@@ -148,6 +148,7 @@
               :data="trabajosRealizadosBar"
               :options="options"
               tipo="bar"
+              @click="mostrarTablaSubtareas"
             />
           </div>
         </div>
@@ -173,6 +174,7 @@
               :data="trabajoRealizadoPorRegionBar"
               :options="options"
               tipo="bar"
+              @click="mostrarTablaSubtareas"
             />
           </div>
         </div>
@@ -200,6 +202,7 @@
               :data="trabajoRealizadoPorRegionTipoTrabajoBar"
               :options="options"
               tipo="bar"
+              @click="mostrarTablaSubtareas"
             />
           </div>
         </div>
@@ -227,6 +230,7 @@
               :data="trabajoRealizadoPorGrupoTipoTrabajoBar"
               :options="options"
               tipo="bar"
+              @click="mostrarTablaSubtareas"
             />
           </div>
         </div>
@@ -254,6 +258,7 @@
               :data="trabajosRealizadosBar"
               :options="options"
               tipo="bar"
+              @click="mostrarTablaSubtareas"
             />
           </div>
 
@@ -294,24 +299,57 @@
       </q-card-section>
     </q-card>
 
-    <q-dialog v-model="modalAbierto" class="row">
-      <div class="col-12">
-        <essential-table
-          titulo="Subtareas"
-          :configuracionColumnas="columnasSubtareas"
-          :datos="subtareas"
-          :permitirConsultar="false"
-          :permitirEditar="false"
-          :permitirEliminar="false"
-          :mostrarBotones="false"
-          :alto-fijo="false"
-          :accion1="botonVer"
-          :accion2="btnSeguimiento"
-          :mostrar-exportar="true"
-        ></essential-table>
-      </div>
+    <q-dialog v-model="modalAbierto" full-width>
+      <q-card class="bg-transparent no-border" flat>
+        <q-toolbar class="bg-body rounded-header">
+          <q-avatar square>
+            <img :src="!$q.dark.isActive ? logoClaro : logoOscuro" />
+          </q-avatar>
+
+          <q-toolbar-title class="text-primary text-subtitle1"
+            ><span>{{ titulo }}</span></q-toolbar-title
+          >
+
+          <div class="row q-gutter-x-sm">
+            <q-btn
+              round
+              dense
+              unelevated
+              color="red"
+              size="sm"
+              v-close-popup
+            >
+              <q-icon name="bi-x-lg" size="14px"></q-icon>
+              <q-tooltip class="bg-dark">Cerrar</q-tooltip>
+            </q-btn>
+          </div>
+        </q-toolbar>
+
+        <q-card-section class="bg-body rounded-footer">
+          <essential-table
+            titulo="Subtareas"
+            :configuracionColumnas="columnasSubtareas"
+            :datos="subtareas"
+            :permitirConsultar="false"
+            :permitirEditar="false"
+            :permitirEliminar="false"
+            :mostrarBotones="false"
+            :alto-fijo="false"
+            :accion1="botonVer"
+            :accion2="btnSeguimiento"
+            :mostrar-exportar="true"
+          ></essential-table>
+        </q-card-section>
+      </q-card>
     </q-dialog>
   </q-page>
+
+  <modales-entidad
+    :comportamiento="modalesSubtarea"
+    :mixin-modal="mixinSubtarea"
+    :persistent="false"
+    :mostrar-listado="false"
+  />
 </template>
 
 <script src="./ReporteModuloTareaPage.ts"></script>

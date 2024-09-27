@@ -34,9 +34,13 @@
             class="lista-busqueda bg-solid custom-shadow text-color"
             style="width: 90%; margin: 0 auto"
           >
-            <div ref="refListadoBusqueda" v-for="(link, index) in resultadosBusqueda" :key="index">
+            <div
+              ref="refListadoBusqueda"
+              v-for="(link, index) in resultadosBusqueda"
+              :key="index"
+            >
               <q-item
-              :focused="posicionResultados==index"
+                :focused="posicionResultados == index"
                 clickable
                 v-if="link.link"
                 :to="link.link"
@@ -554,7 +558,7 @@
             'TransferenciaProductoEmpleado',
             'AsignacionVehiculo',
             'TransferenciaVehiculo',
-            'VacantePage',
+            'VacantePage'
           ]"
         >
           <component :is="Component" />
