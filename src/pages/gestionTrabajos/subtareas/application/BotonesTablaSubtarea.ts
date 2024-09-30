@@ -296,7 +296,8 @@ export const useBotonesTablaSubtarea = (listado: Ref<Subtarea[]>, modales: Compo
   async function guardadoModalesSubtarea(paginaModal: keyof SubtareaModales) {
     switch (paginaModal) {
       case 'AlimentacionGrupoPage':
-        confirmarFinalizar(dataGuardar.value)
+        await confirmarFinalizar(dataGuardar.value)
+        modales.cerrarModalEntidad()
         break
     }
   }

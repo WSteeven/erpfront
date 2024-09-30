@@ -63,6 +63,7 @@
       :mixin-modal="mixin"
       :confirmar-cerrar="false"
       :persistente="false"
+      @guardado="guardadoModalesSubtarea"
     />
   </q-page>
 </template>

@@ -55,7 +55,7 @@ export default defineComponent({
     * Modales
     **********/
     const modalesSubtarea = new ComportamientoModalesSubtarea()
-    const { btnIniciar, btnPausar, btnReanudar, btnSeguimiento, btnReagendar, btnRealizar, btnSuspender, btnCancelar, btnFinalizar, setFiltrarTrabajoAsignado } = useBotonesTablaSubtarea(listado, modalesSubtarea, listadosAuxiliares)
+    const { btnIniciar, btnPausar, btnReanudar, btnSeguimiento, btnReagendar, btnRealizar, btnSuspender, btnCancelar, btnFinalizar, setFiltrarTrabajoAsignado, guardadoModalesSubtarea } = useBotonesTablaSubtarea(listado, modalesSubtarea, listadosAuxiliares)
     setFiltrarTrabajoAsignado(filtrarSubtareas)
 
     /************
@@ -124,6 +124,7 @@ export default defineComponent({
       aplicarFiltro,
       altoFijo,
       mostrarTabs,
+      guardadoModalesSubtarea,
     }
   }
 })
