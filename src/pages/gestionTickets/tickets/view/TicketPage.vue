@@ -99,7 +99,7 @@
             <!-- 'col-md-9': ticket.departamento_responsable.length <= 1, }" -->
             <div class="col-12 col-md-6">
               <label class="q-mb-sm block"
-                >Departamento(s) que atenderá(n)</label
+                >Departamento(s) que atenderá(n) <small class="text-negative text-italic">*Crea tickets individuales a cada departamento</small></label
               >
               <q-select
                 v-model="ticket.departamento_responsable"
@@ -498,8 +498,8 @@
           <q-separator color="primary"></q-separator>
           <div class="col-12 text-primary bg-blue-1 q-px-md q-py-sm text-bold">
             <q-icon name="bi-people" class="q-mr-sm"></q-icon>
-            Añadir CC - Las personas especificadas aqui podrán agregar
-            comentarios al ticket
+            Añadir CC - Las personas especificadas aqui podrán agregar y leer
+            comentarios en el seguimiento del ticket
           </div>
           <q-separator color="primary"></q-separator>
 
