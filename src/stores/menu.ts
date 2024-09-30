@@ -291,12 +291,6 @@ export const useMenuStore = defineStore('menu', () => {
           icon: 'bi-check2-square'
         },
         {
-          title: 'Empleados',
-          link: 'empleados',
-          icon: 'bi-person-lines-fill',
-          can: store.can('puede.acceder.empleados') && store.esBodeguero
-        },
-        {
           title: 'Marcas',
           link: 'marcas',
           can: store.esActivosFijos, //store.can('puede.ver.marcas'),
@@ -834,6 +828,20 @@ export const useMenuStore = defineStore('menu', () => {
               icon: 'bi-box-fill',
               can: store.can('puede.acceder.tipos_licencias')
             }
+          ]
+        },
+        // Reportes del modulo empleados
+        {
+          title: 'Reportes',
+          icon: 'bi-graph-up-arrow',
+          can: store.can('puede.ver.reportes_rrhh'),
+          children: [
+            {
+              title: 'Reporte de Vacaciones de Empleados',
+              link: 'reporte-vacaciones',
+              icon: 'bi-sunglasses',
+              can: store.can('puede.ver.reportes_rrhh')||true
+            },
           ]
         }
       ]

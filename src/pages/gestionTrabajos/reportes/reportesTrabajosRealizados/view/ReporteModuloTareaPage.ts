@@ -6,8 +6,8 @@ import { configuracionColumnasSubtarea } from 'pages/gestionTrabajos/subtareas/d
 import { optionsBarHorizontal as options, optionsBarVertical as optionsVertical } from 'config/graficoGenerico'
 import { configuracionColumnasSubtareasRealizadas } from '../domain/configuracionColumnasSubtareasRealizadas'
 import { StatusEssentialLoading } from 'components/loading/application/StatusEssentialLoading'
-import { defineComponent, reactive, ref } from 'vue'
-import { obtenerFechaActual } from 'shared/utils'
+import { computed, defineComponent, reactive, ref } from 'vue'
+import { filterWhereIn, obtenerFechaActual } from 'shared/utils'
 import { required } from '@vuelidate/validators'
 import { useVuelidate } from '@vuelidate/core'
 import { acciones, accionesTabla, tiposJornadas } from 'config/utils'
@@ -18,6 +18,7 @@ import { Bar } from 'vue-chartjs'
 // Componentes
 import TabLayout from 'shared/contenedor/modules/simple/view/TabLayout.vue'
 import EssentialTable from 'components/tables/view/EssentialTable.vue'
+import ModalesEntidad from 'components/modales/view/ModalEntidad.vue'
 import GraficoGenerico from 'components/chartJS/GraficoGenerico.vue'
 import TableView from 'components/tables/view/TableView.vue'
 import SelectorImagen from 'components/SelectorImagen.vue'
@@ -39,9 +40,10 @@ import { SubtareaController } from 'pages/gestionTrabajos/subtareas/infraestruct
 import { ComportamientoModalesSubtarea } from 'pages/gestionTrabajos/subtareas/application/ComportamientoModalesSubtarea'
 import { CustomActionTable } from 'components/tables/domain/CustomActionTable'
 import { useSubtareaStore } from 'stores/subtarea'
+import { useConfiguracionGeneralStore } from 'stores/configuracion_general'
 
 export default defineComponent({
-  components: { TabLayout, EssentialTable, SelectorImagen, TableView, GraficoGenerico, Bar },
+  components: { TabLayout, EssentialTable, SelectorImagen, TableView, GraficoGenerico, Bar, ModalesEntidad, },
   setup() {
     ChartJS.register(Title, Tooltip, Legend, BarElement, CategoryScale, LinearScale)
 
@@ -49,6 +51,7 @@ export default defineComponent({
      * Stores
      *********/
     const subtareaStore = useSubtareaStore()
+    const configuracionGeneralStore = useConfiguracionGeneralStore()
 
     /*********
      * Mixin
@@ -63,7 +66,7 @@ export default defineComponent({
 
     const mixinSubtarea = new ContenedorSimpleMixin(Subtarea, new SubtareaController())
     const { listado: subtareas } = mixinSubtarea.useReferencias()
-    const { listar: listarSubtareas } = mixinSubtarea.useComportamiento()
+    const { filtrar: filtrarSubtareas } = mixinSubtarea.useComportamiento()
 
     cargarVista(async () => {
       await obtenerListados({
@@ -276,13 +279,17 @@ export default defineComponent({
 
     const mostrarTablaSubtareas = (data) => {
       console.log(data)
-      // listarSubtareas({})
+      subtareas.value = []
+      const ids = data.metadata.ids
+      const campo = data.metadata.campo
+      filtrarSubtareas(filterWhereIn('id', ids) + '&' + campo + '=' + data.label)
       modalAbierto.value = true
     }
 
     return {
       v$,
       mixin,
+      mixinSubtarea,
       listar,
       listado,
       filtro,
@@ -334,6 +341,9 @@ export default defineComponent({
       subtareas,
       btnSeguimiento,
       botonVer,
+      modalesSubtarea,
+      logoClaro: computed(() => configuracionGeneralStore.configuracion?.logo_claro),
+      logoOscuro: computed(() => configuracionGeneralStore.configuracion?.logo_oscuro),
     }
   },
 })

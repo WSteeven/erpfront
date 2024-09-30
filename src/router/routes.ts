@@ -2,6 +2,7 @@ import { RouteRecordRaw } from 'vue-router'
 import rutasMedico from './rutasMedico'
 import rutasTareas from './rutasTareas'
 import rutasTickets from './rutasTickets'
+import rutasRecursosHumanos from './rrhh/rutasRecursosHumanos'
 import rutasSeleccionContratacionPersonal from './rrhh/rutasSeleccionContratacionPersonal'
 import rutasActivosFijos from './rutasActivosFijos'
 import { empresas } from 'config/utils/sistema'
@@ -93,6 +94,7 @@ const routes: RouteRecordRaw[] = [
       /*******************
        * Módulo de RRHH
        *******************/
+      ...rutasRecursosHumanos,
       ...rutasSeleccionContratacionPersonal,
 
       /*******************
