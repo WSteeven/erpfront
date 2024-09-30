@@ -291,12 +291,6 @@ export const useMenuStore = defineStore('menu', () => {
           icon: 'bi-check2-square'
         },
         {
-          title: 'Empleados',
-          link: 'empleados',
-          icon: 'bi-person-lines-fill',
-          can: store.can('puede.acceder.empleados') && store.esBodeguero
-        },
-        {
           title: 'Marcas',
           link: 'marcas',
           can: store.esActivosFijos, //store.can('puede.ver.marcas'),

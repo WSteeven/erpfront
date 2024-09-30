@@ -322,7 +322,7 @@ export default defineComponent({
 
       function matches(item) {
         return searchTerms?.every(term =>
-          new RegExp(term, 'i').test(item.title ?? '')
+          new RegExp(term, 'i').test(item.title ?? '') && item.can
         )
       }
 
