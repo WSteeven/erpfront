@@ -118,8 +118,8 @@ export default defineComponent({
         empleado_id: empleado.value,
         tipo: 'NO ASIGNADOS'
       })
-      console.log(response)
-      console.log(response.data)
+      // console.log(response)
+      // console.log(response.data)
       // console.log(response.result.map((v) => v.name.replace('puede', '').split('.').join(' ').split('_').join(' ')))
 
 

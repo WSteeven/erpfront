@@ -53,6 +53,7 @@
       :mostrar-footer="false"
       :mostrar-botones="false"
       :permitir-buscar="false"
+      ajustarCeldas
       :accion1="btnDescargar"
     ></essential-table>
   </div>
