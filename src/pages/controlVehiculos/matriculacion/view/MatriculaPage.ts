@@ -1,7 +1,7 @@
 // Dependencies
 import { configuracionColumnasMatriculas } from '../domain/configuracionColumnasMatriculas';
 import { required, requiredIf } from 'shared/i18n-validators';
-import { defineComponent, reactive, ref } from 'vue';
+import { defineComponent,  ref } from 'vue';
 import useVuelidate from '@vuelidate/core';
 
 //Components
@@ -16,7 +16,7 @@ import { useNotificaciones } from 'shared/notificaciones';
 import { VehiculoController } from 'pages/controlVehiculos/vehiculos/infraestructure/VehiculoController';
 import { useFiltrosListadosSelects } from 'shared/filtrosListadosGenerales';
 import { tabOptionsMatriculas } from 'config/vehiculos.utils';
-import { obtenerFechaActual, obtenerMesMatricula, obtenerPrimerUltimoDiaMes, obtenerUltimoDigito, sumarFechas } from 'shared/utils';
+import { obtenerMesMatricula, obtenerPrimerUltimoDiaMes, obtenerUltimoDigito } from 'shared/utils';
 import { Vehiculo } from 'pages/controlVehiculos/vehiculos/domain/Vehiculo';
 import { date } from 'quasar';
 import { CustomActionTable } from 'components/tables/domain/CustomActionTable';

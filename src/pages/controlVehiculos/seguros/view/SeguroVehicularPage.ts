@@ -19,9 +19,9 @@ export default defineComponent({
     components: { TabLayoutFilterTabs2 },
     setup(props, { emit }) {
         const mixin = new ContenedorSimpleMixin(SeguroVehicular, new SeguroVehicularController())
-        const { entidad: seguro, disabled, listadosAuxiliares, accion } = mixin.useReferencias()
-        const { setValidador, obtenerListados, cargarVista, listar } = mixin.useComportamiento()
-        const { onReestablecer, onGuardado, onConsultado, onModificado } = mixin.useHooks()
+        const { entidad: seguro, disabled, accion } = mixin.useReferencias()
+        const { setValidador, listar } = mixin.useComportamiento()
+        const {  onGuardado } = mixin.useHooks()
 
         /*****************************
          * HOOKS
