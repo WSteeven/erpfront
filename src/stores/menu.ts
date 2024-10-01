@@ -50,37 +50,37 @@ export const useMenuStore = defineStore('menu', () => {
           title: 'Monitor',
           link: 'monitor-subtareas',
           icon: 'bi-eye-fill',
-          can: store.can('puede.ver.monitor_subtareas')
+          can: store.can('puede.acceder.monitor_subtareas')
         },
         {
           title: 'Proyectos',
           link: 'proyectos',
           icon: 'bi-folder-fill',
-          can: store.can('puede.ver.proyectos')
+          can: store.can('puede.acceder.proyectos')
         },
         {
           title: 'Control de tareas',
           link: 'tareas',
           icon: 'bi-check2-circle',
-          can: store.can('puede.ver.tareas')
+          can: store.can('puede.acceder.tareas')
         },
         {
           title: 'Alimentación grupos',
           link: 'alimentacion-grupo',
           icon: 'bi-check2-circle',
-          can: store.can('puede.ver.alimentacion_grupo')
+          can: store.can('puede.acceder.alimentacion_grupo')
         },
         {
           title: 'Movilización entre trabajos',
           link: 'reporte-movilizacion-subtarea',
           icon: 'bi-truck',
-          can: store.can('puede.ver.reporte_movilizacion_subtarea')
+          can: store.can('puede.acceder.reporte_movilizacion_subtarea')
         },
         {
           title: 'Clientes finales',
           link: 'clientes-finales',
           icon: 'bi-people-fill',
-          can: store.can('puede.ver.clientes_finales')
+          can: store.can('puede.acceder.clientes_finales')
         },
         {
           title: 'Centro de Costos',
@@ -104,19 +104,19 @@ export const useMenuStore = defineStore('menu', () => {
         {
           title: 'Reportes',
           icon: 'bi-graph-up-arrow',
-          can: store.can('puede.ver.reportes_modulo_tareas'),
+          can: store.can('puede.acceder.reportes_modulo_tareas'),
           children: [
             {
               title: 'Reportes materiales utilizados',
               link: 'reportes-materiales-utilizados',
               icon: 'bi-journal-check',
-              can: store.can('puede.ver.reportes_materiales_utilizados')
+              can: store.can('puede.acceder.reportes_materiales_utilizados')
             },
             {
               title: 'Reportes tareas finalizadas',
               link: 'reportes-modulo-tareas',
               icon: 'bi-clipboard-check',
-              can: store.can('puede.ver.reportes_modulo_tareas')
+              can: store.can('puede.acceder.reportes_modulo_tareas')
             }
           ]
         }
@@ -128,33 +128,33 @@ export const useMenuStore = defineStore('menu', () => {
     {
       title: 'Tickets',
       icon: 'bi-tags-fill',
-      can: store.can('puede.ver.modulo_tickets'),
+      can: store.can('puede.acceder.modulo_tickets'),
       module: true,
       children: [
         {
           title: 'Dashboard',
           link: 'dashboard-tickets',
           icon: 'bi-bar-chart-fill',
-          can: store.can('puede.ver.dashboard_tickets')
+          can: store.can('puede.acceder.dashboard_tickets')
         },
         {
           title: 'Crear ticket',
           link: 'tickets',
           icon: 'bi-plus-circle-fill',
-          can: store.can('puede.ver.tickets')
+          can: store.can('puede.acceder.tickets')
         },
         {
           title: 'Tickets asignados para mi',
           link: 'tickets-asignados',
           icon: 'bi-person-check-fill',
-          can: store.can('puede.ver.tickets_asignados')
+          can: store.can('puede.acceder.tickets_asignados')
         },
         {
           title: 'Categorías tipos de tickets',
           link: 'categorias-tipos-tickets',
           icon: 'bi-tag-fill',
           can:
-            store.can('puede.ver.categorias_tipos_tickets') ||
+            store.can('puede.acceder.categorias_tipos_tickets') ||
             store.user.es_responsable_departamento
         },
         {
@@ -162,20 +162,20 @@ export const useMenuStore = defineStore('menu', () => {
           link: 'tipos-tickets',
           icon: 'bi-tags-fill',
           can:
-            store.can('puede.ver.tipos_tickets') ||
+            store.can('puede.acceder.tipos_tickets') ||
             store.user.es_responsable_departamento
         },
         {
           title: 'Motivos de pausas',
           link: 'motivos-pausas-tickets',
           icon: 'bi-pause-fill',
-          can: store.can('puede.ver.motivos_pausas_tickets')
+          can: store.can('puede.acceder.motivos_pausas_tickets')
         },
         {
           title: 'Motivos de cancelaciones',
           link: 'motivos-cancelados-tickets',
           icon: 'bi-x-circle-fill',
-          can: store.can('puede.ver.motivos_cancelados_tickets')
+          can: store.can('puede.acceder.motivos_cancelados_tickets')
         }
       ]
     },
@@ -185,7 +185,7 @@ export const useMenuStore = defineStore('menu', () => {
     {
       title: 'Médico',
       icon: 'bi-heart-pulse-fill',
-      can: store.can('puede.ver.modulo_medico'),
+      can: store.can('puede.acceder.modulo_medico'),
       module: true,
       children: [
         {
@@ -495,7 +495,7 @@ export const useMenuStore = defineStore('menu', () => {
     {
       title: 'Fondos Rotativos',
       icon: 'fa-solid fa-sack-dollar', // Cambiado de 'bi-cash-stack' a Font Awesome
-      can: store.can('puede.ver.fondo'),
+      can: store.can('puede.acceder.fondo'),
       children: [
         // {
         //   title: 'Gastos',
@@ -505,7 +505,7 @@ export const useMenuStore = defineStore('menu', () => {
           title: 'Registrar Gastos',
           link: 'gasto',
           icon: 'fa-solid fa-plus-circle', // Cambiado de 'bi-plus-circle-fill' a Font Awesome
-          can: store.can('puede.ver.gasto')
+          can: store.can('puede.acceder.gasto')
         },
         {
           title: 'Solicitar Fondos',
@@ -1183,6 +1183,10 @@ export const useMenuStore = defineStore('menu', () => {
         }
       ]
     },
+    
+    /***********************
+     * Modulo de ventas JP
+     **********************/
     {
       title: 'Ventas',
       icon: 'fa-solid fa-circle-dollar-to-slot',

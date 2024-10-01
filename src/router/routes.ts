@@ -264,11 +264,11 @@ const routes: RouteRecordRaw[] = [
         name: 'detalles',
         component: () => {
           switch (process.env.VUE_APP_ID) {
-            case empresas.JPCONSTRUCRED: return import(
-              'pages/bodega/detalles_productos/view/jpconstrucred/DetalleProductoPage.vue'
-            )
             case empresas.JPCUSTODY: return import(
               'pages/bodega/detalles_productos/view/jpcustody/DetalleProductoPage.vue'
+            )
+            default: return import(
+              'pages/bodega/detalles_productos/view/jpconstrucred/DetalleProductoPage.vue'
             )
           }
         },
@@ -1481,7 +1481,7 @@ const routes: RouteRecordRaw[] = [
   },
   {
     path: '/puestos-disponibles',
-    component: () =>  import('layouts/PostulanteLayout.vue'),
+    component: () => import('layouts/PostulanteLayout.vue'),
     children: [
       {
         path: '',
