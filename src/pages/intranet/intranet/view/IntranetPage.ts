@@ -342,38 +342,39 @@ const router = useRouter()
 
     const obtenerEmpleadosCumpleaneros = async () => {
       // Obtener el mes actual
-      const currentMonth = new Date().getUTCMonth()
-      console.log(currentMonth)
+      const currentMonth = new Date().getUTCMonth();
+      console.log(currentMonth);
 
       try {
-        const empleadoController = new EmpleadoController()
+        const empleadoController = new EmpleadoController();
         const empleados = (
           await empleadoController.listar({
-            estado: 1
+            estado: 1,
           })
-        ).result
+        ).result;
 
-        empleadosCumpleaneros.value = empleados.filter((empleado:Empleado) => {
+        empleadosCumpleaneros.value = empleados
+          .filter((empleado: Empleado) => {
             if (empleado.fecha_nacimiento) {
               // Obtener el mes de la fecha de nacimiento
-              const birthMonth =
-                new Date(empleado.fecha_nacimiento).getUTCMonth()
-              return birthMonth === currentMonth
+              const birthMonth = new Date(empleado.fecha_nacimiento).getUTCMonth();
+              return birthMonth === currentMonth;
             }
-            return false
+            return false;
           })
           .sort((a, b) => {
-            // Ordenar por día del mes de nacimiento
-            const dayA = new Date(a.fecha_nacimiento).getDate()
-            const dayB = new Date(b.fecha_nacimiento).getDate()
-            return dayA - dayB
-          })
+            // Asegurarse de comparar solo el día, sin considerar la hora
+            const dayA = new Date(a.fecha_nacimiento).getUTCDate(); // Usar getUTCDate()
+            const dayB = new Date(b.fecha_nacimiento).getUTCDate();
+            return dayA - dayB;
+          });
 
-          console.log(empleadosCumpleaneros.value)
+        console.log(empleadosCumpleaneros.value);
       } catch (err) {
-        console.log('Error al obtener empleados cumpleañeros:', err)
+        console.log("Error al obtener empleados cumpleañeros:", err);
       }
-    }
+    };
+
 
     // Función para calcular el tiempo de trabajo del empleado
     const calcularAntiguedad = (fechaVinculacion: string): string => {
