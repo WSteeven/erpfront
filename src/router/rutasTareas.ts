@@ -127,7 +127,7 @@ const rutasTareas: RouteRecordRaw[] = [
       import(
         'gestionTrabajos/trabajoAsignado/view/TrabajoAsignadoPage.vue'
       ),
-    meta: { requiresAuth: true },
+    meta: { requiresAuth: true, permissionRequired: false },
   },
   {
     path: '/reportes-control-materiales',
@@ -161,7 +161,7 @@ const rutasTareas: RouteRecordRaw[] = [
     name: 'mi_bodega',
     component: () =>
       import('gestionTrabajos/miBodega/view/MiBodegaPage.vue'),
-    meta: { requiresAuth: true },
+    meta: { requiresAuth: true, permissionRequired: false },
   },
   {
     path: '/transferencia-producto-empleado',

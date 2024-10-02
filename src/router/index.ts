@@ -44,7 +44,7 @@ export default route(function (/* { store, ssrContext } */) {
     // Si la ruta requiere autenticacion
     if (to.matched.some((ruta) => ruta.meta.requiresAuth)) {
       if (sessionIniciada) {
-        if (authentication.can('puede.ver.' + to.name?.toString()) && permisoRequerido(to)) {
+        if (authentication.can('puede.acceder.' + to.name?.toString()) && permisoRequerido(to)) {
           next()
         } else if (!permisoRequerido(to)) {
           next()
@@ -70,7 +70,7 @@ export default route(function (/* { store, ssrContext } */) {
     // Si la ruta requiere autenticacion
     if (to.matched.some((ruta) => ruta.meta.requiresAuth)) {
       if (sessionIniciada) {
-        if (authentication.can('puede.ver.' + to.name?.toString()) && permisoRequerido(to)) {
+        if (authentication.can('puede.acceder.' + to.name?.toString()) && permisoRequerido(to)) {
           next()
         } else if (!permisoRequerido(to)) {
           next()
