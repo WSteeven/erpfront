@@ -343,7 +343,7 @@ const router = useRouter()
     const obtenerEmpleadosCumpleaneros = async () => {
       // Obtener el mes actual
       const currentMonth = new Date().getUTCMonth()
-      console.log(currentMonth)
+      // console.log(currentMonth)
 
       try {
         const empleadoController = new EmpleadoController()
@@ -369,7 +369,7 @@ const router = useRouter()
             return dayA - dayB
           })
 
-          console.log(empleadosCumpleaneros.value)
+          // console.log(empleadosCumpleaneros.value)
       } catch (err) {
         console.log('Error al obtener empleados cumpleañeros:', err)
       }

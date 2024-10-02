@@ -1,7 +1,7 @@
 import { ColumnConfig } from 'components/tables/domain/ColumnConfig'
-import { Vacacion } from './Vacacion'
+import { SolicitudVacacion } from './SolicitudVacacion'
 
-export const configuracionColumnasVacacion: ColumnConfig<Vacacion>[] = [
+export const configuracionColumnasSolicitudVacacion: ColumnConfig<SolicitudVacacion>[] = [
     {
       name: 'empleado_info',
       field: 'empleado_info',

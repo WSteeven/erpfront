@@ -1,4 +1,4 @@
-import { RouteRecordRaw } from "vue-router";
+import { RouteRecordRaw } from 'vue-router';
 
 const rutasRecursosHumanos: RouteRecordRaw[]=[
   {
@@ -11,10 +11,17 @@ const rutasRecursosHumanos: RouteRecordRaw[]=[
     meta: { requiresAuth: false },
   },
   {
-    path: '/solicitud-vacaciones',
-    name: 'solicitud_vacaciones',
+    path: '/solicitudes-vacaciones',
+    name: 'solicitudes_vacaciones',
     component: () =>
-      import('pages/recursosHumanos/vacacion/view/VacacionPage.vue'),
+      import('recursosHumanos/solicitudVacacion/view/SolicitudVacacionPage.vue'),
+    meta: { requiresAuth: true },
+  },
+  {
+    path: '/vacaciones',
+    name: 'vacaciones',
+    component: () =>
+      import('recursosHumanos/vacaciones/view/VacacionPage.vue'),
     meta: { requiresAuth: true },
   },
 ]

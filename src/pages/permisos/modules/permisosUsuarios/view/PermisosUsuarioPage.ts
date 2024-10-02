@@ -23,6 +23,7 @@ import { PermisosUsuarioController } from '../infraestructure/PermisosUsuarioCon
 import { HttpResponseGet } from 'shared/http/domain/HttpResponse'
 import { AsignarPermisosIndividualController } from '../infraestructure/AsignarPermisosIndividualController'
 import { StatusEssentialLoading } from 'components/loading/application/StatusEssentialLoading'
+import { useFiltrosListadosSelects } from 'shared/filtrosListadosGenerales'
 
 
 export default defineComponent({
@@ -44,7 +45,7 @@ export default defineComponent({
     const roles = ref()
     const permisos = ref()
     const empleado = ref()
-    const empleados = ref([])
+    const { empleados, filtrarEmpleados } = useFiltrosListadosSelects(listadosAuxiliares)
 
     const controller = new PermisosController()
     const asignarPermisoController = new AsignarPermisosIndividualController()
@@ -156,18 +157,7 @@ export default defineComponent({
       roles, permisos, empleados, permisosAsignados,
       refPermisosSinAsignar,
       refPermisosAsignados,
-      filtrarEmpleados(val, update) {
-        if (val === '') {
-          update(() => {
-            empleados.value = listadosAuxiliares.empleados
-          })
-          return
-        }
-        update(() => {
-          const needle = val.toLowerCase()
-          empleados.value = listadosAuxiliares.empleados.filter((v) => v.nombres.toLowerCase().indexOf(needle) > -1 || v.apellidos.toLowerCase().indexOf(needle) > -1)
-        })
-      },
+      filtrarEmpleados,
       filtrarRol(val, update) {
         if (val === '') {
           update(() => {

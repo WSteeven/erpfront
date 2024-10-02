@@ -34,7 +34,7 @@
               use-input
               @blur="v$.numero_dias.$touch"
               input-debounce="0"
-              @filter="filtrarPeriodo"
+              @filter="filtrarPeriodos"
               :option-value="v => v.id"
               :option-label="v => v.nombre"
               emit-value
@@ -57,14 +57,14 @@
           <!-- Derecho a vacaciones -->
           <div
             class="col-12 col-md-3"
-            v-if="accion == 'EDITAR' && esAutorizador"
+            v-if="accion ==acciones.editar && esAutorizador"
           >
             <label class="q-mb-sm block">Derecho a vacaciones</label>
             <q-input
               v-model="vacacion.derecho_vacaciones"
               placeholder="Obligatorio"
               :error="!!v$.derecho_vacaciones.$errors.length"
-              :disable="accion.value != 'NUEVO' ? false : true"
+              :disable="accion==acciones.nuevo"
               type="number"
               @blur="v$.derecho_vacaciones.$touch"
               outlined
@@ -491,4 +491,4 @@
     </template>
   </tab-layout-filter-tabs2>
 </template>
-<script src="./VacacionPage.ts"></script>
+<script src="./SolicitudVacacionPage.ts"></script>

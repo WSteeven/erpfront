@@ -68,7 +68,7 @@ export default defineComponent({
     const listado = ref([])
     const bodegueros = ref([])
     const clientes = ref([])
-    const empleados = ref([])
+    const { empleados, filtrarEmpleados } = useFiltrosListadosSelects(listadosAuxiliares)
     const motivos = ref([])
     const tareas = ref([])
     const { categorias } = useFiltrosListadosSelects(listadosAuxiliares)
@@ -103,17 +103,17 @@ export default defineComponent({
       try {
         cargando.activar()
         const axios = AxiosHttpRepository.getInstance()
-        let url = apiConfig.URL_BASE + '/' + axios.getEndpoint(endpoints.transacciones_egresos) + '/reportes'
+        const url = apiConfig.URL_BASE + '/' + axios.getEndpoint(endpoints.transacciones_egresos) + '/reportes'
         const filename = 'reporte_egresos_bodega'
         switch (accion) {
           case 'excel':
             reporte.accion = 'excel'
-            imprimirArchivo(url, 'POST', 'blob', 'xlsx', filename, reporte)
+            await imprimirArchivo(url, 'POST', 'blob', 'xlsx', filename, reporte)
 
             break
           case 'pdf':
             reporte.accion = 'pdf'
-            imprimirArchivo(url, 'POST', 'blob', 'pdf', filename, reporte)
+            await imprimirArchivo(url, 'POST', 'blob', 'pdf', filename, reporte)
             break
           default:
             reporte.accion = ''
@@ -206,18 +206,7 @@ export default defineComponent({
       botonVerTransaccion,
       modales,
       //filtro de empleados
-      filtroEmpleados(val, update) {
-        if (val === '') {
-          update(() => {
-            empleados.value = listadosAuxiliares.empleados
-          })
-          return
-        }
-        update(() => {
-          const needle = val.toLowerCase()
-          empleados.value = listadosAuxiliares.empleados.filter((v) => v.nombres.toLowerCase().indexOf(needle) > -1 || v.apellidos.toLowerCase().indexOf(needle) > -1)
-        })
-      },
+      filtroEmpleados: filtrarEmpleados,
 
       ordenarLista,
 
