@@ -342,7 +342,7 @@
         @click="
           () => {
             $emit('guardado', 'AlimentacionGrupoPage')
-            $emit('cerrar-modal', false)
+            // $emit('cerrar-modal', false)
           }
         "
       />

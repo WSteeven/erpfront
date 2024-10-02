@@ -55,6 +55,7 @@
               class="normal-text"
               hint="No comparta su contraseña con nadie"
               @keyup.enter="login()"
+              style="text-transform: none;"
             >
               <template v-slot:append>
                 <q-icon

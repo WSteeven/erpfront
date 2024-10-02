@@ -1,7 +1,7 @@
 import axios, { AxiosError, AxiosResponse, Method, ResponseType } from 'axios'
 import { StatusEssentialLoading } from 'components/loading/application/StatusEssentialLoading'
 import { apiConfig, endpoints } from 'config/api'
-import { date, useQuasar } from 'quasar'
+import { date } from 'quasar'
 import { ColumnConfig } from 'src/components/tables/domain/ColumnConfig'
 import { EntidadAuditable } from './entidad/domain/entidadAuditable'
 import { ApiError } from './error/domain/ApiError'
@@ -882,7 +882,6 @@ export const mapearOptionsSelect = (listadoOpciones: { id: number, nombre: strin
 
 export const copiarAlPortapapeles = async (texto: string) => {
   const { notificarInformacion, notificarError } = useNotificaciones()
-  console.log(texto)
 
   try {
     await navigator.clipboard.writeText(texto);
@@ -962,4 +961,12 @@ function siguienteSabado() {
   fecha.setDate(fecha.getDate() + diasFaltantes)
   // Retornamos la fecha formateada como una cadena de texto
   return fecha
+}
+
+export const filterWhereIn = (campo: string, valores: number[]) => {
+  let url = ''
+  for (const valor of valores) {
+    url += '&' + campo + '[]=' + valor
+  }
+  return url
 }

@@ -2,7 +2,6 @@ import { Empleado } from 'recursosHumanos/empleados/domain/Empleado'
 import { useAuthenticationStore } from 'src/stores/authentication'
 import { ApiError } from 'shared/error/domain/ApiError'
 import { UserLogin } from '../domain/UserLogin'
-import { rolesSistema } from 'config/utils'
 import { useRouter } from 'vue-router'
 
 export class LoginController {
@@ -13,7 +12,7 @@ export class LoginController {
     try {
       // const response = await this.store.login(userLogin)
       const usuario = await this.store.login(userLogin)
-      const roles = usuario.roles
+      // const roles = usuario.roles
 
 
       //if (existeYEsArreglo && (this.store.extraerRol(roles, rolesSistema.tecnico_lider) || this.store.extraerRol(roles, rolesSistema.tecnico_secretario))) {
