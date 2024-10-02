@@ -33,7 +33,7 @@ const routes: RouteRecordRaw[] = [
         name: 'tablero_personal',
         component: () =>
           import('pages/tableroPersonal/view/TableroPersonalPage.vue'),
-        meta: { requiresAuth: true },
+        meta: { requiresAuth: true, permissionRequired: false },
       },
       {
         path: 'intranet',
@@ -124,7 +124,7 @@ const routes: RouteRecordRaw[] = [
         path: '/perfil',
         name: 'perfil',
         component: () => import('pages/perfil/view/PerfilPage.vue'),
-        meta: { requiresAuth: true },
+        meta: { requiresAuth: true, permissionRequired: false },
       },
 
       /**
@@ -204,7 +204,7 @@ const routes: RouteRecordRaw[] = [
           import(
             'pages/administracion/notificaciones/view/NotificacionPage.vue'
           ),
-        meta: { requiresAuth: true },
+        meta: { requiresAuth: true, permissionRequired: false },
       },
       {
         path: '/unidades-medidas',
@@ -461,7 +461,7 @@ const routes: RouteRecordRaw[] = [
           import(
             'pages/controlVehiculos/conductores/modules/multas/view/MultaConductorPage.vue'
           ),
-        meta: { requiresAuth: false },
+        meta: { requiresAuth: true },
       },
       {
         path: 'transferencias-vehiculos',
