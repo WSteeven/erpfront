@@ -26,10 +26,7 @@
       >
     </template>
   </q-file>
-  <!-- datos de la imagen  -->
-  <!-- <div v-if="fileSize !== null && !isNaN(fileSize)">
-    Tamaño de la imagen: {{ (fileSize / 1024).toFixed(2) }} KB
-  </div> -->
+
   <div class="bg-desenfoque">
     <q-img
       v-show="imagenCodificada"
@@ -42,8 +39,9 @@
     </q-img>
 
     <small v-if="imagenCodificada" class="block text-center">
+      <!-- @click="opened = true" -->
       <q-btn
-        @click="opened = true"
+        @click="refVisorImagen.abrir(imagenCodificada)"
         label="Ver en pantalla completa"
         icon="bi-eye"
         class="text-grey-8 full-width bg-white border-white"
@@ -55,12 +53,20 @@
     </small>
   </div>
 
-  <q-dialog v-model="opened" maximized>
+  <visor-imagen
+    ref="refVisorImagen"
+    :texto1="texto1"
+    :texto2="texto2"
+    :texto3="texto3"
+    :texto4="texto4"
+  ></visor-imagen>
+
+  <!-- <q-dialog v-model="opened" maximized>
     <q-card class="bg-black rounded-card no-border" flat>
       <q-btn
-        round
-        color="negative"
-        icon="bi-x"
+        color="white"
+        flat
+        icon="close"
         @click="() => (opened = false)"
         class="closeButton"
       />
@@ -85,10 +91,11 @@
         </q-img>
       </q-card-section>
     </q-card>
-  </q-dialog>
+  </q-dialog> -->
 </template>
 
 <script lang="ts" setup>
+import VisorImagen from 'components/VisorImagen.vue'
 import { computed, getCurrentInstance, onMounted, ref, watch } from 'vue'
 
 const props = defineProps({
@@ -117,6 +124,7 @@ onMounted(() => {
   slotUsado.value = !!slots?.error
 })
 
+const refVisorImagen = ref()
 const slotUsado = ref(false)
 const fileSize = ref()
 const img = ref()
@@ -197,6 +205,11 @@ watch(imagenCodificada, () => {
 function limpiar() {
   emit('update:modelValue', null)
 }
+
+/********
+ * Init
+ ********/
+// onMounted(() => refVisorImagen.value.abrir(imagenCodificada.value))
 </script>
 
 <style lang="scss">
