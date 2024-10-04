@@ -1,8 +1,8 @@
-import { configEssentialCalendar } from "config/essentialCalendar";
-import { Evento } from "pages/intranet/eventos/domain/Evento";
-import { Qalendar } from "qalendar";
-import { defineComponent } from "vue";
-import { CustomEvent } from "./domain/Event";
+import { configEssentialCalendar } from 'config/essentialCalendar';
+import { Evento } from 'pages/intranet/eventos/domain/Evento';
+import { Qalendar } from 'qalendar';
+import { defineComponent } from 'vue';
+import { CustomEvent } from './domain/Event';
 
 export default defineComponent({
   components: { Qalendar },
@@ -23,7 +23,7 @@ export default defineComponent({
       emit('close')
     }
 
-    
+
     const events = props.eventos.map((evento: Evento) => {
       const event: CustomEvent = {
         id: evento.id,

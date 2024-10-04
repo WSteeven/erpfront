@@ -16,7 +16,7 @@ import { LicenciaEmpleado } from '../domain/LicenciaEmpleado'
 import { obtenerFechaActual, removeAccents, sumarFechas } from 'shared/utils'
 import { maskFecha, tabOptionsLicencias } from 'config/utils'
 import { endpoints } from 'config/api'
-import { format, addDay } from '@formkit/tempo'
+import { format } from '@formkit/tempo'
 import { Archivo } from 'pages/gestionTrabajos/subtareas/modules/gestorArchivosTrabajos/domain/Archivo'
 import { useAuthenticationStore } from 'stores/authentication'
 import { useNotificaciones } from 'shared/notificaciones'
@@ -61,7 +61,7 @@ export default defineComponent({
     }
     onBeforeGuardar(() => {
       licencia.tieneDocumento =
-        refArchivoPrestamoEmpresarial.value.tamanioListado > 0 ? true : false
+        refArchivoPrestamoEmpresarial.value.tamanioListado > 0
       if (!licencia.tieneDocumento) {
         notificarAdvertencia('Debe seleccionar al menos un archivo.')
       }
@@ -74,7 +74,7 @@ export default defineComponent({
       emit('cerrar-modal')
     })
     onConsultado(() => {
-      es_jefe_inmediato.value = store.user.id == licencia.id_jefe_inmediato ? true : false
+      es_jefe_inmediato.value = store.user.id == licencia.id_jefe_inmediato
       setTimeout(() => {
         refArchivoPrestamoEmpresarial.value.listarArchivos({ licencia_id: licencia.id })
         refArchivoPrestamoEmpresarial.value.esConsultado = true
@@ -95,7 +95,7 @@ export default defineComponent({
           params: {
             campos: 'id,nombre',
             es_modulo_rhh: true,
-            es_jefe_inmediato: store.user.id == licencia.id_jefe_inmediato ? true : false,
+            es_jefe_inmediato: store.user.id == licencia.id_jefe_inmediato,
           },
         },
       })
@@ -120,7 +120,7 @@ export default defineComponent({
       listar({ estado: tabSeleccionado })
       tabPermisoEmpleado = tabSeleccionado
     }
-    
+
     watchEffect(() => {
       if (licencia.fecha_inicio && licencia.dias_licencia) {
         licencia.fecha_fin = sumarFechas(format(licencia.fecha_inicio, 'DD-MM-YYYY'),0,0, Number(licencia.dias_licencia), maskFecha)

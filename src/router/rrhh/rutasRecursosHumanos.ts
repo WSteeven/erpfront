@@ -24,6 +24,12 @@ const rutasRecursosHumanos: RouteRecordRaw[]=[
       import('recursosHumanos/vacaciones/view/VacacionPage.vue'),
     meta: { requiresAuth: true },
   },
+  {
+    path: '/planes-vacaciones',
+    name: 'planes_vacaciones',
+    component: ()=> import('recursosHumanos/planVacacion/view/PlanVacacionPage.vue'),
+    meta: { requiresAuth: false },
+  }
 ]
 
 export default rutasRecursosHumanos

@@ -63,7 +63,7 @@ export default defineComponent({
       try {
         cargando.activar()
         const axios = AxiosHttpRepository.getInstance()
-        let url = apiConfig.URL_BASE + '/' + axios.getEndpoint(endpoints.vacacion) + '/reporte'
+        let url = apiConfig.URL_BASE + '/' + axios.getEndpoint(endpoints.solicitudes_vacaciones) + '/reporte'
         const filename = 'reporte_ingresos_bodega'
         switch (accion) {
           case 'excel':

@@ -380,7 +380,7 @@ export default defineComponent({
           opciones_cantones.value = JSON.parse(LocalStorage.getItem('cantones')!.toString()).filter((v) => v.canton.toLowerCase().indexOf(needle) > -1)
         })
       },
-      filtroEmpleados(val, update) {
+      filtrarEmpleados(val, update) {
         if (val === '') {
           update(() => {
             opciones_empleados.value = listadosAuxiliares.empleados

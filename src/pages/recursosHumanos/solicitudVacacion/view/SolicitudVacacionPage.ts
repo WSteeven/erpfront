@@ -304,7 +304,7 @@ export default defineComponent({
         const url =
           apiConfig.URL_BASE +
           '/' +
-          axios.getEndpoint(endpoints.vacacion) +
+          axios.getEndpoint(endpoints.solicitudes_vacaciones) +
           '/imprimir/' +
           id
         await imprimirArchivo(url, 'GET', 'blob', 'pdf', filename)

@@ -62,14 +62,14 @@
             <label class="q-mb-sm block">Motivo</label>
             <q-select
               v-model="transaccion.motivo"
-              :options="opciones_motivos"
+              :options="motivos"
               transition-show="jum-up"
               transition-hide="jump-down"
               options-dense
               dense
               outlined
               @popup-show="ordenarMotivos"
-              @update:model-value="filtroMotivos"
+              @update:model-value="motivoSeleccionado"
               :readonly="disabled"
               :disable="disabled || soloLectura"
               :error="!!v$.motivo.$errors.length"
@@ -174,7 +174,7 @@
             <label class="q-mb-sm block">Sucursal</label>
             <q-select
               v-model="transaccion.sucursal"
-              :options="opciones_sucursales"
+              :options="sucursales"
               transition-show="jum-up"
               transition-hide="jump-down"
               options-dense
@@ -186,7 +186,7 @@
               error-message="Debes seleccionar una sucursal"
               use-input
               input-debounce="0"
-              @filter="filtroSucursales"
+              @filter="filtrarSucursales"
               @popup-show="ordenarSucursales"
               @update:model-value="seleccionarClientePropietario"
               :option-value="(v) => v.id"
@@ -239,7 +239,7 @@
             <label class="q-mb-sm block">Solicitante</label>
             <q-select
               v-model="transaccion.solicitante"
-              :options="opciones_empleados"
+              :options="empleados"
               transition-show="scale"
               transition-hide="scale"
               options-dense
@@ -248,8 +248,8 @@
               :disable="disabled || soloLectura"
               use-input
               input-debounce="0"
-              @filter="filtroEmpleados"
-              @popup-show="ordenarEmpleados"
+              @filter="filtrarEmpleados"
+              @popup-show="ordenarLista(empleados, 'apellidos')"
               :readonly="disabled || soloLectura"
               :option-label="(v) => v.apellidos + ' ' + v.nombres"
               :option-value="(v) => v.id"
@@ -268,7 +268,7 @@
             <label class="q-mb-sm block">Tarea</label>
             <q-select
               v-model="transaccion.tarea"
-              :options="opciones_tareas"
+              :options="tareas"
               transition-show="scale"
               transition-hide="scale"
               options-dense
@@ -278,7 +278,7 @@
               outlined
               :readonly="disabled"
               :disable="disabled || soloLectura"
-              @update:model-value="filtroTareas"
+              @update:model-value="tareaSeleccionada"
               :option-label="(item) => item.titulo"
               :option-value="(item) => item.id"
               emit-value
@@ -301,7 +301,7 @@
             <label class="q-mb-sm block">Estado</label>
             <q-select
               v-model="transaccion.estado"
-              :options="opciones_estados"
+              :options="estados"
               transition-show="jum-up"
               transition-hide="jump-down"
               options-dense
@@ -414,7 +414,7 @@
             <label class="q-mb-sm block">Estado de los productos</label>
             <q-select
               v-model="transaccion.condicion"
-              :options="opciones_condiciones"
+              :options="condiciones"
               transition-show="jum-up"
               transition-hide="jump-down"
               options-dense

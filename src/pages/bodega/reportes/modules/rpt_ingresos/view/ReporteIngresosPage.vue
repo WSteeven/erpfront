@@ -40,7 +40,7 @@
                   outlined
                   use-input
                   input-debounce="0"
-                  @filter="filtroEmpleados"
+                  @filter="filtrarEmpleados"
                   :option-label="(item) => item.nombres + ' ' + item.apellidos"
                   :option-value="(item) => item.id"
                   emit-value
@@ -83,8 +83,6 @@
                   options-dense
                   dense
                   outlined
-                  :readonly="disabled"
-                  :disable="disabled || soloLectura"
                   :option-value="(v) => v.id"
                   :option-label="(v) => v.nombre"
                   emit-value

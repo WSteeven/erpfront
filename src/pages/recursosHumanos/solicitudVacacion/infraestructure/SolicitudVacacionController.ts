@@ -4,7 +4,7 @@ import { endpoints } from 'config/api';
 
 export class SolicitudVacacionController extends TransaccionSimpleController<SolicitudVacacion> {
   constructor() {
-    super(endpoints.vacacion)
+    super(endpoints.solicitudes_vacaciones)
   }
 }
 

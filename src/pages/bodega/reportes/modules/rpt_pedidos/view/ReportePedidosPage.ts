@@ -1,27 +1,26 @@
 //Dependencias
-import { configuracionColumnasPedidos } from 'pages/bodega/pedidos/domain/configuracionColumnasPedidos';
-import { computed, defineComponent, reactive, ref } from 'vue';
-import { required } from 'shared/i18n-validators';
-import { LocalStorage, useQuasar, } from 'quasar';
-import useVuelidate from '@vuelidate/core';
+import { configuracionColumnasPedidos } from 'pages/bodega/pedidos/domain/configuracionColumnasPedidos'
+import { defineComponent, reactive, ref } from 'vue'
+import { required } from 'shared/i18n-validators'
+import { LocalStorage, useQuasar } from 'quasar'
+import useVuelidate from '@vuelidate/core'
 
 //Componentes
 import EssentialTable from 'components/tables/view/EssentialTable.vue'
-import ModalEntidad from 'components/modales/view/ModalEntidad.vue';
-import { Chart as ChartJS, ArcElement, Tooltip, Legend } from 'chart.js'
+import ModalEntidad from 'components/modales/view/ModalEntidad.vue'
+import { ArcElement, Chart as ChartJS, Legend, Tooltip } from 'chart.js'
 import { Doughnut } from 'vue-chartjs'
 
-
 //Logica y controladores
-import { StatusEssentialLoading } from 'components/loading/application/StatusEssentialLoading';
-import { useNotificaciones } from 'shared/notificaciones';
-import { useNotificacionStore } from 'stores/notificacion';
-import { useCargandoStore } from 'stores/cargando';
-import { accionesTabla } from 'config/utils';
-import { CustomActionTable } from 'components/tables/domain/CustomActionTable';
-import { usePedidoStore } from 'stores/pedido';
-import { ComportamientoModalesPedido } from 'pages/bodega/pedidos/application/ComportamientoModalesPedido';
-import { EmpleadoController } from 'pages/recursosHumanos/empleados/infraestructure/EmpleadoController';
+import { StatusEssentialLoading } from 'components/loading/application/StatusEssentialLoading'
+import { useNotificaciones } from 'shared/notificaciones'
+import { useNotificacionStore } from 'stores/notificacion'
+import { useCargandoStore } from 'stores/cargando'
+import { accionesTabla } from 'config/utils'
+import { CustomActionTable } from 'components/tables/domain/CustomActionTable'
+import { usePedidoStore } from 'stores/pedido'
+import { ComportamientoModalesPedido } from 'pages/bodega/pedidos/application/ComportamientoModalesPedido'
+import { EmpleadoController } from 'pages/recursosHumanos/empleados/infraestructure/EmpleadoController'
 
 ChartJS.register(ArcElement, Tooltip, Legend)
 
@@ -43,7 +42,6 @@ export default defineComponent({
     const datos = ref([])
     const empleados = ref()
     const listadoEmpleados = ref()
-    let datosConfigurados = ref()
     const { notificarError } = useNotificaciones()
     const reglas = {
       fecha_inicio: { required },
@@ -73,17 +71,7 @@ export default defineComponent({
       listadoEmpleados.value = await (await new EmpleadoController().listar({ estado: 1 })).response.data.results
       empleados.value = listadoEmpleados.value
     }
-    function llenarDiccionario(datos) {
-      datosConfigurados.value = {
-        labels: Object.keys(datos.value),
-        datasets: [
-          {
-            backgroundColor: ['#7CFADC', '#FFA13B', '#FAE13C', '#ffebee', '#FA67CE', '#9253FA', 'gray', 'indigo', 'teal'],
-            data: Object.values(datos.value)
-          }
-        ]
-      }
-    }
+
 
     cargarEmpleados()
 
@@ -107,7 +95,7 @@ export default defineComponent({
         await pedidoStore.imprimirPdf()
       },
       visible: ({ entidad }) => {
-        return entidad.estado == 'COMPLETA' ? true : false
+        return entidad.estado == 'COMPLETA'
       }
     }
 
@@ -148,16 +136,14 @@ export default defineComponent({
       //grafico
       data, options,
       datos,
-      datosConfigurados,
 
       //botones de tabla
       btnVerPedido,
       btnImprimir,
       //Filtros
-      filtroEmpleado(val, update) {
+      filtrarEmpleados(val, update) {
         if (val === '') {
           update(() => {
-            // opciones_empleados.value = listadosAuxiliares.empleados
             empleados.value = listadoEmpleados.value
           })
           return

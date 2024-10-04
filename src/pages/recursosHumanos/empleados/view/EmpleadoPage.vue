@@ -9,6 +9,7 @@
     :accion1Header="btnImprimirEmpleados"
     :accion1="btnHabilitarEmpleado"
     :accion2="btnDesHabilitarEmpleado"
+    :accion3="btnPlanVacaciones"
     :puedeFiltrar="false"
     :puedeExportar="true"
     :forzarListar="false"
@@ -1051,7 +1052,7 @@
                 use-input
                 input-debounce="0"
                 @blur="v$.area.$touch"
-                @filter="filtrarDepartamentos"
+                @filter="filtrarAreas"
                 :error="!!v$.area.$errors.length"
                 :option-value="v => v.id"
                 :option-label="v => v.nombre"
