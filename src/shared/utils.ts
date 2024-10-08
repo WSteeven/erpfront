@@ -925,6 +925,13 @@ export function getShortDescription($q, description: string): string {
   }
   return descripcion_plain_text
 }
+
+/**
+ * Obtiene las fechas disponibles para seleccionar en el calendario,
+ * desde el domingo hasta el día actual, en rangos de 7 días finalizando el sabado.
+ * Esto se usa en formulario de gastos, alimentacion de grupo, etc.
+ * @param date
+ */
 export function optionsFecha(date) {
   const today = new Date()
 
