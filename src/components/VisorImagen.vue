@@ -56,6 +56,7 @@
           <div v-if="texto2" class="col-12 col-md-3 text-h6">{{ texto2 }}</div>
           <div v-if="texto3" class="col-12 col-md-3 text-h6">{{ texto3 }}</div>
           <div v-if="texto4" class="col-12 col-md-3 text-h6">{{ texto4 }}</div>
+          <div v-if="texto5" class="col-12 col-md-3 text-h6">{{ texto5 }}</div>
         </div>
       </div>
 
@@ -93,7 +94,8 @@ defineProps({
   texto1: String,
   texto2: String,
   texto3: String,
-  texto4: String
+  texto4: String,
+  texto5: String
 })
 
 // Estado para controlar el zoom y la posición

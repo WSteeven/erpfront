@@ -187,7 +187,7 @@
             <selector-imagen
               file_extensiones=".jpg, image/*"
               :imagen="bitacora.imagen_inicial"
-              :comprimir="true"
+
               :disable="disabled"
               :error="!!v$.imagen_inicial.$errors.length"
               :alto="'200px'"
@@ -937,8 +937,7 @@
               <selector-imagen
                 file_extensiones=".jpg, image/*"
                 :imagen="bitacora.checklistImagenVehiculo.imagen_frontal"
-                :comprimir="true"
-                :disable="disabled"
+                  :disable="disabled"
                 :error="
                   !!v$.checklistImagenVehiculo.imagen_frontal.$errors.length
                 "
@@ -956,8 +955,7 @@
               <selector-imagen
                 file_extensiones=".jpg, image/*"
                 :imagen="bitacora.checklistImagenVehiculo.imagen_trasera"
-                :comprimir="true"
-                :disable="disabled"
+                  :disable="disabled"
                 :error="
                   !!v$.checklistImagenVehiculo.imagen_trasera.$errors.length
                 "
@@ -977,8 +975,7 @@
                 :imagen="
                   bitacora.checklistImagenVehiculo.imagen_lateral_izquierda
                 "
-                :comprimir="true"
-                :disable="disabled"
+                  :disable="disabled"
                 :error="
                   !!v$.checklistImagenVehiculo.imagen_lateral_izquierda.$errors
                     .length
@@ -1000,8 +997,7 @@
                 :imagen="
                   bitacora.checklistImagenVehiculo.imagen_lateral_derecha
                 "
-                :comprimir="true"
-                :disable="disabled"
+                  :disable="disabled"
                 :error="
                   !!v$.checklistImagenVehiculo.imagen_lateral_derecha.$errors
                     .length
@@ -1021,8 +1017,7 @@
               <selector-imagen
                 file_extensiones=".jpg, image/*"
                 :imagen="bitacora.checklistImagenVehiculo.imagen_tablero_km"
-                :comprimir="true"
-                :disable="disabled"
+                  :disable="disabled"
                 :error="
                   !!v$.checklistImagenVehiculo.imagen_tablero_km.$errors.length
                 "
@@ -1040,8 +1035,7 @@
               <selector-imagen
                 file_extensiones=".jpg, image/*"
                 :imagen="bitacora.checklistImagenVehiculo.imagen_tablero_radio"
-                :comprimir="true"
-                :disable="disabled"
+                  :disable="disabled"
                 :error="
                   !!v$.checklistImagenVehiculo.imagen_tablero_radio.$errors
                     .length
@@ -1061,8 +1055,7 @@
               <selector-imagen
                 file_extensiones=".jpg, image/*"
                 :imagen="bitacora.checklistImagenVehiculo.imagen_asientos"
-                :comprimir="true"
-                :disable="disabled"
+                  :disable="disabled"
                 :error="
                   !!v$.checklistImagenVehiculo.imagen_asientos.$errors.length
                 "
@@ -1086,8 +1079,7 @@
               <selector-imagen
                 file_extensiones=".jpg, image/*"
                 :imagen="bitacora.checklistImagenVehiculo.imagen_accesorios"
-                :comprimir="true"
-                :disable="disabled"
+                  :disable="disabled"
                 :error="
                   !!v$.checklistImagenVehiculo.imagen_accesorios.$errors.length
                 "

@@ -59,6 +59,7 @@
     :texto2="texto2"
     :texto3="texto3"
     :texto4="texto4"
+    :texto5="texto5"
   ></visor-imagen>
 
   <!-- <q-dialog v-model="opened" maximized>
@@ -111,6 +112,7 @@ const props = defineProps({
   texto2: String,
   texto3: String,
   texto4: String,
+  texto5: String,
   comprimir: {
     type: Boolean,
     default: true
