@@ -1,10 +1,11 @@
 // Dependencias
-import { obtenerFechaActual, ordernarListaString } from 'shared/utils'
 import { acciones, accionesTabla, estadosTrabajos, rolesSistema } from 'config/utils'
-import { computed, defineComponent, reactive, ref } from 'vue'
+import { obtenerFechaActual, ordernarListaString } from 'shared/utils'
 import { optionsLine, optionsPie } from 'config/graficoGenerico'
-import { modosAsignacionTrabajo } from 'config/tareas.utils'
+import { computed, defineComponent, reactive, ref } from 'vue'
 import { required, requiredIf } from 'shared/i18n-validators'
+import { modosAsignacionTrabajo } from 'config/tareas.utils'
+import { useSubtareaStore } from 'stores/subtarea'
 import { useVuelidate } from '@vuelidate/core'
 
 // Componentes
@@ -25,18 +26,14 @@ import { SubtareaController } from 'pages/gestionTrabajos/subtareas/infraestruct
 import { useFiltrosListadosTarea } from 'pages/gestionTrabajos/tareas/application/FiltrosListadosTarea'
 import { StatusEssentialLoading } from 'components/loading/application/StatusEssentialLoading'
 import { GrupoController } from 'pages/recursosHumanos/grupos/infraestructure/GrupoController'
+import { graficarPorCoordinadorUseCase } from '../applicacion/GraficarPorCoordinadorUseCase'
 import { DashboardTareaController } from '../infraestructure/DashboardTareaController'
 import { ReporteSubtareasRealizadas } from '../domain/ReporteSubtareasRealizadas'
 import { graficarPorGrupoUseCase } from '../applicacion/GraficarPorGrupoUseCase'
-import { CustomActionPrompt } from 'components/tables/domain/CustomActionPrompt'
 import { CustomActionTable } from 'components/tables/domain/CustomActionTable'
 import { Subtarea } from 'pages/gestionTrabajos/subtareas/domain/Subtarea'
 import { Empleado } from 'pages/recursosHumanos/empleados/domain/Empleado'
 import { FiltroDashboardTicket } from '../domain/FiltroReporteMaterial'
-import { useTrabajoAsignadoStore } from 'stores/trabajoAsignado'
-import { useNotificaciones } from 'shared/notificaciones'
-import { useSubtareaStore } from 'stores/subtarea'
-import { graficarPorCoordinadorUseCase } from '../applicacion/GraficarPorCoordinadorUseCase'
 
 export default defineComponent({
   components: { TabLayout, EssentialTable, SelectorImagen, TableView, ModalesEntidad, GraficoGenerico },
@@ -79,76 +76,19 @@ export default defineComponent({
       })
     })
 
-
-
     const filtro = reactive(new FiltroDashboardTicket())
     const dashboardTareaController = new DashboardTareaController()
     const cargando = new StatusEssentialLoading()
     const mostrarTitulosSeccion = computed(() => filtro.fecha_inicio && filtro.fecha_fin && filtro.empleado)
     const tipoFiltroSubordinados = ref(modosAsignacionTrabajo.por_grupo)
+    const mostrarInactivos = ref(false)
 
-    // Cantidades
-    /*const subtareas: Ref<Subtarea[]> = ref([])
-    const subtareasGrupo: Ref<Subtarea[]> = ref([])
-    const subtareasEmpleado: Ref<Subtarea[]> = ref([])
-    const subtareasSubordinados: Ref<Subtarea[]> = ref([])
-    const subtareasEmpleadoSubordinado: Ref<Subtarea[]> = ref([])
-
-    const cantidadTareasActivas = ref()
-    const cantidadTareasFinalizadas = ref()
-    const cantidadSubtareasAgendadas = ref()
-    const cantidadSubtareasEjecutadas = ref()
-    const cantidadSubtareasPausadas = ref()
-    const cantidadSubtareasSuspendidas = ref()
-    const cantidadSubtareasCanceladas = ref()
-    const cantidadSubtareasRealizadas = ref()
-    const cantidadSubtareasFinalizadas = ref()
-    const totalSubtareas = computed(() => {
-      return cantidadSubtareasAgendadas.value
-        + cantidadSubtareasEjecutadas.value
-        + cantidadSubtareasPausadas.value
-        + cantidadSubtareasSuspendidas.value
-        + cantidadSubtareasCanceladas.value
-        + cantidadSubtareasRealizadas.value
-        + cantidadSubtareasFinalizadas.value
-    })*/
-
-    /*const cantidadesPorEstadosSubtareas = ref([])
-    const cantidadesPorEstadosSubtareasBar = ref()
-
-    // Por grupo
-    const agendados: Ref<any> = ref([])
-    const ejecutados: Ref<any> = ref([])
-    const pausados: Ref<any> = ref([])
-    const suspendidos: Ref<any> = ref([])
-    const cancelados: Ref<any> = ref([])
-    const realizados: Ref<any> = ref([])
-    const finalizados: Ref<any> = ref([])
-
-    const agendadosBar = ref()
-    const ejecutadosBar = ref()
-    const pausadosBar = ref()
-    const suspendidosBar = ref()
-    const canceladosBar = ref()
-    const realizadosBar = ref()
-    const finalizadosBar = ref()
-
-    // Por empleado
-    const agendadosEmpleado: Ref<any> = ref([])
-    const ejecutadosEmpleado: Ref<any> = ref([])
-    const pausadosEmpleado: Ref<any> = ref([])
-    const suspendidosEmpleado: Ref<any> = ref([])
-    const canceladosEmpleado: Ref<any> = ref([])
-    const realizadosEmpleado: Ref<any> = ref([])
-    const finalizadosEmpleado: Ref<any> = ref([])
-
-    const agendadosEmpleadoBar = ref()
-    const ejecutadosEmpleadoBar = ref()
-    const pausadosEmpleadoBar = ref()
-    const suspendidosEmpleadoBar = ref()
-    const canceladosEmpleadoBar = ref()
-    const realizadosEmpleadoBar = ref()
-    const finalizadosEmpleadoBar = ref() */
+    async function checkMostrarInactivos(val) {
+      filtro.empleado = null
+      resetearDatosDashboardCoordinador()
+      listadosAuxiliares.empleados = await cargando.cargarConsulta(async () => (await new EmpleadoController().listar({ estado: val ? 0 : 1 })).result) 
+      empleados.value = listadosAuxiliares.empleados
+    }
 
     // Tabs
     const opcionesSubordinado = {
@@ -426,6 +366,8 @@ export default defineComponent({
       graficosCoordinadorSubordinadosPorGrupo,
       graficosCoordinadorSubordinadosPorCoordinador,
       mostrarCantidades,
+      mostrarInactivos,
+      checkMostrarInactivos,
     }
   },
 })
