@@ -43,7 +43,7 @@ export default defineComponent({
     const { setValidador, obtenerListados, cargarVista, listar } = mixin.useComportamiento()
     const { onGuardado } = mixin.useHooks()
 
-    const { confirmar, notificarCorrecto, notificarInformacion, notificarError } = useNotificaciones()
+    const { confirmar, notificarCorrecto, notificarError } = useNotificaciones()
 
 
     /***************************************************************************

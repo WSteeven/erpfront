@@ -20,7 +20,7 @@ export default {
     return {
       token: null,
       user: {},
-      countdown: 3 // Tiempo de cuenta regresiva (5 segundos)
+      countdown: 3 // Tiempo de cuenta regresiva (3 segundos)
     }
   },
   mounted() {

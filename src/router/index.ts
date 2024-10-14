@@ -53,7 +53,7 @@ export default route(function (/* { store, ssrContext } */) {
         }
       } else {
         if (to.query.q == 'external') next({ name: 'LoginPostulante' }) //esto ayuda a decidir a qué login redirigir al usuario
-        else next({ name: 'Login' })
+        else next({ name: 'Login', query:{redirect:to.fullPath} })
       }
     } else if (
       sessionIniciada &&
@@ -78,7 +78,7 @@ export default route(function (/* { store, ssrContext } */) {
           next({ name: '404' })
         }
       } else {
-        next({ name: 'LoginPostulante' })
+        next({ name: 'LoginPostulante', query:{redirect:to.fullPath} })
       }
     } else if (sessionIniciada && ['LoginPostulante', 'RegistroPostulante'].includes(to.name?.toString() ?? '')) {
       next({ name: 'puestos_disponibles' })
