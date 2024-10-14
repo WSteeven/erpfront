@@ -203,6 +203,7 @@ export default defineComponent({
       vacante.requiere_licencia = solicitudStore.solicitudPersonal.requiere_licencia
       vacante.canton = solicitudStore.solicitudPersonal.canton
       vacante.num_plazas = solicitudStore.solicitudPersonal.num_plazas
+      vacante.acepta_discapacitados = solicitudStore.solicitudPersonal.acepta_discapacitados
     }
 
     function agregarFormacionAcademica() {

@@ -120,7 +120,8 @@
               :error="!!v$.canton.$errors.length"
               emit-value
               map-options
-              ><template v-slot:no-option>
+            >
+              <template v-slot:no-option>
                 <q-item>
                   <q-item-section class="text-grey">
                     No hay resultados
@@ -132,8 +133,8 @@
                   <q-item-section>
                     <q-item-label>{{ scope.opt.canton }}</q-item-label>
                     <q-item-label caption
-                      >Provincia {{ scope.opt.provincia }}</q-item-label
-                    >
+                      >Provincia {{ scope.opt.provincia }}
+                    </q-item-label>
                   </q-item-section>
                 </q-item>
               </template>
@@ -270,8 +271,8 @@
                   @click="subirArchivos()"
                 >
                   <q-icon name="bi-upload" class="q-mr-sm" size="xs"></q-icon>
-                  Subir archivos seleccionados</q-btn
-                >
+                  Subir archivos seleccionados
+                </q-btn>
               </template>
             </gestor-archivos>
           </div>
@@ -379,8 +380,8 @@
               icon="bi-plus"
               push
               class="col-12 col-md-3 q-mb-sm"
-              >Agregar Titulo Académico</q-btn
-            >
+              >Agregar Titulo Académico
+            </q-btn>
             <essential-table
               :configuracionColumnas="[
                 ...configuracionColumnasFormacionAcademicaReactive,
@@ -482,6 +483,54 @@
               unchecked-icon="clear"
               :disable="disabled"
             />
+          </div>
+
+          <!-- Vacante abierta a personas con discapacidad -->
+          <div class="col-12 col-md-3 col-sm-3">
+            <label class="q-mb-sm block"
+              >¿Abierta a personas con discapacidad?</label
+            >
+            <q-toggle
+              :label="vacante.acepta_discapacitados ? 'SI' : 'NO'"
+              v-model="vacante.acepta_discapacitados"
+              color="primary"
+              keep-color
+              icon="bi-check2-circle"
+              unchecked-icon="clear"
+              :disable="disabled"
+            />
+          </div>
+
+          <!-- Rango de edad -->
+          <div class="col-12 col-md-3 col-sm-3">
+            <label class="q-mb-sm block">Rango de Edad</label>
+            <q-toggle
+              :label="
+                vacante.rango_edad ? 'Personalizado' : 'Mayores de 18 años'
+              "
+              v-model="vacante.rango_edad"
+              color="primary"
+              keep-color
+              icon="bi-check2-circle"
+              unchecked-icon="clear"
+              :disable="disabled"
+            />
+          </div>
+
+          <!--          Edad personalizada -->
+          <div class="col-12 col-md-3 col-sm-12" v-if="vacante.rango_edad">
+            <q-range
+              v-model="vacante.edad_personalizada"
+              :min="18"
+              :max="65"
+              label
+              color="positive"
+            />
+            <div class="text-center">
+              De <strong> {{ vacante.edad_personalizada.min }}</strong> a
+              <strong> {{ vacante.edad_personalizada.max }}</strong>
+              años
+            </div>
           </div>
 
           <!-- {{v$.$errors}} -->

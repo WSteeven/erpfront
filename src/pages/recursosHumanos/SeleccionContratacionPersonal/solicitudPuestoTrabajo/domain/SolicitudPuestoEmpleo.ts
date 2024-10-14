@@ -11,6 +11,7 @@ export class SolicitudPuestoEmpleo extends EntidadAuditable {
   descripcion: string
   formaciones_academicas: any[]
   requiere_formacion_academica: boolean
+  acepta_discapacitados: boolean
   requiere_experiencia: boolean
   disponibilidad_viajar: boolean
   requiere_licencia: boolean
@@ -32,6 +33,7 @@ export class SolicitudPuestoEmpleo extends EntidadAuditable {
     this.anios_experiencia = null
     this.formaciones_academicas = []
     this.requiere_formacion_academica = false
+    this.acepta_discapacitados = false
     this.requiere_experiencia = false
     this.disponibilidad_viajar = false
     this.requiere_licencia = false

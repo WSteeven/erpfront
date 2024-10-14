@@ -18,6 +18,9 @@ export class Vacante extends EntidadAuditable {
   activo: boolean
   disponibilidad_viajar: boolean
   requiere_licencia: boolean
+  acepta_discapacitados: boolean
+  rango_edad: boolean
+  edad_personalizada: []|null
   postulantes_preseleccionados: number | null
   canton: number | null
   num_plazas: number | null
@@ -49,6 +52,9 @@ export class Vacante extends EntidadAuditable {
     this.numero_postulantes = 0
     this.disponibilidad_viajar = false
     this.requiere_licencia = false
+    this.acepta_discapacitados = false
+    this.rango_edad = false
+    this.edad_personalizada = { min:18, max:65 }
     this.requiere_formacion_academica = false
     this.requiere_experiencia = false
     this.postulantes_preseleccionados = null
