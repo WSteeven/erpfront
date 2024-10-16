@@ -137,7 +137,7 @@ export default defineComponent({
     const refFamiliares = ref()
     const modales = new ComportamientoModalesEmpleado()
     const empleadoStore = useEmpleadoStore()
-    const authenticationStore = useAuthenticationStore()
+    const store = useAuthenticationStore()
     const nombre_usuario = ref()
     const email_usuario = ref()
     const refApellidos = ref()
@@ -385,7 +385,7 @@ export default defineComponent({
       titulo: 'Eliminar',
       icono: 'bi-x',
       color: 'negative',
-      visible: () => authenticationStore.can('puede.eliminar.familiares'),
+      visible: () => store.can('puede.eliminar.familiares'),
       accion: ({ posicion }) =>
         confirmar('¿Está seguro de continuar?', () =>
           empleado.familiares?.splice(posicion, 1)
@@ -395,7 +395,7 @@ export default defineComponent({
       titulo: 'Reporte General',
       icono: 'bi-printer',
       color: 'primary',
-      visible: () => authenticationStore.can('puede.ver.empleados'),
+      visible: () => store.can('puede.ver.empleados'),
       accion: () => {
         generar_reporte_general()
       },
@@ -417,7 +417,7 @@ export default defineComponent({
       color: 'negative',
       tooltip: 'Habilitar',
       visible: ({ entidad }) =>
-        !entidad.estado && authenticationStore.can('puede.activar.empleados'),
+        !entidad.estado && store.can('puede.activar.empleados'),
       accion: ({ entidad, posicion }) => {
         HabilitarEmpleado(entidad.id, true)
         listado.value.splice(posicion, 1)
@@ -429,7 +429,7 @@ export default defineComponent({
       color: 'positive',
       tooltip: 'DesHabilitar',
       visible: ({ entidad }) =>
-        entidad.estado && authenticationStore.can('puede.desactivar.empleados'),
+        entidad.estado && store.can('puede.desactivar.empleados'),
       accion: ({ entidad, posicion }) => {
         HabilitarEmpleado(entidad.id, false)
         entidad.estado = false
@@ -587,6 +587,7 @@ export default defineComponent({
       refArchivo,
       v$,
       componenteCargado,
+      esRecursosHumanos: store.esRecursosHumanos,
       reestablecer_usuario,
       configuracionColumnas: configuracionColumnasEmpleados,
       idEmpleado,

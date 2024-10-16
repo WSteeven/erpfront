@@ -1,4 +1,4 @@
-import { SelectOption } from "./SelectOption"
+import { SelectOption } from './SelectOption'
 
 type tipos = 'text' | 'number' | 'textarea' | 'select' | 'boolean' | 'date' | 'search' | 'imagen' | 'datetime' | 'toggle' | 'select_multiple' // | 'file'
 type align = 'left' | 'center' | 'right'
@@ -9,6 +9,8 @@ export interface ColumnConfig<T> {
   name: keyof T
   field: keyof T
   label: string
+  min?:number
+  max?:number
   align?: align
   sortable?: boolean
   visible?: boolean

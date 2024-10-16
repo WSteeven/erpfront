@@ -13,7 +13,7 @@ export const configuracionColumnasReferencias: ColumnConfig<ReferenciaPersonal>[
   {
     name: 'cargo',
     field: 'cargo',
-    label: 'Cargo o Rol',
+    label: 'Cargo, Rol o Parentesco',
     align: 'left',
     editable: true,
     sortable: true,

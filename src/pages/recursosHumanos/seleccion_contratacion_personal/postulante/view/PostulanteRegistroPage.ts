@@ -1,12 +1,9 @@
 // Dependencias
 import { isAxiosError, notificarMensajesError } from 'shared/utils'
 import { computed, defineComponent, reactive, ref, watchEffect } from 'vue'
-import { useQuasar,  } from 'quasar'
-
-import { useRouter } from 'vue-router'
+import { useQuasar } from 'quasar'
 
 // Componentes
-
 //Logica y controladores
 import { useConfiguracionGeneralStore } from 'stores/configuracion_general'
 import { StatusEssentialLoading } from 'components/loading/application/StatusEssentialLoading'
@@ -15,7 +12,7 @@ import { PostulanteRegistroController } from '../infraestructure/PostulanteRegis
 import { Postulante } from '../domain/Postulante'
 import useVuelidate from '@vuelidate/core'
 import { required } from 'shared/i18n-validators'
-import { tiposDocumentosIdentificaciones } from 'config/utils'
+import { maskFecha, tiposDocumentosIdentificaciones } from 'config/utils'
 import { email } from '@vuelidate/validators'
 
 export default defineComponent({
@@ -36,7 +33,6 @@ export default defineComponent({
 
     const notificaciones = useNotificaciones()
     const cargando = new StatusEssentialLoading()
-    const Router = useRouter()
 
     watchEffect(() => (document.title = nombreEmpresa.value ?? ''))
     const $q = useQuasar()
@@ -48,6 +44,7 @@ export default defineComponent({
       email: { required, email },
       password: { required },
       tipo_documento_identificacion: { required },
+      fecha_nacimiento: { required },
     }
     const v$ = useVuelidate(reglas, postulante)
 
@@ -65,29 +62,7 @@ export default defineComponent({
         } catch (error: any) {
           if (isAxiosError(error)) {
             const mensajes: string[] = error.erroresValidacion
-            notificarMensajesError(mensajes, notificaciones)
-          }
-        } finally {
-          cargando.desactivar()
-        }
-      }
-    }
-    const recuperarPassword = () => {
-      Router.replace('/recuperar-contrasena')
-    }
-
-    const loginTerceros = async (driver) => {
-      if (!$q.loading.isActive) {
-        try {
-          cargando.activar()
-          // await loginController.loginterceros(driver)
-          notificaciones.notificarCorrecto(
-            'Bienvenido a ' + nombreEmpresa.value
-          )
-        } catch (error: any) {
-          if (isAxiosError(error)) {
-            const mensajes: string[] = error.erroresValidacion
-            notificarMensajesError(mensajes, notificaciones)
+            await notificarMensajesError(mensajes, notificaciones)
           }
         } finally {
           cargando.desactivar()
@@ -96,14 +71,14 @@ export default defineComponent({
     }
 
     const enableLoginButton = computed(
-      () => postulante.nombres !== '' && postulante.password !== ''
+      () => postulante.nombres==null || postulante.nombres=='' || postulante.password==null || postulante.password==''
     )
 
     return {
       v$,
       isPwd: ref(true),
       postulante,
-      loginTerceros,
+      maskFecha,
       logoClaro: computed(
         () => configuracionGeneralStore.configuracion?.logo_claro
       ),
@@ -112,9 +87,6 @@ export default defineComponent({
       ),
       enableLoginButton,
       registro,
-      recuperarPassword,
-      nombreEmpresa,
-      cargando,
       tiposDocumentosIdentificaciones,
     }
   },

@@ -1522,7 +1522,7 @@
             </div>
 
             <!-- Salario -->
-            <div class="col-12 col-md-3 col-sm-3">
+            <div class="col-12 col-md-3 col-sm-3" v-if="esRecursosHumanos">
               <label class="q-mb-sm block">Salario</label>
               <q-input
                 v-model="empleado.salario"

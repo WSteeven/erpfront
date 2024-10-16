@@ -8,6 +8,8 @@ export class Postulante extends EntidadAuditable {
   telefono: string | null
   email: string | null
   password : string | null
+  fecha_nacimiento: string | null
+
   constructor() {
     super()
     this.nombres = null
@@ -17,5 +19,6 @@ export class Postulante extends EntidadAuditable {
     this.telefono = null
     this.email = null
     this.password = null
+    this.fecha_nacimiento = null
   }
 }

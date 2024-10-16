@@ -525,6 +525,7 @@
               :max="65"
               label
               color="positive"
+              :disable="disabled"
             />
             <div class="text-center">
               De <strong> {{ vacante.edad_personalizada.min }}</strong> a

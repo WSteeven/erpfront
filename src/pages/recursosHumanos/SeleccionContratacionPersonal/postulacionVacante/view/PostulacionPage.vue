@@ -473,7 +473,7 @@
             </div>
 
             <!-- Dirección  -->
-            <div class="col-md-12 col-sm-12 col-xs-12">
+            <div class="col-md-6 col-sm-12 col-xs-12">
               <label class="q-mb-sm block">Dirección </label>
               <q-input
                 v-model="postulacion.direccion"
@@ -495,6 +495,19 @@
                   </div>
                 </template>
               </q-input>
+            </div>
+
+            <!-- Aspiracion salarial  -->
+            <div class="col-md-3 col-sm-6 col-xs-12">
+              <label class="q-mb-sm block">Aspiración Salarial </label>
+              <q-input
+                v-model="postulacion.aspiracion_salarial"
+                type="number"
+                placeholder="Obligatorio"
+                disable
+                outlined
+                dense
+                />
             </div>
           </div>
         </q-expansion-item>
