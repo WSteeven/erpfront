@@ -16,17 +16,17 @@ export class VisualizarTransferencia extends EntidadAuditable {
 
   constructor() {
     super()
+    this.comprobante=null
     this.usuario_envia_info=null
-    this.usuario_recibe_info=null
+    this.es_devolucion = false
     this.usuario_envia=null
     this.usuario_recibe=null
     this.monto=null
     this.motivo='DEVOLUCION'
     this.cuenta=null
+    this.usuario_recibe_info=null
     this.tarea=null
     this.tarea_info=null
-    this.comprobante=null
     this.estado_info=null
-    this.es_devolucion = false
   }
 }

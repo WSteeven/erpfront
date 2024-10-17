@@ -10,6 +10,7 @@
     :accion1="botonDespachar"
     :accion2="botonAnular"
     :accion3="botonImprimir"
+    :accion4="botonDevolverASinCliente"
   >
     <template #formulario>
       <q-form @submit.prevent>

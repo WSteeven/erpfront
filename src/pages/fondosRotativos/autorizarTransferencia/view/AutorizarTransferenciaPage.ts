@@ -2,10 +2,13 @@
 
 import { useAuthenticationStore } from 'stores/authentication'
 import { defineComponent, ref } from 'vue'
-import { accionesTabla, tabAutorizarTransferenciaSaldo,  estadosTransferencias } from 'config/utils'
+import {
+  accionesTabla,
+  estadosTransferencias,
+  tabAutorizarTransferenciaSaldo
+} from 'config/utils'
 
 // Componentes
-import ConfirmarDialog from 'gestionTrabajos/trabajoAsignado/view/ConfirmarDialog.vue'
 import EssentialTableTabs from 'components/tables/view/EssentialTableTabs.vue'
 import { ContenedorSimpleMixin } from 'shared/contenedor/modules/simple/application/ContenedorSimpleMixin'
 import { Gasto } from 'pages/fondosRotativos/gasto/domain/Gasto'
@@ -19,11 +22,11 @@ import { useTransferenciaSaldoStore } from 'stores/transferenciaSaldo'
 import { useNotificacionStore } from 'stores/notificacion'
 import { useQuasar } from 'quasar'
 import { useCargandoStore } from 'stores/cargando'
+
 export default defineComponent({
   name: 'AutorizarGastoPage',
   components: {
     EssentialTableTabs,
-    ConfirmarDialog,
     ModalEntidad,
   },
   setup() {
@@ -71,7 +74,7 @@ export default defineComponent({
       }
     }
     async function guardado() {
-      filtrarAutorizacionesTransferencia(estadosTransferencias.PENDIENTE)
+      await filtrarAutorizacionesTransferencia(estadosTransferencias.PENDIENTE)
     }
 
     return {

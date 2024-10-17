@@ -1,6 +1,6 @@
 <template>
-  <q-page class="flex flex-center">
-    <q-card flat bordered class="my-card bg-grey-1">
+  <q-page padding class="flex flex-center">
+    <q-card flat bordered class="my-card bg-desenfoque">
       <q-card-section>
         <div class="row items-center no-wrap">
           <div class="col">
@@ -12,7 +12,7 @@
       <q-card-section>
         <!-- Fecha Inicio -->
         <div class="col-6 col-md-3">
-          <label class="q-mb-sm block">Fecha Inicio:</label>
+          <label class="q-mb-sm block">Fecha Inicio</label>
           <q-input
             v-model="consolidadofiltrado.fecha_inicio"
             placeholder="Obligatorio"
@@ -23,7 +23,11 @@
           >
             <template v-slot:append>
               <q-icon name="event" class="cursor-pointer">
-                <q-popup-proxy cover transition-show="scale" transition-hide="scale">
+                <q-popup-proxy
+                  cover
+                  transition-show="scale"
+                  transition-hide="scale"
+                >
                   <q-date
                     v-model="consolidadofiltrado.fecha_inicio"
                     :mask="maskFecha"
@@ -31,7 +35,12 @@
                     today-btn
                   >
                     <div class="row items-center justify-end">
-                      <q-btn v-close-popup label="Cerrar" color="primary" flat />
+                      <q-btn
+                        v-close-popup
+                        label="Cerrar"
+                        color="primary"
+                        flat
+                      />
                     </div>
                   </q-date>
                 </q-popup-proxy>
@@ -47,7 +56,7 @@
         </div>
         <!-- Fecha Fin -->
         <div class="col-6 col-md-3">
-          <label class="q-mb-sm block">Fecha Fin:</label>
+          <label class="q-mb-sm block">Fecha Fin</label>
           <q-input
             v-model="consolidadofiltrado.fecha_fin"
             placeholder="Obligatorio"
@@ -58,7 +67,11 @@
           >
             <template v-slot:append>
               <q-icon name="event" class="cursor-pointer">
-                <q-popup-proxy cover transition-show="scale" transition-hide="scale">
+                <q-popup-proxy
+                  cover
+                  transition-show="scale"
+                  transition-hide="scale"
+                >
                   <q-date
                     v-model="consolidadofiltrado.fecha_fin"
                     :mask="maskFecha"
@@ -66,7 +79,12 @@
                     today-btn
                   >
                     <div class="row items-center justify-end">
-                      <q-btn v-close-popup label="Cerrar" color="primary" flat />
+                      <q-btn
+                        v-close-popup
+                        label="Cerrar"
+                        color="primary"
+                        flat
+                      />
                     </div>
                   </q-date>
                 </q-popup-proxy>
@@ -100,8 +118,8 @@
             @update:model-value="limpiarTipoSaldo"
             @blur="v$.tipo_saldo.$touch"
             @filter="filtarTiposSaldos"
-            :option-value="(v) => v.value"
-            :option-label="(v) => v.label"
+            :option-value="v => v.value"
+            :option-label="v => v.label"
             emit-value
             map-options
           >
@@ -112,7 +130,9 @@
             </template>
             <template v-slot:no-option>
               <q-item>
-                <q-item-section class="text-grey"> No hay resultados </q-item-section>
+                <q-item-section class="text-grey">
+                  No hay resultados
+                </q-item-section>
               </q-item>
             </template>
           </q-select>
@@ -143,8 +163,8 @@
             @blur="v$.tipo_filtro.$touch"
             @filter="filtrarTiposFiltro"
             @update:model-value="limpiar"
-            :option-value="(v) => v.value"
-            :option-label="(v) => v.name"
+            :option-value="v => v.value"
+            :option-label="v => v.name"
             emit-value
             map-options
           >
@@ -155,7 +175,9 @@
             </template>
             <template v-slot:no-option>
               <q-item>
-                <q-item-section class="text-grey"> No hay resultados </q-item-section>
+                <q-item-section class="text-grey">
+                  No hay resultados
+                </q-item-section>
               </q-item>
             </template>
           </q-select>
@@ -169,7 +191,8 @@
               consolidadofiltrado.tipo_saldo == tipo_saldo.ACREDITACIONES ||
               consolidadofiltrado.tipo_saldo == tipo_saldo.CONSOLIDADO ||
               consolidadofiltrado.tipo_saldo == tipo_saldo.ESTADO_CUENTA ||
-              consolidadofiltrado.tipo_saldo == tipo_saldo.TRANSFERENCIA_SALDOS) &&
+              consolidadofiltrado.tipo_saldo ==
+                tipo_saldo.TRANSFERENCIA_SALDOS) &&
             is_inactivo == 'false'
           "
         >
@@ -190,8 +213,8 @@
             error-message="Debes seleccionar un empleado"
             @blur="v$.empleado.$touch"
             @filter="filtrarUsuarios"
-            :option-value="(v) => v.id"
-            :option-label="(v) => v.nombres + ' ' + v.apellidos"
+            :option-value="v => v.id"
+            :option-label="v => v.nombres + ' ' + v.apellidos"
             emit-value
             map-options
           >
@@ -202,7 +225,9 @@
             </template>
             <template v-slot:no-option>
               <q-item>
-                <q-item-section class="text-grey"> No hay resultados </q-item-section>
+                <q-item-section class="text-grey">
+                  No hay resultados
+                </q-item-section>
               </q-item>
             </template>
           </q-select>
@@ -216,7 +241,8 @@
               consolidadofiltrado.tipo_saldo == tipo_saldo.ACREDITACIONES ||
               consolidadofiltrado.tipo_saldo == tipo_saldo.CONSOLIDADO ||
               consolidadofiltrado.tipo_saldo == tipo_saldo.ESTADO_CUENTA ||
-              consolidadofiltrado.tipo_saldo == tipo_saldo.TRANSFERENCIA_SALDOS) &&
+              consolidadofiltrado.tipo_saldo ==
+                tipo_saldo.TRANSFERENCIA_SALDOS) &&
             is_inactivo == 'true'
           "
         >
@@ -237,8 +263,8 @@
             error-message="Debes seleccionar un empleado"
             @blur="v$.empleado.$touch"
             @filter="filtrarUsuariosInactivos"
-            :option-value="(v) => v.id"
-            :option-label="(v) => v.nombres + ' ' + v.apellidos"
+            :option-value="v => v.id"
+            :option-label="v => v.nombres + ' ' + v.apellidos"
             emit-value
             map-options
           >
@@ -249,14 +275,16 @@
             </template>
             <template v-slot:no-option>
               <q-item>
-                <q-item-section class="text-grey"> No hay resultados </q-item-section>
+                <q-item-section class="text-grey">
+                  No hay resultados
+                </q-item-section>
               </q-item>
             </template>
             <template v-slot:after>
-                <q-btn color="positive" @click="recargarEmpleadosInactivos()">
-                  <q-icon size="xs" class="q-mr-sm" name="bi-arrow-clockwise" />
-                </q-btn>
-              </template>
+              <q-btn color="positive" @click="recargarEmpleadosInactivos()">
+                <q-icon size="xs" class="q-mr-sm" name="bi-arrow-clockwise" />
+              </q-btn>
+            </template>
           </q-select>
         </div>
         <!-- Proyectos -->
@@ -265,8 +293,8 @@
           v-if="
             (consolidadofiltrado.tipo_filtro == tipo_filtro.PROYECTO ||
               consolidadofiltrado.tipo_filtro == tipo_filtro.TODOS) &&
-              ( consolidadofiltrado.tipo_saldo == tipo_saldo.GASTO ||
-            consolidadofiltrado.tipo_saldo == tipo_saldo.GASTOS_FOTOGRAFIA)
+            (consolidadofiltrado.tipo_saldo == tipo_saldo.GASTO ||
+              consolidadofiltrado.tipo_saldo == tipo_saldo.GASTOS_FOTOGRAFIA)
           "
         >
           <label class="q-mb-sm block">Proyectos</label>
@@ -286,8 +314,8 @@
             error-message="Debes seleccionar un proyecto"
             @blur="v$.proyecto.$touch"
             @filter="filtrarProyectos"
-            :option-value="(v) => v.id"
-            :option-label="(v) => v.nombre"
+            :option-value="v => v.id"
+            :option-label="v => v.nombre"
             emit-value
             map-options
           >
@@ -308,7 +336,9 @@
             </template>
             <template v-slot:no-option>
               <q-item>
-                <q-item-section class="text-grey"> No hay resultados </q-item-section>
+                <q-item-section class="text-grey">
+                  No hay resultados
+                </q-item-section>
               </q-item>
             </template>
           </q-select>
@@ -320,8 +350,8 @@
             (consolidadofiltrado.tipo_filtro == tipo_filtro.TAREA ||
               consolidadofiltrado.tipo_filtro == tipo_filtro.TODOS) &&
             consolidadofiltrado.proyecto >= 0 &&
-            ( consolidadofiltrado.tipo_saldo == tipo_saldo.GASTO ||
-            consolidadofiltrado.tipo_saldo == tipo_saldo.GASTOS_FOTOGRAFIA)
+            (consolidadofiltrado.tipo_saldo == tipo_saldo.GASTO ||
+              consolidadofiltrado.tipo_saldo == tipo_saldo.GASTOS_FOTOGRAFIA)
           "
         >
           <label class="q-mb-sm block">Tareas</label>
@@ -341,8 +371,8 @@
             error-message="Debes seleccionar una tarea"
             @blur="v$.tarea.$touch"
             @filter="filtrarTareas"
-            :option-value="(v) => v.id"
-            :option-label="(v) => v.titulo"
+            :option-value="v => v.id"
+            :option-label="v => v.titulo"
             emit-value
             map-options
           >
@@ -363,7 +393,9 @@
             </template>
             <template v-slot:no-option>
               <q-item>
-                <q-item-section class="text-grey"> No hay resultados </q-item-section>
+                <q-item-section class="text-grey">
+                  No hay resultados
+                </q-item-section>
               </q-item>
             </template>
           </q-select>
@@ -374,8 +406,8 @@
           v-if="
             (consolidadofiltrado.tipo_filtro == tipo_filtro.DETALLE ||
               consolidadofiltrado.tipo_filtro == tipo_filtro.TODOS) &&
-              ( consolidadofiltrado.tipo_saldo == tipo_saldo.GASTO ||
-            consolidadofiltrado.tipo_saldo == tipo_saldo.GASTOS_FOTOGRAFIA)
+            (consolidadofiltrado.tipo_saldo == tipo_saldo.GASTO ||
+              consolidadofiltrado.tipo_saldo == tipo_saldo.GASTOS_FOTOGRAFIA)
           "
         >
           <label class="q-mb-sm block">Detalle</label>
@@ -395,8 +427,8 @@
             error-message="Debes seleccionar un detalle"
             @blur="v$.detalle.$touch"
             @filter="filtrarDetalles"
-            :option-value="(v) => v.id"
-            :option-label="(v) => v.descripcion"
+            :option-value="v => v.id"
+            :option-label="v => v.descripcion"
             emit-value
             map-options
           >
@@ -407,7 +439,9 @@
             </template>
             <template v-slot:no-option>
               <q-item>
-                <q-item-section class="text-grey"> No hay resultados </q-item-section>
+                <q-item-section class="text-grey">
+                  No hay resultados
+                </q-item-section>
               </q-item>
             </template>
           </q-select>
@@ -418,8 +452,8 @@
           v-if="
             (consolidadofiltrado.tipo_filtro == tipo_filtro.CIUDAD ||
               consolidadofiltrado.tipo_filtro == tipo_filtro.TODOS) &&
-              ( consolidadofiltrado.tipo_saldo == tipo_saldo.GASTO ||
-            consolidadofiltrado.tipo_saldo == tipo_saldo.GASTOS_FOTOGRAFIA)
+            (consolidadofiltrado.tipo_saldo == tipo_saldo.GASTO ||
+              consolidadofiltrado.tipo_saldo == tipo_saldo.GASTOS_FOTOGRAFIA)
           "
         >
           <label class="q-mb-sm block">Ciudades</label>
@@ -439,8 +473,8 @@
             error-message="Debes seleccionar una ciudad"
             @blur="v$.ciudad.$touch"
             @filter="filtrarCiudades"
-            :option-value="(v) => v.id"
-            :option-label="(v) => v.canton"
+            :option-value="v => v.id"
+            :option-label="v => v.canton"
             emit-value
             map-options
           >
@@ -451,7 +485,9 @@
             </template>
             <template v-slot:no-option>
               <q-item>
-                <q-item-section class="text-grey"> No hay resultados </q-item-section>
+                <q-item-section class="text-grey">
+                  No hay resultados
+                </q-item-section>
               </q-item>
             </template>
           </q-select>
@@ -462,8 +498,8 @@
           v-if="
             (consolidadofiltrado.tipo_filtro == tipo_filtro.SUBDETALLE ||
               consolidadofiltrado.tipo_filtro == tipo_filtro.TODOS) &&
-              ( consolidadofiltrado.tipo_saldo == tipo_saldo.GASTO ||
-            consolidadofiltrado.tipo_saldo == tipo_saldo.GASTOS_FOTOGRAFIA)
+            (consolidadofiltrado.tipo_saldo == tipo_saldo.GASTO ||
+              consolidadofiltrado.tipo_saldo == tipo_saldo.GASTOS_FOTOGRAFIA)
           "
         >
           <label class="q-mb-sm block">SubDetalle</label>
@@ -483,8 +519,8 @@
             error-message="Debes seleccionar un subdetalle"
             @blur="v$.subdetalle.$touch"
             @filter="filtroSubdetalles"
-            :option-value="(v) => v.id"
-            :option-label="(v) => v.descripcion"
+            :option-value="v => v.id"
+            :option-label="v => v.descripcion"
             emit-value
             map-options
           >
@@ -495,7 +531,9 @@
             </template>
             <template v-slot:no-option>
               <q-item>
-                <q-item-section class="text-grey"> No hay resultados </q-item-section>
+                <q-item-section class="text-grey">
+                  No hay resultados
+                </q-item-section>
               </q-item>
             </template>
           </q-select>
@@ -506,8 +544,8 @@
           v-if="
             (consolidadofiltrado.tipo_filtro == tipo_filtro.AUTORIZACIONES ||
               consolidadofiltrado.tipo_filtro == tipo_filtro.TODOS) &&
-              ( consolidadofiltrado.tipo_saldo == tipo_saldo.GASTO ||
-            consolidadofiltrado.tipo_saldo == tipo_saldo.GASTOS_FOTOGRAFIA)
+            (consolidadofiltrado.tipo_saldo == tipo_saldo.GASTO ||
+              consolidadofiltrado.tipo_saldo == tipo_saldo.GASTOS_FOTOGRAFIA)
           "
         >
           <label class="q-mb-sm block">Autorización Especial</label>
@@ -527,8 +565,8 @@
             error-message="Debes seleccionar un autorizador"
             @blur="v$.autorizador.$touch"
             @filter="filtrarAutorizacionesEspeciales"
-            :option-value="(v) => v.id"
-            :option-label="(v) => v.nombres + ' ' + v.apellidos"
+            :option-value="v => v.id"
+            :option-label="v => v.nombres + ' ' + v.apellidos"
             emit-value
             map-options
           >
@@ -539,7 +577,9 @@
             </template>
             <template v-slot:no-option>
               <q-item>
-                <q-item-section class="text-grey"> No hay resultados </q-item-section>
+                <q-item-section class="text-grey">
+                  No hay resultados
+                </q-item-section>
               </q-item>
             </template>
           </q-select>
@@ -550,8 +590,9 @@
           v-if="
             (consolidadofiltrado.tipo_filtro == tipo_filtro.RUC ||
               consolidadofiltrado.tipo_filtro == tipo_filtro.TODOS) &&
-             ( consolidadofiltrado.tipo_saldo == tipo_saldo.GASTO ||
-            consolidadofiltrado.tipo_saldo == tipo_saldo.GASTOS_FOTOGRAFIA)          "
+            (consolidadofiltrado.tipo_saldo == tipo_saldo.GASTO ||
+              consolidadofiltrado.tipo_saldo == tipo_saldo.GASTOS_FOTOGRAFIA)
+          "
         >
           <label class="q-mb-sm block">RUC</label>
           <q-input
@@ -588,15 +629,39 @@
 
       <q-separator></q-separator>
 
-      <q-card-actions align="around">
-        <q-btn color="positive" @click="generar_reporte(consolidadofiltrado, 'excel')">
-          <q-icon name="bi-file-earmark-excel-fill" size="xs" class="q-mr-sm"></q-icon
-          >Excel</q-btn
-        >
-        <q-btn color="negative" @click="generar_reporte(consolidadofiltrado, 'pdf')">
-          <q-icon name="bi-file-earmark-pdf-fill" size="xs" class="q-mr-sm"></q-icon
-          >PDF</q-btn
-        >
+      <q-card-actions align="around" class="row q-col-gutter-xs">
+        <div class="col-md-6">
+          <q-btn
+            color="positive"
+            unelevated
+            square
+            class="full-width"
+            @click="generar_reporte(consolidadofiltrado, 'excel')"
+          >
+            <q-icon
+              name="bi-file-earmark-excel-fill"
+              size="xs"
+              class="q-mr-sm"
+            ></q-icon
+            >Excel</q-btn
+          >
+        </div>
+        <div class="col-md-6">
+          <q-btn
+            color="negative"
+            class="full-width"
+            unelevated
+            square
+            @click="generar_reporte(consolidadofiltrado, 'pdf')"
+          >
+            <q-icon
+              name="bi-file-earmark-pdf-fill"
+              size="xs"
+              class="q-mr-sm"
+            ></q-icon
+            >PDF</q-btn
+          >
+        </div>
       </q-card-actions>
     </q-card>
   </q-page>

@@ -606,7 +606,7 @@ export default defineComponent({
     /*******************************************************************************************
      * Botones de tabla
      ******************************************************************************************/
-    const { botonAnular, botonDespachar, botonImprimir } = useBotonesTransferenciaProductoEmpleado(listado, tabSeleccionado)
+    const { botonAnular, botonDespachar, botonImprimir, botonDevolverASinCliente } = useBotonesTransferenciaProductoEmpleado(listado, tabSeleccionado)
     const { botonEditarCantidad, botonEliminar } = useBotonesListadoProductos(transferencia, accion)
 
     //Configurar los listados
@@ -753,7 +753,8 @@ export default defineComponent({
       seleccionarEtapaDestino,
       seleccionarTareaDestino,
       consultarProductos,
-      consultado: computed(() => accion.value === acciones.editar || accion.value === acciones.consultar)
+      consultado: computed(() => accion.value === acciones.editar || accion.value === acciones.consultar),
+      botonDevolverASinCliente,
     }
   }
 })

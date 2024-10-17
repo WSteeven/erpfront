@@ -39,7 +39,7 @@ export default defineComponent({
       VisualizarTransferencia,
       new VisualizarTransferenciaController()
     )
-    const aprobarController = new AprobarTransferenciaController()
+    const controller = new AprobarTransferenciaController()
     const { entidad: transferencia, disabled, accion } = mixin.useReferencias()
     const { setValidador, consultar } = mixin.useComportamiento()
     const {
@@ -47,7 +47,7 @@ export default defineComponent({
       prompt,
       notificarCorrecto,
       notificarAdvertencia,
-      notificarError,
+      notificarError
     } = useNotificaciones()
     const mostrarListado = ref(true)
     const mostrarAprobacion = ref(false)
@@ -56,22 +56,22 @@ export default defineComponent({
      **************/
     const reglas = {
       usuario_recibe: {
-        requiredIf: transferencia.es_devolucion ? true : false,
+        requiredIf: transferencia.es_devolucion
       },
       monto: {
         required,
-        maxLength: maxLength(50),
+        maxLength: maxLength(50)
       },
       cuenta: {
         required,
-        maxLength: maxLength(50),
+        maxLength: maxLength(50)
       },
       tarea: {
-        requiredIf: transferencia.es_devolucion ? true : false,
+        requiredIf: transferencia.es_devolucion
       },
       comprobante: {
-        required,
-      },
+        required
+      }
     }
 
     const v$ = useVuelidate(reglas, transferencia)
@@ -88,17 +88,15 @@ export default defineComponent({
       mostrarAprobacion.value = true
     }
 
-
-
-    async function aprobar_transferencia(entidad, tipo_aprobacion: string) {
+    async function actualizarTransferencia(entidad, tipo_aprobacion: string) {
       switch (tipo_aprobacion) {
         case 'aprobar':
           try {
             cargando.activar()
-           await aprobarController.aprobarTransferencia(entidad)
-            notificarCorrecto('Se aprobado Transferencia Exitosamente')
+            await controller.aprobarTransferencia(entidad)
+            notificarCorrecto('Se aprobó la Transferencia Exitosamente')
             cargando.desactivar()
-            emit('cerrar-modal',false)
+            emit('cerrar-modal', false)
             emit('guardado')
           } catch (e: any) {
             notificarError(
@@ -110,10 +108,10 @@ export default defineComponent({
           confirmar('¿Está seguro de rechazar la transferencia?', async () => {
             try {
               cargando.activar()
-              await aprobarController.rechazarTransferencia(entidad)
+              await controller.rechazarTransferencia(entidad)
               notificarAdvertencia('Se rechazado Transferencia Exitosamente')
-              emit('cerrar-modal')
               cargando.desactivar()
+              emit('cerrar-modal', false)
               emit('guardado')
             } catch (e: any) {
               notificarError(
@@ -127,21 +125,22 @@ export default defineComponent({
             const data: CustomActionPrompt = {
               titulo: 'Anular Transferencia',
               mensaje: 'Ingrese motivo de anulacion',
-              accion: async (data) => {
+              accion: async data => {
                 try {
                   cargando.activar()
                   entidad.detalle_estado = data
-                  await aprobarController.anularTransferencia(entidad)
+                  await controller.anularTransferencia(entidad)
                   notificarAdvertencia('Se anulado Transferencia Exitosamente')
                   emit('cerrar-modal')
                   cargando.desactivar()
+                  emit('cerrar-modal', false)
                   emit('guardado')
                 } catch (e: any) {
                   notificarError(
                     'No se pudo anular, debes ingresar un motivo para la anulación'
                   )
                 }
-              },
+              }
             }
             prompt(data)
           })
@@ -159,8 +158,8 @@ export default defineComponent({
       v$,
       usuario,
       mostrarListado,
-      aprobar_transferencia,
-      configuracionColumnas: configuracionColumnasTransferencia,
+      actualizarTransferencia,
+      configuracionColumnas: configuracionColumnasTransferencia
     }
-  },
+  }
 })

@@ -43,6 +43,35 @@ export function useBotonesTransferenciaProductoEmpleado(listado, tabSeleccionado
     visible: ({ entidad }) => entidad.estado_bodega == 'PENDIENTE' && (entidad.solicitante_id == store.user.id || entidad.per_autoriza_id == store.user.id || store.esAdministrador)
   }
 
+  const botonDevolverASinCliente: CustomActionTable = {
+    titulo: 'Devolver a sin cliente',
+    color: 'negative',
+    icono: 'bi-arrow-return-left',
+    accion: ({ entidad, posicion }) => {
+      confirmar('¿Está seguro de devolver a sin cliente? Todo el listado de productos será movido a SIN CLIENTE, esta operación no es reversible.', () => {
+        const data: CustomActionPrompt = {
+          titulo: 'Motivo',
+          mensaje: 'Ingresa el motivo de la devolución a SIN CLIENTE',
+          accion: async (data) => {
+            try {
+              const { response } = await new CambiarEstadoDevolucion().devolverASinCliente(entidad.id, data)
+              notificarCorrecto(response.data.mensaje)
+              if (posicion >= 0) {
+                listado.value.splice(posicion, 1,)
+                listado.value = [...listado.value]
+              }
+            } catch (e: any) {
+              notificarError('No se pudo anular, debes ingresar un motivo para la anulación')
+            }
+          }
+        }
+
+        prompt(data)
+      })
+    },
+    visible: ({ entidad }) => entidad.autorizacion == 'APROBADO' && (store.esAdministrador || store.esCoordinadorBodega)
+  }
+
   const botonImprimir: CustomActionTable = {
     titulo: 'Imprimir',
     color: 'secondary',
@@ -70,5 +99,6 @@ export function useBotonesTransferenciaProductoEmpleado(listado, tabSeleccionado
     botonAnular,
     botonImprimir,
     botonDespachar,
+    botonDevolverASinCliente,
   }
 }

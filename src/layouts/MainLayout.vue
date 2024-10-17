@@ -549,7 +549,7 @@
           :exclude="[
             'intranet_page',
             'transacciones_ingresos',
-            'Egresos',
+            'EgresoPage',
             'OrdenCompraPage',
             'PreordenCompra',
             'Devoluciones',

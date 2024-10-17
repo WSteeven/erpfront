@@ -48,7 +48,7 @@ export default defineComponent({
     useNotificacionStore().setQuasar(useQuasar())
     useCargandoStore().setQuasar(useQuasar())
 
-    // modales
+    // Modales
     const modales = new ComportamientoModalesMaterialEmpleado()
 
     /************
