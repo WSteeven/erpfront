@@ -11,7 +11,7 @@ export class Vacante extends EntidadAuditable {
   modalidad: string | null
   descripcion: string
   tipo_empleo: string | null
-  anios_experiencia: number | null
+  anios_experiencia: string | null
   formaciones_academicas: any[] | null
   numero_postulantes: number
   areas_conocimiento: any[]

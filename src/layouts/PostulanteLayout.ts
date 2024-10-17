@@ -1,6 +1,13 @@
 // Dependencias
 import EssentialLoading from 'components/loading/view/EssentialLoading.vue'
-import { defineComponent, ref, computed, ComputedRef, onMounted } from 'vue'
+import {
+  defineComponent,
+  ref,
+  computed,
+  ComputedRef,
+  onMounted,
+  watchEffect
+} from 'vue'
 import { useAuthenticationExternalStore } from 'src/stores/authenticationExternal'
 
 import { LocalStorage, useQuasar } from 'quasar'
@@ -31,7 +38,7 @@ export default defineComponent({
     EssentialLoading,
     FooterComponent,
     ModalesEntidad,
-    ScrollToTopButton,
+    ScrollToTopButton
   },
 
   setup() {
@@ -44,7 +51,7 @@ export default defineComponent({
      *********/
     const authenticationStore = useAuthenticationExternalStore()
     const configuracionGeneralStore = useConfiguracionGeneralStore()
-    const {autenticado} = userIsAuthenticated()
+    const { autenticado } = userIsAuthenticated()
 
     /*******
      * Init
@@ -74,10 +81,21 @@ export default defineComponent({
       return ''
     })
 
+    // Establecer favicon
+    configuracionGeneralStore
+      .consultarConfiguracion()
+      .then(() => configuracionGeneralStore.cambiarFavicon())
+
+    // Titulo pagina
+    const nombreEmpresa = computed(
+      () => configuracionGeneralStore.configuracion?.nombre_empresa
+    )
+    watchEffect(() => (document.title = nombreEmpresa.value))
+
     async function logout() {
       cargando.activar()
       await authenticationStore.logout()
-      Router.replace({ name: 'LoginPostulante' })
+      await Router.replace({ name: 'LoginPostulante' })
       cargando.desactivar()
     }
 
@@ -91,11 +109,18 @@ export default defineComponent({
       $q.dark.set(Boolean(modoOscuro.value))
       LocalStorage.set('dark', modoOscuro.value)
     }
+
     //Poner la imagen de perfil
     const imagenPerfil = computed(() => {
       const usuario = authenticationStore.user
       if (usuario) {
-        return `https://ui-avatars.com/api/?name=${usuario.nombres.substr(0, 1)}+${usuario.apellidos.substr(0, 1)}&bold=true&background=0879dc28&color=0879dc`
+        return `https://ui-avatars.com/api/?name=${usuario.nombres.substr(
+          0,
+          1
+        )}+${usuario.apellidos.substr(
+          0,
+          1
+        )}&bold=true&background=0879dc28&color=0879dc`
       }
       return ' '
     })
@@ -129,8 +154,6 @@ export default defineComponent({
      **********/
     const modales = new ComportamientoModalesMainLayout()
 
-
-
     // Establecer favicon
     configuracionGeneralStore
       .consultarConfiguracion()
@@ -158,7 +181,7 @@ export default defineComponent({
       imagenPerfil,
       selfCenterMiddle,
 
-      autenticado,
+      autenticado
     }
-  },
+  }
 })

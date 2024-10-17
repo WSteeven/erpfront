@@ -482,7 +482,8 @@ export default defineComponent({
         console.log('entidad', entidad)
         modales.abrirModalEntidad('FamiliaresPage')
         console.log('paso el abrir modal',modales)
-      }
+      },
+      visible: false
     }
 
     function obtenerUsername() {

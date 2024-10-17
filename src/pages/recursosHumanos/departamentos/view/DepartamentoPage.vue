@@ -80,7 +80,7 @@
 
           <!-- Telefono -->
           <div class="col-12 col-md-4">
-            <label class="q-mb-sm block">Teléfono del departamento</label>
+            <label class="q-mb-sm block">Teléfono del departamento <q-icon name="bi-info-circle"/> <q-tooltip class="bg-dark">Ingresa el número de teléfono en formato +593 99 999 9999 </q-tooltip></label>
             <q-input
               v-model="departamento.telefono"
               placeholder="Opcional"
