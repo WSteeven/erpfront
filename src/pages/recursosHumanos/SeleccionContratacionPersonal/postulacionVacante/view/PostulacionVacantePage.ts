@@ -48,6 +48,7 @@ import { ColumnConfig } from 'components/tables/domain/ColumnConfig'
 import { TipoDiscapacidad } from 'recursosHumanos/tipo-discapacidad/domain/TipoDiscapacidad'
 import { TipoDiscapacidadController } from 'recursosHumanos/tipo-discapacidad/infraestructure/TipoDiscapacidadController'
 import { ValidarReferencias } from 'seleccionContratacion/postulacionVacante/application/ValidarReferencias'
+import { UserDiscapacidadesController } from 'seleccionContratacion/postulacionVacante/infraestructure/UserDiscapacidadesController'
 
 export default defineComponent({
   name: 'PostulacionVacantePage',
@@ -165,12 +166,12 @@ export default defineComponent({
         }
       )
       //Vamos a listar los archivos del usuario que sean CV
-      await cargando.cargarConsulta(
-        async () => await obtenerCurriculumsUsuario()
-      )
-      await cargando.cargarConsulta(
-        async () => await obtenerReferenciasUsuario()
-      )
+      await cargando.cargarConsulta(async () => {
+        await obtenerCurriculumsUsuario()
+        await obtenerReferenciasUsuario()
+        await obtenerDiscapacidadesUsuario()
+      })
+
     })
 
     const reglas = {
@@ -218,6 +219,18 @@ export default defineComponent({
       }
     }
 
+    async function obtenerDiscapacidadesUsuario() {
+      try {
+        const response = (
+          await new UserDiscapacidadesController().listar()
+        ).result
+        postulacion.discapacidades= response
+        postulacion.tengo_discapacidad = response.length>0
+      } catch (error: any) {
+        notificarError('Error al obtener las discapacidades del usuario')
+      }
+    }
+
     async function obtenerReferenciasUsuario() {
       try {
         postulacion.referencias = await (
@@ -253,12 +266,10 @@ export default defineComponent({
 
     async function obtenerAspiracionSalarialUltimaPostulacion() {
       cargando.activar()
-      const response = (
-        await new PostulacionController().listar({ user_id: store.user.id })
-      )[0]
+      const response = await new PostulacionController().listar({ user_id: store.user.id })
       cargando.desactivar()
-      console.log(response)
-      return response?.aspiracion_salarial
+      console.log(response.result[0].aspiracion_salarial)
+      return response.result[0].aspiracion_salarial
     }
 
     const agregarDiscapacidad = () => {

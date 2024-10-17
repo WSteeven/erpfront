@@ -6,6 +6,8 @@ export const recursosHumanos = {
   solicitudes_vacaciones: new Endpoint('recursos-humanos/solicitudes-vacaciones'),
   vacaciones: new Endpoint('recursos-humanos/vacaciones'),
   planes_vacaciones: new Endpoint('recursos-humanos/planes-vacaciones'),
+  registro: new Endpoint('recursos-humanos/registro'),
+  user_discapacidades: new Endpoint('recursos-humanos/discapacidades-usuario'),
   /***************************************************
    *  Submodulo selección y contratación de personal
    **************************************************/
