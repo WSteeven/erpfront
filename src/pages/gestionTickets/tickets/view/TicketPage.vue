@@ -99,7 +99,10 @@
             <!-- 'col-md-9': ticket.departamento_responsable.length <= 1, }" -->
             <div class="col-12 col-md-6">
               <label class="q-mb-sm block"
-                >Departamento(s) que atenderá(n) <small class="text-negative text-italic">*Crea tickets individuales a cada departamento</small></label
+                >Departamento(s) que atenderá(n)
+                <small class="text-negative text-italic"
+                  >*Crea tickets individuales a cada departamento</small
+                ></label
               >
               <q-select
                 v-model="ticket.departamento_responsable"
@@ -626,7 +629,7 @@
       </div>
     </template>
   </tab-layout-filter-tabs2>
-  
+
   <modales-entidad
     :comportamiento="modalesTicket"
     :mixin-modal="mixin"

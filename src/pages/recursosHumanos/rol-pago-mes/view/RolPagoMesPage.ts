@@ -47,6 +47,7 @@ import { StatusEssentialLoading } from 'components/loading/application/StatusEss
 import { Archivo } from 'pages/gestionTrabajos/subtareas/modules/gestorArchivosTrabajos/domain/Archivo'
 import { ArchivoRolPagoMesController } from '../infrestucture/ArchivoRolPagoMesController'
 import GestorDocumentos from 'components/documentos/view/GestorDocumentos.vue'
+import { useNotificacionStore } from 'stores/notificacion'
 
 export default defineComponent({
   name: 'RolPagoMes',
@@ -103,6 +104,7 @@ export default defineComponent({
 
     const { onConsultado } = mixin.useHooks()
     useCargandoStore().setQuasar(useQuasar())
+    useNotificacionStore().setQuasar(useQuasar())
     const { notificarAdvertencia, notificarCorrecto, confirmar, promptItems } =
       useNotificaciones()
 
