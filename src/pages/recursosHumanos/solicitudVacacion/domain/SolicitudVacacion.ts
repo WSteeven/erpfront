@@ -1,6 +1,6 @@
 import { EntidadAuditable } from 'shared/entidad/domain/entidadAuditable'
 
-export class Vacacion extends EntidadAuditable {
+export class SolicitudVacacion extends EntidadAuditable {
   id: number | null
   empleado: number | null
   autorizador: number | null

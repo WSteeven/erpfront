@@ -3,7 +3,7 @@ import axios, { AxiosResponse } from 'axios'
 import { configuracionColumnasRolPago } from '../../rol-pago/domain/configuracionColumnasRolPago'
 import { required } from '@vuelidate/validators'
 import { useVuelidate } from '@vuelidate/core'
-import { defineComponent, ref, computed, Ref, reactive } from 'vue'
+import { computed, defineComponent, reactive, Ref, ref } from 'vue'
 
 // Componentes
 import SelectorImagen from 'components/SelectorImagen.vue'
@@ -27,9 +27,9 @@ import { RolPagoMesController } from '../infrestucture/RolPagoMesController'
 import { ComportamientoModalesRolPagoMes } from '../aplication/ComportamientoModalesRolPagoMes'
 import { ComportamientoModalesRolPago } from 'pages/recursosHumanos/rol-pago/aplication/ComportamientoModalesRolPago'
 import {
-  tabOptionsEstadosRolPago,
-  tabOptionsEstadosRolPagoEmpleado,
   estadosRolPagoEmpleado,
+  tabOptionsEstadosRolPago,
+  tabOptionsEstadosRolPagoEmpleado
 } from 'config/recursosHumanos.utils'
 import { CustomActionTable } from 'components/tables/domain/CustomActionTable'
 import { useBotonesTablaRolPagoMes } from '../aplication/BotonesTablaRolPagoMes'
@@ -75,8 +75,6 @@ export default defineComponent({
       setValidador,
       listar,
       reestablecer,
-      obtenerListados,
-      cargarVista,
     } = mixin.useComportamiento()
     const mixinRolEmpleado = new ContenedorSimpleMixin(
       RolPago,
@@ -167,7 +165,7 @@ export default defineComponent({
           }
           await new CambiarEstadoRolPago().ejecutarMasivo(data)
           notificarCorrecto('Rol de Pagos se esta Verificando!')
-          filtrarRolPagoEmpleado(estadosRolPagoEmpleado.ejecutando)
+          await filtrarRolPagoEmpleado(estadosRolPagoEmpleado.ejecutando)
         })
       },
       visible: () => authenticationStore.can('puede.ver.btn.ejecutar_rol_pago'),
@@ -177,7 +175,7 @@ export default defineComponent({
       icono: 'bi-check',
       color: 'positive',
       visible: () =>
-        rolpago.finalizado == false &&
+        !rolpago.finalizado &&
         authenticationStore.can('puede.ver.btn.finalizar_rol_pago'),
       accion: () => {
         if (!rolpago.id)
@@ -188,7 +186,7 @@ export default defineComponent({
           }
           await new CambiarEstadoRolPago().finalizarMasivo(data)
           notificarCorrecto('Rol de Pagos Finalizado!')
-          filtrarRolPagoEmpleado(estadosRolPagoEmpleado.finalizado)
+          await filtrarRolPagoEmpleado(estadosRolPagoEmpleado.finalizado)
         })
       },
     }
@@ -275,13 +273,14 @@ export default defineComponent({
     const v$ = useVuelidate(reglas, rolpago)
     setValidador(v$.value)
     async function guardado(data) {
-      filtrarRolPagoEmpleado(estadosRolPagoEmpleado.ejecutando)
+      console.log(data)
+      await filtrarRolPagoEmpleado(estadosRolPagoEmpleado.ejecutando)
     }
 
     /**Verifica si es un mes */
       function checkValue (val, reason, details) {
       console.log(val, reason, details)
-      is_month.value = reason === 'month' ? false : true
+      is_month.value = reason !== 'month'
             obtenerNombreMes()
     }
 
@@ -419,7 +418,7 @@ export default defineComponent({
         '/' +
         axios_repository.getEndpoint(endpoints.crear_cash_roles_pago) +
         entidad.id
-      imprimirArchivo(url_pdf, 'GET', 'blob', 'xlsx', filename, null)
+      await imprimirArchivo(url_pdf, 'GET', 'blob', 'xlsx', filename, null)
     }
     async function generar_reporte_general_mes(
       id: number,
@@ -435,7 +434,7 @@ export default defineComponent({
         '?tipo=' +
         tipo
 
-      imprimirArchivo(url_pdf, 'GET', 'blob', tipo, filename, null)
+      await imprimirArchivo(url_pdf, 'GET', 'blob', tipo, filename, null)
     }
 
     const btnRefrescar: CustomActionTable = {
@@ -487,8 +486,8 @@ export default defineComponent({
     async function subirArchivos() {
       if (await v$.value.$validate()) {
         await refArchivoRolPago.value.subir(rolpago)
-        restablecerArchivo()
-        reestablecer()
+        await restablecerArchivo()
+        await reestablecer()
       }
     }
     const enviar_masivo = computed(

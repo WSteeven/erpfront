@@ -10,6 +10,26 @@ const rutasRecursosHumanos: RouteRecordRaw[]=[
       ),
     meta: { requiresAuth: false },
   },
+  {
+    path: '/solicitudes-vacaciones',
+    name: 'solicitudes_vacaciones',
+    component: () =>
+      import('recursosHumanos/solicitudVacacion/view/SolicitudVacacionPage.vue'),
+    meta: { requiresAuth: true },
+  },
+  {
+    path: '/vacaciones',
+    name: 'vacaciones',
+    component: () =>
+      import('recursosHumanos/vacaciones/view/VacacionPage.vue'),
+    meta: { requiresAuth: true },
+  },
+  {
+    path: '/planes-vacaciones',
+    name: 'planes_vacaciones',
+    component: ()=> import('recursosHumanos/planVacacion/view/PlanVacacionPage.vue'),
+    meta: { requiresAuth: false },
+  }
 ]
 
 export default rutasRecursosHumanos

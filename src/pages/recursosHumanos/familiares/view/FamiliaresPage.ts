@@ -13,13 +13,13 @@ import { required } from 'shared/i18n-validators'
 import { EmpleadoController } from 'pages/recursosHumanos/empleados/infraestructure/EmpleadoController'
 import { useAuthenticationStore } from 'stores/authentication'
 import GestorDocumentos from 'components/documentos/view/GestorDocumentos.vue'
-import { useNotificaciones } from 'shared/notificaciones'
 import TabLayout from 'shared/contenedor/modules/simple/view/TabLayout.vue'
 import { FamiliaresController } from '../infraestructure/FamiliaresController'
 import { configuracionColumnasFamiliares } from '../domain/configuracionColumnasFamiliares'
 import { useRecursosHumanosStore } from 'stores/recursosHumanos'
 import { useFamiliarStore } from 'stores/familiar'
 import { parentezcos } from 'config/recursosHumanos.utils'
+import { useFiltrosListadosSelects } from 'shared/filtrosListadosGenerales'
 
 export default defineComponent({
   components: { TabLayout, SelectorImagen, GestorDocumentos },
@@ -33,30 +33,17 @@ export default defineComponent({
       entidad: familiares,
       disabled,
       accion,
-      listado,
       listadosAuxiliares,
     } = mixin.useReferencias()
-    const { setValidador, cargarVista, obtenerListados, listar, consultar } =
+    const { setValidador, cargarVista, obtenerListados, consultar } =
       mixin.useComportamiento()
     const {
-      onBeforeGuardar,
       onGuardado,
-      onBeforeModificar,
-      onModificado,
-      onConsultado,
-      onReestablecer,
     } = mixin.useHooks()
     const store = useAuthenticationStore()
     const storeRecursosHumanos = useRecursosHumanosStore()
-    const {
-      confirmar,
-      prompt,
-      notificarCorrecto,
-      notificarAdvertencia,
-      notificarError,
-    } = useNotificaciones()
 
-    const empleados = ref([])
+    const { empleados, filtrarEmpleados } =useFiltrosListadosSelects(listadosAuxiliares)
 
     const esRecursosHumanos = store.esRecursosHumanos
 
@@ -87,19 +74,7 @@ export default defineComponent({
     }
     accion.value = familiarStore.accion
 
-    function filtrarEmpleados(val, update) {
-      if (val === '')
-        update(() => (empleados.value = listadosAuxiliares.empleados))
 
-      update(() => {
-        const needle = val.toLowerCase()
-        empleados.value = listadosAuxiliares.empleados.filter(
-          (v) =>
-            v.nombres.toLowerCase().indexOf(needle) > -1 ||
-            v.apellidos.toLowerCase().indexOf(needle) > -1
-        )
-      })
-    }
     onGuardado((entidad,data) => {
       emit('cerrar-modal', false)
       emit('guardado',{ key:'EmpleadoPage',model:data.modelo})

@@ -11,7 +11,6 @@ export const seleccionContratacionPersonal = {
   tipos_puestos: new Endpoint('seleccion-contratacion/tipos-puestos'),
   modalidades: new Endpoint('seleccion-contratacion/modalidades'),
   postulantes: new Endpoint('seleccion-contratacion/postulantes'),
-  registro: new Endpoint('recursos-humanos/registro'),
   entrevistas: new Endpoint('seleccion-contratacion/entrevistas'),
   examenes_postulantes: new Endpoint('seleccion-contratacion/examenes-postulantes'),
   postulacion_vacante: new Endpoint('seleccion-contratacion/postulaciones-vacantes'),

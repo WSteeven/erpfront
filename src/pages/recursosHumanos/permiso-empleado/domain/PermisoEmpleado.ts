@@ -24,7 +24,7 @@ export class PermisoEmpleado extends EntidadAuditable {
   suguiere_fecha: boolean | null
   recupero: boolean | null
   tieneDocumento: boolean | null
-  cargo_vacaciones: boolean | null
+  cargo_vacaciones: boolean
   aceptar_sugerencia: boolean | null
   constructor() {
     super()

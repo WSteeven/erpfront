@@ -121,7 +121,7 @@ export class NotificacionesSistema {
     solicitudPrestamoGerenciaPusherEvent.start()
 
 
-    //Vacacion
+    //SolicitudVacacion
     const vacacionPusherEvent = new VacacionPusherEvent()
     vacacionPusherEvent.start()
 

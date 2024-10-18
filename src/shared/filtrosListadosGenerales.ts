@@ -79,6 +79,10 @@ export const useFiltrosListadosSelects = (listadosAuxiliares, entidad?: Ref<any>
   const motivosConsumoActivosFijos = ref(listadosAuxiliares.motivosConsumoActivosFijos)
 
   //////////////////////////////////////////
+  //modulo Recursos Humanos
+  //////////////////////////////////////////
+  const periodos = ref(listadosAuxiliares.periodos)
+  //////////////////////////////////////////
   //modulo seleccion y contratacion
   //////////////////////////////////////////
   const areasConocimiento = ref(listadosAuxiliares.areasConocimiento)
@@ -506,6 +510,7 @@ export const useFiltrosListadosSelects = (listadosAuxiliares, entidad?: Ref<any>
   // const filtrarTiposEvaluacionesMedicasRetiros = (val, update) => filtrarLista(val, update, tiposEvaluacionesMedicasRetiros, 'nombre', listadosAuxiliares.tiposEvaluacionesMedicasRetiros)
   // const filtrarTiposAptitudesMedicasLaborales = (val, update) => filtrarLista(val, update, tiposAptitudesMedicasLaborales, 'nombre', listadosAuxiliares.tiposAptitudesMedicasLaborales)
 
+  const filtrarPeriodos = (val, update) => filtrarLista(val, update, periodos, 'nombre', listadosAuxiliares.periodos)
   /****************
    * Modulo seleccion y contratacion de personal
    ****************/
@@ -584,6 +589,7 @@ export const useFiltrosListadosSelects = (listadosAuxiliares, entidad?: Ref<any>
     // tiposEvaluacionesMedicasRetiros, filtrarTiposEvaluacionesMedicasRetiros,
     // tiposAptitudesMedicasLaborales, filtrarTiposAptitudesMedicasLaborales,
 
+    periodos, filtrarPeriodos,
     //modulo seleccion y contratacion de personal
     areasConocimiento, filtrarAreasConocimiento,
     // Modulo activos fijos

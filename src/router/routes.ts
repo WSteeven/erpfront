@@ -1129,13 +1129,6 @@ const routes: RouteRecordRaw[] = [
         meta: { requiresAuth: true },
       },
       {
-        path: '/vacacion',
-        name: 'vacacion',
-        component: () =>
-          import('pages/recursosHumanos/vacacion/view/VacacionPage.vue'),
-        meta: { requiresAuth: true },
-      },
-      {
         path: '/solicitud-prestamo-empresarial',
         name: 'solicitud_prestamo_empresarial',
         component: () =>

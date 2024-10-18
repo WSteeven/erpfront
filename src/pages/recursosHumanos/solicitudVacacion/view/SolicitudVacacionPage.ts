@@ -1,31 +1,28 @@
 // Dependencias
-import { configuracionColumnasVacacion } from '../domain/configuracionColumnasVacacion'
+import { configuracionColumnasSolicitudVacacion } from '../domain/configuracionColumnasSolicitudVacacion'
 import { required } from 'shared/i18n-validators'
 import { maxValue, minValue } from '@vuelidate/validators'
 import { useVuelidate } from '@vuelidate/core'
-import { defineComponent, ref, computed, reactive } from 'vue'
+import { computed, defineComponent, ref } from 'vue'
 
 // Componentes
-import TabLayout from 'shared/contenedor/modules/simple/view/TabLayout.vue'
-import SelectorImagen from 'components/SelectorImagen.vue'
+import TabLayoutFilterTabs2 from 'shared/contenedor/modules/simple/view/TabLayoutFilterTabs2.vue'
 
 //Logica y controladores
 import { ContenedorSimpleMixin } from 'shared/contenedor/modules/simple/application/ContenedorSimpleMixin'
-import { VacacionController } from '../infraestructure/VacacionController'
-import { Vacacion } from '../domain/Vacacion'
+import { SolicitudVacacionController } from '../infraestructure/SolicitudVacacionController'
+import { SolicitudVacacion } from '../domain/SolicitudVacacion'
 import { imprimirArchivo, ordenarLista, removeAccents } from 'shared/utils'
-import { accionesTabla, maskFecha, tabOptionsVacaciones } from 'config/utils'
+import { accionesTabla, maskFecha, tabOptionsVacaciones, acciones } from 'config/utils'
 import { AxiosHttpRepository } from 'shared/http/infraestructure/AxiosHttpRepository'
 import { apiConfig, endpoints } from 'config/api'
 import EssentialTable from 'components/tables/view/EssentialTable.vue'
 import { useRecursosHumanosStore } from 'stores/recursosHumanos'
 import { PeriodoController } from 'pages/recursosHumanos/periodo/infraestructure/PeriodoController'
 import { useAuthenticationStore } from 'stores/authentication'
-import axios, { Axios, AxiosResponse } from 'axios'
+import { AxiosResponse } from 'axios'
 import { EmpleadoController } from 'pages/recursosHumanos/empleados/infraestructure/EmpleadoController'
-import { Empleado } from 'pages/recursosHumanos/empleados/domain/Empleado'
 import { CustomActionTable } from 'components/tables/domain/CustomActionTable'
-import TabLayoutFilterTabs2 from 'shared/contenedor/modules/simple/view/TabLayoutFilterTabs2.vue'
 import { AutorizacionController } from 'pages/administracion/autorizaciones/infraestructure/AutorizacionController'
 import { format } from '@formkit/tempo'
 import { useFiltrosListadosSelects } from 'shared/filtrosListadosGenerales'
@@ -36,14 +33,20 @@ import { useNotificacionStore } from 'stores/notificacion'
 import { useCargandoStore } from 'stores/cargando'
 
 export default defineComponent({
-  components: { TabLayoutFilterTabs2, SelectorImagen, EssentialTable },
+  components: { TabLayoutFilterTabs2, EssentialTable },
   setup() {
-    const mixin = new ContenedorSimpleMixin(Vacacion, new VacacionController())
-    const { entidad: vacacion, disabled, accion, listadosAuxiliares, } = mixin.useReferencias()
-    const { setValidador, obtenerListados, consultar, cargarVista, listar } = mixin.useComportamiento()
+    const mixin = new ContenedorSimpleMixin(SolicitudVacacion, new SolicitudVacacionController())
+    const {
+      entidad: vacacion,
+      disabled,
+      accion,
+      listadosAuxiliares
+    } = mixin.useReferencias()
+    const { setValidador, obtenerListados, consultar, cargarVista, listar } =
+      mixin.useComportamiento()
     const { onConsultado, onBeforeModificar } = mixin.useHooks()
 
-    const { notificarAdvertencia, notificarError } = useNotificaciones()
+    const { notificarAdvertencia } = useNotificaciones()
 
     /**
      * Stores
@@ -58,7 +61,6 @@ export default defineComponent({
      */
     const autorizaciones = ref()
     const esConsultado = ref(false)
-    const periodos = ref([])
     const esAutorizador = ref(false)
     const data_dias_descuento_vacaciones = ref()
     const empleado = ref()
@@ -69,35 +71,38 @@ export default defineComponent({
     const dias_rango2 = ref()
     let tabVacacion = '1'
 
-    const dias_descuento_vacaciones = computed(() => data_dias_descuento_vacaciones.value)
+    const dias_descuento_vacaciones = computed(
+      () => data_dias_descuento_vacaciones.value
+    )
 
-    const { empleados, filtrarEmpleados } = useFiltrosListadosSelects(listadosAuxiliares)
+    const { empleados, filtrarEmpleados, periodos, filtrarPeriodos } =
+      useFiltrosListadosSelects(listadosAuxiliares)
     cargarVista(async () => {
       await obtenerListados({
         periodos: {
           controller: new PeriodoController(),
-          params: { campos: 'id,nombre', activo: 1 },
+          params: { campos: 'id,nombre', activo: 1 }
         },
         empleados: {
           controller: new EmpleadoController(),
           params: {
             // id: vacacion.empleado == null ? store.user.id : vacacion.empleado,
-            estado: 1,
-          },
+            estado: 1
+          }
         },
         autorizaciones: {
           controller: new AutorizacionController(),
           params: {
             campos: 'id,nombre',
             es_validado: false,
-            es_modulo_rhh: true,
-          },
-        },
+            es_modulo_rhh: true
+          }
+        }
       })
       autorizaciones.value = listadosAuxiliares.autorizaciones
       empleados.value = listadosAuxiliares.empleados
       periodos.value = listadosAuxiliares.periodos
-      obtenerDescuentos()
+      await obtenerDescuentos()
     })
 
     //Reglas de validacion
@@ -109,13 +114,13 @@ export default defineComponent({
       derecho_vacaciones: { reqiredIf: esAutorizador },
       numero_rangos: { required, minValue: minValue(1), maxValue: maxValue(2) },
       fecha_inicio: {
-        requiredIf: vacacion.numero_rangos == '1' ? true : false,
+        requiredIf: vacacion.numero_rangos == '1'
       },
-      fecha_fin: { requiredIf: vacacion.numero_rangos == '1' ? true : false },
+      fecha_fin: { requiredIf: vacacion.numero_rangos == '1' },
       numero_dias: {
-        requiredIf: vacacion.numero_rangos == '1' ? true : false,
-        maxValue: maxValue(15),
-      },
+        requiredIf: vacacion.numero_rangos == '1',
+        maxValue: maxValue(15)
+      }
     }))
     const v$ = useVuelidate(reglas, vacacion)
     setValidador(v$.value)
@@ -125,8 +130,7 @@ export default defineComponent({
      *******************************/
     onBeforeModificar(() => (esConsultado.value = true))
     onConsultado(() => {
-      esAutorizador.value =
-        store.user.id == vacacion.id_jefe_inmediato ? true : false
+      esAutorizador.value = store.user.id == vacacion.id_jefe_inmediato
       setTimeout(() => {
         vacacion.derecho_vacaciones =
           15 +
@@ -147,47 +151,27 @@ export default defineComponent({
       try {
         cargando.activar()
         const axios = AxiosHttpRepository.getInstance()
-        const url_acreditacion = apiConfig.URL_BASE + '/' + axios.getEndpoint(endpoints.descuentos_permiso)
-        const response: AxiosResponse = await axios.get(url_acreditacion, { params: { empleado: vacacion.empleado ?? store.user.id } })
-        const num_dias = response.data.duracion !== null ? response.data.duracion : 0
-        vacacion.descuento_vacaciones = response.data.duracion != null ? Math.floor(num_dias / 24) : 0
-        data_dias_descuento_vacaciones.value = Math.floor(num_dias / 24).toString()
+        const url_acreditacion =
+          apiConfig.URL_BASE +
+          '/' +
+          axios.getEndpoint(endpoints.descuentos_permiso)
+        const response: AxiosResponse = await axios.get(url_acreditacion, {
+          params: { empleado: vacacion.empleado ?? store.user.id }
+        })
+        const num_dias =
+          response.data.duracion !== null ? response.data.duracion : 0
+        vacacion.descuento_vacaciones =
+          response.data.duracion != null ? Math.floor(num_dias / 24) : 0
+        data_dias_descuento_vacaciones.value = Math.floor(
+          num_dias / 24
+        ).toString()
       } catch (error) {
         console.error(error)
       } finally {
         cargando.desactivar()
       }
     }
-    /**
-     * La función 'convertirHorasAHumanos' convierte una determinada cantidad de horas a un formato
-     * legible por humanos, mostrando la cantidad de días y horas restantes.
-     * @param horas - El parámetro 'horas' representa la cantidad de horas que desea convertir a un
-     * formato legible por humanos.
-     * @returns una cadena que representa las horas de entrada convertidas a un formato legible por
-     * humanos.
-     */
-    // function convertirHorasAHumanos(horas) {
-    //   const dias = Math.floor(horas / 24)
-    //   const horasRestantes = horas % 24
 
-    //   let resultado = ''
-    //   if (dias > 0) {
-    //     resultado += dias + ' día'
-    //     if (dias > 1) {
-    //       resultado += 's'
-    //     }
-    //     resultado += ' '
-    //   }
-
-    //   if (horasRestantes > 0) {
-    //     resultado += horasRestantes + ' hora'
-    //     if (horasRestantes > 1) {
-    //       resultado += 's'
-    //     }
-    //   }
-
-    //   return resultado
-    // }
     const dias_adicionales = computed(() => {
       const fecha_ingreso =
         vacacion.empleado == null ? store.user.id : vacacion.empleado
@@ -207,7 +191,6 @@ export default defineComponent({
       return diasAdicionales
     })
 
-
     /* El código define una propiedad computada `numero_dias_rango` que calcula el número total de días en
         un rango. */
     const numero_dias_rango = computed(() => {
@@ -223,22 +206,6 @@ export default defineComponent({
         return 0
       }
     })
-    /**
-     * La función 'convertir_fecha' toma una cadena que representa una fecha en el formato 'dd-mm-yyyy' y
-     * devuelve un objeto Date.
-     * @param fecha - El parámetro `fecha` es una cadena que representa una fecha en el formato
-     * 'dd-mm-yyyy'.
-     * @returns un objeto de fecha que representa la fecha convertida.
-     */
-    // function convertir_fecha(fecha) {
-    //   const dateParts = fecha.split('-') // Dividir el string en partes usando el guión como separador
-
-    //   const dia = parseInt(dateParts[0], 10) // Obtener el día como entero
-    //   const mes = parseInt(dateParts[1], 10) - 1 // Obtener el mes como entero (restar 1 porque en JavaScript los meses comienzan desde 0)
-    //   const anio = parseInt(dateParts[2], 10)
-    //   const fecha_convert = new Date(anio, mes, dia, 0)
-    //   return fecha_convert
-    // }
 
     /**
      * La función 'calcular_fecha_fin' calcula la fecha de finalización de unas vacaciones en función de la
@@ -253,11 +220,9 @@ export default defineComponent({
         const fechaInicio = new Date(vacacion.fecha_inicio)
 
         fechaInicio.setDate(
-          fechaInicio.getDate() +
-          (parseInt(vacacion.numero_dias.toString()))
+          fechaInicio.getDate() + parseInt(vacacion.numero_dias.toString())
         )
         vacacion.fecha_fin = format(fechaInicio, 'YYYY-MM-DD')
-
       } else {
         vacacion.fecha_fin = null
       }
@@ -276,13 +241,14 @@ export default defineComponent({
         const fechaInicio = new Date(vacacion.fecha_inicio_rango1_vacaciones)
         fechaInicio.setDate(
           fechaInicio.getDate() +
-          (parseInt(vacacion.numero_dias_rango1.toString()))
+            parseInt(vacacion.numero_dias_rango1.toString())
         )
         vacacion.fecha_fin_rango1_vacaciones = format(fechaInicio, 'YYYY-MM-DD')
       } else {
         vacacion.fecha_fin_rango1_vacaciones = null
       }
     }
+
     /**
      * La función calcula la fecha de finalización de un intervalo de vacaciones en función de la fecha de
      * inicio y el número de días.
@@ -296,7 +262,7 @@ export default defineComponent({
         const fechaInicio = new Date(vacacion.fecha_inicio_rango2_vacaciones)
         fechaInicio.setDate(
           fechaInicio.getDate() +
-          (parseInt(vacacion.numero_dias_rango2.toString()))
+            parseInt(vacacion.numero_dias_rango2.toString())
         )
         vacacion.fecha_fin_rango2_vacaciones = format(fechaInicio, 'YYYY-MM-DD')
       } else {
@@ -304,32 +270,6 @@ export default defineComponent({
       }
     }
 
-
-    /**
-     * La función `filtrarPeriodo` filtra una lista de períodos en función de un valor dado y actualiza la
-     * lista filtrada.
-     * @param val - El parámetro `val` es un valor de cadena que representa el valor de entrada para
-     * filtrar los períodos. Se utiliza para buscar períodos que tienen un nombre que contiene el valor de
-     * entrada.
-     * @param update - El parámetro `update` es una función que se utiliza para actualizar el valor de
-     * `periodos`. Es una función de devolución de llamada que toma otra función como argumento. La función
-     * interna es responsable de actualizar el valor de `periodos` en función del parámetro `val` dado.
-     * @returns nada (indefinido).
-     */
-    function filtrarPeriodo(val, update) {
-      if (val === '') {
-        update(() => {
-          periodos.value = listadosAuxiliares.periodos
-        })
-        return
-      }
-      update(() => {
-        const needle = val.toLowerCase()
-        periodos.value = listadosAuxiliares.periodos.filter(
-          (v) => v.nombre.toLowerCase().indexOf(needle) > -1
-        )
-      })
-    }
     /**
      * La función 'filtrarVacacion' filtra las vacaciones en función de la pestaña seleccionada y actualiza
      * la variable tabVacacion.
@@ -339,31 +279,40 @@ export default defineComponent({
       listar({ estado: tabSeleccionado }, false)
       tabVacacion = tabSeleccionado
     }
+
     function optionsFechaInicio(date) {
       const currentDateString = format(new Date(), 'YYYY/MM/DD')
 
       return date > currentDateString
     }
+
     function optionFechaInicioRango2(date) {
-      const fecha_fin_rango1 = vacacion.fecha_fin_rango1_vacaciones !== null ? vacacion.fecha_fin_rango1_vacaciones : new Date().toString()
+      const fecha_fin_rango1 =
+        vacacion.fecha_fin_rango1_vacaciones !== null
+          ? vacacion.fecha_fin_rango1_vacaciones
+          : new Date().toString()
       const fechaInicio = new Date(fecha_fin_rango1)
-      fechaInicio.setDate(
-        fechaInicio.getDate() +
-        (2)
-      )
+      fechaInicio.setDate(fechaInicio.getDate() + 2)
       const currentDateString = format(fechaInicio, 'YYYY/MM/DD')
       return date >= currentDateString
-
     }
+
     async function imprimir(id, filename) {
       try {
         cargando.activar()
         const axios = AxiosHttpRepository.getInstance()
-        const url = apiConfig.URL_BASE + '/' + axios.getEndpoint(endpoints.vacacion) + '/imprimir/' + id
-        imprimirArchivo(url, 'GET', 'blob', 'pdf', filename)
+        const url =
+          apiConfig.URL_BASE +
+          '/' +
+          axios.getEndpoint(endpoints.solicitudes_vacaciones) +
+          '/imprimir/' +
+          id
+        await imprimirArchivo(url, 'GET', 'blob', 'pdf', filename)
       } catch (e) {
         notificarAdvertencia('Error al imprimir el documento. ' + e)
-      } finally { cargando.desactivar() }
+      } finally {
+        cargando.desactivar()
+      }
     }
 
     /**************************
@@ -377,7 +326,7 @@ export default defineComponent({
       accion: ({ entidad }) => {
         accion.value = 'EDITAR'
         consultar(entidad)
-      },
+      }
     }
 
     const btnImprimir: CustomActionTable = {
@@ -385,12 +334,14 @@ export default defineComponent({
       color: 'secondary',
       icono: 'bi-printer',
       accion: async ({ entidad }) => {
-        console.log('Presionaste imprimir', entidad);
-        imprimir(entidad.id, `Solicitud vacaciones ${entidad.periodo} ${entidad.empleado_info}`)
+        console.log('Presionaste imprimir', entidad)
+        await imprimir(
+          entidad.id,
+          `Solicitud vacaciones ${entidad.periodo} ${entidad.empleado_info}`
+        )
       },
-      visible: () =>['1','2'].includes(tabVacacion)
+      visible: () => ['1', '2'].includes(tabVacacion)
     }
-
 
     return {
       mixin,
@@ -411,8 +362,9 @@ export default defineComponent({
       maskFecha,
       v$,
       disabled,
-      configuracionColumnas: configuracionColumnasVacacion,
+      configuracionColumnas: configuracionColumnasSolicitudVacacion,
       accion,
+      acciones,
       accionesTabla,
       tabVacacion,
 
@@ -420,7 +372,7 @@ export default defineComponent({
       removeAccents,
       optionsFechaInicio,
       optionFechaInicioRango2,
-      filtrarPeriodo,
+      filtrarPeriodos,
       filtrarVacacion,
       calcular_fecha_fin_rango1,
       calcular_fecha_fin_rango2,
@@ -428,11 +380,12 @@ export default defineComponent({
       ordenarLista,
 
       // listados
-      empleados, filtrarEmpleados,
+      empleados,
+      filtrarEmpleados,
 
       // botones de tabla
       editarVacacion,
-      btnImprimir,
+      btnImprimir
     }
-  },
+  }
 })

@@ -18,6 +18,10 @@ export const tabOptionsEstadosAlimentacion: TabOption[] = [
   { label: 'Finalizadas', value: '1' },
 ];
 
+export const tabOptionsVacaciones: TabOption[]=[
+  {label: 'Pendientes', value:'PENDIENTES'},
+  {label: 'Realizadas', value:'REALIZADAS'},
+]
 
 export const estadosRolPagoEmpleado = {
   todo: '',

@@ -446,6 +446,22 @@
             />
           </div>
 
+          <!-- Vacante abierta a personas con discapacidad -->
+          <div class="col-12 col-md-3 col-sm-3">
+            <label class="q-mb-sm block"
+            >¿Vacante abierta a personas con discapacidad?</label
+            >
+            <q-toggle
+              :label="solicitud.acepta_discapacitados ? 'SI' : 'NO'"
+              v-model="solicitud.acepta_discapacitados"
+              color="primary"
+              keep-color
+              icon="bi-check2-circle"
+              unchecked-icon="clear"
+              :disable="disabled"
+            />
+          </div>
+
           <!-- Manejo de archivos -->
           <div
             class="col-12 q-mb-md"

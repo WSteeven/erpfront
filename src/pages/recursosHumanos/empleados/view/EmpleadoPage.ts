@@ -1,10 +1,34 @@
 //Dependencias
 import { configuracionColumnasTipoDiscapacidadPorcentaje } from '../domain/configuracionColumnasTipoDiscapacidadPorcentaje'
 import { configuracionColumnasEmpleados } from '../domain/configuracionColumnasEmpleados'
-import { maxLength, minLength, numeric, required, requiredIf, } from 'shared/i18n-validators'
+import {
+  maxLength,
+  minLength,
+  numeric,
+  required,
+  requiredIf
+} from 'shared/i18n-validators'
 import { useVuelidate } from '@vuelidate/core'
-import { acciones, accionesTabla, convertir_fecha, maskFecha, niveles_academicos, rolesSistema, talla_letras, tipos_sangre, } from 'config/utils'
-import { defineComponent, ref, watchEffect, computed, Ref } from 'vue'
+import {
+  acciones,
+  accionesTabla,
+  convertir_fecha,
+  maskFecha,
+  niveles_academicos,
+  rolesSistema,
+  talla_letras,
+  tipos_sangre
+} from 'config/utils'
+import {
+  computed,
+  defineComponent,
+  onMounted,
+  onUnmounted,
+  reactive,
+  Ref,
+  ref,
+  watchEffect
+} from 'vue'
 
 // Componentes
 import TabLayoutFilterTabs2 from 'shared/contenedor/modules/simple/view/TabLayoutFilterTabs2.vue'
@@ -31,13 +55,16 @@ import { BancoController } from 'pages/recursosHumanos/banco/infrestruture/Banco
 import { configuracionColumnasFamiliaresEmpleado } from 'pages/recursosHumanos/familiares/domain/configuracionColumnasFamiliaresEmpleado'
 import { ComportamientoModalesEmpleado } from '../application/ComportamientoModalesEmpleado'
 import { CustomActionTable } from 'components/tables/domain/CustomActionTable'
-import { useFamiliarStore } from 'stores/familiar'
 import { useAuthenticationStore } from 'stores/authentication'
 import { Familiares } from 'pages/recursosHumanos/familiares/domain/Familiares'
 import { FamiliaresController } from 'pages/recursosHumanos/familiares/infraestructure/FamiliaresController'
 import { AxiosHttpRepository } from 'shared/http/infraestructure/AxiosHttpRepository'
 import { apiConfig, endpoints } from 'config/api'
-import { encontrarUltimoIdListado, imprimirArchivo, ordenarLista } from 'shared/utils'
+import {
+  encontrarUltimoIdListado,
+  imprimirArchivo,
+  ordenarLista
+} from 'shared/utils'
 import { useCargandoStore } from 'stores/cargando'
 import { AxiosResponse } from 'axios'
 import { useNotificaciones } from 'shared/notificaciones'
@@ -49,13 +76,14 @@ import { ValidarChofer } from '../application/ValidarChofer'
 import { TipoDiscapacidadController } from 'pages/recursosHumanos/tipo-discapacidad/infraestructure/TipoDiscapacidadController'
 import { TipoDiscapacidadPorcentaje } from '../domain/TipoDiscapacidadPorcentaje'
 import { TipoDiscapacidad } from 'pages/recursosHumanos/tipo-discapacidad/domain/TipoDiscapacidad'
-import { reactive } from 'vue'
-import { autoidentificaciones_etnicas, parentezcos } from 'config/recursosHumanos.utils'
-import { onMounted } from 'vue'
-import { onUnmounted } from 'vue'
+import {
+  autoidentificaciones_etnicas,
+  parentezcos
+} from 'config/recursosHumanos.utils'
 import { usePostulanteStore } from 'stores/recursosHumanos/seleccionContratacion/postulante'
 import { StatusEssentialLoading } from 'components/loading/application/StatusEssentialLoading'
-import { tabOptionsProveedoresInternacionales } from '../../../../config/utils_compras_proveedores'
+import { tabOptionsProveedoresInternacionales } from 'config/utils_compras_proveedores'
+import { useEmpleadoStore } from 'stores/empleado'
 
 export default defineComponent({
   components: { TabLayoutFilterTabs2, SelectorImagen, ModalesEntidad, EssentialTable, GestorArchivos, InformacionLicencia, },
@@ -108,8 +136,8 @@ export default defineComponent({
     const religiones = ref([])
     const refFamiliares = ref()
     const modales = new ComportamientoModalesEmpleado()
-    const familiarStore = useFamiliarStore()
-    const authenticationStore = useAuthenticationStore()
+    const empleadoStore = useEmpleadoStore()
+    const store = useAuthenticationStore()
     const nombre_usuario = ref()
     const email_usuario = ref()
     const refApellidos = ref()
@@ -124,7 +152,7 @@ export default defineComponent({
     const idsParentescos: Ref<number[]> = ref([])
     const construccionConfiguracionColumnas = ref(false)
     cargarVista(async () => {
-      if (postulanteStore.idUser) cargarDatosPostulante()
+      if (postulanteStore.idUser) await cargarDatosPostulante()
       await obtenerListados({
         areas: new AreasController(),
         bancos: new BancoController(),
@@ -353,40 +381,11 @@ export default defineComponent({
         empleado.password = empleado.identificacion
       }
     })
-    const btnConsultarFamiliar: CustomActionTable = {
-      titulo: '',
-      icono: 'bi-eye',
-      accion: ({ entidad }) => {
-        familiarStore.idFamiliarSeleccionada = entidad.id
-        familiarStore.idEmpleado = empleado.id
-        familiarStore.accion = acciones.consultar
-        modales.abrirModalEntidad('FamiliaresPage')
-      },
-      visible: () => accion.value == acciones.consultar
-    }
-    const btnEditarFamiliar: CustomActionTable = {
-      titulo: '',
-      icono: 'bi-pencil',
-      color: 'warning',
-      visible: () => {
-        return authenticationStore.can('puede.editar.familiares') && accion.value == acciones.consultar
-      },
-      accion: ({ entidad }) => {
-        familiarStore.idFamiliarSeleccionada = entidad.id
-        familiarStore.idEmpleado = empleado.id
-        familiarStore.nombres = entidad.nombres
-        familiarStore.apellidos = entidad.apellidos
-        familiarStore.identificacion = entidad.identificacion
-        familiarStore.parentezco = entidad.parentezco
-        familiarStore.accion = acciones.editar
-        modales.abrirModalEntidad('FamiliaresPage')
-      },
-    }
     const btnEliminarFamiliar: CustomActionTable = {
       titulo: 'Eliminar',
       icono: 'bi-x',
       color: 'negative',
-      visible: () => authenticationStore.can('puede.eliminar.familiares'),
+      visible: () => store.can('puede.eliminar.familiares'),
       accion: ({ posicion }) =>
         confirmar('¿Está seguro de continuar?', () =>
           empleado.familiares?.splice(posicion, 1)
@@ -396,7 +395,7 @@ export default defineComponent({
       titulo: 'Reporte General',
       icono: 'bi-printer',
       color: 'primary',
-      visible: ({ entidad }) => authenticationStore.can('puede.ver.empleados'),
+      visible: () => store.can('puede.ver.empleados'),
       accion: () => {
         generar_reporte_general()
       },
@@ -409,7 +408,7 @@ export default defineComponent({
         apiConfig.URL_BASE +
         '/' +
         axios.getEndpoint(endpoints.imprimir_reporte_general_empleado)
-      imprimirArchivo(url_pdf, 'GET', 'blob', 'pdf', filename, null)
+      await imprimirArchivo(url_pdf, 'GET', 'blob', 'pdf', filename, null)
     }
 
     const btnHabilitarEmpleado: CustomActionTable = {
@@ -418,7 +417,7 @@ export default defineComponent({
       color: 'negative',
       tooltip: 'Habilitar',
       visible: ({ entidad }) =>
-        !entidad.estado && authenticationStore.can('puede.activar.empleados'),
+        !entidad.estado && store.can('puede.activar.empleados'),
       accion: ({ entidad, posicion }) => {
         HabilitarEmpleado(entidad.id, true)
         listado.value.splice(posicion, 1)
@@ -430,7 +429,7 @@ export default defineComponent({
       color: 'positive',
       tooltip: 'DesHabilitar',
       visible: ({ entidad }) =>
-        entidad.estado && authenticationStore.can('puede.desactivar.empleados'),
+        entidad.estado && store.can('puede.desactivar.empleados'),
       accion: ({ entidad, posicion }) => {
         HabilitarEmpleado(entidad.id, false)
         entidad.estado = false
@@ -472,6 +471,19 @@ export default defineComponent({
         confirmar('¿Está seguro de continuar?', () =>
           empleado.discapacidades?.splice(posicion, 1)
         ),
+    }
+
+    const btnPlanVacaciones: CustomActionTable={
+      titulo: 'Plan Vacaciones',
+      icono: 'bi-sunglasses',
+      color:'accent',
+      accion: ({entidad})=> {
+        empleadoStore.idEmpleado = entidad.id
+        console.log('entidad', entidad)
+        modales.abrirModalEntidad('FamiliaresPage')
+        console.log('paso el abrir modal',modales)
+      },
+      visible: false
     }
 
     function obtenerUsername() {
@@ -516,7 +528,7 @@ export default defineComponent({
 
     async function filtrarListadoEmpleados(tab: string) {
       tabDefecto.value = tab
-      if(listado.value.length>0) listar({ estado: tab })
+      if(listado.value.length>0) await listar({ estado: tab })
     }
 
     function verificarRolesSeleccionados() {
@@ -527,22 +539,6 @@ export default defineComponent({
         conductor.hydrate(new Conductor())
       }
     }
-    function filtrarTipoDiscapacidad(val, update) {
-      if (val === '') {
-        update(() => {
-          tiposDiscapacidades.value = listadosAuxiliares.tiposDiscapacidades
-        })
-        return
-      }
-      update(() => {
-        const needle = val.toLowerCase()
-        tiposDiscapacidades.value =
-          listadosAuxiliares.tiposDiscapacidades.filter(
-            (v) => v.nombre.toLowerCase().indexOf(needle) > -1
-          )
-      })
-    }
-
     async function cargarDatosPostulante() {
       //Aqui hay que hacer la carga de los datos del nuevo empleado
       const postulante = await obtenerUsuarioExterno()
@@ -592,6 +588,7 @@ export default defineComponent({
       refArchivo,
       v$,
       componenteCargado,
+      esRecursosHumanos: store.esRecursosHumanos,
       reestablecer_usuario,
       configuracionColumnas: configuracionColumnasEmpleados,
       idEmpleado,
@@ -601,7 +598,7 @@ export default defineComponent({
       //listados y filtros
       tabDefecto,
       tabOptions: tabOptionsProveedoresInternacionales,
-      areas,
+      areas,filtrarAreas,
       bancos, filtrarBancos,
       cantones, filtrarCantones,
       cargos, filtrarCargos,
@@ -621,13 +618,12 @@ export default defineComponent({
       identidades_genero,
       religiones,
       //metodos
-      btnConsultarFamiliar,
-      btnEditarFamiliar,
       btnEliminarFamiliar,
       btnImprimirEmpleados,
       btnHabilitarEmpleado,
       btnDesHabilitarEmpleado,
       btnEliminarDiscapacidad,
+      btnPlanVacaciones,
       modales,
       idsTiposDiscapacidades,
       idsParentescos,
@@ -641,7 +637,6 @@ export default defineComponent({
       mostrarBotonSubirArchivos,
       filtrarListadoEmpleados,
       conductor,
-      filtrarTipoDiscapacidad,
       configuracionColumnasTipoDiscapacidadPorcentajeReactive,
       configuracionColumnasFamiliaresEmpleado,
       agregarDiscapacidad,

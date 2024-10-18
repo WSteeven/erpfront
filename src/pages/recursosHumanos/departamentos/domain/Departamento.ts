@@ -6,6 +6,8 @@ export class Departamento extends EntidadAuditable {
   activo: boolean
   responsable: string | number | null
   responsable_id: number | null
+  telefono: string|null
+  correo: string|null
 
   constructor() {
     super()
@@ -14,5 +16,7 @@ export class Departamento extends EntidadAuditable {
     this.activo = true
     this.responsable = null
     this.responsable_id = null
+    this.telefono = null
+    this.correo = null
   }
 }

@@ -19,7 +19,7 @@
                   outlined
                   use-input
                   input-debounce="0"
-                  @filter="filtroEmpleado"
+                  @filter="filtrarEmpleados"
                   :option-label="(v) => v.nombres + ' ' + v.apellidos"
                   :option-value="(v) => v.id"
                   emit-value

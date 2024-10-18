@@ -43,7 +43,7 @@ export default defineComponent({
     const { setValidador, obtenerListados, cargarVista, listar } = mixin.useComportamiento()
     const { onGuardado } = mixin.useHooks()
 
-    const { confirmar, notificarCorrecto, notificarInformacion, notificarError } = useNotificaciones()
+    const { confirmar, notificarCorrecto, notificarError } = useNotificaciones()
 
 
     /***************************************************************************
@@ -203,6 +203,7 @@ export default defineComponent({
       vacante.requiere_licencia = solicitudStore.solicitudPersonal.requiere_licencia
       vacante.canton = solicitudStore.solicitudPersonal.canton
       vacante.num_plazas = solicitudStore.solicitudPersonal.num_plazas
+      vacante.acepta_discapacitados = solicitudStore.solicitudPersonal.acepta_discapacitados
     }
 
     function agregarFormacionAcademica() {

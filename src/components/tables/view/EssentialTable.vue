@@ -78,9 +78,7 @@
 
         <q-input
           v-if="
-            props.col.editable &&
-            (!props.col.type ||
-              ['text', 'number', 'date', 'time'].includes(props.col.type))
+            props.col.editable && (!props.col.type || ['text', 'number', 'date', 'time'].includes(props.col.type))
           "
           v-model="props.row[props.col.name]"
           :bg-color="$q.dark.isActive ? 'grey-10' : 'grey-3'"
@@ -88,7 +86,9 @@
           :hint="props.col.hint"
           :disable="disable"
           :placeholder="props.col.placeholder"
-          autogrow
+          :min="props.col.min"
+          :max="props.col.max"
+          :autogrow="props.col.type==='text'||!props.col.type"
           dense
           outlined
         />
@@ -1690,6 +1690,16 @@
         <campo-boleano :propsTable="props" />
       </q-td>
     </template> -->
+    <template #body-cell-opto_pago="props">
+      <q-td :props="props">
+        <campo-boleano :propsTable="props" />
+      </q-td>
+    </template>
+    <template #body-cell-completadas="props">
+      <q-td :props="props">
+        <campo-boleano :propsTable="props" />
+      </q-td>
+    </template>
     <template #body-cell-tengo_conocimientos_requeridos="props">
       <q-td :props="props">
         <campo-boleano :propsTable="props" />
