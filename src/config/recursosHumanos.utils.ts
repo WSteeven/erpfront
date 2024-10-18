@@ -17,7 +17,10 @@ export const tabOptionsEstadosAlimentacion: TabOption[] = [
   { label: 'Activas', value: '0' },
   { label: 'Finalizadas', value: '1' },
 ];
-
+export const tabOptionsPlanificiones: TabOption[] = [
+  { label: 'Pendientes', value: '0' },
+  { label: 'Completas', value: '1' },
+]
 export const tabOptionsVacaciones: TabOption[]=[
   {label: 'Pendientes', value:'PENDIENTES'},
   {label: 'Realizadas', value:'REALIZADAS'},

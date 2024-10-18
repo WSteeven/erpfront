@@ -694,6 +694,12 @@ export const useMenuStore = defineStore('menu', () => {
           can: store.can('puede.acceder.grupos')
         },
         {
+          title: 'Planificador',
+          link: 'planificador',
+          icon: 'bi-calendar-check-fill',
+          can: true
+        },
+        {
           title: 'Permiso',
           link: 'permiso-nomina',
           icon: 'bi-calendar2-plus-fill',
@@ -1188,7 +1194,7 @@ export const useMenuStore = defineStore('menu', () => {
         }
       ]
     },
-    
+
     /***********************
      * Modulo de ventas JP
      **********************/

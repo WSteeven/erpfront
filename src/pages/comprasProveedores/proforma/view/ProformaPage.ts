@@ -74,9 +74,9 @@ export default defineComponent({
 
     // Flags
     const tabDefecto = ref('1')
-    let tabSeleccionado = ref()
-    let soloLectura = ref(false)
-    let puedeEditar = ref(false)
+    const tabSeleccionado = ref()
+    const soloLectura = ref(false)
+    const puedeEditar = ref(false)
     const refItems = ref()
 
 
@@ -170,8 +170,7 @@ export default defineComponent({
       tabDefecto.value = tab
       tabSeleccionado.value = tab
       // if (tab == '1' && proforma.autorizador_id===store.user.id) puedeEditar.value = true
-      if (tab == '1' || tab == '2') puedeEditar.value = true
-      else puedeEditar.value = false
+      puedeEditar.value = tab == '1' || tab == '2';
       listar({ autorizacion_id: tab, solicitante_id: store.user.id })
     }
     function eliminar({ posicion }) {
@@ -252,7 +251,7 @@ export default defineComponent({
       titulo: 'Eliminar',
       icono: 'bi-x',
       color: 'negative',
-      accion: ({ entidad, posicion }) => {
+      accion: ({  posicion }) => {
         eliminar({ posicion })
       },
       visible: () => accion.value == acciones.nuevo || accion.value == acciones.editar
@@ -265,13 +264,13 @@ export default defineComponent({
         proformaStore.idProforma = entidad.id
         await proformaStore.imprimirPdf()
       },
-      visible: () => tabSeleccionado.value > 1 ? true : false
+      visible: () => tabSeleccionado.value > 1
     }
     const btnHacerPrefactura: CustomActionTable = {
       titulo: 'Generar Prefactura',
       color: 'primary',
       icono: 'bi-cart-check',
-      accion: ({ entidad, posicion }) => {
+      accion: ({ entidad }) => {
         proformaStore.proforma = entidad
         router.push('prefacturas')
       },
@@ -357,7 +356,6 @@ export default defineComponent({
       //Tabs
       tabOptionsProformas,
       tabDefecto,
-      tabSeleccionado,
       puedeEditar,
 
 

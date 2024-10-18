@@ -1705,12 +1705,11 @@
         </q-expansion-item>
       </q-form>
     </template>
+  </tab-layout-filter-tabs2>
     <modales-entidad
       :comportamiento="modales"
-      @guardado="data => guardado(data)"
-      :mixin-modal="mixinFamiliares"
+      :persistente="false"
     ></modales-entidad>
-  </tab-layout-filter-tabs2>
 </template>
 
 <script src="./EmpleadoPage.ts" />

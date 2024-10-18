@@ -57,7 +57,6 @@ import { ComportamientoModalesEmpleado } from '../application/ComportamientoModa
 import { CustomActionTable } from 'components/tables/domain/CustomActionTable'
 import { useAuthenticationStore } from 'stores/authentication'
 import { Familiares } from 'pages/recursosHumanos/familiares/domain/Familiares'
-import { FamiliaresController } from 'pages/recursosHumanos/familiares/infraestructure/FamiliaresController'
 import { AxiosHttpRepository } from 'shared/http/infraestructure/AxiosHttpRepository'
 import { apiConfig, endpoints } from 'config/api'
 import {
@@ -86,7 +85,14 @@ import { tabOptionsProveedoresInternacionales } from 'config/utils_compras_prove
 import { useEmpleadoStore } from 'stores/empleado'
 
 export default defineComponent({
-  components: { TabLayoutFilterTabs2, SelectorImagen, ModalesEntidad, EssentialTable, GestorArchivos, InformacionLicencia, },
+  components: {
+    TabLayoutFilterTabs2,
+    SelectorImagen,
+    ModalesEntidad,
+    EssentialTable,
+    GestorArchivos,
+    InformacionLicencia
+  },
   setup() {
     /*********
      * Stores
@@ -100,33 +106,60 @@ export default defineComponent({
     /***********
      * Mixin
      ************/
-    const mixin = new ContenedorSimpleMixin(Empleado, new EmpleadoController(), new ArchivoController())
-    const { entidad: empleado, disabled, accion, listadosAuxiliares, listado } = mixin.useReferencias()
-    const { setValidador, cargarVista, obtenerListados, listar } = mixin.useComportamiento()
-    const { onBeforeGuardar, onBeforeModificar, onConsultado, onGuardado, onReestablecer } = mixin.useHooks()
-    const mixinFamiliares = new ContenedorSimpleMixin(Familiares, new FamiliaresController())
+    const mixin = new ContenedorSimpleMixin(
+      Empleado,
+      new EmpleadoController(),
+      new ArchivoController()
+    )
+    const {
+      entidad: empleado,
+      disabled,
+      accion,
+      listadosAuxiliares,
+      listado
+    } = mixin.useReferencias()
+    const { setValidador, cargarVista, obtenerListados, listar } =
+      mixin.useComportamiento()
+    const {
+      onBeforeGuardar,
+      onBeforeModificar,
+      onConsultado,
+      onGuardado,
+      onReestablecer
+    } = mixin.useHooks()
 
     const conductor = reactive(new Conductor())
     /********************************
      * LISTADOS Y FILTROS
      ********************************/
-    const { empleados, filtrarEmpleados,
-      cantones, filtrarCantones,
-      cargos, filtrarCargos,
-      roles, filtrarRoles,
+    const {
+      empleados,
+      filtrarEmpleados,
+      cantones,
+      filtrarCantones,
+      cargos,
+      filtrarCargos,
+      roles,
+      filtrarRoles,
       tiposContratos,
       estadosCiviles,
-      bancos, filtrarBancos,
-      areas, filtrarAreas,
-      grupos, filtrarGrupos,
-      departamentos, filtrarDepartamentos
+      bancos,
+      filtrarBancos,
+      areas,
+      filtrarAreas,
+      grupos,
+      filtrarGrupos,
+      departamentos,
+      filtrarDepartamentos
     } = useFiltrosListadosSelects(listadosAuxiliares)
 
     /************
      * Variables
      ************/
     const tabDefecto = ref('1')
-    const configuracionColumnasTipoDiscapacidadPorcentajeReactive = reactive(configuracionColumnasTipoDiscapacidadPorcentaje)
+    const configuracionColumnasTipoDiscapacidadPorcentajeReactive = reactive(
+      configuracionColumnasTipoDiscapacidadPorcentaje
+    )
     const estado_civiles = ref([])
     const tipos_contrato = ref([])
     const tiposDiscapacidades = ref([])
@@ -145,7 +178,11 @@ export default defineComponent({
     // const mostrarBotonSubirArchivos = ref(false) //computed(()=>{
     const mostrarComponenteInformacionLicencia = ref(false)
     const refArchivo = ref()
-    const mostrarBotonSubirArchivos = computed(() => refArchivo.value != undefined ? refArchivo.value.quiero_subir_archivos : false)
+    const mostrarBotonSubirArchivos = computed(() =>
+      refArchivo.value != undefined
+        ? refArchivo.value.quiero_subir_archivos
+        : false
+    )
     const idEmpleado = ref()
     const componenteCargado = ref(false)
     const idsTiposDiscapacidades: Ref<number[]> = ref([])
@@ -158,63 +195,71 @@ export default defineComponent({
         bancos: new BancoController(),
         cargos: {
           controller: new CargoController(),
-          params: { estado: 1 },
+          params: { estado: 1 }
         },
         departamentos: {
           controller: new DepartamentoController(),
-          params: { activo: 1 },
+          params: { activo: 1 }
         },
         tiposDiscapacidades: {
           controller: new TipoDiscapacidadController(),
-          params: { campos: 'id,nombres' },
+          params: { campos: 'id,nombres' }
         },
 
         empleados: {
           controller: new EmpleadoController(),
           params: {
             // campos: 'id,nombres,apellidos',
-            estado: 1,
-          },
+            estado: 1
+          }
         },
         estados_civiles: new EstadoCivilController(),
         grupos: {
           controller: new GrupoController(),
-          params: { activo: 1 },
+          params: { activo: 1 }
         },
         tipos_contratos: new TipoContratoController(),
         roles: {
           controller: new RolController(),
-          params: { campos: 'id,name' },
-        },
+          params: { campos: 'id,name' }
+        }
         // orientaciones_sexuales: new OrientacionSexualController(),
         // identidades_genero: new IdentidadGeneroController(),
         // religiones: new ReligionController(),
       })
     }).then(() => {
-      listadosAuxiliares.cantones = JSON.parse(LocalStorage.getItem('cantones')!.toString())
+      listadosAuxiliares.cantones = JSON.parse(
+        LocalStorage.getItem('cantones')!.toString()
+      )
       areas.value = listadosAuxiliares.areas
       bancos.value = listadosAuxiliares.bancos
       cantones.value = listadosAuxiliares.cantones
       cargos.value = listadosAuxiliares.cargos
       departamentos.value = listadosAuxiliares.departamentos
       empleados.value = listadosAuxiliares.empleados
-      listado.value= listadosAuxiliares.empleados
+      listado.value = listadosAuxiliares.empleados
       estadosCiviles.value = listadosAuxiliares.estados_civiles
       grupos.value = listadosAuxiliares.grupos
       roles.value = listadosAuxiliares.roles
       tiposContratos.value = listadosAuxiliares.tipos_contratos
-      configuracionColumnasTipoDiscapacidadPorcentajeReactive.find((item) => item.field === 'tipo_discapacidad')!.options = listadosAuxiliares.tiposDiscapacidades.map((v: TipoDiscapacidad) => { return { label: v.nombre, value: v.id } })
+      configuracionColumnasTipoDiscapacidadPorcentajeReactive.find(
+        item => item.field === 'tipo_discapacidad'
+      )!.options = listadosAuxiliares.tiposDiscapacidades.map(
+        (v: TipoDiscapacidad) => {
+          return { label: v.nombre, value: v.id }
+        }
+      )
       // console.log(configuracionColumnasTipoDiscapacidadPorcentaje);
 
       configuracionColumnasTipoDiscapacidadPorcentajeReactive.find(
-        (item) => item.field === 'tipo_discapacidad'
+        item => item.field === 'tipo_discapacidad'
       )!.options = listadosAuxiliares.tiposDiscapacidades.map(
         (v: TipoDiscapacidad) => {
           return { label: v.nombre, value: v.id }
         }
       )
       configuracionColumnasFamiliaresEmpleado.find(
-        (item) => item.field === 'parentezco'
+        item => item.field === 'parentezco'
       )!.options = parentezcos.map((v: any) => {
         return { label: v.nombre, value: v.value }
       })
@@ -225,7 +270,6 @@ export default defineComponent({
       () => accion.value == acciones.nuevo || accion.value == acciones.editar
     )
 
-
     /****************************
      * Validaciones
      ****************************/
@@ -233,15 +277,15 @@ export default defineComponent({
       identificacion: {
         required,
         minlength: minLength(8),
-        maxlength: maxLength(10),
+        maxlength: maxLength(10)
       },
       telefono: {
         required,
         numeric,
         minlength: minLength(9),
-        maxlength: maxLength(14),
+        maxlength: maxLength(14)
       },
-      direccion: { required, },
+      direccion: { required },
       tipo_sangre: { required },
       estado_civil: { required },
       area: { required },
@@ -256,7 +300,9 @@ export default defineComponent({
       apellidos: { required },
       jefe: { required },
       email: { required },
-      coordenadas: { required: requiredIf(() => accion.value === acciones.editar) },
+      coordenadas: {
+        required: requiredIf(() => accion.value === acciones.editar)
+      },
       correo_personal: { required },
       usuario: { required },
       fecha_nacimiento: { required },
@@ -268,7 +314,7 @@ export default defineComponent({
       talla_zapato: { required: requiredIf(() => empleado.tiene_grupo) },
       talla_camisa: { required },
       talla_pantalon: { required: requiredIf(() => empleado.tiene_grupo) },
-      talla_guantes: { required: requiredIf(() => empleado.tiene_grupo) },
+      talla_guantes: { required: requiredIf(() => empleado.tiene_grupo) }
     }
 
     const v$ = useVuelidate(reglas, empleado)
@@ -290,27 +336,23 @@ export default defineComponent({
      * Hooks
      ********/
 
-
-    async function guardado(data) {
-      empleado.familiares!.push(data.model)
-    }
+    // async function guardado(data) {
+    //   empleado.familiares!.push(data.model)
+    // }
     onBeforeGuardar(() => {
       if (empleado.roles.includes(rolesSistema.chofer)) {
         empleado.conductor = conductor
-      }
-      else {
+      } else {
         empleado.conductor = []
       }
       onReestablecer(() => {
         empleado.familiares = []
       })
-
     })
     onBeforeModificar(() => {
       if (empleado.roles.includes(rolesSistema.chofer)) {
         empleado.conductor = conductor
-      }
-      else {
+      } else {
         empleado.conductor = []
       }
     })
@@ -327,7 +369,9 @@ export default defineComponent({
 
       if (empleado.roles.includes(rolesSistema.chofer)) {
         mostrarComponenteInformacionLicencia.value = true
-        conductor.hydrate(empleado.conductor ? empleado.conductor : new Conductor())
+        conductor.hydrate(
+          empleado.conductor ? empleado.conductor : new Conductor()
+        )
       } else {
         mostrarComponenteInformacionLicencia.value = false
       }
@@ -335,7 +379,7 @@ export default defineComponent({
       // listar archivos
       setTimeout(() => {
         refArchivo.value.listarArchivosAlmacenados(empleado.id)
-      }, 1);
+      }, 1)
 
       //verificar si se debe mostrar el campo de informacion de licencia del empleado
       verificarRolesSeleccionados()
@@ -389,7 +433,7 @@ export default defineComponent({
       accion: ({ posicion }) =>
         confirmar('¿Está seguro de continuar?', () =>
           empleado.familiares?.splice(posicion, 1)
-        ),
+        )
     }
     const btnImprimirEmpleados: CustomActionTable = {
       titulo: 'Reporte General',
@@ -398,7 +442,7 @@ export default defineComponent({
       visible: () => store.can('puede.ver.empleados'),
       accion: () => {
         generar_reporte_general()
-      },
+      }
     }
     async function generar_reporte_general(): Promise<void> {
       // console.log('generar_reporte_general')
@@ -421,7 +465,7 @@ export default defineComponent({
       accion: ({ entidad, posicion }) => {
         HabilitarEmpleado(entidad.id, true)
         listado.value.splice(posicion, 1)
-      },
+      }
     }
     const btnDesHabilitarEmpleado: CustomActionTable = {
       titulo: '',
@@ -434,7 +478,7 @@ export default defineComponent({
         HabilitarEmpleado(entidad.id, false)
         entidad.estado = false
         listado.value.splice(posicion, 1)
-      },
+      }
     }
 
     const agregarDiscapacidad = () => {
@@ -463,27 +507,27 @@ export default defineComponent({
     }
 
     const btnEliminarDiscapacidad: CustomActionTable<TipoDiscapacidadPorcentaje> =
-    {
-      titulo: 'Eliminar',
-      icono: 'bi-x',
-      color: 'negative',
-      accion: ({ posicion }) =>
-        confirmar('¿Está seguro de continuar?', () =>
-          empleado.discapacidades?.splice(posicion, 1)
-        ),
-    }
+      {
+        titulo: 'Eliminar',
+        icono: 'bi-x',
+        color: 'negative',
+        accion: ({ posicion }) =>
+          confirmar('¿Está seguro de continuar?', () =>
+            empleado.discapacidades?.splice(posicion, 1)
+          )
+      }
 
-    const btnPlanVacaciones: CustomActionTable={
+    const btnPlanVacaciones: CustomActionTable = {
       titulo: 'Plan Vacaciones',
       icono: 'bi-sunglasses',
-      color:'accent',
-      accion: ({entidad})=> {
+      color: 'accent',
+      accion: ({ entidad }) => {
         empleadoStore.idEmpleado = entidad.id
         console.log('entidad', entidad)
-        modales.abrirModalEntidad('FamiliaresPage')
-        console.log('paso el abrir modal',modales)
+        modales.abrirModalEntidad('PlanVacacionPage')
+        console.log('paso el abrir modal', modales)
       },
-      visible: false
+      visible: true
     }
 
     function obtenerUsername() {
@@ -505,7 +549,7 @@ export default defineComponent({
       const ruta = axios.getEndpoint(endpoints.generar_username, {
         nombres: empleado.nombres,
         apellidos: empleado.apellidos,
-        usuario: empleado.usuario,
+        usuario: empleado.usuario
       })
       const response: AxiosResponse = await axios.get(ruta)
       const username = ref(response.data.username)
@@ -518,9 +562,9 @@ export default defineComponent({
       const axios = AxiosHttpRepository.getInstance()
       const ruta = axios.getEndpoint(endpoints.habilitar_empleado, {
         id: id,
-        estado: estado,
+        estado: estado
       })
-       await axios.get(ruta)
+      await axios.get(ruta)
       notificarCorrecto(
         estado ? 'Ha Habilitado empleado' : 'Ha deshabilitado empleado'
       )
@@ -528,7 +572,7 @@ export default defineComponent({
 
     async function filtrarListadoEmpleados(tab: string) {
       tabDefecto.value = tab
-      if(listado.value.length>0) await listar({ estado: tab })
+      if (listado.value.length > 0) await listar({ estado: tab })
     }
 
     function verificarRolesSeleccionados() {
@@ -559,7 +603,10 @@ export default defineComponent({
     async function obtenerUsuarioExterno() {
       cargando.activar()
       const axios = AxiosHttpRepository.getInstance()
-      const ruta = axios.getEndpoint(endpoints.usuarios_externos) + '/' + postulanteStore.idUser
+      const ruta =
+        axios.getEndpoint(endpoints.usuarios_externos) +
+        '/' +
+        postulanteStore.idUser
       const response: AxiosResponse = await axios.get(ruta)
       cargando.desactivar()
       return response.data.modelo
@@ -577,10 +624,8 @@ export default defineComponent({
       // console.log('EmpleadoPage -> Desmontado')
     })
 
-
     return {
       mixin,
-      mixinFamiliares,
       empleado,
       disabled,
       accion,
@@ -598,17 +643,25 @@ export default defineComponent({
       //listados y filtros
       tabDefecto,
       tabOptions: tabOptionsProveedoresInternacionales,
-      areas,filtrarAreas,
-      bancos, filtrarBancos,
-      cantones, filtrarCantones,
-      cargos, filtrarCargos,
-      departamentos, filtrarDepartamentos,
-      empleados, filtrarEmpleados,
-      grupos, filtrarGrupos,
+      areas,
+      filtrarAreas,
+      bancos,
+      filtrarBancos,
+      cantones,
+      filtrarCantones,
+      cargos,
+      filtrarCargos,
+      departamentos,
+      filtrarDepartamentos,
+      empleados,
+      filtrarEmpleados,
+      grupos,
+      filtrarGrupos,
       estadosCiviles,
       maskFecha,
       niveles_academicos,
-      roles, filtrarRoles,
+      roles,
+      filtrarRoles,
       talla_letras,
       tipos_sangre,
       tiposContratos,
@@ -631,7 +684,6 @@ export default defineComponent({
       //funciones
       subirArchivos,
       obtenerUsername,
-      guardado,
       ordenarLista,
       verificarRolesSeleccionados,
       mostrarBotonSubirArchivos,
@@ -644,7 +696,7 @@ export default defineComponent({
       accionesTabla,
       construccionConfiguracionColumnas,
       habilitarBotonAgregarFamiliares,
-      autoidentificaciones_etnicas,
+      autoidentificaciones_etnicas
     }
-  },
+  }
 })

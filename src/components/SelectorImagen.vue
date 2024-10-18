@@ -1,5 +1,6 @@
 <template>
   <q-file
+    v-if="mostrarCampo"
     v-model="img"
     dense
     outlined
@@ -113,6 +114,10 @@ const props = defineProps({
   texto3: String,
   texto4: String,
   texto5: String,
+  mostrarCampo: {
+    type: Boolean,
+    default:true
+  },
   comprimir: {
     type: Boolean,
     default: true

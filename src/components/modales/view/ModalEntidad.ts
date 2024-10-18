@@ -6,7 +6,6 @@ import { computed, defineComponent, ref } from 'vue'
 // Componentes
 import { ComportamientoModales } from '../application/ComportamientoModales'
 import { useConfiguracionGeneralStore } from 'stores/configuracion_general'
-import { watch } from 'vue'
 
 export default defineComponent({
   props: {
@@ -58,7 +57,7 @@ export default defineComponent({
 
     const { componente, titulo, abierto, propsData } = props.comportamiento.useModal()
     const { confirmar } = useNotificaciones()
-    function cerrarModalEntidad(confirmarCerrar = true && props.confirmarCerrar) {
+    function cerrarModalEntidad(confirmarCerrar = props.confirmarCerrar) {
       if (confirmarCerrar) {
         confirmar('¿Está seguro de que desea cerrar?', () => {
           abierto.value = false
