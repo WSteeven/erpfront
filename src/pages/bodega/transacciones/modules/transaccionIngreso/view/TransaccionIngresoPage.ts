@@ -324,6 +324,7 @@ export default defineComponent({
     //Configurar los listados
     condiciones.value = JSON.parse(LocalStorage.getItem('condiciones')!.toString())
     sucursales.value = JSON.parse(LocalStorage.getItem('sucursales')!.toString())
+    listadosAuxiliares.sucursales = sucursales.value
     motivos.value = listadosAuxiliares.motivos
     tareas.value = listadosAuxiliares.tareas
     clientes.value = listadosAuxiliares.clientes
@@ -367,6 +368,8 @@ export default defineComponent({
     async function recargarSucursales() {
       const sucursales = (await new SucursalController().listar({ campos: 'id,lugar' })).result
       LocalStorage.set('sucursales', JSON.stringify(sucursales))
+      sucursales.value = JSON.parse(LocalStorage.getItem('sucursales')!.toString())
+      listadosAuxiliares.sucursales = sucursales.value
     }
 
     return {
