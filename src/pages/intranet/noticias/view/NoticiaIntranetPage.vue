@@ -39,7 +39,7 @@
               dense
               outlined
             >
-            <template v-slot:error>
+              <template v-slot:error>
                 <div v-for="error of v$.autor.$errors" :key="error.$uid">
                   <div class="error-msg">{{ error.$message }}</div>
                 </div>
@@ -84,11 +84,76 @@
                 </q-icon>
               </template>
               <template v-slot:error>
-                <div v-for="error of v$.fecha_vencimiento.$errors" :key="error.$uid">
+                <div
+                  v-for="error of v$.fecha_vencimiento.$errors"
+                  :key="error.$uid"
+                >
                   <div class="error-msg">{{ error.$message }}</div>
                 </div>
               </template>
             </q-input>
+          </div>
+
+          <!-- Opción de Noticia para Todos o Departamentos -->
+          <div class="col-12 col-md-3 q-mb-md">
+            <label class="q-mb-sm block"
+              >¿Noticia para todos los empleados?</label
+            >
+            <q-toggle
+              v-model="noticia.para_todos"
+              :label="noticia.para_todos ? 'Si' : 'Personalizado'"
+              :true-value="true"
+              :false-value="false"
+              dense
+            />
+          </div>
+
+          <!--Departamentos Destinatarios-->
+          <div class="col-12 col-md-3" v-if="!noticia.para_todos">
+            <label class="q-mb-sm block">Departamentos Destinatarios</label>
+            <q-select
+              v-model="noticia.departamentos_destinatarios"
+              :options="departamentos"
+              transition-show="scale"
+              transition-hide="scale"
+              options-dense
+              dense
+              use-chips
+              outlined
+              multiple
+              use-input
+              input-debounce="0"
+              @filter="filtrarDepartamentos"
+              :option-value="v => v.id"
+              :option-label="v => v.nombre"
+              emit-value
+              map-options
+              :disable="noticia.para_todos"
+            >
+              <template
+                v-slot:option="{ itemProps, opt, selected, toggleOption }"
+              >
+                <q-item v-bind="itemProps">
+                  <q-item-section>
+                    {{ opt.nombre }}
+                  </q-item-section>
+                  <q-item-section side>
+                    <q-toggle
+                      :model-value="selected"
+                      @update:model-value="toggleOption(opt)"
+                    />
+                  </q-item-section>
+                </q-item>
+              </template>
+
+              <template v-slot:no-option>
+                <q-item>
+                  <q-item-section class="text-grey">
+                    No hay resultados
+                  </q-item-section>
+                </q-item>
+              </template>
+            </q-select>
           </div>
 
           <div class="col-12 col-md-6">
