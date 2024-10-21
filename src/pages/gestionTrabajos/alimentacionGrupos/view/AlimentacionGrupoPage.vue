@@ -6,7 +6,7 @@
     puede-filtrar
     puede-exportar
     ajustar-celdas
-    :mostrar-formulario="false"
+    :mostrar-formulario="mostrarFormulario"
   >
     <template #formulario>
       <q-form @submit.prevent>
