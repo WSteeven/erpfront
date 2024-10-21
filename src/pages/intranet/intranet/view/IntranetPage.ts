@@ -1,17 +1,19 @@
+//Dependencies
+import relativeTime from 'dayjs/plugin/relativeTime'
+import es from 'dayjs/locale/es'
+import dayjs from 'dayjs'
+
 import { useAuthenticationStore } from 'stores/authentication'
 import loginJson from 'src/assets/lottie/welcome.json'
-import { Ref, computed, defineComponent, reactive, ref, onMounted } from 'vue'
 import {
-  QCarousel,
-  QCarouselSlide,
-  QCard,
-  QImg,
-  QCardSection,
-  QDialog,
-  QDate,
-  QCardActions,
-  QBtn
-} from 'quasar'
+  computed,
+  ComputedRef,
+  defineComponent,
+  onMounted,
+  reactive,
+  Ref,
+  ref
+} from 'vue'
 import { Qalendar } from 'qalendar'
 import ModalesEntidad from 'components/modales/view/ModalEntidad.vue'
 import SolicitarFecha from 'shared/prompts/SolicitarFecha.vue'
@@ -26,18 +28,19 @@ import { Empleado } from 'pages/recursosHumanos/empleados/domain/Empleado'
 import { EmpleadoController } from 'pages/recursosHumanos/empleados/infraestructure/EmpleadoController'
 import { useConfiguracionGeneralStore } from 'stores/configuracion_general'
 import { useMovilizacionSubtareaStore } from 'stores/movilizacionSubtarea'
-import { ComputedRef } from 'vue'
 import { useQuasar } from 'quasar'
+import confetti from 'canvas-confetti'
 import { StatusEssentialLoading } from 'components/loading/application/StatusEssentialLoading'
 import { useRouter } from 'vue-router'
 import { useMenuStore } from 'stores/menu'
-import { obtenerFechaActual } from '../../../../shared/utils'
-import { formatearFecha } from '../../../../shared/utils'
+import {
+  getShortDescription as acortarDescripcion,
+  obtenerFechaActual
+} from 'shared/utils'
 import { MenuOption } from 'shared/menu/MenuOption'
 import { NoticiaController } from 'pages/intranet/noticias/infraestructure/NoticiaController'
 import { EventoController } from 'pages/intranet/eventos/infraestructure/EventoController'
-import { Organigrama } from 'pages/intranet/organigrama/domain/Organigrama'
-import MiOrganigramaPage from 'pages/intranet/organigrama/view/MiOrganigramaPage.vue'
+import { VacanteController } from 'pages/recursosHumanos/SeleccionContratacionPersonal/vacantes/infraestructure/VacanteController'
 
 interface Noticia {
   id: number
@@ -59,19 +62,9 @@ interface Evento {
 export default defineComponent({
   name: 'intranet_page',
   components: {
-    MiOrganigramaPage,
     ModalesEntidad,
     LottiePlayer: Vue3Lottie,
     SolicitarFecha,
-    QCarousel,
-    QCarouselSlide,
-    QCard,
-    QImg,
-    QCardSection,
-    QDate,
-    QDialog,
-    QCardActions,
-    QBtn,
     Qalendar
   },
 
@@ -82,9 +75,11 @@ export default defineComponent({
 
     const usuarios = 20
     const carousel_noticias = ref(0)
+    const carousel_vacantes = ref(0)
     const activeTab = ref(0)
 
     const modalNoticia = ref(false)
+    const isCumpleanerosModalOpen = ref<boolean>(false)
 
     const noticias = ref<Noticia[]>([])
     const noticiaCompleta = ref<Noticia | null>(null)
@@ -102,8 +97,8 @@ export default defineComponent({
       descripcion: ''
     })
 
+    const vacantesDisponibles = ref()
     const eventos = ref<Evento[]>([])
-    const organigrama = ref<Organigrama[]>([])
     const eventoSeleccionado = ref<Evento | null>(null)
     const fechaSeleccionada = ref(null)
     const dialogoVisible = ref(false)
@@ -195,6 +190,11 @@ export default defineComponent({
       showCurrentTime: true
     })
 
+const router = useRouter()
+    //dayjs en español
+    dayjs.extend(relativeTime)
+    dayjs.locale(es)
+
     function verEvento(evento) {
       // console.log('evento clickado')
       // console.log('evento clickado', evento)
@@ -215,7 +215,23 @@ export default defineComponent({
         cargando.desactivar()
       }
     }
-
+    async function obtenerVacantes() {
+      try {
+        vacantesDisponibles.value = (
+          await new VacanteController().listar({
+            activo: 1,
+            'fecha_caducidad[operator]': '>=',
+            'fecha_caducidad[value]': obtenerFechaActual(maskFecha)
+          })
+        ).result
+      } catch (error: any) {
+        notificarError('Error al obtener las vacantes disponibles')
+      }
+    }
+    async function visualizarVacante() {
+      // console.log("Diste clic en visualizar vacante", vacante)
+      await router.push('puestos-disponibles')
+    }
     function getShortDescription(description: string): string {
       const maxLength = 275 // Ajusta este valor según la longitud deseada
       if (description.length > maxLength) {
@@ -295,7 +311,7 @@ export default defineComponent({
     async function logout() {
       cargando.activar()
       await store.logout()
-      Router.replace({ name: 'Login' })
+      await Router.replace({ name: 'Login' })
       cargando.desactivar()
     }
 
@@ -304,9 +320,7 @@ export default defineComponent({
       try {
         cargando.activar()
         const idNumerico = Number(departamento_id)
-        if (isNaN(idNumerico)) {
-          throw new Error('El id del departamento no es un número válido')
-        }
+
         const empleadoController = new EmpleadoController()
         empleados.value = (
           await empleadoController.listar({
@@ -335,39 +349,93 @@ export default defineComponent({
 
     const obtenerEmpleadosCumpleaneros = async () => {
       // Obtener el mes actual
-      const currentMonth = new Date().getMonth() + 1
+      const currentMonth = new Date().getUTCMonth();
+      console.log(currentMonth);
 
       try {
-        const empleadoController = new EmpleadoController()
+        const empleadoController = new EmpleadoController();
         const empleados = (
           await empleadoController.listar({
-            estado: 1
+            estado: 1,
           })
-        ).result
+        ).result;
 
         empleadosCumpleaneros.value = empleados
-          .filter(empleado => {
+          .filter((empleado: Empleado) => {
             if (empleado.fecha_nacimiento) {
               // Obtener el mes de la fecha de nacimiento
-              const birthMonth =
-                new Date(empleado.fecha_nacimiento).getMonth() + 1
-              return birthMonth === currentMonth
+              const birthMonth = new Date(empleado.fecha_nacimiento).getUTCMonth();
+              return birthMonth === currentMonth;
             }
-            return false
+            return false;
           })
           .sort((a, b) => {
-            // Ordenar por día del mes de nacimiento
-            const dayA = new Date(a.fecha_nacimiento).getDate()
-            const dayB = new Date(b.fecha_nacimiento).getDate()
-            return dayA - dayB
-          })
+            // Asegurarse de comparar solo el día, sin considerar la hora
+            const dayA = new Date(a.fecha_nacimiento).getUTCDate(); // Usar getUTCDate()
+            const dayB = new Date(b.fecha_nacimiento).getUTCDate();
+            return dayA - dayB;
+          });
+
+        console.log(empleadosCumpleaneros.value);
       } catch (err) {
-        console.log('Error al obtener empleados cumpleañeros:', err)
+        console.log('Error al obtener empleados cumpleañeros:', err);
       }
+    };
+
+
+    // Función para calcular el tiempo de trabajo del empleado
+    const calcularAntiguedad = (fechaVinculacion: string): string => {
+      const hoy = new Date()
+      const vinculacion = new Date(fechaVinculacion)
+      const diffAnios = hoy.getFullYear() - vinculacion.getFullYear()
+      const diffMeses = hoy.getMonth() - vinculacion.getMonth()
+
+      // Ajustar los meses si son negativos
+      const anios = diffMeses < 0 ? diffAnios - 1 : diffAnios
+      const meses = (diffMeses + 12) % 12
+
+      // Condicionar la inclusión de "años" y "meses"
+      const partes: string[] = []
+
+      if (anios > 0) {
+        partes.push(`${anios} ${anios === 1 ? 'año' : 'años'}`)
+      }
+
+      if (meses > 0) {
+        partes.push(`${meses} ${meses === 1 ? 'mes' : 'meses'}`)
+      }
+
+      // Si no hay años ni meses, devolvemos "menos de un mes"
+      return partes.length > 0 ? partes.join(' y ') : 'menos de un mes'
+    }
+
+    // Función para calcular la edad que el empleado cumplirá este año
+    const calcularEdadEsteAno = (fechaNacimiento: string): number => {
+      const hoy = new Date()
+      const nacimiento = new Date(fechaNacimiento)
+      // Restar el año actual del año de nacimiento
+      return hoy.getFullYear() - nacimiento.getFullYear()
+    }
+
+    const selectedEmpleado = ref<Empleado | null>(null)
+
+    async function openCumpleanerosModal(empleado: Empleado) {
+      selectedEmpleado.value = empleado
+      isCumpleanerosModalOpen.value = true
+      // Llama a confetti para disparar el confeti
+      confetti({
+        // Configuración para asegurarse de que el confeti se muestre sobre el modal
+        zIndex: 9999, // Asegúrate de que este z-index sea mayor que el del modal
+        particleCount: 100,
+        spread: 70,
+        startVelocity: 30
+      })
+
     }
 
     onMounted(() => {
       obtenerEventos()
+      obtenerVacantes()
       obtenerEmpleadosCumpleaneros()
     })
 
@@ -396,10 +464,6 @@ export default defineComponent({
       }
     }
 
-    function limpiarFormulario() {
-      solicitud.tipo_solicitud = ''
-    }
-
     const lorem =
       'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.'
     const selfCenterMiddle: ComputedRef<'center middle' | 'top start'> =
@@ -407,13 +471,13 @@ export default defineComponent({
 
     const getImagePerfil = usuario => {
       return usuario.foto_url == null
-        ? `https://ui-avatars.com/api/?name=${usuario.nombres.substr(
-            0,
-            1
-          )}+${usuario.apellidos.substr(
-            0,
-            1
-          )}&bold=true&background=008000&color=ffff`
+        ? `https://ui-avatars.com/api/?name=${usuario.nombres.slice(
+          0,
+          1
+        )}+${usuario.apellidos.slice(
+          0,
+          1
+        )}&bold=true&background=008000&color=ffff`
         : usuario.foto_url
     }
 
@@ -449,6 +513,7 @@ export default defineComponent({
       modales,
       subtareasPorAsignar,
       carousel_noticias,
+      carousel_vacantes,
       activeTab,
       carousel_cumpleanos_mes,
       autoplay,
@@ -463,20 +528,21 @@ export default defineComponent({
       empleados,
       showDepartamentos,
       modulosPermitidos,
+      vacantesDisponibles,
+      acortarDescripcion,
       logout,
       verEvento,
       consultarEmpleadosDepartamento,
       enviarSolicitud,
-      limpiarFormulario,
       getShortDescription,
       verNoticiaCompletaHandler,
       width: computed(() => ($q.screen.xs ? '100%' : '450px')),
       selfCenterMiddle,
       showBanner,
       maskFecha,
-      formatearFecha,
+      dayjs,
+      visualizarVacante,
       readMore,
-      organigrama,
       documentosIntranet,
       empleadosCumpleaneros,
       fechaActual,
@@ -487,6 +553,13 @@ export default defineComponent({
       noticias,
       noticiaCompleta,
       modalNoticia,
+      isCumpleanerosModalOpen,
+      openCumpleanerosModal,
+      selectedEmpleado,
+
+      calcularAntiguedad,
+      calcularEdadEsteAno,
+
       eventosFormateados,
       configuracion,
       cerrarModal() {

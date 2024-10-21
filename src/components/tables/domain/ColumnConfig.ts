@@ -1,13 +1,16 @@
-import { SelectOption } from "./SelectOption"
+import { SelectOption } from './SelectOption'
 
-type tipos = 'text' | 'number' | 'textarea' | 'select' | 'boolean' | 'date' | 'search' | 'imagen' | 'datetime' | 'toggle' | 'select_multiple'
+type tipos = 'text' | 'number' | 'textarea' | 'select' | 'boolean' | 'date' | 'search' | 'imagen' | 'datetime' | 'toggle' | 'select_multiple' // | 'file'
 type align = 'left' | 'center' | 'right'
+type operadores = '<' | '<=' | '>' | '>=' | 'start' | 'end' | 'like' | '!=' | '='
 
 export interface ColumnConfig<T> {
   id?: number
   name: keyof T
   field: keyof T
   label: string
+  min?:number
+  max?:number
   align?: align
   sortable?: boolean
   visible?: boolean
@@ -21,5 +24,7 @@ export interface ColumnConfig<T> {
   filtrar?: boolean
   default?: boolean
   placeholder?: string
+  // accept?: string
   filtro?: (val, update) => void
+  operador?: operadores
 }

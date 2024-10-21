@@ -24,7 +24,7 @@
           size="120px"
           class="q-mx-auto block q-mb-md"
         >
-          <img src="~assets/logo.png" />
+          <img :src="!$q.dark.isActive ? logoClaro : logoOscuro" />
         </q-avatar>
 
         <form @submit.prevent="login" class="full-width q-px-lg">
@@ -55,6 +55,7 @@
               class="normal-text"
               hint="No comparta su contraseña con nadie"
               @keyup.enter="login()"
+              style="text-transform: none;"
             >
               <template v-slot:append>
                 <q-icon
@@ -96,6 +97,19 @@
               @click="recuperarPassword()"
             >
             </q-btn>
+          </div>
+
+          <div class="col-12 q-pt-xl q-mt-xl">
+            <q-btn
+              color="primary"
+              label="¿Entrar como externo?"
+              class="full-width q-mb-sm"
+              no-caps
+              unelevated
+
+              outline
+              :to="{name:'LoginPostulante'}"
+            />
           </div>
         </form>
       </div>

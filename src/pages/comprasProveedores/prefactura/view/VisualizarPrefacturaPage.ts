@@ -64,8 +64,8 @@ export default defineComponent({
 
         // Flags
         const tabSeleccionado = ref('2')
-        let soloLectura = ref(false)
-        let puedeEditar = ref(false)
+        const soloLectura = ref(false)
+        const puedeEditar = ref(false)
         const refItems = ref()
 
 
@@ -214,7 +214,7 @@ export default defineComponent({
             titulo: 'Eliminar',
             icono: 'bi-x',
             color: 'negative',
-            accion: ({ entidad, posicion }) => {
+            accion: ({ posicion }) => {
                 eliminar({ posicion })
                 // confirmar('¿Está seguro de continuar?', () => prefactura.listadoProductos.splice(posicion, 1))
             },
@@ -234,7 +234,7 @@ export default defineComponent({
             titulo: 'Generar Prefactura',
             color: 'primary',
             icono: 'bi-cart-check',
-            accion: ({ entidad, posicion }) => {
+            accion: ({ entidad }) => {
                 prefacturaStore.prefactura = entidad
                 router.push('prefacturas')
             },

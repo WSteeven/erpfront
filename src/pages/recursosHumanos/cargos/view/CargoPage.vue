@@ -40,6 +40,20 @@
               :disable="disabled"
             />
           </div>
+          
+          <!-- Aprobado RRHH -->
+          <div class="col-12 col-md-3">
+            <label class="q-mb-sm block">Aprobado</label>
+            <q-toggle
+              :label="cargo.aprobado_rrhh ? 'SI' : 'NO'"
+              v-model="cargo.aprobado_rrhh"
+              color="primary"
+              keep-color
+              icon="bi-check2-circle"
+              unchecked-icon="clear"
+              :disable="disabled"
+            />
+          </div>
         </div>
       </q-form>
     </template>

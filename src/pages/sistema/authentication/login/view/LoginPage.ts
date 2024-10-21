@@ -44,7 +44,7 @@ export default defineComponent({
         } catch (error: any) {
           if (isAxiosError(error)) {
             const mensajes: string[] = error.erroresValidacion
-            notificarMensajesError(mensajes, notificaciones)
+            await notificarMensajesError(mensajes, notificaciones)
           }
         } finally {
           cargando.desactivar()

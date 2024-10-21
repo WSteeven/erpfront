@@ -6,6 +6,7 @@
     :full-height="fullHeight"
     :persistent="persistente"
     :maximized="maximized"
+    @hide="emit('cerrado')"
   >
     <q-card class="bg-transparent no-border" flat>
       <!-- <q-linear-progress :value="1" color="grey-4" /> -->
@@ -46,7 +47,7 @@
           :mixin-modal="mixinModal"
           :accion="accion"
           :mostrarListado="mostrarListado"
-          :datos="datos"
+          :datos="propsData"
           @cerrar-modal="
             (confirmarCerrar) => cerrarModalEntidad(confirmarCerrar)
             "
@@ -54,13 +55,13 @@
           @modificado="(data) => emit('modificado', data)"
           ></component>
           <!--  @seleccionar="emit('seleccionar')" -->
-        
+
         <component
           v-else
           :is="componente"
           :accion="accion"
           :mostrarListado="mostrarListado"
-          :datos="datos"
+          :datos="propsData"
           @cerrar-modal="
             (confirmarCerrar) => cerrarModalEntidad(confirmarCerrar)
             "

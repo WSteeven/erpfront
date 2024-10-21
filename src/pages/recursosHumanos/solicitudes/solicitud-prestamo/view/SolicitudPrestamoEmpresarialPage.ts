@@ -153,6 +153,7 @@ export default defineComponent({
       listar({ estado: tabSeleccionado }, false)
       tabSolicitudPrestaamo.value = tabSeleccionado
     }
+
     /**
      * La función `filtrarPeriodo` filtra una lista de períodos en función de un valor dado y actualiza la
      * lista filtrada.

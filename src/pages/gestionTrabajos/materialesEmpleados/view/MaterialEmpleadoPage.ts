@@ -10,7 +10,7 @@ import { useAuthenticationStore } from 'stores/authentication'
 import { useNotificacionStore } from 'stores/notificacion'
 import { useNotificaciones } from 'shared/notificaciones'
 import { destinosTareas } from 'config/tareas.utils'
-import { imprimirArchivo, ordernarListaString } from 'shared/utils'
+import { imprimirArchivo, ordenarLista, ordernarListaString } from 'shared/utils'
 import { useCargandoStore } from 'stores/cargando'
 import { apiConfig, endpoints } from 'config/api'
 import { accionesTabla, maskFecha } from 'config/utils'
@@ -48,7 +48,7 @@ export default defineComponent({
     useNotificacionStore().setQuasar(useQuasar())
     useCargandoStore().setQuasar(useQuasar())
 
-    // modales
+    // Modales
     const modales = new ComportamientoModalesMaterialEmpleado()
 
     /************
@@ -58,6 +58,7 @@ export default defineComponent({
     const cargando = new StatusEssentialLoading()
     const tab = ref()
     const empleadoSeleccionado = ref()
+    const mostrarInactivos = ref(false)
     const mostrarImprimirReporteMateriales = ref(false)
 
     onMounted(() => {
@@ -93,7 +94,7 @@ export default defineComponent({
      * Funciones
      ************/
     const { consultarProductosTarea, consultarClientesMaterialesTarea, consultarTareasClienteFinalMantenimiento } = useMaterialesTarea(filtro, listadosAuxiliares)
-    const { consultarProductosEmpleado, consultarClientesMaterialesEmpleado } = useMaterialesEmpleado(filtroEmpleado, listadosAuxiliares)
+    const { consultarProductosEmpleado, consultarClientesMaterialesEmpleado } = useMaterialesEmpleado(filtroEmpleado, listadosAuxiliares, mostrarInactivos)
     const { consultarProyectos, consultarEtapas, consultarProductosProyecto } = useMaterialesProyecto(filtroProyecto, listadosAuxiliares)
 
     function consultarProductosStock() {
@@ -209,9 +210,9 @@ export default defineComponent({
       }
     }
 
-    function ordenarEmpleados() {
-      empleados.value.sort((a: Empleado, b: Empleado) => ordernarListaString(a.apellidos!, b.apellidos!))
-    }
+    // function ordenarEmpleados() {
+    //   empleados.value.sort((a: Empleado, b: Empleado) => ordernarListaString(a.apellidos!, b.apellidos!))
+    // }
 
     async function guardado(data) {
       console.log(data)
@@ -229,6 +230,15 @@ export default defineComponent({
           break
       }
     }
+    async function checkMostrarInactivos(val) {
+      empleadoSeleccionado.value = null
+      //aqui va a mostrar los empleados inactivos
+      const empleadosConsultados = ref()
+      if (val) empleadosConsultados.value = await cargando.cargarConsulta(async () => (await new EmpleadoController().listar({ estado: 0 })).result)
+      else empleadosConsultados.value = await cargando.cargarConsulta(async () => (await new EmpleadoController().listar({ estado: 1 })).result)
+      listadosAuxiliares.empleados = empleadosConsultados.value
+    }
+
 
     async function actualizarCantidadItem(cantidad: number, detalle: number, cliente: number, tarea_id?: number | null) {
       try {
@@ -354,6 +364,7 @@ export default defineComponent({
       tareas,
       proyectos,
       etapas,
+      checkMostrarInactivos,
       filtrarTareas,
       filtrarProyectos,
       filtrarEtapas,
@@ -367,13 +378,15 @@ export default defineComponent({
       refrescarListadosTareas,
       refrescarListadosEmpleado,
       mostrarBtnTransferirStockPersonal: computed(() => tab.value === destinosTareas.paraClienteFinal),
-      ordenarEmpleados,
+      // ordenarEmpleados,
       empleados,
       filtrarEmpleados,
       empleadoSeleccionado,
       resetearFiltros,
       consultarProductosStock,
       guardado,
+      ordenarLista,
+      mostrarInactivos,
       //botones de tabla
       btnCambiarClientePropietario,
       btnModificarStock,

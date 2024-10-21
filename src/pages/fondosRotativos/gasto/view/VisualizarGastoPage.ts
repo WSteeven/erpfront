@@ -1,4 +1,4 @@
-import { Ref, computed, defineComponent, ref, watchEffect } from 'vue'
+import { computed, defineComponent, Ref, ref, watchEffect } from 'vue'
 
 // Componentes
 import TabLayout from 'shared/contenedor/modules/simple/view/TabLayout.vue'
@@ -6,11 +6,11 @@ import { useNotificacionStore } from 'stores/notificacion'
 import { LocalStorage, useQuasar } from 'quasar'
 import { useVuelidate } from '@vuelidate/core'
 import {
-  requiredIf,
   maxLength,
-  minLength,
   maxValue,
+  minLength,
   required,
+  requiredIf
 } from 'shared/i18n-validators'
 import { ContenedorSimpleMixin } from 'shared/contenedor/modules/simple/application/ContenedorSimpleMixin'
 import { configuracionColumnasGasto } from '../domain/configuracionColumnasGasto'
@@ -24,12 +24,12 @@ import {
   acciones,
   convertir_fecha,
   estadosGastos,
-  maskFecha,
+  maskFecha
 } from 'config/utils'
 import { VisualizarGasto } from '../domain/VisualizarGasto'
 import { VisualizarGastoController } from '../infrestructure/VisualizarGastoController'
 import { useCargandoStore } from 'stores/cargando'
-import ImagenComprimidaComponent from 'components/ImagenComprimidaComponent.vue'
+import SelectorImagen from 'components/SelectorImagen.vue'
 import { Empleado } from 'pages/recursosHumanos/empleados/domain/Empleado'
 import { Tarea } from 'pages/gestionTrabajos/tareas/domain/Tarea'
 import { SubDetalleFondo } from 'pages/fondosRotativos/subDetalleFondo/domain/SubDetalleFondo'
@@ -37,14 +37,11 @@ import { SubDetalleFondoController } from 'pages/fondosRotativos/subDetalleFondo
 import { DetalleFondoController } from 'pages/fondosRotativos/detalleFondo/infrestructure/DetalleFondoController'
 import { Gasto } from '../domain/Gasto'
 import { GastoController } from '../infrestructure/GastoController'
-import {
-  isAxiosError,
-  notificarMensajesError,
-} from 'shared/utils'
+import { isAxiosError, notificarMensajesError } from 'shared/utils'
 import { StatusEssentialLoading } from 'components/loading/application/StatusEssentialLoading'
 
 export default defineComponent({
-  components: { TabLayout, ImagenComprimidaComponent, ButtonSubmits },
+  components: { TabLayout, SelectorImagen, ButtonSubmits },
   emits: ['guardado', 'cerrar-modal'],
   setup(props, { emit }) {
     const authenticationStore = useAuthenticationStore()
@@ -202,8 +199,7 @@ export default defineComponent({
         mostrarListado.value = false
         mostrarAprobacion.value = true
         esFactura.value = !!gasto.factura
-        permitirAnular.value =
-          fondoRotativoStore.habilitar_observacion_autorizador
+        permitirAnular.value = fondoRotativoStore.habilitar_observacion_autorizador
         accion.value = fondoRotativoStore.accion_form
         isConsultar.value = fondoRotativoStore.accion_form === acciones.consultar
       }

@@ -78,9 +78,7 @@
 
         <q-input
           v-if="
-            props.col.editable &&
-            (!props.col.type ||
-              ['text', 'number', 'date', 'time'].includes(props.col.type))
+            props.col.editable && (!props.col.type || ['text', 'number', 'date', 'time'].includes(props.col.type))
           "
           v-model="props.row[props.col.name]"
           :bg-color="$q.dark.isActive ? 'grey-10' : 'grey-3'"
@@ -88,6 +86,9 @@
           :hint="props.col.hint"
           :disable="disable"
           :placeholder="props.col.placeholder"
+          :min="props.col.min"
+          :max="props.col.max"
+          :autogrow="props.col.type==='text'||!props.col.type"
           dense
           outlined
         />
@@ -101,11 +102,30 @@
           :options-value="v => v.value"
           options-dense
           outlined
+          autogrow
           dense
           emit-value
           map-options
           :disable="disable"
         />
+
+        <!-- Aún no está completado, porque falta controlar la manera de subir el archivo -->
+        <!-- <q-file
+          v-if="props.col.type === 'file'"
+          v-model="props.row[props.col.name]"
+          outlined
+          autogrow
+          dense
+          use-chips
+          :label="props.col.placeholder"
+          :disable="disable"
+          :placeholder="props.col.placeholder"
+          :style="props.col.style"
+          :bg-color="$q.dark.isActive ? 'grey-10' : 'grey-3'"
+          :accept="props.col.accept ?? '*'"
+        >
+          <template v-slot:prepend> <q-icon name="attach_file" /> </template
+        ></q-file> -->
 
         <q-select
           v-if="props.col.type === 'select_multiple'"
@@ -115,6 +135,7 @@
           :options-value="v => v.value"
           use-chips
           multiple
+          autogrow
           options-dense
           outlined
           dense
@@ -1646,6 +1667,7 @@
         </q-chip>
 
         <estados-subtareas :propsTable="props" />
+        <estados-postulaciones :propsTable="props" />
 
         <!-- estados de la tabla prestamos temporales -->
         <q-chip v-if="props.value === 'DEVUELTO'" class="bg-green-1">
@@ -1661,6 +1683,41 @@
     <template #body-cell-descontable="props">
       <q-td :props="props">
         <campo-descontable :propsTable="props" />
+      </q-td>
+    </template>
+    <!-- <template #body-cell-descartado="props">
+      <q-td :props="props">
+        <campo-boleano :propsTable="props" />
+      </q-td>
+    </template> -->
+    <template #body-cell-opto_pago="props">
+      <q-td :props="props">
+        <campo-boleano :propsTable="props" />
+      </q-td>
+    </template>
+    <template #body-cell-completadas="props">
+      <q-td :props="props">
+        <campo-boleano :propsTable="props" />
+      </q-td>
+    </template>
+    <template #body-cell-tengo_conocimientos_requeridos="props">
+      <q-td :props="props">
+        <campo-boleano :propsTable="props" />
+      </q-td>
+    </template>
+    <template #body-cell-tengo_experiencia_requerida="props">
+      <q-td :props="props">
+        <campo-boleano :propsTable="props" />
+      </q-td>
+    </template>
+    <template #body-cell-tengo_licencia_conducir="props">
+      <q-td :props="props">
+        <campo-boleano :propsTable="props" />
+      </q-td>
+    </template>
+    <template #body-cell-aprobado_rrhh="props">
+      <q-td :props="props">
+        <campo-aprobado-r-r-h-h :propsTable="props" />
       </q-td>
     </template>
 

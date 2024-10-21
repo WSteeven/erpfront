@@ -1,14 +1,19 @@
 <template>
-  <tab-layout
+  <tab-layout-filter-tabs2
     :mixin="mixin"
     :configuracionColumnas="configuracionColumnas"
+    titulo-pagina="Empleados"
+    :tab-options="tabOptions"
+    :tabDefecto="tabDefecto"
+    :filtrar="filtrarListadoEmpleados"
     :accion1Header="btnImprimirEmpleados"
     :accion1="btnHabilitarEmpleado"
     :accion2="btnDesHabilitarEmpleado"
-    titulo-pagina="Empleados"
+    :accion3="btnPlanVacaciones"
     :puedeFiltrar="false"
     :puedeExportar="true"
-    :ajustarCeldas="true"
+    :forzarListar="false"
+    ajustarCeldas
   >
     <template #formulario>
       <q-form @submit.prevent>
@@ -58,7 +63,7 @@
                 "
                 :error="!!v$.email.$errors.length"
                 @blur="v$.email.$touch"
-                @update:model-value="(v) => (empleado.email = v.toLowerCase())"
+                @update:model-value="v => (empleado.email = v.toLowerCase())"
                 outlined
                 dense
               >
@@ -176,6 +181,7 @@
             <div class="col-12 col-md-3 col-sm-3">
               <label class="q-mb-sm block">Apellidos</label>
               <q-input
+                ref="refApellidos"
                 v-model="empleado.apellidos"
                 placeholder="Obligatorio"
                 :disable="disabled"
@@ -222,7 +228,7 @@
                 :error="!!v$.correo_personal.$errors.length"
                 @blur="v$.correo_personal.$touch"
                 @update:model-value="
-                  (v) => (empleado.correo_personal = v.toLowerCase())
+                  v => (empleado.correo_personal = v.toLowerCase())
                 "
                 outlined
                 dense
@@ -254,8 +260,8 @@
                 hint="Opcional"
                 :error="!!v$.tipo_sangre.$errors.length"
                 @blur="v$.tipo_sangre.$touch"
-                :option-value="(v) => v.nombre"
-                :option-label="(v) => v.nombre"
+                :option-value="v => v.nombre"
+                :option-label="v => v.nombre"
                 emit-value
                 map-options
               >
@@ -293,8 +299,8 @@
                 use-input
                 @blur="v$.estado_civil.$touch"
                 :error="!!v$.estado_civil.$errors.length"
-                :option-value="(v) => v.id"
-                :option-label="(v) => v.nombre"
+                :option-value="v => v.id"
+                :option-label="v => v.nombre"
                 emit-value
                 map-options
               >
@@ -490,7 +496,9 @@
 
             <!-- Trabajador Sustituto -->
             <div class="col-12 col-md-3 col-sm-3">
-              <label class="q-mb-sm block">El trabajador sustituye a algún pariente</label>
+              <label class="q-mb-sm block"
+                >El trabajador sustituye a algún pariente</label
+              >
               <q-toggle
                 :label="empleado.trabajador_sustituto ? 'SI' : 'NO'"
                 v-model="empleado.trabajador_sustituto"
@@ -605,8 +613,8 @@
                 :error="!!v$.banco.$errors.length"
                 @blur="v$.banco.$touch"
                 @filter="filtrarBancos"
-                :option-value="(v) => v.id"
-                :option-label="(v) => v.nombre"
+                :option-value="v => v.id"
+                :option-label="v => v.nombre"
                 emit-value
                 map-options
               >
@@ -641,8 +649,8 @@
                 use-input
                 @filter="filtrarCantones"
                 @popup-show="ordenarLista(cantones, 'canton')"
-                :option-value="(v) => v.id"
-                :option-label="(v) => v.canton"
+                :option-value="v => v.id"
+                :option-label="v => v.canton"
                 emit-value
                 map-options
               >
@@ -692,7 +700,7 @@
                 :imagen="empleado.foto_url"
                 :comprimir="true"
                 :alto="'400px'"
-                @update:model-value="(data) => (empleado.foto_url = data)"
+                @update:model-value="data => (empleado.foto_url = data)"
               ></selector-imagen>
             </div>
           </div>
@@ -830,8 +838,8 @@
                     hint="Opcional"
                     :error="!!v$.talla_camisa.$errors.length"
                     @blur="v$.talla_camisa.$touch"
-                    :option-value="(v) => v.nombre"
-                    :option-label="(v) => v.nombre"
+                    :option-value="v => v.nombre"
+                    :option-label="v => v.nombre"
                     emit-value
                     map-options
                   >
@@ -908,62 +916,6 @@
                     </template>
                   </q-input>
                 </div>
-                <!-- Casa propia -->
-                <div class="col-12 col-md-3 col-sm-3">
-                  <label class="q-mb-sm block">La casa donde vive es</label>
-                  <q-toggle
-                    :label="empleado.casa_propia ? 'PROPIA' : 'ALQUILADA'"
-                    v-model="empleado.casa_propia"
-                    color="primary"
-                    keep-color
-                    icon="bi-check2-circle"
-                    unchecked-icon="clear"
-                    :disable="disabled"
-                  />
-                </div>
-                <!-- Vive con discapacitados -->
-                <div class="col-12 col-md-3 col-sm-3">
-                  <label class="q-mb-sm block"
-                    >Convive con personas discapacitadas</label
-                  >
-                  <q-toggle
-                    :label="empleado.vive_con_discapacitados ? 'SI' : 'NO'"
-                    v-model="empleado.vive_con_discapacitados"
-                    color="primary"
-                    keep-color
-                    icon="bi-check2-circle"
-                    unchecked-icon="clear"
-                    :disable="disabled"
-                  />
-                </div>
-                <!-- Casa propia -->
-                <div class="col-12 col-md-3 col-sm-3">
-                  <label class="q-mb-sm block"
-                    >Tiene a su cargo personas discapacitadas</label
-                  >
-                  <q-toggle
-                    :label="empleado.responsable_discapacitados ? 'SI' : 'NO'"
-                    v-model="empleado.responsable_discapacitados"
-                    color="primary"
-                    keep-color
-                    icon="bi-check2-circle"
-                    unchecked-icon="clear"
-                    :disable="disabled"
-                  />
-                </div>
-                <!-- Vive con discapacitados -->
-                <div class="col-12 col-md-3 col-sm-3">
-                  <label class="q-mb-sm block">Tiene Discapacidad</label>
-                  <q-toggle
-                    :label="empleado.tiene_discapacidad ? 'SI' : 'NO'"
-                    v-model="empleado.tiene_discapacidad"
-                    color="primary"
-                    keep-color
-                    icon="bi-check2-circle"
-                    unchecked-icon="clear"
-                    :disable="disabled"
-                  />
-                </div>
                 <div
                   class="col-12 col-md-6 col-sm-12"
                   v-if="empleado.tiene_discapacidad"
@@ -977,7 +929,7 @@
                   <essential-table
                     :configuracionColumnas="[
                       ...configuracionColumnasTipoDiscapacidadPorcentajeReactive,
-                      accionesTabla,
+                      accionesTabla
                     ]"
                     :datos="empleado.discapacidades"
                     :permitirConsultar="false"
@@ -1023,8 +975,8 @@
                 input-debounce="0"
                 @filter="filtrarEmpleados"
                 @popup-show="ordenarLista(empleados, 'nombres')"
-                :option-value="(v) => v.id"
-                :option-label="(v) => v.nombres + ' ' + v.apellidos"
+                :option-value="v => v.id"
+                :option-label="v => v.nombres + ' ' + v.apellidos"
                 emit-value
                 map-options
               >
@@ -1100,10 +1052,10 @@
                 use-input
                 input-debounce="0"
                 @blur="v$.area.$touch"
-                @filter="filtrarDepartamentos"
+                @filter="filtrarAreas"
                 :error="!!v$.area.$errors.length"
-                :option-value="(v) => v.id"
-                :option-label="(v) => v.nombre"
+                :option-value="v => v.id"
+                :option-label="v => v.nombre"
                 emit-value
                 map-options
               >
@@ -1141,8 +1093,8 @@
                 @filter="filtrarDepartamentos"
                 @popup-show="ordenarLista(departamentos, 'nombre')"
                 :error="!!v$.departamento.$errors.length"
-                :option-value="(v) => v.id"
-                :option-label="(v) => v.nombre"
+                :option-value="v => v.id"
+                :option-label="v => v.nombre"
                 emit-value
                 map-options
               >
@@ -1184,8 +1136,8 @@
                 @popup-show="ordenarLista(cargos, 'nombre')"
                 :error="!!v$.cargo.$errors.length"
                 error-message="Debes seleccionar un cargo"
-                :option-value="(v) => v.id"
-                :option-label="(v) => v.nombre"
+                :option-value="v => v.id"
+                :option-label="v => v.nombre"
                 emit-value
                 map-options
               >
@@ -1225,8 +1177,8 @@
                 @filter="filtrarRoles"
                 @popup-show="ordenarLista(roles, 'name')"
                 @update:model-value="verificarRolesSeleccionados"
-                :option-value="(v) => v.name"
-                :option-label="(v) => v.name"
+                :option-value="v => v.name"
+                :option-label="v => v.name"
                 :error="!!v$.roles.$errors.length"
                 error-message="Debes seleccionar uno o varios roles"
                 emit-value
@@ -1281,8 +1233,8 @@
                 use-input
                 @blur="v$.tipo_contrato.$touch"
                 :error="!!v$.tipo_contrato.$errors.length"
-                :option-value="(v) => v.id"
-                :option-label="(v) => v.nombre"
+                :option-value="v => v.id"
+                :option-label="v => v.nombre"
                 emit-value
                 map-options
               >
@@ -1320,8 +1272,8 @@
                 outlined
                 :input-debounce="0"
                 use-input
-                :option-value="(v) => v.nombre"
-                :option-label="(v) => v.nombre"
+                :option-value="v => v.nombre"
+                :option-label="v => v.nombre"
                 emit-value
                 map-options
               >
@@ -1548,8 +1500,8 @@
                 @blur="v$.grupo.$touch"
                 @filter="filtrarGrupos"
                 @popup-show="ordenarLista(grupos, 'nombre')"
-                :option-value="(v) => v.id"
-                :option-label="(v) => v.nombre"
+                :option-value="v => v.id"
+                :option-label="v => v.nombre"
                 emit-value
                 map-options
               >
@@ -1570,7 +1522,7 @@
             </div>
 
             <!-- Salario -->
-            <div class="col-12 col-md-3 col-sm-3">
+            <div class="col-12 col-md-3 col-sm-3" v-if="esRecursosHumanos">
               <label class="q-mb-sm block">Salario</label>
               <q-input
                 v-model="empleado.salario"
@@ -1611,7 +1563,7 @@
                 :imagen="empleado.firma_url"
                 :comprimir="false"
                 :alto="'80px'"
-                @update:model-value="(data) => (empleado.firma_url = data)"
+                @update:model-value="data => (empleado.firma_url = data)"
               ></selector-imagen>
             </div>
             <!-- Telefono de la empresa -->
@@ -1734,7 +1686,7 @@
                 titulo="Familiares"
                 :configuracionColumnas="[
                   ...configuracionColumnasFamiliaresEmpleado,
-                  accionesTabla,
+                  accionesTabla
                 ]"
                 :datos="empleado.familiares"
                 :permitirConsultar="false"
@@ -1755,10 +1707,10 @@
     </template>
     <modales-entidad
       :comportamiento="modales"
-      @guardado="(data) => guardado(data)"
+      @guardado="data => guardado(data)"
       :mixin-modal="mixinFamiliares"
     ></modales-entidad>
-  </tab-layout>
+  </tab-layout-filter-tabs2>
 </template>
 
 <script src="./EmpleadoPage.ts" />

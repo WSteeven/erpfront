@@ -10,6 +10,7 @@
       :permitirEliminar="false"
       :mostrarBotones="false"
       :accion1="BotonMarcarLeido"
+      ajustarCeldas
     >
     </essential-table>
   </q-page>

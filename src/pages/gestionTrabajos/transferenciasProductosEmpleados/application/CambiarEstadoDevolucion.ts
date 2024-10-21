@@ -13,6 +13,10 @@ export class CambiarEstadoDevolucion {
         return this.solicitud('/anular/', devolucionId, { motivo: mensaje })
     }
 
+    async devolverASinCliente(devolucionId: number, mensaje: string) {
+        return this.solicitud('/devolver-a-sin-cliente/', devolucionId, { motivo: mensaje })
+    }
+
     async solicitud(accion, id, data?) {
         const ruta = this.axios.getEndpoint(endpoints.devoluciones) + accion + id
         const response: AxiosResponse = await this.axios.post(ruta, data)

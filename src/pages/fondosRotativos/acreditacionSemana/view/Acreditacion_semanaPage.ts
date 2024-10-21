@@ -29,38 +29,25 @@ import { CustomActionPrompt } from 'components/tables/domain/CustomActionPrompt'
 export default defineComponent({
   name: 'AcreditacionSemana',
 
-  components: { TabLayout, EssentialTable ,ModalesEntidad},
+  components: { TabLayout, EssentialTable, ModalesEntidad },
   setup() {
     /*********
      * Stores
      *********/
     useNotificacionStore().setQuasar(useQuasar())
     const acreditacionesStore = useAcreditacionesStore()
-    const {  notificarCorrecto,  promptItems } =
+    const { notificarCorrecto, promptItems } =
       useNotificaciones()
     /***********
      * Mixin
      ************/
-    const mixin = new ContenedorSimpleMixin(
-      AcreditacionSemana,
-      new AcreditacionSemanaController()
-    )
-    const mixinAcreditacion = new ContenedorSimpleMixin(
-      ValorAcreditar,
-      new ValorAcreditarController()
-    )
+    const mixin = new ContenedorSimpleMixin(AcreditacionSemana, new AcreditacionSemanaController())
+    const mixinAcreditacion = new ContenedorSimpleMixin(ValorAcreditar, new ValorAcreditarController())
     const { listado: roles_empleados } = mixinAcreditacion.useReferencias()
-
-    const {
-      entidad: fondo_rotativo_contabilidad,
-      disabled,
-      accion,
-      listado,
-    } = mixin.useReferencias()
-    const { setValidador,  cargarVista } =
-      mixin.useComportamiento()
-      const store = useAuthenticationStore()
-      useCargandoStore().setQuasar(useQuasar())
+    const { entidad: fondo_rotativo_contabilidad, disabled, accion, listado, } = mixin.useReferencias()
+    const { setValidador, cargarVista } = mixin.useComportamiento()
+    const store = useAuthenticationStore()
+    useCargandoStore().setQuasar(useQuasar())
 
     /************
      * Modales
@@ -95,8 +82,8 @@ export default defineComponent({
       icono: 'bi-eye',
       color: 'primary',
       accion: ({ entidad }) => {
-        acreditacionesStore.acreditacion_semana=entidad
-        acreditacionesStore.esta_acreditado= entidad.acreditar
+        acreditacionesStore.acreditacion_semana = entidad
+        acreditacionesStore.esta_acreditado = entidad.acreditar
         modalesAcreditacionSemana.abrirModalEntidad('ValorAcreditarPage')
       },
     }
@@ -104,7 +91,7 @@ export default defineComponent({
       titulo: 'Acreditar',
       icono: 'bi-check-all',
       color: 'positive',
-      visible: ({entidad}) => store.can('puede.ver.campo.acreditar_saldo_masivo')&& !entidad.acreditar,
+      visible: ({ entidad }) => store.can('puede.ver.campo.acreditar_saldo_masivo') && !entidad.acreditar,
       accion: ({ entidad }) => {
         entidad.acreditar = true;
         acreditacionSaldo(entidad)
@@ -136,20 +123,20 @@ export default defineComponent({
         '/' +
         axios_repository.getEndpoint(endpoints.acreditacion_saldo_semana) +
         entidad.id
-        const response: AxiosResponse = await axios_repository.get(url)
-        return notificarCorrecto(
-          'El rol de pago ha sido Finalizado.'
-        )
+      const response: AxiosResponse = await axios_repository.get(url)
+      return notificarCorrecto(
+        'El rol de pago ha sido Finalizado.'
+      )
     }
 
 
 
-   const botonReporte: CustomActionTable = {
+    const botonReporte: CustomActionTable = {
       titulo: 'Reporte General',
       icono: 'bi-printer',
       color: 'primary',
       visible: ({ entidad }) =>
-       true,
+        true,
       accion: ({ entidad }) => {
         const config: CustomActionPrompt = reactive({
           mensaje: 'Confirme el tipo de reporte',

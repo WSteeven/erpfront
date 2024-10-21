@@ -1,6 +1,6 @@
 import { TransaccionSimpleController } from 'shared/contenedor/modules/simple/infraestructure/TransacccionSimpleController'
 import { EntidadAuditable } from 'shared/entidad/domain/entidadAuditable'
-import { isAxiosError, notificarMensajesError } from 'shared/utils'
+import { downloadFile, isAxiosError, notificarMensajesError } from 'shared/utils'
 import { Contenedor } from '../../../application/contenedor.mixin'
 import { Instanciable } from 'shared/entidad/domain/instanciable'
 import { HooksSimples } from '../domain/hooksSimples'
@@ -149,8 +149,11 @@ export class ContenedorSimpleMixin<T extends EntidadAuditable> extends Contenedo
   private async listar(params?: ParamsType, append = false) {
     this.statusEssentialLoading.activar()
     try {
-      const { result, meta } = await this.controller.listar(params)
-      if (result.length == 0) this.notificaciones.notificarInformacion('Aún no se han agregado elementos')
+      const { result, meta, response } = await this.controller.listar(params)
+      // console.log(response.data)
+
+      if (params?.hasOwnProperty('export')) return downloadFile(response.data, params.titulo, params.export)
+      else if (result.length == 0) this.notificaciones.notificarInformacion('Aún no se han agregado elementos.')
 
       if (append) this.refs.listado.value.push(...result)
       else this.refs.listado.value = result
@@ -159,6 +162,11 @@ export class ContenedorSimpleMixin<T extends EntidadAuditable> extends Contenedo
       this.refs.pagination.value.page = meta?.current_page
       this.refs.pagination.value.total = meta?.total
     } catch (error) {
+      if (isAxiosError(error)) {
+        const mensajes: string[] = error.erroresValidacion
+        console.log(mensajes)
+        await notificarMensajesError(mensajes, this.notificaciones)
+      }
       this.notificaciones.notificarError(error + '')
     } finally {
       this.statusEssentialLoading.desactivar()
@@ -191,6 +199,7 @@ export class ContenedorSimpleMixin<T extends EntidadAuditable> extends Contenedo
   // Guardar
   // @noImplicitAny: false
   private async guardar(data: T, agregarAlListado = true, params?: ParamsType): Promise<any> {
+    this.statusEssentialLoading.activar()
 
     // aqui estaba onbeforeguardar POR EL CUESTIONARIO PSICOSOCIAL PERO EL SISTEMA YA FUNCIONA CON EL OB BEFORE GUARDAR EN LA LINEA 204
 
@@ -198,20 +207,17 @@ export class ContenedorSimpleMixin<T extends EntidadAuditable> extends Contenedo
       this.notificaciones.notificarAdvertencia(
         'No se ha efectuado ningun cambio'
       )
+      this.statusEssentialLoading.desactivar()
       throw new Error('No se ha efectuado ningun cambio')
-      // return console.log('No se ha efectuado ningun cambio')
     }
 
-    console.log('antes de validar')
     if (this.refs.validador.value && !(await this.refs.validador.value.$validate()) || !(await this.ejecutarValidaciones())) {
-      console.log('validando...')
       this.notificaciones.notificarAdvertencia('Verifique el formulario')
+      this.statusEssentialLoading.desactivar()
       throw new Error('Verifique el formulario')
     }
     this.hooks.onBeforeGuardar() // <- 19/02/2024 Se movio antes de las validaciones para realizar cambios en las variables, si da error, bajar
 
-    //return this.cargarVista(async (): Promise<any> => {
-    this.statusEssentialLoading.activar()
     try {
       const { response } = await this.controller.guardar(
         data,
@@ -222,27 +228,20 @@ export class ContenedorSimpleMixin<T extends EntidadAuditable> extends Contenedo
       )
 
       this.notificaciones.notificarCorrecto(response.data.mensaje)
-      this.agregarElementoListadoActual(response.data.modelo, agregarAlListado)
-      this.entidad.hydrate(response.data.modelo)
 
+      if (response.data.modelo) {
+        if (Array.isArray(response.data.modelo)) {
+          this.agregarElementosListadoActual(response.data.modelo, agregarAlListado)
+        } else {
+          this.agregarElementoListadoActual(response.data.modelo, agregarAlListado)
+          this.entidad.hydrate(response.data.modelo)
+        }
+      }
 
-      //console.log(this.entidad)
       const copiaEntidad = JSON.parse(JSON.stringify(this.entidad))
-      // console.log(this.entidad)
-      // console.log(copiaEntidad)
-      // console.log(response.data)
       this.hooks.onGuardado(copiaEntidad.id, response.data)
       this.reestablecer() // antes estaba arriba de onGuardado
       return copiaEntidad
-      /* const stop = watchEffect(() => {
-        // console.log('dentrode  watch')
-        if (this.entidad.id !== null) {
-          this.hooks.onGuardado()
-          // console.log('ha sido guardado mixin')
-          stop()
-        }
-      }) */
-      // @noImplicitAny: false
     } catch (error: any) {
       if (isAxiosError(error)) {
         const mensajes: string[] = error.erroresValidacion
@@ -250,7 +249,6 @@ export class ContenedorSimpleMixin<T extends EntidadAuditable> extends Contenedo
       }
 
       throw error
-      //})
     } finally {
       this.statusEssentialLoading.desactivar()
     }
@@ -362,14 +360,18 @@ export class ContenedorSimpleMixin<T extends EntidadAuditable> extends Contenedo
 
   // Editar
   private async editar(data: T, resetOnUpdated = true, params?: ParamsType) {
+    console.log('editar...')
+    this.statusEssentialLoading.activar()
 
     if (this.entidad.id === null) {
+      this.statusEssentialLoading.desactivar()
       return this.notificaciones.notificarAdvertencia(
         'No se puede editar el recurso con id null'
       )
     }
 
     if (!this.seCambioEntidad(this.entidad_copia)) {
+      this.statusEssentialLoading.desactivar()
       return this.notificaciones.notificarAdvertencia(
         'No se ha efectuado ningun cambio'
       )
@@ -379,6 +381,7 @@ export class ContenedorSimpleMixin<T extends EntidadAuditable> extends Contenedo
 
     if (this.refs.validador.value && !(await this.refs.validador.value.$validate()) || !(await this.ejecutarValidaciones())) {
       this.notificaciones.notificarAdvertencia('Verifique el formulario')
+      this.statusEssentialLoading.desactivar()
       throw new Error('Verifique el formulario')
     }
 

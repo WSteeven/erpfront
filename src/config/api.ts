@@ -2,7 +2,9 @@ import { Endpoint } from 'shared/http/domain/Endpoint'
 import { medico } from './endpoints/medico'
 import { tareas } from './endpoints/tareas'
 import { tickets } from './endpoints/tickets'
+import { recursosHumanos } from './endpoints/rrhh/recursosHumanos'
 import { activosFijos } from './endpoints/activosFijos'
+import { comprasProveedores } from './endpoints/comprasProveedores'
 
 export const apiConfig = {
   // URL_BASE: 'http://localhost:8000',
@@ -17,11 +19,16 @@ export const endpoints = {
   configuracion: new Endpoint('configuracion'),
   auditorias: new Endpoint('auditorias'),
   login: new Endpoint('usuarios/login'),
+  login_externos: new Endpoint('usuarios-externos/login'),
+  // login_terceros: new Endpoint('login-social-network/'),
+  sesion_terceros: new Endpoint('auth-social'),
   logout: new Endpoint('usuarios/logout'),
+  logout_postulante: new Endpoint('usuarios/logout-postulante'),
   cambiarContrasena: new Endpoint('usuarios/cambiar-contrasena'),
   enviar_correo_recuperacion: new Endpoint('usuarios/recuperar-password'),
   recuperacion_cuenta: new Endpoint('usuarios/validar-token'),
   api_user: new Endpoint('user'),
+  api_user_postulante: new Endpoint('user-postulante'),
   reset_password: new Endpoint('usuarios/reset-password'),
   perfil_usuario: new Endpoint('user/profile-information', false),
   cambiar_contrasena: new Endpoint('user/password', false),
@@ -50,6 +57,7 @@ export const endpoints = {
   /********************
   * Modulo de  RR HH
   *********************/
+  ...recursosHumanos,
   cargos: new Endpoint('cargos'),
 
   motivo_permiso_empleado: new Endpoint(
@@ -78,6 +86,7 @@ export const endpoints = {
   rol_pago_mes: new Endpoint('recursos-humanos/rol_pago_mes'),
   banco: new Endpoint('recursos-humanos/banco'),
   datos_empleado: new Endpoint('recursos-humanos/datos_empleado/'),
+
   empleados: new Endpoint('empleados'),
   departamentos: new Endpoint('recursos-humanos/departamentos'),
   allroles: new Endpoint('roles'),
@@ -114,7 +123,7 @@ export const endpoints = {
   rechazar_prestamo_empresarial: new Endpoint(
     'recursos-humanos/rechazar_prestamo_empresarial'
   ),
-  vacacion: new Endpoint('recursos-humanos/vacacion'),
+
 
   archivo_permiso_empleado: new Endpoint(
     'recursos-humanos/archivo_permiso_empleado'
@@ -189,12 +198,8 @@ export const endpoints = {
   detalle_alimentacion: new Endpoint('recursos-humanos/detalle-alimentacion'),
   finalizar_asignacion_alimentacion: new Endpoint('recursos-humanos/finalizar-asignacion-alimentacion'),
 
-  /********************
-  * Modulo de  Seleccion y contratacion
-  *********************/
-  solicitud_puesto_empleo: new Endpoint('recursos-humanos/solicitud-puesto-empleo'),
-  publicacion_puesto_empleo: new Endpoint('recursos-humanos/publicacion-puesto-empleo'),
-  tipos_puestos_trabajos: new Endpoint('recursos-humanos/tipos_puestos_trabajos'),
+
+
 
   /******************************
    * Modulo de Vehiculos
@@ -224,6 +229,7 @@ export const endpoints = {
   reporte_seguros_vehiculos: new Endpoint('vehiculos/reporte-seguros-vehiculos'),
 
   //Modulo de compras y proveedores
+  ...comprasProveedores,
   dashboard_compras: new Endpoint('compras/dashboard'),
   empleados_ordenes: new Endpoint('compras/empleados-ordenes'),
   proveedores_ordenes: new Endpoint('compras/proveedores-ordenes'),

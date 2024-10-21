@@ -17,17 +17,37 @@
             v-if="accion == acciones.nuevo || orden.solicitante"
           >
             <label class="q-mb-sm block">Chofer que solicita</label>
-            <q-input
+            <q-select
               v-model="orden.solicitante"
-              autogrow
-              disable
-              outlined
+              :options="empleados"
+              transition-show="scale"
+              transition-hide="scale"
+              options-dense
+              clearable
               dense
-            ></q-input>
+              outlined
+              :disable="disabled"
+              use-input
+              input-debounce="0"
+              @popup-show="ordenarLista(empleados, 'apellidos')"
+              @filter="filtrarEmpleados"
+              :option-label="(item) => item.apellidos + ' ' + item.nombres"
+              :option-value="(item) => item.id"
+              emit-value
+              map-options
+            >
+              <template v-slot:no-option>
+                <q-item>
+                  <q-item-section class="text-grey">
+                    No hay resultados
+                  </q-item-section>
+                </q-item>
+              </template>
+            </q-select>
           </div>
 
           <!-- Vehiculo -->
-          <div class="col-12 col-md-3 q-mb-md" v-if="!store.esMecanicoGeneral">
+          <!-- <div class="col-12 col-md-3 q-mb-md" v-if="!store.esMecanicoGeneral">
             <label class="q-mb-sm block">Vehículo</label>
             <q-input
               v-model="orden.vehiculo"
@@ -37,8 +57,8 @@
               outlined
               dense
             ></q-input>
-          </div>
-          <div class="col-12 col-md-3 q-mb-md" v-if="store.esMecanicoGeneral">
+          </div> -->
+          <div class="col-12 col-md-3 q-mb-md" >
             <label class="q-mb-sm block">Vehículo</label>
             <q-select
               v-model="orden.vehiculo"

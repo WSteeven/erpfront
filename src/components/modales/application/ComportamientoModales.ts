@@ -11,6 +11,7 @@ export class ComportamientoModales<T extends ModalesEntidad<T>> {
 
   protected componenteActual = ref<ComponenteModal>()
   public abierto = ref(false)
+  public propsData = ref()
 
   constructor(modales: T) {
     this.modales = modales
@@ -27,20 +28,20 @@ export class ComportamientoModales<T extends ModalesEntidad<T>> {
       set: valor => (this.abierto.value = valor),
       get: () => this.abierto.value
     })
-    const datos = computed(() => this.componenteActual.value?.datos)
 
     return {
       componente,
       titulo,
       abierto,
-      datos,
+      propsData: this.propsData,
+      componenteActual: this.componenteActual,
       refModalEntidades: this.refModalEntidades,
     }
   }
 
-  abrirModalEntidad(id: keyof T, datos?: any): void {
+  abrirModalEntidad<N>(id: keyof T, datos?: Record<keyof N, any>): void {
     const componente = this.obtenerModal(id)
-    componente.datos = datos
+    this.propsData.value = datos
 
     if (componente) {
       this.componenteActual.value = componente

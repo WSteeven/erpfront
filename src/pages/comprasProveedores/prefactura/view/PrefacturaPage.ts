@@ -162,7 +162,7 @@ export default defineComponent({
          ******************************************************************************************/
         function filtrarPrefacturas(tab: string) {
             tabSeleccionado.value = tab
-            if (tab == '1') puedeEditar.value = true
+            if (tab == '2') puedeEditar.value = true
             else puedeEditar.value = false
             listar({ estado_id: tab, solicitante_id: store.user.id })
         }

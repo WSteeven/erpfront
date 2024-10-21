@@ -97,7 +97,7 @@
             <label class="q-mb-sm block">Solicitante</label>
             <q-select
               v-model="prestamo.solicitante"
-              :options="opciones_empleados"
+              :options="empleados"
               transition-show="jump-up"
               transition-hide="jump-up"
               options-dense
@@ -105,7 +105,7 @@
               outlined
               use-input
               input-debounce="0"
-              @filter="filtroEmpleados"
+              @filter="filtrarEmpleados"
               @update:model-value="empleadoSeleccionado"
               :readonly="disabled"
               :error="!!v$.solicitante.$errors.length"
@@ -134,7 +134,7 @@
             <label class="q-mb-sm block">Sucursal</label>
             <q-select
               v-model="sucursal"
-              :options="opciones_sucursales"
+              :options="sucursales"
               transition-show="jump-up"
               transition-hide="jump-up"
               options-dense

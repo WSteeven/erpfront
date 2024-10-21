@@ -99,7 +99,6 @@ export default defineComponent({
     /*************
      * Variables
      ******/
-    const { notificarAdvertencia } = useNotificaciones()
     const imagen = ref()
     const refArchivo = ref()
     const abierto = computed(() => props.mostrar)

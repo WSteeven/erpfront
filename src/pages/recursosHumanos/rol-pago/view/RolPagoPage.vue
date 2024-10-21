@@ -62,7 +62,7 @@
           :readonly="disabled"
           use-input
           input-debounce="0"
-          @filter="filtrarEmpleado"
+          @filter="filtrarEmpleados"
           :option-value="(v) => v.id"
           @update:model-value="datos_empleado()"
           :option-label="(v) => v.apellidos + ' ' + v.nombres"

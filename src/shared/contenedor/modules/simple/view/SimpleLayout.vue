@@ -15,7 +15,7 @@
       <button-submits
         v-if="mostrarButtonSubmits"
         :accion="accion"
-        :permitirGuardar="puedeCrear"
+        :permitirGuardar="puedeCrear || forzarGuardar"
         :permitirModificar="puedeEditar"
         :disabled="storeCargando.cargando"
         :labelGuardar="labelGuardar"

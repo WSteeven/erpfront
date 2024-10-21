@@ -236,7 +236,7 @@
               :name="comentario.empleado"
               :avatar="comentario.avatar"
               :text="comentario.comentario"
-              :stamp="comentario.stamp"
+              :stamp="dayjs(comentario.stamp).fromNow()"
               :sent="comentario.sent"
               :bg-color="comentario.sent ? 'primary' : 'grey-4'"
               :text-color="comentario.sent ? 'white' : 'black'"

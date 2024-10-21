@@ -112,4 +112,17 @@ export const iconos = {
     label: 'ENTREGA ACTIVO FIJO',
     icono: 'home_work',
   },
+  solicitud_nuevo_personal: {
+    label : 'SOLICITUD DE NUEVO EMPLEADO',
+    icono: 'bi-person-plus-fill'
+  },
+  candidato_seleccionado: {
+    label : 'CANDIDATO SELECCIONADO',
+    icono: 'bi-person-check-fill'
+  },
+  postulacion: {
+    label : 'POSTULACION',
+    icono: 'bi-person-raised-hand'
+  },
+
 }

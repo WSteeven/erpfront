@@ -28,6 +28,9 @@ body {
   }
 }
 
+.h-100{
+  height: 100% !important;
+}
 .q-drawer__content {
   &::-webkit-scrollbar {
     width: 0px;
@@ -147,6 +150,14 @@ input[type='time']::-webkit-calendar-picker-indicator {
   border: 1px solid $grey-4 !important;
 }
 
+.rounded-4 {
+border-radius: 4px;
+}
+.rounded-8 {
+border-radius: 8px;
+}
+
+
 .border-blue-grey-dashed {
   border: 1px dashed $blue-grey !important;
 }
@@ -173,6 +184,26 @@ input[type='time']::-webkit-calendar-picker-indicator {
 
 .border-bottom-black-2px {
   border-bottom: 2px solid #000;
+}
+
+.border-callout-info {
+  border-right: 3px solid $primary !important;
+  border-left: 3px solid $primary !important;
+}
+
+.border-callout-warning {
+  border-right: 3px solid $warning;
+  border-left: 3px solid $warning;
+}
+
+.border-callout-positive {
+  border-right: 3px solid $positive;
+  border-left: 3px solid $positive;
+}
+
+.border-left-blue-grey {
+  border-bottom: 3px solid $blue-grey-4;
+  border-left: 3px solid $blue-grey;
 }
 
 .border-right-grey-5 {

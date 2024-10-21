@@ -158,10 +158,10 @@ export default defineComponent({
           controller: new ProyectoController(),
           params: { campos: 'id,nombre,codigo_proyecto' },
         },
-        tareas: {
+        tareas: [], /*{
           controller: new TareaController(),
           params: { campos: 'id,codigo_tarea,titulo,cliente_id,proyecto_id' },
-        },
+        },*/
         cantones: {
           controller: new CantonController(),
           params: { campos: 'id,canton' },
@@ -424,7 +424,19 @@ export default defineComponent({
       consolidadofiltrado.subdetalle = null
       consolidadofiltrado.autorizador = null
       consolidadofiltrado.ruc = null
+
+      if (['0', '2'].includes(consolidadofiltrado.tipo_filtro ?? '')) { // Todos o Tarea
+        cargarVista(async () => {
+          await obtenerListados({
+            tareas: {
+              controller: new TareaController(),
+              params: { campos: 'id,codigo_tarea,titulo,cliente_id,proyecto_id' },
+            },
+          })
+        })
+      }
     }
+
     function limpiarTipoSaldo() {
       consolidadofiltrado.tipo_filtro = null
       limpiar();

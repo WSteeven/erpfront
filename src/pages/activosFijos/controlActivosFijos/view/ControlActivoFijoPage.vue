@@ -3,6 +3,7 @@
     :mixin="mixin"
     :configuracionColumnas="configuracionColumnas"
     :mostrar-button-submits="false"
+    :accion1Header="btnDescargarReporte"
   >
     <template #formulario>
       <q-form @submit.prevent>
@@ -21,6 +22,7 @@
             <label class="q-mb-sm block">Descripción</label>
             <q-input
               v-model="activo.detalle_producto.descripcion"
+              autogrow
               disable
               outlined
               dense

@@ -71,6 +71,16 @@ export class ObtenerIconoNotificacionRealtime {
        ***************************/
       case iconos.entrega_activo_fijo.label:
         return iconos.entrega_activo_fijo.icono
+
+        /*******************
+       * MODULO DE SELECCION Y CONTRATACION DE PERSONAL
+       ********************/
+      case iconos.solicitud_nuevo_personal.label:
+        return iconos.solicitud_nuevo_personal.icono
+      case iconos.candidato_seleccionado.label:
+        return iconos.candidato_seleccionado.icono
+      case iconos.postulacion.label:
+        return iconos.postulacion.icono
     }
   }
 }

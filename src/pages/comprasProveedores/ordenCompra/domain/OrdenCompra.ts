@@ -4,6 +4,7 @@ export class OrdenCompra extends EntidadAuditable {
   codigo: number | null
   solicitante: number | null
   proveedor: number | null
+  proveedor_internacional: number | null
   autorizador: number | null
   autorizacion: number | null
   observacion_aut: number | null
@@ -34,12 +35,14 @@ export class OrdenCompra extends EntidadAuditable {
   tiene_pedido: boolean
   modificar_iva: boolean
   id_aux: number | null
+  es_proveedor_internacional:boolean
 
   constructor() {
     super()
     this.codigo = null
     this.solicitante = null
     this.proveedor = null
+    this.proveedor_internacional = null
     this.autorizador = null
     this.autorizacion = null
     this.observacion_aut = null
@@ -68,5 +71,6 @@ export class OrdenCompra extends EntidadAuditable {
     this.completada = false
     this.novedades = null
     this.sum_total = null
+    this.es_proveedor_internacional =false
   }
 }

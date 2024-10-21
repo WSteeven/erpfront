@@ -5,7 +5,9 @@ export const maskFecha = 'YYYY-MM-DD'
 export const maskFechaHora = 'YYYY-MM-DD HH:mm:ss'
 // export const maskFecha = 'DD-MM-YYYY'
 //export const maskFecha = 'YYYY/MM/DD'
+
 // Tipos
+export type Accion = 'NUEVO' | 'ELIMINAR' | 'CONSULTAR' | 'EDITAR'
 export type TipoSeleccion = 'none' | 'single' | 'multiple'
 
 export type TipoSeparador =
@@ -553,12 +555,6 @@ export function convertir_fecha(fecha: Date) {
   const year = fecha.getFullYear()
   return year + '/' + month + '/' + day
 }
-export function convertir_fecha_guion(fecha) {
-  const partes = fecha.split(' ') // Dividir en fecha y hora
-  const fechaPartes = partes[0].split('-') // Dividir la fecha en día, mes y año
-  const nuevaFecha = `${fechaPartes[2]}/${fechaPartes[1]}/${fechaPartes[0]}` // Construir la nueva fecha en formato dd/mm/yyyy
-  return nuevaFecha
-}
 export function convertir_fecha_hora(fecha) {
   const dateParts = fecha.split('-') // Dividir el string en partes usando el guión como separador
   let tiempo = dateParts[2]
@@ -570,6 +566,11 @@ export function convertir_fecha_hora(fecha) {
   const fecha_convert = new Date(anio, mes, dia, tiempo[0], tiempo[1], 0)
   return fecha_convert
 }
+export const tiposDocumentosIdentificaciones = [
+  { nombre: 'Cedula', value:'CEDULA' },
+  { nombre: 'R.U.C.' , value:'RUC' },
+  { nombre: 'Pasaporte',value: 'PASAPORTE' },
+]
 
 export const niveles_academicos = [
   { nombre: 'NINGUNA' },
@@ -683,4 +684,9 @@ export const selectOptionsSiNo: SelectOption[] = [
 export const opcionesGrafico = {
   grafico: 'grafico',
   listado: 'listado'
+}
+
+export const tipoAutenticacion = {
+  empleado: 'private',
+  usuario_externo: 'external'
 }

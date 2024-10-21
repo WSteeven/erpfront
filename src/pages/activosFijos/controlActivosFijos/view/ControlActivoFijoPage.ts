@@ -41,6 +41,7 @@ export default defineComponent({
     const mixin = new ContenedorSimpleMixin(ActivoFijo, new ActivoFijoController())
     const { entidad: activo, disabled, accion } = mixin.useReferencias()
     const { onConsultado } = mixin.useHooks()
+    const { listar } = mixin.useComportamiento()
 
     const mixinTransaccion = new ContenedorSimpleMixin(Transaccion, new TransaccionController(), new ArchivoController())
     const { entidad: transaccion } = mixinTransaccion.useReferencias()
@@ -95,15 +96,14 @@ export default defineComponent({
       }
     }
 
-    const btnJustificativoUso: CustomActionTable = {
-      titulo: 'Justificativo uso',
-      icono: 'bi-upload',
-      color: 'blue-grey',
-      accion: async ({ entidad }) => {
-          // seguimiento.hydrate(entidad)
-          // mostrarSolicitarArchivo.value = true
+    const btnDescargarReporte: CustomActionTable = {
+      titulo: 'Descargar reporte',
+      icono: 'bi-table',
+      color: 'positive',
+      accion: async () => {
+        listar({ export: 'xlsx', titulo: 'reporte_activos_fijos' })
       }
-  }
+    }
 
     /************
      * Observers
@@ -144,7 +144,7 @@ export default defineComponent({
       listarEntregas,
       btnSubirActaEntregaRecepcion,
       btnSubirJustificativoUso,
-      btnJustificativoUso,
+      btnDescargarReporte,
       // consultarStockResponsables,
       asignacionesProductos,
       listarStockResponsablesAF,

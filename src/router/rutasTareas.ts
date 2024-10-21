@@ -127,7 +127,7 @@ const rutasTareas: RouteRecordRaw[] = [
       import(
         'gestionTrabajos/trabajoAsignado/view/TrabajoAsignadoPage.vue'
       ),
-    meta: { requiresAuth: true },
+    meta: { requiresAuth: true, permissionRequired: false },
   },
   {
     path: '/reportes-control-materiales',
@@ -161,13 +161,19 @@ const rutasTareas: RouteRecordRaw[] = [
     name: 'mi_bodega',
     component: () =>
       import('gestionTrabajos/miBodega/view/MiBodegaPage.vue'),
-    meta: { requiresAuth: true },
+    meta: { requiresAuth: true, permissionRequired: false },
   },
   {
     path: '/transferencia-producto-empleado',
     name: 'transferencia_producto_empleado',
     component: () =>
       import('gestionTrabajos/transferenciasProductosEmpleados/view/TransferenciaProductoEmpleadoPage.vue'),
+    meta: { requiresAuth: true },
+  },
+  {
+    path: '/alimentacion-grupo',
+    name: 'alimentacion_grupo',
+    component: () => import('gestionTrabajos/alimentacionGrupos/view/AlimentacionGrupoPage.vue'),
     meta: { requiresAuth: true },
   },
   /*{

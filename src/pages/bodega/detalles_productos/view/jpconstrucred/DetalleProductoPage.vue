@@ -39,8 +39,8 @@
               input-debounce="0"
               @filter="filtroProductos"
               @update:model-value="actualizarCategoria"
-              :option-label="(item) => item.nombre"
-              :option-value="(item) => item.id"
+              :option-label="item => item.nombre"
+              :option-value="item => item.id"
               emit-value
               map-options
             >
@@ -51,7 +51,9 @@
               </template>
               <template v-slot:no-option>
                 <q-item>
-                  <q-item-section class="text-grey"> No hay resultados </q-item-section>
+                  <q-item-section class="text-grey">
+                    No hay resultados
+                  </q-item-section>
                 </q-item>
               </template>
             </q-select>
@@ -69,8 +71,8 @@
               input-debounce="0"
               @filter="filtroDetalles"
               @update:model-value="actualizarDetalle"
-              :option-label="(item) => item.descripcion"
-              :option-value="(item) => item.id"
+              :option-label="item => item.descripcion"
+              :option-value="item => item.id"
               emit-value
               map-options
             >
@@ -79,7 +81,9 @@
                   <q-item-section>
                     <q-item-label>{{ scope.opt.descripcion }}</q-item-label>
                     <q-item-label caption>{{
-                      scope.opt.serial ? "Serie: " + scope.opt.serial : scope.opt.serial
+                      scope.opt.serial
+                        ? 'Serie: ' + scope.opt.serial
+                        : scope.opt.serial
                     }}</q-item-label>
                   </q-item-section>
                 </q-item>
@@ -105,7 +109,10 @@
             </q-input>
           </div>
           <!-- Procesador -->
-          <div v-if="detalle.categoria == 'INFORMATICA'" class="col-12 col-md-4 q-mb-md">
+          <div
+            v-if="detalle.categoria == 'INFORMATICA'"
+            class="col-12 col-md-4 q-mb-md"
+          >
             <label class="q-mb-sm block">Procesador</label>
             <q-select
               v-model="detalle.procesador"
@@ -120,8 +127,8 @@
               use-input
               input-debounce="0"
               @filter="filtroProcesadores"
-              :option-label="(item) => item.nombre"
-              :option-value="(item) => item.id"
+              :option-label="item => item.nombre"
+              :option-value="item => item.id"
               emit-value
               map-options
             >
@@ -133,7 +140,10 @@
             </q-select>
           </div>
           <!-- RAM -->
-          <div v-if="detalle.categoria == 'INFORMATICA'" class="col-12 col-md-4 q-mb-md">
+          <div
+            v-if="detalle.categoria == 'INFORMATICA'"
+            class="col-12 col-md-4 q-mb-md"
+          >
             <label class="q-mb-sm block">Ram</label>
             <q-select
               v-model="detalle.ram"
@@ -148,8 +158,8 @@
               use-input
               input-debounce="0"
               @filter="filtroRams"
-              :option-label="(item) => item.nombre"
-              :option-value="(item) => item.id"
+              :option-label="item => item.nombre"
+              :option-value="item => item.id"
               emit-value
               map-options
             >
@@ -161,7 +171,10 @@
             </q-select>
           </div>
           <!-- Disco -->
-          <div v-if="detalle.categoria == 'INFORMATICA'" class="col-12 col-md-4 q-mb-md">
+          <div
+            v-if="detalle.categoria == 'INFORMATICA'"
+            class="col-12 col-md-4 q-mb-md"
+          >
             <label class="q-mb-sm block">Disco</label>
             <q-select
               v-model="detalle.disco"
@@ -176,8 +189,8 @@
               use-input
               input-debounce="0"
               @filter="filtroDiscos"
-              :option-label="(item) => item.nombre"
-              :option-value="(item) => item.id"
+              :option-label="item => item.nombre"
+              :option-value="item => item.id"
               emit-value
               map-options
             >
@@ -189,7 +202,10 @@
             </q-select>
           </div>
           <!-- Imei -->
-          <div v-if="detalle.categoria == 'INFORMATICA'" class="col-12 col-md-4">
+          <div
+            v-if="detalle.categoria == 'INFORMATICA'"
+            class="col-12 col-md-4"
+          >
             <label class="q-mb-sm block">Imei</label>
             <q-input
               type="number"
@@ -220,8 +236,8 @@
               input-debounce="0"
               @filter="filtroMarcas"
               @update:model-value="seleccionarModelo"
-              :option-label="(item) => item.nombre"
-              :option-value="(item) => item.id"
+              :option-label="item => item.nombre"
+              :option-value="item => item.id"
               emit-value
               map-options
             >
@@ -250,8 +266,8 @@
               input-debounce="0"
               @filter="filtroModelos"
               @update:model-value="seleccionarMarca"
-              :option-label="(item) => item.nombre"
-              :option-value="(item) => item.id"
+              :option-label="item => item.nombre"
+              :option-value="item => item.id"
               emit-value
               map-options
             >
@@ -262,11 +278,41 @@
               </template>
               <template v-slot:no-option>
                 <q-item>
-                  <q-item-section class="text-grey"> No hay resultados </q-item-section>
+                  <q-item-section class="text-grey">
+                    No hay resultados
+                  </q-item-section>
                 </q-item>
               </template>
             </q-select>
           </div>
+
+          <!-- Es un Activo -->
+          <div class="col-12 col-md-4">
+            <label class="q-mb-sm block">¿Es un Activo Fijo?</label>
+            <q-toggle
+              :label="detalle.esActivo ? 'SI' : 'NO'"
+              v-model="detalle.esActivo"
+              color="primary"
+              keep-color
+              icon="bi-check2-circle"
+              unchecked-icon="clear"
+              :disable="disabled"
+            />
+          </div>
+
+          <!-- Código activo fijo -->
+          <div v-if="detalle.esActivo" class="col-12 col-md-4">
+            <label class="q-mb-sm block">Código activo fijo</label>
+            <q-input
+              v-model="detalle.codigo_activo_fijo"
+              placeholder="Obligatorio"
+              :disable="disabled"
+              outlined
+              dense
+            >
+            </q-input>
+          </div>
+
           <!-- Precio compra -->
           <div class="col-12 col-md-4">
             <label class="q-mb-sm block">Precio de compra</label>
@@ -283,6 +329,7 @@
             >
             </q-input>
           </div>
+
           <!-- Tiene serial -->
           <div class="col-12 col-md-4">
             <br />
@@ -318,7 +365,10 @@
             ></q-checkbox>
           </div>
           <!-- Serial -->
-          <div v-if="detalle.tiene_serial || detalle.es_fibra" class="col-12 col-md-4">
+          <div
+            v-if="detalle.tiene_serial || detalle.es_fibra"
+            class="col-12 col-md-4"
+          >
             <label class="q-mb-sm block">Serial</label>
             <q-input
               v-model="detalle.serial"
@@ -373,14 +423,16 @@
               dense
               outlined
               :readonly="disabled"
-              :option-label="(item) => item"
-              :option-value="(item) => item"
+              :option-label="item => item"
+              :option-value="item => item"
               emit-value
               map-options
             >
               <template v-slot:no-option>
                 <q-item>
-                  <q-item-section class="text-grey"> No hay resultados </q-item-section>
+                  <q-item-section class="text-grey">
+                    No hay resultados
+                  </q-item-section>
                 </q-item>
               </template>
             </q-select>
@@ -398,8 +450,8 @@
               outlined
               :readonly="disabled"
               :error="!!v$.span.$errors.length"
-              :option-label="(item) => item.nombre"
-              :option-value="(item) => item.id"
+              :option-label="item => item.nombre"
+              :option-value="item => item.id"
               emit-value
               map-options
             >
@@ -424,8 +476,8 @@
               outlined
               :readonly="disabled"
               :error="!!v$.tipo_fibra.$errors.length"
-              :option-label="(item) => item.nombre"
-              :option-value="(item) => item.id"
+              :option-label="item => item.nombre"
+              :option-value="item => item.id"
               emit-value
               map-options
             >
@@ -450,8 +502,8 @@
               outlined
               :readonly="disabled"
               :error="!!v$.hilos.$errors.length"
-              :option-label="(item) => item.nombre"
-              :option-value="(item) => item.id"
+              :option-label="item => item.nombre"
+              :option-value="item => item.id"
               emit-value
               map-options
             >
@@ -478,7 +530,10 @@
               dense
             >
               <template v-slot:error>
-                <div v-for="error of v$.punta_inicial.$errors" :key="error.$uid">
+                <div
+                  v-for="error of v$.punta_inicial.$errors"
+                  :key="error.$uid"
+                >
                   <div class="error-msg">{{ error.$message }}</div>
                 </div>
               </template>

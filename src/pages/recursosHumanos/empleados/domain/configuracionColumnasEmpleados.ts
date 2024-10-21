@@ -113,6 +113,7 @@ export const configuracionColumnasEmpleados: ColumnConfig<Empleado>[] = [
     field: 'salario',
     label: 'Salario',
     align: 'left',
+    visible: false,
     sortable: true,
   },
   {

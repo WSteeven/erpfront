@@ -2,30 +2,26 @@
 
 import { useAuthenticationStore } from 'stores/authentication'
 import { defineComponent, ref } from 'vue'
-import {
-  accionesTabla,
-  tabAutorizarGasto,
-  estadosGastos,
-  acciones,
-} from 'config/utils'
+import { accionesTabla, tabAutorizarGasto, estadosGastos, acciones, } from 'config/utils'
 
 // Componentes
+import ModalEntidad from 'components/modales/view/ModalEntidad.vue'
 import ConfirmarDialog from 'gestionTrabajos/trabajoAsignado/view/ConfirmarDialog.vue'
 import EssentialTableTabs from 'components/tables/view/EssentialTableTabs.vue'
+
+// Logica y controladores
 import { ContenedorSimpleMixin } from 'shared/contenedor/modules/simple/application/ContenedorSimpleMixin'
 import { Gasto } from 'pages/fondosRotativos/gasto/domain/Gasto'
 import { CustomActionTable } from 'components/tables/domain/CustomActionTable'
 import { configuracionColumnasAutorizarGasto } from '../domain/configuracionColumnasAutorizarGasto'
 import { StatusEssentialLoading } from 'components/loading/application/StatusEssentialLoading'
 import { AutorizarGastoController } from '../infrestructure/AutorizarGastoController'
-import ModalEntidad from 'components/modales/view/ModalEntidad.vue'
 import { ComportamientoModalesAutorizarGasto } from '../application/ComportamientoModalesAutorizarGasto'
 import { useFondoRotativoStore } from 'stores/fondo_rotativo'
 import { useNotificacionStore } from 'stores/notificacion'
-import { date, useQuasar } from 'quasar'
+import { useQuasar } from 'quasar'
 import { useCargandoStore } from 'stores/cargando'
-import { GastoController } from 'pages/fondosRotativos/gasto/infrestructure/GastoController'
-import { format, parse } from '@formkit/tempo'
+import { parse } from '@formkit/tempo'
 import { VehiculoController } from 'pages/controlVehiculos/vehiculos/infraestructure/VehiculoController'
 import { EmpleadoController } from 'pages/recursosHumanos/empleados/infraestructure/EmpleadoController'
 import { ProyectoController } from 'pages/gestionTrabajos/proyectos/infraestructure/ProyectoController'
@@ -40,16 +36,12 @@ export default defineComponent({
   },
   setup() {
     const controller = new AutorizarGastoController()
-    const gastos_controller = new GastoController()
     const tabActual = ref()
     /***********
      * Mixin
      ************/
     const mixin = new ContenedorSimpleMixin(Gasto, controller)
-    const mixin_gastos = new ContenedorSimpleMixin(Gasto, gastos_controller)
-    const { listado, accion } = mixin.useReferencias()
-    const { listar } = mixin.useComportamiento()
-    const { consultar } = mixin_gastos.useComportamiento()
+    const { listado } = mixin.useReferencias()
     const cargando = new StatusEssentialLoading()
 
     /*********
@@ -123,14 +115,10 @@ export default defineComponent({
         fondoRotativoStore.gasto = entidad
         fondoRotativoStore.vehiculos = vehiculos.value
         fondoRotativoStore.empleados = empleados.value
-        fondoRotativoStore.habilitar_observacion_autorizador =
-          authenticationStore.user.id === entidad.aut_especial &&
-          (entidad.estado === estadosGastos.PENDIENTE ||
-            entidad.estado === estadosGastos.APROBADO) &&
-          permitirAnular(entidad.fecha_viat)
+        fondoRotativoStore.habilitar_observacion_autorizador = authenticationStore.user.id === entidad.aut_especial && [estadosGastos.PENDIENTE, estadosGastos.APROBADO].includes(entidad.estado) && permitirAnular(entidad.fecha_viat)
         fondoRotativoStore.accion_form =
           authenticationStore.user.id === entidad.aut_especial &&
-          entidad.estado === estadosGastos.PENDIENTE
+            entidad.estado === estadosGastos.PENDIENTE
             ? acciones.editar
             : acciones.consultar
         if (entidad.estado === estadosGastos.PENDIENTE) {
@@ -146,11 +134,7 @@ export default defineComponent({
     function permitirAnular(date) {
       const currentDate = new Date()
       // Obtén el primer día del mes actual
-      const firstDayOfCurrentMonth = new Date(
-        currentDate.getFullYear(),
-        currentDate.getMonth(),
-        1
-      )
+      const firstDayOfCurrentMonth = new Date(currentDate.getFullYear(), currentDate.getMonth(), 1)
       // Obtén el último día del mes anterior
       const lastDayOfPreviousMonth = new Date(firstDayOfCurrentMonth)
       lastDayOfPreviousMonth.setDate(firstDayOfCurrentMonth.getDate() - 1)

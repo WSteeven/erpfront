@@ -182,7 +182,7 @@
               v-model="permiso.suguiere_fecha"
               label="Sugerir Fecha"
               :disable="
-                (permiso.id_jefe_inmediato == null && permiso.estado !== 1) ||
+                (permiso.id_jefe_inmediato == null && permiso.estado != 1) ||
                 disabled
               "
               outlined
@@ -341,7 +341,7 @@
           </div>
 
           <!-- Documento -->
-          <div class="col-12 col-md-3">
+          <div class="col-12 col-md-3 border-grey rounded-4">
             <label class="q-mb-sm block">Soporte</label>
             <gestor-documentos
               ref="refArchivoPrestamoEmpresarial"
@@ -379,7 +379,7 @@
           <!-- Recupero -->
           <div
             class="col-12 col-md-3"
-            v-if="permiso.id_jefe_inmediato != null && permiso.estado == 2"
+            v-if="permiso.id_jefe_inmediato && permiso.estado == 2 && !permiso.cargo_vacaciones"
           >
             <q-checkbox
               class="q-mt-lg q-pt-md"
@@ -400,7 +400,7 @@
               :error="!!v$.fecha_recuperacion.$errors.length"
               readonly
               :disable="
-                (permiso.id_jefe_inmediato == null && permiso.estado !== 1) ||
+                (permiso.id_jefe_inmediato == null && permiso.estado != 1) ||
                 disabled
               "
               @blur="v$.fecha_recuperacion.$touch"
@@ -451,7 +451,7 @@
               :error="!!v$.hora_recuperacion.$errors.length"
               type="time"
               :disable="
-                (permiso.id_jefe_inmediato == null && permiso.estado !== 1) ||
+                (permiso.id_jefe_inmediato == null && permiso.estado != 1) ||
                 disabled
               "
               hint="Obligatorio"
@@ -473,7 +473,7 @@
 
 
           <!-- Cargo a Vacaciones -->
-          <div class="col-12 col-md-3" v-if="horas_permisos >= 8">
+          <div class="col-12 col-md-3">
             <q-checkbox
               class="q-mt-lg q-pt-md"
               v-model="permiso.cargo_vacaciones"

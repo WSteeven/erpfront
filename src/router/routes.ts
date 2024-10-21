@@ -2,6 +2,8 @@ import { RouteRecordRaw } from 'vue-router'
 import rutasMedico from './rutasMedico'
 import rutasTareas from './rutasTareas'
 import rutasTickets from './rutasTickets'
+import rutasRecursosHumanos from './rrhh/rutasRecursosHumanos'
+import rutasSeleccionContratacionPersonal from './rrhh/rutasSeleccionContratacionPersonal'
 import rutasActivosFijos from './rutasActivosFijos'
 import { empresas } from 'config/utils/sistema'
 
@@ -31,7 +33,7 @@ const routes: RouteRecordRaw[] = [
         name: 'tablero_personal',
         component: () =>
           import('pages/tableroPersonal/view/TableroPersonalPage.vue'),
-        meta: { requiresAuth: true },
+        meta: { requiresAuth: true, permissionRequired: false },
       },
       {
         path: 'intranet',
@@ -90,6 +92,12 @@ const routes: RouteRecordRaw[] = [
         meta: { requiresAuth: false },
       },
       /*******************
+       * Módulo de RRHH
+       *******************/
+      ...rutasRecursosHumanos,
+      ...rutasSeleccionContratacionPersonal,
+
+      /*******************
        * Módulo de tareas
        *******************/
       ...rutasTareas,
@@ -116,8 +124,9 @@ const routes: RouteRecordRaw[] = [
         path: '/perfil',
         name: 'perfil',
         component: () => import('pages/perfil/view/PerfilPage.vue'),
-        meta: { requiresAuth: true },
+        meta: { requiresAuth: true, permissionRequired: false },
       },
+
       /**
        * RUTAS PARA GEOGRAFIA (PROVINCIAS, CANTONES, PARROQUIAS)
        */
@@ -195,7 +204,7 @@ const routes: RouteRecordRaw[] = [
           import(
             'pages/administracion/notificaciones/view/NotificacionPage.vue'
           ),
-        meta: { requiresAuth: true },
+        meta: { requiresAuth: true, permissionRequired: false },
       },
       {
         path: '/unidades-medidas',
@@ -255,11 +264,11 @@ const routes: RouteRecordRaw[] = [
         name: 'detalles',
         component: () => {
           switch (process.env.VUE_APP_ID) {
-            case empresas.JPCONSTRUCRED: return import(
-              'pages/bodega/detalles_productos/view/jpconstrucred/DetalleProductoPage.vue'
-            )
             case empresas.JPCUSTODY: return import(
               'pages/bodega/detalles_productos/view/jpcustody/DetalleProductoPage.vue'
+            )
+            default: return import(
+              'pages/bodega/detalles_productos/view/jpconstrucred/DetalleProductoPage.vue'
             )
           }
         },
@@ -363,6 +372,15 @@ const routes: RouteRecordRaw[] = [
         meta: { requiresAuth: false },
       },
       {
+        path: '/reporte-epps',
+        name: 'reporte_epps',
+        component: () =>
+          import(
+            'pages/bodega/reportes/modules/rpt_epps/ReporteEppsPage.vue'
+          ),
+        meta: { requiresAuth: false },
+      },
+      {
         path: '/reporte-pedidos',
         name: 'reporte_pedidos',
         component: () =>
@@ -390,7 +408,10 @@ const routes: RouteRecordRaw[] = [
         meta: { requiresAuth: false },
       },
 
-      //Routes for Recursos Humanos
+      /************************************************************************************
+       * Routes for Recursos Humanos module
+       ************************************************************************************/
+      // aqui va las rutasSeleccionContratacionPersonal
       {
         path: '/cargos',
         name: 'cargos',
@@ -440,7 +461,7 @@ const routes: RouteRecordRaw[] = [
           import(
             'pages/controlVehiculos/conductores/modules/multas/view/MultaConductorPage.vue'
           ),
-        meta: { requiresAuth: false },
+        meta: { requiresAuth: true },
       },
       {
         path: 'transferencias-vehiculos',
@@ -642,6 +663,13 @@ const routes: RouteRecordRaw[] = [
         meta: { requiresAuth: true },
       },
       {
+        path: '/proveedores-internacionales',
+        name: 'proveedores_internacionales',
+        component: () =>
+          import('pages/comprasProveedores/proveedorInternacional/view/ProveedorInternacionalPage.vue'),
+        meta: { requiresAuth: true },
+      },
+      {
         path: '/categorias-ofertas',
         name: 'categorias_ofertas',
         component: () =>
@@ -699,7 +727,7 @@ const routes: RouteRecordRaw[] = [
         meta: { requiresAuth: true },
       },
       {
-        path: '/ventas/dashboard-ventas',
+        path: '/dashboard-ventas',
         name: 'dashboard_ventas_empresa',
         component: () =>
           import('pages/comprasProveedores/dashboard/view/DashboardVentas.vue'),
@@ -1101,13 +1129,6 @@ const routes: RouteRecordRaw[] = [
         meta: { requiresAuth: true },
       },
       {
-        path: '/vacacion',
-        name: 'vacacion',
-        component: () =>
-          import('pages/recursosHumanos/vacacion/view/VacacionPage.vue'),
-        meta: { requiresAuth: true },
-      },
-      {
         path: '/solicitud-prestamo-empresarial',
         name: 'solicitud_prestamo_empresarial',
         component: () =>
@@ -1266,7 +1287,7 @@ const routes: RouteRecordRaw[] = [
         meta: { requiresAuth: true },
       },
       {
-        path: '/dashboard-ventas',
+        path: '/dashboard-ventas-claro',
         name: 'dashboard_ventas',
         component: () =>
           import(
@@ -1377,21 +1398,6 @@ const routes: RouteRecordRaw[] = [
         meta: { requiresAuth: true },
       },
       {
-        path: '/solicitud-puesto-empleo',
-        name: 'solicitud_puesto_empleo',
-        component: () =>
-          import('pages/recursosHumanos/seleccion_contratacion_personal/solicitud_puesto_trabajo/view/SolicitudPuestoEmpleoPage.vue'),
-        meta: { requiresAuth: true },
-      },
-      {
-        path: '/publicacion-puesto-empleo',
-        name: 'publicacion_puesto_empleo',
-        component: () =>
-          import('pages/recursosHumanos/seleccion_contratacion_personal/publicacion_puesto_trabajo/view/PublicacionPuestoTrabajoPage.vue'),
-        meta: { requiresAuth: true },
-      },
-
-      {
         path: '/eventos',
         name: 'eventos',
         component: () =>
@@ -1420,17 +1426,109 @@ const routes: RouteRecordRaw[] = [
           import('pages/sistema/authentication/login/view/LoginPage.vue'),
       },
     ],
-  }, {
+  },
+  {
+    path: '/login-success',
+    component: () => import('layouts/FullLayout.vue'),
+    children: [
+      {
+        path: '',
+        name: 'login_success',
+        component: () =>
+          import('pages/sistema/authentication/login/view/LoginSuccessPage.vue'),
+      },
+    ],
+  },
+  {
+    path: '/error-login',
+    component: () => import('layouts/FullLayout.vue'),
+    children: [
+      {
+        path: '',
+        name: 'error_login',
+        component: () =>
+          import('pages/sistema/authentication/login/view/ErrorLoginPage.vue'),
+      },
+    ],
+  },
+  /************************************************************************************************
+   * MODULO DE SELECCION Y CONTRATACION PERSONAL
+   * Aquí se lista todo lo referente a este modulo y la parte del login del postulantes para el personal externo.
+   *
+   ***********************************************************************************************/
+  {
     path: '/login-postulante',
     component: () => import('layouts/FullLayout.vue'),
     children: [
       {
         path: '',
-        name: 'Login_postulante',
+        name: 'LoginPostulante',
         component: () =>
           import('pages/recursosHumanos/seleccion_contratacion_personal/login-postulante/view/LoginPostulantePage.vue'),
       },
     ],
+  },
+  {
+    path: '/registro-postulante',
+    component: () => import('layouts/FullLayout.vue'),
+    children: [
+      {
+        path: '',
+        name: 'RegistroPostulante',
+        component: () =>
+          import('pages/recursosHumanos/seleccion_contratacion_personal/postulante/view/PostulanteRegistroPage.vue'),
+      },
+    ],
+  },
+  {
+    path: '/puestos-disponibles',
+    component: () => import('layouts/PostulanteLayout.vue'),
+    children: [
+      {
+        path: '',
+        name: 'puestos_disponibles',
+        component: () =>
+          import(
+            'pages/recursosHumanos/SeleccionContratacionPersonal/vacantesDisponibles/view/PuestoDisponiblePage.vue'
+          ),
+        meta: { requiresAuth: false, permissionRequired: false }
+      },
+      {
+        path: '/puestos-aplicados',
+        name: 'puestos_aplicados',
+        component: () =>
+          import(
+            'pages/recursosHumanos/SeleccionContratacionPersonal/vacantesAplicadas/view/PuestoAplicadoPage.vue'
+          ),
+        meta: { requiresAuth: true, permissionRequired: false }
+      },
+      {
+        path: '/perfil-usuario-externo',
+        name: 'perfil_usuario_externo',
+        component: () => import('pages/perfil/view/PerfilExternoPage.vue'),
+        meta: { requiresAuth: true },
+      },
+    ],
+  },
+  {
+    path: '/vacantes',
+    component: () => import('layouts/PostulanteLayout.vue'),
+    children: [
+      {
+        path: '/favoritas',
+        name: 'favoritas',
+        component: () => import('seleccionContratacion/vacantesFavoritas/view/VacanteFavoritaPage.vue'),
+        meta: { requiresAuth: true, permissionRequired: false }
+      },
+      {
+        path: '/postulacion-vacante/:id',
+        name: 'postulacion_vacante',
+        component: () =>
+          import(
+            'pages/recursosHumanos/SeleccionContratacionPersonal/postulacionVacante/view/PostulacionVacantePage.vue'
+          ),
+        meta: { requiresAuth: true, permissionRequired: false }
+      },]
   },
   {
     path: '/recuperar-contrasena',

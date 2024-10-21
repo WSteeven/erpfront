@@ -18,6 +18,10 @@ export const tabOptionsEstadosAlimentacion: TabOption[] = [
   { label: 'Finalizadas', value: '1' },
 ];
 
+export const tabOptionsVacaciones: TabOption[]=[
+  {label: 'Pendientes', value:'PENDIENTES'},
+  {label: 'Realizadas', value:'REALIZADAS'},
+]
 
 export const estadosRolPagoEmpleado = {
   todo: '',
@@ -30,6 +34,12 @@ export const estadosRolPagoEmpleado = {
 export const estadosAlimentacion = {
   activa: '0',
   finalizado: '1',
+}
+
+export const tipo_puesto ={
+  nuevo:1,
+  vacante:2,
+  pasante:3
 }
 export const parentezcos = [
   { nombre: 'CÓNYUGE', value: 'CÓNYUGE' },

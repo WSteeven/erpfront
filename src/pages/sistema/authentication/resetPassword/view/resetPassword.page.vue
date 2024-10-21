@@ -60,7 +60,8 @@
               outlined
               dense
               :type="isPwd ? 'password' : 'text'"
-              hint="No comparta su contraseña con nadie"
+              hint="Requisitos: Mínimo 8 caracteres, 1 número, 1 letra, Caracter especiales ( @.-/* ), contraseña diferente a la anterior."
+              
             >
               <template v-slot:append>
                 <q-icon

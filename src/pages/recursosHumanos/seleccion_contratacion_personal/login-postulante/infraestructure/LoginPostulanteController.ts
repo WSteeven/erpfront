@@ -1,34 +1,49 @@
 import { Empleado } from 'recursosHumanos/empleados/domain/Empleado'
-import { useAuthenticationStore } from 'src/stores/authentication'
 import { ApiError } from 'shared/error/domain/ApiError'
-import { rolesSistema } from 'config/utils'
-import { useRouter } from 'vue-router'
+import { useRoute, useRouter } from 'vue-router'
 import { UserLoginPostulante } from '../domain/UserLoginPostulante'
+import { useAuthenticationExternalStore } from 'stores/authenticationExternal'
 
 export class LoginPostulanteController {
-  store = useAuthenticationStore()
+  store = useAuthenticationExternalStore()
   Router = useRouter()
+  route = useRoute()
 
   async login(userLogin: UserLoginPostulante): Promise<Empleado> {
     try {
-      const usuario = await this.store.loginPostulante(userLogin)
+      const redirectTo = this.route.query.redirect || '/puestos-disponibles'
+
+      const usuario = await this.store.login(userLogin)
       const roles = usuario.roles
-      if (roles?.includes(rolesSistema.tecnico_lider)) {
-        this.Router.replace({ name: 'trabajo_agendado' })
-      } else {
-        this.Router.replace('/')
-      }
+      await this.Router.replace(redirectTo)
+      // this.Router.replace({ name: 'puestos_disponibles' })
 
       return usuario
     } catch (error: unknown) {
       if (error instanceof ApiError) {
         switch (error.status) {
           case 412:
-            this.Router.replace({ name: 'ResetearContrasena' })
-            this.store.setNombreusuario(userLogin.name!);
-            break;
+            await this.Router.replace({ name: 'ResetearContrasena' })
+            this.store.setNombreusuario(userLogin.name!)
+            break
         }
       }
+      throw error
+    }
+  }
+  async loginterceros(driver) {
+    try {
+      await this.store.loginTerceros(driver)
+    } catch (error: unknown) {
+      throw error
+    }
+  }
+  async obtenerSesionUser() {
+    try {
+      const usuario = this.store.obtenerSesion()
+
+      this.Router.replace({ name: 'puestos_disponibles' })
+    } catch (error: unknown) {
       throw error
     }
   }

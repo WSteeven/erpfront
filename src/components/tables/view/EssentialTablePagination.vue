@@ -296,16 +296,31 @@
 
         <div class="row q-gutter-xs justify-end q-mb-md">
           <transition name="scale" mode="out-in">
-            <q-btn
-              v-if="mostrarFiltros"
-              color="positive"
-              no-caps
-              push
-              @click="agregarFiltro()"
-            >
-              <q-icon name="bi-plus" size="xs" class="q-mr-sm"></q-icon>
-              Agregar filtro</q-btn
-            >
+            <q-btn-group rounded unelevated>
+              <q-btn
+                v-if="mostrarFiltros"
+                color="blue-grey-8"
+                no-caps
+                rounded
+                unelevated
+                @click="agregarFiltro()"
+              >
+                <q-icon name="bi-plus" size="xs" class="q-mr-sm"></q-icon>
+                Agregar filtro</q-btn
+              >
+
+              <q-btn
+                v-if="mostrarFiltros"
+                color="blue-grey-10"
+                no-caps
+                rounded
+                unelevated
+                @click="establecerFiltros()"
+              >
+                <q-icon name="bi-funnel" class="q-mr-sm" size="xs"></q-icon>
+                Buscar con filtros</q-btn
+              >
+            </q-btn-group>
           </transition>
 
           <!-- <q-btn
@@ -318,25 +333,14 @@
             <q-icon name="bi-eraser" class="q-mr-sm" size="xs"></q-icon>
             Resetear filtros</q-btn
           > -->
-          <transition name="scale" mode="out-in">
-            <q-btn
-              v-if="mostrarFiltros"
-              color="primary"
-              no-caps
-              push
-              @click="establecerFiltros()"
-            >
-              <q-icon name="bi-funnel" class="q-mr-sm" size="xs"></q-icon>
-              Buscar con filtros</q-btn
-            >
-          </transition>
           <q-btn
             v-if="mostrarExportar"
             color="positive"
             icon="archive"
             label="Exportar a csv"
             no-caps
-            push
+            rounded
+            unelevated
             @click="exportTable"
           />
           <!--<q-btn-dropdown
@@ -366,11 +370,13 @@
             </q-list>
           </q-btn-dropdown> -->
 
+          <!-- :color="mostrarFiltros ? 'negative' : 'white'" -->
           <q-btn
             v-if="permitirFiltrar"
-            :color="mostrarFiltros ? 'negative' : 'primary'"
+            :class="{ 'text-primary bg-white': !mostrarFiltros, 'text-negative bg-white': mostrarFiltros }"
             no-caps
-            push
+            rounded
+            unelevated
             @click="toggleFiltros()"
           >
             <q-icon

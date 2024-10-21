@@ -88,7 +88,7 @@ import EstadosSubtareas from 'components/tables/view/EstadosSubtareas.vue'
 defineProps({
   ticket: {
     type: Object as () => Ticket,
-    required: true,
-  },
+    required: true
+  }
 })
 </script>

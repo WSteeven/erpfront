@@ -30,6 +30,7 @@ import { PeriodoController } from 'pages/recursosHumanos/periodo/infraestructure
 import { PrestamoCustomController } from '../infraestructure/PrestamoCustomController'
 import { useAuthenticationStore } from 'stores/authentication'
 import { format, parse } from '@formkit/tempo'
+import { useFiltrosListadosSelects } from 'shared/filtrosListadosGenerales'
 
 export default defineComponent({
   components: { TabLayoutFilterTabs2, SelectorImagen, EssentialTable },
@@ -65,7 +66,7 @@ export default defineComponent({
     onBeforeModificar(() => (esConsultado.value = true))
     const maximoAPrestar = ref()
     const esMayorPrestamo = ref(false)
-    const empleados = ref([])
+    const { empleados, filtrarEmpleados } = useFiltrosListadosSelects(listadosAuxiliares)
     const periodos = ref()
     const recursosHumanosStore = useRecursosHumanosStore()
     const authenticationStore = useAuthenticationStore()
@@ -194,22 +195,7 @@ export default defineComponent({
         }
       } catch (error) { }
     })
-    function filtrarEmpleado(val, update) {
-      if (val === '') {
-        update(() => {
-          empleados.value = listadosAuxiliares.empleados
-        })
-        return
-      }
-      update(() => {
-        const needle = val.toLowerCase()
-        empleados.value = listadosAuxiliares.empleados.filter(
-          (v) =>
-            v.nombres.toLowerCase().indexOf(needle) > -1 ||
-            v.apellidos.toLowerCase().indexOf(needle) > -1
-        )
-      })
-    }
+
     function recargar_tabla() {
       const valor_utilidad =
         prestamo.valor_utilidad == null ? 0 : prestamo.valor_utilidad
@@ -495,7 +481,7 @@ export default defineComponent({
       sueldo_basico,
       periodos,
       watchEffect,
-      filtrarEmpleado,
+      filtrarEmpleados,
       filtrarPeriodo,
       filtrarPrestamoEmpresarial,
       recargar_tabla,

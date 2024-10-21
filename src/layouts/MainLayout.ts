@@ -1,16 +1,7 @@
 // Dependencias
 import { Notificacion } from 'pages/administracion/notificaciones/domain/Notificacion'
 import { useNotificationRealtimeStore } from 'stores/notificationRealtime'
-import {
-  defineComponent,
-  ref,
-  computed,
-  Ref,
-  ComputedRef,
-  watch,
-  watchEffect,
-  createApp
-} from 'vue'
+import { defineComponent, ref, computed, Ref, ComputedRef, watchEffect } from 'vue'
 import { useAuthenticationStore } from 'src/stores/authentication'
 import { LocalStorage, useQuasar } from 'quasar'
 import { useMenuStore } from 'src/stores/menu'
@@ -60,6 +51,8 @@ export default defineComponent({
     const menuVisible = ref(false)
 
     const buscarModulo = ref()
+    const refListadoBusqueda = ref()
+    const posicionResultados = ref(-1)
 
     /*********
      * Stores
@@ -83,7 +76,7 @@ export default defineComponent({
         if (permission === 'granted') {
           // console.log('Permiso de notificación concedido.');
         } else {
-          console.log('Permiso de notificación denegado.')
+          // console.log('Permiso de notificación denegado.')
         }
       })
     }
@@ -98,7 +91,7 @@ export default defineComponent({
     const Router = useRouter()
     const route = useRoute()
     const tituloPagina = computed(() => mainLayoutStore.tituloPagina)
-    const grupo = authenticationStore.user.grupo
+    const grupo = authenticationStore.user?.grupo
     const mostrarBuscar = ref(false)
 
     const saldo = computed(() => {
@@ -216,7 +209,7 @@ export default defineComponent({
     // const mostrarAlertaInactividad = computed(() => {
     //   return (tiempoInactividad / 1000) - idledFor.value < 10 //true cuando sean 10 segundos restantes
     // })
-    const { idle, lastActive } = useIdle(tiempoInactividad) //5 minutos de inactividad
+    const { lastActive } = useIdle(tiempoInactividad) //5 minutos de inactividad
     // const now = useTimestamp({ interval: 1000 })
     // const idledFor = computed(() => Math.floor((now.value - lastActive.value) / 1000),) //Tiempo de inactividad transcurrido en segundos 1,2,3...,n
     // const ultimaConexion = LocalStorage.getItem('ultima_conexion')
@@ -237,7 +230,7 @@ export default defineComponent({
     })
     */
     if (authenticationStore.user) {
-      const notIdle = new NotIdle()
+      new NotIdle()
         .whenInteractive()
         .within(60, 1000) // un minuto
         .do(() => {
@@ -321,6 +314,7 @@ export default defineComponent({
       const modulosPermitidos = obtenerModulosPermitidos()
       const resultado = filterItems(modulosPermitidos, val)
       resultadosBusqueda.value = resultado
+      posicionResultados.value = -1
     }
 
     function filterItems(items, searchTerm) {
@@ -328,7 +322,7 @@ export default defineComponent({
 
       function matches(item) {
         return searchTerms?.every(term =>
-          new RegExp(term, 'i').test(item.title ?? '')
+          new RegExp(term, 'i').test(item.title ?? '') && item.can
         )
       }
 
@@ -352,9 +346,23 @@ export default defineComponent({
     }
 
     const resetearBuscador = () => {
+      posicionResultados.value = -1
       buscarModulo.value = null
       mostrarBuscar.value = false
     }
+    function onKeyEnter() {
+      const rutaDestino = resultadosBusqueda.value[posicionResultados.value].link
+      if (rutaDestino) Router.push(rutaDestino)
+      resetearBuscador()
+    }
+    function onKeyUp() {
+      posicionResultados.value = posicionResultados.value > 0 ? posicionResultados.value - 1 : 0
+    }
+    function onKeyDown() {
+      if (posicionResultados.value < refListadoBusqueda.value.length - 1)
+        posicionResultados.value++
+    }
+
 
     return {
       // logoClaro: `${process.env.API_URL}/storage/configuracion_general/logo_claro.jpeg`,
@@ -407,7 +415,12 @@ export default defineComponent({
       resultadosBusqueda,
       menuStore,
       mostrarBuscar,
+      onKeyUp,
+      onKeyDown,
+      onKeyEnter,
+      refListadoBusqueda,
       resetearBuscador,
+      posicionResultados,
       // idledFor,
       // tiempoInactividad,
       // mostrarAlertaInactividad,

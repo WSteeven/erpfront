@@ -8,7 +8,7 @@
     :permitirEliminar="false"
     :mostrarButtonSubmits="true"
     :filtrar="filtrarPermisoEmpleado"
-    tabDefecto="1"
+    :tabDefecto="tabPermisoEmpleado"
     :forzarListar="true"
   >
     <template #formulario>
@@ -28,7 +28,7 @@
               outlined
               :input-debounce="0"
               use-input
-              @update:model-value="obtener_dias_licencia"
+              @update:model-value="obtenerDiasLicencia"
               :option-value="(v) => v.id"
               :option-label="(v) => v.nombre"
               emit-value
@@ -64,7 +64,7 @@
                   <q-popup-proxy cover transition-show="scale" transition-hide="scale">
                       <q-date
                         v-model="licencia.fecha_inicio"
-                        mask="DD-MM-YYYY"
+                        :mask="maskFecha"
                         :options="optionsFechaInicio"
                         today-btn
                       >
@@ -90,7 +90,7 @@
               v-model="licencia.fecha_fin"
               placeholder="Obligatorio"
               :error="!!v$.fecha_fin.$errors.length"
-              disable
+              :disable="false"
               @blur="v$.fecha_fin.$touch"
               outlined
               dense
@@ -100,8 +100,7 @@
                   <q-popup-proxy cover transition-show="scale" transition-hide="scale">
                       <q-date
                         v-model="licencia.fecha_fin"
-                        mask="DD-MM-YYYY"
-                        :options="optionsFecha"
+                       :mask="maskFecha"
                         today-btn
                       >
                         <div class="row items-center justify-end">

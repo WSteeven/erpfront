@@ -7,6 +7,46 @@
     <template #formulario>
       <q-form @submit.prevent>
         <div class="row q-col-gutter-sm q-mb-md">
+
+          <!-- Empleado que envia -->
+          <div class="col-12 col-md-3 q-mb-md col-sm-3" v-if="store.can('puede.registrar.fondos_terceros')">
+            <label class="q-mb-sm block">Empleado Solicitante</label>
+            <q-select
+              v-model="transferencia.usuario_envia"
+              :options="empleados_delegadores"
+              transition-show="jump-up"
+              transition-hide="jump-down"
+              :disable="disabled"
+              options-dense
+              dense
+              outlined
+              :error="!!v$.usuario_envia.$errors.length"
+              @blur="v$.usuario_envia.$touch"
+              error-message="Debes seleccionar un empleado al que se carga el gasto"
+              use-input
+              input-debounce="0"
+              @popup-show="ordenarLista(empleados_delegadores, 'nombres')"
+              :option-value="v => v.id"
+              :option-label="v => v.nombres + ' ' + v.apellidos"
+              emit-value
+              map-options
+            >
+              <template v-slot:error>
+                <div v-for="error of v$.usuario_envia.$errors" :key="error.$uid">
+                  <div class="error-msg">{{ error.$message }}</div>
+                </div>
+              </template>
+
+              <template v-slot:no-option>
+                <q-item>
+                  <q-item-section class="text-grey">
+                    No hay resultados
+                  </q-item-section>
+                </q-item>
+              </template>
+            </q-select>
+          </div>
+
           <!-- Usuarios Reciben -->
           <div
             class="col-12 col-md-3 q-mb-md"
@@ -142,6 +182,7 @@
           <div class="col-12 col-md-3">
             <label class="q-mb-sm block">Comprobante </label>
             <selector-imagen
+              placeholder="Obligatorio"
               :imagen="transferencia.comprobante"
               :error="!!v$.comprobante.$errors.length"
               @update:modelValue="(data) => (transferencia.comprobante = data)"
