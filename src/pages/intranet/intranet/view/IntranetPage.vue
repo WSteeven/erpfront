@@ -45,14 +45,9 @@
           </q-card>
         </div>
         <!--Modal para ver Noticias Completas-->
-        <q-dialog
-          v-model="modalNoticia"
-          transition-show="scale"
-          transition-hide="scale"
-          persistent
-          :maximized="false"
-        >
-          <q-card class="noticia-modal-card" style="width: 300%; height: 100%">
+        <q-dialog v-model="modalNoticia" transition-show="scale" transition-hide="scale"
+          :maximized="$q.screen.sm || $q.screen.xs">
+          <q-card class="noticia-modal-card" style="min-width: 50%">
             <q-card-section class="row q-pb-none">
               <q-space />
               <q-btn flat icon="close" color="white" class="noticia-modal-close-btn" v-close-popup />
@@ -136,7 +131,7 @@
         <br />
 
         <!-- Departamentos -->
-        <!-- <div class="col-12 col-md-9">
+        <div class="col-12 col-md-9">
           <q-card class="fixed-size-card-departamentos">
             <q-card flat bordered class="departamentos-card">
               <q-expansion-item style="
@@ -202,12 +197,7 @@
               </q-expansion-item>
             </q-card>
           </q-card>
-        </div> -->
-
-        <br />
-
-        <!-- Organigrama -->
-        <div class="col-12"></div>
+        </div>
       </div>
 
       <!--SECCION IZQUIERDA-->
@@ -238,13 +228,8 @@
               </div>
             </div>
             <div class="q-mt-md">
-              <q-btn
-                href="https://jpconstrucred.com:2096/"
-                color="secondary"
-                icon-right="mail"
-                label="Ir a mi correo"
-                target="_blank"
-              />
+              <q-btn href="https://jpconstrucred.com:2096/" color="secondary" icon-right="mail" label="Ir a mi correo"
+                target="_blank" />
             </div>
             <!-- Documentos -->
             <div class="q-mt-md flex justify-center rounded-lg" style="
@@ -526,6 +511,7 @@
               </q-dialog>
             </div>
           </q-card-section>
+
         </q-expansion-item>
       </div>
     </div>
@@ -827,13 +813,6 @@ h5 {
   overflow: hidden;
   max-width: 50%;
 } */
-
-.q-dialog {
-  width: 80vw; /* 80% del ancho de la ventana */
-  height: 80vh; /* 80% de la altura de la ventana */
-  max-width: 80vw;
-  max-height: 80vh;
-}
 
 .noticia-modal-card {
   border-radius: 5px;
