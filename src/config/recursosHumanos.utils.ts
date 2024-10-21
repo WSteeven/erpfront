@@ -1,4 +1,5 @@
 import { TabOption } from 'components/tables/domain/TabOption';
+import { SelectOption } from 'components/tables/domain/SelectOption'
 
 export const tabOptionsEstadosRolPagoEmpleado: TabOption[] = [
   { label: 'Todo', value: '' },
@@ -26,6 +27,14 @@ export const tabOptionsVacaciones: TabOption[]=[
   {label: 'Realizadas', value:'REALIZADAS'},
 ]
 
+export const opcionesSubactividadesPlanificador: SelectOption[]=[
+  // {label: 'No iniciado', value:-1},
+  // {label: 'En Proceso', value:0},
+  // {label: 'Finalizado', value:1},
+  {label: 'No iniciado', value:'No iniciado'},
+  {label: 'En Proceso', value:'En Proceso'},
+  {label: 'Finalizado', value:'Finalizado'},
+]
 export const estadosRolPagoEmpleado = {
   todo: '',
   creado: 'CREADO',

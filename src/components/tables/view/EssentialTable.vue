@@ -403,7 +403,7 @@
           push
           rounded
           no-caps
-          @click="accion1Header.accion"
+          @click="accion1Header.accion(identificador)"
         >
           <q-icon
             :name="extraerIcono(accion1Header) ?? ''"
@@ -584,6 +584,7 @@
             :accion8="accion8"
             :accion9="accion9"
             :accion10="accion10"
+            :identificador="identificador"
             :propsTable="props"
             :listado="listado"
           ></CustomButtons>
@@ -679,6 +680,7 @@
                   :accion8="accion8"
                   :accion9="accion9"
                   :accion10="accion10"
+                  :identificador="identificador"
                   :propsTable="props"
                   :listado="listado"
                 ></CustomButtons>

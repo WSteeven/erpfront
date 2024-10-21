@@ -70,9 +70,9 @@
               </template>
             </q-input>
           </div>
-
           <!--          BOTON DE AGREGAR ACTIVIDAD-->
           <div class="col-12 col-md-4 col-sm-6 text-center">
+            <label class="q-mb-sm block"> &nbsp;</label>
             <q-btn
               color="primary"
               class="full-width"
@@ -86,23 +86,65 @@
               <span>Agregar Actividad</span></q-btn
             >
           </div>
-          <!--          TABLAS DE ACTIVIDADES-->
-          <q-expansion-item
-            v-for="actividad of planificador.actividades"
-            :key="actividad.id"
-            class="overflow-hidden q-mb-md expansion"
-            :label="actividad.nombre"
-            header-class="text-bold bg-header-collapse"
-            default-opened
-          >
-            <div class="col-12">
-              <essential-table :datos="actividad.subactividades"
-                               :configuracion-columnas="configuracionColumnasSubactividades">
-
-              </essential-table>
-            </div>
-          </q-expansion-item>
         </div>
+        <!--          TABLAS DE ACTIVIDADES-->
+        <q-expansion-item
+          v-for="(actividad, index) of planificador.actividades"
+          :key="actividad.id"
+          class="overflow-hidden q-mb-md expansion"
+          :label="actividad.nombre"
+          header-class="text-bold bg-header-collapse"
+          default-opened
+        >
+          <template v-slot:header="scope">
+            <div class="row full-width q-col-gutter-sm">
+              <p class="q-pt-sm">{{ actividad.nombre }}</p>
+              <div class="q-pl-md" v-if="scope.expanded">
+                <q-btn
+                  outline
+                  dense
+                  @click="editarNombreActividad(actividad)"
+                  color="secondary"
+                >
+                  <q-tooltip class="bg-dark">Editar</q-tooltip>
+                  <q-icon class="bi-pencil-square" size="xs" />
+                </q-btn>
+              </div>
+              <div  v-if="scope.expanded">
+                <q-btn
+                  outline
+                  dense
+                  class="q-pl-sm"
+                  @click="eliminarActividad(index)"
+                  color="negative"
+                >
+                  <q-tooltip class="bg-dark">Eliminar</q-tooltip>
+                  <q-icon class="bi-trash" size="xs" />
+                </q-btn>
+              </div>
+            </div>
+          </template>
+          <div class="col-12">
+            <essential-table
+              :identificador="index"
+              :datos="actividad.subactividades"
+              :configuracion-columnas="[
+                ...configuracionColumnasSubactividades,
+                accionesTabla
+              ]"
+              ajustar-celdas
+              :permitirConsultar="false"
+              :permitirEditarCeldas="true"
+              :permitirEditar="false"
+              :permitirEliminar="false"
+              :altoFijo="false"
+              :accion1Header="btnAgregarSubactividad"
+              :accion1="btnEliminar"
+              :mostrarFooter="false"
+            >
+            </essential-table>
+          </div>
+        </q-expansion-item>
       </q-form>
     </template>
   </tab-layout-filter-tabs2>

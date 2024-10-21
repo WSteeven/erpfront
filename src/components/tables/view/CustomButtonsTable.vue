@@ -524,6 +524,7 @@
 import { CustomActionTable } from '../domain/CustomActionTable'
 
 const props = defineProps({
+  identificador: { type: Number, default: -1 },
   propsTable: {
     type: Object,
     required: true,
@@ -647,9 +648,11 @@ function ejecutarAccion(accion?: CustomActionTable) {
   const posicion = props.listado.findIndex(
     (fila: any) => fila.id === props.propsTable.row.id
   )
+  console.log(props.identificador)
   accion?.accion({
     entidad: props.propsTable.row,
     posicion, //: props.propsTable.rowIndex,
+    identificador: props.identificador
   })
 }
 

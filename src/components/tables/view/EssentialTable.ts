@@ -1,8 +1,24 @@
 // Dependencias
-import { accionesActivos, autorizacionesTransacciones, estadosTransacciones, estadosInventarios, estadosControlStock, estadosCondicionesId, estadosCondicionesValue } from 'config/utils'
+import {
+  accionesActivos,
+  autorizacionesTransacciones,
+  estadosTransacciones,
+  estadosInventarios,
+  estadosControlStock,
+  estadosCondicionesId,
+  estadosCondicionesValue
+} from 'config/utils'
 import { estadosCalificacionProveedor } from 'config/utils_compras_proveedores'
 // import { VisibleModal } from '../application/VisibleModal'
-import { computed, defineComponent, ref, watchEffect, nextTick, Ref, watch } from 'vue'
+import {
+  computed,
+  defineComponent,
+  ref,
+  watchEffect,
+  nextTick,
+  Ref,
+  watch
+} from 'vue'
 import { EntidadAuditable } from 'shared/entidad/domain/entidadAuditable'
 import { Instanciable } from 'shared/entidad/domain/instanciable'
 import { CustomActionTable } from '../domain/CustomActionTable'
@@ -39,192 +55,214 @@ export default defineComponent({
     EstadosSubtareas,
     BotonesPaginacion,
     TableFilters,
-    VisorArchivos,
+    VisorArchivos
   },
   props: {
+    identificador: { type: Number, default: -1 },
     referencia: Object as () => Ref,
     entidad: {
       type: Object as Instanciable,
-      required: false,
+      required: false
     },
     titulo: {
       type: String,
-      default: 'Listado',
+      default: 'Listado'
     },
     separador: {
       type: String,
-      default: 'horizontal',
+      default: 'horizontal'
     },
     configuracionColumnas: {
       type: Object as () => ColumnConfig<EntidadAuditable>[],
-      required: true,
+      required: true
     },
     desplegarDesde: {
       type: Number,
-      default: 2,
+      default: 2
     },
     datos: {
       type: Array,
-      required: true,
+      required: true
     },
     permitirEditarCeldas: {
       type: Boolean,
-      default: false,
+      default: false
     },
     permitirConsultar: {
       type: Boolean,
-      default: true,
+      default: true
     },
     permitirEditar: {
       type: Boolean,
-      default: true,
+      default: true
     },
     permitirEliminar: {
       type: Boolean,
-      default: true,
+      default: true
     },
     primeraColumnaFija: {
       type: Boolean,
-      default: false,
+      default: false
     },
     tipoSeleccion: {
       type: String as () => TipoSeleccion,
-      default: 'none',
+      default: 'none'
     },
     ajustarCeldas: {
       type: Boolean,
-      default: false,
+      default: false
     },
     accion1: {
       type: Object as () => CustomActionTable,
-      required: false,
+      required: false
     },
     accion2: {
       type: Object as () => CustomActionTable,
-      required: false,
+      required: false
     },
     accion3: {
       type: Object as () => CustomActionTable,
-      required: false,
+      required: false
     },
     accion4: {
       type: Object as () => CustomActionTable,
-      required: false,
+      required: false
     },
     accion5: {
       type: Object as () => CustomActionTable,
-      required: false,
+      required: false
     },
     accion6: {
       type: Object as () => CustomActionTable,
-      required: false,
+      required: false
     },
     accion7: {
       type: Object as () => CustomActionTable,
-      required: false,
+      required: false
     },
     accion8: {
       type: Object as () => CustomActionTable,
-      required: false,
+      required: false
     },
     accion9: {
       type: Object as () => CustomActionTable,
-      required: false,
+      required: false
     },
     accion10: {
       type: Object as () => CustomActionTable,
-      required: false,
+      required: false
     },
     accion1Header: {
       type: Object as () => CustomActionTable,
-      required: false,
+      required: false
     },
     accion2Header: {
       type: Object as () => CustomActionTable,
-      required: false,
+      required: false
     },
     accion3Header: {
       type: Object as () => CustomActionTable,
-      required: false,
+      required: false
     },
     accion4Header: {
       type: Object as () => CustomActionTable,
-      required: false,
+      required: false
     },
     accion5Header: {
       type: Object as () => CustomActionTable,
-      required: false,
+      required: false
     },
     accion6Header: {
       type: Object as () => CustomActionTable,
-      required: false,
+      required: false
     },
     mostrarBotones: {
       type: Boolean,
-      default: true,
+      default: true
     },
     altoFijo: {
       type: Boolean,
-      default: true,
+      default: true
     },
     mostrarHeader: {
       type: Boolean,
-      default: true,
+      default: true
     },
     mostrarCantidadElementos: {
       type: Boolean,
-      default: true,
+      default: true
     },
     mostrarFooter: {
       type: Boolean,
-      default: true,
+      default: true
     },
     permitirEditarModal: {
       type: Boolean,
-      default: false,
+      default: false
     },
     modalMaximized: {
       type: Boolean,
-      default: true,
+      default: true
     },
     permitirBuscar: {
       type: Boolean,
-      default: true,
+      default: true
     },
     permitirFiltrar: {
       type: Boolean,
-      default: false,
+      default: false
     },
     estilos: {
       type: String,
-      required: false,
+      required: false
     },
     mostrarColumnasVisibles: {
       type: Boolean,
-      default: true,
+      default: true
     },
     editarFilaLocal: {
       type: Boolean,
-      default: true,
+      default: true
     },
     mostrarExportar: {
       type: Boolean,
-      default: false,
+      default: false
     },
     grid: {
       type: Boolean,
-      default: true,
+      default: true
     },
     disable: {
       type: Boolean,
-      default: false,
+      default: false
     },
     emitirAlSeleccionar: {
       type: Boolean,
-      default: false,
-    },
+      default: false
+    }
   },
-  emits: ['consultar', 'editar', 'eliminar', 'accion1', 'accion2', 'accion3', 'accion4', 'accion5', 'accion6', 'accion7', 'accion8', 'accion9', 'accion10', 'selected', 'onScroll', 'filtrar', 'toggle-filtros', 'guardar-fila', 'update:selected', 'fila-modificada'],
+  emits: [
+    'consultar',
+    'editar',
+    'eliminar',
+    'accion1',
+    'accion2',
+    'accion3',
+    'accion4',
+    'accion5',
+    'accion6',
+    'accion7',
+    'accion8',
+    'accion9',
+    'accion10',
+    'selected',
+    'onScroll',
+    'filtrar',
+    'toggle-filtros',
+    'guardar-fila',
+    'update:selected',
+    'fila-modificada'
+  ],
   setup(props, { emit }) {
     // const grid = ref(false)
     const inFullscreen = ref(false)
@@ -233,7 +271,7 @@ export default defineComponent({
     const listado = ref()
     const refEditarModal = ref()
 
-    watchEffect(() => listado.value = props.datos)
+    watchEffect(() => (listado.value = props.datos))
 
     // Acciones tabla
     const consultar = (data: object) => emit('consultar', data)
@@ -322,9 +360,7 @@ export default defineComponent({
 
     function guardarFila(data) {
       // console.log(data)
-      const posicion = props.datos.findIndex(
-        (fila: any) => fila.id === data.id
-      )
+      const posicion = props.datos.findIndex((fila: any) => fila.id === data.id)
       // console.log(posicion)
 
       if (props.editarFilaLocal) listado.value[posicion] = data
@@ -349,11 +385,14 @@ export default defineComponent({
       }
     }
 
-    function extraerVisible(accion: CustomActionTable, propsTable: any): boolean {
+    function extraerVisible(
+      accion: CustomActionTable,
+      propsTable: any
+    ): boolean {
       if (accion && accion.visible && accion.hasOwnProperty('visible')) {
         return accion.visible({
           entidad: propsTable.row,
-          posicion: propsTable.rowIndex,
+          posicion: propsTable.rowIndex
         })
       } else {
         return accion !== undefined ?? false
@@ -363,16 +402,17 @@ export default defineComponent({
     function extraerIcono(accion: CustomActionTable, propsTable: any) {
       return typeof accion?.icono === 'function'
         ? accion.icono({
-          entidad: propsTable.row,
-          posicion: propsTable.rowIndex,
-        }) : accion?.icono
+            entidad: propsTable.row,
+            posicion: propsTable.rowIndex
+          })
+        : accion?.icono
     }
 
     const pagination = ref({
       sortBy: 'desc',
       descending: false,
       page: 1,
-      rowsPerPage: props.altoFijo ? 15 : 0,
+      rowsPerPage: props.altoFijo ? 15 : 0
     })
 
     const pagesNumber = computed(() => {
@@ -395,8 +435,6 @@ export default defineComponent({
 
       refTableFilters.value.filtrar()
 
-
-
       // emit('filtrar', filtros.value)
     }
 
@@ -407,6 +445,7 @@ export default defineComponent({
     }
 
     const refTableFilters = ref()
+
     function resetearFiltros() {
       refTableFilters.value.resetearFiltros()
     }
@@ -427,21 +466,27 @@ export default defineComponent({
      */
     function exportTable() {
       // naive encoding to csv format
-      const content = [props.configuracionColumnas.map((col: any) => wrapCsvValue(col.label))].concat(
-        props.datos.map((row: any) => props.configuracionColumnas.map((col: any) => wrapCsvValue(
-          typeof col.field === 'function'
-            ? col.field(row)
-            : row[col.field === void 0 ? col.name : col.field],
-          col.format,
-          row
-        )).join(','))
-      ).join('\r\n')
+      const content = [
+        props.configuracionColumnas.map((col: any) => wrapCsvValue(col.label))
+      ]
+        .concat(
+          props.datos.map((row: any) =>
+            props.configuracionColumnas
+              .map((col: any) =>
+                wrapCsvValue(
+                  typeof col.field === 'function'
+                    ? col.field(row)
+                    : row[col.field === void 0 ? col.name : col.field],
+                  col.format,
+                  row
+                )
+              )
+              .join(',')
+          )
+        )
+        .join('\r\n')
 
-      const status = exportFile(
-        'table-export.csv',
-        content,
-        'text/csv'
-      )
+      const status = exportFile('table-export.csv', content, 'text/csv')
 
       if (status !== true) {
         /*$q.notify({
@@ -454,13 +499,10 @@ export default defineComponent({
     }
 
     function wrapCsvValue(val, formatFn?, row?) {
-      let formatted = formatFn !== void 0
-        ? formatFn(val, row)
-        : val
+      let formatted = formatFn !== void 0 ? formatFn(val, row) : val
 
-      formatted = formatted === void 0 || formatted === null
-        ? ''
-        : String(formatted)
+      formatted =
+        formatted === void 0 || formatted === null ? '' : String(formatted)
 
       formatted = formatted.split('"').join('""')
       /**
@@ -476,9 +518,9 @@ export default defineComponent({
     function extraerColor(accion: CustomActionTable, propsTable: any) {
       return typeof accion?.color === 'function'
         ? accion.color({
-          entidad: propsTable.row,
-          posicion: propsTable.rowIndex,
-        })
+            entidad: propsTable.row,
+            posicion: propsTable.rowIndex
+          })
         : accion?.color
     }
 
@@ -541,7 +583,7 @@ export default defineComponent({
       clearSelection,
       verVisorArchivos,
       archivos,
-      visibleModalVisorArchivos,
+      visibleModalVisorArchivos
     }
-  },
+  }
 })
