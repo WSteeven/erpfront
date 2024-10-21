@@ -131,7 +131,7 @@
         <br />
 
         <!-- Departamentos -->
-        <!-- <div class="col-12 col-md-9">
+        <div class="col-12 col-md-9">
           <q-card class="fixed-size-card-departamentos">
             <q-card flat bordered class="departamentos-card">
               <q-expansion-item style="
@@ -197,15 +197,7 @@
               </q-expansion-item>
             </q-card>
           </q-card>
-        </div> -->
-
-        <br>
-
-        <!-- Organigrama -->
-        <div class="col-12">
-          <mi-organigrama-page/>
         </div>
-
       </div>
 
       <!--SECCION IZQUIERDA-->
