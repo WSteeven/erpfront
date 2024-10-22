@@ -7,6 +7,7 @@
     :tab-defecto="tabDefecto"
     :filtrar="filtrar"
     ajustar-celdas
+    :accion1="btnImprimir"
   >
     <template #formulario>
       <q-form @submit.prevent>
@@ -70,9 +71,19 @@
               </template>
             </q-input>
           </div>
+
+          <!-- Porcentaje cumplimiento -->
+          <div class="col-12 col-md-4 col-sm-6">
+            <label class="q-mb-sm block">Porcentaje Cumplimiento</label>
+            <q-input
+              v-model="planificador.completado"
+              placeholder="Obligatorio"
+              disable
+              dense outlined
+            />
+          </div>
           <!--          BOTON DE AGREGAR ACTIVIDAD-->
-          <div class="col-12 col-md-4 col-sm-6 text-center">
-            <label class="q-mb-sm block"> &nbsp;</label>
+          <div class="col-12 text-center q-pb-md">
             <q-btn
               color="primary"
               class="full-width"
@@ -87,6 +98,8 @@
             >
           </div>
         </div>
+
+
         <!--          TABLAS DE ACTIVIDADES-->
         <q-expansion-item
           v-for="(actividad, index) of planificador.actividades"
@@ -98,7 +111,12 @@
         >
           <template v-slot:header="scope">
             <div class="row full-width q-col-gutter-sm">
-              <p class="q-pt-sm">{{ actividad.nombre }}</p>
+              <div class="col-6">
+              <p class="q-pt-sm">{{index+1}}. {{ actividad.nombre }}</p>
+              </div>
+              <div class="col-5">
+                Completado {{actividad.completado}}%
+              </div>
               <div class="q-pl-md" v-if="scope.expanded">
                 <q-btn
                   outline
@@ -133,6 +151,7 @@
                 accionesTabla
               ]"
               ajustar-celdas
+              :disable="disabled"
               :permitirConsultar="false"
               :permitirEditarCeldas="true"
               :permitirEditar="false"
@@ -141,7 +160,9 @@
               :accion1Header="btnAgregarSubactividad"
               :accion1="btnEliminar"
               :mostrarFooter="false"
+              @fila-modificada="(fila)=>calcularPorcentajeCompletado(fila, actividad)"
             >
+<!--              @input-val="(val)=>filtrarEmpleados"-->
             </essential-table>
           </div>
         </q-expansion-item>

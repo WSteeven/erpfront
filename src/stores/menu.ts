@@ -695,9 +695,9 @@ export const useMenuStore = defineStore('menu', () => {
         },
         {
           title: 'Planificador',
-          link: 'planificador',
+          link: 'planificadores',
           icon: 'bi-calendar-check-fill',
-          can: true
+          can: store.can('puede.acceder.planificadores')
         },
         {
           title: 'Permiso',

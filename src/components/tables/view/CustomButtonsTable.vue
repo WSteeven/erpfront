@@ -648,7 +648,8 @@ function ejecutarAccion(accion?: CustomActionTable) {
   const posicion = props.listado.findIndex(
     (fila: any) => fila.id === props.propsTable.row.id
   )
-  console.log(props.identificador)
+  // console.log(props.identificador)
+  // También se devuelve el identificador, -1 en caso de que no se esté proporcionando en el EssentialTable
   accion?.accion({
     entidad: props.propsTable.row,
     posicion, //: props.propsTable.rowIndex,

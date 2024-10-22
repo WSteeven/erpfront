@@ -31,10 +31,10 @@ const rutasRecursosHumanos: RouteRecordRaw[]=[
     meta: { requiresAuth: false },
   },
   {
-    path: '/planificador',
-    name: 'planificador',
+    path: '/planificadores',
+    name: 'planificadores',
     component: ()=> import('pages/recursosHumanos/planificador/view/PlanificadorPage.vue'),
-    meta: { requiresAuth: false },
+    meta: { requiresAuth: true },
   }
   ]
 

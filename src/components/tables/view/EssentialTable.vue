@@ -68,19 +68,14 @@
           'bg-body': $q.dark.isActive
         }"
       >
-        <!-- <q-popup-edit
-          v-model="props.row[props.col.name]"
-          v-slot="scope"
-          auto-save
-          @hide="guardarCeldaEditada(props.row)"
-        >
-        </q-popup-edit> -->
 
         <q-input
+          :style="props.col.style"
           v-if="
             props.col.editable && (!props.col.type || ['text', 'number', 'date', 'time'].includes(props.col.type))
           "
           v-model="props.row[props.col.name]"
+          @update:model-value="guardarCeldaEditada(props.row)"
           :bg-color="$q.dark.isActive ? 'grey-10' : 'grey-3'"
           :type="props.col.type ? props.col.type : 'text'"
           :hint="props.col.hint"
@@ -106,7 +101,11 @@
           dense
           emit-value
           map-options
+          use-input
+          input-debounce="0"
           :disable="disable"
+          @filter="props.col.filtro"
+          @update:model-value="guardarCeldaEditada(props.row)"
         />
 
         <!-- Aún no está completado, porque falta controlar la manera de subir el archivo -->
@@ -130,6 +129,7 @@
         <q-select
           v-if="props.col.type === 'select_multiple'"
           v-model="props.row[props.col.name]"
+          @update:model-value="guardarCeldaEditada(props.row)"
           :options="props.col.options"
           :options-label="v => v.label"
           :options-value="v => v.value"
@@ -161,6 +161,7 @@
         <q-toggle
           v-if="props.col.type === 'boolean'"
           v-model="props.row[props.col.name]"
+          @update:model-value="guardarCeldaEditada(props.row)"
           :label="props.row[props.col.name] ? 'SI' : 'NO'"
           keep-color
           :disable="disable"

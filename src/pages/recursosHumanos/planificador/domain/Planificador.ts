@@ -10,7 +10,7 @@ export class Planificador extends EntidadAuditable{
     super()
     this.empleado = null
     this.nombre = null
-    this.completado = null
+    this.completado = 0
     this.actividades=[]
   }
 }
