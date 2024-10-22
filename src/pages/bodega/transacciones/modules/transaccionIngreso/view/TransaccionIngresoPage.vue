@@ -169,6 +169,7 @@
             >
             </q-input>
           </div>
+          
           <!-- Select sucursal -->
           <div class="col-12 col-md-3 q-mb-md">
             <label class="q-mb-sm block">Sucursal</label>

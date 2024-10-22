@@ -18,6 +18,7 @@ import { SubDetalleFondo } from 'pages/fondosRotativos/subDetalleFondo/domain/Su
 import { AlimentacionGrupoController } from '../infraestructure/AlimentacionGrupoController'
 import TabLayout from 'shared/contenedor/modules/simple/view/TabLayout.vue'
 import { obtenerFechaHoraActual, optionsFecha } from 'shared/utils'
+import { useRoute } from 'vue-router'
 
 export default defineComponent({
     props: {
@@ -36,6 +37,8 @@ export default defineComponent({
          *************/
         const PRECIO_ALIMENTACION = 3
         const mostrarTodosGrupos = authenticationStore.esJefeTecnico || authenticationStore.esCoordinadorBackup
+        const route = useRoute()
+        const mostrarFormulario = ['monitor_subtareas', 'tareas'].includes(route.name?.toString() ?? '')
 
         /********
          * Mixin
@@ -159,6 +162,7 @@ export default defineComponent({
             noSePuedeEditar: computed(() => accion.value === acciones.editar),
             consultado: computed(() => accion.value === acciones.editar || accion.value === acciones.consultar),
             existeSubtarea: !!props.datos?.idSubtarea, // Seguimiento de subtarea
+            mostrarFormulario,
         }
     }
 })

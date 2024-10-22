@@ -11,6 +11,7 @@
     "test": "vue-cli-service test:unit"
   },
   "dependencies": {
+    "@balkangraph/orgchart.js": "^8.14.48",
     "@formkit/tempo": "^0.0.16",
     "@quasar/extras": "^1.0.0",
     "@types/vuelidate": "^0.7.15",

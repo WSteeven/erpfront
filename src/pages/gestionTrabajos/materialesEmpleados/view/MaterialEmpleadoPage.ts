@@ -355,7 +355,7 @@ export default defineComponent({
       listadosAuxiliares,
       filtro,
       filtroProyecto,
-      filtrarEmpleados: filtroEmpleado,
+      filtroEmpleado,
       destinosTareas,
       transferenciaProductoEmpleadoStore,
       store, accionesTabla,

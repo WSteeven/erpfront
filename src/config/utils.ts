@@ -670,6 +670,12 @@ export const tabOptionsValoresAcreditar: TabOption[] = [
 export const tabOptionsNoticias: TabOption[] = [
   { label: 'Noticias Registradas', value: '1' },
 ]
+
+//Organigrama
+export const tabOptionsOrganigrama: TabOption[] = [
+  { label: 'Organigrama Registrado', value: '1' },
+]
+
 export const selectOptionsSiNo: SelectOption[] = [
   { label: 'Sí', value: true },
   { label: 'No', value: false },

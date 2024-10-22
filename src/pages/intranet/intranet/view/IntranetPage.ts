@@ -160,7 +160,7 @@ export default defineComponent({
       week: {
         startsOn: 'monday',
         nDays: 7,
-        scrollToHour: 8
+        scrollToHour: 24,
       },
       month: {
         showTrailingAndLeadingDates: false
@@ -254,15 +254,41 @@ const router = useRouter()
     }
 
     async function obtenerNoticias() {
-      cargando.activar()
-      const response = await new NoticiaController().listar({
-        'fecha_vencimiento[operator]': '>',
-        'fecha_vencimiento[value]': obtenerFechaActual(maskFecha)
-      })
-      // console.log(response)
-      noticias.value = response.result
-      cargando.desactivar()
+      try {
+        cargando.activar();
+
+        // Obtener el ID del departamento del usuario logueado
+        const departamentoUsuario = store.user.departamento;
+
+        // Verificamos si el ID del departamento es válido
+        if (!departamentoUsuario) {
+          throw new Error('No se encontró el departamento del usuario logueado');
+        }
+
+        // Consultamos todas las noticias
+        const response = await new NoticiaController().listar({
+          'fecha_vencimiento[operator]': '>',
+          'fecha_vencimiento[value]': obtenerFechaActual(maskFecha)
+        });
+
+        // Filtramos las noticias para mostrar las que son para todos (departamentos_destinatarios es NULL)
+        // o las que están destinadas al departamento del usuario
+        const noticiasFiltradas = response.result.filter((noticia) => {
+          return (
+            noticia.departamentos_destinatarios === null || // Noticias para todos
+            noticia.departamentos_destinatarios.includes(departamentoUsuario) // Noticias específicas para el departamento del usuario
+          );
+        });
+
+        // Asignamos las noticias filtradas
+        noticias.value = noticiasFiltradas;
+      } catch (error) {
+        console.error('Error obteniendo noticias:', error);
+      } finally {
+        cargando.desactivar();
+      }
     }
+
 
     const documentosIntranet = ref([
       {

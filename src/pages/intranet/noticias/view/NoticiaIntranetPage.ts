@@ -19,11 +19,13 @@ import { tabOptionsNoticias } from 'config/utils'
 
 import { useAuthenticationStore } from 'stores/authentication'
 import { maskFecha } from 'src/config/utils'
+import { DepartamentoController } from 'pages/recursosHumanos/departamentos/infraestructure/DepartamentoController'
 import { CategoriaController } from 'pages/intranet/categorias/infraestructure/CategoriaController'
 import { EtiquetaController } from 'pages/intranet/etiquetas/infraestructure/EtiquetaController'
 import SelectorImagen from 'components/SelectorImagen.vue'
 import EssentialEditor from 'components/editores/EssentialEditor.vue'
 import { Etiqueta } from 'pages/intranet/etiquetas/domain/Etiqueta'
+import { useFiltrosListadosSelects } from 'shared/filtrosListadosGenerales'
 
 export default defineComponent({
   components: { TabLayoutFilterTabs2, EssentialEditor, SelectorImagen },
@@ -34,16 +36,27 @@ export default defineComponent({
     const { onReestablecer, onConsultado } = mixin.useHooks()
     const store = useAuthenticationStore()
 
+
+    const {departamentos, filtrarDepartamentos } = useFiltrosListadosSelects(listadosAuxiliares)
+
     const categorias = ref([])
     const etiquetas = ref([])
 
     cargarVista(async () => {
       await obtenerListados({
         categorias:{controller: new CategoriaController(), params:{activo:1}},
-        etiquetas: new EtiquetaController()
+        etiquetas: new EtiquetaController(),
+        departamentos: {
+          controller: new DepartamentoController(),
+          params: {
+            campos: 'id,nombre',
+            activo: 1
+          },
+        },
       })
 
       categorias.value = listadosAuxiliares.categorias
+      departamentos.value = listadosAuxiliares.departamentos
       // etiquetas.value = listadosAuxiliares.etiquetas
       noticia.autor = store.user.nombres + ' ' + store.user.apellidos
     })
@@ -75,6 +88,7 @@ export default defineComponent({
       fecha_vencimiento: { required },
       // imagen_noticia: { required },
       descripcion: { required, maxWords },
+
     }))
 
     const v$ = useVuelidate(reglas, noticia)
@@ -101,13 +115,17 @@ export default defineComponent({
       maskFecha,
       accion,
 
+
+
       // funciones
       filtrarNoticias,
       categoriaSeleccionada,
+      filtrarDepartamentos,
 
       // listados,
       categorias,
       etiquetas,
+      departamentos,
     }
   },
 })
