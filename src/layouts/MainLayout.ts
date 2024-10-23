@@ -1,7 +1,14 @@
 // Dependencias
 import { Notificacion } from 'pages/administracion/notificaciones/domain/Notificacion'
 import { useNotificationRealtimeStore } from 'stores/notificationRealtime'
-import { defineComponent, ref, computed, Ref, ComputedRef, watchEffect } from 'vue'
+import {
+  computed,
+  ComputedRef,
+  defineComponent,
+  Ref,
+  ref,
+  watchEffect
+} from 'vue'
 import { useAuthenticationStore } from 'src/stores/authentication'
 import { LocalStorage, useQuasar } from 'quasar'
 import { useMenuStore } from 'src/stores/menu'
@@ -110,7 +117,7 @@ export default defineComponent({
     async function logout() {
       cargando.activar()
       await authenticationStore.logout()
-      Router.replace({ name: 'Login' })
+      await Router.replace({ name: 'Login' })
       cargando.desactivar()
     }
 
@@ -312,8 +319,7 @@ export default defineComponent({
 
     function filtrarMenu(val) {
       const modulosPermitidos = obtenerModulosPermitidos()
-      const resultado = filterItems(modulosPermitidos, val)
-      resultadosBusqueda.value = resultado
+      resultadosBusqueda.value = filterItems(modulosPermitidos, val)
       posicionResultados.value = -1
     }
 
@@ -396,11 +402,11 @@ export default defineComponent({
       mostrarOpciones: ref(false),
       notificaciones,
       marcarLeida,
-      ordenarNotificaciones() {
-        notificaciones.value.sort((a: Notificacion, b: Notificacion) => {
-          return b.id! - a.id!
-        })
-      },
+      // ordenarNotificaciones() {
+      //   notificaciones.value.sort((a: Notificacion, b: Notificacion) => {
+      //     return b.id! - a.id!
+      //   })
+      // },
       dayjs,
       obtenerIcono: obtenerIconoNotificacion,
       imagenPerfil,

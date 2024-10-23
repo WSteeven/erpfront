@@ -13,7 +13,6 @@ import { useTransaccionStore } from 'stores/transaccion'
 import { useDevolucionStore } from 'stores/devolucion'
 import {
   acciones,
-  autorizaciones,
   estados,
   estadosTransacciones,
   motivosTransaccionesBodega

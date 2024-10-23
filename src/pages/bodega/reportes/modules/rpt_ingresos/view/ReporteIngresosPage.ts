@@ -19,7 +19,7 @@ import { TransaccionIngresoController } from 'pages/bodega/transacciones/infraes
 import { Transaccion } from 'pages/bodega/transacciones/domain/Transaccion'
 import { EmpleadoController } from 'pages/recursosHumanos/empleados/infraestructure/EmpleadoController'
 import {
-  accionesTabla,
+  accionesTabla, maskFecha,
   opcionesReportesIngresos,
   tiposReportesIngresos
 } from 'config/utils'
@@ -29,7 +29,7 @@ import { CustomActionTable } from 'components/tables/domain/CustomActionTable'
 import { useTransaccionEgresoStore } from 'stores/transaccionEgreso'
 import { EmpleadoRoleController } from 'pages/recursosHumanos/empleados/infraestructure/EmpleadoRolesController'
 import { TareaController } from 'pages/gestionTrabajos/tareas/infraestructure/TareaController'
-import { imprimirArchivo } from 'shared/utils'
+import { imprimirArchivo, obtenerFechaActual } from 'shared/utils'
 import { useNotificacionStore } from 'stores/notificacion'
 import { useCargandoStore } from 'stores/cargando'
 import { useFiltrosListadosSelects } from 'shared/filtrosListadosGenerales'
@@ -63,14 +63,15 @@ export default defineComponent({
     const transaccionStore = useTransaccionEgresoStore()
     const listado = ref([])
     const bodegueros = ref([])
-    const { empleados, filtrarEmpleados } =useFiltrosListadosSelects(listadosAuxiliares)
-    const motivos = ref([])
+    const { empleados, filtrarEmpleados, motivos, filtrarMotivos } =useFiltrosListadosSelects(listadosAuxiliares)
     const tareas = ref([])
+
     cargarVista(async () => {
       await obtenerListados({
         empleados: new EmpleadoController(),
         motivos: { controller: new MotivoController(), params: { tipo_transaccion_id: 1 } },
       })
+      reporte.fecha_fin = obtenerFechaActual(maskFecha)
     })
 
 
@@ -174,7 +175,8 @@ export default defineComponent({
       reporte,
       //listados
       sucursales, listado,
-      empleados, bodegueros, motivos,
+      empleados, bodegueros,
+      motivos, filtrarMotivos,
       tareas,
 
       opcionesReportesIngresos,

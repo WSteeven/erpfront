@@ -17,8 +17,8 @@
                   dense
                   outlined
                   @update:model-value="consultarListado(reporte.tipo)"
-                  :option-label="(item) => item.label"
-                  :option-value="(item) => item.value"
+                  :option-label="item => item.label"
+                  :option-value="item => item.value"
                   emit-value
                   map-options
                 >
@@ -41,8 +41,8 @@
                   use-input
                   input-debounce="0"
                   @filter="filtrarEmpleados"
-                  :option-label="(item) => item.nombres + ' ' + item.apellidos"
-                  :option-value="(item) => item.id"
+                  :option-label="item => item.nombres + ' ' + item.apellidos"
+                  :option-value="item => item.id"
                   emit-value
                   map-options
                 >
@@ -62,8 +62,8 @@
                   options-dense
                   dense
                   outlined
-                  :option-label="(item) => item.nombres + ' ' + item.apellidos"
-                  :option-value="(item) => item.id"
+                  :option-label="item => item.nombres + ' ' + item.apellidos"
+                  :option-value="item => item.id"
                   emit-value
                   map-options
                 >
@@ -83,8 +83,11 @@
                   options-dense
                   dense
                   outlined
-                  :option-value="(v) => v.id"
-                  :option-label="(v) => v.nombre"
+                  use-input
+                  input-debounce="0"
+                  @filter="filtrarMotivos"
+                  :option-value="v => v.id"
+                  :option-label="v => v.nombre"
                   emit-value
                   map-options
                 >
@@ -126,8 +129,8 @@
                   options-dense
                   dense
                   outlined
-                  :option-value="(v) => v.id"
-                  :option-label="(v) => v.lugar"
+                  :option-value="v => v.id"
+                  :option-label="v => v.lugar"
                   emit-value
                   map-options
                 >
@@ -154,15 +157,20 @@
                   options-dense
                   dense
                   outlined
-                  :option-value="(v) => v.id"
-                  :option-label="(v) => v.codigo_tarea"
+                  :option-value="v => v.id"
+                  :option-label="v => v.codigo_tarea"
                   emit-value
                   map-options
-                  ><template v-slot:option="scope">
+                >
+                  <template v-slot:option="scope">
                     <q-item v-bind="scope.itemProps">
                       <q-item-section>
-                        <q-item-label>{{ scope.opt.codigo_tarea }}</q-item-label>
-                        <q-item-label caption>{{ scope.opt.titulo }}</q-item-label>
+                        <q-item-label>{{
+                          scope.opt.codigo_tarea
+                        }}</q-item-label>
+                        <q-item-label caption>{{
+                          scope.opt.titulo
+                        }}</q-item-label>
                       </q-item-section>
                     </q-item>
                   </template>
@@ -212,7 +220,12 @@
                           today-btn
                         >
                           <div class="row items-center justify-end">
-                            <q-btn v-close-popup label="Cerrar" color="primary" flat />
+                            <q-btn
+                              v-close-popup
+                              label="Cerrar"
+                              color="primary"
+                              flat
+                            />
                           </div>
                         </q-date>
                       </q-popup-proxy>
@@ -236,9 +249,18 @@
                         transition-show="scale"
                         transition-hide="scale"
                       >
-                        <q-date v-model="reporte.fecha_fin" mask="DD-MM-YYYY" today-btn>
+                        <q-date
+                          v-model="reporte.fecha_fin"
+                          mask="DD-MM-YYYY"
+                          today-btn
+                        >
                           <div class="row items-center justify-end">
-                            <q-btn v-close-popup label="Cerrar" color="primary" flat />
+                            <q-btn
+                              v-close-popup
+                              label="Cerrar"
+                              color="primary"
+                              flat
+                            />
                           </div>
                         </q-date>
                       </q-popup-proxy>
@@ -260,7 +282,11 @@
                       glossy
                       @click="buscarReporte('consulta')"
                     >
-                      <q-icon name="bi-search" size="xs" class="q-pr-sm"></q-icon>
+                      <q-icon
+                        name="bi-search"
+                        size="xs"
+                        class="q-pr-sm"
+                      ></q-icon>
                       <span>Buscar</span>
                     </q-btn>
                     <!-- Boton excel -->
@@ -277,8 +303,8 @@
                         name="bi-file-earmark-excel-fill"
                         size="xs"
                         class="q-mr-sm"
-                      ></q-icon
-                      ><span>Excel</span>
+                      ></q-icon>
+                      <span>Excel</span>
                     </q-btn>
                     <!-- Boton PDF -->
                     <q-btn
@@ -301,7 +327,10 @@
                 </div>
               </div>
             </div>
-            <div v-if="listado.length" class="row q-col-gutter-sm q-pa-sm q-py-md">
+            <div
+              v-if="listado.length"
+              class="row q-col-gutter-sm q-pa-sm q-py-md"
+            >
               <div class="col-12 col-md-12">
                 <essential-table
                   v-if="listado.length"
@@ -322,7 +351,11 @@
             <!-- <div v-else>&nbsp;&nbsp; No hay movimientos de esta consulta.</div> -->
           </q-card>
         </div>
-        <modal-entidad :comportamiento="modales" :persistente="false"></modal-entidad>
+        <modal-entidad
+          :comportamiento="modales"
+          :mostrarListado="false"
+          :persistente="false"
+        ></modal-entidad>
       </q-page>
     </q-page-container>
   </q-layout>

@@ -78,9 +78,9 @@ export default defineComponent({
     } = useOrquestadorSelectorDetalles(pedido, 'detalles')
 
     // Flags
-    let tabSeleccionado = ref('PENDIENTE')
-    let soloLectura = ref(false)
-    let puedeEditar = ref(false)
+    const tabSeleccionado = ref('PENDIENTE')
+    const soloLectura = ref(false)
+    const puedeEditar = ref(false)
     const tablaRefrescada = ref(true)
 
     const esCoordinador = store.esCoordinador
@@ -196,9 +196,8 @@ export default defineComponent({
      */
      async function filtrarPedidos(tab:string){
       tabSeleccionado.value = tab
-      listar({estado:tab})
+      await listar({ estado: tab })
       puedeEditar.value = (esCoordinador || esActivosFijos || store.esJefeTecnico || esGerente || store.esCompras || store.can('puede.autorizar.pedidos')) && tabSeleccionado.value === estadosTransacciones.pendiente
-        ? true : false
      }
 
     function cargarDatosDefecto() {
@@ -215,8 +214,8 @@ export default defineComponent({
       })
       listadosAuxiliares.proyectos = response.result
       proyectos.value = response.result
-      if (accion.value == acciones.nuevo) obtenerTareasEtapa(null)
-      else obtenerTareasEtapa(pedido.etapa, false)
+      if (accion.value == acciones.nuevo) await obtenerTareasEtapa(null)
+      else await obtenerTareasEtapa(pedido.etapa, false)
       cargando.desactivar()
     }
 
@@ -328,7 +327,7 @@ export default defineComponent({
       color: 'negative',
       icono: 'bi-x',
       accion: ({ posicion }) => eliminar({ posicion }),
-      visible: () => accion.value == acciones.consultar ? false : true
+      visible: () => accion.value != acciones.consultar
     }
     const botonAnularAutorizacion: CustomActionTable = {
       titulo: 'Anular',
@@ -401,7 +400,7 @@ export default defineComponent({
         prompt(data)
       },
       visible: () => {
-        return accion.value == acciones.consultar ? false : true
+        return accion.value != acciones.consultar
       }
     }
     const botonDespachar: CustomActionTable = {
@@ -412,7 +411,7 @@ export default defineComponent({
         pedidoStore.pedido = entidad
         router.push('transacciones-egresos')
       },
-      visible: ({ entidad }) => (tabSeleccionado.value == 'APROBADO' || tabSeleccionado.value == 'PARCIAL') && esBodeguero && entidad.estado != estadosTransacciones.completa ? true : false
+      visible: ({ entidad }) => (tabSeleccionado.value == 'APROBADO' || tabSeleccionado.value == 'PARCIAL') && (esBodeguero||store.esBodegueroTelconet) && entidad.estado != estadosTransacciones.completa
     }
     const botonCorregir: CustomActionTable = {
       titulo: 'Corregir pedido',
@@ -422,7 +421,7 @@ export default defineComponent({
         pedidoStore.pedido = entidad
         modales.abrirModalEntidad('CorregirPedidoPage')
       },
-      visible: ({ entidad }) => (tabSeleccionado.value == 'APROBADO' || tabSeleccionado.value == 'PARCIAL') && (esBodeguero || entidad.per_autoriza_id == store.user.id) && entidad.estado != estadosTransacciones.completa ? true : false
+      visible: ({ entidad }) => (tabSeleccionado.value == 'APROBADO' || tabSeleccionado.value == 'PARCIAL') && (esBodeguero || entidad.per_autoriza_id == store.user.id) && entidad.estado != estadosTransacciones.completa
     }
     const botonImprimir: CustomActionTable = {
       titulo: 'Imprimir',
@@ -432,7 +431,7 @@ export default defineComponent({
         pedidoStore.idPedido = entidad.id
         await pedidoStore.imprimirPdf()
       },
-      visible: () => tabSeleccionado.value == 'APROBADO' || tabSeleccionado.value == 'PARCIAL' || tabSeleccionado.value == 'COMPLETA' ? true : false
+      visible: () => tabSeleccionado.value == 'APROBADO' || tabSeleccionado.value == 'PARCIAL' || tabSeleccionado.value == 'COMPLETA'
     }
 
 
@@ -493,22 +492,22 @@ export default defineComponent({
       obtenerProyectosTareasTecnico,
       obtenerEtapasProyecto,
       obtenerTareasEtapa,
-      checkEvidencia(val, evt) {
+      checkEvidencia(val) {
         if (!val) {
           pedido.evidencia1 = ''
           pedido.evidencia2 = ''
         }
       },
-      checkCliente(val, evt) {
+      checkCliente(val) {
         if (val) {
           pedido.per_retira = null
           pedido.responsable = null
         } else pedido.cliente = null
       },
-      checkRetiraTercero(val, evt) {
+      checkRetiraTercero(val) {
         if (!val) pedido.per_retira = null
       },
-      checkEsTarea(val, evt) {
+      checkEsTarea(val) {
         if (val) {
           if (!pedido.responsable) {
             notificarAdvertencia('Debes seleccionar primero un empleado (técnico) responsable')

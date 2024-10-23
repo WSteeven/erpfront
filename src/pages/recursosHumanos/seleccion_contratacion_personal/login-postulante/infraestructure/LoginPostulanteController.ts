@@ -14,7 +14,6 @@ export class LoginPostulanteController {
       const redirectTo = this.route.query.redirect || '/puestos-disponibles'
 
       const usuario = await this.store.login(userLogin)
-      const roles = usuario.roles
       await this.Router.replace(redirectTo)
       // this.Router.replace({ name: 'puestos_disponibles' })
 
@@ -41,8 +40,8 @@ export class LoginPostulanteController {
   async obtenerSesionUser() {
     try {
       const usuario = this.store.obtenerSesion()
-
-      this.Router.replace({ name: 'puestos_disponibles' })
+      this.store.setUser(usuario)
+      await this.Router.replace({ name: 'puestos_disponibles' })
     } catch (error: unknown) {
       throw error
     }

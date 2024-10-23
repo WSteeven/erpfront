@@ -456,6 +456,7 @@ export default defineComponent({
       transaccion.cliente = Number.isInteger(pedidoStore.pedido.cliente)
         ? pedidoStore.pedido.cliente
         : pedidoStore.pedido.cliente_id
+      transaccion.observacion_aut = pedidoStore.pedido.observacion_aut ?? pedidoStore.pedido.observacion_est
       listadoPedido.value = [
         ...pedidoStore.pedido.listadoProductos.filter(
           v => v.cantidad != v.despachado
