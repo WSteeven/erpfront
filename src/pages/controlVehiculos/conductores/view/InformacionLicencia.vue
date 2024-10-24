@@ -424,7 +424,7 @@ async function consultarMultasConductor() {
 async function fechaIngresada(fecha?) {
   // console.log('Fecha ingresada: ', fecha)
   dataMulta.fecha_pago = fecha
-  if (await conductorStore.pagarMulta(dataMulta)) consultarMultasConductor()
+  if (await conductorStore.pagarMulta(dataMulta)) await consultarMultasConductor()
 }
 function agregarLicencia(data) {
   // Aqui se recibe clave valor data = {index:1, value:'A'}

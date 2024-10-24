@@ -8,6 +8,11 @@ import { PlanVacacionController } from 'recursosHumanos/planVacacion/infraestruc
 import { useEmpleadoStore } from 'stores/empleado'
 import { EmpleadoController } from 'recursosHumanos/empleados/infraestructure/EmpleadoController'
 import { VacacionController } from 'recursosHumanos/vacaciones/infraestructure/VacacionController'
+import { useFiltrosListadosSelects } from 'shared/filtrosListadosGenerales'
+import { required } from 'shared/i18n-validators'
+import { obtenerFechaActual, ordenarLista, sumarFechas } from 'shared/utils'
+import { useVuelidate } from '@vuelidate/core'
+import { maskFecha } from 'config/utils'
 
 export default defineComponent({
   components: { TabLayout, SimpleLayout, EmpleadoInfoPage },
@@ -16,24 +21,43 @@ export default defineComponent({
       PlanVacacion,
       new PlanVacacionController()
     )
-    const { entidad: plan, disabled, listadosAuxiliares, accion } = mixin.useReferencias()
-    const { cargarVista, obtenerListados } = mixin.useComportamiento()
+    const {
+      entidad: plan,
+      disabled,
+      listadosAuxiliares,
+      accion
+    } = mixin.useReferencias()
+    const { setValidador, cargarVista, obtenerListados } =
+      mixin.useComportamiento()
 
     const empleadoStore = useEmpleadoStore()
     const empleado = ref()
     const vacaciones = ref()
+
+    const { empleados, filtrarEmpleados } =
+      useFiltrosListadosSelects(listadosAuxiliares)
+
     cargarVista(() => {
       obtenerListados({
+        empleados: {
+          controller: new EmpleadoController(),
+          params: {
+            estado: 1,
+            'fecha_ingreso[operator]': '<=',
+            'fecha_ingreso[value]': sumarFechas(obtenerFechaActual(),-1,0,0,maskFecha)
+          }
+        },
         vacaciones: {
           controller: new VacacionController(),
           params: { empleado_id: empleadoStore.idEmpleado }
         }
       })
-      vacaciones.value = listadosAuxiliares.vacaciones
-      if (empleadoStore.idEmpleado > 0) {
-        obtenerEmpleado(empleadoStore.idEmpleado)
-      }
     })
+    const reglas = {
+      empleado: { required }
+    }
+    const v$ = useVuelidate(reglas, plan)
+    setValidador(v$.value)
 
     /****************
      * FUNCIONES
@@ -45,8 +69,16 @@ export default defineComponent({
       empleadoStore.empleado.hydrate(result[0])
     }
 
+    async function seleccionarEmpleado(){
+      await obtenerEmpleado(plan.empleado)
+      const { result} = await new VacacionController().listar({empleado_id: plan.empleado})
+      listadosAuxiliares.vacaciones = result
+      vacaciones.value = listadosAuxiliares.vacaciones
+    }
+
     return {
       mixin,
+      v$,
       plan,
       disabled,
       accion,
@@ -55,10 +87,12 @@ export default defineComponent({
 
       // listados
       vacaciones,
+      empleados,
+      filtrarEmpleados,
 
       //funciones
-
-
+      ordenarLista,
+      seleccionarEmpleado,
     }
   }
 })

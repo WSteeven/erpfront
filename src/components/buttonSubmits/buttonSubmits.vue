@@ -74,6 +74,7 @@ import { defineComponent } from 'vue'
 export default defineComponent({
   components: {},
   props: {
+    identificador: { type: Number, default: -1 },
     accion: {
       type: String,
       required: true
