@@ -1,13 +1,15 @@
 <template>
   <q-page>
-    <div class="row justify-center items-center window-height">
+    <div class="row justify-center items-center window-height bg-grey-2">
       <!-- Left side with the logo -->
       <div
         class="col-12 col-md-6 col-lg-4 q-pa-lg column justify-center items-center"
         :class="{ 'bg-grey-2': !$q.dark.isActive }"
       >
         <q-avatar square size="200px" class="q-mb-lg">
-          <img :src="!$q.dark.isActive ? logoClaro : logoOscuro" />
+          <!-- <img :src="!$q.dark.isActive ? logoClaro : logoOscuro" /> -->
+
+          <q-icon name="face" size="50px" class="text-grey-6" />
         </q-avatar>
         <h2 class="text-center q-mb-md">Bienvenidos a {{ nombreEmpresa }}</h2>
         <span class="text-center q-mb-lg">Inicie sesión con su cuenta</span>
