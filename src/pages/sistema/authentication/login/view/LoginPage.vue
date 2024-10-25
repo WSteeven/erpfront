@@ -1,51 +1,32 @@
 <template>
   <q-page>
-    <div class="row items-center">
-      <!-- Left side -->
+    <div class="row justify-center items-center window-height">
+      <!-- Left side with the logo -->
       <div
-        v-if="!$q.screen.xs && !$q.screen.sm"
-        class="col-12 col-md-8 justify-center q-pa-lg items-center row window-height"
+        class="col-12 col-md-6 col-lg-4 q-pa-lg column justify-center items-center"
         :class="{ 'bg-grey-2': !$q.dark.isActive }"
       >
-        <div class="imagen d-flex align-items-center justify-content-center">
-          <q-avatar square size="400px">
-            <img :src="!$q.dark.isActive ? logoClaro : logoOscuro" />
-          </q-avatar>
-        </div>
-      </div>
-
-      <!-- Right side -->
-      <div
-        class="col-12 col-md-4 column items-center bg-body-table justify-center window-height"
-      >
-        <q-avatar
-          v-if="$q.screen.xs"
-          square
-          size="120px"
-          class="q-mx-auto block q-mb-md"
-        >
+        <q-avatar square size="200px" class="q-mb-lg">
           <img :src="!$q.dark.isActive ? logoClaro : logoOscuro" />
         </q-avatar>
+        <h2 class="text-center q-mb-md">Bienvenidos a {{ nombreEmpresa }}</h2>
+        <span class="text-center q-mb-lg">Inicie sesión con su cuenta</span>
 
+        <!-- Login Form -->
         <form @submit.prevent="login" class="full-width q-px-lg">
-          <div class="q-mb-sm">
-            <h2>Bienvenidos a {{ nombreEmpresa }}</h2>
-            <span>Inicie sesión con su cuenta</span>
-          </div>
-
           <!-- Usuario -->
-          <div class="col-12 q-mb-sm">
+          <div class="q-mb-sm">
             <q-input
               v-model="loginUser.name"
               label="Usuario"
               outlined
               dense
-              @keyup.enter="login()"
+              @keyup.enter="login"
             />
           </div>
 
           <!-- Contraseña -->
-          <div class="col-12 q-mb-sm">
+          <div class="q-mb-sm">
             <q-input
               v-model="loginUser.password"
               label="Contraseña"
@@ -54,7 +35,7 @@
               :type="isPwd ? 'password' : 'text'"
               class="normal-text"
               hint="No comparta su contraseña con nadie"
-              @keyup.enter="login()"
+              @keyup.enter="login"
               style="text-transform: none;"
             >
               <template v-slot:append>
@@ -68,47 +49,40 @@
           </div>
 
           <!-- Recuerdame -->
-          <div class="col-12 q-mb-sm">
+          <div class="q-mb-sm">
             <q-toggle v-model="loginUser.remember_session" label="Recuérdame" />
           </div>
 
-          <div class="col-12">
-            <!-- Botones -->
-            <q-btn
-              color="primary"
-              label="Iniciar sesión"
-              class="full-width q-mb-sm"
-              :disabled="!enableLoginButton"
-              no-caps
-              unelevated
-              @click="login()"
-            >
-            </q-btn>
-          </div>
-          <div class="col-12">
-            <!-- Botones -->
-            <q-btn
-              flat
-              color="primary"
-              label="Recuperar contraseña"
-              class="full-width q-mb-sm"
-              no-caps
-              unelevated
-              @click="recuperarPassword()"
-            >
-            </q-btn>
-          </div>
+          <!-- Botones -->
+          <q-btn
+            color="primary"
+            label="Iniciar sesión"
+            class="full-width q-mb-sm"
+            :disabled="!enableLoginButton"
+            no-caps
+            unelevated
+            @click="login"
+          />
+          <q-btn
+            flat
+            color="primary"
+            label="Recuperar contraseña"
+            class="full-width q-mb-sm"
+            no-caps
+            unelevated
+            @click="recuperarPassword"
+          />
 
-          <div class="col-12 q-pt-xl q-mt-xl">
+          <!-- Entrar como externo -->
+          <div class="q-pt-lg q-mt-lg">
             <q-btn
               color="primary"
               label="¿Entrar como externo?"
               class="full-width q-mb-sm"
               no-caps
               unelevated
-
               outline
-              :to="{name:'LoginPostulante'}"
+              :to="{ name: 'LoginPostulante' }"
             />
           </div>
         </form>
