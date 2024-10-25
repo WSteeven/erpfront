@@ -20,7 +20,8 @@
           <empleado-info-page alto="200px" />
         </div>
       </q-expansion-item>
-<div v-if="vacaciones.length>1">
+
+<div v-if="vacaciones">
   <q-expansion-item
     v-for="(vacacion, index) of vacaciones"
     :key="vacacion.id"
