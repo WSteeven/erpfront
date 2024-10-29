@@ -200,7 +200,7 @@ module.exports = configure(function (/* ctx */) {
       //   router: 'src/router/index',
       //   store: 'src/store/index',
       registerServiceWorker: 'src/register-service-worker',
-      serviceWorker: 'src/service-worker'
+      serviceWorker: 'public/service-worker'
       //   pwaManifestFile: 'src-pwa/manifest.json',
       //   electronMain: 'src-electron/electron-main',
       //   electronPreload: 'src-electron/electron-preload'

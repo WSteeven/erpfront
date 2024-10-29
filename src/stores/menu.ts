@@ -703,7 +703,7 @@ export const useMenuStore = defineStore('menu', () => {
           title: 'Permiso',
           link: 'permiso-nomina',
           icon: 'bi-calendar2-plus-fill',
-          can: store.can('pu ede.acceder.permiso_nomina')
+          can: store.can('puede.acceder.permiso_nomina')
         },
         {
           title: 'Nominas y prestamos',

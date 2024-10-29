@@ -1,5 +1,5 @@
-import { ColumnConfig } from "components/tables/domain/ColumnConfig";
-import { ProveedorInternacional } from "./ProveedorInternacional";
+import { ColumnConfig } from 'components/tables/domain/ColumnConfig';
+import { ProveedorInternacional } from './ProveedorInternacional';
 
 export const configuracionColumnasProveedoresInternacionales: ColumnConfig<ProveedorInternacional>[]=[
   {

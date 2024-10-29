@@ -1,5 +1,4 @@
 import { Empresa } from 'pages/administracion/empresas/domain/Empresa'
-import { Ref, ref } from 'vue'
 import { ordenarLista, ordernarListaString } from './utils'
 import { Banco } from 'pages/recursosHumanos/banco/domain/Banco'
 import { CategoriaOferta } from 'pages/comprasProveedores/categoriaOfertas/domain/CategoriaOferta'
@@ -10,8 +9,9 @@ import { Servicio } from 'pages/controlVehiculos/servicios/domain/Servicio'
 import { Empleado } from 'pages/recursosHumanos/empleados/domain/Empleado'
 import { CentroCosto } from 'pages/gestionTrabajos/centroCostos/domain/CentroCostos'
 import { SeguroVehicular } from 'pages/controlVehiculos/seguros/domain/SeguroVehicular'
+import { ref } from 'vue'
 
-export const useFiltrosListadosSelects = (listadosAuxiliares, entidad?: Ref<any>) => {
+export const useFiltrosListadosSelects = (listadosAuxiliares) => {
   /************
    * Variables
    ************/

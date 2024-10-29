@@ -8,6 +8,10 @@ import { useVuelidate } from '@vuelidate/core'
 import { PlanVacacionController } from 'recursosHumanos/planVacacion/infraestructure/PlanVacacionController'
 import { addDay, format } from '@formkit/tempo'
 import { useNotificaciones } from 'shared/notificaciones'
+import { PeriodoController } from 'recursosHumanos/periodo/infraestructure/PeriodoController'
+import { useEmpleadoStore } from 'stores/empleado'
+import { useFiltrosListadosSelects } from 'shared/filtrosListadosGenerales'
+import { Periodo } from 'recursosHumanos/periodo/domain/Periodo'
 
 export default defineComponent({
   components: { ButtonSubmits },
@@ -31,7 +35,7 @@ export default defineComponent({
     },
     periodo: {
       type: Number,
-      required: true
+      default: -1
     },
     habilitarBotones: {
       type: Boolean,
@@ -43,12 +47,18 @@ export default defineComponent({
       PlanVacacion,
       new PlanVacacionController()
     )
-    const { entidad: planVacacion, accion } = mixin.useReferencias()
-    const { setValidador, guardar, editar } = mixin.useComportamiento()
+    const {
+      entidad: planVacacion,
+      accion,
+      listadosAuxiliares
+    } = mixin.useReferencias()
+    const { setValidador, guardar, editar, cargarVista, obtenerListados } =
+      mixin.useComportamiento()
     const { onGuardado, onModificado } = mixin.useHooks()
     const { notificarAdvertencia } = useNotificaciones()
 
     const mostrarFormularioCrearPlan = ref(false)
+    const empleadoStore = useEmpleadoStore()
 
     /************
      * INIT
@@ -57,6 +67,9 @@ export default defineComponent({
     if (props.accion == acciones.editar) planVacacion.hydrate(props.plan)
     planVacacion.empleado = props.empleado
     planVacacion.periodo = props.periodo
+    console.log(props.periodo)
+    if (props.plan!=undefined)
+      planVacacion.periodo = props.plan?.periodo_id
 
     /*************
      * HOOKS
@@ -66,6 +79,16 @@ export default defineComponent({
     })
     onModificado(() => {
       emit('guardado', accion)
+    })
+    const { periodos, filtrarPeriodos } =
+      useFiltrosListadosSelects(listadosAuxiliares)
+    cargarVista(async () => {
+      await obtenerListados({
+        periodos: props.periodo == -1 ? new PeriodoController() : []
+      })
+
+      // Carga inicial de los listados
+      periodos.value = listadosAuxiliares.periodos
     })
 
     const reglas = {
@@ -88,7 +111,8 @@ export default defineComponent({
       },
       dias_segundo_rango: {
         required: requiredIf(() => planVacacion.rangos == 2)
-      }
+      },
+      periodo: { required: requiredIf(() => props.periodo == -1) }
     }
     const v$ = useVuelidate(reglas, planVacacion)
     v$.value = setValidador(v$.value)
@@ -105,6 +129,21 @@ export default defineComponent({
         addDay(planVacacion.fecha_inicio, props.diasDisponibles - 1),
         maskFecha
       )
+    }
+
+    function obtenerPeriodos() {
+      if (empleadoStore.idEmpleado) {
+        const anioIngreso = parseInt(
+          empleadoStore.empleado.fecha_ingreso.split('-')[0]
+        )
+        listadosAuxiliares.periodos = listadosAuxiliares.periodos.filter(
+          (periodo: Periodo) => {
+            const anioInicial = parseInt(periodo.nombre.split('-')[0])
+            return anioInicial > anioIngreso
+          }
+        )
+      }
+      periodos.value = listadosAuxiliares.periodos
     }
 
     watch(() => {
@@ -158,6 +197,11 @@ export default defineComponent({
       maskFecha,
       planVacacion,
       mostrarFormularioCrearPlan,
+      empleadoStore,
+
+      // listados
+      periodos,
+      filtrarPeriodos,
 
       //funciones
       crearPlanVacaciones,
@@ -167,7 +211,8 @@ export default defineComponent({
       calcularFechasRangos,
       guardar,
       editar,
-      cancelar
+      cancelar,
+      obtenerPeriodos
     }
   }
 })

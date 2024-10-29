@@ -20,52 +20,91 @@
           <empleado-info-page alto="200px" />
         </div>
       </q-expansion-item>
-
-<div v-if="vacaciones">
-  <q-expansion-item
-    v-for="(vacacion, index) of vacaciones"
-    :key="vacacion.id"
-    class="overflow-hidden q-mb-md expansion"
-    :label="'Período ' + vacacion.periodo"
-    header-class="text-bold bg-header-collapse"
-    default-opened
-  >
-    <!--        PLAN-VACACION: {{ planes_vacaciones }}-->
-    <div class="row q-pa-sm" v-if="mostrarPlanVacacion">
-      <div>
-        <label>Plan de Vacaciones para este período &nbsp;</label>
-        <q-btn
-          dense
-          outline
-          color="secondary"
-          @click="()=>habilitarBotones=!habilitarBotones"
-          v-if="obtenerAccion(vacacion.periodo) == acciones.editar"
+      <div v-if="vacaciones.length != 0">
+        <q-expansion-item
+          v-for="(vacacion, index) of vacaciones"
+          :key="vacacion.id"
+          class="overflow-hidden q-mb-md expansion"
+          :label="'Período ' + vacacion.periodo"
+          header-class="text-bold bg-header-collapse"
+          default-opened
         >
-          <q-tooltip class="bg-dark">Editar</q-tooltip>
-          <q-icon class="bi-pencil-square" size="xs" />
-        </q-btn>
+          <div class="row q-pa-sm" v-if="mostrarPlanVacacion">
+            <div>
+              <label>Plan de Vacaciones para este período &nbsp;</label>
+              <q-btn
+                dense
+                outline
+                color="secondary"
+                @click="() => (habilitarBotones = !habilitarBotones)"
+                v-if="obtenerAccion(vacacion.periodo) == acciones.editar"
+              >
+                <q-tooltip class="bg-dark">Editar</q-tooltip>
+                <q-icon class="bi-pencil-square" size="xs" />
+              </q-btn>
+            </div>
+            <div class="col-12 border-grey rounded-8">
+              <formulario-plan-vacaciones
+                :habilitar-botones="
+                  habilitarBotones ||
+                  obtenerAccion(vacacion.periodo) == acciones.nuevo
+                "
+                :dias-disponibles="vacacion.dias_disponibles"
+                :empleado="empleadoStore.idEmpleado"
+                :identificador="index"
+                @cancelar="cancelar"
+                @guardado="obtenerPlanesVacaciones"
+                :accion="obtenerAccion(vacacion.periodo)"
+                :plan="planes_vacaciones[index]"
+                :periodo="vacacion.periodo_id"
+              />
+            </div>
+          </div>
+          <div class="row q-pa-sm">
+            {{ vacacion }}
+          </div>
+        </q-expansion-item>
       </div>
-      <div class="col-12 border-grey rounded-8">
+      <div v-else>
+        <p>
+          <strong style="color: red">*</strong>
+          Este empleado aún no ha cumplido su primer año de labores.
+        </p>
+        <div class="row q-pa-sm" v-if="mostrarPlanVacacion">
+          <div>
+            <label>Plan de Vacaciones para este período &nbsp;</label>
+            <q-btn
+              dense
+              outline
+              color="secondary"
+              @click="() => (habilitarBotones = !habilitarBotones)"
+              v-if="obtenerAccion(planes_vacaciones[0]?.periodo) == acciones.editar"
+            >
+              <q-tooltip class="bg-dark">Editar</q-tooltip>
+              <q-icon class="bi-pencil-square" size="xs" />
+            </q-btn>
+          </div>
+          <div class="col-12 border-grey rounded-8">
         <formulario-plan-vacaciones
-          :habilitar-botones="habilitarBotones||obtenerAccion(vacacion.periodo)==acciones.nuevo"
-          :dias-disponibles="vacacion.dias_disponibles"
+          :habilitar-botones="habilitarBotones || obtenerAccion(planes_vacaciones[0]?.periodo) == acciones.nuevo"
+          :dias-disponibles="15"
           :empleado="empleadoStore.idEmpleado"
-          :identificador="index"
           @cancelar="cancelar"
           @guardado="obtenerPlanesVacaciones"
-          :accion="obtenerAccion(vacacion.periodo)"
-          :plan="planes_vacaciones[index]"
-          :periodo="vacacion.periodo_id"
+          :accion="obtenerAccion(planes_vacaciones[0]?.periodo)"
+          :plan="planes_vacaciones[0]"
         />
-      </div>
-    </div>
-    <div class="row q-pa-sm">
-      {{ vacacion }}
-    </div>
-  </q-expansion-item>
-</div>
-      <div v-else>
-        <p>Este empleado aún no ha cumplido su primer año de labores, pero puedes programar el plan de vacaciones para el siguiente periodo</p>
+          </div>
+        </div>
+<!--        <formulario-plan-vacaciones-->
+<!--          v-else-->
+<!--          :habilitar-botones="false"-->
+<!--          :periodo="2"-->
+<!--          :empleado="empleadoStore.idEmpleado"-->
+<!--          :accion="acciones.editar"-->
+<!--          :dias-disponibles="15"-->
+<!--          :plan="planes_vacaciones[0]"-->
+<!--        />-->
       </div>
 
       <div class="row q-col-gutter-sm q-pa-md" v-if="false">

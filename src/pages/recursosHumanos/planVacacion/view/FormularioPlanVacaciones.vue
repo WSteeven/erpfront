@@ -12,6 +12,45 @@
 
   <div v-else>
     <div class="row q-col-gutter-sm q-pa-sm">
+      {{planVacacion}}
+      <!--Periodos -->
+      <div class="col-12 col-md-3" v-if="periodo==-1">
+        <label class="q-mb-sm block">Periodo</label>
+        <q-select
+          v-model="planVacacion.periodo"
+          :options="periodos"
+          transition-show="jump-up"
+          transition-hide="jump-down"
+          options-dense
+          dense
+          outlined
+          :disable="disabled"
+          :error="!!v$.periodo.$errors.length"
+          error-message="Debes seleccionar un periodo"
+          use-input
+          @blur="v$.periodo.$touch"
+          @popup-show="obtenerPeriodos"
+          input-debounce="0"
+          @filter="filtrarPeriodos"
+          :option-value="v => v.id"
+          :option-label="v => v.nombre"
+          emit-value
+          map-options
+        >
+          <template v-slot:error>
+            <div v-for="error of v$.periodo.$errors" :key="error.$uid">
+              <div class="error-msg">{{ error.$message }}</div>
+            </div>
+          </template>
+          <template v-slot:no-option>
+            <q-item>
+              <q-item-section class="text-grey">
+                No hay resultados
+              </q-item-section>
+            </q-item>
+          </template>
+        </q-select>
+      </div>
       <!-- Dias disponibles -->
       <div class="col-3 col-md-3 col-sm-6">
         <label class="q-mb-sm block">Días disponibles</label>
@@ -334,6 +373,8 @@
         </q-input>
       </div>
     </div>
+
+<!--    {{plan}} ||| {{empleadoStore.empleado}}-->
 
     <div class="row justify-end q-pr-md q-pb-md">
       <!--    botones de submit-->

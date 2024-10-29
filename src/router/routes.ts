@@ -7,9 +7,6 @@ import rutasSeleccionContratacionPersonal from './rrhh/rutasSeleccionContratacio
 import rutasActivosFijos from './rutasActivosFijos'
 import { empresas } from 'config/utils/sistema'
 
-const JPCONSTRUCRED = process.env.VUE_APP_ID == empresas.JPCONSTRUCRED
-const JPCUSTODY = process.env.VUE_APP_ID == empresas.JPCUSTODY
-const CCLEDARE = process.env.VUE_APP_ID == empresas.CCLEDARE
 console.log(process.env.VUE_APP_ID)
 const routes: RouteRecordRaw[] = [
   // {
@@ -1414,7 +1411,7 @@ const routes: RouteRecordRaw[] = [
       },
     ],
   },
-  
+
   {
     path: '/login',
     component: () => import('layouts/FullLayout.vue'),

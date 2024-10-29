@@ -13,7 +13,13 @@ import { ContenedorSimpleMixin } from 'shared/contenedor/modules/simple/applicat
 import { PermisoEmpleadoController } from '../infraestructure/PermisoEmpleadoController'
 import { PermisoEmpleado } from '../domain/PermisoEmpleado'
 import { obtenerFechaActual, removeAccents, sumarFechas } from 'shared/utils'
-import { autorizacionesId, convertir_fecha_hora, maskFecha, numDiaSemana, tabOptionsPermiso} from 'config/utils'
+import {
+  autorizacionesId,
+  convertir_fecha_hora,
+  maskFecha,
+  numDiaSemana,
+  tabOptionsPermiso
+} from 'config/utils'
 import { required, requiredIf } from 'shared/i18n-validators'
 import { MotivoPermisoEmpleadoController } from 'pages/recursosHumanos/motivo/infraestructure/MotivoPermisoEmpleadoController'
 import { EmpleadoController } from 'pages/recursosHumanos/empleados/infraestructure/EmpleadoController'
@@ -72,7 +78,7 @@ export default defineComponent({
     //Definimos variables de hora de inicio y fin para la jornada laboral
     const horaInicioLaboral = 8
     const horaFinLaboral = 17
-    const milisegundosPorHora = 1000 * 60 * 60
+    const milisegundosPorHora = 1000 * 60 * 60 //1000 es 1 segundo; 1000 milisegundos*60 es 1 minuto; 1000*60*60 es 1 hora
     const minuteOptions = [0, 15, 30, 45]
     const mask = 'YYYY-MM-DD HH:mm'
 
@@ -80,6 +86,7 @@ export default defineComponent({
     const esNuevo = computed(() => {
       return accion.value === 'NUEVO'
     })
+
     const dias_permiso = computed(() => {
       if (permiso.fecha_hora_inicio != null && permiso.fecha_hora_fin != null) {
         const fechaInicio = parse(permiso.fecha_hora_inicio, mask)
@@ -183,6 +190,10 @@ export default defineComponent({
       }
     })
 
+    watchEffect(()=>{
+      permiso.cargo_vacaciones = dias_permiso.value==1
+    })
+
     onBeforeGuardar(() => {
       permiso.tieneDocumento =
         refArchivoPrestamoEmpresarial.value.tamanioListado > 0
@@ -197,9 +208,11 @@ export default defineComponent({
       subirArchivos(id)
       emit('cerrar-modal')
     })
+
     async function subirArchivos(id: number) {
       await refArchivoPrestamoEmpresarial.value.subir({ permiso_id: id })
     }
+
     onConsultado(() => {
       esAutorizador.value = store.user.id == permiso.id_jefe_inmediato
       aux_fecha_inicio.value =
@@ -251,6 +264,7 @@ export default defineComponent({
         v => v.id !== autorizacionesId.VALIDADO
       )
     })
+
     function optionsFechaInicio(date) {
       const currentDateString = sumarFechas(
         obtenerFechaActual(),
@@ -265,6 +279,7 @@ export default defineComponent({
         new Date(date).getDay() > numDiaSemana.domingo
       )
     }
+
     function optionsFecha(date) {
       const fecha_hora_inicio = format(
         new Date(convertir_fecha_hora(permiso.fecha_hora_inicio)),
@@ -311,6 +326,7 @@ export default defineComponent({
         new Date(date).getDay() > numDiaSemana.domingo
       )
     }
+
     function optionsFechaSugerida(date) {
       const partes = permiso.fecha_hora_fin?.split(' ')
       return date > format(partes[0], 'YYYY/MM/DD')
@@ -334,6 +350,7 @@ export default defineComponent({
     const v$ = useVuelidate(reglas, permiso)
     setValidador(v$.value)
     const tabPermisoEmpleado = ref('1')
+
     function filtrarPermisoEmpleado(tabSeleccionado: string) {
       switch (tabSeleccionado) {
         case '1': // pendientes
@@ -389,7 +406,6 @@ export default defineComponent({
       minuteOptions,
       filtrarEmpleados,
       filtrarPermisoEmpleado,
-      watchEffect,
       optionsFechaInicio,
       optionsFechaRecuperacion,
       optionsFechaSugerida,

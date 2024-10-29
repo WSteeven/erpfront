@@ -37,8 +37,8 @@ export default defineComponent({
     const empleado = ref()
     const mostrarPlanVacacion = ref(false)
     const habilitarBotones = ref(false)
-    const vacaciones: Ref<Vacacion[]> = ref()
-    const planes_vacaciones = ref()
+    const vacaciones: Ref<Vacacion[]> = ref([])
+    const planes_vacaciones = ref([])
 
     cargarVista(async () => {
       plan.empleado = empleadoStore.idEmpleado
@@ -69,16 +69,25 @@ export default defineComponent({
       habilitarBotones.value = false
       mostrarPlanVacacion.value = false
       listadosAuxiliares.planes_vacaciones = []
-      for (const vacacion of vacaciones.value) {
-        const { result } = await new PlanVacacionController().listar({
-          empleado_id: empleadoStore.idEmpleado,
-          // empleado: empleadoStore.idEmpleado,
-          periodo_id: vacacion.periodo_id
-        })
-        if (result.length>0){
-          console.log('Entro en el if', result)
-          listadosAuxiliares.planes_vacaciones.push(result[0])
+      if (vacaciones.value.length > 0) {
+        for (const vacacion of vacaciones.value) {
+          const { result } = await new PlanVacacionController().listar({
+            empleado_id: empleadoStore.idEmpleado,
+            // empleado: empleadoStore.idEmpleado,
+            periodo_id: vacacion.periodo_id
+          })
+          if (result.length > 0) {
+            console.log('Entro en el if', result)
+            listadosAuxiliares.planes_vacaciones.push(result[0])
+          }
         }
+      } else {
+        const { result } = await new PlanVacacionController().listar({
+          empleado_id: empleadoStore.idEmpleado
+        })
+        // console.log(result)
+        listadosAuxiliares.planes_vacaciones = result
+        // console.log(listadosAuxiliares.planes_vacaciones)
       }
       planes_vacaciones.value = listadosAuxiliares.planes_vacaciones
       mostrarPlanVacacion.value = true
@@ -90,10 +99,11 @@ export default defineComponent({
     }
     const obtenerAccion = (periodo: string | number) => {
       if (planes_vacaciones.value !== undefined) {
-        return  planes_vacaciones.value.find(plan => plan.periodo == periodo)
-          ? acciones.editar
-          : acciones.nuevo
-
+        if (planes_vacaciones.value.length > 0)
+          return planes_vacaciones.value.find(plan => plan.periodo == periodo)
+            ? acciones.editar
+            : acciones.nuevo
+        else return acciones.nuevo
       } else return acciones.nuevo
     }
 
