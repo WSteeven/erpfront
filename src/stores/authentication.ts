@@ -12,7 +12,6 @@ import { ResetPassword } from 'sistema/authentication/resetPassword/domain/Reset
 import { UltimoSaldoController } from 'pages/fondosRotativos/reportes/reporteSaldoActual/infrestucture/UltimoSaldoController'
 import { UserLogin } from 'sistema/authentication/login/domain/UserLogin'
 import { useListadosSistemaStore } from './listadosSistema'
-// import { UserLoginPostulante } from 'pages/recursosHumanos/seleccion_contratacion_personal/login-postulante/domain/UserLoginPostulante'
 
 export const useAuthenticationStore = defineStore('authentication', () => {
   // Variables locales
