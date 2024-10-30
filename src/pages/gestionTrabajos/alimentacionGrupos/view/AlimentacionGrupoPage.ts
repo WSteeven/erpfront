@@ -21,6 +21,7 @@ import { obtenerFechaHoraActual, optionsFecha } from 'shared/utils'
 import { useRoute } from 'vue-router'
 
 export default defineComponent({
+    name: 'alimentacion_grupo', // NO BORRAR
     props: {
         datos: Object as () => UnwrapRef<AlimentacionGrupoPropsData>,
     },
