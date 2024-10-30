@@ -51,6 +51,7 @@ export default defineComponent({
     const store = useAuthenticationStore()
     const FINALIZADO = 'Finalizado'
     const NO_INICIADO = 'No iniciado'
+    const SEMANAL = 'Semanal'
     const tabDefecto = ref('0')
 
     const { empleados, filtrarEmpleados } =
@@ -198,6 +199,7 @@ export default defineComponent({
         fila.actividad_id = planificador.actividades[identificador].id
         fila.responsable = planificador.empleado
         fila.estado_avance = NO_INICIADO
+        fila.periodicidad = SEMANAL
         fila.fecha_inicio =planificador.actividades[identificador].subactividades.at(-1)?.fecha_inicio
         fila.fecha_fin =planificador.actividades[identificador].subactividades.at(-1)?.fecha_fin
         fila.id = planificador.actividades[identificador].subactividades.length ? encontrarUltimoIdListado(planificador.actividades[identificador].subactividades) + 1 : 1
@@ -215,7 +217,7 @@ export default defineComponent({
       accion: ({ posicion, identificador }) => {
         eliminar({ posicion, identificador })
       },
-      visible: () => true
+      visible: () => [acciones.nuevo, acciones.editar].includes(accion.value)
     }
 
     const btnImprimir: CustomActionTable<Planificador>={
