@@ -48,7 +48,7 @@ import { ComportamientoModalesDevolucion } from '../application/ComportamientoMo
 
 
 export default defineComponent({
-  name: 'Devoluciones',
+  name: 'DevolucionPage',
   components: { TabLayoutFilterTabs2, EssentialTable, ModalesEntidad, EssentialSelectableTable, GestorArchivos, },
 
   setup() {
@@ -84,10 +84,9 @@ export default defineComponent({
     //variables
     const refArchivo = ref()
     const idDevolucion = ref()
-    let tabSeleccionado = ref()
-    let soloLectura = ref(false)
-    let esVisibleTarea = ref(false)
-    let puedeEditar = ref(false)
+    const tabSeleccionado = ref()
+    const soloLectura = ref(false)
+    const puedeEditar = ref(false)
     const esCoordinador = store.esCoordinador
     const esActivosFijos = store.esActivosFijos
     const clientes = ref([])
@@ -154,12 +153,12 @@ export default defineComponent({
       if (listadoMaterialesDevolucion.listadoMateriales.length) {
         cargando.activar()
         mostrarInactivos.value = listadoMaterialesDevolucion.inactivo
-        checkMostrarInactivos(listadoMaterialesDevolucion.inactivo)
+        await checkMostrarInactivos(listadoMaterialesDevolucion.inactivo)
         devolucion.devolver_materiales_tecnicos = listadoMaterialesDevolucion.empleado_id !== store.user.id
         devolucion.tarea = listadoMaterialesDevolucion.tareaId ? listadoMaterialesDevolucion.tareaId : null
         devolucion.solicitante = listadoMaterialesDevolucion.empleado_id
         devolucion.cliente = listadoMaterialesDevolucion.cliente_id
-        filtrarCliente(devolucion.cliente)
+        await filtrarCliente(devolucion.cliente)
         devolucion.es_tarea = !!devolucion.tarea
         devolucion.es_para_stock = listadoMaterialesDevolucion.devolverAlStock
         devolucion.listadoProductos = listadoMaterialesDevolucion.listadoMateriales.map((material: MaterialEmpleadoTarea) => {
@@ -178,7 +177,7 @@ export default defineComponent({
       listadosAuxiliares.sucursales = JSON.parse(LocalStorage.getItem('sucursales')!.toString())
       sucursales.value = listadosAuxiliares.sucursales
       // se carga los materiales de clientes
-      obtenerClientesMaterialesEmpleado()
+      await obtenerClientesMaterialesEmpleado()
     })
 
     //reglas de validacion
@@ -251,23 +250,15 @@ export default defineComponent({
       await refArchivo.value.subir()
     }
 
-    function eliminar({ entidad, posicion }) {
+    function eliminar({  posicion }) {
       confirmar('¿Está seguro de continuar?',
         () => devolucion.listadoProductos.splice(posicion, 1))
     }
 
-    function actualizarElemento(posicion: number, entidad: any): void {
-      if (posicion >= 0) {
-        listado.value.splice(posicion, 1, entidad)
-        listado.value = [...listado.value]
-      }
-    }
-
     function filtrarDevoluciones(tab: string) {
       tabSeleccionado.value = tab
-      puedeEditar.value = (esCoordinador || esActivosFijos || store.esJefeTecnico || store.esGerente || store.esRecursosHumanos || store.can('puede.autorizar.devoluciones')) && tabSeleccionado.value === estadosTransacciones.pendiente ? true : false
-      if (tab == 'PENDIENTE') puedeEditar.value = true
-      else puedeEditar.value = false
+      puedeEditar.value = (esCoordinador || esActivosFijos || store.esJefeTecnico || store.esGerente || store.esRecursosHumanos || store.can('puede.autorizar.devoluciones')) && tabSeleccionado.value === estadosTransacciones.pendiente
+      puedeEditar.value = tab == 'PENDIENTE';
       listar({ estado: tab })
     }
 
@@ -278,8 +269,7 @@ export default defineComponent({
     function comunicarComportamiento(value) {
       if (value) notificarInformacion('Esta opción generará un pedido automáticamente con los mismos items de la devolución, cuando la devolución sea aprobada')
     }
-    async function checkSolicitantes(val, evt) {
-
+    async function checkSolicitantes(val) {
       if (val) {
         devolucion.per_autoriza = store.user.id
         devolucion.autorizacion = 2
@@ -314,13 +304,13 @@ export default defineComponent({
         eliminar({ entidad, posicion })
       },
       visible: () => {
-        return accion.value == acciones.consultar ? false : true
+        return accion.value != acciones.consultar
       }
     }
     const botonEditarCantidad: CustomActionTable = {
       titulo: 'Cantidad',
       icono: 'bi-pencil',
-      accion: ({ entidad, posicion }) => {
+      accion: ({  posicion }) => {
         const data: CustomActionPrompt = {
           titulo: 'Modifica',
           mensaje: 'Ingresa la cantidad',
@@ -345,7 +335,7 @@ export default defineComponent({
             mensaje: 'Ingresa el motivo de la anulación',
             accion: async (data) => {
               try {
-                const { result } = await new CambiarEstadoDevolucion().anular(entidad.id, data)
+                await new CambiarEstadoDevolucion().anular(entidad.id, data)
                 notificarCorrecto('Devolución anulada exitosamente!')
                 if (posicion >= 0) {
                   listado.value.splice(posicion, 1,)
@@ -369,7 +359,7 @@ export default defineComponent({
       titulo: 'Imprimir',
       color: 'secondary',
       icono: 'bi-printer',
-      accion: async ({ entidad, posicion }) => {
+      accion: async ({ entidad }) => {
         devolucionStore.idDevolucion = entidad.id
         await devolucionStore.imprimirPdf()
       },
@@ -380,23 +370,23 @@ export default defineComponent({
       titulo: 'Gestionar',
       color: 'primary',
       icono: 'bi-pencil-square',
-      accion: ({ entidad, posicion }) => {
+      accion: ({ entidad }) => {
         devolucionStore.devolucion = entidad
         console.log('Devolución a ingresar a bodega es: ', devolucionStore.devolucion)
         router.push('transacciones-ingresos')
       },
-      visible: ({ entidad }) => (tabSeleccionado.value == 'APROBADO' || tabSeleccionado.value == 'PARCIAL') && store.can('puede.gestionar.devoluciones') ? true : false
+      visible: () => (tabSeleccionado.value == 'APROBADO' || tabSeleccionado.value == 'PARCIAL') && store.can('puede.gestionar.devoluciones')
     }
     const botonCorregir: CustomActionTable = {
       titulo: 'Corregir devolución',
       color: 'amber-3',
       icono: 'bi-gear',
-      accion: ({ entidad, posicion }) => {
+      accion: ({ entidad}) => {
         devolucionStore.devolucion = entidad
         modales.abrirModalEntidad('CorregirDevolucionPage')
       },
       // visible: ({ entidad }) =>true
-      visible: ({ entidad }) => (tabSeleccionado.value == 'APROBADO' || tabSeleccionado.value == 'PARCIAL') && (store.esBodeguero || entidad.per_autoriza_id == store.user.id) && entidad.estado_bodega == estadosTransacciones.parcial ? true : false
+      visible: () => (tabSeleccionado.value == 'APROBADO' || tabSeleccionado.value == 'PARCIAL') && (store.esBodeguero || entidad.per_autoriza_id == store.user.id) && entidad.estado_bodega == estadosTransacciones.parcial
     }
 
 
@@ -468,7 +458,6 @@ export default defineComponent({
 
       //flags
       soloLectura,
-      esVisibleTarea,
       esCoordinador,
       esActivosFijos,
 
@@ -483,7 +472,7 @@ export default defineComponent({
       checkEsTarea,
       filtrarDevoluciones,
       filtrarCliente,
-      checkMismaCondicion(val, evt) {
+      checkMismaCondicion(val) {
         if (!val) devolucion.condicion = null
       },
       onRowClick: (row) => alert(`${row.name} clicked`),

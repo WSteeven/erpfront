@@ -198,7 +198,7 @@
 
           <!-- Es devolucion para stock personal -->
           <!-- <div
-            v-if="devolucion.es_para_stock || accion === 'NUEVO'"
+            v-if="devolucion.es_para_stock || accion === acciones.nuevo"
             class="col-12 col-md-3"
           >
             <q-checkbox
@@ -213,7 +213,7 @@
           </div> -->
           <!-- Es pedido automatico -->
           <div
-            v-if="devolucion.pedido_automatico || accion === 'NUEVO'"
+            v-if="devolucion.pedido_automatico || accion ===acciones.nuevo"
             class="col-12 col-md-3"
           >
           <q-tooltip class="bg-dark">Marque esta opción unicamente cuando quieras hacer un pedido de lo mismo que vas a devolver</q-tooltip>
@@ -229,7 +229,7 @@
           </div>
           <!-- Es devolucion de tarea -->
           <div
-            v-if="devolucion.es_tarea || accion === 'NUEVO'"
+            v-if="devolucion.es_tarea || accion === acciones.nuevo"
             class="col-12 col-md-3"
           >
           <q-tooltip class="bg-dark">Marque esta opción cuando quieras hacer devoluciones de materiales de tarea</q-tooltip>
@@ -245,7 +245,7 @@
           </div>
           <!-- Tarea -->
           <div
-            v-if="esVisibleTarea || devolucion.es_tarea"
+            v-if="devolucion.es_tarea"
             class="col-12 col-md-3"
           >
             <label class="q-mb-sm block">Tarea</label>
@@ -460,19 +460,6 @@
               "
               :idModelo="idDevolucion"
             >
-              <template #boton-subir>
-                <q-btn
-                  v-if="false"
-                  color="positive"
-                  push
-                  no-caps
-                  class="full-width q-mb-lg"
-                  @click="subirArchivos()"
-                >
-                  <q-icon name="bi-upload" class="q-mr-sm" size="xs"></q-icon>
-                  Subir archivos seleccionados</q-btn
-                >
-              </template>
             </gestor-archivos>
           </div>
 

@@ -64,9 +64,7 @@ export default defineComponent({
     const esAutorizador = ref(false)
     const data_dias_descuento_vacaciones = ref()
     const empleado = ref()
-    const esNuevo = computed(() => {
-      return accion.value === 'NUEVO'
-    })
+
     const dias_rango1 = ref()
     const dias_rango2 = ref()
     let tabVacacion = '1'
@@ -357,7 +355,6 @@ export default defineComponent({
       esConsultado,
       dias_rango1,
       dias_rango2,
-      esNuevo,
       numero_dias_rango,
       maskFecha,
       v$,

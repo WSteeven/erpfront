@@ -1,5 +1,10 @@
 // Dependencias
-import { acciones, estadosTransacciones, rolesSistema, tabOptionsTransferenciaProductoEmpleado } from 'config/utils'
+import {
+  acciones,
+  estadosTransacciones,
+  rolesSistema,
+  tabOptionsTransferenciaProductoEmpleado
+} from 'config/utils'
 import { configuracionColumnasDevoluciones } from '../domain/configuracionColumnasDevoluciones'
 import { computed, defineComponent, onMounted, reactive, ref, watch } from 'vue'
 import { useOrquestadorSelectorDetalles } from '../application/OrquestadorSelectorDetalles'
@@ -24,8 +29,6 @@ import { ArchivoController } from 'pages/gestionTrabajos/subtareas/modules/gesto
 import { configuracionColumnasProductosSeleccionadosAccion } from '../domain/configuracionColumnasProductosSeleccionadosAccion'
 import { TransferenciaProductoEmpleadoController } from '../infraestructure/TransferenciaProductoEmpleadoController'
 import { configuracionColumnasProductosSeleccionados } from '../domain/configuracionColumnasProductosSeleccionados'
-import { useBotonesTransferenciaProductoEmpleado } from '../application/UseBotonesTransferenciaProductoEmpleado'
-import { EmpleadoRoleController } from 'pages/recursosHumanos/empleados/infraestructure/EmpleadoRolesController'
 import { ContenedorSimpleMixin } from 'shared/contenedor/modules/simple/application/ContenedorSimpleMixin'
 import { useMaterialesProyecto } from 'pages/gestionTrabajos/miBodega/application/UseMaterialesProyecto'
 import { useMaterialesEmpleado } from 'pages/gestionTrabajos/miBodega/application/UseMaterialesEmpleado'
@@ -606,7 +609,6 @@ export default defineComponent({
     /*******************************************************************************************
      * Botones de tabla
      ******************************************************************************************/
-    const { botonAnular, botonDespachar, botonImprimir, botonDevolverASinCliente } = useBotonesTransferenciaProductoEmpleado(listado, tabSeleccionado)
     const { botonEditarCantidad, botonEliminar } = useBotonesListadoProductos(transferencia, accion)
 
     //Configurar los listados
@@ -703,9 +705,6 @@ export default defineComponent({
       configuracionColumnasProductosSeleccionados,
       botonEditarCantidad,
       botonEliminar,
-      botonAnular,
-      botonImprimir,
-      botonDespachar,
 
       //flags
       esCoordinador,

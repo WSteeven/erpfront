@@ -139,7 +139,7 @@ export default defineComponent({
         listadosAuxiliares.periodos = listadosAuxiliares.periodos.filter(
           (periodo: Periodo) => {
             const anioInicial = parseInt(periodo.nombre.split('-')[0])
-            return anioInicial > anioIngreso
+            return anioInicial >= anioIngreso
           }
         )
       }

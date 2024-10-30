@@ -552,7 +552,7 @@
             'EgresoPage',
             'OrdenCompraPage',
             'PreordenCompra',
-            'Devoluciones',
+            'DevolucionPage',
             'RolPagoMes',
             'AcreditacionSemana',
             'TransferenciaProductoEmpleado',
