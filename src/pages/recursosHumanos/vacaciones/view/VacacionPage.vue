@@ -81,13 +81,7 @@
           <!-- Dias de vacaciones -->
           <div class="col-12 col-md-3 col-sm-3">
             <label class="q-mb-sm block">Días de Vacaciones</label>
-            <q-input
-              v-model="vacacion.dias"
-              disable
-              readonly
-              outlined
-              dense
-            >
+            <q-input v-model="vacacion.dias" disable readonly outlined dense>
             </q-input>
           </div>
 
@@ -163,7 +157,7 @@
               keep-color
               icon="bi-check2-circle"
               unchecked-icon="clear"
-              :disable="disabled"
+              disable
             />
           </div>
 
@@ -180,8 +174,31 @@
               :disable="disabled"
             />
           </div>
+          <div class="col-12" v-if="accion !== acciones.nuevo">
+            <essential-table
+              titulo="Registro de días de vacaciones tomados"
+              :datos="vacacion.detalles"
+              :configuracion-columnas="
+                accion === acciones.editar
+                  ? [...configuracionColumnasDetallesVacacion, accionesTabla]
+                  : configuracionColumnasDetallesVacacion
+              "
+              :accion1-header="btnAgregarDetalle"
+              :alto-fijo="false"
+              ajustar-celdas
+              :permitir-consultar="false"
+              :permitir-editar="false"
+              :permitir-eliminar="false"
+              :accion1="btnEditarDetalle"
+            />
+          </div>
         </div>
       </q-form>
     </template>
   </tab-layout-filter-tabs2>
+  <modales-entidad
+    :comportamiento="modales"
+    :persistente="false"
+    @guardado="guardado"
+  />
 </template>

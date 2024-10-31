@@ -22,10 +22,10 @@
       </q-expansion-item>
       <div v-if="vacaciones.length != 0">
         <q-expansion-item
-          v-for="(vacacion, index) of vacaciones"
-          :key="vacacion.id"
+          v-for="(solicitud, index) of vacaciones"
+          :key="solicitud.id"
           class="overflow-hidden q-mb-md expansion"
-          :label="'Período ' + vacacion.periodo"
+          :label="'Período ' + solicitud.periodo"
           header-class="text-bold bg-header-collapse"
           default-opened
         >
@@ -37,7 +37,7 @@
                 outline
                 color="secondary"
                 @click="() => (habilitarBotones = !habilitarBotones)"
-                v-if="obtenerAccion(vacacion.periodo) == acciones.editar"
+                v-if="obtenerAccion(solicitud.periodo) == acciones.editar"
               >
                 <q-tooltip class="bg-dark">Editar</q-tooltip>
                 <q-icon class="bi-pencil-square" size="xs" />
@@ -47,21 +47,21 @@
               <formulario-plan-vacaciones
                 :habilitar-botones="
                   habilitarBotones ||
-                  obtenerAccion(vacacion.periodo) == acciones.nuevo
+                  obtenerAccion(solicitud.periodo) == acciones.nuevo
                 "
-                :dias-disponibles="vacacion.dias_disponibles"
+                :dias-disponibles="solicitud.dias_disponibles"
                 :empleado="empleadoStore.idEmpleado"
                 :identificador="index"
                 @cancelar="cancelar"
                 @guardado="obtenerPlanesVacaciones"
-                :accion="obtenerAccion(vacacion.periodo)"
+                :accion="obtenerAccion(solicitud.periodo)"
                 :plan="planes_vacaciones[index]"
-                :periodo="vacacion.periodo_id"
+                :periodo="solicitud.periodo_id"
               />
             </div>
           </div>
           <div class="row q-pa-sm">
-            {{ vacacion }}
+            {{ solicitud }}
           </div>
         </q-expansion-item>
       </div>

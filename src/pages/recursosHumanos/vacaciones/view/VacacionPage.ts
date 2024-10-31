@@ -1,11 +1,12 @@
 // Dependencies
 import { obtenerFechaActual, sumarFechas } from 'shared/utils'
-import { maskFecha } from 'config/utils'
+import { acciones, accionesTabla, maskFecha } from 'config/utils'
 import { defineComponent, ref } from 'vue'
 
 // Components
 import TabLayoutFilterTabs2 from 'shared/contenedor/modules/simple/view/TabLayoutFilterTabs2.vue'
 import EssentialTable from 'components/tables/view/EssentialTable.vue'
+import ModalesEntidad from 'components/modales/view/ModalEntidad.vue'
 
 // Logica y controladores
 import { ContenedorSimpleMixin } from 'shared/contenedor/modules/simple/application/ContenedorSimpleMixin'
@@ -18,16 +19,29 @@ import { configuracionColumnasVacaciones } from 'recursosHumanos/vacaciones/doma
 import { useVuelidate } from '@vuelidate/core'
 import { required } from 'shared/i18n-validators'
 import { PeriodoController } from 'recursosHumanos/periodo/infraestructure/PeriodoController'
+import { configuracionColumnasDetallesVacacion } from 'recursosHumanos/vacaciones/modules/detallesVacaciones/domain/configuracionColumnasDetallesVacacion'
+import { DetalleVacacion } from 'recursosHumanos/vacaciones/modules/detallesVacaciones/domain/DetalleVacacion'
+import { CustomActionTable } from 'components/tables/domain/CustomActionTable'
+import { ComportamientoModalesVacaciones } from 'recursosHumanos/vacaciones/application/ComportamientoModalesVacaciones'
+import { DetalleVacacionPropsInterface } from 'recursosHumanos/vacaciones/domain/DetalleVacacionPropsInterface'
 
 export default defineComponent({
-  components: { EssentialTable, TabLayoutFilterTabs2 },
+  components: { EssentialTable, TabLayoutFilterTabs2, ModalesEntidad },
   setup() {
     const mixin = new ContenedorSimpleMixin(Vacacion, new VacacionController())
-    const { entidad: vacacion, listadosAuxiliares, disabled } = mixin.useReferencias()
-    const { setValidador,obtenerListados, cargarVista, listar } = mixin.useComportamiento()
+    const {
+      entidad: vacacion,
+      listadosAuxiliares,
+      accion,
+      disabled
+    } = mixin.useReferencias()
+    const { setValidador, obtenerListados, cargarVista, listar } =
+      mixin.useComportamiento()
+    const modales = new ComportamientoModalesVacaciones()
 
     const tabDefecto = ref('PENDIENTES')
-    const { empleados,    periodos} =      useFiltrosListadosSelects(listadosAuxiliares)
+    const { empleados, periodos } =
+      useFiltrosListadosSelects(listadosAuxiliares)
     cargarVista(async () => {
       await obtenerListados({
         empleados: {
@@ -44,7 +58,7 @@ export default defineComponent({
             )
           }
         },
-        periodos: {controller: new PeriodoController(), params:{activo:1}}
+        periodos: { controller: new PeriodoController(), params: { activo: 1 } }
       })
 
       empleados.value = listadosAuxiliares.empleados
@@ -52,32 +66,106 @@ export default defineComponent({
     })
 
     const reglas = {
-      empleado: {required},
-      periodo: {required},
+      empleado: { required },
+      periodo: { required }
     }
     const v$ = useVuelidate(reglas, vacacion)
     setValidador(v$.value)
 
     /*******************************************************************************************
-     * Funciones
+     * FUNCIONES
      ******************************************************************************************/
     async function filtrar(tab: string) {
       tabDefecto.value = tab
       await listar({ tipo: tab })
     }
 
+    async function guardado(data) {
+      switch (data.accion) {
+        case acciones.editar: // cuando se edita una fila
+          const index = vacacion.detalles.findIndex(
+            (detalle: DetalleVacacion) => detalle.id === data.id
+          )
+          if (index !== -1)
+            vacacion.detalles.splice(index, 1, data.response.modelo)
+          break
+        default: // Cuando se crea una nueva fila
+          vacacion.detalles.push(data.response.modelo)
+      }
+      // Recalcular los días correspondientes a la vacación
+      recalcularDias()
+    }
+
+    function recalcularDias() {
+      vacacion.dias_tomados = vacacion.detalles.reduce(
+        (sum: number, detalle: DetalleVacacion) =>
+          sum + detalle.dias_utilizados,
+        0
+      )
+      vacacion.dias_disponibles = vacacion.dias - vacacion.dias_tomados
+    }
+    /*******************************************************************************************
+     * BOTONES DE TABLA
+     ******************************************************************************************/
+
+    const btnAgregarDetalle: CustomActionTable<DetalleVacacion> = {
+      titulo: 'Agregar detalle',
+      icono: 'bi-arrow-bar-down',
+      color: 'primary',
+      tooltip: 'Agregar Registro de Vacaciones',
+      accion: () => {
+        modales.abrirModalEntidad<{ vacacion_id: number; accion: string }>(
+          'DetalleVacacionPage',
+          { vacacion_id: vacacion.id, accion: acciones.nuevo }
+        )
+      },
+      visible: () => accion.value === acciones.editar
+    }
+
+    const btnEditarDetalle: CustomActionTable<DetalleVacacion> = {
+      titulo: 'Editar',
+      icono: 'bi-pencil-square',
+      color: 'secondary',
+      tooltip: 'Editar Registro de Vacaciones',
+      accion: ({ entidad }) => {
+        modales.abrirModalEntidad<DetalleVacacionPropsInterface>(
+          'DetalleVacacionPage',
+          {
+            vacacion_id: vacacion.id,
+            accion: acciones.editar,
+            entidad: entidad
+          }
+        )
+      },
+      visible: () => accion.value === acciones.editar
+    }
+
     return {
-      mixin,v$, disabled,
+      mixin,
+      v$,
+      disabled,
+      accion,
+      acciones,
+      accionesTabla,
       vacacion,
       tabDefecto,
       configuracionColumnas: configuracionColumnasVacaciones,
+      configuracionColumnasDetallesVacacion,
       tabOptions: tabOptionsVacaciones,
       maskFecha,
+      modales,
+
       // listados
-      empleados, periodos,
+      empleados,
+      periodos,
 
       //funciones
-      filtrar
+      filtrar,
+      guardado,
+
+      // botones de tabla
+      btnAgregarDetalle,
+      btnEditarDetalle
     }
   }
 })

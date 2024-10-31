@@ -56,15 +56,15 @@
         </div>
       </q-expansion-item>
 
-      <q-expansion-item v-for="vacacion of vacaciones" :key="vacacion.id"
+      <q-expansion-item v-for="solicitud of vacaciones" :key="solicitud.id"
         class="overflow-hidden q-mb-md expansion"
-        :label="'Período '+vacacion.periodo"
+        :label="'Período '+solicitud.periodo"
         header-class="text-bold bg-header-collapse"
         default-opened
       >
 
         <div class="row q-pa-sm">
-          {{vacacion}}
+          {{solicitud}}
         </div>
       </q-expansion-item>
 

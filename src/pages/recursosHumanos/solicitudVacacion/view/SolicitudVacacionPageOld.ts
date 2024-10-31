@@ -1,9 +1,9 @@
-// Dependencies
+// Dependencias
 import { configuracionColumnasSolicitudVacacion } from '../domain/configuracionColumnasSolicitudVacacion'
 import { required } from 'shared/i18n-validators'
 import { maxValue, minValue } from '@vuelidate/validators'
 import { useVuelidate } from '@vuelidate/core'
-import { computed, defineComponent, Ref, ref } from 'vue'
+import { computed, defineComponent, ref } from 'vue'
 
 // Componentes
 import TabLayoutFilterTabs2 from 'shared/contenedor/modules/simple/view/TabLayoutFilterTabs2.vue'
@@ -12,49 +12,32 @@ import TabLayoutFilterTabs2 from 'shared/contenedor/modules/simple/view/TabLayou
 import { ContenedorSimpleMixin } from 'shared/contenedor/modules/simple/application/ContenedorSimpleMixin'
 import { SolicitudVacacionController } from '../infraestructure/SolicitudVacacionController'
 import { SolicitudVacacion } from '../domain/SolicitudVacacion'
-import {
-  imprimirArchivo,
-  obtenerFechaActual,
-  ordenarLista,
-  removeAccents
-} from 'shared/utils'
-import {
-  acciones,
-  accionesTabla,
-  maskFecha,
-  tabOptionsVacaciones
-} from 'config/utils'
+import { imprimirArchivo, ordenarLista, removeAccents } from 'shared/utils'
+import { accionesTabla, maskFecha, tabOptionsVacaciones, acciones } from 'config/utils'
 import { AxiosHttpRepository } from 'shared/http/infraestructure/AxiosHttpRepository'
 import { apiConfig, endpoints } from 'config/api'
 import EssentialTable from 'components/tables/view/EssentialTable.vue'
 import { useRecursosHumanosStore } from 'stores/recursosHumanos'
+import { PeriodoController } from 'pages/recursosHumanos/periodo/infraestructure/PeriodoController'
 import { useAuthenticationStore } from 'stores/authentication'
 import { AxiosResponse } from 'axios'
 import { EmpleadoController } from 'pages/recursosHumanos/empleados/infraestructure/EmpleadoController'
 import { CustomActionTable } from 'components/tables/domain/CustomActionTable'
 import { AutorizacionController } from 'pages/administracion/autorizaciones/infraestructure/AutorizacionController'
-import { addYear, format } from '@formkit/tempo'
+import { format } from '@formkit/tempo'
 import { useFiltrosListadosSelects } from 'shared/filtrosListadosGenerales'
 import { StatusEssentialLoading } from 'components/loading/application/StatusEssentialLoading'
 import { useNotificaciones } from 'shared/notificaciones'
 import { useQuasar } from 'quasar'
 import { useNotificacionStore } from 'stores/notificacion'
 import { useCargandoStore } from 'stores/cargando'
-import { VacacionController } from 'recursosHumanos/vacaciones/infraestructure/VacacionController'
-import { PlanVacacionController } from 'recursosHumanos/planVacacion/infraestructure/PlanVacacionController'
-import { Vacacion } from 'recursosHumanos/vacaciones/domain/Vacacion'
-import { PlanVacacion } from 'recursosHumanos/planVacacion/domain/PlanVacacion'
-import { PeriodoController } from 'recursosHumanos/periodo/infraestructure/PeriodoController'
 
 export default defineComponent({
   components: { TabLayoutFilterTabs2, EssentialTable },
   setup() {
-    const mixin = new ContenedorSimpleMixin(
-      SolicitudVacacion,
-      new SolicitudVacacionController()
-    )
+    const mixin = new ContenedorSimpleMixin(SolicitudVacacion, new SolicitudVacacionController())
     const {
-      entidad: solicitud,
+      entidad: vacacion,
       disabled,
       accion,
       listadosAuxiliares
@@ -81,19 +64,7 @@ export default defineComponent({
     const esAutorizador = ref(false)
     const data_dias_descuento_vacaciones = ref()
     const empleado = ref()
-    const vacacionController = new VacacionController()
-    const vacaciones: Ref<Vacacion> = ref([])
-    const planes_vacaciones: Ref<PlanVacacion> = ref([])
-    const dias_disponibles = computed(() =>
-      vacaciones.value[0]?.dias_disponibles ??
-      planes_vacaciones.value[0]?.dias > 0
-        ? planes_vacaciones.value[0]?.dias
-        : planes_vacaciones.value[0]?.dias_primer_rango > 0
-        ? planes_vacaciones.value[0]?.dias_primer_rango
-        : planes_vacaciones.value[0]?.dias_segundo_rango > 0
-        ? planes_vacaciones.value[0]?.dias_segundo_rango
-        : 0
-    )
+
     const dias_rango1 = ref()
     const dias_rango2 = ref()
     let tabVacacion = '1'
@@ -106,9 +77,14 @@ export default defineComponent({
       useFiltrosListadosSelects(listadosAuxiliares)
     cargarVista(async () => {
       await obtenerListados({
+        periodos: {
+          controller: new PeriodoController(),
+          params: { campos: 'id,nombre', activo: 1 }
+        },
         empleados: {
           controller: new EmpleadoController(),
           params: {
+            // id: vacacion.empleado == null ? store.user.id : vacacion.empleado,
             estado: 1
           }
         },
@@ -119,23 +95,12 @@ export default defineComponent({
             es_validado: false,
             es_modulo_rhh: true
           }
-        },
-        vacaciones: {
-          controller: vacacionController,
-          params: { completadas: 0, empleado_id: store.user.id }
-        },
-        planes_vacaciones: {
-          controller: new PlanVacacionController(),
-          params: { empleado_id: store.user.id }
         }
       })
       autorizaciones.value = listadosAuxiliares.autorizaciones
       empleados.value = listadosAuxiliares.empleados
       periodos.value = listadosAuxiliares.periodos
-      planes_vacaciones.value = listadosAuxiliares.planes_vacaciones
-      vacaciones.value = listadosAuxiliares.vacaciones
       await obtenerDescuentos()
-      await obtenerDerechoVacaciones()
     })
 
     //Reglas de validacion
@@ -147,15 +112,15 @@ export default defineComponent({
       derecho_vacaciones: { reqiredIf: esAutorizador },
       numero_rangos: { required, minValue: minValue(1), maxValue: maxValue(2) },
       fecha_inicio: {
-        requiredIf: solicitud.numero_rangos == '1'
+        requiredIf: vacacion.numero_rangos == '1'
       },
-      fecha_fin: { requiredIf: solicitud.numero_rangos == '1' },
+      fecha_fin: { requiredIf: vacacion.numero_rangos == '1' },
       numero_dias: {
-        requiredIf: solicitud.numero_rangos == '1',
+        requiredIf: vacacion.numero_rangos == '1',
         maxValue: maxValue(15)
       }
     }))
-    const v$ = useVuelidate(reglas, solicitud)
+    const v$ = useVuelidate(reglas, vacacion)
     setValidador(v$.value)
 
     /*******************************
@@ -163,125 +128,18 @@ export default defineComponent({
      *******************************/
     onBeforeModificar(() => (esConsultado.value = true))
     onConsultado(() => {
-      esAutorizador.value = store.user.id == solicitud.id_jefe_inmediato
+      esAutorizador.value = store.user.id == vacacion.id_jefe_inmediato
       setTimeout(() => {
-        solicitud.derecho_vacaciones =
+        vacacion.derecho_vacaciones =
           15 +
           dias_adicionales.value -
           parseInt(
-            solicitud.descuento_vacaciones != null
-              ? solicitud.descuento_vacaciones.toString()
+            vacacion.descuento_vacaciones != null
+              ? vacacion.descuento_vacaciones.toString()
               : '0'
           )
       }, 3000)
     })
-
-    /*******************************
-     * FUNCIONES
-     *******************************/
-    async function obtenerDerechoVacaciones() {
-      let dias = 0
-      let fecha_inicio = null
-      if (vacaciones.value.length > 0) {
-        if (planes_vacaciones.value.length > 0) {
-          // este caso es para usuarios como Wilson Cordova que tienen al menos 1 registro de vacaciones activo
-          dias =
-            vacaciones.value[0].periodo === planes_vacaciones.value[0].periodo
-              ? vacaciones.value[0].dias_disponibles
-              : 0
-          fecha_inicio = obtenerFechaInicioCercanaPlanVacaciones()
-        } else {
-          // Aqui se tiene al menos un registro de vacaciones activo pero no se tiene plan de vacaciones creado
-          dias = vacaciones.value[0].dias_disponibles
-          const anioVacaciones = parseInt(
-            vacaciones.value[0].periodo.split('-')[1]
-          )
-          fecha_inicio = format(
-            anioVacaciones +
-              '-' +
-              store.user.fecha_ingreso.split('-')[1] +
-              '-' +
-              store.user.fecha_ingreso.split('-')[2],
-            maskFecha
-          )
-        }
-      } else {
-        // Aqui no se tiene registro de vacaciones
-        if (planes_vacaciones.value.length > 0) {
-          // aqui debe ir el caso para usuarios como Erick Cañarte que no tienen registro de vacaciones activo, pero si tienen plan de vacaciones creado
-          // se tienen al menos 1 registro de plan de vacaciones activo
-          //Como ya tiene plan de vacaciones pero aún no tiene registro de vacaciones creado, toca crearle uno para asociar a este los datos.
-          // 1. Crear el registro de vacaciones
-          await crearVacacion(planes_vacaciones.value[0].periodo_id)
-
-          //2. Partiendo de que ya se tiene el registro de vacaciones, obtenemos los días disponibles que por defecto son 15, luego la fecha
-          dias = vacaciones.value[0].dias_disponibles
-          fecha_inicio = obtenerFechaInicioCercanaPlanVacaciones()
-        } else {
-          // Aqui debe ir el caso para usuarios que no tengan ni uno ni otro
-          // Aqui no se tiene registro de vacaciones activo ni plan de vacaciones creado
-          // Se verifica si hay algún ultimo registro de vacaciones creado para ese usuarios
-          const result = (
-            await vacacionController.listar({
-              empleado_id: store.user.id,
-              'f_params[orderBy][field]': 'created_at',
-              'f_params[orderBy][type]': 'DESC',
-              'f_params[limit]': 1
-            })
-          )[0]
-          if (result == null) {
-            // Como no hay plan de vacaciones, la fecha se elige a libertad pero se debe crear el registro de vacaciones igualmente
-            const periodo = (
-              await new PeriodoController().listar({
-                'nombre[like]': store.user.fecha_ingreso.split('-')[0] + '%',
-                'f_params[limit]': 1
-              })
-            )[0]
-            await crearVacacion(periodo.id)
-          } else {
-            const periodo = (
-              await new PeriodoController().listar({
-                'nombre[like]': result.periodo.split('-')[1] + '%',
-                'f_params[limit]': 1
-              })
-            )[0]
-            await crearVacacion(periodo.id)
-          }
-          dias = vacaciones.value[0].dias_disponibles
-          fecha_inicio = obtenerFechaActual(maskFecha)
-        }
-      }
-
-      return { dias, fecha_inicio }
-    }
-
-    async function crearVacacion(periodo_id: number) {
-      const vacacion = new Vacacion()
-      vacacion.empleado = store.user.id
-      vacacion.periodo = periodo_id
-      const response: AxiosResponse = await vacacionController.guardar(vacacion)
-      if (response.status == 200) vacaciones.value.push(response.data.modelo)
-    }
-
-    function obtenerFechaInicioCercanaPlanVacaciones() {
-      const hoy = new Date()
-      const fechas = [
-        new Date(planes_vacaciones.value[0].fecha_inicio),
-        new Date(planes_vacaciones.value[0].fecha_inicio_primer_rango),
-        new Date(planes_vacaciones.value[0].fecha_inicio_segundo_rango)
-      ].filter(fecha => !isNaN(fecha))
-
-      const fechasHaciaAdelante = fechas.filter(fecha => fecha >= hoy)
-      let fechaCercana
-
-      if (fechasHaciaAdelante.length > 0) {
-        fechaCercana = fechasHaciaAdelante.reduce((a, b) => (a < b ? a : b))
-      } else {
-        fechaCercana = fechas.reduce((a, b) => (a > b ? a : b))
-      }
-
-      return format(fechaCercana, maskFecha)
-    }
 
     /**
      * La función 'obtenerDescuentos' realiza una solicitud GET a una URL específica y recupera
@@ -296,11 +154,11 @@ export default defineComponent({
           '/' +
           axios.getEndpoint(endpoints.descuentos_permiso)
         const response: AxiosResponse = await axios.get(url_acreditacion, {
-          params: { empleado: solicitud.empleado ?? store.user.id }
+          params: { empleado: vacacion.empleado ?? store.user.id }
         })
         const num_dias =
           response.data.duracion !== null ? response.data.duracion : 0
-        solicitud.descuento_vacaciones =
+        vacacion.descuento_vacaciones =
           response.data.duracion != null ? Math.floor(num_dias / 24) : 0
         data_dias_descuento_vacaciones.value = Math.floor(
           num_dias / 24
@@ -314,7 +172,7 @@ export default defineComponent({
 
     const dias_adicionales = computed(() => {
       const fecha_ingreso =
-        solicitud.empleado == null ? store.user.id : solicitud.empleado
+        vacacion.empleado == null ? store.user.id : vacacion.empleado
 
       if (fecha_ingreso == null) {
         return 0
@@ -335,12 +193,12 @@ export default defineComponent({
         un rango. */
     const numero_dias_rango = computed(() => {
       if (
-        solicitud.numero_dias_rango1 != null &&
-        solicitud.numero_dias_rango2 != null
+        vacacion.numero_dias_rango1 != null &&
+        vacacion.numero_dias_rango2 != null
       ) {
         return (
-          parseInt(solicitud.numero_dias_rango1.toString()) +
-          parseInt(solicitud.numero_dias_rango2.toString())
+          parseInt(vacacion.numero_dias_rango1.toString()) +
+          parseInt(vacacion.numero_dias_rango2.toString())
         )
       } else {
         return 0
@@ -353,18 +211,18 @@ export default defineComponent({
      */
     function calcular_fecha_fin() {
       if (
-        solicitud.fecha_inicio !== null &&
-        solicitud.numero_dias !== null &&
-        solicitud.numero_dias !== undefined
+        vacacion.fecha_inicio !== null &&
+        vacacion.numero_dias !== null &&
+        vacacion.numero_dias !== undefined
       ) {
-        const fechaInicio = new Date(solicitud.fecha_inicio)
+        const fechaInicio = new Date(vacacion.fecha_inicio)
 
         fechaInicio.setDate(
-          fechaInicio.getDate() + parseInt(solicitud.numero_dias.toString())
+          fechaInicio.getDate() + parseInt(vacacion.numero_dias.toString())
         )
-        solicitud.fecha_fin = format(fechaInicio, maskFecha)
+        vacacion.fecha_fin = format(fechaInicio, 'YYYY-MM-DD')
       } else {
-        solicitud.fecha_fin = null
+        vacacion.fecha_fin = null
       }
     }
 
@@ -374,18 +232,18 @@ export default defineComponent({
      */
     function calcular_fecha_fin_rango1() {
       if (
-        solicitud.fecha_inicio_rango1_vacaciones !== null &&
-        solicitud.numero_dias_rango1 !== null &&
-        solicitud.numero_dias_rango1 !== undefined
+        vacacion.fecha_inicio_rango1_vacaciones !== null &&
+        vacacion.numero_dias_rango1 !== null &&
+        vacacion.numero_dias_rango1 !== undefined
       ) {
-        const fechaInicio = new Date(solicitud.fecha_inicio_rango1_vacaciones)
+        const fechaInicio = new Date(vacacion.fecha_inicio_rango1_vacaciones)
         fechaInicio.setDate(
           fechaInicio.getDate() +
-            parseInt(solicitud.numero_dias_rango1.toString())
+            parseInt(vacacion.numero_dias_rango1.toString())
         )
-        solicitud.fecha_fin_rango1_vacaciones = format(fechaInicio, maskFecha)
+        vacacion.fecha_fin_rango1_vacaciones = format(fechaInicio, 'YYYY-MM-DD')
       } else {
-        solicitud.fecha_fin_rango1_vacaciones = null
+        vacacion.fecha_fin_rango1_vacaciones = null
       }
     }
 
@@ -395,18 +253,18 @@ export default defineComponent({
      */
     function calcular_fecha_fin_rango2() {
       if (
-        solicitud.fecha_inicio_rango2_vacaciones !== null &&
-        solicitud.numero_dias_rango2 !== null &&
-        solicitud.numero_dias_rango2 !== undefined
+        vacacion.fecha_inicio_rango2_vacaciones !== null &&
+        vacacion.numero_dias_rango2 !== null &&
+        vacacion.numero_dias_rango2 !== undefined
       ) {
-        const fechaInicio = new Date(solicitud.fecha_inicio_rango2_vacaciones)
+        const fechaInicio = new Date(vacacion.fecha_inicio_rango2_vacaciones)
         fechaInicio.setDate(
           fechaInicio.getDate() +
-            parseInt(solicitud.numero_dias_rango2.toString())
+            parseInt(vacacion.numero_dias_rango2.toString())
         )
-        solicitud.fecha_fin_rango2_vacaciones = format(fechaInicio, maskFecha)
+        vacacion.fecha_fin_rango2_vacaciones = format(fechaInicio, 'YYYY-MM-DD')
       } else {
-        solicitud.fecha_fin_rango2_vacaciones = null
+        vacacion.fecha_fin_rango2_vacaciones = null
       }
     }
 
@@ -428,8 +286,8 @@ export default defineComponent({
 
     function optionFechaInicioRango2(date) {
       const fecha_fin_rango1 =
-        solicitud.fecha_fin_rango1_vacaciones !== null
-          ? solicitud.fecha_fin_rango1_vacaciones
+        vacacion.fecha_fin_rango1_vacaciones !== null
+          ? vacacion.fecha_fin_rango1_vacaciones
           : new Date().toString()
       const fechaInicio = new Date(fecha_fin_rango1)
       fechaInicio.setDate(fechaInicio.getDate() + 2)
@@ -485,7 +343,7 @@ export default defineComponent({
 
     return {
       mixin,
-      solicitud,
+      vacacion,
       periodos,
       empleado,
       autorizaciones,
@@ -506,7 +364,6 @@ export default defineComponent({
       acciones,
       accionesTabla,
       tabVacacion,
-      dias_disponibles,
 
       //funciones
       removeAccents,
@@ -522,8 +379,6 @@ export default defineComponent({
       // listados
       empleados,
       filtrarEmpleados,
-      vacaciones,
-      planes_vacaciones,
 
       // botones de tabla
       editarVacacion,

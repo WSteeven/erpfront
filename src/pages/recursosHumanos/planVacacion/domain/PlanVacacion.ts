@@ -5,6 +5,7 @@ export class PlanVacacion extends EntidadAuditable {
   periodo: string | null
   periodo_id: number|null
   rangos: number | null
+  dias: number | null
   dias_primer_rango: number | null
   dias_segundo_rango: number | null
   fecha_inicio: string | null
@@ -20,6 +21,7 @@ export class PlanVacacion extends EntidadAuditable {
     this.periodo = null
     this.periodo_id = null
     this.rangos = 1
+    this.dias = 0
     this.dias_primer_rango = 0
     this.dias_segundo_rango = 0
     this.fecha_inicio = null
