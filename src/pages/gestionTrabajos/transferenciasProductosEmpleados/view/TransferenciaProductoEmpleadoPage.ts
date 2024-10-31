@@ -709,7 +709,8 @@ export default defineComponent({
 
       //flags
       esCoordinador,
-      puedeAutorizar: computed(() => (esCoordinador || authenticationStore.esJefeTecnico || authenticationStore.esAdministrador) && accion.value === acciones.nuevo),
+      puedeAutorizar: computed(() => authenticationStore.can('puede.autorizar.transferencia_producto_empleado') && [acciones.nuevo, acciones.editar].includes(accion.value)),
+      // puedeAutorizar: computed(() => (esCoordinador || authenticationStore.esJefeTecnico || authenticationStore.esAdministrador) && accion.value === acciones.nuevo),
 
       //Tabs
       tabOptionsTransferenciaProductoEmpleado,
