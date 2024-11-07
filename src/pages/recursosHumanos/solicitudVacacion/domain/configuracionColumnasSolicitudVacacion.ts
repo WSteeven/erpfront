@@ -1,75 +1,47 @@
 import { ColumnConfig } from 'components/tables/domain/ColumnConfig'
 import { SolicitudVacacion } from './SolicitudVacacion'
 
-export const configuracionColumnasSolicitudVacacion: ColumnConfig<SolicitudVacacion>[] = [
+export const configuracionColumnasSolicitudVacacion: ColumnConfig<SolicitudVacacion>[] =
+  [
     {
-      name: 'empleado_info',
-      field: 'empleado_info',
+      name: 'empleado',
+      field: 'empleado',
       label: 'Empleado',
       align: 'left',
       sortable: true
-  },
-  {
-    name: 'periodo_info',
-    field: 'periodo_info',
-    label: 'Periodo',
-    align: 'left',
-    sortable: true
-},
-{
-  name: 'descuento_vacaciones',
-  field: 'descuento_vacaciones',
-  label: 'Descuento a Vacaciones',
-  align: 'left',
-  sortable: true
-},
-{
-  name: 'fecha_inicio',
-  field: 'fecha_inicio',
-  label: 'Fecha Inicio',
-  align: 'left',
-  sortable: true
-},
-{
-  name: 'fecha_fin',
-  field: 'fecha_fin',
-  label: 'Fecha Fin',
-  align: 'left',
-  sortable: true
-},
-{
-  name: 'fecha_inicio_rango1_vacaciones',
-  field: 'fecha_inicio_rango1_vacaciones',
-  label: 'Fecha Inicio Rango 1 de Vacaciones',
-  align: 'left',
-  sortable: true
-},
-{
-  name: 'fecha_fin_rango1_vacaciones',
-  field: 'fecha_fin_rango1_vacaciones',
-  label: 'Fecha Fin Rango 1 de Vacaciones',
-  align: 'left',
-  sortable: true
-},
-{
-  name: 'fecha_inicio_rango2_vacaciones',
-  field: 'fecha_inicio_rango2_vacaciones',
-  label: 'Fecha Fin Rango 2 de Vacaciones',
-  align: 'left',
-  sortable: true
-},
-{
-  name: 'fecha_fin_rango2_vacaciones',
-  field: 'fecha_fin_rango2_vacaciones',
-  label: 'Fecha Fin Rango 2 de Vacaciones',
-  align: 'left',
-  sortable: true
-},
-{
-  name: 'solicitud',
-  field: 'solicitud',
-  label: 'Solicitud',
-  align: 'left',
-  sortable: true
-},
-]
+    },
+    {
+      name: 'periodo',
+      field: 'periodo',
+      label: 'Periodo',
+      align: 'left',
+      sortable: true
+    },
+    {
+      name: 'autorizador',
+      field: 'autorizador',
+      label: 'Autoriza',
+      align: 'left'
+    },
+    {
+      name: 'fecha_inicio',
+      field: 'fecha_inicio',
+      label: 'Fecha Inicio',
+      align: 'left',
+      sortable: true
+    },
+    {
+      name: 'fecha_fin',
+      field: 'fecha_fin',
+      label: 'Fecha Fin',
+      align: 'left',
+      sortable: true
+    },
+    {
+      name: 'autorizacion',
+      field: 'autorizacion',
+      label: 'Estado',
+      align: 'left',
+      sortable: true
+    }
+  ]

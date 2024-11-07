@@ -10,6 +10,7 @@ export const recursosHumanos = {
   planificadores: new Endpoint('recursos-humanos/planificadores'),
   registro: new Endpoint('recursos-humanos/registro'),
   user_discapacidades: new Endpoint('recursos-humanos/discapacidades-usuario'),
+  derecho_vacaciones: new Endpoint('recursos-humanos/solicitudes-vacaciones/derecho-vacaciones'),
   /***************************************************
    *  Submodulo selección y contratación de personal
    **************************************************/
