@@ -290,9 +290,9 @@
               input-debounce="0"
               emit-value
               map-options
-              :error="!!v$.tarea_origen.$errors.length"
-              @blur="v$.tarea_origen.$touch"
-            >
+              >
+              <!-- :error="!!v$.tarea_origen.$errors.length"
+              @blur="v$.tarea_origen.$touch" -->
               <template v-slot:option="scope">
                 <q-item v-bind="scope.itemProps">
                   <q-item-section>
@@ -310,11 +310,11 @@
                 </q-item>
               </template>
 
-              <template v-slot:error>
+              <!-- <template v-slot:error>
                 <div v-for="error of v$.tarea_origen.$errors" :key="error.$uid">
                   <div class="error-msg">{{ error.$message }}</div>
                 </div>
-              </template>
+              </template> -->
             </q-select>
           </div>
 
@@ -660,7 +660,8 @@
               outlined
               :disable="
                 disabled ||
-                !(authenticationStore.user.id == transferencia.autorizador)
+                (authenticationStore.user.id !== transferencia.autorizador &&
+                !puedeAutorizar)
               "
               :option-value="v => v.id"
               :option-label="v => v.nombre"
