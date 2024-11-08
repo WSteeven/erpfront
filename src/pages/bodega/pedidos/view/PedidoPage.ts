@@ -450,8 +450,6 @@ export default defineComponent({
       empleados, filtrarEmpleados,
       estados,
       autorizaciones,
-      opciones_estados: estados,
-      opciones_autorizaciones: autorizaciones,
 
       //selector
       refListado,

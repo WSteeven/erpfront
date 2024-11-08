@@ -11,6 +11,7 @@ export class SolicitudVacacion extends EntidadAuditable {
   estado: string | null
   reemplazo: number | null
   funciones: string | null
+  observacion: string | null
 
   constructor() {
     super()
@@ -24,5 +25,6 @@ export class SolicitudVacacion extends EntidadAuditable {
     this.estado = null
     this.reemplazo = null
     this.funciones = null
+    this.observacion = null
   }
 }

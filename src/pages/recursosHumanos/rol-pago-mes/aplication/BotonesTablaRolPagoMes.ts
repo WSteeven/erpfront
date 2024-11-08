@@ -31,7 +31,7 @@ export const useBotonesTablaRolPagoMes = (
     accion: async ({ entidad, posicion }) => {
       if (listado.value[posicion].cantidad_subtareas == 0)
         return notificarAdvertencia(
-          'La tarea debe tener al menos un rol de pago de empleado para poder finalizar el rol de pago del mes.'
+          'El rol de pago debe tener al menos un registro para poder finalizar.'
         )
       const estanFinalizadas = await verificarTodasRolPagoFinalizadas(
         entidad.id

@@ -11,7 +11,7 @@
     :mostrarButtonSubmits="true"
     :filtrar="filtrarPermisoEmpleado"
     tabDefecto="1"
-    >
+  >
     <!-- :forzarListar="true" -->
     <template #formulario>
       <q-form @submit.prevent>
@@ -30,8 +30,8 @@
               outlined
               :input-debounce="0"
               use-input
-              :option-value="(v) => v.id"
-              :option-label="(v) => v.nombre"
+              :option-value="v => v.id"
+              :option-label="v => v.nombre"
               emit-value
               map-options
             >
@@ -58,7 +58,7 @@
               :error="!!v$.fecha_hora_inicio.$errors.length"
               :disable="
                 permiso.id_jefe_inmediato !== store.user.id &&
-                (accion === 'EDITAR' || accion === 'CONSULTAR')
+                [acciones.consultar, acciones.editar].includes(accion)
               "
               @blur="v$.fecha_hora_inicio.$touch"
               readonly
@@ -91,7 +91,7 @@
                       <q-time
                         v-model="permiso.fecha_hora_inicio"
                         :minute-options="minuteOptions"
-                       :mask="mask"
+                        :mask="mask"
                         color="primary"
                       />
                     </div>
@@ -118,7 +118,7 @@
               :error="!!v$.fecha_hora_fin.$errors.length"
               :disable="
                 permiso.id_jefe_inmediato !== store.user.id &&
-                (accion === 'EDITAR' || accion === 'CONSULTAR')
+                [acciones.consultar, acciones.editar].includes(accion)
               "
               @blur="v$.fecha_hora_fin.$touch"
               readonly
@@ -212,7 +212,7 @@
               placeholder="Obligatorio"
               :disable="
                 permiso.id_jefe_inmediato !== store.user.id &&
-                (accion === 'EDITAR' || accion === 'CONSULTAR')
+                [acciones.consultar, acciones.editar].includes(accion)
               "
               readonly
               outlined
@@ -257,10 +257,10 @@
           <div class="col-12 col-md-3">
             <label class="q-mb-sm block">Justificativo</label>
             <q-input
-            autogrow
+              autogrow
               v-model="permiso.justificacion"
               @update:model-value="
-                (v) => (permiso.justificacion = removeAccents(v))
+                v => (permiso.justificacion = removeAccents(v))
               "
               placeholder="Obligatorio"
               :disable="!esNuevo"
@@ -379,7 +379,11 @@
           <!-- Recupero -->
           <div
             class="col-12 col-md-3"
-            v-if="permiso.id_jefe_inmediato && permiso.estado == 2 && !permiso.cargo_vacaciones"
+            v-if="
+              permiso.id_jefe_inmediato &&
+              permiso.estado == 2 &&
+              !permiso.cargo_vacaciones
+            "
           >
             <q-checkbox
               class="q-mt-lg q-pt-md"
@@ -471,7 +475,6 @@
             </q-input>
           </div>
 
-
           <!-- Cargo a Vacaciones -->
           <div class="col-12 col-md-3">
             <q-checkbox
@@ -509,7 +512,7 @@
           <!-- Autorizacion -->
           <div
             class="col-12 col-md-3"
-            v-if="accion == 'EDITAR' && esAutorizador"
+            v-if="accion == acciones.editar && esAutorizador"
           >
             <label class="q-mb-sm block">Autorizacion</label>
             <q-select
@@ -524,8 +527,8 @@
               :readonly="disabled"
               use-input
               input-debounce="0"
-              :option-value="(v) => v.id"
-              :option-label="(v) => v.nombre"
+              :option-value="v => v.id"
+              :option-label="v => v.nombre"
               emit-value
               map-options
             >

@@ -1,5 +1,4 @@
 // Dependencies
-import { obtenerFechaActual, sumarFechas } from 'shared/utils'
 import { acciones, accionesTabla, maskFecha } from 'config/utils'
 import { defineComponent, ref } from 'vue'
 
@@ -24,6 +23,7 @@ import { DetalleVacacion } from 'recursosHumanos/vacaciones/modules/detallesVaca
 import { CustomActionTable } from 'components/tables/domain/CustomActionTable'
 import { ComportamientoModalesVacaciones } from 'recursosHumanos/vacaciones/application/ComportamientoModalesVacaciones'
 import { DetalleVacacionPropsInterface } from 'recursosHumanos/vacaciones/domain/DetalleVacacionPropsInterface'
+import { useNotificaciones } from 'shared/notificaciones'
 
 export default defineComponent({
   components: { EssentialTable, TabLayoutFilterTabs2, ModalesEntidad },
@@ -37,6 +37,7 @@ export default defineComponent({
     } = mixin.useReferencias()
     const { setValidador, obtenerListados, cargarVista, listar } =
       mixin.useComportamiento()
+    const {notificarInformacion}=useNotificaciones()
     const modales = new ComportamientoModalesVacaciones()
 
     const tabDefecto = ref('PENDIENTES')
@@ -48,14 +49,14 @@ export default defineComponent({
           controller: new EmpleadoController(),
           params: {
             estado: 1,
-            'fecha_ingreso[operator]': '<',
-            'fecha_ingreso[value]': sumarFechas(
-              obtenerFechaActual(),
-              -1,
-              0,
-              0,
-              maskFecha
-            )
+            // 'fecha_ingreso[operator]': '<',
+            // 'fecha_ingreso[value]': sumarFechas(
+            //   obtenerFechaActual(),
+            //   -1,
+            //   0,
+            //   0,
+            //   maskFecha
+            // )
           }
         },
         periodos: { controller: new PeriodoController(), params: { activo: 1 } }
@@ -103,6 +104,19 @@ export default defineComponent({
         0
       )
       vacacion.dias_disponibles = vacacion.dias - vacacion.dias_tomados
+    }
+
+    const checkOptoPago = (val)=>{
+      if(val) elegirFormaPago()
+    }
+
+    /**
+     * Notifica que dichas vacaciones serán pagaadas por Rol de Pagos.
+     * Se deja esto como función en caso de que en un futuro se requiera profundizar en otros métodos de pago.
+     */
+    function elegirFormaPago(){
+      notificarInformacion('Esta opción creará un registro de pago en rol de pagos')
+
     }
     /*******************************************************************************************
      * BOTONES DE TABLA
@@ -162,6 +176,7 @@ export default defineComponent({
       //funciones
       filtrar,
       guardado,
+      checkOptoPago,
 
       // botones de tabla
       btnAgregarDetalle,

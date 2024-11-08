@@ -145,30 +145,30 @@ export default defineComponent({
      * La función 'obtenerDescuentos' realiza una solicitud GET a una URL específica y recupera
      * información de descuento para vacaciones.
      */
-    async function obtenerDescuentos() {
-      try {
-        cargando.activar()
-        const axios = AxiosHttpRepository.getInstance()
-        const url_acreditacion =
-          apiConfig.URL_BASE +
-          '/' +
-          axios.getEndpoint(endpoints.descuentos_permiso)
-        const response: AxiosResponse = await axios.get(url_acreditacion, {
-          params: { empleado: vacacion.empleado ?? store.user.id }
-        })
-        const num_dias =
-          response.data.duracion !== null ? response.data.duracion : 0
-        vacacion.descuento_vacaciones =
-          response.data.duracion != null ? Math.floor(num_dias / 24) : 0
-        data_dias_descuento_vacaciones.value = Math.floor(
-          num_dias / 24
-        ).toString()
-      } catch (error) {
-        console.error(error)
-      } finally {
-        cargando.desactivar()
-      }
-    }
+    // async function obtenerDescuentos() {
+    //   try {
+    //     cargando.activar()
+    //     const axios = AxiosHttpRepository.getInstance()
+    //     const url_acreditacion =
+    //       apiConfig.URL_BASE +
+    //       '/' +
+    //       axios.getEndpoint(endpoints.descuentos_permiso)
+    //     const response: AxiosResponse = await axios.get(url_acreditacion, {
+    //       params: { empleado: vacacion.empleado ?? store.user.id }
+    //     })
+    //     const num_dias =
+    //       response.data.duracion !== null ? response.data.duracion : 0
+    //     vacacion.descuento_vacaciones =
+    //       response.data.duracion != null ? Math.floor(num_dias / 24) : 0
+    //     data_dias_descuento_vacaciones.value = Math.floor(
+    //       num_dias / 24
+    //     ).toString()
+    //   } catch (error) {
+    //     console.error(error)
+    //   } finally {
+    //     cargando.desactivar()
+    //   }
+    // }
 
     const dias_adicionales = computed(() => {
       const fecha_ingreso =
@@ -295,23 +295,23 @@ export default defineComponent({
       return date >= currentDateString
     }
 
-    async function imprimir(id, filename) {
-      try {
-        cargando.activar()
-        const axios = AxiosHttpRepository.getInstance()
-        const url =
-          apiConfig.URL_BASE +
-          '/' +
-          axios.getEndpoint(endpoints.solicitudes_vacaciones) +
-          '/imprimir/' +
-          id
-        await imprimirArchivo(url, 'GET', 'blob', 'pdf', filename)
-      } catch (e) {
-        notificarAdvertencia('Error al imprimir el documento. ' + e)
-      } finally {
-        cargando.desactivar()
-      }
-    }
+    // async function imprimir(id, filename) {
+    //   try {
+    //     cargando.activar()
+    //     const axios = AxiosHttpRepository.getInstance()
+    //     const url =
+    //       apiConfig.URL_BASE +
+    //       '/' +
+    //       axios.getEndpoint(endpoints.solicitudes_vacaciones) +
+    //       '/imprimir/' +
+    //       id
+    //     await imprimirArchivo(url, 'GET', 'blob', 'pdf', filename)
+    //   } catch (e) {
+    //     notificarAdvertencia('Error al imprimir el documento. ' + e)
+    //   } finally {
+    //     cargando.desactivar()
+    //   }
+    // }
 
     /**************************
      * BOTONES DE TABLAS

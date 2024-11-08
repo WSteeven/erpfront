@@ -6,6 +6,7 @@
     :mixin="mixin"
     ajustar-celdas
     :tab-defecto="tabDefecto"
+    :permitir-editar="tabDefecto == 'PENDIENTES'"
     :filtrar="filtrar"
     :tab-options="tabOptions"
   >
@@ -171,6 +172,7 @@
               keep-color
               icon="bi-check2-circle"
               unchecked-icon="clear"
+              @update:model-value="checkOptoPago"
               :disable="disabled"
             />
           </div>

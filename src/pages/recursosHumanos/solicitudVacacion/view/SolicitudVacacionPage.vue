@@ -8,7 +8,7 @@
     :permitirEliminar="false"
     :mostrarButtonSubmits="true"
     :filtrar="filtrarSolicitudes"
-    :tabDefecto="tabVacacion"
+    :tabDefecto="tabDefecto"
     :forzarListar="true"
     :accion1="editarVacacion"
     :accion2="btnImprimir"
@@ -104,6 +104,7 @@
               :max="dias_disponibles"
               type="number"
               :error="!!v$.dias_solicitados.$errors.length"
+              :error-message="'Solo puedes ingresar máximo '+dias_disponibles+' día/s'"
               @update:model-value="calcularFechaFin"
               outlined
               dense
@@ -212,6 +213,24 @@
             </q-input>
           </div>
 
+          <!-- observacion -->
+          <div class="col-12 col-md-3" v-if="esAutorizador">
+            <label class="q-mb-sm block">Observacion</label>
+            <q-input
+              v-model="solicitud.observacion"
+              placeholder="Obligatorio"
+              :disable="!esAutorizador"
+              :error="!!v$.observacion.$errors.length"
+              outlined
+              dense
+            >
+              <template v-slot:error>
+                <div v-for="error of v$.observacion.$errors" :key="error.$uid">
+                  <div class="error-msg">{{ error.$message }}</div>
+                </div>
+              </template>
+            </q-input>
+          </div>
 
           <!-- Autorizacion -->
           <div
@@ -232,9 +251,6 @@
               dense
               outlined
               :disable="!esAutorizador"
-              :readonly="disabled"
-              use-input
-              input-debounce="0"
               :option-value="v => v.id"
               :option-label="v => v.nombre"
               emit-value

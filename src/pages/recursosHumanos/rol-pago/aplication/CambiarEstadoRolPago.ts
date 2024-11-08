@@ -19,11 +19,11 @@ export class CambiarEstadoRolPago {
     return this.solicitud(idRolPago, data)
   }
   async ejecutarMasivo(data: UnwrapRef<any>) {
-    return this.solicitudMasiva(data,'actualizar_masivo')
+    return this.solicitudMasiva(data,'actualizar-masivo')
   }
   async finalizarMasivo(data: UnwrapRef<any>) {
 
-    return this.solicitudMasiva(data,'finalizar_masivo')
+    return this.solicitudMasiva(data,'finalizar-masivo')
   }
 
   async realizar(idRolPago: number, movilizacion: any) {

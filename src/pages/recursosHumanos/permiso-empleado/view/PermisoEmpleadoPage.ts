@@ -14,6 +14,7 @@ import { PermisoEmpleadoController } from '../infraestructure/PermisoEmpleadoCon
 import { PermisoEmpleado } from '../domain/PermisoEmpleado'
 import { obtenerFechaActual, removeAccents, sumarFechas } from 'shared/utils'
 import {
+  acciones,
   autorizacionesId,
   convertir_fecha_hora,
   maskFecha,
@@ -374,7 +375,7 @@ export default defineComponent({
       color: 'secondary',
       visible: () => store.can('puede.editar.permiso_nomina'),
       accion: ({ entidad }) => {
-        accion.value = 'EDITAR'
+        accion.value = acciones.editar
         consultar(entidad)
       }
     }
@@ -423,7 +424,7 @@ export default defineComponent({
       horas_permisos,
       empleados,
       autorizaciones,
-      accion,
+      accion, acciones,
       maskFecha,
       store,
       v$,

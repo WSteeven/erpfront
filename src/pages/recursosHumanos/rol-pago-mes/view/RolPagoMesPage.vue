@@ -87,7 +87,7 @@
                 </q-input>
               </div>
               <!-- Nombre -->
-              <div class="col-12 col-md-3">
+              <div class="col-12 col-md-6">
                 <label class="q-mb-sm block">Nombre</label>
                 <q-input
                   v-model="rolpago.nombre"
