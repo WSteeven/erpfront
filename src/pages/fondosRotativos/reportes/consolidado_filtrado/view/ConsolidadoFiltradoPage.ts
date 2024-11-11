@@ -8,7 +8,7 @@ import { ContenedorSimpleMixin } from 'shared/contenedor/modules/simple/applicat
 import { TipoFondoController } from 'pages/fondosRotativos/tipoFondo/infrestructure/TipoFonfoController'
 import { AxiosHttpRepository } from 'shared/http/infraestructure/AxiosHttpRepository'
 import { apiConfig, endpoints } from 'config/api'
-import { imprimirArchivo } from 'shared/utils'
+import { imprimirArchivo, obtenerPrimerUltimoDiaMes } from 'shared/utils'
 import { ConsolidadoFiltrado } from '../domain/ConsolidadoFiltrado'
 
 import { ConsolidadoFiltradoController } from '../infrestructure/ConsolidadoFiltradoController'
@@ -28,7 +28,7 @@ import {
   tipo_saldo,
   tipo_filtro,
 } from 'config/utils'
-import { format } from '@formkit/tempo'
+import { addDay, format, monthStart } from '@formkit/tempo'
 import { required, requiredIf } from 'shared/i18n-validators'
 
 export default defineComponent({
@@ -185,6 +185,13 @@ export default defineComponent({
           ? []
           : JSON.parse(LocalStorage.getItem('usuariosInactivos')!.toString())
       listadosAuxiliares.usuariosInactivos = usuariosInactivos.value
+
+      const primerDiaMes = monthStart(new Date())
+      const ultimoDiaMesAnterior = addDay(primerDiaMes, -1)
+      const primerDiaMesAnterior = monthStart(ultimoDiaMesAnterior)
+
+      consolidadofiltrado.fecha_inicio =format(primerDiaMesAnterior, maskFecha)
+      consolidadofiltrado.fecha_fin =format(ultimoDiaMesAnterior, maskFecha)
     })
     /*********
      * Filtros
