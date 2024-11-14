@@ -706,6 +706,12 @@ export const useMenuStore = defineStore('menu', () => {
           can: store.can('puede.acceder.permiso_nomina')
         },
         {
+          title: 'Descuentos a Empleados',
+          link: 'descuentos',
+          icon: 'bi-emoji-frown-fill',
+          can: store.can('puede.acceder.descuentos')
+        },
+        {
           title: 'Nominas y prestamos',
           icon: 'bi-people-fill',
           can: true,

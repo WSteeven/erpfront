@@ -523,8 +523,8 @@ export default defineComponent({
       color: 'accent',
       accion: ({ entidad }) => {
         empleadoStore.idEmpleado = entidad.id
-        // modales.abrirModalEntidad('PlanVacacionIndividualPage')
-        modales.abrirModalEntidad('PlanVacacionIndividualPage', {vacacion_id:vacacion.id})
+        modales.abrirModalEntidad('PlanVacacionIndividualPage')
+        // modales.abrirModalEntidad('PlanVacacionIndividualPage', {vacacion_id:vacacion.id})
       },
       visible: true
     }

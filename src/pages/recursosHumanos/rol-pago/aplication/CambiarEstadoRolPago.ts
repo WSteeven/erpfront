@@ -34,16 +34,15 @@ export class CambiarEstadoRolPago {
     return this.solicitud( idRolPago, data)
   }
 
-  async cancelar(idRolPago: number, idMotivoCancelado: number) {
-    return this.solicitud( idRolPago, { motivo_suspendido_id: idMotivoCancelado }) // Correcto: es motivo_suspendido_id
-  }
+  // async cancelar(idRolPago: number, idMotivoCancelado: number) {
+  //   return this.solicitud( idRolPago, { motivo_suspendido_id: idMotivoCancelado }) // Correcto: es motivo_suspendido_id
+  // }
 
 
-  async solicitud( rolPago, data?: UnwrapRef<any>) {
+  async solicitud(rolPago, data?: UnwrapRef<any>) {
 
     try {
-      const ruta =
-        this.axios.getEndpoint(endpoints.rol_pago) +'/estado'+ '/' + rolPago
+      const ruta = this.axios.getEndpoint(endpoints.rol_pago) +'/estado/' + rolPago
 
       this.cargando.activar()
 
@@ -63,8 +62,7 @@ export class CambiarEstadoRolPago {
   async solicitudMasiva(data?: UnwrapRef<any>,$tipo?: string) {
 
     try {
-      const ruta =
-        this.axios.getEndpoint(endpoints.rol_pago) +'/'+$tipo
+      const ruta = this.axios.getEndpoint(endpoints.rol_pago) +'/'+$tipo
 
       this.cargando.activar()
 

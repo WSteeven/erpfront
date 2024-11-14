@@ -22,6 +22,12 @@ export const tabOptionsPlanificiones: TabOption[] = [
   { label: 'Pendientes', value: '0' },
   { label: 'Completas', value: '1' },
 ]
+
+export const tabOptionsDescuentos: TabOption[] = [
+  { label: 'Pendientes', value: '0' },
+  { label: 'Pagados', value: '1' },
+]
+
 export const tabOptionsVacaciones: TabOption[]=[
   {label: 'Pendientes', value:'PENDIENTES'},
   {label: 'Realizadas', value:'REALIZADAS'},

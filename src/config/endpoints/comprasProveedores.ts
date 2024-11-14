@@ -1,5 +1,26 @@
 import { Endpoint } from 'shared/http/domain/Endpoint';
 
 export const comprasProveedores = {
-  proveedores_internacionales : new Endpoint('compras/proveedores-internacionales')
+  proveedores_internacionales : new Endpoint('compras/proveedores-internacionales'),
+  dashboard_compras: new Endpoint('compras/dashboard'),
+  empleados_ordenes: new Endpoint('compras/empleados-ordenes'),
+  proveedores_ordenes: new Endpoint('compras/proveedores-ordenes'),
+  clientes_prefacturas: new Endpoint('compras/clientes-prefacturas'),
+  dashboard_ventas_empresa: new Endpoint('compras/dashboard-ventas'),
+  calificacion_proveedor: new Endpoint('compras/calificaciones-proveedores'),
+  categorias_ofertas: new Endpoint('compras/categorias-ofertas'),
+  contactos_proveedores: new Endpoint('compras/contactos-proveedores'),
+  criterios_calificaciones: new Endpoint('compras/criterios-calificaciones'),
+  datos_bancarios_proveedor: new Endpoint('compras/datos-bancarios-proveedores'),
+  detalles_departamentos_proveedor: new Endpoint('compras/detalles-departamentos-proveedor'),
+  log_contactos_proveedores: new Endpoint('compras/log-contactos-proveedores'),
+  ofertas_proveedores: new Endpoint('compras/ofertas-proveedores'),
+  ordenes_compras: new Endpoint('compras/ordenes-compras'),
+  pagos_proveedores: new Endpoint('compras/pagos-proveedores'),
+  preordenes_compras: new Endpoint('compras/preordenes-compras'),
+  preordenes_compras_consolidadas: new Endpoint('compras/preordenes-consolidadas'),
+  novedades_ordenes_compras: new Endpoint('compras/novedades-ordenes-compras'),
+  prefacturas: new Endpoint('compras/prefacturas'),
+  proformas: new Endpoint('compras/proformas'),
+  reporte_proveedores: new Endpoint('compras/reporte-proveedores'),
 }

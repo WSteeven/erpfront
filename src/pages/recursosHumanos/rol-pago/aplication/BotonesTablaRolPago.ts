@@ -31,7 +31,7 @@ export const useBotonesTablaRolPago = (modales: any) => {
           estado: estadosRolPago.EJECUTANDO,
         }
          await new CambiarEstadoRolPago().ejecutar(entidad.id, data)
-        notificarCorrecto('Rol de Pagos se esta Verificando!')
+        notificarCorrecto('Rol de Pagos se esta ejecutando!')
       })
     }
   }
