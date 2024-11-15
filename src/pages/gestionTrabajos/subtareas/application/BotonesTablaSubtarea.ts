@@ -66,11 +66,18 @@ export const useBotonesTablaSubtarea = (listado: Ref<Subtarea[]>, modales: Compo
           ...movilizacion
         }
 
-        const { result } = await new CambiarEstadoSubtarea().ejecutar(entidad.id, data)
-        if (authenticationStore.esTecnico) filtrarTrabajoAsignado(estadosTrabajos.EJECUTANDO)
-        else actualizarElemento(posicion, result)
-        notificarCorrecto('Trabajo ejecutado exitosamente!')
-        movilizacionSubtareaStore.getSubtareaDestino(authenticationStore.user.id)
+        try {
+          const { result } = await new CambiarEstadoSubtarea().ejecutar(entidad.id, data)
+          if (authenticationStore.esTecnico) filtrarTrabajoAsignado(estadosTrabajos.EJECUTANDO)
+          else actualizarElemento(posicion, result)
+          notificarCorrecto('Trabajo ejecutado exitosamente!')
+          movilizacionSubtareaStore.getSubtareaDestino(authenticationStore.user.id)
+        } catch (error: unknown) {
+          if (isAxiosError(error)) {
+            const mensajes: string[] = error.erroresValidacion
+            await notificarMensajesError(mensajes, useNotificaciones())
+          }
+        }
       })
     }
   }
