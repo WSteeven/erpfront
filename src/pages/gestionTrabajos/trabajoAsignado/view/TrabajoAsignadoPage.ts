@@ -24,6 +24,7 @@ import { SubtareaListadoPusherEvent } from '../application/SubtareaPusherEvent'
 import { CustomActionTable } from 'components/tables/domain/CustomActionTable'
 import { Subtarea } from 'pages/gestionTrabajos/subtareas/domain/Subtarea'
 import { useCargandoStore } from 'stores/cargando'
+import { useNotificacionStore } from 'stores/notificacion'
 
 export default defineComponent({
   components: {
@@ -38,6 +39,7 @@ export default defineComponent({
     const trabajoAsignadoStore = useTrabajoAsignadoStore()
     const authenticationStore = useAuthenticationStore()
     useCargandoStore().setQuasar(useQuasar())
+    useNotificacionStore().setQuasar(useQuasar())
 
     /*******
     * Mixin

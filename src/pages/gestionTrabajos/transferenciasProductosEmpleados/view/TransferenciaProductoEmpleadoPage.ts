@@ -214,7 +214,7 @@ export default defineComponent({
       justificacion: { required },
       empleado_origen: { required },
       empleado_destino: { required },
-      tarea_origen: { requiredIf: requiredIf(() => !esParaStock.value) }, //transferenciaProductoEmpleadoStore.origenProductos === destinosTareas.paraClienteFinal) },
+      // tarea_origen: { requiredIf: requiredIf(() => !esParaStock.value) }, //transferenciaProductoEmpleadoStore.origenProductos === destinosTareas.paraClienteFinal) },
       // tarea_destino: { requiredIf: requiredIf(() => !esParaStock.value) }, //transferenciaProductoEmpleadoStore.origenProductos === destinosTareas.paraClienteFinal) },
       solicitante: { required },
       cliente: { required },
@@ -708,7 +708,8 @@ export default defineComponent({
 
       //flags
       esCoordinador,
-      puedeAutorizar: computed(() => (esCoordinador || authenticationStore.esJefeTecnico || authenticationStore.esAdministrador) && accion.value === acciones.nuevo),
+      puedeAutorizar: computed(() => authenticationStore.can('puede.autorizar.transferencia_producto_empleado') && [acciones.nuevo, acciones.editar].includes(accion.value)),
+      // puedeAutorizar: computed(() => (esCoordinador || authenticationStore.esJefeTecnico || authenticationStore.esAdministrador) && accion.value === acciones.nuevo),
 
       //Tabs
       tabOptionsTransferenciaProductoEmpleado,

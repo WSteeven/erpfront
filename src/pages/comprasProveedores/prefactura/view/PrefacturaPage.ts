@@ -1,43 +1,48 @@
 // Dependencias
-import { configuracionColumnasPrefactura } from '../domain/configuracionColumnasPrefactura';
-import { configuracionColumnasDetallesPrefactura } from '../domain/configuracionColumnasDetallesPrefactura';
+import { configuracionColumnasPrefactura } from '../domain/configuracionColumnasPrefactura'
+import { configuracionColumnasDetallesPrefactura } from '../domain/configuracionColumnasDetallesPrefactura'
 import { required } from 'shared/i18n-validators'
 import { useVuelidate } from '@vuelidate/core'
-import { computed, defineComponent, ref, watch, } from 'vue'
-
+import { computed, defineComponent, ref, watch } from 'vue'
 
 // Componentes
-import TabLayoutFilterTabs2 from 'shared/contenedor/modules/simple/view/TabLayoutFilterTabs2.vue';
-import EssentialTable from 'components/tables/view/EssentialTable.vue';
+import TabLayoutFilterTabs2 from 'shared/contenedor/modules/simple/view/TabLayoutFilterTabs2.vue'
+import EssentialTable from 'components/tables/view/EssentialTable.vue'
 import EssentialSelectableTable from 'components/tables/view/EssentialSelectableTable.vue'
-import ModalesEntidad from 'components/modales/view/ModalEntidad.vue';
+import ModalesEntidad from 'components/modales/view/ModalEntidad.vue'
 import EssentialPopupEditableTable from 'components/tables/view/EssentialPopupEditableTable.vue'
 
 // Logica y controladores
-import { ContenedorSimpleMixin } from 'shared/contenedor/modules/simple/application/ContenedorSimpleMixin';
-import { Prefactura } from '../domain/Prefactura';
-import { PrefacturaController } from '../infraestructure/PrefacturaController';
-import { useNotificaciones } from 'shared/notificaciones';
-import { useNotificacionStore } from 'stores/notificacion';
-import { LocalStorage, useQuasar } from 'quasar';
-import { useCargandoStore } from 'stores/cargando';
-import { EmpleadoController } from 'pages/recursosHumanos/empleados/infraestructure/EmpleadoController';
-import { acciones, accionesTabla } from 'config/utils';
-import { tabOptionsPrefactura, opcionesForma, opcionesTiempo, estadosCalificacionProveedor } from 'config/utils_compras_proveedores';
-import { useAuthenticationStore } from 'stores/authentication';
-import { calcularSubtotalConImpuestosLista, calcularSubtotalSinImpuestosLista, formatearFecha } from 'shared/utils';
-import { CustomActionTable } from 'components/tables/domain/CustomActionTable';
-import { StatusEssentialLoading } from 'components/loading/application/StatusEssentialLoading';
-import { useFiltrosListadosSelects } from 'shared/filtrosListadosGenerales';
-import { usePreordenStore } from 'stores/comprasProveedores/preorden';
-import { ValidarListadoProductos } from '../application/validaciones/ValidarListadoProductos';
-import { CustomActionPrompt } from 'components/tables/domain/CustomActionPrompt';
-import { ClienteController } from 'sistema/clientes/infraestructure/ClienteController';
-import { ItemPrefactura } from '../domain/ItemPrefactura';
-import { usePrefacturaStore } from 'stores/comprasProveedores/prefactura';
-import { EmpleadoPermisoController } from 'pages/recursosHumanos/empleados/infraestructure/EmpleadoPermisosController';
-import { useRouter } from 'vue-router';
-import { useProformaStore } from 'stores/comprasProveedores/proforma';
+import { ContenedorSimpleMixin } from 'shared/contenedor/modules/simple/application/ContenedorSimpleMixin'
+import { Prefactura } from '../domain/Prefactura'
+import { PrefacturaController } from '../infraestructure/PrefacturaController'
+import { useNotificaciones } from 'shared/notificaciones'
+import { useNotificacionStore } from 'stores/notificacion'
+import { LocalStorage, useQuasar } from 'quasar'
+import { useCargandoStore } from 'stores/cargando'
+import { EmpleadoController } from 'pages/recursosHumanos/empleados/infraestructure/EmpleadoController'
+import { acciones, accionesTabla } from 'config/utils'
+import {
+  opcionesForma,
+  opcionesTiempo,
+  tabOptionsPrefactura
+} from 'config/utils_compras_proveedores'
+import { useAuthenticationStore } from 'stores/authentication'
+import {
+  calcularSubtotalConImpuestosLista,
+  calcularSubtotalSinImpuestosLista,
+  formatearFecha
+} from 'shared/utils'
+import { CustomActionTable } from 'components/tables/domain/CustomActionTable'
+import { useFiltrosListadosSelects } from 'shared/filtrosListadosGenerales'
+import { ValidarListadoProductos } from '../application/validaciones/ValidarListadoProductos'
+import { CustomActionPrompt } from 'components/tables/domain/CustomActionPrompt'
+import { ClienteController } from 'sistema/clientes/infraestructure/ClienteController'
+import { ItemPrefactura } from '../domain/ItemPrefactura'
+import { usePrefacturaStore } from 'stores/comprasProveedores/prefactura'
+import { EmpleadoPermisoController } from 'pages/recursosHumanos/empleados/infraestructure/EmpleadoPermisosController'
+import { useRouter } from 'vue-router'
+import { useProformaStore } from 'stores/comprasProveedores/proforma'
 
 
 export default defineComponent({
@@ -73,8 +78,8 @@ export default defineComponent({
 
         // Flags
         const tabSeleccionado = ref('2')
-        let soloLectura = ref(false)
-        let puedeEditar = ref(false)
+        const soloLectura = ref(false)
+        const puedeEditar = ref(false)
         const refItems = ref()
 
 
@@ -111,7 +116,7 @@ export default defineComponent({
             // comprueba si hay una proforma en el store para llenar automaticamente los datos en la prefactura
             if (proformaStore.proforma.id) {
                 prefactura.tiene_proforma = true
-                cargarDatosProforma()
+                await cargarDatosProforma()
             }
 
         })
@@ -125,10 +130,7 @@ export default defineComponent({
             soloLectura.value = false
         })
         onConsultado(() => {
-            if (accion.value === acciones.editar)
-                soloLectura.value = false
-            else
-                soloLectura.value = true
+            soloLectura.value = accion.value !== acciones.editar;
         })
         onModificado(() => {
             filtrarPrefacturas('1')
@@ -162,8 +164,7 @@ export default defineComponent({
          ******************************************************************************************/
         function filtrarPrefacturas(tab: string) {
             tabSeleccionado.value = tab
-            if (tab == '2') puedeEditar.value = true
-            else puedeEditar.value = false
+            puedeEditar.value = tab == '2';
             listar({ estado_id: tab, solicitante_id: store.user.id })
         }
         function eliminar({ posicion }) {
@@ -260,7 +261,7 @@ export default defineComponent({
             titulo: 'Eliminar',
             icono: 'bi-x',
             color: 'negative',
-            accion: ({ entidad, posicion }) => {
+            accion: ({ posicion }) => {
                 eliminar({ posicion })
                 // confirmar('¿Está seguro de continuar?', () => prefactura.listadoProductos.splice(posicion, 1))
             },
@@ -274,13 +275,13 @@ export default defineComponent({
                 prefacturaStore.idPrefactura = entidad.id
                 await prefacturaStore.imprimirPdf()
             },
-            visible: () => Number(tabSeleccionado.value) > 1 ? true : false
+            visible: () => Number(tabSeleccionado.value) > 1
         }
         const btnHacerPrefactura: CustomActionTable = {
             titulo: 'Generar Prefactura',
             color: 'primary',
             icono: 'bi-cart-check',
-            accion: ({ entidad, posicion }) => {
+            accion: ({ entidad }) => {
                 prefacturaStore.prefactura = entidad
                 router.push('prefacturas')
             },

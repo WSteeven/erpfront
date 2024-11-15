@@ -31,7 +31,7 @@
   <div class="bg-desenfoque">
     <q-img
       v-show="imagenCodificada"
-      :src="imagenCodificada"
+      :src="imagenCodificada ?? ''"
       width="100%"
       :height="alto"
       fit="contain"

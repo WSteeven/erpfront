@@ -90,6 +90,7 @@
         <!-- @keyup.enter="scope.set" -->
 
         <q-select
+          :style="props.col.style"
           v-if="props.col.type === 'select'"
           v-model="props.row[props.col.name]"
           :options="props.col.options"

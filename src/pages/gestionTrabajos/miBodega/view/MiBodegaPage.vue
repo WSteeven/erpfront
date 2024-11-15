@@ -51,10 +51,8 @@
                 options-dense
                 dense
                 outlined
-                :option-label="
-                  (item) => item.codigo_tarea + ' - ' + item.titulo
-                "
-                :option-value="(item) => item.id"
+                :option-label="item => item.codigo_tarea + ' - ' + item.titulo"
+                :option-value="item => item.id"
                 @update:model-value="seleccionarTarea()"
                 emit-value
                 map-options
@@ -96,8 +94,8 @@
                 options-dense
                 dense
                 outlined
-                :option-label="(item) => item.razon_social"
-                :option-value="(item) => item.cliente_id"
+                :option-label="item => item.razon_social"
+                :option-value="item => item.cliente_id"
                 emit-value
                 map-options
               >
@@ -143,8 +141,8 @@
                 options-dense
                 dense
                 outlined
-                :option-label="(item) => item.nombre"
-                :option-value="(item) => item.id"
+                :option-label="item => item.nombre"
+                :option-value="item => item.id"
                 @update:model-value="seleccionarProyecto()"
                 use-input
                 input-debounce="0"
@@ -201,8 +199,8 @@
                 options-dense
                 dense
                 outlined
-                :option-label="(item) => item.nombre"
-                :option-value="(item) => item.id"
+                :option-label="item => item.nombre"
+                :option-value="item => item.id"
                 use-input
                 input-debounce="0"
                 emit-value
@@ -232,8 +230,8 @@
                 options-dense
                 dense
                 outlined
-                :option-label="(item) => item.razon_social"
-                :option-value="(item) => item.cliente_id"
+                :option-label="item => item.razon_social"
+                :option-value="item => item.cliente_id"
                 emit-value
                 map-options
               >
@@ -296,8 +294,8 @@
                 options-dense
                 dense
                 outlined
-                :option-label="(item) => item.razon_social"
-                :option-value="(item) => item.cliente_id"
+                :option-label="item => item.razon_social"
+                :option-value="item => item.cliente_id"
                 emit-value
                 map-options
               >

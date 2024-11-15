@@ -41,6 +41,15 @@ export const opcionesSubactividadesPlanificador: SelectOption[]=[
   {label: 'En Proceso', value:'En Proceso'},
   {label: 'Finalizado', value:'Finalizado'},
 ]
+export const opcionesPeriodicidad: SelectOption[]=[
+  {label: 'Una vez', value:'Una vez'},
+  {label: 'Diario', value:'Diario'},
+  {label: 'Semanal', value:'Semanal'},
+  {label: 'Quincenal', value:'Quincenal'},
+  {label: 'Mensual', value:'Mensual'},
+  {label: 'Semestral', value:'Semestral'},
+  {label: 'Anual', value:'Anual'},
+]
 export const estadosRolPagoEmpleado = {
   todo: '',
   creado: 'CREADO',

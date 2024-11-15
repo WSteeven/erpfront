@@ -1,6 +1,6 @@
 import { ColumnConfig } from 'components/tables/domain/ColumnConfig'
 import { Subactividad } from 'recursosHumanos/planificador/domain/Subactividad'
-import { opcionesSubactividadesPlanificador } from 'config/recursosHumanos.utils'
+import { opcionesPeriodicidad, opcionesSubactividadesPlanificador } from 'config/recursosHumanos.utils'
 
 export const configuracionColumnasSubactividades: ColumnConfig<Subactividad>[] =
   [
@@ -43,6 +43,16 @@ export const configuracionColumnasSubactividades: ColumnConfig<Subactividad>[] =
       align: 'left',
       type: 'select',
       options: opcionesSubactividadesPlanificador,
+      style: 'min-width: 100px; overflow: auto;',
+      editable: true
+    },
+    {
+      name: 'periodicidad',
+      field: 'periodicidad',
+      label: 'Periodicidad',
+      align: 'left',
+      type: 'select',
+      options: opcionesPeriodicidad,
       editable: true
     },
     {
@@ -52,7 +62,7 @@ export const configuracionColumnasSubactividades: ColumnConfig<Subactividad>[] =
       style: 'min-width: 200px; overflow: auto;',
       align: 'left',
       editable: true
-    },
+    }
     // {
     //   name: 'completado',
     //   field: 'completado',

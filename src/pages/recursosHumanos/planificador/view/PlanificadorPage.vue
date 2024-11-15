@@ -89,6 +89,7 @@
               class="full-width"
               no-caps
               no-wrap
+              :disable="disabled"
               push
               glossy
               @click="agregarActividad"
@@ -121,6 +122,7 @@
                 <q-btn
                   outline
                   dense
+                  :disable="disabled"
                   @click="editarNombreActividad(actividad)"
                   color="secondary"
                 >
@@ -133,6 +135,7 @@
                   outline
                   dense
                   class="q-pl-sm"
+                  :disable="disabled"
                   @click="eliminarActividad(index)"
                   color="negative"
                 >
@@ -146,10 +149,10 @@
             <essential-table
               :identificador="index"
               :datos="actividad.subactividades"
-              :configuracion-columnas="[
+              :configuracion-columnas="[acciones.nuevo, acciones.editar].includes(accion) ?[
                 ...configuracionColumnasSubactividades,
                 accionesTabla
-              ]"
+              ]: configuracionColumnasSubactividades"
               ajustar-celdas
               :disable="disabled"
               :permitirConsultar="false"

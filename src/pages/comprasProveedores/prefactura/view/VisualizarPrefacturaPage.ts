@@ -109,10 +109,7 @@ export default defineComponent({
             soloLectura.value = false
         })
         onConsultado(() => {
-            if (accion.value === acciones.editar)
-                soloLectura.value = false
-            else
-                soloLectura.value = true
+            soloLectura.value = accion.value !== acciones.editar;
         })
         onModificado(() => {
             filtrarPrefacturas('1')
@@ -144,11 +141,10 @@ export default defineComponent({
         /*******************************************************************************************
          * Funciones
          ******************************************************************************************/
-        function filtrarPrefacturas(tab: string) {
+        async function filtrarPrefacturas(tab: string) {
             tabSeleccionado.value = tab
-            if (tab == '1') puedeEditar.value = true
-            else puedeEditar.value = false
-            listar({ estado_id: tab, solicitante_id: store.user.id })
+            puedeEditar.value = tab == '1';
+            await listar({ estado_id: tab, solicitante_id: store.user.id })
         }
         function eliminar({ posicion }) {
             confirmar('¿Está seguro de continuar?', () => prefactura.listadoProductos.splice(posicion, 1))
@@ -228,7 +224,7 @@ export default defineComponent({
                 prefacturaStore.idPrefactura = entidad.id
                 await prefacturaStore.imprimirPdf()
             },
-            visible: () => Number(tabSeleccionado.value) > 1 ? true : false
+            visible: () => Number(tabSeleccionado.value) > 1
         }
         const btnHacerPrefactura: CustomActionTable = {
             titulo: 'Generar Prefactura',

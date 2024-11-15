@@ -7,6 +7,7 @@ export class Subactividad extends EntidadAuditable {
   fecha_inicio: string | null
   fecha_fin: string | null
   estado_avance: number | null
+  periodicidad: string | null
   observaciones: string | null
   actividad_id: number | null
 
@@ -18,6 +19,7 @@ export class Subactividad extends EntidadAuditable {
     this.fecha_inicio = null
     this.fecha_fin = null
     this.estado_avance = null
+    this.periodicidad = null
     this.observaciones = null
     this.actividad_id = null
   }

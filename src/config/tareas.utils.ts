@@ -57,12 +57,12 @@ export const tabOptionsEstadosSubtareas: TabOption[] = [
 
 const authenticationStore = useAuthenticationStore()
 export const tabOptionsEstadosSubtareasMonitor: TabOption[] = [
-  { label: 'Agendado', value: 'AGENDADO', disable: authenticationStore.esContabilidad },
-  { label: 'Ejecutando', value: 'EJECUTANDO', disable: authenticationStore.esContabilidad },
-  { label: 'Pausado', value: 'PAUSADO', disable: authenticationStore.esContabilidad },
-  { label: 'Suspendido', value: 'SUSPENDIDO', disable: authenticationStore.esContabilidad },
-  { label: 'Cancelado', value: 'CANCELADO', disable: authenticationStore.esContabilidad },
-  { label: 'Realizado', value: 'REALIZADO', disable: authenticationStore.esContabilidad },
+  { label: 'Agendado', value: 'AGENDADO' },
+  { label: 'Ejecutando', value: 'EJECUTANDO' },
+  { label: 'Pausado', value: 'PAUSADO' },
+  { label: 'Suspendido', value: 'SUSPENDIDO' },
+  { label: 'Cancelado', value: 'CANCELADO' },
+  { label: 'Realizado', value: 'REALIZADO' },
   { label: 'Finalizado', value: 'FINALIZADO' },
 ]
 
