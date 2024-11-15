@@ -124,6 +124,13 @@ const rutasRecursosHumanos: RouteRecordRaw[] = [
     meta: { requiresAuth: true }
   },
   {
+    path: 'valores-cargados-roles',
+    name: 'valores_cargados_roles',
+    component: () =>
+      import('pages/recursosHumanos/valoresCargadosRolEmpleadoMensual/view/ValorCargadoRolPage.vue'),
+    meta: { requiresAuth: true }
+  },
+  {
     path: '/multa',
     name: 'multa',
     component: () => import('pages/recursosHumanos/multas/view/MultaPage.vue'),

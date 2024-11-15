@@ -206,7 +206,7 @@ export default defineComponent({
       botonVerTransaccion,
       modales,
       //filtro de empleados
-      filtrarEmpleados: filtrarEmpleados,
+       filtrarEmpleados,
 
       ordenarLista,
 

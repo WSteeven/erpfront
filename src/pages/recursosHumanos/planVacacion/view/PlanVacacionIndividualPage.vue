@@ -22,10 +22,10 @@
       </q-expansion-item>
       <div v-if="vacaciones.length != 0">
         <q-expansion-item
-          v-for="(solicitud, index) of vacaciones"
-          :key="solicitud.id"
+          v-for="(vacacion, index) of vacaciones"
+          :key="vacacion.id"
           class="overflow-hidden q-mb-md expansion"
-          :label="'Período ' + solicitud.periodo"
+          :label="'Período ' + vacacion.periodo"
           header-class="text-bold bg-header-collapse"
           default-opened
         >
@@ -37,31 +37,56 @@
                 outline
                 color="secondary"
                 @click="() => (habilitarBotones = !habilitarBotones)"
-                v-if="obtenerAccion(solicitud.periodo) == acciones.editar"
+                v-if="obtenerAccion(vacacion.periodo) == acciones.editar"
               >
                 <q-tooltip class="bg-dark">Editar</q-tooltip>
                 <q-icon class="bi-pencil-square" size="xs" />
               </q-btn>
             </div>
-            <div class="col-12 border-grey rounded-8">
+            <!--            <div class="col-12 border-grey rounded-8" v-if="!vacacion.opto_pago">-->
+            <div class="col-12 border-grey rounded-8" v-if="!vacacion.completadas">
               <formulario-plan-vacaciones
                 :habilitar-botones="
                   habilitarBotones ||
-                  obtenerAccion(solicitud.periodo) == acciones.nuevo
+                  obtenerAccion(vacacion.periodo) == acciones.nuevo
                 "
-                :dias-disponibles="solicitud.dias_disponibles"
+                :dias-disponibles="vacacion.dias_disponibles"
                 :empleado="empleadoStore.idEmpleado"
                 :identificador="index"
                 @cancelar="cancelar"
                 @guardado="obtenerPlanesVacaciones"
-                :accion="obtenerAccion(solicitud.periodo)"
+                :accion="obtenerAccion(vacacion.periodo)"
                 :plan="planes_vacaciones[index]"
-                :periodo="solicitud.periodo_id"
+                :periodo="vacacion.periodo_id"
               />
             </div>
-          </div>
-          <div class="row q-pa-sm">
-            {{ solicitud }}
+
+            <div class="col-12">
+              <br>
+              <label class="q-mt-xl q-pt-xl" v-if="vacacion.dias_tomados > 0"><strong>Registro de Vacaciones </strong>&nbsp;</label>
+            </div>
+            <div class="col-12 border-grey rounded-8">
+              <div class="row q-pa-sm col-12" v-if="vacacion.dias_tomados > 0">
+                <div
+                  class="col-12 col-md-12 rounded-card q-py-sm text-center text-info bg-blue-2"
+                  v-if="vacacion.opto_pago"
+                >
+                  <q-icon
+                    name="bi-info-circle-fill"
+                    class="q-mr-sm"
+                    size="1em"
+                  ></q-icon>
+                  <b>&nbsp; Información</b>
+                  <div>
+                    Estas vacaciones ya fueron tomadas por el empleado, en este
+                    caso optó por pago de sus días de vacaciones
+                  </div>
+                </div>
+                <div class="col-12 ">
+                  <VacacionLitePage :vacacion="vacacion" />
+                </div>
+              </div>
+            </div>
           </div>
         </q-expansion-item>
       </div>
@@ -78,41 +103,46 @@
               outline
               color="secondary"
               @click="() => (habilitarBotones = !habilitarBotones)"
-              v-if="obtenerAccion(planes_vacaciones[0]?.periodo) == acciones.editar"
+              v-if="
+                obtenerAccion(planes_vacaciones[0]?.periodo) == acciones.editar
+              "
             >
               <q-tooltip class="bg-dark">Editar</q-tooltip>
               <q-icon class="bi-pencil-square" size="xs" />
             </q-btn>
           </div>
           <div class="col-12 border-grey rounded-8">
-        <formulario-plan-vacaciones
-          :habilitar-botones="habilitarBotones || obtenerAccion(planes_vacaciones[0]?.periodo) == acciones.nuevo"
-          :dias-disponibles="15"
-          :empleado="empleadoStore.idEmpleado"
-          @cancelar="cancelar"
-          @guardado="obtenerPlanesVacaciones"
-          :accion="obtenerAccion(planes_vacaciones[0]?.periodo)"
-          :plan="planes_vacaciones[0]"
-        />
+            <formulario-plan-vacaciones
+              :habilitar-botones="
+                habilitarBotones ||
+                obtenerAccion(planes_vacaciones[0]?.periodo) == acciones.nuevo
+              "
+              :dias-disponibles="15"
+              :empleado="empleadoStore.idEmpleado"
+              @cancelar="cancelar"
+              @guardado="obtenerPlanesVacaciones"
+              :accion="obtenerAccion(planes_vacaciones[0]?.periodo)"
+              :plan="planes_vacaciones[0]"
+            />
           </div>
         </div>
-<!--        <formulario-plan-vacaciones-->
-<!--          v-else-->
-<!--          :habilitar-botones="false"-->
-<!--          :periodo="2"-->
-<!--          :empleado="empleadoStore.idEmpleado"-->
-<!--          :accion="acciones.editar"-->
-<!--          :dias-disponibles="15"-->
-<!--          :plan="planes_vacaciones[0]"-->
-<!--        />-->
+        <!--        <formulario-plan-vacaciones-->
+        <!--          v-else-->
+        <!--          :habilitar-botones="false"-->
+        <!--          :periodo="2"-->
+        <!--          :empleado="empleadoStore.idEmpleado"-->
+        <!--          :accion="acciones.editar"-->
+        <!--          :dias-disponibles="15"-->
+        <!--          :plan="planes_vacaciones[0]"-->
+        <!--        />-->
       </div>
 
-      <div class="row q-col-gutter-sm q-pa-md" v-if="false">
-        <div class="col-12 col-md-3">
-          <p>Aqui va el plan de vacaciones</p>
-          {{ plan }}
-        </div>
-      </div>
+      <!--      <div class="row q-col-gutter-sm q-pa-md" v-if="false">-->
+      <!--        <div class="col-12 col-md-3">-->
+      <!--          <p>Aqui va el plan de vacaciones</p>-->
+      <!--          {{ plan }}-->
+      <!--        </div>-->
+      <!--      </div>-->
     </template>
   </simple-layout>
 </template>

@@ -11,6 +11,8 @@ export class Vacacion extends EntidadAuditable {
   completadas: boolean
   dias_tomados: number
   dias_disponibles: number
+  observacion: string | null
+  mes_pago: string | null
 
   constructor() {
     super()
@@ -24,5 +26,7 @@ export class Vacacion extends EntidadAuditable {
     this.completadas = false
     this.dias_tomados = 0
     this.dias_disponibles = 0
+    this.observacion = null
+    this.mes_pago = null
   }
 }

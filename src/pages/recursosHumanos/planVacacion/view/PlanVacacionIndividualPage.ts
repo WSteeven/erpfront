@@ -11,9 +11,14 @@ import { VacacionController } from 'recursosHumanos/vacaciones/infraestructure/V
 import { Vacacion } from 'recursosHumanos/vacaciones/domain/Vacacion'
 import FormularioPlanVacaciones from 'recursosHumanos/planVacacion/view/FormularioPlanVacaciones.vue'
 import { acciones } from 'config/utils'
+import EssentialTable from 'components/tables/view/EssentialTable.vue'
+import { configuracionColumnasDetallesVacacion } from 'recursosHumanos/vacaciones/modules/detallesVacaciones/domain/configuracionColumnasDetallesVacacion'
+import VacacionLitePage from 'recursosHumanos/vacaciones/view/VacacionLitePage.vue'
 
 export default defineComponent({
   components: {
+    VacacionLitePage,
+    EssentialTable,
     TabLayout,
     SimpleLayout,
     EmpleadoInfoPage,
@@ -118,7 +123,7 @@ export default defineComponent({
       identificador,
       mostrarPlanVacacion,
       habilitarBotones,
-
+      configuracionColumnasDetallesVacacion,
       // listados
       planes_vacaciones,
       vacaciones,

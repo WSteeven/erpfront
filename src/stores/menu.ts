@@ -735,6 +735,12 @@ export const useMenuStore = defineStore('menu', () => {
               can: store.can('puede.acceder.licencia_empleado')
             },
             {
+              title: 'Valores para Roles',
+              link: 'valores-cargados-roles',
+              icon: 'bi-cash-coin',
+              can: store.can('puede.acceder.valores_cargados_roles')
+            },
+            {
               title: 'Solicitud de Vacaciones',
               link: 'solicitudes-vacaciones',
               icon: 'bi-umbrella-fill',

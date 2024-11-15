@@ -6,6 +6,7 @@ import { defineComponent, ref } from 'vue'
 import TabLayoutFilterTabs2 from 'shared/contenedor/modules/simple/view/TabLayoutFilterTabs2.vue'
 import EssentialTable from 'components/tables/view/EssentialTable.vue'
 import ModalesEntidad from 'components/modales/view/ModalEntidad.vue'
+import SolicitarFecha from 'shared/prompts/SolicitarFecha.vue'
 
 // Logica y controladores
 import { ContenedorSimpleMixin } from 'shared/contenedor/modules/simple/application/ContenedorSimpleMixin'
@@ -24,9 +25,15 @@ import { CustomActionTable } from 'components/tables/domain/CustomActionTable'
 import { ComportamientoModalesVacaciones } from 'recursosHumanos/vacaciones/application/ComportamientoModalesVacaciones'
 import { DetalleVacacionPropsInterface } from 'recursosHumanos/vacaciones/domain/DetalleVacacionPropsInterface'
 import { useNotificaciones } from 'shared/notificaciones'
+import { CustomActionPrompt } from 'components/tables/domain/CustomActionPrompt'
 
 export default defineComponent({
-  components: { EssentialTable, TabLayoutFilterTabs2, ModalesEntidad },
+  components: {
+    SolicitarFecha,
+    EssentialTable,
+    TabLayoutFilterTabs2,
+    ModalesEntidad
+  },
   setup() {
     const mixin = new ContenedorSimpleMixin(Vacacion, new VacacionController())
     const {
@@ -37,8 +44,9 @@ export default defineComponent({
     } = mixin.useReferencias()
     const { setValidador, obtenerListados, cargarVista, listar } =
       mixin.useComportamiento()
-    const {notificarInformacion}=useNotificaciones()
+    const { confirmar, prompt, notificarInformacion } = useNotificaciones()
     const modales = new ComportamientoModalesVacaciones()
+    const mostrarSolicitarFecha = ref(false)
 
     const tabDefecto = ref('PENDIENTES')
     const { empleados, periodos } =
@@ -48,7 +56,7 @@ export default defineComponent({
         empleados: {
           controller: new EmpleadoController(),
           params: {
-            estado: 1,
+            estado: 1
             // 'fecha_ingreso[operator]': '<',
             // 'fecha_ingreso[value]': sumarFechas(
             //   obtenerFechaActual(),
@@ -106,18 +114,51 @@ export default defineComponent({
       vacacion.dias_disponibles = vacacion.dias - vacacion.dias_tomados
     }
 
-    const checkOptoPago = (val)=>{
-      if(val) elegirFormaPago()
+    const checkOptoPago = val => {
+      if (val) elegirFormaPago()
+      else {
+        vacacion.observacion = null
+        vacacion.mes_pago = null
+      }
     }
 
     /**
      * Notifica que dichas vacaciones serán pagaadas por Rol de Pagos.
      * Se deja esto como función en caso de que en un futuro se requiera profundizar en otros métodos de pago.
      */
-    function elegirFormaPago(){
-      notificarInformacion('Esta opción creará un registro de pago en rol de pagos')
-
+    function elegirFormaPago() {
+      //
+      confirmar(
+        '¿Está seguro de marcar como pagada esta vacación?',
+        async () => {
+          const data: CustomActionPrompt = {
+            titulo: 'Observacion',
+            mensaje: '¿Tienes alguna observación al respecto?',
+            validacion: val => val != null,
+            accion: async data => {
+              vacacion.observacion = data
+              if (vacacion.mes_pago == null) mostrarSolicitarFecha.value = true
+            }
+          }
+          prompt(data)
+          // despues de ingresar la información se notifica
+          notificarInformacion(
+            'Esta opción creará un registro de pago en rol de pagos del empleado'
+          )
+        },
+        () => (vacacion.opto_pago = false)
+      )
     }
+
+    function fechaIngresada(fecha?) {
+      vacacion.mes_pago = fecha
+      console.log('Fecha ingresada: ', fecha)
+      console.log(fecha.slice(0, 7))
+      console.log(vacacion)
+      // dataMulta.fecha_pago = fecha
+      // if (await conductorStore.pagarMulta(dataMulta)) await consultarMultasConductor()
+    }
+
     /*******************************************************************************************
      * BOTONES DE TABLA
      ******************************************************************************************/
@@ -168,6 +209,7 @@ export default defineComponent({
       tabOptions: tabOptionsVacaciones,
       maskFecha,
       modales,
+      mostrarSolicitarFecha,
 
       // listados
       empleados,
@@ -177,6 +219,7 @@ export default defineComponent({
       filtrar,
       guardado,
       checkOptoPago,
+      fechaIngresada,
 
       // botones de tabla
       btnAgregarDetalle,

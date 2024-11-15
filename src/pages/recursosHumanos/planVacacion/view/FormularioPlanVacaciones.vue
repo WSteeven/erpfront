@@ -12,7 +12,7 @@
 
   <div v-else>
     <div class="row q-col-gutter-sm q-pa-sm">
-      {{planVacacion}}
+<!--      {{planVacacion}}-->
       <!--Periodos -->
       <div class="col-12 col-md-3" v-if="periodo==-1">
         <label class="q-mb-sm block">Periodo</label>

@@ -169,13 +169,35 @@
               :label="vacacion.opto_pago ? 'SI' : 'NO'"
               v-model="vacacion.opto_pago"
               color="primary"
+              :disable="accion!==acciones.editar"
               keep-color
               icon="bi-check2-circle"
               unchecked-icon="clear"
               @update:model-value="checkOptoPago"
-              :disable="disabled"
             />
           </div>
+          <!-- Observación -->
+          <div class="col-12 col-md-3 col-sm-3" v-if="vacacion.observacion">
+            <label class="q-mb-sm block">Observación</label>
+            <q-input
+              v-model="vacacion.observacion"
+              disable
+              outlined
+              dense
+            />
+          </div>
+
+          <!-- Mes de pago -->
+          <div class="col-12 col-md-3 col-sm-3" v-if="vacacion.mes_pago">
+            <label class="q-mb-sm block">Rol a Pagarse</label>
+            <q-input
+              v-model="vacacion.mes_pago"
+              disable
+              outlined
+              dense
+            />
+          </div>
+
           <div class="col-12" v-if="accion !== acciones.nuevo">
             <essential-table
               titulo="Registro de días de vacaciones tomados"
@@ -198,6 +220,14 @@
       </q-form>
     </template>
   </tab-layout-filter-tabs2>
+  <solicitar-fecha
+    :mostrar="mostrarSolicitarFecha"
+    reason="month"
+    mask="YYYY-MM"
+    label="Mes de pago"
+    :confirmar="fechaIngresada"
+    @cerrar="mostrarSolicitarFecha = false"
+  />
   <modales-entidad
     :comportamiento="modales"
     :persistente="false"
