@@ -22,7 +22,7 @@
     </div>
 
     <div v-if="subtarea.fecha_hora_agendado" class="col-12 col-md-3">
-      <label class="q-mb-sm block">Fecha y hora de agendamiento</label>
+      <label class="q-mb-sm block">Fecha y hora en que fue agendada</label>
       <q-input v-model="subtarea.fecha_hora_agendado" outlined dense disable>
       </q-input>
     </div>

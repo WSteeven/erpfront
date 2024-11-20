@@ -238,13 +238,13 @@ export const useBotonesTablaSubtarea = (listado: Ref<Subtarea[]>, modales: Compo
     titulo: 'Finalizar',
     color: 'positive',
     icono: 'bi-check',
-    visible: ({ entidad }) => entidad.estado === estadosTrabajos.REALIZADO, // 8459 - 8561
+    visible: ({ entidad }) => entidad.estado === estadosTrabajos.REALIZADO,
     accion: async ({ entidad, posicion }) => {
       const config: CustomActionPrompt = reactive({ // Nedetel
         mensaje: 'Confirme la causa de intervención',
         accion: (causa_intervencion_id) => {
           trabajoAsignadoStore.idSubtareaSeleccionada = entidad.id
-          console.log(trabajoAsignadoStore.idSubtareaSeleccionada)
+
           if (entidad.tipo_trabajo === 'STANDBY') confirmarFinalizar({ entidad, posicion })
           else confirmarFinalizarConAlimentacion({ entidad, causa_intervencion_id, posicion })
         },
@@ -313,19 +313,26 @@ export const useBotonesTablaSubtarea = (listado: Ref<Subtarea[]>, modales: Compo
   async function confirmarFinalizar(data: UnwrapRef<any>) {
     const { entidad, causa_intervencion_id, posicion } = data
 
-    // confirmar('¿Está seguro de marcar como finalizada la subtarea?', async () => {
-    try {
-      const { result } = await cambiarEstadoTrabajo.finalizar(entidad.id, { causa_intervencion_id: causa_intervencion_id })
-      actualizarElemento(posicion, result)
+    const config: CustomActionPrompt = {
+      titulo: 'Gastos adicionales',
+      mensaje: 'Ingrese los gastos adicionales.',
+      requerido: true,
+      accion: async (gastos_adicionales: string) => {
+        try {
+          const { result } = await cambiarEstadoTrabajo.finalizar(entidad.id, { causa_intervencion_id: causa_intervencion_id, gastos_adicionales })
+          actualizarElemento(posicion, result)
 
-      notificarCorrecto('Trabajo finalizada exitosamente!')
-    } catch (error: unknown) {
-      if (isAxiosError(error)) {
-        const mensajes: string[] = error.erroresValidacion
-        notificarMensajesError(mensajes, notificaciones)
+          notificarCorrecto('Trabajo finalizada exitosamente!')
+        } catch (error: unknown) {
+          if (isAxiosError(error)) {
+            const mensajes: string[] = error.erroresValidacion
+            notificarMensajesError(mensajes, notificaciones)
+          }
+        }
       }
     }
-    // })
+
+    prompt(config)
   }
 
   const btnSuspender: CustomActionTable = {
@@ -433,8 +440,6 @@ export const useBotonesTablaSubtarea = (listado: Ref<Subtarea[]>, modales: Compo
   const setFiltrarTrabajoAsignado = (funcion: (estado: string) => void) => filtrarTrabajoAsignado = funcion
 
   function actualizarElemento(posicion: number, nuevaEntidad: Subtarea): void {
-    console.log(posicion)
-    console.log(nuevaEntidad)
     if (posicion >= 0) {
       listado.value.splice(posicion, 1, nuevaEntidad)
       listado.value = [...listado.value]

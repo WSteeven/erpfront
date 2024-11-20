@@ -76,6 +76,7 @@ export class Subtarea extends EntidadAuditable {
   etapa_id: number | null
 
   valor_alimentacion: number | null
+  gastos_adicionales: string | null
 
   constructor() {
     super()
@@ -153,5 +154,6 @@ export class Subtarea extends EntidadAuditable {
     this.ruta_tarea = null
 
     this.valor_alimentacion = null
+    this.gastos_adicionales = null
   }
 }

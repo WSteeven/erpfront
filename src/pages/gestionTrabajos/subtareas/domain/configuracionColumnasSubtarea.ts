@@ -66,6 +66,12 @@ export const configuracionColumnasSubtarea: ColumnConfig<Subtarea>[] = [
     align: 'left',
   },
   {
+    name: 'gastos_adicionales',
+    field: 'gastos_adicionales',
+    label: 'Gastos adicionales',
+    align: 'left',
+  },
+  {
     name: 'fecha_solicitud',
     field: 'fecha_solicitud',
     label: 'Fecha solicitud',
