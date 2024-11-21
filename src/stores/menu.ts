@@ -4,7 +4,6 @@ import { defineStore } from 'pinia'
 import { computed, Ref } from 'vue'
 import seleccionContratacionPersonal from './menus/rrhh/seleccionContratacionPersonal'
 
-
 export const useMenuStore = defineStore('menu', () => {
   const store = useAuthenticationStore()
 
@@ -320,7 +319,7 @@ export const useMenuStore = defineStore('menu', () => {
           link: 'permisos-armas',
           icon: 'bi-app',
           // can: store.esBodeguero,// can('puede.ver.detalles'),
-          can: store.can('puede.acceder.permisos_armas'),
+          can: store.can('puede.acceder.permisos_armas')
         },
         {
           title: 'Inventario',
@@ -356,7 +355,7 @@ export const useMenuStore = defineStore('menu', () => {
           title: 'Preingresos de Materiales',
           link: 'preingresos-materiales',
           can: store.can('puede.acceder.preingresos_materiales') || true,
-          icon: 'bi-app',
+          icon: 'bi-app'
         },
 
         {
@@ -475,21 +474,21 @@ export const useMenuStore = defineStore('menu', () => {
           title: 'Control de activos fijos',
           link: 'control-activos-fijos',
           can: store.can('puede.acceder.control_activos_fijos'),
-          icon: 'bi-app',
+          icon: 'bi-app'
         },
         {
           title: 'Seguimiento consumo de activos fijos',
           link: 'seguimiento-consumo-activos-fijos',
           can: store.can('puede.acceder.seguimiento_consumo_activos_fijos'),
-          icon: 'bi-app',
+          icon: 'bi-app'
         },
         {
           title: 'Transferencia de activos fijos',
           link: 'transferencia-activos-fijos',
           can: store.can('puede.acceder.transferencia_activos_fijos'),
-          icon: 'bi-app',
-        },
-      ],
+          icon: 'bi-app'
+        }
+      ]
     },
     // Modulo Fondos Rotativos
     {
@@ -658,7 +657,7 @@ export const useMenuStore = defineStore('menu', () => {
           link: 'ajustes-saldos',
           icon: 'fa-solid fa-money-check-alt', // Cambiado de 'bi-cash' a Font Awesome
           can: store.can('puede.acceder.ajustes_saldos')
-        },
+        }
       ]
     },
 
@@ -793,6 +792,65 @@ export const useMenuStore = defineStore('menu', () => {
           ]
         },
         ...seleccionContratacionPersonal.value,
+
+        //Control de Personal
+        {
+          title: 'Control de Personal',
+          icon: 'bi-person-badge',
+          can: true,
+          children: [
+            {
+              title: 'Dashboard',
+              link: 'dashboard-control-personal',
+              icon: 'bi-speedometer2',
+              can: true
+            },
+            {
+              title: 'Asistencia',
+              link: 'asistencia',
+              icon: 'bi-calendar-check',
+              can: true
+            },
+            {
+              title: 'Justificaciones',
+              link: 'justificaciones',
+              icon: 'bi-file-earmark-text',
+              can: true
+            },
+            {
+              title: 'Configuración',
+              icon: 'bi-gear',
+              can: true,
+              children: [
+                {
+                  title: 'Horario de Ingreso',
+                  link: 'horario-ingreso',
+                  icon: 'bi-clock',
+                  can: true
+                },
+                {
+                  title: 'Horario de Salida',
+                  link: 'horario-salida',
+                  icon: 'bi-clock-history',
+                  can: true
+                },
+                {
+                  title: 'Horario de Salida/Almuerzo',
+                  link: 'horario-salida-almuerzo',
+                  icon: 'bi-clock-fill',
+                  can: true
+                },
+                {
+                  title: 'Horario de Entrada/Almuerzo',
+                  link: 'horario-entrada-almuerzo',
+                  icon: 'bi-clock',
+                  can: true
+                }
+              ]
+            }
+          ]
+        },
+
         {
           title: 'Configuracion',
           icon: 'bi-gear-fill',
@@ -840,8 +898,8 @@ export const useMenuStore = defineStore('menu', () => {
               title: 'Reporte de Vacaciones de Empleados',
               link: 'reporte-vacaciones',
               icon: 'bi-sunglasses',
-              can: store.can('puede.ver.reportes_rrhh')||true
-            },
+              can: store.can('puede.ver.reportes_rrhh') || true
+            }
           ]
         }
       ]
@@ -866,7 +924,7 @@ export const useMenuStore = defineStore('menu', () => {
           title: 'Eventos',
           icon: 'bi-calendar-event-fill',
           link: 'eventos',
-          can: store.can('puede.acceder.intra_eventos'),
+          can: store.can('puede.acceder.intra_eventos')
         },
         {
           title: 'Categorias',
@@ -1090,7 +1148,9 @@ export const useMenuStore = defineStore('menu', () => {
           title: 'Proveedores Internacionales',
           link: 'proveedores-internacionales',
           icon: 'bi-people-fill',
-          can: store.can('puede.acceder.proveedores_internacionales') || store.esAdministrador
+          can:
+            store.can('puede.acceder.proveedores_internacionales') ||
+            store.esAdministrador
         },
         {
           title: 'Datos Bancarios de Proveedores',
