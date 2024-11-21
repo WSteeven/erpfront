@@ -160,7 +160,7 @@ export default defineComponent({
       week: {
         startsOn: 'monday',
         nDays: 7,
-        scrollToHour: 24,
+        scrollToHour: 24
       },
       month: {
         showTrailingAndLeadingDates: false
@@ -190,7 +190,7 @@ export default defineComponent({
       showCurrentTime: true
     })
 
-const router = useRouter()
+    const router = useRouter()
     //dayjs en español
     dayjs.extend(relativeTime)
     dayjs.locale(es)
@@ -255,40 +255,39 @@ const router = useRouter()
 
     async function obtenerNoticias() {
       try {
-        cargando.activar();
+        cargando.activar()
 
         // Obtener el ID del departamento del usuario logueado
-        const departamentoUsuario = store.user.departamento;
+        const departamentoUsuario = store.user.departamento
 
         // Verificamos si el ID del departamento es válido
         if (!departamentoUsuario) {
-          throw new Error('No se encontró el departamento del usuario logueado');
+          throw new Error('No se encontró el departamento del usuario logueado')
         }
 
         // Consultamos todas las noticias
         const response = await new NoticiaController().listar({
           'fecha_vencimiento[operator]': '>',
           'fecha_vencimiento[value]': obtenerFechaActual(maskFecha)
-        });
+        })
 
         // Filtramos las noticias para mostrar las que son para todos (departamentos_destinatarios es NULL)
         // o las que están destinadas al departamento del usuario
-        const noticiasFiltradas = response.result.filter((noticia) => {
+        const noticiasFiltradas = response.result.filter(noticia => {
           return (
             noticia.departamentos_destinatarios === null || // Noticias para todos
             noticia.departamentos_destinatarios.includes(departamentoUsuario) // Noticias específicas para el departamento del usuario
-          );
-        });
+          )
+        })
 
         // Asignamos las noticias filtradas
-        noticias.value = noticiasFiltradas;
+        noticias.value = noticiasFiltradas
       } catch (error) {
-        console.error('Error obteniendo noticias:', error);
+        console.error('Error obteniendo noticias:', error)
       } finally {
-        cargando.desactivar();
+        cargando.desactivar()
       }
     }
-
 
     const documentosIntranet = ref([
       {
@@ -364,9 +363,12 @@ const router = useRouter()
 
     async function consultarDepartamentos() {
       const departamentoController = new DepartamentoController()
-      departamentos.value = (
-        await departamentoController.listar({ activo: 1 })
-      ).result
+      const respuesta = await departamentoController.listar({ activo: 1 })
+
+      // Ocultar departamento de Gerencia
+      departamentos.value = respuesta.result.filter(
+        departamento => departamento.id !== 9
+      )
     }
 
     consultarDepartamentos()
@@ -375,39 +377,40 @@ const router = useRouter()
 
     const obtenerEmpleadosCumpleaneros = async () => {
       // Obtener el mes actual
-      const currentMonth = new Date().getUTCMonth();
-      console.log(currentMonth);
+      const currentMonth = new Date().getUTCMonth()
+      console.log(currentMonth)
 
       try {
-        const empleadoController = new EmpleadoController();
+        const empleadoController = new EmpleadoController()
         const empleados = (
           await empleadoController.listar({
-            estado: 1,
+            estado: 1
           })
-        ).result;
+        ).result
 
         empleadosCumpleaneros.value = empleados
           .filter((empleado: Empleado) => {
             if (empleado.fecha_nacimiento) {
               // Obtener el mes de la fecha de nacimiento
-              const birthMonth = new Date(empleado.fecha_nacimiento).getUTCMonth();
-              return birthMonth === currentMonth;
+              const birthMonth = new Date(
+                empleado.fecha_nacimiento
+              ).getUTCMonth()
+              return birthMonth === currentMonth
             }
-            return false;
+            return false
           })
           .sort((a, b) => {
             // Asegurarse de comparar solo el día, sin considerar la hora
-            const dayA = new Date(a.fecha_nacimiento).getUTCDate(); // Usar getUTCDate()
-            const dayB = new Date(b.fecha_nacimiento).getUTCDate();
-            return dayA - dayB;
-          });
+            const dayA = new Date(a.fecha_nacimiento).getUTCDate() // Usar getUTCDate()
+            const dayB = new Date(b.fecha_nacimiento).getUTCDate()
+            return dayA - dayB
+          })
 
-        console.log(empleadosCumpleaneros.value);
+        console.log(empleadosCumpleaneros.value)
       } catch (err) {
-        console.log('Error al obtener empleados cumpleañeros:', err);
+        console.log('Error al obtener empleados cumpleañeros:', err)
       }
-    };
-
+    }
 
     // Función para calcular el tiempo de trabajo del empleado
     const calcularAntiguedad = (fechaVinculacion: string): string => {
@@ -456,7 +459,6 @@ const router = useRouter()
         spread: 70,
         startVelocity: 30
       })
-
     }
 
     onMounted(() => {
@@ -498,12 +500,12 @@ const router = useRouter()
     const getImagePerfil = usuario => {
       return usuario.foto_url == null
         ? `https://ui-avatars.com/api/?name=${usuario.nombres.slice(
-          0,
-          1
-        )}+${usuario.apellidos.slice(
-          0,
-          1
-        )}&bold=true&background=008000&color=ffff`
+            0,
+            1
+          )}+${usuario.apellidos.slice(
+            0,
+            1
+          )}&bold=true&background=008000&color=ffff`
         : usuario.foto_url
     }
 
