@@ -161,6 +161,10 @@ module.exports = configure(function (/* ctx */) {
         controlActivosFijos: path.join(
           __dirname,
           './src/pages/activosFijos/controlActivosFijos'
+        ),
+        controlPersonal: path.join(
+          __dirname,
+          './src/pages/recursosHumanos/control_personal'
         )
       }
     },

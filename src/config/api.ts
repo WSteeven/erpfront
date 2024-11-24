@@ -200,6 +200,9 @@ export const endpoints = {
 
 
 
+  //Control de personal
+  asistencia: new Endpoint('recursos-humanos/asistencia'),
+
 
   /******************************
    * Modulo de Vehiculos

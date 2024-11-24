@@ -6,6 +6,7 @@ import rutasRecursosHumanos from './rrhh/rutasRecursosHumanos'
 import rutasSeleccionContratacionPersonal from './rrhh/rutasSeleccionContratacionPersonal'
 import rutasActivosFijos from './rutasActivosFijos'
 import { empresas } from 'config/utils/sistema'
+import rutasControlPersonal from './rutasControlPersonal'
 
 const JPCONSTRUCRED = process.env.VUE_APP_ID == empresas.JPCONSTRUCRED
 const JPCUSTODY = process.env.VUE_APP_ID == empresas.JPCUSTODY
@@ -96,6 +97,7 @@ const routes: RouteRecordRaw[] = [
        *******************/
       ...rutasRecursosHumanos,
       ...rutasSeleccionContratacionPersonal,
+      ...rutasControlPersonal,
 
       /*******************
        * Módulo de tareas

@@ -42,7 +42,8 @@
       "seleccionContratacion/*": ["src/pages/recursosHumanos/SeleccionContratacionPersonal/*"],
 
       "activosFijos/*": ["src/pages/activosFijos/*"],
-      "controlActivosFijos/*": ["src/pages/activosFijos/controlActivosFijos/*"]
+      "controlActivosFijos/*": ["src/pages/activosFijos/controlActivosFijos/*"],
+      "controlPersonal/*": ["src/pages/recursosHumanos/control_personal/*"]
     }
   }
 }
