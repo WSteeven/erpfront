@@ -809,13 +809,13 @@ export const useMenuStore = defineStore('menu', () => {
               title: 'Asistencia',
               link: 'asistencia',
               icon: 'bi-calendar-check',
-              can: true
+              can: true,
             },
             {
               title: 'Justificaciones',
               link: 'justificaciones',
               icon: 'bi-file-earmark-text',
-              can: true
+              can: true,
             },
             {
               title: 'Configuración',
@@ -823,29 +823,17 @@ export const useMenuStore = defineStore('menu', () => {
               can: true,
               children: [
                 {
-                  title: 'Horario de Ingreso',
-                  link: 'horario-ingreso',
+                  title: 'Horario Laboral',
+                  link: 'horario-laboral',
                   icon: 'bi-clock',
-                  can: true
+                  can: true,
                 },
                 {
-                  title: 'Horario de Salida',
-                  link: 'horario-salida',
+                  title: 'Horario de Almuerzo',
+                  link: 'horario-almuerzo',
                   icon: 'bi-clock-history',
-                  can: true
+                  can: true,
                 },
-                {
-                  title: 'Horario de Salida/Almuerzo',
-                  link: 'horario-salida-almuerzo',
-                  icon: 'bi-clock-fill',
-                  can: true
-                },
-                {
-                  title: 'Horario de Entrada/Almuerzo',
-                  link: 'horario-entrada-almuerzo',
-                  icon: 'bi-clock',
-                  can: true
-                }
               ]
             }
           ]

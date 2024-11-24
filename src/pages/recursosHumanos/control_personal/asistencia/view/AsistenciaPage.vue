@@ -2,6 +2,7 @@
   <tab-layout
     :mixin="mixin"
     :configuracionColumnas="configuracionColumnas"
+    :mostrarFormulario="false"
     titulo-pagina="Asistencia"
   >
     <template #formulario>

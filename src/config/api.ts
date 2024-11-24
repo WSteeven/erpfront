@@ -202,6 +202,8 @@ export const endpoints = {
 
   //Control de personal
   asistencia: new Endpoint('recursos-humanos/asistencia'),
+  horarioLaboral : new Endpoint('recursos-humanos/horario-laboral'),
+  horarioDeAlmuerzo : new Endpoint('recursos-humanos/horario-almuerzo'),
 
 
   /******************************
