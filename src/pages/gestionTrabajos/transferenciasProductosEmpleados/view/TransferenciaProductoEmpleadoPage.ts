@@ -754,7 +754,6 @@ export default defineComponent({
       seleccionarTareaDestino,
       consultarProductos,
       consultado: computed(() => accion.value === acciones.editar || accion.value === acciones.consultar),
-      botonDevolverASinCliente,
     }
   }
 })
