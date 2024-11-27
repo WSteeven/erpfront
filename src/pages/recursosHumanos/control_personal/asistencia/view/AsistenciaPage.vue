@@ -1,4 +1,10 @@
 <template>
+  <div class="col-12 row justify-end q-gutter-sm q-mb-md">
+    <q-btn color="primary" no-caps @click="actualizarAsistencias">
+      <q-icon name="bi-arrow-clockwise" size="xs" class="q-pr-sm"></q-icon>
+      <span>Actualizar</span>
+    </q-btn>
+  </div>
   <tab-layout
     :mixin="mixin"
     :configuracionColumnas="configuracionColumnas"
@@ -30,16 +36,16 @@
           <div class="col-12 col-md-6">
             <label class="q-mb-sm block">Hora de Ingreso</label>
             <q-input
-              v-model="asistencia.horaIngreso"
+              v-model="asistencia.hora_ingreso"
               type="time"
               placeholder="Obligatorio"
               :readonly="disabled"
-              :error="!!v$.horaIngreso.$errors.length"
+              :error="!!v$.hora_ingreso.$errors.length"
               outlined
               dense
             >
               <template v-slot:error>
-                <div v-for="error of v$.horaIngreso.$errors" :key="error.$uid">
+                <div v-for="error of v$.hora_ingreso.$errors" :key="error.$uid">
                   <div class="error-msg">{{ error.$message }}</div>
                 </div>
               </template>
@@ -49,7 +55,7 @@
           <div class="col-12 col-md-6">
             <label class="q-mb-sm block">Hora de Salida</label>
             <q-input
-              v-model="asistencia.horaSalida"
+              v-model="asistencia.hora_salida"
               type="time"
               placeholder="Opcional"
               :readonly="disabled"
@@ -62,7 +68,7 @@
           <div class="col-12 col-md-6">
             <label class="q-mb-sm block">Salida Almuerzo</label>
             <q-input
-              v-model="asistencia.horaSalidaAlmuerzo"
+              v-model="asistencia.hora_salida_almuerzo"
               type="time"
               placeholder="Opcional"
               :readonly="disabled"
@@ -75,7 +81,7 @@
           <div class="col-12 col-md-6">
             <label class="q-mb-sm block">Entrada Almuerzo</label>
             <q-input
-              v-model="asistencia.horaEntradaAlmuerzo"
+              v-model="asistencia.hora_entrada_almuerzo"
               type="time"
               placeholder="Opcional"
               :readonly="disabled"

@@ -2,17 +2,17 @@ import { EntidadAuditable } from 'shared/entidad/domain/entidadAuditable';
 
 export class Asistencia extends EntidadAuditable {
   empleado: string | null;
-  horaIngreso: Date | null;
-  horaSalida: Date | null;
-  horaSalidaAlmuerzo: Date | null;
-  horaEntradaAlmuerzo: Date | null;
+  hora_ingreso: Date | null;
+  hora_salida: Date | null;
+  hora_salida_almuerzo: Date | null;
+  hora_entrada_almuerzo: Date | null;
 
   constructor() {
     super();
     this.empleado = null;
-    this.horaIngreso = null;
-    this.horaSalida = null;
-    this.horaSalidaAlmuerzo = null;
-    this.horaEntradaAlmuerzo = null;
+    this.hora_ingreso = null;
+    this.hora_salida = null;
+    this.hora_salida_almuerzo = null;
+    this.hora_entrada_almuerzo = null;
   }
 }
