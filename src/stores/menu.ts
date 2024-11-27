@@ -767,6 +767,7 @@ export const useMenuStore = defineStore('menu', () => {
               link: 'solicitudes-vacaciones',
               icon: 'bi-umbrella-fill',
               can: store.can('puede.acceder.solicitudes_vacaciones')
+<<<<<<< Updated upstream
             },
             // {
             //   title: 'Planes de Vacaciones',
@@ -775,6 +776,8 @@ export const useMenuStore = defineStore('menu', () => {
             //   can: store.can('puede.acceder.planes_vacaciones')
             // },
             {
+=======
+>>>>>>> Stashed changes
             }, {
               title: 'Registro de Vacaciones',
               link: 'vacaciones',
@@ -894,7 +897,11 @@ export const useMenuStore = defineStore('menu', () => {
               link: 'reporte-vacaciones',
               icon: 'bi-sunglasses',
               can: store.can('puede.acceder.reportes_rrhh') || true
+<<<<<<< Updated upstream
             }
+=======
+            },
+>>>>>>> Stashed changes
           ]
         }
       ]
