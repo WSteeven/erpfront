@@ -621,13 +621,10 @@ const props = defineProps({
   accion10: {
     type: Object as () => CustomActionTable,
     required: false
-<<<<<<< Updated upstream
   },
   accion11: {
     type: Object as () => CustomActionTable,
     required: false
-=======
->>>>>>> Stashed changes
   },
   listado: {
     type: Array,
