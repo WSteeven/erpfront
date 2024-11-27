@@ -4,6 +4,25 @@
       <q-page padding>
         <q-card class="rounded-card custom-shadow">
             <div class="row q-col-gutter-sm q-pa-sm q-py-md">
+              <!-- Tipo -->
+              <div class="col-12 col-md-3">
+                <label class="q-mb-sm block">Tipo de reporte</label>
+                <q-select
+                  v-model="reporte.tipo"
+                  :options="opcionesReporteVacaciones"
+                  transition-show="scale"
+                  transition-hide="scale"
+                  options-dense
+                  dense
+                  outlined
+                  :option-label="(item) => item.label"
+                  :option-value="(item) => item.value"
+                  emit-value
+                  map-options
+                >
+                </q-select>
+              </div>
+
               <!-- Periodo -->
               <div class="col-12 col-md-3">
                 <label class="q-mb-sm block">Período</label>
@@ -121,7 +140,7 @@
                 </q-input>
               </div>
               <!-- fecha de corte -->
-              <div class="col-12 col-md-3">
+              <div class="col-12 col-md-3" v-if="false">
                 <label class="q-mb-sm block">Fecha corte </label>
                 <q-input
                   v-model="reporte.fecha_corte"
@@ -151,7 +170,7 @@
                 <div class="text-center">
                   <q-btn-group push>
                     <!-- Boton consultar -->
-                    <q-btn
+                    <q-btn v-if="false"
                       color="primary"
                       class="full-width"
                       no-caps
@@ -181,7 +200,7 @@
                       ><span>Excel</span>
                     </q-btn>
                     <!-- Boton PDF -->
-                    <q-btn
+                    <q-btn v-if="false"
                       color="negative"
                       class="full-width"
                       no-caps

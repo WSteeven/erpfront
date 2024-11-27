@@ -1,22 +1,24 @@
-import { AxiosResponse } from "axios";
-import { StatusEssentialLoading } from "components/loading/application/StatusEssentialLoading";
-import ModalEntidad from "components/modales/view/ModalEntidad.vue";
-import EssentialTable from "components/tables/view/EssentialTable.vue";
-import { apiConfig, endpoints } from "config/api";
-import { maskFecha } from "config/utils";
-import { Empleado } from "pages/recursosHumanos/empleados/domain/Empleado";
-import { EmpleadoController } from "pages/recursosHumanos/empleados/infraestructure/EmpleadoController";
-import { PeriodoController } from "pages/recursosHumanos/periodo/infraestructure/PeriodoController";
-import { useQuasar } from "quasar";
-import { ContenedorSimpleMixin } from "shared/contenedor/modules/simple/application/ContenedorSimpleMixin";
-import { useFiltrosListadosSelects } from "shared/filtrosListadosGenerales";
-import { AxiosHttpRepository } from "shared/http/infraestructure/AxiosHttpRepository";
-import { useNotificaciones } from "shared/notificaciones";
-import { imprimirArchivo, ordenarLista } from "shared/utils";
-import { useAuthenticationStore } from "stores/authentication";
-import { useCargandoStore } from "stores/cargando";
-import { useNotificacionStore } from "stores/notificacion";
-import { defineComponent, reactive, ref } from "vue";
+import { AxiosResponse } from 'axios';
+import { StatusEssentialLoading } from 'components/loading/application/StatusEssentialLoading';
+import ModalEntidad from 'components/modales/view/ModalEntidad.vue';
+import EssentialTable from 'components/tables/view/EssentialTable.vue';
+import { apiConfig, endpoints } from 'config/api';
+import { maskFecha } from 'config/utils';
+import { Empleado } from 'pages/recursosHumanos/empleados/domain/Empleado';
+import { EmpleadoController } from 'pages/recursosHumanos/empleados/infraestructure/EmpleadoController';
+import { PeriodoController } from 'pages/recursosHumanos/periodo/infraestructure/PeriodoController';
+import { useQuasar } from 'quasar';
+import { ContenedorSimpleMixin } from 'shared/contenedor/modules/simple/application/ContenedorSimpleMixin';
+import { useFiltrosListadosSelects } from 'shared/filtrosListadosGenerales';
+import { AxiosHttpRepository } from 'shared/http/infraestructure/AxiosHttpRepository';
+import { useNotificaciones } from 'shared/notificaciones';
+import { imprimirArchivo, ordenarLista } from 'shared/utils';
+import { useAuthenticationStore } from 'stores/authentication';
+import { useCargandoStore } from 'stores/cargando';
+import { useNotificacionStore } from 'stores/notificacion';
+import { defineComponent, reactive, ref } from 'vue';
+import { opcionesReporteVacaciones } from 'config/recursosHumanos.utils'
+import { SelectOption } from 'components/tables/domain/SelectOption'
 
 export default defineComponent({
   components: {EssentialTable, ModalEntidad},
@@ -39,7 +41,7 @@ export default defineComponent({
       fecha_fin: '',
       fecha_corte: '',
       solicitante: null,
-      per_atiende: null,
+      periodo: null,
       sucursal: null,
       motivo: null,
       devolucion: null,
@@ -63,18 +65,18 @@ export default defineComponent({
       try {
         cargando.activar()
         const axios = AxiosHttpRepository.getInstance()
-        let url = apiConfig.URL_BASE + '/' + axios.getEndpoint(endpoints.solicitudes_vacaciones) + '/reporte'
-        const filename = 'reporte_ingresos_bodega'
+        const url = apiConfig.URL_BASE + '/' + axios.getEndpoint(endpoints.vacaciones) + '/reporte'
+        const filename = 'Reporte '+opcionesReporteVacaciones.filter((v:SelectOption) => v.value == reporte.tipo)[0].label
         switch (accion) {
           case 'excel':
             reporte.accion = 'excel'
-            imprimirArchivo(url, 'POST', 'blob', 'xlsx', filename, reporte)
+            await imprimirArchivo(url, 'POST', 'blob', 'xlsx', filename, reporte)
 
             break
           case 'pdf':
             reporte.accion = 'pdf'
             cargando.activar()
-            imprimirArchivo(url, 'POST', 'blob', 'pdf', filename, reporte)
+            await imprimirArchivo(url, 'POST', 'blob', 'pdf', filename, reporte)
             cargando.desactivar()
             break
           default:
@@ -112,6 +114,7 @@ export default defineComponent({
       listado,
       periodos,
       empleados, filtrarEmpleados,
+      opcionesReporteVacaciones,
 
       // funciones
       buscarReporte,

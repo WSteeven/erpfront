@@ -444,6 +444,7 @@ export default defineComponent({
         generar_reporte_general()
       }
     }
+
     async function generar_reporte_general(): Promise<void> {
       // console.log('generar_reporte_general')
       const axios = AxiosHttpRepository.getInstance()
@@ -524,9 +525,10 @@ export default defineComponent({
       accion: ({ entidad }) => {
         empleadoStore.idEmpleado = entidad.id
         modales.abrirModalEntidad('PlanVacacionIndividualPage')
-        // modales.abrirModalEntidad('PlanVacacionIndividualPage', {vacacion_id:vacacion.id})
       },
-      visible: true
+      visible: ({ entidad }) =>
+        store.can('puede.ver.btn.plan_vacaciones.empleados') &&
+        (entidad.jefe_id == store.user.id || entidad.id == store.user.id || store.esRecursosHumanos)
     }
 
     function obtenerUsername() {
@@ -543,6 +545,7 @@ export default defineComponent({
         generarUsename()
       }
     }
+
     async function generarUsename() {
       const axios = AxiosHttpRepository.getInstance()
       const ruta = axios.getEndpoint(endpoints.generar_username, {
@@ -557,6 +560,7 @@ export default defineComponent({
       empleado.usuario = username.value
       empleado.email = username.value + '@' + sitio_web
     }
+
     async function HabilitarEmpleado(id: number, estado: boolean) {
       const axios = AxiosHttpRepository.getInstance()
       const ruta = axios.getEndpoint(endpoints.habilitar_empleado, {
@@ -582,6 +586,7 @@ export default defineComponent({
         conductor.hydrate(new Conductor())
       }
     }
+
     async function cargarDatosPostulante() {
       //Aqui hay que hacer la carga de los datos del nuevo empleado
       const postulante = await obtenerUsuarioExterno()
