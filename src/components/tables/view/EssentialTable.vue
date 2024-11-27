@@ -572,7 +572,7 @@
               <q-tooltip class="bg-dark"> Eliminar </q-tooltip>
             </q-btn>
           </q-btn-group>
-dd
+
           <CustomButtons
             v-if="accion1"
             :desplegarDesde="desplegarDesde"
