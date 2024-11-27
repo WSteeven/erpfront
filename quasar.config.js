@@ -157,6 +157,7 @@ module.exports = configure(function (/* ctx */) {
         medico: path.join(__dirname, './src/pages/medico'),
         seleccionContratacion: path.join(__dirname,
           './src/pages/recursosHumanos/SeleccionContratacionPersonal'),
+        capacitacion: path.join(__dirname, './src/pages/recursosHumanos/Capacitacion'),
         activosFijos: path.join(__dirname, './src/pages/activosFijos'),
         controlActivosFijos: path.join(
           __dirname,

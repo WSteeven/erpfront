@@ -1,5 +1,6 @@
 import { Endpoint } from 'shared/http/domain/Endpoint'
 import { seleccionContratacionPersonal } from './seleccionContratacionPersonal'
+import { capacitacionPersonal } from 'config/endpoints/rrhh/capacitacionPersonal'
 
 export const recursosHumanos = {
   empleados: new Endpoint('empleados'),
@@ -141,5 +142,11 @@ export const recursosHumanos = {
   /***************************************************
    *  Submodulo selección y contratación de personal
    **************************************************/
-  ...seleccionContratacionPersonal
+  ...seleccionContratacionPersonal,
+
+  /***************************************************
+   *  Submodulo capacitación de personal
+   **************************************************/
+  ...capacitacionPersonal,
+
 }

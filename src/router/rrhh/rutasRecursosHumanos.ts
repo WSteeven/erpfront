@@ -1,5 +1,6 @@
 import { RouteRecordRaw } from 'vue-router'
 import rutasSeleccionContratacionPersonal from './rutasSeleccionContratacionPersonal'
+import rutasCapacitacion from './rutasCapacitacion'
 
 const rutasRecursosHumanos: RouteRecordRaw[] = [
   /************************************************************************************
@@ -127,7 +128,9 @@ const rutasRecursosHumanos: RouteRecordRaw[] = [
     path: 'valores-cargados-roles',
     name: 'valores_cargados_roles',
     component: () =>
-      import('pages/recursosHumanos/valoresCargadosRolEmpleadoMensual/view/ValorCargadoRolPage.vue'),
+      import(
+        'pages/recursosHumanos/valoresCargadosRolEmpleadoMensual/view/ValorCargadoRolPage.vue'
+      ),
     meta: { requiresAuth: true }
   },
   {
@@ -190,7 +193,8 @@ const rutasRecursosHumanos: RouteRecordRaw[] = [
     meta: { requiresAuth: true }
   },
   // Aquí se pone todos los submodulos de recursos humanos
-  ...rutasSeleccionContratacionPersonal
+  ...rutasSeleccionContratacionPersonal,
+  ...rutasCapacitacion
 ]
 
 export default rutasRecursosHumanos

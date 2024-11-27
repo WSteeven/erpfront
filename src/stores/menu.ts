@@ -3,6 +3,7 @@ import { MenuOption } from 'src/shared/menu/MenuOption'
 import { defineStore } from 'pinia'
 import { computed, Ref } from 'vue'
 import seleccionContratacionPersonal from './menus/rrhh/seleccionContratacionPersonal'
+import capacitacion from 'stores/menus/rrhh/capacitacion'
 
 export const useMenuStore = defineStore('menu', () => {
   const store = useAuthenticationStore()
@@ -822,6 +823,7 @@ export const useMenuStore = defineStore('menu', () => {
           ]
         },
         ...seleccionContratacionPersonal.value,
+        ...capacitacion.value,
         {
           title: 'Configuracion',
           icon: 'bi-gear-fill',
