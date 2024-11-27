@@ -377,6 +377,7 @@ export default defineComponent({
       },
       visible: () => (tabSeleccionado.value == 'APROBADO' || tabSeleccionado.value == 'PARCIAL') && store.can('puede.gestionar.devoluciones')
     }
+
     const botonCorregir: CustomActionTable = {
       titulo: 'Corregir devolución',
       color: 'amber-3',

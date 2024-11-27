@@ -155,20 +155,23 @@ module.exports = configure(function (/* ctx */) {
         vehiculos: path.join(__dirname, './src/pages/controlVehiculos'),
         // Modulo medico
         medico: path.join(__dirname, './src/pages/medico'),
-        seleccionContratacion: path.join(__dirname,
-          './src/pages/recursosHumanos/SeleccionContratacionPersonal'),
+        seleccionContratacion: path.join(
+          __dirname,
+          './src/pages/recursosHumanos/SeleccionContratacionPersonal'
+        ),
         activosFijos: path.join(__dirname, './src/pages/activosFijos'),
         controlActivosFijos: path.join(
           __dirname,
           './src/pages/activosFijos/controlActivosFijos'
-        )
+        ),
+        sso: path.join(__dirname, './src/pages/sso')
       }
     },
 
     // Full list of options: https://v2.quasar.dev/quasar-cli-vite/quasar-config-js#devServer
     devServer: {
       https: false,
-      port:8080,
+      port: 8080,
       open: true // opens browser window automatically
     },
 

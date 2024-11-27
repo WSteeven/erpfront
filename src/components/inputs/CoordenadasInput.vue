@@ -1,0 +1,90 @@
+<template>
+  <div class="row">
+    <!-- Coordenadas -->
+    <div class="col-12">
+      <div class="col-12">
+        <label class="q-mb-sm block">Coordenadas</label>
+        <q-input
+          v-model="coordenadas"
+          outlined
+          dense
+          readonly
+          :error="!!validador.coordenadas.$errors.length"
+          @blur="validador.coordenadas.$touch"
+        >
+          <template v-slot:error>
+            <div
+              v-for="error of validador.coordenadas.$errors"
+              :key="error.$uid"
+            >
+              <div>{{ error.$message }}</div>
+            </div>
+          </template>
+
+          <template #append>
+            <q-btn
+              color="positive"
+              no-caps
+              no-wrap
+              class="full-width"
+              @click="obtenerCoordenadas()"
+              :disable="disable"
+              dense
+              unelevated
+            >
+              <q-icon name="bi-geo-alt" size="xs"></q-icon>
+            </q-btn>
+          </template>
+        </q-input>
+      </div>
+    </div>
+  </div>
+</template>
+
+<script lang="ts" setup>
+import { ref } from 'vue'
+
+const emit = defineEmits(['update:modelValue'])
+
+const props = defineProps({
+  coordenadas: {
+    type: String,
+    default: ''
+  },
+  disable: {
+    type: Boolean,
+    default: false
+  },
+  validador: {
+    type: Object,
+    required: true
+  }
+})
+
+const coordenadas = ref(props.coordenadas)
+
+function obtenerUbicacion(onUbicacionConcedida) {
+  const onErrorDeUbicacion = err => {
+    console.log('Error obteniendo ubicación: ', err)
+  }
+
+  const opcionesDeSolicitud = {
+    enableHighAccuracy: true, // Alta precisión
+    maximumAge: 0, // No queremos caché
+    timeout: 5000 // Esperar solo 5 segundos
+  }
+
+  navigator.geolocation.getCurrentPosition(
+    onUbicacionConcedida,
+    onErrorDeUbicacion,
+    opcionesDeSolicitud
+  )
+}
+
+function obtenerCoordenadas() {
+  obtenerUbicacion(ubicacion => {
+    coordenadas.value = `${ubicacion.coords.latitude}, ${ubicacion.coords.longitude}`
+    emit('update:modelValue', coordenadas.value)
+  })
+}
+</script>

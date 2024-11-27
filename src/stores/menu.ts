@@ -244,6 +244,29 @@ export const useMenuStore = defineStore('menu', () => {
         }
       ]
     },
+    /********************
+     * Modulo SSO
+     ********************/
+    {
+      title: 'SSO',
+      icon: 'bi-heart-pulse-fill',
+      can: store.can('puede.acceder.modulo_sso'),
+      module: true,
+      children: [
+        {
+          title: 'Incidentes',
+          link: 'incidentes',
+          icon: 'bi-person-hearts',
+          can: store.can('puede.acceder.incidentes')
+        },
+        {
+          title: 'Inspecciones',
+          link: 'inspecciones',
+          icon: 'bi-person-hearts',
+          can: store.can('puede.acceder.inspecciones')
+        },
+      ]
+    },
     /**
      * Modulo de bodega.
      /*****************************************************************************
@@ -752,6 +775,7 @@ export const useMenuStore = defineStore('menu', () => {
             //   can: store.can('puede.acceder.planes_vacaciones')
             // },
             {
+            }, {
               title: 'Registro de Vacaciones',
               link: 'vacaciones',
               icon: 'bi-umbrella-fill',

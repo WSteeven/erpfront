@@ -10,7 +10,7 @@ import { useTransferenciaProductoEmpleadoStore } from 'stores/transferenciaProdu
 import { MaterialOcupadoFormulario } from 'pages/gestionTrabajos/formulariosTrabajos/emergencias/domain/MaterialOcupadoFormulario'
 import { ActivoFijoAsignadoController } from 'pages/activosFijos/controlActivosFijos/infraestructure/ActivoFijoAsignadoController'
 
-export function useMaterialesEmpleado(filtro: UnwrapRef<FiltroMiBodegaEmpleado>, listadosAuxiliares?: any, inactivo:Ref<boolean>=ref(false)) {
+export function useMaterialesEmpleado(filtro: UnwrapRef<FiltroMiBodegaEmpleado>, listadosAuxiliares?: any, inactivo: Ref<boolean> = ref(false)) {
   // Stores
   const listadoMaterialesDevolucionStore = useListadoMaterialesDevolucionStore()
   const transferenciaProductoEmpleadoStore = useTransferenciaProductoEmpleadoStore()
@@ -42,7 +42,7 @@ export function useMaterialesEmpleado(filtro: UnwrapRef<FiltroMiBodegaEmpleado>,
       listadosAuxiliares.productos = result
 
       listadoMaterialesDevolucionStore.listadoMateriales = result
-      listadoMaterialesDevolucionStore.inactivo= inactivo.value
+      listadoMaterialesDevolucionStore.inactivo = inactivo.value
       // listadoMaterialesDevolucionStore.origenProductos = 'personal'
       listadoMaterialesDevolucionStore.tareaId = null
       listadoMaterialesDevolucionStore.cliente_id = filtro.cliente_id
@@ -74,8 +74,6 @@ export function useMaterialesEmpleado(filtro: UnwrapRef<FiltroMiBodegaEmpleado>,
   async function consultarClientesMaterialesEmpleado(params?: any) {
     try {
       cargando.activar()
-
-      // if(!params && !params.empleado_id)
       const { result } = await clienteMaterialEmpleadoController.listar({ empleado_id: params ? params.empleado_id : authenticationStore.user.id })
       listadosAuxiliares.clientesMaterialesEmpleado = result
     } catch (e) {

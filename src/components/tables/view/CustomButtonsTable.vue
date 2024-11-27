@@ -569,6 +569,7 @@
 </template>
 
 <script lang="ts" setup>
+import { useQuasar } from 'quasar'
 import { CustomActionTable } from '../domain/CustomActionTable'
 
 const props = defineProps({
@@ -648,6 +649,8 @@ const props = defineProps({
       : false
   }
 } */
+
+const $q = useQuasar()
 
 function extraerVisible(accion?: any) {
   //CustomActionTable): boolean {

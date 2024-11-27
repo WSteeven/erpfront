@@ -68,11 +68,12 @@
           'bg-body': $q.dark.isActive
         }"
       >
-
         <q-input
           :style="props.col.style"
           v-if="
-            props.col.editable && (!props.col.type || ['text', 'number', 'date', 'time'].includes(props.col.type))
+            props.col.editable &&
+            (!props.col.type ||
+              ['text', 'number', 'date', 'time'].includes(props.col.type))
           "
           v-model="props.row[props.col.name]"
           @update:model-value="guardarCeldaEditada(props.row)"
@@ -83,7 +84,7 @@
           :placeholder="props.col.placeholder"
           :min="props.col.min"
           :max="props.col.max"
-          :autogrow="props.col.type==='text'||!props.col.type"
+          :autogrow="props.col.type === 'text' || !props.col.type"
           dense
           outlined
         />
@@ -951,6 +952,7 @@
                       'archivos'
                     ].includes(col.name)
                   "
+                  class="ellipsis-3-lines"
                   >{{ col.value }}</span
                 >
               </q-item-label>

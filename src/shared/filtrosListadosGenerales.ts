@@ -78,6 +78,9 @@ export const useFiltrosListadosSelects = (listadosAuxiliares) => {
   const categoriasMotivosConsumoActivosFijos = ref(listadosAuxiliares.categoriasMotivosConsumoActivosFijos)
   const motivosConsumoActivosFijos = ref(listadosAuxiliares.motivosConsumoActivosFijos)
 
+  // SSO
+  const inspecciones = ref(listadosAuxiliares.inspecciones)
+
   //////////////////////////////////////////
   //modulo Recursos Humanos
   //////////////////////////////////////////
@@ -521,6 +524,11 @@ export const useFiltrosListadosSelects = (listadosAuxiliares) => {
   const filtrarCategoriasMotivosConsumoActivosFijos = (val, update) => filtrarLista(val, update, categoriasMotivosConsumoActivosFijos, 'nombre', listadosAuxiliares.categoriasMotivosConsumoActivosFijos)
   const filtrarMotivosConsumoActivosFijos = (val, update) => filtrarLista(val, update, motivosConsumoActivosFijos, 'nombre', listadosAuxiliares.motivosConsumoActivosFijos)
 
+  /*******
+   * SSO
+  *******/
+  const filtrarInspecciones = (val, update) => filtrarLista(val, update, inspecciones, 'titulo', listadosAuxiliares.inspecciones)
+
   /***************************************
    * Filtro global optimizado
    * Actualmente filtra por un solo campo
@@ -596,5 +604,7 @@ export const useFiltrosListadosSelects = (listadosAuxiliares) => {
     categoriasMotivosConsumoActivosFijos, filtrarCategoriasMotivosConsumoActivosFijos,
     motivosConsumoActivosFijos, filtrarMotivosConsumoActivosFijos,
     filtrarTareasTitulo,
+    // sso
+    inspecciones, filtrarInspecciones,
   }
 }

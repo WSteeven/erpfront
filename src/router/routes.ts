@@ -4,6 +4,7 @@ import rutasTareas from './rutasTareas'
 import rutasTickets from './rutasTickets'
 import rutasRecursosHumanos from './rrhh/rutasRecursosHumanos'
 import rutasActivosFijos from './rutasActivosFijos'
+import rutasSSO from './rutasSSO'
 import { empresas } from 'config/utils/sistema'
 
 console.log(process.env.VUE_APP_ID)
@@ -111,6 +112,11 @@ const routes: RouteRecordRaw[] = [
        * Modulo de activos fijos
        **************************/
       ...rutasActivosFijos,
+
+      /**************************
+       * Modulo de SSO
+       **************************/
+      ...rutasSSO,
 
       /********
        * Otros

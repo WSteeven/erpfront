@@ -1,11 +1,10 @@
+import { DetalleProducto } from 'pages/bodega/detalles_productos/domain/DetalleProducto'
 import { EntidadAuditable } from 'shared/entidad/domain/entidadAuditable'
 import { useSelector } from 'components/tables/application/selector'
 import { endpoints } from 'config/api'
 import { Ref, ref } from 'vue'
-import { DetalleProducto } from 'pages/bodega/detalles_productos/domain/DetalleProducto'
-import { TransferenciaProductoEmpleado } from '../domain/TransferenciaProductoEmpleado'
 
-export function useOrquestadorSelectorDetalles(entidad: TransferenciaProductoEmpleado|any, endpoint: keyof typeof endpoints) {
+export function useOrquestadorSelectorDetallesProductos(entidad: any, endpoint: keyof typeof endpoints) {
     const refListadoSeleccionable = ref()
     const listado: Ref<EntidadAuditable[]> = ref([])
     const criterioBusqueda = ref()
@@ -19,7 +18,7 @@ export function useOrquestadorSelectorDetalles(entidad: TransferenciaProductoEmp
             criterioBusqueda.value = null
         },
         seleccionar: (items: DetalleProducto[]) => {
-            entidad.listado_productos = [...entidad.listado_productos, ...items]
+            entidad.detalles_productos = [...entidad.detalles_productos, ...items]
         }
     }
 
@@ -29,7 +28,7 @@ export function useOrquestadorSelectorDetalles(entidad: TransferenciaProductoEmp
 
     const seleccionar = (items: DetalleProducto[]) => {
         let ids: any = []
-        ids = entidad.listado_productos.map((entidad: DetalleProducto) => entidad.id)
+        ids = entidad.detalles_productos.map((entidad: DetalleProducto) => entidad.id)
         const datos = items.filter((v) => !ids.includes(v.id))
 
         singleSelector.seleccionar(datos)

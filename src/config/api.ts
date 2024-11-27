@@ -6,6 +6,7 @@ import { recursosHumanos } from './endpoints/rrhh/recursosHumanos'
 import { activosFijos } from './endpoints/activosFijos'
 import { comprasProveedores } from './endpoints/comprasProveedores'
 import { vehiculos } from 'config/endpoints/vehiculos'
+import { sso } from './endpoints/sso'
 
 export const apiConfig = {
   // URL_BASE: 'http://localhost:8000',
@@ -32,7 +33,7 @@ export const endpoints = {
   api_user_postulante: new Endpoint('user-postulante'),
   reset_password: new Endpoint('usuarios/reset-password'),
   perfil_usuario: new Endpoint('user/profile-information', false),
-  cambiar_contrasena: new Endpoint('user/password', false),
+  // cambiar_contrasena: new Endpoint('user/password', false),
   roles: new Endpoint('user/roles'),
   fecha: new Endpoint('obtener-fecha'),
   hora: new Endpoint('obtener-hora'),
@@ -153,6 +154,7 @@ export const endpoints = {
   * Modulo de activos fijos
   ***************************/
   ...activosFijos,
+  ...sso,
 
   // Modulo Fondos Rotativos
   empleados_saldos_fr: new Endpoint('fondos-rotativos/empleados-saldos-fr'),
@@ -259,7 +261,7 @@ export const endpoints = {
   novedades_ventas: new Endpoint('ventas-claro/novedades-ventas'),
 
   //intranet
-//Modulo de Intranet
+  //Modulo de Intranet
   noticias: new Endpoint('intranet/noticias'),
   eventos: new Endpoint('intranet/eventos'),
   etiquetas: new Endpoint('intranet/etiquetas'),
