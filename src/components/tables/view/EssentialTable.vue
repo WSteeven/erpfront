@@ -572,7 +572,7 @@
               <q-tooltip class="bg-dark"> Eliminar </q-tooltip>
             </q-btn>
           </q-btn-group>
-
+dd
           <CustomButtons
             v-if="accion1"
             :desplegarDesde="desplegarDesde"
@@ -586,6 +586,7 @@
             :accion8="accion8"
             :accion9="accion9"
             :accion10="accion10"
+            :accion11="accion11"
             :identificador="identificador"
             :propsTable="props"
             :listado="listado"
@@ -682,6 +683,7 @@
                   :accion8="accion8"
                   :accion9="accion9"
                   :accion10="accion10"
+                  :accion11="accion11"
                   :identificador="identificador"
                   :propsTable="props"
                   :listado="listado"

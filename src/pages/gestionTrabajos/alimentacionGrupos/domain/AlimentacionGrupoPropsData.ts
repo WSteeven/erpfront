@@ -1,5 +1,5 @@
 export interface AlimentacionGrupoPropsData {
     idSubtarea: number,
-    idGrupo: number,
-    idTarea: number,
+    idGrupo?: number,
+    idTarea?: number,
 }

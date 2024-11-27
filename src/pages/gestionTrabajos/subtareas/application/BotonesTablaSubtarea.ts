@@ -152,7 +152,7 @@ export const useBotonesTablaSubtarea = (listado: Ref<Subtarea[]>, modales: Compo
     titulo: 'Realizado',
     icono: 'bi-check-circle',
     color: 'positive',
-    visible: ({ entidad }) => entidad.estado === estadosTrabajos.EJECUTANDO && (authenticationStore.esJefeTecnico || authenticationStore.esCoordinador || entidad.es_responsable || authenticationStore.esAdministrador),
+    visible: ({ entidad }) => [estadosTrabajos.EJECUTANDO, estadosTrabajos.PAUSADO].includes(entidad.estado) && (authenticationStore.esJefeTecnico || authenticationStore.esCoordinador || entidad.es_responsable || authenticationStore.esAdministrador),
     accion: ({ entidad, posicion }) => {
       obtenerCoordenadas(entidad)
       const causasFiltradasPorTipo = listadosAuxiliares.causasIntervenciones.filter((causa: CausaIntervencion) => causa.tipo_trabajo === entidad.tipo_trabajo)
@@ -231,6 +231,16 @@ export const useBotonesTablaSubtarea = (listado: Ref<Subtarea[]>, modales: Compo
       // const obtenerPlantilla = new ObtenerPlantilla()
       modales.abrirModalEntidad('SeguimientoSubtareaPage')//obtenerPlantilla.obtener(entidad.tipo_trabajo))
       // })
+    }
+  }
+
+  const btnVerAlimentacion: CustomActionTable<Subtarea> = {
+    titulo: 'Ver alimentación',
+    icono: 'bi-cookie',
+    color: 'orange',
+    visible: ({ entidad }) => [estadosTrabajos.FINALIZADO].includes(entidad.estado),
+    accion: async ({ entidad }) => {
+      modales.abrirModalEntidad<AlimentacionGrupoPropsData>('VerAlimentacionGrupoPage', { idSubtarea: entidad.id })
     }
   }
 
@@ -466,5 +476,6 @@ export const useBotonesTablaSubtarea = (listado: Ref<Subtarea[]>, modales: Compo
     btnFinalizar,
     setFiltrarTrabajoAsignado,
     guardadoModalesSubtarea,
+    btnVerAlimentacion,
   }
 }
