@@ -4,7 +4,6 @@ import { defineStore } from 'pinia'
 import { computed, Ref } from 'vue'
 import seleccionContratacionPersonal from './menus/rrhh/seleccionContratacionPersonal'
 
-
 export const useMenuStore = defineStore('menu', () => {
   const store = useAuthenticationStore()
 
@@ -247,7 +246,7 @@ export const useMenuStore = defineStore('menu', () => {
     },
     /**
      * Modulo de bodega.
-    /*****************************************************************************
+     /*****************************************************************************
      * MÓDULO DE BODEGA.
      * Toda la estructura de pedidos, devoluciones y despachos de materiales
      *****************************************************************************/
@@ -306,7 +305,7 @@ export const useMenuStore = defineStore('menu', () => {
           title: 'Productos',
           link: 'productos',
           icon: 'bi-box-fill',
-          can: store.can('puede.acceder.productos'),
+          can: store.can('puede.acceder.productos')
         },
         {
           title: 'Detalles de productos',
@@ -320,7 +319,7 @@ export const useMenuStore = defineStore('menu', () => {
           link: 'permisos-armas',
           icon: 'bi-app',
           // can: store.esBodeguero,// can('puede.acceder.detalles'),
-          can: store.can('puede.acceder.permisos_armas'),
+          can: store.can('puede.acceder.permisos_armas')
         },
         {
           title: 'Inventario',
@@ -356,7 +355,7 @@ export const useMenuStore = defineStore('menu', () => {
           title: 'Preingresos de Materiales',
           link: 'preingresos-materiales',
           can: store.can('puede.acceder.preingresos_materiales') || true,
-          icon: 'bi-app',
+          icon: 'bi-app'
         },
 
         {
@@ -475,21 +474,21 @@ export const useMenuStore = defineStore('menu', () => {
           title: 'Control de activos fijos',
           link: 'control-activos-fijos',
           can: store.can('puede.acceder.control_activos_fijos'),
-          icon: 'bi-app',
+          icon: 'bi-app'
         },
         {
           title: 'Seguimiento consumo de activos fijos',
           link: 'seguimiento-consumo-activos-fijos',
           can: store.can('puede.acceder.seguimiento_consumo_activos_fijos'),
-          icon: 'bi-app',
+          icon: 'bi-app'
         },
         {
           title: 'Transferencia de activos fijos',
           link: 'transferencia-activos-fijos',
           can: store.can('puede.acceder.transferencia_activos_fijos'),
-          icon: 'bi-app',
-        },
-      ],
+          icon: 'bi-app'
+        }
+      ]
     },
     // Modulo Fondos Rotativos
     {
@@ -587,7 +586,7 @@ export const useMenuStore = defineStore('menu', () => {
               title: 'Transferencia',
               link: 'transferencia',
               icon: 'fa-solid fa-exchange-alt', // Cambiado de 'bi-arrow-left-right' a Font Awesome
-              can: store.can('puede.acceder.transferencia'),
+              can: store.can('puede.acceder.transferencia')
             },
             {
               title: 'Autorizar Transferencia',
@@ -658,7 +657,7 @@ export const useMenuStore = defineStore('menu', () => {
           link: 'ajustes-saldos',
           icon: 'fa-solid fa-money-check-alt', // Cambiado de 'bi-cash' a Font Awesome
           can: store.can('puede.acceder.ajustes_saldos')
-        },
+        }
       ]
     },
 
@@ -745,7 +744,14 @@ export const useMenuStore = defineStore('menu', () => {
               link: 'solicitudes-vacaciones',
               icon: 'bi-umbrella-fill',
               can: store.can('puede.acceder.solicitudes_vacaciones')
-            },{
+            },
+            // {
+            //   title: 'Planes de Vacaciones',
+            //   link: 'planes-vacaciones',
+            //   icon: 'bi-calendar',
+            //   can: store.can('puede.acceder.planes_vacaciones')
+            // },
+            {
               title: 'Registro de Vacaciones',
               link: 'vacaciones',
               icon: 'bi-umbrella-fill',
@@ -863,8 +869,8 @@ export const useMenuStore = defineStore('menu', () => {
               title: 'Reporte de Vacaciones de Empleados',
               link: 'reporte-vacaciones',
               icon: 'bi-sunglasses',
-              can: store.can('puede.acceder.reportes_rrhh')||true
-            },
+              can: store.can('puede.acceder.reportes_rrhh') || true
+            }
           ]
         }
       ]
@@ -889,13 +895,13 @@ export const useMenuStore = defineStore('menu', () => {
           title: 'Eventos',
           icon: 'bi-calendar-event-fill',
           link: 'eventos',
-          can: store.can('puede.acceder.intra_eventos'),
+          can: store.can('puede.acceder.intra_eventos')
         },
         {
           title: 'Organigrama',
           icon: 'bi-diagram-3-fill',
           link: 'organigrama',
-          can: store.can('puede.acceder.intra_organigrama'),
+          can: store.can('puede.acceder.intra_organigrama')
         },
         {
           title: 'Categorias',
@@ -1119,7 +1125,9 @@ export const useMenuStore = defineStore('menu', () => {
           title: 'Proveedores Internacionales',
           link: 'proveedores-internacionales',
           icon: 'bi-people-fill',
-          can: store.can('puede.acceder.proveedores_internacionales') || store.esAdministrador
+          can:
+            store.can('puede.acceder.proveedores_internacionales') ||
+            store.esAdministrador
         },
         {
           title: 'Datos Bancarios de Proveedores',
@@ -1150,7 +1158,8 @@ export const useMenuStore = defineStore('menu', () => {
           link: 'categorias-ofertas',
           icon: 'bi-tags-fill',
           can:
-            store.can('puede.acceder.categorias_ofertas') || store.esAdministrador
+            store.can('puede.acceder.categorias_ofertas') ||
+            store.esAdministrador
         },
         {
           title: 'Preordenes de Compras',
@@ -1435,7 +1444,9 @@ export const useMenuStore = defineStore('menu', () => {
       title: 'Configuracion General',
       link: 'configuracion',
       icon: 'bi-gear-wide-connected',
-      can: store.can('puede.acceder.configuracion_general') || store.esAdministrador
+      can:
+        store.can('puede.acceder.configuracion_general') ||
+        store.esAdministrador
     },
     {
       title: 'Geografía General',
@@ -1521,14 +1532,16 @@ export const useMenuStore = defineStore('menu', () => {
           title: 'Codigos de productos',
           link: 'codigos-clientes',
           icon: 'bi-upc-scan',
-          can: store.can('puede.acceder.codigos_clientes') && store.esActivosFijos
+          can:
+            store.can('puede.acceder.codigos_clientes') && store.esActivosFijos
         },
         {
           title: 'Estados de transacciones',
           link: 'estados-transacciones',
           icon: 'bi-circle',
           can:
-            store.can('puede.acceder.estados_transacciones') && store.esActivosFijos
+            store.can('puede.acceder.estados_transacciones') &&
+            store.esActivosFijos
         },
         {
           title: 'Hilos',
@@ -1582,7 +1595,8 @@ export const useMenuStore = defineStore('menu', () => {
           title: 'Unidades de medida',
           link: 'unidades-medidas',
           icon: 'bi-rulers',
-          can: store.can('puede.acceder.unidades_medidas') && store.esActivosFijos
+          can:
+            store.can('puede.acceder.unidades_medidas') && store.esActivosFijos
           // can: true,
         }
       ]
@@ -1614,13 +1628,16 @@ export const useMenuStore = defineStore('menu', () => {
           title: 'Permisos en roles',
           link: 'permisos-roles',
           icon: 'bi-person-badge-fill',
-          can: store.esAdministrador || store.can('puede.acceder.permisos_roles')
+          can:
+            store.esAdministrador || store.can('puede.acceder.permisos_roles')
         },
         {
           title: 'Permisos de usuarios',
           link: 'permisos-usuarios',
           icon: 'bi-person-lock',
-          can: store.esAdministrador || store.can('puede.acceder.permisos_usuarios')
+          can:
+            store.esAdministrador ||
+            store.can('puede.acceder.permisos_usuarios')
         }
       ]
     }

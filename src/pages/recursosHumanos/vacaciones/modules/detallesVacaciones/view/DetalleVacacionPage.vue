@@ -1,8 +1,19 @@
 <template>
   <q-form @submit.prevent>
     <div class="row q-col-gutter-sm q-py-md">
-      <div class="col-12">{{ datos }}:{{ detalle }}</div>
-
+<!--      <div class="col-12">{{ datos }}:{{ detalle }}</div>-->
+      <div
+        v-if="datos.dias_disponibles<detalle.dias_utilizados"
+        class="col-12 col-md-12 rounded-card q-py-sm text-center text-accent bg-yellow-2"
+      >
+        <q-icon
+          name="bi-exclamation-triangle-fill"
+          class="q-mr-sm"
+          size="1em"
+        ></q-icon
+        ><b>&nbsp; Advertencia</b>
+        <div>No se puede registrar más días de los días disponibles. Días disponibles: {{datos.dias_disponibles}}</div>
+      </div>
       <!-- Fecha Inicio -->
       <div class="col-12 col-md-3">
         <label class="q-mb-sm block">Fecha Inicio</label>
@@ -121,6 +132,7 @@
     <div class="row justify-end q-pr-md q-pb-md">
       <!--    botones de submit-->
       <button-submits
+        :disabled="datos.dias_disponibles<detalle.dias_utilizados"
         :accion="datos.accion"
         @editar="editar(detalle)"
         @guardar="guardar(detalle)"

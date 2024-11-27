@@ -112,6 +112,7 @@ export default defineComponent({
         0
       )
       vacacion.dias_disponibles = vacacion.dias - vacacion.dias_tomados
+      // vacacion.completadas = vacacion.dias_disponibles==0
     }
 
     const checkOptoPago = val => {
@@ -171,7 +172,11 @@ export default defineComponent({
       accion: () => {
         modales.abrirModalEntidad<{ vacacion_id: number; accion: string }>(
           'DetalleVacacionPage',
-          { vacacion_id: vacacion.id, accion: acciones.nuevo }
+          {
+            vacacion_id: vacacion.id,
+            dias_disponibles: vacacion.dias_disponibles,
+            accion: acciones.nuevo
+          }
         )
       },
       visible: () => accion.value === acciones.editar
@@ -187,6 +192,7 @@ export default defineComponent({
           'DetalleVacacionPage',
           {
             vacacion_id: vacacion.id,
+            dias_disponibles: vacacion.dias_disponibles,
             accion: acciones.editar,
             entidad: entidad
           }
