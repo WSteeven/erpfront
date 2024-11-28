@@ -184,6 +184,9 @@ export default defineComponent({
       notificacionesPusherStore.idNotificacion = id
       await notificacionesPusherStore.marcarLeida()
     }
+    async function marcarComoLeidasTodas(){
+      await notificacionesPusherStore.marcarLeidasTodas(authenticationStore.user.id)
+    }
 
     type tipo = 'center middle' | 'top start'
     const selfCenterMiddle: ComputedRef<tipo> = computed(
@@ -402,6 +405,7 @@ export default defineComponent({
       mostrarOpciones: ref(false),
       notificaciones,
       marcarLeida,
+      marcarComoLeidasTodas,
       // ordenarNotificaciones() {
       //   notificaciones.value.sort((a: Notificacion, b: Notificacion) => {
       //     return b.id! - a.id!
