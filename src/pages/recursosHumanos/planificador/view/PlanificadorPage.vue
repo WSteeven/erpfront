@@ -140,7 +140,7 @@
                   color="negative"
                 >
                   <q-tooltip class="bg-dark">Eliminar</q-tooltip>
-                  <q-icon class="bi-trash" size="xs" />
+                  <q-icon class="bi-trash-fill" size="xs" />
                 </q-btn>
               </div>
             </div>

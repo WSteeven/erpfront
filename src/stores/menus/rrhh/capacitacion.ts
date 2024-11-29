@@ -10,12 +10,12 @@ const capacitacion: Ref<MenuOption[]> = computed(()=>{
       icon: 'bi-person-video3',
       can: store.can('puede.acceder.modulo_capacitacion_personal'),
       children: [
-        // {
-        //   title: 'Solicitud de Personal',
-        //   link: 'solicitudes-puestos',
-        //   icon: 'bi-file-text',
-        //   can: store.can('puede.acceder.rrhh_solicitudes_nuevas_vacantes'),
-        // },
+        {
+          title: 'Formularios',
+          link: 'formularios',
+          icon: 'bi-file-text',
+          can: store.can('puede.acceder.rrhh_capacitacion_formularios'),
+        },
         {
           title: 'Reportes',
           icon: 'bi-graph-up-arrow',
