@@ -3,6 +3,13 @@ import { Formulario } from 'capacitacion/forms/domain/Formulario'
 
 export const configuracionColumnasFormularios: ColumnConfig<Formulario>[]=[
   {
+    name: 'empleado',
+    field: 'empleado',
+    label: 'Propietario',
+    align: 'left',
+    sortable: true
+  },
+  {
     name: 'nombre',
     field: 'nombre',
     label: 'Nombre',
@@ -10,9 +17,9 @@ export const configuracionColumnasFormularios: ColumnConfig<Formulario>[]=[
     sortable: true
   },
   {
-    name: 'respuestas',
-    field: 'respuestas',
-    label: 'Respuestas',
+    name: 'tipo',
+    field: 'tipo',
+    label: 'Tipo',
     align: 'left',
     sortable: true
   },

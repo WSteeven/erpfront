@@ -7,11 +7,25 @@
     :tab-defecto="tabDefecto"
     :filtrar="filtrarFormularios"
     ajustar-celdas
+    :accion1="btnCompartirFormulario"
   >
     <template #formulario>
       <q-form @submit.prevent>
         <div class="row q-col-gutter-sm q-py-md">
-          <!-- correo -->
+          <!-- empleado -->
+          <div class="col-12 col-md-3 col-sm-6">
+            <label class="q-mb-sm block">Empleado</label>
+            <q-input
+              v-model="formulario.empleado"
+              autogrow
+              placeholder="Obligatorio"
+              disable
+              outlined
+              dense
+            />
+          </div>
+
+          <!-- nombre -->
           <div class="col-12 col-md-3 col-sm-6">
             <label class="q-mb-sm block">Nombre del formulario</label>
             <q-input
@@ -57,8 +71,8 @@
               :disable="disabled"
               use-chips
               :error="!!v$.periodo_recurrencia.$errors.length"
-              :option-value="(v)=>v.value"
-              :option-label="(v)=>v.label"
+              :option-value="v => v.value"
+              :option-label="v => v.label"
               emit-value
               map-options
             >
@@ -72,7 +86,7 @@
               </template>
             </q-select>
           </div>
-{{formulario}}
+
           <!-- Mes inicia -->
           <div class="col-12 col-md-3 col-sm-3" v-if="formulario.es_recurrente">
             <label class="q-mb-sm block">Fecha Inicio</label>
@@ -124,8 +138,49 @@
             </q-input>
           </div>
 
+          <!-- tipo de formulario -->
+          <div class="col-12 col-md-3">
+            <label class="q-mb-sm block"
+              >Tipo Formulario <i class="bi bi-info-circle" />
+              <q-tooltip class="bg-dark"
+                >INTERNO unicamente para empleados registrados, EXTERNO para
+                cualquier persona en general
+              </q-tooltip>
+            </label>
+            <q-select
+              v-model="formulario.tipo"
+              :options="tiposFormularios"
+              options-dense
+              dense
+              outlined
+              @update:model-value="tipoFormularioSeleccionado"
+              :disable="disabled"
+              use-chips
+              :error="!!v$.tipo.$errors.length"
+            >
+              <template v-slot:error>
+                <div v-for="error of v$.tipo.$errors" :key="error.$uid">
+                  <div class="error-msg">{{ error.$message }}</div>
+                </div>
+              </template>
+            </q-select>
+          </div>
 
-          <div class="col-12 col-md-6 col-sm-6">
+          <!-- Estado -->
+          <div class="col-12 col-md-3 col-sm-3">
+            <label class="q-mb-sm block">¿Activo?</label>
+            <q-toggle
+              :label="formulario.activo ? 'SI' : 'NO'"
+              v-model="formulario.activo"
+              color="primary"
+              keep-color
+              icon="bi-check2-circle"
+              unchecked-icon="clear"
+              :disable="disabled"
+            />
+          </div>
+
+          <div class="col-12 col-md-3 col-sm-6">
             <label class="q-mb-sm block">&nbsp;</label>
             <q-btn
               label="Añadir Pregunta"
@@ -135,40 +190,87 @@
             />
           </div>
           <q-card class="col-12" v-if="formulario.formulario.length > 0">
-            <q-card-section>
-              <!-- Botón para añadir un campo -->
-
-              {{ formulario }}
-
-              <!-- Lista de campos -->
-              <div
-                v-for="(field, index) in formulario.formulario"
-                :key="index"
-                class="q-mb-md"
+            <transition-group name="flip-list" tag="div" class="list-group">
+              <draggable
+                v-if="formulario.formulario.length > 0"
+                v-model="formulario.formulario"
+                item-key="id"
+                :component-data="{ tag: 'div' }"
+                v-bind="dragOptions"
+                @start="dragging = true"
+                @end="dragging = false"
               >
-                <q-separator />
-                <DynamicField :campo="field" />
-                <q-btn
-                  icon="bi-pencil-square"
-                  color="secondary"
-                  flat
-                  dense
-                  @click="editField(index)"
-                  class="q-ml-sm"
-                />
-                <q-btn
-                  icon="bi-trash-fill"
-                  color="negative"
-                  flat
-                  dense
-                  @click="removeField(index)"
-                  class="q-ml-sm"
-                />
-              </div>
-            </q-card-section>
+                <template #item="{ element, index }">
+                  <q-item class="q-mb-sm">
+                    <q-item-section>
+                      <q-separator />
+                      <DynamicField :campo="element" />
+                      <div class="row justify-end q-mt-sm">
+                        <q-btn
+                          icon="bi-pencil-square"
+                          color="secondary"
+                          flat
+                          dense
+                          @click="editField(index)"
+                          class="q-ml-sm"
+                        />
+                        <q-btn
+                          icon="bi-trash-fill"
+                          color="negative"
+                          flat
+                          dense
+                          @click="removeField(index)"
+                          class="q-ml-sm"
+                        />
+                      </div>
+                    </q-item-section>
+                    <q-item-section side>
+                      <q-icon
+                        name="drag_indicator"
+                        class="drag-handle cursor-pointer"
+                      />
+                    </q-item-section>
+                  </q-item>
+                </template>
+              </draggable>
+            </transition-group>
           </q-card>
+          <!--          <q-card class="col-12" v-if="formulario.formulario.length > 0">-->
+          <!--            <q-card-section>-->
+          <!--              &lt;!&ndash; Botón para añadir un campo &ndash;&gt;-->
+          <!--              {{ formulario.formulario }}-->
+          <!--              &lt;!&ndash; Lista de campos &ndash;&gt;-->
+          <!--              <div-->
+          <!--                v-for="(field, index) in formulario.formulario"-->
+          <!--                :key="index"-->
+          <!--                class="q-mb-md"-->
+          <!--              >-->
+          <!--                <q-separator />-->
+          <!--                <DynamicField :campo="field" />-->
+
+          <!--                <div class="row justify-end q-mt-sm">-->
+          <!--                  <q-btn-->
+          <!--                    icon="bi-pencil-square"-->
+          <!--                    color="secondary"-->
+          <!--                    flat-->
+          <!--                    dense-->
+          <!--                    @click="editField(index)"-->
+          <!--                    class="q-ml-sm"-->
+          <!--                  />-->
+          <!--                  <q-btn-->
+          <!--                    icon="bi-trash-fill"-->
+          <!--                    color="negative"-->
+          <!--                    flat-->
+          <!--                    dense-->
+          <!--                    @click="removeField(index)"-->
+          <!--                    class="q-ml-sm"-->
+          <!--                  />-->
+          <!--                </div>-->
+          <!--              </div>-->
+          <!--            </q-card-section>-->
+          <!--          </q-card>-->
         </div>
-        {{newField}}
+<!--        {{ newField }}-->
       </q-form>
     </template>
   </tab-layout-filter-tabs2>
@@ -183,3 +285,27 @@
 </template>
 
 <script src="./CrearFormularioPage.ts" />
+<style scoped>
+.flip-list-enter-active,
+.flip-list-leave-active {
+  transition: transform 0.5s;
+}
+
+.flip-list-enter,
+.flip-list-leave-to {
+  transform: scale(1.1);
+}
+
+.ghost {
+  opacity: 0.5;
+  background-color: #c3dff5;
+}
+
+.list-group {
+  min-height: 20px;
+}
+
+.list-group-item i {
+  cursor: pointer;
+}
+</style>

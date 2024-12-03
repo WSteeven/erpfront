@@ -1,23 +1,22 @@
 // Dependencias
-import relativeTime from 'dayjs/plugin/relativeTime';
-import { defineComponent, onMounted } from 'vue'
-import es from 'dayjs/locale/es';
+import relativeTime from 'dayjs/plugin/relativeTime'
+import { defineComponent, onMounted, ref } from 'vue'
+import es from 'dayjs/locale/es'
 import dayjs from 'dayjs'
-import { ref } from 'vue'
 
 // Componentes
 import BasicContainer from 'shared/contenedor/modules/basic/view/BasicContainer.vue'
-import ModalEntidad from 'components/modales/view/ModalEntidad.vue';
+import ModalEntidad from 'components/modales/view/ModalEntidad.vue'
 
 //Logica y controladores
 import { StatusEssentialLoading } from 'components/loading/application/StatusEssentialLoading'
 import { VacanteController } from '../../vacantes/infraestructure/VacanteController'
 import { useNotificaciones } from 'shared/notificaciones'
 import { ComportamientoModalesVacanteDisponible } from '../application/ComportamientoModalesVacanteDisponible'
-import { useVacanteStore } from 'stores/recursosHumanos/seleccionContratacion/vacante';
-import { getShortDescription } from 'shared/utils';
-import { useRouter } from 'vue-router';
-import { Vacante } from '../../vacantes/domain/Vacante';
+import { useVacanteStore } from 'stores/recursosHumanos/seleccionContratacion/vacante'
+import { getShortDescription } from 'shared/utils'
+import { useRouter } from 'vue-router'
+import { Vacante } from '../../vacantes/domain/Vacante'
 
 
 export default defineComponent({
@@ -67,8 +66,9 @@ export default defineComponent({
         return
       }
       const needle = search.value.toLowerCase()
-      const results = vacantes.value.filter((vacante: Vacante) => vacante.nombre!.toLowerCase().indexOf(needle) > -1)
-      vacantesDisponibles.value = results
+      vacantesDisponibles.value = vacantes.value.filter(
+        (vacante: Vacante) => vacante.nombre!.toLowerCase().indexOf(needle) > -1
+      )
     }
 
     return {

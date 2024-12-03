@@ -23,11 +23,12 @@
           <!--{{newField}}-->
 
           <!-- Configurar etiqueta -->
-          <div class="col-12 col-md-3">
+          <div class="col-12">
             <label class="q-mb-sm block">Etiqueta</label>
             <q-input
               v-model="newField.label"
               dense
+              autogrow
               outlined
               class="q-mt-md"
               :error="!!v$.label.$errors.length"
@@ -131,11 +132,7 @@ export default defineComponent({
     }
     const v$ = useVuelidate(reglas, newField)
 
-    onMounted(()=>{
-      console.log('CrearNuevoCampoModal', new Date().toISOString())
-      console.log(props.campo)
-      console.log(newField)
-    })
+
     const addField =async () => {
       if (await v$.value.$validate()) {
         props.guardar({field: newField,accion:props.accion})

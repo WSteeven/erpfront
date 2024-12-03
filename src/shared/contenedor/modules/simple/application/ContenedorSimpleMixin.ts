@@ -119,6 +119,7 @@ export class ContenedorSimpleMixin<T extends EntidadAuditable> extends Contenedo
       // usuario.hydrate(result)
 
     } catch (error) {
+        console.log('error en consultar', error)
       if (isAxiosError(error)) {
         const mensajes: string[] = error.erroresValidacion
         await notificarMensajesError(mensajes, this.notificaciones)

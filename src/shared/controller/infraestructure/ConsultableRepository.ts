@@ -14,11 +14,14 @@ export class ConsultableRepository<T> {
     this.endpoint = endpoint
   }
 
-  async consultar(id?: number, params?: ParamsType): Promise<ResponseItem<T, HttpResponseGet<T>>> {
+  async consultar(
+    id?: number,
+    params?: ParamsType
+  ): Promise<ResponseItem<T, HttpResponseGet<T>>> {
     try {
       const endpoint = {
         endpoint: this.endpoint,
-        id,
+        id
       }
 
       const ruta = this.httpRepository.getEndpoint(endpoint, params)
@@ -26,11 +29,17 @@ export class ConsultableRepository<T> {
 
       return {
         response,
-        result: response.data.modelo,
+        result: response.data.modelo
       }
-    } catch (error: unknown) {
+    } catch (error: AxiosError) {
+      console.log('error en consultableRepsitory', error)
       const axiosError = error as AxiosError
-      throw new ApiError(axiosError)
+      try {
+        throw new ApiError(axiosError)
+      } catch (e) {
+        console.log('error en el api error linea 35', e)
+        throw e
+      }
     }
   }
 }

@@ -3,6 +3,9 @@ import { TabOption } from 'components/tables/domain/TabOption'
 
 export const tiposCampos: SelectOption[] = [
   { label: 'Texto', value: 'text' },
+  { label: 'Bloque de Texto', value: 'textblock' },
+  { label: 'Tip', value: 'tip' },
+  { label: 'Alerta', value: 'alert' },
   { label: 'Radio', value: 'radio' },
   { label: 'Checkbox', value: 'checkbox' },
   { label: 'Lista Desplegable', value: 'select' },
@@ -18,4 +21,9 @@ export const tiposRecurrencias:SelectOption[] = [
   { label: 'Trimestral', value: 3 },
   { label: 'Semestral', value: 6 },
   { label: 'Anual', value: 12 },
+]
+
+export const tiposFormularios= [
+  'INTERNO',
+  'EXTERNO',
 ]
