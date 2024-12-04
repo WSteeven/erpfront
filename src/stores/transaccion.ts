@@ -80,14 +80,14 @@ export const useTransaccionStore = defineStore('transaccion', () => {
         try {
             statusLoading.activar()
             const axios = AxiosHttpRepository.getInstance()
-            const ruta = apiConfig.URL_BASE + '/' + axios.getEndpoint(endpoints.modificar_item_egreso)
+            const ruta = apiConfig.URL_BASE + '/' + axios.getEndpoint(endpoints.modificar_item_egreso)+'/'+idTransaccion.value
             const response: AxiosResponse = await axios.patch(ruta, data)
             console.log(response)
             if (response.status === 200) notificaciones.notificarCorrecto('Item actualizado correctamente')
         } catch (error: any) {
             const errorApi = new ApiError(error)
             const mensajes: string[] = errorApi.erroresValidacion
-            notificarMensajesError(mensajes, notificaciones)
+            await notificarMensajesError(mensajes, notificaciones)
         } finally {
             statusLoading.desactivar()
         }
