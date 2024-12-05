@@ -1061,7 +1061,8 @@ export const useMenuStore = defineStore('menu', () => {
               can: true
             },
             {
-              title: 'Reporte de Combustibles',
+              title: 'Dashboard de Combustibles',
+              // title: 'Reporte de Combustibles',
               link: 'reporte-combustibles',
               icon: 'bi-fuel-pump',
               can: true

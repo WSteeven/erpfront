@@ -30,18 +30,22 @@ export const useTransferenciaStore = defineStore('transferencia', () => {
     }
 
     async function cargarTransferencia(id: number) {
+      transferencia.hydrate(transferenciaReset)
         try {
             statusLoading.activar()
             const modelo = await consultar(id)
+          console.log(modelo)
             if (modelo.recibida) {
               notificarAdvertencia('La transferencia ya ha sido ingresada y completada')
               transferencia.hydrate(transferenciaReset)
+            }else if(modelo.estado=='ANULADO') {
+              notificarAdvertencia('No puedes cargar esta transferencia, puesto que está anulada.')
             }else{
-              transferencia.hydrate(modelo)
+                transferencia.hydrate(modelo)
             }
         } catch (e) {
             notificarAdvertencia('Transferencia no encontrada o no aprobada')
-            transferencia.hydrate(transferenciaReset)
+            // transferencia.hydrate(transferenciaReset)
         } finally {
             statusLoading.desactivar()
         }
