@@ -10,7 +10,7 @@
           <q-card-section>
             <div>Usuarios registrados</div>
             <q-knob
-              v-model="tablero.usuarios"
+              v-model="tablero.empleados"
               readonly
               show-value
               size="90px"
@@ -18,7 +18,7 @@
               track-color="grey-3"
               class="text-lime q-ma-md"
             >
-              <template #default>{{ tablero.usuarios }}</template>
+              <template #default>{{ tablero.empleados }}</template>
             </q-knob>
           </q-card-section>
         </q-card>
@@ -222,7 +222,7 @@ export default defineComponent({
     const store = useAuthenticationStore()
     const controller = new TableroController()
     const tablero = reactive(new Tablero())
-    const usuarios = 20
+    const empleados = 20
 
     async function index() {
       const { response } = await controller.listar()
@@ -231,7 +231,7 @@ export default defineComponent({
 
     index()
 
-    return { tablero, store, usuarios }
+    return { tablero, store, empleados }
   },
 })
 </script>
