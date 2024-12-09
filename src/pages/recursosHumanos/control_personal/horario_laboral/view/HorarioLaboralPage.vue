@@ -11,16 +11,16 @@
           <div class="col-12 col-md-6">
             <label class="q-mb-sm block">Hora de Entrada</label>
             <q-input
-              v-model="horarioLaboral.horaEntrada"
+              v-model="horarioLaboral.hora_entrada"
               placeholder="Obligatorio"
               :readonly="disabled"
               type="time"
-              :error="!!v$.horaEntrada.$errors.length"
+              :error="!!v$.hora_entrada.$errors.length"
               outlined
               dense
             >
               <template v-slot:error>
-                <div v-for="error of v$.horaEntrada.$errors" :key="error.$uid">
+                <div v-for="error of v$.hora_entrada.$errors" :key="error.$uid">
                   <div class="error-msg">{{ error.$message }}</div>
                 </div>
               </template>
@@ -30,16 +30,16 @@
           <div class="col-12 col-md-6">
             <label class="q-mb-sm block">Hora de Salida</label>
             <q-input
-              v-model="horarioLaboral.horaSalida"
+              v-model="horarioLaboral.hora_salida"
               placeholder="Obligatorio"
               :readonly="disabled"
               type="time"
-              :error="!!v$.horaSalida.$errors.length"
+              :error="!!v$.hora_salida.$errors.length"
               outlined
               dense
             >
               <template v-slot:error>
-                <div v-for="error of v$.horaSalida.$errors" :key="error.$uid">
+                <div v-for="error of v$.hora_salida.$errors" :key="error.$uid">
                   <div class="error-msg">{{ error.$message }}</div>
                 </div>
               </template>

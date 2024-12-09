@@ -3,15 +3,15 @@ import { HorarioLaboral } from './HorarioLaboral';
 
 export const configuracionColumnasHorarioLaboral: ColumnConfig<HorarioLaboral>[] = [
     {
-        name: 'horaEntrada',
-        field: 'horaEntrada',
+        name: 'hora_entrada',
+        field: 'hora_entrada',
         label: 'Hora de Entrada',
         align: 'left',
         sortable: true
     },
     {
-        name: 'horaSalida',
-        field: 'horaSalida',
+        name: 'hora_salida',
+        field: 'hora_salida',
         label: 'Hora de Salida',
         align: 'left',
         sortable: true

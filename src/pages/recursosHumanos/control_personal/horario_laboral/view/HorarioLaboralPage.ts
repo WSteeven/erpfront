@@ -21,8 +21,8 @@ export default defineComponent({
 
     // Reglas de validación
     const reglas = {
-      horaEntrada: { required },
-      horaSalida: { required },
+      hora_entrada: { required },
+      hora_salida: { required },
     };
 
     const v$ = useVuelidate(reglas, horarioLaboral);

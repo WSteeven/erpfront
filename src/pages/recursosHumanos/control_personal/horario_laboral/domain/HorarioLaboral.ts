@@ -1,12 +1,12 @@
 import { EntidadAuditable } from 'shared/entidad/domain/entidadAuditable';
 
 export class HorarioLaboral extends EntidadAuditable {
-  horaEntrada: Date | null;
-  horaSalida: Date | null;
+  hora_entrada: Date | null;
+  hora_salida: Date | null;
 
   constructor() {
     super();
-    this.horaEntrada = null;
-    this.horaSalida = null;
+    this.hora_entrada = null;
+    this.hora_salida = null;
   }
 }
