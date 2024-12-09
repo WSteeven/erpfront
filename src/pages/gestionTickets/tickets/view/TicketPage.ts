@@ -114,7 +114,6 @@ export default defineComponent({
           params: { campos: 'id,nombres,apellidos', estado: 1 },
         },
       })
-
       departamentos.value = listadosAuxiliares.departamentos
     })
 

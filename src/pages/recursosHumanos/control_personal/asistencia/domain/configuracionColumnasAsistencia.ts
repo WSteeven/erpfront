@@ -10,16 +10,16 @@ export const configuracionColumnasAsistencia: ColumnConfig<Asistencia>[] = [
         sortable: true
     },
     {
-        name: 'hora_ingreso',
-        field: 'hora_ingreso',
-        label: 'Ingreso',
-        align: 'center',
+        name: 'fecha',
+        field: 'fecha',
+        label: 'Fecha',
+        align: 'left',
         sortable: true
     },
     {
-        name: 'hora_salida',
-        field: 'hora_salida',
-        label: 'Salida',
+        name: 'hora_ingreso',
+        field: 'hora_ingreso',
+        label: 'Ingreso',
         align: 'center',
         sortable: true
     },
@@ -37,4 +37,11 @@ export const configuracionColumnasAsistencia: ColumnConfig<Asistencia>[] = [
         align: 'center',
         sortable: true
     },
+    {
+      name: 'hora_salida',
+      field: 'hora_salida',
+      label: 'Salida',
+      align: 'center',
+      sortable: true
+  },
 ]

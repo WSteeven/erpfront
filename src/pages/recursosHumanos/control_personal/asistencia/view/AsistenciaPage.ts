@@ -5,7 +5,7 @@ import { useVuelidate } from '@vuelidate/core'
 import { defineComponent } from 'vue'
 
 // Componentes
-import TabLayout from 'shared/contenedor/modules/simple/view/TabLayout.vue'
+import EssentialTable from 'components/tables/view/EssentialTable.vue'
 
 // Lógica y controladores
 import { ContenedorSimpleMixin } from 'shared/contenedor/modules/simple/application/ContenedorSimpleMixin'
@@ -14,17 +14,15 @@ import { Asistencia } from './../domain/Asistencia'
 import { AxiosHttpRepository } from 'shared/http/infraestructure/AxiosHttpRepository'
 import { apiConfig, endpoints } from 'config/api'
 import { AxiosResponse } from 'axios'
+import { ordenarLista } from 'shared/utils'
 
 export default defineComponent({
-  components: { TabLayout },
+  components: { EssentialTable },
   setup() {
-    const mixin = new ContenedorSimpleMixin(
-      Asistencia,
-      new AsistenciaController()
-    )
-    const { entidad: asistencia, listado } = mixin.useReferencias()
-    console.log('Asistencia inicializada en useReferencias:', asistencia)
-    const { setValidador, guardar } = mixin.useComportamiento()
+    const mixin = new ContenedorSimpleMixin(Asistencia,new AsistenciaController())
+    const { entidad: asistencia, disabled, listado } = mixin.useReferencias()
+    //    console.log('Asistencia inicializada en useReferencias:', asistencia)
+    const { setValidador, guardar, listar } = mixin.useComportamiento()
 
     // Reglas de validación
     const reglas = {
@@ -38,14 +36,21 @@ export default defineComponent({
 
     async function actualizarAsistencias() {
       const axios = AxiosHttpRepository.getInstance()
-      const url = apiConfig.URL_BASE +'/'+axios.getEndpoint(endpoints.asistencia)+'/sincronizar'
+      const url = apiConfig.URL_BASE + '/' + axios.getEndpoint(endpoints.asistencia) + '/sincronizar'
       const response: AxiosResponse = await axios.get(url)
       listado.value = []
       listado.value.push(response.data.results)
+      ordenarLista(listado)
+      listar()
     }
+
+    actualizarAsistencias()
+
     return {
       mixin,
       asistencia,
+      disabled,
+      listado,
       v$,
       configuracionColumnas: configuracionColumnasAsistencia,
       guardar,

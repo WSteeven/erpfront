@@ -1,4 +1,4 @@
-import { RouteRecordRaw } from "vue-router";
+import { RouteRecordRaw } from 'vue-router';
 
 const rutasControlPersonal: RouteRecordRaw[] = [
   {
@@ -7,6 +7,24 @@ const rutasControlPersonal: RouteRecordRaw[] = [
     component: () =>
       import(
         'controlPersonal/asistencia/view/AsistenciaPage.vue'
+      ),
+    meta: { requiresAuth: true },
+  },
+  {
+    path: '/dashboard-control-personal',
+    name: 'dashboard_control_personal',
+    component: () =>
+      import(
+        'controlPersonal/dashboard_control_personal/view/DashboardControlPersonal.vue'
+      ),
+    meta: { requiresAuth: true },
+  },
+  {
+    path: '/justificaciones-atrasos',
+    name: 'justificaciones',
+    component: () =>
+      import(
+        'controlPersonal/justificaciones_asistencia/view/JustificacionPage.vue'
       ),
     meta: { requiresAuth: true },
   },
