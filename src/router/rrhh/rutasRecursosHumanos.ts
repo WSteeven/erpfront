@@ -20,6 +20,18 @@ const rutasRecursosHumanos: RouteRecordRaw[] = [
     meta: { requiresAuth: true }
   },
   {
+    path: '/delegar-empleado',
+    name: 'delegar_empleados',
+    component: () => import('pages/recursosHumanos/empleados/modules/modoNoDisponible/view/ModoNoDisponiblePage.vue'),
+    meta: {requiresAuth: false}
+  },
+  {
+    path: '/empleados-delegados',
+    name: 'empleados_delegados',
+    component: () => import('pages/recursosHumanos/empleados/modules/modoNoDisponible/view/EmpleadoDelegadoPage.vue'),
+    meta: {requiresAuth: false}
+  },
+  {
     path: '/grupos',
     name: 'grupos',
     component: () => import('pages/recursosHumanos/grupos/view/GrupoPage.vue'),

@@ -345,9 +345,14 @@
                   </q-avatar>
                   <q-item-section>Ver todas las notificaciones</q-item-section>
                 </q-item>
-                <q-item clickable dense @click="marcarComoLeidasTodas" v-if="notificaciones.length > 0">
+                <q-item
+                  clickable
+                  dense
+                  @click="marcarComoLeidasTodas"
+                  v-if="notificaciones.length > 0"
+                >
                   <q-space />
-                  <q-item-section side >
+                  <q-item-section side>
                     <q-item-label>Marcar todas como leídas</q-item-label>
                   </q-item-section>
                   <q-item-section avatar>
@@ -442,6 +447,16 @@
                     <q-icon name="bi-box-seam"></q-icon>
                   </q-avatar>
                   <q-item-section> Mi bodega </q-item-section>
+                </q-item>
+
+                <q-item clickable class="full-width" v-if="permisoModoNoDisponible">
+                  <q-toggle
+                    v-model="store.user.tiene_delegado"
+                    checked-icon="bi-person-slash"
+                    label="Modo No Disponible"
+                    unchecked-icon="person"
+                    @update:model-value="abrirModoNoDisponible"
+                  />
                 </q-item>
 
                 <q-item clickable class="full-width">
@@ -545,7 +560,7 @@
       </q-btn>
     </q-drawer>
 
-    <modales-entidad :comportamiento="modales" />
+    <modales-entidad :comportamiento="modales" @guardado="guardado" />
 
     <ScrollToTopButton></ScrollToTopButton>
 

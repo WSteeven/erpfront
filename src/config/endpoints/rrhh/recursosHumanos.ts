@@ -3,6 +3,7 @@ import { seleccionContratacionPersonal } from './seleccionContratacionPersonal'
 
 export const recursosHumanos = {
   empleados: new Endpoint('empleados'),
+  empleados_delegados: new Endpoint('recursos-humanos/empleados-delegados'),
   departamentos: new Endpoint('recursos-humanos/departamentos'),
   motivo_permiso_empleado: new Endpoint('recursos-humanos/motivo_permiso_empleado'),
   estado_permiso_empleado: new Endpoint('recursos-humanos/estado_permiso_empleado'),

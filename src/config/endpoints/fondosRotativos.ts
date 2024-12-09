@@ -2,6 +2,7 @@ import { Endpoint } from 'shared/http/domain/Endpoint'
 
 export const fondosRotativos = {
   // Modulo Fondos Rotativos
+  autorizadores_directos: new Endpoint('fondos-rotativos/autorizadores-directos'),
   empleados_saldos_fr: new Endpoint('fondos-rotativos/empleados-saldos-fr'),
   empleados_fondos_rotativos: new Endpoint('empleados-fondos-rotativos'),
   reporte_valores_fondos_empleados: new Endpoint('fondos-rotativos/reporte-valores-fondos'),
