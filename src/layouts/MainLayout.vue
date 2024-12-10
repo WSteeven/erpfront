@@ -51,9 +51,9 @@
                 </q-item-section>
                 <q-item-section>
                   <q-item-label>{{ link.title }}</q-item-label>
-                  <q-item-label caption v-if="link.parentTitle">{{
-                    link.parentTitle
-                  }}</q-item-label>
+                  <q-item-label caption v-if="link.parentTitle"
+                    >{{ link.parentTitle }}
+                  </q-item-label>
                 </q-item-section>
               </q-item>
             </div>
@@ -103,6 +103,7 @@
           </q-btn>
 
           <img
+            alt="Logo FIRSTRED"
             v-if="route.name === 'intranet'"
             :src="!$q.dark.isActive ? logoClaro : logoOscuro"
             height="30"
@@ -344,6 +345,20 @@
                   </q-avatar>
                   <q-item-section>Ver todas las notificaciones</q-item-section>
                 </q-item>
+                <q-item
+                  clickable
+                  dense
+                  @click="marcarComoLeidasTodas"
+                  v-if="notificaciones.length > 0"
+                >
+                  <q-space />
+                  <q-item-section side>
+                    <q-item-label>Marcar todas como leídas</q-item-label>
+                  </q-item-section>
+                  <q-item-section avatar>
+                    <q-icon name="bi-check-all" />
+                  </q-item-section>
+                </q-item>
               </q-list>
             </q-menu>
           </q-btn>
@@ -352,6 +367,7 @@
           <q-btn dense round flat glossy @click.self="mostrarMenu = true">
             <q-badge color="positive" rounded floating> </q-badge>
             <img
+              alt="Profile image"
               :src="imagenPerfil"
               fit="cover"
               height="34px"
@@ -382,6 +398,7 @@
 
                 <!-- <q-avatar size="72px" class="double-border q-mb-md"> -->
                 <img
+                  alt="Profile Image"
                   :src="imagenPerfil"
                   fit="contain"
                   height="72px"
@@ -430,6 +447,16 @@
                     <q-icon name="bi-box-seam"></q-icon>
                   </q-avatar>
                   <q-item-section> Mi bodega </q-item-section>
+                </q-item>
+
+                <q-item clickable class="full-width" v-if="permisoModoNoDisponible">
+                  <q-toggle
+                    v-model="store.user.tiene_delegado"
+                    checked-icon="bi-person-slash"
+                    label="Modo No Disponible"
+                    unchecked-icon="person"
+                    @update:model-value="abrirModoNoDisponible"
+                  />
                 </q-item>
 
                 <q-item clickable class="full-width">
@@ -485,6 +512,7 @@
       <!-- Drawer Header -->
       <div class="absolute-top q-pa-sm q-ma-sm rounded-card">
         <img
+          alt="Logo FirstRed"
           :src="!$q.dark.isActive ? logoClaro : logoOscuro"
           height="60"
           class="q-mx-auto block"
@@ -505,8 +533,8 @@
               v-if="item.hasOwnProperty('header')"
               header
               class="text-bold text-primary"
-              >{{ item.header }}</q-item-label
-            >
+              >{{ item.header }}
+            </q-item-label>
 
             <!-- <EssentialLink v-else v-bind="item" /> -->
             <EssentialLink
@@ -528,11 +556,11 @@
         outline
         rounded
         @click="logout()"
-        >Cerrar sesión</q-btn
-      >
+        >Cerrar sesión
+      </q-btn>
     </q-drawer>
 
-    <modales-entidad :comportamiento="modales" />
+    <modales-entidad :comportamiento="modales" @guardado="guardado" />
 
     <ScrollToTopButton></ScrollToTopButton>
 

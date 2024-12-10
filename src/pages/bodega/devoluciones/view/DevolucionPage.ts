@@ -250,7 +250,7 @@ export default defineComponent({
       await refArchivo.value.subir()
     }
 
-    function eliminar({  posicion }) {
+    function eliminar({ posicion }) {
       confirmar('¿Está seguro de continuar?',
         () => devolucion.listadoProductos.splice(posicion, 1))
     }
@@ -310,7 +310,7 @@ export default defineComponent({
     const botonEditarCantidad: CustomActionTable = {
       titulo: 'Cantidad',
       icono: 'bi-pencil',
-      accion: ({  posicion }) => {
+      accion: ({ posicion }) => {
         const data: CustomActionPrompt = {
           titulo: 'Modifica',
           mensaje: 'Ingresa la cantidad',
@@ -382,12 +382,12 @@ export default defineComponent({
       titulo: 'Corregir devolución',
       color: 'amber-3',
       icono: 'bi-gear',
-      accion: ({ entidad}) => {
+      accion: ({ entidad }) => {
         devolucionStore.devolucion = entidad
         modales.abrirModalEntidad('CorregirDevolucionPage')
       },
       // visible: ({ entidad }) =>true
-      visible: () => (tabSeleccionado.value == 'APROBADO' || tabSeleccionado.value == 'PARCIAL') && (store.esBodeguero || entidad.per_autoriza_id == store.user.id) && entidad.estado_bodega == estadosTransacciones.parcial
+      visible: ({ entidad }) => (tabSeleccionado.value == 'APROBADO' || tabSeleccionado.value == 'PARCIAL') && (store.esBodeguero || entidad.per_autoriza_id == store.user.id) && entidad.estado_bodega == estadosTransacciones.parcial
     }
 
 

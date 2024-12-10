@@ -83,6 +83,7 @@ export const tabOptionsTransferencias: TabOption[] = [
   { label: 'Pendientes', value: 'PENDIENTE' },
   { label: 'Tránsito', value: 'TRANSITO' },
   { label: 'Completadas', value: 'COMPLETADO' },
+  { label: 'Anuladas', value: 'ANULADO' },
 ]
 export const tabOptionsPedidos: TabOption[] = [
   { label: 'Por autorizar', value: 'PENDIENTE' },

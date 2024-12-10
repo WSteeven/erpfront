@@ -6,6 +6,7 @@ import rutasRecursosHumanos from './rrhh/rutasRecursosHumanos'
 import rutasActivosFijos from './rutasActivosFijos'
 import rutasSSO from './rutasSSO'
 import { empresas } from 'config/utils/sistema'
+import rutasFondosRotativos from './rutasFondosRotativos'
 
 console.log(process.env.VUE_APP_ID)
 const routes: RouteRecordRaw[] = [
@@ -88,6 +89,11 @@ const routes: RouteRecordRaw[] = [
           import('pages/bodega/pedidos/view/imagenComprimida.vue'),
         meta: { requiresAuth: false },
       },
+      /**
+       *  Módulo de FONDOS ROTATIVOS
+       */
+      ...rutasFondosRotativos,
+
       /*******************
        * Módulo de RRHH
        *******************/
