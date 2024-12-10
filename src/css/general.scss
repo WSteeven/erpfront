@@ -196,6 +196,16 @@ border-radius: 8px;
   border-left: 3px solid $warning;
 }
 
+.border-callout-success {
+  border-right: 3px solid $positive;
+  border-left: 3px solid $positive;
+}
+
+.border-callout-error {
+  border-right: 3px solid $error;
+  border-left: 3px solid $error;
+}
+
 .border-callout-positive {
   border-right: 3px solid $positive;
   border-left: 3px solid $positive;
