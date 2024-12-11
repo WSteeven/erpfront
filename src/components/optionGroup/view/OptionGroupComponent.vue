@@ -45,11 +45,15 @@ export default defineComponent({
       default: () => [
         {
           label: 'SI',
-          value: true
+          value: true,
+          checkedIcon: 'bi-check-circle-fill',
+          uncheckedIcon: 'panorama_fish_eye'
         },
         {
           label: 'NO',
-          value: false
+          value: false,
+          checkedIcon: 'bi-check-circle-fill',
+          uncheckedIcon: 'panorama_fish_eye'
         }
       ]
     }

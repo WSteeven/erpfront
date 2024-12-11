@@ -9,6 +9,15 @@ const rutasTrabajoSocial: RouteRecordRaw[] = [
         'trabajoSocial/fichaSocioeconomica/view/FichaSocioeconomicaPage.vue'
       ),
     meta: { required: true }
+  },
+  {
+    path: '/visitas-domiciliarias',
+    name: 'visitas_domiciliarias',
+    component: () =>
+      import(
+        'trabajoSocial/visitaDomiciliaria/view/VisitaDomiciliariaPage.vue'
+        ),
+    meta: { required: false }
   }
 ]
 

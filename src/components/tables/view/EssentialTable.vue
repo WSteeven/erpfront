@@ -283,7 +283,7 @@
       </div>
 
       <div
-        v-if="permitirFiltrar || (true && mostrarCantidadElementos)"
+        v-if="permitirFiltrar || mostrarCantidadElementos"
         class="row full-width justify-between q-col-gutter-x-sm items-center q-mb-md"
       >
         <span class="row items-center q-px-md">
