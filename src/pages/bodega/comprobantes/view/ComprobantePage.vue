@@ -16,7 +16,9 @@
       :ajustarCeldas="true"
     ></essential-table-tabs>
 
-    <modal-entidad :comportamiento="modales"></modal-entidad>
+    <modal-entidad :comportamiento="modales"
+    :persistente="false"
+    :mostrar-listado="false"></modal-entidad>
   </q-page>
 </template>
 <script src="./ComprobantePage.ts"></script>

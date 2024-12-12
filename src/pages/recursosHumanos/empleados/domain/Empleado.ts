@@ -64,6 +64,7 @@ export class Empleado extends EntidadAuditable {
   talla_pantalon: string | null
   genero: string | null
   esta_en_rol_pago: boolean | null
+  tiene_delegado: boolean | null
   realiza_factura: boolean | null
   banco_info: string | null
   acumula_fondos_reserva: boolean | null
@@ -117,6 +118,7 @@ export class Empleado extends EntidadAuditable {
     this.fecha_ingreso = null
     this.antiguedad = null
     this.modificar_fecha_vinculacion = false
+    this.tiene_delegado = false
     this.fecha_vinculacion = null
     this.fecha_salida = null
     this.tipo_contrato = null

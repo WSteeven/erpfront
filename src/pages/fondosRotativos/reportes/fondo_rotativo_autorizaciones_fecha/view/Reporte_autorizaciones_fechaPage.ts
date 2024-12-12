@@ -1,4 +1,4 @@
-import { defineComponent, ref, watchEffect } from 'vue'
+import { defineComponent, ref } from 'vue'
 
 import TabLayout from 'shared/contenedor/modules/simple/view/TabLayout.vue'
 import { useNotificacionStore } from 'stores/notificacion'
@@ -8,7 +8,7 @@ import { ContenedorSimpleMixin } from 'shared/contenedor/modules/simple/applicat
 import { TipoFondoController } from 'pages/fondosRotativos/tipoFondo/infrestructure/TipoFonfoController'
 import { AxiosHttpRepository } from 'shared/http/infraestructure/AxiosHttpRepository'
 import { apiConfig, endpoints } from 'config/api'
-import { imprimirArchivo } from 'shared/utils'
+import { imprimirArchivo, obtenerFechaActual } from 'shared/utils'
 import { FondoRotativoAutorizacionesFecha } from '../domain/FondoRotativoAutorizacionesFecha'
 import { FondoRotativoAutorizacionesFechaController } from '../infrestructure/FondoRotativoAutorizacionesFechaController'
 import { maskFecha, tipoReportes } from 'config/utils'
@@ -16,6 +16,8 @@ import { EmpleadoController } from 'pages/recursosHumanos/empleados/infraestruct
 import { useCargandoStore } from 'stores/cargando'
 import { format } from '@formkit/tempo'
 import { required } from 'shared/i18n-validators'
+import { EstadoViaticoController } from 'pages/fondosRotativos/reportes/fondo_rotativo_autorizaciones_fecha/infrestructure/EstadoViaticoController'
+import { useFiltrosListadosSelects } from 'shared/filtrosListadosGenerales'
 
 export default defineComponent({
   components: { TabLayout },
@@ -34,14 +36,20 @@ export default defineComponent({
       new FondoRotativoAutorizacionesFechaController()
     )
     const {
-      entidad: fondo_rotativo_autorizacion_fecha,
+      entidad: reporte,
       disabled,
-      accion,
-      listadosAuxiliares,
+      listadosAuxiliares
     } = mixin.useReferencias()
     const { setValidador, obtenerListados, cargarVista } =
       mixin.useComportamiento()
+    const {onReestablecer}=mixin.useHooks()
 
+
+    /*************
+     * HOOKS
+     **************/
+    onReestablecer(()=>
+    reporte.fecha_fin =  obtenerFechaActual(maskFecha))
     /*************
      * Validaciones
      **************/
@@ -49,7 +57,7 @@ export default defineComponent({
       usuario: {
         required
       },
-      tipo_reporte: {
+      estado: {
         required
       },
       fecha_inicio: {
@@ -57,119 +65,77 @@ export default defineComponent({
       },
       fecha_fin: {
         required
-      },
+      }
     }
-    const v$ = useVuelidate(reglas, fondo_rotativo_autorizacion_fecha)
+    const v$ = useVuelidate(reglas, reporte)
     setValidador(v$.value)
-    const usuarios = ref([])
-    const usuariosInactivos = ref()
+    const empleadosInactivos = ref()
     const tiposFondos = ref([])
     const tiposFondoRotativoFechas = ref([])
-    const is_inactivo = ref('false')
+    const is_inactivo = ref(false)
+    const estados_viaticos = ref([])
+    const { empleados, filtrarEmpleados } =
+      useFiltrosListadosSelects(listadosAuxiliares)
 
     cargarVista(async () => {
       await obtenerListados({
-        usuarios: {
+        empleados: {
           controller: new EmpleadoController(),
-          params: { campos: 'id,nombres,apellidos', estado: 1, empleados_autorizadores_gasto:1 },
+          params: {
+            campos: 'id,nombres,apellidos',
+            estado: 1,
+            empleados_autorizadores_gasto: 1
+          }
         },
         tiposFondos: {
           controller: new TipoFondoController(),
-          params: { campos: 'id,descripcion' },
+          params: { campos: 'id,descripcion' }
         },
+        estados: new EstadoViaticoController()
       })
 
-      usuarios.value = listadosAuxiliares.usuarios
-      usuariosInactivos.value =
+      empleados.value = listadosAuxiliares.empleados
+      empleadosInactivos.value =
         LocalStorage.getItem('usuariosInactivos') == null
           ? []
           : JSON.parse(LocalStorage.getItem('usuariosInactivos')!.toString())
-      listadosAuxiliares.usuariosInactivos = usuariosInactivos.value
+      listadosAuxiliares.usuariosInactivos = empleadosInactivos.value
       tiposFondos.value = listadosAuxiliares.tiposFondos
       tiposFondoRotativoFechas.value =
         listadosAuxiliares.tiposFondoRotativoFechas
-    })
-    /*********
-     * Filtros
-     **********/
-    // - Filtro AUTORIZACIONES ESPECIALES
+      estados_viaticos.value = listadosAuxiliares.estados
 
-    function filtrarUsuarios(val, update) {
-      if (val === '') {
-        update(() => {
-          usuarios.value = listadosAuxiliares.usuarios
-        })
-        return
-      }
-      update(() => {
-        const needle = val.toLowerCase()
-        usuarios.value = listadosAuxiliares.usuarios.filter(
-          (v) =>
-            v.nombres.toLowerCase().indexOf(needle) > -1 ||
-            v.apellidos.toLowerCase().indexOf(needle) > -1
-        )
-      })
-    }
+      reporte.fecha_fin =  obtenerFechaActual(maskFecha)
+    })
+
+    /************************
+     * Funciones
+     ************************/
     function filtrarUsuariosInactivos(val, update) {
       if (val === '') {
         update(() => {
-          usuariosInactivos.value = listadosAuxiliares.usuariosInactivos
+          empleadosInactivos.value = listadosAuxiliares.usuariosInactivos
         })
         return
       }
       update(() => {
         const needle = val.toLowerCase()
-        usuariosInactivos.value = listadosAuxiliares.usuariosInactivos.filter(
-          (v) =>
+        empleadosInactivos.value = listadosAuxiliares.usuariosInactivos.filter(
+          v =>
             v.nombres.toLowerCase().indexOf(needle) > -1 ||
             v.apellidos.toLowerCase().indexOf(needle) > -1
         )
       })
     }
-    // - Filtro TIPOS FONDOS
-    function filtrarTiposFondos(val, update) {
-      if (val === '') {
-        update(() => {
-          tiposFondos.value = listadosAuxiliares.tiposFondos
-        })
-        return
-      }
-      update(() => {
-        const needle = val.toLowerCase()
-        tiposFondos.value = listadosAuxiliares.tiposFondos.filter(
-          (v) => v.descripcion.toLowerCase().indexOf(needle) > -1
-        )
-      })
-    }
 
-    // - Filtro TIPOS FONDOS
-    function filtrarTiposFondoRotativoFechas(val, update) {
-      if (val === '') {
-        update(() => {
-          tiposFondoRotativoFechas.value =
-            listadosAuxiliares.tiposFondoRotativoFechas
-        })
-        return
-      }
-      update(() => {
-        const needle = val.toLowerCase()
-        tiposFondoRotativoFechas.value =
-          listadosAuxiliares.tiposFondoRotativoFechas.filter(
-            (v) => v.descripcion.toLowerCase().indexOf(needle) > -1
-          )
-      })
-    }
-    async function generar_reporte(
-      valor: FondoRotativoAutorizacionesFecha,
-      tipo: string
-    ): Promise<void> {
+    async function generar_reporte(tipo: string): Promise<void> {
       if (await v$.value.$validate()) {
         const axios = AxiosHttpRepository.getInstance()
         const filename =
           'reporte_semanal_gastos_del_' +
-          valor.fecha_inicio +
+          reporte.fecha_inicio +
           '_al_' +
-          valor.fecha_fin
+          reporte.fecha_fin
         switch (tipo) {
           case tipoReportes.EXCEL:
             const url_excel =
@@ -178,7 +144,14 @@ export default defineComponent({
               axios.getEndpoint(
                 endpoints.fondo_rotativo_autorizaciones_fecha_excel
               )
-            imprimirArchivo(url_excel, 'POST', 'blob', 'xlsx', filename, valor)
+            await imprimirArchivo(
+              url_excel,
+              'POST',
+              'blob',
+              'xlsx',
+              filename,
+              reporte
+            )
             break
           case 'pdf':
             const url_pdf =
@@ -187,48 +160,47 @@ export default defineComponent({
               axios.getEndpoint(
                 endpoints.fondo_rotativo_autorizaciones_fecha_pdf
               )
-            imprimirArchivo(url_pdf, 'POST', 'blob', 'pdf', filename, valor)
+            await imprimirArchivo(
+              url_pdf,
+              'POST',
+              'blob',
+              'pdf',
+              filename,
+              reporte
+            )
             break
           default:
             break
         }
       }
     }
-    fondo_rotativo_autorizacion_fecha.tipo_reporte = '1'
-    function optionsFechaInicio(date){
+    function optionsFechaInicio(date) {
       const fecha_actual = format(new Date(), 'YYYY/MM/DD')
-      return  date <= fecha_actual
+      return date <= fecha_actual
     }
     function optionsFechaFin(date) {
       const fecha_actual = format(new Date(), 'YYYY/MM/DD')
       const fecha_inicio = format(
-        fondo_rotativo_autorizacion_fecha.fecha_inicio !== null
-          ? fondo_rotativo_autorizacion_fecha.fecha_inicio
-          : new Date(),
+        reporte.fecha_inicio !== null ? reporte.fecha_inicio : new Date(),
         'YYYY/MM/DD'
       )
-      return date >= fecha_inicio &&  date <= fecha_actual
+      return date >= fecha_inicio && date <= fecha_actual
     }
+
     return {
-      mixin,
-      fondo_rotativo_autorizacion_fecha,
+      reporte,
       disabled,
-      accion,
       v$,
       maskFecha,
-      usuarios,
-      usuariosInactivos,
-      tiposFondos,
-      tiposFondoRotativoFechas,
+      empleados,
+      empleadosInactivos,
       is_inactivo,
+      estados_viaticos,
       generar_reporte,
-      filtrarUsuarios,
+      filtrarEmpleados,
       filtrarUsuariosInactivos,
-      filtrarTiposFondos,
-      filtrarTiposFondoRotativoFechas,
-      watchEffect,
       optionsFechaInicio,
-      optionsFechaFin,
+      optionsFechaFin
     }
-  },
+  }
 })
