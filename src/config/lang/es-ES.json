@@ -2,6 +2,7 @@
   "failed": "Aktion fehlgeschlagen",
   "success": "Aktion erfolgreich",
   "validations": {
+    "undefined": "Error de validación desconocido",
     "required": "Campo requerido",
     "requiredIf": "Campo requerido",
     "maxLength": "ha exedido el número máximo de caracteres",

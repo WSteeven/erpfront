@@ -10,7 +10,7 @@ import { FichaSocioeconomicaController } from 'trabajoSocial/fichaSocioeconomica
 import { EmpleadoController } from 'recursosHumanos/empleados/infraestructure/EmpleadoController'
 import { useFiltrosListadosSelects } from 'shared/filtrosListadosGenerales'
 import { useVuelidate } from '@vuelidate/core'
-import { required, requiredIf } from 'shared/i18n-validators'
+import { helpers, minValue, required, requiredIf } from 'shared/i18n-validators'
 import { tabOptionsProveedoresInternacionales } from 'config/utils_compras_proveedores'
 import { Empleado } from 'recursosHumanos/empleados/domain/Empleado'
 import {
@@ -28,13 +28,14 @@ import {
   maskFecha,
   niveles_academicos
 } from 'config/utils'
-import { configuracionColumnasTipoDiscapacidadPorcentaje as configuracionColumnasDiscapacidades } from 'recursosHumanos/empleados/domain/configuracionColumnasTipoDiscapacidadPorcentaje'
 import { configuracionColumnasHijos } from 'trabajoSocial/fichaSocioeconomica/domain/configuracionColumnasHijos'
 import { CustomActionTable } from 'components/tables/domain/CustomActionTable'
 import { Hijo } from 'trabajoSocial/fichaSocioeconomica/domain/Hijo'
 import {
   likertEspaciosFamiliares,
-  materiales_predominantes, optionsCapacitaciones, optionsConocimientos,
+  materiales_predominantes,
+  optionsCapacitaciones,
+  optionsConocimientos,
   optionsLugaresAtencion,
   optionsProblemasSociales,
   optionsServiciosBasicos,
@@ -43,21 +44,28 @@ import {
   tipos_viviendas,
   vehiculos
 } from 'config/trabajoSocial.utils'
-import {
-  configuracionColumnasFamiliares
-} from 'trabajoSocial/composicion_familiar/domain/configuracionColumnasFamiliares'
+import { configuracionColumnasFamiliares } from 'trabajoSocial/composicion_familiar/domain/configuracionColumnasFamiliares'
 import { Familiar } from 'trabajoSocial/composicion_familiar/domain/Familiar'
-import {
-  TipoDiscapacidadPorcentaje
-} from 'recursosHumanos/empleados/domain/TipoDiscapacidadPorcentaje'
-import {
-  TipoDiscapacidadController
-} from 'recursosHumanos/tipo-discapacidad/infraestructure/TipoDiscapacidadController'
-import { ColumnConfig } from 'components/tables/domain/ColumnConfig'
-import { TipoDiscapacidad } from 'recursosHumanos/tipo-discapacidad/domain/TipoDiscapacidad'
+import { TipoDiscapacidadPorcentaje } from 'recursosHumanos/empleados/domain/TipoDiscapacidadPorcentaje'
+import CalloutComponent from 'components/CalloutComponent.vue'
+import SaludEmpleado from 'trabajoSocial/salud/view/SaludEmpleado.vue'
+import ServiciosBasicos from 'trabajoSocial/servicios_basicos/view/ServiciosBasicos.vue'
+import SelectorImagen from 'components/SelectorImagen.vue'
+import InformacionVivienda from 'trabajoSocial/informacion_vivienda/view/InformacionVivienda.vue'
+import CroquisVivienda from 'trabajoSocial/informacion_vivienda/view/CroquisVivienda.vue'
+import ErrorComponent from 'components/ErrorComponent.vue'
+import NoOptionComponent from 'components/NoOptionComponent.vue'
 
 export default defineComponent({
   components: {
+    NoOptionComponent,
+    ErrorComponent,
+    CroquisVivienda,
+    InformacionVivienda,
+    SelectorImagen,
+    ServiciosBasicos,
+    SaludEmpleado,
+    CalloutComponent,
     ComposicionFamiliar,
     OptionGroupComponent,
     TabLayoutFilterTabs2,
@@ -89,41 +97,111 @@ export default defineComponent({
         empleados: {
           controller: new EmpleadoController(),
           params: { estado: 1 }
-        },
-        tipos_discapacidades: {
-          controller: new TipoDiscapacidadController(),
-          params: { campos: 'id,nombres' }
         }
       })
 
       // configuracion de listados
       empleados.value = listadosAuxiliares.empleados
-      configuracionColumnasDiscapacidades.find(
-        (item: ColumnConfig<TipoDiscapacidadPorcentaje>) =>
-          item.field === 'tipo_discapacidad'
-      )!.options = listadosAuxiliares.tipos_discapacidades.map(
-        (v: TipoDiscapacidad) => {
-          return { label: v.nombre, value: v.id }
-        }
-      )
     })
+
     const reglas = {
       empleado: { required },
+      lugar_nacimiento: { required },
+      ciudad_trabajo: { required },
+      contacto_emergencia: { required },
+      parentesco_contacto_emergencia: { required },
+      telefono_contacto_emergencia: { required },
+      imagen_rutagrama: { required },
+      vias_transito_regular_trabajo: { required },
       conclusiones: { required },
-      conyuge: { nivel_academico: { required } },
+      conyuge: {
+        nombres: { required: requiredIf(() => ficha.tiene_conyuge) },
+        apellidos: { required: requiredIf(() => ficha.tiene_conyuge) },
+        nivel_academico: { required: requiredIf(() => ficha.tiene_conyuge) },
+        edad: { required: requiredIf(() => ficha.tiene_conyuge) },
+        profesion: { required: requiredIf(() => ficha.tiene_conyuge) },
+        telefono: { required: requiredIf(() => ficha.tiene_conyuge) },
+        promedio_ingreso_mensual: {
+          required: requiredIf(() => ficha.tiene_conyuge)
+        }
+      },
+      hijos: {
+        $each: helpers.forEach({
+          nombres_apellidos: { required },
+          ocupacion: { required },
+          edad: { required, minValue: minValue() }
+        })
+      },
       experiencia_previa: {
+        nombre_empresa: {
+          required: requiredIf(() => ficha.tiene_experiencia_previa)
+        },
+        cargo: { required: requiredIf(() => ficha.tiene_experiencia_previa) },
+        antiguedad: {
+          required: requiredIf(() => ficha.tiene_experiencia_previa)
+        },
+        asegurado_iess: {
+          required: requiredIf(() => ficha.tiene_experiencia_previa)
+        },
+        telefono: {
+          required: requiredIf(() => ficha.tiene_experiencia_previa)
+        },
         fecha_retiro: {
+          required: requiredIf(() => ficha.tiene_experiencia_previa)
+        },
+        motivo_retiro: {
           required: requiredIf(() => ficha.tiene_experiencia_previa)
         }
       },
       vivienda: {
         tipo: { required },
+        telefono: { required },
         material_paredes: { required },
         material_techo: { required },
         material_piso: { required },
         comodidad_espacio_familiar: { required }
       },
-      situacion_socioeconomica: { vehiculo: { required } },
+      situacion_socioeconomica: {
+        cantidad_personas_aportan: { required },
+        cantidad_personas_dependientes: { required },
+        familiar_apoya_economicamente: {
+          required: requiredIf(
+            () =>
+              ficha.situacion_socioeconomica
+                ?.recibe_apoyo_economico_otro_familiar
+          )
+        },
+        institucion_apoya_economicamente: {
+          required: requiredIf(
+            () =>
+              ficha.situacion_socioeconomica?.recibe_apoyo_economico_gobierno
+          )
+        },
+        cantidad_prestamos: {
+          required: requiredIf(
+            () => ficha.situacion_socioeconomica?.tiene_prestamos
+          )
+        },
+        entidad_bancaria: {
+          required: requiredIf(
+            () => ficha.situacion_socioeconomica?.tiene_prestamos
+          )
+        },
+        cantidad_tarjetas_credito: {
+          required: requiredIf(
+            () => ficha.situacion_socioeconomica?.tiene_tarjeta_credito
+          )
+        },
+        vehiculo: { required },
+        ingresos_adicionales: {
+          required: requiredIf(
+            () => ficha.situacion_socioeconomica?.tiene_ingresos_adicionales
+          )
+        },
+        familiar_externo_apoyado: {
+          required: requiredIf(() => ficha.situacion_socioeconomica?.apoya_familiar_externo)
+        },
+      },
       salud: {
         parentesco_familiar_discapacitado: {
           required: requiredIf(
@@ -168,6 +246,7 @@ export default defineComponent({
         )
       }
     }
+
     const agregarDiscapacidad = (listado: any) => {
       const discapacidad = new TipoDiscapacidadPorcentaje()
       discapacidad.id = ficha.salud.discapacidades?.length
@@ -175,6 +254,7 @@ export default defineComponent({
         : 1
       listado.push(discapacidad)
     }
+
     function checkTieneCapacitaciones(val) {
       if (val) {
         ficha.conocimientos = []
@@ -192,6 +272,9 @@ export default defineComponent({
       tooltip: 'Agregar hijo',
       accion: () => {
         const hijo = new Hijo()
+        hijo.id = ficha.hijos.length
+          ? encontrarUltimoIdListado(ficha.hijos) + 1
+          : 1
         ficha.hijos.push(hijo)
       },
       visible: () => [acciones.nuevo, acciones.editar].includes(accion.value)
@@ -218,7 +301,6 @@ export default defineComponent({
       listadosAuxiliares,
       disabled,
       configuracionColumnas: configuracionColumnasFichaSocioeconomica,
-      configuracionColumnasDiscapacidades,
       configuracionColumnasFamiliares,
       configuracionColumnasHijos,
       tabDefecto,

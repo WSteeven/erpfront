@@ -6,6 +6,7 @@ export const configuracionColumnasHijos: ColumnConfig<Hijo>[]=[
     name: 'nombres_apellidos',
     field:'nombres_apellidos',
     label:'Nombres y Apellidos',
+
     align: 'left',
     editable:true,
     sortable:true

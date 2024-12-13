@@ -1,21 +1,24 @@
 import { EntidadAuditable } from 'shared/entidad/domain/entidadAuditable'
 import { Conyuge } from 'trabajoSocial/fichaSocioeconomica/domain/Conyuge'
 import { ExperienciaLaboral } from 'trabajoSocial/fichaSocioeconomica/domain/ExperienciaLaboral'
-import { Vivienda } from 'trabajoSocial/fichaSocioeconomica/domain/Vivienda'
+import { Vivienda } from 'trabajoSocial/informacion_vivienda/domain/Vivienda'
 import {
   SituacionSocioeconomica
 } from 'trabajoSocial/fichaSocioeconomica/domain/SituacionSocioeconomica'
-import { Salud } from 'trabajoSocial/fichaSocioeconomica/domain/Salud'
+import { Salud } from 'trabajoSocial/salud/domain/Salud'
 import { AmbienteSocial } from 'trabajoSocial/fichaSocioeconomica/domain/AmbienteSocial'
+import { ServicioBasico } from 'trabajoSocial/servicios_basicos/domain/ServicioBasico'
 
 export class FichaSocioeconomica extends EntidadAuditable {
   empleado: string | null
   lugar_nacimiento: string | null
   coordenadas: string | null
+  imagen_rutagrama: string | null
+  vias_transito_regular_trabajo: string | null
   telefono_domicilio: string | null
   ciudad_trabajo: string | null
   contacto_emergencia: string | null
-  parentesco: string | null
+  parentesco_contacto_emergencia: string | null
   telefono_contacto_emergencia: string | null
   tiene_conyuge: boolean
   tiene_hijos: boolean
@@ -26,6 +29,7 @@ export class FichaSocioeconomica extends EntidadAuditable {
   experiencia_previa: ExperienciaLaboral|null
   vivienda: Vivienda|null
   situacion_socioeconomica: SituacionSocioeconomica|null
+  servicios_basicos: ServicioBasico|null
   salud: Salud | null
   ambiente_social_familiar: AmbienteSocial|null
   composicion_familiar:any
@@ -42,7 +46,7 @@ export class FichaSocioeconomica extends EntidadAuditable {
     this.telefono_domicilio = null
     this.ciudad_trabajo = null
     this.contacto_emergencia = null
-    this.parentesco = null
+    this.parentesco_contacto_emergencia = null
     this.telefono_contacto_emergencia = null
     this.tiene_conyuge = false
     this.tiene_hijos = false
@@ -52,6 +56,7 @@ export class FichaSocioeconomica extends EntidadAuditable {
     this.hijos = []
     this.vivienda = new Vivienda()
     this.situacion_socioeconomica = new SituacionSocioeconomica()
+    this.servicios_basicos = new ServicioBasico()
     this.salud = new Salud()
     this.composicion_familiar = []
     this.ambiente_social_familiar = new AmbienteSocial()
@@ -59,5 +64,7 @@ export class FichaSocioeconomica extends EntidadAuditable {
     this.conocimientos = []
     this.capacitaciones = []
     this.conclusiones = null
+    this.imagen_rutagrama= null
+    this.vias_transito_regular_trabajo= null
   }
 }

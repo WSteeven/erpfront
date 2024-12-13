@@ -5,8 +5,9 @@ export const tipos_viviendas = [
   'PROPIA',
   'ALQUILADA',
   'ALOJADA/PRESTADA',
+  'GUARDIANIA',
   'DE LOS PADRES O FAMILIARES',
-  'GUARDIANIA'
+  'INVADIDA',
 ]
 
 
@@ -18,22 +19,36 @@ export const tipos_predominantes = {
 
 
 export const materiales_predominantes = [
+  { label: 'BLOQUE', value: 'BLOQUE', tipo: tipos_predominantes.PAREDES },
   { label: 'LADRILLO', value: 'LADRILLO', tipo: tipos_predominantes.PAREDES },
   { label: 'MADERA', value: 'MADERA', tipo: tipos_predominantes.PAREDES },
-  { label: 'CARTON', value: 'CARTON', tipo: tipos_predominantes.PAREDES },
+  { label: 'CAÑA', value: 'CAÑA', tipo: tipos_predominantes.PAREDES },
+  { label: 'CARTON PRENSADO', value: 'CARTON PRENSADO', tipo: tipos_predominantes.PAREDES },
   { label: 'PLASTICO', value: 'PLASTICO', tipo: tipos_predominantes.PAREDES },
-  {
-    label: 'CONCRETO ARMADO',
-    value: 'CONCRETO ARMADO',
-    tipo: tipos_predominantes.TECHO
-  },
+
+  { label: 'ZINC', value: 'ZINC', tipo: tipos_predominantes.TECHO },
+  { label: 'CONCRETO ARMADO', value: 'CONCRETO ARMADO', tipo: tipos_predominantes.TECHO},
   { label: 'MADERA', value: 'MADERA', tipo: tipos_predominantes.TECHO },
   { label: 'TEJA', value: 'TEJA', tipo: tipos_predominantes.TECHO },
   { label: 'ETERNIT', value: 'ETERNIT', tipo: tipos_predominantes.TECHO },
-  { label: 'ZINC', value: 'ZINC', tipo: tipos_predominantes.TECHO },
+  { label: 'PLASTICO', value: 'ETERNIT', tipo: tipos_predominantes.TECHO },
+
+  { label: 'CERAMICO', value: 'CERAMICO', tipo: tipos_predominantes.PISO },
+  { label: 'CEMENTO', value: 'CEMENTO', tipo: tipos_predominantes.PISO },
   { label: 'MADERA', value: 'MADERA', tipo: tipos_predominantes.PISO },
+  { label: 'CAÑA', value: 'CAÑA', tipo: tipos_predominantes.PISO },
   { label: 'TIERRA', value: 'TIERRA', tipo: tipos_predominantes.PISO },
-  { label: 'CEMENTO', value: 'CEMENTO', tipo: tipos_predominantes.PISO }
+  { label: 'TAPETE', value: 'TAPETE', tipo: tipos_predominantes.PISO },
+]
+
+export const opcionesDistribucion = [
+  { label: 'SALA', value: 'SALA'},
+  { label: 'COCINA', value: 'COCINA'},
+  { label: 'COMEDOR', value: 'COMEDOR'},
+  { label: 'BAÑO', value: 'BAÑO'},
+  { label: 'DORMITORIOS', value: 'DORMITORIOS'},
+  { label: 'GARAGE O PATIO', value: 'GARAGE O PATIO'},
+
 ]
 
 

@@ -1,25 +1,53 @@
 import { defineComponent, ref, watchEffect } from 'vue'
 import EssentialTable from 'components/tables/view/EssentialTable.vue'
 import { acciones, accionesTabla } from 'config/utils'
-import {
-  configuracionColumnasFamiliares
-} from 'trabajoSocial/composicion_familiar/domain/configuracionColumnasFamiliares'
+import { configuracionColumnasFamiliares } from 'trabajoSocial/composicion_familiar/domain/configuracionColumnasFamiliares'
 import { CustomActionTable } from 'components/tables/domain/CustomActionTable'
 import { Familiar } from 'trabajoSocial/composicion_familiar/domain/Familiar'
 import { btnEliminarDefault, encontrarUltimoIdListado } from 'shared/utils'
+import { parentescos } from 'config/trabajoSocial.utils'
+import { ContenedorSimpleMixin } from 'shared/contenedor/modules/simple/application/ContenedorSimpleMixin'
+import { EntidadAuditable } from 'shared/entidad/domain/entidadAuditable'
+import { EstadoCivilController } from 'recursosHumanos/estado-civil/infraestructure/EstadoCivilController'
 
 export default defineComponent({
   components: { EssentialTable },
   props: {
+    mixin: {
+      type: Object as () => ContenedorSimpleMixin<EntidadAuditable>,
+      required: true
+    },
     datos: {
       type: Array,
       required: true
     },
-    accion:{type:String, default:acciones.nuevo}
+    accion: { type: String as typeof acciones, default: acciones.nuevo }
   },
   setup(props) {
-
+    const { listadosAuxiliares } = props.mixin.useReferencias()
+    const { cargarVista, obtenerListados } = props.mixin.useComportamiento()
     const listado = ref()
+    // const configuracionColumnas = ref(configuracionColumnasFamiliares)
+    cargarVista(async () => {
+      await obtenerListados({
+        estados_civiles: new EstadoCivilController()
+      })
+
+      // configuracion de columnas
+      configuracionColumnasFamiliares.find(
+      // configuracionColumnas.value.find(
+        item => item.field === 'estado_civil'
+      )!.options = listadosAuxiliares.estados_civiles.map(v => {
+        return { label: v.nombre, value: v.nombre }
+      })
+    })
+    // configuracion de columnas
+    // configuracionColumnas.value.find(
+    configuracionColumnasFamiliares.find(
+      item => item.field === 'parentesco'
+    )!.options = parentescos.map(v => {
+      return { label: v.nombre, value: v.value }
+    })
 
     watchEffect(() => (listado.value = props.datos))
 
@@ -38,16 +66,15 @@ export default defineComponent({
       visible: () => [acciones.nuevo, acciones.editar].includes(props.accion)
     }
     return {
-      configuracionColumnasFamiliares,
+      configuracionColumnas: configuracionColumnasFamiliares,
       accionesTabla,
-
+      acciones,
       //listados
       listado,
 
       //botones
       btnAgregarFila,
-      btnEliminarDefault,
-
+      btnEliminarDefault
     }
   }
 })

@@ -17,12 +17,7 @@ export class SituacionSocioeconomica extends EntidadAuditable {
   tiene_bienes: boolean
   tiene_ingresos_adicionales: boolean
   ingresos_adicionales: number|null
-  sbf_luz: string | null
-  sbf_agua: string | null
-  sbf_telefono: string | null
-  sbf_internet: string | null
-  sbf_cable: string | null
-  sbf_servicios_sanitarios: string | null
+
   apoya_familiar_externo: boolean
   familiar_externo_apoyado: string | null
 
@@ -44,12 +39,7 @@ export class SituacionSocioeconomica extends EntidadAuditable {
     this.tiene_bienes = null
     this.tiene_ingresos_adicionales = false
     this.ingresos_adicionales = null
-    this.sbf_luz = null
-    this.sbf_agua = null
-    this.sbf_telefono = null
-    this.sbf_internet = null
-    this.sbf_cable = null
-    this.sbf_servicios_sanitarios = null
+
     this.apoya_familiar_externo = false
     this.familiar_externo_apoyado = null
 
