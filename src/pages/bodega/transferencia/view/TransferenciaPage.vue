@@ -174,7 +174,7 @@
             <label class="q-mb-sm block">Hasta</label>
             <q-select
               v-model="transferencia.sucursal_destino"
-              :options="opciones_sucursales"
+              :options="sucursales"
               transition-show="jum-up"
               transition-hide="jump-down"
               options-dense
