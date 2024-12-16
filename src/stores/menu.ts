@@ -812,7 +812,7 @@ export const useMenuStore = defineStore('menu', () => {
               can: true,
             },
             {
-              title: 'Justificaciones',
+              title: 'Atrasos',
               link: 'justificaciones-atrasos',
               icon: 'bi-file-earmark-text',
               can: true,

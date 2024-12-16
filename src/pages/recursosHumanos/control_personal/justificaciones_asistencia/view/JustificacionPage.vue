@@ -2,25 +2,21 @@
   <tab-layout
     :mixin="mixin"
     :configuracionColumnas="configuracionColumnas"
-    titulo-pagina="Justificaciones"
+    titulo-pagina="Justificaciones de Atrasos"
   >
     <template #formulario>
       <q-form @submit.prevent>
         <q-page class="q-pa-md">
           <q-card class="q-pa-md">
-            <!-- Título -->
-            <q-card-section>
-              <div class="text-h6 text-primary">Justificación de Atrasos</div>
-            </q-card-section>
 
             <!-- Contenido del formulario -->
             <q-card-section>
-              <div class="row q-col-gutter-sm">
+              <div class="row q-col-gutter-md">
                 <!-- Empleado -->
                 <div class="col-12 col-md-6">
                   <label class="q-mb-sm block">Empleado</label>
                   <q-input
-                    v-model="justificacion.empleadoId"
+                    v-model="justificacion.empleado_id"
                     outlined
                     dense
                     readonly
@@ -28,40 +24,54 @@
                   />
                 </div>
 
-                <!-- Horas de atraso -->
-                <div class="col-12 col-md-6">
-                  <label class="q-mb-sm block">Horas de Atraso</label>
+                <!-- Minutos y Segundos de atraso -->
+                <div class="col-12 col-md-3">
+                  <label class="q-mb-sm block">Minutos de Atraso</label>
                   <q-input
-                    v-model="justificacion.horasAtraso"
+                    v-model="justificacion.minutos_atraso"
                     outlined
                     dense
                     readonly
-                    hint="Horas de atraso calculadas"
+                    hint="Minutos de atraso calculados"
+                  />
+                </div>
+
+                <div class="col-12 col-md-3">
+                  <label class="q-mb-sm block">Segundos de Atraso</label>
+                  <q-input
+                    v-model="justificacion.segundos_atraso"
+                    outlined
+                    dense
+                    readonly
+                    hint="Segundos de atraso calculados"
+                  />
+                </div>
+
+                <!-- Requiere Justificación -->
+                <div class="col-12 col-md-3">
+                  <br />
+                  <q-toggle
+                    v-model="justificacion.requiere_justificacion"
+                    label="¿Requiere Justificación?"
+                    color="positive"
+                    :disable="disabled"
                   />
                 </div>
 
                 <!-- Justificación -->
-                <div class="col-12">
-                  <label class="q-mb-sm block">Justificación</label>
-                  <q-input
+                <div class="col-12" v-if="justificacion.requiere_justificacion">
+                  <label class="q-mb-sm block">Justificación de Atraso</label>
+                  <essential-editor
                     v-model="justificacion.justificacion"
-                    type="textarea"
-                    outlined
-                    dense
-                    autogrow
-                    hint="Escriba la justificación"
-                  />
+                    :disable="disabled"
+                  ></essential-editor>
                 </div>
               </div>
             </q-card-section>
 
             <!-- Botones de Acción -->
             <q-card-actions align="right">
-              <q-btn
-                label="Guardar"
-                color="primary"
-                @click="guardar"
-              />
+              <q-btn label="Guardar" color="primary" @click="guardar" />
             </q-card-actions>
           </q-card>
         </q-page>

@@ -1,20 +1,20 @@
 import { EntidadAuditable } from 'shared/entidad/domain/entidadAuditable';
 
 export class Justificacion extends EntidadAuditable {
-  empleadoId: number | null;
-  fechaAtraso: Date | null; // Fecha de atraso.
-  horasAtraso: number | null; // Horas de atraso.
-  minutosAtraso: number | null; // Minutos de atraso.
-  segundosAtraso: number | null; // Segundos de atraso.
+  empleado_id: number | null;
+  fecha_atraso: Date | null; // Fecha de atraso.
+  minutos_atraso: number | null; // Minutos de atraso.
+  segundos_atraso: number | null; // Segundos de atraso.
   justificacion: string | null; // Texto de la justificación.
+  requiere_justificacion: boolean | null;
 
   constructor() {
     super();
-    this.empleadoId = null;
-    this.fechaAtraso = null;
-    this.horasAtraso = null;
-    this.minutosAtraso = null;
-    this.segundosAtraso = null;
-    this.justificacion = null;
+    this.empleado_id = null
+    this.fecha_atraso = null
+    this.minutos_atraso = null
+    this.segundos_atraso = null
+    this.justificacion = null
+    this.requiere_justificacion=false
   }
 }

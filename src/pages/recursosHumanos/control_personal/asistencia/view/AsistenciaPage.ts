@@ -14,14 +14,13 @@ import { Asistencia } from './../domain/Asistencia'
 import { AxiosHttpRepository } from 'shared/http/infraestructure/AxiosHttpRepository'
 import { apiConfig, endpoints } from 'config/api'
 import { AxiosResponse } from 'axios'
-import { ordenarLista } from 'shared/utils'
 
 export default defineComponent({
   components: { EssentialTable },
   setup() {
     const mixin = new ContenedorSimpleMixin(Asistencia,new AsistenciaController())
     const { entidad: asistencia, disabled, listado } = mixin.useReferencias()
-    //    console.log('Asistencia inicializada en useReferencias:', asistencia)
+        console.log('Asistencia inicializada en useReferencias:', asistencia)
     const { setValidador, guardar, listar } = mixin.useComportamiento()
 
     // Reglas de validación
@@ -40,7 +39,6 @@ export default defineComponent({
       const response: AxiosResponse = await axios.get(url)
       listado.value = []
       listado.value.push(response.data.results)
-      ordenarLista(listado)
       listar()
     }
 

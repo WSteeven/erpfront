@@ -6,15 +6,18 @@ import { useVuelidate } from '@vuelidate/core';
 
 // Componentes
 import TabLayout from 'shared/contenedor/modules/simple/view/TabLayout.vue';
+import EssentialEditor from 'components/editores/EssentialEditor.vue'
 
 // Lógica y controladores
 import { ContenedorSimpleMixin } from 'shared/contenedor/modules/simple/application/ContenedorSimpleMixin';
 import { JustificacionController } from '../infraestructure/JustificacionController';
 import { Justificacion } from './../domain/Justificacion';
 
+
+
 export default defineComponent({
   name: 'JustificacionPage',
-  components: { TabLayout },
+  components: { TabLayout, EssentialEditor},
   props: {
     empleadoData: {
       type: Object,
