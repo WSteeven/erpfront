@@ -171,12 +171,17 @@ export default defineComponent({
                 ?.recibe_apoyo_economico_otro_familiar
           )
         },
+        recibe_apoyo_economico_otro_familiar: {required},
+        recibe_apoyo_economico_gobierno: {required},
         institucion_apoya_economicamente: {
           required: requiredIf(
             () =>
               ficha.situacion_socioeconomica?.recibe_apoyo_economico_gobierno
           )
         },
+        tiene_prestamos: {required},
+        tiene_tarjeta_credito: {required},
+        tiene_terreno: {required},
         cantidad_prestamos: {
           required: requiredIf(
             () => ficha.situacion_socioeconomica?.tiene_prestamos

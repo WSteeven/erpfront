@@ -59,15 +59,20 @@
         autogrow
         outlined
         dense
-      />
+        :error="!!v$?.enfermedad_cronica.$errors.length"
+        @blur="v$?.enfermedad_cronica.$touch"
+      >
+
+      </q-input>
     </div>
+
     <!-- Alergias -->
     <div class="col-12 col-md-3">
       <label class="q-mb-sm block">Alergias</label>
       <q-input
         v-model="salud.alergias"
         hint="Separe con comas para registrar varias alergias"
-        placeholder="Obligatorio"
+        placeholder="Opcional"
         :disable="disable"
         outlined
         dense
@@ -81,6 +86,9 @@
         v-model="salud.lugar_atencion"
         :disable="disable"
         :options="optionsLugaresAtencion"
+        clave="lugar_atencion"
+        :v$="v$"
+        :error="!!v$.lugar_atencion.$errors.length"
       />
     </div>
 

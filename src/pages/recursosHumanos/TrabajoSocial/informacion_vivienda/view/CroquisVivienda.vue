@@ -37,7 +37,6 @@ function obtenerCoordenadas() {
         :imagen="vivienda.imagen_croquis"
         :disable="disable"
         :error="!!v$.imagen_croquis.$errors.length"
-        @blur="v$.imagen_croquis.$touch"
         :alto="'300px'"
         @update:model-value="data => (vivienda.imagen_croquis = data)"
       ></selector-imagen>

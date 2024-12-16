@@ -6,12 +6,10 @@
       v-model="servicio_basico.luz"
       :options="optionsServiciosBasicos"
       :disable="disable"
+      clave="luz"
+      :v$="v$"
+      :error="!!v$.luz.$errors.length"
     />
-    <div class="text-negative q-pb-sm">
-      <small>
-        <error-component clave="luz" :v$="v$" />
-      </small>
-    </div>
   </div>
 
   <!-- SBF agua -->
@@ -21,12 +19,10 @@
       v-model="servicio_basico.agua"
       :options="optionsServiciosBasicos"
       :disable="disable"
+      clave="agua"
+      :v$="v$"
+      :error="!!v$.agua.$errors.length"
     />
-    <div class="text-negative q-pb-sm">
-      <small>
-        <error-component clave="agua" :v$="v$" />
-      </small>
-    </div>
   </div>
 
   <!-- SBF telefono -->
@@ -36,12 +32,10 @@
       v-model="servicio_basico.telefono"
       :options="optionsServiciosBasicos"
       :disable="disable"
+      clave="telefono"
+      :v$="v$"
+      :error="!!v$.telefono.$errors.length"
     />
-    <div class="text-negative q-pb-sm">
-      <small>
-        <error-component clave="telefono" :v$="v$" />
-      </small>
-    </div>
   </div>
 
   <!-- SBF internet -->
@@ -51,12 +45,10 @@
       v-model="servicio_basico.internet"
       :options="optionsServiciosBasicos"
       :disable="disable"
+      clave="internet"
+      :v$="v$"
+      :error="!!v$.internet.$errors.length"
     />
-    <div class="text-negative q-pb-sm">
-      <small>
-        <error-component clave="internet" :v$="v$" />
-      </small>
-    </div>
   </div>
 
   <!-- SBF cable -->
@@ -66,12 +58,10 @@
       v-model="servicio_basico.cable"
       :options="optionsServiciosBasicos"
       :disable="disable"
+      clave="cable"
+      :v$="v$"
+      :error="!!v$.cable.$errors.length"
     />
-    <div class="text-negative q-pb-sm">
-      <small>
-        <error-component clave="cable" :v$="v$" />
-      </small>
-    </div>
   </div>
 
   <!-- SBF Servicios Sanitarios -->
@@ -81,12 +71,10 @@
       v-model="servicio_basico.servicios_sanitarios"
       :options="optionsServiciosBasicos"
       :disable="disable"
+      clave="servicios_sanitarios"
+      :v$="v$"
+      :error="!!v$.servicios_sanitarios.$errors.length"
     />
-    <div class="text-negative q-pb-sm">
-      <small>
-        <error-component clave="servicios_sanitarios" :v$="v$" />
-      </small>
-    </div>
   </div>
 </template>
 

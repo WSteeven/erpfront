@@ -12,7 +12,7 @@ import { TipoDiscapacidad } from 'recursosHumanos/tipo-discapacidad/domain/TipoD
 import { acciones, accionesTabla } from 'config/utils'
 import { optionsLugaresAtencion, parentescos } from 'config/trabajoSocial.utils'
 import useVuelidate from '@vuelidate/core'
-import { requiredIf } from 'shared/i18n-validators'
+import { required, requiredIf } from 'shared/i18n-validators'
 import {
   TipoDiscapacidadController
 } from 'recursosHumanos/tipo-discapacidad/infraestructure/TipoDiscapacidadController'
@@ -55,11 +55,17 @@ export default defineComponent({
     })
 
     const reglas = {
+      nombre_familiar_dependiente_discapacitado: {
+        required: requiredIf(() => props.salud.tiene_familiar_dependiente_discapacitado)
+      },
       parentesco_familiar_discapacitado: {
-        required: requiredIf(
-          () => props.salud.tiene_familiar_dependiente_discapacitado
-        )
-      }
+        required: requiredIf(() => props.salud.tiene_familiar_dependiente_discapacitado)
+      },
+      enfermedad_cronica: {
+        required: requiredIf(() => props.salud.tiene_enfermedad_cronica)
+      },
+      lugar_atencion: {required}
+
     }
     const v$ = useVuelidate(reglas, props.salud)
 

@@ -9,19 +9,32 @@
     :inline="horizontal"
     @update:model-value="$emit('update:model-value', valor)"
   />
+  <div class="text-negative q-pb-sm" v-if="error">
+    <small>
+      <error-component :clave="clave" :v$="v$" />
+    </small>
+  </div>
 </template>
 <script lang="ts">
 import { PropType, ref, defineComponent } from 'vue'
 import { OptionGroup } from '../domain/OptionGroup'
 import { watch } from 'vue'
+import ErrorComponent from 'components/ErrorComponent.vue'
 
 export default defineComponent({
   name: 'OptionGroupComponent',
+  components: { ErrorComponent },
   props: {
     modelValue: {
-      type: Boolean || String,
+      type: [Boolean, String, Array, null],
       required: true
     },
+    v$: { type: Object, required: false },
+    clave: {
+      type: String,
+      default: ''
+    },
+    error: {type:Boolean, default:false},
     type: {
       type: String as PropType<'radio' | 'checkbox' | 'toggle'>,
       default: 'radio'

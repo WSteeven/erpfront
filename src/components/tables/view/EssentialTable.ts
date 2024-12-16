@@ -542,7 +542,6 @@ export default defineComponent({
       refTable.value.clearSelection()
     }
 
-    const $q = useQuasar()
 
     return {
       refTable,
@@ -596,7 +595,6 @@ export default defineComponent({
       verVisorArchivos,
       archivos,
       visibleModalVisorArchivos,
-      $q
     }
   }
 })

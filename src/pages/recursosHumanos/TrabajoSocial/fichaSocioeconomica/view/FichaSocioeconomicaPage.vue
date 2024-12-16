@@ -741,6 +741,9 @@
                     .recibe_apoyo_economico_otro_familiar
                 "
                 :disable="disabled"
+                clave="situacion_socioeconomica.recibe_apoyo_economico_otro_familiar"
+                :v$="v$"
+                :error="!!v$.situacion_socioeconomica.recibe_apoyo_economico_otro_familiar.$errors.length"
               />
             </div>
 
@@ -784,6 +787,9 @@
                   ficha.situacion_socioeconomica.recibe_apoyo_economico_gobierno
                 "
                 :disable="disabled"
+                clave="situacion_socioeconomica.recibe_apoyo_economico_gobierno"
+                :v$="v$"
+                :error="!!v$.situacion_socioeconomica.recibe_apoyo_economico_gobierno.$errors.length"
               />
             </div>
 
@@ -822,6 +828,9 @@
               <option-group-component
                 v-model="ficha.situacion_socioeconomica.tiene_prestamos"
                 :disable="disabled"
+                clave="situacion_socioeconomica.tiene_prestamos"
+                :v$="v$"
+                :error="!!v$.situacion_socioeconomica.tiene_prestamos.$errors.length"
               />
             </div>
 
@@ -882,6 +891,9 @@
               <option-group-component
                 v-model="ficha.situacion_socioeconomica.tiene_tarjeta_credito"
                 :disable="disabled"
+                clave="situacion_socioeconomica.tiene_tarjeta_credito"
+                :v$="v$"
+                :error="!!v$.situacion_socioeconomica.tiene_tarjeta_credito.$errors.length"
               />
             </div>
 
@@ -942,6 +954,9 @@
               <option-group-component
                 v-model="ficha.situacion_socioeconomica.tiene_terreno"
                 :disable="disabled"
+                clave="situacion_socioeconomica.tiene_terreno"
+                :v$="v$"
+                :error="!!v$.situacion_socioeconomica.tiene_terreno.$errors.length"
               />
             </div>
 
@@ -1224,6 +1239,9 @@
               <error-component :v$="v$" clave="conclusiones" />
             </template>
           </q-input>
+        </div>
+        <div>
+          <q-btn @click="v$.$validate()">Validar errores</q-btn>
         </div>
       </q-form>
     </template>
