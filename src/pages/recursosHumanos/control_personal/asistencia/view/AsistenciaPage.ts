@@ -34,15 +34,15 @@ export default defineComponent({
     setValidador(v$.value)
 
     async function actualizarAsistencias() {
+
       const axios = AxiosHttpRepository.getInstance()
       const url = apiConfig.URL_BASE + '/' + axios.getEndpoint(endpoints.asistencia) + '/sincronizar'
       const response: AxiosResponse = await axios.get(url)
       listado.value = []
       listado.value.push(response.data.results)
-      listar()
     }
 
-    actualizarAsistencias()
+    listar()
 
     return {
       mixin,

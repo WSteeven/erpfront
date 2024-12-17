@@ -1,58 +1,52 @@
 // Dependencias
-import { defineComponent } from 'vue';
-import { configuracionColumnasJustificacion } from '../domain/configuracionColumnasJustificacion';
-import { required } from '@vuelidate/validators';
-import { useVuelidate } from '@vuelidate/core';
+import { defineComponent } from 'vue'
+import { configuracionColumnasJustificacion } from '../domain/configuracionColumnasJustificacion'
+import { required } from '@vuelidate/validators'
+import { useVuelidate } from '@vuelidate/core'
 
 // Componentes
-import TabLayout from 'shared/contenedor/modules/simple/view/TabLayout.vue';
+import TabLayout from 'shared/contenedor/modules/simple/view/TabLayout.vue'
+import TabLayoutFilterTabs2 from 'shared/contenedor/modules/simple/view/TabLayoutFilterTabs2.vue'
+
 import EssentialEditor from 'components/editores/EssentialEditor.vue'
 
 // Lógica y controladores
-import { ContenedorSimpleMixin } from 'shared/contenedor/modules/simple/application/ContenedorSimpleMixin';
-import { JustificacionController } from '../infraestructure/JustificacionController';
-import { Justificacion } from './../domain/Justificacion';
-
-
+import { ContenedorSimpleMixin } from 'shared/contenedor/modules/simple/application/ContenedorSimpleMixin'
+import { JustificacionController } from '../infraestructure/JustificacionController'
+import { Justificacion } from './../domain/Justificacion'
 
 export default defineComponent({
   name: 'JustificacionPage',
-  components: { TabLayout, EssentialEditor},
+  components: { TabLayout, TabLayoutFilterTabs2, EssentialEditor },
   props: {
     empleadoData: {
       type: Object,
-      required: true,
-    },
+      required: true
+    }
   },
   setup() {
     // Inicializar mixin y obtener referencias
-    const mixin = new ContenedorSimpleMixin(Justificacion, new JustificacionController());
-    const { entidad: justificacion, disabled } = mixin.useReferencias();
-    const { setValidador } = mixin.useComportamiento();
+    const mixin = new ContenedorSimpleMixin(
+      Justificacion,
+      new JustificacionController()
+    )
+    const { entidad: justificacion, disabled } = mixin.useReferencias()
+    const { setValidador } = mixin.useComportamiento()
 
     // Reglas de validación
     const reglas = {
-      justificacion: { required },
-    };
+      justificacion: { required }
+    }
 
-    const v$ = useVuelidate(reglas, justificacion);
-    setValidador(v$.value);
-
-    // Guardar justificación
-    const guardar = () => {
-      if (!v$.value.$invalid) {
-        console.log('Justificación realizada:', justificacion);
-        // Aquí iría la lógica para enviar los datos al backend
-      }
-    };
+    const v$ = useVuelidate(reglas, justificacion)
+    setValidador(v$.value)
 
     return {
       mixin,
       justificacion,
       v$,
       disabled,
-      guardar,
-      configuracionColumnas: configuracionColumnasJustificacion,
-    };
-  },
-});
+      configuracionColumnas: configuracionColumnasJustificacion
+    }
+  }
+})

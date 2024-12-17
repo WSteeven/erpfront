@@ -1,14 +1,13 @@
 <template>
-  <tab-layout
+  <tab-layout-filter-tabs2
     :mixin="mixin"
     :configuracionColumnas="configuracionColumnas"
-    titulo-pagina="Justificaciones de Atrasos"
+    titulo-pagina="Atrasos"
   >
     <template #formulario>
       <q-form @submit.prevent>
         <q-page class="q-pa-md">
           <q-card class="q-pa-md">
-
             <!-- Contenido del formulario -->
             <q-card-section>
               <div class="row q-col-gutter-md">
@@ -23,7 +22,17 @@
                     hint="Nombre del empleado"
                   />
                 </div>
-
+                <!-- Minutos y Segundos de atraso -->
+                <div class="col-12 col-md-3">
+                  <label class="q-mb-sm block">Fecha de Atraso</label>
+                  <q-input
+                    v-model="justificacion.fecha_atraso"
+                    outlined
+                    dense
+                    readonly
+                    hint="Fecha de atraso."
+                  />
+                </div>
                 <!-- Minutos y Segundos de atraso -->
                 <div class="col-12 col-md-3">
                   <label class="q-mb-sm block">Minutos de Atraso</label>
@@ -57,7 +66,6 @@
                     :disable="disabled"
                   />
                 </div>
-
                 <!-- Justificación -->
                 <div class="col-12" v-if="justificacion.requiere_justificacion">
                   <label class="q-mb-sm block">Justificación de Atraso</label>
@@ -68,16 +76,11 @@
                 </div>
               </div>
             </q-card-section>
-
-            <!-- Botones de Acción -->
-            <q-card-actions align="right">
-              <q-btn label="Guardar" color="primary" @click="guardar" />
-            </q-card-actions>
           </q-card>
         </q-page>
       </q-form>
     </template>
-  </tab-layout>
+  </tab-layout-filter-tabs2>
 </template>
 
 <script src="./JustificacionPage.ts" lang="ts"></script>
