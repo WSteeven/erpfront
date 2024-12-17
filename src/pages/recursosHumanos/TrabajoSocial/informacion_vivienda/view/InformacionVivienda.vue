@@ -17,11 +17,11 @@
         error-message="Debes seleccionar un tipo de vivienda"
       >
         <template v-slot:error>
-          <error-component  :v$="v$" clave="tipo"/>
+          <error-component :v$="v$" clave="tipo" />
         </template>
 
         <template v-slot:no-option>
-          <no-option-component/>
+          <no-option-component />
         </template>
       </q-select>
     </div>
@@ -51,11 +51,11 @@
         map-options
       >
         <template v-slot:error>
-          <error-component  :v$="v$" clave="material_paredes"/>
+          <error-component :v$="v$" clave="material_paredes" />
         </template>
 
         <template v-slot:no-option>
-         <no-option-component/>
+          <no-option-component />
         </template>
       </q-select>
     </div>
@@ -85,11 +85,11 @@
         map-options
       >
         <template v-slot:error>
-          <error-component  :v$="v$" clave="material_techo"/>
+          <error-component :v$="v$" clave="material_techo" />
         </template>
 
         <template v-slot:no-option>
-          <no-option-component/>
+          <no-option-component />
         </template>
       </q-select>
     </div>
@@ -119,11 +119,11 @@
         map-options
       >
         <template v-slot:error>
-          <error-component  :v$="v$" clave="material_piso"/>
+          <error-component :v$="v$" clave="material_piso" />
         </template>
 
         <template v-slot:no-option>
-          <no-option-component/>
+          <no-option-component />
         </template>
       </q-select>
     </div>
@@ -151,11 +151,11 @@
         map-options
       >
         <template v-slot:error>
-          <error-component  :v$="v$" clave="distribucion_vivienda"/>
+          <error-component :v$="v$" clave="distribucion_vivienda" />
         </template>
 
         <template v-slot:no-option>
-         <no-option-component/>
+          <no-option-component />
         </template>
       </q-select>
     </div>
@@ -175,7 +175,7 @@
         dense
       >
         <template v-slot:error>
-          <error-component  :v$="v$" clave="numero_dormitorios"/>
+          <error-component :v$="v$" clave="numero_dormitorios" />
         </template>
       </q-input>
     </div>
@@ -208,11 +208,11 @@
         error-message="Debes seleccionar una opción"
       >
         <template v-slot:error>
-          <error-component  :v$="v$" clave="comodidad_espacio_familiar"/>
+          <error-component :v$="v$" clave="comodidad_espacio_familiar" />
         </template>
 
         <template v-slot:no-option>
-          <no-option-component/>
+          <no-option-component />
         </template>
       </q-select>
     </div>
@@ -238,6 +238,13 @@
         dense
       />
     </div>
+  </div>
+  <div class="row border-grey rounded-4 q-pa-xs q-ma-sm">
+    <div class="col-12 text-center text-h6">
+      <b>SERVICIOS BASICOS</b>
+    </div>
+    <servicios-basicos :servicio_basico="vivienda.servicios_basicos" />
+    <!--              <q-btn @click="v$.$validate()">Validar</q-btn>-->
   </div>
 </template>
 

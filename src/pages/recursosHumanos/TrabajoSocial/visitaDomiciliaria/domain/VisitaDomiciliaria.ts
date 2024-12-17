@@ -2,7 +2,6 @@ import { EntidadAuditable } from 'shared/entidad/domain/entidadAuditable'
 import { Salud } from 'trabajoSocial/salud/domain/Salud'
 import { EconomiaFamiliar } from 'trabajoSocial/visitaDomiciliaria/domain/EconomiaFamiliar'
 import { Vivienda } from 'trabajoSocial/informacion_vivienda/domain/Vivienda'
-import { ServicioBasico } from 'trabajoSocial/servicios_basicos/domain/ServicioBasico'
 
 export class VisitaDomiciliaria extends EntidadAuditable {
   empleado: string | null
@@ -13,7 +12,7 @@ export class VisitaDomiciliaria extends EntidadAuditable {
   salud: Salud | null
   economia_familiar: EconomiaFamiliar | null
   vivienda: Vivienda | null
-  servicios_basicos: ServicioBasico | null
+  // servicios_basicos: ServicioBasico | null
   diagnostico_social: string | null
   observaciones: string | null
 
@@ -27,7 +26,7 @@ export class VisitaDomiciliaria extends EntidadAuditable {
     this.salud = new Salud()
     this.economia_familiar = new EconomiaFamiliar()
     this.vivienda = new Vivienda()
-    this.servicios_basicos = new ServicioBasico()
+    // this.servicios_basicos = new ServicioBasico()
     this.diagnostico_social = null
     this.observaciones = null
   }

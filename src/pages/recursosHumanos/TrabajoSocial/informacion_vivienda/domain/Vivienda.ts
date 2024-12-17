@@ -1,4 +1,5 @@
 import { EntidadAuditable } from 'shared/entidad/domain/entidadAuditable'
+import { ServicioBasico } from 'trabajoSocial/servicios_basicos/domain/ServicioBasico'
 
 export class Vivienda extends EntidadAuditable {
   tipo: string | null
@@ -16,6 +17,7 @@ export class Vivienda extends EntidadAuditable {
   coordenadas: string|null
   direccion: string|null
   referencia: string|null
+  servicios_basicos: ServicioBasico|null
 
   constructor() {
     super()
@@ -34,5 +36,6 @@ export class Vivienda extends EntidadAuditable {
     this.coordenadas = null
     this.direccion = null
     this.referencia = null
+    this.servicios_basicos = new ServicioBasico()
   }
 }

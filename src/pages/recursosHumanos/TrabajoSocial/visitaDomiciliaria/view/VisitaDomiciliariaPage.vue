@@ -376,12 +376,6 @@
           default-opened
         >
         <informacion-vivienda :vivienda="visita.vivienda"  :accion="accion" :disable="disabled" />
-         <div class="row border-grey rounded-4 q-pa-xs q-ma-sm">
-           <div class="col-12 text-center text-h6">
-             <b>SERVICIOS BASICOS</b>
-           </div>
-          <servicios-basicos :servicio_basico="visita.servicios_basicos"/>
-         </div>
         </q-expansion-item>
 
         <!-- 11. CROQUIS -->

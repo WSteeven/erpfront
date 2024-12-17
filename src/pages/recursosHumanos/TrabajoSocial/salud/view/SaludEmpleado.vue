@@ -30,6 +30,8 @@
         :permitir-editar-celdas="true"
         :mostrar-header="false"
         :grid="false"
+        :v$="v$"
+        key-error="discapacidades"
         :accion1="btnEliminarDefault(salud.discapacidades)"
         :alto-fijo="false"
         :ajustarCeldas="true"
@@ -62,7 +64,9 @@
         :error="!!v$?.enfermedad_cronica.$errors.length"
         @blur="v$?.enfermedad_cronica.$touch"
       >
-
+        <template v-slot:error>
+          <error-component clave="enfermedad_cronica" :v$="v$"/>
+        </template>
       </q-input>
     </div>
 
@@ -116,7 +120,13 @@
         autogrow
         outlined
         dense
-      />
+        :error="!!v$?.nombre_familiar_dependiente_discapacitado.$errors.length"
+        @blur="v$?.nombre_familiar_dependiente_discapacitado.$touch"
+      >
+        <template v-slot:error>
+          <error-component clave="nombre_familiar_dependiente_discapacitado" :v$="v$"/>
+        </template>
+      </q-input>
     </div>
 
 <!--    {{ v$.$errors }}-->
@@ -147,20 +157,11 @@
         map-options
       >
         <template v-slot:error>
-          <div
-            v-for="error of v$?.parentesco_familiar_discapacitado.$errors"
-            :key="error.$uid"
-          >
-            <div class="error-msg">{{ error.$message }}</div>
-          </div>
+          <error-component clave="parentesco_familiar_discapacitado" :v$="v$"/>
         </template>
 
         <template v-slot:no-option>
-          <q-item>
-            <q-item-section class="text-grey">
-              No hay resultados
-            </q-item-section>
-          </q-item>
+          <no-option-component/>
         </template>
       </q-select>
     </div>
@@ -188,6 +189,8 @@
         :permitir-editar-celdas="true"
         :mostrar-header="false"
         :grid="false"
+        :v$="v$"
+        key-error="discapacidades_familiar_dependiente"
         :accion1="btnEliminarDefault(salud.discapacidades_familiar_dependiente)"
         :alto-fijo="false"
         :ajustarCeldas="true"

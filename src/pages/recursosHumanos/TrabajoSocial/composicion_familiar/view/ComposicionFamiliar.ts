@@ -61,6 +61,8 @@ export default defineComponent({
         familiar.id = listado.value?.length
           ? encontrarUltimoIdListado(listado.value) + 1
           : 1
+        familiar.discapacidad=0
+        familiar.ingreso_mensual=0
         listado.value.push(familiar)
       },
       visible: () => [acciones.nuevo, acciones.editar].includes(props.accion)

@@ -145,8 +145,13 @@ export const optionsProblemasSociales: OptionGroup[] = [
     uncheckedIcon:'bi-square'
   },
   {
-    label: 'PROBLEMAS DE ADICCION (Drogas, alcohol, otros)',
+    label: 'PROBLEMAS DE ADICCION (Droga, alcohol, etc)',
     value: 'PROBLEMAS DE ADICCION',
+    checkedIcon:'bi-check-square-fill',
+    uncheckedIcon:'bi-square'
+  },{
+    label: 'NINGUNO',
+    value: 'NINGUNO',
     checkedIcon:'bi-check-square-fill',
     uncheckedIcon:'bi-square'
   }
@@ -247,6 +252,7 @@ export const optionsCapacitaciones: OptionGroup[] = [
 
 export const parentescos = [
   ...parentezcos,
+  { nombre: 'YO', value: 'YO' },
   { nombre: 'PAPÁ', value: 'PAPA' },
   { nombre: 'MAMÁ', value: 'MAMA' },
   { nombre: 'HERMANO', value: 'HERMANO' },

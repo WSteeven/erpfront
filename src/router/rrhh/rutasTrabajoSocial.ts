@@ -3,7 +3,7 @@ import { RouteRecordRaw } from 'vue-router'
 const rutasTrabajoSocial: RouteRecordRaw[] = [
   {
     path: '/fichas-socieconomicas',
-    name: 'fichas_socieconomicas',
+    name: 'fichas_socioeconomicas',
     component: () =>
       import(
         'trabajoSocial/fichaSocioeconomica/view/FichaSocioeconomicaPage.vue'
@@ -17,7 +17,7 @@ const rutasTrabajoSocial: RouteRecordRaw[] = [
       import(
         'trabajoSocial/visitaDomiciliaria/view/VisitaDomiciliariaPage.vue'
         ),
-    meta: { required: false }
+    meta: { required: true }
   }
 ]
 

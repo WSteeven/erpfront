@@ -12,13 +12,20 @@ import { TipoDiscapacidad } from 'recursosHumanos/tipo-discapacidad/domain/TipoD
 import { acciones, accionesTabla } from 'config/utils'
 import { optionsLugaresAtencion, parentescos } from 'config/trabajoSocial.utils'
 import useVuelidate from '@vuelidate/core'
-import { required, requiredIf } from 'shared/i18n-validators'
+import { helpers, minValue, required, requiredIf } from 'shared/i18n-validators'
 import {
   TipoDiscapacidadController
 } from 'recursosHumanos/tipo-discapacidad/infraestructure/TipoDiscapacidadController'
+import ErrorComponent from 'components/ErrorComponent.vue'
+import NoOptionComponent from 'components/NoOptionComponent.vue'
 
 export default defineComponent({
-  components: { EssentialTable, OptionGroupComponent },
+  components: {
+    NoOptionComponent,
+    ErrorComponent,
+    EssentialTable,
+    OptionGroupComponent
+  },
   props: {
     mixin: {
       type: Object as () => ContenedorSimpleMixin<EntidadAuditable>,
@@ -29,13 +36,13 @@ export default defineComponent({
       required: true
     },
     disable: { type: Boolean, default: false },
-    accion: { type: String as keyof acciones, default: acciones.nuevo },
+    accion: { type: String as keyof acciones, default: acciones.nuevo }
   },
   setup(props) {
-    const { listadosAuxiliares} = props.mixin.useReferencias()
-    const { cargarVista, obtenerListados} = props.mixin.useComportamiento()
-    cargarVista(async()=>{
-      await  obtenerListados({
+    const { listadosAuxiliares } = props.mixin.useReferencias()
+    const { cargarVista, obtenerListados } = props.mixin.useComportamiento()
+    cargarVista(async () => {
+      await obtenerListados({
         tipos_discapacidades: {
           controller: new TipoDiscapacidadController(),
           params: { campos: 'id,nombres' }
@@ -51,21 +58,35 @@ export default defineComponent({
           return { label: v.nombre, value: v.id }
         }
       )
-
     })
 
     const reglas = {
       nombre_familiar_dependiente_discapacitado: {
-        required: requiredIf(() => props.salud.tiene_familiar_dependiente_discapacitado)
+        required: requiredIf(
+          () => props.salud.tiene_familiar_dependiente_discapacitado
+        )
       },
       parentesco_familiar_discapacitado: {
-        required: requiredIf(() => props.salud.tiene_familiar_dependiente_discapacitado)
+        required: requiredIf(
+          () => props.salud.tiene_familiar_dependiente_discapacitado
+        )
       },
       enfermedad_cronica: {
         required: requiredIf(() => props.salud.tiene_enfermedad_cronica)
       },
-      lugar_atencion: {required}
-
+      lugar_atencion: { required },
+      discapacidades: {
+        $each: helpers.forEach({
+          tipo_discapacidad: { required },
+          porcentaje: { required, minValue: minValue(0) }
+        })
+      },
+      discapacidades_familiar_dependiente: {
+        $each: helpers.forEach({
+          tipo_discapacidad: { required },
+          porcentaje: { required, minValue: minValue(0) }
+        })
+      }
     }
     const v$ = useVuelidate(reglas, props.salud)
 

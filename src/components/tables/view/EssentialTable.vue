@@ -115,10 +115,21 @@
           map-options
           use-input
           input-debounce="0"
+          :error="!!v$[keyError]?.$each?.$response.$errors[props.rowIndex][props.col.name]?.length"
           :disable="disable"
           @filter="props.col.filtro"
           @update:model-value="guardarCeldaEditada(props.row)"
-        />
+        >
+          <template v-slot:error>
+            <error-component
+              :v$="v$"
+              is-collection
+              :key-error="keyError"
+              :index-error="props.rowIndex"
+              :clave="props.col.name"
+            />
+          </template>
+        </q-select>
 
         <!-- Aún no está completado, porque falta controlar la manera de subir el archivo -->
         <!-- <q-file
@@ -153,8 +164,18 @@
           dense
           emit-value
           map-options
+          :error="!!v$[keyError]?.$each?.$response.$errors[props.rowIndex][props.col.name]?.length"
           :disable="disable"
         >
+          <template v-slot:error>
+            <error-component
+              :v$="v$"
+              is-collection
+              :key-error="keyError"
+              :index-error="props.rowIndex"
+              :clave="props.col.name"
+            />
+          </template>
           <template v-slot:option="{ itemProps, opt, selected, toggleOption }">
             <q-item v-bind="itemProps">
               <q-item-section>

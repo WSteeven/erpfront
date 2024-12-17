@@ -13,9 +13,15 @@ import { Vivienda } from 'trabajoSocial/informacion_vivienda/domain/Vivienda'
 import useVuelidate from '@vuelidate/core'
 import { required } from 'shared/i18n-validators'
 import NoOptionComponent from 'components/NoOptionComponent.vue'
+import ServiciosBasicos from 'trabajoSocial/servicios_basicos/view/ServiciosBasicos.vue'
 
 export default defineComponent({
-  components: { NoOptionComponent, ErrorComponent, OptionGroupComponent },
+  components: {
+    ServiciosBasicos,
+    NoOptionComponent,
+    ErrorComponent,
+    OptionGroupComponent
+  },
   props: {
     vivienda: {
       type: Vivienda,

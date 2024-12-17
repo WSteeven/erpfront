@@ -55,6 +55,7 @@ import InformacionVivienda from 'trabajoSocial/informacion_vivienda/view/Informa
 import CroquisVivienda from 'trabajoSocial/informacion_vivienda/view/CroquisVivienda.vue'
 import ErrorComponent from 'components/ErrorComponent.vue'
 import NoOptionComponent from 'components/NoOptionComponent.vue'
+import { LocalStorage } from 'quasar'
 
 export default defineComponent({
   components: {
@@ -89,7 +90,7 @@ export default defineComponent({
     const empleadoStore = useEmpleadoStore()
     const tabDefecto = ref('1')
 
-    const { empleados, filtrarEmpleados } =
+    const { empleados, filtrarEmpleados, cantones, filtrarCantones } =
       useFiltrosListadosSelects(listadosAuxiliares)
     const empleado = ref(new Empleado())
     cargarVista(async () => {
@@ -102,12 +103,14 @@ export default defineComponent({
 
       // configuracion de listados
       empleados.value = listadosAuxiliares.empleados
+      listadosAuxiliares.cantones = JSON.parse(LocalStorage.getItem('cantones')!.toString())
+      cantones.value = listadosAuxiliares.cantones
     })
 
     const reglas = {
       empleado: { required },
       lugar_nacimiento: { required },
-      ciudad_trabajo: { required },
+      canton: { required },
       contacto_emergencia: { required },
       parentesco_contacto_emergencia: { required },
       telefono_contacto_emergencia: { required },
@@ -129,29 +132,17 @@ export default defineComponent({
         $each: helpers.forEach({
           nombres_apellidos: { required },
           ocupacion: { required },
-          edad: { required, minValue: minValue() }
+          edad: { required, minValue: minValue(0) }
         })
       },
       experiencia_previa: {
-        nombre_empresa: {
-          required: requiredIf(() => ficha.tiene_experiencia_previa)
-        },
+        nombre_empresa: {          required: requiredIf(() => ficha.tiene_experiencia_previa)        },
         cargo: { required: requiredIf(() => ficha.tiene_experiencia_previa) },
-        antiguedad: {
-          required: requiredIf(() => ficha.tiene_experiencia_previa)
-        },
-        asegurado_iess: {
-          required: requiredIf(() => ficha.tiene_experiencia_previa)
-        },
-        telefono: {
-          required: requiredIf(() => ficha.tiene_experiencia_previa)
-        },
-        fecha_retiro: {
-          required: requiredIf(() => ficha.tiene_experiencia_previa)
-        },
-        motivo_retiro: {
-          required: requiredIf(() => ficha.tiene_experiencia_previa)
-        }
+        antiguedad: {          required: requiredIf(() => ficha.tiene_experiencia_previa)        },
+        asegurado_iess: {          required: requiredIf(() => ficha.tiene_experiencia_previa)        },
+        telefono: {          required: requiredIf(() => ficha.tiene_experiencia_previa)        },
+        fecha_retiro: {          required: requiredIf(() => ficha.tiene_experiencia_previa)        },
+        motivo_retiro: {          required: requiredIf(() => ficha.tiene_experiencia_previa)        }
       },
       vivienda: {
         tipo: { required },
@@ -164,56 +155,33 @@ export default defineComponent({
       situacion_socioeconomica: {
         cantidad_personas_aportan: { required },
         cantidad_personas_dependientes: { required },
-        familiar_apoya_economicamente: {
-          required: requiredIf(
-            () =>
-              ficha.situacion_socioeconomica
-                ?.recibe_apoyo_economico_otro_familiar
-          )
-        },
-        recibe_apoyo_economico_otro_familiar: {required},
-        recibe_apoyo_economico_gobierno: {required},
-        institucion_apoya_economicamente: {
-          required: requiredIf(
-            () =>
-              ficha.situacion_socioeconomica?.recibe_apoyo_economico_gobierno
-          )
-        },
-        tiene_prestamos: {required},
-        tiene_tarjeta_credito: {required},
-        tiene_terreno: {required},
-        cantidad_prestamos: {
-          required: requiredIf(
-            () => ficha.situacion_socioeconomica?.tiene_prestamos
-          )
-        },
-        entidad_bancaria: {
-          required: requiredIf(
-            () => ficha.situacion_socioeconomica?.tiene_prestamos
-          )
-        },
-        cantidad_tarjetas_credito: {
-          required: requiredIf(
-            () => ficha.situacion_socioeconomica?.tiene_tarjeta_credito
-          )
-        },
+        familiar_apoya_economicamente: {required: requiredIf(() =>ficha.situacion_socioeconomica?.recibe_apoyo_economico_otro_familiar)},
+        recibe_apoyo_economico_otro_familiar: { required },
+        recibe_apoyo_economico_gobierno: { required },
+        institucion_apoya_economicamente: {required: requiredIf(() =>ficha.situacion_socioeconomica?.recibe_apoyo_economico_gobierno)},
+        tiene_prestamos: { required },
+        cantidad_prestamos: {required: requiredIf(() => ficha.situacion_socioeconomica?.tiene_prestamos)},
+        entidad_bancaria: {required: requiredIf(() => ficha.situacion_socioeconomica?.tiene_prestamos)},
+        tiene_tarjeta_credito: { required },
+        cantidad_tarjetas_credito: {required: requiredIf(() => ficha.situacion_socioeconomica?.tiene_tarjeta_credito)},
         vehiculo: { required },
-        ingresos_adicionales: {
-          required: requiredIf(
-            () => ficha.situacion_socioeconomica?.tiene_ingresos_adicionales
-          )
-        },
-        familiar_externo_apoyado: {
-          required: requiredIf(() => ficha.situacion_socioeconomica?.apoya_familiar_externo)
-        },
+        tiene_terreno: { required },
+        tiene_bienes: { required },
+        tiene_ingresos_adicionales: { required },
+        ingresos_adicionales: {required: requiredIf(() => ficha.situacion_socioeconomica?.tiene_ingresos_adicionales)},
+        familiar_externo_apoyado: {required: requiredIf(() => ficha.situacion_socioeconomica?.apoya_familiar_externo)}
       },
+      problemas_ambiente_social_familiar: { required },
       salud: {
         parentesco_familiar_discapacitado: {
           required: requiredIf(
             () => ficha.salud?.tiene_familiar_dependiente_discapacitado
           )
         }
-      }
+      },
+      tiene_capacitaciones: { required },
+      conocimientos: { required: requiredIf(() => ficha.tiene_capacitaciones) },
+      capacitaciones: { required: requiredIf(() => ficha.tiene_capacitaciones) }
     }
     const v$ = useVuelidate(reglas, ficha)
     setValidador(v$.value)
@@ -312,7 +280,6 @@ export default defineComponent({
       empleado,
       tabOptions: tabOptionsProveedoresInternacionales,
       maskFecha,
-      optionsFecha,
 
       // listados
       likertEspaciosFamiliares,
@@ -331,6 +298,7 @@ export default defineComponent({
       niveles_academicos,
       empleados,
       filtrarEmpleados,
+      cantones, filtrarCantones,
 
       //funciones
       checkTieneCapacitaciones,

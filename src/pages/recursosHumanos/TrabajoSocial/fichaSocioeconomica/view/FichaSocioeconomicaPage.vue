@@ -13,7 +13,7 @@
         <!--        Datos personales -->
         <q-expansion-item
           class="overflow-hidden q-mb-md expansion"
-          label="1. Datos Personales"
+          label="1. DATOS PERSONALES"
           header-class="text-bold bg-header-collapse"
           default-opened
         >
@@ -44,17 +44,11 @@
                 map-options
               >
                 <template v-slot:error>
-                  <div v-for="error of v$.empleado.$errors" :key="error.$uid">
-                    <div class="error-msg">{{ error.$message }}</div>
-                  </div>
+                  <error-component :v$="v$" clave="empleado" />
                 </template>
 
                 <template v-slot:no-option>
-                  <q-item>
-                    <q-item-section class="text-grey">
-                      No hay resultados
-                    </q-item-section>
-                  </q-item>
+                  <no-option-component/>
                 </template>
               </q-select>
             </div>
@@ -154,23 +148,38 @@
               </q-input>
             </div>
 
-            {{ v$['vivienda.telefono'] }}
-
             <!-- Ciudad de Trabajo -->
             <div class="col-12 col-md-3 q-mb-md">
               <label class="q-mb-sm block">Ciudad de Trabajo</label>
-              <q-input
-                v-model="ficha.ciudad_trabajo"
+              <q-select
+                v-model="ficha.canton"
+                :options="cantones"
+                transition-show="jump-up"
+                transition-hide="jump-down"
                 :disable="disabled"
-                :error="!!v$.ciudad_trabajo.$errors.length"
-                @blur="v$.ciudad_trabajo.$touch"
+                options-dense
                 dense
                 outlined
+                :input-debounce="0"
+                use-input
+                @filter="filtrarCantones"
+                @popup-show="ordenarLista(cantones, 'canton')"
+                :error="!!v$.canton.$errors.length"
+                @blur="v$.canton.$touch"
+                :option-value="v => v.id"
+                :option-label="v => v.canton"
+                emit-value
+                map-options
               >
                 <template v-slot:error>
-                  <error-component :v$="v$" clave="ciudad_trabajo" />
+                  <error-component :v$="v$" clave="canton" />
                 </template>
-              </q-input>
+
+                <template v-slot:no-option>
+                  <no-option-component/>
+                </template>
+              </q-select>
+<!--              </q-input>-->
             </div>
 
             <!-- En caso de emergencia  -->
@@ -247,7 +256,7 @@
         <!--        Informacion del conyuge -->
         <q-expansion-item
           class="overflow-hidden q-mb-md expansion"
-          label="2. Datos del cónyuge"
+          label="2. DATOS DEL CÓNYUGE"
           header-class="text-bold bg-header-collapse"
           default-opened
         >
@@ -307,7 +316,7 @@
             <div class="col-12 col-md-3 q-mb-md col-sm-3">
               <label class="q-mb-sm block">Nivel académico</label>
               <q-select
-                v-model="ficha.conyuge.nombres_apellidos"
+                v-model="ficha.conyuge.nivel_academico"
                 :options="niveles_academicos"
                 transition-show="jump-up"
                 transition-hide="jump-down"
@@ -330,11 +339,7 @@
                 </template>
 
                 <template v-slot:no-option>
-                  <q-item>
-                    <q-item-section class="text-grey">
-                      No hay resultados
-                    </q-item-section>
-                  </q-item>
+                  <no-option-component/>
                 </template>
               </q-select>
             </div>
@@ -432,12 +437,12 @@
         <!--        3. Información de los hijos -->
         <q-expansion-item
           class="overflow-hidden q-mb-md expansion"
-          label="3. Información de los hijos"
+          label="3. INFORMACIÓN DE LOS HIJOS"
           header-class="text-bold bg-header-collapse"
           default-opened
         >
           <div class="row q-col-gutter-sm q-pa-md">
-            <!-- Tiene conyuge -->
+            <!-- Tiene hijos -->
             <div class="col-12 col-md-3 col-sm-3">
               <label class="q-mb-sm block">Tiene hijos</label>
               <q-toggle
@@ -487,7 +492,7 @@
         <!--4. experiencia laboral (ultimo empleo)-->
         <q-expansion-item
           class="overflow-hidden q-mb-md expansion"
-          label="4. Experiencia Laboral (último empleo)"
+          label="4. EXPERIENCIA LABORAL (último empleo)"
           header-class="text-bold bg-header-collapse"
           default-opened
         >
@@ -611,7 +616,6 @@
                     >
                       <q-date
                         v-model="ficha.experiencia_previa.fecha_retiro"
-                        :options="optionsFecha"
                         :mask="maskFecha"
                         today-btn
                       >
@@ -966,6 +970,9 @@
               <option-group-component
                 v-model="ficha.situacion_socioeconomica.tiene_bienes"
                 :disable="disabled"
+                clave="situacion_socioeconomica.tiene_bienes"
+                :v$="v$"
+                :error="!!v$.situacion_socioeconomica.tiene_bienes.$errors.length"
               />
             </div>
 
@@ -977,6 +984,9 @@
                   ficha.situacion_socioeconomica.tiene_ingresos_adicionales
                 "
                 :disable="disabled"
+                clave="situacion_socioeconomica.tiene_ingresos_adicionales"
+                :v$="v$"
+                :error="!!v$.situacion_socioeconomica.tiene_ingresos_adicionales.$errors.length"
               />
             </div>
 
@@ -1002,13 +1012,7 @@
                 </template>
               </q-input>
             </div>
-            <div class="row border-grey rounded-4 q-pa-xs q-ma-sm">
-              <div class="col-12 text-center text-h6">
-                <b>SERVICIOS BASICOS</b>
-              </div>
-              <servicios-basicos :servicio_basico="ficha.servicios_basicos" />
-<!--              <q-btn @click="v$.$validate()">Validar</q-btn>-->
-            </div>
+
             <!-- apoya a algun familiar -->
             <div class="col-12 col-md-3">
               <label class="q-mb-sm block"
@@ -1047,7 +1051,6 @@
             </div>
           </div>
         </q-expansion-item>
-
         <!-- 7. Situación Sociofamiliar -->
         <q-expansion-item
           class="overflow-hidden q-mb-md expansion"
@@ -1092,10 +1095,13 @@
                 de estos problemas? (Puede seleccionar varios)</label
               >
               <option-group-component
-                v-model="ficha.ambiente_social_familiar.problemas"
+                v-model="ficha.problemas_ambiente_social_familiar"
                 type="checkbox"
                 :options="optionsProblemasSociales"
                 :disable="disabled"
+                clave="problemas_ambiente_social_familiar"
+                :v$="v$"
+                :error="!!v$.problemas_ambiente_social_familiar.$errors.length"
               />
             </div>
 
@@ -1103,7 +1109,7 @@
             <div class="col-12 col-md-12 q-mb-md col-sm-12">
               <label class="q-mb-sm block">Observaciones</label>
               <q-input
-                v-model="ficha.ambiente_social_familiar.observaciones"
+                v-model="ficha.observaciones_ambiente_social_familiar"
                 placeholder="Opcional"
                 :disable="disabled"
                 autogrow
@@ -1129,6 +1135,9 @@
                 v-model="ficha.tiene_capacitaciones"
                 :disable="disabled"
                 @update:model-value="checkTieneCapacitaciones"
+                clave="tiene_capacitaciones"
+                :v$="v$"
+                :error="!!v$.tiene_capacitaciones.$errors.length"
               />
             </div>
 
@@ -1143,6 +1152,9 @@
                 type="checkbox"
                 :disable="disabled"
                 :horizontal="false"
+                clave="conocimientos"
+                :v$="v$"
+                :error="!!v$.conocimientos.$errors.length"
               />
             </div>
 
@@ -1158,6 +1170,9 @@
                 type="checkbox"
                 :disable="disabled"
                 :horizontal="false"
+                clave="capacitaciones"
+                :v$="v$"
+                :error="!!v$.capacitaciones.$errors.length"
               />
             </div>
           </div>
@@ -1172,7 +1187,7 @@
         >
           <croquis-vivienda :vivienda="ficha.vivienda" :disable="disabled" />
         </q-expansion-item>
-
+<!--{{ v$.$errors}}-->
         <!-- 12. RUTAGRAMA Y VIAS DE ACCESO -->
         <q-expansion-item
           class="overflow-hidden q-mb-md expansion"
@@ -1210,12 +1225,7 @@
                 dense
               >
                 <template v-slot:error>
-                  <div
-                    v-for="error of v$.vias_transito_regular_trabajo.$errors"
-                    :key="error.$uid"
-                  >
-                    <div class="error-msg">{{ error.$message }}</div>
-                  </div>
+                  <error-component :v$="v$" clave="vias_transito_regular_trabajo" />
                 </template>
               </q-input>
             </div>
