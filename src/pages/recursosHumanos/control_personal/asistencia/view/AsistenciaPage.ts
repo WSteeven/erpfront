@@ -34,15 +34,19 @@ export default defineComponent({
     setValidador(v$.value)
 
     async function actualizarAsistencias() {
-
-      const axios = AxiosHttpRepository.getInstance()
-      const url = apiConfig.URL_BASE + '/' + axios.getEndpoint(endpoints.asistencia) + '/sincronizar'
-      const response: AxiosResponse = await axios.get(url)
-      listado.value = []
-      listado.value.push(response.data.results)
+      const axios = AxiosHttpRepository.getInstance();
+      const url = apiConfig.URL_BASE + '/' + axios.getEndpoint(endpoints.asistencia) + '/sincronizar';
+      try {
+        const response: AxiosResponse = await axios.get(url);
+        listado.value = Array.isArray(response.data.results) ? response.data.results : [];
+        listar(); // Asegúrate de que esta función puede manejar un arreglo vacío
+      } catch (error) {
+        console.error('Error al sincronizar asistencias:', error);
+        listado.value = []; // Mantén el listado vacío si ocurre un error
+      }
     }
 
-    listar()
+    actualizarAsistencias()
 
     return {
       mixin,
