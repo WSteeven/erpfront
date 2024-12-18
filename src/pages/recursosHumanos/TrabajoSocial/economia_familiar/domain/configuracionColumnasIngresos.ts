@@ -1,5 +1,5 @@
 import { ColumnConfig } from 'components/tables/domain/ColumnConfig'
-import { Ingreso } from 'trabajoSocial/visitaDomiciliaria/domain/EconomiaFamiliar'
+import { Ingreso } from 'trabajoSocial/economia_familiar/domain/EconomiaFamiliar'
 
 export const configuracionColumnasIngresos: ColumnConfig<Ingreso>[] = [
   {

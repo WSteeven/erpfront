@@ -14,6 +14,7 @@ export class Salud extends EntidadAuditable {
 
   frecuencia_asiste_medico: string|null
   practica_deporte: boolean
+  deporte_practicado: string|null
   frecuencia_practica_deporte: string|null
 
   constructor() {
@@ -30,6 +31,7 @@ export class Salud extends EntidadAuditable {
     this.parentesco_familiar_discapacitado = null
     this.frecuencia_asiste_medico = null
     this.practica_deporte = null
+    this.deporte_practicado = null
     this.frecuencia_practica_deporte = null
   }
 }

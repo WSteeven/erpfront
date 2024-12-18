@@ -8,39 +8,33 @@ import { Salud } from 'trabajoSocial/salud/domain/Salud'
 export class FichaSocioeconomica extends EntidadAuditable {
   empleado: string | null
   lugar_nacimiento: string | null
-  coordenadas: string | null
-  imagen_rutagrama: string | null
-  vias_transito_regular_trabajo: string | null
-  telefono_domicilio: string | null
   canton: string | null
   contacto_emergencia: string | null
   parentesco_contacto_emergencia: string | null
   telefono_contacto_emergencia: string | null
+  problemas_ambiente_social_familiar: any
+  observaciones_ambiente_social_familiar: string | null
+  conocimientos: any
+  capacitaciones: any
+  imagen_rutagrama: string | null
+  vias_transito_regular_trabajo: string | null
+  conclusiones: string | null
   tiene_conyuge: boolean
   tiene_hijos: boolean
   tiene_experiencia_previa: boolean
-
   conyuge: Conyuge | null
   hijos: any
   experiencia_previa: ExperienciaLaboral | null
   vivienda: Vivienda | null
   situacion_socioeconomica: SituacionSocioeconomica | null
-  // servicios_basicos: ServicioBasico|null
   salud: Salud | null
-  problemas_ambiente_social_familiar: any
-  observaciones_ambiente_social_familiar: string | null
   composicion_familiar: any
   tiene_capacitaciones: boolean
-  conocimientos: any
-  capacitaciones: any
-  conclusiones: string | null
 
   constructor() {
     super()
     this.empleado = null
     this.lugar_nacimiento = null
-    this.coordenadas = null
-    this.telefono_domicilio = null
     this.canton = null
     this.contacto_emergencia = null
     this.parentesco_contacto_emergencia = null
@@ -53,7 +47,6 @@ export class FichaSocioeconomica extends EntidadAuditable {
     this.hijos = []
     this.vivienda = new Vivienda()
     this.situacion_socioeconomica = new SituacionSocioeconomica()
-    // this.servicios_basicos = new ServicioBasico()
     this.salud = new Salud()
     this.composicion_familiar = []
     this.problemas_ambiente_social_familiar = []

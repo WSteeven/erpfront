@@ -17,48 +17,11 @@ const trabajoSocial: Ref<MenuOption[]> = computed(() => {
           can: store.can('puede.acceder.fichas_socioeconomicas')
         },
         {
-          title: 'Vacantes',
-          link: 'vacantes',
-          icon: 'bi-app',
-          can: store.can('puede.acceder.rrhh_vacantes')
+          title: 'Visitas Domiciliarias',
+          link: 'visitas-domiciliarias',
+          icon: 'bi-houses-fill',
+          can: store.can('puede.acceder.visitas_domiciliarias')
         },
-        {
-          title: 'Configuracion',
-          icon: 'bi-gear-fill',
-          children: [
-            {
-              title: 'Areas de conocimiento',
-              link: 'areas-conocimientos',
-              icon: 'bi-circle',
-              can: store.can('puede.acceder.rrhh_areas_conocimientos')
-            },
-            {
-              title: 'Modalidades de Trabajo',
-              link: 'modalidades-trabajo',
-              icon: 'bi-circle',
-              can: store.can('puede.acceder.rrhh_modalidades_trabajo')
-            },
-            {
-              title: 'Tipos de Puestos de Trabajo',
-              link: 'tipos-puestos',
-              icon: 'bi-circle',
-              can: store.can('puede.acceder.rrhh_tipos_puestos')
-            }
-          ]
-        },
-        {
-          title: 'Reportes',
-          icon: 'bi-graph-up-arrow',
-          can: store.can('puede.acceder.reportes_rrhh'),
-          children: [
-            {
-              title: 'Dashboard',
-              link: 'dashboard-seleccion-contratacion',
-              icon: 'bi-journal-arrow-up',
-              can: true
-            }
-          ]
-        }
       ]
     }
   ]

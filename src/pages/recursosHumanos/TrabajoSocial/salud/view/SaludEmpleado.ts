@@ -13,9 +13,7 @@ import { acciones, accionesTabla } from 'config/utils'
 import { optionsLugaresAtencion, parentescos } from 'config/trabajoSocial.utils'
 import useVuelidate from '@vuelidate/core'
 import { helpers, minValue, required, requiredIf } from 'shared/i18n-validators'
-import {
-  TipoDiscapacidadController
-} from 'recursosHumanos/tipo-discapacidad/infraestructure/TipoDiscapacidadController'
+import { TipoDiscapacidadController } from 'recursosHumanos/tipo-discapacidad/infraestructure/TipoDiscapacidadController'
 import ErrorComponent from 'components/ErrorComponent.vue'
 import NoOptionComponent from 'components/NoOptionComponent.vue'
 

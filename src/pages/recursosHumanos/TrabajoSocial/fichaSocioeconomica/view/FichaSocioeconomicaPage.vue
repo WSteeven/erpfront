@@ -1064,7 +1064,6 @@
             :accion="accion"
           />
         </q-expansion-item>
-
         <!--8. Salud -->
         <q-expansion-item
           class="overflow-hidden q-mb-md expansion"
@@ -1185,9 +1184,11 @@
           header-class="text-bold bg-header-collapse"
           default-opened
         >
-          <croquis-vivienda :vivienda="ficha.vivienda" :disable="disabled" />
+          <croquis-vivienda :vivienda="ficha.vivienda" :disable="disabled" :accion="accion" />
         </q-expansion-item>
-<!--{{ v$.$errors}}-->
+
+<!--        <p><strong>Aqui van los errores: </strong> {{v$.$errors}}</p>-->
+
         <!-- 12. RUTAGRAMA Y VIAS DE ACCESO -->
         <q-expansion-item
           class="overflow-hidden q-mb-md expansion"
@@ -1250,9 +1251,9 @@
             </template>
           </q-input>
         </div>
-        <div>
-          <q-btn @click="v$.$validate()">Validar errores</q-btn>
-        </div>
+<!--        <div>-->
+<!--          <q-btn @click="v$.$validate()">Validar errores</q-btn>-->
+<!--        </div>-->
       </q-form>
     </template>
   </tab-layout-filter-tabs2>

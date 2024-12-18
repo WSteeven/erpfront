@@ -17,7 +17,6 @@ import {
   btnEliminarDefault,
   encontrarUltimoIdListado,
   obtenerUbicacion,
-  optionsFecha,
   ordenarLista
 } from 'shared/utils'
 import { useEmpleadoStore } from 'stores/empleado'
@@ -49,7 +48,6 @@ import { Familiar } from 'trabajoSocial/composicion_familiar/domain/Familiar'
 import { TipoDiscapacidadPorcentaje } from 'recursosHumanos/empleados/domain/TipoDiscapacidadPorcentaje'
 import CalloutComponent from 'components/CalloutComponent.vue'
 import SaludEmpleado from 'trabajoSocial/salud/view/SaludEmpleado.vue'
-import ServiciosBasicos from 'trabajoSocial/servicios_basicos/view/ServiciosBasicos.vue'
 import SelectorImagen from 'components/SelectorImagen.vue'
 import InformacionVivienda from 'trabajoSocial/informacion_vivienda/view/InformacionVivienda.vue'
 import CroquisVivienda from 'trabajoSocial/informacion_vivienda/view/CroquisVivienda.vue'
@@ -64,7 +62,6 @@ export default defineComponent({
     CroquisVivienda,
     InformacionVivienda,
     SelectorImagen,
-    ServiciosBasicos,
     SaludEmpleado,
     CalloutComponent,
     ComposicionFamiliar,
@@ -77,19 +74,13 @@ export default defineComponent({
       FichaSocioeconomica,
       new FichaSocioeconomicaController()
     )
-    const {
-      entidad: ficha,
-      accion,
-      listadosAuxiliares,
-      disabled
-    } = mixin.useReferencias()
-    const { setValidador, cargarVista, obtenerListados, listar } =
-      mixin.useComportamiento()
+    const {entidad: ficha, accion, listadosAuxiliares, disabled} = mixin.useReferencias()
+    const { setValidador, cargarVista, obtenerListados, listar } = mixin.useComportamiento()
+    const { onConsultado, onReestablecer } = mixin.useHooks()
     const { notificarAdvertencia, notificarCorrecto } = useNotificaciones()
 
     const empleadoStore = useEmpleadoStore()
     const tabDefecto = ref('1')
-
     const { empleados, filtrarEmpleados, cantones, filtrarCantones } =
       useFiltrosListadosSelects(listadosAuxiliares)
     const empleado = ref(new Empleado())
@@ -103,10 +94,25 @@ export default defineComponent({
 
       // configuracion de listados
       empleados.value = listadosAuxiliares.empleados
-      listadosAuxiliares.cantones = JSON.parse(LocalStorage.getItem('cantones')!.toString())
+      listadosAuxiliares.cantones = JSON.parse(
+        LocalStorage.getItem('cantones')!.toString()
+      )
       cantones.value = listadosAuxiliares.cantones
     })
-
+    /********************************************
+     * HOOKS
+     ********************************************/
+    onReestablecer(async () => {
+      empleado.value.hydrate(new Empleado())
+    })
+    onConsultado(async () => {
+      empleadoStore.idEmpleado = ficha.empleado
+      await empleadoStore.cargarEmpleado()
+      empleado.value = empleadoStore.empleado
+    })
+    /********************************************
+     * REGLAS DE VALIDACIONES
+     ********************************************/
     const reglas = {
       empleado: { required },
       lugar_nacimiento: { required },
@@ -114,7 +120,9 @@ export default defineComponent({
       contacto_emergencia: { required },
       parentesco_contacto_emergencia: { required },
       telefono_contacto_emergencia: { required },
-      imagen_rutagrama: { required },
+      imagen_rutagrama: {
+        required: requiredIf(() => accion.value == acciones.editar)
+      },
       vias_transito_regular_trabajo: { required },
       conclusiones: { required },
       conyuge: {
@@ -136,13 +144,25 @@ export default defineComponent({
         })
       },
       experiencia_previa: {
-        nombre_empresa: {          required: requiredIf(() => ficha.tiene_experiencia_previa)        },
+        nombre_empresa: {
+          required: requiredIf(() => ficha.tiene_experiencia_previa)
+        },
         cargo: { required: requiredIf(() => ficha.tiene_experiencia_previa) },
-        antiguedad: {          required: requiredIf(() => ficha.tiene_experiencia_previa)        },
-        asegurado_iess: {          required: requiredIf(() => ficha.tiene_experiencia_previa)        },
-        telefono: {          required: requiredIf(() => ficha.tiene_experiencia_previa)        },
-        fecha_retiro: {          required: requiredIf(() => ficha.tiene_experiencia_previa)        },
-        motivo_retiro: {          required: requiredIf(() => ficha.tiene_experiencia_previa)        }
+        antiguedad: {
+          required: requiredIf(() => ficha.tiene_experiencia_previa)
+        },
+        asegurado_iess: {
+          required: requiredIf(() => ficha.tiene_experiencia_previa)
+        },
+        telefono: {
+          required: requiredIf(() => ficha.tiene_experiencia_previa)
+        },
+        fecha_retiro: {
+          required: requiredIf(() => ficha.tiene_experiencia_previa)
+        },
+        motivo_retiro: {
+          required: requiredIf(() => ficha.tiene_experiencia_previa)
+        }
       },
       vivienda: {
         tipo: { required },
@@ -155,30 +175,61 @@ export default defineComponent({
       situacion_socioeconomica: {
         cantidad_personas_aportan: { required },
         cantidad_personas_dependientes: { required },
-        familiar_apoya_economicamente: {required: requiredIf(() =>ficha.situacion_socioeconomica?.recibe_apoyo_economico_otro_familiar)},
+        familiar_apoya_economicamente: {
+          required: requiredIf(
+            () =>
+              ficha.situacion_socioeconomica
+                ?.recibe_apoyo_economico_otro_familiar
+          )
+        },
         recibe_apoyo_economico_otro_familiar: { required },
         recibe_apoyo_economico_gobierno: { required },
-        institucion_apoya_economicamente: {required: requiredIf(() =>ficha.situacion_socioeconomica?.recibe_apoyo_economico_gobierno)},
+        institucion_apoya_economicamente: {
+          required: requiredIf(
+            () =>
+              ficha.situacion_socioeconomica?.recibe_apoyo_economico_gobierno
+          )
+        },
         tiene_prestamos: { required },
-        cantidad_prestamos: {required: requiredIf(() => ficha.situacion_socioeconomica?.tiene_prestamos)},
-        entidad_bancaria: {required: requiredIf(() => ficha.situacion_socioeconomica?.tiene_prestamos)},
+        cantidad_prestamos: {
+          required: requiredIf(
+            () => ficha.situacion_socioeconomica?.tiene_prestamos
+          )
+        },
+        entidad_bancaria: {
+          required: requiredIf(
+            () => ficha.situacion_socioeconomica?.tiene_prestamos
+          )
+        },
         tiene_tarjeta_credito: { required },
-        cantidad_tarjetas_credito: {required: requiredIf(() => ficha.situacion_socioeconomica?.tiene_tarjeta_credito)},
+        cantidad_tarjetas_credito: {
+          required: requiredIf(
+            () => ficha.situacion_socioeconomica?.tiene_tarjeta_credito
+          )
+        },
         vehiculo: { required },
         tiene_terreno: { required },
         tiene_bienes: { required },
         tiene_ingresos_adicionales: { required },
-        ingresos_adicionales: {required: requiredIf(() => ficha.situacion_socioeconomica?.tiene_ingresos_adicionales)},
-        familiar_externo_apoyado: {required: requiredIf(() => ficha.situacion_socioeconomica?.apoya_familiar_externo)}
-      },
-      problemas_ambiente_social_familiar: { required },
-      salud: {
-        parentesco_familiar_discapacitado: {
+        ingresos_adicionales: {
           required: requiredIf(
-            () => ficha.salud?.tiene_familiar_dependiente_discapacitado
+            () => ficha.situacion_socioeconomica?.tiene_ingresos_adicionales
+          )
+        },
+        familiar_externo_apoyado: {
+          required: requiredIf(
+            () => ficha.situacion_socioeconomica?.apoya_familiar_externo
           )
         }
       },
+      problemas_ambiente_social_familiar: { required },
+      // salud: {
+      //   parentesco_familiar_discapacitado: {
+      //     required: requiredIf(
+      //       () => ficha.salud?.tiene_familiar_dependiente_discapacitado
+      //     )
+      //   }
+      // },
       tiene_capacitaciones: { required },
       conocimientos: { required: requiredIf(() => ficha.tiene_capacitaciones) },
       capacitaciones: { required: requiredIf(() => ficha.tiene_capacitaciones) }
@@ -210,6 +261,8 @@ export default defineComponent({
         fichaEncontrada.value =
           await empleadoStore.obtenerUltimaFichaSocieconomica()
         console.log(fichaEncontrada.value)
+        ficha.hydrate(fichaEncontrada.value)
+        accion.value = acciones.editar
         notificarCorrecto(
           'Se ha encontrado una ficha socioeconomica del empleado seleccionado'
         )
@@ -298,7 +351,8 @@ export default defineComponent({
       niveles_academicos,
       empleados,
       filtrarEmpleados,
-      cantones, filtrarCantones,
+      cantones,
+      filtrarCantones,
 
       //funciones
       checkTieneCapacitaciones,

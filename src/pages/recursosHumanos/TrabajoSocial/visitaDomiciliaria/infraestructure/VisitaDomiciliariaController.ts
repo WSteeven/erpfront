@@ -6,6 +6,6 @@ import { endpoints } from 'config/api'
 
 export class VisitaDomiciliariaController extends TransaccionSimpleController<VisitaDomiciliaria>{
   constructor() {
-    super(endpoints.visita_domiciliaria)
+    super(endpoints.visitas_domiciliarias)
   }
 }
