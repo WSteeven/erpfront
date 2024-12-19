@@ -9,11 +9,14 @@
     :tabOptions="tabOptionsEstadosTareas"
     :accion1="btnFinalizarTarea"
     :accion2="btnVerImagenInforme"
+    :accion3="btnActivarTareaTemporalmente"
+    :accion4="btnDesactivarTarea"
     :filtrar="filtrarTarea"
     tabDefecto="0"
     paginate
     permitir-filtrar
-    >
+    ajustar-celdas
+  >
     <!-- :forzarListar="true" -->
     <!-- :labelGuardar="tarea.tiene_subtareas ? 'Guardar' : 'Guardar y agendar'" -->
     <template #formulario>
