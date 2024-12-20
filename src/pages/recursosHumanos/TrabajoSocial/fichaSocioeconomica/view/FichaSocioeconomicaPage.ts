@@ -16,6 +16,7 @@ import { Empleado } from 'recursosHumanos/empleados/domain/Empleado'
 import {
   btnEliminarDefault,
   encontrarUltimoIdListado,
+  imprimirArchivo,
   obtenerUbicacion,
   ordenarLista
 } from 'shared/utils'
@@ -53,7 +54,12 @@ import InformacionVivienda from 'trabajoSocial/informacion_vivienda/view/Informa
 import CroquisVivienda from 'trabajoSocial/informacion_vivienda/view/CroquisVivienda.vue'
 import ErrorComponent from 'components/ErrorComponent.vue'
 import NoOptionComponent from 'components/NoOptionComponent.vue'
-import { LocalStorage } from 'quasar'
+import { LocalStorage, useQuasar } from 'quasar'
+import { AxiosHttpRepository } from 'shared/http/infraestructure/AxiosHttpRepository'
+import { apiConfig, endpoints } from 'config/api'
+import { StatusEssentialLoading } from 'components/loading/application/StatusEssentialLoading'
+import { useNotificacionStore } from 'stores/notificacion'
+import { useCargandoStore } from 'stores/cargando'
 
 export default defineComponent({
   components: {
@@ -74,11 +80,21 @@ export default defineComponent({
       FichaSocioeconomica,
       new FichaSocioeconomicaController()
     )
-    const {entidad: ficha, accion, listadosAuxiliares, disabled} = mixin.useReferencias()
-    const { setValidador, cargarVista, obtenerListados, listar } = mixin.useComportamiento()
+    const {
+      entidad: ficha,
+      accion,
+      listadosAuxiliares,
+      disabled
+    } = mixin.useReferencias()
+    const { setValidador, cargarVista, obtenerListados, listar } =
+      mixin.useComportamiento()
     const { onConsultado, onReestablecer } = mixin.useHooks()
     const { notificarAdvertencia, notificarCorrecto } = useNotificaciones()
 
+    useNotificacionStore().setQuasar(useQuasar())
+    useCargandoStore().setQuasar(useQuasar())
+
+    const cargando = new StatusEssentialLoading()
     const empleadoStore = useEmpleadoStore()
     const tabDefecto = ref('1')
     const { empleados, filtrarEmpleados, cantones, filtrarCantones } =
@@ -288,6 +304,19 @@ export default defineComponent({
       }
     }
 
+    async function imprimir(id: number, nombre_empleado: string) {
+      cargando.activar()
+      const axios = AxiosHttpRepository.getInstance()
+      const url =
+        apiConfig.URL_BASE +
+        '/' +
+        axios.getEndpoint(endpoints.imprimir_fichas_socioeconomicas) +
+        id
+      const filename = 'Ficha Socioeconomica ' + nombre_empleado
+      await imprimirArchivo(url, 'GET', 'blob', 'pdf', filename)
+      cargando.desactivar()
+    }
+
     /********************************
      * BOTONES DE TABLA
      *******************************/
@@ -316,6 +345,15 @@ export default defineComponent({
         ficha.composicion_familiar.push(familiar)
       },
       visible: () => [acciones.nuevo, acciones.editar].includes(accion.value)
+    }
+
+    const btnImprimir: CustomActionTable<FichaSocioeconomica> = {
+      titulo: 'Imprimir',
+      color: 'secondary',
+      icono: 'bi-printer',
+      accion: async ({ entidad }) => {
+        await imprimir(entidad.id, entidad.empleado)
+      }
     }
 
     return {
@@ -365,7 +403,8 @@ export default defineComponent({
       //botones de tabla
       btnAgregarFilaFamiliar,
       btnAgregarFilaHijo,
-      btnEliminarDefault
+      btnEliminarDefault,
+      btnImprimir
       // btnEliminarDiscapacidad: btnEliminarDefault(ficha.salud?.discapacidades),
     }
   }

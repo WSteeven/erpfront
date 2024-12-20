@@ -5,8 +5,10 @@
     titulo-pagina="Ficha Socioeconomica"
     :tab-options="tabOptions"
     :tab-defecto="tabDefecto"
+    :permitir-eliminar="false"
     :filtrar="filtrarListadoVisitas"
     ajustar-celdas
+    :accion1="btnImprimir"
   >
     <template #formulario>
       <q-form @submit.prevent>
@@ -17,7 +19,7 @@
           header-class="text-bold bg-header-collapse"
           default-opened
         >
-          {{ v$.$errors }}
+<!--          {{ v$.$errors }}-->
           <div class="row q-col-gutter-sm q-pa-sm">
             <!-- Colaborador -->
             <div class="col-12 col-md-3 q-mb-md col-sm-3">
@@ -505,7 +507,7 @@
             </template>
           </q-input>
         </div>
-        {{ visita }}
+<!--        {{ visita }}-->
       </q-form>
     </template>
   </tab-layout-filter-tabs2>

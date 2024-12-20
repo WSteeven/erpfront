@@ -15,7 +15,7 @@ import SaludEmpleado from 'trabajoSocial/salud/view/SaludEmpleado.vue'
 import { opcionesPeriodicidad } from 'config/recursosHumanos.utils'
 import OptionGroupComponent from 'components/optionGroup/view/OptionGroupComponent.vue'
 import { configuracionColumnasIngresos } from 'trabajoSocial/economia_familiar/domain/configuracionColumnasIngresos'
-import { btnEliminarDefault, ordenarLista } from 'shared/utils'
+import { btnEliminarDefault, imprimirArchivo, ordenarLista } from 'shared/utils'
 import { acciones, accionesTabla } from 'config/utils'
 import InformacionVivienda from 'trabajoSocial/informacion_vivienda/view/InformacionVivienda.vue'
 import ServiciosBasicos from 'trabajoSocial/servicios_basicos/view/ServiciosBasicos.vue'
@@ -27,9 +27,15 @@ import { useEmpleadoStore } from 'stores/empleado'
 import { useNotificaciones } from 'shared/notificaciones'
 import { EmpleadoController } from 'recursosHumanos/empleados/infraestructure/EmpleadoController'
 import { parentescos } from 'config/trabajoSocial.utils'
-import { LocalStorage } from 'quasar'
+import { LocalStorage, useQuasar } from 'quasar'
 import { ValidarListadoIngresosEconomia } from 'trabajoSocial/visitaDomiciliaria/application/validations/ValidarListadoIngresosEconomia'
 import EconomiaFamiliar from 'trabajoSocial/economia_familiar/view/EconomiaFamiliar.vue'
+import { CustomActionTable } from 'components/tables/domain/CustomActionTable'
+import { AxiosHttpRepository } from 'shared/http/infraestructure/AxiosHttpRepository'
+import { apiConfig, endpoints } from 'config/api'
+import { StatusEssentialLoading } from 'components/loading/application/StatusEssentialLoading'
+import { useNotificacionStore } from 'stores/notificacion'
+import { useCargandoStore } from 'stores/cargando'
 
 export default defineComponent({
   components: {
@@ -62,6 +68,10 @@ export default defineComponent({
     const { onConsultado, onReestablecer } = mixin.useHooks()
     const { notificarAdvertencia, notificarCorrecto } = useNotificaciones()
 
+    useNotificacionStore().setQuasar(useQuasar())
+    useCargandoStore().setQuasar(useQuasar())
+
+    const cargando = new StatusEssentialLoading()
     const empleadoStore = useEmpleadoStore()
     const empleado = ref(new Empleado())
     const tabDefecto = ref('1')
@@ -89,6 +99,7 @@ export default defineComponent({
      ********************************************/
     onReestablecer(async () => {
       empleado.value.hydrate(new Empleado())
+      visita.hydrate(new VisitaDomiciliaria())
     })
     onConsultado(async () => {
       empleadoStore.idEmpleado = visita.empleado
@@ -173,9 +184,30 @@ export default defineComponent({
       }
     }
 
+    async function imprimir(id: number, nombre_empleado: string) {
+      cargando.activar()
+      const axios = AxiosHttpRepository.getInstance()
+      const url =
+        apiConfig.URL_BASE +
+        '/' +
+        axios.getEndpoint(endpoints.imprimir_visitas_domiciliarias) +
+        id
+      const filename = 'Visita Domiciliaria ' + nombre_empleado
+      await imprimirArchivo(url, 'GET', 'blob', 'pdf', filename)
+      cargando.desactivar()
+    }
+
     /********************************
      * BOTONES DE TABLA
      *******************************/
+    const btnImprimir: CustomActionTable<VisitaDomiciliaria> = {
+      titulo: 'Imprimir',
+      color: 'secondary',
+      icono: 'bi-printer',
+      accion: async ({ entidad }) => {
+        await imprimir(entidad.id, entidad.empleado)
+      }
+    }
 
     return {
       mixin,
@@ -205,7 +237,8 @@ export default defineComponent({
       ordenarLista,
 
       //botones de tabla
-      btnEliminarDefault
+      btnEliminarDefault,
+      btnImprimir
     }
   }
 })

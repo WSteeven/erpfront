@@ -3,9 +3,11 @@
     :mixin="mixin"
     :configuracion-columnas="configuracionColumnas"
     titulo-pagina="Ficha Socioeconomica"
+    :permitir-eliminar="false"
     :tab-options="tabOptions"
     :tab-defecto="tabDefecto"
     :filtrar="filtrarListadoFichas"
+    :accion1="btnImprimir"
     ajustar-celdas
   >
     <template #formulario>
