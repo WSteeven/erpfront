@@ -3,6 +3,8 @@
     :mixin="mixin"
     :configuracionColumnas="configuracionColumnas"
     titulo-pagina="Atrasos"
+    :tabDefecto="tabDefecto"
+    :filtrar="filtrarListadoAtrasos"
   >
     <template #formulario>
       <q-form @submit.prevent>
@@ -60,14 +62,14 @@
                 <div class="col-12 col-md-3">
                   <br />
                   <q-toggle
-                    v-model="justificacion.requiere_justificacion"
+                    v-model="justificacion.estado"
                     label="¿Requiere Justificación?"
                     color="positive"
                     :disable="disabled"
                   />
                 </div>
                 <!-- Justificación -->
-                <div class="col-12" v-if="justificacion.requiere_justificacion">
+                <div class="col-12" v-if="justificacion.estado">
                   <label class="q-mb-sm block">Justificación de Atraso</label>
                   <essential-editor
                     v-model="justificacion.justificacion"

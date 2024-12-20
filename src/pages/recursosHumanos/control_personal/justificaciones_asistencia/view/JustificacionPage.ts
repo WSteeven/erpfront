@@ -55,7 +55,10 @@ export default defineComponent({
       v$,
       disabled,
       configuracionColumnas: configuracionColumnasJustificacion,
-      filtrarListadoAtrasos
+      filtrarListadoAtrasos,
+
+      tabDefecto,
+
     }
   }
 })

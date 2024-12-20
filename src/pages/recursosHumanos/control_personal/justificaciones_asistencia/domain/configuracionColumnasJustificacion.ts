@@ -31,6 +31,13 @@ export const configuracionColumnasJustificacion: ColumnConfig<Justificacion>[] =
     sortable: true,
   },
   {
+    name: 'estado',
+    field: 'estado',
+    label: '¿Justificado?',
+    align: 'right',
+    sortable: true,
+  },
+  {
     name: 'justificacion',
     field: 'justificacion',
     label: 'Justificación de Atraso',
