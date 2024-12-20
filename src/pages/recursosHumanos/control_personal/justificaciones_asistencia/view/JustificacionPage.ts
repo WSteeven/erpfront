@@ -1,5 +1,5 @@
 // Dependencias
-import { defineComponent } from 'vue'
+import { defineComponent, ref } from 'vue'
 import { configuracionColumnasJustificacion } from '../domain/configuracionColumnasJustificacion'
 import { required } from '@vuelidate/validators'
 import { useVuelidate } from '@vuelidate/core'
@@ -30,8 +30,9 @@ export default defineComponent({
       Justificacion,
       new JustificacionController()
     )
-    const { entidad: justificacion, disabled } = mixin.useReferencias()
-    const { setValidador } = mixin.useComportamiento()
+    const { entidad: justificacion, listado, disabled } = mixin.useReferencias()
+    const { setValidador, listar } = mixin.useComportamiento()
+    const tabDefecto = ref('1')
 
     // Reglas de validación
     const reglas = {
@@ -41,12 +42,20 @@ export default defineComponent({
     const v$ = useVuelidate(reglas, justificacion)
     setValidador(v$.value)
 
+    /**Funciones y logica para las justificaciones */
+
+    async function filtrarListadoAtrasos(tab: string) {
+      tabDefecto.value = tab
+      if (listado.value.length > 0) listar({ estado: tab })
+    }
+
     return {
       mixin,
       justificacion,
       v$,
       disabled,
-      configuracionColumnas: configuracionColumnasJustificacion
+      configuracionColumnas: configuracionColumnasJustificacion,
+      filtrarListadoAtrasos
     }
   }
 })

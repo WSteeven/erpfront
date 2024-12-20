@@ -2,7 +2,7 @@ import { EntidadAuditable } from 'shared/entidad/domain/entidadAuditable';
 
 export class Justificacion extends EntidadAuditable {
   empleado_id: number | null;
-  fecha_atraso: Date | null; // Fecha de atraso.
+  fecha_atraso: string | null; // Fecha de atraso.
   minutos_atraso: number | null; // Minutos de atraso.
   segundos_atraso: number | null; // Segundos de atraso.
   justificacion: string | null; // Texto de la justificación.
