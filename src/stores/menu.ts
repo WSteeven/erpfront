@@ -102,6 +102,18 @@ export const useMenuStore = defineStore('menu', () => {
           ]
         },
         {
+          title: 'Configuracion',
+          icon: 'bi-gear-fill',
+          can: store.can('puede.acceder.configuracion_modulo_tareas'),
+          children: [
+            {
+              title: 'Nodos',
+              link: 'nodos',
+              icon: 'bi-plus-circle-fill',
+              can: store.can('puede.acceder.nodos')
+            },
+          ]},
+        {
           title: 'Reportes',
           icon: 'bi-graph-up-arrow',
           can: store.can('puede.acceder.reportes_modulo_tareas'),

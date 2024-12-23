@@ -390,14 +390,14 @@ export default defineComponent({
               apiConfig.URL_BASE +
               '/' +
               axios.getEndpoint(endpoints.consolidado_filtrado_excel)
-            imprimirArchivo(url_excel, 'POST', 'blob', 'xlsx', filename, valor)
+            await imprimirArchivo(url_excel, 'POST', 'blob', 'xlsx', filename, valor)
             break
           case tipoReportes.PDF:
             const url_pdf =
               apiConfig.URL_BASE +
               '/' +
               axios.getEndpoint(endpoints.consolidado_filtrado_pdf)
-            imprimirArchivo(url_pdf, 'POST', 'blob', 'pdf', filename, valor)
+            await imprimirArchivo(url_pdf, 'POST', 'blob', 'pdf', filename, valor)
             break
           default:
             break

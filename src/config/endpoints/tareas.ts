@@ -70,4 +70,5 @@ export const tareas = {
   reporte_materiales_utilizados: new Endpoint('tareas/reporte-materiales-utilizados'),
   reporte_materiales: new Endpoint('tareas/reporte-materiales'),
   alimentacion_grupos: new Endpoint('tareas/alimentacion-grupos'),
+  nodos: new Endpoint('tareas/nodos'),
 }
