@@ -141,7 +141,13 @@
           <!-- Tipos filtros -->
           <div
             class="col-12 col-md-6"
-            v-if="[tipo_saldo.GASTO, tipo_saldo.GASTOS_FOTOGRAFIA, tipo_saldo.FOTOGRAFIAS_OYM].includes(consolidadofiltrado.tipo_saldo)"
+            v-if="
+              [
+                tipo_saldo.GASTO,
+                tipo_saldo.GASTOS_FOTOGRAFIA,
+                tipo_saldo.FOTOGRAFIAS_OYM
+              ].includes(consolidadofiltrado.tipo_saldo)
+            "
           >
             <label class="q-mb-sm block">Tipo Filtro</label>
             <q-select
@@ -291,7 +297,12 @@
             v-if="
               (consolidadofiltrado.tipo_filtro == tipo_filtro.PROYECTO ||
                 consolidadofiltrado.tipo_filtro == tipo_filtro.TODOS) &&
-                [tipo_saldo.GASTO, tipo_saldo.GASTOS_FOTOGRAFIA, tipo_saldo.FOTOGRAFIAS_OYM].includes(consolidadofiltrado.tipo_saldo)"
+              [
+                tipo_saldo.GASTO,
+                tipo_saldo.GASTOS_FOTOGRAFIA,
+                tipo_saldo.FOTOGRAFIAS_OYM
+              ].includes(consolidadofiltrado.tipo_saldo)
+            "
           >
             <label class="q-mb-sm block">Proyectos</label>
             <q-select
@@ -346,7 +357,11 @@
               (consolidadofiltrado.tipo_filtro == tipo_filtro.TAREA ||
                 consolidadofiltrado.tipo_filtro == tipo_filtro.TODOS) &&
               consolidadofiltrado.proyecto >= 0 &&
-              [tipo_saldo.GASTO, tipo_saldo.GASTOS_FOTOGRAFIA, tipo_saldo.FOTOGRAFIAS_OYM].includes(consolidadofiltrado.tipo_saldo)
+              [
+                tipo_saldo.GASTO,
+                tipo_saldo.GASTOS_FOTOGRAFIA,
+                tipo_saldo.FOTOGRAFIAS_OYM
+              ].includes(consolidadofiltrado.tipo_saldo)
             "
           >
             <label class="q-mb-sm block">Tareas</label>
@@ -401,7 +416,11 @@
             v-if="
               (consolidadofiltrado.tipo_filtro == tipo_filtro.DETALLE ||
                 consolidadofiltrado.tipo_filtro == tipo_filtro.TODOS) &&
-             [tipo_saldo.GASTO, tipo_saldo.GASTOS_FOTOGRAFIA, tipo_saldo.FOTOGRAFIAS_OYM].includes(consolidadofiltrado.tipo_saldo)
+              [
+                tipo_saldo.GASTO,
+                tipo_saldo.GASTOS_FOTOGRAFIA,
+                tipo_saldo.FOTOGRAFIAS_OYM
+              ].includes(consolidadofiltrado.tipo_saldo)
             "
           >
             <label class="q-mb-sm block">Detalle</label>
@@ -446,7 +465,11 @@
             v-if="
               (consolidadofiltrado.tipo_filtro == tipo_filtro.CIUDAD ||
                 consolidadofiltrado.tipo_filtro == tipo_filtro.TODOS) &&
-              [tipo_saldo.GASTO, tipo_saldo.GASTOS_FOTOGRAFIA, tipo_saldo.FOTOGRAFIAS_OYM].includes(consolidadofiltrado.tipo_saldo)
+              [
+                tipo_saldo.GASTO,
+                tipo_saldo.GASTOS_FOTOGRAFIA,
+                tipo_saldo.FOTOGRAFIAS_OYM
+              ].includes(consolidadofiltrado.tipo_saldo)
             "
           >
             <label class="q-mb-sm block">Ciudad</label>
@@ -491,7 +514,11 @@
             v-if="
               (consolidadofiltrado.tipo_filtro == tipo_filtro.SUBDETALLE ||
                 consolidadofiltrado.tipo_filtro == tipo_filtro.TODOS) &&
-              [tipo_saldo.GASTO, tipo_saldo.GASTOS_FOTOGRAFIA, tipo_saldo.FOTOGRAFIAS_OYM].includes(consolidadofiltrado.tipo_saldo)
+              [
+                tipo_saldo.GASTO,
+                tipo_saldo.GASTOS_FOTOGRAFIA,
+                tipo_saldo.FOTOGRAFIAS_OYM
+              ].includes(consolidadofiltrado.tipo_saldo)
             "
           >
             <label class="q-mb-sm block">SubDetalle</label>
@@ -536,7 +563,11 @@
             v-if="
               (consolidadofiltrado.tipo_filtro == tipo_filtro.AUTORIZACIONES ||
                 consolidadofiltrado.tipo_filtro == tipo_filtro.TODOS) &&
-              [tipo_saldo.GASTO, tipo_saldo.GASTOS_FOTOGRAFIA, tipo_saldo.FOTOGRAFIAS_OYM].includes(consolidadofiltrado.tipo_saldo)
+              [
+                tipo_saldo.GASTO,
+                tipo_saldo.GASTOS_FOTOGRAFIA,
+                tipo_saldo.FOTOGRAFIAS_OYM
+              ].includes(consolidadofiltrado.tipo_saldo)
             "
           >
             <label class="q-mb-sm block">Autorización Especial</label>
@@ -581,7 +612,11 @@
             v-if="
               (consolidadofiltrado.tipo_filtro == tipo_filtro.RUC ||
                 consolidadofiltrado.tipo_filtro == tipo_filtro.TODOS) &&
-              [tipo_saldo.GASTO, tipo_saldo.GASTOS_FOTOGRAFIA, tipo_saldo.FOTOGRAFIAS_OYM].includes(consolidadofiltrado.tipo_saldo)
+              [
+                tipo_saldo.GASTO,
+                tipo_saldo.GASTOS_FOTOGRAFIA,
+                tipo_saldo.FOTOGRAFIAS_OYM
+              ].includes(consolidadofiltrado.tipo_saldo)
             "
           >
             <label class="q-mb-sm block">RUC</label>
@@ -595,6 +630,37 @@
               dense
             >
             </q-input>
+          </div>
+
+          <!-- Nodos -->
+          <div
+            class="col-12 col-md-6 q-mb-md"
+            v-if="
+              consolidadofiltrado.tipo_filtro == tipo_filtro.TODOS &&
+              tipo_saldo.FOTOGRAFIAS_OYM == consolidadofiltrado.tipo_saldo
+            "
+          >
+            <label class="q-mb-sm block">Nodo/s</label>
+            <q-select
+              v-model="consolidadofiltrado.nodos"
+              :options="nodos"
+              options-dense
+              dense
+              outlined
+              multiple
+              use-chips
+              use-input
+              input-debounce="0"
+              @filter="filtrarNodos"
+              :option-value="v => v.id"
+              :option-label="v => v.nombre"
+              emit-value
+              map-options
+            >
+              <template v-slot:no-option>
+                <no-option-component />
+              </template>
+            </q-select>
           </div>
           <div
             class="col-12 col-md-6 q-mt-lg"

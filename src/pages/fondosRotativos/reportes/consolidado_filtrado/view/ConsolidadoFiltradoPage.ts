@@ -26,13 +26,16 @@ import {
   tipos_filtros,
   tipos_saldos,
   tipo_saldo,
-  tipo_filtro,
+  tipo_filtro
 } from 'config/utils'
 import { addDay, format, monthStart } from '@formkit/tempo'
 import { required, requiredIf } from 'shared/i18n-validators'
+import { useFiltrosListadosSelects } from 'shared/filtrosListadosGenerales'
+import NoOptionComponent from 'components/NoOptionComponent.vue'
+import { NodoController } from 'gestionTrabajos/nodos/infraestructure/NodoController'
 
 export default defineComponent({
-  components: { TabLayout },
+  components: { NoOptionComponent, TabLayout },
   setup() {
     /*********
      * Stores
@@ -51,7 +54,7 @@ export default defineComponent({
       entidad: consolidadofiltrado,
       disabled,
       accion,
-      listadosAuxiliares,
+      listadosAuxiliares
     } = mixin.useReferencias()
     const { obtenerListados, cargarVista } = mixin.useComportamiento()
 
@@ -60,55 +63,76 @@ export default defineComponent({
      **************/
     const reglas = {
       tipo_saldo: {
-        required,
+        required
       },
       tipo_filtro: {
         requiredIfTipoFiltro: requiredIf(function () {
           return consolidadofiltrado.tipo_saldo != null
             ? consolidadofiltrado.tipo_saldo == tipo_saldo.GASTO ||
-            consolidadofiltrado.tipo_saldo ==
-            tipo_saldo.GASTOS_FOTOGRAFIA
+                consolidadofiltrado.tipo_saldo == tipo_saldo.GASTOS_FOTOGRAFIA
             : false
-        }),
+        })
       },
       fecha_inicio: {
-        required,
+        required
       },
       fecha_fin: {
-        required,
+        required
       },
       empleado: {
         requiredIfEmpleado: requiredIf(function () {
           return consolidadofiltrado.tipo_saldo != null
-            ? consolidadofiltrado.tipo_saldo ==
-            tipo_saldo.CONSOLIDADO ||
-            consolidadofiltrado.tipo_saldo ==
-            tipo_saldo.ESTADO_CUENTA ||
-            consolidadofiltrado.tipo_saldo ==
-            tipo_saldo.TRANSFERENCIA_SALDOS
+            ? consolidadofiltrado.tipo_saldo == tipo_saldo.CONSOLIDADO ||
+                consolidadofiltrado.tipo_saldo == tipo_saldo.ESTADO_CUENTA ||
+                consolidadofiltrado.tipo_saldo ==
+                  tipo_saldo.TRANSFERENCIA_SALDOS
             : false
-        }),
+        })
       },
       detalle: {
-        requiredIfDetalle: requiredIf(function () { return consolidadofiltrado.tipo_filtro != null ? consolidadofiltrado.tipo_filtro == tipo_filtro.DETALLE : false }),
+        requiredIfDetalle: requiredIf(function () {
+          return consolidadofiltrado.tipo_filtro != null
+            ? consolidadofiltrado.tipo_filtro == tipo_filtro.DETALLE
+            : false
+        })
       },
       subdetalle: {
-        requiredIfSubdetalle: requiredIf(function () { return consolidadofiltrado.tipo_filtro != null ? consolidadofiltrado.tipo_filtro == tipo_filtro.SUBDETALLE : false }),
+        requiredIfSubdetalle: requiredIf(function () {
+          return consolidadofiltrado.tipo_filtro != null
+            ? consolidadofiltrado.tipo_filtro == tipo_filtro.SUBDETALLE
+            : false
+        })
       },
       proyecto: {
-        requiredIfProyecto: requiredIf(function () { return consolidadofiltrado.tipo_filtro != null ? consolidadofiltrado.tipo_filtro == tipo_filtro.PROYECTO : false }),
+        requiredIfProyecto: requiredIf(function () {
+          return consolidadofiltrado.tipo_filtro != null
+            ? consolidadofiltrado.tipo_filtro == tipo_filtro.PROYECTO
+            : false
+        })
       },
       tarea: {
-        requiredIfTarea: requiredIf(function () { return consolidadofiltrado.tipo_filtro != null ? consolidadofiltrado.tipo_filtro == tipo_filtro.TAREA : false }),
+        requiredIfTarea: requiredIf(function () {
+          return consolidadofiltrado.tipo_filtro != null
+            ? consolidadofiltrado.tipo_filtro == tipo_filtro.TAREA
+            : false
+        })
       },
       autorizador: {
-        requiredIfAutorizador: requiredIf(function () { return consolidadofiltrado.tipo_filtro != null ? consolidadofiltrado.tipo_filtro == tipo_filtro.AUTORIZACIONES : false }),
+        requiredIfAutorizador: requiredIf(function () {
+          return consolidadofiltrado.tipo_filtro != null
+            ? consolidadofiltrado.tipo_filtro == tipo_filtro.AUTORIZACIONES
+            : false
+        })
       },
       ruc: {
-        minLength: 13,
+        minLength: 13
       },
       ciudad: {
-        requiredIfCiudad: requiredIf(function () { return consolidadofiltrado.tipo_filtro != null ? consolidadofiltrado.tipo_filtro == tipo_filtro.CIUDAD : false }),
+        requiredIfCiudad: requiredIf(function () {
+          return consolidadofiltrado.tipo_filtro != null
+            ? consolidadofiltrado.tipo_filtro == tipo_filtro.CIUDAD
+            : false
+        })
       }
     }
     const tipos_saldos_consolidado_filtro = ref()
@@ -131,41 +155,44 @@ export default defineComponent({
     const cantones = ref([])
     const is_inactivo = ref('false')
     usuarios.value = listadosAuxiliares.usuarios
+    const { nodos, filtrarNodos } =
+      useFiltrosListadosSelects(listadosAuxiliares)
 
     cargarVista(async () => {
       await obtenerListados({
         usuarios: {
           controller: new EmpleadoController(),
-          params: { campos: 'id,nombres,apellidos', estado: 1 },
+          params: { campos: 'id,nombres,apellidos', estado: 1 }
         },
         tiposFondos: {
           controller: new TipoFondoController(),
-          params: { campos: 'id,descripcion' },
+          params: { campos: 'id,descripcion' }
         },
         detalles: {
           controller: new DetalleFondoController(),
-          params: { campos: 'id,descripcion' },
+          params: { campos: 'id,descripcion' }
         },
         autorizacionesEspeciales: {
           controller: new EmpleadoController(),
-          params: { campos: 'id,nombres,apellidos', estado: 1 },
+          params: { campos: 'id,nombres,apellidos', estado: 1 }
         },
         sub_detalles: {
           controller: new SubDetalleFondoController(),
-          params: { campos: 'id,descripcion' },
+          params: { campos: 'id,descripcion' }
         },
         proyectos: {
           controller: new ProyectoController(),
-          params: { campos: 'id,nombre,codigo_proyecto' },
+          params: { campos: 'id,nombre,codigo_proyecto' }
         },
-        tareas: [], /*{
+        nodos: { controller: new NodoController(), params: { activo: 1 } },
+        tareas: [] /*{
           controller: new TareaController(),
           params: { campos: 'id,codigo_tarea,titulo,cliente_id,proyecto_id' },
-        },*/
+        },*/,
         cantones: {
           controller: new CantonController(),
-          params: { campos: 'id,canton' },
-        },
+          params: { campos: 'id,canton' }
+        }
       })
 
       usuarios.value = listadosAuxiliares.usuarios
@@ -190,9 +217,10 @@ export default defineComponent({
       const ultimoDiaMesAnterior = addDay(primerDiaMes, -1)
       const primerDiaMesAnterior = monthStart(ultimoDiaMesAnterior)
 
-      consolidadofiltrado.fecha_inicio =format(primerDiaMesAnterior, maskFecha)
-      consolidadofiltrado.fecha_fin =format(ultimoDiaMesAnterior, maskFecha)
+      consolidadofiltrado.fecha_inicio = format(primerDiaMesAnterior, maskFecha)
+      consolidadofiltrado.fecha_fin = format(ultimoDiaMesAnterior, maskFecha)
     })
+
     /*********
      * Filtros
      **********/
@@ -208,7 +236,7 @@ export default defineComponent({
       update(() => {
         const needle = val.toLowerCase()
         usuarios.value = listadosAuxiliares.usuarios.filter(
-          (v) =>
+          v =>
             v.nombres.toLowerCase().indexOf(needle) > -1 ||
             v.apellidos.toLowerCase().indexOf(needle) > -1
         )
@@ -220,7 +248,8 @@ export default defineComponent({
     function filtrarAutorizacionesEspeciales(val, update) {
       if (val === '') {
         update(() => {
-          autorizacionesEspeciales.value = listadosAuxiliares.autorizacionesEspeciales
+          autorizacionesEspeciales.value =
+            listadosAuxiliares.autorizacionesEspeciales
         })
         return
       }
@@ -228,10 +257,13 @@ export default defineComponent({
         const needle = val.toLowerCase()
         autorizacionesEspeciales.value =
           listadosAuxiliares.autorizacionesEspeciales.filter(
-            (v) => v.nombres.toLowerCase().indexOf(needle) > -1 || v.apellidos.toLowerCase().indexOf(needle) > -1
+            v =>
+              v.nombres.toLowerCase().indexOf(needle) > -1 ||
+              v.apellidos.toLowerCase().indexOf(needle) > -1
           )
       })
     }
+
     // - Filtro Detalles
 
     function filtrarDetalles(val, update) {
@@ -244,10 +276,11 @@ export default defineComponent({
       update(() => {
         const needle = val.toLowerCase()
         detalles.value = listadosAuxiliares.detalles.filter(
-          (v) => v.descripcion.toLowerCase().indexOf(needle) > -1
+          v => v.descripcion.toLowerCase().indexOf(needle) > -1
         )
       })
     }
+
     //Filtro de Cantones
     function filtrarCiudades(val, update) {
       if (val === '') {
@@ -259,10 +292,11 @@ export default defineComponent({
       update(() => {
         const needle = val.toLowerCase()
         cantones.value = listadosAuxiliares.cantones.filter(
-          (v) => v.canton.toLowerCase().indexOf(needle) > -1
+          v => v.canton.toLowerCase().indexOf(needle) > -1
         )
       })
     }
+
     //Filtro de Protyectos
     function filtrarProyectos(val, update) {
       if (val === '') {
@@ -274,12 +308,13 @@ export default defineComponent({
       update(() => {
         const needle = val.toLowerCase()
         proyectos.value = listadosAuxiliares.proyectos.filter(
-          (v) =>
+          v =>
             v.codigo_proyecto.toLowerCase().indexOf(needle) > -1 ||
             v.nombre.toLowerCase().indexOf(needle) > -1
         )
       })
     }
+
     /**Filtro de Tareas */
     function filtrarTareas(val, update) {
       if (val === '') {
@@ -291,12 +326,13 @@ export default defineComponent({
       update(() => {
         const needle = val.toLowerCase()
         tareas.value = listadoTareas.value.filter(
-          (v) =>
+          v =>
             v.codigo_tarea.toLowerCase().indexOf(needle) > -1 ||
             v.titulo.toLowerCase().indexOf(needle) > -1
         )
       })
     }
+
     const listadoTareas = computed(() => {
       if (consolidadofiltrado.proyecto == 0) {
         return listadosAuxiliares.tareas.filter(
@@ -308,14 +344,14 @@ export default defineComponent({
           tarea.proyecto_id === consolidadofiltrado.proyecto || tarea.id == 0
       )
     })
+
     // - Filtro tipos Filtro
     function filtrarTiposFiltro(val, update) {
       switch (consolidadofiltrado.tipo_saldo) {
         case '1':
           update(() => {
-            tipos_filtros_consolidado_filtro.value = listadosAuxiliares.tipos_filtro.filter(
-              (v) => v.value == 6
-            )
+            tipos_filtros_consolidado_filtro.value =
+              listadosAuxiliares.tipos_filtro.filter(v => v.value == 6)
           })
           break
 
@@ -327,11 +363,13 @@ export default defineComponent({
       }
       update(() => {
         const needle = val.toLowerCase()
-        tipos_filtros_consolidado_filtro.value = listadosAuxiliares.tipos_filtro.filter(
-          (v) => v.name.toLowerCase().indexOf(needle) > -1
-        )
+        tipos_filtros_consolidado_filtro.value =
+          listadosAuxiliares.tipos_filtro.filter(
+            v => v.name.toLowerCase().indexOf(needle) > -1
+          )
       })
     }
+
     //Filtro tipos de reportes
     function filtarTiposSaldos(val, update) {
       if (val === '') {
@@ -345,7 +383,7 @@ export default defineComponent({
         const needle = val.toLowerCase()
         tipos_saldos_consolidado_filtro.value =
           listadosAuxiliares.tipos_saldos.filter(
-            (v) => v.label.toLowerCase().indexOf(needle) > -1
+            v => v.label.toLowerCase().indexOf(needle) > -1
           )
       })
     }
@@ -358,7 +396,7 @@ export default defineComponent({
         return listadosAuxiliares.sub_detalles
       }
       return listadosAuxiliares.sub_detalles.filter(
-        (subdetalle) =>
+        subdetalle =>
           subdetalle.id_detalle_viatico === consolidadofiltrado.detalle
       )
     })
@@ -373,12 +411,15 @@ export default defineComponent({
       const needle = val.toLowerCase()
       update(() => {
         sub_detalles.value = opcionesSubdetalles.value.filter(
-          (v) => v.descripcion.toLowerCase().indexOf(needle) > -1
+          v => v.descripcion.toLowerCase().indexOf(needle) > -1
         )
       })
     }
 
-    async function generar_reporte(valor: ConsolidadoFiltrado, tipo: string): Promise<void> {
+    async function generar_reporte(
+      valor: ConsolidadoFiltrado,
+      tipo: string
+    ): Promise<void> {
       valor.isComponentFilesModified = null
       if (await v$.value.$validate()) {
         const axios = AxiosHttpRepository.getInstance()
@@ -390,14 +431,28 @@ export default defineComponent({
               apiConfig.URL_BASE +
               '/' +
               axios.getEndpoint(endpoints.consolidado_filtrado_excel)
-            await imprimirArchivo(url_excel, 'POST', 'blob', 'xlsx', filename, valor)
+            await imprimirArchivo(
+              url_excel,
+              'POST',
+              'blob',
+              'xlsx',
+              filename,
+              valor
+            )
             break
           case tipoReportes.PDF:
             const url_pdf =
               apiConfig.URL_BASE +
               '/' +
               axios.getEndpoint(endpoints.consolidado_filtrado_pdf)
-            await imprimirArchivo(url_pdf, 'POST', 'blob', 'pdf', filename, valor)
+            await imprimirArchivo(
+              url_pdf,
+              'POST',
+              'blob',
+              'pdf',
+              filename,
+              valor
+            )
             break
           default:
             break
@@ -415,7 +470,7 @@ export default defineComponent({
       update(() => {
         const needle = val.toLowerCase()
         usuariosInactivos.value = listadosAuxiliares.usuariosInactivos.filter(
-          (v) =>
+          v =>
             v.nombres.toLowerCase().indexOf(needle) > -1 ||
             v.apellidos.toLowerCase().indexOf(needle) > -1
         )
@@ -432,13 +487,16 @@ export default defineComponent({
       consolidadofiltrado.autorizador = null
       consolidadofiltrado.ruc = null
 
-      if (['0', '2'].includes(consolidadofiltrado.tipo_filtro ?? '')) { // Todos o Tarea
+      if (['0', '2'].includes(consolidadofiltrado.tipo_filtro ?? '')) {
+        // Todos o Tarea
         cargarVista(async () => {
           await obtenerListados({
             tareas: {
               controller: new TareaController(),
-              params: { campos: 'id,codigo_tarea,titulo,cliente_id,proyecto_id' },
-            },
+              params: {
+                campos: 'id,codigo_tarea,titulo,cliente_id,proyecto_id'
+              }
+            }
           })
         })
       }
@@ -446,12 +504,14 @@ export default defineComponent({
 
     function limpiarTipoSaldo() {
       consolidadofiltrado.tipo_filtro = null
-      limpiar();
+      limpiar()
     }
+
     function optionsFechaInicio(date) {
       const fecha_actual = format(new Date(), 'YYYY/MM/DD')
       return date <= fecha_actual
     }
+
     function optionsFechaFin(date) {
       const fecha_actual = format(new Date(), 'YYYY/MM/DD')
       const fecha_inicio = format(
@@ -462,16 +522,21 @@ export default defineComponent({
       )
       return date >= fecha_inicio && date <= fecha_actual
     }
+
     async function recargarEmpleadosInactivos() {
       usuariosInactivos.value = (
         await new EmpleadoController().listar({
           campos: 'id,nombres,apellidos',
-          estado: 0,
+          estado: 0
         })
       ).result
       listadosAuxiliares.usuariosInactivos = usuariosInactivos.value
-      LocalStorage.set('usuariosInactivos', JSON.stringify(usuariosInactivos.value))
+      LocalStorage.set(
+        'usuariosInactivos',
+        JSON.stringify(usuariosInactivos.value)
+      )
     }
+
     return {
       mixin,
       consolidadofiltrado,
@@ -513,6 +578,10 @@ export default defineComponent({
       recargarEmpleadosInactivos,
       tipo_saldo,
       tipo_filtro,
+
+      // listados
+      nodos,
+      filtrarNodos
     }
-  },
+  }
 })
