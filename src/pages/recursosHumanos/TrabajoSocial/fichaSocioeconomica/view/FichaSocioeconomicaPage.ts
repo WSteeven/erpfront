@@ -57,7 +57,6 @@ import NoOptionComponent from 'components/NoOptionComponent.vue'
 import { LocalStorage, useQuasar } from 'quasar'
 import { AxiosHttpRepository } from 'shared/http/infraestructure/AxiosHttpRepository'
 import { apiConfig, endpoints } from 'config/api'
-import { StatusEssentialLoading } from 'components/loading/application/StatusEssentialLoading'
 import { useNotificacionStore } from 'stores/notificacion'
 import { useCargandoStore } from 'stores/cargando'
 
@@ -94,7 +93,7 @@ export default defineComponent({
     useNotificacionStore().setQuasar(useQuasar())
     useCargandoStore().setQuasar(useQuasar())
 
-    const cargando = new StatusEssentialLoading()
+    // const cargando = new StatusEssentialLoading()
     const empleadoStore = useEmpleadoStore()
     const tabDefecto = ref('1')
     const { empleados, filtrarEmpleados, cantones, filtrarCantones } =
@@ -305,7 +304,7 @@ export default defineComponent({
     }
 
     async function imprimir(id: number, nombre_empleado: string) {
-      cargando.activar()
+      // cargando.activar()
       const axios = AxiosHttpRepository.getInstance()
       const url =
         apiConfig.URL_BASE +
@@ -314,7 +313,7 @@ export default defineComponent({
         id
       const filename = 'Ficha Socioeconomica ' + nombre_empleado
       await imprimirArchivo(url, 'GET', 'blob', 'pdf', filename)
-      cargando.desactivar()
+      // cargando.desactivar()
     }
 
     /********************************
