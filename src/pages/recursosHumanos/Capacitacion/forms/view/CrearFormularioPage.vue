@@ -39,9 +39,7 @@
               dense
             >
               <template v-slot:error>
-                <div v-for="error of v$.nombre.$errors" :key="error.$uid">
-                  <div class="error-msg">{{ error.$message }}</div>
-                </div>
+                <error-component clave="nombre" :v$="v$"/>
               </template>
             </q-input>
           </div>
@@ -77,12 +75,10 @@
               map-options
             >
               <template v-slot:error>
-                <div
-                  v-for="error of v$.periodo_recurrencia.$errors"
-                  :key="error.$uid"
-                >
-                  <div class="error-msg">{{ error.$message }}</div>
-                </div>
+                <error-component clave="periodo_recurrencia" :v$="v$"/>
+              </template>
+              <template v-slot:no-option>
+                <no-option-component/>
               </template>
             </q-select>
           </div>
@@ -127,13 +123,7 @@
               </template>
 
               <template v-slot:error>
-                <div
-                  style="clear: inherit"
-                  v-for="error of v$.fecha_inicio.$errors"
-                  :key="error.$uid"
-                >
-                  <div class="error-msg">{{ error.$message }}</div>
-                </div>
+                <error-component clave="fecha_inicio" :v$="v$"/>
               </template>
             </q-input>
           </div>
@@ -143,7 +133,7 @@
             <label class="q-mb-sm block"
               >Tipo Formulario <i class="bi bi-info-circle" />
               <q-tooltip class="bg-dark"
-                >INTERNO unicamente para empleados registrados, EXTERNO para
+                >INTERNO únicamente para empleados registrados, EXTERNO para
                 cualquier persona en general
               </q-tooltip>
             </label>
@@ -159,9 +149,7 @@
               :error="!!v$.tipo.$errors.length"
             >
               <template v-slot:error>
-                <div v-for="error of v$.tipo.$errors" :key="error.$uid">
-                  <div class="error-msg">{{ error.$message }}</div>
-                </div>
+                <error-component clave="tipo" :v$="v$"/>
               </template>
             </q-select>
           </div>

@@ -128,12 +128,8 @@ export default defineComponent({
       descripcion: { required },
       modalidad: { required },
       anios_experiencia: { required: requiredIf(() => vacante.requiere_experiencia) },
-      areas_conocimiento: {
-        required: requiredIf(() => vacante.tipo_puesto !== tipo_puesto.pasante),
-      },
-      formaciones_academicas: {
-        required: requiredIf(() => vacante.requiere_formacion_academica),
-      },
+      areas_conocimiento: { required: requiredIf(() => vacante.tipo_puesto !== tipo_puesto.pasante), },
+      formaciones_academicas: { required: requiredIf(() => vacante.requiere_formacion_academica), },
       canton: { required },
       num_plazas: { required },
     }
@@ -149,15 +145,15 @@ export default defineComponent({
       tabActual.value = tab
       switch (tab) {
         case opcionesTablaVacantes.inactivas:
-          listar({ activo: 0 })
+          await listar({ activo: 0 })
 
           break;
         case opcionesTablaVacantes.publicadas:
-          listar({ activo: 1 })
+          await listar({ activo: 1 })
 
           break;
         case opcionesTablaVacantes.vigentes:
-          listar({
+          await listar({
             'fecha_caducidad[operator]': '>=',
             'fecha_caducidad[value]': obtenerFechaActual(maskFecha),
 
@@ -165,7 +161,7 @@ export default defineComponent({
 
           break;
         case opcionesTablaVacantes.expiradas:
-          listar({
+          await listar({
             'fecha_caducidad[operator]': '<',
             'fecha_caducidad[value]': obtenerFechaActual(maskFecha),
           })

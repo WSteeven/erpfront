@@ -21,11 +21,14 @@ import { useAuthenticationStore } from 'stores/authentication'
 import draggable from 'vuedraggable'
 import { encontrarUltimoIdListado } from 'shared/utils'
 import { CustomActionTable } from 'components/tables/domain/CustomActionTable'
-import { apiConfig } from 'config/api'
+import ErrorComponent from 'components/ErrorComponent.vue'
+import NoOptionComponent from 'components/NoOptionComponent.vue'
 
 export default defineComponent({
   name: 'FormBuilder',
   components: {
+    NoOptionComponent,
+    ErrorComponent,
     draggable,
     TabLayoutFilterTabs2,
     CrearNuevoCampoModal,
@@ -38,7 +41,8 @@ export default defineComponent({
     )
     const { entidad: formulario, accion, disabled } = mixin.useReferencias()
     const { listar, setValidador, cargarVista } = mixin.useComportamiento()
-    const { notificarInformacion, notificarError, notificarAdvertencia, notificarCorrecto } = useNotificaciones()
+    const { notificarInformacion, notificarError, notificarCorrecto } =
+      useNotificaciones()
 
     const store = useAuthenticationStore()
     const tabDefecto = ref('1')

@@ -16,7 +16,7 @@ const rutasCapacitacion: RouteRecordRaw[] = [
     meta: { requiresAuth: false }
   },
   {
-    path: 'formularios',
+    path: '/formularios',
     name: 'rrhh_capacitacion_formularios',
     component: ()=> import('capacitacion/forms/view/CrearFormularioPage.vue'),
     meta: {requiresAuth: true}
