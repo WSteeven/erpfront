@@ -83,6 +83,7 @@ export const tabOptionsTransferencias: TabOption[] = [
   { label: 'Pendientes', value: 'PENDIENTE' },
   { label: 'Tránsito', value: 'TRANSITO' },
   { label: 'Completadas', value: 'COMPLETADO' },
+  { label: 'Anuladas', value: 'ANULADO' },
 ]
 export const tabOptionsPedidos: TabOption[] = [
   { label: 'Por autorizar', value: 'PENDIENTE' },
@@ -341,6 +342,7 @@ export const tipos_saldos = [
   { value: '4', label: 'Estado de Cuenta' },
   { value: '5', label: 'Transferencia de Saldos' },
   { value: '6', label: 'Gastos con Fotografia' },
+  { value: '7', label: 'Fotografias OYM' },
 ]
 
 export const tipos_filtros = [
@@ -374,6 +376,7 @@ export const tipo_saldo = {
   ESTADO_CUENTA: '4',
   TRANSFERENCIA_SALDOS: '5',
   GASTOS_FOTOGRAFIA: '6',
+  FOTOGRAFIAS_OYM : '7'
 }
 export const estadosTransferencias = {
   APROBADO: 1,

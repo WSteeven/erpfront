@@ -83,10 +83,21 @@
           :placeholder="props.col.placeholder"
           :min="props.col.min"
           :max="props.col.max"
-          :autogrow="props.col.type==='text'||!props.col.type"
+          :error="!!v$[keyError]?.$each?.$response.$errors[props.rowIndex][props.col.name]?.length"
+          :autogrow="props.col.type === 'text' || !props.col.type"
           dense
           outlined
-        />
+        >
+          <template v-slot:error>
+            <error-component
+              :v$="v$"
+              is-collection
+              :key-error="keyError"
+              :index-error="props.rowIndex"
+              :clave="props.col.name"
+            />
+          </template>
+        </q-input>
         <!-- @keyup.enter="scope.set" -->
 
         <q-select
@@ -104,10 +115,21 @@
           map-options
           use-input
           input-debounce="0"
+          :error="!!v$[keyError]?.$each?.$response.$errors[props.rowIndex][props.col.name]?.length"
           :disable="disable"
           @filter="props.col.filtro"
           @update:model-value="guardarCeldaEditada(props.row)"
-        />
+        >
+          <template v-slot:error>
+            <error-component
+              :v$="v$"
+              is-collection
+              :key-error="keyError"
+              :index-error="props.rowIndex"
+              :clave="props.col.name"
+            />
+          </template>
+        </q-select>
 
         <!-- Aún no está completado, porque falta controlar la manera de subir el archivo -->
         <!-- <q-file
@@ -142,8 +164,18 @@
           dense
           emit-value
           map-options
+          :error="!!v$[keyError]?.$each?.$response.$errors[props.rowIndex][props.col.name]?.length"
           :disable="disable"
         >
+          <template v-slot:error>
+            <error-component
+              :v$="v$"
+              is-collection
+              :key-error="keyError"
+              :index-error="props.rowIndex"
+              :clave="props.col.name"
+            />
+          </template>
           <template v-slot:option="{ itemProps, opt, selected, toggleOption }">
             <q-item v-bind="itemProps">
               <q-item-section>
@@ -266,11 +298,13 @@
               "
               class="q-ml-md"
             >
-              <q-tooltip class="bg-dark">{{
-                props.inFullscreen
-                  ? 'Salir de pantalla completa'
-                  : 'Abrir en pantalla completa'
-              }}</q-tooltip>
+              <q-tooltip class="bg-dark"
+                >{{
+                  props.inFullscreen
+                    ? 'Salir de pantalla completa'
+                    : 'Abrir en pantalla completa'
+                }}
+              </q-tooltip>
             </q-btn>
           </div>
         </div>
@@ -283,7 +317,7 @@
       </div>
 
       <div
-        v-if="permitirFiltrar || (true && mostrarCantidadElementos)"
+        v-if="permitirFiltrar || mostrarCantidadElementos"
         class="row full-width justify-between q-col-gutter-x-sm items-center q-mb-md"
       >
         <span class="row items-center q-px-md">
@@ -304,8 +338,8 @@
             @click="agregarFiltro()"
           >
             <q-icon name="bi-plus" size="xs" class="q-mr-sm"></q-icon>
-            Agregar filtro</q-btn
-          >
+            Agregar filtro
+          </q-btn>
 
           <!-- <q-btn
             v-if="mostrarFiltros"
@@ -326,8 +360,8 @@
             @click="filtrar()"
           >
             <q-icon name="bi-funnel" class="q-mr-sm" size="xs"></q-icon>
-            Aplicar filtros</q-btn
-          >
+            Aplicar filtros
+          </q-btn>
 
           <q-btn
             v-if="mostrarExportar"
@@ -377,8 +411,8 @@
               class="q-mr-sm"
               size="xs"
             ></q-icon>
-            {{ tituloBotonFiltros }}</q-btn
-          >
+            {{ tituloBotonFiltros }}
+          </q-btn>
         </div>
       </div>
 
@@ -413,9 +447,9 @@
             class="q-pr-sm"
           ></q-icon>
           <span>{{ accion1Header.titulo }}</span>
-          <q-tooltip v-if="accion1Header.tooltip" class="bg-dark">{{
-            accion1Header.tooltip
-          }}</q-tooltip>
+          <q-tooltip v-if="accion1Header.tooltip" class="bg-dark"
+            >{{ accion1Header.tooltip }}
+          </q-tooltip>
         </q-btn>
 
         <!-- Boton 2 Header -->
@@ -434,9 +468,9 @@
             class="q-pr-sm"
           ></q-icon>
           <span>{{ accion2Header.titulo }}</span>
-          <q-tooltip v-if="accion2Header.tooltip" class="bg-dark">{{
-            accion2Header.tooltip
-          }}</q-tooltip>
+          <q-tooltip v-if="accion2Header.tooltip" class="bg-dark"
+            >{{ accion2Header.tooltip }}
+          </q-tooltip>
         </q-btn>
 
         <!-- Boton 3 Header -->
@@ -455,9 +489,9 @@
             class="q-pr-sm"
           ></q-icon>
           <span>{{ accion3Header.titulo }}</span>
-          <q-tooltip v-if="accion3Header.tooltip" class="bg-dark">{{
-            accion3Header.tooltip
-          }}</q-tooltip>
+          <q-tooltip v-if="accion3Header.tooltip" class="bg-dark"
+            >{{ accion3Header.tooltip }}
+          </q-tooltip>
         </q-btn>
 
         <!-- Boton 4 Header -->
@@ -476,9 +510,9 @@
             class="q-pr-sm"
           ></q-icon>
           <span>{{ accion4Header.titulo }}</span>
-          <q-tooltip v-if="accion4Header.tooltip" class="bg-dark">{{
-            accion4Header.tooltip
-          }}</q-tooltip>
+          <q-tooltip v-if="accion4Header.tooltip" class="bg-dark"
+            >{{ accion4Header.tooltip }}
+          </q-tooltip>
         </q-btn>
 
         <!-- Boton 5 Header -->
@@ -497,9 +531,9 @@
             class="q-pr-sm"
           ></q-icon>
           <span>{{ accion5Header.titulo }}</span>
-          <q-tooltip v-if="accion5Header.tooltip" class="bg-dark">{{
-            accion5Header.tooltip
-          }}</q-tooltip>
+          <q-tooltip v-if="accion5Header.tooltip" class="bg-dark"
+            >{{ accion5Header.tooltip }}
+          </q-tooltip>
         </q-btn>
 
         <!-- Boton 6 Header -->
@@ -518,9 +552,9 @@
             class="q-pr-sm"
           ></q-icon>
           <span>{{ accion6Header.titulo }}</span>
-          <q-tooltip v-if="accion6Header.tooltip" class="bg-dark">{{
-            accion6Header.tooltip
-          }}</q-tooltip>
+          <q-tooltip v-if="accion6Header.tooltip" class="bg-dark"
+            >{{ accion6Header.tooltip }}
+          </q-tooltip>
         </q-btn>
       </div>
     </template>
@@ -545,7 +579,7 @@
               "
             >
               <q-icon name="bi-eye" size="xs" color="white"></q-icon>
-              <q-tooltip class="bg-dark"> Consultar </q-tooltip>
+              <q-tooltip class="bg-dark"> Consultar</q-tooltip>
             </q-btn>
 
             <!-- Editar -->
@@ -556,7 +590,7 @@
               @click="editar({ entidad: props.row, posicion: props.rowIndex })"
             >
               <q-icon name="bi-pencil-square" size="xs" color="white"></q-icon>
-              <q-tooltip class="bg-dark"> Editar </q-tooltip>
+              <q-tooltip class="bg-dark"> Editar</q-tooltip>
             </q-btn>
 
             <!-- Eliminar -->
@@ -569,7 +603,7 @@
               "
             >
               <q-icon name="bi-trash3" size="xs" color="white"></q-icon>
-              <q-tooltip class="bg-dark"> Eliminar </q-tooltip>
+              <q-tooltip class="bg-dark"> Eliminar</q-tooltip>
             </q-btn>
           </q-btn-group>
 
@@ -586,6 +620,7 @@
             :accion8="accion8"
             :accion9="accion9"
             :accion10="accion10"
+            :accion11="accion11"
             :identificador="identificador"
             :propsTable="props"
             :listado="listado"
@@ -634,7 +669,7 @@
                   "
                 >
                   <q-icon name="bi-eye" size="xs"></q-icon>
-                  <q-tooltip class="bg-dark"> Consultar </q-tooltip>
+                  <q-tooltip class="bg-dark"> Consultar</q-tooltip>
                 </q-btn>
 
                 <!-- Editar -->
@@ -653,7 +688,7 @@
                     color="white"
                     size="xs"
                   ></q-icon>
-                  <q-tooltip class="bg-dark"> Editar </q-tooltip>
+                  <q-tooltip class="bg-dark"> Editar</q-tooltip>
                 </q-btn>
 
                 <!-- Eliminar -->
@@ -668,7 +703,7 @@
                   "
                 >
                   <q-icon name="bi-trash3" size="xs"></q-icon>
-                  <q-tooltip class="bg-dark"> Eliminar </q-tooltip>
+                  <q-tooltip class="bg-dark"> Eliminar</q-tooltip>
                 </q-btn>
 
                 <CustomButtons
@@ -682,6 +717,7 @@
                   :accion8="accion8"
                   :accion9="accion9"
                   :accion10="accion10"
+                  :accion11="accion11"
                   :identificador="identificador"
                   :propsTable="props"
                   :listado="listado"
@@ -815,8 +851,8 @@
                       name="bi-car-front-fill"
                       color="primary"
                       class="q-mr-xs"
-                    ></q-icon
-                    >{{ 'En camino' }}
+                    ></q-icon>
+                    {{ 'En camino' }}
                   </q-chip>
 
                   <q-chip
@@ -827,8 +863,8 @@
                       name="bi-check-circle-fill"
                       color="positive"
                       class="q-mr-xs"
-                    ></q-icon
-                    >{{ 'RUTA COMPLETADA' }}
+                    ></q-icon>
+                    {{ 'RUTA COMPLETADA' }}
                   </q-chip>
 
                   <q-chip
@@ -869,8 +905,8 @@
                       color="text-primary"
                       size="14px"
                       class="q-mr-xs"
-                    ></q-icon
-                    ><small>{{ 'TICKET EJECUTADO' }}</small>
+                    ></q-icon>
+                    <small>{{ 'TICKET EJECUTADO' }}</small>
                   </q-chip>
 
                   <q-chip
@@ -882,8 +918,8 @@
                       color="positive"
                       size="14px"
                       class="q-mr-xs"
-                    ></q-icon
-                    ><small>{{ 'TICKET FINALIZADO' }}</small>
+                    ></q-icon>
+                    <small>{{ 'TICKET FINALIZADO' }}</small>
                   </q-chip>
 
                   <q-chip
@@ -1176,16 +1212,16 @@
             name="bi-circle-fill"
             color="positive"
             class="q-mr-xs"
-          ></q-icon
-          >Disponible
+          ></q-icon>
+          Disponible
         </q-chip>
         <q-chip v-else class="bg-pink-1">
           <q-icon
             name="bi-circle-fill"
             color="negative"
             class="q-mr-xs"
-          ></q-icon
-          >Ocupado
+          ></q-icon>
+          Ocupado
         </q-chip>
       </q-td>
     </template>
@@ -1219,8 +1255,8 @@
             name="bi-circle-fill"
             color="positive"
             class="q-mr-xs"
-          ></q-icon
-          >Asignado
+          ></q-icon>
+          Asignado
         </q-chip>
         <q-chip v-else class="bg-pink-1" color="red">
           <q-icon
@@ -1322,11 +1358,12 @@
         <q-chip
           v-if="props.value == true"
           :class="{ 'bg-green-1': !$q.dark.isActive }"
-          ><q-icon name="bi-toggle-on"
-        /></q-chip>
-        <q-chip v-else :class="{ 'bg-red-1': !$q.dark.isActive }"
-          ><q-icon name="bi-toggle-off"
-        /></q-chip>
+        >
+          <q-icon name="bi-toggle-on" />
+        </q-chip>
+        <q-chip v-else :class="{ 'bg-red-1': !$q.dark.isActive }">
+          <q-icon name="bi-toggle-off" />
+        </q-chip>
       </q-td>
     </template>
     <template #body-cell-grava_iva="props">
@@ -1334,11 +1371,12 @@
         <q-chip
           v-if="props.value == true"
           :class="{ 'bg-green-1': !$q.dark.isActive }"
-          ><q-icon name="bi-toggle-on"
-        /></q-chip>
-        <q-chip v-else :class="{ 'bg-red-1': !$q.dark.isActive }"
-          ><q-icon name="bi-toggle-off"
-        /></q-chip>
+        >
+          <q-icon name="bi-toggle-on" />
+        </q-chip>
+        <q-chip v-else :class="{ 'bg-red-1': !$q.dark.isActive }">
+          <q-icon name="bi-toggle-off" />
+        </q-chip>
       </q-td>
     </template>
     <!-- corregir esto para que sea dinamico -->
@@ -1365,22 +1403,22 @@
             props.value == estadosCondicionesId.mal_estado ||
             props.value == estadosCondicionesValue.mal_estado
           "
-          >MAL ESTADO</q-chip
-        >
+          >MAL ESTADO
+        </q-chip>
         <q-chip
           v-if="
             props.value == estadosCondicionesId.danado ||
             props.value == estadosCondicionesValue.danado
           "
-          >DAÑADO</q-chip
-        >
+          >DAÑADO
+        </q-chip>
         <q-chip
           v-if="
             props.value == estadosCondicionesId.buen_estado ||
             props.value == estadosCondicionesValue.buen_estado
           "
-          >BUEN ESTADO</q-chip
-        >
+          >BUEN ESTADO
+        </q-chip>
       </q-td>
     </template>
     <!-- ordenes de compra -->
@@ -1422,9 +1460,10 @@
         <q-chip
           v-if="props.value === estadosTransacciones.completa"
           :class="{ 'bg-green-1': !$q.dark.isActive }"
-          ><q-icon name="bi-circle-fill" color="positive"></q-icon
-          >COMPLETA</q-chip
         >
+          <q-icon name="bi-circle-fill" color="positive"></q-icon>
+          COMPLETA
+        </q-chip>
         <q-chip
           v-if="props.value === estadosTransacciones.parcial"
           :class="{ 'bg-red-1': !$q.dark.isActive }"
@@ -1592,15 +1631,19 @@
             name="bi-circle-fill"
             color="negative"
             class="q-mr-xs"
-          ></q-icon
-          >SIN STOCK
+          ></q-icon>
+          SIN STOCK
         </q-chip>
         <q-chip
           v-if="props.value === estadosInventarios.transito"
           class="bg-yellow-1"
         >
-          <q-icon name="bi-circle-fill" color="warning" class="q-mr-xs"></q-icon
-          >TRANSITO
+          <q-icon
+            name="bi-circle-fill"
+            color="warning"
+            class="q-mr-xs"
+          ></q-icon>
+          TRANSITO
         </q-chip>
         <q-chip
           v-if="props.value === estadosInventarios.inventario"
@@ -1610,8 +1653,8 @@
             name="bi-circle-fill"
             color="positive"
             class="q-mr-xs"
-          ></q-icon
-          >INVENTARIO
+          ></q-icon>
+          INVENTARIO
         </q-chip>
         <!-- Estados de la tabla control de stock -->
         <q-chip
@@ -1622,16 +1665,20 @@
             name="bi-circle-fill"
             color="negative"
             class="q-mr-xs"
-          ></q-icon
-          >{{ estadosControlStock.minimo }}
+          ></q-icon>
+          {{ estadosControlStock.minimo }}
         </q-chip>
 
         <q-chip
           v-if="props.value === estadosControlStock.reorden"
           class="bg-yellow-1"
         >
-          <q-icon name="bi-circle-fill" color="warning" class="q-mr-xs"></q-icon
-          >{{ estadosControlStock.reorden }}
+          <q-icon
+            name="bi-circle-fill"
+            color="warning"
+            class="q-mr-xs"
+          ></q-icon>
+          {{ estadosControlStock.reorden }}
         </q-chip>
 
         <q-chip
@@ -1642,8 +1689,8 @@
             name="bi-circle-fill"
             color="positive"
             class="q-mr-xs"
-          ></q-icon
-          >{{ estadosControlStock.suficiente }}
+          ></q-icon>
+          {{ estadosControlStock.suficiente }}
         </q-chip>
 
         <q-chip
@@ -1654,8 +1701,8 @@
             name="bi-car-front-fill"
             color="primary"
             class="q-mr-xs"
-          ></q-icon
-          >{{ 'En camino' }}
+          ></q-icon>
+          {{ 'En camino' }}
         </q-chip>
 
         <q-chip
@@ -1666,8 +1713,8 @@
             name="bi-check-circle-fill"
             color="positive"
             class="q-mr-xs"
-          ></q-icon
-          >{{ 'RUTA COMPLETADA' }}
+          ></q-icon>
+          {{ 'RUTA COMPLETADA' }}
         </q-chip>
 
         <estados-subtareas :propsTable="props" />
@@ -1679,8 +1726,8 @@
             name="bi-circle-fill"
             color="positive"
             class="q-mr-xs"
-          ></q-icon
-          >DEVUELTO
+          ></q-icon>
+          DEVUELTO
         </q-chip>
       </q-td>
     </template>
@@ -1753,8 +1800,8 @@
           v-if="props.value === 'TICKET REASIGNADO'"
           class="bg-blue-1 text-blue"
         >
-          <q-icon name="bi-arrow-left-right" class="q-mr-xs"></q-icon
-          >{{ 'TICKET REASIGNADO' }}
+          <q-icon name="bi-arrow-left-right" class="q-mr-xs"></q-icon>
+          {{ 'TICKET REASIGNADO' }}
         </q-chip>
 
         <q-chip
@@ -1765,8 +1812,8 @@
             name="bi-pause-circle-fill"
             color="text-grey-8"
             class="q-mr-xs"
-          ></q-icon
-          >{{ 'TICKET PAUSADO' }}
+          ></q-icon>
+          {{ 'TICKET PAUSADO' }}
         </q-chip>
 
         <q-chip
@@ -1777,8 +1824,8 @@
             name="bi-play-circle-fill"
             color="text-primary"
             class="q-mr-xs"
-          ></q-icon
-          >{{ 'TICKET EJECUTADO' }}
+          ></q-icon>
+          {{ 'TICKET EJECUTADO' }}
         </q-chip>
 
         <q-chip
@@ -2046,6 +2093,7 @@
 // Columna estatica ---
 .my-sticky-column-first-table {
   max-width: 100%;
+
   th:first-child,
   td:first-child {
     position: sticky;
@@ -2056,8 +2104,10 @@
     background-color: #fff;
   }
 }
+
 .my-sticky-column-table {
   max-width: 100%;
+
   th:last-child,
   td:last-child {
     position: sticky;
@@ -2066,6 +2116,7 @@
     border-left: 1px solid $grey-4;
     border-bottom: 1px solid $grey-4;
   }
+
   /* prevent scrolling behind sticky top row on focus */
   tbody {
     /* height of all previous header rows */

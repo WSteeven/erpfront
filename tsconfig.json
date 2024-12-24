@@ -40,7 +40,7 @@
       // Modulo medico
       "medico/*": ["src/pages/medico/*"],
       "seleccionContratacion/*": ["src/pages/recursosHumanos/SeleccionContratacionPersonal/*"],
-      "capacitacion/*": ["src/pages/recursosHumanos/Capacitacion/*"],
+      "trabajoSocial/*": ["src/pages/recursosHumanos/TrabajoSocial/*"],
 
       "activosFijos/*": ["src/pages/activosFijos/*"],
       "controlActivosFijos/*": ["src/pages/activosFijos/controlActivosFijos/*"]

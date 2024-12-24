@@ -3,6 +3,7 @@ import { MenuOption } from 'src/shared/menu/MenuOption'
 import { defineStore } from 'pinia'
 import { computed, Ref } from 'vue'
 import seleccionContratacionPersonal from './menus/rrhh/seleccionContratacionPersonal'
+import trabajoSocial from 'stores/menus/rrhh/trabajoSocial'
 import capacitacion from 'stores/menus/rrhh/capacitacion'
 
 export const useMenuStore = defineStore('menu', () => {
@@ -101,6 +102,18 @@ export const useMenuStore = defineStore('menu', () => {
             }
           ]
         },
+        {
+          title: 'Configuracion',
+          icon: 'bi-gear-fill',
+          can: store.can('puede.acceder.configuracion_modulo_tareas'),
+          children: [
+            {
+              title: 'Nodos',
+              link: 'nodos',
+              icon: 'bi-plus-circle-fill',
+              can: store.can('puede.acceder.nodos')
+            },
+          ]},
         {
           title: 'Reportes',
           icon: 'bi-graph-up-arrow',
@@ -508,6 +521,12 @@ export const useMenuStore = defineStore('menu', () => {
           can: store.can('puede.acceder.gasto')
         },
         {
+          title: 'Configurar Autorizadores Directos',
+          link: 'autorizadores-directos',
+          icon: 'bi-gear', // Cambiado de 'bi-plus-circle-fill' a Font Awesome
+          can: store.can('puede.acceder.autorizadores_directos')
+        },
+        {
           title: 'Solicitar Fondos',
           link: 'gasto-coordinador',
           icon: 'fa-solid fa-hand-holding-usd', // Cambiado de 'bi-handbag-fill' a Font Awesome
@@ -823,6 +842,7 @@ export const useMenuStore = defineStore('menu', () => {
           ]
         },
         ...seleccionContratacionPersonal.value,
+        ...trabajoSocial.value,
         ...capacitacion.value,
         {
           title: 'Configuracion',
@@ -1063,7 +1083,8 @@ export const useMenuStore = defineStore('menu', () => {
               can: true
             },
             {
-              title: 'Reporte de Combustibles',
+              title: 'Dashboard de Combustibles',
+              // title: 'Reporte de Combustibles',
               link: 'reporte-combustibles',
               icon: 'bi-fuel-pump',
               can: true

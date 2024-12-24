@@ -51,6 +51,7 @@ export const useFiltrosListadosSelects = (listadosAuxiliares) => {
   const tareas = ref(listadosAuxiliares.tareas)
   const tareasDestino = ref(listadosAuxiliares.tareasDestino)
   const centros_costos = ref([])
+  const nodos = ref(listadosAuxiliares.nodos)
 
   // Modulo medico
   const laboratoriosClinicos = ref(listadosAuxiliares.laboratoriosClinicos)
@@ -434,6 +435,9 @@ export const useFiltrosListadosSelects = (listadosAuxiliares) => {
   function filtrarMotivos(val, update) {
     return filtrarLista(val, update, motivos, 'nombre', listadosAuxiliares.motivos)
   }
+  function filtrarNodos(val, update){
+    return filtrarLista(val, update, nodos, 'nombre', listadosAuxiliares.nodos)
+  }
 
   function filtrarSucursales(val, update) {
     return filtrarLista(val, update, sucursales, 'lugar', listadosAuxiliares.sucursales)
@@ -563,6 +567,7 @@ export const useFiltrosListadosSelects = (listadosAuxiliares) => {
     areas, filtrarAreas,
     tiposContratos,
     subdetalles, filtrarSubdetalles,
+    nodos, filtrarNodos,
     tickets, filtrarTickets,
     tareas, filtrarTareas,
     proyectos, filtrarProyectos,

@@ -1,5 +1,6 @@
 import { RouteRecordRaw } from 'vue-router'
 import rutasSeleccionContratacionPersonal from './rutasSeleccionContratacionPersonal'
+import rutasTrabajoSocial from './rutasTrabajoSocial'
 import rutasCapacitacion from './rutasCapacitacion'
 
 const rutasRecursosHumanos: RouteRecordRaw[] = [
@@ -19,6 +20,18 @@ const rutasRecursosHumanos: RouteRecordRaw[] = [
     component: () =>
       import('pages/recursosHumanos/empleados/view/EmpleadoPage.vue'),
     meta: { requiresAuth: true }
+  },
+  {
+    path: '/delegar-empleado',
+    name: 'delegar_empleados',
+    component: () => import('pages/recursosHumanos/empleados/modules/modoNoDisponible/view/ModoNoDisponiblePage.vue'),
+    meta: {requiresAuth: false}
+  },
+  {
+    path: '/empleados-delegados',
+    name: 'empleados_delegados',
+    component: () => import('pages/recursosHumanos/empleados/modules/modoNoDisponible/view/EmpleadoDelegadoPage.vue'),
+    meta: {requiresAuth: false}
   },
   {
     path: '/grupos',
@@ -128,9 +141,7 @@ const rutasRecursosHumanos: RouteRecordRaw[] = [
     path: 'valores-cargados-roles',
     name: 'valores_cargados_roles',
     component: () =>
-      import(
-        'pages/recursosHumanos/valoresCargadosRolEmpleadoMensual/view/ValorCargadoRolPage.vue'
-      ),
+      import('pages/recursosHumanos/valoresCargadosRolEmpleadoMensual/view/ValorCargadoRolPage.vue'),
     meta: { requiresAuth: true }
   },
   {
@@ -194,6 +205,7 @@ const rutasRecursosHumanos: RouteRecordRaw[] = [
   },
   // Aquí se pone todos los submodulos de recursos humanos
   ...rutasSeleccionContratacionPersonal,
+  ...rutasTrabajoSocial,
   ...rutasCapacitacion
 ]
 

@@ -40,6 +40,7 @@
       :accion8="btnSuspender"
       :accion9="btnCancelar"
       :accion10="btnFinalizar"
+      :accion11="btnVerAlimentacion"
       separador="cell"
       :permitirConsultar="false"
       :permitirEditar="false"

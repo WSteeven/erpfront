@@ -25,7 +25,6 @@ import { AlimentacionGrupoController } from '../infraestructure/AlimentacionGrup
 import { Subtarea } from 'pages/gestionTrabajos/subtareas/domain/Subtarea'
 import { SubtareaController } from 'pages/gestionTrabajos/subtareas/infraestructure/SubtareaController'
 import { modosAsignacionTrabajo } from 'config/tareas.utils'
-import { useSubtareaStore } from 'stores/subtarea'
 import { useTrabajoAsignadoStore } from 'stores/trabajoAsignado'
 import { EmpleadoGrupo } from 'pages/gestionTrabajos/subtareas/domain/EmpleadoGrupo'
 import { Empleado } from 'pages/recursosHumanos/empleados/domain/Empleado'

@@ -1,9 +1,11 @@
 import { Endpoint } from 'shared/http/domain/Endpoint'
 import { seleccionContratacionPersonal } from './seleccionContratacionPersonal'
+import { trabajoSocial } from 'config/endpoints/rrhh/trabajoSocial'
 import { capacitacionPersonal } from 'config/endpoints/rrhh/capacitacionPersonal'
 
 export const recursosHumanos = {
   empleados: new Endpoint('empleados'),
+  empleados_delegados: new Endpoint('recursos-humanos/empleados-delegados'),
   departamentos: new Endpoint('recursos-humanos/departamentos'),
   motivo_permiso_empleado: new Endpoint('recursos-humanos/motivo_permiso_empleado'),
   estado_permiso_empleado: new Endpoint('recursos-humanos/estado_permiso_empleado'),
@@ -143,6 +145,11 @@ export const recursosHumanos = {
    *  Submodulo selección y contratación de personal
    **************************************************/
   ...seleccionContratacionPersonal,
+
+  /***************************************************
+   *  Submodulo selección y contratación de personal
+   **************************************************/
+  ...trabajoSocial,
 
   /***************************************************
    *  Submodulo capacitación de personal
