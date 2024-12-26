@@ -39,15 +39,25 @@ import { CustomActionTable } from 'components/tables/domain/CustomActionTable'
 import {
   filtarJefeImediato,
   filtrarEmpleadosPorRoles,
-  optionsFecha, ordenarLista
+  optionsFecha,
+  ordenarLista
 } from 'shared/utils'
 import { CantonController } from 'sistema/ciudad/infraestructure/CantonControllerontroller'
 import { empresas } from 'config/utils/sistema'
 import { useFiltrosListadosSelects } from 'shared/filtrosListadosGenerales'
 import { EmpleadoPermisoController } from 'recursosHumanos/empleados/infraestructure/EmpleadoPermisosController'
+import { NodoController } from 'gestionTrabajos/nodos/infraestructure/NodoController'
+import { StatusEssentialLoading } from 'components/loading/application/StatusEssentialLoading'
+import NoOptionComponent from 'components/NoOptionComponent.vue'
+import ErrorComponent from 'components/ErrorComponent.vue'
 
 export default defineComponent({
-  components: { TabLayoutFilterTabs2, SelectorImagen },
+  components: {
+    ErrorComponent,
+    NoOptionComponent,
+    TabLayoutFilterTabs2,
+    SelectorImagen
+  },
   setup() {
     /*********
      * Stores
@@ -82,7 +92,8 @@ export default defineComponent({
         : false*/
     })
 
-    onConsultado(() => {
+    onConsultado(async() => {
+      if (gasto.detalle == 6) await obtenerListadoNodos()
       esFactura.value = !!gasto.factura //gasto.tiene_factura != null ? gasto.tiene_factura : true
     })
     const esCombustibleEmpresa = computed(() => {
@@ -164,18 +175,19 @@ export default defineComponent({
      * Validaciones
      **************/
     const reglas = {
-      id_usuario: {required: requiredIf(()=> store.can('puede.registrar.fondos_terceros'))},
-      fecha_viat: {
-        required
+      id_usuario: {
+        required: requiredIf(() => store.can('puede.registrar.fondos_terceros'))
       },
-      lugar: {
-        required
-      },
-      num_tarea: {
-        required
-      },
-      proyecto: {
-        required
+      fecha_viat: { required },
+      lugar: { required },
+      num_tarea: { required },
+      proyecto: { required },
+      nodo: {
+        required: requiredIf(
+          () =>
+            gasto.detalle == 6 &&
+            [21, 22, 23, 24, 25].some(num => gasto.sub_detalle?.includes(num))
+        )
       },
       ruc: {
         minLength: minLength(11),
@@ -189,18 +201,10 @@ export default defineComponent({
       /*beneficiarios: {
         required: required
       },*/
-      aut_especial: {
-        required: requiredIf(() => visualizarAutorizador.value)
-      },
-      num_comprobante: {
-        maxLength: maxLength(17)
-      },
-      detalle: {
-        required
-      },
-      sub_detalle: {
-        required
-      },
+      aut_especial: { required: requiredIf(() => visualizarAutorizador.value) },
+      num_comprobante: { maxLength: maxLength(17) },
+      detalle: { required },
+      sub_detalle: { required },
       cantidad: {
         maxValue: maxValue(9999),
         required
@@ -209,29 +213,21 @@ export default defineComponent({
         maxValue: maxValue(9999),
         required
       },
-      total: {
-        required
-      },
+      total: { required },
       comprobante1: {
         required: requiredIf(() => gasto.comprobante1 !== gasto.comprobante2)
       },
       comprobante2: {
         required: requiredIf(() => gasto.comprobante2 !== gasto.comprobante1)
       },
-      kilometraje: {
-        required: requiredIf(() => esCombustibleEmpresa.value)
-      },
+      kilometraje: { required: requiredIf(() => esCombustibleEmpresa.value) },
       vehiculo: {
         required: requiredIf(
           () => esCombustibleEmpresa.value && !gasto.es_vehiculo_alquilado
         )
       },
-      observacion: {
-        required
-      },
-      placa: {
-        required: requiredIf(() => gasto.es_vehiculo_alquilado)
-      }
+      observacion: { required },
+      placa: { required: requiredIf(() => gasto.es_vehiculo_alquilado) }
     }
 
     const v$ = useVuelidate(reglas, gasto)
@@ -244,8 +240,10 @@ export default defineComponent({
     const tareas = ref([])
     const beneficiarios = ref([])
     const empleados_delegadores = ref([])
-    const { cantones, filtrarCantones, vehiculos, filtrarVehiculos } =
-      useFiltrosListadosSelects(listadosAuxiliares)
+    const {cantones,filtrarCantones,
+      vehiculos,filtrarVehiculos,
+      nodos,filtrarNodos
+    } = useFiltrosListadosSelects(listadosAuxiliares)
     //Obtener el listado de las cantones
     cargarVista(async () => {
       await obtenerListados({
@@ -278,7 +276,8 @@ export default defineComponent({
           params: {
             campos: 'id,placa'
           }
-        }
+        },
+        nodos: []
       })
       autorizaciones_especiales.value = await filtrarEmpleadosPorRoles(
         listadosAuxiliares.empleados,
@@ -295,10 +294,11 @@ export default defineComponent({
       proyectos.value = listadosAuxiliares.proyectos
       tareas.value = listadosAuxiliares.tareas
       vehiculos.value = listadosAuxiliares.vehiculos
+      nodos.value = listadosAuxiliares.nodos
 
       gasto.empleado_info = store.nombreUsuario
 
-      if(store.can('puede.registrar.fondos_terceros')){
+      if (store.can('puede.registrar.fondos_terceros')) {
         await obtenerEmpleadosDelegadores()
       }
     })
@@ -321,10 +321,13 @@ export default defineComponent({
     /*********
      * Filtros
      **********/
-    async function obtenerEmpleadosDelegadores(){
-      const response = await new EmpleadoPermisoController().listar({permisos: ['puede.delegar.registro_fondos']})
-      empleados_delegadores.value= response.result
+    async function obtenerEmpleadosDelegadores() {
+      const response = await new EmpleadoPermisoController().listar({
+        permisos: ['puede.delegar.registro_fondos']
+      })
+      empleados_delegadores.value = response.result
     }
+
     // - Filtro AUTORIZACIONES ESPECIALES
     function filtrarAutorizacionesEspeciales(val, update) {
       if (val === '') {
@@ -463,7 +466,22 @@ export default defineComponent({
       gasto.num_tarea = null
     }
 
+    const cargando = new StatusEssentialLoading()
+
+    async function obtenerListadoNodos() {
+      cargando.activar()
+      const { result } = await new NodoController().listar({ activo: 1 })
+      listadosAuxiliares.nodos = result
+      nodos.value = listadosAuxiliares.nodos
+      cargando.desactivar()
+    }
+
     function cambiarDetalle() {
+      // COMBUSTIBLE es id =6
+      console.log(gasto.detalle)
+      if (gasto.detalle == 6) {
+        obtenerListadoNodos()
+      }
       gasto.sub_detalle = null
     }
 
@@ -613,6 +631,9 @@ export default defineComponent({
       watchEffect,
       filtrarAutorizacionesEspeciales,
       tieneFacturaSubDetalle,
+      //listados
+      nodos,
+      filtrarNodos,
       filtrarCantones,
       filtrarDetalles,
       filtarSubdetalles,
@@ -630,7 +651,6 @@ export default defineComponent({
       mascaraFactura,
       mascara_placa,
       listadosAuxiliares,
-      listadoSubdetalles,
       beneficiarios,
       empleados_delegadores,
       ordenarLista,

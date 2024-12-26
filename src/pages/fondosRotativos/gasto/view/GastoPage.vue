@@ -348,13 +348,46 @@
               </template>
               <template v-slot:no-option>
                 <q-item>
-                  <q-item-section class="text-grey"> No hay resultados </q-item-section>
+                  <q-item-section class="text-grey">
+                    {{ gasto.detalle ? 'No hay resultados' : 'Primero selecciona un detalle'}}
+                     </q-item-section>
                 </q-item>
               </template>
               <template v-slot:after>
                 <q-btn color="positive" @click="recargar('sub_detalle')">
                   <q-icon size="xs" class="q-mr-sm" name="bi-arrow-clockwise" />
                 </q-btn>
+              </template>
+            </q-select>
+          </div>
+<!--          {{sub_detalles}}-->
+<!--          {{gasto.sub_detalle}}-->
+          <div class="col-12 col-md-3" v-if="gasto.detalle==6">
+            <label class="q-mb-sm block">Nodo</label>
+            <q-select
+              v-model="gasto.nodo"
+              :options="nodos"
+              options-dense
+              dense
+              outlined
+              use-input
+              :disable="disabled"
+              input-debounce="0"
+              :error="!!v$.nodo.$errors.length"
+              @blur="v$.nodo.$touch"
+              @filter="filtrarNodos"
+              @popup-show="ordenarLista(nodos, 'nombre')"
+              :option-label="v => v.nombre"
+              :option-value="v => v.id"
+              emit-value
+              map-options
+            >
+              <template v-slot:no-option>
+                <no-option-component />
+              </template>
+
+              <template v-slot:error>
+                <error-component clave="nodo" :v$="v$" />
               </template>
             </q-select>
           </div>

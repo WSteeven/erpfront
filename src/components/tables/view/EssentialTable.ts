@@ -2,32 +2,32 @@
 import {
   accionesActivos,
   autorizacionesTransacciones,
-  estadosTransacciones,
-  estadosInventarios,
-  estadosControlStock,
   estadosCondicionesId,
-  estadosCondicionesValue
+  estadosCondicionesValue,
+  estadosControlStock,
+  estadosInventarios,
+  estadosTransacciones,
+  TipoSeleccion
 } from 'config/utils'
 import { estadosCalificacionProveedor } from 'config/utils_compras_proveedores'
 // import { VisibleModal } from '../application/VisibleModal'
 import {
   computed,
   defineComponent,
-  ref,
-  watchEffect,
   nextTick,
+  ref,
   Ref,
-  watch
+  watch,
+  watchEffect
 } from 'vue'
 import { EntidadAuditable } from 'shared/entidad/domain/entidadAuditable'
 import { Instanciable } from 'shared/entidad/domain/instanciable'
 import { CustomActionTable } from '../domain/CustomActionTable'
-import { getVisibleColumns, formatBytes } from 'shared/utils'
+import { formatBytes, getVisibleColumns } from 'shared/utils'
 import { ColumnConfig } from '../domain/ColumnConfig'
-import { TipoSeleccion } from 'config/utils'
 import { offset } from 'config/utils_tablas'
 import { ParamsType } from 'config/types'
-import { exportFile } from 'quasar'
+import { exportFile, useQuasar } from 'quasar'
 
 // Componentes
 import PrevisualizarTablaPdf from 'components/tables/view/PrevisualizarTablaPdf.vue'
@@ -42,9 +42,11 @@ import CampoDescontable from './partials/CampoDescontable.vue'
 import { VisibleModal } from '../application/VisibleModal'
 import CampoBoleano from './partials/CampoBoleano.vue'
 import EstadosPostulaciones from './EstadosPostulaciones.vue'
+import ErrorComponent from 'components/ErrorComponent.vue'
 
 export default defineComponent({
   components: {
+    ErrorComponent,
     PrevisualizarTablaPdf,
     EditarTablaModal,
     CustomButtons,
@@ -58,6 +60,9 @@ export default defineComponent({
     VisorArchivos
   },
   props: {
+    // eslint-disable-next-line vue/require-valid-default-prop
+    v$: { type: Object, default: {}, required:false },
+    keyError: { type: String, required: false },
     identificador: { type: Number, default: -1 },
     referencia: Object as () => Ref,
     entidad: {
@@ -537,6 +542,7 @@ export default defineComponent({
       refTable.value.clearSelection()
     }
 
+
     return {
       refTable,
       refEditarModal,
@@ -588,7 +594,7 @@ export default defineComponent({
       clearSelection,
       verVisorArchivos,
       archivos,
-      visibleModalVisorArchivos
+      visibleModalVisorArchivos,
     }
   }
 })

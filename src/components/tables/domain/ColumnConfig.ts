@@ -17,6 +17,7 @@ export interface ColumnConfig<T> {
   print?: boolean
   style?: string
   type?: tipos
+  error?: boolean
   editable?: boolean
   options?: SelectOption[]
   hint?: string,

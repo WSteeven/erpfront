@@ -3,6 +3,7 @@ import { MenuOption } from 'src/shared/menu/MenuOption'
 import { defineStore } from 'pinia'
 import { computed, Ref } from 'vue'
 import seleccionContratacionPersonal from './menus/rrhh/seleccionContratacionPersonal'
+import trabajoSocial from 'stores/menus/rrhh/trabajoSocial'
 
 export const useMenuStore = defineStore('menu', () => {
   const store = useAuthenticationStore()
@@ -100,6 +101,18 @@ export const useMenuStore = defineStore('menu', () => {
             }
           ]
         },
+        {
+          title: 'Configuracion',
+          icon: 'bi-gear-fill',
+          can: store.can('puede.acceder.configuracion_modulo_tareas'),
+          children: [
+            {
+              title: 'Nodos',
+              link: 'nodos',
+              icon: 'bi-plus-circle-fill',
+              can: store.can('puede.acceder.nodos')
+            },
+          ]},
         {
           title: 'Reportes',
           icon: 'bi-graph-up-arrow',
@@ -868,6 +881,7 @@ export const useMenuStore = defineStore('menu', () => {
           ]
         },
         ...seleccionContratacionPersonal.value,
+        ...trabajoSocial.value,
         {
           title: 'Configuracion',
           icon: 'bi-gear-fill',

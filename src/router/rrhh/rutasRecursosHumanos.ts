@@ -1,5 +1,6 @@
 import { RouteRecordRaw } from 'vue-router'
 import rutasSeleccionContratacionPersonal from './rutasSeleccionContratacionPersonal'
+import rutasTrabajoSocial from './rutasTrabajoSocial'
 
 const rutasRecursosHumanos: RouteRecordRaw[] = [
   /************************************************************************************
@@ -202,7 +203,10 @@ const rutasRecursosHumanos: RouteRecordRaw[] = [
     meta: { requiresAuth: true }
   },
   // Aquí se pone todos los submodulos de recursos humanos
-  ...rutasSeleccionContratacionPersonal
+  ...rutasSeleccionContratacionPersonal,
+
+  ...rutasTrabajoSocial,
+
 ]
 
 export default rutasRecursosHumanos

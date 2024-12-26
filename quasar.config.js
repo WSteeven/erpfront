@@ -155,10 +155,8 @@ module.exports = configure(function (/* ctx */) {
         vehiculos: path.join(__dirname, './src/pages/controlVehiculos'),
         // Modulo medico
         medico: path.join(__dirname, './src/pages/medico'),
-        seleccionContratacion: path.join(
-          __dirname,
-          './src/pages/recursosHumanos/SeleccionContratacionPersonal'
-        ),
+        seleccionContratacion: path.join(__dirname, './src/pages/recursosHumanos/SeleccionContratacionPersonal'),
+        trabajoSocial: path.join(__dirname, './src/pages/recursosHumanos/TrabajoSocial'),
         activosFijos: path.join(__dirname, './src/pages/activosFijos'),
         controlActivosFijos: path.join(
           __dirname,

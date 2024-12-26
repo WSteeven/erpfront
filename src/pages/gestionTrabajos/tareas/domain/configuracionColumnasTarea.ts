@@ -38,13 +38,7 @@ export const configuracionColumnasTarea: ColumnConfig<Tarea>[] = [
     align: 'left',
     sortable: true,
   },
-  /* {
-    name: 'fecha_hora_finalizacion',
-    field: 'fecha_hora_finalizacion',
-    label: 'Fecha y hora de finalización',
-    align: 'left',
-  },
-  {
+  /*{
     name: 'dias_ocupados',
     field: 'dias_ocupados',
     label: 'Días ocupados',
@@ -61,6 +55,12 @@ export const configuracionColumnasTarea: ColumnConfig<Tarea>[] = [
     name: 'created_at',
     field: 'created_at',
     label: 'Fecha creación',
+    align: 'left',
+  },
+  {
+    name: 'fecha_hora_finalizacion',
+    field: 'fecha_hora_finalizacion',
+    label: 'Fecha y hora de finalización',
     align: 'left',
   },
   {

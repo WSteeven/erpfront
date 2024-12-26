@@ -1,6 +1,5 @@
 <template>
   <div class="row">
-    {{ background }}
     <div
       class="col-12 q-pa-sm"
       :class="{ [border]: true, [background]: true }"

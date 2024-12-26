@@ -1,14 +1,11 @@
-import { destinosTareas,  ubicacionesTrabajo } from 'config/tareas.utils'
+import { destinosTareas, ubicacionesTrabajo } from 'config/tareas.utils'
 import { EntidadAuditable } from 'shared/entidad/domain/entidadAuditable'
 
 export class Tarea extends EntidadAuditable {
   codigo_tarea: string | null
-  // cantidad_trabajos: number | null
   medio_notificacion: string | null
   tiene_subtareas: boolean
 
-  // Trabajo ----
-  // codigo_trabajo: string | null
   codigo_tarea_cliente: string | null
   titulo: string | null
   descripcion_completa: string | null
@@ -18,33 +15,9 @@ export class Tarea extends EntidadAuditable {
   fecha_solicitud: string | null
   estado: string | null
   etapa: number | null
-  // modo_asignacion_trabajo: string
-
-  // Tiempos
-  /* created_at: string | null
-  // fecha_hora_creacion: string | null
-  fecha_hora_asignacion: string | null
-  fecha_hora_agendado: string | null
-  fecha_hora_ejecucion: string | null
-  fecha_hora_realizado: string | null
-  fecha_hora_finalizacion: string | null
-  fecha_hora_pendiente: string | null
-  motivo_pendiente: string | null
-  fecha_hora_suspendido: string | null
-  motivo_suspendido: string | null
-  fecha_hora_cancelado: string | null
-  motivo_cancelado: string | null
-  dias_ocupados: number | null */
-
-  /* es_dependiente: boolean
-  es_ventana: boolean
-  fecha_inicio_trabajo: string | null
-  hora_inicio_trabajo: string | null
-  hora_fin_trabajo: string | null */
 
   // Foreign keys
-   tipo_trabajo: number | null
-  /*trabajo_padre: number | null*/
+  tipo_trabajo: number | null
   cliente_final: number | null
   coordinador: number | null
   fiscalizador: number | null
@@ -56,13 +29,7 @@ export class Tarea extends EntidadAuditable {
   trabajo_padre: number | null
   centro_costo: number | null
 
-  // archivos: File[]
   imagen_informe: string | null
-  // trabajo_dependiente_id: number | null
-
-  /*grupo: number | null
-  empleado: number | null
-  subtarea: Subtarea */
 
   // Para mostrar en tabla No borrar
   empleados: string | null
@@ -73,7 +40,9 @@ export class Tarea extends EntidadAuditable {
   ubicacion_trabajo: string
   ruta_tarea: number | null
   metraje_tendido: number | null
-  no_lleva_centro_costo:boolean
+  no_lleva_centro_costo: boolean
+
+  fecha_hora_finalizacion: string | null
 
   constructor() {
     super()
@@ -83,7 +52,6 @@ export class Tarea extends EntidadAuditable {
     this.titulo = null
     this.para_cliente_proyecto = destinosTareas.paraProyecto
     this.ubicacion_trabajo = ubicacionesTrabajo.clienteFinal
-    // this.cantidad_trabajos = null
     this.medio_notificacion = 'CORREO'
     this.tiene_subtareas = true
 
@@ -96,7 +64,6 @@ export class Tarea extends EntidadAuditable {
     this.cliente_id = null
 
     // Trabajo ----
-    // this.codigo_trabajo = null
     this.codigo_tarea_cliente = null
     this.titulo = null
     this.descripcion_completa = null
@@ -106,30 +73,6 @@ export class Tarea extends EntidadAuditable {
     this.fecha_solicitud = null
     this.estado = null
     this.etapa = null
-    /* this.modo_asignacion_trabajo = modosAsignacionTrabajo.por_grupo
-
-    // Tiempos
-    this.created_at = null
-    this.fecha_hora_asignacion = null
-    this.fecha_hora_agendado = null
-    this.fecha_hora_ejecucion = null
-    this.fecha_hora_finalizacion = null
-    this.fecha_hora_realizado = null
-    this.fecha_hora_suspendido = null
-    this.fecha_hora_pendiente = null
-    this.motivo_pendiente = null
-    this.motivo_suspendido = null
-    this.fecha_hora_cancelado = null
-    this.motivo_cancelado = null
-    this.dias_ocupados = null
-
-    this.es_dependiente = false
-    this.es_ventana = false
-
-    this.fecha_inicio_trabajo = null
-    this.hora_inicio_trabajo = null
-    this.hora_fin_trabajo = null
-    this.tarea = null */
     this.metraje_tendido = null
 
     // Foreign keys
@@ -144,14 +87,7 @@ export class Tarea extends EntidadAuditable {
     this.trabajo_dependiente = null
     this.centro_costo = null
 
-    // this.trabajo_dependiente_id = null
-
-    // this.archivos = []
     this.imagen_informe = null
-
-    /* this.grupo = null
-    this.empleado = null
-    this.subtarea = new Subtarea() */
 
     this.empleados = null
     this.grupos = null
@@ -160,5 +96,7 @@ export class Tarea extends EntidadAuditable {
     this.finalizado = false
     this.ruta_tarea = null
     this.no_lleva_centro_costo = false
+
+    this.fecha_hora_finalizacion = null
   }
 }
