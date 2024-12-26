@@ -7,6 +7,7 @@ import { MetaPagination } from './MetaPagination'
 type AccionType = typeof acciones[keyof typeof acciones];
 export class Referencias<T> {
   tabs: Ref
+  tabsPage: Ref
   validador: Ref
   filtros: { [key: string]: any }
   listadoActividades: Ref<any[]>
@@ -35,6 +36,7 @@ export class Referencias<T> {
 
     // Para manipular los tabs
     this.tabs = ref()
+    this.tabsPage = ref('1')
 
     // Para ejecutar las validaciones
     this.validador = ref()

@@ -2,7 +2,7 @@
 import { configuracionColumnasPedidos } from '../domain/configuracionColumnasPedidos'
 import { helpers, required, requiredIf } from 'shared/i18n-validators'
 import { useVuelidate } from '@vuelidate/core'
-import { defineComponent, ref } from 'vue'
+import { computed, defineComponent, ref } from 'vue'
 import { useOrquestadorSelectorDetalles } from 'pages/bodega/pedidos/application/OrquestadorSelectorDetalles'
 
 //Componentes
@@ -29,7 +29,7 @@ import { useNotificaciones } from 'shared/notificaciones'
 import { fechaMayorActual } from 'shared/validadores/validaciones'
 import { useAuthenticationStore } from 'stores/authentication'
 import { usePedidoStore } from 'stores/pedido'
-import { useRouter } from 'vue-router'
+import { useRoute, useRouter } from 'vue-router'
 import { ValidarListadoProductos } from '../application/validaciones/ValidarListadoProductos'
 import { LocalStorage, useQuasar } from 'quasar'
 import { ClienteController } from 'sistema/clientes/infraestructure/ClienteController'
@@ -49,11 +49,12 @@ import { Tarea } from 'pages/gestionTrabajos/tareas/domain/Tarea'
 
 export default defineComponent({
   components: { TabLayoutFilterTabs2, EssentialTable, EssentialSelectableTable, ModalesEntidad, SelectorImagen },
-  setup() {
+  emits: ['guardado'],
+  setup(props, { emit }) {
     const mixin = new ContenedorSimpleMixin(Pedido, new PedidoController())
     const { entidad: pedido, disabled, accion, listadosAuxiliares, listado } = mixin.useReferencias()
-    const { setValidador, obtenerListados, cargarVista, listar } = mixin.useComportamiento()
-    const { onReestablecer, onBeforeConsultar, onConsultado } = mixin.useHooks()
+    const { setValidador, obtenerListados, cargarVista, listar, consultar, reestablecer } = mixin.useComportamiento()
+    const { onReestablecer, onBeforeConsultar, onConsultado, onGuardado } = mixin.useHooks()
     const { confirmar, prompt, notificarCorrecto, notificarError, notificarAdvertencia } = useNotificaciones()
 
     // modales
@@ -89,14 +90,19 @@ export default defineComponent({
     const esActivosFijos = store.esActivosFijos
     const esRRHH = store.esRecursosHumanos
     const esGerente = store.esGerente
+    const enRutaInspeccionIncidente = computed(() => ['inspecciones', 'incidentes'].includes(useRoute().name?.toString() ?? ''))
 
+    /********
+     * Hooks
+     ********/
+    onGuardado((id: number) => emit('guardado', id))
     onReestablecer(() => {
       soloLectura.value = false
       cargarDatosDefecto()
     })
-    onBeforeConsultar(() =>tablaRefrescada.value = false)
+    onBeforeConsultar(() => tablaRefrescada.value = false)
     onConsultado(() => {
-      tablaRefrescada.value=true
+      tablaRefrescada.value = true
       empleados.value = listadosAuxiliares.empleados
       if (accion.value === acciones.editar && (esCoordinador || esActivosFijos || store.user.id === pedido.per_autoriza_id)) {
         soloLectura.value = true
@@ -194,11 +200,11 @@ export default defineComponent({
      * Funciones
      *****************************************************************************************
      */
-     async function filtrarPedidos(tab:string){
+    async function filtrarPedidos(tab: string) {
       tabSeleccionado.value = tab
       await listar({ estado: tab })
       puedeEditar.value = (esCoordinador || esActivosFijos || store.esJefeTecnico || esGerente || store.esCompras || store.can('puede.autorizar.pedidos')) && tabSeleccionado.value === estadosTransacciones.pendiente
-     }
+    }
 
     function cargarDatosDefecto() {
       pedido.solicitante = store.user.id
@@ -411,7 +417,7 @@ export default defineComponent({
         pedidoStore.pedido = entidad
         router.push('transacciones-egresos')
       },
-      visible: ({ entidad }) => (tabSeleccionado.value == 'APROBADO' || tabSeleccionado.value == 'PARCIAL') && (esBodeguero||store.esBodegueroTelconet) && entidad.estado != estadosTransacciones.completa
+      visible: ({ entidad }) => (tabSeleccionado.value == 'APROBADO' || tabSeleccionado.value == 'PARCIAL') && (esBodeguero || store.esBodegueroTelconet) && entidad.estado != estadosTransacciones.completa
     }
     const botonCorregir: CustomActionTable = {
       titulo: 'Corregir pedido',
@@ -525,7 +531,9 @@ export default defineComponent({
 
       filtrarPedidos,
       recargarSucursales,
-
+      enRutaInspeccionIncidente,
+      consultar,
+      reestablecer,
     }
   }
 })

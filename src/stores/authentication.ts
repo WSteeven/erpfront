@@ -57,6 +57,7 @@ export const useAuthenticationStore = defineStore('authentication', () => {
 
   const esMedico = computed(() => user.value ? extraerRol(user.value.roles, rolesSistema.medico) : false)
   const esMecanicoGeneral = computed(() => user.value ? extraerRol(user.value.roles, rolesSistema.mecanicoGeneral) : false)
+  const esSso = computed(() => user.value ? extraerRol(user.value.roles, rolesSistema.sso) : false)
 
   function extraerRol(roles: string[], rolConsultar: string) {
     return roles.some((rol: string) => rol === rolConsultar)
@@ -258,6 +259,7 @@ export const useAuthenticationStore = defineStore('authentication', () => {
     esFiscalizador,
     esSupervisorCampo,
     esMedico,
+    esSso,
     consultar_saldo_actual,
     extraerRol,
     listadoUsuarios,

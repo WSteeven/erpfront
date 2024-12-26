@@ -17,9 +17,9 @@ export const configuracionColumnasIncidente: ColumnConfig<Incidente>[] = [
         sortable: true
     },
     {
-        name: 'descripcion',
-        field: 'descripcion',
-        label: 'Descripción',
+        name: 'created_at',
+        field: 'created_at',
+        label: 'Fecha de incidente',
         align: 'left',
         sortable: true
     },

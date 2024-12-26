@@ -5,16 +5,16 @@
       <div class="col-12">
         <label class="q-mb-sm block">Coordenadas</label>
         <q-input
-          v-model="coordenadas"
+          v-model="internalValue"
           outlined
+          :disable="disable"
           dense
-          readonly
-          :error="!!validador.coordenadas.$errors.length"
-          @blur="validador.coordenadas.$touch"
+          :error="!!validador.coordenadas?.$errors.length"
+          @blur="validador.coordenadas?.$touch"
         >
           <template v-slot:error>
             <div
-              v-for="error of validador.coordenadas.$errors"
+              v-for="error of validador.coordenadas?.$errors"
               :key="error.$uid"
             >
               <div>{{ error.$message }}</div>
@@ -42,12 +42,12 @@
 </template>
 
 <script lang="ts" setup>
-import { ref } from 'vue'
+import { computed } from 'vue'
 
 const emit = defineEmits(['update:modelValue'])
 
 const props = defineProps({
-  coordenadas: {
+  modelValue: {
     type: String,
     default: ''
   },
@@ -61,7 +61,12 @@ const props = defineProps({
   }
 })
 
-const coordenadas = ref(props.coordenadas)
+const internalValue = computed({
+  get: () => props.modelValue,
+  set: newValue => {
+    emit('update:modelValue', newValue)
+  }
+})
 
 function obtenerUbicacion(onUbicacionConcedida) {
   const onErrorDeUbicacion = err => {
@@ -83,8 +88,8 @@ function obtenerUbicacion(onUbicacionConcedida) {
 
 function obtenerCoordenadas() {
   obtenerUbicacion(ubicacion => {
-    coordenadas.value = `${ubicacion.coords.latitude}, ${ubicacion.coords.longitude}`
-    emit('update:modelValue', coordenadas.value)
+    const coordenadas = `${ubicacion.coords.latitude}, ${ubicacion.coords.longitude}`
+    internalValue.value = coordenadas
   })
 }
 </script>

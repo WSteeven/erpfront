@@ -7,7 +7,9 @@
     :tabDefecto="tabSeleccionado"
     :filtrar="filtrarPedidos"
     :permitirEditar="puedeEditar"
+    :permitir-cancelar="!enRutaInspeccionIncidente"
     :ajustarCeldas="true"
+    :mostrar-listado="!enRutaInspeccionIncidente"
     :accion1="botonDespachar"
     :accion2="botonAnularAutorizacion"
     :accion3="botonCorregir"
@@ -703,7 +705,8 @@
           </div>
           <!-- Tabla -->
           <div class="col-12">
-            <essential-table v-if="tablaRefrescada"
+            <essential-table
+              v-if="tablaRefrescada"
               titulo="Productos Seleccionados"
               :configuracionColumnas="
                 accion === acciones.nuevo || accion === acciones.editar

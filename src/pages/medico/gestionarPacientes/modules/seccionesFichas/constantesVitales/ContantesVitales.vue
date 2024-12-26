@@ -4,18 +4,18 @@
       <label class="q-mb-sm block">Presión arterial(mmHg)</label>
       <q-input
         v-model="entidad.presion_arterial"
-        placeholder="Obligatorio"
+        placeholder="Opcional"
         type="number"
         :disable="disable"
         outlined
         dense
         @update:model-value="emitir()"
-        :error="!!validador.constante_vital.presion_arterial.$errors.length"
-        @blur="validador.constante_vital.presion_arterial.$touch"
+        :error="!!validador.constante_vital?.presion_arterial.$errors.length"
+        @blur="validador.constante_vital?.presion_arterial.$touch"
       >
         <template v-slot:error>
           <div
-            v-for="error of validador.constante_vital.presion_arterial.$errors"
+            v-for="error of validador.constante_vital?.presion_arterial.$errors"
             :key="error.$uid"
           >
             <div>{{ error.$message }}</div>
@@ -28,18 +28,18 @@
       <label class="q-mb-sm block">Temperatura(°C)</label>
       <q-input
         v-model="entidad.temperatura"
-        placeholder="Obligatorio"
+        placeholder="Opcional"
         type="number"
         :disable="disable"
         outlined
         dense
         @update:model-value="emitir()"
-        :error="!!validador.constante_vital.temperatura.$errors.length"
-        @blur="validador.constante_vital.temperatura.$touch"
+        :error="!!validador.constante_vital?.temperatura.$errors.length"
+        @blur="validador.constante_vital?.temperatura.$touch"
       >
         <template v-slot:error>
           <div
-            v-for="error of validador.constante_vital.temperatura.$errors"
+            v-for="error of validador.constante_vital?.temperatura.$errors"
             :key="error.$uid"
           >
             <div>{{ error.$message }}</div>
@@ -52,18 +52,19 @@
       <label class="q-mb-sm block">Frecuencia cardiaca(I/min)</label>
       <q-input
         v-model="entidad.frecuencia_cardiaca"
-        placeholder="Obligatorio"
+        placeholder="Opcional"
         type="number"
         :disable="disable"
         outlined
         dense
         @update:model-value="emitir()"
-        :error="!!validador.constante_vital.frecuencia_cardiaca.$errors.length"
-        @blur="validador.constante_vital.frecuencia_cardiaca.$touch"
+        :error="!!validador.constante_vital?.frecuencia_cardiaca.$errors.length"
+        @blur="validador.constante_vital?.frecuencia_cardiaca.$touch"
       >
         <template v-slot:error>
           <div
-            v-for="error of validador.constante_vital.frecuencia_cardiaca.$errors"
+            v-for="error of validador.constante_vital?.frecuencia_cardiaca
+              .$errors"
             :key="error.$uid"
           >
             <div>{{ error.$message }}</div>
@@ -76,18 +77,19 @@
       <label class="q-mb-sm block">Saturación de oxígeno(%)</label>
       <q-input
         v-model="entidad.saturacion_oxigeno"
-        placeholder="Obligatorio"
+        placeholder="Opcional"
         type="number"
         :disable="disable"
         outlined
         dense
         @update:model-value="emitir()"
-        :error="!!validador.constante_vital.saturacion_oxigeno.$errors.length"
-        @blur="validador.constante_vital.saturacion_oxigeno.$touch"
+        :error="!!validador.constante_vital?.saturacion_oxigeno.$errors.length"
+        @blur="validador.constante_vital?.saturacion_oxigeno.$touch"
       >
         <template v-slot:error>
           <div
-            v-for="error of validador.constante_vital.saturacion_oxigeno.$errors"
+            v-for="error of validador.constante_vital?.saturacion_oxigeno
+              .$errors"
             :key="error.$uid"
           >
             <div>{{ error.$message }}</div>
@@ -100,18 +102,21 @@
       <label class="q-mb-sm block">Frecuencia respiratoria(fr/min)</label>
       <q-input
         v-model="entidad.frecuencia_respiratoria"
-        placeholder="Obligatorio"
+        placeholder="Opcional"
         type="number"
         :disable="disable"
         outlined
         dense
         @update:model-value="emitir()"
-        :error="!!validador.constante_vital.frecuencia_respiratoria.$errors.length"
-        @blur="validador.constante_vital.frecuencia_respiratoria.$touch"
+        :error="
+          !!validador.constante_vital?.frecuencia_respiratoria.$errors.length
+        "
+        @blur="validador.constante_vital?.frecuencia_respiratoria.$touch"
       >
         <template v-slot:error>
           <div
-            v-for="error of validador.constante_vital.frecuencia_respiratoria.$errors"
+            v-for="error of validador.constante_vital?.frecuencia_respiratoria
+              .$errors"
             :key="error.$uid"
           >
             <div>{{ error.$message }}</div>
@@ -124,18 +129,18 @@
       <label class="q-mb-sm block">Peso(kg)</label>
       <q-input
         v-model="entidad.peso"
-        placeholder="Obligatorio"
+        placeholder="Opcional"
         type="number"
         :disable="disable"
         outlined
         dense
         @update:model-value="emitir()"
-        :error="!!validador.constante_vital.peso.$errors.length"
-        @blur="validador.constante_vital.peso.$touch"
+        :error="!!validador.constante_vital?.peso.$errors.length"
+        @blur="validador.constante_vital?.peso.$touch"
       >
         <template v-slot:error>
           <div
-            v-for="error of validador.constante_vital.peso.$errors"
+            v-for="error of validador.constante_vital?.peso.$errors"
             :key="error.$uid"
           >
             <div>{{ error.$message }}</div>
@@ -148,18 +153,18 @@
       <label class="q-mb-sm block">Talla(cm)</label>
       <q-input
         v-model="entidad.talla"
-        placeholder="Obligatorio"
+        placeholder="Opcional"
         type="number"
         :disable="disable"
         outlined
         dense
         @update:model-value="emitir()"
-        :error="!!validador.constante_vital.talla.$errors.length"
-        @blur="validador.constante_vital.talla.$touch"
+        :error="!!validador.constante_vital?.talla.$errors.length"
+        @blur="validador.constante_vital?.talla.$touch"
       >
         <template v-slot:error>
           <div
-            v-for="error of validador.constante_vital.talla.$errors"
+            v-for="error of validador.constante_vital?.talla.$errors"
             :key="error.$uid"
           >
             <div>{{ error.$message }}</div>
@@ -172,18 +177,21 @@
       <label class="q-mb-sm block">Indice de masa corporal(kg/m2)</label>
       <q-input
         v-model="entidad.indice_masa_corporal"
-        placeholder="Obligatorio"
+        placeholder="Opcional"
         type="number"
         :disable="disable"
         outlined
         dense
         @update:model-value="emitir()"
-        :error="!!validador.constante_vital.indice_masa_corporal.$errors.length"
-        @blur="validador.constante_vital.indice_masa_corporal.$touch"
+        :error="
+          !!validador.constante_vital?.indice_masa_corporal.$errors.length
+        "
+        @blur="validador.constante_vital?.indice_masa_corporal.$touch"
       >
         <template v-slot:error>
           <div
-            v-for="error of validador.constante_vital.indice_masa_corporal.$errors"
+            v-for="error of validador.constante_vital?.indice_masa_corporal
+              .$errors"
             :key="error.$uid"
           >
             <div>{{ error.$message }}</div>
@@ -196,18 +204,19 @@
       <label class="q-mb-sm block">Perímetro abdominal(cm)</label>
       <q-input
         v-model="entidad.perimetro_abdominal"
-        placeholder="Obligatorio"
+        placeholder="Opcional"
         type="number"
         :disable="disable"
         outlined
         dense
         @update:model-value="emitir()"
-        :error="!!validador.constante_vital.perimetro_abdominal.$errors.length"
-        @blur="validador.constante_vital.perimetro_abdominal.$touch"
+        :error="!!validador.constante_vital?.perimetro_abdominal.$errors.length"
+        @blur="validador.constante_vital?.perimetro_abdominal.$touch"
       >
         <template v-slot:error>
           <div
-            v-for="error of validador.constante_vital.perimetro_abdominal.$errors"
+            v-for="error of validador.constante_vital?.perimetro_abdominal
+              .$errors"
             :key="error.$uid"
           >
             <div>{{ error.$message }}</div>
@@ -227,16 +236,16 @@ const emit = defineEmits(['update:modelValue'])
 const props = defineProps({
   constanteVital: {
     type: Object as () => ConstanteVital,
-    required: true,
+    required: true
   },
   disable: {
     type: Boolean,
-    default: false,
+    default: false
   },
   validador: {
     type: Object,
-    required: true,
-  },
+    required: true
+  }
 })
 
 const entidad = reactive(props.constanteVital)

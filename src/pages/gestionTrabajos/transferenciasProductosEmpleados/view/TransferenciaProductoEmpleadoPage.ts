@@ -59,7 +59,7 @@ export default defineComponent({
      * Mixin
      ********/
     const mixin = new ContenedorSimpleMixin(TransferenciaProductoEmpleado, new TransferenciaProductoEmpleadoController(), new ArchivoController())
-    const { entidad: transferencia, disabled, accion, listadosAuxiliares, listado } = mixin.useReferencias()
+    const { entidad: transferencia, disabled, accion, listadosAuxiliares } = mixin.useReferencias()
     const { setValidador, obtenerListados, cargarVista, listar } = mixin.useComportamiento()
     const { onModificado, onConsultado, onReestablecer, onGuardado } = mixin.useHooks()
 
@@ -140,7 +140,7 @@ export default defineComponent({
     /************************
      * Variables computadas
      ************************/
-    const esEntreProyectos = (): boolean => listadosAuxiliares.proyectos.find((proyecto: Proyecto) => proyecto.id === transferencia.proyecto_origen)?.etapas.length === 0
+    // const esEntreProyectos = (): boolean => listadosAuxiliares.proyectos.find((proyecto: Proyecto) => proyecto.id === transferencia.proyecto_origen)?.etapas.length === 0
 
     //Obtener los listados
     cargarVista(async () => {
@@ -190,8 +190,6 @@ export default defineComponent({
       transferencia.cliente = transferenciaProductoEmpleadoStore.cliente_id
       esParaStock.value = !transferenciaProductoEmpleadoStore.idProyecto && !transferenciaProductoEmpleadoStore.idEtapa && !transferenciaProductoEmpleadoStore.tareaId
 
-      console.log('Montado')
-      console.log(esParaStock.value)
       await seleccionarEmpleadoOrigen(false)
       await seleccionarProyectoOrigen(false)
 
@@ -229,7 +227,7 @@ export default defineComponent({
     /************
      * Funciones
      ************/
-    const resetearFormulario = () => {
+    /* const resetearFormulario = () => {
       transferencia.proyecto_origen = null
       transferencia.proyecto_destino = null
       transferencia.etapa_origen = null
@@ -261,7 +259,7 @@ export default defineComponent({
       listadosAuxiliares.tareas = []
       listadosAuxiliares.tareasDestino = []
       listadosAuxiliares.proyectosDestino = []
-    }
+    } */
 
     /* async function seleccionarClienteStock(idCliente: number) {
       console.log(idCliente)
@@ -436,15 +434,12 @@ export default defineComponent({
     const filtroEmpleado = reactive(new FiltroMiBodegaEmpleado())
     const filtroTarea = reactive(new FiltroMiBodega())
 
-    const { consultarProductosTarea } = useMaterialesTarea(filtroTarea, listadosAuxiliares)
+    // const { consultarProductosTarea } = useMaterialesTarea(filtroTarea, listadosAuxiliares)
     const { consultarProductosEmpleado, consultarClientesMaterialesEmpleado } = useMaterialesEmpleado(filtroEmpleado, listadosAuxiliares)
     const { consultarProyectos, consultarProyectosDestino, consultarEtapas, consultarEtapasDestino, consultarProductosProyecto, consultarClientesMaterialesTarea } = useMaterialesProyecto(filtroProyecto, listadosAuxiliares)
 
     async function establecerAutorizador() {
-      console.log('establecerAutorizador')
-      console.log(accion.value)
       if (accion.value === acciones.nuevo) {
-        console.log('establecerAutorizador nuevo...')
 
         if (transferencia.proyecto_origen) {
           // si es entre proyectos autoriza el jefe tecnico

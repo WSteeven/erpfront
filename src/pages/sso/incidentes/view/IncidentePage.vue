@@ -7,6 +7,10 @@
     :tabDefecto="tabActual"
     ajustar-celdas
     forzar-listar
+    :permitir-consultar="false"
+    label-guardar="Guardar incidente"
+    label-editar="Actualizar incidente"
+    :accion1="btnSeguimiento"
   >
     <template #formulario>
       <q-form @submit.prevent>
@@ -21,11 +25,11 @@
               autofocus
               outlined
               dense
-              :error="!!v$.titulo.$errors.length"
-              @blur="v$.titulo.$touch"
+              :error="!!v$.titulo?.$errors?.length"
+              @blur="v$.titulo?.$touch"
             >
               <template v-slot:error>
-                <div v-for="error of v$.titulo.$errors" :key="error.$uid">
+                <div v-for="error of v$.titulo?.$errors" :key="error.$uid">
                   <div class="error-msg">{{ error.$message }}</div>
                 </div>
               </template>
@@ -41,11 +45,11 @@
               :disable="disabled"
               outlined
               dense
-              :error="!!v$.descripcion.$errors.length"
-              @blur="v$.descripcion.$touch"
+              :error="!!v$.descripcion?.$errors.length"
+              @blur="v$.descripcion?.$touch"
             >
               <template v-slot:error>
-                <div v-for="error of v$.descripcion.$errors" :key="error.$uid">
+                <div v-for="error of v$.descripcion?.$errors" :key="error.$uid">
                   <div class="error-msg">{{ error.$message }}</div>
                 </div>
               </template>
@@ -64,8 +68,9 @@
               outlined
               use-input
               input-debounce="0"
-              :error="!!v$.empleado_involucrado.$errors.length"
-              @blur="v$.empleado_involucrado.$touch"
+              :disable="disabled"
+              :error="!!v$.empleado_involucrado?.$errors.length"
+              @blur="v$.empleado_involucrado?.$touch"
               @filter="filtrarEmpleados"
               :option-label="v => v.apellidos + ' ' + v.nombres"
               :option-value="v => v.id"
@@ -82,8 +87,7 @@
 
               <template v-slot:error>
                 <div
-                  v-for="error of v$.empleado_involucrado.$errors"
-                  TR9953
+                  v-for="error of v$.empleado_involucrado?.$errors"
                   :key="error.$uid"
                 >
                   <div class="error-msg">{{ error.$message }}</div>
@@ -94,10 +98,9 @@
 
           <div class="col-12 col-md-3">
             <coordenadas-input
-              :coordenadas="incidente.coordenadas"
+              v-model="incidente.coordenadas"
               :disable="disabled"
               :validador="v$"
-              @update:model-value="c => (incidente.coordenadas = c)"
             />
           </div>
 
@@ -130,7 +133,7 @@
               class="q-mt-lg q-pt-md"
               v-model="incidente.es_parte_inspeccion"
               label="¿Es parte de una inspección?"
-              :disable="disabled"
+              :disable="disabled || enRutaInspeccion"
               @update:model-value="incidente.inspeccion = null"
               outlined
               dense
@@ -138,19 +141,20 @@
           </div>
 
           <div v-if="incidente.es_parte_inspeccion" class="col-12 col-md-3">
-            <label class="q-mb-sm block">Inspección</label>
+            <label class="q-mb-sm block">Inspecciones para incidencias</label>
             <q-select
               v-model="incidente.inspeccion"
               :options="inspecciones"
               transition-show="scale"
               transition-hide="scale"
+              :disable="disabled || enRutaInspeccion"
               options-dense
               dense
               outlined
               use-input
               input-debounce="0"
-              :error="!!v$.inspeccion.$errors.length"
-              @blur="v$.inspeccion.$touch"
+              :error="!!v$.inspeccion?.$errors.length"
+              @blur="v$.inspeccion?.$touch"
               @filter="filtrarInspecciones"
               :option-label="v => v.titulo"
               :option-value="v => v.id"
@@ -169,6 +173,7 @@
                 <q-btn
                   color="positive"
                   @click="refrescarListados('inspecciones')"
+                  :disable="disabled || enRutaInspeccion"
                   unelevated
                   square
                 >
@@ -178,16 +183,36 @@
               </template>
 
               <template v-slot:error>
-                <div v-for="error of v$.inspeccion.$errors" :key="error.$uid">
+                <div v-for="error of v$.inspeccion?.$errors" :key="error.$uid">
                   <div class="error-msg">{{ error.$message }}</div>
                 </div>
               </template>
             </q-select>
           </div>
 
-          <div class="col-12 col-md-3">
+          <div v-if="incidente.created_at" class="col-12 col-md-3">
+            <label class="q-mb-sm block"
+              >Fecha y hora de registro del incidente</label
+            >
+            <q-input v-model="incidente.created_at" disable outlined dense />
+          </div>
+
+          <!-- <div class="col-12 col-md-3">
             <label class="q-mb-sm block">Estado</label>
             <estado :propsTable="{ value: incidente.estado }"></estado>
+          </div> -->
+
+          <div v-if="accion !== acciones.nuevo" class="col-12 col-md-3">
+            <q-toggle
+              class="q-mt-lg q-pt-md"
+              v-model="incidente.finalizado"
+              label="¿Finalizado?"
+              :disable="disabled"
+              @update:model-value="finalizar()"
+              color="positive"
+              outlined
+              dense
+            ></q-toggle>
           </div>
 
           <!-- Manejo de archivos -->
@@ -201,16 +226,16 @@
               :permitir-eliminar="
                 accion == acciones.nuevo || accion == acciones.editar
               "
-              :idModelo="id"
+              :idModelo="idEntidad"
             />
           </div>
 
           <seleccion-productos-usuario
+            v-if="incidente.tipo_incidente === tiposIncidentes.CAMBIO_EPP"
             :mixin="mixin"
-            :propietario="propietario"
-            :configuracion-columnas="
-              configuracionColumnasProductosSeleccionadosIncidente
-            "
+            :propietario="incidente.empleado_involucrado"
+            :disable="disabled"
+            :configuracion-columnas="columnas"
             :accion1="btnEditarMotivoCambio"
             :accion2="btnEditarCantidad"
             :accion3="btnEliminar"
@@ -234,6 +259,30 @@
           {{ incidente.acciones_correctivas }}
         </div>
       </q-form>
+    </template>
+
+    <template #formulario-2>
+      <div class="bg-desenfoque rounded q-py-md">
+        <span
+          v-if="accion === acciones.consultar"
+          class="q-ml-md q-px-md q-py-xs rounded text-bold bg-grey-4 inline-block"
+        >
+          <q-icon name="bi-clock-history" class="q-mr-sm"></q-icon>
+          Seguimiento del incidente
+        </span>
+        <seguimiento-incidente-page
+          v-if="accion === acciones.consultar"
+          ref="refSeguimiento"
+          :id-empleado="incidente.empleado_involucrado"
+          :disable="disableSeguimiento"
+          :incidente="incidente"
+          @solicitud-descuento-guardada="
+            id => (incidente.solicitud_descuento = id)
+          "
+          @pedido-guardado="id => (incidente.pedido = id)"
+          @devolucion-guardada="id => (incidente.devolucion = id)"
+        ></seguimiento-incidente-page>
+      </div>
     </template>
   </tab-layout-filter-tabs2>
 </template>

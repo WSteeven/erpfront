@@ -44,4 +44,11 @@ export const configuracionColumnasInspecciones: ColumnConfig<Inspeccion>[] = [
         align: 'left',
         sortable: true
     },
+    {
+        name: 'cantidad_incidentes',
+        field: 'cantidad_incidentes',
+        label: 'Cantidad de incidentes',
+        align: 'left',
+        sortable: true
+    },
 ]

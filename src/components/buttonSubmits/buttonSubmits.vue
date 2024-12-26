@@ -1,19 +1,18 @@
 <template>
   <!-- submit and reset -->
-  <div class="row inline justify-end q-gutter-sm">
+  <div class="row q-gutter-xs">
     <!-- Boton guardar -->
     <q-btn
       form="formulario"
       v-if="accion === nuevo && permitirGuardar"
       color="primary"
       type="submit"
+      push
       no-caps
-      square
-      unelevated
       :disable="disabled"
       @click="emitir('guardar')"
     >
-      <q-icon name="bi-save" size="xs" class="q-pr-sm"></q-icon>
+      <q-icon name="save" size="xs" class="q-pr-sm"></q-icon>
       <span>{{ labelGuardar }}</span>
     </q-btn>
 
@@ -25,12 +24,11 @@
       type="submit"
       :disable="disabled"
       no-caps
-      square
-      unelevated
+      push
       @click="emitir('editar')"
     >
-      <q-icon name="bi-save" size="xs" class="q-pr-sm"></q-icon>
-      <span>Guardar cambios</span>
+      <q-icon name="save" size="xs" class="q-pr-sm"></q-icon>
+      <span>{{ labelEditar }}</span>
     </q-btn>
 
     <!-- Boton eliminar -->
@@ -51,9 +49,8 @@
     <q-btn
       v-if="permitirCancelar"
       color="negative"
+      push
       no-caps
-      square
-      unelevated
       @click="
         () => {
           emitir('cancelar', true)
@@ -97,6 +94,10 @@ export default defineComponent({
     labelGuardar: {
       type: String,
       default: 'Guardar'
+    },
+    labelEditar: {
+      type: String,
+      default: 'Guardar cambios'
     },
     disabled: {
       type: Boolean,

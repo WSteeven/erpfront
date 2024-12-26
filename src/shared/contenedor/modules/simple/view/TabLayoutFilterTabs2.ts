@@ -59,6 +59,10 @@ export default defineComponent({
       type: Boolean,
       default: true,
     },
+    permitirCancelar: {
+      type: Boolean,
+      default: true,
+    },
     puedeExportar: {
       type: Boolean,
       default: false,
@@ -75,6 +79,10 @@ export default defineComponent({
     labelGuardar: {
       type: String,
       default: 'Guardar',
+    },
+    labelEditar: {
+      type: String,
+      default: 'Guardar cambios',
     },
     accion1: {
       type: Object as () => CustomActionTable,
@@ -155,11 +163,9 @@ export default defineComponent({
     /************
      * Variables
      ************/
-    const { listar, guardar, editar, eliminar, consultar, reestablecer } =
-      props.mixin.useComportamiento()
+    const { guardar, editar, eliminar, consultar, reestablecer } = props.mixin.useComportamiento()
 
-    const { entidad, listado, accion, filtros, tabs, nextPageUrl } =
-      props.mixin.useReferencias()
+    const { entidad, listado, accion, filtros, tabs } = props.mixin.useReferencias()
 
     const Router = useRouter()
 

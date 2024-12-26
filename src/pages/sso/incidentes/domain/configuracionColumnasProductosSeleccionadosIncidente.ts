@@ -34,12 +34,5 @@ export const configuracionColumnasProductosSeleccionadosIncidente: ColumnConfig<
     editable: true,
     sortable: false,
   },
-  {
-    name: 'acciones',
-    field: 'acciones',
-    label: 'Acciones',
-    align: 'right',
-    sortable: false,
-  }
 ]
 

@@ -591,6 +591,7 @@
             :identificador="identificador"
             :propsTable="props"
             :listado="listado"
+            :disable="disable"
           ></CustomButtons>
         </div>
       </q-td>
@@ -688,6 +689,7 @@
                   :identificador="identificador"
                   :propsTable="props"
                   :listado="listado"
+                  :disable="disable"
                 ></CustomButtons>
               </div>
 

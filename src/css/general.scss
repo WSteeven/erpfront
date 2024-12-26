@@ -1,5 +1,6 @@
 // Custom scrollbar
 body {
+  background-color: $grey-5;
   &::-webkit-scrollbar {
     width: 10px;
     background-color: transparent;

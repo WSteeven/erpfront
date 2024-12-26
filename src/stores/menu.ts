@@ -265,6 +265,30 @@ export const useMenuStore = defineStore('menu', () => {
           icon: 'bi-person-hearts',
           can: store.can('puede.acceder.inspecciones')
         },
+        {
+          title: 'Solicitud de descuento',
+          link: 'solicitudes-descuentos',
+          icon: 'bi-cash-stack',
+          can: store.can('puede.acceder.solicitudes_descuentos')
+        },
+        {
+          title: 'Accidentes',
+          link: 'accidentes',
+          icon: 'personal_injury',
+          can: store.can('puede.acceder.accidentes')
+        },
+        {
+          title: 'Certificaciones',
+          link: 'certificaciones',
+          icon: 'bi-patch-check',
+          can: store.can('puede.acceder.certificaciones')
+        },
+        {
+          title: 'Certificaciones empleados',
+          link: 'certificaciones-empleados',
+          icon: 'bi-patch-check-fill',
+          can: store.can('puede.acceder.certificaciones_empleados')
+        },
       ]
     },
     /**
@@ -773,14 +797,6 @@ export const useMenuStore = defineStore('menu', () => {
               link: 'solicitudes-vacaciones',
               icon: 'bi-umbrella-fill',
               can: store.can('puede.acceder.solicitudes_vacaciones')
-            },
-            // {
-            //   title: 'Planes de Vacaciones',
-            //   link: 'planes-vacaciones',
-            //   icon: 'bi-calendar',
-            //   can: store.can('puede.acceder.planes_vacaciones')
-            // },
-            {
             }, {
               title: 'Registro de Vacaciones',
               link: 'vacaciones',
@@ -900,7 +916,7 @@ export const useMenuStore = defineStore('menu', () => {
               link: 'reporte-vacaciones',
               icon: 'bi-sunglasses',
               can: store.can('puede.acceder.reportes_rrhh') || true
-            }
+            },
           ]
         }
       ]

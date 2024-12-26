@@ -20,6 +20,7 @@
         :color="extraerColor(accion1) || 'primary'"
         dense
         rounded
+        :disable="disable && !accion1?.forzarEditable"
         no-caps
         no-wrap
         class="q-px-sm"
@@ -43,6 +44,7 @@
         :color="extraerColor(accion2) || 'primary'"
         dense
         rounded
+        :disable="disable"
         no-caps
         no-wrap
         unelevated
@@ -67,6 +69,7 @@
         :color="extraerColor(accion3) || 'primary'"
         dense
         rounded
+        :disable="disable"
         no-caps
         no-wrap
         unelevated
@@ -292,6 +295,7 @@
         push
         label="Acciones"
         icon="bi-list"
+        :disable="disable"
         no-caps
         dense
       >
@@ -582,6 +586,7 @@ const props = defineProps({
     type: Number,
     default: 2
   },
+  disable: { type: Boolean, default: false },
   accion1: {
     type: Object as () => CustomActionTable,
     required: false

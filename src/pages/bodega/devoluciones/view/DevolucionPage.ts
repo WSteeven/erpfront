@@ -35,7 +35,7 @@ import { MaterialEmpleadoTarea } from 'pages/gestionTrabajos/miBodega/domain/Mat
 import { ValidarListadoProductos } from '../application/ValidarListadoProductos'
 import { useCargandoStore } from 'stores/cargando'
 import { useNotificacionStore } from 'stores/notificacion'
-import { useRouter } from 'vue-router'
+import { useRoute, useRouter } from 'vue-router'
 import { SucursalController } from 'pages/administracion/sucursales/infraestructure/SucursalController'
 import { filtrarEmpleadosPorRoles, ordenarLista } from 'shared/utils'
 import { StatusEssentialLoading } from 'components/loading/application/StatusEssentialLoading'
@@ -49,12 +49,12 @@ import { ComportamientoModalesDevolucion } from '../application/ComportamientoMo
 
 export default defineComponent({
   name: 'DevolucionPage',
+  emits: ['guardado'],
   components: { TabLayoutFilterTabs2, EssentialTable, ModalesEntidad, EssentialSelectableTable, GestorArchivos, },
-
-  setup() {
+  setup(props, { emit }) {
     const mixin = new ContenedorSimpleMixin(Devolucion, new DevolucionController())
     const { entidad: devolucion, disabled, accion, listadosAuxiliares, listado } = mixin.useReferencias()
-    const { setValidador, obtenerListados, cargarVista, listar } = mixin.useComportamiento()
+    const { setValidador, obtenerListados, cargarVista, listar, consultar, reestablecer } = mixin.useComportamiento()
     const { onReestablecer, onGuardado, onConsultado } = mixin.useHooks()
     const { confirmar, prompt, notificarCorrecto, notificarError, notificarInformacion } = useNotificaciones()
 
@@ -68,6 +68,7 @@ export default defineComponent({
     const store = useAuthenticationStore()
     const listadoMaterialesDevolucion = useListadoMaterialesDevolucionStore()
     const router = useRouter()
+    const route = useRoute()
     const cargando = new StatusEssentialLoading()
     const axios = AxiosHttpRepository.getInstance()
 
@@ -90,6 +91,17 @@ export default defineComponent({
     const esCoordinador = store.esCoordinador
     const esActivosFijos = store.esActivosFijos
     const clientes = ref([])
+    const enRutaInspeccionIncidente = computed(() => ['inspecciones', 'incidentes'].includes(useRoute().name?.toString() ?? ''))
+
+    const limpiarCampos = () => {
+      const solicitante = devolucion.solicitante
+      const devolver = devolucion.devolver_materiales_tecnicos
+      reestablecer()
+      soloLectura.value = false
+      refArchivo.value.limpiarListado()
+      devolucion.solicitante = solicitante
+      devolucion.devolver_materiales_tecnicos = devolver
+    }
 
     /************************
      * HOOKS
@@ -111,6 +123,7 @@ export default defineComponent({
       }, 1)
 
       devolucion.solicitante = store.user.id
+      emit('guardado', id)
     })
 
     const { empleados, filtrarEmpleados,
@@ -147,7 +160,8 @@ export default defineComponent({
       condiciones.value = listadosAuxiliares.condiciones
 
       // en la carga inicial se coloca el solicitante
-      devolucion.solicitante = store.user.id
+      const enRutaInspeccionIncidente = computed(() => ['inspecciones', 'incidentes'].includes(route.name?.toString() ?? ''))
+      if (!enRutaInspeccionIncidente.value) devolucion.solicitante = store.user.id
 
       //logica para autocompletar el formulario de devolucion
       if (listadoMaterialesDevolucion.listadoMateriales.length) {
@@ -481,6 +495,11 @@ export default defineComponent({
       ordenarLista,
       comunicarComportamiento,
       checkSolicitantes,
+      consultar,
+      enRutaInspeccionIncidente,
+      reestablecer,
+      obtenerClientesMaterialesEmpleado,
+      limpiarCampos,
     }
   }
 })

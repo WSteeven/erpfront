@@ -1,30 +1,32 @@
 // Dependencias
 import { StatusEssentialLoading } from 'components/loading/application/StatusEssentialLoading'
-import { useAuthenticationStore } from 'stores/authentication'
+import { useFiltrosListadosSelects } from 'shared/filtrosListadosGenerales'
 import { tiposCitaMedica, tiposEnfermedades } from 'config/utils/medico'
+import { useAuthenticationStore } from 'stores/authentication'
 import { computed, defineComponent, reactive, ref } from 'vue'
+import { useNotificaciones } from 'shared/notificaciones'
 import { required } from 'shared/i18n-validators'
 import { useMedicoStore } from 'stores/medico'
 import useVuelidate from '@vuelidate/core'
+import { acciones } from 'config/utils'
+import { useRoute } from 'vue-router'
 
 // Componentes
 import ContantesVitales from 'medico/gestionarPacientes/modules/seccionesFichas/constantesVitales/ContantesVitales.vue'
 import SimpleLayout from 'src/shared/contenedor/modules/simple/view/SimpleLayout.vue'
 import DetallePaciente from 'medico/gestionarPacientes/view/DetallePaciente.vue'
+import GestorArchivos from 'components/gestorArchivos/GestorArchivos.vue'
 import ButtonSubmits from 'components/buttonSubmits/buttonSubmits.vue'
 
 // Logica y controladores
+import { ConstanteVital } from 'pages/medico/gestionarPacientes/modules/seccionesFichas/domain/ConstanteVital'
 import { ContenedorSimpleMixin } from 'shared/contenedor/modules/simple/application/ContenedorSimpleMixin'
 import { EmpleadoController } from 'pages/recursosHumanos/empleados/infraestructure/EmpleadoController'
 import { ConsultaMedicaController } from '../infraestructure/ConsultaMedicaController'
 import { CieController } from 'pages/medico/cie/infraestructure/CieController'
 import { Empleado } from 'pages/recursosHumanos/empleados/domain/Empleado'
-import { useFiltrosListadosSelects } from 'shared/filtrosListadosGenerales'
 import { DiagnosticoCitaMedica } from '../domain/DiagnosticoCitaMedica'
 import { ConsultaMedica } from '../domain/ConsultaMedica'
-import { acciones } from 'config/utils'
-import { useNotificaciones } from 'shared/notificaciones'
-import { ConstanteVital } from 'pages/medico/gestionarPacientes/modules/seccionesFichas/domain/ConstanteVital'
 
 
 export default defineComponent({
@@ -34,6 +36,7 @@ export default defineComponent({
     DetallePaciente,
     ButtonSubmits,
     ContantesVitales,
+    GestorArchivos,
   },
   emits: ['cerrar-modal', 'guardado'],
   setup(props, { emit }) {
@@ -56,14 +59,17 @@ export default defineComponent({
     const cargando = new StatusEssentialLoading()
     const tabsEnfermedades = ref(tiposEnfermedades.COMUNES)
     const { confirmar } = useNotificaciones()
+    const enRutaAccidentes = computed(() => useRoute().name === 'accidentes')
+    const idEntidad = ref()
+    const refArchivo = ref()
 
     /********
     * Mixin
     *********/
     const mixin = new ContenedorSimpleMixin(ConsultaMedica, consultaController)
     const { entidad: consulta, accion, listadosAuxiliares, listado, disabled } = mixin.useReferencias()
-    const { setValidador, cargarVista, obtenerListados, listar, editarParcial, guardar } = mixin.useComportamiento()
-    const { onBeforeGuardar, onReestablecer, onGuardado, onModificado } = mixin.useHooks()
+    const { setValidador, cargarVista, obtenerListados, listar, editarParcial, guardar, reestablecer } = mixin.useComportamiento()
+    const { onBeforeGuardar, onReestablecer, onGuardado, onModificado, onConsultado, onListado } = mixin.useHooks()
 
     cargarVista(async () => {
       await obtenerListados({
@@ -88,12 +94,17 @@ export default defineComponent({
       }
     }
 
-    const consultarConsulta = async () => {
+    const consultarConsulta = async (filtro) => {
+      // const filtro = { registro_empleado_examen_id: consulta.registro_empleado_examen, cita_medica_id: consulta.cita_medica }
+      listar(filtro)
+      // if (result[0]) consulta.hydrate(result[0])
+    }
+    /* const consultarConsulta = async () => {
       const filtro = { registro_empleado_examen_id: consulta.registro_empleado_examen, cita_medica_id: consulta.cita_medica }
       const { result } = await consultaController.listar(filtro)
       if (result[0]) consulta.hydrate(result[0])
       accion.value = consulta.id ? acciones.consultar : acciones.nuevo
-    }
+    } */
 
     const darAlta = () => {
       confirmar('¿Está seguro del dar de alta al paciente?', () => editarParcial(consulta.id, { dado_alta: true }))
@@ -105,6 +116,8 @@ export default defineComponent({
     }
 
     const hidratarConstanteVital = (constanteVital: ConstanteVital) => consulta.constante_vital.hydrate(constanteVital)
+
+    const subirArchivos = async () => await refArchivo.value.subir()
 
     /*************
    * Validaciones
@@ -130,6 +143,14 @@ export default defineComponent({
     /*********
      * Hooks
      *********/
+    onListado(() => {
+      if (listado.value[0]) consulta.hydrate(listado.value[0])
+      if (!enRutaAccidentes.value) {
+        accion.value = consulta.id ? (authenticationStore.esMedico || authenticationStore.esAdministrador ? acciones.editar : acciones.consultar) : acciones.nuevo
+      }
+      setTimeout(() => refArchivo.value.listarArchivosAlmacenados(consulta.id), 1)
+    })
+
     onBeforeGuardar(() => {
       consulta.diagnosticos = consulta.diagnosticos.map((enfermedad: any) => {
         const diagnostico = new DiagnosticoCitaMedica()
@@ -144,49 +165,59 @@ export default defineComponent({
     })
 
     onReestablecer(() => {
-      console.log('onReestablecer')
       consulta.diagnosticos = []
-      // emit('cerrar-modal')
+      refArchivo.value.limpiarListado()
     })
 
-    onGuardado((id, responseData) => {
-      console.log('onGuarado')
+    onGuardado(async (id, responseData) => {
+      idEntidad.value = id
+      setTimeout(async () => await subirArchivos(), 1)
       emit('guardado', { page: 'DiagnosticoRecetaPage', entidad: responseData.modelo, hook: 'onGuardado', data: {} }) // Para CitaMedicaPage
       emit('cerrar-modal')
     })
 
     onModificado((id, responseData) => {
-      emit('guardado', { page: 'DiagnosticoRecetaPage', entidad: responseData.modelo, hook: 'onModificado' })
-      emit('cerrar-modal')
+      idEntidad.value = id
+      setTimeout(async () => {
+        await subirArchivos(), 1
+        emit('guardado', { page: 'DiagnosticoRecetaPage', entidad: responseData.modelo, hook: 'onModificado' })
+      })
+      // emit('cerrar-modal')
     })
 
     /*******
     * Init
     *******/
-    if (medicoStore.empleado) {
-      empleado.hydrate(medicoStore.empleado)
-    } else {
-      consultarEmpleado(authenticationStore.user.id)
+    if (!enRutaAccidentes.value) {
+      consulta.cita_medica = medicoStore.idCita
+      consulta.registro_empleado_examen = medicoStore.idRegistroEmpleadoExamen
+      if (medicoStore.empleado) {
+        empleado.hydrate(medicoStore.empleado)
+      } else {
+        consultarEmpleado(authenticationStore.user.id)
+      }
+      console.log(consulta.cita_medica)
+      const filtro = { registro_empleado_examen_id: consulta.registro_empleado_examen, cita_medica_id: consulta.cita_medica }
+      if (medicoStore.empleado?.id) listar({ empleado_id: medicoStore.empleado?.id })
+      consultarConsulta(filtro)
     }
-
-    consulta.cita_medica = medicoStore.idCita
-    consulta.registro_empleado_examen = medicoStore.idRegistroEmpleadoExamen
-
-    consultarConsulta()
-    listar({ empleado_id: medicoStore.empleado?.id })
 
     const esAccidenteTrabajo = computed(() => medicoStore.tipoCitaMedica === tiposCitaMedica.ACCIDENTE_DE_TRABAJO.value)
 
     return {
       v$,
       mixin,
+      idEntidad,
+      refArchivo,
+      accion,
+      acciones,
       disabled,
       listado,
       consulta,
       empleado,
       enfermedades,
       filtrarEnfermedades,
-      esConsultable: computed(() => accion.value === acciones.consultar),
+      // esConsultable: computed(() => accion.value === acciones.consultar),
       esAccidenteTrabajo,
       tipoCitaMedica: computed(() => {
         if (medicoStore.tipoCitaMedica === tiposCitaMedica.ENFERMEDAD_COMUN.value) return tiposCitaMedica.ENFERMEDAD_COMUN.label
@@ -198,6 +229,10 @@ export default defineComponent({
       tiposEnfermedades,
       tabsEnfermedades,
       hidratarConstanteVital,
+      consultarConsulta,
+      reestablecer,
+      consultarEmpleado,
+      enRutaAccidentes,
     }
   }
 })

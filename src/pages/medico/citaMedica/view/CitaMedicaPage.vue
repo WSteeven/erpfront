@@ -4,9 +4,10 @@
     :configuracionColumnas="configuracionColumnasCitaMedica"
     :full="true"
     :mostrarListado="false"
-    :customPanel1="enfermedadComunTabPanel"
-    :customPanel2="accidenteTrabajoTabPanel"
-    @tab-seleccionado="(tab) => (tabLayout = tab)"
+    :customPanel1="!enRutaAccidentes ? enfermedadComunTabPanel : null"
+    :customPanel2="!enRutaAccidentes ? accidenteTrabajoTabPanel : null"
+    @tab-seleccionado="tab => (tabLayout = tab)"
+    :permitir-cancelar="!enRutaAccidentes"
   >
     <template #formulario>
       <div class="row q-col-gutter-x-sm q-ma-md q-mb-md">
@@ -23,12 +24,12 @@
             :options="[
               {
                 label: opcionesDestinoCitaMedica.PARA_MI,
-                value: opcionesDestinoCitaMedica.PARA_MI,
+                value: opcionesDestinoCitaMedica.PARA_MI
               },
               {
                 label: opcionesDestinoCitaMedica.PARA_OTRO_EMPLEADO,
-                value: opcionesDestinoCitaMedica.PARA_OTRO_EMPLEADO,
-              },
+                value: opcionesDestinoCitaMedica.PARA_OTRO_EMPLEADO
+              }
             ]"
           />
         </div>
@@ -67,8 +68,8 @@
             @blur="v$.paciente.$touch"
             @filter="filtrarEmpleados"
             @popup-show="ordenarEmpleados(empleados)"
-            :option-label="(v) => v.apellidos + ' ' + v.nombres"
-            :option-value="(v) => v.id"
+            :option-label="v => v.apellidos + ' ' + v.nombres"
+            :option-value="v => v.id"
             emit-value
             map-options
           >
@@ -115,8 +116,8 @@
             dense
             outlined
             color="positive"
-            :option-label="(item) => item.label"
-            :option-value="(item) => item.value"
+            :option-label="item => item.label"
+            :option-value="item => item.value"
             use-input
             input-debounce="0"
             emit-value
@@ -136,8 +137,8 @@
             options-dense
             dense
             outlined
-            :option-label="(item) => item.label"
-            :option-value="(item) => item.value"
+            :option-label="item => item.label"
+            :option-value="item => item.value"
             use-input
             input-debounce="0"
             emit-value
@@ -174,8 +175,8 @@
             options-dense
             dense
             outlined
-            :option-label="(item) => item.label"
-            :option-value="(item) => item.value"
+            :option-label="item => item.label"
+            :option-value="item => item.value"
             use-input
             input-debounce="0"
             emit-value
@@ -185,7 +186,8 @@
         </div>
 
         <!-- Fecha y hora accidente trabajo -->
-        <div v-if="esMedico && esAccidenteTrabajo" class="col-12 col-md-3">
+        <!-- <div v-if="esMedico && esAccidenteTrabajo" class="col-12 col-md-3"> -->
+        <div v-if="esAccidenteTrabajo" class="col-12 col-md-3">
           <label class="q-mb-sm block">Fecha del accidente</label>
           <q-input
             v-model="citaMedica.fecha_accidente"
@@ -203,7 +205,11 @@
                   transition-show="scale"
                   transition-hide="scale"
                 >
-                  <q-date v-model="citaMedica.fecha_accidente" :mask="maskFecha" today-btn>
+                  <q-date
+                    v-model="citaMedica.fecha_accidente"
+                    :mask="maskFecha"
+                    today-btn
+                  >
                     <div class="row items-center justify-end">
                       <q-btn
                         v-close-popup
@@ -228,7 +234,7 @@
           </q-input>
         </div>
 
-        <div v-if="esMedico && esAccidenteTrabajo" class="col-12 col-md-3">
+        <div v-if="esAccidenteTrabajo" class="col-12 col-md-3">
           <label class="q-mb-sm block">Hora del accidente</label>
           <q-input
             v-model="citaMedica.hora_accidente"
@@ -272,7 +278,11 @@
 
         <!-- Fecha y hora limite -->
         <div
-          v-if="esMedico && !(estaCancelado || estaRechazado || estaPendiente)"
+          v-if="
+            esMedico ||
+            (esAdministrador &&
+              !(estaCancelado || estaRechazado || estaPendiente))
+          "
           class="col-12 col-md-3"
         >
           <label class="q-mb-sm block">Fecha de la cita</label>
@@ -322,7 +332,11 @@
         </div>
 
         <div
-          v-if="esMedico && !(estaCancelado || estaRechazado || estaPendiente)"
+          v-if="
+            esMedico ||
+            (esAdministrador &&
+              !(estaCancelado || estaRechazado || estaPendiente))
+          "
           class="col-12 col-md-3"
         >
           <label class="q-mb-sm block">Hora de la cita</label>
@@ -351,11 +365,11 @@
         <div
           v-if="
             citaMedica.estado_cita_medica !== estadosCitaMedica.PENDIENTE &&
-            esMedico &&
-            !(estaCancelado || estaRechazado)
+            (esMedico || esAdministrador)
           "
           class="col-12 col-md-6 col-mb-md"
         >
+          <!-- !(estaCancelado || estaRechazado) -->
           <label class="q-mb-sm block">Observación</label>
           <q-input
             v-model="citaMedica.observacion"
@@ -370,7 +384,9 @@
         </div>
 
         <div
-          v-if="citaMedica.fecha_hora_cancelado && esMedico"
+          v-if="
+            citaMedica.fecha_hora_cancelado && (esMedico || esAdministrador)
+          "
           class="text-negative col-12 col-md-6 col-mb-md"
         >
           <label class="q-mb-sm block">Fecha y hora cancelado</label>
@@ -469,7 +485,7 @@
         titulo="Enfermedades comúnes"
         :configuracionColumnas="[
           ...configuracionColumnasCitaMedica,
-          accionesTabla,
+          accionesTabla
         ]"
         :datos="enfermedadesComunes"
         :ajustarCeldas="true"
@@ -507,7 +523,7 @@
         titulo="Accidentes de trabajo"
         :configuracionColumnas="[
           ...configuracionColumnasCitaMedicaAccidenteTransito,
-          accionesTabla,
+          accionesTabla
         ]"
         :datos="accidentesTrabajo"
         :ajustarCeldas="true"

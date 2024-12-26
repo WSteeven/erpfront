@@ -1,13 +1,15 @@
 <template>
   <div class="col-12">
     <label class="q-mb-sm block">Seleccione un cliente</label>
+
+    <!-- :disable="!['NUEVO', 'EDITAR'].includes(acciones.nuevo)" -->
     <q-select
-      v-model="cliente"
+      v-model="entidad.cliente"
       :options="listadosAuxiliares.clientes"
       transition-show="scale"
       transition-hide="scale"
-      :disable="!['NUEVO', 'EDITAR'].includes(acciones.nuevo)"
-      @update:model-value="entidad.detalle_productos = []"
+      @update:model-value="entidad.detalles_productos = []"
+      :disable="disable || deshabilitarAgregarProductos"
       use-input
       input-debounce="0"
       options-dense
@@ -22,7 +24,7 @@
         <q-btn
           color="positive"
           unelevated
-          :disable="!(accion === acciones.nuevo)"
+          :disable="disable || deshabilitarAgregarProductos"
           @click="refrescarListadosEmpleado('clientes')"
         >
           <q-icon size="xs" name="bi-arrow-clockwise" />
@@ -33,19 +35,16 @@
   </div>
 
   <div class="col-12 col-md-12 q-mt-md">
-    <label class="q-mb-sm block"
-      >Agregar productos<b
-        ><i> *Primero seleccione el origen de los productos</i></b
-      ></label
-    >
+    <label class="q-mb-sm block">Agregar productos</label>
     <div class="row q-col-gutter-x-xs">
       <div class="col-12 col-md-10 q-mb-md">
         <q-input
           v-model="criterioBusquedaProducto"
-          placeholder="Nombre de producto"
-          hint="Presiona Enter para seleccionar un producto"
+          placeholder="Escriba el nombre del producto y luego presione en Buscar producto"
+          hint="También puede presionar Enter para buscar un producto"
           @keydown.enter="consultarProductos"
           @blur="criterioBusquedaProducto === '' ? limpiarProducto() : null"
+          :disable="disable || deshabilitarAgregarProductos"
           outlined
           dense
         >
@@ -58,11 +57,58 @@
           unelevated
           color="primary"
           class="full-width"
+          :disable="disable || deshabilitarAgregarProductos"
           square
           no-caps
           no-wrap
           >Buscar producto</q-btn
         >
+      </div>
+
+      <div class="col-3">
+        <q-checkbox
+          v-model="filtrarPorCategoria"
+          label="Filtrar por categoría"
+          :disable="disable || deshabilitarAgregarProductos"
+          @update:model-value="
+            () => {
+              consultarCategorias()
+              categoriaProductos = null
+            }
+          "
+        />
+      </div>
+
+      <div v-if="filtrarPorCategoria" class="col-3">
+        <label class="q-mb-sm block">Seleccione una categoría</label>
+        <q-select
+          v-model="categoriaProductos"
+          :options="listadosAuxiliares.categorias"
+          transition-show="scale"
+          transition-hide="scale"
+          :disable="disable || deshabilitarAgregarProductos"
+          use-input
+          input-debounce="0"
+          options-dense
+          dense
+          outlined
+          :option-label="item => item.nombre"
+          :option-value="item => item.id"
+          emit-value
+          map-options
+        >
+          <template v-slot:after>
+            <q-btn
+              color="positive"
+              unelevated
+              :disable="disable"
+              @click="refrescarListadosEmpleado('categorias')"
+            >
+              <q-icon size="xs" name="bi-arrow-clockwise" />
+              <q-tooltip>Recargar clientes</q-tooltip>
+            </q-btn>
+          </template>
+        </q-select>
       </div>
     </div>
   </div>
@@ -78,12 +124,17 @@
       :permitirEliminar="false"
       :mostrarBotones="false"
       :ajustarCeldas="true"
+      :disable="disable"
       :altoFijo="false"
       permitir-editar-celdas
       :accion1="accion1"
       :accion2="accion2"
       :accion3="accion3"
+      :accion4="accion4"
+      :accion5="accion5"
+      :accion6="accion6"
     ></essential-table>
+    <!-- :accion3="accion3" -->
   </div>
 
   <!-- Modal de seleccion de detalles -->
@@ -101,7 +152,7 @@ import { useOrquestadorSelectorDetallesProductos } from 'components/inputs/selec
 import { StatusEssentialLoading } from 'components/loading/application/StatusEssentialLoading'
 import { useNotificaciones } from 'shared/notificaciones'
 import { acciones } from 'config/utils'
-import { ref } from 'vue'
+import { computed, ref, watch } from 'vue'
 
 // Componentes
 import EssentialSelectableTable from 'components/tables/view/EssentialSelectableTable.vue'
@@ -113,6 +164,7 @@ import { configuracionColumnasDetallesModal } from 'pages/gestionTrabajos/transf
 import { configuracionColumnasProductosSeleccionadosAccion } from '../domain/configuracionColumnasProductosSeleccionadosAccion'
 import { ColumnConfig } from 'components/tables/domain/ColumnConfig'
 import { CustomActionTable } from 'components/tables/domain/CustomActionTable'
+import { CategoriaController } from 'pages/bodega/categorias/infraestructure/CategoriaController'
 
 // Uso de defineProps con la interface
 const props = defineProps({
@@ -125,6 +177,7 @@ const props = defineProps({
   tarea: Number,
   etapa: Number,
   configuracionColumnas: Object as () => ColumnConfig<any>[],
+  disable: Boolean,
   accion1: {
     type: Object as () => CustomActionTable,
     required: false
@@ -136,8 +189,40 @@ const props = defineProps({
   accion3: {
     type: Object as () => CustomActionTable,
     required: false
-  }
+  },
+  accion4: {
+    type: Object as () => CustomActionTable,
+    required: false
+  },
+  accion5: {
+    type: Object as () => CustomActionTable,
+    required: false
+  },
+  accion6: {
+    type: Object as () => CustomActionTable,
+    required: false
+  },
+  filtrarPorCategoria: {
+    type: Boolean,
+    default: false
+  },
+  deshabilitarAgregarProductos: {
+    type: Boolean,
+    default: false
+  },
 })
+
+/********
+ * Mixin
+ ********/
+const { cargarVista, obtenerListados } = props.mixin.useComportamiento()
+
+const consultarCategorias = () =>
+  cargarVista(async () => {
+    await obtenerListados({
+      categorias: new CategoriaController()
+    })
+  })
 
 /************
  * Variables
@@ -145,18 +230,11 @@ const props = defineProps({
 const { entidad, listadosAuxiliares, accion } = props.mixin.useReferencias()
 const { notificarAdvertencia } = useNotificaciones()
 const cargando = new StatusEssentialLoading()
-const cliente = ref()
+const filtrarPorCategoria = ref(props.filtrarPorCategoria)
+const categoriaProductos = ref()
 const columnas =
   props.configuracionColumnas ??
   configuracionColumnasProductosSeleccionadosAccion
-
-/*******************************************************************************************
- * Botones de tabla
- ******************************************************************************************/
-/* const { botonEditarCantidad, botonEliminar } = useBotonesListadoProductos(
-  transferencia,
-  accion
-) */
 
 /***************
  * Orquestador
@@ -173,8 +251,16 @@ const {
   'materiales_empleado_consolidado'
 )
 
+/*************
+ * Observers
+ *************/
+// watch()
+
+/*************
+ * Funciones
+ ************/
 const consultarProductos = async () => {
-  if (!cliente.value)
+  if (!entidad.cliente)
     return notificarAdvertencia(
       'Debe seleccionar un cliente para filtrar los productos de origen'
     )
@@ -182,22 +268,25 @@ const consultarProductos = async () => {
     // Stock
     return await listarProductos({
       empleado_id: props.propietario,
-      cliente_id: cliente.value,
-      stock_personal: 1
+      cliente_id: entidad.cliente,
+      stock_personal: 1,
+      categoria_id: categoriaProductos.value
     })
   } else {
     if (!props.proyecto && !props.etapa) {
       return listarProductos({
         empleado_id: props.propietario,
-        cliente_id: cliente.value,
-        tarea_id: props.tarea
+        cliente_id: entidad.cliente,
+        tarea_id: props.tarea,
+        categoria_id: categoriaProductos.value
       })
     } else {
       return listarProductos({
         empleado_id: props.propietario,
-        cliente_id: cliente.value,
+        cliente_id: entidad.cliente,
         proyecto_id: props.proyecto,
-        etapa_id: props.etapa
+        etapa_id: props.etapa,
+        categoria_id: categoriaProductos.value
       })
     }
   }
@@ -221,10 +310,22 @@ async function consultarClientesMaterialesEmpleado() {
 async function refrescarListadosEmpleado(nombreListado: string) {
   switch (nombreListado) {
     case 'clientes':
-      await consultarClientesMaterialesEmpleado()
+      consultarClientesMaterialesEmpleado()
+      break
+    case 'categorias':
+      consultarCategorias()
       break
   }
 }
 
-consultarClientesMaterialesEmpleado()
+watch(
+  computed(() => props.propietario),
+  () => {
+    consultarClientesMaterialesEmpleado()
+    if (accion.value === acciones.nuevo) {
+      entidad.detalles_productos = []
+      entidad.cliente = null
+    }
+  }
+)
 </script>

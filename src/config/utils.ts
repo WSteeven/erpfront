@@ -424,6 +424,7 @@ export const rolesSistema = {
   vendedor: 'VENDEDOR',
   financiero: 'FINANCIERO',
   esSupervisorTecnico: 'SUPERVISOR_TECNICO',
+  sso: 'SEGURIDAD Y SALUD OCUPACIONAL',
 }
 
 export const cargosSistema = {

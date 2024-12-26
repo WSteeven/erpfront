@@ -17,7 +17,10 @@ import { useQuasar } from 'quasar'
 import { ref } from 'vue'
 
 const props = defineProps({
-  value: String,
+  value: {
+    type: String,
+    default: ''
+  },
   disable: {
     type: Boolean,
     required: true
