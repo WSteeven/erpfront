@@ -813,7 +813,7 @@ export const useMenuStore = defineStore('menu', () => {
             },
             {
               title: 'Atrasos',
-              link: 'justificaciones-atrasos',
+              link: 'atrasos',
               icon: 'bi-file-earmark-text',
               can: true,
             },

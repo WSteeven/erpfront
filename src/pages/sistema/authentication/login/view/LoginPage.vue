@@ -1,46 +1,45 @@
 <template>
   <q-page>
-    <div class="row justify-center items-center window-height bg-grey-2">
-      <div class="col-12 col-md-6 col-lg-4 q-pa-lg column justify-center items-center">
+    <div class="login-container">
+      <div class="login-card">
 
-
-
-        <span class="text-center">Bienvenidos a</span>
-        <div class="imagen d-flex align-items-center justify-content-center">
-          <q-avatar square size="100px">
+        <!-- Bienvenida -->
+        <span class="welcome-text">Bienvenidos a</span>
+        <div class="logo-container">
+          <q-avatar square style="height: 200px; width: auto;">
             <img :src="!$q.dark.isActive ? logoClaro : logoOscuro" />
           </q-avatar>
         </div>
-        <h2 class="text-center q-mb-md">{{ nombreEmpresa }}</h2>
-        <span class="text-center q-mb-lg">Inicie sesión con su cuenta</span>
 
-        <!-- Login Form -->
-        <form @submit.prevent="login" class="full-width q-px-lg">
-          <div class="q-mb-sm">
+        <!-- <h2 class="company-name">{{ nombreEmpresa }}</h2> -->
+
+        <!-- Formulario de inicio de sesión -->
+        <form @submit.prevent="login" class="login-form">
+          <div class="input-wrapper">
+            <q-icon name="mail" class="input-icon" />
             <q-input
               v-model="loginUser.name"
-              label="Usuario"
+              label="Correo electrónico"
               outlined
               dense
-              @focus="startTyping"
-              @blur="stopTyping"
+              class="input-field"
             />
           </div>
 
-          <div class="q-mb-sm">
+          <div class="input-wrapper">
+            <q-icon name="lock" class="input-icon" />
             <q-input
               v-model="loginUser.password"
               label="Contraseña"
               outlined
               dense
               :type="isPwd ? 'password' : 'text'"
-              @focus="startHidingEyes"
-              @blur="stopHidingEyes"
+              class="input-field"
             >
               <template v-slot:append>
                 <q-icon
                   :name="isPwd ? 'visibility_off' : 'visibility'"
-                  class="cursor-pointer"
+                  class="toggle-icon"
                   @click="togglePasswordVisibility"
                 />
               </template>
@@ -48,76 +47,120 @@
           </div>
 
           <q-btn
-            color="primary"
             label="Iniciar sesión"
-            class="full-width q-mb-sm"
+            class="btn-login"
             :disabled="!enableLoginButton"
             no-caps
             unelevated
             @click="login"
           />
-          <q-btn
-            flat
-            color="primary"
-            label="Recuperar contraseña"
-            class="full-width q-mb-sm"
-            no-caps
-            unelevated
-            @click="recuperarPassword"
-          />
+          <span class="forgot-text" @click="recuperarPassword">
+            ¿Olvidó su nombre de usuario o contraseña?
+          </span>
         </form>
       </div>
     </div>
   </q-page>
 </template>
 
-
 <script src="./LoginPage.ts"></script>
 
-<style scope>
-h2 {
-  line-height: 1.2;
-  font-size: 1.714rem;
+<style scoped>
+/* Contenedor principal */
+.login-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  background-color: var(--q-color-grey-2);
+  padding: 1rem;
 }
 
-.empresa {
-  position: fixed;
-  top: 16px;
-  left: 16px;
-}
-
-.fondo {
-  background: rgb(94, 88, 252);
-  background: linear-gradient(
-    90deg,
-    rgba(94, 88, 252, 1) 0%,
-    rgba(110, 143, 255, 1) 100%
-  );
-}
-
-/* Quita las mayusculas al campo de contraseña y usuario */
-/* .q-field .q-field__inner {
-  text-transform: none !important;
-} */
-
-
- /**Estilos para Avatar */
- .avatar-container {
-  position: relative;
-}
-
-.avatar-svg {
+/* Tarjeta de inicio de sesión */
+.login-card {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  border-radius: 16px;
+  padding: 2.5rem;
+  max-width: 480px; /* Card más grande */
   width: 100%;
-  height: auto;
+  text-align: center;
 }
 
-.cover-eyes circle {
-  transform: translateY(10px); /* Baja los ojos para simular cubrirse */
-  transition: transform 0.3s ease;
+/* Texto de bienvenida */
+.welcome-text {
+  font-size: 1.25rem;
+  font-weight: 500;
+  color: var(--q-color-grey-8);
+  margin-bottom: 1rem;
 }
 
-.peek circle:first-child {
-  transform: translateY(0); /* Sube un ojo para ver la contraseña */
-  transition: transform 0.3s ease;
+/* Nombre de la empresa */
+.company-name {
+  font-size: 1.75rem;
+  font-weight: 700;
+  color: var(--q-color-primary);
+  margin: 0.5rem 0 1.5rem;
+}
+
+/* Contenedor del logo */
+.logo-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-bottom: 1.5rem;
+}
+
+/* Formulario */
+.login-form {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+/* Input con iconos */
+.input-wrapper {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.input-icon {
+  position: absolute;
+  left: 12px;
+  color: var(--q-color-grey-6);
+  font-size: 1.25rem;
+}
+
+.input-field {
+  width: 100%;
+  padding-left: 40px; /* Espacio para el icono */
+}
+
+/* Botón de inicio de sesión */
+.btn-login {
+  width: 100%;
+  padding: 0.75rem 0;
+  font-size: 1rem;
+  font-weight: 600;
+  background-color: rgb(6, 38, 97);
+  color: #ffffff;
+  border-radius: 8px;
+}
+
+/* Texto de recuperación de contraseña */
+.forgot-text {
+  font-size: 0.875rem;
+  color: var(--q-color-grey-7);
+  text-align: center;
+  margin-top: 1rem;
+  cursor: pointer;
+  text-decoration: underline;
+}
+.forgot-text:hover {
+  color: var(--q-color-grey-9);
 }
 </style>

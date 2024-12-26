@@ -1,5 +1,5 @@
 // Dependencias
-import { computed, defineComponent, reactive, ref, watchEffect } from 'vue'
+import { computed, defineComponent, reactive, ref } from 'vue'
 
 // Logica y controladores
 import { StatusEssentialLoading } from 'components/loading/application/StatusEssentialLoading'
@@ -9,7 +9,6 @@ import { useNotificaciones } from 'shared/notificaciones'
 import { isAxiosError, notificarMensajesError } from 'shared/utils'
 import { useRouter } from 'vue-router'
 import { useConfiguracionGeneralStore } from 'stores/configuracion_general'
-import { useCargandoStore } from 'stores/cargando'
 import { useQuasar } from 'quasar'
 
 export default defineComponent({
@@ -31,36 +30,9 @@ export default defineComponent({
     const cargando = new StatusEssentialLoading()
     const Router = useRouter()
 
-    //Const para las animaciones
-    const escribiendo = ref(true)
-    const cubrirOjos = ref(false)
-    const ojeada = ref(false)
-    ///////////////////////////
+    const isPwd = ref(true)
 
-    watchEffect(() => (document.title = nombreEmpresa.value ?? ''))
     const $q = useQuasar()
-
-    //Animaciones
-    const inicioEscribir = () => {
-      cubrirOjos.value = false
-    }
-
-    const paraEscribir = () => {
-      cubrirOjos.value = false
-    }
-
-    const empezarOcultarOjos = () => {
-      cubrirOjos.value = true
-    }
-
-    const dejarOcultarOjos = () => {
-      cubrirOjos.value = false
-    }
-
-    const alternarContraseñaVisibilidad = () => {
-      escribiendo.value = !escribiendo.value
-      ojeada.value = !escribiendo.value
-    }
 
     const login = async () => {
       if (!$q.loading.isActive) {
@@ -81,6 +53,7 @@ export default defineComponent({
         }
       }
     }
+
     const recuperarPassword = () => {
       Router.replace('/recuperar-contrasena')
     }
@@ -89,25 +62,24 @@ export default defineComponent({
       () => loginUser.name !== '' && loginUser.password !== ''
     )
 
+    const togglePasswordVisibility = () => {
+      isPwd.value = !isPwd.value
+    }
+
     return {
-      isPwd: ref(true),
+      isPwd,
       loginUser,
+      enableLoginButton,
+      login,
+      recuperarPassword,
+      nombreEmpresa,
+      togglePasswordVisibility,
       logoClaro: computed(
         () => configuracionGeneralStore.configuracion?.logo_claro
       ),
       logoOscuro: computed(
         () => configuracionGeneralStore.configuracion?.logo_oscuro
-      ),
-      enableLoginButton,
-      login,
-      recuperarPassword,
-      nombreEmpresa,
-      cargando,
-      inicioEscribir,
-      paraEscribir,
-      empezarOcultarOjos,
-      dejarOcultarOjos,
-      alternarContraseñaVisibilidad
+      )
     }
   }
 })

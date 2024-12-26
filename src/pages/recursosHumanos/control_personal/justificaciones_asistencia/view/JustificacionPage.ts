@@ -1,40 +1,30 @@
-// Dependencias
 import { defineComponent, ref } from 'vue'
 import { configuracionColumnasJustificacion } from '../domain/configuracionColumnasJustificacion'
 import { required } from '@vuelidate/validators'
 import { useVuelidate } from '@vuelidate/core'
+import { apiConfig, endpoints } from 'config/api'
+import { AxiosHttpRepository } from 'shared/http/infraestructure/AxiosHttpRepository'
+import { AxiosResponse } from 'axios'
 
-// Componentes
-import TabLayout from 'shared/contenedor/modules/simple/view/TabLayout.vue'
 import TabLayoutFilterTabs2 from 'shared/contenedor/modules/simple/view/TabLayoutFilterTabs2.vue'
-
 import EssentialEditor from 'components/editores/EssentialEditor.vue'
 
-// Lógica y controladores
 import { ContenedorSimpleMixin } from 'shared/contenedor/modules/simple/application/ContenedorSimpleMixin'
 import { JustificacionController } from '../infraestructure/JustificacionController'
 import { Justificacion } from './../domain/Justificacion'
 
 export default defineComponent({
   name: 'JustificacionPage',
-  components: { TabLayout, TabLayoutFilterTabs2, EssentialEditor },
-  props: {
-    empleadoData: {
-      type: Object,
-      required: true
-    }
-  },
+  components: { TabLayoutFilterTabs2, EssentialEditor },
   setup() {
-    // Inicializar mixin y obtener referencias
     const mixin = new ContenedorSimpleMixin(
       Justificacion,
       new JustificacionController()
     )
     const { entidad: justificacion, listado, disabled } = mixin.useReferencias()
     const { setValidador, listar } = mixin.useComportamiento()
-    const tabDefecto = ref('1')
+    const tabDefecto = ref('0') // Por defecto "Justificados"
 
-    // Reglas de validación
     const reglas = {
       justificacion: { required }
     }
@@ -42,12 +32,36 @@ export default defineComponent({
     const v$ = useVuelidate(reglas, justificacion)
     setValidador(v$.value)
 
-    /**Funciones y logica para las justificaciones */
+    const tabOptions = [
+      { value: '0', label: 'Injustificados' },
+      { value: '1', label: 'Justificados' }
+    ]
 
     async function filtrarListadoAtrasos(tab: string) {
       tabDefecto.value = tab
-      if (listado.value.length > 0) listar({ estado: tab })
+      if (listado.value.length > 0) listar({ requiere_justificacion: tab })
     }
+
+    async function actualizarAtrasos() {
+      const axios = AxiosHttpRepository.getInstance()
+      const url =
+        apiConfig.URL_BASE +
+        '/' +
+        axios.getEndpoint(endpoints.atrasos) +
+        '/sincronizar'
+      try {
+        const response: AxiosResponse = await axios.get(url)
+        listado.value = Array.isArray(response.data.results)
+          ? response.data.results
+          : []
+        listar() // Asegúrate de que esta función pueda manejar un arreglo vacío
+      } catch (error) {
+        console.error('Error al sincronizar atrasos:', error)
+        listado.value = [] // Mantén el listado vacío si ocurre un error
+      }
+    }
+
+    actualizarAtrasos()
 
     return {
       mixin,
@@ -56,9 +70,8 @@ export default defineComponent({
       disabled,
       configuracionColumnas: configuracionColumnasJustificacion,
       filtrarListadoAtrasos,
-
       tabDefecto,
-
+      tabOptions
     }
   }
 })

@@ -20,8 +20,8 @@ const rutasControlPersonal: RouteRecordRaw[] = [
     meta: { requiresAuth: true },
   },
   {
-    path: '/justificaciones-atrasos',
-    name: 'justificaciones',
+    path: '/atrasos',
+    name: 'atrasos',
     component: () =>
       import(
         'controlPersonal/justificaciones_asistencia/view/JustificacionPage.vue'

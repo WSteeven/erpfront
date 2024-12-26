@@ -2,7 +2,8 @@
   <tab-layout-filter-tabs2
     :mixin="mixin"
     :configuracionColumnas="configuracionColumnas"
-    titulo-pagina="Atrasos"
+    titulo-pagina="Atrasos de Empleados"
+    :tab-options="tabOptions"
     :tabDefecto="tabDefecto"
     :filtrar="filtrarListadoAtrasos"
   >

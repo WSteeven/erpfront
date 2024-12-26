@@ -6,7 +6,7 @@ export class Justificacion extends EntidadAuditable {
   minutos_atraso: number | null; // Minutos de atraso.
   segundos_atraso: number | null; // Segundos de atraso.
   justificacion: string | null; // Texto de la justificación.
-  estado: boolean | null;
+  requiere_justificacion: boolean | null;
 
   constructor() {
     super();
@@ -15,6 +15,6 @@ export class Justificacion extends EntidadAuditable {
     this.minutos_atraso = null
     this.segundos_atraso = null
     this.justificacion = null
-    this.estado=false
+    this.requiere_justificacion=false
   }
 }
