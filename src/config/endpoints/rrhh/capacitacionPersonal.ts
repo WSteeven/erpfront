@@ -5,4 +5,6 @@ export const capacitacionPersonal = {
     'capacitacion/dahboard-capacitacion-personal'
   ),
   formularios: new Endpoint('capacitacion/formularios'),
+  evaluaciones_desempeno: new Endpoint('capacitacion/evaluaciones-desempeno'),
+  imprimir_evaluacion_desempeno: new Endpoint('capacitacion/evaluaciones-desempeno/imprimir/'),
 }

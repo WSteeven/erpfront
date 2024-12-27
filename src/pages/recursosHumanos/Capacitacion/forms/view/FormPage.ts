@@ -5,18 +5,22 @@ import { Formulario } from 'capacitacion/forms/domain/Formulario'
 import { FormularioController } from 'capacitacion/forms/infraestructure/FormularioController'
 import { useRouter } from 'vue-router'
 import BasicContainer from 'shared/contenedor/modules/basic/view/BasicContainer.vue'
+import { useNotificaciones } from 'shared/notificaciones'
 
 export default defineComponent({
   components: { DynamicFields, BasicContainer },
-  setup() {
+  props: {
+    idFormulario: { type: Number, default: -1 }
+  },
+  setup(props) {
     const mixin = new ContenedorSimpleMixin(
       Formulario,
       new FormularioController()
     )
     const { entidad: formulario, listado } = mixin.useReferencias()
     const { consultar } = mixin.useComportamiento()
+    const { notificarCorrecto, notificarAdvertencia } = useNotificaciones()
     const router = useRouter()
-
 
     const time = ref('')
     let timer
@@ -31,9 +35,14 @@ export default defineComponent({
 
       // Consultar el formulario
       const id = router.currentRoute.value.query.id
-      if(id) {
+      if (id) {
         formulario.id = id
         await consultar(formulario)
+      } else {
+        if (props.idFormulario > 0) {
+          formulario.id = props.idFormulario
+          await consultar(formulario)
+        }
       }
     })
     onUnmounted(() => {
@@ -42,23 +51,15 @@ export default defineComponent({
 
     function handleSubmit() {
       // Validar si todos los campos requeridos tienen valor
-      const invalidField = formulario.formulario.find(
-        field => field.required && !field.value
-      )
+      const invalidField = formulario.formulario.find(field => field.required && !field.valor)
       if (invalidField) {
-        this.$q.notify({
-          type: 'negative',
-          message: 'Por favor llena todos los campos requeridos'
-        })
+        notificarAdvertencia('Por favor llena todos los campos requeridos')
         return
       }
 
       // Procesar los datos del formulario
       console.log('Formulario enviado:', formulario.formulario)
-      this.$q.notify({
-        type: 'positive',
-        message: 'Formulario enviado con éxito'
-      })
+      notificarCorrecto('Formulario enviado con éxito')
     }
 
     return {

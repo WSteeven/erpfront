@@ -36,7 +36,7 @@ export default defineComponent({
      *********/
     const authenticationStore = useAuthenticationStore()
 
-    // const controller = new CategoriaTipoTicketController()
+    // const infraestructure = new CategoriaTipoTicketController()
 
     /********
      * Mixin
@@ -109,7 +109,7 @@ export default defineComponent({
         notificaciones.confirmar('¿Está seguro de continuar?', async () => {
           try {
             cargando.activar()
-            const { response, result } = await controller.editarParcial(entidad.id, { activo: !entidad.activo })
+            const { response, result } = await infraestructure.editarParcial(entidad.id, { activo: !entidad.activo })
             listado.value.splice(posicion, 1, result)
             notificaciones.notificarCorrecto(response.data.mensaje)
           } catch (e: any) {

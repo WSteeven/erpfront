@@ -300,7 +300,7 @@ export class ContenedorSimpleMixin<T extends EntidadAuditable> extends Contenedo
   private async listarActividades(id: number, params?: ParamsType, append = false) {
     this.statusEssentialLoading.activar()
     try {
-      // const { result } = await this.controller.listarActividades(id, params)
+      // const { result } = await this.infraestructure.listarActividades(id, params)
       const result = []
       if (result.length == 0) this.notificaciones.notificarInformacion('Aún no se han agregado elementos')
 
@@ -511,7 +511,7 @@ export class ContenedorSimpleMixin<T extends EntidadAuditable> extends Contenedo
         paramsListado.format = formato
       }
 
-      this.controller
+      this.infraestructure
         .descargarListado({ ...this.argsDefault, ...paramsListado })
         .then((data: any) => {
           this.utils.descargarArchivo(data, this.refs.catalogo, formato)

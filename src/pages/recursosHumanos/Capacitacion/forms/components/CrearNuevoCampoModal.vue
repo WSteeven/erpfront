@@ -3,7 +3,7 @@
   <q-dialog v-model="abierto">
     <q-card style="min-width: 400px">
       <q-card-section>
-        <div class="text-h6">Añadir Nueva Pregunta</div>
+        <div class="text-h6">{{ accion == acciones.nuevo ? 'Añadir Nueva ' : 'Modificar '}}  Pregunta</div>
       </q-card-section>
 
       <q-card-section>
@@ -20,7 +20,6 @@
               emit-value
             />
           </div>
-          <!--{{newField}}-->
 
           <!-- Configurar etiqueta -->
           <div class="col-12">
@@ -33,32 +32,36 @@
               class="q-mt-md"
               :error="!!v$.label.$errors.length"
               @blur="v$.label.$touch"
-              @update:model-value="(val)=>newField.label = val.toUpperCase()"
+              @update:model-value="val => (newField.label = val.toUpperCase())"
             >
               <template v-slot:error>
-                <div v-for="error of v$.label.$errors" :key="error.$uid">
-                  <div class="error-msg">{{ error.$message }}</div>
-                </div>
+                <error-component clave="label" :v$="v$" />
               </template>
             </q-input>
           </div>
 
           <!-- Opciones para radio, checkbox o select -->
           <div class="col-12">
-            <q-input v-if="['radio', 'checkbox', 'select', 'select_multiple'].includes(newField.type)"
+            <q-input
+              v-if="
+                ['radio', 'checkbox', 'select', 'select_multiple'].includes(
+                  newField.type
+                )
+              "
               v-model="newField.options"
               label="Opciones (separadas por comas)"
               dense
               outlined
-                     :error="!!v$.options.$errors.length"
-                     @blur="v$.options.$touch"
+              autocomplete
+              :error="!!v$.options.$errors.length"
+              @blur="v$.options.$touch"
               class="q-mt-md"
-                     @update:model-value="(val)=>newField.options = val.toUpperCase()"
+              @update:model-value="
+                val => (newField.options = val.toUpperCase())
+              "
             >
               <template v-slot:error>
-                <div v-for="error of v$.options.$errors" :key="error.$uid">
-                  <div class="error-msg">{{ error.$message }}</div>
-                </div>
+                <error-component clave="options" :v$="v$" />
               </template>
             </q-input>
           </div>
@@ -74,10 +77,17 @@
           </div>
 
           <!-- Orientacion -->
-          <div class="col-12" v-if="['radio', 'checkbox'].includes(newField.type)">
+          <div
+            class="col-12"
+            v-if="['radio', 'checkbox'].includes(newField.type)"
+          >
             <q-toggle
               v-model="newField.orientacion"
-              :label="newField.orientacion?'Visualización horizontal de las opciones ':'Visualización vertical de las opciones ' "
+              :label="
+                newField.orientacion
+                  ? 'Visualización horizontal de las opciones '
+                  : 'Visualización vertical de las opciones '
+              "
               dense
               class="q-mt-md"
             />
@@ -93,22 +103,24 @@
   </q-dialog>
 </template>
 <script lang="ts">
-import { computed, defineComponent, onMounted, reactive } from 'vue'
+import { computed, defineComponent, reactive } from 'vue'
 import { tiposCampos } from 'config/capacitacion.utils'
 import { useVuelidate } from '@vuelidate/core'
 import { required, requiredIf } from 'shared/i18n-validators'
 import { EmptyField } from 'capacitacion/forms/domain/EmptyField'
 import { acciones } from 'config/utils'
+import ErrorComponent from 'components/ErrorComponent.vue'
 
 export default defineComponent({
+  components: { ErrorComponent },
   props: {
     mostrar: Boolean,
     campo: {
       type: EmptyField,
-      required:true
+      required: true
     },
-    accion:{
-      type:String,
+    accion: {
+      type: String,
       default: acciones.nuevo
     },
     guardar: {
@@ -124,18 +136,21 @@ export default defineComponent({
       emit('cerrar')
     }
     const reglas = {
-      type : { required },
-      label : { required },
+      type: { required },
+      label: { required },
       options: {
-        required: requiredIf(()=>['radio', 'checkbox', 'select', 'select_multiple'].includes(newField.type))
+        required: requiredIf(() =>
+          ['radio', 'checkbox', 'select', 'select_multiple'].includes(
+            newField.type
+          )
+        )
       }
     }
     const v$ = useVuelidate(reglas, newField)
 
-
-    const addField =async () => {
+    const addField = async () => {
       if (await v$.value.$validate()) {
-        props.guardar({field: newField,accion:props.accion})
+        props.guardar({ field: newField, accion: props.accion })
         cancel()
       }
     }
@@ -144,6 +159,7 @@ export default defineComponent({
       v$,
       abierto,
       newField,
+      acciones,
       tiposCampos,
       cancel,
       addField

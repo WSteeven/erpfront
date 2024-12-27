@@ -9,8 +9,6 @@
               <q-icon size="xs" class="q-mr-sm" name="bi-clock-fill" />
               <label>{{ time }}</label>
             </div>
-          </q-card-section>
-          <q-card-section>
             <h4 class="text-center">{{ formulario.nombre }}</h4>
             <div
               v-for="(field, index) in formulario.formulario"

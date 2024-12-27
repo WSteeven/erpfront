@@ -160,7 +160,7 @@ export default defineComponent({
           }
         },
         /* autorizadores: {
-          controller: new EmpleadoRoleController(),
+          infraestructure: new EmpleadoRoleController(),
           params: {
             roles: [rolesSistema.jefe_tecnico, rolesSistema.coordinador, rolesSistema.coordinadorBackup, rolesSistema.gerente],
           }

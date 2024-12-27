@@ -21,6 +21,12 @@ const rutasCapacitacion: RouteRecordRaw[] = [
     component: ()=> import('capacitacion/forms/view/CrearFormularioPage.vue'),
     meta: {requiresAuth: true}
   },
+  {
+    path: '/evaluaciones-desempeno',
+    name: 'rrhh_capacitacion_evaluaciones_desempeno',
+    component: ()=> import('capacitacion/evaluacionDesempeño/view/EvaluacionDesempenoPage.vue'),
+    meta: {requiresAuth: true}
+  },
 
 ]
 

@@ -5,7 +5,8 @@ import { MetaPagination } from './MetaPagination'
 
 // Define el tipo de valores de `acciones`
 type AccionType = typeof acciones[keyof typeof acciones];
-export class Referencias<T> {
+export class Referencias {
+// export class Referencias<T> {
   tabs: Ref
   validador: Ref
   filtros: { [key: string]: any }

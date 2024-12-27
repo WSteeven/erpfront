@@ -1,8 +1,8 @@
-import { EditableController } from '@/app/shared/controller/domain/EditableController.domain'
-import { EliminableController } from '@/app/shared/controller/domain/EliminableController.domain'
-import { ResponseItem } from '@/app/shared/controller/domain/ResponseItem'
-import { EditableRepository } from '@/app/shared/controller/infraestructure/editable.repository'
-import { EliminableRepository } from '@/app/shared/controller/infraestructure/eliminable.repository'
+import { EditableController } from '@/app/shared/infraestructure/domain/EditableController.domain'
+import { EliminableController } from '@/app/shared/infraestructure/domain/EliminableController.domain'
+import { ResponseItem } from '@/app/shared/infraestructure/domain/ResponseItem'
+import { EditableRepository } from '@/app/shared/infraestructure/infraestructure/editable.repository'
+import { EliminableRepository } from '@/app/shared/infraestructure/infraestructure/eliminable.repository'
 import {
   HttpResponseDelete,
   HttpResponsePut,

@@ -89,7 +89,7 @@ export default defineComponent({
                     params: { campos: 'id,placa,modelo_id' }
                 },
                 // servicios: {
-                //     controller: new ServicioController(),
+                //     infraestructure: new ServicioController(),
                 //     params: { tipo: 'PREVENTIVO', estado: 1 }
                 // }
             })

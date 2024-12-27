@@ -162,14 +162,15 @@ module.exports = configure(function (/* ctx */) {
         controlActivosFijos: path.join(
           __dirname,
           './src/pages/activosFijos/controlActivosFijos'
-        )
+        ),
+        sso: path.join(__dirname, './src/pages/sso')
       }
     },
 
     // Full list of options: https://v2.quasar.dev/quasar-cli-vite/quasar-config-js#devServer
     devServer: {
       https: false,
-      port:8080,
+      port: 8080,
       open: true // opens browser window automatically
     },
 

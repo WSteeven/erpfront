@@ -41,6 +41,7 @@ export default defineComponent({
     )
     const { entidad: formulario, accion, disabled } = mixin.useReferencias()
     const { listar, setValidador, cargarVista } = mixin.useComportamiento()
+    const { onReestablecer } = mixin.useHooks()
     const { notificarInformacion, notificarError, notificarCorrecto } =
       useNotificaciones()
 
@@ -75,6 +76,23 @@ export default defineComponent({
     setValidador(v$.value)
 
     /***************
+     * HOOKS
+     **************/
+    onReestablecer(()=>{
+      formulario.empleado_id = store.user.id
+      formulario.empleado = store.nombreUsuario
+    })
+    // onConsultado(()=>{
+    //   formulario.formulario.forEach((item:EmptyField)=> {
+    //     const campo = new EmptyField()
+    //     campo.hydrate(item)
+    //     console.log('El campo',campo)
+    //     return campo
+    //   })
+    //   console.log(formulario.formulario[4])
+    // })
+
+    /***************
      * FUNCIONES
      **************/
     async function filtrarFormularios(tab: string) {
@@ -83,6 +101,7 @@ export default defineComponent({
     }
 
     function openAddFieldModal() {
+      accionModal.value=acciones.nuevo
       newField.value = new EmptyField()
       newField.value.id = formulario.formulario.length
         ? encontrarUltimoIdListado(formulario.formulario) + 1
@@ -98,6 +117,7 @@ export default defineComponent({
     }
 
     function addField(data: { field: EmptyField; accion: string }) {
+      console.log('addField', data)
       // Procesar opciones como un array si aplica
       if (
         ['radio', 'checkbox', 'select', 'select_multiple'].includes(
@@ -112,20 +132,23 @@ export default defineComponent({
         data.field.value = []
 
       if (data.accion === acciones.nuevo)
-        formulario.formulario.push({ ...data.field })
+        formulario.formulario.push(data.field)
       else if (indexModificado.value >= 0)
         formulario.formulario.splice(indexModificado.value, 1, data.field)
-      showAddFieldModal.value = false
 
       newField.value = new EmptyField()
       indexModificado.value = -1
       // console.log(newField.value, indexModificado.value)
+      showAddFieldModal.value = false
     }
 
     function editField(index) {
       indexModificado.value = index
       accionModal.value = acciones.editar
+      console.log(formulario.formulario[index])
       newField.value = formulario.formulario[index]
+      if(Array.isArray(newField.value.options)) newField.value.options = newField.value.options.join(',')
+      console.log(newField.value)
       showAddFieldModal.value = true
     }
 

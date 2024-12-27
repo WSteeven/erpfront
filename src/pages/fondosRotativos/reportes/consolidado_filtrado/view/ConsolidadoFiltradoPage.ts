@@ -186,7 +186,7 @@ export default defineComponent({
         },
         nodos: { controller: new NodoController(), params: { activo: 1 } },
         tareas: [] /*{
-          controller: new TareaController(),
+          infraestructure: new TareaController(),
           params: { campos: 'id,codigo_tarea,titulo,cliente_id,proyecto_id' },
         },*/,
         cantones: {

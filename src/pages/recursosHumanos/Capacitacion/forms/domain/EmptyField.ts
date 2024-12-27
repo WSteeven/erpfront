@@ -1,23 +1,24 @@
-export class EmptyField {
-  id: number
+import { EntidadAuditable } from 'shared/entidad/domain/entidadAuditable'
+
+export class EmptyField extends EntidadAuditable {
+  // id: number
   type: string
-  label: string
-  options: string // Opciones para radio/checkbox/select
-  valor:string
-  placeholder:string
+  label: string | null
+  options: any | null
+  valor: string | null
+  placeholder: string | null
   required: boolean
-  orientacion:boolean
+  orientacion: boolean
 
   constructor() {
-  this.id= 0
-  this.type= 'text'
-  this.label= ''
-  this.options= '' // Opciones para radio/checkbox/select
-  this.valor= ''
-  this.placeholder= ''
-  this.required= false
-  this.orientacion= true
-
+    super()
+    // this.id= 0
+    this.type = 'text'
+    this.label = null
+    this.options = null
+    this.valor = null
+    this.placeholder = null
+    this.required = true
+    this.orientacion = true
   }
-
 }

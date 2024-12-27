@@ -17,6 +17,12 @@ const capacitacion: Ref<MenuOption[]> = computed(()=>{
           can: store.can('puede.acceder.rrhh_capacitacion_formularios'),
         },
         {
+          title: 'Evaluaciones',
+          link: 'evaluaciones-desempeno',
+          icon: 'bi-file-text',
+          can: store.can('puede.acceder.rrhh_capacitacion_evaluaciones_desempeno'),
+        },
+        {
           title: 'Reportes',
           icon: 'bi-graph-up-arrow',
           can:

@@ -50,7 +50,7 @@ export default defineComponent({
 
     cargarVista(async () => obtenerListados({
       esquemasVacunas: [], /*{
-        controller: new EsquemaVacunaController(),
+        infraestructure: new EsquemaVacunaController(),
         params: { paciente_id: medicoStore.empleado?.id },
       }, */
     }))

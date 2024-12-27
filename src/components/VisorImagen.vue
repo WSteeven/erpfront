@@ -159,7 +159,7 @@ const imageStyle = computed(() => {
 const mostrar = ref(false)
 const imagen = ref()
 const rotation = ref(0)
-const zoomLevel = ref(1)
+// const zoomLevel = ref(1)
 
 function abrir(urlImagen) {
   mostrar.value = true

@@ -44,7 +44,8 @@
       "capacitacion/*": ["src/pages/recursosHumanos/Capacitacion/*"],
 
       "activosFijos/*": ["src/pages/activosFijos/*"],
-      "controlActivosFijos/*": ["src/pages/activosFijos/controlActivosFijos/*"]
+      "controlActivosFijos/*": ["src/pages/activosFijos/controlActivosFijos/*"],
+      "sso/*": ["src/pages/sso/*"]
     }
   }
 }

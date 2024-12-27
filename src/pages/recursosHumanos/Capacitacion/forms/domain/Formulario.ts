@@ -4,7 +4,7 @@ export class Formulario extends EntidadAuditable {
   empleado: string | null
   empleado_id: number | null
   nombre: string | null
-  formulario: []
+  formulario: any
   respuestas: string | null
   es_recurrente: boolean
   periodo_recurrencia: number | null

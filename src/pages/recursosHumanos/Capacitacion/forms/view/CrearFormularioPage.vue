@@ -177,7 +177,10 @@
               @click="openAddFieldModal"
             />
           </div>
-          <q-card class="col-12" v-if="formulario.formulario.length > 0">
+
+<!--          {{formulario.formulario}}-->
+
+          <q-card class="col-12" v-if="formulario.formulario.length > 0 && !showAddFieldModal" >
             <transition-group name="flip-list" tag="div" class="list-group">
               <draggable
                 v-if="formulario.formulario.length > 0"
@@ -192,8 +195,8 @@
                   <q-item class="q-mb-sm">
                     <q-item-section>
                       <q-separator />
-                      <DynamicField :campo="element" />
-                      <div class="row justify-end q-mt-sm">
+                      <DynamicField :campo="element" :disable="disabled" />
+                      <div class="row justify-end q-mt-sm" v-if="!disabled">
                         <q-btn
                           icon="bi-pencil-square"
                           color="secondary"
@@ -223,40 +226,6 @@
               </draggable>
             </transition-group>
           </q-card>
-          <!--          <q-card class="col-12" v-if="formulario.formulario.length > 0">-->
-          <!--            <q-card-section>-->
-          <!--              &lt;!&ndash; Botón para añadir un campo &ndash;&gt;-->
-          <!--              {{ formulario.formulario }}-->
-          <!--              &lt;!&ndash; Lista de campos &ndash;&gt;-->
-          <!--              <div-->
-          <!--                v-for="(field, index) in formulario.formulario"-->
-          <!--                :key="index"-->
-          <!--                class="q-mb-md"-->
-          <!--              >-->
-          <!--                <q-separator />-->
-          <!--                <DynamicField :campo="field" />-->
-
-          <!--                <div class="row justify-end q-mt-sm">-->
-          <!--                  <q-btn-->
-          <!--                    icon="bi-pencil-square"-->
-          <!--                    color="secondary"-->
-          <!--                    flat-->
-          <!--                    dense-->
-          <!--                    @click="editField(index)"-->
-          <!--                    class="q-ml-sm"-->
-          <!--                  />-->
-          <!--                  <q-btn-->
-          <!--                    icon="bi-trash-fill"-->
-          <!--                    color="negative"-->
-          <!--                    flat-->
-          <!--                    dense-->
-          <!--                    @click="removeField(index)"-->
-          <!--                    class="q-ml-sm"-->
-          <!--                  />-->
-          <!--                </div>-->
-          <!--              </div>-->
-          <!--            </q-card-section>-->
-          <!--          </q-card>-->
         </div>
 <!--        {{ newField }}-->
       </q-form>

@@ -108,7 +108,7 @@ export default defineComponent({
         orientacionesSexuales: new OrientacionSexualController(),
         identidadesGeneros: new IdentidadGeneroController(),
         tiposAntecedentes: new TipoAntecedenteController(),
-        // controller: new TipoAntecedenteController(),
+        // infraestructure: new TipoAntecedenteController(),
         // params: { genero: medicoStore.empleado?.genero },
         // },
         tiposHabitosToxicos: new TipoHabitoToxicoController(),

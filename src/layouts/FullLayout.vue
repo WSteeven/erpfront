@@ -7,7 +7,7 @@
 </template>
 
 <script lang="ts">
-import {  defineComponent } from 'vue'
+import { defineComponent, watchEffect } from 'vue'
 import { useConfiguracionGeneralStore } from 'stores/configuracion_general'
 
 export default defineComponent({
@@ -19,9 +19,12 @@ export default defineComponent({
       .consultarConfiguracion()
       .then(() => configuracionGeneralStore.cambiarFavicon())
 
-    // Titulo pagina
-    document.title = configuracionGeneralStore.configuracion?.nombre_empresa
-
+    watchEffect(
+      () =>
+        // Titulo pagina
+        (document.title =
+          configuracionGeneralStore.configuracion?.nombre_empresa)
+    )
   }
 })
 </script>

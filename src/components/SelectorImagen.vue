@@ -137,7 +137,7 @@ const fileSize = ref()
 const img = ref()
 const imagenCodificada = computed(() => props.imagen)
 const alto = computed(() => props.alto ?? '160px')
-const opened = ref(false)
+// const opened = ref(false)
 
 const setBase64 = async (file: File) => {
   if (file !== null && file !== undefined) {

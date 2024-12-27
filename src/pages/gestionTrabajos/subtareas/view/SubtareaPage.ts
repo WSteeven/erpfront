@@ -103,11 +103,11 @@ export default defineComponent({
         },
         //clientes: new ClienteController(),
         /*coordinadores: {
-          controller: new EmpleadoController(),
+          infraestructure: new EmpleadoController(),
           params: { rol: rolesSistema.coordinador },
         },*/
         /*empleados: {
-          controller: new EmpleadoController(),
+          infraestructure: new EmpleadoController(),
           params: {
             campos: 'id,nombres,apellidos',
             estado: 1
