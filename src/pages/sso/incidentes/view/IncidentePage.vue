@@ -230,16 +230,18 @@
             />
           </div>
 
-          <seleccion-productos-usuario
-            v-if="incidente.tipo_incidente === tiposIncidentes.CAMBIO_EPP"
-            :mixin="mixin"
-            :propietario="incidente.empleado_involucrado"
-            :disable="disabled"
-            :configuracion-columnas="columnas"
-            :accion1="btnEditarMotivoCambio"
-            :accion2="btnEditarCantidad"
-            :accion3="btnEliminar"
-          />
+          <div v-show="incidente.tipo_incidente === tiposIncidentes.CAMBIO_EPP" class="col-12">
+            <seleccion-productos-usuario
+              :mixin="mixin"
+              :propietario="incidente.empleado_involucrado"
+              :disable="disabled"
+              :configuracion-columnas="columnas"
+              forzar-categorias-sso
+              :accion1="btnEditarMotivoCambio"
+              :accion2="btnEditarCantidad"
+              :accion3="btnEliminar"
+            />
+          </div>
         </div>
 
         <div v-if="incidente.acciones_correctivas" class="col-12 q-mb-md">

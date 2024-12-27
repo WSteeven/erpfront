@@ -178,7 +178,11 @@
                 </div>
               </template>
               <template v-slot:after>
-                <q-btn color="positive" @click="recargarSucursales">
+                <q-btn
+                  color="positive"
+                  @click="recargarSucursales"
+                  :disable="disabled || soloLectura"
+                >
                   <q-icon size="xs" class="q-mr-sm" name="bi-arrow-clockwise" />
                 </q-btn>
               </template>

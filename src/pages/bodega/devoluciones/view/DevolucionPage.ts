@@ -154,9 +154,10 @@ export default defineComponent({
       //Configurar los listados
       empleados.value = listadosAuxiliares.empleados
       autorizaciones.value = JSON.parse(LocalStorage.getItem('autorizaciones')!.toString())
-      sucursales.value = listadosAuxiliares.sucursales
+      // sucursales.value = listadosAuxiliares.sucursales
       tareas.value = listadosAuxiliares.tareas
-      listadosAuxiliares.condiciones = JSON.parse(LocalStorage.getItem('condiciones')!.toString())
+      listadosAuxiliares.condiciones = LocalStorage.getItem('condiciones') ? JSON.parse(LocalStorage.getItem('condiciones')!.toString()) : []
+      // listadosAuxiliares.condiciones = JSON.parse(LocalStorage.getItem('condiciones')!.toString())
       condiciones.value = listadosAuxiliares.condiciones
 
       // en la carga inicial se coloca el solicitante
@@ -279,6 +280,7 @@ export default defineComponent({
     async function recargarSucursales() {
       const sucursales = (await new SucursalController().listar({ campos: 'id,lugar' })).result
       LocalStorage.set('sucursales', JSON.stringify(sucursales))
+      listadosAuxiliares.sucursales = sucursales
     }
     function comunicarComportamiento(value) {
       if (value) notificarInformacion('Esta opción generará un pedido automáticamente con los mismos items de la devolución, cuando la devolución sea aprobada')

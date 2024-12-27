@@ -111,9 +111,11 @@ export default defineComponent({
       titulo: { required },
       descripcion: { required },
       fecha_inicio: { required },
-      empleado_involucrado: { requiredIf: requiredIf(!inspeccion.tiene_incidencias) },
-      coordenadas: { requiredIf: requiredIf(!inspeccion.tiene_incidencias) },
+      empleado_involucrado: { requiredIf: requiredIf(() => !inspeccion.tiene_incidencias) },
+      coordenadas: { requiredIf: requiredIf(() => !inspeccion.tiene_incidencias) },
     }
+
+    console.log(!inspeccion.tiene_incidencias)
 
     const validador$ = useVuelidate(rules, inspeccion)
     setValidador(validador$.value)
@@ -123,7 +125,6 @@ export default defineComponent({
      ********/
     onConsultado(() => {
       // refIncidentePage.value.idInspeccion = inspeccion.id
-
       inspeccion.tiene_incidencias = inspeccion.tiene_incidencias || !!inspeccion.cantidad_incidentes
       setTimeout(() => refArchivo.value.listarArchivosAlmacenados(inspeccion.id), 1)
 

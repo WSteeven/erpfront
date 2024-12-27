@@ -26,6 +26,7 @@ import { ProductoSeleccionadoSolicitudDescuento } from '../domain/ProductoSelecc
 import { EmpleadoController } from 'pages/recursosHumanos/empleados/infraestructure/EmpleadoController'
 import { SolicitudDescuentoController } from '../infraestructure/SolicitudDescuentoController'
 import { SolicitudDescuento } from '../domain/SolicitudDescuento'
+import { ColumnConfig } from 'components/tables/domain/ColumnConfig'
 
 export default defineComponent({
   components: { TabLayoutFilterTabs2, Estado, GestorArchivos, SeleccionProductosUsuario },
@@ -67,6 +68,7 @@ export default defineComponent({
     const route = useRoute()
     const enRutaInspeccionIncidente = computed(() => ['inspecciones', 'incidentes'].includes(route.name?.toString() ?? ''))
     const { prompt, confirmar } = useNotificaciones()
+    const establecerPrecios = ref(false)
 
     /*************
      * Funciones
@@ -99,8 +101,8 @@ export default defineComponent({
     const btnEditarPrecioUnitario: CustomActionTable<ProductoSeleccionadoSolicitudDescuento> = {
       titulo: 'Editar precio unitario',
       icono: 'bi-text-center',
-      color: 'indigo-10',
-      visible: () => accion.value === acciones.consultar && [estadosSolicitudDescuento.CREADO, estadosSolicitudDescuento.PRECIOS_ESTABLECIDOS].includes(solicitud.estado ?? '') && authenticationStore.can('puede.editar.precios_unitarios_solicitudes_descuentos'),
+      color: 'positive',
+      visible: () => [estadosSolicitudDescuento.CREADO, estadosSolicitudDescuento.PRECIOS_ESTABLECIDOS].includes(solicitud.estado ?? '') && authenticationStore.can('puede.editar.precios_unitarios_solicitudes_descuentos'),
       forzarEditable: true,
       accion: async ({ entidad }) => {
         const config: CustomActionPrompt = {
@@ -120,7 +122,7 @@ export default defineComponent({
       titulo: 'Editar cantidad',
       icono: 'bi-pencil-square',
       color: 'indigo',
-      visible: () => $q.screen.xs || $q.screen.sm,
+      visible: () => ($q.screen.xs || $q.screen.sm) && accion.value === acciones.nuevo,
       accion: async ({ entidad }) => {
         const config: CustomActionPrompt = {
           titulo: 'Cantidad',
@@ -149,9 +151,10 @@ export default defineComponent({
       color: 'positive',
       visible: ({ entidad }) => [estadosSolicitudDescuento.CREADO, estadosSolicitudDescuento.PRECIOS_ESTABLECIDOS].includes(entidad.estado) && authenticationStore.can('puede.editar.precios_unitarios_solicitudes_descuentos'),
       accion: async ({ entidad }) => {
-        consultar(entidad)
+        await consultar(entidad)
         accion.value = acciones.consultar
         tabs.value = 'formulario'
+        // establecerPrecios.value = true
       }
     }
 
@@ -183,7 +186,9 @@ export default defineComponent({
      * Hooks
      ********/
     onConsultado(() => {
+      // establecerPrecios.value = false
       setTimeout(() => refArchivo.value.listarArchivosAlmacenados(solicitud.id), 1)
+      console.log(solicitud)
       // solicitud.finalizado = solicitud.estado === estadosSolicitudDescuento.DESCONTADO
     })
 
@@ -209,6 +214,16 @@ export default defineComponent({
     if (!enRutaInspeccionIncidente.value) filtrarSolicitudes(estadosInspecciones.CREADO)
     solicitud.empleado_solicitante = authenticationStore.user.apellidos + ' ' + authenticationStore.user.nombres
 
+    const columnasProductosSeleccionadosSolicitudDescuento = configuracionColumnasProductosSeleccionadosSolicitudDescuento.map((c: ColumnConfig<ProductoSeleccionadoSolicitudDescuento>) => {
+      if (c.field === 'precio_unitario') {
+        c.editable = authenticationStore.esContabilidad
+      }
+      if (c.field === 'cantidad') {
+        c.editable = authenticationStore.esSso
+      }
+      return c
+    })
+
     return {
       v$,
       mixin,
@@ -226,7 +241,7 @@ export default defineComponent({
       filtrarEmpleados,
       idEntidad,
       refArchivo,
-      columnas: [...configuracionColumnasProductosSeleccionadosSolicitudDescuento, accionesTabla],
+      columnas: [...columnasProductosSeleccionadosSolicitudDescuento, accionesTabla],
       btnEditarPrecioUnitario,
       btnEditarCantidad,
       btnEliminar,
@@ -240,6 +255,7 @@ export default defineComponent({
       consultar,
       authenticationStore,
       reestablecer,
+      establecerPrecios,
     }
   }
 })

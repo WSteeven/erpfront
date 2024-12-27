@@ -69,7 +69,9 @@
         <q-checkbox
           v-model="filtrarPorCategoria"
           label="Filtrar por categoría"
-          :disable="disable || deshabilitarAgregarProductos"
+          :disable="
+            disable || deshabilitarAgregarProductos || forzarCategoriasSso
+          "
           @update:model-value="
             () => {
               consultarCategorias()
@@ -114,17 +116,17 @@
   </div>
 
   <!-- Tabla -->
-  <div class="col-12">
+  <div class="col-12 q-mt-md">
     <essential-table
       titulo="Productos seleccionados"
       :configuracionColumnas="columnas"
       :datos="entidad.detalles_productos"
       :permitirConsultar="false"
       :permitirEditar="false"
+      :disable="disable"
       :permitirEliminar="false"
       :mostrarBotones="false"
       :ajustarCeldas="true"
-      :disable="disable"
       :altoFijo="false"
       permitir-editar-celdas
       :accion1="accion1"
@@ -150,21 +152,23 @@
 <script lang="ts" setup>
 import { useOrquestadorSelectorDetallesProductos } from 'components/inputs/seleccionProductosUsuario/application/OrquestadorSelectorDetallesProductos'
 import { StatusEssentialLoading } from 'components/loading/application/StatusEssentialLoading'
+import { CustomActionTable } from 'components/tables/domain/CustomActionTable'
+import { ColumnConfig } from 'components/tables/domain/ColumnConfig'
 import { useNotificaciones } from 'shared/notificaciones'
-import { acciones } from 'config/utils'
 import { computed, ref, watch } from 'vue'
+import { acciones } from 'config/utils'
 
 // Componentes
 import EssentialSelectableTable from 'components/tables/view/EssentialSelectableTable.vue'
 import EssentialTable from 'components/tables/view/EssentialTable.vue'
 
-import { ContenedorSimpleMixin } from 'shared/contenedor/modules/simple/application/ContenedorSimpleMixin'
-import { ClienteMaterialEmpleadoController } from 'pages/gestionTrabajos/miBodega/infraestructure/ClienteMaterialEmpleadoController'
 import { configuracionColumnasDetallesModal } from 'pages/gestionTrabajos/transferenciasProductosEmpleados/domain/configuracionColumnasDetallesModal'
+import { ClienteMaterialEmpleadoController } from 'pages/gestionTrabajos/miBodega/infraestructure/ClienteMaterialEmpleadoController'
 import { configuracionColumnasProductosSeleccionadosAccion } from '../domain/configuracionColumnasProductosSeleccionadosAccion'
-import { ColumnConfig } from 'components/tables/domain/ColumnConfig'
-import { CustomActionTable } from 'components/tables/domain/CustomActionTable'
+import { ContenedorSimpleMixin } from 'shared/contenedor/modules/simple/application/ContenedorSimpleMixin'
 import { CategoriaController } from 'pages/bodega/categorias/infraestructure/CategoriaController'
+import { Categoria } from 'pages/bodega/categorias/domain/Categoria'
+import { Cliente } from 'sistema/clientes/domain/Cliente'
 
 // Uso de defineProps con la interface
 const props = defineProps({
@@ -210,6 +214,10 @@ const props = defineProps({
     type: Boolean,
     default: false
   },
+  forzarCategoriasSso: {
+    type: Boolean,
+    default: false
+  }
 })
 
 /********
@@ -222,6 +230,12 @@ const consultarCategorias = () =>
     await obtenerListados({
       categorias: new CategoriaController()
     })
+
+    if (props.forzarCategoriasSso) {
+      listadosAuxiliares.categorias = listadosAuxiliares.categorias.filter(
+        (c: Categoria) => categoriasSso.includes(c.nombre ?? '')
+      )
+    }
   })
 
 /************
@@ -235,6 +249,7 @@ const categoriaProductos = ref()
 const columnas =
   props.configuracionColumnas ??
   configuracionColumnasProductosSeleccionadosAccion
+const categoriasSso = ['EPP', 'EQUIPO', 'EQUIPO PROPIO']
 
 /***************
  * Orquestador
@@ -300,6 +315,13 @@ async function consultarClientesMaterialesEmpleado() {
     })
 
     listadosAuxiliares.clientes = result
+
+    if (props.forzarCategoriasSso) {
+      listadosAuxiliares.clientes = listadosAuxiliares.clientes.filter(
+        (c: Cliente) =>
+          ['JP CONSTRUCRED C.LTDA.'].includes(c.razon_social ?? '')
+      )
+    }
   } catch (e) {
     console.log(e)
   } finally {
@@ -327,5 +349,10 @@ watch(
       entidad.cliente = null
     }
   }
+)
+
+filtrarPorCategoria.value = props.forzarCategoriasSso
+consultarCategorias().then(
+  () => (categoriaProductos.value = listadosAuxiliares.categorias[0].id)
 )
 </script>

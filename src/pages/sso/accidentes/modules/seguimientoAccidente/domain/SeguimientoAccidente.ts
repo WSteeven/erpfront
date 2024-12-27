@@ -45,8 +45,8 @@ export class SeguimientoAccidente extends EntidadAuditable {
     this.causas_basicas = ''
     this.medidas_preventivas = ''
     this.seguimiento_sso = null
-    this.seguimiento_trabajo_social = null
-    this.seguimiento_rrhh = null
+    this.seguimiento_trabajo_social = ''
+    this.seguimiento_rrhh = ''
     this.tarea = null
     this.subtarea = null
     this.accidente = null

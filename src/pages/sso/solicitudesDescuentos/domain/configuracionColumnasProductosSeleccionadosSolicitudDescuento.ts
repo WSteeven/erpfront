@@ -24,7 +24,6 @@ export const configuracionColumnasProductosSeleccionadosSolicitudDescuento: Colu
     type: 'number',
     editable: true,
     sortable: false,
-
   },
   {
     name: 'precio_unitario',

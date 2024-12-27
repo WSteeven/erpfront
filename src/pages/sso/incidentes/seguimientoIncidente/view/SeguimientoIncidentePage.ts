@@ -98,6 +98,7 @@ export default defineComponent({
                 refDevolucion.value.devolucion.justificacion = props.incidente.titulo + ' - ' + props.incidente.descripcion
                 refDevolucion.value.devolucion.incidente = props.incidente.id
                 refDevolucion.value.devolucion.cliente = props.incidente.cliente
+                refDevolucion.value.obtenerClientesMaterialesEmpleado()
                 if (props.incidente.devolucion) {
                     refDevolucion.value.consultar({ id: props.incidente.devolucion })
                     refDevolucion.value.accion = acciones.consultar

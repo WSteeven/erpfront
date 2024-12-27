@@ -25,17 +25,20 @@ import { Empleado } from 'pages/recursosHumanos/empleados/domain/Empleado'
 import { CitaMedica } from 'pages/medico/citaMedica/domain/CitaMedica'
 import { SeguimientoAccidente } from '../domain/SeguimientoAccidente'
 import { SubtareaController } from 'pages/gestionTrabajos/subtareas/infraestructure/SubtareaController'
+import { useAuthenticationStore } from 'stores/authentication'
 
 export default defineComponent({
   components: { MultiplePageLayout, SimpleLayout, SelectorImagen, EssentialEditor, GestorArchivos, EssentialTable, CitaMedicaPage, DiagnosticoRecetaPage },
   setup() {
+    const authenticationStore = useAuthenticationStore()
+
     /********
      * Mixin
      ********/
     const mixin = new ContenedorSimpleMixin(SeguimientoAccidente, new SeguimientoAccidenteController())
 
     const { entidad: seguimiento, disabled, accion, tabsPage, listadosAuxiliares } = mixin.useReferencias()
-    const { consultar, listar, cargarVista, obtenerListados } = mixin.useComportamiento()
+    const { consultar, listar, cargarVista, obtenerListados, editarParcial } = mixin.useComportamiento()
     const { onReestablecer, onConsultado, onModificado } = mixin.useHooks()
 
     cargarVista(() =>
@@ -59,6 +62,7 @@ export default defineComponent({
     const refArchivo = ref()
     const refCitaMedica = ref()
     const refDiagnosticoReceta = ref()
+    const puedeGestionarSso = authenticationStore.esSso || authenticationStore.esAdministrador
 
     /*************
      * Funciones
@@ -91,6 +95,10 @@ export default defineComponent({
 
     const descargarInformePdf = () => {
       listar({ export: 'pdf', seguimiento_accidente_id: seguimiento.id })
+    }
+
+    const editarSeguimientoParcial = (campo: keyof SeguimientoAccidente, valor) => {
+      editarParcial(seguimiento.id!, { [campo]: valor })
     }
 
     /*****************
@@ -187,6 +195,8 @@ export default defineComponent({
       listadosAuxiliares,
       tareas,
       filtrarTareas,
+      puedeGestionarSso,
+      editarSeguimientoParcial,
     }
   }
 })
