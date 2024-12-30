@@ -243,20 +243,6 @@
 
 <script src="./CrearFormularioPage.ts" />
 <style scoped>
-.flip-list-enter-active,
-.flip-list-leave-active {
-  transition: transform 0.5s;
-}
-
-.flip-list-enter,
-.flip-list-leave-to {
-  transform: scale(1.1);
-}
-
-.ghost {
-  opacity: 0.5;
-  background-color: #c3dff5;
-}
 
 .list-group {
   min-height: 20px;

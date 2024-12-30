@@ -85,7 +85,7 @@
               options-dense
               dense
               outlined
-              :disable="disabled"
+              disable
               use-chips
               use-input
               input-debounce="0"
@@ -99,6 +99,9 @@
             >
               <template v-slot:error>
                 <error-component clave="formulario" :v$="v$" />
+              </template>
+              <template v-slot:no-option>
+                <no-option-component/>
               </template>
             </q-select>
           </div>

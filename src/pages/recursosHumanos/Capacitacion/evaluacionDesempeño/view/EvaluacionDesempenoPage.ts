@@ -87,13 +87,16 @@ export default defineComponent({
         },
         formularios: {
           controller: new FormularioController(),
-          params: { activo: 1 }
+          params: { activo: 1, 'nombre[like]':'%evaluación de desem%' }
+          // params: { activo: 1, 'nombre[like]':'%evaluaci%' }
         }
       })
 
       empleados.value = listadosAuxiliares.empleados
       formularios.value = listadosAuxiliares.formularios
       evaluacion.evaluador = store.user.id
+      evaluacion.formulario = formularios.value[0].id
+      formularioSeleccionado()
     })
 
     /***************************
@@ -101,6 +104,8 @@ export default defineComponent({
      ***************************/
     onReestablecer(() => {
       evaluacion.evaluador = store.user.id
+      evaluacion.formulario = formularios.value[0].id
+      formularioSeleccionado()
     })
 
     /***************************
@@ -122,7 +127,7 @@ export default defineComponent({
         const response = await new FormularioController().consultar(
           evaluacion.formulario
         )
-        console.log(response)
+        // console.log(response)
         formulario.value = response.result
         evaluacion.respuestas = response.result.formulario
       })
@@ -144,7 +149,7 @@ export default defineComponent({
       color: 'secondary',
       icono: 'bi-printer',
       accion: async ({ entidad }) => {
-        await imprimir(entidad.id, entidad.empleado)
+        await imprimir(entidad.id, entidad.evaluado)
       }
     }
 
