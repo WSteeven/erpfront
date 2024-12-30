@@ -45,6 +45,8 @@ import { AxiosHttpRepository } from 'shared/http/infraestructure/AxiosHttpReposi
 import { Condicion } from 'pages/administracion/condiciones/domain/Condicion'
 import { useFiltrosListadosSelects } from 'shared/filtrosListadosGenerales'
 import { ComportamientoModalesDevolucion } from '../application/ComportamientoModalesDevolucion'
+import { IncidenteController } from 'pages/sso/incidentes/infraestructure/IncidenteController'
+import { estadosIncidentes } from 'pages/sso/config/utils'
 
 
 export default defineComponent({
@@ -150,6 +152,13 @@ export default defineComponent({
             'f_params[limit]': 50
           }
         },
+        incidentes: {
+          controller: new IncidenteController(),
+          params: {
+            campos: 'id,titulo',
+            estado: estadosIncidentes.CREADO,
+          }
+        },
       })
       //Configurar los listados
       empleados.value = listadosAuxiliares.empleados
@@ -222,7 +231,7 @@ export default defineComponent({
     /*******************************************************************************************
      * Funciones
      ******************************************************************************************/
-    const { tareas, filtrarTareas } = useFiltrosListadosSelects(listadosAuxiliares)
+    const { tareas, filtrarTareas, incidentes, filtrarIncidentes } = useFiltrosListadosSelects(listadosAuxiliares)
 
     async function obtenerClientesMaterialesEmpleado() {
       try {
@@ -308,6 +317,25 @@ export default defineComponent({
       empleados.value = listadosAuxiliares.empleados
     }
 
+    type listados = 'incidentes'
+    async function refrescarListados(nombreListado: listados) {
+      switch (nombreListado) {
+        case 'incidentes':
+          cargarVista(async () => {
+            await obtenerListados({
+              incidentes: {
+                controller: new IncidenteController(),
+                params: {
+                  campos: 'id,titulo',
+                  estado: estadosIncidentes.CREADO,
+                }
+              },
+            })
+            incidentes.value = listadosAuxiliares.incidentes
+          })
+          break
+      }
+    }
 
     /*******************************************************************************************
      * Botones de tabla
@@ -502,6 +530,10 @@ export default defineComponent({
       reestablecer,
       obtenerClientesMaterialesEmpleado,
       limpiarCampos,
+      incidentes,
+      filtrarIncidentes,
+      enRutaIncidente: computed(() => route.name === 'incidentes'),
+      refrescarListados,
     }
   }
 })

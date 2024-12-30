@@ -81,6 +81,7 @@ export const useFiltrosListadosSelects = (listadosAuxiliares) => {
 
   // SSO
   const inspecciones = ref(listadosAuxiliares.inspecciones)
+  const incidentes = ref(listadosAuxiliares.incidentes)
 
   //////////////////////////////////////////
   //modulo Recursos Humanos
@@ -438,7 +439,7 @@ export const useFiltrosListadosSelects = (listadosAuxiliares) => {
   function filtrarMotivos(val, update) {
     return filtrarLista(val, update, motivos, 'nombre', listadosAuxiliares.motivos)
   }
-  function filtrarNodos(val, update){
+  function filtrarNodos(val, update) {
     return filtrarLista(val, update, nodos, 'nombre', listadosAuxiliares.nodos)
   }
 
@@ -532,6 +533,7 @@ export const useFiltrosListadosSelects = (listadosAuxiliares) => {
    * SSO
   *******/
   const filtrarInspecciones = (val, update) => filtrarLista(val, update, inspecciones, 'titulo', listadosAuxiliares.inspecciones)
+  const filtrarIncidentes = (val, update) => filtrarLista(val, update, incidentes, 'titulo', listadosAuxiliares.incidentes)
 
   /***************************************
    * Filtro global optimizado
@@ -611,5 +613,6 @@ export const useFiltrosListadosSelects = (listadosAuxiliares) => {
     filtrarTareasTitulo,
     // sso
     inspecciones, filtrarInspecciones,
+    incidentes, filtrarIncidentes,
   }
 }

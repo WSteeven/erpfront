@@ -472,6 +472,50 @@
               dense
             />
           </div>
+
+          <div class="col-12 col-md-3">
+            <label class="q-mb-sm block">Incidente (Opcional)</label>
+            <q-select
+              v-model="devolucion.incidente"
+              :options="incidentes"
+              transition-show="scale"
+              transition-hide="scale"
+              :disable="disabled || enRutaIncidente"
+              options-dense
+              dense
+              outlined
+              clearable
+              use-input
+              input-debounce="0"
+              @filter="filtrarIncidentes"
+              :option-label="v => v.titulo"
+              :option-value="v => v.id"
+              emit-value
+              map-options
+            >
+              <template v-slot:no-option>
+                <q-item>
+                  <q-item-section class="text-grey">
+                    No hay resultados
+                  </q-item-section>
+                </q-item>
+              </template>
+
+              <template #after>
+                <q-btn
+                  color="positive"
+                  @click="refrescarListados('incidentes')"
+                  :disable="disabled || enRutaIncidente"
+                  unelevated
+                  square
+                >
+                  <q-icon size="xs" name="bi-arrow-clockwise" />
+                  <q-tooltip>Recargar incidentes</q-tooltip>
+                </q-btn>
+              </template>
+            </q-select>
+          </div>
+
           <!-- Manejo de archivos -->
           <div class="col-12 q-mb-md">
             <gestor-archivos
