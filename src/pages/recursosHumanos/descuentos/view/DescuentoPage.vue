@@ -299,7 +299,7 @@
                   : configuracionColumnasCuotasDescuento
               "
               ajustar-celdas
-              desplegar-desde="3"
+              :desplegar-desde="3"
               :accion1="btnPagarCuota"
               :accion2="btnComentarioCuota"
               :accion3="btnAplazarCuota"

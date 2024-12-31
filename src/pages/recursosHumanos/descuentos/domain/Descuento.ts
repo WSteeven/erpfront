@@ -19,7 +19,7 @@ export class Descuento extends EntidadAuditable {
     this.empleado = null
     this.multa= null
     this.tipo_descuento = null
-    this.descripcion = null
+    this.descripcion = ''
     this.valor = null
     this.cantidad_cuotas = null
     this.mes_inicia_cobro = null
