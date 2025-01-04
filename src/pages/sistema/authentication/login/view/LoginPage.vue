@@ -11,10 +11,8 @@
           </q-avatar>
         </div>
 
-        <!-- <h2 class="company-name">{{ nombreEmpresa }}</h2> -->
-
         <!-- Formulario de inicio de sesión -->
-        <form @submit.prevent="login" class="login-form">
+        <form @submit.prevent="login" class="login-form" @keyup.enter="login">
           <div class="input-wrapper">
             <q-icon name="mail" class="input-icon" />
             <q-input
@@ -62,6 +60,7 @@
     </div>
   </q-page>
 </template>
+
 
 <script src="./LoginPage.ts"></script>
 
@@ -162,5 +161,56 @@
 }
 .forgot-text:hover {
   color: var(--q-color-grey-9);
+}
+
+
+/* Input general */
+.input-field {
+  width: 100%;
+  border-radius: 8px;
+  padding-left: 40px; /* Espacio para el icono */
+  font-size: 1rem;
+}
+
+/* Estilo mejorado */
+.improved-input {
+  background-color: var(--q-color-grey-1);
+  border: 1px solid var(--q-color-grey-4);
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  transition: all 0.2s ease-in-out;
+}
+
+/* Hover y foco */
+.improved-input:hover {
+  border-color: var(--q-color-primary);
+  background-color: var(--q-color-grey-2);
+}
+
+.improved-input:focus-within {
+  border-color: var(--q-color-primary);
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  background-color: #ffffff;
+}
+
+/* Iconos de input */
+.input-icon {
+  position: absolute;
+  left: 12px;
+  color: var(--q-color-grey-6);
+  font-size: 1.5rem;
+  transition: color 0.2s ease-in-out;
+}
+
+.input-wrapper:hover .input-icon {
+  color: var(--q-color-primary);
+}
+
+.toggle-icon {
+  color: var(--q-color-grey-6);
+  cursor: pointer;
+}
+
+.toggle-icon:hover {
+  color: var(--q-color-primary);
 }
 </style>

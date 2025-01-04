@@ -4,6 +4,6 @@ import { endpoints } from 'config/api';
 
 export class AsistenciaController extends TransaccionSimpleController<Asistencia> {
   constructor() {
-    super(endpoints.asistencia);
+    super(endpoints.asistencias);
   }
 }
