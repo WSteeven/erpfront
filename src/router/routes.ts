@@ -8,9 +8,9 @@ import rutasActivosFijos from './rutasActivosFijos'
 import { empresas } from 'config/utils/sistema'
 import rutasControlPersonal from './rutasControlPersonal'
 
-const JPCONSTRUCRED = process.env.VUE_APP_ID == empresas.JPCONSTRUCRED
+/* const JPCONSTRUCRED = process.env.VUE_APP_ID == empresas.JPCONSTRUCRED
 const JPCUSTODY = process.env.VUE_APP_ID == empresas.JPCUSTODY
-const CCLEDARE = process.env.VUE_APP_ID == empresas.CCLEDARE
+const CCLEDARE = process.env.VUE_APP_ID == empresas.CCLEDARE */
 console.log(process.env.VUE_APP_ID)
 const routes: RouteRecordRaw[] = [
   // {

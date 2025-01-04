@@ -206,7 +206,7 @@ export const endpoints = {
   /**
    * Control de personal
    */
-  asistencia: new Endpoint('control-personal/asistencias'),
+  asistencia: new Endpoint('control-personal/asistencia'),
   horarioLaboral: new Endpoint('control-personal/horario-laboral'),
   horarioDeAlmuerzo: new Endpoint('control-personal/horario-almuerzo'),
   atrasos: new Endpoint('control-personal/atrasos'),
