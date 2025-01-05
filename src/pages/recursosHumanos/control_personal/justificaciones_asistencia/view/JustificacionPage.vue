@@ -63,14 +63,14 @@
                 <div class="col-12 col-md-3">
                   <br />
                   <q-toggle
-                    v-model="justificacion.estado"
+                    v-model="justificacion.requiere_justificacion"
                     label="¿Requiere Justificación?"
                     color="positive"
                     :disable="disabled"
                   />
                 </div>
                 <!-- Justificación -->
-                <div class="col-12" v-if="justificacion.estado">
+                <div class="col-12" v-if="justificacion.requiere_justificacion">
                   <label class="q-mb-sm block">Justificación de Atraso</label>
                   <essential-editor
                     v-model="justificacion.justificacion"

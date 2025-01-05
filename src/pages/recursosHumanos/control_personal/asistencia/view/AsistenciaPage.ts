@@ -45,8 +45,6 @@ export default defineComponent({
         listado.value = []; // Mantén el listado vacío si ocurre un error
       }
     }
-    
-    listar()
 
     actualizarAsistencias()
 
@@ -59,7 +57,7 @@ export default defineComponent({
       configuracionColumnas: configuracionColumnasAsistencia,
       guardar,
       //funciones
-      actualizarAsistencias
+      actualizarAsistencias,
     }
   }
 })
