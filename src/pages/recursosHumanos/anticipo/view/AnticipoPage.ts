@@ -16,6 +16,7 @@ import { removeAccents } from 'shared/utils'
 import { accionesTabla, maskFecha } from 'config/utils'
 import { MotivoPermisoEmpleadoController } from 'pages/recursosHumanos/motivo/infraestructure/MotivoPermisoEmpleadoController'
 import { EmpleadoController } from 'pages/recursosHumanos/empleados/infraestructure/EmpleadoController'
+import { useFiltrosListadosSelects } from 'shared/filtrosListadosGenerales'
 
 
 export default defineComponent({
@@ -46,11 +47,11 @@ export default defineComponent({
     const tipos_prestamo = ref([
       { id: 1, nombre: 'Prestamo Empresa', tipo: 1 },
       { id: 2, nombre: 'Anticipo de Sueldo de empleado', tipo: 2 },
-      { id: 2, nombre: 'Anticipo de Prestamo quirorafario', tipo: 2 },
+      { id: 2, nombre: 'Anticipo de Prestamo quirorafario', tipo: 2 }
     ])
-    const empleados = ref([])
+    const { empleados,filtrarEmpleados } =useFiltrosListadosSelects(listadosAuxiliares)
     cargarVista(async () => {
-      obtenerListados({
+      await obtenerListados({
         motivos: new MotivoPermisoEmpleadoController(),
         empleados: {
           controller: new EmpleadoController(),
@@ -72,20 +73,7 @@ export default defineComponent({
 
     const v$ = useVuelidate(reglas, anticipo)
     setValidador(v$.value)
-    function filtrarEmpleado(val, update) {
-      if (val === '') {
-        update(() => {
-          empleados.value = listadosAuxiliares.empleados
-        })
-        return
-      }
-      update(() => {
-        const needle = val.toLowerCase();
-        empleados.value = listadosAuxiliares.empleados.filter(
-          (v) => v.nombres.toLowerCase().indexOf(needle) > -1 || v.apellidos.toLowerCase().indexOf(needle) > -1
-        )
-      })
-    }
+
 
 
     return {
@@ -98,7 +86,7 @@ export default defineComponent({
       formas_pago,
       maskFecha,
       empleados,
-      filtrarEmpleado,
+      filtrarEmpleados,
       v$,
       disabled,
       configuracionColumnas: configuracionColumnasAnticipo,

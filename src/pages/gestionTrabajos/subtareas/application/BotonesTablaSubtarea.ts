@@ -66,11 +66,18 @@ export const useBotonesTablaSubtarea = (listado: Ref<Subtarea[]>, modales: Compo
           ...movilizacion
         }
 
-        const { result } = await new CambiarEstadoSubtarea().ejecutar(entidad.id, data)
-        if (authenticationStore.esTecnico) filtrarTrabajoAsignado(estadosTrabajos.EJECUTANDO)
-        else actualizarElemento(posicion, result)
-        notificarCorrecto('Trabajo ejecutado exitosamente!')
-        movilizacionSubtareaStore.getSubtareaDestino(authenticationStore.user.id)
+        try {
+          const { result } = await new CambiarEstadoSubtarea().ejecutar(entidad.id, data)
+          if (authenticationStore.esTecnico) filtrarTrabajoAsignado(estadosTrabajos.EJECUTANDO)
+          else actualizarElemento(posicion, result)
+          notificarCorrecto('Trabajo ejecutado exitosamente!')
+          movilizacionSubtareaStore.getSubtareaDestino(authenticationStore.user.id)
+        } catch (error: unknown) {
+          if (isAxiosError(error)) {
+            const mensajes: string[] = error.erroresValidacion
+            await notificarMensajesError(mensajes, useNotificaciones())
+          }
+        }
       })
     }
   }
@@ -145,7 +152,7 @@ export const useBotonesTablaSubtarea = (listado: Ref<Subtarea[]>, modales: Compo
     titulo: 'Realizado',
     icono: 'bi-check-circle',
     color: 'positive',
-    visible: ({ entidad }) => entidad.estado === estadosTrabajos.EJECUTANDO && (authenticationStore.esJefeTecnico || authenticationStore.esCoordinador || entidad.es_responsable),
+    visible: ({ entidad }) => [estadosTrabajos.EJECUTANDO, estadosTrabajos.PAUSADO].includes(entidad.estado) && (authenticationStore.esJefeTecnico || authenticationStore.esCoordinador || entidad.es_responsable || authenticationStore.esAdministrador),
     accion: ({ entidad, posicion }) => {
       obtenerCoordenadas(entidad)
       const causasFiltradasPorTipo = listadosAuxiliares.causasIntervenciones.filter((causa: CausaIntervencion) => causa.tipo_trabajo === entidad.tipo_trabajo)
@@ -227,15 +234,27 @@ export const useBotonesTablaSubtarea = (listado: Ref<Subtarea[]>, modales: Compo
     }
   }
 
+  const btnVerAlimentacion: CustomActionTable<Subtarea> = {
+    titulo: 'Ver alimentación',
+    icono: 'bi-cookie',
+    color: 'orange',
+    visible: ({ entidad }) => [estadosTrabajos.FINALIZADO].includes(entidad.estado),
+    accion: async ({ entidad }) => {
+      modales.abrirModalEntidad<AlimentacionGrupoPropsData>('VerAlimentacionGrupoPage', { idSubtarea: entidad.id })
+    }
+  }
+
   const btnFinalizar: CustomActionTable<Subtarea> = {
     titulo: 'Finalizar',
     color: 'positive',
     icono: 'bi-check',
-    visible: ({ entidad }) => entidad.estado === estadosTrabajos.REALIZADO, // 8459 - 8561
+    visible: ({ entidad }) => entidad.estado === estadosTrabajos.REALIZADO,
     accion: async ({ entidad, posicion }) => {
       const config: CustomActionPrompt = reactive({ // Nedetel
         mensaje: 'Confirme la causa de intervención',
         accion: (causa_intervencion_id) => {
+          trabajoAsignadoStore.idSubtareaSeleccionada = entidad.id
+
           if (entidad.tipo_trabajo === 'STANDBY') confirmarFinalizar({ entidad, posicion })
           else confirmarFinalizarConAlimentacion({ entidad, causa_intervencion_id, posicion })
         },
@@ -261,7 +280,6 @@ export const useBotonesTablaSubtarea = (listado: Ref<Subtarea[]>, modales: Compo
   async function confirmarFinalizarConAlimentacion(data: UnwrapRef<any>) {
     const { entidad } = data
     dataGuardar.value = data
-    console.log(entidad)
     modales.abrirModalEntidad<AlimentacionGrupoPropsData>('AlimentacionGrupoPage', { idGrupo: entidad.grupo_id, idSubtarea: entidad.id, idTarea: entidad.tarea_id })
   }
 
@@ -305,19 +323,26 @@ export const useBotonesTablaSubtarea = (listado: Ref<Subtarea[]>, modales: Compo
   async function confirmarFinalizar(data: UnwrapRef<any>) {
     const { entidad, causa_intervencion_id, posicion } = data
 
-    // confirmar('¿Está seguro de marcar como finalizada la subtarea?', async () => {
-    try {
-      const { result } = await cambiarEstadoTrabajo.finalizar(entidad.id, { causa_intervencion_id: causa_intervencion_id })
-      actualizarElemento(posicion, result)
+    const config: CustomActionPrompt = {
+      titulo: 'Gastos adicionales',
+      mensaje: 'Ingrese los gastos adicionales.',
+      requerido: true,
+      accion: async (gastos_adicionales: string) => {
+        try {
+          const { result } = await cambiarEstadoTrabajo.finalizar(entidad.id, { causa_intervencion_id: causa_intervencion_id, gastos_adicionales })
+          actualizarElemento(posicion, result)
 
-      notificarCorrecto('Trabajo finalizada exitosamente!')
-    } catch (error: unknown) {
-      if (isAxiosError(error)) {
-        const mensajes: string[] = error.erroresValidacion
-        notificarMensajesError(mensajes, notificaciones)
+          notificarCorrecto('Trabajo finalizada exitosamente!')
+        } catch (error: unknown) {
+          if (isAxiosError(error)) {
+            const mensajes: string[] = error.erroresValidacion
+            notificarMensajesError(mensajes, notificaciones)
+          }
+        }
       }
     }
-    // })
+
+    prompt(config)
   }
 
   const btnSuspender: CustomActionTable = {
@@ -425,8 +450,6 @@ export const useBotonesTablaSubtarea = (listado: Ref<Subtarea[]>, modales: Compo
   const setFiltrarTrabajoAsignado = (funcion: (estado: string) => void) => filtrarTrabajoAsignado = funcion
 
   function actualizarElemento(posicion: number, nuevaEntidad: Subtarea): void {
-    console.log(posicion)
-    console.log(nuevaEntidad)
     if (posicion >= 0) {
       listado.value.splice(posicion, 1, nuevaEntidad)
       listado.value = [...listado.value]
@@ -453,5 +476,6 @@ export const useBotonesTablaSubtarea = (listado: Ref<Subtarea[]>, modales: Compo
     btnFinalizar,
     setFiltrarTrabajoAsignado,
     guardadoModalesSubtarea,
+    btnVerAlimentacion,
   }
 }

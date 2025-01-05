@@ -1,9 +1,8 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import axios, { AxiosInstance, AxiosRequestConfig, ResponseType } from 'axios'
+import axios, { AxiosInstance, AxiosRequestConfig } from 'axios'
 import { HttpRepository } from '../domain/HttpRepository'
 import { Endpoint } from '../domain/Endpoint'
 import { LocalStorage } from 'quasar'
-import { Ref } from 'vue'
 
 // SINGLETON
 export class AxiosHttpRepository implements HttpRepository {
@@ -22,8 +21,8 @@ export class AxiosHttpRepository implements HttpRepository {
       // baseURL: 'http://backend_jpconstrucred.test:80',
       withCredentials: true,
       // responseType: this.responseType.value,
-    }) 
-    
+    })
+
   }
 
   // static config

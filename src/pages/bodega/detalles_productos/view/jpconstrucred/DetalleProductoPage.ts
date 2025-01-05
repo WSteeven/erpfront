@@ -40,7 +40,7 @@ export default defineComponent({
     const { entidad: detalle, disabled, accion, listadosAuxiliares, listado } = mixin.useReferencias()
     const { setValidador, obtenerListados, cargarVista } = mixin.useComportamiento()
     const { onGuardado, onReestablecer } = mixin.useHooks()
-    const { confirmar, notificarCorrecto, notificarAdvertencia, notificarError } = useNotificaciones()
+    const { confirmar, notificarCorrecto,  notificarError } = useNotificaciones()
 
     //stores
     const detalleStore = useDetalleStore()
@@ -118,7 +118,7 @@ export default defineComponent({
         requiredIfSerial: requiredIf(function () { return detalle.tiene_serial ? detalle.tiene_serial : false }),
         requiredIfFibra: requiredIf(function () { return detalle.es_fibra ? detalle.es_fibra : false })
       },
-      span: { requiredIfFibra: requiredIf(function () { return detalle.es_fibra ? true : false }) },
+      span: { requiredIfFibra: requiredIf(function () { return detalle.es_fibra }) },
       tipo_fibra: { requiredIfFibra: requiredIf(function () { return detalle.es_fibra ? detalle.es_fibra : false }) },
       hilos: { requiredIfFibra: requiredIf(function () { return detalle.es_fibra ? detalle.es_fibra : false }) },
       punta_inicial: {
@@ -130,9 +130,9 @@ export default defineComponent({
         numerico: numeric
       },
       punta_corte: { numeric },
-      procesador: { requiredIfInformatica: requiredIf(function () { return detalle.categoria == 'INFORMATICA' ? true : false }) },
-      ram: { requiredIfInformatica: requiredIf(function () { return detalle.categoria == 'INFORMATICA' ? true : false }) },
-      disco: { requiredIfInformatica: requiredIf(function () { return detalle.categoria == 'INFORMATICA' ? true : false }) },
+      procesador: { requiredIfInformatica: requiredIf(function () { return detalle.categoria == 'INFORMATICA' }) },
+      ram: { requiredIfInformatica: requiredIf(function () { return detalle.categoria == 'INFORMATICA' }) },
+      disco: { requiredIfInformatica: requiredIf(function () { return detalle.categoria == 'INFORMATICA' }) },
     }
 
     function limpiarCamposInformatica() {
@@ -277,7 +277,7 @@ export default defineComponent({
           }
         })
       },
-      visible: ({ entidad }) => entidad.activo && store.can('puede.desactivar.detalles')
+      visible: ({ entidad }) => entidad.activo && store.can('puede.ver.btn.desactivar.detalles')
     }
     const botonActivarDetalle: CustomActionTable = {
       titulo: 'Activar',
@@ -297,7 +297,7 @@ export default defineComponent({
             notificarError('No se pudo activar el detalle!')
           }
         })
-      }, visible: ({ entidad }) => !entidad.activo && store.can('puede.activar.detalles')
+      }, visible: ({ entidad }) => !entidad.activo && store.can('puede.ver.btn.activar.detalles')
     }
     return {
       mixin, detalle, disabled, accion, v$, listado, listadoBackup,

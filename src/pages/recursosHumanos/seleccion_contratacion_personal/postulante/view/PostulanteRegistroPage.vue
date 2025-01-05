@@ -9,7 +9,7 @@
       >
         <div class="imagen d-flex align-items-center justify-content-center">
           <q-avatar square size="400px">
-            <img :src="!$q.dark.isActive ? logoClaro : logoOscuro" />
+            <img :src="!$q.dark.isActive ? logoClaro : logoOscuro" alt="logo" />
           </q-avatar>
         </div>
       </div>
@@ -24,10 +24,10 @@
           size="120px"
           class="q-mx-auto block q-mb-md"
         >
-          <img :src="!$q.dark.isActive ? logoClaro : logoOscuro" />
+          <img :src="!$q.dark.isActive ? logoClaro : logoOscuro" alt="logo" />
         </q-avatar>
 
-        <form @submit.prevent="login" class="full-width q-px-lg">
+        <form @submit.prevent class="full-width q-px-lg">
           <div class="q-mb-sm">
             <h2 class="text-bold">Registro de Postulante</h2>
           </div>
@@ -74,6 +74,56 @@
               </template>
             </q-input>
           </div>
+
+          <!-- Fecha nacimiento -->
+          <div class="col-12 q-mb-sm">
+            <label class="q-mb-sm block">Fecha de nacimiento</label>
+            <q-input
+              v-model="postulante.fecha_nacimiento"
+              placeholder="Obligatorio"
+              :error="!!v$.fecha_nacimiento.$errors.length"
+              @blur="v$.fecha_nacimiento.$touch"
+              readonly
+              outlined
+              dense
+            >
+              <template v-slot:append>
+                <q-icon name="event" class="cursor-pointer">
+                  <q-popup-proxy
+                    cover
+                    transition-show="scale"
+                    transition-hide="scale"
+                  >
+                    <q-date
+                      v-model="postulante.fecha_nacimiento"
+                      :mask="maskFecha"
+                      today-btn
+                    >
+                      <div class="row items-center justify-end">
+                        <q-btn
+                          v-close-popup
+                          label="Cerrar"
+                          color="primary"
+                          flat
+                        />
+                      </div>
+                    </q-date>
+                  </q-popup-proxy>
+                </q-icon>
+              </template>
+
+              <template v-slot:error>
+                <div
+                  style="clear: inherit"
+                  v-for="error of v$.fecha_nacimiento.$errors"
+                  :key="error.$uid"
+                >
+                  <div class="error-msg">{{ error.$message }}</div>
+                </div>
+              </template>
+            </q-input>
+          </div>
+
 
           <!-- Tipo de Identificacion -->
           <div class="col-12 q-mb-sm">
@@ -212,6 +262,7 @@
               class="full-width q-mb-sm"
               no-caps
               unelevated
+              :disable="enableLoginButton"
               @click="registro()"
             >
             </q-btn>

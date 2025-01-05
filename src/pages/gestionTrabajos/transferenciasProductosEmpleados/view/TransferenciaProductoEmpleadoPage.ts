@@ -1,5 +1,10 @@
 // Dependencias
-import { acciones, estadosTransacciones, rolesSistema, tabOptionsTransferenciaProductoEmpleado } from 'config/utils'
+import {
+  acciones,
+  estadosTransacciones,
+  rolesSistema,
+  tabOptionsTransferenciaProductoEmpleado
+} from 'config/utils'
 import { configuracionColumnasDevoluciones } from '../domain/configuracionColumnasDevoluciones'
 import { computed, defineComponent, onMounted, reactive, ref, watch } from 'vue'
 import { useOrquestadorSelectorDetalles } from '../application/OrquestadorSelectorDetalles'
@@ -24,8 +29,6 @@ import { ArchivoController } from 'pages/gestionTrabajos/subtareas/modules/gesto
 import { configuracionColumnasProductosSeleccionadosAccion } from '../domain/configuracionColumnasProductosSeleccionadosAccion'
 import { TransferenciaProductoEmpleadoController } from '../infraestructure/TransferenciaProductoEmpleadoController'
 import { configuracionColumnasProductosSeleccionados } from '../domain/configuracionColumnasProductosSeleccionados'
-import { useBotonesTransferenciaProductoEmpleado } from '../application/UseBotonesTransferenciaProductoEmpleado'
-import { EmpleadoRoleController } from 'pages/recursosHumanos/empleados/infraestructure/EmpleadoRolesController'
 import { ContenedorSimpleMixin } from 'shared/contenedor/modules/simple/application/ContenedorSimpleMixin'
 import { useMaterialesProyecto } from 'pages/gestionTrabajos/miBodega/application/UseMaterialesProyecto'
 import { useMaterialesEmpleado } from 'pages/gestionTrabajos/miBodega/application/UseMaterialesEmpleado'
@@ -56,7 +59,7 @@ export default defineComponent({
      * Mixin
      ********/
     const mixin = new ContenedorSimpleMixin(TransferenciaProductoEmpleado, new TransferenciaProductoEmpleadoController(), new ArchivoController())
-    const { entidad: transferencia, disabled, accion, listadosAuxiliares, listado } = mixin.useReferencias()
+    const { entidad: transferencia, disabled, accion, listadosAuxiliares } = mixin.useReferencias()
     const { setValidador, obtenerListados, cargarVista, listar } = mixin.useComportamiento()
     const { onModificado, onConsultado, onReestablecer, onGuardado } = mixin.useHooks()
 
@@ -137,7 +140,7 @@ export default defineComponent({
     /************************
      * Variables computadas
      ************************/
-    const esEntreProyectos = (): boolean => listadosAuxiliares.proyectos.find((proyecto: Proyecto) => proyecto.id === transferencia.proyecto_origen)?.etapas.length === 0
+    // const esEntreProyectos = (): boolean => listadosAuxiliares.proyectos.find((proyecto: Proyecto) => proyecto.id === transferencia.proyecto_origen)?.etapas.length === 0
 
     //Obtener los listados
     cargarVista(async () => {
@@ -187,8 +190,6 @@ export default defineComponent({
       transferencia.cliente = transferenciaProductoEmpleadoStore.cliente_id
       esParaStock.value = !transferenciaProductoEmpleadoStore.idProyecto && !transferenciaProductoEmpleadoStore.idEtapa && !transferenciaProductoEmpleadoStore.tareaId
 
-      console.log('Montado')
-      console.log(esParaStock.value)
       await seleccionarEmpleadoOrigen(false)
       await seleccionarProyectoOrigen(false)
 
@@ -211,7 +212,7 @@ export default defineComponent({
       justificacion: { required },
       empleado_origen: { required },
       empleado_destino: { required },
-      tarea_origen: { requiredIf: requiredIf(() => !esParaStock.value) }, //transferenciaProductoEmpleadoStore.origenProductos === destinosTareas.paraClienteFinal) },
+      // tarea_origen: { requiredIf: requiredIf(() => !esParaStock.value) }, //transferenciaProductoEmpleadoStore.origenProductos === destinosTareas.paraClienteFinal) },
       // tarea_destino: { requiredIf: requiredIf(() => !esParaStock.value) }, //transferenciaProductoEmpleadoStore.origenProductos === destinosTareas.paraClienteFinal) },
       solicitante: { required },
       cliente: { required },
@@ -226,7 +227,7 @@ export default defineComponent({
     /************
      * Funciones
      ************/
-    const resetearFormulario = () => {
+    /* const resetearFormulario = () => {
       transferencia.proyecto_origen = null
       transferencia.proyecto_destino = null
       transferencia.etapa_origen = null
@@ -258,7 +259,7 @@ export default defineComponent({
       listadosAuxiliares.tareas = []
       listadosAuxiliares.tareasDestino = []
       listadosAuxiliares.proyectosDestino = []
-    }
+    } */
 
     /* async function seleccionarClienteStock(idCliente: number) {
       console.log(idCliente)
@@ -433,15 +434,12 @@ export default defineComponent({
     const filtroEmpleado = reactive(new FiltroMiBodegaEmpleado())
     const filtroTarea = reactive(new FiltroMiBodega())
 
-    const { consultarProductosTarea } = useMaterialesTarea(filtroTarea, listadosAuxiliares)
+    // const { consultarProductosTarea } = useMaterialesTarea(filtroTarea, listadosAuxiliares)
     const { consultarProductosEmpleado, consultarClientesMaterialesEmpleado } = useMaterialesEmpleado(filtroEmpleado, listadosAuxiliares)
     const { consultarProyectos, consultarProyectosDestino, consultarEtapas, consultarEtapasDestino, consultarProductosProyecto, consultarClientesMaterialesTarea } = useMaterialesProyecto(filtroProyecto, listadosAuxiliares)
 
     async function establecerAutorizador() {
-      console.log('establecerAutorizador')
-      console.log(accion.value)
       if (accion.value === acciones.nuevo) {
-        console.log('establecerAutorizador nuevo...')
 
         if (transferencia.proyecto_origen) {
           // si es entre proyectos autoriza el jefe tecnico
@@ -606,7 +604,6 @@ export default defineComponent({
     /*******************************************************************************************
      * Botones de tabla
      ******************************************************************************************/
-    const { botonAnular, botonDespachar, botonImprimir } = useBotonesTransferenciaProductoEmpleado(listado, tabSeleccionado)
     const { botonEditarCantidad, botonEliminar } = useBotonesListadoProductos(transferencia, accion)
 
     //Configurar los listados
@@ -703,13 +700,11 @@ export default defineComponent({
       configuracionColumnasProductosSeleccionados,
       botonEditarCantidad,
       botonEliminar,
-      botonAnular,
-      botonImprimir,
-      botonDespachar,
 
       //flags
       esCoordinador,
-      puedeAutorizar: computed(() => (esCoordinador || authenticationStore.esJefeTecnico || authenticationStore.esAdministrador) && accion.value === acciones.nuevo),
+      puedeAutorizar: computed(() => authenticationStore.can('puede.autorizar.transferencia_producto_empleado') && [acciones.nuevo, acciones.editar].includes(accion.value)),
+      // puedeAutorizar: computed(() => (esCoordinador || authenticationStore.esJefeTecnico || authenticationStore.esAdministrador) && accion.value === acciones.nuevo),
 
       //Tabs
       tabOptionsTransferenciaProductoEmpleado,
@@ -753,7 +748,7 @@ export default defineComponent({
       seleccionarEtapaDestino,
       seleccionarTareaDestino,
       consultarProductos,
-      consultado: computed(() => accion.value === acciones.editar || accion.value === acciones.consultar)
+      consultado: computed(() => accion.value === acciones.editar || accion.value === acciones.consultar),
     }
   }
 })

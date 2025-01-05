@@ -104,7 +104,7 @@ export function useNotificaciones() {
         type: config.tipo ?? 'text', // optional
         isValid: val => config.validacion ? config.validacion(val) : true, //val => val <= data.entidad.cantidad,
       },
-      cancel: true,
+      cancel: !config.requerido,
       persistent: true,
     })
       .onOk((data) => {

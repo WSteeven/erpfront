@@ -1,6 +1,6 @@
-import { TransaccionSimpleController } from "shared/contenedor/modules/simple/infraestructure/TransacccionSimpleController";
-import { ProveedorInternacional } from "../domain/ProveedorInternacional";
-import { endpoints } from "config/api";
+import { TransaccionSimpleController } from 'shared/contenedor/modules/simple/infraestructure/TransacccionSimpleController';
+import { ProveedorInternacional } from '../domain/ProveedorInternacional';
+import { endpoints } from 'config/api';
 
 export class ProveedorInternacionalController extends TransaccionSimpleController<ProveedorInternacional>{
   constructor(){

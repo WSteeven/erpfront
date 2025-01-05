@@ -52,7 +52,7 @@ export default defineComponent({
   name: 'OrdenCompraPage',
   components: { TabLayoutFilterTabs2, EssentialSelectableTable, EssentialTable, ModalesEntidad, EssentialPopupEditableTable, GestorArchivos },
   emits: ['actualizar', 'fila-modificada'],
-  setup(props, { emit }) {
+  setup() {
     const mixin = new ContenedorSimpleMixin(OrdenCompra, new OrdenCompraController(), new ArchivoController())
     const { entidad: orden, disabled, accion, listadosAuxiliares, listado, tabs } = mixin.useReferencias()
     const { setValidador, obtenerListados, cargarVista, listar, consultar } = mixin.useComportamiento()
@@ -84,9 +84,8 @@ export default defineComponent({
     const refArchivo = ref()
     const idOrden = ref()
     const tabDefecto = ref('1')
-    let tabSeleccionado = ref()
-    let soloLectura = ref(false)
-    let puedeEditar = ref(false)
+    const tabSeleccionado = ref()
+    const soloLectura = ref(false)
     const refItems = ref()
 
     //Orquestador
@@ -148,9 +147,8 @@ export default defineComponent({
       //comprueba si hay una preorden en el store para llenar automaticamente los datos en la orden de compra
       orden.autorizacion = 1
       if (preordenStore.preorden.id) {
-        8
         orden.tiene_preorden = true
-        cargarDatosPreorden()
+        await cargarDatosPreorden()
       }
       configuracionColumnasItemOrdenCompra.find((item) => item.field === 'unidad_medida')!.options = listadosAuxiliares.unidades_medidas.map((v: UnidadMedida) => { return { label: v.nombre } })
     })
@@ -224,8 +222,6 @@ export default defineComponent({
     function filtrarOrdenes(tab: string) {
       tabDefecto.value = tab
       tabSeleccionado.value = tab
-      if (tab == '1' || tab == '2') puedeEditar.value = true
-      else puedeEditar.value = false
       switch (tab) {
         case '2':
           listar({ autorizacion_id: tab, estado_id: 1, realizada: 0, pagada: 0, solicitante_id: store.user.id })
@@ -297,9 +293,9 @@ export default defineComponent({
       // console.log(data)
       data.precio_unitario = Number(data.precio_unitario).toFixed(4)
       data.iva = data.grava_iva && data.facturable ? ((Number(data.cantidad) * Number(data.precio_unitario)) * orden.iva / 100).toFixed(4) : 0
-      data.subtotal = data.facturable ? (Number(data.cantidad) * Number(data.precio_unitario)).toFixed(4) : 0
-      data.descuento = data.facturable ? (Number(data.subtotal) * Number(data.porcentaje_descuento | 0) / 100).toFixed(4) : 0
       data.total = data.facturable ? (Number(data.cantidad) * Number(data.precio_unitario) + Number(data.iva) - Number(data.descuento)).toFixed(4) : 0
+      data.descuento = data.facturable ? (Number(data.subtotal) * Number(data.porcentaje_descuento | 0) / 100).toFixed(4) : 0
+      data.subtotal = data.facturable ? (Number(data.cantidad) * Number(data.precio_unitario)).toFixed(4) : 0
     }
 
     /**
@@ -383,7 +379,7 @@ export default defineComponent({
       titulo: 'Eliminar',
       icono: 'bi-trash',
       color: 'negative',
-      accion: ({ entidad, posicion }) => {
+      accion: ({  posicion }) => {
         //: props.propsTable.rowIndex,
         eliminar({ posicion })
       },
@@ -397,7 +393,7 @@ export default defineComponent({
         ordenCompraStore.idOrden = entidad.id
         await ordenCompraStore.imprimirPdf()
       },
-      visible: () => tabSeleccionado.value >= 2 ? true : false
+      visible: () => tabSeleccionado.value >= 2
     }
     const btnAnularOrden: CustomActionTable = {
       titulo: 'Anular',
@@ -440,7 +436,7 @@ export default defineComponent({
       titulo: 'Novedades',
       color: 'warning',
       icono: 'bi-wrench',
-      accion: async ({ entidad, posicion }) => {
+      accion: async ({ entidad }) => {
         console.log(entidad)
         ordenCompraStore.idOrden = entidad.id
         confirmar('¿Está seguro de abrir el formulario de registro de novedades de la orden de compra?', () => {
@@ -448,7 +444,7 @@ export default defineComponent({
           modales.abrirModalEntidad('SeguimientoNovedadesOrdenesCompras')
         })
       },
-      visible: ({ entidad }) => {
+      visible: () => {
         return true
       }
     }
@@ -467,7 +463,7 @@ export default defineComponent({
       titulo: 'Realizada',
       color: 'positive',
       icono: 'bi-check-circle-fill',
-      accion: async ({ entidad, posicion }) => {
+      accion: async ({ entidad }) => {
         confirmar('¿Está seguro de marcar como realizada la orden de compra?', async () => {
           const data: CustomActionPrompt = {
             titulo: 'Observación',
@@ -480,20 +476,20 @@ export default defineComponent({
           prompt(data)
         })
       },
-      visible: ({ entidad }) => tabSeleccionado.value == 6 && store.esCompras
+      visible: () => tabSeleccionado.value == 6 && store.esCompras
     }
     const btnMarcarPagada: CustomActionTable = {
       titulo: 'Pagada',
       color: 'positive',
       icono: 'bi-check-circle-fill',
-      accion: async ({ entidad, posicion }) => {
+      accion: async ({ entidad }) => {
         confirmar('¿Está seguro de marcar como pagada la orden de compra?', async () => {
           ordenCompraStore.idOrden = entidad.id
           await ordenCompraStore.marcarPagada()
           await filtrarOrdenes('5')
         })
       },
-      visible: ({ entidad }) => tabSeleccionado.value == 4 && store.esContabilidad
+      visible: () => tabSeleccionado.value == 4 && store.esContabilidad
     }
 
     const btnEditarRegistro: CustomActionTable = {
@@ -507,10 +503,9 @@ export default defineComponent({
         consultar(entidad)
         tabs.value = 'formulario'
 
-      }, visible: ({ entidad, posicion }) => {
+      }, visible: ({ entidad }) => {
         if ((tabSeleccionado.value == '1' || tabSeleccionado.value == '2') && entidad.autorizacion == autorizacionesTransacciones.pendiente && (store.esCompras || entidad.solicitante_id == store.user.id || entidad.autorizador_id == store.user.id)) return true
-        if ((tabSeleccionado.value == '1' || tabSeleccionado.value == '2') && entidad.autorizacion == autorizacionesTransacciones.aprobado && (store.esCompras || entidad.autorizador_id == store.user.id)) return true
-        return false
+        return ((tabSeleccionado.value == '1' || tabSeleccionado.value == '2') && entidad.autorizacion == autorizacionesTransacciones.aprobado && (store.esCompras || entidad.autorizador_id == store.user.id))
       }
     }
     // watch(refItems, () => {
@@ -572,8 +567,6 @@ export default defineComponent({
       //Tabs
       tabOptionsOrdenCompra,
       tabDefecto,
-      tabSeleccionado,
-      puedeEditar,
       refArchivo,
       idOrden,
 
@@ -599,7 +592,7 @@ export default defineComponent({
         })
       },
       filtrarAutorizadores() {
-        let ids_autorizadores = listadosAuxiliares.autorizadores.map((entidad: Empleado) => entidad.id)
+        const ids_autorizadores = listadosAuxiliares.autorizadores.map((entidad: Empleado) => entidad.id)
         empleados.value = empleados.value.filter((v: Empleado) => ids_autorizadores.includes(v.id || orden.autorizador))
       },
       reestablecerEmpleados() {

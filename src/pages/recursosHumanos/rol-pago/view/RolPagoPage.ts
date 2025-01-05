@@ -2,7 +2,7 @@
 import { configuracionColumnasRolPago } from '../domain/configuracionColumnasRolPago'
 import { required } from '@vuelidate/validators'
 import { useVuelidate } from '@vuelidate/core'
-import { defineComponent, ref, computed, watchEffect, Ref } from 'vue'
+import { computed, defineComponent, ref, Ref, watchEffect } from 'vue'
 
 // Componentes
 import TabLayout from 'shared/contenedor/modules/simple/view/TabLayout.vue'
@@ -12,11 +12,9 @@ import EssentialTable from 'components/tables/view/EssentialTable.vue'
 import { ContenedorSimpleMixin } from 'shared/contenedor/modules/simple/application/ContenedorSimpleMixin'
 import { RolPagoController } from '../infraestructure/RolPagoController'
 import { RolPago } from '../domain/RolPago'
-import { imprimirArchivo, removeAccents } from 'shared/utils'
 import { acciones, accionesTabla } from 'config/utils'
 import { apiConfig, endpoints } from 'config/api'
 import { EmpleadoController } from 'pages/recursosHumanos/empleados/infraestructure/EmpleadoController'
-import { Empleado } from 'pages/recursosHumanos/empleados/domain/Empleado'
 import { configuracionColumnasRolPagoTabla } from '../domain/configuracionColumnasRolPagoTabla'
 import { AxiosHttpRepository } from 'shared/http/infraestructure/AxiosHttpRepository'
 import axios from 'axios'
@@ -27,7 +25,6 @@ import { DescuentosGenralesController } from 'pages/recursosHumanos/descuentos_g
 import { DescuentosLeyController } from 'pages/recursosHumanos/descuentos_ley/infraestructure/DescuentosLeyController'
 import { MultaController } from 'pages/recursosHumanos/multas/infraestructure/MultaController'
 import { HorasExtrasSubTipo } from 'pages/recursosHumanos/horas_extras_subtipo/domain/HorasExtrasSubTipo'
-import { useAuthenticationStore } from 'stores/authentication'
 import { CustomActionTable } from 'components/tables/domain/CustomActionTable'
 import { useCargandoStore } from 'stores/cargando'
 import { LocalStorage, useQuasar } from 'quasar'
@@ -45,6 +42,7 @@ import { IngresoRolPago } from '../domain/IngresoRolPago'
 import { IngresoRolPagoController } from '../infraestructure/IngresoRolPagoController'
 import { configuracionColumnasIngresoRolPago } from '../domain/configuracionColumnasIngresoRolPago'
 import { useEmpleadoStore } from 'stores/empleado'
+import { useFiltrosListadosSelects } from 'shared/filtrosListadosGenerales'
 
 export default defineComponent({
   components: {
@@ -52,7 +50,7 @@ export default defineComponent({
     SelectorImagen,
     EssentialTable,
     ButtonSubmits,
-    GestorDocumentos,
+    GestorDocumentos
   },
 
   setup(props, { emit }) {
@@ -65,16 +63,13 @@ export default defineComponent({
       new ArchivoRolPagoController()
     )
 
-    const mixinEgresoRolPago = new ContenedorSimpleMixin(
-      EgresoRolPago,
-      new EgresoRolPagoController()
-    )
-    const mixinIngresoRolPago = new ContenedorSimpleMixin(
-      IngresoRolPago,
-      new IngresoRolPagoController()
-    )
-    const { eliminar, guardar: guardarEgreso } = mixinEgresoRolPago.useComportamiento()
-    const { eliminar: eliminarIngreso, guardar: guardarIngreso } = mixinIngresoRolPago.useComportamiento()
+    // Mixin de Egreso
+    const mixinEgresoRolPago = new ContenedorSimpleMixin(EgresoRolPago,new EgresoRolPagoController())
+    const { eliminar: eliminarEgreso, guardar: guardarEgreso } = mixinEgresoRolPago.useComportamiento()
+    const {onGuardado: onEgresoGuardado}=mixinEgresoRolPago.useHooks()
+    // Mixin de Ingreso
+    const mixinIngresoRolPago = new ContenedorSimpleMixin(IngresoRolPago,new IngresoRolPagoController())
+    const { eliminar: eliminarIngreso, guardar: guardarIngreso } =mixinIngresoRolPago.useComportamiento()
 
     /*********
      * Stores
@@ -84,14 +79,14 @@ export default defineComponent({
 
     useNotificacionStore().setQuasar(useQuasar())
     useCargandoStore().setQuasar(useQuasar())
-    const store = useAuthenticationStore()
+    // const store = useAuthenticationStore()
     const empleadoStore = useEmpleadoStore()
 
     const {
       entidad: rolpago,
       listadosAuxiliares,
       accion,
-      disabled,
+      disabled
     } = mixin.useReferencias()
 
     const { entidad: egresoRolPago } = mixinEgresoRolPago.useReferencias()
@@ -104,31 +99,31 @@ export default defineComponent({
       guardar,
       editar,
       reestablecer,
-      setValidador,
+      setValidador
     } = mixin.useComportamiento()
-    const { onConsultado, onBeforeModificar } = mixin.useHooks()
+    const { onConsultado } = mixin.useHooks()
     const refArchivoRolPago = ref()
     cargarVista(async () => {
       await obtenerListados({
         empleados: {
           controller: new EmpleadoController(),
-          params: { campos: 'id,nombres,apellidos', estado: 1 },
+          params: { campos: 'id,nombres,apellidos', estado: 1 }
         },
         descuentos_generales: {
           controller: new DescuentosGenralesController(),
-          params: {},
+          params: {}
         },
         multas: {
           controller: new MultaController(),
-          params: {},
+          params: {}
         },
         concepto_ingresos: {
           controller: new ConceptoIngresoController(),
-          params: {},
-        },
+          params: {}
+        }
       })
       empleados.value = listadosAuxiliares.empleados
-      concepto_ingresos.value = listadosAuxiliares.concepto_ingresos
+      conceptos_ingresos.value = listadosAuxiliares.concepto_ingresos
       descuentos_generales.value = listadosAuxiliares.descuentos_generales
       descuentos_ley.value = (
         await new DescuentosLeyController().listar()
@@ -142,8 +137,8 @@ export default defineComponent({
         LocalStorage.getItem('horas_extras_subtipos') == null
           ? []
           : JSON.parse(
-            LocalStorage.getItem('horas_extras_subtipos')!.toString()
-          )
+              LocalStorage.getItem('horas_extras_subtipos')!.toString()
+            )
     })
     /*******
      * Init
@@ -164,7 +159,7 @@ export default defineComponent({
     /************
      * Variables
      ************/
-    const concepto_ingresos: Ref<ConceptoIngreso[]> = ref([])
+    const conceptos_ingresos: Ref<ConceptoIngreso[]> = ref([])
     const descuentos_generales = ref([])
     const horas_extras_tipos = ref([])
     const horas_extras_subtipos = ref([])
@@ -175,13 +170,12 @@ export default defineComponent({
     const es_seleccionable_descuento_general = ref(true)
     const es_seleccionable_descuento_ley = ref(true)
     const es_seleccionable_multa = ref(false)
-    const tipo = ref(1)
     const es_calculable = ref(true)
-    const campo = ref()
     const is_month = ref(false)
     const indice_ingreso = ref()
     const indice_egreso = ref()
-    const empleados = ref<Empleado[]>([])
+    const { empleados, filtrarEmpleados } =
+      useFiltrosListadosSelects(listadosAuxiliares)
     const carga_archivo = ref(false)
     recursosHumanosStore.obtener_porcentaje_anticipo()
 
@@ -191,22 +185,9 @@ export default defineComponent({
           horas_extras_subtipos.horas_extras === rolpago.horas_extra_tipo
       )
     })
-    const sueldo = computed(() => {
-      const num_dias = rolpago.dias != null ? rolpago.dias : 0
-      const dias_sin_recuperar =
-        rolpago.dias_permiso_sin_recuperar != null
-          ? rolpago.dias_permiso_sin_recuperar
-          : 0
-      const salario = rolpago.salario != null ? rolpago.salario : '0'
-      const sueldo = (parseInt(salario) / 30) * (num_dias - dias_sin_recuperar)
-      return sueldo.toFixed(2)
-    })
-
     rolpago.roles = ref([])
     rolpago.ingresos = ref([])
     rolpago.egresos = ref([])
-
-    const esRecursosHumanos = store.esRecursosHumanos
 
     function datos_empleado() {
       obtener_datos_empleado('SALARIO')
@@ -217,23 +198,6 @@ export default defineComponent({
     /*********
      * Filtros
      **********/
-    /****Filtro de Empleados */
-    function filtrarEmpleado(val, update) {
-      if (val === '') {
-        update(() => {
-          empleados.value = listadosAuxiliares.empleados
-        })
-        return
-      }
-      update(() => {
-        const needle = val.toLowerCase()
-        empleados.value = listadosAuxiliares.empleados.filter(
-          (v) =>
-            v.nombres.toLowerCase().indexOf(needle) > -1 ||
-            v.apellidos.toLowerCase().indexOf(needle) > -1
-        )
-      })
-    }
     /**Filtro de HorasExtrasSubTipo */
     function filtrarHorasExtrasSubTipo(val, update) {
       if (val === '') {
@@ -245,10 +209,11 @@ export default defineComponent({
       update(() => {
         const needle = val.toLowerCase()
         horas_extras_subtipos.value = listadoHorasExtrasSubTipo.value.filter(
-          (v) => v.nombre.toLowerCase().indexOf(needle) > -1
+          v => v.nombre.toLowerCase().indexOf(needle) > -1
         )
       })
     }
+
     /**Filtro de Tipo de Horas Extras */
     function filtrarHorasExtrasTipo(val, update) {
       if (val === '') {
@@ -260,7 +225,7 @@ export default defineComponent({
       update(() => {
         const needle = val.toLowerCase()
         horas_extras_tipos.value = listadosAuxiliares.horas_extras_tipos.filter(
-          (v) => v.nombre.toLowerCase().indexOf(needle) > -1
+          v => v.nombre.toLowerCase().indexOf(needle) > -1
         )
       })
     }
@@ -268,6 +233,10 @@ export default defineComponent({
     /********
      * Hooks
      *********/
+    onEgresoGuardado((id, data)=>{
+      console.log(id, data)
+      rolpago.egresos.push(data.modelo)
+    })
     onConsultado(async () => {
       es_consultado.value = true
       console.log('consultado')
@@ -280,7 +249,7 @@ export default defineComponent({
       if (rolpago.estado == 'FINALIZADO') {
         setTimeout(() => {
           refArchivoRolPago.value.listarArchivos({
-            rol_pago_id: rolpago.id,
+            rol_pago_id: rolpago.id
           })
           refArchivoRolPago.value.esConsultado = true
           carga_archivo.value = true
@@ -294,13 +263,11 @@ export default defineComponent({
 
     async function guardarDatos(rolpago: RolPago) {
       try {
-        let entidad: RolPago = new RolPago()
         if (accion.value == 'NUEVO') {
-          entidad = await guardar(rolpago)
+          await guardar(rolpago)
         } else {
           console.log('rol', rolpago)
           await editar(rolpago, false)
-          entidad = rolpago
         }
         // rolPagoStore.recalcularSueldo = true
         emit('cerrar-modal', false)
@@ -310,6 +277,7 @@ export default defineComponent({
         console.log(e)
       }
     }
+
     function reestablecerDatos() {
       reestablecer()
       emit('cerrar-modal')
@@ -320,14 +288,14 @@ export default defineComponent({
      **************/
     const reglas = {
       empleado: { required },
-      mes: { required },
+      mes: { required }
     }
     const v$ = useVuelidate(reglas, rolpago)
     setValidador(v$.value)
 
     /**Verifica si es un mes */
     function checkValue(reason) {
-      is_month.value = reason === 'month' ? false : true
+      is_month.value = reason !== 'month'
     }
 
     /************
@@ -338,7 +306,7 @@ export default defineComponent({
       const axiosHttpRepository = AxiosHttpRepository.getInstance()
       const params = {
         empleado: rolpago.empleado,
-        mes: rolpago.mes,
+        mes: rolpago.mes
       }
 
       const url_salario =
@@ -354,21 +322,22 @@ export default defineComponent({
           responseType: 'json',
           headers: {
             Authorization:
-              axiosHttpRepository.getOptions().headers.Authorization,
-          },
+              axiosHttpRepository.getOptions().headers.Authorization
+          }
         })
-        .then((response) => {
+        .then(response => {
           const { data } = response
           if (data) {
             rolpago.egreso = data.prestamo
           }
         })
     }
+
     function prestamoHipotecario() {
       const axiosHttpRepository = AxiosHttpRepository.getInstance()
       const params = {
         empleado: rolpago.empleado,
-        mes: rolpago.mes,
+        mes: rolpago.mes
       }
 
       const url_salario =
@@ -384,21 +353,22 @@ export default defineComponent({
           responseType: 'json',
           headers: {
             Authorization:
-              axiosHttpRepository.getOptions().headers.Authorization,
-          },
+              axiosHttpRepository.getOptions().headers.Authorization
+          }
         })
-        .then((response) => {
+        .then(response => {
           const { data } = response
           if (data) {
             rolpago.egreso = data.prestamo
           }
         })
     }
+
     function prestamoEmpresarial() {
       const axiosHttpRepository = AxiosHttpRepository.getInstance()
       const params = {
         empleado: rolpago.empleado,
-        mes: rolpago.mes,
+        mes: rolpago.mes
       }
 
       const url_salario =
@@ -412,21 +382,22 @@ export default defineComponent({
           responseType: 'json',
           headers: {
             Authorization:
-              axiosHttpRepository.getOptions().headers.Authorization,
-          },
+              axiosHttpRepository.getOptions().headers.Authorization
+          }
         })
-        .then((response) => {
+        .then(response => {
           const { data } = response
           if (data) {
             rolpago.egreso = data.results
           }
         })
     }
+
     function fondosRotativos() {
       const axiosHttpRepository = AxiosHttpRepository.getInstance()
       const params = {
         empleado: rolpago.empleado,
-        mes: rolpago.mes,
+        mes: rolpago.mes
       }
       const url_salario =
         apiConfig.URL_BASE +
@@ -439,28 +410,29 @@ export default defineComponent({
           responseType: 'json',
           headers: {
             Authorization:
-              axiosHttpRepository.getOptions().headers.Authorization,
-          },
+              axiosHttpRepository.getOptions().headers.Authorization
+          }
         })
-        .then((response) => {
+        .then(response => {
           const { data } = response
           if (data) {
             rolpago.egreso = data.saldoUsuarioEnMes.saldo_actual
           }
         })
     }
+
     function extensionCoverturaSalud() {
       const axiosHttpRepository = AxiosHttpRepository.getInstance()
       const params = {
         empleado: rolpago.empleado,
-        mes: rolpago.mes,
+        mes: rolpago.mes
       }
 
       const url_salario =
         apiConfig.URL_BASE +
         '/' +
         axiosHttpRepository.getEndpoint(
-          endpoints.extension_covertura_salud_empleado
+          endpoints.extension_cobertura_salud_empleado
         )
 
       axios
@@ -469,16 +441,17 @@ export default defineComponent({
           responseType: 'json',
           headers: {
             Authorization:
-              axiosHttpRepository.getOptions().headers.Authorization,
-          },
+              axiosHttpRepository.getOptions().headers.Authorization
+          }
         })
-        .then((response) => {
+        .then(response => {
           const { data } = response
           if (data) {
             rolpago.egreso = data.valor != null ? data.valor : 0
           }
         })
     }
+
     function obtener_datos_empleado(campo) {
       const axiosHttpRepository = AxiosHttpRepository.getInstance()
       const url_salrio =
@@ -491,8 +464,8 @@ export default defineComponent({
         method: 'GET',
         responseType: 'json',
         headers: {
-          Authorization: axiosHttpRepository.getOptions().headers.Authorization,
-        },
+          Authorization: axiosHttpRepository.getOptions().headers.Authorization
+        }
       }).then((response: HttpResponseGet) => {
         const { data } = response
         if (data) {
@@ -512,6 +485,7 @@ export default defineComponent({
         }
       })
     }
+
     function obtener_dias_permiso() {
       rolpago.dias_permiso_sin_recuperar = null
       rolpago.dias = null
@@ -525,12 +499,12 @@ export default defineComponent({
         method: 'GET',
         responseType: 'json',
         headers: {
-          Authorization: axiosHttpRepository.getOptions().headers.Authorization,
+          Authorization: axiosHttpRepository.getOptions().headers.Authorization
         },
         params: {
           empleado: rolpago.empleado,
-          mes: rolpago.mes,
-        },
+          mes: rolpago.mes
+        }
       }).then((response: HttpResponseGet) => {
         const { data } = response
         if (data) {
@@ -540,17 +514,19 @@ export default defineComponent({
         }
       })
     }
+
     /**Verificacion de Tipo de Descuento */
     function verificar_concepto_ingreso() {
       rolpago.ingreso = null
       const indice_ingreso_busqueda = rolpago.ingresos.findIndex(
-        (ingreso) => ingreso.concepto === rolpago.concepto_ingreso
+        ingreso => ingreso.concepto === rolpago.concepto_ingreso
       )
       if (indice_ingreso_busqueda !== -1) {
         rolpago.ingreso = rolpago.ingresos[indice_ingreso_busqueda].monto
         indice_ingreso.value = indice_ingreso_busqueda
       }
     }
+
     function verificar_descuento_general() {
       rolpago.egreso = null
       rolpago.descuento_ley = null
@@ -574,37 +550,38 @@ export default defineComponent({
           break
       }
     }
+
     function buscar_egreso(tipo: string, id: number) {
       const indice_egreso_busqueda = rolpago.egresos.findIndex(
-        (egreso) => egreso.id_descuento === id && egreso.tipo === tipo
+        egreso => egreso.id_descuento === id && egreso.tipo === tipo
       )
       if (indice_egreso_busqueda !== -1) {
         rolpago.egreso = rolpago.egresos[indice_egreso_busqueda].monto
         indice_egreso.value = indice_egreso_busqueda
       }
     }
+
     function obtener_egreso(tipo: string, id: number) {
       let egreso
       switch (tipo) {
         case 'DESCUENTO_GENERAL':
           egreso = listadosAuxiliares.descuentos_generales.filter(
-            (v) => v.id == id
+            v => v.id == id
           )[0]
           break
         case 'MULTA':
-          egreso = listadosAuxiliares.multas.filter((v) => v.id == id)[0]
+          egreso = listadosAuxiliares.multas.filter(v => v.id == id)[0]
           break
         default:
           break
       }
       return egreso
     }
+
     function obtener_ingreso(id: number) {
-      const ingreso = listadosAuxiliares.concepto_ingresos.filter(
-        (v) => v.id == id
-      )[0]
-      return ingreso
+      return listadosAuxiliares.concepto_ingresos.filter(v => v.id == id)[0]
     }
+
     function verificar_descuento_ley() {
       rolpago.egreso = null
       rolpago.descuento_general = null
@@ -635,6 +612,7 @@ export default defineComponent({
           break
       }
     }
+
     function verificar_multa() {
       es_calculable.value = false
       rolpago.egreso = null
@@ -643,6 +621,7 @@ export default defineComponent({
       tipo_descuento.value = 'MULTA'
       buscar_egreso('MULTA', rolpago.multa != null ? rolpago.multa : 0)
     }
+
     /**Calculo de  descuento del IESS */
     function CalculoIESS() {
       if (rolpago.iess == null) {
@@ -651,11 +630,12 @@ export default defineComponent({
       rolpago.egreso =
         rolpago.iess == null ? 0 : parseFloat(rolpago.iess.toString())
     }
+
     function consultarIESS() {
       const axiosHttpRepository = AxiosHttpRepository.getInstance()
       const params = {
         empleado: rolpago.empleado,
-        mes: rolpago.mes,
+        mes: rolpago.mes
       }
 
       const url_salario =
@@ -669,20 +649,21 @@ export default defineComponent({
           responseType: 'json',
           headers: {
             Authorization:
-              axiosHttpRepository.getOptions().headers.Authorization,
-          },
+              axiosHttpRepository.getOptions().headers.Authorization
+          }
         })
-        .then((response) => {
+        .then(response => {
           const { data } = response
           if (data) {
             rolpago.egreso = redondearDecimales(
               parseInt(rolpago.salario == null ? '0' : rolpago.salario) *
-              data.porcentaje_iess,
+                data.porcentaje_iess,
               2
             )
           }
         })
     }
+
     function redondearDecimales(numero, decimales) {
       const numeroRegexp = new RegExp('\\d\\.(\\d){' + decimales + ',}') // Expresion regular para numeros con un cierto numero de decimales o mas
       if (numeroRegexp.test(numero)) {
@@ -692,6 +673,7 @@ export default defineComponent({
         return Number(numero.toFixed(decimales)) === 0 ? 0 : numero // En valores muy bajos, se comprueba si el numero es 0 (con el redondeo deseado), si no lo es se devuelve el numero otra vez.
       }
     }
+
     /**Añadir Ingreso */
     function aniadirIngreso() {
       //modificar
@@ -709,7 +691,7 @@ export default defineComponent({
           concepto: rolpago.concepto_ingreso,
           concepto_info: obtener_ingreso(id_ingreso).nombre,
           id_empleado: rolpago.empleado,
-          monto: rolpago.ingreso,
+          monto: rolpago.ingreso
         })
       }
       if (rolpago.concepto_ingreso == 2) {
@@ -719,6 +701,7 @@ export default defineComponent({
       rolpago.concepto_ingreso = null
       rolpago.ingreso = null
     }
+
     /**Añadir Egreso */
     function aniadirEgreso() {
       let id_descuento = 0
@@ -763,40 +746,32 @@ export default defineComponent({
         egresoRolPago.empleado = rolpago.empleado
         egresoRolPago.id_rol_pago = rolpago.id
         guardarEgreso(egresoRolPago)
-        rolpago.egresos.push({
-          tipo: tipo_descuento.value,
-          id_descuento: id_descuento,
-          descuento: obtener_egreso(tipo_descuento.value, id_descuento).nombre,
-          id_empleado: rolpago.empleado,
-          mes: rolpago.mes,
-          monto: rolpago.egreso,
-        })
+        // rolpago.egresos.push({
+        //   tipo: tipo_descuento.value,
+        //   id_descuento: id_descuento,
+        //   descuento: obtener_egreso(tipo_descuento.value, id_descuento).nombre,
+        //   id_empleado: rolpago.empleado,
+        //   mes: rolpago.mes,
+        //   monto: rolpago.egreso
+        // })
       }
       rolpago.egreso = null
-    }
-
-    const imprimir: CustomActionTable = {
-      titulo: ' ',
-      icono: 'bi-printer',
-      color: 'primary',
-      visible: () => esRecursosHumanos,
-      accion: ({ entidad }) => {
-        generar_reporte(entidad)
-      },
     }
 
     const btnEditarEgreso: CustomActionTable = {
       titulo: 'Editar',
       icono: 'bi-pencil',
       color: 'warning',
-      visible: () => true,
       accion: ({ entidad }) => {
+        console.log(entidad)
         switch (entidad.tipo) {
           case 'DESCUENTO_GENERAL':
+          case 'DescuentosGenerales':
             rolpago.descuento_general = entidad.id_descuento
             rolpago.multa = null
             break
           case 'MULTA':
+          case 'Multas':
             rolpago.multa = entidad.id_descuento
             rolpago.descuento_general = null
             break
@@ -808,7 +783,7 @@ export default defineComponent({
           entidad.tipo,
           rolpago.descuento_general != null ? rolpago.descuento_general : 0
         )
-      },
+      }
     }
     const btnEditarIngreso: CustomActionTable = {
       titulo: 'Editar',
@@ -818,20 +793,20 @@ export default defineComponent({
       accion: ({ entidad }) => {
         rolpago.concepto_ingreso = entidad.concepto
         verificar_concepto_ingreso()
-      },
+      }
     }
     const btnEliminarEgreso: CustomActionTable = {
       titulo: 'Eliminar',
       icono: 'bi-trash',
       color: 'negative',
       visible: () => true,
-      accion: ({ entidad, posicion }) => {
+      accion: async ({ entidad, posicion }) => {
         if (entidad.id == undefined) {
           rolpago.egresos.splice(posicion, 1)
         } else {
-          eliminar(entidad, () => rolpago.egresos.splice(posicion, 1))
+          await eliminarEgreso(entidad, () => rolpago.egresos.splice(posicion, 1))
         }
-      },
+      }
     }
 
     const btnEliminarIngreso: CustomActionTable = {
@@ -846,19 +821,20 @@ export default defineComponent({
           await eliminarIngreso(entidad, () => rolpago.ingresos.splice(posicion, 1))
           // rolpago.ingresos.splice(posicion, 1)
         }
-      },
+      }
     }
 
-    async function generar_reporte(valor: RolPago): Promise<void> {
-      const axios = AxiosHttpRepository.getInstance()
-      const filename = 'rol_pago'
-      const url_pdf =
-        apiConfig.URL_BASE +
-        '/' +
-        axios.getEndpoint(endpoints.imprimir_rol_pago) +
-        valor.id
-      imprimirArchivo(url_pdf, 'GET', 'blob', 'pdf', filename, valor)
-    }
+    // async function generar_reporte(valor: RolPago): Promise<void> {
+    //   const axios = AxiosHttpRepository.getInstance()
+    //   const filename = 'rol_pago'
+    //   const url_pdf =
+    //     apiConfig.URL_BASE +
+    //     '/' +
+    //     axios.getEndpoint(endpoints.imprimir_rol_pago) +
+    //     valor.id
+    //   await imprimirArchivo(url_pdf, 'GET', 'blob', 'pdf', filename, valor)
+    // }
+
     function calcularSalario(tipo_contrato) {
       // let dias_quincena = rolpago.es_quincena ? 15 : 0
       // if (rolpago.medio_tiempo || rolpago.tipo_contrato == 3) {
@@ -868,11 +844,15 @@ export default defineComponent({
       const salario = parseFloat(rolpago.salario ?? '0') //salario es el definido en el registro del empleado
       console.log(dias, salario)
       const porcentajeAnticipo = recursosHumanosStore.porcentajeAnticipo / 100
-      const sueldo = rolpago.es_quincena ? (salario / 30) * dias * (porcentajeAnticipo + (rolpago.es_quincena ? porcentajeAnticipo : 0)) : salario / 30 * dias
+      const sueldo = rolpago.es_quincena
+        ? (salario / 30) *
+          dias *
+          (porcentajeAnticipo + (rolpago.es_quincena ? porcentajeAnticipo : 0))
+        : (salario / 30) * dias
       // console.log(sueldo)
       // const sueldo = (salario / 30) * dias_totales
       //
-      let total_sueldo = 0
+      let total_sueldo: number
       console.log(porcentajeAnticipo, tipo_contrato)
       // switch (tipo_contrato) {
       // case 3:
@@ -890,15 +870,15 @@ export default defineComponent({
         const porcentaje = rolpago.porcentaje_quincena
           ? rolpago.porcentaje_quincena / 100
           : 1
-        total_sueldo = rolpago.es_quincena == true ? salario * 0.5 * porcentaje : sueldo
+        total_sueldo = rolpago.es_quincena ? salario * 0.5 * porcentaje : sueldo
         console.log('if', total_sueldo, porcentaje)
       } else {
         if (rolpago.es_quincena) {
           if (dias == 15) total_sueldo = sueldo
           else {
             if (empleadoStore.empleado.departamento == 'CUADRILLA') {
-              total_sueldo = (salario * porcentajeAnticipo) / 15 * dias
-            } else total_sueldo = (salario * porcentajeAnticipo) / 30 * dias //* porcentajeAnticipo
+              total_sueldo = ((salario * porcentajeAnticipo) / 15) * dias
+            } else total_sueldo = ((salario * porcentajeAnticipo) / 30) * dias //* porcentajeAnticipo
           }
         } else total_sueldo = sueldo
         console.log(total_sueldo)
@@ -909,42 +889,41 @@ export default defineComponent({
       rolpago.sueldo = parseFloat(total_sueldo.toFixed(2))
     }
 
-
-    const sueldoCalculado = computed(() => {
-      let dias_quincena = rolpago.es_quincena == true ? 15 : 0
-      const dias = parseFloat(
-        rolpago.dias != null ? rolpago.dias.toString() : '0'
-      )
-      if (rolpago.medio_tiempo || rolpago.tipo_contrato == 3) {
-        dias_quincena = 0
-      }
-      const salario = parseFloat(rolpago.salario ?? '0')
-      const dias_totales = dias + dias_quincena
-      const sueldo = (salario / 30) * dias_totales
-      let total_sueldo = 0
-      const porcentajeAnticipo = recursosHumanosStore.porcentajeAnticipo / 100
-      switch (rolpago.tipo_contrato) {
-        case 3:
-          const quincena = salario * porcentajeAnticipo
-          total_sueldo = (quincena / 15) * dias
-          break
-        default:
-          if (rolpago.es_vendedor_medio_tiempo) {
-            const porcentaje =
-              rolpago.porcentaje_quincena != null
-                ? rolpago.porcentaje_quincena / 100
-                : 1
-            total_sueldo =
-              rolpago.es_quincena == true ? sueldo * 0.5 * porcentaje : sueldo
-          } else {
-            total_sueldo =
-              rolpago.es_quincena == true ? sueldo * porcentajeAnticipo : sueldo
-          }
-
-          break
-      }
-      return parseFloat(total_sueldo.toFixed(2))
-    }).value
+    // const sueldoCalculado = computed(() => {
+    //   let dias_quincena = rolpago.es_quincena == true ? 15 : 0
+    //   const dias = parseFloat(
+    //     rolpago.dias != null ? rolpago.dias.toString() : '0'
+    //   )
+    //   if (rolpago.medio_tiempo || rolpago.tipo_contrato == 3) {
+    //     dias_quincena = 0
+    //   }
+    //   const salario = parseFloat(rolpago.salario ?? '0')
+    //   const dias_totales = dias + dias_quincena
+    //   const sueldo = (salario / 30) * dias_totales
+    //   let total_sueldo = 0
+    //   const porcentajeAnticipo = recursosHumanosStore.porcentajeAnticipo / 100
+    //   switch (rolpago.tipo_contrato) {
+    //     case 3:
+    //       const quincena = salario * porcentajeAnticipo
+    //       total_sueldo = (quincena / 15) * dias
+    //       break
+    //     default:
+    //       if (rolpago.es_vendedor_medio_tiempo) {
+    //         const porcentaje =
+    //           rolpago.porcentaje_quincena != null
+    //             ? rolpago.porcentaje_quincena / 100
+    //             : 1
+    //         total_sueldo =
+    //           rolpago.es_quincena == true ? sueldo * 0.5 * porcentaje : sueldo
+    //       } else {
+    //         total_sueldo =
+    //           rolpago.es_quincena == true ? sueldo * porcentajeAnticipo : sueldo
+    //       }
+    //
+    //       break
+    //   }
+    //   return parseFloat(total_sueldo.toFixed(2))
+    // }).value
 
     watchEffect(() => {
       // if (rolPagoStore.recalcularSueldo)
@@ -952,37 +931,25 @@ export default defineComponent({
         calcularSalario(rolpago.tipo_contrato)
     })
     return {
-      removeAccents,
       rolpago,
-      concepto_ingresos,
+      conceptos_ingresos,
       descuentos_generales,
       descuentos_ley,
       horas_extras_tipos,
       horas_extras_subtipos,
-      sueldo,
       multas,
-      campo,
       is_month,
       empleados,
-      imprimir,
       mixinRolPago,
-      mixinEgresoRolPago,
       refArchivoRolPago,
       guardarDatos,
       reestablecerDatos,
       datos_empleado,
-      guardar,
-      editar,
-      reestablecer,
-      tipo,
-      es_consultado,
-      tipo_descuento,
-      filtrarEmpleado,
+      filtrarEmpleados,
       filtrarHorasExtrasTipo,
       filtrarHorasExtrasSubTipo,
       checkValue,
       es_calculable,
-      carga_archivo,
       aniadirIngreso,
       aniadirEgreso,
       verificar_concepto_ingreso,
@@ -993,9 +960,6 @@ export default defineComponent({
       btnEliminarEgreso,
       btnEditarIngreso,
       btnEliminarIngreso,
-      es_seleccionable_descuento_general,
-      es_seleccionable_descuento_ley,
-      es_seleccionable_multa,
       v$,
       disabled,
       configuracionColumnasRolPagoTabla,
@@ -1005,7 +969,7 @@ export default defineComponent({
       endpoint: endpoints.archivo_rol_pago,
       accion,
       acciones,
-      accionesTabla,
+      accionesTabla
     }
-  },
+  }
 })

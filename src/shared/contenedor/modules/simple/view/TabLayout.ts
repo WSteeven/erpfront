@@ -275,8 +275,8 @@ export default defineComponent({
 
       //acciones personalizadas
       // accion1: props.accion1
-      puedeFiltrar: props.puedeFiltrar,
-      puedeExportar: props.puedeExportar
+      // puedeFiltrar: props.puedeFiltrar,
+      // puedeExportar: props.puedeExportar
     }
   },
 })

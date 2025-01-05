@@ -9,6 +9,7 @@
     :accion1Header="btnImprimirEmpleados"
     :accion1="btnHabilitarEmpleado"
     :accion2="btnDesHabilitarEmpleado"
+    :accion3="btnPlanVacaciones"
     :puedeFiltrar="false"
     :puedeExportar="true"
     :forzarListar="false"
@@ -1051,7 +1052,7 @@
                 use-input
                 input-debounce="0"
                 @blur="v$.area.$touch"
-                @filter="filtrarDepartamentos"
+                @filter="filtrarAreas"
                 :error="!!v$.area.$errors.length"
                 :option-value="v => v.id"
                 :option-label="v => v.nombre"
@@ -1521,7 +1522,7 @@
             </div>
 
             <!-- Salario -->
-            <div class="col-12 col-md-3 col-sm-3">
+            <div class="col-12 col-md-3 col-sm-3" v-if="esRecursosHumanos">
               <label class="q-mb-sm block">Salario</label>
               <q-input
                 v-model="empleado.salario"
@@ -1704,12 +1705,11 @@
         </q-expansion-item>
       </q-form>
     </template>
+  </tab-layout-filter-tabs2>
     <modales-entidad
       :comportamiento="modales"
-      @guardado="data => guardado(data)"
-      :mixin-modal="mixinFamiliares"
+      :persistente="false"
     ></modales-entidad>
-  </tab-layout-filter-tabs2>
 </template>
 
 <script src="./EmpleadoPage.ts" />

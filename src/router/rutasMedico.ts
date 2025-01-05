@@ -41,7 +41,7 @@ const rutasMedico: RouteRecordRaw[] = [
     path: '/diagnostico-receta',
     name: 'diagnosticos_recetas',
     component: () => import('medico/diagnosticoReceta/view/DiagnosticoRecetaPage.vue'),
-    meta: { requiresAuth: true },
+    meta: { requiresAuth: false },
   },
   {
     path: '/cie',

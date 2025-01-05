@@ -166,15 +166,18 @@
   </q-chip>
 </template>
 
-<script setup>
+<script lang="ts" setup>
 import { estadosTickets } from 'config/tickets.utils'
 import { estadosTrabajos } from 'config/utils'
 import { estadosCitaMedica } from 'config/utils/medico'
+import { useQuasar } from 'quasar'
 
 const props = defineProps({
   propsTable: {
     type: Object,
-    required: true,
-  },
+    required: true
+  }
 })
+
+const $q = useQuasar()
 </script>

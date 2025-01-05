@@ -36,7 +36,7 @@
                 <span>Ver Vacante</span>
               </q-btn>
               <q-btn
-                v-if="btnBancoPostulantes.visible()"
+                v-if="btnBancoPostulantes.visible"
                 :color="btnBancoPostulantes.color"
                 class="full-width"
                 no-caps
@@ -72,7 +72,7 @@
               >
               <!-- Boton consultar -->
               <q-btn
-                v-if="btnCalificar.visible()"
+                v-if="btnCalificar.visible"
                 :color="btnCalificar.color"
                 class="full-width"
                 no-caps
@@ -90,7 +90,7 @@
               </q-btn>
               <!-- Boton Imprimir -->
               <q-btn
-                v-if="btnImprimir.visible()"
+                v-if="btnImprimir.visible"
                 :color="btnImprimir.color"
                 class="full-width"
                 no-caps
@@ -473,7 +473,7 @@
             </div>
 
             <!-- Dirección  -->
-            <div class="col-md-12 col-sm-12 col-xs-12">
+            <div class="col-md-6 col-sm-12 col-xs-12">
               <label class="q-mb-sm block">Dirección </label>
               <q-input
                 v-model="postulacion.direccion"
@@ -495,6 +495,19 @@
                   </div>
                 </template>
               </q-input>
+            </div>
+
+            <!-- Aspiracion salarial  -->
+            <div class="col-md-3 col-sm-6 col-xs-12">
+              <label class="q-mb-sm block">Aspiración Salarial </label>
+              <q-input
+                v-model="postulacion.aspiracion_salarial"
+                type="number"
+                placeholder="Obligatorio"
+                disable
+                outlined
+                dense
+                />
             </div>
           </div>
         </q-expansion-item>
@@ -520,20 +533,7 @@
                 :permitir-eliminar="false"
                 :idModelo="idRegistro"
               >
-                <template #boton-subir>
-                  <q-btn
-                    v-if="false"
-                    color="positive"
-                    push
-                    no-caps
-                    class="full-width q-mb-lg"
-                    @click="subirArchivos()"
-                  >
-                    <q-icon name="bi-upload" class="q-mr-sm" size="xs"></q-icon>
-                    Subir archivos seleccionados</q-btn
-                  >
-                </template>
-              </gestor-archivos>
+                </gestor-archivos>
             </div>
 
             <div class="col-12">
@@ -736,6 +736,49 @@
                 />
               </div>
             </div>
+          </div>
+        </q-expansion-item>
+
+        <q-expansion-item
+          class="overflow-hidden q-mb-md rounded bg-desenfoque-2"
+          label="Información Discapacidades"
+          header-class="text-bold bg-desenfoque text-primary"
+          default-opened
+          v-if="postulacion.tengo_discapacidad"
+        >
+          <div class="row q-pa-md">
+            <!-- Tengo Discapacidad -->
+            <div class="row col-12 " >
+              <div class="col-md-3 col-xs-12">
+                ¿Tengo discapacidad?
+              </div>
+              <div class="col-md-3 col-xs-12  ">
+                <option-group-component
+                  v-model="postulacion.tengo_discapacidad"
+                  disable
+                />
+              </div>
+              <div
+                class="col-12 col-md-6 col-sm-12"
+              >
+                <essential-table
+                  :configuracionColumnas="configuracionColumnasDiscapacidades"
+                  :datos="postulacion.discapacidades"
+                  :permitirConsultar="false"
+                  :permitirEliminar="false"
+                  :permitirEditar="false"
+                  :mostrarBotones="false"
+                  :permitir-editar-celdas="true"
+                  :mostrar-header="false"
+                  disable
+                  :grid="false"
+                  :alto-fijo="false"
+                  :ajustarCeldas="true"
+                >
+                </essential-table>
+              </div>
+            </div>
+
           </div>
         </q-expansion-item>
 

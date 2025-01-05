@@ -19,9 +19,9 @@ export default defineComponent({
     components: { TabLayoutFilterTabs2 },
     setup(props, { emit }) {
         const mixin = new ContenedorSimpleMixin(SeguroVehicular, new SeguroVehicularController())
-        const { entidad: seguro, disabled, listadosAuxiliares, accion } = mixin.useReferencias()
-        const { setValidador, obtenerListados, cargarVista, listar } = mixin.useComportamiento()
-        const { onReestablecer, onGuardado, onConsultado, onModificado } = mixin.useHooks()
+        const { entidad: seguro, disabled, accion } = mixin.useReferencias()
+        const { setValidador, listar } = mixin.useComportamiento()
+        const {  onGuardado } = mixin.useHooks()
 
         /*****************************
          * HOOKS
@@ -48,28 +48,28 @@ export default defineComponent({
         async function filtrarSeguros(tab: string) {
             switch (tab) {
                 case '1': //vigentes
-                    listar({
-                        // estado: 1,
-                        'fecha_caducidad[operator]': '>=',
-                        'fecha_caducidad[value]': sumarFechas(obtenerFechaActual(), 0, 0, 15, maskFecha),
+                    await listar({
+                      // estado: 1,
+                      'fecha_caducidad[operator]': '>=',
+                      'fecha_caducidad[value]': sumarFechas(obtenerFechaActual(), 0, 0, 15, maskFecha),
                     })
                     break
                 case '2': //15 días antes de caducar
-                    listar({
-                        // estado: 0,
-                        'fecha_caducidad[start]': obtenerFechaActual(maskFecha),
-                        'fecha_caducidad[end]': sumarFechas(obtenerFechaActual(), 0, 0, 15, maskFecha),
+                    await listar({
+                      // estado: 0,
+                      'fecha_caducidad[start]': obtenerFechaActual(maskFecha),
+                      'fecha_caducidad[end]': sumarFechas(obtenerFechaActual(), 0, 0, 15, maskFecha),
                     })
                     break
                 case '3': //caducados
-                    listar({
-                        // estado: 0,
-                        'fecha_caducidad[operator]': '<',
-                        'fecha_caducidad[value]': obtenerFechaActual(maskFecha),
+                    await listar({
+                      // estado: 0,
+                      'fecha_caducidad[operator]': '<',
+                      'fecha_caducidad[value]': obtenerFechaActual(maskFecha),
                     })
                     break
                 default:
-                    listar()
+                    await listar()
             }
         }
 

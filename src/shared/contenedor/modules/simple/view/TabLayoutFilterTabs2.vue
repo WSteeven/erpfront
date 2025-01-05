@@ -1,6 +1,5 @@
 <template>
-  <q-page padding>
-    <slot name="modales" />
+  <q-page>
     <!-- Tabs -->
     <q-tabs
       v-model="tabs"
@@ -50,13 +49,14 @@
       transition-prev="scale"
       transition-next="scale"
       :class="{ 'bg-desenfoque border-white rounded-tabpanel': !$q.screen.xs }"
+      class="q-mb-md"
       keep-alive
     >
       <!-- Formulario -->
       <q-tab-panel name="formulario" :class="{ 'q-pa-none': full }">
         <slot name="formulario" />
         <div :class="{ 'q-pa-md': full }">
-          <div class="row justify-end">
+          <div class="row justify-end q-col-gutter-x-xs q-mt-xl">
             <q-btn
               v-if="accionButtonSubmit && accionButtonSubmit.visible()"
               :color="accionButtonSubmit.color"
@@ -73,12 +73,16 @@
               <span>{{ accionButtonSubmit.titulo }}</span>
             </q-btn>
 
+            <slot name="custom-buttons"></slot>
+
             <button-submits
               v-if="mostrarButtonSubmits"
               :accion="accion"
               :permitirGuardar="puedeCrear"
+              :permitirCancelar="permitirCancelar"
               :disabled="storeCargando.cargando"
               :labelGuardar="labelGuardar"
+              :labelEditar="labelEditar"
               @cancelar="reestablecer()"
               @editar="editar(entidad, resetFormularioOnUpdate)"
               @eliminar="eliminar(entidad, cbEliminar)"
@@ -131,6 +135,17 @@
         <slot :name="customPanel2?.label" />
       </q-tab-panel>
     </q-tab-panels>
+
+    <div v-show="tabs == 'formulario'">
+      <div class="text-center q-col-gutter-xs q-mb-md">
+        <q-icon name="bi-circle-fill" color="grey-7"></q-icon>
+        <q-icon name="bi-circle-fill" color="grey-6"></q-icon>
+        <q-icon name="bi-circle-fill" color="grey-7"></q-icon>
+      </div>
+      <slot name="formulario-2" />
+    </div>
+
+    <slot name="modales" />
   </q-page>
 </template>
 

@@ -6,6 +6,7 @@
     puede-filtrar
     puede-exportar
     ajustar-celdas
+    :mostrar-formulario="mostrarFormulario"
   >
     <template #formulario>
       <q-form @submit.prevent>
@@ -69,8 +70,20 @@
               @click="agregarGrupo()"
             ></q-btn>
           </div>
+
+          <div class="col-12 col-md-3">
+            <br />
+            <q-checkbox
+              v-model="alimentacion.editar_participantes"
+              label="Editar participantes (Desmarque para descartar cambios)"
+              @update:model-value="limpiarSubtarea()"
+              outlined
+              dense
+            ></q-checkbox>
+          </div>
+
           <div
-            v-if="!!datos && !datos.idGrupo"
+            v-if="!!datos && !datos.idGrupo || !alimentacion.grupo"
             class="col-12 border-callout-warning bg-solid q-pb-sm"
           >
             <q-icon
@@ -325,6 +338,23 @@
             <label class="block q-mb-sm">&nbsp;</label>
             <q-btn color="pink-10" label="Quitar item" icon="bi-x" no-caps unelevated rounded no-wrap/>
           </div> -->
+        </div>
+
+        <div v-show="alimentacion.editar_participantes">
+          <div class="text-bold">Editar participantes</div>
+          <designar-responsable-trabajo
+            :disable="disabled"
+            :accion="accion"
+            :v$="v$"
+            :subtarea-inicial="subtarea"
+            @seleccionarGrupo="seleccionarGrupo"
+            @seleccionarEmpleado="seleccionarEmpleado"
+            @seleccionarModoDesignacion="seleccionarModoDesignacion"
+            @seleccionarResponsable="seleccionarResponsable"
+            @actualizar-empleados="
+              empleados => (subtarea.empleados_designados = empleados)
+            "
+          ></designar-responsable-trabajo>
         </div>
       </q-form>
     </template>

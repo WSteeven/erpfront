@@ -1,5 +1,6 @@
 // Dependencias
 import EssentialTable from 'components/tables/view/EssentialTable.vue'
+import ModalEntidad from 'components/modales/view/ModalEntidad.vue'
 import { RolController } from 'pages/administracion/roles/infraestructure/RolController'
 import { useQuasar } from 'quasar'
 import { ContenedorSimpleMixin } from 'shared/contenedor/modules/simple/application/ContenedorSimpleMixin'
@@ -10,7 +11,6 @@ import { Permiso } from '../domain/Permiso'
 import { AsignarPermisosController } from '../infrestructure/AsignarPermisosController'
 import { PermisosController } from '../infrestructure/PermisosController'
 import { ComportamientoModalesPermisoNuevo } from '../application/ComportamientoModalesPermisoNuevo'
-import ModalEntidad from 'components/modales/view/ModalEntidad.vue'
 import { useRouter } from 'vue-router'
 
 // Logica y controladores
@@ -35,7 +35,7 @@ export default defineComponent({
     const roles = ref([])
 
     const controller = new PermisosController()
-    const aisnarPermisoController = new AsignarPermisosController()
+    const asignarPermisoController = new AsignarPermisosController()
     const permisosSinAsignar: Ref<Permiso[]> = ref([])
     const refPermisosSinAsignar = ref()
     const refPermisosAsignados = ref()
@@ -63,18 +63,18 @@ export default defineComponent({
       await refPermisosAsignados.value.seleccionar()
       await refPermisosAsignados.value.clearSelection()
     }
-    function asignarPermiso(permisos: any) {
+    async function asignarPermiso(permisos: any) {
       const permisosName = permisos.map((permiso: Permiso) => permiso.id)
-      aisnarPermisoController.guardar({
+      await asignarPermisoController.guardar({
         id_rol: rol.value,
         permisos: permisosName,
         tipo_sincronizacion: 'ASIGNAR',
       })
-      obtenerPermisoRol(rol.value)
+      await obtenerPermisoRol(rol.value)
     }
     function eliminarPermiso(permisos: any) {
       const permisosName = permisos.map((permiso: Permiso) => permiso.id)
-      aisnarPermisoController.guardar({
+      asignarPermisoController.guardar({
         id_rol: rol.value,
         permisos: permisosName,
         tipo_sincronizacion: 'ELIMINAR',

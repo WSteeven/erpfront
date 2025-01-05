@@ -1,11 +1,19 @@
 //Dependencies
-import relativeTime from 'dayjs/plugin/relativeTime';
-import es from 'dayjs/locale/es';
+import relativeTime from 'dayjs/plugin/relativeTime'
+import es from 'dayjs/locale/es'
 import dayjs from 'dayjs'
 
 import { useAuthenticationStore } from 'stores/authentication'
 import loginJson from 'src/assets/lottie/welcome.json'
-import { Ref, computed, defineComponent, reactive, ref, onMounted } from 'vue'
+import {
+  computed,
+  ComputedRef,
+  defineComponent,
+  onMounted,
+  reactive,
+  Ref,
+  ref
+} from 'vue'
 import { Qalendar } from 'qalendar'
 import ModalesEntidad from 'components/modales/view/ModalEntidad.vue'
 import SolicitarFecha from 'shared/prompts/SolicitarFecha.vue'
@@ -20,19 +28,19 @@ import { Empleado } from 'pages/recursosHumanos/empleados/domain/Empleado'
 import { EmpleadoController } from 'pages/recursosHumanos/empleados/infraestructure/EmpleadoController'
 import { useConfiguracionGeneralStore } from 'stores/configuracion_general'
 import { useMovilizacionSubtareaStore } from 'stores/movilizacionSubtarea'
-import { ComputedRef } from 'vue'
 import { useQuasar } from 'quasar'
 import confetti from 'canvas-confetti'
 import { StatusEssentialLoading } from 'components/loading/application/StatusEssentialLoading'
 import { useRouter } from 'vue-router'
 import { useMenuStore } from 'stores/menu'
-import { obtenerFechaActual } from '../../../../shared/utils'
-import { formatearFecha } from '../../../../shared/utils'
+import {
+  getShortDescription as acortarDescripcion,
+  obtenerFechaActual
+} from 'shared/utils'
 import { MenuOption } from 'shared/menu/MenuOption'
 import { NoticiaController } from 'pages/intranet/noticias/infraestructure/NoticiaController'
 import { EventoController } from 'pages/intranet/eventos/infraestructure/EventoController'
 import { VacanteController } from 'pages/recursosHumanos/SeleccionContratacionPersonal/vacantes/infraestructure/VacanteController'
-import { getShortDescription as acortarDescripcion } from 'shared/utils';
 
 interface Noticia {
   id: number
@@ -152,7 +160,7 @@ export default defineComponent({
       week: {
         startsOn: 'monday',
         nDays: 7,
-        scrollToHour: 8
+        scrollToHour: 24
       },
       month: {
         showTrailingAndLeadingDates: false
@@ -182,7 +190,7 @@ export default defineComponent({
       showCurrentTime: true
     })
 
-const router = useRouter()
+    const router = useRouter()
     //dayjs en español
     dayjs.extend(relativeTime)
     dayjs.locale(es)
@@ -209,19 +217,20 @@ const router = useRouter()
     }
     async function obtenerVacantes() {
       try {
-        const results = (await new VacanteController().listar({
-          'activo': 1,
-          'fecha_caducidad[operator]': '>=',
-          'fecha_caducidad[value]': obtenerFechaActual(maskFecha),
-        })).result
-        vacantesDisponibles.value = results
+        vacantesDisponibles.value = (
+          await new VacanteController().listar({
+            activo: 1,
+            'fecha_caducidad[operator]': '>=',
+            'fecha_caducidad[value]': obtenerFechaActual(maskFecha)
+          })
+        ).result
       } catch (error: any) {
         notificarError('Error al obtener las vacantes disponibles')
       }
     }
-    async function visualizarVacante(vacante) {
+    async function visualizarVacante() {
       // console.log("Diste clic en visualizar vacante", vacante)
-      router.push('puestos-disponibles')
+      await router.push('puestos-disponibles')
     }
     function getShortDescription(description: string): string {
       const maxLength = 275 // Ajusta este valor según la longitud deseada
@@ -245,14 +254,39 @@ const router = useRouter()
     }
 
     async function obtenerNoticias() {
-      cargando.activar()
-      const response = await new NoticiaController().listar({
-        'fecha_vencimiento[operator]': '>',
-        'fecha_vencimiento[value]': obtenerFechaActual(maskFecha)
-      })
-      // console.log(response)
-      noticias.value = response.result
-      cargando.desactivar()
+      try {
+        cargando.activar()
+
+        // Obtener el ID del departamento del usuario logueado
+        const departamentoUsuario = store.user.departamento
+
+        // Verificamos si el ID del departamento es válido
+        if (!departamentoUsuario) {
+          throw new Error('No se encontró el departamento del usuario logueado')
+        }
+
+        // Consultamos todas las noticias
+        const response = await new NoticiaController().listar({
+          'fecha_vencimiento[operator]': '>',
+          'fecha_vencimiento[value]': obtenerFechaActual(maskFecha)
+        })
+
+        // Filtramos las noticias para mostrar las que son para todos (departamentos_destinatarios es NULL)
+        // o las que están destinadas al departamento del usuario
+        const noticiasFiltradas = response.result.filter(noticia => {
+          return (
+            noticia.departamentos_destinatarios === null || // Noticias para todos
+            noticia.departamentos_destinatarios.includes(departamentoUsuario) // Noticias específicas para el departamento del usuario
+          )
+        })
+
+        // Asignamos las noticias filtradas
+        noticias.value = noticiasFiltradas
+      } catch (error) {
+        console.error('Error obteniendo noticias:', error)
+      } finally {
+        cargando.desactivar()
+      }
     }
 
     const documentosIntranet = ref([
@@ -302,7 +336,7 @@ const router = useRouter()
     async function logout() {
       cargando.activar()
       await store.logout()
-      Router.replace({ name: 'Login' })
+      await Router.replace({ name: 'Login' })
       cargando.desactivar()
     }
 
@@ -311,9 +345,7 @@ const router = useRouter()
       try {
         cargando.activar()
         const idNumerico = Number(departamento_id)
-        if (isNaN(idNumerico)) {
-          throw new Error('El id del departamento no es un número válido')
-        }
+
         const empleadoController = new EmpleadoController()
         empleados.value = (
           await empleadoController.listar({
@@ -331,9 +363,12 @@ const router = useRouter()
 
     async function consultarDepartamentos() {
       const departamentoController = new DepartamentoController()
-      departamentos.value = (
-        await departamentoController.listar({ activo: 1 })
-      ).result
+      const respuesta = await departamentoController.listar({ activo: 1 })
+
+      // Ocultar departamento de Gerencia
+      departamentos.value = respuesta.result.filter(
+        departamento => departamento.id !== 9
+      )
     }
 
     consultarDepartamentos()
@@ -357,21 +392,23 @@ const router = useRouter()
           .filter((empleado: Empleado) => {
             if (empleado.fecha_nacimiento) {
               // Obtener el mes de la fecha de nacimiento
-              const birthMonth = new Date(empleado.fecha_nacimiento).getUTCMonth();
-              return birthMonth === currentMonth;
+              const birthMonth = new Date(
+                empleado.fecha_nacimiento
+              ).getUTCMonth()
+              return birthMonth === currentMonth
             }
             return false;
           })
           .sort((a, b) => {
             // Asegurarse de comparar solo el día, sin considerar la hora
-            const dayA = new Date(a.fecha_nacimiento).getUTCDate(); // Usar getUTCDate()
-            const dayB = new Date(b.fecha_nacimiento).getUTCDate();
-            return dayA - dayB;
-          });
+            const dayA = new Date(a.fecha_nacimiento).getUTCDate() // Usar getUTCDate()
+            const dayB = new Date(b.fecha_nacimiento).getUTCDate()
+            return dayA - dayB
+          })
 
-        console.log(empleadosCumpleaneros.value);
+        console.log(empleadosCumpleaneros.value)
       } catch (err) {
-        console.log("Error al obtener empleados cumpleañeros:", err);
+        console.log('Error al obtener empleados cumpleañeros:', err);
       }
     };
 
@@ -423,7 +460,6 @@ const router = useRouter()
         spread: 70,
         startVelocity: 30
       })
-
     }
 
     onMounted(() => {
@@ -457,10 +493,6 @@ const router = useRouter()
       }
     }
 
-    function limpiarFormulario() {
-      solicitud.tipo_solicitud = ''
-    }
-
     const lorem =
       'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.'
     const selfCenterMiddle: ComputedRef<'center middle' | 'top start'> =
@@ -468,13 +500,13 @@ const router = useRouter()
 
     const getImagePerfil = usuario => {
       return usuario.foto_url == null
-        ? `https://ui-avatars.com/api/?name=${usuario.nombres.substr(
-          0,
-          1
-        )}+${usuario.apellidos.substr(
-          0,
-          1
-        )}&bold=true&background=008000&color=ffff`
+        ? `https://ui-avatars.com/api/?name=${usuario.nombres.slice(
+            0,
+            1
+          )}+${usuario.apellidos.slice(
+            0,
+            1
+          )}&bold=true&background=008000&color=ffff`
         : usuario.foto_url
     }
 
@@ -531,7 +563,6 @@ const router = useRouter()
       verEvento,
       consultarEmpleadosDepartamento,
       enviarSolicitud,
-      limpiarFormulario,
       getShortDescription,
       verNoticiaCompletaHandler,
       width: computed(() => ($q.screen.xs ? '100%' : '450px')),
@@ -540,7 +571,6 @@ const router = useRouter()
       maskFecha,
       dayjs,
       visualizarVacante,
-      formatearFecha,
       readMore,
       documentosIntranet,
       empleadosCumpleaneros,

@@ -289,7 +289,7 @@ export default defineComponent({
         for (const key in antecedente) {
           if (antecedente.hasOwnProperty(key) && !['id', 'created_at', 'updated_at'].includes(key)) {
             const value = antecedente[key]
-            if (typeof value === 'boolean' && value === true) {
+            if (typeof value === 'boolean' && value) {
               riesgos.push(parseInt(key))
             } else {
               newItem[key] = value

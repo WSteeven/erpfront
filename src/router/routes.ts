@@ -3,14 +3,17 @@ import rutasMedico from './rutasMedico'
 import rutasTareas from './rutasTareas'
 import rutasTickets from './rutasTickets'
 import rutasRecursosHumanos from './rrhh/rutasRecursosHumanos'
-import rutasSeleccionContratacionPersonal from './rrhh/rutasSeleccionContratacionPersonal'
 import rutasActivosFijos from './rutasActivosFijos'
+import rutasSSO from './rutasSSO'
 import { empresas } from 'config/utils/sistema'
 import rutasControlPersonal from './rutasControlPersonal'
 
 /* const JPCONSTRUCRED = process.env.VUE_APP_ID == empresas.JPCONSTRUCRED
 const JPCUSTODY = process.env.VUE_APP_ID == empresas.JPCUSTODY
 const CCLEDARE = process.env.VUE_APP_ID == empresas.CCLEDARE */
+import rutasFondosRotativos from './rutasFondosRotativos'
+import rutasSeleccionContratacionPersonal from './rrhh/rutasSeleccionContratacionPersonal'
+
 console.log(process.env.VUE_APP_ID)
 const routes: RouteRecordRaw[] = [
   // {
@@ -34,7 +37,7 @@ const routes: RouteRecordRaw[] = [
         name: 'tablero_personal',
         component: () =>
           import('pages/tableroPersonal/view/TableroPersonalPage.vue'),
-        meta: { requiresAuth: true },
+        meta: { requiresAuth: true, permissionRequired: false },
       },
       {
         path: 'intranet',
@@ -92,6 +95,11 @@ const routes: RouteRecordRaw[] = [
           import('pages/bodega/pedidos/view/imagenComprimida.vue'),
         meta: { requiresAuth: false },
       },
+      /**
+       *  Módulo de FONDOS ROTATIVOS
+       */
+      ...rutasFondosRotativos,
+
       /*******************
        * Módulo de RRHH
        *******************/
@@ -119,6 +127,11 @@ const routes: RouteRecordRaw[] = [
        **************************/
       ...rutasActivosFijos,
 
+      /**************************
+       * Modulo de SSO
+       **************************/
+      ...rutasSSO,
+
       /********
        * Otros
        ********/
@@ -126,7 +139,7 @@ const routes: RouteRecordRaw[] = [
         path: '/perfil',
         name: 'perfil',
         component: () => import('pages/perfil/view/PerfilPage.vue'),
-        meta: { requiresAuth: true },
+        meta: { requiresAuth: true, permissionRequired: false },
       },
 
       /**
@@ -206,7 +219,7 @@ const routes: RouteRecordRaw[] = [
           import(
             'pages/administracion/notificaciones/view/NotificacionPage.vue'
           ),
-        meta: { requiresAuth: true },
+        meta: { requiresAuth: true, permissionRequired: false },
       },
       {
         path: '/unidades-medidas',
@@ -266,11 +279,11 @@ const routes: RouteRecordRaw[] = [
         name: 'detalles',
         component: () => {
           switch (process.env.VUE_APP_ID) {
-            case empresas.JPCONSTRUCRED: return import(
-              'pages/bodega/detalles_productos/view/jpconstrucred/DetalleProductoPage.vue'
-            )
             case empresas.JPCUSTODY: return import(
               'pages/bodega/detalles_productos/view/jpcustody/DetalleProductoPage.vue'
+            )
+            default: return import(
+              'pages/bodega/detalles_productos/view/jpconstrucred/DetalleProductoPage.vue'
             )
           }
         },
@@ -410,31 +423,7 @@ const routes: RouteRecordRaw[] = [
         meta: { requiresAuth: false },
       },
 
-      /************************************************************************************
-       * Routes for Recursos Humanos module
-       ************************************************************************************/
-      // aqui va las rutasSeleccionContratacionPersonal
-      {
-        path: '/cargos',
-        name: 'cargos',
-        component: () =>
-          import('pages/recursosHumanos/cargos/view/CargoPage.vue'),
-        meta: { requiresAuth: true },
-      },
-      {
-        path: '/empleados',
-        name: 'empleados',
-        component: () =>
-          import('pages/recursosHumanos/empleados/view/EmpleadoPage.vue'),
-        meta: { requiresAuth: true },
-      },
-      {
-        path: '/grupos',
-        name: 'grupos',
-        component: () =>
-          import('pages/recursosHumanos/grupos/view/GrupoPage.vue'),
-        meta: { requiresAuth: true },
-      },
+
       /*****************************************
        * MODULO DE VEHICULOS
        *****************************************/
@@ -463,7 +452,7 @@ const routes: RouteRecordRaw[] = [
           import(
             'pages/controlVehiculos/conductores/modules/multas/view/MultaConductorPage.vue'
           ),
-        meta: { requiresAuth: false },
+        meta: { requiresAuth: true },
       },
       {
         path: 'transferencias-vehiculos',
@@ -1093,132 +1082,7 @@ const routes: RouteRecordRaw[] = [
           ),
         meta: { requiresAuth: true },
       },
-      //Recursos Humanos
-      {
-        path: '/permiso-nomina',
-        name: 'permiso_nomina',
-        component: () =>
-          import(
-            'pages/recursosHumanos/permiso-empleado/view/PermisoEmpleadoPage.vue'
-          ),
-        meta: { requiresAuth: true },
-      },
-      {
-        path: '/prestamo-empresarial',
-        name: 'prestamo_empresarial',
-        component: () =>
-          import(
-            'pages/recursosHumanos/prestamo/view/PrestamoEmpresarialPage.vue'
-          ),
-        meta: { requiresAuth: true },
-      },
-      {
-        path: '/licencia-empleado',
-        name: 'licencia_empleado',
-        component: () =>
-          import(
-            'pages/recursosHumanos/licencia-empleado/view/LicenciaEmpleadoPage.vue'
-          ),
-        meta: { requiresAuth: true },
-      },
-      {
-        path: '/tipos-licencias',
-        name: 'tipos_licencias',
-        component: () =>
-          import(
-            'pages/recursosHumanos/tipo-licencia/view/TipoLicenciaPage.vue'
-          ),
-        meta: { requiresAuth: true },
-      },
-      {
-        path: '/vacacion',
-        name: 'vacacion',
-        component: () =>
-          import('pages/recursosHumanos/vacacion/view/VacacionPage.vue'),
-        meta: { requiresAuth: true },
-      },
-      {
-        path: '/solicitud-prestamo-empresarial',
-        name: 'solicitud_prestamo_empresarial',
-        component: () =>
-          import(
-            'pages/recursosHumanos/solicitudes/solicitud-prestamo/view/SolicitudPrestamoEmpresarialPage.vue'
-          ),
-        meta: { requiresAuth: true },
-      },
-      {
-        path: '/rol-pago-mes',
-        name: 'rol_pago_mes',
-        component: () =>
-          import('pages/recursosHumanos/rol-pago-mes/view/RolPagoMesPage.vue'),
-        meta: { requiresAuth: true },
-      },
-      {
-        path: '/prestamo-hipotecario',
-        name: 'prestamo_hipotecario',
-        component: () =>
-          import(
-            'pages/recursosHumanos/prestamo-hipotecario/view/PrestamoHipotecarioPage.vue'
-          ),
-        meta: { requiresAuth: true },
-      },
-      {
-        path: 'prestamos-quirografarios',
-        name: 'prestamos_quirografarios',
-        component: () =>
-          import(
-            'pages/recursosHumanos/prestamo-quirorafarios/view/PrestamoQuirorafarioPage.vue'
-          ),
-        meta: { requiresAuth: true },
-      },
-      {
-        path: '/extension-conyugal',
-        name: 'extension_conyugal',
-        component: () =>
-          import(
-            'pages/recursosHumanos/extension-conyugal/view/ExtensionConyugalPage.vue'
-          ),
-        meta: { requiresAuth: true },
-      },
-      {
-        path: '/familiares',
-        name: 'familiares',
-        component: () =>
-          import('pages/recursosHumanos/familiares/view/FamiliaresPage.vue'),
-        meta: { requiresAuth: true },
-      },
-      {
-        path: '/descuentos-generales',
-        name: 'descuentos_generales',
-        component: () =>
-          import(
-            'pages/recursosHumanos/descuentos_generales/view/DescuentosGeneralesPage.vue'
-          ),
-        meta: { requiresAuth: true },
-      },
-      {
-        path: '/multa',
-        name: 'multa',
-        component: () =>
-          import('pages/recursosHumanos/multas/view/MultaPage.vue'),
-        meta: { requiresAuth: true },
-      },
-      {
-        path: '/concepto-ingreso',
-        name: 'concepto_ingreso',
-        component: () =>
-          import(
-            'pages/recursosHumanos/concepto_ingreso/view/ConceptoIngresoPage.vue'
-          ),
-        meta: { requiresAuth: true },
-      },
-      {
-        path: '/rubro',
-        name: 'rubro',
-        component: () =>
-          import('pages/recursosHumanos/rubros/view/RubroPage.vue'),
-        meta: { requiresAuth: true },
-      },
+      // Ventas Claro
       {
         path: '/productos-ventas',
         name: 'productos_ventas',
@@ -1414,8 +1278,16 @@ const routes: RouteRecordRaw[] = [
         meta: { requiresAuth: false },
       },
 
+      {
+        path: '/organigrama',
+        name: 'intra_organigrama',
+        component: () =>
+          import('src/pages/intranet/organigrama/view/OrganigramaPage.vue'),
+        meta: { requiresAuth: true },
+      },
     ],
   },
+
   {
     path: '/login',
     component: () => import('layouts/FullLayout.vue'),
@@ -1483,7 +1355,7 @@ const routes: RouteRecordRaw[] = [
   },
   {
     path: '/puestos-disponibles',
-    component: () =>  import('layouts/PostulanteLayout.vue'),
+    component: () => import('layouts/PostulanteLayout.vue'),
     children: [
       {
         path: '',

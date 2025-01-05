@@ -12,6 +12,7 @@ import ClienteFinalPage from 'clientesFinales/view/ClienteFinalPage.vue'
 import ReagendarPage from 'gestionTrabajos/subtareas/modules/reagendar/view/ReagendarPage.vue'
 import ControlTendidoPage from 'formulariosTrabajos/tendidos/controlTendidos/view/ControlTendidoPage.vue'
 import AlimentacionGrupoPage from 'gestionTrabajos/alimentacionGrupos/view/AlimentacionGrupoPage.vue'
+import VerAlimentacionGrupoPage from 'gestionTrabajos/alimentacionGrupos/view/VerAlimentacionGrupoPage.vue'
 
 export class SubtareaModales {
   SubtareaPage: ComponenteModal
@@ -22,6 +23,7 @@ export class SubtareaModales {
   ReagendarPage: ComponenteModal
   ControlTendido: ComponenteModal
   AlimentacionGrupoPage: ComponenteModal
+  VerAlimentacionGrupoPage: ComponenteModal
 
   constructor() {
     this.SubtareaPage = markRaw(
@@ -50,6 +52,9 @@ export class SubtareaModales {
     )
     this.AlimentacionGrupoPage = markRaw(
       new ComponenteModal('Alimentación del grupo', AlimentacionGrupoPage)
+    )
+    this.VerAlimentacionGrupoPage = markRaw(
+      new ComponenteModal('Alimentación de la subtarea', VerAlimentacionGrupoPage)
     )
   }
 }

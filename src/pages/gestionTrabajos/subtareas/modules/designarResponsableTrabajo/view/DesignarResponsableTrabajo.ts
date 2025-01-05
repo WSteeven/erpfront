@@ -53,7 +53,7 @@ export default defineComponent({
         empleados: {
           controller: new EmpleadoController(),
           params: {
-            campos: 'id,nombres,apellidos',
+            campos: 'id,nombres,apellidos,grupo_id',
             estado: 1
           }
         },
@@ -152,7 +152,8 @@ export default defineComponent({
     }
 
     function seleccionarEmpleado() {
-      return emit('seleccionar-empleado', subtarea.empleado)
+      const empleado = listadosAuxiliares.empleados.find((e: Empleado) => e.id === subtarea.empleado)
+      return emit('seleccionar-empleado', subtarea.empleado, empleado)
     }
 
     function limpiarSelector() {

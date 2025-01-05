@@ -85,7 +85,7 @@
           </div>
           <!-- Select autorizacion -->
           <div
-            v-if="transaccion.autorizacion || esVisibleAutorizacion"
+            v-if="transaccion.autorizacion "
             class="col-12 col-md-3 q-mb-md"
           >
             <label class="q-mb-sm block">Autorizacion</label>
@@ -172,51 +172,7 @@
             >
             </q-input>
           </div>
-          <!-- Tiene observacion de autorizacion -->
-          <div
-            v-if="
-              transaccion.tiene_observacion_aut ||
-              transaccion.observacion_aut ||
-              esVisibleAutorizacion
-            "
-            class="col-12 col-md-3"
-          >
-            <q-checkbox
-              class="q-mt-lg q-pt-md"
-              v-model="transaccion.tiene_observacion_aut"
-              label="Tiene observación"
-              :disable="disabled || soloLectura"
-              outlined
-              dense
-            ></q-checkbox>
-          </div>
-          <!-- observacion autorizacion -->
-          <div
-            v-if="
-              transaccion.tiene_observacion_aut || transaccion.observacion_aut
-            "
-            class="col-12 col-md-3"
-          >
-            <label class="q-mb-sm block">Observacion</label>
-            <q-input
-              v-model="transaccion.observacion_aut"
-              placeholder="Obligatorio"
-              :disable="disabled || soloLectura"
-              :readonly="disabled || soloLectura"
-              :error="!!v$.observacion_aut.$errors.length"
-              outlined
-              dense
-            >
-              <template v-slot:error>
-                <div
-                  v-for="error of v$.observacion_aut.$errors"
-                  :key="error.$uid"
-                >
-                  <div class="error-msg">{{ error.$message }}</div>
-                </div>
-              </template>
-            </q-input>
-          </div>
+
           <!-- Select sucursal -->
           <div class="col-12 col-md-3 q-mb-md">
             <label class="q-mb-sm block">Sucursal</label>
@@ -419,12 +375,7 @@
           </div>
           <!-- Es para una tarea -->
           <div
-            v-if="
-              (esVisibleTarea && !transaccion.es_transferencia) ||
-              (accion === 'NUEVO' && !transaccion.es_transferencia)
-            "
-            class="col-12 col-md-3"
-          >
+            v-if="accion === acciones.nuevo && !transaccion.es_transferencia" class="col-12 col-md-3" >
             <q-checkbox
               class="q-mt-lg q-pt-md"
               v-model="transaccion.es_tarea"
@@ -542,7 +493,7 @@
           </div>
           <!-- Tarea -->
           <div
-            v-if="esVisibleTarea || transaccion.es_tarea"
+            v-if="transaccion.es_tarea"
             class="col-12 col-md-3"
           >
             <label class="q-mb-sm block">Tarea</label>
@@ -629,6 +580,21 @@
             </q-select>
           </div>
 
+          <!-- observacion autorizacion -->
+          <div
+            v-if="transaccion.observacion_aut || accion===acciones.nuevo"
+            class="col-12 col-md-3"
+          >
+            <label class="q-mb-sm block">Observacion</label>
+            <q-input
+              v-model="transaccion.observacion_aut"
+              placeholder="Obligatorio"
+              :disable="disabled || soloLectura"
+              outlined autogrow
+              dense
+            />
+          </div>
+
           <!-- Codigo permiso -->
           <div v-if="transaccion.se_traslada_arma && existeItemArmaFuego" class="col-12 col-md-3">
             <label class="q-mb-sm block">Código permiso SINCOAR</label>
@@ -685,7 +651,7 @@
             <q-icon name="bi-exclamation-circle-fill" color="amber"></q-icon>
               Tiene armas de fuego en el listado de productos seleccionados.
             </div>
-            
+
 
             <q-checkbox
               v-model="transaccion.se_traslada_arma"

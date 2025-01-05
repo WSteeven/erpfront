@@ -6,7 +6,7 @@
       </div>
       <q-expansion-item
         class="overflow-hidden q-mb-md rounded bg-desenfoque-2"
-        label="Datos personales"
+        label="Datos Personales"
         header-class="text-bold bg-desenfoque text-primary"
         default-opened
       >
@@ -334,7 +334,7 @@
           </div>
 
           <!-- Dirección  -->
-          <div class="col-md-4 col-sm-12 col-xs-12">
+          <div class="col-md-6 col-sm-12 col-xs-12">
             <label class="q-mb-sm block">Dirección </label>
             <q-input
               v-model="postulacion.direccion"
@@ -357,12 +357,39 @@
               </template>
             </q-input>
           </div>
+
+          <!-- Aspiracion salarial  -->
+          <div class="col-md-3 col-sm-6 col-xs-12">
+            <label class="q-mb-sm block">Aspiración Salarial </label>
+            <q-input
+              v-model="postulacion.aspiracion_salarial"
+              type="number"
+              placeholder="Obligatorio"
+              :disable="disabled"
+              outlined
+              min="0"
+              max="1000"
+              dense
+              :error="!!v$.aspiracion_salarial.$errors.length"
+              @blur="v$.aspiracion_salarial.$touch"
+            >
+              <template v-slot:error>
+                <div
+                  style="clear: inherit"
+                  v-for="error of v$.aspiracion_salarial.$errors"
+                  :key="error.$uid"
+                >
+                  <div class="error-msg">{{ error.$message }}</div>
+                </div>
+              </template>
+            </q-input>
+          </div>
         </div>
       </q-expansion-item>
       <!-- {{ postulacion }} -->
       <q-expansion-item
         class="overflow-hidden q-mb-md rounded bg-desenfoque-2"
-        label="Información adicional"
+        label="Información Adicional"
         header-class="text-bold bg-desenfoque text-primary"
         default-opened
       >
@@ -647,6 +674,60 @@
       </q-expansion-item>
       <q-expansion-item
         class="overflow-hidden q-mb-md rounded bg-desenfoque-2"
+        label="Información Discapacidades"
+        header-class="text-bold bg-desenfoque text-primary"
+        default-opened
+      >
+        <div class="row q-pa-md">
+          <label class="col-12 q-mb-md">
+            <strong style="color: red">*</strong> Esta vacante {{vacante.acepta_discapacitados?'si':'no'}} está abierta para personas discapacitadas, {{vacante.acepta_discapacitados?'por favor ingresa información acerca de tu discapacidad':'sin embargo, si tienes alguna discapacidad, háznosla saber aquí abajo por favor.'}}
+          </label>
+          <!-- Tengo Discapacidad -->
+          <div class="row col-12 " >
+            <div class="col-md-3 col-xs-12">
+              ¿Tengo discapacidad?
+            </div>
+            <div class="col-md-3 col-xs-12  ">
+              <option-group-component
+                v-model="postulacion.tengo_discapacidad"
+                :disable="disabled"
+              />
+            </div>
+          <div
+            class="col-12 col-md-6 col-sm-12"
+            v-if="postulacion.tengo_discapacidad"
+          >
+            <q-btn
+              color="primary"
+              @click="agregarDiscapacidad()"
+              class="col-12 col-md-3 full-width"
+            >Agregar discapacidad</q-btn
+            >
+            <essential-table
+              :configuracionColumnas="[...configuracionColumnasDiscapacidades, accionesTabla]"
+              :datos="postulacion.discapacidades"
+              :permitirConsultar="false"
+              :permitirEliminar="false"
+              :permitirEditar="false"
+              :mostrarBotones="false"
+              :permitir-editar-celdas="true"
+              :mostrar-header="false"
+              :grid="false"
+              :accion1="btnEliminarDiscapacidad"
+              :alto-fijo="false"
+              :ajustarCeldas="true"
+            >
+            </essential-table>
+          </div>
+          </div>
+
+        </div>
+      </q-expansion-item>
+
+<!--      {{postulacion}}-->
+
+      <q-expansion-item
+        class="overflow-hidden q-mb-md rounded bg-desenfoque-2"
         label="Referencias Personales"
         header-class="text-bold bg-desenfoque text-primary"
         default-opened
@@ -662,7 +743,7 @@
               <strong>formato PDF</strong></label
             > -->
             <essential-table
-              :configuracionColumnas="configuracionColumnasReferencias"
+              :configuracionColumnas="[...configuracionColumnasReferencias, accionesTabla]"
               :datos="postulacion.referencias"
               ajustarCeldas
               :permitirConsultar="false"

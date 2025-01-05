@@ -1,5 +1,6 @@
 // Custom scrollbar
 body {
+  background-color: $grey-5;
   &::-webkit-scrollbar {
     width: 10px;
     background-color: transparent;
@@ -194,6 +195,16 @@ border-radius: 8px;
 .border-callout-warning {
   border-right: 3px solid $warning;
   border-left: 3px solid $warning;
+}
+
+.border-callout-success {
+  border-right: 3px solid $positive;
+  border-left: 3px solid $positive;
+}
+
+.border-callout-error {
+  border-right: 3px solid $error;
+  border-left: 3px solid $error;
 }
 
 .border-callout-positive {

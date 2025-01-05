@@ -10,6 +10,8 @@ export class Noticia extends EntidadAuditable {
   categoria: string | null
   etiquetas: []
   imagen_noticia: string | null
+  departamentos_destinatarios: []
+  para_todos: boolean
 
   constructor() {
     super()
@@ -22,5 +24,7 @@ export class Noticia extends EntidadAuditable {
     this.categoria = null
     this.etiquetas = []
     this.imagen_noticia = null
+    this.departamentos_destinatarios = []
+    this.para_todos = true
   }
 }

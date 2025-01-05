@@ -1,6 +1,6 @@
 +
 <template>
-  <simple-layout :mixin="mixin">
+  <simple-layout :mixin="mixin" :permitir-cancelar="!enRutaAccidentes">
     <template #formulario>
       <div class="row q-mb-md">
         <div class="col-12">
@@ -16,7 +16,7 @@
           <q-expansion-item
             class="overflow-hidden q-mb-md rounded bg-desenfoque-2"
             label="Diagnóstico"
-            header-class="text-bold bg-desenfoque text-primary"
+            header-class="text-bold bg-solid text-primary"
             default-opened
             icon="bi-clipboard2-pulse"
           >
@@ -35,8 +35,7 @@
                     :label="tiposEnfermedades.HISTORIAL_CLINICO"
                     :class="{
                       'tab-inactive':
-                        tabsEnfermedades !==
-                        tiposEnfermedades.HISTORIAL_CLINICO,
+                        tabsEnfermedades !== tiposEnfermedades.HISTORIAL_CLINICO
                     }"
                     no-caps
                   />
@@ -45,7 +44,7 @@
                     :label="tiposEnfermedades.COMUNES"
                     :class="{
                       'tab-inactive':
-                        tabsEnfermedades !== tiposEnfermedades.COMUNES,
+                        tabsEnfermedades !== tiposEnfermedades.COMUNES
                     }"
                     no-caps
                   />
@@ -157,7 +156,7 @@
                           options-dense
                           dense
                           outlined
-                          :option-label="(i) => i.codigo_nombre_enfermedad"
+                          :option-label="i => i.codigo_nombre_enfermedad"
                           use-input
                           input-debounce="0"
                           emit-value
@@ -218,14 +217,11 @@
               </div>
             </div>
           </q-expansion-item>
-        </div>
 
-        <div class="col-12">
           <q-expansion-item
             class="overflow-hidden q-mb-md rounded bg-desenfoque-2"
             label="Constantes vitales"
-            header-class="text-bold bg-desenfoque text-primary"
-            default-opened
+            header-class="text-bold bg-solid text-primary"
             icon="bi-heart-pulse"
           >
             <div class="row q-col-gutter-sm q-pa-md">
@@ -237,14 +233,11 @@
               ></contantes-vitales>
             </div>
           </q-expansion-item>
-        </div>
 
-        <div class="col-12">
           <q-expansion-item
             class="overflow-hidden q-mb-md rounded bg-desenfoque-2"
             label="Receta"
-            header-class="text-bold bg-desenfoque text-primary"
-            default-opened
+            header-class="text-bold bg-solid text-primary"
             icon="bi-capsule-pill"
           >
             <div class="row q-col-gutter-sm q-pa-md">
@@ -287,9 +280,8 @@
 
           <q-expansion-item
             class="overflow-hidden q-mb-md rounded bg-desenfoque-2"
-            label="Informacón adicional"
-            header-class="text-bold bg-desenfoque text-primary"
-            default-opened
+            label="Evolución y exámen físico"
+            header-class="text-bold bg-solid text-primary"
             icon="bi-chat-left-text"
           >
             <div class="row q-col-gutter-sm q-pa-md">
@@ -320,7 +312,16 @@
                 >
                 </q-input>
               </div>
+            </div>
+          </q-expansion-item>
 
+          <q-expansion-item
+            class="overflow-hidden q-mb-md rounded bg-desenfoque-2"
+            label="Descanso médico"
+            header-class="text-bold bg-solid text-primary"
+            icon="bi-chat-left-text"
+          >
+            <div class="row q-col-gutter-sm q-pa-md">
               <div class="col-12 col-md-3 q-mb-md">
                 <label class="q-mb-sm block">Días de descanso médico</label>
                 <q-input
@@ -333,6 +334,50 @@
                 >
                 </q-input>
               </div>
+
+              <div class="col-12 q-mb-md">
+                <label class="q-mb-sm block">Observaciones</label>
+                <q-input
+                  v-model="consulta.observaciones_alta"
+                  placeholder="Opcional"
+                  :disable="disabled"
+                  outlined
+                  dense
+                  autogrow
+                  type="textarea"
+                >
+                </q-input>
+              </div>
+
+              <div class="col-12 q-mb-md">
+                <label class="q-mb-sm block">Restricciones</label>
+                <q-input
+                  v-model="consulta.restricciones_alta"
+                  placeholder="Opcional"
+                  :disable="disabled"
+                  outlined
+                  dense
+                  autogrow
+                  type="textarea"
+                >
+                </q-input>
+              </div>
+
+              <!-- Manejo de archivos -->
+              <div class="col-12">
+                <label class="q-mb-sm block">Certificado de alta</label>
+                <gestor-archivos
+                  ref="refArchivo"
+                  label="Adjuntar archivos"
+                  :mixin="mixin"
+                  :disable="disabled"
+                  :listarAlGuardar="false"
+                  :permitir-eliminar="
+                    accion == acciones.nuevo || accion == acciones.editar
+                  "
+                  :idModelo="idEntidad"
+                />
+              </div>
             </div>
           </q-expansion-item>
         </div>
@@ -340,9 +385,12 @@
     </template>
 
     <template #custom-buttons>
-      <!-- {{ esConsultable }} -->
       <q-btn
-        v-if="esAccidenteTrabajo && esConsultable && !consulta.dado_alta"
+        v-if="
+          esAccidenteTrabajo &&
+          !consulta.dado_alta &&
+          accion === acciones.editar
+        "
         color="positive"
         @click="darAlta()"
         no-caps
@@ -356,7 +404,7 @@
         Dar de alta</q-btn
       >
       <q-btn
-        v-if="esAccidenteTrabajo && !esConsultable"
+        v-if="esAccidenteTrabajo && accion === acciones.nuevo"
         color="primary"
         @click="guardarYDarAlta()"
         no-caps

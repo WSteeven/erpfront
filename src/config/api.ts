@@ -5,6 +5,9 @@ import { tickets } from './endpoints/tickets'
 import { recursosHumanos } from './endpoints/rrhh/recursosHumanos'
 import { activosFijos } from './endpoints/activosFijos'
 import { comprasProveedores } from './endpoints/comprasProveedores'
+import { vehiculos } from 'config/endpoints/vehiculos'
+import { sso } from './endpoints/sso'
+import { fondosRotativos } from 'config/endpoints/fondosRotativos'
 
 export const apiConfig = {
   // URL_BASE: 'http://localhost:8000',
@@ -31,7 +34,7 @@ export const endpoints = {
   api_user_postulante: new Endpoint('user-postulante'),
   reset_password: new Endpoint('usuarios/reset-password'),
   perfil_usuario: new Endpoint('user/profile-information', false),
-  cambiar_contrasena: new Endpoint('user/password', false),
+  // cambiar_contrasena: new Endpoint('user/password', false),
   roles: new Endpoint('user/roles'),
   fecha: new Endpoint('obtener-fecha'),
   hora: new Endpoint('obtener-hora'),
@@ -58,36 +61,6 @@ export const endpoints = {
    *********************/
   ...recursosHumanos,
   cargos: new Endpoint('cargos'),
-
-  motivo_permiso_empleado: new Endpoint(
-    'recursos-humanos/motivo_permiso_empleado'
-  ),
-  estado_permiso_empleado: new Endpoint(
-    'recursos-humanos/estado_permiso_empleado'
-  ),
-  estado_civil: new Endpoint('recursos-humanos/estado_civil'),
-  familiares: new Endpoint('recursos-humanos/familiares'),
-
-  areas: new Endpoint('recursos-humanos/areas'),
-  tipo_contrato: new Endpoint('recursos-humanos/tipo_contrato'),
-  tipo_licencia: new Endpoint('recursos-humanos/tipo_licencia'),
-  permiso_empleado: new Endpoint('recursos-humanos/permiso_empleado'),
-  licencia_empleado: new Endpoint('recursos-humanos/licencia_empleado'),
-  prestamo_empresarial: new Endpoint('recursos-humanos/prestamo_empresarial'),
-  solicitud_prestamo_empresarial: new Endpoint(
-    'recursos-humanos/solicitud_prestamo_empresarial'
-  ),
-  periodo: new Endpoint('recursos-humanos/periodo'),
-  anticipo: new Endpoint('recursos-humanos/anticipo'),
-  rol_pago: new Endpoint('recursos-humanos/rol_pago'),
-  egreso_rol_pago: new Endpoint('recursos-humanos/egreso_rol_pago'),
-  ingreso_rol_pago: new Endpoint('recursos-humanos/ingreso_rol_pago'),
-  rol_pago_mes: new Endpoint('recursos-humanos/rol_pago_mes'),
-  banco: new Endpoint('recursos-humanos/banco'),
-  datos_empleado: new Endpoint('recursos-humanos/datos_empleado/'),
-
-  empleados: new Endpoint('empleados'),
-  departamentos: new Endpoint('recursos-humanos/departamentos'),
   allroles: new Endpoint('roles'),
   concepto_ingreso: new Endpoint('recursos-humanos/concepto_ingreso'),
   descuentos_generales: new Endpoint('recursos-humanos/descuentos_generales'),
@@ -210,55 +183,16 @@ export const endpoints = {
   horarioLaboral: new Endpoint('control-personal/horario-laboral'),
   horarioDeAlmuerzo: new Endpoint('control-personal/horario-almuerzo'),
   atrasos: new Endpoint('control-personal/atrasos'),
+  
 
   /******************************
    * Modulo de Vehiculos
    ******************************/
-  combustibles: new Endpoint('vehiculos/combustibles'),
-  garajes: new Endpoint('vehiculos/garajes'),
-  vehiculos: new Endpoint('vehiculos/vehiculos'),
-  tipos_vehiculos: new Endpoint('vehiculos/tipos-vehiculos'),
-  bitacoras_vehiculos: new Endpoint('vehiculos/bitacoras-vehiculos'),
-  ultima_bitacora: new Endpoint('vehiculos/ultima-bitacora'),
-  registros_incidentes: new Endpoint('vehiculos/registros-incidentes'),
-  historial_vehiculos: new Endpoint('vehiculos/historial'),
-  empleados_choferes: new Endpoint('vehiculos/empleados-choferes'),
-  conductores: new Endpoint('vehiculos/conductores'),
-  matriculas: new Endpoint('vehiculos/matriculas'),
-  ordenes_reparaciones: new Endpoint('vehiculos/ordenes-reparaciones'),
-  asignaciones_vehiculos: new Endpoint('vehiculos/asignaciones-vehiculos'),
-  transferencias_vehiculos: new Endpoint('vehiculos/transferencias-vehiculos'),
-  multas_conductores: new Endpoint('vehiculos/multas'),
-  seguros: new Endpoint('vehiculos/seguros'),
-  servicios: new Endpoint('vehiculos/servicios'),
-  tanqueos: new Endpoint('vehiculos/tanqueos'),
-  planes_mantenimientos: new Endpoint('vehiculos/planes-mantenimientos'),
-  mantenimientos_vehiculos: new Endpoint('vehiculos/mantenimientos-vehiculos'),
-  reporte_conductor_licencia: new Endpoint(
-    'vehiculos/reporte-conductor-licencia'
-  ),
-  reporte_combustibles: new Endpoint('vehiculos/reporte-combustibles'),
-  reporte_seguros_vehiculos: new Endpoint(
-    'vehiculos/reporte-seguros-vehiculos'
-  ),
+  ...vehiculos,
+
 
   //Modulo de compras y proveedores
   ...comprasProveedores,
-  dashboard_compras: new Endpoint('compras/dashboard'),
-  empleados_ordenes: new Endpoint('compras/empleados-ordenes'),
-  proveedores_ordenes: new Endpoint('compras/proveedores-ordenes'),
-  clientes_prefacturas: new Endpoint('compras/clientes-prefacturas'),
-  dashboard_ventas_empresa: new Endpoint('compras/dashboard-ventas'),
-  calificacion_proveedor: new Endpoint('compras/calificaciones-proveedores'),
-  categorias_ofertas: new Endpoint('compras/categorias-ofertas'),
-  contactos_proveedores: new Endpoint('compras/contactos-proveedores'),
-  criterios_calificaciones: new Endpoint('compras/criterios-calificaciones'),
-  datos_bancarios_proveedor: new Endpoint(
-    'compras/datos-bancarios-proveedores'
-  ),
-  detalles_departamentos_proveedor: new Endpoint(
-    'compras/detalles-departamentos-proveedor'
-  ),
   empresas: new Endpoint('empresas'),
   log_contactos_proveedores: new Endpoint('compras/log-contactos-proveedores'),
   ofertas_proveedores: new Endpoint('compras/ofertas-proveedores'),
@@ -272,7 +206,7 @@ export const endpoints = {
   prefacturas: new Endpoint('compras/prefacturas'),
   proformas: new Endpoint('compras/proformas'),
   proveedores: new Endpoint('proveedores'),
-  reporte_proveedores: new Endpoint('compras/reporte-proveedores'),
+
 
   // Modulo de Bodega
   autorizaciones: new Endpoint('autorizaciones'),
@@ -354,6 +288,12 @@ export const endpoints = {
    * Modulo de activos fijos
    ***************************/
   ...activosFijos,
+  ...sso,
+
+  /**
+   * Modulo de fondos rotativos
+   */
+  ...fondosRotativos,
 
   // Modulo Fondos Rotativos
   empleados_saldos_fr: new Endpoint('fondos-rotativos/empleados-saldos-fr'),
@@ -381,36 +321,6 @@ export const endpoints = {
   tipo_saldo: new Endpoint('fondos-rotativos/tipo-saldo'),
   usuarios_autorizadores: new Endpoint('usuarios-autorizadores'),
   lista_usuarios: new Endpoint('lista-usuarios'),
-  fondo_rotativo_fecha_excel: new Endpoint(
-    'fondos-rotativos/reporte/fecha/excel'
-  ),
-  fondo_rotativo_fecha_pdf: new Endpoint('fondos-rotativos/reporte/fecha/pdf'),
-  fondo_rotativo_autorizaciones_fecha_pdf: new Endpoint(
-    'fondos-rotativos/autorizaciones_fecha/pdf'
-  ),
-  fondo_rotativo_autorizaciones_fecha_excel: new Endpoint(
-    'fondos-rotativos/autorizaciones_fecha/excel'
-  ),
-  consolidado_pdf: new Endpoint('fondos-rotativos/consolidado/pdf'),
-  consolidado_excel: new Endpoint('fondos-rotativos/consolidado/excel'),
-  consolidado_filtrado_pdf: new Endpoint(
-    'fondos-rotativos/consolidado_filtrado/pdf'
-  ),
-  consolidado_filtrado_excel: new Endpoint(
-    'fondos-rotativos/consolidado_filtrado/excel'
-  ),
-  autorizaciones_gastos: new Endpoint('fondos-rotativos/autorizaciones_gastos'),
-  autorizaciones_transferencia: new Endpoint(
-    'fondos-rotativos/autorizaciones_transferencia'
-  ),
-  umbral: new Endpoint('fondos-rotativos/umbral'),
-  acreditacion: new Endpoint('fondos-rotativos/acreditacion'),
-  transferencia: new Endpoint('fondos-rotativos/transferencia'),
-  ultimo_saldo: new Endpoint('fondos-rotativos/ultimo_saldo'),
-  monto_acreditar_usuario: new Endpoint(
-    'fondos-rotativos/monto_acreditar_usuario'
-  ),
-  cortar_saldo: new Endpoint('fondos-rotativos/cortar_saldo'),
 
   reporte_saldo_actual_excel: new Endpoint(
     'fondos-rotativos/reporte/saldo_actual/excel'
@@ -479,5 +389,7 @@ export const endpoints = {
   eventos: new Endpoint('intranet/eventos'),
   etiquetas: new Endpoint('intranet/etiquetas'),
   categorias_noticias: new Endpoint('intranet/categorias'),
-  tipos_eventos: new Endpoint('intranet/tipos-eventos')
+  tipos_eventos: new Endpoint('intranet/tipos-eventos'),
+  organigrama: new Endpoint('intranet/organigrama'),
+  organigrama_datos: new Endpoint('intranet/organigrama/datos'),
 }

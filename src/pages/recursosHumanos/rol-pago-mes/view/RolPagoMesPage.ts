@@ -3,7 +3,7 @@ import axios, { AxiosResponse } from 'axios'
 import { configuracionColumnasRolPago } from '../../rol-pago/domain/configuracionColumnasRolPago'
 import { required } from '@vuelidate/validators'
 import { useVuelidate } from '@vuelidate/core'
-import { defineComponent, ref, computed, Ref, reactive } from 'vue'
+import { computed, defineComponent, reactive,  ref } from 'vue'
 
 // Componentes
 import SelectorImagen from 'components/SelectorImagen.vue'
@@ -16,9 +16,8 @@ import EssentialTableTabs from 'components/tables/view/EssentialTableTabs.vue'
 import { ContenedorSimpleMixin } from 'shared/contenedor/modules/simple/application/ContenedorSimpleMixin'
 import { RolPagoController } from '../../rol-pago/infraestructure/RolPagoController'
 import { RolPago } from '../../rol-pago/domain/RolPago'
-import { imprimirArchivo, removeAccents } from 'shared/utils'
+import { imprimirArchivo } from 'shared/utils'
 import { acciones, accionesTabla, estadosRolPago } from 'config/utils'
-import { ConceptoIngreso } from 'pages/recursosHumanos/concepto_ingreso/domain/ConceptoIngreso'
 import { useAuthenticationStore } from 'stores/authentication'
 import { useCargandoStore } from 'stores/cargando'
 import { useQuasar } from 'quasar'
@@ -27,9 +26,9 @@ import { RolPagoMesController } from '../infrestucture/RolPagoMesController'
 import { ComportamientoModalesRolPagoMes } from '../aplication/ComportamientoModalesRolPagoMes'
 import { ComportamientoModalesRolPago } from 'pages/recursosHumanos/rol-pago/aplication/ComportamientoModalesRolPago'
 import {
-  tabOptionsEstadosRolPago,
-  tabOptionsEstadosRolPagoEmpleado,
   estadosRolPagoEmpleado,
+  tabOptionsEstadosRolPago,
+  tabOptionsEstadosRolPagoEmpleado
 } from 'config/recursosHumanos.utils'
 import { CustomActionTable } from 'components/tables/domain/CustomActionTable'
 import { useBotonesTablaRolPagoMes } from '../aplication/BotonesTablaRolPagoMes'
@@ -44,9 +43,8 @@ import { AxiosHttpRepository } from 'shared/http/infraestructure/AxiosHttpReposi
 import { CustomActionPrompt } from 'components/tables/domain/CustomActionPrompt'
 import { HttpResponseGet } from 'shared/http/domain/HttpResponse'
 import { StatusEssentialLoading } from 'components/loading/application/StatusEssentialLoading'
-import { Archivo } from 'pages/gestionTrabajos/subtareas/modules/gestorArchivosTrabajos/domain/Archivo'
-import { ArchivoRolPagoMesController } from '../infrestucture/ArchivoRolPagoMesController'
 import GestorDocumentos from 'components/documentos/view/GestorDocumentos.vue'
+import { useNotificacionStore } from 'stores/notificacion'
 
 export default defineComponent({
   name: 'RolPagoMes',
@@ -59,37 +57,13 @@ export default defineComponent({
     GestorDocumentos,
   },
   setup() {
-    const mixin = new ContenedorSimpleMixin(
-      RolPagoMes,
-      new RolPagoMesController()
-    )
-    const {
-      entidad: rolpago,
-      accion,
-      disabled,
-      listadosAuxiliares,
-    } = mixin.useReferencias()
-    const {
-      consultar,
-      setValidador,
-      listar,
-      reestablecer,
-      obtenerListados,
-      cargarVista,
-    } = mixin.useComportamiento()
-    const mixinRolEmpleado = new ContenedorSimpleMixin(
-      RolPago,
-      new RolPagoController()
-    )
-    const mixinArchivoRolPago = new ContenedorSimpleMixin(
-      Archivo,
-      new ArchivoRolPagoMesController()
-    )
-    const { reestablecer: restablecerArchivo } =
-      mixinArchivoRolPago.useComportamiento()
+    const mixin = new ContenedorSimpleMixin(RolPagoMes,new RolPagoMesController())
+    const {entidad: rolpago,accion,disabled,listadosAuxiliares,} = mixin.useReferencias()
+    const {setValidador,listar,} = mixin.useComportamiento()
+    const mixinRolEmpleado = new ContenedorSimpleMixin(RolPago,new RolPagoController())
+
     const { listado: roles_empleados } = mixinRolEmpleado.useReferencias()
-    const { listar: listarRolEmpleado, eliminar } =
-      mixinRolEmpleado.useComportamiento()
+    const { listar: listarRolEmpleado, eliminar } =mixinRolEmpleado.useComportamiento()
     const authenticationStore = useAuthenticationStore()
 
     const cargando = new StatusEssentialLoading()
@@ -103,11 +77,12 @@ export default defineComponent({
 
     const { onConsultado } = mixin.useHooks()
     useCargandoStore().setQuasar(useQuasar())
+    useNotificacionStore().setQuasar(useQuasar())
     const { notificarAdvertencia, notificarCorrecto, confirmar, promptItems } =
       useNotificaciones()
 
     const { btnFinalizarRolPago } = useBotonesTablaRolPagoMes(mixin)
-    const { btnIniciar, btnFirmar, btnRealizado, btnFinalizar } =
+    const { btnIniciar,  btnFinalizar } =
       useBotonesTablaRolPago(
         roles_empleados,
         modalesRolPago,
@@ -165,7 +140,7 @@ export default defineComponent({
           }
           await new CambiarEstadoRolPago().ejecutarMasivo(data)
           notificarCorrecto('Rol de Pagos se esta Verificando!')
-          filtrarRolPagoEmpleado(estadosRolPagoEmpleado.ejecutando)
+          await filtrarRolPagoEmpleado(estadosRolPagoEmpleado.ejecutando)
         })
       },
       visible: () => authenticationStore.can('puede.ver.btn.ejecutar_rol_pago'),
@@ -175,7 +150,7 @@ export default defineComponent({
       icono: 'bi-check',
       color: 'positive',
       visible: () =>
-        rolpago.finalizado == false &&
+        !rolpago.finalizado &&
         authenticationStore.can('puede.ver.btn.finalizar_rol_pago'),
       accion: () => {
         if (!rolpago.id)
@@ -186,7 +161,7 @@ export default defineComponent({
           }
           await new CambiarEstadoRolPago().finalizarMasivo(data)
           notificarCorrecto('Rol de Pagos Finalizado!')
-          filtrarRolPagoEmpleado(estadosRolPagoEmpleado.finalizado)
+          await filtrarRolPagoEmpleado(estadosRolPagoEmpleado.finalizado)
         })
       },
     }
@@ -237,8 +212,8 @@ export default defineComponent({
         'Diciembre',
       ]
       const [mes, anio] = rolpago.mes!.split('-')
-      rolpago.nombre = `Rol de Pagos de ${
-        rolpago.es_quincena ? 'QUINCENA DEL MES DE ' : ''
+      rolpago.nombre = `Rol de Pagos de${
+        rolpago.es_quincena ? ' QUINCENA DEL MES DE ' : ''
       }  ${meses[parseInt(mes, 10) - 1]} de ${anio}`
     }
     let tabActualRolPago = '0'
@@ -256,12 +231,6 @@ export default defineComponent({
       )
       tabActual.value = estado
     }
-
-    const concepto_ingresos: Ref<ConceptoIngreso[]> = ref([])
-    const es_consultado = ref(false)
-    const tipo = ref(1)
-    const es_calculable = ref(true)
-    const campo = ref()
     const is_month = ref(false)
     const tab = ref('rol_pago')
 
@@ -273,27 +242,28 @@ export default defineComponent({
     const v$ = useVuelidate(reglas, rolpago)
     setValidador(v$.value)
     async function guardado(data) {
-      filtrarRolPagoEmpleado(estadosRolPagoEmpleado.ejecutando)
+      console.log(data)
+      await filtrarRolPagoEmpleado(estadosRolPagoEmpleado.ejecutando)
     }
 
     /**Verifica si es un mes */
       function checkValue (val, reason, details) {
       console.log(val, reason, details)
-      is_month.value = reason === 'month' ? false : true
+      is_month.value = reason !== 'month'
             obtenerNombreMes()
     }
 
-    const editarRolPago: CustomActionTable = {
-      titulo: 'Editar',
-      icono: 'bi-pencil-square',
-      color: 'secondary',
-      visible: ({ entidad }) =>
-        authenticationStore.can('puede.editar.rol_pago') && !entidad.finalizado,
-      accion: ({ entidad }) => {
-        accion.value = 'EDITAR'
-        consultar(entidad)
-      },
-    }
+    // const editarRolPago: CustomActionTable = {
+    //   titulo: 'Editar',
+    //   icono: 'bi-pencil-square',
+    //   color: 'secondary',
+    //   visible: ({ entidad }) =>
+    //     authenticationStore.can('puede.editar.rol_pago') && !entidad.finalizado,
+    //   accion: ({ entidad }) => {
+    //     accion.value = 'EDITAR'
+    //     consultar(entidad)
+    //   },
+    // }
     const btnEnviarRolPagoEmpleado: CustomActionTable = {
       titulo: 'Enviar Rol de Pago Individual',
       icono: 'bi-envelope-fill',
@@ -417,7 +387,7 @@ export default defineComponent({
         '/' +
         axios_repository.getEndpoint(endpoints.crear_cash_roles_pago) +
         entidad.id
-      imprimirArchivo(url_pdf, 'GET', 'blob', 'xlsx', filename, null)
+      await imprimirArchivo(url_pdf, 'GET', 'blob', 'xlsx', filename, null)
     }
     async function generar_reporte_general_mes(
       id: number,
@@ -433,7 +403,7 @@ export default defineComponent({
         '?tipo=' +
         tipo
 
-      imprimirArchivo(url_pdf, 'GET', 'blob', tipo, filename, null)
+      await imprimirArchivo(url_pdf, 'GET', 'blob', tipo, filename, null)
     }
 
     const btnRefrescar: CustomActionTable = {
@@ -479,38 +449,21 @@ export default defineComponent({
         cargando.desactivar()
       }
     }
-    const esNuevo = computed(() => {
-      return accion.value === 'NUEVO'
-    })
-    async function subirArchivos() {
-      if (await v$.value.$validate()) {
-        await refArchivoRolPago.value.subir(rolpago)
-        restablecerArchivo()
-        reestablecer()
-      }
-    }
+
+
     const enviar_masivo = computed(
       () => refArchivoRolPago.value?.quiero_subir_archivos
     )
-    const mostrarBotonSubir = computed(
-      () => refArchivoRolPago.value?.quiero_subir_archivos
-    )
+
 
     return {
-      removeAccents,
       mixin,
       rolpago,
-      accion,
-      concepto_ingresos,
-      campo,
+      accion, acciones,
       is_month,
-      tipo,
       tab,
-      es_consultado,
       btnIniciar,
-      btnFirmar,
       btnImprimir,
-      btnRealizado,
       btnConsultarRolPagoEmpleado,
       btnAgregarRolPagoEmpleado,
       btnGenerarReporte,
@@ -520,16 +473,13 @@ export default defineComponent({
       modalesRolPagoMes,
       modalesRolPago,
       guardado,
-      editarRolPago,
-      es_calculable,
       v$,
       filtrarRolPagoMes,
       filtrarRolPagoEmpleado,
       obtenerNombreMes,
-      subirArchivos,
       disabled,
       btnEnviarRolPago,
-      configuracionColumnasRolPago,
+      // configuracionColumnasRolPago,
       columnasRolPagoEmpleados: [
         ...configuracionColumnasRolPago,
         accionesTabla,
@@ -550,14 +500,8 @@ export default defineComponent({
       btnCashRolPago,
       btnRefrescar,
       btnActualizarEmpleadosRol,
-      refArchivoRolPago,
-      esNuevo,
-      mostrarBotonSubir,
-      endpoint: endpoints.archivo_rol_pago_mes,
-      mixinArchivoRolPago,
       enviar_masivo,
       configuracionColumnas: configuracionColumnasRolPagoMes,
-      accionesTabla,
       tabActualRolPago,
     }
   },

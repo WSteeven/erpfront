@@ -18,6 +18,10 @@ export class AlimentacionGrupo extends EntidadAuditable {
 
     alimentacion_grupos: AlimentacionGrupo[]
 
+    // variables auxiliares
+    empleado: number | null
+    editar_participantes: boolean
+
     constructor() {
         super()
         this.tarea = null
@@ -33,7 +37,11 @@ export class AlimentacionGrupo extends EntidadAuditable {
         // this.tipos_alimentacion = []
         this.tipo_alimentacion = null
         this.tipo_alimentacion_id = null
-        
+
         this.alimentacion_grupos = []
+
+        this.empleado = null
+        this.grupo = null
+        this.editar_participantes = false
     }
 }

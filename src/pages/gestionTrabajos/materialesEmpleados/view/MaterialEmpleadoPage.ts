@@ -48,7 +48,7 @@ export default defineComponent({
     useNotificacionStore().setQuasar(useQuasar())
     useCargandoStore().setQuasar(useQuasar())
 
-    // modales
+    // Modales
     const modales = new ComportamientoModalesMaterialEmpleado()
 
     /************
@@ -247,7 +247,7 @@ export default defineComponent({
         const data = tab.value == destinosTareas.paraClienteFinal ? { tarea_id, tipo: tab.value, cantidad, empleado: empleadoSeleccionado.value, detalle_producto_id: detalle, cliente_id: cliente } : { tipo: tab.value, cantidad: cantidad, empleado: empleadoSeleccionado.value, detalle_producto_id: detalle, cliente_id: cliente }
         const response: AxiosResponse = await axios.post(url, data)
         console.log(response)
-        if (response.status = 200) {
+        if (response.status == 200) {
           notificarCorrecto(response.data.mensaje)
           return true
         } else notificarAdvertencia(response.data.mensaje)
@@ -324,7 +324,7 @@ export default defineComponent({
         transferenciaProductoEmpleadoStore.filaAModificar = fila
         modales.abrirModalEntidad('CambiarClientePropietarioMaterialPage')
       },
-      visible: () => store.can('puede.modificar_stock.materiales_empleados')
+      visible: () => store.can('puede.ver.btn.modificar_stock.materiales_empleados')
     }
     const btnModificarStock: CustomActionTable = {
       titulo: 'Stock',
@@ -345,7 +345,7 @@ export default defineComponent({
         }
         prompt(data)
       },
-      visible: () => store.can('puede.modificar_stock.materiales_empleados')
+      visible: () => store.can('puede.ver.btn.modificar_stock.materiales_empleados')
     }
 
     return {

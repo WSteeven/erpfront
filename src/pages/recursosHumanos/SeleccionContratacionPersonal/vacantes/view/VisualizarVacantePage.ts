@@ -1,32 +1,29 @@
 // Dependencies
-import { defineComponent, reactive } from 'vue';
-import { useVacanteStore } from 'stores/recursosHumanos/seleccionContratacion/vacante';
-import relativeTime from 'dayjs/plugin/relativeTime';
-import es from 'dayjs/locale/es';
+import { defineComponent, reactive } from 'vue'
+import { useVacanteStore } from 'stores/recursosHumanos/seleccionContratacion/vacante'
+import relativeTime from 'dayjs/plugin/relativeTime'
+import es from 'dayjs/locale/es'
 import dayjs from 'dayjs'
 
-
 // Components
-import VisorImagen from 'components/VisorImagen.vue';
-import BasicContainer from 'shared/contenedor/modules/basic/view/BasicContainer.vue';
-import { userIsAuthenticated } from '../../../../../shared/helpers/verifyAuthenticatedUser';
-import { useNotificaciones } from 'shared/notificaciones';
-import { CustomActionPrompt } from 'components/tables/domain/CustomActionPrompt';
-import { useRoute, useRouter } from 'vue-router';
-import { StatusEssentialLoading } from 'components/loading/application/StatusEssentialLoading';
-import { AxiosHttpRepository } from 'shared/http/infraestructure/AxiosHttpRepository';
-import { endpoints } from 'config/api';
-import { AxiosResponse } from 'axios';
-import { useMeta, useQuasar } from 'quasar';
-import { getShortDescription } from 'shared/utils';
+import VisorImagen from 'components/VisorImagen.vue'
+import BasicContainer from 'shared/contenedor/modules/basic/view/BasicContainer.vue'
+import { userIsAuthenticated } from '../../../../../shared/helpers/verifyAuthenticatedUser'
+import { useNotificaciones } from 'shared/notificaciones'
+import { CustomActionPrompt } from 'components/tables/domain/CustomActionPrompt'
+import { useRoute, useRouter } from 'vue-router'
+import { StatusEssentialLoading } from 'components/loading/application/StatusEssentialLoading'
+import { AxiosHttpRepository } from 'shared/http/infraestructure/AxiosHttpRepository'
+import { endpoints } from 'config/api'
+import { AxiosResponse } from 'axios'
+import { useMeta, useQuasar } from 'quasar'
+import { getShortDescription } from 'shared/utils'
 
 // Logic & controllers
-
 
 export default defineComponent({
   components: { BasicContainer, VisorImagen },
   setup() {
-
     dayjs.extend(relativeTime)
     dayjs.locale(es)
 
@@ -38,9 +35,9 @@ export default defineComponent({
     const route = useRoute()
     const cargando = new StatusEssentialLoading()
 
-    if (vacanteStore.idVacante !== null || vacanteStore.idVacante !== undefined) {
+    if (vacanteStore.idVacante !== null) {
       // cargando.activar()
-      vacanteStore.showPreview();
+      vacanteStore.showPreview()
       // cargando.desactivar()
     }
 
@@ -50,25 +47,35 @@ export default defineComponent({
         // Aquí se le pregunta si necesita loguearse como empleado o como externo para redirigirlo
         const config: CustomActionPrompt = reactive({
           mensaje: 'Es requerido iniciar sesión para continuar',
-          accion: async (opcion) => {
+          accion: async opcion => {
             if (opcion === 1) {
               // se dirige a la pagina de login de empleados
-              router.push('login')
+              await router.push({
+                path: 'login',
+                query: {
+                  redirect: `${router.currentRoute.value.fullPath}?id=${id}&showModal=1`
+                }
+              })
             } else {
               // se dirige a la pagina de login de externos
-              router.push('login-postulante')
+              await router.push({
+                path: 'login-postulante',
+                query: {
+                  redirect: `${router.currentRoute.value.fullPath}?id=${id}&showModal=1`
+                   }
+              })
             }
-
-          }, tipo: 'radio',
+          },
+          tipo: 'radio',
           items: [
             {
               label: 'Soy empleado',
-              value: 1,
+              value: 1
             },
             {
               label: 'Soy nuevo o deseo registrarme',
-              value: 2,
-            },
+              value: 2
+            }
           ]
         })
         promptItems(config)
@@ -103,23 +110,25 @@ export default defineComponent({
         // Aquí se le pregunta si necesita loguearse como empleado o como externo para redirigirlo
         const config: CustomActionPrompt = reactive({
           mensaje: 'Es requerido iniciar sesión para continuar',
-          accion: async (opcion) => {
-            if (opcion === 1) { // se dirige a la pagina de login de empleados
+          accion: async opcion => {
+            if (opcion === 1) {
+              // se dirige a la pagina de login de empleados
               router.push('login')
-            } else { // se dirige a la pagina de login de externos
+            } else {
+              // se dirige a la pagina de login de externos
               router.push('login-postulante')
             }
-
-          }, tipo: 'radio',
+          },
+          tipo: 'radio',
           items: [
             {
               label: 'Soy empleado',
-              value: 1,
+              value: 1
             },
             {
               label: 'Soy nuevo o deseo registrarme',
-              value: 2,
-            },
+              value: 2
+            }
           ]
         })
         promptItems(config)
@@ -129,35 +138,46 @@ export default defineComponent({
         almacenarVacanteFavorita(id)
       }
     }
+
     const baseUrl = window.location.origin
     const $q = useQuasar()
-    // Configuracion de metadatos para la vacante para que se muestre las miniaturas cuando se compartan 
+    // Configuracion de metadatos para la vacante para que se muestre las miniaturas cuando se compartan
     useMeta({
       title: vacanteStore.vacante.nombre ?? 'Trabaja con nosotros',
       meta: [
         { name: 'og:title', content: vacanteStore.vacante.nombre },
-        { name: 'og:description', content: getShortDescription($q, vacanteStore.vacante.descripcion) },
+        {
+          name: 'og:description',
+          content: getShortDescription($q, vacanteStore.vacante.descripcion)
+        },
         { name: 'og:image', content: vacanteStore.vacante.imagen_publicidad },
-        { property: 'og:url', content: `${baseUrl}/puestos-disponibles/${vacanteStore.vacante.id}` },
+        {
+          property: 'og:url',
+          content: `${baseUrl}/puestos-disponibles/${vacanteStore.vacante.id}`
+        },
         { property: 'og:type', content: 'website' },
         { name: 'twitter:card', content: 'summary_large_image' },
-        { name: 'twitter:title', content: vacanteStore.vacante.nombre},
-        { name: 'twitter:description', content:getShortDescription($q, vacanteStore.vacante.descripcion) },
-        { name: 'twitter:image', content: vacanteStore.vacante.imagen_publicidad }
+        { name: 'twitter:title', content: vacanteStore.vacante.nombre },
+        {
+          name: 'twitter:description',
+          content: getShortDescription($q, vacanteStore.vacante.descripcion)
+        },
+        {
+          name: 'twitter:image',
+          content: vacanteStore.vacante.imagen_publicidad
+        }
       ]
     })
-
 
     return {
       vacante: vacanteStore.vacante,
       dayjs,
 
-
       route,
 
       //funciones
       btnPostular,
-      btnAgregarAFavoritos,
+      btnAgregarAFavoritos
     }
   }
 })

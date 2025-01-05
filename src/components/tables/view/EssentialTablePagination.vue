@@ -604,6 +604,7 @@
             :accion8="accion8"
             :accion9="accion9"
             :accion10="accion10"
+            :accion11="accion11"
             :propsTable="props"
             :listado="listado"
           ></CustomButtons>
@@ -699,6 +700,7 @@
                   :accion8="accion8"
                   :accion9="accion9"
                   :accion10="accion10"
+                  :accion11="accion11"
                   :propsTable="props"
                   :listado="listado"
                 ></CustomButtons>

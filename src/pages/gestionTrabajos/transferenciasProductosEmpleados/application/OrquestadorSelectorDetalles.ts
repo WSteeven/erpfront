@@ -5,7 +5,7 @@ import { Ref, ref } from 'vue'
 import { DetalleProducto } from 'pages/bodega/detalles_productos/domain/DetalleProducto'
 import { TransferenciaProductoEmpleado } from '../domain/TransferenciaProductoEmpleado'
 
-export function useOrquestadorSelectorDetalles(entidad: TransferenciaProductoEmpleado, endpoint: keyof typeof endpoints) {
+export function useOrquestadorSelectorDetalles(entidad: TransferenciaProductoEmpleado|any, endpoint: keyof typeof endpoints) {
     const refListadoSeleccionable = ref()
     const listado: Ref<EntidadAuditable[]> = ref([])
     const criterioBusqueda = ref()

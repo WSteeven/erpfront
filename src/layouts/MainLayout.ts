@@ -1,7 +1,14 @@
 // Dependencias
 import { Notificacion } from 'pages/administracion/notificaciones/domain/Notificacion'
 import { useNotificationRealtimeStore } from 'stores/notificationRealtime'
-import { defineComponent, ref, computed, Ref, ComputedRef, watchEffect } from 'vue'
+import {
+  computed,
+  ComputedRef,
+  defineComponent,
+  Ref,
+  ref,
+  watchEffect
+} from 'vue'
 import { useAuthenticationStore } from 'src/stores/authentication'
 import { LocalStorage, useQuasar } from 'quasar'
 import { useMenuStore } from 'src/stores/menu'
@@ -32,16 +39,23 @@ import { useMainLayoutStore } from 'stores/mainLayout'
 import { StatusEssentialLoading } from 'components/loading/application/StatusEssentialLoading'
 
 import { MenuOption } from 'shared/menu/MenuOption'
+import { useAuthenticationExternalStore } from 'stores/authenticationExternal'
+import { EmpleadoDelegadoController } from 'recursosHumanos/empleados/modules/modoNoDisponible/infraestructure/EmpleadoDelegadoController'
+import { AxiosHttpRepository } from 'shared/http/infraestructure/AxiosHttpRepository'
+import { endpoints } from 'config/api'
+import { AxiosResponse } from 'axios'
+import { useNotificaciones } from 'shared/notificaciones'
 
 export default defineComponent({
   name: 'MainLayout',
+  methods: { useAuthenticationExternalStore },
   components: {
     EssentialLink,
     EssentialLoading,
     ModalesEntidad,
     ScrollToTopButton,
     FooterComponent,
-    CrearTicket,
+    CrearTicket
   },
 
   setup() {
@@ -60,7 +74,12 @@ export default defineComponent({
     const authenticationStore = useAuthenticationStore()
     const movilizacionSubtareaStore = useMovilizacionSubtareaStore()
     const configuracionGeneralStore = useConfiguracionGeneralStore()
+    const {notificarCorrecto, notificarAdvertencia}=useNotificaciones()
     const mainLayoutStore = useMainLayoutStore()
+    const modoNoDisponible = ref(false)
+    const permisoModoNoDisponible = computed(() =>
+      authenticationStore.can('puede.ver.btn.modo_no_disponible')
+    )
 
     /*******
      * Init
@@ -110,7 +129,7 @@ export default defineComponent({
     async function logout() {
       cargando.activar()
       await authenticationStore.logout()
-      Router.replace({ name: 'Login' })
+      await Router.replace({ name: 'Login' })
       cargando.desactivar()
     }
 
@@ -123,6 +142,25 @@ export default defineComponent({
     function toggleDarkMode() {
       $q.dark.set(Boolean(modoOscuro.value))
       LocalStorage.set('dark', modoOscuro.value)
+    }
+
+    function abrirModoNoDisponible(val) {
+      if (val) modales.abrirModalEntidad('ModoNoDisponiblePage')
+      else cancelarModoNoDisponible()
+    }
+
+    async function cancelarModoNoDisponible() {
+      //Aqui se hace una solicitud DELETE para borrar el registro de modo no disponible de algun empleado
+      cargando.activar()
+      const axios = AxiosHttpRepository.getInstance()
+      const ruta =
+        axios.getEndpoint(endpoints.empleados_delegados) +
+        '/desactivar/' +
+        authenticationStore.user.id
+      const response: AxiosResponse = await axios.get(ruta)
+      if (response.status === 200) notificarCorrecto(response.data.mensaje)
+      else notificarAdvertencia('No tienes delegaciones activas')
+      cargando.desactivar()
     }
 
     /**********************************************
@@ -173,9 +211,27 @@ export default defineComponent({
       return notificacionesAgrupadasYOrdenadas
     }
 
+    function guardado(data) {
+      console.log('captura en guardado', data)
+      switch (data.formulario) {
+        case 'ModoNoDisponiblePage':
+          modoNoDisponible.value = data.valor
+          authenticationStore.user.tiene_delegado = data.valor
+          break
+        default:
+        //
+      }
+    }
+
     async function marcarLeida(id) {
       notificacionesPusherStore.idNotificacion = id
       await notificacionesPusherStore.marcarLeida()
+    }
+
+    async function marcarComoLeidasTodas() {
+      await notificacionesPusherStore.marcarLeidasTodas(
+        authenticationStore.user.id
+      )
     }
 
     type tipo = 'center middle' | 'top start'
@@ -254,8 +310,8 @@ export default defineComponent({
             LocalStorage.set(
               'ultima_conexion',
               formatearFechaTexto(lastActive.value) +
-              ' ' +
-              new Date(lastActive.value).toLocaleTimeString('en-US')
+                ' ' +
+                new Date(lastActive.value).toLocaleTimeString('en-US')
             )
             Swal.fire({
               icon: 'error',
@@ -281,12 +337,12 @@ export default defineComponent({
     )
     watchEffect(
       () =>
-      (document.title =
-        (notificaciones.value.length
-          ? `(${notificaciones.value.length})`
-          : '') +
-        ' ' +
-        nombreEmpresa.value)
+        (document.title =
+          (notificaciones.value.length
+            ? `(${notificaciones.value.length})`
+            : '') +
+          ' ' +
+          nombreEmpresa.value)
     )
 
     // función para obtener los módulos permitidos
@@ -312,8 +368,7 @@ export default defineComponent({
 
     function filtrarMenu(val) {
       const modulosPermitidos = obtenerModulosPermitidos()
-      const resultado = filterItems(modulosPermitidos, val)
-      resultadosBusqueda.value = resultado
+      resultadosBusqueda.value = filterItems(modulosPermitidos, val)
       posicionResultados.value = -1
     }
 
@@ -321,8 +376,8 @@ export default defineComponent({
       const searchTerms = searchTerm?.toLowerCase().split(' ')
 
       function matches(item) {
-        return searchTerms?.every(term =>
-          new RegExp(term, 'i').test(item.title ?? '') && item.can
+        return searchTerms?.every(
+          term => new RegExp(term, 'i').test(item.title ?? '') && item.can
         )
       }
 
@@ -350,19 +405,23 @@ export default defineComponent({
       buscarModulo.value = null
       mostrarBuscar.value = false
     }
+
     function onKeyEnter() {
-      const rutaDestino = resultadosBusqueda.value[posicionResultados.value].link
+      const rutaDestino =
+        resultadosBusqueda.value[posicionResultados.value].link
       if (rutaDestino) Router.push(rutaDestino)
       resetearBuscador()
     }
+
     function onKeyUp() {
-      posicionResultados.value = posicionResultados.value > 0 ? posicionResultados.value - 1 : 0
+      posicionResultados.value =
+        posicionResultados.value > 0 ? posicionResultados.value - 1 : 0
     }
+
     function onKeyDown() {
       if (posicionResultados.value < refListadoBusqueda.value.length - 1)
         posicionResultados.value++
     }
-
 
     return {
       // logoClaro: `${process.env.API_URL}/storage/configuracion_general/logo_claro.jpeg`,
@@ -396,11 +455,17 @@ export default defineComponent({
       mostrarOpciones: ref(false),
       notificaciones,
       marcarLeida,
-      ordenarNotificaciones() {
-        notificaciones.value.sort((a: Notificacion, b: Notificacion) => {
-          return b.id! - a.id!
-        })
-      },
+      marcarComoLeidasTodas,
+      guardado,
+      modoNoDisponible,
+      permisoModoNoDisponible,
+      store: authenticationStore,
+      abrirModoNoDisponible,
+      // ordenarNotificaciones() {
+      //   notificaciones.value.sort((a: Notificacion, b: Notificacion) => {
+      //     return b.id! - a.id!
+      //   })
+      // },
       dayjs,
       obtenerIcono: obtenerIconoNotificacion,
       imagenPerfil,
@@ -420,7 +485,7 @@ export default defineComponent({
       onKeyEnter,
       refListadoBusqueda,
       resetearBuscador,
-      posicionResultados,
+      posicionResultados
       // idledFor,
       // tiempoInactividad,
       // mostrarAlertaInactividad,

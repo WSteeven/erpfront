@@ -11,6 +11,7 @@
     "test": "vue-cli-service test:unit"
   },
   "dependencies": {
+    "@balkangraph/orgchart.js": "^8.14.48",
     "@formkit/tempo": "^0.0.16",
     "@quasar/extras": "^1.0.0",
     "@types/vuelidate": "^0.7.15",
@@ -43,7 +44,7 @@
     "vue3-lottie": "^2.3.0"
   },
   "devDependencies": {
-    "@quasar/app-vite": "^1.0.0",
+    "@quasar/app-vite": "^1.11.0",
     "@quasar/quasar-app-extension-qcalendar": "^4.0.0-beta.15",
     "@types/i18n": "^0.13.6",
     "@types/node": "^12.20.21",
@@ -57,10 +58,5 @@
     "prettier": "^2.5.1",
     "pusher-js": "^7.6.0",
     "typescript": "^5.0.4"
-  },
-  "engines": {
-    "node": "^18 || ^16 || ^14.19",
-    "npm": ">= 6.13.4",
-    "yarn": ">= 1.21.1"
   }
 }

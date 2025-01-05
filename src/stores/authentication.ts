@@ -12,7 +12,6 @@ import { ResetPassword } from 'sistema/authentication/resetPassword/domain/Reset
 import { UltimoSaldoController } from 'pages/fondosRotativos/reportes/reporteSaldoActual/infrestucture/UltimoSaldoController'
 import { UserLogin } from 'sistema/authentication/login/domain/UserLogin'
 import { useListadosSistemaStore } from './listadosSistema'
-// import { UserLoginPostulante } from 'pages/recursosHumanos/seleccion_contratacion_personal/login-postulante/domain/UserLoginPostulante'
 
 export const useAuthenticationStore = defineStore('authentication', () => {
   // Variables locales
@@ -58,6 +57,7 @@ export const useAuthenticationStore = defineStore('authentication', () => {
 
   const esMedico = computed(() => user.value ? extraerRol(user.value.roles, rolesSistema.medico) : false)
   const esMecanicoGeneral = computed(() => user.value ? extraerRol(user.value.roles, rolesSistema.mecanicoGeneral) : false)
+  const esSso = computed(() => user.value ? extraerRol(user.value.roles, rolesSistema.sso) : false)
 
   function extraerRol(roles: string[], rolConsultar: string) {
     return roles.some((rol: string) => rol === rolConsultar)
@@ -201,7 +201,7 @@ export const useAuthenticationStore = defineStore('authentication', () => {
   }
 
   async function isUserLoggedIn(): Promise<boolean> {
-    console.log('auth...')
+    // console.log('auth...')
     if (!usuarioFueConsultado) {
       await getUser()
       usuarioFueConsultado = true
@@ -259,6 +259,7 @@ export const useAuthenticationStore = defineStore('authentication', () => {
     esFiscalizador,
     esSupervisorCampo,
     esMedico,
+    esSso,
     consultar_saldo_actual,
     extraerRol,
     listadoUsuarios,

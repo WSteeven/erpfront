@@ -8,7 +8,7 @@ const seleccionContratacionPersonal: Ref<MenuOption[]> = computed(() => {
     {
       title: 'Seleccion y Contratacion',
       icon: 'bi-person-lines-fill',
-      can: store.can('puede.ver.modulo_seleccion_contratacion'),
+      can: store.can('puede.acceder.modulo_seleccion_contratacion'),
       children: [
         {
           title: 'Solicitud de Personal',
@@ -62,7 +62,7 @@ const seleccionContratacionPersonal: Ref<MenuOption[]> = computed(() => {
           title: 'Reportes',
           icon: 'bi-graph-up-arrow',
           can:
-            store.can('puede.ver.reportes_rrhh'),
+            store.can('puede.acceder.reportes_rrhh'),
           children: [
             {
               title: 'Dashboard',

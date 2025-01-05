@@ -33,7 +33,7 @@ self.addEventListener('push', (event) => {
   const options = {
     body: event.data.text(),
     icon: './src/assets/logo.png', // Ruta a un icono para la notificación
-    badge: '12', // Ruta a un distintivo para la notificación
+    badge: './src/assets/logo_CUS.png', // Ruta a un distintivo para la notificación
   };
 
   event.waitUntil(
@@ -53,11 +53,12 @@ self.addEventListener('notificationclick', (event) => {
 
 self.addEventListener('message', (event) => {
   if (event.data && event.data.action === 'notificacionPush') {
-    console.log('Evento recibido:', event.data.mensaje);
+    // console.log('Evento recibido:', event.data.mensaje);
 
     const options = {
       body: event.data.mensaje,
-      icon: './src/assets/logo.png', // Ruta a un icono para la notificación
+      icon: event.data.icon,//'./src/assets/logo.png', // Ruta a un icono para la notificación
+      badge: event.data.badge,
       vibrate: [200, 100, 200],
       data: { url: event.data.link }, // Cambia event.data.link a la propiedad correcta que contiene la URL
     };

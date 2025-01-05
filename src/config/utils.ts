@@ -83,6 +83,7 @@ export const tabOptionsTransferencias: TabOption[] = [
   { label: 'Pendientes', value: 'PENDIENTE' },
   { label: 'Tránsito', value: 'TRANSITO' },
   { label: 'Completadas', value: 'COMPLETADO' },
+  { label: 'Anuladas', value: 'ANULADO' },
 ]
 export const tabOptionsPedidos: TabOption[] = [
   { label: 'Por autorizar', value: 'PENDIENTE' },
@@ -310,7 +311,7 @@ export const estadosTrabajos = {
   EJECUTANDO: 'EJECUTANDO',
   PAUSADO: 'PAUSADO',
   SUSPENDIDO: 'SUSPENDIDO',
-  //PENDIENTE: 'PENDIENTE',
+  PENDIENTE: 'PENDIENTE',
   CANCELADO: 'CANCELADO',
   REALIZADO: 'REALIZADO',
   FINALIZADO: 'FINALIZADO',
@@ -341,6 +342,7 @@ export const tipos_saldos = [
   { value: '4', label: 'Estado de Cuenta' },
   { value: '5', label: 'Transferencia de Saldos' },
   { value: '6', label: 'Gastos con Fotografia' },
+  { value: '7', label: 'Fotografias OYM' },
 ]
 
 export const tipos_filtros = [
@@ -374,6 +376,7 @@ export const tipo_saldo = {
   ESTADO_CUENTA: '4',
   TRANSFERENCIA_SALDOS: '5',
   GASTOS_FOTOGRAFIA: '6',
+  FOTOGRAFIAS_OYM : '7'
 }
 export const estadosTransferencias = {
   APROBADO: 1,
@@ -423,6 +426,7 @@ export const rolesSistema = {
   vendedor: 'VENDEDOR',
   financiero: 'FINANCIERO',
   esSupervisorTecnico: 'SUPERVISOR_TECNICO',
+  sso: 'SEGURIDAD Y SALUD OCUPACIONAL',
 }
 
 export const cargosSistema = {
@@ -555,12 +559,6 @@ export function convertir_fecha(fecha: Date) {
   const year = fecha.getFullYear()
   return year + '/' + month + '/' + day
 }
-export function convertir_fecha_guion(fecha) {
-  const partes = fecha.split(' ') // Dividir en fecha y hora
-  const fechaPartes = partes[0].split('-') // Dividir la fecha en día, mes y año
-  const nuevaFecha = `${fechaPartes[2]}/${fechaPartes[1]}/${fechaPartes[0]}` // Construir la nueva fecha en formato dd/mm/yyyy
-  return nuevaFecha
-}
 export function convertir_fecha_hora(fecha) {
   const dateParts = fecha.split('-') // Dividir el string en partes usando el guión como separador
   let tiempo = dateParts[2]
@@ -676,6 +674,12 @@ export const tabOptionsValoresAcreditar: TabOption[] = [
 export const tabOptionsNoticias: TabOption[] = [
   { label: 'Noticias Registradas', value: '1' },
 ]
+
+//Organigrama
+export const tabOptionsOrganigrama: TabOption[] = [
+  { label: 'Organigrama Registrado', value: '1' },
+]
+
 export const selectOptionsSiNo: SelectOption[] = [
   { label: 'Sí', value: true },
   { label: 'No', value: false },

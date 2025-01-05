@@ -154,7 +154,7 @@ export default defineComponent({
     const esCoordinadorBackup = authenticationStore.esCoordinadorBackup
     const clienteFinal = reactive(new ClienteFinal())
 
-    const { btnFinalizarTarea, mostrarSolicitarImagen, imagenSubida, btnVerImagenInforme, refVisorImagen } = useBotonesTablaTarea(mixin)
+    const { btnFinalizarTarea, mostrarSolicitarImagen, imagenSubida, btnVerImagenInforme, refVisorImagen, btnActivarTareaTemporalmente, btnDesactivarTarea } = useBotonesTablaTarea(mixin)
     const { btnIniciar, btnPausar, btnReanudar, btnRealizar, btnReagendar, btnCancelar, btnFinalizar, btnSeguimiento, btnSuspender, setFiltrarTrabajoAsignado, guardadoModalesSubtarea } = useBotonesTablaSubtarea(subtareas, modalesSubtarea, listadosAuxiliares)
     setFiltrarTrabajoAsignado(filtrarSubtareas)
 
@@ -489,6 +489,8 @@ export default defineComponent({
       centros_costos, filtrarCentrosCostos,
       checkCentroCosto,
       guardadoModalesSubtarea,
+      btnActivarTareaTemporalmente,
+      btnDesactivarTarea,
     }
   },
 })

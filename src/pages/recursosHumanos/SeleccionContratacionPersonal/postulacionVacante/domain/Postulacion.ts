@@ -15,6 +15,7 @@ export class Postulacion extends EntidadAuditable {
   tipo_identificacion: string | null //
   telefono: string | null //
   correo_personal: string | null //
+  aspiracion_salarial: number | null //
   pais: string | null //
   pais_residencia: string | null //
   fecha_nacimiento: string | null //
@@ -23,9 +24,11 @@ export class Postulacion extends EntidadAuditable {
   ruta_cv: string | null //
   estado: string | null //
   referencias: any //
+  discapacidades: any //
   calificacion: string | null //
 
   tengo_documentos_regla: boolean //
+  tengo_discapacidad: boolean
 
   tengo_formacion_academica_requerida: boolean //
   tengo_conocimientos_requeridos: boolean //
@@ -45,8 +48,9 @@ export class Postulacion extends EntidadAuditable {
     this.nombres = null
     this.nombres_apellidos = null
     this.apellidos = null
-    this.identificacion = null
     this.tipo_identificacion = null
+    this.identificacion = null
+    this.aspiracion_salarial = null
     this.telefono = null
     this.correo_personal = null
     this.genero = 'M'
@@ -60,9 +64,11 @@ export class Postulacion extends EntidadAuditable {
     this.tengo_documentos_regla = false
     this.estado = estadosPostulacion.POSTULADO
     this.referencias = []
+    this.discapacidades = []
     this.calificacion = null
 
     this.tengo_formacion_academica_requerida = false
+    this.tengo_discapacidad = false
     this.tengo_conocimientos_requeridos = false
     this.tengo_experiencia_requerida = false
     this.tengo_disponibilidad_viajar = false

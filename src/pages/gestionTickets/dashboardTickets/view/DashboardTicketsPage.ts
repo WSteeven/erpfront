@@ -197,18 +197,10 @@ export default defineComponent({
     /*********
    * Filtros
    **********/
-    const empleados = ref([])
     const empleadosResponsables = ref([])
-    function filtrarEmpleados(val, update) {
-      if (val === '') update(() => empleados.value = listadosAuxiliares.empleados.sort((a, b) => ordernarListaString(a.nombres, b.nombres)))
 
-      update(() => {
-        const needle = val.toLowerCase()
-        empleados.value = listadosAuxiliares.empleados.filter((v) => v.nombres.toLowerCase().indexOf(needle) > -1 || v.apellidos.toLowerCase().indexOf(needle) > -1)
-      })
-    }
 
-    const {
+    const {empleados, filtrarEmpleados,
       departamentos,
       filtrarDepartamentos,
     } = useFiltrosListadosTickets(listadosAuxiliares)

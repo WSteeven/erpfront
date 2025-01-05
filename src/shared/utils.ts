@@ -1,7 +1,7 @@
 import axios, { AxiosError, AxiosResponse, Method, ResponseType } from 'axios'
 import { StatusEssentialLoading } from 'components/loading/application/StatusEssentialLoading'
 import { apiConfig, endpoints } from 'config/api'
-import { date, useQuasar } from 'quasar'
+import { date } from 'quasar'
 import { ColumnConfig } from 'src/components/tables/domain/ColumnConfig'
 import { EntidadAuditable } from './entidad/domain/entidadAuditable'
 import { ApiError } from './error/domain/ApiError'
@@ -13,6 +13,7 @@ import { useAuthenticationStore } from 'stores/authentication'
 import { rolesSistema } from 'config/utils'
 import { SelectOption } from 'components/tables/domain/SelectOption'
 import { format } from '@formkit/tempo'
+import { CustomActionTable } from 'components/tables/domain/CustomActionTable'
 
 const authenticationStore = useAuthenticationStore()
 const usuario = authenticationStore.user
@@ -175,8 +176,9 @@ export function generarFilters<T>(
 export function partirNumeroDocumento(numeroDocumento: string): string[] {
   return numeroDocumento.split('-')
 }
+
 export function checkValueIsNumber(val): boolean {
-  return !isNaN(val) && !isNaN(parseFloat(val));
+  return !isNaN(val) && !isNaN(parseFloat(val))
 }
 
 export function construirNumeroDocumento(
@@ -188,7 +190,7 @@ export function construirNumeroDocumento(
 }
 
 export function sleep(ms: number): Promise<void> {
-  return new Promise((res) => setTimeout(res, ms))
+  return new Promise(res => setTimeout(res, ms))
 }
 
 export function isAxiosError(candidate: any): candidate is ApiError {
@@ -278,13 +280,23 @@ export function obtenerFechaActual(formato = 'DD-MM-YYYY') {
  * @returns una cadena en el formato 'DD-MM-AAAA', que representa la fecha obtenida sumando o restando el número
  * especificado de años, meses y días a la fecha de entrada.
  */
-export function sumarFechas(fechaString: string, anios: number, meses: number, dias: number, formato = 'DD-MM-YYYY') {
+export function sumarFechas(
+  fechaString: string,
+  anios: number,
+  meses: number,
+  dias: number,
+  formato = 'DD-MM-YYYY'
+) {
   // Paso 1: Se divide el string de fecha en dia, mes, año y se construye la fecha en formato valido de fecha
   const partesFecha = fechaString.split('-')
-  const fecha = new Date(Number(partesFecha[2]), Number(partesFecha[1]) - 1, Number(partesFecha[0]))
+  const fecha = new Date(
+    Number(partesFecha[2]),
+    Number(partesFecha[1]) - 1,
+    Number(partesFecha[0])
+  )
 
   // Paso 2: Suma los años a la fecha
-  fecha.setFullYear(fecha.getFullYear() + anios);
+  fecha.setFullYear(fecha.getFullYear() + anios)
   //Paso 3: Suma los meses a la fecha
   fecha.setMonth(fecha.getMonth() + meses)
   //Paso 4: Se suma los días
@@ -341,7 +353,7 @@ export async function obtenerTiempoActual() {
     return {
       fecha: fecha.data,
       hora: hora.data,
-      fecha_hora: fecha.data + ' ' + hora.data,
+      fecha_hora: fecha.data + ' ' + hora.data
     }
   } catch (e: any) {
     throw new ApiError(e)
@@ -376,12 +388,13 @@ export function formatBytes(bytes, decimals = 2) {
 
 export function stringToArray(listado: string) {
   const array = listado.split(',')
-  return array.map((item) => item.trim())
+  return array.map(item => item.trim())
 }
 
 export function quitarItemDeArray(listado: any[], elemento: string) {
-  return listado.filter((item) => item !== elemento)
+  return listado.filter(item => item !== elemento)
 }
+
 export function pushEventMesaggeServiceWorker(data: ServiceWorkerClass) {
   if ('serviceWorker' in navigator) {
     navigator.serviceWorker.ready.then(function (registration) {
@@ -391,7 +404,7 @@ export function pushEventMesaggeServiceWorker(data: ServiceWorkerClass) {
         mensaje: data.mensaje,
         icono: data.icono,
         link: data.link,
-        badge: data.badge,
+        badge: data.badge
       })
     })
   }
@@ -426,10 +439,10 @@ export async function imprimirArchivo(
     data: data,
     responseType: responseType,
     headers: {
-      Authorization: axiosHttpRepository.getOptions().headers.Authorization,
-    },
+      Authorization: axiosHttpRepository.getOptions().headers.Authorization
+    }
   })
-    .then((response) => {
+    .then(response => {
       if (response.status === 200) {
         if (
           response.data.size < 100 ||
@@ -454,7 +467,7 @@ export async function imprimirArchivo(
         notificarError('Se produjo un error inesperado')
       }
     })
-    .catch(async (error) => {
+    .catch(async error => {
       notificarError(error)
     })
     .finally(() => statusLoading.desactivar())
@@ -516,14 +529,14 @@ export function ordernarListaString(a: string, b: string) {
 }
 
 export function obtenerUbicacion(onUbicacionConcedida) {
-  const onErrorDeUbicacion = (err) => {
+  const onErrorDeUbicacion = err => {
     console.log('Error obteniendo ubicación: ', err)
   }
 
   const opcionesDeSolicitud = {
     enableHighAccuracy: true, // Alta precisión
     maximumAge: 0, // No queremos caché
-    timeout: 5000, // Esperar solo 5 segundos
+    timeout: 5000 // Esperar solo 5 segundos
   }
 
   navigator.geolocation.getCurrentPosition(
@@ -553,7 +566,7 @@ export function formatearFecha(fecha: string) {
   const nuevaFecha = date.buildDate({
     year: arrayFecha[2],
     month: arrayFecha[1],
-    day: arrayFecha[0],
+    day: arrayFecha[0]
   })
 
   return date.formatDate(nuevaFecha, 'YYYY-MM-DD')
@@ -564,7 +577,7 @@ export function formatearFechaHora(fecha: string, hora: string) {
   const nuevaFecha = date.buildDate({
     year: arrayFecha[2],
     month: arrayFecha[1],
-    day: arrayFecha[0],
+    day: arrayFecha[0]
   })
 
   return date.formatDate(nuevaFecha, 'YYYY-MM-DD') + ' ' + hora
@@ -580,7 +593,7 @@ export function formatearFechaSeparador(
   let nuevaFecha = date.buildDate({
     year: arrayFecha[2],
     month: arrayFecha[1],
-    day: arrayFecha[0],
+    day: arrayFecha[0]
   })
 
   if (sumarTiempo) nuevaFecha = date.addToDate(nuevaFecha, sumarTiempo)
@@ -602,7 +615,7 @@ export function formatearFechaTexto(fecha: number) {
     weekday: 'long',
     year: 'numeric',
     month: 'long',
-    day: 'numeric',
+    day: 'numeric'
   })
 }
 
@@ -745,6 +758,7 @@ export function calcularSubtotalSinImpuestosLista(val: ItemProforma) {
   suma -= val.grava_iva ? 0 : Number(val.descuento) || 0
   return suma
 }
+
 export function calcularSubtotalConImpuestosLista(val: ItemProforma) {
   let suma = 0
   suma += val.facturable && val.grava_iva ? Number(val.subtotal) || 0 : 0
@@ -787,20 +801,30 @@ export function obtenerMesMatricula(digito) {
   //recordemos que en javascript los meses empiezan por 0=enero, 1=febrero y así sucesivamente.
   switch (digito) {
     //enero es cero en meses de javascript
-    case '1': return 1 //febrero
-    case '2': return 2 //marzo
-    case '3': return 3 //abril
-    case '4': return 4 //mayo
-    case '5': return 5 //junio
-    case '6': return 6 //julio
-    case '7': return 7 //agosto
-    case '8': return 8 //septiembre
-    case '9': return 9 //octubre
-    case '0': return 10 //noviembre
+    case '1':
+      return 1 //febrero
+    case '2':
+      return 2 //marzo
+    case '3':
+      return 3 //abril
+    case '4':
+      return 4 //mayo
+    case '5':
+      return 5 //junio
+    case '6':
+      return 6 //julio
+    case '7':
+      return 7 //agosto
+    case '8':
+      return 8 //septiembre
+    case '9':
+      return 9 //octubre
+    case '0':
+      return 10 //noviembre
     // case '11': return null //diciembre, se retorna null por los rezagados
-    default: return null
+    default:
+      return null
   }
-
 }
 
 /**
@@ -813,11 +837,11 @@ export function obtenerMesMatricula(digito) {
 export function obtenerUltimoDigito(texto: string) {
   texto = String(texto)
   const ultimoDigito = texto.match(/\d(?!.*\d)/)
-  if (ultimoDigito)
-    return ultimoDigito[0]
+  if (ultimoDigito) return ultimoDigito[0]
   // return parseInt(ultimoDigito[0], 10)
   else return null
 }
+
 /*
  * La función filtra a los empleados según sus roles.
  * @param empleados - Una lista de empleados consultados en la base de datos. Cada objeto de empleado debe tener una
@@ -828,9 +852,9 @@ export function obtenerUltimoDigito(texto: string) {
  * 'roles'.
  */
 export function filtrarEmpleadosPorRoles(empleados, roles) {
-  const filtrados = empleados.filter((empleado) => {
+  const filtrados = empleados.filter(empleado => {
     const rolesEmpleado = empleado.roles.split(', ')
-    return roles.some((rol) => rolesEmpleado.includes(rol))
+    return roles.some(rol => rolesEmpleado.includes(rol))
   })
   return filtrados
 }
@@ -839,26 +863,31 @@ export function filtarVisualizacionEmpleadosSaldos(empleados) {
   if (authenticationStore.can('puede.buscar.tecnicos')) {
     const filtrados_busqueda =
       authenticationStore.esContabilidad ||
-        authenticationStore.esCoordinador ||
-        authenticationStore.esAdministrador
+      authenticationStore.esCoordinador ||
+      authenticationStore.esAdministrador
         ? empleados
-        : empleados.filter((empleado) => empleado.departamento === rolesSistema.tecnico && extraerRol(empleado.roles.split(', '), rolesSistema.tecnico) && !extraerRol(empleado.roles.split(', '), rolesSistema.coordinador))
+        : empleados.filter(
+            empleado =>
+              empleado.departamento === rolesSistema.tecnico &&
+              extraerRol(empleado.roles.split(', '), rolesSistema.tecnico) &&
+              !extraerRol(empleado.roles.split(', '), rolesSistema.coordinador)
+          )
     return filtrados_busqueda
   }
 
   const filtrados =
     authenticationStore.esContabilidad ||
-      authenticationStore.esCoordinador ||
-      authenticationStore.esAdministrador
+    authenticationStore.esCoordinador ||
+    authenticationStore.esAdministrador
       ? empleados
-      : empleados.filter((empleado) => empleado.jefe_id === usuario.id)
+      : empleados.filter(empleado => empleado.jefe_id === usuario.id)
 
   return filtrados
 }
-export function filtarJefeImediato(empleados) {
-  return empleados.filter((empleado) => empleado.id === usuario.jefe_id)[0]
-}
 
+export function filtarJefeImediato(empleados) {
+  return empleados.filter(empleado => empleado.id === usuario.jefe_id)[0]
+}
 
 export async function notificarErrores(err) {
   const axiosError = err as AxiosError
@@ -871,11 +900,16 @@ export async function notificarErrores(err) {
   }
 }
 
-export const mapearOptionsSelect = (listadoOpciones: { id: number, nombre: string }[]): SelectOption[] => {
-  return listadoOpciones.map((opcion: { id: number, nombre: string }) => {
+export const mapearOptionsSelect = (
+  listadoOpciones: {
+    id: number
+    nombre: string
+  }[]
+): SelectOption[] => {
+  return listadoOpciones.map((opcion: { id: number; nombre: string }) => {
     return {
       label: opcion.nombre,
-      value: opcion.id,
+      value: opcion.id
     }
   })
 }
@@ -884,10 +918,10 @@ export const copiarAlPortapapeles = async (texto: string) => {
   const { notificarInformacion, notificarError } = useNotificaciones()
 
   try {
-    await navigator.clipboard.writeText(texto);
-    notificarInformacion('Texto copiado al portapapeles');
+    await navigator.clipboard.writeText(texto)
+    notificarInformacion('Texto copiado al portapapeles')
   } catch (err) {
-    notificarError('Error al intentar copiar el texto al portapapeles');
+    notificarError('Error al intentar copiar el texto al portapapeles')
   }
 }
 
@@ -902,12 +936,11 @@ export const copiarAlPortapapeles = async (texto: string) => {
  */
 export function removeHTMLTags(html: string): string {
   // Expresión regular para eliminar etiquetas HTML y reemplazar &nbsp;
-  const regex = /<[^>]*>|&nbsp;/g;
+  const regex = /<[^>]*>|&nbsp;/g
   // Reemplazar las etiquetas HTML y &nbsp; por una cadena vacía
-  const plainText = html.replace(regex, '\n').trim();
-  return plainText;
+  const plainText = html.replace(regex, '\n').trim()
+  return plainText
 }
-
 
 /**
  * Esta función genera una versión resumida de una descripción dada.
@@ -925,6 +958,13 @@ export function getShortDescription($q, description: string): string {
   }
   return descripcion_plain_text
 }
+
+/**
+ * Obtiene las fechas disponibles para seleccionar en el calendario,
+ * desde el domingo hasta el día actual, en rangos de 7 días finalizando el sabado.
+ * Esto se usa en formulario de gastos, alimentacion de grupo, etc.
+ * @param date
+ */
 export function optionsFecha(date) {
   const today = new Date()
 
@@ -946,9 +986,7 @@ export function optionsFecha(date) {
   const fecha_actual = format(new Date(), 'YYYY/MM/DD')
 
   return (
-    date >= sabadoAnterior &&
-    date <= sabadoSiguiente &&
-    date <= fecha_actual
+    date >= sabadoAnterior && date <= sabadoSiguiente && date <= fecha_actual
   )
 }
 
@@ -969,4 +1007,22 @@ export const filterWhereIn = (campo: string, valores: number[]) => {
     url += '&' + campo + '[]=' + valor
   }
   return url
+}
+
+/**
+ * Esta funcion elimina un ítem del listado en función de la posición del ítem en el listado.
+ * PRECAUCION: no está verificado si funciona correctamente cuando se ordena el listado y se elimina un ítem.
+ * @param listado el listado sobre el que se va a eliminar el registro.
+ */
+export const btnEliminarDefault: CustomActionTable<any> = (listado: T[]) => {
+  const { confirmar } = useNotificaciones()
+  return {
+    titulo: 'Eliminar',
+    icono: 'bi-x',
+    color: 'negative',
+    accion: ({ posicion }) =>
+      confirmar('¿Está seguro de continuar?', () =>
+        listado?.splice(posicion, 1)
+      )
+  }
 }

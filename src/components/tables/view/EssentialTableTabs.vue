@@ -68,6 +68,7 @@
         :accion8="accion8"
         :accion9="accion9"
         :accion10="accion10"
+        :accion11="accion11"
         :accion1Header="accion1Header"
         :accion2Header="accion2Header"
         :accion3Header="accion3Header"
@@ -90,6 +91,7 @@
         @accion8="emitAccion8"
         @accion9="emitAccion9"
         @accion10="emitAccion10"
+        @accion11="emitAccion11"
         :permitir-filtrar="permitirFiltrar"
         :permitir-buscar="permitirBuscar"
         :primeraColumnaFija="primeraColumnaFija"
@@ -122,6 +124,7 @@
         :accion8="accion8"
         :accion9="accion9"
         :accion10="accion10"
+        :accion11="accion11"
         :accion1Header="accion1Header"
         :accion2Header="accion2Header"
         :accion3Header="accion3Header"
@@ -144,6 +147,7 @@
         @accion8="emitAccion8"
         @accion9="emitAccion9"
         @accion10="emitAccion10"
+        @accion11="emitAccion11"
         :permitir-filtrar="permitirFiltrar"
         :permitir-buscar="permitirBuscar"
         :primeraColumnaFija="primeraColumnaFija"
@@ -258,6 +262,10 @@ export default defineComponent({
       type: Object as () => CustomActionTable,
       required: false
     },
+    accion11: {
+      type: Object as () => CustomActionTable,
+      required: false
+    },
     accion1Header: {
       type: Object as () => CustomActionTable,
       required: false
@@ -344,6 +352,7 @@ export default defineComponent({
     'accion8',
     'accion9',
     'accion10',
+    'accion11',
     'tab-seleccionado',
     'filtrar',
     'limpiar-listado',
@@ -398,6 +407,7 @@ export default defineComponent({
     const emitAccion8 = data => emit('accion8', data)
     const emitAccion9 = data => emit('accion9', data)
     const emitAccion10 = data => emit('accion10', data)
+    const emitAccion11 = data => emit('accion11', data)
 
     function consultarTodos(uri) {
       emit('filtrar', uri)
@@ -444,6 +454,7 @@ export default defineComponent({
       emitAccion8,
       emitAccion9,
       emitAccion10,
+      emitAccion11,
       consultarTodos,
       toggleFiltros,
       seleccionado,

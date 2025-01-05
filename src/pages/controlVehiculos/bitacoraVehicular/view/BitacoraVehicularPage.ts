@@ -44,7 +44,7 @@ import { Vehiculo } from 'pages/controlVehiculos/vehiculos/domain/Vehiculo';
 export default defineComponent({
   // name:'ControlDiarioVehiculo',
   components: { TabLayoutFilterTabs2, SelectorImagen, EssentialPopupEditableTable },
-  setup(props, { emit }) {
+  setup() {
     const mixin = new ContenedorSimpleMixin(BitacoraVehicular, new BitacoraVehicularController())
     const { entidad: bitacora, disabled, listadosAuxiliares, accion } = mixin.useReferencias()
     const { setValidador, cargarVista, obtenerListados, reestablecer, listar } = mixin.useComportamiento()
@@ -255,7 +255,7 @@ export default defineComponent({
       confirmar('¿Está seguro de continuar?', () => bitacora.actividadesRealizadas.splice(posicion, 1))
     }
 
-    async function checkFinalizada(val, evt) {
+    async function checkFinalizada(val) {
       const formularioValidado = await v$.value.$validate()
       if (val) {
         confirmar('¿Está seguro de marcar como finalizada esta bitácora? Después de esto no podrás modificarla!', () =>
@@ -280,7 +280,7 @@ export default defineComponent({
         const url = apiConfig.URL_BASE + '/' + axios.getEndpoint(endpoints.bitacoras_vehiculos) + '/firmar-bitacora/' + id
         const response: AxiosResponse = await axios.post(url)
         // console.log(response)
-        if (response.status = 200) notificarCorrecto(response.data.mensaje)
+        if (response.status == 200) notificarCorrecto(response.data.mensaje)
         //se filtra los registros para mostrar en el lado correcto la bitacora actualizada
         await filtrarBitacoras('1')
         //se manda a consultar la ultima bitacora, la que se actualizó recientemente
@@ -290,7 +290,7 @@ export default defineComponent({
         await reestablecer()
         return response
       } catch (error) {
-        notificarErrores(error)
+        await notificarErrores(error)
       } finally {
         cargando.desactivar()
       }
@@ -332,7 +332,7 @@ export default defineComponent({
       titulo: 'Eliminar',
       icono: 'bi-trash',
       color: 'negative',
-      accion: ({ entidad, posicion }) => {
+      accion: ({ posicion }) => {
         eliminar({ posicion })
       },
       visible: () => true
@@ -342,7 +342,7 @@ export default defineComponent({
       titulo: 'Imprimir',
       icono: 'bi-printer',
       color: 'secondary',
-      accion: async ({ entidad, posicion }) => {
+      accion: async ({ entidad }) => {
         await imprimirPdf(entidad.id)
       },
       visible: () => tabDefecto.value === '1'
@@ -352,7 +352,7 @@ export default defineComponent({
       titulo: 'Finalizar',
       icono: 'bi-check2-circle',
       color: 'positive',
-      accion: async ({ entidad, posicion }) => {
+      accion: async ({ entidad }) => {
         // console.log('diste clic en finalizar', bitacora)
         bitacora.id = entidad.id
         bitacora.km_inicial = entidad.km_inicial

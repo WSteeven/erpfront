@@ -1,6 +1,6 @@
 <template>
-  <q-page class="flex flex-center">
-    <q-card flat bordered class="my-card bg-grey-1">
+  <q-page padding class="flex flex-center">
+    <q-card flat bordered class="my-card bg-desenfoque">
       <q-card-section>
         <div class="row items-center no-wrap">
           <div class="col">
@@ -31,8 +31,8 @@
             @blur="v$.tipo_saldo.$touch"
             @update:model-value="limpiar()"
             @filter="filtarTiposSaldos"
-            :option-value="(v) => v.value"
-            :option-label="(v) => v.label"
+            :option-value="v => v.value"
+            :option-label="v => v.label"
             emit-value
             map-options
           >
@@ -43,7 +43,9 @@
             </template>
             <template v-slot:no-option>
               <q-item>
-                <q-item-section class="text-grey"> No hay resultados </q-item-section>
+                <q-item-section class="text-grey">
+                  No hay resultados
+                </q-item-section>
               </q-item>
             </template>
           </q-select>
@@ -75,14 +77,16 @@
             use-input
             input-debounce="0"
             @filter="filtrarUsuarios"
-            :option-value="(v) => v.id"
-            :option-label="(v) => v.nombres + ' ' + v.apellidos"
+            :option-value="v => v.id"
+            :option-label="v => v.nombres + ' ' + v.apellidos"
             emit-value
             map-options
           >
             <template v-slot:no-option>
               <q-item>
-                <q-item-section class="text-grey"> No hay resultados </q-item-section>
+                <q-item-section class="text-grey">
+                  No hay resultados
+                </q-item-section>
               </q-item>
             </template>
           </q-select>
@@ -114,14 +118,16 @@
             use-input
             input-debounce="0"
             @filter="filtrarUsuariosInactivos"
-            :option-value="(v) => v.id"
-            :option-label="(v) => v.nombres + ' ' + v.apellidos"
+            :option-value="v => v.id"
+            :option-label="v => v.nombres + ' ' + v.apellidos"
             emit-value
             map-options
           >
             <template v-slot:no-option>
               <q-item>
-                <q-item-section class="text-grey"> No hay resultados </q-item-section>
+                <q-item-section class="text-grey">
+                  No hay resultados
+                </q-item-section>
               </q-item>
             </template>
             <template v-slot:after>
@@ -144,15 +150,23 @@
           >
             <template v-slot:append>
               <q-icon name="event" class="cursor-pointer">
-                <q-popup-proxy cover transition-show="scale" transition-hide="scale">
+                <q-popup-proxy
+                  cover
+                  transition-show="scale"
+                  transition-hide="scale"
+                >
                   <q-date
                     v-model="consolidado.fecha_inicio"
                     :mask="maskFecha"
-
                     today-btn
                   >
                     <div class="row items-center justify-end">
-                      <q-btn v-close-popup label="Cerrar" color="primary" flat />
+                      <q-btn
+                        v-close-popup
+                        label="Cerrar"
+                        color="primary"
+                        flat
+                      />
                     </div>
                   </q-date>
                 </q-popup-proxy>
@@ -179,14 +193,23 @@
           >
             <template v-slot:append>
               <q-icon name="event" class="cursor-pointer">
-                <q-popup-proxy cover transition-show="scale" transition-hide="scale">
+                <q-popup-proxy
+                  cover
+                  transition-show="scale"
+                  transition-hide="scale"
+                >
                   <q-date
                     v-model="consolidado.fecha_fin"
                     :mask="maskFecha"
                     today-btn
                   >
                     <div class="row items-center justify-end">
-                      <q-btn v-close-popup label="Cerrar" color="primary" flat />
+                      <q-btn
+                        v-close-popup
+                        label="Cerrar"
+                        color="primary"
+                        flat
+                      />
                     </div>
                   </q-date>
                 </q-popup-proxy>
@@ -223,22 +246,46 @@
             v-model="is_inactivo"
             color="secondary"
             label="Inactivo"
-
           ></q-checkbox>
         </div>
       </q-card-section>
 
       <q-separator></q-separator>
 
-      <q-card-actions align="around">
-        <q-btn color="positive" @click="generar_reporte(consolidado, 'excel')">
-          <q-icon name="bi-file-earmark-excel-fill" size="xs" class="q-mr-sm"></q-icon
-          >Excel</q-btn
-        >
-        <q-btn color="negative" @click="generar_reporte(consolidado, 'pdf')">
-          <q-icon name="bi-file-earmark-pdf-fill" size="xs" class="q-mr-sm"></q-icon
-          >PDF</q-btn
-        >
+      <q-card-actions align="around" class="row q-col-gutter-xs">
+        <div class="col-md-6">
+          <q-btn
+            color="positive"
+            @click="generar_reporte(consolidado, 'excel')"
+            class="full-width"
+            unelevated
+            square
+          >
+            <q-icon
+              name="bi-file-earmark-excel-fill"
+              size="xs"
+              class="q-mr-sm"
+            ></q-icon
+            >Excel</q-btn
+          >
+        </div>
+
+        <div class="col-md-6">
+          <q-btn
+            color="negative"
+            @click="generar_reporte(consolidado, 'pdf')"
+            class="full-width"
+            unelevated
+            square
+          >
+            <q-icon
+              name="bi-file-earmark-pdf-fill"
+              size="xs"
+              class="q-mr-sm"
+            ></q-icon
+            >PDF</q-btn
+          >
+        </div>
       </q-card-actions>
     </q-card>
   </q-page>

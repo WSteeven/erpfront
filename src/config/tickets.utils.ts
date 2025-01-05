@@ -19,6 +19,7 @@ export const estadosTickets = {
   FINALIZADO: 'FINALIZADO',
   FINALIZADO_SOLUCIONADO: 'FINALIZADO SOLUCIONADO',
   ETIQUETADOS_A_MI: 'ETIQUETADOS_A_MI',
+  CALIFICADO: 'CALIFICADO',
 }
 
 export const tabOptionsEstadosTickets: TabOption[] = [

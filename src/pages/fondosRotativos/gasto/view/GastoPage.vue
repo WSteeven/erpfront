@@ -12,22 +12,66 @@
     :forzarListar="true"
     :accion1="editarGasto"
     :puede-exportar="true"
+    ajustar-celdas
   >
+<!--    puede.registrar.fondos_terceros -->
+<!--    puede.delegar.registro_fondos -->
     <template #formulario>
       <q-form @submit.prevent>
         <div class="row q-col-gutter-sm q-mb-md q-mt-md q-mx-md q-py-sm">
           <!-- Empleado Solicitante -->
-          <div class="col-12 col-md-3" v-if="es_consultar">
+          <div class="col-12 col-md-3" v-if="accion===acciones.consultar">
             <label class="q-mb-sm block">Empleado Solicitante</label>
             <q-input
               v-model="gasto.empleado_info"
               placeholder="Obligatorio"
-              disable
+              disable autogrow
               outlined
               dense
             >
             </q-input>
           </div>
+
+          <!-- Usuario del gasto -->
+          <div class="col-12 col-md-3 q-mb-md col-sm-3" v-if="store.can('puede.registrar.fondos_terceros')">
+            <label class="q-mb-sm block">Empleado Solicitante</label>
+            <q-select
+              v-model="gasto.id_usuario"
+              :options="empleados_delegadores"
+              transition-show="jump-up"
+              transition-hide="jump-down"
+              :disable="disabled"
+              options-dense
+              dense
+              outlined
+              :error="!!v$.id_usuario.$errors.length"
+              @blur="v$.id_usuario.$touch"
+              error-message="Debes seleccionar un empleado al que se carga el gasto"
+              use-input
+              input-debounce="0"
+              @popup-show="ordenarLista(empleados_delegadores, 'nombres')"
+              :option-value="v => v.id"
+              :option-label="v => v.nombres + ' ' + v.apellidos"
+              emit-value
+              map-options
+            >
+              <template v-slot:error>
+                <div v-for="error of v$.id_usuario.$errors" :key="error.$uid">
+                  <div class="error-msg">{{ error.$message }}</div>
+                </div>
+              </template>
+
+              <template v-slot:no-option>
+                <q-item>
+                  <q-item-section class="text-grey">
+                    No hay resultados
+                  </q-item-section>
+                </q-item>
+              </template>
+            </q-select>
+          </div>
+
+
           <!-- Lugar -->
           <div class="col-12 col-md-3">
             <label class="q-mb-sm block">Lugar</label>
@@ -304,13 +348,46 @@
               </template>
               <template v-slot:no-option>
                 <q-item>
-                  <q-item-section class="text-grey"> No hay resultados </q-item-section>
+                  <q-item-section class="text-grey">
+                    {{ gasto.detalle ? 'No hay resultados' : 'Primero selecciona un detalle'}}
+                     </q-item-section>
                 </q-item>
               </template>
               <template v-slot:after>
                 <q-btn color="positive" @click="recargar('sub_detalle')">
                   <q-icon size="xs" class="q-mr-sm" name="bi-arrow-clockwise" />
                 </q-btn>
+              </template>
+            </q-select>
+          </div>
+<!--          {{sub_detalles}}-->
+<!--          {{gasto.sub_detalle}}-->
+          <div class="col-12 col-md-3" v-if="gasto.detalle==6">
+            <label class="q-mb-sm block">Nodo</label>
+            <q-select
+              v-model="gasto.nodo"
+              :options="nodos"
+              options-dense
+              dense
+              outlined
+              use-input
+              :disable="disabled"
+              input-debounce="0"
+              :error="!!v$.nodo.$errors.length"
+              @blur="v$.nodo.$touch"
+              @filter="filtrarNodos"
+              @popup-show="ordenarLista(nodos, 'nombre')"
+              :option-label="v => v.nombre"
+              :option-value="v => v.id"
+              emit-value
+              map-options
+            >
+              <template v-slot:no-option>
+                <no-option-component />
+              </template>
+
+              <template v-slot:error>
+                <error-component clave="nodo" :v$="v$" />
               </template>
             </q-select>
           </div>
@@ -455,6 +532,7 @@
               use-input
               input-debounce="0"
               @filter="filtrarBeneficiarios"
+              @popup-show="ordenarLista(beneficiarios, 'nombres')"
               :option-value="(v) => v.id"
               :option-label="(v) => v.nombres + ' ' + v.apellidos"
               emit-value
@@ -463,7 +541,7 @@
               <template v-slot:option="{ itemProps, opt, selected, toggleOption }">
                 <q-item v-bind="itemProps">
                   <q-item-section>
-                    {{ opt.nombres + " " + opt.apellidos }}
+                    {{ opt.apellidos + " " + opt.nombres }}
                     <q-item-label v-bind:inner-h-t-m-l="opt.nombres" />
                   </q-item-section>
                   <q-item-section side>
@@ -500,6 +578,7 @@
               input-debounce="0"
               @blur="v$.aut_especial.$touch"
               @filter="filtrarAutorizacionesEspeciales"
+              @popup-show="ordenarLista(autorizaciones_especiales, 'nombres')"
               :option-value="(v) => v.id"
               :option-label="(v) => v.nombres + ' ' + v.apellidos"
               emit-value
@@ -622,32 +701,22 @@
           <!-- Comprobante 1 Archivo -->
           <div class="col-12 col-md-3">
             <label class="q-mb-sm block">Comprobante 1</label>
-            <imagen-comprimida-component
+            <selector-imagen
               :imagen="gasto.comprobante1"
               file_extensiones=".jpg, image/*"
               @update:modelValue="(data) => (gasto.comprobante1 = data)"
-            >
-              <template v-slot:error>
-                <div v-for="error of v$.comprobante1.$errors" :key="error.$uid">
-                  <div class="error-msg">{{ error.$message }}</div>
-                </div>
-              </template>
-            </imagen-comprimida-component>
+              :error="!!v$.comprobante1.$errors.length"
+            ></selector-imagen>
           </div>
           <!-- Comprobante 2 Archivo -->
           <div class="col-12 col-md-3">
             <label class="q-mb-sm block">Comprobante 2</label>
-            <imagen-comprimida-component
+            <selector-imagen
               :imagen="gasto.comprobante2"
               file_extensiones=".jpg, image/*"
               @update:modelValue="(data) => (gasto.comprobante2 = data)"
-            >
-              <template v-slot:error>
-                <div v-for="error of v$.comprobante2.$errors" :key="error.$uid">
-                  <div class="error-msg">{{ error.$message }}</div>
-                </div>
-              </template>
-            </imagen-comprimida-component>
+              :error="!!v$.comprobante2.$errors.length"
+            ></selector-imagen>
           </div>
           <!-- Observacion -->
           <div class="col-12 col-md-3">
@@ -685,7 +754,7 @@
             </q-input>
           </div>
           <!-- Centro de Costo -->
-          <div class="col-12 col-md-3" v-if="es_consultar">
+          <div class="col-12 col-md-3" v-if="accion===acciones.consultar">
             <label class="q-mb-sm block">Centro de Costo</label>
             <q-input
               v-model="gasto.centro_costo"
@@ -697,7 +766,7 @@
             </q-input>
           </div>
           <!-- Sub Centro de Costo -->
-          <div class="col-12 col-md-3" v-if="es_consultar">
+          <div class="col-12 col-md-3" v-if="accion===acciones.consultar">
             <label class="q-mb-sm block">Sub Centro de Costo</label>
             <q-input
               v-model="gasto.subcentro_costo"

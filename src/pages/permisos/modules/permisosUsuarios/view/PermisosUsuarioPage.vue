@@ -147,7 +147,7 @@
         </div>
       </q-card-section>
     </q-card>
-    <modal-entidad :comportamiento="modales"></modal-entidad>
+    <modal-entidad :comportamiento="modales" :persistente="false"></modal-entidad>
   </q-page>
 </template>
 

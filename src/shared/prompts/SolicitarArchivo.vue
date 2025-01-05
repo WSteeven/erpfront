@@ -64,8 +64,7 @@
 
 <script lang="ts">
 // Dependencias
-import { useNotificaciones } from 'shared/notificaciones'
-import { ref, defineComponent, computed, onMounted } from 'vue'
+import { computed, defineComponent, onMounted, ref } from 'vue'
 
 // Componentes
 import GestorArchivos from 'components/gestorArchivos/GestorArchivos.vue'
