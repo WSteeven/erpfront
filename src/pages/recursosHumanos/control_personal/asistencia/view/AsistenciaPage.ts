@@ -46,7 +46,10 @@ export default defineComponent({
       }
     }
 
+
     actualizarAsistencias()
+
+    listar()
 
     return {
       mixin,

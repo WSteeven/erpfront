@@ -18,7 +18,7 @@
                 <div class="col-12 col-md-6">
                   <label class="q-mb-sm block">Empleado</label>
                   <q-input
-                    v-model="justificacion.empleado_id"
+                    v-model="justificacion.empleado"
                     outlined
                     dense
                     readonly

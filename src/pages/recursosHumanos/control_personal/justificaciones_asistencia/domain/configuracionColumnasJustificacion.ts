@@ -3,8 +3,8 @@ import { Justificacion } from './Justificacion';
 
 export const configuracionColumnasJustificacion: ColumnConfig<Justificacion>[] = [
   {
-    name: 'empleado_id',
-    field: 'empleado_id',
+    name: 'empleado',
+    field: 'empleado',
     label: 'Empleado',
     align: 'left',
     sortable: true,
