@@ -35,7 +35,7 @@ export default defineComponent({
 
     async function actualizarAsistencias() {
       const axios = AxiosHttpRepository.getInstance();
-      const url = apiConfig.URL_BASE + '/' + axios.getEndpoint(endpoints.asistencias) + '/sincronizar';
+      const url = apiConfig.URL_BASE  + axios.getEndpoint(endpoints.asistencias) + '/sincronizar';
       try {
         const response: AxiosResponse = await axios.get(url);
         listado.value = Array.isArray(response.data.results) ? response.data.results : [];

@@ -1,6 +1,6 @@
 import { EntidadAuditable } from 'shared/entidad/domain/entidadAuditable';
 
-export class Justificacion extends EntidadAuditable {
+export class Atrasos extends EntidadAuditable {
   empleado: number | null;
   fecha_atraso: string | null; // Fecha de atraso.
   minutos_atraso: number | null; // Minutos de atraso.

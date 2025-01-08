@@ -16,7 +16,7 @@ const rutasControlPersonal: RouteRecordRaw[] = [
   {
     path: '/atrasos',
     name: 'atrasos',
-    component: () => import('src/pages/recursosHumanos/control_personal/justificaciones_asistencia/view/JustificacionPage.vue'),
+    component: () => import('src/pages/recursosHumanos/control_personal/atrasos/view/AtrasosPage.vue'),
     meta: { requiresAuth: true }
   },
   {

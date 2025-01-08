@@ -1,8 +1,8 @@
 import { TransaccionSimpleController } from 'shared/contenedor/modules/simple/infraestructure/TransacccionSimpleController'
-import { Justificacion } from '../domain/Justificacion'
+import { Atrasos } from '../domain/Atrasos'
 import { endpoints } from 'config/api'
 
-export class JustificacionController extends TransaccionSimpleController<Justificacion> {
+export class AtrasosController extends TransaccionSimpleController<Atrasos> {
   constructor() {
     super(endpoints.atrasos)
   }

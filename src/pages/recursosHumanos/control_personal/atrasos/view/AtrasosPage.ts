@@ -1,5 +1,5 @@
 import { defineComponent, ref } from 'vue'
-import { configuracionColumnasJustificacion } from '../domain/configuracionColumnasJustificacion'
+import { configuracionColumnasAtrasos } from '../domain/configuracionColumnasAtrasos'
 import { required } from '@vuelidate/validators'
 import { useVuelidate } from '@vuelidate/core'
 import { apiConfig, endpoints } from 'config/api'
@@ -10,18 +10,18 @@ import TabLayoutFilterTabs2 from 'shared/contenedor/modules/simple/view/TabLayou
 import EssentialEditor from 'components/editores/EssentialEditor.vue'
 
 import { ContenedorSimpleMixin } from 'shared/contenedor/modules/simple/application/ContenedorSimpleMixin'
-import { JustificacionController } from '../infraestructure/JustificacionController'
-import { Justificacion } from './../domain/Justificacion'
+import { AtrasosController } from '../infraestructure/AtrasosController'
+import { Atrasos } from '../domain/Atrasos'
 
 export default defineComponent({
   name: 'JustificacionPage',
   components: { TabLayoutFilterTabs2, EssentialEditor },
   setup() {
     const mixin = new ContenedorSimpleMixin(
-      Justificacion,
-      new JustificacionController()
+      Atrasos,
+      new AtrasosController()
     )
-    const { entidad: justificacion, listado, disabled } = mixin.useReferencias()
+    const { entidad: atraso, listado, disabled } = mixin.useReferencias()
     const { setValidador, listar } = mixin.useComportamiento()
     const tabDefecto = ref('0') // Por defecto "Justificados"
 
@@ -29,7 +29,7 @@ export default defineComponent({
       justificacion: { required }
     }
 
-    const v$ = useVuelidate(reglas, justificacion)
+    const v$ = useVuelidate(reglas, atraso)
     setValidador(v$.value)
 
     const tabOptions = [
@@ -46,7 +46,6 @@ export default defineComponent({
       const axios = AxiosHttpRepository.getInstance()
       const url =
         apiConfig.URL_BASE +
-        '/' +
         axios.getEndpoint(endpoints.atrasos) +
         '/sincronizar'
       try {
@@ -65,10 +64,10 @@ export default defineComponent({
 
     return {
       mixin,
-      justificacion,
+      atraso,
       v$,
       disabled,
-      configuracionColumnas: configuracionColumnasJustificacion,
+      configuracionColumnas: configuracionColumnasAtrasos,
       filtrarListadoAtrasos,
       tabDefecto,
       tabOptions

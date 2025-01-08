@@ -1,7 +1,7 @@
 import { ColumnConfig } from 'components/tables/domain/ColumnConfig';
-import { Justificacion } from './Justificacion';
+import { Atrasos } from './Atrasos';
 
-export const configuracionColumnasJustificacion: ColumnConfig<Justificacion>[] = [
+export const configuracionColumnasAtrasos: ColumnConfig<Atrasos>[] = [
   {
     name: 'empleado',
     field: 'empleado',

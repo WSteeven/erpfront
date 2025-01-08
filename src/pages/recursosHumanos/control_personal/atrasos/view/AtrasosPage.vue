@@ -86,4 +86,4 @@
   </tab-layout-filter-tabs2>
 </template>
 
-<script src="./JustificacionPage.ts" lang="ts"></script>
+<script src="./AtrasosPage.ts" lang="ts"></script>
