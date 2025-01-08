@@ -525,6 +525,8 @@ export default defineComponent({
     //ACCIONES DE BUSQUEDA DE MODULO
 
     return {
+      correo: computed(() => 'https://'+configuracionGeneralStore.configuracion?.sitio_web+'/webmail'),
+
       logoClaro: computed(
         () => configuracionGeneralStore.configuracion?.logo_claro
       ),
