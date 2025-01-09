@@ -5,7 +5,7 @@ export const configuracionColumnasHorarioLaboral: ColumnConfig<HorarioLaboral>[]
     {
         name: 'tipo_horario',
         field: 'tipo_horario',
-        label: 'Hora de Entrada',
+        label: 'Tipo de Horario',
         align: 'left',
         sortable: true
     },
