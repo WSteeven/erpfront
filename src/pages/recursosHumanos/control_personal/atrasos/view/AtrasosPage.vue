@@ -18,7 +18,7 @@
                 <div class="col-12 col-md-6">
                   <label class="q-mb-sm block">Empleado</label>
                   <q-input
-                    v-model="justificacion.empleado"
+                    v-model="atraso.empleado"
                     outlined
                     dense
                     readonly
@@ -29,7 +29,7 @@
                 <div class="col-12 col-md-3">
                   <label class="q-mb-sm block">Fecha de Atraso</label>
                   <q-input
-                    v-model="justificacion.fecha_atraso"
+                    v-model="atraso.fecha_atraso"
                     outlined
                     dense
                     readonly
@@ -40,7 +40,7 @@
                 <div class="col-12 col-md-3">
                   <label class="q-mb-sm block">Minutos de Atraso</label>
                   <q-input
-                    v-model="justificacion.minutos_atraso"
+                    v-model="atraso.minutos_atraso"
                     outlined
                     dense
                     readonly
@@ -51,7 +51,7 @@
                 <div class="col-12 col-md-3">
                   <label class="q-mb-sm block">Segundos de Atraso</label>
                   <q-input
-                    v-model="justificacion.segundos_atraso"
+                    v-model="atraso.segundos_atraso"
                     outlined
                     dense
                     readonly
@@ -63,17 +63,17 @@
                 <div class="col-12 col-md-3">
                   <br />
                   <q-toggle
-                    v-model="justificacion.requiere_justificacion"
+                    v-model="atraso.requiere_justificacion"
                     label="¿Requiere Justificación?"
                     color="positive"
                     :disable="disabled"
                   />
                 </div>
                 <!-- Justificación -->
-                <div class="col-12" v-if="justificacion.requiere_justificacion">
+                <div class="col-12" v-if="atraso.requiere_justificacion">
                   <label class="q-mb-sm block">Justificación de Atraso</label>
                   <essential-editor
-                    v-model="justificacion.justificacion"
+                    v-model="atraso.justificacion"
                     :disable="disabled"
                   ></essential-editor>
                 </div>

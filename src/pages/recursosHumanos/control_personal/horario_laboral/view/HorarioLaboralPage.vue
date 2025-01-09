@@ -7,6 +7,25 @@
     <template #formulario>
       <q-form @submit.prevent>
         <div class="row q-col-gutter-sm q-py-md">
+          <!-- Tipo de Horario -->
+          <div class="col-12 col-md-12">
+            <label class="q-mb-sm block">Tipo de Horario</label>
+            <q-select
+              v-model="horarioLaboral.tipo_horario"
+              :options="tipoHorarioOptions"
+              placeholder="Seleccionar"
+              :readonly="disabled"
+              outlined
+              dense
+              :error="!!v$.tipo_horario.$errors.length"
+            >
+              <template v-slot:error>
+                <div v-for="error of v$.tipo_horario.$errors" :key="error.$uid">
+                  <div class="error-msg">{{ error.$message }}</div>
+                </div>
+              </template>
+            </q-select>
+          </div>
           <!-- Hora de Entrada -->
           <div class="col-12 col-md-6">
             <label class="q-mb-sm block">Hora de Entrada</label>

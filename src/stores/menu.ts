@@ -917,12 +917,6 @@ export const useMenuStore = defineStore('menu', () => {
                   icon: 'bi-clock',
                   can: true,
                 },
-                {
-                  title: 'Horario de Almuerzo',
-                  link: 'horario-almuerzo',
-                  icon: 'bi-clock-history',
-                  can: true,
-                },
               ]
             }
           ]

@@ -19,10 +19,16 @@ export default defineComponent({
     const { entidad: horarioLaboral, disabled } = mixin.useReferencias();
     const { setValidador } = mixin.useComportamiento();
 
+    const tipoHorarioOptions = [
+      { label: 'Laboral', value: 'laboral' },
+      { label: 'Almuerzo', value: 'almuerzo' },
+    ];
+
     // Reglas de validación
     const reglas = {
       hora_entrada: { required },
       hora_salida: { required },
+      tipo_horario: { required },
     };
 
     const v$ = useVuelidate(reglas, horarioLaboral);
@@ -33,6 +39,7 @@ export default defineComponent({
       horarioLaboral,
       v$,
       disabled,
+      tipoHorarioOptions,
       configuracionColumnas: configuracionColumnasHorarioLaboral,
     };
   },
