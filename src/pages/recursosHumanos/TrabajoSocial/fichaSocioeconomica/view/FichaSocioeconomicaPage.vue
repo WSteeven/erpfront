@@ -183,7 +183,8 @@
               </q-select>
 <!--              </q-input>-->
             </div>
-
+          </div>
+            <div class="row q-col-gutter-sm  border-grey q-pa-xs q-ma-sm">
             <!-- En caso de emergencia  -->
             <div class="col-12 col-md-3 q-mb-md">
               <label class="q-mb-sm block"
@@ -253,8 +254,114 @@
                 </template>
               </q-input>
             </div>
+            </div>
+            <div class="row q-col-gutter-sm  border-grey q-pa-xs q-ma-sm">
+              <!-- Contacto que no viva con ud  -->
+              <div class="col-12 col-md-3 q-mb-md">
+                <label class="q-mb-sm block"
+                >Contacto que no viva con usted
+                </label>
+                <q-input
+                  v-model="ficha.contacto_emergencia_externo"
+                  :disable="disabled"
+                  placeholder="Familiar que no vive con usted"
+                  autogrow
+                  :error="!!v$.contacto_emergencia_externo.$errors.length"
+                  @blur="v$.contacto_emergencia_externo.$touch"
+                  dense
+                  outlined
+                >
+                  <template v-slot:error>
+                    <error-component :v$="v$" clave="contacto_emergencia_externo" />
+                  </template>
+                </q-input>
+              </div>
+
+              <!-- Parentesco  -->
+              <div class="col-12 col-md-3 q-mb-md">
+                <label class="q-mb-sm block">Parentesco Contacto Externo</label>
+                <q-select
+                  v-model="ficha.parentesco_contacto_emergencia_externo"
+                  :options="parentescos"
+                  transition-show="jump-up"
+                  transition-hide="jump-down"
+                  :disable="disabled"
+                  options-dense
+                  dense
+                  outlined
+                  :error="!!v$.parentesco_contacto_emergencia_externo.$errors.length"
+                  @blur="v$.parentesco_contacto_emergencia_externo.$touch"
+                  error-message="Debes seleccionar un parentesco"
+                  :option-value="v => v.value"
+                  :option-label="v => v.nombre"
+                  emit-value
+                  map-options
+                >
+                  <template v-slot:error>
+                    <error-component
+                      :v$="v$"
+                      clave="parentesco_contacto_emergencia_externo"
+                    />
+                  </template>
+                </q-select>
+              </div>
+
+              <!-- telefono -->
+              <div class="col-12 col-md-3 q-mb-md">
+                <label class="q-mb-sm block">Teléfono Contacto Externo</label>
+                <q-input
+                  v-model="ficha.telefono_contacto_emergencia_externo"
+                  :disable="disabled"
+                  :error="!!v$.telefono_contacto_emergencia_externo.$errors.length"
+                  @blur="v$.telefono_contacto_emergencia_externo.$touch"
+                  dense
+                  outlined
+                >
+                  <template v-slot:error>
+                    <error-component
+                      :v$="v$"
+                      clave="telefono_contacto_emergencia_externo"
+                    />
+                  </template>
+                </q-input>
+              </div>
+
+              <!-- Ciudad de Trabajo -->
+              <div class="col-12 col-md-3 q-mb-md">
+                <label class="q-mb-sm block">Ciudad del Contacto Externo</label>
+                <q-select
+                  v-model="ficha.ciudad_contacto_emergencia_externo"
+                  :options="cantones"
+                  transition-show="jump-up"
+                  transition-hide="jump-down"
+                  :disable="disabled"
+                  options-dense
+                  dense
+                  outlined
+                  :input-debounce="0"
+                  use-input
+                  @filter="filtrarCantones"
+                  @popup-show="ordenarLista(cantones, 'canton')"
+                  :error="!!v$.ciudad_contacto_emergencia_externo.$errors.length"
+                  @blur="v$.ciudad_contacto_emergencia_externo.$touch"
+                  :option-value="v => v.id"
+                  :option-label="v => v.canton"
+                  emit-value
+                  map-options
+                >
+                  <template v-slot:error>
+                    <error-component :v$="v$" clave="ciudad_contacto_emergencia_externo" />
+                  </template>
+
+                  <template v-slot:no-option>
+                    <no-option-component/>
+                  </template>
+                </q-select>
+              </div>
+<!--            </div>-->
           </div>
         </q-expansion-item>
+        {{ficha.composicion_familiar}}
         <!--        Informacion del conyuge -->
         <q-expansion-item
           class="overflow-hidden q-mb-md expansion"
@@ -406,7 +513,37 @@
               <option-group-component
                 v-model="ficha.conyuge.tiene_dependencia_laboral"
                 :disable="disabled"
+                @update:model-value="checkDependenciaLaboral"
               />
+            </div>
+
+            <!-- Tiene negocio propio -->
+            <div class="col-12 col-md-3" v-if="!ficha.conyuge.tiene_dependencia_laboral">
+              <label class="q-mb-sm block">¿Tiene negocio propio?</label>
+              <option-group-component
+                v-model="ficha.conyuge.tiene_negocio_propio"
+                :disable="disabled"
+                @update:model-value="checkNegocioPropio"
+              />
+            </div>
+
+            <!-- negocio propio -->
+            <div class="col-12 col-md-3" v-if="ficha.conyuge.tiene_negocio_propio">
+              <label class="q-mb-sm block">Especifique negocio propio o emprendimiento</label>
+              <q-input
+                v-model="ficha.conyuge.negocio_propio"
+                placeholder="Obligatorio"
+                :disable="disabled"
+                :error="!!v$.conyuge.negocio_propio.$errors.length"
+                @blur="v$.conyuge.negocio_propio.$touch"
+                autogrow
+                outlined
+                dense
+              >
+                <template v-slot:error>
+                  <error-component :v$="v$" clave="conyuge.negocio_propio" />
+                </template>
+              </q-input>
             </div>
 
             <!-- Promedio de ingreso mensual -->
@@ -476,6 +613,7 @@
                 :permitir-editar="false"
                 :permitir-consultar="false"
                 permitirEditarModal
+                @fila-modificada="filaModificadaHijo"
                 :mostrarCantidadElementos="true"
                 :accion1-header="btnAgregarFilaHijo"
                 :accion1="btnEliminarDefault(ficha.hijos)"
@@ -658,6 +796,25 @@
                 </template>
               </q-input>
             </div>
+
+            <!-- Salario -->
+            <div class="col-12 col-md-3">
+              <label class="q-mb-sm block">Salario último empleo</label>
+              <q-input
+                v-model="ficha.experiencia_previa.salario"
+                placeholder="Obligatorio"
+                :disable="disabled"
+                autogrow
+                outlined
+                dense
+                :error="!!v$.experiencia_previa.salario.$errors.length"
+                @blur="v$.experiencia_previa.salario.$touch"
+              >
+                <template v-slot:error>
+                  <error-component :v$="v$" clave="experiencia_previa.salario" />
+                </template>
+              </q-input>
+            </div>
           </div>
           <div class="col-12 text-center q-pa-md" v-else>
             <callout-component
@@ -676,6 +833,7 @@
           default-opened
         >
           <informacion-vivienda
+            :mixin="mixin"
             :vivienda="ficha.vivienda"
             :accion="accion"
             :disable="disabled"
@@ -963,7 +1121,27 @@
                 clave="situacion_socioeconomica.tiene_terreno"
                 :v$="v$"
                 :error="!!v$.situacion_socioeconomica.tiene_terreno.$errors.length"
+                @update:model-value="checkTieneTerreno"
               />
+            </div>
+
+            <!-- Especificacion de tiene terreno -->
+            <div class="col-12 col-md-3" v-if="ficha.situacion_socioeconomica.tiene_terreno">
+              <label class="q-mb-sm block">Especifique terreno/s que posee</label>
+              <q-input
+                v-model="ficha.situacion_socioeconomica.especificacion_terreno"
+                placeholder="Obligatorio"
+                :disable="disabled"
+                :error="!!v$.situacion_socioeconomica.especificacion_terreno.$errors.length"
+                @blur="v$.situacion_socioeconomica.especificacion_terreno.$touch"
+                autogrow
+                outlined
+                dense
+              >
+                <template v-slot:error>
+                  <error-component :v$="v$" clave="situacion_socioeconomica.especificacion_terreno" />
+                </template>
+              </q-input>
             </div>
 
             <!-- tiene_bienes -->
@@ -974,8 +1152,28 @@
                 :disable="disabled"
                 clave="situacion_socioeconomica.tiene_bienes"
                 :v$="v$"
+                @update:model-value="checkTieneBienes"
                 :error="!!v$.situacion_socioeconomica.tiene_bienes.$errors.length"
               />
+            </div>
+
+            <!-- Especificacion de tiene bienes -->
+            <div class="col-12 col-md-3" v-if="ficha.situacion_socioeconomica.tiene_bienes">
+              <label class="q-mb-sm block">Especifique bien/es que posee</label>
+              <q-input
+                v-model="ficha.situacion_socioeconomica.especificacion_bienes"
+                placeholder="Obligatorio"
+                :disable="disabled"
+                :error="!!v$.situacion_socioeconomica.especificacion_bienes.$errors.length"
+                @blur="v$.situacion_socioeconomica.especificacion_bienes.$touch"
+                autogrow
+                outlined
+                dense
+              >
+                <template v-slot:error>
+                  <error-component :v$="v$" clave="situacion_socioeconomica.especificacion_bienes" />
+                </template>
+              </q-input>
             </div>
 
             <!-- tiene ingresos adicionales -->
@@ -989,7 +1187,28 @@
                 clave="situacion_socioeconomica.tiene_ingresos_adicionales"
                 :v$="v$"
                 :error="!!v$.situacion_socioeconomica.tiene_ingresos_adicionales.$errors.length"
+                @update:model-value="checkTieneIngresosAdicionales"
               />
+            </div>
+
+            <!-- Especificacion de ingresos adicionales -->
+            <div class="col-12 col-md-3" v-if="ficha.situacion_socioeconomica.tiene_ingresos_adicionales">
+              <label class="q-mb-sm block">Especifique origen de ingresos adicionales</label>
+              <q-input
+                v-model="ficha.situacion_socioeconomica.especificacion_ingresos_adicionales"
+                placeholder="Obligatorio"
+                hint="Separe con comas para especificar varios"
+                :disable="disabled"
+                :error="!!v$.situacion_socioeconomica.especificacion_ingresos_adicionales.$errors.length"
+                @blur="v$.situacion_socioeconomica.especificacion_ingresos_adicionales.$touch"
+                autogrow
+                outlined
+                dense
+              >
+                <template v-slot:error>
+                  <error-component :v$="v$" clave="situacion_socioeconomica.especificacion_ingresos_adicionales" />
+                </template>
+              </q-input>
             </div>
 
             <!-- Ingresos adicionales -->
@@ -1023,7 +1242,27 @@
               <option-group-component
                 v-model="ficha.situacion_socioeconomica.apoya_familiar_externo"
                 :disable="disabled"
+                @update:model-value="checkApoyaEconomicamenteFamiliarExterno"
               />
+            </div>
+
+            <!-- Especificacion de ingresos adicionales -->
+            <div class="col-12 col-md-3" v-if="ficha.situacion_socioeconomica.apoya_familiar_externo">
+              <label class="q-mb-sm block">Especifique monto ($) con que apoya mensualmente </label>
+              <q-input
+                v-model="ficha.situacion_socioeconomica.valor_apoyo_familiar_externo"
+                placeholder="Obligatorio"
+                :disable="disabled"
+                :error="!!v$.situacion_socioeconomica.valor_apoyo_familiar_externo.$errors.length"
+                @blur="v$.situacion_socioeconomica.valor_apoyo_familiar_externo.$touch"
+                autogrow
+                outlined
+                dense
+              >
+                <template v-slot:error>
+                  <error-component :v$="v$" clave="situacion_socioeconomica.valor_apoyo_familiar_externo" />
+                </template>
+              </q-input>
             </div>
 
             <!-- Familiar externo apoyado -->

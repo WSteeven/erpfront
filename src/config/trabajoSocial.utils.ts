@@ -9,6 +9,11 @@ export const tipos_viviendas = [
   'DE LOS PADRES O FAMILIARES',
   'INVADIDA',
 ]
+export const numero_plantas = [
+  '1 PLANTA',
+  '2 PLANTAS',
+  '3 O MAS PLANTAS',
+]
 
 
 export const tipos_predominantes = {
@@ -145,8 +150,8 @@ export const optionsProblemasSociales: OptionGroup[] = [
     uncheckedIcon:'bi-square'
   },
   {
-    label: 'PROBLEMAS DE ADICCION (Droga, alcohol, etc)',
-    value: 'PROBLEMAS DE ADICCION',
+    label: 'DEPENDENCIA DE SUSTANCIAS (Droga, alcohol, etc)',
+    value: 'DEPENDENCIA DE SUSTANCIAS',
     checkedIcon:'bi-check-square-fill',
     uncheckedIcon:'bi-square'
   },{
@@ -246,9 +251,19 @@ export const optionsCapacitaciones: OptionGroup[] = [
     value: 'POLICIA',
     checkedIcon:'bi-check-square-fill',
     uncheckedIcon:'bi-square'
+  },{
+    label: 'ANT',
+    value: 'ANT',
+    checkedIcon:'bi-check-square-fill',
+    uncheckedIcon:'bi-square'
   }
 ]
 
+export const tiposHijos = [
+  {nombre: 'BIOLOGICO', value:'BIOLOGICO'},
+  {nombre: 'PUTATIVO', value:'PUTATIVO'},
+  {nombre: 'ADOPTIVO', value:'ADOPTIVO'},
+]
 
 export const parentescos = [
   ...parentezcos,

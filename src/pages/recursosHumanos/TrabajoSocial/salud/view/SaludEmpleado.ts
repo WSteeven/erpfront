@@ -9,16 +9,18 @@ import { ContenedorSimpleMixin } from 'shared/contenedor/modules/simple/applicat
 import { EntidadAuditable } from 'shared/entidad/domain/entidadAuditable'
 import { ColumnConfig } from 'components/tables/domain/ColumnConfig'
 import { TipoDiscapacidad } from 'recursosHumanos/tipo-discapacidad/domain/TipoDiscapacidad'
-import { acciones, accionesTabla } from 'config/utils'
+import { acciones, accionesTabla, maskFecha } from 'config/utils'
 import { optionsLugaresAtencion, parentescos } from 'config/trabajoSocial.utils'
 import useVuelidate from '@vuelidate/core'
 import { helpers, minValue, required, requiredIf } from 'shared/i18n-validators'
 import { TipoDiscapacidadController } from 'recursosHumanos/tipo-discapacidad/infraestructure/TipoDiscapacidadController'
 import ErrorComponent from 'components/ErrorComponent.vue'
 import NoOptionComponent from 'components/NoOptionComponent.vue'
+import SelectorImagen from 'components/SelectorImagen.vue'
 
 export default defineComponent({
   components: {
+    SelectorImagen,
     NoOptionComponent,
     ErrorComponent,
     EssentialTable,
@@ -69,7 +71,15 @@ export default defineComponent({
           () => props.salud.tiene_familiar_dependiente_discapacitado
         )
       },
+      imagen_cedula_familiar_dependiente_discapacitado: {
+        required: requiredIf(
+          () => props.salud.tiene_familiar_dependiente_discapacitado
+        )
+      },
       enfermedad_cronica: {
+        required: requiredIf(() => props.salud.tiene_enfermedad_cronica)
+      },
+      fecha_enfermedad_cronica: {
         required: requiredIf(() => props.salud.tiene_enfermedad_cronica)
       },
       lugar_atencion: { required },
@@ -101,11 +111,11 @@ export default defineComponent({
       configuracionColumnasDiscapacidades,
       accionesTabla,
       acciones,
+      maskFecha,
 
       // listados
       optionsLugaresAtencion,
       parentescos,
-
       //funciones
       agregarDiscapacidad,
 

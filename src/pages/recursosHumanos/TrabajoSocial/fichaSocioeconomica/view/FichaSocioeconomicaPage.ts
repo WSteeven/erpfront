@@ -1,4 +1,4 @@
-import { defineComponent, ref } from 'vue'
+import { defineComponent, ref, toRaw, unref, watch } from 'vue'
 import TabLayoutFilterTabs2 from 'shared/contenedor/modules/simple/view/TabLayoutFilterTabs2.vue'
 import ComposicionFamiliar from 'trabajoSocial/composicion_familiar/view/ComposicionFamiliar.vue'
 import OptionGroupComponent from 'components/optionGroup/view/OptionGroupComponent.vue'
@@ -42,6 +42,7 @@ import {
   parentescos,
   tipos_predominantes,
   tipos_viviendas,
+  tiposHijos,
   vehiculos
 } from 'config/trabajoSocial.utils'
 import { configuracionColumnasFamiliares } from 'trabajoSocial/composicion_familiar/domain/configuracionColumnasFamiliares'
@@ -59,6 +60,7 @@ import { AxiosHttpRepository } from 'shared/http/infraestructure/AxiosHttpReposi
 import { apiConfig, endpoints } from 'config/api'
 import { useNotificacionStore } from 'stores/notificacion'
 import { useCargandoStore } from 'stores/cargando'
+import { ColumnConfig } from 'components/tables/domain/ColumnConfig'
 
 export default defineComponent({
   components: {
@@ -106,6 +108,18 @@ export default defineComponent({
           params: { estado: 1 }
         }
       })
+      configuracionColumnasHijos.find(
+        (item: ColumnConfig<Hijo>) => item.field === 'tipo'
+      )!.options = tiposHijos.map(v => {
+        return { value: v.value, label: v.nombre }
+      })
+      configuracionColumnasHijos.find(
+        (item: ColumnConfig<Hijo>) => item.field === 'genero'
+      )!.options = parentescos
+        .filter(item => ['HIJO', 'HIJA'].includes(item.nombre))
+        .map(item => {
+          return { value: item.nombre, label: item.nombre }
+        })
 
       // configuracion de listados
       empleados.value = listadosAuxiliares.empleados
@@ -135,6 +149,10 @@ export default defineComponent({
       contacto_emergencia: { required },
       parentesco_contacto_emergencia: { required },
       telefono_contacto_emergencia: { required },
+      contacto_emergencia_externo: { required },
+      parentesco_contacto_emergencia_externo: { required },
+      telefono_contacto_emergencia_externo: { required },
+      ciudad_contacto_emergencia_externo: { required },
       imagen_rutagrama: {
         required: requiredIf(() => accion.value == acciones.editar)
       },
@@ -149,10 +167,14 @@ export default defineComponent({
         telefono: { required: requiredIf(() => ficha.tiene_conyuge) },
         promedio_ingreso_mensual: {
           required: requiredIf(() => ficha.tiene_conyuge)
+        },
+        negocio_propio: {
+          required: requiredIf(() => ficha.conyuge?.tiene_negocio_propio)
         }
       },
       hijos: {
         $each: helpers.forEach({
+          tipo: { required },
           nombres_apellidos: { required },
           ocupacion: { required },
           edad: { required, minValue: minValue(0) }
@@ -177,7 +199,8 @@ export default defineComponent({
         },
         motivo_retiro: {
           required: requiredIf(() => ficha.tiene_experiencia_previa)
-        }
+        },
+        salario: { required: requiredIf(() => ficha.tiene_experiencia_previa) }
       },
       vivienda: {
         tipo: { required },
@@ -211,6 +234,22 @@ export default defineComponent({
             () => ficha.situacion_socioeconomica?.tiene_prestamos
           )
         },
+        especificacion_terreno: {
+          required: requiredIf(
+            () => ficha.situacion_socioeconomica?.tiene_terreno
+          )
+        },
+        especificacion_bienes: {
+          required: requiredIf(
+            () => ficha.situacion_socioeconomica?.tiene_bienes
+          )
+        },
+        especificacion_ingresos_adicionales: {
+          required: requiredIf(
+            () => ficha.situacion_socioeconomica?.tiene_ingresos_adicionales
+          )
+        },
+
         entidad_bancaria: {
           required: requiredIf(
             () => ficha.situacion_socioeconomica?.tiene_prestamos
@@ -229,6 +268,11 @@ export default defineComponent({
         ingresos_adicionales: {
           required: requiredIf(
             () => ficha.situacion_socioeconomica?.tiene_ingresos_adicionales
+          )
+        },
+        valor_apoyo_familiar_externo: {
+          required: requiredIf(
+            () => ficha.situacion_socioeconomica?.apoya_familiar_externo
           )
         },
         familiar_externo_apoyado: {
@@ -268,14 +312,31 @@ export default defineComponent({
     }
 
     async function empleadoSeleccionado() {
+      const idSeleccionado = ficha.empleado
+      ficha.hydrate(new FichaSocioeconomica())
+      ficha.empleado = idSeleccionado
       const fichaEncontrada = ref()
       empleadoStore.idEmpleado = ficha.empleado
       await empleadoStore.cargarEmpleado()
       empleado.value = empleadoStore.empleado
+      const familiar = new Familiar()
+      familiar.id = ficha.composicion_familiar.length
+        ? encontrarUltimoIdListado(ficha.composicion_familiar) + 1
+        : 1
+      familiar.nombres_apellidos =
+        empleado.value.nombres + ' ' + empleado.value.apellidos
+      familiar.edad = empleado.value.edad
+      familiar.parentesco = parentescos.find(item => item.nombre == 'YO').nombre
+      familiar.estado_civil = empleado.value.estado_civil
+      familiar.instruccion = empleado.value.nivel_academico
+      familiar.ocupacion = empleado.value.nombre_cargo
+      familiar.discapacidad = 0
+      familiar.ingreso_mensual = 0
+      ficha.composicion_familiar.push(familiar)
       if (await empleadoStore.tieneFichaSocioeconomica()) {
         fichaEncontrada.value =
           await empleadoStore.obtenerUltimaFichaSocieconomica()
-        console.log(fichaEncontrada.value)
+        // console.log(fichaEncontrada.value)
         ficha.hydrate(fichaEncontrada.value)
         accion.value = acciones.editar
         notificarCorrecto(
@@ -294,6 +355,84 @@ export default defineComponent({
         ? encontrarUltimoIdListado(ficha.salud.discapacidades) + 1
         : 1
       listado.push(discapacidad)
+    }
+
+    const ultimoCambioHijos = ref(null)
+    const temporizadorHijos = ref(null)
+    const old_row = new Hijo()
+
+    function filaModificadaHijo(row: Hijo) {
+      ultimoCambioHijos.value = Date.now()
+      reiniciarTemporizadorHijos()
+    }
+
+    function sincronizarHijosEnComposicionFamiliar() {
+      console.log('Sincronizando hijos...')
+
+      // Filtrar y eliminar registros de tipo 'HIJO' o 'HIJA' en ficha.composicion_familiar
+      ficha.composicion_familiar = ficha.composicion_familiar.filter(
+        (familiar: Familiar) => !['HIJO', 'HIJA'].includes(familiar.parentesco)
+      )
+      ficha.hijos.forEach((hijo: Hijo) => {
+        const familiar = new Familiar()
+        familiar.id = ficha.composicion_familiar.length
+          ? encontrarUltimoIdListado(ficha.composicion_familiar) + 1
+          : 1
+        familiar.nombres_apellidos = hijo.nombres_apellidos
+        familiar.edad = hijo.edad
+        familiar.ocupacion = hijo.ocupacion
+        familiar.parentesco = hijo.genero
+        familiar.discapacidad = 0
+        familiar.ingreso_mensual = 0
+        ficha.composicion_familiar.push(familiar)
+      })
+    }
+
+    function reiniciarTemporizadorHijos() {
+      if (temporizadorHijos.value) clearTimeout(temporizadorHijos.value)
+
+      temporizadorHijos.value = setTimeout(() => {
+        sincronizarHijosEnComposicionFamiliar()
+      }, 10000)
+    }
+
+    watch(ficha.hijos, async (newValue, oldValue) => {
+      console.log('oldValue', toRaw(oldValue))
+      console.log('newValue', unref(newValue))
+    })
+
+    function checkDependenciaLaboral(val) {
+      if (val) {
+        ficha.conyuge.tiene_negocio_propio = false
+        ficha.conyuge.negocio_propio = null
+      }
+    }
+
+    function checkNegocioPropio(val) {
+      if (!val) ficha.conyuge.negocio_propio = null
+    }
+
+    function checkTieneTerreno(val) {
+      if (!val) ficha.situacion_socioeconomica.especificacion_terreno = null
+    }
+
+    function checkTieneBienes(val) {
+      if (!val) ficha.situacion_socioeconomica.especificacion_bienes = null
+    }
+
+    function checkTieneIngresosAdicionales(val) {
+      if (!val) {
+        ficha.situacion_socioeconomica.especificacion_ingresos_adicionales =
+          null
+        ficha.situacion_socioeconomica.ingresos_adicionales = null
+      }
+    }
+
+    function checkApoyaEconomicamenteFamiliarExterno(val) {
+      if (!val) {
+        ficha.situacion_socioeconomica.valor_apoyo_familiar_externo = null
+        ficha.situacion_socioeconomica.familiar_externo_apoyado = null
+      }
     }
 
     function checkTieneCapacitaciones(val) {
@@ -392,12 +531,19 @@ export default defineComponent({
       filtrarCantones,
 
       //funciones
+      checkTieneBienes,
+      checkTieneTerreno,
+      checkNegocioPropio,
+      checkDependenciaLaboral,
       checkTieneCapacitaciones,
+      checkTieneIngresosAdicionales,
+      checkApoyaEconomicamenteFamiliarExterno,
       filtrarListadoFichas,
       empleadoSeleccionado,
-      ordenarLista,
-      obtenerCoordenadas,
       agregarDiscapacidad,
+      obtenerCoordenadas,
+      filaModificadaHijo,
+      ordenarLista,
 
       //botones de tabla
       btnAgregarFilaFamiliar,
