@@ -228,7 +228,7 @@
               </div>
             </div>
             <div class="q-mt-md">
-              <q-btn href="https://jpconstrucred.com:2096/" color="secondary" icon-right="mail" label="Ir a mi correo"
+              <q-btn :href="correo" color="secondary" icon-right="mail" label="Ir a mi correo"
                 target="_blank" />
             </div>
             <!-- Documentos -->
