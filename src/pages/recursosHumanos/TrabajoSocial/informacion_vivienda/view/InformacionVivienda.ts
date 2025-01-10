@@ -7,7 +7,9 @@ import {
   likertEspaciosFamiliares,
   materiales_predominantes,
   numero_plantas,
-  opcionesDistribucion,
+  opcionesDistribucion, optionsAmenazasPrevistas,
+  tipos_amenazas_deslaves,
+  tipos_amenazas_inundaciones,
   tipos_predominantes,
   tipos_viviendas
 } from 'config/trabajoSocial.utils'
@@ -72,11 +74,17 @@ export default defineComponent({
       numero_dormitorios: { required },
       numero_personas: { required },
       comodidad_espacio_familiar: { required },
+      amenaza_inundacion: { required },
+      amenaza_deslaves: { required },
+      existe_peligro_tsunami: { required },
+      existe_peligro_lahares: { required },
+      otras_amenazas_previstas: { required },
       familia_acogiente: {
         parroquia: { required },
         direccion: { required },
         coordenadas: { required },
         nombres_apellidos: { required },
+        telefono: { required }
       }
     }
 
@@ -113,12 +121,14 @@ export default defineComponent({
         }
       }
     }
+
     function obtenerCoordenadas() {
       obtenerUbicacion(ubicacion => {
         vivienda.familia_acogiente.coordenadas =
           ubicacion.coords.latitude + ' ' + ubicacion.coords.longitude
       })
     }
+
     function obtenerCantones(provinciaId: number | null) {
       // eslint-disable-next-line vue/no-mutating-props
       props.vivienda.familia_acogiente.canton = null
@@ -151,7 +161,10 @@ export default defineComponent({
       numero_plantas,
       tipos_predominantes,
       optionsTiposParroquias,
+      tipos_amenazas_deslaves,
       likertEspaciosFamiliares,
+      optionsAmenazasPrevistas,
+      tipos_amenazas_inundaciones,
       opcionesDistribucion,
       provincias,
       filtrarProvincias,

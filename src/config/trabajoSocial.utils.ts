@@ -9,6 +9,21 @@ export const tipos_viviendas = [
   'DE LOS PADRES O FAMILIARES',
   'INVADIDA',
 ]
+export const tipos_amenazas_inundaciones = [
+  'MAR',
+  'BRAZO DE MAR',
+  'RIOS',
+  'CANALES',
+  'LLUVIAS',
+  'ALUVIONES',
+  'NINGUNA'
+]
+export const tipos_amenazas_deslaves = [
+  'MAR',
+  'RIO',
+  'CANALES',
+  'NINGUNA'
+]
 export const numero_plantas = [
   '1 PLANTA',
   '2 PLANTAS',
@@ -161,6 +176,46 @@ export const optionsProblemasSociales: OptionGroup[] = [
     uncheckedIcon:'bi-square'
   }
 ]
+
+export const optionsAmenazasPrevistas: OptionGroup[] = [
+  {
+    label: 'DERRUMBE',
+    value: 'DERRUMBE',
+    checkedIcon: 'bi-check-square-fill',
+    uncheckedIcon: 'bi-square'
+  },
+  {
+    label: 'CORTE DE VIA',
+    value: 'CORTE DE VIA',
+    checkedIcon: 'bi-check-square-fill',
+    uncheckedIcon: 'bi-square'
+  },
+  {
+    label: 'CAIDA DE PUENTE',
+    value: 'CAIDA DE PUENTE',
+    checkedIcon: 'bi-check-square-fill',
+    uncheckedIcon: 'bi-square'
+  },
+  {
+    label: 'CAIDA DE ESTRUCTURA',
+    value: 'CAIDA DE ESTRUCTURA',
+    checkedIcon: 'bi-check-square-fill',
+    uncheckedIcon: 'bi-square'
+  },
+  {
+    label: 'CAIDA DE CENIZA',
+    value: 'CAIDA DE CENIZA',
+    checkedIcon:'bi-check-square-fill',
+    uncheckedIcon:'bi-square'
+  },
+  {
+    label: 'NINGUNA',
+    value: 'NINGUNA',
+    checkedIcon:'bi-check-square-fill',
+    uncheckedIcon:'bi-square'
+  }
+]
+
 
 export const optionsConocimientos: OptionGroup[] = [
   {

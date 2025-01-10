@@ -443,7 +443,6 @@ export default defineComponent({
     }
 
     async function imprimir(id: number, nombre_empleado: string) {
-      // cargando.activar()
       const axios = AxiosHttpRepository.getInstance()
       const url =
         apiConfig.URL_BASE +
@@ -452,7 +451,21 @@ export default defineComponent({
         id
       const filename = 'Ficha Socioeconomica ' + nombre_empleado
       await imprimirArchivo(url, 'GET', 'blob', 'pdf', filename)
-      // cargando.desactivar()
+    }
+
+    async function imprimirEvaluacionRiesgos(
+      id: number,
+      nombre_empleado: string
+    ) {
+      const axios = AxiosHttpRepository.getInstance()
+      const url =
+        apiConfig.URL_BASE +
+        '/' +
+        axios.getEndpoint(endpoints.imprimir_formulario_evaluacion_riesgos) +
+        id
+      const filename =
+        'Evaluacion de Riesgos ante eventos adversos ' + nombre_empleado
+      await imprimirArchivo(url, 'GET', 'blob', 'pdf', filename)
     }
 
     /********************************
@@ -493,6 +506,16 @@ export default defineComponent({
         await imprimir(entidad.id, entidad.empleado)
       }
     }
+
+    const btnImprimirEvaluacionRiesgos: CustomActionTable<FichaSocioeconomica> =
+      {
+        titulo: 'Imprimir Evaluación de Riesgos',
+        color: 'accent',
+        icono: 'bi-printer-fill',
+        accion: async ({ entidad }) => {
+          await imprimirEvaluacionRiesgos(entidad.id, entidad.empleado)
+        }
+      }
 
     return {
       v$,
@@ -549,7 +572,8 @@ export default defineComponent({
       btnAgregarFilaFamiliar,
       btnAgregarFilaHijo,
       btnEliminarDefault,
-      btnImprimir
+      btnImprimir,
+      btnImprimirEvaluacionRiesgos
       // btnEliminarDiscapacidad: btnEliminarDefault(ficha.salud?.discapacidades),
     }
   }

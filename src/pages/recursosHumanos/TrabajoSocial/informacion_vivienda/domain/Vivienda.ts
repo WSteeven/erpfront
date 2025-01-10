@@ -10,6 +10,7 @@ export class Vivienda extends EntidadAuditable {
   material_piso: string | null
   distribucion_vivienda: any
   comodidad_espacio_familiar: string | null
+  numero_personas: number | null
   numero_dormitorios: number | null
   existe_hacinamiento: boolean
   existe_upc_cercano: boolean
@@ -21,7 +22,15 @@ export class Vivienda extends EntidadAuditable {
   direccion: string | null
   referencia: string | null
   servicios_basicos: ServicioBasico | null
-  familia_acogiente: FamiliaAcogiente|null
+  familia_acogiente: FamiliaAcogiente | null
+
+  // posibles amenazas
+  amenaza_inundacion: string | null
+  amenaza_deslaves: string | null
+  otras_amenazas_previstas: any
+  otras_amenazas: string | null
+  existe_peligro_tsunami: boolean
+  existe_peligro_lahares: boolean
 
   constructor() {
     super()
@@ -32,6 +41,7 @@ export class Vivienda extends EntidadAuditable {
     this.material_piso = null
     this.distribucion_vivienda = []
     this.numero_dormitorios = null
+    this.numero_personas = null
     this.comodidad_espacio_familiar = null
     this.existe_hacinamiento = false
     this.existe_upc_cercano = false
@@ -45,5 +55,11 @@ export class Vivienda extends EntidadAuditable {
     this.servicios_basicos = new ServicioBasico()
     this.familia_acogiente = new FamiliaAcogiente()
 
+    this.amenaza_inundacion = null
+    this.amenaza_deslaves = null
+    this.otras_amenazas_previstas = []
+    this.otras_amenazas = null
+    this.existe_peligro_tsunami = null
+    this.existe_peligro_lahares = null
   }
 }

@@ -8,6 +8,7 @@
     :tab-defecto="tabDefecto"
     :filtrar="filtrarListadoFichas"
     :accion1="btnImprimir"
+    :accion2="btnImprimirEvaluacionRiesgos"
     ajustar-celdas
   >
     <template #formulario>
@@ -361,7 +362,7 @@
 <!--            </div>-->
           </div>
         </q-expansion-item>
-        {{ficha.composicion_familiar}}
+<!--        {{ficha.composicion_familiar}}-->
         <!--        Informacion del conyuge -->
         <q-expansion-item
           class="overflow-hidden q-mb-md expansion"

@@ -286,7 +286,131 @@
         dense
       />
     </div>
+    <div class="col-12">
 
+    <q-expansion-item
+      class="overflow-hidden q-mb-md expansion"
+      label="POSIBLES AMENAZAS EN EL SECTOR"
+      header-class="text-bold bg-header-collapse"
+      default-opened
+    >
+      <div class="row q-col-gutter-sm q-pa-md">
+        <!-- amenazas de inundacion -->
+        <div class="col-12 col-md-3 q-mb-md col-sm-3">
+          <label class="q-mb-sm block">¿Inundación?</label>
+          <q-select
+            v-model="vivienda.amenaza_inundacion"
+            :options="tipos_amenazas_inundaciones"
+            transition-show="jump-up"
+            transition-hide="jump-down"
+            :disable="disable"
+            options-dense
+            dense
+            outlined
+            :error="!!v$.amenaza_inundacion.$errors.length"
+            @blur="v$.amenaza_inundacion.$touch"
+            error-message="Debes seleccionar al menos una opción"
+            multiple
+            use-chips
+           >
+            <template v-slot:error>
+              <error-component :v$="v$" clave="amenaza_inundacion" />
+            </template>
+
+            <template v-slot:no-option>
+              <no-option-component />
+            </template>
+          </q-select>
+        </div>
+
+        <!-- amenazas de deslaves -->
+        <div class="col-12 col-md-3 q-mb-md col-sm-3">
+          <label class="q-mb-sm block">¿Deslaves/Derrumbes?</label>
+          <q-select
+            v-model="vivienda.amenaza_deslaves"
+            :options="tipos_amenazas_deslaves"
+            transition-show="jump-up"
+            transition-hide="jump-down"
+            :disable="disable"
+            options-dense
+            dense
+            outlined
+            :error="!!v$.amenaza_deslaves.$errors.length"
+            @blur="v$.amenaza_deslaves.$touch"
+            error-message="Debes seleccionar al menos una opción"
+            multiple
+            use-chips
+          >
+            <template v-slot:error>
+              <error-component :v$="v$" clave="amenaza_deslaves" />
+            </template>
+
+            <template v-slot:no-option>
+              <no-option-component />
+            </template>
+          </q-select>
+        </div>
+
+        <!-- En caso de terremoto? -->
+        <div class="col-12 col-md-3">
+          <label class="q-mb-sm block"
+          >¿En caso de terremoto podría ocurrir TSUNAMI?</label
+          >
+          <option-group-component
+            v-model="vivienda.existe_peligro_tsunami"
+            :disable="disable"
+            :error="!!v$.existe_peligro_tsunami.$errors.length"
+            clave="existe_peligro_tsunami"
+            :v$="v$"
+          />
+        </div>
+
+        <!-- En caso de erupcion volcanica? -->
+        <div class="col-12 col-md-3">
+          <label class="q-mb-sm block"
+          >¿En caso de erupción volcanica existe peligro de LAHARES?</label
+          >
+          <option-group-component
+            v-model="vivienda.existe_peligro_lahares"
+            :disable="disable"
+            :error="!!v$.existe_peligro_lahares.$errors.length"
+            clave="existe_peligro_lahares"
+            :v$="v$"
+          />
+        </div>
+
+        <!-- mas amenazas -->
+        <div class="col-12 col-md-12">
+          <label class="q-mb-sm block"
+          >Indique si el sector es propenso a alguna de las siguientes amenazas (Puede seleccionar varios)</label
+          >
+          <option-group-component
+            v-model="vivienda.otras_amenazas_previstas"
+            type="checkbox"
+            :options="optionsAmenazasPrevistas"
+            :disable="disable"
+            clave="otras_amenazas_previstas"
+            :v$="v$"
+            :error="!!v$.otras_amenazas_previstas.$errors.length"
+          />
+        </div>
+
+        <!-- Otras amenazas redactadas -->
+        <div class="col-12 col-md-12 q-mb-md col-sm-12">
+          <label class="q-mb-sm block">¿Otras amenazas que quiera especificar?</label>
+          <q-input
+            v-model="vivienda.otras_amenazas"
+            placeholder="Opcional"
+            :disable="disable"
+            autogrow
+            outlined
+            dense
+          />
+        </div>
+
+      </div>
+    </q-expansion-item>
+    </div>
     <!-- En caso de evacuacion tiene donde ir? -->
     <div class="col-12 col-md-3">
       <label class="q-mb-sm block"
@@ -437,8 +561,8 @@
         v-model="vivienda.familia_acogiente.telefono"
         hint="Separe con comas para registrar varios telefonos"
         placeholder="Obligatorio"
-        :error="!!v$.vivienda.familia_acogiente.telefono.$errors.length"
-        @blur="v$.vivienda.familia_acogiente.telefono.$touch"
+        :error="!!v$.familia_acogiente.telefono.$errors.length"
+        @blur="v$.familia_acogiente.telefono.$touch"
         :disable="disable"
         outlined
         dense
