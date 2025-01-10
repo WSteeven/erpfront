@@ -92,7 +92,7 @@ export default defineComponent({
       else return {
         titulo: { required },
         descripcion: { required },
-        coordenadas: { required },
+        coordenadas: { requiredIf: requiredIf(false) },
         tipo_incidente: { required },
         empleado_involucrado: { required },
         inspeccion: { requiredIf: requiredIf(incidente.es_parte_inspeccion) },
