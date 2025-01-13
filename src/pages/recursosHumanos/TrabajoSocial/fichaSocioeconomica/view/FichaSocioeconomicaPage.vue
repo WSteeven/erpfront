@@ -838,6 +838,7 @@
             :vivienda="ficha.vivienda"
             :accion="accion"
             :disable="disabled"
+            @consultado="consultado"
           />
         </q-expansion-item>
 

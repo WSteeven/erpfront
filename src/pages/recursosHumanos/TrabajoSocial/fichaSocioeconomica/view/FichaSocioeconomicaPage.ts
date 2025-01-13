@@ -89,7 +89,7 @@ export default defineComponent({
     } = mixin.useReferencias()
     const { setValidador, cargarVista, obtenerListados, listar } =
       mixin.useComportamiento()
-    const { onConsultado, onReestablecer } = mixin.useHooks()
+    const {  onReestablecer } = mixin.useHooks()
     const { notificarAdvertencia, notificarCorrecto } = useNotificaciones()
 
     useNotificacionStore().setQuasar(useQuasar())
@@ -134,11 +134,11 @@ export default defineComponent({
     onReestablecer(async () => {
       empleado.value.hydrate(new Empleado())
     })
-    onConsultado(async () => {
+    const consultado = async () => {
       empleadoStore.idEmpleado = ficha.empleado
       await empleadoStore.cargarEmpleado()
       empleado.value = empleadoStore.empleado
-    })
+    }
     /********************************************
      * REGLAS DE VALIDACIONES
      ********************************************/
@@ -359,9 +359,8 @@ export default defineComponent({
 
     const ultimoCambioHijos = ref(null)
     const temporizadorHijos = ref(null)
-    const old_row = new Hijo()
 
-    function filaModificadaHijo(row: Hijo) {
+    function filaModificadaHijo() {
       ultimoCambioHijos.value = Date.now()
       reiniciarTemporizadorHijos()
     }
@@ -567,7 +566,7 @@ export default defineComponent({
       obtenerCoordenadas,
       filaModificadaHijo,
       ordenarLista,
-
+      consultado,
       //botones de tabla
       btnAgregarFilaFamiliar,
       btnAgregarFilaHijo,

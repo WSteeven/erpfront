@@ -6,6 +6,7 @@ export class FamiliaAcogiente extends  EntidadAuditable{
   parroquia: number|null
   tipo_parroquia: string|null
   direccion: number|null
+  referencia: number|null
   coordenadas: number|null
   nombres_apellidos: number|null
   telefono: number|null
@@ -17,6 +18,7 @@ export class FamiliaAcogiente extends  EntidadAuditable{
     this.parroquia = null
     this.tipo_parroquia = null
     this.direccion = null
+    this.referencia = null
     this.coordenadas = null
     this.nombres_apellidos = null
     this.telefono = null

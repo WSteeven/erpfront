@@ -591,6 +591,24 @@
       </q-input>
     </div>
 
+    <!-- Referenecia -->
+    <div class="col-12 col-md-3">
+      <label class="q-mb-sm block">Referencia</label>
+      <q-input
+        v-model="vivienda.familia_acogiente.referencia"
+        placeholder="Obligatorio"
+        :error="!!v$.familia_acogiente.referencia.$errors.length"
+        @blur="v$.familia_acogiente.referencia.$touch"
+        outlined
+        :disable="disable"
+        dense
+      >
+        <template v-slot:error>
+          <error-component clave="familia_acogiente.referencia" :v$="v$" />
+        </template>
+      </q-input>
+    </div>
+
     <!-- Coordenadas -->
     <div class="col-12 col-md-3">
       <label class="q-mb-sm block">Coordenadas</label>
@@ -603,13 +621,6 @@
         :disable="disable"
         dense
       >
-        <template v-slot:append>
-          <q-icon
-            name="bi-geo-alt"
-            @click="obtenerCoordenadas"
-            class="cursor-pointer"
-          />
-        </template>
         <template v-slot:error>
           <error-component clave="familia_acogiente.coordenadas" :v$="v$" />
         </template>

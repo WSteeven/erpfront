@@ -7,7 +7,8 @@ import {
   likertEspaciosFamiliares,
   materiales_predominantes,
   numero_plantas,
-  opcionesDistribucion, optionsAmenazasPrevistas,
+  opcionesDistribucion,
+  optionsAmenazasPrevistas,
   tipos_amenazas_deslaves,
   tipos_amenazas_inundaciones,
   tipos_predominantes,
@@ -46,9 +47,11 @@ export default defineComponent({
     disable: { type: Boolean, default: false },
     accion: { type: String as keyof acciones, default: acciones.nuevo }
   },
-  setup(props) {
+  emits: ['consultado'],
+  setup(props, {emit}) {
     const { listadosAuxiliares } = props.mixin.useReferencias()
     const { cargarVista, obtenerListados } = props.mixin.useComportamiento()
+    const { onConsultado } = props.mixin.useHooks()
     const cargando = new StatusEssentialLoading()
     const {
       provincias,
@@ -60,7 +63,11 @@ export default defineComponent({
     } = useFiltrosListadosSelects(listadosAuxiliares)
     cargarVista(() => {
       listadosAuxiliares.provincias = []
+      listadosAuxiliares.cantones = []
       listadosAuxiliares.parroquias = []
+      listadosAuxiliares.cantones = JSON.parse(
+        LocalStorage.getItem('cantones')!.toString()
+      )
       cantones.value = listadosAuxiliares.cantones
       parroquias.value = listadosAuxiliares.parroquias
     })
@@ -83,6 +90,7 @@ export default defineComponent({
         parroquia: { required },
         direccion: { required },
         coordenadas: { required },
+        referencia: { required },
         nombres_apellidos: { required },
         telefono: { required }
       }
@@ -90,16 +98,28 @@ export default defineComponent({
 
     const v$ = useVuelidate(reglas, props.vivienda)
 
+    onConsultado(async () => {
+      if (provincias.value == undefined || provincias.value?.length == 0) {
+        await obtenerListados({ provincias: new ProvinciaController() })
+        provincias.value = listadosAuxiliares.provincias
+      }
+      const parroquiaId = props.vivienda.familia_acogiente.parroquia
+      await obtenerParroquias(props.vivienda.familia_acogiente?.canton)
+      // eslint-disable-next-line vue/no-mutating-props
+      props.vivienda.familia_acogiente.parroquia = parroquiaId
+
+      emit('consultado')
+    })
     const optionsTiposParroquias: OptionGroup[] = [
       {
         label: 'URBANA',
-        value: true,
+        value: 'URBANA',
         checkedIcon: 'bi-check-circle-fill',
         uncheckedIcon: 'panorama_fish_eye'
       },
       {
         label: 'RURAL',
-        value: false,
+        value: 'RURAL',
         checkedIcon: 'bi-check-circle-fill',
         uncheckedIcon: 'panorama_fish_eye'
       }
@@ -176,7 +196,7 @@ export default defineComponent({
       //funciones
       obtenerCantones,
       obtenerParroquias,
-      obtenerCoordenadas,
+
       checkTieneDondeEvacuar,
       obtenerListadoMaterialesPredominantes: tipo => {
         return materiales_predominantes.filter(v => v.tipo == tipo)
