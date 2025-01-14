@@ -572,6 +572,7 @@
         </template>
       </q-input>
     </div>
+
     <!-- Dirección -->
     <div class="col-12 col-md-6">
       <label class="q-mb-sm block">Dirección</label>

@@ -17,7 +17,7 @@ import {
 import { acciones } from 'config/utils'
 import { Vivienda } from 'trabajoSocial/informacion_vivienda/domain/Vivienda'
 import useVuelidate from '@vuelidate/core'
-import { required } from 'shared/i18n-validators'
+import { required, requiredIf } from 'shared/i18n-validators'
 import { ContenedorSimpleMixin } from 'shared/contenedor/modules/simple/application/ContenedorSimpleMixin'
 import { EntidadAuditable } from 'shared/entidad/domain/entidadAuditable'
 import { useFiltrosListadosSelects } from 'shared/filtrosListadosGenerales'
@@ -48,7 +48,7 @@ export default defineComponent({
     accion: { type: String as keyof acciones, default: acciones.nuevo }
   },
   emits: ['consultado'],
-  setup(props, {emit}) {
+  setup(props, { emit }) {
     const { listadosAuxiliares } = props.mixin.useReferencias()
     const { cargarVista, obtenerListados } = props.mixin.useComportamiento()
     const { onConsultado } = props.mixin.useHooks()
@@ -87,12 +87,24 @@ export default defineComponent({
       existe_peligro_lahares: { required },
       otras_amenazas_previstas: { required },
       familia_acogiente: {
-        parroquia: { required },
-        direccion: { required },
-        coordenadas: { required },
-        referencia: { required },
-        nombres_apellidos: { required },
-        telefono: { required }
+        parroquia: {
+          required: requiredIf(() => props.vivienda.tiene_donde_evacuar)
+        },
+        direccion: {
+          required: requiredIf(() => props.vivienda.tiene_donde_evacuar)
+        },
+        coordenadas: {
+          required: requiredIf(() => props.vivienda.tiene_donde_evacuar)
+        },
+        referencia: {
+          required: requiredIf(() => props.vivienda.tiene_donde_evacuar)
+        },
+        nombres_apellidos: {
+          required: requiredIf(() => props.vivienda.tiene_donde_evacuar)
+        },
+        telefono: {
+          required: requiredIf(() => props.vivienda.tiene_donde_evacuar)
+        }
       }
     }
 

@@ -362,7 +362,6 @@
 <!--            </div>-->
           </div>
         </q-expansion-item>
-<!--        {{ficha.composicion_familiar}}-->
         <!--        Informacion del conyuge -->
         <q-expansion-item
           class="overflow-hidden q-mb-md expansion"
@@ -1430,7 +1429,6 @@
           <croquis-vivienda :vivienda="ficha.vivienda" :disable="disabled" :accion="accion" />
         </q-expansion-item>
 
-<!--        <p><strong>Aqui van los errores: </strong> {{v$.$errors}}</p>-->
 
         <!-- 12. RUTAGRAMA Y VIAS DE ACCESO -->
         <q-expansion-item

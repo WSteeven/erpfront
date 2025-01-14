@@ -1,4 +1,4 @@
-import { defineComponent, ref, toRaw, unref, watch } from 'vue'
+import { defineComponent, ref } from 'vue'
 import TabLayoutFilterTabs2 from 'shared/contenedor/modules/simple/view/TabLayoutFilterTabs2.vue'
 import ComposicionFamiliar from 'trabajoSocial/composicion_familiar/view/ComposicionFamiliar.vue'
 import OptionGroupComponent from 'components/optionGroup/view/OptionGroupComponent.vue'
@@ -89,7 +89,7 @@ export default defineComponent({
     } = mixin.useReferencias()
     const { setValidador, cargarVista, obtenerListados, listar } =
       mixin.useComportamiento()
-    const {  onReestablecer } = mixin.useHooks()
+    const { onReestablecer } = mixin.useHooks()
     const { notificarAdvertencia, notificarCorrecto } = useNotificaciones()
 
     useNotificacionStore().setQuasar(useQuasar())
@@ -394,11 +394,6 @@ export default defineComponent({
         sincronizarHijosEnComposicionFamiliar()
       }, 10000)
     }
-
-    watch(ficha.hijos, async (newValue, oldValue) => {
-      console.log('oldValue', toRaw(oldValue))
-      console.log('newValue', unref(newValue))
-    })
 
     function checkDependenciaLaboral(val) {
       if (val) {
