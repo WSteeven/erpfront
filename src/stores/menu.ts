@@ -262,7 +262,7 @@ export const useMenuStore = defineStore('menu', () => {
      ********************/
     {
       title: 'SSO',
-      icon: 'bi-heart-pulse-fill',
+      icon: 'fas fa-clinic-medical',
       can: store.can('puede.acceder.modulo_sso'),
       module: true,
       children: [

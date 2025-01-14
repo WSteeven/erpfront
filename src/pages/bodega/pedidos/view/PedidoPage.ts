@@ -45,6 +45,8 @@ import { StatusEssentialLoading } from 'components/loading/application/StatusEss
 import { TareaController } from 'pages/gestionTrabajos/tareas/infraestructure/TareaController'
 import { EtapaController } from 'pages/gestionTrabajos/proyectos/modules/etapas/infraestructure/EtapaController'
 import { Tarea } from 'pages/gestionTrabajos/tareas/domain/Tarea'
+import { IncidenteController } from 'pages/sso/incidentes/infraestructure/IncidenteController'
+import { estadosIncidentes } from 'pages/sso/config/utils'
 
 
 export default defineComponent({
@@ -139,6 +141,7 @@ export default defineComponent({
       etapas, filtrarEtapas,
       tareas, filtrarTareas,
       sucursales, filtrarSucursales,
+      incidentes, filtrarIncidentes,
     } = useFiltrosListadosSelects(listadosAuxiliares)
 
     //Obtener los listados

@@ -69,7 +69,7 @@ export default defineComponent({
         requiredIfTipoFiltro: requiredIf(function () {
           return consolidadofiltrado.tipo_saldo != null
             ? consolidadofiltrado.tipo_saldo == tipo_saldo.GASTO ||
-                consolidadofiltrado.tipo_saldo == tipo_saldo.GASTOS_FOTOGRAFIA
+            consolidadofiltrado.tipo_saldo == tipo_saldo.GASTOS_FOTOGRAFIA
             : false
         })
       },
@@ -83,9 +83,9 @@ export default defineComponent({
         requiredIfEmpleado: requiredIf(function () {
           return consolidadofiltrado.tipo_saldo != null
             ? consolidadofiltrado.tipo_saldo == tipo_saldo.CONSOLIDADO ||
-                consolidadofiltrado.tipo_saldo == tipo_saldo.ESTADO_CUENTA ||
-                consolidadofiltrado.tipo_saldo ==
-                  tipo_saldo.TRANSFERENCIA_SALDOS
+            consolidadofiltrado.tipo_saldo == tipo_saldo.ESTADO_CUENTA ||
+            consolidadofiltrado.tipo_saldo ==
+            tipo_saldo.TRANSFERENCIA_SALDOS
             : false
         })
       },
@@ -334,6 +334,14 @@ export default defineComponent({
     }
 
     const listadoTareas = computed(() => {
+      if (consolidadofiltrado.proyecto) {
+        return listadosAuxiliares.tareas.filter(
+          (tarea: Tarea) => tarea.proyecto_id === consolidadofiltrado.proyecto // || tarea.id == 0
+        )
+      } else return listadosAuxiliares.tareas
+    })
+
+    /* const listadoTareas = computed(() => {
       if (consolidadofiltrado.proyecto == 0) {
         return listadosAuxiliares.tareas.filter(
           (tarea: Tarea) => tarea.proyecto_id === null || tarea.id == 0
@@ -343,7 +351,7 @@ export default defineComponent({
         (tarea: Tarea) =>
           tarea.proyecto_id === consolidadofiltrado.proyecto || tarea.id == 0
       )
-    })
+    }) */
 
     // - Filtro tipos Filtro
     function filtrarTiposFiltro(val, update) {
