@@ -4,6 +4,7 @@ import { defineStore } from 'pinia'
 import { computed, Ref } from 'vue'
 import seleccionContratacionPersonal from './menus/rrhh/seleccionContratacionPersonal'
 import trabajoSocial from 'stores/menus/rrhh/trabajoSocial'
+import controlPersonal from 'stores/menus/rrhh/controlPersonal'
 
 export const useMenuStore = defineStore('menu', () => {
   const store = useAuthenticationStore()
@@ -882,45 +883,7 @@ export const useMenuStore = defineStore('menu', () => {
         },
         ...seleccionContratacionPersonal.value,
 
-        //Control de Personal
-        {
-          title: 'Control de Personal',
-          icon: 'bi-person-badge',
-          can: true,
-          children: [
-            {
-              title: 'Dashboard',
-              link: 'dashboard-control-personal',
-              icon: 'bi-speedometer2',
-              can: true
-            },
-            {
-              title: 'Asistencia',
-              link: 'asistencia',
-              icon: 'bi-calendar-check',
-              can: true,
-            },
-            {
-              title: 'Atrasos',
-              link: 'atrasos',
-              icon: 'bi-file-earmark-text',
-              can: true,
-            },
-            {
-              title: 'Configuración',
-              icon: 'bi-gear',
-              can: true,
-              children: [
-                {
-                  title: 'Horario Laboral',
-                  link: 'horario-laboral',
-                  icon: 'bi-clock',
-                  can: true,
-                },
-              ]
-            }
-          ]
-        },
+        ...controlPersonal.value,
         {
           title: 'Configuracion',
           icon: 'bi-gear-fill',

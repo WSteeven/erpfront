@@ -39,21 +39,18 @@ export default defineComponent({
 
     async function filtrarListadoAtrasos(tab: string) {
       tabDefecto.value = tab
-      if (listado.value.length > 0) listar({ requiere_justificacion: tab })
+      if (listado.value.length > 0) await listar({ requiere_justificacion: tab })
     }
 
     async function actualizarAtrasos() {
       const axios = AxiosHttpRepository.getInstance()
-      const url =
-        apiConfig.URL_BASE +
-        axios.getEndpoint(endpoints.atrasos) +
-        '/sincronizar'
+      const url =apiConfig.URL_BASE +'/'+axios.getEndpoint(endpoints.sincronizar_atrasos)
       try {
         const response: AxiosResponse = await axios.get(url)
         listado.value = Array.isArray(response.data.results)
           ? response.data.results
           : []
-        listar() // Asegúrate de que esta función pueda manejar un arreglo vacío
+       await listar() // Asegúrate de que esta función pueda manejar un arreglo vacío
       } catch (error) {
         console.error('Error al sincronizar atrasos:', error)
         listado.value = [] // Mantén el listado vacío si ocurre un error

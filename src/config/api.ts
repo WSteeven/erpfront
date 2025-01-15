@@ -8,6 +8,7 @@ import { comprasProveedores } from './endpoints/comprasProveedores'
 import { vehiculos } from 'config/endpoints/vehiculos'
 import { sso } from './endpoints/sso'
 import { fondosRotativos } from 'config/endpoints/fondosRotativos'
+import { controlPersonal } from 'config/endpoints/rrhh/controlPersonal'
 
 export const apiConfig = {
   // URL_BASE: 'http://localhost:8000',
@@ -176,14 +177,13 @@ export const endpoints = {
     'recursos-humanos/finalizar-asignacion-alimentacion'
   ),
 
-  /**
-   * Control de personal
-   */
-  asistencias: new Endpoint('control-personal/asistencias'),
-  horarioLaboral: new Endpoint('control-personal/horario-laboral'),
-  horarioDeAlmuerzo: new Endpoint('control-personal/horario-almuerzo'),
-  atrasos: new Endpoint('control-personal/atrasos'),
-  
+
+
+  /******************************
+   * Modulo de Control de Personal
+   ******************************/
+  ...controlPersonal,
+
 
   /******************************
    * Modulo de Vehiculos

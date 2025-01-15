@@ -18,9 +18,12 @@ import { AxiosResponse } from 'axios'
 export default defineComponent({
   components: { EssentialTable },
   setup() {
-    const mixin = new ContenedorSimpleMixin(Asistencia,new AsistenciaController())
+    const mixin = new ContenedorSimpleMixin(
+      Asistencia,
+      new AsistenciaController()
+    )
     const { entidad: asistencia, disabled, listado } = mixin.useReferencias()
-        console.log('Asistencia inicializada en useReferencias:', asistencia)
+    console.log('Asistencia inicializada en useReferencias:', asistencia)
     const { setValidador, guardar, listar } = mixin.useComportamiento()
 
     // Reglas de validación
@@ -34,22 +37,23 @@ export default defineComponent({
     setValidador(v$.value)
 
     async function actualizarAsistencias() {
-      const axios = AxiosHttpRepository.getInstance();
-      const url = apiConfig.URL_BASE  + axios.getEndpoint(endpoints.asistencias) + '/sincronizar';
+      const axios = AxiosHttpRepository.getInstance()
+      const url = apiConfig.URL_BASE+'/'+axios.getEndpoint(endpoints.sincronizar_asistencias)
       try {
-        const response: AxiosResponse = await axios.get(url);
-        listado.value = Array.isArray(response.data.results) ? response.data.results : [];
-        listar(); // Asegúrate de que esta función puede manejar un arreglo vacío
+        const response: AxiosResponse = await axios.get(url)
+
+        listado.value = Array.isArray(response.data.results)
+          ? response.data.results
+          : []
+
+        await listar()
       } catch (error) {
-        console.error('Error al sincronizar asistencias:', error);
-        listado.value = []; // Mantén el listado vacío si ocurre un error
+        console.error('Error al sincronizar asistencias:', error)
+        listado.value = [] // Mantén el listado vacío si ocurre un error
       }
     }
 
-
     actualizarAsistencias()
-
-    listar()
 
     return {
       mixin,
@@ -60,7 +64,7 @@ export default defineComponent({
       configuracionColumnas: configuracionColumnasAsistencia,
       guardar,
       //funciones
-      actualizarAsistencias,
+      actualizarAsistencias
     }
   }
 })
