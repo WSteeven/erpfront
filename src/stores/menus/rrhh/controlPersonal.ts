@@ -14,7 +14,10 @@ const controlPersonal: Ref<MenuOption[]> = computed(() => {
           title: 'Dashboard',
           link: 'dashboard-control-personal',
           icon: 'bi-speedometer2',
-          can: true
+          can:
+            store.esAdministrador ||
+            store.esRecursosHumanos ||
+            store.can('puede.acceder.dashboard_control_personal'),
         },
         {
           title: 'Asistencia',
