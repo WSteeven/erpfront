@@ -17,61 +17,132 @@
                 <!-- Empleado -->
                 <div class="col-12 col-md-6">
                   <label class="q-mb-sm block">Empleado</label>
-                  <q-input
+                  <q-select
                     v-model="atraso.empleado"
-                    outlined
+                    :options="empleados"
+                    transition-show="jump-up"
+                    transition-hide="jump-down"
+                    disable
+                    options-dense
                     dense
-                    readonly
-                    hint="Nombre del empleado"
-                  />
+                    outlined
+                    :error="!!v$.empleado.$errors.length"
+                    @blur="v$.empleado.$touch"
+                    error-message="Debes seleccionar un empleado"
+                    use-input
+                    input-debounce="0"
+                    @filter="filtrarEmpleados"
+                    @popup-show="ordenarLista(empleados, 'nombres')"
+                    :option-value="v => v.id"
+                    :option-label="v => v.nombres + ' ' + v.apellidos"
+                    emit-value
+                    map-options
+                  >
+                    <template v-slot:error>
+                      <error-component clave="empleado" :v$="v$" />
+                    </template>
+
+                    <template v-slot:no-option>
+                      <no-option-component />
+                    </template>
+                  </q-select>
                 </div>
-                <!-- Minutos y Segundos de atraso -->
+
+                <!-- Fecha de atraso -->
                 <div class="col-12 col-md-3">
                   <label class="q-mb-sm block">Fecha de Atraso</label>
                   <q-input
                     v-model="atraso.fecha_atraso"
                     outlined
                     dense
-                    readonly
-                    hint="Fecha de atraso."
-                  />
+                    disable
+                    hint="Fecha de atraso"
+                  >
+                    <template v-slot:append>
+                      <q-icon name="event" class="cursor-pointer">
+                        <q-popup-proxy
+                          cover
+                          transition-show="scale"
+                          transition-hide="scale"
+                        >
+                          <q-date
+                            v-model="atraso.fecha_atraso"
+                            :mask="maskFecha"
+                            today-btn
+                            disable
+                          >
+                            <div class="row items-center justify-end">
+                              <q-btn
+                                v-close-popup
+                                label="Cerrar"
+                                color="primary"
+                                flat
+                              />
+                            </div>
+                          </q-date>
+                        </q-popup-proxy>
+                      </q-icon>
+                    </template>
+                  </q-input>
                 </div>
-                <!-- Minutos y Segundos de atraso -->
+                <!-- Tiempo de atraso -->
                 <div class="col-12 col-md-3">
-                  <label class="q-mb-sm block">Minutos de Atraso</label>
+                  <label class="q-mb-sm block">Tiempo de Atraso</label>
                   <q-input
-                    v-model="atraso.minutos_atraso"
+                    v-model="atraso.tiempo_atraso"
                     outlined
                     dense
-                    readonly
-                    hint="Minutos de atraso calculados"
+                    disable
+                    hint="Tiempo de atraso calculados"
                   />
                 </div>
 
+                <!-- Ocurrencia -->
                 <div class="col-12 col-md-3">
-                  <label class="q-mb-sm block">Segundos de Atraso</label>
+                  <label class="q-mb-sm block">Ocurrencia del Atraso</label>
                   <q-input
-                    v-model="atraso.segundos_atraso"
+                    v-model="atraso.ocurrencia"
                     outlined
                     dense
-                    readonly
-                    hint="Segundos de atraso calculados"
+                    disable
+                    hint="Ocurrencia del atraso"
                   />
                 </div>
 
-                <!-- Requiere Justificación -->
+                <!-- Justificar -->
                 <div class="col-12 col-md-3">
-                  <br />
-                  <q-toggle
-                    v-model="atraso.requiere_justificacion"
-                    label="¿Requiere Justificación?"
-                    color="positive"
+                  <label class="q-mb-sm block">¿Justificar?</label>
+                  <option-group-component
+                    v-model="atraso.justificado"
                     :disable="disabled"
                   />
                 </div>
+
+                <!-- Existe UPC cercano -->
+                <div class="col-12 col-md-3">
+                  <label class="q-mb-sm block">¿Revisado?</label>
+                  <option-group-component
+                    v-model="atraso.revisado"
+                    :disable="true"
+                  />
+                </div>
+
+                <div class="col-6 col-md-3 col-sm-12">
+                  <label for="q-mb-xl block">Imagen Evidencia</label>
+                  <selector-imagen
+                    file_extensiones=".jpg, image/*"
+                    :imagen="atraso.imagen_evidencia"
+                    :disable="disabled"
+                    :alto="'300px'"
+                    @update:model-value="
+                      data => (atraso.imagen_evidencia = data)
+                    "
+                  ></selector-imagen>
+                </div>
+
                 <!-- Justificación -->
-                <div class="col-12" v-if="atraso.requiere_justificacion">
-                  <label class="q-mb-sm block">Justificación de Atraso</label>
+                <div class="col-12">
+                  <label class="q-mb-sm block">Justificación del atraso</label>
                   <essential-editor
                     v-model="atraso.justificacion"
                     :disable="disabled"

@@ -1,6 +1,5 @@
 import { defineComponent, ref } from 'vue'
 import { configuracionColumnasAtrasos } from '../domain/configuracionColumnasAtrasos'
-import { required } from '@vuelidate/validators'
 import { useVuelidate } from '@vuelidate/core'
 import { apiConfig, endpoints } from 'config/api'
 import { AxiosHttpRepository } from 'shared/http/infraestructure/AxiosHttpRepository'
@@ -12,20 +11,54 @@ import EssentialEditor from 'components/editores/EssentialEditor.vue'
 import { ContenedorSimpleMixin } from 'shared/contenedor/modules/simple/application/ContenedorSimpleMixin'
 import { AtrasosController } from '../infraestructure/AtrasosController'
 import { Atrasos } from '../domain/Atrasos'
+import { EmpleadoController } from 'recursosHumanos/empleados/infraestructure/EmpleadoController'
+import { useFiltrosListadosSelects } from 'shared/filtrosListadosGenerales'
+import { ordenarLista } from 'shared/utils'
+import { required } from 'shared/i18n-validators'
+import ErrorComponent from 'components/ErrorComponent.vue'
+import NoOptionComponent from 'components/NoOptionComponent.vue'
+import { maskFecha } from 'config/utils'
+import OptionGroupComponent from 'components/optionGroup/view/OptionGroupComponent.vue'
+import SelectorImagen from 'components/SelectorImagen.vue'
 
 export default defineComponent({
   name: 'JustificacionPage',
-  components: { TabLayoutFilterTabs2, EssentialEditor },
+  components: {
+    NoOptionComponent,
+    SelectorImagen,
+    ErrorComponent,
+    TabLayoutFilterTabs2,
+    OptionGroupComponent,
+    EssentialEditor
+  },
   setup() {
-    const mixin = new ContenedorSimpleMixin(
-      Atrasos,
-      new AtrasosController()
-    )
-    const { entidad: atraso, listado, disabled } = mixin.useReferencias()
-    const { setValidador, listar } = mixin.useComportamiento()
+    const mixin = new ContenedorSimpleMixin(Atrasos, new AtrasosController())
+    const {
+      entidad: atraso,
+      listado,
+      listadosAuxiliares,
+      disabled
+    } = mixin.useReferencias()
+    const { setValidador, listar, cargarVista, obtenerListados } =
+      mixin.useComportamiento()
     const tabDefecto = ref('0') // Por defecto "Justificados"
 
+    const { empleados, filtrarEmpleados } =
+      useFiltrosListadosSelects(listadosAuxiliares)
+    cargarVista(async () => {
+      await obtenerListados({
+        empleados: {
+          controller: new EmpleadoController(),
+          params: { estado: 1 }
+        }
+      })
+
+      empleados.value = listadosAuxiliares.empleados
+
+    })
+
     const reglas = {
+      empleado: { required },
       justificacion: { required }
     }
 
@@ -39,25 +72,22 @@ export default defineComponent({
 
     async function filtrarListadoAtrasos(tab: string) {
       tabDefecto.value = tab
-      if (listado.value.length > 0) await listar({ requiere_justificacion: tab })
+      await listar({ justificado: tab })
     }
 
-    async function actualizarAtrasos() {
+    async function sincronizarAtrasos() {
       const axios = AxiosHttpRepository.getInstance()
-      const url =apiConfig.URL_BASE +'/'+axios.getEndpoint(endpoints.sincronizar_atrasos)
+      const url = apiConfig.URL_BASE + '/' + axios.getEndpoint(endpoints.sincronizar_atrasos)
       try {
         const response: AxiosResponse = await axios.get(url)
-        listado.value = Array.isArray(response.data.results)
-          ? response.data.results
-          : []
-       await listar() // Asegúrate de que esta función pueda manejar un arreglo vacío
+        console.log(response.data)
       } catch (error) {
         console.error('Error al sincronizar atrasos:', error)
         listado.value = [] // Mantén el listado vacío si ocurre un error
       }
     }
 
-    actualizarAtrasos()
+    sincronizarAtrasos()
 
     return {
       mixin,
@@ -65,9 +95,17 @@ export default defineComponent({
       v$,
       disabled,
       configuracionColumnas: configuracionColumnasAtrasos,
-      filtrarListadoAtrasos,
       tabDefecto,
-      tabOptions
+      tabOptions,
+      maskFecha,
+
+      // opciones
+      empleados,
+      filtrarEmpleados,
+
+      //funciones
+      filtrarListadoAtrasos,
+      ordenarLista
     }
   }
 })

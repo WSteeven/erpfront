@@ -38,7 +38,8 @@ export default defineComponent({
 
     async function actualizarAsistencias() {
       const axios = AxiosHttpRepository.getInstance()
-      const url = apiConfig.URL_BASE+'/'+axios.getEndpoint(endpoints.sincronizar_asistencias)
+      // const url = apiConfig.URL_BASE+'/'+axios.getEndpoint(endpoints.sincronizar_asistencias)
+      const url = apiConfig.URL_BASE+'/'+axios.getEndpoint(endpoints.sincronizar_marcaciones)
       try {
         const response: AxiosResponse = await axios.get(url)
 
