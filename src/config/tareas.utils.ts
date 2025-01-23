@@ -101,3 +101,13 @@ export const tiposReportesMaterialUtilizado = {
 }
 
 export const opcionesTipoReporteMaterialUtilizado = [tiposReportesMaterialUtilizado.POR_TAREA, tiposReportesMaterialUtilizado.POR_PROYECTO]
+
+export const estadosTransferenciasProductos = {
+  PENDIENTE: 'PENDIENTE',
+  APROBADO: 'APROBADO',
+}
+
+export const tabOptionsAceptarTransferenciasProductos: TabOption[] = [
+  { label: 'Pendiente', value: estadosTransferenciasProductos.PENDIENTE },
+  { label: 'Aprobado', value: estadosTransferenciasProductos.APROBADO },
+]
