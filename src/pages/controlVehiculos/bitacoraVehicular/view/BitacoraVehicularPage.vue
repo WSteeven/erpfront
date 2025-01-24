@@ -175,6 +175,7 @@
               file_extensiones=".jpg, image/*"
               :imagen="bitacora.imagen_inicial"
               :disable="disabled"
+              placeholder="Obligatorio"
               :error="!!v$.imagen_inicial.$errors.length"
               :alto="'200px'"
               @update:model-value="data => (bitacora.imagen_inicial = data)"
