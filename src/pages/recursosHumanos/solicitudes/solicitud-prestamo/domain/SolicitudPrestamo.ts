@@ -13,7 +13,7 @@ export class SolicitudPrestamo extends EntidadAuditable {
   estado_info: string | null
   motivo: string | null
   observacion: string | null
-  cargo_utilidad: boolean | null
+  cargo_utilidad: boolean
 
   constructor() {
     super()
