@@ -85,17 +85,23 @@ export default defineComponent({
             estado: 1,
           },
         },
+        usuariosInactivos: {
+          controller: new EmpleadoController(),
+          params: {
+            estado: 0,
+          },
+        },
       })
 
       usuarios.value = filtarVisualizacionEmpleadosSaldos(
         listadosAuxiliares.usuarios
       )
       listadosAuxiliares.usuarios = usuarios.value
-      usuariosInactivos.value =
-        LocalStorage.getItem('usuariosInactivos') == null
+      usuariosInactivos.value = listadosAuxiliares.usuariosInactivos
+        /* LocalStorage.getItem('usuariosInactivos') == null
           ? []
-          : JSON.parse(LocalStorage.getItem('usuariosInactivos')!.toString())
-      listadosAuxiliares.usuariosInactivos = usuariosInactivos.value
+          : JSON.parse(LocalStorage.getItem('usuariosInactivos')!.toString()) */
+      /* listadosAuxiliares.usuariosInactivos = usuariosInactivos.value */
     })
     /*********
      * Filtros
