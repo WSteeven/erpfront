@@ -10,7 +10,7 @@ import { useAuthenticationStore } from 'stores/authentication'
 import { useNotificacionStore } from 'stores/notificacion'
 import { useNotificaciones } from 'shared/notificaciones'
 import { destinosTareas } from 'config/tareas.utils'
-import { imprimirArchivo, ordenarLista } from 'shared/utils'
+import { imprimirArchivo, obtenerFechaActual, ordenarLista } from 'shared/utils'
 import { useCargandoStore } from 'stores/cargando'
 import { apiConfig, endpoints } from 'config/api'
 import { accionesTabla, maskFecha } from 'config/utils'
@@ -79,8 +79,8 @@ export default defineComponent({
     const filtroProyecto = reactive(new FiltroMiBodegaProyecto())
     const filtroEmpleado = reactive(new FiltroMiBodegaEmpleado())
     const filtroReporteMateriales = reactive({
-      fecha_inicio: null,
-      fecha_fin: null,
+      fecha_inicio: '2023-04-01',
+      fecha_fin: obtenerFechaActual(maskFecha),
     })
 
     const listadosAuxiliares = reactive({
@@ -255,7 +255,7 @@ export default defineComponent({
         const url = apiConfig.URL_BASE + '/' + axios.getEndpoint(endpoints.actualizar_cantidad_material_empleado)
         const data = tab.value == destinosTareas.paraClienteFinal ? { tarea_id, tipo: tab.value, cantidad, empleado: empleadoSeleccionado.value, detalle_producto_id: detalle, cliente_id: cliente } : { tipo: tab.value, cantidad: cantidad, empleado: empleadoSeleccionado.value, detalle_producto_id: detalle, cliente_id: cliente }
         const response: AxiosResponse = await axios.post(url, data)
-        console.log(response)
+
         if (response.status == 200) {
           notificarCorrecto(response.data.mensaje)
           return true
