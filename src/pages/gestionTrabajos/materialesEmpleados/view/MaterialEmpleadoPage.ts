@@ -10,7 +10,7 @@ import { useAuthenticationStore } from 'stores/authentication'
 import { useNotificacionStore } from 'stores/notificacion'
 import { useNotificaciones } from 'shared/notificaciones'
 import { destinosTareas } from 'config/tareas.utils'
-import { imprimirArchivo, ordenarLista, ordernarListaString } from 'shared/utils'
+import { imprimirArchivo, ordenarLista } from 'shared/utils'
 import { useCargandoStore } from 'stores/cargando'
 import { apiConfig, endpoints } from 'config/api'
 import { accionesTabla, maskFecha } from 'config/utils'
@@ -36,6 +36,9 @@ import { Empleado } from 'pages/recursosHumanos/empleados/domain/Empleado'
 import { Tarea } from 'pages/gestionTrabajos/tareas/domain/Tarea'
 import { requiredIf } from 'shared/i18n-validators'
 import useVuelidate from '@vuelidate/core'
+import { ContenedorSimpleMixin } from 'shared/contenedor/modules/simple/application/ContenedorSimpleMixin'
+import { ProductoEmpleado } from '../domain/ProductoEmpleado'
+import { ProductoEmpleadoController } from '../infraestructure/ProductoEmpleadoController'
 
 export default defineComponent({
   components: { EssentialTable, ModalEntidad },
@@ -47,6 +50,12 @@ export default defineComponent({
     const store = useAuthenticationStore()
     useNotificacionStore().setQuasar(useQuasar())
     useCargandoStore().setQuasar(useQuasar())
+
+    /********
+     * Mixin
+     ********/
+    const mixin = new ContenedorSimpleMixin(ProductoEmpleado, new ProductoEmpleadoController())
+    const { listar } = mixin.useComportamiento()
 
     // Modales
     const modales = new ComportamientoModalesMaterialEmpleado()
@@ -256,7 +265,7 @@ export default defineComponent({
       }
     }
 
-    const descargarReporteMateriales = async () => {
+    const descargarReporteMaterialesStockUsadosTareas = async () => {
       if (await v$.value.$validate()) {
         // const fechaActual = new Date()
         const empleado: any = listadosAuxiliares.empleados.find((empleado: Empleado) => empleado.id === empleadoSeleccionado.value)
@@ -265,6 +274,23 @@ export default defineComponent({
         const endpoint = endpoints.reporte_materiales
         const urlPdf = apiConfig.URL_BASE + '/' + AxiosHttpRepository.getInstance().getEndpoint(endpoint, { empleado_id: empleadoSeleccionado.value, ...filtroReporteMateriales })
         imprimirArchivo(urlPdf, 'GET', 'blob', 'xlsx', filename)
+      }
+    }
+
+    const descargarReporteMateriales = async () => {
+      if (await v$.value.$validate()) {
+        const empleado: any = listadosAuxiliares.empleados.find((empleado: Empleado) => empleado.id === empleadoSeleccionado.value)
+        const filename = 'reporte_materiales_' + empleado?.nombres + ' ' + empleado?.apellidos + '_' + filtroReporteMateriales.fecha_inicio + '-' + filtroReporteMateriales.fecha_fin
+
+        listar({
+          export: 'xlsx',
+          titulo: filename,
+          tipo: 3,
+          fecha_inicio: filtroReporteMateriales.fecha_inicio,
+          fecha_fin: filtroReporteMateriales.fecha_fin,
+          responsable: empleadoSeleccionado.value,
+          firmada: 1
+        })
       }
     }
 
@@ -390,10 +416,11 @@ export default defineComponent({
       //botones de tabla
       btnCambiarClientePropietario,
       btnModificarStock,
-      descargarReporteMateriales,
+      descargarReporteMaterialesStockUsadosTareas,
       filtroReporteMateriales,
       mostrarImprimirReporteMateriales,
       maskFecha,
+      descargarReporteMateriales,
     }
   },
 })

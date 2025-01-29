@@ -146,17 +146,27 @@
           </q-input>
         </div>
 
-        <div v-if="mostrarImprimirReporteMateriales" class="col-12 col-md-3">
-          <label class="block q-mb-sm">&nbsp;</label>
-          <q-btn
-            color="primary"
-            no-caps
-            no-wrap
-            @click="descargarReporteMateriales()"
-          >
-            <q-icon name="bi-download" size="xs" class="q-mr-sm"></q-icon>
-            Imprimir reporte de materiales de stock
-          </q-btn>
+        <div v-if="mostrarImprimirReporteMateriales" class="col-12 row">
+          <q-btn-group dense unelevated rounded>
+            <q-btn
+              color="primary"
+              no-caps
+              no-wrap
+              @click="descargarReporteMaterialesStockUsadosTareas()"
+            >
+              <q-icon name="bi-printer" size="xs" class="q-mr-sm"></q-icon>
+              Reporte de materiales de stock usados en tareas
+            </q-btn>
+            <q-btn
+              color="secondary"
+              no-caps
+              no-wrap
+              @click="descargarReporteMateriales()"
+            >
+              <q-icon name="bi-printer" size="xs" class="q-mr-sm"></q-icon>
+              Reporte de materiales de stock
+            </q-btn>
+          </q-btn-group>
         </div>
       </q-card-section>
     </q-card>
