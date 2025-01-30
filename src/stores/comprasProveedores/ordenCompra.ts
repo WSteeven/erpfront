@@ -50,7 +50,7 @@ export const useOrdenCompraStore = defineStore('ordenCompra', () => {
       const axios = AxiosHttpRepository.getInstance()
       const url = apiConfig.URL_BASE + '/' + axios.getEndpoint(endpoints.ordenes_compras) + '/toProveedor/' + idOrden.value
       const response: AxiosResponse = await axios.get(url)
-      if (response.status = 200) notificarCorrecto(response.data.mensaje)
+      if (response.status === 200) notificarCorrecto(response.data.mensaje)
       else notificarAdvertencia(response.data.mensaje)
 
     } catch (e) {

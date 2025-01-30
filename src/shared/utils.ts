@@ -331,6 +331,25 @@ export function obtenerPrimerUltimoDiaMes(formato = 'DD-MM-YYYY') {
 }
 
 /**
+ * Funcion para remover ÚNICAMENTE tildes en una cadena
+ * @param str cadena que se va a limpiar
+ */
+export function removeTildes(str: string) {
+  // Reemplaza las letras acentuadas por sus equivalentes sin tilde
+  return str
+    .replace(/á/g, 'a')
+    .replace(/é/g, 'e')
+    .replace(/í/g, 'i')
+    .replace(/ó/g, 'o')
+    .replace(/ú/g, 'u')
+    .replace(/Á/g, 'A')
+    .replace(/É/g, 'E')
+    .replace(/Í/g, 'I')
+    .replace(/Ó/g, 'O')
+    .replace(/Ú/g, 'U');
+}
+
+/**
  * Funcion para remover tildes o acentos de una cadena
  * @param accents cadena que se va a limpiar
  * @returns cadena sin acentos ni tildes
