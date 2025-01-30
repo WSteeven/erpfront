@@ -50,13 +50,21 @@
           ></q-checkbox>
         </div>
 
+        <div v-if="mostrarImprimirReporteMateriales" class="col-12 q-mt-md q-mb-lg">
+          <q-separator color="positive"></q-separator>
+          <div
+            class="col-12 bg-green-1 text-positive text-bold q-px-md q-py-sm"
+          >
+            <q-icon name="bi-bar-chart-line" class="q-mr-sm"></q-icon>
+            Reporte de materiales
+          </div>
+        </div>
+
         <div v-if="empleadoSeleccionado" class="col-12 col-md-3">
           <br />
           <q-toggle
             v-model="mostrarImprimirReporteMateriales"
-            label="Mostrar imprimir reporte materiales"
-            checked-icon="bi-bag-check"
-            icon="bi-bag"
+            label="Mostrar sección para imprimir reportes"
             color="positive"
             dense
           ></q-toggle>
@@ -147,16 +155,31 @@
         </div>
 
         <div v-if="mostrarImprimirReporteMateriales" class="col-12 col-md-3">
-          <label class="block q-mb-sm">&nbsp;</label>
-          <q-btn
-            color="primary"
-            no-caps
-            no-wrap
-            @click="descargarReporteMateriales()"
-          >
-            <q-icon name="bi-download" size="xs" class="q-mr-sm"></q-icon>
-            Imprimir reporte de materiales de stock
-          </q-btn>
+          <label class="block q-mb-sm">Botón de acciones</label>
+          <q-btn-group dense unelevated rounded>
+            <!-- <q-btn
+              color="primary"
+              no-caps
+              no-wrap
+              @click="descargarReporteMaterialesStockUsadosTareas()"
+            >
+              <q-icon name="bi-printer" size="xs" class="q-mr-sm"></q-icon>
+              Reporte de materiales de stock usados en tareas
+            </q-btn> -->
+            <q-btn
+              color="positive"
+              no-caps
+              no-wrap
+              @click="descargarReporteMateriales()"
+            >
+              <q-icon
+                name="bi-file-earmark-spreadsheet"
+                size="xs"
+                class="q-mr-sm"
+              ></q-icon>
+              Generar reporte
+            </q-btn>
+          </q-btn-group>
         </div>
       </q-card-section>
     </q-card>
