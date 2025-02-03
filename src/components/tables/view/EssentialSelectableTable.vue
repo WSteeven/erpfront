@@ -64,16 +64,16 @@ export default defineComponent({
   props: {
     configuracionColumnas: {
       type: Object as () => ColumnConfig<EntidadAuditable>[],
-      required: true,
+      required: true
     },
     datos: {
       type: Array,
-      required: true,
+      required: true
     },
     tipoSeleccion: {
       type: String as () => TipoSeleccion,
-      default: 'single',
-    },
+      default: 'single'
+    }
   },
   components: { EssentialTable },
   emits: ['selected'],
@@ -105,8 +105,8 @@ export default defineComponent({
       ocultar,
       seleccionar,
       abierto,
-      emitSelected,
+      emitSelected
     }
-  },
+  }
 })
 </script>

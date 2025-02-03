@@ -561,7 +561,7 @@
           </div>
           <!-- Autorizacion -->
           <div class="col-12 col-md-3" v-if="visualizarAutorizador">
-            <label class="q-mb-sm block">Autorizaciòn Especial</label>
+            <label class="q-mb-sm block">Autorización Especial</label>
             <q-select
               v-model="gasto.aut_especial"
               :options="autorizaciones_especiales"

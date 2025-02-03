@@ -101,8 +101,8 @@
             <q-select
               v-model="familiares.parentezco"
               :options="parentezcos"
-              :error="!!v$.parentesco.$errors.length"
-              @blur="v$.parentesco.$touch"
+              :error="!!v$.parentezco.$errors.length"
+              @blur="v$.parentezco.$touch"
               transition-show="scale"
               transition-hide="scale"
               options-dense

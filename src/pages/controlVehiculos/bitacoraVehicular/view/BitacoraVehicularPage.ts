@@ -408,7 +408,6 @@ export default defineComponent({
 
     async function imprimirPdf(id: number) {
       try {
-        cargando.activar()
         const axios = AxiosHttpRepository.getInstance()
         const url =
           apiConfig.URL_BASE +
@@ -421,8 +420,6 @@ export default defineComponent({
         // console.log('Bitácora vehicular con éxito')
       } catch (e) {
         notificarAdvertencia('Error al imprimir la bitácora. ' + e)
-      } finally {
-        cargando.desactivar()
       }
     }
 

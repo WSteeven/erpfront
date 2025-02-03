@@ -113,7 +113,8 @@ export const useMenuStore = defineStore('menu', () => {
               icon: 'bi-plus-circle-fill',
               can: store.can('puede.acceder.nodos')
             },
-          ]},
+          ]
+        },
         {
           title: 'Reportes',
           icon: 'bi-graph-up-arrow',
@@ -467,7 +468,12 @@ export const useMenuStore = defineStore('menu', () => {
                 store.esCoordinador ||
                 store.esGerente ||
                 store.can('puede.acceder.comprobantes_egresos')
-            }
+            },
+            {
+              title: 'Aceptar transferencia de productos',
+              link: '/aceptar-transferencia-producto',
+              icon: 'bi-arrow-left-right'
+            },
           ]
         },
         {

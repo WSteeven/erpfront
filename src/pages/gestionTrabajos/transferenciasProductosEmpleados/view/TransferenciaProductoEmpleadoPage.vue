@@ -7,6 +7,7 @@
     :filtrar="filtrarTransferenciasProductoEmpleado"
     :ajustarCeldas="true"
     :permitirEditar="puedeEditar"
+    :accion1="botonImprimir"
   >
     <template #formulario>
       <q-form @submit.prevent>

@@ -16,7 +16,7 @@ export const recursosHumanos = {
   permiso_empleado: new Endpoint('recursos-humanos/permiso_empleado'),
   licencia_empleado: new Endpoint('recursos-humanos/licencia_empleado'),
   prestamo_empresarial: new Endpoint('recursos-humanos/prestamo_empresarial'),
-  solicitud_prestamo_empresarial: new Endpoint('recursos-humanos/solicitud_prestamo_empresarial'),
+  solicitud_prestamo_empresarial: new Endpoint('recursos-humanos/solicitud-prestamo-empresarial'),
   periodo: new Endpoint('recursos-humanos/periodo'),
   anticipo: new Endpoint('recursos-humanos/anticipo'),
   rol_pago: new Endpoint('recursos-humanos/rol_pago'),

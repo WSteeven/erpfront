@@ -25,7 +25,7 @@ import { CustomActionTable } from 'components/tables/domain/CustomActionTable';
 import { useTransaccionEgresoStore } from 'stores/transaccionEgreso';
 import { EmpleadoRoleController } from 'pages/recursosHumanos/empleados/infraestructure/EmpleadoRolesController';
 import { TareaController } from 'pages/gestionTrabajos/tareas/infraestructure/TareaController';
-import { imprimirArchivo, ordenarLista } from 'shared/utils'
+import { imprimirArchivo, obtenerFechaActual, ordenarLista } from 'shared/utils'
 import { useNotificacionStore } from 'stores/notificacion';
 import { ClienteController } from 'sistema/clientes/infraestructure/ClienteController';
 import { ComportamientoModalesTransaccionEgreso } from 'pages/bodega/transacciones/modules/transaccionEgreso/application/ComportamientoModalesGestionarEgresos';
@@ -78,6 +78,8 @@ export default defineComponent({
         motivos: { controller: new MotivoController(), params: { tipo_transaccion_id: 2 } },
       })
       listadosAuxiliares.categorias = []
+
+      reporte.fecha_fin = obtenerFechaActual(maskFecha)
     })
 
 
@@ -101,7 +103,6 @@ export default defineComponent({
     }
     async function buscarReporte(accion: string) {
       try {
-        cargando.activar()
         const axios = AxiosHttpRepository.getInstance()
         const url = apiConfig.URL_BASE + '/' + axios.getEndpoint(endpoints.transacciones_egresos) + '/reportes'
         const filename = 'reporte_egresos_bodega'
@@ -123,12 +124,9 @@ export default defineComponent({
               if (response.data.results.length < 1) notificarAdvertencia('No se obtuvieron resultados')
             }
         }
-        cargando.desactivar()
       } catch (e) {
         console.log(e)
         notificarError('Error al obtener reporte')
-      } finally {
-        cargando.desactivar()
       }
     }
     async function consultarListado(id: number) {

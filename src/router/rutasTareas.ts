@@ -182,6 +182,13 @@ const rutasTareas: RouteRecordRaw[] = [
     component: () => import('gestionTrabajos/nodos/view/NodoPage.vue'),
     meta: { requiresAuth: true },
   },
+  {
+    path: '/aceptar-transferencia-producto',
+    name: 'aceptar_transferencia_producto',
+    component: () => import('pages/bodega/transacciones/modules/aceptarTransferenciaProducto/view/AceptarTransferenciaProductoPage.vue'),
+    meta: { requiresAuth: true },
+  },
+
   /*{
     path: '/reporte-trabajos-realizados',
     name: 'reporte_trabajos_realizados',

@@ -5,7 +5,7 @@ import {
   rolesSistema,
   tabOptionsTransferenciaProductoEmpleado
 } from 'config/utils'
-import { configuracionColumnasDevoluciones } from '../domain/configuracionColumnasDevoluciones'
+import { configuracionColumnasTransferenciaProducto } from '../domain/configuracionColumnasTransferenciaProducto'
 import { computed, defineComponent, onMounted, reactive, ref, watch } from 'vue'
 import { useOrquestadorSelectorDetalles } from '../application/OrquestadorSelectorDetalles'
 import { useFiltrosListadosSelects } from 'shared/filtrosListadosGenerales'
@@ -49,6 +49,7 @@ import { TareaController } from 'tareas/infraestructure/TareaController'
 import { Empleado } from 'recursosHumanos/empleados/domain/Empleado'
 import { Tarea } from 'tareas/domain/Tarea'
 import { useNotificaciones } from 'shared/notificaciones'
+import { CustomActionTable } from 'components/tables/domain/CustomActionTable'
 
 export default defineComponent({
   name: 'TransferenciaProductoEmpleado',
@@ -601,10 +602,17 @@ export default defineComponent({
       seleccionarEmpleadoOrigen()
     })
 
-    /*******************************************************************************************
+    /********************
      * Botones de tabla
-     ******************************************************************************************/
+     ********************/
     const { botonEditarCantidad, botonEliminar } = useBotonesListadoProductos(transferencia, accion)
+
+    const botonImprimir: CustomActionTable<TransferenciaProductoEmpleado> = {
+      titulo: 'Imprimir',
+      color: 'positive',
+      icono: 'bi-printer',
+      accion: async ({ entidad }) => listar({ export: 'pdf', id: entidad.id, titulo: 'Tranferencia #' + entidad.id })
+    }
 
     //Configurar los listados
     // opciones_empleados.value = listadosAuxiliares.empleados
@@ -665,7 +673,7 @@ export default defineComponent({
 
     return {
       mixin, transferencia, disabled, accion, v$, acciones,
-      configuracionColumnas: configuracionColumnasDevoluciones,
+      configuracionColumnas: configuracionColumnasTransferenciaProducto,
       authenticationStore,
       refArchivo,
       idTransferencia,
@@ -703,7 +711,7 @@ export default defineComponent({
 
       //flags
       esCoordinador,
-      puedeAutorizar: computed(() => authenticationStore.can('puede.autorizar.transferencia_producto_empleado') && [acciones.nuevo, acciones.editar].includes(accion.value)),
+      puedeAutorizar: computed(() => authenticationStore.can('puede.autorizar.transferencia_producto_empleado') && [acciones.nuevo, acciones.editar].includes(accion.value as any)),
       // puedeAutorizar: computed(() => (esCoordinador || authenticationStore.esJefeTecnico || authenticationStore.esAdministrador) && accion.value === acciones.nuevo),
 
       //Tabs
@@ -749,6 +757,7 @@ export default defineComponent({
       seleccionarTareaDestino,
       consultarProductos,
       consultado: computed(() => accion.value === acciones.editar || accion.value === acciones.consultar),
+      botonImprimir,
     }
   }
 })

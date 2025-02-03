@@ -69,16 +69,6 @@
     >{{ estadosTrabajos.PAUSADO }}
   </q-chip>
 
-  <!-- PENDIENTE-->
-  <q-chip
-    v-if="props.propsTable.value === estadosTrabajos.PENDIENTE"
-    :class="{ 'bg-orange-1': !$q.dark.isActive }"
-    class="text-orange q-mx-none"
-  >
-    <q-icon name="bi-circle-fill" color="accent" class="q-mr-xs"></q-icon
-    >{{ estadosTrabajos.PENDIENTE }}
-  </q-chip>
-
   <!-- SUSPENDIDO -->
   <q-chip
     v-if="props.propsTable.value === estadosTrabajos.SUSPENDIDO"
