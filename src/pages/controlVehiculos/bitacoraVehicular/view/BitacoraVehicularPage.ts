@@ -63,6 +63,11 @@ import ModalesEntidad from 'components/modales/view/ModalEntidad.vue'
 import ErrorComponent from 'components/ErrorComponent.vue'
 import NoOptionComponent from 'components/NoOptionComponent.vue'
 import { TanqueoController } from 'vehiculos/tanqueoCombustible/infraestructure/TanqueoController'
+import {
+  configuracionColumnasDetallesProforma
+} from 'pages/comprasProveedores/proforma/domain/configuracionColumnasDetallesProforma'
+import { UnidadMedida } from 'pages/bodega/unidades_medidas/domain/UnidadMedida'
+import { Tarea } from 'tareas/domain/Tarea'
 
 export default defineComponent({
   // name:'ControlDiarioVehiculo',
@@ -170,6 +175,10 @@ export default defineComponent({
 
         tareas.value = listadosAuxiliares.tareas
         tickets.value = listadosAuxiliares.tickets
+
+        //Colocar las tareas en listado
+        configuracionColumnasActividadesRealizadas.find((item) => item.field === 'tarea')!.options = listadosAuxiliares.tareas.map((v: Tarea) => { return { value: v.id, label: v.codigo_tarea } })
+
       }
 
       await obtenerTanqueosBitacora()
