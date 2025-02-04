@@ -107,7 +107,7 @@
             </q-input>
           </div>
           <!-- Hora de inicio -->
-          <div class="col-3 col-md-3">
+          <div class="col-3 col-md-3 col-sm-6 col-xs-6">
             <label class="q-mb-sm block">Hora inicio labores vehículo</label>
             <q-input
               v-model="bitacora.hora_salida"
@@ -126,7 +126,7 @@
             </q-input>
           </div>
           <!-- Hora de llegada -->
-          <div class="col-3 col-md-3">
+          <div class="col-3 col-md-3 col-sm-6 col-xs-6">
             <label class="q-mb-sm block">Hora fin labores vehículo</label>
             <q-input
               v-model="bitacora.hora_llegada"
@@ -175,6 +175,7 @@
               file_extensiones=".jpg, image/*"
               :imagen="bitacora.imagen_inicial"
               :disable="disabled"
+              placeholder="Obligatorio"
               :error="!!v$.imagen_inicial.$errors.length"
               :alto="'200px'"
               @update:model-value="data => (bitacora.imagen_inicial = data)"
@@ -419,7 +420,7 @@
         >
           <div class="row q-col-gutter-sm q-pa-sm">
             <div class="col-12">
-              <essential-popup-editable-table
+              <essential-table
                 titulo="Actividades realizadas"
                 :configuracionColumnas="
                   accion === acciones.editar
@@ -437,7 +438,7 @@
                 :altoFijo="false"
                 :accion1Header="btnAgregarActividad"
                 :accion1="btnEliminar"
-              ></essential-popup-editable-table>
+              ></essential-table>
             </div>
           </div>
         </q-expansion-item>

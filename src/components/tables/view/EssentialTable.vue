@@ -73,7 +73,7 @@
           v-if="
             props.col.editable &&
             (!props.col.type ||
-              ['text', 'number', 'date', 'time'].includes(props.col.type))
+              ['text','textarea', 'number', 'date', 'time'].includes(props.col.type))
           "
           v-model="props.row[props.col.name]"
           @update:model-value="guardarCeldaEditada(props.row)"
