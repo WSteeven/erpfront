@@ -1,6 +1,6 @@
 //Dependencias
 import { configuracionColumnasPedidos } from 'pages/bodega/pedidos/domain/configuracionColumnasPedidos'
-import { defineComponent, reactive, ref } from 'vue'
+import { defineComponent, onMounted, reactive, ref } from 'vue'
 import { required } from 'shared/i18n-validators'
 import { LocalStorage, useQuasar } from 'quasar'
 import useVuelidate from '@vuelidate/core'
@@ -12,15 +12,15 @@ import { ArcElement, Chart as ChartJS, Legend, Tooltip } from 'chart.js'
 import { Doughnut } from 'vue-chartjs'
 
 //Logica y controladores
-import { StatusEssentialLoading } from 'components/loading/application/StatusEssentialLoading'
 import { useNotificaciones } from 'shared/notificaciones'
 import { useNotificacionStore } from 'stores/notificacion'
 import { useCargandoStore } from 'stores/cargando'
-import { accionesTabla } from 'config/utils'
+import { accionesTabla, maskFecha } from 'config/utils'
 import { CustomActionTable } from 'components/tables/domain/CustomActionTable'
 import { usePedidoStore } from 'stores/pedido'
 import { ComportamientoModalesPedido } from 'pages/bodega/pedidos/application/ComportamientoModalesPedido'
 import { EmpleadoController } from 'pages/recursosHumanos/empleados/infraestructure/EmpleadoController'
+import { obtenerFechaActual } from 'shared/utils'
 
 ChartJS.register(ArcElement, Tooltip, Legend)
 
@@ -30,12 +30,11 @@ export default defineComponent({
     const reporte = reactive({
       fecha_inicio: '',
       fecha_fin: '',
-      estado: '',
+      estado: ''
     })
     useNotificacionStore().setQuasar(useQuasar())
     useCargandoStore().setQuasar(useQuasar())
     const pedidoStore = usePedidoStore()
-    const cargando = new StatusEssentialLoading()
 
     const modales = new ComportamientoModalesPedido()
     const listado = ref([])
@@ -45,33 +44,34 @@ export default defineComponent({
     const { notificarError } = useNotificaciones()
     const reglas = {
       fecha_inicio: { required },
-      fecha_fin: { required },
+      fecha_fin: { required }
     }
     const v$ = useVuelidate(reglas, reporte)
 
-
-
+    onMounted(() => (reporte.fecha_fin = obtenerFechaActual(maskFecha)))
 
     /**
      * Funciones
-    */
+     */
     async function buscarReporte(accion: string) {
       try {
-        cargando.activar()
-        listado.value = await pedidoStore.buscarReporte(accion, reporte, listado.value)
-        cargando.desactivar()
+        listado.value = await pedidoStore.buscarReporte(
+          accion,
+          reporte,
+          listado.value
+        )
       } catch (e) {
         console.log(e)
         notificarError('Error al obtener reporte')
-      } finally {
-        cargando.desactivar()
       }
     }
+
     async function cargarEmpleados() {
-      listadoEmpleados.value = await (await new EmpleadoController().listar({ estado: 1 })).response.data.results
+      listadoEmpleados.value = await (
+        await new EmpleadoController().listar({ estado: 1 })
+      ).response.data.results
       empleados.value = listadoEmpleados.value
     }
-
 
     cargarEmpleados()
 
@@ -79,7 +79,9 @@ export default defineComponent({
      * Botones de tabla
      */
     const btnVerPedido: CustomActionTable = {
-      titulo: '', icono: 'bi-eye', color: 'primary',
+      titulo: '',
+      icono: 'bi-eye',
+      color: 'primary',
       accion: async ({ entidad }) => {
         pedidoStore.idPedido = entidad.id
         await pedidoStore.showPreview()
@@ -100,11 +102,12 @@ export default defineComponent({
     }
 
     //listados
-    const estados = JSON.parse(LocalStorage.getItem('estados_transacciones')!.toString())
+    const estados = JSON.parse(
+      LocalStorage.getItem('estados_transacciones')!.toString()
+    )
 
     //agregar otra opcion
-    estados.unshift({ id: 0, nombre: 'TODOS LOS ESTADOS', })
-
+    estados.unshift({ id: 0, nombre: 'TODOS LOS ESTADOS' })
 
     //datos para el grafico
     const data = {
@@ -122,11 +125,15 @@ export default defineComponent({
       maintainAspectRatio: false
     }
 
-    const configuracionColumnas = [...configuracionColumnasPedidos, accionesTabla]
+    const configuracionColumnas = [
+      ...configuracionColumnasPedidos,
+      accionesTabla
+    ]
 
     return {
       configuracionColumnas,
-      reporte, v$,
+      reporte,
+      v$,
       empleados,
       estados,
       listado,
@@ -134,9 +141,10 @@ export default defineComponent({
       //funciones
       buscarReporte,
       //grafico
-      data, options,
+      data,
+      options,
       datos,
-
+      maskFecha,
       //botones de tabla
       btnVerPedido,
       btnImprimir,
@@ -150,11 +158,13 @@ export default defineComponent({
         }
         update(() => {
           const needle = val.toLowerCase()
-          empleados.value = listadoEmpleados.value.filter((v) => (v.nombres.toLowerCase().indexOf(needle) > -1 || v.apellidos.toLowerCase().indexOf(needle) > -1))
+          empleados.value = listadoEmpleados.value.filter(
+            v =>
+              v.nombres.toLowerCase().indexOf(needle) > -1 ||
+              v.apellidos.toLowerCase().indexOf(needle) > -1
+          )
         })
-      },
-
-
+      }
     }
   }
 })

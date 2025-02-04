@@ -72,7 +72,7 @@ export default defineComponent({
     const authenticationStore = useAuthenticationStore()
 
     const sueldo_basico = computed(() => {
-      recursosHumanosStore.obtener_sueldo_basico()
+      recursosHumanosStore.obtenerSueldoBasico()
       return recursosHumanosStore.sueldo_basico
     })
     const prestamoEmpresarialCustomController = new PrestamoCustomController()

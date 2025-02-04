@@ -13,7 +13,7 @@ export default defineComponent({
     //stores
     useNotificacionStore().setQuasar(useQuasar())
     useCargandoStore().setQuasar(useQuasar())
-    let sucursal = ref()
+    const sucursal = ref()
     const sucursales: Ref<any[]> = ref([])
 
 
@@ -24,11 +24,11 @@ export default defineComponent({
       switch (tipo) {
         case 'excel':
           url = apiConfig.URL_BASE + '/' + axios.getEndpoint(endpoints.reporte_inventario) + '/excel/' + sucursal.value
-          imprimirArchivo(url, 'GET', 'blob', 'xlsx', filename)
+          await imprimirArchivo(url, 'GET', 'blob', 'xlsx', filename)
           break;
         case 'pdf':
           url = apiConfig.URL_BASE + '/' + axios.getEndpoint(endpoints.reporte_inventario) + '/pdf/' + sucursal.value
-          imprimirArchivo(url, 'GET', 'blob', 'pdf', filename)
+          await imprimirArchivo(url, 'GET', 'blob', 'pdf', filename)
           break;
         default:
           break;

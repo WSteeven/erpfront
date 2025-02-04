@@ -167,6 +167,7 @@
                 :disable="disabled"
                 :error="!!v$.nombres.$errors.length"
                 @blur="v$.nombres.$touch && obtenerUsername()"
+                @update:model-value="(v) => (empleado.nombres = removeTildes(v))"
                 outlined
                 dense
               >
@@ -186,6 +187,7 @@
                 placeholder="Obligatorio"
                 :disable="disabled"
                 :error="!!v$.apellidos.$errors.length"
+                @update:model-value="(v) => (empleado.apellidos = removeTildes(v))"
                 @blur="v$.apellidos.$touch && obtenerUsername()"
                 outlined
                 dense

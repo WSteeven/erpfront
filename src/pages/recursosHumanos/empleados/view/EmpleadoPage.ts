@@ -62,7 +62,7 @@ import { apiConfig, endpoints } from 'config/api'
 import {
   encontrarUltimoIdListado,
   imprimirArchivo,
-  ordenarLista
+  ordenarLista, removeAccents, removeTildes
 } from 'shared/utils'
 import { useCargandoStore } from 'stores/cargando'
 import { AxiosResponse } from 'axios'
@@ -500,7 +500,7 @@ export default defineComponent({
 
     function reestablecer_usuario() {
       if (accion.value == acciones.editar && empleado.generar_usuario) {
-        generarUsename()
+        generarUsename(true)
       } else {
         empleado.usuario = nombre_usuario.value
         empleado.email = email_usuario.value
@@ -532,28 +532,21 @@ export default defineComponent({
     }
 
     function obtenerUsername() {
-      if (accion.value == acciones.editar && empleado.generar_usuario) {
-        generarUsename()
-      }
-      if (
-        accion.value == acciones.nuevo &&
-        empleado.nombres != null &&
-        empleado.nombres != '' &&
-        empleado.apellidos != null &&
-        empleado.apellidos != ''
-      ) {
-        generarUsename()
-      }
+      const esEditar =accion.value == acciones.editar && empleado.generar_usuario
+      const esNuevo = accion.value == acciones.nuevo && empleado.nombres?.trim()  && empleado.apellidos?.trim()
+      if (esEditar||esNuevo) generarUsename(accion.value===acciones.editar) // Solo se sobreescribirá cuando sea editar
     }
 
-    async function generarUsename() {
+    async function generarUsename(sobreescribir=false) {
       const axios = AxiosHttpRepository.getInstance()
-      const ruta = axios.getEndpoint(endpoints.generar_username, {
+      const ruta = axios.getEndpoint(endpoints.generar_username)
+      const datos = {
         nombres: empleado.nombres,
         apellidos: empleado.apellidos,
-        usuario: empleado.usuario
-      })
-      const response: AxiosResponse = await axios.get(ruta)
+        usuario: empleado.usuario,
+        sobreescribir:sobreescribir
+      }
+      const response: AxiosResponse = await axios.post(ruta, datos)
       const username = ref(response.data.username)
       const sitio_web =
         configuracionStore.configuracion?.sitio_web?.split('WWW.')[1]
@@ -700,7 +693,8 @@ export default defineComponent({
       accionesTabla,
       construccionConfiguracionColumnas,
       habilitarBotonAgregarFamiliares,
-      autoidentificaciones_etnicas
+      autoidentificaciones_etnicas,
+      removeTildes,
     }
   }
 })

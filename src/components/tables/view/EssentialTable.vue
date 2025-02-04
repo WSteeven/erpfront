@@ -1620,17 +1620,7 @@
           ></q-icon>
           PARCIAL
         </q-chip>
-        <!-- <q-chip
-          v-if="props.value === estadosTransacciones['pendiente']"
-          :class="{ 'bg-yellow-1': !$q.dark.isActive }"
-        >
-          <q-icon
-            name="bi-circle-fill"
-            color="warning"
-            class="q-mr-xs"
-          ></q-icon>
-          PENDIENTE
-        </q-chip> -->
+
         <q-chip
           v-if="props.value === estadosTransacciones.no_realizada"
           :class="{ 'bg-red-1': !$q.dark.isActive }"

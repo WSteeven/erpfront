@@ -3,63 +3,81 @@
     <q-page-container>
       <q-page padding>
         <div class="col">
-          <q-card class="rounded-card custom-shadow">
+          <q-card class="col rounded no-border q-pb-md">
             <div class="row q-col-gutter-sm q-pa-sm q-py-md">
-              <!-- Empleado -->
-              <div class="col-12 col-md-3" v-if="false">
-                <label class="q-mb-sm block">Empleado</label>
-                <q-select
-                  v-model="reporte.empleado"
-                  :options="empleados"
-                  transition-show="jump-up"
-                  transition-hide="jump-up"
-                  options-dense
-                  dense
-                  hint="Opcional, no seleccionar si desea todos los empleados"
-                  outlined
-                  use-input
-                  input-debounce="0"
-                  @filter="filtrarEmpleados"
-                  :option-label="(v) => v.nombres + ' ' + v.apellidos"
-                  :option-value="(v) => v.id"
-                  emit-value
-                  map-options
-                >
-                  <template v-slot:no-option>
-                    <q-item>
-                      <q-item-section class="text-grey">
-                        No hay resultados
-                      </q-item-section>
-                    </q-item>
-                  </template>
-                </q-select>
-              </div>
-              <!-- estados -->
+              <!-- tipo -->
               <div class="col-12 col-md-3">
-                <label class="q-mb-sm block">Seleccione un estado</label>
+                <label class="q-mb-sm block">Tipo de reporte</label>
                 <q-select
-                  v-model="reporte.estado"
-                  :options="estados"
+                  v-model="reporte.tipo"
+                  :options="opciones"
                   transition-show="scale"
                   transition-hide="scale"
                   options-dense
                   dense
                   outlined
-                  :option-label="(item) => item.nombre"
-                  :option-value="(item) => item.id"
+                  @update:model-value="consultarListado(reporte.tipo)"
+                  :error="!!v$.tipo.$errors.length"
+                  emit-value
+                  map-options
+                  ><template v-slot:error>
+                    <error-component clave="tipo" :v$="v$" />
+                  </template>
+                </q-select>
+              </div>
+
+              <!-- Vehiculo -->
+              <div
+                class="col-12 col-md-3 q-mb-md"
+                v-if="reporte.tipo == INDIVIDUAL"
+              >
+                <label class="q-mb-sm block">Vehículo</label>
+                <q-select
+                  v-model="reporte.vehiculo"
+                  :options="vehiculos"
+                  hint="Agregue elementos desde el panel de vehículos"
+                  transition-show="scale"
+                  transition-hide="scale"
+                  options-dense
+                  clearable
+                  dense
+                  outlined
+                  use-input
+                  input-debounce="0"
+                  @filter="filtrarVehiculos"
+                  :option-label="item => item.placa"
+                  :option-value="item => item.id"
+                  :error="!!v$.vehiculo.$errors.length"
+                  @blur="v$.vehiculo.$touch"
                   emit-value
                   map-options
                 >
+                  <template v-slot:option="scope">
+                    <q-item v-bind="scope.itemProps">
+                      <q-item-section>
+                        <q-item-label>{{ scope.opt.placa }}</q-item-label>
+                        <q-item-label caption>{{
+                          scope.opt.marca + ' ' + scope.opt.modelo
+                        }}</q-item-label>
+                      </q-item-section>
+                    </q-item>
+                  </template>
+                  <template v-slot:no-option>
+                    <no-option-component />
+                  </template>
+                  <template v-slot:error>
+                    <error-component clave="vehiculo" :v$="v$" />
+                  </template>
                 </q-select>
               </div>
+
               <!-- fecha de inicio -->
               <div class="col-12 col-md-3">
                 <label class="q-mb-sm block">Fecha de inicio</label>
                 <q-input
                   v-model="reporte.fecha_inicio"
-                  placeholder="Obligatorio"
                   :error="!!v$.fecha_inicio.$errors.length"
-                  @blur="v$.fecha_inicio.$touch"
+                  placeholder="Opcional"
                   outlined
                   dense
                 >
@@ -88,13 +106,7 @@
                     </q-icon>
                   </template>
                   <template v-slot:error>
-                    <div
-                      style="clear: inherit"
-                      v-for="error of v$.fecha_inicio.$errors"
-                      :key="error.$uid"
-                    >
-                      <div class="error-msg">{{ error.$message }}</div>
-                    </div>
+                    <error-component clave="fecha_inicio" :v$="v$" />
                   </template>
                 </q-input>
               </div>
@@ -103,9 +115,7 @@
                 <label class="q-mb-sm block">Fecha fin </label>
                 <q-input
                   v-model="reporte.fecha_fin"
-                  placeholder="opcional"
-                  :error="!!v$.fecha_fin.$errors.length"
-                  @blur="v$.fecha_fin.$touch"
+                  placeholder="Opcional"
                   outlined
                   dense
                 >
@@ -133,15 +143,18 @@
                       </q-popup-proxy>
                     </q-icon>
                   </template>
-                  <template v-slot:error>
-                    <div
-                      style="clear: inherit"
-                      v-for="error of v$.fecha_fin.$errors"
-                      :key="error.$uid"
-                    >
-                      <div class="error-msg">{{ error.$message }}</div>
-                    </div>
-                  </template>
+                </q-input>
+              </div>
+              <!-- Umbral de kilometraje -->
+              <div class="col-12 col-md-3">
+                <label class="q-mb-sm block">Umbral Kilometraje </label>
+                <q-input
+                  v-model="umbral_km_consumidos"
+                  type="number"
+                  placeholder="Opcional"
+                  outlined
+                  dense
+                >
                 </q-input>
               </div>
               <!-- Grupo de botones -->
@@ -202,47 +215,27 @@
                   </q-btn-group>
                 </div>
               </div>
-              <!-- Pastel -->
-              <!-- <div class="col-12 col-md-6" v-if="true">
-                  <Doughnut
-                    :data="datosConfigurados"
-                    :options="options"
-                    v-if="datosConfigurados"
-                  />
-                </div> -->
             </div>
-            <div
-              v-if="listado.length"
-              class="row q-col-gutter-sm q-pa-sm q-py-md"
-            >
-              <div class="col-12 col-md-12">
+          </q-card>
+          <br />
+          <q-card
+            class="q-mb-md q-mt-sm rounded no-border custom-shadow"
+            v-if="listado"
+          >
+            <div class="row q-col-gutter-sm q-py-md q-mb-lg">
+              <div class="col-12">
                 <essential-table
-                  v-if="listado.length"
-                  titulo="Listado de pedidos"
+                  titulo="Bitácoras de vehículos"
                   :configuracionColumnas="configuracionColumnas"
                   :datos="listado"
-                  :permitirConsultar="false"
-                  :permitirEliminar="false"
-                  :permitirEditar="false"
-                  :mostrarBotones="false"
-                  :permitir-buscar="true"
-                  :ajustarCeldas="true"
-                  :alto-fijo="true"
-                  :accion1="btnVerPedido"
-                  :accion2="btnImprimir"
+                  :altoFijo="false"
                 ></essential-table>
               </div>
             </div>
-            <div v-else>&nbsp;&nbsp; No hay movimientos de esta consulta.</div>
           </q-card>
         </div>
-        <modal-entidad
-          :comportamiento="modales"
-          :persistente="false"
-        ></modal-entidad>
       </q-page>
     </q-page-container>
   </q-layout>
 </template>
-
-<script src="./ReportePedidosPage.ts"></script>
+<script src="./ReporteBitacorasPage.ts" />

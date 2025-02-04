@@ -206,7 +206,7 @@ export default defineComponent({
     async function filtrarPedidos(tab: string) {
       tabSeleccionado.value = tab
       await listar({ estado: tab })
-      puedeEditar.value = (esCoordinador || esActivosFijos || store.esJefeTecnico || esGerente || store.esCompras || store.can('puede.autorizar.pedidos')) && tabSeleccionado.value === estadosTransacciones.pendiente
+      puedeEditar.value = (esCoordinador || esActivosFijos || store.esJefeTecnico || esGerente || store.esCompras || store.esRecursosHumanos || store.can('puede.autorizar.pedidos')) && tabSeleccionado.value === estadosTransacciones.pendiente
     }
 
     function cargarDatosDefecto() {
