@@ -152,3 +152,14 @@ export const estadosOrdenesCompras = {
   PAGADA: 'PAGADA',
   ANULADA: 'ANULADA'
 }
+
+export const tiposCuentasCash = [
+  { value: 'AHO', label: 'AHORROS' },
+  { value: 'CTE', label: 'CORRIENTE' },
+]
+
+export const tiposDocumentosIdentificacionesCash = [
+  { nombre: 'Cédula', value: 'C' },
+  { nombre: 'RUC.', value: 'R' },
+  { nombre: 'Pasaporte', value: 'P' },
+]

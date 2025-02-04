@@ -1171,6 +1171,12 @@ export const useMenuStore = defineStore('menu', () => {
           can: store.can('puede.acceder.dashboard_ordenes_compras')
         },
         {
+          title: 'Generador de cash',
+          link: 'generador-cash',
+          icon: 'bi-cash-stack',
+          can: store.can('puede.acceder.generador_cash')
+        },
+        {
           title: 'Empresas',
           link: 'empresas',
           icon: 'bi-building',

@@ -162,7 +162,8 @@ module.exports = configure(function (/* ctx */) {
           __dirname,
           './src/pages/activosFijos/controlActivosFijos'
         ),
-        sso: path.join(__dirname, './src/pages/sso')
+        sso: path.join(__dirname, './src/pages/sso'),
+        comprasProveedores: path.join(__dirname, './src/pages/comprasProveedores'),
       }
     },
 

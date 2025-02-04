@@ -145,6 +145,10 @@ export default defineComponent({
       type: Boolean,
       default: false,
     },
+    grid: {
+      type: Boolean,
+      default: true
+    },
   },
   components: { EssentialTable, EssentialTablePagination, ButtonSubmits },
   setup(props) {
@@ -169,9 +173,9 @@ export default defineComponent({
 
     // console.log(props.mostrarListado)
     if (props.mostrarListado) {
-      if(props.paginate) {
-        listar({paginate:1})
-      }else{
+      if (props.paginate) {
+        listar({ paginate: 1 })
+      } else {
         listar()
       }
     }

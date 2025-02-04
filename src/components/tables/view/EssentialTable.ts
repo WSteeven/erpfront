@@ -61,7 +61,7 @@ export default defineComponent({
   },
   props: {
     // eslint-disable-next-line vue/require-valid-default-prop
-    v$: { type: Object, default: {}, required:false },
+    v$: { type: Object, default: {}, required: false },
     keyError: { type: String, required: false },
     identificador: { type: Number, default: -1 },
     referencia: Object as () => Ref,
@@ -412,9 +412,9 @@ export default defineComponent({
     function extraerIcono(accion: CustomActionTable, propsTable: any) {
       return typeof accion?.icono === 'function'
         ? accion.icono({
-            entidad: propsTable.row,
-            posicion: propsTable.rowIndex
-          })
+          entidad: propsTable.row,
+          posicion: propsTable.rowIndex
+        })
         : accion?.icono
     }
 
@@ -528,9 +528,9 @@ export default defineComponent({
     function extraerColor(accion: CustomActionTable, propsTable: any) {
       return typeof accion?.color === 'function'
         ? accion.color({
-            entidad: propsTable.row,
-            posicion: propsTable.rowIndex
-          })
+          entidad: propsTable.row,
+          posicion: propsTable.rowIndex
+        })
         : accion?.color
     }
 
@@ -541,7 +541,6 @@ export default defineComponent({
     function clearSelection() {
       refTable.value.clearSelection()
     }
-
 
     return {
       refTable,
@@ -595,6 +594,7 @@ export default defineComponent({
       verVisorArchivos,
       archivos,
       visibleModalVisorArchivos,
+      emitirFila: (accion, rowIndex: number) => accion(listado.value[rowIndex], rowIndex),
     }
   }
 })

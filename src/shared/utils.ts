@@ -863,22 +863,22 @@ export function filtarVisualizacionEmpleadosSaldos(empleados) {
   if (authenticationStore.can('puede.buscar.tecnicos')) {
     const filtrados_busqueda =
       authenticationStore.esContabilidad ||
-      authenticationStore.esCoordinador ||
-      authenticationStore.esAdministrador
+        authenticationStore.esCoordinador ||
+        authenticationStore.esAdministrador
         ? empleados
         : empleados.filter(
-            empleado =>
-              empleado.departamento === rolesSistema.tecnico &&
-              extraerRol(empleado.roles.split(', '), rolesSistema.tecnico) &&
-              !extraerRol(empleado.roles.split(', '), rolesSistema.coordinador)
-          )
+          empleado =>
+            empleado.departamento === rolesSistema.tecnico &&
+            extraerRol(empleado.roles.split(', '), rolesSistema.tecnico) &&
+            !extraerRol(empleado.roles.split(', '), rolesSistema.coordinador)
+        )
     return filtrados_busqueda
   }
 
   const filtrados =
     authenticationStore.esContabilidad ||
-    authenticationStore.esCoordinador ||
-    authenticationStore.esAdministrador
+      authenticationStore.esCoordinador ||
+      authenticationStore.esAdministrador
       ? empleados
       : empleados.filter(empleado => empleado.jefe_id === usuario.id)
 
@@ -900,18 +900,11 @@ export async function notificarErrores(err) {
   }
 }
 
-export const mapearOptionsSelect = (
-  listadoOpciones: {
-    id: number
-    nombre: string
-  }[]
-): SelectOption[] => {
-  return listadoOpciones.map((opcion: { id: number; nombre: string }) => {
-    return {
-      label: opcion.nombre,
-      value: opcion.id
-    }
-  })
+export const mapearOptionsSelect = (listado: { id: number; nombre: string }[]): SelectOption[] => {
+  return listado.map(opcion => ({
+    label: opcion.nombre,
+    value: opcion.id
+  }))
 }
 
 export const copiarAlPortapapeles = async (texto: string) => {
