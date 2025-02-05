@@ -4,6 +4,7 @@
     :configuracion-columnas="configuracionColumnasGeneradorCash"
     :permitir-eliminar="false"
     :accion1="btnGenerarCash"
+    :accion2="btnGenerarCashTxt"
   >
     <template #formulario>
       <div class="row q-col-gutter-sm q-mb-md">

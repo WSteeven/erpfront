@@ -94,10 +94,17 @@ export default defineComponent({
         }
 
         const btnGenerarCash: CustomActionTable<Pago> = {
-            titulo: 'Generar cash',
+            titulo: 'Generar cash Excel',
             icono: 'bi-table',
             color: 'positive',
             accion: ({ entidad }) => listarGeneradorCash({ export: 'xlsx', titulo: `cash_${entidad.id}_${entidad.titulo}_${entidad.created_at}`, id: entidad.id })
+        }
+
+        const btnGenerarCashTxt: CustomActionTable<Pago> = {
+            titulo: 'Generar cash Txt',
+            icono: 'bi-card-text',
+            color: 'green-10',
+            accion: ({ entidad }) => listarGeneradorCash({ export: 'txt', titulo: `cash_${entidad.id}_${entidad.titulo}_${entidad.created_at}`, id: entidad.id })
         }
 
         const btnEliminarPago = ({ posicion }) => confirmar('Esta operación es irreversible. ¿Desea continuar?', () => generador.pagos.splice(posicion, 1))
@@ -184,6 +191,7 @@ export default defineComponent({
             configuracionColumnasBeneficiarios,
             btnAgregarPago,
             btnGenerarCash,
+            btnGenerarCashTxt,
             refListadoSeleccionable,
             listado,
             seleccionar,
