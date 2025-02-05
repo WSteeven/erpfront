@@ -35,6 +35,7 @@
             :grid="false"
             :alto-fijo="false"
             :accion1Header="btnAgregarPago"
+            :accion2Header="btnGestionarBeneficiarios"
             permitirEditarCeldas
             :permitir-consultar="false"
             :permitir-editar="false"
@@ -68,6 +69,7 @@
     :comportamiento="modales"
     :mixin-modal="mixin"
     :persistent="false"
+    @guardado="listar"
   />
 </template>
 

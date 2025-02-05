@@ -5,10 +5,13 @@ import { configuracionColumnasGeneradorCash } from '../domain/configuracionColum
 import { configuracionColumnasPago } from '../domain/configuracionColumnasPago'
 import { CustomActionTable } from 'components/tables/domain/CustomActionTable'
 import { ColumnConfig } from 'components/tables/domain/ColumnConfig'
+import { minValue, required } from 'shared/i18n-validators'
 import { useNotificacionStore } from 'stores/notificacion'
 import { useNotificaciones } from 'shared/notificaciones'
 import { defineComponent, Ref, ref, watch } from 'vue'
-import { minValue, required } from 'shared/i18n-validators'
+import { helpers } from '@vuelidate/validators'
+import { accionesTabla } from 'config/utils'
+import useVuelidate from '@vuelidate/core'
 import { useQuasar } from 'quasar'
 import _ from 'lodash'
 
@@ -26,9 +29,6 @@ import { useOrquestadorSelectorBeneficiarios } from '../application/OrquestadorS
 import { GeneradorCashController } from '../infraestructure/GeneradorCashController'
 import { GeneradorCash } from '../domain/GeneradorCash'
 import { Pago } from '../domain/Pago'
-import { accionesTabla } from 'config/utils'
-import useVuelidate from '@vuelidate/core'
-import { helpers } from '@vuelidate/validators'
 
 export default defineComponent({
     components: { TabLayout, EssentialTable, EssentialSelectableTable, ModalesEntidad },
@@ -84,11 +84,18 @@ export default defineComponent({
             accion: () => generador.pagos = [_.cloneDeep(pago), ...generador.pagos]
         }
 
+        const btnGestionarBeneficiarios: CustomActionTable = {
+            titulo: 'Gestionar beneficiarios',
+            icono: 'bi-people',
+            color: 'positive',
+            accion: () => modales.abrirModalEntidad('BeneficiarioPage')
+        }
+
         const btnGenerarCash: CustomActionTable<Pago> = {
             titulo: 'Generar cash',
             icono: 'bi-table',
             color: 'positive',
-            accion: ({ entidad }) => listarGeneradorCash({ export: 'xlsx', titulo: 'cash', id: entidad.id })
+            accion: ({ entidad }) => listarGeneradorCash({ export: 'xlsx', titulo: `cash_${entidad.id}_${entidad.created_at}`, id: entidad.id })
         }
 
         const btnEliminarPago = ({ posicion }) => confirmar('Esta operación es irreversible. ¿Desea continuar?', () => generador.pagos.splice(posicion, 1))
@@ -122,8 +129,8 @@ export default defineComponent({
         /************
          * Observers
         ************/
-        watch(existenCoincidencias, (existe) => {
-            if (!existe) modales.abrirModalEntidad('BeneficiarioPage')
+        watch(existenCoincidencias, (existe) => { // Agregar identificacion automaticamente 
+            if (!existe) modales.abrirModalEntidad('BeneficiarioPage', { identificacion_beneficiario: generador.pagos[rowIndex.value].identificacion_beneficiario })
         })
 
         /********
@@ -180,6 +187,7 @@ export default defineComponent({
             existenCoincidencias,
             modales,
             btnEliminarPago,
+            btnGestionarBeneficiarios,
             // orquestador
             refListadoSeleccionableCuentasBancarias,
             criterioBusquedaCuentasBancarias,
@@ -187,6 +195,7 @@ export default defineComponent({
             listarCuentasBancarias,
             seleccionarCuentasBancarias,
             existenCoincidenciasCuentasBancarias,
+            listar,
         }
     }
 })

@@ -17,6 +17,7 @@
           @selected="emitSelected"
           :ajustarCeldas="true"
           :alto-fijo="false"
+          :mostrar-footer="false"
         ></essential-table>
       </q-card-section>
 

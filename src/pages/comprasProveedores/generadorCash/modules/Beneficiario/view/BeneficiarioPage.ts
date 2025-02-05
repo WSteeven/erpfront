@@ -3,9 +3,9 @@ import { configuracionColumnasCuentaBancaria } from '../domain/configuracionColu
 import { configuracionColumnasBeneficiarios } from '../domain/configuracionColumnasBeneficiarios'
 import { useFiltrosListadosSelects } from 'shared/filtrosListadosGenerales'
 import { mapearOptionsSelect, ordenarLista } from 'shared/utils'
-import { required } from 'shared/i18n-validators'
+import { helpers, required } from 'shared/i18n-validators'
+import { defineComponent, UnwrapRef } from 'vue'
 import useVuelidate from '@vuelidate/core'
-import { defineComponent } from 'vue'
 
 // Componentes
 import TabLayout from 'shared/contenedor/modules/simple/view/TabLayout.vue'
@@ -17,22 +17,27 @@ import { ContenedorSimpleMixin } from 'shared/contenedor/modules/simple/applicat
 import { CuentaBancaria } from 'pages/comprasProveedores/generadorCash/domain/CuentaBancaria'
 import { BancoController } from 'pages/recursosHumanos/banco/infrestruture/BancoController'
 import { CantonController } from 'sistema/ciudad/infraestructure/CantonControllerontroller'
+import { tiposDocumentosIdentificacionesCash } from 'config/utils_compras_proveedores'
 import { BeneficiarioController } from '../infraestructure/BeneficiarioController'
 import { CustomActionTable } from 'components/tables/domain/CustomActionTable'
-import { Beneficiario } from '../domain/Beneficiario'
-import { tiposDocumentosIdentificacionesCash } from 'config/utils_compras_proveedores'
 import { useNotificaciones } from 'shared/notificaciones'
+import { Beneficiario } from '../domain/Beneficiario'
 import { accionesTabla } from 'config/utils'
 
 export default defineComponent({
   components: { TabLayout, EssentialTable },
-  setup() {
+  props: {
+    datos: Object as () => UnwrapRef<{ identificacion_beneficiario: string, codigo_beneficiario: string }>,
+  },
+  emits: ['cerrar-modal', 'guardado'],
+  setup(props, { emit }) {
     /********
      * Mixin
      ********/
     const mixin = new ContenedorSimpleMixin(Beneficiario, new BeneficiarioController())
     const { entidad: beneficiario, disabled, listadosAuxiliares } = mixin.useReferencias()
     const { setValidador, cargarVista, obtenerListados } = mixin.useComportamiento()
+    const { onReestablecer, onGuardado } = mixin.useHooks()
 
     cargarVista(async () => {
       await obtenerListados({
@@ -69,8 +74,15 @@ export default defineComponent({
     const rules = {
       codigo_beneficiario: { required },
       tipo_documento: { required },
-      identificacion_beneficiario: { required },// pedido - editar
+      identificacion_beneficiario: { required },
       nombre_beneficiario: { required },
+      cuentas_bancarias: {
+        $each: helpers.forEach({
+          tipo_cuenta: { required },
+          numero_cuenta: { required },
+          banco: { required },
+        })
+      },
     }
 
     // Inicializamos Vuelidate
@@ -78,9 +90,18 @@ export default defineComponent({
     setValidador(v$.value)
 
     /********
+     * Hooks
+     ********/
+    onReestablecer(() => emit('cerrar-modal'))
+
+    onGuardado(() => emit('guardado'))
+
+    /********
      * Init
      ********/
     beneficiario.cuentas_bancarias.unshift(new CuentaBancaria())
+    beneficiario.identificacion_beneficiario = props.datos?.identificacion_beneficiario ?? null
+    beneficiario.codigo_beneficiario = props.datos?.identificacion_beneficiario ?? null
 
     return {
       v$,

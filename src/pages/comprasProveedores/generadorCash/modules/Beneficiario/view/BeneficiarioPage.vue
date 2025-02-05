@@ -198,6 +198,8 @@
         :permitir-editar="false"
         permitirEditarCeldas
         @eliminar="btnEliminarCuentaBancaria"
+        :v$="v$"
+        key-error="cuentas_bancarias"
       ></essential-table>
     </template>
   </tab-layout>

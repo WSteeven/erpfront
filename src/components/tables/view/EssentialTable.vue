@@ -111,7 +111,6 @@
           "
           dense
           outlined
-          square
         >
           <template v-slot:error>
             <error-component
@@ -127,8 +126,8 @@
             <q-icon
               :name="props.col.icon"
               size="xs"
-              color="dark"
-              class="bg-grey-4 rounded-tabpanel q-pa-sm"
+              color="primary"
+              class="bg-grgey-4 rounded q-pa-sm q-ma-none"
             ></q-icon>
           </template>
         </q-input>
