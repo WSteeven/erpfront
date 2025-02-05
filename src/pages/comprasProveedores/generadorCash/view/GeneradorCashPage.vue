@@ -13,6 +13,7 @@
           <q-input
             v-model="generador.titulo"
             placeholder="Obligatorio"
+            :disable="disabled"
             outlined
             dense
             :error="!!v$.titulo.$errors.length"
@@ -32,6 +33,7 @@
             :configuracionColumnas="configuracionColumnasPagoAccion"
             :datos="generador.pagos"
             ajustar-celdas
+            :disable="disabled"
             :grid="false"
             :alto-fijo="false"
             :accion1Header="btnAgregarPago"
@@ -39,6 +41,7 @@
             permitirEditarCeldas
             :permitir-consultar="false"
             :permitir-editar="false"
+            :permitir-eliminar="!disabled"
             :permitir-buscar="false"
             @eliminar="btnEliminarPago"
             :v$="v$"

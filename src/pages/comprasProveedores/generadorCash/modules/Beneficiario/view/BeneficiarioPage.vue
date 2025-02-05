@@ -137,6 +137,7 @@
               transition-hide="jump-down"
               hint="Opcional"
               options-dense
+              :disable="disabled"
               dense
               outlined
               :input-debounce="0"
@@ -196,6 +197,7 @@
         :permitir-buscar="false"
         :permitir-consultar="false"
         :permitir-editar="false"
+        :disable="disabled"
         permitirEditarCeldas
         @eliminar="btnEliminarCuentaBancaria"
         :v$="v$"

@@ -43,7 +43,7 @@ export default defineComponent({
          * Mixin
          ********/
         const mixin = new ContenedorSimpleMixin(GeneradorCash, new GeneradorCashController())
-        const { entidad: generador } = mixin.useReferencias()
+        const { entidad: generador, disabled } = mixin.useReferencias()
         const { listar: listarGeneradorCash, setValidador } = mixin.useComportamiento()
         const { onBeforeGuardar, onReestablecer } = mixin.useHooks()
 
@@ -81,6 +81,7 @@ export default defineComponent({
         const btnAgregarPago: CustomActionTable<Pago> = {
             titulo: 'Agregar pago',
             icono: 'bi-plus',
+            visible: () => !disabled.value,
             accion: () => generador.pagos = [_.cloneDeep(pago), ...generador.pagos]
         }
 
@@ -88,6 +89,7 @@ export default defineComponent({
             titulo: 'Gestionar beneficiarios',
             icono: 'bi-people',
             color: 'positive',
+            visible: () => !disabled.value,
             accion: () => modales.abrirModalEntidad('BeneficiarioPage')
         }
 
@@ -95,7 +97,7 @@ export default defineComponent({
             titulo: 'Generar cash',
             icono: 'bi-table',
             color: 'positive',
-            accion: ({ entidad }) => listarGeneradorCash({ export: 'xlsx', titulo: `cash_${entidad.id}_${entidad.created_at}`, id: entidad.id })
+            accion: ({ entidad }) => listarGeneradorCash({ export: 'xlsx', titulo: `cash_${entidad.id}_${entidad.titulo}_${entidad.created_at}`, id: entidad.id })
         }
 
         const btnEliminarPago = ({ posicion }) => confirmar('Esta operación es irreversible. ¿Desea continuar?', () => generador.pagos.splice(posicion, 1))
@@ -174,6 +176,7 @@ export default defineComponent({
         return {
             v$,
             mixin,
+            disabled,
             generador,
             configuracionColumnasGeneradorCash,
             configuracionColumnasPagoAccion: [...configuracionColumnasPago, accionesTabla],
