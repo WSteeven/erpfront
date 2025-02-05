@@ -240,7 +240,7 @@ export class ContenedorSimpleMixin<T extends EntidadAuditable> extends Contenedo
 
       const copiaEntidad = JSON.parse(JSON.stringify(this.entidad))
       this.hooks.onGuardado(copiaEntidad.id, response.data)
-      this.reestablecer() // antes estaba arriba de onGuardado
+      this.reestablecer() // antes estaba arriba de onGuardado, no ha dado error asi que se deja aqui
       return copiaEntidad
     } catch (error: any) {
       if (isAxiosError(error)) {

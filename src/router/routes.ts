@@ -1087,12 +1087,18 @@ const routes: RouteRecordRaw[] = [
           import('pages/intranet/eventos/view/EventoPage.vue'),
         meta: { requiresAuth: false },
       },
-
       {
         path: '/organigrama',
         name: 'intra_organigrama',
         component: () =>
           import('src/pages/intranet/organigrama/view/OrganigramaPage.vue'),
+        meta: { requiresAuth: true },
+      },
+      {
+        path: '/generador-cash',
+        name: 'generador_cash',
+        component: () =>
+          import('src/pages/comprasProveedores/generadorCash/view/GeneradorCashPage.vue'),
         meta: { requiresAuth: true },
       },
     ],

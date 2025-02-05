@@ -56,17 +56,17 @@ export default defineComponent({
     const configuracionGeneralStore = useConfiguracionGeneralStore()
 
     const { componente, titulo, abierto, propsData } = props.comportamiento.useModal()
-    const { confirmar } = useNotificaciones()
+    // const { confirmar } = useNotificaciones()
     function cerrarModalEntidad(confirmarCerrar = props.confirmarCerrar) {
-      if (confirmarCerrar) {
+      /* if (confirmarCerrar) {
         confirmar('¿Está seguro de que desea cerrar?', () => {
           abierto.value = false
           emit('cerrado')
         })
-      } else {
-        abierto.value = false
-        emit('cerrado')
-      }
+      } else { */
+      abierto.value = false
+      emit('cerrado')
+      // }
     }
 
     const duracion = ref(0)

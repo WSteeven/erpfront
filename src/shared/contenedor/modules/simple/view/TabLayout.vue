@@ -1,6 +1,6 @@
 <template>
   <!-- :padding="!$q.screen.xs" -->
-  <q-page>
+  <component :is="full ? 'q-page' : 'div'">
     <transition name="scale" mode="out-in">
       <slot name="modales" />
     </transition>
@@ -54,7 +54,7 @@
       :class="{ 'rounded-tabpanel': !$q.screen.xs }"
     >
       <!-- Formulario -->
-      <q-tab-panel name="formulario" :class="{ 'q-pa-none': full }">
+      <q-tab-panel name="formulario">
         <slot name="formulario" />
         <div :class="{ 'q-pa-md': full }">
           <div class="row justify-end q-col-gutter-x-xs">
@@ -118,6 +118,7 @@
           :titulo="tituloTabla"
           :configuracionColumnas="columnas"
           :datos="listado"
+          :grid="grid"
           :permitirConsultar="puedeVer"
           :permitirEditar="puedeEditar"
           :permitirEliminar="puedeEliminar"
@@ -150,7 +151,7 @@
         <slot name="custom-listado" />
       </q-tab-panel>
     </q-tab-panels>
-  </q-page>
+  </component>
 </template>
 
 <script src="./TabLayout.ts"></script>

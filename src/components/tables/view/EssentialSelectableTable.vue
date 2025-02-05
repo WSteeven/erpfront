@@ -1,15 +1,14 @@
 <template>
-  <q-dialog
-    v-model="abierto"
-    full-width
-    :position="$q.screen.xs ? 'standard' : 'top'"
-    :maximized="$q.screen.xs"
-  >
-    <q-card>
-      <q-linear-progress :value="1" color="primary" />
-
-      <q-card-section style="height: 89vh" class="scroll">
+  <q-dialog v-model="abierto" full-width :maximized="$q.screen.xs">
+    <!-- :position="$q.screen.xs ? 'standard' : 'center'" -->
+    <q-card class="rounded-card">
+      <!-- <q-linear-progress :value="1" color="primary" /> -->
+      <q-card-section
+        :style="{ height: `calc(100vh - ${$q.screen.xs ? 100 : 500}px)` }"
+        class="scroll"
+      >
         <essential-table
+          titulo="Seleccione del listado"
           ref="refTabla"
           :configuracion-columnas="configuracionColumnas"
           :datos="datos"
@@ -17,6 +16,8 @@
           :tipoSeleccion="tipoSeleccion"
           @selected="emitSelected"
           :ajustarCeldas="true"
+          :alto-fijo="false"
+          :mostrar-footer="false"
         ></essential-table>
       </q-card-section>
 

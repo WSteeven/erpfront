@@ -1,57 +1,59 @@
+import { StatusEssentialLoading } from 'components/loading/application/StatusEssentialLoading'
 import { SelectorController } from '../infraestructure/SelectorController'
 import { useNotificaciones } from 'shared/notificaciones'
-import { StatusEssentialLoading } from 'components/loading/application/StatusEssentialLoading'
 import { AxiosError } from 'axios'
+import { ref } from 'vue'
 
 export function useSelector(selector: any) {
   const controller = new SelectorController(selector.endpoint)
   const status = new StatusEssentialLoading()
   const notificaciones = useNotificaciones()
+  const existenCoincidencias = ref(true) // 
 
   const listar = async (criterioBusqueda?: string | null, params?: any) => {
-    const filtros = {
+    /* const filtros = {
       search: criterioBusqueda,
-    }
+    } */
     let result
-    if (!criterioBusqueda) delete filtros.search
+    existenCoincidencias.value = true
+    // if (!criterioBusqueda) delete filtros.search
     try {
-
-      if (params) {
-        // Object.assign(filtros, params)
+      status.activar()
+      const { response } = await controller.listar({ search: criterioBusqueda, ...params })
+      if (response.data.mensaje) notificaciones.notificarAdvertencia(response.data.mensaje)
+      result = response.data.data ?? response.data.results
+      status.desactivar()
+      /* if (params) {
         status.activar()
         const { response } = await controller.listar(params)
-        // console.log(response.data.mensaje)
         if (response.data.mensaje) notificaciones.notificarAdvertencia(response.data.mensaje)
-        result = response.data.results
+        result = response.data.data ?? response.data.results
         status.desactivar()
       } else {
         status.activar()
         const { response } = await controller.listar(filtros)
-        // console.log(response.data.mensaje)
         if (response.data.mensaje) notificaciones.notificarAdvertencia(response.data.mensaje)
-        result = response.data.results
+        result = response.data.data ?? response.data.results
         status.desactivar()
-      }
+      } */
     } catch (e: unknown) {
-      console.log('error', e)
       const axiosError = e as AxiosError
       notificaciones.notificarError(axiosError + '')
     } finally {
       status.desactivar()
     }
 
-
     if (result) {
       if (result.length === 0) {
         const { notificarAdvertencia } = useNotificaciones()
-        // await sleep(0)
-        notificarAdvertencia('No se encontraron coincidencias')
-        return
+        existenCoincidencias.value = false
+        return notificarAdvertencia('No se encontraron coincidencias')
       }
 
       // si se obtiene un solo elemento, se auto selecciona
       if (result.length === 1) {
         selector.refListadoSeleccionable.value.seleccionar(result) // seleccion multiple verificar si funciona para seleccion simple
+        existenCoincidencias.value = true
         return
       }
 
@@ -59,6 +61,7 @@ export function useSelector(selector: any) {
       if (result.length > 1) {
         selector.listadoSeleccionable.value = [...result]
         selector.refListadoSeleccionable.value.mostrar()
+        existenCoincidencias.value = true
       }
     }
   }
@@ -75,5 +78,6 @@ export function useSelector(selector: any) {
   return {
     listar,
     seleccionar,
+    existenCoincidencias,
   }
 }
