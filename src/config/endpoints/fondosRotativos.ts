@@ -34,6 +34,7 @@ export const fondosRotativos = {
   autorizaciones_transferencia: new Endpoint('fondos-rotativos/autorizaciones_transferencia'),
   umbral: new Endpoint('fondos-rotativos/umbral'),
   acreditacion: new Endpoint('fondos-rotativos/acreditacion'),
+  acreditaciones_lotes: new Endpoint('fondos-rotativos/acreditaciones-lotes'),
   transferencia: new Endpoint('fondos-rotativos/transferencia'),
   ultimo_saldo: new Endpoint('fondos-rotativos/ultimo_saldo'),
   monto_acreditar_usuario: new Endpoint('fondos-rotativos/monto_acreditar_usuario'),

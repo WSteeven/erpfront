@@ -44,15 +44,21 @@ export default defineComponent({
       Acreditacion,
       new AcreditacionController()
     )
+    const mixin2 = new ContenedorSimpleMixin(
+      Acreditacion,
+      new AcreditacionController()
+    ) // mixin alternativo para que no se duplique listado
     const {
       entidad: acreditacion,
       disabled,
       accion,
       listadosAuxiliares,
-      listado, tabs
+      listado,
+      tabs, filtros
     } = mixin.useReferencias()
     const { setValidador, obtenerListados, cargarVista, listar } =
       mixin.useComportamiento()
+    const { onGuardado, onReestablecer } = mixin.useHooks()
     const {
       confirmar,
       prompt,
@@ -104,6 +110,7 @@ export default defineComponent({
       tiposFondos.value = listadosAuxiliares.tiposFondos
       tiposSaldos.value = listadosAuxiliares.tiposSaldos
     })
+
     /*********
      * Filtros
      **********/
@@ -148,6 +155,7 @@ export default defineComponent({
         acreditacion.saldo_anterior = response.data.saldo_actual
       }
     }
+
     function anularAcreditacion(entidad) {
       confirmar('¿Está seguro de anular la acreditacion?', () => {
         const data: CustomActionPrompt = {
@@ -188,9 +196,20 @@ export default defineComponent({
     }
 
     async function subirArchivos() {
-      await refArchivo.value.subir()
-      console.log(refArchivo.value)
-      tab.value = 'listado'
+      try {
+        await refArchivo.value.subir()
+
+        refArchivo.value.quiero_subir_archivos = false
+        modoIndividual.value = true
+        // retrasar la ejecucion de esta funcion
+        setTimeout(async () => {
+          refArchivo.value?.limpiarListado()
+          tabs.value = 'listado'
+          await filtrarAcreditacion('1')
+        }, 1000)
+      } catch (error) {
+        console.error(`Error es: ${error}`)
+      }
     }
 
     const btnEliminarAcreditacion: CustomActionTable = {
@@ -203,6 +222,7 @@ export default defineComponent({
         eliminar_acreditacion({ entidad, posicion })
       }
     }
+
     async function eliminar_acreditacion({ entidad, posicion }) {
       try {
         const data: CustomActionPrompt = {
@@ -224,11 +244,11 @@ export default defineComponent({
         )
       }
     }
-    let tabActualAcreditacion = '1'
 
-    function filtrarAcreditacion(tabSeleccionado: string) {
-      listar({ id_estado: tabSeleccionado }, false)
-      tabActualAcreditacion = tabSeleccionado
+    async function filtrarAcreditacion(tabSeleccionado: string) {
+      await listar({ id_estado: tabSeleccionado, paginate: true }, false)
+
+      filtros.fields = { id_estado: tabSeleccionado }
     }
 
     watchEffect(
@@ -256,17 +276,19 @@ export default defineComponent({
     ]
     return {
       mixin,
+      mixin2,
       acreditacion,
       options,
       disabled,
       accion,
       acciones,
+      refArchivo,
       v$,
       tiposFondos,
       tiposSaldos,
       maskFecha,
       modoIndividual,
-      endpoint: endpoints.pagos_proveedores,
+      endpoint: endpoints.acreditaciones_lotes,
       ordenarLista,
       optionsFecha,
       saldo_anterior,

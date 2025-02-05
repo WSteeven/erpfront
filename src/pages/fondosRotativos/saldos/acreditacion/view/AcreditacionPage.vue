@@ -8,6 +8,7 @@
     :filtrar="filtrarAcreditacion"
     tabDefecto="1"
     :forzarListar="true"
+    paginate
     ajustarCeldas
   >
     <template #formulario>
@@ -270,15 +271,12 @@
           <!-- Documento -->
           <div class="col-12 col-md-12" v-if="accion == acciones.nuevo">
             <label class="q-mb-sm block"
-            >Reporte de contifico <i class="bi bi-info-circle"></i
-            ><q-tooltip class="bg-light-blue-7"
-            >Suba el reporte de cartera por pagar emitida por
-              contifico</q-tooltip
-            ></label
+            >Reporte de Produbanco <i class="bi bi-info-circle"></i>
+              <q-tooltip class="bg-light-blue-7">Suba el reporte emitido por PRODUBANCO</q-tooltip></label
             >
             <gestor-documentos
               ref="refArchivo"
-              :mixin="mixin"
+              :mixin="mixin2"
               :endpoint="endpoint"
               :disable="disabled"
               :permitir-eliminar="false"
@@ -288,7 +286,7 @@
             >
               <template #boton-subir>
                 <q-btn
-                  v-if="true"
+                  v-if="refArchivo?.quiero_subir_archivos"
                   color="positive"
                   push
                   no-caps
