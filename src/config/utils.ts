@@ -356,6 +356,7 @@ export const tipos_filtros = [
   { value: '7', name: 'RUC' },
   { value: '8', name: 'SIN FACTURA' },
   { value: '9', name: 'CIUDAD' },
+  { value: '10', name: 'GRUPO' },
 ]
 export const tipo_filtro = {
   TODOS: '0',
@@ -368,6 +369,7 @@ export const tipo_filtro = {
   RUC: '7',
   SIN_FACTURA: '8',
   CIUDAD: '9',
+  GRUPO: '10',
 }
 export const tipo_saldo = {
   ACREDITACIONES: '1',
