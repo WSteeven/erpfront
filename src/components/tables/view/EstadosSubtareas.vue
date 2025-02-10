@@ -123,7 +123,11 @@
 
   <!-- FINALIZADO SOLUCIONADO -->
   <q-chip
-    v-if="props.propsTable.value === estadosTickets.FINALIZADO_SOLUCIONADO"
+    v-if="
+      [estadosTickets.FINALIZADO_SOLUCIONADO, 'VALIDADO'].includes(
+        props.propsTable.value
+      )
+    "
     :class="{ 'bg-green-1': !$q.dark.isActive }"
     class="q-mx-none"
     style="color: #9ba98c"
@@ -133,7 +137,7 @@
       style="color: #9ba98c"
       class="q-mr-xs"
     ></q-icon
-    >{{ estadosTickets.FINALIZADO_SOLUCIONADO }}
+    >{{ props.propsTable.value }}
   </q-chip>
 
   <!-- FINALIZADO SIN SOLUCION -->

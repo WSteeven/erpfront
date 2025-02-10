@@ -186,7 +186,7 @@ const rutasTareas: RouteRecordRaw[] = [
     path: '/aceptar-transferencia-producto',
     name: 'aceptar_transferencia_producto',
     component: () => import('pages/bodega/transacciones/modules/aceptarTransferenciaProducto/view/AceptarTransferenciaProductoPage.vue'),
-    meta: { requiresAuth: true },
+    meta: { requiresAuth: true, permissionRequired: false },
   },
 
   /*{

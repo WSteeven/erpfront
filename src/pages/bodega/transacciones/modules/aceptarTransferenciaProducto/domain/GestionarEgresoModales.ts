@@ -1,15 +1,14 @@
 //Dependencias
+import { ComponenteModal } from 'components/modales/domain/ComponenteModal.domain'
+import { markRaw } from 'vue'
 
-import { ComponenteModal } from 'components/modales/domain/ComponenteModal.domain';
-import { markRaw } from 'vue';
+// Paginas
+import VisualizarTransferenciaProductoPage from 'src/pages/bodega/transacciones/modules/aceptarTransferenciaProducto/view/VisualizarTransferenciaProductoPage.vue'
 
-//Paginas
-import VisualizarEgresoPage  from 'pages/bodega/transacciones/modules/transaccionEgreso/VisualizarEgresoPage.vue'
+export class GestionarEgresoModales {
+    VisualizarTransferenciaProductoPage: ComponenteModal
 
-export class GestionarEgresoModales{
-    VisualizarEgresoPage: ComponenteModal
-
-    constructor(){
-        this.VisualizarEgresoPage = markRaw(new ComponenteModal('Egreso de bodega', VisualizarEgresoPage))
+    constructor() {
+        this.VisualizarTransferenciaProductoPage = markRaw(new ComponenteModal('Aceptar transferencia de productos', VisualizarTransferenciaProductoPage))
     }
 }

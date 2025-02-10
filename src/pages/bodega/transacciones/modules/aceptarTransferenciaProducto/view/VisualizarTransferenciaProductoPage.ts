@@ -1,108 +1,89 @@
 // Dependencias
-import { configuracionColumnasTransaccionEgreso } from '../../domain/configuracionColumnasTransaccionEgreso'
-import { defineComponent, ref } from 'vue'
-import { configuracionColumnasProductosSeleccionadosEgreso } from './domain/configuracionColumnasProductosSeleccionadosEgreso'
-import { configuracionColumnasProductosSeleccionadosDespachadoParciales } from './domain/configuracionColumnasProductosSeleccionadosDespachadoParciales'
+import { AxiosHttpRepository } from 'shared/http/infraestructure/AxiosHttpRepository'
+import { CustomActionPrompt } from 'components/tables/domain/CustomActionPrompt'
+import { CustomActionTable } from 'components/tables/domain/CustomActionTable'
+import { useTransaccionEgresoStore } from 'stores/transaccionEgreso'
+import { useAuthenticationStore } from 'stores/authentication'
 import { acciones, tabGestionarEgresos } from 'config/utils'
-
-// Componentes
-import TabLayout from 'shared/contenedor/modules/simple/view/TabLayout.vue'
-import EssentialTable from 'components/tables/view/EssentialTable.vue'
-import EssentialSelectableTable from 'components/tables/view/EssentialSelectableTable.vue'
-
-//Logica y controladores
-import { ContenedorSimpleMixin } from 'shared/contenedor/modules/simple/application/ContenedorSimpleMixin'
-import { TransaccionEgresoController } from '../../infraestructure/TransaccionEgresoController'
-import { Transaccion } from '../../domain/Transaccion'
+import { useTransferenciaStore } from 'stores/transferencia'
 import { useNotificacionStore } from 'stores/notificacion'
+import { useNotificaciones } from 'shared/notificaciones'
+import { useTransaccionStore } from 'stores/transaccion'
+import { defineComponent, ref, UnwrapRef } from 'vue'
+import { apiConfig, endpoints } from 'config/api'
+import { usePedidoStore } from 'stores/pedido'
+import { iconos } from 'config/iconos'
+import { useRoute } from 'vue-router'
 import { useQuasar } from 'quasar'
 
-//Controladores
-import { useNotificaciones } from 'shared/notificaciones'
-
-import { useAuthenticationStore } from 'stores/authentication'
-import { useTransaccionStore } from 'stores/transaccion'
-
-import { CustomActionPrompt } from 'components/tables/domain/CustomActionPrompt'
-import { usePedidoStore } from 'stores/pedido'
-
-import { useTransferenciaStore } from 'stores/transferencia'
-import { apiConfig, endpoints } from 'config/api'
-import { AxiosHttpRepository } from 'shared/http/infraestructure/AxiosHttpRepository'
-import { useRoute } from 'vue-router'
-import { useTransaccionEgresoStore } from 'stores/transaccionEgreso'
-import { CustomActionTable } from 'components/tables/domain/CustomActionTable'
+// Componentes
+import EssentialSelectableTable from 'components/tables/view/EssentialSelectableTable.vue'
+import SimpleLayout from 'shared/contenedor/modules/simple/view/SimpleLayout.vue'
+import EssentialTable from 'components/tables/view/EssentialTable.vue'
+import CalloutComponent from 'components/CalloutComponent.vue'
+import { configuracionColumnasProductosRecibidos } from '../domain/configuracionColumnasProductosRecibidos'
+import { configuracionColumnasProductosRecibidosParcial } from '../domain/configuracionColumnasProductosRecibidosParcial'
+import { estadosTransferenciasProductos } from 'config/tareas.utils'
 
 export default defineComponent({
-  components: { TabLayout, EssentialTable, EssentialSelectableTable },
+  components: { SimpleLayout, EssentialTable, EssentialSelectableTable, CalloutComponent },
+  props: {
+    datos: Object as () => UnwrapRef<{ mixin }>,
+  },
   setup(props, { emit }) {
-    /*********
-     * Mixin
-     *********/
-    const mixin = new ContenedorSimpleMixin(Transaccion, new TransaccionEgresoController())
-    const { entidad: transaccion } = mixin.useReferencias()
-
-    /*************
-     * Variables
-     *************/
-    const { notificarError, notificarCorrecto, confirmar, prompt } = useNotificaciones()
-
-    //stores
+    /**********
+     * Stores
+     **********/
     useNotificacionStore().setQuasar(useQuasar())
     const store = useAuthenticationStore()
     const transaccionStore = useTransaccionStore()
     const transaccionEgresoStore = useTransaccionEgresoStore()
     const pedidoStore = usePedidoStore()
     const transferenciaStore = useTransferenciaStore()
-    const route = useRoute()
-    let listadoAux
-    if (transaccionStore.transaccion) {
-      transaccion.hydrate(transaccionStore.transaccion)
-      listadoAux = JSON.parse(JSON.stringify(transaccionEgresoStore.transaccion.listadoProductosTransaccion))
-    }
 
+    /*********
+     * Mixin
+     *********/
+    const { entidad: transferencia } = props.datos?.mixin.useReferencias()
+    const { consultar, editarParcial } = props.datos?.mixin.useComportamiento()
+    const { onConsultado, onBeforeModificar } = props.datos?.mixin.useHooks()
+
+    /*************
+     * Variables
+     *************/
+    const { notificarError, notificarCorrecto, confirmar, prompt } = useNotificaciones()
     const esBodeguero = store.esBodeguero
     const esCoordinador = store.esCoordinador
     const rolSeleccionado = (store.user.roles.filter((v) => v.indexOf('BODEGA') > -1 || v.indexOf('COORDINADOR') > -1)).length > 0 ? true : false
-
-    // console.log('rol seleccionado: ', rolSeleccionado)
 
     let esVisibleAutorizacion = ref(false)
 
     let esVisibleTarea = ref(false)
     let requiereFecha = ref(false) //para mostrar u ocultar fecha limite
+    const route = useRoute()
 
-
-
-    function aprobarEgreso() {
+    /*************
+     * Funciones
+     *************/
+    function aprobarTransferencia() {
       const data: CustomActionPrompt = {
         titulo: 'Aprobar y firmar',
-        mensaje: 'Ingrese motivo de aprobación',
-        accion: async (data) => {
+        mensaje: 'Novedades al recibir los productos.',
+        accion: async (novedades) => {
           try {
-            confirmar('Esta acción firmará el comprobante de egreso ', async () => {
-              //aqui se aprueba y se firma el documento
+            confirmar('Esta acción completará la transferencia. ¿Desea continuar?', async () => {
               const datos = {
-                transaccion_id: transaccionStore.idTransaccion,
-                firmada: true,
-                estado: 'ACEPTADA',
-                observacion: data
+                autorizacion_id: 2,
+                novedades_transferencia_recibida: novedades,
+                listado_productos: transferencia.listado_productos.filter((item) => item.recibido)
               }
-              const axios = AxiosHttpRepository.getInstance()
-              const url = apiConfig.URL_BASE + '/' + axios.getEndpoint(endpoints.comprobantes) + '/' + transaccion.id
-              const response = await axios.put(url, datos)
-              // const {response, result} = await comprobanteController.editar(datos)
-              console.log(response)
-              // transaccionStore.firmarComprobante(transaccionStore.idTransaccion, datos)
-              notificarCorrecto('Documento aprobado y firmado correctamente')
+              await editarParcial(transferencia.id, datos)
+              notificarCorrecto('Transferencia aprobada y firmada correctamente.')
               emit('cerrar-modal', false)
               emit('guardado', 'aceptado')
-              transaccionStore.resetearTransaccion()
-              transaccionEgresoStore.resetearTransaccion()
-              transaccionEgresoStore.estadoPendiente = false
             })
           } catch (e) {
-            notificarError('No se pudo aprobar ni firmar el documento')
+            notificarError('No se pudo aprobar ni firmar la transferencia.')
           }
         },
       }
@@ -110,70 +91,9 @@ export default defineComponent({
 
     }
 
-    function aprobarEgresoParcial() {
-      if (verificarRecibidoMenor()) notificarError('El valor de recibido no puede ser superior a la cantidad despachada')
-      else {
-        const data: CustomActionPrompt = {
-          titulo: 'Aprobar Recepción Parcial',
-          mensaje: 'Ingrese motivo de la aprobación parcial',
-          accion: async (data) => {
-            try {
-              confirmar('Esta acción firmará el comprobante de egreso con las cantidades y materiales aceptados ', async () => {
-                //aqui se aprueba y se firma el documento
-                const datos = {
-                  transaccion: transaccion,
-                  observacion: data
-                }
-                const axios = AxiosHttpRepository.getInstance()
-                const url = apiConfig.URL_BASE + '/' + axios.getEndpoint(endpoints.comprobantes) + '/aceptar-parcial/' + transaccion.id
-                const response = await axios.put(url, datos)
-                console.log(response)
-                notificarCorrecto('Documento parcial aprobado y firmado correctamente')
-                emit('cerrar-modal', false)
-                emit('guardado', 'parcial')
-                transaccionStore.resetearTransaccion()
-                transaccionEgresoStore.resetearTransaccion()
-                transaccionEgresoStore.estadoPendiente = false
-              })
-            } catch (e) {
-              notificarError('Ha ocurrido un error')
-            }
-          },
-        }
-        prompt(data)
-      }
-    }
-
     function permitirModificarCantidades() {
-      transaccion.modificar_recepcion = !transaccion.modificar_recepcion
-      if (transaccion.modificar_recepcion && transaccion.estado_comprobante === 'PARCIAL') {
-        //primero se quita los completados
-        transaccion.listadoProductosTransaccion = transaccion.listadoProductosTransaccion.filter((item) => item.cantidad != item.recibido)
-
-        // se resta del valor inicial la cantidad para que sea igual que la recibida
-        transaccion.listadoProductosTransaccion.forEach((item) => {
-          item.cantidad = item.cantidad - item.recibido
-        })
-        // se copia en recibdo el valor de cantidad
-        transaccion.listadoProductosTransaccion.forEach((item) => {
-          item.recibido = item.cantidad
-        })
-        // console.log(transaccion.listadoProductosTransaccion)
-      } else {
-        // console.log('entraste en el else', listadoAux)
-        // console.log('entraste en el else', transaccion.listadoProductosTransaccion)
-
-        // transaccion.listadoProductosTransaccion = Object.deepCopy(listadoAux)
-        transaccion.listadoProductosTransaccion = JSON.parse(JSON.stringify(listadoAux))
-      }
-    }
-
-    function eliminar({ posicion }) {
-      confirmar('¿Está seguro de continuar?', () => transaccion.listadoProductosTransaccion.splice(posicion, 1))
-    }
-
-    function verificarRecibidoMenor() {
-      return transaccion.listadoProductosTransaccion.some((item) => item.recibido > item.cantidad)
+      transferencia.modificar_recepcion = !transferencia.modificar_recepcion
+      transferencia.listado_productos.forEach((item) => item.recibido = item.cantidad)
     }
 
     /*******************************************************************************************
@@ -181,68 +101,64 @@ export default defineComponent({
      ******************************************************************************************/
     const btnEditarCantidad: CustomActionTable = {
       titulo: 'Cantidad',
-      icono: 'bi-pencil',
-      accion: ({ posicion }) => {
+      icono: iconos.editar,
+      accion: ({ entidad, posicion }) => {
         const config: CustomActionPrompt = {
           titulo: 'Confirmación',
           mensaje: 'Ingresa la cantidad',
-          defecto: transaccion.listadoProductosTransaccion[posicion].recibido,
+          defecto: transferencia.listado_productos[posicion].recibido,
           tipo: 'number',
-          accion: (data) => {
-            transaccion.listadoProductosTransaccion[posicion].recibido = data
-          },
+          validacion: (val) => !!val && val >= 0 && val <= entidad.cantidad,
+          accion: (data) => transferencia.listado_productos[posicion].recibido = data
         }
 
         prompt(config)
       },
-      visible: () => transaccion.modificar_recepcion
-    }
-    const btnEliminarFila: CustomActionTable = {
-      titulo: 'Eliminar',
-      icono: 'bi-trash',
-      color: 'negative',
-      accion: ({ entidad, posicion }) => {
-        //: props.propsTable.rowIndex,
-        eliminar({ posicion })
-      },
-      visible: () => transaccion.modificar_recepcion
     }
 
+    const btnLlego: CustomActionTable = {
+      titulo: ({ entidad }) => entidad.recibido === 0 ? 'Sí se recibió' : 'No se recibió',
+      icono: ({ entidad }) => entidad.recibido === 0 ? 'bi-check' : iconos.cancelar,
+      color: ({ entidad }) => entidad.recibido === 0 ? 'positive' : 'negative',
+      accion: ({ entidad }) => entidad.recibido = entidad.recibido === 0 ? entidad.cantidad : 0
+    }
+
+    /********
+     * Hooks
+     ********/
+    onConsultado(() => {
+      if (transferencia.autorizacion == estadosTransferenciasProductos.VALIDADO) transferencia.listado_productos.forEach((item) => item.recibido = item.cantidad)
+    })
+
+    /*******
+     * Init
+     *******/
+    consultar(transferencia)
 
     return {
-      mixin, transaccion,
-      configuracionColumnas: configuracionColumnasTransaccionEgreso,
+      mixin: props.datos?.mixin,
+      transferencia,
       acciones,
-
-
-      //stores
       pedidoStore,
       transferenciaStore,
-
-      //variables auxiliares
       esVisibleAutorizacion,
       esVisibleTarea,
       requiereFecha,
-
-      configuracionColumnasProductosSeleccionadosEgreso,
-      configuracionColumnasProductosSeleccionadosDespachadoParciales,
-
+      configuracionColumnasProductosRecibidos,
+      configuracionColumnasProductosRecibidosParcial,
       //rol
       rolSeleccionado,
       esBodeguero,
       esCoordinador,
       permitirModificarCantidades,
-      aprobarEgreso,
-      aprobarEgresoParcial,
+      aprobarTransferencia,
       tabGestionarEgresos,
-
       //rutas
       route,
-
       //botones de tabla
       btnEditarCantidad,
-      btnEliminarFila,
-
+      btnLlego,
+      iconos,
     }
   }
 })

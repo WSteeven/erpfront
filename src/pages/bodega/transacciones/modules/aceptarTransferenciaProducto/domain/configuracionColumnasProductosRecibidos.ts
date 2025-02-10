@@ -1,19 +1,25 @@
 import { ColumnConfig } from 'components/tables/domain/ColumnConfig'
 
-export const configuracionColumnasProductosSeleccionadosAccion: ColumnConfig<any>[] = [
+export const configuracionColumnasProductosRecibidos: ColumnConfig<any>[] = [
   {
     name: 'producto',
     field: 'producto',
     label: 'Producto',
+    style: 'max-width:300px; overflow: auto;',
     align: 'left',
     sortable: true,
+    editable: false,
+    visible: true
   },
   {
     name: 'descripcion',
     field: 'descripcion',
     label: 'Descripción',
+    style: 'max-width:300px; overflow: auto;',
     align: 'left',
     sortable: true,
+    editable: false,
+    visible: true
   },
   {
     name: 'categoria',
@@ -21,6 +27,8 @@ export const configuracionColumnasProductosSeleccionadosAccion: ColumnConfig<any
     label: 'Categoria',
     align: 'left',
     sortable: true,
+    editable: false,
+    visible: true
   },
   {
     name: 'serial',
@@ -28,27 +36,23 @@ export const configuracionColumnasProductosSeleccionadosAccion: ColumnConfig<any
     label: 'Serial',
     align: 'left',
     sortable: true,
+    editable: false,
+    visible: true
   },
   {
     name: 'cantidad',
     field: 'cantidad',
-    label: 'Cantidad',
+    label: 'Cantidad enviada',
     align: 'left',
     sortable: false,
   },
   {
     name: 'recibido',
     field: 'recibido',
-    label: 'Recibido',
+    label: 'Cantidad recibida',
     align: 'left',
     sortable: false,
+    editable: false,
   },
-  {
-    name: 'acciones',
-    field: 'acciones',
-    label: 'Acciones',
-    align: 'right',
-    sortable: false,
-  }
 ]
 

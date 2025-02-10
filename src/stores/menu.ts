@@ -472,7 +472,8 @@ export const useMenuStore = defineStore('menu', () => {
             {
               title: 'Aceptar transferencia de productos',
               link: '/aceptar-transferencia-producto',
-              icon: 'bi-arrow-left-right'
+              icon: 'bi-arrow-left-right',
+              can: store.can('puede.acceder.aceptar_transferencia_producto')
             },
           ]
         },

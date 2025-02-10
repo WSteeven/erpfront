@@ -41,7 +41,7 @@ export default defineComponent({
     const tab = ref()
 
     onMounted(() => {
-      tab.value = destinosTareas.paraClienteFinal
+      tab.value = destinosTareas.personal
       proyectos.value = listadosAuxiliares.proyectos
     })
 

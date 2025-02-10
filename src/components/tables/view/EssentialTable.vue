@@ -1317,7 +1317,7 @@
     <template #body-cell-autorizacion="props">
       <q-td :props="props">
         <q-chip
-          v-if="props.value === autorizacionesTransacciones['aprobado']"
+          v-if="[autorizacionesTransacciones['aprobado'], 'VALIDADO'].includes(props.value)"
           :class="{ 'bg-green-1': !$q.dark.isActive }"
         >
           <q-icon
@@ -1325,7 +1325,7 @@
             color="positive"
             class="q-mr-xs"
           ></q-icon>
-          APROBADO
+          {{ props.value }}
         </q-chip>
         <q-chip
           v-if="props.value === autorizacionesTransacciones['cancelado']"

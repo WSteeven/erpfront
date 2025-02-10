@@ -1,6 +1,6 @@
 // Dependencias
 import { ContenedorSimpleMixin } from 'shared/contenedor/modules/simple/application/ContenedorSimpleMixin'
-import { estadosTransacciones, tabOptionsTransferenciaProductoEmpleado } from 'config/utils'
+import { estadosTransacciones } from 'config/utils'
 import { defineComponent, ref } from 'vue'
 
 // Componentes
@@ -12,6 +12,7 @@ import { ArchivoController } from 'pages/gestionTrabajos/subtareas/modules/gesto
 import { TransferenciaActivoFijoController } from '../infraestructure/TransferenciaActivoFijoController'
 import { configuracionColumnasTransferenciasActivosFijos } from '../domain/configuracionColumnasTransferenciasActivosFijos'
 import { useAuthenticationStore } from 'stores/authentication'
+import { tabOptionsTransferenciaProductoEmpleado } from 'config/tareas.utils'
 
 export default defineComponent({
     components: {
