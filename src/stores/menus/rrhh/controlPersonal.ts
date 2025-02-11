@@ -21,15 +21,15 @@ const controlPersonal: Ref<MenuOption[]> = computed(() => {
         },
         {
           title: 'Asistencia',
-          link: 'asistencia',
+          link: 'asistencias',
           icon: 'bi-calendar-check',
-          can: true
+          can:  store.can('puede.acceder.asistencias'),
         },
         {
           title: 'Atrasos',
           link: 'atrasos',
           icon: 'bi-file-earmark-text',
-          can: true
+          can:  store.can('puede.acceder.atrasos'),
         },
         {
           title: 'Configuración',

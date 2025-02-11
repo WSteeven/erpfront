@@ -13,7 +13,6 @@ const JPCUSTODY = process.env.VUE_APP_ID == empresas.JPCUSTODY
 const CCLEDARE = process.env.VUE_APP_ID == empresas.CCLEDARE */
 import rutasFondosRotativos from './rutasFondosRotativos'
 import rutasVehiculos from './rutasVehiculos'
-import rutasSeleccionContratacionPersonal from './rrhh/rutasSeleccionContratacionPersonal'
 
 console.log(process.env.VUE_APP_ID)
 const routes: RouteRecordRaw[] = [
@@ -105,7 +104,6 @@ const routes: RouteRecordRaw[] = [
        * Módulo de RRHH
        *******************/
       ...rutasRecursosHumanos,
-      ...rutasSeleccionContratacionPersonal,
       ...rutasControlPersonal,
 
       /*******************

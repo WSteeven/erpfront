@@ -11,8 +11,8 @@ import { fondosRotativos } from 'config/endpoints/fondosRotativos'
 import { controlPersonal } from 'config/endpoints/rrhh/controlPersonal'
 
 export const apiConfig = {
-   URL_BASE: 'http://localhost:8000',
-  //URL_BASE: process.env.API_URL
+   // URL_BASE: 'http://localhost:8000',
+  URL_BASE: process.env.API_URL
 }
 
 export const endpoints = {

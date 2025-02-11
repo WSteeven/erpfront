@@ -2,8 +2,8 @@ import { RouteRecordRaw } from 'vue-router'
 
 const rutasControlPersonal: RouteRecordRaw[] = [
   {
-    path: '/asistencia',
-    name: 'asistencia',
+    path: '/asistencias',
+    name: 'asistencias',
     component: () => import('src/pages/recursosHumanos/control_personal/asistencia/view/AsistenciaPage.vue'),
     meta: { requiresAuth: true }
   },
