@@ -3,10 +3,11 @@
     :mixin="mixin"
     :configuracionColumnas="configuracionColumnas"
     :tab-options="tabOptionsTransferenciaProductoEmpleado"
-    tabDefecto="PENDIENTE"
+    tabDefecto="1"
     :filtrar="filtrarTransferenciasProductoEmpleado"
     :ajustarCeldas="true"
     :permitirEditar="puedeEditar"
+    :accion1="botonImprimir"
   >
     <template #formulario>
       <q-form @submit.prevent>
@@ -287,7 +288,7 @@
               input-debounce="0"
               emit-value
               map-options
-              >
+            >
               <!-- :error="!!v$.tarea_origen.$errors.length"
               @blur="v$.tarea_origen.$touch" -->
               <template v-slot:option="scope">
@@ -648,7 +649,7 @@
             >
             <q-select
               v-model="transferencia.autorizacion"
-              :options="opciones_autorizaciones"
+              :options="autorizaciones"
               transition-show="jum-up"
               transition-hide="jump-down"
               color="positive"
@@ -658,7 +659,7 @@
               :disable="
                 disabled ||
                 (authenticationStore.user.id !== transferencia.autorizador &&
-                !puedeAutorizar)
+                  !puedeAutorizar)
               "
               :option-value="v => v.id"
               :option-label="v => v.nombre"
@@ -676,8 +677,9 @@
           </div>
 
           <!-- Observacion de autorizacion -->
+          <!-- esCoordinador || esActivosFijos || -->
           <div
-            v-if="authenticationStore.user.id === transferencia.per_autoriza"
+            v-if="authenticationStore?.user?.id === transferencia.per_autoriza"
             class="col-12 col-md-3"
           >
             <label class="q-mb-sm block">Observacion</label>
@@ -687,11 +689,7 @@
               placeholder="Opcional"
               :disable="
                 disabled ||
-                !(
-                  esCoordinador ||
-                  esActivosFijos ||
-                  authenticationStore.user.id == transferencia.per_autoriza_id
-                )
+                !(authenticationStore.user.id == transferencia.per_autoriza_id)
               "
               :error="!!v$.observacion_aut.$errors.length"
               outlined
@@ -790,6 +788,13 @@
               :ajustarCeldas="true"
               :altoFijo="false"
             ></essential-table>
+          </div>
+
+          <div v-if="transferencia.listado_productos.length" class="col-12">
+            <callout
+              mensaje="La columna Recibido se refiere a la cantidad recibida que ha sido registrada por el empleado receptor de la transferencia."
+              tipo="info"
+            />
           </div>
         </div>
       </q-form>

@@ -23,4 +23,7 @@ export const comprasProveedores = {
   prefacturas: new Endpoint('compras/prefacturas'),
   proformas: new Endpoint('compras/proformas'),
   reporte_proveedores: new Endpoint('compras/reporte-proveedores'),
+  generador_cash: new Endpoint('compras/generador-cash'),
+  beneficiarios: new Endpoint('compras/beneficiarios'),
+  cuentas_bancarias: new Endpoint('compras/cuentas-bancarias'),
 }

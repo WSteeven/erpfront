@@ -186,6 +186,47 @@
               </template>
             </q-select>
           </div>
+
+          <!-- Grupo -->
+          <div
+            v-if="
+              consolidadofiltrado.tipo_filtro === tipo_filtro.GRUPO ||
+              consolidadofiltrado.tipo_saldo === tipo_saldo.ACREDITACIONES
+            "
+            class="col-12 col-md-6"
+          >
+            <label class="q-mb-sm block">Grupo</label>
+            <q-select
+              v-model="consolidadofiltrado.grupo"
+              :options="grupos"
+              transition-show="jump-up"
+              transition-hide="jump-down"
+              :disable="disabled"
+              options-dense
+              dense
+              outlined
+              clearable
+              use-input
+              input-debounce="0"
+              :error="!!v$.grupo.$errors.length"
+              @blur="v$.grupo.$touch"
+              @filter="filtrarGrupos"
+              @popup-show="ordenarLista(grupos, 'nombre')"
+              :option-value="v => v.id"
+              :option-label="v => v.nombre"
+              emit-value
+              map-options
+            >
+              <template v-slot:error>
+                <error-component clave="grupo" :v$="v$" />
+              </template>
+
+              <template v-slot:no-option>
+                <no-option-component />
+              </template>
+            </q-select>
+          </div>
+
           <!-- Empleados -->
           <div
             class="col-12 col-md-6"
@@ -197,7 +238,7 @@
                 consolidadofiltrado.tipo_saldo == tipo_saldo.ESTADO_CUENTA ||
                 consolidadofiltrado.tipo_saldo ==
                   tipo_saldo.TRANSFERENCIA_SALDOS) &&
-              is_inactivo == 'false'
+              !is_inactivo
             "
           >
             <label class="q-mb-sm block">Empleado</label>
@@ -209,8 +250,7 @@
               options-dense
               dense
               outlined
-              :disable="disabled"
-              :readonly="disabled"
+              :disable="consolidadofiltrado.grupo!==null"
               use-input
               input-debounce="0"
               :error="!!v$.empleado.$errors.length"
@@ -223,16 +263,10 @@
               map-options
             >
               <template v-slot:error>
-                <div v-for="error of v$.empleado.$errors" :key="error.$uid">
-                  <div class="error-msg">{{ error.$message }}</div>
-                </div>
+                <error-component clave="empleado" :v$="v$" />
               </template>
               <template v-slot:no-option>
-                <q-item>
-                  <q-item-section class="text-grey">
-                    No hay resultados
-                  </q-item-section>
-                </q-item>
+                <no-option-component />
               </template>
             </q-select>
           </div>
@@ -247,7 +281,7 @@
                 consolidadofiltrado.tipo_saldo == tipo_saldo.ESTADO_CUENTA ||
                 consolidadofiltrado.tipo_saldo ==
                   tipo_saldo.TRANSFERENCIA_SALDOS) &&
-              is_inactivo == 'true'
+              is_inactivo
             "
           >
             <label class="q-mb-sm block">Empleado</label>
@@ -273,16 +307,10 @@
               map-options
             >
               <template v-slot:error>
-                <div v-for="error of v$.empleado.$errors" :key="error.$uid">
-                  <div class="error-msg">{{ error.$message }}</div>
-                </div>
+                <error-component clave="empleado" :v$="v$" />
               </template>
               <template v-slot:no-option>
-                <q-item>
-                  <q-item-section class="text-grey">
-                    No hay resultados
-                  </q-item-section>
-                </q-item>
+                <no-option-component />
               </template>
               <template v-slot:after>
                 <q-btn color="positive" @click="recargarEmpleadosInactivos()">
@@ -306,7 +334,7 @@
           >
             <label class="q-mb-sm block">Proyectos</label>
             <q-select
-              v-model="consolidadofiltrado.proyecto"
+              v-model="consolidadofiltrado.id_proyecto"
               :options="proyectos"
               transition-show="jump-up"
               transition-hide="jump-down"
@@ -317,9 +345,9 @@
               :readonly="disabled"
               use-input
               input-debounce="0"
-              :error="!!v$.proyecto.$errors.length"
+              :error="!!v$.id_proyecto.$errors.length"
               error-message="Debes seleccionar un proyecto"
-              @blur="v$.proyecto.$touch"
+              @blur="v$.id_proyecto.$touch"
               @filter="filtrarProyectos"
               :option-value="v => v.id"
               :option-label="v => v.nombre"
@@ -327,9 +355,7 @@
               map-options
             >
               <template v-slot:error>
-                <div v-for="error of v$.proyecto.$errors" :key="error.$uid">
-                  <div class="error-msg">{{ error.$message }}</div>
-                </div>
+                <error-component clave="id_proyecto" :v$="v$" />
               </template>
               <template v-slot:option="scope">
                 <q-item v-bind="scope.itemProps" class="q-my-sm">
@@ -342,11 +368,7 @@
                 </q-item>
               </template>
               <template v-slot:no-option>
-                <q-item>
-                  <q-item-section class="text-grey">
-                    No hay resultados
-                  </q-item-section>
-                </q-item>
+                <no-option-component />
               </template>
             </q-select>
           </div>
@@ -366,7 +388,7 @@
           >
             <label class="q-mb-sm block">Tareas</label>
             <q-select
-              v-model="consolidadofiltrado.tarea"
+              v-model="consolidadofiltrado.id_tarea"
               :options="tareas"
               transition-show="jump-up"
               transition-hide="jump-down"
@@ -377,9 +399,9 @@
               :readonly="disabled"
               use-input
               input-debounce="0"
-              :error="!!v$.tarea.$errors.length"
+              :error="!!v$.id_tarea.$errors.length"
               error-message="Debes seleccionar una tarea"
-              @blur="v$.tarea.$touch"
+              @blur="v$.id_tarea.$touch"
               @filter="filtrarTareas"
               :option-value="v => v.id"
               :option-label="v => v.titulo"
@@ -387,9 +409,7 @@
               map-options
             >
               <template v-slot:error>
-                <div v-for="error of v$.tarea.$errors" :key="error.$uid">
-                  <div class="error-msg">{{ error.$message }}</div>
-                </div>
+                <error-component clave="id_tarea" :v$="v$" />
               </template>
               <template v-slot:option="scope">
                 <q-item v-bind="scope.itemProps" class="q-my-sm">
@@ -402,11 +422,7 @@
                 </q-item>
               </template>
               <template v-slot:no-option>
-                <q-item>
-                  <q-item-section class="text-grey">
-                    No hay resultados
-                  </q-item-section>
-                </q-item>
+                <no-option-component />
               </template>
             </q-select>
           </div>
@@ -446,16 +462,10 @@
               map-options
             >
               <template v-slot:error>
-                <div v-for="error of v$.detalle.$errors" :key="error.$uid">
-                  <div class="error-msg">{{ error.$message }}</div>
-                </div>
+                <error-component clave="detalle" :v$="v$" />
               </template>
               <template v-slot:no-option>
-                <q-item>
-                  <q-item-section class="text-grey">
-                    No hay resultados
-                  </q-item-section>
-                </q-item>
+                <no-option-component />
               </template>
             </q-select>
           </div>
@@ -474,7 +484,7 @@
           >
             <label class="q-mb-sm block">Ciudad</label>
             <q-select
-              v-model="consolidadofiltrado.ciudad"
+              v-model="consolidadofiltrado.id_lugar"
               :options="cantones"
               transition-show="jump-up"
               transition-hide="jump-down"
@@ -485,9 +495,9 @@
               :readonly="disabled"
               use-input
               input-debounce="0"
-              :error="!!v$.ciudad.$errors.length"
+              :error="!!v$.id_lugar.$errors.length"
               error-message="Debes seleccionar una ciudad"
-              @blur="v$.ciudad.$touch"
+              @blur="v$.id_lugar.$touch"
               @filter="filtrarCiudades"
               :option-value="v => v.id"
               :option-label="v => v.canton"
@@ -495,16 +505,10 @@
               map-options
             >
               <template v-slot:error>
-                <div v-for="error of v$.ciudad.$errors" :key="error.$uid">
-                  <div class="error-msg">{{ error.$message }}</div>
-                </div>
+                <error-component clave="id_lugar" :v$="v$" />
               </template>
               <template v-slot:no-option>
-                <q-item>
-                  <q-item-section class="text-grey">
-                    No hay resultados
-                  </q-item-section>
-                </q-item>
+                <no-option-component />
               </template>
             </q-select>
           </div>
@@ -572,7 +576,7 @@
           >
             <label class="q-mb-sm block">Autorización Especial</label>
             <q-select
-              v-model="consolidadofiltrado.autorizador"
+              v-model="consolidadofiltrado.aut_especial"
               :options="autorizacionesEspeciales"
               transition-show="jump-up"
               transition-hide="jump-down"
@@ -583,9 +587,9 @@
               :readonly="disabled"
               use-input
               input-debounce="0"
-              :error="!!v$.autorizador.$errors.length"
+              :error="!!v$.aut_especial.$errors.length"
               error-message="Debes seleccionar un autorizador"
-              @blur="v$.autorizador.$touch"
+              @blur="v$.aut_especial.$touch"
               @filter="filtrarAutorizacionesEspeciales"
               :option-value="v => v.id"
               :option-label="v => v.nombres + ' ' + v.apellidos"
@@ -593,16 +597,10 @@
               map-options
             >
               <template v-slot:error>
-                <div v-for="error of v$.autorizador.$errors" :key="error.$uid">
-                  <div class="error-msg">{{ error.$message }}</div>
-                </div>
+                <error-component clave="aut_especial" :v$="v$" />
               </template>
               <template v-slot:no-option>
-                <q-item>
-                  <q-item-section class="text-grey">
-                    No hay resultados
-                  </q-item-section>
-                </q-item>
+                <no-option-component />
               </template>
             </q-select>
           </div>
@@ -623,7 +621,8 @@
             <q-input
               v-model="consolidadofiltrado.ruc"
               placeholder=""
-              type="textarea"
+              mask="#############"
+              maxlength="13"
               autogrow
               :disable="disabled"
               outlined
@@ -678,8 +677,6 @@
               v-model="is_inactivo"
               color="secondary"
               label="Inactivo"
-              true-value="true"
-              false-value="false"
             ></q-checkbox>
           </div>
         </div>

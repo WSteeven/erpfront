@@ -2,6 +2,7 @@ import { Endpoint } from 'shared/http/domain/Endpoint'
 
 export const trabajoSocial = {
   imprimir_fichas_socioeconomicas: new Endpoint('trabajo-social/fichas-socioeconomicas/imprimir/'),
+  imprimir_formulario_evaluacion_riesgos: new Endpoint('trabajo-social/evaluacion-riesgos/imprimir/'),
   fichas_socioeconomicas: new Endpoint('trabajo-social/fichas-socioeconomicas'),
   imprimir_visitas_domiciliarias: new Endpoint('trabajo-social/visitas-domiciliarias/imprimir/'),
   visitas_domiciliarias: new Endpoint('trabajo-social/visitas-domiciliarias'),

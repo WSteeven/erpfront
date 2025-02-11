@@ -92,29 +92,7 @@ export const tabOptionsPedidos: TabOption[] = [
   { label: 'Cancelados', value: 'CANCELADO' },
   { label: 'Completados', value: 'COMPLETA' },
 ]
-export const tabOptionsTransferenciaProductoEmpleado: TabOption[] = [
-  {
-    label: 'Pendientes',
-    value: 'PENDIENTE',
-    icono: 'bi-app-indicator',
-    color_icono: 'yellow-10',
-    bg_color: 'yellow-1',
-  },
-  {
-    label: 'Aprobados',
-    value: 'APROBADO',
-    icono: 'bi-check-circle-fill',
-    color_icono: 'positive',
-    bg_color: 'green-1',
-  },
-  {
-    label: 'Cancelados',
-    value: 'CANCELADO',
-    icono: 'bi-x-circle-fill',
-    color_icono: 'negative',
-    bg_color: 'pink-1',
-  },
-]
+
 export const tabOptionsSolicitudPedido: TabOption[] = [
   { label: 'Pendiente', value: '1' },
   { label: 'Validado', value: '4' },
@@ -356,6 +334,7 @@ export const tipos_filtros = [
   { value: '7', name: 'RUC' },
   { value: '8', name: 'SIN FACTURA' },
   { value: '9', name: 'CIUDAD' },
+  { value: '10', name: 'GRUPO' },
 ]
 export const tipo_filtro = {
   TODOS: '0',
@@ -368,6 +347,7 @@ export const tipo_filtro = {
   RUC: '7',
   SIN_FACTURA: '8',
   CIUDAD: '9',
+  GRUPO: '10',
 }
 export const tipo_saldo = {
   ACREDITACIONES: '1',
@@ -376,7 +356,7 @@ export const tipo_saldo = {
   ESTADO_CUENTA: '4',
   TRANSFERENCIA_SALDOS: '5',
   GASTOS_FOTOGRAFIA: '6',
-  FOTOGRAFIAS_OYM : '7'
+  FOTOGRAFIAS_OYM: '7'
 }
 export const estadosTransferencias = {
   APROBADO: 1,
@@ -571,9 +551,9 @@ export function convertir_fecha_hora(fecha) {
   return fecha_convert
 }
 export const tiposDocumentosIdentificaciones = [
-  { nombre: 'Cedula', value:'CEDULA' },
-  { nombre: 'R.U.C.' , value:'RUC' },
-  { nombre: 'Pasaporte',value: 'PASAPORTE' },
+  { nombre: 'Cedula', value: 'CEDULA' },
+  { nombre: 'R.U.C.', value: 'RUC' },
+  { nombre: 'Pasaporte', value: 'PASAPORTE' },
 ]
 
 export const niveles_academicos = [

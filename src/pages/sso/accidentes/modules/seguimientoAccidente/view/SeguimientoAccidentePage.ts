@@ -94,7 +94,7 @@ export default defineComponent({
     }
 
     const descargarInformePdf = () => {
-      listar({ export: 'pdf', seguimiento_accidente_id: seguimiento.id })
+      listar({ export: 'pdf', seguimiento_accidente_id: seguimiento.id, titulo: `Informe de seguimiento de accidente ${seguimiento.id}` })
     }
 
     const editarSeguimientoParcial = (campo: keyof SeguimientoAccidente, valor) => {

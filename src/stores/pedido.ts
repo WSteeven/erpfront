@@ -58,7 +58,7 @@ export const usePedidoStore = defineStore('pedido', () => {
     const axios = AxiosHttpRepository.getInstance()
     const url = apiConfig.URL_BASE + '/' + axios.getEndpoint(endpoints.pedidos) + '/imprimir/' + idPedido.value
     const filename = 'pedido_' + idPedido.value + '_' + Date.now()
-    imprimirArchivo(url, 'GET', 'blob', 'pdf', filename)
+    await imprimirArchivo(url, 'GET', 'blob', 'pdf', filename)
     console.log('Pedido impreso con éxito')
   }
 
@@ -108,11 +108,11 @@ export const usePedidoStore = defineStore('pedido', () => {
       switch (accion) {
         case 'excel':
           data.accion = 'excel'
-          imprimirArchivo(url, 'POST', 'blob', 'xlsx', filename, data)
+          await imprimirArchivo(url, 'POST', 'blob', 'xlsx', filename, data)
           return listado
         case 'pdf':
           data.accion = 'pdf'
-          imprimirArchivo(url, 'POST', 'blob', 'pdf', filename, data)
+          await imprimirArchivo(url, 'POST', 'blob', 'pdf', filename, data)
           return listado
         default:
           data.accion = ''

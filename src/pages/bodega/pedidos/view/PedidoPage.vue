@@ -643,6 +643,7 @@
             >
             </q-input>
           </div>
+
           <!-- Configuracion de opciones para que puedan seleccionar los detalles en el listado -->
           <div class="col-12 col-md-12" v-if="accion == acciones.nuevo">
             <q-option-group

@@ -37,6 +37,13 @@ export const configuracionColumnasProductosSeleccionadosAccion: ColumnConfig<any
     sortable: false,
   },
   {
+    name: 'recibido',
+    field: 'recibido',
+    label: 'Recibido',
+    align: 'left',
+    sortable: false,
+  },
+  {
     name: 'acciones',
     field: 'acciones',
     label: 'Acciones',

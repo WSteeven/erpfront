@@ -358,7 +358,7 @@ export default defineComponent({
         )
       },
       visible: ({ entidad }) => {
-        console.log(entidad)
+        // console.log(entidad)
         return (
           store.can('puede.anular.egresos') &&
           ((entidad.estado === estadosTransacciones.completa &&

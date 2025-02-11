@@ -377,16 +377,16 @@ export default defineComponent({
 
     const obtenerEmpleadosCumpleaneros = async () => {
       // Obtener el mes actual
-      const currentMonth = new Date().getUTCMonth();
-      console.log(currentMonth);
+      const currentMonth = new Date().getUTCMonth()
+      console.log(currentMonth)
 
       try {
-        const empleadoController = new EmpleadoController();
+        const empleadoController = new EmpleadoController()
         const empleados = (
           await empleadoController.listar({
-            estado: 1,
+            estado: 1
           })
-        ).result;
+        ).result
 
         empleadosCumpleaneros.value = empleados
           .filter((empleado: Empleado) => {
@@ -397,7 +397,7 @@ export default defineComponent({
               ).getUTCMonth()
               return birthMonth === currentMonth
             }
-            return false;
+            return false
           })
           .sort((a, b) => {
             // Asegurarse de comparar solo el día, sin considerar la hora
@@ -408,10 +408,9 @@ export default defineComponent({
 
         console.log(empleadosCumpleaneros.value)
       } catch (err) {
-        console.log('Error al obtener empleados cumpleañeros:', err);
+        console.log('Error al obtener empleados cumpleañeros:', err)
       }
-    };
-
+    }
 
     // Función para calcular el tiempo de trabajo del empleado
     const calcularAntiguedad = (fechaVinculacion: string): string => {

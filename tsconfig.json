@@ -45,6 +45,8 @@
       "activosFijos/*": ["src/pages/activosFijos/*"],
       "controlActivosFijos/*": ["src/pages/activosFijos/controlActivosFijos/*"],
       "controlPersonal/*": ["src/pages/recursosHumanos/control_personal/*"],
+      "sso/*": ["src/pages/sso/*"],
+      "comprasProveedores/*": ["src/pages/comprasProveedores/*"],
     }
   }
 }

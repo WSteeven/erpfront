@@ -331,6 +331,25 @@ export function obtenerPrimerUltimoDiaMes(formato = 'DD-MM-YYYY') {
 }
 
 /**
+ * Funcion para remover ÚNICAMENTE tildes en una cadena
+ * @param str cadena que se va a limpiar
+ */
+export function removeTildes(str: string) {
+  // Reemplaza las letras acentuadas por sus equivalentes sin tilde
+  return str
+    .replace(/á/g, 'a')
+    .replace(/é/g, 'e')
+    .replace(/í/g, 'i')
+    .replace(/ó/g, 'o')
+    .replace(/ú/g, 'u')
+    .replace(/Á/g, 'A')
+    .replace(/É/g, 'E')
+    .replace(/Í/g, 'I')
+    .replace(/Ó/g, 'O')
+    .replace(/Ú/g, 'U');
+}
+
+/**
  * Funcion para remover tildes o acentos de una cadena
  * @param accents cadena que se va a limpiar
  * @returns cadena sin acentos ni tildes
@@ -863,22 +882,22 @@ export function filtarVisualizacionEmpleadosSaldos(empleados) {
   if (authenticationStore.can('puede.buscar.tecnicos')) {
     const filtrados_busqueda =
       authenticationStore.esContabilidad ||
-      authenticationStore.esCoordinador ||
-      authenticationStore.esAdministrador
+        authenticationStore.esCoordinador ||
+        authenticationStore.esAdministrador
         ? empleados
         : empleados.filter(
-            empleado =>
-              empleado.departamento === rolesSistema.tecnico &&
-              extraerRol(empleado.roles.split(', '), rolesSistema.tecnico) &&
-              !extraerRol(empleado.roles.split(', '), rolesSistema.coordinador)
-          )
+          empleado =>
+            empleado.departamento === rolesSistema.tecnico &&
+            extraerRol(empleado.roles.split(', '), rolesSistema.tecnico) &&
+            !extraerRol(empleado.roles.split(', '), rolesSistema.coordinador)
+        )
     return filtrados_busqueda
   }
 
   const filtrados =
     authenticationStore.esContabilidad ||
-    authenticationStore.esCoordinador ||
-    authenticationStore.esAdministrador
+      authenticationStore.esCoordinador ||
+      authenticationStore.esAdministrador
       ? empleados
       : empleados.filter(empleado => empleado.jefe_id === usuario.id)
 
@@ -900,18 +919,11 @@ export async function notificarErrores(err) {
   }
 }
 
-export const mapearOptionsSelect = (
-  listadoOpciones: {
-    id: number
-    nombre: string
-  }[]
-): SelectOption[] => {
-  return listadoOpciones.map((opcion: { id: number; nombre: string }) => {
-    return {
-      label: opcion.nombre,
-      value: opcion.id
-    }
-  })
+export const mapearOptionsSelect = (listado: { id: number; nombre: string }[]): SelectOption[] => {
+  return listado.map(opcion => ({
+    label: opcion.nombre,
+    value: opcion.id
+  }))
 }
 
 export const copiarAlPortapapeles = async (texto: string) => {

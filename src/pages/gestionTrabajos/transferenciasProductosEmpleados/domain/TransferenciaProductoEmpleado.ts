@@ -30,6 +30,9 @@ export class TransferenciaProductoEmpleado extends EntidadAuditable {
   nombre_etapa_origen: string | null
   nombre_etapa_destino: string | null
   nombre_cliente: string | null
+  nombre_solicitante: string | null = null
+  nombre_empleado_origen: string | null = null
+  nombre_empleado_destino: string | null = null
 
   listado_productos: any[]
 

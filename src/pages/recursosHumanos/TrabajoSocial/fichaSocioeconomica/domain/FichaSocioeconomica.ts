@@ -10,8 +10,12 @@ export class FichaSocioeconomica extends EntidadAuditable {
   lugar_nacimiento: string | null
   canton: string | null
   contacto_emergencia: string | null
+  contacto_emergencia_externo: string | null
   parentesco_contacto_emergencia: string | null
+  parentesco_contacto_emergencia_externo: string | null
   telefono_contacto_emergencia: string | null
+  telefono_contacto_emergencia_externo: string | null
+  ciudad_contacto_emergencia_externo: string | null
   problemas_ambiente_social_familiar: any
   observaciones_ambiente_social_familiar: string | null
   conocimientos: any
@@ -37,8 +41,12 @@ export class FichaSocioeconomica extends EntidadAuditable {
     this.lugar_nacimiento = null
     this.canton = null
     this.contacto_emergencia = null
+    this.contacto_emergencia_externo = null
     this.parentesco_contacto_emergencia = null
+    this.parentesco_contacto_emergencia_externo = null
     this.telefono_contacto_emergencia = null
+    this.telefono_contacto_emergencia_externo = null
+    this.ciudad_contacto_emergencia_externo = null
     this.tiene_conyuge = false
     this.tiene_hijos = false
     this.tiene_experiencia_previa = true

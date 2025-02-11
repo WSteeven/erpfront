@@ -19,6 +19,15 @@ export const configuracionColumnasActividadesRealizadas: ColumnConfig<any>[] = [
         editable: true,
         visible: true
     },
+  {
+    name: 'kilometraje',
+    field: 'kilometraje',
+    label: 'Kilometraje',
+    align: 'left',
+    type: 'number',
+    editable: true,
+    visible: true
+  },
     {
         name: 'actividad_realizada',
         field: 'actividad_realizada',
@@ -29,4 +38,13 @@ export const configuracionColumnasActividadesRealizadas: ColumnConfig<any>[] = [
         editable: true,
         visible: true
     },
+  {
+    name: 'tarea',
+    field: 'tarea',
+    label: 'Tarea',
+    align: 'left',
+    type: 'select',
+    editable: true,
+    visible: true
+  },
 ]

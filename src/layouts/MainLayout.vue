@@ -586,7 +586,9 @@
             'TransferenciaProductoEmpleado',
             'AsignacionVehiculo',
             'TransferenciaVehiculo',
-            'VacantePage'
+            'VacantePage',
+            'ReporteBitacorasPage',
+            'aceptar_transferencia_producto',
           ]"
         >
           <component :is="Component" />

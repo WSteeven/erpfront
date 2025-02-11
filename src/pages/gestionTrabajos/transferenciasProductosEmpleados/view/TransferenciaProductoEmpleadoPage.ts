@@ -2,58 +2,59 @@
 import {
   acciones,
   estadosTransacciones,
-  rolesSistema,
-  tabOptionsTransferenciaProductoEmpleado
+  rolesSistema
 } from 'config/utils'
-import { configuracionColumnasDevoluciones } from '../domain/configuracionColumnasDevoluciones'
+import { configuracionColumnasProductosSeleccionadosAccion } from '../domain/configuracionColumnasProductosSeleccionadosAccion'
+import { configuracionColumnasTransferenciaProducto } from '../domain/configuracionColumnasTransferenciaProducto'
 import { computed, defineComponent, onMounted, reactive, ref, watch } from 'vue'
 import { useOrquestadorSelectorDetalles } from '../application/OrquestadorSelectorDetalles'
 import { useFiltrosListadosSelects } from 'shared/filtrosListadosGenerales'
 import { useAuthenticationStore } from 'stores/authentication'
-import { required, requiredIf } from 'shared/i18n-validators'
 import { useNotificacionStore } from 'stores/notificacion'
-import { destinosTareas } from 'config/tareas.utils'
+import { destinosTareas, tabOptionsTransferenciaProductoEmpleado } from 'config/tareas.utils'
 import { useCargandoStore } from 'stores/cargando'
 import { ordernarListaString } from 'shared/utils'
-import { LocalStorage, useQuasar } from 'quasar'
+import { required } from 'shared/i18n-validators'
 import { useVuelidate } from '@vuelidate/core'
+import { useQuasar } from 'quasar'
 
 // Componentes
 import TabLayoutFilterTabs2 from 'shared/contenedor/modules/simple/view/TabLayoutFilterTabs2.vue'
 import EssentialSelectableTable from 'components/tables/view/EssentialSelectableTable.vue'
 import GestorArchivos from 'components/gestorArchivos/GestorArchivos.vue'
 import EssentialTable from 'components/tables/view/EssentialTable.vue'
+import Callout from 'components/CalloutComponent.vue'
 
 // Logica y controladores
 import { ArchivoController } from 'pages/gestionTrabajos/subtareas/modules/gestorArchivosTrabajos/infraestructure/ArchivoController'
-import { configuracionColumnasProductosSeleccionadosAccion } from '../domain/configuracionColumnasProductosSeleccionadosAccion'
 import { TransferenciaProductoEmpleadoController } from '../infraestructure/TransferenciaProductoEmpleadoController'
 import { configuracionColumnasProductosSeleccionados } from '../domain/configuracionColumnasProductosSeleccionados'
+import { AutorizacionController } from 'pages/administracion/autorizaciones/infraestructure/AutorizacionController'
 import { ContenedorSimpleMixin } from 'shared/contenedor/modules/simple/application/ContenedorSimpleMixin'
 import { useMaterialesProyecto } from 'pages/gestionTrabajos/miBodega/application/UseMaterialesProyecto'
 import { useMaterialesEmpleado } from 'pages/gestionTrabajos/miBodega/application/UseMaterialesEmpleado'
 import { FiltroMiBodegaProyecto } from 'pages/gestionTrabajos/miBodega/domain/FiltroMiBodegaProyecto'
 import { FiltroMiBodegaEmpleado } from 'pages/gestionTrabajos/miBodega/domain/FiltroMiBodegaEmpleado'
-import { useMaterialesTarea } from 'pages/gestionTrabajos/miBodega/application/UseMaterialesTarea'
 import { EmpleadoController } from 'recursosHumanos/empleados/infraestructure/EmpleadoController'
 import { configuracionColumnasDetallesModal } from '../domain/configuracionColumnasDetallesModal'
 import { useTransferenciaProductoEmpleadoStore } from 'stores/transferenciaProductoEmpleado'
 import { TransferenciaProductoEmpleado } from '../domain/TransferenciaProductoEmpleado'
+import { Autorizacion } from 'pages/administracion/autorizaciones/domain/Autorizacion'
 import { useBotonesListadoProductos } from '../application/UseBotonesListadoProductos'
 import { FiltroMiBodega } from 'pages/gestionTrabajos/miBodega/domain/FiltroMiBodega'
 import { Etapa } from 'pages/gestionTrabajos/proyectos/modules/etapas/domain/Etapa'
+import { CustomActionTable } from 'components/tables/domain/CustomActionTable'
 import { ValidarExisteArchivo } from '../application/ValidarListadoProductos'
 import { MaterialEmpleadoTarea } from 'miBodega/domain/MaterialEmpleadoTarea'
 import { Proyecto } from 'pages/gestionTrabajos/proyectos/domain/Proyecto'
 import { TareaController } from 'tareas/infraestructure/TareaController'
 import { Empleado } from 'recursosHumanos/empleados/domain/Empleado'
-import { Tarea } from 'tareas/domain/Tarea'
 import { useNotificaciones } from 'shared/notificaciones'
+import { Tarea } from 'tareas/domain/Tarea'
 
 export default defineComponent({
   name: 'TransferenciaProductoEmpleado',
-  components: { TabLayoutFilterTabs2, EssentialTable, EssentialSelectableTable, GestorArchivos, },
-
+  components: { TabLayoutFilterTabs2, EssentialTable, EssentialSelectableTable, GestorArchivos, Callout },
   setup() {
     /********
      * Mixin
@@ -135,11 +136,10 @@ export default defineComponent({
 
     const { empleados, filtrarEmpleados, ordenarEmpleados, empleadosOrigen, filtrarEmpleadosOrigen, ordenarEmpleadosOrigen, tareas, filtrarTareas, tareasDestino, filtrarTareasDestino } = useFiltrosListadosSelects(listadosAuxiliares)
 
-    const opciones_autorizaciones = ref([])
-
     /************************
      * Variables computadas
      ************************/
+    const autorizaciones = computed(() => transferencia.autorizacion === 2 ? listadosAuxiliares.autorizaciones : listadosAuxiliares.autorizaciones.filter((autorizacion: Autorizacion) => autorizacion.nombre !== 'APROBADO'))
     // const esEntreProyectos = (): boolean => listadosAuxiliares.proyectos.find((proyecto: Proyecto) => proyecto.id === transferencia.proyecto_origen)?.etapas.length === 0
 
     //Obtener los listados
@@ -159,12 +159,7 @@ export default defineComponent({
             estado: 1,
           }
         },
-        /* autorizadores: {
-          controller: new EmpleadoRoleController(),
-          params: {
-            roles: [rolesSistema.jefe_tecnico, rolesSistema.coordinador, rolesSistema.coordinadorBackup, rolesSistema.gerente],
-          }
-        }, */
+        autorizaciones: new AutorizacionController(),
         empleadosOrigen: [],
         productos: [],
         etapas: [],
@@ -203,7 +198,6 @@ export default defineComponent({
     })
 
     transferencia.solicitante = authenticationStore.user.id
-    opciones_autorizaciones.value = JSON.parse(LocalStorage.getItem('autorizaciones')!.toString())
 
     /*********
      * Reglas
@@ -227,51 +221,16 @@ export default defineComponent({
     /************
      * Funciones
      ************/
-    /* const resetearFormulario = () => {
-      transferencia.proyecto_origen = null
-      transferencia.proyecto_destino = null
-      transferencia.etapa_origen = null
-      transferencia.etapa_destino = null
-      transferencia.tarea_origen = null
-      transferencia.tarea_destino = null
-      transferencia.empleado_destino = null
+    const { proyectos, filtrarProyectos, proyectosDestino, filtrarProyectosDestino, etapas, filtrarEtapas, etapasDestino, filtrarEtapasDestino } = useFiltrosListadosSelects(listadosAuxiliares)
 
-      listadosAuxiliares.productos = []
-      listadosAuxiliares.etapas = []
-      listadosAuxiliares.etapasDestino = []
-      listadosAuxiliares.tareas = []
-      listadosAuxiliares.tareasDestino = []
-      listadosAuxiliares.proyectos = []
-      listadosAuxiliares.proyectosDestino = []
-    }
+    const filtroProyecto = reactive(new FiltroMiBodegaProyecto())
+    const filtroEmpleado = reactive(new FiltroMiBodegaEmpleado())
+    const filtroTarea = reactive(new FiltroMiBodega())
 
-    const resetearFormularioExceptoProyectoOrigen = () => {
-      transferencia.proyecto_destino = null
-      transferencia.etapa_origen = null
-      transferencia.etapa_destino = null
-      transferencia.tarea_origen = null
-      transferencia.tarea_destino = null
-      transferencia.empleado_destino = null
+    // const { consultarProductosTarea } = useMaterialesTarea(filtroTarea, listadosAuxiliares)
+    const { consultarClientesMaterialesEmpleado } = useMaterialesEmpleado(filtroEmpleado, listadosAuxiliares)
+    const { consultarProyectos, consultarProyectosDestino, consultarEtapas, consultarEtapasDestino, consultarClientesMaterialesTarea } = useMaterialesProyecto(filtroProyecto, listadosAuxiliares)
 
-      listadosAuxiliares.productos = []
-      listadosAuxiliares.etapas = []
-      listadosAuxiliares.etapasDestino = []
-      listadosAuxiliares.tareas = []
-      listadosAuxiliares.tareasDestino = []
-      listadosAuxiliares.proyectosDestino = []
-    } */
-
-    /* async function seleccionarClienteStock(idCliente: number) {
-      console.log(idCliente)
-      filtroEmpleado.empleado_id = transferencia.empleado_origen
-      filtroEmpleado.cliente_id = transferencia.cliente
-      await consultarProductosEmpleado()
-      transferencia.listado_productos = mapearProductos(listadosAuxiliares.productos)
-      establecerAutorizador()
-    } */
-
-    /**Mejora de observers */
-    // ######################
     async function seleccionarEmpleadoOrigen(limpiarCampos = true) {
       if (accion.value === acciones.nuevo && limpiarCampos) {
         transferencia.proyecto_origen = null
@@ -400,43 +359,14 @@ export default defineComponent({
       const id = transferencia.tarea_destino
       if (id) {
         // Buscar la tarea origen y extraer proyecto, etapa y cliente y colocarlo en transferencia
-        // if (listadosAuxiliares.tareas.length) {
         const tarea = listadosAuxiliares.tareasDestino.find((t: Tarea) => t.id === id)
-        console.log(listadosAuxiliares.tareasDestino)
-        console.log(tarea)
-
         transferencia.proyecto_destino = tarea?.proyecto_id
         transferencia.etapa_destino = tarea?.etapa_id
 
-        console.log('tarea ha cambiado !!!!')
-
-        // if (accion.value === acciones.nuevo)
         if (transferencia.proyecto_destino) await consultarEtapasEmpleadoDestino(transferencia.proyecto_destino)
       }
       establecerAutorizador()
     }
-
-    // Destino
-    watch(computed(() => transferencia.proyecto_destino), (id) => {
-      if (id) consultarEtapasEmpleadoDestino(id)
-    })
-
-    /*watchEffect(() => {
-      if (transferencia.tarea_origen && !!listadosAuxiliares.tareas.length) establecerAutorizador()
-    })*/
-
-    /*******************************************************************************************
-     * Funciones
-     ******************************************************************************************/
-    const { proyectos, filtrarProyectos, proyectosDestino, filtrarProyectosDestino, etapas, filtrarEtapas, etapasDestino, filtrarEtapasDestino } = useFiltrosListadosSelects(listadosAuxiliares)
-
-    const filtroProyecto = reactive(new FiltroMiBodegaProyecto())
-    const filtroEmpleado = reactive(new FiltroMiBodegaEmpleado())
-    const filtroTarea = reactive(new FiltroMiBodega())
-
-    // const { consultarProductosTarea } = useMaterialesTarea(filtroTarea, listadosAuxiliares)
-    const { consultarProductosEmpleado, consultarClientesMaterialesEmpleado } = useMaterialesEmpleado(filtroEmpleado, listadosAuxiliares)
-    const { consultarProyectos, consultarProyectosDestino, consultarEtapas, consultarEtapasDestino, consultarProductosProyecto, consultarClientesMaterialesTarea } = useMaterialesProyecto(filtroProyecto, listadosAuxiliares)
 
     async function establecerAutorizador() {
       if (accion.value === acciones.nuevo) {
@@ -512,9 +442,9 @@ export default defineComponent({
     const puedeEditar = ref()
     function filtrarTransferenciasProductoEmpleado(tab: string) {
       tabSeleccionado.value = tab
-      puedeEditar.value = tabSeleccionado.value === estadosTransacciones.pendiente ? true : false // authenticationStore.can('puede.autorizar.devoluciones')
-      puedeEditar.value = tab == 'PENDIENTE'
-      listar({ estado: tab })
+      puedeEditar.value = tabSeleccionado.value === estadosTransacciones.pendiente ? true : false
+      puedeEditar.value = tab == '1'
+      listar({ autorizacion_id: tab })
     }
 
     async function consultarTareasEmpleadoOrigen(params?: any) {
@@ -555,6 +485,13 @@ export default defineComponent({
         }
       })
     }
+
+    /************
+     * Observers
+     ************/
+    watch(computed(() => transferencia.proyecto_destino), (id) => {
+      if (id) consultarEtapasEmpleadoDestino(id)
+    })
 
     /********
      * Hooks
@@ -601,10 +538,17 @@ export default defineComponent({
       seleccionarEmpleadoOrigen()
     })
 
-    /*******************************************************************************************
+    /********************
      * Botones de tabla
-     ******************************************************************************************/
+     ********************/
     const { botonEditarCantidad, botonEliminar } = useBotonesListadoProductos(transferencia, accion)
+
+    const botonImprimir: CustomActionTable<TransferenciaProductoEmpleado> = {
+      titulo: 'Imprimir',
+      color: 'positive',
+      icono: 'bi-printer',
+      accion: async ({ entidad }) => listar({ export: 'pdf', id: entidad.id, titulo: 'Tranferencia #' + entidad.id })
+    }
 
     //Configurar los listados
     // opciones_empleados.value = listadosAuxiliares.empleados
@@ -665,14 +609,15 @@ export default defineComponent({
 
     return {
       mixin, transferencia, disabled, accion, v$, acciones,
-      configuracionColumnas: configuracionColumnasDevoluciones,
+      configuracionColumnas: configuracionColumnasTransferenciaProducto,
+      listadosAuxiliares,
       authenticationStore,
       refArchivo,
       idTransferencia,
       // listados
       // opciones_empleados,
       empleadosOrigen,
-      opciones_autorizaciones,
+      // opciones_autorizaciones,
       tareas,
       tareasDestino,
       proyectos,
@@ -703,7 +648,7 @@ export default defineComponent({
 
       //flags
       esCoordinador,
-      puedeAutorizar: computed(() => authenticationStore.can('puede.autorizar.transferencia_producto_empleado') && [acciones.nuevo, acciones.editar].includes(accion.value)),
+      puedeAutorizar: computed(() => authenticationStore.can('puede.autorizar.transferencia_producto_empleado') && [acciones.nuevo, acciones.editar].includes(accion.value as any)),
       // puedeAutorizar: computed(() => (esCoordinador || authenticationStore.esJefeTecnico || authenticationStore.esAdministrador) && accion.value === acciones.nuevo),
 
       //Tabs
@@ -718,7 +663,6 @@ export default defineComponent({
       ordenarEmpleados,
       filtrarEmpleadosOrigen, ordenarEmpleadosOrigen,
       // consultarTareasClienteFinalMantenimiento,
-      listadosAuxiliares,
       transferenciaProductoEmpleadoStore,
       // ordenarOpcionesEmpleados: () => opciones_empleados.value.sort((a: Empleado, b: Empleado) => ordernarListaString(a.apellidos!, b.apellidos!)),
       ordenarOpcionesEmpleados: () => empleadosOrigen.value.sort((a: Empleado, b: Empleado) => ordernarListaString(a.apellidos!, b.apellidos!)),
@@ -749,6 +693,8 @@ export default defineComponent({
       seleccionarTareaDestino,
       consultarProductos,
       consultado: computed(() => accion.value === acciones.editar || accion.value === acciones.consultar),
+      botonImprimir,
+      autorizaciones,
     }
   }
 })

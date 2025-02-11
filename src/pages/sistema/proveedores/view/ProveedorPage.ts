@@ -1,66 +1,98 @@
 //Dependencias
 import { configuracionColumnasProveedores } from './../domain/configuracionColumnasProveedores'
-import { configuracionColumnasContactosProveedores } from 'pages/comprasProveedores/contactosProveedor/domain/configuracionColumnasContactosProveedores';
+import { configuracionColumnasContactosProveedores } from 'pages/comprasProveedores/contactosProveedor/domain/configuracionColumnasContactosProveedores'
 import { required, requiredIf } from 'shared/i18n-validators'
-import { useVuelidate } from '@vuelidate/core';
+import { useVuelidate } from '@vuelidate/core'
 
 //Componentes
 import TabLayout from 'shared/contenedor/modules/simple/view/TabLayout.vue'
-import LabelAbrirModal from 'components/modales/modules/LabelAbrirModal.vue';
-import ModalesEntidad from 'components/modales/view/ModalEntidad.vue';
-import EssentialTable from 'components/tables/view/EssentialTable.vue';
-import GestorArchivos from 'components/gestorArchivos/GestorArchivos.vue';
+import LabelAbrirModal from 'components/modales/modules/LabelAbrirModal.vue'
+import ModalesEntidad from 'components/modales/view/ModalEntidad.vue'
+import EssentialTable from 'components/tables/view/EssentialTable.vue'
+import GestorArchivos from 'components/gestorArchivos/GestorArchivos.vue'
 
 //Logica y controladores
-import { ContenedorSimpleMixin } from 'shared/contenedor/modules/simple/application/ContenedorSimpleMixin';
-import { Ref, computed, defineComponent, reactive, ref } from 'vue';
-import { ProveedorController } from '../infraestructure/ProveedorController';
-import { Proveedor } from '../domain/Proveedor';
-import { acciones } from 'config/utils';
-import { ComportamientoModalesProveedores } from '../application/ComportamientoModalesProveedores';
-import { EmpresaController } from 'pages/administracion/empresas/infraestructure/EmpresaController';
-import { useFiltrosListadosSelects } from 'shared/filtrosListadosGenerales';
-import { Empresa } from 'pages/administracion/empresas/domain/Empresa';
-import { StatusEssentialLoading } from 'components/loading/application/StatusEssentialLoading';
-import { estadosCalificacionProveedor, opcionesTipoContribuyente, opcionesTipoNegocio, tiposEnvios, formasPagos } from 'config/utils_compras_proveedores';
-import { ParroquiaController } from 'sistema/parroquia/infraestructure/ParroquiaController';
-import { OfertaProveedorController } from '../modules/ofertas_proveedores/infraestructure/OfertaProveedorController';
-import { DepartamentoController } from '../modules/departamentos/infraestructure/DepartamentoController';
-import { CustomActionTable } from 'components/tables/domain/CustomActionTable';
-import { ContactoProveedor } from 'pages/comprasProveedores/contactosProveedor/domain/ContactoProveedor';
-import { useNotificaciones } from 'shared/notificaciones';
-import { ContactoProveedorController } from 'pages/comprasProveedores/contactosProveedor/infraestructure/ContactoProveedorController';
-import { useProveedorStore } from 'stores/comprasProveedores/proveedor';
-import { useAuthenticationStore } from 'stores/authentication';
-import dayjs from 'dayjs';
-import { useCalificacionProveedorStore } from 'stores/comprasProveedores/calificacionProveedor';
-import { DetalleDepartamentoProveedorController } from 'pages/comprasProveedores/detallesDepartamentosProveedor/infraestructure/DetalleDepartamentoProveedorController';
-import { LocalStorage, useQuasar } from 'quasar';
-import { CategoriaOfertaController } from 'pages/comprasProveedores/categoriaOfertas/infraestructure/CategoriaOfertaController';
-import { CategoriaOferta } from 'pages/comprasProveedores/categoriaOfertas/domain/CategoriaOferta';
-import { ordernarListaString } from 'shared/utils';
-import { Departamento } from 'pages/recursosHumanos/departamentos/domain/Departamento';
-import { useNotificacionStore } from 'stores/notificacion';
-import { useCargandoStore } from 'stores/cargando';
-import { configuracionColumnasDatosBancariosProveedor } from 'pages/comprasProveedores/datosBancariosProveedor/domain/configuracionColumnasDatosBancariosProveedor';
-import { ArchivoController } from 'pages/gestionTrabajos/subtareas/modules/gestorArchivosTrabajos/infraestructure/ArchivoController';
-import { CustomActionPrompt } from 'components/tables/domain/CustomActionPrompt';
-import { ValidarPropiedadesProveedor } from '../application/validaciones/ValidarPropiedadesProveedor';
-import { DatoBancarioController } from 'pages/comprasProveedores/datosBancariosProveedor/infraestructure/DatoBancarioController';
-
+import { ContenedorSimpleMixin } from 'shared/contenedor/modules/simple/application/ContenedorSimpleMixin'
+import { computed, defineComponent, reactive, ref } from 'vue'
+import { ProveedorController } from '../infraestructure/ProveedorController'
+import { Proveedor } from '../domain/Proveedor'
+import { acciones } from 'config/utils'
+import { ComportamientoModalesProveedores } from '../application/ComportamientoModalesProveedores'
+import { EmpresaController } from 'pages/administracion/empresas/infraestructure/EmpresaController'
+import { useFiltrosListadosSelects } from 'shared/filtrosListadosGenerales'
+import { Empresa } from 'pages/administracion/empresas/domain/Empresa'
+import { StatusEssentialLoading } from 'components/loading/application/StatusEssentialLoading'
+import {
+  estadosCalificacionProveedor,
+  formasPagos,
+  opcionesTipoContribuyente,
+  opcionesTipoNegocio,
+  tiposEnvios
+} from 'config/utils_compras_proveedores'
+import { ParroquiaController } from 'sistema/parroquia/infraestructure/ParroquiaController'
+import { OfertaProveedorController } from '../modules/ofertas_proveedores/infraestructure/OfertaProveedorController'
+import { DepartamentoController } from '../modules/departamentos/infraestructure/DepartamentoController'
+import { CustomActionTable } from 'components/tables/domain/CustomActionTable'
+import { useNotificaciones } from 'shared/notificaciones'
+import { ContactoProveedorController } from 'pages/comprasProveedores/contactosProveedor/infraestructure/ContactoProveedorController'
+import { useProveedorStore } from 'stores/comprasProveedores/proveedor'
+import { useAuthenticationStore } from 'stores/authentication'
+import dayjs from 'dayjs'
+import { useCalificacionProveedorStore } from 'stores/comprasProveedores/calificacionProveedor'
+import { DetalleDepartamentoProveedorController } from 'pages/comprasProveedores/detallesDepartamentosProveedor/infraestructure/DetalleDepartamentoProveedorController'
+import { LocalStorage, useQuasar } from 'quasar'
+import { CategoriaOfertaController } from 'pages/comprasProveedores/categoriaOfertas/infraestructure/CategoriaOfertaController'
+import { CategoriaOferta } from 'pages/comprasProveedores/categoriaOfertas/domain/CategoriaOferta'
+import { ordernarListaString } from 'shared/utils'
+import { Departamento } from 'pages/recursosHumanos/departamentos/domain/Departamento'
+import { useNotificacionStore } from 'stores/notificacion'
+import { useCargandoStore } from 'stores/cargando'
+import { configuracionColumnasDatosBancariosProveedor } from 'pages/comprasProveedores/datosBancariosProveedor/domain/configuracionColumnasDatosBancariosProveedor'
+import { ArchivoController } from 'pages/gestionTrabajos/subtareas/modules/gestorArchivosTrabajos/infraestructure/ArchivoController'
+import { CustomActionPrompt } from 'components/tables/domain/CustomActionPrompt'
+import { ValidarPropiedadesProveedor } from '../application/validaciones/ValidarPropiedadesProveedor'
+import { DatoBancarioController } from 'pages/comprasProveedores/datosBancariosProveedor/infraestructure/DatoBancarioController'
 
 export default defineComponent({
-  components: { TabLayout, LabelAbrirModal, ModalesEntidad, EssentialTable, GestorArchivos },
+  components: {
+    TabLayout,
+    LabelAbrirModal,
+    ModalesEntidad,
+    EssentialTable,
+    GestorArchivos
+  },
   setup() {
-    const mixinEmpresas = new ContenedorSimpleMixin(Empresa, new EmpresaController(), new ArchivoController())
-    const mixin = new ContenedorSimpleMixin(Proveedor, new ProveedorController())
-    const { entidad: proveedor, disabled, accion, listadosAuxiliares, listado } = mixin.useReferencias()
-    const { setValidador, cargarVista, obtenerListados, listar } = mixin.useComportamiento()
-    const { onConsultado, onReestablecer, onGuardado, onModificado, onBeforeGuardar, onBeforeModificar } = mixin.useHooks()
-    const { confirmar, prompt, notificarCorrecto, notificarError } = useNotificaciones()
+    const mixinEmpresas = new ContenedorSimpleMixin(
+      Empresa,
+      new EmpresaController(),
+      new ArchivoController()
+    )
+    const mixin = new ContenedorSimpleMixin(
+      Proveedor,
+      new ProveedorController()
+    )
+    const {
+      entidad: proveedor,
+      disabled,
+      accion,
+      listadosAuxiliares,
+      listado
+    } = mixin.useReferencias()
+    const { setValidador, cargarVista, obtenerListados, listar } =
+      mixin.useComportamiento()
+    const {
+      onConsultado,
+      onReestablecer,
+      onGuardado,
+      onBeforeGuardar,
+      onBeforeModificar
+    } = mixin.useHooks()
+    const { confirmar, prompt, notificarCorrecto, notificarError } =
+      useNotificaciones()
     const refContactos = ref()
-    const contactosProveedor: Ref<ContactoProveedor[]> = ref(proveedor.contactos)
-    const mostrarLabelModal = computed(() => accion.value === acciones.nuevo || accion.value === acciones.editar)
+    const mostrarLabelModal = computed(
+      () => accion.value === acciones.nuevo || accion.value === acciones.editar
+    )
     /**************************************************************
      * Stores
      **************************************************************/
@@ -80,18 +112,13 @@ export default defineComponent({
     const categorias = ref([])
     const departamentos = ref([])
     const ofertas = ref([])
-    const departamentoFinanciero = computed(() => listadosAuxiliares.departamentos.length > 0 ? listadosAuxiliares.departamentos.filter((v: Departamento) => v.nombre == 'FINANCIERO')[0] : new Departamento())
-    const reporte = reactive({
-      estado_calificado: null,
-      categorias: null,
-      canton: null,
-      razon_social: null,
-      tipo: null,
-      accion: null,
-      fecha_inicio: null,
-      fecha_fin: null,
-      estado: true,
-  })
+    const departamentoFinanciero = computed(() =>
+      listadosAuxiliares.departamentos.length > 0
+        ? listadosAuxiliares.departamentos.filter(
+            (v: Departamento) => v.nombre == 'FINANCIERO'
+          )[0]
+        : new Departamento()
+    )
     cargarVista(async () => {
       await obtenerListados({
         empresas: {
@@ -101,27 +128,39 @@ export default defineComponent({
         parroquias: new ParroquiaController(),
         categorias: new CategoriaOfertaController(),
         departamentos: new DepartamentoController(),
-        ofertas: new OfertaProveedorController(),
+        ofertas: new OfertaProveedorController()
       }).then(() => {
-        proveedor.departamentos = [...proveedor.departamentos, departamentoFinanciero.value.id]
+        proveedor.departamentos = [
+          ...proveedor.departamentos,
+          departamentoFinanciero.value.id
+        ]
       })
-      listadosAuxiliares.cantones = JSON.parse(LocalStorage.getItem('cantones')!.toString())
+      listadosAuxiliares.cantones = JSON.parse(
+        LocalStorage.getItem('cantones')!.toString()
+      )
       cantones.value = JSON.parse(LocalStorage.getItem('cantones')!.toString())
-      listar({ filtrarProveedores: true }) // aqui se lista solo los proveedores que me corresponde calificar
+      await listar({ filtrarProveedores: true }) // aqui se lista solo los proveedores que me corresponde calificar
     })
 
     /**************************************************************
      * Hooks
-    **************************************************************/
+     **************************************************************/
     onConsultado(() => {
       // proveedor.tipo_envio = proveedor.tipo_envio != null ? JSON.parse(proveedor.tipo_envio.toString()) : []
-      obtenerEmpresa(proveedor.empresa).then(() => refArchivo.value.listarArchivosAlmacenados(empresa.id))
-      categorias.value = listadosAuxiliares.categorias.filter((v) => proveedor.tipos_ofrece.includes(v.tipo_oferta_id))
+      obtenerEmpresa(proveedor.empresa).then(() =>
+        refArchivo.value.listarArchivosAlmacenados(empresa.id)
+      )
+      categorias.value = listadosAuxiliares.categorias.filter(v =>
+        proveedor.tipos_ofrece.includes(v.tipo_oferta_id)
+      )
     })
     onReestablecer(() => {
       empresa.hydrate(new Empresa())
       cantones.value = JSON.parse(LocalStorage.getItem('cantones')!.toString())
-      proveedor.departamentos = [...proveedor.departamentos, departamentoFinanciero.value.id]
+      proveedor.departamentos = [
+        ...proveedor.departamentos,
+        departamentoFinanciero.value.id
+      ]
       refArchivo.value.limpiarListado()
       categorias.value = listadosAuxiliares.categorias
     })
@@ -130,18 +169,18 @@ export default defineComponent({
       // console.log(empresa)
       // console.log(proveedor)
     })
-    onGuardado((id: number) => {
+    onGuardado(() => {
       // console.log('id guardado: ', id)
       subirArchivos()
     })
     onBeforeModificar(() => {
       subirArchivos()
     })
-    onModificado((id: number) => {
+    // onModificado(() => {
       // console.log('id modificado: ', id)
       // refArchivo.value.idModelo = id
       // console.log(idEmpresaParaArchivos.value)
-    })
+    // })
     /**************************************************************
      * Validaciones
      **************************************************************/
@@ -154,19 +193,21 @@ export default defineComponent({
       categorias_ofrece: { required },
       departamentos: { required },
 
-      tipo_envio: { requiredIfRealizaEnvios: requiredIf(proveedor.envios) },
+      tipo_envio: { requiredIfRealizaEnvios: requiredIf(proveedor.envios) }
     }
     const v$ = useVuelidate(reglas, proveedor)
     setValidador(v$.value)
 
-    const validarPropiedadesProveedor = new ValidarPropiedadesProveedor(proveedor)
+    const validarPropiedadesProveedor = new ValidarPropiedadesProveedor(
+      proveedor
+    )
     mixin.agregarValidaciones(validarPropiedadesProveedor)
 
     /***************************
      * Configuracion de columnas
      ****************************/
     const columnasContactosProveedor: any = [
-      ...configuracionColumnasContactosProveedores,
+      ...configuracionColumnasContactosProveedores
       // accionesTabla,
     ]
     columnasContactosProveedor.splice(2, 1)
@@ -188,13 +229,18 @@ export default defineComponent({
         confirmar('¿Está seguro de desactivar el proveedor?', () => {
           const data: CustomActionPrompt = {
             titulo: 'Causa de deactivación',
-            mensaje: 'Ingresa el motivo por el que quieres desactivar este proveedor?',
-            accion: async (data) => {
+            mensaje:
+              'Ingresa el motivo por el que quieres desactivar este proveedor?',
+            accion: async data => {
               try {
                 proveedorStore.idProveedor = entidad.id
-                const response = await proveedorStore.anularProveedor({ motivo: data })
+                const response = await proveedorStore.anularProveedor({
+                  motivo: data
+                })
                 if (response?.status == 200) {
-                  notificarCorrecto('Se ha desactivado correctamente el proveedor')
+                  notificarCorrecto(
+                    'Se ha desactivado correctamente el proveedor'
+                  )
                   listado.value.splice(posicion, 1, response.data.modelo)
                 }
               } catch (error: any) {
@@ -204,7 +250,10 @@ export default defineComponent({
           }
           prompt(data)
         })
-      }, visible: ({ entidad }) => entidad.estado && (store.esCompras || store.can('puede.desactivar.proveedores'))
+      },
+      visible: ({ entidad }) =>
+        entidad.estado &&
+        (store.esCompras || store.can('puede.desactivar.proveedores'))
     }
     const botonActivarProveedor: CustomActionTable = {
       titulo: 'Activar',
@@ -215,11 +264,14 @@ export default defineComponent({
         confirmar('¿Está seguro de activar el proveedor?', () => {
           const data: CustomActionPrompt = {
             titulo: 'Causa de deactivación',
-            mensaje: 'Ingresa el motivo por el que quieres desactivar este proveedor?',
-            accion: async (data) => {
+            mensaje:
+              'Ingresa el motivo por el que quieres desactivar este proveedor?',
+            accion: async data => {
               try {
                 proveedorStore.idProveedor = entidad.id
-                const response = await proveedorStore.anularProveedor({ motivo: data })
+                const response = await proveedorStore.anularProveedor({
+                  motivo: data
+                })
                 if (response?.status == 200) {
                   notificarCorrecto('Se ha activado correctamente el proveedor')
                   listado.value.splice(posicion, 1, response.data.modelo)
@@ -231,17 +283,23 @@ export default defineComponent({
           }
           prompt(data)
         })
-      }, visible: ({ entidad }) => !entidad.estado && (store.esCompras || store.can('puede.activar.proveedores'))
+      },
+      visible: ({ entidad }) =>
+        !entidad.estado &&
+        (store.esCompras || store.can('puede.activar.proveedores'))
     }
     const abrirModalContacto: CustomActionTable = {
       titulo: 'Agregar Contacto',
       icono: 'bi-person-fill-add',
       color: 'positive',
-      tooltip: 'Puede modificar o eliminar un contacto desde el panel contactos de proveedores',
+      tooltip:
+        'Puede modificar o eliminar un contacto desde el panel contactos de proveedores',
       accion: () => {
         modales.abrirModalEntidad('ContactoProveedorPage')
       },
-      visible: () => { return accion.value == acciones.nuevo || accion.value == acciones.editar }
+      visible: () => {
+        return accion.value == acciones.nuevo || accion.value == acciones.editar
+      }
     }
     const abrirModalDatoBancario: CustomActionTable = {
       titulo: 'Agregar N° Cuenta',
@@ -261,35 +319,43 @@ export default defineComponent({
         proveedorStore.idProveedor = entidad.id
         const response = await proveedorStore.actualizarCalificacion()
         if (response?.status == 200) {
-          notificarCorrecto('Se ha actualizado correctamente la calificación del proveedor')
+          notificarCorrecto(
+            'Se ha actualizado correctamente la calificación del proveedor'
+          )
           listado.value.splice(posicion, 1, response.data.modelo)
         }
-      }, visible: () => store.esAdministrador
+      },
+      visible: () => store.esAdministrador
     }
     const botonCalificarProveedor: CustomActionTable = {
       titulo: 'Calificar',
       icono: 'bi-stars',
       color: 'positive',
-      accion: async ({ entidad, posicion }) => {
+      accion: async ({ entidad }) => {
         proveedorStore.idDepartamento = store.user.departamento
         proveedorStore.idProveedor = entidad.id
         proveedorStore.proveedor = entidad
         consultarDetalleDepartamentoProveedor().then(() => {
-          proveedorStore.idDetalleDepartamento = detalleDepartamentoProveedor.value.id
+          proveedorStore.idDetalleDepartamento =
+            detalleDepartamentoProveedor.value.id
         })
         // proveedorStore.proveedor.hydrate(await new ProveedorController().consultar(entidad.id))
         modales.abrirModalEntidad('CalificacionProveedorPage')
-
       },
-      visible: ({ posicion, entidad }) => {
+      visible: ({ entidad }) => {
         // console.log(posicion, entidad)
-        const departamento_calificador = entidad.related_departamentos.filter((v) => v.id === store.user.departamento)[0]
+        const departamento_calificador = entidad.related_departamentos.filter(
+          v => v.id === store.user.departamento
+        )[0]
         if (departamento_calificador) {
           if (departamento_calificador.pivot.fecha_calificacion) {
-            const diasTranscurridos = dayjs().diff(dayjs(departamento_calificador?.pivot.fecha_calificacion), 'day')
+            const diasTranscurridos = dayjs().diff(
+              dayjs(departamento_calificador?.pivot.fecha_calificacion),
+              'day'
+            )
             return diasTranscurridos > 365 && entidad.estado
           }
-          return true && entidad.estado
+          return entidad.estado
         }
         return false
 
@@ -300,23 +366,27 @@ export default defineComponent({
       titulo: 'Mi calificación',
       icono: 'bi-search',
       color: 'positive',
-      accion: async ({ entidad, posicion }) => {
+      accion: async ({ entidad }) => {
         proveedorStore.idDepartamento = store.user.departamento
         proveedorStore.idProveedor = entidad.id
         proveedorStore.proveedor = entidad
         calificacionStore.idDepartamento = proveedorStore.idDepartamento
         calificacionStore.verMiCalificacion = true
         await consultarDetalleDepartamentoProveedor().then(() => {
-          proveedorStore.idDetalleDepartamento = detalleDepartamentoProveedor.value.id
-          calificacionStore.idDetalleDepartamentoProveedor = detalleDepartamentoProveedor.value.id
-          calificacionStore.detalleDepartamentoProveedor = detalleDepartamentoProveedor.value
+          proveedorStore.idDetalleDepartamento =
+            detalleDepartamentoProveedor.value.id
+          calificacionStore.idDetalleDepartamentoProveedor =
+            detalleDepartamentoProveedor.value.id
+          // calificacionStore.detalleDepartamentoProveedor = detalleDepartamentoProveedor.value
         })
         modales.abrirModalEntidad('MiCalificacionProveedorPage')
       },
-      visible: ({ posicion, entidad }) => {
-        const departamento_calificador = entidad.related_departamentos.filter((v) => v.id === store.user.departamento)[0]
+      visible: ({  entidad }) => {
+        const departamento_calificador = entidad.related_departamentos.filter(
+          v => v.id === store.user.departamento
+        )[0]
         if (departamento_calificador) {
-          return departamento_calificador.pivot.calificacion !== null//aqui se muestra aunque de 0, corregir esta parte
+          return departamento_calificador.pivot.calificacion !== null //aqui se muestra aunque de 0, corregir esta parte
         }
         return false
       }
@@ -325,19 +395,24 @@ export default defineComponent({
       titulo: 'Todas calificaciones',
       icono: 'bi-eye',
       color: 'info',
-      accion: async ({ entidad, posicion }) => {
-        proveedorStore.idDepartamento = store.user.departamento
+      accion: async ({ entidad }) => {
+        // proveedorStore.idDepartamento = store.user.departamento
         proveedorStore.idProveedor = entidad.id
         proveedorStore.proveedor = entidad
         await consultarDetalleDepartamentoProveedor().then(() => {
-          proveedorStore.idDetalleDepartamento = detalleDepartamentoProveedor.value.id
+          proveedorStore.idDetalleDepartamento =
+            detalleDepartamentoProveedor.value.id
         })
         modales.abrirModalEntidad('InfoCalificacionProveedorPage')
       },
-      visible: ({ posicion, entidad }) => {
+      visible: ({ entidad }) => {
         // console.log(entidad)
         // console.log(store.user.permisos)
-        return entidad.estado_calificado === estadosCalificacionProveedor.calificado || (entidad.estado_calificado == estadosCalificacionProveedor.parcial)// || (store.esCompras && (entidad.estado_calificado !== estadosCalificacionProveedor.vacio || entidad.estado_calificado !== estadosCalificacionProveedor.parcial || entidad.estado_calificado !== estadosCalificacionProveedor.pendiente))
+        return (
+          entidad.estado_calificado ===
+            estadosCalificacionProveedor.calificado ||
+          entidad.estado_calificado == estadosCalificacionProveedor.parcial
+        ) // || (store.esCompras && (entidad.estado_calificado !== estadosCalificacionProveedor.vacio || entidad.estado_calificado !== estadosCalificacionProveedor.parcial || entidad.estado_calificado !== estadosCalificacionProveedor.pendiente))
       }
     }
 
@@ -345,8 +420,9 @@ export default defineComponent({
       titulo: 'Descargar Excel',
       icono: 'bi-file-earmark-excel-fill',
       color: 'positive',
-      tooltip: 'Descarga todos los datos de proveedores en formato de Contifico',
-      accion: async()=>{
+      tooltip:
+        'Descarga todos los datos de proveedores en formato de Contifico',
+      accion: async () => {
         await proveedorStore.obtenerProveedores()
       }
     }
@@ -356,7 +432,7 @@ export default defineComponent({
      **************************************************************/
 
     async function subirArchivos() {
-      await refArchivo.value.subir();
+      await refArchivo.value.subir()
     }
 
     async function obtenerEmpresa(empresaId: number | null) {
@@ -367,37 +443,41 @@ export default defineComponent({
         proveedor.correo = proveedor.correo ? proveedor.correo : empresa.correo
         proveedor.contactos = empresa.contactos
         proveedor.canton = proveedor.canton ? proveedor.canton : empresa.canton
-        proveedor.direccion = proveedor.direccion ? proveedor.direccion : empresa.direccion
-        if (!proveedor.parroquia) obtenerParroquias(proveedor.canton)
-        proveedor.sucursal = proveedor.sucursal ? proveedor.sucursal : empresa.sucursal
+        proveedor.direccion = proveedor.direccion
+          ? proveedor.direccion
+          : empresa.direccion
+        if (!proveedor.parroquia) await obtenerParroquias(proveedor.canton)
+        proveedor.sucursal = proveedor.sucursal
+          ? proveedor.sucursal
+          : empresa.sucursal
         StatusLoading.desactivar()
       }
     }
     async function guardado(data) {
       switch (data) {
         case 'CategoriaOfertaPage':
-          consultarCategoriasOfertas()
+          await consultarCategoriasOfertas()
           break
         case 'ContactoProveedorPage':
-          consultarContactosProveedor()
+          await consultarContactosProveedor()
           break
         case 'CalificacionProveedorPage':
-          listar()
+          await listar()
           break
         case 'DatoBancarioPage':
-          consultarDatosBancarios()
+          await consultarDatosBancarios()
           break
         default:
-          consultarEmpresas()
-
+          await consultarEmpresas()
       }
-
     }
     async function obtenerParroquias(parroquiaId: number | string | null) {
       proveedor.parroquia = null
       if (parroquiaId !== null) {
         StatusLoading.activar()
-        listadosAuxiliares.parroquias = (await new ParroquiaController().listar({ canton_id: parroquiaId })).result
+        listadosAuxiliares.parroquias = (
+          await new ParroquiaController().listar({ canton_id: parroquiaId })
+        ).result
         parroquias.value = listadosAuxiliares.parroquias
         StatusLoading.desactivar()
       }
@@ -405,14 +485,20 @@ export default defineComponent({
     }
 
     async function consultarDetalleDepartamentoProveedor() {
-      const { result } = await new DetalleDepartamentoProveedorController().listar({ proveedor_id: proveedorStore.idProveedor, departamento_id: proveedorStore.idDepartamento })
+      const { result } =
+        await new DetalleDepartamentoProveedorController().listar({
+          proveedor_id: proveedorStore.idProveedor,
+          departamento_id: proveedorStore.idDepartamento
+        })
       console.log('El detalle departamento proveedor es: ', result[0])
       if (result) detalleDepartamentoProveedor.value = result[0]
-
     }
 
     function actualizarCategorias() {
-      categorias.value = listadosAuxiliares.categorias.filter((v: CategoriaOferta) => proveedor.tipos_ofrece.includes(v.tipo_oferta_id))
+      categorias.value = listadosAuxiliares.categorias.filter(
+        (v: CategoriaOferta) =>
+          proveedor.tipos_ofrece.includes(v.tipo_oferta_id)
+      )
     }
 
     async function consultarEmpresas() {
@@ -421,11 +507,16 @@ export default defineComponent({
       empresas.value = result
     }
     async function consultarDatosBancarios() {
-      const { result } = await new DatoBancarioController().listar({ empresa_id: proveedor.empresa })
+      const { result } = await new DatoBancarioController().listar({
+        empresa_id: proveedor.empresa
+      })
       empresa.datos_bancarios = result
     }
     async function consultarContactosProveedor() {
-      const { result } = await new ContactoProveedorController().listar({ empresa_id: proveedor.empresa, proveedor_id: proveedor.id })
+      const { result } = await new ContactoProveedorController().listar({
+        empresa_id: proveedor.empresa,
+        proveedor_id: proveedor.id
+      })
       proveedor.contactos = result
     }
     async function consultarCategoriasOfertas() {
@@ -434,10 +525,13 @@ export default defineComponent({
       categorias.value = result
     }
     const {
-      cantones, filtrarCantones,
-      parroquias, filtrarParroquias,
-      empresas, filtrarEmpresas, ordenarEmpresas,
-
+      cantones,
+      filtrarCantones,
+      parroquias,
+      filtrarParroquias,
+      empresas,
+      filtrarEmpresas,
+      ordenarEmpresas
     } = useFiltrosListadosSelects(listadosAuxiliares)
 
     //llenar listados
@@ -450,14 +544,18 @@ export default defineComponent({
 
     return {
       mixinEmpresas,
-      mixin, proveedor, disabled, v$, accion, acciones,
+      mixin,
+      proveedor,
+      disabled,
+      v$,
+      accion,
+      acciones,
       configuracionColumnas: configuracionColumnasProveedores,
       columnasContactosProveedor,
       columnasDatosBancarios,
       departamentoFinanciero,
       refArchivo,
       esReferido,
-
 
       //store
       store,
@@ -471,9 +569,12 @@ export default defineComponent({
       formasPagos,
       opcionesTipoContribuyente,
       opcionesTipoNegocio,
-      cantones, filtrarCantones,
-      parroquias, filtrarParroquias,
-      empresas, filtrarEmpresas,
+      cantones,
+      filtrarCantones,
+      parroquias,
+      filtrarParroquias,
+      empresas,
+      filtrarEmpresas,
 
       //modal
       modales,
@@ -489,16 +590,23 @@ export default defineComponent({
       actualizarCategorias,
       ordenarEmpresas,
       ordenarCategorias() {
-        categorias.value.sort((a: CategoriaOferta, b: CategoriaOferta) => ordernarListaString(a.nombre!, b.nombre!))
+        categorias.value.sort((a: CategoriaOferta, b: CategoriaOferta) =>
+          ordernarListaString(a.nombre!, b.nombre!)
+        )
       },
-      actualizarDepartamentos(val) {
+      actualizarDepartamentos() {
         if (accion.value == acciones.nuevo) {
-          let catSeleccionadas = categorias.value.filter((v: CategoriaOferta) => proveedor.categorias_ofrece.includes(v.id))
+          const catSeleccionadas = categorias.value.filter(
+            (v: CategoriaOferta) => proveedor.categorias_ofrece.includes(v.id)
+          )
           // console.log(catSeleccionadas)
           // console.log(new Set(catSeleccionadas.flatMap((v: CategoriaOferta) => v.departamentos)))
-          proveedor.departamentos = [... new Set(catSeleccionadas.flatMap((v: CategoriaOferta) => v.departamentos))]
+          proveedor.departamentos = [
+            ...new Set(
+              catSeleccionadas.flatMap((v: CategoriaOferta) => v.departamentos)
+            )
+          ]
         }
-
       },
 
       //botones
@@ -508,9 +616,8 @@ export default defineComponent({
       botonDesactivarProveedor,
       botonActivarProveedor,
       botonActualizarCalificacion,
-      botonDescargarProveedores,
+      botonDescargarProveedores
     }
-
   }
 })
 

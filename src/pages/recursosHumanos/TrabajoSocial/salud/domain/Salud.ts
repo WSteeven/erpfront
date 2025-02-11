@@ -5,11 +5,13 @@ export class Salud extends EntidadAuditable {
   discapacidades: any
   discapacidades_familiar_dependiente: any
   tiene_enfermedad_cronica: boolean
+  fecha_enfermedad_cronica: string | null
   enfermedad_cronica: string | null
   alergias: string | null
   lugar_atencion: string | null
   tiene_familiar_dependiente_discapacitado: boolean
   nombre_familiar_dependiente_discapacitado: string | null
+  imagen_cedula_familiar_dependiente_discapacitado: string | null
   parentesco_familiar_discapacitado: string | null
 
   frecuencia_asiste_medico: string|null
@@ -25,9 +27,11 @@ export class Salud extends EntidadAuditable {
     this.discapacidades = []
     this.discapacidades_familiar_dependiente = []
     this.enfermedad_cronica = null
+    this.fecha_enfermedad_cronica = null
     this.alergias = null
     this.lugar_atencion = null
     this.nombre_familiar_dependiente_discapacitado = null
+    this.imagen_cedula_familiar_dependiente_discapacitado = null
     this.parentesco_familiar_discapacitado = null
     this.frecuencia_asiste_medico = null
     this.practica_deporte = null

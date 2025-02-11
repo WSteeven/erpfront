@@ -1,11 +1,18 @@
 import { ColumnConfig } from 'components/tables/domain/ColumnConfig'
 import { TransferenciaProductoEmpleado } from './TransferenciaProductoEmpleado'
 
-export const configuracionColumnasDevoluciones: ColumnConfig<TransferenciaProductoEmpleado>[] = [
+export const configuracionColumnasTransferenciaProducto: ColumnConfig<TransferenciaProductoEmpleado>[] = [
   {
     name: 'id',
     field: 'id',
     label: 'N°',
+    align: 'left',
+    sortable: true
+  },
+  {
+    name: 'created_at',
+    field: 'created_at',
+    label: 'Fecha',
     align: 'left',
     sortable: true
   },
@@ -18,9 +25,9 @@ export const configuracionColumnasDevoluciones: ColumnConfig<TransferenciaProduc
     sortable: true
   },
   {
-    name: 'solicitante',
-    field: 'solicitante',
-    label: 'Solicitante',
+    name: 'autorizador',
+    field: 'autorizador',
+    label: 'Autoriza',
     align: 'left',
     sortable: true
   },
@@ -32,9 +39,23 @@ export const configuracionColumnasDevoluciones: ColumnConfig<TransferenciaProduc
     sortable: true
   },
   {
-    name: 'autorizador',
-    field: 'autorizador',
-    label: 'Autoriza',
+    name: 'solicitante',
+    field: 'solicitante',
+    label: 'Solicitante',
+    align: 'left',
+    sortable: true
+  },
+  {
+    name: 'empleado_origen',
+    field: 'empleado_origen',
+    label: 'Empleado origen',
+    align: 'left',
+    sortable: true
+  },
+  {
+    name: 'empleado_destino',
+    field: 'empleado_destino',
+    label: 'Empleado destino',
     align: 'left',
     sortable: true
   },

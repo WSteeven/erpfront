@@ -20,7 +20,9 @@
     :visible-columns="visibleColumns"
     :separator="$q.screen.xs ? 'horizontal' : separador"
     :hide-bottom="!mostrarFooter"
+    color="primary"
     flat
+    dense
     bordered
     square
     :selection="tipoSeleccion"
@@ -73,19 +75,40 @@
           v-if="
             props.col.editable &&
             (!props.col.type ||
-              ['text', 'number', 'date', 'time'].includes(props.col.type))
+              [
+                'float',
+                'textarea',
+                'text',
+                'number',
+                'date',
+                'time',
+                'search'
+              ].includes(props.col.type))
           "
           v-model="props.row[props.col.name]"
           @update:model-value="guardarCeldaEditada(props.row)"
-          :bg-color="$q.dark.isActive ? 'grey-10' : 'grey-3'"
-          :type="props.col.type ? props.col.type : 'text'"
+          :bg-color="$q.dark.isActive ? 'grey-10' : 'grey-2'"
+          :type="props.col.type != 'float' ? props.col.type : 'text'"
+          :mask="props.col.type == 'float' ? '#.##' : ''"
+          :fill-mask="props.col.type == 'float' ? '0' : ''"
+          :reverse-fill-mask="props.col.type == 'float'"
           :hint="props.col.hint"
           :disable="disable"
           :placeholder="props.col.placeholder"
+          class="q-py-none"
           :min="props.col.min"
           :max="props.col.max"
-          :error="!!v$[keyError]?.$each?.$response.$errors[props.rowIndex][props.col.name]?.length"
-          :autogrow="props.col.type === 'text' || !props.col.type"
+          :error="
+            !!v$[keyError]?.$each?.$response.$errors[props.rowIndex][
+              props.col.name
+            ]?.length
+          "
+          :autogrow="props.col.type === 'textarea'"
+          @keydown.enter="
+            props.col.accion
+              ? emitirFila(props.col.accion, props.rowIndex)
+              : null
+          "
           dense
           outlined
         >
@@ -98,6 +121,15 @@
               :clave="props.col.name"
             />
           </template>
+
+          <template #prepend v-if="props.col.icon">
+            <q-icon
+              :name="props.col.icon"
+              size="xs"
+              color="primary"
+              class="bg-grgey-4 rounded q-pa-sm q-ma-none"
+            ></q-icon>
+          </template>
         </q-input>
         <!-- @keyup.enter="scope.set" -->
 
@@ -108,6 +140,7 @@
           :options="props.col.options"
           :options-label="v => v.label"
           :options-value="v => v.value"
+          class="q-py-none"
           options-dense
           outlined
           autogrow
@@ -116,7 +149,11 @@
           map-options
           use-input
           input-debounce="0"
-          :error="!!v$[keyError]?.$each?.$response.$errors[props.rowIndex][props.col.name]?.length"
+          :error="
+            !!v$[keyError]?.$each?.$response.$errors[props.rowIndex][
+              props.col.name
+            ]?.length
+          "
           :disable="disable"
           @filter="props.col.filtro"
           @update:model-value="guardarCeldaEditada(props.row)"
@@ -165,7 +202,11 @@
           dense
           emit-value
           map-options
-          :error="!!v$[keyError]?.$each?.$response.$errors[props.rowIndex][props.col.name]?.length"
+          :error="
+            !!v$[keyError]?.$each?.$response.$errors[props.rowIndex][
+              props.col.name
+            ]?.length
+          "
           :disable="disable"
         >
           <template v-slot:error>
@@ -1276,7 +1317,7 @@
     <template #body-cell-autorizacion="props">
       <q-td :props="props">
         <q-chip
-          v-if="props.value === autorizacionesTransacciones['aprobado']"
+          v-if="[autorizacionesTransacciones['aprobado'], 'VALIDADO'].includes(props.value)"
           :class="{ 'bg-green-1': !$q.dark.isActive }"
         >
           <q-icon
@@ -1284,7 +1325,7 @@
             color="positive"
             class="q-mr-xs"
           ></q-icon>
-          APROBADO
+          {{ props.value }}
         </q-chip>
         <q-chip
           v-if="props.value === autorizacionesTransacciones['cancelado']"
@@ -1578,17 +1619,7 @@
           ></q-icon>
           PARCIAL
         </q-chip>
-        <!-- <q-chip
-          v-if="props.value === estadosTransacciones['pendiente']"
-          :class="{ 'bg-yellow-1': !$q.dark.isActive }"
-        >
-          <q-icon
-            name="bi-circle-fill"
-            color="warning"
-            class="q-mr-xs"
-          ></q-icon>
-          PENDIENTE
-        </q-chip> -->
+
         <q-chip
           v-if="props.value === estadosTransacciones.no_realizada"
           :class="{ 'bg-red-1': !$q.dark.isActive }"

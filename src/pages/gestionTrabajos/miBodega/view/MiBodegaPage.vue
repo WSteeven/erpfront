@@ -20,7 +20,12 @@
         no-caps
         inline-label
       >
-        <q-tab name="personal" label="Stock personal" icon="bi-person"> </q-tab>
+        <q-tab
+          :name="destinosTareas.personal"
+          label="Stock personal"
+          icon="bi-person"
+        >
+        </q-tab>
         <q-tab
           :name="destinosTareas.paraClienteFinal"
           label="Material para cliente final y mantenimiento"
@@ -278,7 +283,7 @@
           </div>
         </q-tab-panel>
 
-        <q-tab-panel name="personal">
+        <q-tab-panel :name="destinosTareas.personal">
           <div class="row justify-center q-gutter-sm q-mb-md">
             <div class="col-12">
               <label class="q-mb-sm block"
@@ -377,11 +382,11 @@
               size="xs"
               class="q-pr-sm"
             ></q-icon>
-            <span>Transferir a otro técnico</span>
+            <span>Transferir a otro empleado</span>
           </q-btn>
         </div>
 
-        <div class="col-12 q-px-md">
+        <div class="col-12 q-px-md q-mb-md">
           <essential-table
             titulo="Listado de materiales para tarea"
             :configuracionColumnas="configuracionColumnasMaterialEmpleadoTarea"

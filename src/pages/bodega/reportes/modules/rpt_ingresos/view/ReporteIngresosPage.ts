@@ -91,7 +91,6 @@ export default defineComponent({
     }
     async function buscarReporte(accion: string) {
       try {
-        cargando.activar()
         const axios = AxiosHttpRepository.getInstance()
         let url = axios.getEndpoint(endpoints.transacciones_ingresos) + '/reportes'
         const filename = 'reporte_ingresos_bodega'
@@ -105,9 +104,7 @@ export default defineComponent({
           case 'pdf':
             url = apiConfig.URL_BASE + '/' + axios.getEndpoint(endpoints.transacciones_ingresos) + '/reportes'
             reporte.accion = 'pdf'
-            cargando.activar()
             await imprimirArchivo(url, 'POST', 'blob', 'pdf', filename, reporte)
-            cargando.desactivar()
             break
           default:
             reporte.accion = ''
@@ -117,12 +114,9 @@ export default defineComponent({
               if (response.data.results.length < 1) notificarAdvertencia('No se obtuvieron resultados')
             }
         }
-        cargando.desactivar()
       } catch (e) {
         console.log(e)
         notificarError('Error al obtener reporte')
-      } finally {
-        cargando.desactivar()
       }
     }
     async function consultarListado(id: number) {

@@ -28,6 +28,7 @@ export function useOrquestadorSelectorDetallesProductos(entidad: any, endpoint: 
 
     const seleccionar = (items: DetalleProducto[]) => {
         let ids: any = []
+        console.log(items)
         ids = entidad.detalles_productos.map((entidad: DetalleProducto) => entidad.id)
         const datos = items.filter((v) => !ids.includes(v.id))
 
