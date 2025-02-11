@@ -575,6 +575,7 @@
         <!-- Aplica keep-alive aquí -->
         <keep-alive
           :exclude="[
+            'PrefacturaPage',
             'intranet_page',
             'transacciones_ingresos',
             'EgresoPage',
