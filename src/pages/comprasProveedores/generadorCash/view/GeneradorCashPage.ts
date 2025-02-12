@@ -20,6 +20,7 @@ import EssentialSelectableTable from 'components/tables/view/EssentialSelectable
 import TabLayout from 'shared/contenedor/modules/simple/view/TabLayout.vue'
 import EssentialTable from 'components/tables/view/EssentialTable.vue'
 import ModalesEntidad from 'components/modales/view/ModalEntidad.vue'
+import Callout from 'components/CalloutComponent.vue'
 
 // Logica y controladores
 import { useOrquestadorSelectorCuentasBancariasBeneficiario } from '../application/OrquestadorSelectorCuentasBancariasBeneficiario'
@@ -29,9 +30,11 @@ import { useOrquestadorSelectorBeneficiarios } from '../application/OrquestadorS
 import { GeneradorCashController } from '../infraestructure/GeneradorCashController'
 import { GeneradorCash } from '../domain/GeneradorCash'
 import { Pago } from '../domain/Pago'
+import { AxiosHttpRepository } from 'shared/http/infraestructure/AxiosHttpRepository'
+import { endpoints } from 'config/api'
 
 export default defineComponent({
-    components: { TabLayout, EssentialTable, EssentialSelectableTable, ModalesEntidad },
+    components: { TabLayout, EssentialTable, EssentialSelectableTable, ModalesEntidad, Callout },
     setup() {
         /**********
          * Stores
@@ -43,7 +46,7 @@ export default defineComponent({
          * Mixin
          ********/
         const mixin = new ContenedorSimpleMixin(GeneradorCash, new GeneradorCashController())
-        const { entidad: generador, disabled } = mixin.useReferencias()
+        const { entidad: generador, disabled, listado: listadoGeneradorCash } = mixin.useReferencias()
         const { listar: listarGeneradorCash, setValidador } = mixin.useComportamiento()
         const { onBeforeGuardar, onReestablecer } = mixin.useHooks()
 
@@ -57,7 +60,7 @@ export default defineComponent({
         pago.num_secuencial = 1
         pago.moneda = 'USD'
         pago.forma_pago = 'CTA'
-        const { notificarAdvertencia, confirmar } = useNotificaciones()
+        const { notificarAdvertencia, confirmar, notificarCorrecto } = useNotificaciones()
 
         /************
          * Funciones
@@ -105,6 +108,18 @@ export default defineComponent({
             icono: 'bi-card-text',
             color: 'green-10',
             accion: ({ entidad }) => listarGeneradorCash({ export: 'txt', titulo: `cash_${entidad.id}_${entidad.titulo}_${entidad.created_at}`, id: entidad.id })
+        }
+
+        const btnDuplicar: CustomActionTable<GeneradorCash> = {
+            titulo: 'Duplicar',
+            icono: 'bi-copy',
+            color: 'teal',
+            accion: async ({ entidad }) => {
+                const axios = AxiosHttpRepository.getInstance()
+                const response: any = await axios.post(axios.getEndpoint(endpoints.generador_cash_duplicate) + '/' + entidad.id)
+                listadoGeneradorCash.value.unshift(response.data.modelo)
+                notificarCorrecto(response.data.mensaje)
+            }
         }
 
         const btnEliminarPago = ({ posicion }) => confirmar('Esta operación es irreversible. ¿Desea continuar?', () => generador.pagos.splice(posicion, 1))
@@ -192,6 +207,7 @@ export default defineComponent({
             btnAgregarPago,
             btnGenerarCash,
             btnGenerarCashTxt,
+            btnDuplicar,
             refListadoSeleccionable,
             listado,
             seleccionar,

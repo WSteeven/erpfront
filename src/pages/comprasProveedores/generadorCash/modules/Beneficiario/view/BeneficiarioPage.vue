@@ -184,6 +184,19 @@
             >
             </q-input>
           </div>
+
+          <!-- Correo -->
+          <div class="col-12 col-md-3">
+            <label class="q-mb-sm block">Correo</label>
+            <q-input
+              v-model="beneficiario.correo"
+              placeholder="Opcional"
+              :disable="disabled"
+              outlined
+              dense
+            >
+            </q-input>
+          </div>
         </div>
       </q-form>
 

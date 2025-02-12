@@ -26,4 +26,5 @@ export const comprasProveedores = {
   generador_cash: new Endpoint('compras/generador-cash'),
   beneficiarios: new Endpoint('compras/beneficiarios'),
   cuentas_bancarias: new Endpoint('compras/cuentas-bancarias'),
+  generador_cash_duplicate: new Endpoint('compras/generador-cash-duplicate'),
 }

@@ -122,13 +122,19 @@
             />
           </template>
 
-          <template #prepend v-if="props.col.icon">
-            <q-icon
-              :name="props.col.icon"
-              size="xs"
+          <template #append v-if="props.col.icon">
+            <q-btn
               color="primary"
-              class="bg-grgey-4 rounded q-pa-sm q-ma-none"
-            ></q-icon>
+              dense
+              push
+              @click="
+                props.col.accion
+                  ? emitirFila(props.col.accion, props.rowIndex)
+                  : null
+              "
+            >
+              <q-icon :name="props.col.icon" size="xs"></q-icon>
+            </q-btn>
           </template>
         </q-input>
         <!-- @keyup.enter="scope.set" -->
@@ -1317,7 +1323,11 @@
     <template #body-cell-autorizacion="props">
       <q-td :props="props">
         <q-chip
-          v-if="[autorizacionesTransacciones['aprobado'], 'VALIDADO'].includes(props.value)"
+          v-if="
+            [autorizacionesTransacciones['aprobado'], 'VALIDADO'].includes(
+              props.value
+            )
+          "
           :class="{ 'bg-green-1': !$q.dark.isActive }"
         >
           <q-icon

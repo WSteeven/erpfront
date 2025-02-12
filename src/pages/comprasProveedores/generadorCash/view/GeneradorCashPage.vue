@@ -3,8 +3,9 @@
     :mixin="mixin"
     :configuracion-columnas="configuracionColumnasGeneradorCash"
     :permitir-eliminar="false"
-    :accion1="btnGenerarCash"
-    :accion2="btnGenerarCashTxt"
+    :accion1="btnDuplicar"
+    :accion2="btnGenerarCash"
+    :accion3="btnGenerarCashTxt"
   >
     <template #formulario>
       <div class="row q-col-gutter-sm q-mb-md">
@@ -48,6 +49,13 @@
             :v$="v$"
             key-error="pagos"
           ></essential-table>
+        </div>
+
+        <div class="col-12">
+          <callout
+            tipo="info"
+            mensaje="Use el método rápido de búsqueda presionando <b>ENTER</b> luego de escribir el texto a buscar. También puede buscar presionando el botón de lupa <img src='src\assets\img\boton-lupa.png' width='20px' />."
+          ></callout>
         </div>
       </div>
     </template>

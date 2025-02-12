@@ -25,6 +25,7 @@ export function useOrquestadorSelectorBeneficiarios(
       entidad.pagos[rowIndex.value].codigo_beneficiario = items[0].codigo_beneficiario
       entidad.pagos[rowIndex.value].nombre_beneficiario = items[0].nombre_beneficiario
       entidad.pagos[rowIndex.value].tipo_documento = items[0].tipo_documento
+      entidad.pagos[rowIndex.value].referencia_adicional = items[0].correo
       // Resetear cuenta bancaria
       entidad.pagos[rowIndex.value].cuenta_banco_id = null
       entidad.pagos[rowIndex.value].tipo_cuenta = null

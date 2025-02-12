@@ -3,15 +3,15 @@ import { GeneradorCash } from './GeneradorCash'
 
 export const configuracionColumnasGeneradorCash: ColumnConfig<GeneradorCash>[] = [
   {
-    name: 'id',
-    field: 'id',
-    label: 'Identificador de cash',
-    align: 'left',
-  },
-  {
     name: 'titulo',
     field: 'titulo',
     label: 'Titulo',
+    align: 'left',
+  },
+  {
+    name: 'total_pagos',
+    field: 'total_pagos',
+    label: 'Total de pagos',
     align: 'left',
   },
   {
