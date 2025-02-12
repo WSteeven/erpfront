@@ -54,7 +54,7 @@
         <div class="col-12">
           <callout
             tipo="info"
-            mensaje="Use el método rápido de búsqueda presionando <b>ENTER</b> luego de escribir el texto a buscar. También puede buscar presionando el botón de lupa <img src='src\assets\img\boton-lupa.png' width='20px' />."
+            mensaje="Use el método rápido de búsqueda presionando <b>ENTER</b> luego de escribir el texto a buscar. También puede buscar presionando el botón de lupa."
           ></callout>
         </div>
       </div>
