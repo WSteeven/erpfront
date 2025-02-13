@@ -14,6 +14,7 @@ import { Asistencia } from './../domain/Asistencia'
 import { AxiosHttpRepository } from 'shared/http/infraestructure/AxiosHttpRepository'
 import { apiConfig, endpoints } from 'config/api'
 import { AxiosResponse } from 'axios'
+import { useNotificaciones } from 'shared/notificaciones'
 
 export default defineComponent({
   components: { EssentialTable },
@@ -25,6 +26,7 @@ export default defineComponent({
     const { entidad: asistencia, disabled, listado } = mixin.useReferencias()
     console.log('Asistencia inicializada en useReferencias:', asistencia)
     const { setValidador, guardar, listar } = mixin.useComportamiento()
+    const { notificarCorrecto } = useNotificaciones()
 
     // Reglas de validación
     const reglas = {
@@ -38,16 +40,15 @@ export default defineComponent({
 
     async function actualizarAsistencias() {
       const axios = AxiosHttpRepository.getInstance()
-        const url2 = apiConfig.URL_BASE+'/'+axios.getEndpoint(endpoints.sincronizar_asistencias)
-      const url = apiConfig.URL_BASE+'/'+axios.getEndpoint(endpoints.sincronizar_marcaciones)
+      const url =
+        apiConfig.URL_BASE +
+        '/' +
+        axios.getEndpoint(endpoints.sincronizar_marcaciones)
       try {
         const response: AxiosResponse = await axios.get(url)
-        const response2: AxiosResponse = await axios.get(url2)
 
-        listado.value = Array.isArray(response2.data.results)
-          ? response.data.results
-          : []
-
+        console.log(response.data.message)
+        if (response.status === 200) notificarCorrecto(response.data.message)
         await listar()
       } catch (error) {
         console.error('Error al sincronizar asistencias:', error)

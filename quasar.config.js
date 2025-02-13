@@ -164,6 +164,7 @@ module.exports = configure(function (/* ctx */) {
         ),
         sso: path.join(__dirname, './src/pages/sso'),
         comprasProveedores: path.join(__dirname, './src/pages/comprasProveedores'),
+        controlPersonal: path.join(__dirname, './src/pages/recursosHumanos/control_personal')
       }
     },
 

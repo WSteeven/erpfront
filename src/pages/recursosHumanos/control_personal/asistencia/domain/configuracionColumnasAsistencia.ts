@@ -2,6 +2,13 @@ import { ColumnConfig } from 'components/tables/domain/ColumnConfig'
 import { Asistencia } from './Asistencia'
 
 export const configuracionColumnasAsistencia: ColumnConfig<Asistencia>[] = [
+  {
+    name: 'id',
+    field: 'id',
+    label: 'N°',
+    align: 'left',
+    sortable: true
+  },
     {
         name: 'empleado',
         field: 'empleado',
@@ -17,31 +24,11 @@ export const configuracionColumnasAsistencia: ColumnConfig<Asistencia>[] = [
         sortable: true
     },
     {
-        name: 'hora_ingreso',
-        field: 'hora_ingreso',
-        label: 'Ingreso',
+        name: 'marcaciones',
+        field: 'marcaciones',
+        label: 'Marcaciones',
         align: 'center',
         sortable: true
     },
-    {
-        name: 'hora_salida_almuerzo',
-        field: 'hora_salida_almuerzo',
-        label: 'Salida Almuerzo',
-        align: 'center',
-        sortable: true
-    },
-    {
-        name: 'hora_entrada_almuerzo',
-        field: 'hora_entrada_almuerzo',
-        label: 'Entrada Almuerzo',
-        align: 'center',
-        sortable: true
-    },
-    {
-      name: 'hora_salida',
-      field: 'hora_salida',
-      label: 'Salida',
-      align: 'center',
-      sortable: true
-  },
+
 ]

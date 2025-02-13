@@ -115,7 +115,7 @@ export default defineComponent({
     },
     ajustarCeldas: {
       type: Boolean,
-      default: false
+      default: true
     },
     accion1: {
       type: Object as () => CustomActionTable,
