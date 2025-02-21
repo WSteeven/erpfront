@@ -1,27 +1,27 @@
-import { addDay, format, monthStart } from "@formkit/tempo";
-import useVuelidate from "@vuelidate/core";
-import { AxiosResponse } from "axios";
-import ErrorComponent from "components/ErrorComponent.vue";
-import { StatusEssentialLoading } from "components/loading/application/StatusEssentialLoading";
-import NoOptionComponent from "components/NoOptionComponent.vue";
-import EssentialTable from "components/tables/view/EssentialTable.vue";
-import { apiConfig, endpoints } from "config/api";
-import { maskFecha } from "config/utils";
-import { BitacoraVehicular } from "pages/controlVehiculos/bitacoraVehicular/domain/BitacoraVehicular";
-import { BitacoraVehicularController } from "pages/controlVehiculos/bitacoraVehicular/infraestructure/BitacoraVehicularController";
-import { VehiculoController } from "pages/controlVehiculos/vehiculos/infraestructure/VehiculoController";
-import { ContenedorSimpleMixin } from "shared/contenedor/modules/simple/application/ContenedorSimpleMixin";
-import { useFiltrosListadosSelects } from "shared/filtrosListadosGenerales";
-import { AxiosHttpRepository } from "shared/http/infraestructure/AxiosHttpRepository";
-import { required, requiredIf } from "shared/i18n-validators";
-import { useNotificaciones } from "shared/notificaciones";
-import { imprimirArchivo } from "shared/utils";
-import { reactive, defineComponent, ref, onMounted } from "vue";
-import { configuracionColumnasReporteBitacoras } from "../domain/configuracionColumnasBitacoras";
-import { LocalStorage, useQuasar } from "quasar";
-import { useNotificacionStore } from "stores/notificacion";
-import { useCargandoStore } from "stores/cargando";
-import { onUnmounted } from "vue";
+import { addDay, format, monthStart } from '@formkit/tempo';
+import useVuelidate from '@vuelidate/core';
+import { AxiosResponse } from 'axios';
+import ErrorComponent from 'components/ErrorComponent.vue';
+import { StatusEssentialLoading } from 'components/loading/application/StatusEssentialLoading';
+import NoOptionComponent from 'components/NoOptionComponent.vue';
+import EssentialTable from 'components/tables/view/EssentialTable.vue';
+import { apiConfig, endpoints } from 'config/api';
+import { maskFecha } from 'config/utils';
+import { BitacoraVehicular } from 'pages/controlVehiculos/bitacoraVehicular/domain/BitacoraVehicular';
+import { BitacoraVehicularController } from 'pages/controlVehiculos/bitacoraVehicular/infraestructure/BitacoraVehicularController';
+import { VehiculoController } from 'pages/controlVehiculos/vehiculos/infraestructure/VehiculoController';
+import { ContenedorSimpleMixin } from 'shared/contenedor/modules/simple/application/ContenedorSimpleMixin';
+import { useFiltrosListadosSelects } from 'shared/filtrosListadosGenerales';
+import { AxiosHttpRepository } from 'shared/http/infraestructure/AxiosHttpRepository';
+import { required, requiredIf } from 'shared/i18n-validators';
+import { useNotificaciones } from 'shared/notificaciones';
+import { imprimirArchivo } from 'shared/utils';
+import { reactive, defineComponent, ref, onMounted } from 'vue';
+import { configuracionColumnasReporteBitacoras } from '../domain/configuracionColumnasBitacoras';
+import { LocalStorage, useQuasar } from 'quasar';
+import { useNotificacionStore } from 'stores/notificacion';
+import { useCargandoStore } from 'stores/cargando';
+import { onUnmounted } from 'vue';
 
 export default defineComponent
   ({
@@ -109,12 +109,12 @@ export default defineComponent
               case 'excel':
                 data.accion = 'excel'
                 data.umbral= umbral_km_consumidos.value
-                imprimirArchivo(url, 'POST', 'blob', 'xlsx', filename, data)
+                await imprimirArchivo(url, 'POST', 'blob', 'xlsx', filename, data)
                 return listado
                 case 'pdf':
                   data.accion = 'pdf'
                   data.umbral= umbral_km_consumidos.value
-                imprimirArchivo(url, 'POST', 'blob', 'pdf', filename, data)
+                await imprimirArchivo(url, 'POST', 'blob', 'pdf', filename, data)
                 return listado
               default:
                 data.accion = ''
