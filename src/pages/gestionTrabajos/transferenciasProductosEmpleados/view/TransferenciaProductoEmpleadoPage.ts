@@ -11,7 +11,7 @@ import { useOrquestadorSelectorDetalles } from '../application/OrquestadorSelect
 import { useFiltrosListadosSelects } from 'shared/filtrosListadosGenerales'
 import { useAuthenticationStore } from 'stores/authentication'
 import { useNotificacionStore } from 'stores/notificacion'
-import { destinosTareas, tabOptionsTransferenciaProductoEmpleado } from 'config/tareas.utils'
+import { destinosTareas, estadosTransferenciasProductos, tabOptionsTransferenciaProductoEmpleado } from 'config/tareas.utils'
 import { useCargandoStore } from 'stores/cargando'
 import { ordernarListaString } from 'shared/utils'
 import { required } from 'shared/i18n-validators'
@@ -128,6 +128,7 @@ export default defineComponent({
      ************/
     const tabSeleccionado = ref()
     const esCoordinador = authenticationStore.esCoordinador
+    const esCoordinadorBodega = authenticationStore.esCoordinadorBodega
     const refArchivo = ref()
     const idTransferencia = ref()
     const esParaStock = ref(false)
@@ -442,8 +443,8 @@ export default defineComponent({
     const puedeEditar = ref()
     function filtrarTransferenciasProductoEmpleado(tab: string) {
       tabSeleccionado.value = tab
-      puedeEditar.value = tabSeleccionado.value === estadosTransacciones.pendiente ? true : false
-      puedeEditar.value = tab == '1'
+      puedeEditar.value = [estadosTransferenciasProductos.PENDIENTE].includes(tabSeleccionado.value) || [estadosTransferenciasProductos.PENDIENTE, estadosTransferenciasProductos.VALIDADO].includes(tabSeleccionado.value) && esCoordinadorBodega
+      // puedeEditar.value = tab == '1'
       listar({ autorizacion_id: tab })
     }
 
