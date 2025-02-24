@@ -181,7 +181,7 @@ export default defineComponent({
 
       if (devolucionStore.devolucion.id) {
         transaccion.tiene_devolucion = true
-        transaccion.tarea = devolucionStore.devolucion.tarea
+        transaccion.tarea = Number.isInteger(devolucionStore.devolucion.tarea) ? devolucionStore.devolucion.tarea : devolucionStore.devolucion.tarea_id
         await cargarDatosDevolucion()
       } else {
         transaccion.solicitante = store.user.id
@@ -263,7 +263,6 @@ export default defineComponent({
       if (devolucionStore.devolucion.tarea) {
         transaccion.es_tarea = true
         transaccion.tarea = Number.isInteger(devolucionStore.devolucion.tarea) ? devolucionStore.devolucion.tarea : devolucionStore.devolucion.tarea_id
-        filtroTareas(transaccion.tarea)
       }
     }
 
