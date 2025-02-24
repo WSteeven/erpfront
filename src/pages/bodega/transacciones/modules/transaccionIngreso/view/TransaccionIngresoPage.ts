@@ -1,22 +1,29 @@
 import { limpiarListado, ordenarLista, ordernarListaString } from 'shared/utils'
 //Dependencias
-import { configuracionColumnasTransaccionIngreso } from '../../../domain/configuracionColumnasTransaccionIngreso'
-import { configuracionColumnasListadoProductosDevolucion } from '../../transaccionContent/domain/configuracionColumnasListadoProductosDevolucion'
-import { configuracionColumnasDetallesProductosSeleccionables } from '../domain/configuracionColumnasDetallesSeleccionables'
+import {
+  configuracionColumnasTransaccionIngreso
+} from '../../../domain/configuracionColumnasTransaccionIngreso'
+import {
+  configuracionColumnasListadoProductosDevolucion
+} from '../../transaccionContent/domain/configuracionColumnasListadoProductosDevolucion'
+import {
+  configuracionColumnasDetallesProductosSeleccionables
+} from '../domain/configuracionColumnasDetallesSeleccionables'
 import { required, requiredIf } from '@vuelidate/validators'
 import { useVuelidate } from '@vuelidate/core'
 import { computed, defineComponent, ref } from 'vue'
-import { configuracionColumnasProductosSeleccionados } from '../domain/configuracionColumnasProductosSeleccionados'
-import { configuracionColumnasProductos } from 'pages/bodega/productos/domain/configuracionColumnasProductos'
-import { useOrquestadorSelectorItemsTransaccion } from 'pages/bodega/transacciones/modules/transaccionIngreso/application/OrquestadorSelectorDetalles'
+import {
+  configuracionColumnasProductosSeleccionados
+} from '../domain/configuracionColumnasProductosSeleccionados'
+import {
+  configuracionColumnasProductos
+} from 'pages/bodega/productos/domain/configuracionColumnasProductos'
+import {
+  useOrquestadorSelectorItemsTransaccion
+} from 'pages/bodega/transacciones/modules/transaccionIngreso/application/OrquestadorSelectorDetalles'
 import { useTransaccionStore } from 'stores/transaccion'
 import { useDevolucionStore } from 'stores/devolucion'
-import {
-  acciones,
-  estados,
-  estadosTransacciones,
-  motivosTransaccionesBodega
-} from 'config/utils'
+import { acciones, estados, estadosTransacciones, motivosTransaccionesBodega } from 'config/utils'
 
 // Componentes
 import TabLayout from 'shared/contenedor/modules/simple/view/TabLayout.vue'
@@ -25,7 +32,9 @@ import EssentialTable from 'components/tables/view/EssentialTable.vue'
 import ModalesEntidad from 'components/modales/view/ModalEntidad.vue'
 
 //Logica y controladores
-import { ContenedorSimpleMixin } from 'shared/contenedor/modules/simple/application/ContenedorSimpleMixin'
+import {
+  ContenedorSimpleMixin
+} from 'shared/contenedor/modules/simple/application/ContenedorSimpleMixin'
 import { useNotificacionStore } from 'stores/notificacion'
 import { LocalStorage, useQuasar } from 'quasar'
 
@@ -37,8 +46,12 @@ import { useAuthenticationStore } from 'stores/authentication'
 import { TareaController } from 'pages/gestionTrabajos/tareas/infraestructure/TareaController'
 import { ClienteController } from 'pages/sistema/clientes/infraestructure/ClienteController'
 import { Transaccion } from 'pages/bodega/transacciones/domain/Transaccion'
-import { TransaccionIngresoController } from 'pages/bodega/transacciones/infraestructure/TransaccionIngresoController'
-import { EmpleadoController } from 'pages/recursosHumanos/empleados/infraestructure/EmpleadoController'
+import {
+  TransaccionIngresoController
+} from 'pages/bodega/transacciones/infraestructure/TransaccionIngresoController'
+import {
+  EmpleadoController
+} from 'pages/recursosHumanos/empleados/infraestructure/EmpleadoController'
 
 import { CustomActionPrompt } from 'components/tables/domain/CustomActionPrompt'
 import { Cliente } from 'sistema/clientes/domain/Cliente'
@@ -47,10 +60,17 @@ import { Sucursal } from 'pages/administracion/sucursales/domain/Sucursal'
 import { useTransferenciaStore } from 'stores/transferencia'
 import { Condicion } from 'pages/administracion/condiciones/domain/Condicion'
 import { useCargandoStore } from 'stores/cargando'
-import { ComportamientoModalesTransaccionIngreso } from '../application/ComportamientoModalesGestionarIngreso'
-import { SucursalController } from 'pages/administracion/sucursales/infraestructure/SucursalController'
-import { ValidarListadoProductosIngreso } from '../application/validations/ValidarListadoProductosIngreso'
+import {
+  ComportamientoModalesTransaccionIngreso
+} from '../application/ComportamientoModalesGestionarIngreso'
+import {
+  SucursalController
+} from 'pages/administracion/sucursales/infraestructure/SucursalController'
+import {
+  ValidarListadoProductosIngreso
+} from '../application/validations/ValidarListadoProductosIngreso'
 import { useFiltrosListadosSelects } from 'shared/filtrosListadosGenerales'
+import { StatusEssentialLoading } from 'components/loading/application/StatusEssentialLoading'
 
 export default defineComponent({
   name: 'transacciones_ingresos',
@@ -60,7 +80,16 @@ export default defineComponent({
 
     const mixin = new ContenedorSimpleMixin(Transaccion, new TransaccionIngresoController())
     const { entidad: transaccion, disabled, accion, listadosAuxiliares } = mixin.useReferencias()
-    const { setValidador, obtenerListados, cargarVista, listar, guardar, editar, eliminar, reestablecer } = mixin.useComportamiento()
+    const {
+      setValidador,
+      obtenerListados,
+      cargarVista,
+      listar,
+      guardar,
+      editar,
+      eliminar,
+      reestablecer
+    } = mixin.useComportamiento()
     const { onConsultado, onReestablecer, onGuardado } = mixin.useHooks()
     const { confirmar, prompt } = useNotificaciones()
 
@@ -73,6 +102,7 @@ export default defineComponent({
     const transaccionStore = useTransaccionStore()
     const devolucionStore = useDevolucionStore()
     const transferenciaStore = useTransferenciaStore()
+    const cargando = new StatusEssentialLoading()
 
     const rolSeleccionado = (store.user.roles.filter((v) => v.indexOf('BODEGA') > -1 || v.indexOf('COORDINADOR') > -1)).length > 0
 
@@ -119,32 +149,34 @@ export default defineComponent({
 
     const condiciones = ref([])
 
-    const { clientes, filtrarClientes,
+    const {
+      clientes, filtrarClientes,
       empleados, filtrarEmpleados,
       sucursales, filtrarSucursales,
-    motivos,
-    tareas} = useFiltrosListadosSelects(listadosAuxiliares)
+      motivos,
+      tareas
+    } = useFiltrosListadosSelects(listadosAuxiliares)
 
     //obtener los listados
     cargarVista(async () => {
       await obtenerListados({
-        tareas: { controller: new TareaController(), params: { campos: 'id,codigo_tarea,titulo,cliente_id' } },
+        // tareas: { controller: new TareaController(), params: { campos: 'id,codigo_tarea,titulo,cliente_id' } },
         motivos: { controller: new MotivoController(), params: { tipo_transaccion_id: 1 } },
         clientes: {
           controller: new ClienteController(),
           params: {
             campos: 'id,razon_social',
             requiere_bodega: 1,
-            estado: 1,
-          },
+            estado: 1
+          }
         },
         empleados: {
           controller: new EmpleadoController(),
           params: {
-            campos: 'id,nombres,apellidos',
+            campos: 'id,nombres,apellidos'
             // estado: 1
           }
-        },
+        }
       })
 
       if (devolucionStore.devolucion.id) {
@@ -163,8 +195,12 @@ export default defineComponent({
       justificacion: { required },
       sucursal: { required },
       motivo: { requiredIfRol: requiredIf(store.esBodeguero) },
-      estado: { requiredIfRol: requiredIf(accion.value === acciones.editar), },
-      observacion_est: { requiredIfObsEstado: requiredIf(function () { return transaccion.tiene_obs_estado }) },
+      estado: { requiredIfRol: requiredIf(accion.value === acciones.editar) },
+      observacion_est: {
+        requiredIfObsEstado: requiredIf(function() {
+          return transaccion.tiene_obs_estado
+        })
+      },
       listadoProductosTransaccion: { required },
       cliente: { required },
       condicion: { requiredIfMasivo: requiredIf(transaccion.ingreso_masivo) }
@@ -183,7 +219,9 @@ export default defineComponent({
       accion: () => {
         modales.abrirModalEntidad('DetalleProductoPage')
       },
-      visible: () => { return accion.value == acciones.nuevo || accion.value == acciones.editar }
+      visible: () => {
+        return accion.value == acciones.nuevo || accion.value == acciones.editar
+      }
     }
 
     /**
@@ -207,6 +245,7 @@ export default defineComponent({
       }
 
     }
+
     async function cargarDatosDevolucion() {
       //Copiar los valores de las variables
       transaccion.devolucion = devolucionStore.devolucion.id
@@ -258,7 +297,6 @@ export default defineComponent({
     }
 
 
-
     function eliminarItem({ entidad }) {
       const posicion = transaccion.listadoProductosTransaccion.findIndex((fila: any) => fila.id === entidad.id)
       confirmar('¿Esta seguro de continuar?',
@@ -266,6 +304,7 @@ export default defineComponent({
           transaccion.listadoProductosTransaccion.splice(posicion, 1)
         })
     }
+
     const botonActualizar: CustomActionTable = {
       titulo: 'Actualizar',
       icono: 'bi-arrow-clockwise',
@@ -276,7 +315,7 @@ export default defineComponent({
     }
     const botonEditarCantidad: CustomActionTable = {
       titulo: 'Editar cantidad',
-      accion: ({  posicion }) => {
+      accion: ({ posicion }) => {
         const config: CustomActionPrompt = {
           titulo: 'Confirmación',
           mensaje: 'Ingresa la cantidad',
@@ -285,7 +324,7 @@ export default defineComponent({
           validacion: (val) => val > 0,
           accion: (data) => {
             transaccion.listadoProductosTransaccion[posicion].cantidad = data
-          },
+          }
         }
         prompt(config)
       },
@@ -300,7 +339,7 @@ export default defineComponent({
       accion: async ({ entidad }) => {
         transaccionStore.idTransaccion = entidad.id
         await transaccionStore.imprimirIngreso()
-      },
+      }
     }
     const botonAnular: CustomActionTable = {
       titulo: 'Anular',
@@ -330,33 +369,33 @@ export default defineComponent({
     empleados.value = listadosAuxiliares.empleados
 
 
-
-
     const configuracionColumnasProductosSeleccionadosAccion = computed(() => [...configuracionColumnasProductosSeleccionados,
-    {
-      name: 'condiciones',
-      field: 'condiciones',
-      label: 'Estado del producto',
-      align: 'left',
-      sortable: false,
-      visible: true,
-      type: 'select',
-      options: condiciones.value.map((v: Condicion) => { return { label: v.nombre } })
-    },
-    {
-      name: 'cantidad',
-      field: 'cantidad',
-      label: 'Cantidad',
-      align: 'left',
-      type: 'number',
-      sortable: false,
-    },
-    {
-      name: 'acciones',
-      field: 'acciones',
-      label: 'Acciones',
-      align: 'center'
-    },
+      {
+        name: 'condiciones',
+        field: 'condiciones',
+        label: 'Estado del producto',
+        align: 'left',
+        sortable: false,
+        visible: true,
+        type: 'select',
+        options: condiciones.value.map((v: Condicion) => {
+          return { label: v.nombre }
+        })
+      },
+      {
+        name: 'cantidad',
+        field: 'cantidad',
+        label: 'Cantidad',
+        align: 'left',
+        type: 'number',
+        sortable: false
+      },
+      {
+        name: 'acciones',
+        field: 'acciones',
+        label: 'Acciones',
+        align: 'center'
+      }
     ])
 
     function tareaSeleccionada(val) {
@@ -369,6 +408,26 @@ export default defineComponent({
       LocalStorage.set('sucursales', JSON.stringify(sucursales))
       sucursales.value = JSON.parse(LocalStorage.getItem('sucursales')!.toString())
       listadosAuxiliares.sucursales = sucursales.value
+    }
+
+    async function obtenerTareas(limpiarTarea = true, tarea_id: number | null = null) {
+      cargando.activar()
+      let response
+      if (limpiarTarea) transaccion.tarea = null
+      if (tarea_id) {
+        response = await new TareaController().listar({ id: tarea_id })
+      } else {
+         response = await new TareaController().listar({
+          activas_empleado: 1,
+          empleado_id: transaccion.solicitante,
+          campos: 'id,codigo_tarea,titulo',
+          finalizado: 0
+        })
+      }
+
+      listadosAuxiliares.tareas = response.result
+      tareas.value = response.result
+      cargando.desactivar()
     }
 
     return {
@@ -395,7 +454,8 @@ export default defineComponent({
         const opcionSeleccionada = listadosAuxiliares.motivos.filter((v) => v.id === val)
         esVisibleComprobante.value = opcionSeleccionada[0]['nombre'] === motivosTransaccionesBodega.compraProveedor
         esVisibleTarea.value = opcionSeleccionada[0]['nombre'] === motivosTransaccionesBodega.mercaderiaClienteTarea || opcionSeleccionada[0]['nombre'] === motivosTransaccionesBodega.devolucionTarea
-        transaccion.es_transferencia = opcionSeleccionada[0]['nombre'] == motivosTransaccionesBodega.ingresoTransferenciaBodegas;
+        transaccion.es_transferencia = opcionSeleccionada[0]['nombre'] == motivosTransaccionesBodega.ingresoTransferenciaBodegas
+        if (esVisibleTarea.value)  obtenerTareas(false, transaccion.tarea)
       },
 
       checkMasivo(val) {//checkbox de ingreso masivo
@@ -478,7 +538,7 @@ export default defineComponent({
           sucursales.value = sucursalesTelconet.sort((a: Sucursal, b: Sucursal) => ordernarListaString(a.lugar!, b.lugar!))
         } else sucursales.value.sort((a: Sucursal, b: Sucursal) => ordernarListaString(a.lugar!, b.lugar!))
       },
-      ordenarLista,
+      ordenarLista
 
     }
   }
