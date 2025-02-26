@@ -71,12 +71,6 @@ const routes: RouteRecordRaw[] = [
         meta: { requiresAuth: false },
       },
       {
-        path: '/extensiones-telefonicas',
-        name: 'intra_extensiones_telefonicas',
-        component: () => import('pages/intranet/extensiones/view/ExtensionTelefonicaPage.vue'),
-        meta: { requiresAuth: false },
-      },
-      {
         path: 'auditorias',
         name: 'auditorias',
         component: () => import('pages/sistema/auditorias/view/AuditoriaPage.vue'),

@@ -983,12 +983,6 @@ export const useMenuStore = defineStore('menu', () => {
           icon: 'bi-calendar2-event-fill',
           can: store.can('puede.acceder.intra_tipos_eventos')
         },
-        {
-          title: 'Extensiones Telefonicas',
-          link: 'extensiones-telefonicas',
-          icon: 'bi-telephone-fill',
-          can: store.can('puede.acceder.intra_extensiones_telefonicas')
-        },
 /*         {
           title: 'Organigrama',
           icon: 'bi-diagram-3-fill',
