@@ -482,7 +482,7 @@ export default defineComponent({
           Router.push('/licencia-empleado')
           break
         case 'vacaciones':
-          Router.push('/vacacion')
+          Router.push('/solicitudes-vacaciones')
           break
         case 'prestamos':
           Router.push('/solicitud-prestamo-empresarial')
