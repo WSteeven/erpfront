@@ -15,6 +15,7 @@ import { AxiosHttpRepository } from 'shared/http/infraestructure/AxiosHttpReposi
 import { apiConfig, endpoints } from 'config/api'
 import { AxiosResponse } from 'axios'
 import { useNotificaciones } from 'shared/notificaciones'
+import { StatusEssentialLoading } from 'components/loading/application/StatusEssentialLoading'
 
 export default defineComponent({
   components: { EssentialTable },
@@ -28,6 +29,8 @@ export default defineComponent({
     const { setValidador, guardar, listar } = mixin.useComportamiento()
     const { notificarCorrecto } = useNotificaciones()
 
+    const cargando  = new StatusEssentialLoading()
+
     // Reglas de validación
     const reglas = {
       empleado: { required },
@@ -39,6 +42,7 @@ export default defineComponent({
     setValidador(v$.value)
 
     async function actualizarAsistencias() {
+      cargando.activar()
       const axios = AxiosHttpRepository.getInstance()
       const url =
         apiConfig.URL_BASE +
@@ -53,6 +57,8 @@ export default defineComponent({
       } catch (error) {
         console.error('Error al sincronizar asistencias:', error)
         listado.value = [] // Mantén el listado vacío si ocurre un error
+      }finally{
+        cargando.desactivar()
       }
     }
 

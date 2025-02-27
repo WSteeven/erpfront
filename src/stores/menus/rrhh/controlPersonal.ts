@@ -20,7 +20,7 @@ const controlPersonal: Ref<MenuOption[]> = computed(() => {
             store.can('puede.acceder.dashboard_control_personal'),
         },
         {
-          title: 'Asistencia',
+          title: 'Asistencias',
           link: 'asistencias',
           icon: 'bi-calendar-check',
           can:  store.can('puede.acceder.asistencias'),
