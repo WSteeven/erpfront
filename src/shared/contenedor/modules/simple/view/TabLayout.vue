@@ -1,9 +1,9 @@
 <template>
   <!-- :padding="!$q.screen.xs" -->
   <component :is="full ? 'q-page' : 'div'">
-    <transition name="scale" mode="out-in">
-      <slot name="modales" />
-    </transition>
+    <!-- <transition name="scale" mode="out-in"> -->
+    <slot name="modales" />
+    <!-- </transition> -->
 
     <!-- <div class="text-center q-mb-md q-pa-sm bg-grey-2 border-bottom"> -->
     <!-- <small class="block text-bold"> {{ tituloTabla }}</small> -->

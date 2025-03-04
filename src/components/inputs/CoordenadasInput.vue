@@ -8,6 +8,7 @@
           v-model="internalValue"
           outlined
           :disable="disable"
+          :placeholder="placeholder"
           dense
           :error="!!validador.coordenadas?.$errors.length"
           @blur="validador.coordenadas?.$touch"
@@ -23,7 +24,7 @@
 
           <template #append>
             <q-btn
-              color="positive"
+              color="primary"
               no-caps
               no-wrap
               class="full-width"
@@ -58,6 +59,10 @@ const props = defineProps({
   validador: {
     type: Object,
     required: true
+  },
+  placeholder: {
+    type: String,
+    default: ''
   }
 })
 

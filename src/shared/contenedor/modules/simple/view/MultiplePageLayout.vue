@@ -2,12 +2,11 @@
   <component :is="fullscreen ? 'q-page' : 'div'">
     <q-btn
       v-if="tabsPage != '1' && mostrarRegresar"
-      outline
-      color="grey-8"
+      color="positive"
       icon="bi-chevron-left"
-      class="q-mt-md q-ml-md"
+      class="q-my-md q-ml-md"
       no-caps
-      rounded
+      push
       @click="regresar()"
       >Regresar</q-btn
     >
@@ -25,7 +24,7 @@
       <q-tab
         v-for="(tab, index) in tabsOptions"
         :key="index + 1"
-        :name="(index + 1) + ''"
+        :name="index + 1 + ''"
         :label="tab"
         no-caps
       />
@@ -37,7 +36,7 @@
       transition-prev="slide-right"
       transition-next="slide-left"
       keep-alive
-      class="bg-desenfoque rounded-tabpanel"
+      class="bg-desenfoque rounded-card"
     >
       <!-- Formulario -->
       <q-tab-panel name="1"><slot name="tab1" /></q-tab-panel>

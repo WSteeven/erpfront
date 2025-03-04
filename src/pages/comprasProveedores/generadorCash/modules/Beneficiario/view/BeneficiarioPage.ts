@@ -2,6 +2,7 @@
 import { configuracionColumnasCuentaBancaria } from '../domain/configuracionColumnasCuentaBancaria'
 import { configuracionColumnasBeneficiarios } from '../domain/configuracionColumnasBeneficiarios'
 import { useFiltrosListadosSelects } from 'shared/filtrosListadosGenerales'
+import { ColumnConfig } from 'components/tables/domain/ColumnConfig'
 import { mapearOptionsSelect, ordenarLista } from 'shared/utils'
 import { helpers, required } from 'shared/i18n-validators'
 import { defineComponent, UnwrapRef } from 'vue'
@@ -10,7 +11,6 @@ import useVuelidate from '@vuelidate/core'
 // Componentes
 import TabLayout from 'shared/contenedor/modules/simple/view/TabLayout.vue'
 import EssentialTable from 'components/tables/view/EssentialTable.vue'
-import { ColumnConfig } from 'components/tables/domain/ColumnConfig'
 
 // Logica y controladores
 import { ContenedorSimpleMixin } from 'shared/contenedor/modules/simple/application/ContenedorSimpleMixin'

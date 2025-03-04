@@ -80,8 +80,8 @@ export default defineComponent({
 
     const { notificarError, notificarAdvertencia, notificarInformacion, confirmar } = useNotificaciones()
 
-    function listarArchivosAlmacenados(id: number, params: string) {//ParamsType) {
-      listarArchivos(id, params)
+    async function listarArchivosAlmacenados(id: number, params: string) {//ParamsType) {
+      await listarArchivos(id, params)
     }
 
     const cantElementos = ref(0)
@@ -149,13 +149,14 @@ export default defineComponent({
       }
     }
 
-    function subir(params: ParamsType) {
+    async function subir(params: ParamsType) {
+      console.log('sueiendo...')
       paramsForm = params
       if (refGestor.value) {
-        refGestor.value.upload()
-        refGestor.value.reset()
-        refGestor.value.removeUploadedFiles()
-        refGestor.value.removeQueuedFiles()
+        await refGestor.value.upload()
+        await refGestor.value.reset()
+        await refGestor.value.removeUploadedFiles()
+        await refGestor.value.removeQueuedFiles()
       }
     }
 

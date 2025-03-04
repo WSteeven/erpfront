@@ -1,8 +1,9 @@
 import { StatusEssentialLoading } from 'components/loading/application/StatusEssentialLoading'
 import { SelectorController } from '../infraestructure/SelectorController'
 import { useNotificaciones } from 'shared/notificaciones'
-import { AxiosError } from 'axios'
+import { AxiosError, isAxiosError } from 'axios'
 import { ref } from 'vue'
+import { notificarMensajesError } from 'shared/utils'
 
 export function useSelector(selector: any) {
   const controller = new SelectorController(selector.endpoint)
@@ -36,9 +37,16 @@ export function useSelector(selector: any) {
         result = response.data.data ?? response.data.results
         status.desactivar()
       } */
-    } catch (e: unknown) {
-      const axiosError = e as AxiosError
-      notificaciones.notificarError(axiosError + '')
+    } catch (error: unknown) {
+      // notificaciones.notificarError(axiosError + '')
+      // console.log(e)
+      
+      // if (isAxiosError(error)) {
+        // const axiosError = e as AxiosError
+        const mensajes: string[] = (error as any).erroresValidacion
+        console.log(mensajes)
+        await notificarMensajesError(mensajes, notificaciones)
+      // }
     } finally {
       status.desactivar()
     }
