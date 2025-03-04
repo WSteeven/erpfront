@@ -95,7 +95,7 @@
             />
           </div>
 
-          <div v-if="listadosAuxiliares.miembrosZona" class="col-12 q-mb-md">
+          <div v-if="listadosAuxiliares.miembrosZona.length" class="col-12 q-mb-md">
             <div class="q-mb-md">
               Empleados asignados a la zona
               <q-icon name="bi-check-circle-fill" color="positive" />
@@ -307,7 +307,7 @@
         </div>
 
         <div
-          v-if="prendaZona.miembro_zona"
+          v-show="prendaZona.miembro_zona"
           class="row q-col-gutter-sm q-mb-md q-pa-md"
         >
           <div class="col-12 col-md-5 q-gutter-y-sm">

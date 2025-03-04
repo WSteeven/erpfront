@@ -6,6 +6,7 @@ export class PrendaZona extends EntidadAuditable {
     detalles_productos: DetalleProducto[] = []
     empleado_id: number | null = null
     cliente_id: number | null = null
+    empleado_apellidos_nombres: string | null = null
 
     // Auxiliares
     tiene_restricciones = false

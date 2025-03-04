@@ -1,5 +1,6 @@
 // Dependencias
 import { configuracionColumnasProductosSeleccionados } from 'pages/bodega/pedidos/domain/configuracionColumnasProductosSeleccionados'
+import { configuracionColumnasEmpleadosLite } from 'pages/recursosHumanos/empleados/domain/configuracionColumnasEmpleadosLite'
 import { configuracionColumnasEmpleadoDesignado } from 'pages/seguridad/zonas/domain/configuracionColumnasEmpleadoDesignado'
 import { configuracionColumnasDetallesModal } from 'pages/bodega/pedidos/domain/configuracionColumnasDetallesModal'
 import { configuracionColumnasRestriccionPrendaZona } from '../domain/configuracionColumnasRestriccionPrendaZona'
@@ -7,13 +8,16 @@ import { configuracionColumnasPrendaZona } from '../domain/configuracionColumnas
 import { useOrquestadorSelectorDetalles } from '../application/OrquestadorSelectorDetalles'
 import { AxiosHttpRepository } from 'shared/http/infraestructure/AxiosHttpRepository'
 import { useFiltrosListadosSelects } from 'shared/filtrosListadosGenerales'
-import { useNotificaciones } from 'shared/notificaciones'
 import { computed, defineComponent, reactive, ref } from 'vue'
-import { required, helpers } from 'shared/i18n-validators'
+import { useNotificacionStore } from 'stores/notificacion'
+import { useNotificaciones } from 'shared/notificaciones'
+import { required } from 'shared/i18n-validators'
 import { ordenarLista } from 'shared/utils'
 import useVuelidate from '@vuelidate/core'
+import { acciones } from 'config/utils'
 import { iconos } from 'config/iconos'
 import { endpoints } from 'config/api'
+import { useQuasar } from 'quasar'
 
 // Componentes
 import EssentialSelectableTable from 'components/tables/view/EssentialSelectableTable.vue'
@@ -21,7 +25,10 @@ import TabLayout from 'shared/contenedor/modules/simple/view/TabLayout.vue'
 import EssentialTable from 'components/tables/view/EssentialTable.vue'
 
 // Logica y controladores
+import { useOrquestadorSelectorEmpleados } from 'pages/seguridad/bitacoras/application/useOrquestadorSelectorEmpleados'
 import { ContenedorSimpleMixin } from 'shared/contenedor/modules/simple/application/ContenedorSimpleMixin'
+import { useMaterialesEmpleado } from 'pages/gestionTrabajos/miBodega/application/UseMaterialesEmpleado'
+import { FiltroMiBodegaEmpleado } from 'pages/gestionTrabajos/miBodega/domain/FiltroMiBodegaEmpleado'
 import { RestriccionPrendaZonaController } from '../infraestructure/RestriccionPrendaZonaController'
 import { MiembroZonaController } from 'pages/seguridad/zonas/infraestructure/MiembroZonaController'
 import { DetalleProducto } from 'pages/bodega/detalles_productos/domain/DetalleProducto'
@@ -30,15 +37,6 @@ import { PrendaZonaController } from '../infraestructure/PrendaZonaController'
 import { RestriccionPrendaZona } from '../domain/RestriccionPrendaZona'
 import { MiembroZona } from 'pages/seguridad/zonas/domain/MiembroZona'
 import { PrendaZona } from '../domain/PrendaZona'
-import { acciones } from 'config/utils'
-import { useAuthenticationStore } from 'stores/authentication'
-import { useQuasar } from 'quasar'
-import { useNotificacionStore } from 'stores/notificacion'
-import { useOrquestadorSelectorEmpleados } from 'pages/seguridad/bitacoras/application/useOrquestadorSelectorEmpleados'
-import { configuracionColumnasEmpleadosLite } from 'pages/recursosHumanos/empleados/domain/configuracionColumnasEmpleadosLite'
-import { useMaterialesEmpleado } from 'pages/gestionTrabajos/miBodega/application/UseMaterialesEmpleado'
-import { FiltroMiBodegaEmpleado } from 'pages/gestionTrabajos/miBodega/domain/FiltroMiBodegaEmpleado'
-// import { helpers } from '@vuelidate/validators'
 
 export default defineComponent({
   components: { TabLayout, EssentialTable, EssentialSelectableTable },
@@ -46,7 +44,6 @@ export default defineComponent({
     /**********
      * Stores
      **********/
-    const authenticationStore = useAuthenticationStore()
     useNotificacionStore().setQuasar(useQuasar())
 
     /********
@@ -68,6 +65,7 @@ export default defineComponent({
           params: { activo: 1 },
         },
         clientesMaterialesEmpleado: [],
+        miembrosZona: [],
       })
     })
 
@@ -192,14 +190,6 @@ export default defineComponent({
       await refPrendasAsignadas.value.clearSelection()
     }
 
-    const obtenerProductos = () => {
-      listarDetalleProducto({
-        empleado_id: prendaZona.empleado_id,
-        cliente_id: prendaZona.cliente_id,
-        search: criterioBusquedaDetalleProducto
-      })
-    }
-
     /*********
      * Reglas
      *********/
@@ -216,20 +206,16 @@ export default defineComponent({
      ********/
     onConsultado(() => {
       if (prendaZona.zona) consultarMiembrosZona(prendaZona.zona)
+      criterioBusquedaEmpleado.value = prendaZona.empleado_apellidos_nombres
+      consultarClientesMaterialesEmpleado()
     })
 
     onReestablecer(() => {
       listadosAuxiliares.miembrosZona = []
-      refPrendasSinAsignar.value.clearSelection()
-      refPrendasAsignadas.value.clearSelection()
+      refPrendasSinAsignar.value?.clearSelection()
+      refPrendasAsignadas.value?.clearSelection()
+      criterioBusquedaEmpleado.value = null
     })
-
-    /*************
-     * Observers
-     *************/
-    /* watch(computed(() => prendaZona.detalles_productos), async () => {
-      if (prendaZona.miembro_zona) await obtenerPrendasAsignadas(prendaZona.miembro_zona)
-    }, { deep: true }) */
 
     /***************
      * Orquestador
