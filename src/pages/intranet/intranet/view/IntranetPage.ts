@@ -294,14 +294,14 @@ export default defineComponent({
         id: 1,
         name: 'Instructivos',
         icon: 'fa-solid fa-book-journal-whills',
-        link: 'https://drive.google.com/drive/folders/1Zv3eTjramxByFRht-L5Gz_nrulgFE32V?usp=sharing_eip_m&ts=64386770',
+        link: 'https://drive.google.com/drive/folders/1ILsatqtyrkV5tfofM2cTinLOfhIQMO-h?usp=drive_link',
         color: '#FF5733'
       },
       {
         id: 2,
         name: 'Reglamentos y Normativas',
         icon: 'fa-solid fa-book-bookmark',
-        link: 'https://drive.google.com/drive/folders/1Zv3eTjramxByFRht-L5Gz_nrulgFE32V?usp=sharing_eip_m&ts=64386770',
+        link: 'https://drive.google.com/drive/folders/1k7WjBVUbYf4FY5wX0xoUP8r5gvWNA64e?usp=sharing',
         color: '#581845'
       }
     ])
@@ -525,7 +525,7 @@ export default defineComponent({
 
     return {
       correo: computed(() => 'https://'+configuracionGeneralStore.configuracion?.sitio_web+'/webmail'),
-      
+
       logoClaro: computed(
         () => configuracionGeneralStore.configuracion?.logo_claro
       ),

@@ -67,7 +67,7 @@ export default defineComponent({
               item: entidad
             })
             //Aqui se debe actualizar el registro modificado
-            emit('cerrar-modal', false)
+            // emit('cerrar-modal', false)
           }
         }
         prompt(config)
