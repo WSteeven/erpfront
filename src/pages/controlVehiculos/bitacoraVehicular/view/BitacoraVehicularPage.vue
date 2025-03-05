@@ -86,7 +86,6 @@
                     <q-date
                       v-model="bitacora.fecha"
                       :mask="maskFecha"
-                      :options="optionsFecha"
                       today-btn
                     >
                       <div class="row items-center justify-end">

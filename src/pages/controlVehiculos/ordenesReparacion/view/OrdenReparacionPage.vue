@@ -184,6 +184,20 @@
             />
           </div>
 
+          <!-- motivo  -->
+          <div class="col-12 col-md-4 q-mb-md">
+            <label class="q-mb-sm block">Comentario o motivo de retraso</label>
+            <q-input
+              autogrow
+              v-model="orden.motivo"
+              placeholder="Opcional"
+              hint="Llena este campo en caso de tener algun comentario"
+              outlined
+              :disable="disabled"
+              dense
+            />
+          </div>
+
           <!-- Servicios -->
           <div class="col-12 col-md-12 q-mb-md">
             <label class="q-mb-sm block">Servicios a realizar</label>

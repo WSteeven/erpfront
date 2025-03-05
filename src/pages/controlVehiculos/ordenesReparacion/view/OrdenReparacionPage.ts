@@ -162,14 +162,14 @@ export default defineComponent({
         responsable_id: store.user.id,
         estado: 'ACEPTADO'
       })
-      console.log(response)
+      // console.log(response)
       if (response.result.length == 0) {
         const response = await new TransferenciaVehiculoController().listar({
           filtro: 1,
           responsable_id: store.user.id,
           estado: 'ACEPTADO'
         })
-        console.log(response)
+        // console.log(response)
         return response.result[0]
       } else {
         return response.result[0]

@@ -10,6 +10,7 @@ export class OrdenReparacion extends EntidadAuditable {
   servicios: string | null
   observacion: string | null
   valor_reparacion: string | null
+  motivo: string | null
 
   constructor() {
     super()
@@ -22,5 +23,6 @@ export class OrdenReparacion extends EntidadAuditable {
     this.servicios = null
     this.observacion = null
     this.valor_reparacion = null
+    this.motivo = null
   }
 }

@@ -36,5 +36,11 @@ export const configuracionColumnasOrdenesReparaciones: ColumnConfig<OrdenReparac
         label: 'Valor Reparación',
         align: 'left',
         sortable: true,
+    },{
+        name: 'motivo',
+        field: 'motivo',
+        label: 'Motivo',
+        align: 'left',
+        sortable: true,
     },
 ]
