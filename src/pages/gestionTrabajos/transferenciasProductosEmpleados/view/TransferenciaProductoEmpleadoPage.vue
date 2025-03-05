@@ -152,6 +152,7 @@
                 <q-btn
                   color="positive"
                   unelevated
+                  dense
                   :disable="!(accion === acciones.nuevo)"
                   @click="refrescarListadosEmpleado('clientes')"
                 >

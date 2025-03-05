@@ -41,7 +41,7 @@ export default defineComponent({
         const store = useAuthenticationStore()
         const cargando = new StatusEssentialLoading()
 
-        
+
         const usuarioDefault = ref()
         const { vehiculos, filtrarVehiculos,
             combustibles, filtrarCombustibles,

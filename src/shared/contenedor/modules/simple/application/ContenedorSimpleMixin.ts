@@ -51,11 +51,13 @@ export class ContenedorSimpleMixin<T extends EntidadAuditable> extends Contenedo
       consultar: this.consultar.bind(this),
       guardarArchivos: this.guardarArchivos.bind(this),
       guardarActividades: this.guardarActividades.bind(this),
+      guardarListado: this.guardarListado.bind(this),
       guardar: this.guardar.bind(this),
       editar: this.editar.bind(this),
       editarParcial: this.editarParcial.bind(this),
       eliminar: this.eliminar.bind(this),
       eliminarArchivo: this.eliminarArchivo.bind(this),
+      eliminarListado: this.eliminarListado.bind(this),
       reestablecer: this.reestablecer.bind(this),
       obtenerListados: this.obtenerListados.bind(this),
       cargarVista: this.cargarVista.bind(this),
@@ -109,8 +111,8 @@ export class ContenedorSimpleMixin<T extends EntidadAuditable> extends Contenedo
             ...params
           }
         )
-        this.entidad.hydrate(result)
-        this.entidad_copia.hydrate(JSON.parse(JSON.stringify(this.entidad)))
+        await this.entidad.hydrate(result)
+        await this.entidad_copia.hydrate(JSON.parse(JSON.stringify(this.entidad)))
         this.refs.tabs.value = 'formulario'
         this.hooks.onConsultado(result)
       })
@@ -280,6 +282,23 @@ export class ContenedorSimpleMixin<T extends EntidadAuditable> extends Contenedo
       })
     })
   }
+
+  private async eliminarListado(ids: number[]) {
+    // this.notificaciones.confirmar('¿Está seguro que desea eliminar?', () => {
+
+      this.controller.eliminarListado(ids).then(({ response }) => {
+        response.data.results ? this.refs.listado.value = response.data.results : null // devuelve lo que queda despues de eliminar (opcional)
+        this.notificaciones.notificarCorrecto(response.data.mensaje)
+      }).catch((error) => {
+        if (isAxiosError(error)) {
+          const mensajes: string[] = error.erroresValidacion
+          notificarMensajesError(mensajes, this.notificaciones)
+        } else {
+          this.notificaciones.notificarError(error.mensaje)
+        }
+      })
+    // })
+  }
   /**
    * Funcion para listar todos los archivos relacionados a un modelo
    */
@@ -356,11 +375,27 @@ export class ContenedorSimpleMixin<T extends EntidadAuditable> extends Contenedo
     }
   }
 
+  private async guardarListado(listado: T[]): Promise<any> {
+    this.statusEssentialLoading.activar()
+    try {
+      const { response } = await this.controller.guardarListado(listado)
+      this.refs.listado.value = response.data.results
+      this.notificaciones.notificarCorrecto(response.data.mensaje)
+      return response
+    } catch (error) {
+      if (isAxiosError(error)) {
+        const mensajes: string[] = error.erroresValidacion
+        await notificarMensajesError(mensajes, this.notificaciones)
+      }
+    } finally {
+      this.statusEssentialLoading.desactivar()
+    }
+  }
+
 
 
   // Editar
   private async editar(data: T, resetOnUpdated = true, params?: ParamsType) {
-    console.log('editar...')
     this.statusEssentialLoading.activar()
 
     if (this.entidad.id === null) {

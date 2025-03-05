@@ -17,7 +17,7 @@
 
       <!-- Right side -->
       <div
-        class="col-12 col-md-4 column items-center bg-body-table justify-center window-height"
+        class="col-12 col-md-4 column items-center bgd-body-table justify-center window-height"
       >
         <q-avatar v-if="$q.screen.xs" square size="120px" class="q-mx-auto block q-mb-md">
           <img :src="!$q.dark.isActive ? logoClaro : logoOscuro" />

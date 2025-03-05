@@ -6,6 +6,7 @@
     :full-height="fullHeight"
     :persistent="persistente"
     :maximized="maximized"
+    class="bg-desenfoque"
     @hide="emit('cerrado')"
   >
     <q-card class="bg-transparent no-border" flat>

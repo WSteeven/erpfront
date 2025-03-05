@@ -1,8 +1,19 @@
 <template>
-  <q-page :padding="!$q.screen.xs">
-    <div class="row items-center justify-between q-px-md q-mb-sm q-py-sm">
-      {{ 'Mis tickets asignados' }}
-      <b>{{ fecha }}</b>
+  <q-page>
+    <div
+      class="row items-center q-col-gutter-sm justify-between q-px-md q-mb-sm q-py-sm"
+    >
+      <div class="col-12">
+        {{ 'Tickets asignados para mi' }}
+        <b>{{ fecha }}</b>
+      </div>
+
+      <div v-if="tabActual === estadosTickets.FINALIZADO_SOLUCIONADO" class="col-12">
+        <callout
+          tipo="info"
+          mensaje="Para <b>REANUDAR</b> un ticket <b>FINALIZADO</b> primero <b>pause</b> el ticket que se está ejecutando actualmente."
+        ></callout>
+      </div>
     </div>
 
     <q-tab-panels
@@ -20,7 +31,7 @@
           "
           :configuracionColumnas="[
             ...configuracionColumnasTicketAsignado,
-            accionesTabla,
+            accionesTabla
           ]"
           :datos="listado"
           :accion1="botonVer"
@@ -48,7 +59,7 @@
           titulo="Ticket buscado"
           :configuracionColumnas="[
             ...configuracionColumnasTicketAsignado,
-            accionesTabla,
+            accionesTabla
           ]"
           :datos="listado"
           :accion1="botonVer"

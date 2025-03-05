@@ -3,8 +3,15 @@
     ref="refEditarModal"
     :configuracionColumnas="configuracionColumnas"
     :fila="fila"
-    @limpiar="limpiarFila"
-    @guardar="guardarFila"
+    :accion="accion"
+    @limpiar="
+      () => {
+        cancelar()
+        limpiarFila()
+      }
+    "
+    @editar="guardarCambiosFila"
+    @guardar="guardarNuevaFila"
     :modalMaximized="modalMaximized"
   ></EditarTablaModal>
 
@@ -82,7 +89,7 @@
                 'number',
                 'date',
                 'time',
-                'search'
+                'search',
               ].includes(props.col.type))
           "
           v-model="props.row[props.col.name]"
@@ -240,18 +247,19 @@
         </q-select>
 
         <q-toggle
-          v-if="props.col.type === 'boolean'"
+          v-if="['boolean', 'toggle'].includes(props.col.type)"
           v-model="props.row[props.col.name]"
           @update:model-value="guardarCeldaEditada(props.row)"
-          :label="props.row[props.col.name] ? 'SI' : 'NO'"
           keep-color
-          :disable="disable"
-        />
+          color="positive"
+          :disable="disable || props.col.disableTable"
+          />
+          <!-- :label="props.row[props.col.name] ? 'SI' : 'NO'" -->
       </q-td>
 
       <q-td v-else :props="props">
         <span
-          v-if="!['select', 'boolean'].includes(props.col.type)"
+        v-if="!['selecdt', 'boolean', 'toggle'].includes(props.col.type)"
           :class="{
             'text-white': $q.dark.isActive,
             'text-dark': !$q.dark.isActive
@@ -484,6 +492,7 @@
           v-if="extraerVisible(accion1Header, props)"
           :color="accion1Header?.color ?? 'primary'"
           :class="{ 'q-mb-sm': $q.screen.xs, 'full-width': $q.screen.xs }"
+          :disable="extraerDisable(accion1Header, props)"
           push
           rounded
           no-caps
@@ -1844,6 +1853,7 @@
         <q-chip
           v-if="props.value === 'TICKET REASIGNADO'"
           class="bg-blue-1 text-blue"
+          dense
         >
           <q-icon name="bi-arrow-left-right" class="q-mr-xs"></q-icon>
           {{ 'TICKET REASIGNADO' }}
@@ -1852,6 +1862,7 @@
         <q-chip
           v-if="props.value === 'TICKET PAUSADO'"
           class="bg-grey-2 text-grey-8"
+          dense
         >
           <q-icon
             name="bi-pause-circle-fill"
@@ -1864,6 +1875,7 @@
         <q-chip
           v-if="props.value === 'TICKET EJECUTADO'"
           class="bg-yellow-1 text-yellow-8"
+          dense
         >
           <q-icon
             name="bi-play-circle-fill"
@@ -1876,6 +1888,7 @@
         <q-chip
           v-if="props.value === 'TICKET FINALIZADO'"
           class="bg-green-1 text-positive"
+          dense
         >
           <q-icon
             name="bi-check-circle-fill"

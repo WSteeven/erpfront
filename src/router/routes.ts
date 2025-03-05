@@ -8,6 +8,7 @@ import rutasSSO from './rutasSSO'
 import { empresas } from 'config/utils/sistema'
 import rutasFondosRotativos from './rutasFondosRotativos'
 import rutasVehiculos from './rutasVehiculos'
+import rutasSeguridad from './rutasSeguridad'
 
 console.log(process.env.VUE_APP_ID)
 const routes: RouteRecordRaw[] = [
@@ -124,6 +125,7 @@ const routes: RouteRecordRaw[] = [
        * Modulo de SSO
        **************************/
       ...rutasSSO,
+      ...rutasSeguridad,
 
       /********
        * Otros

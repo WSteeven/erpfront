@@ -12,6 +12,7 @@ import ConfirmarDialog from 'gestionTrabajos/trabajoAsignado/view/ConfirmarDialo
 import EssentialTableTabs from 'components/tables/view/EssentialTableTabs.vue'
 import EssentialTable from 'components/tables/view/EssentialTable.vue'
 import ModalesEntidad from 'components/modales/view/ModalEntidad.vue'
+import Callout from 'components/CalloutComponent.vue'
 
 // Logica y controladores
 import { ComportamientoModalesTicketAsignado } from '../application/ComportamientoModalesTicketAsignado'
@@ -30,6 +31,7 @@ export default defineComponent({
     EssentialTable,
     ModalesEntidad,
     ConfirmarDialog,
+    Callout,
   },
   setup() {
     /***********

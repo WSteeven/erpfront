@@ -5,6 +5,7 @@ import { computed, Ref } from 'vue'
 import seleccionContratacionPersonal from './menus/rrhh/seleccionContratacionPersonal'
 import trabajoSocial from 'stores/menus/rrhh/trabajoSocial'
 import vehiculos from './menus/vehiculos/vehiculos'
+import menuSeguridad from './menus/seguridad/menuSeguridad'
 
 export const useMenuStore = defineStore('menu', () => {
   const store = useAuthenticationStore()
@@ -259,6 +260,10 @@ export const useMenuStore = defineStore('menu', () => {
         }
       ]
     },
+    /********************
+     * Modulo Seguridad
+     ********************/
+    ...menuSeguridad.value,
     /********************
      * Modulo SSO
      ********************/

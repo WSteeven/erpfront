@@ -1,6 +1,6 @@
 import { SelectOption } from './SelectOption'
 
-type tipos = 'float' | 'text' | 'number' | 'textarea' | 'select' | 'boolean' | 'date' | 'search' | 'imagen' | 'datetime' | 'toggle' | 'select_multiple' // | 'file'
+type tipos = 'float' | 'text' | 'number' | 'textarea' | 'select' | 'boolean' | 'date' | 'search' | 'imagen' | 'datetime' | 'toggle' | 'select_multiple' | 'checkbox' | 'voice'
 type align = 'left' | 'center' | 'right'
 type operadores = '<' | '<=' | '>' | '>=' | 'start' | 'end' | 'like' | '!=' | '='
 
@@ -15,7 +15,8 @@ export interface ColumnConfig<T> {
   max?: number
   align?: align
   sortable?: boolean
-  visible?: boolean
+  visible?: boolean // oculta tanto en tabla como en modal de editar
+  visibleModal?: boolean
   print?: boolean
   style?: string
   type?: tipos
@@ -30,5 +31,9 @@ export interface ColumnConfig<T> {
   // accept?: string
   filtro?: (val, update) => void
   operador?: operadores,
-  accion?: funcion<T>
+  accion?: funcion<T>,
+  table_index?: number // Para saber en que posición de la tabla se encuentra
+  disableModal?: boolean
+  disableTable?: boolean
+  columnClass?: string
 }
