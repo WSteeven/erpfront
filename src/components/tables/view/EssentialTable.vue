@@ -488,11 +488,11 @@
       <!-- Botones Header -->
       <div class="row full-width q-gutter-xs">
         <!-- Boton 1 Header -->
+        <!-- :disable="extraerDisable(accion1Header, props)" -->
         <q-btn
           v-if="extraerVisible(accion1Header, props)"
           :color="accion1Header?.color ?? 'primary'"
           :class="{ 'q-mb-sm': $q.screen.xs, 'full-width': $q.screen.xs }"
-          :disable="extraerDisable(accion1Header, props)"
           push
           rounded
           no-caps

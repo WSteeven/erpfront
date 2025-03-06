@@ -12,7 +12,7 @@ import { useNotificacionStore } from 'stores/notificacion'
 import { useNotificaciones } from 'shared/notificaciones'
 import { jornadas } from 'pages/seguridad/config/utils'
 import { acciones, accionesTabla } from 'config/utils'
-import { defineComponent, reactive, ref } from 'vue'
+import { computed, defineComponent, reactive, ref } from 'vue'
 import { required } from 'shared/i18n-validators'
 import useVuelidate from '@vuelidate/core'
 import { endpoints } from 'config/api'
@@ -79,6 +79,15 @@ export default defineComponent({
     const mostrarSolicitarArchivoActividad = ref(false)
     const modales = new ComportamientoModalesBitacora()
     const { confirmar, promptItems } = useNotificaciones()
+    // const prendas = computed(() => listadosAuxiliares.prendas)
+    const prendas = computed(() =>
+      listadosAuxiliares.prendas.map((prenda) => ({
+        ...prenda,
+        descripcion: prenda.descripcion
+          .toLowerCase()
+          .replace(/\b\w/g, (char) => char.toUpperCase()),
+      }))
+    )
 
     /*************
      * Funciones
@@ -315,6 +324,9 @@ export default defineComponent({
       btnRegistrarActividades,
       btnFinalizarBitacora,
       listarActividadBitacora,
+      accion,
+      acciones,
+      prendas,
       // orquestador
       refListadoSeleccionable,
       criterioBusqueda,

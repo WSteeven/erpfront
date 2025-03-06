@@ -34,6 +34,7 @@
               file_extensiones=".jpg, image/*"
               @update:modelValue="(data) => (imagen = data)"
               hint="Obligatorio"
+              :comprimir="false"
             >
             </selector-imagen>
           </div>

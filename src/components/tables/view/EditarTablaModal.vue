@@ -195,7 +195,10 @@ export default defineComponent({
       type: Boolean,
       default: true
     },
-    accion: String
+    accion: {
+      type: String,
+      default: acciones.editar
+    }
   },
   emits: ['limpiar', 'guardar', 'editar'],
 
@@ -257,6 +260,7 @@ export default defineComponent({
     }
 
     function guardar() {
+      console.log(props.accion)
       const newObj = camposFiltrados.reduce((acc, item) => {
         acc[item.field] = item.valor
         return acc
@@ -264,6 +268,7 @@ export default defineComponent({
       if (validarRequeridos(newObj)) {
         if (props.accion === acciones.nuevo) emit('guardar', newObj)
         if (props.accion === acciones.editar) emit('editar', newObj)
+        console.log(newObj)
         abierto.value = false
       }
     }

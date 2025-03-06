@@ -168,6 +168,18 @@
                     ></q-icon>
                   </template>
 
+                  <template #after>
+                    <q-btn
+                      color="positive"
+                      :icon="iconos.buscar"
+                      @click="listarProtector"
+                      unelevated
+                      dense
+                    >
+                      <q-tooltip>Recargar protector</q-tooltip>
+                    </q-btn>
+                  </template>
+
                   <template v-slot:error>
                     <div
                       v-for="error of v$.protector.$errors"
@@ -204,6 +216,18 @@
                     ></q-icon>
                   </template>
 
+                  <template #after>
+                    <q-btn
+                      color="positive"
+                      :icon="iconos.buscar"
+                      @click="listarConductor"
+                      unelevated
+                      dense
+                    >
+                      <q-tooltip>Recargar protector</q-tooltip>
+                    </q-btn>
+                  </template>
+
                   <template v-slot:error>
                     <div
                       v-for="error of v$.conductor.$errors"
@@ -223,16 +247,32 @@
                   class="q-mr-sm"
                   color="primary"
                 ></q-icon>
-                Selección de prendas recibidas
+                <span class="inline-block q-mr-sm"
+                  >Selección de prendas recibidas</span
+                >
+                <q-btn
+                  v-if="bitacora.zona && accion === acciones.nuevo"
+                  color="positive"
+                  :icon="iconos.recargar"
+                  @click="consultarPrendasPermitidas()"
+                  unelevated
+                  dense
+                  rounded
+                  no-caps
+                  label="Recargar prendas asignadas"
+                  class="q-px-sm"
+                >
+                  <q-tooltip>Recargar prendas asignadas</q-tooltip>
+                </q-btn>
                 <q-separator class="q-my-xs"></q-separator>
               </div>
 
-              <i v-if="!listadosAuxiliares.prendas.length"
+              <i v-if="!prendas.length"
                 >Seleccione una zona para mostrar el listado de prendas.</i
               >
 
               <div
-                v-for="prenda in listadosAuxiliares.prendas"
+                v-for="prenda in prendas"
                 :key="prenda.id"
                 class="col-6 col-md-3"
               >

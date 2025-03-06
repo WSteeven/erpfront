@@ -95,7 +95,10 @@
             />
           </div>
 
-          <div v-if="listadosAuxiliares.miembrosZona.length" class="col-12 q-mb-md">
+          <div
+            v-if="listadosAuxiliares.miembrosZona.length"
+            class="col-12 q-mb-md"
+          >
             <div class="q-mb-md">
               Empleados asignados a la zona
               <q-icon name="bi-check-circle-fill" color="positive" />
@@ -398,7 +401,9 @@
         @selected="
           d => {
             seleccionarEmpleado(d)
-            consultarClientesMaterialesEmpleado()
+            consultarClientesMaterialesEmpleado({
+              empleado_id: prendaZona.empleado_id
+            })
           }
         "
         tipo-seleccion="single"

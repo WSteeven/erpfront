@@ -383,7 +383,7 @@ export default defineComponent({
         if (data) filaVacia.hydrate(data)
         fila.value = filaVacia
         // console.log(fila.value)
-        posicionFilaEditada.value = listado.value.length
+        // posicionFilaEditada.value = listado.value.length
         refEditarModal.value.abrir()
       } else {
         console.log('Debe pasar un objeto Instanciable a la tabla')
@@ -405,7 +405,8 @@ export default defineComponent({
 
     const getIndex = (data) => {
       if (data.table_index) return listado.value.findIndex((fila: any) => fila.table_index === data.table_index)
-      else return props.datos.findIndex((fila: any) => fila.id === data.id)
+      else if (data.id) return props.datos.findIndex((fila: any) => fila.id === data.id)
+      else return posicionFilaEditada.value
     }
 
     function guardarNuevaFila(data) {
@@ -416,8 +417,15 @@ export default defineComponent({
 
     function guardarCambiosFila(data) {
       const posicion = getIndex(data)
+      console.log(posicion, data)
+      console.log(props.editarFilaLocal)
+      console.log(posicionFilaEditada.value)
 
-      if (props.editarFilaLocal) listado.value[posicion] = data
+      const dataAnterior = listado.value[posicion]
+      const dataNueva = {...dataAnterior, ...data}
+
+      console.log(dataNueva)
+      if (props.editarFilaLocal) listado.value[posicion] = dataNueva
       emit('guardar-fila', data)
       limpiarFila()
     }

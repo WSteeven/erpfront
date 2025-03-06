@@ -26,13 +26,13 @@ const menuSeguridad: Ref<MenuOption[]> = computed(() => {
         {
           title: 'Prendas zonas',
           link: 'prendas-zonas',
-          icon: 'bi-geo-alt',
+          icon: 'bi-diagram-2',
           can: store.can('puede.acceder.prendas_zonas')
         },
         {
           title: 'Tipos de eventos bitácora',
           link: 'tipos-eventos-bitacoras',
-          icon: 'bi-geo-alt',
+          icon: 'bi-list-ul',
           can: store.can('puede.acceder.tipos_eventos_bitacoras')
         },
       ],
