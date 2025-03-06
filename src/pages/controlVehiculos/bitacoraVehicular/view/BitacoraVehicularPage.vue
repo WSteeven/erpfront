@@ -14,6 +14,21 @@
     <template #formulario>
       <q-form @submit.prevent>
         <div class="row q-col-gutter-sm q-py-md">
+          <div class="col-12 col-md-3 col-sm-3">
+            <label class="q-mb-sm block">Tipo de vehículo</label>
+            <q-toggle
+              :label="bitacora.es_vehiculo_propio ? 'PROPIO' : 'ALQUILADO'"
+              v-model="bitacora.es_vehiculo_propio"
+              color="primary"
+              keep-color
+              icon="bi-check2-circle"
+              unchecked-icon="clear"
+              :disable="disabled"
+              @update:model-value="obtenerVehiculos"
+            />
+          </div>
+
+
           <!-- Vehiculo -->
           <div class="col-12 col-md-3 q-mb-md">
             <label class="q-mb-sm block">Vehículo</label>
@@ -53,7 +68,7 @@
           <!-- Chofer -->
           <div
             class="col-12 col-md-3 q-mb-md"
-            v-if="accion == acciones.nuevo || bitacora.chofer"
+            v-if="(accion == acciones.nuevo || bitacora.chofer) && bitacora.es_vehiculo_propio"
           >
             <label class="q-mb-sm block">Chofer</label>
             <q-input
@@ -62,8 +77,33 @@
               disable
               outlined
               dense
-            ></q-input>
+            />
           </div>
+          <!-- Chofer -->
+          <div class="col-12 col-md-3 q-mb-md" v-if="!bitacora.es_vehiculo_propio">
+            <label class="q-mb-sm block">Chofer</label>
+            <q-select
+              v-model="bitacora.chofer"
+              :options="choferes"
+              transition-show="scale"
+              transition-hide="scale"
+              options-dense
+              clearable
+              dense
+              outlined
+              :disable="disabled"
+              @update:model-value="()=>bitacora.chofer_id = Number(bitacora.chofer)"
+              :option-label="(item) => item.apellidos + ' ' + item.nombres"
+              :option-value="(item) => item.id"
+              emit-value
+              map-options
+            >
+              <template v-slot:no-option>
+                <no-option-component/>
+              </template>
+            </q-select>
+          </div>
+
           <!-- Fecha de registro -->
           <div class="col-6 col-md-3">
             <label class="q-mb-sm block">Fecha</label>
