@@ -10,6 +10,8 @@ export class GastoCoordinadores extends EntidadAuditable {
   observacion: string | null
   id_usuario: number | null
   empleado_info: string | null
+  revisado: boolean
+  estado : number|null
 
 
   constructor() {
@@ -24,5 +26,7 @@ export class GastoCoordinadores extends EntidadAuditable {
     this.observacion = null
     this.id_usuario = null
     this.empleado_info = null
+    this.revisado = false
+    this.estado = null
   }
 }

@@ -1,7 +1,12 @@
 <template>
-  <tab-layout
+  <tab-layout-filter-tabs2
     :mixin="mixin"
     :configuracionColumnas="configuracionColumnas"
+    titulo-pagina="Solicitudes de fondos para viáticos"
+    :tab-options="tabOptions"
+    :tab-defecto="tabDefecto"
+    :permitir-editar="esContabilidad"
+    :filtrar="filtrarSolicitudes"
     :accion1="editarGasto"
     ajustarCeldas
   >
@@ -33,16 +38,10 @@
               map-options
             >
               <template v-slot:error>
-                <div v-for="error of v$.lugar.$errors" :key="error.$uid">
-                  <div class="error-msg">{{ error.$message }}</div>
-                </div>
+                <error-component clave="lugar" :v$="v$" />
               </template>
               <template v-slot:no-option>
-                <q-item>
-                  <q-item-section class="text-grey">
-                    No hay resultados
-                  </q-item-section>
-                </q-item>
+                <no-option-component/>
               </template>
             </q-select>
           </div>
@@ -62,9 +61,7 @@
               dense
             >
               <template v-slot:error>
-                <div v-for="error of v$.monto.$errors" :key="error.$uid">
-                  <div class="error-msg">{{ error.$message }}</div>
-                </div>
+                <error-component clave="monto" :v$="v$" />
               </template>
             </q-input>
           </div>
@@ -93,16 +90,10 @@
               map-options
             >
               <template v-slot:error>
-                <div v-for="error of v$.grupo.$errors" :key="error.$uid">
-                  <div class="error-msg">{{ error.$message }}</div>
-                </div>
+                <error-component clave="grupo" :v$="v$" />
               </template>
               <template v-slot:no-option>
-                <q-item>
-                  <q-item-section class="text-grey">
-                    No hay resultados
-                  </q-item-section>
-                </q-item>
+                <no-option-component/>
               </template>
             </q-select>
           </div>
@@ -120,6 +111,9 @@
               dense
               use-chips
               outlined
+              use-input
+              input-debounce="0"
+              @filter="filtrarMotivos"
               @blur="v$.motivo.$touch"
               :error="!!v$.motivo.$errors.length"
               error-message="Debes seleccionar uno o varios sub_detalle"
@@ -145,28 +139,61 @@
                 </q-item>
               </template>
               <template v-slot:error>
-                <div v-for="error of v$.motivo.$errors" :key="error.$uid">
-                  <div class="error-msg">{{ error.$message }}</div>
-                </div>
+                <error-component clave="motivo" :v$="v$" />
               </template>
               <template v-slot:no-option>
-                <q-item>
-                  <q-item-section class="text-grey">
-                    No hay resultados
-                  </q-item-section>
-                </q-item>
+                <no-option-component/>
               </template>
+            </q-select>
+          </div>
+<!--          Revisado -->
+          <div class="col-12 col-md-3 " v-if="[acciones.consultar, acciones.editar].includes(accion)">
+            <label class="q-mb-sm block">¿Solicitud revisada?</label>
+            <q-toggle
+              :label="gasto.revisado ? 'SI' : 'NO'"
+              v-model="gasto.revisado"
+              color="primary"
+              keep-color
+              icon="bi-check2-circle"
+              unchecked-icon="clear"
+              :disable="disabled"
+            />
+          </div>
+
+          <!-- Select estado -->
+          <div
+            v-if="[acciones.consultar, acciones.editar].includes(accion)"
+            class="col-12 col-md-3 q-mb-md"
+          >
+            <label
+              color="light-green-2"
+              class="text-positive text-bold q-mb-sm inline-block bg-light-green-2 rounded q-px-md"
+            >Estado
+            </label>
+            <q-select
+              v-model="gasto.estado"
+              :options="estados"
+              transition-show="jum-up"
+              transition-hide="jump-down"
+              options-dense
+              dense
+              outlined
+              disable
+              :option-value="v => v.id"
+              :option-label="v => v.nombre"
+              emit-value
+              map-options
+            >
             </q-select>
           </div>
 
           <!-- Observacion -->
-          <div class="col-12 col-md-3">
+          <div class="col-12 col-md-6">
             <label class="q-mb-sm block">Descripcion</label>
             <q-input
               v-model="gasto.observacion"
               placeholder="Obligatorio"
               autogrow
-              type="textarea"
               :disable="disabled"
               :error="!!v$.observacion.$errors.length"
               hint="Escriba su requerimiento al que desea pedir el gasto"
@@ -175,15 +202,13 @@
               dense
             >
               <template v-slot:error>
-                <div v-for="error of v$.observacion.$errors" :key="error.$uid">
-                  <div class="error-msg">{{ error.$message }}</div>
-                </div>
+                <error-component clave="observacion" :v$="v$" />
               </template>
             </q-input>
           </div>
         </div>
       </q-form>
     </template>
-  </tab-layout>
+  </tab-layout-filter-tabs2>
 </template>
 <script src="./GastoCoordinadorPage.ts"></script>

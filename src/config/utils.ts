@@ -67,6 +67,12 @@ export const regiones = ['R1', 'R2', 'R3', 'R4', 'R5']
 
 export const atenciones = ['URBANO', 'INTERURBANO']
 
+export const tabOptionsSolicitudesViaticos: TabOption[] = [
+  { label: 'Pendientes', value: '1' }, //autorizacion PENDIENTE
+  { label: 'Completadas', value: '2' }, //autorizacion APROBADO
+  { label: 'Anuladas', value: '4' },  //estado ANULADO
+]
+
 export const tabOptionsTransaccionesIngresos: TabOption[] = [
   { label: 'Todo', value: 'TODO' },
   { label: 'Pendiente', value: 'PENDIENTE' },

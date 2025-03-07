@@ -1805,6 +1805,11 @@
         <campo-boleano :propsTable="props" />
       </q-td>
     </template>
+    <template #body-cell-revisado="props">
+    <q-td :props="props">
+      <campo-boleano :propsTable="props" />
+    </q-td>
+  </template>
     <template #body-cell-tengo_conocimientos_requeridos="props">
       <q-td :props="props">
         <campo-boleano :propsTable="props" />
