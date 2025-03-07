@@ -32,6 +32,7 @@ import { AxiosHttpRepository } from 'shared/http/infraestructure/AxiosHttpReposi
 import { useRoute } from 'vue-router'
 import { useTransaccionEgresoStore } from 'stores/transaccionEgreso'
 import { CustomActionTable } from 'components/tables/domain/CustomActionTable'
+import { StatusEssentialLoading } from 'components/loading/application/StatusEssentialLoading'
 
 export default defineComponent({
   components: { TabLayout, EssentialTable, EssentialSelectableTable },
@@ -43,6 +44,7 @@ export default defineComponent({
     //stores
     useNotificacionStore().setQuasar(useQuasar())
     const store = useAuthenticationStore()
+    const cargando = new StatusEssentialLoading()
     const transaccionStore = useTransaccionStore()
     const transaccionEgresoStore = useTransaccionEgresoStore()
     const pedidoStore = usePedidoStore()
@@ -119,6 +121,7 @@ export default defineComponent({
           accion: async (data) => {
             try {
               confirmar('Esta acción firmará el comprobante de egreso con las cantidades y materiales aceptados ', async () => {
+                cargando.activar()
                 //aqui se aprueba y se firma el documento
                 const datos = {
                   transaccion: transaccion,
@@ -137,6 +140,8 @@ export default defineComponent({
               })
             } catch (e) {
               notificarError('Ha ocurrido un error')
+            }finally {
+              cargando.desactivar()
             }
           },
         }
@@ -235,7 +240,7 @@ export default defineComponent({
       aprobarEgreso,
       aprobarEgresoParcial,
       tabGestionarEgresos,
-
+cargando,
       //rutas
       route,
 

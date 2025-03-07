@@ -382,6 +382,7 @@
           v-if="transaccion.modificar_recepcion"
           color="positive"
           @click="aprobarEgresoParcial()"
+          :disable="cargando.estaCargando"
           no-caps
           glossy
           push
