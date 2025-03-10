@@ -319,6 +319,7 @@
               </template>
             </q-select>
           </div>
+          
           <!-- Retira un tercero -->
           <div
             v-if="

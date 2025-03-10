@@ -971,12 +971,6 @@ export const useMenuStore = defineStore('menu', () => {
           can: store.can('puede.acceder.intra_eventos')
         },
         {
-          title: 'Organigrama',
-          icon: 'bi-diagram-3-fill',
-          link: 'organigrama',
-          can: store.can('puede.acceder.intra_organigrama')
-        },
-        {
           title: 'Categorias',
           link: 'categorias-noticias',
           icon: 'bi-tags-fill',
@@ -993,7 +987,13 @@ export const useMenuStore = defineStore('menu', () => {
           link: 'tipos-eventos',
           icon: 'bi-calendar2-event-fill',
           can: store.can('puede.acceder.intra_tipos_eventos')
-        }
+        },
+/*         {
+          title: 'Organigrama',
+          icon: 'bi-diagram-3-fill',
+          link: 'organigrama',
+          can: store.can('puede.acceder.intra_organigrama')
+        }, */
       ]
     },
 
