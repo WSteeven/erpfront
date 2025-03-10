@@ -146,7 +146,29 @@
               </template>
             </q-select>
           </div>
-<!--          Revisado -->
+
+
+          <!-- Observacion -->
+          <div class="col-12 col-md-12">
+            <label class="q-mb-sm block">Descripcion</label>
+            <q-input
+              v-model="gasto.observacion"
+              placeholder="Obligatorio"
+              autogrow
+              :disable="disabled"
+              :error="!!v$.observacion.$errors.length"
+              hint="Escriba su requerimiento al que desea pedir el gasto"
+              @blur="v$.observacion.$touch"
+              outlined
+              dense
+            >
+              <template v-slot:error>
+                <error-component clave="observacion" :v$="v$" />
+              </template>
+            </q-input>
+          </div>
+
+          <!--          Revisado -->
           <div class="col-12 col-md-3 " v-if="[acciones.consultar, acciones.editar].includes(accion)">
             <label class="q-mb-sm block">¿Solicitud revisada?</label>
             <q-toggle
@@ -156,7 +178,7 @@
               keep-color
               icon="bi-check2-circle"
               unchecked-icon="clear"
-              :disable="disabled"
+              disable
             />
           </div>
 
@@ -178,7 +200,7 @@
               options-dense
               dense
               outlined
-              disable
+              :disable="!esContabilidad"
               :option-value="v => v.id"
               :option-label="v => v.nombre"
               emit-value
@@ -188,24 +210,25 @@
           </div>
 
           <!-- Observacion -->
-          <div class="col-12 col-md-6">
-            <label class="q-mb-sm block">Descripcion</label>
+          <div class="col-12 col-md-6" v-if="esContabilidad">
+            <label class="q-mb-sm block">Observación contabilidad</label>
             <q-input
-              v-model="gasto.observacion"
+              v-model="gasto.observacion_contabilidad"
               placeholder="Obligatorio"
               autogrow
               :disable="disabled"
-              :error="!!v$.observacion.$errors.length"
-              hint="Escriba su requerimiento al que desea pedir el gasto"
-              @blur="v$.observacion.$touch"
+              :error="!!v$.observacion_contabilidad.$errors.length"
+              hint="Escriba su observación al marcar como completada o anulada la solicitud"
+              @blur="v$.observacion_contabilidad.$touch"
               outlined
               dense
             >
               <template v-slot:error>
-                <error-component clave="observacion" :v$="v$" />
+                <error-component clave="observacion_contabilidad" :v$="v$" />
               </template>
             </q-input>
           </div>
+
         </div>
       </q-form>
     </template>
