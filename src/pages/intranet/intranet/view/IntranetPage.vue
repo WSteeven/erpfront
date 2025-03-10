@@ -416,7 +416,7 @@
               font-size: 12px;
               font-weight: bold;
             "
-            label="EXTENSIONES TELÉFONICAS"
+            label="EXTENSIONES TELEFÓNICAS"
             icon="bi-telephone-fill"
             class="extensiones-header"
             expand-separator
