@@ -1,9 +1,12 @@
 <template>
-  <tab-layout
+  <tab-layout-filter-tabs2
     :mixin="mixin"
     :configuracionColumnas="configuracionColumnas"
     :pagination="pagination"
     :puedeExportar="true"
+    :tab-options="tabOptions"
+    :tab-defecto="tabDefecto"
+    :filtrar="filtrarDetalles"
     :ajustarCeldas="true"
     titulo-pagina="Detalles de productos"
     :accion1="botonActivarDetalle"
@@ -612,6 +615,6 @@
         </div>
       </q-form>
     </template>
-  </tab-layout>
+  </tab-layout-filter-tabs2>
 </template>
 <script src="./DetalleProductoPage.ts"></script>
