@@ -76,6 +76,7 @@ export default defineComponent({
     const usuarios = 20
     const carousel_noticias = ref(0)
     const carousel_vacantes = ref(0)
+    const carousel_extensiones = ref(0)
     const activeTab = ref(0)
 
     const modalNoticia = ref(false)
@@ -374,6 +375,28 @@ export default defineComponent({
     consultarDepartamentos()
 
     const empleadosCumpleaneros = ref<Empleado[]>([])
+    const empleadosConExtension = ref<Empleado[]>([])
+
+
+    const obtenerEmpleadosConExtension = async () => {
+      try {
+        const empleadoController = new EmpleadoController()
+        const empleados = (
+          await empleadoController.listar({
+            estado: 1
+          })
+        ).result
+
+        empleadosConExtension.value = empleados.filter((empleado: Empleado) => {
+          // Verifica que el campo extensión no sea nulo, undefined o vacío
+          return empleado.extension !== null && empleado.extension !== undefined
+        })
+
+        console.log(empleadosConExtension.value)
+      } catch (err) {
+        console.log('Error al obtener empleados con extensión:', err)
+      }
+    }
 
     const obtenerEmpleadosCumpleaneros = async () => {
       // Obtener el mes actual
@@ -465,6 +488,7 @@ export default defineComponent({
       obtenerEventos()
       obtenerVacantes()
       obtenerEmpleadosCumpleaneros()
+      obtenerEmpleadosConExtension()
     })
 
     useNotificaciones()
@@ -544,6 +568,7 @@ export default defineComponent({
       subtareasPorAsignar,
       carousel_noticias,
       carousel_vacantes,
+      carousel_extensiones,
       activeTab,
       carousel_cumpleanos_mes,
       autoplay,
@@ -575,6 +600,7 @@ export default defineComponent({
       readMore,
       documentosIntranet,
       empleadosCumpleaneros,
+      empleadosConExtension,
       fechaActual,
       fechaSeleccionada,
       eventos,
