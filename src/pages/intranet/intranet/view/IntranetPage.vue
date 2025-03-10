@@ -403,7 +403,7 @@
                 </q-icon>
               </a>
             </div>
-            
+
           </div>
         </q-card>
         <br />
@@ -420,6 +420,7 @@
             icon="bi-telephone-fill"
             class="extensiones-header"
             expand-separator
+            :default-opened="false"
           >
             <div
               v-if="empleadosConExtension.length > 0"
