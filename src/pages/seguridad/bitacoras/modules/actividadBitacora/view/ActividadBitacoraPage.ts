@@ -1,7 +1,9 @@
 // Dependencias
 import { defineComponent, onMounted, ref, UnwrapRef } from 'vue'
 import { required, requiredIf } from 'shared/i18n-validators'
+import { obtenerTiempoActual } from 'shared/utils'
 import useVuelidate from '@vuelidate/core'
+import { acciones } from 'config/utils'
 
 // Componentes
 import SimpleLayout from 'shared/contenedor/modules/simple/view/SimpleLayout.vue'
@@ -14,9 +16,7 @@ import VoiceInput from 'components/inputs/VoiceInput.vue'
 import { TipoEventoBitacoraController } from 'pages/seguridad/tiposEventosBitacoras/infraestructure/TipoEventoBitacoraController'
 import { ContenedorSimpleMixin } from 'shared/contenedor/modules/simple/application/ContenedorSimpleMixin'
 import { ActividadBitacora } from '../domain/ActividadBitacora'
-import { acciones } from 'config/utils'
 import { TipoEventoBitacora } from 'pages/seguridad/tiposEventosBitacoras/domain/TipoEventoBitacora'
-import { obtenerTiempoActual } from 'shared/utils'
 
 export default defineComponent({
   components: { SimpleLayout, VoiceInput, SelectorImagen, GestorArchivos, FormularioVisitante },

@@ -150,7 +150,7 @@ export default defineComponent({
             campos: 'id,codigo_tarea,titulo,cliente_id',
             'f_params[orderBy][field]': 'id',
             'f_params[orderBy][type]': 'DESC',
-            'f_params[limit]': 50
+            'f_params[limit]': 150
           }
         },
         incidentes: {

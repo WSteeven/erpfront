@@ -128,7 +128,7 @@
           />
         </div>
       </div>
-      
+        
       <div class="row q-col-gutter-sm">
         <div class="col-12 text-pdrimary text-bold q-py-sm q-mt-sm">
           <q-icon name="bi-x-diamond" class="q-mr-sm" color="primary"></q-icon>

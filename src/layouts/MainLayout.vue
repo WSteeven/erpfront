@@ -489,7 +489,7 @@
       </q-toolbar>
 
       <div class="text-center">
-        <q-chip v-if="enCamino" class="bg-grey-2 q-mx-auto q-mb-md">
+        <q-chip v-if="enCamino" class="bg-desenfoque q-mx-auto">
           <q-icon
             name="bi-car-front-fill"
             color="positive"
