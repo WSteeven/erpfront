@@ -325,7 +325,7 @@ export default defineComponent({
           listado.value.splice(posicion, 1, response.data.modelo)
         }
       },
-      visible: () => store.esAdministrador
+      visible: () => false //store.esAdministrador
     }
     const botonCalificarProveedor: CustomActionTable = {
       titulo: 'Calificar',
@@ -339,14 +339,11 @@ export default defineComponent({
           proveedorStore.idDetalleDepartamento =
             detalleDepartamentoProveedor.value.id
         })
-        // proveedorStore.proveedor.hydrate(await new ProveedorController().consultar(entidad.id))
         modales.abrirModalEntidad('CalificacionProveedorPage')
       },
       visible: ({ entidad }) => {
-        // console.log(posicion, entidad)
-        const departamento_calificador = entidad.related_departamentos.filter(
-          v => v.id === store.user.departamento
-        )[0]
+        console.log(entidad)
+        const departamento_calificador = entidad.related_departamentos.filter(v => v.id === store.user.departamento)[0]
         if (departamento_calificador) {
           if (departamento_calificador.pivot.fecha_calificacion) {
             const diasTranscurridos = dayjs().diff(
@@ -358,8 +355,6 @@ export default defineComponent({
           return entidad.estado
         }
         return false
-
-        // return true
       }
     }
     const botonVerMiCalificacionProveedor: CustomActionTable = {
@@ -373,13 +368,11 @@ export default defineComponent({
         calificacionStore.idDepartamento = proveedorStore.idDepartamento
         calificacionStore.verMiCalificacion = true
         await consultarDetalleDepartamentoProveedor().then(() => {
-          proveedorStore.idDetalleDepartamento =
-            detalleDepartamentoProveedor.value.id
-          calificacionStore.idDetalleDepartamentoProveedor =
-            detalleDepartamentoProveedor.value.id
+          proveedorStore.idDetalleDepartamento = detalleDepartamentoProveedor.value.id
+          calificacionStore.idDetalleDepartamentoProveedor = detalleDepartamentoProveedor.value.id
           // calificacionStore.detalleDepartamentoProveedor = detalleDepartamentoProveedor.value
         })
-        modales.abrirModalEntidad('MiCalificacionProveedorPage')
+        modales.abrirModalEntidad('MiCalificacionProveedorPage', {mixin})
       },
       visible: ({  entidad }) => {
         const departamento_calificador = entidad.related_departamentos.filter(
@@ -391,7 +384,7 @@ export default defineComponent({
         return false
       }
     }
-    const botonVerCalificacionProveedor: CustomActionTable = {
+    const botonVerTodasCalificacionesProveedor: CustomActionTable = {
       titulo: 'Todas calificaciones',
       icono: 'bi-eye',
       color: 'info',
@@ -400,10 +393,9 @@ export default defineComponent({
         proveedorStore.idProveedor = entidad.id
         proveedorStore.proveedor = entidad
         await consultarDetalleDepartamentoProveedor().then(() => {
-          proveedorStore.idDetalleDepartamento =
-            detalleDepartamentoProveedor.value.id
+          proveedorStore.idDetalleDepartamento = detalleDepartamentoProveedor.value.id
         })
-        modales.abrirModalEntidad('InfoCalificacionProveedorPage')
+        modales.abrirModalEntidad('InfoCalificacionProveedorPage',{mixin})
       },
       visible: ({ entidad }) => {
         // console.log(entidad)
@@ -490,6 +482,7 @@ export default defineComponent({
           proveedor_id: proveedorStore.idProveedor,
           departamento_id: proveedorStore.idDepartamento
         })
+      console.log('Los detalles del departamento proveedor es: ', result)
       console.log('El detalle departamento proveedor es: ', result[0])
       if (result) detalleDepartamentoProveedor.value = result[0]
     }
@@ -611,7 +604,7 @@ export default defineComponent({
 
       //botones
       botonCalificarProveedor,
-      botonVerCalificacionProveedor,
+      botonVerTodasCalificacionesProveedor,
       botonVerMiCalificacionProveedor,
       botonDesactivarProveedor,
       botonActivarProveedor,

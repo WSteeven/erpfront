@@ -8,7 +8,7 @@
     :accion2="botonActivarProveedor"
     :accion3="botonCalificarProveedor"
     :accion4="botonVerMiCalificacionProveedor"
-    :accion5="botonVerCalificacionProveedor"
+    :accion5="botonVerTodasCalificacionesProveedor"
     :accion6="botonActualizarCalificacion"
     :ajustarCeldas="true"
     :puedeExportar="true"
