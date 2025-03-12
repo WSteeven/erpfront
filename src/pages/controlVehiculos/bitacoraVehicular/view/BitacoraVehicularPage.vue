@@ -97,12 +97,12 @@
               @filter="filtrarChoferes"
               use-input
               input-debounce="0"
+              @update:model-value="() => (bitacora.chofer_id = Number(bitacora.chofer))"
               :option-label="item => item.apellidos + ' ' + item.nombres"
               :option-value="item => item.id"
               emit-value
               map-options
             >
-<!--              @update:model-value="() => (bitacora.chofer_id = Number(bitacora.chofer))"-->
               <template v-slot:no-option>
                 <no-option-component />
               </template>
