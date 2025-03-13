@@ -1,6 +1,13 @@
 <template>
   <div class="row">
+    <!--  :error="
+            !!v$[keyError]?.$each?.$response.$errors[props.rowIndex][
+              props.col.name
+            ]?.length
+          " -->
+    <!--  {{ get(v$, keyError + '.$errors', []) }} -->
     <div class="col-12">
+      <!-- {{ v$.visitante?.nombre_completo.$errors }} -->
       <label class="q-mb-sm block">{{ label }}</label>
       <q-input
         v-model="internalValue"
@@ -11,12 +18,17 @@
         autogrow
         :placeholder="placeholder"
         :hint="grabando ? 'Escuchando...' : 'Presione el micrófono para grabar'"
-        :error="!!v$[keyError]?.$errors.length"
-        @blur="v$[keyError]?.$touch"
+        :error="!!get(v$, keyError + '.$errors', []).length"
+        @blur="get(v$, keyError, {}).$touch"
         :mask="mask"
       >
+        <!-- @blur="v$[keyError]?.$touch" -->
+        <!-- :error="!!v$[keyError]?.$errors.length" -->
         <template v-slot:error>
-          <div v-for="error of v$[keyError]?.$errors" :key="error.$uid">
+          <div
+            v-for="error of get(v$, keyError + '.$errors', [])"
+            :key="error.$uid"
+          >
             <div>{{ error.$message }}</div>
           </div>
         </template>
@@ -56,6 +68,7 @@
 
 <script lang="ts" setup>
 import { computed, ref } from 'vue'
+import get from 'lodash.get'
 
 const emit = defineEmits(['update:modelValue'])
 

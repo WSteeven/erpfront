@@ -4,8 +4,8 @@
       <voice-input
         v-model="entidad.nombre_completo"
         :v$="v$"
-        key-error="nombre_completo"
-        label="Nombre completo"
+        key-error="visitante.nombre_completo"
+        label="Nombre completo (Apellidos y nombres)"
         placeholder="OBLIGATORIO"
         :disable="disable"
       ></voice-input>
@@ -40,7 +40,7 @@
       <voice-input
         v-model="entidad.motivo_visita"
         :v$="v$"
-        key-error="motivo_visita"
+        key-error="visitante.motivo_visita"
         label="Motivo de visita"
         placeholder="OBLIGATORIO"
         :disable="disable"
@@ -70,6 +70,17 @@
             :color="entidad.persona_visitada ? 'positive' : 'grey-6'"
             size="xs"
           ></q-icon>
+        </template>
+
+        <template #after>
+          <q-btn
+            color="positive"
+            :icon="iconos.buscar"
+            @click="listar"
+            unelevated
+            dense
+          >
+          </q-btn>
         </template>
 
         <template v-slot:error>
@@ -140,12 +151,16 @@
 </template>
 
 <script lang="ts" setup>
+// Dependencias
 import { configuracionColumnasEmpleadosLite } from 'pages/recursosHumanos/empleados/domain/configuracionColumnasEmpleadosLite'
 import { useOrquestadorSelectorEmpleados } from 'pages/seguridad/bitacoras/application/useOrquestadorSelectorEmpleados'
 import { Visitante } from '../domain/Visitante'
+import { iconos } from 'config/iconos'
 import { reactive } from 'vue'
-import VoiceInput from 'components/inputs/VoiceInput.vue'
+
+// Componentes
 import EssentialSelectableTable from 'components/tables/view/EssentialSelectableTable.vue'
+import VoiceInput from 'components/inputs/VoiceInput.vue'
 
 const props = defineProps({
   visitante: {

@@ -193,6 +193,7 @@
               :permitirEliminar="false"
               :permitirEditar="false"
               :mostrarBotones="false"
+              :accion1-header="btnExportarExcel"
               :alto-fijo="false"
               :ajustarCeldas="true"
             />

@@ -247,7 +247,7 @@
                   class="q-mr-sm"
                   color="primary"
                 ></q-icon>
-                <span class="inline-block q-mr-sm"
+                <span class="inline-block q-mr-sm q-mb-sm"
                   >Selección de prendas recibidas</span
                 >
                 <q-btn
@@ -262,7 +262,6 @@
                   label="Recargar prendas asignadas"
                   class="q-px-sm"
                 >
-                  <q-tooltip>Recargar prendas asignadas</q-tooltip>
                 </q-btn>
                 <q-separator class="q-my-xs"></q-separator>
               </div>
@@ -274,7 +273,7 @@
               <div
                 v-for="prenda in prendas"
                 :key="prenda.id"
-                class="col-6 col-md-3"
+                class="col-12 col-md-3 q-mb-md"
               >
                 <q-checkbox
                   v-model="bitacora.prendas_recibidas"
@@ -284,7 +283,7 @@
                 ></q-checkbox>
               </div>
 
-              <div class="col-12 q-pt-xl">
+              <div class="col-12 q-pt-md">
                 <voice-input
                   v-model="bitacora.observaciones"
                   :v$="v$"

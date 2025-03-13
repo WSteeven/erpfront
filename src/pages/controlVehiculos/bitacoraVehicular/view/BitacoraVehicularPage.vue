@@ -28,7 +28,6 @@
             />
           </div>
 
-
           <!-- Vehiculo -->
           <div class="col-12 col-md-3 q-mb-md">
             <label class="q-mb-sm block">Vehículo</label>
@@ -61,14 +60,17 @@
                 </q-item>
               </template>
               <template v-slot:no-option>
-                <no-option-component/>
+                <no-option-component />
               </template>
             </q-select>
           </div>
           <!-- Chofer -->
           <div
             class="col-12 col-md-3 q-mb-md"
-            v-if="(accion == acciones.nuevo || bitacora.chofer) && bitacora.es_vehiculo_propio"
+            v-if="
+              (accion == acciones.nuevo || bitacora.chofer) &&
+              bitacora.es_vehiculo_propio
+            "
           >
             <label class="q-mb-sm block">Chofer</label>
             <q-input
@@ -80,26 +82,29 @@
             />
           </div>
           <!-- Chofer -->
-          <div class="col-12 col-md-3 q-mb-md" v-if="!bitacora.es_vehiculo_propio">
+          <div
+            class="col-12 col-md-3 q-mb-md"
+            v-if="!bitacora.es_vehiculo_propio"
+          >
             <label class="q-mb-sm block">Chofer</label>
             <q-select
               v-model="bitacora.chofer"
               :options="choferes"
-              transition-show="scale"
-              transition-hide="scale"
-              options-dense
-              clearable
-              dense
-              outlined
               :disable="disabled"
-              @update:model-value="()=>bitacora.chofer_id = Number(bitacora.chofer)"
-              :option-label="(item) => item.apellidos + ' ' + item.nombres"
-              :option-value="(item) => item.id"
+              options-dense
+              outlined
+              dense
+              @filter="filtrarChoferes"
+              use-input
+              input-debounce="0"
+              @update:model-value="() => (bitacora.chofer_id = Number(bitacora.chofer))"
+              :option-label="item => item.apellidos + ' ' + item.nombres"
+              :option-value="item => item.id"
               emit-value
               map-options
             >
               <template v-slot:no-option>
-                <no-option-component/>
+                <no-option-component />
               </template>
             </q-select>
           </div>
@@ -236,7 +241,7 @@
             >
               <template v-slot:error>
                 <error-component clave="km_final" :v$="v$" />
-           </template>
+              </template>
             </q-input>
           </div>
 
@@ -356,7 +361,7 @@
                 </q-item>
               </template>
               <template v-slot:no-option>
-                <no-option-component/>
+                <no-option-component />
               </template>
             </q-select>
           </div>
@@ -393,7 +398,7 @@
                 </q-item>
               </template>
               <template v-slot:no-option>
-                <no-option-component/>
+                <no-option-component />
               </template>
             </q-select>
           </div>
@@ -438,7 +443,10 @@
               />
             </div>
           </div>
-          <div class="row q-col-gutter-sm q-pa-sm" v-if="bitacora.tiene_tanqueo">
+          <div
+            class="row q-col-gutter-sm q-pa-sm"
+            v-if="bitacora.tiene_tanqueo"
+          >
             <div class="col-12">
               <essential-table
                 :datos="bitacora.tanqueos"
@@ -1168,7 +1176,7 @@
     :comportamiento="modales"
     :persistente="false"
     :mostrar-listado="false"
-    @guardado="(data)=>guardado(data)"
+    @guardado="data => guardado(data)"
   ></modales-entidad>
 </template>
 

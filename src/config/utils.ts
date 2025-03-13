@@ -481,6 +481,17 @@ export const numDiaSemana = {
   sabado: 6
 }
 
+export const optionsDias = [
+  { label: 'Lunes', value: 'lunes' },
+  { label: 'Martes', value: 'martes' },
+  { label: 'Miércoles', value: 'miercoles' },
+  { label: 'Jueves', value: 'jueves' },
+  { label: 'Viernes', value: 'viernes' },
+  { label: 'Sábado', value: 'sabado' },
+  { label: 'Domingo', value: 'domingo' }
+]
+
+
 export const opcionesReportesEgresos = [
   { value: 0, label: 'POR SOLICITANTE' },
   { value: 1, label: 'POR PERSONA QUE AUTORIZA' },

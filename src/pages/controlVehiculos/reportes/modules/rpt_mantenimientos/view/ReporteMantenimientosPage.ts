@@ -10,9 +10,10 @@ import { AxiosResponse } from 'axios'
 import { useNotificacionStore } from 'stores/notificacion'
 import { useQuasar } from 'quasar'
 import { useCargandoStore } from 'stores/cargando'
-import { StatusEssentialLoading } from 'components/loading/application/StatusEssentialLoading'
 import EssentialTable from 'components/tables/view/EssentialTable.vue'
 import { configuracionColumnasOrdenesReparacionesReporte } from 'vehiculos/reportes/modules/rpt_mantenimientos/domain/configuracionColumnasOrdenesReparaciones'
+import { CustomActionTable } from 'components/tables/domain/CustomActionTable'
+import { useNotificaciones } from 'shared/notificaciones'
 
 export default defineComponent({
   components: { EssentialTable, ErrorComponent },
@@ -22,9 +23,10 @@ export default defineComponent({
       fecha_fin: null
     })
 
+    const { notificarError, notificarAdvertencia } = useNotificaciones()
+
     useNotificacionStore().setQuasar(useQuasar())
     useCargandoStore().setQuasar(useQuasar())
-    const cargando = new StatusEssentialLoading()
 
     const listado = ref([])
     reporte.fecha_fin = obtenerFechaActual(maskFecha)
@@ -38,7 +40,6 @@ export default defineComponent({
     async function obtenerReporte(accion: string, data, listado) {
       if (await v$.value.$validate()) {
         try {
-          cargando.activar()
           const axios = AxiosHttpRepository.getInstance()
           const url =
             apiConfig.URL_BASE +
@@ -57,7 +58,6 @@ export default defineComponent({
             default:
               data.accion = ''
               const response: AxiosResponse = await axios.post(url, data)
-              // console.log(response)
               if (response.data.results) {
                 if (response.data.results.length < 1)
                   notificarAdvertencia('No se obtuvieron resultados')
@@ -65,10 +65,9 @@ export default defineComponent({
               } else return listado
           }
         } catch (error) {
-          console.log(error)
+          console.error(error)
           notificarError('Error al obtener el reporte')
         } finally {
-          cargando.desactivar()
         }
       }
     }
@@ -77,8 +76,20 @@ export default defineComponent({
       const results = ref([])
       results.value = await obtenerReporte(accion, reporte, listado.value)
       listado.value = results.value
-      console.log(results.value)
-      console.log(listado.value)
+    }
+
+    /**
+     * Botones de tabla
+     */
+    const btnExportarExcel: CustomActionTable = {
+      titulo: 'Descargar',
+      icono: 'bi-file-earmark-excel-fill',
+      color: 'positive',
+      tooltip: 'Descargar reporte',
+      accion: async () => {
+        await obtenerReporte('excel', reporte, listado.value)
+      },
+      visible: () => listado.value.results
     }
 
     return {
@@ -87,7 +98,9 @@ export default defineComponent({
       maskFecha,
       listado,
       configuracionColumnas: configuracionColumnasOrdenesReparacionesReporte,
-      buscarReporte
+      buscarReporte,
+
+      btnExportarExcel
     }
   }
 })
