@@ -85,40 +85,33 @@ export default defineComponent({
     } = useOrquestadorSelectorDetalles(transferencia, 'materiales_empleado_consolidado')
 
     const consultarProductos = async () => {
-      if (!transferencia.cliente) return notificarAdvertencia('Debe seleccionar un cliente para filtrar los productos de origen')
+      if (!transferencia.cliente) return notificarAdvertencia('Debe seleccionar un cliente de origen para buscar los productos a transferir.')
       if (!transferencia.tarea_origen) { // Stock
         return await listarProductos({
           empleado_id: transferencia.empleado_origen,
           cliente_id: transferencia.cliente,
           stock_personal: 1,
+          destino: transferencia.tarea_destino ? 'TAREA' : 'STOCK'
         })
       } else {
         if (!transferencia.proyecto_origen && !transferencia.etapa_origen) {
-          /* filtroTarea.cliente_id = transferencia.cliente
-          filtroTarea.empleado_id = transferencia.empleado_origen
-          filtroTarea.tarea_id = transferencia.tarea_origen */
 
           return listarProductos({
             empleado_id: transferencia.empleado_origen,
             cliente_id: transferencia.cliente,
             tarea_id: transferencia.tarea_origen,
+            destino: transferencia.tarea_destino ? 'TAREA' : 'STOCK'
           })
-          // await consultarProductosTarea()
-          // transferencia.listado_productos = mapearProductos(listadosAuxiliares.productos)
+
         } else {
-          /* filtroProyecto.empleado_id = transferencia.empleado_origen
-          filtroProyecto.proyecto_id = transferencia.proyecto_origen
-          filtroProyecto.etapa_id = transferencia.etapa_origen */
 
           return listarProductos({
             empleado_id: transferencia.empleado_origen,
             cliente_id: transferencia.cliente,
             proyecto_id: transferencia.proyecto_origen,
             etapa_id: transferencia.etapa_origen,
+            destino: transferencia.tarea_destino ? 'TAREA' : 'STOCK'
           })
-
-          // await consultarProductosProyecto()
-          // transferencia.listado_productos = mapearProductos(listadosAuxiliares.productos)
         }
       }
     }

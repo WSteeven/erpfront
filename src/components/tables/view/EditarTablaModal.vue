@@ -11,7 +11,7 @@
           <img src="~assets/logo.png" />
         </q-avatar>
 
-        <q-toolbar-title>Editar fila seleccionada {{ accion }}</q-toolbar-title>
+        <q-toolbar-title>{{ accion }}</q-toolbar-title>
 
         <q-btn
           round
