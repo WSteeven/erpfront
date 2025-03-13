@@ -36,7 +36,7 @@ export class ConfiguracionGeneral extends EntidadAuditable {
     this.direccion_principal = null
     this.telefono = null
     this.moneda = null
-    this.iva = 15
+    this.iva = 15.00
     this.tipo_contribuyente = null
     this.celular1 = null
     this.celular2 = null
