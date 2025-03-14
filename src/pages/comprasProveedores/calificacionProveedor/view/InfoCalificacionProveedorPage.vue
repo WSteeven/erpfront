@@ -59,16 +59,26 @@
     </q-expansion-item>
     <div v-if="calificacionesDepartamentos.length > 0">
       <q-expansion-item
-        v-for="departamento in calificacionesDepartamentos"
-        :key="departamento.id"
+        v-for="(departamento, index) in calificacionesDepartamentos"
+        :key="index"
         class="overflow-hidden q-mb-md expansion"
         v-bind:label="
-          'Calificaciones del departamento ' + departamento[0].departamento
+          'Calificaciones del departamento ' +
+          (departamento != undefined
+            ? departamento[0].departamento
+            : 'Desconocido') +
+          ' - ' +
+          (departamento != undefined
+            ? departamento[0].created_at
+            : 'Fecha no disponible')
         "
         header-class="text-bold bg-header-collapse"
         default-opened
       >
-        <div class="row q-col-gutter-sm q-pa-sm">
+        <div
+          class="row q-col-gutter-sm q-pa-sm"
+          v-if="departamento != undefined"
+        >
           <!-- tabla de criterios de bienes -->
           <div
             class="col-12 col-md-12"
@@ -108,7 +118,11 @@
           </div>
 
           <div class="col-12 col-md-12">
-            <q-card flat bordered>
+            <q-card
+              flat
+              bordered
+              v-if="departamento[0].fecha_calificacion!=null || departamento[0].calificacion!=null"
+            >
               <q-card-section>
                 <div class="text-h6">
                   Empleado: {{ departamento[0].empleado }}
@@ -123,6 +137,13 @@
                 <div class="text">
                   Fecha de calificación:
                   <strong>{{ departamento[0].fecha_calificacion }}</strong>
+                </div>
+              </q-card-section>
+            </q-card>
+            <q-card flat bordered v-else>
+              <q-card-section>
+                <div class="text-h6">
+                  Aún no hay una calificación para este periodo.
                 </div>
               </q-card-section>
             </q-card>

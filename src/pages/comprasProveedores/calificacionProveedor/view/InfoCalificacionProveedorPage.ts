@@ -1,5 +1,5 @@
 // Dependencies
-import { computed, defineComponent, onMounted, ref } from 'vue'
+import { computed, defineComponent, ref } from 'vue'
 
 //Components
 import EssentialTable from 'components/tables/view/EssentialTable.vue'
@@ -12,14 +12,8 @@ import { CalificacionProveedor } from '../domain/CalificacionProveedor'
 import { CalificacionProveedorController } from '../infraestructure/CalificacionProveedorController'
 import { configuracionColumnasCriteriosCalificacionesConCalificacion } from 'pages/comprasProveedores/criteriosCalificaciones/domain/configuracionColumnasCriteriosCalificacionesConCalificacion'
 import { useCalificacionProveedorStore } from 'stores/comprasProveedores/calificacionProveedor'
-import { Proveedor } from 'sistema/proveedores/domain/Proveedor'
-import { ProveedorController } from 'sistema/proveedores/infraestructure/ProveedorController'
-import {
-    DetalleDepartamentoProveedor
-} from 'comprasProveedores/detallesDepartamentosProveedor/domain/DetalleDepartamentoProveedor'
-import {
-    DetalleDepartamentoProveedorController
-} from 'comprasProveedores/detallesDepartamentosProveedor/infraestructure/DetalleDepartamentoProveedorController'
+import { DetalleDepartamentoProveedor } from 'comprasProveedores/detallesDepartamentosProveedor/domain/DetalleDepartamentoProveedor'
+import { DetalleDepartamentoProveedorController } from 'comprasProveedores/detallesDepartamentosProveedor/infraestructure/DetalleDepartamentoProveedorController'
 
 //Logica y controladores
 
@@ -39,26 +33,19 @@ export default defineComponent({
          **************************************************************/
         const proveedorStore = useProveedorStore()
         const calificacionProveedorStore = useCalificacionProveedorStore()
-        const mostrarCalificacionPersonal = calificacionProveedorStore.verMiCalificacion
 
 
         /**************************************************************
          * Variables
          **************************************************************/
-        const calificacion_dada = ref()
         const refArchivo = ref()
-        const criteriosBienes = ref([])
-        const criteriosServicios = ref([])
         const departamentosCalificadores = ref([])
         const calificacionesDepartamentos = ref<any>([])
         const idDetalleDepartamentoProveedor = computed(() => proveedorStore.idDetalleDepartamento)
 
-        console.log(idDetalleDepartamentoProveedor.value)
-        calificacion_dada.value = { calificacion: 0, fecha_calificacion: Date.now() }
 
 
         cargarVista(async () => {
-            // console.log('INFO CALIFICACION', proveedorStore.idProveedor, proveedorStore.idDepartamento)
             calificacionProveedorStore.idProveedor = proveedorStore.proveedor.id
             calificacionProveedorStore.idDepartamento = proveedorStore.idDepartamento
             await calificacionProveedorStore.consultarDepartamentosCalificanProveedor()
@@ -67,14 +54,9 @@ export default defineComponent({
                 calificacionesDepartamentos.value[index] = [v, await calificacionProveedorStore.consultarCalificacionesProveedorDepartamento(v.id)]
                 await  cargarArchivos(v.id)
             })
-            console.log(calificacionesDepartamentos.value)
-            calificacionesDepartamentos.value.forEach((v)=>{
-                console.log('v es: ',v)
+            calificacionesDepartamentos.value.forEach(()=>{
                 cargarArchivos(1)
             })
-            console.log(calificacionProveedorStore.detalleDepartamentoProveedor)
-            calificacion_dada.value = calificacionProveedorStore.detalleDepartamentoProveedor
-
         })
 
 
@@ -85,11 +67,6 @@ export default defineComponent({
             refArchivo.value.listarArchivosAlmacenados(id)
         }
 
-        // onMounted(() => {
-        //     cargarArchivos(proveedorStore.idProveedor)
-        //     console.log(refArchivo.value)
-        // }
-        // )
         return {
             ofertas: listadosAuxiliaresProveedor.ofertas,
             proveedor: proveedorStore.proveedor,
@@ -97,8 +74,6 @@ export default defineComponent({
 
             //listados
             calificacionesDepartamentos,
-            criteriosServicios,
-            criteriosBienes,
 
             listadoFiltrado(listado, tipo) {
               return listado.filter(
@@ -106,11 +81,8 @@ export default defineComponent({
               )
             },
 
-            mostrarCalificacionPersonal,
-            calificacion_dada,
             refArchivo,
             mixinArchivos,
-            cargarArchivos,
 
             idDetalleDepartamentoProveedor,
         }
