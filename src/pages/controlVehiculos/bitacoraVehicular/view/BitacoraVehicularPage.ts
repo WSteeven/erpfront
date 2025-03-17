@@ -63,11 +63,8 @@ import ModalesEntidad from 'components/modales/view/ModalEntidad.vue'
 import ErrorComponent from 'components/ErrorComponent.vue'
 import NoOptionComponent from 'components/NoOptionComponent.vue'
 import { TanqueoController } from 'vehiculos/tanqueoCombustible/infraestructure/TanqueoController'
-import {
-  configuracionColumnasDetallesProforma
-} from 'pages/comprasProveedores/proforma/domain/configuracionColumnasDetallesProforma'
-import { UnidadMedida } from 'pages/bodega/unidades_medidas/domain/UnidadMedida'
 import { Tarea } from 'tareas/domain/Tarea'
+import { EmpleadoController } from 'recursosHumanos/empleados/infraestructure/EmpleadoController'
 
 export default defineComponent({
   // name:'ControlDiarioVehiculo',
@@ -96,7 +93,7 @@ export default defineComponent({
       mixin.useComportamiento()
     const { onReestablecer, onConsultado, onBeforeModificar, onModificado } =
       mixin.useHooks()
-    const { confirmar, notificarCorrecto, notificarAdvertencia } =
+    const { confirmar, notificarCorrecto, notificarAdvertencia, notificarError } =
       useNotificaciones()
     const modales = new ComportamientoModalesBitacoraVehicular()
     /****************************************
@@ -131,7 +128,10 @@ export default defineComponent({
       bitacoraDefault.value = await obtenerUltimaBitacora()
       cargarDatosBitacoraDefecto()
       await obtenerListados({
-        vehiculos: new VehiculoController()
+        vehiculos: {
+          controller: new VehiculoController(),
+          params: { tipo: 'PROPIO' }
+        }
       })
       vehiculos.value = listadosAuxiliares.vehiculos
     })
@@ -177,9 +177,13 @@ export default defineComponent({
         tickets.value = listadosAuxiliares.tickets
 
         //Colocar las tareas en listado
-        configuracionColumnasActividadesRealizadas.find((item) => item.field === 'tarea')!.options = listadosAuxiliares.tareas.map((v: Tarea) => { return { value: v.id, label: v.codigo_tarea } })
-
+        configuracionColumnasActividadesRealizadas.find(
+          item => item.field === 'tarea'
+        )!.options = listadosAuxiliares.tareas.map((v: Tarea) => {
+          return { value: v.id, label: v.codigo_tarea }
+        })
       }
+      await obtenerVehiculos()
 
       await obtenerTanqueosBitacora()
     })
@@ -434,9 +438,11 @@ export default defineComponent({
 
     async function obtenerTanqueosBitacora() {
       // se consulta los tanqueos correspondientes  esta bitacora y se cargan en bitacora.tanqueos
-      const { result } = await (new TanqueoController().listar({        bitacora_id: bitacora.id      }))
+      const { result } = await new TanqueoController().listar({
+        bitacora_id: bitacora.id
+      })
       console.log(result)
-      bitacora.tiene_tanqueo = result.length>0
+      bitacora.tiene_tanqueo = result.length > 0
       bitacora.tanqueos = result
     }
 
@@ -444,6 +450,37 @@ export default defineComponent({
       if (data.formulario == 'TanqueoLitePage') {
         bitacora.tanqueos.push(data.modelo)
         console.log('data recibida en el evento emitido de guardado', data)
+      }
+    }
+
+    async function obtenerEmpleados(){
+      const {result} = await new EmpleadoController().listar({'estado':1})
+      listadosAuxiliares.empleados = result
+      choferes.value = listadosAuxiliares.empleados
+    }
+
+    async function obtenerVehiculos() {
+      let response
+      try {
+        cargando.activar()
+        if (bitacora.es_vehiculo_propio) {
+          //obtener solo los vehículos propios
+          response = await new VehiculoController().listar({ tipo: 'PROPIO' })
+        } else {
+          //obtener solo los vehiculos alquilados
+          response = await new VehiculoController().listar({
+            tipo: 'ALQUILADO'
+          })
+          // llamada a obtener empleados
+          await obtenerEmpleados()
+        }
+        console.log(response)
+        listadosAuxiliares.vehiculos = response.result
+        vehiculos.value = listadosAuxiliares.vehiculos
+      } catch (e) {
+        notificarError(`Ha ocurrido un error: ${e}`)
+      } finally {
+        cargando.desactivar()
       }
     }
 
@@ -565,6 +602,7 @@ export default defineComponent({
       guardado,
       optionsFecha,
       checkFinalizada,
+      obtenerVehiculos,
       filtrarBitacoras,
       vehiculoSeleccionado,
 

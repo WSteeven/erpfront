@@ -4,7 +4,7 @@
     <q-card class="rounded-card">
       <!-- <q-linear-progress :value="1" color="primary" /> -->
       <q-card-section
-        :style="{ height: `calc(100vh - ${$q.screen.xs ? 100 : 500}px)` }"
+        :style="{ height: `calc(100vh - ${$q.screen.xs ? 100 : 200}px)` }"
         class="scroll"
       >
         <essential-table
@@ -106,7 +106,7 @@ export default defineComponent({
       ocultar,
       seleccionar,
       abierto,
-      emitSelected
+      emitSelected,
     }
   }
 })

@@ -2,32 +2,40 @@ import { defineComponent, ref } from 'vue'
 import { GastoCoordinadores } from '../domain/GastoCoordinadores'
 
 // Componentes
-import TabLayout from 'shared/contenedor/modules/simple/view/TabLayout.vue'
+import TabLayoutFilterTabs2 from 'shared/contenedor/modules/simple/view/TabLayoutFilterTabs2.vue'
+import NoOptionComponent from 'components/NoOptionComponent.vue'
 import SelectorImagen from 'components/SelectorImagen.vue'
+import ErrorComponent from 'components/ErrorComponent.vue'
 
 import { useNotificacionStore } from 'stores/notificacion'
 import { useQuasar } from 'quasar'
 import { useVuelidate } from '@vuelidate/core'
-import { required, minLength } from 'shared/i18n-validators'
+import { required, minLength, requiredIf } from 'shared/i18n-validators'
 import { ContenedorSimpleMixin } from 'shared/contenedor/modules/simple/application/ContenedorSimpleMixin'
 import { GastoCoordinadoresController } from '../infrestructure/GastoCoordinadoresController'
 import { configuracionColumnasGasto } from '../domain/configuracionColumnasGasto'
 import { CantonController } from 'sistema/ciudad/infraestructure/CantonControllerontroller'
 import { MotivoGastoController } from 'pages/fondosRotativos/MotivoGasto/infrestructure/MotivoGastoController'
 import { GrupoController } from 'pages/recursosHumanos/grupos/infraestructure/GrupoController'
-import { acciones } from 'config/utils'
+import { acciones, tabOptionsSolicitudesViaticos } from 'config/utils'
 import { useAuthenticationStore } from 'stores/authentication'
 import { CustomActionTable } from 'components/tables/domain/CustomActionTable'
+import { useFiltrosListadosSelects } from 'shared/filtrosListadosGenerales'
 
 export default defineComponent({
-  components: { TabLayout, SelectorImagen },
+  components: {
+    TabLayoutFilterTabs2,
+    NoOptionComponent,
+    SelectorImagen,
+    ErrorComponent,
+  },
   setup() {
     /*********
      * Stores
      *********/
     useNotificacionStore().setQuasar(useQuasar())
     const authenticationStore = useAuthenticationStore()
-
+    const {esContabilidad} = authenticationStore
     /***********
      * Mixin
      ************/
@@ -39,100 +47,93 @@ export default defineComponent({
       entidad: gasto,
       disabled,
       accion,
-      listadosAuxiliares,
+      listadosAuxiliares
     } = mixin.useReferencias()
-    const { setValidador, obtenerListados, cargarVista,consultar } =
+    const { setValidador, obtenerListados, cargarVista, consultar, listar } =
       mixin.useComportamiento()
+    const {onModificado}=  mixin.useHooks()
+
 
     /*******
      * Init
      ******/
+    const tabDefecto = ref('1')
+    const estados = [
+      { nombre: 'Pendiente', id: 1 }, //estado PENDIENTE
+      { nombre: 'Completa', id: 2 }, //estado COMPLETA
+      { nombre: 'Anulado', id: 4 }, //estado ANULADO
+    ]
 
     /*************
      * Validaciones
      **************/
     const reglas = {
       lugar: {
-        required,
+        required
       },
       grupo: {
-        required,
+        required
       },
       monto: {
-        required,
+        required
       },
       motivo: {
-        required,
+        required
       },
       observacion: {
         required,
-        minLength: minLength(25),
+        minLength: minLength(25)
       },
+      observacion_contabilidad: {
+        required: requiredIf(()=>esContabilidad && accion.value === acciones.editar && gasto.estado!=1)
+      }
     }
 
     const v$ = useVuelidate(reglas, gasto)
     setValidador(v$.value)
-    const cantones = ref([])
     const motivos = ref([])
-    const grupos = ref([])
     const autorizacionesEspeciales = ref([])
-    //Obtener el listado de las cantones
+
+    const {cantones, filtrarCantones, grupos, filtrarGrupos} = useFiltrosListadosSelects(listadosAuxiliares)
+
     cargarVista(async () => {
       await obtenerListados({
         cantones: {
           controller: new CantonController(),
-          params: { campos: 'id,canton' },
+          params: { campos: 'id,canton' }
         },
         motivos: {
           controller: new MotivoGastoController(),
-          params: { campos: 'id,nombre' },
+          params: { campos: 'id,nombre' }
         },
         grupos: {
           controller: new GrupoController(),
-          params: { campos: 'id,nombre' },
-        },
+          params: { campos: 'id,nombre' }
+        }
       })
       cantones.value = listadosAuxiliares.cantones
       motivos.value = listadosAuxiliares.motivos
       grupos.value = listadosAuxiliares.grupos
     })
 
+    /**
+     * HOOKS
+     */
+    onModificado(async ()=>
+    await filtrarSolicitudes('1')
+    )
+    /*********
+     * Funciones
+     **********/
+    async function filtrarSolicitudes(tab: string) {
+      tabDefecto.value = tab
+      await listar({ estado_id: tab })
+    }
+
     /*********
      * Filtros
      **********/
-
-    // - Filtro Lugares
-    function filtrarCantones(val, update) {
-      if (val === '') {
-        update(() => {
-          cantones.value = listadosAuxiliares.cantones
-        })
-        return
-      }
-      update(() => {
-        const needle = val.toLowerCase()
-        cantones.value = listadosAuxiliares.cantones.filter(
-          (v) => v.canton.toLowerCase().indexOf(needle) > -1
-        )
-      })
-    }
-    // filtro de grupos
-    function filtrarGrupos(val, update) {
-      if (val === '') {
-        update(() => {
-          grupos.value = listadosAuxiliares.grupos
-        })
-        return
-      }
-      update(() => {
-        const needle = val.toLowerCase()
-        grupos.value = listadosAuxiliares.grupos.filter(
-          (v) => v.nombre.toLowerCase().indexOf(needle) > -1
-        )
-      })
-    }
-
-    function filtarMotivos(val, update) {
+    function filtrarMotivos(val, update) {
       if (val === '') {
         update(() => {
           motivos.value = listadosAuxiliares.motivos
@@ -142,7 +143,7 @@ export default defineComponent({
       update(() => {
         const needle = val.toLowerCase()
         motivos.value = listadosAuxiliares.motivos.filter(
-          (v) => v.nombre.toLowerCase().indexOf(needle) > -1
+          v => v.nombre.toLowerCase().indexOf(needle) > -1
         )
       })
     }
@@ -151,12 +152,12 @@ export default defineComponent({
       icono: 'bi-pencil-square',
       color: 'secondary',
       visible: ({ entidad }) => {
-        return entidad.usuario == authenticationStore.user.id
+        return entidad.usuario == authenticationStore.user.id && tabDefecto.value === '1' // mostrar si la pestaña es pendiente
       },
       accion: ({ entidad }) => {
         accion.value = acciones.editar
         consultar(entidad)
-      },
+      }
     }
 
     return {
@@ -167,13 +168,19 @@ export default defineComponent({
       motivos,
       disabled,
       accion,
+      acciones,
       v$,
       configuracionColumnas: configuracionColumnasGasto,
       autorizacionesEspeciales,
+      estados,
       filtrarGrupos,
       filtrarCantones,
-      filtarMotivos,
-      editarGasto
+      filtrarMotivos,
+      editarGasto,
+      tabDefecto,
+      tabOptions: tabOptionsSolicitudesViaticos,
+      filtrarSolicitudes,
+      esContabilidad,
     }
-  },
+  }
 })

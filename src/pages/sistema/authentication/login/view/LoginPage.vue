@@ -9,7 +9,7 @@
       >
         <div class="imagen d-flex align-items-center justify-content-center">
           <q-avatar square size="400px">
-            <img :src="!$q.dark.isActive ? logoClaro : logoOscuro" />
+            <img :src="!$q.dark.isActive ? logoClaro : logoOscuro" alt="logo"/>
           </q-avatar>
         </div>
       </div>
@@ -24,7 +24,7 @@
           size="120px"
           class="q-mx-auto block q-mb-md"
         >
-          <img :src="!$q.dark.isActive ? logoClaro : logoOscuro" />
+          <img :src="!$q.dark.isActive ? logoClaro : logoOscuro" alt="logo" />
         </q-avatar>
 
         <form @submit.prevent="login" class="full-width q-px-lg">
@@ -119,26 +119,12 @@
 
 <script src="./LoginPage.ts"></script>
 
-<style scope>
+<style scoped>
 h2 {
   line-height: 1.2;
   font-size: 1.714rem;
 }
 
-.empresa {
-  position: fixed;
-  top: 16px;
-  left: 16px;
-}
-
-.fondo {
-  background: rgb(94, 88, 252);
-  background: linear-gradient(
-    90deg,
-    rgba(94, 88, 252, 1) 0%,
-    rgba(110, 143, 255, 1) 100%
-  );
-}
 
 /* Quita las mayusculas al campo de contraseña y usuario */
 /* .q-field .q-field__inner {

@@ -6,6 +6,7 @@ import seleccionContratacionPersonal from './menus/rrhh/seleccionContratacionPer
 import trabajoSocial from 'stores/menus/rrhh/trabajoSocial'
 import controlPersonal from 'stores/menus/rrhh/controlPersonal'
 import vehiculos from './menus/vehiculos/vehiculos'
+import menuSeguridad from './menus/seguridad/menuSeguridad'
 
 export const useMenuStore = defineStore('menu', () => {
   const store = useAuthenticationStore()
@@ -261,6 +262,10 @@ export const useMenuStore = defineStore('menu', () => {
       ]
     },
     /********************
+     * Modulo Seguridad
+     ********************/
+    ...menuSeguridad.value,
+    /********************
      * Modulo SSO
      ********************/
     {
@@ -474,7 +479,7 @@ export const useMenuStore = defineStore('menu', () => {
               title: 'Aceptar transferencia de productos',
               link: '/aceptar-transferencia-producto',
               icon: 'bi-arrow-left-right',
-              can: store.can('puede.acceder.aceptar_transferencia_producto')
+              can: true, // store.can('puede.acceder.aceptar_transferencia_producto')
             },
           ]
         },
@@ -968,12 +973,6 @@ export const useMenuStore = defineStore('menu', () => {
           can: store.can('puede.acceder.intra_eventos')
         },
         {
-          title: 'Organigrama',
-          icon: 'bi-diagram-3-fill',
-          link: 'organigrama',
-          can: store.can('puede.acceder.intra_organigrama')
-        },
-        {
           title: 'Categorias',
           link: 'categorias-noticias',
           icon: 'bi-tags-fill',
@@ -990,7 +989,13 @@ export const useMenuStore = defineStore('menu', () => {
           link: 'tipos-eventos',
           icon: 'bi-calendar2-event-fill',
           can: store.can('puede.acceder.intra_tipos_eventos')
-        }
+        },
+/*         {
+          title: 'Organigrama',
+          icon: 'bi-diagram-3-fill',
+          link: 'organigrama',
+          can: store.can('puede.acceder.intra_organigrama')
+        }, */
       ]
     },
 

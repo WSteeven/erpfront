@@ -29,7 +29,6 @@ export class ListableRepository<T> {
         }
       })
       .catch((error) => {
-        console.log(error)
         throw new ApiError(error)
       })
   }

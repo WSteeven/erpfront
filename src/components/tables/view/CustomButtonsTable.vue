@@ -6,7 +6,7 @@
       'column justify-end q-gutter-y-sm': $q.screen.xs,
     }"
   > -->
-  <span class="block text-center">
+  <span class="blockd text-center">
     <q-btn-group
       v-if="totalAcciones <= desplegarDesde"
       dense
@@ -20,7 +20,7 @@
         :color="extraerColor(accion1) || 'primary'"
         dense
         rounded
-        :disable="disable && !accion1?.forzarEditable"
+        :disable="disable && !accion1?.forzarEditable || extraerDisable(accion1)"
         no-caps
         no-wrap
         class="q-px-sm"
@@ -44,7 +44,7 @@
         :color="extraerColor(accion2) || 'primary'"
         dense
         rounded
-        :disable="disable"
+        :disable="disable || extraerDisable(accion2)"
         no-caps
         no-wrap
         unelevated
@@ -674,6 +674,29 @@ function extraerVisible(accion?: any) {
     }
   } else {
     return false
+  }
+}
+
+function extraerDisable(accion?: any) {
+  //CustomActionTable): boolean {
+  if (accion) {
+    if (accion.hasOwnProperty('disable')) {
+      if (typeof accion.disable === 'function') {
+        console.log('evaluando funcione')
+        const res = accion.disable({
+          entidad: props.propsTable.row,
+          posicion: props.propsTable.rowIndex
+        })
+        console.log('Devuelvo resultado', res)
+        return res
+      } else {
+        return accion.disable
+      }
+    } else {
+      return false
+    }
+  } else {
+    return true
   }
 }
 

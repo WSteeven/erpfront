@@ -168,6 +168,12 @@ const rutasVehiculos: RouteRecordRaw[] = [
     component: () =>
       import('pages/controlVehiculos/reportes/modules/rpt_bitacoras/view/ReporteBitacorasPage.vue'),
     meta: { requiresAuth: false },
+  },{
+    path: '/reporte-mantenimientos',
+    name: 'reporte_mantenimientos',
+    component: () =>
+      import('pages/controlVehiculos/reportes/modules/rpt_mantenimientos/view/ReporteMantenimientosPage.vue'),
+    meta: { requiresAuth: false },
   },
   {
     path: 'reporte-seguros',

@@ -1,5 +1,5 @@
 <template>
-  <q-dialog v-model="abierto" top :persistent="false" class="border-white">
+  <q-dialog v-model="abierto" top :persistent="false" class="bg-desenfoque">
     <q-card
       flat
       class="bg-transparent rounded-card no-border col-12"

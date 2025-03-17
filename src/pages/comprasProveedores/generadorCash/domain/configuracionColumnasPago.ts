@@ -29,7 +29,7 @@ export const configuracionColumnasPago: ColumnConfig<Pago>[] = reactive([
     label: 'Identificación beneficiario',
     align: 'left',
     editable: true,
-    placeholder: 'Escriba y presione ENTER',
+    placeholder: 'Nombre o identificación',
     icon: iconos.buscar
   },
   {
@@ -86,7 +86,7 @@ export const configuracionColumnasPago: ColumnConfig<Pago>[] = reactive([
     label: 'Número Cta.Beneficiario',
     align: 'left',
     editable: true,
-    placeholder: 'Escriba y presione ENTER',
+    placeholder: 'Num. Cuenta',
     icon: iconos.buscar
   },
   {
@@ -113,7 +113,7 @@ export const configuracionColumnasPago: ColumnConfig<Pago>[] = reactive([
   {
     name: 'referencia_adicional',
     field: 'referencia_adicional',
-    label: 'Referencia adicional',
+    label: 'Referencia adicional (Correo)',
     align: 'left',
     editable: true,
     type: 'textarea',

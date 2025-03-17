@@ -45,9 +45,9 @@ export default defineComponent({
 
 
         cargarVista(async () => {
-            obtenerListados({
-                empresas: new EmpresaController(),
-                proveedores: new ProveedorController(),
+            await obtenerListados({
+              empresas: new EmpresaController(),
+              proveedores: new ProveedorController(),
             })
             proveedoresAux.value = listadosAuxiliares.proveedores
         })
@@ -110,7 +110,7 @@ export default defineComponent({
             titulo: 'Historial',
             color: 'grey',
             icono: 'bi-file-text',
-            accion: ({ entidad, posicion }) => {
+            accion: ({ entidad }) => {
                 // console.log(entidad.id)
                 contactoProveedorStore.idcontacto = entidad.id
                 modales.abrirModalEntidad('ContactoProveedorLogPage')

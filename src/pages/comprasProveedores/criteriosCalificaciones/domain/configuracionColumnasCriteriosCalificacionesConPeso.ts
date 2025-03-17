@@ -6,7 +6,6 @@ export const configuracionColumnasCriteriosCalificacionesConPeso: ColumnConfig<a
         name: 'nombre',
         field: 'nombre',
         label: 'Nombre',
-        style: 'max-width: 150px; overflow: auto;',
         align: 'left',
         sortable: true
     },
@@ -14,7 +13,6 @@ export const configuracionColumnasCriteriosCalificacionesConPeso: ColumnConfig<a
         name: 'descripcion',
         field: 'descripcion',
         label: 'Descripción',
-        style: 'max-width: 250px; overflow: auto;',
         align: 'left',
         sortable: true
     },

@@ -16,6 +16,7 @@ export class BitacoraVehicular extends EntidadAuditable {
   firmada: boolean
   chofer: string | null
   chofer_id: number | null
+  es_vehiculo_propio: boolean
   vehiculo: string | null
   vehiculo_id: number | null
   actividadesRealizadas: any
@@ -47,6 +48,7 @@ export class BitacoraVehicular extends EntidadAuditable {
     this.firmada = false
     this.chofer = null
     this.chofer_id = null
+    this.es_vehiculo_propio = true
     this.vehiculo = null
     this.vehiculo_id = null
     this.actividadesRealizadas = []

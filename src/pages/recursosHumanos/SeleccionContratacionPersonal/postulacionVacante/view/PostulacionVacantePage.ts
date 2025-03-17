@@ -268,8 +268,8 @@ export default defineComponent({
       cargando.activar()
       const response = await new PostulacionController().listar({ user_id: store.user.id })
       cargando.desactivar()
-      console.log(response.result[0].aspiracion_salarial)
-      return response.result[0].aspiracion_salarial
+      // console.log(response)
+      return response.result[0]?.aspiracion_salarial??0
     }
 
     const agregarDiscapacidad = () => {
@@ -298,7 +298,7 @@ export default defineComponent({
 
     function seleccionarArchivo(archivos: any) {
       if (archivos.length > 0) {
-        console.log(archivos[0].ruta)
+        // console.log(archivos[0].ruta)
         postulacion.ruta_cv = archivos[0].ruta
       }
     }

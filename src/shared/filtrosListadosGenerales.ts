@@ -83,6 +83,9 @@ export const useFiltrosListadosSelects = (listadosAuxiliares) => {
   const inspecciones = ref(listadosAuxiliares.inspecciones)
   const incidentes = ref(listadosAuxiliares.incidentes)
 
+  // Seguridad
+  const zonas = ref(listadosAuxiliares.zonas)
+
   //////////////////////////////////////////
   //modulo Recursos Humanos
   //////////////////////////////////////////
@@ -535,6 +538,11 @@ export const useFiltrosListadosSelects = (listadosAuxiliares) => {
   const filtrarInspecciones = (val, update) => filtrarLista(val, update, inspecciones, 'titulo', listadosAuxiliares.inspecciones)
   const filtrarIncidentes = (val, update) => filtrarLista(val, update, incidentes, 'titulo', listadosAuxiliares.incidentes)
 
+  /************
+   * Seguridad
+  *************/
+  const filtrarZonas = (val, update) => filtrarLista(val, update, zonas, 'nombre', listadosAuxiliares.zonas)
+
   /***************************************
    * Filtro global optimizado
    * Actualmente filtra por un solo campo
@@ -614,5 +622,7 @@ export const useFiltrosListadosSelects = (listadosAuxiliares) => {
     // sso
     inspecciones, filtrarInspecciones,
     incidentes, filtrarIncidentes,
+    // seguridad
+    zonas, filtrarZonas,
   }
 }

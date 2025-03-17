@@ -11,7 +11,7 @@ import { useOrquestadorSelectorDetalles } from '../application/OrquestadorSelect
 import { useFiltrosListadosSelects } from 'shared/filtrosListadosGenerales'
 import { useAuthenticationStore } from 'stores/authentication'
 import { useNotificacionStore } from 'stores/notificacion'
-import { destinosTareas, tabOptionsTransferenciaProductoEmpleado } from 'config/tareas.utils'
+import { destinosTareas, estadosTransferenciasProductos, tabOptionsTransferenciaProductoEmpleado } from 'config/tareas.utils'
 import { useCargandoStore } from 'stores/cargando'
 import { ordernarListaString } from 'shared/utils'
 import { required } from 'shared/i18n-validators'
@@ -85,40 +85,33 @@ export default defineComponent({
     } = useOrquestadorSelectorDetalles(transferencia, 'materiales_empleado_consolidado')
 
     const consultarProductos = async () => {
-      if (!transferencia.cliente) return notificarAdvertencia('Debe seleccionar un cliente para filtrar los productos de origen')
+      if (!transferencia.cliente) return notificarAdvertencia('Debe seleccionar un cliente de origen para buscar los productos a transferir.')
       if (!transferencia.tarea_origen) { // Stock
         return await listarProductos({
           empleado_id: transferencia.empleado_origen,
           cliente_id: transferencia.cliente,
           stock_personal: 1,
+          destino: transferencia.tarea_destino ? 'TAREA' : 'STOCK'
         })
       } else {
         if (!transferencia.proyecto_origen && !transferencia.etapa_origen) {
-          /* filtroTarea.cliente_id = transferencia.cliente
-          filtroTarea.empleado_id = transferencia.empleado_origen
-          filtroTarea.tarea_id = transferencia.tarea_origen */
 
           return listarProductos({
             empleado_id: transferencia.empleado_origen,
             cliente_id: transferencia.cliente,
             tarea_id: transferencia.tarea_origen,
+            destino: transferencia.tarea_destino ? 'TAREA' : 'STOCK'
           })
-          // await consultarProductosTarea()
-          // transferencia.listado_productos = mapearProductos(listadosAuxiliares.productos)
+
         } else {
-          /* filtroProyecto.empleado_id = transferencia.empleado_origen
-          filtroProyecto.proyecto_id = transferencia.proyecto_origen
-          filtroProyecto.etapa_id = transferencia.etapa_origen */
 
           return listarProductos({
             empleado_id: transferencia.empleado_origen,
             cliente_id: transferencia.cliente,
             proyecto_id: transferencia.proyecto_origen,
             etapa_id: transferencia.etapa_origen,
+            destino: transferencia.tarea_destino ? 'TAREA' : 'STOCK'
           })
-
-          // await consultarProductosProyecto()
-          // transferencia.listado_productos = mapearProductos(listadosAuxiliares.productos)
         }
       }
     }
@@ -128,6 +121,7 @@ export default defineComponent({
      ************/
     const tabSeleccionado = ref()
     const esCoordinador = authenticationStore.esCoordinador
+    const esCoordinadorBodega = authenticationStore.esCoordinadorBodega
     const refArchivo = ref()
     const idTransferencia = ref()
     const esParaStock = ref(false)
@@ -149,14 +143,14 @@ export default defineComponent({
           controller: new EmpleadoController(),
           params: {
             campos: 'id,nombres,apellidos',
-            estado: 1,
+            // estado: 1,
           }
         },
         autorizadores: {
           controller: new EmpleadoController(),
           params: {
             campos: 'id,nombres,apellidos',
-            estado: 1,
+            // estado: 1,
           }
         },
         autorizaciones: new AutorizacionController(),
@@ -188,10 +182,10 @@ export default defineComponent({
       await seleccionarEmpleadoOrigen(false)
       await seleccionarProyectoOrigen(false)
 
-      if (transferenciaProductoEmpleadoStore.listadoMateriales.length) {
+      /* if (transferenciaProductoEmpleadoStore.listadoMateriales.length) {
         transferencia.listado_productos = mapearProductos(transferenciaProductoEmpleadoStore.listadoMateriales)
       } else {
-      }
+      } */
 
       if (accion.value === acciones.nuevo) esDestinoStock.value = true
       establecerAutorizador()
@@ -442,8 +436,8 @@ export default defineComponent({
     const puedeEditar = ref()
     function filtrarTransferenciasProductoEmpleado(tab: string) {
       tabSeleccionado.value = tab
-      puedeEditar.value = tabSeleccionado.value === estadosTransacciones.pendiente ? true : false
-      puedeEditar.value = tab == '1'
+      puedeEditar.value = [estadosTransferenciasProductos.PENDIENTE].includes(tabSeleccionado.value) || [estadosTransferenciasProductos.PENDIENTE, estadosTransferenciasProductos.VALIDADO].includes(tabSeleccionado.value) && esCoordinadorBodega
+      // puedeEditar.value = tab == '1'
       listar({ autorizacion_id: tab })
     }
 
@@ -520,10 +514,8 @@ export default defineComponent({
       empleados.value = listadosAuxiliares.empleados
 
       transferenciaProductoEmpleadoStore.origenProductos = (transferencia.tarea_origen ? destinosTareas.paraClienteFinal : destinosTareas.paraProyecto)
-      // esParaStock.value = !transferencia.tarea_origen // !transferencia.proyecto_origen && !transferencia.etapa_origen && !transferencia.tarea_origen
-      esParaStock.value = !transferencia.proyecto_origen //|| !transferencia.tarea_origen
+      esParaStock.value = !transferencia.proyecto_origen
       esDestinoStock.value = !transferencia.proyecto_destino && !transferencia.etapa_destino && !transferencia.tarea_destino
-      console.log('ON CONSULTADO...')
 
       await seleccionarEmpleadoOrigen()
       await seleccionarProyectoOrigen(false)
@@ -550,12 +542,6 @@ export default defineComponent({
       accion: async ({ entidad }) => listar({ export: 'pdf', id: entidad.id, titulo: 'Tranferencia #' + entidad.id })
     }
 
-    //Configurar los listados
-    // opciones_empleados.value = listadosAuxiliares.empleados
-    empleadosOrigen.value = listadosAuxiliares.empleados
-    listadosAuxiliares.empleadosOrigen = listadosAuxiliares.empleados
-    empleados.value = listadosAuxiliares.empleados
-
     const tipoTransferencia = computed(() => {
       if (transferencia.proyecto_origen) return 'Transferencia entre proyectos'
       else if (!transferencia.proyecto_origen && transferencia.tarea_origen) return 'Transferencia entre tareas'
@@ -573,27 +559,17 @@ export default defineComponent({
     async function refrescarListadosProyectos(nombreListado: string) {
       switch (nombreListado) {
         case 'clientes':
-          /* const param: any = { proyecto_id: transferencia.proyecto_origen, etapa_id: transferencia.etapa_origen, filtrar_por_proyecto: true }
-          if (filtroProyecto.etapa_id) delete param.etapa_id
-          consultarClientesMaterialesTarea(param) */
           await consultarClientesProyectoEtapa()
           break
       }
     }
 
     async function consultarClientesProyectoEtapa() {
-      // if (filtroProyecto.etapa_id) consultarClientesMaterialesTarea({ proyecto_id: transferencia.proyecto_origen, etapa_id: transferencia.etapa_origen, filtrar_por_etapa: true })
-      // if (accion.value !== acciones.nuevo) return
-      console.log(transferencia)
       if (transferencia.etapa_origen) {
-        console.log('####### CON Etapa origen...')
         await consultarClientesMaterialesTarea({ proyecto_id: transferencia.proyecto_origen, etapa_id: transferencia.etapa_origen, filtrar_por_etapa: true })
       } else {
-        console.log('####### SIN Etapa origen...')
         await consultarClientesMaterialesTarea({ proyecto_id: transferencia.proyecto_origen, etapa_id: transferencia.etapa_origen, filtrar_por_proyecto: true })
       }
-
-      console.log('consultadndo clientes...')
     }
 
     const seleccionarEsStock = () => {
@@ -607,6 +583,13 @@ export default defineComponent({
       transferencia.tarea_destino = null
     }
 
+    /*******
+     * Init
+     *******/
+    empleadosOrigen.value = listadosAuxiliares.empleados
+    listadosAuxiliares.empleadosOrigen = listadosAuxiliares.empleados
+    empleados.value = listadosAuxiliares.empleados
+
     return {
       mixin, transferencia, disabled, accion, v$, acciones,
       configuracionColumnas: configuracionColumnasTransferenciaProducto,
@@ -615,9 +598,7 @@ export default defineComponent({
       refArchivo,
       idTransferencia,
       // listados
-      // opciones_empleados,
       empleadosOrigen,
-      // opciones_autorizaciones,
       tareas,
       tareasDestino,
       proyectos,
@@ -649,7 +630,6 @@ export default defineComponent({
       //flags
       esCoordinador,
       puedeAutorizar: computed(() => authenticationStore.can('puede.autorizar.transferencia_producto_empleado') && [acciones.nuevo, acciones.editar].includes(accion.value as any)),
-      // puedeAutorizar: computed(() => (esCoordinador || authenticationStore.esJefeTecnico || authenticationStore.esAdministrador) && accion.value === acciones.nuevo),
 
       //Tabs
       tabOptionsTransferenciaProductoEmpleado,
@@ -662,9 +642,7 @@ export default defineComponent({
       filtrarEmpleados,
       ordenarEmpleados,
       filtrarEmpleadosOrigen, ordenarEmpleadosOrigen,
-      // consultarTareasClienteFinalMantenimiento,
       transferenciaProductoEmpleadoStore,
-      // ordenarOpcionesEmpleados: () => opciones_empleados.value.sort((a: Empleado, b: Empleado) => ordernarListaString(a.apellidos!, b.apellidos!)),
       ordenarOpcionesEmpleados: () => empleadosOrigen.value.sort((a: Empleado, b: Empleado) => ordernarListaString(a.apellidos!, b.apellidos!)),
       // Computeds
       mostrarOrigenTarea: computed(() => transferenciaProductoEmpleadoStore.origenProductos === destinosTareas.paraClienteFinal),
@@ -678,11 +656,9 @@ export default defineComponent({
       esParaStock,
       esDestinoStock,
       seleccionarEsDestinoStock,
-      // seleccionarClienteStock,
       seleccionarEsStock,
       existenProductos: computed(() => transferencia.listado_productos.length),
       filtroTarea,
-      // mejora observers
       seleccionarEmpleadoOrigen,
       seleccionarProyectoOrigen,
       seleccionarEtapaOrigen,

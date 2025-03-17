@@ -3,7 +3,7 @@
     :mixin="mixin"
     :configuracion-columnas="configuracionColumnasTipoTicket"
     :permitir-eliminar="false"
-    :permitir-editar="false"
+    :permitir-editar="true"
     :permitir-consultar="false"
     :accion1="btnToggleActivar"
     subtitulo-pagina="Módulo de Tickets"
@@ -24,8 +24,8 @@
               dense
               outlined
               :disable="disabled"
-              :option-label="(item) => item.nombre"
-              :option-value="(item) => item.id"
+              :option-label="item => item.nombre"
+              :option-value="item => item.id"
               use-input
               input-debounce="0"
               emit-value
@@ -64,8 +64,8 @@
               dense
               outlined
               :disable="disabled"
-              :option-label="(item) => item.nombre"
-              :option-value="(item) => item.id"
+              :option-label="item => item.nombre"
+              :option-value="item => item.id"
               use-input
               input-debounce="0"
               emit-value
@@ -113,6 +113,46 @@
           </div>
 
           <div v-if="tipoTicket.categoria_tipo_ticket" class="col-12 col-md-3">
+            <label class="q-mb-sm block">Destinatario</label>
+            <q-input
+              v-model="criterioBusquedaDestinatario"
+              placeholder="Escriba y presione enter para buscar"
+              hint="Puede buscar por nombre, apellido o identificación"
+              :disable="disabled"
+              @keydown.enter="
+                listarDestinatario({ departamento_id: tipoTicket.departamento, estado: 1 })
+              "
+              @blur="resetearDestinatario()"
+              outlined
+              dense
+            >
+              <template v-slot:append>
+                <q-icon
+                  :name="
+                    tipoTicket.destinatario
+                      ? 'bi-check-circle-fill'
+                      : 'bi-check-circle'
+                  "
+                  :color="tipoTicket.destinatario ? 'positive' : 'grey-6'"
+                  size="xs"
+                ></q-icon>
+              </template>
+
+              <template #after>
+                <q-btn
+                  color="positive"
+                  :icon="iconos.buscar"
+                  @click="listarDestinatario"
+                  unelevated
+                  dense
+                >
+                  <q-tooltip>Recargar empleados</q-tooltip>
+                </q-btn>
+              </template>
+            </q-input>
+          </div>
+
+          <div v-if="tipoTicket.categoria_tipo_ticket" class="col-12 col-md-3">
             <br />
             <q-toggle
               v-model="tipoTicket.activo"
@@ -124,6 +164,16 @@
           </div>
         </div>
       </q-form>
+    </template>
+
+    <template #modales>
+      <essential-selectable-table
+        ref="refListadoSeleccionableDestinatario"
+        :configuracion-columnas="configuracionColumnasEmpleadosLite"
+        :datos="listadoDestinatario"
+        @selected="seleccionarDestinatario"
+        tipo-seleccion="single"
+      ></essential-selectable-table>
     </template>
   </tab-layout>
 </template>

@@ -19,10 +19,10 @@
         no-caps
         dense
         color="primary"
-        @click="() => (verEjemploFiltrosAvanzados = true)"
+        @click="() => (verEjemploFiltrosAvanzados = true)" 
       >
         <q-icon name="bi-eye" class="q-mr-sm"></q-icon>
-        Ver ejemplo</q-btn
+        Ver ejemplo</q-btn 
       >
     </small>
 

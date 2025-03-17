@@ -158,6 +158,12 @@ const vehiculos: Ref<MenuOption[]> = computed(() => {
               can: true
             },
             {
+              title: 'Reporte de Reparaciones y Mantenimientos',
+              link: 'reporte-mantenimientos',
+              icon: 'bi-wrench',
+              can: true
+            },
+            {
               title: 'Reporte de Tiempos de Vehículos',
               link: 'reporte-tiempos-vehiculos',
               icon: 'bi-clock-fill',

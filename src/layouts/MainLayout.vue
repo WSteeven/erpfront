@@ -262,7 +262,19 @@
               max-height="100vh"
               anchor="center middle"
             >
-              <div class="full-width text-right q-pr-md q-mb-md">
+              <div class="full-width justify-between row q-px-xs q-mb-md">
+                <q-btn
+                  icon="bi-check2-all"
+                  dense
+                  rounded
+                  unelevated
+                  no-caps
+                  color="primary"
+                  class="q-mt-sm q-px-sm"
+                  label="Marcar todas como leídas"
+                  @click="marcarComoLeidasTodas"
+                ></q-btn>
+
                 <q-btn
                   icon="bi-chevron-right"
                   round
@@ -344,20 +356,6 @@
                     <q-icon name="bi-bell" />
                   </q-avatar>
                   <q-item-section>Ver todas las notificaciones</q-item-section>
-                </q-item>
-                <q-item
-                  clickable
-                  dense
-                  @click="marcarComoLeidasTodas"
-                  v-if="notificaciones.length > 0"
-                >
-                  <q-space />
-                  <q-item-section side>
-                    <q-item-label>Marcar todas como leídas</q-item-label>
-                  </q-item-section>
-                  <q-item-section avatar>
-                    <q-icon name="bi-check-all" />
-                  </q-item-section>
                 </q-item>
               </q-list>
             </q-menu>
@@ -449,7 +447,11 @@
                   <q-item-section> Mi bodega </q-item-section>
                 </q-item>
 
-                <q-item clickable class="full-width" v-if="permisoModoNoDisponible">
+                <q-item
+                  clickable
+                  class="full-width"
+                  v-if="permisoModoNoDisponible"
+                >
                   <q-toggle
                     v-model="store.user.tiene_delegado"
                     checked-icon="bi-person-slash"
@@ -487,7 +489,7 @@
       </q-toolbar>
 
       <div class="text-center">
-        <q-chip v-if="enCamino" class="bg-grey-2 q-mx-auto q-mb-md">
+        <q-chip v-if="enCamino" class="bg-desenfoque q-mx-auto">
           <q-icon
             name="bi-car-front-fill"
             color="positive"
@@ -575,6 +577,7 @@
         <!-- Aplica keep-alive aquí -->
         <keep-alive
           :exclude="[
+            'PrefacturaPage',
             'intranet_page',
             'transacciones_ingresos',
             'EgresoPage',
@@ -588,7 +591,7 @@
             'TransferenciaVehiculo',
             'VacantePage',
             'ReporteBitacorasPage',
-            'aceptar_transferencia_producto',
+            'aceptar_transferencia_producto'
           ]"
         >
           <component :is="Component" />

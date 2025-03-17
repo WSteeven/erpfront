@@ -8,6 +8,8 @@ export const comprasProveedores = {
   clientes_prefacturas: new Endpoint('compras/clientes-prefacturas'),
   dashboard_ventas_empresa: new Endpoint('compras/dashboard-ventas'),
   calificacion_proveedor: new Endpoint('compras/calificaciones-proveedores'),
+  recalificacion_proveedor: new Endpoint('compras/recalificaciones-proveedores'),
+  mi_calificacion_proveedor: new Endpoint('compras/obtener-calificacion-individual'),
   categorias_ofertas: new Endpoint('compras/categorias-ofertas'),
   contactos_proveedores: new Endpoint('compras/contactos-proveedores'),
   criterios_calificaciones: new Endpoint('compras/criterios-calificaciones'),
@@ -26,4 +28,5 @@ export const comprasProveedores = {
   generador_cash: new Endpoint('compras/generador-cash'),
   beneficiarios: new Endpoint('compras/beneficiarios'),
   cuentas_bancarias: new Endpoint('compras/cuentas-bancarias'),
+  generador_cash_duplicate: new Endpoint('compras/generador-cash-duplicate'),
 }

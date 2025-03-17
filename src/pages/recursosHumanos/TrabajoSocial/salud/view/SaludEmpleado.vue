@@ -6,6 +6,7 @@
       <option-group-component
         v-model="salud.tiene_discapacidad"
         :disable="disable"
+        @update:modelValue="(val)=>{if(val)agregarDiscapacidad(salud.discapacidades)}"
       />
     </div>
     <div class="col-12 col-md-9 col-sm-12" v-if="salud.tiene_discapacidad">
@@ -150,6 +151,7 @@
       <option-group-component
         v-model="salud.tiene_familiar_dependiente_discapacitado"
         :disable="disable"
+        @update:modelValue="(val)=>{if(val)agregarDiscapacidad(salud.discapacidades_familiar_dependiente)}"
       />
     </div>
 

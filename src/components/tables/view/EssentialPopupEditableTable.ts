@@ -232,16 +232,37 @@ export default defineComponent({
       fila.value = null
     }
 
-    function guardarFila(data) {
-      // console.log(data)
+    /* function guardarFilaOld(data) {
+      console.log(data)
       const posicion = props.datos.findIndex(
         (fila: any) => fila.id === data.id
       )
-      // console.log(posicion)
+      console.log(posicion)
 
       if (props.editarFilaLocal) listado.value[posicion] = data
       limpiarFila()
       emit('guardar-fila', data)
+    } */
+
+    const getIndex = (data) => {
+      if (data.table_index) return listado.value.findIndex((fila: any) => fila.table_index === data.table_index)
+      else if (data.id) return props.datos.findIndex((fila: any) => fila.id === data.id)
+      else return posicionFilaEditada.value
+    }
+
+    function guardarFila(data) {
+      const posicion = getIndex(data)
+      console.log(posicion, data)
+      console.log(props.editarFilaLocal)
+      console.log(posicionFilaEditada.value)
+
+      const dataAnterior = listado.value[posicion]
+      const dataNueva = { ...dataAnterior, ...data }
+
+      console.log(dataNueva)
+      if (props.editarFilaLocal) listado.value[posicion] = dataNueva
+      emit('guardar-fila', dataNueva)
+      limpiarFila()
     }
 
     function onScroll({ to }) {

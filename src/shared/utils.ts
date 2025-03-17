@@ -362,17 +362,17 @@ export async function obtenerTiempoActual() {
   const axios = AxiosHttpRepository.getInstance()
 
   try {
-    const fecha: AxiosResponse = await axios.get(
+    const fechaHora: AxiosResponse = await axios.get(
       axios.getEndpoint(endpoints.fecha)
     )
-    const hora: AxiosResponse = await axios.get(
+    /* const hora: AxiosResponse = await axios.get(
       axios.getEndpoint(endpoints.hora)
-    )
+    ) */
 
     return {
-      fecha: fecha.data,
-      hora: hora.data,
-      fecha_hora: fecha.data + ' ' + hora.data
+      fecha: fechaHora.data.split(' ')[0],
+      hora: fechaHora.data.split(' ')[1],
+      fecha_hora: fechaHora.data // + ' ' + hora.data
     }
   } catch (e: any) {
     throw new ApiError(e)

@@ -76,6 +76,7 @@ export default defineComponent({
     const usuarios = 20
     const carousel_noticias = ref(0)
     const carousel_vacantes = ref(0)
+    const carousel_extensiones = ref(0)
     const activeTab = ref(0)
 
     const modalNoticia = ref(false)
@@ -294,14 +295,14 @@ export default defineComponent({
         id: 1,
         name: 'Instructivos',
         icon: 'fa-solid fa-book-journal-whills',
-        link: 'https://drive.google.com/drive/folders/1Zv3eTjramxByFRht-L5Gz_nrulgFE32V?usp=sharing_eip_m&ts=64386770',
+        link: 'https://drive.google.com/drive/folders/1ILsatqtyrkV5tfofM2cTinLOfhIQMO-h?usp=drive_link',
         color: '#FF5733'
       },
       {
         id: 2,
         name: 'Reglamentos y Normativas',
         icon: 'fa-solid fa-book-bookmark',
-        link: 'https://drive.google.com/drive/folders/1Zv3eTjramxByFRht-L5Gz_nrulgFE32V?usp=sharing_eip_m&ts=64386770',
+        link: 'https://drive.google.com/drive/folders/1k7WjBVUbYf4FY5wX0xoUP8r5gvWNA64e?usp=sharing',
         color: '#581845'
       }
     ])
@@ -374,6 +375,28 @@ export default defineComponent({
     consultarDepartamentos()
 
     const empleadosCumpleaneros = ref<Empleado[]>([])
+    const empleadosConExtension = ref<Empleado[]>([])
+
+
+    const obtenerEmpleadosConExtension = async () => {
+      try {
+        const empleadoController = new EmpleadoController()
+        const empleados = (
+          await empleadoController.listar({
+            estado: 1
+          })
+        ).result
+
+        empleadosConExtension.value = empleados.filter((empleado: Empleado) => {
+          // Verifica que el campo extensión no sea nulo, undefined o vacío
+          return empleado.extension !== null && empleado.extension !== undefined
+        })
+
+        console.log(empleadosConExtension.value)
+      } catch (err) {
+        console.log('Error al obtener empleados con extensión:', err)
+      }
+    }
 
     const obtenerEmpleadosCumpleaneros = async () => {
       // Obtener el mes actual
@@ -465,6 +488,7 @@ export default defineComponent({
       obtenerEventos()
       obtenerVacantes()
       obtenerEmpleadosCumpleaneros()
+      obtenerEmpleadosConExtension()
     })
 
     useNotificaciones()
@@ -482,7 +506,7 @@ export default defineComponent({
           Router.push('/licencia-empleado')
           break
         case 'vacaciones':
-          Router.push('/vacacion')
+          Router.push('/solicitudes-vacaciones')
           break
         case 'prestamos':
           Router.push('/solicitud-prestamo-empresarial')
@@ -544,6 +568,7 @@ export default defineComponent({
       subtareasPorAsignar,
       carousel_noticias,
       carousel_vacantes,
+      carousel_extensiones,
       activeTab,
       carousel_cumpleanos_mes,
       autoplay,
@@ -575,6 +600,7 @@ export default defineComponent({
       readMore,
       documentosIntranet,
       empleadosCumpleaneros,
+      empleadosConExtension,
       fechaActual,
       fechaSeleccionada,
       eventos,

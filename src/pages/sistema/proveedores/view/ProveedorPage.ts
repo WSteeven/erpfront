@@ -10,6 +10,8 @@ import LabelAbrirModal from 'components/modales/modules/LabelAbrirModal.vue'
 import ModalesEntidad from 'components/modales/view/ModalEntidad.vue'
 import EssentialTable from 'components/tables/view/EssentialTable.vue'
 import GestorArchivos from 'components/gestorArchivos/GestorArchivos.vue'
+import NoOptionComponent from 'components/NoOptionComponent.vue'
+import ErrorComponent from 'components/ErrorComponent.vue'
 
 //Logica y controladores
 import { ContenedorSimpleMixin } from 'shared/contenedor/modules/simple/application/ContenedorSimpleMixin'
@@ -37,7 +39,6 @@ import { useNotificaciones } from 'shared/notificaciones'
 import { ContactoProveedorController } from 'pages/comprasProveedores/contactosProveedor/infraestructure/ContactoProveedorController'
 import { useProveedorStore } from 'stores/comprasProveedores/proveedor'
 import { useAuthenticationStore } from 'stores/authentication'
-import dayjs from 'dayjs'
 import { useCalificacionProveedorStore } from 'stores/comprasProveedores/calificacionProveedor'
 import { DetalleDepartamentoProveedorController } from 'pages/comprasProveedores/detallesDepartamentosProveedor/infraestructure/DetalleDepartamentoProveedorController'
 import { LocalStorage, useQuasar } from 'quasar'
@@ -55,6 +56,8 @@ import { DatoBancarioController } from 'pages/comprasProveedores/datosBancariosP
 
 export default defineComponent({
   components: {
+    ErrorComponent,
+    NoOptionComponent,
     TabLayout,
     LabelAbrirModal,
     ModalesEntidad,
@@ -80,13 +83,8 @@ export default defineComponent({
     } = mixin.useReferencias()
     const { setValidador, cargarVista, obtenerListados, listar } =
       mixin.useComportamiento()
-    const {
-      onConsultado,
-      onReestablecer,
-      onGuardado,
-      onBeforeGuardar,
-      onBeforeModificar
-    } = mixin.useHooks()
+    const { onConsultado, onReestablecer, onGuardado, onBeforeModificar } =
+      mixin.useHooks()
     const { confirmar, prompt, notificarCorrecto, notificarError } =
       useNotificaciones()
     const refContactos = ref()
@@ -165,22 +163,14 @@ export default defineComponent({
       categorias.value = listadosAuxiliares.categorias
     })
 
-    onBeforeGuardar(() => {
-      // console.log(empresa)
-      // console.log(proveedor)
-    })
     onGuardado(() => {
-      // console.log('id guardado: ', id)
       subirArchivos()
     })
+
     onBeforeModificar(() => {
       subirArchivos()
     })
-    // onModificado(() => {
-      // console.log('id modificado: ', id)
-      // refArchivo.value.idModelo = id
-      // console.log(idEmpresaParaArchivos.value)
-    // })
+
     /**************************************************************
      * Validaciones
      **************************************************************/
@@ -325,7 +315,7 @@ export default defineComponent({
           listado.value.splice(posicion, 1, response.data.modelo)
         }
       },
-      visible: () => store.esAdministrador
+      visible: () => false //store.esAdministrador
     }
     const botonCalificarProveedor: CustomActionTable = {
       titulo: 'Calificar',
@@ -339,27 +329,63 @@ export default defineComponent({
           proveedorStore.idDetalleDepartamento =
             detalleDepartamentoProveedor.value.id
         })
-        // proveedorStore.proveedor.hydrate(await new ProveedorController().consultar(entidad.id))
-        modales.abrirModalEntidad('CalificacionProveedorPage')
+        modales.abrirModalEntidad('CalificacionProveedorPage', { mixin })
       },
       visible: ({ entidad }) => {
-        // console.log(posicion, entidad)
         const departamento_calificador = entidad.related_departamentos.filter(
           v => v.id === store.user.departamento
         )[0]
         if (departamento_calificador) {
-          if (departamento_calificador.pivot.fecha_calificacion) {
-            const diasTranscurridos = dayjs().diff(
-              dayjs(departamento_calificador?.pivot.fecha_calificacion),
-              'day'
-            )
-            return diasTranscurridos > 365 && entidad.estado
+          if (
+            departamento_calificador.pivot.fecha_calificacion == null ||
+            departamento_calificador.pivot.calificacion == null
+          ) {
+            // se retorna true ya que aún no está calificado
+            return entidad.estado
           }
-          return entidad.estado
         }
         return false
+      }
+    }
 
-        // return true
+    const botonRecalificarProveedor: CustomActionTable<Proveedor> = {
+      titulo: 'Recalificar',
+      icono: 'bi-stars',
+      color: 'positive',
+      accion: async ({ entidad }) => {
+        proveedorStore.idDepartamento = store.user.departamento
+        proveedorStore.idProveedor = entidad.id
+        proveedorStore.proveedor = entidad
+        consultarDetalleDepartamentoProveedor(true).then(() => {
+          proveedorStore.idDetalleDepartamento =
+            detalleDepartamentoProveedor.value.id
+        })
+        modales.abrirModalEntidad('RecalificacionProveedorPage', { mixin })
+      },
+      visible: ({ entidad }) => {
+        const calificaciones_departamento =
+          entidad.related_departamentos.filter(
+            v => v.id === store.user.departamento
+          )
+
+        if (calificaciones_departamento.length > 0) {
+          const mas_reciente = calificaciones_departamento.reduce(
+            (latest, current) => {
+              //Comparamos las fechas de created_at para obtener el más reciente
+              return new Date(current.pivot.created_at) >
+                new Date(latest.pivot.created_at)
+                ? current
+                : latest
+            }
+          )
+          return (
+            entidad.require_recalificacion &&
+            entidad.estado &&
+            (mas_reciente.pivot.fecha_calificacion == null ||
+              mas_reciente.pivot.calificacion == null)
+          )
+        }
+        return false
       }
     }
     const botonVerMiCalificacionProveedor: CustomActionTable = {
@@ -379,9 +405,9 @@ export default defineComponent({
             detalleDepartamentoProveedor.value.id
           // calificacionStore.detalleDepartamentoProveedor = detalleDepartamentoProveedor.value
         })
-        modales.abrirModalEntidad('MiCalificacionProveedorPage')
+        modales.abrirModalEntidad('MiCalificacionProveedorPage', { mixin })
       },
-      visible: ({  entidad }) => {
+      visible: ({ entidad }) => {
         const departamento_calificador = entidad.related_departamentos.filter(
           v => v.id === store.user.departamento
         )[0]
@@ -391,23 +417,22 @@ export default defineComponent({
         return false
       }
     }
-    const botonVerCalificacionProveedor: CustomActionTable = {
+    const botonVerTodasCalificacionesProveedor: CustomActionTable = {
       titulo: 'Todas calificaciones',
       icono: 'bi-eye',
       color: 'info',
       accion: async ({ entidad }) => {
         // proveedorStore.idDepartamento = store.user.departamento
+        proveedorStore.idDepartamento = null
         proveedorStore.idProveedor = entidad.id
         proveedorStore.proveedor = entidad
         await consultarDetalleDepartamentoProveedor().then(() => {
           proveedorStore.idDetalleDepartamento =
             detalleDepartamentoProveedor.value.id
         })
-        modales.abrirModalEntidad('InfoCalificacionProveedorPage')
+        modales.abrirModalEntidad('InfoCalificacionProveedorPage', { mixin })
       },
       visible: ({ entidad }) => {
-        // console.log(entidad)
-        // console.log(store.user.permisos)
         return (
           entidad.estado_calificado ===
             estadosCalificacionProveedor.calificado ||
@@ -453,6 +478,7 @@ export default defineComponent({
         StatusLoading.desactivar()
       }
     }
+
     async function guardado(data) {
       switch (data) {
         case 'CategoriaOfertaPage':
@@ -462,6 +488,7 @@ export default defineComponent({
           await consultarContactosProveedor()
           break
         case 'CalificacionProveedorPage':
+        case 'RecalificacionProveedorPage':
           await listar()
           break
         case 'DatoBancarioPage':
@@ -471,6 +498,7 @@ export default defineComponent({
           await consultarEmpresas()
       }
     }
+
     async function obtenerParroquias(parroquiaId: number | string | null) {
       proveedor.parroquia = null
       if (parroquiaId !== null) {
@@ -484,14 +512,25 @@ export default defineComponent({
       // parroquias.value = JSON.parse(LocalStorage.getItem('parroquias')!.toString()).filter((v) => v.canton_id == proveedor.canton)
     }
 
-    async function consultarDetalleDepartamentoProveedor() {
+    async function consultarDetalleDepartamentoProveedor(
+      recalificacion = false
+    ) {
       const { result } =
         await new DetalleDepartamentoProveedorController().listar({
           proveedor_id: proveedorStore.idProveedor,
           departamento_id: proveedorStore.idDepartamento
         })
-      console.log('El detalle departamento proveedor es: ', result[0])
-      if (result) detalleDepartamentoProveedor.value = result[0]
+      // console.log('Los detalles del departamento proveedor es: ', result)
+      // console.log('El detalle departamento proveedor es: ', result[0])
+      if (result) {
+        detalleDepartamentoProveedor.value = result[0]
+        if (recalificacion) {
+          detalleDepartamentoProveedor.value = result.reduce(
+            (max, item) => (item.id > max.id ? item : max),
+            result[0]
+          )
+        }
+      }
     }
 
     function actualizarCategorias() {
@@ -506,12 +545,14 @@ export default defineComponent({
       listadosAuxiliares.empresas = result
       empresas.value = result
     }
+
     async function consultarDatosBancarios() {
       const { result } = await new DatoBancarioController().listar({
         empresa_id: proveedor.empresa
       })
       empresa.datos_bancarios = result
     }
+
     async function consultarContactosProveedor() {
       const { result } = await new ContactoProveedorController().listar({
         empresa_id: proveedor.empresa,
@@ -519,11 +560,13 @@ export default defineComponent({
       })
       proveedor.contactos = result
     }
+
     async function consultarCategoriasOfertas() {
       const { result } = await new CategoriaOfertaController().listar()
       listadosAuxiliares.categorias = result
       categorias.value = result
     }
+
     const {
       cantones,
       filtrarCantones,
@@ -556,9 +599,6 @@ export default defineComponent({
       departamentoFinanciero,
       refArchivo,
       esReferido,
-
-      //store
-      store,
 
       empresa,
       //listados
@@ -611,7 +651,8 @@ export default defineComponent({
 
       //botones
       botonCalificarProveedor,
-      botonVerCalificacionProveedor,
+      botonRecalificarProveedor,
+      botonVerTodasCalificacionesProveedor,
       botonVerMiCalificacionProveedor,
       botonDesactivarProveedor,
       botonActivarProveedor,
@@ -620,4 +661,3 @@ export default defineComponent({
     }
   }
 })
-

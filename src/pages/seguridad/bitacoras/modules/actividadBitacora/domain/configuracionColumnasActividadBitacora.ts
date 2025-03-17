@@ -1,0 +1,82 @@
+import { ColumnConfig } from 'components/tables/domain/ColumnConfig'
+import { ActividadBitacora } from './ActividadBitacora'
+import { reactive } from 'vue'
+
+export const configuracionColumnasActividadBitacora: ColumnConfig<ActividadBitacora>[] = reactive([
+  {
+    name: 'fecha_hora_inicio',
+    field: 'fecha_hora_inicio',
+    label: 'Fecha y hora de inicio',
+    align: 'left',
+    disableModal: true,
+  },
+  {
+    name: 'fecha_hora_fin',
+    field: 'fecha_hora_fin',
+    label: 'Fecha y hora de fin',
+    align: 'left',
+    sortable: true,
+    visibleModal: false,
+  },
+  {
+    name: 'tipo_evento_bitacora',
+    field: 'tipo_evento_bitacora',
+    label: 'Tipo de evento',
+    align: 'left',
+    type: 'select',
+    requerido: true,
+  },
+  {
+    name: 'notificacion_inmediata',
+    field: 'notificacion_inmediata',
+    label: 'Notificación inmediata',
+    align: 'left',
+    type: 'toggle',
+    disableTable: true,
+    editable: true,
+    visibleModal: false,
+  },
+  {
+    name: 'medio_notificacion',
+    field: 'medio_notificacion',
+    label: 'Medio por el cual se notificó',
+    align: 'left',
+  },
+  {
+    name: 'actividad',
+    field: 'actividad',
+    label: 'Actividad',
+    align: 'left',
+    type: 'voice',
+    columnClass: 'col-12 col-md-6',
+    requerido: true,
+  },
+  {
+    name: 'tiene_adjuntos',
+    field: 'tiene_adjuntos',
+    label: 'Tiene adjuntos',
+    align: 'left',
+    type: 'toggle',
+    visibleModal: false,
+    disableTable: true,
+    editable: true,
+  },
+  {
+    name: 'fotografia_evidencia_1',
+    field: 'fotografia_evidencia_1',
+    label: 'Fotografía de evidencia 1 (Opcional)',
+    align: 'left',
+    type: 'imagen',
+    editable: true,
+    visible: false,
+  },
+  {
+    name: 'fotografia_evidencia_2',
+    field: 'fotografia_evidencia_2',
+    label: 'Fotografía de evidencia 2 (Opcional)',
+    align: 'left',
+    type: 'imagen',
+    editable: true,
+    visible: false,
+  },
+])

@@ -152,6 +152,7 @@
                 <q-btn
                   color="positive"
                   unelevated
+                  dense
                   :disable="!(accion === acciones.nuevo)"
                   @click="refrescarListadosEmpleado('clientes')"
                 >
@@ -689,7 +690,7 @@
               placeholder="Opcional"
               :disable="
                 disabled ||
-                !(authenticationStore.user.id == transferencia.per_autoriza_id)
+                !(authenticationStore.user?.id == transferencia.per_autoriza_id)
               "
               :error="!!v$.observacion_aut.$errors.length"
               outlined

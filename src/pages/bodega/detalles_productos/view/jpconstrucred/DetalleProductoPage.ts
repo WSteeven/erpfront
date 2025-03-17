@@ -1,12 +1,12 @@
 //Dependencias
 import { configuracionColumnasDetallesProductos } from '../../domain/configuracionColumnasDetallesProductos'
 import { configuracionColumnasSerialesDetalles } from '../../domain/configuracionColumnasSerialesDetalles'
-import { required, requiredIf, numeric } from 'shared/i18n-validators'
+import { numeric, required, requiredIf } from 'shared/i18n-validators'
 import { useVuelidate } from '@vuelidate/core'
 import { defineComponent, ref, watch } from 'vue'
 
 //Componentes
-import TabLayout from 'shared/contenedor/modules/simple/view/TabLayout.vue'
+import TabLayoutFilterTabs2 from 'shared/contenedor/modules/simple/view/TabLayoutFilterTabs2.vue'
 import EssentialTable from 'components/tables/view/EssentialTable.vue'
 
 //Logica y controladores
@@ -32,15 +32,26 @@ import { ValidarListadoSeriales } from '../../application/validaciones/ValidarLi
 import { encontrarUltimoIdListado } from 'shared/utils'
 import { useDetalleStore } from 'stores/detalle'
 import { useAuthenticationStore } from 'stores/authentication'
+import { tabOptionsProveedoresInternacionales } from 'config/utils_compras_proveedores'
 
 export default defineComponent({
-  components: { TabLayout, EssentialTable },
+  components: { TabLayoutFilterTabs2, EssentialTable },
   setup() {
-    const mixin = new ContenedorSimpleMixin(DetalleProducto, new DetalleProductoController())
-    const { entidad: detalle, disabled, accion, listadosAuxiliares, listado } = mixin.useReferencias()
-    const { setValidador, obtenerListados, cargarVista } = mixin.useComportamiento()
+    const mixin = new ContenedorSimpleMixin(
+      DetalleProducto,
+      new DetalleProductoController()
+    )
+    const {
+      entidad: detalle,
+      disabled,
+      accion,
+      listadosAuxiliares,
+      listado
+    } = mixin.useReferencias()
+    const { setValidador, obtenerListados, cargarVista, listar } =
+      mixin.useComportamiento()
     const { onGuardado, onReestablecer } = mixin.useHooks()
-    const { confirmar, notificarCorrecto,  notificarError } = useNotificaciones()
+    const { confirmar, notificarCorrecto, notificarError } = useNotificaciones()
 
     //stores
     const detalleStore = useDetalleStore()
@@ -49,6 +60,7 @@ export default defineComponent({
     //variable aux
     const descripcion = ref()
     const refSeriesModalEditable = ref()
+    const tabDefecto = ref('1')
 
     //listas
     const opciones_productos = ref([])
@@ -100,13 +112,13 @@ export default defineComponent({
         procesadores: {
           controller: new ProcesadorController(),
           params: { campos: 'id,nombre' }
-        },
+        }
       })
     })
 
     //Hooks
-    onGuardado(() => descripcion.value = null)
-    onReestablecer(() => descripcion.value = null)
+    onGuardado(() => (descripcion.value = null))
+    onReestablecer(() => (descripcion.value = null))
 
     //Reglas de validacion
     const reglas = {
@@ -115,24 +127,56 @@ export default defineComponent({
       marca: { required },
       modelo: { required },
       serial: {
-        requiredIfSerial: requiredIf(function () { return detalle.tiene_serial ? detalle.tiene_serial : false }),
-        requiredIfFibra: requiredIf(function () { return detalle.es_fibra ? detalle.es_fibra : false })
+        requiredIfSerial: requiredIf(function () {
+          return detalle.tiene_serial ? detalle.tiene_serial : false
+        }),
+        requiredIfFibra: requiredIf(function () {
+          return detalle.es_fibra ? detalle.es_fibra : false
+        })
       },
-      span: { requiredIfFibra: requiredIf(function () { return detalle.es_fibra }) },
-      tipo_fibra: { requiredIfFibra: requiredIf(function () { return detalle.es_fibra ? detalle.es_fibra : false }) },
-      hilos: { requiredIfFibra: requiredIf(function () { return detalle.es_fibra ? detalle.es_fibra : false }) },
+      span: {
+        requiredIfFibra: requiredIf(function () {
+          return detalle.es_fibra
+        })
+      },
+      tipo_fibra: {
+        requiredIfFibra: requiredIf(function () {
+          return detalle.es_fibra ? detalle.es_fibra : false
+        })
+      },
+      hilos: {
+        requiredIfFibra: requiredIf(function () {
+          return detalle.es_fibra ? detalle.es_fibra : false
+        })
+      },
       punta_inicial: {
-        requiredIfFibra: requiredIf(function () { return detalle.es_fibra ? detalle.es_fibra : false }),
+        requiredIfFibra: requiredIf(function () {
+          return detalle.es_fibra ? detalle.es_fibra : false
+        }),
         numerico: numeric
       },
       punta_final: {
-        requiredIfFibra: requiredIf(function () { return detalle.es_fibra ? detalle.es_fibra : false }),
+        requiredIfFibra: requiredIf(function () {
+          return detalle.es_fibra ? detalle.es_fibra : false
+        }),
         numerico: numeric
       },
       punta_corte: { numeric },
-      procesador: { requiredIfInformatica: requiredIf(function () { return detalle.categoria == 'INFORMATICA' }) },
-      ram: { requiredIfInformatica: requiredIf(function () { return detalle.categoria == 'INFORMATICA' }) },
-      disco: { requiredIfInformatica: requiredIf(function () { return detalle.categoria == 'INFORMATICA' }) },
+      procesador: {
+        requiredIfInformatica: requiredIf(function () {
+          return detalle.categoria == 'INFORMATICA'
+        })
+      },
+      ram: {
+        requiredIfInformatica: requiredIf(function () {
+          return detalle.categoria == 'INFORMATICA'
+        })
+      },
+      disco: {
+        requiredIfInformatica: requiredIf(function () {
+          return detalle.categoria == 'INFORMATICA'
+        })
+      }
     }
 
     function limpiarCamposInformatica() {
@@ -191,6 +235,10 @@ export default defineComponent({
 
     const categoria_var = ref('')
 
+    async function filtrarDetalles(tab: string) {
+      tabDefecto.value = tab
+      await listar({ activo: tab })
+    }
     watch(categoria_var, () => {
       listadoBackup.value = listado.value
       limpiarCamposInformatica()
@@ -198,9 +246,7 @@ export default defineComponent({
       if (detalle.categoria === 'EPP') {
         detalle.tiene_adicionales = true
       }
-
     })
-
 
     async function cargarDetalle(id) {
       const { result } = await new DetalleProductoController().consultar(id)
@@ -244,15 +290,22 @@ export default defineComponent({
       color: 'positive',
       accion: () => {
         const fila = {
-          id: detalle.seriales.length ? encontrarUltimoIdListado(detalle.seriales) + 1 : 1,
-          serial: '',
+          id: detalle.seriales.length
+            ? encontrarUltimoIdListado(detalle.seriales) + 1
+            : 1,
+          serial: ''
         }
         detalle.seriales.push(fila)
-        refSeriesModalEditable.value.abrirModalEntidad(fila, detalle.seriales.length - 1)
+        refSeriesModalEditable.value.abrirModalEntidad(
+          fila,
+          detalle.seriales.length - 1
+        )
       }
     }
     function eliminar({ posicion }) {
-      confirmar('¿Está seguro de continuar?', () => detalle.seriales.splice(posicion, 1))
+      confirmar('¿Está seguro de continuar?', () =>
+        detalle.seriales.splice(posicion, 1)
+      )
     }
 
     /**************************************************************
@@ -277,7 +330,8 @@ export default defineComponent({
           }
         })
       },
-      visible: ({ entidad }) => entidad.activo && store.can('puede.ver.btn.desactivar.detalles')
+      visible: ({ entidad }) =>
+        entidad.activo && store.can('puede.ver.btn.desactivar.detalles')
     }
     const botonActivarDetalle: CustomActionTable = {
       titulo: 'Activar',
@@ -297,10 +351,18 @@ export default defineComponent({
             notificarError('No se pudo activar el detalle!')
           }
         })
-      }, visible: ({ entidad }) => !entidad.activo && store.can('puede.ver.btn.activar.detalles')
+      },
+      visible: ({ entidad }) =>
+        !entidad.activo && store.can('puede.ver.btn.activar.detalles')
     }
     return {
-      mixin, detalle, disabled, accion, v$, listado, listadoBackup,
+      mixin,
+      detalle,
+      disabled,
+      accion,
+      v$,
+      listado,
+      listadoBackup,
       configuracionColumnas: configuracionColumnasDetallesProductos,
       //listados
       opciones_hilos,
@@ -314,6 +376,8 @@ export default defineComponent({
       opciones_rams,
       opciones_tipos,
       useVuelidate,
+      tabOptions: tabOptionsProveedoresInternacionales,
+      tabDefecto,
 
       //variables auxiliares
       descripcion,
@@ -321,9 +385,12 @@ export default defineComponent({
       pagination,
 
       //filtros
+      filtrarDetalles,
       seleccionarModelo(val) {
         // console.log('seleccionar modelo: ', val)
-        opciones_modelos.value = listadosAuxiliares.modelos.filter((v) => v.marca_id === val)
+        opciones_modelos.value = listadosAuxiliares.modelos.filter(
+          v => v.marca_id === val
+        )
         // console.log(opciones_modelos.value)
         detalle.modelo = ''
         if (opciones_modelos.value.length < 1) {
@@ -343,16 +410,20 @@ export default defineComponent({
         }
         update(() => {
           const needle = val.toLowerCase()
-          opciones_modelos.value = listadosAuxiliares.modelos.filter((v) => v.nombre.toLowerCase().indexOf(needle) > -1)
+          opciones_modelos.value = listadosAuxiliares.modelos.filter(
+            v => v.nombre.toLowerCase().indexOf(needle) > -1
+          )
           // console.log(listadosAuxiliares.modelos.filter((v) => v.nombre.toLowerCase().indexOf(needle) > -1))
         })
       },
 
       seleccionarMarca(val) {
         // console.log('seleccionar marca: ', val)
-        const encontrado = listadosAuxiliares.modelos.filter((v) => v.id === val)
+        const encontrado = listadosAuxiliares.modelos.filter(v => v.id === val)
         if (encontrado.length > 0) {
-          opciones_marcas.value = listadosAuxiliares.marcas.filter((v) => v.id === encontrado[0]['marca_id'])
+          opciones_marcas.value = listadosAuxiliares.marcas.filter(
+            v => v.id === encontrado[0]['marca_id']
+          )
           detalle.marca = encontrado[0]['marca_id']
         }
         // })
@@ -367,7 +438,9 @@ export default defineComponent({
         }
         update(() => {
           const needle = val.toLowerCase()
-          opciones_marcas.value = listadosAuxiliares.marcas.filter((v) => v.nombre.toLowerCase().indexOf(needle) > -1)
+          opciones_marcas.value = listadosAuxiliares.marcas.filter(
+            v => v.nombre.toLowerCase().indexOf(needle) > -1
+          )
         })
       },
       filtroProcesadores(val, update) {
@@ -379,7 +452,9 @@ export default defineComponent({
         }
         update(() => {
           const needle = val.toLowerCase()
-          opciones_procesadores.value = listadosAuxiliares.procesadores.filter((v) => v.nombre.toLowerCase().indexOf(needle) > -1)
+          opciones_procesadores.value = listadosAuxiliares.procesadores.filter(
+            v => v.nombre.toLowerCase().indexOf(needle) > -1
+          )
         })
       },
       filtroRams(val, update) {
@@ -391,7 +466,9 @@ export default defineComponent({
         }
         update(() => {
           const needle = val.toLowerCase()
-          opciones_rams.value = listadosAuxiliares.rams.filter((v) => v.nombre.toLowerCase().indexOf(needle) > -1)
+          opciones_rams.value = listadosAuxiliares.rams.filter(
+            v => v.nombre.toLowerCase().indexOf(needle) > -1
+          )
         })
       },
       filtroDiscos(val, update) {
@@ -403,7 +480,9 @@ export default defineComponent({
         }
         update(() => {
           const needle = val.toLowerCase()
-          opciones_discos.value = listadosAuxiliares.discos.filter((v) => v.nombre.toLowerCase().indexOf(needle) > -1)
+          opciones_discos.value = listadosAuxiliares.discos.filter(
+            v => v.nombre.toLowerCase().indexOf(needle) > -1
+          )
         })
       },
 
@@ -416,7 +495,9 @@ export default defineComponent({
         }
         update(() => {
           const needle = val.toLowerCase()
-          opciones_productos.value = listadosAuxiliares.productos.filter((v) => v.nombre.toLowerCase().indexOf(needle) > -1)
+          opciones_productos.value = listadosAuxiliares.productos.filter(
+            v => v.nombre.toLowerCase().indexOf(needle) > -1
+          )
         })
       },
       checkFibra(val) {
@@ -426,12 +507,14 @@ export default defineComponent({
       },
 
       actualizarCategoria(val) {
-        const producto = listadosAuxiliares.productos.filter((v) => v.id === val)
+        const producto = listadosAuxiliares.productos.filter(v => v.id === val)
         // console.log(producto[0])
         categoria_var.value = producto[0]['categoria']
         detalle.categoria = producto[0]['categoria']
         if (detalle.calco) {
-          listadoBackup.value = listadoBackup.value.filter((v) => v.producto_id === producto[0]['id'])
+          listadoBackup.value = listadoBackup.value.filter(
+            v => v.producto_id === producto[0]['id']
+          )
         }
         /* if (producto[0]['categoria'] === 'INFORMATICA') {
             limpiarCamposInformatica()
@@ -441,7 +524,6 @@ export default defineComponent({
         } */
       },
       filtroDetalles(val, update) {
-
         // console.log('valor tipeado', val)
         if (val === '') {
           update(() => {
@@ -450,7 +532,9 @@ export default defineComponent({
           return
         }
         update(() => {
-          listadoBackup.value = listadoBackup.value.filter((v) => v.descripcion.toLowerCase().indexOf(val) > -1)
+          listadoBackup.value = listadoBackup.value.filter(
+            v => v.descripcion.toLowerCase().indexOf(val) > -1
+          )
         })
       },
       actualizarDetalle(val) {
@@ -460,7 +544,9 @@ export default defineComponent({
        * Función para calcular la diferencia entre la punta inicial y la punta final, cuyo resultado se asigna al valor de custodia.
        */
       calcularMetraje() {
-        detalle.custodia = Math.abs((parseInt(detalle.punta_final!) - parseInt(detalle.punta_inicial!))).toString()
+        detalle.custodia = Math.abs(
+          parseInt(detalle.punta_final!) - parseInt(detalle.punta_inicial!)
+        ).toString()
       },
 
       /* Filas y columnas de ingresar varios seriales */
@@ -470,7 +556,7 @@ export default defineComponent({
       eliminar,
 
       botonDesactivarDetalle,
-      botonActivarDetalle,
+      botonActivarDetalle
     }
   }
 })

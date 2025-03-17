@@ -7,6 +7,7 @@ import { activosFijos } from './endpoints/activosFijos'
 import { comprasProveedores } from './endpoints/comprasProveedores'
 import { vehiculos } from 'config/endpoints/vehiculos'
 import { sso } from './endpoints/sso'
+import { seguridad } from './endpoints/seguridad'
 import { fondosRotativos } from 'config/endpoints/fondosRotativos'
 import { controlPersonal } from 'config/endpoints/rrhh/controlPersonal'
 
@@ -289,6 +290,7 @@ export const endpoints = {
    ***************************/
   ...activosFijos,
   ...sso,
+  ...seguridad,
 
   /**
    * Modulo de fondos rotativos

@@ -12,6 +12,7 @@ import ConfirmarDialog from 'gestionTrabajos/trabajoAsignado/view/ConfirmarDialo
 import EssentialTableTabs from 'components/tables/view/EssentialTableTabs.vue'
 import EssentialTable from 'components/tables/view/EssentialTable.vue'
 import ModalesEntidad from 'components/modales/view/ModalEntidad.vue'
+import Callout from 'components/CalloutComponent.vue'
 
 // Logica y controladores
 import { ComportamientoModalesTicketAsignado } from '../application/ComportamientoModalesTicketAsignado'
@@ -30,6 +31,7 @@ export default defineComponent({
     EssentialTable,
     ModalesEntidad,
     ConfirmarDialog,
+    Callout,
   },
   setup() {
     /***********
@@ -67,6 +69,7 @@ export default defineComponent({
       individual: 'individual',
     }
     const tabsOpcionesFiltrado = ref(opcionesFiltrado.listado)
+    const imagenPerfil = authenticationStore.user.foto_url ?? `https://ui-avatars.com/api/?name=${authenticationStore.user.nombres.substr(0, 1)}+${authenticationStore.user.apellidos.substr(0, 1)}&bold=true&background=0879dc28&color=0879dc`
 
     /*********
      * Pusher
@@ -117,6 +120,7 @@ export default defineComponent({
     return {
       mixin,
       listado,
+      imagenPerfil,
       configuracionColumnasTicketAsignado,
       tabOptionsEstadosTicketsAsignados,
       filtrarTrabajoAsignado,

@@ -9,6 +9,7 @@ export class Beneficiario extends EntidadAuditable {
     direccion: string | null = null
     telefono: string | null = null
     localidad: string | null = null
+    correo: string | null = null
 
     // Foreign keys
     canton: number | null = null

@@ -67,6 +67,12 @@ export const regiones = ['R1', 'R2', 'R3', 'R4', 'R5']
 
 export const atenciones = ['URBANO', 'INTERURBANO']
 
+export const tabOptionsSolicitudesViaticos: TabOption[] = [
+  { label: 'Pendientes', value: '1' }, //autorizacion PENDIENTE
+  { label: 'Completadas', value: '2' }, //autorizacion APROBADO
+  { label: 'Anuladas', value: '4' },  //estado ANULADO
+]
+
 export const tabOptionsTransaccionesIngresos: TabOption[] = [
   { label: 'Todo', value: 'TODO' },
   { label: 'Pendiente', value: 'PENDIENTE' },
@@ -474,6 +480,17 @@ export const numDiaSemana = {
   viernes: 5,
   sabado: 6
 }
+
+export const optionsDias = [
+  { label: 'Lunes', value: 'lunes' },
+  { label: 'Martes', value: 'martes' },
+  { label: 'Miércoles', value: 'miercoles' },
+  { label: 'Jueves', value: 'jueves' },
+  { label: 'Viernes', value: 'viernes' },
+  { label: 'Sábado', value: 'sabado' },
+  { label: 'Domingo', value: 'domingo' }
+]
+
 
 export const opcionesReportesEgresos = [
   { value: 0, label: 'POR SOLICITANTE' },

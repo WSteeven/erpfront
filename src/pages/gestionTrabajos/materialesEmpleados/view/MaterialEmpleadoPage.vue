@@ -50,7 +50,10 @@
           ></q-checkbox>
         </div>
 
-        <div v-if="mostrarImprimirReporteMateriales" class="col-12 q-mt-md q-mb-lg">
+        <div
+          v-if="mostrarImprimirReporteMateriales"
+          class="col-12 q-mt-md q-mb-lg"
+        >
           <q-separator color="positive"></q-separator>
           <div
             class="col-12 bg-green-1 text-positive text-bold q-px-md q-py-sm"
@@ -467,7 +470,10 @@
               >
               <q-select
                 v-model="filtroEmpleado.cliente_id"
-                :options="listadosAuxiliares.clientesMaterialesEmpleado"
+                :options="[
+                  ...listadosAuxiliares.clientesMaterialesEmpleado,
+                  { cliente_id: null, razon_social: 'Sin cliente' }
+                ]"
                 transition-show="scale"
                 transition-hide="scale"
                 use-input

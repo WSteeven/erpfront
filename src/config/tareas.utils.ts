@@ -110,8 +110,8 @@ export const estadosTransferenciasProductos = {
 }
 
 export const tabOptionsAceptarTransferenciasProductos: TabOption[] = [
-  { label: 'Pendiente de firmar', value: estadosTransferenciasProductos.VALIDADO },
-  { label: 'Aprobado', value: estadosTransferenciasProductos.APROBADO },
+  { label: 'Pendiente de aceptar', value: estadosTransferenciasProductos.VALIDADO },
+  { label: 'Transferencias aceptadas', value: estadosTransferenciasProductos.APROBADO },
 ]
 
 export const tabOptionsTransferenciaProductoEmpleado: TabOption[] = [
