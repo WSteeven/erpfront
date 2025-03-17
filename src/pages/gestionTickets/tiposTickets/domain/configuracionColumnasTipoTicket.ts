@@ -21,6 +21,12 @@ export const configuracionColumnasTipoTicket: ColumnConfig<TipoTicket>[] = [
     align: 'left',
   },
   {
+    name: 'destinatario',
+    field: 'destinatario',
+    label: 'Destinatario',
+    align: 'left',
+  },
+  {
     name: 'activo',
     field: 'activo',
     label: 'Activo',

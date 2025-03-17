@@ -274,6 +274,18 @@
               >
               </q-input>
             </div>
+            <!-- IVA -->
+            <div class="col-12 col-md-4">
+              <label class="q-mb-sm block">IVA % (Impuesto al valor agregado del Pais de Operaciones)</label>
+              <q-input
+                v-model="configuracion.iva"
+                autogrow
+                placeholder="Obligatorio"
+                outlined
+                dense
+              >
+              </q-input>
+            </div>
 
             <!-- Logo claro -->
             <div class="col-12 col-md-4">

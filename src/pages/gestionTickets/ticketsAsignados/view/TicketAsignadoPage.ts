@@ -69,6 +69,7 @@ export default defineComponent({
       individual: 'individual',
     }
     const tabsOpcionesFiltrado = ref(opcionesFiltrado.listado)
+    const imagenPerfil = authenticationStore.user.foto_url ?? `https://ui-avatars.com/api/?name=${authenticationStore.user.nombres.substr(0, 1)}+${authenticationStore.user.apellidos.substr(0, 1)}&bold=true&background=0879dc28&color=0879dc`
 
     /*********
      * Pusher
@@ -119,6 +120,7 @@ export default defineComponent({
     return {
       mixin,
       listado,
+      imagenPerfil,
       configuracionColumnasTicketAsignado,
       tabOptionsEstadosTicketsAsignados,
       filtrarTrabajoAsignado,

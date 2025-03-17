@@ -388,7 +388,7 @@
 
         <div class="col-12 q-px-md q-mb-md">
           <essential-table
-            titulo="Listado de materiales para tarea"
+            titulo="Productos"
             :configuracionColumnas="configuracionColumnasMaterialEmpleadoTarea"
             :datos="listadosAuxiliares.productos"
             :permitirConsultar="false"

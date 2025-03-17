@@ -11,7 +11,7 @@
           <img src="~assets/logo.png" />
         </q-avatar>
 
-        <q-toolbar-title>Editar fila seleccionada {{ accion }}</q-toolbar-title>
+        <q-toolbar-title>{{ accion }}</q-toolbar-title>
 
         <q-btn
           round
@@ -102,6 +102,7 @@
                 @update:modelValue="data => (field.valor = data)"
                 :hint="field.hint"
                 :disable="field.disableModal"
+                :comprimir="false"
               />
             </div>
 
@@ -250,6 +251,22 @@ export default defineComponent({
       )
     })
 
+    // Todos los campos
+    const fieldsAll = computed(() =>
+      props.configuracionColumnas
+        .map((fila: ColumnConfig<any>) => {
+          return reactive({
+            label: fila.label,
+            field: fila.field,
+            type: fila.type ?? 'text',
+            editable: fila.editable ?? true,
+            valor: props.fila ? props.fila[fila.field] : '',
+            hint: fila.hint
+          })
+        })
+        .filter(fila => fila.field !== 'acciones')
+    )
+
     /************
      * Funciones
      ************/
@@ -259,12 +276,29 @@ export default defineComponent({
       console.log(disable.value)
     }
 
-    function guardar() {
+    function guardarMejorado() {
       console.log(props.accion)
-      const newObj = camposFiltrados.reduce((acc, item) => {
+      let newObj = camposFiltrados.reduce((acc, item) => {
         acc[item.field] = item.valor
         return acc
       }, {})
+
+      if (validarRequeridos(newObj)) {
+        if (props.accion === acciones.nuevo) emit('guardar', newObj)
+        if (props.accion === acciones.editar) emit('editar', newObj)
+        console.log(newObj)
+        abierto.value = false
+      }
+    }
+
+    function guardar() {
+      let newObj = camposFiltrados.reduce((acc, item) => {
+        acc[item.field] = item.valor
+        return acc
+      }, {})
+
+      // newObj = { ...newObj, ...fieldsAll }
+
       if (validarRequeridos(newObj)) {
         if (props.accion === acciones.nuevo) emit('guardar', newObj)
         if (props.accion === acciones.editar) emit('editar', newObj)
