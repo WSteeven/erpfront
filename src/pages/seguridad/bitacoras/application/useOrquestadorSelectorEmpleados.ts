@@ -28,7 +28,7 @@ export function useOrquestadorSelectorEmpleados(
   }
 
   const selector = useSelector(singleSelector)
-  const listar = () => selector.listar(criterioBusqueda.value)
+  const listar = (params?: any) => selector.listar(criterioBusqueda.value, params)
   const limpiar = () => singleSelector.limpiar()
   const seleccionar = (items: Empleado[]) => singleSelector.seleccionar(items)
 

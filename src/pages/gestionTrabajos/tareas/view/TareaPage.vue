@@ -15,7 +15,6 @@
     tabDefecto="0"
     paginate
     permitir-filtrar
-    ajustar-celdas
   >
     <!-- :forzarListar="true" -->
     <!-- :labelGuardar="tarea.tiene_subtareas ? 'Guardar' : 'Guardar y agendar'" -->

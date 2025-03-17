@@ -37,6 +37,17 @@ $bg-body: $grey-5;
     ) !important;
   }
 
+  .bg-body-background-gradient {
+    // background: $blue-10; //linear-gradient(to bottom, teal, #444444, #888888, #CCCCCC, #FFFFFF);
+    /* Gradiente lineal con inclinación */
+    background: linear-gradient(
+        135deg,          /* Grado de inclinación (45 grados) */
+        $grey-5,        /* Verde inicial */
+        $grey-4 50%,    /* Blanco en el centro (50%) */
+        $grey-5         /* Verde final */
+    );
+  }
+
   .bg-body-table {
     background-color: #fff;
   }

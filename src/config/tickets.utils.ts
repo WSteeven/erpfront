@@ -20,6 +20,7 @@ export const estadosTickets = {
   FINALIZADO_SOLUCIONADO: 'FINALIZADO SOLUCIONADO',
   ETIQUETADOS_A_MI: 'ETIQUETADOS_A_MI',
   CALIFICADO: 'CALIFICADO',
+  RECURRENTE: 'RECURRENTE',
 }
 
 export const tabOptionsEstadosTickets: TabOption[] = [
@@ -31,6 +32,7 @@ export const tabOptionsEstadosTickets: TabOption[] = [
   { label: 'Finalizado sin solución', value: estadosTickets.FINALIZADO_SIN_SOLUCION },
   { label: 'Cancelado', value: estadosTickets.CANCELADO },
   { label: 'Rechazado', value: estadosTickets.RECHAZADO },
+  { label: 'Recurrentes', value: estadosTickets.RECURRENTE },
 ]
 
 export const tabOptionsEstadosTicketsAsignados: TabOption[] = [

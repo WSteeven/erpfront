@@ -35,6 +35,14 @@ export class Ticket extends EntidadAuditable {
   para_sso?: boolean
   cc: number[]
 
+  // Ticket recurrente
+  is_recurring = false
+  recurrence_active = true
+  recurrence_frequency = ''
+  recurrence_time = '08:00:00'
+  recurrence_day_of_week = ''
+  recurrence_day_of_month = ''
+
   constructor() {
     super()
     this.codigo = null
