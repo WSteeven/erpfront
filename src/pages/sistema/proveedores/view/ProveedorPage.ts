@@ -344,8 +344,7 @@ export default defineComponent({
             return entidad.estado
           }
         }
-        // return false
-        return true
+        return false
       }
     }
 
@@ -489,6 +488,7 @@ export default defineComponent({
           await consultarContactosProveedor()
           break
         case 'CalificacionProveedorPage':
+        case 'RecalificacionProveedorPage':
           await listar()
           break
         case 'DatoBancarioPage':
@@ -520,8 +520,8 @@ export default defineComponent({
           proveedor_id: proveedorStore.idProveedor,
           departamento_id: proveedorStore.idDepartamento
         })
-      console.log('Los detalles del departamento proveedor es: ', result)
-      console.log('El detalle departamento proveedor es: ', result[0])
+      // console.log('Los detalles del departamento proveedor es: ', result)
+      // console.log('El detalle departamento proveedor es: ', result[0])
       if (result) {
         detalleDepartamentoProveedor.value = result[0]
         if (recalificacion) {

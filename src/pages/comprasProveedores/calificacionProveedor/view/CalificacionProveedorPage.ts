@@ -157,8 +157,8 @@ export default defineComponent({
           await confirmar(
             '¿Estás seguro de guardar tu calificación? Una vez realizada no podrás modificarla',
             async () => {
-              console.log('Aqui se guardan los resultados en la base de datos')
-              console.log(criteriosBienes.value, criteriosServicios.value)
+              // console.log('Aqui se guardan los resultados en la base de datos')
+              // console.log(criteriosBienes.value, criteriosServicios.value)
               let calificacionBienes = 0
               let calificacionServicios = 0
               let suma = 0
@@ -172,7 +172,7 @@ export default defineComponent({
                   (prev, curr) => prev + parseFloat(curr.calificacion),
                   0
                 )
-              console.log(calificacionBienes, calificacionServicios)
+              // console.log(calificacionBienes, calificacionServicios)
               if (calificacionBienes > 0 && calificacionServicios > 0) {
                 suma = (calificacionServicios + calificacionBienes) / 2
               } else {

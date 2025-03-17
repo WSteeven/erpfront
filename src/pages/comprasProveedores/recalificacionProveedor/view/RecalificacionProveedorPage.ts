@@ -22,7 +22,8 @@ import { AxiosResponse } from 'axios'
 export default defineComponent({
   components: { EssentialTable, GestorArchivos },
   props: { datos: { type: Object, required: true } },
-  setup(props) {
+  emits: ['cerrar-modal', 'guardado'],
+  setup(props, { emit }) {
     const mixin = new ContenedorSimpleMixin(
       CalificacionProveedor,
       new CalificacionProveedorController(),
@@ -142,8 +143,8 @@ export default defineComponent({
           await confirmar(
             '¿Estás seguro de guardar tu calificación? Una vez realizada no podrás modificarla',
             async () => {
-              console.log('Aqui se guardan los resultados en la base de datos')
-              console.log(criteriosBienes.value, criteriosServicios.value)
+              // console.log('Aqui se guardan los resultados en la base de datos')
+              // console.log(criteriosBienes.value, criteriosServicios.value)
               let calificacionBienes = 0
               let calificacionServicios = 0
               let suma = 0
@@ -157,7 +158,7 @@ export default defineComponent({
                   (prev, curr) => prev + parseFloat(curr.calificacion),
                   0
                 )
-              console.log(calificacionBienes, calificacionServicios)
+              // console.log(calificacionBienes, calificacionServicios)
               if (calificacionBienes > 0 && calificacionServicios > 0) {
                 suma = (calificacionServicios + calificacionBienes) / 2
               } else {
@@ -166,7 +167,8 @@ export default defineComponent({
               }
 
               const data = {
-                  detalle_departamento_proveedor_id: idDetalleDepartamentoProveedor.value,
+                detalle_departamento_proveedor_id:
+                  idDetalleDepartamentoProveedor.value,
                 proveedor_id: proveedorStore.proveedor.id,
                 criterios: [
                   ...criteriosBienes.value,
@@ -198,20 +200,27 @@ export default defineComponent({
       }
       if (step.value == 5) {
         emit('cerrar-modal', false)
-        emit('guardado', 'CalificacionProveedorPage') //se  envia a recargar listado de proveedores para que no se muestre el boton
+        emit('guardado', 'RecalificacionProveedorPage') //se  envia a recargar listado de proveedores para que no se muestre el boton
       }
       stepper.value.next()
     }
 
-      async function guardarRecalificacion(data) {
-          const axios = AxiosHttpRepository.getInstance()
-          const ruta = axios.getEndpoint(endpoints.recalificacion_proveedor)
-          const response: AxiosResponse = await axios.post(ruta, data)
-          return {
-              response,
-              result: response.data.modelo
-          }
+    async function guardarRecalificacion(data) {
+      try {
+        cargando.activar()
+        const axios = AxiosHttpRepository.getInstance()
+        const ruta = axios.getEndpoint(endpoints.recalificacion_proveedor)
+        const response: AxiosResponse = await axios.post(ruta, data)
+        return {
+          response,
+          result: response.data.modelo
+        }
+      } catch (e) {
+        console.error(e)
+      } finally {
+        cargando.desactivar()
       }
+    }
 
     /**
      * La función 'verificarCriteriosBienes' comprueba si la suma de los pesos asignados a los

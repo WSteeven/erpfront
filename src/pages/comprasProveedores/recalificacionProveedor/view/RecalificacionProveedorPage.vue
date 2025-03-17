@@ -31,7 +31,7 @@
         <div class="col-sm-6 col-md-3 col-xs-12">
           <label class="q-mb-sm block">Dirección</label>
           <q-input
-            disable
+            disable autogrow
             dense
             outlined
             v-model:model-value="proveedor.direccion"
