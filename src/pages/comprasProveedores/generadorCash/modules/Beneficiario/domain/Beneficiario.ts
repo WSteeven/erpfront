@@ -16,4 +16,5 @@ export class Beneficiario extends EntidadAuditable {
 
     // Auxiliares
     cuentas_bancarias: CuentaBancaria[] = []
+    resumen_cuentas_bancarias: string | null = null
 }

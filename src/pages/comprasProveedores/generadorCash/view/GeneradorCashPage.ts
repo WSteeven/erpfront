@@ -8,7 +8,7 @@ import { ColumnConfig } from 'components/tables/domain/ColumnConfig'
 import { minValue, required } from 'shared/i18n-validators'
 import { useNotificacionStore } from 'stores/notificacion'
 import { useNotificaciones } from 'shared/notificaciones'
-import { defineComponent, Ref, ref, watch } from 'vue'
+import { computed, defineComponent, Ref, ref, watch } from 'vue'
 import { helpers } from '@vuelidate/validators'
 import { accionesTabla } from 'config/utils'
 import useVuelidate from '@vuelidate/core'
@@ -27,11 +27,11 @@ import { useOrquestadorSelectorCuentasBancariasBeneficiario } from '../applicati
 import { ContenedorSimpleMixin } from 'shared/contenedor/modules/simple/application/ContenedorSimpleMixin'
 import { ComportamientoModalesGeneradorCash } from '../application/ComportamientoModalesGeneradorCash'
 import { useOrquestadorSelectorBeneficiarios } from '../application/OrquestadorSelectorBeneficiarios'
+import { AxiosHttpRepository } from 'shared/http/infraestructure/AxiosHttpRepository'
 import { GeneradorCashController } from '../infraestructure/GeneradorCashController'
 import { GeneradorCash } from '../domain/GeneradorCash'
-import { Pago } from '../domain/Pago'
-import { AxiosHttpRepository } from 'shared/http/infraestructure/AxiosHttpRepository'
 import { endpoints } from 'config/api'
+import { Pago } from '../domain/Pago'
 
 export default defineComponent({
     components: { TabLayout, EssentialTable, EssentialSelectableTable, ModalesEntidad, Callout },
@@ -61,6 +61,7 @@ export default defineComponent({
         pago.moneda = 'USD'
         pago.forma_pago = 'CTA'
         const { notificarAdvertencia, confirmar, notificarCorrecto } = useNotificaciones()
+        const sumaPagos = computed(() => generador.pagos.reduce((acc, pago: Pago) => acc + parseFloat(pago.valor + ''), 0))
 
         /************
          * Funciones
@@ -215,6 +216,7 @@ export default defineComponent({
             modales,
             btnEliminarPago,
             btnGestionarBeneficiarios,
+            sumaPagos,
             // orquestador
             refListadoSeleccionableCuentasBancarias,
             criterioBusquedaCuentasBancarias,
