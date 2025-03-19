@@ -16,9 +16,10 @@ import { apiConfig, endpoints } from 'config/api'
 import { AxiosResponse } from 'axios'
 import { useNotificaciones } from 'shared/notificaciones'
 import { StatusEssentialLoading } from 'components/loading/application/StatusEssentialLoading'
+import EssentialTablePagination from 'components/tables/view/EssentialTablePagination.vue'
 
 export default defineComponent({
-  components: { EssentialTable },
+  components: { EssentialTablePagination, EssentialTable },
   setup() {
     const mixin = new ContenedorSimpleMixin(
       Asistencia,
@@ -26,10 +27,10 @@ export default defineComponent({
     )
     const { entidad: asistencia, disabled, listado } = mixin.useReferencias()
     console.log('Asistencia inicializada en useReferencias:', asistencia)
-    const { setValidador, guardar, listar } = mixin.useComportamiento()
+    const { setValidador, guardar, listar, filtrar } = mixin.useComportamiento()
     const { notificarCorrecto } = useNotificaciones()
 
-    const cargando  = new StatusEssentialLoading()
+    const cargando = new StatusEssentialLoading()
 
     // Reglas de validación
     const reglas = {
@@ -40,6 +41,14 @@ export default defineComponent({
 
     const v$ = useVuelidate(reglas, asistencia)
     setValidador(v$.value)
+
+    async function listarListado(val) {
+      if (!val) await listar({ paginate: 1 })
+    }
+
+    async function aplicarFiltro(uri) {
+      await filtrar(uri)
+    }
 
     async function actualizarAsistencias() {
       cargando.activar()
@@ -53,11 +62,11 @@ export default defineComponent({
 
         console.log(response.data.message)
         if (response.status === 200) notificarCorrecto(response.data.message)
-        await listar()
+        await listarListado(false)
       } catch (error) {
         console.error('Error al sincronizar asistencias:', error)
         listado.value = [] // Mantén el listado vacío si ocurre un error
-      }finally{
+      } finally {
         cargando.desactivar()
       }
     }
@@ -73,7 +82,9 @@ export default defineComponent({
       configuracionColumnas: configuracionColumnasAsistencia,
       guardar,
       //funciones
-      actualizarAsistencias
+      actualizarAsistencias,
+      aplicarFiltro,
+      listarListado
     }
   }
 })

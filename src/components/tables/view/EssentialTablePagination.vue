@@ -9,7 +9,7 @@
   ></EditarTablaModal>
 
   <q-table
-    flat
+    flat dense
     bordered
     ref="refTable"
     title="Treats"

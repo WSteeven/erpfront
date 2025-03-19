@@ -21,6 +21,7 @@ export const configuracionColumnasAsistencia: ColumnConfig<Asistencia>[] = [
         field: 'fecha',
         label: 'Fecha',
         align: 'left',
+        type: 'date',
         sortable: true
     },
     {

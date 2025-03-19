@@ -9,7 +9,8 @@
     </div>
 
     <!-- Tabla de asistencias -->
-    <essential-table
+    <essential-table-pagination
+      :mixin="mixin"
       titulo="Asistencias"
       :configuracionColumnas="configuracionColumnas"
       :datos="listado"
@@ -18,7 +19,10 @@
       :permitirEliminar="false"
       :permitirFiltrar="true"
       :ajustarCeldas="true"
-    ></essential-table>
+      @toggle-filtros="listarListado"
+      @filtrar="aplicarFiltro"
+      paginate
+    ></essential-table-pagination>
   </q-page>
 </template>
 
