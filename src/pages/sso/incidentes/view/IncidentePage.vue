@@ -263,7 +263,7 @@
       </q-form>
     </template>
 
-    <template #forario-2>
+    <template #formulario-2>
       <div class="bg-desenfoque rounded q-py-md">
         <span
           v-if="accion === acciones.consultar"

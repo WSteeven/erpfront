@@ -583,7 +583,6 @@
               <q-input
                 v-model="empleado.num_cuenta"
                 placeholder="Obligatorio"
-                type="number"
                 :disable="disabled"
                 :error="!!v$.num_cuenta.$errors.length"
                 @blur="v$.num_cuenta.$touch"

@@ -39,6 +39,9 @@ export class ActivoFijo extends EntidadAuditable {
     sucursal: number | null
     condicion: number | null
 
+    codigo_personalizado: string | null = null
+    codigo_sistema_anterior: string | null = null
+
     constructor() {
         super()
         this.codigo = null

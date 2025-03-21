@@ -5,4 +5,6 @@ export const iconos = {
     eliminar: 'bi-trash',
     cancelar: 'bi-x-lg',
     recargar: 'bi-arrow-clockwise',
+    descargar: 'bi-download',
+    imprimir: 'bi-printer',
 }

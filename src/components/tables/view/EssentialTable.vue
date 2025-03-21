@@ -614,6 +614,8 @@
             >{{ accion6Header.tooltip }}
           </q-tooltip>
         </q-btn>
+
+        <slot name="header"></slot>
       </div>
     </template>
 

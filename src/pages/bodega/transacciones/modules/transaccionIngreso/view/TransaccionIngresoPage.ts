@@ -1,4 +1,4 @@
-import { limpiarListado, ordenarLista, ordernarListaString } from 'shared/utils'
+import { isAxiosError, limpiarListado, notificarMensajesError, ordenarLista, ordernarListaString } from 'shared/utils'
 //Dependencias
 import {
   configuracionColumnasTransaccionIngreso
@@ -39,6 +39,7 @@ import { useNotificacionStore } from 'stores/notificacion'
 import { LocalStorage, useQuasar } from 'quasar'
 
 //Controladores para los listados
+import { ProveedorController } from 'sistema/proveedores/infraestructure/ProveedorController'
 import { MotivoController } from 'pages/administracion/motivos/infraestructure/MotivoController'
 import { CustomActionTable } from 'components/tables/domain/CustomActionTable'
 import { useNotificaciones } from 'shared/notificaciones'
@@ -71,6 +72,9 @@ import {
 } from '../application/validations/ValidarListadoProductosIngreso'
 import { useFiltrosListadosSelects } from 'shared/filtrosListadosGenerales'
 import { StatusEssentialLoading } from 'components/loading/application/StatusEssentialLoading'
+import { isNumber } from 'lodash'
+import { AxiosHttpRepository } from 'shared/http/infraestructure/AxiosHttpRepository'
+import { iconos } from 'config/iconos'
 
 export default defineComponent({
   name: 'transacciones_ingresos',
@@ -90,7 +94,7 @@ export default defineComponent({
       eliminar,
       reestablecer
     } = mixin.useComportamiento()
-    const { onConsultado, onReestablecer, onGuardado } = mixin.useHooks()
+    const { onConsultado, onReestablecer, onGuardado, onBeforeGuardar, onBeforeModificar } = mixin.useHooks()
     const { confirmar, prompt } = useNotificaciones()
 
     //modales
@@ -127,6 +131,14 @@ export default defineComponent({
 
     })
 
+    onBeforeGuardar(() => {
+      transaccion.proveedor = transaccion.proveedor_id ? listadosAuxiliares.proveedores.find((p) => p.id === transaccion.proveedor_id).razon_social : transaccion.proveedor
+    })
+
+    onBeforeModificar(() => {
+      transaccion.proveedor = transaccion.proveedor_id ? listadosAuxiliares.proveedores.find((p) => p.id === transaccion.proveedor_id).razon_social : transaccion.proveedor
+    })
+
     /*****************************************************************************************
      * Selector
      *****************************************************************************************/
@@ -154,7 +166,8 @@ export default defineComponent({
       empleados, filtrarEmpleados,
       sucursales, filtrarSucursales,
       motivos,
-      tareas
+      tareas,
+      proveedores, filtrarProveedores
     } = useFiltrosListadosSelects(listadosAuxiliares)
 
     //obtener los listados
@@ -176,7 +189,8 @@ export default defineComponent({
             campos: 'id,nombres,apellidos'
             // estado: 1
           }
-        }
+        },
+        proveedores: new ProveedorController()
       })
 
       if (devolucionStore.devolucion.id) {
@@ -186,6 +200,8 @@ export default defineComponent({
       } else {
         transaccion.solicitante = store.user.id
       }
+
+      proveedores.value = listadosAuxiliares.proveedores
     })
 
     /*****************************************************************************************
@@ -197,7 +213,7 @@ export default defineComponent({
       motivo: { requiredIfRol: requiredIf(store.esBodeguero) },
       estado: { requiredIfRol: requiredIf(accion.value === acciones.editar) },
       observacion_est: {
-        requiredIfObsEstado: requiredIf(function() {
+        requiredIfObsEstado: requiredIf(function () {
           return transaccion.tiene_obs_estado
         })
       },
@@ -340,6 +356,35 @@ export default defineComponent({
         await transaccionStore.imprimirIngreso()
       }
     }
+
+    const botonEditarFechaCompra: CustomActionTable<Transaccion> = {
+      titulo: 'Editar fecha de compra',
+      color: 'amber-8',
+      icono: iconos.editar,
+      visible: ({ entidad }) => entidad.motivo === motivosTransaccionesBodega.compraProveedor,
+      accion: async ({ entidad, posicion }) => {
+        const config: CustomActionPrompt = {
+          titulo: 'Fecha de compra',
+          mensaje: 'Ingresa la nueva fecha',
+          defecto: transaccion.listadoProductosTransaccion[posicion]?.fecha_compra,
+          tipo: 'text',
+          accion: async (fecha_compra) => {
+            try {
+
+              const axios = AxiosHttpRepository.getInstance()
+              axios.put('api/transacciones-ingresos-editar-fecha-compra/' + entidad.id, { fecha_compra })
+            } catch (error) {
+              if (isAxiosError(error)) {
+                const mensajes: string[] = error.erroresValidacion
+                await notificarMensajesError(mensajes, useNotificaciones())
+              }
+            }
+          }
+        }
+        prompt(config)
+      }
+    }
+
     const botonAnular: CustomActionTable = {
       titulo: 'Anular',
       color: 'red',
@@ -369,32 +414,32 @@ export default defineComponent({
 
 
     const configuracionColumnasProductosSeleccionadosAccion = computed(() => [...configuracionColumnasProductosSeleccionados,
-      {
-        name: 'condiciones',
-        field: 'condiciones',
-        label: 'Estado del producto',
-        align: 'left',
-        sortable: false,
-        visible: true,
-        type: 'select',
-        options: condiciones.value.map((v: Condicion) => {
-          return { label: v.nombre }
-        })
-      },
-      {
-        name: 'cantidad',
-        field: 'cantidad',
-        label: 'Cantidad',
-        align: 'left',
-        type: 'number',
-        sortable: false
-      },
-      {
-        name: 'acciones',
-        field: 'acciones',
-        label: 'Acciones',
-        align: 'center'
-      }
+    {
+      name: 'condiciones',
+      field: 'condiciones',
+      label: 'Estado del producto',
+      align: 'left',
+      sortable: false,
+      visible: true,
+      type: 'select',
+      options: condiciones.value.map((v: Condicion) => {
+        return { label: v.nombre }
+      })
+    },
+    {
+      name: 'cantidad',
+      field: 'cantidad',
+      label: 'Cantidad',
+      align: 'left',
+      type: 'number',
+      sortable: false
+    },
+    {
+      name: 'acciones',
+      field: 'acciones',
+      label: 'Acciones',
+      align: 'center'
+    }
     ])
 
     function tareaSeleccionada(val) {
@@ -416,7 +461,7 @@ export default defineComponent({
       if (tarea_id) {
         response = await new TareaController().listar({ id: tarea_id })
       } else {
-         response = await new TareaController().listar({
+        response = await new TareaController().listar({
           activas_empleado: 1,
           empleado_id: transaccion.solicitante,
           campos: 'id,codigo_tarea,titulo',
@@ -454,7 +499,7 @@ export default defineComponent({
         esVisibleComprobante.value = opcionSeleccionada[0]['nombre'] === motivosTransaccionesBodega.compraProveedor
         esVisibleTarea.value = opcionSeleccionada[0]['nombre'] === motivosTransaccionesBodega.mercaderiaClienteTarea || opcionSeleccionada[0]['nombre'] === motivosTransaccionesBodega.devolucionTarea
         transaccion.es_transferencia = opcionSeleccionada[0]['nombre'] == motivosTransaccionesBodega.ingresoTransferenciaBodegas
-        if (esVisibleTarea.value)  obtenerTareas(false, transaccion.tarea)
+        if (esVisibleTarea.value) obtenerTareas(false, transaccion.tarea)
       },
 
       checkMasivo(val) {//checkbox de ingreso masivo
@@ -476,6 +521,7 @@ export default defineComponent({
       botonActualizar,
       botonImprimir,
       botonAnular,
+      botonEditarFechaCompra,
       eliminarItem,
 
       //listado de devoluciones
@@ -537,8 +583,8 @@ export default defineComponent({
           sucursales.value = sucursalesTelconet.sort((a: Sucursal, b: Sucursal) => ordernarListaString(a.lugar!, b.lugar!))
         } else sucursales.value.sort((a: Sucursal, b: Sucursal) => ordernarListaString(a.lugar!, b.lugar!))
       },
-      ordenarLista
-
+      ordenarLista,
+      proveedores, filtrarProveedores,
     }
   }
 })

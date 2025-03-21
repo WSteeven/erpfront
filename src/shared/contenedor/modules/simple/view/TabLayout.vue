@@ -5,12 +5,6 @@
     <slot name="modales" />
     <!-- </transition> -->
 
-    <!-- <div class="text-center q-mb-md q-pa-sm bg-grey-2 border-bottom"> -->
-    <!-- <small class="block text-bold"> {{ tituloTabla }}</small> -->
-    <!-- <q-icon name="bi-app-indicator" class="q-mr-sm"></q-icon> -->
-    <!-- <small class="text-grey-9 text-bold">{{ subtituloPagina }}</small> -->
-    <!-- </div> -->
-
     <!-- Tabs -->
     <q-tabs
       v-model="tabs"
@@ -111,7 +105,12 @@
           @eliminar="accionTabla.eliminar"
           @filtrar="filtrarTodos"
           :mixin="mixin"
-        ></essential-table-pagination>
+        >
+          <template #header-tabla-listado
+            >hola
+            <slot name="header"></slot>
+          </template>
+        </essential-table-pagination>
 
         <essential-table
           v-else
@@ -143,7 +142,11 @@
           @editar="accionTabla.editar"
           @eliminar="accionTabla.eliminar"
           @filtrar="filtrarTodos"
-        ></essential-table>
+        >
+          <template #header>
+            <slot name="header-tabla-listado"></slot>
+          </template>
+        </essential-table>
       </q-tab-panel>
 
       <!-- Custom listado -->

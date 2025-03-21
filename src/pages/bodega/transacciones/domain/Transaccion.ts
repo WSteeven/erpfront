@@ -57,6 +57,12 @@ export class Transaccion extends EntidadAuditable {
   se_traslada_arma: boolean
   codigo_permiso_traslado: string | null
 
+  modo_seleccion = true
+  proveedor_id: number | null = null
+  fecha_compra: string | null = null
+
+  nombre_motivo: string | null = null
+
   constructor() {
     super()
     this.id = null

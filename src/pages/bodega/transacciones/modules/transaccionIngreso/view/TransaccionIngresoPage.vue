@@ -7,13 +7,16 @@
     :ajustarCeldas="true"
     :accion1="botonImprimir"
     :accion2="botonAnular"
+    :accion3="botonEditarFechaCompra"
     :accion1Header="botonActualizar"
   >
     <template #formulario>
       <q-form @submit.prevent>
         <div class="row q-col-gutter-sm q-py-md">
           <div class="col col-12" v-if="transaccion.es_para_stock">
-            <span>Se realizará un egreso automatico al stock del solicitante</span>
+            <span
+              >Se realizará un egreso automatico al stock del solicitante</span
+            >
           </div>
 
           <!-- N° transaccion -->
@@ -46,10 +49,22 @@
             >
               <template v-slot:append>
                 <q-icon name="event" class="cursor-pointer">
-                  <q-popup-proxy cover transition-show="scale" transition-hide="scale">
-                    <q-date v-model="transaccion.fecha_limite" mask="DD-MM-YYYY">
+                  <q-popup-proxy
+                    cover
+                    transition-show="scale"
+                    transition-hide="scale"
+                  >
+                    <q-date
+                      v-model="transaccion.fecha_limite"
+                      mask="DD-MM-YYYY"
+                    >
                       <div class="row items-center justify-end">
-                        <q-btn v-close-popup label="Cerrar" color="primary" flat />
+                        <q-btn
+                          v-close-popup
+                          label="Cerrar"
+                          color="primary"
+                          flat
+                        />
                       </div>
                     </q-date>
                   </q-popup-proxy>
@@ -57,6 +72,7 @@
               </template>
             </q-input>
           </div>
+
           <!-- Select motivo -->
           <div class="col-12 col-md-3 q-mb-md">
             <label class="q-mb-sm block">Motivo</label>
@@ -74,20 +90,25 @@
               :disable="disabled || soloLectura"
               :error="!!v$.motivo.$errors.length"
               error-message="Debes seleccionar un motivo"
-              :option-value="(v) => v.id"
-              :option-label="(v) => v.nombre"
+              :option-value="v => v.id"
+              :option-label="v => v.nombre"
               emit-value
               map-options
             >
               <template v-slot:no-option>
                 <q-item>
-                  <q-item-section class="text-grey"> No hay resultados </q-item-section>
+                  <q-item-section class="text-grey">
+                    No hay resultados
+                  </q-item-section>
                 </q-item>
               </template>
             </q-select>
           </div>
           <!-- Transferencia -->
-          <div v-if="transaccion.es_transferencia" class="col-12 col-md-3 q-mb-md">
+          <div
+            v-if="transaccion.es_transferencia"
+            class="col-12 col-md-3 q-mb-md"
+          >
             <label class="q-mb-sm block">N° transferencia</label>
             <q-input
               type="number"
@@ -104,7 +125,7 @@
           <!-- Tiene devolución -->
           <div
             v-if="
-              (accion === 'NUEVO' && !transaccion.es_transferencia) ||
+              (accion === 'NUEVO' && !transaccion.es_transferencia && !esVisibleComprobante) ||
               (transaccion.tiene_devolucion && !transaccion.es_transferencia)
             "
             class="col-12 col-md-3"
@@ -120,7 +141,10 @@
             ></q-checkbox>
           </div>
           <!-- Devolución -->
-          <div v-if="transaccion.tiene_devolucion|| transaccion.devolucion" class="col-12 col-md-3 q-mb-md">
+          <div
+            v-if="transaccion.tiene_devolucion || transaccion.devolucion"
+            class="col-12 col-md-3 q-mb-md"
+          >
             <label class="q-mb-sm block">N° devolución</label>
             <q-input
               type="number"
@@ -147,16 +171,78 @@
               placeholder="Obligatorio"
               :readonly="disabled"
               :disable="disabled || soloLectura"
-              :rules="[(val) => val > 0 || 'Ingresa un numero de comprobante válido']"
+              :rules="[
+                val => val > 0 || 'Ingresa un numero de comprobante válido'
+              ]"
               :lazy-rules="true"
               outlined
               dense
             >
             </q-input>
           </div>
+
+          <div class="col-12 col-md-3 col-sm-3">
+            <label class="q-mb-sm block">Modo de selección de Proveedor</label>
+            <q-toggle
+              :label="transaccion.modo_seleccion ? 'LISTADO' : 'TEXTO'"
+              v-model="transaccion.modo_seleccion"
+              @update:model-value="transaccion.proveedor = null"
+              icon="bi-check2-circle"
+              unchecked-icon="clear"
+              :disable="disabled"
+              color="primary"
+              keep-color
+            />
+          </div>
+
+          <!-- Proveedor -->
+          <div
+            v-if="esVisibleComprobante && transaccion.modo_seleccion || transaccion.proveedor_id"
+            class="col-12 col-md-3"
+          >
+            <label class="q-mb-sm block">Proveedor</label>
+            <q-select
+              v-model="transaccion.proveedor_id"
+              :options="proveedores"
+              transition-show="jump-up"
+              transition-hide="jump-up"
+              options-dense
+              dense
+              outlined
+              use-input
+              input-debounce="0"
+              @filter="filtrarProveedores"
+              :disable="disabled || soloLectura"
+              :option-label="v => v.razon_social + ' - ' + v.sucursal"
+              :option-value="v => v.id"
+              emit-value
+              map-options
+              ><template v-slot:option="scope">
+                <q-item v-bind="scope.itemProps">
+                  <q-item-section>
+                    <q-item-label>{{ scope.opt.razon_social }}</q-item-label>
+                    <q-item-label caption
+                      >{{ scope.opt.nombre_comercial }} - Sucursal:
+                      {{
+                        scope.opt.sucursal || scope.opt.direccion
+                      }}</q-item-label
+                    >
+                  </q-item-section>
+                </q-item>
+              </template>
+              <template v-slot:no-option>
+                <q-item>
+                  <q-item-section class="text-grey">
+                    No hay resultados
+                  </q-item-section>
+                </q-item>
+              </template>
+            </q-select>
+          </div>
+
           <!--Proveedor -->
           <div
-            v-if="esVisibleComprobante || transaccion.proveedor"
+            v-if="esVisibleComprobante && !transaccion.modo_seleccion || transaccion.proveedor"
             class="col-12 col-md-3 q-mb-md"
           >
             <label class="q-mb-sm block">Proveedor</label>
@@ -169,7 +255,45 @@
             >
             </q-input>
           </div>
-          
+
+          <div v-if="esVisibleComprobante || transaccion.fecha_compra" class="col-12 col-md-3 q-mb-md">
+            <label class="q-mb-sm block">Fecha de compra</label>
+            <q-input
+              v-model="transaccion.fecha_compra"
+              placeholder="YYYY-MM-DD"
+              hint="Opcional"
+              :disable="disabled"
+              clearable
+              outlined
+              dense
+            >
+              <template v-slot:append>
+                <q-icon name="event" class="cursor-pointer">
+                  <q-popup-proxy
+                    cover
+                    transition-show="scale"
+                    transition-hide="scale"
+                  >
+                    <q-date
+                      v-model="transaccion.fecha_compra"
+                      mask="YYYY-MM-DD"
+                      today-btn
+                    >
+                      <div class="row items-center justify-end">
+                        <q-btn
+                          v-close-popup
+                          label="Cerrar"
+                          color="primary"
+                          flat
+                        />
+                      </div>
+                    </q-date>
+                  </q-popup-proxy>
+                </q-icon>
+              </template>
+            </q-input>
+          </div>
+
           <!-- Select sucursal -->
           <div class="col-12 col-md-3 q-mb-md">
             <label class="q-mb-sm block">Sucursal</label>
@@ -190,8 +314,8 @@
               @filter="filtrarSucursales"
               @popup-show="ordenarSucursales"
               @update:model-value="seleccionarClientePropietario"
-              :option-value="(v) => v.id"
-              :option-label="(v) => v.lugar"
+              :option-value="v => v.id"
+              :option-label="v => v.lugar"
               emit-value
               map-options
             >
@@ -202,7 +326,9 @@
               </template>
               <template v-slot:no-option>
                 <q-item>
-                  <q-item-section class="text-grey"> No hay resultados </q-item-section>
+                  <q-item-section class="text-grey">
+                    No hay resultados
+                  </q-item-section>
                 </q-item>
               </template>
               <template v-slot:after>
@@ -227,7 +353,10 @@
               dense
             >
               <template v-slot:error>
-                <div v-for="error of v$.justificacion.$errors" :key="error.$uid">
+                <div
+                  v-for="error of v$.justificacion.$errors"
+                  :key="error.$uid"
+                >
                   <div class="error-msg">{{ error.$message }}</div>
                 </div>
               </template>
@@ -252,14 +381,16 @@
               @filter="filtrarEmpleados"
               @popup-show="ordenarLista(empleados, 'apellidos')"
               :readonly="disabled || soloLectura"
-              :option-label="(v) => v.apellidos + ' ' + v.nombres"
-              :option-value="(v) => v.id"
+              :option-label="v => v.apellidos + ' ' + v.nombres"
+              :option-value="v => v.id"
               emit-value
               map-options
             >
               <template v-slot:no-option>
                 <q-item>
-                  <q-item-section class="text-grey"> No hay resultados </q-item-section>
+                  <q-item-section class="text-grey">
+                    No hay resultados
+                  </q-item-section>
                 </q-item>
               </template>
             </q-select>
@@ -280,8 +411,8 @@
               :readonly="disabled"
               :disable="disabled || soloLectura"
               @update:model-value="tareaSeleccionada"
-              :option-label="(item) => item.titulo"
-              :option-value="(item) => item.id"
+              :option-label="item => item.titulo"
+              :option-value="item => item.id"
               emit-value
               map-options
               ><template v-slot:option="scope">
@@ -312,8 +443,8 @@
               :disable="disabled || soloLectura"
               :error="!!v$.estado.$errors.length"
               error-message="Debes seleccionar un estado para la transacción"
-              :option-value="(item) => item.id"
-              :option-label="(item) => item.nombre"
+              :option-value="item => item.id"
+              :option-label="item => item.nombre"
               emit-value
               map-options
             >
@@ -325,7 +456,9 @@
               </template>
               <template v-slot:no-option>
                 <q-item>
-                  <q-item-section class="text-grey"> No hay resultados </q-item-section>
+                  <q-item-section class="text-grey">
+                    No hay resultados
+                  </q-item-section>
                 </q-item>
               </template>
             </q-select>
@@ -356,7 +489,10 @@
               dense
             >
               <template v-slot:error>
-                <div v-for="error of v$.observacion_est.$errors" :key="error.$uid">
+                <div
+                  v-for="error of v$.observacion_est.$errors"
+                  :key="error.$uid"
+                >
                   <div class="error-msg">{{ error.$message }}</div>
                 </div>
               </template>
@@ -381,8 +517,8 @@
               input-debounce="0"
               @popup-show="ordenarClientes"
               @filter="filtrarClientes"
-              :option-value="(item) => item.id"
-              :option-label="(item) => item.razon_social"
+              :option-value="item => item.id"
+              :option-label="item => item.razon_social"
               emit-value
               map-options
             >
@@ -393,7 +529,9 @@
               </template>
               <template v-slot:no-option>
                 <q-item>
-                  <q-item-section class="text-grey"> No hay resultados </q-item-section>
+                  <q-item-section class="text-grey">
+                    No hay resultados
+                  </q-item-section>
                 </q-item>
               </template>
             </q-select>
@@ -424,8 +562,8 @@
               :readonly="disabled"
               :error="!!v$.condicion.$errors.length"
               error-message="Debes seleccionar una condición"
-              :option-value="(item) => item.id"
-              :option-label="(item) => item.nombre"
+              :option-value="item => item.id"
+              :option-label="item => item.nombre"
               emit-value
               map-options
             >
@@ -436,14 +574,18 @@
               </template>
               <template v-slot:no-option>
                 <q-item>
-                  <q-item-section class="text-grey"> No hay resultados </q-item-section>
+                  <q-item-section class="text-grey">
+                    No hay resultados
+                  </q-item-section>
                 </q-item>
               </template>
             </q-select>
           </div>
           <!-- Listado de la devolución -->
           <div
-            v-if="listadoDevolucion !== undefined && listadoDevolucion.length > 0"
+            v-if="
+              listadoDevolucion !== undefined && listadoDevolucion.length > 0
+            "
             class="col-12 col-md-12"
           >
             <q-table
@@ -475,7 +617,9 @@
                   hint="Presiona Enter para seleccionar un producto"
                   :disable="disabled || soloLectura"
                   @keydown.enter="listarProductos()"
-                  @blur="criterioBusquedaProducto === '' ? limpiarProducto() : null"
+                  @blur="
+                    criterioBusquedaProducto === '' ? limpiarProducto() : null
+                  "
                   outlined
                   dense
                 >
@@ -501,12 +645,18 @@
           <div class="col-12">
             <essential-table
               titulo="Productos Seleccionados"
-              :configuracionColumnas="configuracionColumnasProductosSeleccionadosAccion"
+              :configuracionColumnas="
+                configuracionColumnasProductosSeleccionadosAccion
+              "
               :datos="transaccion.listadoProductosTransaccion"
               :permitirConsultar="false"
-              :permitirEditar="!transaccion.ingreso_masivo && accion === acciones.nuevo"
+              :permitirEditar="
+                !transaccion.ingreso_masivo && accion === acciones.nuevo
+              "
               :permitirEliminar="
-                accion == acciones.nuevo || accion == acciones.editar ? true : false
+                accion == acciones.nuevo || accion == acciones.editar
+                  ? true
+                  : false
               "
               :mostrarBotones="false"
               :accion1="botonEditarCantidad"
@@ -523,7 +673,9 @@
       <!-- Modal de seleccion de detalles -->
       <essential-selectable-table
         ref="refListadoSeleccionableProductos"
-        :configuracion-columnas="configuracionColumnasDetallesProductosSeleccionables"
+        :configuracion-columnas="
+          configuracionColumnasDetallesProductosSeleccionables
+        "
         :datos="listadoProductos"
         tipo-seleccion="multiple"
         @selected="seleccionarProducto"
