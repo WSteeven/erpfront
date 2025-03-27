@@ -92,7 +92,8 @@ export default defineComponent({
     const { notificarAdvertencia, notificarCorrecto, confirmar, promptItems } =
       useNotificaciones()
 
-    const { btnFinalizarRolPago } = useBotonesTablaRolPagoMes(mixin)
+    const { btnFinalizarRolPago, btnActivarRolPago } =
+      useBotonesTablaRolPagoMes(mixin)
     const { btnIniciar, btnFinalizar } = useBotonesTablaRolPago(
       roles_empleados,
       modalesRolPago,
@@ -506,6 +507,7 @@ export default defineComponent({
       tabOptionsEstadosRolPago,
       tabActual,
       btnFinalizarRolPago,
+      btnActivarRolPago,
       btnFinalizarMasivo,
       btnFinalizar,
       btnEliminarRolPago,
