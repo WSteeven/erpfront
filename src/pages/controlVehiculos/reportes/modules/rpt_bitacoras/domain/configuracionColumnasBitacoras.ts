@@ -31,6 +31,20 @@ export const configuracionColumnasReporteBitacoras: ColumnConfig<BitacoraVehicul
         sortable: true,
     },
     {
+        name: 'hora_salida',
+        field: 'hora_salida',
+        label: 'H Salida',
+        align: 'left',
+        sortable: true,
+    },
+    {
+        name: 'hora_llegada',
+        field: 'hora_llegada',
+        label: 'H. Llegada',
+        align: 'left',
+        sortable: true,
+    },
+    {
         name: 'km_inicial',
         field: 'km_inicial',
         label: 'Km Inicio',
