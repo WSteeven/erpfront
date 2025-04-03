@@ -1,57 +1,58 @@
 // Dependencias
-import { configuracionColumnasOrdenesCompras } from "../domain/configuracionColumnasOrdenCompra";
-import { configuracionColumnasProductos } from "../domain/configuracionColumnasProductos";
-import { configuracionColumnasDetallesProductos } from "../domain/configuracionColumnasDetallesProductos";
-import { configuracionColumnasItemOrdenCompra } from "pages/comprasProveedores/itemsOrdenCompra/domain/configuracionColumnasItemOrdenCompra";
+import { configuracionColumnasOrdenesCompras } from '../domain/configuracionColumnasOrdenCompra';
+import { configuracionColumnasProductos } from '../domain/configuracionColumnasProductos';
+import { configuracionColumnasDetallesProductos } from '../domain/configuracionColumnasDetallesProductos';
+import { configuracionColumnasItemOrdenCompra } from 'pages/comprasProveedores/itemsOrdenCompra/domain/configuracionColumnasItemOrdenCompra';
 import { required, requiredIf, } from 'shared/i18n-validators'
 import { useVuelidate } from '@vuelidate/core'
 import { computed, defineComponent, ref, } from 'vue'
 
 
 // Componentes
-import TabLayoutFilterTabs2 from "shared/contenedor/modules/simple/view/TabLayoutFilterTabs2.vue";
-import EssentialTable from "components/tables/view/EssentialTable.vue";
-import EssentialSelectableTable from "components/tables/view/EssentialSelectableTable.vue"
-import ModalesEntidad from "components/modales/view/ModalEntidad.vue";
-import EssentialPopupEditableTable from "components/tables/view/EssentialPopupEditableTable.vue"
+import TabLayoutFilterTabs2 from 'shared/contenedor/modules/simple/view/TabLayoutFilterTabs2.vue';
+import EssentialTable from 'components/tables/view/EssentialTable.vue';
+import EssentialSelectableTable from 'components/tables/view/EssentialSelectableTable.vue'
+import ModalesEntidad from 'components/modales/view/ModalEntidad.vue';
+import EssentialPopupEditableTable from 'components/tables/view/EssentialPopupEditableTable.vue'
 import GestorArchivos from 'components/gestorArchivos/GestorArchivos.vue';
 
 // Logica y controladores
-import { ContenedorSimpleMixin } from "shared/contenedor/modules/simple/application/ContenedorSimpleMixin";
-import { OrdenCompra } from "../domain/OrdenCompra";
-import { OrdenCompraController } from "../infraestructure/OrdenCompraController";
-import { useNotificaciones } from "shared/notificaciones";
-import { useNotificacionStore } from "stores/notificacion";
-import { useQuasar } from "quasar";
-import { useCargandoStore } from "stores/cargando";
-import { EmpleadoController } from "pages/recursosHumanos/empleados/infraestructure/EmpleadoController";
-import { ProveedorController } from "sistema/proveedores/infraestructure/ProveedorController";
-import { acciones, accionesTabla, autorizaciones, autorizacionesTransacciones, estados } from "config/utils";
-import { tabOptionsOrdenCompra, opcionesForma, opcionesTiempo, } from "config/utils_compras_proveedores";
-import { useAuthenticationStore } from "stores/authentication";
-import { calcularSubtotalConImpuestosLista, calcularSubtotalSinImpuestosLista, formatearFecha, } from "shared/utils";
-import { CustomActionTable } from "components/tables/domain/CustomActionTable";
-import { useFiltrosListadosSelects } from "shared/filtrosListadosGenerales";
-import { usePreordenStore } from "stores/comprasProveedores/preorden";
-import { ValidarListadoProductos } from "../application/validaciones/ValidarListadoProductos";
-import { useOrdenCompraStore } from "stores/comprasProveedores/ordenCompra";
-import { CustomActionPrompt } from "components/tables/domain/CustomActionPrompt";
-import { EmpleadoPermisoController } from "pages/recursosHumanos/empleados/infraestructure/EmpleadoPermisosController";
-import { useOrquestadorSelectorProductos } from "../application/OrquestadorSelectorProductos";
-import { TareaController } from "pages/gestionTrabajos/tareas/infraestructure/TareaController";
-import { Empleado } from "pages/recursosHumanos/empleados/domain/Empleado";
-import { ComportamientoModalesOrdenCompra } from "../application/ComportamientoModalesOrdenCompra";
-import { UnidadMedidaController } from "pages/bodega/unidades_medidas/infraestructure/UnidadMedidaController";
-import { UnidadMedida } from "pages/bodega/unidades_medidas/domain/UnidadMedida";
-import { PreordenCompra } from "pages/comprasProveedores/preordenCompra/domain/PreordenCompra";
-import { ArchivoController } from "pages/gestionTrabajos/subtareas/modules/gestorArchivosTrabajos/infraestructure/ArchivoController";
+import { ContenedorSimpleMixin } from 'shared/contenedor/modules/simple/application/ContenedorSimpleMixin';
+import { OrdenCompra } from '../domain/OrdenCompra';
+import { OrdenCompraController } from '../infraestructure/OrdenCompraController';
+import { useNotificaciones } from 'shared/notificaciones';
+import { useNotificacionStore } from 'stores/notificacion';
+import { useQuasar } from 'quasar';
+import { useCargandoStore } from 'stores/cargando';
+import { EmpleadoController } from 'pages/recursosHumanos/empleados/infraestructure/EmpleadoController';
+import { ProveedorController } from 'sistema/proveedores/infraestructure/ProveedorController';
+import { acciones, accionesTabla, autorizaciones, autorizacionesTransacciones, estados } from 'config/utils';
+import { tabOptionsOrdenCompra, opcionesForma, opcionesTiempo, } from 'config/utils_compras_proveedores';
+import { useAuthenticationStore } from 'stores/authentication';
+import { calcularSubtotalConImpuestosLista, calcularSubtotalSinImpuestosLista, filtrarLista, formatearFecha, } from 'shared/utils';
+import { CustomActionTable } from 'components/tables/domain/CustomActionTable';
+import { useFiltrosListadosSelects } from 'shared/filtrosListadosGenerales';
+import { usePreordenStore } from 'stores/comprasProveedores/preorden';
+import { ValidarListadoProductos } from '../application/validaciones/ValidarListadoProductos';
+import { useOrdenCompraStore } from 'stores/comprasProveedores/ordenCompra';
+import { CustomActionPrompt } from 'components/tables/domain/CustomActionPrompt';
+import { EmpleadoPermisoController } from 'pages/recursosHumanos/empleados/infraestructure/EmpleadoPermisosController';
+import { useOrquestadorSelectorProductos } from '../application/OrquestadorSelectorProductos';
+import { TareaController } from 'pages/gestionTrabajos/tareas/infraestructure/TareaController';
+import { Empleado } from 'pages/recursosHumanos/empleados/domain/Empleado';
+import { ComportamientoModalesOrdenCompra } from '../application/ComportamientoModalesOrdenCompra';
+import { UnidadMedidaController } from 'pages/bodega/unidades_medidas/infraestructure/UnidadMedidaController';
+import { UnidadMedida } from 'pages/bodega/unidades_medidas/domain/UnidadMedida';
+import { PreordenCompra } from 'pages/comprasProveedores/preordenCompra/domain/PreordenCompra';
+import { ArchivoController } from 'pages/gestionTrabajos/subtareas/modules/gestorArchivosTrabajos/infraestructure/ArchivoController';
+import { ProveedorInternacionalController } from 'pages/comprasProveedores/proveedorInternacional/infraestructure/ProveedorInternacionalController';
 
 
 export default defineComponent({
   name: 'OrdenCompraPage',
   components: { TabLayoutFilterTabs2, EssentialSelectableTable, EssentialTable, ModalesEntidad, EssentialPopupEditableTable, GestorArchivos },
   emits: ['actualizar', 'fila-modificada'],
-  setup(props, { emit }) {
+  setup() {
     const mixin = new ContenedorSimpleMixin(OrdenCompra, new OrdenCompraController(), new ArchivoController())
     const { entidad: orden, disabled, accion, listadosAuxiliares, listado, tabs } = mixin.useReferencias()
     const { setValidador, obtenerListados, cargarVista, listar, consultar } = mixin.useComportamiento()
@@ -82,10 +83,9 @@ export default defineComponent({
     // Flags
     const refArchivo = ref()
     const idOrden = ref()
-    const tabDefecto = ref()
-    let tabSeleccionado = ref()
-    let soloLectura = ref(false)
-    let puedeEditar = ref(false)
+    const tabDefecto = ref('1')
+    const tabSeleccionado = ref()
+    const soloLectura = ref(false)
     const refItems = ref()
 
     //Orquestador
@@ -99,7 +99,7 @@ export default defineComponent({
     } = useOrquestadorSelectorProductos(orden, 'productos')
     //Filtros y listados
     const { proveedores, filtrarProveedores } = useFiltrosListadosSelects(listadosAuxiliares)
-
+    const proveedores_internacionales=ref([])
     //Obtener listados
     const empleados = ref([])
     // const categorias = ref([])
@@ -148,7 +148,7 @@ export default defineComponent({
       orden.autorizacion = 1
       if (preordenStore.preorden.id) {
         orden.tiene_preorden = true
-        cargarDatosPreorden()
+        await cargarDatosPreorden()
       }
       configuracionColumnasItemOrdenCompra.find((item) => item.field === 'unidad_medida')!.options = listadosAuxiliares.unidades_medidas.map((v: UnidadMedida) => { return { label: v.nombre } })
     })
@@ -163,16 +163,20 @@ export default defineComponent({
       orden.autorizacion = 1
 
       refArchivo.value.limpiarListado()
+      obtenerTareas(false)
     })
     onConsultado(() => {
       // console.log(accion.value)
-      if (accion.value === acciones.editar && (store.user.id === orden.autorizador || store.esCompras || store.user.id === orden.solicitante))
+      if (accion.value === acciones.editar && (store.user.id === orden.autorizador || store.esCompras || store.user.id === orden.solicitante)) {
         soloLectura.value = false
-      else
+        obtenerTareas(false)
+      } else {
+        obtenerTareas(true)
         soloLectura.value = true
-      setTimeout(() => {
-        refArchivo.value.listarArchivosAlmacenados(orden.id)
-      }, 1);
+        setTimeout(() => {
+          if (orden.id) refArchivo.value.listarArchivosAlmacenados(orden.id)
+        }, 1);
+      }
     })
     onModificado((id: number) => {
       idOrden.value = id
@@ -189,7 +193,8 @@ export default defineComponent({
      * Validaciones
      ****************************************************************************************/
     const reglas = {
-      proveedor: { requiredIf: requiredIf(() => store.esCompras) },
+      proveedor: { requiredIf: requiredIf(() => store.esCompras && !orden.es_proveedor_internacional) },
+      proveedor_internacional: { requiredIf: requiredIf(() => store.esCompras && orden.es_proveedor_internacional) },
       autorizador: { required },
       descripcion: { required },
       forma: { requiredIf: requiredIf(() => store.esCompras) },
@@ -217,8 +222,6 @@ export default defineComponent({
     function filtrarOrdenes(tab: string) {
       tabDefecto.value = tab
       tabSeleccionado.value = tab
-      if (tab == '1' || tab == '2') puedeEditar.value = true
-      else puedeEditar.value = false
       switch (tab) {
         case '2':
           listar({ autorizacion_id: tab, estado_id: 1, realizada: 0, pagada: 0, solicitante_id: store.user.id })
@@ -239,6 +242,25 @@ export default defineComponent({
           listar({ autorizacion_id: tab, estado_id: 1, solicitante_id: store.user.id })
       }
     }
+
+    async function obtenerTareas(soloUna = false) {
+      let response
+      if (soloUna)
+        response = await new TareaController().listar({ id: orden.tarea, todas: 1 })
+      else
+        response = await new TareaController().listar({
+          campos: 'id,codigo_tarea,titulo,cliente_id',
+          formulario: true,
+          empleado_id: store.user.id
+        })
+      listadosAuxiliares.tareas = response.result
+      tareas.value = listadosAuxiliares.tareas
+    }
+    async function obtenerProveedoresInternacionales(){
+      const response = await new ProveedorInternacionalController().listar({activo:1})
+      listadosAuxiliares.proveedores_internacionales = response.result
+      proveedores_internacionales.value = listadosAuxiliares.proveedores_internacionales
+    }
     function eliminar({ posicion }) {
       confirmar('¿Está seguro de continuar?', () => orden.listadoProductos.splice(posicion, 1))
     }
@@ -250,7 +272,17 @@ export default defineComponent({
       console.log(fila)
       calcularValores(fila)
     }
-
+    function checkEsProveedorInternacional(val){
+      if(val){
+        orden.proveedor=null
+        if(proveedores_internacionales.value.length===0){
+          obtenerProveedoresInternacionales()
+        }
+      }else orden.proveedor_internacional=null
+    }
+    function filtrarProveedoresInternacionales(val, update){
+      return filtrarLista(val, update, proveedores_internacionales, 'nombre', listadosAuxiliares.proveedores_internacionales)
+    }
     /**
      * La función calcula los valores de iva, subtotal y total en función de los datos
      * proporcionados en la tabla de productos seleccionados.
@@ -261,9 +293,9 @@ export default defineComponent({
       // console.log(data)
       data.precio_unitario = Number(data.precio_unitario).toFixed(4)
       data.iva = data.grava_iva && data.facturable ? ((Number(data.cantidad) * Number(data.precio_unitario)) * orden.iva / 100).toFixed(4) : 0
-      data.subtotal = data.facturable ? (Number(data.cantidad) * Number(data.precio_unitario)).toFixed(4) : 0
-      data.descuento = data.facturable ? (Number(data.subtotal) * Number(data.porcentaje_descuento | 0) / 100).toFixed(4) : 0
       data.total = data.facturable ? (Number(data.cantidad) * Number(data.precio_unitario) + Number(data.iva) - Number(data.descuento)).toFixed(4) : 0
+      data.descuento = data.facturable ? (Number(data.subtotal) * Number(data.porcentaje_descuento | 0) / 100).toFixed(4) : 0
+      data.subtotal = data.facturable ? (Number(data.cantidad) * Number(data.precio_unitario)).toFixed(4) : 0
     }
 
     /**
@@ -290,8 +322,8 @@ export default defineComponent({
       })
     }
     /**
-     * La función "limpiarOrden" reinicia el objeto "orden" reemplazándolo con una nueva instancia
-     * de la clase "OrdenCompra".
+     * La función 'limpiarOrden' reinicia el objeto 'orden' reemplazándolo con una nueva instancia
+     * de la clase 'OrdenCompra'.
      */
     function limpiarOrden() {
       orden.hydrate(new OrdenCompra())
@@ -317,8 +349,8 @@ export default defineComponent({
     }
 
     /**
-     * La función "actualizarListado" se ejecuta cuando se cambia el campo IVA general, itera sobre cada fila en el arreglo "listadoProductos" del
-     * objeto "orden" y llama a la función "calcularValores" para cada fila.
+     * La función 'actualizarListado' se ejecuta cuando se cambia el campo IVA general, itera sobre cada fila en el arreglo 'listadoProductos' del
+     * objeto 'orden' y llama a la función 'calcularValores' para cada fila.
      */
     function actualizarListado() {
       orden.listadoProductos.forEach((fila) => {
@@ -347,7 +379,7 @@ export default defineComponent({
       titulo: 'Eliminar',
       icono: 'bi-trash',
       color: 'negative',
-      accion: ({ entidad, posicion }) => {
+      accion: ({  posicion }) => {
         //: props.propsTable.rowIndex,
         eliminar({ posicion })
       },
@@ -361,7 +393,7 @@ export default defineComponent({
         ordenCompraStore.idOrden = entidad.id
         await ordenCompraStore.imprimirPdf()
       },
-      visible: () => tabSeleccionado.value >= 2 ? true : false
+      visible: () => tabSeleccionado.value >= 2
     }
     const btnAnularOrden: CustomActionTable = {
       titulo: 'Anular',
@@ -404,7 +436,7 @@ export default defineComponent({
       titulo: 'Novedades',
       color: 'warning',
       icono: 'bi-wrench',
-      accion: async ({ entidad, posicion }) => {
+      accion: async ({ entidad }) => {
         console.log(entidad)
         ordenCompraStore.idOrden = entidad.id
         confirmar('¿Está seguro de abrir el formulario de registro de novedades de la orden de compra?', () => {
@@ -412,7 +444,7 @@ export default defineComponent({
           modales.abrirModalEntidad('SeguimientoNovedadesOrdenesCompras')
         })
       },
-      visible: ({ entidad }) => {
+      visible: () => {
         return true
       }
     }
@@ -431,7 +463,7 @@ export default defineComponent({
       titulo: 'Realizada',
       color: 'positive',
       icono: 'bi-check-circle-fill',
-      accion: async ({ entidad, posicion }) => {
+      accion: async ({ entidad }) => {
         confirmar('¿Está seguro de marcar como realizada la orden de compra?', async () => {
           const data: CustomActionPrompt = {
             titulo: 'Observación',
@@ -444,20 +476,20 @@ export default defineComponent({
           prompt(data)
         })
       },
-      visible: ({ entidad }) => tabSeleccionado.value == 6 && store.esCompras
+      visible: () => tabSeleccionado.value == 6 && store.esCompras
     }
     const btnMarcarPagada: CustomActionTable = {
       titulo: 'Pagada',
       color: 'positive',
       icono: 'bi-check-circle-fill',
-      accion: async ({ entidad, posicion }) => {
+      accion: async ({ entidad }) => {
         confirmar('¿Está seguro de marcar como pagada la orden de compra?', async () => {
           ordenCompraStore.idOrden = entidad.id
           await ordenCompraStore.marcarPagada()
           await filtrarOrdenes('5')
         })
       },
-      visible: ({ entidad }) => tabSeleccionado.value == 4 && store.esContabilidad
+      visible: () => tabSeleccionado.value == 4 && store.esContabilidad
     }
 
     const btnEditarRegistro: CustomActionTable = {
@@ -471,10 +503,9 @@ export default defineComponent({
         consultar(entidad)
         tabs.value = 'formulario'
 
-      }, visible: ({ entidad, posicion }) => {
+      }, visible: ({ entidad }) => {
         if ((tabSeleccionado.value == '1' || tabSeleccionado.value == '2') && entidad.autorizacion == autorizacionesTransacciones.pendiente && (store.esCompras || entidad.solicitante_id == store.user.id || entidad.autorizador_id == store.user.id)) return true
-        if ((tabSeleccionado.value == '1' || tabSeleccionado.value == '2') && entidad.autorizacion == autorizacionesTransacciones.aprobado && (store.esCompras || entidad.autorizador_id == store.user.id)) return true
-        return false
+        return ((tabSeleccionado.value == '1' || tabSeleccionado.value == '2') && entidad.autorizacion == autorizacionesTransacciones.aprobado && (store.esCompras || entidad.autorizador_id == store.user.id))
       }
     }
     // watch(refItems, () => {
@@ -500,6 +531,7 @@ export default defineComponent({
       //listados
       empleados,
       proveedores,
+      proveedores_internacionales,
       autorizaciones,
       tareas,
       estados,
@@ -535,13 +567,13 @@ export default defineComponent({
       //Tabs
       tabOptionsOrdenCompra,
       tabDefecto,
-      tabSeleccionado,
-      puedeEditar,
       refArchivo,
       idOrden,
 
 
       //funciones
+      checkEsProveedorInternacional,
+      filtrarProveedoresInternacionales,
       filtrarOrdenes,
       calcularValores,
       // estructuraConsultaCategoria,
@@ -560,7 +592,7 @@ export default defineComponent({
         })
       },
       filtrarAutorizadores() {
-        let ids_autorizadores = listadosAuxiliares.autorizadores.map((entidad: Empleado) => entidad.id)
+        const ids_autorizadores = listadosAuxiliares.autorizadores.map((entidad: Empleado) => entidad.id)
         empleados.value = empleados.value.filter((v: Empleado) => ids_autorizadores.includes(v.id || orden.autorizador))
       },
       reestablecerEmpleados() {

@@ -1,5 +1,5 @@
 <template>
-  <q-page :padding="!$q.screen.xs">
+  <q-page>
     <div class="text-center q-my-md">
       <div class="q-mb-mdd">
         Bienvenido, <strong>{{ authenticationStore.nombreUsuario }}</strong>

@@ -1,5 +1,6 @@
 <template>
   <q-file
+    v-if="mostrarCampo"
     v-model="img"
     dense
     outlined
@@ -9,6 +10,7 @@
     @clear="limpiar()"
     :disable="disable"
     accept=".png, .jpg, .jpeg"
+    :label="placeholder"
     :error="error"
     :hint="hint"
   >
@@ -17,30 +19,56 @@
     </template>
 
     <template v-slot:error>
-      <slot name="error"></slot>
+      <slot name="error" v-if="slotUsado"></slot>
+      <slot name="error" v-else>
+        <div>
+          <div class="error-msg">Imagen requerida</div>
+        </div></slot
+      >
     </template>
   </q-file>
-  <!-- datos de la imagen  -->
-  <!-- <div v-if="fileSize !== null && !isNaN(fileSize)">
-    Tamaño de la imagen: {{ (fileSize / 1024).toFixed(2) }} KB
-  </div> -->
-  <q-img
-    v-show="imagenCodificada"
-    :src="imagenCodificada"
-    width="100%"
-    :height="alto"
-    fit="contain"
-  >
-  </q-img>
 
-  <q-dialog v-model="opened" maximized>
+  <div class="bg-desenfoque">
+    <q-img
+      v-show="imagenCodificada"
+      :src="imagenCodificada ?? ''"
+      width="100%"
+      :height="alto"
+      fit="contain"
+      class="border-white"
+    >
+    </q-img>
+
+    <small v-if="imagenCodificada" class="block text-center">
+      <!-- @click="opened = true" -->
+      <q-btn
+        @click="refVisorImagen.abrir(imagenCodificada)"
+        label="Ver en pantalla completa"
+        icon="bi-eye"
+        class="text-grey-8 full-width bg-white border-white"
+        no-caps
+        no-wrap
+        square
+        unelevated
+      />
+    </small>
+  </div>
+
+  <visor-imagen
+    ref="refVisorImagen"
+    :texto1="texto1"
+    :texto2="texto2"
+    :texto3="texto3"
+    :texto4="texto4"
+    :texto5="texto5"
+  ></visor-imagen>
+
+  <!-- <q-dialog v-model="opened" maximized>
     <q-card class="bg-black rounded-card no-border" flat>
       <q-btn
-        round
-        push
-        color="negative"
-        glossy
-        icon="bi-x"
+        color="white"
+        flat
+        icon="close"
         @click="() => (opened = false)"
         class="closeButton"
       />
@@ -65,42 +93,46 @@
         </q-img>
       </q-card-section>
     </q-card>
-  </q-dialog>
-
-  <small v-if="imagenCodificada" class="block text-center q-py-sm">
-    <q-btn
-      outline
-      glossy
-      color="primary"
-      @click="opened = true"
-      label="Ver en pantalla completa"
-      no-caps
-    />
-  </small>
+  </q-dialog> -->
 </template>
 
 <script lang="ts" setup>
-import { computed, ref, watch } from 'vue'
+import VisorImagen from 'components/VisorImagen.vue'
+import { computed, getCurrentInstance, onMounted, ref, watch } from 'vue'
 
 const props = defineProps({
   modelValue: String,
-  imagen: String,
+  imagen: String as () => string | null | undefined,
   disable: Boolean,
   file_extensiones: String,
   error: Boolean,
   alto: String,
   hint: String,
+  placeholder: { type: String, default: 'Opcional' },
   texto1: String,
   texto2: String,
   texto3: String,
   texto4: String,
+  texto5: String,
+  mostrarCampo: {
+    type: Boolean,
+    default:true
+  },
   comprimir: {
     type: Boolean,
-    default: true,
-  },
+    default: true
+  }
 })
 const emit = defineEmits(['update:modelValue'])
+const instance = getCurrentInstance()
+const slots = instance?.slots
 
+onMounted(() => {
+  slotUsado.value = !!slots?.error
+})
+
+const refVisorImagen = ref()
+const slotUsado = ref(false)
 const fileSize = ref()
 const img = ref()
 const imagenCodificada = computed(() => props.imagen)
@@ -126,10 +158,10 @@ const setBase64 = async (file: File) => {
 }
 
 async function compressImage(file) {
-  return new Promise<File>((resolve) => {
+  return new Promise<File>(resolve => {
     const reader = new FileReader()
 
-    reader.onload = (event) => {
+    reader.onload = event => {
       // console.log(event)
       const img = new Image()
       img.src = event.target?.result?.toString() || ''
@@ -154,11 +186,11 @@ async function compressImage(file) {
         ctx?.drawImage(img, 0, 0, newWidth, newHeight)
 
         canvas.toBlob(
-          (blob) => {
+          blob => {
             if (blob) {
               const compressedFile: File = new File([blob], file.name, {
                 type: 'image/jpeg', // Ajusta el tipo de archivo según tus necesidades
-                lastModified: Date.now(),
+                lastModified: Date.now()
               })
               resolve(compressedFile)
             }
@@ -180,6 +212,11 @@ watch(imagenCodificada, () => {
 function limpiar() {
   emit('update:modelValue', null)
 }
+
+/********
+ * Init
+ ********/
+// onMounted(() => refVisorImagen.value.abrir(imagenCodificada.value))
 </script>
 
 <style lang="scss">

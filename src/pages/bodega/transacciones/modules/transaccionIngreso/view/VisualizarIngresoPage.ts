@@ -1,6 +1,6 @@
 //Dependencias
 import { configuracionColumnasTransaccionIngreso } from 'pages/bodega/transacciones/domain/configuracionColumnasTransaccionIngreso'
-import { defineComponent, ref } from 'vue'
+import { defineComponent } from 'vue'
 import { configuracionColumnasProductosSeleccionados } from '../domain/configuracionColumnasProductosSeleccionados'
 import { acciones } from 'config/utils'
 
@@ -14,7 +14,7 @@ import { ContenedorSimpleMixin } from 'shared/contenedor/modules/simple/applicat
 import { TransaccionIngresoController } from 'pages/bodega/transacciones/infraestructure/TransaccionIngresoController'
 import { Transaccion } from 'pages/bodega/transacciones/domain/Transaccion'
 import { useNotificacionStore } from 'stores/notificacion'
-import {  useQuasar } from 'quasar'
+import { useQuasar } from 'quasar'
 
 //Controladores
 import { useAuthenticationStore } from 'stores/authentication'
@@ -24,7 +24,7 @@ import { useTransferenciaStore } from 'stores/transferencia'
 export default defineComponent({
   components: { TabLayout, EssentialTable, EssentialSelectableTable },
   emits: ['cerrar-modal'],
-  setup(props, { emit }) {
+  setup() {
     const mixin = new ContenedorSimpleMixin(Transaccion, new TransaccionIngresoController())
     const { entidad: transaccion } = mixin.useReferencias()
     //stores
@@ -38,7 +38,7 @@ export default defineComponent({
 
     const esBodeguero = store.esBodeguero
     const esCoordinador = store.esCoordinador
-    const rolSeleccionado = (store.user.roles.filter((v) => v.indexOf('BODEGA') > -1 || v.indexOf('COORDINADOR') > -1)).length > 0 ? true : false
+    const rolSeleccionado = (store.user.roles.filter((v) => v.indexOf('BODEGA') > -1 || v.indexOf('COORDINADOR') > -1)).length > 0
 
     // console.log('rol seleccionado: ', rolSeleccionado)
 

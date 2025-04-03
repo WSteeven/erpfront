@@ -1,0 +1,96 @@
+import { AntecedenteTrabajoAnterior } from './AntecedenteTrabajoAnterior'
+import { ColumnConfig } from 'components/tables/domain/ColumnConfig'
+
+export const configuracionColumnasAntecedenteTrabajoAnterior: ColumnConfig<AntecedenteTrabajoAnterior>[] = [
+  {
+    name: 'empresa',
+    field: 'empresa',
+    label: 'Empresa',
+    align: 'left',
+    sortable: true,
+    editable: true,
+  },
+  {
+    name: 'puesto_trabajo',
+    field: 'puesto_trabajo',
+    label: 'Puesto de trabajo',
+    align: 'left',
+    sortable: true,
+    editable: true,
+  },
+  {
+    name: 'actividades',
+    field: 'actividades',
+    label: 'Actividades que desempeñaba',
+    align: 'left',
+    sortable: true,
+    editable: true,
+  },
+  {
+    name: 'tiempo_trabajo',
+    field: 'tiempo_trabajo',
+    label: 'Tiempo de trabajo(meses)',
+    align: 'left',
+    type: 'number',
+    sortable: true,
+    editable: true,
+  },
+  {
+    name: 'observaciones',
+    field: 'observaciones',
+    label: 'Observaciones',
+    align: 'left',
+    type: 'text',
+    sortable: true,
+    editable: true,
+  },
+  /*{
+    name: 'r_fisico',
+    field: 'r_fisico',
+    label: 'Riesgo físico',
+    align: 'left',
+    type: 'boolean',
+    editable: true,
+  },
+  {
+    name: 'r_mecanico',
+    field: 'r_mecanico',
+    label: 'Riesgo mecánico',
+    align: 'left',
+    type: 'boolean',
+    editable: true,
+  },
+  {
+    name: 'r_quimico',
+    field: 'r_quimico',
+    label: 'Riesgo químico',
+    align: 'left',
+    type: 'boolean',
+    editable: true,
+  },
+  {
+    name: 'r_biologico',
+    field: 'r_biologico',
+    label: 'Riesgo biológico',
+    align: 'left',
+    type: 'boolean',
+    editable: true,
+  },
+  {
+    name: 'r_ergonomico',
+    field: 'r_ergonomico',
+    label: 'Riesgo ergonómico',
+    align: 'left',
+    type: 'boolean',
+    editable: true,
+  },
+  {
+    name: 'r_psicosocial',
+    field: 'r_psicosocial',
+    label: 'Riesgo psicosocial',
+    align: 'left',
+    type: 'boolean',
+    editable: true,
+  },*/
+
+]

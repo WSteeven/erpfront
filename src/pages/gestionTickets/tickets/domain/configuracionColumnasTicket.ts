@@ -61,7 +61,7 @@ export const configuracionColumnasTicket: ColumnConfig<Ticket>[] = [
     label: 'Tiempo ocupado pausas',
     align: 'left',
   },
-  {
+  /* {
     name: 'calificado_solicitante',
     field: 'calificado_solicitante',
     label: 'Calificado solicitante',
@@ -74,5 +74,5 @@ export const configuracionColumnasTicket: ColumnConfig<Ticket>[] = [
     label: 'Calificado responsable',
     align: 'left',
     sortable: true,
-  },
+  }, */
 ]

@@ -1,9 +1,9 @@
-import { EntidadAuditable } from "shared/entidad/domain/entidadAuditable";
-import { Ref, ref } from "vue";
+import { EntidadAuditable } from 'shared/entidad/domain/entidadAuditable'
 
 export class Proveedor extends EntidadAuditable {
   empresa: number | null
   estado: boolean | null
+  require_recalificacion: boolean | null
   razon_social: string | null
   sucursal: string | null
   ubicacion: string | null
@@ -33,7 +33,6 @@ export class Proveedor extends EntidadAuditable {
   salud: string | null
   observaciones: string | null
 
-
   //logistica del proveedor
   tiempo_entrega: string | null
   envios: boolean
@@ -46,6 +45,7 @@ export class Proveedor extends EntidadAuditable {
     super()
     this.empresa = null
     this.estado = true
+    this.require_recalificacion = false
     this.razon_social = null
     this.sucursal = null
     this.ubicacion = null

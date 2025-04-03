@@ -58,11 +58,11 @@
           options-dense
           dense
           outlined
-          :disable="disabled || accion === 'EDITAR'"
+          :disable="disabled || accion === acciones.editar"
           :readonly="disabled"
           use-input
           input-debounce="0"
-          @filter="filtrarEmpleado"
+          @filter="filtrarEmpleados"
           :option-value="(v) => v.id"
           @update:model-value="datos_empleado()"
           :option-label="(v) => v.apellidos + ' ' + v.nombres"
@@ -238,7 +238,7 @@
           <label class="q-mb-sm block">Concepto</label>
           <q-select
             v-model="rolpago.concepto_ingreso"
-            :options="concepto_ingresos"
+            :options="conceptos_ingresos"
             transition-show="scale"
             transition-hide="scale"
             options-dense
@@ -357,7 +357,7 @@
         </div>
         <!-- Bono Recurente -->
         <div class="col-12 col-md-3 col-sm-4">
-          <label class="q-mb-sm block">Bono Recurente</label>
+          <label class="q-mb-sm block">Bono Recurrente</label>
           <q-input
             v-model="rolpago.bono_recurente"
             placeholder="Obligatorio"
@@ -518,9 +518,9 @@
           :permitirEditar="false"
           :permitirEliminar="false"
           :altoFijo="false"
-          :accion1="btnEditarEgreso"
-          :accion2="btnEliminarEgreso"
+          :accion1="btnEliminarEgreso"
         >
+<!--          :accion1="btnEditarEgreso"-->
         </essential-table>
       </div>
     </q-expansion-item>

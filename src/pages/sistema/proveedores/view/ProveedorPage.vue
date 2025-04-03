@@ -7,12 +7,12 @@
     :accion1="botonDesactivarProveedor"
     :accion2="botonActivarProveedor"
     :accion3="botonCalificarProveedor"
-    :accion4="botonVerMiCalificacionProveedor"
-    :accion5="botonVerCalificacionProveedor"
-    :accion6="botonActualizarCalificacion"
+    :accion4="botonRecalificarProveedor"
+    :accion5="botonVerMiCalificacionProveedor"
+    :accion6="botonVerTodasCalificacionesProveedor"
+    :accion7="botonActualizarCalificacion"
     :ajustarCeldas="true"
     :puedeExportar="true"
-    :listar="false"
   >
     <template #formulario>
       <q-form @submit.prevent>
@@ -55,9 +55,7 @@
                 map-options
               >
                 <template v-slot:error>
-                  <div v-for="error of v$.empresa.$errors" :key="error.$uid">
-                    <div class="error-msg">{{ error.$message }}</div>
-                  </div>
+                    <error-component clave="empresa" :v$="v$"/>
                 </template>
                 <template v-slot:option="scope">
                   <q-item v-bind="scope.itemProps">
@@ -72,11 +70,7 @@
                   </q-item>
                 </template>
                 <template v-slot:no-option>
-                  <q-item>
-                    <q-item-section class="text-grey">
-                      No hay resultados
-                    </q-item-section>
-                  </q-item>
+                    <no-option-component/>
                 </template>
               </q-select>
             </div>
@@ -111,11 +105,7 @@
                 map-options
               >
                 <template v-slot:no-option>
-                  <q-item>
-                    <q-item-section class="text-grey">
-                      No hay resultados
-                    </q-item-section>
-                  </q-item>
+                    <no-option-component/>
                 </template>
               </q-select>
             </div>
@@ -150,11 +140,7 @@
                 map-options
               >
                 <template v-slot:no-option>
-                  <q-item>
-                    <q-item-section class="text-grey">
-                      No hay resultados
-                    </q-item-section>
-                  </q-item>
+                    <no-option-component/>
                 </template>
               </q-select>
             </div>
@@ -239,9 +225,7 @@
                 dense
               >
                 <template v-slot:error>
-                  <div v-for="error of v$.sucursal.$errors" :key="error.$uid">
-                    <div class="error-msg">{{ error.$message }}</div>
-                  </div>
+                    <error-component clave="sucursal" :v$="v$"/>
                 </template>
               </q-input>
             </div>
@@ -267,11 +251,7 @@
                 emit-value
                 map-options
                 ><template v-slot:no-option>
-                  <q-item>
-                    <q-item-section class="text-grey">
-                      No hay resultados
-                    </q-item-section>
-                  </q-item>
+                  <no-option-component/>
                 </template>
                 <template v-slot:option="scope">
                   <q-item v-bind="scope.itemProps">
@@ -309,9 +289,7 @@
                 map-options
               >
                 <template v-slot:error>
-                  <div v-for="error of v$.parroquia.$errors" :key="error.$uid">
-                    <div class="error-msg">{{ error.$message }}</div>
-                  </div>
+                    <error-component clave="parroquia" :v$="v$"/>
                 </template>
                 <template v-slot:option="scope">
                   <q-item v-bind="scope.itemProps">
@@ -323,11 +301,7 @@
                     </q-item-section>
                   </q-item> </template
                 ><template v-slot:no-option>
-                  <q-item>
-                    <q-item-section class="text-grey">
-                      No hay resultados
-                    </q-item-section>
-                  </q-item>
+                  <no-option-component/>
                 </template>
               </q-select>
             </div>
@@ -383,9 +357,7 @@
                 outlined
                 dense
                 ><template v-slot:error>
-                  <div v-for="error of v$.direccion.$errors" :key="error.$uid">
-                    <div class="error-msg">{{ error.$message }}</div>
-                  </div>
+                  <error-component clave="direccion" :v$="v$"/>
                 </template>
               </q-input>
             </div>
@@ -469,11 +441,7 @@
                     </q-item-section>
                   </q-item> </template
                 ><template v-slot:no-option>
-                  <q-item>
-                    <q-item-section class="text-grey">
-                      No hay resultados
-                    </q-item-section>
-                  </q-item>
+                  <no-option-component/>
                 </template>
               </q-select>
             </div>
@@ -614,12 +582,7 @@
                         </q-item>
                       </template>
                       <template v-slot:no-option>
-                        <q-item>
-                          <q-item-section class="text-grey">
-                            No hay resultados
-                          </q-item-section>
-                        </q-item>
-                      </template>
+                          <no-option-component/></template>
                     </q-select>
                   </div>
 
@@ -769,11 +732,7 @@
                   </q-item>
                 </template>
                 <template v-slot:no-option>
-                  <q-item>
-                    <q-item-section class="text-grey">
-                      No hay resultados
-                    </q-item-section>
-                  </q-item>
+                    <no-option-component/>
                 </template>
               </q-select>
             </div>
@@ -821,11 +780,7 @@
                   </q-item>
                 </template>
                 <template v-slot:no-option>
-                  <q-item>
-                    <q-item-section class="text-grey">
-                      No hay resultados
-                    </q-item-section>
-                  </q-item>
+                    <no-option-component/>
                 </template>
               </q-select>
             </div>
@@ -873,11 +828,7 @@
                   </q-item>
                 </template>
                 <template v-slot:no-option>
-                  <q-item>
-                    <q-item-section class="text-grey">
-                      No hay resultados
-                    </q-item-section>
-                  </q-item>
+                    <no-option-component/>
                 </template>
               </q-select>
             </div>
@@ -906,4 +857,4 @@
   ></modales-entidad>
 </template>
 
-<script src="./ProveedorPage.ts"></script>
+<script src="./ProveedorPage.ts"/>

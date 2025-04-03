@@ -1,5 +1,5 @@
-import { ColumnConfig } from "components/tables/domain/ColumnConfig";
-import { Transferencia } from "./Transferencia";
+import { ColumnConfig } from 'components/tables/domain/ColumnConfig';
+import { Transferencia } from './Transferencia';
 
 export const configuracionColumnasTransferencia: ColumnConfig<Transferencia>[] = [
   {
@@ -45,15 +45,15 @@ export const configuracionColumnasTransferencia: ColumnConfig<Transferencia>[] =
     sortable: true
   },
   {
-    name:'estado_info',
-    field:'estado_info',
-    label:'Estado',
+    name: 'estado_info',
+    field: 'estado_info',
+    label: 'Estado',
     align: 'left',
     sortable: true
-  },  {
-    name:'es_devolucion',
-    field:'es_devolucion',
-    label:'Es Devolucion',
+  }, {
+    name: 'es_devolucion',
+    field: 'es_devolucion',
+    label: 'Es Devolucion',
     align: 'left',
     sortable: true
   }

@@ -8,6 +8,8 @@
     :filtrar="filtrarDevoluciones"
     :ajustarCeldas="true"
     :permitirEditar="puedeEditar"
+    :permitir-cancelar="!enRutaInspeccionIncidente"
+    :mostrar-listado="!enRutaInspeccionIncidente"
     :accion1="botonDespachar"
     :accion2="botonAnular"
     :accion3="botonCorregir"
@@ -37,7 +39,12 @@
           <div
             class="col-12 col-md-3"
             v-if="
-              accion == acciones.nuevo &&(store.esCoordinador ||store.esCoordinadorBackup ||store.esJefeTecnico ||store.esCoordinadorBodega||store.can('puede.hacer.devoluciones_terceros'))
+              accion == acciones.nuevo &&
+              (store.esCoordinador ||
+                store.esCoordinadorBackup ||
+                store.esJefeTecnico ||
+                store.esCoordinadorBodega ||
+                store.can('puede.hacer.devoluciones_terceros'))
             "
           >
             <br />
@@ -56,8 +63,8 @@
               dense
             ></q-toggle>
           </div>
+          <!-- {{devolucion}} -->
           <!-- Solicitante -->
-
           <div
             v-if="
               (accion == acciones.nuevo &&
@@ -79,8 +86,14 @@
               outlined
               :disable="disabled || soloLectura"
               :readonly="disabled || soloLectura"
-              :option-label="(v) => v.apellidos + ' ' + v.nombres"
-              :option-value="(v) => v.id"
+              :option-label="v => v.apellidos + ' ' + v.nombres"
+              :option-value="v => v.id"
+              @update:model-value="
+                () => {
+                  limpiarCampos()
+                  obtenerClientesMaterialesEmpleado()
+                }
+              "
               use-input
               input-debounce="0"
               @filter="filtrarEmpleados"
@@ -96,6 +109,17 @@
                 </q-item>
               </template>
             </q-select>
+          </div>
+          <div class="col-md-3 q-mt-md q-pt-sm">
+            <q-checkbox
+              class="q-mt-sm q-pt-sm"
+              v-model="mostrarInactivos"
+              label="Inactivos"
+              :disable="disabled"
+              outlined
+              @update:model-value="checkMostrarInactivos"
+              dense
+            ></q-checkbox>
           </div>
 
           <div
@@ -116,8 +140,8 @@
               dense
               outlined
               :disable="disabled || soloLectura"
-              :option-label="(item) => item.razon_social"
-              :option-value="(item) => item.cliente_id"
+              :option-label="item => item.razon_social"
+              :option-value="item => item.cliente_id"
               @update:model-value="filtrarCliente"
               emit-value
               map-options
@@ -143,8 +167,8 @@
               input-debounce="0"
               @filter="filtrarSucursales"
               @popup-show="ordenarLista(sucursales, 'lugar')"
-              :option-label="(item) => item.lugar"
-              :option-value="(item) => item.id"
+              :option-label="item => item.lugar"
+              :option-value="item => item.id"
               emit-value
               map-options
             >
@@ -154,7 +178,11 @@
                 </div>
               </template>
               <template v-slot:after>
-                <q-btn color="positive" @click="recargarSucursales">
+                <q-btn
+                  color="positive"
+                  @click="recargarSucursales"
+                  :disable="disabled || soloLectura"
+                >
                   <q-icon size="xs" class="q-mr-sm" name="bi-arrow-clockwise" />
                 </q-btn>
               </template>
@@ -187,7 +215,7 @@
 
           <!-- Es devolucion para stock personal -->
           <!-- <div
-            v-if="devolucion.es_para_stock || accion === 'NUEVO'"
+            v-if="devolucion.es_para_stock || accion === acciones.nuevo"
             class="col-12 col-md-3"
           >
             <q-checkbox
@@ -202,10 +230,13 @@
           </div> -->
           <!-- Es pedido automatico -->
           <div
-            v-if="devolucion.pedido_automatico || accion === 'NUEVO'"
+            v-if="devolucion.pedido_automatico || accion === acciones.nuevo"
             class="col-12 col-md-3"
           >
-          <q-tooltip class="bg-dark">Marque esta opción unicamente cuando quieras hacer un pedido de lo mismo que vas a devolver</q-tooltip>
+            <q-tooltip class="bg-dark"
+              >Marque esta opción unicamente cuando quieras hacer un pedido de
+              lo mismo que vas a devolver</q-tooltip
+            >
             <q-checkbox
               class="q-mt-lg q-pt-md"
               v-model="devolucion.pedido_automatico"
@@ -218,24 +249,25 @@
           </div>
           <!-- Es devolucion de tarea -->
           <div
-            v-if="devolucion.es_tarea || accion === 'NUEVO'"
+            v-if="devolucion.es_tarea || accion === acciones.nuevo"
             class="col-12 col-md-3"
           >
-          <q-tooltip class="bg-dark">Marque esta opción cuando quieras hacer devoluciones de materiales de tarea</q-tooltip>
+            <q-tooltip class="bg-dark"
+              >Marque esta opción cuando quieras hacer devoluciones de
+              materiales de tarea</q-tooltip
+            >
             <q-checkbox
               class="q-mt-lg q-pt-md"
               v-model="devolucion.es_tarea"
               label="¿Es material de tarea?"
               :disable="disabled || soloLectura"
+              @update:model-value="checkEsTarea"
               outlined
               dense
             ></q-checkbox>
           </div>
           <!-- Tarea -->
-          <div
-            v-if="esVisibleTarea || devolucion.es_tarea"
-            class="col-12 col-md-3"
-          >
+          <div v-if="devolucion.es_tarea" class="col-12 col-md-3">
             <label class="q-mb-sm block">Tarea</label>
             <q-select
               v-model="devolucion.tarea"
@@ -252,8 +284,8 @@
               outlined
               :disable="disabled || soloLectura"
               :readonly="disabled || soloLectura"
-              :option-label="(item) => item.codigo_tarea + ' - ' + item.titulo"
-              :option-value="(item) => item.id"
+              :option-label="item => item.codigo_tarea + ' - ' + item.titulo"
+              :option-value="item => item.id"
               emit-value
               map-options
               ><template v-slot:option="scope">
@@ -279,7 +311,10 @@
             v-if="accion === acciones.nuevo || devolucion.misma_condicion"
             class="col-12 col-md-3"
           >
-          <q-tooltip class="bg-dark">Marque esta opción para seleccionar un estado para todos los elementos de la devolución</q-tooltip>
+            <q-tooltip class="bg-dark"
+              >Marque esta opción para seleccionar un estado para todos los
+              elementos de la devolución</q-tooltip
+            >
             <q-checkbox
               class="q-mt-lg q-pt-md"
               v-model="devolucion.misma_condicion"
@@ -290,7 +325,6 @@
                 soloLectura ||
                 (accion == acciones.editar && devolucion.misma_condicion)
               "
-              
               dense
             ></q-checkbox>
           </div>
@@ -308,8 +342,8 @@
               :readonly="disabled"
               :error="!!v$.condicion.$errors.length"
               error-message="Debes seleccionar una condición"
-              :option-value="(item) => item.id"
-              :option-label="(item) => item.nombre"
+              :option-value="item => item.id"
+              :option-label="item => item.nombre"
               emit-value
               map-options
             >
@@ -340,8 +374,8 @@
               outlined
               :disable="disabled || soloLectura"
               :readonly="disabled || soloLectura"
-              :option-label="(v) => v.nombres + ' ' + v.apellidos"
-              :option-value="(v) => v.id"
+              :option-label="v => v.nombres + ' ' + v.apellidos"
+              :option-value="v => v.id"
               emit-value
               map-options
             />
@@ -352,7 +386,7 @@
             <label class="q-mb-sm block">Autorizacion</label>
             <q-select
               v-model="devolucion.autorizacion"
-              :options="opciones_autorizaciones"
+              :options="autorizaciones"
               transition-show="jum-up"
               transition-hide="jump-down"
               options-dense
@@ -368,8 +402,8 @@
                     store.user.id == devolucion.per_autoriza
                   ))
               "
-              :option-value="(v) => v.id"
-              :option-label="(v) => v.nombre"
+              :option-value="v => v.id"
+              :option-label="v => v.nombre"
               emit-value
               map-options
             >
@@ -415,6 +449,72 @@
               </template>
             </q-input>
           </div>
+          <div v-if="devolucion.estado_bodega" class="col-12 col-md-3 q-mb-md">
+            <label class="q-mb-sm block">Estado</label>
+            <q-input
+              autogrow
+              v-model="devolucion.estado_bodega"
+              disable
+              outlined
+              dense
+            />
+          </div>
+          <div
+            v-if="devolucion.causa_anulacion"
+            class="col-12 col-md-3 q-mb-md"
+          >
+            <label class="q-mb-sm block">Causa anulación</label>
+            <q-input
+              autogrow
+              v-model="devolucion.causa_anulacion"
+              disable
+              outlined
+              dense
+            />
+          </div>
+
+          <div class="col-12 col-md-3">
+            <label class="q-mb-sm block">Incidente (Opcional)</label>
+            <q-select
+              v-model="devolucion.incidente"
+              :options="incidentes"
+              transition-show="scale"
+              transition-hide="scale"
+              :disable="disabled || enRutaIncidente"
+              options-dense
+              dense
+              outlined
+              clearable
+              use-input
+              input-debounce="0"
+              @filter="filtrarIncidentes"
+              :option-label="v => v.titulo"
+              :option-value="v => v.id"
+              emit-value
+              map-options
+            >
+              <template v-slot:no-option>
+                <q-item>
+                  <q-item-section class="text-grey">
+                    No hay resultados
+                  </q-item-section>
+                </q-item>
+              </template>
+
+              <template #after>
+                <q-btn
+                  color="positive"
+                  @click="refrescarListados('incidentes')"
+                  :disable="disabled || enRutaIncidente"
+                  unelevated
+                  square
+                >
+                  <q-icon size="xs" name="bi-arrow-clockwise" />
+                  <q-tooltip>Recargar incidentes</q-tooltip>
+                </q-btn>
+              </template>
+            </q-select>
+          </div>
 
           <!-- Manejo de archivos -->
           <div class="col-12 q-mb-md">
@@ -429,19 +529,6 @@
               "
               :idModelo="idDevolucion"
             >
-              <template #boton-subir>
-                <q-btn
-                  v-if="false"
-                  color="positive"
-                  push
-                  no-caps
-                  class="full-width q-mb-lg"
-                  @click="subirArchivos()"
-                >
-                  <q-icon name="bi-upload" class="q-mr-sm" size="xs"></q-icon>
-                  Subir archivos seleccionados</q-btn
-                >
-              </template>
             </gestor-archivos>
           </div>
 
@@ -458,7 +545,7 @@
                   @keydown.enter="
                     listarProductos({
                       empleado_id: devolucion.solicitante,
-                      cliente_id: devolucion.cliente,
+                      cliente_id: devolucion.cliente
                     })
                   "
                   @blur="
@@ -474,7 +561,7 @@
                   @click="
                     listarProductos({
                       empleado_id: devolucion.solicitante,
-                      cliente_id: devolucion.cliente,
+                      cliente_id: devolucion.cliente
                     })
                   "
                   icon="search"
@@ -496,7 +583,7 @@
                 accion == acciones.nuevo || accion == acciones.editar
                   ? [
                       ...configuracionColumnasProductosSeleccionadosAccion,
-                      accionesTabla,
+                      accionesTabla
                     ]
                   : configuracionColumnasProductosSeleccionadosAccion
               "
@@ -513,7 +600,7 @@
               :accion2="botonEliminar"
               :altoFijo="false"
               :ajustarCeldas="true"
-              />
+            />
           </div>
         </div>
       </q-form>

@@ -1,5 +1,5 @@
 import { configuracionColumnasVentas } from '../domain/configuracionColumnasVentas'
-import { computed, defineComponent, ref, watchEffect } from 'vue'
+import { computed, defineComponent, ref } from 'vue'
 import { Venta } from '../domain/Venta'
 
 import TabLayoutFilterTabs2 from 'shared/contenedor/modules/simple/view/TabLayoutFilterTabs2.vue';

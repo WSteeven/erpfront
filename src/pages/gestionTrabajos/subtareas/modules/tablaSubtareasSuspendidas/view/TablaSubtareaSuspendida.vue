@@ -17,7 +17,7 @@ import { configuracionColumnasSuspendido } from '../domain/configuracionColumnas
 import { AxiosHttpRepository } from 'shared/http/infraestructure/AxiosHttpRepository'
 import { endpoints } from 'config/api'
 import { AxiosResponse } from 'axios'
-import { ref, watchEffect } from 'vue'
+import { computed, ref, watch } from 'vue'
 
 // Componentes
 import EssentialTable from 'components/tables/view/EssentialTable.vue'
@@ -26,7 +26,7 @@ import EssentialTable from 'components/tables/view/EssentialTable.vue'
 import { StatusEssentialLoading } from 'components/loading/application/StatusEssentialLoading'
 
 const props = defineProps({
-  idSubtarea: Number,
+  idSubtarea: Number
 })
 
 /************
@@ -50,7 +50,10 @@ async function obtenerSuspendidos() {
   statusEssentialLoading.desactivar()
 }
 
-watchEffect(() => {
-  if (props.idSubtarea) obtenerSuspendidos()
-})
+watch(
+  computed(() => props.idSubtarea),
+  id => {
+    if (id) obtenerSuspendidos()
+  }
+)
 </script>

@@ -1,21 +1,15 @@
 // Dependencias
-import { computed, defineComponent, onMounted, ref } from 'vue'
-import { regiones, atenciones } from 'config/utils'
+import { computed, defineComponent, ref } from 'vue'
 import useVuelidate from '@vuelidate/core'
-import { endpoints } from 'config/api'
 
 // Componentes
 import TablaFilasDinamicas from 'components/tables/view/TablaFilasDinamicas.vue'
-import EssentialTable from 'components/tables/view/EssentialTable.vue'
-import ButtonSubmits from 'components/buttonSubmits/buttonSubmits.vue'
-import SelectorImagen from 'components/SelectorImagen.vue'
 import VisorImagen from 'components/VisorImagen.vue'
-import GestorArchivos from 'components/gestorArchivos/GestorArchivos.vue';
+import GestorArchivos from 'components/gestorArchivos/GestorArchivos.vue'
 
 // Logica y controladores
 import { ContenedorSimpleMixin } from 'shared/contenedor/modules/simple/application/ContenedorSimpleMixin'
 import { CustomActionTable } from 'components/tables/domain/CustomActionTable'
-import { useAuthenticationStore } from 'stores/authentication'
 import { configuracionColumnasSeguimientoOrdenCompra } from '../domain/configuracionColumnasSeguimientoOrdenCompra'
 import NovedadOrdenCompra from '../domain/SeguimientoOrdenCompra'
 import { NovedadOrdenCompraController } from '../infraestructure/NovedadOrdenCompraControllet'
@@ -44,7 +38,7 @@ export default defineComponent({
          * Variables
          ************/
         const refArchivo = ref()
-        const fila = ref()
+        // const fila = ref()
         const refVisorImagen = ref()
         const permitirSubir = ordenCompraStore.permitirSubir
 

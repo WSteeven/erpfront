@@ -1,5 +1,5 @@
-import { ColumnConfig } from "components/tables/domain/ColumnConfig";
-import { ConfiguracionGeneral } from "./Configuracion";
+import { ColumnConfig } from 'components/tables/domain/ColumnConfig';
+import { ConfiguracionGeneral } from './Configuracion';
 
 export const configuracionColumnasConfiguracionGeneral: ColumnConfig<ConfiguracionGeneral>[] = [
     {
@@ -29,6 +29,12 @@ export const configuracionColumnasConfiguracionGeneral: ColumnConfig<Configuraci
         label: 'Nombre ruc',
         align: 'left',
         sortable: true
+    }, {
+        name: 'ciiu',
+        field: 'ciiu',
+        label: 'Ciiu',
+        align: 'left',
+        sortable: true
     },
     {
         name: 'direccion_principal',
@@ -44,6 +50,5 @@ export const configuracionColumnasConfiguracionGeneral: ColumnConfig<Configuraci
         align: 'left',
         sortable: true
     },
-
 
 ]

@@ -43,7 +43,7 @@
               v-model="modelo.nombre"
               placeholder="Obligatorio"
               :readonly="disabled"
-              :error="!!v$.nombre.$errors - length"
+              :error="!!v$.nombre.$errors.length"
               outlined
               dense
             >

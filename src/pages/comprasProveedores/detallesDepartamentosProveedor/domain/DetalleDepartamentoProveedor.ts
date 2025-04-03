@@ -1,7 +1,7 @@
-import { EntidadAuditable } from "shared/entidad/domain/entidadAuditable";
+import { EntidadAuditable } from 'shared/entidad/domain/entidadAuditable';
 
 export class DetalleDepartamentoProveedor extends EntidadAuditable {
-    id:number|null
+    id: number | null
     departamento: string | null
     razon_social: string | null
     sucursal: string | null

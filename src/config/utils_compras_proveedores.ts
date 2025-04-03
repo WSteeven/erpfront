@@ -1,4 +1,4 @@
-import { TabOption } from "components/tables/domain/TabOption"
+import { TabOption } from 'components/tables/domain/TabOption'
 
 export const opcionesTipoContribuyente = [
   { value: 'PERSONA NATURAL', label: 'PERSONA NATURAL' },
@@ -69,6 +69,10 @@ export const tabOptionsPrefactura: TabOption[] = [
   { label: 'Creadas', value: '2' }, //estado CREADO
   { label: 'Anuladas', value: '4' }, //estado ANULADO
 ]
+export const tabOptionsProveedoresInternacionales: TabOption[] = [
+  { label: 'ACTIVOS', value: '1' },
+  { label: 'INACTIVOS', value: '0' },
+]
 export const tabOptionsOrdenCompra: TabOption[] = [
   { label: 'Pendientes', value: '1' }, //autorizacion PENDIENTE
   { label: 'Autorizadas', value: '2' }, //autorizacion APROBADO
@@ -129,6 +133,16 @@ export const opcionesCalificacionProveedor = [
   { value: 'CALIFICADO', label: 'CALIFICADO' },
   { value: 'PARCIAL', label: 'PARCIAL' },
 ]
+export const opcionesEstadosPrefacturas = [
+  { value: '2', label: 'CREADAS' },
+  { value: '4', label: 'ANULADAS' },
+]
+export const opcionesEstadosOC = [
+  { value: 'PENDIENTES' },
+  { value: 'REVISADAS' },
+  { value: 'REALIZADAS', },
+  { value: 'PAGADAS', },
+]
 
 export const estadosOrdenesCompras = {
   PENDIENTE: 'PENDIENTE',
@@ -138,3 +152,14 @@ export const estadosOrdenesCompras = {
   PAGADA: 'PAGADA',
   ANULADA: 'ANULADA'
 }
+
+export const tiposCuentasCash = [
+  { value: 'AHO', label: 'AHORROS' },
+  { value: 'CTE', label: 'CORRIENTE' },
+]
+
+export const tiposDocumentosIdentificacionesCash = [
+  { nombre: 'Cédula', value: 'C' },
+  { nombre: 'RUC.', value: 'R' },
+  { nombre: 'Pasaporte', value: 'P' },
+]

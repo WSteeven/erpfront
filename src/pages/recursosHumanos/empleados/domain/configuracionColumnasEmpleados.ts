@@ -97,7 +97,14 @@ export const configuracionColumnasEmpleados: ColumnConfig<Empleado>[] = [
   {
     name: 'fecha_vinculacion',
     field: 'fecha_vinculacion',
-    label: 'Fecha de Vinculacion',
+    label: 'Fecha Vinculación',
+    align: 'left',
+    sortable: true,
+  },
+  {
+    name: 'fecha_salida',
+    field: 'fecha_salida',
+    label: 'Fecha Desvinculación',
     align: 'left',
     sortable: true,
   },
@@ -113,6 +120,7 @@ export const configuracionColumnasEmpleados: ColumnConfig<Empleado>[] = [
     field: 'salario',
     label: 'Salario',
     align: 'left',
+    visible: false,
     sortable: true,
   },
   {
@@ -142,5 +150,11 @@ export const configuracionColumnasEmpleados: ColumnConfig<Empleado>[] = [
     label: '¿Firma?',
     align: 'left',
     sortable: true,
+  },
+  {
+    name: 'archivos',
+    field: 'archivos',
+    label: 'archivos',
+    visible: false,
   },
 ]

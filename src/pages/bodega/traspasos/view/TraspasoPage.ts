@@ -239,7 +239,7 @@ export default defineComponent({
             //Filtros
             filtrarClientes,
             ordenarLista,
-            filtroTareas(val) {
+            tareaSeleccionada(val) {
                 const opcionSeleccionada = listadosAuxiliares.tareas.filter((v) => v.id === val)
                 traspaso.hasta_cliente = opcionSeleccionada[0]['cliente_id']
 

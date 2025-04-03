@@ -1,40 +1,27 @@
 import { AxiosHttpRepository } from 'shared/http/infraestructure/AxiosHttpRepository'
-import { UserLogin } from 'src/pages/sistema/authentication/login/domain/UserLogin'
 import { ApiError } from 'shared/error/domain/ApiError'
-import { rolesSistema } from 'config/utils'
+import { rolesSistema, tipoAutenticacion } from 'config/utils'
 import { endpoints } from 'src/config/api'
 import { defineStore } from 'pinia'
 import { computed, ref } from 'vue'
 import { LocalStorage } from 'quasar'
 import { AxiosError, AxiosResponse } from 'axios'
 import { Empleado } from 'pages/recursosHumanos/empleados/domain/Empleado'
-import { EstadosTransaccionController } from 'pages/administracion/estados_transacciones/infraestructure/EstadosTransaccionController'
-import { AutorizacionController } from 'pages/administracion/autorizaciones/infraestructure/AutorizacionController'
-import { SucursalController } from 'pages/administracion/sucursales/infraestructure/SucursalController'
-import { CondicionController } from 'pages/administracion/condiciones/infraestructure/CondicionController'
 import { ForgotPassword } from 'sistema/authentication/forgotPassword/domain/ForgotPassword'
 import { ResetPassword } from 'sistema/authentication/resetPassword/domain/ResetPassword'
-import { DetalleFondoController } from 'pages/fondosRotativos/detalleFondo/infrestructure/DetalleFondoController'
-import { SubDetalleFondoController } from 'pages/fondosRotativos/subDetalleFondo/infrestructure/SubDetalleFondoController'
-import { CantonController } from 'sistema/ciudad/infraestructure/CantonControllerontroller'
-import { TareaController } from 'pages/gestionTrabajos/tareas/infraestructure/TareaController'
-import { EmpleadoController } from 'pages/recursosHumanos/empleados/infraestructure/EmpleadoController'
-import { ConceptoIngresoController } from 'pages/recursosHumanos/concepto_ingreso/infraestructure/ConceptoIngresoController'
-import { DescuentosGenralesController } from 'pages/recursosHumanos/descuentos_generales/infraestructure/DescuentosGenralesController'
-import { DescuentosLeyController } from 'pages/recursosHumanos/descuentos_ley/infraestructure/DescuentosLeyController'
-import { HorasExtrasSubTipoController } from 'pages/recursosHumanos/horas_extras_subtipo/infraestructure/HorasExtrasSubTipoController'
-import { HorasExtrasTipoController } from 'pages/recursosHumanos/horas_extras_tipo/infraestructure/HorasExtrasTipoController'
-import { MultaController } from 'pages/recursosHumanos/multas/infraestructure/MultaController'
 import { UltimoSaldoController } from 'pages/fondosRotativos/reportes/reporteSaldoActual/infrestucture/UltimoSaldoController'
+import { UserLogin } from 'sistema/authentication/login/domain/UserLogin'
+import { useListadosSistemaStore } from './listadosSistema'
 
 export const useAuthenticationStore = defineStore('authentication', () => {
   // Variables locales
   const axios = AxiosHttpRepository.getInstance()
   let usuarioFueConsultado = false
+  const listadosSistemaStore = useListadosSistemaStore()
 
   // State
-  const user = ref()
   const auth = ref(false)
+  const user = ref()
   const roles = ref()
   const permisos = ref()
   const nombre_usuario = ref() // Para resetear clave
@@ -106,6 +93,16 @@ export const useAuthenticationStore = defineStore('authentication', () => {
       ? extraerRol(user.value.roles, rolesSistema.administrador)
       : false
   )
+  const esAdministradorVehiculos = computed(() =>
+    user.value
+      ? extraerRol(user.value.roles, rolesSistema.administradorVehiculos)
+      : false
+  )
+  const esSupervisorTecnico = computed(() =>
+    user.value
+      ? extraerRol(user.value.roles, rolesSistema.esSupervisorTecnico)
+      : false
+  )
   //ventas
   const esJefeVentasClaro = computed(() =>
     user.value ? extraerRol(user.value.roles, rolesSistema.jefe_ventas) : false
@@ -117,6 +114,18 @@ export const useAuthenticationStore = defineStore('authentication', () => {
   )
   const esVendedor = computed(() =>
     user.value ? extraerRol(user.value.roles, rolesSistema.vendedor) : false
+  )
+
+  const esMedico = computed(() =>
+    user.value ? extraerRol(user.value.roles, rolesSistema.medico) : false
+  )
+  const esMecanicoGeneral = computed(() =>
+    user.value
+      ? extraerRol(user.value.roles, rolesSistema.mecanicoGeneral)
+      : false
+  )
+  const esSso = computed(() =>
+    user.value ? extraerRol(user.value.roles, rolesSistema.sso) : false
   )
 
   function extraerRol(roles: string[], rolConsultar: string) {
@@ -132,13 +141,14 @@ export const useAuthenticationStore = defineStore('authentication', () => {
 
       const login = axios.getEndpoint(endpoints.login)
       const response: AxiosResponse = await axios.post(login, credentiales)
-
+      // console.log(response)
       LocalStorage.set('token', response.data.access_token)
+      LocalStorage.set('method_access', tipoAutenticacion.empleado)
       setUser(response.data.modelo)
       roles.value = response.data.modelo.roles
       permisos.value = response.data.modelo.permisos
 
-      cargarDatosLS()
+      listadosSistemaStore.cargarDatosLS()
 
       return response.data.modelo
     } catch (error: unknown) {
@@ -148,9 +158,35 @@ export const useAuthenticationStore = defineStore('authentication', () => {
       throw new ApiError(axiosError)
     }
   }
+
+  // Actions
+  //  const loginPostulante = async (credentiales: UserLoginPostulante): Promise<Empleado> => {
+  //   try {
+  /*const csrf_cookie = axios.getEndpoint(endpoints.csrf_cookie)
+      console.log('authentication...')
+      await axios.get(csrf_cookie) */
+
+  //     const login = axios.getEndpoint(endpoints.login)
+  //     const response: AxiosResponse = await axios.post(login, credentiales)
+
+  //     LocalStorage.set('token', response.data.access_token)
+  //     setUser(response.data.modelo)
+  //     roles.value = response.data.modelo.roles
+  //     permisos.value = response.data.modelo.permisos
+
+  //     listadosSistemaStore.cargarDatosLS()
+
+  //     return response.data.modelo
+  //   } catch (error: unknown) {
+  //     console.log(error)
+
+  //     const axiosError = error as AxiosError
+  //     throw new ApiError(axiosError)
+  //   }
+  // }
   const enviarCorreoRecuperacion = async (userLogin: ForgotPassword) => {
     try {
-      await axios.post(
+      return await axios.post(
         axios.getEndpoint(endpoints.enviar_correo_recuperacion),
         userLogin
       )
@@ -161,7 +197,7 @@ export const useAuthenticationStore = defineStore('authentication', () => {
   }
   const recuperacionCuenta = async (userLogin: ForgotPassword) => {
     try {
-      await axios.post(
+      return await axios.post(
         axios.getEndpoint(endpoints.recuperacion_cuenta),
         userLogin
       )
@@ -170,6 +206,7 @@ export const useAuthenticationStore = defineStore('authentication', () => {
       throw new ApiError(axiosError)
     }
   }
+
   async function consultar_saldo_actual() {
     try {
       const ultimo_saldo = new UltimoSaldoController()
@@ -184,68 +221,11 @@ export const useAuthenticationStore = defineStore('authentication', () => {
     }
   }
 
-  /**
-   * Función para cargar datos en el Local Storage
-   */
-  async function cargarDatosLS() {
-    const autorizaciones = (
-      await new AutorizacionController().listar({ campos: 'id,nombre' })
-    ).result
-    LocalStorage.set('autorizaciones', JSON.stringify(autorizaciones))
-    const sucursales = (
-      await new SucursalController().listar({ campos: 'id,lugar,cliente_id' })
-    ).result
-    LocalStorage.set('sucursales', JSON.stringify(sucursales))
-    const condiciones = (
-      await new CondicionController().listar({ campos: 'id,nombre' })
-    ).result
-    LocalStorage.set('condiciones', JSON.stringify(condiciones))
-    const estados_transacciones = (
-      await new EstadosTransaccionController().listar({ campos: 'id,nombre' })
-    ).result
-    LocalStorage.set(
-      'estados_transacciones',
-      JSON.stringify(estados_transacciones)
-    )
-    const cantones = (
-      await new CantonController().listar({ campos: 'id,canton' })
-    ).result
-    LocalStorage.set('cantones', JSON.stringify(cantones))
-    const detalles = (
-      await new DetalleFondoController().listar({ campos: 'id,descripcion' })
-    ).result
-    LocalStorage.set('detalles', JSON.stringify(detalles))
-    const sub_detalles = (
-      await new SubDetalleFondoController().listar({ campos: 'id,descripcion' })
-    ).result
-    LocalStorage.set('sub_detalles', JSON.stringify(sub_detalles))
-    const tareas = (await new TareaController().listar({ campos: 'id,titulo' }))
-      .result
-    LocalStorage.set('tareas', JSON.stringify(tareas))
-    const usuariosInactivos = (
-      await new EmpleadoController().listar({
-        campos: 'id,nombres,apellidos',
-        estado: 0,
-      })
-    ).result
-    LocalStorage.set('usuariosInactivos', JSON.stringify(usuariosInactivos))
-  }
-  /**
-   * Función para limpiar los datos del Local Storage
-   */
-  function limpiarLS() {
-    LocalStorage.remove('autorizaciones')
-    LocalStorage.remove('sucursales')
-    LocalStorage.remove('condiciones')
-    LocalStorage.remove('estados_transacciones')
-    LocalStorage.remove('lugares')
-    LocalStorage.remove('detalles')
-  }
-
   async function logout() {
     await axios.post(axios.getEndpoint(endpoints.logout))
     LocalStorage.remove('token')
-    limpiarLS()
+    LocalStorage.remove('method_access')
+    listadosSistemaStore.limpiarLS()
     await getUser()
     document.title = 'JPCONSTRUCRED'
   }
@@ -289,6 +269,7 @@ export const useAuthenticationStore = defineStore('authentication', () => {
   }
 
   async function isUserLoggedIn(): Promise<boolean> {
+    // console.log('auth...')
     if (!usuarioFueConsultado) {
       await getUser()
       usuarioFueConsultado = true
@@ -344,13 +325,18 @@ export const useAuthenticationStore = defineStore('authentication', () => {
     esCompras,
     esContabilidad,
     esAdministrador,
+    esAdministradorVehiculos,
+    esMecanicoGeneral,
+    esSupervisorTecnico,
     esJefeVentasClaro,
     esSupervisorVentasClaro,
     esVendedor,
     esFiscalizador,
     esSupervisorCampo,
+    esMedico,
+    esSso,
     consultar_saldo_actual,
     extraerRol,
-    listadoUsuarios,
+    listadoUsuarios
   }
 })

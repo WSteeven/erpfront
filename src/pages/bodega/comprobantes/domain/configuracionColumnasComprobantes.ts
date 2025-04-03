@@ -1,7 +1,7 @@
-import { ColumnConfig } from "components/tables/domain/ColumnConfig";
-import { Comprobante } from "./Comprobante";
+import { ColumnConfig } from 'components/tables/domain/ColumnConfig';
+import { Comprobante } from './Comprobante';
 
-export const configuracionColumnasComprobantes: ColumnConfig<Comprobante>[]=[
+export const configuracionColumnasComprobantes: ColumnConfig<Comprobante>[] = [
     {
         name: 'transaccion_id',
         field: 'transaccion_id',

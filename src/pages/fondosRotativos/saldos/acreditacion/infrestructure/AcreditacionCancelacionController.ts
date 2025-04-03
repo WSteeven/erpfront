@@ -1,6 +1,4 @@
-import { TransaccionSimpleController } from 'shared/contenedor/modules/simple/infraestructure/TransacccionSimpleController'
 import { endpoints } from 'config/api'
-import { Gasto } from 'pages/fondosRotativos/gasto/domain/Gasto'
 import { AxiosHttpRepository } from 'shared/http/infraestructure/AxiosHttpRepository'
 import { AxiosError } from 'axios'
 import { ApiError } from 'shared/error/domain/ApiError'

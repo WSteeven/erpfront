@@ -48,12 +48,12 @@ export default defineComponent({
       await obtenerListados({
         grupos: {
           controller: new GrupoController(),
-          params: { campos: 'id,nombre' }
+          params: { campos: 'id,nombre', activo: 1 }
         },
         empleados: {
           controller: new EmpleadoController(),
           params: {
-            campos: 'id,nombres,apellidos',
+            campos: 'id,nombres,apellidos,grupo_id',
             estado: 1
           }
         },
@@ -152,7 +152,8 @@ export default defineComponent({
     }
 
     function seleccionarEmpleado() {
-      return emit('seleccionar-empleado', subtarea.empleado)
+      const empleado = listadosAuxiliares.empleados.find((e: Empleado) => e.id === subtarea.empleado)
+      return emit('seleccionar-empleado', subtarea.empleado, empleado)
     }
 
     function limpiarSelector() {

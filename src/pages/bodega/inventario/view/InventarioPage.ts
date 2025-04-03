@@ -9,7 +9,6 @@ import EssentialTable from 'components/tables/view/EssentialTable.vue'
 import { ContenedorSimpleMixin } from 'shared/contenedor/modules/simple/application/ContenedorSimpleMixin'
 import { InventarioController } from '../infraestructure/InventarioController'
 import { Inventario } from '../domain/Inventario'
-import { ColumnConfig } from 'components/tables/domain/ColumnConfig'
 
 export default defineComponent({
     components: { EssentialTable },

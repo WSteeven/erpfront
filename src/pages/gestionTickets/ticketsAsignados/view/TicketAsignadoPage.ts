@@ -1,10 +1,10 @@
 // Dependencias
 import { configuracionColumnasTicketAsignado } from '../domain/configuracionColumnasTicketAsignado'
+import { tabOptionsEstadosTicketsAsignados, estadosTickets } from 'config/tickets.utils'
 import { useAuthenticationStore } from 'stores/authentication'
 import { accionesTabla, estadosTrabajos } from 'config/utils'
-import { tabOptionsEstadosTicketsAsignados, estadosTickets } from 'config/tickets.utils'
-import { computed, defineComponent, ref } from 'vue'
 import { useTicketStore } from 'stores/ticket'
+import { defineComponent, ref } from 'vue'
 import { date } from 'quasar'
 
 // Componentes
@@ -12,12 +12,12 @@ import ConfirmarDialog from 'gestionTrabajos/trabajoAsignado/view/ConfirmarDialo
 import EssentialTableTabs from 'components/tables/view/EssentialTableTabs.vue'
 import EssentialTable from 'components/tables/view/EssentialTable.vue'
 import ModalesEntidad from 'components/modales/view/ModalEntidad.vue'
+import Callout from 'components/CalloutComponent.vue'
 
 // Logica y controladores
 import { ComportamientoModalesTicketAsignado } from '../application/ComportamientoModalesTicketAsignado'
 import { ContenedorSimpleMixin } from 'shared/contenedor/modules/simple/application/ContenedorSimpleMixin'
 import { CustomActionTable } from 'components/tables/domain/CustomActionTable'
-import { SubtareaListadoPusherEvent } from '../application/SubtareaPusherEvent'
 import { TicketController } from 'pages/gestionTickets/tickets/infraestructure/TicketController'
 import { Ticket } from 'pages/gestionTickets/tickets/domain/Ticket'
 import { useBotonesTablaTicket } from 'pages/gestionTickets/tickets/application/BotonesTablaTicket'
@@ -31,6 +31,7 @@ export default defineComponent({
     EssentialTable,
     ModalesEntidad,
     ConfirmarDialog,
+    Callout,
   },
   setup() {
     /***********
@@ -68,6 +69,7 @@ export default defineComponent({
       individual: 'individual',
     }
     const tabsOpcionesFiltrado = ref(opcionesFiltrado.listado)
+    const imagenPerfil = authenticationStore.user.foto_url ?? `https://ui-avatars.com/api/?name=${authenticationStore.user.nombres.substr(0, 1)}+${authenticationStore.user.apellidos.substr(0, 1)}&bold=true&background=0879dc28&color=0879dc`
 
     /*********
      * Pusher
@@ -118,6 +120,7 @@ export default defineComponent({
     return {
       mixin,
       listado,
+      imagenPerfil,
       configuracionColumnasTicketAsignado,
       tabOptionsEstadosTicketsAsignados,
       filtrarTrabajoAsignado,

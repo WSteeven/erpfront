@@ -2,38 +2,26 @@ import { Empleado } from 'recursosHumanos/empleados/domain/Empleado'
 import { useAuthenticationStore } from 'src/stores/authentication'
 import { ApiError } from 'shared/error/domain/ApiError'
 import { UserLogin } from '../domain/UserLogin'
-import { rolesSistema } from 'config/utils'
-import { useRouter } from 'vue-router'
+import { useRoute, useRouter } from 'vue-router'
 
 export class LoginController {
   store = useAuthenticationStore()
   Router = useRouter()
+  route = useRoute()
 
   async login(userLogin: UserLogin): Promise<Empleado> {
     try {
+      const redirectTo = this.route.query.redirect || '/intranet'
       // const response = await this.store.login(userLogin)
       const usuario = await this.store.login(userLogin)
-      const roles = usuario.roles
-
-      const existeYEsArreglo = typeof (roles) === 'object' && roles
-
-      //if (existeYEsArreglo && (this.store.extraerRol(roles, rolesSistema.tecnico_lider) || this.store.extraerRol(roles, rolesSistema.tecnico_secretario))) {
-      // console.log(roles)
-      // console.log(existeYEsArreglo)
-
-      // if (typeof usuario.cargo === 'string' && [cargosSistema.tecnico_lider, cargosSistema.tecnico_secretario].includes(usuario.cargo)) {
-      if (roles?.includes(rolesSistema.tecnico_lider)) {
-        this.Router.replace({ name: 'trabajo_agendado' })
-      } else {
-        this.Router.replace('/')
-      }
+        await this.Router.replace(redirectTo)
 
       return usuario
     } catch (error: unknown) {
       if (error instanceof ApiError) {
         switch (error.status) {
           case 412:
-            this.Router.replace({ name: 'ResetearContrasena' })
+            await this.Router.replace({ name: 'ResetearContrasena' })
             this.store.setNombreusuario(userLogin.name!);
             break;
         }

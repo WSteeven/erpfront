@@ -11,62 +11,73 @@ export function useNotificaciones() {
     return mensaje
   }
 
+  const base = {
+    html: true,
+    textColor: $q.dark.isActive ? 'white' : 'black',
+    position: 'bottom',
+    // multiLine: true,
+    // progress: true,
+    classes: 'rounded-tabpanel q-py-sm shadow-notification bg-desenfoque border-white',
+  }
+
   function notificarInformacion(mensaje: string | string[]) {
     $q.notify({
-      html: true,
-      color: 'light-blue-7',
-      textColor: 'white',
+      ...base,
+      iconColor: 'light-blue-7',
       icon: 'bi-info-circle-fill',
-      message: 'Información',
+      message: '<b>Información</b>',
       caption: obtenerMensaje(mensaje),
-      position: 'bottom',
+      progressClass: 'text-light-blue-7',
+      actions: [
+        { label: 'Cerrar', color: 'light-blue-7', handler: () => { /* ... */ } }
+      ],
     })
   }
 
   function notificarCorrecto(mensaje: string | string[]) {
     $q.notify({
-      html: true,
-      color: 'light-green-2',
-      textColor: 'light-green-8',
+      ...base,
+      iconColor: 'positive',
       icon: 'bi-check-circle-fill',
-      message: 'Correcto',
+      message: '<b>Correcto</b>',
       caption: obtenerMensaje(mensaje),
-      position: 'bottom',
+      progressClass: 'text-positive',
+      actions: [
+        { label: 'Cerrar', color: 'positive', handler: () => { /* ... */ } }
+      ],
     })
   }
 
   function notificarError(mensaje: string | string[]) {
     $q.notify({
-      html: true,
-      color: 'pink-2',
-      textColor: 'pink-6',
+      ...base,
+      iconColor: 'pink-6',
       icon: 'bi-question-diamond-fill',
-      message: 'Error',
+      message: '<b>Error</b>',
       caption: obtenerMensaje(mensaje),
-      position: 'bottom',
+      progressClass: 'text-pink-6',
+      actions: [
+        { label: 'Cerrar', color: 'pink-6', handler: () => { /* ... */ } }
+      ],
     })
   }
 
 
   function notificarAdvertencia(mensaje: string | string[]) {
     $q.notify({
-      html: true,
-      color: 'amber-2',
-      textColor: 'amber-9',
+      ...base,
+      iconColor: 'amber-9',
       icon: 'bi-exclamation-triangle-fill',
+      message: '<b>Advertencia</b>',
       caption: obtenerMensaje(mensaje),
-      message: 'Advertencia',
-      position: 'bottom',
-      closeBtn: false,
-      progress: true,
-      timeout: 2000,
+      progressClass: 'text-amber-9',
       actions: [
-        { label: 'X', color: 'amber-9', handler: () => { /* ... */ } }
-      ]
+        { label: 'Cerrar', color: 'amber-9', handler: () => { /* ... */ } }
+      ],
     })
   }
 
-  function confirmar(mensaje: string | string[], callback: () => void) {
+  function confirmar(mensaje: string | string[], callback: () => void, cancel?: () => void) {
     $q.dialog({
       html: true,
       title: 'Confirmación',
@@ -77,7 +88,8 @@ export function useNotificaciones() {
       .onOk(async () => {
         await callback()
       })
-      .onCancel(() => {
+      .onCancel(async () => {
+        if (cancel) await cancel()
         // console.log('>>>> Cancel')
       })
   }
@@ -88,11 +100,12 @@ export function useNotificaciones() {
       title: config.titulo ?? 'Confirmación',
       message: config.mensaje,
       prompt: {
+        placeholder: config.placeholder,
         model: config.defecto,
         type: config.tipo ?? 'text', // optional
         isValid: val => config.validacion ? config.validacion(val) : true, //val => val <= data.entidad.cantidad,
       },
-      cancel: true,
+      cancel: !config.requerido,
       persistent: true,
     })
       .onOk((data) => {

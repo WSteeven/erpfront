@@ -1,36 +1,38 @@
 //Dependencias
-import { configuracionColumnasTransaccionIngreso } from 'pages/bodega/transacciones/domain/configuracionColumnasTransaccionIngreso';
-import { defineComponent, reactive, ref } from "vue";
-import { required } from "shared/i18n-validators";
-import { LocalStorage, useQuasar, } from "quasar";
-import useVuelidate from "@vuelidate/core";
+import { configuracionColumnasTransaccionIngreso } from 'pages/bodega/transacciones/domain/configuracionColumnasTransaccionIngreso'
+import { defineComponent, reactive, ref } from 'vue'
+import { LocalStorage, useQuasar } from 'quasar'
 
 //Componentes
-import EssentialTable from "components/tables/view/EssentialTable.vue";
-import { Chart as ChartJS, ArcElement, Tooltip, Legend } from 'chart.js'
-import ModalEntidad from 'components/modales/view/ModalEntidad.vue';
-
+import EssentialTable from 'components/tables/view/EssentialTable.vue'
+import { ArcElement, Chart as ChartJS, Legend, Tooltip } from 'chart.js'
+import ModalEntidad from 'components/modales/view/ModalEntidad.vue'
 
 //Logica y controladores
-import { StatusEssentialLoading } from "components/loading/application/StatusEssentialLoading";
-import { AxiosHttpRepository } from "shared/http/infraestructure/AxiosHttpRepository";
-import { AxiosResponse } from "axios"
-import { apiConfig, endpoints } from "config/api";
-import { useNotificaciones } from "shared/notificaciones";
-import { ContenedorSimpleMixin } from "shared/contenedor/modules/simple/application/ContenedorSimpleMixin";
-import { TransaccionIngresoController } from "pages/bodega/transacciones/infraestructure/TransaccionIngresoController";
-import { Transaccion } from "pages/bodega/transacciones/domain/Transaccion";
-import { EmpleadoController } from "pages/recursosHumanos/empleados/infraestructure/EmpleadoController";
-import { accionesTabla, opcionesReportesIngresos, tiposReportesIngresos } from 'config/utils';
-import { MotivoController } from 'pages/administracion/motivos/infraestructure/MotivoController';
-import { ComportamientoModalesTransaccionIngreso } from 'pages/bodega/transacciones/modules/transaccionIngreso/application/ComportamientoModalesGestionarIngreso';
-import { CustomActionTable } from 'components/tables/domain/CustomActionTable';
-import { useTransaccionEgresoStore } from 'stores/transaccionEgreso';
-import { EmpleadoRoleController } from 'pages/recursosHumanos/empleados/infraestructure/EmpleadoRolesController';
-import { TareaController } from 'pages/gestionTrabajos/tareas/infraestructure/TareaController';
-import { imprimirArchivo } from 'shared/utils'
-import { useNotificacionStore } from 'stores/notificacion';
-import { useCargandoStore } from 'stores/cargando';
+import { StatusEssentialLoading } from 'components/loading/application/StatusEssentialLoading'
+import { AxiosHttpRepository } from 'shared/http/infraestructure/AxiosHttpRepository'
+import { AxiosResponse } from 'axios'
+import { apiConfig, endpoints } from 'config/api'
+import { useNotificaciones } from 'shared/notificaciones'
+import { ContenedorSimpleMixin } from 'shared/contenedor/modules/simple/application/ContenedorSimpleMixin'
+import { TransaccionIngresoController } from 'pages/bodega/transacciones/infraestructure/TransaccionIngresoController'
+import { Transaccion } from 'pages/bodega/transacciones/domain/Transaccion'
+import { EmpleadoController } from 'pages/recursosHumanos/empleados/infraestructure/EmpleadoController'
+import {
+  accionesTabla, maskFecha,
+  opcionesReportesIngresos,
+  tiposReportesIngresos
+} from 'config/utils'
+import { MotivoController } from 'pages/administracion/motivos/infraestructure/MotivoController'
+import { ComportamientoModalesTransaccionIngreso } from 'pages/bodega/transacciones/modules/transaccionIngreso/application/ComportamientoModalesGestionarIngreso'
+import { CustomActionTable } from 'components/tables/domain/CustomActionTable'
+import { useTransaccionEgresoStore } from 'stores/transaccionEgreso'
+import { EmpleadoRoleController } from 'pages/recursosHumanos/empleados/infraestructure/EmpleadoRolesController'
+import { TareaController } from 'pages/gestionTrabajos/tareas/infraestructure/TareaController'
+import { imprimirArchivo, obtenerFechaActual } from 'shared/utils'
+import { useNotificacionStore } from 'stores/notificacion'
+import { useCargandoStore } from 'stores/cargando'
+import { useFiltrosListadosSelects } from 'shared/filtrosListadosGenerales'
 
 ChartJS.register(ArcElement, Tooltip, Legend)
 export default defineComponent({
@@ -61,14 +63,15 @@ export default defineComponent({
     const transaccionStore = useTransaccionEgresoStore()
     const listado = ref([])
     const bodegueros = ref([])
-    const empleados = ref([])
-    const motivos = ref([])
+    const { empleados, filtrarEmpleados, motivos, filtrarMotivos } =useFiltrosListadosSelects(listadosAuxiliares)
     const tareas = ref([])
+
     cargarVista(async () => {
       await obtenerListados({
         empleados: new EmpleadoController(),
         motivos: { controller: new MotivoController(), params: { tipo_transaccion_id: 1 } },
       })
+      reporte.fecha_fin = obtenerFechaActual(maskFecha)
     })
 
 
@@ -88,7 +91,6 @@ export default defineComponent({
     }
     async function buscarReporte(accion: string) {
       try {
-        cargando.activar()
         const axios = AxiosHttpRepository.getInstance()
         let url = axios.getEndpoint(endpoints.transacciones_ingresos) + '/reportes'
         const filename = 'reporte_ingresos_bodega'
@@ -96,15 +98,13 @@ export default defineComponent({
           case 'excel':
             url = apiConfig.URL_BASE + '/' + axios.getEndpoint(endpoints.transacciones_ingresos) + '/reportes'
             reporte.accion = 'excel'
-            imprimirArchivo(url, 'POST', 'blob', 'xlsx', filename, reporte)
+            await imprimirArchivo(url, 'POST', 'blob', 'xlsx', filename, reporte)
 
             break
           case 'pdf':
             url = apiConfig.URL_BASE + '/' + axios.getEndpoint(endpoints.transacciones_ingresos) + '/reportes'
             reporte.accion = 'pdf'
-            cargando.activar()
-            imprimirArchivo(url, 'POST', 'blob', 'pdf', filename, reporte)
-            cargando.desactivar()
+            await imprimirArchivo(url, 'POST', 'blob', 'pdf', filename, reporte)
             break
           default:
             reporte.accion = ''
@@ -114,12 +114,9 @@ export default defineComponent({
               if (response.data.results.length < 1) notificarAdvertencia('No se obtuvieron resultados')
             }
         }
-        cargando.desactivar()
       } catch (e) {
         console.log(e)
         notificarError('Error al obtener reporte')
-      } finally {
-        cargando.desactivar()
       }
     }
     async function consultarListado(id: number) {
@@ -172,7 +169,8 @@ export default defineComponent({
       reporte,
       //listados
       sucursales, listado,
-      empleados, bodegueros, motivos,
+      empleados, bodegueros,
+      motivos, filtrarMotivos,
       tareas,
 
       opcionesReportesIngresos,
@@ -184,18 +182,7 @@ export default defineComponent({
       botonVerTransaccion,
       modales,
       //filtro de empleados
-      filtroEmpleados(val, update) {
-        if (val === '') {
-          update(() => {
-            empleados.value = listadosAuxiliares.empleados
-          })
-          return
-        }
-        update(() => {
-          const needle = val.toLowerCase()
-          empleados.value = listadosAuxiliares.empleados.filter((v) => v.nombres.toLowerCase().indexOf(needle) > -1 || v.apellidos.toLowerCase().indexOf(needle) > -1)
-        })
-      },
+      filtrarEmpleados,
 
     }
   }

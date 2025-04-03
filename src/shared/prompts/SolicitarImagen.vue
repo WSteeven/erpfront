@@ -34,6 +34,7 @@
               file_extensiones=".jpg, image/*"
               @update:modelValue="(data) => (imagen = data)"
               hint="Obligatorio"
+              :comprimir="false"
             >
             </selector-imagen>
           </div>
@@ -46,7 +47,7 @@
               @click="guardar()"
               no-caps
             >
-              Continuar y finalizar
+              Continuar
               <q-icon
                 name="bi-arrow-right-circle-fill"
                 class="q-ml-sm"

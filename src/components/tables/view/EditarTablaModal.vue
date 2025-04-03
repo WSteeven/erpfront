@@ -1,22 +1,17 @@
 <template>
   <q-dialog
     v-model="abierto"
-    :maximized="modalMaximized"
     :full-width="true"
-    persistent
-    top
+    maximizedd
+    class="bg-desenfoque"
   >
-    <q-card
-      flat
-      class="bg-transparent rounded-card no-border"
-      :class="{ 'q-py-md q-px-xl': !$q.screen.xs }"
-    >
-      <q-toolbar class="bg-body rounded-header">
+    <q-card flat class="bg-body rounded-card no-border">
+      <q-toolbar>
         <q-avatar square>
           <img src="~assets/logo.png" />
         </q-avatar>
 
-        <q-toolbar-title>Editar fila</q-toolbar-title>
+        <q-toolbar-title>{{ accion }}</q-toolbar-title>
 
         <q-btn
           round
@@ -30,113 +25,128 @@
         />
       </q-toolbar>
 
-      <q-card-section class="bg-body rounded-footer">
+      <q-card-section>
         <div class="row q-col-gutter-xs q-mb-md">
-          <!-- Selects -->
-          <div
-            v-for="field in fieldsSelect"
-            :key="field.field"
-            class="col-12 col-md-3 q-mb-sm"
-          >
-            <label class="block q-mb-sm">{{ field.label }}</label>
-            <q-select
-              v-model="field.valor"
-              :options="field.options"
-              transition-show="scale"
-              transition-hide="scale"
-              :hint="field.hint"
-              options-dense
-              dense
-              outlined
-              :option-label="(item) => item.label"
-              :option-value="(item) => item.label"
-              use-input
-              input-debounce="0"
-              @filter="(val, update) => {
-                const opciones = field.options
-                  if (val === '') {
-                    update(() => {
-                      field.options = opciones
-                    })
-                    return
-                  }
-                  update(() => {
-                    field.options = field.options!.filter(
-                      (item) =>item.label.toLowerCase().indexOf(val.toLowerCase())>-1)
-                  })
-                }
-              "
-              emit-value
-              map-options
+          <template v-for="field in camposFiltrados" :key="field.field">
+            <!-- Select -->
+            <div
+              v-if="field.type === 'select' && field.visibleModal"
+              :class="[field.columnClass || 'col-12 col-md-3 q-mb-md']"
             >
-              <template v-slot:no-option>
-                <q-item>
-                  <q-item-section class="text-grey">
-                    No hay resultados
-                  </q-item-section>
-                </q-item>
-              </template>
-            </q-select>
-          </div>
+              <label class="block q-mb-sm">{{ field.label }}</label>
+              <q-select
+                v-model="field.valor"
+                :options="field.options"
+                transition-show="scale"
+                transition-hide="scale"
+                :hint="field.hint"
+                :disable="field.disableModal"
+                options-dense
+                dense
+                outlined
+                use-input
+                input-debounce="0"
+                emit-value
+                map-options
+                :option-label="item => item.label"
+                :option-value="item => item.label"
+                @filter="(val, update) => filterOptions(field, val, update)"
+              >
+                <template v-slot:no-option>
+                  <q-item>
+                    <q-item-section class="text-grey"
+                      >No hay resultados</q-item-section
+                    >
+                  </q-item>
+                </template>
+              </q-select>
+            </div>
 
-          <!-- Toggles -->
-          <div
-            v-for="field in fieldsToggle"
-            :key="field.field"
-            class="col-12 col-md-3"
-          >
-            <label class="block q-mb-sm">{{ field.label }}</label>
-            <q-toggle
-              keep-color
-              v-model="field.valor"
-              :label="field.valor ? 'SI' : 'NO'"
-            />
-          </div>
-          <!-- Inputs normales -->
-          <!-- :class="{ 'col-12 q-mb-sm': true, 'col-md-3': fields.length > 1 }" -->
-          <div
-            v-for="field in fields"
-            :key="field.field"
-            class="col-12 col-md-3"
-          >
-            <label class="block q-mb-sm">{{ field.label }}</label>
-            <q-input
-              v-model="field.valor"
-              :type="
-                field.type !== 'select' || field.type !== 'toggle'
-                  ? field.type
-                  : 'text'
-              "
-              :autogrow="field.type !== 'number'"
-              :hint="field.hint"
-              outlined
-              dense
-            ></q-input>
-          </div>
-
-          <!-- Imagenes -->
-          <!-- :class="{ 'col-12 q-mb-sm': true, 'col-md-3': fields.length > 1 }" -->
-          <div
-            v-for="field in fieldsImagen"
-            :key="field.field"
-            class="col-12 col-md-3"
-          >
-            <label class="q-mb-sm block">{{ field.label }}</label>
-            <selector-imagen
-              :imagen="field.valor"
-              file_extensiones=".jpg, image/*"
-              @update:modelValue="(data) => (field.valor = data)"
-              :hint="field.hint"
+            <!-- Toggle -->
+            <div
+              v-else-if="field.type === 'toggle' && field.visibleModal"
+              :class="[field.columnClass || 'col-12 col-md-3 q-mb-md']"
             >
-            </selector-imagen>
-          </div>
+              <label class="block q-mb-sm">{{ field.label }}</label>
+              <q-toggle
+                keep-color
+                v-model="field.valor"
+                :label="field.valor ? 'Si' : 'No'"
+                :disable="field.disableModal"
+              />
+            </div>
+
+            <!-- Checkbox -->
+            <div
+              v-else-if="field.type === 'checkbox' && field.visibleModal"
+              :class="[field.columnClass || 'col-12 col-md-3 q-mb-md']"
+            >
+              <label class="block q-mb-sm">{{ field.label }}</label>
+              <q-checkbox
+                keep-color
+                v-model="field.valor"
+                :label="field.valor ? 'Si' : 'No'"
+                :disable="field.disableModal"
+              />
+            </div>
+
+            <!-- Imagen -->
+            <div
+              v-else-if="field.type === 'imagen' && field.visibleModal"
+              :class="[field.columnClass || 'col-12 col-md-3 q-mb-md']"
+            >
+              <label class="q-mb-sm block">{{ field.label }}</label>
+              <selector-imagen
+                :imagen="field.valor"
+                file_extensiones=".jpg, image/*"
+                @update:modelValue="data => (field.valor = data)"
+                :hint="field.hint"
+                :disable="field.disableModal"
+                :comprimir="false"
+              />
+            </div>
+
+            <!-- Voz -->
+            <div
+              v-else-if="field.type === 'voice' && field.visibleModal"
+              :class="[field.columnClass || 'col-12 col-md-3 q-mb-md']"
+            >
+              <voice-input
+                v-model="field.valor"
+                :label="field.label"
+                :disable="field.disableModal"
+              ></voice-input>
+            </div>
+
+            <!-- Otros Inputs -->
+            <div
+              v-else-if="field.visibleModal"
+              :class="[field.columnClass || 'col-12 col-md-3 q-mb-md']"
+            >
+              <label class="block q-mb-sm">{{ field.label }}</label>
+              <q-input
+                v-model="field.valor"
+                :type="field.type || 'text'"
+                :hint="field.hint"
+                :disable="field.disableModal"
+                outlined
+                dense
+              />
+            </div>
+          </template>
         </div>
 
-        <!-- Botones formulario -->
+        <!-- Botones -->
         <div class="row q-gutter-md justify-end">
-          <q-btn color="primary" no-caps @click="guardar()" push>
+          <q-btn
+            v-if="!disable"
+            color="primary"
+            no-caps
+            @click="guardar()"
+            push
+          >
             <q-icon name="bi-save" size="xs" class="q-mr-sm"></q-icon>
-            <div>Guardar</div>
+            <div>{{ labelGuardar }}</div>
           </q-btn>
 
           <q-btn color="negative" no-caps @click="cerrarModalEntidad()" push>
@@ -150,77 +160,97 @@
 </template>
 
 <script lang="ts">
+// Dependencias
 import { EntidadAuditable } from 'shared/entidad/domain/entidadAuditable'
-import { ColumnConfig } from '../domain/ColumnConfig'
-import { computed, reactive, ref, defineComponent } from 'vue'
-import SelectorImagen from 'components/SelectorImagen.vue'
+import {
+  watchEffect,
+  ref,
+  defineComponent,
+  reactive,
+  UnwrapRef,
+  computed
+} from 'vue'
 import { useNotificaciones } from 'shared/notificaciones'
+import { ColumnConfig } from '../domain/ColumnConfig'
+
+// Componentes
+import SelectorImagen from 'components/SelectorImagen.vue'
+import VoiceInput from 'components/inputs/VoiceInput.vue'
+import { acciones } from 'config/utils'
 
 export default defineComponent({
   components: {
     SelectorImagen,
+    VoiceInput
   },
   props: {
     configuracionColumnas: {
       type: Object as () => ColumnConfig<EntidadAuditable>[],
-      required: true,
+      required: true
     },
     fila: {
       type: Object as () => EntidadAuditable,
-      required: false,
+      required: false
     },
     modalMaximized: {
       type: Boolean,
-      default: true,
+      default: true
     },
+    accion: {
+      type: String,
+      default: acciones.editar
+    }
   },
-  emits: ['limpiar', 'guardar'],
+  emits: ['limpiar', 'guardar', 'editar'],
 
-  // normal
   setup(props, { emit }) {
+    /************
+     * Variables
+     ************/
     const { notificarAdvertencia } = useNotificaciones()
+    const disable = ref(false)
 
-    const fields = computed(() =>
-      props.configuracionColumnas
-        .map((fila: ColumnConfig<any>) => {
-          return reactive({
+    // Estado reactivo de los campos para mantener sus valores
+    const camposFiltrados = reactive<{ [key: string]: any }[]>([])
+
+    const tableIndex = {
+      name: 'table_index',
+      field: 'table_index',
+      label: 'Indice',
+      align: 'left',
+      visibleModal: false
+    }
+
+    // Estado del modal
+    const abierto = ref(false)
+
+    /*************
+     * Observers
+     *************/
+    // Sincroniza `camposFiltrados` cuando cambian `configuracionColumnas` o `fila`
+    watchEffect(() => {
+      camposFiltrados.splice(
+        0,
+        camposFiltrados.length,
+        ...[...props.configuracionColumnas, tableIndex]
+          .map((fila: ColumnConfig<EntidadAuditable>) => ({
             label: fila.label,
             field: fila.field,
             type: fila.type ?? 'text',
             editable: fila.editable ?? true,
             valor: props.fila ? props.fila[fila.field] : '',
+            options: fila.options || [],
+            options_all: fila.options || [],
             hint: fila.hint,
-          })
-        })
-        .filter(
-          (fila) =>
-            fila.field !== 'acciones' &&
-            fila.type !== 'imagen' &&
-            fila.type !== 'select' &&
-            fila.type !== 'toggle' &&
-            fila.editable
-        )
-    )
+            disableModal: fila.disableModal || disable.value,
+            columnClass: fila.columnClass,
+            // visible:  ?? true,
+            visibleModal: fila.visibleModal ?? true
+          }))
+          .filter((fila: any) => fila.field !== 'acciones' && fila.editable)
+      )
+    })
 
-    // select
-    const fieldsSelect = computed(() =>
-      props.configuracionColumnas
-        .map((fila: ColumnConfig<any>) => {
-          return reactive({
-            label: fila.label,
-            field: fila.field,
-            type: fila.type ?? 'text',
-            editable: fila.editable ?? true,
-            valor: props.fila ? props.fila[fila.field] : '',
-            options: fila.options,
-            hint: fila.hint,
-          })
-        })
-        .filter(
-          (fila) =>
-            fila.field !== 'acciones' && fila.type === 'select' && fila.editable
-        )
-    )
     // Todos los campos
     const fieldsAll = computed(() =>
       props.configuracionColumnas
@@ -231,87 +261,48 @@ export default defineComponent({
             type: fila.type ?? 'text',
             editable: fila.editable ?? true,
             valor: props.fila ? props.fila[fila.field] : '',
-            hint: fila.hint,
+            hint: fila.hint
           })
         })
-        .filter((fila) => fila.field !== 'acciones')
-    )
-    //toggles
-    const fieldsToggle = computed(() =>
-      props.configuracionColumnas
-        .map((fila: ColumnConfig<any>) => {
-          return reactive({
-            label: fila.label,
-            field: fila.field,
-            type: fila.type ?? 'text',
-            editable: fila.editable ?? true,
-            valor: props.fila ? props.fila[fila.field] : '',
-            hint: fila.hint,
-          })
-        })
-        .filter(
-          (fila) =>
-            fila.field !== 'acciones' && fila.type === 'toggle' && fila.editable
-        )
+        .filter(fila => fila.field !== 'acciones')
     )
 
-    // imagenes
-    const fieldsImagen = computed(() =>
-      props.configuracionColumnas
-        .map((fila: ColumnConfig<any>) => {
-          return reactive({
-            label: fila.label,
-            field: fila.field,
-            type: fila.type ?? 'text',
-            editable: fila.editable ?? true,
-            valor: props.fila ? props.fila[fila.field] : '',
-            hint: fila.hint,
-          })
-        })
-        .filter(
-          (fila) =>
-            fila.field !== 'acciones' && fila.type === 'imagen' && fila.editable
-        )
-    )
-
-    const abierto = ref(false) //computed(() => !!props.fila)
-
-    function abrir() {
+    /************
+     * Funciones
+     ************/
+    const abrir = (params?: { accion: string }) => {
       abierto.value = true
+      disable.value = params?.accion === acciones.consultar ?? false
+      console.log(disable.value)
+    }
+
+    function guardarMejorado() {
+      console.log(props.accion)
+      let newObj = camposFiltrados.reduce((acc, item) => {
+        acc[item.field] = item.valor
+        return acc
+      }, {})
+
+      if (validarRequeridos(newObj)) {
+        if (props.accion === acciones.nuevo) emit('guardar', newObj)
+        if (props.accion === acciones.editar) emit('editar', newObj)
+        console.log(newObj)
+        abierto.value = false
+      }
     }
 
     function guardar() {
-      var mapped = fields.value.map((item) => ({ [item.field]: item.valor }))
-      var mappedSelect = fieldsSelect.value.map((item) => ({
-        [item.field]: item.valor,
-      }))
-      var mappedToggle = fieldsToggle.value.map((item) => ({
-        [item.field]: item.valor,
-      }))
-      var mappedImagen = fieldsImagen.value.map((item) => ({
-        [item.field]: item.valor,
-      }))
-      const mappedAll = fieldsAll.value.map((item) => ({
-        [item.field]: item.valor,
-      }))
-      const mappedLleno = [
-        ...mappedAll,
-        ...mapped,
-        ...mappedSelect,
-        ...mappedImagen,
-        ...mappedToggle,
-      ]
-      const newObj = Object.assign({}, ...mapped)
+      let newObj = camposFiltrados.reduce((acc, item) => {
+        acc[item.field] = item.valor
+        return acc
+      }, {})
 
-      Object.assign(newObj, ...mappedSelect)
-      Object.assign(newObj, ...mappedImagen)
-      Object.assign(newObj, ...mappedAll)
-      Object.assign(newObj, ...mappedLleno)
+      // newObj = { ...newObj, ...fieldsAll }
 
-      const valido = validarRequeridos(newObj)
-
-      if (valido) {
-        emit('guardar', newObj)
+      if (validarRequeridos(newObj)) {
+        if (props.accion === acciones.nuevo) emit('guardar', newObj)
+        if (props.accion === acciones.editar) emit('editar', newObj)
+        console.log(newObj)
         abierto.value = false
       }
     }
@@ -321,50 +312,46 @@ export default defineComponent({
       emit('limpiar')
     }
 
-    // function filtrarSelect(val, update) {
-    // const opciones = fieldsSelect.filter
-    // console.log(val)
-    // if(val ===''){
-    //   update(()=>{
-    //     opciones = opciones
-    //   })
-    //   return
-    // }
-    // update(()=>{
-    //   opciones = opciones.filter((item) => item.label.toLowerCase().includes(val.toLowerCase()))
-    // })
-    // }
-
-    // Antes de cerrar el modal
-    function validarRequeridos(fila) {
-      const requeridos: any = props.configuracionColumnas
-        .filter((item) => item.requerido)
-        .map((item) => item.field)
-
-      // console.log(requeridos)
-      let valido = true
-
-      for (let key in fila) {
-        if (requeridos.includes(key) && !fila[key]) {
-          valido = false
-          notificarAdvertencia('El campo ' + key + ' es requerido')
-        }
+    function filterOptions(field: UnwrapRef<any>, val, update) {
+      if (val === '') {
+        update(() => {
+          field.options = field.options_all
+        })
+        return
       }
+      update(() => {
+        field.options = field.options_all!.filter(
+          item => item.label.toLowerCase().indexOf(val.toLowerCase()) > -1
+        )
+      })
+    }
 
-      return valido
+    function validarRequeridos(fila) {
+      const faltantes = props.configuracionColumnas
+        .filter(col => col.requerido && !fila[col.field])
+        .map(col => col.label)
+
+      if (faltantes.length > 0) {
+        notificarAdvertencia(
+          `Los siguientes campos son obligatorios: ${faltantes.join(', ')}`
+        )
+        return false
+      }
+      return true
     }
 
     return {
-      fields,
-      fieldsSelect,
-      fieldsToggle,
-      fieldsAll,
-      fieldsImagen,
       abierto,
+      camposFiltrados,
       abrir,
       guardar,
       cerrarModalEntidad,
+      filterOptions,
+      disable,
+      labelGuardar: computed(() =>
+        props.accion === acciones.nuevo ? 'Guardar' : 'Guardar cambios'
+      )
     }
-  },
+  }
 })
 </script>

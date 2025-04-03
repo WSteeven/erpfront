@@ -1,6 +1,6 @@
 import { TransaccionSimpleController } from 'shared/contenedor/modules/simple/infraestructure/TransacccionSimpleController'
 import { EntidadAuditable } from 'shared/entidad/domain/entidadAuditable'
-import { isAxiosError, notificarMensajesError } from 'shared/utils'
+import { downloadFile, isAxiosError, notificarMensajesError } from 'shared/utils'
 import { Contenedor } from '../../../application/contenedor.mixin'
 import { Instanciable } from 'shared/entidad/domain/instanciable'
 import { HooksSimples } from '../domain/hooksSimples'
@@ -28,9 +28,14 @@ export class ContenedorSimpleMixin<T extends EntidadAuditable> extends Contenedo
   }
 
   private async cargarVista(callback: () => Promise<void>): Promise<void> {
-    this.statusEssentialLoading.activar()
-    await callback()
-    this.statusEssentialLoading.desactivar()
+    try {
+      this.statusEssentialLoading.activar()
+      await callback()
+    } catch (e) {
+      throw e
+    } finally {
+      this.statusEssentialLoading.desactivar()
+    }
   }
 
   useReferencias() {
@@ -41,14 +46,18 @@ export class ContenedorSimpleMixin<T extends EntidadAuditable> extends Contenedo
     return {
       listar: this.listar.bind(this),
       listarArchivos: this.listarArchivos.bind(this),
+      listarActividades: this.listarActividades.bind(this),
       filtrar: this.filtrar.bind(this),
       consultar: this.consultar.bind(this),
       guardarArchivos: this.guardarArchivos.bind(this),
+      guardarActividades: this.guardarActividades.bind(this),
+      guardarListado: this.guardarListado.bind(this),
       guardar: this.guardar.bind(this),
       editar: this.editar.bind(this),
       editarParcial: this.editarParcial.bind(this),
       eliminar: this.eliminar.bind(this),
       eliminarArchivo: this.eliminarArchivo.bind(this),
+      eliminarListado: this.eliminarListado.bind(this),
       reestablecer: this.reestablecer.bind(this),
       obtenerListados: this.obtenerListados.bind(this),
       cargarVista: this.cargarVista.bind(this),
@@ -64,7 +73,7 @@ export class ContenedorSimpleMixin<T extends EntidadAuditable> extends Contenedo
         this.hooks.bindHook('onGuardado', callback),
       onBeforeConsultar: (callback: () => void) =>
         this.hooks.bindHook('onBeforeConsultar', callback),
-      onConsultado: (callback: () => void) =>
+      onConsultado: (callback: (entidad?: any) => void) =>
         this.hooks.bindHook('onConsultado', callback),
       onBeforeModificar: (callback: () => void) =>
         this.hooks.bindHook('onBeforeModificar', callback),
@@ -72,6 +81,10 @@ export class ContenedorSimpleMixin<T extends EntidadAuditable> extends Contenedo
         this.hooks.bindHook('onModificado', callback),
       onReestablecer: (callback: () => void) =>
         this.hooks.bindHook('onReestablecer', callback),
+      onListado: (callback: () => void) =>
+        this.hooks.bindHook('onListado', callback),
+      onListadosCargados: (callback: () => void) =>
+        this.hooks.bindHook('onListadosCargados', callback),
     }
   }
 
@@ -80,25 +93,29 @@ export class ContenedorSimpleMixin<T extends EntidadAuditable> extends Contenedo
 
     this.hooks.onBeforeConsultar()
 
-    // this.cargarVista(async () => {
+
     if (data.id === null) {
       return this.notificaciones.notificarAdvertencia(
         'No se puede consultar el recurso con id null'
       )
     }
 
+    // this.statusEssentialLoading.activar()
+    const idEntidad = data.id
     try {
-      this.statusEssentialLoading.activar()
-      const { result } = await this.controller.consultar(
-        data.id,
-        {
-          ...this.argsDefault,
-          ...params
-        }
-      )
-      this.entidad.hydrate(result)
-      this.entidad_copia.hydrate(this.entidad)
-      this.refs.tabs.value = 'formulario'
+      this.cargarVista(async () => {
+        const { result } = await this.controller.consultar(
+          idEntidad,
+          {
+            ...this.argsDefault,
+            ...params
+          }
+        )
+        await this.entidad.hydrate(result)
+        await this.entidad_copia.hydrate(JSON.parse(JSON.stringify(this.entidad)))
+        this.refs.tabs.value = 'formulario'
+        this.hooks.onConsultado(result)
+      })
 
       // const usuario = new Usuario()
       // usuario.hydrate(result)
@@ -109,8 +126,8 @@ export class ContenedorSimpleMixin<T extends EntidadAuditable> extends Contenedo
         await notificarMensajesError(mensajes, this.notificaciones)
       }
     } finally {
-      this.hooks.onConsultado()
-      this.statusEssentialLoading.desactivar()
+      // this.hooks.onConsultado(result)
+      // this.statusEssentialLoading.desactivar()
     }
     // })
 
@@ -132,30 +149,43 @@ export class ContenedorSimpleMixin<T extends EntidadAuditable> extends Contenedo
   }
 
   private async listar(params?: ParamsType, append = false) {
-    //this.cargarVista(async () => {
     this.statusEssentialLoading.activar()
     try {
-      const { result } = await this.controller.listar(params)
-      if (result.length == 0) this.notificaciones.notificarCorrecto('Aún no se han agregado elementos')
+      const { result, meta, response } = await this.controller.listar(params)
+      // console.log(response.data)
+
+      if (params?.hasOwnProperty('export')) return downloadFile(response.data, params.titulo, params.export)
+      else if (result.length == 0) this.notificaciones.notificarInformacion('Aún no se han agregado elementos.')
 
       if (append) this.refs.listado.value.push(...result)
       else this.refs.listado.value = result
+
+      this.refs.pagination.value.last_page = meta?.last_page
+      this.refs.pagination.value.page = meta?.current_page
+      this.refs.pagination.value.total = meta?.total
     } catch (error) {
-      this.notificaciones.notificarError('Error al obtener el listado.')
+      if (isAxiosError(error)) {
+        const mensajes: string[] = error.erroresValidacion
+        await notificarMensajesError(mensajes, this.notificaciones)
+      }
+      this.notificaciones.notificarError(error + '')
+    } finally {
+      this.statusEssentialLoading.desactivar()
     }
-    this.statusEssentialLoading.desactivar()
-    //})
+
+    this.hooks.onListado()
   }
 
   private async filtrar(uri: string) {
     this.cargarVista(async () => {
       try {
         const { result } = await this.controller.filtrar(uri)
-        if (result.length == 0) this.notificaciones.notificarCorrecto('No se encontraron coincidencias.')
+        if (result.length == 0) this.notificaciones.notificarInformacion('No se encontraron coincidencias.')
 
         this.refs.listado.value = result
-      } catch (error) {
-        this.notificaciones.notificarError('Error al obtener el listado.')
+        this.notificaciones.notificarInformacion('Resultados encontrados.')
+      } catch (error: any) {
+        this.notificaciones.notificarError(error)//'Error al obtener el listado.')
       }
     })
   }
@@ -170,26 +200,26 @@ export class ContenedorSimpleMixin<T extends EntidadAuditable> extends Contenedo
   // Guardar
   // @noImplicitAny: false
   private async guardar(data: T, agregarAlListado = true, params?: ParamsType): Promise<any> {
+    console.log('guardar')
+    this.statusEssentialLoading.activar()
+
+    // aqui estaba onbeforeguardar POR EL CUESTIONARIO PSICOSOCIAL PERO EL SISTEMA YA FUNCIONA CON EL OB BEFORE GUARDAR EN LA LINEA 204
 
     if (!this.seCambioEntidad(this.entidad_vacia)) {
       this.notificaciones.notificarAdvertencia(
         'No se ha efectuado ningun cambio'
       )
+      this.statusEssentialLoading.desactivar()
       throw new Error('No se ha efectuado ningun cambio')
-      // return console.log('No se ha efectuado ningun cambio')
     }
-
-
+    console.log(this.refs.validador.value)
     if (this.refs.validador.value && !(await this.refs.validador.value.$validate()) || !(await this.ejecutarValidaciones())) {
       this.notificaciones.notificarAdvertencia('Verifique el formulario')
+      this.statusEssentialLoading.desactivar()
       throw new Error('Verifique el formulario')
-      // return console.log('Verifique el formulario')
     }
+    this.hooks.onBeforeGuardar() // <- 19/02/2024 Se movio antes de las validaciones para realizar cambios en las variables, si da error, bajar
 
-    this.hooks.onBeforeGuardar()
-
-    //return this.cargarVista(async (): Promise<any> => {
-    this.statusEssentialLoading.activar()
     try {
       const { response } = await this.controller.guardar(
         data,
@@ -200,33 +230,27 @@ export class ContenedorSimpleMixin<T extends EntidadAuditable> extends Contenedo
       )
 
       this.notificaciones.notificarCorrecto(response.data.mensaje)
-      if (agregarAlListado) this.agregarElementoListadoActual(response.data.modelo)
-      this.entidad.hydrate(response.data.modelo)
 
-
-      //console.log(this.entidad)
-      const copiaEntidad = JSON.parse(JSON.stringify(this.entidad))
-      // console.log(this.entidad)
-      // console.log(copiaEntidad)
-      // console.log(response.data)
-      this.hooks.onGuardado(copiaEntidad.id, response.data)
-      this.reestablecer() // antes estaba arriba de onGuardado
-      return copiaEntidad
-      /* const stop = watchEffect(() => {
-        // console.log('dentrode  watch')
-        if (this.entidad.id !== null) {
-          this.hooks.onGuardado()
-          // console.log('ha sido guardado mixin')
-          stop()
+      if (response.data.modelo) {
+        if (Array.isArray(response.data.modelo)) {
+          this.agregarElementosListadoActual(response.data.modelo, agregarAlListado)
+        } else {
+          this.agregarElementoListadoActual(response.data.modelo, agregarAlListado)
+          this.entidad.hydrate(response.data.modelo)
         }
-      }) */
-      // @noImplicitAny: false
+      }
+
+      const copiaEntidad = JSON.parse(JSON.stringify(this.entidad))
+      this.hooks.onGuardado(copiaEntidad.id, response.data)
+      this.reestablecer() // antes estaba arriba de onGuardado, no ha dado error asi que se deja aqui
+      return copiaEntidad
     } catch (error: any) {
       if (isAxiosError(error)) {
         const mensajes: string[] = error.erroresValidacion
         await notificarMensajesError(mensajes, this.notificaciones)
       }
-      //})
+
+      throw error
     } finally {
       this.statusEssentialLoading.desactivar()
     }
@@ -240,10 +264,13 @@ export class ContenedorSimpleMixin<T extends EntidadAuditable> extends Contenedo
       if (data.id === null) {
         return this.notificaciones.notificarAdvertencia('No se puede eliminar el recurso con id null')
       }
-      this.controllerFiles?.eliminarFile(data.id, this.argsDefault).then(({ response }) => {
+
+      if (!this.controllerFiles) return this.notificaciones.notificarError('El mixin requiere de una instancia de ArchivoController()')
+
+      this.controllerFiles.eliminarFile(data.id).then(({ response }) => {
         this.notificaciones.notificarCorrecto(response.data.mensaje)
         this.eliminarElementoListaArchivosActual(data)
-        this.reestablecer()
+        // this.reestablecer()
         if (callback) callback()
       }).catch((error) => {
         if (isAxiosError(error)) {
@@ -255,19 +282,50 @@ export class ContenedorSimpleMixin<T extends EntidadAuditable> extends Contenedo
       })
     })
   }
+
+  private async eliminarListado(ids: number[]) {
+    // this.notificaciones.confirmar('¿Está seguro que desea eliminar?', () => {
+
+      this.controller.eliminarListado(ids).then(({ response }) => {
+        response.data.results ? this.refs.listado.value = response.data.results : null // devuelve lo que queda despues de eliminar (opcional)
+        this.notificaciones.notificarCorrecto(response.data.mensaje)
+      }).catch((error) => {
+        if (isAxiosError(error)) {
+          const mensajes: string[] = error.erroresValidacion
+          notificarMensajesError(mensajes, this.notificaciones)
+        } else {
+          this.notificaciones.notificarError(error.mensaje)
+        }
+      })
+    // })
+  }
   /**
    * Funcion para listar todos los archivos relacionados a un modelo
    */
-  private async listarArchivos(id: number, params?: ParamsType, append = false) {
+  private async listarArchivos(id: number, params?: string) {//ParamsType, append = false) {
     this.statusEssentialLoading.activar()
     try {
       const { result } = await this.controller.listarFiles(id, params)
-      if (result.length == 0) this.notificaciones.notificarCorrecto('Aún no se han agregado elementos')
+      if (result.length == 0) this.notificaciones.notificarInformacion('Aún no se han agregado elementos')
 
-      if (append) this.refs.listadoArchivos.value.push(...result)
-      else this.refs.listadoArchivos.value = result
+      // if (append) this.refs.listadoArchivos.value.push(...result)
+      this.refs.listadoArchivos.value = result
+    } catch (error: any) {
+      this.notificaciones.notificarError(error) //'Error al obtener el listado de archivos.')
+    }
+    this.statusEssentialLoading.desactivar()
+  }
+  private async listarActividades(id: number, params?: ParamsType, append = false) {
+    this.statusEssentialLoading.activar()
+    try {
+      // const { result } = await this.controller.listarActividades(id, params)
+      const result = []
+      if (result.length == 0) this.notificaciones.notificarInformacion('Aún no se han agregado elementos')
+
+      if (append) this.refs.listadoActividades.value.push(...result)
+      else this.refs.listadoActividades.value = result
     } catch (error) {
-      this.notificaciones.notificarError('Error al obtener el listado de archivos.')
+      this.notificaciones.notificarError('Error al obtener el listado de actividades realizadas.')
     }
     this.statusEssentialLoading.desactivar()
   }
@@ -276,10 +334,9 @@ export class ContenedorSimpleMixin<T extends EntidadAuditable> extends Contenedo
    * Aqui se guardan los archivos
    * @param data
    * @param agregarAlListado
-   * @param params
    * @returns
    */
-  private async guardarArchivos(id: number, data: T, params?: ParamsType): Promise<any> {
+  private async guardarArchivos(id: number, data: T): Promise<any> {
 
     this.statusEssentialLoading.activar()
     try {
@@ -300,18 +357,56 @@ export class ContenedorSimpleMixin<T extends EntidadAuditable> extends Contenedo
     }
   }
 
+  private async guardarActividades(id: number, data: T): Promise<any> {
+    this.statusEssentialLoading.activar()
+    try {
+      const { response } = await this.controller.guardarActivities(id, data)
+
+      this.notificaciones.notificarCorrecto(response.data.mensaje)
+
+      return response
+    } catch (error) {
+      if (isAxiosError(error)) {
+        const mensajes: string[] = error.erroresValidacion
+        await notificarMensajesError(mensajes, this.notificaciones)
+      }
+    } finally {
+      this.statusEssentialLoading.desactivar()
+    }
+  }
+
+  private async guardarListado(listado: T[]): Promise<any> {
+    this.statusEssentialLoading.activar()
+    try {
+      const { response } = await this.controller.guardarListado(listado)
+      this.refs.listado.value = response.data.results
+      this.notificaciones.notificarCorrecto(response.data.mensaje)
+      return response
+    } catch (error) {
+      if (isAxiosError(error)) {
+        const mensajes: string[] = error.erroresValidacion
+        await notificarMensajesError(mensajes, this.notificaciones)
+      }
+    } finally {
+      this.statusEssentialLoading.desactivar()
+    }
+  }
+
 
 
   // Editar
   private async editar(data: T, resetOnUpdated = true, params?: ParamsType) {
+    this.statusEssentialLoading.activar()
 
     if (this.entidad.id === null) {
+      this.statusEssentialLoading.desactivar()
       return this.notificaciones.notificarAdvertencia(
         'No se puede editar el recurso con id null'
       )
     }
 
-    if (!this.seCambioEntidad(this.entidad_vacia)) {
+    if (!this.seCambioEntidad(this.entidad_copia)) {
+      this.statusEssentialLoading.desactivar()
       return this.notificaciones.notificarAdvertencia(
         'No se ha efectuado ningun cambio'
       )
@@ -321,6 +416,7 @@ export class ContenedorSimpleMixin<T extends EntidadAuditable> extends Contenedo
 
     if (this.refs.validador.value && !(await this.refs.validador.value.$validate()) || !(await this.ejecutarValidaciones())) {
       this.notificaciones.notificarAdvertencia('Verifique el formulario')
+      this.statusEssentialLoading.desactivar()
       throw new Error('Verifique el formulario')
     }
 
@@ -338,12 +434,10 @@ export class ContenedorSimpleMixin<T extends EntidadAuditable> extends Contenedo
         this.actualizarElementoListadoActual(modelo)
         this.entidad.hydrate(response.data.modelo)
 
-        if (resetOnUpdated) {
-          this.reestablecer()
-        }
-
         const id: number = response.data.modelo.id ?? 0
         this.hooks.onModificado(id, response.data)
+
+        if (resetOnUpdated) this.reestablecer()
 
       } catch (error: any) {
         if (isAxiosError(error)) {
@@ -364,7 +458,9 @@ export class ContenedorSimpleMixin<T extends EntidadAuditable> extends Contenedo
       )
     } */
 
-    this.cargarVista(async () => {
+    this.hooks.onBeforeModificar()
+
+    return this.cargarVista(async () => {
       try {
         const { response, result: modelo } = await this.controller.editarParcial(
           id,
@@ -379,6 +475,10 @@ export class ContenedorSimpleMixin<T extends EntidadAuditable> extends Contenedo
         this.actualizarElementoListadoActual(modelo)
         this.entidad.hydrate(response.data.modelo)
 
+        // this.hooks.onReestablecer()
+        this.reestablecer()
+        this.hooks.onModificado(id, response.data)
+
       } catch (error: any) {
         if (isAxiosError(error)) {
           const mensajes: string[] = error.erroresValidacion
@@ -386,6 +486,7 @@ export class ContenedorSimpleMixin<T extends EntidadAuditable> extends Contenedo
         } else {
           this.notificaciones.notificarError(error.message)
         }
+        throw error
       }
     })
 
@@ -403,7 +504,7 @@ export class ContenedorSimpleMixin<T extends EntidadAuditable> extends Contenedo
       }
 
       this.controller
-        .eliminar(data.id, this.argsDefault)
+        .eliminar(data.id)
         .then(({ response }) => {
           this.notificaciones.notificarCorrecto(response.data.mensaje)
           this.eliminarElementoListaActual(data)
@@ -435,10 +536,10 @@ export class ContenedorSimpleMixin<T extends EntidadAuditable> extends Contenedo
 
   /* private descargarArchivoBinario(formato: string) {
     if (this.refs.listado.value.length !== 0) {
-      const paramsListado: { [key: string]: any } = { opcion: "print" }
+      const paramsListado: { [key: string]: any } = { opcion: 'print' }
 
-      if (formato !== "pdf") {
-        paramsListado.opcion = "export"
+      if (formato !== 'pdf') {
+        paramsListado.opcion = 'export'
         paramsListado.format = formato
       }
 
@@ -449,7 +550,7 @@ export class ContenedorSimpleMixin<T extends EntidadAuditable> extends Contenedo
         })
         .catch(() =>
           this.notificaciones.notificarError(
-            "No se consiguio obtener el archivo del servidor."
+            'No se consiguio obtener el archivo del servidor.'
           )
         )
     }

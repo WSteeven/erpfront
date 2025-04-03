@@ -1,20 +1,18 @@
-import { ContenedorSimpleMixin } from "shared/contenedor/modules/simple/application/ContenedorSimpleMixin";
-import { useEmpleadoStore } from "stores/empleado";
-import { defineComponent, onBeforeUnmount, reactive } from "vue";
-import { Empleado } from "../domain/Empleado";
-import { EmpleadoController } from "../infraestructure/EmpleadoController";
+import { useEmpleadoStore } from 'stores/empleado'
+import { defineComponent } from 'vue'
+import SelectorImagen from 'components/SelectorImagen.vue'
 
 export default defineComponent({
-    setup() {
+  components: { SelectorImagen },
+  props: { alto: { type: String, default: '400px' } },
+  setup() {
+    /*********
+     * Stores
+     *********/
+    const empleadoStore = useEmpleadoStore()
 
-        /*********
-         * Stores
-         *********/
-        const empleadoStore = useEmpleadoStore()
-        
-        
-        return {
-            empleado:empleadoStore.empleado,
-        }
+    return {
+      empleado: empleadoStore.empleado
     }
+  }
 })

@@ -1,11 +1,9 @@
 import { EtapaController } from 'pages/gestionTrabajos/proyectos/modules/etapas/infraestructure/EtapaController'
-import { ClienteMaterialEmpleadoController } from '../infraestructure/ClienteMaterialEmpleadoController'
 import { ProyectoController } from 'pages/gestionTrabajos/proyectos/infraestructure/ProyectoController'
 import { MaterialEmpleadoTareaController } from '../infraestructure/MaterialEmpleadoTareaController'
 import { StatusEssentialLoading } from 'components/loading/application/StatusEssentialLoading'
 import { useListadoMaterialesDevolucionStore } from 'stores/listadoMaterialesDevolucion'
 import { FiltroMiBodegaProyecto } from '../domain/FiltroMiBodegaProyecto'
-import { useAuthenticationStore } from 'stores/authentication'
 import { useNotificaciones } from 'shared/notificaciones'
 import { UnwrapRef } from 'vue'
 import { destinosTareas } from 'config/tareas.utils'
@@ -101,7 +99,8 @@ export function useMaterialesProyecto(filtro: UnwrapRef<FiltroMiBodegaProyecto>,
     }
   }
 
-  async function consultarProyectosDestino(filtrarProyectosConEtapa = true) {
+  // async function consultarProyectosDestino(filtrarProyectosConEtapa = true) {
+  async function consultarProyectosDestino() {
     const params = {
       campos: 'id,nombre,codigo_proyecto,cliente_id,etapas',
       finalizado: 0,

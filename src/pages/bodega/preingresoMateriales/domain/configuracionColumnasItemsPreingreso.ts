@@ -1,5 +1,5 @@
-import { ColumnConfig } from "components/tables/domain/ColumnConfig";
-import { ItemPreingresoMaterial } from "./ItemPreingresoMaterial";
+import { ColumnConfig } from 'components/tables/domain/ColumnConfig';
+import { ItemPreingresoMaterial } from './ItemPreingresoMaterial';
 
 export const configuracionColumnasItemPreingreso: ColumnConfig<ItemPreingresoMaterial>[] = [
     {

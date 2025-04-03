@@ -2,13 +2,6 @@ import { ColumnConfig } from 'components/tables/domain/ColumnConfig'
 
 export const configuracionColumnasDetallesModal: ColumnConfig<any>[] = [
     {
-        name: 'categoria',
-        field: 'Categoria',
-        label: 'Categoria',
-        align: 'left',
-        sortable: true
-    },
-    {
         name: 'producto',
         field: 'producto',
         label: 'Producto',
@@ -50,6 +43,12 @@ export const configuracionColumnasDetallesModal: ColumnConfig<any>[] = [
         align: 'left',
         sortable: true
     },
-
+    {
+        name: 'categoria',
+        field: 'categoria',
+        label: 'Categoria',
+        align: 'left',
+        sortable: true
+    },
 ]
 

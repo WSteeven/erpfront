@@ -57,7 +57,6 @@ export default defineComponent({
      * Validaciones
      **************/
     const reglas = {
-
       usuario: {
         required: true,
         minLength: 3,
@@ -83,8 +82,13 @@ export default defineComponent({
         usuarios: {
           controller: new EmpleadoController(),
           params: {
-            campos: 'id,nombres,apellidos',
             estado: 1,
+          },
+        },
+        usuariosInactivos: {
+          controller: new EmpleadoController(),
+          params: {
+            estado: 0,
           },
         },
       })
@@ -93,11 +97,11 @@ export default defineComponent({
         listadosAuxiliares.usuarios
       )
       listadosAuxiliares.usuarios = usuarios.value
-      usuariosInactivos.value =
-        LocalStorage.getItem('usuariosInactivos') == null
+      usuariosInactivos.value = listadosAuxiliares.usuariosInactivos
+        /* LocalStorage.getItem('usuariosInactivos') == null
           ? []
-          : JSON.parse(LocalStorage.getItem('usuariosInactivos')!.toString())
-      listadosAuxiliares.usuariosInactivos = usuariosInactivos.value
+          : JSON.parse(LocalStorage.getItem('usuariosInactivos')!.toString()) */
+      /* listadosAuxiliares.usuariosInactivos = usuariosInactivos.value */
     })
     /*********
      * Filtros

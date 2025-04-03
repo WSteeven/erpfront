@@ -29,7 +29,7 @@
               error-message="Debes seleccionar un empleado"
               use-input
               input-debounce="0"
-              @filter="filtrarEmpleado"
+              @filter="filtrarEmpleados"
               :option-value="(v) => v.id"
               :option-label="(v) => v.nombres + ' ' + v.apellidos"
               emit-value
@@ -210,15 +210,16 @@
         :permitirConsultar="false"
         :permitirEditar="false"
         :permitirEliminar="false"
-        :accion1="botonmodificar_couta"
-        :accion2="botonpagar_couta"
-        :accion3="botonaplazar_couta"
-        :accion4="botoneditar_total_couta"
+        :accion1="btnModificarCouta"
+        :accion2="btnPagarCouta"
+        :accion3="btnAplazarCouta"
+        :accion4="btnEditarTotalCouta"
+        :altoFijo="false"
       >
       </essential-table>
-      <label v-if="esMayorPrestamo" class="q-mb-sm text-red text-h6 block"
+      <!-- <label v-if="esMayorPrestamo" class="q-mb-sm text-red text-h6 block"
         >La suma de todas las coutas no debe superar al valor del prestamo</label
-      >
+      > -->
     </template>
   </tab-layout-filter-tabs2>
 </template>

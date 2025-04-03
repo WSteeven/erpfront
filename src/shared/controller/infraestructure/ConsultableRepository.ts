@@ -14,7 +14,7 @@ export class ConsultableRepository<T> {
     this.endpoint = endpoint
   }
 
-  async consultar(id: number, params?: ParamsType): Promise<ResponseItem<T, HttpResponseGet<T>>> {
+  async consultar(id?: number, params?: ParamsType): Promise<ResponseItem<T, HttpResponseGet<T>>> {
     try {
       const endpoint = {
         endpoint: this.endpoint,

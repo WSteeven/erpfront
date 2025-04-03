@@ -1,4 +1,4 @@
-import { Ref, computed, defineComponent, ref, watchEffect } from 'vue'
+import { computed, defineComponent, Ref, ref, watchEffect } from 'vue'
 
 // Componentes
 import TabLayout from 'shared/contenedor/modules/simple/view/TabLayout.vue'
@@ -6,11 +6,11 @@ import { useNotificacionStore } from 'stores/notificacion'
 import { LocalStorage, useQuasar } from 'quasar'
 import { useVuelidate } from '@vuelidate/core'
 import {
-  requiredIf,
   maxLength,
-  minLength,
   maxValue,
+  minLength,
   required,
+  requiredIf
 } from 'shared/i18n-validators'
 import { ContenedorSimpleMixin } from 'shared/contenedor/modules/simple/application/ContenedorSimpleMixin'
 import { configuracionColumnasGasto } from '../domain/configuracionColumnasGasto'
@@ -24,12 +24,12 @@ import {
   acciones,
   convertir_fecha,
   estadosGastos,
-  maskFecha,
+  maskFecha
 } from 'config/utils'
 import { VisualizarGasto } from '../domain/VisualizarGasto'
 import { VisualizarGastoController } from '../infrestructure/VisualizarGastoController'
 import { useCargandoStore } from 'stores/cargando'
-import ImagenComprimidaComponent from 'components/ImagenComprimidaComponent.vue'
+import SelectorImagen from 'components/SelectorImagen.vue'
 import { Empleado } from 'pages/recursosHumanos/empleados/domain/Empleado'
 import { Tarea } from 'pages/gestionTrabajos/tareas/domain/Tarea'
 import { SubDetalleFondo } from 'pages/fondosRotativos/subDetalleFondo/domain/SubDetalleFondo'
@@ -37,14 +37,11 @@ import { SubDetalleFondoController } from 'pages/fondosRotativos/subDetalleFondo
 import { DetalleFondoController } from 'pages/fondosRotativos/detalleFondo/infrestructure/DetalleFondoController'
 import { Gasto } from '../domain/Gasto'
 import { GastoController } from '../infrestructure/GastoController'
-import {
-  isAxiosError,
-  notificarMensajesError,
-} from 'shared/utils'
+import { isAxiosError, notificarMensajesError } from 'shared/utils'
 import { StatusEssentialLoading } from 'components/loading/application/StatusEssentialLoading'
 
 export default defineComponent({
-  components: { TabLayout, ImagenComprimidaComponent, ButtonSubmits },
+  components: { TabLayout, SelectorImagen, ButtonSubmits },
   emits: ['guardado', 'cerrar-modal'],
   setup(props, { emit }) {
     const authenticationStore = useAuthenticationStore()
@@ -110,9 +107,9 @@ export default defineComponent({
       if (parseInt(gasto.detalle !== null ? gasto.detalle : '') === 6) {
         return (
           gasto.sub_detalle!.findIndex((subdetalle) => subdetalle === 96) >
-            -1 ||
+          -1 ||
           gasto.sub_detalle!.findIndex((subdetalle) => subdetalle === 97) >
-            -1 ||
+          -1 ||
           gasto.sub_detalle!.findIndex((subdetalle) => subdetalle === 24) > -1
         )
       } else {
@@ -168,14 +165,14 @@ export default defineComponent({
     })
     //Obtener el listado de las cantones
     cargarVista(async () => {
-        beneficiarios.value = fondoRotativoStore.empleados
+      beneficiarios.value = fondoRotativoStore.empleados
       listadosAuxiliares.beneficiarios = beneficiarios.value
-       proyectos.value = fondoRotativoStore.proyectos
+      proyectos.value = fondoRotativoStore.proyectos
       listadosAuxiliares.proyectos = proyectos.value
       listadosAuxiliares.proyectos.unshift({ id: 0, nombre: 'Sin Proyecto' })
       tareas.value = fondoRotativoStore.tareas
       listadosAuxiliares.tareas = tareas.value
-      listadosAuxiliares.tareas.unshift({
+      if (listadosAuxiliares.tareas !== undefined) listadosAuxiliares.tareas.unshift({
         id: 0,
         titulo: 'Sin Tarea',
         codigo_tarea: ' ',
@@ -202,8 +199,7 @@ export default defineComponent({
         mostrarListado.value = false
         mostrarAprobacion.value = true
         esFactura.value = !!gasto.factura
-        permitirAnular.value =
-          fondoRotativoStore.habilitar_observacion_autorizador
+        permitirAnular.value = fondoRotativoStore.habilitar_observacion_autorizador
         accion.value = fondoRotativoStore.accion_form
         isConsultar.value = fondoRotativoStore.accion_form === acciones.consultar
       }
@@ -222,9 +218,6 @@ export default defineComponent({
       num_tarea: {
         required,
       },
-      subTarea: {
-        required,
-      },
       proyecto: {
         required,
       },
@@ -237,14 +230,17 @@ export default defineComponent({
         minLength: minLength(cantidadPermitidaFactura),
         required: requiredIf(() => esFactura.value),
       },
-      num_comprobante: {
-        maxLength: maxLength(15),
-      },
+      /*beneficiarios: {
+        required: required
+      },*/
       aut_especial: {
-        required,
+        required: required,
       },
       empleado_info: {
         required,
+      },
+      num_comprobante: {
+        maxLength: maxLength(17),
       },
       detalle: {
         required,
@@ -253,11 +249,11 @@ export default defineComponent({
         required,
       },
       cantidad: {
-        maxValue:maxValue(9999),
+        maxValue: maxValue(9999),
         required,
       },
       valor_u: {
-        maxValue:maxValue(9999),
+        maxValue: maxValue(9999),
         required,
       },
       total: {
@@ -273,18 +269,20 @@ export default defineComponent({
         required: requiredIf(() => esCombustibleEmpresa.value),
       },
       vehiculo: {
-        required: requiredIf(() => esCombustibleEmpresa.value),
+        required: requiredIf(
+          () => esCombustibleEmpresa.value && !gasto.es_vehiculo_alquilado
+        ),
       },
       observacion: {
-        required,
-      },
-      detalle_estado: {
         required,
       },
       placa: {
         required: requiredIf(() => gasto.es_vehiculo_alquilado),
       },
-      observacion_anulacion:{
+      detalle_estado: {
+        required,
+      },
+      observacion_anulacion: {
         required: requiredIf(() => gasto.estado === estadosGastos.APROBADO),
       }
     }
@@ -546,8 +544,8 @@ export default defineComponent({
                   LocalStorage.getItem('sub_detalles') == null
                     ? []
                     : JSON.parse(
-                        LocalStorage.getItem('sub_detalles')!.toString()
-                      )
+                      LocalStorage.getItem('sub_detalles')!.toString()
+                    )
                 listadosAuxiliares.sub_detalles = sub_detalles.value
               }, 100),
             250

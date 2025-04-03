@@ -1,49 +1,38 @@
 <template>
-  <q-page :padding="!$q.screen.xs">
-    <div class="q-mb-md text-right">
-      <b class="block text-subtitle1 text-primary q-mb-sm">
-        <!-- <q-icon name="bi-app-indicator" class="q-mr-sm"></q-icon> -->
-        {{ 'Tickets asignados' }}</b
-      >
-      <div class="q-mb-sm">
-        Bienvenido, <b>{{ authenticationStore.nombreUsuario }}</b>
-      </div>
-      <small>
-        <b>{{ fecha }}</b>
-      </small>
-    </div>
+  <q-page>
+    <div class="row items-center justify-between q-px-md q-mb-sm q-py-sm">
+      <!-- <div class="col-12"> -->
+      <span>
+        <q-icon
+          name="bi-person-check-fill"
+          color="primary"
+          class="q-mr-sm"
+        ></q-icon>
+        <!-- <span>{{ 'Bienvenido, ' + authenticationStore.nombreUsuario }}</span> -->
+        <span>{{ 'Tickets asignados para mi' }}</span>
+      </span>
+      <b>{{ fecha }}</b>
+      <!-- </div> -->
 
-    <!-- <div class="row justify-end q-mb-md">
-      <q-btn-toggle
-        v-model="tabsOpcionesFiltrado"
-        class="toggle-button-primary"
-        no-caps
-        rounded
-        toggle-color="primary"
-        unelevated
-        :options="[
-          {
-            label: 'Mostrar tickets por estado',
-            value: opcionesFiltrado.listado,
-            icon: 'bi-segmented-nav',
-          },
-          {
-            label: 'Buscar un ticket en específico',
-            value: opcionesFiltrado.individual,
-            icon: 'bi-search',
-          },
-        ]"
-      />
-    </div> -->
+      <div
+        v-if="tabActual === estadosTickets.FINALIZADO_SOLUCIONADO"
+        class="col-12"
+      >
+        <callout
+          tipo="info"
+          mensaje="Para <b>REANUDAR</b> un ticket <b>FINALIZADO</b> primero <b>pause</b> el ticket que se está ejecutando actualmente."
+        ></callout>
+      </div>
+    </div>
 
     <q-tab-panels
       v-model="tabsOpcionesFiltrado"
       animated
       transition-prev="scale"
       transition-next="scale"
+      class="bg-body-background-gradient border-whdite rounded custom-shadow"
       keep-alive
     >
-      <!-- Graficos -->
       <q-tab-panel :name="opcionesFiltrado.listado">
         <essential-table-tabs
           :titulo="
@@ -51,7 +40,7 @@
           "
           :configuracionColumnas="[
             ...configuracionColumnasTicketAsignado,
-            accionesTabla,
+            accionesTabla
           ]"
           :datos="listado"
           :accion1="botonVer"
@@ -67,6 +56,7 @@
           :permitirEditar="false"
           :permitirEliminar="false"
           :mostrar-botones="false"
+          ajustar-celdas
           :tab-options="tabOptionsEstadosTicketsAsignados"
           @tab-seleccionado="filtrarTrabajoAsignado"
           :tab-defecto="tabActual"
@@ -78,7 +68,7 @@
           titulo="Ticket buscado"
           :configuracionColumnas="[
             ...configuracionColumnasTicketAsignado,
-            accionesTabla,
+            accionesTabla
           ]"
           :datos="listado"
           :accion1="botonVer"

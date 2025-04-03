@@ -9,7 +9,6 @@ import { compararObjetos } from 'shared/utils'
 import { reactive, UnwrapRef } from 'vue'
 import { Validador } from 'shared/validadores/domain/Validador'
 import { useNotificaciones } from 'shared/notificaciones'
-import { Archivo } from 'pages/gestionTrabajos/subtareas/modules/gestorArchivosTrabajos/domain/Archivo'
 import { ArchivoController } from 'pages/gestionTrabajos/subtareas/modules/gestorArchivosTrabajos/infraestructure/ArchivoController'
 // Componentes
 
@@ -94,9 +93,16 @@ export abstract class Contenedor<
   /**
    * Agregar elementos en los listados
    */
-  protected agregarElementoListadoActual(modelo: T): void {
-    this.refs.listado.value = [modelo, ...this.refs.listado.value]
+  protected agregarElementoListadoActual(modelo: T, alPrincipio = true): void {
+    if (alPrincipio) this.refs.listado.value = [modelo, ...this.refs.listado.value]
+    else this.refs.listado.value = [...this.refs.listado.value, modelo]
   }
+
+  protected agregarElementosListadoActual(elementos: T[], alPrincipio = true): void {
+    if (alPrincipio) this.refs.listado.value = [...elementos, ...this.refs.listado.value]
+    else this.refs.listado.value = [...this.refs.listado.value, ...elementos]
+  }
+
   protected agregarElementoListadoArchivosActual(modelo: T): void {
     this.refs.listadoArchivos.value = [modelo, ...this.refs.listadoArchivos.value]
   }
@@ -197,8 +203,8 @@ export abstract class Contenedor<
    * @param entidad entidad a comparar con la copia de un objeto nuevo
    * @returns true, cuando se haya cambiado algun parametro de la entidad.
    */
-  protected seCambioEntidad(entidad_vacia: UnwrapRef<T>): boolean {
-    return compararObjetos(entidad_vacia, this.entidad)
+  protected seCambioEntidad(entidad: UnwrapRef<T>): boolean {
+    return compararObjetos(entidad, this.entidad)
   }
 
   /**
@@ -211,4 +217,8 @@ export abstract class Contenedor<
     this.entidad_copia[key] = value
     this.entidad_vacia[key] = value
   } */
+
+  public getController() {
+    return this.controller
+  }
 }

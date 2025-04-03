@@ -10,9 +10,9 @@ import { apiConfig, endpoints } from 'config/api'
 import { accionesTabla } from 'config/utils'
 // import { defineComponent, ref } from 'vue'
 
-import { ArchivoSubtareaController } from "../modules/gestorArchivosTrabajos/infraestructure/ArchivoSubtareaController"
-import { ContenedorSimpleMixin } from "shared/contenedor/modules/simple/application/ContenedorSimpleMixin"
-import { Archivo } from "../modules/gestorArchivosTrabajos/domain/Archivo"
+import { ArchivoSubtareaController } from '../modules/gestorArchivosTrabajos/infraestructure/ArchivoSubtareaController'
+import { ContenedorSimpleMixin } from 'shared/contenedor/modules/simple/application/ContenedorSimpleMixin'
+import { Archivo } from '../modules/gestorArchivosTrabajos/domain/Archivo'
 import { configuracionColumnasArchivoSubtarea } from '../modules/gestorArchivosTrabajos/domain/configuracionColumnasArchivoSubtarea'
 
 export const useSubirArchivos = (subtarea_id: number) => {

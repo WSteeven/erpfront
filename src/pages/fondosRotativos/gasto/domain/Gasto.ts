@@ -19,6 +19,7 @@ export class Gasto extends EntidadAuditable {
   lugar_info: string | null
   subTarea_info: string | null
   detalle: string | null
+  nodo: string | null
   detalle_info: string | null
   sub_detalle: [] | null
   sub_detalle_info: string | null
@@ -58,6 +59,7 @@ export class Gasto extends EntidadAuditable {
     this.proyecto_info = null
     this.ruc = null
     this.factura = null
+    this.nodo = null
     this.num_comprobante = null
     this.beneficiarios = null
     this.beneficiarios_info = null

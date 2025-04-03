@@ -1,20 +1,20 @@
 //Dependencias
-import { configuracionColumnasDatosBancariosProveedor } from "../domain/configuracionColumnasDatosBancariosProveedor";
-import { required, minLength, minValue, numeric } from "shared/i18n-validators";
-import useVuelidate from "@vuelidate/core";
+import { configuracionColumnasDatosBancariosProveedor } from '../domain/configuracionColumnasDatosBancariosProveedor';
+import { required, minLength, minValue, numeric } from 'shared/i18n-validators';
+import useVuelidate from '@vuelidate/core';
 
 //Components
-import TabLayout from "shared/contenedor/modules/simple/view/TabLayout.vue";
-import { defineComponent, reactive, ref } from "vue";
-import { ContenedorSimpleMixin } from "shared/contenedor/modules/simple/application/ContenedorSimpleMixin";
-import { DatoBancario } from "../domain/DatoBancario";
-import { DatoBancarioController } from "../infraestructure/DatoBancarioController";
-import { BancoController } from "pages/recursosHumanos/banco/infrestruture/BancoController";
-import { EmpresaController } from "pages/administracion/empresas/infraestructure/EmpresaController";
-import { useFiltrosListadosSelects } from "shared/filtrosListadosGenerales";
-import { StatusEssentialLoading } from "components/loading/application/StatusEssentialLoading";
-import { Empresa } from "pages/administracion/empresas/domain/Empresa";
-import { tiposCuentas } from "config/utils_compras_proveedores";
+import TabLayout from 'shared/contenedor/modules/simple/view/TabLayout.vue';
+import { defineComponent, reactive, ref } from 'vue';
+import { ContenedorSimpleMixin } from 'shared/contenedor/modules/simple/application/ContenedorSimpleMixin';
+import { DatoBancario } from '../domain/DatoBancario';
+import { DatoBancarioController } from '../infraestructure/DatoBancarioController';
+import { BancoController } from 'pages/recursosHumanos/banco/infrestruture/BancoController';
+import { EmpresaController } from 'pages/administracion/empresas/infraestructure/EmpresaController';
+import { useFiltrosListadosSelects } from 'shared/filtrosListadosGenerales';
+import { StatusEssentialLoading } from 'components/loading/application/StatusEssentialLoading';
+import { Empresa } from 'pages/administracion/empresas/domain/Empresa';
+import { tiposCuentas } from 'config/utils_compras_proveedores';
 
 //Logica y controladores
 

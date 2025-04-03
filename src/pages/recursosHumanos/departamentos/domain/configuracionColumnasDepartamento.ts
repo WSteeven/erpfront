@@ -15,6 +15,18 @@ export const configuracionColumnasDepartamento: ColumnConfig<Departamento>[] = [
     align: 'left',
   },
   {
+    name: 'telefono',
+    field: 'telefono',
+    label: 'Teléfono',
+    align: 'left',
+  },
+  {
+    name: 'correo',
+    field: 'correo',
+    label: 'Correo',
+    align: 'left',
+  },
+  {
     name: 'activo',
     field: 'activo',
     label: 'Activo',

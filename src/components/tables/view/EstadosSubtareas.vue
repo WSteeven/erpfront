@@ -1,4 +1,14 @@
 <template>
+  <!-- PENDIENTE -->
+  <q-chip
+    v-if="props.propsTable.value === estadosCitaMedica.PENDIENTE"
+    :class="{ 'bg-yellow-1': !$q.dark.isActive }"
+    class="text-warning q-mx-none"
+  >
+    <q-icon name="bi-circle-fill" color="warning" class="q-mr-xs"></q-icon
+    >{{ estadosCitaMedica.PENDIENTE }}
+  </q-chip>
+
   <!-- CREADO -->
   <q-chip
     v-if="props.propsTable.value === estadosTrabajos.CREADO"
@@ -59,16 +69,6 @@
     >{{ estadosTrabajos.PAUSADO }}
   </q-chip>
 
-  <!-- PENDIENTE-->
-  <q-chip
-    v-if="props.propsTable.value === estadosTrabajos.PENDIENTE"
-    :class="{ 'bg-orange-1': !$q.dark.isActive }"
-    class="text-orange q-mx-none"
-  >
-    <q-icon name="bi-circle-fill" color="accent" class="q-mr-xs"></q-icon
-    >{{ estadosTrabajos.PENDIENTE }}
-  </q-chip>
-
   <!-- SUSPENDIDO -->
   <q-chip
     v-if="props.propsTable.value === estadosTrabajos.SUSPENDIDO"
@@ -123,7 +123,11 @@
 
   <!-- FINALIZADO SOLUCIONADO -->
   <q-chip
-    v-if="props.propsTable.value === estadosTickets.FINALIZADO_SOLUCIONADO"
+    v-if="
+      [estadosTickets.FINALIZADO_SOLUCIONADO, 'VALIDADO'].includes(
+        props.propsTable.value
+      )
+    "
     :class="{ 'bg-green-1': !$q.dark.isActive }"
     class="q-mx-none"
     style="color: #9ba98c"
@@ -133,7 +137,7 @@
       style="color: #9ba98c"
       class="q-mr-xs"
     ></q-icon
-    >{{ estadosTickets.FINALIZADO_SOLUCIONADO }}
+    >{{ props.propsTable.value }}
   </q-chip>
 
   <!-- FINALIZADO SIN SOLUCION -->
@@ -156,14 +160,18 @@
   </q-chip>
 </template>
 
-<script setup>
+<script lang="ts" setup>
 import { estadosTickets } from 'config/tickets.utils'
 import { estadosTrabajos } from 'config/utils'
+import { estadosCitaMedica } from 'config/utils/medico'
+import { useQuasar } from 'quasar'
 
 const props = defineProps({
   propsTable: {
     type: Object,
-    required: true,
-  },
+    required: true
+  }
 })
+
+const $q = useQuasar()
 </script>

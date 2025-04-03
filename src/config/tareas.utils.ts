@@ -1,12 +1,16 @@
-import { TabOption } from "components/tables/domain/TabOption"
+import { TabOption } from 'components/tables/domain/TabOption'
 
 export const tiposReportes = {
   TRABAJOS_REALIZADOS: 'TRABAJOS REALIZADOS',
   TRABAJO_REALIZADO_POR_REGION: 'TRABAJO REALIZADO POR REGION',
-  TRABAJO_REALIZADO_POR_REGION_TIPO_TRABAJO: 'TRABAJO REALIZADO POR REGION Y TIPO DE TRABAJO',
-  TRABAJO_REALIZADO_POR_GRUPO_TIPO_TRABAJO: 'TRABAJO REALIZADO POR GRUPO Y TIPO DE TRABAJO',
-  TRABAJO_REALIZADO_POR_GRUPO_TIPOS_TRABAJOS_EMERGENCIA: 'TRABAJO REALIZADO POR GRUPO Y TIPOS DE TRABAJOS EMERGENCIA',
-  TRABAJO_REALIZADO_POR_GRUPO_CAUSA_INTERVENCION: 'TRABAJO REALIZADO POR GRUPO Y CAUSA DE INTERVENCION',
+  TRABAJO_REALIZADO_POR_REGION_TIPO_TRABAJO:
+    'TRABAJO REALIZADO POR REGION Y TIPO DE TRABAJO',
+  TRABAJO_REALIZADO_POR_GRUPO_TIPO_TRABAJO:
+    'TRABAJO REALIZADO POR GRUPO Y TIPO DE TRABAJO',
+  TRABAJO_REALIZADO_POR_GRUPO_TIPOS_TRABAJOS_EMERGENCIA:
+    'TRABAJO REALIZADO POR GRUPO Y TIPOS DE TRABAJOS EMERGENCIA',
+  TRABAJO_REALIZADO_POR_GRUPO_CAUSA_INTERVENCION:
+    'TRABAJO REALIZADO POR GRUPO Y CAUSA DE INTERVENCION'
 }
 
 export const mediosNotificacion = [
@@ -21,6 +25,7 @@ export const modosAsignacionTrabajo = { por_grupo: 'POR_GRUPO', por_empleado: 'P
 export const destinosTareas = {
   paraProyecto: 'PARA_PROYECTO',
   paraClienteFinal: 'PARA_CLIENTE_FINAL',
+  personal: 'PERSONAL',
 } as const
 
 export const tiposTareas = [
@@ -54,7 +59,6 @@ export const tabOptionsEstadosSubtareas: TabOption[] = [
 ]
 
 export const tabOptionsEstadosSubtareasMonitor: TabOption[] = [
-  //{ label: 'Todo', value: '' },
   { label: 'Agendado', value: 'AGENDADO' },
   { label: 'Ejecutando', value: 'EJECUTANDO' },
   { label: 'Pausado', value: 'PAUSADO' },
@@ -84,4 +88,59 @@ export const modosStock: TabOption[] = [
 export const motivosMovilizacion = [
   { id: 'IDA', descripcion: 'IDA AL TRABAJO' },
   { id: 'REGRESO', descripcion: 'REGRESO DEL TRABAJO' },
+]
+
+export const opcionesTipoReporteMaterialUtilizado2 = [
+  { value: 0, label: 'POR TAREA' },
+  { value: 1, label: 'POR PROYECTO' },
+]
+
+export const tiposReportesMaterialUtilizado = {
+  POR_TAREA: 'POR TAREA',
+  POR_PROYECTO: 'POR PROYECTO',
+}
+
+export const opcionesTipoReporteMaterialUtilizado = [tiposReportesMaterialUtilizado.POR_TAREA, tiposReportesMaterialUtilizado.POR_PROYECTO]
+
+export const estadosTransferenciasProductos = {
+  PENDIENTE: '1',
+  APROBADO: '2',
+  CANCELADO: '3',
+  VALIDADO: '4',
+}
+
+export const tabOptionsAceptarTransferenciasProductos: TabOption[] = [
+  { label: 'Pendiente de aceptar', value: estadosTransferenciasProductos.VALIDADO },
+  { label: 'Transferencias aceptadas', value: estadosTransferenciasProductos.APROBADO },
+]
+
+export const tabOptionsTransferenciaProductoEmpleado: TabOption[] = [
+  {
+    label: 'Pendientes',
+    value: estadosTransferenciasProductos.PENDIENTE,
+    icono: 'bi-app-indicator',
+    color_icono: 'yellow-10',
+    bg_color: 'yellow-1',
+  },
+  {
+    label: 'Validado',
+    value: estadosTransferenciasProductos.VALIDADO,
+    icono: 'bi-check-circle-fill',
+    color_icono: 'primary',
+    bg_color: 'blue-1',
+  },
+  {
+    label: 'Aprobados',
+    value: estadosTransferenciasProductos.APROBADO,
+    icono: 'bi-check-circle-fill',
+    color_icono: 'green-8',
+    bg_color: 'green-3',
+  },
+  {
+    label: 'Cancelados',
+    value: estadosTransferenciasProductos.CANCELADO,
+    icono: 'bi-x-circle-fill',
+    color_icono: 'negative',
+    bg_color: 'pink-1',
+  },
 ]

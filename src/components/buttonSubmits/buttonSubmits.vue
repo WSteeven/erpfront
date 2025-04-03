@@ -1,33 +1,34 @@
 <template>
   <!-- submit and reset -->
-  <div class="row inline justify-end q-gutter-sm">
+  <div class="row q-gutter-xs">
     <!-- Boton guardar -->
     <q-btn
       form="formulario"
       v-if="accion === nuevo && permitirGuardar"
       color="primary"
       type="submit"
-      no-caps
       push
+      no-caps
       :disable="disabled"
       @click="emitir('guardar')"
     >
-      <q-icon name="bi-save" size="xs" class="q-pr-sm"></q-icon>
+      <q-icon name="save" size="xs" class="q-pr-sm"></q-icon>
       <span>{{ labelGuardar }}</span>
     </q-btn>
 
     <!-- Boton modificar -->
     <q-btn
       form="formulario"
-      v-if="accion === editar || permitirModificar"
+      v-if="accion === editar && permitirModificar"
       color="primary"
       type="submit"
+      :disable="disabled"
       no-caps
       push
       @click="emitir('editar')"
     >
-      <q-icon name="bi-save" size="xs" class="q-pr-sm"></q-icon>
-      <span>Guardar cambios</span>
+      <q-icon name="save" size="xs" class="q-pr-sm"></q-icon>
+      <span>{{ labelEditar }}</span>
     </q-btn>
 
     <!-- Boton eliminar -->
@@ -48,8 +49,8 @@
     <q-btn
       v-if="permitirCancelar"
       color="negative"
-      no-caps
       push
+      no-caps
       @click="
         () => {
           emitir('cancelar', true)
@@ -70,33 +71,38 @@ import { defineComponent } from 'vue'
 export default defineComponent({
   components: {},
   props: {
+    identificador: { type: Number, default: -1 },
     accion: {
       type: String,
-      required: true,
+      required: true
     },
     permitirGuardar: {
       type: Boolean,
       required: false,
-      default: true,
+      default: true
     },
     permitirModificar: {
       type: Boolean,
       required: false,
-      default: false,
+      default: true
     },
     permitirCancelar: {
       type: Boolean,
       required: false,
-      default: true,
+      default: true
     },
     labelGuardar: {
       type: String,
-      default: 'Guardar',
+      default: 'Guardar'
+    },
+    labelEditar: {
+      type: String,
+      default: 'Guardar cambios'
     },
     disabled: {
       type: Boolean,
-      default: false,
-    },
+      default: false
+    }
   },
   emits: ['guardar', 'editar', 'cancelar', 'eliminar', 'cerrar-modal'],
   setup(props, { emit }) {
@@ -110,8 +116,8 @@ export default defineComponent({
       editar,
       eliminar,
       // callbacks
-      emitir,
+      emitir
     }
-  },
+  }
 })
 </script>

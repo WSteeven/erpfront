@@ -1,5 +1,6 @@
 // Dependencias
 import EssentialTable from 'components/tables/view/EssentialTable.vue'
+import ModalEntidad from 'components/modales/view/ModalEntidad.vue'
 import { RolController } from 'pages/administracion/roles/infraestructure/RolController'
 import { useQuasar } from 'quasar'
 import { ContenedorSimpleMixin } from 'shared/contenedor/modules/simple/application/ContenedorSimpleMixin'
@@ -10,13 +11,12 @@ import { Permiso } from '../domain/Permiso'
 import { AsignarPermisosController } from '../infrestructure/AsignarPermisosController'
 import { PermisosController } from '../infrestructure/PermisosController'
 import { ComportamientoModalesPermisoNuevo } from '../application/ComportamientoModalesPermisoNuevo'
-import ModalEntidad from 'components/modales/view/ModalEntidad.vue'
 import { useRouter } from 'vue-router'
 
 // Logica y controladores
 
 export default defineComponent({
-  components: { EssentialTable,ModalEntidad },
+  components: { EssentialTable, ModalEntidad },
   setup() {
     /*********
      * Stores
@@ -35,7 +35,7 @@ export default defineComponent({
     const roles = ref([])
 
     const controller = new PermisosController()
-    const aisnarPermisoController = new AsignarPermisosController()
+    const asignarPermisoController = new AsignarPermisosController()
     const permisosSinAsignar: Ref<Permiso[]> = ref([])
     const refPermisosSinAsignar = ref()
     const refPermisosAsignados = ref()
@@ -50,41 +50,43 @@ export default defineComponent({
     })
     roles.value = listadosAuxiliares.roles
     async function obtenerPermisoRol(val) {
-      if(val){
-        listar({ id_rol:val, tipo: 'ASIGNADOS' })
-        permisosSinAsignar.value = (await controller.listar({id_rol: val,tipo: 'NO ASIGNADOS',})).result
+      if (val) {
+        listar({ id_rol: val, tipo: 'ASIGNADOS' })
+        permisosSinAsignar.value = (await controller.listar({ id_rol: val, tipo: 'NO ASIGNADOS', })).result
       }
     }
-    function botonAsignarPermisos() {
-      refPermisosSinAsignar.value.seleccionar()
+    async function botonAsignarPermisos() {
+      await refPermisosSinAsignar.value.seleccionar()
+      await refPermisosSinAsignar.value.clearSelection()
     }
-    function botonEliminarPermisos() {
-     refPermisosAsignados.value.seleccionar()
+    async function botonEliminarPermisos() {
+      await refPermisosAsignados.value.seleccionar()
+      await refPermisosAsignados.value.clearSelection()
     }
-    function asignarPermiso(permisos: any) {
+    async function asignarPermiso(permisos: any) {
       const permisosName = permisos.map((permiso: Permiso) => permiso.id)
-      aisnarPermisoController.guardar({
+      await asignarPermisoController.guardar({
         id_rol: rol.value,
         permisos: permisosName,
         tipo_sincronizacion: 'ASIGNAR',
       })
-      obtenerPermisoRol(rol.value)
+      await obtenerPermisoRol(rol.value)
     }
-    function eliminarPermiso(permisos: any){
-     const permisosName = permisos.map((permiso: Permiso) => permiso.id)
-      aisnarPermisoController.guardar({
+    function eliminarPermiso(permisos: any) {
+      const permisosName = permisos.map((permiso: Permiso) => permiso.id)
+      asignarPermisoController.guardar({
         id_rol: rol.value,
         permisos: permisosName,
         tipo_sincronizacion: 'ELIMINAR',
       })
       obtenerPermisoRol(rol.value)
     }
-     /**Modales */
-     const modales = new ComportamientoModalesPermisoNuevo()
-     function crear_permiso() {
-       modales.abrirModalEntidad('PermisoNuevoPage')
-     }
-     const crearRol = () => {
+    /**Modales */
+    const modales = new ComportamientoModalesPermisoNuevo()
+    function crear_permiso() {
+      modales.abrirModalEntidad('PermisoNuevoPage')
+    }
+    const crearRol = () => {
       Router.replace('/roles')
     }
 
@@ -107,16 +109,16 @@ export default defineComponent({
       roles,
       refPermisosSinAsignar,
       refPermisosAsignados,
-      filtrarRol(val, update){
-        if(val===''){
-          update(()=>{
+      filtrarRol(val, update) {
+        if (val === '') {
+          update(() => {
             roles.value = listadosAuxiliares.roles
           })
           return
         }
-        update(()=>{
+        update(() => {
           const needle = val.toLowerCase()
-          roles.value = listadosAuxiliares.roles.filter((v)=>v.nombre.toLowerCase().indexOf(needle)>-1)
+          roles.value = listadosAuxiliares.roles.filter((v) => v.nombre.toLowerCase().indexOf(needle) > -1)
         })
       },
 

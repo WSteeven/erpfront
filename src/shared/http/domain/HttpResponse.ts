@@ -2,6 +2,7 @@ export interface ResponseData<T> {
   mensaje: string
   errores: string
   modelo: T
+  results: T[]
 }
 
 export interface HttpResponseGet<T = any> {

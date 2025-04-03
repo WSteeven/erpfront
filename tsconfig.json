@@ -6,6 +6,8 @@
     "strictFunctionTypes": false,
     "module": "esnext",
     "target": "esnext",
+    "types": ["node"],
+    "typeRoots": ["./node_modules/@types", "./src/types"],
     "paths": {
       "config/*": ["src/config/*"],
       "shared/*": ["src/shared/*"],
@@ -15,6 +17,7 @@
       "pages/*": ["src/pages/*"],
       "gestionTrabajos/*": ["src/pages/gestionTrabajos/*"],
       "tareas/*": ["src/pages/gestionTrabajos/tareas/*"],
+      "vehiculos/*": ["src/pages/controlVehiculos/*"],
       "trabajos/*": ["src/pages/gestionTrabajos/trabajos/*"],
       "clientesFinales/*": ["src/pages/gestionTrabajos/clientesFinales/*"],
       "formulariosTrabajos/*": [
@@ -34,7 +37,19 @@
       "tiposTickets/*": ["gestionTickets/tiposTickets"],
       "categoriasTiposTickets/*": ["gestionTickets/categoriasTiposTickets"],
       "motivosPausasTickets/*": ["gestionTickets/motivosPausasTickets"],
-      "motivosCanceladosTickets/*": ["gestionTickets/motivosCanceladosTickets"]
+      "motivosCanceladosTickets/*": ["gestionTickets/motivosCanceladosTickets"],
+      // Modulo medico
+      "medico/*": ["src/pages/medico/*"],
+      "seleccionContratacion/*": [
+        "src/pages/recursosHumanos/SeleccionContratacionPersonal/*"
+      ],
+      "trabajoSocial/*": ["src/pages/recursosHumanos/TrabajoSocial/*"],
+
+      "activosFijos/*": ["src/pages/activosFijos/*"],
+      "controlActivosFijos/*": ["src/pages/activosFijos/controlActivosFijos/*"],
+      "sso/*": ["src/pages/sso/*"],
+      "comprasProveedores/*": ["src/pages/comprasProveedores/*"],
+      "seguridad/*": ["src/pages/seguridad/*"]
     }
   }
 }

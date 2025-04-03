@@ -1,5 +1,5 @@
-import { Validador } from "shared/validadores/domain/Validador";
-import { TransferenciaProductoEmpleado } from "../domain/TransferenciaProductoEmpleado";
+import { Validador } from 'shared/validadores/domain/Validador';
+import { TransferenciaProductoEmpleado } from '../domain/TransferenciaProductoEmpleado';
 
 export class ValidarExisteArchivo implements Validador {
   private transferencia: TransferenciaProductoEmpleado

@@ -44,9 +44,9 @@
             >
               <template v-slot:append>
                 <q-icon
-                  :name="isPwd ? 'visibility_off' : 'visibility'"
+                  :name="isPwdold ? 'visibility_off' : 'visibility'"
                   class="cursor-pointer"
-                  @click="isPwd = !isPwdold"
+                  @click="isPwdold = !isPwdold"
                 />
               </template>
             </q-input>
@@ -60,7 +60,8 @@
               outlined
               dense
               :type="isPwd ? 'password' : 'text'"
-              hint="No comparta su contraseña con nadie"
+              hint="Requisitos: Mínimo 8 caracteres, 1 número, 1 letra, Caracter especiales ( @.-/* ), contraseña diferente a la anterior."
+              
             >
               <template v-slot:append>
                 <q-icon
@@ -83,9 +84,9 @@
             >
               <template v-slot:append>
                 <q-icon
-                  :name="isPwd ? 'visibility_off' : 'visibility'"
+                  :name="isPwdConfirm ? 'visibility_off' : 'visibility'"
                   class="cursor-pointer"
-                  @click="isPwd = !isPwdConfirm"
+                  @click="isPwdConfirm = !isPwdConfirm"
                 />
               </template>
             </q-input>

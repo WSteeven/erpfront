@@ -3,12 +3,11 @@ import { Component } from 'vue'
 export class ComponenteModal {
   component: Component
   titulo: string
-  // propiedades: any
+  datos: any
 
-  constructor(titulo: string, component: Component) {
-    //, propiedades?: any) {
+  constructor(titulo: string, component: Component, datos?: any) {
     this.titulo = titulo
-    // this.propiedades = propiedades
+    this.datos = datos
     this.component = component
   }
 

@@ -12,13 +12,8 @@ import { ContenedorSimpleMixin } from 'shared/contenedor/modules/simple/applicat
 import { PrestamoQuirorafarioController } from '../infraestructure/PrestamoHipotecarioController'
 import { PrestamoQuirorafario } from '../domain/PrestamoQuirorafario'
 import { removeAccents } from 'shared/utils'
-import { maskFecha, tabOptionsSolicitudPedido } from 'config/utils'
-import {
-  requiredIf,
-  maxLength,
-  minLength,
-  required,
-} from 'shared/i18n-validators'
+import { maskFecha } from 'config/utils'
+import { required } from 'shared/i18n-validators'
 import { endpoints } from 'config/api'
 import { Archivo } from 'pages/gestionTrabajos/subtareas/modules/gestorArchivosTrabajos/domain/Archivo'
 import { ArchivoPrestamoQuirorafarioController } from '../infraestructure/ArchivoPrestamoQuirorafarioController'
@@ -31,38 +26,15 @@ export default defineComponent({
   components: { TabLayout, SelectorImagen, GestorDocumentos },
   emits: ['cerrar-modal'],
   setup(props, { emit }) {
-    const mixin = new ContenedorSimpleMixin(
-      PrestamoQuirorafario,
-      new PrestamoQuirorafarioController()
-    )
-    const mixinPrestamoQuirorafario = new ContenedorSimpleMixin(
-      Archivo,
-      new ArchivoPrestamoQuirorafarioController()
-    )
+    const mixin = new ContenedorSimpleMixin(PrestamoQuirorafario, new PrestamoQuirorafarioController())
+    const mixinPrestamoQuirorafario = new ContenedorSimpleMixin(Archivo, new ArchivoPrestamoQuirorafarioController())
 
-    const {
-      entidad: prestamo,
-      disabled,
-      accion,
-    } = mixin.useReferencias()
-    const { setValidador, consultar, cargarVista, obtenerListados, listar } =
-      mixin.useComportamiento()
-    const {
-      onBeforeGuardar,
-      onGuardado,
-      onBeforeModificar,
-      onModificado,
-      onConsultado,
-      onReestablecer,
-    } = mixin.useHooks()
+    const { entidad: prestamo, disabled, accion, } = mixin.useReferencias()
+    const { setValidador, consultar, listar } = mixin.useComportamiento()
+    const { onBeforeGuardar, onGuardado, onBeforeModificar, onReestablecer } = mixin.useHooks()
     const store = useAuthenticationStore()
-    const {
-      confirmar,
-      prompt,
-      notificarCorrecto,
-      notificarAdvertencia,
-      notificarError,
-    } = useNotificaciones()
+    const {notificarAdvertencia} = useNotificaciones()
+    
     const is_month = ref(false)
     const refArchivoPrestamoQuirorafario = ref()
     const esRecursosHumanos = store.esRecursosHumanos
@@ -71,7 +43,7 @@ export default defineComponent({
     const esNuevo = computed(() => {
       return accion.value === 'NUEVO'
     })
-const auxmes = ref()
+    const auxmes = ref()
 
 
     function convertir_fecha(fecha) {
@@ -102,7 +74,7 @@ const auxmes = ref()
       // emit('cerrar-modal')
     })
     async function subirArchivos() {
-        await refArchivoPrestamoQuirorafario.value.subir({ mes: auxmes.value })
+      await refArchivoPrestamoQuirorafario.value.subir({ mes: auxmes.value })
     }
 
     const limpiarArchivoPrestamoQuirorafario = () => {
@@ -111,7 +83,7 @@ const auxmes = ref()
       archivoPrestamoQuirorafario.quiero_subir_archivos = false;
       archivoPrestamoQuirorafario.esConsultado = false;
       // Realizar cambios en la interfaz de usuario en el siguiente ciclo de renderizado
-     requestAnimationFrame(() => {
+      requestAnimationFrame(() => {
         archivoPrestamoQuirorafario.quiero_subir_archivos = true;
       });
     };
@@ -138,8 +110,8 @@ const auxmes = ref()
         consultar(entidad)
       },
     }
-     /**Verifica si es un mes */
-     function checkValue(val, reason, details) {
+    /**Verifica si es un mes */
+    function checkValue(val, reason, details) {
       is_month.value = reason === 'month' ? false : true
     }
 

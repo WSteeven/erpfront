@@ -1,4 +1,4 @@
-import { EntidadAuditable } from "shared/entidad/domain/entidadAuditable";
+import { EntidadAuditable } from 'shared/entidad/domain/entidadAuditable';
 
 export class ConfiguracionGeneral extends EntidadAuditable {
   logo_claro: string | null
@@ -11,6 +11,7 @@ export class ConfiguracionGeneral extends EntidadAuditable {
   direccion_principal: string | null
   telefono: string | null
   moneda: string | null
+  iva: number | null
   tipo_contribuyente: string | null
   celular1: string | null
   celular2: string | null
@@ -21,6 +22,7 @@ export class ConfiguracionGeneral extends EntidadAuditable {
   direccion_secundaria2: string | null
   favicon: string | null
   nombre_empresa: string | null
+  ciiu: string | null
 
   constructor() {
     super()
@@ -34,6 +36,7 @@ export class ConfiguracionGeneral extends EntidadAuditable {
     this.direccion_principal = null
     this.telefono = null
     this.moneda = null
+    this.iva = 15.00
     this.tipo_contribuyente = null
     this.celular1 = null
     this.celular2 = null
@@ -44,5 +47,6 @@ export class ConfiguracionGeneral extends EntidadAuditable {
     this.direccion_secundaria2 = null
     this.favicon = null
     this.nombre_empresa = null
+    this.ciiu = null
   }
 }

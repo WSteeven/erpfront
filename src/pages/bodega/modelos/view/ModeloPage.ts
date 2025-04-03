@@ -1,6 +1,6 @@
 //Dependencias
 import { configuracionColumnasModelos } from '../domain/configuracionColumnasModelos'
-import { required } from '@vuelidate/validators'
+import { required } from 'shared/i18n-validators'
 import { useVuelidate } from '@vuelidate/core'
 import { defineComponent, ref } from 'vue'
 
@@ -29,7 +29,7 @@ export default defineComponent({
 
     const opciones = ref([])
     //obtener el listado de todas las marcas
-    cargarVista(async() => {
+    cargarVista(async () => {
       obtenerListados({
         marcas: {
           controller: new MarcaController(),
@@ -79,7 +79,7 @@ export default defineComponent({
         }
         update(() => {
           const needle = val.toLowerCase()
-          opciones.value= listadosAuxiliares.marcas.filter(
+          opciones.value = listadosAuxiliares.marcas.filter(
             (v) => v.nombre.toLowerCase().indexOf(needle) > -1
           )
         })

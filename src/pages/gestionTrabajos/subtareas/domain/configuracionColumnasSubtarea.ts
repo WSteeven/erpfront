@@ -19,6 +19,7 @@ export const configuracionColumnasSubtarea: ColumnConfig<Subtarea>[] = [
     label: 'Estado',
     align: 'left',
     type: 'select',
+    operador: '=',
     options: estadosTrabajoArray
   },
   {
@@ -26,6 +27,7 @@ export const configuracionColumnasSubtarea: ColumnConfig<Subtarea>[] = [
     field: 'coordinador',
     label: 'Coordinador',
     align: 'center',
+    operador: 'like',
     filtrar: authenticationStore.esJefeTecnico || authenticationStore.esCoordinadorBackup,
   },
   {
@@ -60,6 +62,18 @@ export const configuracionColumnasSubtarea: ColumnConfig<Subtarea>[] = [
     align: 'left',
   },
   {
+    name: 'valor_alimentacion',
+    field: 'valor_alimentacion',
+    label: 'Valor alimentación',
+    align: 'left',
+  },
+  {
+    name: 'gastos_adicionales',
+    field: 'gastos_adicionales',
+    label: 'Gastos adicionales',
+    align: 'left',
+  },
+  {
     name: 'fecha_solicitud',
     field: 'fecha_solicitud',
     label: 'Fecha solicitud',
@@ -78,7 +92,7 @@ export const configuracionColumnasSubtarea: ColumnConfig<Subtarea>[] = [
     field: 'fecha_hora_creacion',
     label: 'Fecha y hora de creación',
     align: 'left',
-    type: 'datetime',
+    type: 'date',
   },
   {
     name: 'fecha_inicio_trabajo',
@@ -104,35 +118,40 @@ export const configuracionColumnasSubtarea: ColumnConfig<Subtarea>[] = [
     field: 'fecha_hora_asignacion',
     label: 'Fecha y hora de asignación',
     align: 'left',
-    type: 'date'
+    type: 'date',
+    operador: '=',
   },
   {
     name: 'fecha_hora_agendado',
     field: 'fecha_hora_agendado',
     label: 'Fecha y hora de agendado',
     align: 'left',
-    type: 'date'
+    type: 'date',
+    operador: '='
   },
   {
     name: 'fecha_hora_ejecucion',
     field: 'fecha_hora_ejecucion',
     label: 'Fecha y hora de ejecución',
     align: 'left',
-    type: 'datetime',
+    type: 'date',
+    operador: '=',
   },
   {
     name: 'fecha_hora_realizado',
     field: 'fecha_hora_realizado',
     label: 'Fecha y hora de realizado',
     align: 'left',
-    type: 'date'
+    type: 'date',
+    operador: '=',
   },
   {
     name: 'fecha_hora_finalizacion',
     field: 'fecha_hora_finalizacion',
     label: 'Fecha y hora de finalización',
     align: 'left',
-    type: 'date'
+    type: 'date',
+    operador: '=',
   },
   {
     name: 'dias_ocupados',

@@ -8,7 +8,7 @@ import SelectorImagen from 'components/SelectorImagen.vue'
 import { useNotificacionStore } from 'stores/notificacion'
 import { useQuasar } from 'quasar'
 import { useVuelidate } from '@vuelidate/core'
-import { required, maxLength,maxValue } from 'shared/i18n-validators'
+import { required, maxLength, maxValue, requiredIf } from 'shared/i18n-validators'
 import { ContenedorSimpleMixin } from 'shared/contenedor/modules/simple/application/ContenedorSimpleMixin'
 import { TransferenciaController } from '../infrestructure/TransferenciaController'
 import { configuracionColumnasTransferencia } from '../domain/configuracionColumnasTransferencia'
@@ -16,18 +16,20 @@ import { TareaController } from 'pages/gestionTrabajos/tareas/infraestructure/Ta
 import { useAuthenticationStore } from 'stores/authentication'
 import { useTransferenciaSaldoStore } from 'stores/transferenciaSaldo'
 import { EmpleadoController } from 'pages/recursosHumanos/empleados/infraestructure/EmpleadoController'
+import { EmpleadoPermisoController } from 'recursosHumanos/empleados/infraestructure/EmpleadoPermisosController'
+import { ordenarLista } from 'shared/utils'
 
 export default defineComponent({
   components: { TabLayout, SelectorImagen },
   emits: ['guardado', 'cerrar-modal'],
 
-  setup(props, { emit }) {
+  setup() {
     /*********
      * Stores
      *********/
     useNotificacionStore().setQuasar(useQuasar())
-    const authenticationStore = useAuthenticationStore()
-    const usuario = authenticationStore.user
+    const store = useAuthenticationStore()
+    const usuario = store.user
     const transferenciaSaldoStore = useTransferenciaSaldoStore()
     /***********
      * Mixin
@@ -45,20 +47,21 @@ export default defineComponent({
     const { setValidador, obtenerListados, cargarVista, consultar } =
       mixin.useComportamiento()
     const usuarios = ref([])
-    const esDevolucion = ref(false)
     const tareas = ref([])
     const mostrarListado = ref(true)
     const mostrarAprobacion = ref(false)
+    const empleados_delegadores = ref([])
     /*************
      * Validaciones
      **************/
     const reglas = {
+      usuario_envia: {required: requiredIf(()=>store.can('puede.registrar.fondos_terceros'))},
       usuario_recibe: {
-        requiredIf: esDevolucion.value ? true : false,
+        requiredIf: requiredIf(() => !transferencia.es_devolucion),
       },
       monto: {
         required,
-        maxValue:maxValue(9999),
+        maxValue: maxValue(9999),
         maxLength: maxLength(50),
       },
       cuenta: {
@@ -66,12 +69,13 @@ export default defineComponent({
         maxLength: maxLength(50),
       },
       tarea: {
-        requiredIf: esDevolucion.value ? true : false,
+        requiredIf: requiredIf(() => !transferencia.es_devolucion),
       },
       comprobante: {
         required,
       },
       observacion: {
+        required,
         maxLength: maxLength(150),
       },
     }
@@ -88,7 +92,7 @@ export default defineComponent({
       consultar({ id: transferenciaSaldoStore.id_transferencia })
       mostrarListado.value = false
       mostrarAprobacion.value = true
-      esDevolucion.value = transferencia.usuario_recibe !== null ? true : false
+      // esDevolucion.value = transferencia.usuario_recibe !== null ? true : false
     }
 
     //Obtener el listado de las cantones
@@ -100,7 +104,11 @@ export default defineComponent({
         },
         tareas: {
           controller: new TareaController(),
-          params: { campos: 'id,codigo_tarea,titulo,cliente_id,proyecto_id' },
+          params: { campos: 'id,codigo_tarea,titulo,cliente_id,proyecto_id',
+            'f_params[orderBy][field]': 'id',
+            'f_params[orderBy][type]': 'DESC',
+            'f_params[limit]':100
+          },
         },
       })
       listadosAuxiliares.tareas.unshift({
@@ -110,11 +118,19 @@ export default defineComponent({
       })
       tareas.value = listadosAuxiliares.tareas
       usuarios.value = listadosAuxiliares.usuarios
+
+      if(store.can('puede.registrar.fondos_terceros')){
+        await obtenerEmpleadosDelegadores()
+      }
     })
 
     /*********
      * Filtros
      **********/
+    async function obtenerEmpleadosDelegadores(){
+      const response = await new EmpleadoPermisoController().listar({permisos: ['puede.delegar.registro_fondos']})
+      empleados_delegadores.value= response.result
+    }
     function filtrarUsuarios(val, update) {
       if (val === '') {
         update(() => {
@@ -158,27 +174,29 @@ export default defineComponent({
     function existeDevolucion() {
       if (transferencia.es_devolucion) {
         transferencia.usuario_recibe = null
-        transferencia.tarea =0
+        transferencia.tarea = 0
         transferencia.motivo = 'DEVOLUCION'
       } else {
         transferencia.motivo = 'TRANSFERENCIA ENTRE USUARIOS'
+        transferencia.tarea = null
       }
-      esDevolucion.value = transferencia.es_devolucion
     }
 
-  watchEffect(() => {
-      existeDevolucion()
-    })
-     return {
+    // watchEffect(() => {
+    //   existeDevolucion()
+    // })
+    return {
       mixin,
       transferencia,
-      esDevolucion,
       disabled,
       accion,
       v$,
+      store,
+      empleados_delegadores,
       usuarios,
       usuario,
       tareas,
+      ordenarLista,
       filtrarUsuarios,
       filtrarTareas,
       existeDevolucion,

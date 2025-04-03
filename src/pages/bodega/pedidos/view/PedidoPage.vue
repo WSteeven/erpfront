@@ -1,12 +1,15 @@
 <template>
-  <tab-layout-filter-tabs
+  <tab-layout-filter-tabs2
     :mixin="mixin"
     :configuracionColumnas="configuracionColumnas"
     titulo-pagina="Pedido"
     :tab-options="tabOptionsPedidos"
-    @tab-seleccionado="tabEs"
+    :tabDefecto="tabSeleccionado"
+    :filtrar="filtrarPedidos"
     :permitirEditar="puedeEditar"
+    :permitir-cancelar="!enRutaInspeccionIncidente"
     :ajustarCeldas="true"
+    :mostrar-listado="!enRutaInspeccionIncidente"
     :accion1="botonDespachar"
     :accion2="botonAnularAutorizacion"
     :accion3="botonCorregir"
@@ -47,8 +50,8 @@
               dense
               outlined
               disable
-              :option-label="(v) => v.nombres + ' ' + v.apellidos"
-              :option-value="(v) => v.id"
+              :option-label="v => v.nombres + ' ' + v.apellidos"
+              :option-value="v => v.id"
               emit-value
               map-options
             >
@@ -79,8 +82,8 @@
               input-debounce="0"
               @filter="filtrarSucursales"
               @popup-show="ordenarLista(sucursales, 'lugar')"
-              :option-label="(item) => item.lugar"
-              :option-value="(item) => item.id"
+              :option-label="item => item.lugar"
+              :option-value="item => item.id"
               emit-value
               map-options
             >
@@ -111,6 +114,7 @@
               :error="!!v$.justificacion.$errors.length"
               outlined
               dense
+              @blur="v$.justificacion.$touch"
             >
               <template v-slot:error>
                 <div
@@ -195,8 +199,8 @@
               input-debounce="0"
               @filter="filtrarClientes"
               @popup-show="ordenarLista(clientes, 'razon_social')"
-              :option-label="(v) => v.razon_social"
-              :option-value="(v) => v.id"
+              :option-label="v => v.razon_social"
+              :option-value="v => v.id"
               emit-value
               map-options
             >
@@ -229,8 +233,8 @@
               error-message="Debes seleccionar el responsable de los materiales"
               :error="!!v$.responsable.$errors.length"
               :disable="disabled || soloLectura"
-              :option-label="(v) => v.apellidos + ' ' + v.nombres"
-              :option-value="(v) => v.id"
+              :option-label="v => v.apellidos + ' ' + v.nombres"
+              :option-value="v => v.id"
               emit-value
               map-options
             >
@@ -278,8 +282,8 @@
               error-message="Debes seleccionar la persona que retira los materiales"
               :error="!!v$.per_retira.$errors.length"
               :disable="disabled || soloLectura"
-              :option-label="(v) => v.apellidos + ' ' + v.nombres"
-              :option-value="(v) => v.id"
+              :option-label="v => v.apellidos + ' ' + v.nombres"
+              :option-value="v => v.id"
               emit-value
               map-options
             >
@@ -330,8 +334,8 @@
               dense
               outlined
               clearable
-              :option-label="(item) => item.nombre"
-              :option-value="(item) => item.id"
+              :option-label="item => item.nombre"
+              :option-value="item => item.id"
               use-input
               input-debounce="0"
               emit-value
@@ -373,8 +377,8 @@
               dense
               clearable
               outlined
-              :option-label="(item) => item.nombre"
-              :option-value="(item) => item.id"
+              :option-label="item => item.nombre"
+              :option-value="item => item.id"
               use-input
               input-debounce="0"
               emit-value
@@ -430,8 +434,8 @@
               @filter="filtrarTareas"
               @update:model-value="obtenerDatosTareaSeleccionada"
               error-message="Debe seleccionar una tarea"
-              :option-label="(item) => item.codigo_tarea + ' - ' + item.titulo"
-              :option-value="(item) => item.id"
+              :option-label="item => item.codigo_tarea + ' - ' + item.titulo"
+              :option-value="item => item.id"
               emit-value
               map-options
               ><template v-slot:option="scope">
@@ -468,8 +472,8 @@
               dense
               outlined
               disable
-              :option-label="(v) => v.nombres + ' ' + v.apellidos"
-              :option-value="(v) => v.id"
+              :option-label="v => v.nombres + ' ' + v.apellidos"
+              :option-value="v => v.id"
               emit-value
               map-options
             />
@@ -491,8 +495,8 @@
                 (store.user.id != pedido.per_autoriza_id &&
                   !store.esCoordinadorBodega)
               "
-              :option-value="(v) => v.id"
-              :option-label="(v) => v.nombre"
+              :option-value="v => v.id"
+              :option-label="v => v.nombre"
               emit-value
               map-options
             >
@@ -553,8 +557,8 @@
               dense
               outlined
               disable
-              :option-value="(v) => v.id"
-              :option-label="(v) => v.nombre"
+              :option-value="v => v.id"
+              :option-label="v => v.nombre"
               emit-value
               map-options
             >
@@ -583,7 +587,7 @@
               file_extensiones=".jpg, image/*"
               :imagen="pedido.evidencia1"
               :alto="'200px'"
-              @update:model-value="(data) => (pedido.evidencia1 = data)"
+              @update:model-value="data => (pedido.evidencia1 = data)"
             ></selector-imagen>
           </div>
           <!-- Evidencia fotografica 2 -->
@@ -596,7 +600,7 @@
               file_extensiones=".jpg, image/*"
               :imagen="pedido.evidencia2"
               :alto="'200px'"
-              @update:model-value="(data) => (pedido.evidencia2 = data)"
+              @update:model-value="data => (pedido.evidencia2 = data)"
             ></selector-imagen>
           </div>
           <!-- observacion estado -->
@@ -639,6 +643,7 @@
             >
             </q-input>
           </div>
+
           <!-- Configuracion de opciones para que puedan seleccionar los detalles en el listado -->
           <div class="col-12 col-md-12" v-if="accion == acciones.nuevo">
             <q-option-group
@@ -664,7 +669,7 @@
                       search: criterioBusquedaProducto,
                       sucursal_id: pedido.sucursal,
                       cliente_id: pedido.cliente || pedido.cliente_id,
-                      stock: true,
+                      stock: true
                     })
                   "
                   @blur="
@@ -683,7 +688,7 @@
                       search: criterioBusquedaProducto,
                       sucursal_id: pedido.sucursal,
                       cliente_id: pedido.cliente || pedido.cliente_id,
-                      stock: true,
+                      stock: true
                     })
                   "
                   icon="search"
@@ -702,6 +707,7 @@
           <!-- Tabla -->
           <div class="col-12">
             <essential-table
+              v-if="tablaRefrescada"
               titulo="Productos Seleccionados"
               :configuracionColumnas="
                 accion === acciones.nuevo || accion === acciones.editar
@@ -739,8 +745,8 @@
         @selected="seleccionarProducto"
       ></essential-selectable-table>
     </template>
-  </tab-layout-filter-tabs>
+  </tab-layout-filter-tabs2>
   <!-- Modales -->
   <modales-entidad :comportamiento="modales"></modales-entidad>
 </template>
-<script src="./PedidoPage.ts"></script>
+<script src="./PedidoPage.ts" />
