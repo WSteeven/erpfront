@@ -10,6 +10,7 @@
     :accion4="botonAnular"
     :tab-options="tabOptionsTransaccionesEgresos"
     :ajustarCeldas="true"
+    paginate
     :tabDefecto="tabDefecto"
     :filtrar="filtrarTransacciones"
   >
@@ -319,7 +320,7 @@
               </template>
             </q-select>
           </div>
-          
+
           <!-- Retira un tercero -->
           <div
             v-if="

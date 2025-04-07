@@ -63,6 +63,9 @@ import { TareasEmpleadoController } from 'pages/gestionTrabajos/tareas/infraestr
 import { EtapaController } from 'pages/gestionTrabajos/proyectos/modules/etapas/infraestructure/EtapaController'
 import { ComportamientoModalesTransaccionEgreso } from './application/ComportamientoModalesGestionarEgresos'
 import { empresas } from 'config/utils/sistema'
+import { ColumnConfig } from 'components/tables/domain/ColumnConfig'
+import { Inventario } from 'pages/bodega/inventario/domain/Inventario'
+import { Condicion } from 'pages/administracion/condiciones/domain/Condicion'
 
 export default defineComponent({
   name: 'EgresoPage',
@@ -181,6 +184,8 @@ export default defineComponent({
         transaccion.solicitante = pedidoStore.pedido.solicitante_id
         transaccion.sucursal = pedidoStore.pedido.sucursal_id
       }
+
+      configuracionColumnasInventarios.find((item:ColumnConfig<Inventario>)=>item.field == 'condiciones')!.options = JSON.parse(LocalStorage.getItem('condiciones')!.toString()).map((v:Condicion)=>{return {label:v.nombre}})
     })
 
     //hooks
@@ -270,7 +275,7 @@ export default defineComponent({
 
     function filtrarTransacciones(tab: string) {
       tabDefecto.value = tab
-      listar({ estado: tab }) //, paginate: paginate })
+      listar({ estado: tab , paginate: paginate })
 
       filtros.fields = { estado: tab }
     }

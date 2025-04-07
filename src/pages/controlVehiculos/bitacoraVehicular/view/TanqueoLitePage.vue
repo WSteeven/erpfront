@@ -208,7 +208,7 @@ async function guardarTanqueo() {
             </template>
           </q-select>
         </div>
-        <!-- Imagen comprobante -->
+        <!-- Imagen num_comprobante -->
         <div class="col-12 col-md-3 col-sm-6">
           <label for="q-mb-sm block">Imagen Comprobante</label>
           <selector-imagen

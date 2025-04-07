@@ -9,6 +9,7 @@
     :accion2="botonAnular"
     :accion3="botonEditarFechaCompra"
     :accion1Header="botonActualizar"
+    paginate
   >
     <template #formulario>
       <q-form @submit.prevent>
@@ -161,12 +162,12 @@
           </div>
           <!-- Comprobante/Factura -->
           <div
-            v-if="esVisibleComprobante || transaccion.comprobante"
+            v-if="esVisibleComprobante || transaccion.num_comprobante"
             class="col-12 col-md-3 q-mb-md"
           >
             <label class="q-mb-sm block">N° Factura/Comprobante</label>
             <q-input
-              v-model="transaccion.comprobante"
+              v-model="transaccion.num_comprobante"
               type="number"
               placeholder="Obligatorio"
               :readonly="disabled"
@@ -181,7 +182,7 @@
             </q-input>
           </div>
 
-          <div class="col-12 col-md-3 col-sm-3">
+          <div class="col-12 col-md-3 col-sm-3" v-if="esVisibleComprobante">
             <label class="q-mb-sm block">Modo de selección de Proveedor</label>
             <q-toggle
               :label="transaccion.modo_seleccion ? 'LISTADO' : 'TEXTO'"
@@ -655,8 +656,6 @@
               "
               :permitirEliminar="
                 accion == acciones.nuevo || accion == acciones.editar
-                  ? true
-                  : false
               "
               :mostrarBotones="false"
               :accion1="botonEditarCantidad"
