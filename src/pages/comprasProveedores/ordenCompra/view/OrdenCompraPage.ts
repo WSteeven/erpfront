@@ -173,10 +173,10 @@ export default defineComponent({
       } else {
         obtenerTareas(true)
         soloLectura.value = true
-        setTimeout(() => {
-          if (orden.id) refArchivo.value.listarArchivosAlmacenados(orden.id)
-        }, 1);
       }
+      setTimeout(() => {
+        if (orden.id) refArchivo.value.listarArchivosAlmacenados(orden.id)
+      }, 1);
     })
     onModificado((id: number) => {
       idOrden.value = id

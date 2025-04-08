@@ -315,7 +315,7 @@ export default defineComponent({
           listado.value.splice(posicion, 1, response.data.modelo)
         }
       },
-      visible: () => false //store.esAdministrador
+      visible: () => store.esAdministrador
     }
     const botonCalificarProveedor: CustomActionTable = {
       titulo: 'Calificar',
