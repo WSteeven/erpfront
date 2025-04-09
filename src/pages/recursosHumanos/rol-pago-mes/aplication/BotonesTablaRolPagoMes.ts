@@ -6,13 +6,15 @@ import { useNotificaciones } from 'shared/notificaciones'
 import { RolPagoMes } from '../domain/RolPagoMes'
 import { endpoints } from 'config/api'
 import { AxiosResponse } from 'axios'
+import { StatusEssentialLoading } from 'components/loading/application/StatusEssentialLoading'
 
 export const useBotonesTablaRolPagoMes = (
   mixin: ContenedorSimpleMixin<RolPagoMes>
 ) => {
-  const { notificarAdvertencia, notificarCorrecto } = useNotificaciones()
+  const { notificarAdvertencia, notificarCorrecto, confirmar } = useNotificaciones()
   const { listado } = mixin.useReferencias()
   const { listar } = mixin.useComportamiento()
+    const cargando = new StatusEssentialLoading()
   const filaFinalizar = {
     id: null,
     novedad: null,
@@ -22,6 +24,19 @@ export const useBotonesTablaRolPagoMes = (
     imagen_informe: null
   }
   const store = useAuthenticationStore()
+
+    const btnActivarRolPago:CustomActionTable<RolPagoMes> = {
+      titulo: 'Activar Rol de Pago',
+        icono: 'bi-check-circle-fill',
+        color:'positive',
+        visible: ({entidad})=> entidad.finalizado,
+        accion: async ({entidad})=>{
+          confirmar('¿Está seguro de reactivar el Rol de Pago?', async()=>{
+              await activarRolPago(entidad.id)
+              await listar({ finalizado: '1' })
+          })
+        }
+    }
 
   const btnFinalizarRolPago: CustomActionTable = {
     titulo: 'Finalizar Rol de Pago',
@@ -71,6 +86,20 @@ export const useBotonesTablaRolPagoMes = (
     return notificarCorrecto('El rol de pago ha sido Actualizado.')
   }
 
+  async function activarRolPago(idRolPago:number){
+      try{
+          cargando.activar()
+          const axios = AxiosHttpRepository.getInstance()
+          const ruta = axios.getEndpoint(endpoints.activar_rol_pago)+idRolPago
+          const response:AxiosResponse = await axios.post(ruta)
+          if(response.status===200) notificarCorrecto(response.data.mensaje)
+      }
+      catch (e){
+          console.error(e)
+      }finally {
+          cargando.desactivar()
+      }
+  }
   async function finalizarRolPago(idRolPago: number) {
     const axios = AxiosHttpRepository.getInstance()
     const ruta = axios.getEndpoint(endpoints.finalizar_rol_pago, {
@@ -93,6 +122,7 @@ export const useBotonesTablaRolPagoMes = (
 
   return {
     btnFinalizarRolPago,
+      btnActivarRolPago,
     btnRefrescar
   }
 }

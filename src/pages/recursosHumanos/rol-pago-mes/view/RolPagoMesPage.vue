@@ -11,6 +11,7 @@
     :accion2="btnImprimirRolPago"
     :accion3="btnEnviarRolPago"
     :accion4="btnCashRolPago"
+    :accion5="btnActivarRolPago"
     :filtrar="filtrarRolPagoMes"
     :tabDefecto="tabActualRolPago"
     :ajustarCeldas="true"

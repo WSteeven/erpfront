@@ -1,5 +1,5 @@
-import { ColumnConfig } from "components/tables/domain/ColumnConfig";
-import { BitacoraVehicular } from "pages/controlVehiculos/bitacoraVehicular/domain/BitacoraVehicular";
+import { ColumnConfig } from 'components/tables/domain/ColumnConfig';
+import { BitacoraVehicular } from 'pages/controlVehiculos/bitacoraVehicular/domain/BitacoraVehicular';
 
 export const configuracionColumnasReporteBitacoras: ColumnConfig<BitacoraVehicular>[] = [
     {
@@ -11,7 +11,7 @@ export const configuracionColumnasReporteBitacoras: ColumnConfig<BitacoraVehicul
     },
     {
         name: 'vehiculo',
-        field: 'vehiculo', 
+        field: 'vehiculo',
         label: 'Placa',
         align: 'left',
         sortable: true,
@@ -27,6 +27,20 @@ export const configuracionColumnasReporteBitacoras: ColumnConfig<BitacoraVehicul
         name: 'fecha',
         field: 'fecha',
         label: 'fecha',
+        align: 'left',
+        sortable: true,
+    },
+    {
+        name: 'hora_salida',
+        field: 'hora_salida',
+        label: 'H Salida',
+        align: 'left',
+        sortable: true,
+    },
+    {
+        name: 'hora_llegada',
+        field: 'hora_llegada',
+        label: 'H. Llegada',
         align: 'left',
         sortable: true,
     },

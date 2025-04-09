@@ -26,7 +26,6 @@ import { useAuthenticationStore } from 'stores/authentication'
 import { AsignacionVehiculoController } from 'pages/controlVehiculos/asignarVehiculos/infraestructure/AsignacionVehiculoController'
 import {
   encontrarUltimoIdListado,
-  imprimirArchivo,
   notificarErrores,
   obtenerFechaActual
 } from 'shared/utils'
@@ -65,6 +64,7 @@ import NoOptionComponent from 'components/NoOptionComponent.vue'
 import { TanqueoController } from 'vehiculos/tanqueoCombustible/infraestructure/TanqueoController'
 import { Tarea } from 'tareas/domain/Tarea'
 import { EmpleadoController } from 'recursosHumanos/empleados/infraestructure/EmpleadoController'
+import { useFunctionsBitacoraVehicular } from 'vehiculos/bitacoraVehicular/application/Functions'
 
 export default defineComponent({
   // name:'ControlDiarioVehiculo',
@@ -93,8 +93,12 @@ export default defineComponent({
       mixin.useComportamiento()
     const { onReestablecer, onConsultado, onBeforeModificar, onModificado } =
       mixin.useHooks()
-    const { confirmar, notificarCorrecto, notificarAdvertencia, notificarError } =
-      useNotificaciones()
+    const {
+      confirmar,
+      notificarCorrecto,
+      notificarAdvertencia,
+      notificarError
+    } = useNotificaciones()
     const modales = new ComportamientoModalesBitacoraVehicular()
     /****************************************
      * Stores
@@ -120,6 +124,8 @@ export default defineComponent({
     const bloquear_km_tanque = ref(false)
     const tabDefecto = ref('0')
     const axios = AxiosHttpRepository.getInstance()
+
+    const { imprimirPdf } = useFunctionsBitacoraVehicular()
 
     cargarVista(async () => {
       usuarioDefault.value = await obtenerVehiculoAsignado()
@@ -419,22 +425,22 @@ export default defineComponent({
       }
     }
 
-    async function imprimirPdf(id: number) {
-      try {
-        const axios = AxiosHttpRepository.getInstance()
-        const url =
-          apiConfig.URL_BASE +
-          '/' +
-          axios.getEndpoint(endpoints.bitacoras_vehiculos) +
-          '/imprimir/' +
-          id
-        const filename = 'bitacora_vehicular_' + id + '_' + Date.now()
-        await imprimirArchivo(url, 'GET', 'blob', 'pdf', filename)
-        // console.log('Bitácora vehicular con éxito')
-      } catch (e) {
-        notificarAdvertencia('Error al imprimir la bitácora. ' + e)
-      }
-    }
+    // async function imprimirPdf(id: number) {
+    //   try {
+    //     const axios = AxiosHttpRepository.getInstance()
+    //     const url =
+    //       apiConfig.URL_BASE +
+    //       '/' +
+    //       axios.getEndpoint(endpoints.bitacoras_vehiculos) +
+    //       '/imprimir/' +
+    //       id
+    //     const filename = 'bitacora_vehicular_' + id + '_' + Date.now()
+    //     await imprimirArchivo(url, 'GET', 'blob', 'pdf', filename)
+    //     // console.log('Bitácora vehicular con éxito')
+    //   } catch (e) {
+    //     notificarAdvertencia('Error al imprimir la bitácora. ' + e)
+    //   }
+    // }
 
     async function obtenerTanqueosBitacora() {
       // se consulta los tanqueos correspondientes  esta bitacora y se cargan en bitacora.tanqueos
@@ -453,8 +459,8 @@ export default defineComponent({
       }
     }
 
-    async function obtenerEmpleados(){
-      const {result} = await new EmpleadoController().listar({'estado':1})
+    async function obtenerEmpleados() {
+      const { result } = await new EmpleadoController().listar({ estado: 1 })
       listadosAuxiliares.empleados = result
       choferes.value = listadosAuxiliares.empleados
     }
