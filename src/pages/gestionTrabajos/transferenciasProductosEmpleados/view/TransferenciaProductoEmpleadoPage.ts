@@ -668,7 +668,7 @@ export default defineComponent({
       consultado: computed(() => accion.value === acciones.editar || accion.value === acciones.consultar),
       botonImprimir,
       autorizaciones,
-      notificacionSSA: computed(() => transferencia.listado_productos.some((p: DetalleProducto) => p.categoria === 'EPP') ? 'Se notificará el responsable del departamento de <b>SSA</b> que se transfirieron <b>EPPs</b>.' : null),
+      notificacionSSA: computed(() => transferencia.listado_productos.some((p: DetalleProducto) => p.categoria === 'EPP') ? 'Se notificará al responsable del departamento de <b>SSA</b> que se transfirieron <b>EPPs</b>.' : null),
     }
   }
 })

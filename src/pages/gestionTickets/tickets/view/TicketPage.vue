@@ -101,7 +101,7 @@
               <label class="q-mb-sm block"
                 >Departamento(s) que atenderá(n)
                 <small class="text-primary text-italic"
-                  >*Crea una copia del ticket para que cada departamento</small
+                  >*Crea una copia del ticket para cada departamento</small
                 ></label
               >
               <q-select
@@ -164,7 +164,11 @@
                   :key="responsable"
                   class="q-pa-sm full-width"
                 >
-                  <q-icon name="bi-person-fill" class="q-mr-sm" color="primary"></q-icon>
+                  <q-icon
+                    name="bi-person-fill"
+                    class="q-mr-sm"
+                    color="primary"
+                  ></q-icon>
                   <span class="q-mr-xs">{{ responsable.empleado }}</span>
                   <b>{{ `| ${responsable.departamento}` }}</b>
                 </div>
@@ -396,7 +400,10 @@
             Categorías y tipos
           </div> -->
           <q-separator color="primary"></q-separator>
-          <div class="col-12 text-primary bg-blue-1 q-px-md q-py-sm text-bold">
+          <div
+            id="step1"
+            class="col-12 text-primary bg-blue-1 q-px-md q-py-sm text-bold"
+          >
             <q-icon name="bi-view-list" class="q-mr-sm"></q-icon>
             Categorías y tipos
           </div>
@@ -464,10 +471,18 @@
               <label class="q-mb-sm block">Tipo de ticket</label>
               <q-select
                 v-model="destinatario.tipo_ticket_id"
-                :options="destinatario.tipos_tickets"
+                :options="destinatario.tipos_tickets_filter"
                 transition-show="scale"
                 transition-hide="scale"
                 hint="Obligatorio"
+                @filter="
+                  (val, update) =>
+                    (destinatario.tipos_tickets_filter = filtrarTiposTickets(
+                      val,
+                      update,
+                      destinatario
+                    ))
+                "
                 options-dense
                 dense
                 outlined
@@ -559,7 +574,10 @@
           </div>
 
           <q-separator color="primary"></q-separator>
-          <div class="col-12 text-primary bg-blue-1 q-px-md q-py-sm text-bold">
+          <div
+            id="step2"
+            class="col-12 text-primary bg-blue-1 q-px-md q-py-sm text-bold"
+          >
             <q-icon name="bi-repeat" class="q-mr-sm"></q-icon>
             Crear mismo ticket periódicamente
           </div>
@@ -568,13 +586,18 @@
           <div class="row q-pa-md">
             <div class="col-12 col-md-3">
               <q-toggle
+                ref="step3"
                 v-model="ticket.is_recurring"
                 label="¿Es recurrente?"
                 :disable="disabled"
               />
             </div>
 
-            <div v-if="ticket.is_recurring" class="col-12 col-md-4">
+            <div
+              id="step4"
+              v-show="ticket.is_recurring"
+              class="col-12 col-md-4"
+            >
               <q-btn-toggle
                 v-model="ticket.recurrence_active"
                 class="toggle-button-primary"
@@ -600,7 +623,11 @@
             </div>
           </div>
 
-          <div v-if="ticket.is_recurring" class="row q-gutter-md q-pa-md">
+          <div
+            id="step5"
+            v-show="ticket.is_recurring"
+            class="row q-gutter-md q-pa-md"
+          >
             <div class="col-12 col-md-3">
               <label class="q-mb-sm block">Frecuencia</label>
               <q-select
@@ -612,9 +639,20 @@
                 options-dense
                 :option-label="item => item.label"
                 :option-value="item => item.value"
+                :error="!!v$.recurrence_frequency.$errors.length"
+                @blur="v$.recurrence_frequency.$touch"
                 emit-value
                 map-options
-              />
+              >
+                <template v-slot:error>
+                  <div
+                    v-for="error of v$.recurrence_frequency.$errors"
+                    :key="error.$uid"
+                  >
+                    <div class="error-msg">{{ error.$message }}</div>
+                  </div>
+                </template>
+              </q-select>
             </div>
 
             <div class="col-12 col-md-3">
