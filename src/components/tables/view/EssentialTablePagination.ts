@@ -424,6 +424,8 @@ export default defineComponent({
         await listar({
           search: filter.value,
           ...filtros.fields,
+            paginate: true,
+            page: 1
         })
       } else {
         onRequest(1)
@@ -435,6 +437,7 @@ export default defineComponent({
 
       await listar({
         ...filtros.fields,
+          search: filter.value,
         paginate: true,
         page: page
       })
