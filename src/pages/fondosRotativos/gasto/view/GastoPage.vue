@@ -12,7 +12,7 @@
     :forzarListar="true"
     :accion1="editarGasto"
     :puede-exportar="true"
-    ajustar-celdas
+    ajustar-celdas paginate
   >
 <!--    puede.registrar.fondos_terceros -->
 <!--    puede.delegar.registro_fondos -->

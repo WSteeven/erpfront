@@ -16,6 +16,7 @@
     :accion5="btnCalificarSolicitante"
     :accion6="btnPausarRecurrente"
     subtitulo-pagina="Módulo de Tickets"
+    paginate
   >
     <template #formulario>
       <div class="q-pa-md">

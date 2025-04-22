@@ -92,7 +92,7 @@ export default defineComponent({
      * Mixin
      *********/
     const mixin = new ContenedorSimpleMixin(Ticket, new TicketController())
-    const { entidad: ticket, listadosAuxiliares, accion, disabled } = mixin.useReferencias()
+    const { entidad: ticket, listadosAuxiliares, accion, disabled, filtros } = mixin.useReferencias()
     const { guardar, editar, eliminar, reestablecer, setValidador, obtenerListados, cargarVista, listar } = mixin.useComportamiento()
     const { onBeforeGuardar, onGuardado, onConsultado, onReestablecer } = mixin.useHooks()
 
@@ -315,9 +315,10 @@ export default defineComponent({
       await refArchivoTicket.value.subir({ tickets_id: id })
     }
 
-    function filtrarTickets(tab: string) {
-      listar({ solicitante_id: authenticationStore.user.id, estado: tab })
-      tabActual.value = tab
+    function filtrarTickets(tabSeleccionado: string) {
+      listar({ solicitante_id: authenticationStore.user.id, estado: tabSeleccionado, paginate: true })
+      tabActual.value = tabSeleccionado
+      filtros.fields = { estado: tabSeleccionado }
     }
 
     filtrarTickets(estadosTickets.ASIGNADO)

@@ -75,7 +75,7 @@ export default defineComponent({
       entidad: gasto,
       disabled,
       accion,
-      listadosAuxiliares
+      listadosAuxiliares,filtros,
     } = mixin.useReferencias()
     const { setValidador, obtenerListados, cargarVista, consultar, listar } =
       mixin.useComportamiento()
@@ -628,8 +628,10 @@ export default defineComponent({
     const tabActualGasto = ref(estadosGastos.PENDIENTE)
 
     function filtrarGasto(tabSeleccionado: number) {
-      listar({ estado: tabSeleccionado }, false)
+      listar({ estado: tabSeleccionado, paginate:true }, false)
       tabActualGasto.value = tabSeleccionado
+
+        filtros.fields = {estado: tabSeleccionado}
     }
 
     return {

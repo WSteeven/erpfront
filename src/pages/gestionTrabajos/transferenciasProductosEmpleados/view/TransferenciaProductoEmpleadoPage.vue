@@ -8,6 +8,7 @@
     :ajustarCeldas="true"
     :permitirEditar="puedeEditar"
     :accion1="botonImprimir"
+    paginate
   >
     <template #formulario>
       <q-form @submit.prevent>

@@ -8,7 +8,8 @@
     :filtrar="filtrarPedidos"
     :permitirEditar="puedeEditar"
     :permitir-cancelar="!enRutaInspeccionIncidente"
-    :ajustarCeldas="true"
+    ajustarCeldas
+    paginate
     :mostrar-listado="!enRutaInspeccionIncidente"
     :accion1="botonDespachar"
     :accion2="botonAnularAutorizacion"

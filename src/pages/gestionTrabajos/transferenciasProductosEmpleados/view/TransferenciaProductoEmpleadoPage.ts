@@ -57,7 +57,7 @@ export default defineComponent({
      * Mixin
      ********/
     const mixin = new ContenedorSimpleMixin(TransferenciaProductoEmpleado, new TransferenciaProductoEmpleadoController(), new ArchivoController())
-    const { entidad: transferencia, disabled, accion, listadosAuxiliares } = mixin.useReferencias()
+    const { entidad: transferencia, disabled, accion, listadosAuxiliares, filtros } = mixin.useReferencias()
     const { setValidador, obtenerListados, cargarVista, listar } = mixin.useComportamiento()
     const { onModificado, onConsultado, onReestablecer, onGuardado } = mixin.useHooks()
 
@@ -434,8 +434,8 @@ export default defineComponent({
     function filtrarTransferenciasProductoEmpleado(tab: string) {
       tabSeleccionado.value = tab
       puedeEditar.value = [estadosTransferenciasProductos.PENDIENTE].includes(tabSeleccionado.value) || [estadosTransferenciasProductos.PENDIENTE, estadosTransferenciasProductos.VALIDADO].includes(tabSeleccionado.value) && esCoordinadorBodega
-      // puedeEditar.value = tab == '1'
-      listar({ autorizacion_id: tab })
+      filtros.fields = { autorizacion_id: tabSeleccionado }
+      listar({ autorizacion_id: tab, paginate: true })
     }
 
     async function consultarTareasEmpleadoOrigen(params?: any) {
