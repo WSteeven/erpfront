@@ -16,6 +16,7 @@
     :accion5="btnCalificarSolicitante"
     :accion6="btnPausarRecurrente"
     subtitulo-pagina="Módulo de Tickets"
+    ajustar-celdas
     paginate
   >
     <template #formulario>
