@@ -10,5 +10,6 @@ export interface CustomActionPrompt<T = any> {
   validacion?: funcion<T>
   items?: any[]
   requerido?: boolean
+  placeholder?: string
 }
 

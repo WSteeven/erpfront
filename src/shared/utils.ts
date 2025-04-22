@@ -63,7 +63,7 @@ export function descargarArchivo(
 export function descargarArchivoUrl(url: string): void {
   const link = document.createElement('a')
   link.href = apiConfig.URL_BASE + url
-  link.target = '_blank'
+  link.target = '_self'
   link.click()
   link.remove()
 }

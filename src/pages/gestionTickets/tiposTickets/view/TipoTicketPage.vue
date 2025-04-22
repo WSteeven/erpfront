@@ -16,7 +16,7 @@
             <label class="q-mb-sm block">Seleccione un departamento</label>
             <q-select
               v-model="tipoTicket.departamento"
-              :options="departamentos"
+              :options="departamentosComputed"
               @filter="filtrarDepartamentos"
               transition-show="scale"
               transition-hide="scale"
@@ -51,12 +51,12 @@
           </div>
 
           <!-- Categoria -->
-          <!-- @filter="filtrarCategoriasTiposTickets" -->
           <div v-if="tipoTicket.departamento" class="col-12 col-md-3">
             <label class="q-mb-sm block">Seleccione una categoría</label>
             <q-select
               v-model="tipoTicket.categoria_tipo_ticket"
-              :options="categoriasTiposTickets"
+              :options="categoriasTiposTicketsComputed"
+              @filter="filtrarCategoriasTiposTickets"
               transition-show="scale"
               transition-hide="scale"
               hint="Obligatorio"
@@ -120,7 +120,10 @@
               hint="Puede buscar por nombre, apellido o identificación"
               :disable="disabled"
               @keydown.enter="
-                listarDestinatario({ departamento_id: tipoTicket.departamento, estado: 1 })
+                listarDestinatario({
+                  departamento_id: tipoTicket.departamento,
+                  estado: 1
+                })
               "
               @blur="resetearDestinatario()"
               outlined

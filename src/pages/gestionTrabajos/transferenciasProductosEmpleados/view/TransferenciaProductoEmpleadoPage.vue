@@ -792,6 +792,10 @@
             ></essential-table>
           </div>
 
+          <div v-if="notificacionSSA" class="col-12">
+            <callout :mensaje="notificacionSSA" tipo="success" />
+          </div>
+
           <div v-if="transferencia.listado_productos.length" class="col-12">
             <callout
               mensaje="La columna Recibido se refiere a la cantidad recibida que ha sido registrada por el empleado receptor de la transferencia."

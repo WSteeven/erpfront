@@ -7,15 +7,18 @@ import { tabOptionsEstadosTickets, tiposPrioridades, estadosTickets } from 'conf
 import { StatusEssentialLoading } from 'components/loading/application/StatusEssentialLoading'
 import { AxiosHttpRepository } from 'shared/http/infraestructure/AxiosHttpRepository'
 import { configuracionColumnasTicket } from '../domain/configuracionColumnasTicket'
-import { required, minLength } from 'shared/i18n-validators'
+import { required, minLength, requiredIf } from 'shared/i18n-validators'
 import { accionesTabla, maskFecha } from 'config/utils'
-import { computed, defineComponent, ref } from 'vue'
+import { computed, defineComponent, nextTick, onMounted, ref, watch } from 'vue'
 import { useCargandoStore } from 'stores/cargando'
 import { useTareaStore } from 'stores/tarea'
 import useVuelidate from '@vuelidate/core'
 import { endpoints } from 'config/api'
 import { AxiosResponse } from 'axios'
 import { useQuasar } from 'quasar'
+
+import introJs from 'intro.js'
+import 'intro.js/minified/introjs.min.css'
 
 // Componentes
 import DesignarResponsableTrabajo from 'gestionTrabajos/subtareas/modules/designarResponsableTrabajo/view/DesignarResponsableTrabajo.vue'
@@ -192,6 +195,22 @@ export default defineComponent({
       return nuevoListado
     }
 
+    const filtrarTiposTickets = (val, update, destinatario: DestinatarioTicket) => {
+      let nuevoListado: any[] = []
+
+      if (val === '') {
+        update(() => nuevoListado = destinatario.tipos_tickets ?? [])
+      }
+      update(() => {
+        const needle = val.toLowerCase()
+        nuevoListado = (destinatario.tipos_tickets ?? []).filter(
+          (v: any) => v['nombre'].toLowerCase().indexOf(needle) > -1
+        )
+      })
+
+      return nuevoListado
+    }
+
     /*************
     * Validaciones
     **************/
@@ -201,6 +220,7 @@ export default defineComponent({
       prioridad: { required },
       responsable: { required },
       departamento_responsable: { required },
+      recurrence_frequency: { requiredIf: requiredIf(() => ticket.is_recurring) },
     }
 
     const v$ = useVuelidate(reglas, ticket)
@@ -357,6 +377,91 @@ export default defineComponent({
       console.log(destinatario)
     }
 
+    /**
+     * Tour
+     */
+    const TOUR_KEY = 'tutorial_visto';
+    let intro
+    const step3 = ref()
+
+    // 👀 Detectar cambio en el toggle
+    watch(computed(() => ticket.is_recurring), (val) => {
+      // console.log(val)
+      if (val && intro) {//} && intro._currentStep === 0) {
+        intro.nextStep()
+      }
+    });
+
+    const startTour = (force = false) => {
+      const tutorialVisto = localStorage.getItem(TOUR_KEY);
+
+      if (tutorialVisto && !force) {
+        return; // Ya lo vio, y no se forzó
+      }
+
+      intro = introJs()
+      intro.setOptions({
+        steps: [
+          {
+            element: '#step1',
+            intro: 'Ahora puedes filtrar las categorias y los tipos de tickets, solo escribe en los listados para filtrar.',
+          },
+          {
+            element: '#step2',
+            intro: 'Si deseas crear el mismo ticket periódicamente puedes realizarlo desde aquí.',
+          },
+          {
+            element: step3.value?.$el,// '#step3',
+            intro: 'Haz clic en este checkbox para continuar',
+            disableInteraction: false, // IMPORTANTE
+            tooltipClass: 'no-block-tooltip',
+            highlightClass: 'no-block-highlight',
+            position: 'right'
+          },
+          {
+            element: '#step4',
+            intro: 'Aquí puedes configurar la frecuencia en que deseas que se cree el ticket.',
+          },
+          {
+            element: '#step4',
+            intro: 'Aquí puedes configurar la frecuencia en que deseas que se cree el ticket.',
+          },
+        ],
+        showProgress: true,
+        showBullets: false,
+        exitOnOverlayClick: false,
+        nextLabel: 'Siguiente',
+        prevLabel: 'Anterior',
+        doneLabel: 'Finalizar',
+        showStepNumbers: true,
+      })
+        .oncomplete(() => {
+          localStorage.setItem(TOUR_KEY, 'true');
+        })
+        .onexit(() => {
+          localStorage.setItem(TOUR_KEY, 'true');
+        })
+
+      intro.onchange(() => {
+        if (intro._currentStep === 0) {
+          step3.value?.$el?.classList.add('highlight-pulse');
+        } else {
+          step3.value?.$el?.classList.remove('highlight-pulse');
+        }
+      })
+
+      intro.start()
+
+      setTimeout(() => {
+        const overlay = document.querySelector('.introjs-overlay');
+        if (overlay) {
+          overlay.style.display = 'none';
+        }
+      }, 100);
+    }
+
+    onMounted(() => nextTick(() => startTour()))
+
     /*************
      * Observers
      *************/
@@ -427,6 +532,10 @@ export default defineComponent({
       reestablecerDestinatarios()
     })
 
+    /**
+     * Init
+     */
+
     return {
       toolbar,
       v$,
@@ -494,6 +603,8 @@ export default defineComponent({
       obtenerDestinatarioAutomatico,
       establecerIdDestinatarioAutomatico,
       filtrarCategoriasTiposTickets,
+      filtrarTiposTickets,
+      step3,
     }
   },
 })
