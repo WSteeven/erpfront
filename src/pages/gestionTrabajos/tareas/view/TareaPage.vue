@@ -2,7 +2,6 @@
   <tab-layout-filter-tabs2
     :mixin="mixin"
     :configuracionColumnas="configuracionColumnasTarea"
-    full
     :permitirEditar="false"
     :permitirEliminar="false"
     :mostrarButtonSubmits="tab === 'tarea'"

@@ -10,7 +10,6 @@
 
   <q-table
     flat
-    bordered
     ref="refTable"
     title="Treats"
     :rows="listado"
@@ -30,7 +29,7 @@
     :separator="$q.screen.xs ? 'horizontal' : separador"
     :hide-bottom="!mostrarFooter"
     :style="estilos"
-    class="bg-body-table my-sticky-column-table my-sticky-header-column-table borde rounded"
+    class="bg-body-table my-sticky-column-table my-sticky-header-column-table"
     :class="{
       'alto-fijo-desktop': !inFullscreen && altoFijo && !$q.screen.xs,
       'alto-fijo-mobile': !inFullscreen && altoFijo && $q.screen.xs,
@@ -176,8 +175,8 @@
             'text-white': $q.dark.isActive,
             'text-dark': !$q.dark.isActive
           }"
-          v-html="props.row[props.col.name]"></span
-        >
+          v-html="props.row[props.col.name]"
+        ></span>
       </q-td>
     </template>
 
@@ -373,7 +372,10 @@
           <!-- :color="mostrarFiltros ? 'negative' : 'white'" -->
           <q-btn
             v-if="permitirFiltrar"
-            :class="{ 'text-primary bg-white': !mostrarFiltros, 'text-negative bg-white': mostrarFiltros }"
+            :class="{
+              'text-primary bg-white': !mostrarFiltros,
+              'text-negative bg-white': mostrarFiltros
+            }"
             no-caps
             rounded
             unelevated

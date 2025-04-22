@@ -17,6 +17,7 @@ import Swal from 'sweetalert2'
 import dayjs from 'dayjs'
 import es from 'dayjs/locale/es'
 import relativeTime from 'dayjs/plugin/relativeTime'
+import fondo from 'src/assets/img/bg.svg'
 
 // Componentes
 import ScrollToTopButton from 'components/buttonSubmits/ScrollToTopButton.vue'
@@ -74,7 +75,7 @@ export default defineComponent({
     const authenticationStore = useAuthenticationStore()
     const movilizacionSubtareaStore = useMovilizacionSubtareaStore()
     const configuracionGeneralStore = useConfiguracionGeneralStore()
-    const {notificarCorrecto, notificarAdvertencia}=useNotificaciones()
+    const { notificarCorrecto, notificarAdvertencia } = useNotificaciones()
     const mainLayoutStore = useMainLayoutStore()
     const modoNoDisponible = ref(false)
     const permisoModoNoDisponible = computed(() =>
@@ -310,8 +311,8 @@ export default defineComponent({
             LocalStorage.set(
               'ultima_conexion',
               formatearFechaTexto(lastActive.value) +
-                ' ' +
-                new Date(lastActive.value).toLocaleTimeString('en-US')
+              ' ' +
+              new Date(lastActive.value).toLocaleTimeString('en-US')
             )
             Swal.fire({
               icon: 'error',
@@ -337,12 +338,12 @@ export default defineComponent({
     )
     watchEffect(
       () =>
-        (document.title =
-          (notificaciones.value.length
-            ? `(${notificaciones.value.length})`
-            : '') +
-          ' ' +
-          nombreEmpresa.value)
+      (document.title =
+        (notificaciones.value.length
+          ? `(${notificaciones.value.length})`
+          : '') +
+        ' ' +
+        nombreEmpresa.value)
     )
 
     // función para obtener los módulos permitidos
@@ -485,7 +486,8 @@ export default defineComponent({
       onKeyEnter,
       refListadoBusqueda,
       resetearBuscador,
-      posicionResultados
+      posicionResultados,
+      fondo,
       // idledFor,
       // tiempoInactividad,
       // mostrarAlertaInactividad,

@@ -131,7 +131,7 @@ export default defineComponent({
     },
     full: {
       type: Boolean,
-      default: false,
+      default: true,
     },
     labelGuardar: {
       type: String,
@@ -263,7 +263,7 @@ export default defineComponent({
       accion,
       filtros,
       accionTabla,
-      // tituloPagina: tituloTabla[0].toUpperCase() + tituloTabla.substring(1),
+      tituloPagina: tituloTabla[0].toUpperCase() + tituloTabla.substring(1),
       seleccionado,
       columnas,
       // acciones tabla

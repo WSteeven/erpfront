@@ -1,7 +1,7 @@
 <template>
   <q-layout view="lHh Lpr lFf">
     <!-- Navbar -->
-    <q-header class="bg-body-background" :class="{ 'q-px-lg': !$q.screen.xs }">
+    <q-header class="bg-desenfoque">
       <transition name="slide-fade" mode="out-in">
         <div v-if="mostrarBuscar" class="q-pa-xs">
           <q-input
@@ -61,19 +61,17 @@
         </div>
       </transition>
 
-      <q-toolbar class="row justify-between border-bottom q-py-md">
+      <q-toolbar class="row justify-between q-py-sm border-bottom">
         <span class="row q-gutter-x-sm">
           <q-btn
             v-if="route.name !== 'intranet'"
             dense
             aria-label="Menu"
             @click="toggleLeftDrawer"
-            color="primary"
-            icon="menu"
+            class="custom-shadow bg-primary"
             unelevated
-            flat
           >
-            <!-- <svg
+            <svg
               width="24"
               height="24"
               viewBox="0 0 24 24"
@@ -101,7 +99,7 @@
                 style="fill: #fff; stroke-width: 1.04881"
                 d="M 8.9160156 16.658203 C 8.3637368 16.658203 7.9160156 17.150284 7.9160156 17.757812 C 7.9160156 18.365342 8.3637368 18.859375 8.9160156 18.859375 L 14.916016 18.859375 C 15.468314 18.859375 15.916016 18.365342 15.916016 17.757812 C 15.916016 17.150284 15.468314 16.658203 14.916016 16.658203 L 8.9160156 16.658203 z "
               />
-            </svg> -->
+            </svg>
           </q-btn>
 
           <img
@@ -509,7 +507,7 @@
     <!-- Drawer -->
     <q-drawer
       v-model="leftDrawerOpen"
-      class="bg-drawer border-right q-px-sm q-py-sm my-font"
+      class="bg-drawer border-right q-px-sm q-py-sm"
       show-if-above
       v-if="route.name !== 'intranet'"
     >
@@ -536,7 +534,7 @@
             <q-item-label
               v-if="item.hasOwnProperty('header')"
               header
-              class="text-color"
+              class="text-bold text-primary"
               >{{ item.header }}
             </q-item-label>
 
@@ -568,16 +566,7 @@
 
     <ScrollToTopButton></ScrollToTopButton>
 
-    <q-page-container
-      class="my-font"
-      :style="{
-        backgroundImage: `url(${fondo})`,
-        backgroundSize: 'auto',
-        backgroundPosition: 'top right',
-        backgroundRepeat: 'no-repeat',
-        marginTop: '90px'
-      }"
-    >
+    <q-page-container :class="{ 'bg-body': true }" class="q-ma-md">
       <router-view v-slot="{ Component }">
         <!-- <transition name="scale" mode="out-in">
           <essential-loading></essential-loading>

@@ -30,12 +30,11 @@
     color="primary"
     flat
     dense
-    bordered
     square
     :selection="tipoSeleccion"
     v-model:selected="selected"
     :style="estilos"
-    class="bg-body-table my-sticky-column-table my-sticky-header-column-table borde rounded"
+    class="bg-body-table my-sticky-column-table my-sticky-header-column-table"
     :class="{
       'alto-fijo-desktop': !inFullscreen && altoFijo && !$q.screen.xs,
       'alto-fijo-mobile': !inFullscreen && altoFijo && $q.screen.xs,
@@ -89,7 +88,7 @@
                 'number',
                 'date',
                 'time',
-                'search',
+                'search'
               ].includes(props.col.type))
           "
           v-model="props.row[props.col.name]"
@@ -253,20 +252,19 @@
           keep-color
           color="positive"
           :disable="disable || props.col.disableTable"
-          />
-          <!-- :label="props.row[props.col.name] ? 'SI' : 'NO'" -->
+        />
+        <!-- :label="props.row[props.col.name] ? 'SI' : 'NO'" -->
       </q-td>
 
       <q-td v-else :props="props">
         <span
-        v-if="!['selecdt', 'boolean', 'toggle'].includes(props.col.type)"
+          v-if="!['selecdt', 'boolean', 'toggle'].includes(props.col.type)"
           :class="{
             'text-white': $q.dark.isActive,
             'text-dark': !$q.dark.isActive
           }"
           v-html="props.row[props.col.name]"
-          ></span
-        >
+        ></span>
       </q-td>
     </template>
 
@@ -1809,10 +1807,10 @@
       </q-td>
     </template>
     <template #body-cell-revisado="props">
-    <q-td :props="props">
-      <campo-boleano :propsTable="props" />
-    </q-td>
-  </template>
+      <q-td :props="props">
+        <campo-boleano :propsTable="props" />
+      </q-td>
+    </template>
     <template #body-cell-tengo_conocimientos_requeridos="props">
       <q-td :props="props">
         <campo-boleano :propsTable="props" />

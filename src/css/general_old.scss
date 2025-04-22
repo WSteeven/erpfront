@@ -1,14 +1,6 @@
 // Custom scrollbar
 body {
-  // background-color: $grey-5;
-  /* Versión con rgba para mayor control de opacidad si se necesita */
-  /* background: linear-gradient(
-    180deg,
-    rgba(75, 46, 131, 1) 0%,
-    rgba(30, 58, 138, 1) 100%
-  ); */
-  //background: linear-gradient(to bottom right, #a9abbe, #e2e4ec);
-
+  background-color: $grey-5;
   &::-webkit-scrollbar {
     width: 10px;
     background-color: transparent;
@@ -21,10 +13,6 @@ body {
     // background: -webkit-linear-gradient(to top, #2f4d81, #009fff);
     // background: linear-gradient(to top, #2f4d81, #009fff);
   }
-}
-
-.q-page {
-  background-color: transparent !important;
 }
 
 .q-virtual-scroll {
@@ -41,6 +29,9 @@ body {
   }
 }
 
+.h-100 {
+  height: 100% !important;
+}
 .q-drawer__content {
   &::-webkit-scrollbar {
     width: 0px;
@@ -60,70 +51,12 @@ body {
   opacity: 0.6;
 }
 
-.q-tabs {
-  margin-bottom: 4px;
-}
-
-.q-tab__label {
-  font-weight: 500;
-}
-
-// Mis estilos
-.custom-shadow {
-  box-shadow: 0px 10px 60px -10px rgba(44, 54, 60, 0.2);
-}
-
-.custom-shadow2 {
-  box-shadow: rgba(0, 0, 0, 0.2) 0px 20px 30px;
-}
-
-.custom-shadow3 {
-  // box-shadow: rgba(17, 12, 46, 0.15) 0px 48px 100px 0px;
-  box-shadow: rgba(50, 50, 93, 0.25) 0px 50px 100px -20px,
-    rgba(0, 0, 0, 0.3) 0px 30px 60px -30px;
-}
-
-.custom-shadow4 {
-  //box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;
-  box-shadow: rgba(50, 50, 93, 0.25) 0px 50px 100px -20px,
-    rgba(0, 0, 0, 0.3) 0px 30px 60px -30px,
-    rgba(10, 37, 64, 0.35) 0px -2px 6px 0px inset;
-}
-
-.custom-shadow5 {
-  box-shadow: rgba(0, 0, 0, 0.16) 0px 1px 4px;
-}
-
-.shadow-button {
-  box-shadow: 0px 10px 60px -10px rgba(44, 54, 60, 0.4);
-}
-
-.error-validation {
-  box-shadow: rgba(50, 50, 105, 0.15) 0px 2px 5px 0px,
-    rgba(0, 0, 0, 0.05) 0px 1px 1px 0px;
-  padding: 8px;
-  background-color: #fff;
-  width: 100%;
-  margin: 0;
-  border-radius: 4px;
-  z-index: 99999;
-}
-
-.shadow-chip {
-  box-shadow: rgba(0, 0, 0, 0.12) 0px 5px 15px;
-}
-
-.text-thin {
-  font-weight: 200;
-}
-
 .rounded-field {
   border-radius: 4px !important;
 }
 
 .rounded-card {
   border-radius: 16px !important;
-  // box-shadow: rgba(0, 0, 0, 0.12) 0px 5px 15px;
 }
 
 .square-card {
@@ -131,7 +64,11 @@ body {
 }
 
 .rounded-tabpanel {
-  border-radius: 16px;
+  border-radius: 0 16px 16px 16px;
+}
+
+.rounded-notification {
+  border-radius: 0px 24px 0 24px;
 }
 
 .rounded-toolbar {
@@ -144,14 +81,6 @@ body {
 
 .rounded-footer {
   border-radius: 0 0 16px 16px !important;
-}
-
-.rounded-drawer {
-  border-radius: 0 24px 24px 0 !important;
-}
-
-.q-drawer {
-  background-color: transparent !important;
 }
 
 // table
@@ -186,9 +115,9 @@ td {
 }
 
 /*th {
-    color: white;
-    border-color: black;
-  }*/
+  color: white;
+  border-color: black;
+}*/
 
 // q-table
 .q-virtual-scroll__content {
@@ -199,8 +128,8 @@ td {
   text-transform: uppercase;
 }
 
-.q-field--outlined .q-field__control:before {
-  border: none; // Quitar el borde de los inputs
+.normal-text {
+  text-transform: none !important;
 }
 
 input[type='time']::-webkit-calendar-picker-indicator {
@@ -214,8 +143,19 @@ input[type='time']::-webkit-calendar-picker-indicator {
   border: 1px solid $primary !important;
 }
 
+.border-warning {
+  border: 1px solid $warning !important;
+}
+
 .border-grey {
   border: 1px solid $grey-4 !important;
+}
+
+.rounded-4 {
+  border-radius: 4px;
+}
+.rounded-8 {
+  border-radius: 8px;
 }
 
 .border-blue-grey-dashed {
@@ -230,6 +170,10 @@ input[type='time']::-webkit-calendar-picker-indicator {
   border: 1px solid $grey-6;
 }
 
+.border-grey-6-2px {
+  border: 1px solid $primary;
+}
+
 .border-bottom-grey-5 {
   border-bottom: 1px solid $grey-5;
 }
@@ -242,6 +186,38 @@ input[type='time']::-webkit-calendar-picker-indicator {
   border-bottom: 2px solid #000;
 }
 
+.border-callout-info {
+  border: 1px solid rgba($primary, 0.2) !important;
+  border-radius: 4px;
+  background-color: rgba($primary, 0.1) !important;
+}
+
+.border-callout-warning {
+  border: 1px solid rgba($warning, 0.2) !important;
+  border-radius: 4px;
+  background-color: rgba($warning, 0.1) !important;
+}
+
+.border-callout-success {
+  border: 1px solid rgba($positive, 0.3);
+  border-radius: 4px;
+}
+
+.border-callout-error {
+  border-right: 3px solid $error;
+  border-left: 3px solid $error;
+}
+
+.border-callout-positive {
+  border-right: 3px solid $positive;
+  border-left: 3px solid $positive;
+}
+
+.border-left-blue-grey {
+  border-bottom: 3px solid $blue-grey-4;
+  border-left: 3px solid $blue-grey;
+}
+
 .border-right-grey-5 {
   border-right: 1px solid $grey-5;
 }
@@ -250,12 +226,12 @@ input[type='time']::-webkit-calendar-picker-indicator {
   border-bottom: 1px solid $primary;
 }
 /* .bg-transparent {
-      background-color: transparent !important;
-      border: none !important;
-    } */
+    background-color: transparent !important;
+    border: none !important;
+  } */
 .q-card-hover {
   /* Agregar sombra predeterminada sin hover */
-  //box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
   transition: box-shadow 0.3s ease;
 
   /* Establecer márgenes o padding según tu diseño */
@@ -298,44 +274,7 @@ input[type='time']::-webkit-calendar-picker-indicator {
   border-bottom: 2px solid $positive;
 }
 
-.gradiente-azul-morado {
-  /* Versión con rgba para mayor control de opacidad si se necesita */
-  background: linear-gradient(
-    180deg,
-    rgba(75, 46, 131, 1) 0%,
-    rgba(30, 58, 138, 1) 100%
-  );
-}
-
-.gradiente-blanco {
-  background: linear-gradient(
-    to right,
-    rgba(255, 255, 255, 0.8),
-    rgba(240, 240, 240, 0.5)
-  );
-  backdrop-filter: blur(10px);
-}
-
-.border-callout-info {
-  border: 1px solid rgba($primary, 0.2) !important;
-  border-radius: 4px;
-  background-color: rgba($primary, 0.1) !important;
-  //border-left: 3px solid $primary !important;
-}
-
-.border-callout-warning {
-  border: 1px solid rgba($warning, 0.2) !important;
-  border-radius: 4px;
-  background-color: rgba($warning, 0.1) !important;
-}
-
-.border-callout-success {
-  border: 1px solid rgba($positive, 0.3);
-  border-radius: 4px;
-  // border-left: 3px solid $positive;
-}
-
-.border-callout-error {
-  border-right: 3px solid $error;
-  border-left: 3px solid $error;
+.q-field.q-field--with-bottom div .q-field__bottom {
+  text-transform: none !important;
+  margin-bottom: 6px;
 }

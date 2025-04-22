@@ -2,10 +2,11 @@
   <q-page padding>
     <q-tabs
       v-model="tabPrivacidadCuestionario"
-      align="justify"
-      switch-indicator
+      align="left"
       active-class="tab-active"
-      indicator-color="transparent"
+      indicator-color="primary"
+      class="border-bottom"
+      inline-label
       dense
     >
       <q-tab
@@ -15,7 +16,7 @@
         :class="{
           'tab-inactive':
             tabPrivacidadCuestionario !==
-            opcionesPrivacidadCuestionarios.INTERNO,
+            opcionesPrivacidadCuestionarios.INTERNO
         }"
         no-caps
       />
@@ -26,13 +27,13 @@
         :class="{
           'tab-inactive':
             tabPrivacidadCuestionario !==
-            opcionesPrivacidadCuestionarios.PUBLICO,
+            opcionesPrivacidadCuestionarios.PUBLICO
         }"
         no-caps
       />
     </q-tabs>
 
-    <div class="bg-desenfoque rounded-footer border-white q-pa-sm">
+    <div class="q-mt-lg">
       <q-expansion-item
         v-show="
           tabPrivacidadCuestionario === opcionesPrivacidadCuestionarios.PUBLICO
@@ -48,7 +49,7 @@
               titulo="Cada link es una empresa"
               :configuracionColumnas="[
                 ...ConfiguracionColumnasLinksCreados,
-                accionesTabla,
+                accionesTabla
               ]"
               :datos="linksCreados"
               :permitir-consultar="false"
@@ -211,8 +212,8 @@
               options-dense
               dense
               outlined
-              :option-label="(item) => item.titulo"
-              :option-value="(item) => item.id"
+              :option-label="item => item.titulo"
+              :option-value="item => item.id"
               :error="!!v$.tipo_cuestionario_id.$errors.length"
               @blur="v$.tipo_cuestionario_id.$touch"
               emit-value
@@ -254,8 +255,8 @@
               options-dense
               dense
               outlined
-              :option-label="(item) => item.link"
-              :option-value="(item) => item.link"
+              :option-label="item => item.link"
+              :option-value="item => item.link"
               :error="!!v$.link.$errors.length"
               @blur="v$.link.$touch"
               emit-value
@@ -297,7 +298,7 @@
           <essential-table
             titulo="Empleados que respondieron el cuestionario en el año seleccionado"
             :configuracionColumnas="[
-              ...ConfiguracionColumnasReporteCuestionarioEmpleado,
+              ...ConfiguracionColumnasReporteCuestionarioEmpleado
             ]"
             :datos="listado"
             :permitirConsultar="false"
