@@ -94,9 +94,9 @@ export default defineComponent({
     * Funciones
     *************/
     async function filtrarTrabajoAsignado(tabSeleccionado) {
-      await listar({ responsable_id: authenticationStore.user.id, estado: tabSeleccionado, paginate: true })
+      await listar({ responsable_id: authenticationStore.user.id, estado: tabSeleccionado, paginate: true, para_mi: true })
       tabActual.value = tabSeleccionado
-      filtros.fields = { estado: tabSeleccionado }
+      filtros.fields = { estado: tabSeleccionado, responsable_id: authenticationStore.user.id, para_mi: true }
     }
 
     filtrarTrabajoAsignado(estadosTrabajos.ASIGNADO)

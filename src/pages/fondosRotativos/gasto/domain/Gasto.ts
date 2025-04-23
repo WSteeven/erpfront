@@ -21,10 +21,11 @@ export class Gasto extends EntidadAuditable {
   detalle: string | null
   nodo: string | null
   detalle_info: string | null
-  sub_detalle: [] | null
+  sub_detalle: number[]
   sub_detalle_info: string | null
   comprobante1: string | null
   comprobante2: string | null
+  comprobante3: string | null
   cantidad: number | null
   valor_u: number | null
   total: number | null
@@ -67,10 +68,11 @@ export class Gasto extends EntidadAuditable {
     this.aut_especial_user = null
     this.detalle = null
     this.detalle_info = null
-    this.sub_detalle = null
+    this.sub_detalle = []
     this.sub_detalle_info = null
     this.comprobante1 = null
     this.comprobante2 = null
+    this.comprobante3 = null
     this.cantidad = null
     this.valor_u = null
     this.total = null

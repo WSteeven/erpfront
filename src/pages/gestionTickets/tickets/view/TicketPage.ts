@@ -318,7 +318,7 @@ export default defineComponent({
     function filtrarTickets(tabSeleccionado: string) {
       listar({ solicitante_id: authenticationStore.user.id, estado: tabSeleccionado, paginate: true })
       tabActual.value = tabSeleccionado
-      filtros.fields = { estado: tabSeleccionado }
+      filtros.fields = { solicitante_id: authenticationStore.user.id, estado: tabSeleccionado }
     }
 
     filtrarTickets(estadosTickets.ASIGNADO)

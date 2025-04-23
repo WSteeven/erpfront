@@ -99,7 +99,7 @@ export default defineComponent({
     } = useOrquestadorSelectorProductos(orden, 'productos')
     //Filtros y listados
     const { proveedores, filtrarProveedores } = useFiltrosListadosSelects(listadosAuxiliares)
-    const proveedores_internacionales=ref([])
+    const proveedores_internacionales = ref([])
     //Obtener listados
     const empleados = ref([])
     // const categorias = ref([])
@@ -244,6 +244,7 @@ export default defineComponent({
     }
 
     async function obtenerTareas(soloUna = false) {
+      // console.log('consulta')
       let response
       if (soloUna)
         response = await new TareaController().listar({ id: orden.tarea, todas: 1 })
@@ -251,13 +252,13 @@ export default defineComponent({
         response = await new TareaController().listar({
           campos: 'id,codigo_tarea,titulo,cliente_id',
           formulario: true,
-          empleado_id: store.user.id
+          empleado_id: store.user.id,
         })
       listadosAuxiliares.tareas = response.result
       tareas.value = listadosAuxiliares.tareas
     }
-    async function obtenerProveedoresInternacionales(){
-      const response = await new ProveedorInternacionalController().listar({activo:1})
+    async function obtenerProveedoresInternacionales() {
+      const response = await new ProveedorInternacionalController().listar({ activo: 1 })
       listadosAuxiliares.proveedores_internacionales = response.result
       proveedores_internacionales.value = listadosAuxiliares.proveedores_internacionales
     }
@@ -272,15 +273,15 @@ export default defineComponent({
       console.log(fila)
       calcularValores(fila)
     }
-    function checkEsProveedorInternacional(val){
-      if(val){
-        orden.proveedor=null
-        if(proveedores_internacionales.value.length===0){
+    function checkEsProveedorInternacional(val) {
+      if (val) {
+        orden.proveedor = null
+        if (proveedores_internacionales.value.length === 0) {
           obtenerProveedoresInternacionales()
         }
-      }else orden.proveedor_internacional=null
+      } else orden.proveedor_internacional = null
     }
-    function filtrarProveedoresInternacionales(val, update){
+    function filtrarProveedoresInternacionales(val, update) {
       return filtrarLista(val, update, proveedores_internacionales, 'nombre', listadosAuxiliares.proveedores_internacionales)
     }
     /**
@@ -379,7 +380,7 @@ export default defineComponent({
       titulo: 'Eliminar',
       icono: 'bi-trash',
       color: 'negative',
-      accion: ({  posicion }) => {
+      accion: ({ posicion }) => {
         //: props.propsTable.rowIndex,
         eliminar({ posicion })
       },
