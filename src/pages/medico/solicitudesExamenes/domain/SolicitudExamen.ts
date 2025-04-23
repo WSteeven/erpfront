@@ -16,6 +16,7 @@ export class SolicitudExamen extends EntidadAuditable {
   autorizador: number | null
   solicitante: number | null
   autorizacion: string | null
+  generar_orden_compra = false
 
   constructor() {
     super()
