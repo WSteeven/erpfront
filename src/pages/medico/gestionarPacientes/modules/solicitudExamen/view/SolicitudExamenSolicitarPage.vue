@@ -190,6 +190,14 @@
         </div>
       </div> -->
     </template>
+
+    <template #custom-buttons>
+      <q-checkbox
+          v-model="solicitudExamen.generar_orden_compra"
+          label="Generar órden de compra"
+          :disable="disabled"
+        />
+    </template>
   </simple-layout>
 </template>
 
