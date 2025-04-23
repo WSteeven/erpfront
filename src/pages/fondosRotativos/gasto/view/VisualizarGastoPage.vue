@@ -718,6 +718,21 @@
             ></selector-imagen>
           </div>
 
+          <!-- Comprobante 3 Archivo -->
+          <div class="col-12 col-md-3" v-if="gasto.comprobante3">
+            <label class="q-mb-sm block">Comprobante 3</label>
+            <selector-imagen
+                :imagen="gasto.comprobante3"
+                :texto1="gasto.empleado_info"
+                :texto2="'RUC: '+gasto.ruc"
+                :texto3="gasto.num_comprobante"
+                :texto4="'# FACTURA: '+gasto.factura"
+                :texto5="'TOTAL: $ '+gasto.total"
+                file_extensiones=".jpg, image/*"
+                @update:modelValue="(data) => (gasto.comprobante3 = data)"
+            ></selector-imagen>
+          </div>
+
           <!-- Observacion -->
           <div class="col-12 col-md-3">
             <label class="q-mb-sm block">Observación</label>
