@@ -112,8 +112,9 @@ export const tabOptionsLicencias: TabOption[] = [
 ]
 export const tabOptionsVacaciones: TabOption[] = [
   { label: 'Pendiente', value: '1' },
-  { label: 'Aprobados', value: '2' },
-  { label: 'Cancelados', value: '3' },
+  { label: 'Aprobadas', value: '2' },
+  { label: 'Canceladas', value: '3' },
+  { label: 'Anuladas', value: '5' },
 ]
 
 export const tabOptionsPermiso: TabOption[] = [
