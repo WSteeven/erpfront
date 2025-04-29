@@ -8,11 +8,11 @@
       :to="link"
       active-class="link-active"
       :class="{ 'border-left q-ml-lg': hasParent }"
-      class="text-color"
+      class="text-color-drawer"
       exact
     >
       <q-item-section v-if="icon" avatar>
-        <q-icon :name="icon" size="xs" class="color-icono" />
+        <q-icon :name="icon" size="xs" />
       </q-item-section>
 
       <q-item-section>
@@ -28,17 +28,19 @@
       active-class="link-active"
       exact
       :class="{
-        'bg-desenfoque border-white rounded q-mb-xs': true,
+        'bg-desenfoque border-white rounded q-mb-xs': false,
         'border-left q-ml-lg': hasParent
       }"
     >
       <template #header>
         <q-item-section v-if="icon" avatar>
-          <q-icon :name="icon" size="xs" class="color-icono" />
+          <q-icon :name="icon" size="xs" class="text-color-drawer" />
         </q-item-section>
 
         <q-item-section>
-          <q-item-label>{{ title }}</q-item-label>
+          <q-item-label class="text-color-drawer-bold textf-bold">{{
+            title
+          }}</q-item-label>
         </q-item-section>
       </template>
 

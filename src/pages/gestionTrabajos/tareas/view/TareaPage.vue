@@ -20,10 +20,10 @@
     <template #formulario>
       <q-tabs
         v-model="tab"
-        class="text-primary"
+        class="text-primary border-bottom"
         :class="{ 'bg-grey-1': !$q.dark.isActive }"
-        active-color="primary"
         :indicator-color="indicatorColor"
+        active-class="tab-active"
         align="justify"
         no-caps
         inline-label

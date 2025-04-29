@@ -158,16 +158,16 @@
             dense
             unelevated
             no-caps
-            class="q-px-sm"
+            class="q-px-sm color-icon-navbar"
             @click="abrirMovilizacionSubtarea()"
           >
             <q-icon
               name="bi-car-front"
               :class="{ 'q-mr-sm': !$q.screen.xs }"
-              class="bg-icon color-icon-navbar q-pa-xs rounded-field"
+              class="bg-icon q-pa-xs rounded-field"
               size="xs"
             ></q-icon>
-            <span v-if="!$q.screen.xs" class="text-color">Movilización</span>
+            <span v-if="!$q.screen.xs">Movilización</span>
             <q-tooltip class="bg-dark">Movilización</q-tooltip>
           </q-btn>
 
@@ -176,16 +176,16 @@
             dense
             unelevated
             no-caps
-            class="q-px-sm"
+            class="q-px-sm color-icon-navbar"
             :to="{ name: 'mi_bodega' }"
           >
             <q-icon
               name="bi-box-seam"
               :class="{ 'q-mr-sm': !$q.screen.xs }"
-              class="bg-icon color-icon-navbar q-pa-xs rounded-field"
+              class="bg-icon q-pa-xs rounded-field"
               size="xs"
             ></q-icon>
-            <span v-if="!$q.screen.xs" class="text-color">Mi bodega</span>
+            <span v-if="!$q.screen.xs">Mi bodega</span>
             <q-tooltip class="bg-dark">Mi bodega</q-tooltip>
           </q-btn>
 
@@ -250,7 +250,7 @@
             <!-- <span v-if="!$q.screen.xs">Notificaciones</span> -->
             <q-tooltip class="bg-dark">Notificaciones</q-tooltip>
 
-            <q-badge v-if="notificaciones.length > 0" color="positive" floating
+            <q-badge v-if="notificaciones.length > 0" color="primary" floating
               ><span>{{ notificaciones.length }}</span>
             </q-badge>
 
@@ -365,7 +365,9 @@
 
           <!-- Perfil -->
           <q-btn dense round flat glossy @click.self="mostrarMenu = true">
-            <q-badge color="positive" rounded floating> </q-badge>
+            <!-- <q-badge color="white" round floating >
+              <q-icon name="bi-stars" size="12px" color="primary" 
+            /></q-badge> -->
             <img
               alt="Profile image"
               :src="imagenPerfil"
@@ -514,29 +516,30 @@
       v-if="route.name !== 'intranet'"
     >
       <!-- Drawer Header -->
-      <div class="absolute-top q-pa-sm q-ma-sm rounded-card">
+      <div class="row items-center absolute-top q-pa-sm q-ma-md rounfded-card">
         <img
           alt="Logo FirstRed"
           :src="!$q.dark.isActive ? logoClaro : logoOscuro"
-          height="60"
-          class="q-mx-auto block"
+          height="54"
+          class="block bg-solid q-pa-sm borde q-mr-sm"
+          style="border-radius: 8px"
         />
+        <span class="column">
+          <b class="text-thin text-h5 elegant-blue-gradient-text">FIRSTRED</b>
+          <small class="text-color">System</small>
+        </span>
       </div>
 
       <!-- Drawer Body -->
       <q-scroll-area
-        style="
-          height: calc(94% - 120px);
-          margin-top: 100px;
-          margin-bottom: 20px;
-        "
+        style="height: calc(99% - 100px); margin-top: 80px; margin-bottom: 20px"
       >
         <q-list>
           <div v-for="item in links" :key="item.title">
             <q-item-label
               v-if="item.hasOwnProperty('header')"
               header
-              class="text-color"
+              class="text-color-drawer"
               >{{ item.header }}
             </q-item-label>
 
@@ -553,7 +556,7 @@
         </q-list>
       </q-scroll-area>
 
-      <q-btn
+      <!--  <q-btn
         color="primary"
         no-caps
         class="full-width q-mb-md"
@@ -561,7 +564,7 @@
         rounded
         @click="logout()"
         >Cerrar sesión
-      </q-btn>
+      </q-btn> -->
     </q-drawer>
 
     <modales-entidad :comportamiento="modales" @guardado="guardado" />
@@ -569,13 +572,13 @@
     <ScrollToTopButton></ScrollToTopButton>
 
     <q-page-container
-      class="my-font"
+      class="my-font bg-body-background"
       :style="{
         backgroundImage: `url(${fondo})`,
         backgroundSize: 'auto',
         backgroundPosition: 'top right',
-        backgroundRepeat: 'no-repeat',
-        marginTop: '90px'
+        marginTop: '90px',
+        backgroundRepeat: 'no-repeat'
       }"
     >
       <router-view v-slot="{ Component }">

@@ -53,7 +53,7 @@
       animated
       transition-prev="scale"
       transition-next="scale"
-      class="borde rounded custom-shadow q-mt-lg"
+      class="borde rounded custom-shadow5 q-mt-lg"
       keep-alive
     >
       <!-- :class="{ 'bg-desenfoque border-white rounded-tabpanel': !$q.screen.xs }" -->

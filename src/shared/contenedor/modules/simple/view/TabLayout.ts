@@ -149,6 +149,10 @@ export default defineComponent({
       type: Boolean,
       default: true
     },
+    mostrarColumnasVisibles: {
+      type: Boolean,
+      default: true
+    },
   },
   components: { EssentialTable, EssentialTablePagination, ButtonSubmits },
   setup(props) {

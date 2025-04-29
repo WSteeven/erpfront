@@ -4,7 +4,7 @@
       Productos que tienen asignados los empleados
     </div>
 
-    <q-card class="rounded q-mb-md">
+    <q-card class="rounded q-mb-md bg-body no-border" flat>
       <q-card-section class="row q-col-gutter-x-sm">
         <div class="col-10 q-mb-md">
           <label class="q-mb-sm block"

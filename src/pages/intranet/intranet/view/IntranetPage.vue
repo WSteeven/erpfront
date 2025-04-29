@@ -7,7 +7,7 @@
         <div class="q-mb-sm">
           <q-carousel
             v-if="noticias.length > 0"
-            class="carousel-noticias"
+            class="carousel-noticias borde custom-shadow"
             style="border-radius: 15px; overflow: hidden"
             animated
             v-model="carousel_noticias"
@@ -65,6 +65,7 @@
                 <q-btn
                   class="noticias-read-more bottom-right q-mb-md"
                   color="primary"
+                  unelevated
                   @click="verNoticiaCompletaHandler(noticia.id)"
                 >
                   Ver Noticia
@@ -148,18 +149,15 @@
           </q-card>
         </q-dialog>
 
-        
-
         <!--Mis Modulos-->
         <div class="col-12 col-md-9 q-mb-sm">
           <q-card class="my-modulos-card rounded">
-            <q-card-section style="background-color: #006831">
+            <q-card-section style="background: #60b5ff">
               <div
-                class="text-h6"
+                class="text-white"
                 style="
                   text-align: center;
-                  color: white;
-                  font-size: 24px;
+                  font-size: 20px;
                   font-weight: bold;
                   padding: 0px 0;
                 "
@@ -227,22 +225,23 @@
               <q-expansion-item
                 style="
                   text-align-last: center;
-                  background-color: orangered;
-                  color: white;
                   font-size: 20px;
                   font-weight: bold;
                 "
                 icon="bi-buildings-fill"
+                header-class="text-bold bg-primary text-white"
                 label="DEPARTAMENTOS"
                 expand-separator
                 :default-opened="true"
               >
-                <div style="background-color: midnightblue">
+                <div>
                   <q-tabs
                     v-model="activeTab"
-                    class="text-orange"
-                    active-color="orange"
-                    indicator-color="orangered"
+                    align="left"
+                    active-class="tab-active"
+                    indicator-color="primary"
+                    dense
+                    class="border-bottom"
                   >
                     <q-tab
                       v-for="departamento in departamentos"
@@ -250,12 +249,11 @@
                       :name="departamento.id"
                       :label="departamento.nombre"
                       @click="consultarEmpleadosDepartamento(departamento.id)"
-                      style="color: white"
                     />
                   </q-tabs>
                 </div>
 
-                <div style="flex: 1; overflow-y: auto; color: orangered">
+                <div style="flex: 1; overflow-y: auto; color: blue">
                   <q-tab-panels v-model="activeTab" animated>
                     <q-tab-panel
                       v-for="departamento in departamentos"
@@ -328,7 +326,7 @@
       <div class="col-12 col-md-3">
         <!-- Card Empleado -->
         <q-card
-          class="empleado-card q-mb-sm"
+          class="empleado-card q-mb-sm custom-shadow"
           style="border-radius: 15px; overflow: hidden"
         >
           <div class="q-pa-md text-center">
@@ -364,7 +362,7 @@
                 icon-right="mail"
                 label="Ir a mi correo"
                 target="_blank"
-                push
+                unelevated
                 no-caps
               />
             </div>
@@ -405,25 +403,32 @@
                   }}</q-tooltip>
                 </q-icon>
               </a>
-
             </div>
-            <q-btn icon="bi-plugin" label="Plugins" no-caps class="q-mt-sm" color="primary" href="https://drive.google.com/drive/folders/1KypTE2iv-2pHbwQxpzVhVPEhf5Ra8fow?usp=sharing" target="_blank"></q-btn>
+            <q-btn
+              icon="bi-plugin"
+              label="Plugins"
+              no-caps
+              class="q-mt-sm"
+              color="primary"
+              unelevated
+              href="https://drive.google.com/drive/folders/1KypTE2iv-2pHbwQxpzVhVPEhf5Ra8fow?usp=sharing"
+              target="_blank"
+            ></q-btn>
           </div>
         </q-card>
 
         <!--Sección de Extensiones-->
-        <q-card flat bordered class="extensiones-card q-mb-sm">
+        <q-card flat bordered class="q-mb-sm">
           <q-expansion-item
-            style="color: #555; font-size: 12px; font-weight: bold"
             label="EXTENSIONES TELEFÓNICAS"
             icon="bi-telephone-fill"
-            class="extensiones-header"
-            expand-separator
-            :default-opened="false"
+            header-class="text-white"
+            default-opened
+            style="background: #FF9149"
           >
             <div
               v-if="empleadosConExtension.length > 0"
-              class="extensiones-scroll"
+              class="extensiones-scroll bg-solid q-pa-sm"
             >
               <q-card
                 v-for="(empleado, index) in empleadosConExtension"
@@ -450,12 +455,11 @@
               </q-card>
             </div>
 
-            <div v-else class="sin-datos">
+            <div v-else class="sin-datos bg-solid">
               No hay empleados con extensión disponible.
             </div>
           </q-expansion-item>
         </q-card>
-
 
         <!--Sección de Vacantes-->
         <q-card
@@ -468,7 +472,7 @@
           <q-expansion-item
             style="
               text-align-last: center;
-              background-color: rebeccapurple;
+              background-color: #0118d8;
               color: white;
               font-size: 13px;
               font-weight: bold;
@@ -538,7 +542,7 @@
         <!--Formulario de Solicitudes-->
         <q-expansion-item
           style="
-            background-color: #003f68;
+            background-color: #0118d8;
             color: white;
             font-size: 12px;
             font-weight: bold;
@@ -587,7 +591,7 @@
 
         <q-expansion-item
           style="
-            background-color: orange;
+            background-color: #ff9149;
             color: white;
             font-size: 12px;
             font-weight: bold;
@@ -601,13 +605,12 @@
             style="margin: 0; background-color: #ffffff; color: black"
           >
             <div
-              class="text-h6"
+              class="q-py-sm"
               style="
                 text-align: center;
-                color: white;
-                background-color: midnightblue;
-                padding: 10px 0;
-                border-radius: 15px 15px 0px 0px;
+                background-color: #ffecdb;
+                border-radius: 50px;
+                color: #ff9149;
               "
             >
               <i class="bi bi-cake2" style="margin-right: 10px"></i>

@@ -48,12 +48,12 @@
       animated
       transition-prev="scale"
       transition-next="scale"
-      class="borde rounded custom-shadow q-mt-lg"
+      class="bodrde roundded cusdtom-shadow q-mt-lg"
       keep-alive
     >
       <!-- :class="{ 'rounded-tabpanel': !$q.screen.xs }" -->
       <!-- Formulario -->
-      <q-tab-panel name="formulario">
+      <q-tab-panel name="formulario" class="q-pa-none">
         <slot name="formulario" />
         <div>
           <div class="row justify-end q-col-gutter-x-xs">
@@ -85,6 +85,7 @@
           :titulo="tituloTabla"
           :configuracionColumnas="columnas"
           :datos="listado"
+          :grid="grid"
           :permitirConsultar="puedeVer"
           :permitirEditar="puedeEditar"
           :permitirEliminar="puedeEliminar"
@@ -104,6 +105,7 @@
           :accion4Header="accion4Header"
           :permitirFiltrar="puedeFiltrar"
           :mostrarExportar="puedeExportar"
+          :mostrarColumnasVisibles="mostrarColumnasVisibles"
           :ajustarCeldas="ajustarCeldas"
           @consultar="accionTabla.consultar"
           @editar="accionTabla.editar"
@@ -142,6 +144,7 @@
           :accion4Header="accion4Header"
           :permitirFiltrar="puedeFiltrar"
           :mostrarExportar="puedeExportar"
+          :mostrarColumnasVisibles="mostrarColumnasVisibles"
           :ajustarCeldas="ajustarCeldas"
           @consultar="accionTabla.consultar"
           @editar="accionTabla.editar"
