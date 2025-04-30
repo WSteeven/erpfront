@@ -29,4 +29,5 @@ export const comprasProveedores = {
   beneficiarios: new Endpoint('compras/beneficiarios'),
   cuentas_bancarias: new Endpoint('compras/cuentas-bancarias'),
   generador_cash_duplicate: new Endpoint('compras/generador-cash-duplicate'),
+  reportes_calificaciones_proveedores: new Endpoint('compras/proveedores/reportes-calificaciones'),
 }
