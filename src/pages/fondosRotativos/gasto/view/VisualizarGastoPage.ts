@@ -489,7 +489,7 @@ export default defineComponent({
       gasto.num_tarea = null
     }
     function cambiar_detalle() {
-      gasto.sub_detalle = null
+      gasto.sub_detalle = []
     }
 
     function tiene_factura_subdetalle() {

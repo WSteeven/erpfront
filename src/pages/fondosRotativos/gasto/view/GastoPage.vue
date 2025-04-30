@@ -663,7 +663,7 @@
             ></selector-imagen>
           </div>
           <!-- Comprobante 3 Archivo -->
-          <div class="col-12 col-md-3" v-if="requiere3Imagenes">
+          <div class="col-12 col-md-3" v-if="requiere4Imagenes">
             <label class="q-mb-sm block">Comprobante 3</label>
             <selector-imagen
                 :imagen="gasto.comprobante3"
@@ -672,6 +672,18 @@
                 :error="!!v$.comprobante3.$errors.length"
             ></selector-imagen>
           </div>
+
+          <!-- Comprobante 4 Archivo -->
+          <div class="col-12 col-md-3" v-if="requiere4Imagenes">
+            <label class="q-mb-sm block">Comprobante 4</label>
+            <selector-imagen
+                :imagen="gasto.comprobante4"
+                file_extensiones=".jpg, image/*"
+                @update:modelValue="(data) => (gasto.comprobante4 = data)"
+                :error="!!v$.comprobante4.$errors.length"
+            ></selector-imagen>
+          </div>
+
           <!-- Observacion -->
           <div class="col-12 col-md-3">
             <label class="q-mb-sm block">Observación</label>

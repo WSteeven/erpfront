@@ -8,6 +8,8 @@ export class DetalleVacacion extends EntidadAuditable {
   vacacionable_id: string | null
   vacacionable_type: string | null
   observacion: string | null
+  anulado: string | null
+  motivo_anulacion: string | null
 
   constructor() {
     super()
@@ -18,5 +20,7 @@ export class DetalleVacacion extends EntidadAuditable {
     this.vacacionable_id = null
     this.vacacionable_type = null
     this.observacion = null
+    this.anulado = null
+    this.motivo_anulacion = null
   }
 }

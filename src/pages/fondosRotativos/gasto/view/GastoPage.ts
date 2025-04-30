@@ -75,7 +75,8 @@ export default defineComponent({
       entidad: gasto,
       disabled,
       accion,
-      listadosAuxiliares,filtros,
+      listadosAuxiliares,
+      filtros
     } = mixin.useReferencias()
     const { setValidador, obtenerListados, cargarVista, consultar, listar } =
       mixin.useComportamiento()
@@ -106,8 +107,8 @@ export default defineComponent({
     const visualizarAutorizador = computed(() => {
       return store.can('puede.ver.campo.autorizador')
       /*return usuario.roles.findIndex((rol) => rol === 'TECNICO') > -1
-                                      ? true
-                                      : false*/
+                                            ? true
+                                            : false*/
     })
 
     onConsultado(async () => {
@@ -195,7 +196,7 @@ export default defineComponent({
     const VEHICULO = 'VEHICULO'
     const VEHICULO_PROPIO = 'VEHICULO PROPIO'
 
-    const requiere3Imagenes = computed(() => {
+    const requiere4Imagenes = computed(() => {
       const subdetalles_vehiculos = sub_detalles.value
         .filter(
           (v: SubDetalleFondo) =>
@@ -232,8 +233,8 @@ export default defineComponent({
         required: requiredIf(() => esFactura.value)
       },
       /*beneficiarios: {
-                                      required: required
-                                    },*/
+                                            required: required
+                                          },*/
       aut_especial: { required: requiredIf(() => visualizarAutorizador.value) },
       num_comprobante: { maxLength: maxLength(17) },
       detalle: { required },
@@ -249,9 +250,8 @@ export default defineComponent({
       total: { required },
       comprobante1: { required },
       comprobante2: { required },
-      comprobante3: {
-        required: requiredIf(() => requiere3Imagenes.value)
-      },
+      comprobante3: { required: requiredIf(() => requiere4Imagenes.value) },
+      comprobante4: { required: requiredIf(() => requiere4Imagenes.value) },
       kilometraje: { required: requiredIf(() => esCombustibleEmpresa.value) },
       vehiculo: {
         required: requiredIf(
@@ -521,7 +521,7 @@ export default defineComponent({
         }
       }
       esFactura.value = tieneFactura
-      if (!requiere3Imagenes.value) {
+      if (!requiere4Imagenes.value) {
         gasto.vehiculo = null
         gasto.kilometraje = null
       }
@@ -628,10 +628,10 @@ export default defineComponent({
     const tabActualGasto = ref(estadosGastos.PENDIENTE)
 
     function filtrarGasto(tabSeleccionado: number) {
-      listar({ estado: tabSeleccionado, paginate:true }, false)
+      listar({ estado: tabSeleccionado, paginate: true }, false)
       tabActualGasto.value = tabSeleccionado
 
-        filtros.fields = {estado: tabSeleccionado}
+      filtros.fields = { estado: tabSeleccionado }
     }
 
     return {
@@ -685,7 +685,7 @@ export default defineComponent({
       mostarPlaca,
       listadoTareas,
       estadosGastos,
-      requiere3Imagenes
+      requiere4Imagenes
     }
   }
 })

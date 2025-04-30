@@ -26,6 +26,7 @@ export class Gasto extends EntidadAuditable {
   comprobante1: string | null
   comprobante2: string | null
   comprobante3: string | null
+  comprobante4: string | null
   cantidad: number | null
   valor_u: number | null
   total: number | null
@@ -73,6 +74,7 @@ export class Gasto extends EntidadAuditable {
     this.comprobante1 = null
     this.comprobante2 = null
     this.comprobante3 = null
+    this.comprobante4 = null
     this.cantidad = null
     this.valor_u = null
     this.total = null
