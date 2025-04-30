@@ -1,36 +1,22 @@
 <template>
-  <q-page>
-    <div class="row items-center">
-      <!-- Left side -->
-      <div
-        v-if="!$q.screen.xs && !$q.screen.sm"
-        class="col-12 col-md-8 justify-center q-pa-lg items-center row window-height"
-        :class="{ 'bg-grey-2': !$q.dark.isActive }"
-      >
-        <div class="imagen d-flex align-items-center justify-content-center">
-          <q-avatar square size="400px">
-            <img :src="!$q.dark.isActive ? logoClaro : logoOscuro" alt="logo"/>
-          </q-avatar>
-        </div>
+  <q-page class="gradiente-logind my-font">
+    <div class="row justify-center q-pt-xl q-px-sm">
+      <!-- Right side -->
+      <div class="col-12 text-center q-mb-md">
+        <img
+          :src="!$q.dark.isActive ? logoClaro : logoOscuro"
+          alt="logo"
+          width="100"
+        />
       </div>
 
-      <!-- Right side -->
       <div
-        class="col-12 col-md-4 column items-center bg-body-table justify-center window-height"
+        class="col-12 col-md-3 column borde q-py-lg rounded-card custom-shadow bg-solid"
       >
-        <q-avatar
-          v-if="$q.screen.xs"
-          square
-          size="120px"
-          class="q-mx-auto block q-mb-md"
-        >
-          <img :src="!$q.dark.isActive ? logoClaro : logoOscuro" alt="logo" />
-        </q-avatar>
-
         <form @submit.prevent="login" class="full-width q-px-lg">
-          <div class="q-mb-sm">
-            <h2>Bienvenidos a {{ nombreEmpresa }}</h2>
-            <span>Inicie sesión con su cuenta</span>
+          <div class="q-mb-md">
+            <!-- <h2>Bienvenidos a {{ nombreEmpresa }}</h2> -->
+            <span class="text-h5 text-bold">Inicio de sesión</span>
           </div>
 
           <!-- Usuario -->
@@ -55,7 +41,7 @@
               class="normal-text"
               hint="No comparta su contraseña con nadie"
               @keyup.enter="login()"
-              style="text-transform: none;"
+              style="text-transform: none"
             >
               <template v-slot:append>
                 <q-icon
@@ -69,7 +55,10 @@
 
           <!-- Recuerdame -->
           <div class="col-12 q-mb-sm">
-            <q-toggle v-model="loginUser.remember_session" label="Recuérdame" />
+            <q-checkbox
+              v-model="loginUser.remember_session"
+              label="Recuérdame"
+            />
           </div>
 
           <div class="col-12">
@@ -85,13 +74,12 @@
             >
             </q-btn>
           </div>
+
           <div class="col-12">
             <!-- Botones -->
             <q-btn
-              flat
-              color="primary"
               label="Recuperar contraseña"
-              class="full-width q-mb-sm"
+              class="full-width bg-grey-4 q-mb-sm"
               no-caps
               unelevated
               @click="recuperarPassword()"
@@ -106,9 +94,8 @@
               class="full-width q-mb-sm"
               no-caps
               unelevated
-
               outline
-              :to="{name:'LoginPostulante'}"
+              :to="{ name: 'LoginPostulante' }"
             />
           </div>
         </form>
@@ -125,9 +112,39 @@ h2 {
   font-size: 1.714rem;
 }
 
-
 /* Quita las mayusculas al campo de contraseña y usuario */
 /* .q-field .q-field__inner {
   text-transform: none !important;
 } */
+
+.gradiente-login {
+  /* background: #0f0c29;
+  background: -webkit-linear-gradient(
+    to right,
+    #24243e,
+    #302b63,
+    #0f0c29
+  ); 
+  background: linear-gradient(
+    to right,
+    #24243e,
+    #302b63,
+    #0f0c29
+  );  */
+  background: #667db6; /* fallback for old browsers */
+  background: -webkit-linear-gradient(
+    to right,
+    #667db6,
+    #0082c8,
+    #0082c8,
+    #667db6
+  ); /* Chrome 10-25, Safari 5.1-6 */
+  background: linear-gradient(
+    to right,
+    #667db6,
+    #0082c8,
+    #0082c8,
+    #667db6
+  ); /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
+}
 </style>

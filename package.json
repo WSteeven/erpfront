@@ -12,6 +12,8 @@
   },
   "dependencies": {
     "@balkangraph/orgchart.js": "^8.14.48",
+    "@capacitor/camera": "^7.0.1",
+    "@capacitor/status-bar": "^7.0.1",
     "@formkit/tempo": "^0.0.16",
     "@quasar/extras": "^1.0.0",
     "@types/vuelidate": "^0.7.15",

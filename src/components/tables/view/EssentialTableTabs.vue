@@ -2,7 +2,7 @@
   <div>
     <!-- narrow-indicator -->
     <q-tabs
-      v-if="mostrarTabs"
+    v-if="mostrarTabs"
       v-model="tabSeleccionado"
       no-caps
       bordered
@@ -11,8 +11,8 @@
       :active-color="activeColor"
       :active-bg-color="activeBgColor"
       :indicator-color="indicatorColor"
-      class="border-bottom"
       align="justify"
+      :class="{ 'border-bottom': !$q.screen.xs }"
     >
       <q-tab
         v-for="opcion in tabOptions"
@@ -20,7 +20,7 @@
         :name="opcion.value + ''"
         :disable="opcion.disable"
         :class="{
-          'rounded shadow-chip q-mx-xs q-my-md': $q.screen.xs,
+          'rounded shadow-chip q-mx-xs q-my-sm': $q.screen.xs,
           'tab-inactive': tabSeleccionado !== opcion.label && !$q.screen.xs
         }"
         @click="$emit('tab-seleccionado', tabSeleccionado)"
@@ -103,6 +103,7 @@
         :tipoSeleccion="tipoSeleccion"
         @selected="seleccionado"
         :mixin="mixin"
+        :mostrarColumnasVisibles="!$q.screen.xs"
       ></essential-table-pagination>
 
       <essential-table
@@ -158,6 +159,7 @@
         :separador="separador"
         :tipoSeleccion="tipoSeleccion"
         @selected="seleccionado"
+        :mostrarColumnasVisibles="!$q.screen.xs"
       ></essential-table>
     </div>
   </div>
@@ -371,7 +373,7 @@ export default defineComponent({
       () =>
         props.tabOptions.find(
           (opcion: TabOption) => opcion.value === tabSeleccionado.value
-        )?.color_icono ?? ($q.screen.sm || $q.screen.xs ? 'grey' : 'dark')
+        )?.color_icono ?? ($q.screen.sm || $q.screen.xs ? 'grey-3' : 'dark')
     )
 
     const indicatorColor = computed(

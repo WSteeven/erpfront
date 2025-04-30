@@ -1,5 +1,42 @@
 <template>
-  <q-page padding>
+  <q-page>
+    <div class="row">
+      <div class="col-12 text-center q-mb-md">
+        <img
+          alt="Logo FIRSTRED"
+          :src="!$q.dark.isActive ? logoClaro : logoOscuro"
+          :height="$q.screen.xs ? 40 : 80"
+          class="custom-shadow"
+        />
+      </div>
+
+      <div class="col-12 text-center q-mx-auto q-mb-md">
+        <div class="text-h5 text-bold">Bienvenido</div>
+      </div>
+    </div>
+
+    <!-- <q-tabs
+      v-model="tabs"
+      no-caps
+      bordered
+      dense
+      active-class="tab-active-intranet"
+      indicator-color="transparent"
+      class="q-mb-none q-mx-xfl"
+      align="center"
+    >
+      <q-tab
+        v-for="opcion in tabsMenu"
+        :key="opcion"
+        :name="opcion + ''"
+        class="bordde rounded shadow-chip q-mb-xl bg-body q-pa-md q-mx-sm"
+        href="#mis_modulos"
+      >
+        <q-icon name="las la-newspaper" size="md" class="q-mb-md"></q-icon>
+        {{ opcion }}
+      </q-tab>
+    </q-tabs> -->
+
     <div class="row q-col-gutter-sm q-mx-md q-mb-md">
       <!-- SECCION DERECHA -->
       <div class="col-12 col-md-9">
@@ -150,7 +187,7 @@
         </q-dialog>
 
         <!--Mis Modulos-->
-        <div class="col-12 col-md-9 q-mb-sm">
+        <div id="#mis_modulos" class="col-12 col-md-9 q-mb-sm">
           <q-card class="my-modulos-card rounded">
             <q-card-section style="background: #60b5ff">
               <div
@@ -424,7 +461,7 @@
             icon="bi-telephone-fill"
             header-class="text-white"
             default-opened
-            style="background: #FF9149"
+            style="background: #ff9149"
           >
             <div
               v-if="empleadosConExtension.length > 0"
@@ -845,8 +882,14 @@
 </template>
 
 <!--Estilos del calendario Qalendar-->
-<style>
+<style lang="scss">
 @import 'qalendar/dist/style.css';
+
+.tab-active-intranet {
+  font-weight: bold;
+  color: $primary;
+  // font-size: 1.5rem;
+}
 
 /* Estilo para pintar todo el cuadro del día con evento */
 .qalendar-day.has-event {
@@ -1105,10 +1148,10 @@ h5 {
   border-radius: 15px;
 }
 
-.text-h5 {
+/* .text-h5 {
   font-size: 1.25rem;
   font-weight: 500;
-}
+} */
 
 .text-subtitle1 {
   font-size: 1rem;

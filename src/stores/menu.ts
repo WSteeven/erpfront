@@ -1012,7 +1012,7 @@ export const useMenuStore = defineStore('menu', () => {
      *********************************************************/
     {
       title: 'Compras y proveedores',
-      icon: 'fa-solid fa-cart-shopping',
+      icon: 'las la-shopping-cart',
       can: store.can('puede.acceder.modulo_compras') || store.esAdministrador,
       module: true,
       children: [

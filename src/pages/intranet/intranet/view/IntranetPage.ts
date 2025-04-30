@@ -69,6 +69,14 @@ export default defineComponent({
   },
 
   setup() {
+    const tabsOptions = {
+      NOTICIAS: 'Noticias',
+      MIS_MODULOS: 'Mis módulos',
+      DEPARTAMENTOS: 'Departamentos',
+      EVENTOS: 'Eventos',
+      AREA_PERSONAL: 'Área personal',
+    }
+    const tabs = ref(tabsOptions.NOTICIAS)
     const departamentos: Ref<Departamento[]> = ref([])
     const departamentoSeleccionado = 1
     const empleados: Ref<Empleado[]> = ref([])
@@ -524,12 +532,12 @@ export default defineComponent({
     const getImagePerfil = usuario => {
       return usuario.foto_url == null
         ? `https://ui-avatars.com/api/?name=${usuario.nombres.slice(
-            0,
-            1
-          )}+${usuario.apellidos.slice(
-            0,
-            1
-          )}&bold=true&background=008000&color=ffff`
+          0,
+          1
+        )}+${usuario.apellidos.slice(
+          0,
+          1
+        )}&bold=true&background=008000&color=ffff`
         : usuario.foto_url
     }
 
@@ -548,7 +556,7 @@ export default defineComponent({
     //ACCIONES DE BUSQUEDA DE MODULO
 
     return {
-      correo: computed(() => 'https://'+configuracionGeneralStore.configuracion?.sitio_web+'/webmail'),
+      correo: computed(() => 'https://' + configuracionGeneralStore.configuracion?.sitio_web + '/webmail'),
 
       logoClaro: computed(
         () => configuracionGeneralStore.configuracion?.logo_claro
@@ -620,7 +628,14 @@ export default defineComponent({
       configuracion,
       cerrarModal() {
         modalNoticia.value = false
-      }
+      },
+      tabs,
+      tabsOptions,
+      tabsMenu: [tabsOptions.NOTICIAS,
+      tabsOptions.MIS_MODULOS,
+      tabsOptions.DEPARTAMENTOS,
+      tabsOptions.EVENTOS,
+      tabsOptions.AREA_PERSONAL],
     }
   }
 })

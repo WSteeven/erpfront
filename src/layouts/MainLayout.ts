@@ -7,10 +7,11 @@ import {
   defineComponent,
   Ref,
   ref,
+  watch,
   watchEffect
 } from 'vue'
 import { useAuthenticationStore } from 'src/stores/authentication'
-import { LocalStorage, useQuasar } from 'quasar'
+import { LocalStorage, Platform, useQuasar } from 'quasar'
 import { useMenuStore } from 'src/stores/menu'
 import { useRoute, useRouter } from 'vue-router'
 import Swal from 'sweetalert2'
@@ -18,6 +19,8 @@ import dayjs from 'dayjs'
 import es from 'dayjs/locale/es'
 import relativeTime from 'dayjs/plugin/relativeTime'
 import fondo from 'src/assets/img/bg.svg'
+import { StatusBar, Style } from '@capacitor/status-bar'
+import { Capacitor } from '@capacitor/core'
 
 // Componentes
 import ScrollToTopButton from 'components/buttonSubmits/ScrollToTopButton.vue'
@@ -424,6 +427,30 @@ export default defineComponent({
         posicionResultados.value++
     }
 
+    /**
+     * StatusBar - Android
+     */
+    // Función para actualizar el color de la barra de estado
+    const updateStatusBarColor = async () => {
+      if (Capacitor.isNativePlatform()) {
+        await StatusBar.setOverlaysWebView({ overlay: false }); // el contenido ya no se dibuja debajo
+
+        const color = $q.dark.isActive ? '#060606' : '#FFFFFF' // Ajusta los colores según tus necesidades
+        await StatusBar.setBackgroundColor({ color })
+
+        // Cambiar el color del texto de la barra de estado
+        const style = $q.dark.isActive ? Style.Dark : Style.Light // Texto blanco en tema oscuro, negro en tema claro
+        StatusBar.setStyle({ style }) // Cambiar el estilo del texto
+      }
+    }
+
+    watch(
+      computed(() => $q.dark.isActive),
+      updateStatusBarColor
+    )
+    // Llamamos a la función para establecer el color al inicio
+    updateStatusBarColor()
+
     return {
       // logoClaro: `${process.env.API_URL}/storage/configuracion_general/logo_claro.jpeg`,
       logoClaro: computed(
@@ -488,6 +515,13 @@ export default defineComponent({
       resetearBuscador,
       posicionResultados,
       fondo,
+      pageContainerStyle: Capacitor.isNativePlatform() || $q.screen.xs ? { marginTop: '10px' } : {
+        backgroundImage: `url(${fondo})`,
+        backgroundSize: 'auto',
+        backgroundPosition: 'top right',
+        marginTop: '90px',
+        backgroundRepeat: 'no-repeat',
+      }
       // idledFor,
       // tiempoInactividad,
       // mostrarAlertaInactividad,

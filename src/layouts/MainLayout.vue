@@ -1,7 +1,10 @@
 <template>
   <q-layout view="lHh Lpr lFf">
     <!-- Navbar -->
-    <q-header class="bg-body-background" :class="{ 'q-px-lg': !$q.screen.xs }">
+    <q-header
+      class="bg-body-background my-font"
+      :class="{ 'q-px-lg': !$q.screen.xs }"
+    >
       <transition name="slide-fade" mode="out-in">
         <div v-if="mostrarBuscar" class="q-pa-xs">
           <q-input
@@ -70,7 +73,7 @@
             @click="toggleLeftDrawer"
             color="primary"
             icon="menu"
-            unelevated
+            :class="{ 'q-mr-sm': !$q.screen.xs }"
             flat
           >
             <!-- <svg
@@ -104,23 +107,23 @@
             </svg> -->
           </q-btn>
 
-          <img
+          <!-- <img
             alt="Logo FIRSTRED"
             v-if="route.name === 'intranet'"
             :src="!$q.dark.isActive ? logoClaro : logoOscuro"
             height="30"
             class="custom-shadow"
-          />
+          /> -->
 
           <!-- Barra de Busqueda -->
-          <div class="row q-col-gutter-x-xs">
-            <q-btn @click="mostrarBuscar = !mostrarBuscar" unelevated no-caps>
-              <q-icon
-                name="bi-search"
-                size="xs"
-                class="bg-icon color-icon-navbar q-pa-xs rounded-field q-mr-xs"
-              ></q-icon>
-              <span v-if="!$q.screen.xs" class="text-color">Buscar</span>
+          <div class="row">
+            <q-btn
+              @click="mostrarBuscar = !mostrarBuscar"
+              color="primary"
+              no-caps
+            >
+              <q-icon name="las la-search" size="xs"></q-icon>
+              <span v-if="!$q.screen.xs" class="q-ml-xs">Buscar</span>
             </q-btn>
           </div>
         </span>
@@ -128,7 +131,7 @@
         <span
           class="row"
           :class="{
-            'q-gutter-x-sm': $q.screen.xs,
+            'q-gutter-x-xfs': $q.screen.xs,
             'q-gutter-x-md': !$q.screen.xs
           }"
         >
@@ -138,18 +141,15 @@
             dense
             unelevated
             no-caps
-            class="q-px-sm bg-grey-4d"
+            class="q-px-sm color-icon-navbar"
             @click="abrirTransferirTareas()"
           >
             <q-icon
-              name="bi-arrow-left-right"
+              name="las la-exchange-alt"
               :class="{ 'q-mx-sm': !$q.screen.xs }"
-              class="bg-icon color-icon-navbar q-pa-xs rounded-field"
-              size="xs"
+              class="bg-icon q-pa-xs rounded-field"
             ></q-icon>
-            <span v-if="!$q.screen.xs" class="text-color"
-              >Transferir tareas activas</span
-            >
+            <span v-if="!$q.screen.xs">Transferir tareas activas</span>
             <q-tooltip class="bg-dark">Transferir tareas activas</q-tooltip>
           </q-btn>
 
@@ -162,10 +162,9 @@
             @click="abrirMovilizacionSubtarea()"
           >
             <q-icon
-              name="bi-car-front"
+              name="las la-truck-pickup"
               :class="{ 'q-mr-sm': !$q.screen.xs }"
               class="bg-icon q-pa-xs rounded-field"
-              size="xs"
             ></q-icon>
             <span v-if="!$q.screen.xs">Movilización</span>
             <q-tooltip class="bg-dark">Movilización</q-tooltip>
@@ -180,10 +179,9 @@
             :to="{ name: 'mi_bodega' }"
           >
             <q-icon
-              name="bi-box-seam"
+              name="las la-box"
               :class="{ 'q-mr-sm': !$q.screen.xs }"
               class="bg-icon q-pa-xs rounded-field"
-              size="xs"
             ></q-icon>
             <span v-if="!$q.screen.xs">Mi bodega</span>
             <q-tooltip class="bg-dark">Mi bodega</q-tooltip>
@@ -198,10 +196,9 @@
             @click.self="mostrarCrearTicket = true"
           >
             <q-icon
-              name="bi-tags"
+              name="las la-tags"
               :class="{ 'q-mr-sm': !$q.screen.xs }"
               class="bg-icon color-icon-navbar q-pa-xs rounded-field"
-              size="xs"
             ></q-icon>
 
             <q-tooltip class="bg-dark">Crear ticket</q-tooltip>
@@ -237,14 +234,13 @@
             dense
             unelevated
             no-caps
-            class="q-pl-sm"
+            class="q-pr-sm"
             @click.self="mostrarNotificaciones = true"
           >
             <q-icon
-              name="bi-bell"
+              name="las la-bell"
               :class="{ 'q-mr-sm': !$q.screen.xs }"
               class="bg-icon color-icon-navbar q-pa-xs rounded-field"
-              size="xs"
             ></q-icon>
 
             <!-- <span v-if="!$q.screen.xs">Notificaciones</span> -->
@@ -365,9 +361,6 @@
 
           <!-- Perfil -->
           <q-btn dense round flat glossy @click.self="mostrarMenu = true">
-            <!-- <q-badge color="white" round floating >
-              <q-icon name="bi-stars" size="12px" color="primary" 
-            /></q-badge> -->
             <img
               alt="Profile image"
               :src="imagenPerfil"
@@ -511,12 +504,14 @@
     <!-- Drawer -->
     <q-drawer
       v-model="leftDrawerOpen"
-      class="bg-drawer border-right q-px-sm q-py-sm my-font"
+      class="bg-drawer border-right q-px-sm q-py-sm my-font zindex-drawer"
       show-if-above
       v-if="route.name !== 'intranet'"
     >
       <!-- Drawer Header -->
-      <div class="row items-center absolute-top q-pa-sm q-ma-md rounfded-card">
+      <div
+        class="row items-center absolute-top q-pa-sm q-ma-md rounfded-card zindex-drawer"
+      >
         <img
           alt="Logo FirstRed"
           :src="!$q.dark.isActive ? logoClaro : logoOscuro"
@@ -533,6 +528,7 @@
       <!-- Drawer Body -->
       <q-scroll-area
         style="height: calc(99% - 100px); margin-top: 80px; margin-bottom: 20px"
+        class="zindex-drawer"
       >
         <q-list>
           <div v-for="item in links" :key="item.title">
@@ -573,13 +569,7 @@
 
     <q-page-container
       class="my-font bg-body-background"
-      :style="{
-        backgroundImage: `url(${fondo})`,
-        backgroundSize: 'auto',
-        backgroundPosition: 'top right',
-        marginTop: '90px',
-        backgroundRepeat: 'no-repeat'
-      }"
+      :style="pageContainerStyle"
     >
       <router-view v-slot="{ Component }">
         <!-- <transition name="scale" mode="out-in">
