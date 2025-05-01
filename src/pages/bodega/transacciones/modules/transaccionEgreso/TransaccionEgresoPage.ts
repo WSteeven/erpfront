@@ -245,12 +245,12 @@ export default defineComponent({
       },
       tarea: { requiredIfTarea: requiredIf(transaccion.es_tarea) },
       responsable: { required },
-      autorizacion: {
-        requiredIfCoordinador: requiredIf(
-          esCoordinador && !store.esBodegueroTelconet
-        ),
-        requiredIfEsVisibleAut: requiredIf(false)
-      },
+      // autorizacion: {
+      //   requiredIfCoordinador: requiredIf(
+      //     esCoordinador && !store.esBodegueroTelconet
+      //   ),
+      //   requiredIfEsVisibleAut: requiredIf(false)
+      // },
       observacion_aut: {
         requiredIfObsAutorizacion: requiredIf(false)
       },
