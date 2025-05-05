@@ -19,7 +19,7 @@ export const useMenuStore = defineStore('menu', () => {
     {
       title: 'Inicio',
       icon: 'bi-house-door',
-      link: 'intranet',
+      link: '/',
       can: true //!store.can('puede.acceder.trabajo_asignado'),
     },
     {

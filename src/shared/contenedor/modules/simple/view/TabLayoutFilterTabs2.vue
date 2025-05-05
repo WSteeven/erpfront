@@ -58,7 +58,7 @@
     >
       <!-- :class="{ 'bg-desenfoque border-white rounded-tabpanel': !$q.screen.xs }" -->
       <!-- Formulario -->
-      <q-tab-panel name="formulario" class="q-pa-none">
+      <q-tab-panel name="formulario">
         <slot name="formulario" />
         <div>
           <div class="row justify-end q-col-gutter-x-xs q-mt-xl">

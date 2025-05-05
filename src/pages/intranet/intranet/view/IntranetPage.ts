@@ -2,6 +2,7 @@
 import relativeTime from 'dayjs/plugin/relativeTime'
 import es from 'dayjs/locale/es'
 import dayjs from 'dayjs'
+import { PushNotifications } from '@capacitor/push-notifications'
 
 import { useAuthenticationStore } from 'stores/authentication'
 import loginJson from 'src/assets/lottie/welcome.json'
@@ -304,14 +305,14 @@ export default defineComponent({
         name: 'Instructivos',
         icon: 'fa-solid fa-book-journal-whills',
         link: 'https://drive.google.com/drive/folders/1ILsatqtyrkV5tfofM2cTinLOfhIQMO-h?usp=drive_link',
-        color: '#FF5733'
+        color: 'teal-8'
       },
       {
         id: 2,
         name: 'Reglamentos y Normativas',
         icon: 'fa-solid fa-book-bookmark',
         link: 'https://drive.google.com/drive/folders/1k7WjBVUbYf4FY5wX0xoUP8r5gvWNA64e?usp=sharing',
-        color: '#581845'
+        color: 'teal-8'
       }
     ])
 
@@ -554,6 +555,24 @@ export default defineComponent({
     }
 
     //ACCIONES DE BUSQUEDA DE MODULO
+    const token = ref('')
+
+    onMounted(async () => {
+      await PushNotifications.requestPermissions().then(result => {
+        if (result.receive === 'granted') {
+          PushNotifications.register()
+        }
+      })
+
+      PushNotifications.addListener('registration', t => {
+        console.log('Push registration success, token:', t.value)
+        token.value = t.value
+      })
+
+      PushNotifications.addListener('registrationError', err => {
+        console.error('Registration error:', err)
+      })
+    }) 
 
     return {
       correo: computed(() => 'https://' + configuracionGeneralStore.configuracion?.sitio_web + '/webmail'),
@@ -636,6 +655,7 @@ export default defineComponent({
       tabsOptions.DEPARTAMENTOS,
       tabsOptions.EVENTOS,
       tabsOptions.AREA_PERSONAL],
+      token,
     }
   }
 })

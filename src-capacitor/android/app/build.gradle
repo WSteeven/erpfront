@@ -40,7 +40,18 @@ dependencies {
     androidTestImplementation "androidx.test.ext:junit:$androidxJunitVersion"
     androidTestImplementation "androidx.test.espresso:espresso-core:$androidxEspressoCoreVersion"
     implementation project(':capacitor-cordova-android-plugins')
+
+    //implementation platform('com.google.firebase:firebase-bom:32.1.1')
+    // implementation 'com.google.firebase:firebase-messaging:20.3.0'
+    //implementation 'com.google.firebase:firebase-messaging:23.4.1'
+    //implementation 'com.pusher:push-notifications-android:1.9.0'
 }
+
+/*configurations.all {
+    resolutionStrategy {
+        force 'com.google.firebase:firebase-messaging:20.3.0'
+    }
+}*/
 
 apply from: 'capacitor.build.gradle'
 
@@ -52,3 +63,5 @@ try {
 } catch(Exception e) {
     logger.info("google-services.json not found, google-services plugin not applied. Push Notifications won't work")
 }
+// Add this line to the end of the file
+//apply plugin: 'com.google.gms.google-services'

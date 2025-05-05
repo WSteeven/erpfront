@@ -513,7 +513,7 @@
         class="row items-center absolute-top q-pa-sm q-ma-md rounfded-card zindex-drawer"
       >
         <img
-          alt="Logo FirstRed"
+          alt="Logo"
           :src="!$q.dark.isActive ? logoClaro : logoOscuro"
           height="54"
           class="block bg-solid q-pa-sm borde q-mr-sm"

@@ -5,6 +5,7 @@
   "author": "Juan <juanbryanc@gmail.com>",
   "private": true,
   "dependencies": {
+    "@capacitor/push-notifications": "^7.0.1",
     "@capacitor/camera": "^7.0.1",
     "@capacitor/status-bar": "^7.0.1",
     "@capacitor/android": "^6.2.1",

@@ -59,7 +59,7 @@ export default route(function (/* { store, ssrContext } */) {
       sessionIniciada &&
       ['Login', 'ResetPassword', 'Register'].includes(to.name?.toString() ?? '')
     ) {
-      next({ name: 'tablero_personal' })
+      next({ name: 'intranet' })
     } else {
       next()
     }

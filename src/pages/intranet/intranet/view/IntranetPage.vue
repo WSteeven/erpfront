@@ -1,6 +1,7 @@
 <template>
   <q-page>
-    <div class="row">
+    {{ token }}
+    <!-- <div class="row">
       <div class="col-12 text-center q-mb-md">
         <img
           alt="Logo FIRSTRED"
@@ -13,7 +14,7 @@
       <div class="col-12 text-center q-mx-auto q-mb-md">
         <div class="text-h5 text-bold">Bienvenido</div>
       </div>
-    </div>
+    </div> -->
 
     <!-- <q-tabs
       v-model="tabs"
@@ -39,18 +40,21 @@
 
     <div class="row q-col-gutter-sm q-mx-md q-mb-md">
       <!-- SECCION DERECHA -->
+      <div class="col-12">
+        <div class="q-py-md text-h5 text-bold">Últimas noticias</div>
+      </div>
       <div class="col-12 col-md-9">
         <!-- Noticias -->
         <div class="q-mb-sm">
           <q-carousel
             v-if="noticias.length > 0"
-            class="carousel-noticias borde custom-shadow"
+            class="carousel-noticias no-border custom-shadow"
             style="border-radius: 15px; overflow: hidden"
             animated
             v-model="carousel_noticias"
             navigation
             navigation-position="right"
-            height="400px"
+            :height="$q.screen.xs ? '600px' : '400px'"
             autoplay
             autoplay-interval="3000"
             infinite
@@ -88,8 +92,9 @@
                 v-if="noticia.imagen_noticia"
                 :src="noticia.imagen_noticia"
                 :alt="noticia.titulo"
-                class="col-12 col-md-5 noticias-image"
+                class="col-12 col-md-5 noticias-imagfe"
                 style="border-radius: 15px"
+                :style="{ objectFit: 'cover', height: $q.screen.xs  ? '30%' : '100%' }"
               />
               <div class="col-12 col-md-7 q-pl-md">
                 <h5 class="q-mb-sm q-pr-xl" style="text-transform: uppercase">
@@ -111,8 +116,8 @@
             </q-carousel-slide>
           </q-carousel>
 
-          <q-card v-else class="q-pa-md q-mt-md no-news-card" flat bordered>
-            <q-card-section class="text-center q-pa-none">
+          <q-card v-else class="q-pa-md no-border rounded shadow-chip">
+            <q-card-section class="text-center">
               <q-img
                 src="https://cdn.domestika.org/c_fill,dpr_auto,f_auto,q_auto,w_820/v1561146967/content-items/003/072/424/Untitled-2-original.gif?1561146967"
                 class="no-news-gif"
@@ -129,6 +134,7 @@
             </q-card-section>
           </q-card>
         </div>
+
         <!--Modal para ver Noticias Completas-->
         <q-dialog
           v-model="modalNoticia"
@@ -140,10 +146,10 @@
             <q-card-section class="row q-pb-none">
               <q-space />
               <q-btn
-                flat
                 icon="close"
-                color="white"
-                class="noticia-modal-close-btn"
+                color="negative"
+                dense
+                class="noticia-mdodal-close-btn"
                 v-close-popup
               />
             </q-card-section>
@@ -153,8 +159,8 @@
                 :alt="noticiaCompleta?.titulo"
                 class="noticia-modal-image"
               />
-              <div class="noticia-modal-header">
-                <div class="noticia-modal-categories">
+              <div class="noticia-modal-headegr">
+                <div class="noticia-modal-categohries">
                   <q-badge>{{ noticiaCompleta?.categoria }}</q-badge>
                   <q-badge
                     v-for="etiqueta in noticiaCompleta?.etiquetas"
@@ -164,6 +170,7 @@
                     >{{ etiqueta }}</q-badge
                   >
                 </div>
+                
                 <div class="noticia-modal-autor-container">
                   <div class="noticia-modal-autor">
                     ✍️ : {{ noticiaCompleta?.autor }}
@@ -188,44 +195,21 @@
 
         <!--Mis Modulos-->
         <div id="#mis_modulos" class="col-12 col-md-9 q-mb-sm">
-          <q-card class="my-modulos-card rounded">
-            <q-card-section style="background: #60b5ff">
-              <div
-                class="text-white"
-                style="
-                  text-align: center;
-                  font-size: 20px;
-                  font-weight: bold;
-                  padding: 0px 0;
-                "
-              >
-                MIS MÓDULOS
-              </div>
-            </q-card-section>
-            <q-card-section
-              class="icon-container-modulos"
-              style="
-                display: flex;
-                justify-content: center;
-                flex-wrap: wrap;
-                padding: 20px;
-              "
+          <div class="q-py-md text-h5 text-bold q-mb-sm">Mis módulos</div>
+
+          <div class="row q-col-gutter-sm q-mb-xl">
+            <div
+              v-for="(modulo, index) in modulosPermitidos"
+              :key="index"
+              class="col-xs-3 col-md-1"
             >
               <q-btn
-                v-for="(modulo, index) in modulosPermitidos"
-                :key="index"
                 :to="modulo.link"
-                class="icon-link-modulos"
+                class="rounded shadow-chip q-pa-md full-width full-height"
                 flat
                 unelevated
                 rounded
                 dense
-                style="
-                  padding: xs lg;
-                  margin: 10px;
-                  flex-direction: column; /* Cambiar a column para alinear verticalmente */
-                  align-items: center;
-                "
               >
                 <div
                   style="
@@ -236,8 +220,8 @@
                 >
                   <q-icon
                     :name="modulo.icon"
-                    class="icon-content-modulos text-color"
-                    size="40px"
+                    class="idcon-content-modulos text-color"
+                    size="28px"
                   >
                     <q-tooltip anchor="bottom middle" self="bottom middle">
                       {{ modulo.title }}
@@ -251,8 +235,8 @@
                   </div>
                 </div>
               </q-btn>
-            </q-card-section>
-          </q-card>
+            </div>
+          </div>
         </div>
 
         <!-- Departamentos -->
@@ -362,15 +346,12 @@
       <!--SECCION IZQUIERDA-->
       <div class="col-12 col-md-3">
         <!-- Card Empleado -->
-        <q-card
-          class="empleado-card q-mb-sm custom-shadow"
-          style="border-radius: 15px; overflow: hidden"
-        >
+        <q-card class="q-mb-sm custom-shadow no-border rounded">
           <div class="q-pa-md text-center">
             <div class="q-mt-md">
               <p><strong>BIENVENIDO!</strong></p>
               <div
-                class="text-h6"
+                class="q-mb-md"
                 style="
                   font-family: Impact, sans-serif;
                   font-size: 30px;
@@ -381,76 +362,69 @@
                 {{ store.nombreUsuario }}
               </div>
 
-              <div style="font-size: 16px; color: #555">
-                <q-badge rounded color="white" label="👤" />
-                <q-badge color="primary">{{ store.user?.email }}</q-badge>
+              <div style="font-size: 16px; color: #555" class="q-mb-sm">
+                <q-icon name="las la-user-alt" size="sm" />
+                <small class="q-pa-sm">{{ store.user?.email }}</small>
               </div>
+
               <div style="font-size: 14px; color: #555">
-                <q-badge rounded color="white" label="🎓" />
-                <q-badge rounded color="orange">{{
-                  store.user?.cargo
-                }}</q-badge>
+                <!-- <q-badge rounded color="white" label="🎓" /> -->
+                <q-icon name="las la-user-graduate" size="sm" />
+                <small class="q-pa-sm">{{ store.user?.cargo }}</small>
               </div>
             </div>
-            <div class="q-mt-md">
+
+            <div class="column q-gutter-xs q-mt-md">
+              <q-btn
+                href="https://drive.google.com/drive/folders/1Zv3eTjramxByFRht-L5Gz_nrulgFE32V?usp=sharing_eip_m&ts=64386770"
+                color="blue-14"
+                class="bg-blue-1"
+                icon-right="las la-external-link-alt"
+                label="Manuales"
+                target="_blank"
+                unelevated
+                outline
+                no-caps
+              />
               <q-btn
                 :href="correo"
-                color="secondary"
-                icon-right="mail"
+                color="blue-14"
+                class="bg-blue-1"
+                icon-right="las la-external-link-alt"
                 label="Ir a mi correo"
                 target="_blank"
                 unelevated
+                outline
                 no-caps
               />
-            </div>
-            <!-- Documentos -->
-            <div
-              class="q-mt-md flex justify-center rounded-lg"
-              style="
-                padding: 10px;
-                background-color: white;
-                border: 1px solid #ffffff;
-                border-radius: 10px;
-              "
-            >
-              <q-badge
-                rounded
-                color="green"
-                style="font-size: 16px; height: 30px; max-width: 600px"
-              >
-                <q-icon name="bi-folder" class="q-mr-sm"></q-icon>
-                Documentos</q-badge
-              >
 
-              <a
+              <q-btn
+                icon-right="las la-external-link-alt"
+                label="Plugins"
+                class="bg-blue-1"
+                outline
+                no-caps
+                color="blue-14"
+                unelevated
+                href="https://drive.google.com/drive/folders/1KypTE2iv-2pHbwQxpzVhVPEhf5Ra8fow?usp=sharing"
+                target="_blank"
+              ></q-btn>
+
+              <q-btn
                 v-for="documento in documentosIntranet"
                 :key="documento.id"
                 :href="documento.link"
                 target="_blank"
-                class="social-link-empleado"
-                :style="{ color: documento.color }"
+                :label="documento.name"
+                class="bg-teal-1"
+                no-caps
+                outline
+                unelevated
+                icon-right="las la-external-link-alt"
+                :color="documento.color"
               >
-                <q-icon
-                  :name="documento.icon"
-                  size="md"
-                  class="icon-content-empleado"
-                >
-                  <q-tooltip anchor="top middle" self="bottom middle">{{
-                    documento.name
-                  }}</q-tooltip>
-                </q-icon>
-              </a>
+              </q-btn>
             </div>
-            <q-btn
-              icon="bi-plugin"
-              label="Plugins"
-              no-caps
-              class="q-mt-sm"
-              color="primary"
-              unelevated
-              href="https://drive.google.com/drive/folders/1KypTE2iv-2pHbwQxpzVhVPEhf5Ra8fow?usp=sharing"
-              target="_blank"
-            ></q-btn>
           </div>
         </q-card>
 

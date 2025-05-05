@@ -11,7 +11,7 @@
       </div>
 
       <div
-        class="col-12 col-md-3 column borde q-py-lg rounded-card custom-shadow bg-solid"
+        class="col-12 col-md-3 column bordfe q-py-lg rounded-card shadow-chip bg-solid"
       >
         <form @submit.prevent="login" class="full-width q-px-lg">
           <div class="q-mb-md">
