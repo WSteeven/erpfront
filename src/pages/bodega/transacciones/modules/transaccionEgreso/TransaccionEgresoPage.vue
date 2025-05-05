@@ -100,18 +100,12 @@
               outlined
               :disable="disabled || (soloLectura && !esCoordinador)"
               :readonly="disabled || (soloLectura && !esCoordinador)"
-              :error="!!v$.autorizacion.$errors.length"
               error-message="Debes seleccionar una autorizacion"
               :option-value="v => v.id"
               :option-label="v => v.nombre"
               emit-value
               map-options
             >
-              <template v-slot:error>
-                <div v-for="error of v$.autorizacion.$errors" :key="error.$uid">
-                  <div class="error-msg">{{ error.$message }}</div>
-                </div>
-              </template>
               <template v-slot:no-option>
                 <q-item>
                   <q-item-section class="text-grey">
@@ -735,6 +729,8 @@
               </div>
             </div>
           </div>
+
+          {{v$.$errors}}
 
           <!-- Tabla -->
           <div class="col-12">
