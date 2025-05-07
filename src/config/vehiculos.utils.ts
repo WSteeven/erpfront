@@ -1,4 +1,8 @@
 import { TabOption } from 'components/tables/domain/TabOption'
+import { AxiosHttpRepository } from 'shared/http/infraestructure/AxiosHttpRepository'
+import { apiConfig, endpoints } from 'config/api'
+import { imprimirArchivo } from 'shared/utils'
+import { useNotificaciones } from 'shared/notificaciones'
 
 
 export const opciones_traccion_vehiculos = [
@@ -234,4 +238,3 @@ export const tabOptionsBitacoras: TabOption[] = [
   { label: 'Creadas', value: '0' }, //estado Finalizado = false
   { label: 'Finalizadas', value: '1' }, //estado Finalizado = true
 ]
-

@@ -6,7 +6,7 @@ export class Pago extends EntidadAuditable {
     num_secuencial: number | null = null
     num_comprobante: string | null = null
     moneda: string | null = null
-    valor: string | null = null
+    valor: number | null = 0
     forma_pago: string | null = null
     referencia: string | null = null
     referencia_adicional: string | null = null

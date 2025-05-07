@@ -1,10 +1,10 @@
 <template>
   <q-page padding>
-    <div class="row q-col-gutter-sm q-mt-md q-mx-md q-mb-md">
+    <div class="row q-col-gutter-sm q-mx-md q-mb-md">
       <!-- SECCION DERECHA -->
-      <div class="col-12 col-md-9 q-px-md">
+      <div class="col-12 col-md-9">
         <!-- Noticias -->
-        <div>
+        <div class="q-mb-sm">
           <q-carousel
             v-if="noticias.length > 0"
             class="carousel-noticias"
@@ -148,10 +148,10 @@
           </q-card>
         </q-dialog>
 
-        <br />
+        
 
         <!--Mis Modulos-->
-        <div class="col-12 col-md-9">
+        <div class="col-12 col-md-9 q-mb-sm">
           <q-card class="my-modulos-card rounded">
             <q-card-section style="background-color: #006831">
               <div
@@ -219,8 +219,6 @@
             </q-card-section>
           </q-card>
         </div>
-
-        <br />
 
         <!-- Departamentos -->
         <div class="col-12 col-md-9">
@@ -327,10 +325,10 @@
       </div>
 
       <!--SECCION IZQUIERDA-->
-      <div class="col-12 col-md-3 q-px-md q-mt-md">
+      <div class="col-12 col-md-3">
         <!-- Card Empleado -->
         <q-card
-          class="empleado-card"
+          class="empleado-card q-mb-sm"
           style="border-radius: 15px; overflow: hidden"
         >
           <div class="q-pa-md text-center">
@@ -366,6 +364,8 @@
                 icon-right="mail"
                 label="Ir a mi correo"
                 target="_blank"
+                push
+                no-caps
               />
             </div>
             <!-- Documentos -->
@@ -382,8 +382,11 @@
                 rounded
                 color="green"
                 style="font-size: 16px; height: 30px; max-width: 600px"
-                >DOCUMENTOS</q-badge
               >
+                <q-icon name="bi-folder" class="q-mr-sm"></q-icon>
+                Documentos</q-badge
+              >
+
               <a
                 v-for="documento in documentosIntranet"
                 :key="documento.id"
@@ -402,20 +405,16 @@
                   }}</q-tooltip>
                 </q-icon>
               </a>
-            </div>
 
+            </div>
+            <q-btn icon="bi-plugin" label="Plugins" no-caps class="q-mt-sm" color="primary" href="https://drive.google.com/drive/folders/1KypTE2iv-2pHbwQxpzVhVPEhf5Ra8fow?usp=sharing" target="_blank"></q-btn>
           </div>
         </q-card>
-        <br />
 
         <!--Sección de Extensiones-->
-        <q-card flat bordered class="extensiones-card">
+        <q-card flat bordered class="extensiones-card q-mb-sm">
           <q-expansion-item
-            style="
-              color: #555;
-              font-size: 12px;
-              font-weight: bold;
-            "
+            style="color: #555; font-size: 12px; font-weight: bold"
             label="EXTENSIONES TELEFÓNICAS"
             icon="bi-telephone-fill"
             class="extensiones-header"
@@ -456,14 +455,14 @@
             </div>
           </q-expansion-item>
         </q-card>
-        <br />
+
 
         <!--Sección de Vacantes-->
         <q-card
           v-if="vacantesDisponibles"
           flat
           bordered
-          class="vacantes-card"
+          class="vacantes-card q-mb-sm"
           style="border-radius: 15px; overflow: hidden"
         >
           <q-expansion-item
@@ -536,8 +535,6 @@
           </q-expansion-item>
         </q-card>
 
-        <br />
-
         <!--Formulario de Solicitudes-->
         <q-expansion-item
           style="
@@ -551,6 +548,7 @@
           dense-toogle
           label="SOLICITUDES"
           :default-opened="false"
+          class="q-mb-sm"
         >
           <div style="background-color: WHITE; padding: 20px">
             <q-form @submit.prevent="enviarSolicitud">
@@ -584,8 +582,6 @@
             </q-form>
           </div>
         </q-expansion-item>
-
-        <br />
 
         <!--Calendario de Eventos-->
 
@@ -1365,8 +1361,6 @@ h5 {
   font-size: 13px;
   border-radius: 12px 12px 0 0; /* Redondeo solo arriba si quieres */
 }
-
-
 
 .extensiones-header {
   background-color: #ffffff;

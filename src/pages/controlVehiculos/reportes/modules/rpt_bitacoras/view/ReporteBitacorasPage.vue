@@ -229,6 +229,12 @@
                   :configuracionColumnas="configuracionColumnas"
                   :datos="listado"
                   :altoFijo="false"
+                  :accion1="btnImprimir"
+                  :permitirConsultar="false"
+                  :permitirEditar="false"
+                  :permitirEliminar="false"
+                  :permitirBuscar="true"
+                  ajustar-celdas
                 ></essential-table>
               </div>
             </div>

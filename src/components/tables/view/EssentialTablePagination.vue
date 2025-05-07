@@ -176,7 +176,7 @@
             'text-white': $q.dark.isActive,
             'text-dark': !$q.dark.isActive
           }"
-          >{{ props.row[props.col.name] }}</span
+          v-html="props.row[props.col.name]"></span
         >
       </q-td>
     </template>

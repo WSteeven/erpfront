@@ -146,7 +146,7 @@ export default defineComponent({
         tareas: {
           controller: new TareaController(),
           params: {
-            todas:1,
+            todas: 1,
             campos: 'id,codigo_tarea,titulo,cliente_id',
             'f_params[orderBy][field]': 'id',
             'f_params[orderBy][type]': 'DESC',
@@ -174,6 +174,8 @@ export default defineComponent({
       const enRutaInspeccionIncidente = computed(() => ['inspecciones', 'incidentes'].includes(route.name?.toString() ?? ''))
       if (!enRutaInspeccionIncidente.value) devolucion.solicitante = store.user.id
 
+      console.log(listadoMaterialesDevolucion)
+
       //logica para autocompletar el formulario de devolucion
       if (listadoMaterialesDevolucion.listadoMateriales.length) {
         cargando.activar()
@@ -197,10 +199,12 @@ export default defineComponent({
             serial: material.serial,
           }
         })
+        if (listadoMaterialesDevolucion.tareaId) checkEsTarea(listadoMaterialesDevolucion.tareaId)
         cargando.desactivar()
       }
       listadosAuxiliares.sucursales = JSON.parse(LocalStorage.getItem('sucursales')!.toString())
       sucursales.value = listadosAuxiliares.sucursales
+
       // se carga los materiales de clientes
       await obtenerClientesMaterialesEmpleado()
     })

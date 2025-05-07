@@ -19,6 +19,7 @@ export interface ColumnConfig<T> {
   visibleModal?: boolean
   print?: boolean
   style?: string
+  headerStyle?: string
   type?: tipos
   error?: boolean
   editable?: boolean

@@ -9,10 +9,14 @@ export const configuracionColumnasGeneradorCash: ColumnConfig<GeneradorCash>[] =
     align: 'left',
   },
   {
+    name: 'valor_total',
+    field: 'valor_total',
+    label: 'Valor total ($)',
+  },
+  {
     name: 'total_pagos',
     field: 'total_pagos',
     label: 'Total de pagos',
-    align: 'left',
   },
   {
     name: 'creador',

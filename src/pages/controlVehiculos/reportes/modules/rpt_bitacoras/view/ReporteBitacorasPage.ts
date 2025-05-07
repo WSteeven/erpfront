@@ -6,7 +6,7 @@ import { StatusEssentialLoading } from 'components/loading/application/StatusEss
 import NoOptionComponent from 'components/NoOptionComponent.vue';
 import EssentialTable from 'components/tables/view/EssentialTable.vue';
 import { apiConfig, endpoints } from 'config/api';
-import { maskFecha } from 'config/utils';
+import { accionesTabla, maskFecha } from 'config/utils'
 import { BitacoraVehicular } from 'pages/controlVehiculos/bitacoraVehicular/domain/BitacoraVehicular';
 import { BitacoraVehicularController } from 'pages/controlVehiculos/bitacoraVehicular/infraestructure/BitacoraVehicularController';
 import { VehiculoController } from 'pages/controlVehiculos/vehiculos/infraestructure/VehiculoController';
@@ -22,6 +22,8 @@ import { LocalStorage, useQuasar } from 'quasar';
 import { useNotificacionStore } from 'stores/notificacion';
 import { useCargandoStore } from 'stores/cargando';
 import { onUnmounted } from 'vue';
+import { CustomActionTable } from 'components/tables/domain/CustomActionTable'
+import { useFunctionsBitacoraVehicular } from 'vehiculos/bitacoraVehicular/application/Functions'
 
 export default defineComponent
   ({
@@ -32,7 +34,9 @@ export default defineComponent
       const { listadosAuxiliares } = mixin.useReferencias()
       const { cargarVista, obtenerListados } = mixin.useComportamiento()
       const { notificarError, notificarAdvertencia } = useNotificaciones()
-
+        /****************************************
+         * Stores
+         ****************************************/
       useNotificacionStore().setQuasar(useQuasar())
       useCargandoStore().setQuasar(useQuasar())
       const cargando = new StatusEssentialLoading()
@@ -52,6 +56,7 @@ export default defineComponent
 
       const listado = ref([])
       const { vehiculos, filtrarVehiculos } = useFiltrosListadosSelects(listadosAuxiliares)
+        const { imprimirPdf } = useFunctionsBitacoraVehicular()
       cargarVista(async () => {
         await obtenerListados({
           vehiculos: []
@@ -142,6 +147,15 @@ export default defineComponent
       }
 
 
+        const btnImprimir: CustomActionTable = {
+            titulo: 'Imprimir',
+            icono: 'bi-printer',
+            color: 'secondary',
+            accion: async ({ entidad }) => {
+                await imprimirPdf(entidad.id)
+            }
+        }
+
       return {
         v$,
         listado,
@@ -150,12 +164,15 @@ export default defineComponent
         reporte,
         maskFecha,
         INDIVIDUAL,
-        configuracionColumnas: configuracionColumnasReporteBitacoras,
+        configuracionColumnas: [...configuracionColumnasReporteBitacoras, accionesTabla],
         umbral_km_consumidos,
 
         //listados
         vehiculos, filtrarVehiculos,
         opciones,
+
+        //botones de tabla
+        btnImprimir,
 
         //funciones
         buscarReporte,

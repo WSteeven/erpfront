@@ -28,12 +28,12 @@ export const configuracionColumnasBeneficiarios: ColumnConfig<Beneficiario>[] = 
     align: 'left',
   },
   {
-    name: 'direccion',
-    field: 'direccion',
-    label: 'Dirección',
+    name: 'resumen_cuentas_bancarias',
+    field: 'resumen_cuentas_bancarias',
+    label: 'Cuentas bancarias',
     align: 'left',
   },
-  {
+  /* {
     name: 'telefono',
     field: 'telefono',
     label: 'Teléfono',
@@ -50,5 +50,5 @@ export const configuracionColumnasBeneficiarios: ColumnConfig<Beneficiario>[] = 
     field: 'canton',
     label: 'Canton',
     align: 'left',
-  },
+  }, */
 ])

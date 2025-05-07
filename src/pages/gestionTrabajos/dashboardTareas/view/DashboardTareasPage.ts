@@ -1,5 +1,10 @@
 // Dependencias
-import { acciones, accionesTabla, estadosTrabajos, rolesSistema } from 'config/utils'
+import {
+  acciones,
+  accionesTabla,
+  estadosTrabajos,
+  rolesSistema
+} from 'config/utils'
 import { obtenerFechaActual, ordernarListaString } from 'shared/utils'
 import { optionsLine, optionsPie } from 'config/graficoGenerico'
 import { computed, defineComponent, reactive, ref } from 'vue'
@@ -34,9 +39,17 @@ import { CustomActionTable } from 'components/tables/domain/CustomActionTable'
 import { Subtarea } from 'pages/gestionTrabajos/subtareas/domain/Subtarea'
 import { Empleado } from 'pages/recursosHumanos/empleados/domain/Empleado'
 import { FiltroDashboardTicket } from '../domain/FiltroReporteMaterial'
+import { OptionGroup } from 'components/optionGroup/domain/OptionGroup'
 
 export default defineComponent({
-  components: { TabLayout, EssentialTable, SelectorImagen, TableView, ModalesEntidad, GraficoGenerico },
+  components: {
+    TabLayout,
+    EssentialTable,
+    SelectorImagen,
+    TableView,
+    ModalesEntidad,
+    GraficoGenerico
+  },
   setup() {
     /*********
      * Stores
@@ -57,7 +70,10 @@ export default defineComponent({
     const { cargarVista, obtenerListados } = mixin.useComportamiento()
 
     // mixin subtarea
-    const mixinSubtarea = new ContenedorSimpleMixin(Subtarea, new SubtareaController())
+    const mixinSubtarea = new ContenedorSimpleMixin(
+      Subtarea,
+      new SubtareaController()
+    )
 
     cargarVista(async () => {
       await obtenerListados({
@@ -70,54 +86,83 @@ export default defineComponent({
           params: {
             campos: 'id,nombres,apellidos',
             estado: 1,
-            rol: [rolesSistema.coordinador, rolesSistema.coordinadorBackup, rolesSistema.jefe_tecnico],
+            rol: [
+              rolesSistema.coordinador,
+              rolesSistema.coordinadorBackup,
+              rolesSistema.jefe_tecnico
+            ]
           }
-        },
+        }
       })
     })
+      const SISTEMA = 'SISTEMA'
+      const APPENATE = 'APPENATE'
 
+    const tiposDashboard: OptionGroup[] = [
+      { label: SISTEMA, value: SISTEMA },
+      { label: APPENATE, value: APPENATE }
+    ]
+    const tipoDashboard = ref(SISTEMA)
     const filtro = reactive(new FiltroDashboardTicket())
     const dashboardTareaController = new DashboardTareaController()
     const cargando = new StatusEssentialLoading()
-    const mostrarTitulosSeccion = computed(() => filtro.fecha_inicio && filtro.fecha_fin && filtro.empleado)
+    const mostrarTitulosSeccion = computed(
+      () => filtro.fecha_inicio && filtro.fecha_fin && filtro.empleado
+    )
     const tipoFiltroSubordinados = ref(modosAsignacionTrabajo.por_grupo)
     const mostrarInactivos = ref(false)
+    const mostrarPowerBI = ref(false)
 
     async function checkMostrarInactivos(val) {
       filtro.empleado = null
       resetearDatosDashboardCoordinador()
-      listadosAuxiliares.empleados = await cargando.cargarConsulta(async () => (await new EmpleadoController().listar({ estado: val ? 0 : 1 })).result) 
+      listadosAuxiliares.empleados = await cargando.cargarConsulta(
+        async () =>
+          (
+            await new EmpleadoController().listar({ estado: val ? 0 : 1 })
+          ).result
+      )
       empleados.value = listadosAuxiliares.empleados
+    }
+
+    async function checkmostrarPowerBI(val) {
+      if (val) console.log('se muestra el power BI')
     }
 
     // Tabs
     const opcionesSubordinado = {
       subordinadosGrafico: 'subordinadosGrafico',
       subordinadosListado: 'subordinadosListado',
-      subordinadosEmpleadoListado: 'subordinadosEmpleadoListado',
+      subordinadosEmpleadoListado: 'subordinadosEmpleadoListado'
     }
 
     const opcionesCoordinadorConsultado = {
       coordinadorConsultadoGrafico: 'coordinadorConsultadoGrafico',
-      coordinadorConsultadoListado: 'coordinadorConsultadoListado',
+      coordinadorConsultadoListado: 'coordinadorConsultadoListado'
     }
 
     const opcionesGrupo = {
       grupoGrafico: 'grupoGrafico',
-      grupoListado: 'grupoListado',
+      grupoListado: 'grupoListado'
     }
 
-    const tabsCoordinadorConsultado = ref(opcionesCoordinadorConsultado.coordinadorConsultadoGrafico)
+    const tabsCoordinadorConsultado = ref(
+      opcionesCoordinadorConsultado.coordinadorConsultadoGrafico
+    )
     const tabsSubordinados = ref(opcionesSubordinado.subordinadosGrafico)
     const tabsGrupo = ref(opcionesGrupo.grupoGrafico)
 
     const opcionesFiltroGrupoEmpleado = {
       porGrupo: 'POR GRUPO',
-      porEmpleado: 'POR EMPLEADO',
+      porEmpleado: 'POR EMPLEADO'
     }
 
-    const mostrarSeccionGrupo = computed(() => filtro.grupo_empleado === opcionesFiltroGrupoEmpleado.porGrupo)
-    const mostrarSeccionEmpleado = computed(() => filtro.grupo_empleado === opcionesFiltroGrupoEmpleado.porEmpleado)
+    const mostrarSeccionGrupo = computed(
+      () => filtro.grupo_empleado === opcionesFiltroGrupoEmpleado.porGrupo
+    )
+    const mostrarSeccionEmpleado = computed(
+      () => filtro.grupo_empleado === opcionesFiltroGrupoEmpleado.porEmpleado
+    )
 
     /*******
      * Init
@@ -130,16 +175,22 @@ export default defineComponent({
       fecha_inicio: { required },
       fecha_fin: { required },
       empleado: { requiredIf: requiredIf(() => mostrarSeccionEmpleado.value) },
-      grupo: { requiredIf: requiredIf(() => mostrarSeccionGrupo.value) },
+      grupo: { requiredIf: requiredIf(() => mostrarSeccionGrupo.value) }
     }
 
     const v$ = useVuelidate(reglas, filtro)
 
     /**********
-    * Modales
-    **********/
+     * Modales
+     **********/
     const modalesSubtarea = new ComportamientoModalesSubtarea()
-    const { execute, graficos, seleccionarEstado, listadoFiltrado, resetearDatos } = graficarPorGrupoUseCase(dashboardTareaController, filtro)
+    const {
+      execute,
+      graficos,
+      seleccionarEstado,
+      listadoFiltrado,
+      resetearDatos
+    } = graficarPorGrupoUseCase(dashboardTareaController, filtro)
     const {
       consultarDashboardCoordinador,
       resetearDatosDashboardCoordinador,
@@ -182,10 +233,17 @@ export default defineComponent({
       totalSubtareas,
       graficosCoordinadorSubordinadosPorGrupo,
       graficosCoordinadorSubordinadosPorCoordinador,
-      mostrarCantidades,
-    } = graficarPorCoordinadorUseCase(dashboardTareaController, filtro, modalesSubtarea)
+      mostrarCantidades
+    } = graficarPorCoordinadorUseCase(
+      dashboardTareaController,
+      filtro,
+      modalesSubtarea
+    )
 
-    const { btnSeguimiento } = useBotonesTablaSubtarea(subtareas, modalesSubtarea)
+    const { btnSeguimiento } = useBotonesTablaSubtarea(
+      subtareas,
+      modalesSubtarea
+    )
     const botonVer: CustomActionTable = {
       titulo: 'Más detalles',
       icono: 'bi-eye',
@@ -193,18 +251,14 @@ export default defineComponent({
         subtareaStore.idSubtareaSeleccionada = entidad.id
         subtareaStore.accion = acciones.consultar
         modalesSubtarea.abrirModalEntidad('SubtareaPage')
-      },
+      }
     }
 
     /*********
-   * Filtros
-   **********/
-    const {
-      grupos,
-      filtrarGrupos,
-      empleados,
-      filtrarEmpleados,
-    } = useFiltrosListadosTarea(listadosAuxiliares)
+     * Filtros
+     **********/
+    const { grupos, filtrarGrupos, empleados, filtrarEmpleados } =
+      useFiltrosListadosTarea(listadosAuxiliares)
 
     async function consultar() {
       if (await v$.value.$validate()) {
@@ -249,7 +303,9 @@ export default defineComponent({
     }
 
     function ordenarEmpleados() {
-      empleados.value.sort((a: Empleado, b: Empleado) => ordernarListaString(a.apellidos!, b.apellidos!))
+      empleados.value.sort((a: Empleado, b: Empleado) =>
+        ordernarListaString(a.apellidos!, b.apellidos!)
+      )
     }
 
     function clickGraficoLineaTiempo(data) {
@@ -264,7 +320,8 @@ export default defineComponent({
     function clickCantidadesPorEstadoSubtareas(data) {
       const { label } = data
       if (label) {
-        tabsCoordinadorConsultado.value = opcionesCoordinadorConsultado.coordinadorConsultadoListado
+        tabsCoordinadorConsultado.value =
+          opcionesCoordinadorConsultado.coordinadorConsultadoListado
         seleccionarCantidadesPorEstadoSubtareas(data)
       }
     }
@@ -368,6 +425,10 @@ export default defineComponent({
       mostrarCantidades,
       mostrarInactivos,
       checkMostrarInactivos,
+      mostrarPowerBI,
+      checkmostrarPowerBI,
+      tipoDashboard,
+      tiposDashboard,SISTEMA, APPENATE,
     }
-  },
+  }
 })

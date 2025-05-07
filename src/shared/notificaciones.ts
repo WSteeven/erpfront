@@ -100,6 +100,7 @@ export function useNotificaciones() {
       title: config.titulo ?? 'Confirmación',
       message: config.mensaje,
       prompt: {
+        placeholder: config.placeholder ?? null,
         model: config.defecto,
         type: config.tipo ?? 'text', // optional
         isValid: val => config.validacion ? config.validacion(val) : true, //val => val <= data.entidad.cantidad,

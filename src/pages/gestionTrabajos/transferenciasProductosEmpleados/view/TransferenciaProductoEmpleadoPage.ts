@@ -1,9 +1,5 @@
 // Dependencias
-import {
-  acciones,
-  estadosTransacciones,
-  rolesSistema
-} from 'config/utils'
+import { destinosTareas, estadosTransferenciasProductos, tabOptionsTransferenciaProductoEmpleado } from 'config/tareas.utils'
 import { configuracionColumnasProductosSeleccionadosAccion } from '../domain/configuracionColumnasProductosSeleccionadosAccion'
 import { configuracionColumnasTransferenciaProducto } from '../domain/configuracionColumnasTransferenciaProducto'
 import { computed, defineComponent, onMounted, reactive, ref, watch } from 'vue'
@@ -11,7 +7,7 @@ import { useOrquestadorSelectorDetalles } from '../application/OrquestadorSelect
 import { useFiltrosListadosSelects } from 'shared/filtrosListadosGenerales'
 import { useAuthenticationStore } from 'stores/authentication'
 import { useNotificacionStore } from 'stores/notificacion'
-import { destinosTareas, estadosTransferenciasProductos, tabOptionsTransferenciaProductoEmpleado } from 'config/tareas.utils'
+import { acciones, rolesSistema } from 'config/utils'
 import { useCargandoStore } from 'stores/cargando'
 import { ordernarListaString } from 'shared/utils'
 import { required } from 'shared/i18n-validators'
@@ -51,6 +47,7 @@ import { TareaController } from 'tareas/infraestructure/TareaController'
 import { Empleado } from 'recursosHumanos/empleados/domain/Empleado'
 import { useNotificaciones } from 'shared/notificaciones'
 import { Tarea } from 'tareas/domain/Tarea'
+import { DetalleProducto } from 'pages/bodega/detalles_productos/domain/DetalleProducto'
 
 export default defineComponent({
   name: 'TransferenciaProductoEmpleado',
@@ -671,6 +668,7 @@ export default defineComponent({
       consultado: computed(() => accion.value === acciones.editar || accion.value === acciones.consultar),
       botonImprimir,
       autorizaciones,
+      notificacionSSA: computed(() => transferencia.listado_productos.some((p: DetalleProducto) => p.categoria === 'EPP') ? 'Se notificará el responsable del departamento de <b>SSA</b> que se transfirieron <b>EPPs</b>.' : null),
     }
   }
 })

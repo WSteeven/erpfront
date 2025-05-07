@@ -8,9 +8,9 @@
     :accion3="btnGenerarCashTxt"
   >
     <template #formulario>
-      <div class="row q-col-gutter-sm q-mb-md">
+      <div class="row q-col-gutter-sm q-mb-md justify-between">
         <!-- Observacion -->
-        <div class="col-12 col-md-4">
+        <div class="col-12 col-md-6">
           <label class="q-mb-sm block">Titulo del documento</label>
           <q-input
             v-model="generador.titulo"
@@ -27,6 +27,14 @@
               </div>
             </template>
           </q-input>
+        </div>
+
+        <div class="col-12 col-md-2 text-right">
+          <!-- <label class="q-mb-sm block">Total</label> -->
+          <span class="q-mr-sm text-bold">Total</span>
+          <span class="bg-desenfoque q-pa-md q-mt-xs inline-block text-bold text-primary text-h5 border-primary">
+            {{ '$ ' + sumaPagos}}
+          </span>
         </div>
 
         <div class="col-12">

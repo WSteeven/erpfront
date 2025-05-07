@@ -6,6 +6,7 @@ export const fondosRotativos = {
   empleados_saldos_fr: new Endpoint('fondos-rotativos/empleados-saldos-fr'),
   empleados_fondos_rotativos: new Endpoint('empleados-fondos-rotativos'),
   reporte_valores_fondos_empleados: new Endpoint('fondos-rotativos/reporte-valores-fondos'),
+  activar_gasto_rechazado: new Endpoint('fondos-rotativos/activar-gasto-rechazado'),
   tipo_fondo: new Endpoint('fondos-rotativos/tipo-fondo'),
   ajustes_saldos: new Endpoint('fondos-rotativos/ajustes-saldos'),
   gastos: new Endpoint('fondos-rotativos/gastos'),
