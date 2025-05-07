@@ -35,6 +35,7 @@
     icon="camera_alt"
     class="q-mt-sm text-color full-width bg-solid borde"
     unelevated
+    :disable="disable"
     @click="abrirCamaraOGaleria"
     no-caps
   />

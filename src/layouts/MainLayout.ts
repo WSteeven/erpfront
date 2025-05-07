@@ -1,3 +1,4 @@
+import { useMenuAppMovilStore } from './../stores/menuAppMovil';
 // Dependencias
 import { Notificacion } from 'pages/administracion/notificaciones/domain/Notificacion'
 import { useNotificationRealtimeStore } from 'stores/notificationRealtime'
@@ -64,7 +65,7 @@ export default defineComponent({
 
   setup() {
     const leftDrawerOpen = ref(false)
-    const menu = useMenuStore()
+    //const menu = useMenuStore()
 
     const menuVisible = ref(false)
 
@@ -351,7 +352,7 @@ export default defineComponent({
 
     // función para obtener los módulos permitidos
     function obtenerModulosPermitidos() {
-      const modulosPermitidos = menuStore.links.filter(
+      const modulosPermitidos = (Capacitor.isNativePlatform() ? menuAppMovilStore.links : menuStore.links).filter(
         (link: MenuOption) => link.can
       )
 
@@ -368,6 +369,7 @@ export default defineComponent({
 
     // barra de búsqueda
     const menuStore = useMenuStore()
+    const menuAppMovilStore = useMenuAppMovilStore()
     const resultadosBusqueda = ref<MenuOption[]>([])
 
     function filtrarMenu(val) {
@@ -465,7 +467,7 @@ export default defineComponent({
       route,
       abrirMovilizacionSubtarea,
       abrirTransferirTareas,
-      links: menu.links,
+      links: Capacitor.isNativePlatform() ? menuAppMovilStore.links : menuStore.links,
       leftDrawerOpen,
       toggleLeftDrawer() {
         leftDrawerOpen.value = !leftDrawerOpen.value
@@ -515,13 +517,13 @@ export default defineComponent({
       resetearBuscador,
       posicionResultados,
       fondo,
-      pageContainerStyle: Capacitor.isNativePlatform() || $q.screen.xs ? { marginTop: '10px' } : {
+      pageContainerStyle: { marginTop: '10px' },/* Capacitor.isNativePlatform() || $q.screen.xs ? { marginTop: '10px' } : {
         backgroundImage: `url(${fondo})`,
         backgroundSize: 'auto',
         backgroundPosition: 'top right',
         marginTop: '90px',
         backgroundRepeat: 'no-repeat',
-      }
+      } */
       // idledFor,
       // tiempoInactividad,
       // mostrarAlertaInactividad,

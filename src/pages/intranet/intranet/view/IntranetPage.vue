@@ -1,6 +1,5 @@
 <template>
   <q-page>
-    {{ token }}
     <!-- <div class="row">
       <div class="col-12 text-center q-mb-md">
         <img
@@ -94,7 +93,10 @@
                 :alt="noticia.titulo"
                 class="col-12 col-md-5 noticias-imagfe"
                 style="border-radius: 15px"
-                :style="{ objectFit: 'cover', height: $q.screen.xs  ? '30%' : '100%' }"
+                :style="{
+                  objectFit: 'cover',
+                  height: $q.screen.xs ? '30%' : '100%'
+                }"
               />
               <div class="col-12 col-md-7 q-pl-md">
                 <h5 class="q-mb-sm q-pr-xl" style="text-transform: uppercase">
@@ -170,7 +172,7 @@
                     >{{ etiqueta }}</q-badge
                   >
                 </div>
-                
+
                 <div class="noticia-modal-autor-container">
                   <div class="noticia-modal-autor">
                     ✍️ : {{ noticiaCompleta?.autor }}

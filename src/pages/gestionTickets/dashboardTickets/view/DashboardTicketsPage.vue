@@ -206,7 +206,7 @@
               label="Reporte Excel"
               color="positive"
               class="full-width"
-              square
+              no-caps
               unelevated
               no-wrap
               @click="reporteExcel()"

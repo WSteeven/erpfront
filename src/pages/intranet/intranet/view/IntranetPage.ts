@@ -1,3 +1,4 @@
+import { Capacitor } from '@capacitor/core';
 //Dependencies
 import relativeTime from 'dayjs/plugin/relativeTime'
 import es from 'dayjs/locale/es'
@@ -558,21 +559,23 @@ export default defineComponent({
     const token = ref('')
 
     onMounted(async () => {
-      await PushNotifications.requestPermissions().then(result => {
-        if (result.receive === 'granted') {
-          PushNotifications.register()
-        }
-      })
+      if (Capacitor.isNativePlatform()) {
+        await PushNotifications.requestPermissions().then(result => {
+          if (result.receive === 'granted') {
+            PushNotifications.register()
+          }
+        })
 
-      PushNotifications.addListener('registration', t => {
-        console.log('Push registration success, token:', t.value)
-        token.value = t.value
-      })
+        PushNotifications.addListener('registration', t => {
+          console.log('Push registration success, token:', t.value)
+          token.value = t.value
+        })
 
-      PushNotifications.addListener('registrationError', err => {
-        console.error('Registration error:', err)
-      })
-    }) 
+        PushNotifications.addListener('registrationError', err => {
+          console.error('Registration error:', err)
+        })
+      }
+    })
 
     return {
       correo: computed(() => 'https://' + configuracionGeneralStore.configuracion?.sitio_web + '/webmail'),

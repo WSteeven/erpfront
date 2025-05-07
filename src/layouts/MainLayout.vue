@@ -121,6 +121,7 @@
               @click="mostrarBuscar = !mostrarBuscar"
               color="primary"
               no-caps
+              no-wrap
             >
               <q-icon name="las la-search" size="xs"></q-icon>
               <span v-if="!$q.screen.xs" class="q-ml-xs">Buscar</span>
@@ -138,7 +139,7 @@
           <!-- Boton transferir tareas -->
           <q-btn
             v-if="mostrarTransferirTareas"
-            dense
+            dense7
             unelevated
             no-caps
             class="q-px-sm color-icon-navbar"
@@ -149,7 +150,7 @@
               :class="{ 'q-mx-sm': !$q.screen.xs }"
               class="bg-icon q-pa-xs rounded-field"
             ></q-icon>
-            <span v-if="!$q.screen.xs">Transferir tareas activas</span>
+            <span v-if="$q.screen.md">Transferir tareas activas</span>
             <q-tooltip class="bg-dark">Transferir tareas activas</q-tooltip>
           </q-btn>
 
@@ -256,7 +257,7 @@
               transition-show="slide-left"
               transition-hide="slide-right"
               :style="{ width: width }"
-              class="window-height bg-desenfoque-2 custom-shadow"
+              class="window-height full-width bg-desenfoque custom-shadow"
               max-height="100vh"
               anchor="center middle"
             >
@@ -527,7 +528,7 @@
 
       <!-- Drawer Body -->
       <q-scroll-area
-        style="height: calc(99% - 100px); margin-top: 80px; margin-bottom: 20px"
+        style="height: calc(96% - 90px); margin-top: 80px; margin-bottom: 12px"
         class="zindex-drawer"
       >
         <q-list>
@@ -552,15 +553,16 @@
         </q-list>
       </q-scroll-area>
 
-      <!--  <q-btn
-        color="primary"
+      <q-btn
+        color="blue-14"
         no-caps
         class="full-width q-mb-md"
-        outline
-        rounded
+        label="Descarga la app móvil"
+        icon="bi-google-play"
+        target="_blank"
         @click="logout()"
-        >Cerrar sesión
-      </q-btn> -->
+      >
+      </q-btn>
     </q-drawer>
 
     <modales-entidad :comportamiento="modales" @guardado="guardado" />

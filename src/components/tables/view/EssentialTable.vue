@@ -2122,11 +2122,11 @@
   display: block;
   width: 100%;
 } */
-/*.bg-header-table {
+.bg-header-table {
   .q-table__top {
     background-color: $grey-4 !important;
   }
-}*/
+}
 
 .my-sticky-dynamic {
   /* height or max-height is important */

@@ -11,10 +11,10 @@ export class LoginController {
 
   async login(userLogin: UserLogin): Promise<Empleado> {
     try {
-      const redirectTo = this.route.query.redirect || '/intranet'
+      const redirectTo = this.route.query.redirect || '/'
       // const response = await this.store.login(userLogin)
       const usuario = await this.store.login(userLogin)
-        await this.Router.replace(redirectTo)
+      await this.Router.replace(redirectTo)
 
       return usuario
     } catch (error: unknown) {
